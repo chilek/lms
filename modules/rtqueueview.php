@@ -24,6 +24,13 @@
  *  $Id$
  */
 
+$currentuser = Auth::GetCurrentUser();
+$ticketlist_status = ConfigHelper::getConfig('rt.ticketlist_status', ConfigHelper::getConfig('phpui.ticketlist_status'));
+$ticketlist_priority = ConfigHelper::getConfig('rt.ticketlist_priority', ConfigHelper::getConfig('phpui.ticketlist_priority'));
+$ticketlist_pagelimit = ConfigHelper::getConfig('rt.ticketlist_pagelimit', ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $filter['total']));
+$short_pagescroller = ConfigHelper::checkConfig('phpui.short_pagescroller');
+$aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 86400);
+
 if (isset($_GET['action'])) {
     switch ($_GET['action']) {
         case 'assign':
@@ -32,13 +39,13 @@ if (isset($_GET['action'])) {
                     header('Content-Type: application/json');
                     die(json_encode($LMS->TicketIsAssigned($_GET['ticketid'])));
                 }
-                $LMS->TicketChange($_GET['ticketid'], array('owner' => Auth::GetCurrentUser()));
+                $LMS->TicketChange($_GET['ticketid'], array('owner' => $currentuser));
                 $SESSION->redirect(str_replace('&action=assign', '', $_SERVER['REQUEST_URI'])
                     . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
             }
             break;
         case 'assign2':
-            $LMS->TicketChange($_GET['ticketid'], array('verifierid' => Auth::GetCurrentUser()));
+            $LMS->TicketChange($_GET['ticketid'], array('verifierid' => $currentuser));
             $SESSION->redirect(str_replace('&action=assign2', '', $_SERVER['REQUEST_URI'])
                 . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
             break;
@@ -81,7 +88,7 @@ if (isset($_GET['id'])) {
 } else {
     if (!empty($filter['ids'])) {
         foreach ($filter['ids'] as $queueidx => $queueid) {
-            if (!$LMS->GetUserRightsRT(Auth::GetCurrentUser(), $queueid)) {
+            if (!$LMS->GetUserRightsRT($currentuser, $queueid)) {
                 unset($filter['ids'][$queueidx]);
             }
         }
@@ -92,7 +99,7 @@ if (isset($_GET['id'])) {
 }
 
 if (empty($filter['ids'])) {
-    $queues = $DB->GetCol('SELECT queueid FROM rtrights WHERE userid=?', array(Auth::GetCurrentUser()));
+    $queues = $DB->GetCol('SELECT queueid FROM rtrights WHERE userid=?', array($currentuser));
 
     if (!$queues) {
         access_denied();
@@ -121,7 +128,7 @@ if (!empty($_GET['catid'])) {
 if (!empty($filter['catids'])) {
     foreach ($filter['catids'] as $catidx => $catid) {
         if ($catid != -1) {
-            if (!$LMS->GetUserRightsToCategory(Auth::GetCurrentUser(), $catid)) {
+            if (!$LMS->GetUserRightsToCategory($currentuser, $catid)) {
                 unset($filter['catids'][$catidx]);
             }
         }
@@ -131,7 +138,7 @@ if (!empty($filter['catids'])) {
     }
 }
 /*else {
-    $categories = $DB->GetCol('SELECT categoryid FROM rtcategoryusers WHERE userid=?', array(Auth::GetCurrentUser()));
+    $categories = $DB->GetCol('SELECT categoryid FROM rtcategoryusers WHERE userid=?', array($currentuser));
     $all_cat = $DB->GetOne('SELECT COUNT(*) FROM rtcategories');
 
     if (!$categories && $all_cat)
@@ -258,10 +265,7 @@ if (isset($_GET['d'])) {
 if (isset($_GET['s'])) {
     $filter['state'] = $_GET['s'];
 } elseif (!isset($filter['state'])) {
-    $filter['state'] = ConfigHelper::getConfig(
-        'rt.ticketlist_status',
-        ConfigHelper::getConfig('phpui.ticketlist_status')
-    );
+    $filter['state'] = $ticketlist_status;
     if (isset($filter['state']) && strlen($filter['state'])) {
         $filter['state'] = explode(',', $filter['state']);
     }
@@ -288,10 +292,7 @@ if (isset($_GET['priority'])) {
         $filter['priority'] = Utils::filterIntegers(array($_GET['priority']));
     }
 } elseif (!isset($filter['priority'])) {
-    $filter['priority'] = ConfigHelper::getConfig(
-        'rt.ticketlist_priority',
-        ConfigHelper::getConfig('phpui.ticketlist_priority')
-    );
+    $filter['priority'] = $ticketlist_priority;
     if (isset($filter['priority']) && strlen($filter['priority'])) {
         $filter['priority'] = explode(',', $filter['priority']);
     }
@@ -353,10 +354,7 @@ $filter['count'] = true;
 
 $filter['total'] = intval($LMS->GetQueueContents($filter));
 
-$filter['limit'] = intval(ConfigHelper::getConfig(
-    'rt.ticketlist_pagelimit',
-    ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $filter['total'])
-));
+$filter['limit'] = intval($ticketlist_pagelimit);
 $filter['offset'] = ($filter['page'] - 1) * $filter['limit'];
 if ($filter['offset'] > $filter['total']) {
     $filter['page'] = 1;
@@ -370,7 +368,7 @@ $pagination = LMSPaginationFactory::getPagination(
     $filter['page'],
     $filter['total'],
     $filter['limit'],
-    ConfigHelper::checkConfig('phpui.short_pagescroller')
+    $short_pagescroller
 );
 
 $SESSION->add_history_entry();
@@ -378,54 +376,30 @@ $SESSION->add_history_entry();
 $filter['direction'] = $queue['direction'];
 $filter['order'] = $queue['order'];
 
-unset($queue['total']);
-unset($queue['state']);
-unset($queue['priority']);
-unset($queue['source']);
-unset($queue['order']);
-unset($queue['direction']);
-unset($queue['owner']);
-unset($queue['removed']);
-unset($queue['deadline']);
-unset($queue['service']);
-unset($queue['type']);
-unset($queue['unread']);
-unset($queue['parentids']);
-unset($queue['rights']);
-unset($queue['verifier']);
-unset($queue['netnode']);
-unset($queue['projectids']);
-unset($queue['cid']);
-unset($queue['subject']);
-unset($queue['fromdate']);
-unset($queue['todate']);
-unset($queue['watching']);
-
+unset($queue['total'], $queue['state'], $queue['priority'], $queue['source'], $queue['order'], $queue['direction'], $queue['owner'], $queue['removed'], $queue['deadline'], $queue['service'], $queue['type'], $queue['unread'], $queue['parentids'], $queue['rights'], $queue['verifier'], $queue['netnode'], $queue['projectids'], $queue['cid'], $queue['subject'], $queue['fromdate'], $queue['todate'], $queue['watching']);
 
 $queues = $LMS->GetQueueList(array('stats' => false));
-$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
+$categories = $LMS->GetUserCategories($currentuser);
 
 $projects = $LMS->GetProjects('name', array());
-unset($projects['total']);
-unset($projects['order']);
-unset($projects['direction']);
+unset($projects['total'], $projects['order'], $projects['direction']);
 
 $netnodelist = $LMS->GetNetNodeList(array(), 'name');
-unset($netnodelist['total']);
-unset($netnodelist['order']);
-unset($netnodelist['direction']);
-
-$aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 86400);
+unset($netnodelist['total'], $netnodelist['order'], $netnodelist['direction']);
 
 $SESSION->remove('backid');
 
-$SMARTY->assign('aet', $aet);
-$SMARTY->assign('pagination', $pagination);
-$SMARTY->assign('queues', $queues);
-$SMARTY->assign('projects', $projects);
-$SMARTY->assign('categories', $categories);
-$SMARTY->assign('queue', $queue);
-$SMARTY->assign('netnodelist', $netnodelist);
-$SMARTY->assign('users', $LMS->GetUserNames(array('withDeleted' => 1)));
+$SMARTY->assign(
+    array(
+        'aet' => $aet,
+        'pagination' => $pagination,
+        'queues' => $queues,
+        'projects' => $projects,
+        'categories' => $categories,
+        'queue' => $queue,
+        'netnodelist' => $netnodelist,
+        'users' => $LMS->GetUserNames(array('withDeleted' => 1))
+    )
+);
 
 $SMARTY->display('rt/rtqueueview.html');

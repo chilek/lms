@@ -36,6 +36,7 @@ $superuser = ConfigHelper::checkPrivilege('superuser');
 $event_overlap_warning = ConfigHelper::checkConfig('timetable.event_overlap_warning', ConfigHelper::checkConfig('phpui.event_overlap_warning'));
 $max_userlist_size = ConfigHelper::getConfig('timetable.event_max_userlist_size', ConfigHelper::getConfig('phpui.event_max_userlist_size'));
 $big_networks = ConfigHelper::checkConfig('phpui.big_networks');
+$now = time();
 
 if (isset($_GET['id'])) {
     $event = $LMS->GetEvent($_GET['id']);
@@ -64,7 +65,7 @@ $backurl = '?' . $backto . (empty($backid) ? '' : '#' . $backid);
 $action = isset($_GET['action']) ? $_GET['action'] : null;
 switch ($action) {
     case 'open':
-        if (empty($event['closeddate']) || ($event['closed'] == 1 && $aee && (time() - $event['closeddate'] < $aee)) || $superuser) {
+        if (empty($event['closeddate']) || ($event['closed'] == 1 && $aee && ($now - $event['closeddate'] < $aee)) || $superuser) {
             $DB->Execute('UPDATE events SET closed = 0, closeduserid = NULL, closeddate = 0 WHERE id = ?', array($_GET['id']));
             $SESSION->remove_history_entry();
             $SESSION->redirect($backurl);
@@ -83,7 +84,7 @@ switch ($action) {
         }
         break;
     case 'assign':
-        if ($event['closed'] != 1 || ($event['closed'] == 1 && $aee && ((time() - $event['closeddate']) < $aee)) || $superuser) {
+        if ($event['closed'] != 1 || ($event['closed'] == 1 && $aee && (($now - $event['closeddate']) < $aee)) || $superuser) {
             $LMS->AssignUserToEvent($_GET['id'], Auth::GetCurrentUser());
             $SESSION->remove_history_entry();
             $SESSION->redirect($backurl);
@@ -92,7 +93,7 @@ switch ($action) {
         }
         break;
     case 'unassign':
-        if ($event['closed'] != 1 || ($event['closed'] == 1 && $aee && ((time() - $event['closeddate']) < $aee)) || $superuser) {
+        if ($event['closed'] != 1 || ($event['closed'] == 1 && $aee && (($now - $event['closeddate']) < $aee)) || $superuser) {
             $LMS->UnassignUserFromEvent($_GET['id'], Auth::GetCurrentUser());
             $SESSION->remove_history_entry();
             $SESSION->redirect($backurl);
