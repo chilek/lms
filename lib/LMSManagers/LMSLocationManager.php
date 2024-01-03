@@ -591,11 +591,15 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
         if (empty($v)) {
             $v = $address;
         } else {
-            $v['location_street_name'] = Utils::formatStreetName(array(
-                'type' => $v['location_street_type_name'],
-                'name' => $v['location_street_name'],
-                'name2' => $v['location_street_name2'],
-            ));
+            if (isset($v['location_street_name']) && strlen($v['location_street_name'])) {
+                $v['location_street_name'] = Utils::formatStreetName(array(
+                    'type' => $v['location_street_type_name'],
+                    'name' => $v['location_street_name'],
+                    'name2' => $v['location_street_name2'],
+                ));
+            } else {
+                $v['location_street_name'] = '';
+            }
             unset($v['location_street_name2'], $v['location_street_type_name']);
 
             $v = array_merge($address, $v);
