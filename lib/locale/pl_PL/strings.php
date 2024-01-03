@@ -575,6 +575,7 @@ $_LANG['— all users —'] = '— wszyscy —';
 $_LANG['amount'] = 'na kwotę';
 $_LANG['Amount'] = 'Ilość';
 $_LANG['AND'] = 'I';
+$_LANG['Use logical conjunction AND instead of OR in user selection when checkbox selected'] = 'Użyj spójnika logicznego I zamiast LUB przy wyborze użytkowników gdy pole wyboru jest zaznaczone';
 $_LANG['Approved By'] = 'Zatwierdził';
 $_LANG['Are you sure that you want to logout?'] = 'Czy na pewno chcesz się wylogować?';
 $_LANG['Are you sure that you want to remove'] = 'Czy na pewno chcesz usunąć';
@@ -5471,7 +5472,7 @@ $_LANG['no connections'] = 'bez połączeń';
 
 $_LANG['Phone number validation failed!'] = 'Weryfikacja poprawności numeru telefonu nie powiodła się!';
 
-$_LANG['Choose events types'] = 'Wybierz typy zdarzeń';
+$_LANG['Events types'] = 'Typy zdarzeń';
 $_LANG['Choose ticket type'] = 'Wybierz rodzaj zgłoszenia';
 $_LANG['Choose service type'] = 'Wybierz typ usługi';
 
