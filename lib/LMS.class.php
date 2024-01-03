@@ -2984,7 +2984,7 @@ class LMS
         $smime_certificate = ConfigHelper::getConfig('mail.smime_certificate', LIB_DIR . DIRECTORY_SEPARATOR . 'lms-mail.cert');
         $smime_key = ConfigHelper::getConfig('mail.smime_key', LIB_DIR . DIRECTORY_SEPARATOR . 'lms.key');
         $smime_ca_chain = ConfigHelper::getConfig('mail.smime_ca_chain', '');
-        $smime_sender_email = ConfigHelper::getConfig('mail.smime_sender_email', $sender_email);
+        $smime_sender_email = ConfigHelper::getConfig('mail.smime_sender_email', '', true);
 
         if ($mail_backend == 'pear') {
             if (!is_object($this->mail_object) || !$persist) {
@@ -3252,7 +3252,7 @@ class LMS
                     ? $smime_ca_chain
                     : $smtp_options['smime_ca_chain'],
                 'sender_email' => !isset($smtp_options['smime_sender_email'])
-                    ? $smime_sender_email
+                    ? (strlen($smime_sender_email) ? $smime_sender_email : $sender_email)
                     : $smtp_options['smime_sender_email'],
             );
 
