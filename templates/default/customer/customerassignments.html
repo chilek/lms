@@ -97,7 +97,7 @@
 					<div class="lms-ui-tab-table-wrapper col-4">
 						<div class="lms-ui-tab-table-wrapper col-2">
 							<div class="lms-ui-tab-table-column liability">
-								{trans("Liability")}<br>
+								{trans("Liability")} ({trans("Note")})<br>
 								{trans("Recipient")}
 							</div>
 							{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
@@ -207,8 +207,9 @@
 											<A href="?m=tariffinfo&id={$a.tariffid}" {if !$a.commited} class="lms-ui-assignment-not-commited"{/if}>
 												{$a.name} {if count($assignments)>1} ({$a.id}){/if}
 											</A>
-											{if $a.attribute} - {$a.attribute|escape}{/if}
 										</strong>
+										{if $a.note}<span class="green" {tip text="{$a.note|escape}"}>({$a.note|trunescape:20})</span>{/if}
+										{if $a.attribute} - {$a.attribute|escape}{/if}
 										{if ($a.flags & $smarty.const.TARIFF_FLAG_ALL_REWARD_PENALTY_FLAGS) > 0}
 											{capture assign="reward_flags"}
 												{if $a.value < 0}
@@ -234,6 +235,7 @@
 										{/if}
 									{else}
 										{$a.name}
+										{if $a.note}<span class="green" {tip text="{$a.note|escape}"}>({$a.note|trunescape:20})</span>{/if}
 									{/if}
 
 									{if $a.nodes}

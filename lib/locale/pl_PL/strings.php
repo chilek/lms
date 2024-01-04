@@ -1721,6 +1721,7 @@ $_LANG['No such tickets matching search criteria.'] = 'Brak zgłoszeń spełniaj
 $_LANG['No such transactions'] = 'Brak transakcji';
 $_LANG['Note'] = 'Notatka';
 $_LANG['Note:'] = 'Notatka:';
+$_LANG['Enter assignment/liability note'] = 'Wprowadź notatkę zobowiązania/obciążenia';
 $_LANG['<!customer-note>Contents'] = 'Treść';
 $_LANG['Notes:'] = 'Notatki:';
 $_LANG['Notes'] = 'Notatki';
