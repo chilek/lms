@@ -37,7 +37,7 @@
 						<label>
 							<input type="hidden" name="userand" value="0">
 							{if $filter.userand}{trans("and")}{else}{trans("or")}{/if}
-							<input type="checkbox" name="userand" value="1" onchange="document.filter.submit();"{if isset($filter.userand) && $filter.userand} checked{/if}{tip text="Use logical conjunction AND instead of OR in user selection when checkbox selected"}>
+							<input type="checkbox" name="userand" value="1" onchange="document.filter.submit();"{if isset($filter.userand) && $filter.userand} checked{/if}{tip text="Use logical conjunction AND instead of OR in user selection"}>
 						</label>
 
 						<SELECT name="privacy" onchange="document.filter.submit();" {tip text="Select privacy flag"}>
