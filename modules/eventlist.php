@@ -236,7 +236,7 @@ $today = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
 
 $SMARTY->assign(array(
         'today' => $today,
-        'period' => $DB->GetRow('SELECT MIN(date) AS fromdate, MAX(date) AS todate FROM events'),
+        'period' => $LMS->GetTimetableRange(),
         'eventlist' => $eventlist,
         'overdue_events' => $overdue_events,
         'days' => $days,

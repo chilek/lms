@@ -45,10 +45,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     $user['rights'] = $this->GetUserRightsRT($user['id'], $id);
                     $queue['rights'][] = $user;
                 }
-                $queue['categories'] = $this->db->GetAll('SELECT categoryid, name
-                    FROM rtqueuecategories
-                    JOIN rtcategories c ON c.id = categoryid
-                    WHERE queueid = ?', array($id));
+                $queue['categories'] = $this->GetQueueCategories($id);
             }
             return $queue;
         } else {
@@ -608,10 +605,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             . (isset($offset) ? ' OFFSET ' . $offset : ''),
             array($userid, $userid, $userid, $userid, 'image/%')
         )) {
-            $ticket_categories = $this->db->GetAllByKey('SELECT c.id AS categoryid, c.name, c.description, c.style
-				FROM rtcategories c
-				JOIN rtcategoryusers cu ON cu.categoryid = c.id
-				WHERE cu.userid = ?', 'categoryid', array($userid));
+            $ticket_categories = $this->GetUserCategories($userid);
             foreach ($result as &$ticket) {
                 if (!empty($ticket['categories']) && ConfigHelper::checkConfig('rt.show_ticket_categories')) {
                     $categories = explode(',', $ticket['categories']);
@@ -878,7 +872,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             return 1;
         }
 
-        if (!$this->db->GetOne('SELECT 1 FROM rtcategories WHERE id = ?', array($category))) {
+        if (!$this->CategoryExists($category)) {
             return true;
         }
 
@@ -944,12 +938,12 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function GetUserCategories($userid = null)
     {
-        return $this->db->GetAll('SELECT c.id, name
+        return $this->db->GetAllByKey('SELECT c.id, name
 		    FROM rtcategories c
 		    LEFT JOIN rtcategoryusers cu
 			ON c.id = cu.categoryid '
                         . ($userid ? 'WHERE userid = ' . intval($userid) : '' )
-                        . ' ORDER BY name');
+                        . ' ORDER BY name', 'categoryid');
     }
 
     public function RTStats()
@@ -1753,8 +1747,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         if (isset($props['categories'])) {
             $ticket['categories'] = empty($ticket['categories']) ? array() : array_keys($ticket['categories']);
-            $categories = $this->db->GetAllByKey('SELECT id, name, description
-				FROM rtcategories', 'id');
+            $categories = $this->GetCategoryList(false);
 
             $category_change = isset($props['category_change']) ? $props['category_change'] : null;
             switch ($category_change) {
@@ -2340,22 +2333,16 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         );
 
         if (ConfigHelper::checkPrivilege('helpdesk_operation') || ConfigHelper::checkPrivilege('helpdesk_administration')) {
-            $result['critical'] = $this->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_CRITICAL,
-                'state' => -3, 'rights' => RT_RIGHT_INDICATOR));
-            $result['urgent'] = $this->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_URGENT,
-                'state' => -3, 'rights' => RT_RIGHT_INDICATOR));
-            $result['unread'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'unread' => 1,
-                'rights' => RT_RIGHT_INDICATOR));
-            $result['expired'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'deadline' => -2,
-                'owner' => $userid, 'rights' => RT_RIGHT_INDICATOR));
-            $result['outdated'] = $this->GetQueueContents(array('count' => true, 'state' => RT_EXPIRED,
-                'owner' => $userid, 'rights' => RT_RIGHT_INDICATOR));
-            $result['verify'] = $this->GetQueueContents(array('count' => true, 'state' => RT_VERIFIED,
-                'verifierids' => $userid, 'rights' => RT_RIGHT_INDICATOR));
-            $result['left'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'owner' => $userid,
-                'rights' => RT_RIGHT_INDICATOR));
-            $result['watching'] = $this->GetQueueContents(array('count' => true, 'watching' => 1,
-                'rights' => RT_RIGHT_INDICATOR));
+            $result = array(
+                    'critical' => $this->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_CRITICAL, 'state' => -3, 'rights' => RT_RIGHT_INDICATOR)),
+                    'urgent' => $this->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_URGENT, 'state' => -3, 'rights' => RT_RIGHT_INDICATOR)),
+                    'unread' => $this->GetQueueContents(array('count' => true, 'state' => -1, 'unread' => 1, 'rights' => RT_RIGHT_INDICATOR)),
+                    'expired' => $this->GetQueueContents(array('count' => true, 'state' => -1, 'deadline' => -2, 'owner' => $userid, 'rights' => RT_RIGHT_INDICATOR)),
+                    'outdated' => $this->GetQueueContents(array('count' => true, 'state' => RT_EXPIRED, 'owner' => $userid, 'rights' => RT_RIGHT_INDICATOR)),
+                    'verify' => $this->GetQueueContents(array('count' => true, 'state' => RT_VERIFIED, 'verifierids' => $userid, 'rights' => RT_RIGHT_INDICATOR)),
+                    'left' => $this->GetQueueContents(array('count' => true, 'state' => -1, 'owner' => $userid, 'rights' => RT_RIGHT_INDICATOR)),
+                    'watching' => $this->GetQueueContents(array('count' => true, 'watching' => 1, 'rights' => RT_RIGHT_INDICATOR)),
+            );
         }
 
         if (ConfigHelper::CheckPrivilege('timetable_management')) {
