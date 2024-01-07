@@ -30,6 +30,11 @@
  */
 class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 {
+    public function GetTimetableRange()
+    {
+        return $this->db->GetRow('SELECT MIN(date) AS fromdate, MAX(date) AS todate FROM events');
+    }
+
     public function EventAdd($event)
     {
         $args = array(

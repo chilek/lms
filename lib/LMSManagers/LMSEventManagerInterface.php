@@ -30,6 +30,8 @@
  */
 interface LMSEventManagerInterface
 {
+    public function GetTimetableRange();
+
     public function EventAdd($event);
 
     public function EventUpdate($event);
