@@ -1144,6 +1144,7 @@ CREATE TABLE liabilities (
     taxcategory smallint DEFAULT 0 NOT NULL,
 	currency varchar(3),
 	name text               NOT NULL DEFAULT '',
+	note text		DEFAULT NULL,
 	taxid int(11)           NOT NULL,
 	prodid varchar(255)     NOT NULL DEFAULT '',
 	type smallint DEFAULT -1 NOT NULL,
@@ -1239,6 +1240,7 @@ CREATE TABLE assignments (
 	customerid int(11) NOT NULL,
 	period smallint NOT NULL DEFAULT '0',
     backwardperiod smallint NOT NULL DEFAULT 0,
+	note text DEFAULT NULL,
     at int(11) NOT NULL DEFAULT '0',
 	datefrom int(11) NOT NULL DEFAULT '0',
 	dateto int(11) NOT NULL DEFAULT '0',
@@ -4351,4 +4353,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023122900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024010400');

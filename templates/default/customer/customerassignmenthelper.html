@@ -546,6 +546,14 @@
 								</TD>
 							</TR>
 
+							<TR id="a_note">
+                                                                <TD>{icon name="notes"}</TD>
+                                                                <TD class="bold nobr">{trans("Note")}</TD>
+                                                                <TD>
+                                                                        <INPUT type="text" name="{$variable_prefix}[note]" value="{if $variables.note}{$variables.note|escape}{/if}" size="30" {tip text="Enter assignment/liability note" trigger="note"}>
+                                                                </TD>
+                                                        </TR>
+
 							<TR id="a_day" style="display: none;">
 								<TD>
 									{icon name="accounting"}

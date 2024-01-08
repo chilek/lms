@@ -119,7 +119,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $now = mktime(0, 0, 0, date('n'), date('d'), date('Y'));
 
         $assignments = $this->db->GetAll(
-            'SELECT a.id AS id, a.tariffid, a.customerid, a.period AS periodvalue, a.backwardperiod,
+            'SELECT a.id AS id, a.tariffid, a.customerid, a.period AS periodvalue, a.backwardperiod, a.note,
             a.at, a.suspended, a.invoice, a.settlement, a.recipient_address_id,
             a.datefrom, a.dateto, a.pdiscount,
             a.vdiscount AS unitary_vdiscount,
@@ -454,7 +454,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $tariff = $this->db->GetRow(
                 'SELECT a.data, s.data AS sdata, t.name, t.type, t.value, t.currency, t.period,
                 t.id, t.prodid, t.taxid, t.flags, t.taxcategory, t.netvalue,
-                t2.value AS taxvalue
+                t2.value AS taxvalue, a.note
                 FROM promotionassignments a
                 JOIN promotionschemas s ON (s.id = a.promotionschemaid)
                 JOIN tariffs t ON (t.id = a.tariffid)
@@ -621,6 +621,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                 'prodid' => $tariff['prodid'],
                                 'type' => $tariff['type'],
                                 'netvalue' => str_replace(',', '.', $netValue),
+                                'note' => htmlspecialchars($note),
                             );
                             $this->db->Execute(
                                 'INSERT INTO liabilities (name, value, flags, taxcategory, currency,

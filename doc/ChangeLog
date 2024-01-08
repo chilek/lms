@@ -599,6 +599,7 @@ version 28-git (????-??-??):
   - improvement: added support for %author in ticket notify templates [interduo]
   - enhancement: added support of number plan to customer type relations [chilan]
   - improvement: introduced smarty {user_selection} component [interduo]
+  - enhancement: add assignment note field, user assignment description [interduo]
 
 version 27.0 (2021-08-20):
 
