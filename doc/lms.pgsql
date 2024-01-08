@@ -990,7 +990,7 @@ CREATE TABLE liabilities (
     taxcategory smallint DEFAULT 0 NOT NULL,
 	currency varchar(3),
 	name text           	DEFAULT '' NOT NULL,
-	note text,
+	note text		DEFAULT NULL,
 	taxid integer       	NOT NULL
 		CONSTRAINT liabilities_taxid_fkey REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	prodid varchar(255) 	DEFAULT '' NOT NULL,
@@ -1096,7 +1096,7 @@ CREATE TABLE assignments (
 		CONSTRAINT assignments_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	period smallint 	DEFAULT 0 NOT NULL,
 	backwardperiod smallint DEFAULT 0 NOT NULL,
-	note text,
+	note text 		DEFAULT NULL,
 	at integer 		DEFAULT 0 NOT NULL,
 	datefrom integer	DEFAULT 0 NOT NULL,
 	dateto integer		DEFAULT 0 NOT NULL,
