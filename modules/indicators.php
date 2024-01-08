@@ -33,10 +33,13 @@ if (isset($_GET['ajax'])) {
 $action = $_GET['action'];
 $redirect = '';
 $currentuser = Auth::GetCurrentUser();
+$helpdesk_adm = ConfigHelper::CheckPrivilege('helpdesk_administration');
+$helpdesk_oper = ConfigHelper::CheckPrivilege('helpdesk_operation');
+$timetable_mgnt = ConfigHelper::CheckPrivilege('timetable_management');
 
 switch ($action) {
     case 'critical':
-        if (ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')) {
+        if ($helpdesk_adm || $helpdesk_oper) {
             $count = $LMS->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_CRITICAL,
                 'state' => -1, 'rights' => RT_RIGHT_INDICATOR));
             if ($count == 1) {
@@ -50,7 +53,7 @@ switch ($action) {
         }
         break;
     case 'urgent':
-        if (ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')) {
+        if ($helpdesk_adm || $helpdesk_oper) {
             $count = $LMS->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_URGENT,
                 'state' => -3, 'rights' => RT_RIGHT_INDICATOR));
             if ($count == 1) {
@@ -64,7 +67,7 @@ switch ($action) {
         }
         break;
     case 'unread':
-        if (ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')) {
+        if ($helpdesk_adm || $helpdesk_oper) {
             $count = $LMS->GetQueueContents(array('count' => true, 'state' => -1, 'unread' => 1,
                 'rights' => RT_RIGHT_INDICATOR));
             if ($count == 1) {
@@ -78,7 +81,7 @@ switch ($action) {
         }
         break;
     case 'expired':
-        if (ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')) {
+        if ($helpdesk_adm || $helpdesk_oper) {
                 $count = $LMS->GetQueueContents(array('count' => true, 'state' => -1, 'deadline' => -2, 'owner' => $currentuser, 'rights' => RT_RIGHT_INDICATOR));
             if ($count == 1) {
                 $tickets = $LMS->GetQueueContents(array('count' => false, 'state' => -1, 'deadline' => -2, 'owner' => $currentuser, 'rights' => RT_RIGHT_INDICATOR));
@@ -90,7 +93,7 @@ switch ($action) {
         }
         break;
     case 'outdated':
-        if (ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')) {
+        if ($helpdesk_adm || $helpdesk_oper) {
             $count = $LMS->GetQueueContents(array('count' => true, 'state' => RT_EXPIRED, 'owner' => $currentuser, 'rights' => RT_RIGHT_INDICATOR));
             if ($count == 1) {
                 $tickets = $LMS->GetQueueContents(array('count' => false, 'state' => RT_EXPIRED, 'owner' => $currentuser, 'rights' => RT_RIGHT_INDICATOR));
@@ -102,7 +105,7 @@ switch ($action) {
         }
         break;
     case 'verify':
-        if (ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')) {
+        if ($helpdesk_adm || $helpdesk_oper) {
             $count = $LMS->GetQueueContents(array('count' => true, 'state' => RT_VERIFIED, 'verifierids' => $currentuser, 'rights' => RT_RIGHT_INDICATOR));
             if ($count == 1) {
                 $tickets = $LMS->GetQueueContents(array('count' => false, 'state' => RT_VERIFIED, 'verifierids' => $currentuser, 'rights' => RT_RIGHT_INDICATOR));
@@ -114,7 +117,7 @@ switch ($action) {
         }
         break;
     case 'left':
-        if (ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')) {
+        if ($helpdesk_adm || $helpdesk_oper) {
             $count = $LMS->GetQueueContents(array('count' => true, 'state' => -1, 'owner' => -3, 'rights' => RT_RIGHT_INDICATOR));
             if ($count == 1) {
                 $tickets = $LMS->GetQueueContents(array('count' => false, 'state' => -1, 'owner' => $currentuser, 'rights' => RT_RIGHT_INDICATOR));
@@ -126,7 +129,7 @@ switch ($action) {
         }
         break;
     case 'events':
-        if (ConfigHelper::CheckPrivilege('timetable_management')) {
+        if ($timetable_mgnt) {
             $count = $LMS->GetEventList(array('userid' => $currentuser,
                 'forward' => 1, 'closed' => 0, 'count' => true));
             if ($count == 1) {
@@ -140,7 +143,7 @@ switch ($action) {
         }
         break;
     case 'overdue':
-        if (ConfigHelper::CheckPrivilege('timetable_management')) {
+        if ($timetable_mgnt) {
             $count = $LMS->GetEventList(array('userid' => $currentuser,
                 'forward' => -1, 'closed' => 0, 'count' => true));
             if ($count == 1) {
@@ -154,7 +157,7 @@ switch ($action) {
         }
         break;
     case 'watching':
-        if (ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')) {
+        if ($helpdesk_adm || $helpdesk_oper) {
             $count = $LMS->GetQueueContents(array('watching' => 1, 'count' => true, 'state' => -2));
             if ($count == 1) {
                 $ticket = $LMS->GetQueueContents(array('watching' => 1, 'count' => false, 'state' => -2));
