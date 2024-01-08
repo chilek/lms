@@ -25,7 +25,7 @@
  */
 
 // here should be always the newest version of database!
-define('DBVERSION', '2023053000');
+define('DBVERSION', '2024010400');
 
 /**
  *
@@ -70,6 +70,8 @@ abstract class LMSDB_common implements LMSDBInterface
     /** @var resource|null Query result * */
     protected $_result = null;
 
+    protected $_connection_error = null;
+
     /** @var array Query errors * */
     protected $errors = array();
 
@@ -94,10 +96,18 @@ abstract class LMSDB_common implements LMSDBInterface
 
         register_shutdown_function(array($this, '_driver_shutdown'));
 
+        set_error_handler(function ($errno, $errstr, $errfile, $errline) {
+            $this->_connection_error = $errstr;
+        });
+
         // database initialization
         if ($this->_driver_connect($dbhost, $dbuser, $dbpasswd, $dbname)) {
+            set_error_handler(null);
+
             return $this->_dblink;
         } else {
+            set_error_handler(null);
+
             $this->errors[] = array(
                 'query' => 'database connect',
                 'error' => $this->_driver_geterror(),
@@ -690,6 +700,11 @@ abstract class LMSDB_common implements LMSDBInterface
     {
 
         return $this->errors;
+    }
+
+    public function GetConnectionError()
+    {
+        return $this->_connection_error;
     }
 
     /**

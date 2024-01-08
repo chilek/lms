@@ -29,6 +29,10 @@ use GusApi\RegonConstantsInterface;
 use GusApi\Exception\InvalidUserKeyException;
 use GusApi\ReportTypes;
 use GusApi\ReportTypeMapper;
+use proj4php\Proj4php;
+use proj4php\Proj;
+use proj4php\Point;
+use Ramsey\Uuid\Uuid;
 
 class Utils
 {
@@ -40,6 +44,9 @@ class Utils
     const GUS_REGON_API_SEARCH_TYPE_TEN = 1;
     const GUS_REGON_API_SEARCH_TYPE_REGON = 2;
     const GUS_REGON_API_SEARCH_TYPE_RBE = 3;
+
+    const PESEL_STATUS_RESERVED = 'ZASTRZEZONY';
+    const PESEL_STATUS_NOT_RESERVED = 'NIEZASTRZEZONY';
 
     public static function filterIntegers(array $params)
     {
@@ -230,15 +237,17 @@ class Utils
                 $line = trim($line);
             }
             unset($line);
-            return preg_replace(
-                array(
-                    '#\[([^]]+)\]\(([^/][^\)]*)\)#',
-                    '#\[([^]]+)\]\((/[^\)]*)\)#',
-                ),
-                array(
-                    '[$1](https://wiki.lms.plus/$2)',
-                    '[$1](https://github.com$2)',
-                ),
+            return preg_replace_callback(
+                '#\[([^]]+)\]\(([^)]*)\)#',
+                function ($matches) {
+                    if (preg_match('#https?://#', $matches[2])) {
+                        return $matches[0];
+                    } elseif (preg_match('#\[([^]]+)\]\(([^/][^\)]*)\)#', $matches[0])) {
+                        return '[' . $matches[1] . '](https://wiki.lms.plus/' . $matches[2] . ')';
+                    } elseif (preg_match('#\[([^]]+)\]\((/[^\)]*)\)#', $matches[0])) {
+                        return '[' . $matches[1] . '](https://github.com' . $matches[2] . ')';
+                    }
+                },
                 implode("\n", $lines)
             );
         }
@@ -256,15 +265,17 @@ class Utils
 
         $content = explode(
             "\n",
-            preg_replace(
-                array(
-                    '#\[([^]]+)\]\(([^/][^\)]*)\)#',
-                    '#\[([^]]+)\]\((/[^\)]*)\)#',
-                ),
-                array(
-                    '[$1](https://wiki.lms.plus/$2)',
-                    '[$1](https://github.com$2)',
-                ),
+            preg_replace_callback(
+                '#\[([^]]+)\]\(([^)]*)\)#',
+                function ($matches) {
+                    if (preg_match('#https?://#', $matches[2])) {
+                        return $matches[0];
+                    } elseif (preg_match('#\[([^]]+)\]\(([^/][^\)]*)\)#', $matches[0])) {
+                        return '[' . $matches[1] . '](https://wiki.lms.plus/' . $matches[2] . ')';
+                    } elseif (preg_match('#\[([^]]+)\]\((/[^\)]*)\)#', $matches[0])) {
+                        return '[' . $matches[1] . '](https://github.com' . $matches[2] . ')';
+                    }
+                },
                 $content
             )
         );
@@ -511,6 +522,9 @@ class Utils
                 'news' => true,
                 'tel' => true,
                 'data' => true,
+            ));
+            $hm_config->set('Attr.ForbiddenClasses', array(
+                'lms-ui-datatable' => true,
             ));
             $hm_config->set('CSS.MaxImgLength', null);
             $hm_config->set('HTML.MaxImgLength', null);
@@ -903,6 +917,40 @@ class Utils
         return sprintf('%s %s', Localisation::smartFormatNumber($value), $currency);
     }
 
+    public static function convertToGeoportalCoordinates($latitude, $longitude)
+    {
+        static $proj4 = null;
+
+        if (!isset($proj4)) {
+            $proj4 = new Proj4php();
+            $projWGS84 = new Proj('EPSG:4326', $proj4); //EPSG:4326 WGS 84
+            $projL93 = new Proj('EPSG:2180', $proj4); //EPSG:2154 RGF93 v1 / Lambert-93
+        }
+
+        // Create a point.
+        $pointWGS84 = new Point($longitude, $latitude, $projWGS84);
+
+        // Transform the point between datums.
+        $pointL93 = $proj4->transform($projL93, $pointWGS84);
+
+        return $pointL93->toArray();
+    }
+
+    public static function convertToSidusisCoordinates($latitude, $longitude)
+    {
+        $proj4 = new Proj4php();
+        $projWGS84  = new Proj('EPSG:4326', $proj4); //EPSG:4326 WGS 84
+        $proj3857    = new Proj('EPSG:3857', $proj4); //EPSG:3857
+
+        // Create a point.
+        $pointWGS84 = new Point($longitude, $latitude, $projWGS84);
+
+        // Transform the point between datums.
+        $point3857 = $proj4->transform($proj3857, $pointWGS84);
+
+        return $point3857->toArray();
+    }
+
     public static function formatMoney($value, $currency = null)
     {
         if (is_string($value)) {
@@ -911,6 +959,149 @@ class Utils
         if (empty($currency)) {
             $currency = Localisation::getCurrentCurrency();
         }
-        return sprintf('%s %s', Localisation::formatNumber($value), $currency);
+        return sprintf('%s %s', Localisation::formatNumber(round($value, 2)), $currency);
+    }
+
+    public static function checkPeselReservationStatus($pesel)
+    {
+        static $api_url = null;
+        static $api_key = null;
+        static $api_request_reason = null;
+        static $curl = null;
+
+        if (empty($api_url)) {
+            $api_url = ConfigHelper::getConfig('pesel.api_url', 'https://rejestr-zastrzezen.obywatel.gov.pl:2443/api/v1');
+            $api_key = ConfigHelper::getConfig('pesel.api_key', '', true);
+            $api_request_reason = ConfigHelper::getConfig('pesel.api_request_reason', trans('telecommunication service contract'));
+
+            if (!strlen($api_key)) {
+                throw new Exception(trans('Empty PESEL Reservation Registry API secret key!'));
+            }
+        }
+
+        if (preg_match('/^[0-9]{13}$/', $pesel)) {
+            throw new Exception(trans('Incorrect PESEL format!'));
+        }
+
+        if (!isset($curl)) {
+            if (!function_exists('curl_init')) {
+                throw new Exception(trans('Curl extension not loaded!'));
+            }
+            $curl = curl_init();
+        }
+
+        $uuid = Uuid::uuid4();
+        $stringified_uuid = $uuid->toString();
+        //$stringified_uuid = '7a48c9f2-2b64-4374-ab4c-c3a68c295130';
+
+        $data = array(
+            'powodWeryfikacji' => $api_request_reason,
+            'PESEL' => $pesel,
+            //'PESEL' => '80103193344', // not reserved
+            //'PESEL' => '70030158839', // reserved
+        );
+
+        curl_setopt($curl, CURLOPT_URL, $api_url . '/status-zastrzezenia/aktualny');
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data, JSON_FORCE_OBJECT));
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+        curl_setopt(
+            $curl,
+            CURLOPT_HTTPHEADER,
+            array(
+                'Accept: application/json',
+                'Content-Type: application/json; charset=UTF-8',
+                'X-REQUEST-ID: ' . $stringified_uuid,
+                'X-API-KEY: ' . $api_key,
+            )
+        );
+
+        $reply = curl_exec($curl);
+        if (curl_error($curl)) {
+            throw new Exception('Communication error: ' . curl_error($curl));
+        }
+
+        if (empty($reply)) {
+            throw new Exception(trans('Unexpected empty reply from PESEL Reservation Registry API server!'));
+        }
+
+        $reply = json_decode($reply, true);
+        if (empty($reply)) {
+            throw new Exception(trans('Malformed reply from PESEL Reservation Registry API server!'));
+        }
+
+        $info = curl_getinfo($curl);
+
+        $result = array(
+            'uuid' => $stringified_uuid,
+            'http_code' => $info['http_code'],
+            'errors' => array(),
+            'reserved' => null,
+        );
+
+        switch ($result['http_code']) {
+            case 200:
+                switch ($reply['aktualnyStatus']['status']) {
+                    case self::PESEL_STATUS_NOT_RESERVED:
+                        $result['reserved'] = false;
+                        break;
+                    case self::PESEL_STATUS_RESERVED:
+                        $result['reserved'] = true;
+                        break;
+                }
+                if (isset($reply['aktualnyStatus']['dataICzasPoczatkuWaznosciStatusu'])) {
+                    $last_change = strtotime($reply['aktualnyStatus']['dataICzasPoczatkuWaznosciStatusu']);
+                } else {
+                    $last_change = null;
+                }
+                $result['last_change'] = $last_change;
+                break;
+            case 400:
+                $result['errors'][] = $reply['komunikat'];
+                $result['errors'] = array_merge($result['errors'], self::array_column($reply['bledy'], 'komunikat'));
+                break;
+            case 401:
+            case 403:
+            case 500:
+            case 503:
+                $result['errors'][] = $reply['komunikat'];
+                break;
+        }
+
+        return $result;
+    }
+
+    public static function formatStreetName(array $args)
+    {
+        static $teryt_street_address_format = null;
+
+        if (!isset($teryt_street_address_format)) {
+            $teryt_street_address_format = ConfigHelper::getConfig('phpui.teryt_street_address_format', '%type% %street2% %street1%');
+        }
+
+        if (preg_match('/^rynek$/i', $args['type']) &&
+            (preg_match('/^rynek/i', $args['name']) || preg_match('/^rynek/i', $args['name2']))) {
+            $args['type'] = '';
+        } else if (!strlen($args['name2']) && preg_match('/^[0-9]+(\.|-go)?$/', $args['name'])) {
+            $args['type'] = '';
+        }
+        return preg_replace(
+            '/[ ]{2,}/',
+            ' ',
+            str_replace(
+                array(
+                    '%type%',
+                    '%street1%',
+                    '%street2%',
+                ),
+                array(
+                    $args['type'],
+                    $args['name'],
+                    $args['name2'],
+                ),
+                $teryt_street_address_format
+            )
+        );
     }
 }

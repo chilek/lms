@@ -119,7 +119,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $now = mktime(0, 0, 0, date('n'), date('d'), date('Y'));
 
         $assignments = $this->db->GetAll(
-            'SELECT a.id AS id, a.tariffid, a.customerid, a.period AS periodvalue, a.backwardperiod,
+            'SELECT a.id AS id, a.tariffid, a.customerid, a.period AS periodvalue, a.backwardperiod, a.note,
             a.at, a.suspended, a.invoice, a.settlement, a.recipient_address_id,
             a.datefrom, a.dateto, a.pdiscount,
             a.vdiscount AS unitary_vdiscount,
@@ -454,7 +454,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $tariff = $this->db->GetRow(
                 'SELECT a.data, s.data AS sdata, t.name, t.type, t.value, t.currency, t.period,
                 t.id, t.prodid, t.taxid, t.flags, t.taxcategory, t.netvalue,
-                t2.value AS taxvalue
+                t2.value AS taxvalue, a.note
                 FROM promotionassignments a
                 JOIN promotionschemas s ON (s.id = a.promotionschemaid)
                 JOIN tariffs t ON (t.id = a.tariffid)
@@ -621,6 +621,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                 'prodid' => $tariff['prodid'],
                                 'type' => $tariff['type'],
                                 'netvalue' => str_replace(',', '.', $netValue),
+                                'note' => htmlspecialchars($note),
                             );
                             $this->db->Execute(
                                 'INSERT INTO liabilities (name, value, flags, taxcategory, currency,
@@ -857,13 +858,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     }
                 }
 
-                if (!empty($lid) || $value != 'NULL') {
-                    $ending_period_date = 0;
+                $ending_period_date = 0;
 
-                    // creates assignment record for ending partial period
-                    if ($idx && $period == MONTHLY
-                        && (($idx == count($data_tariff) - 1 && isset($data['last-settlement']) && $align_periods && $data['dateto'] && $data['dateto'] > $dateto)
-                            || ($idx < count($data_tariff) - 1 && !$align_periods))) {
+                // creates assignment record for ending partial period
+                if ($idx && $period == MONTHLY
+                    && (($idx == count($data_tariff) - 1 && isset($data['last-settlement']) && $align_periods && $data['dateto'] && $data['dateto'] > $dateto)
+                        || ($idx < count($data_tariff) - 1 && !$align_periods))) {
+                    if (!empty($lid) || $value != 'NULL') {
                         $val = $value;
                         if ($tariff['period'] && $period != DISPOSABLE
                             && $tariff['period'] != $period) {
@@ -888,53 +889,57 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             }
                         }
                         $discounted_val = $val;
+                    }
 
-                        if ($align_periods) {
-                            list ($year, $month, $dom) = explode('/', date('Y/m/d', $data['dateto']));
-                            $prevperiod = mktime(0, 0, 0, $month, 1, $year);
-                            $diffdays = sprintf("%d", ($data['dateto'] + 1 - $prevperiod) / 86400);
-                            $_dateto = $data['dateto'];
-                        } else {
-                            list ($year, $month, $dom) = explode('/', date('Y/m/d', $dateto + 1));
-                            $prevperiod = mktime(0, 0, 0, $month, 1, $year);
-                            $diffdays = $cday - 1;
-                            $_dateto = mktime(23, 59, 59, $month, $diffdays, $year);
-                        }
+                    if ($align_periods) {
+                        list ($year, $month, $dom) = explode('/', date('Y/m/d', $data['dateto']));
+                        $prevperiod = mktime(0, 0, 0, $month, 1, $year);
+                        $diffdays = sprintf("%d", ($data['dateto'] + 1 - $prevperiod) / 86400);
+                        $_dateto = $data['dateto'];
+                    } else {
+                        list ($year, $month, $dom) = explode('/', date('Y/m/d', $dateto + 1));
+                        $prevperiod = mktime(0, 0, 0, $month, 1, $year);
+                        $diffdays = $cday - 1;
+                        $_dateto = mktime(23, 59, 59, $month, $diffdays, $year);
+                    }
 
-                        if ($diffdays > 0) {
-                            $month_days = date('d', mktime(0, 0, 0, $month + 1, 0, $year));
+                    if ($diffdays > 0) {
+                        $month_days = date('d', mktime(0, 0, 0, $month + 1, 0, $year));
+                        if (!empty($lid) || $value != 'NULL') {
                             $v = $diffdays * $discounted_val / $month_days;
                             $partial_vdiscount = str_replace(',', '.', round(abs($v - $val), 3));
-                            $partial_datefrom = $prevperiod;
-                            if ($data['at'] > 0 && $data['at'] < $dom) {
-                                $partial_at = $data['at'];
-                            } else {
-                                $partial_at = $dom - 1;
-                            }
+                        }
+                        $partial_datefrom = $prevperiod;
+                        if ($data['at'] > 0 && $data['at'] < $dom) {
+                            $partial_at = $data['at'];
+                        } else {
+                            $partial_at = $dom - 1;
+                        }
 
+                        if (!empty($lid) || $value != 'NULL') {
                             $args = array(
-                                SYSLOG::RES_TARIFF  => empty($data['tariffid']) ? null : $tariffid,
-                                SYSLOG::RES_CUST    => $data['customerid'],
-                                'period'            => $period,
-                                'backwardperiod'    => $data['backwardperiod'],
-                                'at'                => $align_periods ? $partial_at : $data['at'],
-                                'count'             => $data['count'],
-                                'invoice'           => isset($data['invoice']) ? intval($data['invoice']) : 0,
-                                'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
-                                'settlement'        => 0,
+                                SYSLOG::RES_TARIFF => empty($data['tariffid']) ? null : $tariffid,
+                                SYSLOG::RES_CUST => $data['customerid'],
+                                'period' => $period,
+                                'backwardperiod' => $data['backwardperiod'],
+                                'at' => $align_periods ? $partial_at : $data['at'],
+                                'count' => $data['count'],
+                                'invoice' => isset($data['invoice']) ? intval($data['invoice']) : 0,
+                                'separatedocument' => isset($data['separatedocument']) ? 1 : 0,
+                                'settlement' => 0,
                                 SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : null,
-                                'paytime'           => !empty($data['paytime']) && $data['paytime'] != -1 ? $data['paytime'] : null,
-                                'paytype'           => !empty($data['paytype']) ? $data['paytype'] : null,
-                                'datefrom'          => $partial_datefrom,
-                                'dateto'            => $_dateto,
-                                'pdiscount'         => 0,
-                                'vdiscount'         => str_replace(',', '.', (($use_discounts ? $tariff['value'] - $val : 0) + $partial_vdiscount) * ($val < 0 ? -1 : 1)),
-                                'attribute'         => !empty($data['attribute']) ? $data['attribute'] : null,
-                                SYSLOG::RES_LIAB    => null,
+                                'paytime' => !empty($data['paytime']) && $data['paytime'] != -1 ? $data['paytime'] : null,
+                                'paytype' => !empty($data['paytype']) ? $data['paytype'] : null,
+                                'datefrom' => $partial_datefrom,
+                                'dateto' => $_dateto,
+                                'pdiscount' => 0,
+                                'vdiscount' => str_replace(',', '.', (($use_discounts ? $tariff['value'] - $val : 0) + $partial_vdiscount) * ($val < 0 ? -1 : 1)),
+                                'attribute' => !empty($data['attribute']) ? $data['attribute'] : null,
+                                SYSLOG::RES_LIAB => null,
                                 'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
-                                'docid'             => empty($data['docid']) ? null : $data['docid'],
+                                'docid' => empty($data['docid']) ? null : $data['docid'],
                                 'promotionschemaid' => $data['schemaid'],
-                                'commited'          => $commited,
+                                'commited' => $commited,
                             );
 
                             $result[] = $data['assignmentid'] = $this->insertAssignment($args);
@@ -942,48 +947,49 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             $this->insertNodeAssignments($data);
                             $this->insertPhoneAssignments($data);
                         }
-
-                        $ending_period_date = mktime(23, 59, 59, $month, 0, $year);
                     }
 
-                    $__datefrom = $idx ? $datefrom : 0;
-                    $__dateto = $idx && ($idx < count($data_tariff) - 1) ? $dateto : $ending_period_date;
-                    if (!$align_periods) {
-                         $dateto = isset($_dateto) ? $_dateto : 0;
-                    }
+                    $ending_period_date = mktime(23, 59, 59, $month, 0, $year);
+                }
 
-                    if ($__datefrom < $__dateto || !$__dateto) {
-                        // creates assignment record for schema period
-                        $args = array(
-                            SYSLOG::RES_TARIFF => empty($tariffid) ? null : $tariffid,
-                            SYSLOG::RES_CUST => $data['customerid'],
-                            'period' => $period,
-                            'backwardperiod' => $data['backwardperiod'],
-                            'at' => $at,
-                            'count' => $data['count'],
-                            'invoice' => isset($data['invoice']) ? intval($data['invoice']) : 0,
-                            'separatedocument' => isset($data['separatedocument']) ? 1 : 0,
-                            'settlement' => isset($data['settlement']) && $data['settlement'] == 1 && ($idx == 1 || !$align_periods) ? 1 : 0,
-                            SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : null,
-                            'paytime' => !empty($data['paytime']) && $data['paytime'] != -1 ? $data['paytime'] : null,
-                            'paytype' => !empty($data['paytype']) ? $data['paytype'] : null,
-                            'datefrom' => $__datefrom,
-                            'dateto' => $__dateto,
-                            'pdiscount' => 0,
-                            'vdiscount' => str_replace(',', '.', (($use_discounts ? $tariff['value'] - $value : 0)) * (isset($val) && $val < 0 ? -1 : 1)),
-                            'attribute' => !empty($data['attribute']) ? $data['attribute'] : null,
-                            SYSLOG::RES_LIAB => empty($lid) ? null : $lid,
-                            'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
-                            'docid' => empty($data['docid']) ? null : $data['docid'],
-                            'promotionschemaid' => $data['schemaid'],
-                            'commited' => $commited,
-                        );
+                $__datefrom = $idx ? $datefrom : 0;
+                $__dateto = $idx && ($idx < count($data_tariff) - 1) ? $dateto : $ending_period_date;
+                if (!$align_periods) {
+                     $dateto = isset($_dateto) ? $_dateto : 0;
+                }
 
-                        $result[] = $data['assignmentid'] = $this->insertAssignment($args);
+                if ((!empty($lid) || $value != 'NULL')
+                    && ($__datefrom < $__dateto || !$__dateto)) {
+                    // creates assignment record for schema period
+                    $args = array(
+                        SYSLOG::RES_TARIFF => empty($tariffid) ? null : $tariffid,
+                        SYSLOG::RES_CUST => $data['customerid'],
+                        'period' => $period,
+                        'backwardperiod' => $data['backwardperiod'],
+                        'at' => $at,
+                        'count' => $data['count'],
+                        'invoice' => isset($data['invoice']) ? intval($data['invoice']) : 0,
+                        'separatedocument' => isset($data['separatedocument']) ? 1 : 0,
+                        'settlement' => isset($data['settlement']) && $data['settlement'] == 1 && ($idx == 1 || !$align_periods) ? 1 : 0,
+                        SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : null,
+                        'paytime' => !empty($data['paytime']) && $data['paytime'] != -1 ? $data['paytime'] : null,
+                        'paytype' => !empty($data['paytype']) ? $data['paytype'] : null,
+                        'datefrom' => $__datefrom,
+                        'dateto' => $__dateto,
+                        'pdiscount' => 0,
+                        'vdiscount' => str_replace(',', '.', (($use_discounts ? $tariff['value'] - $value : 0)) * (isset($val) && $val < 0 ? -1 : 1)),
+                        'attribute' => !empty($data['attribute']) ? $data['attribute'] : null,
+                        SYSLOG::RES_LIAB => empty($lid) ? null : $lid,
+                        'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
+                        'docid' => empty($data['docid']) ? null : $data['docid'],
+                        'promotionschemaid' => $data['schemaid'],
+                        'commited' => $commited,
+                    );
 
-                        $this->insertNodeAssignments($data);
-                        $this->insertPhoneAssignments($data);
-                    }
+                    $result[] = $data['assignmentid'] = $this->insertAssignment($args);
+
+                    $this->insertNodeAssignments($data);
+                    $this->insertPhoneAssignments($data);
                 }
 
                 if ($idx) {
@@ -1551,7 +1557,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         }
                         if (isset($values[$label][$tariffid])) {
                             foreach ($values[$label][$tariffid] as $period_idx => $value) {
-                                if (!preg_match('/^[0-9]+([.,][0-9]{1,3})?$/', $value)) {
+                                if (!preg_match('/^[0-9]+([\.,][0-9]{1,3})?$/', $value)) {
                                     $error['value-' . $schemaid . '-'
                                     . iconv('UTF-8', 'ASCII//TRANSLIT', preg_replace('/[ _]/', '-', $label))
                                     . '-' . $tariffid . '-' . $period_idx] = trans('Incorrect value!');
@@ -1588,9 +1594,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $error['value'] = trans('Liability value is required!');
                     } elseif (!$a['netvalue'] && !empty($a['netflag'])) {
                         $error['netvalue'] = trans('Liability value is required!');
-                    } elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['value']) && empty($a['netflag'])) {
+                    } elseif (!preg_match('/^[-]?[0-9\.,]+$/', $a['value']) && empty($a['netflag'])) {
                         $error['value'] = trans('Incorrect value!');
-                    } elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['netvalue']) && !empty($a['netflag'])) {
+                    } elseif (!preg_match('/^[-]?[0-9\.,]+$/', $a['netvalue']) && !empty($a['netflag'])) {
                         $error['netvalue'] = trans('Incorrect value!');
                     } elseif ($a['discount_type'] == 2 && $a['discount'] && $a['value'] - $a['discount'] < 0) {
                         $error['value'] = trans('Value less than discount are not allowed!');
@@ -2963,6 +2969,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.div_inv_author AS division_author, d.div_inv_cplace AS division_cplace,
 				d.post_address_id,
 				c.pin AS customerpin, c.divisionid AS current_divisionid,
+				c.type AS customertype,
 				c.street, c.building, c.apartment,
 				(CASE WHEN d.post_address_id IS NULL THEN c.post_street ELSE a2.street END) AS post_street,
 				(CASE WHEN d.post_address_id IS NULL THEN c.post_building ELSE a2.house END) AS post_building,
@@ -3026,7 +3033,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 }
             }
 
-            $result['paytypename'] = $PAYTYPES[$result['paytype']]['label'];
+            $result['paytypename'] = $PAYTYPES[empty($result['paytype']) ? PAYTYPE_TRANSFER : $result['paytype']]['label'];
 
             $result['valuep'] = round(($result['value'] - floor($result['value'])) * 100);
             $result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);
@@ -4714,7 +4721,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             foreach ($promotion_schemas as $promotion_schema) {
                 $period_labels = array(trans('Activation'));
                 if (empty($promotion_schema['sdata'])) {
-                    $period_labels[] = trans('Months $a-', 1);
+                    $period_labels[] = trans('Months $a-$b', 1, '&hellip;');
                 } else {
                     $periods = explode(';', $promotion_schema['sdata']);
                     $month = 1;
@@ -4723,7 +4730,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         : trans('Months $a-$b', $month, $month + $period - 1));
                         $month += $period;
                     }
-                    $period_labels[] = trans('Months $a-', $month);
+                    $period_labels[] = trans('Months $a-$b', $month, '&hellip;');
                 }
 
                 $promotions[$promotion_schema['promotionid']]['schemas'][$promotion_schema['id']] = array(

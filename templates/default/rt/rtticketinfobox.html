@@ -35,7 +35,7 @@
 								<TD style="width: 1%;" class="bold nobr">
 									{icon name="subject" label="Subject"}
 								</TD>
-								<TD style="width: 99%;" class="nobr">
+								<TD style="width: 99%;" class="nobr" {tip text=$ticket.subject}>
 									{$ticket.subject|trunescape:50}
 								</TD>
 							</TR>
@@ -383,7 +383,7 @@
 				{if ($ticket.owner != $layout.logid && $ticket.state != $smarty.const.RT_RESOLVED) || ConfigHelper::checkPrivilege('superuser')}
 					{button id="ticket-assign-to-me" icon="user" label="Assign to me" tip="Assign to me" data_href="?m=rtticketedit&id={$ticket.ticketid}&action=assign"}
 				{/if}
-				{if (!$ticket.verifier && $ticket.owner != $layout.logid && $ticket.state != $smarty.const.RT_RESOLVED) || ConfigHelper::checkPrivilege('superuser')}
+				{if (!$ticket.verifierid && $ticket.owner != $layout.logid && $ticket.state != $smarty.const.RT_RESOLVED) || ConfigHelper::checkPrivilege('superuser')}
 					{button id="ticket-assign2-to-me" type='link-button' icon="user" label="Assign to me as verifier" tip="Assign to me as verifier" href="?m=rtticketedit&id={$ticket.ticketid}&action=assign2"}
 				{/if}
 				{if $ticket.watching}
@@ -439,10 +439,9 @@
 		<TBODY>
 		<TR>
 			<TD style="width: 1%;" class="dark bold nobr">
-				{icon name="customer" label="Customer" class="lms-ui-sortable-handle"}
+				<a href="?m=customerinfo&amp;id={$ticket.customerid}">{icon name="customer" class="lms-ui-sortable-handle" label=$customerinfo.customername}</a>
 			</TD>
 			<TD style="width: 1%;" class="dark nobr">
-				<span class="bold"><A href="?m=customerinfo&amp;id={$ticket.customerid}">{$customerinfo.customername}</A></span>
 				{icon name="home"} {$customerinfo.address} &nbsp;{$customerinfo.zip} {$customerinfo.city}
 				{if $customerinfo.phone}
 					<a class="phone_number" href="tel:{$customerinfo.phone|escape}">

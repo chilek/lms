@@ -101,13 +101,13 @@
                                                             <td>
                                                                 <input type="tel" name="voipaccountdata[numbers][0][phone]"
                                                                     value="{$voipaccountdata.numbers[0].phone}"
-                                                                    class="phone-number" placeholder="{trans("<!phone>number")}"
-                                                                    {tip trigger="phone-number-0"}>
+                                                                    placeholder="{trans("<!phone>number")}"
+                                                                    {tip class="phone-number" trigger="phone-number-0"}>
                                                                 <input type="search" name="voipaccountdata[numbers][0][info]"
                                                                     value="{$voipaccountdata.numbers[0].info|default:""|escape}"
-                                                                    class="phone-info" placeholder="{trans("description")}"
+                                                                    placeholder="{trans("description")}"
                                                                     autocomplete="off"
-                                                                    {tip trigger="phone-info-0"}>
+                                                                    {tip class="phone-info" trigger="phone-info-0"}>
                                                             </td>
                                                             <td>
                                                                 <div>
@@ -195,6 +195,7 @@
                                                         selectname="voipaccountdata[customerid]"
                                                         inputname="voipaccountdata[ownerid]"
                                                         selecttip="Assign VoIP account to customer"
+                                                        trigger="voipaccountdata[ownerid]"
                                                         customOnChange="change_customer();"
                                                         required=true
                                                         version=2

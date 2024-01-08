@@ -210,6 +210,17 @@
                         <div class="lms-ui-filter-definition">
                             {icon name="filter" class="fa-fw"}
                             <label class="filter-item">
+                                {trans("<!netrange>Project")}
+                                <select name="filter[project]" form="netranges" class="filter-element">
+                                    <option value="">{trans("<!invproject>— ignore —")}</option>
+                                    <option value="-1"{if $filter['project'] == -1} selected{/if}>{trans("<!invproject>— any —")}</option>
+                                    <option value="-2"{if $filter['project'] == -2} selected{/if}>{trans("<!invproject>— without project —")}</option>
+                                    {foreach $invprojects as $invproject}
+                                        <option value="{$invproject.id}"{if $invproject.id == $filter['project']} selected{/if}>{$invproject.name|escape}</option>
+                                    {/foreach}
+                                </select>
+                            </label>
+                            <label class="filter-item">
                                 {trans("<!netrange>Without ranges")}
                                 <select name="filter[without-ranges]" form="netranges" class="filter-element">
                                     <option value="">{trans("— any —")}</option>
@@ -229,8 +240,8 @@
                                 {trans("<!netrange>Link")}
                                 <select name="filter[linktype]" form="netranges" class="filter-element">
                                     <option value="">{trans("— any —")}</option>
-                                    {foreach $_LINKTYPES as $type => $label}
-                                        <option value="{$type}"{if $type === $filter.linktype} selected{/if}>{$label}</option>
+                                    {foreach $linktechnologies as $linktype => $linktech}
+                                        <option value="{$linktype}"{if $linktype === $filter.linktype} selected{/if}>{$_LINKTYPES[$linktype]}</option>
                                     {/foreach}
                                 </select>
                             </label>
@@ -313,7 +324,11 @@
                 <strong>{trans("Territory unit")}</strong>
             </td>
             <td>
-                <strong>{trans("GPS coordinates")}</strong>
+                <span class="nobr">
+                    <strong>{trans("GPS coordinates")}</strong>
+                </span>
+                <br>
+                <strong>{trans("<!netrange>Project")}</strong>
             </td>
             <td class="nobr">
                 <strong>{trans("Link type")}</strong>
@@ -359,6 +374,20 @@
                         {icon name="location" class="fa-fw"}
                     </a>
                     {$building.longitude}, {$building.latitude}
+                    <br>
+                    {if !empty($building.netrangeid)}
+                        {if empty($building.invprojectid)}
+                            -
+                        {else}
+                            <span class="nobr">
+                                <a href="?m=invprojectedit&id={$building.invprojectid}">
+                                    {icon name="money" class="fa-fw"}
+                                    (#{$building.invprojectid})
+                                    {$invprojects[$building.invprojectid].name|escape}
+                                </a>
+                            </span>
+                        {/if}
+                    {/if}
                 </td>
                 <td>
                     {if !empty($building.netrangeid)}
@@ -395,7 +424,7 @@
                                 {trans("<!netrange>wholesale")}
                             {/if}
                             {if ($building.services & 2) > 0}
-                                {if ($building.service & 1) > 0}
+                                {if ($building.services & 1) > 0}
                                     ,&nbsp;
                                 {/if}
                                 {trans("<!netrange>retail")}
@@ -521,6 +550,15 @@
                         <td class="text-left">
                             <div class="operation-panels">
                                 <div class="operation-panel">
+                                    <label>
+                                        {trans("<!netrange>Project")}
+                                        <select name="range[project]" form="update-range">
+                                            <option value="">{trans("<!invproject>— none —")}</option>
+                                            {foreach $invprojects as $invproject}
+                                                <option value="{$invproject.id}"{if $invproject.id == $range.project} selected{/if}>{$invproject.name|escape}</option>
+                                            {/foreach}
+                                        </select>
+                                    </label>
                                     <label>
                                         {trans("<!netrange>Link")}
                                         <select name="range[linktype]" form="update-range" required>

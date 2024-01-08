@@ -92,6 +92,17 @@ class Localisation
                 'currency' => 'GYD',
                 //'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
             ),
+            'en_GB' => array(
+                'name' => 'English (Great Britain)',
+                'orig' => 'English (Great Britain)',
+                'locale' => 'en_GB.UTF-8',
+                'charset' => 'UTF-8',
+                'html' => 'en',
+                'money_format' => '£ %01.2f',
+                'money_format_in_words' => '%s %s %s/100',
+                'currency' => 'GBP',
+                //'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
+            ),
             'sk_SK' => array(
                 'name' => 'Slovak',
                 'orig' => 'Slovenský',

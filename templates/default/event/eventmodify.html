@@ -1,6 +1,7 @@
 {extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
+{$privacy_status_change_warning = ConfigHelper::checkConfig('timetable.privacy_status_change_warning')}
 {$hide_disabled_users = ConfigHelper::checkConfig('timetable.hide_disabled_users', ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users'))}
 {$hide_deleted_users = ConfigHelper::checkConfig('timetable.hide_deleted_users', ConfigHelper::checkConfig('phpui.timetable_hide_deleted_users'))}
 	<!--// $Id$ //-->
@@ -72,7 +73,7 @@
 
 					{box_row icon="type" label="Type:" icon_class="fa-fw"}
 						<select name="event[type]" size="1">
-							{foreach $_EVENTTYPES as $idx => $eventtype}
+							{foreach Localisation::arraySort($_EVENTTYPES, 'label') as $idx => $eventtype}
 								<option value="{$idx}"
 									{if $idx == $event.type || (!$event.type && $idx == $smarty.const.EVENT_OTHER)} selected{/if}
 									>{$eventtype.label}</option>
@@ -273,6 +274,12 @@
 
 		$(function() {
 			$('[name="event[title]"]').focus();
+
+			{if $privacy_status_change_warning}
+				$('input[name="event[private]"]').change(function () {
+					alertDialog($t('Warning! You have changed privacy status for this timetable event!'));
+				});
+			{/if}
 
 			$('[name="event[rtqueue]"]').change(function () {
 				var newticket_notify = $(this).find(':selected').attr('data-newticket-notify');

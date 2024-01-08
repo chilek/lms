@@ -23,8 +23,11 @@
 
 $this->BeginTrans();
 
-if (!$this->ResourceExists('voip_cdr.direction', LMSDB::RESOURCE_TYPE_COLUMN)) {
+if ($this->ResourceExists('voip_cdr_type_uniqueid_ukey', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
     $this->Execute("ALTER TABLE voip_cdr DROP CONSTRAINT voip_cdr_type_uniqueid_ukey");
+}
+
+if (!$this->ResourceExists('voip_cdr.direction', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("ALTER TABLE voip_cdr ADD COLUMN direction smallint");
     $this->Execute("UPDATE voip_cdr SET direction = type");
     $this->Execute("ALTER TABLE voip_cdr ALTER COLUMN direction SET NOT NULL");

@@ -191,8 +191,6 @@
 							{if $listdata.ftype == $smarty.const.BILLING_RECORD_TYPE_MMS} selected{/if}>{trans("<!voip>MMS")}</option>
 						<option value="{$smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}"
 							{if $listdata.ftype == $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER} selected{/if}>{trans("<!voip>data transfer")}</option>
-						<option value="{$smarty.const.BILLING_RECORD_TYPE_VIDEO}"
-								{if $listdata.ftype == $smarty.const.BILLING_RECORD_TYPE_VIDEO} selected{/if}>{trans("<!voip>video")}</option>
 					</select>
 
 					<span>{trans("<!voip>Status")}</span>

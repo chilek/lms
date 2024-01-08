@@ -482,8 +482,10 @@ switch ($action) {
             // finally check if selected customer can use selected numberplan
             $args = array(
                 'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
+                'cdate' => $invoice['cdate'],
                 'customerid' => $customer['id'],
                 'division' => $customer['divisionid'],
+                'customertype' => $customer['type'],
                 'next' => false,
             );
             $numberplans = $LMS->GetNumberPlans($args);
@@ -557,8 +559,10 @@ switch ($action) {
 
         $args = array(
             'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
+            'cdate' => $invoice['cdate'],
             'customerid' => $customer['id'],
             'division' => $customer['divisionid'],
+            'customertype' => $customer['type'],
             'next' => false,
         );
         $numberplans = $LMS->GetNumberPlans($args);
@@ -597,7 +601,7 @@ switch ($action) {
         }
 
         if ($SYSLOG) {
-            $tables = array_merge($tables, array('logmessages', 'logmessagekeys', 'logmessagedata'));
+            $tables = array_merge($tables, array('logmessages', 'logmessagekeys', 'logmessagedata', 'logtransactions'));
         }
 
         $hook_data = array(
@@ -762,11 +766,12 @@ $SMARTY->assign('tariffs', $LMS->GetTariffs());
 
 $args = array(
     'doctype' => !empty($invoice['proforma']) ? DOC_INVOICE_PRO : DOC_INVOICE,
-    'cdate' => date('Y/m', $invoice['cdate']),
+    'cdate' => $invoice['cdate'],
 );
 if (isset($customer)) {
     $args['customerid'] = $customer['id'];
-    $args['division'] = $DB->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($customer['id']));
+    $args['division'] = $customer['divisionid'];
+    $args['customertype'] = $customer['type'];
 } else {
     $args['customerid'] = null;
 }

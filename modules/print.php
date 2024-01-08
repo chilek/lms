@@ -158,11 +158,23 @@ switch ($type) {
         $from = $_POST['balancefrom'];
         $to = $_POST['balanceto'];
         $net = intval($_POST['network']);
-        $group = intval($_POST['customergroup']);
+        if (!empty($_POST['customergroup'])) {
+            $group = $_POST['customergroup'];
+            if (!is_array($group)) {
+                $group = array($group);
+            }
+            $group = Utils::filterIntegers($group);
+        } else {
+            $group = array();
+        }
         $division = intval($_POST['division']);
         $source = intval($_POST['source']);
-        $types = isset($_POST['types']) ? $_POST['types'] : null;
+        $types = isset($_POST['types']) ? Utils::filterIntegers($_POST['types']) : array();
         $docs = $_POST['docs'];
+
+        $hideid = isset($_POST['printcustomerhideid']);
+        $hidessnten = isset($_POST['printcustomerhidessnten']);
+        $hideaddress = isset($_POST['printcustomerhideaddress']);
 
         // date format 'yyyy/mm/dd'
         if ($from) {
@@ -188,7 +200,8 @@ switch ($type) {
             $layout['pagetitle'] = trans('Balance Sheet ($a to $b)', ($from ? $from : ''), $to);
         }
 
-        if ($types) {
+        $typetxt = array();
+        if (!empty($types)) {
             foreach ($types as $tt) {
                 switch ($tt) {
                     case 1:
@@ -206,54 +219,69 @@ switch ($type) {
                 }
             }
 
-            $typewhere = ' AND ('.implode(' OR ', $typewhere).')';
+            $typewhere = ' AND (' . implode(' OR ', $typewhere) . ')';
         }
 
-        $customerslist = $DB->GetAllByKey('SELECT id, '.$DB->Concat('UPPER(lastname)', "' '", 'name').' AS customername FROM customers', 'id');
+        $customerslist = $DB->GetAllByKey('SELECT id, ' . $DB->Concat('UPPER(lastname)', "' '", 'name') . ' AS customername FROM customers', 'id');
 
         if (isset($date['from'])) {
             $lastafter = $DB->GetOne(
-                'SELECT SUM(CASE WHEN c.customerid IS NOT NULL AND type=0 THEN 0 ELSE value * c.currencyvalue END)
-					FROM cash c '
-                    .($group ? 'LEFT JOIN vcustomerassignments a ON (c.customerid = a.customerid) ' : '')
-                    .'WHERE time<?'
-                    .($docs ? ($docs == 'documented' ? ' AND c.docid IS NOT NULL' : ' AND c.docid IS NULL') : '')
-                    .($source ? ' AND c.sourceid = '.intval($source) : '')
-                    .($group ? ' AND a.customergroupid = '.$group : '')
-                    .($net ? ' AND EXISTS (SELECT 1 FROM vnodes WHERE c.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
-                    .($division ? ' AND EXISTS (SELECT 1 FROM customers WHERE id = c.customerid AND divisionid = '.$division.')' : '')
-                    .($types ? $typewhere : '')
-                    .' AND NOT EXISTS (
-			        		SELECT 1 FROM vcustomerassignments a
-						JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-						WHERE e.userid = lms_current_user() AND a.customerid = c.customerid)',
-                array($date['from'])
+                'SELECT
+                    SUM(CASE WHEN c.customerid IS NOT NULL AND c.type = 0 THEN 0 ELSE c.value * c.currencyvalue END)
+                FROM cash c
+                JOIN customerview ON customerview.id = c.customerid
+                WHERE c.time < ?'
+                . (empty($group) ? '' : ' AND EXISTS (SELECT 1 FROM vcustomerassignments a WHERE a.customerid = c.customerid AND a.customergroupid IN (' . implode(',', $group) . '))')
+                . ($docs ? ($docs == 'documented' ? ' AND c.docid IS NOT NULL' : ' AND c.docid IS NULL') : '')
+                . ($source ? ' AND c.sourceid = ' . intval($source) : '')
+                . ($net ? ' AND EXISTS (SELECT 1 FROM vnodes WHERE c.customerid = ownerid AND ((ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ') OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')))' : '')
+                . ($division ? ' AND customerview.divisionid = ' . $division : '')
+                . (empty($types) ? '' : $typewhere),
+                array(
+                    $date['from'],
+                )
             );
         } else {
             $lastafter = 0;
         }
 
-        if ($balancelist = $DB->GetAll('SELECT c.id AS id, time, userid,
-                    c.value AS value, c.currency, c.currencyvalue,
-					taxes.label AS taxlabel, c.customerid, comment, c.type AS type,
-                    cs.name AS sourcename
-					FROM cash c
-					LEFT JOIN cashsources cs ON cs.id = c.sourceid
-					LEFT JOIN taxes ON (taxid = taxes.id) '
-                    .($group ? 'LEFT JOIN vcustomerassignments a ON (c.customerid = a.customerid)  ' : '')
-                    .'WHERE time <= ? '
-                    .($docs ? ($docs == 'documented' ? ' AND c.docid IS NOT NULL' : ' AND c.docid IS NULL') : '')
-                    .($source ? ($source == -1 ? ' AND c.sourceid IS NULL' : ' AND c.sourceid = '.intval($source)) : '')
-                    .(isset($date['from']) ? ' AND time >= '.$date['from'] : '')
-                    .($group ? ' AND a.customergroupid = '.$group : '')
-                    .($net ? ' AND EXISTS (SELECT 1 FROM vnodes WHERE c.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
-                    .($division ? ' AND EXISTS (SELECT 1 FROM customers WHERE id = c.customerid AND divisionid = '.$division.')' : '')
-                    .($types ? $typewhere : '')
-                    .' AND NOT EXISTS (
-			        		SELECT 1 FROM vcustomerassignments a
-						JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-						WHERE e.userid = lms_current_user() AND a.customerid = c.customerid)'
-                    .' ORDER BY time ASC', array($date['to']))) {
+        if ($balancelist = $DB->GetAll(
+            'SELECT
+                c.id AS id,
+                c.time,
+                c.userid,
+                customerview.type AS ctype,
+                COALESCE(d.ssn, customerview.ssn) AS ssn,
+                COALESCE(d.ten, customerview.ten) AS ten,
+                COALESCE(d.address, customerview.address) AS address,
+                COALESCE(d.zip, customerview.zip) AS zip,
+                COALESCE(d.city, customerview.city) AS city,
+                c.value AS value,
+                c.currency,
+                c.currencyvalue,
+                taxes.label AS taxlabel,
+                c.customerid,
+                c.comment,
+                c.type AS type,
+                cs.name AS sourcename
+            FROM cash c
+            JOIN customerview ON customerview.id = c.customerid
+            LEFT JOIN documents d ON d.id = c.docid
+            LEFT JOIN cashsources cs ON cs.id = c.sourceid
+            LEFT JOIN taxes ON taxid = taxes.id
+            WHERE time <= ?'
+            . (empty($group) ? '' : ' AND EXISTS (SELECT 1 FROM vcustomerassignments a WHERE a.customerid = c.customerid AND a.customergroupid IN (' . implode(',', $group) . '))')
+            . ($docs ? ($docs == 'documented' ? ' AND c.docid IS NOT NULL' : ' AND c.docid IS NULL') : '')
+            . ($source ? ($source == -1 ? ' AND c.sourceid IS NULL' : ' AND c.sourceid = ' . intval($source)) : '')
+            . (isset($date['from']) ? ' AND c.time >= ' . $date['from'] : '')
+            . ($net ? ' AND EXISTS (SELECT 1 FROM vnodes WHERE c.customerid = ownerid AND ((ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ') OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')))' : '')
+            . ($division ? ' AND customerview.divisionid = ' . $division : '')
+            . (empty($types) ? '' : $typewhere)
+            . ' ORDER BY c.time ASC',
+            array(
+                $date['to'],
+            )
+        )) {
             $listdata['income'] = 0;
             $listdata['expense'] = 0;
             $listdata['liability'] = 0;
@@ -261,8 +289,8 @@ switch ($type) {
 
             foreach ($balancelist as $idx => $row) {
                 if ($user) {
-                    if ($row['userid']!=$user) {
-                        if ($row['value']>0 || !$row['customerid']) {  // skip cust. covenants
+                    if ($row['userid'] != $user) {
+                        if ($row['value'] > 0 || !$row['customerid']) {  // skip cust. covenants
                             $lastafter += $row['value'];
                         }
                         unset($balancelist[$idx]);
@@ -270,14 +298,7 @@ switch ($type) {
                     }
                 }
 
-                $list[$x]['value'] = $row['value'];
-                $list[$x]['currency'] = $row['currency'];
-                $list[$x]['currencyvalue'] = $row['currencyvalue'];
-                $list[$x]['taxlabel'] = $row['taxlabel'];
-                $list[$x]['time'] = $row['time'];
-                $list[$x]['sourcename'] = $row['sourcename'];
-                $list[$x]['comment'] = $row['comment'];
-                $list[$x]['customerid'] = $row['customerid'];
+                $list[$x] = $row;
                 $list[$x]['customername'] = empty($row['customerid']) ? '' : $customerslist[$row['customerid']]['customername'];
 
                 if (!empty($row['customerid']) && empty($row['type'])) {
@@ -312,11 +333,12 @@ switch ($type) {
         if ($net) {
             $SMARTY->assign('net', $net['name']);
         }
-        if ($types) {
-            $SMARTY->assign('types', implode(', ', $typetxt));
-        }
-        if ($group) {
-            $SMARTY->assign('group', $DB->GetOne('SELECT name FROM customergroups WHERE id = ?', array($group)));
+
+        $SMARTY->assign('types', array_flip(empty($types) ? array(1, 2, 3) : $types));
+        $SMARTY->assign('typetxt', implode(', ', $typetxt));
+
+        if (!empty($group)) {
+            $SMARTY->assign('groups', $DB->GetCol('SELECT name FROM customergroups WHERE id IN ? ORDER BY name', array($group)));
         }
         if ($division) {
             $SMARTY->assign('division', $DB->GetOne('SELECT name FROM divisions WHERE id = ?', array($division)));
@@ -324,6 +346,8 @@ switch ($type) {
         if ($source) {
             $SMARTY->assign('source', $DB->GetOne('SELECT name FROM cashsources WHERE id = ?', array($source)));
         }
+
+        $SMARTY->assign(compact('hideid', 'hidessnten', 'hideaddress'));
 
         if (strtolower($report_type) == 'pdf') {
             $output = $SMARTY->fetch('print/printbalancelist.html');
@@ -1010,6 +1034,8 @@ switch ($type) {
         $SMARTY->assign('divisions', $LMS->GetDivisions());
         $SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources ORDER BY name'));
         $SMARTY->assign('printmenu', 'finances');
+
+        $SMARTY->assign('invprojects', $LMS->GetProjects());
 
         $SMARTY->display('print/printindex.html');
 

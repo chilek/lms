@@ -2,80 +2,120 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!-- $Id$ -->
-<H1>{$layout.pagetitle}</H1>
-<TABLE class="lmsbox">
-    <THEAD>
-	<TR>
-		<TD WIDTH="1%" nowrap>{trans("ID:")}</TD>
+<h1>{$layout.pagetitle}</h1>
+<table class="lmsbox lms-ui-background-cycle">
+	<colgroup>
+		<col style="width: 1%;">
 		{if $divisions}
-		<TD WIDTH="1%" nowrap><img src="img/division.gif" alt=""></TD>
-		<TD WIDTH="1%" nowrap><B>{trans("Division:")}</B></TD>
+			<col style="width: 1%;">
+			<col style="width: 1%;">
 		{/if}
-		<TD WIDTH="94%" nowrap><B>{trans("Name:")}</B></TD>
-		<TD WIDTH="1%" nowrap>{trans("Nodes")}</TD>
-		<TD WIDTH="1%" nowrap>{trans("Network Device Nodes")}</TD>
-		<TD WIDTH="1%" nowrap><A href="?m=invprojectadd">{trans("Add investment project")} <img src="img/save.gif" alt=""></A></TD>
-	</TR>
-        {if $listdata.total != 0}
-        <TR>
-                <TD class="lms-ui-pagination" {if $divisions}colspan="7"{else}colspan="5"{/if}>
-                        {include file="scroller.html" loop=$invprojectlist}
-                </TD>
-        </TR>
-        {/if}
-    </THEAD>
-    <TBODY>
-	{cycle values="light,lucid" print=false}
-	{foreach from=$invprojectlist item=invproject}
-	<TR class="highlight {cycle}" data-name="{$invproject.name}">
-		<TD onClick="return self.location.href='?m=invprojectedit&id={$invproject.id}';">
-			({$invproject.id|string_format:"%04d"})
-		</TD>
-		{if $divisions}
-		<TD onClick="return self.location.href='?m=invprojectedit&id={$invproject.id}';" nowrap><img src="img/division.gif" alt=""></TD>
-		<TD onClick="return self.location.href='?m=invprojectedit&id={$invproject.id}';" nowrap>
-			{foreach $divisions as $division}
-				{if $division.id == $invproject.divisionid}<B>{$division.label|escape}</B>{/if}
-			{/foreach}
-		</TD>
+		<col style="width: 93%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<td class="nobr">
+				{trans("ID")}
+			</td>
+			{if $divisions}
+				<td class="nobr">
+					{icon name="division" class="fa-fw"}
+				</td>
+				<td class="nobr">
+					<strong>{trans("Division")}</strong>
+				</td>
+			{/if}
+			<td class="nobr">
+				<strong>{trans("Name")}</strong>
+			</td>
+			<td class="nobr">
+				{trans("Estimated completion date")}
+			</td>
+			<td class="nobr">
+				{trans("Nodes")}
+			</td>
+			<td class="nobr">
+				{trans("Network Device Nodes")}
+			</td>
+			<td class="nobr">
+				{button icon="save" label="Add investment project" href="?m=invprojectadd"}
+			</td>
+		</tr>
+		{if $listdata.total != 0}
+			<tr>
+				<td class="lms-ui-pagination" colspan="{if $divisions}8{else}6{/if}">
+					{include file="scroller.html" loop=$invprojectlist}
+				</td>
+			</tr>
 		{/if}
-		<TD onClick="return self.location.href='?m=invprojectedit&id={$invproject.id}';" class="bold nobr">
-			{$invproject.name|escape}
-		</TD>
-		<TD class="text-center" onClick="return self.location.href='?m=invprojectedit&id={$invproject.id}';" nowrap>
-			{$invproject.nodes}
-		</TD>
-		<TD class="text-center" onClick="return self.location.href='?m=invprojectedit&id={$invproject.id}';" nowrap>
-			{$invproject.netnodes}
-		</TD>
-		<TD align="right" NOWRAP>
-			<A HREF="?m=invprojectedit&id={$invproject.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-			<A class="delete-invproject" HREF="?m=invprojectdel&id={$invproject.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-		</TD>
-	</TR>
-	{foreachelse}
-	<tr>
-		<td {if $divisions}colspan="7"{else}colspan="5"{/if} class="empty-table">
-			{trans("There are no investment project.")}
-		</td>
-	</tr>
-	{/foreach}
-        </TBODY>
-        <TFOOT>
-	<TR>
-		<TD {if $divisions}colspan="7"{else}colspan="5"{/if} align="right">
-			<A href="?m=invprojectadd">{trans("Add investment project")} <IMG src="img/save.gif" alt=""></A>
-		</TD>
-	</TR>
-        </TFOOT>
-</TABLE>
-	<script>
-		$('.delete-invproject').click(function() {
+	</thead>
+	<tbody>
+		{foreach $invprojectlist as $invproject}
+			<tr class="highlight" data-name="{$invproject.name}">
+				<td data-target-url="?m=invprojectedit&id={$invproject.id}">
+					({$invproject.id|string_format:"#%d"})
+				</td>
+				{if $divisions}
+					<td data-target-url="?m=invprojectedit&id={$invproject.id}" class="nobr">
+						{icon name="division" class="fa-fw"}
+					</td>
+					<td data-target-url="?m=invprojectedit&id={$invproject.id}" class="nobr">
+						{foreach $divisions as $division}
+							{if $division.id == $invproject.divisionid}<strong>{$division.label|escape}</strong>{/if}
+						{/foreach}
+					</td>
+				{/if}
+				<td data-target-url="?m=invprojectedit&id={$invproject.id}" class="nobr">
+					<strong>{$invproject.name|escape}</strong>
+				</td>
+				<td class="text-center{if $invproject.cdate && $invproject.cdate < $smarty.now} red{/if}">
+					{if $invproject.cdate}
+						<strong>{$invproject.cdate|date_format:"%Y/%m/%d"}</strong>
+					{/if}
+				</td>
+				<td class="text-center nobr" data-target-url="?m=invprojectedit&id={$invproject.id}">
+					{$invproject.nodes}
+				</td>
+				<td class="text-center nobr" data-target-url="?m=invprojectedit&id={$invproject.id}">
+					{$invproject.netnodes}
+				</td>
+				<td class="text-right nobr">
+					{button type="link" icon="edit" tip="Edit" href="?m=invprojectedit&id={$invproject.id}"}
+					{button type="link" icon="delete" tip="Delete" class="delete-invproject" data_href="?m=invprojectdel&id={$invproject.id}"}
+				</td>
+			</tr>
+		{foreachelse}
+			<tr>
+				<td colspan="{if $divisions}8{else}6{/if}" class="empty-table">
+					{trans("There are no investment project.")}
+				</td>
+			</tr>
+		{/foreach}
+	</tbody>
+	<tfoot>
+		<tr class="dark">
+			<td colspan="{if $divisions}8{else}6{/if}" class="text-right">
+				{button icon="save" label="Add investment project" href="?m=invprojectadd"}
+			</td>
+		</tr>
+	</tfoot>
+</table>
+
+<script>
+
+	$(function() {
+		$('.delete-invproject').click(function () {
 			var name = $(this).closest('tr').attr('data-name');
-			confirmDialog($t("Are you sure, you want to remove investment project '$a'?", name), this).done(function() {
-				location.href = $(this).attr('href');
+			confirmDialog($t("Are you sure, you want to remove investment project '$a'?", name), this).done(function () {
+				location.href = $(this).attr('data-href');
 			});
 			return false;
 		});
-	</script>
+	});
+
+</script>
 {/block}

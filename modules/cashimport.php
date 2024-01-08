@@ -231,7 +231,15 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
                 }
             }
 
-            $DB->Execute('UPDATE cashimport SET closed = 1 WHERE id = ?', array($import['id']));
+            $DB->Execute(
+                'UPDATE cashimport
+                SET customerid = ?, closed = 1
+                WHERE id = ?',
+                array(
+                    $balance['customerid'],
+                    $import['id'],
+                )
+            );
             if ($SYSLOG) {
                 $args = array(
                     SYSLOG::RES_CASHIMPORT => $import['id'],
@@ -257,11 +265,18 @@ $divisions = $LMS->GetDivisions(array('order' => 'name'));
 
 $divisions[0] = array('id' => 0, 'name' => '');
 
-if ($importlist = $DB->GetAll('SELECT i.*, c.divisionid
-	FROM cashimport i
-	LEFT JOIN customerview c ON (i.customerid = c.id)
-	WHERE i.closed = 0 AND i.value > 0
-	ORDER BY i.id')) {
+if ($importlist = $DB->GetAll(
+    'SELECT
+        i.*,
+        c.divisionid,
+        cs.name AS sourcename
+    FROM cashimport i
+    LEFT JOIN customerview c ON i.customerid = c.id
+    LEFT JOIN cashsources cs ON cs.id = i.sourceid
+    WHERE i.closed = 0
+        AND i.value > 0
+    ORDER BY i.id'
+)) {
     $listdata['total'] = count($importlist);
 
     foreach ($importlist as $idx => $row) {

@@ -347,7 +347,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $doctype = null;
         }
         if (!isset($cdate)) {
-            $cdate = null;
+            $cdate = time();
+        } else {
+            $cdate = intval($cdate);
         }
         if (!isset($division)) {
             $division = null;
@@ -357,6 +359,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
         if (!isset($customerid)) {
             $customerid = null;
+        }
+        if (!isset($customertype)) {
+            $customertype = null;
         }
 
         if (is_array($doctype)) {
@@ -368,6 +373,14 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         if ($division) {
             $where[] = 'EXISTS (SELECT 1 FROM numberplanassignments
                 WHERE planid = n.id AND divisionid = ' . intval($division) . ')';
+        }
+
+        if ($cdate) {
+            $where[] = '(n.datefrom <= ' . $cdate . ' AND (n.dateto = 0 OR n.dateto >= ' . $cdate .  '))';
+        }
+
+        if (isset($customertype)) {
+            $where[] = '(n.customertype IS NULL OR n.customertype = ' . intval($customertype) . ')';
         }
 
         if (!ConfigHelper::checkPrivilege('superuser')) {
@@ -392,7 +405,11 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $list = $this->db->GetAllByKey(
             'SELECT
                 n.id, n.template, n.isdefault, n.period, n.doctype,
-                (CASE WHEN EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id) THEN 1 ELSE 2 END) AS idx
+                n.customertype,
+                n.datefrom,
+                n.dateto,
+                ((CASE WHEN n.customertype IS NULL THEN 100 ELSE 0 END)
+                    + (CASE WHEN EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id) THEN 1 ELSE 2 END)) AS idx
             FROM numberplans n
             ' . $where . '
             ORDER BY idx, n.id',
@@ -401,7 +418,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         if ($list && $next) {
             if ($cdate) {
-                list($curryear, $currmonth) = explode('/', $cdate);
+                $curryear = date('Y', $cdate);
+                $currmonth = date('n', $cdate);
             } else {
                 $curryear = date('Y');
                 $currmonth = date('n');
@@ -503,12 +521,14 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             'id' => 0,
             'idx' => 1,
             'isDefault' => 0,
+            'datefrom' => 0,
+            'dateto' => 0,
             'period' => YEARLY,
             'template' => DEFAULT_NUMBER_TEMPLATE,
         );
 
         if ($cdate) {
-            list($curryear, $currmonth) = explode('/', $cdate);
+            $curryear = date('Y', $cdate);
         } else {
             $curryear = date('Y');
         }
@@ -586,7 +606,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
     public function getNumberPlan($id)
     {
         $numberplan = $this->db->GetRow(
-            'SELECT id, period, template, doctype, isdefault
+            'SELECT id, period, template, doctype, isdefault, customertype, datefrom, dateto
             FROM numberplans n
             WHERE id = ?'
             . (ConfigHelper::checkPrivilege('superuser')
@@ -673,12 +693,13 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     . (empty($params['userid']) ? '' : ' AND EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id AND userid = ' . intval($params['userid']) . ')')
                     . (empty($params['divisionid']) ? '' : ' AND EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id AND divisionid = ' . intval($params['divisionid']) . ')')
                     . (empty($params['type']) ? '' : ' AND n.doctype = ' . intval($params['type']))
+                    . (isset($params['customertype']) ? ' AND n.customertype = ' . intval($params['customertype']) : '')
                 )
             );
         }
 
         if ($list = $this->db->GetAllByKey(
-            'SELECT n.id, n.template, n.period, n.doctype, n.isdefault
+            'SELECT n.id, n.template, n.period, n.doctype, n.isdefault, n.customertype, n.datefrom, n.dateto
             FROM numberplans n
             WHERE' . (ConfigHelper::checkPrivilege('superuser')
                 ? ' 1 = 1'
@@ -693,8 +714,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     ))')
             . (empty($params['userid']) ? '' : ' AND EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id AND userid = ' . intval($params['userid']) . ')')
             . (empty($params['divisionid']) ? '' : ' AND EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id AND divisionid = ' . intval($params['divisionid']) . ')')
-            . (empty($params['type']) ? '' : ' AND n.doctype = ' . intval($params['type'])) . '
-            ORDER BY n.template'
+            . (empty($params['type']) ? '' : ' AND n.doctype = ' . intval($params['type']))
+            . (isset($params['customertype']) ? ' AND n.customertype = ' . intval($params['customertype']) : '')
+            . ' ORDER BY n.template'
             . (isset($params['limit']) ? ' LIMIT ' . intval($params['limit']) : '')
             . (isset($params['offset']) ? ' OFFSET ' . intval($params['offset']) : ''),
             'id'
@@ -767,14 +789,48 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $selecteddivisions = Utils::filterIntegers(empty($numberplan['divisions']) ? array() : $numberplan['divisions']);
         $selectedusers = Utils::filterIntegers(empty($numberplan['users']) ? array() : $numberplan['users']);
 
+        $customertype = isset($numberplan['customertype']) && strlen($numberplan['customertype']) ? intval($numberplan['customertype']) : null;
+
+        $datefrom = empty($numberplan['datefrom']) ? 0 : intval($numberplan['datefrom']);
+        $dateto = empty($numberplan['dateto']) ? 0 : strtotime('tomorrow', intval($numberplan['dateto'])) - 1;
+
         if ($numberplan['doctype'] && !empty($numberplan['isdefault'])) {
+            if (empty($datefrom)) {
+                if (empty($dateto)) {
+                    $date_interval_condition = '';
+                } else {
+                    $date_interval_condition = ' AND ((n.datefrom <= ' . $dateto . ' AND (n.dateto = 0 OR n.dateto >= ' . $dateto . '))';
+                }
+            } else {
+                if (empty($dateto)) {
+                    $date_interval_condition = ' AND ((n.datefrom <= ' . $datefrom . ' AND (n.dateto = 0 OR n.dateto >= ' . $datefrom . '))'
+                        . ' OR (n.datefrom >= ' . $datefrom . '))';
+                } else {
+                    if ($datefrom > $dateto) {
+                        return array(
+                            'dateto' => trans('End date should be later than start date!'),
+                        );
+                    }
+                    $date_interval_condition = ' AND ((n.datefrom <= ' . $datefrom . ' AND (n.dateto = 0 OR n.dateto >= ' . $datefrom . '))'
+                        . ' OR (n.datefrom >= ' . $datefrom . ' AND (n.dateto = 0 OR n.dateto <= ' . $dateto . ')))';
+                }
+            }
+
+            if (isset($customertype)) {
+                $customer_type_condition = ' AND n.customertype IS NOT NULL AND n.customertype = ' . $customertype;
+            } else {
+                $customer_type_condition = '';
+            }
+
             if (empty($selecteddivisions)) {
                 if (empty($selectedusers)) {
                     if ($this->db->GetOne(
                         'SELECT 1 FROM numberplans n
                         WHERE doctype = ? AND isdefault = 1' . (empty($numberplan['id']) ? '' : ' AND n.id <> ' . intval($numberplan['id']))
                         . ' AND NOT EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id)
-                        AND NOT EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id)',
+                        AND NOT EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id)'
+                        . $date_interval_condition
+                        . $customer_type_condition,
                         array($numberplan['doctype'])
                     )) {
                         return array(
@@ -786,7 +842,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         'SELECT 1 FROM numberplans n
                         WHERE doctype = ? AND isdefault = 1' . (empty($numberplan['id']) ? '' : ' AND n.id <> ' . intval($numberplan['id']))
                         . ' AND NOT EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id)
-                        AND NOT EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.in AND userid IN ?)',
+                        AND NOT EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.in AND userid IN ?)'
+                        . $date_interval_condition
+                        . $customer_type_condition,
                         array($numberplan['doctype'], $selectedusers)
                     )) {
                         return array(
@@ -803,7 +861,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             SELECT 1 FROM numberplanassignments WHERE planid = n.id AND divisionid IN ?
                         ) AND NOT EXISTS (
                             SELECT 1 FROM numberplanusers WHERE planid = n.id
-                        )',
+                        )'
+                        . $date_interval_condition
+                        . $customer_type_condition,
                         array($numberplan['doctype'], $selecteddivisions)
                     )) {
                         return array(
@@ -818,7 +878,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             SELECT 1 FROM numberplanassignments WHERE planid = n.id AND divisionid IN ?
                         ) AND EXISTS (
                             SELECT 1 FROM numberplanusers WHERE planid = n.id AND userid IN ?
-                        )',
+                        )'
+                        . $date_interval_condition
+                        . $customer_type_condition,
                         array($numberplan['doctype'], $selecteddivisions, $selectedusers)
                     )) {
                         return array(
@@ -868,11 +930,14 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             'template' => $numberplan['template'],
             'doctype' => $numberplan['doctype'],
             'period' => $numberplan['period'],
-            'isdefault' => isset($numberplan['isdefault']) ? 1 : 0
+            'datefrom' => empty($numberplan['datefrom']) ? 0 : $numberplan['datefrom'],
+            'dateto' => empty($numberplan['dateto']) ? 0 : strtotime('tomorrow', $numberplan['dateto']) - 1,
+            'customertype' => isset($numberplan['customertype']) && strlen($numberplan['customertype']) ? intval($numberplan['customertype']) : null,
+            'isdefault' => isset($numberplan['isdefault']) ? 1 : 0,
         );
         $this->db->Execute(
-            'INSERT INTO numberplans (template, doctype, period, isdefault)
-            VALUES (?, ?, ?, ?)',
+            'INSERT INTO numberplans (template, doctype, period, datefrom, dateto, customertype, isdefault)
+            VALUES (?, ?, ?, ?, ?, ?, ?)',
             array_values($args)
         );
 
@@ -929,11 +994,16 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             'template' => $numberplan['template'],
             'doctype' => $numberplan['doctype'],
             'period' => $numberplan['period'],
+            'datefrom' => empty($numberplan['datefrom']) ? 0 : $numberplan['datefrom'],
+            'dateto' => empty($numberplan['dateto']) ? 0 : strtotime('tomorrow', $numberplan['dateto']) - 1,
+            'customertype' => isset($numberplan['customertype']) && strlen($numberplan['customertype']) ? intval($numberplan['customertype']) : null,
             'isdefault' => $numberplan['isdefault'],
             SYSLOG::RES_NUMPLAN => $numberplan['id']
         );
         $res = $this->db->Execute(
-            'UPDATE numberplans SET template = ?, doctype = ?, period = ?, isdefault = ? WHERE id = ?',
+            'UPDATE numberplans
+            SET template = ?, doctype = ?, period = ?, datefrom = ?, dateto = ?, customertype = ?, isdefault = ?
+            WHERE id = ?',
             array_values($args)
         );
         if ($res && $this->syslog) {
@@ -2360,8 +2430,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         if ($userid) {
             $document = $this->db->GetRow(
                 'SELECT d.id, d.number, d.cdate, d.type, d.customerid,
-                    d.fullnumber, n.template, d.ssn, d.name, d.reference
+                    d.fullnumber, n.template, d.ssn, d.name, d.reference,
+                    dc.title AS content_title
                 FROM documents d
+                JOIN documentcontents dc ON dc.docid = d.id
                 LEFT JOIN numberplans n ON (d.numberplanid = n.id)
                 JOIN docrights r ON (r.doctype = d.type)
                 WHERE d.id = ? AND r.userid = ? AND (r.rights & ?) > 0',
@@ -2374,8 +2446,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         } else {
             $document = $this->db->GetRow(
                 'SELECT d.id, d.number, d.cdate, d.type, d.customerid,
-                    d.fullnumber, n.template, d.ssn, d.name
+                    d.fullnumber, n.template, d.ssn, d.name,
+                    dc.title AS content_title
                 FROM documents d
+                JOIN documentcontents dc ON dc.docid = d.id
                 LEFT JOIN numberplans n ON (d.numberplanid = n.id)
                 JOIN docrights r ON (r.doctype = d.type)
                 WHERE d.id = ?',
@@ -2608,6 +2682,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     '%cdate-m',
                     '%cdate-d',
                     '%type',
+                    '%title',
                     '%today',
                     '\n',
                 ),
@@ -2617,6 +2692,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     date('m', $document['cdate']),
                     date('d', $document['cdate']),
                     $DOCTYPES[$document['type']],
+                    $document['content_title'],
                     $year . '-' . $month . '-' . $day,
                     "\n",
                 ),
@@ -2627,10 +2703,12 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 array(
                     '%document',
                     '%type',
+                    '%title',
                 ),
                 array(
                     $document['fullnumber'],
                     $DOCTYPES[$document['type']],
+                    $document['content_title'],
                 ),
                 $subject
             );

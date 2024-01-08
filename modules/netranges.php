@@ -216,6 +216,15 @@ function getBuildings(array $filter)
     } else {
         $existing = 0;
     }
+    if (isset($filter['project']) && is_numeric($filter['project'])) {
+        if ($filter['project'] == -1) {
+            $where[] = 'r.invprojectid IS NOT NULL';
+        } elseif ($filter['project'] == -2) {
+            $where[] = 'r.invprojectid IS NULL';
+        } else {
+            $where[] = 'r.invprojectid = ' . $filter['project'];
+        }
+    }
     if (isset($filter['linktype']) && is_numeric($filter['linktype'])) {
         $where[] = 'r.linktype = ' . intval($filter['linktype']);
     }
@@ -411,7 +420,8 @@ function getBuildings(array $filter)
                 r.downlink,
                 r.uplink,
                 r.type,
-                r.services
+                r.services,
+                r.invprojectid
             FROM location_buildings b
             LEFT JOIN location_streets lst ON lst.id = b.street_id
             LEFT JOIN location_street_types t ON t.id = lst.typeid
@@ -485,6 +495,12 @@ $oldrange = $SESSION->get('netranges_update_range');
 $oldrange = isset($oldrange) ? $oldrange : array();
 $range = isset($_POST['range']) ? $_POST['range'] : array();
 
+if (isset($range['project'])) {
+    $range['project'] = strlen($range['project']) ? intval($range['project']) : null;
+} else {
+    $range['project'] = isset($oldrange['project']) ? $oldrange['project'] : null;
+}
+
 if (isset($range['linktype'])) {
     $range['linktype'] = strlen($range['linktype']) ? intval($range['linktype']) : '';
 } else {
@@ -557,8 +573,8 @@ if (isset($_POST['range'])) {
                         if (!$DB->GetOne('SELECT 1 FROM netranges WHERE buildingid = ? LIMIT 1', array($buildingid))) {
                             $DB->Execute(
                                 'INSERT INTO netranges
-                                (linktype, linktechnology, downlink, uplink, type, services, buildingid)
-                                VALUES (?, ?, ?, ?, ?, ?, ?)',
+                                (invprojectid, linktype, linktechnology, downlink, uplink, type, services, buildingid)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                                 array_values($args)
                             );
                         }
@@ -575,7 +591,8 @@ if (isset($_POST['range'])) {
                             $args['id'] = $rangeid;
                             $DB->Execute(
                                 'UPDATE netranges
-                                SET linktype = ?,
+                                SET invprojectid = ?,
+                                    linktype = ?,
                                     linktechnology = ?,
                                     downlink = ?,
                                     uplink = ?,
@@ -589,8 +606,8 @@ if (isset($_POST['range'])) {
                             $args['buildingid'] = $buildingid;
                             $DB->Execute(
                                 'INSERT INTO netranges
-                                (linktype, linktechnology, downlink, uplink, type, services, buildingid)
-                                VALUES (?, ?, ?, ?, ?, ?, ?)',
+                                (invprojectid, linktype, linktechnology, downlink, uplink, type, services, buildingid)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                                 array_values($args)
                             );
                             unset($args['buildingid']);
@@ -609,7 +626,8 @@ if (isset($_POST['range'])) {
                         if (!$DB->GetOne(
                             'SELECT 1
                             FROM netranges
-                            WHERE linktype = ?
+                            WHERE invprojectid = ?
+                                AND linktype = ?
                                 AND linktechnology = ?
                                 AND downlink = ?
                                 AND uplink = ?
@@ -621,8 +639,8 @@ if (isset($_POST['range'])) {
                         )) {
                             $DB->Execute(
                                 'INSERT INTO netranges
-                                (linktype, linktechnology, downlink, uplink, type, services, buildingid)
-                                VALUES (?, ?, ?, ?, ?, ?, ?)',
+                                (invprojectid, linktype, linktechnology, downlink, uplink, type, services, buildingid)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                                 array_values($args)
                             );
                         }
@@ -640,6 +658,12 @@ $layout['pagetitle'] = trans('Network Ranges');
 $oldfilter = $SESSION->get('netranges_filter');
 $oldfilter = isset($oldfilter) ? $oldfilter : array();
 $filter = isset($_POST['filter']) ? $_POST['filter'] : array();
+
+if (isset($filter['project'])) {
+    $filter['project'] = strlen($filter['project']) ? intval($filter['project']) : '';
+} else {
+    $filter['project'] = isset($oldfilter['project']) ? $oldfilter['project'] : '';
+}
 
 if (isset($filter['without-ranges'])) {
     $filter['without-ranges'] = strlen($filter['without-ranges']) ? intval($filter['without-ranges']) : '';
@@ -810,6 +834,7 @@ $SMARTY->assign(array(
     'total' => $total,
     'ranges' => $ranges,
     'existing' => $existing,
+    'invprojects' => $LMS->GetProjects(),
 ));
 
 $SMARTY->display('net/netranges.html');

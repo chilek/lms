@@ -105,7 +105,7 @@
                                 <div class="toast-header bg-light">
                                     <span class="badge badge-warning mr-1">&nbsp;</span>
                                     <strong class="mr-auto">{trans("Notification")}</strong>
-                                    {button class="ml-2 mb-1 close" data-dismiss="toast" label="&times;"}
+                                    {button class="ml-2 mb-1 close" data-dismiss="toast" text="&times;"}
                                 </div>
                                 <div class="toast-body">
                                     {$error}
@@ -135,7 +135,11 @@
                     {if ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
                         || ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
                         <form id="remind" class="form-signin" method="post" action="{$target}" style="display:none;">
-                            <input type="hidden" name="remindform[type]" id="remindType" value="1">
+                            {if ConfigHelper::checkConfig('userpanel.sms_credential_reminders') && !ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
+                                <input type="hidden" name="remindform[type]" id="remindType" value="2">
+                            {else}
+                                <input type="hidden" name="remindform[type]" id="remindType" value="1">
+                            {/if}
                             {$sms_service = ConfigHelper::getConfig('sms.service', '', true)}
                             {if !empty($sms_service) && ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
                                 && ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}

@@ -88,21 +88,32 @@ if (isset($_POST['document'])) {
 
     $state = $_POST['filter'];
     $network = $_POST['network'];
-    $customergroup = $_POST['customergroup'];
+
+    if (isset($_POST['customergroup'])) {
+        if (is_array($_POST['customergroup'])) {
+            $customergroup = $_POST['customergroup'];
+        } else {
+            $customergroup = array($_POST['customergroup']);
+        }
+    } else {
+        $customergroup = array();
+    }
+    $customergroupsqlskey = 'OR';
+
     switch ($state) {
         case CSTATUS_DISCONNECTED:
         case 51:
         case 52:
         case CSTATUS_CONNECTED:
         case 0:
-            $customerlist = $LMS->GetCustomerList(compact("state", "network", "customergroup"));
+            $customerlist = $LMS->GetCustomerList(compact('state', 'network', 'customergroup', 'customergroupsqlskey'));
             break;
         case CSTATUS_INTERESTED:
         case CSTATUS_WAITING:
-            $customerlist = $LMS->GetCustomerList(compact("state"));
+            $customerlist = $LMS->GetCustomerList(compact('state'));
             break;
         case -1:
-            if ($customerlist = $LMS->GetCustomerList(compact("customergroup"))) {
+            if ($customerlist = $LMS->GetCustomerList(compact('customergroup', 'customergroupsqlskey'))) {
                 foreach ($customerlist as $idx => $row) {
                     if (!$row['account']) {
                         $ncustomerlist[] = $customerlist[$idx];
@@ -443,6 +454,22 @@ if (isset($_POST['document'])) {
                 $engine,
                 isset($document['attachments']) ? $document['attachments'] : array()
             ));
+        }
+    }
+} else {
+    $document['type'] = '';
+
+    $default_type = ConfigHelper::getConfig('documents.default_type', '', true);
+    if (strlen($default_type)) {
+        $doctype_aliases_flipped = array_flip($DOCTYPE_ALIASES);
+        if (ctype_digit($default_type)) {
+            if (isset($DOCTYPE_ALIASES[$default_type])) {
+                $document['type'] = $default_type;
+            }
+        } else {
+            if (isset($doctype_aliases_flipped[$default_type])) {
+                $document['type'] = $doctype_aliases_flipped[$default_type];
+            }
         }
     }
 }

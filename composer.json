@@ -104,6 +104,7 @@
         "php" : ">=7.2",
         "ext-mbstring": "*",
         "ext-xml": "*",
+        "ext-sockets": "*",
         "ext-json": "*",
         "ext-fileinfo": "*",
         "ext-bcmath": "*",
@@ -115,6 +116,7 @@
         "ext-gmp": "*",
         "ext-curl": "*",
         "ext-intl": "*",
+        "ext-ctype": "*",
         "phine/observer": "2.0",
         "phine/exception": "1.0",
         "phpmailer/phpmailer": "^6",
@@ -149,7 +151,8 @@
         "ezyang/htmlpurifier": "^4",
         "phpoffice/phpspreadsheet": "*",
         "gasparesganga/php-shapefile": "^3",
-        "proj4php/proj4php": "^2"
+        "proj4php/proj4php": "^2",
+        "ramsey/uuid": "^4"
     },
     "require-dev": {
         "phpunit/phpunit": "*",

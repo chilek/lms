@@ -72,6 +72,8 @@ interface LMSCustomerManagerInterface
 
     public function getCustomerConsents($id);
 
+    public function getCustomerSensibleData($id);
+
     public function GetCustomer($id, $short = false);
 
     public function GetCustomerAltName($id);
@@ -81,6 +83,8 @@ interface LMSCustomerManagerInterface
     public function deleteCustomer($id);
 
     public function deleteCustomerPermanent($id);
+
+    public function restoreCustomer($id);
 
     public function checkCustomerAddress($a_id, $c_id);
 
@@ -131,6 +135,8 @@ interface LMSCustomerManagerInterface
     public function getCustomerNote($id);
 
     public function addCustomerNote($params);
+
+    public function updateCustomerNote($params);
 
     public function delCustomerNote($id);
 

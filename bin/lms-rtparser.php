@@ -191,7 +191,9 @@ $queue = 0;
 if (isset($options['queue'])) {
     $queue = $options['queue'];
 }
-$queue = ConfigHelper::getConfig($config_section . '.parser_default_queue', ConfigHelper::getConfig($config_section . '.default_queue', $queue));
+if (empty($queue)) {
+    $queue = ConfigHelper::getConfig($config_section . '.parser_default_queue');
+}
 
 if (preg_match('/^[0-9]+$/', $queue)) {
     $queue = intval($queue);
@@ -372,7 +374,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             if (is_array($headers['return-path'])) {
                 $return_paths = $headers['return-path'];
             } else {
-                $return_paths = array($return_paths);
+                $return_paths = array($headers['return-path']);
             }
             $return_paths = array_filter($return_paths, function ($var) {
                 return $var == '<>' || strtolower($var) == '<mailer-daemon>';
@@ -845,7 +847,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                     'Message-ID' => "<confirm.$ticket_id.$queue.$timestamp@rtsystem.$hostname>",
                 );
 
-                if (!empty($ccemails)) {
+                if (!empty($reqcustid) && !empty($ccemails)) {
                     $headers['Cc'] = implode(
                         ', ',
                         array_map(function ($address, $display) {

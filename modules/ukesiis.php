@@ -100,7 +100,7 @@ function parseNetworkSpeed($s)
     if ($s <= 40000) {
         return 40000;
     }
-    
+
     return 100000;
 }
 
@@ -214,7 +214,11 @@ if (isset($_POST['sheets']) && is_array($_POST['sheets'])) {
 $customer_netdevices = isset($_POST['customernetdevices']);
 
 $buffer = '#SIIS wersja 5.28' . EOL;
-$header = ConfigHelper::getConfig('siis.header', '');
+$header = ConfigHelper::getConfig(
+    'uke.siis_header',
+    ConfigHelper::getConfig('siis.header', '', true),
+    true
+);
 if (strlen($header)) {
     $buffer .= str_replace("\n", EOL, $header) . EOL;
 }

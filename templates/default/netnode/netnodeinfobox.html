@@ -129,15 +129,24 @@
 										<td>
 											{button type="link" icon="map" label="Show on map"
 												href="?m=netdevmap&lon={$nodeinfo.longitude}&lat={$nodeinfo.latitude}"}
-										</td>
-									</tr>
-									<tr>
-										<td colspan="2">
-										</td>
-										<td>
-											{$gps_coordinate_url = ConfigHelper::getConfig('phpui.gps_coordinate_url', 'https://www.google.com/maps/search/?api=1&query=%latitude%2C%longitude')}
-											{button type="link" icon="location" label="Show on external map" external=true
-												href="{$gps_coordinate_url|replace:"%longitude":$nodeinfo.longitude|replace:"%latitude":$nodeinfo.latitude}"}
+											{show_on_map_button
+												type='google'
+												latitude=$nodeinfo.latitude
+												longitude=$nodeinfo.longitude
+												label=true
+											}
+											{show_on_map_button
+												type='geoportal'
+												latitude=$nodeinfo.latitude
+												longitude=$nodeinfo.longitude
+												label=true
+											}
+											{show_on_map_button
+												type='netstork'
+												latitude=$nodeinfo.latitude
+												longitude=$nodeinfo.longitude
+												label=true
+											}
 										</td>
 									</tr>
 								{/if}

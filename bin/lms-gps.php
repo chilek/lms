@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2022 LMS Developers
+ *  (C) Copyright 2001-2023 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -75,7 +75,7 @@ foreach (array_flip(array_filter($long_to_shorts, function ($value) {
 if (array_key_exists('version', $options)) {
     print <<<EOF
 lms-gps.php
-(C) 2001-2021 LMS Developers
+(C) 2001-2023 LMS Developers
 
 EOF;
     exit(0);
@@ -84,7 +84,7 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-gps.php
-(C) 2001-2021 LMS Developers
+(C) 2001-2023 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -u, --update                    update nodes GPS coordinates
@@ -107,7 +107,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
 lms-gps.php
-(C) 2001-2021 LMS Developers
+(C) 2001-2023 LMS Developers
 
 EOF;
 }
@@ -165,6 +165,10 @@ include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 
 $SYSLOG = SYSLOG::getInstance();
 
+// Initialize Session, Auth and LMS classes
+$AUTH = null;
+$LMS = new LMS($DB, $AUTH, $SYSLOG);
+
 /*
 $_APIKEY = ConfigHelper::getConfig('google.apikey');
 if (!$_APIKEY)
@@ -217,9 +221,6 @@ $google_api_key = ConfigHelper::getConfig(
 );
 
 foreach ($types as $label => $type) {
-    if (!$quiet) {
-        echo $label . PHP_EOL;
-    }
     $locations = $DB->GetAll(
         "SELECT
             t.id, va.location, va.city_id, va.street_id, va.house, ls.name AS state_name,
@@ -264,7 +265,14 @@ foreach ($types as $label => $type) {
         )
     );
     if (!empty($locations)) {
+        $label_displayed = false;
+
         foreach ($locations as $row) {
+            if (!$quiet && !$label_displayed) {
+                echo $label . PHP_EOL;
+                $label_displayed = true;
+            }
+
             foreach ($providers as $provider) {
                 if ($provider == 'google') {
                     $res = geocode((empty($row['state_name']) ? '' : $row['state_name'] . ', ' . $row['district_name'] . ', ' . $row['borough_name'])
@@ -281,14 +289,15 @@ foreach ($types as $label => $type) {
                             );
                         }
                         if (!$quiet) {
-                            echo 'google: #' . $row['id'] . " - OK - Accuracy: " . $res['accuracy']
+                            echo 'google: #' . $row['id'] . " - OK - Building: " . $row['location'] . " - Accuracy: " . $res['accuracy']
                                 . " (lat.: " . $res['latitude'] . " long.: " . $res['longitude'] . ")" . PHP_EOL;
                         }
                         sleep(2);
                         break;
                     } else {
                         if (!$quiet) {
-                            echo 'google: #' . $row['id'] . " - ERROR: " . $res['status'] . ' (' . $res['error'] . ')' . PHP_EOL;
+                            echo 'google: #' . $row['id'] . " - ERROR - Building: " . $row['location']
+                                . " - Status: " . $res['status'] . ' (' . $res['error'] . ')' . PHP_EOL;
                         }
                     }
                     if (empty($google_api_key)) {
@@ -336,7 +345,7 @@ foreach ($types as $label => $type) {
                         );
                     }
                     if (!$quiet) {
-                        echo 'osm: #' . $row['id'] . " - OK (lat.: " . $res['latitude'] . " long.: " . $res['longitude'] . ")" . PHP_EOL;
+                        echo 'osm: #' . $row['id'] . " - OK - Building: " . $row['location'] . " (lat.: " . $res['latitude'] . " long.: " . $res['longitude'] . ")" . PHP_EOL;
                     }
 
                     sleep(1);
@@ -352,14 +361,8 @@ foreach ($types as $label => $type) {
                     if (!empty($row['house'])) {
                         $args['building_num'] = $row['house'];
                     }
-
-                    $buildings = $DB->GetAll(
-                        'SELECT * FROM location_buildings
-                        WHERE ' . implode(' = ? AND ', array_keys($args)) . ' = ?',
-                        array_values($args)
-                    );
-
-                    if (empty($buildings) || count($buildings) > 1 || empty($buildings[0]['longitude'])) {
+                    $coordinates = $LMS->getCoordinatesForAddress($args);
+                    if (empty($coordinates)) {
                         if (!$quiet) {
                             echo 'prg: #' . $row['id'] . " - ERROR - Building: " . $row['location'] . PHP_EOL;
                         }
@@ -370,16 +373,16 @@ foreach ($types as $label => $type) {
                         $DB->Execute(
                             "UPDATE " . $type . " SET latitude = ?, longitude = ? WHERE id = ?",
                             array(
-                                $buildings[0]['latitude'],
-                                $buildings[0]['longitude'],
+                                $coordinates['latitude'],
+                                $coordinates['longitude'],
                                 $row['id'],
                             )
                         );
                     }
 
                     if (!$quiet) {
-                        echo 'prg: #' . $row['id'] . " - OK - Building: " . $row['location'] . " (lat.: " . $buildings[0]['latitude']
-                            . " long.: " . $buildings[0]['longitude'] . ")" . PHP_EOL;
+                        echo 'prg: #' . $row['id'] . " - OK - Building: " . $row['location'] . " (lat.: " . $coordinates['latitude']
+                            . " long.: " . $coordinates['longitude'] . ")" . PHP_EOL;
                     }
 
                     break;

@@ -32,6 +32,7 @@ $parameters = array(
     'quiet' => 'q',
     'help' => 'h',
     'version' => 'v',
+    'section:' => 's:',
 );
 
 $long_to_shorts = array();
@@ -83,6 +84,8 @@ lms-dsn-handler.php
 -h, --help                      print this help and exit;
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
+-s, --section=<section-name>    configuration section name where settings
+                                are stored
 
 EOF;
     exit(0);
@@ -151,10 +154,14 @@ include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 $SYSLOG = SYSLOG::getInstance();
 */
 
+$config_section = isset($options['section']) && preg_match('/^[a-z0-9-_]+$/i', $options['section'])
+    ? $options['section']
+    : 'dsn-handler';
+
 $ih = @imap_open(
-    '{' . ConfigHelper::getConfig('dsn-handler.server') . '}' . ConfigHelper::getConfig('dsn-handler.folder', 'INBOX'),
-    ConfigHelper::getConfig('dsn-handler.username'),
-    ConfigHelper::getConfig('dsn-handler.password')
+    '{' . ConfigHelper::getConfig($config_section . '.server') . '}' . ConfigHelper::getConfig($config_section . '.folder', 'INBOX'),
+    ConfigHelper::getConfig($config_section . '.username'),
+    ConfigHelper::getConfig($config_section . '.password')
 );
 if (!$ih) {
     die("Cannot connect to mail server!" . PHP_EOL);
@@ -284,7 +291,7 @@ if (!empty($posts)) {
                                 }
 
                                 foreach (preg_split('/\r?\n/', $body) as $line) {
-                                    if (preg_match('/To jest potwierdzenie dla wiadomości wysłanej przez Ciebie do.+[[:blank:]]+(?<mday>[0-9]+)[[:blank:]]+(?<mname>[[:alpha:]]+)[[:blank:]]+(?<year>[0-9]{4})[[:blank:]]+o[[:blank:]]+godz\.[[:blank:]]+(?<hour>[0-9]{2}):(?<minute>[0-9]{2})\./', $line, $m)) {
+                                    if (preg_match('/To jest potwierdzenie dla wiadomości wysłanej przez Ciebie do.+[[:blank:]]+(?<mday>[0-9]+)[[:blank:]]+(?<mname>[[:alpha:]]+)[[:blank:]]+(?<year>[0-9]{4})[[:blank:]]+o[[:blank:]]+godz\.[[:blank:]]+(?<hour>[0-9]{2}):(?<minute>[0-9]{2})\./u', $line, $m)) {
                                         $month_mapping_index = mb_substr($m['mname'], 0, 3);
                                         if (!isset($month_mappings[$month_mapping_index])) {
                                             break 3;

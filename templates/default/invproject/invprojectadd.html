@@ -2,44 +2,83 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<P><FORM method="POST" action="?m=invprojectadd" name="invprojectadd">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox">
-    <THEAD>
-	<TR>
+<h1>{$layout.pagetitle}</h1>
+<form method="POST" id="invprojectadd" action="?m=invprojectadd" name="invprojectadd">
+	<input type="submit" class="hiddenbtn">
+</form>
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 98%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<td>
+				{icon name="money" class="fa-fw"}
+			</td>
+			<td>
+				<strong>{trans("Name")}</strong>
+			</td>
+			<td>
+				<input type="text" size="40" name="invprojectadd[project]" form="invprojectadd"
+					value="{$invprojectadd.project|escape}"
+					{tip text="Enter investment project name" trigger="project" bold=1}>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
 		{if $divisions}
-		<TD width="1%"><img src="img/division.gif" alt=""></TD>
-		<TD width="1%">{trans("Division:")}</TD>
-		<TD style="width: 1%;">
-			<SELECT size="1" name="invprojectadd[divisionid]" {tip text="Select division" trigger="divisionid"}>
-				{foreach $divisions as $item}
-					<OPTION value="{$item.id}"{if $invprojectadd.division == $item.id} selected{/if}>{$item.label|escape}</OPTION>
-				{/foreach}
-			</SELECT>
-		</TD>
+			<tr>
+				<td>
+					{icon name="division" class="fa-fw"}
+				</td>
+				<td>
+					{trans("Division")}
+				</td>
+				<td>
+					<select size="1" name="invprojectadd[divisionid]" form="invprojectadd"
+						{tip text="Select division" trigger="divisionid"}>
+						{foreach $divisions as $item}
+							<option value="{$item.id}"{if $invprojectadd.division == $item.id} selected{/if}>{$item.label|escape}</option>
+						{/foreach}
+					</select>
+				</td>
+			</tr>
 		{/if}
-		<TD width="1%"><img src="img/money.gif" alt=""></TD>
-		<TD width="1%"><B>{trans("Name:")}</B></TD>
-		<TD width="96%"><INPUT type="text" size="40" name="invprojectadd[project]" value="{$invprojectadd.project|escape}" {tip text="Enter investment project name" trigger="project" bold=1}></TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR>
-		<TD align="right" {if $divisions}colspan="6"{else}colspan="3"{/if}>
-			<A href="javascript:document.invprojectadd.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
-			<A href="?m=invprojectlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="invprojectadd[reuse]" id="reuse" value="ON" {if $invprojectadd.reuse}checked{/if}> <label for="reuse">{trans("Display this form again, when this invproject is saved")}</label>
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
-</P>
-<SCRIPT type="text/javascript">
-<!--
-$(function() {
-	$('form[name="invprojectadd"] [name="invprojectadd[project]"]').focus();
-});
-//-->
-</SCRIPT>
+		<tr>
+			<td>
+				{icon name="calendar" class="fa-fw"}
+			</td>
+			<td class="nobr">
+				{trans("Estimated completion date")}
+			</td>
+			<td>
+				<input type="text" size="10" name="invprojectadd[cdate]" form="invprojectadd" id="cdate"
+					{tip class="lms-ui-date lms-ui-date-unix" text="Enter date in YYYY/MM/DD format or click to choose it from calendar" trigger="cdate"}
+					   value="{if $invprojectadd.cdate}{$invprojectadd.cdate}{/if}"
+			</td>
+		</tr>
+		<tr>
+			<td class="lms-ui-box-buttons" colspan="3">
+				{button type="submit" accesskey="s" form="invprojectadd" label="Submit" icon="save"}
+				{button label="Cancel" icon="cancel" href="?m=invprojectlist"}
+				<br>
+				<label>
+					<input type="checkbox" name="invprojectadd[reuse]" form="invprojectadd" value="ON"
+						{if $invprojectadd.reuse} checked{/if}>
+					{trans("Display this form again, when this invproject is saved")}
+				</label>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<script>
+
+	$(function() {
+		$('form[name="invprojectadd"] [name="invprojectadd[project]"]').focus();
+	});
+
+</script>
 {/block}

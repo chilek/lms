@@ -2,11 +2,9 @@
   <table class="lmsbox">
     <tr>
       <td style="width: 1%;" class="bold nobr">
-        {icon name="customer"}
-        {trans("Customer:")}
+        {icon name="customer" label=$customer.customername}
       </td>
       <td style="width: 99%;">
-        <span class="bold">{$customer.customername}</span>
         &nbsp;&raquo;&nbsp; {if $customer.postoffice && $customer.postoffice != $customer.city && $customer.street}{$customer.city}, {/if}
         {$customer.address}, {$customer.zip} {if $customer.postoffice}{$customer.postoffice}{else}{$customer.city}{/if}
         &nbsp;&raquo;&nbsp; {if $customer.balance < 0}<span class="red">{/if}{$customer.balance|money_format}{if $customer.balance < 0}</span>{/if}

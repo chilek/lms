@@ -110,13 +110,13 @@
                                                         <td>
                                                             <input type="tel" name="voipaccountedit[numbers][0][phone]"
                                                                 value="{$voipaccountinfo.numbers[0].phone}"
-                                                                class="phone-number" placeholder="{trans("<!phone>number")}"
-                                                                {tip trigger="phone-number-0"}>
+                                                                placeholder="{trans("<!phone>number")}"
+                                                                {tip class="phone-number" trigger="phone-number-0"}>
                                                             <input type="search" name="voipaccountedit[numbers][0][info]"
                                                                 value="{$voipaccountinfo.numbers[0].info|default:""|escape}"
-                                                                class="phone-info" placeholder="{trans("description")}"
+                                                                placeholder="{trans("description")}"
                                                                 autocomplete="off"
-                                                                {tip trigger="phone-info-0"}>
+                                                                {tip class="phone-info" trigger="phone-info-0"}>
                                                         </td>
                                                         <td>
                                                             <div>
@@ -217,6 +217,7 @@
                                                     selected=$voipaccountinfo.ownerid
                                                     selectname="voipaccountedit[customerid]"
                                                     inputname="voipaccountedit[ownerid]"
+                                                    trigger="voipaccountedit[ownerid]"
                                                     customOnChange="customer_change();"
                                                     required=true
                                                     version=2

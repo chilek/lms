@@ -998,6 +998,8 @@ class LMSTcpdfInvoice extends LMSInvoice
             )
         );
 
+        $customerid = $this->data['customerid'];
+
         $this->backend->SetFont(null, '', 7);
         $this->backend->writeHTMLCell(150, 0, '', '', trans("&nbsp; <BR> Scan and Pay <BR> You can make a transfer simply and quickly using your phone. <BR> To make a transfer, please scan QRcode on you smartphone in your bank's application."), 0, 1, 0, true, 'R');
         $tmp = preg_replace('/[^0-9]/', '', $this->data['division_ten'])
@@ -1017,7 +1019,13 @@ class LMSTcpdfInvoice extends LMSInvoice
                 array(
                     $docnumber,
                 ),
-                $qr2pay_comment
+                preg_replace_callback(
+                    '/%(\\d*)cid/',
+                    function ($m) use ($customerid) {
+                        return sprintf('%0' . $m[1] . 'd', $customerid);
+                    },
+                    $qr2pay_comment
+                )
             )
             . '|||';
         $style['position'] = 'R';
@@ -1131,12 +1139,20 @@ class LMSTcpdfInvoice extends LMSInvoice
                 $payment_title = trans('Payment for invoice No. $a', $payment_docnumber);
             }
         } else {
-            $payment_title = preg_replace_callback(
-                '/%(\\d*)cid/',
-                function ($m) use ($customerid) {
-                    return sprintf('%0' . $m[1] . 'd', $customerid);
-                },
-                $payment_title
+            $payment_title = str_replace(
+                array(
+                    '%number',
+                ),
+                array(
+                    $payment_docnumber,
+                ),
+                preg_replace_callback(
+                    '/%(\\d*)cid/',
+                    function ($m) use ($customerid) {
+                        return sprintf('%0' . $m[1] . 'd', $customerid);
+                    },
+                    $payment_title
+                )
             );
         }
 

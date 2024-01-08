@@ -74,7 +74,7 @@
 		<td>
 			<select name="event[type]" size="1">
 				<option value="0" selected>{trans("— all —")}</option>
-				{foreach $_EVENTTYPES as $idx => $eventtype}
+				{foreach Localisation::arraySort($_EVENTTYPES, 'label') as $idx => $eventtype}
 					<option value="{$idx}">{$eventtype.label}</option>
 				{/foreach}
 			</select>

@@ -135,7 +135,7 @@
 										</td>
 										<td class="cell-flex">
 											<div>
-												<input type="text" name="nodeedit[ipaddr]" value="{$nodeinfo.ipaddr}" required
+												<input type="text" name="nodeedit[ipaddr]" id="ipaddr" value="{$nodeinfo.ipaddr}" required
 													{tip trigger="ipaddr"}>
 												{button type="link" onClick="return ipchoosewin({
 														ipelem: document.editnode['nodeedit[ipaddr]'],
@@ -252,9 +252,8 @@
 
 													<select name="nodeedit[linktype]" id="linktype"
 														{tip trigger="linktype" text="Select link type"}>
-														{foreach $_LINKTYPES as $key => $item}
-															<option value="{$key}"{if $key == $nodeinfo.linktype} selected{/if}
-																>{$item}</option>
+														{foreach $_LINKTECHNOLOGIES as $linktype => $linktech}
+															<option value="{$linktype}"{if $linktype == $nodeinfo.linktype} selected{/if}>{$_LINKTYPES[$linktype]}</option>
 														{/foreach}
 													</select>
 

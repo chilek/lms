@@ -116,6 +116,7 @@ DROP TABLE IF EXISTS netdevicemodels;
 DROP TABLE IF EXISTS netdevicetypes;
 DROP TABLE IF EXISTS netdeviceproducers;
 DROP TABLE IF EXISTS netnodes;
+DROP TABLE IF EXISTS netranges;
 DROP TABLE IF EXISTS invprojects;
 DROP TABLE IF EXISTS vlans;
 DROP TABLE IF EXISTS networks;
@@ -169,7 +170,6 @@ DROP TABLE IF EXISTS customers;
 DROP TABLE IF EXISTS serviceproviders;
 DROP TABLE IF EXISTS divisions;
 DROP TABLE IF EXISTS addresses;
-DROP TABLE IF EXISTS netranges;
 DROP TABLE IF EXISTS location_buildings;
 DROP TABLE IF EXISTS location_streets;
 DROP TABLE IF EXISTS location_street_types;
@@ -387,36 +387,14 @@ CREATE TABLE location_buildings (
 	latitude     numeric(10,6) NULL,
 	longitude    numeric(10,6) NULL,
 	updated      smallint DEFAULT 0,
+	extid        varchar(128) DEFAULT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT location_buildings_city_id_fkey
 		FOREIGN KEY (city_id) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT location_buildings_street_id_fkey
 		FOREIGN KEY (street_id) REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	UNIQUE KEY location_buildings_extid_ukey (extid),
 	INDEX location_cityid_index (city_id)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table netranges
-#
-CREATE TABLE netranges (
-	id int(11) NOT NULL auto_increment,
-	buildingid int(11) NOT NULL,
-	linktype smallint NOT NULL,
-	linktechnology smallint NOT NULL,
-	downlink int(11) NOT NULL,
-	uplink int(11) NOT NULL,
-	type smallint NOT NULL,
-	services smallint NOT NULL,
-	PRIMARY KEY (id),
-	CONSTRAINT netranges_buildingid_fkey
-		FOREIGN KEY (buildingid) REFERENCES location_buildings (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	INDEX netranges_linktype_idx (linktype),
-	INDEX netranges_linktechnology_idx (linktechnology),
-	INDEX netranges_downlink_idx (downlink),
-	INDEX netranges_uplink_idx (uplink),
-	INDEX netranges_type_idx (type),
-	INDEX netranges_services_idx (services)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -576,16 +554,20 @@ CREATE TABLE customernotes (
     customerid int(11) NOT NULL,
     dt int(11) NOT NULL,
     message text NOT NULL,
+    moddate int(11) DEFAULT NULL,
+    moduserid int(11) DEFAULT NULL,
     PRIMARY KEY (id),
     CONSTRAINT customernotes_userid_fkey
         FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT customernotes_customerid_fkey
-        FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
+        FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT customernotes_moduserid_fkey
+        FOREIGN KEY (moduserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE SET NULL
 );
 
 # --------------------------------------------------------
 #
-# Structure of table numberplans
+# Structure of table customerkarmalastchanges
 #
 CREATE TABLE customerkarmalastchanges (
     id int(11) NOT NULL auto_increment,
@@ -647,6 +629,9 @@ CREATE TABLE numberplans (
 	period smallint NOT NULL DEFAULT '0',
 	doctype int(11) NOT NULL DEFAULT '0',
 	isdefault tinyint(1) NOT NULL DEFAULT '0',
+	datefrom int(11) NOT NULL DEFAULT 0,
+	dateto int(11) NOT NULL DEFAULT 0,
+	customertype smallint DEFAULT NULL,
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
@@ -1159,6 +1144,7 @@ CREATE TABLE liabilities (
     taxcategory smallint DEFAULT 0 NOT NULL,
 	currency varchar(3),
 	name text               NOT NULL DEFAULT '',
+	note text		DEFAULT NULL,
 	taxid int(11)           NOT NULL,
 	prodid varchar(255)     NOT NULL DEFAULT '',
 	type smallint DEFAULT -1 NOT NULL,
@@ -1254,6 +1240,7 @@ CREATE TABLE assignments (
 	customerid int(11) NOT NULL,
 	period smallint NOT NULL DEFAULT '0',
     backwardperiod smallint NOT NULL DEFAULT 0,
+	note text DEFAULT NULL,
     at int(11) NOT NULL DEFAULT '0',
 	datefrom int(11) NOT NULL DEFAULT '0',
 	dateto int(11) NOT NULL DEFAULT '0',
@@ -1396,11 +1383,15 @@ CREATE TABLE cashimport (
 	sourceid int(11) DEFAULT NULL,
 	sourcefileid int(11) DEFAULT NULL,
 	srcaccount varchar(60) DEFAULT NULL,
+	operdate int(11) DEFAULT NULL,
+	extid varchar(64) DEFAULT NULL,
 	PRIMARY KEY (id),
+	UNIQUE KEY cashimport_sourceid_extid_ukey (sourceid, extid),
 	INDEX hash (hash),
 	INDEX customerid (customerid),
 	INDEX sourceid (sourceid),
 	INDEX sourcefileid (sourcefileid),
+	INDEX cashimport_extid_idx (extid),
 	CONSTRAINT cashimport_customerid_fkey
 	FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT cashimport_sourceid_fkey
@@ -1534,13 +1525,41 @@ CREATE TABLE hosts (
 # Structure of table invprojects
 #
 CREATE TABLE invprojects (
-        id int(11) NOT NULL auto_increment,
+	id int(11) NOT NULL auto_increment,
 	name varchar(255) NOT NULL,
 	type tinyint DEFAULT 0,
-        divisionid int(11) DEFAULT NULL,
+	divisionid int(11) DEFAULT NULL,
+	cdate int(11) DEFAULT NULL,
 	PRIMARY KEY (id),
-        FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE
+	FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=INNODB;
+
+# --------------------------------------------------------
+#
+# Structure of table netranges
+#
+CREATE TABLE netranges (
+	id int(11) NOT NULL auto_increment,
+	buildingid int(11) NOT NULL,
+	linktype smallint NOT NULL,
+	linktechnology smallint NOT NULL,
+	downlink int(11) NOT NULL,
+	uplink int(11) NOT NULL,
+	type smallint NOT NULL,
+	services smallint NOT NULL,
+	invprojectid int(11) DEFAULT NULL,
+	PRIMARY KEY (id),
+	CONSTRAINT netranges_buildingid_fkey
+		FOREIGN KEY (buildingid) REFERENCES location_buildings (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT netranges_invprojectid_fkey
+		FOREIGN KEY (invprojectid) REFERENCES invprojects (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	INDEX netranges_linktype_idx (linktype),
+	INDEX netranges_linktechnology_idx (linktechnology),
+	INDEX netranges_downlink_idx (downlink),
+	INDEX netranges_uplink_idx (uplink),
+	INDEX netranges_type_idx (type),
+	INDEX netranges_services_idx (services)
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -3757,7 +3776,9 @@ INSERT INTO countries (name, ccode) VALUES
 ('Slovakia', 'sk_SK'),
 ('USA', 'en_US'),
 ('Czech', 'cs_CZ'),
-('Guyana', 'en_GY');
+('Guyana', 'en_GY'),
+('Great Britain', 'en_GB'),
+('United Kingdom', 'en_GB');
 
 INSERT INTO addresses (name) VALUES ('default');
 INSERT INTO divisions (shortname, name, address_id) VALUES ('default', 'default', (SELECT MAX(id) FROM addresses));
@@ -4332,4 +4353,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023053000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024010400');

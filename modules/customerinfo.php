@@ -24,38 +24,36 @@
  *  $Id$
  */
 
-if (isset($_GET['ajax'])) {
-    if (!isset($_POST['id'])) {
-        die;
-    }
-    if (is_array($_POST['id'])) {
-        $ids = $_POST['id'];
-    } else {
-        $ids = array($_POST['id']);
-    }
-
-    $customernames = array();
-    foreach ($ids as $id) {
-        if (!($id = intval($id))) {
-            continue;
-        }
-        $customername = $LMS->GetCustomerName($id);
-        if (!empty($customername)) {
-            $customernames[$id] = $customername;
-        }
-    }
-    header('Content-Type: application/json');
-
-    if (empty($customernames)) {
-        echo json_encode(array('error' => trans("Not exists")));
-    } else {
-        echo json_encode(array('customernames' => $customernames));
-    }
-
-    die;
-}
-
 $customerid = intval($_GET['id']);
+
+if (isset($_GET['action'])) {
+    header('Content-type: application/json');
+
+    switch ($_GET['action']) {
+        case 'get_sensible_data':
+            $sensible_data = $LMS->getCustomerSensibleData($customerid);
+            if (empty($sensible_data)) {
+                $sensible_data = array();
+            }
+
+            if ($SYSLOG) {
+                $args = array(
+                    SYSLOG::RES_USER => Auth::GetCurrentUser(),
+                    SYSLOG::RES_CUST => $customerid,
+                );
+                foreach ($sensible_data as $key => $value) {
+                    $args[$key] = $value;
+                }
+
+                $SYSLOG->addMessage(SYSLOG::RES_CUST, SYSLOG::OPER_GET, $args);
+            }
+
+            die(json_encode($sensible_data));
+            break;
+    }
+
+    die('[]');
+}
 
 $LMS->InitXajax();
 

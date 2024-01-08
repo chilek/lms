@@ -9,12 +9,33 @@
 </style>
 
 <fieldset id="other-resources">
-    <legend>{trans("other resources")}</legend>
+    <legend>
+        <label>
+            <input type="checkbox" id="user-copy-permissions-check-all">
+            {trans("other resources")}
+        </label>
+    </legend>
     {foreach $user_copy_permissions as $permission}
         <label>
-            <input type="checkbox" name="{$form_variable_prefix}[copy-permissions][{$permission.name}]" value="{$permission@index}"
-                    {if isset($variables['copy-permissions'][$permission.name])} checked{/if}>
+            <input type="checkbox" class="user-copy-permission"
+                name="{$form_variable_prefix}[copy-permissions][{$permission.name}]" value="{$permission@index}"
+                {if isset($variables['copy-permissions'][$permission.name])} checked{/if}>
             {$permission.label}
         </label>
     {/foreach}
 </fieldset>
+
+<script>
+
+    $(function() {
+        $('#user-copy-permissions-check-all').change(function() {
+            $('.user-copy-permission').prop('checked', $(this).prop('checked'));
+        });
+
+        $('.user-copy-permission').change(function() {
+            var allChecks = $('.user-copy-permission');
+            $('#user-copy-permissions-check-all').prop('checked', allChecks.length == allChecks.filter(':checked').length);
+        }).change();
+    });
+
+</script>

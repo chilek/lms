@@ -3,7 +3,7 @@
 /**
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2022 LMS Developers
+ *  (C) Copyright 2001-2023 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,6 +27,12 @@
 $divisionid = intval($_POST['division']);
 if (empty($divisionid)) {
     die;
+}
+
+if (isset($_POST['projects'])) {
+    $projects = Utils::filterIntegers($_POST['projects']);
+} else {
+    $projects = array();
 }
 
 $division = $LMS->GetDivision($divisionid);
@@ -58,6 +64,9 @@ $buildings = $DB->GetAll(
         r.uplink,
         r.type,
         r.services,
+        r.invprojectid,
+        p.name AS invprojectname,
+        p.cdate AS invprojectcdate,
         ls.ident AS state_ident,
         ld.ident AS district_ident,
         lb.ident AS borough_ident,
@@ -72,12 +81,15 @@ $buildings = $DB->GetAll(
         lst.ident AS street_ident
     FROM location_buildings b
     JOIN netranges r ON r.buildingid = b.id
+    LEFT JOIN invprojects p ON p.id = r.invprojectid
     JOIN location_cities lc ON lc.id = b.city_id
     JOIN location_boroughs lb ON lb.id = lc.boroughid
     JOIN location_districts ld ON ld.id = lb.districtid
     JOIN location_states ls ON ls.id = ld.stateid
     LEFT JOIN location_streets lst ON lst.id = b.street_id
-    LEFT JOIN location_street_types t ON t.id = lst.typeid'
+    LEFT JOIN location_street_types t ON t.id = lst.typeid
+    WHERE '
+    . (empty($projects) ? 'r.invprojectid IS NULL' : 'r.invprojectid IN (' . implode(',', $projects) . ')')
 );
 
 if (empty($buildings)) {
@@ -99,57 +111,161 @@ fputcsv(
     )
 );
 
-fputcsv(
-    $fh,
-    array(
-        'PO',
-        OPERATOR_REPRESENTATIVE_ID,
-        $division['email'],
-        $phone,
-        ConfigHelper::getConfig('sidusis.operator_offer_url', 'http://firma.pl/offer/')
-    )
-);
-
-foreach ($buildings as $building) {
-    switch ($building['linktype']) {
-        case LINKTYPE_WIRE:
-            if ($building['linktechnology'] >= 50 && $building['linktechnology'] < 100) {
-                $linktype = 'kablowe współosiowe miedziane';
-            } else {
-                $linktype = 'kablowe parowe miedziane';
-            }
-            break;
-        case LINKTYPE_WIRELESS:
-            $linktype = 'radiowe (FWA)';
-            break;
-        case LINKTYPE_FIBER:
-            $linktype = 'światłowodowe';
-            break;
-    }
-
+if (empty($projects)) {
     fputcsv(
         $fh,
         array(
-            'ZS',
-            $building['netrangeid'],
-            $building['state_ident'] . $building['district_ident'] . $building['borough_ident'] . $building['borough_type'],
-            $building['city_name'],
-            $building['city_ident'],
-            $building['street_rlabel'],
-            $building['street_ident'],
-            $building['building_num'],
-            sprintf('%02.6F', round($building['latitude'], 6)),
-            sprintf('%02.6F', round($building['longitude'], 6)),
-            $linktype,
-            $SIDUSIS_LINKTECHNOLOGIES[$building['linktype']][$building['linktechnology']],
-            $building['downlink'],
-            $building['uplink'],
-            $building['type'] == '1' ? 'rzeczywisty' : 'teoretyczny',
-            ($building['services'] & 1) ? 'TAK' : 'NIE',
-            ($building['services'] & 2) ? 'TAK' : 'NIE',
+            'PO',
             OPERATOR_REPRESENTATIVE_ID,
+            $division['email'],
+            $phone,
+            ConfigHelper::getConfig(
+                'uke.sidusis_operator_offer_url',
+                ConfigHelper::getConfig('sidusis.operator_offer_url', 'http://firma.pl/offer/')
+            ),
         )
     );
+
+    foreach ($buildings as $building) {
+        switch ($building['linktype']) {
+            case LINKTYPE_WIRE:
+                if ($building['linktechnology'] >= 50 && $building['linktechnology'] < 100) {
+                    $linktype = 'kablowe współosiowe miedziane';
+                } else {
+                    $linktype = 'kablowe parowe miedziane';
+                }
+                break;
+            case LINKTYPE_WIRELESS:
+                $linktype = 'radiowe (FWA)';
+                break;
+            case LINKTYPE_FIBER:
+                $linktype = 'światłowodowe';
+                break;
+        }
+
+        fputcsv(
+            $fh,
+            array(
+                'ZS',
+                $building['netrangeid'],
+                $building['state_ident'] . $building['district_ident'] . $building['borough_ident'] . $building['borough_type'],
+                $building['city_name'],
+                $building['city_ident'],
+                $building['street_rlabel'],
+                $building['street_ident'],
+                $building['building_num'],
+                sprintf('%02.6F', round($building['latitude'], 6)),
+                sprintf('%02.6F', round($building['longitude'], 6)),
+                $linktype,
+                $SIDUSIS_LINKTECHNOLOGIES[$building['linktype']][$building['linktechnology']],
+                $building['downlink'],
+                $building['uplink'],
+                $building['type'] == '1' ? 'rzeczywisty' : 'teoretyczny',
+                ($building['services'] & 1) ? 'TAK' : 'NIE',
+                ($building['services'] & 2) ? 'TAK' : 'NIE',
+                OPERATOR_REPRESENTATIVE_ID,
+            )
+        );
+    }
+} else {
+    $subproject_buildings = array();
+    foreach ($buildings as $building) {
+        $invprojectid = intval($building['invprojectid']);
+        if (!isset($subproject_buildings[$invprojectid])) {
+            $subproject_buildings[$invprojectid] = array();
+        }
+
+        switch ($building['linktype']) {
+            case LINKTYPE_WIRE:
+                if ($building['linktechnology'] >= 50 && $building['linktechnology'] < 100) {
+                    $linktype = 'kablowe współosiowe miedziane';
+                } else {
+                    $linktype = 'kablowe parowe miedziane';
+                }
+                break;
+            case LINKTYPE_WIRELESS:
+                $linktype = 'radiowe (FWA)';
+                break;
+            case LINKTYPE_FIBER:
+                $linktype = 'światłowodowe';
+                break;
+        }
+
+        $subproject_key = implode(
+            '|',
+            array(
+                $invprojectid,
+                $linktype,
+                ($building['services'] & 1) ? 'TAK' : 'NIE',
+                ($building['services'] & 2) ? 'TAK' : 'NIE',
+                $building['downlink'],
+                $building['uplink'],
+            )
+        );
+        if (!isset($subproject_buildings[$invprojectid][$subproject_key])) {
+            $subproject_buildings[$invprojectid][$subproject_key] = array(
+                'id' => $building['invprojectid'],
+                'name' => $building['invprojectname'],
+                'cdate' => $building['invprojectcdate'],
+                'linktype' => $linktype,
+                'wholesale' => ($building['services'] & 1) ? 'TAK' : 'NIE',
+                'retail' => ($building['services'] & 2) ? 'TAK' : 'NIE',
+                'downlink' => $building['downlink'],
+                'uplink' => $building['uplink'],
+                'email' => ConfigHelper::getConfig(
+                    'uke.sidusis_operator_project_email',
+                    ConfigHelper::getConfig('sidusis.operator_project_email', '', true),
+                    true
+                ),
+                'phone' => ConfigHelper::getConfig(
+                    'uke.sidusis_operator_project_phone',
+                    ConfigHelper::getConfig('sidusis.operator_project_phone', '', true),
+                    true
+                ),
+                'buildings' => array(),
+            );
+        }
+        $subproject_buildings[$invprojectid][$subproject_key]['buildings'][] = $building;
+    }
+
+    foreach ($subproject_buildings as $invprojectid => $subprojects) {
+        foreach ($subprojects as $subproject_key => $subproject) {
+            fputcsv(
+                $fh,
+                array(
+                    'PI',
+                    $subproject['name'] . (count($subprojects) == 1 ? '' : '-' . $subproject_key),
+                    date('Y-m-d', $subproject['cdate']),
+                    $subproject['linktype'],
+                    $subproject['wholesale'],
+                    $subproject['retail'],
+                    $subproject['downlink'],
+                    $subproject['uplink'],
+                    $subproject['email'],
+                    $subproject['phone'],
+                )
+            );
+            foreach ($subproject['buildings'] as $building) {
+                fputcsv(
+                    $fh,
+                    array(
+                        'AI',
+                        $building['netrangeid'],
+                        $subproject['name'] . (count($subprojects) == 1 ? '' : '-' . $subproject_key),
+                        'planowane',
+                        $building['state_ident'] . $building['district_ident'] . $building['borough_ident'] . $building['borough_type'],
+                        $building['city_name'],
+                        $building['city_ident'],
+                        $building['street_rlabel'],
+                        $building['street_ident'],
+                        $building['building_num'],
+                        sprintf('%02.6F', round($building['latitude'], 6)),
+                        sprintf('%02.6F', round($building['longitude'], 6)),
+                    )
+                );
+            }
+        }
+    }
 }
 
 $filesize = ftell($fh);
@@ -157,12 +273,13 @@ rewind($fh);
 $content = fread($fh, $filesize);
 fclose($fh);
 
-$filename = tempnam(sys_get_temp_dir(), 'lms-sidusis') . '.zip';
-$zipname = 'lms-sidusis.zip';
+$name = 'lms-sidusis' . (empty($projects) ? '' : '-projects');
+$filename = tempnam(sys_get_temp_dir(), $name) . '.zip';
+$zipname = $name . '.zip';
 
 $zip = new ZipArchive();
 if ($zip->open($filename, ZipArchive::CREATE)) {
-    $zip->addFromString('lms-sidusis.csv', $content);
+    $zip->addFromString($name . '.csv', $content);
     $zip->close();
 }
 

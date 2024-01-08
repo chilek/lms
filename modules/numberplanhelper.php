@@ -35,11 +35,13 @@ $db = LMSDB::getInstance();
 if ($documentType) {
     $args = array(
         'doctype' => $documentType,
-        'cdate' => date('Y/m', $cdate),
+        'cdate' => $cdate,
     );
     if (!empty($customerID)) {
         $args['customerid'] = $customerID;
-        $args['division'] = $db->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($customerID));
+        $customer = $db->GetRow('SELECT divisionid, type FROM customers WHERE id = ?', array($customerID));
+        $args['division'] = $customer['divisionid'];
+        $args['customertype'] = $customer['type'];
     }
     $numberplanlist = $lms->GetNumberPlans($args);
     if (!$numberplanlist) {
@@ -47,7 +49,7 @@ if ($documentType) {
     }
 } else {
     $args = array(
-        'cdate' => date('Y/m', $cdate),
+        'cdate' => $cdate,
     );
     $numberplanlist = $lms->getSystemDefaultNumberPlan($args);
 }
@@ -62,6 +64,7 @@ if ($numberplanlist) {
         ));
         $item['period_name'] = $NUM_PERIODS[$item['period']];
     }
+    $numberplanlist = array_values($numberplanlist);
 }
 
 header('Content-Type: application/json');

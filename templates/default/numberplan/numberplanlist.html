@@ -15,7 +15,7 @@
 
 </style>
 
-<TABLE class="lmsbox lms-ui-background-cycle">
+<table class="lmsbox lms-ui-background-cycle">
 	<colgroup>
 		<col style="width: 93%;">
 		<col style="width: 1%;">
@@ -26,22 +26,27 @@
 		<col style="width: 1%;">
 		<col style="width: 1%;">
 	</colgroup>
-    <THEAD>
-		<TR>
-			<TD class="bold nobr">
-				{icon name="id"}
-				{trans("Template:")}
-			</TD>
-			<TD class="text-right nobr">{trans("ID:")}</TD>
-			<TD class="text-right nobr">{trans("Example (next) number:")}</TD>
-			<TD class="text-right nobr">{trans("No. of issued documents:")}</TD>
-			<TD class="text-right nobr">{trans("Document type:")}</TD>
-			<TD class="text-right nobr">{trans("Period:")}</TD>
-			<TD class="text-right nobr">{trans("Default:")}</TD>
-			<TD class="text-right nobr">
+	<thead>
+		<tr>
+			<td class="nobr">
+				<strong>
+					{icon name="id"}
+					{trans("Template")}
+				</strong>
+				<br>
+				{icon name="calendar"}
+				{trans("Validity period")}
+			</td>
+			<td class="text-right nobr">{trans("ID")}</td>
+			<td class="text-right nobr">{trans("Example (next) number")}</td>
+			<td class="text-right nobr">{trans("No. of issued documents:")}</td>
+			<td class="text-right nobr">{trans("Document type")}</td>
+			<td class="text-right nobr">{trans("Period")}</td>
+			<td class="text-right nobr">{trans("Default")}</td>
+			<td class="text-right nobr">
 				{button icon="add" label="Add plan" href="?m=numberplanadd"}
-			</TD>
-		</TR>
+			</td>
+		</tr>
 		<tr>
 			<td colspan="8">
 				<div class="lms-ui-filter-container">
@@ -89,43 +94,60 @@
 				</td>
 			</tr>
 		{/if}
-    </THEAD>
-    <TBODY>
+	</thead>
+	<tbody>
 		{foreach $numberplanlist as $plan}
-		<TR class="highlight {if ($plan.validfrom !=0 && $plan.validfrom > $smarty.now) || ($plan.validto !=0 && $plan.validto < $smarty.now)} blend{/if}" data-name="{$plan.template}">
-			<TD class="bold nobr" data-target-url="?m=numberplanedit&id={$plan.id}">
-				{icon name="id"}
-				{$plan.template}
-				{if !empty($plan.divisions)}
-					{capture assign="tip"}{foreach $plan.divisions as $division}{if !$division@first}<br>{/if}{$division.shortname|escape|escape}{/foreach}{/capture}
-					{icon name="division" tip=$tip}
+		<tr class="highlight {if (!empty($plan.datofrom) && $plan.datefrom > $smarty.now) || (!empty($plan.dateto) && $plan.dateto < $smarty.now)} blend{/if}" data-name="{$plan.template}">
+			<td class="nobr" data-target-url="?m=numberplanedit&id={$plan.id}">
+				<strong>
+					{icon name="id"}
+					{$plan.template}
+					{if !empty($plan.divisions)}
+						{capture assign="tip"}{foreach $plan.divisions as $division}{if !$division@first}<br>{/if}{$division.shortname|escape|escape}{/foreach}{/capture}
+						{icon name="division" tip=$tip}
+					{/if}
+					{if !empty($plan.users)}
+						{capture assign="tip"}{foreach $plan.users as $user}{if !$user@first}<br>{/if}{$user.rname|escape|escape} ({$user.login|escape|escape}){/foreach}{/capture}
+						{icon name="user" tip=$tip}
+					{/if}
+					{if isset($plan.customertype)}
+						{icon name="legal-personality" tip=$_CTYPES[$plan.customertype]}
+					{/if}
+				</strong>
+				{if !empty($plan.datefrom) || !empty($plan.dateto)}
+					<br>
+					{icon name="calendar"}
+					{if !empty($plan.datefrom)}
+						{trans("from")}
+						{$plan.datefrom|date_format:"Y/m/d"}
+					{/if}
+					{if !empty($plan.dateto)}
+						{trans("to")}
+						{$plan.dateto|date_format:"Y/m/d"}
+					{/if}
 				{/if}
-				{if !empty($plan.users)}
-					{capture assign="tip"}{foreach $plan.users as $user}{if !$user@first}<br>{/if}{$user.rname|escape|escape} ({$user.login|escape|escape}){/foreach}{/capture}
-					{icon name="user" tip=$tip}
-				{/if}
-			</TD>
-			<TD class="text-right nobr" data-target-url="?m=numberplanedit&id={$plan.id}">
+			</td>
+			<td class="text-right nobr" data-target-url="?m=numberplanedit&id={$plan.id}">
 				({$plan.id|string_format:"%04d"})
-			</TD>
-			<TD class="text-right nobr" data-target-url="?m=numberplanedit&id={$plan.id}">
+			</td>
+			<td class="text-right nobr" data-target-url="?m=numberplanedit&id={$plan.id}">
 				{number number=$plan.next template=$plan.template time=$smarty.now}
-			</TD>
-			<TD class="text-right nobr" data-target-url="?m=numberplanedit&id={$plan.id}">
+			</td>
+			<td class="text-right nobr" data-target-url="?m=numberplanedit&id={$plan.id}">
 				{$plan.issued|default:"0"}
-			</TD>
-			<TD class="text-right nobr" data-target-url="?m=numberplanedit&id={$plan.id}">
+			</td>
+			<td class="text-right nobr" data-target-url="?m=numberplanedit&id={$plan.id}">
 				{assign var="doctype" value=$plan.doctype}
 				{$_DOCTYPES.$doctype}
-			</TD>
-			<TD class="text-right nobr" data-target-url="?m=numberplanedit&id={$plan.id}">
+			</td>
+			<td class="text-right nobr" data-target-url="?m=numberplanedit&id={$plan.id}">
 				{assign var="period" value=$plan.period}
 				{$_NUM_PERIODS.$period}
-			</TD>
-			<TD class="text-right nobr" data-target-url="?m=numberplanedit&id={$plan.id}">
+			</td>
+			<td class="text-right nobr" data-target-url="?m=numberplanedit&id={$plan.id}">
 				{if $plan.isdefault}{icon name="checked" tip="yes"}{/if}
-			</TD>
-			<TD class="text-right nobr">
+			</td>
+			<td class="text-right nobr">
 				{if empty($plan.issued)}
 					{button type="link" icon="delete" tip="Delete"
 						class="delete-numberplan" href="?m=numberplandel&id={$plan.id}"}
@@ -134,8 +156,8 @@
 						class="delete-numberplan" href="?m=numberplandel&id={$plan.id}" disabled=true}
 				{/if}
 				{button type="link" icon="edit" tip="Edit" href="?m=numberplanedit&id={$plan.id}"}
-			</TD>
-		</TR>
+			</td>
+		</tr>
 		{foreachelse}
 		<tr>
 			<td colspan="8" class="empty-table">
@@ -143,22 +165,22 @@
 			</td>
 		</tr>
 		{/foreach}
-    </TBODY>
-    <TFOOT>
+	</tbody>
+	<tfoot>
 		{if $pagination->getTotal() != 0}
 			<tr>
 				<td class="lms-ui-pagination" colspan="8"">
-				{include file="pagination.html"}
+					{include file="pagination.html"}
 				</td>
 			</tr>
 		{/if}
-		<TR>
-			<TD colspan="8" class="text-right">
+		<tr>
+			<td colspan="8" class="text-right">
 				{button icon="add" label="Add plan" href="?m=numberplanadd"}
-			</TD>
-		</TR>
-    </TFOOT>
-</TABLE>
+			</td>
+		</tr>
+	</tfoot>
+</table>
 <script>
 
 	$(function() {

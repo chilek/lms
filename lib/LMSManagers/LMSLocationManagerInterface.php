@@ -62,6 +62,8 @@ interface LMSLocationManagerInterface
 
     public function TerytToLocation($terc, $simc, $ulic);
 
+    public function getCoordinatesForAddress($params);
+
     public function GetZipCode(array $params);
 
     public function GetCitiesWithSections();

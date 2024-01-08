@@ -278,8 +278,9 @@
 							</td>
 							<td class="nobr">{trans("Network")}</td>
 							<td>
-								<select name="message[network]" {tip trigger="network" text="Select IP network"}>
-									<option value="0">{trans("— all networks —")}</option>
+								<select name="message[network][]" multiple class="lms-ui-multiselect"
+									data-default-value="{trans("— all networks —")}"
+									{tip trigger="network" text="Select IP network"}>
 									{foreach $networks as $network}
 										<option value="{$network.id}"{if $message.network == $network.id} selected{/if}
 											>{$network.name|trunescape:30}</option>
@@ -311,8 +312,8 @@
 							<td>
 								<select size="1" name="message[linktype]" {tip trigger="linktype"}>
 									<option value="">{trans("— all —")}</option>
-									{foreach $_LINKTYPES as $type => $label}
-										<option value="{$type}">{$label}</option>
+									{foreach $_LINKTECHNOLOGIES as $linktype => $linktech}
+										<option value="{$linktype}">{$_LINKTYPES[$linktype]}</option>
 									{/foreach}
 								</select>
 							</td>
@@ -481,7 +482,7 @@
 				<strong>{trans("Sender")}</strong>
 			</td>
 			<td>
-				<input type="text" name="message[from]" size="40"  value="{if $message.from}{$message.from}{elseif $userinfo.name}{$userinfo.name}{/if}"
+				<input type="text" name="message[from]" size="40"  value="{if $message.from}{$message.from}{else}{$sender_name}{/if}"
 					{tip trigger="from" text="Enter sender name"}>
 			</td>
 		</tr>

@@ -136,7 +136,8 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
                 $params['postalcode'] = $address['zip'];
             }
             $geocode = osm_geocode($params);
-            if (empty($geocode)) {
+            if (empty($geocode)
+                || isset($geocode['latitude'], $geocode['longitude']) && (!strlen($geocode['latitude']) || !strlen($geocode['longitude']))) {
                 continue;
             }
 
@@ -145,10 +146,9 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
                 $("' . $latitude_selector . '").val("' . $geocode['latitude'] . '");
                 $("' . $longitude_selector . '").val("' . $geocode['longitude'] . '");
             ');
-        } elseif (($provider == 'siis' || $provider == 'prg') && isset($address) && isset($address['city_id'])
-            && !empty($address['city_id']) && $DB->GetOne('SELECT id FROM location_buildings LIMIT 1')) {
+        } elseif (($provider == 'siis' || $provider == 'prg') && isset($address)) {
             $args = array(
-            'city_id' => $address['city_id'],
+                'city_id' => $address['city_id'],
             );
             if (!empty($address['street_id'])) {
                 $args['street_id'] = $address['street_id'];
@@ -156,15 +156,14 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
             if (!empty($location['house'])) {
                 $args['building_num'] = $location['house'];
             }
-            $buildings = $DB->GetAll('SELECT * FROM location_buildings
-				WHERE ' . implode(' = ? AND ', array_keys($args)) . ' = ?', array_values($args));
-            if (empty($buildings) || count($buildings) > 1 || empty($buildings[0]['longitude'])) {
+            $coordinates = $LMS->getCoordinatesForAddress($args);
+            if (empty($coordinates)) {
                 continue;
             }
             $found = true;
             $result->script('
-				$("' . $latitude_selector . '").val("' . $buildings[0]['latitude'] . '");
-				$("' . $longitude_selector . '").val("' . $buildings[0]['longitude'] . '");
+				$("' . $latitude_selector . '").val("' . $coordinates['latitude'] . '");
+				$("' . $longitude_selector . '").val("' . $coordinates['longitude'] . '");
 			');
         }
     }

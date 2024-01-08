@@ -40,8 +40,28 @@ function sessionHandler($item, $name)
     return $o;
 }
 
-if (!empty($_POST['str'])) {
-    $voipaccounts = $LMS->GetCustomerVoipAccounts($_POST['str']);
+function getVoipAccountList($fownerid = null)
+{
+    $lms = LMS::getInstance();
+    $voipaccountlist = $lms->GetVoipAccountList('owner', empty($fownerid) ? null : array('ownerid' => $fownerid), null);
+    unset($voipaccountlist['total']);
+    unset($voipaccountlist['order']);
+    unset($voipaccountlist['direction']);
+
+    $hook_data =  $lms->executeHook(
+        'voipbillinglist_accountlist_init',
+        array(
+            'voipaccountlist' => $voipaccountlist,
+        )
+    );
+
+    return $hook_data['voipaccountlist'];
+}
+
+if (isset($_POST['str'])) {
+    $str = !empty($_POST['str']) ? $_POST['str'] : null;
+    $voipaccounts = getVoipAccountList($str);
+
     $SMARTY->assign('voipaccounts', $voipaccounts);
     $content = $SMARTY->fetch('voipaccount/voipaccounts.html');
     echo json_encode($content);
@@ -66,11 +86,12 @@ if (isset($_GET['init'])) {
     $params['fvoipaccid'] = 0;
 } else {
     $params['fvownerid'] = sessionHandler('fvownerid', 'vblfownerid');
+    $params['fvoipaccid'] = sessionHandler('fvoipaccid', 'vblfvoipaccid');
 }
-if (isset($params['fvownerid']) && empty($params['fvownerid']) && !isset($_GET['fvoipaccid'])) {
+if (empty($params['fvoipaccid']) && !isset($_GET['fvoipaccid'])) {
     $params['id'] = null;
 } else {
-    $params['id'] = $params['fvoipaccid'] = sessionHandler('fvoipaccid', 'vblfvoipaccid');
+    $params['id'] = $params['fvoipaccid'];
     if (!empty($params['id'])) {
         $params['fvownerid'] = $LMS->getVoipAccountOwner($params['id']);
         $SESSION->save('vblfownerid', $params['fvownerid']);
@@ -94,10 +115,18 @@ $LMS->executeHook('voip_billing_preparation', array(
     'status' => $params['fstatus'],
 ));
 
+$hook_data = $plugin_manager->executeHook(
+    'voipbillinglist_init',
+    array(
+        'params' => $params,
+    )
+);
+$params = $hook_data['params'];
+
 $params['count'] = true;
 $total = intval($LMS->getVoipBillings($params));
 
-$page  = !isset($_GET['page']) ? (!isset($_POST['page']) ? ($SESSION->is_set('valp') ? $SESSION->get('valp') : 1) : intval($_POST['page'])) : intval($_GET['page']);
+$page  = !isset($_GET['page']) ? (!isset($_POST['page']) ? ($SESSION->is_set('vablp') ? $SESSION->get('vablp') : 1) : intval($_POST['page'])) : intval($_GET['page']);
 $limit = intval(ConfigHelper::getConfig('phpui.billinglist_pagelimit', 100));
 $offset = ($page - 1) * $limit;
 
@@ -145,11 +174,8 @@ if (isset($params['ftype'])) {
     $listdata['ftype'] = is_numeric($params['ftype']) ? $params['ftype'] : null;
 }
 
-$voipaccountlist = $LMS->GetVoipAccountList('owner', empty($params['fvownerid']) ? null : array('ownerid' => $params['fvownerid']), null);
-unset($voipaccountlist['total']);
-unset($voipaccountlist['order']);
-unset($voipaccountlist['direction']);
-
+$fvownerid = !empty($params['fvownerid']) ? $params['fvownerid'] : null;
+$voipaccountlist = getVoipAccountList($fvownerid);
 $voipownerlist = Utils::array_column($voipaccountlist, "owner", "ownerid");
 
 $order = explode(',', $params['o']);
@@ -172,15 +198,11 @@ if (!empty($params['fvoipaccid'])) {
     $listdata['fvoipaccid'] = $params['fvoipaccid'];
 }
 
-$SESSION->save('valp', $page);
+$SESSION->save('vablp', $page);
 
-$billing_stats = $DB->GetRow('SELECT
-                                 SUM(price) AS price,
-                                 SUM(totaltime) AS totaltime,
-                                 SUM(billedtime) AS billedtime,
-                                 COUNT(*) AS cnt
-                              FROM
-                                 voip_cdr');
+$params['stats'] = true;
+$billing_stats = $LMS->getVoipBillings($params);
+$params['stats'] = false;
 
 $SMARTY->assign('voipaccounts', $voipaccountlist);
 $SMARTY->assign('voipownerlist', $voipownerlist);

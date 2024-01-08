@@ -35,6 +35,7 @@
 		<col style="width: 1%;">
 		<col style="width: 1%;">
 		<col style="width: 1%;">
+		<col style="width: 1%;">
 		<col style="width: 25%;">
 		<col style="width: 42%;">
 		<col style="width: 32%;">
@@ -44,6 +45,9 @@
 		<tr>
 			<td>
 				{trans("ID:")}
+			</td>
+			<td>
+				{trans("Source")}
 			</td>
 			<td>
 				{trans("Date:")}
@@ -69,7 +73,7 @@
 		{foreach $divisions as $division}
 			{if $division.list}
 				<tr>
-					<td colspan="4" class="dark">
+					<td colspan="5" class="dark">
 						{icon name="division"}
 						<strong>{$division.name|escape}</strong>
 					</td>
@@ -81,6 +85,9 @@
 				<tr>
 					<td>
 						{$item.id|string_format:"%04d"}
+					</td>
+					<td>
+						<strong>{$item.sourcename|escape}</strong>
 					</td>
 					<td class="nobr">
 						{$item.date|date_format:"Y-m-d"}
@@ -113,7 +120,7 @@
 		{/foreach}
 		{if !$listdata.total}
 			<tr>
-				<td class="empty-table" colspan="7">
+				<td class="empty-table" colspan="8">
 					{trans("No cash operations to import.")}
 				</td>
 			</tr>
@@ -121,7 +128,7 @@
 	</tbody>
 	<tfoot>
 		<tr class="lms-ui-button-panel">
-			<td class="nobr" colspan="3">
+			<td class="nobr" colspan="4">
 				<label>
 					<input type="checkbox" name="allbox" class="lms-ui-multi-check-all" value="1" form="cashimport">
 					{trans("Check All")}

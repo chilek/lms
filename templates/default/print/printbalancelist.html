@@ -1,13 +1,19 @@
 {include file="clearheader.html"}
 <!--// $Id$ //-->
+{$colspan = 5 + count($types)}
 <TABLE WIDTH="100%" CELLPADDING="3" ALIGN="CENTER">
 	<TR>
 		<TD WIDTH="535" VALIGN="TOP">
 			<P class="hdf"><B>{$layout.pagetitle}</B>
 			{if $net}<BR><span class="sdr"><B>{trans("Network:")} {$net}</B></span>{/if}
-			{if $group}<BR><span class="sdr"><B>{trans("Group:")} {$group}</B></span>{/if}
+			{if !empty($groups)}
+				<br>
+				<span class="sdr">
+					<strong>{trans("Groups:")} {implode(', ', $groups)}</strong>
+				</span>
+			{/if}
 			{if $division}<BR><span class="sdr"><B>{trans("Division")}: {$division}</B></span>{/if}
-			{if $types}<BR><span class="sdr"><B>{trans("Type:")} {$types}</B></span>{/if}
+			{if strlen($typetxt)}<BR><span class="sdr"><B>{trans("Type:")} {$typetxt}</B></span>{/if}
 			{if $source}<BR><span class="sdr"><B>{trans("Source:")} {$source}</B></span>{/if}
 			</P>
 		</TD>
@@ -28,15 +34,21 @@
 		<TD WIDTH="45" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Date")}
 		</TD>
-		<TD WIDTH="60" CLASS="HEAD" ALIGN="CENTER">
-			{trans("Liability")}
-		</TD>
-		<TD WIDTH="40" CLASS="HEAD" ALIGN="CENTER">
-			{trans("Income")}
-		</TD>
-		<TD WIDTH="40" CLASS="HEAD" ALIGN="CENTER">
-			{trans("Expense")}
-		</TD>
+		{if isset($types[1])}
+			<td WIDTH="60" CLASS="HEAD" ALIGN="CENTER">
+				{trans("Liability")}
+			</td>
+		{/if}
+		{if isset($types[2])}
+			<td WIDTH="40" CLASS="HEAD" ALIGN="CENTER">
+				{trans("Income")}
+			</td>
+		{/if}
+		{if isset($types[3])}
+			<td WIDTH="40" CLASS="HEAD" ALIGN="CENTER">
+				{trans("Expense")}
+			</td>
+		{/if}
 		<TD WIDTH="40" CLASS="HEAD" ALIGN="CENTER">
 			{trans("After")}
 		</TD>
@@ -48,57 +60,84 @@
 		</TD>
 	</TR>
 	{cycle values="white,grey" print=false}
-	{section name=balancelist loop=$balancelist}
-	<TR class="{cycle}">
-		<TD ALIGN="CENTER">
-			{counter}.
-		</TD>
-		<TD ALIGN="CENTER" NOWRAP>
-			{$balancelist[balancelist].time|date_format:"d.m.Y"}
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
-			{if $balancelist[balancelist].covenant}{moneyf($balancelist[balancelist].value*-1, $balancelist[balancelist].currency)}{else}-{/if}
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
-			{if !$balancelist[balancelist].covenant && $balancelist[balancelist].value > 0}{moneyf($balancelist[balancelist].value, $balancelist[balancelist].currency)}{else}-{/if}
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
-			{if !$balancelist[balancelist].covenant && $balancelist[balancelist].value < 0}{moneyf($balancelist[balancelist].value*-1, $balancelist[balancelist].currency)}{else}-{/if}
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
-			{if $balancelist[balancelist].covenant}
-			-
-			{else}
-			{moneyf($balancelist[balancelist].after)}
+	{foreach $balancelist as $item}
+		<TR class="{cycle}">
+			<TD ALIGN="CENTER">
+				{counter}.
+			</TD>
+			<TD ALIGN="CENTER" NOWRAP>
+				{$item.time|date_format:"d.m.Y"}
+			</TD>
+			{if isset($types[1])}
+				<TD ALIGN="RIGHT" NOWRAP>
+					{if $item.covenant}{moneyf($item.value*-1, $item.currency)}{else}-{/if}
+				</TD>
 			{/if}
-		</TD>
-		<TD ALIGN="LEFT" NOWRAP>
-			{$balancelist[balancelist].customername|truncate:25:"&hellip;"}
-		</TD>
-		<TD ALIGN="LEFT">
-			{$balancelist[balancelist].comment|wordwrap:42:"<br />\n"}
-		</TD>
-	</TR>
-	{sectionelse}
-	<tr>
-		<td colspan="8" class="empty-table">
-			{trans("No such cash operations.")}
-		</td>
-	</tr>
-	{/section}
+			{if isset($types[2])}
+				<TD ALIGN="RIGHT" NOWRAP>
+					{if !$item.covenant && $item.value > 0}{moneyf($item.value, $item.currency)}{else}-{/if}
+				</TD>
+			{/if}
+			{if isset($types[3])}
+				<TD ALIGN="RIGHT" NOWRAP>
+					{if !$item.covenant && $item.value < 0}{moneyf($item.value*-1, $item.currency)}{else}-{/if}
+				</TD>
+			{/if}
+			<TD ALIGN="RIGHT" NOWRAP>
+				{if $item.covenant}
+					-
+				{else}
+					{moneyf($item.after)}
+				{/if}
+			</TD>
+			<TD ALIGN="LEFT">
+				<b>{$item.customername}</b>
+				{if !$hideid}(#{$item.customerid}){/if}
+				{if !$hideaddress}
+					<br>
+					{$item.address}, {if strlen($item.zip)}{$item.zip} {/if}{$item.city}
+				{/if}
+				{if !$hidessnten
+					&& ($item.ctype == $smarty.const.CTYPES_PRIVATE && strlen($item.ssn)
+						|| $item.ctype == $smarty.const.CTYPES_COMPANY && strlen($item.ten))}
+					<br>
+					{if $item.ctype == $smarty.const.CTYPES_PRIVATE}
+						{t a=$item.ssn}SSN: $a{/t}
+					{else}
+						{t a=$item.ten}TEN: $a{/t}
+					{/if}
+				{/if}
+			</TD>
+			<TD ALIGN="LEFT">
+				{$item.comment|wordwrap:42:"<br />\n"}
+			</TD>
+		</TR>
+	{foreachelse}
+		<tr>
+			<td colspan="{$colspan}" class="empty-table">
+				{trans("No such cash operations.")}
+			</td>
+		</tr>
+	{/foreach}
 	<TR>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" COLSPAN="2">
 			<B>{trans("Total:")}</B>
 		</TD>
-		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
-			<B>{$listdata.liability|money_format}</B>
-		</TD>
-		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
-			<B>{$listdata.income|money_format}</B>
-		</TD>
-		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
-			<B>{$listdata.expense|money_format}</B>
-		</TD>
+		{if isset($types[1])}
+			<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
+				<B>{$listdata.liability|money_format}</B>
+			</TD>
+		{/if}
+		{if isset($types[2])}
+			<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
+				<B>{$listdata.income|money_format}</B>
+			</TD>
+		{/if}
+		{if isset($types[3])}
+			<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
+				<B>{$listdata.expense|money_format}</B>
+			</TD>
+		{/if}
 		<TD CLASS="HEADGREY" ALIGN="CENTER" COLSPAN="3" NOWRAP>
 			<B>{trans("Balance:")} {$listdata.total|money_format}</B>
 		</TD>

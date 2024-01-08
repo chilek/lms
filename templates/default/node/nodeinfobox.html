@@ -15,6 +15,10 @@
         flex-wrap: wrap;
 	}
 
+	.cell-flex > *:not(:first-child) {
+		margin-left: 0.5em;
+	}
+
 	.mac-address {
 		cursor: pointer;
 	}
@@ -183,6 +187,9 @@
 												{else}
 													{if $nodeinfo.location_name}{$nodeinfo.location_name} ,{/if}{$nodeinfo.location}
 												{/if}
+												{if empty($nodeinfo.address_id)}
+													<span class="lms-ui-alert bold">{trans("<!node-location>(implicit)")}</span>
+												{/if}
 												</div>
 											</td>
 										</tr>
@@ -252,9 +259,8 @@
 															<select name="linktype" id="linktype"
 																{tip trigger="linktype" text="Select link type"}
 																onchange="change_linktype(this.options[this.selectedIndex].value)">
-																{foreach $_LINKTYPES as $key => $item}
-																	<option value="{$key}"
-																		{if $linktype == $key} selected{/if}>{$item}</option>
+																{foreach $_LINKTECHNOLOGIES as $key => $linktech}
+																	<option value="{$linktype}"{if $linktype == $key} selected{/if}>{$_LINKTYPES[$key]}</option>
 																{/foreach}
 															</select>
 
@@ -461,17 +467,27 @@
 											<td colspan="2">
 											</td>
 											<td class="cell-flex">
-												{button type="link" icon="map" label="Show on map"
-													href="?m=netdevmap&nodeid={$nodeinfo.id}"}
-											</td>
-										</tr>
-										<tr>
-											<td colspan="2">
-											</td>
-											<td>
-												{$gps_coordinate_url = ConfigHelper::getConfig('phpui.gps_coordinate_url', 'https://www.google.com/maps/search/?api=1&query=%latitude%2C%longitude')}
-												{button type="link" icon="location" label="Show on external map" external=true
-													href="{$gps_coordinate_url|replace:"%longitude":$nodeinfo.longitude|replace:"%latitude":$nodeinfo.latitude}"}
+												{show_on_map_button
+													nodeid=$nodeinfo.id
+													label=true}
+												{show_on_map_button
+													type="default"
+													latitude=$nodeinfo.latitude
+													longitude=$nodeinfo.longitude
+													label=true
+												}
+												{show_on_map_button
+													type="geoportal"
+													latitude=$nodeinfo.latitude
+													longitude=$nodeinfo.longitude
+													label=true
+												}
+												{show_on_map_button
+													type="netstork"
+													latitude=$nodeinfo.latitude
+													longitude=$nodeinfo.longitude
+													label=true
+												}
 											</td>
 										</tr>
 									{/if}

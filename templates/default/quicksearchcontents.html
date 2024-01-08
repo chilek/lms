@@ -93,6 +93,7 @@
 		<option value="name"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.name)} selected{/if}>{trans("<!qs>device name")}</option>
 		<option value="serial"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.serial)} selected{/if}>{trans("<!qs>device serial number")}</option>
 		<option value="mac"{if !isset($qs_properties.mac) || isset($qs_properties.netdevice.mac)} selected{/if}>{trans("<!qs>device mac")}</option>
+		<option value="location_address"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.location_address)} selected{/if}>{trans("<!qs>location address")}</option>
 		<option value="description"{if !isset($qs_properties.description) || isset($qs_properties.netdevice.description)} selected{/if}>{trans("<!qs>device description")}</option>
 	</select>
 </div>
@@ -140,6 +141,13 @@
 <div id="qs-customerext" class="lms-ui-quick-search-field" data-mode="customerext" data-label="{trans("<!qs>customer external id")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+e">
 	<i class="lms-ui-quick-search-icon lms-ui-icon-externalid" {tip text="Enter external customer ID fragment and press Enter"}></i>
     <input type="text" name="qs[customerext]" value="" size="15" {tip text="Enter external customer ID fragment and press Enter" class="blend lms-ui-quick-search-input"}>
+	<i class="fa-fw lms-ui-icon-customisation"></i>
+	<select id="qs-customerext-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select which service providers should be used during external customer identifiers search")}">
+		<option value="default"{if !isset($qs_properties.customeext) || isset($qs_properties.cutomerext.default)} selected{/if}>{trans("<!qs>default")}</option>
+		{foreach $serviceproviders as $serviceprovider}
+			<option value="{$serviceprovider.name}"{if !isset($qs_properties.customerext) || isset($qs_properties.customerext[$serviceprovider.name])} selected{/if}>{$serviceprovider.name}</option>
+		{/foreach}
+	</select>
 </div>
 {/if}
 

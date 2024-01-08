@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2023 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -36,7 +36,7 @@ $devices = $DB->GetAllByKey('SELECT n.id, n.name, va.location, '.$DB->GroupConca
 				LEFT JOIN vnodes ON n.id = vnodes.netdev
 				LEFT JOIN netradiosectors rs ON rs.netdev = n.id
 				WHERE ((nn.latitude IS NULL AND n.latitude IS NOT NULL) OR nn.latitude IS NOT NULL)
-					AND ((nn.longitude IS NULL AND n.longitude IS NOT NULL) OR nn.latitude IS NOT NULL)
+					AND ((nn.longitude IS NULL AND n.longitude IS NOT NULL) OR nn.longitude IS NOT NULL)
 				GROUP BY n.id, n.name, va.location, n.latitude, n.longitude, nn.latitude, nn.longitude, n.ownerid, n.netnodeid', 'id');
 
 if ($devices) {
@@ -116,6 +116,9 @@ if ($devices) {
 
         foreach ($netlinkpoints as $netlinkpoint) {
             $netlinkid = $netlinkpoint['netlinkid'];
+            if (!isset($devlinks[$netlinkid])) {
+                continue;
+            }
             $netlinkpointid = $netlinkpoint['id'];
             $devlinks[$netlinkid]['points'][$netlinkpointid] = array(
                 'lon' => $netlinkpoint['longitude'],
@@ -135,31 +138,60 @@ if ($devices) {
     $devlinks = null;
 }
 
-$nodes = $DB->GetAllByKey('SELECT n.id, n.name, INET_NTOA(n.ipaddr) AS ipaddr, n.location, n.lastonline, n.latitude AS lat, n.longitude AS lon 
-				FROM vnodes n 
-				WHERE n.latitude IS NOT NULL AND n.longitude IS NOT NULL', 'id');
+$nodes = $DB->GetAllByKey(
+    'SELECT
+        n.id,
+        n.name,
+        INET_NTOA(n.ipaddr) AS ipaddr,
+        n.location,
+        n.lastonline,
+        n.latitude AS lat,
+        n.longitude AS lon,
+        n.linktype,
+        n.linktechnology
+    FROM vnodes n
+    WHERE n.latitude IS NOT NULL
+        AND n.longitude IS NOT NULL',
+    'id'
+);
 
 if ($nodes) {
-    foreach ($nodes as $nodeidx => $node) {
+    foreach ($nodes as &$node) {
         if ($node['lastonline']) {
             if (time() - $node['lastonline'] > ConfigHelper::getConfig('phpui.lastonline_limit')) {
-                $nodes[$nodeidx]['state'] = 2;
+                $node['state'] = 2;
             } else {
-                $nodes[$nodeidx]['state'] = 1;
+                $node['state'] = 1;
             }
         } else {
-            $nodes[$nodeidx]['state'] = 0;
+            $node['state'] = 0;
         }
-            $urls = $DB->GetRow(
-                'SELECT '.$DB->GroupConcat('url').' AS url,
-			'.$DB->GroupConcat('comment').' AS comment FROM managementurls WHERE nodeid = ?',
-                array($node['id'])
-            );
+
+        if ($node['linktype'] == LINKTYPE_WIRE) {
+            $node['linktypeicon'] = 'wired';
+        } elseif ($node['linktype'] == LINKTYPE_WIRELESS) {
+            $node['linktypeicon'] = 'wireless';
+        } elseif ($node['linktype'] == LINKTYPE_FIBER) {
+            $node['linktypeicon'] = 'fiber';
+        } else {
+            $node['linktypeicon'] = '';
+        }
+        $node['linktypename'] = isset($node['linktype']) ? $LINKTYPES[$node['linktype']] : '';
+        $node['linktechnologyname'] = isset($node['linktype'], $node['linktechnology']) ? $LINKTECHNOLOGIES[$node['linktype']][$node['linktechnology']] : '';
+
+        $urls = $DB->GetRow(
+            'SELECT ' . $DB->GroupConcat('url') . ' AS url,
+            ' . $DB->GroupConcat('comment') . ' AS comment
+            FROM managementurls
+            WHERE nodeid = ?',
+            array($node['id'])
+        );
         if ($urls) {
-            $nodes[$nodeidx]['url'] = $urls['url'];
-            $nodes[$nodeidx]['comment'] = $urls['comment'];
+            $node['url'] = $urls['url'];
+            $node['comment'] = $urls['comment'];
         }
     }
+    unset($node);
 
     if ($devices) {
         $nodelinks = $DB->GetAll(

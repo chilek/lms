@@ -117,9 +117,14 @@ if (!empty($filtertype)) {
             break;
         case 'mac':
             if (check_mac($filtervalue)) {
-                $where[] = 's.mac = \'' . $filtervalue . '\'';
+                $where[] = 's.mac = ' . $DB->Escape($filtervalue);
             } else {
-                $filtervalue = '';
+                $fixed_mac = strtoupper(preg_replace('/[^0-9a-f]/', '', $filtervalue));
+                if (strlen($fixed_mac) && strlen($fixed_mac) < 12) {
+                    $where[] = 's.mac ?LIKE? ' . $DB->Escape('%'. $filtervalue . '%');
+                } else {
+                    $filtervalue = '';
+                }
             }
             break;
         case 'customer':

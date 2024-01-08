@@ -32,6 +32,12 @@ function CustomerAssignmentHelper(options) {
 			this.phoneTariffType = 0;
 		}
 
+		if ('tvTariffType' in options) {
+			this.tvTariffType = options.tvTariffType;
+		} else {
+			this.tvTariffType = 0;
+		}
+
 		if ('tariffTypes' in options) {
 			this.tariffTypes = options.tariffTypes;
 		} else {
@@ -66,6 +72,7 @@ function CustomerAssignmentHelper(options) {
 		this.selected = {};
 		this.internetTariffType = 0;
 		this.phoneTariffType = 0;
+		this.tvTariffType = 0;
 		this.tariffTypes = {};
 		this.promotionAttachments = {};
 		this.assignmentPromotionAttachments = {};
@@ -79,6 +86,10 @@ function CustomerAssignmentHelper(options) {
 
 	this.initEventHandlers = function() {
 		$('#submit-button,#print-button').click(function () {
+			$('#a-day-of-month').prop('required', function() {
+				return $(this).is(':visible');
+			});
+
 			if ($(this)[0].form.checkValidity()) {
 				$('.schema-tariff-checkbox[data-mandatory]:checkbox').prop('disabled', false);
 			}
@@ -112,7 +123,7 @@ function CustomerAssignmentHelper(options) {
 			confirm($t('No location has been selected!'));
 			return false;
 		}
-		if ($.isEmptyObject(tariffs)) {
+		if (lmsSettings.missedNodeWarning && $.isEmptyObject(tariffs)) {
 			return confirm($t('No nodes has been selected for assignment, by at least one is recommended! Are you sure you want to continue despite of this?'));
 		}
 		var cancelled = 0;
@@ -121,7 +132,8 @@ function CustomerAssignmentHelper(options) {
 				return false;
 			}
 			var selector  = '[name^="' + helper.variablePrefix + '[snodes][' + schemaid + '][' + label + ']"]';
-			if (helper.tariffTypes[tariffid] == helper.internetTariffType &&
+			if (lmsSettings.missedNodeWarning &&
+				helper.tariffTypes[tariffid] == helper.internetTariffType &&
 				(($('input' + selector).length && $('div#' + $(selector).closest('div').attr('id').replace('-layer', '') + ':visible').length &&
 						!$(selector + ':checked').length) ||
 					($('select' + selector).length && !$(selector).val().length)) &&
@@ -165,6 +177,8 @@ function CustomerAssignmentHelper(options) {
 
 		init_multiselects('select.lms-ui-multiselect-deferred:visible');
 
+		var allAttachments = 0;
+		var allCheckedAttachments = 0;
 		var html = '';
 
 		if (helper.promotionAttachments.hasOwnProperty(schemaId) && !$.isEmptyObject(helper.promotionAttachments[schemaId].promotions)) {
@@ -173,15 +187,22 @@ function CustomerAssignmentHelper(options) {
 				'<ul>';
 
 			$.each(helper.promotionAttachments[schemaId].promotions, function (index, attachment) {
+				allAttachments++;
+				var checked = helper.assignmentPromotionAttachments.hasOwnProperty(attachment.id) &&
+					helper.assignmentPromotionAttachments[attachment.id] == attachment.id ||
+					!helper.assignmentPromotionAttachments.hasOwnProperty(attachment.id) &&
+					attachment.checked;
+				if (checked) {
+					allCheckedAttachments++;
+				}
 				html +=
-					'<li>' +
-						'<label>' +
+					'<li class="lms-ui-tab-table-row">' +
+						'<label class="lms-ui-multi-check-ignore">' +
 							'<input type="hidden" name="' + helper.variablePrefix + '[promotion-attachments][' + attachment.id + ']"' +
 								' value="0">' +
 							'<input type="checkbox" name="' + helper.variablePrefix + '[promotion-attachments][' + attachment.id + ']"' +
-								' value="' + attachment.id + '"' +
-								(helper.assignmentPromotionAttachments.hasOwnProperty(attachment.id) && helper.assignmentPromotionAttachments[attachment.id] == attachment.id ||
-									!helper.assignmentPromotionAttachments.hasOwnProperty(attachment.id) && attachment.checked ? ' checked' : '') + '>' +
+								' value="' + attachment.id + '" class="lms-ui-multi-check"' +
+								(checked ? ' checked' : '') + '>' +
 							'<span>' +
 								escapeHtml(attachment.label.length ? attachment.label : attachment.filename) +
 							'</span>' +
@@ -198,15 +219,22 @@ function CustomerAssignmentHelper(options) {
 				'<ul>';
 
 			$.each(helper.promotionAttachments[schemaId].promotionschemas, function (index, attachment) {
+				allAttachments++;
+				var checked = helper.assignmentPromotionSchemaAttachments.hasOwnProperty(attachment.id) &&
+					helper.assignmentPromotionSchemaAttachments[attachment.id] == attachment.id ||
+					!helper.assignmentPromotionSchemaAttachments.hasOwnProperty(attachment.id) &&
+					attachment.checked;
+				if (checked) {
+					allCheckedAttachments++;
+				}
 				html +=
-					'<li>' +
-						'<label>' +
+					'<li class="lms-ui-tab-table-row">' +
+						'<label class="lms-ui-multi-check-ignore">' +
 							'<input type="hidden" name="' + helper.variablePrefix + '[promotion-schema-attachments][' + attachment.id + ']"' +
 								' value="0">' +
 							'<input type="checkbox" name="' + helper.variablePrefix + '[promotion-schema-attachments][' + attachment.id + ']"' +
-								' value="' + attachment.id + '"' +
-								(helper.assignmentPromotionSchemaAttachments.hasOwnProperty(attachment.id) && helper.assignmentPromotionSchemaAttachments[attachment.id] == attachment.id ||
-									!helper.assignmentPromotionSchemaAttachments.hasOwnProperty(attachment.id) && attachment.checked ? ' checked' : '') + '>' +
+								' value="' + attachment.id + '" class="lms-ui-multi-check"' +
+								(checked ? ' checked' : '') + '>' +
 							'<span>' +
 								escapeHtml(attachment.label.length ? attachment.label : attachment.filename) +
 							'</span>' +
@@ -217,7 +245,16 @@ function CustomerAssignmentHelper(options) {
 			html += '</ul></div>';
 		}
 
+		if (html.length) {
+			html += '<label class="lms-ui-dotted-line-top multi-check-all-label">' +
+				'<input type="checkbox" class="lms-ui-multi-check-all"' +
+				(allAttachments == allCheckedAttachments ? ' checked' : '') + '>' +
+				$t("Check All") +
+				'</label>';
+		}
+
 		$('#promotion-attachments').html(html);
+		initMultiChecks('#promotion-attachments');
 		$('#a_attachments').toggle($('#tariff-select').val() == -2 && typeof(promotionAttachments) != 'undefined' && html.length > 0);
 
 		$('#location-select').trigger('change');
@@ -240,10 +277,10 @@ function CustomerAssignmentHelper(options) {
 		period_tables.hide();
 		period_tables.filter('[data-assignment-id="' + assignment_id + '"]').show();
 
-		tr.find('.nodes,.netdevnodes').toggle(tariffType == helper.internetTariffType);
+		tr.find('.nodes,.netdevnodes').toggle(tariffType == helper.internetTariffType || tariffType == helper.tvTariffType);
 		tr.find('.phones').toggle(tariffType == helper.phoneTariffType);
 
-		var selects = tr.find(tariffType == helper.phoneTariffType ? '.phones select' : (tariffType == helper.internetTariffType ? '.nodes select,.netdevnodes select' : ''));
+		var selects = tr.find(tariffType == helper.phoneTariffType ? '.phones select' : (tariffType == helper.internetTariffType || tariffType == helper.tvTariffType ? '.nodes select,.netdevnodes select' : ''));
 		if (!selects.length) {
 			return;
 		}
@@ -813,19 +850,19 @@ $("#netprice").on('change', function () {
 
 $(".format-3f").on('change', function () {
 	if ($(this).val()) {
-		let roundedValue = financeRound($(this).val(), 3);
+		let roundedValue = financeRound($(this).val().replaceAll(' ', ''), 3);
 		$(this).val(roundedValue);
 	}
 });
 
 $("#discount_value").on('change', function () {
 	if ($("#discount_type").val() == 2) {
-		let roundedValue = financeRound($(this).val(), 3);
+		let roundedValue = financeRound($(this).val().replaceAll(' ', ''), 3);
 		$(this).val(roundedValue);
 	}
 
 	if ($("#discount_type").val() == 1) {
-		let roundedValue = financeRound($(this).val(), 2);
+		let roundedValue = financeRound($(this).val().replaceAll(' ', ''), 2);
 		$(this).val(roundedValue);
 	}
 });

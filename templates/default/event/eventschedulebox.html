@@ -75,7 +75,7 @@
                                                             <td style="min-width: 90px; {if isset($_EVENTTYPES[$tevents[tevent].type])} {$_EVENTTYPES[$tevents[tevent].type].style}{/if}" class="text-center bold"
                                                                 data-target-url="?m=eventinfo&id={$tevents[tevent].id}">
                                                                 {if $tevents[tevent].position == 0}
-                                                                    {if isset($_EVENTTYPES[$tevents[tevent].type])}{$_EVENTTYPES[$tevents[tevent].type].label}<br>{else}<br>{/if}
+                                                                    {if isset($_EVENTTYPES[$tevents[tevent].type])}{trans($_EVENTTYPES[$tevents[tevent].type].label)}<br>{else}<br>{/if}
                                                                     {if $tevents[tevent].ticketid}<a href="?m=rtticketview&id={$tevents[tevent].ticketid}" style="color: black">{$tevents[tevent].ticketid|string_format:"%06d"}</a><br>{else}<br>{/if}
                                                                 {button icon="info" type="link" onclick="?m=eventinfo&id={$tevents[tevent].id}" class="lms-ui-hint-rollover" data_url="?m=eventinfoshort&id={$tevents[tevent].id}"}
 

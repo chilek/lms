@@ -914,20 +914,22 @@
 			transfer_balance_dialog.handler.dialog("close");
 		});
 
-		$('#transfer-balance-form').submit(function() {
-			var checkboxes = $('#customerbalancebox [data-moveable] .lms-ui-multi-check:checked');
-			var old_customerid = {$balancelist.customerid};
-			var customerid = parseInt($('[name="customerid"][form="transfer-balance-form"]').val());
-			if (!checkboxes.length || customerid == old_customerid) {
-				$('#transfer-balance-apply-button').prop('disabled', false);
-				return false;
-			}
-			var html = '<input type="hidden" name="old-customerid" value="' + old_customerid + '">';
-			$.each(checkboxes, function() {
-				html += '<input type="hidden" name="marks[]" value="' + $(this).val() + '">';
+		{if !empty($balancelist.customerid)}
+			$('#transfer-balance-form').submit(function() {
+				var checkboxes = $('#customerbalancebox [data-moveable] .lms-ui-multi-check:checked');
+				var old_customerid = {$balancelist.customerid};
+				var customerid = parseInt($('[name="customerid"][form="transfer-balance-form"]').val());
+				if (!checkboxes.length || customerid == old_customerid) {
+					$('#transfer-balance-apply-button').prop('disabled', false);
+					return false;
+				}
+				var html = '<input type="hidden" name="old-customerid" value="' + old_customerid + '">';
+				$.each(checkboxes, function() {
+					html += '<input type="hidden" name="marks[]" value="' + $(this).val() + '">';
+				});
+				$(this).html(html);
 			});
-			$(this).html(html);
-		});
+		{/if}
 
 		$('#move-balances').prop('disabled', !$('#customerbalancebox .lms-ui-multi-check:checked').closest('[data-moveable]').length)
 			.click(function() {

@@ -77,7 +77,7 @@ if ($resourceKeyOnly) {
 
 switch ($mode) {
     case 'customer':
-        if (empty($search) || (!ConfigHelper::checkPrivilege('customer_management') && !ConfigHelper::checkPrivilege('read_only'))) {
+        if (empty($search) || ($module != 'customerselect' && !ConfigHelper::checkPrivilege('customer_management') && !ConfigHelper::checkPrivilege('read_only'))) {
             die;
         }
 
@@ -259,18 +259,41 @@ switch ($mode) {
         }
 
         if (isset($_GET['ajax'])) { // support for AutoSuggest
-            $candidates = $DB->GetAll("SELECT c.id, cc.contact AS email, full_address AS address,
-				post_name, post_full_address AS post_address, deleted, c.status, altname,
-			    " . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . " AS customername
-				FROM customerview c
-				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ?) > 0
-				WHERE LOWER(c.extid) ?LIKE? LOWER($sql_search)
-				ORDER by deleted, customername, cc.contact, full_address
-				LIMIT ?", array(CONTACT_EMAIL, intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
+            $candidates = $DB->GetAll(
+                "SELECT
+                    c.id,
+                    cc.contact AS email,
+                    full_address AS address,
+                    post_name,
+                    post_full_address AS post_address,
+                    deleted,
+                    c.status,
+                    altname,
+                    " . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . " AS customername,
+                    extids.extid,
+                    sp.name AS serviceprovidername
+                FROM customerview c
+                LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ?) > 0
+                LEFT JOIN customerextids extids ON extids.customerid = c.id
+                LEFT JOIN serviceproviders sp ON sp.id = extids.serviceproviderid
+                WHERE LOWER(extids.extid) ?LIKE? LOWER($sql_search)
+                ORDER by deleted, customername, cc.contact, full_address
+                LIMIT ?",
+                array(
+                    CONTACT_EMAIL,
+                    intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15)),
+                )
+            );
 
             $result = array();
             if ($candidates) {
                 foreach ($candidates as $idx => $row) {
+                    if (!empty($properties)
+                        && (!isset($properties['default']) && empty($row['serviceprovidername'])
+                            || !empty($row['serviceprovidername']) && !isset($properties[$row['serviceprovidername']]))) {
+                        continue;
+                    }
+
                     $name = truncate_str($row['customername'], 50);
 
                     $name_classes = array();
@@ -284,8 +307,15 @@ switch ($mode) {
                     $description_class = '';
                     $action = '?m=customerinfo&id=' . $row['id'];
 
-                    if (preg_match("~^$search\$~i", $row['id'])) {
-                        $description = trans('Id:') . ' ' . $row['id'];
+                    if ((empty($properties) || isset($properties['default'])) && empty($row['serviceprovidername'])) {
+                        $description = trans('default:') . ' ' . $row['extid'];
+                    } elseif (!empty($row['serviceprovidername']) && (empty($properties) || isset($properties[$row['serviceprovidername']]))) {
+                        foreach ($serviceproviders as $serviceprovider) {
+                            if (empty($properties) || isset($properties[$serviceprovider['name']])) {
+                                $description = $serviceprovider['name'] . ': ' . $row['extid'];
+                                break;
+                            }
+                        }
                     }
 
                     $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
@@ -310,43 +340,68 @@ switch ($mode) {
         }
 
         if (isset($_GET['ajax'])) { // support for AutoSuggest
-            $where = array();
             $phone_number = preg_replace('/[^0-9]/', '', $search);
-            if (empty($properties) || isset($properties['contact'])) {
-                $where[] = "REPLACE(REPLACE(cc.contact, '-', ''), ' ', '') ?LIKE? '%$phone_number%'";
-            }
-            if (empty($properties) || isset($properties['account'])) {
-                $where[] = "vn.phone ?LIKE? '%$phone_number%'" ;
+
+            $sqlContact = "SELECT c.id,
+                cc.contact AS phone,
+                NULL AS number,
+                NULL AS voipaccountid,
+                full_address AS address,
+                cc.contact AS contact,
+                post_name, post_full_address AS post_address, deleted, altname, "
+                . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . " AS customername
+                FROM customerview c
+                LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & " . (CONTACT_LANDLINE | CONTACT_MOBILE | CONTACT_FAX) . " > 0)
+                WHERE REPLACE(REPLACE(cc.contact, '-', ''), ' ', '') ?LIKE? '%$phone_number%'";
+
+            $sqlAccount = "SELECT c.id,
+                NULL AS phone,
+                vn.phone AS number, va.id AS voipaccountid,
+                NULL AS address,
+                NULL AS contact,
+                NULL AS post_name, NULL AS post_address, deleted, altname, "
+                . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . " AS customername
+                FROM customerview c
+                LEFT JOIN voipaccounts va ON va.ownerid = c.id
+                LEFT JOIN voip_numbers vn ON vn.voip_account_id = va.id
+                WHERE vn.phone ?LIKE? '%$phone_number%'";
+
+            $candidatesSql = null;
+            if (empty($properties) || isset($properties['contact']) && isset($properties['account'])) {
+                $candidatesSql = $sqlContact . " UNION " . $sqlAccount;
+            } elseif (isset($properties['contact'])) {
+                $candidatesSql = $sqlContact;
+            } elseif (isset($properties['account'])) {
+                $candidatesSql = $sqlAccount;
             }
 
-            $candidates = $DB->GetAll("SELECT c.id, "
-                    . (empty($properties) || isset($properties['contact']) ? "cc.contact AS phone, " : '')
-                    . (empty($properties) || isset($properties['account']) ? "vn.phone AS number, va.id AS voipaccountid, " : '')
-                    . "full_address AS address,
-				post_name, post_full_address AS post_address, deleted, altname,
-			    " . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . " AS customername
-				FROM customerview c "
-                . (empty($properties) || isset($properties['contact']) ?
-                    "LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & " . (CONTACT_LANDLINE | CONTACT_MOBILE | CONTACT_FAX) . " > 0)" : '')
-                . (empty($properties) || isset($properties['account']) ?
-                    "LEFT JOIN voipaccounts va ON va.ownerid = c.id
-					LEFT JOIN voip_numbers vn ON vn.voip_account_id = va.id" : '')
-                . " WHERE 1=1" . (empty($where) ? '' : ' AND (' . implode(' OR ', $where) . ')')
-                . " ORDER by deleted, customername, "
-                . (empty($properties) || isset($properties['contact']) ? "cc.contact, " : '')
-                . (empty($properties) || isset($properties['account']) ? "vn.phone, " : '')
-                . "full_address
-				LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
+            $candidates = array();
+            if (!empty($candidatesSql)) {
+                $candidates = $DB->GetAll(
+                    $candidatesSql
+                    . " ORDER BY deleted, customername, contact, phone, number, address"
+                    . " LIMIT ?",
+                    array(
+                        intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))
+                    )
+                );
+            }
 
             $result = array();
-            if ($candidates) {
+            if (!empty($candidates)) {
                 foreach ($candidates as $idx => $row) {
                     if (isset($row['number'])) {
                         $action = '?m=voipaccountinfo&id=' . $row['voipaccountid'];
+                        $number = $row['number'];
+                        $voipaccountid = $row['voipaccountid'];
                     } else {
                         $action = '?m=customerinfo&id=' . $row['id'];
+                        $number = null;
+                        $voipaccountid = null;
                     }
+
                     $name = truncate_str('(#' . $row['id'] . ') ' . $row['customername'], 50);
+
                     if (isset($row['number'])) {
                         $description = trans('VoIP number:') . ' ' . htmlspecialchars($row['number']);
                         $name_class = '';
@@ -360,12 +415,14 @@ switch ($mode) {
                         $name_class = '';
                         $icon = 'fa-fw lms-ui-icon-location';
                     }
+
                     $name_class .= $row['deleted'] ? ' blend' : '';
 
                     $description_class = '';
-                    $result[$row['id']] = compact('name', 'name_class', 'icon', 'description', 'description_class', 'action');
+                    $result[$idx] = compact('name', 'name_class', 'icon', 'description', 'description_class', 'action', 'number', 'voipaccountid');
                 }
             }
+
             $hook_data = array(
                 'search' => $search,
                 'sql_search' => $sql_search,
@@ -609,22 +666,36 @@ switch ($mode) {
         }
 
         if (isset($_GET['ajax'])) { // support for AutoSuggest
-            $candidates = $DB->GetAll("SELECT id, name, serialnumber, description, no.lastonline FROM netdevices
+            $candidates = $DB->GetAll(
+                "SELECT
+                    d.id,
+                    d.name,
+                    d.serialnumber,
+                    d.description,
+                    a.location,
+                    no.lastonline
+                FROM netdevices d
                 LEFT JOIN (
                     SELECT netdev AS netdevid, MAX(lastonline) AS lastonline
                     FROM nodes
                     WHERE nodes.netdev IS NOT NULL AND nodes.ownerid IS NULL
                         AND lastonline > 0
                     GROUP BY netdev
-                ) no ON no.netdevid = netdevices.id
+                ) no ON no.netdevid = d.id
+                LEFT JOIN vaddresses a ON d.address_id = a.id
                 WHERE "
-                . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/', $search) ? 'id = ' . $search : '1=0') : '1=0')
-                . (empty($properties) || isset($properties['name']) ? " OR LOWER(name) ?LIKE? LOWER($sql_search)" : '')
-                . (empty($properties) || isset($properties['serial']) ? " OR LOWER(serialnumber) ?LIKE? LOWER($sql_search)" : '')
-                . (empty($properties) || isset($properties['description']) ? " OR LOWER(description) ?LIKE? LOWER($sql_search)" : '')
-                . (empty($properties) || isset($properties['mac']) ? " OR EXISTS (SELECT 1 FROM netdevicemacs WHERE netdevicemacs.netdevid = netdevices.id AND LOWER(netdevicemacs.mac) ?LIKE? LOWER($sql_search))" : '')
-                . "	ORDER by name
-                LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
+                . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/', $search) ? 'd.id = ' . $search : '1=0') : '1=0')
+                . (empty($properties) || isset($properties['name']) ? " OR LOWER(d.name) ?LIKE? LOWER($sql_search)" : '')
+                . (empty($properties) || isset($properties['serial']) ? " OR LOWER(d.serialnumber) ?LIKE? LOWER($sql_search)" : '')
+                . (empty($properties) || isset($properties['description']) ? " OR LOWER(d.description) ?LIKE? LOWER($sql_search)" : '')
+                . (empty($properties) || isset($properties['mac']) ? " OR EXISTS (SELECT 1 FROM netdevicemacs WHERE netdevicemacs.netdevid = d.id AND LOWER(netdevicemacs.mac) ?LIKE? LOWER($sql_search))" : '')
+                . (empty($properties) || isset($properties['location_address']) ? " OR LOWER(a.location) ?LIKE? LOWER($sql_search)" : '')
+                . ' ORDER by name
+                LIMIT ?',
+                array(
+                    intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15)),
+                )
+            );
 
                 $result = array();
             if ($candidates) {
@@ -652,6 +723,8 @@ switch ($mode) {
                         $description = trans('Name') . ': ' . htmlspecialchars($row['name']);
                     } else if ((empty($properties) || isset($properties['serial'])) && preg_match("~$search~i", $row['serialnumber'])) {
                         $description = trans('Serial number:') . ' ' . $row['serialnumber'];
+                    } else if ((empty($properties) || isset($properties['location_address'])) && preg_match("~$search~i", $row['location'])) {
+                        $description = trans('Address') . ': ' . htmlspecialchars($row['location']);
                     } else if ((empty($properties) || isset($properties['description'])) && preg_match("~$search~i", $row['description'])) {
                         //$description = trans('Description:') . ' ' . htmlspecialchars($row['description']);
                         $description = trans('Description:') . ' &hellip;';
@@ -688,6 +761,9 @@ switch ($mode) {
         }
         if (empty($properties) || isset($properties['serial'])) {
             $s['serialnumber'] = $search;
+        }
+        if (empty($properties) || isset($properties['location_address'])) {
+            $s['location'] = $search;
         }
         $SESSION->save('netdevsearch', $s);
         $SESSION->save('ndlsk', 'OR');

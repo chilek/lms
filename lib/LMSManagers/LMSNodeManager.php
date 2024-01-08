@@ -603,7 +603,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
 				LEFT JOIN location_states ls ON ls.id = ld.stateid '
-                . (!empty($customergroup) ? 'JOIN vcustomerassignments ON (customerid = c.id) ' : '')
+                . (!empty($customergroup) ? 'JOIN vcustomerassignments ON (vcustomerassignments.customerid = c.id) ' : '')
                 . (isset($nodegroup) && $nodegroup ? ($nodegroup > 0 ? '' : 'LEFT ') . 'JOIN nodegroupassignments ON (nodeid = n.id) ' : '')
                 . ' WHERE 1=1 '
                 . (isset($network) && $network ? ' AND (n.netid = ' . $network . ' OR (n.ipaddr_pub > ' . $net['address'] . ' AND n.ipaddr_pub < ' . $net['broadcast'] . '))' : '')

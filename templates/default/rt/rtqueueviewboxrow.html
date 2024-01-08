@@ -47,7 +47,7 @@
 		<span><br>{trans($_RT_TYPES[$ticket.type].label)}</span>
 	</TD>
 	<TD class="valign-middle">
-		<span class="bold">{$ticket.subject|trunescape:100|default:"&nbsp;"}</span>
+		<span class="bold" {tip text=$ticket.subject}>{$ticket.subject|trunescape:100|default:"&nbsp;"}</span>
 		{foreach $ticket.categories as $tc}
 			<a href="?m=rtqueueview&persistent-filter=-1&catid={$tc.categoryid}&s=-1&priority=all&unread=-1&o=lastmodified,desc">
 				<div class="lms-ui-category-label" style="{$tc.style}">
@@ -130,8 +130,8 @@
 				{if $ticket.verifierid && $ticket.verifierid != Auth::GetCurrentUser() &&  $ticket.state != $smarty.const.RT_VERIFIED}
 					{button type="link" icon="verifier" tip="Transfer to verifier" href="?m=rtticketedit&id={$ticket.id}&action=verify"}
 				{elseif ConfigHelper::checkConfig('rt.block_ticket_close_with_open_events', ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events'))
-					&& $ticket['openeventcount'] !== 0}
-					{button type="link" icon="close" tip="Resolve" href="?m=rtticketedit&id={$ticket.id}&action=resolve" class="disabled" tip="Ticket have open assigned events!"}
+					&& !empty($ticket.eventcountopened)}
+					{button type="link" icon="close" tip="Resolve" href="?m=rtticketedit&id={$ticket.id}&action=resolve" disabled=true tip="Ticket have open assigned events!"}
 				{else}
 					{button type="link" icon="close" tip="Resolve" href="?m=rtticketedit&id={$ticket.id}&action=resolve"}
 				{/if}

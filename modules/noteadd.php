@@ -409,11 +409,12 @@ $SMARTY->assign('note', $note);
 
 $args = array(
     'doctype' => DOC_DNOTE,
-    'cdate' => date('Y/m', $note['cdate']),
+    'cdate' => $note['cdate'],
 );
 if (isset($customer)) {
     $args['customerid'] = $customer['id'];
-    $args['division'] = $DB->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($customer['id']));
+    $args['division'] = $customer['divisionid'];
+    $args['customertype'] = $customer['type'];
 } else {
     $args['customerid'] = null;
 }

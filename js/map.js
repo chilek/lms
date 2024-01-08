@@ -971,6 +971,23 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 							mappopup.contentDiv.style.width = 'auto';
 							mappopup.contentDiv.style.heigh = 'auto';
 							//mappopup.updateSize();
+
+							// workaround popup positioning error manually moving popup to correct position
+							var point = this.handlers.feature.evt.xy;
+							var popupSize = {
+								height: mappopup.div.scrollHeight,
+								width: mappopup.div.scrollWidth,
+							};
+							var mapSize = {
+								height: map.div.scrollHeight,
+								width: map.div.scrollWidth
+							}
+							mappopup.moveTo(
+								new OpenLayers.Pixel(
+									point.x + popupSize.width >= mapSize.width ? point.x - popupSize.width : point.x,
+									point.y + popupSize.height >= mapSize.height ? point.y - popupSize.height : point.y
+								)
+							);
 						}
 					}
 				}
@@ -1028,34 +1045,62 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 					var content = '<div class="lms-ui-map-popup-titlebar"><div class="lms-ui-map-popup-title">Info</div>' +
 						'<div id="' + featurepopup.id + '_popupCloseBox" class="olPopupCloseBox lms-ui-map-popup-closebox">&nbsp;</div></div>' +
 						'<div class="lms-ui-map-info-popup-contents">';
+					var data, state;
 					for (i in features) {
-						content += '<div class="lms-ui-map-info-popup-name">' + features[i].data.name + '</div>';
-						if (features[i].data.type == 'netdevinfo') {
-							if (features[i].data.ipaddr.length) {
-								var ips = features[i].data.ipaddr.split(',');
-								var nodeids = features[i].data.nodeid.split(',');
-								for (j in nodeids)
+						data = features[i].data;
+						if (!data.hasOwnProperty('type')) {
+							continue;
+						}
+						content += '<div class="lms-ui-map-info-popup-entry">';
+						if (data.type == 'netdevinfo') {
+							content += '<div class="lms-ui-map-info-popup-name">' + data.name + '</div>';
+							if (data.ipaddr.length) {
+								var ips = data.ipaddr.split(',');
+								var nodeids = data.nodeid.split(',');
+								for (j in nodeids) {
 									content += '<div class="lms-ui-map-info-popup-address"><a href="#" onclick="ping_host(\'' +
-										featurepopup.id + '\', \'' + ips[j] + '\')"><i class="lms-ui-icon-routed"></i>&nbsp;' +
+										featurepopup.id + '\', \'' + ips[j] + '\')"><i class="lms-ui-icon-routed fa-fw"></i>&nbsp;' +
 										ips[j] + '</a></div>';
+								}
 							}
-						} else
-							content += '<div class="lms-ui-map-info-popup-address"><i class="lms-ui-icon-routed"></i>&nbsp;<a href="#" onclick="ping_host(\'' +
-								featurepopup.id + '\', \'' + features[i].data.ipaddr + '\')">' +
-								features[i].data.ipaddr + '</a></div>';
 							content += '<div class="lms-ui-map-info-popup-details">' +
-							'<i class="lms-ui-icon-location"></i><a href="?m=' + features[i].data.type + '&id=' + features[i].data.id + '">&nbsp;Info</a></div>';
-							content += '<div class="lms-ui-map-info-popup-details"><i class="lms-ui-icon-location"></i>&nbsp;' + features[i].data.location + '</div>';
-							if (features[i].data.url) {
-							var urls = features[i].data.url.split(',');
-							var comments = features[i].data.comment.split(',');
-							for (j in urls) {
-								content += '<div class="lms-ui-map-info-popup-details"><a href="' + urls[j] + '"' +
-									(urls[j].match(/^(https?|ftp):/) ? ' target="_blank"' : '') + '>' +
-									'<img src="img/network.gif" alt=""> ' +
-									(comments[j].length ? comments[j] : urls[j]) + '</a></div>';
+								'<i class="lms-ui-icon-location fa-fw"></i><a href="?m=' + data.type + '&id=' + data.id + '">&nbsp;Info</a></div>';
+							if (data.location) {
+								content += '<div class="lms-ui-map-info-popup-details"><i class="lms-ui-icon-location fa-fw"></i>&nbsp;' + data.location + '</div>';
+							}
+						} else {
+							state = data.state;
+							content += '<div class="lms-ui-map-info-popup-name">' +
+								'<i class="lms-ui-icon-node' + (state == 2 ? 'off' : (state == 1 ? 'on' : 'unk')) +
+								' fa-fw"></i>&nbsp;' + data.name + '</div>';
+							content += '<div class="lms-ui-map-info-popup-address"><i class="lms-ui-icon-routed"></i>&nbsp;<a href="#" onclick="ping_host(\'' +
+								featurepopup.id + '\', \'' + data.ipaddr + '\')">' +
+								data.ipaddr + '</a></div>';
+							content += '<div class="lms-ui-map-info-popup-details">' +
+								'<i class="lms-ui-icon-location fa-fw"></i><a href="?m=' + data.type + '&id=' + data.id + '">&nbsp;Info</a></div>';
+							if (data.location) {
+								content += '<div class="lms-ui-map-info-popup-details"><i class="lms-ui-icon-location fa-fw"></i>&nbsp;' + data.location + '</div>';
+							}
+							if (data.linktype.length) {
+								content += '<div class="lms-ui-map-info-popup-details"><i class="lms-ui-icon-' +
+									data.linktypeicon + ' fa-fw"></i><div class="lms-ui-map-info-popup-details-list"><div>' + data.linktypename +
+									'</div>' + (data.linktechnologyname.length ? '<div>' + data.linktechnologyname + '</div>' : '') +
+									'</div></div>';
+							}
+							if (data.url) {
+								var urls = data.url.split(',');
+								var comments = data.comment.split(',');
+								content += '<div class="lms-ui-map-info-popup-details"><i class="lms-ui-icon-url fa-fw"></i>' +
+									'<div class="lms-ui-map-info-popup-details-list">';
+								for (j in urls) {
+									content += '<a href="' + urls[j] + '"' +
+										(urls[j].match(/^(https?|ftp):/) ? ' target="_blank"' : '') + '>' +
+										(comments[j].length ? comments[j] : urls[j]) + '</a>';
+								}
+								content += '</div></div>';
 							}
 						}
+						content += '</div>';
 					}
 					content += '</div>';
 					featurepopup.setContentHTML(content);
@@ -1073,6 +1118,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 					featurepopup.groupDiv.style.height = 'auto';
 					featurepopup.contentDiv.style.width = 'auto';
 					featurepopup.contentDiv.style.heigh = 'auto';
+					featurepopup.feature = feature;
 					//featurepopup.updateSize();
 					feature.popup = featurepopup;
 				}
@@ -1270,6 +1316,29 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 	map.events.register('moveend', map, function(e) {
 		setCookie('mapSettings',  map.getCenter().lon + ';' + map.getCenter().lat + ';' + map.getZoom(), true);
 	});
+
+	// closes popups after mouse double click on them
+	document.getElementById('map').addEventListener(
+		'dblclick',
+		function(e) {
+			var closestElement = e.target;
+			while (closestElement && 'className' in closestElement &&
+				(typeof(closestElement.className) != 'string' || !closestElement.className.match(/^olPopup$/))) {
+				closestElement = closestElement.parentElement;
+			}
+			if (closestElement !== null) {
+				for (var i in map.popups) {
+					if (map.popups[i].visible() && map.popups[i].id == closestElement.id) {
+						selectlayer.unselect(map.popups[i].feature);
+						map.removePopup(map.popups[i]);
+					}
+				}
+			}
+		},
+		{
+			capture: true
+		}
+	);
 
 	//map.events.register('mousemove', map, function(e) {
 	//	removeInvisiblePopups();

@@ -22,8 +22,8 @@
 						<span class="bold">{trans("Filter:")} </span>
 						{trans("Type:")}
 						<SELECT name="type[]" onchange="document.filter.submit();" class="lms-ui-multiselect lms-ui-multiselect-filter" multiple data-default-value="{trans("— all —")}">
-							{foreach $_EVENTTYPES as $id => $eventtype}
-								<OPTION value="{$id}"{if is_array($filter.type) && in_array($id, $filter.type)} selected{/if}>{$evemttype.label}</OPTION>
+							{foreach Localisation::arraySort($_EVENTTYPES, 'label') as $id => $eventtype}
+								<OPTION value="{$id}"{if is_array($filter.type) && in_array($id, $filter.type)} selected{/if}>{$eventtype.label}</OPTION>
 							{/foreach}
 						</SELECT>
 						{trans("User:")}

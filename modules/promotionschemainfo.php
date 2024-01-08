@@ -52,7 +52,7 @@ foreach ($schema['data'] as $idx => $data) {
         // unlimited
         break;
     } else if ($data == 1) {
-        $period = trans('Month $a', $data);
+        $period = trans('Month $a', $mon);
         $mon++;
     } else {
         $period = trans('Months $a-$b', $mon, $mon + $data-1);
@@ -60,7 +60,7 @@ foreach ($schema['data'] as $idx => $data) {
     }
     $schema['periods'][] = $period;
 }
-$schema['periods'][] = trans('Months $a-', $mon);
+$schema['periods'][] = trans('Months $a-$b', $mon, '&hellip;');
 
 $schema['data'] = implode(' &raquo; ', (array)$schema['data']);
 

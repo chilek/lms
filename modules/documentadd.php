@@ -485,12 +485,16 @@ if (isset($_POST['document'])) {
                 )
             );
             $document = $hook_data['document'];
-        }
 
-        if ($LMS->DocumentExists($docid) && !empty($document['confirmdate'])) {
-            $document['id'] = $docid;
-            $document['fullnumber'] = $fullnumber;
-            $LMS->NewDocumentCustomerNotifications($document);
+            if (isset($document['closed'])) {
+                $LMS->CommitDocuments(array($docid), false, false);
+            }
+
+            if (!empty($document['confirmdate'])) {
+                $document['id'] = $docid;
+                $document['fullnumber'] = $fullnumber;
+                $LMS->NewDocumentCustomerNotifications($document);
+            }
         }
 
         if (!isset($document['reuse'])) {
@@ -514,7 +518,25 @@ if (isset($_POST['document'])) {
     }
 } else {
     $document['customerid'] = isset($_GET['cid']) ? intval($_GET['cid']) : '';
-    $document['type'] = isset($_GET['type']) ? intval($_GET['type']) : '';
+    if (isset($_GET['type'])) {
+        $document['type'] = intval($_GET['type']);
+    } else {
+        $document['type'] = '';
+
+        $default_type = ConfigHelper::getConfig('documents.default_type', '', true);
+        if (strlen($default_type)) {
+            $doctype_aliases_flipped = array_flip($DOCTYPE_ALIASES);
+            if (ctype_digit($default_type)) {
+                if (isset($DOCTYPE_ALIASES[$default_type])) {
+                    $document['type'] = $default_type;
+                }
+            } else {
+                if (isset($doctype_aliases_flipped[$default_type])) {
+                    $document['type'] = $doctype_aliases_flipped[$default_type];
+                }
+            }
+        }
+    }
 
     $default_document_type = ConfigHelper::getConfig(
         'assignments.default_document_type',

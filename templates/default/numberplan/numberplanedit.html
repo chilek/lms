@@ -2,24 +2,29 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<FORM method="POST" action="?m=numberplanedit&id={$numberplanedit.id}" name="numberplanedit">
+<h1>{$layout.pagetitle}</h1>
+
+<form method="POST" id="numberplanedit" action="?m=numberplanedit&id={$numberplanedit.id}" name="numberplanedit">
+</form>
+
 <table class="lmsbox">
 	<colgroup>
 		<col style="width: 1%;">
 		<col style="width: 1%;">
 		<col style="width: 98%;">
 	</colgroup>
-    <thead>
-		<TR>
-			<TD>
+	<thead>
+		<tr>
+			<td>
 				{icon name="id"}
-			</TD>
-			<TD class="bold">
-				{trans("Template:")}
-			</TD>
-			<TD>
-				<input type="text" name="numberplanedit[template]" value="{$numberplanedit.template|escape}"
+			</td>
+			<td>
+				<strong>{trans("Template")}</strong>
+			</td>
+			<td>
+				<input type="text" name="numberplanedit[template]"
+					value="{$numberplanedit.template|escape}"
+					form="numberplanedit"
 					{tip trigger="template"}>
 				{capture assign="template_hint"}{strip}
 					Enter number template<br>
@@ -33,99 +38,154 @@
 					Other symbols can be used which are described in PHP <a href="https://php.net/strftime"><strong>strftime</strong></a> function documentation.
 				{/strip}{/capture}
 				{hint content=$template_hint}
-			</TD>
-		</TR>
-    </thead>
-    <tbody>
-		<TR>
-			<TD>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
 				{icon name="document"}
-			</TD>
-			<TD class="bold nobr">
-				{trans("Document type:")}
-			</TD>
-			<TD>
-				<select name="numberplanedit[doctype]" size="1" {tip text="Select document type" trigger="doctype"}>
+			</td>
+			<td class="nobr">
+				<strong>{trans("Document type")}</strong>
+			</td>
+			<td>
+				<select name="numberplanedit[doctype]" size="1"
+					form="numberplanedit"
+					{tip text="Select document type" trigger="doctype"}>
 					{foreach Localisation::arraySort($_DOCTYPES) as $doctype => $item}
 						<option value="{$doctype}"{if $doctype == $numberplanedit.doctype} selected{/if}>{$item|escape}</option>
 					{/foreach}
 				</select>
-			</TD>
-		</TR>
-		<TR>
-			<TD>
+			</td>
+		</tr>
+		<tr>
+			<td>
 				{icon name="calendar"}
-			</TD>
-			<TD class="bold">
-				{trans("Period:")}
-			</TD>
-			<TD>
-				<select name="numberplanedit[period]" size="1" {tip text="Select numbering period" trigger="period"}>
+			</td>
+			<td>
+				<strong>{trans("Period")}</strong>
+			</td>
+			<td>
+				<select name="numberplanedit[period]" size="1"
+					form="numberplanedit"
+					{tip text="Select numbering period" trigger="period"}>
 					{foreach $_NUM_PERIODS as $key => $item}
 						<option value="{$key}"{if $key == $numberplanedit.period} selected{/if}>{$item}</option>
 					{/foreach}
 				</select>
-			</TD>
-		</TR>
-		<TR>
-			<TD class="valign-top">
+			</td>
+		</tr>
+		<tr>
+			<td class="valign-top">
 				{icon name="division"}
-			</TD>
-			<TD class="bold nobr valign-top">
-				{trans("Division")}
-			</TD>
-			<TD>
+			</td>
+			<td class="nobr valign-top">
+				<strong>{trans("Division")}</strong>
+			</td>
+			<td>
 				<select name="numberplanedit[divisions][]" id="divisions" multiple
+					form="numberplanedit"
 					{tip text="Select division" class="lms-ui-multiselect" trigger="divisions"}>
 					{foreach $divisions as $division}
 						<option value="{$division.id}"{if isset($numberplanedit.divisions[$division.id])} selected{/if}
 							>{$division.label|escape}</option>
 					{/foreach}
 				</select>
-			</TD>
-		</TR>
-		<TR>
-			<TD class="valign-top">
+			</td>
+		</tr>
+		<tr>
+			<td class="valign-top">
 				{icon name="user"}
-			</TD>
-			<TD class="bold nobr valign-top">
-				{trans("User")}
-			</TD>
-			<TD>
+			</td>
+			<td class="nobr valign-top">
+				<strong>{trans("User")}</strong>
+			</td>
+			<td>
 				<select name="numberplanedit[users][]" id="users" multiple
-						{tip text="Select users" class="lms-ui-multiselect" trigger="users"}>
+					form="numberplanedit"
+					{tip text="Select users" class="lms-ui-multiselect" trigger="users"}>
 					{foreach $users as $user}
 						<option value="{$user.id}"{if isset($numberplanedit.users[$user.id])} selected{/if}
 							>{$user.rname|escape} ({$user.login})</option>
 					{/foreach}
 				</select>
-			</TD>
-		</TR>
-		<TR>
-			<TD>
+			</td>
+		</tr>
+		<tr>
+			<td class="valign-top">
+				{icon name="legal-personality"}
+			</td>
+			<td class="nobr valign-top">
+				<strong>{trans("Customer type")}</strong>
+			</td>
+			<td>
+				<select name="numberplanedit[customertype]" id="customertype"
+						form="numberplanedit"
+						{tip text="Select customer type" trigger="customertype"}>
+					<option value="">{trans("<!customer-type>— any —")}</option>
+					<option value="{$smarty.const.CTYPES_PRIVATE}"
+						{if isset($numberplanedit.customertype) && $numberplanedit.customertype == $smarty.const.CTYPES_PRIVATE} selected{/if}
+						>{$_CTYPES[$smarty.const.CTYPES_PRIVATE]}</option>
+					<option value="{$smarty.const.CTYPES_COMPANY}"
+						{if isset($numberplanedit.customertype) && $numberplanedit.customertype == $smarty.const.CTYPES_COMPANY} selected{/if}
+						>{$_CTYPES[$smarty.const.CTYPES_COMPANY]}</option>
+					<label>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="calendar"}
+			</td>
+			<td>
+				<strong>{trans("Validity period")}</strong>
+			</td>
+			<td>
+				{trans("from")}
+				<input type="text" name="numberplanedit[datefrom]"
+					value="{if $numberplanedit.datefrom}{$numberplanedit.datefrom}{/if}"
+					form="numberplanedit"
+					placeholder="{trans("yyyy/mm/dd")}"
+					{tip class="lms-ui-date lms-ui-date-unix" trigger="datefrom"}
+					size="10">
+				{trans("to")}
+				<input type="text" name="numberplanedit[dateto]"
+					value="{if $numberplanedit.dateto}{$numberplanedit.dateto}{/if}"
+					form="numberplanedit"
+					placeholder="{trans("yyyy/mm/dd")}"
+					{tip class="lms-ui-date lms-ui-date-unix" trigger="dateto"}
+					size="10">
+			</td>
+		</tr>
+		<tr>
+			<td>
 				{icon name="option"}
-			</TD>
-			<TD class="bold nobr">
-				<label for="numberplanedit_isdefault">{trans("Default:")}</label>
-			</TD>
-			<TD>
+			</td>
+			<td class="nobr">
+				<label for="numberplanedit_isdefault">
+					<strong>{trans("Default")}</strong>
+				</label>
+			</td>
+			<td>
 				<input type="checkbox" name="numberplanedit[isdefault]" id="numberplanedit_isdefault"
+					form="numberplanedit"
 					value="1" {tip text="Check box to make this plan a default for selected document type"}
 					{if $numberplanedit.isdefault} checked{/if}>
-			</TD>
-		</TR>
-		<TR>
-			<TD class="lms-ui-box-buttons" colspan="3">
-				{button type="submit" icon="save" label="Submit"}
+			</td>
+		</tr>
+		<tr>
+			<td class="lms-ui-box-buttons" colspan="3">
+				{button type="submit" icon="save" label="Submit" form="numberplanedit"}
 				{button icon="cancel" label="Cancel" href="?m=numberplanlist"}
-			</TD>
-		</TR>
-    </tbody>
+			</td>
+		</tr>
+	</tbody>
 </table>
 <script>
 
 	$(function() {
-		$('form[name="numberplanedit"] [name="numberplanedit[template]"]').focus();
+		$('[name="numberplanedit[template]"]').focus();
 
 		$('#divisions').change(function() {
 			$.ajax('?m={$layout.module}&op=updateusers&api=1', {

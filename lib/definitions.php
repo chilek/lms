@@ -318,6 +318,7 @@ define('RT_SOURCE_MESSCHAT', 5);
 define('RT_SOURCE_PAPER', 6);
 define('RT_SOURCE_SMS', 7);
 define('RT_SOURCE_CALLCENTER', 8);
+define('RT_SOURCE_SIDUSIS', 9);
 
 $RT_SOURCES = array(
     RT_SOURCE_UNKNOWN => 'unknown/other',
@@ -329,6 +330,7 @@ $RT_SOURCES = array(
     RT_SOURCE_PAPER => 'complaint',
     RT_SOURCE_SMS => 'SMS',
     RT_SOURCE_CALLCENTER => 'call center',
+    RT_SOURCE_SIDUSIS => 'SIDUSIS',
 );
 
 //Helpdesk ticket priority
@@ -1162,6 +1164,30 @@ $LINKTECHNOLOGIES = array(
     ),
 );
 
+$allowed_link_technologies = trim(ConfigHelper::getConfig('phpui.allowed_link_technologies', '', true));
+if (strlen($allowed_link_technologies)) {
+    $allowed_link_technologies = array_filter(
+        preg_split("/([\s]+|[\s]*,[\s]*)/", $allowed_link_technologies, -1, PREG_SPLIT_NO_EMPTY),
+        function ($link_technology) {
+            return ctype_digit($link_technology);
+        }
+    );
+    if (!empty($allowed_link_technologies)) {
+        $allowed_link_technologies = array_flip($allowed_link_technologies);
+        foreach ($LINKTECHNOLOGIES as $linktype => &$linktechnologies) {
+            foreach ($linktechnologies as $linktechnology_idx => $linktechnology) {
+                if (!isset($allowed_link_technologies[$linktechnology_idx])) {
+                    unset($linktechnologies[$linktechnology_idx]);
+                }
+            }
+            if (empty($linktechnologies)) {
+                unset($LINKTECHNOLOGIES[$linktype]);
+            }
+        }
+        unset($linktechnologies);
+    }
+}
+
 $SIDUSIS_LINKTECHNOLOGIES = array(
     LINKTYPE_WIRE => array(
         1 => 'ADSL',
@@ -1218,6 +1244,42 @@ $SIDUSIS_LINKTECHNOLOGIES = array(
         224 => 'EoC',
     ),
 );
+
+$allowed_link_technologies = trim(ConfigHelper::getConfig(
+    'uke.sidusis_allowed_link_technologies',
+    ConfigHelper::getConfig(
+        'sidusis.allowed_link_technologies',
+        ConfigHelper::getConfig(
+            'phpui.allowed_link_technologies',
+            '',
+            true
+        ),
+        true
+    ),
+    true
+));
+if (strlen($allowed_link_technologies)) {
+    $allowed_link_technologies = array_filter(
+        preg_split("/([\s]+|[\s]*,[\s]*)/", $allowed_link_technologies, -1, PREG_SPLIT_NO_EMPTY),
+        function ($link_technology) {
+            return ctype_digit($link_technology);
+        }
+    );
+    if (!empty($allowed_link_technologies)) {
+        $allowed_link_technologies = array_flip($allowed_link_technologies);
+        foreach ($SIDUSIS_LINKTECHNOLOGIES as $linktype => &$linktechnologies) {
+            foreach ($linktechnologies as $linktechnology_idx => $linktechnology) {
+                if (!isset($allowed_link_technologies[$linktechnology_idx])) {
+                    unset($linktechnologies[$linktechnology_idx]);
+                }
+            }
+            if (empty($linktechnologies)) {
+                unset($SIDUSIS_LINKTECHNOLOGIES[$linktype]);
+            }
+        }
+        unset($linktechnologies);
+    }
+}
 
 $LINKSPEEDS = array(
     10000       => trans('10Mbit/s'),
@@ -1292,9 +1354,9 @@ $NETELEMENTTYPEGROUPS = array(
         12 => true,
         3 => true,
         13 => true,
+        10 => true,
     ),
     trans('infrastructure elements (PIT)') => array(
-        10 => true,
         17 => true,
         9 => true,
         20 => true,
@@ -1367,52 +1429,58 @@ define('EVENT_VACATION', 6);
 define('EVENT_DUTY', 7);
 define('EVENT_PHONE', 8);
 define('EVENT_TV', 9);
+define('EVENT_TECHNICAL_VERIFICATION', 10);
 
 $EVENTTYPES = array(
     EVENT_OTHER => array(
-        'label' => trans('other'),
+        'label' => 'other',
         'style' => 'background-color: gray; color: white;',
         'alias' => 'other',
     ),
     EVENT_NETWORK => array(
-        'label' => trans('network'),
+        'label' => 'network',
         'style' => 'background-color: blue; color: white;',
         'alias' => 'network',
     ),
     EVENT_SERVICE => array(
-        'label' => trans('service<!event>'),
+        'label' => 'service<!event>',
         'style' => 'background-color: red; color: white;',
         'alias' => 'service',
     ),
     EVENT_INSTALLATION => array(
-        'label' => trans('installation'),
+        'label' => 'installation',
         'style' => 'background-color: green; color: white;',
         'alias'=> 'installation',
     ),
     EVENT_MEETING => array(
-        'label' => trans('meeting'),
+        'label' => 'meeting',
         'style' => 'background-color: gold; color: black;',
         'alias' => 'meeting',
     ),
     EVENT_VACATION => array(
-        'label' => trans('vacation'),
+        'label' => 'vacation',
         'style' => 'background-color: white; color: black;',
         'alias' => 'vacation',
     ),
     EVENT_DUTY => array(
-        'label' => trans('duty'),
+        'label' => 'duty',
         'style' => 'background-color: brown; color: white;',
         'alias' => 'duty',
     ),
     EVENT_PHONE => array(
-        'label' => trans('phone'),
+        'label' => 'phone',
         'style' => 'background-color: yellow; color: black;',
         'alias' => 'phone',
     ),
     EVENT_TV => array(
-        'label' => trans('tv'),
+        'label' => 'tv',
         'style' => 'background-color: greenyellow; color: blue;',
         'alias' => 'tv',
+    ),
+    EVENT_TECHNICAL_VERIFICATION => array(
+        'label' => 'technical verification',
+        'style' => 'background-color: #30D5C8; color: black;',
+        'alias' => 'technical_verification',
     ),
 );
 

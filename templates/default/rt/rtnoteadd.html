@@ -2,9 +2,9 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!-- $Id$ -->
-{$hide_disabled_users = ConfigHelper::checkConfig('rt.hide_disabled_users', ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users'))}
-{$hide_deleted_users = ConfigHelper::checkConfig('rt.hide_deleted_users', ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users'))}
 {$xajax}
+{include file="rt/rtticketshared.html"}
+
 <h1>{$layout.pagetitle}</h1>
 <form method="POST" name="note" id="note-form" action="?m=rtnoteadd">
 	<input type="hidden" name="note[inreplyto]" value ="{$note.inreplyto|default:"0"}">
@@ -159,9 +159,8 @@
 				{trans("Queue")}
 			</td>
 			<td>
-				<select size="1" name="note[queueid]" form="note-form"
-					{tip text="Select queue" trigger="queue" class="lms-ui-advanced-select"}
-					onchange="xajax_queue_changed($(this).val(), $('#rtverifiers select').val())">
+				<select size="1" name="note[queueid]" form="note-form" id="queue-selection"
+					{tip text="Select queue" trigger="queue" class="lms-ui-advanced-select"}>
 					{foreach $queuelist as $item}
 					<option value="{$item.id}"
 						{if $item.id == $note.queueid} selected{/if}>{$item.name}</option>
@@ -175,7 +174,7 @@
 				{trans("Owner")}
 			</td>
 			<td>
-				<select size="1" name="note[owner]" form="note-form"
+				<select size="1" name="note[owner]" form="note-form" id="owner"
 					{tip text="Select user" trigger="owner" class="lms-ui-advanced-select"}>
 					<option value="0">{trans("— select user —")}</option>
 					{foreach $userlist as $user}
@@ -278,7 +277,7 @@
 
 {include file="rt/rtticketmessagesbox.html"}
 
-<SCRIPT>
+<script>
 
 	$(function() {
 		$('[name="note[body]"]').focus();
@@ -291,36 +290,6 @@
 			}
 		}).change();
 
-		$('#resolve').change(function() {
-			var stateelem = $('#state');
-			if ($(this).prop('checked')) {
-				$(this).data('prev-state', stateelem.val());
-				stateelem.val({$smarty.const.RT_RESOLVED});
-			} else {
-				var prev_state = $(this).data('prev-state');
-				if (prev_state) {
-					stateelem.val(prev_state);
-				}
-			}
-		});
-
-		$('#state').change(function() {
-			$('#resolve').prop('checked', $(this).val() == {$smarty.const.RT_RESOLVED});
-		});
-
-		$('[name="note[owner]"]').change(function() {
-			$('#assign-to-me').prop('checked', false);
-		});
-
-		$('#assign-to-me').change(function() {
-			var select = $('[name="note[owner]"]');
-			if ($(this).prop('checked')) {
-				select.val($(this).attr('data-old-userid', select.val()).attr('data-userid'));
-			} else {
-				select.val($(this).attr('data-old-userid'));
-			}
-		});
-
 		$('body').on('change', '.template-selector', function() {
 			var selected = $('option:selected', this);
 			if (parseInt(selected.val()) == 0) {
@@ -330,5 +299,6 @@
 		});
 	});
 
-</SCRIPT>
+</script>
+
 {/block}

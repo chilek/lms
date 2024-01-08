@@ -34,6 +34,21 @@ if (!class_exists('ZipArchive')) {
 //$old_locale = setlocale(LC_NUMERIC, '0');
 setlocale(LC_NUMERIC, 'C');
 
+function sanitizeTechnologyName($technologyName)
+{
+    static $dash_character = null;
+
+    if (!isset($dash_character)) {
+        $dash_character = isset($_POST['dash-character']) && $_POST['dash-character'] == 'pit' ? 1 : 2;
+    }
+
+    if ($dash_character == 1) {
+        return $technologyName;
+    } else {
+        return str_replace('–', '-', $technologyName);
+    }
+}
+
 function technologyName($technology)
 {
     static $LINKTECHNOLOGIES = null;
@@ -43,11 +58,11 @@ function technologyName($technology)
     }
 
     if ($technology < 100) {
-        return $LINKTECHNOLOGIES[LINKTYPE_WIRE][$technology];
+        return sanitizeTechnologyName($LINKTECHNOLOGIES[LINKTYPE_WIRE][$technology]);
     } elseif ($technology < 200) {
-        return $LINKTECHNOLOGIES[LINKTYPE_WIRELESS][$technology];
+        return sanitizeTechnologyName($LINKTECHNOLOGIES[LINKTYPE_WIRELESS][$technology]);
     } else {
-        return $LINKTECHNOLOGIES[LINKTYPE_FIBER][$technology];
+        return sanitizeTechnologyName($LINKTECHNOLOGIES[LINKTYPE_FIBER][$technology]);
     }
 }
 
@@ -221,6 +236,7 @@ function isMobileTechnology($technology)
 function routeTypeName($routetype)
 {
     static $route_types = null;
+    static $report_other_duct_type_as = null;
 
     if (!isset($route_types)) {
         $route_types = array(
@@ -230,12 +246,19 @@ function routeTypeName($routetype)
             4 => 'Linia kablowa nadziemna na podbudowie słupowej telekomunikacyjnej',
             5 => 'Linia kablowa nadziemna na podbudowie elektroenergetycznej, oświetleniowej lub trakcyjnej',
         );
+
+        $report_other_duct_type_as = intval($_POST['report-other-duct-type-as']);
+        if (isset($route_types[$report_other_duct_type_as])) {
+            $report_other_duct_type_as = $route_types[$report_other_duct_type_as];
+        } else {
+            $report_other_duct_type_as = 'Inna określona w narzędziu teleinformatycznym';
+        }
     }
 
     if (isset($route_types[$routetype])) {
         return $route_types[$routetype];
     } else {
-        return 'Inna określona w narzędziu teleinformatycznym';
+        return $report_other_duct_type_as;
     }
 }
 
@@ -311,7 +334,7 @@ function radioTransmissionNameByTechnology($technology)
  */
 function networkSpeedCode($speed)
 {
-    $speed = round($speed / 1000, 2);
+    $speed = round($speed / $GLOBALS['speed_unit_type'], 2);
 
     if ($speed <= 2) {
         return '01';
@@ -382,6 +405,10 @@ $customers = array();
 
 $report_type = isset($_POST['report-type']) && $_POST['report-type'] == 'customer-services' ? 'customer-services' : 'full';
 
+$speed_unit_type = intval(ConfigHelper::getConfig('phpui.speed_unit_type', 1000));
+if (!$speed_unit_type) {
+    $speed_unit_type = 1000;
+}
 $root_netdevice_id = intval(ConfigHelper::getConfig('phpui.root_netdevice_id'));
 
 if ($report_type == 'full' && empty($root_netdevice_id)) {
@@ -395,7 +422,10 @@ $summary_only = isset($_POST['summaryonly']);
 $validate_teryt = isset($_POST['validate-teryt']);
 $validate_building_numbers = isset($_POST['validate-building-numbers']);
 $validate_gps = isset($_POST['validate-gps']);
+$validate_wireless_links = isset($_POST['validate-wireless-links']);
+$complete_breakdown_points = isset($_POST['complete-breakdown-points']);
 $detect_loops = isset($_POST['detectloops']);
+$report_elements_outside_network_infrastructure = isset($_POST['report-elements-outside-network-infrastructure']);
 
 $pit_ethernet_technologies = array();
 
@@ -481,6 +511,7 @@ if ($report_type == 'full') {
             nn.longitude, nn.latitude,
             a.city_id as location_city, a.street_id as location_street, a.house as location_house, a.flat as location_flat,
             a.city as location_city_name, a.street as location_street_name,
+            a.zip AS location_zip,
             (CASE WHEN (a.flat IS NULL OR a.flat = '') THEN a.house ELSE " . $DB->Concat('a.house', "'/'", 'a.flat') . " END) AS address_budynek
         FROM netnodes nn
         LEFT JOIN addresses a ON nn.address_id = a.id
@@ -503,6 +534,7 @@ if ($report_type == 'full') {
             a.city AS location_city_name,
             a.street AS location_street_name,
             (CASE WHEN (a.flat IS NULL OR a.flat = '') THEN a.house ELSE " . $DB->Concat('a.house', "'/'", 'a.flat') . " END) AS address_budynek,
+            a.zip AS location_zip,
             COALESCE(t.passive, 1) AS passive,
             nd.name AS name
         FROM netdevices nd
@@ -617,9 +649,14 @@ if ($report_type == 'full') {
                 c.id AS customerid,
                 c.type AS customertype,
                 (CASE WHEN ndsrc.ownerid IS NULL THEN nl.src ELSE nl.dst END) AS operator_netdevid,
+                (CASE WHEN ndsrc.ownerid IS NULL THEN ndsrc.name ELSE nddst.name END) AS operator_netdevname,
                 (CASE WHEN ndsrc.ownerid IS NULL THEN ndsrc.status ELSE nddst.status END) AS operator_netdevstatus,
                 (CASE WHEN ndsrc.ownerid IS NULL THEN nddst.invprojectid ELSE ndsrc.invprojectid END) AS invprojectid,
                 (CASE WHEN ndsrc.ownerid IS NULL THEN nl.dst ELSE nl.src END) AS netdevid,
+                (CASE WHEN ndsrc.ownerid IS NULL THEN nddst.name ELSE ndsrc.name END) AS netdevname,
+                (CASE WHEN ndsrc.ownerid IS NULL THEN nddst.longitude ELSE ndsrc.longitude END) AS longitude,
+                (CASE WHEN ndsrc.ownerid IS NULL THEN nddst.latitude ELSE ndsrc.latitude END) AS latitude,
+                (CASE WHEN ndsrc.ownerid IS NULL THEN nddst.address_id ELSE ndsrc.address_id END) AS address_id,
                 (CASE WHEN ndsrc.ownerid IS NULL THEN adst.city_id ELSE asrc.city_id END) AS location_city,
                 (CASE WHEN ndsrc.ownerid IS NULL THEN adst.city ELSE asrc.city END) AS location_city_name,
                 (CASE WHEN ndsrc.ownerid IS NULL THEN adst.street_id ELSE asrc.street_id END) AS location_street,
@@ -755,6 +792,8 @@ $errors = array(
     'netnodes' => array(),
     'netdevices' => array(),
     'nodes' =>  array(),
+    'netlinks' => array(),
+    'flexibility-points' => array(),
 );
 
 if ($report_type == 'full') {
@@ -895,7 +934,7 @@ if ($report_type == 'full') {
                 $netnodename = mb_strtoupper($netnodename);
 
                 if (array_key_exists($netnodename, $netnodes)) {
-                    if (!in_array($netdevice['invproject'], $netnodes[$netnodename]['invproject'])) {
+                    if (strlen($netdevice['invproject']) && !in_array($netdevice['invproject'], $netnodes[$netnodename]['invproject'])) {
                         $netnodes[$netnodename]['invproject'][] = $netdevice['invproject'];
                     }
                 } else {
@@ -912,7 +951,7 @@ if ($report_type == 'full') {
                 }
 
                 $netnodes[$netnodename]['id'] = $netnodeid;
-                $netnodes[$netnodename]['invproject'] = array($projectname);
+                $netnodes[$netnodename]['invproject'] = strlen($projectname) ? array($projectname) : array();
                 $netnodes[$netnodename]['name'] = $netnodename;
 
                 if (array_key_exists($netdevice['netnodeid'], $real_netnodes)) {
@@ -924,6 +963,7 @@ if ($report_type == 'full') {
                     $netnodes[$netnodename]['location_street'] = $netnode['location_street'];
                     $netnodes[$netnodename]['location_street_name'] = $netnode['location_street_name'];
                     $netnodes[$netnodename]['location_house'] = $netnode['location_house'];
+                    $netnodes[$netnodename]['location_zip'] = $netnode['location_zip'];
                     $netnodes[$netnodename]['status'] = intval($netnode['status']);
                     $netnodes[$netnodename]['type'] = intval($netnode['type']);
                     $netnodes[$netnodename]['ownership'] = intval($netnode['ownership']);
@@ -998,6 +1038,7 @@ if ($report_type == 'full') {
                     $netnodes[$netnodename]['location_street'] = $netdevice['location_street'];
                     $netnodes[$netnodename]['location_street_name'] = $netdevice['location_street_name'];
                     $netnodes[$netnodename]['location_house'] = $netdevice['location_house'];
+                    $netnodes[$netnodename]['location_zip'] = $netdevice['location_zip'];
                     $netnodes[$netnodename]['status'] = 0;
                     $netnodes[$netnodename]['type'] = 8;
                     $netnodes[$netnodename]['ownership'] = 0;
@@ -1114,7 +1155,17 @@ if ($report_type == 'full') {
     }
 
     if ($netnodes) {
+        $pit_netnode_types = $NETELEMENTTYPEGROUPS[trans('infrastructure elements (PIT)')];
+
         foreach ($netnodes as $netnodename => &$netnode) {
+            if (!isset($pit_netnode_types[$netnode['type']])) {
+                $errors['netnodes'][] = array(
+                    'id' => $netnode['real_id'],
+                    'name' => $netnode['name'],
+                    'type' => true,
+                );
+            }
+
             // if teryt location is not set then try to get location address from network node name
             if (!isset($netnode['area_woj'])) {
                 $address = mb_split("[[:blank:]]+", $netnodename);
@@ -1167,6 +1218,7 @@ if ($report_type == 'full') {
                     n.linktype,
                     n.linktechnology,
                     a.city_id AS location_city,
+                    a.street AS location_street_name,
                     a.street_id AS location_street,
                     a.house AS location_house,
                     0 AS from_uni_link
@@ -1177,7 +1229,7 @@ if ($report_type == 'full') {
                     " . ($division ? ' AND c.divisionid = ' . $division : '') . "
                     AND a.city_id IS NOT NULL
                     AND n.netdev IN ?
-                GROUP BY n.linktype, n.linktechnology, a.city_id, a.street_id, a.house",
+                GROUP BY n.linktype, n.linktechnology, a.city_id, a.street, a.street_id, a.house",
                 array(
                     $netnode['netdevices'],
                 )
@@ -1233,13 +1285,20 @@ if ($report_type == 'full') {
 
                 $nodes = array();
                 $uni_nodes = array();
+                if (isset($uni_link)) {
+                    unset($uni_link);
+                }
                 if ($customer_resources_as_operator_resources || empty($range['from_uni_link'])) {
                     // get info about computers connected to network node
                     $nodes = $DB->GetAll(
                         "SELECT
                             na.nodeid,
+                            n.name AS nodename,
+                            n.longitude,
+                            n.latitude,
                             n.linktype,
-                            n.linktechnology, "
+                            n.linktechnology,
+                            n.address_id, "
                         . $DB->GroupConcat(
                             "DISTINCT (CASE t.type WHEN " . SERVICE_INTERNET . " THEN 'INT'
                                 WHEN " . SERVICE_PHONE . " THEN 'TEL'
@@ -1271,6 +1330,7 @@ if ($report_type == 'full') {
                             AND n.linktype = ?
                             AND n.linktechnology = ?
                             AND addr.city_id = ?
+                            " . (empty($range['location_street_name']) ? '' : ' AND addr.street = ' . $DB->Escape($range['location_street_name'])) . "
                             AND (addr.street_id = ? OR addr.street_id IS NULL)
                             AND addr.house = ?
                             AND a.commited = 1
@@ -1279,7 +1339,7 @@ if ($report_type == 'full') {
                             AND a.datefrom < ?NOW?
                             AND (a.dateto = 0 OR a.dateto > ?NOW?)
                             AND allsuspended.total IS NULL
-                        GROUP BY na.nodeid, n.linktype, n.linktechnology",
+                        GROUP BY na.nodeid, n.name, n.longitude, n.latitude, n.linktype, n.linktechnology, n.address_id",
                         array(
                             $range['linktype'],
                             $range['linktechnology'],
@@ -1299,9 +1359,11 @@ if ($report_type == 'full') {
 
                     $uni_nodes = $DB->GetAll(
                         "SELECT
-                            na.nodeid, "
+                            na.nodeid,
+                            n.name AS nodename, "
                         . $uni_link['type'] . " AS linktype, "
-                        . $uni_link['technology'] . " AS linktechnology, "
+                        . $uni_link['technology'] . " AS linktechnology,
+                            n.address_id, "
                         . $uni_link['operator_netdevid'] . " AS netdevid, "
                         . $DB->GroupConcat(
                             "DISTINCT (CASE t.type WHEN " . SERVICE_INTERNET . " THEN 'INT'
@@ -1337,7 +1399,7 @@ if ($report_type == 'full') {
                             AND a.datefrom < ?NOW?
                             AND (a.dateto = 0 OR a.dateto > ?NOW?)
                             AND allsuspended.total IS NULL
-                        GROUP BY na.nodeid, n.linktype, n.linktechnology",
+                        GROUP BY na.nodeid, n.name, n.linktype, n.linktechnology, n.address_id",
                         array(
                             $uni_link['nodes'],
                             array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE),
@@ -1368,15 +1430,27 @@ if ($report_type == 'full') {
                 );
 
                 foreach ($nodes as $node) {
-                    if (isset($nodecoords[$node['nodeid']])) {
+                    if (empty($node['netdevid'])) {
+                        if (isset($nodecoords[$node['nodeid']])) {
+                            if (!strlen($netrange['longitude'])) {
+                                $netrange['longitude'] = 0;
+                            }
+                            if (!strlen($netrange['latitude'])) {
+                                $netrange['latitude'] = 0;
+                            }
+                            $netrange['longitude'] += $nodecoords[$node['nodeid']]['longitude'];
+                            $netrange['latitude'] += $nodecoords[$node['nodeid']]['latitude'];
+                            $netrange['count']++;
+                        }
+                    } elseif (!empty($uni_link) && isset($uni_link['longitude'], $uni_link['latitude'])) {
                         if (!strlen($netrange['longitude'])) {
                             $netrange['longitude'] = 0;
                         }
                         if (!strlen($netrange['latitude'])) {
                             $netrange['latitude'] = 0;
                         }
-                        $netrange['longitude'] += $nodecoords[$node['nodeid']]['longitude'];
-                        $netrange['latitude'] += $nodecoords[$node['nodeid']]['latitude'];
+                        $netrange['longitude'] += $uni_link['longitude'];
+                        $netrange['latitude'] += $uni_link['latitude'];
                         $netrange['count']++;
                     }
                 }
@@ -1461,6 +1535,81 @@ if ($report_type == 'full') {
                         $netnode['ranges'][$range_key] = array_merge($range, $range_access_props);
                     }
                     $netnode['ranges'][$range_key]['count']++;
+
+                    if (!strlen($range['terc']) || !strlen($range['simc']) || !strlen($range['building'])) {
+                        if (empty($node['netdevid'])) {
+                            $error = array(
+                                'id' => $node['nodeid'],
+                                'name' => $node['nodename'],
+                            );
+                            if (empty($node['address_id'])) {
+                                $error['address_id'] = true;
+                            } else {
+                                if (!strlen($range['terc'])) {
+                                    $error['terc'] = true;
+                                }
+                                if (!strlen($range['simc'])) {
+                                    $error['simc'] = true;
+                                }
+                                if (!strlen($range['building'])) {
+                                    $error['location_house'] = true;
+                                }
+                            }
+                            $errors['nodes'][] = $error;
+                        } elseif (!empty($uni_link)) {
+                            $error = array(
+                                'id' => $uni_link['netdevid'],
+                                'name' => $uni_link['netdevname'],
+                                'customerid' => $uni_link['customerid'],
+                            );
+                            if (empty($uni_link['address_id'])) {
+                                $error['address_id'] = true;
+                            } else {
+                                if (!strlen($range['terc'])) {
+                                    $error['terc'] = true;
+                                }
+                                if (!strlen($range['simc'])) {
+                                    $error['simc'] = true;
+                                }
+                                if (!strlen($range['building'])) {
+                                    $error['location_house'] = true;
+                                }
+                            }
+                            $errors['netdevices'][] = $error;
+                        }
+                    }
+
+                    if (empty($node['netdevid'])) {
+                        if (empty($node['longitude']) || empty($node['latitude'])) {
+                            $errors['nodes'][] = array(
+                                'id' => $node['nodeid'],
+                                'name' => $node['nodename'],
+                                'gps' => true,
+                            );
+                        }
+                    } elseif (!empty($uni_link) && (empty($uni_link['longitude']) || empty($uni_link['latitude']))) {
+                        $errors['netdevices'][] = array(
+                            'id' => $uni_link['netdevid'],
+                            'name' => $uni_link['netdevname'],
+                            'customerid' => $uni_link['customerid'],
+                            'gps' => true,
+                        );
+                    } elseif (empty($range['longitude']) || empty($range['latitude'])) {
+                        if (empty($node['netdevid'])) {
+                            $errors['nodes'][] = array(
+                                'id' => $node['nodeid'],
+                                'name' => $node['nodename'],
+                                'gps' => true,
+                            );
+                        } elseif (!empty($uni_link)) {
+                            $errors['netdevices'][] = array(
+                                'id' => $uni_link['netdevid'],
+                                'name' => $uni_link['netdevname'],
+                                'customerid' => $uni_link['customerid'],
+                                'gps' => true,
+                            );
+                        }
+                    }
                 }
 
                 $netnode['technologies'][$range['technology']] = $range['technology'];
@@ -1476,6 +1625,7 @@ if ($report_type == 'full') {
             n.name,
             n.linktype,
             n.linktechnology,
+            n.address_id,
             addr.city_id AS location_city,
             addr.street_id AS location_street,
             addr.house AS location_house, "
@@ -1519,6 +1669,7 @@ if ($report_type == 'full') {
             n.name,
             n.linktype,
             n.linktechnology,
+            n.address_id,
             addr.city_id,
             addr.street_id,
             addr.house",
@@ -1580,14 +1731,18 @@ if ($report_type == 'full') {
                 'id' => $node['nodeid'],
                 'name' => $node['name'],
             );
-            if (!isset($teryt['area_terc'])) {
-                $error['terc'] = true;
-            }
-            if (!isset($teryt['area_simc'])) {
-                $error['simc'] = true;
-            }
-            if (!isset($node['location_house']) || !strlen($node['location_house'])) {
-                $error['location_house'] = true;
+            if (empty($node['address_id'])) {
+                $error['address_id'] = true;
+            } else {
+                if (!isset($teryt['area_terc'])) {
+                    $error['terc'] = true;
+                }
+                if (!isset($teryt['area_simc'])) {
+                    $error['simc'] = true;
+                }
+                if (!isset($node['location_house']) || !strlen($node['location_house'])) {
+                    $error['location_house'] = true;
+                }
             }
             $errors['nodes'][] = $error;
         }
@@ -1844,10 +1999,220 @@ if ($report_type == 'full') {
     }
 
     $processed_netnodes = analyze_network_tree($root_netnode_name, $root_netdevice_id, null, false, $root_netnode_name, array(), $netnodes, $netdevices, $all_netlinks);
+
+    foreach ($netnodes as $netnodename => $netnode) {
+        if ($netnode['mode'] != 2 && !isset($netnode['parent_netnodename'])
+            && (isset($processed_netnodes[$netnodename]) || $report_elements_outside_network_infrastructure)) {
+            $errors['flexibility-points'][] = array(
+                'name' => $netnodename,
+                'location' => $netnode['location_street_name'] . ' ' . $netnode['location_house'] . ', '
+                    . (strlen($netnode['location_zip']) ? $netnode['location_zip'] . ' ' : '')
+                    . $netnode['location_city_name'],
+            );
+        }
+    }
+}
+
+$tmp_netlinkpoints = $DB->GetAll(
+    'SELECT *
+    FROM netlinkpoints
+    ORDER BY id'
+);
+if (empty($tmp_netlinkpoints)) {
+    $tmp_netlinkpoints = array();
+}
+$netlinkpoints = array();
+foreach ($tmp_netlinkpoints as $netlinkpoint) {
+    $netlinkid = $netlinkpoint['netlinkid'];
+    $netlinkpointid = $netlinkpoint['id'];
+
+    if (!isset($netlinkpoints[$netlinkid])) {
+        $netlinkpoints[$netlinkid] = array();
+    }
+
+    $netlinkpoints[$netlinkid][$netlinkpointid] = $netlinkpoint;
+}
+unset($tmp_netlinkpoints);
+
+if ($report_type == 'full') {
+    $po_buffer = 'po01_id_podmiotu_obcego,po02_nip_pl,po03_nip_nie_pl' . EOL;
+    foreach ($foreigners as $name => $foreigner) {
+        if (isset($used_foreigners[$name])) {
+            $data = array(
+                // alternatively $foreingerid can be used
+                'po01_id_podmiotu_obcego' => 'PO-' . $foreigner,
+                'po02_nip_pil' => '',
+                'po03_nip_nie_pl' => '',
+            );
+            $po_buffer .= to_csv($data) . EOL;
+        }
+    }
+
+    //prepare info about network links (only between different network nodes)
+    $processed_netlinks = array();
+    $netlinks = array();
+    if ($netdevices) {
+        foreach ($netdevices as $netdevice) {
+            $ndnetlinks = $DB->GetAll(
+                "SELECT
+                    nl.id,
+                    nl.src,
+                    nl.dst,
+                    nl.type,
+                    nl.speed,
+                    nl.technology,
+                    nl.routetype,
+                    nl.linecount,
+                    (CASE src WHEN ? THEN (CASE WHEN srcrs.license IS NULL THEN dstrs.license ELSE srcrs.license END)
+                        ELSE (CASE WHEN dstrs.license IS NULL THEN srcrs.license ELSE dstrs.license END) END) AS license,
+                    (CASE src WHEN ? THEN (CASE WHEN srcrs.frequency IS NULL THEN dstrs.frequency ELSE srcrs.frequency END)
+                        ELSE (CASE WHEN dstrs.frequency IS NULL THEN srcrs.frequency ELSE dstrs.frequency END) END) AS frequency
+                FROM netlinks nl
+                JOIN netdevices ndsrc ON ndsrc.id = nl.src
+                JOIN netdevices nddst ON nddst.id = nl.dst
+                LEFT JOIN netradiosectors srcrs ON srcrs.id = nl.srcradiosector
+                LEFT JOIN netradiosectors dstrs ON dstrs.id = nl.dstradiosector
+                WHERE (src = ?" . ($customer_resources_as_operator_resources ? '' : ' AND nddst.ownerid IS NULL') . ")
+                    OR (dst = ?" . ($customer_resources_as_operator_resources ? '' : ' AND ndsrc.ownerid IS NULL') . ")",
+                array(
+                    $netdevice['id'],
+                    $netdevice['id'],
+                    $netdevice['id'],
+                    $netdevice['id'],
+                )
+            );
+            if ($ndnetlinks) {
+                foreach ($ndnetlinks as $netlink) {
+                    $netdevnetnodename = $netdevs[$netdevice['id']];
+                    $netdevnetnode = $netnodes[$netdevnetnodename];
+                    $srcnetnodename = $netdevs[$netlink['src']];
+                    $dstnetnodename = $netdevs[$netlink['dst']];
+                    $srcnetdevice = $netdevices[$netlink['src']];
+                    $dstnetdevice = $netdevices[$netlink['dst']];
+                    $srcnetnode = $netnodes[$srcnetnodename];
+                    $dstnetnode = $netnodes[$dstnetnodename];
+                    $netnodeids = array($netnodes[$srcnetnodename]['id'], $netnodes[$dstnetnodename]['id']);
+
+                    sort($netnodeids);
+
+                    $netnodelinkid = implode('_', $netnodeids);
+
+                    if (!isset($processed_netlinks[$netnodelinkid])) {
+                        $linkspeed = $netlink['speed'];
+                        $speed = floor($linkspeed / $speed_unit_type);
+
+                        $othernetnode = null;
+                        $othernetdevice = null;
+
+                        if ($netlink['src'] == $netdevice['id']) {
+                            if ($netdevnetnodename != $dstnetnodename) {
+                                if ($srcnetdevice['invproject'] == $dstnetdevice['invproject']
+                                    || strlen($srcnetdevice['invproject']) || strlen($dstnetdevice['invproject'])) {
+                                    $invproject = $srcnetdevice['invproject'];
+                                } else {
+                                    $invproject = '';
+                                }
+                                if ($srcnetdevice['status'] == $dstnetdevice['status']) {
+                                    $status = $srcnetdevice['status'];
+                                } elseif ($srcnetdevice['status'] == 2 || $dstnetdevice['status'] == 2) {
+                                    $status = 2;
+                                } elseif ($srcnetdevice['status'] == 1 || $dstnetdevice['status'] == 1) {
+                                    $status = 1;
+                                }
+
+                                $processed_netlinks[$netnodelinkid] = true;
+
+                                $foreign = $netnodes[$netdevnetnodename]['ownership'] == 2 && $dstnetnode['ownership'] < 2
+                                    || $netnodes[$netdevnetnodename]['ownership'] < 2 && $dstnetnode['ownership'] == 2;
+
+                                $netlinks[] = array(
+                                    'id' => $netlink['id'],
+                                    'type' => $netlink['type'],
+                                    'speed' => $speed,
+                                    'technology' => $netlink['technology'],
+                                    'src' => $netdevnetnodename,
+                                    'dst' => $dstnetnodename,
+                                    'license' => isset($netlink['license']) ? $netlink['license'] : '',
+                                    'frequency' => $netlink['frequency'],
+                                    'routetype' => $netlink['routetype'],
+                                    'linecount' => $netlink['linecount'],
+                                    'invproject' => $invproject,
+                                    'status' => $status,
+                                    'foreign' => $foreign,
+                                );
+
+                                $othernetnode = $dstnetnode;
+                                $othernetdevice = $dstnetdevice;
+                            }
+                        } else if ($netdevnetnodename != $srcnetnodename) {
+                            if ($srcnetdevice['invproject'] == $dstnetdevice['invproject']
+                                || strlen($srcnetdevice['invproject']) || strlen($dstnetdevice['invproject'])) {
+                                $invproject = $srcnetdevice['invproject'];
+                            } else {
+                                $invproject = '';
+                            }
+                            if ($srcnetdevice['status'] == $dstnetdevice['status']) {
+                                $status = $netdevices[$netlink['src']]['status'];
+                            } elseif ($srcnetdevice['status'] == 2 || $dstnetdevice['status'] == 2) {
+                                $status = 2;
+                            } elseif ($srcnetdevice['status'] == 1 || $dstnetdevice['status'] == 1) {
+                                $status = 1;
+                            }
+
+                            $processed_netlinks[$netnodelinkid] = true;
+
+                            $foreign = $netnodes[$netdevnetnodename]['ownership'] == 2 && $dstnetnode['ownership'] < 2
+                                || $netnodes[$netdevnetnodename]['ownership'] < 2 && $dstnetnode['ownership'] == 2;
+
+                            $netlinks[] = array(
+                                'id' => $netlink['id'],
+                                'type' => $netlink['type'],
+                                'speed' => $speed,
+                                'technology' => $netlink['technology'],
+                                'src' => $netdevnetnodename,
+                                'dst' => $srcnetnodename,
+                                'license' => isset($netlink['license']) ? $netlink['license'] : '',
+                                'frequency' => $netlink['frequency'],
+                                'routetype' => $netlink['routetype'],
+                                'linecount' => $netlink['linecount'],
+                                'invproject' => $invproject,
+                                'status' => $status,
+                                'foreign' => $foreign,
+                            );
+
+                            $othernetnode = $srcnetnode;
+                            $othernetdevice = $srcnetdevice;
+                        }
+
+                        if ($validate_wireless_links && isset($othernetnode) && $netlink['type'] == LINKTYPE_WIRELESS) {
+                            $error = array(
+                                'srcid' => $netdevice['id'],
+                                'srcname' => $netdevice['name'],
+                                'srcnetnode' => $netdevnetnode,
+                                'dstid' => $othernetdevice['id'],
+                                'dstname' => $othernetdevice['name'],
+                                'dstnetnode' => $othernetnode,
+                            );
+                            if ($netdevnetnode['mode'] == 1) {
+                                $error['srcerror'] = true;
+                            }
+                            if ($othernetnode['mode'] == 1) {
+                                $error['dsterror'] = true;
+                            }
+                            if (isset($error['srcerror']) || isset($error['dsterror'])) {
+                                $errors['netlinks'][] = $error;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 $stop = false;
-foreach (array('netnodes', 'netdevices', 'nodes') as $errorous_resource) {
+
+foreach (array('netnodes', 'netdevices', 'nodes', 'netlinks', 'flexibility-points') as $errorous_resource) {
     if (!empty($errors[$errorous_resource])) {
         foreach ($errors[$errorous_resource] as $error) {
             if ($errorous_resource == 'netnodes') {
@@ -1857,7 +2222,7 @@ foreach (array('netnodes', 'netdevices', 'nodes') as $errorous_resource) {
                 $error_message = '<!uke-pit>Network node "$a" (#$b) has missed properties: $c';
                 $url_prefix = '?m=netnodeinfo&id=';
             } elseif ($errorous_resource == 'netdevices') {
-                if (!isset($processed_netnodes[$netdevs[$error['id']]])) {
+                if (empty($error['customerid']) && !isset($processed_netnodes[$netdevs[$error['id']]])) {
                     continue;
                 }
                 $error_message = '<!uke-pit>Network device "$a" (#$b) has missed properties: $c';
@@ -1865,14 +2230,53 @@ foreach (array('netnodes', 'netdevices', 'nodes') as $errorous_resource) {
             } elseif ($errorous_resource == 'nodes') {
                 $error_message = '<!uke-pit>Node "$a" (#$b) has missed properties: $c';
                 $url_prefix = '?m=nodeinfo&id=';
+            } elseif ($errorous_resource == 'netlinks') {
+                $error_message = '<!uke-pit>Wireless link can connect only network nodes, but it connects network device "$a" (#$b) located in $c "$d" with network device "$e" (#$f) located in $g "$h"';
+
+                $srcnetnode = $error['srcnetnode'];
+                $dstnetnode = $error['dstnetnode'];
+
+                echo trans(
+                    $error_message,
+                    '<a href="' . '?m=netdevinfo&id=' . $error['srcid'] . '">' . $error['srcname'] . '</a>',
+                    $error['srcid'],
+                    trans(isset($error['srcerror']) ? '<!uke-pit>flexibility point' : '<!uke-pit>network node'),
+                    (isset($srcnetnode['real_id']) ? '<a href="?m=netnodeinfo&id=' . $srcnetnode['real_id'] . '">' : '')
+                        . (isset($error['srcerror']) ? 'P' : 'W') . '-' . $srcnetnode['name']
+                        . (isset($srcnetnode['real_id']) ? '</a>' : ''),
+                    '<a href="' . '?m=netdevinfo&id=' . $error['dstid'] . '">' . $error['dstname'] . '</a>',
+                    $error['dstid'],
+                    trans(isset($error['dsterror']) ? '<!uke-pit>flexibility point' : '<!uke-pit>network node'),
+                    (isset($dstnetnode['real_id']) ? '<a href="?m=netnodeinfo&id=' . $dstnetnode['real_id'] . '">' : '')
+                        . (isset($error['dsterror']) ? 'P' : 'W') . '-' . $dstnetnode['name']
+                        . (isset($dstnetnode['real_id']) ? '</a>' : '')
+                ) . '<br>';
+
+                $stop = true;
+
+                continue;
+            } elseif ($errorous_resource == 'flexibility-points') {
+                $error_message = '<!uke-pit>Flexibility point \'$a\' with location \'$b\' does not have defined feeding network node!';
+
+                echo trans(
+                    $error_message,
+                    'P-' . (strlen($error['name']) ? $error['name'] : 'BEZ-NAZWY'),
+                    $error['location']
+                ) . '<br>';
+
+                $stop = true;
             }
             $missed_properties = array();
             if ($validate_teryt) {
-                if (isset($error['terc'])) {
-                    $missed_properties[] = trans('<!uke-pit>TERC');
-                }
-                if (isset($error['simc'])) {
-                    $missed_properties[] = trans('<!uke-pit>SIMC');
+                if (($errorous_resource == 'nodes' || $errorous_resource == 'netdevices') && !empty($error['address_id'])) {
+                    $missed_properties[] = trans('<!uke-pit>explicitly assigned address');
+                } else {
+                    if (isset($error['terc'])) {
+                        $missed_properties[] = trans('<!uke-pit>TERC');
+                    }
+                    if (isset($error['simc'])) {
+                        $missed_properties[] = trans('<!uke-pit>SIMC');
+                    }
                 }
             }
             if ($validate_building_numbers && isset($error['location_building'])) {
@@ -1881,6 +2285,15 @@ foreach (array('netnodes', 'netdevices', 'nodes') as $errorous_resource) {
             if ($validate_gps && isset($error['gps'])) {
                 $missed_properties[] = trans('<!uke-pit>GPS coordinates');
             }
+
+            switch ($errorous_resource) {
+                case 'netnodes':
+                    if (isset($error['type'])) {
+                        $missed_properties[] = trans('<!uke-pit>network node type out of allowed values');
+                    }
+                    break;
+            }
+
             if (empty($missed_properties)) {
                 continue;
             }
@@ -1934,6 +2347,10 @@ if ($report_type == 'full') {
 
     foreach ($netnodes as $netnodename => &$netnode) {
         if (!$summary_only) {
+            if (!isset($processed_netnodes[$netnodename]) && !$report_elements_outside_network_infrastructure) {
+                continue;
+            }
+
             $media = array();
             foreach ($netnode['technologies'] as $technology) {
                 $mediaCode = mediaCodeByTechnology($technology);
@@ -2097,7 +2514,7 @@ if ($report_type == 'full') {
                             $service_name[] = 'TEL';
                         }
 
-                        $service_name[] = round($range['downstream'] / 1000);
+                        $service_name[] = round($range['downstream'] / $speed_unit_type);
 
                         if (isset($range_keys[$range_key])) {
                             $range_keys[$range_key]++;
@@ -2210,7 +2627,7 @@ if ($report_type == 'full') {
                 $service_name[] = 'TEL';
             }
 
-            $service_name[] = round($range['downstream'] / 1000);
+            $service_name[] = round($range['downstream'] / $speed_unit_type);
 
             $data = array(
                 'ua01_id_punktu_adresowego' => $aggregate_customer_services ? $range_key : ($range_key + 1),
@@ -2245,168 +2662,7 @@ if ($report_type == 'full') {
 unset($teryt_cities);
 unset($teryt_streets);
 
-$tmp_netlinkpoints = $DB->GetAll(
-    'SELECT *
-    FROM netlinkpoints
-    ORDER BY id'
-);
-if (empty($tmp_netlinkpoints)) {
-    $tmp_netlinkpoints = array();
-}
-$netlinkpoints = array();
-foreach ($tmp_netlinkpoints as $netlinkpoint) {
-    $netlinkid = $netlinkpoint['netlinkid'];
-    $netlinkpointid = $netlinkpoint['id'];
-
-    if (!isset($netlinkpoints[$netlinkid])) {
-        $netlinkpoints[$netlinkid] = array();
-    }
-
-    $netlinkpoints[$netlinkid][$netlinkpointid] = $netlinkpoint;
-}
-unset($tmp_netlinkpoints);
-
 if ($report_type == 'full') {
-    $po_buffer = 'po01_id_podmiotu_obcego,po02_nip_pl,po03_nip_nie_pl' . EOL;
-    foreach ($foreigners as $name => $foreigner) {
-        if (isset($used_foreigners[$name])) {
-            $data = array(
-                // alternatively $foreingerid can be used
-                'po01_id_podmiotu_obcego' => 'PO-' . $foreigner,
-                'po02_nip_pil' => '',
-                'po03_nip_nie_pl' => '',
-            );
-            $po_buffer .= to_csv($data) . EOL;
-        }
-    }
-
-    //prepare info about network links (only between different network nodes)
-    $processed_netlinks = array();
-    $netlinks = array();
-    if ($netdevices) {
-        foreach ($netdevices as $netdevice) {
-            $ndnetlinks = $DB->GetAll(
-                "SELECT
-                    nl.id,
-                    nl.src,
-                    nl.dst,
-                    nl.type,
-                    nl.speed,
-                    nl.technology,
-                    nl.routetype,
-                    nl.linecount,
-                    (CASE src WHEN ? THEN (CASE WHEN srcrs.license IS NULL THEN dstrs.license ELSE srcrs.license END)
-                        ELSE (CASE WHEN dstrs.license IS NULL THEN srcrs.license ELSE dstrs.license END) END) AS license,
-                    (CASE src WHEN ? THEN (CASE WHEN srcrs.frequency IS NULL THEN dstrs.frequency ELSE srcrs.frequency END)
-                        ELSE (CASE WHEN dstrs.frequency IS NULL THEN srcrs.frequency ELSE dstrs.frequency END) END) AS frequency
-                FROM netlinks nl
-                JOIN netdevices ndsrc ON ndsrc.id = nl.src
-                JOIN netdevices nddst ON nddst.id = nl.dst
-                LEFT JOIN netradiosectors srcrs ON srcrs.id = nl.srcradiosector
-                LEFT JOIN netradiosectors dstrs ON dstrs.id = nl.dstradiosector
-                WHERE (src = ?" . ($customer_resources_as_operator_resources ? '' : ' AND nddst.ownerid IS NULL') . ")
-                    OR (dst = ?" . ($customer_resources_as_operator_resources ? '' : ' AND ndsrc.ownerid IS NULL') . ")",
-                array(
-                    $netdevice['id'],
-                    $netdevice['id'],
-                    $netdevice['id'],
-                    $netdevice['id'],
-                )
-            );
-            if ($ndnetlinks) {
-                foreach ($ndnetlinks as $netlink) {
-                    $netdevnetnode = $netdevs[$netdevice['id']];
-                    $srcnetnode = $netdevs[$netlink['src']];
-                    $dstnetnode = $netdevs[$netlink['dst']];
-                    $netnodeids = array($netnodes[$srcnetnode]['id'], $netnodes[$dstnetnode]['id']);
-
-                    sort($netnodeids);
-
-                    $netnodelinkid = implode('_', $netnodeids);
-
-                    if (!isset($processed_netlinks[$netnodelinkid])) {
-                        $linkspeed = $netlink['speed'];
-                        $speed = floor($linkspeed / 1000);
-
-                        if ($netlink['src'] == $netdevice['id']) {
-                            if ($netdevnetnode != $dstnetnode) {
-                                if ($netdevices[$netlink['src']]['invproject'] == $netdevices[$netlink['dst']]['invproject']
-                                    || strlen($netdevices[$netlink['src']]['invproject']) || strlen($netdevices[$netlink['dst']]['invproject'])) {
-                                    $invproject = $netdevices[$netlink['src']]['invproject'];
-                                } else {
-                                    $invproject = '';
-                                }
-                                if ($netdevices[$netlink['src']]['status'] == $netdevices[$netlink['dst']]['status']) {
-                                    $status = $netdevices[$netlink['src']]['status'];
-                                } elseif ($netdevices[$netlink['src']]['status'] == 2 || $netdevices[$netlink['dst']]['status'] == 2) {
-                                    $status = 2;
-                                } elseif ($netdevices[$netlink['src']]['status'] == 1 || $netdevices[$netlink['dst']]['status'] == 1) {
-                                    $status = 1;
-                                }
-
-                                $processed_netlinks[$netnodelinkid] = true;
-
-                                $foreign = $netnodes[$netdevnetnode]['ownership'] == 2 && $netnodes[$dstnetnode]['ownership'] < 2
-                                    || $netnodes[$netdevnetnode]['ownership'] < 2 && $netnodes[$dstnetnode]['ownership'] == 2;
-
-                                $netlinks[] = array(
-                                    'id' => $netlink['id'],
-                                    'type' => $netlink['type'],
-                                    'speed' => $speed,
-                                    'technology' => $netlink['technology'],
-                                    'src' => $netdevnetnode,
-                                    'dst' => $dstnetnode,
-                                    'license' => isset($netlink['license']) ? $netlink['license'] : '',
-                                    'frequency' => $netlink['frequency'],
-                                    'routetype' => $netlink['routetype'],
-                                    'linecount' => $netlink['linecount'],
-                                    'invproject' => $invproject,
-                                    'status' => $status,
-                                    'foreign' => $foreign,
-                                );
-                            }
-                        } else if ($netdevnetnode != $srcnetnode) {
-                            if ($netdevices[$netlink['src']]['invproject'] == $netdevices[$netlink['dst']]['invproject']
-                                || strlen($netdevices[$netlink['src']]['invproject']) || strlen($netdevices[$netlink['dst']]['invproject'])) {
-                                $invproject = $netdevices[$netlink['src']]['invproject'];
-                            } else {
-                                $invproject = '';
-                            }
-                            if ($netdevices[$netlink['src']]['status'] == $netdevices[$netlink['dst']]['status']) {
-                                $status = $netdevices[$netlink['src']]['status'];
-                            } elseif ($netdevices[$netlink['src']]['status'] == 2 || $netdevices[$netlink['dst']]['status'] == 2) {
-                                $status = 2;
-                            } elseif ($netdevices[$netlink['src']]['status'] == 1 || $netdevices[$netlink['dst']]['status'] == 1) {
-                                $status = 1;
-                            }
-
-                            $processed_netlinks[$netnodelinkid] = true;
-
-                            $foreign = $netnodes[$netdevnetnode]['ownership'] == 2 && $netnodes[$dstnetnode]['ownership'] < 2
-                                || $netnodes[$netdevnetnode]['ownership'] < 2 && $netnodes[$dstnetnode]['ownership'] == 2;
-
-                            $netlinks[] = array(
-                                'id' => $netlink['id'],
-                                'type' => $netlink['type'],
-                                'speed' => $speed,
-                                'technology' => $netlink['technology'],
-                                'src' => $netdevnetnode,
-                                'dst' => $srcnetnode,
-                                'license' => isset($netlink['license']) ? $netlink['license'] : '',
-                                'frequency' => $netlink['frequency'],
-                                'routetype' => $netlink['routetype'],
-                                'linecount' => $netlink['linecount'],
-                                'invproject' => $invproject,
-                                'status' => $status,
-                                'foreign' => $foreign,
-                            );
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     if (!$summary_only) {
         $lk_buffer = 'lk01_id_lk,lk02_id_punktu_poczatkowego,lk03_punkty_zalamania,lk04_id_punktu_koncowego,'
             . 'lk05_medium_transmisyjne,lk06_rodzaj_linii_kablowej,lk07_liczba_wlokien,lk08_liczba_wlokien_wykorzystywanych,'
@@ -2453,7 +2709,7 @@ if ($report_type == 'full') {
                             'lb05_nr_pozwolenia_radiowego' => $netlink['license'],
                             'lb06_pasmo_radiowe' => strlen($netlink['license']) ? '' : $frequency,
                             'lb07_system_transmisyjny' => radioTransmissionNameByTechnology($technology),
-                            'lb08_przepustowosc' => networkSpeedCode($netlink['speed'] * 1000),
+                            'lb08_przepustowosc' => networkSpeedCode($netlink['speed'] * $speed_unit_type),
                             'lb09_mozliwosc_udostepnienia' => 'Nie',
                         );
 
@@ -2477,6 +2733,13 @@ if ($report_type == 'full') {
                             'longitude' => $dstnetnode['longitude'],
                             'latitude' => $dstnetnode['latitude'],
                         );
+
+                        if (isset($complete_breakdown_points) && count($points) == 2) {
+                            $points[1] = array(
+                                'longitude' => round(($points[0]['longitude'] + $points[PHP_INT_MAX]['longitude']) / 2, 5),
+                                'latitude' => round(($points[0]['latitude'] + $points[PHP_INT_MAX]['latitude']) / 2, 5),
+                            );
+                        }
 
                         $data = array(
                             'lk01_id_lk' => 'LK-' . $netlink['id'],

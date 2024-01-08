@@ -75,6 +75,20 @@
 		margin-left: 0;
 	}
 
+	.customeredit-button-panel {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.customeredit-buttons {
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+	.customeredit-buttons > *:not(:first-child) {
+		margin-left: 0.3em;
+	}
+
 </style>
 
 {include file="customer/customercompanyselectiondialog.html"}
@@ -383,8 +397,17 @@
 														{if $customerinfo.icnwarning}
 															<input type="hidden" name="customerdata[icnwarning]" value="1">
 														{/if}
-														<input type="text" value="{$customerinfo.icn}" name="customerdata[icn]" size="30"
-															{tip trigger="icn"}>
+														{if ConfigHelper::checkPrivilege('customer_sensitive_data_view')}
+															{$icn = $customerinfo.icn}
+															{$disabled = false}
+														{else}
+															{$icn = preg_replace('/[^\s]/', '*', $customerinfo.icn)}
+															{$disabled = true}
+														{/if}
+														<input type="text" value="{$icn}" name="customerdata[icn]" size="30"
+															class="customer-sensible-data" data-type="icn"
+															{tip trigger="icn"}
+															{if $disabled} disabled{/if}>
 													</label>
 													<label class="identity-document-property">
 														<span>{trans("Expires")}</span>
@@ -410,8 +433,17 @@
 											{trans("SSN")}
 										</td>
 										<td>
-											<input type="text" name="customerdata[ssn]" value="{$customerinfo.ssn}" size="30"
-												{tip trigger="ssn"}>
+											{if ConfigHelper::checkPrivilege('customer_sensitive_data_view')}
+												{$ssn = $customerinfo.ssn}
+												{$disabled = false}
+											{else}
+												{$ssn = preg_replace('/[^\s]/', '*', $customerinfo.ssn)}
+												{$disabled = true}
+											{/if}
+											<input type="text" name="customerdata[ssn]" value="{$ssn}" size="30"
+												class="customer-sensible-data" data-type="ssn"
+												{tip trigger="ssn"}
+												{if $disabled} disabled{/if}>
 											{if $customerinfo.ssnwarning}
 												<input type="hidden" name="customerdata[ssnwarning]" value="1">
 											{/if}
@@ -692,8 +724,17 @@
 	</TR>
 	<TR>
 		<TD style="width: 100%;" class="lms-ui-box-buttons">
-			{button type="submit" id="save-button" icon="save" label="Submit"}
-			{button id="cancel-button" icon="cancel" label="Cancel" onclick="location.href = '{$backurl}';"}
+			<div class="customeredit-button-panel">
+				<div class="customeredit-buttons">
+					{button type="submit" id="save-button" icon="save" label="Submit"}
+					{button id="cancel-button" icon="cancel" label="Cancel" onclick="location.href = '{$backurl}';"}
+				</div>
+				{if !ConfigHelper::checkPrivilege('customer_sensitive_data_view') && !ConfigHelper::checkPrivilege('hide_customer_sensitive_data')}
+					<div class="customeredit-buttons">
+						{button icon="sensible-data" label="Show sensible data" id="customer-sensible-data-button"}
+					</div>
+				{/if}
+			</div>
 		</TD>
 	</TR>
 	</TBODY>
@@ -767,7 +808,8 @@
 		});
 
 		$('#icexpires-indefinitely').change(function() {
-			$('#icexpires').datepicker("option", "disabled", $(this).prop('checked'));
+			var checked = $(this).prop('checked');
+			$('#icexpires').datepicker("option", "disabled", checked).closest('.lms-ui-date-container').prev().prop('disabled', checked);
 		}).change();
 
 		var inSubmit = false;
@@ -804,6 +846,25 @@
 		$('#cutoffstopindefinitely').change(function() {
 			$('.cutoffstop').toggle(!this.checked);
 		});
+
+		$('#customer-sensible-data-button').click(function() {
+			var btn = $(this);
+
+			$.ajax({
+				url: "?m=customerinfo&api=1&id={$customerinfo.id}&action=get_sensible_data",
+				dataType: "json",
+				success: function(data) {
+					$('.customer-sensible-data[data-type]').each(function() {
+						var type = $(this).attr('data-type');
+						if (data.hasOwnProperty(type)) {
+							$(this).val(data[type]).prop('disabled', false);
+						}
+					});
+					btn.prop('disabled', true);
+				}
+			});
+		});
+
 	});
 
 </script>

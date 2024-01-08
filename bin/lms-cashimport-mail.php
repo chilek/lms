@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2023 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -70,7 +70,7 @@ foreach (array_flip(array_filter($long_to_shorts, function ($value) {
 if (array_key_exists('version', $options)) {
     print <<<EOF
 lms-cashimport-mail.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2023 LMS Developers
 
 EOF;
     exit(0);
@@ -79,7 +79,7 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-cashimport-mail.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2023 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -97,7 +97,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
 lms-cashimport-mail.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2023 LMS Developers
 
 EOF;
 }
@@ -186,6 +186,28 @@ if (empty($posts)) {
     die;
 }
 
+function decode_filename($encoded_filename)
+{
+    $filename = '';
+
+    if (preg_match('/^=\?/', $encoded_filename)) {
+        $elems = imap_mime_header_decode($encoded_filename);
+        if (!empty($elems)) {
+            foreach ($elems as $elem) {
+                if ($elem->charset != 'default') {
+                    $filename .= iconv($elem->charset, 'utf-8', $elem->text);
+                } else {
+                    $filename .= $elem->text;
+                }
+            }
+        }
+    } else {
+        $filename = $encoded_filename;
+    }
+
+    return $filename;
+}
+
 foreach ($posts as $postid) {
     $files = array();
     $post = imap_fetchstructure($ih, $postid);
@@ -200,23 +222,13 @@ foreach ($posts as $postid) {
                     && $part->ifdparameters) {
                     foreach ($part->dparameters as $dparameter) {
                         if (strtolower($dparameter->attribute) == 'filename') {
-                            if (preg_match('/^=\?/', $dparameter->value)) {
-                                $elems = imap_mime_header_decode($dparameter->value);
-                                if ($elems[0]->charset != 'default') {
-                                    $fname = iconv($elems[0]->charset, 'utf-8', $elems[0]->text);
-                                } else {
-                                    $fname = $elems[0]->text;
-                                }
-                            } else {
-                                $fname = $dparameter->value;
-                            }
                             $body = imap_fetchbody($ih, $postid, $partid + 1);
                             if ($part->encoding == 3) {
                                 $body = imap_base64($body);
                             }
                             $files[] = array(
-                            'name' => $fname,
-                            'contents' => $body,
+                                'name' => decode_filename($dparameter->value),
+                                'contents' => $body,
                             );
                         }
                     }
@@ -225,19 +237,13 @@ foreach ($posts as $postid) {
                 if (strtolower($part->subtype) == 'octet-stream' && $part->ifparameters) {
                     foreach ($part->parameters as $parameter) {
                         if (strtolower($parameter->attribute) == 'name') {
-                            $elems = imap_mime_header_decode($parameter->value);
-                            if ($elems[0]->charset != 'default') {
-                                $fname = iconv($elems[0]->charset, 'utf-8', $elems[0]->text);
-                            } else {
-                                $fname = $elems[0]->text;
-                            }
                             $body = imap_fetchbody($ih, $postid, $partid + 1);
                             if ($part->encoding == 3) {
                                 $body = imap_base64($body);
                             }
                             $files[] = array(
-                            'name' => $fname,
-                            'contents' => $body,
+                                'name' => decode_filename($parameter->value),
+                                'contents' => $body,
                             );
                         }
                     }
@@ -255,22 +261,12 @@ foreach ($posts as $postid) {
                             }
                             foreach ($parameters as $parameter) {
                                 if (strtolower($parameter->attribute) == 'filename' || strtolower($parameter->attribute) == 'name') {
-                                    if (preg_match('/^=\?/', $parameter->value)) {
-                                        $elems = imap_mime_header_decode($parameter->value);
-                                        if ($elems[0]->charset != 'default') {
-                                            $fname = iconv($elems[0]->charset, 'utf-8', $elems[0]->text);
-                                        } else {
-                                            $fname = $elems[0]->text;
-                                        }
-                                    } else {
-                                        $fname = $parameter->value;
-                                    }
                                     $body = imap_fetchbody($ih, $postid, ($partid + 1) . '.' . ($subpartid + 1));
                                     if ($subpart->encoding == 3) {
                                         $body = imap_base64($body);
                                     }
                                     $files[] = array(
-                                        'name' => $fname,
+                                        'name' => decode_filename($parameter->value),
                                         'contents' => $body,
                                     );
                                 }
@@ -285,23 +281,13 @@ foreach ($posts as $postid) {
         && $post->ifdparameters) {
         foreach ($post->dparameters as $dparameter) {
             if (strtolower($dparameter->attribute) == 'filename') {
-                if (preg_match('/^=\?/', $dparameter->value)) {
-                    $elems = imap_mime_header_decode($dparameter->value);
-                    if ($elems[0]->charset != 'default') {
-                        $fname = iconv($elems[0]->charset, 'utf-8', $elems[0]->text);
-                    } else {
-                        $fname = $elems[0]->text;
-                    }
-                } else {
-                    $fname = $dparameter->value;
-                }
                 $body = imap_fetchbody($ih, $postid, '1');
                 if ($post->encoding == 3) {
                     $body = imap_base64($body);
                 }
                 $files[] = array(
-                'name' => $fname,
-                'contents' => $body,
+                    'name' => decode_filename($dparameter->value),
+                    'contents' => $body,
                 );
             }
         }
@@ -352,5 +338,3 @@ foreach ($posts as $postid) {
 }
 
 imap_close($ih);
-
-?>

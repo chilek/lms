@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2022 LMS Developers
+ *  (C) Copyright 2001-2023 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -39,6 +39,7 @@ if (!empty($_POST['invprojectadd'])) {
         $LMS->AddProject(array(
             'project' => $invproject['project'],
             'divisionid' => $invproject['divisionid'],
+            'cdate' => $invproject['cdate'],
         ));
 
         if (!isset($invproject['reuse'])) {

@@ -44,7 +44,8 @@
 		uploadedImageMaxSize: {intval(ConfigHelper::getConfig('phpui.uploaded_image_max_size', 0))},
 		monthlyPeriod: {$smarty.const.MONTHLY},
 		touchDeviceTooltips: {if ConfigHelper::checkConfig('phpui.touch_device_tooltips', 'false')}true{else}false{/if},
-		terytShowNumericIdentifiers: {if ConfigHelper::checkConfig('teryt.show_numeric_identifiers')}true{else}false{/if}
+		terytShowNumericIdentifiers: {if ConfigHelper::checkConfig('teryt.show_numeric_identifiers')}true{else}false{/if},
+		missedNodeWarning: {if ConfigHelper::checkConfig('assignments.missed_node_warning', ConfigHelper::checkConfig('phpui.node_assignment_warning'))}true{else}false{/if}
 	};
 
 	var lms = {

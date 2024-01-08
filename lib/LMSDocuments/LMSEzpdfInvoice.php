@@ -143,31 +143,40 @@ class LMSEzpdfInvoice extends LMSInvoice
         $this->backend->text_autosize(15*$scale+$x, 372*$scale+$y, 30*$scale, $this->data['name'], 950*$scale);
         $this->backend->text_autosize(15*$scale+$x, 312*$scale+$y, 30*$scale, $this->data['address']." ".$this->data['zip']." ".$this->data['city'], 950*$scale);
 
+        $payment_docnumber = docnumber(array(
+            'number' => $this->data['number'],
+            'template' => $this->data['template'],
+            'cdate' => $this->data['cdate'],
+            'customerid' => $this->data['customerid'],
+        ));
+
         $payment_title = ConfigHelper::getConfig('invoices.payment_title', null, true);
         if (empty($payment_title)) {
             if (ConfigHelper::checkConfig('invoices.customer_balance_in_form')) {
                 $payment_title = trans('Payment for liabilities');
             } else {
-                $tmp = docnumber(array(
-                    'number' => $this->data['number'],
-                    'template' => $this->data['template'],
-                    'cdate' => $this->data['cdate'],
-                    'customerid' => $this->data['customerid'],
-                ));
                 if ($this->data['doctype'] == DOC_INVOICE_PRO) {
-                    $payment_title = trans('Payment for pro forma invoice No. $a', $tmp);
+                    $payment_title = trans('Payment for pro forma invoice No. $a', $payment_docnumber);
                 } else {
-                    $payment_title = trans('Payment for invoice No. $a', $tmp);
+                    $payment_title = trans('Payment for invoice No. $a', $payment_docnumber);
                 }
             }
         } else {
             $customerid = $this->data['customerid'];
-            $payment_title = preg_replace_callback(
-                '/%(\\d*)cid/',
-                function ($m) use ($customerid) {
-                    return sprintf('%0' . $m[1] . 'd', $customerid);
-                },
-                $payment_title
+            $payment_title = str_replace(
+                array(
+                    '%number',
+                ),
+                array(
+                    $payment_docnumber,
+                ),
+                preg_replace_callback(
+                    '/%(\\d*)cid/',
+                    function ($m) use ($customerid) {
+                        return sprintf('%0' . $m[1] . 'd', $customerid);
+                    },
+                    $payment_title
+                )
             );
         }
         $this->backend->text_autosize(15 * $scale + $x, 250 * $scale + $y, 30 * $scale, $payment_title, 950 * $scale);

@@ -28,10 +28,6 @@ $event = $LMS->GetEvent($_GET['id']);
 
 $event['date'] = sprintf('%04d/%02d/%02d', date('Y', $event['date']), date('n', $event['date']), date('j', $event['date']));
 
-$eventuserlist = $DB->GetAll('SELECT userid AS id, vusers.name
-	FROM vusers, eventassignments
-	WHERE vusers.id = userid AND eventid = ?', array($event['id']));
-
 $backto = $SESSION->get_history_entry('m=eventlist');
 $backid = $SESSION->get('backid');
 $backurl = '?' . $backto . (empty($backid) ? '' : '#' . $backid);
@@ -46,7 +42,6 @@ if (isset($_POST['event'])) {
 
 $SMARTY->assign('backurl', $backurl);
 
-$event['userlist'] = ($eventuserlist) ? $eventuserlist : array();
 $layout['pagetitle'] = trans('Add Note');
 
 $SESSION->add_history_entry();

@@ -66,7 +66,12 @@
 				id: {$node.id},
 				type: "nodeinfo",
 				url: "{$node.url}",
-				comment: "{$node.comment}"
+				comment: "{$node.comment}",
+				linktype: "{$node.linktype}",
+				linktypeicon: "{$node.linktypeicon}",
+				linktypename: "{$node.linktypename}",
+				linktechnology: "{$node.linktechnology}",
+				linktechnologyname: "{$node.linktechnologyname}"
 			});
 		{/foreach}
 	{/if}

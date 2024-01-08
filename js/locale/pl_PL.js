@@ -23,6 +23,16 @@
  *  $Id$
  */
 
+$_LANG['Check in PESEL Reservation Registry'] = 'Sprawdź w Rejestrze Zastrzeżeń PESEL';
+$_LANG['Empty PESEL Reservation Registry API secret key!'] = 'Pusty klucz API Rejestru Zastrzeżeń PESEL!';
+$_LANG['Incorrect PESEL format!'] = 'Błędny format PESEL!';
+$_LANG['Unexpected empty reply from PESEL Reservation Registry API server!'] = 'Nieoczekiwana pusta odpowiedź serwera API Rejestru Zastrzeżeń PESEL!';
+$_LANG['Malformed reply from PESEL Reservation Registry API server!'] = 'Błędna odpowiedź serwera API Rejestru Zastrzeżeń PESEL!';
+$_LANG['telecommunication service contract'] = 'umowa na usługi telekomunikacyjne';
+
+$_LANG['Show sensible data'] = 'Pokaż dane wrażliwe';
+$_LANG['customer sensitive data view'] = 'podgląd danych wrażliwych klientów';
+
 $_LANG['(hidden)'] = '(ukryto)';
 
 $_LANG['<!nodesearch>Address origin'] = 'Pochodzenie adresu';
@@ -56,14 +66,26 @@ $_LANG['<!uke-pit>TERC'] = 'TERC';
 $_LANG['<!uke-pit>SIMC'] = 'SIMC';
 $_LANG['<!uke-pit>building number'] = 'numer budynku';
 $_LANG['<!uke-pit>GPS coordinates'] = 'współrzędne GPS';
+$_LANG['<!uke-pit>network node type out of allowed values'] = 'typ węzła sieciowego spoza dozwolonej listy wartości';
 $_LANG['<!uke-pit>Network node "$a" (#$b) has missed properties: $c'] = 'Węzłowi sieciowemu "$a" (#$b) brakuje właściwości: $c';
 $_LANG['<!uke-pit>Network device "$a" (#$b) has missed properties: $c'] = 'Urządzeniu sieciowemu "$a" (#$b) brakuje właściwości: $c';
 $_LANG['<!uke-pit>Node "$a" (#$b) has missed properties: $c'] = 'Komputerowi "$a" (#$b) brakuje właściwości: $c';
+$_LANG['<!uke-pit>Wireless link can connect only network nodes, but it connects network device "$a" (#$b) located in $c "$d" with network device "$e" (#$f) located in $g "$h"'] = 'Połączenie bezprzewodowe może łączyć wyłącznie węzły sieciowe, a łączy urządzenie sieciowe "$a" (#$b) umieszczone w $c "$d" z urządzeniem sieciowym "$e" (#$f) umieszczonym w $g "$h"';
+$_LANG['<!uke-pit>flexibility point'] = 'punkt elastyczności';
+$_LANG['<!uke-pit>Flexibility point \'$a\' with location \'$b\' does not have defined feeding network node!'] = 'Punkt elastyczności \'$a\' o lokalizacji \'$b\' nie ma zdefiniowanego zasilającego węzła sieciowego!';
+$_LANG['<!uke-pit>network node'] = 'węzeł sieciowy';
 $_LANG['<!uke-pit>Validate TERYT properties'] = 'Weryfikuj właściwości TERYT';
 $_LANG['<!uke-pit>Validate building numbers'] = 'Weryfikuj numery budynków';
 $_LANG['<!uke-pit>Validate GPS coordinates'] = 'Weryfikuj współrzędne GPS';
+$_LANG['<!uke-pit>Validate wireless links'] = 'Weryfikuj połączenia bezprzewodowe';
 $_LANG['<!uke-pit>Root network node \'$a\' does not contain any active network devices!'] = 'Główny węzeł \'$a\' nie zawiera żadnych urządzeń aktywnych!';
 $_LANG['<!uke-pit>Passive network devices:'] = 'Pasywne urządzenia sieciowe:';
+$_LANG['<!uke-pit>Dash character'] = 'Znak myślnika';
+$_LANG['<!uke-pit>— preserve —'] = '— zachowaj —';
+$_LANG['<!uke-pit>Report other duct type as'] = 'Raportuj inny typ traktu jako';
+$_LANG['<!uke-pit>Complete breakdown points of network connections'] = 'Dopełniaj punkty załamania połączeń sieciowych';
+$_LANG['<!uke-pit>explicitly assigned address'] = 'jawnie przypisany adres';
+$_LANG['<!uke-pit>Report elements outside network infrastructure'] = 'Raportuj elementy spoza infrastruktury sieciowej';
 
 $_LANG['underground (placed directly in the ground)'] = 'podziemny (umieszczona bezpośrednio w ziemi)';
 $_LANG['placed in cable ducts (including cable pipeline, microducts)'] = 'umieszczony w kanalizacji kablowej (w tym w rurociągu kablowym, mikrokanalizacji)';
@@ -204,6 +226,7 @@ $_LANG['translates into JPK TP flag'] = 'przekłada się na flagę JPK TP';
 $_LANG['translates into JPK MPP flag'] = 'przekłada się na flagę JPK MPP';
 $_LANG['translates into JPK EE flag'] = 'przekłada się na flagę JPK EE';
 $_LANG['translates into JPK FP flag'] = 'przekłada się na flagę JPK FP';
+$_LANG['JPK flags'] = 'Flagi JPK';
 $_LANG['VAT payer'] = 'płatnik VAT';
 $_LANG['if customer is not VAT payer, then his telecommunication services are reported with JPK EE flag'] = 'jeśli klient nie jest płatnikiem VAT, to świadczone mu usługi telekomunikacyjne są raportowane z flagą JPK EE';
 $_LANG['supplier'] = 'dostawca';
@@ -223,6 +246,8 @@ $_LANG['<!invoice>Without receipt:'] = 'Różnica (kwoty do uwzgl. w VAT-7):';
 $_LANG['<!invoice>receipt'] = 'paragon';
 $_LANG['<!invoice>(receipt)'] = '(paragon)';
 
+$_LANG['<!node-location>(implicit)'] = '(niejawna)';
+
 $_LANG['<!assignment>backward'] = 'wstecz';
 $_LANG['<!assignment>Backward:'] = 'Wstecz:';
 $_LANG['Check if tariff should be accounted backward'] = 'Zaznacz, jeśli taryfa powinna być naliczana za okres wsteczny';
@@ -230,6 +255,7 @@ $_LANG['Check if tariff should be accounted backward'] = 'Zaznacz, jeśli taryfa
 $_LANG['(limited to first 100)'] = '(ograniczone do pierwszych 100)';
 
 $_LANG['No documents to JPK export!'] = 'Brak dokumentów do eksportu JPK!';
+$_LANG['No document attachments meet document view filter settings!'] = 'Brak załączników dokumentów spełniających ustawienia filtra podglądu dokumentów!';
 
 $_LANG['Customer has not any assigned email contacts with "documents" flag!'] = 'Klient nie posiada przypisanych żadnych adresów poczty elektronicznej z ustawioną flagą "dokumenty"!';
 
@@ -750,6 +776,11 @@ $_LANG['<!netrange>Link technology'] = 'Technologia łącza';
 $_LANG['<!netrange>Node count'] = 'Liczba komputerów';
 $_LANG['<!netrange>Customers'] = 'Klienci';
 $_LANG['<!netrange>Customer name'] = 'Nazwa klienta';
+$_LANG['<!netrange>Project'] = 'Projekt';
+$_LANG['<!invproject>— any —'] = '— dowolny —';
+$_LANG['<!invproject>— ignore —'] = '— ignoruj —';
+$_LANG['<!invproject>— without project —'] = '— bez projektu —';
+$_LANG['<!invproject>— none —'] = '— brak —';
 $_LANG['connected<!singular>'] = 'podłączony';
 $_LANG['Connected:'] = 'Podłączeni:';
 $_LANG['Connected<!status>'] = 'podłączony';
@@ -854,6 +885,7 @@ $_LANG['Data precision level:'] = 'Poziom dokładności danych:';
 $_LANG['Date'] = 'Data';
 $_LANG['Date:'] = 'Data:';
 $_LANG['date (YYYY/MM/DD)'] = 'data (RRRR/MM/DD)';
+$_LANG['Validity period'] = 'Okres obowiązywania';
 $_LANG['Day:'] = 'Dzień:';
 $_LANG['dead'] = 'martwy';
 $_LANG['Dead:'] = 'Martwe:';
@@ -898,6 +930,7 @@ $_LANG['Device connected to other device or node can\'t be deleted.'] = 'Urządz
 $_LANG['Device Edit: $a ($b)'] = 'Edycja urządzenia: $a ($b)';
 $_LANG['Device Edit: $a'] = 'Edycja urządzenia: $a';
 $_LANG['No free ports on device!'] = 'Urządzenie nie posiada wolnych portów!';
+$_LANG['No free addresses in selected network!'] = 'Brak dostępnych adresów w wybranej sieci!';
 $_LANG['No IP addresses on device.'] = 'Urządzenie nie posiada adresu IP.';
 $_LANG['Device Info: $a $b $c'] = 'Informacje o urządzeniu: $a $b $c';
 $_LANG['Device name is required!'] = 'Nazwa urządzenia jest wymagana!';
@@ -977,6 +1010,7 @@ $_LANG['End:'] = 'Koniec:';
 $_LANG['End of DHCP range:'] = 'Koniec zakresu DHCP:';
 $_LANG['End of DHCP range has to be equal or greater than start!'] = 'Koniec zakresu DHCP musi być równy lub większy niż jego początek!';
 $_LANG['End time must not precede start time!'] = 'Czas zakończenia musi być późniejszy niż czas rozpoczęcia!';
+$_LANG['End date should be later than start date!'] = 'Data końcowa powinna być późniejsza od daty początkowej!';
 $_LANG['Enter $a characters PIN code'] = 'Wprowadź kod PIN o długości $a znaków';
 $_LANG['Enter $a to $b characters PIN code'] = 'Wprowadź kod PIN o długości od $a do $b znaków';
 $_LANG['Enter account quota in MB'] = 'Wprowadź limit dla konta w MB';
@@ -1146,6 +1180,7 @@ $_LANG['Event title is required!'] = 'Tytuł zdarzenia jest wymagany!';
 $_LANG['Event title is too long!'] = 'Tytuł zdarzenia jest za długi!';
 $_LANG['Holiday:'] = 'Dzień wolny od pracy:';
 $_LANG['service<!event>'] = 'serwis';
+$_LANG['technical verification'] = 'weryfikacja techniczna';
 $_LANG['<!netrange>Services'] = 'Usługi';
 $_LANG['<!netrange>Services:'] = 'Usługi:';
 $_LANG['installation'] = 'instalacja';
@@ -1241,6 +1276,8 @@ $_LANG['Guarantee period:'] = 'Okres gwarancji:';
 $_LANG['Guarantee period'] = 'Okres gwarancji';
 $_LANG['Warranty'] = 'Gwarancja';
 $_LANG['Guyana'] = 'Gujana';
+$_LANG['Great Britain'] = 'Wielka Brytania';
+$_LANG['United Kingdom'] = 'Zjednoczone Królestwo';
 $_LANG['Has'] = 'Ma';
 $_LANG['Headers:'] = 'Nagłówki:';
 $_LANG['Helpdesk'] = 'Helpdesk';
@@ -1677,6 +1714,7 @@ $_LANG['No such tickets matching search criteria.'] = 'Brak zgłoszeń spełniaj
 $_LANG['No such transactions'] = 'Brak transakcji';
 $_LANG['Note'] = 'Notatka';
 $_LANG['Note:'] = 'Notatka:';
+$_LANG['<!customer-note>Contents'] = 'Treść';
 $_LANG['Notes:'] = 'Notatki:';
 $_LANG['Notes'] = 'Notatki';
 $_LANG['No such transactions found in database.'] = 'Nie znaleziono żadnych transakcji w bazie danych.';
@@ -2030,6 +2068,7 @@ $_LANG['Force SSL:'] = 'Wymuś SSL:';
 $_LANG['SSN'] = 'PESEL';
 $_LANG['SSN $a'] = 'PESEL $a';
 $_LANG['SSN:'] = 'PESEL:';
+$_LANG['SSN: $a'] = 'PESEL: $a';
 $_LANG['Stamp:'] = 'Pieczęć';
 $_LANG['State:'] = 'Wojew.:';
 $_LANG['State and district should be selected at least.'] = 'Konieczny wybór województwa i powiatu.';
@@ -2071,6 +2110,7 @@ $_LANG['Missed required SSN identifier!'] = 'Brak identyfikatora PESEL!';
 $_LANG['Missed required Identity Card Number!'] = 'Brak identyfikatora dokumentu tożsamości!';
 $_LANG['TEN $a'] = 'NIP $a';
 $_LANG['TEN:'] = 'NIP:';
+$_LANG['TEN: $a'] = 'NIP: $a';
 $_LANG['TEN/SSN'] = 'NIP/PESEL';
 $_LANG['Thanks for using our services!'] = 'Dziękujemy za korzystanie z naszych usług!';
 $_LANG['That customer hasn\'t got any assigned subscriptions.'] = 'Ten klient nie ma przypisanych żadnych taryf.';
@@ -2343,11 +2383,16 @@ $_LANG['You must to specify file for upload or select document template!'] = 'Mu
 $_LANG['Numbering Plans'] = 'Plany numeracyjne';
 $_LANG['Numbering Plans Definitions'] = 'Definicje planów numeracyjnych';
 $_LANG['Template:'] = 'Szablon:';
+$_LANG['Template'] = 'Szablon';
 $_LANG['Example (next) number:'] = 'Przykładowy (następny) numer:';
+$_LANG['Example (next) number'] = 'Przykładowy (następny) numer';
 $_LANG['No. of issued documents:'] = 'Wystawiono dokumentów:';
+$_LANG['No. of issued documents'] = 'Wystawiono dokumentów';
 $_LANG['Document type:'] = 'Typ dokumentu:';
+$_LANG['Document type'] = 'Typ dokumentu';
 $_LANG['Default:'] = 'Domyślny:';
 $_LANG['Default'] = 'Domyślny';
+$_LANG['default:'] = 'domyślny:';
 $_LANG['Are you sure, you want to delete numberplan \'$a\'?'] = 'Jesteś pewien, że chcesz usunąć plan \'$a\'?';
 $_LANG['Numbering Plans List'] = 'Lista planów numeracyjnych';
 $_LANG['Add plan'] = 'Dodaj plan';
@@ -3092,6 +3137,7 @@ $_LANG['Prefixes already exists:'] = 'Prefiksy już istniejące:';
 $_LANG['Next ticket'] = 'Następne zgłoszenie';
 $_LANG['Division'] = 'Firma';
 $_LANG['Transaction type:'] = 'Typ operacji:';
+$_LANG['Transaction type'] = 'Typ operacji';
 $_LANG['Select transaction type'] = 'Wybierz typ operacji';
 $_LANG['Are you sure, you want to remove customer VoIP account?'] = 'Czy na pewno chcesz usunąć konto VoIP klienta?';
 $_LANG['Incorrect month number (max.6)!'] = 'Niepoprawny numer miesiąca (max.6)!';
@@ -3501,7 +3547,6 @@ $_LANG['Enter subscription value for specified period'] = 'Wprowadź kwotę abon
 $_LANG['List of promotions'] = 'Lista promocji';
 $_LANG['Months $a-$b'] = 'mies. $a-$b';
 $_LANG['Month $a'] = 'mies. $a';
-$_LANG['Months $a-'] = 'mies. $a-';
 $_LANG['New Promotion'] = 'Nowa promocja';
 $_LANG['New Schema'] = 'Nowy schemat';
 $_LANG['Periods:'] = 'Okresy:';
@@ -3647,8 +3692,11 @@ $_LANG['GPS longitude'] = 'Długość geograficzna';
 $_LANG['Click to select GPS coordinates from map'] = 'Kliknij, aby wybrać współrzędne geograficzne z mapy';
 $_LANG['Select GPS coordinates'] = 'Wybierz współrzędne geograficzne';
 $_LANG['Select GPS coordinates:'] = 'Wybierz współrzędne geograficzne:';
+$_LANG['No GPS coordinates for this address'] = 'Brak współrzędnych dla tego adresu';
 $_LANG['Show on map'] = 'Pokaż na mapie';
-$_LANG['Show on external map'] = 'Pokaż na mapie zewnętrznej';
+$_LANG['Show on default external map'] = 'Pokaż na domyślnej mapie zewnętrznej';
+$_LANG['Show in GeoPortal'] = 'Pokaż w GeoPortalu';
+$_LANG['Show on NetStorkWeb Maps'] = 'Pokaż na mapach NetStorkWeb';
 
 $_LANG['$a bytes from $b: icmp_req=$c ttl=$d time=$e'] = '$a bajtów od $b: icmp_req=$c ttl=$d czas=$e';
 $_LANG['Unicast reply from $a [$b]: time=$c'] = 'Odpowiedź unicast od $a [$b]: czas=$c';
@@ -3780,7 +3828,10 @@ $_LANG['reports'] = 'raporty';
 $_LANG['Adjust the print'] = 'Dostosuj wydruk';
 $_LANG['hide customer ID'] = 'ukryj ID klienta';
 $_LANG['hide customer SSN'] = 'ukryj PESEL klienta';
+$_LANG['hide customer SSN/TEN'] = 'ukryj PESEL/NIP klienta';
+$_LANG['hide customer address'] = 'ukryj adres klienta';
 $_LANG['only summary'] = 'tylko podsumowanie';
+$_LANG['match document content service type'] = 'dopasowuj typ usługi z zawartości dokumentu';
 
 $_LANG['Active from:'] = 'Aktywne od:';
 $_LANG['Active to:'] = 'Aktywne do:';
@@ -3796,6 +3847,10 @@ $_LANG['Last modified by:'] = 'Ostatnio zmodyfikował:';
 $_LANG['Last modified by'] = 'Ostatnio zmodyfikował';
 $_LANG['Closed by'] = 'Zamknięte przez';
 $_LANG['Closed time'] = 'Czas zamknięcia';
+$_LANG['<!customer-note>Created'] = 'Utworzona';
+$_LANG['<!customer-note>Creator'] = 'Twórca';
+$_LANG['<!customer-note>Modified'] = 'Zmodyfikowana';
+$_LANG['<!customer-note>Modifier'] = 'Modyfikujący';
 
 $_LANG['current:'] = 'aktualnie:';
 
@@ -3932,6 +3987,7 @@ $_LANG['ticket<!syslog>'] = 'zgłoszenie Helpdesk';
 $_LANG['addition<!syslog>'] = 'dodanie';
 $_LANG['deletion<!syslog>'] = 'usunięcie';
 $_LANG['update<!syslog>'] = 'aktualizacja';
+$_LANG['get<!syslog>'] = 'pobranie';
 $_LANG['recover<!syslog>'] = 'przywrócenie';
 $_LANG['password change<!syslog>'] = 'zmiana hasła';
 $_LANG['access denied<!syslog>'] = 'odmowa dostępu';
@@ -4043,6 +4099,8 @@ $_LANG['Select link technology'] = 'Wybierz technologię łącza';
 $_LANG['Link technology:'] = 'Technologia łącza:';
 $_LANG['<!netrange>Technology'] = 'Technologia';
 $_LANG['— unknown —'] = '— nieznana —';
+$_LANG['Link technology is required!'] = 'Technologia łącza jest wymagana!';
+$_LANG['Link technology is not selected!'] = 'Nie wybrano technologii łącza';
 
 $_LANG['Hide toolbar from user interface. Default: false.'] = 'Ukryj górne menu w interfejsie użytkownika. Domyślnie: 0 (wyłączone).';
 $_LANG['Does this LMS have transaction log support (not opensource). Default: false.'] = 'Czy ta instalacja LMS posiada log transakcji (opcja nie opensource). Domyślnie: 0 (wyłączone).';
@@ -4156,6 +4214,8 @@ $_LANG['Enter investment project name'] = 'Wpisz nazwę projektu inwestycyjnego'
 $_LANG['Display this form again, when this invproject is saved'] = 'Wyświetl formularz ponownie po dodaniu projektu inwestycyjnego';
 $_LANG['Investment project with specified name already exists!'] = 'Projekt inwestycyjny o podanej nazwie już istnieje!';
 $_LANG['Investment project name is required!'] = 'Nazwa projektu inwestycyjnego jest wymagana!';
+$_LANG['Edit investment project: $a'] = 'Edycja projektu inwestycyjnego: $a';
+$_LANG['Estimated completion date'] = 'Przewidywana data zakończenia';
 
 $_LANG['Select device status'] = 'Wybierz status urządzenia';
 $_LANG['$a (from network node $b)'] = '$a (z węzła sieciowego $b)';
@@ -4447,6 +4507,7 @@ $_LANG['suspended'] = 'zawieszone';
 $_LANG['active, with invoice'] = 'aktywne, z fakturą';
 $_LANG['active, with pro forma'] = 'aktywne, z pro forma';
 $_LANG['without end date'] = 'bez daty zakończenia';
+$_LANG['without start date'] = 'bez daty rozpoczęcia';
 $_LANG['with end date'] = 'z datą zakończenia';
 $_LANG['with end date:'] = 'z datą zakończenia:';
 $_LANG['<!enddate>— any —'] = '— dowolną —';
@@ -4455,6 +4516,10 @@ $_LANG['expire in indicated number of days'] = 'wygasną za wskazaną liczbę dn
 
 $_LANG['TERYT not specified'] = 'bez TERYT';
 $_LANG['<!welcome>TERYT not specified'] = 'Bez TERYT';
+$_LANG['<!welcome>Without explicit TERYT'] = 'Bez jawnego TERYT';
+$_LANG['<!welcome>Without TERYT'] = 'Bez TERYT';
+$_LANG['without explicit TERYT'] = 'bez jawnego TERYT';
+$_LANG['without TERYT'] = 'bez TERYT';
 $_LANG['Net Device not specified'] = 'Bez urządzenia sieciowego';
 
 $_LANG['with e-invoice'] = 'z e-fakturą';
@@ -4758,6 +4823,7 @@ $_LANG['Enter external customer ID fragment and press Enter'] = 'Podaj fragment 
 $_LANG['Customer count'] = 'Liczba klientów';
 $_LANG['Assignment count'] = 'Liczba zobowiązań';
 $_LANG['Active assignment count'] = 'Liczba aktywnych zobowiązań';
+$_LANG['Active assignments not found!'] = 'Nie znaleziono aktywnych zobowiązań';
 
 $_LANG['(from network node)'] = '(z węzła sieciowego)';
 
@@ -4889,6 +4955,8 @@ $_LANG['(payment without title)'] = '(płatność bez tytułu)';
 
 $_LANG['<!assignment>Expired'] = 'Przeterminowane';
 $_LANG['<!assignment>Commited'] = 'Zatwierdzone';
+$_LANG['<!assignment>commited'] = 'zatwierdzone';
+$_LANG['<!assignment>not commited'] = 'niezatwierdzone';
 
 $_LANG['Unread:'] = 'Nieprzeczytane:';
 $_LANG['<!rt>Unread'] = 'Nieprzeczytany:';
@@ -4987,12 +5055,14 @@ $_LANG['<!qs>ticket'] = 'zgłoszenie';
 $_LANG['<!qs>account'] = 'konto hostingowe';
 $_LANG['<!qs>document'] = 'dokument';
 $_LANG['<!qs>customer external id'] = 'zewnętrzny identyfikator klienta';
+$_LANG['<!qs>default'] = 'domyślny';
 
 $_LANG['Click here to select which quick search fields should be visible'] = 'Kliknij tutaj, aby wybrać, które pola szybkiego wyszukiwania powinny być widoczne';
 $_LANG['Click here to select which customer properties should be used during search'] = 'Kliknij tutaj, aby wybrać, które właściwości klienta powinny być używane podczas wyszukiwania';
 $_LANG['Click here to select which node properties should be used during search'] = 'Kliknij tutaj, aby wybrać, które właściwości komputera powinny być używane podczas wyszukiwania';
 $_LANG['Click here to select which network device properties should be used during search'] = 'Kliknij tutaj, aby wybrać, które właściwości urządzenia sieciowego powinny być używane podczas wyszukiwania';
 $_LANG['Click here to select which ticket properties should be used during search'] = 'Kliknij tutaj, aby wybrać, które właściwości zgłoszenia powinny być używane podczas wyszukiwania';
+$_LANG['Click here to select which service providers should be used during external customer identifiers search'] = 'Kliknij tutaj, aby wybrać, którzy dostawcy usługi powinni być używani podczas wyszukiwania zewnętrznych identyfikatorów klientów';
 
 $_LANG['Clear filter'] = 'Wyczyść filtr';
 
@@ -5407,6 +5477,7 @@ $_LANG['Ticket subject can contain maximum $a characters!'] = 'Temat zgłoszenia
 $_LANG['Wait for customer action till:'] = 'Oczekuj na działanie klienta do:';
 $_LANG['Enter date in YYYY/MM/DD format we wait for customer action till (optional)'] = 'Wprowadź datę w formacie RRRR/MM/DD, do kiedy będziemy oczekiwać na działanie klienta (opcjonalnie)';
 $_LANG['Warning! Customer submitted signed document scan. Consider to review it and then possibly confirm.'] = 'Uwaga! Klient przesłał skan podpisanego dokumentu. Rozważ ich przejrzenie i ewentualnie zatwierdzenie.';
+$_LANG['Warning! You have changed privacy status for this timetable event!'] = 'Uwaga! Zmieniłeś status prywatności dla tego zdarzenia!';
 $_LANG['Warning! Customer action time limit is expired is expired!'] = 'Uwaga! Upłynął termin przeznaczony na działanie klienta!';
 
 $_LANG['Service start'] = 'Rozpoczęcie świadczenia usługi';
@@ -5445,6 +5516,9 @@ $_LANG['<!customersearch>Remove flags'] = 'Usuń flagi';
 $_LANG['<!customersearch>Messages'] = 'Wiadomości';
 $_LANG['<!customersearch>New email message'] = 'Nowa wiadomość e-mail';
 $_LANG['<!customersearch>New sms message'] = 'Nowa wiadomość SMS';
+$_LANG['<!customersearch>Customer deletion'] = 'Usunięcie klienta';
+$_LANG['<!customersearch>Deletion'] = 'Usunięcie';
+$_LANG['<!customersearch>Restoration'] = 'Przywrócenie';
 
 $_LANG['Apply'] = 'Zastosuj';
 
@@ -5481,8 +5555,7 @@ $_LANG['don\'t scale images'] = 'nie skaluj obrazków';
 
 $_LANG['customer note<!syslog>'] = 'notatka klienta';
 $_LANG['Customer Notes'] = 'Notatki klienta';
-$_LANG['Customer Notes:'] = 'Notatki klienta:';
-$_LANG['New customer note:'] = 'Nowa notatka:';
+$_LANG['New customer note'] = 'Nowa notatka';
 $_LANG['Add new customer note'] = 'Dodaje nową notatkę klienta';
 $_LANG['No customer notes.'] = 'Brak notatek klienta.';
 $_LANG['Customer note is too short!'] = 'Notatka kliencka jest zbyt krótka!';
@@ -5761,7 +5834,7 @@ $_LANG['<!month-name-full>December'] = 'grudzień';
 
 $_LANG['logical operator'] = 'operator logiczny';
 
-$_LANG['hide customer sensitive data'] = 'ukrywanie wrażliwych danych klientów';
+$_LANG['hide customer sensitive data'] = 'ukrywanie danych wrażliwych klientów';
 
 $_LANG['No email address is selected while customer email notification is checked!'] = 'Nie wybrano adresu e-mail, podczas gdy powiadomienie e-mail klienta zostało zaznaczone!';
 $_LANG['No phone number is selected while customer sms notification is checked!'] = 'Nie wybrano numeru telefonu, podczas gdy powiadomienie SMS klienta zostało zaznaczone!';

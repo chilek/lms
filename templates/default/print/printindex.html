@@ -113,12 +113,12 @@
 								<TD style="width: 1%;"><IMG src="img/netdev.gif" alt=""></TD>
 								<TD style="width: 1%;" class="bold nobr">{trans("Link type:")}</TD>
 								<TD style="width: 98%;" class="nobr">
-									<SELECT size="1" name="linktype" {tip text="Select link type"}>
-										<OPTION value="">{trans("— all —")}</OPTION>
-										{foreach from=$_LINKTYPES item=item key=key}
-										<OPTION value="{$key}">{$item}</OPTION>
+									<select size="1" name="linktype" {tip text="Select link type"}>
+										<option value="">{trans("— all —")}</option>
+										{foreach $_LINKTECHNOLOGIES as $linktype => $linktech}
+											<option value="{$linktype}">{$_LINKTYPES[$linktype]}</option>
 										{/foreach}
-									</SELECT>
+									</select>
 								</TD>
 							</TR>
 							<TR>
@@ -271,187 +271,256 @@
 </form>
 {/if}
 {if $printmenu=="finances"}
-<FORM method="post" name="printbalancelist" id="printbalancelist" action="?m=print&type=balancelist" target="_blank">
-<input type="hidden" name="disposition" value="print">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox">
-    <COLGROUP>
-        <COL style="width: 1%;">
-        <COL style="width: 99%;">
-    </COLGROUP>
-    <THEAD>
-	<TR>
-		<TH scope="col">
-		    <IMG src="img/money.gif" alt="">
-		</TH>
-		<TH  scope="col" class="bold nobr">
-		    {trans("Network Balance Sheet")}
-		</TH>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR>
-		<TD class="container" width="100%" colspan="2">
-			<TABLE width="100%">
-				<TR>
-					<TD style="width: 1%;" class="nobr">
-					    <TABLE cellpadding="3">
-					        <TR>
-					    	    <TD style="width: 1%;">
-							<IMG src="img/users.gif" alt="">
-						    </TD>
-						    <TD style="width: 1%;" class="bold nobr">
-						        {trans("User:")}
-						    </TD>
-						    <TD style="width: 98%;">
-						        <SELECT size="1" name="user" {tip text="You can select user to limit results"}>
-						    	    <OPTION value="">{trans("— all users —")}</OPTION>
-							    {section name="users" loop=$users}
-							    <OPTION value="{$users[users].id}">{$users[users].name|truncate:40:"&hellip;":true}</OPTION>
-							    {/section}
-					    	    </SELECT>
-						</TR>
-						<TR>
-						    <TD style="width: 1%;">
-							<IMG src="img/network.gif" alt="">
-						    </TD>
-						    <TD style="width: 1%;" class="bold nobr">
-							{trans("Network:")}
-						    </TD>
-						    <TD style="width: 98%;">
-							<SELECT size="1" name="network" {tip text="Select network"}>
-							    <OPTION value="0" SELECTED>{trans("— all networks —")}</OPTION>
-							    {section name="networks" loop=$networks}
-							    <OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"&hellip;":true}</OPTION>
-							    {/section}
-							</SELECT>
-						    </TD>
-						</TR>
-						<TR>
-						    <TD style="width: 1%;">
-							<IMG src="img/division.gif" alt="">
-						    </TD>
-						    <TD style="width: 1%;" class="bold nobr">
-							{trans("Division")}:
-						    </TD>
-						    <TD style="width: 98%;" class="nobr">
-							<SELECT size="1" name="division" {tip text="Select division"}>
-								<OPTION value="0">{trans("— all —")}</OPTION>
-								{foreach $divisions as $item}
-									<OPTION value="{$item.id}">{$item.label|escape}</OPTION>
-								{/foreach}
-							</SELECT>
-						    </TD>
-						</TR>
-						<TR>
-						    <TD style="width: 1%;">
-							<IMG src="img/group.gif" alt="">
-						    </TD>
-						    <TD style="width: 1%;" class="bold nobr">
-							{trans("Group:")}
-						    </TD>
-						    <TD style="width: 98%;">
-							<SELECT size="1" name="customergroup" {tip text="Select group"}>
-							    <OPTION value="0" SELECTED>{trans("— all groups —")}</OPTION>
-							    {section name="customergroups" loop=$customergroups}
-							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:40:"&hellip;":true}</OPTION>
-							    {/section}
-							</SELECT>
-						    </TD>
-						</TR>
-					    </TABLE>
-					</TD>
-					<TD style="width: 1%;" class="nobr">
-					    <TABLE>
-						<TR>
-						    <TD style="width: 1%;">
-							<IMG src="img/money.gif" alt="">
-						    </TD>
-						    <TD style="width: 1%;" class="bold nobr">
-							{trans("Transaction type:")}
-						    </TD>
-							<TD style="width: 98%;" class="multiselect">
-								<SELECT name="types[]" class="lms-ui-multiselect" {tip text="Select transaction type"} multiple data-default-value="{trans("— all types —")}">
-									<OPTION value="1">{trans("Liability")}</OPTION>
-									<OPTION value="2">{trans("Income")}</OPTION>
-									<OPTION value="3">{trans("Expense")}</OPTION>
-								</SELECT>
-							</TD>
-						</TR>
-						<TR>
-						    <TD style="width: 1%;">
-						    	<IMG src="img/print.gif" alt="">
-						    </TD>
-						    <TD style="width: 1%;" class="bold nobr">
-                        				{trans("Documents:")}
-                        			    </TD>
-                        			    <TD style="width: 98%;">
-                        				<SELECT size="1" name="docs" {tip text="Select transaction type"}>
-                                			    <OPTION value="">{trans("— all —")}</OPTION>
-                            				    <OPTION value="documented">{trans("with document")}</OPTION>
-                            				    <OPTION value="notdocumented">{trans("without document")}</OPTION>
-                        				</SELECT>
-                        			    </TD>
-                    				</TR>
-						<TR>
-						    <TD style="width: 1%;">
-						    	<IMG src="img/isource.gif" alt="">
-						    </TD>
-						    <TD style="width: 1%;" class="bold nobr">
-                        				{trans("Source:")}
-                        			    </TD>
-                        			    <TD style="width: 98%;">
-							<SELECT size="1" name="source" {tip text="You can select import source to limit results"}>
-							<OPTION value="0">{trans("— all sources —")}</OPTION>
-							<OPTION value="-1">{trans("— none —")}</OPTION>
-							{foreach from=$sourcelist item=item}
-							<OPTION value="{$item.id}">{$item.name}</OPTION>
-							{/foreach}
-							</SELECT>
-						    </TD>
-						</TR>
-					    </TABLE>
-					</TD>
-					<TD style="width: 1%;">
-						<IMG src="img/calendar.gif" alt="">
-					</TD>
-					<TD style="width: 95%;">
-						<span class="lms-ui-date-period-container">
-							<strong>{trans("Period:")}</strong>
-							{date_period_preset from="#printbalancelist [name=\"balancefrom\"]" to="#printbalancelist [name=\"balanceto\"]"}
-							<span>{trans("From")}</span>
-							<input type="text" name="balancefrom" size="10" maxlength="10"
-								placeholder="{trans("yyyy/mm/dd")}"
-								{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-							<span>{trans("To")}</span>
-							<input type="text" name="balanceto" size="10" maxlength="10"
-								placeholder="{trans("yyyy/mm/dd")}"
-								{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-						</span>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<tr>
-		<td class="lms-ui-box-buttons" colspan="2">
-			{button icon="csv" label="CSV" id="printbalancelist-csv"}
-			{button icon="print" label="Print" id="printbalancelist-print"}
-		</td>
-	</tr>
-    </TBODY>
-</TABLE>
-</FORM>
+<form method="post" name="printbalancelist" id="printbalancelist" action="?m=print&type=balancelist" target="_blank">
+	<input type="hidden" name="disposition" value="print">
+	<input type="submit" class="hiddenbtn">
+</form>
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<th scope="col">
+				{icon name="money" class="fa-fw"}
+			</th>
+			<th scope="col" class="nobr">
+				<strong>{trans("Network Balance Sheet")}</strong>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td class="container" colspan="2">
+				<table>
+					<colgroup>
+						<col style="width: 1%;">
+						<col style="width: 1%;">
+						<col style="width: 1%;">
+						<col style="width: 1%;">
+						<col style="width: 96%;">
+					</colgroup>
+					<tr>
+						<td class="nobr">
+							<table>
+								<colgroup>
+									<col style="width: 1%;">
+									<col style="width: 1%;">
+									<col style="width: 98%;">
+								</colgroup>
+								<tbody>
+									<tr>
+										<td>
+											{icon name="user" class="fa-fw"}
+										</td>
+										<td class="nobr">
+											<strong>{trans("User")}</strong>
+										</td>
+										<td>
+											<select size="1" name="user" {tip text="You can select user to limit results"}
+												form="printbalancelist">
+												<option value="">{trans("— all users —")}</option>
+												{foreach $users as $user}
+													<option value="{$user.id}">{$user.name|trunescape:40}</option>
+												{/foreach}
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											{icon name="network" class="fa-fw"}
+										</td>
+										<td class="nobr">
+											<strong>{trans("Network")}</strong>
+										</td>
+										<td>
+											<select size="1" name="network" {tip text="Select network"}
+												form="printbalancelist">
+												<option value="0" selected>{trans("— all networks —")}</option>
+												{foreach $networks as $network}
+													<option value="{$network.id}">{$network.name|trunescape:40}</option>
+												{/foreach}
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											{icon name="division" class="fa-fw"}
+										</td>
+										<td class="nobr">
+											<strong>{trans("Division")}</strong>
+										</td>
+										<td class="nobr">
+											<select size="1" name="division" {tip text="Select division"}
+												form="printbalancelist">
+												<option value="0">{trans("— all —")}</option>
+												{foreach $divisions as $division}
+													<option value="{$division.id}">{$division.label|escape}</option>
+												{/foreach}
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											{icon name="customergroup" class="fa-fw"}
+										</td>
+										<td class="nobr">
+											<strong>{trans("Groups")}</strong>
+										</td>
+										<td>
+											<select size="1" name="customergroup[]" {tip class="lms-ui-multiselect" text="Select group"}
+												form="printbalancelist"
+												multiple data-default-value="{trans("— all groups —")}">
+												{foreach $customergroups as $customergroup}
+													<option value="{$customergroup.id}">{$customergroup.name|trunescape:40}</option>
+												{/foreach}
+											</select>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+						<td class="nobr">
+							<table>
+								<colgroup>
+									<col style="width: 1%;">
+									<col style="width: 1%;">
+									<col style="width: 98%;">
+								</colgroup>
+								<tbody>
+									<tr>
+										<td>
+											{icon name="money" class="fa-fw"}}
+										</td>
+										<td class="nobr">
+											<strong>{trans("Transaction type")}</strong>
+										</td>
+										<td class="multiselect">
+											<select name="types[]" class="lms-ui-multiselect" {tip text="Select transaction type"}
+												form="printbalancelist"
+												multiple data-default-value="{trans("— all types —")}">
+												<option value="1">{trans("Liability")}</option>
+												<option value="2">{trans("Income")}</option>
+												<option value="3">{trans("Expense")}</option>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											{icon name="print" class="fa-fw"}
+										</td>
+										<td class="nobr">
+											<strong>{trans("Documents")}</strong>
+										</td>
+										<td>
+											<select size="1" name="docs" {tip text="Select transaction type"}
+												form="printbalancelist">
+												<option value="">{trans("— all —")}</option>
+												<option value="documented">{trans("with document")}</option>
+												<option value="notdocumented">{trans("without document")}</option>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											{icon name="isource" class="fa-fw"}
+										</td>
+										<td class="nobr">
+											<strong>{trans("Source")}</strong>
+										</td>
+										<td>
+											<select size="1" name="source" {tip text="You can select import source to limit results"}
+												form="printbalancelist">
+												<option value="0">{trans("— all sources —")}</option>
+												<option value="-1">{trans("— none —")}</option>
+												{foreach $sourcelist as $item}
+													<option value="{$item.id}">{$item.name}</option>
+												{/foreach}
+											</select>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+						<td>
+							{icon name="calendar" class="fa-fw"}
+						</td>
+						<td>
+							<span class="lms-ui-date-period-container">
+								<strong>{trans("Period")}</strong>
+								{date_period_preset from="[form=\"printbalancelist\"][name=\"balancefrom\"]" to="[form=\"printbalancelist\"][name=\"balanceto\"]"}
+								<span>{trans("From")}</span>
+								<input type="text" name="balancefrom" size="10" maxlength="10"
+									form="printbalancelist"
+									placeholder="{trans("yyyy/mm/dd")}"
+									{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+								<span>{trans("To")}</span>
+								<input type="text" name="balanceto" size="10" maxlength="10"
+									form="printbalancelist"
+									placeholder="{trans("yyyy/mm/dd")}"
+									{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+							</span>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="5">
+							<table>
+								<colgroup>
+									<col style="width: 1%;">
+									<col style="width: 1%;">
+									<col style="width: 98%;">
+								</colgroup>
+								<tbody>
+									<td>
+										{icon name="configuration"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("Adjust the print")}</strong>
+									</td>
+									<td class="nobr">
+										<label>
+											<input type="checkbox" name="printcustomerhideid" value="1"
+												form="printbalancelist">
+											{trans("hide customer ID")}
+										</label>
+										<label>
+											<input type="checkbox" name="printcustomerhidessnten" value="1"
+												form="printbalancelist">
+											{trans("hide customer SSN/TEN")}
+										</label>
+										<label>
+											<input type="checkbox" name="printcustomerhideaddress" value="1"
+												form="printbalancelist">
+											{trans("hide customer address")}
+										</label>
+									</td>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="lms-ui-box-buttons" colspan="2">
+				{button icon="csv" label="CSV" id="printbalancelist-csv"}
+				{button icon="print" label="Print" id="printbalancelist-print"}
+			</td>
+		</tr>
+	</tbody>
+</table>
+
 <script>
 
 	$(function() {
 		$('#printbalancelist-csv').click(function() {
-			$('#printbalancelist [name="disposition"]').val('csv');
+			$('form[name="printbalancelist"] [name="disposition"]').val('csv');
 			$('#printbalancelist').submit();
 		});
 
 		$('#printbalancelist-print').click(function() {
-			$('#printbalancelist [name="disposition"]').val('print');
+			$('form[name="printbalancelist"] [name="disposition"]').val('print');
 			$('#printbalancelist').submit();
 		});
 	});
@@ -695,13 +764,13 @@
 									</td>
 								</tr>
 								<tr>
-									<td>
+									<td class="valign-top">
 										{icon name="configuration"}
 									</td>
-									<td class="nobr">
+									<td class="nobr valign-top">
 										<strong>{trans("Adjust the print")}</strong>
 									</td>
-									<td colspan="2" class="nobr">
+									<td colspan="2">
 										<label>
 											<input type="checkbox" name="printcustomerid" value="1"
 												form="invoicereport">
@@ -711,6 +780,11 @@
 											<input type="checkbox" name="printcustomerssn" value="1"
 												form="invoicereport">
 											{trans("hide customer SSN")}
+										</label>
+										<label>
+											<input type="checkbox" name="print-match-content-service-type" value="1"
+												form="invoicereport">
+											{trans("match document content service type")}
 										</label>
 										<label>
 											<input type="checkbox" name="printonlysummary" value="1"
@@ -2028,12 +2102,26 @@
 				</label>
 			</td>
 		</tr>
+		<tr style="display: none;">
+			<td>
+				{icon name="configuration" class="fa-fw"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("<!uke-pit>Dash character")}</strong>
+			</td>
+			<td>
+				<select size="1" name="dash-character" form="uke-pit">
+					<option value="pit">pit.uke.gov.pl</option>
+					<option value="inwentaryzacja" selected>inwentaryzacja.uke.gov.pl</option>
+				</select>
+			</td>
+		</tr>
 		<tr>
 			<td>
 				{icon name="division" class="fa-fw"}
 			</td>
 			<td class="nobr">
-				<label for="uke-pit-division" class="lms-ui-disabled">
+				<label for="uke-pit-division">
 					<strong>{trans("Division")}</strong>
 				</label>
 			</td>
@@ -2090,6 +2178,54 @@
 					id="uke-pit-customer-resources-as-operator-resources" value="1">
 			</td>
 		</tr>
+		{$report_other_duct_type_as = ConfigHelper::getConfig('uke.pit_report_other_duct_type_as')}
+		<tr>
+			<td>
+				{icon name="wired" class="fa-fw"}
+			</td>
+			<td class="nobr">
+				<label for="uke-pit-report-other-duct-type-as">
+					<strong>{trans("<!uke-pit>Report other duct type as")}</strong>
+				</label>
+			</td>
+			<td>
+				<select size="1" name="report-other-duct-type-as" form="uke-pit"
+					id="uke-pit-report-other-duct-type-as">
+					<option value="0">{trans("<!uke-pit>— preserve —")}</option>
+					{foreach $_NETWORK_DUCT_TYPES as $duct => $duct_type}
+						<option value="{$duct}"{if $duct == $report_other_duct_type_as} selected{/if}>{$duct_type}</option>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="network" class="fa-fw"}
+			</td>
+			<td class="nobr">
+				<label for="uke-pit-report-elements-outside-network-infrastructure">
+					<strong>{trans("<!uke-pit>Report elements outside network infrastructure")}</strong>
+				</label>
+			</td>
+			<td>
+				<input type="checkbox" name="report-elements-outside-network-infrastructure" form="uke-pit"
+					id="uke-pit-report-elements-outside-network-infrastructure" value="1" checked>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="wired" class="fa-fw"}
+			</td>
+			<td class="nobr">
+				<label for="uke-pit-complete-breakdown-points">
+					<strong>{trans("<!uke-pit>Complete breakdown points of network connections")}</strong>
+				</label>
+			</td>
+			<td>
+				<input type="checkbox" name="complete-breakdown-points" form="uke-pit"
+					id="uke-pit-complete-breakdown-points" value="1" checked>
+			</td>
+		</tr>
 		<tr>
 			<td>
 				{icon name="location" class="fa-fw"}
@@ -2134,6 +2270,20 @@
 		</tr>
 		<tr>
 			<td>
+				{icon name="wireless" class="fa-fw"}
+			</td>
+			<td class="nobr">
+				<label for="uke-pit-validate-wireless-links">
+					<strong>{trans("<!uke-pit>Validate wireless links")}</strong>
+				</label>
+			</td>
+			<td>
+				<input type="checkbox" name="validate-wireless-links" form="uke-pit"
+					id="uke-pit-validate-wireless-links" value="1" checked>
+			</td>
+		</tr>
+		<tr>
+			<td>
 				{icon name="reload" class="fa-fw"}
 			</td>
 			<td class="nobr">
@@ -2160,6 +2310,7 @@
 		$('[name="report-type"]').change(function() {
 			var checked = $(this).prop('checked') && $(this).is('[value="customer-services"]');
 			$('#uke-pit-aggregate-customer-services').prop('disabled', !checked).closest('tr').find('label').toggleClass('lms-ui-disabled', !checked);
+			$('#uke-pit-report-other-duct-type-as,#uke-pit-complete-breakdown-points').prop('disabled', checked).closest('tr').find('label').toggleClass('lms-ui-disabled', checked);
 		});
 	});
 
@@ -2373,6 +2524,27 @@
 				</select>
 			</td>
 		</tr>
+		{if !empty($invprojects)}
+			<tr>
+				<td>
+					{icon name="money" class="fa-fw"}
+				</td>
+				<td class="nobr">
+					<strong>{trans("Investment projects")}</strong>
+				</td>
+				<td>
+					<select name="projects[]" form="sidusis-form" required
+						{tip text="Select projects" class="lms-ui-multiselect"}
+						data-default-value="{trans("<!invproject>— without project —")}"
+						multiple>
+						<option value="" data-exclusive selected>{trans("<!invproject>— without project —")}</option>
+						{foreach $invprojects as $project}
+							<option value="{$project.id}"{if !empty($project.divisionid)} data-divisionid="{$project.divisionid}"{/if}>{$project.name|escape}</option>
+						{/foreach}
+					</select>
+				</td>
+			</tr>
+		{/if}
 		<tr>
 			<td colspan="3" class="lms-ui-box-buttons">
 				{button type="submit" form="sidusis-form" icon="submit" label="Submit"}
@@ -2387,6 +2559,15 @@
 		$('#sidusis-form').submit(function () {
 			$('[form="sidusis-form"][type="submit"]').prop('disabled', false);
 		})
+
+		$('[form="sidusis-form"][name="division"]').change(function() {
+			var divisionId = $(this).val();
+			$('[form="sidusis-form"][name="projects[]"]').find('option').each(function() {
+				var optionDivisionId = $(this).attr('data-divisionid');
+				$(this).toggle(!optionDivisionId || divisionId == "" || optionDivisionId == divisionId);
+			});
+			$('[form="sidusis-form"][name="projects[]"]').trigger('lms:multiselect:updated');
+		});
 	});
 
 </script>

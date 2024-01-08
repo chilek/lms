@@ -146,9 +146,34 @@
 							</div>
 							<div class="lms-ui-tab-table-column network">
 								<strong>
-									<A href="?m=netinfo&amp;id={$node.netid}">{$node.netname|truncate:"20":"&hellip;":true}</A>
+									{if !empty($node.vlanid) || strlen($node.netnotes)}
+										{capture assign="hint_text"}{strip}
+											<div class="network-popup">
+												{if !empty($node.vlanid)}
+													<div class="network-popup-row"">
+														{icon name="vlan" class="fa-fw"}
+														<strong>{$node.vlanid}</strong>
+													</div>
+												{/if}
+												{if strlen($node.netnotes)}
+													<div class="network-popup-row">
+														{icon name="notes" class="fa-fw"}
+														<table>
+															<tr>
+																<td class="fall superlight">
+																	{nl2br($node.netnotes|escape)}
+																</td>
+															</tr>
+														</table>
+													</div>
+												{/if}
+											</div>
+										{/strip}{/capture}
+										{hint icon="info" class="lms-ui-ignore-target-url" text=$hint_text}
+									{/if}
+									<A href="?m=netinfo&id={$node.netid}">{$node.netname|truncate:"20":"&hellip;":true}</A>
 									{if $node.network_pub}
-										(<A href="?m=netinfo&amp;id={$node.network_pub.id}">{$node.network_pub.name|truncate:"20":"&hellip;":true}</A>)
+										(<A href="?m=netinfo&id={$node.network_pub.id}">{$node.network_pub.name|truncate:"20":"&hellip;":true}</A>)
 									{/if}
 								</strong>
 							</div>

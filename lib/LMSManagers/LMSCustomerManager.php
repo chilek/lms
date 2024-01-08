@@ -30,6 +30,23 @@
  */
 class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterface
 {
+    const CUSTOMER_LAST_BALANCE_TABLE_STYLE = '<style>
+        .customer-last-balance-table th {
+            border: 1px solid black;
+            white-space: nowrap;
+            padding: 0.3em;
+            vertical-align: middle;
+        }
+
+        .customer-last-balance-table tbody td {
+            border: 1px solid black;
+            white-space: nowrap;
+            padding: 0.3em;
+            text-align: center;
+            vertical-align: middle;
+        }
+        </style>';
+
     /**
      * Returns customer name
      *
@@ -314,7 +331,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 WHERE ' . (ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment') ? '1=0 AND' : '')
                 . ' d.customerid = ? AND d.type = ?'
                 . ($totime ? ' AND d.cdate <= ' . intval($totime) : '') . ')
-            ORDER BY time ' . $direction . ', id',
+            ORDER BY time ' . $direction . ', docid, id',
             array($id, $id, DOC_INVOICE_PRO)
         );
 
@@ -446,9 +463,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             } else {
                 // ok, now we are going to rise up system's load
                 if ($format == 'html') {
-                    $lN = '<table><thead><tr>' . PHP_EOL;
+                    $lN = '<table class="customer-last-balance-table"><thead><tr>' . PHP_EOL;
                     foreach ($cols as $col_name => $col) {
-                        $lN .= '<th style="border: 1px solid black; white-space: nowrap; padding: 0.3em; text-align: ' . $col['align'] . '; vertical-align: middle;">' . $col['label'] . '</th>' . PHP_EOL;
+                        $lN .= '<th style="text-align: ' . $col['align'] . ';">' . $col['label'] . '</th>' . PHP_EOL;
                     }
                     $lN .= '</thead><tbody>' . PHP_EOL;
                 } else {
@@ -477,16 +494,16 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $cols['description']['value'] = $row_s['comment'];
                     if ($format == 'html') {
                         $lN .= '<tr>' . PHP_EOL
-                            . '<td style="border: 1px solid black; white-space: nowrap; padding: 0.3em; text-align: center; vertical-align: middle;">'
+                            . '<td>'
                                 . $cols['date']['value'] . '</td>' . PHP_EOL . '
-                            <td style="border: 1px solid black; white-space: nowrap; padding: 0.3em; text-align: right; vertical-align: middle;">'
+                            <td>'
                                 . $cols['liability']['value'] . '</td>' . PHP_EOL . '
-                            <td style="border: 1px solid black; white-space: nowrap; padding: 0.3em; text-align: right; vertical-align: middle;'
+                            <td style="'
                                 . ($cols['payment']['value'] > 0 ? ' color: green;' : ($cols['payment'] < 0 ? 'color: red;' : '')) . '">'
                                 . ($cols['payment']['value'] > 0 ? '+' : '') . $cols['payment']['value'] . '</td>' . PHP_EOL . '
-                            <td style="border: 1px solid black; white-space: nowrap; padding: 0.3em; text-align: right; vertical-align: middle;'
+                            <td style="'
                                 . ($cols['balance']['value'] < 0 ? 'color: red;' : '') . '">' . $cols['balance']['value'] . '</td>' . PHP_EOL . '
-                            <td style="border: 1px solid black; white-space: nowrap; padding: 0.3em; text-align: left; vertical-align: middle;">'
+                            <td>'
                                 . $cols['description']['value'] . '</td>' . PHP_EOL
                         . '</tr>' . PHP_EOL;
                     } else {
@@ -503,7 +520,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $lN .= $horizontal_line . PHP_EOL;
                 }
             }
-            $body = preg_replace('/%last_[0-9]+_in_a_table/', $lN, $body);
+            $body = preg_replace(
+                '/%last_[0-9]+_in_a_table/',
+                $lN,
+                ($format == 'html' ? self::CUSTOMER_LAST_BALANCE_TABLE_STYLE : '') . $body
+            );
         }
 
         return $body;
@@ -1078,7 +1099,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             }
         }
         if (!empty($customer_statuses)) {
-            $state_conditions[] = '((c.status = ' . implode(' ' . $statesqlskey . ' c.status = ', $customer_statuses) . ') AND c.deleted = 0)';
+            $state_conditions[] = '((c.status = ' . implode(' ' . $statesqlskey . ' c.status = ', $customer_statuses) . ')'
+                . ($ignore_deleted_customers ? ' AND c.deleted = 0' : '') . ')';
             $ignore_deleted_customers = false;
         }
 
@@ -1105,7 +1127,18 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         switch ($as) {
             case -1:
-                $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.commited = 1 AND a.dateto = 0';
+                if (!empty($search['tarifftype'])) {
+                    $assignment = 'SELECT DISTINCT(a.customerid)
+                        FROM assignments a
+                        LEFT JOIN tariffs t ON t.id = a.tariffid
+                        LEFT JOIN liabilities l ON (l.id = a.liabilityid AND a.period <> 0)
+                        WHERE a.suspended = 0
+                        AND a.commited = 1
+                        AND a.dateto = 0
+                        AND (t.type = ' . intval($search['tarifftype']) . ' OR l.type = ' . intval($search['tarifftype']) . ')';
+                } else {
+                    $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.commited = 1 AND a.dateto = 0';
+                }
                 break;
             case -2:
                 $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.commited = 1 '
@@ -1158,6 +1191,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 break;
             case -10:
                 $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.commited = 1 AND a.datefrom = 0';
+                break;
+            case -11:
+                $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.commited = 1';
+                break;
+            case -12:
+                $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.commited = 0';
                 break;
             default:
                 if ($as > 0) {
@@ -1760,7 +1799,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                         (SELECT COUNT(*)
                                         FROM nodegroupassignments
                                         WHERE nodeid = n.id) AS gcount,
-                                        n.netid, net.name AS netname,
+                                        n.netid,
+                                        net.name AS netname,
+                                        net.notes AS netnotes,
+                                        vlans.vlanid,
+                                        vlans.description AS vlandescription,
                                         (CASE WHEN EXISTS (
                                             SELECT 1 FROM nodelocks
                                             WHERE disabled = 0 AND (days & " . $weekday . ") > 0 AND " . $daysecond . " >= fromsec
@@ -1770,6 +1813,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                         vnodes n
                                      LEFT JOIN addresses addr ON addr.id = n.address_id
                                      JOIN networks net ON net.id = n.netid
+                                     LEFT JOIN vlans ON vlans.id = net.vlanid
                                         " . ($type == 'netdev' ? '' : 'LEFT ') . "JOIN netdevices nd ON n.netdev = nd.id
                                      WHERE
                                         " . ($type == 'netdev' ? 'nd.ownerid = ? AND n.ownerid IS NULL' : 'n.ownerid = ?') . "
@@ -1886,6 +1930,16 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
 
         return $this->extractCustomerConsents($result);
+    }
+
+    public function getCustomerSensibleData($id)
+    {
+        return $this->db->GetRow(
+            'SELECT c.ssn, c.icn
+            FROM customer' . (defined('LMS-UI') ? 'view' : 's') . ' c
+            WHERE c.id = ?',
+            array($id)
+        );
     }
 
     /**
@@ -2386,6 +2440,31 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $this->db->CommitTrans();
     }
 
+    public function restoreCustomer($id)
+    {
+        $this->db->BeginTrans();
+
+        $this->db->Execute(
+            'UPDATE customers
+            SET deleted = 0, moddate = ?NOW?, modid = ?
+            WHERE id = ?',
+            array(
+                Auth::GetCurrentUser(),
+                $id,
+            )
+        );
+
+        if ($this->syslog) {
+            $this->syslog->AddMessage(
+                SYSLOG::RES_CUST,
+                SYSLOG::OPER_UPDATE,
+                array(SYSLOG::RES_CUST => $id, 'deleted' => 0)
+            );
+        }
+
+        $this->db->CommitTrans();
+    }
+
     /**
      * Check if address is belong to customer.
      *
@@ -2717,6 +2796,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
     public function getCustomerSMSOptions()
     {
+        global $LMS;
+
         $options = array();
 
         $variable_mapping = array(
@@ -2735,6 +2816,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'from' => 'sms-customers.from',
             'phone_number_validation_pattern' => 'sms-customers.phone_number_validation_pattern',
             'message_template' => 'sms-customers.message_template',
+        );
+
+        $variable_mapping = $LMS->executeHook(
+            'get_customer_sms_options',
+            $variable_mapping
         );
 
         foreach ($variable_mapping as $option_name => $variable_name) {
@@ -3019,9 +3105,20 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     public function getCustomerNotes($cid)
     {
         return $this->db->GetAll(
-            'SELECT n.id, u.login AS user, u.name AS username, u.rname AS rusername, dt, message AS note
+            'SELECT
+                n.id,
+                u.login AS user,
+                u.name AS username,
+                u.rname AS rusername,
+                dt,
+                u2.login AS moduser,
+                u2.name AS modusername,
+                u2.rname AS modrusername,
+                moddate,
+                message AS note
             FROM customernotes n
             LEFT JOIN vusers u ON u.id = n.userid
+            LEFT JOIN vusers u2 ON u2.id = n.moduserid
             WHERE customerid = ? ORDER BY dt DESC',
             array($cid)
         );
@@ -3030,13 +3127,25 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     public function getCustomerNote($id)
     {
         $result = $this->db->GetRow(
-            'SELECT n.id, u.login AS user, u.name AS username, u.rname AS rusername, dt, message AS note
+            'SELECT
+                n.id,
+                u.login AS user,
+                u.name AS username,
+                u.rname AS rusername,
+                dt,
+                u2.login AS moduser,
+                u2.name AS modusername,
+                u2.rname AS modrusername,
+                moddate,
+                message AS note
             FROM customernotes n
             LEFT JOIN vusers u ON u.id = n.userid
+            LEFT JOIN vusers u2 ON u2.id = n.moduserid
             WHERE n.id = ?',
             array($id)
         );
         $result['date'] = date('Y/m/d H:i', $result['dt']);
+        $result['moddate'] = empty($result['moddate']) ? '' : date('Y/m/d H:i', $result['moddate']);
         $result['text'] = htmlspecialchars($result['note']);
         return $result;
     }
@@ -3057,6 +3166,38 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     'message' => $params['customernote'],
                 );
                 $this->syslog->AddMessage(SYSLOG::RES_CUSTNOTE, SYSLOG::OPER_ADD, $args);
+            }
+        } else {
+            $id = null;
+        }
+
+        return $id;
+    }
+
+    public function updateCustomerNote($params)
+    {
+        if (!isset($params['noteid'], $params['customernote'])) {
+            return null;
+        }
+
+        $res = $this->db->Execute(
+            'UPDATE customernotes SET message = ?, moddate = ?NOW?, moduserid = ? WHERE id = ?',
+            array(
+                $params['customernote'],
+                Auth::GetCurrentUser(),
+                $params['noteid'],
+            )
+        );
+
+        if ($res) {
+            $id = $params['noteid'];
+            if ($this->syslog) {
+                $args = array(
+                    SYSLOG::RES_CUSTNOTE => $params['noteid'],
+                    SYSLOG::RES_CUST => $params['customerid'],
+                    'message' => $params['customernote'],
+                );
+                $this->syslog->AddMessage(SYSLOG::RES_CUSTNOTE, SYSLOG::OPER_UPDATE, $args);
             }
         } else {
             $id = null;
@@ -3690,7 +3831,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
     public function getServiceProviders()
     {
-        $result = $this->db->GetAllByKey('SELECT * FROM serviceproviders', 'id');
+        $result = $this->db->GetAllByKey('SELECT * FROM serviceproviders ORDER BY name', 'id');
         return empty($result) ? array() : $result;
     }
 }

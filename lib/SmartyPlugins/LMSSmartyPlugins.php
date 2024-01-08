@@ -38,6 +38,7 @@ class LMSSmartyPlugins
             'type' => 'button',
             'tip' => null,
             'label' => null,
+            'text' => null,
             'href' => null,
             'class' => null,
             'onclick' => null,
@@ -73,6 +74,7 @@ class LMSSmartyPlugins
                 case 'tip':
                 // optional - button with icon only don't use label
                 case 'label':
+                case 'text':
                     if (isset($value)) {
                         $$name = trans($value);
                     }
@@ -111,7 +113,8 @@ class LMSSmartyPlugins
             . ($visible ? '' : ' style="display: none;"')
             . ($disabled ? ' disabled' : '') . '>'
             . ($icon ? '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0 || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>' : '')
-            . ($label ? '<span class="lms-ui-label">' . htmlspecialchars($label) . '</span>' : '') . '
+            . ($label ? '<span class="lms-ui-label">' . htmlspecialchars($label) . '</span>' : '')
+            . ($text ? '<span class="lms-ui-label">' . $text . '</span>' : '') . '
 		</' . ($type == 'link' || $type == 'link-button' ? 'a' : 'button') . '>';
     }
 
@@ -189,7 +192,7 @@ class LMSSmartyPlugins
 
         if ($force_global_division_context) {
             $result .= ($label ? '<label>' : '') . ($label ? trans($label) : '')
-                . '<span class="division-context bold">' . (!empty($user_divisions) ? $user_divisions['shortname'] : trans("all"))
+                . '<span class="division-context bold">' . (!empty($user_divisions) ? htmlspecialchars($user_divisions['label']) : trans("all"))
                 . (empty($icon) ? '' : '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0
                     || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>&nbsp;') . '</span>'
                 . ($label ? '</label>' : '')
@@ -215,7 +218,7 @@ class LMSSmartyPlugins
                 $user_division = reset($user_divisions);
                 $result .= ($label ? '<label>' : '') . ($label ? trans($label) : '')
                     . '<span class="division-context bold">'
-                    . (empty($user_divisions) ? trans("all") : ($shortname ? $user_division['shortname'] : $user_division['name']))
+                    . (empty($user_divisions) ? trans("all") : htmlspecialchars($shortname ? $user_division['label'] : $user_division['name']))
                     . (empty($icon) ? '' : '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0
                       || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>&nbsp;') . '</span>'
                     . ($label ? '</label>' : '')
@@ -238,6 +241,7 @@ class LMSSmartyPlugins
 
         $form = isset($params['form']) ? $params['form'] : null;
         $icon = empty($params['icon']) ? null : $params['icon'];
+        $trigger = isset($params['trigger']) ? $params['trigger'] : 'customerid';
 
         if (isset($params['selected']) && !preg_match('/^[0-9]+$/', $params['selected'])) {
             $params['selected'] = '';
@@ -346,7 +350,7 @@ class LMSSmartyPlugins
                 . ' ' . self::tipFunction(
                     array(
                         'text' => isset($params['inputtip']) ? $params['inputtip'] : 'Search for customer',
-                        'trigger' => 'customerid',
+                        'trigger' => $trigger,
                         'class' => 'lms-ui-customer-select-suggestion-input lms-ui-autogrow'
                     ),
                     $template
@@ -475,6 +479,7 @@ class LMSSmartyPlugins
             $params = array();
         }
 
+        $zipcode_required = ConfigHelper::checkConfig('phpui.zipcode_required');
         // generate unique id for location box
         $LOCATION_ID = 'lmsui-' . uniqid();
 
@@ -616,7 +621,8 @@ class LMSSmartyPlugins
         echo '<tr>
               <td class="nobr">' . trans('Postcode') . '</td>
               <td>
-                <input type="text"   value="' . (!empty($params['location_zip']) ? $params['location_zip'] : '' ) . '" name="' . $input_name_zip . '" data-address="zip" size="7" maxlength="10">
+                <input type="text" value="' . (!empty($params['location_zip']) ? $params['location_zip'] : '' ) . '" name="' . $input_name_zip
+                    . '" data-address="zip" size="7" maxlength="10"' . ($zipcode_required ? ' required' : '') . '>
                 <a class="zip-code-button" href="#" title="' . trans('Click here to autocomplete zip code') . '">&raquo;&raquo;&raquo;</a>
               </td>
           </tr>';
@@ -1139,6 +1145,132 @@ class LMSSmartyPlugins
         ';
     }
 
+    public static function showOnMapButtonFunction(array $params, $template)
+    {
+        static $loaded = false;
+
+        $latitude = isset($params['latitude']) ? $params['latitude'] : null;
+        $longitude = isset($params['longitude']) ? $params['longitude'] : null;
+        $type = isset($params['type']) ? $params['type'] : null;
+        $nodeid = empty($params['nodeid']) ? null : intval($params['nodeid']);
+        $netdevid = empty($params['netdevid']) ? null : intval($params['netdevid']);
+        $external = !empty($params['external']);
+
+        $disabled = false;
+        if (empty($nodeid) && empty($netdevid) && !isset($latitude, $longitude)) {
+            if (empty($params['cityid'])) {
+                return '';
+            }
+            $disabled = isset($params['building_num']) && strlen($params['building_num']);
+        }
+
+        $script = '';
+        if ($disabled) {
+            $address = array(
+                'city_id' => $params['cityid'],
+                'street_id' => empty($params['streetid']) ? null : $params['streetid'],
+                'building_num' => $params['building_num'],
+            );
+            $address = base64_encode(json_encode($address));
+            $class = 'lms-ui-geocoding';
+            if (!$loaded) {
+                $script = '<script src="js/lms-ui-geocoding.js"></script>';
+                $loaded = true;
+            }
+        } else {
+            $address = '';
+            $class = '';
+        }
+
+        switch ($type) {
+            case 'geoportal':
+                $url = '?m=maplink&action=get-geoportal-link&latitude=%latitude&longitude=%longitude';
+                $icon = 'lms-ui-icon-location-geoportal';
+                $tip = trans('Show in GeoPortal');
+                break;
+            case 'default':
+                $url = ConfigHelper::getConfig('phpui.gps_coordinate_url', 'https://www.google.com/maps/search/?api=1&query=%latitude,%longitude');
+                $icon = 'lms-ui-icon-map-pin';
+                $tip = trans('Show on default external map');
+                break;
+            case 'netstork':
+                $url = ConfigHelper::getConfig('netstork.map_url', '', true);
+                if (!strlen($url)) {
+                    return '';
+                }
+                $defaultMapZoom = ConfigHelper::getConfig('netstork.default_map_zoom', 18);
+                $url .= '#%longitude,%latitude,' . $defaultMapZoom;
+                $icon = 'lms-ui-icon-location-netstork';
+                $tip = trans('Show on NetStorkWeb Maps');
+                break;
+            case 'sidusis':
+                $url = '?m=maplink&action=get-sidusis-link&latitude=%latitude&longitude=%longitude';
+                $icon = 'lms-ui-icon-location-sidusis';
+                $tip = trans('Show on SIDUSIS Maps');
+                break;
+            default:
+                if (!empty($nodeid)) {
+                    $url = '?m=netdevmap&nodeid=' . $nodeid;
+                    $icon = 'lms-ui-icon-map';
+                    $tip = trans('Show on map');
+                } elseif (!empty($netdevid)) {
+                    $url = '?m=netdevmap&netdevid=' . $netdevid;
+                    $icon = 'lms-ui-icon-map';
+                    $tip = trans('Show on map');
+                } elseif (!$disabled) {
+                    return '';
+                }
+                break;
+        }
+
+        if (!$disabled) {
+            $url = str_replace(
+                array(
+                    '%longitude',
+                    '%latitude',
+                ),
+                array(
+                    $longitude,
+                    $latitude,
+                ),
+                $url
+            );
+        }
+
+        if ($disabled) {
+            $data_tip = $tip;
+            $tip = trans('No GPS coordinates for this address');
+        }
+
+        $args = array(
+            'href' => $url,
+            'type' => 'link',
+            'external' => $external,
+            'disabled' => $disabled,
+            'icon' => $icon,
+            'tip' => $tip,
+        );
+
+        if (strlen($address)) {
+            $args['data_address'] = $address;
+        }
+        if (strlen($class)) {
+            $args['class'] = $class;
+        }
+        if (isset($data_tip)) {
+            $args['data_tip'] = $data_tip;
+        }
+        if (isset($params['label'])) {
+            if (is_string($params['label'])) {
+                $args['label'] = $params['label'];
+            } elseif (!empty($params['label']) && isset($tip)) {
+                $args['label'] = $tip;
+            }
+        }
+
+        return self::buttonFunction($args, $template) . $script;
+    }
+
     public static function deadlineSelectionFunction(array $params, $template)
     {
         $name = $params['name'];
@@ -1201,6 +1333,53 @@ class LMSSmartyPlugins
             . ' ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template)
             . (isset($params['onchange']) ? ' onChange="' . $params['onchange'] . '"' : '') . '>
 			<option value=""' . (!$selected ? ' selected' : '') . '> ' . trans('<!netdevtype>— undefined —') . '</option>'
+            . $options
+            . '</select>';
+    }
+
+    public static function userSelectionFunction(array $params, $template)
+    {
+        static $userlist = array();
+        $LMS = LMS::getInstance();
+
+        $argv = array(
+            'userAccess' => empty($params['hide_disabled']) ? true : false,
+            'hideDeleted' => empty($params['hide_deleted']) ? true : false,
+            'short' => true
+        );
+        $userlist = $LMS->getUserList($argv);
+
+        $elemid = isset($params['elemid']) ? $params['elemid'] : false;
+        $elemname = isset($params['elemname']) ? $params['elemname'] : false;
+        $class = isset($params['class']) ? $params['class'] : false;
+        $selected = empty($params['selected']) ? false : (is_array($params['selected']) ? $params['selected'] : array($params['selected']));
+        $placeholder = empty($params['placeholder']) ? trans('Select users') : trans($params['placeholder']);
+        $tip = empty($params['tip']) ? trans('Select user(s) (optional)') : $params['tip'];
+        $trigger = isset($params['trigger']) ? $params['trigger'] : $elemname;
+        $form = isset($params['form']) ? $params['form'] : null;
+        $multiple = empty($params['multiple']) ? false : true;
+        $onChange = empty($params['onchange']) ? 'document.filter.submit();' : $params['onchange'];
+        $required = empty($params['required']) ? false : true;
+
+        $options = '';
+
+        foreach ($userlist as $item) {
+            $options .= '<option value="' . $item['id'] . '"'
+                . (is_array($selected) && in_array($item['id'], $selected) ? ' selected' : '')
+                . ' class="' . (empty($item['accessinfo']) ? 'blend' : '') . (empty($item['deleted']) ? '' : ' crossed') . '"'
+                . '>' . htmlspecialchars(substr(trans($item['rname']), 0, 40)) . ' (' . $item['login'] . ')</option>';
+        }
+        $options .= '<option value="-1"' . (is_array($selected) && in_array('-1', $selected) ? ' selected' : '') . ' data-exclusive> ' . trans('— unassigned —') . '</option>';
+
+        return '<select data-placeholder="' . $placeholder . '"'
+            . ($elemname ? ' name="' . $elemname . '"' : '')
+            . ($elemid ? ' id="' . $elemid . '"' : '')
+            . ($form ? ' form="' . $form . '"' : '')
+            . ($multiple ? ' multiple' : '')
+            . ($required ? ' required' : '')
+            . ' class="lms-ui-advanced-select' . ($class ? ' ' . $class : '') . '"'
+            . ' onChange="' . $onChange . '"'
+            . ' ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template) . '>'
             . $options
             . '</select>';
     }

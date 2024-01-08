@@ -57,7 +57,15 @@ function GetRecipients($filter, $type = MSG_MAIL)
     global $LMS;
 
     $state = intval($filter['state']);
-    $network = intval($filter['network']);
+
+    if (empty($filter['network'])) {
+        $networks = array();
+    } elseif (is_array($filter['network'])) {
+        $networks = Utils::filterIntegers($filter['network']);
+    } else {
+        $networks = Utils::filterIntegers(array($filter['network']));
+    }
+
     if (empty($filter['customergroup'])) {
         $customergroup = null;
     } elseif (is_array($filter['customergroup'])) {
@@ -79,7 +87,7 @@ function GetRecipients($filter, $type = MSG_MAIL)
 
     if ($state == 50) {
         $deleted = 1;
-        $network = null;
+        $networks = array();
         $customergroup = null;
     } else {
         $deleted = 0;
@@ -171,8 +179,16 @@ function GetRecipients($filter, $type = MSG_MAIL)
         $state = 0;
     }
 
-    if ($network) {
-        $net = $LMS->GetNetworkParams($network);
+    if (!empty($networks)) {
+        $network_where = array();
+        foreach ($networks as $network) {
+            $net = $LMS->GetNetworkParams($network);
+            $network_where[] = '(netid = ' . $net['id'] . ' AND ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ')';
+            $network_where[] = '(ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')';
+        }
+        $network_condition = ' AND c.id IN (SELECT ownerid FROM vnodes WHERE ' . implode(' OR ', $network_where) . ')';
+    } else {
+        $network_condition = '';
     }
 
     if ($type == MSG_SMS) {
@@ -337,9 +353,7 @@ function GetRecipients($filter, $type = MSG_MAIL)
         . ($type == MSG_WWW ? ' AND c.id IN (SELECT DISTINCT ownerid FROM nodes)' : '')
         . ($state != 0 ? ' AND c.status = ' . $state : '')
         . $document_condition
-        .($network ? ' AND c.id IN (SELECT ownerid FROM vnodes WHERE 
-			(netid = ' . $net['id'] . ' AND ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ')
-			OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
+        . $network_condition
         .($customergroup ? ' AND c.id IN (SELECT customerid FROM vcustomerassignments
 			WHERE customergroupid IN (' . $customergroup . '))' : '')
         .($nodegroup ? ' AND c.id IN (SELECT ownerid FROM vnodes
@@ -725,9 +739,16 @@ foreach ($divisions as $division) {
         $division_count++;
     }
 }
-$SMARTY->assign('division_count', $division_count);
 
 $userinfo = $LMS->GetUserInfo(Auth::GetCurrentUser());
+$sender_name = ConfigHelper::getConfig('messages.sender_name', $userinfo['name']);
+
+$SMARTY->assign(
+    array(
+        'division_count' => $division_count,
+        'sender_name' => $sender_name
+    )
+);
 
 if (isset($_POST['message']) && !isset($_GET['sent'])) {
     $message = $_POST['message'];

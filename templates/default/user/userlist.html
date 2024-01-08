@@ -18,8 +18,7 @@
 <TABLE class="lmsbox lms-ui-background-cycle">
     <COLGROUP>
         <COL style="width: 1%;">
-        <COL style="width: 91%">
-        <COL style="width: 2%">
+        <COL style="width: 93%">
         <COL style="width: 2%">
         <COL style="width: 2%">
         <COL style="width: 1%">
@@ -27,10 +26,10 @@
     </COLGROUP>
     <THEAD>
 	<tr>
-		<td colspan="6">
+		<td colspan="5">
 			{division_selection name="division" selected=$selectedDivision onchange="document.choosefilter.submit();" label="Division:" superuser="{if !empty($superuser)}1{/if}"}
 		</td>
-		<td>
+		<td class="text-right">
 			{button icon="add" label="New User" href="?m=useradd"}
 		</td>
 	</tr>
@@ -45,10 +44,7 @@
 			<SPAN class="nobr">{trans("Phone")}</SPAN>
 		</TH>
 		<TH scope="col">
-			<SPAN class="nobr">{trans("Active from:")}</SPAN>
-		</TH>
-		<TH scope="col">
-			<SPAN class="nobr">{trans("Active to:")}</SPAN>
+			<SPAN class="nobr">{trans("Access period")}</SPAN>
 		</TH>
 		<TH scope="col">
 			<SPAN class="nobr">{trans("Last login:")}</SPAN>
@@ -61,7 +57,7 @@
     <TBODY>
 	{foreach $userslist as $user}
 	{if $user.id}
-	<TR class="highlight{if !$user.access} blend{/if}" data-target-url="?m=userinfo&id={$user.id}" data-name="{$user.login}">
+	<TR class="highlight{if !$user.accessinfo || !$user.access} blend{/if}" data-target-url="?m=userinfo&id={$user.id}" data-name="{$user.login}">
 		<TD class="nobr bold">
 			{$user.login}
 		</TD>
@@ -71,10 +67,8 @@
 		<TD class="nobr">
 			{if $user.phone}{$user.phone}{else} - {/if}
 		</TD>
-		<td class="nobr">
-			{$user.accessfrom}
-		</td>
-		<td class="nobr">
+		<td class="nobr{if !$user.accessinfo} red{/if}">
+			{$user.accessfrom}<br>
 			{$user.accessto}
 		</td>
 		<TD class="nobr">

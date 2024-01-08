@@ -34,6 +34,18 @@ if (!$LMS->CategoryExists($_GET['id'])) {
     $category = intval($_GET['id']);
 
     $DB->Execute('DELETE FROM rtcategories WHERE id=?', array($category));
+    $userpanel_rtcategories = $DB->GetOne('SELECT value FROM uiconfig WHERE section = \'userpanel\' AND var = \'default_categories\'');
+
+    // Remove userpanel helpdesk default category
+    if (!empty($userpanel_rtcategories)) {
+        $cats = array_filter(
+            explode(',', $userpanel_rtcategories),
+            function ($elem) use ($category) {
+                return $elem != $category;
+            }
+        );
+        $DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'default_categories\'', array(implode(',', $cats)));
+    }
 
     $SESSION->redirect('?m=rtcategorylist');
 }

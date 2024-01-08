@@ -48,6 +48,10 @@ function parseWorkTimeHours($period)
     );
 }
 
+$big_networks = ConfigHelper::checkConfig('phpui.big_networks');
+$default_forward_day_limit = ConfigHelper::getConfig('timetable.default_forward_day_limit', ConfigHelper::getConfig('phpui.timetable_days_forward'));
+$hide_disabled_users = ConfigHelper::checkConfig('timetable.hide_disabled_users', ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users'));
+
 // ajax request handling
 if (isset($_GET['action']) && $_GET['action'] == 'eventmove') {
     if (!isset($_GET['id']) || !isset($_GET['delta'])) {
@@ -169,7 +173,7 @@ if (!isset($filter['year'])) {
 
 $layout['pagetitle'] = trans('Schedule');
 
-$filter['forward'] = ConfigHelper::getConfig('timetable.default_forward_day_limit', ConfigHelper::getConfig('phpui.timetable_days_forward'));
+$filter['forward'] = $default_forward_day_limit;
 $eventlist = $LMS->GetEventList($filter);
 $eventlistIds = Utils::array_column($eventlist, 'id', 'id');
 
@@ -177,7 +181,7 @@ $userid = isset($filter['userid']) ? $filter['userid'] : null;
 $userlistcount = empty($userid) ? 0 : count($userid);
 
 $params['short'] = 1;
-if (ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users')) {
+if ($hide_disabled_users) {
     $params['userAccess'] = 1;
 }
 $params['withDeleted'] = 1;
@@ -350,7 +354,7 @@ foreach ($usereventlistgrid as $guserid => $guserevents) {
 //</editor-fold>
 
 // create calendars
-for ($i = 0; $i < ConfigHelper::getConfig('timetable.default_forward_day_limit', ConfigHelper::getConfig('phpui.timetable_days_forward')); $i++) {
+for ($i = 0; $i < $default_forward_day_limit; $i++) {
     $dt = mktime(0, 0, 0, $filter['month'], $filter['day'] + $i, $filter['year']);
     $daylist[$i] = $dt;
 }
@@ -368,22 +372,20 @@ $SESSION->add_history_entry();
 $SESSION->remove('backid');
 
 $today = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
-$SMARTY->assign('today', $today);
-
-$SMARTY->assign('period', $DB->GetRow('SELECT MIN(date) AS fromdate, MAX(date) AS todate FROM events'));
-$SMARTY->assign('eventlist', $eventlist);
-$SMARTY->assign('usereventlist', $usereventlist);
-$SMARTY->assign('usereventlistcount', $usereventlistcount);
-$SMARTY->assign('userlistcount', $userlistcount);
-$SMARTY->assign('usereventlistdates', $usereventlistdates);
-$SMARTY->assign('usereventlistgrid', $usereventlistgrid);
-
-$SMARTY->assign('days', $days);
-$SMARTY->assign('daylist', $daylist);
-$SMARTY->assign('date', $date);
-$SMARTY->assign('error', $error);
-if (!ConfigHelper::checkConfig('phpui.big_networks')) {
-    $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
-}
-$SMARTY->assign('getHolidays', getHolidays(isset($year) ? $year : null));
+$SMARTY->assign(array(
+    'today' => $today,
+    'period' => $LMS->GetTimetableRange(),
+    'eventlist' => $eventlist,
+    'usereventlist' => $usereventlist,
+    'usereventlistcount' => $usereventlistcount,
+    'userlistcount' => $userlistcount,
+    'usereventlistdates' => $usereventlistdates,
+    'usereventlistgrid' => $usereventlistgrid,
+    'days' => $days,
+    'daylist' => $daylist,
+    'date' => $date,
+    'error' => $error,
+    'customerlist' => ($big_networks ? null : $LMS->GetCustomerNames()),
+    'getHolidays' => getHolidays(isset($year) ? $year : null)
+));
 $SMARTY->display('event/eventschedule.html');

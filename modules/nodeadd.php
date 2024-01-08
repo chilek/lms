@@ -78,6 +78,8 @@ if (strlen($node_empty_mac) && !check_mac($node_empty_mac)) {
     $node_empty_mac = '';
 }
 
+$netdevices = $LMS->GetNetDevNames();
+
 if (isset($_POST['nodedata'])) {
     $nodedata = $_POST['nodedata'];
 
@@ -397,6 +399,19 @@ if (isset($_POST['nodedata'])) {
     }
     $nodedata['authtype'] = $authtype;
 
+    if (!empty($netdevices)) {
+        $technology_required = ConfigHelper::getConfig('phpui.node_link_technology_required', 'error');
+        $technology = intval($nodedata['linktechnology']);
+
+        if ($technology_required != 'none' && empty($technology)) {
+            if ($technology_required == 'error' || $technology_required == 'true') {
+                $error['linktechnology'] = trans('Link technology is required!');
+            } elseif ($technology_required == 'warning' && !isset($warnings['nodedata-linktechnology-'])) {
+                $warning['nodedata[linktechnology]'] = trans('Link technology is not selected!');
+            }
+        }
+    }
+
     $hook_data = $LMS->executeHook(
         'nodeadd_validation_before_submit',
         array(
@@ -552,6 +567,6 @@ if (!empty($nodedata['ownerid'])) {
 
 $SMARTY->assign('node_empty_mac', $node_empty_mac);
 $SMARTY->assign('networks', $LMS->GetNetworks());
-$SMARTY->assign('netdevices', $LMS->GetNetDevNames());
+$SMARTY->assign('netdevices', $netdevices);
 $SMARTY->assign('nodedata', $nodedata);
 $SMARTY->display('node/nodeadd.html');

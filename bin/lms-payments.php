@@ -408,15 +408,29 @@ $plans = array();
 $periods = array(
     0 => YEARLY,
 );
-$query = "SELECT n.id, n.period, doctype, COALESCE(a.divisionid, 0) AS divid, isdefault 
-		FROM numberplans n 
-		LEFT JOIN numberplanassignments a ON (a.planid = n.id) 
-		WHERE doctype IN (?, ?, ?)";
-$results = $DB->GetAll($query, array(DOC_INVOICE, DOC_INVOICE_PRO, DOC_DNOTE));
+$query = "SELECT n.id, n.period, doctype,
+        COALESCE(a.divisionid, 0) AS divid,
+        COALESCE(n.customertype, -1) AS customertype,
+        n.isdefault
+    FROM numberplans n
+    LEFT JOIN numberplanassignments a ON a.planid = n.id
+    WHERE doctype IN ?
+        AND n.datefrom <= ?
+        AND (n.dateto = 0 OR n.dateto >= ?)";
+$results = $DB->GetAll(
+    $query,
+    array(
+        array(
+            DOC_INVOICE, DOC_INVOICE_PRO, DOC_DNOTE,
+        ),
+        $currtime,
+        $currtime,
+    )
+);
 if (!empty($results)) {
     foreach ($results as $row) {
         if ($row['isdefault']) {
-            $plans[$row['divid']][$row['doctype']] = $row['id'];
+            $plans[$row['divid']][$row['doctype']][$row['customertype']] = $row['id'];
         }
         $periods[$row['id']] = ($row['period'] ? $row['period'] : YEARLY);
     }
@@ -1130,6 +1144,14 @@ if (!empty($assigns)) {
     }
 }
 
+// correct currency values for foreign currency documents with today's cdate or sdate
+// which have estimated currency value earlier (in the moment of document issue)
+$daystart = mktime(0, 0, 0, date('n', $currtime), date('j', $currtime), date('Y', $currtime));
+$dayend = $daystart + 86399;
+$currencydaystart = strtotime('yesterday', $daystart);
+$currencycurrtime = strtotime('yesterday', $currtime);
+$currencydayend = strtotime('yesterday', $dayend);
+
 $currencyvalues = array();
 
 if (!empty($assigns)) {
@@ -1180,14 +1202,6 @@ if (!empty($currencyvalues) && !$quiet) {
     }
 }
 $currencyvalues[Localisation::getCurrentCurrency()] = 1.0;
-
-// correct currency values for foreign currency documents with today's cdate or sdate
-// which have estimated currency value earlier (in the moment of document issue)
-$daystart = mktime(0, 0, 0, date('n', $currtime), date('j', $currtime), date('Y', $currtime));
-$dayend = $daystart + 86399;
-$currencydaystart = strtotime('yesterday', $daystart);
-$currencycurrtime = strtotime('yesterday', $currtime);
-$currencydayend = strtotime('yesterday', $dayend);
 
 $documents = $DB->GetAll(
     'SELECT d.id, d.currency FROM documents d
@@ -1739,12 +1753,18 @@ foreach ($assigns as $assign) {
                 $inv_paytime = $deadline;
             }
 
-            if ($assign['numberplanid']) {
+            if ($assign['numberplanid'] && isset($periods[$assign['numberplanid']])) {
                 $plan = $assign['numberplanid'];
-            } elseif ($assign['tariffnumberplanid']) {
+            } elseif ($assign['tariffnumberplanid'] && isset($periods[$assign['tariffnumberplanid']])) {
                 $plan = $assign['tariffnumberplanid'];
             } else {
-                $plan = isset($plans[$divid][$assign['invoice']]) ? $plans[$divid][$assign['invoice']] : 0;
+                if (isset($plans[$divid][$assign['invoice']][$assign['customertype']])) {
+                    $plan = $plans[$divid][$assign['invoice']][$assign['customertype']];
+                } elseif (isset($plans[$divid][$assign['invoice']]['-1'])) {
+                    $plan = $plans[$divid][$assign['invoice']]['-1'];
+                } else {
+                    $plan = 0;
+                }
             }
 
             if ($invoices[$cid] == 0 || $doctypes[$cid] != $assign['invoice']

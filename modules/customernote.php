@@ -31,6 +31,11 @@ if (isset($_GET['oper'])) {
                 die(json_encode($LMS->getCustomerNote($noteid)));
             }
             break;
+        case 'update':
+            if ($LMS->updateCustomerNote($_POST)) {
+                die(json_encode($LMS->getCustomerNote($_POST['noteid'])));
+            }
+            break;
         case 'del':
             $LMS->delCustomerNote($_GET['id']);
             break;

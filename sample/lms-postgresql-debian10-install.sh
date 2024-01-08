@@ -2,8 +2,8 @@
 
 #LMS Dependencies
 apt install -y php apache2 postgresql git bash-completion net-tools patch wget mtr \
-  php-{intl,gd,pgsql,bcmath,soap,snmp,imap,gmp,iconv,mailparse,zip,curl,imagick,pear} \
-  composer libdbi-perl libconfig-inifiles-perl libdbd-pg-perl makepasswd sudo bsd-mailx
+  php-{intl,gd,pgsql,bcmath,soap,snmp,imap,gmp,iconv,mailparse,zip,curl,imagick,pear,xml} \
+  libdbi-perl libconfig-inifiles-perl libdbd-pg-perl makepasswd sudo bsd-mailx
 
 apt update
 apt dist-upgrade -y
@@ -41,8 +41,14 @@ do
     chown ${APACHEUSER}:${APACHEUSER} -R $dir
 done
 
-composer update --no-dev
-cd ${USERPANELDIR}/style/bclean; composer update --no-dev
+#install composer
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+php -r "if (hash_file('sha384', 'composer-setup.php') === 'e21205b207c3ff031906575712edab6f13eb0b361f2085f1f1237b7126d785e826a450292b6cfd1d64d92e6563bbde02') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+php composer-setup.php
+php -r "unlink('composer-setup.php');"
+
+php composer.phar update --no-dev
+cd ${USERPANELDIR}/style/bclean; php composer.phar update --no-dev
 
 #LMS DB APP
 PGCONF=`find /etc/postgresql -type f -name 'pg_hba.conf' | tail -1`

@@ -24,8 +24,9 @@
 	<input type="hidden" name="id" value="{$netnode.id}">
 
 {box_container id="netnode"}
-	{box_header icon="netnode" label="Name"}
+	{box_header icon="netnode" label="Name" content_id="netnode-name"}
 		<input type="text" name="netnode[name]" value="{$netnode.name}" maxlength="32" required
+			id="netnode-name"
 			{tip trigger="name" text="<!netnode>Enter node name" bold=1}>
 	{/box_header}
 

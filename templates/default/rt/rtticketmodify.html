@@ -1,5 +1,4 @@
-{$hide_disabled_users = ConfigHelper::checkConfig('rt.hide_disabled_users', ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users'))}
-{$hide_deleted_users = ConfigHelper::checkConfig('rt.hide_deleted_users', ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users'))}
+{include file="rt/rtticketshared.html"}
 
 <style>
 
@@ -170,7 +169,8 @@
 		{box_panel}
 			{block name="rtticketmodify-rightcolumn"}
 			{box_row icon="owner" label="Owner" icon_class="fa-fw"}
-				<select size="1" name="ticket[owner]" {tip class="lms-ui-advanced-select" text="Select user" trigger="owner"}>
+				<select size="1" name="ticket[owner]" id="owner"
+						{tip class="lms-ui-advanced-select" text="Select user" trigger="owner"}>
 					<option value="0">{trans("— select user —")}</option>
 					{foreach $userlist as $user}
 						{if $user.id != $ticket.owner
@@ -245,9 +245,8 @@
 			{/box_row}
 
 			{box_row icon="queue" label="Queue" icon_class="fa-fw"}
-				<select size="1" name="ticket[queue]"
-						{tip class="lms-ui-advanced-select" text="Select queue" trigger="queue"}
-						onchange="xajax_queue_changed($(this).val(), $('#rtverifiers select').val())">
+				<select size="1" name="ticket[queue]" id="queue-selection"
+						{tip class="lms-ui-advanced-select" text="Select queue" trigger="queue"}>
 					{foreach $queuelist as $item}
 						<option value="{$item.id}"
 							{if $item.newticketsubject && $item.newticketbody || $item.newticketsmsbody} data-newticket-notify="1"{/if}
@@ -389,25 +388,6 @@
 <script src="js/templates/rt/rtticketmodify.js"></script>
 <script>
 
-	$(function() {
-		$('#resolve').change(function() {
-			var stateelem = $('#state');
-			if ($(this).prop('checked')) {
-				$(this).data('prev-state', stateelem.val());
-				stateelem.val({$smarty.const.RT_RESOLVED});
-			} else {
-				var prev_state = $(this).data('prev-state');
-				if (prev_state) {
-					stateelem.val(prev_state);
-				}
-			}
-			updateAdvancedSelects(stateelem);
-		});
-
-		$('#state').change(function() {
-			$('#resolve').prop('checked', $(this).val() == {$smarty.const.RT_RESOLVED});
-		});
-
 		$('body').on('change', '.template-selector', function() {
 			var selected = $('option:selected', this);
 			if (parseInt(selected.val()) == 0) {
@@ -445,6 +425,5 @@
 			excluded_elements: [ {if isset($ticket.ticketid)}'{$ticket.ticketid}'{/if} ],
 			conflict_lists: [ '#parent-ticket' ]
 		});
-	});
 
 </script>

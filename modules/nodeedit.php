@@ -75,6 +75,8 @@ if (strlen($node_empty_mac)) {
     }
 }
 
+$netdevices = $LMS->GetNetDevNames();
+
 $layout['pagetitle'] = trans('Node Edit: $a', $nodeinfo['name']);
 
 if (isset($_POST['nodeedit'])) {
@@ -356,8 +358,18 @@ if (isset($_POST['nodeedit'])) {
     } else if (! $LMS->CustomerExists($nodeedit['ownerid'])) {
         $error['nodeedit[customerid]'] = trans('Inexistent owner selected!');
         $error['nodeedit[ownerid]'] = trans('Inexistent owner selected!');
-    } else if ($nodeedit['access'] && $LMS->GetCustomerStatus($nodeedit['ownerid']) != CSTATUS_CONNECTED) {
-        $error['access'] = trans('Node owner is not connected!');
+    } elseif ($nodeedit['access']) {
+        $allowed_statuses = array_flip(
+            Utils::determineAllowedCustomerStatus(
+                ConfigHelper::getConfig('phpui.node_access_change_allowed_customer_statuses'),
+                array(
+                    CSTATUS_CONNECTED,
+                )
+            )
+        );
+        if (!isset($allowed_statuses[$LMS->GetCustomerStatus($nodeedit['ownerid'])])) {
+            $error['access'] = trans('Node owner is not connected!');
+        }
     }
 
     if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')
@@ -380,6 +392,19 @@ if (isset($_POST['nodeedit'])) {
         }
     }
     $nodeedit['authtype'] = $authtype;
+
+    if (!empty($netdevices)) {
+        $technology_required = ConfigHelper::getConfig('phpui.node_link_technology_required', 'error');
+        $technology = intval($nodeedit['linktechnology']);
+
+        if ($technology_required != 'none' && empty($technology)) {
+            if ($technology_required == 'error' || $technology_required == 'true') {
+                $error['linktechnology'] = trans('Link technology is required!');
+            } elseif ($technology_required == 'warning' && !isset($warnings['nodeedit-linktechnology-'])) {
+                $warning['nodeedit[linktechnology]'] = trans('Link technology is not selected!');
+            }
+        }
+    }
 
     $hook_data = $LMS->executeHook(
         'nodeedit_validation_before_submit',
@@ -440,6 +465,7 @@ if (isset($_POST['nodeedit'])) {
     $nodeinfo['authtype'] = $nodeedit['authtype'];
     $nodeinfo['info'] = $nodeedit['info'];
     $nodeinfo['wysiwyg'] = $nodeedit['wysiwyg'];
+    $nodeinfo['linktechnology'] = $nodeedit['linktechnology'];
 
     if ($nodeedit['ipaddr_pub'] == '0.0.0.0') {
         $nodeinfo['ipaddr_pub'] = '';
@@ -518,7 +544,7 @@ if (!isset($resource_tabs['nodesessions']) || $resource_tabs['nodesessions']) {
     $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($nodeid));
 }
 $SMARTY->assign('networks', $LMS->GetNetworks(true));
-$SMARTY->assign('netdevices', $LMS->GetNetDevNames());
+$SMARTY->assign('netdevices', $netdevices);
 if (!isset($resource_tabs['nodegroups']) || $resource_tabs['nodegroups']) {
     $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNamesByNode($nodeid));
     $SMARTY->assign('othernodegroups', $LMS->GetNodeGroupNamesWithoutNode($nodeid));

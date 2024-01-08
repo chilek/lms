@@ -16,6 +16,16 @@
         white-space: nowrap;
     }
 
+    #customernotes-datatable tbody .moddate {
+        font-weight: bold;
+        white-space: nowrap;
+    }
+
+    #customernotes-datatable tbody .modusername {
+        font-weight: bold;
+        white-space: nowrap;
+    }
+
     #customernotes-datatable tbody .note {
         text-align: left;
     }
@@ -24,9 +34,17 @@
         display: none;
     }
 
-    #customernote {
+    .customer-note {
         margin-right: 1em;
         min-height: 1.5em;
+    }
+
+    #customernotes-datatable .note-edit-mode {
+        display: none;
+    }
+
+    .note {
+        cursor: pointer;
     }
 
 </style>
@@ -35,34 +53,42 @@
 
     {tab_header content_id="notespanel"}
         {tab_header_cell icon="lms-ui-icon-notes"}
-            <strong>{trans("Customer Notes:")}</strong>
+            <strong>{trans("Customer Notes")}</strong>
         {/tab_header_cell}
     {/tab_header}
 
     {tab_contents id="notespanel"}
 
         {tab_table}
-            <TABLE id="customernotes-datatable" class="lmsbox-inner lms-ui-datatable lms-ui-datatable-column-search"
+            <table id="customernotes-datatable" class="lmsbox-inner lms-ui-datatable lms-ui-datatable-column-search"
                     {if $limit} data-page-length="{$limit}"{/if}
-                   data-order='[[ 0, "desc" ]]'
-                   data-empty-table-message="{trans("No customer notes.")}"
-                   width="100%">
-                <COLGROUP>
-                    <COL style="width: 1%;">
-                    <COL style="width: 1%;">
-                    <COL style="width: 97%;">
-                    <COL style="width: 1%;">
-                </COLGROUP>
+                    data-order='[[ 0, "desc" ]]'
+                    data-empty-table-message="{trans("No customer notes.")}"
+                    width="100%">
+                <colgroup>
+                    <col style="width: 1%;">
+                    <col style="width: 1%;">
+                    <col style="width: 1%;">
+                    <col style="width: 1%;">
+                    <col style="width: 97%;">
+                    <col style="width: 1%;">
+                </colgroup>
                 <thead>
                     <tr>
-                        <th class="nobr" data-searchable="false" data-select-value="false">
-                            {trans("Date:")}
+                        <th class="nobr text-center" data-searchable="false" data-select-value="false">
+                            {trans("<!customer-note>Created")}
                         </th>
-                        <th class="nobr" data-searchable="true" data-select-value="true" data-filter-id="user-filter">
-                            {trans("User:")}
+                        <th class="nobr text-center" data-searchable="true" data-select-value="true" data-filter-id="user-filter">
+                            {trans("<!customer-note>Creator")}
+                        </th>
+                        <th class="nobr text-center" data-searchable="false" data-select-value="false">
+                            {trans("<!customer-note>Modified")}
+                        </th>
+                        <th class="nobr text-center" data-searchable="true" data-select-value="true" data-filter-id="moduser-filter">
+                            {trans("<!customer-note>Modifier")}
                         </th>
                         <th class="nobr text-left" data-orderable="false" data-searchable="true" data-select-value="false" data-filter-id="note-filter">
-                            {trans("Note:")}
+                            {trans("<!customer-note>Contents")}
                         </th>
                         <th data-searchable="false" data-sortable="false">
                             &nbsp;
@@ -71,29 +97,47 @@
                 </thead>
                 <tbody>
                     {foreach $customernotes as $customernote}
-                    <TR data-id="{$customernote.id}">
-                        <TD class="date">
+                    <tr data-id="{$customernote.id}">
+                        <td class="date text-center">
                             {$customernote.dt|date_format:"Y-m-d H:i"}
-                        </TD>
-                        <TD class="username" data-order="{$customernote.rusername}">
+                        </td>
+                        <td class="username text-center" data-order="{$customernote.rusername}">
                             {$customernote.username}
-                        </TD>
-                        <TD class="note">
-                            {nl2br(htmlspecialchars($customernote.note))}
-                        </TD>
-                        <TD class="text-right nobr">
-                            {button type="link" icon="delete" class="delete-note" tip="Delete"}
-                        </TD>
-                    </TR>
+                        </td>
+                        <td class="moddate text-center">
+                            {if empty($customernote.moddate)}
+                                -
+                            {else}
+                                {$customernote.moddate|date_format:"Y-m-d H:i"}
+                            {/if}
+                        </td>
+                        <td class="modusername text-center"{if !empty($customernote.modusername)} data-order="{$customernote.modrusername}"{/if}>
+                            {if empty($customernote.modusername)}
+                                -
+                            {else}
+                                {$customernote.modusername}
+                            {/if}
+                        </td>
+                        <td class="note">
+                            <span class="note-view-mode">{nl2br(htmlspecialchars($customernote.note))}</span>
+                            <textarea class="lms-ui-autogrow note-edit-mode customer-note" cols="50" rows="1"></textarea>
+                        </td>
+                        <td class="text-right nobr">
+                            {button type="link" icon="save" class="note-edit-mode save-note-button" tip="Save"}
+                            {button type="link" icon="cancel" class="note-edit-mode cancel-note-button" tip="Cancel"}
+                            {button type="link" icon="edit" class="note-view-mode edit-note-button" tip="Edit"}
+                            {button type="link" icon="delete" class="note-view-mode delete-note-button" tip="Delete"}
+                        </td>
+                    </tr>
                     {/foreach}
                 </tbody>
-            </TABLE>
+            </table>
         {/tab_table}
 
         {tab_button_panel}
             {tab_buttons}
-                <label for="customernote" class="bold">{trans("New customer note:")}</label>
-                <textarea class="lms-ui-autogrow" cols="50" rows="1" id="customernote"></textarea>
+                <label for="customer-note" class="bold">{trans("New customer note")}</label>
+                <textarea class="lms-ui-autogrow customer-note" cols="50" rows="1" id="customer-note"></textarea>
                 {button icon="add" id="add-note" label="Add" tip="Add new customer note"}
             {/tab_buttons}
         {/tab_button_panel}
@@ -102,8 +146,11 @@
 
 {/tab_container}
 
-<template id="delete-note-template">
-    {button type="link" icon="delete" class="delete-note" tip="Delete"}
+<template id="note-menu-template">
+    {button type="link" icon="save" class="note-edit-mode save-note-button" tip="Save"}
+    {button type="link" icon="cancel" class="note-edit-mode cancel-note-button" tip="Cancel"}
+    {button type="link" icon="edit" class="note-view-mode edit-note-button" tip="Edit"}
+    {button type="link" icon="delete" class="note-view-mode delete-note-button" tip="Delete"}
 </template>
 
 <script>
@@ -113,9 +160,11 @@
         var addBtn = $('#add-note');
         var table = $('#customernotes-datatable').DataTable();
 
-        $('#customernotes-datatable').on('click', '.delete-note', function() {
+        $('#customernotes-datatable').on('click', '.delete-note-button', function() {
+            var row = $(this).closest('tr');
             addBtn.prop('disabled', true);
-            var noteid = $(this).closest('tr').attr('data-id');
+            $(this).prop('disabled', true);
+            var noteid = row.attr('data-id');
             $.ajax({
                 url: action + '&api=1&oper=del&id=' + noteid,
                 async: true,
@@ -126,10 +175,63 @@
                     $('#add-note').prop('disabled', false);
                 }
             });
+        }).on('click', '.edit-note-button', function() {
+            var row = $(this).closest('tr');
+            row.find('.note-edit-mode').show();
+            row.find('.note-view-mode').hide();
+            addBtn.prop('disabled', true);
+            var val = row.find('.note .note-view-mode').html();
+            row.find('.note .note-edit-mode').val(val.replaceAll(/(\n|\n\r|\r|\r\n)/g, '').replaceAll('<br>', '\n')).show().trigger('input');
+        }).on('click', '.cancel-note-button', function() {
+            var row = $(this).closest('tr');
+            row.find('.note-edit-mode').hide();
+            row.find('.note-view-mode').show();
+            addBtn.prop('disabled', false);
+        }).on('click', '.save-note-button', function() {
+            var row = $(this).closest('tr');
+            var noteid = row.attr('data-id');
+            var val = row.find('.note .note-edit-mode').val();
+
+            if (val.trim().length < 4) {
+                alertDialog($t("Customer note is too short!"), this);
+                return;
+            }
+
+            $.ajax({
+                url: action + '&api=1&oper=update',
+                async: true,
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    customerid: {$customerinfo.id},
+                    noteid: noteid,
+                    customernote: val
+                },
+                success: function(data) {
+                    if (data.hasOwnProperty('id')) {
+                        row.find('.note .note-view-mode').html(escapeHtml(val).replace(/(\n|\n\r|\r|\r\n)/g, '<br>'));
+                        row.find('.moddate').html(data.moddate);
+                        row.find('.modusername').html(data.modusername).attr('data-order', data.modrusername);
+                    }
+                    row.find('.note-edit-mode').hide();
+                    row.find('.note-view-mode').show();
+                    table.rows('[data-id="' + noteid + '"]').draw();
+                    addBtn.prop('disabled', false);
+                }
+            });
+        }).on('click', '.note', function() {
+            if (!$(this).find('.note-edit-mode').is(':visible')) {
+                $(this).closest('tr').find('.edit-note-button').click();
+            }
+        }).on('keydown', '.note-edit-mode.customer-note', function(e) {
+            if (e.keyCode == 27) {
+                $(this).closest('tr').find('.cancel-note-button').click();
+                e.stopImmediatePropagation();
+            }
         });
 
         addBtn.click(function() {
-            var note = $('#customernote');
+            var note = $('#customer-note');
             if (note.val().trim().length < 4) {
                 alertDialog($t("Customer note is too short!"), this);
                 return;
@@ -148,12 +250,23 @@
                 },
                 success: function(data) {
                     if (data.hasOwnProperty('id')) {
-                        var tr = $('<tr data-id="' + data.id + '"><td class="date">' +
-                            data.date + '</td><td class="username" data-order="' + data.rusername + '">' +
-                            data.username + '</td><td class="note">' +
-                            data.text.replace(/\r?\n/g, '<br>') + '</td><td>' +
-                            $('#delete-note-template').html() + '</td></tr>')
+                        var tr = $(
+                            '<tr data-id="' + data.id + '">' +
+                                '<td class="date text-center">' + data.date + '</td>' +
+                                '<td class="username text-center" data-order="' + data.rusername + '">' + data.username + '</td>' +
+                                '<td class="modedate text-center"></td>' +
+                                '<td class="modusername text-center"></td>' +
+                                '<td class="note">' +
+                                    '<span class="note-view-mode">' +
+                                    data.text.replace(/\r?\n/g, '<br>') +
+                                    '</span>' +
+                                    '<textarea class="lms-ui-autogrow note-edit-mode customer-note" cols="50" rows="1"></textarea>' +
+                                '</td>' +
+                                '<td>' + $('#note-menu-template').html() + '</td>' +
+                            '</tr>'
+                        );
                         table.row.add(tr).draw();
+                        initAutoGrow('.lms-ui-autogrow');
                     }
                     note.val('');
                     addBtn.prop('disabled', false);

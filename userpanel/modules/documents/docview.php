@@ -109,7 +109,7 @@ if (!empty($_GET['id'])) {
             } else {
                 header('Content-Disposition: inline; filename="' . $doc['filename'] . '"');
                 header('Content-Transfer-Encoding: binary');
-                header('Content-Length: ' . filesize($filename) . ' bytes');
+                header('Content-Length: ' . filesize($filename));
             }
 
             readfile($filename);

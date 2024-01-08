@@ -44,6 +44,32 @@
 		padding-right: 1em;
 	}
 
+	.lms-ui-button-clipboard[data-type] {
+		display: none;
+	}
+
+	.lms-ui-button-clipboard[data-type] > #check-ssn-button {
+		display: none;
+	}
+
+	[data-type="ssn"].lms-ui-error {
+		color: red;
+	}
+
+	.customerinfo-button-panel {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.customerinfo-buttons {
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+	.customerinfo-buttons > *:not(:first-child) {
+		margin-left: 0.3em;
+	}
+
 </style>
 
 <table class="lmsbox{if $customerpanel} lms-ui-tab-container lms-ui-sortable{/if}" id="customerinfobox"{if $customerpanel} data-label="{trans("Customer Info")}"{/if}>
@@ -139,8 +165,20 @@
 													{if isset($_IDENTITY_TYPES[$customerinfo.ict])}
 														{trans($_IDENTITY_TYPES[$customerinfo.ict])}
 													{/if}
-													{$customerinfo.icn|escape}
-													{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.icn}
+													{if ConfigHelper::checkPrivilege('customer_sensitive_data_view')}
+														{$icn = $customerinfo.icn|escape}
+													{else}
+														{$icn = preg_replace('/[^\s]/', '*', $customerinfo.icn)}
+													{/if}
+													<span class="customer-sensible-data" data-type="icn">
+														{$icn}
+													</span>
+													{if ConfigHelper::checkPrivilege('customer_sensitive_data_view')}
+														{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_text=$icn}
+													{else}
+														{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_handler=true
+															data_type="icn"}
+													{/if}
 													{if $customerinfo.icexpires !== ''}
 														{if $customerinfo.icexpires > 0}
 															{textformat assign="icexpires"}
@@ -161,11 +199,23 @@
 										{if $customerinfo.ssn != ""}
 											<tr>
 												<td>
-													{icon name="user-id-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.ssn}
+													{icon name="user-id-number"}
 												</td>
 												<td>
 													{trans("SSN")}
-													{$customerinfo.ssn|escape}
+													{if ConfigHelper::checkPrivilege('customer_sensitive_data_view')}
+														<span data-type="ssn">
+															{$customerinfo.ssn|escape}
+														</span>
+														{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.ssn}
+													{else}
+														<span class="customer-sensible-data" data-type="ssn">
+															{preg_replace('/[^\s]/', '*', $customerinfo.ssn)}
+														</span>
+														{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_handler=true
+															data_type="ssn"}
+													{/if}
+													{button type="link" icon="check" id="check-ssn-button" tip="Check in PESEL Reservation Registry"}
 												</td>
 											</tr>
 										{/if}
@@ -218,9 +268,37 @@
 														{else}
 															{$v.location|default:""|escape}
 														{/if}
-														<a href="{$gps_location_url|replace:"%location":$v.location|replace:"%state":$v.location_state_name|replace:"%city":$v.location_city_name|replace:"%zip":$v.location_zip|replace:"%street":$v.location_street_name|replace:"%full_street":$v.location_full_street_name|replace:"%full_reversed_street":$v.location_full_reversed_street_name|replace:"%short_street":$v.location_short_street_name|replace:"%house":$v.location_house|escape}"
-															title="{trans("Show on map")}">{icon name="location"}</a>
 													</span>
+													{button
+														type="link"
+														tip="Show on map"
+														icon="location"
+														href="{$gps_location_url|replace:"%location":$v.location|replace:"%state":$v.location_state_name|replace:"%city":$v.location_city_name|replace:"%zip":$v.location_zip|replace:"%street":$v.location_street_name|replace:"%full_street":$v.location_full_street_name|replace:"%full_reversed_street":$v.location_full_reversed_street_name|replace:"%short_street":$v.location_short_street_name|replace:"%house":$v.location_house|escape}"
+													}
+													{show_on_map_button
+														type="default"
+														cityid=$v.location_city
+														streetid=$v.location_street
+														building_num=$v.location_house
+													}
+													{show_on_map_button
+														type="netstork"
+														cityid=$v.location_city
+														streetid=$v.location_street
+														building_num=$v.location_house
+													}
+													{show_on_map_button
+														type="geoportal"
+														cityid=$v.location_city
+														streetid=$v.location_street
+														building_num=$v.location_house
+													}
+													{show_on_map_button
+														type='sidusis'
+														cityid=$v.location_city
+														streetid=$v.location_street
+														building_num=$v.location_house
+													}
 												</td>
 											</tr>
 											{break}
@@ -252,9 +330,37 @@
 														{else}
 															{$v.location|escape}
 														{/if}
-														<a href="{$gps_location_url|replace:"%location":$v.location|replace:"%state":$v.location_state_name|replace:"%city":$v.location_city_name|replace:"%zip":$v.location_zip|replace:"%street":$v.location_street_name|replace:"%full_street":$v.location_full_street_name|replace:"%full_reversed_street":$v.location_full_reversed_street_name|replace:"%short_street":$v.location_short_street_name|replace:"%house":$v.location_house|escape}"
-															title="{trans("Show on map")}">{icon name="location"}</a>
 													</span>
+													{button
+														type="link"
+														tip="Show on map"
+														icon="location"
+														href="{$gps_location_url|replace:"%location":$v.location|replace:"%state":$v.location_state_name|replace:"%city":$v.location_city_name|replace:"%zip":$v.location_zip|replace:"%street":$v.location_street_name|replace:"%full_street":$v.location_full_street_name|replace:"%full_reversed_street":$v.location_full_reversed_street_name|replace:"%short_street":$v.location_short_street_name|replace:"%house":$v.location_house|escape}"
+													}
+													{show_on_map_button
+														type="default"
+														cityid=$v.location_city
+														streetid=$v.location_street
+														building_num=$v.location_house
+													}
+													{show_on_map_button
+														type="netstork"
+														cityid=$v.location_city
+														streetid=$v.location_street
+														building_num=$v.location_house
+													}
+													{show_on_map_button
+														type="geoportal"
+														cityid=$v.location_city
+														streetid=$v.location_street
+														building_num=$v.location_house
+													}
+                                                                                                        {show_on_map_button
+                                                                                                                type='sidusis'
+                                                                                                                cityid=$v.location_city
+                                                                                                                streetid=$v.location_street
+                                                                                                                building_num=$v.location_house
+                                                                                                        }
 												</td>
 											</tr>
 											{break}
@@ -294,9 +400,37 @@
 														{else}
 															{$v.location|default:""|escape}
 														{/if}
-														<a href="{$gps_location_url|replace:"%location":$v.location|replace:"%state":$v.location_state_name|replace:"%city":$v.location_city_name|replace:"%zip":$v.location_zip|replace:"%street":$v.location_street_name|replace:"%full_street":$v.location_full_street_name|replace:"%full_reversed_street":$v.location_full_reversed_street_name|replace:"%short_street":$v.location_short_street_name|replace:"%house":$v.location_house|escape}"
-															title="{trans("Show on map")}">{icon name="location"}</a>
 													</span>
+													{button
+														type="link"
+														tip="Show on map"
+														icon="location"
+														href="{$gps_location_url|replace:"%location":$v.location|replace:"%state":$v.location_state_name|replace:"%city":$v.location_city_name|replace:"%zip":$v.location_zip|replace:"%street":$v.location_street_name|replace:"%full_street":$v.location_full_street_name|replace:"%full_reversed_street":$v.location_full_reversed_street_name|replace:"%short_street":$v.location_short_street_name|replace:"%house":$v.location_house|escape}"
+													}
+													{show_on_map_button
+														type="default"
+														cityid=$v.location_city
+														streetid=$v.location_street
+														building_num=$v.location_house
+													}
+													{show_on_map_button
+														type="netstork"
+														cityid=$v.location_city
+														streetid=$v.location_street
+														building_num=$v.location_house
+													}
+													{show_on_map_button
+														type="geoportal"
+														cityid=$v.location_city
+														streetid=$v.location_street
+														building_num=$v.location_house
+													}
+                                                                                                        {show_on_map_button
+                                                                                                                type='sidusis'
+                                                                                                                cityid=$v.location_city
+                                                                                                                streetid=$v.location_street
+                                                                                                                building_num=$v.location_house
+                                                                                                        }
 												</td>
 											</tr>
 										{/if}
@@ -687,40 +821,49 @@
 		</tr>
 		<tr>
 			<td colspan="2" class="lms-ui-box-buttons">
-				{block name="customerinfobox-buttons"}
-					{if $customerinfo.deleted}
-						{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
-							{button id="remove-button" icon="remove" label="Remove permanently"
-								data_href="?m=customerdel&id={$customerinfo.id}&type=permanent"}
-						{/if}
-						{button id="restore-button" icon="restore" label="Restore"
-							href="?m=customeredit&id={$customerinfo.id}&action=recover"}
-					{else}
-						{button type="link-button" id="rtsearch-button"
-							class="{if $customerstats['tickets']['notresolved']}bold{/if}"
-							icon="timetable"
-							label="{trans("Tickets")}{if $customerstats['tickets']} ({$customerstats['tickets']['all']}{if $customerstats['tickets']['notresolved']} / {$customerstats['tickets']['notresolved']}{/if}){/if}"
-							href="?m=rtsearch&id={$customerinfo.id}"}
-						{button type="link-button" id="accounts-button" icon="customer"
-							label="{trans("Accounts")} ({$customerstats['accounts']})"
-							href="?m=accountlist&u={$customerinfo.id}"}
-						{button type="link-button" id="domains-button" icon="network"
-							label="{trans("Domains")} ({$customerstats['domains']})"
-							href="?m=domainlist&c={$customerinfo.id}"}
-						{button type="link-button" id="stats-button" icon="stats" label="Stats"
-							href="?m=trafficprint&type=customertraffic&customer={$customerinfo.id}"}
-						{button type="link-button" id="edit-button" icon="edit" label="Edit"
-							href="?m=customeredit&id={$customerinfo.id}"}
-						{if ConfigHelper::checkPrivilege('customer_removal')}
-							{button id="delete-button" icon="delete" label="Delete"
-								data_href="?m=customerdel&id={$customerinfo.id}"}
-						{/if}
+				<div class="customerinfo-button-panel">
+					<div class="customerinfo-buttons">
+						{block name="customerinfobox-buttons"}
+							{if $customerinfo.deleted}
+								{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
+									{button id="remove-button" icon="remove" label="Remove permanently"
+										data_href="?m=customerdel&id={$customerinfo.id}&type=permanent"}
+								{/if}
+								{button id="restore-button" icon="restore" label="Restore"
+									href="?m=customeredit&id={$customerinfo.id}&action=recover"}
+							{else}
+								{button type="link-button" id="rtsearch-button"
+									class="{if $customerstats['tickets']['notresolved']}bold{/if}"
+									icon="timetable"
+									label="{trans("Tickets")}{if $customerstats['tickets']} ({$customerstats['tickets']['all']}{if $customerstats['tickets']['notresolved']} / {$customerstats['tickets']['notresolved']}{/if}){/if}"
+									href="?m=rtsearch&id={$customerinfo.id}"}
+								{button type="link-button" id="accounts-button" icon="customer"
+									label="{trans("Accounts")} ({$customerstats['accounts']})"
+									href="?m=accountlist&u={$customerinfo.id}"}
+								{button type="link-button" id="domains-button" icon="network"
+									label="{trans("Domains")} ({$customerstats['domains']})"
+									href="?m=domainlist&c={$customerinfo.id}"}
+								{button type="link-button" id="stats-button" icon="stats" label="Stats"
+									href="?m=trafficprint&type=customertraffic&customer={$customerinfo.id}"}
+								{button type="link-button" id="edit-button" icon="edit" label="Edit"
+									href="?m=customeredit&id={$customerinfo.id}"}
+								{if ConfigHelper::checkPrivilege('customer_removal')}
+									{button id="delete-button" icon="delete" label="Delete"
+										data_href="?m=customerdel&id={$customerinfo.id}"}
+								{/if}
+							{/if}
+							{if $info_link}
+								{button type="link-button" id="info-button" icon="info" label="Info"
+									href="?m=customerinfo&id={$customerinfo.id}"}
+							{/if}
+						{/block}
+					</div>
+					{if !ConfigHelper::checkPrivilege('customer_sensitive_data_view') && !ConfigHelper::checkPrivilege('hide_customer_sensitive_data')}
+						<div class="customerinfo-buttons">
+							{button icon="sensible-data" label="Show sensible data" id="customer-sensible-data-button"}
+						</div>
 					{/if}
-					{if $info_link}
-						{button type="link-button" id="info-button" icon="info" label="Info"
-							href="?m=customerinfo&id={$customerinfo.id}"}
-					{/if}
-				{/block}
+				</div>
 			</td>
 		</tr>
 	</tbody>
@@ -750,6 +893,72 @@
 			var name = $(this).attr('data-name');
 			confirmDialog($t("Are you sure, you want to make instant payment for customer '$a'?", name), this).done(function () {
 				$('#instantpayment').submit();
+			});
+		});
+
+		$('#customer-sensible-data-button').click(function() {
+			var btn = $(this);
+
+			$.ajax({
+				url: "?m={$layout.module}&api=1&id={$customerinfo.id}&action=get_sensible_data",
+				dataType: "json",
+				success: function(data) {
+					$('.customer-sensible-data[data-type]').each(function() {
+						var type = $(this).attr('data-type');
+						if (data.hasOwnProperty(type)) {
+							$(this).html(data[type]);
+						}
+					});
+					$('.lms-ui-button-clipboard[data-type],#check-ssn-button').show();
+					btn.prop('disabled', true);
+				}
+			});
+		});
+
+		$('.lms-ui-button-clipboard[data-type]').on('lms:clipboard:click', function() {
+			return $('.customer-sensible-data[data-type="' + $(this).attr('data-type') + '"]').text().trim();
+		});
+
+		$('#check-ssn-button').click(function() {
+			var btn = $(this);
+			var ssnElem = $('[data-type="ssn"]');
+
+			ssnElem.attr({
+				"data-tooltip": null,
+				title: null
+			}).css({
+				color: ''
+			}).removeClass('lms-ui-error');
+
+			btn.prop('disabled', true);
+
+			$.ajax({
+				url: '?m=customerssncheck&api=1&ssn=' + ssnElem.text().trim(),
+				//url: '?m=customerssncheck&api=1&ssn=80103193344', // not reserved
+				//url: '?m=customerssncheck&api=1&ssn=70030158839', // reserved
+				dataType: "json",
+				success: function(data) {
+					if (data.hasOwnProperty('error')) {
+						ssnElem.addClass('lms-ui-error').attr({
+							title: data.error,
+							"data-tooltip": null
+						});
+					} else if (data.errors.length) {
+						ssnElem.addClass('lms-ui-error').attr({
+							title: data.errors.join('<br>'),
+							"data-tooltip": null
+						});
+					} else {
+						if (data.reserved) {
+							ssnElem.css('color', 'Sienna');
+						} else {
+							ssnElem.css('color', 'green');
+						}
+					}
+
+					btn.prop('disabled', false);
+				}
+
 			});
 		});
 	});

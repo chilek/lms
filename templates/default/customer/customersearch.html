@@ -79,24 +79,24 @@
 		options.add(new Option('{trans("— none —")}', 0));
 		switch (linktype) {
 			case '':
-				{foreach array(0, 1, 2) as $linktype}
+				{foreach array({$smarty.const.LINKTYPE_WIRE}, {$smarty.const.LINKTYPE_WIRELESS}, {$smarty.const.LINKTYPE_FIBER}) as $linktype}
 					{foreach $_LINKTECHNOLOGIES[$linktype] as $linktechnologyidx => $linktechnology}
 					options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
 					{/foreach}
 				{/foreach}
 				break;
 			case '0':
-				{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
+				{foreach $_LINKTECHNOLOGIES[$smarty.const.LINKTYPE_WIRE] as $linktechnologyidx => $linktechnology}
 				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
 				{/foreach}
 				break;
 			case '1':
-				{foreach $_LINKTECHNOLOGIES[1] as $linktechnologyidx => $linktechnology}
+				{foreach $_LINKTECHNOLOGIES[$smarty.const.LINKTYPE_WIRELESS] as $linktechnologyidx => $linktechnology}
 				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
 				{/foreach}
 				break;
 			case '2':
-				{foreach $_LINKTECHNOLOGIES[2] as $linktechnologyidx => $linktechnology}
+				{foreach $_LINKTECHNOLOGIES[$smarty.const.LINKTYPE_FIBER] as $linktechnologyidx => $linktechnology}
 				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
 				{/foreach}
 				break;
@@ -401,14 +401,14 @@
 		<TD class="bold nobr">
 			{icon name="netdev"} {trans("Link type:")}
 		</TD>
-		<TD>
-			<SELECT SIZE="1" name="search[linktype]" onchange="change_linktype(this.options[this.selectedIndex].value)">
-				<OPTION VALUE="">{trans("— all —")}</OPTION>
-				{foreach from=$_LINKTYPES item=item key=key}
-					<OPTION VALUE="{$key}">{$item}</OPTION>
+		<td>
+			<select size="1" name="search[linktype]" onchange="change_linktype(this.options[this.selectedIndex].value)">
+				<option value="">{trans("— all —")}</option>
+				{foreach $_LINKTECHNOLOGIES as $linktype => $linktech}
+					<option value="{$linktype}">{$_LINKTYPES[$linktype]}</option>
 				{/foreach}
-			</SELECT>
-		</TD>
+			</select>
+		</td>
 	</TR>
 	<TR>
 		<TD class="bold nobr">
@@ -492,6 +492,8 @@
 				<option value="-9">{trans('all suspended')}</option>
 				<option value="-6">{trans('waiting')}</option>
 				<option value="-8">{trans('waiting, without nodes')}</option>
+				<option value="-11">{trans("<!assignment>commited")}</option>
+				<option value="-12">{trans("<!assignment>not commited")}</option>
 			</select>
 			<input type="text" id="assignment-days" name="search[assignments]" value="" disabled required
 				size="5" placeholder="{trans("days")}" style="display: none;" pattern="[0-9]+">

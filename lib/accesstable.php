@@ -25,7 +25,7 @@
  */
 
 // modules with access for everyone
-$global_access_regexp = '^(welcome|copyrights|logout|chpasswd|twofactorauth(info|edit)|quicksearch|calendar|persistentsetting|currentdivision|zipcode|indicators|dns|configinfo|numberplanhelper)$';
+$global_access_regexp = '^(welcome|copyrights|logout|chpasswd|twofactorauth(info|edit)|quicksearch|calendar|persistentsetting|currentdivision|zipcode|indicators|dns|configinfo|numberplanhelper|maplink|customerssncheck)$';
 
 $access_table = array(
     'full_access' => array(
@@ -36,7 +36,7 @@ $access_table = array(
     ),
     'read_only' => array(
         'label' => trans('read only (excluding helpdesk)'),
-        'allow_regexp' => '^(([a-z]+(list|info|view|search|balance|infoshort))|eventschedule|customeraddresses|customerassignmenthelper|netdevmap|eventprint|eventnote|nodelistshort|number|choose[a-z]+)$',
+        'allow_regexp' => '^(([a-z]+(list|info|view|search|balance|infoshort))|eventschedule|customeraddresses|customerselect|customerassignmenthelper|netdevmap|eventprint|eventnote|nodelistshort|number|choose[a-z]+)$',
         'allow_menu_items' => array(
             'admin' => array('userlist', 'dblist', 'copyrights', 'usergrouplist'),
             'customers' => array('customerlist', 'customersearch', 'customergrouplist'),
@@ -67,7 +67,7 @@ $access_table = array(
     ),
     'finances_management' => array(
         'label' => trans('finances management'),
-        'allow_regexp' => '^((tariff|customerassignment)(add|info|list|move|edit|del)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list|transfer|)|(cashreg(list|info))|(invoice|invoice(list|new|edit|del|note(|edit)|report|paid|info|send))|(note|note(list|add|edit|del|paid))|number|export|print|cashimport|cashimportparser|cashpackagedel|customertransferform|tariffpricevariant)$',
+        'allow_regexp' => '^((tariff|customerassignment)(add|info|list|move|edit|del)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list|transfer|)|(cashreg(list|info))|(invoice|invoice(list|new|edit|del|note(|edit)|report|paid|info|send))|(note|note(list|add|edit|del|paid))|number|export|print|cashimport|cashimportparser|cashpackagedel|customertransferform|customerselect|tariffpricevariant)$',
         'allow_menu_items' => array(
             'finances' => Permission::MENU_ALL,
         ),
@@ -117,11 +117,14 @@ $access_table = array(
     ),
     'customer_management' => array(
         'label' => trans('customers management'),
-        'allow_regexp' => '^((customer|document)(add|edit|info|infoshort|list|print|search|warn|cutoffstop|group)|documentdel|documentscanadd|customertransferform|customeraddresses|customernote|customerassignmenthelper|documentsend|documentgen|documentview|nodewarn|choose(node|location)|gusapi|number|invoiceinfo)$',
+        'allow_regexp' => '^((customer|document)(add|edit|info|infoshort|list|print|search|warn|cutoffstop|group)|documentdel|documentscanadd|customertransferform|customeraddresses|customerselect|customernote|customername|customerassignmenthelper|documentsend|documentgen|documentview|nodewarn|choose(node|location)|gusapi|number|invoiceinfo)$',
         'allow_menu_items' => array(
             'customers' => Permission::MENU_ALL,
             'documents' => Permission::MENU_ALL,
         ),
+    ),
+    'customer_sensitive_data_view' => array(
+        'label' => trans('customer sensitive data view'),
     ),
     'customer_call_view' => array(
         'label' => trans('customer phone call view'),
@@ -147,7 +150,7 @@ $access_table = array(
     ),
     'node_management' => array(
         'label' => trans('nodes management'),
-        'allow_regexp' => '^(node(add|info|infoshort|list|listshort|scan|search|del|edit|print|warn|sessionlist|session)|choose(mac|ip|location|gpscoords|netdevice)|ping)|customeraddresses|routednetworks$',
+        'allow_regexp' => '^(node(add|info|infoshort|list|listshort|scan|search|del|edit|print|warn|sessionlist|session)|choose(mac|ip|location|gpscoords|netdevice)|ping)|customeraddresses|customerselect|routednetworks$',
         'allow_menu_items' => array(
             'nodes' => Permission::MENU_ALL,
         ),
@@ -230,7 +233,7 @@ $access_table = array(
     ),
     'cash_operations' => array(
         'label' => trans('cash operations'),
-        'allow_regexp' => '^(cashreglist|receipt|receipt(list|edit|add|del|adv)|cashreglog(info|view|add|edit|del)|choosecustomer)$',
+        'allow_regexp' => '^(cashreglist|receipt|receipt(list|edit|add|del|adv)|cashreglog(info|view|add|edit|del)|choosecustomer|customerselect)$',
         'allow_menu_items' => array(
             'finances' => array('cashreglist', 'receiptadd'),
         ),
@@ -313,7 +316,7 @@ $access_table = array(
     ),
     'user_management_forbidden' => array(
         'label' => trans('users edition and addition forbidden'),
-        'deny_regexp' => '^(user(add|del|edit|passwd))$',
+        'deny_regexp' => '^(user(add|del|edit|passwd|access|switch))$',
     ),
     'no_access' => array(
         'label' => trans('no access'),

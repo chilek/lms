@@ -509,6 +509,97 @@ version 28-git (????-??-??):
   - enhancement: 'without start date' assignment filter added in customer search form [chilan]
   - improvement: show customer id for addresses in 'merge' mode lms-teryt.php script [chilan]
   - enhancement: added division property to network devices [chilan]
+  - improvement: show source name in imported operation list pending for confirmation [chilan]
+  - improvement/devel: 'get_customer_sms_options' plugin hook introduced which allows to collect
+    specific sms-like section configuration variable names [chilan]
+  - improvement: send document confirm notifications if document is created with 'closed'
+    status [chilan]
+  - enhancement: teryt: two different building base providers are supported - 'gugik' and 'sidusis'
+    (--building-base-provider parameter of bin/lms-teryt.php script chooses which provider should be
+    used) [chilan]
+  - enhancement: 'teryt.building_base_provider' with 'gugik' as default value allows to permanently
+    specify building base provider which should be used [chilan]
+  - enhancement: 'phpui.allowed_link_technologies' and 'sidusis.allowed_link_technologies' with default
+    empty values allow to limit link technology selection lists in user interface [chilan]
+  - enhancement: added estimated completion date property to investment projects [chilan]
+  - enhancement: uke/sidusis: implemented investment project csv export [chilan]
+  - enhancement: added operation date and operation external id to cash import records [chilan]
+  - enhancement: added --customer-types input parameter for bin/lms-notify.php script - notified
+    customer types can be specified with symboli names 'company' and 'private' separated
+    by colons [chilan]
+  - enhancement: implemented inline customer note modifications [chilan]
+  - improvement: '%number' symbol support in 'invoices.payment_title' configuration variable [chilan]
+  - enhancement: 'notification-type_recipients' configuration variable used by lms-notify.php script
+    allow to select notification recipient categories - 'users' and 'customers' are supported
+    currently only for 'events' notifications [chilan]
+  - enhancement: added preliminary en_GB localisation support [chilan]
+  - improvement: 'invoices.qr2pay_comment' configuration variable supports %cid substitution
+    symbol [chilan]
+  - enhancement: multi network selection in new message form [chilan]
+  - enhancement: allow to quick search customers by different extids depending on selected
+    service providers [chilan]
+  - enhancement: added new actions 'customer deletion' and 'customer restoration' for customer
+    search result list [chilan]
+  - enhancement: show link properties (type and technology) in node details popup of openlayers
+    map [chilan]
+  - improvement: close openlayer map popups after mouse double click on them [chilan]
+  - enhancement: quick search network devices by location address [chilan]
+  - improvement: multi customer group selection in balance list report [chilan]
+  - improvement: balance list report: allow to customise visibility of customer id, ssn, ten
+    and address [chilan]
+  - improvement: balance list report: show only form selected value columns in table [chilan]
+  - enhancement: added click-triggered popup as hint icon near network name of customer nodes box/panel
+    in which VLAN id and network notes are displayed [chilan]
+  - improvement: added 'technical verification' event type [chilan]
+  - improvement: event types are ordered by localised label in user interface [chilan]
+  - improvement: 'rt.parser_default_queue' does not take it default value from 'rt.default_queue'
+    as this behavior was problematic [chilan]
+  - improvement: 'phpui.node_link_technology_required' with default value of 'error' controls if node
+    link technology is required, recommended [chilan]
+  - improvement: 'report other duct type as' form option which instructs how to transform 'other duct type'
+    to uke well-known duct types ('uke.pit_report_other_duct_type_as' controls default value of new form
+    option with default empty value preserving other duct type) [chilan]
+  - devel/cleanup: renamed 'sidusis.operator_offer_url', 'sidusis.operator_project_email',
+    'sidusis.operator_project_phone', 'siis.header' to 'uke.sidusis_operator_offer_url',
+    'uke.sidusis_operator_project_email', 'uke.sidusis_operator_project_phone', 'uke.siis_header' [chilan]
+  - devel/cleanup: renamed 'sidusis.allowed_link_technologies' to 'uke.sidusis_allowed_link_technologies' [chilan]
+  - enhancement: implemented --scope/--scopes script parameter support which allows to specify if customers,
+    users or both should be notified (handled only by selected notification types) [chilan]
+  - improvement: unified (customer and user) special symbol support in events-type notification message
+    and subject configuration [chilan]
+  - enhancement: 'documents.default_type' configuraton variable controls what document type is pre-selected
+    in documentadd and documentgen forms [chilan]
+  - enhancement: added some new useful substitution symbols support for 'events' type notifications [chilan]
+  - improvement: allow to check/uncheck all user resource permission to be copied
+    from selected user with single click [chilan]
+  - enhancement: show Geoportal Maps and NetStorkWeb Maps links near gps coordinates and customer
+    addresses [interduo/chilan]
+  - enhancement: 'netstork.map_url' (without default value) and 'netstork.default_map_zoom' (with default
+    value of '18') [interduo/chilan]
+  - enhancement: implemented validity intervals for numbering plans [chilan]
+  - enhancement: don't show customer sensible data for regular users and store all requested sensible data views
+    in transaction log; new permission 'customer_sensitive_data_view' allows to disable this mechanism
+    for selected users [chilan]
+  - enhancement: added new option to 'sale registry' report which allows to check matches between document
+    content service types and service type form filter [chilan]
+  - enhancement: 'commited'/'not commited' assignment filter in customer search form [chilan]
+  - improvement: show warning when changing privacy status flag
+    (configuration variable: timetable.privacy_status_change_warning, default:false) [interduo]
+  - improvement: multi customer group selection is possible in document generation form [chilan]
+  - improvement: allow to search for node sessions using mac address fragment [chilan]
+  - enhancement: added SIDUSIS Maps link type, added variables:
+    'uke.sidusis_map_url' and 'uke.sidusis_default_map_zoom' (default: 20) [interduo]
+  - improvement: '%title' symbol is replaced by document title during document send via mail [chilan]
+  - enhancement: added new indicator - outdated tickets [interduo]
+  - enhancement: lms-sidusis.php script for reporting ranges and importing internet
+    demands as a tickets [interduo]
+  - improvement: 'phpui.node_access_change_allowed_customer_statuses' configuration variable
+    with 'connected' as default value, allows to specify for customer with which status node access flag
+    change is allowed [chilan]
+  - improvement: added support for %author in ticket notify templates [interduo]
+  - enhancement: added support of number plan to customer type relations [chilan]
+  - improvement: introduced smarty {user_selection} component [interduo]
+  - enhancement: add assignment note field, user assignment description [interduo]
 
 version 27.0 (2021-08-20):
 

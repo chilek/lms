@@ -119,7 +119,7 @@
 										</td>
 										<td class="cell-flex">
 											<div>
-												<input type="text" name="nodedata[ipaddr]" value="{$nodedata.ipaddr}" required
+												<input type="text" name="nodedata[ipaddr]" id="ipaddr" value="{$nodedata.ipaddr}" required
 													placeholder="{trans("IP address")}"
 													{tip trigger="ipaddr"}>
 												{button type="link" onClick="return ipchoosewin({
@@ -221,9 +221,8 @@
 
 													<select name="nodedata[linktype]" id="linktype"
 															{tip trigger="linktype" text="Select link type"}>
-														{foreach $_LINKTYPES as $key => $item}
-															<option value="{$key}"{if $key == $nodedata.linktype} selected{/if}
-																>{$item}</option>
+														{foreach $_LINKTECHNOLOGIES as $linktype => $linktech}
+															<option value="{$linktype}"{if $linktype == $nodedata.linktype} selected{/if}>{$_LINKTYPES[$linktype]}</option>
 														{/foreach}
 													</select>
 

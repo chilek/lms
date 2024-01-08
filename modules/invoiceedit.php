@@ -430,8 +430,10 @@ switch ($action) {
 
         $args = array(
             'doctype' => isset($invoice['proforma']) && $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
+            'cdate' => $invoice['cdate'],
             'customerid' => $invoice['customerid'],
             'division' => $invoice['divisionid'],
+            'customertype' => $invoice['customertype'],
             'next' => false,
         );
         $numberplans = $LMS->GetNumberPlans($args);
@@ -513,9 +515,11 @@ switch ($action) {
 
         $args = array(
             'doctype' => isset($invoice['proforma']) && $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
+            'cdate' => $invoice['cdate'],
             'customerid' => $invoice['customerid'],
             'division' => $use_current_customer_data ? (empty($customer['divisionid']) ? null : $customer['divisionid'])
                 : (empty($invoice['divisionid']) ? null : $invoice['divisionid']),
+            'customertype' => $invoice['customertype'],
             'next' => false,
         );
         $numberplans = $LMS->GetNumberPlans($args);
@@ -834,11 +838,12 @@ $SMARTY->assign('taxeslist', $taxeslist);
 
 $args = array(
     'doctype' => isset($invoice['proforma']) && $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
-    'cdate' => date('Y/m', $invoice['cdate']),
+    'cdate' => $invoice['cdate'],
 );
 if (isset($invoice['customerid']) && !empty($invoice['customerid'])) {
     $args['customerid'] = $invoice['customerid'];
     $args['division'] = $DB->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($invoice['customerid']));
+    $args['customertype'] = $invoice['customertype'];
 }
 
 $numberplanlist = $LMS->GetNumberPlans($args);

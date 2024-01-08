@@ -271,13 +271,16 @@
 				{icon name="customergroup"}
 			</td>
 			<td class="nobr">
-				<strong>{trans("Group:")}</strong>
+				<strong>{trans("Group")}</strong>
 			</td>
 			<td>
-				<select size="1" name="customergroup" {tip text="Select group" trigger="customer"}>
-					<option value="0" selected>{trans("— all groups —")}</option>
+				<select size="1" name="customergroup[]"
+					{tip text="Select group" trigger="customer" class="lms-ui-multiselect"}
+					multiple data-default-value="{trans("— all groups —")}">
 					{foreach $customergroups as $group}
-						<option value="{$group.id}"{if $customergroup == $group.id} selected{/if}>{$group.name|truncate:40:"&hellip;":true}</option>
+						<option value="{$group.id}"
+							{if is_array($customergroup) && in_array($group.id, $customergroup) || !is_array($customergroup) && $customergroup == $group.id} selected{/if}
+							>{$group.name|trunescape:40}</option>
 					{/foreach}
 				</select>
 			</td>

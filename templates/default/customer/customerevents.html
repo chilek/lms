@@ -80,7 +80,7 @@
 			{$event=$eventlist[eventlist]}
 				<div class="lms-ui-tab-table-row{if $event.closed} blend{/if}" data-target-url="?m=eventinfo&id={$event.id}">
 					<div class="lms-ui-tab-table-column type" style="{if !$event.closed}{if isset($_EVENTTYPES[$event.type])} {$_EVENTTYPES[$event.type].style}{/if}{/if}">
-						{$_EVENTTYPES[$event.type].label}
+						{trans($_EVENTTYPES[$event.type].label)}
 						{if $event.ticketid}
 							<br><A href="?m=rtticketview&id={$event.ticketid}">#{$event.ticketid}</A>
 						{/if}

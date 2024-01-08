@@ -98,6 +98,8 @@ class SYSLOG
     const OPER_ADD = 1;
     const OPER_DELETE = 2;
     const OPER_UPDATE = 3;
+
+    const OPER_GET = 4;
     const OPER_DBBACKUPRECOVER = 240;
     const OPER_USERPASSWDCHANGE = 251;
     const OPER_USERNOACCESS = 252;
@@ -250,6 +252,7 @@ class SYSLOG
         self::OPER_ADD => 'addition<!syslog>',
         self::OPER_DELETE => 'deletion<!syslog>',
         self::OPER_UPDATE => 'update<!syslog>',
+        self::OPER_GET => 'get<!syslog>',
         self::OPER_DBBACKUPRECOVER => 'recover<!syslog>',
         self::OPER_USERPASSWDCHANGE => 'password change<!syslog>',
         self::OPER_USERNOACCESS => 'access denied<!syslog>',
@@ -261,6 +264,7 @@ class SYSLOG
         self::OPER_ADD => 'color: green',
         self::OPER_DELETE => 'color: red',
         self::OPER_UPDATE => 'color: blue',
+        self::OPER_GET => 'color: black',
         self::OPER_DBBACKUPRECOVER => 'color: aqua',
         self::OPER_USERPASSWDCHANGE => 'color: navy',
         self::OPER_USERNOACCESS => 'color: purple',

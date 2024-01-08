@@ -26,6 +26,8 @@
 
 class LMSPdfUniteBackend
 {
+    const MAX_PDF_INPUT_FILES = 100;
+
     private $input_files;
     private $output_file;
 
@@ -47,20 +49,36 @@ class LMSPdfUniteBackend
     private function prepareOutputFile()
     {
         if (!empty($this->input_files) && empty($this->output_file)) {
-            $result = 0;
-            $cmd = 'pdfunite';
-            foreach ($this->input_files as $input_file) {
-                $cmd .= ' ' . $input_file;
+            $this->output_file = null;
+            $new_output_file = null;
+
+            $input_file_chunks = array_chunk($this->input_files, self::MAX_PDF_INPUT_FILES);
+            foreach ($input_file_chunks as $input_file_chunk) {
+                $cmd = 'pdfunite';
+                if (isset($this->output_file)) {
+                    $cmd .= ' ' . $this->output_file;
+                }
+                foreach ($input_file_chunk as $input_file) {
+                    $cmd .= ' ' . $input_file;
+                }
+                $new_output_file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('LMS-PDF-UNITE-', true) . '.pdf';
+                $cmd .= ' ' . $new_output_file;
+                $result = 0;
+                system($cmd, $result);
+                if (isset($this->output_file)) {
+                    @unlink($this->output_file);
+                }
+                $this->output_file = $new_output_file;
+                if (!empty($result)) {
+                    @unlink($this->output_file);
+                    break;
+                }
             }
-            $this->output_file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('LMS-PDF-UNITE-', true) . '.pdf';
-            $cmd .= ' ' . $this->output_file;
-            system($cmd, $result);
-            if (!empty($result)) {
-                @unlink($this->output_file);
-            }
+
             foreach ($this->input_files as $input_file) {
                 @unlink($input_file);
             }
+
             $this->input_files = array();
         }
     }

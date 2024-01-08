@@ -116,6 +116,8 @@ if (!empty($_POST['servicetypes'])) {
         $sql_servicetypes[] = 'EXISTS (SELECT 1 FROM cash WHERE servicetype = ' . $servicetype . ' AND cash.docid = d.id)';
     }
     $servicetypewhere = ' AND ( ' . implode($servicetypeoper == 'and' ? ' AND ' : ' OR ', $sql_servicetypes) . ')';
+
+    $servicetypes = array_flip($servicetypes);
 }
 
 if (!empty($_POST['division'])) {
@@ -196,6 +198,8 @@ $args = array($doctypes, $unixfrom, $unixto);
 
 $taxes = $DB->GetAllByKey('SELECT id, value, label, taxed FROM taxes', 'id');
 
+$match_content_service_type = isset($_POST['print-match-content-service-type']);
+
 $documents = $DB->GetAll('SELECT d.id, d.type,
             cn.name AS country, n.template,
             a.state AS rec_state, a.state_id AS rec_state_id,
@@ -263,6 +267,18 @@ if ($documents) {
                 break;
         }
 
+        if ($match_content_service_type && !empty($servicetypes)) {
+            $document['content'] = array_filter(
+                $document['content'],
+                function ($item) use ($servicetypes) {
+                    return isset($servicetypes[$item['servicetype']]);
+                }
+            );
+        }
+        if (empty($document['content'])) {
+            continue;
+        }
+
         $invoicelist[$idx]['custname'] = $document['name'];
         $invoicelist[$idx]['custaddress'] = (empty($document['zip']) ? '' : $document['zip'] . ' ') . $document['city'] . ', ' . $document['address'];
         $invoicelist[$idx]['ten'] = ($document['ten'] ? trans('TEN') . ' ' . $document['ten'] : ($document['ssn'] ? trans('SSN') . ' ' . $document['ssn'] : ''));
@@ -303,14 +319,35 @@ if ($documents) {
                 $invoicelist[$idx]['brutto_receipt'] = 0;
             }
 
+            $taxid2 = null;
+            $tax2 = $netto2 = $brutto2 = 0;
+
             if ($doctype == DOC_DNOTE) {
                 $tax = 0;
                 $brutto = $item['value'];
                 $netto = $item['value'];
             } elseif (isset($document['invoice']) && $document['invoice']['doctype'] != DOC_INVOICE_PRO) {
-                $tax = $item['totaltax'] - $document['invoice']['content'][$itemid]['totaltax'];
-                $netto = $item['totalbase'] - $document['invoice']['content'][$itemid]['totalbase'];
-                $brutto = $item['total'] - $document['invoice']['content'][$itemid]['total'];
+                $taxid2 = $document['invoice']['content'][$itemid]['taxid'];
+                if ($taxid == $taxid2) {
+                    $tax = $item['totaltax'] - $document['invoice']['content'][$itemid]['totaltax'];
+                    $netto = $item['totalbase'] - $document['invoice']['content'][$itemid]['totalbase'];
+                    $brutto = $item['total'] - $document['invoice']['content'][$itemid]['total'];
+
+                    $taxid2 = null;
+                } else {
+                    if (!isset($invoicelist[$idx][$taxid2])) {
+                        $invoicelist[$idx][$taxid2]['tax'] = 0;
+                        $invoicelist[$idx][$taxid2]['val'] = 0;
+                    }
+
+                    $tax2 = -$document['invoice']['content'][$itemid]['totaltax'];
+                    $netto2 = -$document['invoice']['content'][$itemid]['totalbase'];
+                    $brutto2 = -$document['invoice']['content'][$itemid]['total'];
+
+                    $tax = $item['totaltax'];
+                    $netto = $item['totalbase'];
+                    $brutto = $item['total'];
+                }
             } else {
                 $tax = $item['totaltax'];
                 $netto = $item['totalbase'];
@@ -319,8 +356,12 @@ if ($documents) {
 
             $invoicelist[$idx][$taxid]['tax'] += $tax;
             $invoicelist[$idx][$taxid]['val'] += $netto;
-            $invoicelist[$idx]['tax'] += $tax;
-            $invoicelist[$idx]['brutto'] += $brutto;
+            if (isset($taxid2)) {
+                $invoicelist[$idx][$taxid2]['tax'] += $tax2;
+                $invoicelist[$idx][$taxid2]['val'] += $netto2;
+            }
+            $invoicelist[$idx]['tax'] += $tax + $tax2;
+            $invoicelist[$idx]['brutto'] += $brutto + $brutto2;
 
             if (!isset($listdata[$taxid])) {
                 $listdata[$taxid]['tax'] = 0;
@@ -332,13 +373,21 @@ if ($documents) {
             if (!empty($invoicelist[$idx]['flags'][DOC_FLAG_RECEIPT])) {
                 $listdata[$taxid]['tax_receipt'] += $tax * $document['currencyvalue'];
                 $listdata[$taxid]['val_receipt'] += $netto * $document['currencyvalue'];
-                $listdata['tax_receipt'] += $tax * $document['currencyvalue'];
-                $listdata['brutto_receipt'] += $brutto * $document['currencyvalue'];
+                if (isset($taxid2)) {
+                    $listdata[$taxid2]['tax_receipt'] += $tax2 * $document['currencyvalue'];
+                    $listdata[$taxid2]['val_receipt'] += $netto2 * $document['currencyvalue'];
+                }
+                $listdata['tax_receipt'] += ($tax + $tax2) * $document['currencyvalue'];
+                $listdata['brutto_receipt'] += ($brutto + $brutto2) * $document['currencyvalue'];
             } else {
                 $listdata[$taxid]['tax'] += $tax * $document['currencyvalue'];
                 $listdata[$taxid]['val'] += $netto * $document['currencyvalue'];
-                $listdata['tax'] += $tax * $document['currencyvalue'];
-                $listdata['brutto'] += $brutto * $document['currencyvalue'];
+                if (isset($taxid2)) {
+                    $listdata[$taxid2]['tax'] += $tax2 * $document['currencyvalue'];
+                    $listdata[$taxid2]['val'] += $netto2 * $document['currencyvalue'];
+                }
+                $listdata['tax'] += ($tax + $tax2) * $document['currencyvalue'];
+                $listdata['brutto'] += ($brutto + $brutto2) * $document['currencyvalue'];
             }
         }
     }
@@ -461,7 +510,7 @@ if (isset($_POST['extended'])) {
     $SMARTY->assign('printcustomerssn', isset($_POST['printcustomerssn']));
     $SMARTY->assign('printonlysummary', isset($_POST['printonlysummary']));
 
-    if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
+    if (strtolower(ConfigHelper::getConfig('phpui.report_type', '', true)) == 'pdf') {
         $output = $SMARTY->fetch('invoice/invoicereport-ext.html');
         html2pdf($output, trans('Reports'), $layout['pagetitle'], null, null, 'L', array(5, 5, 5, 5), ($_GET['save'] == 1) ? true : false);
     } else {
@@ -472,7 +521,7 @@ if (isset($_POST['extended'])) {
     $SMARTY->assign('printcustomerssn', isset($_POST['printcustomerssn']));
     $SMARTY->assign('printonlysummary', isset($_POST['printonlysummary']));
 
-    if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
+    if (strtolower(ConfigHelper::getConfig('phpui.report_type', '', true)) == 'pdf') {
         $output = $SMARTY->fetch('invoice/invoicereport.html');
         html2pdf($output, trans('Reports'), $layout['pagetitle'], null, null, 'L', array(5, 5, 5, 5), ($_GET['save'] == 1) ? true : false);
     } else {
