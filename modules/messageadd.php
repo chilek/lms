@@ -58,6 +58,10 @@ function GetRecipients($filter, $type = MSG_MAIL)
 
     $state = intval($filter['state']);
 
+    if (!empty($filter['division'])) {
+        $division = intval($filter['division']);
+    }
+
     if (empty($filter['network'])) {
         $networks = array();
     } elseif (is_array($filter['network'])) {
@@ -352,6 +356,7 @@ function GetRecipients($filter, $type = MSG_MAIL)
         . ($consent ? ' AND ' . ($type == MSG_SMS || $type == MSG_ANYSMS ? 'c.smsnotice' : 'c.mailingnotice') . ' = 1' : '')
         . ($type == MSG_WWW ? ' AND c.id IN (SELECT DISTINCT ownerid FROM nodes)' : '')
         . ($state != 0 ? ' AND c.status = ' . $state : '')
+        . (empty($division) ? '' : ' AND c.divisionid = ' . $division)
         . $document_condition
         . $network_condition
         .($customergroup ? ' AND c.id IN (SELECT customerid FROM vcustomerassignments
@@ -1444,6 +1449,7 @@ if (isset($message['type'])) {
     $msgtmpltype = TMPL_MAIL;
 }
 
+$SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('messagetemplates', $LMS->GetMessageTemplates($msgtmpltype));
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());

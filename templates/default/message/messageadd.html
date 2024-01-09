@@ -226,8 +226,8 @@
 							<col style="width: 93%;">
 						</colgroup>
 						<tr>
-							<td class="nobr" rowspan="3">{trans("Status")}</td>
-							<td rowspan="3">
+							<td class="nobr">{trans("Status")}</td>
+							<td>
 								<select name="message[state]" {tip trigger="state"}>
 									<option value="0"{if !$message.state} selected{/if}>{trans("— all customers —")}</option>
 									<optgroup label="Status">
@@ -298,6 +298,18 @@
 							</td>
 						</tr>
 						<tr>
+							<td class="nobr valign-top" rowspan="2">
+								{trans("Division")}
+							</td>
+							<td class="valign-top" rowspan="2">
+								<select name="message[division]">
+									<option value="">- {trans("all")} -</option>
+									{foreach $divisions as $division}
+										<option value="{$division.id}"{if $message.division == $division.id} selected{/if}
+											>{$division.label|escape}</option>
+									{/foreach}
+								</select>
+							</td>
 							<td class="nobr">{trans("Node Group<!short>")}</td>
 							<td class="multiselect">
 								<select size="1" name="message[nodegroup][]" multiple class="lms-ui-multiselect"
