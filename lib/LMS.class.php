@@ -3480,6 +3480,12 @@ class LMS
         return $manager->GetTaxes($from, $to, $default);
     }
 
+    public function GetTimetableRange()
+    {
+        $manager = $this->getEventManager();
+        return $manager->GetTimetableRange();
+    }
+
     public function EventAdd($event)
     {
         $manager = $this->getEventManager();
