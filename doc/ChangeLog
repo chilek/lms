@@ -600,6 +600,7 @@ version 28-git (????-??-??):
   - enhancement: added support of number plan to customer type relations [chilan]
   - improvement: introduced smarty {user_selection} component [interduo]
   - enhancement: add assignment note field, user assignment description [interduo]
+  - enhancement: added division filter in new message form [chilan]
 
 version 27.0 (2021-08-20):
 
