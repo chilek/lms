@@ -763,7 +763,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         $events = $this->db->GetAll('SELECT events.id as id, title, description, note, date, begintime, endtime, '
                 . 'userid, customerid, private, closed, closeddate, closeduserid, events.type, ticketid, va.location, '
-                . ''.$this->db->Concat('customers.name', "' '", 'customers.lastname').' AS customername, '
+                . ''.$this->db->Concat('customers.lastname', "' '", 'customers.name').' AS customername, '
                 . ''.$this->db->Concat('users.firstname', "' '", 'users.lastname').' AS username, '
                 . ''.$this->db->Concat('u.firstname', "' '", 'u.lastname').' AS closedusername, vn.name AS node_name, '
                 . ''.$this->db->Concat('c.city', "', '", 'c.address') . ' AS customerlocation, vn.location AS node_location '
