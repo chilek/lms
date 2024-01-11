@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$id = $_GET['id'];
+$id = intval($_GET['id']);
 
 if ($id) {
     $LMS->executeHook(
@@ -36,18 +36,6 @@ if ($id) {
     $LMS->EventDelete($id);
 }
 
-
 $backto = $SESSION->remove_history_entry();
-
-if (!empty($backto)) {
-    if (strpos($backto, 'm=rtticketview') !== false) {
-        $SESSION->redirect($backto);
-    } elseif (strpos($backto, 'm=eventinfo') !== false) {
-        $SESSION->redirect('?m=eventlist');
-    } else {
-        $SESSION->redirect('?' . $backto);
-    }
-}
-
 $backid = $SESSION->get('backid');
-$SESSION->redirect($backto . (empty($backid) ? '' : '#' . $backid));
+$SESSION->redirect('?' . $backto . (empty($backid) ? '' : '#' . $backid));
