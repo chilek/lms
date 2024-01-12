@@ -454,7 +454,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $tariff = $this->db->GetRow(
                 'SELECT a.data, s.data AS sdata, t.name, t.type, t.value, t.currency, t.period,
                 t.id, t.prodid, t.taxid, t.flags, t.taxcategory, t.netvalue,
-                t2.value AS taxvalue, a.note
+                t2.value AS taxvalue
                 FROM promotionassignments a
                 JOIN promotionschemas s ON (s.id = a.promotionschemaid)
                 JOIN tariffs t ON (t.id = a.tariffid)
