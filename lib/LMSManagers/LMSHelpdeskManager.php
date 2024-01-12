@@ -938,12 +938,15 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function GetUserCategories($userid = null)
     {
-        return $this->db->GetAllByKey('SELECT c.id, name
-		    FROM rtcategories c
-		    LEFT JOIN rtcategoryusers cu
-			ON c.id = cu.categoryid '
-                        . ($userid ? 'WHERE userid = ' . intval($userid) : '' )
-                        . ' ORDER BY name', 'categoryid');
+        return $this->db->GetAllByKey(
+            'SELECT c.id, name
+            FROM rtcategories c
+            LEFT JOIN rtcategoryusers cu
+            ON c.id = cu.categoryid '
+            . ($userid ? 'WHERE userid = ' . intval($userid) : '' )
+            . ' ORDER BY name',
+            'id'
+        );
     }
 
     public function RTStats()
