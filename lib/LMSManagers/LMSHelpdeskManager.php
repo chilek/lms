@@ -1268,7 +1268,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             . $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername,
             o.name AS ownername, t.createtime, t.resolvetime, t.subject, t.deleted, t.deltime, t.deluserid,
             t.address_id, va.location, t.nodeid, n.name AS node_name, n.location AS node_location,
-            t.netnodeid, nn.name AS netnode_name, t.netdevid, nd.name AS netdev_name,
+            t.netnodeid, nn.name AS netnode_name, t.netdevid, nd.name AS netdev_name, va.city_id, va.street_id, va.house,
             t.verifierid, e.name AS verifier_username, t.deadline, openeventcount, t.type, t.service, t.parentid' .
             (!empty($userid) ? ', (CASE WHEN t.id = w.ticketid AND w.userid = ' . $userid . ' THEN 1 ELSE 0 END) as watching ' : '') . '
             FROM rttickets t
@@ -1310,6 +1310,16 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             array_map(function ($elem) {
                 return $elem['name'];
             }, $ticket['categories']);
+
+
+        if ($ticket['city_id'] && $ticket['house']) {
+            $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $ticket['coords'] = $location_manager->getCoordinatesForAddress(array(
+                'city_id' => $ticket['city_id'],
+                'street_id' => $ticket['street_id'],
+                'building_num' => $ticket['house'],
+            ));
+        }
 
         $ticket['parent'] = $this->getTickets($ticket['parentid']);
         $ticket['relatedtickets'] = $this->GetRelatedTickets($id);
