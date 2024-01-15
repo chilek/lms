@@ -528,7 +528,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         );
 
         if ($cdate) {
-            $curryear = date('Y', $cdate);
+            $curryear = date('Y', intval($cdate));
         } else {
             $curryear = date('Y');
         }
