@@ -286,8 +286,6 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             }
         }
 
-        if (empty($division['o']))
-
         if ($this->syslog) {
             $args['added_users'] = implode(',', $division['diff_users_add']);
             $args['removed_users'] = implode(',', $division['diff_users_del']);
