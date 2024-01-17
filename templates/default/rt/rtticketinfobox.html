@@ -290,6 +290,12 @@
 								</TD>
 							</TR>
 							{/if}
+                                                        {if $ticket.location && !empty($ticket.coords.latitude)}
+                                                        <TR>
+                                                            <TD class="bold nobr">{icon name=location label="GPS coordinates"}</TD>
+                                                            <TD>{$ticket.coords.latitude}, {$ticket.coords.longitude}</TD>
+                                                        </TR>
+                                                        {/if}
 							{if $ticket.nodeid}
 							<TR>
 								<TD class="bold nobr">
