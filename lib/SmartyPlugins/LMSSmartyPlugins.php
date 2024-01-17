@@ -1758,8 +1758,49 @@ class LMSSmartyPlugins
             return '';
         }
 
-        return 'data:' . mime_content_type($params['file'])
+        $result = 'data:' . mime_content_type($params['file'])
             . ';base64,' . base64_encode(file_get_contents($params['file']));
+
+        if (isset($params['assign'])) {
+            $template->assign($params['assign'], $result);
+            return '';
+        } else {
+            return $result;
+        }
+    }
+
+    public static function imageFunction(array $params, Smarty_Internal_Template $template)
+    {
+        if (!isset($params['file']) || !is_file($params['file'])) {
+            return '';
+        }
+
+        $image_data = self::imageDataFunction(
+            array_filter(
+                $params,
+                function ($value, $key) {
+                    return $key != 'assign';
+                },
+                ARRAY_FILTER_USE_BOTH
+            ),
+            $template
+        );
+        if (empty($image_data)) {
+            return '';
+        }
+
+        $result = '<img src="' . $image_data . '" style="margin: 0 auto;'
+            . ' width: ' . (isset($params['width']) ? $params['width'] : '600') . 'px;'
+            . (isset($params['height']) ? ' height: ' . $params['height'] . 'px;' : '')
+            . (isset($params['style']) ? ' ' . $params['style'] : '')
+            . '">';
+
+        if (isset($params['assign'])) {
+            $template->assign($params['assign'], $result);
+            return '';
+        } else {
+            return $result;
+        }
     }
 
     public static function barCodeFunction($params, $template)
