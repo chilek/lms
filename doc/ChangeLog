@@ -601,6 +601,7 @@ version 28-git (????-??-??):
   - improvement: introduced smarty {user_selection} component [interduo]
   - enhancement: add assignment note field, user assignment description [interduo]
   - enhancement: added division filter in new message form [chilan]
+  - enhancement: added office address, url and userpanel url properties to divisions [chilan]
 
 version 27.0 (2021-08-20):
 
