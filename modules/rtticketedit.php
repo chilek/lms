@@ -58,6 +58,11 @@ if (is_array($id)) {
 if ($id && !isset($_POST['ticket'])) {
     if (isset($action)) {
         switch ($action) {
+            case 'queuechange':
+                $dstqueue = intval($_GET['queueid']);
+                $LMS->TicketChange($id, array('queueid' => $dstqueue));
+                $SESSION->redirect('?m=rtticketview&id=' . $id);
+                break;
             case 'verify':
                 $ticket = $LMS->GetTicketContents($id);
 

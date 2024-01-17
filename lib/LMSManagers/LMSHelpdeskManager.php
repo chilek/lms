@@ -789,6 +789,17 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         return $this->db->GetOne('SELECT name FROM rtqueues WHERE id=?', array($id));
     }
 
+    public function GetFavoriteQueues()
+    {
+        $fav_queues = Utils::filterIntegers(explode(',', ConfigHelper::getConfig('rt.favorite_queues')));
+        foreach ($fav_queues as $fq) {
+            if ($this->QueueExists($fq) && !empty($fq)) {
+                $favorite_queues[$fq] = $this->GetQueueName($fq);
+            }
+        }
+        return $favorite_queues;
+    }
+
     public function GetQueueEmail($id)
     {
         return $this->db->GetOne('SELECT email FROM rtqueues WHERE id=?', array($id));

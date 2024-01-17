@@ -185,6 +185,15 @@
 								</TD>
 								<TD style="width: 99%;">
 									<A href="?m=rtqueueview&amp;id={$ticket.queueid}">{$ticket.queuename}</A>
+									{if empty($favorite_queues)}
+										{button type="link" icon="next" disabled=true tip="No favorite queues defined (check variable rt.favorite_queues)"}
+									{else}
+										{foreach $favorite_queues as $queueid => $name}
+										{if $queueid != $ticket.queueid}
+											{button type="link" icon="next" tip=trans('Move ticket to queue $a', $name) data_href="?m=rtticketedit&action=queuechange&id={$ticket.ticketid}&queueid=$queueid" data_confirmation_text=trans('Are you sure, you want to move ticket to $a?', $name)}
+										{/if}
+										{/foreach}
+									{/if}
 								</TD>
 							</TR>
 							<TR>
