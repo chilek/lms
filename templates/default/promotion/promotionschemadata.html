@@ -549,7 +549,7 @@
 		let elemVal = $(this).val();
 		if (elemVal.length) {
 			let value = parseFloat(elemVal.replace(/[\,]+/, '.'));
-			$(this).val(lms.utils.smartFormatNumber(value).replace(/[^0-9,\.]/g, ''));
+			$(this).val(lms.utils.smartFormatNumber(value).replace(/[^\-0-9,\.]/g, ''));
 		}
 	});
 
