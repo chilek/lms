@@ -187,6 +187,7 @@ $SMARTY->assign(
         'categories' => $categories,
         'assignedevents' => $assignedevents,
         'rtticketview_sortable_order' => $SESSION->get_persistent_setting('rtticketview-sortable-order'),
+        'favorite_queues' => $LMS->GetFavoriteQueues(),
     )
 );
 

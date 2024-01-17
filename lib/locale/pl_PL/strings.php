@@ -420,6 +420,7 @@ $_LANG['Are you sure you want to send messages to $a customer(s)?'] = 'Jesteś p
 $_LANG['You violate recipient limit ($a) trying to send messages to $b customer(s)!'] = 'Naruszasz limit odbiorców ($a) próbując wysłać wiadomości do $b klient(a/ów)!';
 $_LANG['Are you sure, you want to make instant payment for customer \'$a\'?'] = 'Czy jesteś pewien, że chcesz wykonać szybką płatność dla klienta \'$a\'?';
 $_LANG['Are You sure, you want to delete this ticket?'] = 'Czy jesteś pewien, że chcesz usunąć to zgłoszenie?';
+$_LANG['Are you sure, you want to move ticket to $a?'] = 'Czy jesteś pewien, że chcesz przenieść to zgłoszenie do kolejki $a?';
 
 $_LANG['Export to JPK-FA format'] = 'Eksport do formatu JPK-FA';
 $_LANG['Export to JPK-VAT format'] = 'Eksport do formatu JPK-VAT';
@@ -1557,6 +1558,8 @@ $_LANG['Instant messengers'] = 'Komunikatory';
 $_LANG['Messages'] = 'Wiadomości';
 $_LANG['Message subject is required!'] = 'Temat wiadomości jest wymagany!';
 $_LANG['Message subject not specified!'] ='Brak tytułu wiadomości!';
+$_LANG['Move ticket to queue $a'] ='Przenieś zgłoszenie do kolejki $a';
+$_LANG['No favorite queues defined (check variable rt.favorite_queues)'] ='Brak ulubionych kolejek (sprawdź zmienną rt.favorite_queues)';
 $_LANG['Min. Uptime'] = 'Min. Uptime';
 $_LANG['Model:'] = 'Model:';
 $_LANG['Model'] = 'Model';

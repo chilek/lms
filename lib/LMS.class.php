@@ -2345,6 +2345,12 @@ class LMS
         return $manager->GetQueueName($id);
     }
 
+    public function GetFavoriteQueues()
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->GetFavoriteQueues();
+    }
+
     public function GetQueueEmail($id)
     {
         $manager = $this->getHelpdeskManager();

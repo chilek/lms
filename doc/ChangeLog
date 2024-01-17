@@ -603,6 +603,8 @@ version 28-git (????-??-??):
   - enhancement: added division filter in new message form [chilan]
   - enhancement: added office address, url and userpanel url properties to divisions [chilan]
   - enhancement: {button data_confirmation_text="some question?"} needs to be confirmed by dialog
+  - enhancement: one click ticket move to favorite queues
+    (variable: rt.favorite_queues, default: empty) [interduo]
 
 version 27.0 (2021-08-20):
 
