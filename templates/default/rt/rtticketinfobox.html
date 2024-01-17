@@ -1,11 +1,12 @@
 <!-- $Id$ -->
 {$gps_location_url = ConfigHelper::getConfig('phpui.gps_location_url', 'https://www.google.com/maps/place/%location')}
+{$ticketinfo_clipboard_text = ConfigHelper::getConfig('rt.ticketinfo_clipboard_text',"%ticketurl {trans("Subject:")}%subject{if $ticket.location}, {trans("Location:")}%location{/if}")|replace:"%location":$ticket.location|replace:"%ticketid":$ticket.ticketid|replace:"%subject":$ticket.subject|replace:"%ticketurl":"{$url}?m=rtticketview&id={$ticket.ticketid}"}
 
 <TABLE class="lmsbox">
 	<THEAD>
 	<TR>
 		<TD style="width: 100%;" class="bold" colspan="3">
-			{icon name="helpdesk" label="{t}Ticket No.{/t} {$ticket.ticketid|string_format:"%06d"}"}
+			{icon name="helpdesk" class="lms-ui-button-clipboard" label="{t}Ticket No.{/t} {$ticket.ticketid|string_format:"%06d"}" data_clipboard_text=$ticketinfo_clipboard_text}
 		</TD>
 	</TR>
 	</THEAD>
@@ -292,8 +293,21 @@
 							{/if}
                                                         {if $ticket.location && !empty($ticket.coords.latitude)}
                                                         <TR>
-                                                            <TD class="bold nobr">{icon name=location label="GPS coordinates"}</TD>
-                                                            <TD>{$ticket.coords.latitude}, {$ticket.coords.longitude}</TD>
+                                                            <TD class="bold nobr">
+								{icon name="location"
+								    class="lms-ui-button-clipboard"
+								    label="GPS coordinates"
+								    data_clipboard_text="{$ticket.coords.latitude}, {$ticket.coords.longitude}"
+								}
+                                                            </TD>
+                                                            <TD>
+								{button
+								    type="link"
+								    class="lms-ui-button-clipboard"
+								    label="{$ticket.coords.latitude}, {$ticket.coords.longitude}"
+								    data_clipboard_text="{$ticket.coords.latitude}, {$ticket.coords.longitude}"
+								}
+                                                            </TD>
                                                         </TR>
                                                         {/if}
 							{if $ticket.nodeid}
@@ -448,6 +462,7 @@
 				{else}
 					{button id="delete-rtticket" icon="delete" label="Delete" tip="Delete" data_href="?m=rtticketdel&id={$ticket.ticketid}&taction=delete"}
 				{/if}
+				{button icon="link" class="lms-ui-button-clipboard" label="Copy link" data_clipboard_text=$ticketinfo_clipboard_text}
 			{/buttons}
 		</TD>
 	</TR>
