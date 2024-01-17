@@ -41,20 +41,50 @@ if (!empty($_GET['changestatus'])) {
     $SESSION->redirect('?m=divisionlist');
 }
 
-$olddiv = $DB->GetRow('SELECT d.*,
-		addr.name as location_name,
-		addr.city as location_city_name, addr.street as location_street_name,
-		addr.city_id as location_city, addr.street_id as location_street,
-		addr.house as location_house, addr.flat as location_flat,
-		addr.zip as location_zip, addr.state as location_state_name,
-		addr.state_id as location_state, addr.country_id as location_country_id,
-		addr.postoffice AS location_postoffice
-	FROM vdivisions d
-		LEFT JOIN addresses addr           ON addr.id = d.address_id
-		LEFT JOIN location_cities lc       ON lc.id = addr.city_id
-		LEFT JOIN location_streets ls      ON ls.id = addr.street_id
-		LEFT JOIN location_street_types lt ON lt.id = ls.typeid
-	WHERE d.id = ?', array($_GET['id']));
+$olddiv = $DB->GetRow(
+    'SELECT d.*,
+        addr.name AS location_name,
+        addr.city AS location_city_name,
+        addr.street AS location_street_name,
+        addr.city_id AS location_city,
+        addr.street_id AS location_street,
+        addr.house AS location_house,
+        addr.flat AS location_flat,
+        addr.zip AS location_zip,
+        addr.state AS location_state_name,
+        addr.state_id AS location_state,
+        addr.country_id AS location_country_id,
+        addr.postoffice AS location_postoffice,
+        o_addr.location AS location_office,
+        o_addr.name AS location_office_name,
+        o_addr.city AS location_office_city_name,
+        o_addr.street AS location_office_street_name,
+        o_addr.city_id AS location_office_city,
+        o_addr.street_id AS location_office_street,
+        o_addr.house AS location_office_house,
+        o_addr.flat AS location_office_flat,
+        o_addr.zip AS location_office_zip,
+        o_addr.state AS location_office_state_name,
+        o_addr.state_id AS location_office_state,
+        o_addr.country_id AS location_office_country_id,
+        o_addr.postoffice AS location_office_postoffice,
+        ' . $DB->Concat('simc.woj', 'simc.pow', 'simc.gmi', 'simc.rodz_gmi') . ' AS office_terc,
+        simc.sym AS office_simc,
+        ulic.sym_ul AS office_ulic
+    FROM vdivisions d
+    LEFT JOIN addresses addr           ON addr.id = d.address_id
+    LEFT JOIN location_cities lc       ON lc.id = addr.city_id
+    LEFT JOIN location_streets ls      ON ls.id = addr.street_id
+    LEFT JOIN location_street_types lt ON lt.id = ls.typeid
+    LEFT JOIN vaddresses o_addr        ON o_addr.id = d.office_address_id
+    LEFT JOIN location_cities o_lc     ON o_lc.id = o_addr.city_id
+    LEFT JOIN location_streets o_ls    ON o_ls.id = o_addr.street_id
+    LEFT JOIN location_street_types o_lt ON o_lt.id = o_ls.typeid
+    LEFT JOIN teryt_simc simc          ON simc.cityid = o_addr.city_id
+    LEFT JOIN teryt_ulic ulic          ON ulic.id = o_addr.street_id
+    WHERE d.id = ?',
+    array($_GET['id'])
+);
 
 $divisionUsers = $LMS->GetUserList(array('divisions' => $id));
 unset($divisionUsers['total']);
@@ -139,6 +169,14 @@ if (!empty($_POST['division'])) {
         $error['phone'] = trans('Incorrect phone number!');
     }
 
+    if (strlen($division['url']) && !filter_var($division['url'], FILTER_VALIDATE_URL)) {
+        $error['url'] = trans('Invalid URL address format!');
+    }
+
+    if (strlen($division['userpanel_url']) && !filter_var($division['userpanel_url'], FILTER_VALIDATE_URL)) {
+        $error['userpanel_url'] = trans('Invalid URL address format!');
+    }
+
     if ($division['inv_paytime'] == '') {
         $division['inv_paytime'] = null;
     }
@@ -152,6 +190,8 @@ if (!empty($_POST['division'])) {
         && (!isset($division['teryt']) || empty($division['location_city'])) && $LMS->isTerritState($division['location_state_name'])) {
         $error['division[teryt]'] = trans('TERYT address is required!');
     }
+
+    $division['office_address']['address_id'] = $olddiv['office_address_id'];
 
     if (!$error) {
         $diffUsersAdd = array();
@@ -183,6 +223,8 @@ if (!empty($_POST['division'])) {
 
         $SESSION->redirect('?m=divisionlist');
     }
+
+    $division['office_address']['prefix'] = 'division[office_address]';
 } else {
     if ($olddiv['location_city'] || $olddiv['location_street']) {
         $olddiv['teryt'] = true;
@@ -194,6 +236,41 @@ if (!empty($_POST['division'])) {
             );
             $olddiv['city'] = $m['city'];
             $oldciv['address'] = $m['address'];
+        }
+    }
+
+    $olddiv['office_address'] = array(
+        'prefix' => 'division[office_address]',
+        'address_id' => $olddiv['office_address_id'],
+        'location' => $olddiv['location_office'],
+        'location_name' => $olddiv['location_office_name'],
+        'location_state_name' => $olddiv['location_office_state_name'],
+        'location_state' => $olddiv['location_office_state'],
+        'location_city_name' => $olddiv['location_office_city_name'],
+        'location_city' => $olddiv['location_office_city'],
+        'location_street_name' => $olddiv['location_office_street_name'],
+        'location_street' => $olddiv['location_office_street'],
+        'location_house' => $olddiv['location_office_house'],
+        'location_flat' => $olddiv['location_office_flat'],
+        'location_zip' => $olddiv['location_office_zip'],
+        'location_country_id' => $olddiv['location_office_country_id'],
+        'location_postoffice' => $olddiv['location_office_postoffice'],
+        'teryt' => false,
+        'terc' => $olddiv['office_terc'],
+        'simc' => $olddiv['office_simc'],
+        'ulic' => $olddiv['office_ulic'],
+    );
+
+    if ($olddiv['location_office_city'] || $olddiv['location_office_street']) {
+        $olddiv['office_address']['teryt'] = true;
+        if ($olddiv['location_office_city'] && $olddiv['location_office_street']) {
+            preg_match(
+                '/^(?<city>.+)\s*,\s*(?<address>.+)$/',
+                location_str(array('city_name' => $olddiv['location_office_city'], 'street_name' => $olddiv['location_office_street'])),
+                $m
+            );
+            $olddiv['office_address']['city'] = $m['city'];
+            $oldciv['office_address']['address'] = $m['address'];
         }
     }
 }

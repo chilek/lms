@@ -281,8 +281,12 @@ CREATE TABLE divisions (
 	description 	text		NOT NULL DEFAULT '',
 	status 		smallint 	NOT NULL DEFAULT 0,
 	tax_office_code varchar(8) DEFAULT NULL,
+	url text DEFAULT NULL,
+	userpanel_url text DEFAULT NULL,
 	address_id integer DEFAULT NULL
 		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	office_address_id integer DEFAULT NULL
+		CONSTRAINT divisions_office_address_id_fkey REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id),
 	UNIQUE (shortname)
 );
@@ -3185,10 +3189,20 @@ CREATE VIEW vaddresses AS
 ------------------------------------------------------*/
 CREATE VIEW vdivisions AS
     SELECT d.*,
-        a.country_id as countryid, a.ccode, a.zip as zip, a.city as city, a.address,
+        a.country_id AS countryid,
+        a.ccode,
+        a.zip AS zip,
+        a.city AS city,
+        a.address,
+        oa.country_id AS office_countryid,
+        oa.ccode AS office_ccode,
+        oa.zip AS office_zip,
+        oa.city AS office_city,
+        oa.address AS office_address,
         (CASE WHEN d.firstname IS NOT NULL AND d.lastname IS NOT NULL AND d.birthdate IS NOT NULL THEN 1 ELSE 0 END) AS naturalperson
     FROM divisions d
-        JOIN vaddresses a ON a.id = d.address_id;
+    JOIN vaddresses a ON a.id = d.address_id
+    LEFT JOIN vaddresses oa ON oa.id = d.office_address_id;
 
 CREATE VIEW vnetworks AS
     SELECT h.name AS hostname, ne.*, no.ownerid, a.ccode, a.city_id as location_city,
@@ -4396,6 +4410,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024010400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024011700');
 
 COMMIT;

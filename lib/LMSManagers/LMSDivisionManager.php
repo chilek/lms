@@ -127,6 +127,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
     {
         $lm = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
         $address_id = $lm->InsertAddress($division);
+        $office_address_id = $lm->InsertAddress($division['office_address']);
 
         $args = array(
             'name'            => $division['name'],
@@ -152,13 +153,16 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             'phone'           => empty($division['phone']) ? null : $division['phone'],
             'description'     => $division['description'],
             'tax_office_code' => $division['tax_office_code'],
-            'address_id'      => ($address_id >= 0 ? $address_id : null)
+            'url'             => isset($division['url']) && strlen($division['url']) ? $division['url'] : null,
+            'userpanel_url'   => isset($division['userpanel_url']) && strlen($division['userpanel_url']) ? $division['userpanel_url'] : null,
+            'address_id'      => $address_id > 0 ? $address_id : null,
+            'office_address_id' => $office_address_id > 0 ? $office_address_id : null,
         );
 
         $this->db->Execute('INSERT INTO divisions (name, shortname, label, firstname, lastname, birthdate,
 			ten, regon, rbe, rbename, telecomnumber, bank, account, inv_header, inv_footer, inv_author,
-			inv_cplace, inv_paytime, inv_paytype, email, phone, description, tax_office_code, address_id)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			inv_cplace, inv_paytime, inv_paytype, email, phone, description, tax_office_code, url, userpanel_url, address_id, office_address_id)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
         $divisionid = $this->db->GetLastInsertID('divisions');
 
@@ -209,6 +213,25 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
 
     public function UpdateDivision($division)
     {
+        $lm = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
+
+        $lm->UpdateAddress($division);
+
+        $office_address_id = null;
+        if (!strlen($division['office_address']['location_city_name'])) {
+            if (!empty($division['office_address_id'])) {
+                $lm->DeleteAddress($division['office_address_id']);
+            }
+        } elseif (empty($division['office_address_id'])) {
+            $office_address_id = $lm->InsertAddress($division['office_address']);
+            if ($office_address_id <= 0) {
+                $office_address_id = null;
+            }
+        } else {
+            $lm->UpdateAddress($division['office_address']);
+            $office_address_id = $division['office_address_id'];
+        }
+
         $args = array(
             'name'        => $division['name'],
             'shortname'   => $division['shortname'],
@@ -234,15 +257,22 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             'description' => $division['description'],
             'status'      => !empty($division['status']) ? 1 : 0,
             'tax_office_code' => $division['tax_office_code'],
+            'url'             => isset($division['url']) && strlen($division['url']) ? $division['url'] : null,
+            'userpanel_url'   => isset($division['userpanel_url']) && strlen($division['userpanel_url']) ? $division['userpanel_url'] : null,
+            'office_address_id' => $office_address_id,
             SYSLOG::RES_DIV   => $division['id']
         );
 
-        $this->db->Execute('UPDATE divisions SET name=?, shortname=?, label = ?,
-            firstname = ?, lastname = ?, birthdate = ?,
-			ten=?, regon=?, rbe=?, rbename=?, telecomnumber=?, bank=?, account=?, inv_header=?,
-			inv_footer=?, inv_author=?, inv_cplace=?, inv_paytime=?,
-			inv_paytype=?, email=?, phone = ?, description=?, status=?, tax_office_code = ?
-			WHERE id=?', array_values($args));
+        $this->db->Execute(
+            'UPDATE divisions SET name=?, shortname=?, label = ?,
+                firstname = ?, lastname = ?, birthdate = ?,
+                ten=?, regon=?, rbe=?, rbename=?, telecomnumber=?, bank=?, account=?, inv_header=?,
+                inv_footer=?, inv_author=?, inv_cplace=?, inv_paytime=?,
+                inv_paytype=?, email=?, phone = ?, description=?, status=?, tax_office_code = ?,
+                url = ?, userpanel_url = ?, office_address_id = ?
+            WHERE id=?',
+            array_values($args)
+        );
 
         if (!empty($division['diff_users_del'])) {
             foreach ($division['diff_users_del'] as $userdelid) {
@@ -256,8 +286,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             }
         }
 
-        $lm = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
-        $lm->UpdateAddress($division);
+        if (empty($division['o']))
 
         if ($this->syslog) {
             $args['added_users'] = implode(',', $division['diff_users_add']);

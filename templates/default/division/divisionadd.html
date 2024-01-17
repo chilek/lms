@@ -13,6 +13,7 @@
 
 <H1>{$layout.pagetitle}</H1>
 <script src="js/location_box.js"></script>
+<script src="js/location_box_expandable.js"></script>
 <form method="POST" action="?m=divisionadd" name="division">
 <input type="submit" class="hiddenbtn">
 <table class="lmsbox">
@@ -94,11 +95,11 @@
 			</td>
 		</tr>
 		<tr>
-			<td>
+			<td class="valign-top">
 				{icon name="home"}
 			</td>
-			<td class="nobr">
-				<strong>{trans("Address:")}</strong>
+			<td class="nobr valign-top">
+				<strong>{trans("Address")}</strong>
 			</td>
 			<td>
 				{location_box
@@ -117,6 +118,17 @@
 					location_country_id  = "{$division.location_country_id}"
 					teryt                = "{$division.teryt}"
 				}
+			</td>
+		</tr>
+		<tr>
+			<td class="valign-top">
+				{icon name="customer-location"}
+			</td>
+			<td class="nobr valign-top">
+				<strong>{trans("Office address")}</strong>
+			</td>
+			<td>
+				{location_box_expandable data=$division.office_address}
 			</td>
 		</tr>
 		<tr>
@@ -243,6 +255,34 @@
 			<td>
 				<input type="text" value="{$division.phone}" name="division[phone]" size="40"
 					{tip text="Enter phone number (optional)" trigger="phone"}>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="url"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("URL")}</strong>
+			</td>
+			<td>
+				<input type="text" size="80" name="division[url]"
+					value="{$division.url}"
+					placeholder="{trans("URL address")}"
+					{tip trigger="url"}>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="url"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Userpanel URL")}</strong>
+			</td>
+			<td>
+				<input type="text" size="80" name="division[userpanel_url]"
+					value="{$division.userpanel_url}"
+					placeholder="{trans("URL address")}"
+					{tip trigger="userpanel_url"}>
 			</td>
 		</tr>
 		<tr>

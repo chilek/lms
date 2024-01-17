@@ -98,6 +98,14 @@ if (!empty($_POST['division'])) {
         $error['phone'] = trans('Incorrect phone number!');
     }
 
+    if (strlen($division['url']) && !filter_var($division['url'], FILTER_VALIDATE_URL)) {
+        $error['url'] = trans('Invalid URL address format!');
+    }
+
+    if (strlen($division['userpanel_url']) && !filter_var($division['userpanel_url'], FILTER_VALIDATE_URL)) {
+        $error['userpanel_url'] = trans('Invalid URL address format!');
+    }
+
     if ($division['inv_paytime'] == '') {
         $division['inv_paytime'] = null;
     }
@@ -132,6 +140,8 @@ if (!isset($division['location_zip']) && $default_zip) {
 if (!isset($division['location_city']) && $default_city) {
     $division['location_city'] = $default_city;
 }
+
+$division['office_address']['prefix'] = 'division[office_address]';
 
 $layout['pagetitle'] = trans('New Division');
 
