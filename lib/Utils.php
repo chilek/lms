@@ -1086,7 +1086,7 @@ class Utils
         } else if (!strlen($args['name2']) && preg_match('/^[0-9]+(\.|-go)?$/', $args['name'])) {
             $args['type'] = '';
         }
-        return preg_replace(
+        return trim(preg_replace(
             '/[ ]{2,}/',
             ' ',
             str_replace(
@@ -1102,6 +1102,6 @@ class Utils
                 ),
                 $teryt_street_address_format
             )
-        );
+        ));
     }
 }
