@@ -34,6 +34,7 @@ $userid = Auth::GetCurrentUser();
 $queue = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 if (isset($_GET['netdevid']) && intval($_GET['netdevid'])) {
+    $ticket['netdevid'] = intval($_GET['netdevid']);
     $netdevice = $LMS->GetNetDev($_GET['netdevid']);
     if (!empty($netdevice['netnodeid'])) {
         $ticket['netnodeid'] = $netdevice['netnodeid'];
