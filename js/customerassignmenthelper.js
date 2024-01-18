@@ -255,7 +255,7 @@ function CustomerAssignmentHelper(options) {
 
 		$('#location-select').trigger('change');
 
-		$('select.schema-tariff-selection').each(
+		$('select.schema-tariff-selection :visible').each(
 			function (e, schemaId) {
 				if (schemaId) {
 					$(this).attr('required');
