@@ -2666,9 +2666,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         if ($ticket_subject_remove_reply_prefix) {
             $subject = preg_replace('/(Re|Odp):\s*/', '', $subject);
         }
-        $subject = preg_replace('/' . $subject_ticket_regexp_match . '/', '', $subject);
-
-        return $subject;
+        return preg_replace('/' . $subject_ticket_regexp_match . '/', '', $subject);
     }
 
     public function isCategoryAssignedToTicket($categoryid, $ticketid)
