@@ -205,8 +205,20 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
                 }
             }
 
-            $this->db->Execute('DELETE FROM addresses a
-				WHERE a.id = (SELECT address_id FROM divisions d WHERE d.id = ?)', array($id));
+            $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
+
+            $address_ids = $this->db->GetRow(
+                'SELECT d.address_id, d.office_address_id
+                FROM divisions d
+                WHERE d.id = ?',
+                array($id)
+            );
+            foreach ($address_ids as $address_id) {
+                if (!empty($address_id)) {
+                    $location_manager->DeleteAddress($address_id);
+                }
+            }
+
             $this->db->Execute('DELETE FROM divisions WHERE id=?', array($id));
         }
     }
