@@ -261,64 +261,64 @@
 								</TD>
 								<TD>
 									{$ticket.location|escape}
-                                                                        {button
-                                                                            type="link"
-                                                                            tip="Show on map"
-                                                                            icon="location"
-                                                                            href="{$gps_location_url|replace:"%location":$ticket.location|escape}"
-                                                                        }
-                                                                        {show_on_map_button
-                                                                                type="default"
-                                                                                cityid=$ticket.city_id
-                                                                                streetid=$ticket.street_id
-                                                                                building_num=$ticket.house
-                                                                        }
+									{button
+										type="link"
+										tip="Show on map"
+										icon="location"
+										href="{$gps_location_url|replace:"%location":$ticket.location|escape}"
+									}
+									{show_on_map_button
+										type="default"
+										cityid=$ticket.city_id
+										streetid=$ticket.street_id
+										building_num=$ticket.house
+									}
 									{show_on_map_button
 										type="google"
-                                                                                cityid=$ticket.city_id
-                                                                                streetid=$ticket.street_id
-                                                                                building_num=$ticket.house
+										cityid=$ticket.city_id
+										streetid=$ticket.street_id
+										building_num=$ticket.house
 									}
 									{show_on_map_button
 										type="geoportal"
-                                                                                cityid=$ticket.city_id
-                                                                                streetid=$ticket.street_id
-                                                                                building_num=$ticket.house
+										cityid=$ticket.city_id
+										streetid=$ticket.street_id
+										building_num=$ticket.house
 									}
 									{show_on_map_button
 										type="netstork"
-                                                                                cityid=$ticket.city_id
-                                                                                streetid=$ticket.street_id
-                                                                                building_num=$ticket.house
+										cityid=$ticket.city_id
+										streetid=$ticket.street_id
+										building_num=$ticket.house
 									}
 									{show_on_map_button
 										type="sidusis"
-                                                                                cityid=$ticket.city_id
-                                                                                streetid=$ticket.street_id
-                                                                                building_num=$ticket.house
+										cityid=$ticket.city_id
+										streetid=$ticket.street_id
+										building_num=$ticket.house
 									}
 								</TD>
 							</TR>
 							{/if}
-                                                        {if $ticket.location && !empty($ticket.coords.latitude)}
-                                                        <TR>
-                                                            <TD class="bold nobr">
-								{icon name="location"
-								    class="lms-ui-button-clipboard"
-								    label="GPS coordinates"
-								    data_clipboard_text="{$ticket.coords.latitude}, {$ticket.coords.longitude}"
-								}
-                                                            </TD>
-                                                            <TD>
-								{button
-								    type="link"
-								    class="lms-ui-button-clipboard"
-								    label="{$ticket.coords.latitude}, {$ticket.coords.longitude}"
-								    data_clipboard_text="{$ticket.coords.latitude}, {$ticket.coords.longitude}"
-								}
-                                                            </TD>
-                                                        </TR>
-                                                        {/if}
+							{if $ticket.location && !empty($ticket.coords.latitude)}
+							<TR>
+								<TD class="bold nobr">
+									{icon name="location"
+										class="lms-ui-button-clipboard"
+										label="GPS coordinates"
+										data_clipboard_text="{$ticket.coords.latitude}, {$ticket.coords.longitude}"
+									}
+								</TD>
+								<TD>
+									{button
+										type="link"
+										class="lms-ui-button-clipboard"
+										label="{$ticket.coords.latitude}, {$ticket.coords.longitude}"
+										data_clipboard_text="{$ticket.coords.latitude}, {$ticket.coords.longitude}"
+									}
+								</TD>
+							</TR>
+							{/if}
 							{if $ticket.nodeid}
 							<TR>
 								<TD class="bold nobr">
