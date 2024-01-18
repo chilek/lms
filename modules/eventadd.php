@@ -497,7 +497,7 @@ if (isset($ticket['netnodeid']) && !empty($ticket['netnodeid'])) {
     $search = array();
 }
 
-$invprojectlist = $LMS->GetProjects('name', array());
+$invprojectlist = $LMS->GetProjects();
 
 $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 if (empty($categories)) {

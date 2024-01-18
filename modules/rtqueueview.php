@@ -381,7 +381,7 @@ unset($queue['total'], $queue['state'], $queue['priority'], $queue['source'], $q
 $queues = $LMS->GetQueueList(array('stats' => false));
 $categories = $LMS->GetUserCategories($currentuser);
 
-$projects = $LMS->GetProjects('name', array());
+$projects = $LMS->GetProjects();
 unset($projects['total'], $projects['order'], $projects['direction']);
 
 $netnodelist = $LMS->GetNetNodeList(array(), 'name');
