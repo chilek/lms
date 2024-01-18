@@ -126,6 +126,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
      */
     public function GetQueueContents(array $params)
     {
+        $userid = Auth::GetCurrentUser();
         extract($params);
         foreach (array('ids', 'state', 'priority', 'source', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
             'serviceids', 'typeids', 'unread', 'parentids', 'verifierids', 'rights', 'projectids', 'cid', 'subject', 'fromdate', 'todate', 'short', 'watching') as $var) {
@@ -337,7 +338,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         if (!empty($owner) && !in_array('all', $owner)) {
             if (in_array('-3', $owner)) {
-                $ownerfilter = ' AND (t.owner IS NULL OR t.owner = ' . Auth::GetCurrentUser() . ')';
+                $ownerfilter = ' AND (t.owner IS NULL OR t.owner = ' . $userid . ')';
             } elseif (in_array('-2', $owner)) {
                 $ownerfilter = ' AND t.owner IS NOT NULL';
             } else {
@@ -422,8 +423,6 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         } else {
             $categoriesfilter = '';
         }
-
-        $userid = Auth::GetCurrentUser();
 
         $user_permission_checks = ConfigHelper::checkConfig('rt.additional_user_permission_checks', ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks'));
         $allow_empty_categories = ConfigHelper::checkConfig('rt.allow_empty_categories', ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories'));
@@ -831,7 +830,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				WHERE t.queueid = ?' . ($user_permission_checks ? ' AND (r.queueid IS NOT NULL OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid . ')' : '')
                     . (empty($deleted_tickets) ? ' AND t.deleted = 0' : ''),
                 array(RT_RESOLVED, RT_PRIORITY_CRITICAL, RT_RESOLVED, RT_RESOLVED,
-                    Auth::GetCurrentUser(),
+                    $userid,
                 $id)
             );
             if (!empty($result)) {
