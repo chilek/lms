@@ -799,7 +799,7 @@ if (!empty($ticket['customerid'])) {
 $netnodelist = $LMS->GetNetNodeList(array('short' => true), 'name');
 unset($netnodelist['total'], $netnodelist['order'], $netnodelist['direction']);
 
-$invprojectlist = $LMS->GetProjects('name', array());
+$invprojectlist = $LMS->GetProjects();
 unset($invprojectlist['total'], $invprojectlist['order'], $invprojectlist['direction']);
 
 if (isset($ticket['netnodeid']) && !empty($ticket['netnodeid'])) {

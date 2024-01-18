@@ -613,7 +613,7 @@ $search['short'] = true;
 $netdevlist = $LMS->GetNetDevList('name', $search);
 unset($netdevlist['total'], $netdevlist['order'], $netdevlist['direction']);
 
-$invprojectlist = $LMS->GetProjects('name', array());
+$invprojectlist = $LMS->GetProjects();
 unset($invprojectlist['total'], $invprojectlist['order'], $invprojectlist['direction']);
 
 $hook_data = $LMS->executeHook(
