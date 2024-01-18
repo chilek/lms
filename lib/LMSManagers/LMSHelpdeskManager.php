@@ -1497,13 +1497,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $notes = array();
         if ($parentid) {
             $note = trans('Ticket parent ID has been set to $a.', $parentid);
-            $type = RTMESSAGE_PARENT_CHANGE;
         } else {
             $note = trans('Ticket parent ID has been removed.');
-            $type = RTMESSAGE_PARENT_CHANGE;
         }
         $this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
-            VALUES(?, ?, ?, ?, ?NOW?)', array(Auth::GetCurrentUser(), $ticketid, $type, $note));
+            VALUES(?, ?, ?, ?, ?NOW?)', array(Auth::GetCurrentUser(), $ticketid, RTMESSAGE_PARENT_CHANGE, $note));
         $this->db->Execute('UPDATE rttickets SET parentid = ? WHERE id = ?', array($parentid, $ticketid));
     }
 
