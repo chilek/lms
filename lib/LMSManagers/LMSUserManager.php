@@ -131,7 +131,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         extract($params);
 
         return $this->db->GetAll(
-            'SELECT id, login, name, rname, login, deleted,
+            'SELECT id, login, name, rname, deleted,
             (CASE WHEN access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0) THEN 1 ELSE 0 END) AS access
             FROM vusers
             WHERE deleted = 0'
