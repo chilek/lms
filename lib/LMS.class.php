@@ -999,7 +999,7 @@ class LMS
     public function CustomergroupWithCustomerGet($id)
     {
         $manager = $this->getCustomerGroupManager();
-        return $manager->CustomergroupWithCustomerGet();
+        return $manager->CustomergroupWithCustomerGet($id);
     }
 
     public function CustomergroupAdd($customergroupdata)
