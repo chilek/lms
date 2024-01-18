@@ -2544,10 +2544,10 @@ class LMS
         return $manager->GetIndicatorStats();
     }
 
-    public function DetermineSenderEmail($queue_email, $ticket_email, $user_email, $forced_order = null)
+    public function DetermineSenderEmail($user_email, $queue_email, $ticket_email, $forced_order = null)
     {
         $manager = $this->getHelpdeskManager();
-        return $manager->DetermineSenderEmail($queue_email, $ticket_email, $user_email, $forced_order);
+        return $manager->DetermineSenderEmail($user_email, $queue_email, $ticket_email, $forced_order);
     }
 
     public function GetTicketRequestorMail($ticketid)
