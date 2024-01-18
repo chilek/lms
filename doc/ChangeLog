@@ -602,9 +602,8 @@ version 28-git (????-??-??):
   - enhancement: add assignment note field, user assignment description [interduo]
   - enhancement: added division filter in new message form [chilan]
   - enhancement: added office address, url and userpanel url properties to divisions [chilan]
-  - enhancement: {button data_confirmation_text="some question?"} needs to be confirmed by dialog
-  - enhancement: one click ticket move to favorite queues
-    (variable: rt.favorite_queues, default: empty) [interduo]
+  - enhancement: move tickets to favorite queues with single click ('rt.favorite_queues' configuration variable
+    with empty default value) [interduo]
 
 version 27.0 (2021-08-20):
 
