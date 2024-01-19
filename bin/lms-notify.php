@@ -3288,6 +3288,9 @@ if (empty($types) || in_array('events', $types)) {
                         $cid
                     )
                 );
+                if (empty($customers[$cid])) {
+                    unset($customers[$cid]);
+                }
             }
 
             if ((empty($scopes) || isset($scopes['customers'])) && (empty($recipients) || isset($recipients['customers'])) && $cid) {
