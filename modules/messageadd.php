@@ -87,6 +87,8 @@ function GetRecipients($filter, $type = MSG_MAIL)
     $linktype = $filter['linktype'] == '' ? '' : intval($filter['linktype']);
     $tarifftype = intval($filter['tarifftype']);
     $consent = isset($filter['consent']);
+    $email_options = isset($filter['email-options']) ? intval($filter['email-options']) : 0;
+    $phone_options = isset($filter['phone-options']) ? intval($filter['phone-options']) : 0;
     $netdevices = isset($filter['netdevices']) ? $filter['netdevices'] : null;
 
     if ($state == 50) {
@@ -198,13 +200,13 @@ function GetRecipients($filter, $type = MSG_MAIL)
     if ($type == MSG_SMS) {
         $smstable = 'JOIN (SELECT ' . $LMS->DB->GroupConcat('contact') . ' AS phone, customerid
 				FROM customercontacts
-				WHERE ((type & ' . (CONTACT_MOBILE | CONTACT_DISABLED) . ') = ' . CONTACT_MOBILE . ' )
+				WHERE ((type & ' . (CONTACT_MOBILE | CONTACT_DISABLED | $phone_options) . ') = ' . (CONTACT_MOBILE | $phone_options) . ' )
 				GROUP BY customerid
 			) x ON (x.customerid = c.id) ';
     } elseif ($type == MSG_MAIL) {
         $mailtable = 'JOIN (SELECT ' . $LMS->DB->GroupConcat('contact') . ' AS email, customerid
 				FROM customercontacts
-				WHERE ((type & ' . (CONTACT_EMAIL | CONTACT_DISABLED) . ') = ' . CONTACT_EMAIL . ')
+				WHERE ((type & ' . (CONTACT_EMAIL | CONTACT_DISABLED | $email_options) . ') = ' . (CONTACT_EMAIL | $email_options) . ')
 				GROUP BY customerid
 			) cc ON (cc.customerid = c.id) ';
     }
@@ -1323,6 +1325,8 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 }
             }
         }
+    } else {
+        require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
     }
 
     $SMARTY->assign('error', $error);
@@ -1424,6 +1428,8 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
     $message['usergroup'] = isset($_GET['usergroupid']) ? intval($_GET['usergroupid']) : 0;
     $message['tmplid'] = isset($_GET['templateid']) ? intval($_GET['templateid']) : 0;
     $SMARTY->assign('autoload_template', true);
+
+    require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 }
 
 if (isset($message['type'])) {

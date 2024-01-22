@@ -298,10 +298,10 @@
 							</td>
 						</tr>
 						<tr>
-							<td class="nobr valign-top" rowspan="2">
+							<td class="nobr valign-top" rowspan="1">
 								{trans("Division")}
 							</td>
-							<td class="valign-top" rowspan="2">
+							<td class="valign-top" rowspan="1">
 								<select name="message[division]">
 									<option value="">- {trans("all")} -</option>
 									{foreach $divisions as $division}
@@ -321,7 +321,7 @@
 								</select>
 							</td>
 							<td class="nobr">{trans("Link type")}</td>
-							<td>
+							<td colspan="3">
 								<select size="1" name="message[linktype]" {tip trigger="linktype"}>
 									<option value="">{trans("— all —")}</option>
 									{foreach $_LINKTECHNOLOGIES as $linktype => $linktech}
@@ -329,12 +329,42 @@
 									{/foreach}
 								</select>
 							</td>
-							<td class="nobr" colspan="2">
+						</tr>
+						<tr>
+							<td class="nobr" colspan="1">
 								<label>
 									<input type="checkbox" name="message[consent]" value="1"
-										{tip text="Check if customer consent to messages delivery via e-mail or sms is required" trigger="consent"}
-										{if $message.consent} checked{/if}>
+											{tip text="Check if customer consent to messages delivery via e-mail or sms is required" trigger="consent"}
+											{if $message.consent} checked{/if}>
 									{trans("consent required")}
+								</label>
+							</td>
+							<td class="nobr" colspan="7">
+								<label data-contact-type="typemail"
+									{if !empty($message.type) && $message.type != $smarty.const.MSG_MAIL} class="lms-ui-disabled"{/if}>
+									{trans("E-mail contact options")}
+									<select name="message[email-options]"
+										{if !empty($message.type) && $message.type != $smarty.const.MSG_MAIL} disabled{/if}>
+										<option value="">{trans("— any —")}</option>
+										{foreach $_CUSTOMERCONTACTTYPES.email.ui.flags as $flagval => $flag}
+											{if $flagval != $smarty.const.CONTACT_DISABLED}
+												<option value="{$flagval}"{if $message['email-options'] == $flagval} selected{/if}>{$flag.label}</option>
+											{/if}
+										{/foreach}
+									</select>
+								</label>
+								<label data-contact-type="typesms"
+									{if $message.type != $smarty.const.MSG_SMS} class="lms-ui-disabled"{/if}>
+									{trans("Phone contact options")}
+									<select name="message[phone-options]"
+										{if $message.type != $smarty.const.MSG_SMS} disabled{/if}>
+										<option value="">{trans("— any —")}</option>
+										{foreach $_CUSTOMERCONTACTTYPES.phone.ui.flags as $flagval => $flag}
+											{if $flagval != $smarty.const.CONTACT_DISABLED}
+												<option value="{$flagval}"{if $message['phone-options'] == $flagval} selected{/if}>{$flag.label}</option>
+											{/if}
+										{/foreach}
+									</select>
 								</label>
 							</td>
 						</tr>
@@ -691,6 +721,12 @@
 			$('#customer-filter').toggle(parseInt($(this).val()) != {$smarty.const.MSG_ANYSMS}{if !empty($message.customers)} || true{/if});
 
 			var elem = $(this).attr('id');
+
+			$('[data-contact-type]').each(function() {
+				var disabled = elem != $(this).attr('data-contact-type');
+				$(this).toggleClass('lms-ui-disabled', disabled).find('select').prop('disabled', disabled);
+			});
+
 			if (elem == 'typesms' || elem == 'typeanysms' || elem == 'typewww' || elem == 'typeuserpanel' || elem == 'typeuserpanelurgent') {
 				$('#mailfrom,#mailsender,#attachment').hide();
 
