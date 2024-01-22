@@ -604,6 +604,7 @@ version 28-git (????-??-??):
   - enhancement: added office address, url and userpanel url properties to divisions [chilan]
   - enhancement: move tickets to favorite queues with single click ('rt.favorite_queues' configuration variable
     with empty default value) [interduo]
+  - enhancement: added recipient selection by customer contact flags/options in new message form [chilan]
 
 version 27.0 (2021-08-20):
 
