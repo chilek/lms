@@ -606,6 +606,7 @@ version 28-git (????-??-??):
     with empty default value) [interduo]
   - enhancement: added recipient selection by customer contact flags/options in new message form [chilan]
   - enhancement: quick search customers by alternative bank accounts [chilan]
+  - improvement: added 'active, without document' assignment filter in customer search form [chilan]
 
 version 27.0 (2021-08-20):
 
