@@ -4485,6 +4485,7 @@ $_LANG['Credit Note for Invoice Edit: $a'] = 'Edycja faktury korygującej: $a';
 $_LANG['$a (clone)'] = '$a (klon)';
 
 $_LANG['Alternative bank accounts'] = 'Alternatywne rachunki bankowe';
+$_LANG['Alternative bank account:'] = 'Alternatywny rachunek bankowy:';
 $_LANG['Bank accounts'] = 'Rachunki bankowe';
 $_LANG['Enter bank account (optional)'] = 'Wprowadź rachunek bankowy (opcjonalnie)';
 $_LANG['Enter bank name (optional)'] = 'Wprowadź nazwę banku (opcjonalnie)';
@@ -5039,6 +5040,7 @@ $_LANG['<!qs>location name'] = 'nazwa lokalizacji';
 $_LANG['<!qs>post address'] = 'adres korespondencyjny';
 $_LANG['<!qs>location address'] = 'adres lokalizacyjny';
 $_LANG['<!qs>email'] = 'e-mail';
+$_LANG['<!qs>alternative bank account'] = 'alternatywny rachunek bankowy';
 $_LANG['<!qs>TEN'] = 'NIP';
 $_LANG['<!qs>SSN'] = 'PESEL';
 $_LANG['<!qs>additional information'] = 'informacje dodatkowe';

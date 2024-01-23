@@ -86,16 +86,30 @@ switch ($mode) {
                 $properties = array('altname' => 'altname');
             }
 
-            $candidates = $DB->GetAll("SELECT c.id, cc.contact AS email, full_address AS address,
-				post_name, post_full_address AS post_address, deleted, altname,
-			    " . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . " AS customername,
-			    va.name AS location_name, va.address AS location_address,
-			    c.status, c.ten, c.ssn, c.info, c.notes
-				FROM customerview c
-				LEFT JOIN customer_addresses ca ON ca.customer_id = c.id AND ca.type IN (?, ?)
-				LEFT JOIN vaddresses va ON va.id = ca.address_id
-				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ?) > 0
-				WHERE " . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/', $search) ? 'c.id = ' . $search : '1=0') : '1=0')
+            $candidates = $DB->GetAll(
+                "SELECT
+                    c.id,
+                    cc.contact AS email,
+                    cc2.contact AS bankaccount,
+                    full_address AS address,
+                    post_name,
+                    post_full_address AS post_address,
+                    deleted,
+                    altname,
+                    " . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . " AS customername,
+                    va.name AS location_name,
+                    va.address AS location_address,
+                    c.status,
+                    c.ten,
+                    c.ssn,
+                    c.info,
+                    c.notes
+                FROM customerview c
+                LEFT JOIN customer_addresses ca ON ca.customer_id = c.id AND ca.type IN ?
+                LEFT JOIN vaddresses va ON va.id = ca.address_id
+                LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ?) > 0
+                LEFT JOIN customercontacts cc2 ON cc2.customerid = c.id AND (cc2.type & ?) > 0
+                WHERE " . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/', $search) ? 'c.id = ' . $search : '1=0') : '1=0')
                     . (empty($properties) || isset($properties['name']) ? " OR LOWER(" . $DB->Concat('lastname', "' '", 'c.name') . ") ?LIKE? LOWER($sql_search) OR LOWER(" . $DB->Concat('c.name', "' '", 'lastname') . ") ?LIKE? LOWER($sql_search)" : '')
                     . (empty($properties) || isset($properties['altname']) ? " OR LOWER(c.altname) ?LIKE? LOWER($sql_search)" : '')
                     . (empty($properties) || isset($properties['address']) ? " OR LOWER(full_address) ?LIKE? LOWER($sql_search)" : '')
@@ -104,12 +118,23 @@ switch ($mode) {
                     . (empty($properties) || isset($properties['location_name']) ? " OR LOWER(va.name) ?LIKE? LOWER($sql_search)" : '')
                     . (empty($properties) || isset($properties['location_address']) ? " OR LOWER(va.address) ?LIKE? LOWER($sql_search)" : '')
                     . (empty($properties) || isset($properties['email']) ? " OR LOWER(cc.contact) ?LIKE? LOWER($sql_search)" : '')
+                    . (empty($properties) || isset($properties['bankaccount']) ? " OR LOWER(REPLACE(cc2.contact, ' ', '')) ?LIKE? LOWER(REPLACE($sql_search, ' ', ''))" : '')
                     . (empty($properties) || isset($properties['ten']) ? " OR REPLACE(REPLACE(c.ten, '-', ''), ' ', '') ?LIKE? REPLACE(REPLACE($sql_search, '-', ''), ' ', '')" : '')
                     . (empty($properties) || isset($properties['ssn']) ? " OR REPLACE(REPLACE(c.ssn, '-', ''), ' ', '') ?LIKE? REPLACE(REPLACE($sql_search, '-', ''), ' ', '')" : '')
                     . (empty($properties) || isset($properties['additional-info']) ? " OR LOWER(c.info) ?LIKE? LOWER($sql_search)" : '')
                     . (empty($properties) || isset($properties['notes']) ? " OR LOWER(c.notes) ?LIKE? LOWER($sql_search)" : '') . "
                 ORDER by deleted, customername, cc.contact, full_address
-				LIMIT ?", array(DEFAULT_LOCATION_ADDRESS, LOCATION_ADDRESS, CONTACT_EMAIL, intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
+                LIMIT ?",
+                array(
+                    array(
+                        DEFAULT_LOCATION_ADDRESS,
+                        LOCATION_ADDRESS,
+                    ),
+                    CONTACT_EMAIL,
+                    CONTACT_BANKACCOUNT,
+                    intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15)),
+                )
+            );
 
             $result = array();
             if ($candidates) {
@@ -163,6 +188,9 @@ switch ($mode) {
                         $description = trans('Address:') . ' ' . htmlspecialchars($row['location_address']);
                     } else if ((empty($properties) || isset($properties['email'])) && preg_match("~$search~i", $row['email'])) {
                         $description = trans('E-mail:') . ' ' . $row['email'];
+                    } else if ((empty($properties) || isset($properties['bankaccount']))
+                        && preg_match('~' . preg_replace('/[\- ]/', '', $search) . '~i', preg_replace('/[\- ]/', '', $row['bankaccount']))) {
+                        $description = trans('Alternative bank account:') . ' ' . format_bankaccount($row['bankaccount']);
                     } else if ((empty($properties) || isset($properties['ten']))
                         && preg_match('~' . preg_replace('/[\- ]/', '', $search) . '~i', preg_replace('/[\- ]/', '', $row['ten']))) {
                         $description = trans('TEN:') . ' ' . $row['ten'];
