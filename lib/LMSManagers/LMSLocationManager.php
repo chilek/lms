@@ -506,12 +506,20 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                 $args['street_id'] = $params['street_id'];
             }
             if (!empty($params['building_num'])) {
-                $args['building_num'] = $params['building_num'];
+                $args['building_num'] = mb_strtoupper($params['building_num']);
             }
             $buildings = $this->db->GetAll(
                 'SELECT longitude, latitude
                 FROM location_buildings
-                WHERE ' . implode(' = ? AND ', array_keys($args)) . ' = ?',
+                WHERE ' . implode(
+                    ' = ? AND ',
+                    array_map(
+                        function ($key) {
+                            return $key == 'building_num' ? 'UPPER(' . $key . ')' : $key;
+                        },
+                        array_keys($args)
+                    )
+                ) . ' = ?',
                 array_values($args)
             );
             if (empty($buildings) || count($buildings) > 1 || empty($buildings[0]['longitude'])) {
