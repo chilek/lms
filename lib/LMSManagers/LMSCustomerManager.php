@@ -1147,7 +1147,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             case -3:
                 $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.invoice = ' . DOC_INVOICE
                     . ' AND a.suspended = 0 AND a.commited = 1
-                    AND (a.dateto = 0 OR a.dateto > ?NOW?) AND ((a.at + 86400) > ?NOW? or a.period != 0)';
+                    AND (a.dateto = 0 OR a.dateto > ?NOW?) AND (a.period <> ' . DISPOSABLE . ' OR (a.at + 86400) > ?NOW?)';
                 break;
             case -4:
                 $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended <> 0';
@@ -1197,6 +1197,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 break;
             case -12:
                 $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.commited = 0';
+                break;
+            case -13:
+                $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.invoice = 0
+                    AND a.suspended = 0 AND a.commited = 1
+                    AND (a.dateto = 0 OR a.dateto > ?NOW?) AND (a.period <> ' . DISPOSABLE . ' OR (a.at + 86400) > ?NOW?)';
                 break;
             default:
                 if ($as > 0) {
