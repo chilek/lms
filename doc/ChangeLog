@@ -607,6 +607,9 @@ version 28-git (????-??-??):
   - enhancement: added recipient selection by customer contact flags/options in new message form [chilan]
   - enhancement: quick search customers by alternative bank accounts [chilan]
   - improvement: added 'active, without document' assignment filter in customer search form [chilan]
+  - improvement: some new substitution symbols support added  in mail body (%customer_name,
+    %division_name, %division_address, %division_zip, %division_city) of message with attached invoice
+    sent to customer [chilan]
 
 version 27.0 (2021-08-20):
 
