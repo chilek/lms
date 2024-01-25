@@ -248,14 +248,17 @@ function GetConfigList()
                 $item['reftypedescription'] = 'global value';
             }
 
-            if (strlen($item['value']) > 130) {
-                $item['fullvalue'] = $item['value'];
+            if (mb_strlen($item['value']) > 130) {
                 $lines = explode("\n", $item['value']);
                 foreach ($lines as &$line) {
                     $line = mb_strimwidth($line, 0, 130, '…');
                 }
                 unset($line);
-                $item['value'] = implode("\n", $lines);
+                $value = implode("\n", $lines);
+                if ($value != $item['value']) {
+                    $item['fullvalue'] = $item['value'];
+                    $item['value'] = $value;
+                }
             }
         }
         unset($item);
