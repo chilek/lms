@@ -249,6 +249,7 @@ function GetConfigList()
             }
 
             if (strlen($item['value']) > 130) {
+                $item['fullvalue'] = $item['value'];
                 $lines = explode("\n", $item['value']);
                 foreach ($lines as &$line) {
                     $line = mb_strimwidth($line, 0, 130, '…');

@@ -67,6 +67,10 @@
 		margin-left: 0.3em;
 	}
 
+	.show-full-value {
+		float: right;
+	}
+
 	@media all and (max-width: 1200px) {
 		.row-container-buttons {
 			flex-direction: column;
@@ -139,8 +143,19 @@
 			<td class="bold">
 				{$config.var}
 			</td>
-			<td>
-				{nl2br($config.value|escape|replace:" ":"&nbsp;")}
+			<td{if isset($config.fullvalue)} data-full-value="{base64_encode(nl2br($config.fullvalue|escape|replace:" ":"&nbsp;"))}"{/if}>
+				{if isset($config.fullvalue)}
+					<div>
+						<div class="show-full-value lms-ui-ignore-target-url">
+							{icon name="next"}
+						</div>
+						<div>
+							{nl2br($config.value|escape|replace:" ":"&nbsp;")}
+						</div>
+					</div>
+				{else}
+					{nl2br($config.value|escape|replace:" ":"&nbsp;")}
+				{/if}
 			</td>
 			<td>
 				{$config.description|truncate:5000:"&hellip;"}
@@ -326,6 +341,11 @@ $(function() {
 			document.configform.submit();
 			return;
 		});
+	});
+
+	$(".show-full-value").click(function() {
+		var elem = $(this).closest("[data-full-value]");
+		elem.html(Base64.decode(elem.attr('data-full-value')));
 	});
 
 	$('#export-configs').click(function() {
