@@ -140,7 +140,7 @@
 				{$config.var}
 			</td>
 			<td>
-				{$config.value|escape}
+				{nl2br($config.value|escape|replace:" ":"&nbsp;")}
 			</td>
 			<td>
 				{$config.description|truncate:5000:"&hellip;"}

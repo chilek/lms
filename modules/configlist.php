@@ -247,6 +247,15 @@ function GetConfigList()
                 $item['reftype'] = null;
                 $item['reftypedescription'] = 'global value';
             }
+
+            if (strlen($item['value']) > 130) {
+                $lines = explode("\n", $item['value']);
+                foreach ($lines as &$line) {
+                    $line = mb_strimwidth($line, 0, 130, '…');
+                }
+                unset($line);
+                $item['value'] = implode("\n", $lines);
+            }
         }
         unset($item);
     }
