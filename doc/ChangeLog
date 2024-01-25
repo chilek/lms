@@ -610,6 +610,8 @@ version 28-git (????-??-??):
   - improvement: some new substitution symbols support added  in mail body (%customer_name,
     %division_name, %division_address, %division_zip, %division_city) of message with attached invoice
     sent to customer [chilan]
+  - improvement: 'phpui.login_form_logo' with default value of 'img/logo.png' controls which image file
+    is presented in login, one-time password forms [chilan]
 
 version 27.0 (2021-08-20):
 
