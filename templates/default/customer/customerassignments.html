@@ -285,7 +285,7 @@
 									{if $a.tariffid || $a.liabilityid}
 										{if $a.pdiscount != 0}
 											{if $a.suspended == 1}
-												{$a.pdiscount}% + {ConfigHelper::getConfig('finances.suspension_percentage')}%
+												{$a.pdiscount}% + {ConfigHelper::checkConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0))}%
 											{else}
 												{$a.pdiscount}%
 											{/if}
@@ -315,7 +315,7 @@
 									{if $a.tariffid || $a.liabilityid}
 										{if $a.pdiscount != 0}
 											{if $a.suspended == 1}
-												{$a.pdiscount}% + {ConfigHelper::getConfig('finances.suspension_percentage')}%
+												{$a.pdiscount}% + {ConfigHelper::checkConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0))}%
 											{else}
 												{$a.pdiscount}%
 											{/if}
