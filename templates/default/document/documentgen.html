@@ -38,7 +38,6 @@
 
 	function printdoc() {
 		document.documentgen.action = "?m=documentgen&print=1";
-		document.documentgen.target = "_blank";
 	}
 
 </script>
@@ -289,8 +288,8 @@
 				<div id="document-button-panel">
 					<div>
 						{button type="submit" icon="save" id="submit-button" label="Submit"}
-						{button type="submit" icon="print" label="Print" onclick="printdoc()"}
-						{button icon="cancel" label="Cancel" onclick="location.href = '?m=documentlist';"}
+						{button type="submit" icon="print" label="Print" onclick="printdoc()" external=true}
+						{button icon="cancel" label="Cancel" href="?m=documentlist"}
 					</div>
 				</div>
 			</td>
