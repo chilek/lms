@@ -231,10 +231,7 @@ function GetRecipients($filter, $type = MSG_MAIL)
 			) nd ON nd.ownerid = c.id ';
     }
 
-    $suspension_percentage = f_round(ConfigHelper::checkConfig(
-        'payments.suspension_percentage',
-        ConfigHelper::getConfig('finances.suspension_percentage', 0))
-    );
+    $suspension_percentage = f_round(ConfigHelper::checkConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0)));
 
     $recipients = $LMS->DB->GetAll(
         'SELECT c.id, pin, c.divisionid, '

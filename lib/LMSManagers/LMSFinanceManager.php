@@ -57,10 +57,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function GetCustomerAssignmentValue($id)
     {
-        $suspension_percentage = f_round(ConfigHelper::checkConfig(
-            'payments.suspension_percentage',
-            ConfigHelper::getConfig('finances.suspension_percentage', 0))
-        );
+        $suspension_percentage = f_round(ConfigHelper::checkConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0)));
 
         return $this->db->GetAllByKey('SELECT SUM(sum), currency FROM
             (SELECT SUM((CASE a.suspended
@@ -120,10 +117,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     public function GetCustomerAssignments($id, $show_expired = false, $show_approved = true)
     {
         $now = mktime(0, 0, 0, date('n'), date('d'), date('Y'));
-        $suspension_percentage = f_round(ConfigHelper::checkConfig(
-            'payments.suspension_percentage',
-            ConfigHelper::getConfig('finances.suspension_percentage', 0))
-        );
+        $suspension_percentage = f_round(ConfigHelper::checkConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0)));
 
         $assignments = $this->db->GetAll(
             'SELECT a.id AS id, a.tariffid, a.customerid, a.period AS periodvalue, a.backwardperiod, a.note,
@@ -360,10 +354,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         global $SERVICETYPES;
 
         $now = mktime(0, 0, 0, date('n'), date('d'), date('Y'));
-        $suspension_percentage = f_round(ConfigHelper::checkConfig(
-            'payments.suspension_percentage',
-            ConfigHelper::getConfig('finances.suspension_percentage', 0))
-        );
+        $suspension_percentage = f_round(ConfigHelper::checkConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0)));
 
         $servicesassignments = $this->db->GetAll('SELECT
             t.type AS tarifftype,
