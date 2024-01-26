@@ -248,10 +248,10 @@ function GetConfigList()
                 $item['reftypedescription'] = 'global value';
             }
 
-            if (mb_strlen($item['value']) > 130) {
+            if (mb_strlen($item['value']) > 120) {
                 $lines = explode("\n", $item['value']);
                 foreach ($lines as &$line) {
-                    $line = mb_strimwidth($line, 0, 130, '…');
+                    $line = mb_strimwidth($line, 0, 120, '…');
                 }
                 unset($line);
                 $value = implode("\n", $lines);
