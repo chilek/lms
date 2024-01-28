@@ -3966,7 +3966,7 @@ URL: %url
 ('receipts', 'content_type', 'text/html', '', 0),
 ('receipts', 'type', 'html', '', 0),
 ('receipts', 'attachment_name', '', '', 0),
-('finances', 'suspension_percentage', '0', '', 0),
+('payments', 'suspension_percentage', '0', '', 0),
 ('mail', 'debug_email', '', '', 0),
 ('mail', 'smtp_host', '127.0.0.1', '', 0),
 ('mail', 'smtp_port', '25', '', 0),

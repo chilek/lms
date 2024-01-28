@@ -69,7 +69,7 @@
             </sect2>
             <sect2 id="install-req-perl">
             <title>Perl</title>
-       <para><emphasis>LMS-MGC</emphasis> and the rest of Perl scripts requires 
+       <para><emphasis>LMS-MGC</emphasis> and the rest of Perl scripts requires
           also Perl interpreter and some modules:
        <itemizedlist>
          <listitem>
@@ -97,15 +97,15 @@
        <sect2 id="install-req-browser">
            <title>Web Browser</title>
            <para>LMS has web user interface, so you'll need web browser with javascript and
-           cookies enabled. Our exparience says that Mozilla Firefox 1.x will be a good 
+           cookies enabled. Our exparience says that Mozilla Firefox 1.x will be a good
            choice.</para>
          </sect2>
      </sect1>
      <sect1 id="install-install">
      <title>LMS Installation</title>
-            <para>LMS in tarball (.tar.gz) archive can be downloaded from project 
+            <para>LMS in tarball (.tar.gz) archive can be downloaded from project
           home page (<ulink url="http://www.lms.org.pl">www.lms.org.pl</ulink>),
-          which should be extracted and placed in chosen directory (i.e. <filename>/var/www/lms</filename>) 
+          which should be extracted and placed in chosen directory (i.e. <filename>/var/www/lms</filename>)
           and made available for Web Server (ie. with Alias /lms/ /var/www/lms):
 <screen>
 $ cd /var/www
@@ -183,7 +183,7 @@ $ /usr/local/mysql/bin/mysqladmin -u root password new_password</screen>
           </sect3>
           <sect3 id="install-mysql-dbcreate">
           <title>Create Database</title>
-               <para>You have to create database if you run LMS for the first time. 
+               <para>You have to create database if you run LMS for the first time.
 		In order to create database and load it with schema go to LMS directory and run:
 <screen>
 mysql -u[user name with database creation rights] -p
@@ -221,7 +221,7 @@ password = your_password</screen>
           <title>PostgreSQL</title>
           <sect3 id="install-pgsql-intro">
           <title>Intro</title>
-               <para>LMS require PostgreSQL 8.4 or higher. If you have not installed PostgreSQL server, 
+               <para>LMS require PostgreSQL 8.4 or higher. If you have not installed PostgreSQL server,
 	       you can compile it yourself from sources available on <ulink url="http://www.postgresql.org">
                www.postgresql.org</ulink>.</para>
           </sect3>
@@ -280,7 +280,7 @@ password = password_entered_with_lms_user_creation</screen>
          </para>
           </sect3>
           </sect2>
-      </sect1>       
+      </sect1>
       <sect1 id="install-config">
            <title>Basic Configuration</title>
           <para>Main configuration file of LMS is <filename>lms.ini</filename>, which must be placed
@@ -289,10 +289,10 @@ password = password_entered_with_lms_user_creation</screen>
          and for all scripts with exception of <emphasis>LMS-MGC</emphasis>.</para>
          <para><note><para>Remember to remove semicolons (comments sign) from beginning of line with
          parameter that you set.</para></note></para>
-	 <para><note><para>As of version 1.6 and later storing config 
-	 in <filename>lms.ini</filename> is beeing treaded as obsolete. 
+	 <para><note><para>As of version 1.6 and later storing config
+	 in <filename>lms.ini</filename> is beeing treaded as obsolete.
 	 The only required values there are from [database] and [directories]
-	 sections. Other settings are stored in database and could be changed by 
+	 sections. Other settings are stored in database and could be changed by
 	 user interface.</para></note></para>
         <sect2 id="install-config-db">
         <title>Section [database] - Database Settings</title>
@@ -300,14 +300,14 @@ password = password_entered_with_lms_user_creation</screen>
             <itemizedlist>
     		<listitem>
 	    	    <para>type</para>
-    		    <para>Database driver type. Currently are supported 'mysql' or 'mysqli' 
+    		    <para>Database driver type. Currently are supported 'mysql' or 'mysqli'
 		    and 'postgres'. Default: mysql</para>
     		    <para>Example: <prompt>type = mysql</prompt></para>
 		</listitem>
         	<listitem>
 	            <para>host</para>
-    		    <para>Host where database is running. Usually 'localhost', but you can set anything here     
-	            (IP, domain or path to socket in 'localhost:/path/to/socket' format).                       
+    		    <para>Host where database is running. Usually 'localhost', but you can set anything here
+	            (IP, domain or path to socket in 'localhost:/path/to/socket' format).
 	            Default: localhost</para>
 	            <para>Example:     <prompt>host = localhost</prompt></para>
 		</listitem>
@@ -331,9 +331,9 @@ password = password_entered_with_lms_user_creation</screen>
 	    </itemizedlist>
     	    </para>
     </sect2>
-    <sect2 id="install-config-dir">         
+    <sect2 id="install-config-dir">
 	<title>Section [directories] - Directories Settings</title>
-        <para>        
+        <para>
      <itemizedlist>
      <listitem>
         <para>sys_dir</para>
@@ -391,6 +391,11 @@ password = password_entered_with_lms_user_creation</screen>
     <title>Section [finances] - Finances Settings</title>
 	<para>This section consist options for financial system and for payment
         forms. You can read more about that in chapter 'Documents'.
+        </para>
+    </sect2>
+    <sect2 id="install-config-payments">
+    <title>Section [payments] - Payments Settings</title>
+	<para>
         <itemizedlist>
     	    <listitem>
             <para>suspension_percentage (optional)</para>
@@ -405,8 +410,8 @@ password = password_entered_with_lms_user_creation</screen>
       <title>Access rights</title>
       <sect2 id="install-rights-idea">
                 <title>Idea</title>
-      <para>In LMS you may define up to 256 rules to access the system. 
-      Each can permit or deny access to defined modules. 
+      <para>In LMS you may define up to 256 rules to access the system.
+      Each can permit or deny access to defined modules.
       Each user can have any combination of access rules assigned to his account.</para>
       <para>By default following access rules list is defined:
        <itemizedlist>
@@ -437,7 +442,7 @@ password = password_entered_with_lms_user_creation</screen>
         <listitem><para>no access</para></listitem>
        </itemizedlist>
       Most of them grant access to modules and two denies. Modules that user
-      has always access are: welcome, copyrights, logout, chpasswd 
+      has always access are: welcome, copyrights, logout, chpasswd
       (chpasswd can change only own password), access to all others is defined by rules.</para>
       <note><para>If you don't define any access rule for user, then LMS defines
       0 rule for him, which mean: full access.</para></note>
@@ -448,11 +453,11 @@ password = password_entered_with_lms_user_creation</screen>
           <simplelist>
           <member>-  First of all: checking list of modules that user always has access.</member>
           <member>-  Next: checking if module match rules in each levels user has access to.</member>
-          <member>-  Finally: Decision if user is permitted to access modules. If module 
+          <member>-  Finally: Decision if user is permitted to access modules. If module
           match to any level that denies access then access will be forbidden even if user has
-          level that permits access to module. For example, if someone has full access and no access 
+          level that permits access to module. For example, if someone has full access and no access
           to "add computer" module, then he won't able to access module.
-          If module  matches level that permits access to module, then LMS will grant access to module, 
+          If module  matches level that permits access to module, then LMS will grant access to module,
           but if module does not match at any level then no-access-message also will be printed.</member>
        </simplelist>
           </para>
@@ -466,9 +471,9 @@ password = password_entered_with_lms_user_creation</screen>
           section to created file name.</para>
           <para>In that way it's possible to define your own rules to allow
           or deny access for any modules. Module is a name of PHP file
-          in <filename>modules</filename> directory, given without extension 
+          in <filename>modules</filename> directory, given without extension
           in access rules. For example, it's possible to define
-          rule for invoices display (e.g. for lms-sendinvoices script) 
+          rule for invoices display (e.g. for lms-sendinvoices script)
           in the following way:
 <screen>
 &lt;?php
@@ -491,7 +496,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
         stage is a database structure change - it's self-executing process acting upon first login to
         the UI.</para>
 	<para><warning><para>If you've got CVS version you've to
-	install Smarty library. Just copy contents of Smarty's 
+	install Smarty library. Just copy contents of Smarty's
 	<filename>/lib</filename> directory to <filename>/lib/Smarty</filename>.
 	It can be done (including Smarty download) automatic with use of
 	<filename>/devel/smarty_install.sh</filename> script.</para></warning></para>
@@ -500,7 +505,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
 	<title>Documents</title>
 	    <para>LMS makes possible to generate and to store various documents
 	    i.e. invoices, receipts and non-financial documents i.e. contracts,
-	    protocols and others. Documents can be numbered with numbering plans 
+	    protocols and others. Documents can be numbered with numbering plans
 	    (patterns) defined in menu Configuration - Numbering Plans.</para>
     <sect2 id="tax-calculation">
 	    <title>Calculation of tax value</title>
@@ -522,7 +527,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
 				    <para>total brutto price = unitary brutto price * count</para>
 				    <para>Example: unitary brutto price of 1 meter of cable is $2.56, number of meters is 1366, tax rate is 22%</para>
 				    <para>total brutto price = $2.56 * 1366 m = $3496.96</para>
-			    </listitem>	    
+			    </listitem>
 			    <listitem>
 				    <para>total netto price = total brutto price / tax value</para>
 				    <para>Example: unitary brutto price of 1 meter of cable is $2.56, number of meters is 1366, tax rate is 22%</para>
@@ -539,7 +544,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
                 In this case invoices are created by <filename>lms-payments</filename> script or
                 <emphasis>lmsd</emphasis> daemon.</para>
                 <para>For proper work of printouts you need to define division's invoices data
-		(e.g. header, footer, default expositor, place, bank account) and configure some options 
+		(e.g. header, footer, default expositor, place, bank account) and configure some options
 		in configuration section <emphasis>[invoices]</emphasis>:
           <itemizedlist>
 	  <listitem>
@@ -550,19 +555,19 @@ $access['table'][100]['allow_reg'] = '^invoice$';
 	  </listitem>
 	  <listitem>
 		<para>print_balance_history_limit</para>
-		<para>Records number on customer balance list on invoice. Specify 
+		<para>Records number on customer balance list on invoice. Specify
 		last x records.	Default: 10.</para>
 		<para>Example: <prompt>print_balance_history_limit = 20000</prompt></para>
           </listitem>
           </itemizedlist>
           Generated invoices can be viewed in two ways: by clicking on printer icon, in balance sheet page
-          or by clicking 'Invoices List' in 'Finances' menu. In second case, is also possible to 
+          or by clicking 'Invoices List' in 'Finances' menu. In second case, is also possible to
           filter invoices for printing.</para>
                 <para>When printing by default are displayed original and copy pages, it can be changed:
           <itemizedlist>
           <listitem>
                <para>default_printpage</para>
-               <para>Coma-separated list of default invoice printout pages. You can use 
+               <para>Coma-separated list of default invoice printout pages. You can use
 	       "original", "copy", "duplicate". Default: "original,copy".</para>
                <para>Example: <prompt>default_printpage = "original"</prompt></para>
           </listitem>
@@ -576,10 +581,10 @@ $access['table'][100]['allow_reg'] = '^invoice$';
           <itemizedlist>
           <listitem>
                <para>template_file</para>
-               <para>Invoice template, which should be placed in 
+               <para>Invoice template, which should be placed in
                <filename>templates</filename> directory. Default: invoice.html.</para>
                <para>Example: <prompt>template_file = invoice-mynet.html</prompt></para>
-          </listitem>          
+          </listitem>
           <listitem>
                <para>content_type</para>
                <para>Invoice content-type. If you enter here 'application/octet-stream'
@@ -587,26 +592,26 @@ $access['table'][100]['allow_reg'] = '^invoice$';
                It's useful if you use your own template which generate eg. rtf or xls file.
                Default: 'text/html'</para>
                <para>Example: <prompt>content_type = application/octet-stream</prompt></para>
-          </listitem>     
+          </listitem>
           <listitem>
                <para>attachment_name</para>
-               <para>File name for saving finished invoice printout. WARNING: Setting attachment_name 
-               with default content_type will (in case of MSIE) print invoice + prompt for save on 
+               <para>File name for saving finished invoice printout. WARNING: Setting attachment_name
+               with default content_type will (in case of MSIE) print invoice + prompt for save on
                disk + bonus browser crash (6.0SP1 on WInXP).
                Default: empty.</para>
                <para>Example: <prompt>attachment_name = invoice.xls</prompt></para>
           </listitem>
           </itemizedlist>
           Generated invoice in HTML format consist of originals and copies, which are separated
-          by CSS page-break markups, so every modern browser that supports CSS 
+          by CSS page-break markups, so every modern browser that supports CSS
           should print many-page invoices correctly. This behavior was tested on
           Microsoft Internet Explorer 6.0, Opera 7.02 and Mozilla 1.3.</para>
           <para>
-               <note><para>Almost every internet browser has printing 
-               configuration, where functions like header and footer or URL 
+               <note><para>Almost every internet browser has printing
+               configuration, where functions like header and footer or URL
                printing can be disabled.</para></note>
           </para>
-         </sect3>     
+         </sect3>
          <sect3 id="install-invoices-pdf">
           <title>PDF</title>
                  <para>It's possible to create invoices as PDF files. Setting option <filename>type</filename> in
@@ -620,16 +625,16 @@ $access['table'][100]['allow_reg'] = '^invoice$';
          </sect3>
  	 <sect3 id="install-invoices-iban">
           <title>Automatic iban account number generation</title>
-          <para>LMS allows for automatic IBAN number generation. As of now it supports fixed lenght of 26 digits 
-	  and  2 letters (letters are set fixed to PL -- POLAND). 
+          <para>LMS allows for automatic IBAN number generation. As of now it supports fixed lenght of 26 digits
+	  and  2 letters (letters are set fixed to PL -- POLAND).
 	  You need to specify 8 to 20 digits, the rest is taken as as-many-leading-zeros-as-needed plus Customer-ID
 	  Be aware that for example Cyprus and Hungary also use 26 digits.
 	  More on: <ulink url="http://en.wikipedia.org/wiki/International_Bank_Account_Number">Wikipedia</ulink>
 	  </para>
-         </sect3> 
+         </sect3>
          <sect3 id="install-invoices-cnote">
           <title>Credit Notes</title>
-          <para>Credit notes uses invoices settings from 
+          <para>Credit notes uses invoices settings from
 	  <emphasis>[invoices]</emphasis> section.
 	  Default invoice template include also credit notes contents, but
 	  you have possibility to define different template for credit notes
@@ -637,7 +642,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
           <itemizedlist>
           <listitem>
                <para>cnote_template_file</para>
-               <para>Credit note template, which should be placed in 
+               <para>Credit note template, which should be placed in
                <filename>templates</filename> directory. Default: invoice.html.</para>
                <para>Example: <prompt>cnote_template_file = invoice-mynet.html</prompt></para>
           </listitem>
@@ -647,7 +652,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
     </sect2>
 	<sect2 id="install-transferforms">
 	<title>Transfer forms</title>
-		<para>Transfer forms it's Polish specific feature. Data for payment form printouts 
+		<para>Transfer forms it's Polish specific feature. Data for payment form printouts
 		is get from customer's division info. The title of payment can be set using 'pay_title' option
 		in <emphasis>[finances]</emphasis> section.</para>
 	</sect2>
@@ -663,10 +668,10 @@ $access['table'][100]['allow_reg'] = '^invoice$';
           <itemizedlist>
           <listitem>
                <para>template_file</para>
-               <para>Cash receipt template, which should be placed in 
+               <para>Cash receipt template, which should be placed in
                <filename>templates</filename> directory. Default: receipt.html.</para>
                <para>Example: <prompt>template_file = /mytemplates/receipt.html</prompt></para>
-          </listitem> 
+          </listitem>
           <listitem>
                <para>content_type</para>
                <para>Printout content-type. If you enter here 'application/octet-stream'
@@ -674,18 +679,18 @@ $access['table'][100]['allow_reg'] = '^invoice$';
                It's useful if you use your own template which generate eg. rtf or xls file.
                Default: 'text/html'</para>
                <para>Example: <prompt>content_type = application/octet-stream</prompt></para>
-          </listitem>     
+          </listitem>
           <listitem>
                <para>attachment_name</para>
-               <para>File name for saving receipt printout. WARNING: Setting attachment_name 
-               with default content_type will (in case of MSIE) print document + prompt for save on 
+               <para>File name for saving receipt printout. WARNING: Setting attachment_name
+               with default content_type will (in case of MSIE) print document + prompt for save on
                disk + bonus browser crash (6.0SP1 on WinXP).
                Default: empty.</para>
                <para>Example: <prompt>attachment_name = receipt.xls</prompt></para>
           </listitem>
           </itemizedlist>
           </para>
-        </sect3>     
+        </sect3>
         <sect3 id="install-receipts-pdf">
     	    <title>PDF</title>
                 <para>It's possible to create receipts as PDF files. Setting option <filename>type</filename> in
@@ -699,21 +704,21 @@ $access['table'][100]['allow_reg'] = '^invoice$';
     </sect2>
     <sect2 id="install-documents-other" xreflabel="Other documents">
 	<title>Other documents</title>
-	    <para>Documents support is not limited to invoices. You might store 
-	    virtually any documents you want in LMS, such as contracts, protocols, 
-	    annexes and others. You can assign any number of documents to each 
-	    customer in 'Customer documents' tab in 'Customer information' panel. 
-	    Each document should have defined title, type and additionally you 
+	    <para>Documents support is not limited to invoices. You might store
+	    virtually any documents you want in LMS, such as contracts, protocols,
+	    annexes and others. You can assign any number of documents to each
+	    customer in 'Customer documents' tab in 'Customer information' panel.
+	    Each document should have defined title, type and additionally you
 	    might define it's time span (time until when it's valid) and description.
 	    Document files are being stored outside of database (which should be kept
 	    in mind while doing backups!) in directory defined with <filename>doc_dir</filename>
 	    in <emphasis>[directories]</emphasis> section of config file.</para>
-		<para>Documents can be uploaded to system as prepared files, but also 
+		<para>Documents can be uploaded to system as prepared files, but also
 		generated from templates with use of defined wizards. Here system gives
-		great configuration possibilities. In directory 
+		great configuration possibilities. In directory
 		<filename>documents/templates/default</filename> you can find
-		default document wizard (template and engine). You can create unlimited 
-		number of own documents wizards, which must be placed in  
+		default document wizard (template and engine). You can create unlimited
+		number of own documents wizards, which must be placed in
 		<filename>documents/templates/</filename> directory.</para>
 		<para>Each wizard must have file <filename>info.php</filename> with
 		specified structure:
@@ -732,7 +737,7 @@ $engine = array(
 ?&gt;
 </screen>
 		File <filename>info.php</filename> define wizard and is required.
-		To generate document is needed engine (file with name <filename>engine.php</filename>). 
+		To generate document is needed engine (file with name <filename>engine.php</filename>).
 		You can create own engine or use other by setting 'engine' variable to
 		appropriate wizard name. So, there is no need to create engine for
 		each new wizard. Is enough to make 'template' template and file
@@ -740,7 +745,7 @@ $engine = array(
 		<para>Member <filename>plugin</filename> specify name of php file used
 		for printing additional fields on document creation form.
 		Plugin can also consist errors handlers for those fields.
-		After document creation will be executed PHP script which name (without extension) 
+		After document creation will be executed PHP script which name (without extension)
 		should be specified in <filename>post-action</filename> value.</para>
     </sect2>
     </sect1>

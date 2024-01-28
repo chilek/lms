@@ -109,9 +109,9 @@ function GetConfigList()
         'payments' => array(
             'date_format' => 'Define date format for variable: %period, %aligned_period, %current_month used in payments.comment and payments.settlement_comment',
             'default_unit_name' => 'Unit name on invoice, default: "pcs."',
+            'suspension_percentage' => 'Percentage of suspended liabilities. Default: 0',
         ),
         'finances' => array(
-            'suspension_percentage' => 'Percentage of suspended liabilities. Default: 0',
             'cashimport_checkinvoices' => 'Check invoices as accounted when importing cash operations. Default: false',
         ),
         'invoices' => array(
