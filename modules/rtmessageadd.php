@@ -939,7 +939,7 @@ if (!is_array($message['ticketid'])) {
             }
             unset($contact);
         }
-    } elseif ($customer_notif) {
+    } elseif ($customer_notify) {
         $message['mailnotify'] = !empty($contacts['mails']);
         $message['smsnotify'] = !empty($contacts['phones']);
     }
