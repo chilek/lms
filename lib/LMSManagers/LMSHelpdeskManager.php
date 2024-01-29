@@ -791,7 +791,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function GetFavoriteQueues()
     {
-        $fav_queues = Utils::filterIntegers(explode(',', ConfigHelper::getConfig('rt.favorite_queues')));
+        $fav_queues = Utils::filterIntegers(explode(',', ConfigHelper::getConfig('rt.favorite_queues', '', true)));
+        $favorite_queues = array();
         foreach ($fav_queues as $fq) {
             if ($this->QueueExists($fq) && !empty($fq)) {
                 $favorite_queues[$fq] = $this->GetQueueName($fq);
