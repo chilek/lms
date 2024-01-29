@@ -675,6 +675,107 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         }
     }
 
+    /**
+     * @param array $params associative array of parameters described below:
+     *      id - id of event to close, single integer value,
+     *      ticketid - assigned ticketid of all events to close
+     */
+
+    public function EventClose($params)
+    {
+        if (!ConfigHelper::checkPrivilege('timetable_mangement')) {
+            die('Error - cannot close event(s) - no permissions');
+        }
+        if (empty($params)) {
+            die('Error - cannot close event(s)');
+        }
+
+        if (!empty($params['ticketid'])) {
+            $where = 'closed = 0 AND ticketid = ?';
+            $sqlreplacedata = $params['ticketid'];
+            $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
+            $ids = $helpdesk_manager->GetEventsByTicketId($params['ticketid']);
+            $ids = $ids ?? $params['id'];
+
+            foreach ($ids as $id) {
+                $helpdesk_manager->TicketMessageAdd(array(
+                    'ticketid' => $params['ticketid'],
+                    'messageid' => '<msg.' . $params['ticketid'] . $id['id'] . '.' . time() . '@rtsystem.' . gethostname() . '>',
+                    'body' => trans('Assigned event ($a) was closed.', $a = $id['id']),
+                    'type' => RTMESSAGE_ASSIGNED_EVENT_CHANGE,
+                ));
+            }
+        } else {
+            $where = 'id = ?';
+            $sqlreplacedata = $params['id'];
+            $ids = array($params['id']);
+        }
+
+        if ($this->syslog) {
+            foreach ($ids as $id) {
+                $this->syslog->AddMessage(
+                    SYSLOG::RES_EVENT,
+                    SYSLOG::OPER_UPDATE,
+                    $id,
+                    array('mod' . SYSLOG::getResourceKey(SYSLOG::RES_USER))
+                );
+            }
+        }
+
+        return $this->db->Execute(
+            'UPDATE events
+                SET closed = 1, closeduserid = ?, closeddate = ?NOW?
+                WHERE ' . $where,
+            array(Auth::GetCurrentUser(), $sqlreplacedata)
+        );
+    }
+
+    public function EventOpen($id)
+    {
+        if (!ConfigHelper::checkPrivilege('timetable_mangement')) {
+            die('Error - cannot open event(s) - no permissions');
+        }
+
+        $aee = ConfigHelper::getConfig(
+            'timetable.allow_modify_closed_events_newer_than',
+            ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800)
+        );
+        $event = $this->GetEvent($id);
+        if (empty($event['closed'])) {
+            die('Cannot open event - event not closed');
+        }
+        if (!ConfigHelper::checkPrivilege('superuser') && $aee && ((time() - $event['closeddate']) < $aee)) {
+            die('Cannot open event - event closed too long ago');
+        }
+
+        if ($this->syslog) {
+            $this->syslog->AddMessage(
+                SYSLOG::RES_EVENT,
+                SYSLOG::OPER_UPDATE,
+                $id,
+                array('mod' . SYSLOG::getResourceKey(SYSLOG::RES_USER))
+            );
+        }
+
+        if (!empty($event['ticketid'])) {
+            $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
+            $ticketqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
+
+            $helpdesk_manager->TicketMessageAdd(array(
+                'ticketid' => $event['ticketid'],
+                'messageid' => '<msg.' . $ticketqueue['id'] . '.' . $event['ticketid'] . '.' . time() . '@rtsystem.' . gethostname() . '>',
+                'body' => trans('Assigned event ($a) was opened.', $a = $id),
+                'type' => RTMESSAGE_ASSIGNED_EVENT_CHANGE,
+            ));
+        }
+
+        return $this->db->Execute(
+            'UPDATE events SET closed = 0, closeduserid = NULL, closeddate = 0
+              WHERE id = ?',
+            array($id)
+        );
+    }
+
     public function GetCustomerIdByTicketId($id)
     {
         return $this->db->GetOne('SELECT customerid FROM rttickets WHERE id=?', array($id));

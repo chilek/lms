@@ -3528,6 +3528,18 @@ class LMS
         return $manager->GetEventList($params);
     }
 
+    public function EventOpen($id)
+    {
+        $manager = $this->getEventManager();
+        return $manager->EventOpen($id);
+    }
+
+    public function EventClose($params)
+    {
+        $manager = $this->getEventManager();
+        return $manager->EventClose($params);
+    }
+
     public function GetCustomerIdByTicketId($id)
     {
         $manager = $this->getEventManager();
