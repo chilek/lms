@@ -44,14 +44,11 @@ switch ($_GET['taction']) {
     case 'delete':
         // We use incomplete cascade delete. This means that we delete only messages tah weren't deleted before ticket delete operation.
         $DB->BeginTrans();
-        $DB->Execute(
-            'UPDATE rttickets SET deleted = ?, deltime = ?NOW?, deluserid = ? WHERE deleted = ? AND id IN ?',
-            array(1, Auth::GetCurrentUser(), 0, $tickets)
-        );
-        $DB->Execute(
-            'UPDATE rtmessages SET deleted = ?, deluserid = ? WHERE deleted = ? and ticketid IN ?',
-            array(1, Auth::GetCurrentUser(), 0, $tickets)
-        );
+
+        foreach ($tickets as $ticket) {
+            $LMS->deleteTicket($ticket, false);
+        }
+
         $DB->CommitTrans();
         break;
     case 'delperm':

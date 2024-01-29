@@ -2725,14 +2725,90 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         return $inserted;
     }
 
-    public function deleteTicket($ticketid)
+    public function deleteTicket($ticketid, $persistent = true)
     {
-        $rt_dir = ConfigHelper::getConfig('rt.mail_dir', STORAGE_DIR . DIRECTORY_SEPARATOR . 'rt');
+        if ($this->syslog) {
+            $ticket = $this->db->GetRow(
+                'SELECT
+                        t.customerid,
+                        t.queueid,
+                        t.nodeid,
+                        t.netnodeid,
+                        t.netdevid
+                    FROM rttickets t
+                    WHERE t.id = ?',
+                array(
+                    $ticketid,
+                )
+            );
 
-        $ticket_dir = $rt_dir . DIRECTORY_SEPARATOR . sprintf('%06d', $ticketid);
+            $userid = Auth::GetCurrentUser();
 
-        rrmdir($ticket_dir);
+            $args = array(
+                SYSLOG::RES_USER => $userid,
+                'del_' . SYSLOG::getResourceKey(SYSLOG::RES_USER) => $userid,
+                SYSLOG::RES_TICKET => $ticketid,
+                SYSLOG::RES_QUEUE => $ticket['queueid'],
+                SYSLOG::RES_CUST => $ticket['customerid'],
+                SYSLOG::RES_NODE => $ticket['nodeid'],
+                SYSLOG::RES_NETNODE => $ticket['netnodeid'],
+                SYSLOG::RES_NETDEV => $ticket['netdevid'],
+            );
 
-        return $this->db->Execute('DELETE FROM rttickets WHERE id = ?', array($ticketid));
+            $messageids = $this->db->GetCol('SELECT id FROM rtmessages WHERE ticketid = ?', array($ticketid));
+            if (empty($messageids)) {
+                $messageids = array();
+            }
+
+            $message_args = array(
+                SYSLOG::RES_TICKET_MESSAGE => null,
+                SYSLOG::RES_TICKET => $ticketid,
+            );
+        }
+
+        if ($persistent) {
+            $rt_dir = ConfigHelper::getConfig('rt.mail_dir', STORAGE_DIR . DIRECTORY_SEPARATOR . 'rt');
+
+            $ticket_dir = $rt_dir . DIRECTORY_SEPARATOR . sprintf('%06d', $ticketid);
+
+            rrmdir($ticket_dir);
+
+            if ($this->syslog) {
+                $this->syslog->AddMessage(SYSLOG::RES_TICKET, SYSLOG::OPER_DELETE, $args);
+
+                foreach ($messageids as $messageid) {
+                    $args[SYSLOG::RES_TICKET_MESSAGE] = $messageid;
+                    $args['del_' . SYSLOG::getResourceKey(SYSLOG::RES_USER)] = $userid;
+                    $this->syslog->AddMessage(SYSLOG::RES_TICKET_MESSAGE, SYSLOG::OPER_DELETE, $args);
+                }
+            }
+
+            return $this->db->Execute('DELETE FROM rttickets WHERE id = ?', array($ticketid));
+        } else {
+            $result = $this->db->Execute(
+                'UPDATE rttickets SET deleted = ?, deltime = ?NOW?, deluserid = ? WHERE deleted = ? AND id = ?',
+                array(1, $userid, 0, $ticketid)
+            );
+
+            $this->db->Execute(
+                'UPDATE rtmessages SET deleted = ?, deluserid = ? WHERE deleted = ? and ticketid = ?',
+                array(1, $userid, 0, $ticketid)
+            );
+
+            if ($this->syslog) {
+                $args['deleted'] = 1;
+
+                $this->syslog->AddMessage(SYSLOG::RES_TICKET, SYSLOG::OPER_UPDATE, $args);
+
+                foreach ($messageids as $messageid) {
+                    $args[SYSLOG::RES_TICKET_MESSAGE] = $messageid;
+                    $args['del_' . SYSLOG::getResourceKey(SYSLOG::RES_USER)] = $userid;
+                    $args['deleted'] = 1;
+                    $this->syslog->AddMessage(SYSLOG::RES_TICKET_MESSAGE, SYSLOG::OPER_UPDATE, $args);
+                }
+            }
+
+            return $result;
+        }
     }
 }

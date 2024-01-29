@@ -2652,10 +2652,10 @@ class LMS
         return $manager->assignCategoryToTicket($categoryid, $ticketid);
     }
 
-    public function deleteTicket($ticketid)
+    public function deleteTicket($ticketid, $persistent = true)
     {
         $manager = $this->getHelpdeskManager();
-        return $manager->deleteTicket($ticketid);
+        return $manager->deleteTicket($ticketid, $persistent);
     }
 
     /*

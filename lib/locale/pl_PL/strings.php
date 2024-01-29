@@ -4018,6 +4018,9 @@ $_LANG['log out<!syslog>'] = 'wylogowanie';
 $_LANG['document attachment<!syslog>'] = 'załącznik dokumentu';
 $_LANG['document content<!syslog>'] = 'zawartość dokumentu';
 $_LANG['customer consent<!syslog>'] = 'zgoda klienta';
+$_LANG['tariff price variant<!syslog>'] = 'wariant cenowy taryfy';
+$_LANG['ticket message<!syslog>'] = 'wiadomość do zgłoszenia';
+$_LANG['queue<!syslog>'] = 'kolejka';
 
 $_LANG['Choose network'] = 'Wybierz sieć';
 $_LANG['— automatic selection —'] = '— wybór automatyczny —';

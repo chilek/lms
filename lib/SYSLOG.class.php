@@ -94,6 +94,8 @@ class SYSLOG
     const RES_VOIP_ACCOUNT_NUMBER = 66;
     const RES_NETNODE = 67;
     const RES_TARIFF_PRICE_VARIANT = 68;
+    const RES_TICKET_MESSAGE = 69;
+    const RES_QUEUE = 70;
 
     const OPER_ADD = 1;
     const OPER_DELETE = 2;
@@ -177,6 +179,8 @@ class SYSLOG
         self::RES_VOIP_ACCOUNT_NUMBER => 'VoIP account number<!syslog>',
         self::RES_NETNODE => 'network node<!syslog>',
         self::RES_TARIFF_PRICE_VARIANT => 'tariff price variant<!syslog>',
+        self::RES_TICKET_MESSAGE => 'ticket message<!syslog>',
+        self::RES_QUEUE => 'queue<!syslog>',
     );
     private static $resource_keys = array(
         self::RES_USER => 'userid',
@@ -247,6 +251,8 @@ class SYSLOG
         self::RES_VOIP_ACCOUNT_NUMBER => 'voipnumberid',
         self::RES_NETNODE => 'netnodeid',
         self::RES_TARIFF_PRICE_VARIANT => 'tariffpricevariantid',
+        self::RES_TICKET_MESSAGE => 'ticketid',
+        self::RES_QUEUE => 'queueid',
     );
     private static $operations = array(
         self::OPER_ADD => 'addition<!syslog>',
