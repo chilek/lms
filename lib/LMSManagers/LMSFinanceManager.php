@@ -57,7 +57,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function GetCustomerAssignmentValue($id)
     {
-        $suspension_percentage = f_round(ConfigHelper::getConfig('finances.suspension_percentage'));
+        $suspension_percentage = f_round(ConfigHelper::getConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0)));
 
         return $this->db->GetAllByKey('SELECT SUM(sum), currency FROM
             (SELECT SUM((CASE a.suspended
@@ -117,6 +117,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     public function GetCustomerAssignments($id, $show_expired = false, $show_approved = true)
     {
         $now = mktime(0, 0, 0, date('n'), date('d'), date('Y'));
+        $suspension_percentage = f_round(ConfigHelper::getConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0)));
 
         $assignments = $this->db->GetAll(
             'SELECT a.id AS id, a.tariffid, a.customerid, a.period AS periodvalue, a.backwardperiod, a.note,
@@ -271,7 +272,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 if ($assignments[$idx]['netflag']) {
                     $assignments[$idx]['discounted_netprice'] = f_round(($row['unitary_netvalue'] - $row['unitary_netvalue'] * $row['pdiscount'] / 100) - ($row['unitary_vdiscount']), 3);
                     if ($row['suspended'] == 1) {
-                        $assignments[$idx]['discounted_netprice'] = $assignments[$idx]['discounted_netprice'] * ConfigHelper::getConfig('finances.suspension_percentage') / 100;
+                        $assignments[$idx]['discounted_netprice'] = $assignments[$idx]['discounted_netprice'] * $suspension_percentage / 100;
                     }
                     $assignments[$idx]['discounted_netvalue'] = f_round($assignments[$idx]['discounted_netprice'] * $row['count']);
                     $assignments[$idx]['unitary_netdiscount'] = f_round($row['unitary_netvalue'] - $assignments[$idx]['discounted_netprice'], 3);
@@ -293,7 +294,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 } else {
                     $assignments[$idx]['discounted_price'] = f_round(($row['unitary_value'] - $row['unitary_value'] * $row['pdiscount'] / 100) - ($row['unitary_vdiscount']), 3);
                     if ($row['suspended'] == 1) {
-                        $assignments[$idx]['discounted_price'] = $assignments[$idx]['discounted_price'] * ConfigHelper::getConfig('finances.suspension_percentage') / 100;
+                        $assignments[$idx]['discounted_price'] = $assignments[$idx]['discounted_price'] * $suspension_percentage / 100;
                     }
                     $assignments[$idx]['discounted_value'] = f_round($assignments[$idx]['discounted_price'] * $row['count']);
                     $assignments[$idx]['unitary_discount'] = f_round($row['unitary_value'] - $assignments[$idx]['discounted_price'], 3);
@@ -353,7 +354,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         global $SERVICETYPES;
 
         $now = mktime(0, 0, 0, date('n'), date('d'), date('Y'));
-        $suspension_percentage = f_round(ConfigHelper::getConfig('finances.suspension_percentage'));
+        $suspension_percentage = f_round(ConfigHelper::getConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0)));
 
         $servicesassignments = $this->db->GetAll('SELECT
             t.type AS tarifftype,

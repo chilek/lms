@@ -468,7 +468,7 @@ $smtp_options = array(
     'ssl_allow_self_signed' => ConfigHelper::checkConfig($config_section . '.smtp_ssl_allow_self_signed'),
 );
 
-$suspension_percentage = floatval(ConfigHelper::getConfig('finances.suspension_percentage', 0));
+$suspension_percentage = floatval(ConfigHelper::getConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0)));
 $debug_email = ConfigHelper::getConfig($config_section . '.debug_email', '', true);
 $mail_from = ConfigHelper::getConfig($config_section . '.sender_email', ConfigHelper::getConfig($config_section . '.mailfrom', '', true));
 $mail_fname = ConfigHelper::getConfig($config_section . '.sender_name', ConfigHelper::getConfig($config_section . '.mailfname', '', true));

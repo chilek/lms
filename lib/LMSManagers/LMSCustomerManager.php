@@ -1495,7 +1495,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $sqlsarg = implode(' ' . $sqlskey . ' ', $searchargs);
         }
 
-        $suspension_percentage = f_round(ConfigHelper::getConfig('finances.suspension_percentage'));
+        $suspension_percentage = f_round(ConfigHelper::getConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0)));
 
         $sql = '';
 

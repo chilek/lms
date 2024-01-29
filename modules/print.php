@@ -629,7 +629,7 @@ switch ($type) {
             $yearday -= 1;
         }
 
-        $suspension_percentage = ConfigHelper::getConfig('finances.suspension_percentage');
+        $suspension_percentage = ConfigHelper::getConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0));
 
         $reportlist = array();
         if ($taxes = $LMS->GetTaxes($reportday, $reportday)) {

@@ -612,6 +612,7 @@ version 28-git (????-??-??):
     sent to customer [chilan]
   - improvement: 'phpui.login_form_logo' with default value of 'img/logo.png' controls which image file
     is presented in login, one-time password forms [chilan]
+  - devel/cleanup: move configuration variable 'suspension_percentage' from 'finances' to 'payments' section [ravvar]
 
 version 27.0 (2021-08-20):
 
