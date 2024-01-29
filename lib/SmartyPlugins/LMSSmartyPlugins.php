@@ -1238,16 +1238,16 @@ class LMSSmartyPlugins
         }
 
         if ($disabled) {
-            $data_tip = $tip;
+            $data_tip = isset($tip) ? $tip : null;
             $tip = trans('No GPS coordinates for this address');
         }
 
         $args = array(
-            'href' => $url,
+            'href' => isset($url) ? $url : null,
             'type' => 'link',
             'external' => $external,
             'disabled' => $disabled,
-            'icon' => $icon,
+            'icon' => isset($icon) ? $icon : null,
             'tip' => $tip,
         );
 
