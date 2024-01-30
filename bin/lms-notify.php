@@ -2342,7 +2342,9 @@ if (empty($types) || in_array('invoices', $types)) {
         "SELECT d.id AS docid, c.id, c.pin, d.name,
             d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
             acc.alternative_accounts,
-            COALESCE(ca.balance, 0) AS balance, v.value, v.currency,
+            COALESCE(ca.balance, 0) AS balance,
+            COALESCE(ca.balance, 0) AS totalbalance,
+            v.value, v.currency,
             c.invoicenotice
         FROM documents d
         JOIN customeraddressview c ON (c.id = d.customerid)
