@@ -629,8 +629,12 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 
         if ($params['provider'] == 'pna') {
             preg_match('/^(?<number>[0-9]+)(?<letter>[a-z]*)$/', strtolower($house), $m);
+            if (!isset($m['number'])) {
+                return null;
+            }
+
             $number = intval($m['number']);
-            $letter = $m['letter'];
+            $letter = isset($m['letter']) ? $m['letter'] : null;
             $parity = (intval($number) & 1) ? 1 : 2;
 
             $from = '(fromnumber IS NULL OR (fromnumber < ' . $number . ')
