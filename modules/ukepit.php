@@ -2497,7 +2497,9 @@ if ($report_type == 'full') {
                         $new_pe = $netnodes[$netnodename];
                         $new_pe['mode'] = 1;
                         $new_pe['parent_netnodename'] = $netnodename;
-                        $netnodes['V-' . (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY')] = $new_pe;
+                        $new_netnodename = 'V-' . (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY');
+                        $netnodes[$new_netnodename] = $new_pe;
+                        $processed_netnodes[$new_netnodename] = true;
                     } else {
                         $service_name = array();
 
