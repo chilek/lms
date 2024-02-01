@@ -616,6 +616,8 @@ version 28-git (????-??-??):
   - enhancement: 'sms.customer_message_template' configuration variable with default value '%body' allows
     to format sms message sent to customer containing helpdesk ticket message entered in new ticket message
     form [chilan]
+  - improvement: single 'replace' button in customer group panel/box allows to replace selected group assignments
+    by newly selected groups [chilan]
 
 version 27.0 (2021-08-20):
 
