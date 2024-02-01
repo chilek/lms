@@ -390,7 +390,16 @@ if (isset($_POST['message'])) {
                     }
                 }
                 if (!empty($phones)) {
-                    $sms_body = preg_replace('/\r?\n/', ' ', $message['body']);
+                    $sms_body = str_replace(
+                        array(
+                            '%body',
+                        ),
+                        array(
+                            $message['body'],
+                        ),
+                        ConfigHelper::getConfig('sms.customer_message_template', '%body')
+                    )
+                    $sms_body = preg_replace('/\r?\n/', ' ', $sms_body);
                     foreach ($phones as $phone) {
                         $LMS->SendSMS($phone, $sms_body);
                     }
