@@ -175,7 +175,7 @@ if (isset($_POST['message'])) {
         }
 
         $smtp_options = $LMS->GetRTSmtpOptions();
-    
+
         $message['userid'] = $userid;
 
         foreach ($tickets as $ticketid) {
@@ -393,12 +393,14 @@ if (isset($_POST['message'])) {
                     $sms_body = str_replace(
                         array(
                             '%body',
+                            '%username',
                         ),
                         array(
                             $message['body'],
+                            $layout['logname'],
                         ),
                         ConfigHelper::getConfig('sms.customer_message_template', '%body')
-                    )
+                    );
                     $sms_body = preg_replace('/\r?\n/', ' ', $sms_body);
                     foreach ($phones as $phone) {
                         $LMS->SendSMS($phone, $sms_body);
