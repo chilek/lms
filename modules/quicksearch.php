@@ -86,6 +86,8 @@ switch ($mode) {
                 $properties = array('altname' => 'altname');
             }
 
+            $quicksearch_limit = intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15));
+
             $candidates = $DB->GetAll(
                 "SELECT
                     c.id,
@@ -288,8 +290,6 @@ switch ($mode) {
         }
 
         if (isset($_GET['ajax'])) { // support for AutoSuggest
-            $quicksearch_limit = intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15));
-
             $candidates = $DB->GetAll(
                 "SELECT
                     c.id,
