@@ -132,7 +132,7 @@ switch ($mode) {
                     ),
                     CONTACT_EMAIL,
                     CONTACT_BANKACCOUNT,
-                    intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15)),
+                    $quicksearch_limit * 3,
                 )
             );
 
@@ -208,6 +208,7 @@ switch ($mode) {
                         array('id' => $row['id'])
                     );
                 }
+                $result = array_slice($result, 0, $quicksearch_limit, true);
             }
             $hook_data = array(
                 'search' => $search,
@@ -287,6 +288,8 @@ switch ($mode) {
         }
 
         if (isset($_GET['ajax'])) { // support for AutoSuggest
+            $quicksearch_limit = intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15));
+
             $candidates = $DB->GetAll(
                 "SELECT
                     c.id,
