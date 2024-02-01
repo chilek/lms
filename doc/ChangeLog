@@ -613,6 +613,9 @@ version 28-git (????-??-??):
   - improvement: 'phpui.login_form_logo' with default value of 'img/logo.png' controls which image file
     is presented in login, one-time password forms [chilan]
   - devel/cleanup: move configuration variable 'suspension_percentage' from 'finances' to 'payments' section [ravvar]
+  - enhancement: 'sms.customer_message_template' configuration variable with default value '%body' allows
+    to format sms message sent to customer containing helpdesk ticket message entered in new ticket message
+    form [chilan]
 
 version 27.0 (2021-08-20):
 
