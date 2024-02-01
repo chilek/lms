@@ -98,15 +98,16 @@
 		{tab_button_panel}
 			{tab_buttons}
 				{button icon="delete" label="Delete" id="delete-groups"}
-{if !empty($othercustomergroups)}
-				{button icon="add" label="Add" id="add-groups" tip="Add customer to groups"}
-				<SELECT NAME="customergroupid[]" {tip text="Select group to attribute to customer" class="lms-ui-multiselect"}
+				{if !empty($othercustomergroups)}
+					{button icon="add" label="Add" id="add-groups" tip="Add customer to groups"}
+					{button icon="reload" label="Replace" id="replace-groups" tip="Replace customer group assignments"}
+					<select name="customergroupid[]" {tip text="Select group to attribute to customer" class="lms-ui-multiselect"}
 						form="customergroupassignment" multiple>
-					{foreach $othercustomergroups as $customergroup}
-					<OPTION VALUE="{$customergroup.id}">{$customergroup.name} ({$customergroup.id|string_format:"%04d"})</OPTION>
-					{/foreach}
-				</SELECT>
-{/if}
+						{foreach $othercustomergroups as $customergroup}
+							<option value="{$customergroup.id}">{$customergroup.name} (#{$customergroup.id})</option>
+						{/foreach}
+					</select>
+				{/if}
 			{/tab_buttons}
 			{tab_buttons}
 				<label>
