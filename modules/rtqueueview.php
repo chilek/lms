@@ -27,7 +27,6 @@
 $currentuser = Auth::GetCurrentUser();
 $ticketlist_status = ConfigHelper::getConfig('rt.ticketlist_status', ConfigHelper::getConfig('phpui.ticketlist_status'));
 $ticketlist_priority = ConfigHelper::getConfig('rt.ticketlist_priority', ConfigHelper::getConfig('phpui.ticketlist_priority'));
-$ticketlist_pagelimit = ConfigHelper::getConfig('rt.ticketlist_pagelimit', ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $filter['total']));
 $short_pagescroller = ConfigHelper::checkConfig('phpui.short_pagescroller');
 $aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 86400);
 
@@ -353,6 +352,8 @@ $filter['netdevids'] = null;
 $filter['count'] = true;
 
 $filter['total'] = intval($LMS->GetQueueContents($filter));
+
+$ticketlist_pagelimit = ConfigHelper::getConfig('rt.ticketlist_pagelimit', ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $filter['total']));
 
 $filter['limit'] = intval($ticketlist_pagelimit);
 $filter['offset'] = ($filter['page'] - 1) * $filter['limit'];
