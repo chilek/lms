@@ -367,7 +367,7 @@ if ($backup || $archive) {
         $part_number = intval(date('H', time()));
     }
 
-    $extrafile = isset($options['extra-file']) ? $options['extra-file'] : null);
+    $extrafile = isset($options['extra-file']) ? $options['extra-file'] : null;
     if ($extrafile && !is_readable($extrafile)) {
         die("Unable to read additional file [$extrafile]!" . PHP_EOL);
     }
