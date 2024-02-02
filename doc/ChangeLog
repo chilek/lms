@@ -618,6 +618,7 @@ version 28-git (????-??-??):
     form [chilan]
   - improvement: single 'replace' button in customer group panel/box allows to replace selected group assignments
     by newly selected groups [chilan]
+  - improvement: added sort criterion selection in cash report form [chilan]
 
 version 27.0 (2021-08-20):
 
