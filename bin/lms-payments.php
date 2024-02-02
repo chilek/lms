@@ -31,9 +31,7 @@
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 
-ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
-
-$parameters = array(
+$script_parameters = array(
     'config-file:' => 'C:',
     'quiet' => 'q',
     'help' => 'h',
@@ -51,51 +49,7 @@ $parameters = array(
     'tariff-tags:' => null,
 );
 
-$long_to_shorts = array();
-foreach ($parameters as $long => $short) {
-    $long = str_replace(':', '', $long);
-    if (isset($short)) {
-        $short = str_replace(':', '', $short);
-    }
-    $long_to_shorts[$long] = $short;
-}
-
-$options = getopt(
-    implode(
-        '',
-        array_filter(
-            array_values($parameters),
-            function ($value) {
-                return isset($value);
-            }
-        )
-    ),
-    array_keys($parameters)
-);
-
-foreach (array_flip(array_filter($long_to_shorts, function ($value) {
-    return isset($value);
-})) as $short => $long) {
-    if (array_key_exists($short, $options)) {
-        $options[$long] = $options[$short];
-        unset($options[$short]);
-    }
-}
-
-if (isset($options['version'])) {
-    print <<<EOF
-lms-payments.php
-(C) 2001-2024 LMS Developers
-
-EOF;
-    exit(0);
-}
-
-if (isset($options['help'])) {
-    print <<<EOF
-lms-payments.php
-(C) 2001-2024 LMS Developers
-
+$script_help = <<<EOF
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
 -v, --version                   print version info and exit;
@@ -117,80 +71,9 @@ lms-payments.php
     --tariff-tags=<tariff-tag1,tariff-tag-2,...>
                                 create financial charges using only tariffs which have
                                 assigned specified tariff tags
-
 EOF;
-    exit(0);
-}
 
-$quiet = isset($options['quiet']);
-if (!$quiet) {
-    print <<<EOF
-lms-payments.php
-(C) 2001-2024 LMS Developers
-
-EOF;
-}
-
-if (isset($options['config-file'])) {
-    $CONFIG_FILE = $options['config-file'];
-} else {
-    $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
-}
-
-if (!$quiet) {
-    echo "Using file ".$CONFIG_FILE." as config." . PHP_EOL;
-}
-
-if (!is_readable($CONFIG_FILE)) {
-    die('Unable to read configuration file ['.$CONFIG_FILE.']!');
-}
-
-define('CONFIG_FILE', $CONFIG_FILE);
-
-$CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
-
-// Check for configuration vars and set default values
-$CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
-$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib' : $CONFIG['directories']['lib_dir']);
-$CONFIG['directories']['doc_dir'] = (!isset($CONFIG['directories']['doc_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'documents' : $CONFIG['directories']['doc_dir']);
-$CONFIG['directories']['smarty_compile_dir'] = (!isset($CONFIG['directories']['smarty_compile_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'templates_c' : $CONFIG['directories']['smarty_compile_dir']);
-$CONFIG['directories']['smarty_templates_dir'] = (!isset($CONFIG['directories']['smarty_templates_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'templates' : $CONFIG['directories']['smarty_templates_dir']);
-$CONFIG['directories']['plugin_dir'] = (!isset($CONFIG['directories']['plugin_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'plugins' : $CONFIG['directories']['plugin_dir']);
-$CONFIG['directories']['plugins_dir'] = $CONFIG['directories']['plugin_dir'];
-
-define('SYS_DIR', $CONFIG['directories']['sys_dir']);
-define('LIB_DIR', $CONFIG['directories']['lib_dir']);
-define('DOC_DIR', $CONFIG['directories']['doc_dir']);
-define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
-define('SMARTY_TEMPLATES_DIR', $CONFIG['directories']['smarty_templates_dir']);
-define('PLUGIN_DIR', $CONFIG['directories']['plugin_dir']);
-define('PLUGINS_DIR', $CONFIG['directories']['plugin_dir']);
-
-// Load autoloader
-$composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-if (file_exists($composer_autoload_path)) {
-    require_once $composer_autoload_path;
-} else {
-    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More information at https://getcomposer.org/" . PHP_EOL);
-}
-
-// Init database
-
-$DB = null;
-
-try {
-    $DB = LMSDB::getInstance();
-} catch (Exception $ex) {
-    trigger_error($ex->getMessage(), E_USER_WARNING);
-    // can't work without database
-    die("Fatal error: cannot connect to database!" . PHP_EOL);
-}
-
-// Include required files (including sequence is important)
-
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
+require_once('script-options.php');
 
 $SYSLOG = SYSLOG::getInstance();
 
