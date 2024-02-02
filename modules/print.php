@@ -820,6 +820,7 @@ switch ($type) {
         $registry = isset($_POST['registry']) ? intval($_POST['registry']) : 0;
         $user = isset($_POST['user']) ? intval($_POST['user']) : 0;
         $group = isset($_POST['group']) ? intval($_POST['group']) : 0;
+        $sorttype = isset($_POST['sorttype']) ? $_POST['sorttype'] : null;
         $where = '';
 
         if ($registry) {
@@ -858,6 +859,16 @@ switch ($type) {
             );
         }
 
+        // Sorting
+        switch ($sorttype) {
+            case 'number':
+                $sortcol = 'd.number';
+                break;
+            case 'cdate':
+            default:
+                $sortcol = 'd.cdate';
+        }
+
         $listdata['totalincome'] = 0;
         $listdata['totalexpense'] = 0;
         $listdata['advances'] = 0;
@@ -876,7 +887,7 @@ switch ($type) {
 					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 					WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)
 			GROUP BY d.id, number, cdate, customerid, d.name, address, zip, city, numberplans.template, extnumber, closed
-			ORDER BY cdate, d.id',
+			ORDER BY ' . $sortcol . ', d.id',
             array(DOC_RECEIPT)
         )) {
             foreach ($list as $idx => $row) {

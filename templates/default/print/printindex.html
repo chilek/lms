@@ -971,19 +971,34 @@
 						<IMG src="img/calendar.gif" alt="">
 					</TD>
 					<TD style="width: 1%;">
-						<span class="lms-ui-date-period-container">
-							<strong>{trans("Period:")}</strong>&nbsp;
-							{date_period_preset from="#printreceiptlist [name=\"from\"]" to="#printreceiptlist [name=\"to\"]"}
-							<span>{trans("From")}</span>
-							<input type="text" name="from" size="10" maxlength="10"
-								placeholder="{trans("yyyy/mm/dd")}"
-								{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-							<span>{trans("To")}</span>
-							<input type="text" name="to" size="10" maxlength="10"
-								placeholder="{trans("yyyy/mm/dd")}"
-								{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-						</span>
-					</TD>
+						<table style="width: 100%;">
+							<tr>
+								<td style="width: 1%;">
+									<span class="lms-ui-date-period-container">
+										<strong>{trans("Period:")}</strong>&nbsp;
+										{date_period_preset from="#printreceiptlist [name=\"from\"]" to="#printreceiptlist [name=\"to\"]"}
+										<span>{trans("From")}</span>
+										<input type="text" name="from" size="10" maxlength="10"
+											placeholder="{trans("yyyy/mm/dd")}"
+											{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+										<span>{trans("To")}</span>
+										<input type="text" name="to" size="10" maxlength="10"
+											placeholder="{trans("yyyy/mm/dd")}"
+											{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<td class="nobr">
+									{trans("Sorting")}
+									<select name="sorttype" {tip text="Select sorting criterion"}>
+										<option value="cdate">{trans("Draw-up date")}</option>
+										<option value="number">{trans("Document number")}</option>
+									</select>
+								</td>
+							</tr>
+						</table>
+					</td>
 					<TD style="width: 97%;" class="nobr">
 						<input type="checkbox" name="extended" value="1" id="receiptlist-extended"><label for="receiptlist-extended">{trans("extended format")}</label>
 					</TD>
