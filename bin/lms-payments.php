@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2022 LMS Developers
+ *  (C) Copyright 2001-2024 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -41,6 +41,8 @@ $parameters = array(
     'test' => 't',
     'section:' => 's:',
     'fakedate:' => 'f:',
+    'fake-date:' => null,
+    'force-date:' => null,
     'issue-date:' => null,
     'customerid:' => null,
     'division:' => null,
@@ -80,19 +82,19 @@ foreach (array_flip(array_filter($long_to_shorts, function ($value) {
     }
 }
 
-if (array_key_exists('version', $options)) {
+if (isset($options['version'])) {
     print <<<EOF
 lms-payments.php
-(C) 2001-2022 LMS Developers
+(C) 2001-2024 LMS Developers
 
 EOF;
     exit(0);
 }
 
-if (array_key_exists('help', $options)) {
+if (isset($options['help'])) {
     print <<<EOF
 lms-payments.php
-(C) 2001-2022 LMS Developers
+(C) 2001-2024 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -101,7 +103,7 @@ lms-payments.php
 -t, --test                      no changes are made to database;
 -s, --section=<section-name>    section name from lms configuration where settings
                                 are stored
--f, --fakedate=YYYY/MM/DD       override system date;
+-f, --fakedate, --fake-date, --force-date=YYYY/MM/DD       override system date;
     --issue-date=YYYY/MM/DD     override system date for generated cash record issue date;
     --customerid=<id>           limit assignments to specifed customer
     --division=<shortname>
@@ -120,16 +122,16 @@ EOF;
     exit(0);
 }
 
-$quiet = array_key_exists('quiet', $options);
+$quiet = isset($options['quiet']);
 if (!$quiet) {
     print <<<EOF
 lms-payments.php
-(C) 2001-2022 LMS Developers
+(C) 2001-2024 LMS Developers
 
 EOF;
 }
 
-if (array_key_exists('config-file', $options)) {
+if (isset($options['config-file'])) {
     $CONFIG_FILE = $options['config-file'];
 } else {
     $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
@@ -252,7 +254,15 @@ if (empty($allowed_customer_status)) {
     $customer_status_condition = ' AND c.status IN (' . implode(',', $allowed_customer_status) . ')';
 }
 
-$fakedate = isset($options['fakedate']) ? $options['fakedate'] : null;
+if (isset($options['force-date'])) {
+    $fakedate = $options['force-date'];
+} elseif (isset($options['fake-date'])) {
+    $fakedate = $options['fake-date'];
+} elseif (isset($options['fakedate'])) {
+    $fakedate = $options['fakedate'];
+} else {
+    $fakedate = null;
+}
 $issuedate = isset($options['issue-date']) ? $options['issue-date'] : null;
 $customerid = isset($options['customerid']) && intval($options['customerid']) ? $options['customerid'] : null;
 
@@ -504,7 +514,7 @@ if (!empty($tariff_tags)) {
     $tariff_tags = ' AND (a.tariffid IS NULL OR (' . implode(' OR ', $tariff_tag_ORs) . '))';
 }
 
-$test = array_key_exists('test', $options);
+$test = isset($options['test']);
 if ($test) {
     echo "WARNING! You are using test mode." . PHP_EOL;
 }

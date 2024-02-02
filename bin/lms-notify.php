@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2024 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -34,6 +34,8 @@ $parameters = array(
     'version' => 'v',
     'debug' => 'd',
     'fakedate:' => 'f:',
+    'fake-date:' => null,
+    'force-date:' => null,
     'part-number:' => 'p:',
     'part-size:' => 'l:',
     'interval:' => 'i:',
@@ -84,26 +86,26 @@ foreach (array_flip(array_filter($long_to_shorts, function ($value) {
     }
 }
 
-if (array_key_exists('version', $options)) {
+if (isset($options['version'])) {
     print <<<EOF
 lms-notify.php
-(C) 2001-2021 LMS Developers
+(C) 2001-2024 LMS Developers
 
 EOF;
     exit(0);
 }
 
-if (array_key_exists('help', $options)) {
+if (isset($options['help'])) {
     print <<<EOF
 lms-notify.php
-(C) 2001-2021 LMS Developers
+(C) 2001-2024 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors
 -d, --debug                     do debugging, dont send anything.
--f, --fakedate=YYYY/MM/DD       override system date;
+-f, --fakedate, --fake-date, --force-date=YYYY/MM/DD       override system date;
 -p, --part-number=NN            defines which part of notifications should be sent;
 -l, --part-size=NN              defines part size of notifications which should be sent
                                 (can be specified as percentage value);
@@ -144,26 +146,36 @@ EOF;
     exit(0);
 }
 
-$quiet = array_key_exists('quiet', $options);
+$quiet = isset($options['quiet']);
 if (!$quiet) {
     print <<<EOF
 lms-notify.php
-(C) 2001-2021 LMS Developers
+(C) 2001-2024 LMS Developers
 
 EOF;
 }
 
-$debug = array_key_exists('debug', $options);
-$fakedate = (array_key_exists('fakedate', $options) ? $options['fakedate'] : null);
+$debug = isset($options['debug']);
+
+if (isset($options['force-date'])) {
+    $fakedate = $options['force-date'];
+} elseif (isset($options['fake-date'])) {
+    $fakedate = $options['fake-date'];
+} elseif (isset($options['fakedate'])) {
+    $fakedate = $options['fakedate'];
+} else {
+    $fakedate = null;
+}
+
 $customerid = isset($options['customerid']) && intval($options['customerid']) ? $options['customerid'] : null;
 
 $types = array();
-if (array_key_exists('type', $options)) {
+if (isset($options['type'])) {
     $types = explode(',', $options['type']);
 }
 
 $channels = array();
-if (array_key_exists('channel', $options)) {
+if (isset($options['channel'])) {
     $channels = explode(',', $options['channel']);
 }
 if (empty($channels)) {
@@ -173,12 +185,12 @@ if (empty($channels)) {
 $current_month = intval(date('m'));
 $current_year = intval(date('Y'));
 
-$config_section = (array_key_exists('section', $options) && preg_match('/^[a-z0-9-_]+$/i', $options['section'])
+$config_section = (isset($options['section']) && preg_match('/^[a-z0-9-_]+$/i', $options['section'])
     ? $options['section'] : 'notify');
 
 $timeoffset = date('Z');
 
-if (array_key_exists('config-file', $options)) {
+if (isset($options['config-file'])) {
     $CONFIG_FILE = $options['config-file'];
 } else {
     $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
@@ -3263,7 +3275,7 @@ if (empty($types) || in_array('events', $types)) {
             $cid = intval($event['customerid']);
             $uid = intval($event['userid']);
 
-            if ($cid && !array_key_exists($cid, $customers)) {
+            if ($cid && !isset($customers[$cid])) {
                 $customers[$cid] = $DB->GetRow(
                     "SELECT (" . $DB->Concat('c.lastname', "' '", 'c.name') . ") AS name,
                             m.email, x.phone
@@ -3299,7 +3311,7 @@ if (empty($types) || in_array('events', $types)) {
                 if (!empty($customers[$cid]['email'])) {
                     $emails = explode(',', $debug_email ? $debug_email : $customers[$cid]['email']);
                     foreach ($emails as $contact) {
-                        if (!array_key_exists($contact, $emails)) {
+                        if (!isset($emails[$contact])) {
                             $contacts[$contact] = array(
                                 'cid' => $cid,
                                 'email' => $contact,
@@ -3310,7 +3322,7 @@ if (empty($types) || in_array('events', $types)) {
                 if (!empty($customers[$cid]['phone'])) {
                     $phones = explode(',', $debug_phone ? $debug_phone : $customers[$cid]['phone']);
                     foreach ($phones as $contact) {
-                        if (!array_key_exists($contact, $phones)) {
+                        if (!isset($phones[$contact])) {
                             $contacts[$contact] = array(
                                 'cid' => $cid,
                                 'phone' => $contact,
@@ -3324,7 +3336,7 @@ if (empty($types) || in_array('events', $types)) {
                 if (!empty($users[$uid]['email'])) {
                     $emails = explode(',', $debug_email ? $debug_email : $users[$uid]['email']);
                     foreach ($emails as $contact) {
-                        if (!array_key_exists($contact, $contacts)) {
+                        if (!isset($contacts[$contact])) {
                             $contacts[$contact] = array(
                                 'uid' => $uid,
                                 'email' => $contact,
@@ -3335,7 +3347,7 @@ if (empty($types) || in_array('events', $types)) {
                 if (!empty($users[$uid]['phone'])) {
                     $phones = explode(',', $debug_phone ? $debug_phone : $users[$uid]['phone']);
                     foreach ($phones as $contact) {
-                        if (!array_key_exists($contact, $contacts)) {
+                        if (!isset($contacts[$contact])) {
                             $contacts[$contact] = array(
                                 'uid' => $uid,
                                 'phone' => $contact,
@@ -3360,7 +3372,7 @@ if (empty($types) || in_array('events', $types)) {
 
             if (!$quiet) {
                 foreach ($contacts as $contact) {
-                    if (array_key_exists('uid', $contact)) {
+                    if (isset($contact['uid'])) {
                         $uid = $contact['uid'];
                         if (in_array('mail', $channels) && array_key_exists('email', $contact)) {
                             printf(
@@ -3374,7 +3386,7 @@ if (empty($types) || in_array('events', $types)) {
                                 send_mail_to_user($contact['email'], $users[$uid]['name'], $subject, $message);
                             }
                         }
-                        if (in_array('sms', $channels) && array_key_exists('phone', $contact)) {
+                        if (in_array('sms', $channels) && isset($contact['phone'])) {
                             printf(
                                 "[sms/events] Event #%d, %s (UID: #%d): %s" . PHP_EOL,
                                 $event['id'],
@@ -3387,9 +3399,9 @@ if (empty($types) || in_array('events', $types)) {
                             }
                         }
                     }
-                    if (array_key_exists('cid', $contact)) {
+                    if (isset($contact['cid'])) {
                         $cid = $contact['cid'];
-                        if (in_array('mail', $channels) && array_key_exists('email', $contact)) {
+                        if (in_array('mail', $channels) && isset($contact['email'])) {
                             printf(
                                 "[mail/events] Event #%d, %s (CID: #%d): %s" . PHP_EOL,
                                 $event['id'],
@@ -3409,7 +3421,7 @@ if (empty($types) || in_array('events', $types)) {
                                 );
                             }
                         }
-                        if (in_array('sms', $channels) && array_key_exists('phone', $contact)) {
+                        if (in_array('sms', $channels) && isset($contact['phone'])) {
                             printf(
                                 "[sms/events] Event #%d, %s (CID: #%d): %s" . PHP_EOL,
                                 $event['id'],

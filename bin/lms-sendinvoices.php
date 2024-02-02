@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2022 LMS Developers
+ *  (C) Copyright 2001-2024 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -34,6 +34,8 @@ $parameters = array(
     'version' => 'v',
     'test' => 't',
     'fakedate:' => 'f:',
+    'fake-date:' => null,
+    'force-date:' => null,
     'part-number:' => 'p:',
     'fakehour:' => 'g:',
     'part-size:' => 'l:',
@@ -83,26 +85,26 @@ foreach (array_flip(array_filter($long_to_shorts, function ($value) {
     }
 }
 
-if (array_key_exists('version', $options)) {
+if (isset($options['version'])) {
     print <<<EOF
 lms-sendinvoices.php
-(C) 2001-2022 LMS Developers
+(C) 2001-2024 LMS Developers
 
 EOF;
     exit(0);
 }
 
-if (array_key_exists('help', $options)) {
+if (isset($options['help'])) {
     print <<<EOF
 lms-sendinvoices.php
-(C) 2001-2022 LMS Developers
+(C) 2001-2024 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
 -t, --test                      print only invoices to send;
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
--f, --fakedate=YYYY/MM/DD       override system date;
+-f, --fakedate, --fake-date, --force-date=YYYY/MM/DD       override system date;
 -p, --part-number=NN            defines which part of invoices that should be sent;
 -g, --fakehour=HH               override system hour; if no fakehour is present - current hour will be used;
                                 (deprecated - use --part-number instead of);
@@ -132,11 +134,11 @@ EOF;
     exit(0);
 }
 
-$quiet = array_key_exists('quiet', $options);
+$quiet = isset($options['quiet']);
 if (!$quiet) {
     print <<<EOF
 lms-sendinvoices.php
-(C) 2001-2022 LMS Developers
+(C) 2001-2024 LMS Developers
 
 EOF;
 }
@@ -160,7 +162,7 @@ if ($archive && $backup) {
     die("Archive and backup modes cannot be used simultaneously!" . PHP_EOL);
 }
 
-if (array_key_exists('config-file', $options)) {
+if (isset($options['config-file'])) {
     $CONFIG_FILE = $options['config-file'];
 } else {
     $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
@@ -365,13 +367,22 @@ if ($backup || $archive) {
         $part_number = intval(date('H', time()));
     }
 
-    $extrafile = (array_key_exists('extra-file', $options) ? $options['extra-file'] : null);
+    $extrafile = isset($options['extra-file']) ? $options['extra-file'] : null);
     if ($extrafile && !is_readable($extrafile)) {
         die("Unable to read additional file [$extrafile]!" . PHP_EOL);
     }
 }
 
-$fakedate = isset($options['fakedate']) ? $options['fakedate'] : null;
+if (isset($options['force-date'])) {
+    $fakedate = $options['force-date'];
+} elseif (isset($options['fake-date'])) {
+    $fakedate = $options['fake-date'];
+} elseif (isset($options['fakedate'])) {
+    $fakedate = $options['fakedate'];
+} else {
+    $fakedate = null;
+}
+
 $customerid = isset($options['customerid']) && intval($options['customerid']) ? $options['customerid'] : null;
 
 if (empty($fakedate)) {
@@ -434,7 +445,7 @@ if ($archive) {
     }
 
     if (!$backup) {
-        $test = array_key_exists('test', $options);
+        $test = isset($options['test']);
         if ($test) {
             echo "WARNING! You are using test mode." . PHP_EOL;
         }
