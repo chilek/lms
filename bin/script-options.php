@@ -107,8 +107,7 @@ if (isset($options['help'])) {
 $quiet = isset($options['quiet']);
 if (!$quiet) {
     echo $script_name . PHP_EOL
-        . SCRIPT_COPYRIGHT_INFO . PHP_EOL
-        . PHP_EOL;
+        . SCRIPT_COPYRIGHT_INFO . PHP_EOL;
 }
 
 if (isset($options['config-file'])) {
