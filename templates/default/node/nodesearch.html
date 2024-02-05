@@ -104,7 +104,8 @@
 				<option value="0"{if $nodesearch.status == 0} selected{/if}>{trans("— all —")}</option>
 				<option value="1"{if $nodesearch.status == 1} selected{/if}>{trans("connected<!plural:item>")}</option>
 				<option value="2"{if $nodesearch.status == 2} selected{/if}>{trans("disconnected<!plural:item>")}</option>
-				<option value="3"{if $nodesearch.status == 3} selected{/if}>{trans("online")}</option>
+				<option value="3"{if $nodesearch.status == 3} selected{/if}>{trans("<!node>online")}</option>
+				<option value="12"{if $nodesearch.status == 12} selected{/if}>{trans("<!node>offline")}</option>
 				<option value="4"{if $nodesearch.status == 4} selected{/if}>{trans("without tariff")}</option>
 				<option value="5"{if $nodesearch.status == 5} selected{/if}>{trans("without explicit TERYT")}</option>
 				<option value="11"{if $nodesearch.status == 11} selected{/if}>{trans("without TERYT")}</option>

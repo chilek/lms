@@ -338,6 +338,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
      *          9 = without radio sector (if wireless link),
      *          10 = with locks,
      *          11 = without TERYT,
+     *          12 = offline,
      *      network - network id (default: null = any), single integer value
      *      customergroup - customer group id (default: null = any), single integer value
      *      nodegroup - node group id (default: null = any), single integer value, -1 means nodes without any group
@@ -610,6 +611,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 . ($status == 1 ? ' AND n.access = 1' : '') //connected
                 . ($status == 2 ? ' AND n.access = 0' : '') //disconnected
                 . ($status == 3 ? ' AND n.lastonline > ?NOW? - ' . intval(ConfigHelper::getConfig('phpui.lastonline_limit')) : '') //online
+                . ($status == 12 ? ' AND n.lastonline < ?NOW? - ' . intval(ConfigHelper::getConfig('phpui.lastonline_limit')) : '') //offline
                 . ($status == 4 ? ' AND n.id NOT IN (
 					SELECT DISTINCT nodeid FROM nodeassignments na
 					JOIN assignments a ON a.id = na.assignmentid
