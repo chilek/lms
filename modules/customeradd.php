@@ -401,7 +401,7 @@ if (isset($_POST['customeradd'])) {
         $customer_flags_flipped[$customer_flag_properties['alias']] = $customer_flag;
     }
     $customeradd['flags'] = array_map(
-        function($value) use ($customer_flags_flipped) {
+        function ($value) use ($customer_flags_flipped) {
             return isset($customer_flags_flipped[$value]) ? $customer_flags_flipped[$value] : 0;
         },
         preg_split("/([\s]+|[\s]*,[\s]*)/", strtolower($customer_flags), -1, PREG_SPLIT_NO_EMPTY)
