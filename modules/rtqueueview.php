@@ -67,11 +67,7 @@ if (isset($_GET['id'])) {
     if ($_GET['id'] == 'all') {
         $filter['ids'] = null;
     } else {
-        if (is_array($_GET['id'])) {
-            $filter['ids'] = Utils::filterIntegers($_GET['id']);
-        } elseif (intval($_GET['id'])) {
-            $filter['ids'] = Utils::filterIntegers(array($_GET['id']));
-        }
+        $filter['ids'] = Utils::filterIntegers(is_array($_GET['id']) ? $_GET['id'] : array($_GET['id']));
         if (!isset($filter['ids']) || empty($filter['ids'])) {
             $SESSION->redirect('?m=rtqueuelist');
         }
