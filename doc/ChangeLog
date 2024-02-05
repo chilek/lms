@@ -623,6 +623,7 @@ version 28-git (????-??-??):
     add customer form initialisation [chilan]
   - improvement: 'phpui.default_customer_flags' with empty default value allows to preselect customer flags during
     add customer form initialisation [chilan]
+  - enhancement: added offline status selection in node search form [chilan]
 
 version 27.0 (2021-08-20):
 
