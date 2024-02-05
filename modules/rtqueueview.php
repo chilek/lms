@@ -58,12 +58,7 @@ if (isset($_GET['action'])) {
 $LMS->CleanupTicketLastView();
 
 if (!empty($_GET['ticketid']) && isset($_GET['ticketwatching'])) {
-    if ($_GET['ticketwatching']) {
-        $LMS->changeTicketWatching($_GET['ticketid'], 1);
-    } else {
-        $LMS->changeTicketWatching($_GET['ticketid'], 0);
-    }
-
+    $LMS->changeTicketWatching($_GET['ticketid'], intval($_GET['ticketwatching']));
     $SESSION->redirect_to_history_entry('m=rtticketinfo&id=' . $_GET['ticketid']);
 }
 
