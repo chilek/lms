@@ -142,6 +142,9 @@ if (!empty($docids)) {
 
             if ($i !== false) {
                 $extension = mb_substr($filename, $i + 1);
+                if (preg_match('/^htm/', $extension) && $pdf) {
+                    $extension = 'pdf';
+                }
                 $filename = mb_substr($filename, 0, $i);
             } elseif (preg_match('#/\.(?<extension>[[:alnum:]]+)$#i', $list[0]['contenttype'], $m)) {
                 $extension = $m['extension'];
@@ -170,7 +173,7 @@ if (!empty($docids)) {
             );
 
             if ($pdf || $others) {
-                header('Content-Disposition: ' . ($pdf ? 'inline' : 'attachment') . '; filename=' . $filename . '.' . $extension);
+                header('Content-Disposition: ' . ($pdf && !isset($_GET['save']) ? 'inline' : 'attachment') . '; filename=' . $filename . '.' . $extension);
             } else {
                 header('Content-Disposition: ' . (isset($_GET['save']) ? 'attachment' : 'inline') . '; filename=' . $filename . '.' . $extension);
             }
