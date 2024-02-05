@@ -97,14 +97,17 @@ $CUSTOMERFLAGS = array(
     CUSTOMER_FLAG_RELATED_ENTITY => array(
         'label' => 'related entity',
         'tip' => trans('translates into JPK TP flag'),
+        'alias' => 'related-entity',
     ),
     CUSTOMER_FLAG_VAT_PAYER => array(
         'label' => 'VAT payer',
         'tip' => trans('if customer is not VAT payer, then his telecommunication services are reported with JPK EE flag'),
+        'alias' => 'vat-payer',
     ),
     CUSTOMER_FLAG_SUPPLIER => array(
         'label' => 'supplier',
         'tip' => trans('check it if customer is supplier for example for warehouse purpose'),
+        'alias' => 'supplier',
     ),
 );
 
