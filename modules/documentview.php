@@ -40,12 +40,17 @@ if (!empty($_POST['marks'])) {
 }
 
 if (!empty($docids)) {
-    if ($list = $DB->GetCol(
-        'SELECT d.id FROM documents d
-        JOIN docrights r ON (r.doctype = d.type)
+    if ($docs = $DB->GetAllByKey(
+        'SELECT
+            d.id,
+            d.type,
+            d.fullnumber
+        FROM documents d
+        JOIN docrights r ON r.doctype = d.type
         WHERE d.id IN ?
             AND r.userid = ?
             AND (r.rights & ?) > 0',
+        'id',
         array(
             $docids,
             Auth::GetCurrentUser(),
@@ -72,28 +77,37 @@ if (!empty($docids)) {
             foreach ($docids as $doc) {
                 $referencedDocument = $LMS->getReferencedDocument($doc);
                 if (!empty($referencedDocument) && isset($relatedDocuments[$referencedDocument['type']])) {
-                    $list[] = $referencedDocument['id'];
+                    $docs[$referencedDocument['id']] = array(
+                        'id' => $referencedDocument['id'],
+                        'type' => $referencedDocument['type'],
+                        'fullnumber' => $referencedDocument['fullnumber'],
+                    );
                 }
 
                 $referencingDocuments = $LMS->getReferencingDocuments($doc);
                 if (!empty($referencingDocuments)) {
                     foreach ($referencingDocuments as $referencingDocument) {
                         if (isset($relatedDocuments[$referencingDocument['type']])) {
-                            $list[] = $referencingDocument['id'];
+                            $docs[$referencingDocument['id']] = array(
+                                'id' => $referencingDocument['id'],
+                                'type' => $referencingDocument['type'],
+                                'fullnumber' => $referencingDocument['fullnumber'],
+                            );
                         }
                     }
                 }
             }
         }
         $list = $DB->GetAll(
-            'SELECT filename, contenttype, md5sum
-            FROM documentattachments
-            WHERE docid IN ?'
-                . ($attachments || !empty($attachmentid) ? '' : ' AND type = 1')
-                . (empty($attachmentid) ? '' : ' AND id = ' . $attachmentid)
-            . ' ORDER BY docid ASC, type DESC',
+            'SELECT dc.docid, dc.filename, dc.contenttype, dc.md5sum
+            FROM documentattachments dc
+            JOIN documents d ON d.id = dc.docid
+            WHERE dc.docid IN ?'
+                . ($attachments || !empty($attachmentid) ? '' : ' AND dc.type = 1')
+                . (empty($attachmentid) ? '' : ' AND dc.id = ' . $attachmentid)
+            . ' ORDER BY dc.docid ASC, dc.type DESC',
             array(
-                $list,
+                Utils::array_column($docs, 'id'),
             )
         );
         if (empty($list)) {
@@ -119,8 +133,47 @@ if (!empty($docids)) {
 
         $pdf = $pdfs || $htmls && $document_type == 'pdf';
 
-        if ($pdf || $others) {
-            header('Content-Disposition: ' . ($pdf ? 'inline' : 'attachment') . '; filename=' . $list[0]['filename']);
+        if ($pdf || $others || count($docs) == 1) {
+            $attachment_filename = ConfigHelper::getConfig('documents.attachment_filename', '%filename');
+
+            $docid = $list[0]['docid'];
+            $filename = $list[0]['filename'];
+            $i = strpos($filename, '.');
+
+            if ($i !== false) {
+                $extension = mb_substr($filename, $i + 1);
+                $filename = mb_substr($filename, 0, $i);
+            } elseif (preg_match('#/\.(?<extension>[[:alnum:]]+)$#i', $list[0]['contenttype'], $m)) {
+                $extension = $m['extension'];
+            } else {
+                $extension = '';
+            }
+
+            $filename = preg_replace(
+                '/[^[:alnum:]_\.]/i',
+                '_',
+                str_replace(
+                    array(
+                        '%filename',
+                        '%type',
+                        '%document',
+                        '%docid',
+                    ),
+                    array(
+                        $filename,
+                        $DOCTYPES[$docs[$docid]['type']],
+                        $docs[$docid]['fullnumber'],
+                        $docid,
+                    ),
+                    $attachment_filename
+                )
+            );
+
+            if ($pdf || $others) {
+                header('Content-Disposition: ' . ($pdf ? 'inline' : 'attachment') . '; filename=' . $filename . '.' . $extension);
+            } else {
+                header('Content-Disposition: ' . (isset($_GET['save']) ? 'attachment' : 'inline') . '; filename=' . $filename . '.' . $extension);
+            }
             header('Pragma: public');
         }
 
