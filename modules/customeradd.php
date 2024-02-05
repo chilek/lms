@@ -388,6 +388,12 @@ if (isset($_POST['customeradd'])) {
     $customeradd['documentmemo'] = ConfigHelper::getConfig('phpui.default_customer_document_memo', '', true);
 
     $customeradd['consents'] = Utils::getDefaultCustomerConsents();
+
+    $customer_type = trim(ConfigHelper::getConfig('phpui.default_customer_type', $CTYPE_ALIASES[CTYPES_PRIVATE]));
+    $ctype_aliases_flipped = array_flip($CTYPE_ALIASES);
+    if (isset($ctype_aliases_flipped[$customer_type])) {
+        $customeradd['type'] = $ctype_aliases_flipped[$customer_type];
+    }
 }
 
 if (!isset($customeradd['cutoffstopindefinitely'])) {

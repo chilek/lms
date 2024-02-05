@@ -37,6 +37,12 @@ $CTYPES = array(
     CTYPES_CONTRACTOR   => trans('contractor'),
 );
 
+$CTYPE_ALIASES = array(
+    CTYPES_PRIVATE => 'private',
+    CTYPES_COMPANY => 'legal',
+    CTYPES_CONTRACTOR => 'contractor',
+);
+
 // customer statuses
 const CSTATUS_INTERESTED = 1,
     CSTATUS_WAITING = 2,
