@@ -39,7 +39,7 @@ $CTYPES = array(
 
 $CTYPE_ALIASES = array(
     CTYPES_PRIVATE => 'private',
-    CTYPES_COMPANY => 'legal',
+    CTYPES_COMPANY => 'company',
     CTYPES_CONTRACTOR => 'contractor',
 );
 
