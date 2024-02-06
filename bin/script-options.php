@@ -87,7 +87,9 @@ foreach ($argv as $arg) {
     }
 }
 
-$script_name = basename($argv[0]);
+if (!isset($script_name)) {
+    $script_name = basename($argv[0]);
+}
 
 if (isset($options['version'])) {
     echo $script_name . PHP_EOL
