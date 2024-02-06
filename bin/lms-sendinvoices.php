@@ -49,7 +49,7 @@ $script_parameters = array(
 );
 
 $script_help = <<<EOF
--q, --quiet                     suppress any output, except errors;
+-t, --test                      print only invoices to send;
 -f, --fakedate, --fake-date, --force-date=YYYY/MM/DD       override system date;
 -p, --part-number=NN            defines which part of invoices that should be sent;
 -g, --fakehour=HH               override system hour; if no fakehour is present - current hour will be used;
