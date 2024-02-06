@@ -25,17 +25,7 @@
  *  $Id$
  */
 
-// REPLACE THIS WITH PATH TO YOUR CONFIG FILE
-
-// PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
-// *EXACTLY* WHAT ARE YOU DOING!!!
-// *******************************************************************
-
 $script_parameters = array(
-    'config-file:' => 'C:',
-    'quiet' => 'q',
-    'help' => 'h',
-    'version' => 'v',
     'test' => 't',
     'section:' => 's:',
     'fakedate:' => 'f:',
@@ -50,10 +40,6 @@ $script_parameters = array(
 );
 
 $script_help = <<<EOF
--C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
--h, --help                      print this help and exit;
--v, --version                   print version info and exit;
--q, --quiet                     suppress any output, except errors;
 -t, --test                      no changes are made to database;
 -s, --section=<section-name>    section name from lms configuration where settings
                                 are stored

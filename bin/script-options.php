@@ -37,6 +37,16 @@ if ($http_mode) {
     $long_to_shorts = array();
     $short_to_longs = array();
 
+    $script_parameters = array_merge(
+        array(
+            'config-file:' => 'C:',
+            'quiet' => 'q',
+            'help' => 'h',
+            'version' => 'v',
+        ),
+        isset($script_parameters) ? $script_parameters : array()
+    );
+
     foreach ($script_parameters as $long => $short) {
         $long = str_replace(':', '', $long);
         if (isset($short)) {
@@ -114,6 +124,10 @@ if (isset($options['help'])) {
     echo $script_name . PHP_EOL
         . SCRIPT_COPYRIGHT_INFO . PHP_EOL
         . PHP_EOL
+        . '-C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);' . PHP_EOL
+        . '-h, --help                      print this help and exit;' . PHP_EOL
+        . '-v, --version                   print version info and exit;' . PHP_EOL
+        . '-q, --quiet                     suppress any output, except errors;' . PHP_EOL
         . $script_help . PHP_EOL;
     exit(0);
 }
@@ -148,6 +162,7 @@ $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 $CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
 $CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib' : $CONFIG['directories']['lib_dir']);
 $CONFIG['directories']['doc_dir'] = (!isset($CONFIG['directories']['doc_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'documents' : $CONFIG['directories']['doc_dir']);
+$CONFIG['directories']['storage_dir'] = (!isset($CONFIG['directories']['storage_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'storage' : $CONFIG['directories']['storage_dir']);
 $CONFIG['directories']['smarty_compile_dir'] = (!isset($CONFIG['directories']['smarty_compile_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'templates_c' : $CONFIG['directories']['smarty_compile_dir']);
 $CONFIG['directories']['smarty_templates_dir'] = (!isset($CONFIG['directories']['smarty_templates_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'templates' : $CONFIG['directories']['smarty_templates_dir']);
 $CONFIG['directories']['plugin_dir'] = (!isset($CONFIG['directories']['plugin_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'plugins' : $CONFIG['directories']['plugin_dir']);
@@ -156,6 +171,7 @@ $CONFIG['directories']['plugins_dir'] = $CONFIG['directories']['plugin_dir'];
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 define('DOC_DIR', $CONFIG['directories']['doc_dir']);
+define('STORAGE_DIR', $CONFIG['directories']['storage_dir']);
 define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
 define('SMARTY_TEMPLATES_DIR', $CONFIG['directories']['smarty_templates_dir']);
 define('PLUGIN_DIR', $CONFIG['directories']['plugin_dir']);

@@ -26,10 +26,6 @@
  */
 
 $script_parameters = array(
-    'config-file:' => 'C:',
-    'quiet' => 'q',
-    'help' => 'h',
-    'version' => 'v',
     'test' => 't',
     'fakedate:' => 'f:',
     'fake-date:' => null,
@@ -53,10 +49,6 @@ $script_parameters = array(
 );
 
 $script_help = <<<EOF
--C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
--h, --help                      print this help and exit;
--t, --test                      print only invoices to send;
--v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
 -f, --fakedate, --fake-date, --force-date=YYYY/MM/DD       override system date;
 -p, --part-number=NN            defines which part of invoices that should be sent;

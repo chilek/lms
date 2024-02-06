@@ -26,10 +26,6 @@
  */
 
 $script_parameters = array(
-    'config-file:' => 'C:',
-    'quiet' => 'q',
-    'help' => 'h',
-    'version' => 'v',
     'debug' => 'd',
     'fakedate:' => 'f:',
     'fake-date:' => null,
@@ -54,10 +50,6 @@ $script_parameters = array(
 );
 
 $script_help = <<<EOF
--C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
--h, --help                      print this help and exit;
--v, --version                   print version info and exit;
--q, --quiet                     suppress any output, except errors
 -d, --debug                     do debugging, dont send anything.
 -f, --fakedate, --fake-date, --force-date=YYYY/MM/DD       override system date;
 -p, --part-number=NN            defines which part of notifications should be sent;

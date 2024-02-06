@@ -26,19 +26,11 @@
  */
 
 $script_parameters = array(
-    'config-file:' => 'C:',
-    'quiet' => 'q',
-    'help' => 'h',
-    'version' => 'v',
     'section:' => 's:',
     'import-file:' => 'f:',
 );
 
 $script_help = <<<EOF
--C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
--h, --help                      print this help and exit;
--v, --version                   print version info and exit;
--q, --quiet                     suppress any output, except errors;
 -s, --section=<section-name>    section name from lms configuration where settings
                                 are stored
 -f, --import-file               cash import file name from which import contents is read
@@ -55,7 +47,8 @@ $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 
 $config_section = isset($options['section']) && preg_match('/^[a-z0-9-_]+$/i', $options['section'])
-    ? $options['section'] : 'cashimport';
+    ? $options['section']
+    : 'cashimport';
 
 $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);

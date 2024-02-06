@@ -26,10 +26,6 @@
  */
 
 $script_parameters = array(
-    'config-file:' => 'C:',
-    'quiet'  => 'q',
-    'help'  => 'h',
-    'version'  => 'v',
     'fetch'  => 'f',
     'list:' => 'l:',
     'update'  => 'u',
@@ -43,13 +39,6 @@ $script_parameters = array(
 );
 
 $script_help = <<<EOF
-lms-teryt.php
-(C) 2001-2023 LMS Developers
-
--C, --config-file=/etc/lms/lms.ini alternate config file (default: /etc/lms/lms.ini);
--h, --help                         print this help and exit;
--v, --version                      print version info and exit;
--q, --quiet                        suppress any output, except errors
 -f, --fetch                        download teryt files
 -u, --update                       update LMS database
 -m, --merge                        try join current addresses with teryt locations

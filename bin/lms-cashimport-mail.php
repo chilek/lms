@@ -26,19 +26,11 @@
  */
 
 $script_parameters = array(
-    'config-file:' => 'C:',
-    'quiet' => 'q',
-    'help' => 'h',
-    'version' => 'v',
     'stdout' => 'c',
     'section:' => 's:',
 );
 
 $script_help = <<<EOF
--C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
--h, --help                      print this help and exit;
--v, --version                   print version info and exit;
--q, --quiet                     suppress any output, except errors;
 -c, --stdout                    write cash import file contents to stdout
 -s, --section=<section-name>    section name from lms configuration where settings
                                 are stored
@@ -49,7 +41,9 @@ require_once('script-options.php');
 // Initialize Session, Auth and LMS classes
 
 $stdout = isset($options['stdout']);
-$config_section = isset($options['section']) && preg_match('/^[a-z0-9-_]+$/i', $options['section']) ? $options['section'] : 'cashimport';
+$config_section = isset($options['section']) && preg_match('/^[a-z0-9-_]+$/i', $options['section'])
+    ? $options['section']
+    : 'cashimport';
 
 $cashimport_server = ConfigHelper::getConfig($config_section . '.server');
 $cashimport_username = ConfigHelper::getConfig($config_section . '.username');

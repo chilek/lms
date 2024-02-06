@@ -26,23 +26,15 @@
  */
 
 $script_parameters = array(
-    'config-file:' => 'C:',
-    'quiet' => 'q',
-    'help' => 'h',
-    'version' => 'v',
     'section:' => 's:',
     'message-file:' => 'm:',
     'force-http-mode' => 'f',
 );
 
 $script_help = <<<EOF
--C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
--m, --message-file=<message-file>       name of message file;
--h, --help                      print this help and exit;
--v, --version                   print version info and exit;
--q, --quiet                     suppress any output, except errors;
 -s, --section=<section-name>    section name from lms configuration where settings
                                 are stored
+-m, --message-file=<message-file>       name of message file;
 -f, --force-http-mode           force callback url mode even if script is not launched under
                                 http server control
 EOF;
