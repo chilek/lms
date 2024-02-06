@@ -58,12 +58,7 @@ if (isset($_GET['action'])) {
 $LMS->CleanupTicketLastView();
 
 if (!empty($_GET['ticketid']) && isset($_GET['ticketwatching'])) {
-    if ($_GET['ticketwatching']) {
-        $LMS->changeTicketWatching($_GET['ticketid'], 1);
-    } else {
-        $LMS->changeTicketWatching($_GET['ticketid'], 0);
-    }
-
+    $LMS->changeTicketWatching($_GET['ticketid'], intval($_GET['ticketwatching']));
     $SESSION->redirect_to_history_entry('m=rtticketinfo&id=' . $_GET['ticketid']);
 }
 
@@ -72,11 +67,7 @@ if (isset($_GET['id'])) {
     if ($_GET['id'] == 'all') {
         $filter['ids'] = null;
     } else {
-        if (is_array($_GET['id'])) {
-            $filter['ids'] = Utils::filterIntegers($_GET['id']);
-        } elseif (intval($_GET['id'])) {
-            $filter['ids'] = Utils::filterIntegers(array($_GET['id']));
-        }
+        $filter['ids'] = Utils::filterIntegers(is_array($_GET['id']) ? $_GET['id'] : array($_GET['id']));
         if (!isset($filter['ids']) || empty($filter['ids'])) {
             $SESSION->redirect('?m=rtqueuelist');
         }
