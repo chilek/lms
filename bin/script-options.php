@@ -28,63 +28,75 @@ ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 define('SCRIPT_COPYRIGHT_INFO', '(c) 2001-2024 LMS Developers');
 
-$long_to_shorts = array();
-$short_to_longs = array();
-foreach ($script_parameters as $long => $short) {
-    $long = str_replace(':', '', $long);
-    if (isset($short)) {
-        $short = str_replace(':', '', $short);
-        $short_to_longs[$short] = $long;
-    }
-    $long_to_shorts[$long] = $short;
-}
+$http_mode = isset($_SERVER['HTTP_HOST']);
 
-$options = getopt(
-    implode(
-        '',
-        array_filter(
-            array_values($script_parameters),
-            function ($value) {
-                return isset($value);
-            }
-        )
-    ),
-    array_keys($script_parameters)
-);
+if ($http_mode) {
+    ob_clean();
+    $options = array();
+} else {
+    $long_to_shorts = array();
+    $short_to_longs = array();
 
-foreach (array_flip(array_filter($long_to_shorts, function ($value) {
-    return isset($value);
-})) as $short => $long) {
-    if (array_key_exists($short, $options)) {
-        $options[$long] = $options[$short];
-        unset($options[$short]);
-    }
-}
-
-foreach ($argv as $arg) {
-    if (strpos($arg, '-') !== 0) {
-        continue;
-    }
-
-    if (strpos($arg, '-', 1) === 1) {
-        $option = preg_replace('/^--/', '', $arg);
-        if (!array_key_exists($option, $long_to_shorts)) {
-            die('Fatal error: unsupported option \'' . $arg . '\'!' . PHP_EOL);
-        } else {
-            if (!isset($options[$option])) {
-                die('Fatal error: option \'' . $arg . '\' requires parameter!' . PHP_EOL);
-            }
+    foreach ($script_parameters as $long => $short) {
+        $long = str_replace(':', '', $long);
+        if (isset($short)) {
+            $short = str_replace(':', '', $short);
+            $short_to_longs[$short] = $long;
         }
-    } else {
-        $option = substr(preg_replace('/^-/', '', $arg), 0, 1);
-        if (!isset($short_to_longs[$option])) {
-            die('Fatal error: unsupported option \'-' . $option . '\'!' . PHP_EOL);
-        } else {
-            if (!array_key_exists($short_to_longs[$option], $options)) {
-                die('Fatal error: option \'-' . $option . '\' requires parameter!' . PHP_EOL);
-            }
+        $long_to_shorts[$long] = $short;
+    }
+
+    $options = getopt(
+        implode(
+            '',
+            array_filter(
+                array_values($script_parameters),
+                function ($value) {
+                    return isset($value);
+                }
+            )
+        ),
+        array_keys($script_parameters)
+    );
+
+    foreach (array_flip(array_filter($long_to_shorts, function ($value) {
+        return isset($value);
+    })) as $short => $long) {
+        if (array_key_exists($short, $options)) {
+            $options[$long] = $options[$short];
+            unset($options[$short]);
         }
     }
+
+    foreach ($argv as $arg) {
+        if (strpos($arg, '-') !== 0) {
+            continue;
+        }
+
+        if (strpos($arg, '-', 1) === 1) {
+            $option = preg_replace('/^--/', '', $arg);
+            if (!array_key_exists($option, $long_to_shorts)) {
+                die('Fatal error: unsupported option \'' . $arg . '\'!' . PHP_EOL);
+            } else {
+                if (!isset($options[$option])) {
+                    die('Fatal error: option \'' . $arg . '\' requires parameter!' . PHP_EOL);
+                }
+            }
+        } else {
+            $option = substr(preg_replace('/^-/', '', $arg), 0, 1);
+            if (!isset($short_to_longs[$option])) {
+                die('Fatal error: unsupported option \'-' . $option . '\'!' . PHP_EOL);
+            } else {
+                if (!array_key_exists($short_to_longs[$option], $options)) {
+                    die('Fatal error: option \'-' . $option . '\' requires parameter!' . PHP_EOL);
+                }
+            }
+        }
+    }
+}
+
+if (isset($options['force-http-mode'])) {
+    $http_mode = true;
 }
 
 if (!isset($script_name)) {
@@ -106,19 +118,21 @@ if (isset($options['help'])) {
     exit(0);
 }
 
-$quiet = isset($options['quiet']);
-if (!$quiet) {
-    echo $script_name . PHP_EOL
-        . SCRIPT_COPYRIGHT_INFO . PHP_EOL;
-}
-
 if (isset($options['config-file'])) {
     $CONFIG_FILE = $options['config-file'];
+} elseif ($http_mode && is_readable('lms.ini')) {
+    $CONFIG_FILE = 'lms.ini';
+} elseif ($http_mode && is_readable(DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini')) {
+    $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini';
 } else {
     $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
 }
 
-if (!$quiet) {
+$quiet = isset($options['quiet']);
+
+if (!$quiet && (!$http_mode || isset($options['force-http-mode']))) {
+    echo $script_name . PHP_EOL
+        . SCRIPT_COPYRIGHT_INFO . PHP_EOL;
     echo 'Using file ' . $CONFIG_FILE . ' as config.' . PHP_EOL;
 }
 

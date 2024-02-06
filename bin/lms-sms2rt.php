@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2023 LMS Developers
+ *  (C) Copyright 2001-2024 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,76 +25,17 @@
  *  $Id$
  */
 
-// REPLACE THIS WITH PATH TO YOUR CONFIG FILE
+$script_parameters = array(
+    'config-file:' => 'C:',
+    'quiet' => 'q',
+    'help' => 'h',
+    'version' => 'v',
+    'section:' => 's:',
+    'message-file:' => 'm:',
+    'force-http-mode' => 'f',
+);
 
-// PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
-// *EXACTLY* WHAT ARE YOU DOING!!!
-// *******************************************************************
-
-ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
-
-$http_mode = isset($_SERVER['HTTP_HOST']);
-
-if ($http_mode) {
-    ob_clean();
-    $options = array();
-} else {
-    $parameters = array(
-        'config-file:' => 'C:',
-        'quiet' => 'q',
-        'help' => 'h',
-        'version' => 'v',
-        'section:' => 's:',
-        'message-file:' => 'm:',
-        'force-http-mode' => 'f',
-    );
-
-    $long_to_shorts = array();
-    foreach ($parameters as $long => $short) {
-        $long = str_replace(':', '', $long);
-        if (isset($short)) {
-            $short = str_replace(':', '', $short);
-        }
-        $long_to_shorts[$long] = $short;
-    }
-
-    $options = getopt(
-        implode(
-            '',
-            array_filter(
-                array_values($parameters),
-                function ($value) {
-                    return isset($value);
-                }
-            )
-        ),
-        array_keys($parameters)
-    );
-
-    foreach (array_flip(array_filter($long_to_shorts, function ($value) {
-        return isset($value);
-    })) as $short => $long) {
-        if (array_key_exists($short, $options)) {
-            $options[$long] = $options[$short];
-            unset($options[$short]);
-        }
-    }
-}
-
-if (isset($options['version'])) {
-    print <<<EOF
-lms-sms2rt.php
-(C) 2001-2023 LMS Developers
-
-EOF;
-    exit(0);
-}
-
-if (isset($options['help'])) {
-    print <<<EOF
-lms-sms2rt.php
-(C) 2001-2023 LMS Developers
-
+$script_help = <<<EOF
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -m, --message-file=<message-file>       name of message file;
 -h, --help                      print this help and exit;
@@ -104,90 +45,9 @@ lms-sms2rt.php
                                 are stored
 -f, --force-http-mode           force callback url mode even if script is not launched under
                                 http server control
-
 EOF;
-    exit(0);
-}
 
-$quiet = isset($options['quiet']);
-if (!$quiet && !$http_mode) {
-    print <<<EOF
-lms-sms2rt.php
-(C) 2001-2023 LMS Developers
-
-EOF;
-}
-
-$config_section = isset($options['section']) && preg_match('/^[a-z0-9-_]+$/i', $options['section']) ? $options['section'] : 'sms';
-
-if (isset($options['config-file'])) {
-    $CONFIG_FILE = $options['config-file'];
-} elseif ($http_mode && is_readable('lms.ini')) {
-    $CONFIG_FILE = 'lms.ini';
-} elseif ($http_mode && is_readable(DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini')) {
-    $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini';
-} else {
-    $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
-}
-
-if (isset($options['force-http-mode'])) {
-    $http_mode = true;
-}
-
-
-if (!$quiet && (!$http_mode || isset($options['force-http-mode']))) {
-    echo 'Using file ' . $CONFIG_FILE . ' as config.' . PHP_EOL;
-}
-
-if (!is_readable($CONFIG_FILE)) {
-    die('Unable to read configuration file [' . $CONFIG_FILE . ']!' . PHP_EOL);
-}
-
-define('CONFIG_FILE', $CONFIG_FILE);
-
-$CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
-
-// Check for configuration vars and set default values
-$CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
-$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib' : $CONFIG['directories']['lib_dir']);
-$CONFIG['directories']['storage_dir'] = (!isset($CONFIG['directories']['storage_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'storage' : $CONFIG['directories']['storage_dir']);
-$CONFIG['directories']['plugin_dir'] = (!isset($CONFIG['directories']['plugin_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'plugins' : $CONFIG['directories']['plugin_dir']);
-$CONFIG['directories']['plugins_dir'] = $CONFIG['directories']['plugin_dir'];
-
-define('SYS_DIR', $CONFIG['directories']['sys_dir']);
-define('LIB_DIR', $CONFIG['directories']['lib_dir']);
-define('STORAGE_DIR', $CONFIG['directories']['storage_dir']);
-define('PLUGIN_DIR', $CONFIG['directories']['plugin_dir']);
-define('PLUGINS_DIR', $CONFIG['directories']['plugin_dir']);
-
-// Load autoloader
-$composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-if (file_exists($composer_autoload_path)) {
-    require_once $composer_autoload_path;
-} else {
-    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More information at https://getcomposer.org/" . PHP_EOL);
-}
-
-// Do some checks and load config defaults
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'config.php');
-
-// Init database
-
-$DB = null;
-
-try {
-    $DB = LMSDB::getInstance();
-} catch (Exception $ex) {
-    trigger_error($ex->getMessage(), E_USER_WARNING);
-    // can't work without database
-    die("Fatal error: cannot connect to database!" . PHP_EOL);
-}
-
-// Include required files (including sequence is important)
-
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
-include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
+require_once('script-options.php');
 
 $SYSLOG = SYSLOG::getInstance();
 
@@ -195,6 +55,8 @@ $SYSLOG = SYSLOG::getInstance();
 
 $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
+
+$config_section = isset($options['section']) && preg_match('/^[a-z0-9-_]+$/i', $options['section']) ? $options['section'] : 'sms';
 
 $incoming_queue = ConfigHelper::getConfig($config_section . '.incoming_queue', 'SMS');
 $default_mail_from = ConfigHelper::getConfig($config_section . '.default_mail_from', 'root@localhost');
