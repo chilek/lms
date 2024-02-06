@@ -87,6 +87,8 @@ EOF;
 
 require_once('script-options.php');
 
+define('K_TCPDF_EXTERNAL_CONFIG', true);
+
 $backup = isset($options['backup']);
 if ($backup) {
     if (isset($options['output-directory'])) {
