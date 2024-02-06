@@ -68,7 +68,7 @@ foreach ($argv as $arg) {
 
     if (strpos($arg, '-', 1) === 1) {
         $option = preg_replace('/^--/', '', $arg);
-        if (!isset($long_to_shorts[$option])) {
+        if (!array_key_exists($option, $long_to_shorts)) {
             die('Fatal error: unsupported option \'' . $arg . '\'!' . PHP_EOL);
         } else {
             if (!isset($options[$option])) {
@@ -80,7 +80,7 @@ foreach ($argv as $arg) {
         if (!isset($short_to_longs[$option])) {
             die('Fatal error: unsupported option \'-' . $option . '\'!' . PHP_EOL);
         } else {
-            if (!isset($options[$short_to_longs[$option]])) {
+            if (!array_key_exists($short_to_longs[$option], $options)) {
                 die('Fatal error: option \'-' . $option . '\' requires parameter!' . PHP_EOL);
             }
         }
