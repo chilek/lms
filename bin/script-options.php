@@ -105,6 +105,8 @@ if ($http_mode) {
             }
             $option = null;
             continue;
+        } elseif (isset($option) && !empty($params_required[$option])) {
+            die('Fatal error: option \'' . $option_presentation . '\' requires parameter!' . PHP_EOL);
         }
 
         $option = mb_substr($arg, 1);
