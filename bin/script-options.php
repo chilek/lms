@@ -83,24 +83,29 @@ if ($http_mode) {
             continue;
         }
 
-        if (strpos($arg, '-', 1) === 1) {
-            $option = preg_replace('/^--/', '', $arg);
-            if (!array_key_exists($option, $long_to_shorts)) {
-                die('Fatal error: unsupported option \'' . $arg . '\'!' . PHP_EOL);
-            } else {
-                if (!isset($options[$option])) {
-                    die('Fatal error: option \'' . $arg . '\' requires parameter!' . PHP_EOL);
-                }
-            }
+        $option = mb_substr($arg, 1);
+        $arg = '-';
+        if (strpos($option, '-') === 0) {
+            $option = mb_substr($option, 1);
+            $long_option = true;
+            $arg .= '-';
         } else {
-            $option = substr(preg_replace('/^-/', '', $arg), 0, 1);
-            if (!isset($short_to_longs[$option])) {
-                die('Fatal error: unsupported option \'-' . $option . '\'!' . PHP_EOL);
-            } else {
-                if (!array_key_exists($short_to_longs[$option], $options)) {
-                    die('Fatal error: option \'-' . $option . '\' requires parameter!' . PHP_EOL);
-                }
-            }
+            $long_option = false;
+        }
+        $equal_pos = strpos($option, '=');
+        if ($equal_pos !== false) {
+            $option = mb_substr($option, 0, $equal_pos);
+        }
+        $arg .= $option;
+
+        if ($long_option && !array_key_exists($option, $long_to_shorts)
+            || !$long_option && !isset($short_to_longs[$option])) {
+            die('Fatal error: unsupported option \'' . $arg . '\'!' . PHP_EOL);
+        }
+
+        $option = $long_option ? $option : $short_to_longs[$option];
+        if (!isset($options[$option])) {
+            die('Fatal error: option \'' . $arg . '\' requires parameter!' . PHP_EOL);
         }
     }
 }
