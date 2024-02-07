@@ -124,38 +124,54 @@ $current_year = intval(date('Y'));
 $config_section = (isset($options['section']) && preg_match('/^[a-z0-9-_]+$/i', $options['section'])
     ? $options['section'] : 'notify');
 
+$current_time = strtotime('now');
 if (empty($fakedate)) {
-    $currtime = strtotime('now');
+    $currtime = $current_time;
 } else {
     $currtime = strtotime($fakedate);
 }
 
 $omit_free_days = isset($options['omit-free-days']);
 
-list ($year, $month, $day) = explode('/', date('Y/n/j', $currtime));
+list ($year, $month, $day) = explode('/', date('Y/n/j', $current_time));
 
-$weekday = date('N', $currtime);
-$holidays = getHolidays($year);
-if ($omit_free_days && ($weekday > 5 || isset($holidays[$currtime]))) {
+$weekday = date('N', $current_time);
+$holidays = array(
+    $year => getHolidays($year),
+);
+if ($omit_free_days && ($weekday > 5 || isset($holidays[$year][$current_time]))) {
     die('Notifications are omitted, because current day is free day!' . PHP_EOL);
 }
+
+list ($year, $month, $day) = explode('/', date('Y/n/j', $currtime));
 
 $daystart = mktime(0, 0, 0, $month, $day, $year);
 $dayend = mktime(23, 59, 59, $month, $day, $year);
 
 if ($omit_free_days) {
-    $prevday = $daystart;
-    $curryear = $year;
-    do {
-        $nextday = $prevday;
-        $prevday = strtotime('yesterday', $prevday);
-        $prevyear = date('Y', $prevday);
-        if ($prevyear != $curryear) {
-            $holidays = getHolidays($prevyear);
-            $curryear = $prevyear;
+    $yesterday = strtotime('yesterday', $current_time);
+    $yesterday_year = date('Y', $yesterday);
+    if (!isset($holidays[$yesterday_year])) {
+        $holidays[$yesterday_year] = getHolidays($yesterday_year);
+    }
+    if (date('N', $yesterday) > 5 || isset($holidays[$yesterday_year][$yesterday])) {
+        $prevday = $daystart;
+        do {
+            $nextday = $prevday;
+            $prevday = strtotime('yesterday', $prevday);
+            $prevyear = date('Y', $prevday);
+            if (!isset($holidays[$prevyear])) {
+                $holidays[$prevyear] = getHolidays($prevyear);
+            }
+        } while (date('N', $prevday) > 5 || isset($holidays[$prevyear][$prevday]));
+        $days = round(($daystart - $nextday) / 86400);
+        $daystart = $nextday;
+
+        $diff_days = round(($current_time - $currtime) / 86400);
+        if ($days < $diff_days) {
+            $daystart = strtotime(($diff_days - $days) . ' days ago', $daystart);
         }
-    } while (date('N', $prevday) > 5 || isset($holidays[$prevday]));
-    $daystart = $nextday;
+    }
 }
 
 $SYSLOG = SYSLOG::getInstance();
