@@ -2416,7 +2416,8 @@ if ($delete_old_assignments_after_days) {
         "DELETE FROM assignments
 		WHERE " . ($customerid ? 'customerid = ' . $customerid : '1 = 1')
             . ($divisionid ? ' AND EXISTS (SELECT c.id FROM customers c WHERE c.divisionid = ' . $divisionid . ' AND c.id = customerid)' : '')
-            . " AND ((dateto <> 0 AND dateto < $today - ? * 86400)
+            . " AND (a.tariffid IS NOT NULL OR a.liabilityid IS NOT NULL)
+            AND ((dateto <> 0 AND dateto < $today - ? * 86400)
 			OR (period = ? AND at < $today - ? * 86400))",
         array($delete_old_assignments_after_days, DISPOSABLE, $delete_old_assignments_after_days)
     );
