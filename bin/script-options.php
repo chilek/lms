@@ -87,7 +87,16 @@ if ($http_mode) {
     $option = null;
     $args = array();
     foreach (array_slice($argv, 1) as $arg) {
-        $args = array_merge($args, explode('=', $arg));
+        $new_args = explode('=', $arg);
+        foreach ($new_args as $new_arg) {
+            if (preg_match('/^-[[:alnum:]]{2,}/', $new_arg)) {
+                for ($i = 1; $i < strlen($new_arg); $i++) {
+                    $args[] = '-' . $new_arg[$i];
+                }
+            } else {
+                $args[] = $new_arg;
+            }
+        }
     }
     foreach ($args as $arg_idx => $arg) {
         if (strpos($arg, '-') !== 0) {
