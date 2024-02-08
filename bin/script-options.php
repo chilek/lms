@@ -26,7 +26,7 @@
 
 ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
-define('SCRIPT_COPYRIGHT_INFO', '(c) 2001-2024 LMS Developers');
+const SCRIPT_COPYRIGHT_INFO = '(c) 2001-2024 LMS Developers';
 
 $http_mode = isset($_SERVER['HTTP_HOST']);
 
@@ -46,7 +46,7 @@ if ($http_mode) {
             'help' => 'h',
             'version' => 'v',
         ),
-        isset($script_parameters) ? $script_parameters : array()
+        $script_parameters ?? array()
     );
 
     foreach ($script_parameters as $long => $short) {
@@ -92,7 +92,7 @@ if ($http_mode) {
     foreach ($args as $arg_idx => $arg) {
         if (strpos($arg, '-') !== 0) {
             if (!isset($option)) {
-                die('Fatal error: unexcpected option parameter \'' . $arg . '\'!' . PHP_EOL);
+                die('Fatal error: unexpected option parameter \'' . $arg . '\'!' . PHP_EOL);
             }
             if (isset($options[$option])) {
                 if (empty($params_required[$option]) && empty($params_optional[$option])) {
@@ -178,8 +178,8 @@ $quiet = isset($options['quiet']);
 
 if (!$quiet && (!$http_mode || isset($options['force-http-mode']))) {
     echo $script_name . PHP_EOL
-        . SCRIPT_COPYRIGHT_INFO . PHP_EOL;
-    echo 'Using file ' . $CONFIG_FILE . ' as config.' . PHP_EOL;
+        . SCRIPT_COPYRIGHT_INFO . PHP_EOL
+        . 'Using file ' . $CONFIG_FILE . ' as config.' . PHP_EOL;
 }
 
 if (!is_readable($CONFIG_FILE)) {
@@ -191,23 +191,14 @@ define('CONFIG_FILE', $CONFIG_FILE);
 $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 
 // Check for configuration vars and set default values
-$CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
-$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib' : $CONFIG['directories']['lib_dir']);
-$CONFIG['directories']['doc_dir'] = (!isset($CONFIG['directories']['doc_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'documents' : $CONFIG['directories']['doc_dir']);
-$CONFIG['directories']['storage_dir'] = (!isset($CONFIG['directories']['storage_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'storage' : $CONFIG['directories']['storage_dir']);
-$CONFIG['directories']['smarty_compile_dir'] = (!isset($CONFIG['directories']['smarty_compile_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'templates_c' : $CONFIG['directories']['smarty_compile_dir']);
-$CONFIG['directories']['smarty_templates_dir'] = (!isset($CONFIG['directories']['smarty_templates_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'templates' : $CONFIG['directories']['smarty_templates_dir']);
-$CONFIG['directories']['plugin_dir'] = (!isset($CONFIG['directories']['plugin_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'plugins' : $CONFIG['directories']['plugin_dir']);
-$CONFIG['directories']['plugins_dir'] = $CONFIG['directories']['plugin_dir'];
-
-define('SYS_DIR', $CONFIG['directories']['sys_dir']);
-define('LIB_DIR', $CONFIG['directories']['lib_dir']);
-define('DOC_DIR', $CONFIG['directories']['doc_dir']);
-define('STORAGE_DIR', $CONFIG['directories']['storage_dir']);
-define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
-define('SMARTY_TEMPLATES_DIR', $CONFIG['directories']['smarty_templates_dir']);
-define('PLUGIN_DIR', $CONFIG['directories']['plugin_dir']);
-define('PLUGINS_DIR', $CONFIG['directories']['plugin_dir']);
+define('SYS_DIR', $CONFIG['directories']['sys_dir'] ?? getcwd());
+define('LIB_DIR', $CONFIG['directories']['lib_dir'] ?? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib');
+define('DOC_DIR', $CONFIG['directories']['doc_dir'] ?? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'documents');
+define('STORAGE_DIR', $CONFIG['directories']['storage_dir'] ?? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'storage');
+define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir'] ?? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'templates_c');
+define('SMARTY_TEMPLATES_DIR', $CONFIG['directories']['smarty_templates_dir'] ?? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'templates');
+define('PLUGIN_DIR', $CONFIG['directories']['plugin_dir'] ?? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'plugins');
+const PLUGINS_DIR = PLUGIN_DIR;
 
 // Load autoloader
 $composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
@@ -230,7 +221,6 @@ try {
 }
 
 // Include required files (including sequence is important)
-
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
