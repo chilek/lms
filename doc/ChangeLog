@@ -628,6 +628,8 @@ version 28-git (????-??-??):
     changes 'favicon' in web browser [chilan]
   - improvement: 'carbon-copy' e-mail address presentation in reply/quote ticket message add form, but checked
     by default only if original message was recognised as one from registered customer e-mail contact [chilan]
+  - improvement: added '- without technology -' selection in link technology filter
+    of customer search form [chilan]
 
 version 27.0 (2021-08-20):
 
