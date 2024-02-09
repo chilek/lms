@@ -4752,7 +4752,7 @@ $_LANG['Select first free address'] = 'Wybierz pierwszy dostępny adres';
 $_LANG['Selected network is already assigned to customer $a ($b)!'] = 'Wybrana sieć jest już przypisana do klienta $a ($b)!';
 
 $_LANG['— without assigned groups —'] = '— bez przypisanych grup —';
-
+$_LANG['— without technology —'] = '— bez technologii —';
 $_LANG['Creation date<!document>'] = 'Data utworzenia';
 $_LANG['Confirmation date<!document>'] = 'Data zatwierdzenia';
 $_LANG['Created by<!document>'] = 'Utworzono przez';

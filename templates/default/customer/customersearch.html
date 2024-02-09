@@ -417,6 +417,7 @@
 		<TD>
 			<SELECT SIZE="1" name="search[linktechnology]" id="linktechnology">
 				<OPTION VALUE="">{trans("— all —")}</OPTION>
+				<option value="0">{trans("— without technology —")}</option>
 				{foreach array(0, 1, 2) as $linktype}
 					{foreach $_LINKTECHNOLOGIES[$linktype] as $linktechnologyidx => $linktechnology}
 					<OPTION VALUE="{$linktechnologyidx}">{$linktechnology}</OPTION>

@@ -1402,7 +1402,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                     SELECT 1 FROM vnodes
                                     JOIN netdevices ON netdevices.id = vnodes.netdev
                                     WHERE vnodes.ownerid = c.id
-                                        AND vnodes.linktechnology = ' . intval($value) . '
+                                        AND vnodes.linktechnology ' . (empty($value) ? 'IS NULL' : '= ' . intval($value)) . '
                                         AND netdevices.ownerid IS NULL
                                 ) OR EXISTS (
                                     SELECT 1 FROM netdevices nd1
@@ -1411,7 +1411,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                     WHERE nd1.ownerid = c.id
                                         AND nd2.ownerid IS NULL
                                         AND ((netlinks.src = nd1.id AND netlinks.dst = nd2.id) OR (netlinks.dst = nd1.id AND netlinks.src = nd2.id))
-                                        AND netlinks.technology = ' . intval($value) . '
+                                        AND netlinks.technology ' . (empty($value) ? 'IS NULL' : '= ' . intval($value)) . '
                                 ))';
                             break;
                         case 'linkspeed':
