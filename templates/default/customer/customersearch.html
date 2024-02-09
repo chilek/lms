@@ -77,6 +77,7 @@
 		while (options.length)
 			options.remove(0);
 		options.add(new Option('{trans("— none —")}', 0));
+		options.add(new Option("{trans("— without technology —")}", 0));
 		switch (linktype) {
 			case '':
 				{foreach array({$smarty.const.LINKTYPE_WIRE}, {$smarty.const.LINKTYPE_WIRELESS}, {$smarty.const.LINKTYPE_FIBER}) as $linktype}
