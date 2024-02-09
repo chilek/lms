@@ -624,6 +624,8 @@ version 28-git (????-??-??):
   - improvement: 'phpui.default_customer_flags' with empty default value allows to preselect customer flags during
     add customer form initialisation [chilan]
   - enhancement: added offline status selection in node search form [chilan]
+  - improvement: new configuraton variable 'phpui.shortcut_icon' with default value of 'img/lms-net.gif'
+    changes 'favicon' in web browser [chilan]
 
 version 27.0 (2021-08-20):
 
