@@ -872,7 +872,7 @@ if (!is_array($message['ticketid'])) {
                         'name' => trans('from message "Copy" header'),
                         'display' => isset($m['name']) ? $m['name'] : '',
                         'source' => 'carbon-copy',
-                        'checked' => 1,
+                        'checked' => empty($reply['customerid']) ? 0 : 1,
                     );
                     $replyto_cc_mail_addresses = true;
                 }
