@@ -534,27 +534,41 @@
 
 	<table width="100%" cellpadding="3">
 		<tr>
-			{if ($_PAYTYPES[$invoice.paytype].features & $smarty.const.INVOICE_FEATURE_TO_PAY) > 0}
-				<td width="50%" align="left" class="hdf">
-					{if $invoice.rebate}
-						{if $use_alert_color && !$show_balance_summary}<span style="color: red; font-weight: bold;">{/if}
-						{if $invoice.invoice && $invoice.doctype == $smarty.const.DOC_CNOTE}
+			<td width="50%" align="left" class="hdf">
+				{if $invoice.rebate}
+					{if $use_alert_color && !$show_balance_summary}<span style="color: red; font-weight: bold;">{/if}
+					{if $invoice.invoice && $invoice.doctype == $smarty.const.DOC_CNOTE}
+						{if ($_PAYTYPES[$invoice.paytype].features & $smarty.const.INVOICE_FEATURE_TO_PAY) > 0}
 							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Correction value: $a (to repay){/t}
 						{else}
-							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Invoice value: $a (to repay){/t}
+							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Correction value: $a{/t}
 						{/if}
-						{if $use_alert_color && !$show_balance_summary}</span>{/if}
 					{else}
-						{if $use_alert_color && !$show_balance_summary}<span style="color: red; font-weight: bold;">{/if}
-						{if $invoice.invoice && $invoice.doctype == $smarty.const.DOC_CNOTE}
+						{if ($_PAYTYPES[$invoice.paytype].features & $smarty.const.INVOICE_FEATURE_TO_PAY) > 0}
+							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Invoice value: $a (to repay){/t}
+						{else}
+							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Invoice value: $a{/t}
+						{/if}
+					{/if}
+					{if $use_alert_color && !$show_balance_summary}</span>{/if}
+				{else}
+					{if $use_alert_color && !$show_balance_summary}<span style="color: red; font-weight: bold;">{/if}
+					{if $invoice.invoice && $invoice.doctype == $smarty.const.DOC_CNOTE}
+						{if ($_PAYTYPES[$invoice.paytype].features & $smarty.const.INVOICE_FEATURE_TO_PAY) > 0}
 							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Correction value: $a (to pay){/t}
 						{else}
-							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Invoice value: $a (to pay){/t}
+							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Correction value: $a{/t}
 						{/if}
-						{if $use_alert_color && !$show_balance_summary}</span>{/if}
+					{else}
+						{if ($_PAYTYPES[$invoice.paytype].features & $smarty.const.INVOICE_FEATURE_TO_PAY) > 0}
+							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Invoice value: $a (to pay){/t}
+						{else}
+							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Invoice value: $a{/t}
+						{/if}
 					{/if}
-				</td>
-			{/if}
+					{if $use_alert_color && !$show_balance_summary}</span>{/if}
+				{/if}
+			</td>
 			<td width="50%" align="right" rowspan="2">
 				{if !ConfigHelper::checkConfig('invoices.hide_expositor')}
 					{t a=$invoice.expositor}Expositor: <b>$a</b>{/t}

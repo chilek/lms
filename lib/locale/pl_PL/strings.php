@@ -131,6 +131,7 @@ $_LANG['Enter document number. WARNING! Changing this number can be DANGEROUS! (
 $_LANG['Previous balance: $a $b'] = 'Dotychczasowe saldo: $a $b';
 $_LANG['Total to pay: $a'] = 'Razem do zapłaty: $a';
 $_LANG['Invoice value: $a'] = 'Wartość faktury: $a';
+$_LANG['Correction value: $a'] = 'Wartość korekty: $a';
 $_LANG['Invoice value: $a (to pay)'] = 'Wartość faktury: $a (do zapłaty)';
 $_LANG['Invoice value: $a (to repay)'] = 'Wartość faktury: $a (do zwrotu)';
 $_LANG['Correction value: $a (to pay)'] = 'Wartość korekty: $a (do zapłaty)';

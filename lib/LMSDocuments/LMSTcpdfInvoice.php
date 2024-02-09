@@ -613,10 +613,6 @@ class LMSTcpdfInvoice extends LMSInvoice
     {
         global $PAYTYPES;
 
-        if (!($PAYTYPES[$this->data['paytype']]['features'] & INVOICE_FEATURE_TO_PAY)) {
-            return;
-        }
-
         $show_balance_summary = ConfigHelper::checkConfig('invoices.show_balance_summary');
 
         $this->backend->Ln(-9);
@@ -628,7 +624,15 @@ class LMSTcpdfInvoice extends LMSInvoice
                 '',
                 '',
                 trans(
-                    $this->data['doctype'] != DOC_CNOTE ? 'Invoice value: $a (to repay)' : 'Correction value: $a (to repay)',
+                    $this->data['doctype'] != DOC_CNOTE
+                        ? ($PAYTYPES[$this->data['paytype']]['features'] & INVOICE_FEATURE_TO_PAY
+                            ? 'Invoice value: $a (to repay)'
+                            : 'Invoice value: $a'
+                        )
+                        : ($PAYTYPES[$this->data['paytype']]['features'] & INVOICE_FEATURE_TO_PAY
+                            ? 'Correction value: $a (to repay)'
+                            : 'Correction value: $a'
+                        ),
                     Utils::formatMoney($this->data['value'], $this->data['currency'])
                 ),
                 0,
@@ -647,7 +651,15 @@ class LMSTcpdfInvoice extends LMSInvoice
                 '',
                 '',
                 trans(
-                    $this->data['doctype'] != DOC_CNOTE ? 'Invoice value: $a (to pay)' : 'Correction value: $a (to pay)',
+                    $this->data['doctype'] != DOC_CNOTE
+                        ? ($PAYTYPES[$this->data['paytype']]['features'] & INVOICE_FEATURE_TO_PAY
+                            ? 'Invoice value: $a (to pay)'
+                            : 'Invoice value: $a'
+                        )
+                        : ($PAYTYPES[$this->data['paytype']]['features'] & INVOICE_FEATURE_TO_PAY
+                            ? 'Correction value: $a (to pay)'
+                            : 'Correction value: $a'
+                        ),
                     Utils::formatMoney($this->data['value'], $this->data['currency'])
                 ),
                 0,

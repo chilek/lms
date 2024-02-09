@@ -1210,10 +1210,6 @@ class LMSEzpdfInvoice extends LMSInvoice
     {
         global $PAYTYPES;
 
-        if (!$PAYTYPES[$this->data['paytype']]['features'] & INVOICE_FEATURE_TO_PAY) {
-            return;
-        }
-
         $show_balance_summary = ConfigHelper::checkConfig('invoices.show_balance_summary');
 
         if (isset($this->data['rebate'])) {
@@ -1222,7 +1218,15 @@ class LMSEzpdfInvoice extends LMSInvoice
                 $y,
                 $show_balance_summary ? 10 : 14,
                 trans(
-                    $this->data['doctype'] != DOC_CNOTE ? 'Invoice value: $a (to repay)' : 'Correction value: $a (to repay)',
+                    $this->data['doctype'] != DOC_CNOTE
+                        ? ($PAYTYPES[$this->data['paytype']]['features'] & INVOICE_FEATURE_TO_PAY
+                            ? 'Invoice value: $a (to repay)'
+                            : 'Invoice value: $a'
+                        )
+                        : ($PAYTYPES[$this->data['paytype']]['features'] & INVOICE_FEATURE_TO_PAY
+                            ? 'Correction value: $a (to repay)'
+                            : 'Correction value: $a'
+                        ),
                     Utils::formatMoney($this->data['value'], $this->data['currency'])
                 )
             );
@@ -1233,7 +1237,15 @@ class LMSEzpdfInvoice extends LMSInvoice
                 $show_balance_summary ? 10 : 14,
                 (!$show_balance_summary && $this->use_alert_color ? '<c:color:255,0,0>' : '')
                 . trans(
-                    $this->data['doctype'] != DOC_CNOTE ? 'Invoice value: $a (to pay)' : 'Correction value: $a (to pay)',
+                    $this->data['doctype'] != DOC_CNOTE
+                        ? ($PAYTYPES[$this->data['paytype']]['features'] & INVOICE_FEATURE_TO_PAY
+                            ? 'Invoice value: $a (to pay)'
+                            : 'Invoice value: $a'
+                        )
+                        : ($PAYTYPES[$this->data['paytype']]['features'] & INVOICE_FEATURE_TO_PAY
+                            ? 'Correction value: $a (to pay)'
+                            : 'Correction value: $a'
+                        ),
                     Utils::formatMoney($this->data['value'], $this->data['currency'])
                 )
                 . (!$show_balance_summary && $this->use_alert_color ? '</c:color>' : '')
