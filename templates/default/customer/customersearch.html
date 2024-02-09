@@ -76,7 +76,7 @@
 		var options = document.getElementById('linktechnology').options;
 		while (options.length)
 			options.remove(0);
-		options.add(new Option('{trans("— none —")}', 0));
+		options.add(new Option('{trans("— none —")}', ''));
 		options.add(new Option("{trans("— without technology —")}", 0));
 		switch (linktype) {
 			case '':
