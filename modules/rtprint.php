@@ -28,7 +28,7 @@ if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') && !ConfigHelp
     access_denied();
 }
 
-$type = isset($_GET['type']) ? $_GET['type'] : '';
+$type = $_GET['type'] ?? '';
 
 switch ($type) {
     case 'stats':
@@ -125,8 +125,8 @@ switch ($type) {
         $days     = !empty($_GET['days']) ? intval($_GET['days']) : intval($_POST['days']);
         $customer = !empty($_GET['customer']) ? intval($_GET['customer']) : intval($_POST['customer']);
         $queue    = !empty($_GET['queue']) ? intval($_GET['queue']) : intval($_POST['queue']);
-        $status   = isset($_GET['status']) ? $_GET['status'] : $_POST['status'];
-        $removed  = isset($_GET['removed']) ? $_GET['removed'] : $_POST['removed'];
+        $status   = $_GET['status'] ?? $_POST['status'];
+        $removed  = $_GET['removed'] ?? $_POST['removed'];
         $subject  = !empty($_GET['subject']) ? $_GET['subject'] : $_POST['subject'];
         $extended = !empty($_GET['extended']) ? true : (!empty($_POST['extended']) ? true : false);
         $comment_details = !empty($_GET['comment-details']) || !empty($_POST['comment-details']);

@@ -382,7 +382,7 @@ if (isset($_POST['ticket'])) {
                     $headers['X-LMS-Format'] = 'html';
                 }
 
-                $params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
+                $params['customerinfo'] = $sms_customerinfo ?? null;
                 $params['contenttype'] = 'text/plain';
                 $sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_sms_body', ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body')), $params);
 
@@ -436,7 +436,7 @@ if (isset($_POST['ticket'])) {
                 $smtp_options = $LMS->GetRTSmtpOptions();
                 $LMS->prepareMessageTemplates('rt');
                 foreach ($emails as $email) {
-                    $custmail_headers['To'] = '<' . (isset($info['email']) ? $info['email'] : $email) . '>';
+                    $custmail_headers['To'] = '<' . ($info['email'] ?? $email) . '>';
                     $LMS->SendMail(
                         $email,
                         $custmail_headers,

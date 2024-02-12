@@ -370,12 +370,12 @@ if (isset($search) || isset($_GET['s'])) {
 
         $search['order'] = $queue['order'];
         $search['direction'] = $queue['direction'];
-        $search['queue'] = isset($search['queue']) ? $search['queue'] : 0;
+        $search['queue'] = $search['queue'] ?? 0;
 
         unset($queue['order']);
         unset($queue['direction']);
 
-        $SESSION->save('rtp', isset($page) ? $page : 0);
+        $SESSION->save('rtp', $page ?? 0);
         $SESSION->save('rtsearch', $search);
 
         $SMARTY->assign('pagination', $pagination);
@@ -437,6 +437,6 @@ $SMARTY->assign('netnodelist', $netnodelist);
 $SMARTY->assign('netdevlist', $netdevlist);
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
-$SMARTY->assign('search', isset($search) ? $search : null);
+$SMARTY->assign('search', $search ?? null);
 $SMARTY->assign('error', $error);
 $SMARTY->display('rt/rtsearch.html');
