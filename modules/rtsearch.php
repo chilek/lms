@@ -425,15 +425,11 @@ $SMARTY->assign('xajax', $LMS->RunXajax());
 
 $SESSION->add_history_entry();
 
-$netnodelist = $LMS->GetNetNodeList(array(), 'name');
-unset($netnodelist['total']);
-unset($netnodelist['order']);
-unset($netnodelist['direction']);
+$netnodelist = $LMS->GetNetNodeList();
+unset($netnodelist['total'], $netnodelist['order'], $netnodelist['direction']);
 
-$netdevlist = $LMS->GetNetDevList('name', array());
-unset($netdevlist['total']);
-unset($netdevlist['order']);
-unset($netdevlist['direction']);
+$netdevlist = $LMS->GetNetDevList();
+unset($netdevlist['total'], $netdevlist['order'], $netdevlist['direction']);
 
 $SMARTY->assign('queuelist', $LMS->GetQueueList(array('stats' => false)));
 $SMARTY->assign('categories', $categories);
