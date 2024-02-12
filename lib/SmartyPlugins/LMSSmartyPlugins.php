@@ -402,7 +402,7 @@ class LMSSmartyPlugins
         $form = isset($params['form']) ? $params['form'] : null;
         $accept = !empty($params['accept']) ? $params['accept'] : null;
         $multiple = isset($params['multiple']) ? ConfigHelper::checkValue($params['multiple']) : true;
-
+        $view_selector = empty($params['view_selector']) ? null : $params['view_selector'];
         $image_resize = !isset($params['image_resize']) || !empty($params['image_resize']);
 
         // special treatment of file upload errors marked in error associative array
@@ -458,11 +458,12 @@ class LMSSmartyPlugins
             . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
 		</div>';
         $result .= '<script>
-			$(function() {
-				new lmsFileUpload(
-                    "' . $id . '", "' . ($form ?: '') . '"'
-                    . ', "' . (strlen($new_item_custom_content) ? base64_encode($new_item_custom_content) : '') . '");
-			});
+            $(function() {
+                new lmsFileUpload("' . $id . '", "' . ($form ?: '') . '"' . ', "'
+                    . (strlen($new_item_custom_content) ? base64_encode($new_item_custom_content) : '')
+                    . '", "' . $view_selector . '"
+                )
+            });
 		</script>';
 
         return $result;
