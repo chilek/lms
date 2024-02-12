@@ -385,9 +385,9 @@ if ($id && !isset($_POST['ticket'])) {
                         'body' => $message['body'],
                     );
                     $headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_mail_subject', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject')), $params);
-                    $params['customerinfo'] = isset($mail_customerinfo) ? $mail_customerinfo : null;
+                    $params['customerinfo'] = $mail_customerinfo ?? null;
                     $body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_mail_body', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body')), $params);
-                    $params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
+                    $params['customerinfo'] = $sms_customerinfo ?? null;
                     $sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_sms_body', ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body')), $params);
 
                     $LMS->NotifyUsers(array(
@@ -540,7 +540,7 @@ if (isset($_POST['ticket'])) {
             'customerid' => $ticketedit['customerid'],
             'categories' => isset($ticketedit['categories']) ? array_keys($ticketedit['categories']) : array(),
             'source' => $ticketedit['source'],
-            'priority' => isset($ticketedit['priority']) ? $ticketedit['priority'] : null,
+            'priority' => $ticketedit['priority'] ?? null,
             'address_id' => $ticketedit['address_id'] == -1 ? null : $ticketedit['address_id'],
             'nodeid' => empty($ticketedit['nodeid']) ? null : $ticketedit['nodeid'],
             'netnodeid' => empty($ticketedit['netnodeid']) ? null : $ticketedit['netnodeid'],
@@ -559,7 +559,7 @@ if (isset($_POST['ticket'])) {
             'requestor_phone' => !empty($ticketedit['requestor_userid']) || $ticketedit['requestor_userid'] == ''
                 || empty($ticketedit['requestor_phone']) ? null : $ticketedit['requestor_phone'],
             'parentid' => empty($ticketedit['parentid']) ? null : $ticketedit['parentid'],
-            'relatedtickets' => isset($ticketedit['relatedtickets']) ? $ticketedit['relatedtickets'] : array(),
+            'relatedtickets' => $ticketedit['relatedtickets'] ?? array(),
         );
         $LMS->TicketChange($ticketedit['ticketid'], $props);
 
@@ -710,9 +710,9 @@ if (isset($_POST['ticket'])) {
                 'attachments' => &$attachments,
             );
             $headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_mail_subject', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject')), $params);
-            $params['customerinfo'] =  isset($mail_customerinfo) ? $mail_customerinfo : null;
+            $params['customerinfo'] = $mail_customerinfo ?? null;
             $body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_mail_body', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body')), $params);
-            $params['customerinfo'] =  isset($sms_customerinfo) ? $sms_customerinfo : null;
+            $params['customerinfo'] = $sms_customerinfo ?? null;
             $sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_sms_body', ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body')), $params);
 
             $LMS->NotifyUsers(array(
@@ -749,16 +749,16 @@ if (isset($_POST['ticket'])) {
     $ticket['deadline'] = $ticketedit['deadline'];
     $ticket['address_id'] = $ticketedit['address_id'];
     $ticket['nodeid'] = $ticketedit['nodeid'];
-    $ticket['netnodeid'] = isset($ticketedit['netnodeid']) ? $ticketedit['netnodeid'] : null;
+    $ticket['netnodeid'] = $ticketedit['netnodeid'] ?? null;
     $ticket['netdevid'] = $ticketedit['netdevid'];
     $ticket['invprojectid'] = empty($ticketedit['invprojectid']) ? null : $ticketedit['invprojectid'];
     $ticket['priority'] = $ticketedit['priority'];
     $ticket['requestor_userid'] = $ticketedit['requestor_userid'];
-    $ticket['requestor_name'] = isset($ticketedit['requestor_name']) ? $ticketedit['requestor_name'] : null;
-    $ticket['requestor_mail'] = isset($ticketedit['requestor_mail']) ? $ticketedit['requestor_mail'] : null;
-    $ticket['requestor_phone'] = isset($ticketedit['requestor_phone']) ? $ticketedit['requestor_phone'] : null;
-    $ticket['parentid'] = isset($ticketedit['parentid']) ? $ticketedit['parentid'] : null;
-    $ticket['categorywarn'] = isset($ticketedit['categorywarn']) ? $ticketedit['categorywarn'] : 0;
+    $ticket['requestor_name'] = $ticketedit['requestor_name'] ?? null;
+    $ticket['requestor_mail'] = $ticketedit['requestor_mail'] ?? null;
+    $ticket['requestor_phone'] = $ticketedit['requestor_phone'] ?? null;
+    $ticket['parentid'] = $ticketedit['parentid'] ?? null;
+    $ticket['categorywarn'] = $ticketedit['categorywarn'] ?? 0;
 
     if (!empty($ticketedit['relatedtickets'])) {
         $ticket['relatedtickets'] = $LMS->getTickets($ticketedit['relatedtickets']);
@@ -837,7 +837,7 @@ $SMARTY->assign(
         'netdevlist' => $netdevlist,
         'invprojectlist' => $invprojectlist,
         'userlist' => $LMS->GetUserNames(array('withDeleted' => 1)),
-        'error' => (isset($error) ? $error : null),
+        'error' => ($error ?? null),
     )
 );
 
