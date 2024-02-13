@@ -669,7 +669,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $rights = $this->db->GetOne('SELECT rights FROM rtrights WHERE userid=? AND queueid=?', array($user, $queue));
 
-        return ($rights ? $rights : 0);
+        return ($rights ?: 0);
     }
 
     /**
