@@ -231,7 +231,7 @@ if (isset($_POST['message'])) {
                     $headers['X-LMS-Format'] = 'html';
                 }
 
-                if (isset($message['contacts']['mails']) && !empty($message['contacts']['mails'])) {
+                if (!empty($message['contacts']['mails'])) {
                     $toemails = array();
                     $ccemails = array();
                     foreach ($message['contacts']['mails'] as $address => $contact) {
@@ -611,7 +611,7 @@ if (isset($_POST['message'])) {
 
         $backto = $SESSION->remove_history_entry();
         if (strpos($backto, 'rtqueueview') === false && isset($msgid)) {
-            $SESSION->redirect('?m=rtticketview&id=' . $message['ticketid'] . (isset($msgid) ? '#rtmessage-' . $msgid : ''));
+            $SESSION->redirect('?m=rtticketview&id=' . $message['ticketid'] . '#rtmessage-' . $msgid);
         } elseif (strpos($backto, 'rtqueueview') !== false) {
             $SESSION->redirect('?' . $backto
                 . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
@@ -834,7 +834,7 @@ if (!is_array($message['ticketid'])) {
     }
 
     $from_mail_addresses = false;
-    if (isset($message['mailfrom']) && !empty($message['mailfrom'])) {
+    if (!empty($message['mailfrom'])) {
         foreach ($message['mailfrom'] as $address) {
             switch ($address['source']) {
                 case 'carbon-copy':
@@ -861,7 +861,7 @@ if (!is_array($message['ticketid'])) {
     }
 
     $replyto_cc_mail_addresses = false;
-    if (isset($message['inreplyto']) && !empty($message['inreplyto'])) {
+    if (!empty($message['inreplyto'])) {
         $reply = $LMS->GetMessage($message['inreplyto']);
 
         if (!empty($reply['cc'])) {
@@ -913,7 +913,7 @@ if (!is_array($message['ticketid'])) {
             'checked' => 1,
         );
     }
-    if (isset($message['phonefrom']) && !empty($message['phonefrom'])) {
+    if (!empty($message['phonefrom'])) {
         $contacts['phones'][$message['phonefrom']] = array(
             'contact' => $message['phonefrom'],
             'name' => trans('from message'),

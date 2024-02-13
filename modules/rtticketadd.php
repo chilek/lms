@@ -116,7 +116,7 @@ if (isset($_POST['ticket'])) {
         || (intval($ticket['custid']) && !$LMS->CustomerExists($ticket['custid']))) {
         $error['custid'] = trans('Specified ID is not proper or does not exist!');
     } else {
-        $ticket['customerid'] = $ticket['custid'] ? $ticket['custid'] : 0;
+        $ticket['customerid'] = $ticket['custid'] ?: 0;
         if ($ticket['customerid'] && $ticket['address_id'] <= 0) {
             $addresses = $LMS->getCustomerAddresses($ticket['customerid']);
             if (count($addresses) > 1 && !$_POST['address_id_warning']) {
@@ -605,7 +605,7 @@ if (isset($ticket['customerid']) && intval($ticket['customerid'])) {
 $netnodelist = $LMS->GetNetNodeList(array('short' => true), 'name');
 unset($netnodelist['total'], $netnodelist['order'], $netnodelist['direction']);
 
-if (isset($ticket['netnodeid']) && !empty($ticket['netnodeid'])) {
+if (!empty($ticket['netnodeid'])) {
     $search = array('netnode' => $ticket['netnodeid']);
 } else {
     $search = array();
