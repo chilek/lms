@@ -68,7 +68,7 @@ if (isset($_GET['id'])) {
         $filter['ids'] = null;
     } else {
         $filter['ids'] = Utils::filterIntegers(is_array($_GET['id']) ? $_GET['id'] : array($_GET['id']));
-        if (!isset($filter['ids']) || empty($filter['ids'])) {
+        if (empty($filter['ids'])) {
             $SESSION->redirect('?m=rtqueuelist');
         }
         if (isset($filter['ids'])) {
@@ -331,7 +331,7 @@ if (isset($_GET['rights'])) {
 
 if (isset($_GET['page'])) {
     $filter['page'] = intval($_GET['page']);
-} elseif (!isset($filter['page']) || empty($filter['page'])) {
+} elseif (empty($filter['page'])) {
     $filter['page'] = 1;
 }
 

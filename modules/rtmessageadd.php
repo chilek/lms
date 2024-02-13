@@ -231,7 +231,7 @@ if (isset($_POST['message'])) {
                     $headers['X-LMS-Format'] = 'html';
                 }
 
-                if (isset($message['contacts']['mails']) && !empty($message['contacts']['mails'])) {
+                if (!empty($message['contacts']['mails'])) {
                     $toemails = array();
                     $ccemails = array();
                     foreach ($message['contacts']['mails'] as $address => $contact) {
@@ -334,7 +334,7 @@ if (isset($_POST['message'])) {
                     'cause' => $message['cause'],
                     'state' => $message['state'],
                     'source' => $message['source'],
-                    'priority' => isset($message['priority']) ? $message['priority'] : null,
+                    'priority' => $message['priority'] ?? null,
                     'verifierid' => empty($message['verifierid']) ? null : $message['verifierid'],
                     'deadline' => empty($message['deadline']) ? null : $deadline,
                 );
@@ -487,7 +487,7 @@ if (isset($_POST['message'])) {
                         'id' => $ticketid,
                         'author' => Auth::GetCurrentUserName(),
                         'queue' => $queue['name'],
-                        'messageid' => isset($msgid) ? $msgid : null,
+                        'messageid' => $msgid ?? null,
                         'customerid' => empty($message['customerid']) ? $ticketdata['customerid'] : $message['customerid'],
                         'status' => $ticketdata['status'],
                         'categories' => $ticketdata['categorynames'],
@@ -513,7 +513,7 @@ if (isset($_POST['message'])) {
                         $headers['X-LMS-Format'] = 'html';
                     }
 
-                    $params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
+                    $params['customerinfo'] = $sms_customerinfo ?? null;
                     $params['contenttype'] = 'text/plain';
                     $sms_body = $LMS->ReplaceNotificationSymbols($notification_sms_body, $params);
 
@@ -611,7 +611,7 @@ if (isset($_POST['message'])) {
 
         $backto = $SESSION->remove_history_entry();
         if (strpos($backto, 'rtqueueview') === false && isset($msgid)) {
-            $SESSION->redirect('?m=rtticketview&id=' . $message['ticketid'] . (isset($msgid) ? '#rtmessage-' . $msgid : ''));
+            $SESSION->redirect('?m=rtticketview&id=' . $message['ticketid'] . '#rtmessage-' . $msgid);
         } elseif (strpos($backto, 'rtqueueview') !== false) {
             $SESSION->redirect('?' . $backto
                 . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
@@ -712,7 +712,7 @@ if (isset($_POST['message'])) {
                 foreach ($reply['cc'] as &$cc) {
                     if (preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $cc['address'], $m)) {
                         $cc['contact'] = $m['mail'];
-                        $cc['display'] = isset($m['name']) ? $m['name'] : '';
+                        $cc['display'] = $m['name'] ?? '';
                         $cc['source'] = 'carbon-copy';
                     }
                 }
@@ -724,7 +724,7 @@ if (isset($_POST['message'])) {
             if (!empty($reply['replyto']) && preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $reply['replyto'], $m)) {
                 $message['mailfrom'][$m['mail']] = array(
                     'contact' => $m['mail'],
-                    'display' => isset($m['name']) ? $m['name'] : '',
+                    'display' => $m['name'] ?? '',
                     'source' => 'reply-to',
                 );
             }
@@ -834,7 +834,7 @@ if (!is_array($message['ticketid'])) {
     }
 
     $from_mail_addresses = false;
-    if (isset($message['mailfrom']) && !empty($message['mailfrom'])) {
+    if (!empty($message['mailfrom'])) {
         foreach ($message['mailfrom'] as $address) {
             switch ($address['source']) {
                 case 'carbon-copy':
@@ -861,7 +861,7 @@ if (!is_array($message['ticketid'])) {
     }
 
     $replyto_cc_mail_addresses = false;
-    if (isset($message['inreplyto']) && !empty($message['inreplyto'])) {
+    if (!empty($message['inreplyto'])) {
         $reply = $LMS->GetMessage($message['inreplyto']);
 
         if (!empty($reply['cc'])) {
@@ -870,7 +870,7 @@ if (!is_array($message['ticketid'])) {
                     $contacts['mails'][$m['mail']] = array(
                         'contact' => $m['mail'],
                         'name' => trans('from message "Copy" header'),
-                        'display' => isset($m['name']) ? $m['name'] : '',
+                        'display' => $m['name'] ?? '',
                         'source' => 'carbon-copy',
                         'checked' => empty($reply['customerid']) ? 0 : 1,
                     );
@@ -884,7 +884,7 @@ if (!is_array($message['ticketid'])) {
             $contacts['mails'][$m['mail']] = array(
                 'contact' => $m['mail'],
                 'name' => trans('from message "Reply" header'),
-                'display' => isset($m['name']) ? $m['name'] : '',
+                'display' => $m['name'] ?? '',
                 'source' => 'reply-to',
                 'checked' => 1,
             );
@@ -913,7 +913,7 @@ if (!is_array($message['ticketid'])) {
             'checked' => 1,
         );
     }
-    if (isset($message['phonefrom']) && !empty($message['phonefrom'])) {
+    if (!empty($message['phonefrom'])) {
         $contacts['phones'][$message['phonefrom']] = array(
             'contact' => $message['phonefrom'],
             'name' => trans('from message'),
@@ -945,7 +945,7 @@ if (!is_array($message['ticketid'])) {
         }
         foreach (array('mails', 'phones') as $contact_type) {
             foreach ($contacts[$contact_type] as $contactidx => &$contact) {
-                $contact['name'] = isset($message['contacts']['mailnames'][$contactidx]) ? $message['contacts']['mailnames'][$contactidx] : '';
+                $contact['name'] = $message['contacts']['mailnames'][$contactidx] ?? '';
                 $contact['checked'] = isset($message['contacts'][$contact_type][$contactidx]) ? 1 : 0;
             }
             unset($contact);

@@ -139,7 +139,7 @@ if (isset($_GET['ticketid'])) {
             'cause' => $note['cause'],
             'state' => $note['state'],
             'source' => $note['source'],
-            'priority' => isset($note['priority']) ? $note['priority'] : null,
+            'priority' => $note['priority'] ?? null,
             'verifierid' => empty($note['verifierid']) ? null : $note['verifierid'],
             'deadline' => empty($note['deadline']) ? null : $deadline,
         );
@@ -241,7 +241,7 @@ if (isset($_GET['ticketid'])) {
                 'id' => $note['ticketid'],
                 'author' => Auth::GetCurrentUserName(),
                 'queue' => $queue['name'],
-                'messageid' => isset($msgid) ? $msgid : null,
+                'messageid' => $msgid ?? null,
                 'customerid' => $ticket['customerid'],
                 'status' => $ticket['status'],
                 'categories' => $ticket['categorynames'],
@@ -261,9 +261,9 @@ if (isset($_GET['ticketid'])) {
             }
 
             $headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_mail_subject', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject')), $params);
-            $params['customerinfo'] = isset($mail_customerinfo) ? $mail_customerinfo : null;
+            $params['customerinfo'] = $mail_customerinfo ?? null;
             $body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_mail_body', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body')), $params);
-            $params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
+            $params['customerinfo'] = $sms_customerinfo ?? null;
             $sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_sms_body', ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body')), $params);
 
             // Don't notify verifier adding note
@@ -290,7 +290,7 @@ if (isset($_GET['ticketid'])) {
 
         $backto = $SESSION->remove_history_entry();
         if (strpos($backto, 'rtqueueview') === false && isset($msgid)) {
-            $SESSION->redirect('?m=rtticketview&id=' . $note['ticketid'] . (isset($msgid) ? '#rtmessage-' . $msgid : ''));
+            $SESSION->redirect('?m=rtticketview&id=' . $note['ticketid'] . '#rtmessage-' . $msgid);
         } elseif (strpos($backto, 'rtqueueview') !== false) {
             $SESSION->redirect('?' . $backto
                 . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
@@ -311,7 +311,7 @@ $layout['pagetitle'] = trans('New Note');
 $SMARTY->assign('ticket', $ticket);
 if (!isset($_POST['note'])) {
     $note['source'] = $ticket['source'];
-    $note['priority'] = isset($ticket['priority']) ? $ticket['priority'] : null;
+    $note['priority'] = $ticket['priority'] ?? null;
     $note['verifierid'] = $ticket['verifierid'];
     $note['deadline'] = $ticket['deadline'];
     $notechangestateafter = ConfigHelper::getConfig('rt.change_ticket_state_to_open_after_note_add_interval', 0);

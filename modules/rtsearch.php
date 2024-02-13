@@ -130,17 +130,15 @@ function RTSearch($search, $order = 'createtime,desc')
         $where[] = '(UPPER(requestor) ?LIKE? UPPER('.$DB->Escape('%'.$search['name'].'%').') OR '
             .$DB->Concat('UPPER(c.lastname)', "' '", 'UPPER(c.name)').' ?LIKE? UPPER('.$DB->Escape('%'.$search['name'].'%').'))';
     }
-    if (isset($search['queue'])) {
-        if (!empty($search['queue'])) {
-            if (is_array($search['queue'])) {
-                $where_queue = '(t.queueid IN (' . implode(',', $search['queue']) . ')';
-            } else {
-                $where_queue = '(t.queueid = ' . intval($search['queue']);
-            }
-            $user_permission_checks = ConfigHelper::checkConfig('rt.additional_user_permission_checks', ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks'));
-            $userid = Auth::GetCurrentUser();
-            $where[] = $where_queue . ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')';
+    if (!empty($search['queue'])) {
+        if (is_array($search['queue'])) {
+            $where_queue = '(t.queueid IN (' . implode(',', $search['queue']) . ')';
+        } else {
+            $where_queue = '(t.queueid = ' . intval($search['queue']);
         }
+        $user_permission_checks = ConfigHelper::checkConfig('rt.additional_user_permission_checks', ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks'));
+        $userid = Auth::GetCurrentUser();
+        $where[] = $where_queue . ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')';
     }
     if (isset($search['catids'])) {
         $where[] = 'tc.categoryid IN ('.implode(',', $search['catids']).')';
@@ -331,7 +329,7 @@ if ($SESSION->is_set('rtp') && !isset($_GET['page']) && !isset($search)) {
 }
 
 if (isset($search) || isset($_GET['s'])) {
-    if (isset($search['queue']) && !empty($search['queue'])) {
+    if (!empty($search['queue'])) {
         if (is_array($search['queue'])) {
             foreach ($search['queue'] as $queue) {
                 if (!$LMS->GetUserRightsRT(Auth::GetCurrentUser(), $queue)) {
@@ -370,12 +368,12 @@ if (isset($search) || isset($_GET['s'])) {
 
         $search['order'] = $queue['order'];
         $search['direction'] = $queue['direction'];
-        $search['queue'] = isset($search['queue']) ? $search['queue'] : 0;
+        $search['queue'] = $search['queue'] ?? 0;
 
         unset($queue['order']);
         unset($queue['direction']);
 
-        $SESSION->save('rtp', isset($page) ? $page : 0);
+        $SESSION->save('rtp', $page ?? 0);
         $SESSION->save('rtsearch', $search);
 
         $SMARTY->assign('pagination', $pagination);
@@ -425,15 +423,11 @@ $SMARTY->assign('xajax', $LMS->RunXajax());
 
 $SESSION->add_history_entry();
 
-$netnodelist = $LMS->GetNetNodeList(array(), 'name');
-unset($netnodelist['total']);
-unset($netnodelist['order']);
-unset($netnodelist['direction']);
+$netnodelist = $LMS->GetNetNodeList();
+unset($netnodelist['total'], $netnodelist['order'], $netnodelist['direction']);
 
-$netdevlist = $LMS->GetNetDevList('name', array());
-unset($netdevlist['total']);
-unset($netdevlist['order']);
-unset($netdevlist['direction']);
+$netdevlist = $LMS->GetNetDevList();
+unset($netdevlist['total'], $netdevlist['order'], $netdevlist['direction']);
 
 $SMARTY->assign('queuelist', $LMS->GetQueueList(array('stats' => false)));
 $SMARTY->assign('categories', $categories);
@@ -441,6 +435,6 @@ $SMARTY->assign('netnodelist', $netnodelist);
 $SMARTY->assign('netdevlist', $netdevlist);
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
-$SMARTY->assign('search', isset($search) ? $search : null);
+$SMARTY->assign('search', $search ?? null);
 $SMARTY->assign('error', $error);
 $SMARTY->display('rt/rtsearch.html');

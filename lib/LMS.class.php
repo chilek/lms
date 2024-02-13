@@ -5475,7 +5475,7 @@ class LMS
 							WHERE id = ?', array($status, $res, $msgitems[$doc['customerid']][$email]));
                     }
 
-                    if (isset($interval) && !empty($interval)) {
+                    if (!empty($interval)) {
                         if ($interval == -1) {
                             $delay = mt_rand(500, 5000);
                         } else {
