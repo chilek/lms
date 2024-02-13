@@ -501,7 +501,7 @@ if (isset($_POST['ticket'])) {
         }
     }
 
-    $ticketedit['customerid'] = ($ticketedit['custid'] ? $ticketedit['custid'] : 0);
+    $ticketedit['customerid'] = ($ticketedit['custid'] ?: 0);
 
     if ($ticketedit['requestor_userid'] == '0') {
         if (empty($ticketedit['requestor_name']) && empty($ticketedit['requestor_mail']) && empty($ticketedit['requestor_phone'])) {
@@ -802,7 +802,7 @@ unset($netnodelist['total'], $netnodelist['order'], $netnodelist['direction']);
 $invprojectlist = $LMS->GetProjects();
 unset($invprojectlist['total'], $invprojectlist['order'], $invprojectlist['direction']);
 
-if (isset($ticket['netnodeid']) && !empty($ticket['netnodeid'])) {
+if (!empty($ticket['netnodeid'])) {
     $search = array('netnode' => $ticket['netnodeid']);
 } else {
     $search = array();

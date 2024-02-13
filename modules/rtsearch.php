@@ -130,17 +130,15 @@ function RTSearch($search, $order = 'createtime,desc')
         $where[] = '(UPPER(requestor) ?LIKE? UPPER('.$DB->Escape('%'.$search['name'].'%').') OR '
             .$DB->Concat('UPPER(c.lastname)', "' '", 'UPPER(c.name)').' ?LIKE? UPPER('.$DB->Escape('%'.$search['name'].'%').'))';
     }
-    if (isset($search['queue'])) {
-        if (!empty($search['queue'])) {
-            if (is_array($search['queue'])) {
-                $where_queue = '(t.queueid IN (' . implode(',', $search['queue']) . ')';
-            } else {
-                $where_queue = '(t.queueid = ' . intval($search['queue']);
-            }
-            $user_permission_checks = ConfigHelper::checkConfig('rt.additional_user_permission_checks', ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks'));
-            $userid = Auth::GetCurrentUser();
-            $where[] = $where_queue . ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')';
+    if (!empty($search['queue'])) {
+        if (is_array($search['queue'])) {
+            $where_queue = '(t.queueid IN (' . implode(',', $search['queue']) . ')';
+        } else {
+            $where_queue = '(t.queueid = ' . intval($search['queue']);
         }
+        $user_permission_checks = ConfigHelper::checkConfig('rt.additional_user_permission_checks', ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks'));
+        $userid = Auth::GetCurrentUser();
+        $where[] = $where_queue . ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')';
     }
     if (isset($search['catids'])) {
         $where[] = 'tc.categoryid IN ('.implode(',', $search['catids']).')';
@@ -331,7 +329,7 @@ if ($SESSION->is_set('rtp') && !isset($_GET['page']) && !isset($search)) {
 }
 
 if (isset($search) || isset($_GET['s'])) {
-    if (isset($search['queue']) && !empty($search['queue'])) {
+    if (!empty($search['queue'])) {
         if (is_array($search['queue'])) {
             foreach ($search['queue'] as $queue) {
                 if (!$LMS->GetUserRightsRT(Auth::GetCurrentUser(), $queue)) {
