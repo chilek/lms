@@ -202,6 +202,7 @@ $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 // Check for configuration vars and set default values
 define('SYS_DIR', $CONFIG['directories']['sys_dir'] ?? getcwd());
 define('LIB_DIR', $CONFIG['directories']['lib_dir'] ?? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib');
+define('MODULES_DIR', $CONFIG['directories']['modules_dir'] ?? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'modules');
 define('DOC_DIR', $CONFIG['directories']['doc_dir'] ?? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'documents');
 define('STORAGE_DIR', $CONFIG['directories']['storage_dir'] ?? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'storage');
 define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir'] ?? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'templates_c');
