@@ -26,7 +26,6 @@
 
 $CONTACT_EMAIL = 8;
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE VIEW customermailsview AS
@@ -34,7 +33,3 @@ $this->Execute("
 			FROM customercontacts
 			WHERE type = ? AND contact <> ''
 			GROUP BY customerid", array($CONTACT_EMAIL));
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015090300', 'dbversion'));
-
-$this->CommitTrans();

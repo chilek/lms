@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 $this->Execute("
     CREATE SEQUENCE domains_id_seq;
     CREATE TABLE domains (
@@ -47,6 +46,3 @@ if ($domains = $this->GetAll('SELECT id, name FROM domains')) {
     }
 }
 $this->Execute('ALTER TABLE passwd DROP domain');
-
-$this->Execute("UPDATE dbinfo SET keyvalue = '2004120300' WHERE keytype = 'dbversion'");
-$this->CommitTrans();

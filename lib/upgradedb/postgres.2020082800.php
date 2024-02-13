@@ -21,12 +21,7 @@
  *
  */
 
-$this->BeginTrans();
 
 if (!$this->ResourceExists('assignments.backwardperiod', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("ALTER TABLE assignments ADD COLUMN backwardperiod smallint NOT NULL DEFAULT 0");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020082800', 'dbversion'));
-
-$this->CommitTrans();

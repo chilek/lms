@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("CREATE TABLE voip_emergency_numbers (
 	location_borough int(11) NOT NULL,
@@ -31,7 +30,3 @@ $this->Execute("CREATE TABLE voip_emergency_numbers (
 	UNIQUE KEY number (location_borough, number),
 	FOREIGN KEY (location_borough) REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016062400', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE pna MODIFY COLUMN cityid int(11) NULL");
 $this->Execute("ALTER TABLE pna ALTER COLUMN cityid SET DEFAULT NULL");
@@ -30,7 +29,3 @@ $this->Execute("ALTER TABLE pna ADD COLUMN cityname varchar(100) DEFAULT NULL");
 
 $this->Execute("ALTER TABLE pna DROP INDEX zip,
 	ADD UNIQUE zip (zip, cityid, cityname, streetid, streetname, fromnumber, fromletter, tonumber, toletter, parity)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018022500', 'dbversion'));
-
-$this->CommitTrans();

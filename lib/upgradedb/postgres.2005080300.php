@@ -41,7 +41,6 @@ $receipt_monthly_numbering = $this->GetOne(
     array('receipts', 'monthly_numbering', 0)
 );
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE SEQUENCE numberplans_id_seq;
@@ -73,7 +72,3 @@ $this->Execute("
     
     CREATE INDEX documents_numberplanid_idx ON documents(numberplanid);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005080300', 'dbversion'));
-
-$this->CommitTrans();

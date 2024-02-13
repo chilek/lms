@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE SEQUENCE excludedgroups_id_seq;
@@ -36,7 +35,3 @@ $this->Execute("
 	CONSTRAINT excludedgroups_userid_key UNIQUE (userid, customergroupid)
     );
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007071600', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE TABLE customernotes (
@@ -37,7 +36,3 @@ $this->Execute("
             FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
     )
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020081400', 'dbversion'));
-
-$this->CommitTrans();
