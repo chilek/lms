@@ -29,8 +29,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 
     public function GetNetNodeList($search, $order)
     {
-        $search = $search ?? array();
-        $order = $order ?? 'name,asc';
+        $order = isset($order) ? $order : 'name,asc';
 
         list ($order, $dir) = sscanf($order, '%[^,],%s');
         ($dir == 'desc') ? $dir = 'desc' : $dir = 'asc';
