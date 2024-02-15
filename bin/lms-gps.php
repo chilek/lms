@@ -43,9 +43,6 @@ $script_help = <<<EOF
 -s, --sources=<google,osm,prg>  use Google Maps API and/or PRG building location database
                                 to determine GPS coordinates (in specified order)
 -d, --debug                     only try to determine GPS coordinates without updating database
--h, --help                      print this help and exit;
--v, --version                   print version info and exit;
--q, --quiet                     suppress any output, except errors;
 -f, --force                     force update GPS coordinates even if they are non-empty;
 EOF;
 
