@@ -416,15 +416,15 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 		(CASE WHEN a.liabilityid IS NULL THEN t.taxid ELSE l.taxid END) AS taxid,
 		(CASE WHEN a.liabilityid IS NULL THEN t.prodid ELSE l.prodid END) AS prodid,
 		voipphones.phones,
-		ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount) *
+		ROUND(((((100 - a.pdiscount) / 100 * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END))) - a.vdiscount) -
 			(CASE a.suspended WHEN 0
-				THEN 1.0
-				ELSE $suspension_percentage / 100
+				THEN 0
+				ELSE ROUND(((((100 - a.pdiscount) / 100 * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END))) - a.vdiscount) * $suspension_percentage / 100, 3)
 			END), 3) AS unitary_value,
-		ROUND(ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount) *
+		ROUND(ROUND(((((100 - a.pdiscount) / 100 * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END))) - a.vdiscount) -
 			(CASE a.suspended WHEN 0
-				THEN 1.0
-				ELSE $suspension_percentage / 100
+				THEN 0
+				ELSE ROUND(((((100 - a.pdiscount) / 100 * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END))) - a.vdiscount) * $suspension_percentage / 100, 3)
 			END), 3) * a.count, 2) AS value,
 		(CASE WHEN a.liabilityid IS NULL THEN t.taxrate ELSE l.taxrate END) AS taxrate,
 		(CASE WHEN a.liabilityid IS NULL THEN t.currency ELSE l.currency END) AS currency,
@@ -1362,7 +1362,8 @@ foreach ($assigns as $assign) {
     $cid = $assign['customerid'];
     $divid = ($assign['divisionid'] ? $assign['divisionid'] : 0);
 
-    $assign['value'] = floatval($assign['value']);
+    $assign['value'] = round($assign['value'], 3);
+    $assign['unitary_value'] = round($assign['unitary_value'], 3);
 
     if (empty($assign['value']) && ($assign['liabilityid'] != 'set' || !$empty_billings)) {
         continue;
@@ -1399,7 +1400,8 @@ foreach ($assigns as $assign) {
     $linktechnology = isset($assignment_linktechnologies[$assign['id']]) ? $assignment_linktechnologies[$assign['id']]['technology'] : null;
 
     if (!$assign['suspended'] && $assign['allsuspended']) {
-        $assign['value'] = round($assign['value'] * $suspension_percentage / 100, 3);
+        $assign['unitary_value'] = $assign['unitary_value'] - round($assign['unitary_value'] * $suspension_percentage / 100, 3);
+        $assign['value'] = $assign['value'] - round($assign['value'] * $suspension_percentage / 100, 3);
     }
     if (empty($assign['value']) && ($assign['liabilityid'] != 'set' || !$empty_billings)) {
         continue;
