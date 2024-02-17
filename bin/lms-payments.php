@@ -1364,7 +1364,8 @@ foreach ($assigns as $assign) {
     $cid = $assign['customerid'];
     $divid = ($assign['divisionid'] ? $assign['divisionid'] : 0);
 
-    $assign['value'] = floatval($assign['value']);
+    $assign['value'] = round($assign['value'], 3);
+    $assign['unitary_value'] = round($assign['unitary_value'], 3);
 
     if (empty($assign['value']) && ($assign['liabilityid'] != 'set' || !$empty_billings)) {
         continue;
@@ -1401,7 +1402,8 @@ foreach ($assigns as $assign) {
     $linktechnology = isset($assignment_linktechnologies[$assign['id']]) ? $assignment_linktechnologies[$assign['id']]['technology'] : null;
 
     if (!$assign['suspended'] && $assign['allsuspended']) {
-        $assign['value'] = round($assign['value'] * $suspension_percentage / 100, 3);
+        $assign['unitary_value'] = $assign['unitary_value'] - round($assign['unitary_value'] * $suspension_percentage / 100, 3);
+        $assign['value'] = $assign['value'] - round($assign['value'] * $suspension_percentage / 100, 3);
     }
     if (empty($assign['value']) && ($assign['liabilityid'] != 'set' || !$empty_billings)) {
         continue;
