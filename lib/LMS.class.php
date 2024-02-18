@@ -2233,7 +2233,7 @@ class LMS
         return $manager->GetCustomerNetNodes($id);
     }
 
-    public function GetNetNodeList($search, $order)
+    public function GetNetNodeList($search = array(), $order = 'name,asc')
     {
         $manager = $this->getNetNodeManager();
         return $manager->GetNetNodeList($search, $order);

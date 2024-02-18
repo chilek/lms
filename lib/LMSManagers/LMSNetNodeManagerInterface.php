@@ -32,7 +32,7 @@ interface LMSNetNodeManagerInterface
 
     public function GetNetNodes();
 
-    public function GetNetNodeList($search, $order);
+    public function GetNetNodeList($search = array(), $order = 'name,asc');
 
     public function NetNodeAdd($netnodedata);
 
