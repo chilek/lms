@@ -116,7 +116,7 @@ if (isset($_POST['document'])) {
             if ($customerlist = $LMS->GetCustomerList(compact('customergroup', 'customergroupsqlskey'))) {
                 foreach ($customerlist as $idx => $row) {
                     if (!$row['account']) {
-                        $ncustomerlist[] = $customerlist[$idx];
+                        $ncustomerlist[] = $row;
                     }
                 }
 

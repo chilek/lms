@@ -451,8 +451,8 @@ if (defined('USERPANEL_SETUPMODE')) {
                 if (isset($old)) {
                     $userchanges[$key]['oldvalue'] = $old;
                     unset($old);
-                } elseif (isset($userchanges[$key][$change['fieldname']])) {
-                    $userchanges[$key]['oldvalue'] = $userchanges[$key][$change['fieldname']];
+                } elseif (isset($change[$change['fieldname']])) {
+                    $userchanges[$key]['oldvalue'] = $change[$change['fieldname']];
                 }
             }
         }

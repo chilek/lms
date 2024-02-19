@@ -1652,7 +1652,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         if (is_array($values)) {
             foreach ($values as $label => $assignments) {
                 foreach ($assignments as $assignmentid => $periods) {
-                    $data['values'][$schemaid][$label][$assignmentid] = str_replace(',', '.', $values[$label][$assignmentid]);
+                    $data['values'][$schemaid][$label][$assignmentid] = str_replace(',', '.', $assignments[$assignmentid]);
                 }
             }
             $values = $data['values'][$schemaid];

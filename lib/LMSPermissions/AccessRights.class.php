@@ -154,7 +154,7 @@ class AccessRights
                     $effective_menus = array_diff_key($effective_menus, $all_menus);
                     if (!empty($effective_menus)) {
                         foreach ($effective_menus as $menukey => $menuitem) {
-                            $effective_menus[$menukey] = array_diff_key($effective_menus[$menukey], $all_menus[$menukey]);
+                            $effective_menus[$menukey] = array_diff_key($menuitem, $all_menus[$menukey]);
                         }
                     }
                 }
@@ -163,7 +163,7 @@ class AccessRights
                 if (!empty($effective_menus)) {
                     foreach ($effective_menus as $menukey => $menuitem) {
                         if (isset($menuperms['deny_menu_items'][$menukey])) {
-                            $effective_menus[$menukey] = array_diff_key($effective_menus[$menukey], $menuperms['deny_menu_items'][$menukey]);
+                            $effective_menus[$menukey] = array_diff_key($menuitem, $menuperms['deny_menu_items'][$menukey]);
                         }
                     }
                 }

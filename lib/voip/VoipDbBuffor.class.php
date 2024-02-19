@@ -297,7 +297,7 @@ class VoipDbBuffor
         foreach ($matches as $k => $v) {
             if (is_numeric($k)) {
                 unset($matches[$k]);
-            } else if (!$matches[$k]) {
+            } else if (!$v) {
                 $matches[$k] = 0;
             }
         }

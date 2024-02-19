@@ -1417,10 +1417,10 @@ function trim_rec($data)
 
     if (is_array($data)) {
         foreach ($data as $k => $v) {
-            if (is_array($data[$k])) {
-                $data[$k] = trim_rec($data[$k]);
+            if (is_array($v)) {
+                $data[$k] = trim_rec($v);
             } else {
-                $data[$k] = trim($data[$k]);
+                $data[$k] = trim($v);
             }
         }
 

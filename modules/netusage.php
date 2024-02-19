@@ -146,7 +146,7 @@ function getNetworks($ip, $br, $host = null)
     );
 
     foreach ($networks as $k => $v) {
-        $networks[$k]['ip']      = long_ip($networks[$k]['ip_long']);
+        $networks[$k]['ip']      = long_ip($v['ip_long']);
         $networks[$k]['br_long'] = ip_long(getbraddr(long_ip($v['ip_long']), $v['mask_ip']));
 
         if ($v['ip_long'] < $ip_long) {
