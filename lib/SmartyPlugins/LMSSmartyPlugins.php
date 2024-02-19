@@ -1427,7 +1427,7 @@ class LMSSmartyPlugins
 
         static $netnodelist = array();
         if (empty($netnodelist)) {
-            $netnodelist = $LMS->GetNetNodeList(array(), 'name,asc');
+            $netnodelist = $LMS->GetNetNodeList();
             unset($netnodelist['total'], $netnodelist['order'], $netnodelist['direction']);
         }
 

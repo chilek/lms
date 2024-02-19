@@ -156,7 +156,7 @@ $SESSION->save('ndlp', $page);
 
 $SESSION->add_history_entry();
 
-$netnodes = $LMS->GetNetNodeList(array(), 'name,ASC');
+$netnodes = $LMS->GetNetNodeList();
 unset($netnodes['total'], $netnodes['order'], $netnodes['direction']);
 $SMARTY->assign('netnodes', $netnodes);
 
