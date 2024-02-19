@@ -2247,7 +2247,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $post_address_id = $location_manager->GetCustomerAddress($invoice['customer']['id'], POSTAL_ADDRESS);
 
         if (empty($post_address_id)) {
-            $post_address_id = $location_manager->GetCustomerAddress($invoice['customer']['id'], BILLING_ADDRESS);
+            $post_address_id = $location_manager->GetCustomerAddress($invoice['customer']['id']);
         }
 
         $invoice['invoice']['post_address_id'] = $location_manager->CopyAddress($post_address_id);

@@ -388,7 +388,7 @@ function rmkdir($dir)
             $cdir .= DIRECTORY_SEPARATOR . $directories[$j];
         }
         if (!is_dir($cdir)) {
-            $result = mkdir($cdir, 0777);
+            $result = mkdir($cdir);
             $makedirs ++;
         }
     }

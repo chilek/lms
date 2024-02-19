@@ -543,7 +543,7 @@ $SMARTY->assign('NNprojects', $nprojects);
 if (!isset($resource_tabs['nodesessions']) || $resource_tabs['nodesessions']) {
     $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($nodeid));
 }
-$SMARTY->assign('networks', $LMS->GetNetworks(true));
+$SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('netdevices', $netdevices);
 if (!isset($resource_tabs['nodegroups']) || $resource_tabs['nodegroups']) {
     $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNamesByNode($nodeid));

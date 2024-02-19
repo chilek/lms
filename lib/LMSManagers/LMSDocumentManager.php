@@ -2221,7 +2221,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $post_addr = $location_manager->GetCustomerAddress($customerid, POSTAL_ADDRESS);
 
         if (empty($post_addr)) {
-            $post_addr = $location_manager->GetCustomerAddress($customerid, BILLING_ADDRESS);
+            $post_addr = $location_manager->GetCustomerAddress($customerid);
         }
 
         $old_post_addr = $this->db->GetOne('SELECT post_address_id FROM documents WHERE id = ?', array($docid));

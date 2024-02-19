@@ -2892,7 +2892,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
     public function GetCustomerAddressesWithEndPoints($customerid)
     {
-        return $this->getCustomerAddressessWithOrWithoutEndPoints($customerid, true);
+        return $this->getCustomerAddressessWithOrWithoutEndPoints($customerid);
     }
 
     public function GetCustomerAddressesWithoutEndPoints($customerid)

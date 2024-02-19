@@ -626,7 +626,7 @@ switch ($action) {
         }
 
         if (empty($invoice['post_address_id'])) {
-            $invoice['post_address_id'] = $LMS->GetCustomerAddress($invoice['customerid'], BILLING_ADDRESS);
+            $invoice['post_address_id'] = $LMS->GetCustomerAddress($invoice['customerid']);
         }
         $invoice['post_address_id'] = $LMS->CopyAddress($invoice['post_address_id']);
 

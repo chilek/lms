@@ -407,7 +407,7 @@ function validate_dns_record(&$record, &$error)
     }
 
     if (!in_array($record['type'], array('SOA', 'CNAME')) && !empty($record['name'])) {
-        if ($errorname = check_hostname_fqdn($record['name'], true, false)) {
+        if ($errorname = check_hostname_fqdn($record['name'], true)) {
             $error['name'] = $errorname;
         }
     }
@@ -429,7 +429,7 @@ function validate_dns_record(&$record, &$error)
             break;
         case 'ALIAS':
         case 'ANAME':
-            if (strlen($record['alias']) && $errorname = check_hostname_fqdn($record['alias'], true, false)) {
+            if (strlen($record['alias']) && $errorname = check_hostname_fqdn($record['alias'], true)) {
                 $error['alias'] = $errorname;
             }
             break;
@@ -457,7 +457,7 @@ function validate_dns_record(&$record, &$error)
             }
             break;
         case 'CNAME':
-            if ($errorname = check_hostname_fqdn($record['alias'], true, false)) {
+            if ($errorname = check_hostname_fqdn($record['alias'], true)) {
                 $error['alias'] = $errorname;
             }
             break;

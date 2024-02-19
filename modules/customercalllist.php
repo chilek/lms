@@ -193,7 +193,7 @@ if ($total && $total < $params['offset']) {
 }
 $customercalls = $LMS->getCustomerCalls($params);
 
-$SMARTY->assign('users', $LMS->getUserNames(array()));
+$SMARTY->assign('users', $LMS->getUserNames());
 
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 

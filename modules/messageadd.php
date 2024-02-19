@@ -984,7 +984,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         $format = $html_format ? 'html' : 'text';
 
         if ($message['type'] == MSG_MAIL && !$html_format) {
-            $message['body'] = wordwrap($message['body'], 128, "\n");
+            $message['body'] = wordwrap($message['body'], 128);
         }
 
         $message['contenttype'] = $html_format ? 'text/html' : 'text/plain';

@@ -26,7 +26,7 @@
 
 // Checking if connection is from allowed IP
 
-$allow_from = ConfigHelper::getConfig('phpui.allow_from', null);
+$allow_from = ConfigHelper::getConfig('phpui.allow_from');
 
 if ($allow_from) {
     // delete ipv6 prefix if it's present:

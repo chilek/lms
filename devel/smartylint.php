@@ -155,7 +155,7 @@ foreach ($argv as $template) {
     }
 }
 
-$pagination = LMSPaginationFactory::getPagination(1, 10, 5, false);
+$pagination = LMSPaginationFactory::getPagination(1, 10, 5);
 $SMARTY->assign('pagination', $pagination);
 
 try {

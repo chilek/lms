@@ -1882,8 +1882,7 @@ class xajaxResponse
             if (false === function_exists('mb_convert_encoding')) {
                 $objLanguageManager = xajaxLanguageManager::getInstance();
                 trigger_error(
-                    $objLanguageManager->getText('XJXRSP:MBEERR:01'),
-                    E_USER_NOTICE
+                    $objLanguageManager->getText('XJXRSP:MBEERR:01')
                 );
             }
             //EndSkipDebug

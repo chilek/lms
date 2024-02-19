@@ -1500,7 +1500,7 @@ if (isset($options['buildings'])) {
             $fileptr = 0;
 
             while (!feof($fh)) {
-                $res = fseek($fh, $fileptr, SEEK_SET);
+                $res = fseek($fh, $fileptr);
                 $contents = fread($fh, 1048576);
                 $pos = 0;
                 while (true) {
@@ -1513,7 +1513,7 @@ if (isset($options['buildings'])) {
                     }
 
                     $line = trim(substr($contents, $pos, $new_pos - $pos - 1));
-                    $fields = str_getcsv($line, ',');
+                    $fields = str_getcsv($line);
                     $pos = $new_pos;
 
                     if (!isset($column_names)) {
