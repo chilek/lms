@@ -693,7 +693,7 @@ function parse_customer_data($data, $format, $row)
             'SELECT ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN t.value ELSE l.value END)) / 100) - a.vdiscount) *
 			    (CASE a.suspended WHEN 0
 				    THEN 1.0
-				    ELSE ? / 100
+				    ELSE ?
 			    END), 2) AS value, t.currency
             FROM assignments a
             LEFT JOIN tariffs t ON t.id = a.tariffid
@@ -708,7 +708,7 @@ function parse_customer_data($data, $format, $row)
             GROUP BY tariffs.currency',
             array(
                 $row['id'],
-                $GLOBALS['suspension_percentage'],
+                round($GLOBALS['suspension_percentage'] / 100, 2),
                 $GLOBALS['currtime'],
                 $GLOBALS['currtime'],
                 $GLOBALS['currtime'],

@@ -419,12 +419,12 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 		ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount) *
 			(CASE a.suspended WHEN 0
 				THEN 1.0
-				ELSE $suspension_percentage / 100
+				ELSE ?
 			END), 3) AS unitary_value,
 		ROUND(ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount) *
 			(CASE a.suspended WHEN 0
 				THEN 1.0
-				ELSE $suspension_percentage / 100
+				ELSE ?
 			END), 3) * a.count, 2) AS value,
 		(CASE WHEN a.liabilityid IS NULL THEN t.taxrate ELSE l.taxrate END) AS taxrate,
 		(CASE WHEN a.liabilityid IS NULL THEN t.currency ELSE l.currency END) AS currency,
@@ -491,6 +491,8 @@ $services = $DB->GetAll(
         LIABILITY_FLAG_SPLIT_PAYMENT,
         TARIFF_FLAG_NET_ACCOUNT,
         LIABILITY_FLAG_NET_ACCOUT,
+        round($suspension_percentage / 100, 2),
+        round($suspension_percentage / 100, 2),
         TARIFF_FLAG_NET_ACCOUNT,
         LIABILITY_FLAG_NET_ACCOUT,
         DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $doms, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
