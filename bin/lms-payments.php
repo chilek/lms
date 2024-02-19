@@ -926,10 +926,6 @@ if ($result['assignments']) {
 
 setlocale(LC_NUMERIC, $old_locale);
 
-if ($prefer_netto) {
-    $taxeslist = $LMS->GetTaxes();
-}
-
 // find assignments with tariff reward/penalty flag
 // and check if customer applies to this
 $reward_to_check = array();
@@ -1034,6 +1030,9 @@ $currencycurrtime = strtotime('yesterday', $currtime);
 $currencydayend = strtotime('yesterday', $dayend);
 
 $currencyvalues = array();
+if ($prefer_netto) {
+    $taxeslist = $LMS->GetTaxes();
+}
 
 if (!empty($assigns)) {
     // determine currency values for assignments with foreign currency
@@ -1043,19 +1042,18 @@ if (!empty($assigns)) {
         if (!empty($assign['tariffid'])) {
             $priceVariant = $LMS->getTariffPriceVariantByQuantityThreshold($assign['tariffid'], $assign['count']);
             if (!empty($priceVariant)) {
-                $suspension = empty($assign['suspended']) ? 1 : ($suspension_percentage / 100);
                 if (!empty($assign['netflag'])) {
-                    $assign['unitary_value'] = round(((((100 - $assign['pdiscount']) * $priceVariant['net_price']) / 100) - $assign['vdiscount']) * $suspension, 3);
+                    $assign['unitary_value'] = round(((((100 - $assign['pdiscount']) * $priceVariant['net_price']) / 100) - $assign['vdiscount']), 3);
                     $assign['netvalue'] = round($assign['unitary_value'] * $assign['count'], 2);
                 } else {
-                    $assign['unitary_value'] = round(((((100 - $assign['pdiscount']) * $priceVariant['gross_price']) / 100) - $assign['vdiscount']) * $suspension, 3);
+                    $assign['unitary_value'] = round(((((100 - $assign['pdiscount']) * $priceVariant['gross_price']) / 100) - $assign['vdiscount']), 3);
                     $assign['value'] = round($assign['unitary_value'] * $assign['count'], 2);
                 }
             }
         }
         if ($prefer_netto) {
-            if (isset($assign['netvalue']) && !empty($assign['netvalue'])) {
-                $assign['value'] = round($assign['netvalue'] * (100 + $taxeslist[$assign['taxid']]['value']) / 100, 3);
+            if (!empty($assign['netvalue'])) {
+                $assign['value'] = round($assign['netvalue'] * (100 + $taxeslist[$assign['taxid']]['value']) / 100, 2);
             }
         }
 
@@ -1364,7 +1362,7 @@ foreach ($assigns as $assign) {
     $cid = $assign['customerid'];
     $divid = ($assign['divisionid'] ? $assign['divisionid'] : 0);
 
-    $assign['value'] = round($assign['value'], 3);
+    $assign['value'] = round($assign['value'], 2);
     $assign['unitary_value'] = round($assign['unitary_value'], 3);
 
     if (empty($assign['value']) && ($assign['liabilityid'] != 'set' || !$empty_billings)) {
@@ -1403,7 +1401,7 @@ foreach ($assigns as $assign) {
 
     if (!$assign['suspended'] && $assign['allsuspended']) {
         $assign['unitary_value'] = $assign['unitary_value'] - round($assign['unitary_value'] * $suspension_percentage / 100, 3);
-        $assign['value'] = $assign['value'] - round($assign['value'] * $suspension_percentage / 100, 3);
+        $assign['value'] = $assign['value'] - round($assign['value'] * $suspension_percentage / 100, 2);
     }
     if (empty($assign['value']) && ($assign['liabilityid'] != 'set' || !$empty_billings)) {
         continue;
