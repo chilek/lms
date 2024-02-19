@@ -313,7 +313,7 @@ switch ($action) {
             unset($error);
 
         // get default receipt's numberplanid and next number
-        $receipt = ($_POST['receipt']) ? $_POST['receipt'] : null;
+        $receipt = ($_POST['receipt']) ?: null;
         $receipt['customerid'] = isset($_POST['customerid']) ? $_POST['customerid'] : null;
         $receipt['type'] = isset($receipt['type']) ? $receipt['type'] : $_POST['type'];
 

@@ -65,7 +65,7 @@ function Traffic($from = 0, $to = 0, $owner = 0, $order = '')
         $todate = $to;
     }
 
-    $delta = ($todate-$fromdate) ? ($todate-$fromdate) : 1;
+    $delta = ($todate-$fromdate) ?: 1;
 
     if ($from || $to) {
         $dt = " AND ( dt >= $fromdate AND dt <= $todate )";
@@ -95,8 +95,8 @@ function Traffic($from = 0, $to = 0, $owner = 0, $order = '')
 		    FROM stats 
 		    LEFT JOIN nodes ON stats.nodeid=nodes.id 
 		    WHERE 1=1 '
-            .($dt ? $dt : '')
-            .($owner ? $owner : '')
+            .($dt ?: '')
+            .($owner ?: '')
             .' GROUP BY nodeid, name, ipaddr '.$order;
 
     // get results
@@ -107,8 +107,8 @@ function Traffic($from = 0, $to = 0, $owner = 0, $order = '')
         foreach ($traffic as $idx => $row) {
             $traffic['upload']['data'][] = $row['upload'];
             $traffic['download']['data'][] = $row['download'];
-            $traffic['upload']['name'][] = ($row['name'] ? $row['name'] : 'nieznany (ID: '.$row['nodeid'].')');
-            $traffic['download']['name'][] = ($row['name'] ? $row['name'] : 'nieznany (ID: '.$row['nodeid'].')');
+            $traffic['upload']['name'][] = ($row['name'] ?: 'nieznany (ID: '.$row['nodeid'].')');
+            $traffic['download']['name'][] = ($row['name'] ?: 'nieznany (ID: '.$row['nodeid'].')');
             $traffic['upload']['ipaddr'][] = $row['ip'];
             $traffic['download']['nodeid'][] = $row['nodeid'];
             $traffic['upload']['nodeid'][] = $row['nodeid'];
@@ -140,7 +140,7 @@ function Traffic($from = 0, $to = 0, $owner = 0, $order = '')
 
         foreach ($traffic['download']['data'] as $data) {
             $down = round($data * 150 / $maximum);
-            $traffic['download']['bar'][] = $down ? $down : 1;
+            $traffic['download']['bar'][] = $down ?: 1;
             list($traffic['download']['data'][$x], $traffic['download']['unit'][$x]) = setunits($data);
             $x++;
         }
@@ -148,7 +148,7 @@ function Traffic($from = 0, $to = 0, $owner = 0, $order = '')
 
         foreach ($traffic['upload']['data'] as $data) {
             $up = round($data * 150 / $maximum);
-            $traffic['upload']['bar'][] = $up ? $up : 1;
+            $traffic['upload']['bar'][] = $up ?: 1;
             list($traffic['upload']['data'][$x], $traffic['upload']['unit'][$x]) = setunits($data);
             $x++;
         }
@@ -203,6 +203,6 @@ function module_main()
 
     $layout['pagetitle'] = trans('Network Statistics');
 
-    $SMARTY->assign('bar', $bar ? $bar : 'month');
+    $SMARTY->assign('bar', $bar ?: 'month');
     $SMARTY->display('module:stats.html');
 }

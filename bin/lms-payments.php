@@ -311,7 +311,7 @@ if (!empty($results)) {
         if ($row['isdefault']) {
             $plans[$row['divid']][$row['doctype']][$row['customertype']] = $row['id'];
         }
-        $periods[$row['id']] = ($row['period'] ? $row['period'] : YEARLY);
+        $periods[$row['id']] = ($row['period'] ?: YEARLY);
     }
 }
 
@@ -1309,7 +1309,7 @@ if (!empty($billing_document_template)) {
             if ($row['isdefault']) {
                 $billing_plans[$row['divid']] = $row['id'];
             }
-            $billing_periods[$row['id']] = $row['period'] ? $row['period'] : YEARLY;
+            $billing_periods[$row['id']] = $row['period'] ?: YEARLY;
         }
     }
 
@@ -1361,7 +1361,7 @@ $invoices_with_billings = array();
 
 foreach ($assigns as $assign) {
     $cid = $assign['customerid'];
-    $divid = ($assign['divisionid'] ? $assign['divisionid'] : 0);
+    $divid = ($assign['divisionid'] ?: 0);
 
     $assign['value'] = round($assign['value'], 2);
     $assign['unitary_value'] = round($assign['unitary_value'], 3);
@@ -1730,36 +1730,36 @@ foreach ($assigns as $assign) {
 					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     array(
                         $newnumber,
-                        $plan ? $plan : null,
+                        $plan ?: null,
                         $assign['invoice'],
-                        $customer['countryid'] ? $customer['countryid'] : null,
+                        $customer['countryid'] ?: null,
                         $customer['divisionid'],
                         $cid,
                         $customer['lastname']." ".$customer['name'],
                         ($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
                             ? $customer['city'] . ', ' : '') . $customer['address'],
-                        $customer['zip'] ? $customer['zip'] : null,
-                        $customer['postoffice'] ? $customer['postoffice'] : ($customer['city'] ? $customer['city'] : null),
+                        $customer['zip'] ?: null,
+                        $customer['postoffice'] ?: ($customer['city'] ?: null),
                         $customer['ten'],
                         $customer['ssn'],
                         $issuetime,
                         $saledate,
                         $inv_paytime,
                         $inv_paytype,
-                        ($division['name'] ? $division['name'] : ''),
-                        ($division['shortname'] ? $division['shortname'] : ''),
-                        ($division['address'] ? $division['address'] : ''),
-                        ($division['city'] ? $division['city'] : ''),
-                        ($division['zip'] ? $division['zip'] : ''),
-                        ($division['countryid'] ? $division['countryid'] : null),
-                        ($division['ten'] ? $division['ten'] : ''),
-                        ($division['regon'] ? $division['regon'] : ''),
+                        ($division['name'] ?: ''),
+                        ($division['shortname'] ?: ''),
+                        ($division['address'] ?: ''),
+                        ($division['city'] ?: ''),
+                        ($division['zip'] ?: ''),
+                        ($division['countryid'] ?: null),
+                        ($division['ten'] ?: ''),
+                        ($division['regon'] ?: ''),
                         $division['bank'] ?: null,
-                        ($division['account'] ? $division['account'] : ''),
-                        ($division['inv_header'] ? $division['inv_header'] : ''),
-                        ($division['inv_footer'] ? $division['inv_footer'] : ''),
-                        ($division['inv_author'] ? $division['inv_author'] : ''),
-                        ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
+                        ($division['account'] ?: ''),
+                        ($division['inv_header'] ?: ''),
+                        ($division['inv_footer'] ?: ''),
+                        ($division['inv_author'] ?: ''),
+                        ($division['inv_cplace'] ?: ''),
                         $fullnumber,
                         $recipient_address_id,
                         empty($assign['post_address_id']) ? null : $LMS->CopyAddress($assign['post_address_id']),
@@ -1983,33 +1983,33 @@ foreach ($assigns as $assign) {
                                     ?, ?, ?)",
                             array(
                                 $newnumber,
-                                $billing_plan ? $billing_plan : null,
+                                $billing_plan ?: null,
                                 DOC_BILLING,
-                                $customer['countryid'] ? $customer['countryid'] : null,
+                                $customer['countryid'] ?: null,
                                 $customer['divisionid'],
                                 $cid,
                                 $customer['lastname'] . ' ' . $customer['name'],
                                 ($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
                                     ? $customer['city'] . ', ' : '') . $customer['address'],
-                                $customer['zip'] ? $customer['zip'] : null,
-                                $customer['postoffice'] ? $customer['postoffice'] : ($customer['city'] ? $customer['city'] : null),
+                                $customer['zip'] ?: null,
+                                $customer['postoffice'] ?: ($customer['city'] ?: null),
                                 $customer['ten'],
                                 $customer['ssn'],
                                 $issuetime,
-                                $division['name'] ? $division['name'] : '',
-                                $division['shortname'] ? $division['shortname'] : '',
-                                $division['address'] ? $division['address'] : '',
-                                $division['city'] ? $division['city'] : '',
-                                $division['zip'] ? $division['zip'] : '',
-                                $division['countryid'] ? $division['countryid'] : null,
-                                $division['ten'] ? $division['ten'] : '',
-                                $division['regon'] ? $division['regon'] : '',
+                                $division['name'] ?: '',
+                                $division['shortname'] ?: '',
+                                $division['address'] ?: '',
+                                $division['city'] ?: '',
+                                $division['zip'] ?: '',
+                                $division['countryid'] ?: null,
+                                $division['ten'] ?: '',
+                                $division['regon'] ?: '',
                                 $division['bank'] ?: null,
-                                $division['account'] ? $division['account'] : '',
-                                $division['inv_header'] ? $division['inv_header'] : '',
-                                $division['inv_footer'] ? $division['inv_footer'] : '',
-                                $division['inv_author'] ? $division['inv_author'] : '',
-                                $division['inv_cplace'] ? $division['inv_cplace'] : '',
+                                $division['account'] ?: '',
+                                $division['inv_header'] ?: '',
+                                $division['inv_footer'] ?: '',
+                                $division['inv_author'] ?: '',
+                                $division['inv_cplace'] ?: '',
                                 $fullnumber,
                                 $invoices[$cid],
                                 $billing_document_template['name'],

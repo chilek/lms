@@ -100,7 +100,7 @@ function hostname()
     }
 
     if (!$hostname) {
-        $hostname = $_ENV['HOSTNAME'] ? $_ENV['HOSTNAME'] : $_SERVER['SERVER_NAME'];
+        $hostname = $_ENV['HOSTNAME'] ?: $_SERVER['SERVER_NAME'];
     }
     if (!$hostname) {
         $hostname='N.A.';
@@ -572,9 +572,9 @@ function docnumber($number = null, $template = null, $cdate = null, $ext_num = '
         }
     }
 
-    $number = $number ? $number : 1;
-    $template = $template ? $template : DEFAULT_NUMBER_TEMPLATE;
-    $cdate = $cdate ? $cdate : time();
+    $number = $number ?: 1;
+    $template = $template ?: DEFAULT_NUMBER_TEMPLATE;
+    $cdate = $cdate ?: time();
 
     // customer id support
     if (empty($customerid)) {

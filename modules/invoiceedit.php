@@ -496,10 +496,10 @@ switch ($action) {
         }
 
         $currtime = time();
-        $cdate = $invoice['cdate'] ? $invoice['cdate'] : $currtime;
-        $sdate = $invoice['sdate'] ? $invoice['sdate'] : $currtime;
-        $deadline = $invoice['deadline'] ? $invoice['deadline'] : $currtime;
-        $comment = $invoice['comment'] ? $invoice['comment'] : null;
+        $cdate = $invoice['cdate'] ?: $currtime;
+        $sdate = $invoice['sdate'] ?: $currtime;
+        $deadline = $invoice['deadline'] ?: $currtime;
+        $comment = $invoice['comment'] ?: null;
         $paytime = round(($deadline - $cdate) / 86400);
         $iid   = $invoice['id'];
 
@@ -650,27 +650,27 @@ switch ($action) {
             'ten' => $use_current_customer_data ? $customer['ten'] : $invoice['ten'],
             'ssn' => $use_current_customer_data ? $customer['ssn'] : $invoice['ssn'],
             'zip' => $use_current_customer_data ? $customer['zip'] : $invoice['zip'],
-            'city' => $use_current_customer_data ? ($customer['postoffice'] ? $customer['postoffice'] : $customer['city'])
+            'city' => $use_current_customer_data ? ($customer['postoffice'] ?: $customer['city'])
                 : $invoice['city'],
             SYSLOG::RES_COUNTRY => $use_current_customer_data ? (empty($customer['countryid']) ? null : $customer['countryid'])
                 : (empty($invoice['countryid']) ? null : $invoice['countryid']),
             SYSLOG::RES_DIV => $use_current_customer_data ? (empty($customer['divisionid']) ? null : $customer['divisionid'])
                 : (empty($invoice['divisionid']) ? null : $invoice['divisionid']),
-            'div_name' => ($division['name'] ? $division['name'] : ''),
-            'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
-            'div_address' => ($division['address'] ? $division['address'] : ''),
-            'div_city' => ($division['city'] ? $division['city'] : ''),
-            'div_zip' => ($division['zip'] ? $division['zip'] : ''),
-            'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => ($division['countryid'] ? $division['countryid'] : null),
-            'div_ten'=> ($division['ten'] ? $division['ten'] : ''),
-            'div_regon' => ($division['regon'] ? $division['regon'] : ''),
+            'div_name' => ($division['name'] ?: ''),
+            'div_shortname' => ($division['shortname'] ?: ''),
+            'div_address' => ($division['address'] ?: ''),
+            'div_city' => ($division['city'] ?: ''),
+            'div_zip' => ($division['zip'] ?: ''),
+            'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => ($division['countryid'] ?: null),
+            'div_ten'=> ($division['ten'] ?: ''),
+            'div_regon' => ($division['regon'] ?: ''),
             'div_bank' => $division['bank'] ?: null,
-            'div_account' => ($division['account'] ? $division['account'] : ''),
-            'div_inv_header' => ($division['inv_header'] ? $division['inv_header'] : ''),
-            'div_inv_footer' => ($division['inv_footer'] ? $division['inv_footer'] : ''),
-            'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
-            'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
-            'comment' => ($invoice['comment'] ? $invoice['comment'] : null),
+            'div_account' => ($division['account'] ?: ''),
+            'div_inv_header' => ($division['inv_header'] ?: ''),
+            'div_inv_footer' => ($division['inv_footer'] ?: ''),
+            'div_inv_author' => ($division['inv_author'] ?: ''),
+            'div_inv_cplace' => ($division['inv_cplace'] ?: ''),
+            'comment' => ($invoice['comment'] ?: null),
             'currency' => $invoice['currency'],
             'currencyvalue' => $invoice['currencyvalue'],
             'memo' => $use_current_customer_data ? (empty($customer['documentmemo']) ? null : $customer['documentmemo']) : $invoice['memo'],

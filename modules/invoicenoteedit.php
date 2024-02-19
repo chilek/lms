@@ -350,13 +350,13 @@ switch ($action) {
         $currtime = time();
 
         if (ConfigHelper::checkPrivilege('invoice_consent_date')) {
-            $cdate = $cnote['cdate'] ? $cnote['cdate'] : $currtime;
+            $cdate = $cnote['cdate'] ?: $currtime;
         } else {
             $cdate = $cnote['oldcdate'];
         }
 
         if (ConfigHelper::checkPrivilege('invoice_sale_date')) {
-            $sdate = $cnote['sdate'] ? $cnote['sdate'] : $currtime;
+            $sdate = $cnote['sdate'] ?: $currtime;
         } else {
             $sdate = $cnote['oldsdate'];
         }
@@ -364,7 +364,7 @@ switch ($action) {
         $cnote['currency'] = $cnote['oldcurrency'];
         $cnote['currencyvalue'] = $cnote['oldcurrencyvalue'];
 
-        $deadline = $cnote['deadline'] ? $cnote['deadline'] : $currtime;
+        $deadline = $cnote['deadline'] ?: $currtime;
         $paytime = $cnote['paytime'] = round(($cnote['deadline'] - $cnote['cdate']) / 86400);
         $iid   = $cnote['id'];
 
@@ -683,26 +683,26 @@ switch ($action) {
             'ten' => $use_current_customer_data ? $customer['ten'] : $cnote['ten'],
             'ssn' => $use_current_customer_data ? $customer['ssn'] : $cnote['ssn'],
             'zip' => $use_current_customer_data ? $customer['zip'] : $cnote['zip'],
-            'city' => $use_current_customer_data ? ($customer['postoffice'] ? $customer['postoffice'] : $customer['city'])
+            'city' => $use_current_customer_data ? ($customer['postoffice'] ?: $customer['city'])
                 : $cnote['city'],
             SYSLOG::RES_COUNTRY => $use_current_customer_data ? (empty($customer['countryid']) ? null : $customer['countryid'])
                 : (empty($cnote['countryid']) ? null : $cnote['countryid']),
             'reason' => $cnote['reason'],
             SYSLOG::RES_DIV => $use_current_customer_data ? $customer['divisionid'] : $cnote['divisionid'],
-            'div_name' => ($division['name'] ? $division['name'] : ''),
-            'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
-            'div_address' => ($division['address'] ? $division['address'] : ''),
-            'div_city' => ($division['city'] ? $division['city'] : ''),
-            'div_zip' => ($division['zip'] ? $division['zip'] : ''),
-            'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => ($division['countryid'] ? $division['countryid'] : null),
-            'div_ten'=> ($division['ten'] ? $division['ten'] : ''),
-            'div_regon' => ($division['regon'] ? $division['regon'] : ''),
+            'div_name' => ($division['name'] ?: ''),
+            'div_shortname' => ($division['shortname'] ?: ''),
+            'div_address' => ($division['address'] ?: ''),
+            'div_city' => ($division['city'] ?: ''),
+            'div_zip' => ($division['zip'] ?: ''),
+            'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => ($division['countryid'] ?: null),
+            'div_ten'=> ($division['ten'] ?: ''),
+            'div_regon' => ($division['regon'] ?: ''),
             'div_bank' => $division['bank'] ?: null,
-            'div_account' => ($division['account'] ? $division['account'] : ''),
-            'div_inv_header' => ($division['inv_header'] ? $division['inv_header'] : ''),
-            'div_inv_footer' => ($division['inv_footer'] ? $division['inv_footer'] : ''),
-            'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
-            'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
+            'div_account' => ($division['account'] ?: ''),
+            'div_inv_header' => ($division['inv_header'] ?: ''),
+            'div_inv_footer' => ($division['inv_footer'] ?: ''),
+            'div_inv_author' => ($division['inv_author'] ?: ''),
+            'div_inv_cplace' => ($division['inv_cplace'] ?: ''),
             'currency' => $cnote['currency'],
             'currencyvalue' => $cnote['currencyvalue'],
             'memo' => $use_current_customer_data ? (empty($customer['documentmemo']) ? null : $customer['documentmemo']) : $cnote['memo'],

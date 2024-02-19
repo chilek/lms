@@ -1859,7 +1859,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 if ($channels) {
                     foreach ($channels as $channel) {
                         $idx = $ids[$channel['nodeid']];
-                        $result[$idx]['channelid']   = $channel['id'] ? $channel['id'] : $channel['channelid'];
+                        $result[$idx]['channelid']   = $channel['id'] ?: $channel['channelid'];
                         $result[$idx]['channelname'] = $channel['name'];
                         $result[$idx]['cid']         = $channel['cid'];
                         $result[$idx]['downceil']    = $channel['downceil'];
@@ -2167,7 +2167,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'cutoffstop'     => $customerdata['cutoffstop'],
             SYSLOG::RES_DIV  => empty($customerdata['divisionid']) ? null : $customerdata['divisionid'],
             'paytime'        => $customerdata['paytime'],
-            'paytype'        => $customerdata['paytype'] ? $customerdata['paytype'] : null,
+            'paytype'        => $customerdata['paytype'] ?: null,
             'flags'          => $flags,
             SYSLOG::RES_CUST => $customerdata['id']
         );

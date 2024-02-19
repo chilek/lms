@@ -201,7 +201,7 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
     public function _driver_fetchrow_assoc($result = null)
     {
         if (!$this->_error) {
-            return mysqli_fetch_array($result ? $result : $this->_result, MYSQLI_ASSOC);
+            return mysqli_fetch_array($result ?: $this->_result, MYSQLI_ASSOC);
         } else {
             return false;
         }

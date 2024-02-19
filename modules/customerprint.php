@@ -203,7 +203,7 @@ switch ($type) {
         $layout['pagetitle'] = trans(
             'Customer $a Balance Sheet ($b to $c)',
             $LMS->GetCustomerName($_POST['customer']),
-            ($from ? $from : ''),
+            ($from ?: ''),
             $to
         );
 

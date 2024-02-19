@@ -186,7 +186,7 @@ function module_main()
             if (!empty($ticket['email'])) {
                 $ticket['email'] = $ticket['email'][0];
             }
-            $ticket['mailfrom'] = $ticket['email'] ? $ticket['email'] : '';
+            $ticket['mailfrom'] = $ticket['email'] ?: '';
 
             $id = $LMS->TicketAdd(array(
                 'state' => RT_NEW,
@@ -461,7 +461,7 @@ function module_main()
             }
 
             $ticket['email'] = $LMS->GetCustomerEmail($SESSION->id);
-            $ticket['mailfrom'] = $ticket['email'] ? $ticket['email'] : '';
+            $ticket['mailfrom'] = $ticket['email'] ?: '';
 
             $mailfrom = $LMS->DetermineSenderEmail($user['email'], $ticket['queue']['email'], $ticket['mailfrom']);
 

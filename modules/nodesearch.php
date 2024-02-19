@@ -103,12 +103,12 @@ function select_location($what, $id)
 			FROM location_districts WHERE stateid = ?
 			ORDER BY name', array($stateid));
 
-        $JSResponse->call('update_selection', 'district', $list ? $list : array(), !$what ? $districtid : 0);
+        $JSResponse->call('update_selection', 'district', $list ?: array(), !$what ? $districtid : 0);
     }
 
     if ($districtid) {
         $list = get_loc_boroughs($districtid);
-        $JSResponse->call('update_selection', 'borough', $list ? $list : array(), !$what ? $boroughid : 0);
+        $JSResponse->call('update_selection', 'borough', $list ?: array(), !$what ? $boroughid : 0);
     }
 
     return $JSResponse;

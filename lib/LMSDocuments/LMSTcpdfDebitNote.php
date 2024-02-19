@@ -115,7 +115,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
             $shipaddress = '';
             if ($this->data['post_name'] || $this->data['post_address']) {
                 $lines = document_address(array(
-                    'name' => $this->data['post_name'] ? $this->data['post_name'] : $this->data['name'],
+                    'name' => $this->data['post_name'] ?: $this->data['name'],
                     'address' => $this->data['post_address'],
                     'street' => $this->data['post_street'],
                     'zip' => $this->data['post_zip'],

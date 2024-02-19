@@ -460,7 +460,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         if ($this->data['type'] == DOC_ENTITY_DUPLICATE) {
             $this->backend->SetFont(null, '', 10);
             $title = trans('DUPLICATE, draw-up date:') . ' ' . date('d.m.Y', $this->data['duplicate-date']
-                ? $this->data['duplicate-date'] : time());
+                ?: time());
             $this->backend->Write(0, $title, '', 0, 'C', true, 0, false, false, 0);
         }
     }
@@ -535,7 +535,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             $postbox = '';
             if ($this->data['post_name'] || $this->data['post_address']) {
                 $lines = document_address(array(
-                    'name' => $this->data['post_name'] ? $this->data['post_name'] : $this->data['name'],
+                    'name' => $this->data['post_name'] ?: $this->data['name'],
                     'address' => $this->data['post_address'],
                     'street' => $this->data['post_street'],
                     'zip' => $this->data['post_zip'],

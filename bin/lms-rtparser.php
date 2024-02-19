@@ -611,7 +611,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             );
             if (!empty($queue_autoreply)) {
                 $autoreply_from = $queue_autoreply['email'];
-                $autoreply_name = $autoreply_name ? $autoreply_name : $queue_autoreply['name'];
+                $autoreply_name = $autoreply_name ?: $queue_autoreply['name'];
             }
         }
 

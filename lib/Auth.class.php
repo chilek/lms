@@ -147,8 +147,8 @@ class Auth
 
             $this->switchUser();
 
-            $this->logname = $this->logname ? $this->logname : $this->SESSION->get('session_logname');
-            $this->id = $this->id ? $this->id : $this->SESSION->get('session_id');
+            $this->logname = $this->logname ?: $this->SESSION->get('session_logname');
+            $this->id = $this->id ?: $this->SESSION->get('session_id');
 
             if (isset($loginform)) {
                 $this->DB->Execute('UPDATE users SET lastlogindate=?, lastloginip=? WHERE id=?', array(time(), $this->ip ,$this->id));

@@ -374,7 +374,7 @@ class Utils
     {
         $holidaysByYear = array();
 
-        list ($year, $month, $day, $weekday) = explode('/', date('Y/m/j/N', $date ? $date : time()));
+        list ($year, $month, $day, $weekday) = explode('/', date('Y/m/j/N', $date ?: time()));
         $date = mktime(0, 0, 0, $month, $day, $year);
 
         while (true) {

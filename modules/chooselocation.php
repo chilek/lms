@@ -206,7 +206,7 @@ if (isset($_GET['ajax']) && (isset($_POST['what']) || isset($_GET['what']))) {
                 ORDER BY name', array($stateid));
             $result[] = array(
                 'type' => 'district',
-                'data' => $list ? $list : array(),
+                'data' => $list ?: array(),
                 'selected' => !$what ? $districtid : 0,
             );
         }
@@ -215,7 +215,7 @@ if (isset($_GET['ajax']) && (isset($_POST['what']) || isset($_GET['what']))) {
             $list = get_loc_cities($districtid);
             $result[] = array(
                 'type' => 'city',
-                'data' => $list ? $list : array(),
+                'data' => $list ?: array(),
                 'selected' => !$what ? $cityid : 0,
             );
         }
@@ -224,7 +224,7 @@ if (isset($_GET['ajax']) && (isset($_POST['what']) || isset($_GET['what']))) {
             $list = get_loc_streets($cityid);
             $result[] = array(
                 'type' => 'street',
-                'data' => $list ? $list : array(),
+                'data' => $list ?: array(),
                 'selected' => 0,
             );
         }
