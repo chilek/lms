@@ -1013,7 +1013,6 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         }
                     }
                     break;
-                case 84:
                 case 85:
                     $contracts = 4;
                     if ($state_item == 85) {
