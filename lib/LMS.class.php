@@ -3066,7 +3066,7 @@ class LMS
                         } else {
                             $buf .= "Content-Disposition: attachment; filename=\"" . $chunk['filename'] . "\"\n\n";
                         }
-                        $buf .= chunk_split(base64_encode($chunk['data']), 60, "\n");
+                        $buf .= chunk_split(base64_encode($chunk['data']), 60);
                     }
                 }
                 $buf .= '--' . $boundary . '--';
