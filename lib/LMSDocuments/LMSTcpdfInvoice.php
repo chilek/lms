@@ -187,7 +187,7 @@ class LMSTcpdfInvoice extends LMSInvoice
 
             $this->backend->startTransaction();
             $old_y = $this->backend->GetY();
-            $this->backend->MultiCell($h_width[$item], 0, $heads[$item], 1, 'C', true, 1, '', '', true, 0, false, false, 0);
+            $this->backend->MultiCell($h_width[$item], 0, $name, 1, 'C', true, 1, '', '', true, 0, false, false, 0);
             $h_cell = $this->backend->GetY() - $old_y;
             $this->backend->rollbackTransaction(true);
 
@@ -196,7 +196,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             }
         }
         foreach ($heads as $item => $name) {
-            $this->backend->MultiCell($h_width[$item], $h_head, $heads[$item], 1, 'C', true, 0, '', '', true, 0, false, false, $h_head, 'M');
+            $this->backend->MultiCell($h_width[$item], $h_head, $name, 1, 'C', true, 0, '', '', true, 0, false, false, $h_head, 'M');
         }
 
         $this->backend->Ln();

@@ -147,7 +147,7 @@ switch ($type) {
 
                 foreach ($customerlist as $idx => $row) {
                     if (! $row['account']) {
-                        $ncustomerlist[] = $customerlist[$idx];
+                        $ncustomerlist[] = $row;
                     }
                 }
             }

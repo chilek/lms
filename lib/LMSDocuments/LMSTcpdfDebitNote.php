@@ -233,16 +233,16 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         $h_head = 6;
         /* data table headers */
         foreach ($heads as $item => $name) {
-            $h_cell = $this->backend->getStringHeight($h_width[$item], $heads[$item], true, false, 0, 1);
+            $h_cell = $this->backend->getStringHeight($h_width[$item], $name, true, false, 0, 1);
             if ($h_cell > $h_head) {
                 $h_head = $h_cell;
             }
         }
         foreach ($heads as $item => $name) {
             if ($item == 'name') {
-                $this->backend->MultiCell($h_width[$item], $h_head, $heads[$item], 1, 'L', true, 0, '', '', true, 0, false, false, $h_head, 'M');
+                $this->backend->MultiCell($h_width[$item], $h_head, $name, 1, 'L', true, 0, '', '', true, 0, false, false, $h_head, 'M');
             } else {
-                $this->backend->MultiCell($h_width[$item], $h_head, $heads[$item], 1, 'C', true, 0, '', '', true, 0, false, false, $h_head, 'M');
+                $this->backend->MultiCell($h_width[$item], $h_head, $name, 1, 'C', true, 0, '', '', true, 0, false, false, $h_head, 'M');
             }
         }
 
