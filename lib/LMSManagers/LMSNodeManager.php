@@ -955,14 +955,14 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
     public function NodeExists($id)
     {
-        return ($this->db->GetOne(
+        return (bool)$this->db->GetOne(
             'SELECT n.id FROM vnodes n
 			WHERE n.id = ? AND n.ownerid IS NOT NULL AND NOT EXISTS (
 		        	SELECT 1 FROM vcustomerassignments a
 			        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 				WHERE e.userid = lms_current_user() AND a.customerid = n.ownerid)',
             array($id)
-        ) ? true : false);
+        );
     }
 
     public function NodeStats()

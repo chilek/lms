@@ -27,13 +27,13 @@
 function AliasExists($login, $domain)
 {
     global $DB;
-    return ($DB->GetOne('SELECT id FROM aliases WHERE login = ? AND domainid = ?', array($login, $domain)) ? true : false);
+    return (bool)$DB->GetOne('SELECT id FROM aliases WHERE login = ? AND domainid = ?', array($login, $domain));
 }
 
 function AccountExists($login, $domain)
 {
     global $DB;
-    return ($DB->GetOne('SELECT id FROM passwd WHERE login = ? AND domainid = ?', array($login, $domain)) ? true : false);
+    return (bool)$DB->GetOne('SELECT id FROM passwd WHERE login = ? AND domainid = ?', array($login, $domain));
 }
 
 $aliasold = $DB->GetRow('SELECT a.id, a.login, a.domainid, d.name AS domain

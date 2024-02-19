@@ -51,7 +51,7 @@ $layout['hostname'] = hostname();
 $layout['lmsv'] = LMS::SOFTWARE_VERSION;
 $layout['lmsvr'] = LMS::getSoftwareRevision();
 $layout['dberrors'] =& $DB->GetErrors();
-$layout['popup'] = isset($_GET['popup']) ? true : false;
+$layout['popup'] = isset($_GET['popup']);
 
 $SMARTY->assignByRef('layout', $layout);
 $SMARTY->assign('_module', $ExecStack->module);

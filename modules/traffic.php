@@ -269,7 +269,7 @@ $SMARTY->assign('starttime', $starttime);
 $SMARTY->assign('startyear', $startyear);
 $SMARTY->assign('endtime', $endtime);
 $SMARTY->assign('endyear', $endyear);
-$SMARTY->assign('showips', isset($_POST['showips']) ? true : false);
+$SMARTY->assign('showips', isset($_POST['showips']));
 $SMARTY->assign('bars', $bars);
 $SMARTY->assign('bar', $bar);
 $SMARTY->assign('trafficorder', $SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download');

@@ -107,7 +107,7 @@ switch ($p) {
             $netid,
             $page,
             ConfigHelper::getConfig('phpui.networkhosts_pagelimit'),
-            isset($firstfree) ? true : false
+            isset($firstfree)
         );
 
         $page = $network['page'];
@@ -126,7 +126,7 @@ switch ($p) {
                 $netid,
                 $page,
                 ConfigHelper::getConfig('phpui.networkhosts_pagelimit'),
-                isset($firstfree) ? true : false
+                isset($firstfree)
             );
         }
         $SESSION->save('ntlp.pages.' . $netid, $network['pages']);

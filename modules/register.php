@@ -25,7 +25,7 @@
  */
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $LMS->UpdateRegisterData($_POST['name'], $_POST['url'], ($_POST['hidden'] == 1 ? true : false));
+    $LMS->UpdateRegisterData($_POST['name'], $_POST['url'], $_POST['hidden'] == 1);
     $SESSION->redirect('?m=welcome');
 }
 

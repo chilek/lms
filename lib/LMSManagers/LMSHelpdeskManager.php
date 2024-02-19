@@ -739,7 +739,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function QueueExists($id)
     {
-        return ($this->db->GetOne('SELECT * FROM rtqueues WHERE id=?', array($id)) ? true : false);
+        return (bool)$this->db->GetOne('SELECT * FROM rtqueues WHERE id=?', array($id));
     }
 
     public function GetQueueIdByName($queue)
@@ -934,7 +934,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function CategoryExists($id)
     {
-        return ($this->db->GetOne('SELECT * FROM rtcategories WHERE id=?', array($id)) ? true : false);
+        return (bool)$this->db->GetOne('SELECT * FROM rtcategories WHERE id=?', array($id));
     }
 
     public function GetCategoryIdByName($category)
