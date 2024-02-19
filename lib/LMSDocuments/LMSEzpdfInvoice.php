@@ -364,7 +364,7 @@ class LMSEzpdfInvoice extends LMSInvoice
         if ($this->data['type'] == DOC_ENTITY_DUPLICATE) {
             $font_size = 10;
             $y = $y - $this->backend->text_align_left($x, $y+4, $font_size, trans('DUPLICATE, draw-up date:') . ' '
-                . date('Y/m/d', $this->data['duplicate-date'] ? $this->data['duplicate-date'] : time()));
+                . date('Y/m/d', $this->data['duplicate-date'] ?: time()));
         }
 
         $y -= 5;
@@ -412,7 +412,7 @@ class LMSEzpdfInvoice extends LMSInvoice
         if (ConfigHelper::checkConfig('invoices.post_address', true)) {
             if ($this->data['post_name'] || $this->data['post_address']) {
                 $lines = document_address(array(
-                    'name' => $this->data['post_name'] ? $this->data['post_name'] : $this->data['name'],
+                    'name' => $this->data['post_name'] ?: $this->data['name'],
                     'address' => $this->data['post_address'],
                     'street' => $this->data['post_street'],
                     'zip' => $this->data['post_zip'],

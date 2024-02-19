@@ -120,7 +120,7 @@ function valid_pool($p, $id = 0)
         }
     }
 
-    return ($error) ? $error : 0;
+    return ($error) ?: 0;
 }
 
 /*

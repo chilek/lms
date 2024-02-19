@@ -2220,8 +2220,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     public function AddInvoice($invoice)
     {
         $currtime = time();
-        $cdate = $invoice['invoice']['cdate'] ? $invoice['invoice']['cdate'] : $currtime;
-        $sdate = $invoice['invoice']['sdate'] ? $invoice['invoice']['sdate'] : $currtime;
+        $cdate = $invoice['invoice']['cdate'] ?: $currtime;
+        $sdate = $invoice['invoice']['sdate'] ?: $currtime;
         $number = $invoice['invoice']['number'];
         $type = $invoice['invoice']['type'];
         $fullnumber = docnumber(array(
@@ -2272,7 +2272,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $args = array(
             'number' => $number,
-            SYSLOG::RES_NUMPLAN => $invoice['invoice']['numberplanid'] ? $invoice['invoice']['numberplanid'] : null,
+            SYSLOG::RES_NUMPLAN => $invoice['invoice']['numberplanid'] ?: null,
             'type' => $type,
             'cdate' => $cdate,
             'sdate' => $sdate,
@@ -2291,23 +2291,23 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'ten' => $invoice['customer']['ten'],
             'ssn' => $invoice['customer']['ssn'],
             'zip' => $invoice['customer']['zip'],
-            'city' => $invoice['customer']['postoffice'] ? $invoice['customer']['postoffice'] : $invoice['customer']['city'],
-            SYSLOG::RES_COUNTRY => $invoice['customer']['countryid'] ? $invoice['customer']['countryid'] : null,
+            'city' => $invoice['customer']['postoffice'] ?: $invoice['customer']['city'],
+            SYSLOG::RES_COUNTRY => $invoice['customer']['countryid'] ?: null,
             SYSLOG::RES_DIV => $invoice['customer']['divisionid'],
-            'div_name' => ($division['name'] ? $division['name'] : ''),
-            'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
-            'div_address' => ($division['address'] ? $division['address'] : ''),
-            'div_city' => ($division['city'] ? $division['city'] : ''),
-            'div_zip' => ($division['zip'] ? $division['zip'] : ''),
-            'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => ($division['countryid'] ? $division['countryid'] : null),
-            'div_ten' => ($division['ten'] ? $division['ten'] : ''),
-            'div_regon' => ($division['regon'] ? $division['regon'] : ''),
+            'div_name' => ($division['name'] ?: ''),
+            'div_shortname' => ($division['shortname'] ?: ''),
+            'div_address' => ($division['address'] ?: ''),
+            'div_city' => ($division['city'] ?: ''),
+            'div_zip' => ($division['zip'] ?: ''),
+            'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => ($division['countryid'] ?: null),
+            'div_ten' => ($division['ten'] ?: ''),
+            'div_regon' => ($division['regon'] ?: ''),
             'div_bank' => $division['bank'] ?: null,
-            'div_account' => ($division['account'] ? $division['account'] : ''),
-            'div_inv_header' => ($division['inv_header'] ? $division['inv_header'] : ''),
-            'div_inv_footer' => ($division['inv_footer'] ? $division['inv_footer'] : ''),
-            'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
-            'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
+            'div_account' => ($division['account'] ?: ''),
+            'div_inv_header' => ($division['inv_header'] ?: ''),
+            'div_inv_footer' => ($division['inv_footer'] ?: ''),
+            'div_inv_author' => ($division['inv_author'] ?: ''),
+            'div_inv_cplace' => ($division['inv_cplace'] ?: ''),
             'fullnumber' => $fullnumber,
             'comment' => $comment,
             'recipient_address_id' => empty($invoice['invoice']['recipient_address_id']) ? null : $invoice['invoice']['recipient_address_id'],
@@ -3131,11 +3131,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'value' => $tariff['value'],
             'taxcategory' => $tariff['taxcategory'],
             'currency' => isset($tariff['currency']) ? $tariff['currency'] : Localisation::getCurrentCurrency(),
-            'period' => $tariff['period'] ? $tariff['period'] : null,
+            'period' => $tariff['period'] ?: null,
             SYSLOG::RES_TAX => empty($tariff['taxid']) ? null : $tariff['taxid'],
-            SYSLOG::RES_NUMPLAN => $tariff['numberplanid'] ? $tariff['numberplanid'] : null,
-            'datefrom' => $tariff['from'] ? $tariff['from'] : 0,
-            'dateto' => $tariff['to'] ? $tariff['to'] : 0,
+            SYSLOG::RES_NUMPLAN => $tariff['numberplanid'] ?: null,
+            'datefrom' => $tariff['from'] ?: 0,
+            'dateto' => $tariff['to'] ?: 0,
             'prodid' => $tariff['prodid'],
             'uprate' => $tariff['uprate'],
             'downrate' => $tariff['downrate'],
@@ -3231,9 +3231,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'value' => $tariff['value'],
             'taxcategory' => $tariff['taxcategory'],
             'currency' => $tariff['currency'],
-            'period' => $tariff['period'] ? $tariff['period'] : null,
+            'period' => $tariff['period'] ?: null,
             SYSLOG::RES_TAX => empty($tariff['taxid']) ? null : $tariff['taxid'],
-            SYSLOG::RES_NUMPLAN => $tariff['numberplanid'] ? $tariff['numberplanid'] : null,
+            SYSLOG::RES_NUMPLAN => $tariff['numberplanid'] ?: null,
             'datefrom' => $tariff['from'],
             'dateto' => $tariff['to'],
             'prodid' => $tariff['prodid'],
@@ -3815,7 +3815,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'servicetype' => isset($addbalance['servicetype']) && !empty($addbalance['servicetype']) ? $addbalance['servicetype'] : null,
             SYSLOG::RES_CASHIMPORT => !empty($addbalance['importid']) ? $addbalance['importid'] : null,
             SYSLOG::RES_CASHSOURCE => !empty($addbalance['sourceid'])
-                ? ($addbalance['sourceid'] == -1 ? ($default_source_id ? $default_source_id : null) : $addbalance['sourceid'])
+                ? ($addbalance['sourceid'] == -1 ? ($default_source_id ?: null) : $addbalance['sourceid'])
                 : null,
         );
         $res = $this->db->Execute('INSERT INTO cash (time, userid, value, currency, currencyvalue, type, taxid,
@@ -4455,7 +4455,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'address' => $customer ? (($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
                     ? $customer['city'] . ', ' : '') . $customer['address']) : '',
             'zip' => $customer ? $customer['zip'] : '',
-            'city' => $customer ? ($customer['postoffice'] ? $customer['postoffice'] : $customer['city']) : '',
+            'city' => $customer ? ($customer['postoffice'] ?: $customer['city']) : '',
             SYSLOG::RES_COUNTRY => $customer && !empty($customer['countryid']) ? $customer['countryid'] : null,
             SYSLOG::RES_DIV => $customer ? $customer['divisionid'] : null,
             'div_name' => !empty($division['name']) ? $division['name'] : '',

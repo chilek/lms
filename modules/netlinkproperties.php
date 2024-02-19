@@ -71,8 +71,8 @@ function update_netlink_properties($id, $devid, $link)
     $tech_content = ($link['technology'] ? $LINKTECHNOLOGIES[$link['type']][$link['technology']]
             . (!$isnetlink ? ($radiosectorname ? " ($radiosectorname)" : '')
                 : ($srcradiosectorname || $dstradiosectorname ? ' ('
-                    . ($srcradiosectorname ? $srcradiosectorname : '-')
-                    . '/' . ($dstradiosectorname ? $dstradiosectorname : '-') . ')' : ''))
+                    . ($srcradiosectorname ?: '-')
+                    . '/' . ($dstradiosectorname ?: '-') . ')' : ''))
             : '-');
 
     $speed_content = $LINKSPEEDS[$link['speed']];

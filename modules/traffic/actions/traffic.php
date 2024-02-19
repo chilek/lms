@@ -54,8 +54,8 @@ if (isset($traffic)) {
 
 $starttime = $DB->GetOne('SELECT MIN(dt) FROM stats');
 $endtime = $DB->GetOne('SELECT MAX(dt) FROM stats');
-$starttime = $starttime ? $starttime : time();
-$endtime = $endtime ? $endtime : time();
+$starttime = $starttime ?: time();
+$endtime = $endtime ?: time();
 $startyear = date('Y', $starttime);
 $endyear = date('Y', $endtime);
 

@@ -533,7 +533,7 @@ switch ($action) {
             $args = array(
                 'type' => DOC_RECEIPT,
                 'number' => $receipt['number'],
-                'extnumber' => $receipt['extnumber'] ? $receipt['extnumber'] : '',
+                'extnumber' => $receipt['extnumber'] ?: '',
                 SYSLOG::RES_NUMPLAN => empty($receipt['numberplanid']) ? null : $receipt['numberplanid'],
                 'cdate' => $receipt['cdate'],
                 SYSLOG::RES_USER => Auth::GetCurrentUser(),

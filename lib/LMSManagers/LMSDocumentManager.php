@@ -1193,7 +1193,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
 
         $period = isset($period) ? $period : YEARLY;
-        $cdate = $cdate ? $cdate : time();
+        $cdate = $cdate ?: time();
 
         switch ($period) {
             case DAILY:
@@ -1328,7 +1328,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
 
         $period = isset($period) ? $period : YEARLY;
-        $cdate = $cdate ? $cdate : time();
+        $cdate = $cdate ?: time();
 
         switch ($period) {
             case DAILY:

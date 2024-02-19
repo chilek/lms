@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$month = $_POST['month'] ? $_POST['month'] : date('n');
-$year = $_POST['year'] ? $_POST['year'] : date('Y');
-$customer = $_POST['customer'] ? $_POST['customer'] : $_GET['customer'];
+$month = $_POST['month'] ?: date('n');
+$year = $_POST['year'] ?: date('Y');
+$customer = $_POST['customer'] ?: $_GET['customer'];
 
 $layout['pagetitle'] = trans('Stats of Customer $a in month $b', $LMS->GetCustomerName($customer), date('F Y', mktime(0, 0, 0, $month, 1, $year)));
     

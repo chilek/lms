@@ -102,7 +102,7 @@ if (isset($_POST['document'])) {
                     'planid' => $documentedit['numberplanid'],
                     'customerid' => $document['customerid'],
                 ));
-                $documentedit['number'] = $tmp ? $tmp : 1;
+                $documentedit['number'] = $tmp ?: 1;
             } else {
                 $documentedit['number'] = $document['number'];
             }

@@ -153,8 +153,8 @@ class VoipDbBuffor
                                $c['price']              . ',' .
                                $c['call_status']        . ',' .
                                $c['call_type']          . ',' .
-                               ($caller['voipaccountid'] ? $caller['voipaccountid'] : 'NULL') . ',' .
-                               ($callee['voipaccountid'] ? $callee['voipaccountid'] : 'NULL') . ',' .
+                               ($caller['voipaccountid'] ?: 'NULL') . ',' .
+                               ($callee['voipaccountid'] ?: 'NULL') . ',' .
                                ((int) $caller['flags']) . ',' .
                                ((int) $callee['flags']) . ',' .
                                ($caller_gr               ? "'$caller_gr'"           : 'NULL') . ',' .

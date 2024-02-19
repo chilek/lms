@@ -101,7 +101,7 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
     $imgW = GRAPH_WIDTH;
     $imgH = GRAPH_HEIGHT;
 
-    $tto = ($todate ? $todate : time());
+    $tto = ($todate ?: time());
     $tfrom = $fromdate;
 
     if ($tfrom > $tto) {
@@ -127,7 +127,7 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
             $tfrom = $tto - 60 * 60 * 24 * 365;
             break;
         default:
-            $tfrom = $tfrom ? $tfrom : $tto - 60 * 60 * 24 * 30;
+            $tfrom = $tfrom ?: $tto - 60 * 60 * 24 * 30;
             break;
     }
 

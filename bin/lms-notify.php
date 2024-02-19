@@ -1894,7 +1894,7 @@ if (empty($types) || in_array('reminder', $types)) {
             $notifications['reminder']['customers'][] = $row['id'];
             $row['doc_number'] = docnumber(array(
                 'number' => $row['number'],
-                'template' => ($row['template'] ? $row['template'] : '%N/LMS/%Y'),
+                'template' => ($row['template'] ?: '%N/LMS/%Y'),
                 'cdate' => $row['cdate'],
                 'customerid' => $row['id'],
             ));
@@ -2340,7 +2340,7 @@ if (empty($types) || in_array('invoices', $types)) {
             $notifications['invoices']['customers'][] = $row['id'];
             $row['doc_number'] = docnumber(array(
                 'number' => $row['number'],
-                'template' => ($row['template'] ? $row['template'] : '%N/LMS/%Y'),
+                'template' => ($row['template'] ?: '%N/LMS/%Y'),
                 'cdate' => $row['cdate'],
                 'customerid' => $row['id'],
             ));
@@ -2566,7 +2566,7 @@ if (empty($types) || in_array('notes', $types)) {
             $notifications['notes']['customers'][] = $row['id'];
             $row['doc_number'] = docnumber(array(
                 'number' => $row['number'],
-                'template' => ($row['template'] ? $row['template'] : '%N/LMS/%Y'),
+                'template' => ($row['template'] ?: '%N/LMS/%Y'),
                 'cdate' => $row['cdate'],
                 'customerid' => $row['id'],
             ));
@@ -3204,7 +3204,7 @@ if (empty($types) || in_array('events', $types)) {
 
             if ((empty($scopes) || isset($scopes['customers'])) && (empty($recipients) || isset($recipients['customers'])) && $cid) {
                 if (!empty($customers[$cid]['email'])) {
-                    $emails = explode(',', $debug_email ? $debug_email : $customers[$cid]['email']);
+                    $emails = explode(',', $debug_email ?: $customers[$cid]['email']);
                     foreach ($emails as $contact) {
                         if (!isset($emails[$contact])) {
                             $contacts[$contact] = array(
@@ -3215,7 +3215,7 @@ if (empty($types) || in_array('events', $types)) {
                     }
                 }
                 if (!empty($customers[$cid]['phone'])) {
-                    $phones = explode(',', $debug_phone ? $debug_phone : $customers[$cid]['phone']);
+                    $phones = explode(',', $debug_phone ?: $customers[$cid]['phone']);
                     foreach ($phones as $contact) {
                         if (!isset($phones[$contact])) {
                             $contacts[$contact] = array(
@@ -3229,7 +3229,7 @@ if (empty($types) || in_array('events', $types)) {
 
             if ((empty($scopes) || isset($scopes['users'])) && (empty($recipients) || isset($recipients['users'])) && $uid && array_key_exists($uid, $users)) {
                 if (!empty($users[$uid]['email'])) {
-                    $emails = explode(',', $debug_email ? $debug_email : $users[$uid]['email']);
+                    $emails = explode(',', $debug_email ?: $users[$uid]['email']);
                     foreach ($emails as $contact) {
                         if (!isset($contacts[$contact])) {
                             $contacts[$contact] = array(
@@ -3240,7 +3240,7 @@ if (empty($types) || in_array('events', $types)) {
                     }
                 }
                 if (!empty($users[$uid]['phone'])) {
-                    $phones = explode(',', $debug_phone ? $debug_phone : $users[$uid]['phone']);
+                    $phones = explode(',', $debug_phone ?: $users[$uid]['phone']);
                     foreach ($phones as $contact) {
                         if (!isset($contacts[$contact])) {
                             $contacts[$contact] = array(

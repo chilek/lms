@@ -95,7 +95,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
         }
 
         foreach ($list as $idx => $row) {
-            $line = $record ? $record : $cash_record;
+            $line = $record ?: $cash_record;
             $i++;
 
             $clariondate = intval($row['cdate']/86400)+61731;
@@ -115,7 +115,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
             $line = str_replace('%CID', $row['customerid'], $line);
             $line = str_replace('%UID4', sprintf('%04d', $row['userid']), $line);
             $line = str_replace('%UID', $row['userid'], $line);
-            $line = str_replace('%CUSTOMER', $row['customer'] ? $row['customer'] : $default_customer, $line);
+            $line = str_replace('%CUSTOMER', $row['customer'] ?: $default_customer, $line);
             $line = str_replace('%ADDRESS', $row['address'], $line);
             $line = str_replace('%ZIP', $row['zip'], $line);
             $line = str_replace('%CITY', $row['city'], $line);
@@ -301,7 +301,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
             $rec['brutto'] += $sum;
 
             if (!isset($items[$idx + 1]['docid']) || $row['docid'] != $items[$idx + 1]['docid']) {
-                $line = $record ? $record : $inv_record;
+                $line = $record ?: $inv_record;
                 $i++;
 
                 $clariondate = intval($doc['cdate'] / 86400) + 61731;

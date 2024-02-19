@@ -148,7 +148,7 @@ class LMSSmartyPlugins
             }
             $result .= '</select>';
         } else {
-            $lockedSelected = ($selected ? $selected : $defaultSelected);
+            $lockedSelected = ($selected ?: $defaultSelected);
             $result = $lockedSelected . '<input type="hidden" name="' . $elementname . '"'
                 . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . ' value="'
                 . $lockedSelected . '">';
