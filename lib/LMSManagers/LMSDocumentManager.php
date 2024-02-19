@@ -134,7 +134,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $archived = isset($params['archived']) ? $params['archived'] : -1;
         $limit = isset($params['limit']) ? $params['limit'] : null;
         $offset = isset($params['offset']) ? $params['offset'] : null;
-        $count = isset($params['count']) ? $params['count'] : false;
+        $count = isset($params['count']) && $params['count'];
 
         if ($order=='') {
             $order='cdate,asc';

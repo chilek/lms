@@ -274,7 +274,7 @@ $layout['pagetitle'] = trans('Network Map');
 
 $graph = isset($_GET['graph']) ? $_GET['graph'] : '';
 $start = isset($_GET['start']) ? $_GET['start'] : 0;
-$mini = isset($_GET['mini']) ? true : false;
+$mini = isset($_GET['mini']);
 
 $minx = 0;
 $maxx = 0;

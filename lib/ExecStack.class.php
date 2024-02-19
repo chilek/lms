@@ -217,7 +217,10 @@ class ExecStack
 
     public function actionExists($module, $action)
     {
-        return is_array($this->_MODINFO[$module]['actions'][$action]) && ($this->needExec($module, $action) ? is_readable($this->modules_dir.'/'.$module.'/actions/'.$action.'.php') : true);
+        return is_array($this->_MODINFO[$module]['actions'][$action]) && (!$this->needExec(
+            $module,
+            $action
+        ) || is_readable($this->modules_dir . '/' . $module . '/actions/' . $action . '.php'));
     }
 
     public function actionIsPublic($module, $action)

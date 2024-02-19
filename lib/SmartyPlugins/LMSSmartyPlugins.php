@@ -401,7 +401,7 @@ class LMSSmartyPlugins
 
         $form = isset($params['form']) ? $params['form'] : null;
         $accept = !empty($params['accept']) ? $params['accept'] : null;
-        $multiple = isset($params['multiple']) ? ConfigHelper::checkValue($params['multiple']) : true;
+        $multiple = !isset($params['multiple']) || ConfigHelper::checkValue($params['multiple']);
 
         $image_resize = !isset($params['image_resize']) || !empty($params['image_resize']);
 
@@ -1343,8 +1343,8 @@ class LMSSmartyPlugins
         $LMS = LMS::getInstance();
 
         $argv = array(
-            'userAccess' => empty($params['hide_disabled']) ? true : false,
-            'hideDeleted' => empty($params['hide_deleted']) ? true : false,
+            'userAccess' => empty($params['hide_disabled']),
+            'hideDeleted' => empty($params['hide_deleted']),
             'short' => true
         );
         $userlist = $LMS->getUserList($argv);
@@ -1357,9 +1357,9 @@ class LMSSmartyPlugins
         $tip = empty($params['tip']) ? trans('Select user(s) (optional)') : $params['tip'];
         $trigger = isset($params['trigger']) ? $params['trigger'] : $elemname;
         $form = isset($params['form']) ? $params['form'] : null;
-        $multiple = empty($params['multiple']) ? false : true;
+        $multiple = !empty($params['multiple']);
         $onChange = empty($params['onchange']) ? 'document.filter.submit();' : $params['onchange'];
-        $required = empty($params['required']) ? false : true;
+        $required = !empty($params['required']);
 
         $options = '';
 
@@ -1813,7 +1813,7 @@ class LMSSmartyPlugins
             $types = array_flip($barcode->getTypes());
         }
 
-        $transliterate = isset($params['transliterate']) ? ConfigHelper::checkValue($params['transliterate']) : true;
+        $transliterate = !isset($params['transliterate']) || ConfigHelper::checkValue($params['transliterate']);
         $text = isset($params['text']) ? $params['text'] : 'text not set';
         $type = isset($params['type']) && isset($types[$params['type']]) ? $params['type'] : 'C128';
         $scale = isset($params['scale']) ? filter_var($params['scale'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE) : null;

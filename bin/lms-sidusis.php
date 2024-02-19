@@ -281,7 +281,7 @@ if (array_key_exists('export-ranges', $options)) {
 
     $curl_options[CURLOPT_POST] = false;
     $curl_options[CURLOPT_POSTFIELDS] = array(
-        'is_incremental' => array_key_exists('replace-ranges', $options) ? false : true,
+        'is_incremental' => !array_key_exists('replace-ranges', $options),
         'file' => curl_file_create(
             $sidusisTemporaryFilePath,
             'application/zip',

@@ -44,7 +44,7 @@ function insertGroups(array $groups)
                         (rule_group_id, prefix_group_id, settings)
                        VALUES ' . implode(',', $groups));
 
-    return $r ? true : false;
+    return (bool)$r;
 }
 
 /*!

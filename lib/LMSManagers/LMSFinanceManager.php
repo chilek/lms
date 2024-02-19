@@ -3513,7 +3513,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function TariffExists($id)
     {
-        return ($this->db->GetOne('SELECT id FROM tariffs WHERE id=?', array($id)) ? true : false);
+        return (bool)$this->db->GetOne('SELECT id FROM tariffs WHERE id=?', array($id));
     }
 
     public function ReceiptDelete($docid)
@@ -4042,7 +4042,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function PaymentExists($id)
     {
-        return ($this->db->GetOne('SELECT id FROM payments WHERE id=?', array($id)) ? true : false);
+        return (bool)$this->db->GetOne('SELECT id FROM payments WHERE id=?', array($id));
     }
 
     public function PaymentAdd($paymentdata)

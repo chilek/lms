@@ -33,7 +33,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
     public function NetworkExists($id)
     {
-        return ($this->db->GetOne('SELECT * FROM networks WHERE id=?', array($id)) ? true : false);
+        return (bool)$this->db->GetOne('SELECT * FROM networks WHERE id=?', array($id));
     }
 
     public function NetworkSet($id, $disabled = -1)
@@ -75,9 +75,15 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     public function IsIPFree($ip, $netid = 0)
     {
         if ($netid) {
-            return !($this->db->GetOne('SELECT id FROM vnodes WHERE (ipaddr=inet_aton(?) AND netid=?) OR ipaddr_pub=inet_aton(?)', array($ip, $netid, $ip)) ? true : false);
+            return !(bool)$this->db->GetOne(
+                'SELECT id FROM vnodes WHERE (ipaddr=inet_aton(?) AND netid=?) OR ipaddr_pub=inet_aton(?)',
+                array($ip, $netid, $ip)
+            );
         } else {
-            return !($this->db->GetOne('SELECT id FROM vnodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ip, $ip)) ? true : false);
+            return !(bool)$this->db->GetOne(
+                'SELECT id FROM vnodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)',
+                array($ip, $ip)
+            );
         }
     }
 
@@ -88,7 +94,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
     public function IsIPGateway($ip)
     {
-        return ($this->db->GetOne('SELECT gateway FROM networks WHERE gateway = ?', array($ip)) ? true : false);
+        return (bool)$this->db->GetOne('SELECT gateway FROM networks WHERE gateway = ?', array($ip));
     }
 
     public function GetPrefixList()

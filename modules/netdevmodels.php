@@ -124,15 +124,15 @@ function save_producer($forms)
 
     if (!$error) {
         if (!$form['id']) {
-            $error = ($DB->GetOne(
+            $error = (bool)$DB->GetOne(
                 'SELECT COUNT(*) FROM netdeviceproducers WHERE name = ?',
                 array(strtoupper($form['name']))
-            ) ? true : false);
+            );
         } else {
-            $error = ($DB->GetOne(
+            $error = (bool)$DB->GetOne(
                 'SELECT COUNT(*) FROM netdeviceproducers WHERE name = ? AND id <> ? ',
                 array(strtoupper($form['name']), $form['id'])
-            ) ? true : false);
+            );
         }
 
         if ($error) {
@@ -328,15 +328,15 @@ function save_model($forms)
 
     if (!$error) {
         if (!$form['id']) {
-            $error = ($DB->GetOne(
+            $error = (bool)$DB->GetOne(
                 'SELECT COUNT(*) FROM netdevicemodels WHERE netdeviceproducerid = ? AND UPPER(name) = ? ',
                 array($pid, strtoupper($form['name']))
-            ) ? true : false);
+            );
         } else {
-            $error = ($DB->GetOne(
+            $error = (bool)$DB->GetOne(
                 'SELECT COUNT(*) FROM netdevicemodels WHERE id <> ? AND netdeviceproducerid = ? AND UPPER(name) = ?',
                 array($formid, $pid, strtoupper($form['name']))
-            ) ? true : false);
+            );
         }
 
         if ($error) {

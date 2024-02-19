@@ -435,7 +435,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             )',
             array($id)
         );
-        return (($voip_account) ? true : false);
+        return (bool)$voip_account;
     }
 
     /**
