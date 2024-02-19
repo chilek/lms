@@ -376,7 +376,7 @@ $categories = $LMS->GetUserCategories($currentuser);
 $projects = $LMS->GetProjects();
 unset($projects['total'], $projects['order'], $projects['direction']);
 
-$netnodelist = $LMS->GetNetNodeList(array(), 'name');
+$netnodelist = $LMS->GetNetNodeList();
 unset($netnodelist['total'], $netnodelist['order'], $netnodelist['direction']);
 
 $SESSION->remove('backid');
