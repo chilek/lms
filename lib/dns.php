@@ -313,9 +313,8 @@ function update_soa_serial($did)
         }
 
             $serial = $today . str_pad($revision, 2, '0', STR_PAD_LEFT);
-        ;
 
-            // Change serial in SOA array.
+        // Change serial in SOA array.
             $soa[2] = $serial;
 
             // Build new SOA record content and update the database

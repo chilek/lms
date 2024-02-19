@@ -1479,7 +1479,7 @@ class xajaxResponse
             $this->_printResponse_JSON();
         } else {
             //todo: trigger Error
-        };
+        }
         return ob_get_clean();
     }
     
@@ -1627,8 +1627,8 @@ class xajaxResponse
     {
         if ('text/xml' == $this->getContentType()) {
             $mData = $this->_encodeArray($mData);
-        };
-        
+        }
+
         /* merge commands if possible */
         if (in_array($aAttributes['cmd'], array('js','ap'))) {
             if ($aLastCommand = array_pop($this->aCommands)) {
