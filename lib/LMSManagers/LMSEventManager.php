@@ -102,7 +102,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 'body' => $messagebody,
                 'type' => RTMESSAGE_ASSIGNED_EVENT_ADD,
             ));
-        };
+        }
 
         $this->db->CommitTrans();
 
@@ -192,7 +192,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 'body' => $messagebody,
                 'type' => RTMESSAGE_ASSIGNED_EVENT_CHANGE,
             ));
-        };
+        }
 
         $this->db->CommitTrans();
     }
@@ -236,7 +236,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                     'body' => $messagebody,
                     'type' => RTMESSAGE_ASSIGNED_EVENT_DELETE,
                 ));
-            };
+            }
         }
     }
 

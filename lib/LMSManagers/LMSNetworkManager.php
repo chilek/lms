@@ -1105,6 +1105,6 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             }
 
             return $result;
-        };
+        }
     }
 }
