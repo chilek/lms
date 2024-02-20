@@ -47,42 +47,69 @@
 		{/if}
 	</TR>
 	{cycle values="white,grey" print=false}
-	{section name=customerlist loop=$customerlist}{if $customerlist[customerlist].id}
-	<TR class="{cycle}">{assign var=cid value=$customerlist[customerlist].id}
-		<TD ALIGN="CENTER">
-			{counter}.
-		</TD>
-		<TD ALIGN="CENTER">
-			{$customerlist[customerlist].id|string_format:"%04d"}
-		</TD>
-		<TD ALIGN="CENTER">
-			{if $customerlist[customerlist].extid}{$customerlist[customerlist].extid|escape}{/if}
-		</TD>
-		<TD>
-			<B>{$customerlist[customerlist].customername}</B><BR>
-			{$customerlist[customerlist].zip} {$customerlist[customerlist].city}{if $customerlist[customerlist].city != ""},{/if} {$customerlist[customerlist].address}<BR>
-			{if $contactlist.$cid.type}{trans("<!print>mobile")}{else}{trans("phone<!plural>")}{/if} {$contactlist.$cid.phone}
-		</TD>
-		{if $customernodes}
-			<td align="right">
-				{foreach $customerlist[customerlist].nodes as $node}
-					{$node.name} ({$node.ip} / {$node.mac})
-					{if !$node@last}<br>{/if}
-				{/foreach}
-			</td>
+	{foreach $customerlist as $customer}
+		{if !empty($customer.id)}
+			<tr class="{cycle}">
+				{$cid = $customer.id}
+				<td class="text-center">
+					{counter}.
+				</td>
+				<td class="text-center">
+					{$customer.id|string_format:"%04d"}
+				</td>
+				<td class="text-center">
+					{if $customer.extid}
+						{$customer.extid|escape}
+					{/if}
+				</td>
+				<td>
+					<strong>{$customer.customername}</strong>
+					<br>
+					{$customer.zip} {$customer.city}{if $customer.city != ""},{/if}
+					{$customer.address}
+					<br>
+					{if $contactlist.$cid.type}
+						{trans("<!print>mobile")}
+					{else}
+						{trans("phone<!plural>")}
+					{/if}
+					{$contactlist.$cid.phone}
+				</td>
+				{if $customernodes}
+					<td class="text-right">
+						{foreach $customer.nodes as $node}
+							{$node.name} ({$node.ip} / {$node.mac})
+							{if !$node@last}<br>{/if}
+						{/foreach}
+					</td>
+				{/if}
+				<td class="text-right" style="max-width: 200ch;">
+					{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+						{$customer.tariffvalue|money_format}
+						<br>
+					{/if}
+					{if $customer.email}
+						{$customer.email|replace:",":', '}
+						<br>
+					{/if}
+					{if $customer.ten}{trans("TEN:")}
+						{$customer.ten}
+					{elseif $customer.ssn}{trans("SSN:")}
+						{if empty($listdata.hidessn)}
+							{$customer.ssn}
+						{else}
+							{trans("(hidden)")}
+						{/if}
+					{/if}
+				</td>
+				{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+				<td class="text-right nobr">
+					{$customer.balance|money_format}
+				</td>
+				{/if}
+			</tr>
 		{/if}
-		<TD ALIGN="RIGHT">
-			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{$customerlist[customerlist].tariffvalue|money_format}<BR>{/if}
-			{if $customerlist[customerlist].email}{$customerlist[customerlist].email}<BR>{/if}
-			{if $customerlist[customerlist].ten}{trans("TEN:")} {$customerlist[customerlist].ten}{elseif $customerlist[customerlist].ssn}{trans("SSN:")} {if empty($listdata.hidessn)}{$customerlist[customerlist].ssn}{else}{trans("(hidden)")}{/if}{/if}
-		</TD>
-		{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-		<TD ALIGN="RIGHT" NOWRAP>
-			{$customerlist[customerlist].balance|money_format}
-		</TD>
-		{/if}
-	</TR>
-	{/if}{/section}
+	{/foreach}
 	{if ConfigHelper::checkConfig('privileges.superuser') || (!ConfigHelper::checkConfig('privileges.hide_finances') && !ConfigHelper::checkConfig('privileges.hide_summaries'))}
 	<TR>
 		<TD CLASS="HEADGREY" COLSPAN="{if $customernodes}5{else}4{/if}" ALIGN="RIGHT"><B>{trans("Total:")}</B></TD>
