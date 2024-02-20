@@ -325,7 +325,7 @@ if (isset($_GET['search'])) {
             $nodesearch['lastonlineafter'] = $lastonlineafter;
         }
 
-        $status = isset($nodesearch['status']) ? $nodesearch['status'] : null;
+        $status = $nodesearch['status'] ?? null;
         unset($nodesearch['status']);
         $nodelist = $LMS->GetNodeList(array('order' => $o, 'search' => $nodesearch, 'status' => $status, 'sqlskey' => $k));
 

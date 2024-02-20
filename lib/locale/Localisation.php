@@ -275,13 +275,13 @@ class Localisation
 
     public static function getCurrentViesCode()
     {
-        return isset(self::$langDefs[self::$systemLanguage]['vies_code']) ? self::$langDefs[self::$systemLanguage]['vies_code'] : null;
+        return self::$langDefs[self::$systemLanguage]['vies_code'] ?? null;
     }
 
     public static function getViesCodeByCountryCode($countryCode)
     {
         $lang = self::checkLanguage($countryCode);
-        return isset(self::$langDefs[$lang]['vies_code']) ? self::$langDefs[$lang]['vies_code'] : null;
+        return self::$langDefs[$lang]['vies_code'] ?? null;
     }
 
     public static function getCurrentHtmlCharset()
@@ -435,7 +435,7 @@ class Localisation
         }
 
         for ($i = 1, $len = count($args); $i <= $len; $i++) {
-            $content = str_replace('$' . chr(97 + $i - 1), isset($args[$i - 1]) ? $args[$i - 1] : '-', $content);
+            $content = str_replace('$' . chr(97 + $i - 1), $args[$i - 1] ?? '-', $content);
         }
 
         $content = preg_replace('/<![^>]+>/', '', $content);

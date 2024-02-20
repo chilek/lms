@@ -33,7 +33,7 @@ if (empty($report_type)) {
     $report_type = '';
 }
 
-$type = isset($_GET['type']) ? $_GET['type'] : '';
+$type = $_GET['type'] ?? '';
 
 switch ($type) {
     case 'customerbalance':
@@ -820,7 +820,7 @@ switch ($type) {
         $registry = isset($_POST['registry']) ? intval($_POST['registry']) : 0;
         $user = isset($_POST['user']) ? intval($_POST['user']) : 0;
         $group = isset($_POST['group']) ? intval($_POST['group']) : 0;
-        $sorttype = isset($_POST['sorttype']) ? $_POST['sorttype'] : null;
+        $sorttype = $_POST['sorttype'] ?? null;
         $where = '';
 
         if ($registry) {
@@ -1001,9 +1001,9 @@ switch ($type) {
             foreach ($totals as $page => $t) {
                 $pages[] = $page;
 
-                $totals[$page]['totalincome'] = (isset($totals[$page - 1]['totalincome']) ? $totals[$page - 1]['totalincome'] : 0) + $t['income'];
-                $totals[$page]['totalexpense'] = (isset($totals[$page - 1]['totalexpense']) ? $totals[$page - 1]['totalexpense'] : 0)
-                    + (isset($t['expense']) ? $t['expense'] : 0);
+                $totals[$page]['totalincome'] = ($totals[$page - 1]['totalincome'] ?? 0) + $t['income'];
+                $totals[$page]['totalexpense'] = ($totals[$page - 1]['totalexpense'] ?? 0)
+                    + ($t['expense'] ?? 0);
                 $totals[$page]['rowstart'] = isset($totals[$page - 1]) ? $totals[$page - 1]['rowstart'] + $totals[$page - 1]['rows'] : 0;
             }
 

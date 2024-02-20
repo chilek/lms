@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$regid = isset($_GET['regid']) ? $_GET['regid'] : 0;
+$regid = $_GET['regid'] ?? 0;
 
 if (!$regid) {
         $SESSION->redirect('?m=cashreglist');

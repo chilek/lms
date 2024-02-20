@@ -159,7 +159,7 @@ if (isset($_GET['bar'])) {
     }
 }
 
-$bar = isset($_GET['bar']) ? $_GET['bar'] : '';
+$bar = $_GET['bar'] ?? '';
 
 switch ($bar) {
     case 'hour':
@@ -229,8 +229,8 @@ switch ($bar) {
             $to,
             $net,
             $customer,
-            isset($_POST['order']) ? $_POST['order'] : '',
-            isset($_POST['limit']) ? $_POST['limit'] : 0
+            $_POST['order'] ?? '',
+            $_POST['limit'] ?? 0
         );
         break;
 

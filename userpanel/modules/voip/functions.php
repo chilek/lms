@@ -233,11 +233,11 @@ function module_main()
             'customerid' => $params['fvownerid'],
             'voipaccountid' => empty($params['id']) ? null : $params['id'],
             'number' => empty($params['phone']) ? null : $params['phone'],
-            'datefrom' => isset($params['frangefrom']) ? $params['frangefrom'] : null,
-            'dateto' => isset($params['frangeto']) ? $params['frangeto'] : null,
-            'direction' => isset($params['fdirection']) ? $params['fdirection'] : null,
-            'type' => isset($params['ftype']) ? $params['ftype'] : null,
-            'status' => isset($params['fstatus']) ? $params['fstatus'] : null,
+            'datefrom' => $params['frangefrom'] ?? null,
+            'dateto' => $params['frangeto'] ?? null,
+            'direction' => $params['fdirection'] ?? null,
+            'type' => $params['ftype'] ?? null,
+            'status' => $params['fstatus'] ?? null,
         ));
 
         if (isset($_GET['mode']) && $_GET['mode'] == 'minibilling') {

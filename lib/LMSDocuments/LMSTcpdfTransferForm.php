@@ -285,7 +285,7 @@ class LMSTcpdfTransferForm extends LMSDocument
 
         /* account */
         $this->backend->SetFont(null, 'B', 9);
-        $this->backend->Text(67, 25, format_bankaccount($this->data['account'], isset($this->data['export']) ? $this->data['export'] : false));
+        $this->backend->Text(67, 25, format_bankaccount($this->data['account'], $this->data['export'] ?? false));
 
         /* currency */
         $this->backend->SetFont(null, 'B', 10);
@@ -369,7 +369,7 @@ class LMSTcpdfTransferForm extends LMSDocument
         if (!empty($customerinfo['accounts'])) {
             $account = $customerinfo['accounts'][0]['account'];
         } elseif (!empty($customerinfo['account'])) {
-            $account = bankaccount($data['customerid'], $customerinfo['account'], isset($data['export']) ? $data['export'] : false);
+            $account = bankaccount($data['customerid'], $customerinfo['account'], $data['export'] ?? false);
         } else {
             $account = null;
         }

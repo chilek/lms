@@ -188,9 +188,9 @@ if ($locations) {
                 $args = array();
             }
             $args = array_merge($args, array(
-                'city' => isset($loc['city']) ? $loc['city'] : '',
+                'city' => $loc['city'] ?? '',
                 'city_id'=> $city,
-                'street' => isset($loc['street']) ? $loc['street'] : (isset($loc['city']) ? '' : $v['location']),
+                'street' => $loc['street'] ?? (isset($loc['city']) ? '' : $v['location']),
                 'street_id' => $street,
                 'house' => $house,
                 'flat' => $flat,
@@ -248,9 +248,9 @@ if ($locations) {
             $args = array();
         }
         $args = array_merge($args, array(
-            'city' => isset($loc['city']) ? $loc['city'] : '',
+            'city' => $loc['city'] ?? '',
             'city_id'=> $city,
-            'street' => isset($loc['street']) ? $loc['street'] : (isset($loc['city']) ? '' : $v['location']),
+            'street' => $loc['street'] ?? (isset($loc['city']) ? '' : $v['location']),
             'street_id' => $street,
             'house' => $house,
             'flat' => $flat,
@@ -297,9 +297,9 @@ if ($locations) {
                 $args = array();
             }
             $args = array_merge($args, array(
-                'city' => isset($loc['city']) ? $loc['city'] : '',
+                'city' => $loc['city'] ?? '',
                 'city_id'=> $city,
-                'street' => isset($loc['street']) ? $loc['street'] : (isset($loc['city']) ? '' : $v['location']),
+                'street' => $loc['street'] ?? (isset($loc['city']) ? '' : $v['location']),
                 'street_id' => $street,
                 'house' => $house,
                 'flat' => $flat,
@@ -403,9 +403,9 @@ if ($locations) {
                 $args = array();
             }
             $args = array_merge($args, array(
-                'city' => isset($loc['city']) ? $loc['city'] : '',
+                'city' => $loc['city'] ?? '',
                 'city_id'=> $city,
-                'street' => isset($loc['street']) ? $loc['street'] : (isset($loc['city']) ? '' : $v['location']),
+                'street' => $loc['street'] ?? (isset($loc['city']) ? '' : $v['location']),
                 'street_id' => $street,
                 'house' => $house,
                 'flat' => $flat,

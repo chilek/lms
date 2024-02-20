@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$useradd = isset($_POST['useradd']) ? $_POST['useradd'] : array();
+$useradd = $_POST['useradd'] ?? array();
 
 if (count($useradd)) {
     foreach ($useradd as $key => $value) {

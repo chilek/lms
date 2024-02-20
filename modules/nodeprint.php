@@ -28,7 +28,7 @@ if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkCo
     access_denied();
 }
 
-$type = isset($_GET['type']) ? $_GET['type'] : '';
+$type = $_GET['type'] ?? '';
 
 switch ($type) {
     case 'nodelist':

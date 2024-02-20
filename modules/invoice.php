@@ -1048,7 +1048,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             } else {
                 // JPK body positions (invoices)
                 $jpk_data .= "\t<Faktura>\n";
-                $jpk_data .= "\t\t<KodWaluty>" . (isset($invoice['currency']) ? $invoice['currency'] : 'PLN') . "</KodWaluty>\n";
+                $jpk_data .= "\t\t<KodWaluty>" . ($invoice['currency'] ?? 'PLN') . "</KodWaluty>\n";
                 $jpk_data .= "\t\t<P_1>" . date('Y-m-d', $invoice['cdate']) . "</P_1>\n";
                 $invoices[$invoiceid] = $invoice;
                 $jpk_data .= "\t\t<P_2A>" . $invoice['fullnumber'] . "</P_2A>\n";

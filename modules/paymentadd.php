@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$payment = isset($_POST['payment']) ? $_POST['payment'] : null;
+$payment = $_POST['payment'] ?? null;
 
 if ($payment) {
     foreach ($payment as $key => $value) {

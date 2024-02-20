@@ -120,20 +120,20 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
      */
     public function GetDocumentList(array $params)
     {
-        $order = isset($params['order']) ? $params['order'] : 'cdate,asc';
-        $type = isset($params['type']) ? $params['type'] : null;
-        $service = isset($params['service']) ? $params['service'] : null;
-        $customer = isset($params['customer']) ? $params['customer'] : null;
-        $numberplan = isset($params['numberplan']) ? $params['numberplan'] : null;
-        $usertype = isset($params['usertype']) ? $params['usertype'] : 'creator';
-        $userid = isset($params['userid']) ? $params['userid'] : null;
-        $periodtype = isset($params['periodtype']) ? $params['periodtype'] : 'creationdate';
-        $from = isset($params['from']) ? $params['from'] : 0;
-        $to = isset($params['to']) ? $params['to'] : 0;
-        $status = isset($params['status']) ? $params['status'] : -1;
-        $archived = isset($params['archived']) ? $params['archived'] : -1;
-        $limit = isset($params['limit']) ? $params['limit'] : null;
-        $offset = isset($params['offset']) ? $params['offset'] : null;
+        $order = $params['order'] ?? 'cdate,asc';
+        $type = $params['type'] ?? null;
+        $service = $params['service'] ?? null;
+        $customer = $params['customer'] ?? null;
+        $numberplan = $params['numberplan'] ?? null;
+        $usertype = $params['usertype'] ?? 'creator';
+        $userid = $params['userid'] ?? null;
+        $periodtype = $params['periodtype'] ?? 'creationdate';
+        $from = $params['from'] ?? 0;
+        $to = $params['to'] ?? 0;
+        $status = $params['status'] ?? -1;
+        $archived = $params['archived'] ?? -1;
+        $limit = $params['limit'] ?? null;
+        $offset = $params['offset'] ?? null;
         $count = isset($params['count']) && $params['count'];
 
         if ($order=='') {
@@ -744,7 +744,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
             foreach ($list as &$item) {
                 $item['next'] = isset($max[$item['id']]['max']) ? $max[$item['id']]['max']+1 : 1;
-                $item['issued'] = isset($count[$item['id']]['count']) ? $count[$item['id']]['count'] : 0;
+                $item['issued'] = $count[$item['id']]['count'] ?? 0;
             }
             unset($item);
 
@@ -1192,7 +1192,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $planid = null;
         }
 
-        $period = isset($period) ? $period : YEARLY;
+        $period = $period ?? YEARLY;
         $cdate = $cdate ?: time();
 
         switch ($period) {
@@ -1327,7 +1327,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $planid = null;
         }
 
-        $period = isset($period) ? $period : YEARLY;
+        $period = $period ?? YEARLY;
         $cdate = $cdate ?: time();
 
         switch ($period) {
@@ -1888,7 +1888,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                                     $send_errors = array($res);
                                 } else {
                                     $status = $res['status'];
-                                    $send_errors = isset($res['errors']) ? $res['errors'] : array();
+                                    $send_errors = $res['errors'] ?? array();
                                 }
 
                                 if ($status == MSG_SENT || isset($res['id']) || !empty($send_errors)) {
@@ -2063,7 +2063,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             $send_errors = array($res);
                         } else {
                             $status = $res['status'];
-                            $send_errors = isset($res['errors']) ? $res['errors'] : array();
+                            $send_errors = $res['errors'] ?? array();
                         }
 
                         if ($status == MSG_SENT || isset($res['id']) || !empty($send_errors)) {
@@ -2153,7 +2153,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             $send_errors = array($res);
                         } else {
                             $status = $res['status'];
-                            $send_errors = isset($res['errors']) ? $res['errors'] : array();
+                            $send_errors = $res['errors'] ?? array();
                         }
 
                         if ($status == MSG_ERROR) {
@@ -2395,7 +2395,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         $file['filename'],
                         $file['type'],
                         $file['md5sum'],
-                        isset($file['attachmenttype']) ? $file['attachmenttype'] : 0,
+                        $file['attachmenttype'] ?? 0,
                     )
                 )) {
                     $attachmentids[] = $this->db->GetLastInsertID('documentattachments');
@@ -2867,7 +2867,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         $body,
                         $files,
                         null,
-                        (isset($smtp_options) ? $smtp_options : null)
+                        ($smtp_options ?? null)
                     );
 
                     if (is_string($res)) {

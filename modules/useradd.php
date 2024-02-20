@@ -37,8 +37,8 @@ if (isset($_GET['fromuser'])) {
 
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'usercopypermissions.inc.php');
 
-$acl = isset($_POST['acl']) ? $_POST['acl'] : array();
-$useradd = isset($_POST['useradd']) ? $_POST['useradd'] : array();
+$acl = $_POST['acl'] ?? array();
+$useradd = $_POST['useradd'] ?? array();
 
 if (count($useradd)) {
     $error = array();
@@ -181,8 +181,8 @@ if (count($useradd)) {
         $LMS->executeHook('useradd_after_submit', $id);
         $SESSION->redirect('?m=userinfo&id=' . $id);
     } else {
-        $SMARTY->assign('selectedusergroups', array_flip(isset($useradd['usergroups']) ? $useradd['usergroups'] : array()));
-        $SMARTY->assign('selectedgroups', array_flip(isset($useradd['customergroups']) ? $useradd['customergroups'] : array()));
+        $SMARTY->assign('selectedusergroups', array_flip($useradd['usergroups'] ?? array()));
+        $SMARTY->assign('selectedgroups', array_flip($useradd['customergroups'] ?? array()));
     }
 } else {
     $useradd['ntype'] = MSG_MAIL | MSG_SMS;

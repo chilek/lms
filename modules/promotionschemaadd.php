@@ -26,7 +26,7 @@
 
 check_file_uploads();
 
-$schema = isset($_POST['schema']) ? $_POST['schema'] : null;
+$schema = $_POST['schema'] ?? null;
 
 if ($schema) {
     foreach ($schema as $key => $value) {

@@ -466,8 +466,8 @@ function getBuildings(array $filter)
             if (isset($limit) || isset($offset)) {
                 $buildings = array_slice(
                     $buildings,
-                    isset($offset) ? $offset : 0,
-                    isset($limit) ? $limit : null
+                    $offset ?? 0,
+                    $limit ?? null
                 );
             }
         }
@@ -492,43 +492,43 @@ if (isset($_GET['boroughid'])) {
 }
 
 $oldrange = $SESSION->get('netranges_update_range');
-$oldrange = isset($oldrange) ? $oldrange : array();
-$range = isset($_POST['range']) ? $_POST['range'] : array();
+$oldrange = $oldrange ?? array();
+$range = $_POST['range'] ?? array();
 
 if (isset($range['project'])) {
     $range['project'] = strlen($range['project']) ? intval($range['project']) : null;
 } else {
-    $range['project'] = isset($oldrange['project']) ? $oldrange['project'] : null;
+    $range['project'] = $oldrange['project'] ?? null;
 }
 
 if (isset($range['linktype'])) {
     $range['linktype'] = strlen($range['linktype']) ? intval($range['linktype']) : '';
 } else {
-    $range['linktype'] = isset($oldrange['linktype']) ? $oldrange['linktype'] : '';
+    $range['linktype'] = $oldrange['linktype'] ?? '';
 }
 
 if (isset($range['linktechnology'])) {
     $range['linktechnology'] = strlen($range['linktechnology']) ? intval($range['linktechnology']) : '';
 } else {
-    $range['linktechnology'] = isset($oldrange['linktechnology']) ? $oldrange['linktechnology'] : '';
+    $range['linktechnology'] = $oldrange['linktechnology'] ?? '';
 }
 
 if (isset($range['downlink'])) {
     $range['downlink'] = strlen($range['downlink']) ? intval($range['downlink']) : '';
 } else {
-    $range['downlink'] = isset($oldrange['downlink']) ? $oldrange['downlink'] : '';
+    $range['downlink'] = $oldrange['downlink'] ?? '';
 }
 
 if (isset($range['uplink'])) {
     $range['uplink'] = strlen($range['uplink']) ? intval($range['uplink']) : '';
 } else {
-    $range['uplink'] = isset($oldrange['uplink']) ? $oldrange['uplink'] : '';
+    $range['uplink'] = $oldrange['uplink'] ?? '';
 }
 
 if (isset($range['type'])) {
     $range['type'] = strlen($range['type']) ? intval($range['type']) : '';
 } else {
-    $range['type'] = isset($oldrange['type']) ? $oldrange['type'] : '';
+    $range['type'] = $oldrange['type'] ?? '';
 }
 
 $services = 0;
@@ -656,37 +656,37 @@ if (isset($_POST['range'])) {
 $layout['pagetitle'] = trans('Network Ranges');
 
 $oldfilter = $SESSION->get('netranges_filter');
-$oldfilter = isset($oldfilter) ? $oldfilter : array();
-$filter = isset($_POST['filter']) ? $_POST['filter'] : array();
+$oldfilter = $oldfilter ?? array();
+$filter = $_POST['filter'] ?? array();
 
 if (isset($filter['project'])) {
     $filter['project'] = strlen($filter['project']) ? intval($filter['project']) : '';
 } else {
-    $filter['project'] = isset($oldfilter['project']) ? $oldfilter['project'] : '';
+    $filter['project'] = $oldfilter['project'] ?? '';
 }
 
 if (isset($filter['without-ranges'])) {
     $filter['without-ranges'] = strlen($filter['without-ranges']) ? intval($filter['without-ranges']) : '';
 } else {
-    $filter['without-ranges'] = isset($oldfilter['without-ranges']) ? $oldfilter['without-ranges'] : '';
+    $filter['without-ranges'] = $oldfilter['without-ranges'] ?? '';
 }
 
 if (isset($filter['existing'])) {
     $filter['existing'] = strlen($filter['existing']) ? intval($filter['existing']) : '';
 } else {
-    $filter['existing'] = isset($oldfilter['existing']) ? $oldfilter['existing'] : '';
+    $filter['existing'] = $oldfilter['existing'] ?? '';
 }
 
 if (isset($filter['stateid'])) {
     $filter['stateid'] = strlen($filter['stateid']) ? intval($filter['stateid']) : '';
 } else {
-    $filter['stateid'] = isset($oldfilter['stateid']) ? $oldfilter['stateid'] : '';
+    $filter['stateid'] = $oldfilter['stateid'] ?? '';
 }
 
 if (isset($filter['districtid'])) {
     $filter['districtid'] = strlen($filter['districtid']) ? intval($filter['districtid']) : '';
 } else {
-    $filter['districtid'] = isset($oldfilter['districtid']) ? $oldfilter['districtid'] : '';
+    $filter['districtid'] = $oldfilter['districtid'] ?? '';
 }
 if (empty($filter['stateid'])) {
     $filter['districtid'] = '';
@@ -695,7 +695,7 @@ if (empty($filter['stateid'])) {
 if (isset($filter['boroughid'])) {
     $filter['boroughid'] = strlen($filter['boroughid']) ? intval($filter['boroughid']) : '';
 } else {
-    $filter['boroughid'] = isset($oldfilter['boroughid']) ? $oldfilter['boroughid'] : '';
+    $filter['boroughid'] = $oldfilter['boroughid'] ?? '';
 }
 if (empty($filter['districtid'])) {
     $filter['boroughid'] = '';
@@ -704,7 +704,7 @@ if (empty($filter['districtid'])) {
 if (isset($filter['cityid'])) {
     $filter['cityid'] = strlen($filter['cityid']) ? intval($filter['cityid']) : '';
 } else {
-    $filter['cityid'] = isset($oldfilter['cityid']) ? $oldfilter['cityid'] : '';
+    $filter['cityid'] = $oldfilter['cityid'] ?? '';
 }
 if (empty($filter['boroughid'])) {
     $filter['cityid'] = '';
@@ -713,7 +713,7 @@ if (empty($filter['boroughid'])) {
 if (isset($filter['streetid'])) {
     $filter['streetid'] = strlen($filter['streetid']) ? intval($filter['streetid']) : '';
 } else {
-    $filter['streetid'] = isset($oldfilter['streetid']) ? $oldfilter['streetid'] : '';
+    $filter['streetid'] = $oldfilter['streetid'] ?? '';
 }
 if (empty($filter['cityid'])) {
     $filter['streetid'] = '';
@@ -723,7 +723,7 @@ $streets = empty($filter['cityid']) ? array() : getStreets($filter['cityid']);
 if (isset($filter['numberparity'])) {
     $filter['numberparity'] = $filter['numberparity'];
 } else {
-    $filter['numberparity'] = isset($oldfilter['numberparity']) ? $oldfilter['numberparity'] : '';
+    $filter['numberparity'] = $oldfilter['numberparity'] ?? '';
 }
 if (empty($filter['cityid']) || !empty($streets) && empty($filter['streetid'])) {
     $filter['numberparity'] = '';
@@ -732,31 +732,31 @@ if (empty($filter['cityid']) || !empty($streets) && empty($filter['streetid'])) 
 if (isset($filter['linktype'])) {
     $filter['linktype'] = strlen($filter['linktype']) ? intval($filter['linktype']) : '';
 } else {
-    $filter['linktype'] = isset($oldfilter['linktype']) ? $oldfilter['linktype'] : '';
+    $filter['linktype'] = $oldfilter['linktype'] ?? '';
 }
 
 if (isset($filter['linktechnology'])) {
     $filter['linktechnology'] = strlen($filter['linktechnology']) ? intval($filter['linktechnology']) : '';
 } else {
-    $filter['linktechnology'] = isset($oldfilter['linktechnology']) ? $oldfilter['linktechnology'] : '';
+    $filter['linktechnology'] = $oldfilter['linktechnology'] ?? '';
 }
 
 if (isset($filter['downlink'])) {
     $filter['downlink'] = strlen($filter['downlink']) ? intval($filter['downlink']) : '';
 } else {
-    $filter['downlink'] = isset($oldfilter['downlink']) ? $oldfilter['downlink'] : '';
+    $filter['downlink'] = $oldfilter['downlink'] ?? '';
 }
 
 if (isset($filter['uplink'])) {
     $filter['uplink'] = strlen($filter['uplink']) ? intval($filter['uplink']) : '';
 } else {
-    $filter['uplink'] = isset($oldfilter['uplink']) ? $oldfilter['uplink'] : '';
+    $filter['uplink'] = $oldfilter['uplink'] ?? '';
 }
 
 if (isset($filter['type'])) {
     $filter['type'] = strlen($filter['type']) ? intval($filter['type']) : '';
 } else {
-    $filter['type'] = isset($oldfilter['type']) ? $oldfilter['type'] : '';
+    $filter['type'] = $oldfilter['type'] ?? '';
 }
 
 $services = 0;

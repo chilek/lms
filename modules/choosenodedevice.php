@@ -26,7 +26,7 @@
 
 $layout['pagetitle'] = trans('Select netdevice');
 
-$p = isset($_GET['p']) ? $_GET['p'] : '';
+$p = $_GET['p'] ?? '';
 
 if (!$p || $p == 'main') {
     $SMARTY->assign('js', 'var targetfield = window.parent.targetfield;');

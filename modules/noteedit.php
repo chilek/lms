@@ -25,7 +25,7 @@
  */
 
 //$taxeslist = $LMS->GetTaxes();
-$action = isset($_GET['action']) ? $_GET['action'] : '';
+$action = $_GET['action'] ?? '';
 
 if (isset($_GET['id']) && $action=='edit') {
     if ($LMS->isDocumentPublished($_GET['id']) && !ConfigHelper::checkConfig('privileges.superuser')) {

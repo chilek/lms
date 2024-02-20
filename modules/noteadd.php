@@ -31,7 +31,7 @@ $SESSION->restore('notecustomer', $customer);
 $SESSION->restore('note', $note);
 $SESSION->restore('notenewerror', $error);
 
-$action = isset($_GET['action']) ? $_GET['action'] : null;
+$action = $_GET['action'] ?? null;
 
 switch ($action) {
     case 'init':
@@ -382,9 +382,9 @@ switch ($action) {
 }
 
 $SESSION->save('note', $note);
-$SESSION->save('notecontents', isset($contents) ? $contents : null);
-$SESSION->save('notecustomer', isset($customer) ? $customer : null);
-$SESSION->save('notenewerror', isset($error) ? $error : null);
+$SESSION->save('notecontents', $contents ?? null);
+$SESSION->save('notecustomer', $customer ?? null);
+$SESSION->save('notenewerror', $error ?? null);
 
 if ($action) {
     // redirect needed because we don't want to destroy contents of note in order of page refresh

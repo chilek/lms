@@ -112,9 +112,7 @@ $use_comment_for_liabilities = ConfigHelper::checkConfig($config_section . '.use
 
 $allowed_customer_status =
 Utils::determineAllowedCustomerStatus(
-    isset($options['customer-status'])
-        ? $options['customer-status']
-        : ConfigHelper::getConfig($config_section . '.allowed_customer_status', '')
+    $options['customer-status'] ?? ConfigHelper::getConfig($config_section . '.allowed_customer_status', '')
 );
 
 if (empty($allowed_customer_status)) {
@@ -132,7 +130,7 @@ if (isset($options['force-date'])) {
 } else {
     $fakedate = null;
 }
-$issuedate = isset($options['issue-date']) ? $options['issue-date'] : null;
+$issuedate = $options['issue-date'] ?? null;
 $customerid = isset($options['customerid']) && intval($options['customerid']) ? $options['customerid'] : null;
 
 if (empty($fakedate)) {
@@ -1450,7 +1448,7 @@ foreach ($assigns as $assign) {
         ),
         array(
             $assign['tarifftype'] != SERVICE_OTHER ? $SERVICETYPES[$assign['tarifftype']] : '',
-            isset($BILLING_PERIODS[$assign['period']]) ? $BILLING_PERIODS[$assign['period']] : '',
+            $BILLING_PERIODS[$assign['period']] ?? '',
             $assign['name'],
             $assign['attribute'],
             $assign['description'],
@@ -1930,7 +1928,7 @@ foreach ($assigns as $assign) {
                     }
 
                     if (!empty($billing_document_template) && !empty($assign['billingconsent']) && !isset($invoices_with_billings[$invoices[$cid]])) {
-                        $billing_plan = isset($billing_plans[$divid]) ? $billing_plans[$divid] : 0;
+                        $billing_plan = $billing_plans[$divid] ?? 0;
                         if (!isset($numbertemplates[$billing_plan])) {
                             $numbertemplates[$billing_plan] = $DB->GetOne("SELECT template FROM numberplans WHERE id = ?", array($billing_plan));
                         }

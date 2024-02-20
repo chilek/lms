@@ -452,7 +452,7 @@ if (isset($_POST['document'])) {
             $SMARTY->assign('attachment_result', GenerateAttachmentHTML(
                 $template_dir,
                 $engine,
-                isset($document['attachments']) ? $document['attachments'] : array()
+                $document['attachments'] ?? array()
             ));
         }
     }
@@ -508,9 +508,9 @@ if (isset($document['type'])) {
 }
 
 $SMARTY->assign('numberplans', $numberplans);
-$SMARTY->assign('planDocumentType', isset($document['type']) ? $document['type'] : null);
+$SMARTY->assign('planDocumentType', $document['type'] ?? null);
 
-$docengines = GetDocumentTemplates($rights, isset($document['type']) ? $document['type'] : null);
+$docengines = GetDocumentTemplates($rights, $document['type'] ?? null);
 
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());

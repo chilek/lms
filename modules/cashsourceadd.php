@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$sourceadd = isset($_POST['sourceadd']) ? $_POST['sourceadd'] : null;
+$sourceadd = $_POST['sourceadd'] ?? null;
 
 if ($sourceadd) {
     $sourceadd['name'] = trim($sourceadd['name']);

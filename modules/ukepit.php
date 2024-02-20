@@ -927,7 +927,7 @@ if ($report_type == 'full') {
                 }
             } else {
                 if (empty($netdevice['location_city'])) {
-                    $netnodename = isset($netdevice['location']) ? $netdevice['location'] : '(pusty)';
+                    $netnodename = $netdevice['location'] ?? '(pusty)';
                 } else {
                     $netnodename = $netdevice['area_terc'] . '_' . $netdevice['area_simc'] . '_' . $netdevice['area_ulic'] . '_' . $netdevice['location_house'];
                 }
@@ -1032,7 +1032,7 @@ if ($report_type == 'full') {
                         $netnodes[$netnodename]['latitude'] = $netnode['latitude'];
                     }
                 } else {
-                    $netnodes[$netnodename]['location'] = isset($netdevice['location']) ? $netdevice['location'] : '';
+                    $netnodes[$netnodename]['location'] = $netdevice['location'] ?? '';
                     $netnodes[$netnodename]['location_city'] = $netdevice['location_city'];
                     $netnodes[$netnodename]['location_city_name'] = $netdevice['location_city_name'];
                     $netnodes[$netnodename]['location_street'] = $netdevice['location_street'];
@@ -1462,9 +1462,9 @@ if ($report_type == 'full') {
                 }
 
                 $range = array(
-                    'terc' => isset($teryt['area_terc']) ? $teryt['area_terc'] : '',
-                    'simc' => isset($teryt['area_simc']) ? $teryt['area_simc'] : '',
-                    'ulic' => isset($teryt['address_symul']) ? $teryt['address_symul'] : '',
+                    'terc' => $teryt['area_terc'] ?? '',
+                    'simc' => $teryt['area_simc'] ?? '',
+                    'ulic' => $teryt['address_symul'] ?? '',
                     'building' => isset($teryt['address_budynek']) ? str_replace(' ', '', $teryt['address_budynek']) : '',
                     'latitude' => (!isset($netrange['latitude']) || is_string($netrange['latitude']))
                     && (!isset($netnode['latitude']) || is_string($netnode['latitude']))
@@ -1756,9 +1756,9 @@ if ($report_type == 'full') {
         }
 
         $range = array(
-            'terc' => isset($teryt['area_terc']) ? $teryt['area_terc'] : '',
-            'simc' => isset($teryt['area_simc']) ? $teryt['area_simc'] : '',
-            'ulic' => isset($teryt['address_symul']) ? $teryt['address_symul'] : '',
+            'terc' => $teryt['area_terc'] ?? '',
+            'simc' => $teryt['area_simc'] ?? '',
+            'ulic' => $teryt['address_symul'] ?? '',
             'building' => isset($teryt['address_budynek']) ? str_replace(' ', '', $teryt['address_budynek']) : '',
             'latitude' => !isset($netrange['latitude']) || is_string($netrange['latitude'])
                 ? ''
@@ -1872,7 +1872,7 @@ if ($report_type == 'full') {
                     'location' => $netnodes[$bt_netnode_name]['location_city_name']
                         . (empty($netnodes[$bt_netnode_name]['location_street_name']) ? '' : ', ' . $netnodes[$bt_netnode_name]['location_street_name'])
                         . ' ' . $netnodes[$bt_netnode_name]['location_house'],
-                    'id' => isset($netnodes[$bt_netnode_name]['real_id']) ? $netnodes[$bt_netnode_name]['real_id'] : null,
+                    'id' => $netnodes[$bt_netnode_name]['real_id'] ?? null,
                     'netdevid' => $bt_netnode_netdevid,
                 );
                 if (isset($last_netdevid) && $last_netdevid == $bt_netnode_netdevid) {
@@ -2132,7 +2132,7 @@ if ($report_type == 'full') {
                                     'technology' => $netlink['technology'],
                                     'src' => $netdevnetnodename,
                                     'dst' => $dstnetnodename,
-                                    'license' => isset($netlink['license']) ? $netlink['license'] : '',
+                                    'license' => $netlink['license'] ?? '',
                                     'frequency' => $netlink['frequency'],
                                     'routetype' => $netlink['routetype'],
                                     'linecount' => $netlink['linecount'],
@@ -2171,7 +2171,7 @@ if ($report_type == 'full') {
                                 'technology' => $netlink['technology'],
                                 'src' => $netdevnetnodename,
                                 'dst' => $srcnetnodename,
-                                'license' => isset($netlink['license']) ? $netlink['license'] : '',
+                                'license' => $netlink['license'] ?? '',
                                 'frequency' => $netlink['frequency'],
                                 'routetype' => $netlink['routetype'],
                                 'linecount' => $netlink['linecount'],
@@ -2369,12 +2369,12 @@ if ($report_type == 'full') {
                     'we01_id_wezla' => '',
                     'we02_tytul_do_wezla' => strlen($netnode['coowner']) && !empty($netnode['ownership']) ? 'Węzeł współdzielony z innym podmiotem' : 'Węzeł własny',
                     'we03_id_podmiotu_obcego' => strlen($netnode['coowner']) && !empty($netnode['ownership']) ? 'PO-' . $netnode['coowner'] : '',
-                    'we04_terc' => isset($netnode['area_terc']) ? $netnode['area_terc'] : '',
-                    'we05_simc' => isset($netnode['area_simc']) ? $netnode['area_simc'] : '',
-                    'we06_ulic' => isset($netnode['address_symul']) ? $netnode['address_symul'] : '',
+                    'we04_terc' => $netnode['area_terc'] ?? '',
+                    'we05_simc' => $netnode['area_simc'] ?? '',
+                    'we06_ulic' => $netnode['address_symul'] ?? '',
                     'we07_nr_porzadkowy' => str_replace(' ', '', $netnode['address_budynek']),
-                    'we08_szerokosc' => isset($netnode['latitude']) ? $netnode['latitude'] : '',
-                    'we09_dlugosc' => isset($netnode['longitude']) ? $netnode['longitude'] : '',
+                    'we08_szerokosc' => $netnode['latitude'] ?? '',
+                    'we09_dlugosc' => $netnode['longitude'] ?? '',
                     'we10_medium' => '',
                     'we11_bsa' => 'Nie',
                     'we12_technologia_dostepowa' => '',
@@ -2435,12 +2435,12 @@ if ($report_type == 'full') {
                     'pe02_typ_pe' => pointCodeByNetNodeType($netnode['type']),
                     'pe03_id_wezla' => '',
                     'pe04_pdu' => '',
-                    'pe05_terc' => isset($netnode['area_terc']) ? $netnode['area_terc'] : '',
-                    'pe06_simc' => isset($netnode['area_simc']) ? $netnode['area_simc'] : '',
-                    'pe07_ulic' => isset($netnode['address_symul']) ? $netnode['address_symul'] : '',
+                    'pe05_terc' => $netnode['area_terc'] ?? '',
+                    'pe06_simc' => $netnode['area_simc'] ?? '',
+                    'pe07_ulic' => $netnode['address_symul'] ?? '',
                     'pe08_nr_porzadkowy' => str_replace(' ', '', $netnode['address_budynek']),
-                    'pe09_szerokosc' => isset($netnode['latitude']) ? $netnode['latitude'] : '',
-                    'pe10_dlugosc' => isset($netnode['longitude']) ? $netnode['longitude'] : '',
+                    'pe09_szerokosc' => $netnode['latitude'] ?? '',
+                    'pe10_dlugosc' => $netnode['longitude'] ?? '',
                     'pe11_medium_transmisyjne' => '',
                     'pe12_technologia_dostepowa' => '',
                     'pe13_mozliwosc_swiadczenia_uslug' => empty($netnode['technologies']) ? '' : '09',
@@ -2569,7 +2569,7 @@ if ($report_type == 'full') {
             echo '<br>';
 
             if ($netnode['mode'] == 1) {
-                echo '&nbsp;&nbsp;&nbsp;&nbsp;zasilany z węzła: <strong>' . (isset($netnode['parent_netnodename']) ? $netnode['parent_netnodename'] : '-') . '</strong><br>';
+                echo '&nbsp;&nbsp;&nbsp;&nbsp;zasilany z węzła: <strong>' . ($netnode['parent_netnodename'] ?? '-') . '</strong><br>';
             }
 
             echo '&nbsp;&nbsp;&nbsp;&nbsp;technologie dostępu:<br>';

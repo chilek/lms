@@ -26,8 +26,8 @@
 
 check_file_uploads();
 
-$promotion = isset($_POST['promotion']) ? $_POST['promotion'] : null;
-$action = isset($_GET['action']) ? $_GET['action'] : null;
+$promotion = $_POST['promotion'] ?? null;
+$action = $_GET['action'] ?? null;
 
 $promotionid = intval($_GET['id']);
 if (!$promotionid) {

@@ -299,7 +299,7 @@ $sourcefiles = $DB->GetAll('SELECT s.*, u.name AS username,
     ORDER BY s.idate DESC');
 
 $SMARTY->assign('divisions', $divisions);
-$SMARTY->assign('listdata', isset($listdata) ? $listdata : null);
+$SMARTY->assign('listdata', $listdata ?? null);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('sourcefiles', $sourcefiles);
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {

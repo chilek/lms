@@ -124,7 +124,7 @@ $SESSION->save('aso', $o);
 if (isset($_GET['u'])) {
     $u = $_GET['u'];
 } elseif (count($search)) {
-    $u = isset($search['ownerid']) ? $search['ownerid'] : '';
+    $u = $search['ownerid'] ?? '';
 } else {
     $SESSION->restore('asu', $u);
 }
@@ -133,7 +133,7 @@ $SESSION->save('asu', $u);
 if (isset($_GET['t'])) {
     $t = $_GET['t'];
 } elseif (count($search)) {
-    $t = isset($search['type']) ? $search['type'] : 0;
+    $t = $search['type'] ?? 0;
 } else {
     $SESSION->restore('ast', $t);
 }
@@ -142,7 +142,7 @@ $SESSION->save('ast', $t);
 if (isset($_GET['k'])) {
     $k = $_GET['k'];
 } elseif (count($search)) {
-    $k = isset($search['kind']) ? $search['kind'] : 0;
+    $k = $search['kind'] ?? 0;
 } else {
     $SESSION->restore('ask', $k);
 }
@@ -209,5 +209,5 @@ if (count($search) || isset($_GET['s'])) {
 $layout['pagetitle'] = trans('Account, Alias, Domain Search');
 
 $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
-$SMARTY->assign('search', isset($search) ? $search : $SESSION->get('accountsearch'));
+$SMARTY->assign('search', $search ?? $SESSION->get('accountsearch'));
 $SMARTY->display('account/accountsearch.html');

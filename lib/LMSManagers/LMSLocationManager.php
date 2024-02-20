@@ -364,7 +364,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 
         $tmp = array(
             $args['location_name'],
-            isset($args['location_state_name']) ? $args['location_state_name'] : '',
+            $args['location_state_name'] ?? '',
             $args['location_state'],
             $args['location_city_name'],
             $args['location_city'],
@@ -634,7 +634,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
             }
 
             $number = intval($m['number']);
-            $letter = isset($m['letter']) ? $m['letter'] : null;
+            $letter = $m['letter'] ?? null;
             $parity = (intval($number) & 1) ? 1 : 2;
 
             $from = '(fromnumber IS NULL OR (fromnumber < ' . $number . ')

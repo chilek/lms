@@ -97,7 +97,7 @@ class ExecStack
         }
 
         foreach ($this->_MODINFO as $module_name => $modinfo) {
-            $priority_table['priority'][] = (isset($modinfo['priority']) ? $modinfo['priority'] : 255);
+            $priority_table['priority'][] = ($modinfo['priority'] ?? 255);
             $priority_table['module'][] = $module_name;
         }
 

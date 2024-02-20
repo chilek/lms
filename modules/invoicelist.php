@@ -122,7 +122,7 @@ if (isset($_POST['group'])) {
     } else {
         $g = $_POST['group'];
     }
-    $ge = isset($_POST['groupexclude']) ? $_POST['groupexclude'] : null;
+    $ge = $_POST['groupexclude'] ?? null;
 } else {
     $SESSION->restore('ilg', $g);
     $SESSION->restore('ilge', $ge);

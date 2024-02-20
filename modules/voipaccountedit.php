@@ -142,7 +142,7 @@ if (isset($_POST['voipaccountedit'])) {
     }
 
     $voipaccountinfo['flags']   = $voipaccountedit['flags'] = $flags;
-    $voipaccountinfo['login']   = isset($voipaccountedit['login']) ? $voipaccountedit['login'] : null;
+    $voipaccountinfo['login']   = $voipaccountedit['login'] ?? null;
     $voipaccountinfo['passwd']  = $voipaccountedit['passwd'];
     $voipaccountinfo['ownerid'] = $voipaccountedit['ownerid'];
 

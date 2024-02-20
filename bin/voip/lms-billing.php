@@ -155,8 +155,10 @@ setlocale(LC_NUMERIC, 'en_US');
 
 $options['action'] = (isset($options['action'])) ? $options['action'] : '';
 
-define('VOIP_CACHE_DIR', isset($options['cache-dir']) ? $options['cache-dir']
-    : SYS_DIR . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'voip' . DIRECTORY_SEPARATOR . 'cache');
+define(
+    'VOIP_CACHE_DIR',
+    $options['cache-dir'] ?? SYS_DIR . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'voip' . DIRECTORY_SEPARATOR . 'cache'
+);
 
 $estimate  = new Estimate(SqlProvider::getInstance());
 $db_buffor = new VoipDbBuffor(SqlProvider::getInstance());

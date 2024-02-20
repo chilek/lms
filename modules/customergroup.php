@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$action = isset($_GET['action']) ? $_GET['action'] : '';
+$action = $_GET['action'] ?? '';
 
 if ($action == 'delete') {
     if (isset($_GET['customergroupid'])) {
@@ -94,7 +94,7 @@ if ($action == 'delete') {
     }
 } elseif (!empty($_POST['setwarnings'])) {
     $setwarnings = $_POST['setwarnings'];
-    $oper = isset($_GET['oper']) ? $_GET['oper'] : '';
+    $oper = $_GET['oper'] ?? '';
 
     if (isset($setwarnings['customergroup'])) {
         if (is_array($setwarnings['customergroup'])) {

@@ -72,8 +72,8 @@ $titlenumber = docnumber(array(
 $layout['pagetitle'] = trans('Advance settlement: $a', $titlenumber);
 
 if (isset($_POST['receipt'])) {
-    $out_extended = isset($receipt['out_extended']) ? $receipt['out_extended'] : null;
-    $in_extended = isset($receipt['in_extended']) ? $receipt['in_extended'] : null;
+    $out_extended = $receipt['out_extended'] ?? null;
+    $in_extended = $receipt['in_extended'] ?? null;
 
     $receipt = $_POST['receipt'];
 
@@ -183,7 +183,7 @@ if (isset($_POST['receipt'])) {
             } else {
                 $in_number = $receipt['number'];
             }
-            $in_extnumber = isset($receipt['extnumber']) ? $receipt['extnumber'] : '';
+            $in_extnumber = $receipt['extnumber'] ?? '';
         } else {
             if (!$receipt['in_number']) {
                 $in_number = $LMS->GetNewDocumentNumber(array(
@@ -194,7 +194,7 @@ if (isset($_POST['receipt'])) {
             } else {
                 $in_number = $receipt['in_number'];
             }
-            $in_extnumber = isset($receipt['in_extnumber']) ? $receipt['in_extnumber'] : '';
+            $in_extnumber = $receipt['in_extnumber'] ?? '';
         }
 
         $fullnumber = docnumber(array(
@@ -216,8 +216,8 @@ if (isset($_POST['receipt'])) {
                 Auth::GetCurrentUser(),
                 $record['name'],
                 $fullnumber,
-                isset($receipt['currency']) ? $receipt['currency'] : Localisation::getCurrentCurrency(),
-                isset($receipt['currencyvalue']) ? $receipt['currencyvalue'] : 1.0,
+                $receipt['currency'] ?? Localisation::getCurrentCurrency(),
+                $receipt['currencyvalue'] ?? 1.0,
             )
         );
 
@@ -245,14 +245,14 @@ if (isset($_POST['receipt'])) {
                 array(
                     DOC_RECEIPT,
                     $receipt['out_number'],
-                    isset($receipt['out_extnumber']) ? $receipt['out_extnumber'] : '',
+                    $receipt['out_extnumber'] ?? '',
                     $record['numberplanid'],
                     $cdate,
                     Auth::GetCurrentUser(),
                     $receipt['name'],
                     $fullnumber,
-                    isset($receipt['currency']) ? $receipt['currency'] : Localisation::getCurrentCurrency(),
-                    isset($receipt['currencyvalue']) ? $receipt['currencyvalue'] : 1.0,
+                    $receipt['currency'] ?? Localisation::getCurrentCurrency(),
+                    $receipt['currencyvalue'] ?? 1.0,
                 )
             );
 
@@ -278,8 +278,8 @@ if (isset($_POST['receipt'])) {
                 $cdate,
                 $rid,
                 str_replace(',', '.', $record['value'] * -1),
-                isset($receipt['currency']) ? $receipt['currency'] : Localisation::getCurrentCurrency(),
-                isset($receipt['currencyvalue']) ? $receipt['currencyvalue'] : 1.0,
+                $receipt['currency'] ?? Localisation::getCurrentCurrency(),
+                $receipt['currencyvalue'] ?? 1.0,
                 trans('Advance return') . ' - ' . $titlenumber,
                 Auth::GetCurrentUser()
             )
@@ -303,8 +303,8 @@ if (isset($_POST['receipt'])) {
                     $cdate,
                     $rid,
                     str_replace(',', '.', $value * -1),
-                    isset($receipt['currency']) ? $receipt['currency'] : Localisation::getCurrentCurrency(),
-                    isset($receipt['currencyvalue']) ? $receipt['currencyvalue'] : 1.0,
+                    $receipt['currency'] ?? Localisation::getCurrentCurrency(),
+                    $receipt['currencyvalue'] ?? 1.0,
                     $receipt['description'],
                     Auth::GetCurrentUser()
                 )
@@ -317,7 +317,7 @@ if (isset($_POST['receipt'])) {
         $DB->CommitTrans();
 
         if (isset($_GET['print'])) {
-            $which = isset($_GET['which']) ? $_GET['which'] : 0;
+            $which = $_GET['which'] ?? 0;
 
             $SESSION->save('receiptprint', array('receipt' => $rid, 'receipt2' => $rid2, 'which' => $which), true);
         }

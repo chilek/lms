@@ -395,7 +395,7 @@ class SYSLOG
         $key = (isset($params['key']) && !empty($params['key']) ? $params['key'] : '');
         $value = (isset($params['value']) && preg_match('/^[0-9]+$/', $params['value']) ? $params['value'] : '');
         $propname = (isset($params['propname']) && !empty($params['propname']) ? $params['propname'] : '');
-        $propvalue = (isset($params['propvalue']) ? $params['propvalue'] : '');
+        $propvalue = ($params['propvalue'] ?? '');
         $userid = (isset($params['userid']) && !empty($params['userid']) ? intval($params['userid']) : null);
         $module = isset($params['module']) && strlen($params['module']) ? $params['module'] : null;
         $offset = (isset($params['offset']) && !empty($params['offset']) ? intval($params['offset']) : 0);
@@ -511,9 +511,9 @@ class SYSLOG
             foreach ($trans as &$tran) {
                 $this->_decodeTransaction(
                     $tran,
-                    isset($transaction_messages[$tran['id']]) ? $transaction_messages[$tran['id']] : null,
-                    isset($transaction_keys[$tran['id']]) ? $transaction_keys[$tran['id']] : null,
-                    isset($transaction_data[$tran['id']]) ? $transaction_data[$tran['id']] : null
+                    $transaction_messages[$tran['id']] ?? null,
+                    $transaction_keys[$tran['id']] ?? null,
+                    $transaction_data[$tran['id']] ?? null
                 );
             }
             unset($tran);
@@ -653,7 +653,7 @@ class SYSLOG
                     foreach ($msg['keys'] as $keyname => &$key) {
                         $msg['text'] .= ', ' . $keyname . ': ' . $key['value'];
                         $key_name = preg_replace('/^[a-z]+_/i', '', $keyname);
-                        $key['type'] = isset(self::$resourceKeyByName[$key_name]) ? self::$resourceKeyByName[$key_name] : 0;
+                        $key['type'] = self::$resourceKeyByName[$key_name] ?? 0;
                     }
                     unset($key);
                 }

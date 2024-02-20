@@ -136,7 +136,7 @@ if (isset($_GET['id'])) {
 
     $SESSION->save('receipt', $receipt, true);
     $SESSION->save('receiptcontents', $contents, true);
-    $SESSION->save('receiptcustomer', isset($customer) ? $customer : null, true);
+    $SESSION->save('receiptcustomer', $customer ?? null, true);
     $SESSION->save('receiptediterror', $error, true);
 }
 
@@ -165,7 +165,7 @@ $receipt['titlenumber'] = docnumber(array(
     'number' => $receipt['number'],
     'template' => $receipt['template'],
     'cdate' => $receipt['cdate'],
-    'ext_num' => isset($receipt['extnumber']) ? $receipt['extnumber'] : '',
+    'ext_num' => $receipt['extnumber'] ?? '',
     'customerid' => $receipt['customerid'],
 ));
 
@@ -175,7 +175,7 @@ if ($receipt['type']=='in') {
     $layout['pagetitle'] = trans('Cash-out Receipt Edit: $a', $receipt['titlenumber']);
 }
 
-$action = isset($_GET['action']) ? $_GET['action'] : '';
+$action = $_GET['action'] ?? '';
 
 switch ($action) {
     case 'additem':
@@ -217,7 +217,7 @@ switch ($action) {
             }
         }
 
-        $receipt['customerid'] = isset($_POST['customerid']) ? $_POST['customerid'] : null;
+        $receipt['customerid'] = $_POST['customerid'] ?? null;
         $receipt['template'] = $oldtemplate;
         $receipt['id'] = $id;
         $receipt['closed'] = $oldclosed;
@@ -638,7 +638,7 @@ switch ($action) {
         $SESSION->remove('receiptediterror', true);
 
         if (isset($_GET['print'])) {
-            $which = isset($_GET['which']) ? $_GET['which'] : 0;
+            $which = $_GET['which'] ?? 0;
 
             $SESSION->save('receiptprint', array('receipt' => $rid, 'which' => $which), true);
         }

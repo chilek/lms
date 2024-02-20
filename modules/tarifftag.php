@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$action = isset($_GET['action']) ? $_GET['action'] : '';
+$action = $_GET['action'] ?? '';
 
 if ($action == 'delete') {
     $LMS->TariffAssignmentDelete(array('tariffid' => intval($_GET['id']), 'tarifftagid' => $_GET['tarifftagid']));

@@ -63,11 +63,11 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
     }
 
     $filter['userand'] = isset($_POST['userand']) ? intval($_POST['userand']) : 0;
-    $filter['userid'] = isset($_POST['a']) ? $_POST['a'] : null;
-    $filter['customerid'] = isset($_POST['u']) ? $_POST['u'] : null;
-    $filter['type'] = isset($_POST['type']) ? $_POST['type'] : null;
+    $filter['userid'] = $_POST['a'] ?? null;
+    $filter['customerid'] = $_POST['u'] ?? null;
+    $filter['type'] = $_POST['type'] ?? null;
     $filter['privacy'] = isset($_POST['privacy']) ? intval($_POST['privacy']) : null;
-    $filter['closed'] = isset($_POST['closed']) ? $_POST['closed'] : null;
+    $filter['closed'] = $_POST['closed'] ?? null;
     $filter['netnodeid'] = (isset($_POST['netnodeid']) && $LMS->NetNodeExists(intval($_POST['netnodeid']))) ? intval($_POST['netnodeid']) : null;
     $filter['netdevid'] = (isset($_POST['netdevid']) && $LMS->NetDevExists(intval($_POST['netdevid']))) ? intval($_POST['netdevid']) : null;
 
@@ -131,10 +131,10 @@ if (isset($filter['year']) && isset($filter['month']) && isset($filter['day'])) 
 }
 
 $SESSION->save('eld', array(
-    'year' => isset($filter['year']) ? $filter['year'] : null,
-    'month' => isset($filter['month']) ? $filter['month'] : null,
-    'day' => isset($filter['day']) ? $filter['day'] : null,
-    'edate' => isset($filter['edate']) ? $filter['edate'] : null,
+    'year' => $filter['year'] ?? null,
+    'month' => $filter['month'] ?? null,
+    'day' => $filter['day'] ?? null,
+    'edate' => $filter['edate'] ?? null,
 ));
 
 $SESSION->saveFilter($filter, null, array('year', 'month', 'day', 'edate'), true);
@@ -246,7 +246,7 @@ $SMARTY->assign(array(
         'netnodes' => $LMS->GetNetNodes(),
         'netdevices' => $LMS->GetNetDevList('name,asc', array('short' => true)),
         'overdue_events_only' => $overdue_events_only,
-        'getHolidays', getHolidays(isset($year) ? $year : null),
+        'getHolidays', getHolidays($year ?? null),
         'customerlist' => $big_networks ? null : $LMS->GetCustomerNames(),
     ));
 $SMARTY->display('event/eventlist.html');

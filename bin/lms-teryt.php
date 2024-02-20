@@ -675,7 +675,7 @@ if (isset($options['update'])) {
 
         // if $row['pow'] is empty then this row contains state
         if (empty($row['pow'])) {
-            $data = isset($terc[$statekey]) ? $terc[$statekey] : null;
+            $data = $terc[$statekey] ?? null;
 
             // if state already exists then try update
             if ($data) {
@@ -707,7 +707,7 @@ if (isset($options['update'])) {
             }
         } elseif (empty($row['gmi'])) {
             // if $row['gmi'] is empty then this row contains district
-            $data = isset($terc[$districtkey]) ? $terc[$districtkey] : null;
+            $data = $terc[$districtkey] ?? null;
 
             // if district already exists then try update
             if ($data) {
@@ -739,7 +739,7 @@ if (isset($options['update'])) {
             }
         } else {
             // else row contains brough
-            $data = isset($terc[$key]) ? $terc[$key] : null;
+            $data = $terc[$key] ?? null;
 
             // if district already exists then try update
             if ($data) {
@@ -991,7 +991,7 @@ if (isset($options['update'])) {
         $key   = $row['woj'].':'.$row['pow'].':'.$row['gmi'].':'.$row['rodz_gmi'];
         $rodz_mi = $row['rm'];
         $id    = $row['sym'];
-        $data  = isset($simc[$id]) ? $simc[$id] : null;
+        $data  = $simc[$id] ?? null;
         $refid = $row['sympod'];
 
         if (!isset($terc[$key]) && !$quiet) {
@@ -1057,7 +1057,7 @@ if (isset($options['update'])) {
         if (isset($cities_r[$id])) {
             while ($elem = array_pop($cities_r[$id])) {
                 $rid  = $elem['sym'];
-                $data = isset($simc[$rid]) ? $simc[$rid] : null;
+                $data = $simc[$rid] ?? null;
 
                 // entry exists
                 if ($data) {
@@ -1176,7 +1176,7 @@ if (isset($options['update'])) {
         $row['nazwa_1'] = trim($row['nazwa_1']);
         $row['nazwa_2'] = trim($row['nazwa_2']);
         $key    = $row['sym_ul'].':'.$row['sym'];
-        $data   = isset($ulic[$key]) ? $ulic[$key] : null;
+        $data   = $ulic[$key] ?? null;
         $row['cecha'] = mb_strtolower($row['cecha']);
 
         if (isset($str_types[$row['cecha']])) {

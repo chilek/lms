@@ -41,6 +41,6 @@ $SESSION->add_history_entry();
 $SMARTY->assign('usergroup', $usergroup);
 $SMARTY->assign('users', $users);
 $SMARTY->assign('userscount', $userscount);
-$SMARTY->assign('membersnetid', isset($membersnetid) ? $membersnetid : 0);
-$SMARTY->assign('othersnetid', isset($othersnetid) ? $othersnetid : 0);
+$SMARTY->assign('membersnetid', $membersnetid ?? 0);
+$SMARTY->assign('othersnetid', $othersnetid ?? 0);
 $SMARTY->display('user/usergroupinfo.html');

@@ -28,8 +28,8 @@ if (!($id = $DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array(intval($
     $SESSION->redirect('?m=nodegrouplist');
 }
 
-$membersnetid = isset($_GET['membersnetid']) ? $_GET['membersnetid'] : 0;
-$othersnetid =  isset($_GET['othersnetid']) ? $_GET['othersnetid'] : 0;
+$membersnetid = $_GET['membersnetid'] ?? 0;
+$othersnetid = $_GET['othersnetid'] ?? 0;
 
 $nodegroup = $LMS->GetNodeGroup($id, $membersnetid);
 $nodes = $LMS->GetNodesWithoutGroup($id, $othersnetid);
@@ -82,7 +82,7 @@ $SMARTY->assign('nodes', $nodes);
 $SMARTY->assign('nodescount', count($nodes));
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
-$SMARTY->assign('membersnetid', isset($membersnetid) ? $membersnetid : 0);
-$SMARTY->assign('othersnetid', isset($othersnetid) ? $othersnetid : 0);
+$SMARTY->assign('membersnetid', $membersnetid ?? 0);
+$SMARTY->assign('othersnetid', $othersnetid ?? 0);
 
 $SMARTY->display('node/nodegroupedit.html');

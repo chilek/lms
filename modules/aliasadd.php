@@ -36,7 +36,7 @@ function AccountExists($login, $domain)
     return (bool)$DB->GetOne('SELECT id FROM passwd WHERE login = ? AND domainid = ?', array($login, $domain));
 }
 
-$alias = isset($_POST['alias']) ? $_POST['alias'] : null;
+$alias = $_POST['alias'] ?? null;
 
 if ($alias) {
     $alias['login'] = trim($alias['login']);
@@ -163,7 +163,7 @@ if (isset($alias['accounts']) && count($alias['accounts'])) {
 $accountlist = $DB->GetAll('SELECT passwd.id, login, domains.name AS domain 
 			FROM passwd, domains 
 			WHERE domainid = domains.id '
-            .(isset($where) ? $where : '')
+            .($where ?? '')
             .' ORDER BY login, domains.name');
 
 $layout['pagetitle'] = trans('New Alias');

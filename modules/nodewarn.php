@@ -39,12 +39,12 @@ $LMS->InitXajax();
 $LMS->RegisterXajaxFunction(array('getMessageTemplate'));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
-$setwarnings = isset($_POST['setwarnings']) ? $_POST['setwarnings'] : array();
+$setwarnings = $_POST['setwarnings'] ?? array();
 
 if (isset($setwarnings['mnodeid'])) {
-    $message = isset($setwarnings['message']) ? $setwarnings['message'] : '';
-    $warnon  = isset($setwarnings['warnon']) ? $setwarnings['warnon'] : false;
-    $warnoff = isset($setwarnings['warnoff']) ? $setwarnings['warnoff'] : false;
+    $message = $setwarnings['message'] ?? '';
+    $warnon  = $setwarnings['warnon'] ?? false;
+    $warnoff = $setwarnings['warnoff'] ?? false;
 
     $msgtmplid = intval($setwarnings['tmplid']);
     $msgtmploper = intval($setwarnings['tmploper']);
@@ -113,7 +113,7 @@ if (!empty($_POST['marks'])) {
     $SESSION->redirect_to_history_entry();
 }
 
-$backid = isset($_GET['ownerid']) ? $_GET['ownerid'] : 0;
+$backid = $_GET['ownerid'] ?? 0;
 
 if ($backid && $LMS->CustomerExists($backid)) {
     $res = $LMS->NodeSetWarnU($backid, $warning);
@@ -133,7 +133,7 @@ if ($backid && $LMS->CustomerExists($backid)) {
     $SESSION->redirect('?' . $redir . '#' . $backid);
 }
 
-$backid = isset($_GET['id']) ? $_GET['id'] : 0;
+$backid = $_GET['id'] ?? 0;
 
 if ($backid && $LMS->NodeExists($backid)) {
     $res = $LMS->NodeSwitchWarn($backid);

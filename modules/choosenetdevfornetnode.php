@@ -26,7 +26,7 @@
 
 $layout['pagetitle'] = trans('Select net devices');
 
-$p = isset($_GET['p']) ? $_GET['p'] : '';
+$p = $_GET['p'] ?? '';
 if ($p == 'main') {
     $list = $DB->GetAll("SELECT n.name, n.id, n.producer, n.model, n.ownerid,
 			addr.city as location_city_name, addr.street as location_street_name,

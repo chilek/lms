@@ -89,7 +89,7 @@ function GetRecipients($filter, $type = MSG_MAIL)
     $consent = isset($filter['consent']);
     $email_options = isset($filter['email-options']) ? intval($filter['email-options']) : 0;
     $phone_options = isset($filter['phone-options']) ? intval($filter['phone-options']) : 0;
-    $netdevices = isset($filter['netdevices']) ? $filter['netdevices'] : null;
+    $netdevices = $filter['netdevices'] ?? null;
 
     if ($state == 50) {
         $deleted = 1;
@@ -350,9 +350,9 @@ function GetRecipients($filter, $type = MSG_MAIL)
                     GROUP BY customerid
                     HAVING MAX(dateto) >= ?NOW? AND MAX(dateto) <= ?NOW? + 86400 * ' . $contracts_days . '
                 ) ass ON ass.customerid = c.id ') : '')))
-        . (isset($netdevtable) ? $netdevtable : '')
-        . (isset($mailtable) ? $mailtable : '')
-        . (isset($smstable) ? $smstable : '')
+        . ($netdevtable ?? '')
+        . ($mailtable ?? '')
+        . ($smstable ?? '')
         . ($tarifftype ? $tarifftable : '')
         .'WHERE deleted = ' . $deleted
         . ($consent ? ' AND ' . ($type == MSG_SMS || $type == MSG_ANYSMS ? 'c.smsnotice' : 'c.mailingnotice') . ' = 1' : '')
@@ -556,9 +556,9 @@ function BodyVars(&$body, $data, $format)
             moneyf($data['totalbalance'], $currency),
             sprintf('%01.2f', $data['balance']),
             moneyf($data['balance'], $currency),
-            isset($data['customername']) ? $data['customername'] : '',
-            isset($data['id']) ? $data['id'] : '',
-            isset($data['pin']) ? $data['pin'] : '',
+            $data['customername'] ?? '',
+            $data['id'] ?? '',
+            $data['pin'] ?? '',
         ),
         $body
     );
@@ -1126,7 +1126,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
             $body = $message['body'];
 
-            $customerid = isset($row['id']) ? $row['id'] : 0;
+            $customerid = $row['id'] ?? 0;
 
             if (!empty($customerid) || $message['type'] == MSG_ANYSMS) {
                 $plain_body = $body;
@@ -1165,7 +1165,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                     $key,
                     count($recipients),
                     sprintf('%02.1f%%', round((100 / count($recipients)) * $key, 1)),
-                    (isset($row['customername']) ? $row['customername'] : '-') . ' &lt;' . $destination . '&gt;'
+                    ($row['customername'] ?? '-') . ' &lt;' . $destination . '&gt;'
                 );
                 flush();
 
@@ -1200,7 +1200,12 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                         break;
                     case MSG_SMS:
                     case MSG_ANYSMS:
-                        $result = $LMS->SendSMS($destination, $body, $msgitems[$customerid][$orig_destination], isset($sms_options) ? $sms_options : null);
+                        $result = $LMS->SendSMS(
+                            $destination,
+                            $body,
+                            $msgitems[$customerid][$orig_destination],
+                            $sms_options ?? null
+                        );
                         break;
                     case MSG_USERPANEL:
                     case MSG_USERPANEL_URGENT:
@@ -1218,7 +1223,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                     $errors = array($result);
                 } else {
                     $status = $result['status'];
-                    $errors = isset($result['errors']) ? $result['errors'] : array();
+                    $errors = $result['errors'] ?? array();
                 }
                 switch ($status) {
                     case MSG_ERROR:

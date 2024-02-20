@@ -27,8 +27,8 @@
 function smarty_block_tab_contents($params, $content, $template, $repeat)
 {
     if (!$repeat) {
-        $id = isset($params['id']) ? $params['id'] : null;
-        $class = isset($params['class']) ? $params['class'] : null;
+        $id = $params['id'] ?? null;
+        $class = $params['class'] ?? null;
 
         return '
 			<div class="lms-ui-tab-contents lms-ui-multi-check' . ($class ? ' ' . $class : '')

@@ -28,7 +28,7 @@ function module_main()
 {
     global $SESSION, $LMS;
 
-    $op = isset($_GET['op']) ? $_GET['op'] : '';
+    $op = $_GET['op'] ?? '';
 
     $DB = LMSDB::getInstance();
     $SMARTY = LMSSmarty::getInstance();
@@ -104,7 +104,7 @@ function module_main()
                                     $send_errors = array($res);
                                 } else {
                                     $status = $res['status'];
-                                    $send_errors = isset($res['errors']) ? $res['errors'] : array();
+                                    $send_errors = $res['errors'] ?? array();
                                 }
 
                                 if ($status == MSG_ERROR) {

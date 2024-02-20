@@ -25,7 +25,7 @@
  */
 
 // get customer name and check privileges using customerview
-$aids = isset($_POST['customerassignments']) ? $_POST['customerassignments'] : array($_GET['id']);
+$aids = $_POST['customerassignments'] ?? array($_GET['id']);
 $aids = Utils::filterIntegers($aids);
 if (empty($aids)) {
     $SESSION->redirect_to_history_entry();
@@ -74,7 +74,7 @@ if (isset($_POST['assignment'])) {
 
     $a['id'] = $_GET['id'];
     $a['customerid'] = $customer['id'];
-    $a['liabilityid'] = isset($_GET['lid']) ? $_GET['lid'] : null;
+    $a['liabilityid'] = $_GET['lid'] ?? null;
 
     $period = sprintf('%d', $a['period']);
 
@@ -428,7 +428,7 @@ if (isset($_POST['assignment'])) {
             'vdiscount' => str_replace(',', '.', $a['vdiscount']),
             SYSLOG::RES_LIAB => $a['liabilityid'],
             SYSLOG::RES_NUMPLAN => !empty($a['numberplanid']) ? $a['numberplanid'] : null,
-            'paytime' => isset($paytime) ? $paytime : null,
+            'paytime' => $paytime ?? null,
             'paytype' => !empty($a['paytype']) ? $a['paytype'] : null,
             'recipient_address_id' => ($a['recipient_address_id'] >= 0) ? $a['recipient_address_id'] : null,
             SYSLOG::RES_ASSIGN => $a['id']

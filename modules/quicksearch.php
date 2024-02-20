@@ -48,8 +48,8 @@ if (!empty($_POST['qs'])) {
     }
     $search = isset($search) ? urldecode(trim($search)) : '';
 } else {
-    $search = urldecode(trim(isset($_GET['what']) ? $_GET['what'] : ''));
-    $mode = isset($_GET['mode']) ? $_GET['mode'] : '';
+    $search = urldecode(trim($_GET['what'] ?? ''));
+    $mode = $_GET['mode'] ?? '';
 }
 $sql_search = $DB->Escape("%$search%");
 

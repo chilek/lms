@@ -75,8 +75,8 @@ if (isset($_POST['level'])) {
             while ($maxtime > $mintime) {
                 $data = $DB->GetRow('SELECT sum(upload) as upload, sum(download) as download FROM stats WHERE dt >= ? AND dt < ? AND nodeid=? GROUP BY nodeid', array($maxtime-$step,$maxtime,$node['id']));
                 $deleted += $DB->Execute('DELETE FROM stats WHERE nodeid=? AND dt >= ? AND dt < ?', array($node['id'],$maxtime-$step,$maxtime));
-                $download = (isset($data['download']) ? $data['download'] : 0);
-                $upload = (isset($data['upload']) ? $data['upload'] : 0);
+                $download = ($data['download'] ?? 0);
+                $upload = ($data['upload'] ?? 0);
                 if ($download || $upload) {
                     $inserted += $DB->Execute('INSERT INTO stats (nodeid, dt, upload, download) VALUES (?, ?, ?, ?)', array($node['id'], $maxtime, $upload, $download ));
                 }

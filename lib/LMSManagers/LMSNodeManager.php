@@ -66,7 +66,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'linkspeed'         => !empty($nodedata['linkspeed']) && (is_int($nodedata['linkspeed']) || ctype_digit($nodedata['linkspeed']))
                 ? intval($nodedata['linkspeed']) : null,
             'port'              => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
-            'nas'               => isset($nodedata['nas']) ? $nodedata['nas'] : 0,
+            'nas'               => $nodedata['nas'] ?? 0,
             'longitude'         => !empty($nodedata['longitude']) ? str_replace(',', '.', $nodedata['longitude']) : null,
             'latitude'          => !empty($nodedata['latitude'])  ? str_replace(',', '.', $nodedata['latitude'])  : null,
             SYSLOG::RES_NETWORK => $nodedata['netid'],
@@ -869,7 +869,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'port'              => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
             'chkmac'            => $nodedata['chkmac'],
             'halfduplex'        => $nodedata['halfduplex'],
-            'nas'               => isset($nodedata['nas']) ? $nodedata['nas'] : 0,
+            'nas'               => $nodedata['nas'] ?? 0,
             'longitude'         => !empty($nodedata['longitude']) ? str_replace(',', '.', $nodedata['longitude']) : null,
             'latitude'          => !empty($nodedata['latitude'])  ? str_replace(',', '.', $nodedata['latitude'])  : null,
             SYSLOG::RES_NETWORK => $nodedata['netid'],

@@ -110,7 +110,7 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
     $start = 0;
     $pagelimit = ConfigHelper::getConfig(
         'rt.ticketlist_pagelimit',
-        ConfigHelper::getConfig('phpui.ticketlist_pagelimit', isset($queue['total']) ? $queue['total'] : null)
+        ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $queue['total'] ?? null)
     );
 
     $SMARTY->assign('netdev', $netdev);
