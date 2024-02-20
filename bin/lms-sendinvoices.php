@@ -213,11 +213,7 @@ if ($backup || $archive) {
         $customer_status_condition = ' AND c.status IN (' . implode(',', $allowed_customer_status) . ')';
     }
 
-    if (isset($options['interval'])) {
-        $interval = $options['interval'];
-    } else {
-        $interval = ConfigHelper::getConfig('sendinvoices.interval', 0);
-    }
+    $interval = $options['interval'] ?? ConfigHelper::getConfig('sendinvoices.interval', 0);
     if ($interval == 'random') {
         $interval = -1;
     } else {

@@ -216,11 +216,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
     $SESSION->remove('ilm');
 
     if (isset($_POST['marks'])) {
-        if (isset($_POST['marks']['invoice'])) {
-            $marks = $_POST['marks']['invoice'];
-        } else {
-            $marks = $_POST['marks'];
-        }
+        $marks = $_POST['marks']['invoice'] ?? $_POST['marks'];
     } else {
         $marks = array();
     }

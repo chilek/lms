@@ -42,11 +42,7 @@ if ($SESSION->is_set('uldiv', true) && !isset($_GET['division'])) {
     $SESSION->restore('uldiv', $_GET['division']);
 }
 
-if (isset($_GET['division'])) {
-    $selectedDivision = $_GET['division'];
-} else {
-    $selectedDivision = $divisionContext;
-}
+$selectedDivision = $_GET['division'] ?? $divisionContext;
 
 $userslist = (!empty($superuser) ? $LMS->GetUserList(array('divisions' => $selectedDivision, 'superuser' => 1)) : $LMS->GetUserList(array('divisions' => $selectedDivision)));
 unset($userslist['total']);

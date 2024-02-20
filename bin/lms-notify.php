@@ -441,11 +441,7 @@ if (!empty($scopes)) {
     $scopes = array_flip($scopes);
 }
 
-if (isset($options['interval'])) {
-    $interval = $options['interval'];
-} else {
-    $interval = ConfigHelper::getConfig($config_section . '.interval', 0);
-}
+$interval = $options['interval'] ?? ConfigHelper::getConfig($config_section . '.interval', 0);
 if ($interval == 'random') {
     $interval = -1;
 } else {

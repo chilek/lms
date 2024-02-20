@@ -294,11 +294,7 @@ function convert_pna_to_teryt($data)
         );
     }
 
-    if (isset($city_ids[$state_name . '_' . $district_name . '_' . $borough_name . '_' . $city_name])) {
-        $cityid = $city_ids[$state_name . '_' . $district_name . '_' . $borough_name . '_' . $city_name];
-    } else {
-        $cityid = null;
-    }
+    $cityid = $city_ids[$state_name . '_' . $district_name . '_' . $borough_name . '_' . $city_name] ?? null;
 
     $street_common_parts = array();
     $streets = array();

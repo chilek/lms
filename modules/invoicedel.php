@@ -24,11 +24,7 @@
  *  $Id$
  */
 
-if (isset($_POST['marks'])) {
-    $ids = $_POST['marks'];
-} else {
-    $ids = array($_GET['id']);
-}
+$ids = $_POST['marks'] ?? array($_GET['id']);
 $ids = Utils::filterIntegers($ids);
 if (empty($ids)) {
     return;
