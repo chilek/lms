@@ -203,8 +203,6 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                     );
                     $this->syslog->AddMessage(SYSLOG::RES_VOIP_ACCOUNT, SYSLOG::OPER_UPDATE, $args);
                 }
-
-                return $voip_account_updated;
             } else {
                 $voip_account_updated = $this->db->Execute(
                     'UPDATE voipaccounts SET access = 0 WHERE id = ?',
@@ -219,9 +217,8 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                     );
                     $this->syslog->AddMessage(SYSLOG::RES_VOIP_ACCOUNT, SYSLOG::OPER_UPDATE, $args);
                 }
-
-                return $voip_account_updated;
             }
+            return $voip_account_updated;
         } else {
             $access = $this->db->GetOne(
                 'SELECT access FROM voipaccounts WHERE id = ?',
@@ -242,8 +239,6 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                     );
                     $this->syslog->AddMessage(SYSLOG::RES_VOIP_ACCOUNT, SYSLOG::OPER_UPDATE, $args);
                 }
-
-                return $voip_account_updated;
             } else {
                 $voip_account_updated = $this->db->Execute(
                     'UPDATE voipaccounts SET access = 1
@@ -266,9 +261,8 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                     );
                     $this->syslog->AddMessage(SYSLOG::RES_VOIP_ACCOUNT, SYSLOG::OPER_UPDATE, $args);
                 }
-
-                return $voip_account_updated;
             }
+            return $voip_account_updated;
         }
     }
 

@@ -637,14 +637,11 @@ function module_main()
 
                 $helpdesk['subject'] = $reply['subject'];
                 $helpdesk['subject'] = 'Re: ' . $LMS->cleanupTicketSubject($helpdesk['subject']);
-
-                $helpdesk['inreplyto'] = $reply['id'];
-                $helpdesk['references'] = implode(' ', $reply['references']);
             } else {
                 $reply = $LMS->GetFirstMessage($_GET['id']);
-                $helpdesk['inreplyto'] = $reply['id'];
-                $helpdesk['references'] = implode(' ', $reply['references']);
             }
+            $helpdesk['inreplyto'] = $reply['id'];
+            $helpdesk['references'] = implode(' ', $reply['references']);
             $SMARTY->assign('helpdesk', $helpdesk);
 
             if (count($queues)==1) {

@@ -370,8 +370,6 @@ function save_model($forms)
                     $formid,
                 )
             );
-            $obj->script("xajax_cancel_model();");
-            $obj->script("self.location.href='?m=netdevmodels&page=1&p_id=$pid';");
         } else {
             $DB->Execute(
                 'INSERT INTO netdevicemodels (netdeviceproducerid, name, alternative_name, type) VALUES (?, ?, ?, ?)',
@@ -383,10 +381,9 @@ function save_model($forms)
                 )
             );
             $form['id'] = $DB->GetLastInsertID('netdevicemodels');
-
-            $obj->script("xajax_cancel_model();");
-            $obj->script("self.location.href='?m=netdevmodels&page=1&p_id=$pid';");
         }
+        $obj->script("xajax_cancel_model();");
+        $obj->script("self.location.href='?m=netdevmodels&page=1&p_id=$pid';");
 
         $hook_data = $LMS->executeHook(
             'netdevmodel_after_update',

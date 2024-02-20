@@ -259,11 +259,10 @@ if (empty($starttime)) {
     $starttime = time()-(3600*24);
     $endtime = time();
     $startyear = 2001;
-    $endyear = date('Y', $endtime);
 } else {
     $startyear = date('Y', $starttime);
-    $endyear = date('Y', $endtime);
 }
+$endyear = date('Y', $endtime);
 
 $SMARTY->assign('starttime', $starttime);
 $SMARTY->assign('startyear', $startyear);

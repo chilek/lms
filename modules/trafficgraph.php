@@ -270,7 +270,6 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
             if ($elem['dt'] < $ctime) {
                 $upt = $elem['upload'];
                 $dnt = $elem['download'];
-                $dt_prev = $elem['dt'];
             } else {
                 if ($dtime > $freq) {
                     $coeff = ($elem['dt'] - $ctime) / ($elem['dt'] - $dt_prev);
@@ -312,8 +311,8 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
 
                 $upt = $elem['upload'] * $coeff;
                 $dnt = $elem['download'] * $coeff;
-                $dt_prev = $elem['dt'];
             }
+            $dt_prev = $elem['dt'];
         }
     }
     if ($tto - $ctime >= $freq) {

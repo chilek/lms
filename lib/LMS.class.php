@@ -5398,33 +5398,19 @@ class LMS
                                     ));
                                 }
                             }
-
-                            $this->DB->Execute(
-                                'INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)
-                                VALUES (?, ?, ?, ?NOW?, ?)',
-                                array($msgid, $doc['customerid'], $email, MSG_NEW)
-                            );
-
-                            $msgitemid = $this->DB->GetLastInsertID('messageitems');
-                            if (!isset($msgitems[$doc['customerid']])) {
-                                $msgitems[$doc['customerid']] = array();
-                            }
-                            $msgitems[$doc['customerid']][$email] = $msgitemid;
                         } else {
                             $msgid = $messages[$mailSubject]['msgid'];
-
-                            $this->DB->Execute(
-                                'INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)
-                                VALUES (?, ?, ?, ?NOW?, ?)',
-                                array($msgid, $doc['customerid'], $email, MSG_NEW)
-                            );
-
-                            $msgitemid = $this->DB->GetLastInsertID('messageitems');
-                            if (!isset($msgitems[$doc['customerid']])) {
-                                $msgitems[$doc['customerid']] = array();
-                            }
-                            $msgitems[$doc['customerid']][$email] = $msgitemid;
                         }
+                        $this->DB->Execute(
+                            'INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)
+                            VALUES (?, ?, ?, ?NOW?, ?)',
+                            array($msgid, $doc['customerid'], $email, MSG_NEW)
+                        );
+                        $msgitemid = $this->DB->GetLastInsertID('messageitems');
+                        if (!isset($msgitems[$doc['customerid']])) {
+                            $msgitems[$doc['customerid']] = array();
+                        }
+                        $msgitems[$doc['customerid']][$email] = $msgitemid;
                     }
 
                     if ($add_message && (!empty($dsn_email) || !empty($mdn_email))) {

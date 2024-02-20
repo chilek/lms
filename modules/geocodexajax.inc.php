@@ -99,7 +99,6 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
 						$("' . $latitude_selector . '").val("' . $geocode['latitude'] . '");
 						$("' . $longitude_selector . '").val("' . $geocode['longitude'] . '");
 					');
-                    break;
                 } else {
                     $result->script('
 						var longitude = "' . $geocode['longitude'] . '";
@@ -109,8 +108,8 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
     							$("' . $latitude_selector . '").val(latitude);
     							$("' . $longitude_selector . '").val(longitude);
 						});');
-                    break;
                 }
+                break;
             } else {
                 $error = $geocode['status'] . ': ' . $geocode['error'];
             }
