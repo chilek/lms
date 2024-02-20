@@ -468,12 +468,10 @@ class Session
         ));
 
         $res = curl_exec($ch);
+        curl_close($ch);
         if ($res !== false && ($res = json_decode($res, true)) !== null && $res['success']) {
-            curl_close($ch);
             return true;
         }
-
-        curl_close($ch);
 
         return false;
     }

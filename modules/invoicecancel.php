@@ -48,14 +48,6 @@ if ($id) {
                 'itemid' => $content['itemid'],
             ));
         }
-        if ($SYSLOG) {
-            $args = array(
-                SYSLOG::RES_DOC => $document['id'],
-                SYSLOG::RES_CUST => $document['customerid'],
-                SYSLOG::RES_USER => Auth::GetCurrentUser()
-            );
-            $SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
-        }
     } else {
         if ($LMS->isDocumentPublished($id) && !ConfigHelper::checkConfig('privileges.superuser')) {
             return;
@@ -79,14 +71,14 @@ if ($id) {
         $DB->Execute('UPDATE documents SET cancelled = 1 WHERE id = ?', array($id));
         $DB->Execute('DELETE FROM cash WHERE docid = ?', array($id));
         $document = $DB->GetRow('SELECT * FROM documents WHERE id = ?', array($id));
-        if ($SYSLOG) {
-            $args = array(
-                SYSLOG::RES_DOC => $document['id'],
-                SYSLOG::RES_CUST => $document['customerid'],
-                SYSLOG::RES_USER => Auth::GetCurrentUser()
-            );
-            $SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
-        }
+    }
+    if ($SYSLOG) {
+        $args = array(
+            SYSLOG::RES_DOC => $document['id'],
+            SYSLOG::RES_CUST => $document['customerid'],
+            SYSLOG::RES_USER => Auth::GetCurrentUser()
+        );
+        $SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
     }
 }
 

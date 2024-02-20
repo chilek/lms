@@ -468,13 +468,11 @@ if ($type == 'openlayers') {
             $dst_py = (($dst_cely * $cellh) + $celltmargin);
             if (! $link['type']) {
                 $connections->setLine(1, 0, 128, 0);
-                $connections->movePenTo($src_px+8, $src_py+8);
-                $connections->drawLineTo($dst_px+8, $dst_py+8);
             } else {
                 $connections->setLine(1, 0, 200, 255);
-                $connections->movePenTo($src_px+8, $src_py+8);
-                $connections->drawLineTo($dst_px+8, $dst_py+8);
             }
+            $connections->movePenTo($src_px+8, $src_py+8);
+            $connections->drawLineTo($dst_px+8, $dst_py+8);
         }
     }
 
@@ -490,13 +488,11 @@ if ($type == 'openlayers') {
             $dst_py = (($dst_cely * $cellh) + $celltmargin);
             if ($node['linktype']=="0") {
                 $connections->setLine(1, 255, 0, 0);
-                $connections->movePenTo($src_px+4, $src_py+4);
-                $connections->drawLineTo($dst_px+4, $dst_py+4);
             } else {
                 $connections->setLine(1, 0, 200, 255);
-                $connections->movePenTo($src_px+4, $src_py+4);
-                $connections->drawLineTo($dst_px+4, $dst_py+4);
             }
+            $connections->movePenTo($src_px+4, $src_py+4);
+            $connections->drawLineTo($dst_px+4, $dst_py+4);
         }
     }
 

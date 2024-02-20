@@ -82,11 +82,9 @@ function fetch_questions($id)
     $table = array();
     if ($questions = get_questions($id)) {
         foreach ($questions as $question) {
+            $table[$question['id']] = $question['title'];
             if (are_questions($question['id'])) {
-                $table[$question['id']] = $question['title'];
                 $table['next'.$question['id']] = fetch_questions($question['id']);
-            } else {
-                $table[$question['id']] = $question['title'];
             }
         }
     }
