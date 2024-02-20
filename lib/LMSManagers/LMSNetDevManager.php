@@ -739,7 +739,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         $count = $search['count'] ?? false;
         $offset = $search['offset'] ?? null;
         $limit = $search['limit'] ?? null;
-        $short = isset($search['short']) && !empty($search['short']);
+        $short = !empty($search['short']);
 
         list($order, $direction) = sscanf($order, '%[^,],%s');
 

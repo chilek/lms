@@ -2092,7 +2092,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         if (!empty($new_document_sms_body)) {
             $sms_options = $LMS->getCustomerSMSOptions();
-            $sms_active = !empty($sms_options) && isset($sms_options['service']) && !empty($sms_options['service']);
+            $sms_active = !empty($sms_options) && !empty($sms_options['service']);
             if (!$sms_active) {
                 $sms_service = ConfigHelper::getConfig('sms.service', '', true);
                 $sms_active = !empty($sms_service);

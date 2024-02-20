@@ -382,7 +382,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
     {
         extract($params);
 
-        if (!isset($order) || empty($order)) {
+        if (empty($order)) {
             $order = 'name,asc';
         }
 
@@ -418,7 +418,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         }
 
         $searchargs = array();
-        if (isset($search) && !empty($search)) {
+        if (!empty($search)) {
             foreach ($search as $key => $value) {
                 if ($value != '') {
                     switch ($key) {

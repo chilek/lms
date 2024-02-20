@@ -1452,7 +1452,7 @@ foreach ($assigns as $assign) {
             $assign['name'],
             $assign['attribute'],
             $assign['description'],
-            isset($assign['call_count']) && !empty($assign['call_count']) ? $assign['call_count'] : 0,
+            !empty($assign['call_count']) ? $assign['call_count'] : 0,
             isset($assign['call_fraction']) && mb_strlen($assign['call_fraction']) ? $assign['call_fraction'] : '',
             isset($assign['call_time']) ? ceil($assign['call_time'] / 60) : '',
             $assign['promotion_name'],

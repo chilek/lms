@@ -450,7 +450,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $force_at_next_day = ConfigHelper::checkConfig('promotions.force_at_next_day', ConfigHelper::checkConfig('phpui.promotion_force_at_next_day'));
             $force_current_period_settlement_at_same_day = ConfigHelper::checkConfig('promotions.force_current_period_settlement_at_same_day');
 
-            $align_periods = isset($data['align-periods']) && !empty($data['align-periods']);
+            $align_periods = !empty($data['align-periods']);
 
             $tariff = $this->db->GetRow(
                 'SELECT a.data, s.data AS sdata, t.name, t.type, t.value, t.currency, t.period,
@@ -1105,7 +1105,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         'pdiscount'         => 0,
                         'vdiscount'         => $partial_vdiscount,
                         'attribute'         => !empty($data['attribute']) ? $data['attribute'] : null,
-                        SYSLOG::RES_LIAB    => !isset($lid) || empty($lid) ? null : $lid,
+                        SYSLOG::RES_LIAB    => empty($lid) ? null : $lid,
                         'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
                         'docid'             => empty($data['docid']) ? null : $data['docid'],
                         'promotionschemaid' => null,
@@ -1184,7 +1184,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         'pdiscount'         => 0,
                         'vdiscount'         => $partial_vdiscount,
                         'attribute'         => !empty($data['attribute']) ? $data['attribute'] : null,
-                        SYSLOG::RES_LIAB    => !isset($lid) || empty($lid) ? null : $lid,
+                        SYSLOG::RES_LIAB    => empty($lid) ? null : $lid,
                         'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
                         'docid'             => empty($data['docid']) ? null : $data['docid'],
                         'promotionschemaid' => null,
@@ -1247,7 +1247,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     'pdiscount' => str_replace(',', '.', $data['pdiscount']),
                     'vdiscount' => str_replace(',', '.', $data['vdiscount']),
                     'attribute' => !empty($data['attribute']) ? $data['attribute'] : null,
-                    SYSLOG::RES_LIAB => !isset($lid) || empty($lid) ? null : $lid,
+                    SYSLOG::RES_LIAB => empty($lid) ? null : $lid,
                     'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
                     'docid' => empty($data['docid']) ? null : $data['docid'],
                     'promotionschemaid' => null,
@@ -1516,7 +1516,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
         }
 
-        if (isset($a['netflag']) && !empty($a['netflag']) && isset($a['invoice']) && (empty($a['invoice']) || $a['invoice'] == DOC_DNOTE)) {
+        if (!empty($a['netflag']) && isset($a['invoice']) && (empty($a['invoice']) || $a['invoice'] == DOC_DNOTE)) {
             $error['invoice'] = trans('Select document type');
         }
 
@@ -1665,7 +1665,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         if (is_array($values)) {
             foreach ($values as $label => &$assignments) {
-                if (!isset($sassignments[$label]) || empty($sassignments[$label])) {
+                if (empty($sassignments[$label])) {
                     unset($values[$label]);
                     continue;
                 }
@@ -1919,7 +1919,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         global $DOCENTITIES;
 
-        if (isset($doc['archived']) && !empty($doc['archived'])) {
+        if (!empty($doc['archived'])) {
             $document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
             return $document_manager->GetArchiveDocument($doc['id']);
         }
@@ -2312,9 +2312,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'post_address_id' => empty($invoice['invoice']['post_address_id']) ? null : $invoice['invoice']['post_address_id'],
             'currency' => $invoice['invoice']['currency'] ?? Localisation::getCurrentCurrency(),
             'currencyvalue' => $invoice['invoice']['currencyvalue'] ?? 1.0,
-            'memo' => isset($invoice['customer']['documentmemo']) && !empty($invoice['customer']['documentmemo'])
+            'memo' => !empty($invoice['customer']['documentmemo'])
                 ? $invoice['customer']['documentmemo'] : null,
-            'reference' => isset($invoice['invoice']['proformaid']) && !empty($invoice['invoice']['proformaid']) ? $invoice['invoice']['proformaid'] : null,
+            'reference' => !empty($invoice['invoice']['proformaid']) ? $invoice['invoice']['proformaid'] : null,
         );
 
         $this->db->Execute('INSERT INTO documents (number, numberplanid, type,
@@ -2352,7 +2352,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 'itemid' => $itemid,
                 'value' => empty($invoice['invoice']['netflag']) ? $item['valuebrutto'] : $item['valuenetto'],
                 SYSLOG::RES_TAX => $item['taxid'],
-                'taxcategory' => isset($item['taxcategory']) && !empty($item['taxcategory']) ? $item['taxcategory'] : 0,
+                'taxcategory' => !empty($item['taxcategory']) ? $item['taxcategory'] : 0,
                 'prodid' => ($item['prodid'] ?? ''),
                 'content' => $item['jm'],
                 'count' => $item['count'],
@@ -3800,17 +3800,17 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $args = array(
             'time' => $addbalance['time'] ?? time(),
-            SYSLOG::RES_USER => isset($addbalance['userid']) && !empty($addbalance['userid']) ? $addbalance['userid'] : Auth::GetCurrentUser(),
+            SYSLOG::RES_USER => !empty($addbalance['userid']) ? $addbalance['userid'] : Auth::GetCurrentUser(),
             'value' => str_replace(',', '.', round($addbalance['value'], 2)),
             'currency' => $addbalance['currency'],
             'currencyvalue' => $addbalance['currencyvalue'] ?? 1.0,
             'type' => $addbalance['type'] ?? 0,
-            SYSLOG::RES_TAX => isset($addbalance['taxid']) && !empty($addbalance['taxid']) ? $addbalance['taxid'] : null,
+            SYSLOG::RES_TAX => !empty($addbalance['taxid']) ? $addbalance['taxid'] : null,
             SYSLOG::RES_CUST => $addbalance['customerid'],
             'comment' => $addbalance['comment'],
-            SYSLOG::RES_DOC => isset($addbalance['docid']) && !empty($addbalance['docid']) ? $addbalance['docid'] : null,
+            SYSLOG::RES_DOC => !empty($addbalance['docid']) ? $addbalance['docid'] : null,
             'itemid' => $addbalance['itemid'] ?? 0,
-            'servicetype' => isset($addbalance['servicetype']) && !empty($addbalance['servicetype']) ? $addbalance['servicetype'] : null,
+            'servicetype' => !empty($addbalance['servicetype']) ? $addbalance['servicetype'] : null,
             SYSLOG::RES_CASHIMPORT => !empty($addbalance['importid']) ? $addbalance['importid'] : null,
             SYSLOG::RES_CASHSOURCE => !empty($addbalance['sourceid'])
                 ? ($addbalance['sourceid'] == -1 ? ($default_source_id ?: null) : $addbalance['sourceid'])

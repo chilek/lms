@@ -49,7 +49,7 @@ $big_networks = ConfigHelper::checkConfig('phpui.big_networks');
 $max_userlist_size = ConfigHelper::getConfig('timetable.event_max_userlist_size', ConfigHelper::getConfig('phpui.event_max_userlist_size'));
 $now = time();
 
-if (isset($_GET['ticketid']) && !empty($_GET['ticketid']) && intval($_GET['ticketid'])) {
+if (!empty($_GET['ticketid']) && intval($_GET['ticketid'])) {
     $eventticketid = intval($_GET['ticketid']);
 }
 
@@ -251,7 +251,7 @@ if (isset($_POST['event'])) {
 
     if (!$error && !$warning) {
         $event['address_id'] = !isset($event['address_id']) || $event['address_id'] == -1 ? null : $event['address_id'];
-        $event['nodeid'] = !isset($event['nodeid']) || empty($event['nodeid']) ? null : $event['nodeid'];
+        $event['nodeid'] = empty($event['nodeid']) ? null : $event['nodeid'];
 
         switch ($event['helpdesk']) {
             case 'new':
@@ -491,7 +491,7 @@ if (isset($_POST['event'])) {
     $SMARTY->assign('backurl', $backurl);
 }
 
-if (isset($ticket['netnodeid']) && !empty($ticket['netnodeid'])) {
+if (!empty($ticket['netnodeid'])) {
     $search = array('netnode' => $ticket['netnodeid']);
 } else {
     $search = array();
@@ -578,7 +578,7 @@ if (isset($eventticketid) && empty($_GET['id'])) {
 if (isset($_GET['customerid'])) {
     $event['customerid'] = intval($_GET['customerid']);
 }
-if (isset($event['customerid']) && !empty($event['customerid'])) {
+if (!empty($event['customerid'])) {
     $event['customername'] = $LMS->GetCustomerName($event['customerid']);
     $addresses = $LMS->getCustomerAddresses($event['customerid']);
     $address_id = $LMS->determineDefaultCustomerAddress($addresses);

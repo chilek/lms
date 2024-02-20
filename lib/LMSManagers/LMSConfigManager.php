@@ -135,9 +135,9 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         if (isset($section)) {
             $test =  $this->db->GetOne(
                 'SELECT id FROM uiconfig WHERE section = ? AND var = ?'
-                . (isset($userid) && !empty($userid) ? ' AND userid = ' . intval($userid) : ' AND userid IS NULL')
+                . (!empty($userid) ? ' AND userid = ' . intval($userid) : ' AND userid IS NULL')
                 . (!isset($userid) ? ' AND userid IS NULL' : '')
-                . (isset($divisionid) && !empty($divisionid) ? ' AND divisionid = ' . intval($divisionid) : ' AND divisionid IS NULL')
+                . (!empty($divisionid) ? ' AND divisionid = ' . intval($divisionid) : ' AND divisionid IS NULL')
                 . (!isset($divisionid) ? ' AND divisionid IS NULL' : ''),
                 array(
                     $section,
@@ -295,12 +295,10 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
     {
         extract($params);
 
-        if (isset($variableinfo) && !empty($variableinfo)
-            && isset($divArgs) && !empty($divArgs)
-            && isset($config_id) && !empty($config_id)) {
+        if (!empty($variableinfo) && !empty($divArgs) && !empty($config_id)) {
             $addedDivisionConfig = $this->addConfigOption($divArgs);
 
-            if (isset($withchildbindings) && !empty($withchildbindings) && !empty($addedDivisionConfig)) { // clone child bindings
+            if (!empty($withchildbindings) && !empty($addedDivisionConfig)) { // clone child bindings
                 $optionHierarchy = $this->getOptionHierarchy($config_id);
                 if ($optionHierarchy) {
                     if (isset($optionHierarchy['divisions']) && $optionHierarchy['divisions'][0]['id'] == $variableinfo['divisionid']) {
@@ -336,7 +334,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
     {
         extract($params);
 
-        if (isset($config_id) && !empty($config_id) && isset($targetSection) && !empty($targetSection)) {
+        if (!empty($config_id) && !empty($targetSection)) {
             $variableinfo = $this->GetConfigVariable($config_id);
             $optionExist = $this->globalConfigOptionExists(array('section' => $targetSection, 'variable' => $variableinfo['var']));
 
@@ -356,7 +354,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                 $addedGlobalConfig = $this->addConfigOption($globalArgs);
 
                 if (!empty($addedGlobalConfig)) {
-                    if (isset($withchildbindings) && !empty($withchildbindings)) { // clone child bindings
+                    if (!empty($withchildbindings)) { // clone child bindings
                         $optionHierarchy = $this->getOptionHierarchy($config_id);
                         if ($optionHierarchy) {
                             if (isset($optionHierarchy['divisions'])) {
@@ -424,7 +422,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
     {
         extract($params);
 
-        if (isset($config_id) && isset($targetSection) && isset($targetDivision)
+        if (isset($targetDivision)
             && !empty($config_id) && !empty($targetSection) && !empty($targetDivision)) {
             $variableinfo = $this->GetConfigVariable($config_id);
             $optionExist = $this->globalConfigOptionExists(array('section' => $targetSection, 'variable' => $variableinfo['var']));
@@ -443,7 +441,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                 if ($variableinfo['divisionid'] != $targetDivision) { // source division is different from target division
                     $divisionOptionExist = $this->divisionConfigOptionExists(array('section' => $variableinfo['section'], 'variable' => $variableinfo['var'], 'divisionid' => $targetDivision));
                     if ($divisionOptionExist) { // if target division exists
-                        if (isset($override) && !empty($override)) {
+                        if (!empty($override)) {
                             // delete old target division config
                             $this->DeleteConfigOption($divisionOptionExist);
                             // clone source division data to the target division config
@@ -472,7 +470,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                 if (!empty($optionExist)) { // clone to the another existing section
                     $divisionOptionExist = $this->divisionConfigOptionExists(array('section' => $targetSection, 'variable' => $variableinfo['var'], 'divisionid' => $targetDivision));
                     if (!empty($divisionOptionExist)) { // if target division option exists
-                        if (isset($override) && !empty($override)) {
+                        if (!empty($override)) {
                             // delete old target division config
                             $this->DeleteConfigOption($divisionOptionExist);
                             // clone source division config data to the target division config
@@ -497,7 +495,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                         $this->addDivisionConfig($params);
                     }
                 } else { // clone to the new section - parent dependency is requiered
-                    if (isset($withparentbindings) && !empty($withparentbindings)) {
+                    if (!empty($withparentbindings)) {
                         // create parent (global) option with data from target division option data
                         $globalArgs = array(
                             'section' => $targetSection,
@@ -533,7 +531,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
     {
         extract($params);
 
-        if (isset($config_id) && isset($targetSection) && isset($targetDivision) && isset($targetUser)
+        if (isset($targetDivision)
             && !empty($config_id) && !empty($targetSection) && !empty($targetDivision) && !empty($targetUser)) {
             $lms = LMS::getInstance();
             $userDivisionAccess = $lms->checkDivisionsAccess(array('divisions' => $targetDivision, 'userid' => $targetUser));
@@ -567,7 +565,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                                 'userid' => $targetUser
                             ));
                             if (!empty($divisionUserOptionExist)) { // if user exists in target division
-                                if (isset($override) && !empty($override)) {
+                                if (!empty($override)) {
                                     $this->DeleteConfigOption($divisionUserOptionExist);
                                     // clone source division config to the target division config in the same option
                                     $userTargetArgs = array(
@@ -590,7 +588,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                                 $this->addConfigOption($userArgs);
                             }
                         } else { // if parent target division does not exist - parent dependency is requiered
-                            if (isset($withparentbindings) && !empty($withparentbindings)) {
+                            if (!empty($withparentbindings)) {
                                 // create parent division option with the same settings as target user option data
                                 // and right after that bind new division user settings
                                 $globalOptionExists = $this->globalConfigOptionExists(array(
@@ -629,7 +627,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                                 'userid' => $targetUser
                             ));
                             if (!empty($divisionUserOptionExist)) {
-                                if (isset($override) && !empty($override)) {
+                                if (!empty($override)) {
                                     $this->DeleteConfigOption($divisionUserOptionExist);
                                     // clone source division config to the target division config in the same option
                                     $userTargetArgs = array(
@@ -668,7 +666,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                                 'userid' => $targetUser
                             ));
                             if (!empty($divisionUserOptionExist)) { // if user exists in target division
-                                if (isset($override) && !empty($override)) {
+                                if (!empty($override)) {
                                     $this->DeleteConfigOption($divisionUserOptionExist);
                                     // clone source user config data to the target user config
                                     $userTargetArgs = array(
@@ -693,7 +691,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                         } else { // if parent target division option for target user does not exist
                             // create parent division option with the same settings as target user option data
                             // and right after that bind new division user settings
-                            if (isset($withparentbindings) && !empty($withparentbindings)) {
+                            if (!empty($withparentbindings)) {
                                 $divTargetArgs = array(
                                     'section' => $targetSection,
                                     'userid' => null,
@@ -716,7 +714,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                             }
                         }
                     } else { // clone to the new section - parent dependency is requiered
-                        if (isset($withparentbindings) && !empty($withparentbindings)) {
+                        if (!empty($withparentbindings)) {
                             // create parent global and division option with the same settings as target user
                             // and right after that bind new user settings
                             $globalTargetArgs = array(
@@ -761,7 +759,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
     {
         extract($params);
 
-        if (isset($config_id) && isset($targetSection) && isset($targetUser)
+        if (isset($targetUser)
             && !empty($config_id) && !empty($targetSection) && !empty($targetUser)) {
             $variableinfo = $this->GetConfigVariable($config_id);
             $optionExist = $this->globalConfigOptionExists(array('section' => $targetSection, 'variable' => $variableinfo['var']));
@@ -779,7 +777,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                 if ($variableinfo['userid'] != $targetUser) { // source user is different from target user
                     $userOptionExist = $this->userConfigOptionExists(array('section' => $variableinfo['section'], 'variable' => $variableinfo['var'], 'userid' => $targetUser));
                     if (!empty($userOptionExist)) { // if target user exists
-                        if (isset($override) && !empty($override)) {
+                        if (!empty($override)) {
                             // delete old target user config
                             $this->DeleteConfigOption($userOptionExist);
                             // clone source user data to the target user config
@@ -804,7 +802,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                 if (!empty($optionExist)) { // clone to the another existing section
                     $userOptionExist = $this->userConfigOptionExists(array('section' => $targetSection, 'variable' => $variableinfo['var'], 'userid' => $targetUser));
                     if (!empty($userOptionExist)) { // if target user option exists
-                        if (isset($override) && !empty($override)) {
+                        if (!empty($override)) {
                             // delete old target user config
                             $this->DeleteConfigOption($userOptionExist);
                             // clone source user config data to the target user config
@@ -825,7 +823,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                         $this->addConfigOption($userArgs);
                     }
                 } else { // clone to the new section - parent dependency is requiered
-                    if (isset($withparentbindings) && !empty($withparentbindings)) {
+                    if (!empty($withparentbindings)) {
                         // create parent (global) option with data from target user option data
                         $globalArgs = array(
                             'section' => $targetSection,
@@ -913,9 +911,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
     {
         extract($params);
 
-        if (isset($targetSection) && !empty($targetSection)
-            && isset($targetVariable) && !empty($targetVariable)
-            && isset($targetValue) && !empty($targetValue)) {
+        if (!empty($targetSection) && !empty($targetVariable) && !empty($targetValue)) {
             $optionExist = $this->globalConfigOptionExists(array('section' => $targetSection, 'variable' => $targetVariable));
 
             if (!$optionExist) {
@@ -938,7 +934,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                 $this->addConfigOption($globalArgs);
             } else {
                 // override existing
-                if (isset($override) && !empty($override)) {
+                if (!empty($override)) {
                     $globalArgs = array(
                         'value' => $targetValue,
                         'id' => $optionExist
@@ -964,10 +960,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
     {
         extract($params);
 
-        if (isset($targetSection) && !empty($targetSection)
-            && isset($targetVariable) && !empty($targetVariable)
-            && isset($targetValue) && !empty($targetValue)
-            && isset($targetDivision) && !empty($targetDivision)) {
+        if (!empty($targetSection) && !empty($targetVariable) && !empty($targetValue) && !empty($targetDivision)) {
             $divisionOptionExist = $this->divisionConfigOptionExists(array('section' => $targetSection, 'variable' => $targetVariable, 'divisionid' => $targetDivision));
 
             if (!$divisionOptionExist) {  // create division config
@@ -988,7 +981,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                     );
                     $this->addConfigOption($divisionTargetArgs);
                 } else { // global parent option does not exist - parent dependency is requiered
-                    if (isset($withparentbindings) && !empty($withparentbindings)) {
+                    if (!empty($withparentbindings)) {
                         // set option type
                         $option = $targetSection . '.' . $targetVariable;
                         $optionType = $this->GetConfigDefaultType($option);
@@ -1022,7 +1015,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                     }
                 }
             } else { // override existing division config
-                if (isset($override) && !empty($override)) {
+                if (!empty($override)) {
                     $divisionTargetArgs = array(
                         'value' => $targetValue,
                         'id' => $divisionOptionExist
@@ -1048,11 +1041,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
     {
         extract($params);
 
-        if (isset($targetSection) && !empty($targetSection)
-            && isset($targetVariable) && !empty($targetVariable)
-            && isset($targetValue) && !empty($targetValue)
-            && isset($targetUser) && !empty($targetUser)
-            && isset($targetDivision) && !empty($targetDivision)) {
+        if (!empty($targetSection) && !empty($targetVariable) && !empty($targetValue) && !empty($targetUser) && !empty($targetDivision)) {
             $lms = LMS::getInstance();
             $userDivisionAccess = $lms->checkDivisionsAccess(array('divisions' => $targetDivision, 'userid' => $targetUser));
 
@@ -1086,7 +1075,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                         );
                         $this->addConfigOption($divisionUserTargetArgs);
                     } else { // division parent option does not exist - parent dependency is requiered
-                        if (isset($withparentbindings) && !empty($withparentbindings)) {
+                        if (!empty($withparentbindings)) {
                             $globalOptionExist = $this->globalConfigOptionExists(array(
                                 'section' => $targetSection,
                                 'variable' => $targetVariable
@@ -1171,7 +1160,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                         }
                     }
                 } else { // override existing division config
-                    if (isset($override) && !empty($override)) {
+                    if (!empty($override)) {
                         $divisionUserTargetArgs = array(
                             'value' => $targetValue,
                             'id' => $divisionUserOptionExist
@@ -1198,10 +1187,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
     {
         extract($params);
 
-        if (isset($targetSection) && !empty($targetSection)
-            && isset($targetVariable) && !empty($targetVariable)
-            && isset($targetValue) && !empty($targetValue)
-            && isset($targetUser) && !empty($targetUser)) {
+        if (!empty($targetSection) && !empty($targetVariable) && !empty($targetValue) && !empty($targetUser)) {
             $userOptionExist = $this->userConfigOptionExists(array('section' => $targetSection, 'variable' => $targetVariable, 'userid' => $targetUser));
 
             if (!$userOptionExist) {  // create user config
@@ -1222,7 +1208,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                     );
                     $this->addConfigOption($userTargetArgs);
                 } else { // global parent option does not exist - parent dependency is requiered
-                    if (isset($withparentbindings) && !empty($withparentbindings)) {
+                    if (!empty($withparentbindings)) {
                         // set option type
                         $option = $targetSection . '.' . $targetVariable;
                         $optionType = $this->GetConfigDefaultType($option);
@@ -1256,7 +1242,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                     }
                 }
             } else { // override existing division config
-                if (isset($override) && !empty($override)) {
+                if (!empty($override)) {
                     $userTargetArgs = array(
                         'value' => $targetValue,
                         'id' => $userOptionExist
@@ -1358,9 +1344,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
     public function importConfigs($params)
     {
         extract($params);
-        if (isset($fileExtension) && !empty($fileExtension)
-            && isset($file) && !empty($file)
-            && isset($targetType) && !empty($targetType)) {
+        if (!empty($fileExtension) && !empty($file) && !empty($targetType)) {
             if ($fileExtension == 'ini') {
                 $configs = (array) parse_ini_file($file, true);
                 if (!empty($configs)) {
@@ -1406,7 +1390,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
 
     public function getRelatedUsers($id, $division = null)
     {
-        if (isset($division) && !empty($division)) {
+        if (!empty($division)) {
             // user override division conf
             return $this->db->GetAllByKey(
                 'SELECT userid

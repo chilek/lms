@@ -1226,7 +1226,7 @@ if ($report_type == 'full') {
             if (!$customer_resources_as_operator_resources) {
                 // collect ranges from customer uni links
                 $uni_ranges = array();
-                if (isset($netnode['uni_links']) && !empty($netnode['uni_links'])) {
+                if (!empty($netnode['uni_links'])) {
                     foreach ($netnode['uni_links'] as $uni_link_id) {
                         $uni_link = &$uni_links[$uni_link_id];
                         // $uni_link['nodes']

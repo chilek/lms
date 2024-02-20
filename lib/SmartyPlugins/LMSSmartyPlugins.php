@@ -174,8 +174,8 @@ class LMSSmartyPlugins
         $id = $params['id'] ?? $name;
         $icon = empty($params['icon']) ? null : $params['icon'];
         $selected = $params['selected'] ?? null;
-        $superuser = isset($params['superuser']) && !empty($params['superuser']) ? $params['superuser'] : null;
-        $onchange = isset($params['onchange']) && !empty($params['onchange']) ? $params['onchange'] : null;
+        $superuser = !empty($params['superuser']) ? $params['superuser'] : null;
+        $onchange = !empty($params['onchange']) ? $params['onchange'] : null;
         $tip = trans($params['tip'] ?? 'Select division');
 
         if (isset($user_divisions) && empty($user_divisions)) {
@@ -1070,7 +1070,7 @@ class LMSSmartyPlugins
         // optional - allow to easily attach event handler in jquery,
         $id = $params['id'] ?? null;
         // optional - additional css classes which are appended to class attribute
-        $class = isset($params['class']) && !empty($params['class']) ? $params['class'] : null;
+        $class = !empty($params['class']) ? $params['class'] : null;
         // optional - icon selection transformed to css class
         $name = $params['name'] ?? null;
         // optional - text tip,
@@ -1110,8 +1110,8 @@ class LMSSmartyPlugins
         }
 
         $elemname = $params['elemname'];
-        $id = isset($params['id']) && !empty($params['id']) ? $params['id'] : null;
-        $selected = isset($params['selected']) && !empty($params['selected']) ? $params['selected'] : 0;
+        $id = !empty($params['id']) ? $params['id'] : null;
+        $selected = !empty($params['selected']) ? $params['selected'] : 0;
         $tip = $params['tip'] ?? trans('Select payment type');
         $trigger = $params['trigger'] ?? 'paytype';
         $form = $params['form'] ?? null;
@@ -1319,7 +1319,7 @@ class LMSSmartyPlugins
         }
 
         $elemname = $params['elemname'];
-        $selected = isset($params['selected']) && !empty($params['selected']) ? $params['selected'] : 0;
+        $selected = !empty($params['selected']) ? $params['selected'] : 0;
         $tip = $params['tip'] ?? trans('Select network device type');
         $trigger = $params['trigger'] ?? 'netdevtype';
         $form = $params['form'] ?? null;
@@ -1465,7 +1465,7 @@ class LMSSmartyPlugins
         }
 
         $elemname = $params['elemname'];
-        $selected = isset($params['selected']) && !empty($params['selected']) ? intval($params['selected']) : null;
+        $selected = !empty($params['selected']) ? intval($params['selected']) : null;
         $tip = $params['tip'] ?? trans('Select identity type');
         $trigger = $params['trigger'] ?? 'ict';
 

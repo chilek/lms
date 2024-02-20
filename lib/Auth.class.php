@@ -103,7 +103,7 @@ class Auth
         $this->SESSION->restore('session_target_login', $this->targetLogin);
         $this->SESSION->restore('session_authcoderequired', $this->authcoderequired);
 
-        if (isset($loginform['backtologinform']) && !empty($loginform['backtologinform'])) {
+        if (!empty($loginform['backtologinform'])) {
             $this->authcoderequired = false;
         }
 

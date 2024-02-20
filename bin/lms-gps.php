@@ -194,19 +194,19 @@ foreach ($types as $label => $type) {
                     $params = array(
                         'city' => $row['city_name'],
                     );
-                    if (isset($row['country_name']) && !empty($row['country_name'])) {
+                    if (!empty($row['country_name'])) {
                         $params['country'] = $row['country_name'];
                     }
-                    if (isset($row['state_name']) && !empty($row['state_name'])) {
+                    if (!empty($row['state_name'])) {
                         $params['state'] = $row['state_name'];
                     }
-                    if (isset($row['simple_street_name']) && !empty($row['simple_street_name'])) {
+                    if (!empty($row['simple_street_name'])) {
                         $params['street'] = (isset($row['house']) && mb_strlen($row['house'])
                                 ? $row['house'] . ' '
                                 : ''
                             ) . $row['simple_street_name'];
                     }
-                    if (isset($row['zip']) && !empty($row['zip'])) {
+                    if (!empty($row['zip'])) {
                         $params['postalcode'] = $row['zip'];
                     }
                     $res = osm_geocode($params);

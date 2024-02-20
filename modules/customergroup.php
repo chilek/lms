@@ -32,7 +32,7 @@ if ($action == 'delete') {
     } elseif (isset($_POST['markedcustomergroupid'])) {
         $customergroupids = $_POST['markedcustomergroupid'];
     }
-    if (isset($customergroupids) && !empty($customergroupids)) {
+    if (!empty($customergroupids)) {
         foreach ($customergroupids as $customergroupid) {
             $LMS->CustomerAssignmentDelete(
                 array('customerid' => intval($_GET['id']),
@@ -67,7 +67,7 @@ if ($action == 'delete') {
     }
     $cid = intval($_GET['id']);
 
-    if (isset($customergroupids) && !empty($customergroupids)) {
+    if (!empty($customergroupids)) {
         foreach ($customergroupids as $customergroupid) {
             $LMS->CustomerAssignmentDelete(array(
                 'customerid' => $cid,
@@ -99,7 +99,7 @@ if ($action == 'delete') {
             $groups = array($setwarnings['customergroup']);
         }
         $groups = Utils::filterIntegers($groups);
-    } elseif (isset($setwarnings['newcustomergroup']) && !empty($setwarnings['newcustomergroup'])) {
+    } elseif (!empty($setwarnings['newcustomergroup'])) {
         $groups = array($LMS->CustomergroupAdd(array(
             'name' => $setwarnings['newcustomergroup'],
             'description' => '',

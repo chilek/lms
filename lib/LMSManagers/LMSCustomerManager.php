@@ -832,11 +832,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     {
         extract($params);
 
-        if (!isset($order) || empty($order)) {
+        if (empty($order)) {
             $order = 'customername,asc';
         }
 
-        if (!isset($sqlskey) || empty($sqlskey)) {
+        if (empty($sqlskey)) {
             $sqlskey = 'AND';
         }
 
@@ -896,7 +896,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $nodegroupnegation = false;
         }
 
-        if (isset($state) && !is_array($state) && !empty($state)) {
+        if (!is_array($state) && !empty($state)) {
             $state = array($state);
         }
 
@@ -1714,7 +1714,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $customer_idx_by_cids[$row['id']] = $idx;
                 }
 
-                if (isset($customernodes) && !empty($customernodes)) {
+                if (!empty($customernodes)) {
                     $nodes = $this->db->GetAll(
                         'SELECT n.id, n.name, n.mac, n.ownerid, INET_NTOA(n.ipaddr) AS ip FROM vnodes n
                             WHERE n.ownerid IN (' . implode(',', array_keys($customer_idx_by_cids)) . ')'
@@ -2528,7 +2528,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         if (isset($default_location_address)) {
             $caddr[$default_location_address]['default_address'] = true;
             return $default_location_address;
-        } elseif (isset($location_address) && !empty($location_address)) {
+        } elseif (!empty($location_address)) {
             $caddr[$location_address]['default_address'] = true;
             return $location_address;
         } else {
@@ -3419,7 +3419,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
     public function getCustomerCalls(array $params)
     {
-        $count = isset($params['count']) && !empty($params['count']);
+        $count = !empty($params['count']);
 
         if (isset($params['offset'])) {
             $offset = ' OFFSET ' . intval($params['offset']);
@@ -3476,11 +3476,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $where[] = 'c.phone LIKE \'%' . $this->db->Escape($params['phone']) . '%\'';
         }
 
-        if (isset($params['datefrom']) && !empty($params['datefrom'])) {
+        if (!empty($params['datefrom'])) {
             $where[] = 'c.dt >= ' . intval($params['datefrom']);
         }
 
-        if (isset($params['dateto']) && !empty($params['dateto'])) {
+        if (!empty($params['dateto'])) {
             $where[] = 'c.dt <= ' . intval($params['dateto']);
         }
 
@@ -3601,7 +3601,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             VALUES (?, ?, ?, ?, ?, ?)',
             array(
                 $params['dt'],
-                isset($params['userid']) && !empty($params['userid']) ? intval($params['userid']) : null,
+                !empty($params['userid']) ? intval($params['userid']) : null,
                 $params['filename'],
                 empty($params['outgoing']) ? 0 : 1,
                 $params['phone'],
@@ -3616,7 +3616,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $res = $this->db->Execute(
             'UPDATE customercalls SET notes = ? WHERE id = ?',
             array(
-                !isset($params['notes']) || empty($params['notes']) ? null : $params['notes'],
+                empty($params['notes']) ? null : $params['notes'],
                 $callid,
             )
         );

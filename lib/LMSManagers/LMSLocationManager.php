@@ -498,7 +498,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 
     public function getCoordinatesForAddress($params)
     {
-        if (isset($params['city_id']) && !empty($params['city_id']) && $this->db->GetOne('SELECT id FROM location_buildings LIMIT 1')) {
+        if (!empty($params['city_id']) && $this->db->GetOne('SELECT id FROM location_buildings LIMIT 1')) {
             $args = array(
                 'city_id' => $params['city_id'],
             );

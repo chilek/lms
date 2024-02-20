@@ -58,9 +58,9 @@ if (isset($_GET['search'])) {
 
     require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
     if ($customerlist && (
-        (isset($_POST['consents']) && !empty($_POST['consents']))
+        (!empty($_POST['consents']))
         || ($_GET['oper'] == 'changetype' && ($_GET['type'] == CTYPES_PRIVATE || $_GET['type'] == CTYPES_COMPANY))
-        || (isset($_GET['type']) && isset($_POST['contactflags'][$_GET['type']]) && !empty($_POST['contactflags'][$_GET['type']])
+        || (isset($_GET['type']) && !empty($_POST['contactflags'][$_GET['type']])
             && isset($CUSTOMERCONTACTTYPES[$_GET['type']]))
         || ($_GET['oper'] == 'changestatus' && isset($_GET['status']) && isset($CSTATUSES[$_GET['status']]))
         || ($_GET['oper'] == 'restore')

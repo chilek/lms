@@ -45,7 +45,7 @@ if (!isset($search)) {
     $SESSION->save('customersearch', $search);
 }
 
-if (isset($search['balance_date']) && !empty($search['balance_date'])) {
+if (!empty($search['balance_date'])) {
     $time = intval($search['balance_date']);
 }
 

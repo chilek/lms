@@ -67,7 +67,7 @@ if (!isset($_GET['init'])) {
     if (isset($_GET['usertype'])) {
         $filter['usertype'] = $_GET['usertype'];
     }
-    if (!isset($filter['usertype']) || empty($filter['usertype'])) {
+    if (empty($filter['usertype'])) {
         $filter['usertype'] = 'creator';
     }
 
@@ -88,7 +88,7 @@ if (!isset($_GET['init'])) {
     if (isset($_GET['periodtype'])) {
         $filter['periodtype'] = $_GET['periodtype'];
     }
-    if (!isset($filter['periodtype']) || empty($filter['periodtype'])) {
+    if (empty($filter['periodtype'])) {
         $filter['periodtype'] = 'creationdate';
     }
 

@@ -128,7 +128,7 @@ $page = (empty($_GET['page']) ? 0 : intval($_GET['page']));
 if (isset($_GET['sourcefileid']) || $c == 'cashimport') {
     if (isset($_GET['sourcefileid'])) {
         $sourcefileid = intval($_GET['sourcefileid']);
-    } elseif (isset($_POST['sourcefileid']) && !empty($_POST['sourcefileid'])) {
+    } elseif (!empty($_POST['sourcefileid'])) {
         $sourcefileid = intval($_POST['sourcefileid']);
     } else {
         $SESSION->restore('blsfid', $sourcefileid);

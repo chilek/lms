@@ -70,7 +70,7 @@ if ($api) {
 
     if (isset($_GET['page'])) {
         $filter['page'] = intval($_GET['page']);
-    } elseif (!isset($filter['page']) || empty($filter['page'])) {
+    } elseif (empty($filter['page'])) {
         $filter['page'] = 1;
     }
 

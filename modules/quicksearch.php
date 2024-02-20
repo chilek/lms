@@ -1228,7 +1228,7 @@ switch ($mode) {
                 if ($i > $quicksearch_limit) {
                     break;
                 }
-                if (isset($_GET['section']) && !empty($_GET['section']) && $section != $_GET['section']) {
+                if (!empty($_GET['section']) && $section != $_GET['section']) {
                     continue;
                 }
                 foreach ($variables as $variable => $documentation) {
