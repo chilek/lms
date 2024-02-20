@@ -681,7 +681,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'altname'        => empty($customeradd['altname']) ? null : $customeradd['altname'],
             'type'           => empty($customeradd['type']) ? 0 : 1,
             'ten'            => $customeradd['ten'],
-            'ssn'            => isset($customeradd['ssn']) ? $customeradd['ssn'] : '',
+            'ssn'            => $customeradd['ssn'] ?? '',
             'status'         => $customeradd['status'],
             SYSLOG::RES_USER => Auth::GetCurrentUser(),
             'info'           => Utils::removeInsecureHtml($customeradd['info']),
@@ -692,8 +692,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'regon'          => $customeradd['regon'],
             'rbename'        => $customeradd['rbename'],
             'rbe'            => $customeradd['rbe'],
-            'ict'            => isset($customeradd['ict']) ? $customeradd['ict'] : 0,
-            'icn'            => isset($customeradd['icn']) ? $customeradd['icn'] : '',
+            'ict'            => $customeradd['ict'] ?? 0,
+            'icn'            => $customeradd['icn'] ?? '',
             'icexpires'      => isset($customeradd['icexpires']) ? (intval($customeradd['icexpires']) > 0
                 ? strtotime('tomorrow', intval($customeradd['icexpires'])) - 1
                 : ($customeradd['icexpires'] === '-1' ? 0 : null)) : null,
@@ -832,11 +832,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     {
         extract($params);
 
-        if (!isset($order) || empty($order)) {
+        if (empty($order)) {
             $order = 'customername,asc';
         }
 
-        if (!isset($sqlskey) || empty($sqlskey)) {
+        if (empty($sqlskey)) {
             $sqlskey = 'AND';
         }
 
@@ -896,7 +896,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $nodegroupnegation = false;
         }
 
-        if (isset($state) && !is_array($state) && !empty($state)) {
+        if (!is_array($state) && !empty($state)) {
             $state = array($state);
         }
 
@@ -1013,7 +1013,6 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         }
                     }
                     break;
-                case 84:
                 case 85:
                     $contracts = 4;
                     if ($state_item == 85) {
@@ -1715,7 +1714,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $customer_idx_by_cids[$row['id']] = $idx;
                 }
 
-                if (isset($customernodes) && !empty($customernodes)) {
+                if (!empty($customernodes)) {
                     $nodes = $this->db->GetAll(
                         'SELECT n.id, n.name, n.mac, n.ownerid, INET_NTOA(n.ipaddr) AS ip FROM vnodes n
                             WHERE n.ownerid IN (' . implode(',', array_keys($customer_idx_by_cids)) . ')'
@@ -1860,7 +1859,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 if ($channels) {
                     foreach ($channels as $channel) {
                         $idx = $ids[$channel['nodeid']];
-                        $result[$idx]['channelid']   = $channel['id'] ? $channel['id'] : $channel['channelid'];
+                        $result[$idx]['channelid']   = $channel['id'] ?: $channel['channelid'];
                         $result[$idx]['channelname'] = $channel['name'];
                         $result[$idx]['cid']         = $channel['cid'];
                         $result[$idx]['downceil']    = $channel['downceil'];
@@ -1997,8 +1996,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $result['cstate'] = $cstate['name'];
                 }
                 if ($result['zip'] == $result['post_zip']) {
-                    $result['post_stateid'] = isset($result['stateid']) ? $result['stateid'] : null;
-                    $result['post_cstate'] = isset($result['cstate']) ? $result['cstate'] : null;
+                    $result['post_stateid'] = $result['stateid'] ?? null;
+                    $result['post_cstate'] = $result['cstate'] ?? null;
                 } else if ($result['post_zip'] && ($cstate = $this->db->GetRow('SELECT s.id, s.name
 					FROM states s, zipcodes
 					WHERE zip = ? AND stateid = s.id', array($result['post_zip'])))) {
@@ -2146,7 +2145,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'status'         => $customerdata['status'],
             'type'           => empty($customerdata['type']) ? 0 : 1,
             'ten'            => $customerdata['ten'],
-            'ssn'            => isset($customerdata['ssn']) ? $customerdata['ssn'] : $customer['ssn'],
+            'ssn'            => $customerdata['ssn'] ?? $customer['ssn'],
             SYSLOG::RES_USER => Auth::GetCurrentUser(),
             'info'           => Utils::removeInsecureHtml($customerdata['info']),
             'notes'          => Utils::removeInsecureHtml($customerdata['notes']),
@@ -2158,8 +2157,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'pin'            => $pin,
             'pinlastchange'  => $pinlastchange,
             'regon'          => $customerdata['regon'],
-            'ict'            => isset($customerdata['ict']) ? $customerdata['ict'] : $customer['ict'],
-            'icn'            => isset($customerdata['icn']) ? $customerdata['icn'] : $customer['icn'],
+            'ict'            => $customerdata['ict'] ?? $customer['ict'],
+            'icn'            => $customerdata['icn'] ?? $customer['icn'],
             'icexpires'      => isset($customerdata['icexpires']) ? (intval($customerdata['icexpires']) > 0
                 ? strtotime('tomorrow', intval($customerdata['icexpires'])) - 1
                 : ($customerdata['icexpires'] === '-1' ? 0 : null)) : $customer['icexpires'],
@@ -2168,7 +2167,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'cutoffstop'     => $customerdata['cutoffstop'],
             SYSLOG::RES_DIV  => empty($customerdata['divisionid']) ? null : $customerdata['divisionid'],
             'paytime'        => $customerdata['paytime'],
-            'paytype'        => $customerdata['paytype'] ? $customerdata['paytype'] : null,
+            'paytype'        => $customerdata['paytype'] ?: null,
             'flags'          => $flags,
             SYSLOG::RES_CUST => $customerdata['id']
         );
@@ -2529,7 +2528,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         if (isset($default_location_address)) {
             $caddr[$default_location_address]['default_address'] = true;
             return $default_location_address;
-        } elseif (isset($location_address) && !empty($location_address)) {
+        } elseif (!empty($location_address)) {
             $caddr[$location_address]['default_address'] = true;
             return $location_address;
         } else {
@@ -2893,7 +2892,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
     public function GetCustomerAddressesWithEndPoints($customerid)
     {
-        return $this->getCustomerAddressessWithOrWithoutEndPoints($customerid, true);
+        return $this->getCustomerAddressessWithOrWithoutEndPoints($customerid);
     }
 
     public function GetCustomerAddressesWithoutEndPoints($customerid)
@@ -3420,7 +3419,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
     public function getCustomerCalls(array $params)
     {
-        $count = isset($params['count']) && !empty($params['count']);
+        $count = !empty($params['count']);
 
         if (isset($params['offset'])) {
             $offset = ' OFFSET ' . intval($params['offset']);
@@ -3477,11 +3476,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $where[] = 'c.phone LIKE \'%' . $this->db->Escape($params['phone']) . '%\'';
         }
 
-        if (isset($params['datefrom']) && !empty($params['datefrom'])) {
+        if (!empty($params['datefrom'])) {
             $where[] = 'c.dt >= ' . intval($params['datefrom']);
         }
 
-        if (isset($params['dateto']) && !empty($params['dateto'])) {
+        if (!empty($params['dateto'])) {
             $where[] = 'c.dt <= ' . intval($params['dateto']);
         }
 
@@ -3602,7 +3601,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             VALUES (?, ?, ?, ?, ?, ?)',
             array(
                 $params['dt'],
-                isset($params['userid']) && !empty($params['userid']) ? intval($params['userid']) : null,
+                !empty($params['userid']) ? intval($params['userid']) : null,
                 $params['filename'],
                 empty($params['outgoing']) ? 0 : 1,
                 $params['phone'],
@@ -3617,7 +3616,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $res = $this->db->Execute(
             'UPDATE customercalls SET notes = ? WHERE id = ?',
             array(
-                !isset($params['notes']) || empty($params['notes']) ? null : $params['notes'],
+                empty($params['notes']) ? null : $params['notes'],
                 $callid,
             )
         );

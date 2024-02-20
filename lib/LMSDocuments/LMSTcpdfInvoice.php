@@ -187,7 +187,7 @@ class LMSTcpdfInvoice extends LMSInvoice
 
             $this->backend->startTransaction();
             $old_y = $this->backend->GetY();
-            $this->backend->MultiCell($h_width[$item], 0, $heads[$item], 1, 'C', true, 1, '', '', true, 0, false, false, 0);
+            $this->backend->MultiCell($h_width[$item], 0, $name, 1, 'C', true, 1, '', '', true, 0, false, false, 0);
             $h_cell = $this->backend->GetY() - $old_y;
             $this->backend->rollbackTransaction(true);
 
@@ -196,7 +196,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             }
         }
         foreach ($heads as $item => $name) {
-            $this->backend->MultiCell($h_width[$item], $h_head, $heads[$item], 1, 'C', true, 0, '', '', true, 0, false, false, $h_head, 'M');
+            $this->backend->MultiCell($h_width[$item], $h_head, $name, 1, 'C', true, 0, '', '', true, 0, false, false, $h_head, 'M');
         }
 
         $this->backend->Ln();
@@ -460,7 +460,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         if ($this->data['type'] == DOC_ENTITY_DUPLICATE) {
             $this->backend->SetFont(null, '', 10);
             $title = trans('DUPLICATE, draw-up date:') . ' ' . date('d.m.Y', $this->data['duplicate-date']
-                ? $this->data['duplicate-date'] : time());
+                ?: time());
             $this->backend->Write(0, $title, '', 0, 'C', true, 0, false, false, 0);
         }
     }
@@ -488,7 +488,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             . implode("\n", $accounts)
             . ($this->use_alert_color ? '</span>' : '');
         $tmp = str_replace('%bankaccount', $account_text, $tmp);
-        $tmp = str_replace('%bankname', isset($this->data['div_bank']) ? $this->data['div_bank'] : '', $tmp);
+        $tmp = str_replace('%bankname', $this->data['div_bank'] ?? '', $tmp);
 
         if (ConfigHelper::checkConfig('invoices.customer_bankaccount', true)) {
             $tmp .= "\n" . trans('Bank account:') . "\n" . '<B>' . $account_text . '<B>';
@@ -535,7 +535,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             $postbox = '';
             if ($this->data['post_name'] || $this->data['post_address']) {
                 $lines = document_address(array(
-                    'name' => $this->data['post_name'] ? $this->data['post_name'] : $this->data['name'],
+                    'name' => $this->data['post_name'] ?: $this->data['name'],
                     'address' => $this->data['post_address'],
                     'street' => $this->data['post_street'],
                     'zip' => $this->data['post_zip'],
@@ -871,7 +871,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                 $account = format_bankaccount($account, $this->data['export']);
             }
             $tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
-            $tmp = str_replace('%bankname', isset($this->data['div_bank']) ? $this->data['div_bank'] : '', $tmp);
+            $tmp = str_replace('%bankname', $this->data['div_bank'] ?? '', $tmp);
 
             $this->backend->SetFont(null, '', 8);
             //$h = $this->backend->getStringHeight(0, $tmp);

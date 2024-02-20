@@ -34,23 +34,11 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 
         list ($order, $dir) = sscanf($order, '%[^,],%s');
         ($dir == 'desc') ? $dir = 'desc' : $dir = 'asc';
-        $short = isset($search['short']) && !empty($search['short']);
+        $short = !empty($search['short']);
 
-        if (isset($search['count'])) {
-            $count = $search['count'];
-        } else {
-            $count = false;
-        }
-        if (isset($search['offset'])) {
-            $offset = $search['offset'];
-        } else {
-            $offset = null;
-        }
-        if (isset($search['limit'])) {
-            $limit = $search['limit'];
-        } else {
-            $limit = null;
-        }
+        $count = $search['count'] ?? false;
+        $offset = $search['offset'] ?? null;
+        $limit = $search['limit'] ?? null;
 
         switch ($order) {
             case 'id':
@@ -203,7 +191,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
                     . $netnode['location_borough_ident'] . $netnode['location_borough_type'];
                 $netnode['simc'] = empty($netnode['location_city_ident']) ? null : $netnode['location_city_ident'];
                 $netnode['ulic'] = empty($netnode['location_street_ident']) ? null : $netnode['location_street_ident'];
-                $netnode['filecontainers'] = isset($filecontainers[$netnode['id']]) ? $filecontainers[$netnode['id']] : array();
+                $netnode['filecontainers'] = $filecontainers[$netnode['id']] ?? array();
             }
             unset($netnode);
         }

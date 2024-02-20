@@ -45,7 +45,6 @@ function find_program($program)
         }
         next($path);
     }
-    return;
 }
 
 function execute_program($program, $args = '')
@@ -100,7 +99,7 @@ function hostname()
     }
 
     if (!$hostname) {
-        $hostname = $_ENV['HOSTNAME'] ? $_ENV['HOSTNAME'] : $_SERVER['SERVER_NAME'];
+        $hostname = $_ENV['HOSTNAME'] ?: $_SERVER['SERVER_NAME'];
     }
     if (!$hostname) {
         $hostname='N.A.';
@@ -388,7 +387,7 @@ function rmkdir($dir)
             $cdir .= DIRECTORY_SEPARATOR . $directories[$j];
         }
         if (!is_dir($cdir)) {
-            $result = mkdir($cdir, 0777);
+            $result = mkdir($cdir);
             $makedirs ++;
         }
     }
@@ -572,9 +571,9 @@ function docnumber($number = null, $template = null, $cdate = null, $ext_num = '
         }
     }
 
-    $number = $number ? $number : 1;
-    $template = $template ? $template : DEFAULT_NUMBER_TEMPLATE;
-    $cdate = $cdate ? $cdate : time();
+    $number = $number ?: 1;
+    $template = $template ?: DEFAULT_NUMBER_TEMPLATE;
+    $cdate = $cdate ?: time();
 
     // customer id support
     if (empty($customerid)) {
@@ -618,7 +617,7 @@ function fetch_url($url)
     $url_parsed = parse_url($url);
     $host = $url_parsed['host'];
     $path = $url_parsed['path'];
-    $port = isset($url_parsed['port']) ? $url_parsed['port'] : 0; //sometimes port is undefined
+    $port = $url_parsed['port'] ?? 0; //sometimes port is undefined
 
     if ($port==0) {
         $port = 80;
@@ -1417,10 +1416,10 @@ function trim_rec($data)
 
     if (is_array($data)) {
         foreach ($data as $k => $v) {
-            if (is_array($data[$k])) {
-                $data[$k] = trim_rec($data[$k]);
+            if (is_array($v)) {
+                $data[$k] = trim_rec($v);
             } else {
-                $data[$k] = trim($data[$k]);
+                $data[$k] = trim($v);
             }
         }
 
@@ -1459,7 +1458,7 @@ function geocode($location)
     $status = $page["status"];
     return array(
         'status' => $status,
-        'error' => isset($page['error_message']) ? $page['error_message'] : '',
+        'error' => $page['error_message'] ?? '',
         'accuracy' => $accuracy,
         'latitude' => $latitude,
         'longitude' => $longitude,

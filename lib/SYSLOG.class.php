@@ -392,19 +392,19 @@ class SYSLOG
 
     public function GetTransactions($params)
     {
-        $key = (isset($params['key']) && !empty($params['key']) ? $params['key'] : '');
+        $key = (!empty($params['key']) ? $params['key'] : '');
         $value = (isset($params['value']) && preg_match('/^[0-9]+$/', $params['value']) ? $params['value'] : '');
-        $propname = (isset($params['propname']) && !empty($params['propname']) ? $params['propname'] : '');
-        $propvalue = (isset($params['propvalue']) ? $params['propvalue'] : '');
-        $userid = (isset($params['userid']) && !empty($params['userid']) ? intval($params['userid']) : null);
+        $propname = (!empty($params['propname']) ? $params['propname'] : '');
+        $propvalue = ($params['propvalue'] ?? '');
+        $userid = (!empty($params['userid']) ? intval($params['userid']) : null);
         $module = isset($params['module']) && strlen($params['module']) ? $params['module'] : null;
-        $offset = (isset($params['offset']) && !empty($params['offset']) ? intval($params['offset']) : 0);
-        $limit = (isset($params['limit']) && !empty($params['limit']) ? intval($params['limit']) : 20);
+        $offset = (!empty($params['offset']) ? intval($params['offset']) : 0);
+        $limit = (!empty($params['limit']) ? intval($params['limit']) : 20);
         $order = (isset($params['order']) && preg_match('/ASC/i', $params['order']) ? 'ASC' : 'DESC');
-        $datefrom = (isset($params['datefrom']) && !empty($params['datefrom']) ? intval($params['datefrom']) : 0);
-        $dateto = (isset($params['dateto']) && !empty($params['dateto']) ? intval($params['dateto']) : 0);
-        $resource = (isset($params['resource']) && !empty($params['resource']) ? $params['resource'] : 0);
-        $details = (isset($params['details'])) && !empty($params['details']);
+        $datefrom = (!empty($params['datefrom']) ? intval($params['datefrom']) : 0);
+        $dateto = (!empty($params['dateto']) ? intval($params['dateto']) : 0);
+        $resource = (!empty($params['resource']) ? $params['resource'] : 0);
+        $details = !empty($params['details']);
 
         $args = array();
         $where = array();
@@ -511,9 +511,9 @@ class SYSLOG
             foreach ($trans as &$tran) {
                 $this->_decodeTransaction(
                     $tran,
-                    isset($transaction_messages[$tran['id']]) ? $transaction_messages[$tran['id']] : null,
-                    isset($transaction_keys[$tran['id']]) ? $transaction_keys[$tran['id']] : null,
-                    isset($transaction_data[$tran['id']]) ? $transaction_data[$tran['id']] : null
+                    $transaction_messages[$tran['id']] ?? null,
+                    $transaction_keys[$tran['id']] ?? null,
+                    $transaction_data[$tran['id']] ?? null
                 );
             }
             unset($tran);
@@ -653,7 +653,7 @@ class SYSLOG
                     foreach ($msg['keys'] as $keyname => &$key) {
                         $msg['text'] .= ', ' . $keyname . ': ' . $key['value'];
                         $key_name = preg_replace('/^[a-z]+_/i', '', $keyname);
-                        $key['type'] = isset(self::$resourceKeyByName[$key_name]) ? self::$resourceKeyByName[$key_name] : 0;
+                        $key['type'] = self::$resourceKeyByName[$key_name] ?? 0;
                     }
                     unset($key);
                 }
@@ -722,7 +722,7 @@ class SYSLOG
     {
         $type = $resource['type'];
         $id = $resource['id'];
-        $date = !isset($resource['date']) || empty($resource['date']) ? time() : intval($resource['date']);
+        $date = empty($resource['date']) ? time() : intval($resource['date']);
         // get all possible resource properties
         $names = $this->GetResourcePropertyNames($type);
         if (empty($names)) {

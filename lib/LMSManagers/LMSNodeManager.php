@@ -66,12 +66,12 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'linkspeed'         => !empty($nodedata['linkspeed']) && (is_int($nodedata['linkspeed']) || ctype_digit($nodedata['linkspeed']))
                 ? intval($nodedata['linkspeed']) : null,
             'port'              => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
-            'nas'               => isset($nodedata['nas']) ? $nodedata['nas'] : 0,
+            'nas'               => $nodedata['nas'] ?? 0,
             'longitude'         => !empty($nodedata['longitude']) ? str_replace(',', '.', $nodedata['longitude']) : null,
             'latitude'          => !empty($nodedata['latitude'])  ? str_replace(',', '.', $nodedata['latitude'])  : null,
             SYSLOG::RES_NETWORK => $nodedata['netid'],
             'invprojectid'      => empty($nodedata['invprojectid']) ? null : $nodedata['invprojectid'],
-            'authtype'          => $nodedata['authtype']   ? $nodedata['authtype']   : 0,
+            'authtype'          => $nodedata['authtype']   ?: 0,
             'address_id'        => isset($nodedata['address_id']) && $nodedata['address_id'] >= 0 ? $nodedata['address_id'] : null,
             SYSLOG::RES_NODE    => $nodedata['id']
         );
@@ -382,7 +382,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
     {
         extract($params);
 
-        if (!isset($order) || empty($order)) {
+        if (empty($order)) {
             $order = 'name,asc';
         }
 
@@ -418,7 +418,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         }
 
         $searchargs = array();
-        if (isset($search) && !empty($search)) {
+        if (!empty($search)) {
             foreach ($search as $key => $value) {
                 if ($value != '') {
                     switch ($key) {
@@ -869,7 +869,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'port'              => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
             'chkmac'            => $nodedata['chkmac'],
             'halfduplex'        => $nodedata['halfduplex'],
-            'nas'               => isset($nodedata['nas']) ? $nodedata['nas'] : 0,
+            'nas'               => $nodedata['nas'] ?? 0,
             'longitude'         => !empty($nodedata['longitude']) ? str_replace(',', '.', $nodedata['longitude']) : null,
             'latitude'          => !empty($nodedata['latitude'])  ? str_replace(',', '.', $nodedata['latitude'])  : null,
             SYSLOG::RES_NETWORK => $nodedata['netid'],
@@ -955,14 +955,14 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
     public function NodeExists($id)
     {
-        return ($this->db->GetOne(
+        return (bool)$this->db->GetOne(
             'SELECT n.id FROM vnodes n
 			WHERE n.id = ? AND n.ownerid IS NOT NULL AND NOT EXISTS (
 		        	SELECT 1 FROM vcustomerassignments a
 			        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 				WHERE e.userid = lms_current_user() AND a.customerid = n.ownerid)',
             array($id)
-        ) ? true : false);
+        );
     }
 
     public function NodeStats()

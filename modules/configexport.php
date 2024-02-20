@@ -25,7 +25,7 @@
  */
 
 $fileType = null;
-if (!isset($_GET['fileType']) || empty($_GET['fileType'])) {
+if (empty($_GET['fileType'])) {
     die();
 } else {
     $fileType = $_GET['fileType'];

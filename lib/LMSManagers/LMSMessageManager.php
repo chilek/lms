@@ -86,13 +86,13 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
             }
 
             if ($type == TMPL_HELPDESK) {
-                if (isset($helpdesk_queues) && !empty($helpdesk_queues)) {
+                if (!empty($helpdesk_queues)) {
                     foreach ($helpdesk_queues as $queueid) {
                         $this->db->Execute('INSERT INTO rttemplatequeues (templateid, queueid)
 							VALUES (?, ?)', array($id, $queueid));
                     }
                 }
-                if (isset($helpdesk_message_types) && !empty($helpdesk_message_types)) {
+                if (!empty($helpdesk_message_types)) {
                     foreach ($helpdesk_message_types as $message_type) {
                         $this->db->Execute('INSERT INTO rttemplatetypes (templateid, messagetype)
 							VALUES (?, ?)', array($id, $message_type));
@@ -139,13 +139,13 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
         $this->db->Execute('DELETE FROM rttemplatetypes WHERE templateid = ?', array($id));
 
         if ($type == TMPL_HELPDESK) {
-            if (isset($helpdesk_queues) && !empty($helpdesk_queues)) {
+            if (!empty($helpdesk_queues)) {
                 foreach ($helpdesk_queues as $queueid) {
                     $this->db->Execute('INSERT INTO rttemplatequeues (templateid, queueid)
 							VALUES (?, ?)', array($id, $queueid));
                 }
             }
-            if (isset($helpdesk_message_types) && !empty($helpdesk_message_types)) {
+            if (!empty($helpdesk_message_types)) {
                 foreach ($helpdesk_message_types as $message_type) {
                     $this->db->Execute('INSERT INTO rttemplatetypes (templateid, messagetype)
 							VALUES (?, ?)', array($id, $message_type));
@@ -421,9 +421,9 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
             $params['type'],
             $params['subject'],
             $params['body'],
-            isset($params['userid']) ? $params['userid'] : Auth::GetCurrentUser(),
+            $params['userid'] ?? Auth::GetCurrentUser(),
             $params['type'] == MSG_MAIL && isset($params['sender']) ? '"' . $params['sender']['name'] . '" <' . $params['sender']['mail'] . '>' : '',
-            isset($params['contenttype']) ? $params['contenttype'] : 'text/plain',
+            $params['contenttype'] ?? 'text/plain',
         ));
 
         $result['id'] = $msgid  = $this->db->GetLastInsertID('messages');
@@ -448,7 +448,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
                     $row['destination'] = explode(',', $row['phone']);
             }
 
-            $customerid = isset($row['id']) ? $row['id'] : 0;
+            $customerid = $row['id'] ?? 0;
             foreach ($row['destination'] as $destination) {
                 $this->db->Execute(
                     'INSERT INTO messageitems (messageid, customerid,
@@ -458,9 +458,9 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
                         $msgid,
                         empty($customerid) ? null : $customerid,
                         $destination,
-                        isset($row['status']) ? $row['status'] : MSG_NEW,
-                        isset($row['error']) ? $row['error'] : null,
-                        isset($row['externalmsgid']) && !empty($row['externalmsgid']) ? $row['externalmsgid'] : null,
+                        $row['status'] ?? MSG_NEW,
+                        $row['error'] ?? null,
+                        !empty($row['externalmsgid']) ? $row['externalmsgid'] : null,
                     )
                 );
                 if (!isset($msgitems[$customerid])) {
@@ -482,7 +482,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
             return $this->db->Execute(
                 'UPDATE messageitems SET body = ?
                 WHERE messageid = ? AND customerid '
-                . (isset($params['customerid']) && !empty($params['customerid']) ? '= ' . intval($params['customerid']) : 'IS NULL'),
+                . (!empty($params['customerid']) ? '= ' . intval($params['customerid']) : 'IS NULL'),
                 array($params['real_body'], $params['messageid'])
             );
         }

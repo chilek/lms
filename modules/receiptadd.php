@@ -203,7 +203,7 @@ $SESSION->restore('receiptregid', $receipt['regid'], true);
 $SESSION->restore('receipttype', $receipt['type'], true);
 $SESSION->restore('receiptadderror', $error, true);
 
-$action = isset($_GET['action']) ? $_GET['action'] : '';
+$action = $_GET['action'] ?? '';
 
 switch ($action) {
     case 'init':
@@ -217,9 +217,9 @@ switch ($action) {
         $receipt['currency'] = Localisation::getDefaultCurrency();
 
         // get default receipt's numberplanid and next number
-        $receipt['regid'] = isset($_GET['regid']) ? $_GET['regid'] : $oldreg;
-        $receipt['type'] = isset($_GET['type']) ? $_GET['type'] : (isset($_POST['type']) ? $_POST['type'] : 0);
-        $receipt['customerid'] = isset($_GET['customerid']) ? $_GET['customerid'] : null;
+        $receipt['regid'] = $_GET['regid'] ?? $oldreg;
+        $receipt['type'] = $_GET['type'] ?? ($_POST['type'] ?? 0);
+        $receipt['customerid'] = $_GET['customerid'] ?? null;
 
         $cashreglist = $LMS->GetCashRegistries($receipt['customerid']);
 
@@ -313,9 +313,9 @@ switch ($action) {
             unset($error);
 
         // get default receipt's numberplanid and next number
-        $receipt = ($_POST['receipt']) ? $_POST['receipt'] : null;
-        $receipt['customerid'] = isset($_POST['customerid']) ? $_POST['customerid'] : null;
-        $receipt['type'] = isset($receipt['type']) ? $receipt['type'] : $_POST['type'];
+        $receipt = ($_POST['receipt']) ?: null;
+        $receipt['customerid'] = $_POST['customerid'] ?? null;
+        $receipt['type'] = $receipt['type'] ?? $_POST['type'];
 
         if (!$receipt['regid']) {
             $error['regid'] = trans('Registry not selected!');
@@ -483,7 +483,7 @@ switch ($action) {
     case 'setcustomer':
         $oldreg = $receipt['regid'];
         $oldtype = $receipt['type'];
-        $oldcid = isset($customer['id']) ? $customer['id'] : null;
+        $oldcid = $customer['id'] ?? null;
         unset($receipt);
         unset($customer);
         unset($error);
@@ -495,7 +495,7 @@ switch ($action) {
         }
 
         //$receipt['customerid'] = $_POST['customerid'];
-        $receipt['type'] = isset($_POST['type']) ? $_POST['type'] : $oldtype;
+        $receipt['type'] = $_POST['type'] ?? $oldtype;
 
         if ($receipt['regid'] != $oldreg || !$receipt['numberplanid']) {
             if ($receipt['type'] == 'in') {
@@ -737,7 +737,7 @@ switch ($action) {
             $SESSION->remove('receiptadderror', true);
 
             if (isset($_GET['print'])) {
-                $which = isset($_GET['which']) ? $_GET['which'] : 0;
+                $which = $_GET['which'] ?? 0;
 
                 $SESSION->save('receiptprint', array('receipt' => $rid, 'which' => $which), true);
             }
@@ -805,15 +805,15 @@ switch ($action) {
             $args = array(
                 'type' => DOC_RECEIPT,
                 'number' => $receipt['number'],
-                'extnumber' => isset($receipt['extnumber']) ? $receipt['extnumber'] : '',
+                'extnumber' => $receipt['extnumber'] ?? '',
                 SYSLOG::RES_NUMPLAN => $receipt['numberplanid'],
                 'cdate' => $receipt['cdate'],
                 SYSLOG::RES_USER => Auth::GetCurrentUser(),
                 'name' => '',
                 'closed' => 1,
                 'fullnumber' => $fullnumber,
-                'currency' => isset($receipt['currency']) ? $receipt['currency'] : Localisation::getCurrentCurrency(),
-                'currencyvalue' => isset($receipt['currencyvalue']) ? $receipt['currencyvalue'] : 1.0,
+                'currency' => $receipt['currency'] ?? Localisation::getCurrentCurrency(),
+                'currencyvalue' => $receipt['currencyvalue'] ?? 1.0,
             );
             $DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed, fullnumber, currency, currencyvalue)
 					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
@@ -873,8 +873,8 @@ switch ($action) {
                 SYSLOG::RES_USER => Auth::GetCurrentUser(),
                 'closed' => 1,
                 'fullnumber' => $fullnumber,
-                'currency' => isset($receipt['currency']) ? $receipt['currency'] : Localisation::getCurrentCurrency(),
-                'currencyvalue' => isset($receipt['currencyvalue']) ? $receipt['currencyvalue'] : 1.0,
+                'currency' => $receipt['currency'] ?? Localisation::getCurrentCurrency(),
+                'currencyvalue' => $receipt['currencyvalue'] ?? 1.0,
             );
             $DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, userid, closed, fullnumber, currency, currencyvalue)
 					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
@@ -907,7 +907,7 @@ switch ($action) {
             $SESSION->remove('receiptadderror', true);
 
             if (isset($_GET['print'])) {
-                $which = isset($_GET['which']) ? $_GET['which'] : 0;
+                $which = $_GET['which'] ?? 0;
 
                 $SESSION->save('receiptprint', array('receipt' => $rid, 'which' => $which), true);
             }
@@ -918,15 +918,15 @@ switch ($action) {
 }
 
 if (!isset($cashreglist)) {
-    $cashreglist = $LMS->GetCashRegistries(isset($receipt['customerid']) ? $receipt['customerid'] : null);
+    $cashreglist = $LMS->GetCashRegistries($receipt['customerid'] ?? null);
 }
 
 $SESSION->save('receipt', $receipt, true);
 $SESSION->save('receiptregid', $receipt['regid'], true);
 $SESSION->save('receipttype', $receipt['type'], true);
-$SESSION->save('receiptcontents', isset($contents) ? $contents : array(), true);
-$SESSION->save('receiptcustomer', isset($customer) ? $customer : null, true);
-$SESSION->save('receiptadderror', isset($error) ? $error : null, true);
+$SESSION->save('receiptcontents', $contents ?? array(), true);
+$SESSION->save('receiptcustomer', $customer ?? null, true);
+$SESSION->save('receiptadderror', $error ?? null, true);
 
 if ($action != '') {
     $SESSION->redirect('?m=receiptadd');

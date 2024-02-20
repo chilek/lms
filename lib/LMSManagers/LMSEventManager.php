@@ -102,7 +102,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 'body' => $messagebody,
                 'type' => RTMESSAGE_ASSIGNED_EVENT_ADD,
             ));
-        };
+        }
 
         $this->db->CommitTrans();
 
@@ -192,7 +192,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 'body' => $messagebody,
                 'type' => RTMESSAGE_ASSIGNED_EVENT_CHANGE,
             ));
-        };
+        }
 
         $this->db->CommitTrans();
     }
@@ -236,7 +236,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                     'body' => $messagebody,
                     'type' => RTMESSAGE_ASSIGNED_EVENT_DELETE,
                 ));
-            };
+            }
         }
     }
 
@@ -417,7 +417,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         $netdevfilter = empty($netdevid) ? '' : ' AND events.netdevid = ' . intval($netdevid);
         $netnodefilter = empty($netnodeid) ? '' : ' AND events.netnodeid = ' . intval($netnodeid);
 
-        if (!isset($userid) || empty($userid)) {
+        if (empty($userid)) {
             $userfilter = '';
         } else {
             if (is_array($userid)) {

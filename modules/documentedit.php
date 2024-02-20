@@ -78,7 +78,7 @@ if (isset($_POST['document'])) {
 
     $oldfdate = $documentedit['fromdate'];
     $oldtdate = $documentedit['todate'];
-    $oldconfirmdate = isset($documentedit['confirmdate']) ? $documentedit['confirmdate'] : 0;
+    $oldconfirmdate = $documentedit['confirmdate'] ?? 0;
 
     if (!$documentedit['title']) {
         $error['title'] = trans('Document title is required!');
@@ -102,7 +102,7 @@ if (isset($_POST['document'])) {
                     'planid' => $documentedit['numberplanid'],
                     'customerid' => $document['customerid'],
                 ));
-                $documentedit['number'] = $tmp ? $tmp : 1;
+                $documentedit['number'] = $tmp ?: 1;
             } else {
                 $documentedit['number'] = $document['number'];
             }
@@ -113,7 +113,7 @@ if (isset($_POST['document'])) {
                 'number' => $documentedit['number'],
                 'doctype' => $documentedit['type'],
                 'planid' => $documentedit['numberplanid'],
-                'customerid' => isset($document['customerid']) ? $document['customerid'] : null,
+                'customerid' => $document['customerid'] ?? null,
             ))) > 0 && $docid != $documentedit['id']) {
                 $error['number'] = trans('Document with specified number exists!');
             }

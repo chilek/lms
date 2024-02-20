@@ -72,8 +72,8 @@ $cdr = $DB->GetAll(
     'SELECT cdr.*
     FROM voip_cdr cdr
     WHERE 1 = 1'
-    . (isset($params['frangefrom']) && !empty($params['frangefrom']) ? ' AND call_start_time >= ' . strtotime($params['frangefrom']) : '')
-    . (isset($params['frangeto']) && !empty($params['frangeto']) ? ' AND call_start_time < ' . (strtotime($params['frangeto']) + 86400) : '')
+    . (!empty($params['frangefrom']) ? ' AND call_start_time >= ' . strtotime($params['frangefrom']) : '')
+    . (!empty($params['frangeto']) ? ' AND call_start_time < ' . (strtotime($params['frangeto']) + 86400) : '')
     . (isset($params['fstatus']) ? ' AND status = ' . $params['fstatus'] : '')
     . (isset($params['fdirection']) ? ' AND direction = ' . $params['fdirection'] : '')
     . (isset($params['id']) ? ' AND callervoipaccountid IN (' . implode(',', $params['id']) . ')' : '')
@@ -91,11 +91,7 @@ if (!empty($cdr)) {
             $minibilling[$phone] = array();
         }
         if (!empty($minibilling_groups)) {
-            if (isset($minibilling_groups[$group])) {
-                $group = $minibilling_groups[$group];
-            } else {
-                $group = '(nieznane: ' . $group . ')';
-            }
+            $group = $minibilling_groups[$group] ?? '(nieznane: ' . $group . ')';
         }
         if (!isset($minibilling[$phone][$group])) {
             $minibilling[$phone][$group] = array(

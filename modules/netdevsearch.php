@@ -143,7 +143,7 @@ function NetDevSearch($order = 'name,asc', $search = null, $sqlskey = 'AND')
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
 				LEFT JOIN location_states ls    ON ls.id = ld.stateid'
                 .(isset($nodes) ? ' LEFT JOIN vnodes n ON (netdev = d.id AND n.ownerid IS NULL)' : '')
-                .(isset($searchargs) ? $searchargs : '')
+                .($searchargs ?? '')
                 .($sqlord != '' ? $sqlord.' '.$direction : ''));
 
     if ($netdevlist) {

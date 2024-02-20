@@ -240,7 +240,6 @@ self::addLanguageFunctions(
                             $ret .= to_words($snum, $p, $cursuffix);
                         }
                             $curp = $p - 1;
-                            continue;
                     }
                 }
 

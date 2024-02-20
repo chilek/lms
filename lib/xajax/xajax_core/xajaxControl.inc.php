@@ -377,8 +377,6 @@ class xajaxControl
                     echo "\n";
                 }
             }
-                
-            return;
         } else if ('optional' == $this->sEndTag) {
             echo '/>';
             
@@ -388,8 +386,6 @@ class xajaxControl
                     echo "\n";
                 }
             }
-                
-            return;
         }
 //SkipDebug
         else {

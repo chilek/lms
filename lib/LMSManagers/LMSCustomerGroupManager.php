@@ -130,7 +130,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
      */
     public function CustomergroupExists($id)
     {
-        return ($this->db->GetOne('SELECT id FROM customergroups WHERE id=?', array($id)) ? true : false);
+        return (bool)$this->db->GetOne('SELECT id FROM customergroups WHERE id=?', array($id));
     }
 
     /**

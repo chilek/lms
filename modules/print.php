@@ -33,7 +33,7 @@ if (empty($report_type)) {
     $report_type = '';
 }
 
-$type = isset($_GET['type']) ? $_GET['type'] : '';
+$type = $_GET['type'] ?? '';
 
 switch ($type) {
     case 'customerbalance':
@@ -64,9 +64,9 @@ switch ($type) {
 
         $id = intval($_POST['customer']);
 
-        $aggregate_documents = isset($_POST['aggregate_documents']) && !empty($_POST['aggregate_documents']);
+        $aggregate_documents = !empty($_POST['aggregate_documents']);
 
-        $layout['pagetitle'] = trans('Customer $a Balance Sheet ($b to $c)', $LMS->GetCustomerName($id), ($from ? $from : ''), $to);
+        $layout['pagetitle'] = trans('Customer $a Balance Sheet ($b to $c)', $LMS->GetCustomerName($id), ($from ?: ''), $to);
 
         $list['balance'] = 0;
         $list['income'] = 0;
@@ -195,9 +195,9 @@ switch ($type) {
         }
 
         if ($user = $_POST['user']) {
-            $layout['pagetitle'] = trans('Balance Sheet of User: $a ($b to $c)', $LMS->GetUserName($user), ($from ? $from : ''), $to);
+            $layout['pagetitle'] = trans('Balance Sheet of User: $a ($b to $c)', $LMS->GetUserName($user), ($from ?: ''), $to);
         } else {
-            $layout['pagetitle'] = trans('Balance Sheet ($a to $b)', ($from ? $from : ''), $to);
+            $layout['pagetitle'] = trans('Balance Sheet ($a to $b)', ($from ?: ''), $to);
         }
 
         $typetxt = array();
@@ -387,7 +387,7 @@ switch ($type) {
             $date['to'] = mktime(23, 59, 59); // end of today
         }
 
-        $layout['pagetitle'] = trans('Total Invoiceless Income ($a to $b)', ($from ? $from : ''), $to);
+        $layout['pagetitle'] = trans('Total Invoiceless Income ($a to $b)', ($from ?: ''), $to);
 
         $incomelist = $DB->GetAll(
             'SELECT floor(time/86400)*86400 AS date, SUM(value * currencyvalue) AS value
@@ -820,7 +820,7 @@ switch ($type) {
         $registry = isset($_POST['registry']) ? intval($_POST['registry']) : 0;
         $user = isset($_POST['user']) ? intval($_POST['user']) : 0;
         $group = isset($_POST['group']) ? intval($_POST['group']) : 0;
-        $sorttype = isset($_POST['sorttype']) ? $_POST['sorttype'] : null;
+        $sorttype = $_POST['sorttype'] ?? null;
         $where = '';
 
         if ($registry) {
@@ -1001,9 +1001,9 @@ switch ($type) {
             foreach ($totals as $page => $t) {
                 $pages[] = $page;
 
-                $totals[$page]['totalincome'] = (isset($totals[$page - 1]['totalincome']) ? $totals[$page - 1]['totalincome'] : 0) + $t['income'];
-                $totals[$page]['totalexpense'] = (isset($totals[$page - 1]['totalexpense']) ? $totals[$page - 1]['totalexpense'] : 0)
-                    + (isset($t['expense']) ? $t['expense'] : 0);
+                $totals[$page]['totalincome'] = ($totals[$page - 1]['totalincome'] ?? 0) + $t['income'];
+                $totals[$page]['totalexpense'] = ($totals[$page - 1]['totalexpense'] ?? 0)
+                    + ($t['expense'] ?? 0);
                 $totals[$page]['rowstart'] = isset($totals[$page - 1]) ? $totals[$page - 1]['rowstart'] + $totals[$page - 1]['rows'] : 0;
             }
 

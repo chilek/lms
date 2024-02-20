@@ -97,7 +97,7 @@ class ExecStack
         }
 
         foreach ($this->_MODINFO as $module_name => $modinfo) {
-            $priority_table['priority'][] = (isset($modinfo['priority']) ? $modinfo['priority'] : 255);
+            $priority_table['priority'][] = ($modinfo['priority'] ?? 255);
             $priority_table['module'][] = $module_name;
         }
 
@@ -217,7 +217,10 @@ class ExecStack
 
     public function actionExists($module, $action)
     {
-        return is_array($this->_MODINFO[$module]['actions'][$action]) && ($this->needExec($module, $action) ? is_readable($this->modules_dir.'/'.$module.'/actions/'.$action.'.php') : true);
+        return is_array($this->_MODINFO[$module]['actions'][$action]) && (!$this->needExec(
+            $module,
+            $action
+        ) || is_readable($this->modules_dir . '/' . $module . '/actions/' . $action . '.php'));
     }
 
     public function actionIsPublic($module, $action)

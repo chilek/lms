@@ -26,10 +26,10 @@
 
 function smarty_function_date_period_preset(array $params, Smarty_Internal_Template $template)
 {
-    $from_selector = isset($params['from']) ? $params['from'] : null;
-    $to_selector = isset($params['to']) ? $params['to'] : null;
-    $periods = isset($params['periods']) ? $params['periods'] : null;
-    $time = isset($params['time']) && !empty($params['time']);
+    $from_selector = $params['from'] ?? null;
+    $to_selector = $params['to'] ?? null;
+    $periods = $params['periods'] ?? null;
+    $time = !empty($params['time']);
 
     if (!isset($from_selector) || !isset($to_selector)) {
         return;

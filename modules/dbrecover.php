@@ -104,7 +104,7 @@ if (isset($_GET['is_sure'])) {
     if (!empty($_GET['gz'])) {
         $LMS->DatabaseCreate(true);
     } else {
-        $LMS->DatabaseCreate(false);
+        $LMS->DatabaseCreate();
     }
 
     $db = $_GET['db'];

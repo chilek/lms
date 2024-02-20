@@ -26,7 +26,7 @@
 
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'invoiceajax.inc.php');
 
-$action = isset($_GET['action']) ? $_GET['action'] : null;
+$action = $_GET['action'] ?? null;
 
 if (isset($_GET['id']) && $action == 'init') {
     $docid = $LMS->GetDocumentLastReference($_GET['id']);
@@ -334,20 +334,20 @@ switch ($action) {
             $idx = $item['itemid'];
 
             if (ConfigHelper::checkConfig('phpui.tax_category_required')
-                && (!isset($newcontents['taxcategory'][$idx]) || empty($newcontents['taxcategory'][$idx]))) {
+                && (empty($newcontents['taxcategory'][$idx]))) {
                 $error['taxcategory[' . $idx . ']'] = trans('Tax category selection is required!');
             }
 
-            $contents[$idx]['taxid'] = isset($newcontents['taxid'][$idx]) ? $newcontents['taxid'][$idx] : $item['taxid'];
-            $contents[$idx]['taxcategory'] = isset($newcontents['taxcategory'][$idx]) ? $newcontents['taxcategory'][$idx] : $item['taxcategory'];
-            $contents[$idx]['prodid'] = isset($newcontents['prodid'][$idx]) ? $newcontents['prodid'][$idx] : $item['prodid'];
-            $contents[$idx]['content'] = isset($newcontents['content'][$idx]) ? $newcontents['content'][$idx] : $item['content'];
-            $contents[$idx]['count'] = isset($newcontents['count'][$idx]) ? $newcontents['count'][$idx] : $item['count'];
+            $contents[$idx]['taxid'] = $newcontents['taxid'][$idx] ?? $item['taxid'];
+            $contents[$idx]['taxcategory'] = $newcontents['taxcategory'][$idx] ?? $item['taxcategory'];
+            $contents[$idx]['prodid'] = $newcontents['prodid'][$idx] ?? $item['prodid'];
+            $contents[$idx]['content'] = $newcontents['content'][$idx] ?? $item['content'];
+            $contents[$idx]['count'] = $newcontents['count'][$idx] ?? $item['count'];
 
-            $contents[$idx]['discount'] = str_replace(',', '.', isset($newcontents['discount'][$idx]) ? $newcontents['discount'][$idx] : $item['discount']);
+            $contents[$idx]['discount'] = str_replace(',', '.', $newcontents['discount'][$idx] ?? $item['discount']);
             $contents[$idx]['pdiscount'] = 0;
             $contents[$idx]['vdiscount'] = 0;
-            $contents[$idx]['discount_type'] = isset($newcontents['discount_type'][$idx]) ? $newcontents['discount_type'][$idx] : $item['discount_type'];
+            $contents[$idx]['discount_type'] = $newcontents['discount_type'][$idx] ?? $item['discount_type'];
             if (preg_match('/^[0-9]+(\.[0-9]+)*$/', $contents[$idx]['discount'])) {
                 $contents[$idx]['pdiscount'] = ($contents[$idx]['discount_type'] == DISCOUNT_PERCENTAGE ? floatval($contents[$idx]['discount']) : 0);
                 $contents[$idx]['vdiscount'] = ($contents[$idx]['discount_type'] == DISCOUNT_AMOUNT ? floatval($contents[$idx]['discount']) : 0);
@@ -356,13 +356,13 @@ switch ($action) {
                 $error['discount[' . $idx . ']'] = trans('Wrong discount value!');
             }
 
-            $contents[$idx]['name'] = isset($newcontents['name'][$idx]) ? $newcontents['name'][$idx] : $item['name'];
+            $contents[$idx]['name'] = $newcontents['name'][$idx] ?? $item['name'];
             if (!strlen($contents[$idx]['name'])) {
                 $error['name[' . $idx . ']'] = trans('Field cannot be empty!');
             }
 
-            $contents[$idx]['tariffid'] = isset($newcontents['tariffid'][$idx]) ? $newcontents['tariffid'][$idx] : $item['tariffid'];
-            $contents[$idx]['servicetype'] = isset($newcontents['servicetype'][$idx]) ? $newcontents['servicetype'][$idx] : $item['servicetype'];
+            $contents[$idx]['tariffid'] = $newcontents['tariffid'][$idx] ?? $item['tariffid'];
+            $contents[$idx]['servicetype'] = $newcontents['servicetype'][$idx] ?? $item['servicetype'];
             $contents[$idx]['valuebrutto'] = isset($newcontents['valuebrutto'][$idx]) && $newcontents['valuebrutto'][$idx] != '' ? $newcontents['valuebrutto'][$idx] : $item['valuebrutto'];
             $contents[$idx]['valuenetto'] = isset($newcontents['valuenetto'][$idx]) && $newcontents['valuenetto'][$idx] != '' ? $newcontents['valuenetto'][$idx] : $item['valuenetto'];
 
@@ -626,7 +626,7 @@ switch ($action) {
         }
 
         if (empty($invoice['post_address_id'])) {
-            $invoice['post_address_id'] = $LMS->GetCustomerAddress($invoice['customerid'], BILLING_ADDRESS);
+            $invoice['post_address_id'] = $LMS->GetCustomerAddress($invoice['customerid']);
         }
         $invoice['post_address_id'] = $LMS->CopyAddress($invoice['post_address_id']);
 
@@ -658,7 +658,7 @@ switch ($action) {
             'ten' => $use_current_customer_data ? $customer['ten'] : $invoice['ten'],
             'ssn' => $use_current_customer_data ? $customer['ssn'] : $invoice['ssn'],
             'zip' => $use_current_customer_data ? $customer['zip'] : $invoice['zip'],
-            'city' => $use_current_customer_data ? ($customer['postoffice'] ? $customer['postoffice'] : $customer['city'])
+            'city' => $use_current_customer_data ? ($customer['postoffice'] ?: $customer['city'])
                 : $invoice['city'],
             SYSLOG::RES_COUNTRY => $use_current_customer_data ? (empty($customer['countryid']) ? null : $customer['countryid'])
                 : (empty($invoice['countryid']) ? null : $invoice['countryid']),
@@ -666,20 +666,20 @@ switch ($action) {
             'reason' => $cnote['reason'],
             SYSLOG::RES_DIV => !empty($cnote['use_current_division']) ? $invoice['current_divisionid']
                 : (!empty($invoice['divisionid']) ? $invoice['divisionid'] : null),
-            'div_name' => $division['name'] ? $division['name'] : '',
-            'div_shortname' => $division['shortname'] ? $division['shortname'] : '',
-            'div_address' => $division['address'] ? $division['address'] : '',
-            'div_city' => $division['city'] ? $division['city'] : '',
-            'div_zip' => $division['zip'] ? $division['zip'] : '',
+            'div_name' => $division['name'] ?: '',
+            'div_shortname' => $division['shortname'] ?: '',
+            'div_address' => $division['address'] ?: '',
+            'div_city' => $division['city'] ?: '',
+            'div_zip' => $division['zip'] ?: '',
             'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => !empty($division['countryid']) ? $division['countryid'] : null,
-            'div_ten' => $division['ten'] ? $division['ten'] : '',
-            'div_regon' => $division['regon'] ? $division['regon'] : '',
+            'div_ten' => $division['ten'] ?: '',
+            'div_regon' => $division['regon'] ?: '',
             'div_bank' => $division['bank'] ?: null,
-            'div_account' => $division['account'] ? $division['account'] : '',
-            'div_inv_header' => $division['inv_header'] ? $division['inv_header'] : '',
-            'div_inv_footer' => $division['inv_footer'] ? $division['inv_footer'] : '',
-            'div_inv_author' => $division['inv_author'] ? $division['inv_author'] : '',
-            'div_inv_cplace' => $division['inv_cplace'] ? $division['inv_cplace'] : '',
+            'div_account' => $division['account'] ?: '',
+            'div_inv_header' => $division['inv_header'] ?: '',
+            'div_inv_footer' => $division['inv_footer'] ?: '',
+            'div_inv_author' => $division['inv_author'] ?: '',
+            'div_inv_cplace' => $division['inv_cplace'] ?: '',
             'fullnumber' => $fullnumber,
             'recipient_address_id' => $cnote['recipient_address_id'],
             'post_address_id' => $invoice['post_address_id'],
@@ -782,7 +782,7 @@ switch ($action) {
         $SESSION->remove('cnoteerror', true);
 
         if (isset($_GET['print'])) {
-            $which = isset($_GET['which']) ? $_GET['which'] : 0;
+            $which = $_GET['which'] ?? 0;
 
             $SESSION->save('invoiceprint', array('invoice' => $id, 'which' => $which), true);
         } else {

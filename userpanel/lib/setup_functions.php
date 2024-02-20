@@ -327,7 +327,7 @@ function module_submit_rights_default()
     global $DB;
 
     if (!isset($_POST['loginform'])) {
-        $rights = isset($_POST['setdefaultrights']) ? $_POST['setdefaultrights'] : array();
+        $rights = $_POST['setdefaultrights'] ?? array();
         foreach ($DB->GetCol('SELECT id FROM up_rights') as $right) {
             $DB->Execute(
                 'UPDATE up_rights SET setdefault = ? WHERE id = ?',

@@ -82,7 +82,7 @@ if (isset($_POST['event'])) {
 
     $SMARTY->assign('eventlist', $eventlist);
     $SMARTY->assign('daylist', $daylist);
-    $SMARTY->assign('getHolidays', getHolidays(isset($year) ? $year : null));
+    $SMARTY->assign('getHolidays', getHolidays($year ?? null));
     $SMARTY->display('event/eventsearchresults.html');
     $SESSION->close();
     die;

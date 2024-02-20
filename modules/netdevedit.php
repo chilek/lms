@@ -888,7 +888,7 @@ if (!empty($netdev['ownerid'])) {
 }
 
 $netdevips       = $LMS->GetNetDevIPs($id);
-$nodelist        = $netdev['ports'] > (isset($netdev['takenports']) ? $netdev['takenports'] : $LMS->CountNetDevLinks($id)) ? $LMS->GetUnlinkedNodes() : array();
+$nodelist        = $netdev['ports'] > ($netdev['takenports'] ?? $LMS->CountNetDevLinks($id)) ? $LMS->GetUnlinkedNodes() : array();
 $netdevconnected = $LMS->GetNetDevConnectedNames($id);
 $netcomplist     = $LMS->GetNetDevLinkedNodes($id);
 $netdevlist      = $LMS->GetNotConnectedDevices($id);
@@ -930,8 +930,8 @@ $SMARTY->assign('netcomplist', $netcomplist);
 $SMARTY->assign('nodelist', $nodelist);
 $SMARTY->assign('mgmurls', $LMS->GetManagementUrls(LMSNetDevManager::NETDEV_URL, $netdev['id']));
 $SMARTY->assign('radiosectors', $LMS->GetRadioSectors($netdev['id']));
-$SMARTY->assign('netdevcontype', isset($netdevcontype) ? $netdevcontype : null);
-$SMARTY->assign('netdevauthtype', isset($netdevauthtype) ? $netdevauthtype : null);
+$SMARTY->assign('netdevcontype', $netdevcontype ?? null);
+$SMARTY->assign('netdevauthtype', $netdevauthtype ?? null);
 $SMARTY->assign('netdevips', $netdevips);
 $SMARTY->assign('restnetdevlist', $netdevlist);
 $SMARTY->assign('devlinktype', $SESSION->get('devlinktype'));

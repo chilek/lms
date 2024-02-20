@@ -50,8 +50,8 @@ class Permission
         $this->label = $label;
         $this->allow_regexps = isset($allow_regexp) ? array($allow_regexp) : array();
         $this->deny_regexps = isset($deny_regexp) ? array($deny_regexp) : array();
-        $this->allow_menu_items = isset($allow_menu_items) ? $allow_menu_items : array();
-        $this->deny_menu_items = isset($deny_menu_items) ? $deny_menu_items : array();
+        $this->allow_menu_items = $allow_menu_items ?? array();
+        $this->deny_menu_items = $deny_menu_items ?? array();
     }
 
     public function getName()
@@ -109,7 +109,7 @@ class Permission
 
     public function setMenuPermissions(array $menuPermissions)
     {
-        $this->allow_menu_items = isset($menuPermissions['allow_menu_items']) ? $menuPermissions['allow_menu_items'] : array();
-        $this->deny_menu_items = isset($menuPermissions['deny_menu_items']) ? $menuPermissions['deny_menu_items'] : array();
+        $this->allow_menu_items = $menuPermissions['allow_menu_items'] ?? array();
+        $this->deny_menu_items = $menuPermissions['deny_menu_items'] ?? array();
     }
 }

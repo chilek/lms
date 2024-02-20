@@ -147,18 +147,18 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                                   street_id,house,flat,zip,postoffice,country_id)
                                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',
                 array(
-                    $args['location_name']        ? $args['location_name']        : null,
+                    $args['location_name']        ?: null,
                     isset($args['location_state_name']) && $args['location_state_name']  ? $args['location_state_name']  : null,
-                    $args['location_state']       ? $args['location_state']       : null,
-                    $args['location_city_name']   ? $args['location_city_name']   : null,
-                    $args['location_city']        ? $args['location_city']        : null,
-                    $args['location_street_name'] ? $args['location_street_name'] : null,
-                    $args['location_street']      ? $args['location_street']      : null,
-                    $args['location_house']       ? $args['location_house']       : null,
-                    $args['location_flat']        ? $args['location_flat']        : null,
-                    $args['location_zip']         ? $args['location_zip']         : null,
-                    $args['location_postoffice']  ? $args['location_postoffice']  : null,
-                    $args['location_country_id']  ? $args['location_country_id']  : null,
+                    $args['location_state']       ?: null,
+                    $args['location_city_name']   ?: null,
+                    $args['location_city']        ?: null,
+                    $args['location_street_name'] ?: null,
+                    $args['location_street']      ?: null,
+                    $args['location_house']       ?: null,
+                    $args['location_flat']        ?: null,
+                    $args['location_zip']         ?: null,
+                    $args['location_postoffice']  ?: null,
+                    $args['location_country_id']  ?: null,
                 )
             );
 
@@ -257,18 +257,18 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                                    flat = ?, zip = ?, postoffice = ?, country_id = ?
                                 WHERE id = ?',
                 array(
-                    $args['location_name'] ? $args['location_name'] : null,
+                    $args['location_name'] ?: null,
                     isset($args['location_state_name']) && $args['location_state_name'] ? $args['location_state_name'] : null,
-                    $args['location_state'] ? $args['location_state'] : null,
-                    $args['location_city_name'] ? $args['location_city_name'] : null,
-                    $args['location_city'] ? $args['location_city'] : null,
-                    $args['location_street_name'] ? $args['location_street_name'] : null,
-                    $args['location_street'] ? $args['location_street'] : null,
-                    $args['location_house'] ? $args['location_house'] : null,
-                    $args['location_flat'] ? $args['location_flat'] : null,
-                    $args['location_zip'] ? $args['location_zip'] : null,
-                    $args['location_postoffice'] ? $args['location_postoffice'] : null,
-                    $args['location_country_id'] ? $args['location_country_id'] : null,
+                    $args['location_state'] ?: null,
+                    $args['location_city_name'] ?: null,
+                    $args['location_city'] ?: null,
+                    $args['location_street_name'] ?: null,
+                    $args['location_street'] ?: null,
+                    $args['location_house'] ?: null,
+                    $args['location_flat'] ?: null,
+                    $args['location_zip'] ?: null,
+                    $args['location_postoffice'] ?: null,
+                    $args['location_country_id'] ?: null,
                     $args['address_id'],
                 )
             );
@@ -364,7 +364,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 
         $tmp = array(
             $args['location_name'],
-            isset($args['location_state_name']) ? $args['location_state_name'] : '',
+            $args['location_state_name'] ?? '',
             $args['location_state'],
             $args['location_city_name'],
             $args['location_city'],
@@ -498,7 +498,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 
     public function getCoordinatesForAddress($params)
     {
-        if (isset($params['city_id']) && !empty($params['city_id']) && $this->db->GetOne('SELECT id FROM location_buildings LIMIT 1')) {
+        if (!empty($params['city_id']) && $this->db->GetOne('SELECT id FROM location_buildings LIMIT 1')) {
             $args = array(
                 'city_id' => $params['city_id'],
             );
@@ -634,7 +634,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
             }
 
             $number = intval($m['number']);
-            $letter = isset($m['letter']) ? $m['letter'] : null;
+            $letter = $m['letter'] ?? null;
             $parity = (intval($number) & 1) ? 1 : 2;
 
             $from = '(fromnumber IS NULL OR (fromnumber < ' . $number . ')

@@ -7,7 +7,7 @@
     },
     "name": "lmsgit/lms",
     "description": "Lan Management System (LMS)",
-    "homepage": "http://lms.org.pl/",
+    "homepage": "https://lms.org.pl/",
     "license": "GPL-2.0",
     "repositories": [
         {
@@ -117,6 +117,9 @@
         "ext-curl": "*",
         "ext-intl": "*",
         "ext-ctype": "*",
+        "ext-posix": "*",
+        "ext-pgsql": "*",
+        "ext-calendar": "*",
         "phine/observer": "2.0",
         "phine/exception": "1.0",
         "phpmailer/phpmailer": "^6",

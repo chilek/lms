@@ -65,7 +65,7 @@ class LMSConfig
      */
     public static function getIniConfig(array $options = array())
     {
-        $force = (isset($options['force'])) ? $options['force'] : false;
+        $force = isset($options['force']) && $options['force'];
         if ($force || self::$ini_config === null) {
             $options['provider'] = IniConfigProvider::NAME;
             $options['parser'] = IniConfigParser::NAME;
@@ -90,7 +90,7 @@ class LMSConfig
         if (!LMSDB::checkIfInstanceExists()) {
             throw new Exception('Cannot load uiconfig while database connection does not exist!');
         }
-        $force = (isset($options['force'])) ? $options['force'] : false;
+        $force = isset($options['force']) && $options['force'];
         if ($force || self::$ui_config === null) {
             $options['provider'] = UiConfigProvider::NAME;
             $options['parser'] = UiConfigParser::NAME;
@@ -119,7 +119,7 @@ class LMSConfig
         if (!isset($options['user_id'])) {
             throw new Exception('Cannot load user rights config without user id!');
         }
-        $force = (isset($options['force'])) ? $options['force'] : false;
+        $force = isset($options['force']) && $options['force'];
         if ($force || self::$user_rights_config === null) {
             $options['provider'] = UserRightsConfigProvider::NAME;
             $options['parser'] = UserRightsConfigParser::NAME;
@@ -143,7 +143,7 @@ class LMSConfig
      */
     public static function getConfig(array $options = array())
     {
-        $force = (isset($options['force'])) ? $options['force'] : false;
+        $force = isset($options['force']) && $options['force'];
         if ($force || self::$config === null) {
             self::$config = self::mergeConfigs($options);
         }

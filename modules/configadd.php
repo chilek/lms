@@ -135,9 +135,9 @@ if (!empty($config)) {
             'description' => $config['description'],
             'disabled' => $config['disabled'],
             'type' => $config['type'],
-            'userid' => (isset($config['userid']) && !empty($config['userid']) ? $config['userid'] : null),
-            'divisionid' => (isset($config['divisionid']) && !empty($config['divisionid']) ? $config['divisionid'] : null),
-            'configid' => (isset($config['refconfigid']) && !empty($config['refconfigid']) ? $config['refconfigid'] : null)
+            'userid' => (!empty($config['userid']) ? $config['userid'] : null),
+            'divisionid' => (!empty($config['divisionid']) ? $config['divisionid'] : null),
+            'configid' => (!empty($config['refconfigid']) ? $config['refconfigid'] : null)
         );
 
         $DB->BeginTrans();
@@ -179,7 +179,7 @@ if (!empty($config)) {
         die;
     }
 
-    $variables = (isset($_POST['marks']) && !empty($_POST['marks']) ? $_POST['marks'] : null);
+    $variables = (!empty($_POST['marks']) ? $_POST['marks'] : null);
     $DB->BeginTrans();
     $LMS->cloneConfigs(
         array(

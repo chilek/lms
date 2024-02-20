@@ -215,17 +215,9 @@ class Session
     public function restore($variable, &$content, $tab = false)
     {
         if ($tab) {
-            if (isset($this->_tab_content[$this->tabId][$variable])) {
-                $content = $this->_tab_content[$this->tabId][$variable];
-            } else {
-                $content = null;
-            }
+            $content = $this->_tab_content[$this->tabId][$variable] ?? null;
         } else {
-            if (isset($this->_content[$variable])) {
-                $content = $this->_content[$variable];
-            } else {
-                $content = null;
-            }
+            $content = $this->_content[$variable] ?? null;
         }
     }
 
@@ -235,17 +227,9 @@ class Session
             return $this->get_history_entry();
         }
         if ($tab) {
-            if (isset($this->_tab_content[$this->tabId][$variable])) {
-                return $this->_tab_content[$this->tabId][$variable];
-            } else {
-                return null;
-            }
+            return $this->_tab_content[$this->tabId][$variable] ?? null;
         } else {
-            if (isset($this->_content[$variable])) {
-                return $this->_content[$variable];
-            } else {
-                return null;
-            }
+            return $this->_content[$variable] ?? null;
         }
     }
 
@@ -448,11 +432,7 @@ class Session
 
     public function get_persistent_setting($variable)
     {
-        if (isset($this->_persistent_settings[$variable])) {
-            return $this->_persistent_settings[$variable];
-        } else {
-            return null;
-        }
+        return $this->_persistent_settings[$variable] ?? null;
     }
 
     public function save_persistent_setting($variable, $content)
@@ -693,11 +673,7 @@ class Session
                 $vdata[$vkey] = $_SERVER[$vkey];
             }
         }
-        if (isset($vdata)) {
-            return $vdata;
-        } else {
-            return null;
-        }
+        return $vdata ?? null;
     }
 
     public function redirect($location)

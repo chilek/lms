@@ -999,7 +999,7 @@ if (!function_exists('menu_cmp')) {
 
 foreach ($menu as $idx => $item) {
     if (isset($item['submenu'])) {
-        uasort($menu[$idx]['submenu'], 'menu_cmp');
+        uasort($item['submenu'], 'menu_cmp');
     }
 }
 

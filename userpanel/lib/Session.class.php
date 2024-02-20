@@ -280,8 +280,6 @@ class Session
                         LOG_WARNING
                     );
                     $this->LogOut();
-
-                    return;
                 } else {
                     $this->islogged = true;
                     $this->isPasswdChangeRequired = $this->get('passwd_change_required');
@@ -314,20 +312,12 @@ class Session
 
     public function restore($variable, &$content)
     {
-        if (isset($this->_content[$variable])) {
-            $content = $this->_content[$variable];
-        } else {
-            $content = null;
-        }
+        $content = $this->_content[$variable] ?? null;
     }
 
     public function get($variable)
     {
-        if (isset($this->_content[$variable])) {
-            return $this->_content[$variable];
-        } else {
-            return null;
-        }
+        return $this->_content[$variable] ?? null;
     }
 
     public function remove($variable)
@@ -365,11 +355,7 @@ class Session
                 $vdata[$vkey] = $_SERVER[$vkey];
             }
         }
-        if (isset($vdata)) {
-            return $vdata;
-        } else {
-            return null;
-        }
+        return $vdata ?? null;
     }
 
     public function close()
@@ -482,12 +468,10 @@ class Session
         ));
 
         $res = curl_exec($ch);
+        curl_close($ch);
         if ($res !== false && ($res = json_decode($res, true)) !== null && $res['success']) {
-            curl_close($ch);
             return true;
         }
-
-        curl_close($ch);
 
         return false;
     }

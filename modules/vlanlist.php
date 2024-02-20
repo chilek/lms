@@ -24,13 +24,13 @@
  *  $Id$
  */
 
-$action = isset($_GET['action']) ? $_GET['action'] : '';
-$id = isset($_GET['id']) ? $_GET['id'] : 0;
+$action = $_GET['action'] ?? '';
+$id = $_GET['id'] ?? 0;
 
-$addvlan = isset($_POST['addvlan']) ? $_POST['addvlan'] : array();
+$addvlan = $_POST['addvlan'] ?? array();
 $layout['pagetitle'] = trans('VLAN List');
 
-$params['orderby'] = isset($_GET['orderby']) ? $_GET['orderby'] : null;
+$params['orderby'] = $_GET['orderby'] ?? null;
 
 $vlanlist = $LMS->GetVlanList($params);
 $netnodelist = $LMS->GetNetNodes();

@@ -25,7 +25,7 @@
  */
 
 $SESSION->restore('rlm', $marks);
-$marked = isset($_POST['marks']) ? $_POST['marks'] : array();
+$marked = $_POST['marks'] ?? array();
 if (count($marked)) {
     foreach ($marked as $id => $mark) {
         $marks[$id] = $mark;
@@ -143,8 +143,8 @@ $SESSION->restore('rlf', $listdata['from']);
 $SESSION->restore('rlt', $listdata['to']);
 $SESSION->restore('rla', $listdata['advances']);
 
-$listdata['order'] = isset($receiptlist['order']) ? $receiptlist['order'] : null;
-$listdata['direction'] = isset($receiptlist['direction']) ? $receiptlist['direction'] : null;
+$listdata['order'] = $receiptlist['order'] ?? null;
+$listdata['direction'] = $receiptlist['direction'] ?? null;
 $listdata['totalincome'] = $summary['totalincome'];
 $listdata['totalexpense'] = $summary['totalexpense'];
 $listdata['regid'] = $regid;

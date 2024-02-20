@@ -3066,7 +3066,7 @@ class LMS
                         } else {
                             $buf .= "Content-Disposition: attachment; filename=\"" . $chunk['filename'] . "\"\n\n";
                         }
-                        $buf .= chunk_split(base64_encode($chunk['data']), 60, "\n");
+                        $buf .= chunk_split(base64_encode($chunk['data']), 60);
                     }
                 }
                 $buf .= '--' . $boundary . '--';
@@ -3095,7 +3095,7 @@ class LMS
             if (!empty($smtp_username) || isset($smtp_options['user'])) {
                 $this->mail_object->Username = (!isset($smtp_options['user']) ? $smtp_username : $smtp_options['user']);
                 $this->mail_object->Password = (!isset($smtp_options['pass']) ? $smtp_password : $smtp_options['pass']);
-                $auth_type = isset($smtp_options['auth']) ? $smtp_options['auth'] : $smtp_auth_type;
+                $auth_type = $smtp_options['auth'] ?? $smtp_auth_type;
                 if (is_bool($auth_type)) {
                     $this->mail_object->SMTPAuth = $auth_type;
                 } elseif ($auth_type == 'false') {
@@ -3118,12 +3118,9 @@ class LMS
 
             $this->mail_object->SMTPOptions = array(
                 'ssl' => array(
-                    'verify_peer' => isset($smtp_options['ssl_verify_peer']) ? $smtp_options['ssl_verify_peer']
-                        : $smtp_ssl_verify_peer,
-                    'verify_peer_name' => isset($smtp_options['ssl_verify_peer_name']) ? $smtp_options['ssl_verify_peer_name']
-                        : $smtp_ssl_verify_peer_name,
-                    'allow_self_signed' => isset($smtp_options['ssl_allow_self_signed']) ? $smtp_options['ssl_allow_self_signed']
-                        : $smtp_ssl_allow_self_signed,
+                    'verify_peer' => $smtp_options['ssl_verify_peer'] ?? $smtp_ssl_verify_peer,
+                    'verify_peer_name' => $smtp_options['ssl_verify_peer_name'] ?? $smtp_ssl_verify_peer_name,
+                    'allow_self_signed' => $smtp_options['ssl_allow_self_signed'] ?? $smtp_ssl_allow_self_signed,
                 )
             );
 
@@ -3229,7 +3226,7 @@ class LMS
             }
 
             foreach (explode(",", $recipients) as $recipient) {
-                $this->mail_object->addAddress($recipient, isset($headers['Recipient-Name']) ? $headers['Recipient-Name'] : '');
+                $this->mail_object->addAddress($recipient, $headers['Recipient-Name'] ?? '');
             }
 
             if (isset($headers['X-Priority']) && intval($headers['X-Priority'])) {
@@ -3295,18 +3292,20 @@ class LMS
             );
         }
 
-        $debug_phone = isset($sms_options['debug_phone']) ? $sms_options['debug_phone'] : ConfigHelper::getConfig('sms.debug_phone');
+        $debug_phone = $sms_options['debug_phone'] ?? ConfigHelper::getConfig('sms.debug_phone');
         if (!empty($debug_phone)) {
             $number = $debug_phone;
         }
 
-        $prefix = isset($sms_options['prefix']) ? $sms_options['prefix'] : ConfigHelper::getConfig('sms.prefix', '');
+        $prefix = $sms_options['prefix'] ?? ConfigHelper::getConfig('sms.prefix', '');
         $number = preg_replace('/[^0-9]/', '', $number);
         $number = preg_replace('/^0+/', '', $number);
 
-        $phone_number_validation_pattern = isset($sms_options['phone_number_validation_pattern'])
-            ? $sms_options['phone_number_validation_pattern']
-            : ConfigHelper::getConfig('sms.phone_number_validation_pattern', '', true);
+        $phone_number_validation_pattern = $sms_options['phone_number_validation_pattern'] ?? ConfigHelper::getConfig(
+            'sms.phone_number_validation_pattern',
+            '',
+            true
+        );
         if (!empty($phone_number_validation_pattern) && !preg_match('/' . $phone_number_validation_pattern . '/', $number)) {
             return array(
                 'status' => MSG_ERROR,
@@ -3329,24 +3328,23 @@ class LMS
         $message = str_replace(
             array('%body'),
             array($message),
-            isset($sms_options['message_template'])
-                ? $sms_options['message_template']
-                : ConfigHelper::getConfig('sms.message_template', '%body')
+            $sms_options['message_template'] ?? ConfigHelper::getConfig('sms.message_template', '%body')
         );
 
-        $transliterate_message = isset($sms_options['transliterate_message']) ? $sms_options['transliterate_message']
-            : ConfigHelper::getConfig('sms.transliterate_message', 'false');
+        $transliterate_message = $sms_options['transliterate_message'] ?? ConfigHelper::getConfig(
+            'sms.transliterate_message',
+            'false'
+        );
         if (ConfigHelper::checkValue($transliterate_message)) {
             $message = iconv('UTF-8', 'ASCII//TRANSLIT', $message);
         }
 
-        $max_length = isset($sms_options['max_length']) ? $sms_options['max_length']
-            : ConfigHelper::getConfig('sms.max_length');
+        $max_length = $sms_options['max_length'] ?? ConfigHelper::getConfig('sms.max_length');
         if (!empty($max_length) && intval($max_length) > 6 && $msg_len > intval($max_length)) {
             $message = mb_substr($message, 0, $max_length - 6) . ' [...]';
         }
 
-        $service = isset($sms_options['service']) ? $sms_options['service'] : ConfigHelper::getConfig('sms.service');
+        $service = $sms_options['service'] ?? ConfigHelper::getConfig('sms.service');
         if (empty($service)) {
             return array(
                 'status' => MSG_ERROR,
@@ -3396,8 +3394,10 @@ class LMS
 
             switch ($service) {
                 case 'smstools':
-                    $dir = isset($sms_options['smstools_outdir']) ? $sms_options['smstools_outdir']
-                        : ConfigHelper::getConfig('sms.smstools_outdir', DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'spool' . DIRECTORY_SEPARATOR . 'sms' . DIRECTORY_SEPARATOR . 'outgoing');
+                    $dir = $sms_options['smstools_outdir'] ?? ConfigHelper::getConfig(
+                        'sms.smstools_outdir',
+                        DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'spool' . DIRECTORY_SEPARATOR . 'sms' . DIRECTORY_SEPARATOR . 'outgoing'
+                    );
 
                     if (!file_exists($dir)) {
                         $errors[] = trans('SMSTools outgoing directory not exists ($a)!', $dir);
@@ -3419,14 +3419,15 @@ class LMS
                         $message = iconv('UTF-8', 'UNICODEBIG', $message);
                     }
 
-                    $queue = isset($sms_options['queue']) ? $sms_options['queue']
-                        : ConfigHelper::getConfig('sms.queue', '', true);
+                    $queue = $sms_options['queue'] ?? ConfigHelper::getConfig('sms.queue', '', true);
                     if (!empty($queue)) {
                         $headers['Queue'] = $queue;
                     }
 
-                    $delivery_reports = isset($sms_options['delivery_reports']) ? $sms_options['delivery_reports']
-                        : ConfigHelper::getConfig('sms.delivery_reports', 'false');
+                    $delivery_reports = $sms_options['delivery_reports'] ?? ConfigHelper::getConfig(
+                        'sms.delivery_reports',
+                        'false'
+                    );
                     if (ConfigHelper::checkValue($delivery_reports)) {
                         $headers['Report'] = 'yes';
                     }
@@ -5397,33 +5398,19 @@ class LMS
                                     ));
                                 }
                             }
-
-                            $this->DB->Execute(
-                                'INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)
-                                VALUES (?, ?, ?, ?NOW?, ?)',
-                                array($msgid, $doc['customerid'], $email, MSG_NEW)
-                            );
-
-                            $msgitemid = $this->DB->GetLastInsertID('messageitems');
-                            if (!isset($msgitems[$doc['customerid']])) {
-                                $msgitems[$doc['customerid']] = array();
-                            }
-                            $msgitems[$doc['customerid']][$email] = $msgitemid;
                         } else {
                             $msgid = $messages[$mailSubject]['msgid'];
-
-                            $this->DB->Execute(
-                                'INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)
-                                VALUES (?, ?, ?, ?NOW?, ?)',
-                                array($msgid, $doc['customerid'], $email, MSG_NEW)
-                            );
-
-                            $msgitemid = $this->DB->GetLastInsertID('messageitems');
-                            if (!isset($msgitems[$doc['customerid']])) {
-                                $msgitems[$doc['customerid']] = array();
-                            }
-                            $msgitems[$doc['customerid']][$email] = $msgitemid;
                         }
+                        $this->DB->Execute(
+                            'INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)
+                            VALUES (?, ?, ?, ?NOW?, ?)',
+                            array($msgid, $doc['customerid'], $email, MSG_NEW)
+                        );
+                        $msgitemid = $this->DB->GetLastInsertID('messageitems');
+                        if (!isset($msgitems[$doc['customerid']])) {
+                            $msgitems[$doc['customerid']] = array();
+                        }
+                        $msgitems[$doc['customerid']][$email] = $msgitemid;
                     }
 
                     if ($add_message && (!empty($dsn_email) || !empty($mdn_email))) {
@@ -5437,7 +5424,7 @@ class LMS
                         $body,
                         $files,
                         null,
-                        (isset($smtp_options) ? $smtp_options : null)
+                        ($smtp_options ?? null)
                     );
 
                     if (is_string($res)) {

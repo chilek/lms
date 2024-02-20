@@ -628,8 +628,6 @@ final class xajaxPluginManager
             echo '" ';
             echo $this->sDefer;
             echo 'charset="UTF-8"><';
-            echo '/script>';
-            echo $sCrLf;
         } else {
             foreach ($aJsFiles as $aJsFile) {
                 echo '<';
@@ -659,9 +657,9 @@ final class xajaxPluginManager
             echo '/* ]]> */';
             echo $sCrLf;
             echo '<';
-            echo '/script>';
-            echo $sCrLf;
         }
+        echo '/script>';
+        echo $sCrLf;
     }
 
     private function generateHash()

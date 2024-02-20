@@ -103,7 +103,7 @@ class Auth
         $this->SESSION->restore('session_target_login', $this->targetLogin);
         $this->SESSION->restore('session_authcoderequired', $this->authcoderequired);
 
-        if (isset($loginform['backtologinform']) && !empty($loginform['backtologinform'])) {
+        if (!empty($loginform['backtologinform'])) {
             $this->authcoderequired = false;
         }
 
@@ -147,8 +147,8 @@ class Auth
 
             $this->switchUser();
 
-            $this->logname = $this->logname ? $this->logname : $this->SESSION->get('session_logname');
-            $this->id = $this->id ? $this->id : $this->SESSION->get('session_id');
+            $this->logname = $this->logname ?: $this->SESSION->get('session_logname');
+            $this->id = $this->id ?: $this->SESSION->get('session_id');
 
             if (isset($loginform)) {
                 $this->DB->Execute('UPDATE users SET lastlogindate=?, lastloginip=? WHERE id=?', array(time(), $this->ip ,$this->id));
@@ -161,7 +161,7 @@ class Auth
                         array(
                             SYSLOG::RES_USER => $this->id,
                             'ip' => $this->ip,
-                            'useragent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
+                            'useragent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
                         )
                     );
                 }
@@ -180,7 +180,7 @@ class Auth
             if (isset($loginform)) {
                 if ($this->id) {
                     if ($this->authcoderequired) {
-                        writesyslog('Bad authentication code (' . (isset($this->authcode) ? $this->authcode : '-') . ') for ' . $this->login, LOG_WARNING);
+                        writesyslog('Bad authentication code (' . ($this->authcode ?? '-') . ') for ' . $this->login, LOG_WARNING);
                     } else {
                         if (!$this->hostverified) {
                             writesyslog('Bad host (' . $this->ip . ') for ' . $this->login, LOG_WARNING);

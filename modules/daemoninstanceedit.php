@@ -108,6 +108,6 @@ if (isset($_POST['instance'])) {
 $SESSION->add_history_entry();
 
 $SMARTY->assign('error', $error);
-$SMARTY->assign('instance', isset($instedit) ? $instedit : $instance);
+$SMARTY->assign('instance', $instedit ?? $instance);
 $SMARTY->assign('hosts', $DB->GetAll('SELECT id, name FROM hosts ORDER BY name'));
 $SMARTY->display('daemon/daemoninstanceedit.html');

@@ -85,7 +85,7 @@ class LMSTariffTagManager extends LMSManager implements LMSTariffTagManagerInter
 
     public function TarifftagExists($id)
     {
-        return ($this->db->GetOne('SELECT id FROM tarifftags WHERE id=?', array($id)) ? true : false);
+        return (bool)$this->db->GetOne('SELECT id FROM tarifftags WHERE id=?', array($id));
     }
 
     public function GetTariffWithoutTagNames($tagid)

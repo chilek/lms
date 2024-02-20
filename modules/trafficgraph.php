@@ -101,7 +101,7 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
     $imgW = GRAPH_WIDTH;
     $imgH = GRAPH_HEIGHT;
 
-    $tto = ($todate ? $todate : time());
+    $tto = ($todate ?: time());
     $tfrom = $fromdate;
 
     if ($tfrom > $tto) {
@@ -127,7 +127,7 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
             $tfrom = $tto - 60 * 60 * 24 * 365;
             break;
         default:
-            $tfrom = $tfrom ? $tfrom : $tto - 60 * 60 * 24 * 30;
+            $tfrom = $tfrom ?: $tto - 60 * 60 * 24 * 30;
             break;
     }
 
@@ -270,7 +270,6 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
             if ($elem['dt'] < $ctime) {
                 $upt = $elem['upload'];
                 $dnt = $elem['download'];
-                $dt_prev = $elem['dt'];
             } else {
                 if ($dtime > $freq) {
                     $coeff = ($elem['dt'] - $ctime) / ($elem['dt'] - $dt_prev);
@@ -312,8 +311,8 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
 
                 $upt = $elem['upload'] * $coeff;
                 $dnt = $elem['download'] * $coeff;
-                $dt_prev = $elem['dt'];
             }
+            $dt_prev = $elem['dt'];
         }
     }
     if ($tto - $ctime >= $freq) {
@@ -540,10 +539,10 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
     imagedestroy($image);
 }
 
-$nodeid = isset($_GET['nodeid']) ? $_GET['nodeid'] : 0;
-$bar = isset($_GET['bar']) ? $_GET['bar'] : null;
-$from = isset($_GET['from']) ? $_GET['from'] : null;
-$to = isset($_GET['to']) ? $_GET['to'] : null;
+$nodeid = $_GET['nodeid'] ?? 0;
+$bar = $_GET['bar'] ?? null;
+$from = $_GET['from'] ?? null;
+$to = $_GET['to'] ?? null;
 $customer = !empty($_GET['customer']) ? $_GET['customer'] : null;
 $net = !empty($_GET['net']) ? $_GET['net'] : null;
 $add = !empty($_GET['add']) ? $_GET['add'] : null;

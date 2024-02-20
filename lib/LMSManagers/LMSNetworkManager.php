@@ -33,7 +33,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
     public function NetworkExists($id)
     {
-        return ($this->db->GetOne('SELECT * FROM networks WHERE id=?', array($id)) ? true : false);
+        return (bool)$this->db->GetOne('SELECT * FROM networks WHERE id=?', array($id));
     }
 
     public function NetworkSet($id, $disabled = -1)
@@ -75,9 +75,15 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     public function IsIPFree($ip, $netid = 0)
     {
         if ($netid) {
-            return !($this->db->GetOne('SELECT id FROM vnodes WHERE (ipaddr=inet_aton(?) AND netid=?) OR ipaddr_pub=inet_aton(?)', array($ip, $netid, $ip)) ? true : false);
+            return !(bool)$this->db->GetOne(
+                'SELECT id FROM vnodes WHERE (ipaddr=inet_aton(?) AND netid=?) OR ipaddr_pub=inet_aton(?)',
+                array($ip, $netid, $ip)
+            );
         } else {
-            return !($this->db->GetOne('SELECT id FROM vnodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ip, $ip)) ? true : false);
+            return !(bool)$this->db->GetOne(
+                'SELECT id FROM vnodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)',
+                array($ip, $ip)
+            );
         }
     }
 
@@ -88,7 +94,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
     public function IsIPGateway($ip)
     {
-        return ($this->db->GetOne('SELECT gateway FROM networks WHERE gateway = ?', array($ip)) ? true : false);
+        return (bool)$this->db->GetOne('SELECT gateway FROM networks WHERE gateway = ?', array($ip));
     }
 
     public function GetPrefixList()
@@ -253,7 +259,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             );
         }
 
-        $order = isset($search['order']) && !empty($search['order']) ? $search['order'] : 'id,asc';
+        $order = !empty($search['order']) ? $search['order'] : 'id,asc';
 
         list($order, $direction) = sscanf($order, '%[^,],%s');
 
@@ -364,7 +370,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             $sqlwhere = rtrim($sqlwhere, $search['operatorType']);
         }
 
-        $count = isset($search['count']) && !empty($search['count']);
+        $count = !empty($search['count']);
 
         if ($count) {
             return $this->db->GetOne('SELECT COUNT(n.id)
@@ -1073,8 +1079,8 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
         if (!empty($props['id'])) {
             $props = array(
                 'id' => $props['id'],
-                'vlanid' => isset($props['vlanid']) ? $props['vlanid'] : null,
-                'description' => isset($props['description']) ? $props['description'] : null,
+                'vlanid' => $props['vlanid'] ?? null,
+                'description' => $props['description'] ?? null,
                 'customerid' => empty($props['customerid']) ? null : $props['customerid'],
                 'netnodeid' => empty($props['netnodeid']) ? null : $props['netnodeid'],
             );
@@ -1099,6 +1105,6 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             }
 
             return $result;
-        };
+        }
     }
 }

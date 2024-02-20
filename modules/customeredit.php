@@ -58,9 +58,9 @@ if (isset($_GET['search'])) {
 
     require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
     if ($customerlist && (
-        (isset($_POST['consents']) && !empty($_POST['consents']))
+        (!empty($_POST['consents']))
         || ($_GET['oper'] == 'changetype' && ($_GET['type'] == CTYPES_PRIVATE || $_GET['type'] == CTYPES_COMPANY))
-        || (isset($_GET['type']) && isset($_POST['contactflags'][$_GET['type']]) && !empty($_POST['contactflags'][$_GET['type']])
+        || (isset($_GET['type']) && !empty($_POST['contactflags'][$_GET['type']])
             && isset($CUSTOMERCONTACTTYPES[$_GET['type']]))
         || ($_GET['oper'] == 'changestatus' && isset($_GET['status']) && isset($CSTATUSES[$_GET['status']]))
         || ($_GET['oper'] == 'restore')
@@ -131,7 +131,7 @@ if (isset($_GET['oper'])) {
 if (!isset($_POST['xjxfun'])) {
     require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
-    $action = isset($_GET['action']) ? $_GET['action'] : '';
+    $action = $_GET['action'] ?? '';
     $exists = $LMS->CustomerExists($_GET['id']);
 
     if ($exists < 0 && $action != 'recover') {
@@ -389,7 +389,7 @@ if (!isset($_POST['xjxfun'])) {
                     )
                 );
                 $customerdata = $hook_data['customerdata'];
-                $id = isset($hook_data['id']) ? $hook_data['id'] : null;
+                $id = $hook_data['id'] ?? null;
 
                 if ($SYSLOG) {
                     $contactids = $DB->GetCol('SELECT id FROM customercontacts WHERE customerid = ?', array($customerdata['id']));
@@ -459,8 +459,8 @@ if (!isset($_POST['xjxfun'])) {
                 $customerinfo['moddateh'] = $olddata['moddateh'];
                 $customerinfo['customername'] = $olddata['customername'];
                 $customerinfo['balance'] = $olddata['balance'];
-                $customerinfo['stateid'] = isset($olddata['stateid']) ? $olddata['stateid'] : 0;
-                $customerinfo['post_stateid'] = isset($olddata['post_stateid']) ? $olddata['post_stateid'] : 0;
+                $customerinfo['stateid'] = $olddata['stateid'] ?? 0;
+                $customerinfo['post_stateid'] = $olddata['post_stateid'] ?? 0;
                 $customerinfo['tenwarning'] = empty($tenwarning) ? 0 : 1;
                 $customerinfo['tenexistencewarning'] = empty($tenexistencewarning) ? 0 : 1;
                 $customerinfo['ssnwarning'] = empty($ssnwarning) ? 0 : 1;
@@ -538,7 +538,7 @@ $LMS->InitXajax();
 $hook_data = $LMS->executeHook(
     'customeredit_before_display',
     array(
-        'customerinfo' => isset($customerinfo) ? $customerinfo : array(),
+        'customerinfo' => $customerinfo ?? array(),
         'smarty' => $SMARTY
     )
 );

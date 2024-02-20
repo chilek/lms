@@ -398,9 +398,7 @@ $checked_mail_contact_flags = $required_mail_contact_flags | CONTACT_DISABLED;
 
 $allowed_customer_status =
     Utils::determineAllowedCustomerStatus(
-        isset($options['customer-status'])
-            ? $options['customer-status']
-            : ConfigHelper::getConfig($config_section . '.allowed_customer_status', ''),
+        $options['customer-status'] ?? ConfigHelper::getConfig($config_section . '.allowed_customer_status', ''),
         -1
     );
 
@@ -443,20 +441,16 @@ if (!empty($scopes)) {
     $scopes = array_flip($scopes);
 }
 
-if (isset($options['interval'])) {
-    $interval = $options['interval'];
-} else {
-    $interval = ConfigHelper::getConfig($config_section . '.interval', 0);
-}
+$interval = $options['interval'] ?? ConfigHelper::getConfig($config_section . '.interval', 0);
 if ($interval == 'random') {
     $interval = -1;
 } else {
     $interval = intval($interval);
 }
 
-$part_size = isset($options['part-size']) ? $options['part-size'] : ConfigHelper::getConfig($config_section . '.limit', '0');
+$part_size = $options['part-size'] ?? ConfigHelper::getConfig($config_section . '.limit', '0');
 
-$part_number = isset($options['part-number']) ? $options['part-number'] : null;
+$part_number = $options['part-number'] ?? null;
 if (isset($part_number)) {
     $part_number = intval($part_number);
 } else {
@@ -669,7 +663,7 @@ function parse_customer_data($data, $format, $row)
             $all_accounts,
             $commented_balance,
             $row['name'],
-            isset($row['age']) ? $row['age'] : '',
+            $row['age'] ?? '',
             sprintf('%01.2f', $amount),
             sprintf('%01.2f', $totalamount),
             date('Y'),
@@ -738,8 +732,8 @@ function parse_customer_data($data, $format, $row)
             '%lastday',
         ),
         array(
-            isset($row['doc_number']) ? $row['doc_number'] : '',
-            isset($row['doc_number']) ? $row['doc_number'] : '',
+            $row['doc_number'] ?? '',
+            $row['doc_number'] ?? '',
             isset($row['value'], $row['currency']) ? moneyf($row['value'], $row['currency']) : '',
             isset($row['cdate']) ? date('Y', $row['cdate']) : '',
             isset($row['cdate']) ? date('m', $row['cdate']) : '',
@@ -762,7 +756,7 @@ function parse_node_data($data, $row)
         ),
         array(
             $row['ip'],
-            isset($row['customerid']) ? $row['customerid'] : '',
+            $row['customerid'] ?? '',
             isset($row['customername']) ? str_replace('"', "'", iconv('UTF-8', 'ASCII//TRANSLIT', $row['customername'])) : '',
         ),
         $data
@@ -899,7 +893,7 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body)
         $DB->Execute($query, array($result, null, $msgid, $cid, $msgitemid));
     }
 
-    if (isset($interval) && !empty($interval)) {
+    if (!empty($interval)) {
         if ($interval == -1) {
             $delay = mt_rand(500, 5000);
         } else {
@@ -1278,7 +1272,7 @@ if (empty($types) || in_array('documents', $types)) {
                     $msgid = create_message(
                         MSG_MAIL,
                         $subject,
-                        isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                        $message ?? ($mail_format == 'html' ? $message_html : $message_text)
                     );
                     foreach ($recipient_mails as $recipient_mail) {
                         send_mail(
@@ -1287,7 +1281,7 @@ if (empty($types) || in_array('documents', $types)) {
                             $recipient_mail,
                             $recipient_name,
                             $subject,
-                            isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                            $message ?? ($mail_format == 'html' ? $message_html : $message_text)
                         );
                     }
                 }
@@ -1295,14 +1289,14 @@ if (empty($types) || in_array('documents', $types)) {
                     $msgid = create_message(
                         MSG_SMS,
                         $subject,
-                        isset($message) ? $message : $message_text
+                        $message ?? $message_text
                     );
                     foreach ($recipient_phones as $recipient_phone) {
                         send_sms(
                             $msgid,
                             $row['id'],
                             $recipient_phone,
-                            isset($message) ? $message : $message_text
+                            $message ?? $message_text
                         );
                     }
                 }
@@ -1310,7 +1304,7 @@ if (empty($types) || in_array('documents', $types)) {
                     $msgid = create_message(
                         MSG_USERPANEL,
                         $subject,
-                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                        $message ?? ($format == 'html' ? $message_html : $message_text)
                     );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel'));
                 }
@@ -1318,7 +1312,7 @@ if (empty($types) || in_array('documents', $types)) {
                     $msgid = create_message(
                         MSG_USERPANEL_URGENT,
                         $subject,
-                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                        $message ?? ($format == 'html' ? $message_html : $message_text)
                     );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
@@ -1474,7 +1468,7 @@ if (empty($types) || in_array('contracts', $types)) {
                     $msgid = create_message(
                         MSG_MAIL,
                         $subject,
-                        isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                        $message ?? ($mail_format == 'html' ? $message_html : $message_text)
                     );
                     foreach ($recipient_mails as $recipient_mail) {
                         send_mail(
@@ -1483,7 +1477,7 @@ if (empty($types) || in_array('contracts', $types)) {
                             $recipient_mail,
                             $recipient_name,
                             $subject,
-                            isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                            $message ?? ($mail_format == 'html' ? $message_html : $message_text)
                         );
                     }
                 }
@@ -1491,14 +1485,14 @@ if (empty($types) || in_array('contracts', $types)) {
                     $msgid = create_message(
                         MSG_SMS,
                         $subject,
-                        isset($message) ? $message : $message_text
+                        $message ?? $message_text
                     );
                     foreach ($recipient_phones as $recipient_phone) {
                         send_sms(
                             $msgid,
                             $row['id'],
                             $recipient_phone,
-                            isset($message) ? $message : $message_text
+                            $message ?? $message_text
                         );
                     }
                 }
@@ -1506,7 +1500,7 @@ if (empty($types) || in_array('contracts', $types)) {
                     $msgid = create_message(
                         MSG_USERPANEL,
                         $subject,
-                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                        $message ?? ($format == 'html' ? $message_html : $message_text)
                     );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel'));
                 }
@@ -1514,7 +1508,7 @@ if (empty($types) || in_array('contracts', $types)) {
                     $msgid = create_message(
                         MSG_USERPANEL_URGENT,
                         $subject,
-                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                        $message ?? ($format == 'html' ? $message_html : $message_text)
                     );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
@@ -1615,11 +1609,10 @@ if (empty($types) || in_array('debtors', $types)) {
                 } else {
                     $part_size = ceil(($percent * $count) / 100);
                     $part_offset = $part_number * $part_size;
+                    $start_idx = $part_offset;
                     if ((!$part_offset && $part_number) || $part_offset >= $count) {
-                        $start_idx = $part_offset;
                         $end_idx = $part_offset - 1;
                     } else {
-                        $start_idx = $part_offset;
                         $end_idx = $part_offset + ($part_size ?: $count) - 1;
                     }
                 }
@@ -1712,7 +1705,7 @@ if (empty($types) || in_array('debtors', $types)) {
                         $msgid = create_message(
                             MSG_MAIL,
                             $subject,
-                            isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                            $message ?? ($mail_format == 'html' ? $message_html : $message_text)
                         );
                         foreach ($recipient_mails as $recipient_mail) {
                             send_mail(
@@ -1721,7 +1714,7 @@ if (empty($types) || in_array('debtors', $types)) {
                                 $recipient_mail,
                                 $recipient_name,
                                 $subject,
-                                isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                                $message ?? ($mail_format == 'html' ? $message_html : $message_text)
                             );
                         }
                     }
@@ -1730,14 +1723,14 @@ if (empty($types) || in_array('debtors', $types)) {
                     $msgid = create_message(
                         MSG_SMS,
                         $subject,
-                        isset($message) ? $message : $message_text
+                        $message ?? $message_text
                     );
                     foreach ($recipient_phones as $recipient_phone) {
                         send_sms(
                             $msgid,
                             $row['id'],
                             $recipient_phone,
-                            isset($message) ? $message : $message_text
+                            $message ?? $message_text
                         );
                     }
                 }
@@ -1745,7 +1738,7 @@ if (empty($types) || in_array('debtors', $types)) {
                     $msgid = create_message(
                         MSG_USERPANEL,
                         $subject,
-                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                        $message ?? ($format == 'html' ? $message_html : $message_text)
                     );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel'));
                 }
@@ -1753,7 +1746,7 @@ if (empty($types) || in_array('debtors', $types)) {
                     $msgid = create_message(
                         MSG_USERPANEL_URGENT,
                         $subject,
-                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                        $message ?? ($format == 'html' ? $message_html : $message_text)
                     );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
@@ -1871,11 +1864,10 @@ if (empty($types) || in_array('reminder', $types)) {
                 } else {
                     $part_size = ceil(($percent * $count) / 100);
                     $part_offset = $part_number * $part_size;
+                    $start_idx = $part_offset;
                     if ((!$part_offset && $part_number) || $part_offset >= $count) {
-                        $start_idx = $part_offset;
                         $end_idx = $part_offset - 1;
                     } else {
-                        $start_idx = $part_offset;
                         $end_idx = $part_offset + ($part_size ?: $count) - 1;
                     }
                 }
@@ -1894,7 +1886,7 @@ if (empty($types) || in_array('reminder', $types)) {
             $notifications['reminder']['customers'][] = $row['id'];
             $row['doc_number'] = docnumber(array(
                 'number' => $row['number'],
-                'template' => ($row['template'] ? $row['template'] : '%N/LMS/%Y'),
+                'template' => ($row['template'] ?: '%N/LMS/%Y'),
                 'cdate' => $row['cdate'],
                 'customerid' => $row['id'],
             ));
@@ -1978,7 +1970,7 @@ if (empty($types) || in_array('reminder', $types)) {
                         $msgid = create_message(
                             MSG_MAIL,
                             $subject,
-                            isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                            $message ?? ($mail_format == 'html' ? $message_html : $message_text)
                         );
                         foreach ($recipient_mails as $recipient_mail) {
                             send_mail(
@@ -1987,7 +1979,7 @@ if (empty($types) || in_array('reminder', $types)) {
                                 $recipient_mail,
                                 $row['name'],
                                 $subject,
-                                isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                                $message ?? ($mail_format == 'html' ? $message_html : $message_text)
                             );
                         }
                     }
@@ -1996,14 +1988,14 @@ if (empty($types) || in_array('reminder', $types)) {
                     $msgid = create_message(
                         MSG_SMS,
                         $subject,
-                        isset($message) ? $message : $message_text
+                        $message ?? $message_text
                     );
                     foreach ($recipient_phones as $recipient_phone) {
                         send_sms(
                             $msgid,
                             $row['id'],
                             $recipient_phone,
-                            isset($message) ? $message : $message_text
+                            $message ?? $message_text
                         );
                     }
                 }
@@ -2011,7 +2003,7 @@ if (empty($types) || in_array('reminder', $types)) {
                     $msgid = create_message(
                         MSG_USERPANEL,
                         $subject,
-                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                        $message ?? ($format == 'html' ? $message_html : $message_text)
                     );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel'));
                 }
@@ -2019,7 +2011,7 @@ if (empty($types) || in_array('reminder', $types)) {
                     $msgid = create_message(
                         MSG_USERPANEL_URGENT,
                         $subject,
-                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                        $message ?? ($format == 'html' ? $message_html : $message_text)
                     );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
@@ -2194,7 +2186,7 @@ if (empty($types) || in_array('income', $types)) {
                     $msgid = create_message(
                         MSG_MAIL,
                         $subject,
-                        isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                        $message ?? ($mail_format == 'html' ? $message_html : $message_text)
                     );
                     foreach ($recipient_mails as $recipient_mail) {
                         send_mail(
@@ -2203,7 +2195,7 @@ if (empty($types) || in_array('income', $types)) {
                             $recipient_mail,
                             $row['name'],
                             $subject,
-                            isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                            $message ?? ($mail_format == 'html' ? $message_html : $message_text)
                         );
                     }
                 }
@@ -2211,14 +2203,14 @@ if (empty($types) || in_array('income', $types)) {
                     $msgid = create_message(
                         MSG_SMS,
                         $subject,
-                        isset($message) ? $message : $message_text
+                        $message ?? $message_text
                     );
                     foreach ($recipient_phones as $recipient_phone) {
                         send_sms(
                             $msgid,
                             $row['id'],
                             $recipient_phone,
-                            isset($message) ? $message : $message_text
+                            $message ?? $message_text
                         );
                     }
                 }
@@ -2226,7 +2218,7 @@ if (empty($types) || in_array('income', $types)) {
                     $msgid = create_message(
                         MSG_USERPANEL,
                         $subject,
-                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                        $message ?? ($format == 'html' ? $message_html : $message_text)
                     );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel'));
                 }
@@ -2234,7 +2226,7 @@ if (empty($types) || in_array('income', $types)) {
                     $msgid = create_message(
                         MSG_USERPANEL_URGENT,
                         $subject,
-                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                        $message ?? ($format == 'html' ? $message_html : $message_text)
                     );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
@@ -2317,11 +2309,10 @@ if (empty($types) || in_array('invoices', $types)) {
                 } else {
                     $part_size = ceil(($percent * $count) / 100);
                     $part_offset = $part_number * $part_size;
+                    $start_idx = $part_offset;
                     if ((!$part_offset && $part_number) || $part_offset >= $count) {
-                        $start_idx = $part_offset;
                         $end_idx = $part_offset - 1;
                     } else {
-                        $start_idx = $part_offset;
                         $end_idx = $part_offset + ($part_size ?: $count) - 1;
                     }
                 }
@@ -2340,7 +2331,7 @@ if (empty($types) || in_array('invoices', $types)) {
             $notifications['invoices']['customers'][] = $row['id'];
             $row['doc_number'] = docnumber(array(
                 'number' => $row['number'],
-                'template' => ($row['template'] ? $row['template'] : '%N/LMS/%Y'),
+                'template' => ($row['template'] ?: '%N/LMS/%Y'),
                 'cdate' => $row['cdate'],
                 'customerid' => $row['id'],
             ));
@@ -2424,7 +2415,7 @@ if (empty($types) || in_array('invoices', $types)) {
                         $msgid = create_message(
                             MSG_MAIL,
                             $subject,
-                            isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                            $message ?? ($mail_format == 'html' ? $message_html : $message_text)
                         );
                         foreach ($recipient_mails as $recipient_mail) {
                             send_mail(
@@ -2433,7 +2424,7 @@ if (empty($types) || in_array('invoices', $types)) {
                                 $recipient_mail,
                                 $row['name'],
                                 $subject,
-                                isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                                $message ?? ($mail_format == 'html' ? $message_html : $message_text)
                             );
                         }
                     }
@@ -2442,14 +2433,14 @@ if (empty($types) || in_array('invoices', $types)) {
                     $msgid = create_message(
                         MSG_SMS,
                         $subject,
-                        isset($message) ? $message : $message_text
+                        $message ?? $message_text
                     );
                     foreach ($recipient_phones as $recipient_phone) {
                         send_sms(
                             $msgid,
                             $row['id'],
                             $recipient_phone,
-                            isset($message) ? $message : $message_text
+                            $message ?? $message_text
                         );
                     }
                 }
@@ -2457,7 +2448,7 @@ if (empty($types) || in_array('invoices', $types)) {
                     $msgid = create_message(
                         MSG_USERPANEL,
                         $subject,
-                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                        $message ?? ($format == 'html' ? $message_html : $message_text)
                     );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel'));
                 }
@@ -2465,7 +2456,7 @@ if (empty($types) || in_array('invoices', $types)) {
                     $msgid = create_message(
                         MSG_USERPANEL_URGENT,
                         $subject,
-                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                        $message ?? ($format == 'html' ? $message_html : $message_text)
                     );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
@@ -2543,11 +2534,10 @@ if (empty($types) || in_array('notes', $types)) {
                 } else {
                     $part_size = ceil(($percent * $count) / 100);
                     $part_offset = $part_number * $part_size;
+                    $start_idx = $part_offset;
                     if ((!$part_offset && $part_number) || $part_offset >= $count) {
-                        $start_idx = $part_offset;
                         $end_idx = $part_offset - 1;
                     } else {
-                        $start_idx = $part_offset;
                         $end_idx = $part_offset + ($part_size ?: $count) - 1;
                     }
                 }
@@ -2566,7 +2556,7 @@ if (empty($types) || in_array('notes', $types)) {
             $notifications['notes']['customers'][] = $row['id'];
             $row['doc_number'] = docnumber(array(
                 'number' => $row['number'],
-                'template' => ($row['template'] ? $row['template'] : '%N/LMS/%Y'),
+                'template' => ($row['template'] ?: '%N/LMS/%Y'),
                 'cdate' => $row['cdate'],
                 'customerid' => $row['id'],
             ));
@@ -2650,7 +2640,7 @@ if (empty($types) || in_array('notes', $types)) {
                         $msgid = create_message(
                             MSG_MAIL,
                             $subject,
-                            isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                            $message ?? ($mail_format == 'html' ? $message_html : $message_text)
                         );
                         foreach ($recipient_mails as $recipient_mail) {
                             send_mail(
@@ -2659,7 +2649,7 @@ if (empty($types) || in_array('notes', $types)) {
                                 $recipient_mail,
                                 $row['name'],
                                 $subject,
-                                isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                                $message ?? ($mail_format == 'html' ? $message_html : $message_text)
                             );
                         }
                     }
@@ -2668,14 +2658,14 @@ if (empty($types) || in_array('notes', $types)) {
                     $msgid = create_message(
                         MSG_SMS,
                         $subject,
-                        isset($message) ? $message : $message_text
+                        $message ?? $message_text
                     );
                     foreach ($recipient_phones as $recipient_phone) {
                         send_sms(
                             $msgid,
                             $row['id'],
                             $recipient_phone,
-                            isset($message) ? $message : $message_text
+                            $message ?? $message_text
                         );
                     }
                 }
@@ -2683,7 +2673,7 @@ if (empty($types) || in_array('notes', $types)) {
                     $msgid = create_message(
                         MSG_USERPANEL,
                         $subject,
-                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                        $message ?? ($format == 'html' ? $message_html : $message_text)
                     );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel'));
                 }
@@ -2691,7 +2681,7 @@ if (empty($types) || in_array('notes', $types)) {
                     $msgid = create_message(
                         MSG_USERPANEL_URGENT,
                         $subject,
-                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                        $message ?? ($format == 'html' ? $message_html : $message_text)
                     );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
@@ -2743,11 +2733,10 @@ if (empty($types) || in_array('birthday', $types)) {
                 } else {
                     $part_size = ceil(($percent * $count) / 100);
                     $part_offset = $part_number * $part_size;
+                    $start_idx = $part_offset;
                     if ((!$part_offset && $part_number) || $part_offset >= $count) {
-                        $start_idx = $part_offset;
                         $end_idx = $part_offset - 1;
                     } else {
-                        $start_idx = $part_offset;
                         $end_idx = $part_offset + ($part_size ?: $count) - 1;
                     }
                 }
@@ -2847,7 +2836,7 @@ if (empty($types) || in_array('birthday', $types)) {
                         $msgid = create_message(
                             MSG_MAIL,
                             $subject,
-                            isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                            $message ?? ($mail_format == 'html' ? $message_html : $message_text)
                         );
                         foreach ($recipient_mails as $recipient_mail) {
                             send_mail(
@@ -2856,7 +2845,7 @@ if (empty($types) || in_array('birthday', $types)) {
                                 $recipient_mail,
                                 $row['name'],
                                 $subject,
-                                isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                                $message ?? ($mail_format == 'html' ? $message_html : $message_text)
                             );
                         }
                     }
@@ -2865,14 +2854,14 @@ if (empty($types) || in_array('birthday', $types)) {
                     $msgid = create_message(
                         MSG_SMS,
                         $subject,
-                        isset($message) ? $message : $message_text
+                        $message ?? $message_text
                     );
                     foreach ($recipient_phones as $recipient_phone) {
                         send_sms(
                             $msgid,
                             $row['id'],
                             $recipient_phone,
-                            isset($message) ? $message : $message_text
+                            $message ?? $message_text
                         );
                     }
                 }
@@ -2880,7 +2869,7 @@ if (empty($types) || in_array('birthday', $types)) {
                     $msgid = create_message(
                         MSG_USERPANEL,
                         $subject,
-                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                        $message ?? ($format == 'html' ? $message_html : $message_text)
                     );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel'));
                 }
@@ -2888,7 +2877,7 @@ if (empty($types) || in_array('birthday', $types)) {
                     $msgid = create_message(
                         MSG_USERPANEL_URGENT,
                         $subject,
-                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                        $message ?? ($format == 'html' ? $message_html : $message_text)
                     );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
@@ -2956,11 +2945,10 @@ if (empty($types) || in_array('warnings', $types)) {
                 } else {
                     $part_size = ceil(($percent * $count) / 100);
                     $part_offset = $part_number * $part_size;
+                    $start_idx = $part_offset;
                     if ((!$part_offset && $part_number) || $part_offset >= $count) {
-                        $start_idx = $part_offset;
                         $end_idx = $part_offset - 1;
                     } else {
-                        $start_idx = $part_offset;
                         $end_idx = $part_offset + ($part_size ?: $count) - 1;
                     }
                 }
@@ -3051,7 +3039,7 @@ if (empty($types) || in_array('warnings', $types)) {
                         $msgid = create_message(
                             MSG_MAIL,
                             $subject,
-                            isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                            $message ?? ($mail_format == 'html' ? $message_html : $message_text)
                         );
                         foreach ($recipient_mails as $recipient_mail) {
                             send_mail(
@@ -3060,7 +3048,7 @@ if (empty($types) || in_array('warnings', $types)) {
                                 $recipient_mail,
                                 $row['name'],
                                 $subject,
-                                isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                                $message ?? ($mail_format == 'html' ? $message_html : $message_text)
                             );
                         }
                     }
@@ -3069,14 +3057,14 @@ if (empty($types) || in_array('warnings', $types)) {
                     $msgid = create_message(
                         MSG_SMS,
                         $subject,
-                        isset($message) ? $message : $message_text
+                        $message ?? $message_text
                     );
                     foreach ($recipient_phones as $recipient_phone) {
                         send_sms(
                             $msgid,
                             $row['id'],
                             $recipient_phone,
-                            isset($message) ? $message : $message_text
+                            $message ?? $message_text
                         );
                     }
                 }
@@ -3084,7 +3072,7 @@ if (empty($types) || in_array('warnings', $types)) {
                     $msgid = create_message(
                         MSG_USERPANEL,
                         $subject,
-                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                        $message ?? ($format == 'html' ? $message_html : $message_text)
                     );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel'));
                 }
@@ -3092,7 +3080,7 @@ if (empty($types) || in_array('warnings', $types)) {
                     $msgid = create_message(
                         MSG_USERPANEL_URGENT,
                         $subject,
-                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                        $message ?? ($format == 'html' ? $message_html : $message_text)
                     );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
@@ -3204,7 +3192,7 @@ if (empty($types) || in_array('events', $types)) {
 
             if ((empty($scopes) || isset($scopes['customers'])) && (empty($recipients) || isset($recipients['customers'])) && $cid) {
                 if (!empty($customers[$cid]['email'])) {
-                    $emails = explode(',', $debug_email ? $debug_email : $customers[$cid]['email']);
+                    $emails = explode(',', $debug_email ?: $customers[$cid]['email']);
                     foreach ($emails as $contact) {
                         if (!isset($emails[$contact])) {
                             $contacts[$contact] = array(
@@ -3215,7 +3203,7 @@ if (empty($types) || in_array('events', $types)) {
                     }
                 }
                 if (!empty($customers[$cid]['phone'])) {
-                    $phones = explode(',', $debug_phone ? $debug_phone : $customers[$cid]['phone']);
+                    $phones = explode(',', $debug_phone ?: $customers[$cid]['phone']);
                     foreach ($phones as $contact) {
                         if (!isset($phones[$contact])) {
                             $contacts[$contact] = array(
@@ -3229,7 +3217,7 @@ if (empty($types) || in_array('events', $types)) {
 
             if ((empty($scopes) || isset($scopes['users'])) && (empty($recipients) || isset($recipients['users'])) && $uid && array_key_exists($uid, $users)) {
                 if (!empty($users[$uid]['email'])) {
-                    $emails = explode(',', $debug_email ? $debug_email : $users[$uid]['email']);
+                    $emails = explode(',', $debug_email ?: $users[$uid]['email']);
                     foreach ($emails as $contact) {
                         if (!isset($contacts[$contact])) {
                             $contacts[$contact] = array(
@@ -3240,7 +3228,7 @@ if (empty($types) || in_array('events', $types)) {
                     }
                 }
                 if (!empty($users[$uid]['phone'])) {
-                    $phones = explode(',', $debug_phone ? $debug_phone : $users[$uid]['phone']);
+                    $phones = explode(',', $debug_phone ?: $users[$uid]['phone']);
                     foreach ($phones as $contact) {
                         if (!isset($contacts[$contact])) {
                             $contacts[$contact] = array(

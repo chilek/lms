@@ -111,15 +111,15 @@ $image_max_size = ConfigHelper::getConfig('phpui.uploaded_image_max_size');
 
 $rtparser_server = ConfigHelper::getConfig(
     $config_section . '.imap_server',
-    isset($smtp_options['host']) ? $smtp_options['host'] : ConfigHelper::GetConfig('mail.smtp_host')
+    $smtp_options['host'] ?? ConfigHelper::GetConfig('mail.smtp_host')
 );
 $rtparser_username = ConfigHelper::getConfig(
     $config_section . '.imap_username',
-    isset($smtp_options['user']) ? $smtp_options['user'] : ConfigHelper::GetConfig('mail.smtp_username')
+    $smtp_options['user'] ?? ConfigHelper::GetConfig('mail.smtp_username')
 );
 $rtparser_password = ConfigHelper::getConfig(
     $config_section . '.imap_password',
-    isset($smtp_options['pass']) ? $smtp_options['pass'] : ConfigHelper::GetConfig('mail.smtp_password')
+    $smtp_options['pass'] ?? ConfigHelper::GetConfig('mail.smtp_password')
 );
 $rtparser_use_seen_flag = ConfigHelper::checkConfig($config_section . '.imap_use_seen_flag', true);
 $rtparser_folder = ConfigHelper::getConfig($config_section . '.imap_folder', 'INBOX');
@@ -325,7 +325,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                     && ($mail_body == '' || ($html && $prefer_html) || (!$html && !$use_html))) {
                     $mail_body = substr($buffer, $partdata['starting-pos-body'], $partdata['ending-pos-body'] - $partdata['starting-pos-body']);
                     $charset = $partdata['content-charset'];
-                    $transfer_encoding = isset($partdata['transfer-encoding']) ? $partdata['transfer-encoding'] : '';
+                    $transfer_encoding = $partdata['transfer-encoding'] ?? '';
                     switch ($transfer_encoding) {
                         case 'base64':
                             $mail_body = base64_decode($mail_body);
@@ -357,7 +357,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                             && (trim($mail_body) == '' || ($html && $prefer_html) || (!$html && !$use_html))) {
                             $mail_body = substr($buffer, $subpartdata['starting-pos-body'], $subpartdata['ending-pos-body'] - $subpartdata['starting-pos-body']);
                             $charset = $subpartdata['content-charset'];
-                            $transfer_encoding = isset($subpartdata['transfer-encoding']) ? $subpartdata['transfer-encoding'] : '';
+                            $transfer_encoding = $subpartdata['transfer-encoding'] ?? '';
                             switch ($transfer_encoding) {
                                 case 'base64':
                                     $mail_body = base64_decode($mail_body);
@@ -384,7 +384,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 } elseif ((isset($partdata['content-disposition']) && ($isAttachment
                             || $partdata['content-disposition'] == 'inline')) || isset($partdata['content-id'])) {
                     $file_content = substr($buffer, $partdata['starting-pos-body'], $partdata['ending-pos-body'] - $partdata['starting-pos-body']);
-                    $transfer_encoding = isset($partdata['transfer-encoding']) ? $partdata['transfer-encoding'] : '';
+                    $transfer_encoding = $partdata['transfer-encoding'] ?? '';
                     switch ($transfer_encoding) {
                         case 'base64':
                             $file_content = base64_decode($file_content);
@@ -393,8 +393,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                             $file_content = quoted_printable_decode($file_content);
                             break;
                     }
-                    $file_name = isset($partdata['content-name']) ? $partdata['content-name'] :
-                        (isset($partdata['disposition-filename']) ? $partdata['disposition-filename'] : '');
+                    $file_name = $partdata['content-name'] ?? ($partdata['disposition-filename'] ?? '');
                     if (!$file_name) {
                         unset($file_content);
                         continue;
@@ -438,7 +437,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             $charset = $partdata['content-charset'];
             $mail_body = substr($buffer, $partdata['starting-pos-body'], $partdata['ending-pos-body'] - $partdata['starting-pos-body']);
 
-            $transfer_encoding = isset($partdata['transfer-encoding']) ? $partdata['transfer-encoding'] : '';
+            $transfer_encoding = $partdata['transfer-encoding'] ?? '';
             switch ($transfer_encoding) {
                 case 'base64':
                     $mail_body = base64_decode($mail_body);
@@ -523,14 +522,14 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         $requserid = null;
 
         if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $mh_replyto, $m)) {
-            $replytoname = isset($m['display']) ? $m['display'] : '';
+            $replytoname = $m['display'] ?? '';
             $replytoemail = $m['address'];
         } else {
             $replytoname = $replytoemail = '';
         }
 
         if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $mh_from, $m)) {
-            $fromname = isset($m['display']) ? $m['display'] : '';
+            $fromname = $m['display'] ?? '';
             $fromemail = $m['address'];
         } else {
             $fromname = $fromemail = '';
@@ -549,7 +548,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         if (!empty($_ccemails)) {
             foreach ($_ccemails as $ccemail) {
                 if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $ccemail, $m)) {
-                    $ccemails[$m['address']] = isset($m['display']) ? $m['display'] : '';
+                    $ccemails[$m['address']] = $m['display'] ?? '';
                 } else {
                     $ccemails[$ccemail] = '';
                 }
@@ -611,7 +610,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             );
             if (!empty($queue_autoreply)) {
                 $autoreply_from = $queue_autoreply['email'];
-                $autoreply_name = $autoreply_name ? $autoreply_name : $queue_autoreply['name'];
+                $autoreply_name = $autoreply_name ?: $queue_autoreply['name'];
             }
         }
 
@@ -826,7 +825,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             $params = array(
                 'id' => $ticket_id,
                 'queue' => $queuedata['name'],
-                'messageid' => isset($msgid) ? $msgid : null,
+                'messageid' => $msgid ?? null,
                 'customerid' => $ticket['customerid'] && $reqcustid ? $ticket['customerid'] : null,
                 'status' => $ticket['status'],
                 'categories' => $ticket['categorynames'],
@@ -838,11 +837,11 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
 
             $headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig($config_section . '.notification_mail_subject', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject')), $params);
 
-            $params['customerinfo'] = isset($mail_customerinfo) ? $mail_customerinfo : null;
+            $params['customerinfo'] = $mail_customerinfo ?? null;
             $params['contenttype'] = $contenttype;
             $body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig($config_section . '.notification_mail_body', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body')), $params);
 
-            $params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
+            $params['customerinfo'] = $sms_customerinfo ?? null;
             $params['contenttype'] = 'text/plain';
             $sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig($config_section . '.notification_sms_body', ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body')), $params);
 

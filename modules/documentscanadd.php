@@ -72,8 +72,8 @@ if (isset($_POST['documentscans'])) {
             if (isset($_POST['documents'][$filename])) {
                 $docid = $_POST['documents'][$filename];
                 if ($LMS->isDocumentAccessible($docid)) {
-                    $LMS->AddDocumentFileAttachments(array($files[$filename]));
-                    $LMS->AddDocumentAttachments($docid, array($files[$filename]));
+                    $LMS->AddDocumentFileAttachments(array($file));
+                    $LMS->AddDocumentAttachments($docid, array($file));
                 }
             }
         }

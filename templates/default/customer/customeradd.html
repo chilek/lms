@@ -271,7 +271,7 @@
 						{if $customeradd.tenexistencewarning}
 							<input type="hidden" name="customeradd[tenexistencewarning]" value="1">
 						{/if}
-						{button type="link" icon="division" class="gusapi-button"
+						{button icon="division" class="gusapi-button" label="GUS"
 							data_type=Utils::GUS_REGON_API_SEARCH_TYPE_TEN
 							tip="Click here to autocomplete company data from GUS REGON database"}
 					</td>
@@ -281,7 +281,7 @@
 					<td>
 						<input type="text" size="30" value="{$customeradd.regon}" name="customeradd[regon]"
 							{tip trigger="regon"}>
-						{button type="link" icon="division" class="gusapi-button"
+						{button icon="division" class="gusapi-button" label="GUS"
 							data_type=Utils::GUS_REGON_API_SEARCH_TYPE_REGON
 							tip="Click here to autocomplete company data from GUS REGON database"}
 					</td>

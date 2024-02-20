@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if (isset($_POST) && !empty($_POST)) {
+if (!empty($_POST)) {
     foreach ($_POST as $variable => $value) {
         $SESSION->save_persistent_setting($variable, $value);
     }

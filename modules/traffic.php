@@ -30,7 +30,7 @@ function Traffic($from = 0, $to = 0, $net = 0, $customerid = 0, $order = '', $li
     // period
     $fromdate = intval($from);
     $todate = intval($to);
-    $delta = ($todate-$fromdate) ? ($todate-$fromdate) : 1;
+    $delta = ($todate-$fromdate) ?: 1;
 
     $dt = "( dt >= $fromdate AND dt < $todate ) ";
 
@@ -93,8 +93,8 @@ function Traffic($from = 0, $to = 0, $net = 0, $customerid = 0, $order = '', $li
             $traffic['download']['data'][] = $row['download'];
             $traffic['upload']['avg'][] = $row['upload']*8/($delta*1000);
             $traffic['download']['avg'][] = $row['download']*8/($delta*1000);
-            $traffic['upload']['name'][] = ($row['name'] ? $row['name'] : trans('unknown').' (ID: '.$row['nodeid'].')');
-            $traffic['download']['name'][] = ($row['name'] ? $row['name'] : trans('unknown').' (ID: '.$row['nodeid'].')');
+            $traffic['upload']['name'][] = ($row['name'] ?: trans('unknown').' (ID: '.$row['nodeid'].')');
+            $traffic['download']['name'][] = ($row['name'] ?: trans('unknown').' (ID: '.$row['nodeid'].')');
             $traffic['upload']['ipaddr'][] = $row['ip'];
             $traffic['download']['nodeid'][] = $row['nodeid'];
             $traffic['upload']['nodeid'][] = $row['nodeid'];
@@ -159,7 +159,7 @@ if (isset($_GET['bar'])) {
     }
 }
 
-$bar = isset($_GET['bar']) ? $_GET['bar'] : '';
+$bar = $_GET['bar'] ?? '';
 
 switch ($bar) {
     case 'hour':
@@ -229,8 +229,8 @@ switch ($bar) {
             $to,
             $net,
             $customer,
-            isset($_POST['order']) ? $_POST['order'] : '',
-            isset($_POST['limit']) ? $_POST['limit'] : 0
+            $_POST['order'] ?? '',
+            $_POST['limit'] ?? 0
         );
         break;
 
@@ -259,17 +259,16 @@ if (empty($starttime)) {
     $starttime = time()-(3600*24);
     $endtime = time();
     $startyear = 2001;
-    $endyear = date('Y', $endtime);
 } else {
     $startyear = date('Y', $starttime);
-    $endyear = date('Y', $endtime);
 }
+$endyear = date('Y', $endtime);
 
 $SMARTY->assign('starttime', $starttime);
 $SMARTY->assign('startyear', $startyear);
 $SMARTY->assign('endtime', $endtime);
 $SMARTY->assign('endyear', $endyear);
-$SMARTY->assign('showips', isset($_POST['showips']) ? true : false);
+$SMARTY->assign('showips', isset($_POST['showips']));
 $SMARTY->assign('bars', $bars);
 $SMARTY->assign('bar', $bar);
 $SMARTY->assign('trafficorder', $SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download');

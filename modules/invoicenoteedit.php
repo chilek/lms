@@ -27,7 +27,7 @@
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'invoiceajax.inc.php');
 
 $taxeslist = $LMS->GetTaxes();
-$action = isset($_GET['action']) ? $_GET['action'] : '';
+$action = $_GET['action'] ?? '';
 
 if (isset($_GET['id']) && $action == 'edit') {
     if ($LMS->isDocumentPublished($_GET['id']) && !ConfigHelper::checkPrivilege('published_document_modification')) {
@@ -350,13 +350,13 @@ switch ($action) {
         $currtime = time();
 
         if (ConfigHelper::checkPrivilege('invoice_consent_date')) {
-            $cdate = $cnote['cdate'] ? $cnote['cdate'] : $currtime;
+            $cdate = $cnote['cdate'] ?: $currtime;
         } else {
             $cdate = $cnote['oldcdate'];
         }
 
         if (ConfigHelper::checkPrivilege('invoice_sale_date')) {
-            $sdate = $cnote['sdate'] ? $cnote['sdate'] : $currtime;
+            $sdate = $cnote['sdate'] ?: $currtime;
         } else {
             $sdate = $cnote['oldsdate'];
         }
@@ -364,7 +364,7 @@ switch ($action) {
         $cnote['currency'] = $cnote['oldcurrency'];
         $cnote['currencyvalue'] = $cnote['oldcurrencyvalue'];
 
-        $deadline = $cnote['deadline'] ? $cnote['deadline'] : $currtime;
+        $deadline = $cnote['deadline'] ?: $currtime;
         $paytime = $cnote['paytime'] = round(($cnote['deadline'] - $cnote['cdate']) / 86400);
         $iid   = $cnote['id'];
 
@@ -379,21 +379,21 @@ switch ($action) {
 
         foreach ($contents as $idx => $item) {
             if (ConfigHelper::checkConfig('phpui.tax_category_required')
-                && (!isset($newcontents['taxcategory'][$idx]) || empty($newcontents['taxcategory'][$idx]))) {
+                && (empty($newcontents['taxcategory'][$idx]))) {
                 $error['taxcategory[' . $idx . ']'] = trans('Tax category selection is required!');
             }
 
-            $contents[$idx]['taxid'] = isset($newcontents['taxid'][$idx]) ? $newcontents['taxid'][$idx] : $item['taxid'];
-            $contents[$idx]['taxcategory'] = isset($newcontents['taxcategory'][$idx]) ? $newcontents['taxcategory'][$idx] : $item['taxcategory'];
-            $contents[$idx]['servicetype'] = isset($newcontents['servicetype'][$idx]) ? $newcontents['servicetype'][$idx] : $item['servicetype'];
-            $contents[$idx]['prodid'] = isset($newcontents['prodid'][$idx]) ? $newcontents['prodid'][$idx] : $item['prodid'];
-            $contents[$idx]['content'] = isset($newcontents['content'][$idx]) ? $newcontents['content'][$idx] : $item['content'];
-            $contents[$idx]['count'] = isset($newcontents['count'][$idx]) ? $newcontents['count'][$idx] : $item['count'];
+            $contents[$idx]['taxid'] = $newcontents['taxid'][$idx] ?? $item['taxid'];
+            $contents[$idx]['taxcategory'] = $newcontents['taxcategory'][$idx] ?? $item['taxcategory'];
+            $contents[$idx]['servicetype'] = $newcontents['servicetype'][$idx] ?? $item['servicetype'];
+            $contents[$idx]['prodid'] = $newcontents['prodid'][$idx] ?? $item['prodid'];
+            $contents[$idx]['content'] = $newcontents['content'][$idx] ?? $item['content'];
+            $contents[$idx]['count'] = $newcontents['count'][$idx] ?? $item['count'];
 
-            $contents[$idx]['discount'] = str_replace(',', '.', isset($newcontents['discount'][$idx]) ? $newcontents['discount'][$idx] : $item['discount']);
+            $contents[$idx]['discount'] = str_replace(',', '.', $newcontents['discount'][$idx] ?? $item['discount']);
             $contents[$idx]['pdiscount'] = 0;
             $contents[$idx]['vdiscount'] = 0;
-            $contents[$idx]['discount_type'] = isset($newcontents['discount_type'][$idx]) ? $newcontents['discount_type'][$idx] : $item['discount_type'];
+            $contents[$idx]['discount_type'] = $newcontents['discount_type'][$idx] ?? $item['discount_type'];
             if (preg_match('/^[0-9]+(\.[0-9]+)*$/', $contents[$idx]['discount'])) {
                 $contents[$idx]['pdiscount'] = (!empty($contents[$idx]['discount_type']) && $contents[$idx]['discount_type'] == DISCOUNT_PERCENTAGE ? floatval($contents[$idx]['discount']) : 0);
                 $contents[$idx]['vdiscount'] = (!empty($contents[$idx]['discount_type']) && $contents[$idx]['discount_type'] == DISCOUNT_AMOUNT ? floatval($contents[$idx]['discount']) : 0);
@@ -402,13 +402,13 @@ switch ($action) {
                 $error['discount[' . $idx . ']'] = trans('Wrong discount value!');
             }
 
-            $contents[$idx]['name'] = isset($newcontents['name'][$idx]) ? $newcontents['name'][$idx] : $item['name'];
+            $contents[$idx]['name'] = $newcontents['name'][$idx] ?? $item['name'];
 
             if (!strlen($contents[$idx]['name'])) {
                 $error['name[' . $idx . ']'] = trans('Field cannot be empty!');
             }
 
-            $contents[$idx]['tariffid'] = isset($newcontents['tariffid'][$idx]) ? $newcontents['tariffid'][$idx] : $item['tariffid'];
+            $contents[$idx]['tariffid'] = $newcontents['tariffid'][$idx] ?? $item['tariffid'];
             if ($cnote['netflag']) {
                 if ($newcontents['valuenetto'][$idx] == '') {
                     $error['valuenetto[' . $idx . ']'] = trans('Wrong value!');
@@ -683,26 +683,26 @@ switch ($action) {
             'ten' => $use_current_customer_data ? $customer['ten'] : $cnote['ten'],
             'ssn' => $use_current_customer_data ? $customer['ssn'] : $cnote['ssn'],
             'zip' => $use_current_customer_data ? $customer['zip'] : $cnote['zip'],
-            'city' => $use_current_customer_data ? ($customer['postoffice'] ? $customer['postoffice'] : $customer['city'])
+            'city' => $use_current_customer_data ? ($customer['postoffice'] ?: $customer['city'])
                 : $cnote['city'],
             SYSLOG::RES_COUNTRY => $use_current_customer_data ? (empty($customer['countryid']) ? null : $customer['countryid'])
                 : (empty($cnote['countryid']) ? null : $cnote['countryid']),
             'reason' => $cnote['reason'],
             SYSLOG::RES_DIV => $use_current_customer_data ? $customer['divisionid'] : $cnote['divisionid'],
-            'div_name' => ($division['name'] ? $division['name'] : ''),
-            'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
-            'div_address' => ($division['address'] ? $division['address'] : ''),
-            'div_city' => ($division['city'] ? $division['city'] : ''),
-            'div_zip' => ($division['zip'] ? $division['zip'] : ''),
-            'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => ($division['countryid'] ? $division['countryid'] : null),
-            'div_ten'=> ($division['ten'] ? $division['ten'] : ''),
-            'div_regon' => ($division['regon'] ? $division['regon'] : ''),
+            'div_name' => ($division['name'] ?: ''),
+            'div_shortname' => ($division['shortname'] ?: ''),
+            'div_address' => ($division['address'] ?: ''),
+            'div_city' => ($division['city'] ?: ''),
+            'div_zip' => ($division['zip'] ?: ''),
+            'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => ($division['countryid'] ?: null),
+            'div_ten'=> ($division['ten'] ?: ''),
+            'div_regon' => ($division['regon'] ?: ''),
             'div_bank' => $division['bank'] ?: null,
-            'div_account' => ($division['account'] ? $division['account'] : ''),
-            'div_inv_header' => ($division['inv_header'] ? $division['inv_header'] : ''),
-            'div_inv_footer' => ($division['inv_footer'] ? $division['inv_footer'] : ''),
-            'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
-            'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
+            'div_account' => ($division['account'] ?: ''),
+            'div_inv_header' => ($division['inv_header'] ?: ''),
+            'div_inv_footer' => ($division['inv_footer'] ?: ''),
+            'div_inv_author' => ($division['inv_author'] ?: ''),
+            'div_inv_cplace' => ($division['inv_cplace'] ?: ''),
             'currency' => $cnote['currency'],
             'currencyvalue' => $cnote['currencyvalue'],
             'memo' => $use_current_customer_data ? (empty($customer['documentmemo']) ? null : $customer['documentmemo']) : $cnote['memo'],
@@ -820,7 +820,7 @@ switch ($action) {
         $DB->CommitTrans();
 
         if (isset($_GET['print'])) {
-            $which = isset($_GET['which']) ? $_GET['which'] : 0;
+            $which = $_GET['which'] ?? 0;
 
             $SESSION->save('invoiceprint', array('invoice' => $iid, 'which' => $which), true);
         }

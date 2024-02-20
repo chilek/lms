@@ -65,7 +65,7 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
         $address = array(
             'city_name' => $location['city'],
         );
-        if (isset($location['state_name']) && !empty($location['state_name'])) {
+        if (!empty($location['state_name'])) {
             $address['state_name'] = $location['state'];
         }
     }
@@ -80,11 +80,11 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
 
     foreach ($providers as $provider) {
         if ($provider == 'google') {
-            $location_string = (isset($address['state_name']) && !empty($address['state_name']) ? $address['state_name'] . ', ' : '')
-                . (isset($address['district_name']) && !empty($address['district_name']) ? $address['district_name'] . ', ' : '')
-                . (isset($address['borough_name']) && !empty($address['borough_name']) ? $address['borough_name'] . ', ' : '')
+            $location_string = (!empty($address['state_name']) ? $address['state_name'] . ', ' : '')
+                . (!empty($address['district_name']) ? $address['district_name'] . ', ' : '')
+                . (!empty($address['borough_name']) ? $address['borough_name'] . ', ' : '')
                 . (isset($address['zip']) ? $address['zip'] . ' ' : '') . $address['city_name']
-                . (isset($location['street']) && !empty($location['street']) ? ', ' . $location['street'] : '')
+                . (!empty($location['street']) ? ', ' . $location['street'] : '')
                 . (isset($location['house']) && mb_strlen($location['house']) ? ' ' . $location['house'] : '')
                 . (isset($location['flat']) && mb_strlen($location['flat']) ? '/' . $location['flat'] : '');
             $geocode = geocode($location_string);
@@ -99,7 +99,6 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
 						$("' . $latitude_selector . '").val("' . $geocode['latitude'] . '");
 						$("' . $longitude_selector . '").val("' . $geocode['longitude'] . '");
 					');
-                    break;
                 } else {
                     $result->script('
 						var longitude = "' . $geocode['longitude'] . '";
@@ -109,8 +108,8 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
     							$("' . $latitude_selector . '").val(latitude);
     							$("' . $longitude_selector . '").val(longitude);
 						});');
-                    break;
                 }
+                break;
             } else {
                 $error = $geocode['status'] . ': ' . $geocode['error'];
             }
@@ -118,13 +117,13 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
             $params = array(
                 'city' => $address['city_name'],
             );
-            if (isset($address['country_name']) && !empty($address['country_name'])) {
+            if (!empty($address['country_name'])) {
                 $params['country'] = $address['country_name'];
             }
-            if (isset($address['state_name']) && !empty($address['state_name'])) {
+            if (!empty($address['state_name'])) {
                 $params['state'] = $address['state_name'];
             }
-            if (isset($location['street']) && !empty($location['street'])) {
+            if (!empty($location['street'])) {
                 $params['street'] = (isset($location['house']) && mb_strlen($location['house'])
                     ? $location['house'] . ' '
                     : ''

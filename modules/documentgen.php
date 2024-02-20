@@ -48,7 +48,7 @@ if (isset($_POST['document'])) {
             'doctype' => $document['type'],
             'planid' => $document['numberplanid'],
         ));
-        $document['number'] = $tmp ? $tmp : 0;
+        $document['number'] = $tmp ?: 0;
     } elseif (!preg_match('/^[0-9]+$/', $document['number'])) {
         $error['number'] = trans('Document number must be an integer!');
     } elseif ($LMS->DocumentExists(array(
@@ -116,7 +116,7 @@ if (isset($_POST['document'])) {
             if ($customerlist = $LMS->GetCustomerList(compact('customergroup', 'customergroupsqlskey'))) {
                 foreach ($customerlist as $idx => $row) {
                     if (!$row['account']) {
-                        $ncustomerlist[] = $customerlist[$idx];
+                        $ncustomerlist[] = $row;
                     }
                 }
 
@@ -158,7 +158,7 @@ if (isset($_POST['document'])) {
             $globalfiles[] = $attachment;
         }
     }
-    if (isset($document['attachments']) && !empty($document['attachments'])) {
+    if (!empty($document['attachments'])) {
         foreach ($document['attachments'] as $attachment => $value) {
             if (isset($engine['attachments'][$attachment])) {
                 $filename = $engine['attachments'][$attachment];
@@ -340,27 +340,27 @@ if (isset($_POST['document'])) {
                     $time,
                     $document['customerid'],
                     Auth::GetCurrentUser(),
-                    $gencust['divisionid'] ? $gencust['divisionid'] : null,
+                    $gencust['divisionid'] ?: null,
                     $gencust['customername'],
-                    $gencust['address'] ? $gencust['address'] : '',
-                    $gencust['zip'] ? $gencust['zip'] : '',
-                    $gencust['city'] ? $gencust['city'] : '',
-                    $gencust['ten'] ? $gencust['ten'] : '',
-                    $gencust['ssn'] ? $gencust['ssn'] : '',
+                    $gencust['address'] ?: '',
+                    $gencust['zip'] ?: '',
+                    $gencust['city'] ?: '',
+                    $gencust['ten'] ?: '',
+                    $gencust['ssn'] ?: '',
                     !empty($document['closed']) ? 1 : 0,
-                    ($division['name'] ? $division['name'] : ''),
-                    ($division['shortname'] ? $division['shortname'] : ''),
-                    ($division['address'] ? $division['address'] : ''),
-                    ($division['city'] ? $division['city'] : ''),
-                    ($division['zip'] ? $division['zip'] : ''),
-                    ($division['countryid'] ? $division['countryid'] : null),
-                    ($division['ten'] ? $division['ten'] : ''),
-                    ($division['regon'] ? $division['regon'] : ''),
-                    ($division['account'] ? $division['account'] : ''),
-                    ($division['inv_header'] ? $division['inv_header'] : ''),
-                    ($division['inv_footer'] ? $division['inv_footer'] : ''),
-                    ($division['inv_author'] ? $division['inv_author'] : ''),
-                    ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
+                    ($division['name'] ?: ''),
+                    ($division['shortname'] ?: ''),
+                    ($division['address'] ?: ''),
+                    ($division['city'] ?: ''),
+                    ($division['zip'] ?: ''),
+                    ($division['countryid'] ?: null),
+                    ($division['ten'] ?: ''),
+                    ($division['regon'] ?: ''),
+                    ($division['account'] ?: ''),
+                    ($division['inv_header'] ?: ''),
+                    ($division['inv_footer'] ?: ''),
+                    ($division['inv_author'] ?: ''),
+                    ($division['inv_cplace'] ?: ''),
                     $fullnumber,
                     empty($document['templ']) ? null : $document['templ'],
             ));
@@ -452,7 +452,7 @@ if (isset($_POST['document'])) {
             $SMARTY->assign('attachment_result', GenerateAttachmentHTML(
                 $template_dir,
                 $engine,
-                isset($document['attachments']) ? $document['attachments'] : array()
+                $document['attachments'] ?? array()
             ));
         }
     }
@@ -508,9 +508,9 @@ if (isset($document['type'])) {
 }
 
 $SMARTY->assign('numberplans', $numberplans);
-$SMARTY->assign('planDocumentType', isset($document['type']) ? $document['type'] : null);
+$SMARTY->assign('planDocumentType', $document['type'] ?? null);
 
-$docengines = GetDocumentTemplates($rights, isset($document['type']) ? $document['type'] : null);
+$docengines = GetDocumentTemplates($rights, $document['type'] ?? null);
 
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());

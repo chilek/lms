@@ -39,12 +39,12 @@ $LMS->InitXajax();
 $LMS->RegisterXajaxFunction(array('getMessageTemplate'));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
-$setwarnings = isset($_POST['setwarnings']) ? $_POST['setwarnings'] : array();
+$setwarnings = $_POST['setwarnings'] ?? array();
 
 if (isset($setwarnings['mcustomerid'])) {
-    $warnon = isset($setwarnings['warnon']) ? $setwarnings['warnon'] : false;
-    $warnoff = isset($setwarnings['warnoff']) ? $setwarnings['warnoff'] : false;
-    $message = isset($setwarnings['message']) ? $setwarnings['message'] : null;
+    $warnon = $setwarnings['warnon'] ?? false;
+    $warnoff = $setwarnings['warnoff'] ?? false;
+    $message = $setwarnings['message'] ?? null;
 
     $msgtmplid = intval($setwarnings['tmplid']);
     $msgtmploper = intval($setwarnings['tmploper']);

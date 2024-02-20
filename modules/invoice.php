@@ -216,11 +216,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
     $SESSION->remove('ilm');
 
     if (isset($_POST['marks'])) {
-        if (isset($_POST['marks']['invoice'])) {
-            $marks = $_POST['marks']['invoice'];
-        } else {
-            $marks = $_POST['marks'];
-        }
+        $marks = $_POST['marks']['invoice'] ?? $_POST['marks'];
     } else {
         $marks = array();
     }
@@ -629,7 +625,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t\t<NazwaKontrahenta>" . escapeJpkText($invoice['name']) . "</NazwaKontrahenta>\n";
                 if ($jpk_vat_version == 3) {
                     $jpk_data .= "\t\t<AdresKontrahenta>" . ($invoice['postoffice'] && $invoice['postoffice'] != $invoice['city'] && $invoice['street'] ? $invoice['city'] . ', ' : '')
-                        . $invoice['address'] . ', ' . (empty($invoice['zip']) ? '' : $invoice['zip'] . ' ') . ($invoice['postoffice'] ? $invoice['postoffice'] : $invoice['city']) . "</AdresKontrahenta>\n";
+                        . $invoice['address'] . ', ' . (empty($invoice['zip']) ? '' : $invoice['zip'] . ' ') . ($invoice['postoffice'] ?: $invoice['city']) . "</AdresKontrahenta>\n";
                 }
                 $jpk_data .= "\t\t<DowodSprzedazy>" . $invoice['fullnumber'] . "</DowodSprzedazy>\n";
                 $jpk_data .= "\t\t<DataWystawienia>" . date('Y-m-d', $invoice['cdate']) . "</DataWystawienia>\n";
@@ -669,7 +665,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                     }
 
                     if ($jpk_vat_version == 4) {
-                        $splitpayment = isset($invoice['splitpayment']) && !empty($invoice['splitpayment']);
+                        $splitpayment = !empty($invoice['splitpayment']);
                         if ($splitpayment) {
                             $jpk_data .= "\t\t<MPP>1</MPP>\n";
                         }
@@ -1048,7 +1044,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             } else {
                 // JPK body positions (invoices)
                 $jpk_data .= "\t<Faktura>\n";
-                $jpk_data .= "\t\t<KodWaluty>" . (isset($invoice['currency']) ? $invoice['currency'] : 'PLN') . "</KodWaluty>\n";
+                $jpk_data .= "\t\t<KodWaluty>" . ($invoice['currency'] ?? 'PLN') . "</KodWaluty>\n";
                 $jpk_data .= "\t\t<P_1>" . date('Y-m-d', $invoice['cdate']) . "</P_1>\n";
                 $invoices[$invoiceid] = $invoice;
                 $jpk_data .= "\t\t<P_2A>" . $invoice['fullnumber'] . "</P_2A>\n";
@@ -1273,7 +1269,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t\t<P_16>false</P_16>\n";
                 $jpk_data .= "\t\t<P_17>false</P_17>\n";
                 $jpk_data .= "\t\t<P_18>" . (isset($invoice['taxest']['-2']['base']) ? 'true' : 'false') . "</P_18>\n";
-                $splitpayment = isset($invoice['splitpayment']) && !empty($invoice['splitpayment']);
+                $splitpayment = !empty($invoice['splitpayment']);
                 $jpk_data .= "\t\t<P_18A>" . ($splitpayment ? 'true' : 'false') . "</P_18A>\n";
                 $jpk_data .= "\t\t<P_19>false</P_19>\n";
                 $jpk_data .= "\t\t<P_20>false</P_20>\n";
@@ -1585,6 +1581,6 @@ if ($jpk) {
     }
 }
 
-if (!$dontpublish && isset($ids) && !empty($ids)) {
+if (!$dontpublish && !empty($ids)) {
     $LMS->PublishDocuments($ids);
 }

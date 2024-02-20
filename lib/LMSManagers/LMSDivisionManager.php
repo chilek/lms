@@ -66,7 +66,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
     {
         extract($params);
 
-        if (!isset($order) || empty($order)) {
+        if (empty($order)) {
             $order = 'shortname,asc';
         }
 
@@ -116,7 +116,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             FROM vdivisions d
             WHERE 1 = 1'
             . ((isset($superuser) && empty($superuser)) || !isset($superuser) ? ' AND id IN (' . $user_divisions . ')' : '')
-            . (isset($exludedDivisions) && !empty($exludedDivisions) ? ' AND id NOT IN (' . $exludedDivisions . ')' : '') .
+            . (!empty($exludedDivisions) ? ' AND id NOT IN (' . $exludedDivisions . ')' : '') .
             ' ORDER BY (CASE WHEN d.label IS NULL THEN d.shortname ELSE d.label END)'
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : '')
@@ -139,8 +139,8 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             'ten'             => $division['ten'],
             'regon'           => $division['regon'],
             'rbe'             => $division['rbe'],
-            'rbename'         => $division['rbename'] ? $division['rbename'] : '',
-            'telecomnumber'   => $division['telecomnumber'] ? $division['telecomnumber'] : '',
+            'rbename'         => $division['rbename'] ?: '',
+            'telecomnumber'   => $division['telecomnumber'] ?: '',
             'bank'            => empty($division['bank']) ? null : $division['bank'],
             'account'         => $division['account'],
             'inv_header'      => $division['inv_header'],
@@ -148,7 +148,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             'inv_author'      => $division['inv_author'],
             'inv_cplace'      => $division['inv_cplace'],
             'inv_paytime'     => $division['inv_paytime'],
-            'inv_paytype'     => $division['inv_paytype'] ? $division['inv_paytype'] : null,
+            'inv_paytype'     => $division['inv_paytype'] ?: null,
             'email'           => empty($division['email']) ? null : $division['email'],
             'phone'           => empty($division['phone']) ? null : $division['phone'],
             'description'     => $division['description'],
@@ -253,9 +253,9 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             'birthdate'   => empty($division['firstname']) || empty($division['lastname']) || empty($division['birthdate']) ? null : $division['birthdate'],
             'ten'         => $division['ten'],
             'regon'       => $division['regon'],
-            'rbe'         => $division['rbe'] ? $division['rbe'] : '',
-            'rbename'     => $division['rbename'] ? $division['rbename'] : '',
-            'telecomnumber'     => $division['telecomnumber'] ? $division['telecomnumber'] : '',
+            'rbe'         => $division['rbe'] ?: '',
+            'rbename'     => $division['rbename'] ?: '',
+            'telecomnumber'     => $division['telecomnumber'] ?: '',
             'bank'            => empty($division['bank']) ? null : $division['bank'],
             'account'     => $division['account'],
             'inv_header'  => $division['inv_header'],
@@ -263,7 +263,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             'inv_author'  => $division['inv_author'],
             'inv_cplace'  => $division['inv_cplace'],
             'inv_paytime' => $division['inv_paytime'],
-            'inv_paytype' => $division['inv_paytype'] ? $division['inv_paytype'] : null,
+            'inv_paytype' => $division['inv_paytype'] ?: null,
             'email'           => empty($division['email']) ? null : $division['email'],
             'phone'           => empty($division['phone']) ? null : $division['phone'],
             'description' => $division['description'],
@@ -308,7 +308,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
     public function checkDivisionsAccess($params = array())
     {
         extract($params);
-        $user_id = (isset($userid) ? $userid : Auth::GetCurrentUser());
+        $user_id = ($userid ?? Auth::GetCurrentUser());
         $user_divisions = $this->GetDivisions(array('userid' => $user_id));
 
         if (isset($divisions)) {

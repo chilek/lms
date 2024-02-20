@@ -62,7 +62,7 @@ $backto = $SESSION->get_history_entry('m=eventlist');
 $backid = $SESSION->get('backid');
 $backurl = '?' . $backto . (empty($backid) ? '' : '#' . $backid);
 
-$action = isset($_GET['action']) ? $_GET['action'] : null;
+$action = $_GET['action'] ?? null;
 switch ($action) {
     case 'open':
         if (empty($event['closeddate']) || ($event['closed'] == 1 && $aee && ($now - $event['closeddate'] < $aee)) || $superuser) {
@@ -77,11 +77,10 @@ switch ($action) {
         $SESSION->remove_history_entry();
         if (isset($_GET['ticketid'])) {
             $DB->Execute('UPDATE events SET closed = 1, closeduserid = ?, closeddate = ?NOW? WHERE closed = 0 AND ticketid = ?', array(Auth::GetCurrentUser(), $_GET['ticketid']));
-            $SESSION->redirect($backurl);
         } else {
             $DB->Execute('UPDATE events SET closed = 1, closeduserid = ?, closeddate = ?NOW? WHERE id = ?', array(Auth::GetCurrentUser(), $_GET['id']));
-            $SESSION->redirect($backurl);
         }
+        $SESSION->redirect($backurl);
         break;
     case 'assign':
         if ($event['closed'] != 1 || ($event['closed'] == 1 && $aee && (($now - $event['closeddate']) < $aee)) || $superuser) {
@@ -180,7 +179,7 @@ if (isset($_POST['event'])) {
             'begintime' => $begintime,
             'enddate' => $enddate,
             'endtime' => $endtime,
-            'users' => isset($event['userlist']) ? $event['userlist'] : array(),
+            'users' => $event['userlist'] ?? array(),
             'ignoredevent' => $event['id'],
         )))) {
         $users_by_id = Utils::array_column($userlist, 'rname', 'id');
@@ -224,7 +223,7 @@ if (isset($_POST['event'])) {
         $event['private'] = isset($event['private']) ? 1 : 0;
 
         $event['address_id'] = !isset($event['address_id']) || $event['address_id'] == -1 ? null : $event['address_id'];
-        $event['nodeid'] = !isset($event['nodeid']) || empty($event['nodeid']) ? null : $event['nodeid'];
+        $event['nodeid'] = empty($event['nodeid']) ? null : $event['nodeid'];
 
         $event['date'] = $date;
         $event['begintime'] = $begintime;

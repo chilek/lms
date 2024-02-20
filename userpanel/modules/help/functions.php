@@ -82,11 +82,9 @@ function fetch_questions($id)
     $table = array();
     if ($questions = get_questions($id)) {
         foreach ($questions as $question) {
+            $table[$question['id']] = $question['title'];
             if (are_questions($question['id'])) {
-                $table[$question['id']] = $question['title'];
                 $table['next'.$question['id']] = fetch_questions($question['id']);
-            } else {
-                $table[$question['id']] = $question['title'];
             }
         }
     }
@@ -96,11 +94,7 @@ function fetch_questions($id)
 function module_main()
 {
     global $SMARTY,$_GET;
-    if (isset($_GET['pr'])) {
-        $problem = $_GET['pr'];
-    } else {
-        $problem = get_first_solution();
-    }
+    $problem = $_GET['pr'] ?? get_first_solution();
     $solution = get_solution($problem);
     $questions = get_questions($problem);
 

@@ -58,7 +58,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
                 "%s,%s,\"%s\",\"%s\"\r\n",
                 date('Y-m-d', $row['date']),
                 str_replace(',', '.', $row['value']),
-                str_replace($search, $replace, $row['customername'] ? $row['customername'] : $row['customer']),
+                str_replace($search, $replace, $row['customername'] ?: $row['customer']),
                 str_replace($search, $replace, $row['description'])
             );
         }
@@ -82,7 +82,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
                 "%s\t%s\t%s\t%s\r\n",
                 date('Y-m-d', $row['date']),
                 str_replace(',', '.', $row['value']),
-                $row['customername'] ? $row['customername'] : $row['customer'],
+                $row['customername'] ?: $row['customer'],
                 str_replace("\n", ' ', $row['description'])
             );
         }
@@ -299,7 +299,7 @@ $sourcefiles = $DB->GetAll('SELECT s.*, u.name AS username,
     ORDER BY s.idate DESC');
 
 $SMARTY->assign('divisions', $divisions);
-$SMARTY->assign('listdata', isset($listdata) ? $listdata : null);
+$SMARTY->assign('listdata', $listdata ?? null);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('sourcefiles', $sourcefiles);
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {

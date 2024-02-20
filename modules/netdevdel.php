@@ -61,7 +61,7 @@ if ($LMS->CountNetDevLinks($id) > 0) {
             'body' => $body,
         )
     );
-    if (!isset($hook_data['abort']) || empty($hook_data['abort'])) {
+    if (empty($hook_data['abort'])) {
         $result = $LMS->DeleteNetDev($id);
 
         $hook_data = $LMS->executeHook(

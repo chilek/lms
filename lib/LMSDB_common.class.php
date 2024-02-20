@@ -101,13 +101,10 @@ abstract class LMSDB_common implements LMSDBInterface
         });
 
         // database initialization
+        set_error_handler(null);
         if ($this->_driver_connect($dbhost, $dbuser, $dbpasswd, $dbname)) {
-            set_error_handler(null);
-
             return $this->_dblink;
         } else {
-            set_error_handler(null);
-
             $this->errors[] = array(
                 'query' => 'database connect',
                 'error' => $this->_driver_geterror(),
@@ -854,7 +851,7 @@ abstract class LMSDB_common implements LMSDBInterface
 
         $this->EnableWarnings();
 
-        return isset($lastupgrade) ? $lastupgrade : $dbver;
+        return $lastupgrade ?? $dbver;
     }
 
     public function getUpgradeErrors()

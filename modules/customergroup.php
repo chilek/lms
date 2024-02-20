@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$action = isset($_GET['action']) ? $_GET['action'] : '';
+$action = $_GET['action'] ?? '';
 
 if ($action == 'delete') {
     if (isset($_GET['customergroupid'])) {
@@ -32,7 +32,7 @@ if ($action == 'delete') {
     } elseif (isset($_POST['markedcustomergroupid'])) {
         $customergroupids = $_POST['markedcustomergroupid'];
     }
-    if (isset($customergroupids) && !empty($customergroupids)) {
+    if (!empty($customergroupids)) {
         foreach ($customergroupids as $customergroupid) {
             $LMS->CustomerAssignmentDelete(
                 array('customerid' => intval($_GET['id']),
@@ -59,11 +59,7 @@ if ($action == 'delete') {
         }
     }
 } elseif ($action == 'replace') {
-    if (isset($_POST['markedcustomergroupid'])) {
-        $customergroupids = $_POST['markedcustomergroupid'];
-    } else {
-        $customergroupids = array();
-    }
+    $customergroupids = $_POST['markedcustomergroupid'] ?? array();
 
     $groupids = $_POST['customergroupid'];
     if (!is_array($groupids)) {
@@ -71,7 +67,7 @@ if ($action == 'delete') {
     }
     $cid = intval($_GET['id']);
 
-    if (isset($customergroupids) && !empty($customergroupids)) {
+    if (!empty($customergroupids)) {
         foreach ($customergroupids as $customergroupid) {
             $LMS->CustomerAssignmentDelete(array(
                 'customerid' => $cid,
@@ -94,7 +90,7 @@ if ($action == 'delete') {
     }
 } elseif (!empty($_POST['setwarnings'])) {
     $setwarnings = $_POST['setwarnings'];
-    $oper = isset($_GET['oper']) ? $_GET['oper'] : '';
+    $oper = $_GET['oper'] ?? '';
 
     if (isset($setwarnings['customergroup'])) {
         if (is_array($setwarnings['customergroup'])) {
@@ -103,7 +99,7 @@ if ($action == 'delete') {
             $groups = array($setwarnings['customergroup']);
         }
         $groups = Utils::filterIntegers($groups);
-    } elseif (isset($setwarnings['newcustomergroup']) && !empty($setwarnings['newcustomergroup'])) {
+    } elseif (!empty($setwarnings['newcustomergroup'])) {
         $groups = array($LMS->CustomergroupAdd(array(
             'name' => $setwarnings['newcustomergroup'],
             'description' => '',

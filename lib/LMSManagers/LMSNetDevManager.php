@@ -618,7 +618,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
     public function NetDevExists($id)
     {
-        return ($this->db->GetOne('SELECT * FROM netdevices WHERE id=?', array($id)) ? true : false);
+        return (bool)$this->db->GetOne('SELECT * FROM netdevices WHERE id=?', array($id));
     }
 
     public function getNetDevByMac($mac)
@@ -736,22 +736,10 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         if (empty($order)) {
             $order = 'name,asc';
         }
-        if (isset($search['count'])) {
-            $count = $search['count'];
-        } else {
-            $count = false;
-        }
-        if (isset($search['offset'])) {
-            $offset = $search['offset'];
-        } else {
-            $offset = null;
-        }
-        if (isset($search['limit'])) {
-            $limit = $search['limit'];
-        } else {
-            $limit = null;
-        }
-        $short = isset($search['short']) && !empty($search['short']);
+        $count = $search['count'] ?? false;
+        $offset = $search['offset'] ?? null;
+        $limit = $search['limit'] ?? null;
+        $short = !empty($search['short']);
 
         list($order, $direction) = sscanf($order, '%[^,],%s');
 
@@ -952,7 +940,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                         . $netdev['borough_ident'] . $netdev['borough_type'];
                 $netdev['simc'] = empty($netdev['city_ident']) ? null : $netdev['city_ident'];
                 $netdev['ulic'] = empty($netdev['street_ident']) ? null : $netdev['street_ident'];
-                $netdev['filecontainers'] = isset($filecontainers[$netdev['id']]) ? $filecontainers[$netdev['id']] : array();
+                $netdev['filecontainers'] = $filecontainers[$netdev['id']] ?? array();
                 $netdev['lastonlinedate'] = lastonline_date($netdev['lastonline']);
             }
             unset($netdev);
@@ -1409,7 +1397,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         if (!empty($list)) {
             foreach ($list as &$model) {
                 $model['customlinks'] = array();
-                $model['filecontainers'] = isset($filecontainers[$model['id']]) ? $filecontainers[$model['id']] : array();
+                $model['filecontainers'] = $filecontainers[$model['id']] ?? array();
             }
             unset($model);
         }

@@ -184,9 +184,9 @@ if (isset($_GET['old_tab_id'], $_GET['tab_id'], $_POST['old_history_entry'], $_P
     && preg_match('/^[0-9]+$/', $_GET['tab_id'])) {
     $SESSION->historyQuirks(array(
         'old_tab_id' => $_GET['old_tab_id'],
-        'old_history_entry' => isset($_POST['old_history_entry']) ? $_POST['old_history_entry'] : null,
+        'old_history_entry' => $_POST['old_history_entry'] ?? null,
         'tab_id' => $_GET['tab_id'],
-        'history_entry' => isset($_POST['history_entry']) ? $_POST['history_entry'] : null,
+        'history_entry' => $_POST['history_entry'] ?? null,
     ));
     //$SESSION->close();
     header('Content-Type: application/json');
@@ -230,8 +230,8 @@ $layout['hostname'] = hostname();
 $layout['lmsv'] = LMS::SOFTWARE_VERSION;
 $layout['lmsvr'] = LMS::getSoftwareRevision();
 $layout['dberrors'] = &$DB->GetErrors();
-$layout['dbdebug'] = isset($_DBDEBUG) ? $_DBDEBUG : false;
-$layout['popup'] = isset($_GET['popup']) ? true : false;
+$layout['dbdebug'] = $_DBDEBUG ?? false;
+$layout['popup'] = isset($_GET['popup']);
 $layout['url'] = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
     . $_SERVER['HTTP_HOST']
     . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1);
@@ -427,7 +427,7 @@ if ($AUTH->islogged) {
 
                 // persister filter apply
                 if (isset($_GET['persistent-filter'])) {
-                    $filterId = isset($_GET['filter-id']) ? $_GET['filter-id'] : null;
+                    $filterId = $_GET['filter-id'] ?? null;
                     $filter = $SESSION->getPersistentFilter(
                         $_GET['persistent-filter'],
                         null,
@@ -440,7 +440,7 @@ if ($AUTH->islogged) {
                         $SESSION->saveFilter($filter);
                     }
                 }
-                $filter = $SESSION->getFilter(isset($_GET['module-filter']) ? $_GET['module-filter'] : null);
+                $filter = $SESSION->getFilter($_GET['module-filter'] ?? null);
                 $SMARTY->assignByRef('filter', $filter);
 
                 // restore selected persistent filter info
@@ -478,7 +478,7 @@ if ($AUTH->islogged) {
             } else {
                 // persistent filter ajax management
                 if (isset($_GET['persistent-filter']) && isset($_GET['action'])) {
-                    $filterId = isset($_POST['filter-id']) ? $_POST['filter-id'] : null;
+                    $filterId = $_POST['filter-id'] ?? null;
                     switch ($_GET['action']) {
                         case 'update':
                             $oldFilter = $SESSION->getFilter(null, $filterId);

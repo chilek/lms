@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$addbalance = isset($_POST['addbalance']) ? $_POST['addbalance'] : (isset($_POST['instantpayment']) ? $_POST['instantpayment'] : null);
+$addbalance = $_POST['addbalance'] ?? ($_POST['instantpayment'] ?? null);
 if (empty($addbalance)) {
     $SESSION->redirect_to_history_entry();
 }
@@ -58,7 +58,7 @@ if ($currenttime) {
     $SESSION->save('addbt', $addbalance['time']);
 }
 
-$SESSION->save('addbtax', isset($addbalance['taxid']) ? $addbalance['taxid'] : 0);
+$SESSION->save('addbtax', $addbalance['taxid'] ?? 0);
 
 if (!isset($addbalance['type'])) {
     $addbalance['type'] = 1;

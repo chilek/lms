@@ -62,12 +62,12 @@ if (isset($_GET['action']) && $_GET['action'] == 'eventmove') {
     die('[]');
 }
 
-if (isset($filter['edate']) && !empty($filter['edate'])) {
+if (!empty($filter['edate'])) {
     list ($filter['year'], $filter['month'], $filter['day']) = explode('/', $filter['edate']);
 }
 
 if (!isset($_POST['loginform']) && !empty($_POST)) {
-    list ($filter['year'], $filter['month'], $filter['day']) = explode('/', isset($_POST['date']) && !empty($_POST['date']) ? $_POST['date'] : date('Y/m/d'));
+    list ($filter['year'], $filter['month'], $filter['day']) = explode('/', !empty($_POST['date']) ? $_POST['date'] : date('Y/m/d'));
 
     if (!empty($filter['edate'])) {
         if (empty($filter['month'])) {
@@ -85,11 +85,11 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
     }
 
     $filter['userand'] = isset($_POST['userand']) ? intval($_POST['userand']) : 0;
-    $filter['userid'] = isset($_POST['userid']) ? $_POST['userid'] : array();
-    $filter['customerid'] = isset($_POST['customerid']) ? $_POST['customerid'] : null;
-    $filter['type'] = isset($_POST['type']) ? $_POST['type'] : null;
+    $filter['userid'] = $_POST['userid'] ?? array();
+    $filter['customerid'] = $_POST['customerid'] ?? null;
+    $filter['type'] = $_POST['type'] ?? null;
     $filter['privacy'] = isset($_POST['privacy']) ? intval($_POST['privacy']) : null;
-    $filter['closed'] = isset($_POST['closed']) ? $_POST['closed'] : null;
+    $filter['closed'] = $_POST['closed'] ?? null;
 
     if (isset($_POST['switchToTimetable'])) {
         $SESSION->save('schedulerFiler', $filter, true);
@@ -151,10 +151,10 @@ if (isset($filter['year']) && isset($filter['month']) && isset($filter['day'])) 
 }
 
 $SESSION->save('eld', array(
-    'year' => isset($filter['year']) ? $filter['year'] : null,
-    'month' => isset($filter['month']) ? $filter['month'] : null,
-    'day' => isset($filter['day']) ? $filter['day'] : null,
-    'edate' => isset($filter['edate']) ? $filter['edate'] : null,
+    'year' => $filter['year'] ?? null,
+    'month' => $filter['month'] ?? null,
+    'day' => $filter['day'] ?? null,
+    'edate' => $filter['edate'] ?? null,
 ));
 
 $SESSION->saveFilter($filter, null, array('year', 'month', 'day', 'edate'), true);
@@ -177,7 +177,7 @@ $filter['forward'] = $default_forward_day_limit;
 $eventlist = $LMS->GetEventList($filter);
 $eventlistIds = Utils::array_column($eventlist, 'id', 'id');
 
-$userid = isset($filter['userid']) ? $filter['userid'] : null;
+$userid = $filter['userid'] ?? null;
 $userlistcount = empty($userid) ? 0 : count($userid);
 
 $params['short'] = 1;
@@ -194,7 +194,7 @@ if (is_array($userid) && in_array('-1', $userid)) {
 }
 
 $usereventlist = array();
-if (!isset($userid) || empty($userid)) {
+if (empty($userid)) {
     unset($filter['userid']);
     foreach ($userlist as $user) {
         $filter['userid'] = $user['id'];
@@ -386,6 +386,6 @@ $SMARTY->assign(array(
     'date' => $date,
     'error' => $error,
     'customerlist' => ($big_networks ? null : $LMS->GetCustomerNames()),
-    'getHolidays' => getHolidays(isset($year) ? $year : null)
+    'getHolidays' => getHolidays($year ?? null)
 ));
 $SMARTY->display('event/eventschedule.html');

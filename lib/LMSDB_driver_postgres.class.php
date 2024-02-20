@@ -196,7 +196,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
     public function _driver_fetchrow_assoc($result = null)
     {
         if (!$this->_error) {
-            return @pg_fetch_array($result ? $result : $this->_result, null, PGSQL_ASSOC);
+            return @pg_fetch_array($result ?: $this->_result, null, PGSQL_ASSOC);
         } else {
             return false;
         }

@@ -60,7 +60,7 @@ if (isset($_GET['fromuser'])) {
 // end of ajax request handlers
 
 if (isset($_GET['removetrusteddevices'])) {
-    $AUTH->removeTrustedDevices($id, isset($_GET['deviceid']) ? $_GET['deviceid'] : null);
+    $AUTH->removeTrustedDevices($id, $_GET['deviceid'] ?? null);
     $SESSION->redirect($_SERVER['HTTP_REFERER']);
 }
 
@@ -74,7 +74,7 @@ $user_divisions = array_keys($LMS->GetDivisions(array('userid' => $id)));
 
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'usercopypermissions.inc.php');
 
-$userinfo = isset($_POST['userinfo']) ? $_POST['userinfo'] : array();
+$userinfo = $_POST['userinfo'] ?? array();
 
 if ($userinfo) {
     $acl = $_POST['acl'];
@@ -211,7 +211,7 @@ if ($userinfo) {
         $SMARTY->assign('selectedusergroups', !empty($userinfo['usergroups']) ? array_flip($userinfo['usergroups']) : array());
 
         $customergroups = $LMS->getAllCustomerGroups();
-        $SMARTY->assign('selectedgroups', array_flip(isset($userinfo['customergroups']) ? $userinfo['customergroups'] : array()));
+        $SMARTY->assign('selectedgroups', array_flip($userinfo['customergroups'] ?? array()));
 
         $access = AccessRights::getInstance();
         $accesslist = $access->getArray(array_keys($acl));

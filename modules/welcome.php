@@ -73,11 +73,11 @@ if (ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkCon
     $SMARTY->assign('customerstats', $LMS->CustomerStats());
     $SMARTY->assign('nodestats', $LMS->NodeStats());
     $documentsnotapproved=$DB->GetOne('SELECT COUNT(id) AS sum FROM documents WHERE type < 0 AND closed = 0');
-    $SMARTY->assign('documentsnotapproved', ( $documentsnotapproved ? $documentsnotapproved : 0));
+    $SMARTY->assign('documentsnotapproved', ( $documentsnotapproved ?: 0));
 
     if (file_exists(ConfigHelper::getConfig('directories.userpanel_dir') . DIRECTORY_SEPARATOR . 'index.php')) {
         $customerschanges=$DB->GetOne('SELECT COUNT(id) FROM up_info_changes');
-        $SMARTY->assign('customerschanges', ( $customerschanges ? $customerschanges : 0));
+        $SMARTY->assign('customerschanges', ( $customerschanges ?: 0));
     }
 }
 

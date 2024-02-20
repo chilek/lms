@@ -197,15 +197,13 @@ if ($backup || $archive) {
     $aggregate_documents = ConfigHelper::checkConfig('sendinvoices.aggregate_documents');
     $dsn_email = ConfigHelper::getConfig('sendinvoices.dsn_email', '', true);
     $mdn_email = ConfigHelper::getConfig('sendinvoices.mdn_email', '', true);
-    $part_size = isset($options['part-size']) ? $options['part-size'] : ConfigHelper::getConfig('sendinvoices.limit', '0');
+    $part_size = $options['part-size'] ?? ConfigHelper::getConfig('sendinvoices.limit', '0');
 
     $use_all_accounts = ConfigHelper::checkConfig('sendinvoices.use_all_accounts');
     $use_only_alternative_accounts = ConfigHelper::checkConfig('sendinvoices.use_only_alternative_accounts');
 
     $allowed_customer_status = Utils::determineAllowedCustomerStatus(
-        isset($options['customer-status'])
-            ? $options['customer-status']
-            : ConfigHelper::getConfig('sendinvoices.allowed_customer_status', ''),
+        $options['customer-status'] ?? ConfigHelper::getConfig('sendinvoices.allowed_customer_status', ''),
         -1
     );
 
@@ -215,11 +213,7 @@ if ($backup || $archive) {
         $customer_status_condition = ' AND c.status IN (' . implode(',', $allowed_customer_status) . ')';
     }
 
-    if (isset($options['interval'])) {
-        $interval = $options['interval'];
-    } else {
-        $interval = ConfigHelper::getConfig('sendinvoices.interval', 0);
-    }
+    $interval = $options['interval'] ?? ConfigHelper::getConfig('sendinvoices.interval', 0);
     if ($interval == 'random') {
         $interval = -1;
     } else {
@@ -235,14 +229,14 @@ if ($backup || $archive) {
         die("Fatal error: smtp_auth setting not supported! Can't continue, exiting." . PHP_EOL);
     }
 
-    $part_number = isset($options['part-number']) ? $options['part-number'] : (isset($options['fakehour']) ? $options['fakehour'] : null);
+    $part_number = $options['part-number'] ?? ($options['fakehour'] ?? null);
     if (isset($part_number)) {
         $part_number = intval($part_number);
     } else {
         $part_number = intval(date('H', time()));
     }
 
-    $extrafile = isset($options['extra-file']) ? $options['extra-file'] : null;
+    $extrafile = $options['extra-file'] ?? null;
     if ($extrafile && !is_readable($extrafile)) {
         die("Unable to read additional file [$extrafile]!" . PHP_EOL);
     }

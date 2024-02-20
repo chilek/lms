@@ -160,7 +160,7 @@ class ConfigHelper
     public static function checkPrivilege($privilege, $checkIfSuperUser = true)
     {
         if ($checkIfSuperUser && self::checkConfig('privileges.superuser')) {
-            return preg_match('/^hide_/', $privilege) ? false : true;
+            return !preg_match('/^hide_/', $privilege);
         }
         return self::checkConfig("privileges.$privilege");
     }

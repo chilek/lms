@@ -102,7 +102,6 @@ class LMSPluginManager extends Subject implements SubjectInterface
                 $this->new_style_plugins[$plugin_name] = $plugin_info;
             } else {
                 writesyslog("Unknown plugin $plugin_name at position " . (empty($position) ? 'unknown' : $position), LOG_ERR);
-                continue;
             }
         }
 

@@ -272,9 +272,9 @@ function makemap(&$map, &$seen, $device = 0, $x = 500, $y = 500, $parent = 0)
 
 $layout['pagetitle'] = trans('Network Map');
 
-$graph = isset($_GET['graph']) ? $_GET['graph'] : '';
-$start = isset($_GET['start']) ? $_GET['start'] : 0;
-$mini = isset($_GET['mini']) ? true : false;
+$graph = $_GET['graph'] ?? '';
+$start = $_GET['start'] ?? 0;
+$mini = isset($_GET['mini']);
 
 $minx = 0;
 $maxx = 0;
@@ -309,15 +309,15 @@ if ($type == 'openlayers') {
 
     if (isset($_GET['netdevid'])) {
         $netdevid = intval($_GET['netdevid']);
-        $SMARTY->assign('lon', isset($devices[$netdevid]['lon']) ? $devices[$netdevid]['lon'] : null);
-        $SMARTY->assign('lat', isset($devices[$netdevid]['lat']) ? $devices[$netdevid]['lat'] : null);
+        $SMARTY->assign('lon', $devices[$netdevid]['lon'] ?? null);
+        $SMARTY->assign('lat', $devices[$netdevid]['lat'] ?? null);
     } else if (isset($_GET['nodeid'])) {
         $nodeid = intval($_GET['nodeid']);
-        $SMARTY->assign('lon', isset($nodes[$nodeid]['lon']) ? $nodes[$nodeid]['lon'] : null);
-        $SMARTY->assign('lat', isset($nodes[$nodeid]['lat']) ? $nodes[$nodeid]['lat'] : null);
+        $SMARTY->assign('lon', $nodes[$nodeid]['lon'] ?? null);
+        $SMARTY->assign('lat', $nodes[$nodeid]['lat'] ?? null);
     } else {
-        $SMARTY->assign('lon', isset($_GET['lon']) ? $_GET['lon'] : null);
-        $SMARTY->assign('lat', isset($_GET['lat']) ? $_GET['lat'] : null);
+        $SMARTY->assign('lon', $_GET['lon'] ?? null);
+        $SMARTY->assign('lat', $_GET['lat'] ?? null);
     }
 
     $SMARTY->assign('type', $type);
@@ -383,7 +383,7 @@ if ($type == 'openlayers') {
     
     $deviceslist = $DB->GetAll('SELECT id, name FROM netdevices ORDER BY name ASC');
     
-    $SMARTY->assign('devicemap', isset($devicemap) ? $devicemap : null);
+    $SMARTY->assign('devicemap', $devicemap ?? null);
     $SMARTY->assign('nodemap', $nodemap);
     $SMARTY->assign('deviceslist', $deviceslist);
     $SMARTY->assign('start', $start);
@@ -468,13 +468,11 @@ if ($type == 'openlayers') {
             $dst_py = (($dst_cely * $cellh) + $celltmargin);
             if (! $link['type']) {
                 $connections->setLine(1, 0, 128, 0);
-                $connections->movePenTo($src_px+8, $src_py+8);
-                $connections->drawLineTo($dst_px+8, $dst_py+8);
             } else {
                 $connections->setLine(1, 0, 200, 255);
-                $connections->movePenTo($src_px+8, $src_py+8);
-                $connections->drawLineTo($dst_px+8, $dst_py+8);
             }
+            $connections->movePenTo($src_px+8, $src_py+8);
+            $connections->drawLineTo($dst_px+8, $dst_py+8);
         }
     }
 
@@ -490,13 +488,11 @@ if ($type == 'openlayers') {
             $dst_py = (($dst_cely * $cellh) + $celltmargin);
             if ($node['linktype']=="0") {
                 $connections->setLine(1, 255, 0, 0);
-                $connections->movePenTo($src_px+4, $src_py+4);
-                $connections->drawLineTo($dst_px+4, $dst_py+4);
             } else {
                 $connections->setLine(1, 0, 200, 255);
-                $connections->movePenTo($src_px+4, $src_py+4);
-                $connections->drawLineTo($dst_px+4, $dst_py+4);
             }
+            $connections->movePenTo($src_px+4, $src_py+4);
+            $connections->drawLineTo($dst_px+4, $dst_py+4);
         }
     }
 
@@ -682,10 +678,10 @@ if ($type == 'openlayers') {
     $links = $DB->GetAll('SELECT src, dst, type FROM netlinks');
     if ($links) {
         foreach ($links as $link) {
-            $src_celx = isset($devicemap[$link['src']]['x']) ? $devicemap[$link['src']]['x'] : 0;
-            $src_cely = isset($devicemap[$link['src']]['y']) ? $devicemap[$link['src']]['y'] : 0;
-            $dst_celx = isset($devicemap[$link['dst']]['x']) ? $devicemap[$link['dst']]['x'] : 0;
-            $dst_cely = isset($devicemap[$link['dst']]['y']) ? $devicemap[$link['dst']]['y'] : 0;
+            $src_celx = $devicemap[$link['src']]['x'] ?? 0;
+            $src_cely = $devicemap[$link['src']]['y'] ?? 0;
+            $dst_celx = $devicemap[$link['dst']]['x'] ?? 0;
+            $dst_cely = $devicemap[$link['dst']]['y'] ?? 0;
             $src_px = (($src_celx * $cellw) + $celllmargin);
             $src_py = (($src_cely * $cellh) + $celltmargin);
             $dst_px = (($dst_celx * $cellw) + $celllmargin);

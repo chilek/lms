@@ -121,7 +121,7 @@ class LMSSmartyPlugins
     public static function currencySelectionFunction(array $params, $template)
     {
         $elemid = isset($params['elemid']) ? 'id="' . $params['elemid'] . '"' : null;
-        $elementname = isset($params['elementname']) ? $params['elementname'] : 'currency';
+        $elementname = $params['elementname'] ?? 'currency';
         $selected = isset($params['selected']) && isset($GLOBALS['CURRENCIES'][$params['selected']])
             ? $params['selected'] : null;
         $defaultSelected = Localisation::getCurrentCurrency();
@@ -148,7 +148,7 @@ class LMSSmartyPlugins
             }
             $result .= '</select>';
         } else {
-            $lockedSelected = ($selected ? $selected : $defaultSelected);
+            $lockedSelected = ($selected ?: $defaultSelected);
             $result = $lockedSelected . '<input type="hidden" name="' . $elementname . '"'
                 . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . ' value="'
                 . $lockedSelected . '">';
@@ -168,15 +168,15 @@ class LMSSmartyPlugins
             $params = array();
         }
 
-        $label = isset($params['label']) ? $params['label'] : null;
-        $name = isset($params['name']) ? $params['name'] : 'division';
+        $label = $params['label'] ?? null;
+        $name = $params['name'] ?? 'division';
         $shortname = !empty($params['shortname']);
-        $id = isset($params['id']) ? $params['id'] : $name;
+        $id = $params['id'] ?? $name;
         $icon = empty($params['icon']) ? null : $params['icon'];
-        $selected = isset($params['selected']) ? $params['selected'] : null;
-        $superuser = isset($params['superuser']) && !empty($params['superuser']) ? $params['superuser'] : null;
-        $onchange = isset($params['onchange']) && !empty($params['onchange']) ? $params['onchange'] : null;
-        $tip = trans(isset($params['tip']) ? $params['tip'] : 'Select division');
+        $selected = $params['selected'] ?? null;
+        $superuser = !empty($params['superuser']) ? $params['superuser'] : null;
+        $onchange = !empty($params['onchange']) ? $params['onchange'] : null;
+        $tip = trans($params['tip'] ?? 'Select division');
 
         if (isset($user_divisions) && empty($user_divisions)) {
             if ($force_global_division_context) {
@@ -239,9 +239,9 @@ class LMSSmartyPlugins
 
         $customername = !isset($params['customername']) || $params['customername'];
 
-        $form = isset($params['form']) ? $params['form'] : null;
+        $form = $params['form'] ?? null;
         $icon = empty($params['icon']) ? null : $params['icon'];
-        $trigger = isset($params['trigger']) ? $params['trigger'] : 'customerid';
+        $trigger = $params['trigger'] ?? 'customerid';
 
         if (isset($params['selected']) && !preg_match('/^[0-9]+$/', $params['selected'])) {
             $params['selected'] = '';
@@ -309,10 +309,10 @@ class LMSSmartyPlugins
         }
 
         $result .= '<input type="text" name="' . $params['inputname'] . '"' . (empty($params['selected']) ? '' : ' value="'
-            . (isset($params['selected']) ? $params['selected'] : '') . '"')
+            . ($params['selected'] ?? '') . '"')
             . ' class="lms-ui-customer-select-customerid"'
             . ' data-default-value="' . (isset($params['default_value']) ? htmlspecialchars($params['default_value']) : '') . '"'
-            . ' data-prev-value="' . (isset($params['selected']) ? $params['selected'] : '')
+            . ' data-prev-value="' . ($params['selected'] ?? '')
             . '" size="5"';
 
         if (isset($form)) {
@@ -349,7 +349,7 @@ class LMSSmartyPlugins
                 . (isset($form) ? ' form="' . $form . '"' : '')
                 . ' ' . self::tipFunction(
                     array(
-                        'text' => isset($params['inputtip']) ? $params['inputtip'] : 'Search for customer',
+                        'text' => $params['inputtip'] ?? 'Search for customer',
                         'trigger' => $trigger,
                         'class' => 'lms-ui-customer-select-suggestion-input lms-ui-autogrow'
                     ),
@@ -399,9 +399,9 @@ class LMSSmartyPlugins
             }
         }
 
-        $form = isset($params['form']) ? $params['form'] : null;
+        $form = $params['form'] ?? null;
         $accept = !empty($params['accept']) ? $params['accept'] : null;
-        $multiple = isset($params['multiple']) ? ConfigHelper::checkValue($params['multiple']) : true;
+        $multiple = !isset($params['multiple']) || ConfigHelper::checkValue($params['multiple']);
 
         $image_resize = !isset($params['image_resize']) || !empty($params['image_resize']);
 
@@ -454,7 +454,7 @@ class LMSSmartyPlugins
 			<div class="fileupload-status lms-ui-error bold">
 			</div>
 			<input type="hidden" class="fileupload-tmpdir" name="fileupload[' . $id . '-tmpdir]" value="'
-            . (isset($fileupload[$id . '-tmpdir']) ? $fileupload[$id . '-tmpdir'] : '')
+            . ($fileupload[$id . '-tmpdir'] ?? '')
             . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
 		</div>';
         $result .= '<script>
@@ -543,7 +543,7 @@ class LMSSmartyPlugins
               <td>' . trans('Name') . '</td>
               <td>
                   <input type="text"   value="' . (!empty($params['location_name']) ? htmlspecialchars($params['location_name']) : '' ) . '" name="' . $input_name_location . '" size="' . self::LOCATION_BOX_INPUT_SIZE . '" data-address="location-name">
-                  <input type="hidden" value="' . (isset($params['location']) ? $params['location'] : '') . '" name="' . $input_name . '" data-address="location">
+                  <input type="hidden" value="' . ($params['location'] ?? '') . '" name="' . $input_name . '" data-address="location">
               </td>
           </tr>';
 
@@ -713,9 +713,9 @@ class LMSSmartyPlugins
         }
 
         echo '<div class="location-box-expandable"'
-            . ' data-node-use-counter="' . (isset($params['data']['node_use_counter']) ? $params['data']['node_use_counter'] : '0') . '"'
-            . ' data-netdev-use-counter="' . (isset($params['data']['netdev_use_counter']) ? $params['data']['netdev_use_counter'] : '0') . '"'
-            . ' data-netnode-use-counter="' . (isset($params['data']['netnode_use_counter']) ? $params['data']['netnode_use_counter'] : '0') . '">';
+            . ' data-node-use-counter="' . ($params['data']['node_use_counter'] ?? '0') . '"'
+            . ' data-netdev-use-counter="' . ($params['data']['netdev_use_counter'] ?? '0') . '"'
+            . ' data-netnode-use-counter="' . ($params['data']['netnode_use_counter'] ?? '0') . '">';
 
         $uid = uniqid();
         $location_str = isset($params['data']['location_address_type']) && $params['data']['location_address_type'] == BILLING_ADDRESS ? ''
@@ -927,18 +927,18 @@ class LMSSmartyPlugins
     public static function boxRowBlock($params, $content, $template, $repeat)
     {
         if (!$repeat) {
-            $id = isset($params['id']) ? $params['id'] : null;
-            $icon = isset($params['icon']) ? $params['icon'] : null;
+            $id = $params['id'] ?? null;
+            $icon = $params['icon'] ?? null;
             // optional - text tip,
             $tip = isset($params['tip']) ? trans($params['tip']) : null;
-            $label = isset($params['label']) ? $params['label'] : null;
-            $labelid = isset($params['labelid']) ? $params['labelid'] : null;
+            $label = $params['label'] ?? null;
+            $labelid = $params['labelid'] ?? null;
             $visible = !isset($params['visible']) || !empty($params['visible']);
-            $class = isset($params['class']) ? $params['class'] : null;
-            $icon_class = isset($params['icon_class']) ? $params['icon_class'] : null;
-            $label_class = isset($params['label_class']) ? $params['label_class'] : null;
-            $field_id = isset($params['field_id']) ? $params['field_id'] : null;
-            $field_class = isset($params['field_class']) ? $params['field_class'] : null;
+            $class = $params['class'] ?? null;
+            $icon_class = $params['icon_class'] ?? null;
+            $label_class = $params['label_class'] ?? null;
+            $field_id = $params['field_id'] ?? null;
+            $field_class = $params['field_class'] ?? null;
 
             return '
 			<div' . ($id ? ' id="' . $id . '"' : '') . ' class="lms-ui-box-row' . ($class ? ' ' . $class : '') . '"'
@@ -969,17 +969,17 @@ class LMSSmartyPlugins
         if (!$repeat) {
             return '<div class="lms-ui-responsive-buttons">' . self::buttonFunction(
                 array(
-                    'type' => isset($params['type']) ? $params['type'] : 'link',
-                    'icon' => isset($params['icon']) ? $params['icon'] : 'additional-selection',
-                    'class' => isset($params['class']) ? $params['class'] : 'lms-ui-dropdown-toggle',
-                    'label' => isset($params['label']) ? $params['label'] : '',
+                    'type' => $params['type'] ?? 'link',
+                    'icon' => $params['icon'] ?? 'additional-selection',
+                    'class' => $params['class'] ?? 'lms-ui-dropdown-toggle',
+                    'label' => $params['label'] ?? '',
                 ),
                 $template
             ) . (isset($params['secondary']) && $params['secondary'] ?
                 self::buttonFunction(
                     array(
                         'type' => 'link',
-                        'icon' => isset($params['icon']) ? $params['icon'] : 'additional-selection',
+                        'icon' => $params['icon'] ?? 'additional-selection',
                         'class' => 'lms-ui-dropdown-toggle secondary',
                         'tip' => trans('more actions'),
                     ),
@@ -996,7 +996,7 @@ class LMSSmartyPlugins
     public static function boxContainerBlock($params, $content, $template, $repeat)
     {
         if (!$repeat) {
-            $id = isset($params['id']) ? $params['id'] : null;
+            $id = $params['id'] ?? null;
 
             $data_attributes = '';
             foreach ($params as $name => $value) {
@@ -1020,7 +1020,7 @@ class LMSSmartyPlugins
     public static function tabContainerBlock($params, $content, $template, $repeat)
     {
         if (!$repeat) {
-            $id = isset($params['id']) ? $params['id'] : null;
+            $id = $params['id'] ?? null;
             $label = isset($params['label']) ? trans($params['label']) : null;
 
             $data_attributes = '';
@@ -1068,11 +1068,11 @@ class LMSSmartyPlugins
     public static function iconFunction(array $params, $template)
     {
         // optional - allow to easily attach event handler in jquery,
-        $id = isset($params['id']) ? $params['id'] : null;
+        $id = $params['id'] ?? null;
         // optional - additional css classes which are appended to class attribute
-        $class = isset($params['class']) && !empty($params['class']) ? $params['class'] : null;
+        $class = !empty($params['class']) ? $params['class'] : null;
         // optional - icon selection transformed to css class
-        $name = isset($params['name']) ? $params['name'] : null;
+        $name = $params['name'] ?? null;
         // optional - text tip,
         $tip = isset($params['tip']) ? trans($params['tip']) : null;
         // optional - text label
@@ -1110,11 +1110,11 @@ class LMSSmartyPlugins
         }
 
         $elemname = $params['elemname'];
-        $id = isset($params['id']) && !empty($params['id']) ? $params['id'] : null;
-        $selected = isset($params['selected']) && !empty($params['selected']) ? $params['selected'] : 0;
-        $tip = isset($params['tip']) ? $params['tip'] : trans('Select payment type');
-        $trigger = isset($params['trigger']) ? $params['trigger'] : 'paytype';
-        $form = isset($params['form']) ? $params['form'] : null;
+        $id = !empty($params['id']) ? $params['id'] : null;
+        $selected = !empty($params['selected']) ? $params['selected'] : 0;
+        $tip = $params['tip'] ?? trans('Select payment type');
+        $trigger = $params['trigger'] ?? 'paytype';
+        $form = $params['form'] ?? null;
 
         $options = '';
         foreach ($paytypes as $key => $item) {
@@ -1131,10 +1131,10 @@ class LMSSmartyPlugins
 
     public static function karmaFunction(array $params, $template)
     {
-        $id = isset($params['id']) ? $params['id'] : 'id';
+        $id = $params['id'] ?? 'id';
         $value = isset($params['value']) ? intval($params['value']) : 0;
-        $title = Localisation::trans(isset($params['title']) ? $params['title'] : 'Counter');
-        $handler = isset($params['handler']) ? $params['handler'] : '';
+        $title = Localisation::trans($params['title'] ?? 'Counter');
+        $handler = $params['handler'] ?? '';
         return '
             <div class="lms-ui-karma-container" data-handler="' . $handler . '" data-id="' . $id . '">
                 <i class="lms-ui-icon-star'  . ($value > 0 ? ' green' : ($value < 0 ? ' red' : '')) . '" title="' . $title . '"></i>
@@ -1149,9 +1149,9 @@ class LMSSmartyPlugins
     {
         static $loaded = false;
 
-        $latitude = isset($params['latitude']) ? $params['latitude'] : null;
-        $longitude = isset($params['longitude']) ? $params['longitude'] : null;
-        $type = isset($params['type']) ? $params['type'] : null;
+        $latitude = $params['latitude'] ?? null;
+        $longitude = $params['longitude'] ?? null;
+        $type = $params['type'] ?? null;
         $nodeid = empty($params['nodeid']) ? null : intval($params['nodeid']);
         $netdevid = empty($params['netdevid']) ? null : intval($params['netdevid']);
         $external = !empty($params['external']);
@@ -1238,16 +1238,16 @@ class LMSSmartyPlugins
         }
 
         if ($disabled) {
-            $data_tip = isset($tip) ? $tip : null;
+            $data_tip = $tip ?? null;
             $tip = trans('No GPS coordinates for this address');
         }
 
         $args = array(
-            'href' => isset($url) ? $url : null,
+            'href' => $url ?? null,
             'type' => 'link',
             'external' => $external,
             'disabled' => $disabled,
-            'icon' => isset($icon) ? $icon : null,
+            'icon' => $icon ?? null,
             'tip' => $tip,
         );
 
@@ -1274,9 +1274,9 @@ class LMSSmartyPlugins
     public static function deadlineSelectionFunction(array $params, $template)
     {
         $name = $params['name'];
-        $id = isset($params['id']) ? $params['id'] : null;
-        $cdate_selector = isset($params['cdate_selector']) ? $params['cdate_selector'] : '#cdate';
-        $value = isset($params['value']) ? $params['value'] : '';
+        $id = $params['id'] ?? null;
+        $cdate_selector = $params['cdate_selector'] ?? '#cdate';
+        $value = $params['value'] ?? '';
         if (!empty($params['value']) && preg_match('/^[0-9]+$/', $value)) {
             $value = date('Y/m/d', $value);
         }
@@ -1289,7 +1289,7 @@ class LMSSmartyPlugins
                         array(
                             'class' => 'lms-ui-deadline-selection-date lms-ui-date',
                             'text' => 'Enter deadline date in YYYY/MM/DD format (empty field means default deadline) or click to select it from calendar',
-                            'trigger' => isset($id) ? $id : $name,
+                            'trigger' => $id ?? $name,
                         ),
                         $template
                     ) . '>
@@ -1319,10 +1319,10 @@ class LMSSmartyPlugins
         }
 
         $elemname = $params['elemname'];
-        $selected = isset($params['selected']) && !empty($params['selected']) ? $params['selected'] : 0;
-        $tip = isset($params['tip']) ? $params['tip'] : trans('Select network device type');
-        $trigger = isset($params['trigger']) ? $params['trigger'] : 'netdevtype';
-        $form = isset($params['form']) ? $params['form'] : null;
+        $selected = !empty($params['selected']) ? $params['selected'] : 0;
+        $tip = $params['tip'] ?? trans('Select network device type');
+        $trigger = $params['trigger'] ?? 'netdevtype';
+        $form = $params['form'] ?? null;
 
         $options = '';
         foreach ($types as $item) {
@@ -1343,23 +1343,23 @@ class LMSSmartyPlugins
         $LMS = LMS::getInstance();
 
         $argv = array(
-            'userAccess' => empty($params['hide_disabled']) ? true : false,
-            'hideDeleted' => empty($params['hide_deleted']) ? true : false,
+            'userAccess' => empty($params['hide_disabled']),
+            'hideDeleted' => empty($params['hide_deleted']),
             'short' => true
         );
         $userlist = $LMS->getUserList($argv);
 
-        $elemid = isset($params['elemid']) ? $params['elemid'] : false;
-        $elemname = isset($params['elemname']) ? $params['elemname'] : false;
-        $class = isset($params['class']) ? $params['class'] : false;
+        $elemid = $params['elemid'] ?? false;
+        $elemname = $params['elemname'] ?? false;
+        $class = $params['class'] ?? false;
         $selected = empty($params['selected']) ? false : (is_array($params['selected']) ? $params['selected'] : array($params['selected']));
         $placeholder = empty($params['placeholder']) ? trans('Select users') : trans($params['placeholder']);
         $tip = empty($params['tip']) ? trans('Select user(s) (optional)') : $params['tip'];
-        $trigger = isset($params['trigger']) ? $params['trigger'] : $elemname;
-        $form = isset($params['form']) ? $params['form'] : null;
-        $multiple = empty($params['multiple']) ? false : true;
+        $trigger = $params['trigger'] ?? $elemname;
+        $form = $params['form'] ?? null;
+        $multiple = !empty($params['multiple']);
         $onChange = empty($params['onchange']) ? 'document.filter.submit();' : $params['onchange'];
-        $required = empty($params['required']) ? false : true;
+        $required = !empty($params['required']);
 
         $options = '';
 
@@ -1465,9 +1465,9 @@ class LMSSmartyPlugins
         }
 
         $elemname = $params['elemname'];
-        $selected = isset($params['selected']) && !empty($params['selected']) ? intval($params['selected']) : null;
-        $tip = isset($params['tip']) ? $params['tip'] : trans('Select identity type');
-        $trigger = isset($params['trigger']) ? $params['trigger'] : 'ict';
+        $selected = !empty($params['selected']) ? intval($params['selected']) : null;
+        $tip = $params['tip'] ?? trans('Select identity type');
+        $trigger = $params['trigger'] ?? 'ict';
 
         $options = '<option value="0">' . trans('— select —') . '</option>';
         foreach ($identityTypes as $key => $item) {
@@ -1490,7 +1490,7 @@ class LMSSmartyPlugins
             . (isset($params['text']) ? ' data-hint="' . htmlspecialchars($params['text']) . '"' : '')
             . (isset($params['url']) ? ' data-url="' . $params['url'] . '"' : '')
             . (isset($params['style']) ? ' style="' . $params['style'] . '"' : '')
-            . '><i class="lms-ui-icon-' . (isset($params['icon']) ? $params['icon'] : 'hint') . ' fa-fw"></i></a>';
+            . '><i class="lms-ui-icon-' . ($params['icon'] ?? 'hint') . ' fa-fw"></i></a>';
     }
 
     public static function speechRecognitionFunction(array $params, $template)
@@ -1517,7 +1517,7 @@ class LMSSmartyPlugins
 
         $result = '';
 
-        $form = isset($params['form']) ? $params['form'] : null;
+        $form = $params['form'] ?? null;
 
         if (isset($params['selected']) && !preg_match('/^[0-9]+$/', $params['selected'])) {
             $params['selected'] = '';
@@ -1618,8 +1618,8 @@ class LMSSmartyPlugins
     {
         static $loaded = false;
 
-        $elem_selector = isset($params['elem']) ? $params['elem'] : null;
-        $days = isset($params['days']) ? $params['days'] : '7,14,21,30';
+        $elem_selector = $params['elem'] ?? null;
+        $days = $params['days'] ?? '7,14,21,30';
 
         if (!isset($elem_selector)) {
             return;
@@ -1670,7 +1670,7 @@ class LMSSmartyPlugins
 
         $id = isset($params['id']) ? ' id="' . $params['id'] . '"' : null;
         $name = isset($params['name']) ? ' name="' . $params['name'] . '"' : null;
-        $selected = isset($params['selected']) ? $params['selected'] : $default_taxid;
+        $selected = $params['selected'] ?? $default_taxid;
         $value = empty($selected) ? null : ' value="' . $selected . '"';
         $class = isset($params['class']) ? ' class="'. $params['class'] . '"' : null;
         $customonchange = isset($params['customonchange']) ? ' onchange="'. $params['customonchange'] . '"' : null;
@@ -1720,9 +1720,9 @@ class LMSSmartyPlugins
     {
         static $loaded = false;
 
-        $icon = isset($params['icon']) ? $params['icon'] : 'lms-ui-icon-clear';
+        $icon = $params['icon'] ?? 'lms-ui-icon-clear';
         $tip = isset($params['tip']) ? trans($params['tip']) : null;
-        $target = isset($params['target']) ? $params['target'] : '[data-default-value]';
+        $target = $params['target'] ?? '[data-default-value]';
 
         $result = $script = '';
         if (!$loaded) {
@@ -1790,7 +1790,7 @@ class LMSSmartyPlugins
         }
 
         $result = '<img src="' . $image_data . '" style="margin: 0 auto;'
-            . ' width: ' . (isset($params['width']) ? $params['width'] : '600') . 'px;'
+            . ' width: ' . ($params['width'] ?? '600') . 'px;'
             . (isset($params['height']) ? ' height: ' . $params['height'] . 'px;' : '')
             . (isset($params['style']) ? ' ' . $params['style'] : '')
             . '">';
@@ -1813,14 +1813,14 @@ class LMSSmartyPlugins
             $types = array_flip($barcode->getTypes());
         }
 
-        $transliterate = isset($params['transliterate']) ? ConfigHelper::checkValue($params['transliterate']) : true;
-        $text = isset($params['text']) ? $params['text'] : 'text not set';
+        $transliterate = !isset($params['transliterate']) || ConfigHelper::checkValue($params['transliterate']);
+        $text = $params['text'] ?? 'text not set';
         $type = isset($params['type']) && isset($types[$params['type']]) ? $params['type'] : 'C128';
         $scale = isset($params['scale']) ? filter_var($params['scale'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE) : null;
         if (!isset($scale)) {
             $scale = 1;
         }
-        $color = isset($params['color']) ? $params['color'] : 'black';
+        $color = $params['color'] ?? 'black';
         $padding = isset($params['padding']) && is_array($params['padding']) && count($params['padding']) == 4
             ? $params['padding']
             : array(0, 0, 0, 0);
