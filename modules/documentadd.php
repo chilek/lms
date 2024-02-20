@@ -267,7 +267,7 @@ if (isset($_POST['document'])) {
             $files[] = $attachment;
         }
     }
-    if (isset($document['attachments']) && !empty($document['attachments'])) {
+    if (!empty($document['attachments'])) {
         foreach ($document['attachments'] as $attachment => $value) {
             if (isset($engine['attachments'][$attachment])) {
                 $filename = $engine['attachments'][$attachment];
@@ -294,10 +294,10 @@ if (isset($_POST['document'])) {
     }
 
     $promotionattachments = array();
-    if (isset($document['assignment']['promotion-attachments']) && !empty($document['assignment']['promotion-attachments'])) {
+    if (!empty($document['assignment']['promotion-attachments'])) {
         $promotionattachments = array_merge($promotionattachments, $document['assignment']['promotion-attachments']);
     }
-    if (isset($document['assignment']['promotion-schema-attachments']) && !empty($document['assignment']['promotion-schema-attachments'])) {
+    if (!empty($document['assignment']['promotion-schema-attachments'])) {
         $promotionattachments = array_merge($promotionattachments, $document['assignment']['promotion-schema-attachments']);
     }
     $promotionattachments = Utils::filterIntegers($promotionattachments);
@@ -398,7 +398,7 @@ if (isset($_POST['document'])) {
                 ($division['inv_cplace'] ?: ''),
                 isset($document['closed']) ? DOC_CLOSED : DOC_OPEN,
                 $fullnumber,
-                !isset($document['reference']) || empty($document['reference']) ? null : $document['reference']['id'],
+                empty($document['reference']) ? null : $document['reference']['id'],
                 empty($document['templ']) ? null : $document['templ'],
                 $commit_flags,
             )

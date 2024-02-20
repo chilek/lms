@@ -334,7 +334,7 @@ switch ($action) {
             $idx = $item['itemid'];
 
             if (ConfigHelper::checkConfig('phpui.tax_category_required')
-                && (!isset($newcontents['taxcategory'][$idx]) || empty($newcontents['taxcategory'][$idx]))) {
+                && (empty($newcontents['taxcategory'][$idx]))) {
                 $error['taxcategory[' . $idx . ']'] = trans('Tax category selection is required!');
             }
 

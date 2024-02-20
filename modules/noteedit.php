@@ -449,7 +449,7 @@ $args = array(
     'doctype' => DOC_DNOTE,
     'cdate' => $note['cdate'],
 );
-if (isset($note['customerid']) && !empty($note['customerid'])) {
+if (!empty($note['customerid'])) {
     $args['customerid'] = $note['customerid'];
     $args['division'] = $DB->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($note['customerid']));
 }

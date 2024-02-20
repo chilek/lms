@@ -1872,7 +1872,7 @@ class xajaxResponse
     */
     private function _printEscapedString_XML($sData)
     {
-        if (is_null($sData) || false == isset($sData)) {
+        if (false == isset($sData)) {
             echo '*';
             return;
         }

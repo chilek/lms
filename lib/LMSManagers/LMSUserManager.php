@@ -169,11 +169,11 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                 accessfrom, accessto, rname, twofactorauth
             FROM vallusers
             WHERE deleted = 0'
-                . (isset($divisions) && !empty($divisions) ? ' AND id IN (SELECT userid
+                . (!empty($divisions) ? ' AND id IN (SELECT userid
                     FROM userdivisions
                     WHERE divisionid IN (' . $divisions . ')
                     )' : '')
-                . (isset($excludedUsers) && !empty($excludedUsers) ? ' AND id NOT IN (' . $excludedUsers . ')' : '') .
+                . (!empty($excludedUsers) ? ' AND id NOT IN (' . $excludedUsers . ')' : '') .
                 ' ORDER BY ' . $sqlord,
                 'id'
             );
@@ -183,11 +183,11 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                     accessfrom, accessto, rname, twofactorauth
                 FROM vusers
                 WHERE deleted = 0'
-                . (isset($divisions) && !empty($divisions) ? ' AND id IN (SELECT userid
+                . (!empty($divisions) ? ' AND id IN (SELECT userid
                         FROM userdivisions
                         WHERE divisionid IN (' . $divisions . ')
                         )' : '')
-                . (isset($excludedUsers) && !empty($excludedUsers) ? ' AND id NOT IN (' . $excludedUsers . ')' : '') .
+                . (!empty($excludedUsers) ? ' AND id NOT IN (' . $excludedUsers . ')' : '') .
                 ' ORDER BY ' . $sqlord,
                 'id'
             );
@@ -216,7 +216,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             . ' WHERE 1=1'
             . $deletedFilter
             . $disabledFilter
-            . (isset($divisions) && !empty($divisions) ? ' AND id IN 
+            . (!empty($divisions) ? ' AND id IN 
                 (SELECT userid
                 FROM userdivisions
                 WHERE divisionid IN (' . $divisions . ')

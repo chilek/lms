@@ -38,7 +38,7 @@ if (isset($_POST['type'])) {
 
 $SESSION->save('nsltype', $type);
 
-if (isset($_POST['datefrom']) && !empty($_POST['datefrom'])) {
+if (!empty($_POST['datefrom'])) {
     if (preg_match('/^(?<year>[0-9]{4})\/(?<month>[0-9]{2})\/(?<day>[0-9]{2}) (?<hour>[0-9]{2}):(?<minute>[0-9]{2})$/', $_POST['datefrom'], $m)) {
         $datefrom = mktime($m['hour'], $m['minute'], 0, $m['month'], $m['day'], $m['year']);
     } else {
@@ -51,7 +51,7 @@ if (isset($_POST['datefrom']) && !empty($_POST['datefrom'])) {
     }
 }
 
-if (isset($_POST['dateto']) && !empty($_POST['dateto'])) {
+if (!empty($_POST['dateto'])) {
     if (preg_match('/^(?<year>[0-9]{4})\/(?<month>[0-9]{2})\/(?<day>[0-9]{2}) (?<hour>[0-9]{2}):(?<minute>[0-9]{2})$/', $_POST['dateto'], $m)) {
         $dateto = mktime($m['hour'], $m['minute'], 0, $m['month'], $m['day'], $m['year']);
     } else {

@@ -40,12 +40,12 @@ $show_delayed_events = ConfigHelper::checkConfig('timetable.show_delayed_events'
 $big_networks = ConfigHelper::checkConfig('phpui.big_networks');
 $params['userid'] = Auth::GetCurrentUser();
 
-if (isset($filter['edate']) && !empty($filter['edate'])) {
+if (!empty($filter['edate'])) {
     list ($filter['year'], $filter['month'], $filter['day']) = explode('/', $filter['edate']);
 }
 
 if (!isset($_POST['loginform']) && !empty($_POST)) {
-    list ($filter['year'], $filter['month'], $filter['day']) = explode('/', isset($_POST['date']) && !empty($_POST['date']) ? $_POST['date'] : date('Y/m/d'));
+    list ($filter['year'], $filter['month'], $filter['day']) = explode('/', !empty($_POST['date']) ? $_POST['date'] : date('Y/m/d'));
 
     if (isset($filter['edate']) && $filter['edate']) {
         if (empty($filter['month'])) {

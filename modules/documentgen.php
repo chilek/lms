@@ -158,7 +158,7 @@ if (isset($_POST['document'])) {
             $globalfiles[] = $attachment;
         }
     }
-    if (isset($document['attachments']) && !empty($document['attachments'])) {
+    if (!empty($document['attachments'])) {
         foreach ($document['attachments'] as $attachment => $value) {
             if (isset($engine['attachments'][$attachment])) {
                 $filename = $engine['attachments'][$attachment];

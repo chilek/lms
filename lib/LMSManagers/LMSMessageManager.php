@@ -86,13 +86,13 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
             }
 
             if ($type == TMPL_HELPDESK) {
-                if (isset($helpdesk_queues) && !empty($helpdesk_queues)) {
+                if (!empty($helpdesk_queues)) {
                     foreach ($helpdesk_queues as $queueid) {
                         $this->db->Execute('INSERT INTO rttemplatequeues (templateid, queueid)
 							VALUES (?, ?)', array($id, $queueid));
                     }
                 }
-                if (isset($helpdesk_message_types) && !empty($helpdesk_message_types)) {
+                if (!empty($helpdesk_message_types)) {
                     foreach ($helpdesk_message_types as $message_type) {
                         $this->db->Execute('INSERT INTO rttemplatetypes (templateid, messagetype)
 							VALUES (?, ?)', array($id, $message_type));
@@ -139,13 +139,13 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
         $this->db->Execute('DELETE FROM rttemplatetypes WHERE templateid = ?', array($id));
 
         if ($type == TMPL_HELPDESK) {
-            if (isset($helpdesk_queues) && !empty($helpdesk_queues)) {
+            if (!empty($helpdesk_queues)) {
                 foreach ($helpdesk_queues as $queueid) {
                     $this->db->Execute('INSERT INTO rttemplatequeues (templateid, queueid)
 							VALUES (?, ?)', array($id, $queueid));
                 }
             }
-            if (isset($helpdesk_message_types) && !empty($helpdesk_message_types)) {
+            if (!empty($helpdesk_message_types)) {
                 foreach ($helpdesk_message_types as $message_type) {
                     $this->db->Execute('INSERT INTO rttemplatetypes (templateid, messagetype)
 							VALUES (?, ?)', array($id, $message_type));
@@ -460,7 +460,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
                         $destination,
                         $row['status'] ?? MSG_NEW,
                         $row['error'] ?? null,
-                        isset($row['externalmsgid']) && !empty($row['externalmsgid']) ? $row['externalmsgid'] : null,
+                        !empty($row['externalmsgid']) ? $row['externalmsgid'] : null,
                     )
                 );
                 if (!isset($msgitems[$customerid])) {
@@ -482,7 +482,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
             return $this->db->Execute(
                 'UPDATE messageitems SET body = ?
                 WHERE messageid = ? AND customerid '
-                . (isset($params['customerid']) && !empty($params['customerid']) ? '= ' . intval($params['customerid']) : 'IS NULL'),
+                . (!empty($params['customerid']) ? '= ' . intval($params['customerid']) : 'IS NULL'),
                 array($params['real_body'], $params['messageid'])
             );
         }

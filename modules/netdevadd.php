@@ -209,7 +209,7 @@ if (isset($netdev)) {
                 if (empty($netdev['address_id']) && empty($netdev['location_city']) && empty($netdev['location_street'])) {
                     $netdev['address_id'] = $dev['address_id'];
                 }
-                if (!strlen($netdev['longitude']) || !strlen($netdev['longitude'])) {
+                if (!strlen($netdev['longitude'])) {
                     $netdev['longitude'] = $dev['longitude'];
                     $netdev['latitude']  = $dev['latitude'];
                 }

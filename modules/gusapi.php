@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if (!isset($_GET['searchtype']) || !isset($_GET['searchdata']) || empty($_GET['searchdata'])) {
+if (!isset($_GET['searchtype']) || empty($_GET['searchdata'])) {
     return;
 }
 

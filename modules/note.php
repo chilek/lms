@@ -339,6 +339,6 @@ if (!is_null($attachment_name) && isset($docnumber)) {
 
 $document->WriteToBrowser($attachment_name);
 
-if (!$dontpublish && isset($ids) && !empty($ids)) {
+if (!$dontpublish && !empty($ids)) {
     $LMS->PublishDocuments($ids);
 }

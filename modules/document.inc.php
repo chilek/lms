@@ -52,7 +52,7 @@ if (isset($_GET['template'])) {
 function GenerateAttachmentHTML($template_dir, $engine, $selected = null)
 {
     $output = array();
-    if (isset($engine['attachments']) && !empty($engine['attachments']) && is_array($engine['attachments'])) {
+    if (!empty($engine['attachments']) && is_array($engine['attachments'])) {
         foreach ($engine['attachments'] as $idx => $file) {
             if (is_array($file)) {
                 $file['checked'] = isset($selected) ? isset($selected[$file['label']]) : $file['checked'];
@@ -206,7 +206,7 @@ function GetTemplates($doctype, $doctemplate, $JSResponse)
     $contents = $SMARTY->fetch('document/documenttemplateoptions.html');
 
     $JSResponse->assign('templ', 'innerHTML', $contents);
-    if (isset($doctype) && !empty($doctype)) {
+    if (!empty($doctype)) {
         $JSResponse->call('enable_templates');
     } else {
         $JSResponse->call('disable_templates');

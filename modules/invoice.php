@@ -665,7 +665,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                     }
 
                     if ($jpk_vat_version == 4) {
-                        $splitpayment = isset($invoice['splitpayment']) && !empty($invoice['splitpayment']);
+                        $splitpayment = !empty($invoice['splitpayment']);
                         if ($splitpayment) {
                             $jpk_data .= "\t\t<MPP>1</MPP>\n";
                         }
@@ -1269,7 +1269,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t\t<P_16>false</P_16>\n";
                 $jpk_data .= "\t\t<P_17>false</P_17>\n";
                 $jpk_data .= "\t\t<P_18>" . (isset($invoice['taxest']['-2']['base']) ? 'true' : 'false') . "</P_18>\n";
-                $splitpayment = isset($invoice['splitpayment']) && !empty($invoice['splitpayment']);
+                $splitpayment = !empty($invoice['splitpayment']);
                 $jpk_data .= "\t\t<P_18A>" . ($splitpayment ? 'true' : 'false') . "</P_18A>\n";
                 $jpk_data .= "\t\t<P_19>false</P_19>\n";
                 $jpk_data .= "\t\t<P_20>false</P_20>\n";
@@ -1581,6 +1581,6 @@ if ($jpk) {
     }
 }
 
-if (!$dontpublish && isset($ids) && !empty($ids)) {
+if (!$dontpublish && !empty($ids)) {
     $LMS->PublishDocuments($ids);
 }

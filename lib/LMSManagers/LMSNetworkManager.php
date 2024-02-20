@@ -259,7 +259,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             );
         }
 
-        $order = isset($search['order']) && !empty($search['order']) ? $search['order'] : 'id,asc';
+        $order = !empty($search['order']) ? $search['order'] : 'id,asc';
 
         list($order, $direction) = sscanf($order, '%[^,],%s');
 
@@ -370,7 +370,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             $sqlwhere = rtrim($sqlwhere, $search['operatorType']);
         }
 
-        $count = isset($search['count']) && !empty($search['count']);
+        $count = !empty($search['count']);
 
         if ($count) {
             return $this->db->GetOne('SELECT COUNT(n.id)

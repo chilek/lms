@@ -113,7 +113,7 @@ if (isset($_GET['attachmentaction'])) {
             die;
             break;
     }
-    if (isset($_GET['restore']) && !empty($_GET['restore'])) {
+    if (!empty($_GET['restore'])) {
         $SESSION->redirect('?' . $SESSION->remove_history_entry() . '&restore=1&resourceid=' . $_GET['resourceid']);
     } else {
         $SESSION->redirect_to_history_entry();
@@ -158,7 +158,7 @@ if (isset($_POST['upload'])) {
             rrmdir($tmppath);
         }
 
-        if (isset($upload['restore']) && !empty($upload['restore'])) {
+        if (!empty($upload['restore'])) {
             die(json_encode(array('url' => '?' . $SESSION->remove_history_entry() . '&restore=1&resourceid=' . $attachmentresourceid)));
         } else {
             die(json_encode(array('url' => '?' . $SESSION->remove_history_entry())));

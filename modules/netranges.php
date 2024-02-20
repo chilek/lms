@@ -178,7 +178,7 @@ function getBuildings(array $filter)
 
     $DB = LMSDB::getInstance();
 
-    $count = isset($filter['count']) && !empty($filter['count']);
+    $count = !empty($filter['count']);
 
     $where = $where2 = array();
 
@@ -240,7 +240,7 @@ function getBuildings(array $filter)
     if (isset($filter['type']) && is_numeric($filter['type'])) {
         $where[] = 'r.type = ' . intval($filter['type']);
     }
-    if (isset($filter['services']) && is_numeric($filter['services']) && !empty($filter['services'])) {
+    if (is_numeric($filter['services']) && !empty($filter['services'])) {
         $where[] = 'r.services = ' . intval($filter['services']);
     }
 

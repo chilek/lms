@@ -417,7 +417,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         $netdevfilter = empty($netdevid) ? '' : ' AND events.netdevid = ' . intval($netdevid);
         $netnodefilter = empty($netnodeid) ? '' : ' AND events.netnodeid = ' . intval($netnodeid);
 
-        if (!isset($userid) || empty($userid)) {
+        if (empty($userid)) {
             $userfilter = '';
         } else {
             if (is_array($userid)) {

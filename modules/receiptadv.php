@@ -88,7 +88,7 @@ if (isset($_POST['receipt'])) {
     }
 
     // $cdate = 0 means current unix timestamp
-    if (isset($receipt['cdate']) && !empty($receipt['cdate'])) {
+    if (!empty($receipt['cdate'])) {
         $cdate = date_to_timestamp($receipt['cdate']);
         if (empty($cdate)) {
             $error['cdate'] = trans('Incorrect date format!');

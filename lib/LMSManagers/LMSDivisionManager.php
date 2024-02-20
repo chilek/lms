@@ -66,7 +66,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
     {
         extract($params);
 
-        if (!isset($order) || empty($order)) {
+        if (empty($order)) {
             $order = 'shortname,asc';
         }
 
@@ -116,7 +116,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             FROM vdivisions d
             WHERE 1 = 1'
             . ((isset($superuser) && empty($superuser)) || !isset($superuser) ? ' AND id IN (' . $user_divisions . ')' : '')
-            . (isset($exludedDivisions) && !empty($exludedDivisions) ? ' AND id NOT IN (' . $exludedDivisions . ')' : '') .
+            . (!empty($exludedDivisions) ? ' AND id NOT IN (' . $exludedDivisions . ')' : '') .
             ' ORDER BY (CASE WHEN d.label IS NULL THEN d.shortname ELSE d.label END)'
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : '')

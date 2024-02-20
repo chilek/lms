@@ -683,8 +683,8 @@ switch ($action) {
             $DB->Execute('DELETE FROM cash WHERE id IN (' . implode(',', $ids) . ')');
         }
 
-        if (isset($invoice['proformaid']) && !empty($invoice['proformaid'])) {
-            if (isset($invoice['preserve-proforma']) && !empty($invoice['preserve-proforma'])) {
+        if (!empty($invoice['proformaid'])) {
+            if (!empty($invoice['preserve-proforma'])) {
                 $LMS->PreserveProforma($invoice['proformaid']);
             } else {
                 $LMS->DeleteArchiveTradeDocument($invoice['proformaid']);
@@ -784,7 +784,7 @@ $SMARTY->assign('numberplanlist', $numberplanlist);
 
 $SMARTY->assign('taxeslist', $taxeslist);
 
-if (isset($invoice['proformaid']) && !empty($invoice['proformaid'])) {
+if (!empty($invoice['proformaid'])) {
     $layout['pagetitle'] = trans('Conversion Pro Forma Invoice $a To Invoice', $invoice['proformanumber']);
 } elseif (!empty($invoice['proforma'])) {
     $layout['pagetitle'] = trans('New Pro Forma Invoice');

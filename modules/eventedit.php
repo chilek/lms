@@ -223,7 +223,7 @@ if (isset($_POST['event'])) {
         $event['private'] = isset($event['private']) ? 1 : 0;
 
         $event['address_id'] = !isset($event['address_id']) || $event['address_id'] == -1 ? null : $event['address_id'];
-        $event['nodeid'] = !isset($event['nodeid']) || empty($event['nodeid']) ? null : $event['nodeid'];
+        $event['nodeid'] = empty($event['nodeid']) ? null : $event['nodeid'];
 
         $event['date'] = $date;
         $event['begintime'] = $begintime;

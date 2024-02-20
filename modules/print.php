@@ -64,7 +64,7 @@ switch ($type) {
 
         $id = intval($_POST['customer']);
 
-        $aggregate_documents = isset($_POST['aggregate_documents']) && !empty($_POST['aggregate_documents']);
+        $aggregate_documents = !empty($_POST['aggregate_documents']);
 
         $layout['pagetitle'] = trans('Customer $a Balance Sheet ($b to $c)', $LMS->GetCustomerName($id), ($from ?: ''), $to);
 

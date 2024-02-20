@@ -828,7 +828,7 @@ if (!ConfigHelper::checkConfig('phpui.big_networks')) {
 }
 
 $SMARTY->assign('error', $error);
-if (isset($invoice['customerid']) && !empty($invoice['customerid'])) {
+if (!empty($invoice['customerid'])) {
     $customer = $LMS->GetCustomer($invoice['customerid'], true);
 } else {
     $customer = null;
@@ -840,7 +840,7 @@ $args = array(
     'doctype' => isset($invoice['proforma']) && $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
     'cdate' => $invoice['cdate'],
 );
-if (isset($invoice['customerid']) && !empty($invoice['customerid'])) {
+if (!empty($invoice['customerid'])) {
     $args['customerid'] = $invoice['customerid'];
     $args['division'] = $DB->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($invoice['customerid']));
     $args['customertype'] = $invoice['customertype'];

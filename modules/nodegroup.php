@@ -32,7 +32,7 @@ if ($action == 'delete') {
     } elseif (isset($_POST['markednodegroupid'])) {
         $nodegroupids = $_POST['markednodegroupid'];
     }
-    if (isset($nodegroupids) && !empty($nodegroupids)) {
+    if (!empty($nodegroupids)) {
         foreach ($nodegroupids as $nodegroupid) {
             $params = array(
             SYSLOG::RES_NODE => $_GET['id'],

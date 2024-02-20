@@ -62,12 +62,12 @@ if (isset($_GET['action']) && $_GET['action'] == 'eventmove') {
     die('[]');
 }
 
-if (isset($filter['edate']) && !empty($filter['edate'])) {
+if (!empty($filter['edate'])) {
     list ($filter['year'], $filter['month'], $filter['day']) = explode('/', $filter['edate']);
 }
 
 if (!isset($_POST['loginform']) && !empty($_POST)) {
-    list ($filter['year'], $filter['month'], $filter['day']) = explode('/', isset($_POST['date']) && !empty($_POST['date']) ? $_POST['date'] : date('Y/m/d'));
+    list ($filter['year'], $filter['month'], $filter['day']) = explode('/', !empty($_POST['date']) ? $_POST['date'] : date('Y/m/d'));
 
     if (!empty($filter['edate'])) {
         if (empty($filter['month'])) {
@@ -194,7 +194,7 @@ if (is_array($userid) && in_array('-1', $userid)) {
 }
 
 $usereventlist = array();
-if (!isset($userid) || empty($userid)) {
+if (empty($userid)) {
     unset($filter['userid']);
     foreach ($userlist as $user) {
         $filter['userid'] = $user['id'];

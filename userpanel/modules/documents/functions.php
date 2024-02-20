@@ -47,7 +47,7 @@ function module_main()
 
     $sms_options = $LMS->getCustomerSMSOptions();
     $sms_onetime_password_body = ConfigHelper::getConfig('userpanel.document_approval_customer_onetime_password_sms_body', '', true);
-    $sms_active = !empty($sms_options) && isset($sms_options['service']) && !empty($sms_options['service'])
+    $sms_active = !empty($sms_options) && !empty($sms_options['service'])
         && !empty($sms_onetime_password_body);
     if (!$sms_active) {
         $sms_service = ConfigHelper::getConfig('sms.service', '', true);

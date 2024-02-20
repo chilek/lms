@@ -324,12 +324,12 @@ function convert_pna_to_teryt($data)
             if (preg_match('/^(?<prefix>ul\.|inne|al\.|rynek|pl\.|rondo|park|os\.|szosa|skwer|bulw\.|wyspa|ogród|wyb\.|droga)?[[:blank:]]/', $street, $pmatches)
                 || preg_match('/.+[[:blank:]](?<suffix>ul\.|inne|al\.|rynek|pl\.|rondo|park|os\.|szosa|skwer|bulw\.|wyspa|ogród|wyb\.|droga)?$/', $street, $smatches)) {
                 $replaces = array();
-                if (isset($pmatches['prefix']) && !empty($pmatches['prefix'])) {
+                if (!empty($pmatches['prefix'])) {
                     $street_common_parts[] = $street_common_part = $pmatches['prefix'];
                     $street_common_parts[] = strtr($street_common_part, $street_short_to_long_part_replaces);
                     $replaces[$street_common_part] = '';
                 }
-                if (isset($smatches['suffix']) && !empty($smatches['suffix'])) {
+                if (!empty($smatches['suffix'])) {
                     $street_common_parts[] = $street_common_part = $smatches['suffix'];
                     $street_common_parts[] = strtr($street_common_part, $street_short_to_long_part_replaces);
                     $replaces[$street_common_part] = '';
