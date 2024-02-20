@@ -258,6 +258,16 @@ function CustomerAssignmentHelper(options) {
 		$('#a_attachments').toggle($('#tariff-select').val() == -2 && typeof(promotionAttachments) != 'undefined' && html.length > 0);
 
 		$('#location-select').trigger('change');
+
+		$('select.schema-tariff-selection :visible').each(
+			function (e, schemaId) {
+				if (schemaId) {
+					$(this).attr('required');
+				} else {
+					$(this).removeAttr('required');
+				}
+			}
+		);
 	}
 
 	this.tariffSelectionHandler = function () {
