@@ -28,7 +28,7 @@ $layout['pagetitle'] = trans('Select IP address');
 
 $networks = $LMS->GetNetworks();
 
-$p = isset($_GET['p']) ? $_GET['p'] : '';
+$p = $_GET['p'] ?? '';
 
 if (!$p || $p == 'main') {
     $js = 'var targetfield1 = window.parent.targetfield1;var targetfield2 = window.parent.targetfield2;';
@@ -36,7 +36,7 @@ if (!$p || $p == 'main') {
     $js = '';
 }
 
-$privnetid = isset($_GET['privnetid']) ? $_GET['privnetid'] : null;
+$privnetid = $_GET['privnetid'] ?? null;
 
 if (isset($_POST['netid']) && $_POST['netid']) {
     $netid = $_POST['netid'];
@@ -147,6 +147,6 @@ $SMARTY->assign('networks', $networks);
 $SMARTY->assign('network', $network);
 $SMARTY->assign('netid', $netid);
 $SMARTY->assign('privnetid', $privnetid);
-$SMARTY->assign('device', isset($_GET['device']) ? $_GET['device'] : null);
+$SMARTY->assign('device', $_GET['device'] ?? null);
 $SMARTY->assign('ip', $ip);
 $SMARTY->display('choose/chooseip.html');

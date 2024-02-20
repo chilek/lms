@@ -177,7 +177,7 @@ if (isset($_POST['event'])) {
             'begintime' => $begintime,
             'enddate' => $enddate,
             'endtime' => $endtime,
-            'users' => isset($event['userlist']) ? $event['userlist'] : array(),
+            'users' => $event['userlist'] ?? array(),
         )))) {
         $users_by_id = Utils::array_column($userlist, 'rname', 'id');
         $users = array_map(function ($userid) use ($users_by_id) {
@@ -403,9 +403,9 @@ if (isset($_POST['event'])) {
                         'body' => $ticket['body'],
                     );
                     $headers['Subject'] = $LMS->ReplaceNotificationSymbols($notification_mail_subject, $params);
-                    $params['customerinfo'] = isset($mail_customerinfo) ? $mail_customerinfo : null;
+                    $params['customerinfo'] = $mail_customerinfo ?? null;
                     $body = $LMS->ReplaceNotificationSymbols($notification_mail_body, $params);
-                    $params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
+                    $params['customerinfo'] = $sms_customerinfo ?? null;
                     $sms_body = $LMS->ReplaceNotificationSymbols($notification_sms_body, $params);
 
                     $LMS->NotifyUsers(array(
@@ -478,7 +478,7 @@ if (isset($_POST['event'])) {
     } else {
         $event['overlapwarned'] = 0;
         $event['wholedays'] = false;
-        $event['date'] = isset($event['date']) ? $event['date'] : $SESSION->get('edate');
+        $event['date'] = $event['date'] ?? $SESSION->get('edate');
 
         if (isset($eventticketid)) {
             $event['helpdesk'] = 'assign';
@@ -507,7 +507,7 @@ $queuelist = $LMS->GetQueueList(array('stats' => false));
 
 $queue = null;
 if (isset($_POST['event'])) {
-    $queue = isset($ticket['queue']) ? $ticket['queue'] : null;
+    $queue = $ticket['queue'] ?? null;
     foreach ($categories as &$category) {
         $category['checked'] = isset($ticket['categories'][$category['id']]) || count($categories) == 1;
     }
@@ -567,7 +567,7 @@ if (isset($eventticketid) && empty($_GET['id'])) {
     $event['ticketid'] = $eventticketid;
     $event['ticket'] = $LMS->getTickets($eventticketid);
     $event['customerid'] = $event['ticket']['customerid'];
-    $event['customername'] = isset($event['ticket']['customername']) ? $event['ticket']['customername'] : '';
+    $event['customername'] = $event['ticket']['customername'] ?? '';
     if ($copy_ticket_summary_to_assigned_event) {
         $event['title'] = $event['ticket']['name'];
         $message = $LMS->GetFirstMessage($event['ticketid']);

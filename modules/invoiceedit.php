@@ -44,7 +44,7 @@ function cleanUpValue($value)
 }
 
 $taxeslist = $LMS->GetTaxes();
-$action = isset($_GET['action']) ? $_GET['action'] : '';
+$action = $_GET['action'] ?? '';
 
 if (isset($_GET['id']) && ($action == 'edit' || $action == 'init')) {
     if (!$LMS->isInvoiceEditable($_GET['id'])) {
@@ -309,7 +309,7 @@ switch ($action) {
         $zip = $invoice['zip'];
         $city = $invoice['city'];
         $countryid = $invoice['countryid'];
-        $recipient_address = isset($invoice['recipient_address']) ? $invoice['recipient_address'] : null;
+        $recipient_address = $invoice['recipient_address'] ?? null;
 
         unset($invoice);
         unset($error);
@@ -801,7 +801,7 @@ switch ($action) {
         $DB->CommitTrans();
 
         if (isset($_GET['print'])) {
-            $which = isset($_GET['which']) ? $_GET['which'] : 0;
+            $which = $_GET['which'] ?? 0;
 
             $SESSION->save('invoiceprint', array(
                 'invoice' => $invoice['id'],

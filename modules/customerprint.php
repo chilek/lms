@@ -28,7 +28,7 @@ if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkCo
     access_denied();
 }
 
-$type = isset($_GET['type']) ? $_GET['type'] : '';
+$type = $_GET['type'] ?? '';
 
 switch ($type) {
     case 'customerlist':
@@ -463,8 +463,7 @@ switch ($type) {
                     }
                     $location_content .= "\t\t\t\t\t</Województwo>\n";
 
-                    $teryt_city = isset($city_idents_by_ids[$address['location_city']])
-                        ? $city_idents_by_ids[$address['location_city']] : null;
+                    $teryt_city = $city_idents_by_ids[$address['location_city']] ?? null;
 
                     $location_content .= "\t\t\t\t\t<Powiat>\n";
                     $location_content .= "\t\t\t\t\t\t<NazwaPowiatu>"
@@ -590,8 +589,7 @@ switch ($type) {
                     }
                     $location_content .= "\t\t\t\t\t</Województwo>\n";
 
-                    $teryt_city = isset($city_idents_by_ids[$address['location_city']])
-                        ? $city_idents_by_ids[$address['location_city']] : null;
+                    $teryt_city = $city_idents_by_ids[$address['location_city']] ?? null;
 
                     $location_content .= "\t\t\t\t\t<Powiat>\n";
                     $location_content .= "\t\t\t\t\t\t<NazwaPowiatu>"

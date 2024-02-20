@@ -93,8 +93,8 @@ function update_netlink_properties($id, $devid, $link)
         $tech_content,
         $speed_content,
         $port_content,
-        isset($link['srcport']) ? $link['srcport'] : (isset($link['port']) ? $link['port'] : 0),
-        isset($link['dstport']) ? $link['dstport'] : 0
+        $link['srcport'] ?? ($link['port'] ?? 0),
+        $link['dstport'] ?? 0
     );
 
     return $result;
@@ -153,7 +153,7 @@ $link['isnetlink'] = $isnetlink;
 
 $SMARTY->assign('link', $link);
 
-$radiosectors = isset($link['radiosectors']) ? $link['radiosectors'] : array();
+$radiosectors = $link['radiosectors'] ?? array();
 
 $SMARTY->assign('radiosectors', $radiosectors);
 $SMARTY->display('netdev/netlinkproperties.html');

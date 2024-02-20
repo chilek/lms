@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$stateadd = isset($_POST['stateadd']) ? $_POST['stateadd'] : null;
+$stateadd = $_POST['stateadd'] ?? null;
 
 if (!empty($stateadd)) {
     $stateadd['name'] = trim($stateadd['name']);

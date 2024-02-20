@@ -62,7 +62,7 @@ $backto = $SESSION->get_history_entry('m=eventlist');
 $backid = $SESSION->get('backid');
 $backurl = '?' . $backto . (empty($backid) ? '' : '#' . $backid);
 
-$action = isset($_GET['action']) ? $_GET['action'] : null;
+$action = $_GET['action'] ?? null;
 switch ($action) {
     case 'open':
         if (empty($event['closeddate']) || ($event['closed'] == 1 && $aee && ($now - $event['closeddate'] < $aee)) || $superuser) {
@@ -180,7 +180,7 @@ if (isset($_POST['event'])) {
             'begintime' => $begintime,
             'enddate' => $enddate,
             'endtime' => $endtime,
-            'users' => isset($event['userlist']) ? $event['userlist'] : array(),
+            'users' => $event['userlist'] ?? array(),
             'ignoredevent' => $event['id'],
         )))) {
         $users_by_id = Utils::array_column($userlist, 'rname', 'id');

@@ -42,7 +42,7 @@ $USERPANEL->AddModule(
 );
 
 require_once('UserpanelDocumentHandler.php');
-$document_handler = new UserpanelDocumentHandler($DB, $SMARTY, isset($SESSION->id) ? $SESSION->id : null);
+$document_handler = new UserpanelDocumentHandler($DB, $SMARTY, $SESSION->id ?? null);
 
 $USERPANEL->registerCallback('documents', function ($db, $smarty, $mod_dir) use ($document_handler) {
     $document_warnings = $document_handler->getDocumentWarnings();

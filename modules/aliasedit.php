@@ -168,7 +168,7 @@ if (isset($alias['accounts']) && count($alias['accounts'])) {
 $accountlist = $DB->GetAll('SELECT passwd.id, login, domains.name AS domain 
 			FROM passwd, domains 
 			WHERE domainid = domains.id '
-            .(isset($where) ? $where : '')
+            .($where ?? '')
             .' ORDER BY login, domains.name');
 
 $SESSION->add_history_entry();

@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$date = isset($_GET['day']) ? $_GET['day'] : 0;
+$date = $_GET['day'] ?? 0;
 
 if (empty($date)) {
     $date = time();
@@ -38,8 +38,8 @@ $eventlist = $LMS->GetEventList(
         'month' => $month,
         'day' => $day,
         'forward' => 1,
-        'userid' => isset($_GET['a']) ? $_GET['a'] : 0,
-        'type' => isset($_GET['t']) ? $_GET['t'] : 0,
+        'userid' => $_GET['a'] ?? 0,
+        'type' => $_GET['t'] ?? 0,
         'customerid' => $_GET['u'],
         'privacy' => $_GET['privacy'],
         'closed' => $_GET['closed'],

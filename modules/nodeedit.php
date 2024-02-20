@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$action = isset($_GET['action']) ? $_GET['action'] : '';
+$action = $_GET['action'] ?? '';
 
 if (!$LMS->NodeExists($_GET['id'])) {
     if (isset($_GET['ownerid'])) {
@@ -449,7 +449,7 @@ if (isset($_POST['nodeedit'])) {
     $nodeinfo['macs'] = $nodeedit['macs'];
     $nodeinfo['ipaddr'] = $nodeedit['ipaddr'];
     $nodeinfo['netid'] = $nodeedit['netid'];
-    $nodeinfo['wholenetwork'] = isset($nodeedit['wholenetwork']) ? $nodeedit['wholenetwork'] : null;
+    $nodeinfo['wholenetwork'] = $nodeedit['wholenetwork'] ?? null;
     $nodeinfo['ipaddr_pub'] = $nodeedit['ipaddr_pub'];
     $nodeinfo['pubnetid'] = $nodeedit['pubnetid'];
     $nodeinfo['passwd'] = $nodeedit['passwd'];
@@ -458,7 +458,7 @@ if (isset($_POST['nodeedit'])) {
     $nodeinfo['chkmac'] = $nodeedit['chkmac'];
     $nodeinfo['halfduplex'] = $nodeedit['halfduplex'];
     $nodeinfo['port'] = $nodeedit['port'];
-    $nodeinfo['stateid'] = isset($nodeedit['stateid']) ? $nodeedit['stateid'] : null;
+    $nodeinfo['stateid'] = $nodeedit['stateid'] ?? null;
     $nodeinfo['latitude'] = $nodeedit['latitude'];
     $nodeinfo['longitude'] = $nodeedit['longitude'];
     $nodeinfo['invprojectid'] = $nodeedit['invprojectid'];

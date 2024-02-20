@@ -952,7 +952,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                         . $netdev['borough_ident'] . $netdev['borough_type'];
                 $netdev['simc'] = empty($netdev['city_ident']) ? null : $netdev['city_ident'];
                 $netdev['ulic'] = empty($netdev['street_ident']) ? null : $netdev['street_ident'];
-                $netdev['filecontainers'] = isset($filecontainers[$netdev['id']]) ? $filecontainers[$netdev['id']] : array();
+                $netdev['filecontainers'] = $filecontainers[$netdev['id']] ?? array();
                 $netdev['lastonlinedate'] = lastonline_date($netdev['lastonline']);
             }
             unset($netdev);
@@ -1409,7 +1409,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         if (!empty($list)) {
             foreach ($list as &$model) {
                 $model['customlinks'] = array();
-                $model['filecontainers'] = isset($filecontainers[$model['id']]) ? $filecontainers[$model['id']] : array();
+                $model['filecontainers'] = $filecontainers[$model['id']] ?? array();
             }
             unset($model);
         }

@@ -713,8 +713,8 @@ class Utils
                     $details = array(
                         'lastname' => $report['fiz_nazwa'],
                         'name' => '',
-                        'rbename' => isset($report['fizC_RodzajRejestru_Nazwa']) ? $report['fizC_RodzajRejestru_Nazwa'] : '',
-                        'rbe' => isset($report['fizC_numerWRejestrzeEwidencji']) ? $report['fizC_numerWRejestrzeEwidencji'] : '',
+                        'rbename' => $report['fizC_RodzajRejestru_Nazwa'] ?? '',
+                        'rbe' => $report['fizC_numerWRejestrzeEwidencji'] ?? '',
                         'regon' => array_key_exists('fiz_regon9', $report)
                             ? $report['fiz_regon9']
                             : $report['fiz_regon14'],

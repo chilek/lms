@@ -150,7 +150,7 @@ $filter['count'] = true;
 $filter['total'] = intval($LMS->GetDocumentList($filter));
 
 $filter['limit'] = intval(ConfigHelper::getConfig('phpui.documentlist_pagelimit', 100));
-$filter['page'] = intval(isset($_GET['page']) ? $_GET['page'] : ceil($filter['total'] / $filter['limit']));
+$filter['page'] = intval($_GET['page'] ?? ceil($filter['total'] / $filter['limit']));
 if (empty($filter['page'])) {
     $filter['page'] = 1;
 }

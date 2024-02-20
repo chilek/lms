@@ -48,7 +48,7 @@ if (isset($_POST['assignment'])) {
 
     // try to restrict node assignment sharing
     if ($a['tariffid'] > 0 && isset($a['nodes']) && !empty($a['nodes'])) {
-        $restricted_nodes = $LMS->CheckNodeTariffRestrictions(isset($a['id']) ? $a['id'] : null, $a['nodes'], $from, $to);
+        $restricted_nodes = $LMS->CheckNodeTariffRestrictions($a['id'] ?? null, $a['nodes'], $from, $to);
         $node_multi_tariff_restriction = ConfigHelper::getConfig(
             'phpui.node_multi_tariff_restriction',
             '',
@@ -92,12 +92,12 @@ if (isset($_POST['assignment'])) {
         $LMS->UpdateExistingAssignments($a);
 
         if (isset($a['sassignmentid'][$schemaid]) && is_array($a['sassignmentid'][$schemaid])) {
-            $modifiedvalues = isset($a['values'][$schemaid]) ? $a['values'][$schemaid] : array();
+            $modifiedvalues = $a['values'][$schemaid] ?? array();
             $counts = $a['counts'][$schemaid];
             $backwardperiods = $a['backwardperiods'][$schemaid];
             $copy_a = $a;
-            $snodes = isset($a['snodes'][$schemaid]) ? $a['snodes'][$schemaid] : array();
-            $sphones = isset($a['sphones'][$schemaid]) ? $a['sphones'][$schemaid] : array();
+            $snodes = $a['snodes'][$schemaid] ?? array();
+            $sphones = $a['sphones'][$schemaid] ?? array();
 
             foreach ($a['sassignmentid'][$schemaid] as $label => $v) {
                 if (!$v) {
@@ -105,11 +105,11 @@ if (isset($_POST['assignment'])) {
                 }
 
                 $copy_a['promotionassignmentid'] = $v;
-                $copy_a['modifiedvalues'] = isset($modifiedvalues[$label][$v]) ? $modifiedvalues[$label][$v] : array();
+                $copy_a['modifiedvalues'] = $modifiedvalues[$label][$v] ?? array();
                 $copy_a['count'] = $counts[$label];
                 $copy_a['backwardperiod'] = $backwardperiods[$label][$v];
-                $copy_a['nodes'] = isset($snodes[$label]) ? $snodes[$label] : array();
-                $copy_a['phones'] = isset($sphones[$label]) ? $sphones[$label] : array();
+                $copy_a['nodes'] = $snodes[$label] ?? array();
+                $copy_a['phones'] = $sphones[$label] ?? array();
                 $tariffid = $LMS->AddAssignment($copy_a);
             }
         } else {

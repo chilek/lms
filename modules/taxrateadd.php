@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$taxrateadd = isset($_POST['taxrateadd']) ? $_POST['taxrateadd'] : null;
+$taxrateadd = $_POST['taxrateadd'] ?? null;
 
 if (is_array($taxrateadd) && count($taxrateadd)) {
     foreach ($taxrateadd as $idx => $key) {

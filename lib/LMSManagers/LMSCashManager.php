@@ -565,7 +565,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                     if (!isset($sourcefileid)) {
                         $args = array(
                             'name' => $filename,
-                            'idate' => isset($filemtime) ? $filemtime : time(),
+                            'idate' => $filemtime ?? time(),
                             SYSLOG::RES_USER => Auth::GetCurrentUser(),
                         );
                         $this->db->Execute(

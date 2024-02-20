@@ -248,8 +248,8 @@ if (isset($_POST['ip']) && isset($_POST['mask'])) {
 $layout['pagetitle'] = trans('IP Network Search');
 
 $SMARTY->assign('host_list', $DB->GetAll('SELECT name FROM hosts'));
-$SMARTY->assign('selected_host', isset($_POST['host']) ? $_POST['host'] : null);
+$SMARTY->assign('selected_host', $_POST['host'] ?? null);
 $SMARTY->assign('mask', isset($_POST['mask']) ? mask2prefix($_POST['mask']) : 24);
-$SMARTY->assign('ip', !empty($ip) ? $ip : (isset($_POST['ip']) ? $_POST['ip'] : null));
+$SMARTY->assign('ip', !empty($ip) ? $ip : ($_POST['ip'] ?? null));
 
 $SMARTY->display('net/netusage.html');

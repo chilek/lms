@@ -115,7 +115,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 				LEFT JOIN location_boroughs lb     ON lb.id   = lc.boroughid
 				LEFT JOIN location_districts ld    ON ld.id   = lb.districtid
 				LEFT JOIN location_states lst      ON lst.id  = ld.stateid '
-                . (isset($searchargs) ? $searchargs : '')
+                . ($searchargs ?? '')
                 . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
         );
 
@@ -350,9 +350,9 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             'passwd' => $voipaccountdata['passwd'],
             SYSLOG::RES_USER => Auth::GetCurrentUser(),
             'access' => $voipaccountdata['access'],
-            'balance' => isset($voipaccountdata['balance']) ? $voipaccountdata['balance'] : ConfigHelper::getConfig('voip.default_cost_limit', 200),
-            'flags' => isset($voipaccountdata['flags']) ? $voipaccountdata['flags'] : ConfigHelper::getConfig('voip.default_account_flags', 0),
-            'cost_limit' => isset($voipaccountdata['cost_limit']) ? $voipaccountdata['cost_limit'] : null,
+            'balance' => $voipaccountdata['balance'] ?? ConfigHelper::getConfig('voip.default_cost_limit', 200),
+            'flags' => $voipaccountdata['flags'] ?? ConfigHelper::getConfig('voip.default_account_flags', 0),
+            'cost_limit' => $voipaccountdata['cost_limit'] ?? null,
             SYSLOG::RES_ADDRESS => empty($voipaccountdata['address_id']) ? null : $voipaccountdata['address_id'],
             'description' => isset($voipaccountdata['description']) ? Utils::removeInsecureHtml($voipaccountdata['description']) : '',
             'extid' => isset($voipaccountdata['extid']) ? strval($voipaccountdata['extid']) : null,

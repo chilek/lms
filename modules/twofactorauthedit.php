@@ -34,7 +34,7 @@ if (!$userinfo || $userinfo['deleted']) {
 }
 
 if (isset($_GET['removetrusteddevices'])) {
-    $AUTH->removeTrustedDevices($userid, isset($_GET['deviceid']) ? $_GET['deviceid'] : null);
+    $AUTH->removeTrustedDevices($userid, $_GET['deviceid'] ?? null);
     $SESSION->redirect($_SERVER['HTTP_REFERER']);
 }
 

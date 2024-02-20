@@ -31,7 +31,7 @@ if (isset($_GET['bar']) && isset($_POST['order'])) {
     $SESSION->save('trafficorder', $_POST['order']);
 }
 
-$bar = isset($_GET['bar']) ? $_GET['bar'] : '';
+$bar = $_GET['bar'] ?? '';
 
 switch ($bar) {
     case 'user':

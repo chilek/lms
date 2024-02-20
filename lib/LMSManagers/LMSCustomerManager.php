@@ -681,7 +681,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'altname'        => empty($customeradd['altname']) ? null : $customeradd['altname'],
             'type'           => empty($customeradd['type']) ? 0 : 1,
             'ten'            => $customeradd['ten'],
-            'ssn'            => isset($customeradd['ssn']) ? $customeradd['ssn'] : '',
+            'ssn'            => $customeradd['ssn'] ?? '',
             'status'         => $customeradd['status'],
             SYSLOG::RES_USER => Auth::GetCurrentUser(),
             'info'           => Utils::removeInsecureHtml($customeradd['info']),
@@ -692,8 +692,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'regon'          => $customeradd['regon'],
             'rbename'        => $customeradd['rbename'],
             'rbe'            => $customeradd['rbe'],
-            'ict'            => isset($customeradd['ict']) ? $customeradd['ict'] : 0,
-            'icn'            => isset($customeradd['icn']) ? $customeradd['icn'] : '',
+            'ict'            => $customeradd['ict'] ?? 0,
+            'icn'            => $customeradd['icn'] ?? '',
             'icexpires'      => isset($customeradd['icexpires']) ? (intval($customeradd['icexpires']) > 0
                 ? strtotime('tomorrow', intval($customeradd['icexpires'])) - 1
                 : ($customeradd['icexpires'] === '-1' ? 0 : null)) : null,
@@ -1996,8 +1996,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $result['cstate'] = $cstate['name'];
                 }
                 if ($result['zip'] == $result['post_zip']) {
-                    $result['post_stateid'] = isset($result['stateid']) ? $result['stateid'] : null;
-                    $result['post_cstate'] = isset($result['cstate']) ? $result['cstate'] : null;
+                    $result['post_stateid'] = $result['stateid'] ?? null;
+                    $result['post_cstate'] = $result['cstate'] ?? null;
                 } else if ($result['post_zip'] && ($cstate = $this->db->GetRow('SELECT s.id, s.name
 					FROM states s, zipcodes
 					WHERE zip = ? AND stateid = s.id', array($result['post_zip'])))) {
@@ -2145,7 +2145,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'status'         => $customerdata['status'],
             'type'           => empty($customerdata['type']) ? 0 : 1,
             'ten'            => $customerdata['ten'],
-            'ssn'            => isset($customerdata['ssn']) ? $customerdata['ssn'] : $customer['ssn'],
+            'ssn'            => $customerdata['ssn'] ?? $customer['ssn'],
             SYSLOG::RES_USER => Auth::GetCurrentUser(),
             'info'           => Utils::removeInsecureHtml($customerdata['info']),
             'notes'          => Utils::removeInsecureHtml($customerdata['notes']),
@@ -2157,8 +2157,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'pin'            => $pin,
             'pinlastchange'  => $pinlastchange,
             'regon'          => $customerdata['regon'],
-            'ict'            => isset($customerdata['ict']) ? $customerdata['ict'] : $customer['ict'],
-            'icn'            => isset($customerdata['icn']) ? $customerdata['icn'] : $customer['icn'],
+            'ict'            => $customerdata['ict'] ?? $customer['ict'],
+            'icn'            => $customerdata['icn'] ?? $customer['icn'],
             'icexpires'      => isset($customerdata['icexpires']) ? (intval($customerdata['icexpires']) > 0
                 ? strtotime('tomorrow', intval($customerdata['icexpires'])) - 1
                 : ($customerdata['icexpires'] === '-1' ? 0 : null)) : $customer['icexpires'],

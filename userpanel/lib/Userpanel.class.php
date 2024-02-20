@@ -72,7 +72,8 @@ class USERPANEL
         if ($name != '') {
             $this->MODULES[$module] = array('name' => $name, 'tip' => $tip, 'prio' => $prio, 'description' => $description,
                 'selected' => false, 'module' => $module, 'submenu' => $submenu, 'icon' => $icon,
-                'module_dir' => isset($module_dir) ? $module_dir : USERPANEL_MODULES_DIR);
+                'module_dir' => $module_dir ?? USERPANEL_MODULES_DIR
+            );
             if (!function_exists('cmp')) {
                 function cmp($a, $b)
                 {

@@ -54,7 +54,7 @@ foreach ($modules_dirs as $suspected_module_dir) {
 
 $SMARTY->assignByRef('menu', $USERPANEL->MODULES);
 
-$module = isset($_GET['module']) ? $_GET['module'] : 'userpanel';
+$module = $_GET['module'] ?? 'userpanel';
 
 // Execute module
 $layout['pagetitle'] = trans('Configure Module: $a', $module);

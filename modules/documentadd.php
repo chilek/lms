@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+use Com\Tecnick\Barcode\Barcode;
+
 check_file_uploads();
 
 $SMARTY->setDefaultResourceType('file');
@@ -203,10 +205,10 @@ if (isset($_POST['document'])) {
             $SMARTY->assign('attachment_result', GenerateAttachmentHTML(
                 $template_dir,
                 $engine,
-                isset($document['attachments']) ? $document['attachments'] : array()
+                $document['attachments'] ?? array()
             ));
 
-            $barcode = new \Com\Tecnick\Barcode\Barcode();
+            $barcode = new Barcode();
             $bobj = $barcode->getBarcodeObj('C128', iconv('UTF-8', 'ASCII//TRANSLIT', $fullnumber), -1, -30, 'black');
             $document['barcode'] = base64_encode($bobj->getPngData());
 
@@ -424,7 +426,7 @@ if (isset($_POST['document'])) {
         if (isset($selected_assignment)) {
             $selected_assignment['docid'] = $docid;
             $selected_assignment['customerid'] = $document['customerid'];
-            $selected_assignment['reference'] = isset($document['reference']['id']) ? $document['reference']['id'] : null;
+            $selected_assignment['reference'] = $document['reference']['id'] ?? null;
             if (empty($from)) {
                 list ($year, $month, $day) = explode('/', date('Y/m/d'));
                 $selected_assignment['datefrom'] = mktime(0, 0, 0, $month, $day, $year);
@@ -450,12 +452,12 @@ if (isset($_POST['document'])) {
                 $selected_assignment['align-periods'] = isset($document['assignment']['align-periods']);
 
                 if (is_array($selected_assignment['sassignmentid'][$schemaid])) {
-                    $modifiedvalues = isset($selected_assignment['values'][$schemaid]) ? $selected_assignment['values'][$schemaid] : array();
+                    $modifiedvalues = $selected_assignment['values'][$schemaid] ?? array();
                     $counts = $selected_assignment['counts'][$schemaid];
                     $backwardperiods = $selected_assignment['backwardperiods'][$schemaid];
                     $copy_a = $selected_assignment;
-                    $snodes = isset($selected_assignment['snodes'][$schemaid]) ? $selected_assignment['snodes'][$schemaid] : array();
-                    $sphones = isset($selected_assignment['sphones'][$schemaid]) ? $selected_assignment['sphones'][$schemaid] : array();
+                    $snodes = $selected_assignment['snodes'][$schemaid] ?? array();
+                    $sphones = $selected_assignment['sphones'][$schemaid] ?? array();
 
                     foreach ($selected_assignment['sassignmentid'][$schemaid] as $label => $v) {
                         if (!$v) {
@@ -463,11 +465,11 @@ if (isset($_POST['document'])) {
                         }
 
                         $copy_a['promotionassignmentid'] = $v;
-                        $copy_a['modifiedvalues'] = isset($modifiedvalues[$label][$v]) ? $modifiedvalues[$label][$v] : array();
+                        $copy_a['modifiedvalues'] = $modifiedvalues[$label][$v] ?? array();
                         $copy_a['count'] = $counts[$label];
                         $copy_a['backwardperiod'] = $backwardperiods[$label][$v];
-                        $copy_a['nodes'] = isset($snodes[$label]) ? $snodes[$label] : array();
-                        $copy_a['phones'] = isset($sphones[$label]) ? $sphones[$label] : array();
+                        $copy_a['nodes'] = $snodes[$label] ?? array();
+                        $copy_a['phones'] = $sphones[$label] ?? array();
                         $tariffid = $LMS->AddAssignment($copy_a);
                     }
                 }
@@ -619,15 +621,15 @@ if (!$rights) {
 }
 
 if (isset($document['type'])) {
-    $customerid = isset($document['customerid']) ? $document['customerid'] : null;
+    $customerid = $document['customerid'] ?? null;
     $numberplans = GetDocumentNumberPlans($document['type'], $customerid);
 } else {
     $numberplans = array();
 }
 $SMARTY->assign('numberplans', $numberplans);
-$SMARTY->assign('planDocumentType', isset($document['type']) ? $document['type'] : null);
+$SMARTY->assign('planDocumentType', $document['type'] ?? null);
 
-$docengines = GetDocumentTemplates($rights, isset($document['type']) ? $document['type'] : null);
+$docengines = GetDocumentTemplates($rights, $document['type'] ?? null);
 
 $references = empty($document['customerid']) ? null : $LMS->GetDocuments($document['customerid']);
 $SMARTY->assign('references', $references);

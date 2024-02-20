@@ -28,7 +28,7 @@ $state = $DB->GetRow('SELECT * FROM states WHERE id = ?', array($_GET['id']));
 
 $name = $state['name'];
 
-$stateedit = isset($_POST['stateedit']) ? $_POST['stateedit'] : null;
+$stateedit = $_POST['stateedit'] ?? null;
 
 if (!empty($stateedit)) {
     $stateedit['name'] = trim($stateedit['name']);

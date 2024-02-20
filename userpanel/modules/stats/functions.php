@@ -170,7 +170,7 @@ function module_main()
         $SESSION->save('trafficorder', $_POST['order']);
     }
 
-    $bar = isset($_GET['bar']) ? $_GET['bar'] : '';
+    $bar = $_GET['bar'] ?? '';
     $owner = ConfigHelper::checkConfig('userpanel.owner_stats') ? $SESSION->id : null;
 
     switch ($bar) {

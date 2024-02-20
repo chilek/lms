@@ -27,7 +27,7 @@
 function smarty_block_tab_button_panel($params, $content, $template, $repeat)
 {
     if (!$repeat) {
-        $id = isset($params['id']) ? $params['id'] : null;
+        $id = $params['id'] ?? null;
 
         return '
 			<div class="lms-ui-tab-button-panel"' . ($id ? ' id="' . $id . '"' : '') . '>

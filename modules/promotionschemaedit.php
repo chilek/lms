@@ -180,7 +180,7 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
             }
         }
 
-        $data['tags'] = isset($_POST['form']['tags']) ? $_POST['form']['tags'] : array();
+        $data['tags'] = $_POST['form']['tags'] ?? array();
         $data['alltariffs'] = isset($_POST['form']['alltariffs']);
         $SESSION->save('psdform', $data);
         $SESSION->redirect('?m=promotionschemainfo&id=' . $schemaid);
@@ -212,7 +212,7 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
     $DB->Execute('DELETE FROM promotionassignments WHERE id = ?', array($aid));
 
     $data['servicetype'] = $_POST['form']['servicetype'];
-    $data['tags'] = isset($_POST['form']['tags']) ? $_POST['form']['tags'] : array();
+    $data['tags'] = $_POST['form']['tags'] ?? array();
     $data['alltariffs'] = empty($_POST['form']['alltariffs']) ? 0 : 1;
     $SESSION->save('psdform', $data);
     $SESSION->redirect('?m=promotionschemainfo&id=' . $schemaid);

@@ -26,7 +26,7 @@
 
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'invoiceajax.inc.php');
 
-$action = isset($_GET['action']) ? $_GET['action'] : null;
+$action = $_GET['action'] ?? null;
 
 if (isset($_GET['id']) && $action == 'init') {
     $docid = $LMS->GetDocumentLastReference($_GET['id']);
@@ -338,16 +338,16 @@ switch ($action) {
                 $error['taxcategory[' . $idx . ']'] = trans('Tax category selection is required!');
             }
 
-            $contents[$idx]['taxid'] = isset($newcontents['taxid'][$idx]) ? $newcontents['taxid'][$idx] : $item['taxid'];
-            $contents[$idx]['taxcategory'] = isset($newcontents['taxcategory'][$idx]) ? $newcontents['taxcategory'][$idx] : $item['taxcategory'];
-            $contents[$idx]['prodid'] = isset($newcontents['prodid'][$idx]) ? $newcontents['prodid'][$idx] : $item['prodid'];
-            $contents[$idx]['content'] = isset($newcontents['content'][$idx]) ? $newcontents['content'][$idx] : $item['content'];
-            $contents[$idx]['count'] = isset($newcontents['count'][$idx]) ? $newcontents['count'][$idx] : $item['count'];
+            $contents[$idx]['taxid'] = $newcontents['taxid'][$idx] ?? $item['taxid'];
+            $contents[$idx]['taxcategory'] = $newcontents['taxcategory'][$idx] ?? $item['taxcategory'];
+            $contents[$idx]['prodid'] = $newcontents['prodid'][$idx] ?? $item['prodid'];
+            $contents[$idx]['content'] = $newcontents['content'][$idx] ?? $item['content'];
+            $contents[$idx]['count'] = $newcontents['count'][$idx] ?? $item['count'];
 
-            $contents[$idx]['discount'] = str_replace(',', '.', isset($newcontents['discount'][$idx]) ? $newcontents['discount'][$idx] : $item['discount']);
+            $contents[$idx]['discount'] = str_replace(',', '.', $newcontents['discount'][$idx] ?? $item['discount']);
             $contents[$idx]['pdiscount'] = 0;
             $contents[$idx]['vdiscount'] = 0;
-            $contents[$idx]['discount_type'] = isset($newcontents['discount_type'][$idx]) ? $newcontents['discount_type'][$idx] : $item['discount_type'];
+            $contents[$idx]['discount_type'] = $newcontents['discount_type'][$idx] ?? $item['discount_type'];
             if (preg_match('/^[0-9]+(\.[0-9]+)*$/', $contents[$idx]['discount'])) {
                 $contents[$idx]['pdiscount'] = ($contents[$idx]['discount_type'] == DISCOUNT_PERCENTAGE ? floatval($contents[$idx]['discount']) : 0);
                 $contents[$idx]['vdiscount'] = ($contents[$idx]['discount_type'] == DISCOUNT_AMOUNT ? floatval($contents[$idx]['discount']) : 0);
@@ -356,13 +356,13 @@ switch ($action) {
                 $error['discount[' . $idx . ']'] = trans('Wrong discount value!');
             }
 
-            $contents[$idx]['name'] = isset($newcontents['name'][$idx]) ? $newcontents['name'][$idx] : $item['name'];
+            $contents[$idx]['name'] = $newcontents['name'][$idx] ?? $item['name'];
             if (!strlen($contents[$idx]['name'])) {
                 $error['name[' . $idx . ']'] = trans('Field cannot be empty!');
             }
 
-            $contents[$idx]['tariffid'] = isset($newcontents['tariffid'][$idx]) ? $newcontents['tariffid'][$idx] : $item['tariffid'];
-            $contents[$idx]['servicetype'] = isset($newcontents['servicetype'][$idx]) ? $newcontents['servicetype'][$idx] : $item['servicetype'];
+            $contents[$idx]['tariffid'] = $newcontents['tariffid'][$idx] ?? $item['tariffid'];
+            $contents[$idx]['servicetype'] = $newcontents['servicetype'][$idx] ?? $item['servicetype'];
             $contents[$idx]['valuebrutto'] = isset($newcontents['valuebrutto'][$idx]) && $newcontents['valuebrutto'][$idx] != '' ? $newcontents['valuebrutto'][$idx] : $item['valuebrutto'];
             $contents[$idx]['valuenetto'] = isset($newcontents['valuenetto'][$idx]) && $newcontents['valuenetto'][$idx] != '' ? $newcontents['valuenetto'][$idx] : $item['valuenetto'];
 
@@ -782,7 +782,7 @@ switch ($action) {
         $SESSION->remove('cnoteerror', true);
 
         if (isset($_GET['print'])) {
-            $which = isset($_GET['which']) ? $_GET['which'] : 0;
+            $which = $_GET['which'] ?? 0;
 
             $SESSION->save('invoiceprint', array('invoice' => $id, 'which' => $which), true);
         } else {

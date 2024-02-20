@@ -1079,8 +1079,8 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
         if (!empty($props['id'])) {
             $props = array(
                 'id' => $props['id'],
-                'vlanid' => isset($props['vlanid']) ? $props['vlanid'] : null,
-                'description' => isset($props['description']) ? $props['description'] : null,
+                'vlanid' => $props['vlanid'] ?? null,
+                'description' => $props['description'] ?? null,
                 'customerid' => empty($props['customerid']) ? null : $props['customerid'],
                 'netnodeid' => empty($props['netnodeid']) ? null : $props['netnodeid'],
             );

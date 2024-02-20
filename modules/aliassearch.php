@@ -99,7 +99,7 @@ $SESSION->save('also', $o);
 if (isset($_GET['u'])) {
     $u = $_GET['u'];
 } elseif (count($search)) {
-    $u = isset($search['ownerid']) ? $search['ownerid'] : '';
+    $u = $search['ownerid'] ?? '';
 } else {
     $SESSION->restore('alsu', $u);
 }
@@ -162,5 +162,5 @@ if (count($search) || isset($_GET['s'])) {
 $layout['pagetitle'] = trans('Account, Alias, Domain Search');
 
 $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
-$SMARTY->assign('search', isset($search) ? $search : $SESSION->get('aliassearch'));
+$SMARTY->assign('search', $search ?? $SESSION->get('aliassearch'));
 $SMARTY->display('account/accountsearch.html');

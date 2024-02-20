@@ -26,7 +26,7 @@
 
 $layout['pagetitle'] = trans('Select gps coordinates');
 
-$p = isset($_GET['p']) ? $_GET['p'] : '';
+$p = $_GET['p'] ?? '';
 $js = '';
 
 if (!$p) {

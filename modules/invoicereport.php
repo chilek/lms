@@ -241,9 +241,9 @@ $documents = $DB->GetAll('SELECT d.id, d.type,
         . ' WHERE cancelled = 0 AND d.type IN ? AND (' . $wherecol . ' BETWEEN ? AND ?) '
         . (empty($jpk_flag) ? '' : ' AND (d.flags & ' . $jpk_flag . ') > 0')
         .(isset($numberplans) ? 'AND d.numberplanid IN (' . $numberplans . ')' : '')
-        .(isset($divwhere) ? $divwhere : '')
-        . (isset($servicetypewhere) ? $servicetypewhere : '')
-        .(isset($groupwhere) ? $groupwhere : '')
+        .($divwhere ?? '')
+        . ($servicetypewhere ?? '')
+        .($groupwhere ?? '')
         . $ctenwhere
         .( $ctype != -1 ? ' AND cu.type = ' . $ctype : '')
         .' AND NOT EXISTS (
@@ -478,23 +478,23 @@ if (isset($_POST['extended'])) {
     foreach ($totals as $page => $t) {
         $pages[] = $page;
 
-        $totals[$page]['alltotal_receipt'] = (isset($totals[$page - 1]['alltotal_receipt']) ? $totals[$page - 1]['alltotal_receipt'] : 0)
-            + (isset($t['total_receipt']) ? $t['total_receipt'] : 0);
-        $totals[$page]['allsumtax_receipt'] = (isset($totals[$page - 1]['allsumtax_receipt']) ? $totals[$page - 1]['allsumtax_receipt'] : 0)
-            + (isset($t['sumtax_receipt']) ? $t['sumtax_receipt'] : 0);
-        $totals[$page]['alltotal'] = (isset($totals[$page - 1]['alltotal']) ? $totals[$page - 1]['alltotal'] : 0)
+        $totals[$page]['alltotal_receipt'] = ($totals[$page - 1]['alltotal_receipt'] ?? 0)
+            + ($t['total_receipt'] ?? 0);
+        $totals[$page]['allsumtax_receipt'] = ($totals[$page - 1]['allsumtax_receipt'] ?? 0)
+            + ($t['sumtax_receipt'] ?? 0);
+        $totals[$page]['alltotal'] = ($totals[$page - 1]['alltotal'] ?? 0)
             + $t['total'];
-        $totals[$page]['allsumtax'] = (isset($totals[$page - 1]['allsumtax']) ? $totals[$page - 1]['allsumtax'] : 0)
+        $totals[$page]['allsumtax'] = ($totals[$page - 1]['allsumtax'] ?? 0)
             + $t['sumtax'];
 
         foreach ($taxeslist as $idx => $tax) {
             $totals[$page]['allval_receipt'][$idx] = (isset($totals[$page - 1]['allval_receipt']) ? $totals[$page - 1]['allval_receipt'][$idx] : 0)
-                + (isset($t['val_receipt'][$idx]) ? $t['val_receipt'][$idx] : 0);
+                + ($t['val_receipt'][$idx] ?? 0);
             $totals[$page]['alltax_receipt'][$idx] = (isset($totals[$page - 1]['alltax_receipt']) ? $totals[$page - 1]['alltax_receipt'][$idx] : 0)
-                + (isset($t['tax_receipt'][$idx]) ? $t['tax_receipt'][$idx] : 0);
-            $totals[$page]['allval'][$idx] = (isset($totals[$page - 1]['allval'][$idx]) ? $totals[$page - 1]['allval'][$idx] : 0)
+                + ($t['tax_receipt'][$idx] ?? 0);
+            $totals[$page]['allval'][$idx] = ($totals[$page - 1]['allval'][$idx] ?? 0)
                 + $t['val'][$idx];
-            $totals[$page]['alltax'][$idx] = (isset($totals[$page - 1]['alltax'][$idx]) ? $totals[$page-1]['alltax'][$idx] : 0)
+            $totals[$page]['alltax'][$idx] = ($totals[$page - 1]['alltax'][$idx] ?? 0)
                 + $t['tax'][$idx];
         }
     }

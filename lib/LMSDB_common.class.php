@@ -854,7 +854,7 @@ abstract class LMSDB_common implements LMSDBInterface
 
         $this->EnableWarnings();
 
-        return isset($lastupgrade) ? $lastupgrade : $dbver;
+        return $lastupgrade ?? $dbver;
     }
 
     public function getUpgradeErrors()

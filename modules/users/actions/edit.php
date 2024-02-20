@@ -28,7 +28,7 @@ if (!$LMS->UserExists($_GET['id'])) {
     $SESSION->redirect('?m=users&a=list');
 }
 
-$userinfo = isset($_POST['userinfo']) ? $_POST['userinfo'] : false;
+$userinfo = $_POST['userinfo'] ?? false;
 
 if ($userinfo) {
     $userinfo['id'] = $_GET['id'];

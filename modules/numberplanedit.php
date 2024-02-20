@@ -65,7 +65,7 @@ if (empty($numberplan)) {
 
 $template = $numberplan['template'];
 
-$numberplanedit = isset($_POST['numberplanedit']) ? $_POST['numberplanedit'] : null;
+$numberplanedit = $_POST['numberplanedit'] ?? null;
 
 if (is_array($numberplanedit) && count($numberplanedit)) {
     $numberplanedit['template'] = trim($numberplanedit['template']);

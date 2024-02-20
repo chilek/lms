@@ -95,7 +95,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
             . implode("\n", $accounts)
             . ($this->use_alert_color ? '</span>' : '');
         $tmp = str_replace('%bankaccount', $account_text, $tmp);
-        $tmp = str_replace('%bankname', isset($this->data['div_bank']) ? $this->data['div_bank'] : '', $tmp);
+        $tmp = str_replace('%bankname', $this->data['div_bank'] ?? '', $tmp);
 
         if (ConfigHelper::checkConfig('notes.customer_bankaccount', ConfigHelper::checkConfig('invoices.customer_bankaccount', true))) {
             $tmp .= "\n" . trans('Bank account:') . "\n" . '<B>' . $account_text . '<B>';

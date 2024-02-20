@@ -228,7 +228,7 @@ foreach ($message_files as $message_file) {
 
         $tid = $LMS->TicketAdd(array(
             'queue' => $queueid,
-            'createtime' => isset($date) ? $date : null,
+            'createtime' => $date ?? null,
             'requestor' => $requestor,
             'requestor_phone' => empty($phone) ? null : $phone,
             'subject' => trans('SMS from $a', (empty($phone) ? trans('unknown') : $formatted_phone)),
@@ -386,7 +386,7 @@ foreach ($message_files as $message_file) {
             $params = array(
                 'id' => $tid,
                 'queue' => $queuedata['name'],
-                'messageid' => isset($msgid) ? $msgid : null,
+                'messageid' => $msgid ?? null,
                 'customerid' => empty($customer) ? null : $customer['cid'],
                 'status' => $RT_STATES[RT_NEW],
                 'categories' => $cats,
@@ -395,9 +395,9 @@ foreach ($message_files as $message_file) {
                 'url' => $lms_url . '?m=rtticketview&id=',
             );
             $headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_mail_subject', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject')), $params);
-            $params['customerinfo'] = isset($mail_customerinfo) ? $mail_customerinfo : null;
+            $params['customerinfo'] = $mail_customerinfo ?? null;
             $message = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_mail_body', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body')), $params);
-            $params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
+            $params['customerinfo'] = $sms_customerinfo ?? null;
             $sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_sms_body', ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body')), $params);
 
             $LMS->NotifyUsers(array(

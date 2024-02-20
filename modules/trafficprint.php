@@ -28,7 +28,7 @@ if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkCo
     access_denied();
 }
 
-$type = isset($_GET['type']) ? $_GET['type'] : '';
+$type = $_GET['type'] ?? '';
 
 switch ($type) {
     case 'customertraffic':
@@ -37,8 +37,8 @@ switch ($type) {
         $stat_freq = ConfigHelper::getConfig('phpui.stat_freq', 12);
         $speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000);
 
-        $month = isset($_POST['month']) ? $_POST['month'] : date('n');
-        $year = isset($_POST['year']) ? $_POST['year'] : date('Y');
+        $month = $_POST['month'] ?? date('n');
+        $year = $_POST['year'] ?? date('Y');
         $customer = isset($_POST['customer']) ? intval($_POST['customer']) : intval($_GET['customer']);
 
         $layout['pagetitle'] = trans('Stats of Customer $a in month $b', $LMS->GetCustomerName($customer), date('F Y', mktime(0, 0, 0, $month, 1, $year)));

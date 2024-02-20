@@ -66,7 +66,7 @@ $SESSION->save('dnlh', $h);
 
 if (isset($_POST['group'])) {
     $g = $_POST['group'];
-    $ge = isset($_POST['groupexclude']) ? $_POST['groupexclude'] : null;
+    $ge = $_POST['groupexclude'] ?? null;
 } else {
     $SESSION->restore('dnlg', $g);
     $SESSION->restore('dnlge', $ge);

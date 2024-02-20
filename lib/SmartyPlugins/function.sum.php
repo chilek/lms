@@ -27,8 +27,8 @@
 function smarty_function_sum($params, $template)
 {
     $array = $params['array'];
-    $format = (isset($params['string_format']) ? $params['string_format'] : '%d');
-    $default = (isset($params['default']) ? $params['default'] : 0);
+    $format = ($params['string_format'] ?? '%d');
+    $default = ($params['default'] ?? 0);
     $result = 0;
 
     if ($array) {
@@ -39,7 +39,7 @@ function smarty_function_sum($params, $template)
         }
     }
 
-    $result = isset($result) ? $result : $default;
+    $result = $result ?? $default;
 
     if (isset($params['assign'])) {
         $template->assign($params['assign'], $result);

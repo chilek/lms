@@ -123,7 +123,7 @@ function GetPlugin($template, $customer, $update_title, $JSResponse)
 
     $JSResponse->assign('plugin', 'innerHTML', $result);
     if ($update_title) {
-        $JSResponse->assign('title', 'value', isset($engine['form_title']) ? $engine['form_title'] : $engine['title']);
+        $JSResponse->assign('title', 'value', $engine['form_title'] ?? $engine['title']);
     }
 
     $JSResponse->script('$("#documentpromotions").toggle(' . (empty($engine['promotion-schema-selection']) ? 'false' : 'true') . ')');

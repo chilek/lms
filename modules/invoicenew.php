@@ -71,7 +71,7 @@ $SESSION->restore('invoicenewerror', $error, true);
 
 $itemdata = r_trim($_POST);
 
-$action = isset($_GET['action']) ? $_GET['action'] : null;
+$action = $_GET['action'] ?? null;
 
 function changeContents($contents, $newcontents)
 {
@@ -703,7 +703,7 @@ switch ($action) {
         $contents = $customer = $error = $invoice = null;
 
         if (isset($_GET['print'])) {
-            $which = isset($_GET['which']) ? $_GET['which'] : 0;
+            $which = $_GET['which'] ?? 0;
 
             $SESSION->save('invoiceprint', array('invoice' => $iid, 'which' => $which), true);
         }
@@ -718,9 +718,9 @@ switch ($action) {
 }
 
 $SESSION->save('invoice', $invoice, true);
-$SESSION->save('invoicecontents', isset($contents) ? $contents : null, true);
-$SESSION->save('invoicecustomer', isset($customer) ? $customer : null, true);
-$SESSION->save('invoicenewerror', isset($error) ? $error : null, true);
+$SESSION->save('invoicecontents', $contents ?? null, true);
+$SESSION->save('invoicecustomer', $customer ?? null, true);
+$SESSION->save('invoicenewerror', $error ?? null, true);
 
 if ($action && (!isset($error) || !$error)) {
     // redirect needed because we don't want to destroy contents of invoice in order of page refresh
