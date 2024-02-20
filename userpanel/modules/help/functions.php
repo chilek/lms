@@ -96,11 +96,7 @@ function fetch_questions($id)
 function module_main()
 {
     global $SMARTY,$_GET;
-    if (isset($_GET['pr'])) {
-        $problem = $_GET['pr'];
-    } else {
-        $problem = get_first_solution();
-    }
+    $problem = $_GET['pr'] ?? get_first_solution();
     $solution = get_solution($problem);
     $questions = get_questions($problem);
 

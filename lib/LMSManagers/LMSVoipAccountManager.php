@@ -759,26 +759,10 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
      */
     public function getVoipBillings(array $params)
     {
-        if (isset($params['count'])) {
-            $count = $params['count'];
-        } else {
-            $count = false;
-        }
-        if (isset($params['stats'])) {
-            $stats = $params['stats'];
-        } else {
-            $stats = false;
-        }
-        if (isset($params['offset'])) {
-            $offset = $params['offset'];
-        } else {
-            $offset = null;
-        }
-        if (isset($params['limit'])) {
-            $limit = $params['limit'];
-        } else {
-            $limit = null;
-        }
+        $count = $params['count'] ?? false;
+        $stats = $params['stats'] ?? false;
+        $offset = $params['offset'] ?? null;
+        $limit = $params['limit'] ?? null;
 
         $order_string = '';
         if (isset($params['o'])) {

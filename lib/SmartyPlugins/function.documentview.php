@@ -51,11 +51,7 @@ function smarty_function_documentview($params, $template)
     }
     $external = isset($params['external']) && $params['external'] == 'true';
 
-    if (isset($types[$type])) {
-        $type = $types[$type];
-    } else {
-        $type = '';
-    }
+    $type = $types[$type] ?? '';
 
     $result .= '<div class="documentviewdialog" id="documentviewdialog-' . $id . '" title="' . $name . '" style="display: none;"
 		data-url="' . $url . '"></div>';

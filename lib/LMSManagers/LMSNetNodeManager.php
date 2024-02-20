@@ -36,21 +36,9 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
         ($dir == 'desc') ? $dir = 'desc' : $dir = 'asc';
         $short = isset($search['short']) && !empty($search['short']);
 
-        if (isset($search['count'])) {
-            $count = $search['count'];
-        } else {
-            $count = false;
-        }
-        if (isset($search['offset'])) {
-            $offset = $search['offset'];
-        } else {
-            $offset = null;
-        }
-        if (isset($search['limit'])) {
-            $limit = $search['limit'];
-        } else {
-            $limit = null;
-        }
+        $count = $search['count'] ?? false;
+        $offset = $search['offset'] ?? null;
+        $limit = $search['limit'] ?? null;
 
         switch ($order) {
             case 'id':

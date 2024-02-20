@@ -137,11 +137,7 @@ function ethernetInterfaceCodeByTechnology($technology)
         );
     }
 
-    if (isset($ethernet_interface_codes[$technology])) {
-        return $ethernet_interface_codes[$technology];
-    } else {
-        return '10';
-    }
+    return $ethernet_interface_codes[$technology] ?? '10';
 }
 
 function pointCodeByNetNodeType($netNodeType)
@@ -180,11 +176,7 @@ function pointCodeByNetNodeType($netNodeType)
         );
     }
 
-    if (isset($point_codes[$netNodeType])) {
-        return $point_codes[$netNodeType];
-    } else {
-        return '14';
-    }
+    return $point_codes[$netNodeType] ?? '14';
 }
 
 function isMobileTechnology($technology)
@@ -248,18 +240,10 @@ function routeTypeName($routetype)
         );
 
         $report_other_duct_type_as = intval($_POST['report-other-duct-type-as']);
-        if (isset($route_types[$report_other_duct_type_as])) {
-            $report_other_duct_type_as = $route_types[$report_other_duct_type_as];
-        } else {
-            $report_other_duct_type_as = 'Inna określona w narzędziu teleinformatycznym';
-        }
+        $report_other_duct_type_as = $route_types[$report_other_duct_type_as] ?? 'Inna określona w narzędziu teleinformatycznym';
     }
 
-    if (isset($route_types[$routetype])) {
-        return $route_types[$routetype];
-    } else {
-        return $report_other_duct_type_as;
-    }
+    return $route_types[$routetype] ?? $report_other_duct_type_as;
 }
 
 function radioTransmissionNameByTechnology($technology)

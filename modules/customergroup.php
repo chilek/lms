@@ -59,11 +59,7 @@ if ($action == 'delete') {
         }
     }
 } elseif ($action == 'replace') {
-    if (isset($_POST['markedcustomergroupid'])) {
-        $customergroupids = $_POST['markedcustomergroupid'];
-    } else {
-        $customergroupids = array();
-    }
+    $customergroupids = $_POST['markedcustomergroupid'] ?? array();
 
     $groupids = $_POST['customergroupid'];
     if (!is_array($groupids)) {
