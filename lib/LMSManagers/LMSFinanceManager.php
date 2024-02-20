@@ -1672,7 +1672,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 foreach ($assignments as $assignmentid => &$periods) {
                     if (!in_array($assignmentid, $sassignments)) {
                         unset($values[$label][$assignmentid]);
-                        continue;
                     }
                 }
                 unset($periods);

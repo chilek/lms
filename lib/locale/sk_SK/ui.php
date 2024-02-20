@@ -177,7 +177,6 @@ self::addLanguageFunctions(
                             $ret .=' ';
                         }
                         $curp = $p - 1;
-                        continue;
                     }
                 }
                 $num = substr($num, $maxp - $curp, $curp - $p + 1);
