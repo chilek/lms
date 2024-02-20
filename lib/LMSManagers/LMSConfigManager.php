@@ -455,8 +455,6 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                             $divArgs = array_merge($divisionSourceArgs, $divisionTargetArgs);
                             $params['divArgs'] = $divArgs;
                             $this->addDivisionConfig($params);
-                        } else {
-                            return; // skip due to denied override
                         }
                     } else { // if target division does not exist
                         // clone source division data to the target division config
@@ -486,8 +484,6 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                             $divArgs = array_merge($divisionSourceArgs, $divisionTargetArgs);
                             $params['divArgs'] = $divArgs;
                             $this->addDivisionConfig($params);
-                        } else {
-                            return; // skip due to denied override
                         }
                     } else { // if target division option does not exist
                         // clone source division config data to the target division config
@@ -527,8 +523,6 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                             $params['divArgs'] = $divArgs;
                             $this->addDivisionConfig($params);
                         }
-                    } else {
-                        return; // skip due to denied parent dependecy
                     }
                 }
             }
@@ -584,8 +578,6 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                                     );
                                     $userArgs = array_merge($sourceArgs, $userTargetArgs);
                                     $this->addConfigOption($userArgs);
-                                } else {
-                                    return;
                                 }
                             } else { // if user option does not exist in target division
                                 $userTargetArgs = array(
@@ -625,11 +617,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                                         $userArgs = array_merge($sourceArgs, $userTargetArgs);
                                         $this->addConfigOption($userArgs);
                                     }
-                                } else {
-                                    return;
                                 }
-                            } else {
-                                return; // skip because creation of parent dependecy is denied
                             }
                         }
                     } else { // clone source user to target user in the same division in the same section
@@ -652,8 +640,6 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                                     );
                                     $userArgs = array_merge($sourceArgs, $userTargetArgs);
                                     $this->addConfigOption($userArgs);
-                                } else {
-                                    return;
                                 }
                             } else { // if user not exists in target division
                                 $userTargetArgs = array(
@@ -665,8 +651,6 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                                 $userArgs = array_merge($sourceArgs, $userTargetArgs);
                                 $this->addConfigOption($userArgs);
                             }
-                        } else {
-                            return; // skip if source user is the same as target user
                         }
                     }
                 } else { // check if section is new one or exists
@@ -695,8 +679,6 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                                     );
                                     $userArgs = array_merge($sourceArgs, $userTargetArgs);
                                     $this->addConfigOption($userArgs);
-                                } else {
-                                    return; // skip because override is denied
                                 }
                             } else { // if user not exists in target division add new one
                                 $userTargetArgs = array(
@@ -731,8 +713,6 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                                     $userArgs = array_merge($sourceArgs, $userTargetArgs);
                                     $this->addConfigOption($userArgs);
                                 }
-                            } else {
-                                return; // skip because creation of parent dependecy is denied
                             }
                         }
                     } else { // clone to the new section - parent dependency is requiered
@@ -770,8 +750,6 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                                 $userArgs = array_merge($sourceArgs, $userTargetArgs);
                                 $this->addConfigOption($userArgs);
                             }
-                        } else {
-                            return; // skip because creation of parent dependecy is denied
                         }
                     }
                 }
@@ -811,8 +789,6 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                             );
                             $userArgs = array_merge($userSourceArgs, $userTargetArgs);
                             $this->addConfigOption($userArgs);
-                        } else {
-                            return; // skip because override is denied
                         }
                     } else { // if target user does not exist
                         // clone source user data to the target user config
@@ -838,8 +814,6 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                             );
                             $userArgs = array_merge($userSourceArgs, $userTargetArgs);
                             $this->addConfigOption($userArgs);
-                        } else {
-                            return; // skip because override is denied
                         }
                     } else { // if target user option does not exist
                         // clone source user config data to the target user config
@@ -875,8 +849,6 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                             $userArgs = array_merge($userSourceArgs, $userTargetArgs);
                             $this->addConfigOption($userArgs);
                         }
-                    } else {
-                        return; // skip because parent dependecy is denied
                     }
                 }
             }

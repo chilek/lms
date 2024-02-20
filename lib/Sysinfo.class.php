@@ -93,7 +93,6 @@ class Sysinfo
             }
             next($path);
         }
-        return;
     }
 
     public function hostname()

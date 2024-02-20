@@ -45,7 +45,6 @@ function find_program($program)
         }
         next($path);
     }
-    return;
 }
 
 function execute_program($program, $args = '')
