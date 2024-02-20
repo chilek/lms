@@ -2160,9 +2160,13 @@ $(function() {
 
 
 	$('a[data-confirmation-text], button[data-confirmation-text]').click(function() {
-		confirmDialog($(this).attr('data-confirmation-text')).done(function() { location.href = $(this).attr('data-href'); })
+		var btn = $(this);
+		confirmDialog($(this).attr('data-confirmation-text')).done(function() {
+			location.href = btn.attr('data-href');
+		});
 		return false;
 	});
+
 	window.addEventListener('message', function(e) {
 		if (e.data.hasOwnProperty('targetValue') && e.data.hasOwnProperty('targetSelector')) {
 			var elem = $(e.data.targetSelector);
