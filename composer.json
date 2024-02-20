@@ -118,7 +118,6 @@
         "ext-intl": "*",
         "ext-ctype": "*",
         "ext-posix": "*",
-        "ext-pgsql": "*",
         "ext-calendar": "*",
         "phine/observer": "2.0",
         "phine/exception": "1.0",
