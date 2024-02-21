@@ -630,6 +630,7 @@ version 28-git (????-??-??):
     by default only if original message was recognised as one from registered customer e-mail contact [chilan]
   - improvement: added '- without technology -' selection in link technology filter
     of customer search form [chilan]
+  - improvement: separated help queue rights for sms and e-mail notices [chilan]
 
 version 27.0 (2021-08-20):
 
