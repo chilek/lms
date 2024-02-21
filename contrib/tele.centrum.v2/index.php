@@ -247,7 +247,7 @@ if (!empty($_POST)) {
                     AND u.deleted = 0',
                 array(
                     $queue,
-                    RT_RIGHT_NOTICE,
+                    RT_RIGHT_SMS_NOTICE,
                 )
             ))) {
                 foreach ($recipients as $phone) {

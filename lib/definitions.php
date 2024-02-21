@@ -302,14 +302,17 @@ $RT_STATES = array(
 const RT_RIGHT_READ = 1,
     RT_RIGHT_WRITE = 2,
     RT_RIGHT_DELETE = 4,
-    RT_RIGHT_NOTICE = 8,
-    RT_RIGHT_INDICATOR = 16;
+    RT_RIGHT_SMS_NOTICE = 8,
+    RT_RIGHT_INDICATOR = 16,
+    RT_RIGHT_EMAIL_NOTICE = 32,
+    RT_RIGHT_NOTICE = 40;
 
 $RT_RIGHTS = array(
     RT_RIGHT_READ => trans("Read"),
     RT_RIGHT_WRITE => trans("Write (+R)"),
     RT_RIGHT_DELETE => trans("Delete (+R)"),
-    RT_RIGHT_NOTICE => trans("Notice (+R)"),
+    RT_RIGHT_SMS_NOTICE => trans("SMS Notice (+R)"),
+    RT_RIGHT_EMAIL_NOTICE => trans("E-mail Notice (+R)"),
     RT_RIGHT_INDICATOR => trans("Indicator (+R)"),
 );
 

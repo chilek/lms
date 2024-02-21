@@ -2146,7 +2146,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 'SELECT DISTINCT email
 			FROM users, rtrights
 			WHERE users.id=userid AND queueid = ? AND email != \'\'
-				AND (rtrights.rights & ' . RT_RIGHT_NOTICE . ') > 0 AND deleted = 0 AND access = 1'
+				AND (rtrights.rights & ' . RT_RIGHT_EMAIL_NOTICE . ') > 0 AND deleted = 0 AND access = 1'
                 . (!isset($args['user']) || $notify_author ? '' : ' AND users.id <> ?')
                 . (!empty($params['verifierid']) ? ' AND users.id <> ' . intval($params['verifierid']) : '')
                 . ' AND (ntype & ?) > 0',
@@ -2163,7 +2163,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                         'SELECT DISTINCT email
 					FROM users, rtrights
 					WHERE users.id=userid AND queueid = ? AND email != \'\'
-						AND (rtrights.rights & ' . RT_RIGHT_NOTICE . ') > 0 AND deleted = 0 AND access = 1
+						AND (rtrights.rights & ' . RT_RIGHT_EMAIL_NOTICE . ') > 0 AND deleted = 0 AND access = 1
 						AND (ntype & ?) > 0',
                         array($params['oldqueue'], MSG_MAIL)
                     );
@@ -2215,7 +2215,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 'SELECT DISTINCT phone
 			FROM users, rtrights
 				WHERE users.id=userid AND queueid = ? AND phone != \'\'
-					AND (rtrights.rights & ' . RT_RIGHT_NOTICE . ') > 0 AND deleted = 0 AND access = 1'
+					AND (rtrights.rights & ' . RT_RIGHT_SMS_NOTICE . ') > 0 AND deleted = 0 AND access = 1'
                     . (!isset($args['user']) || $notify_author ? '' : ' AND users.id <> ?')
                     . (!empty($params['verifierid']) ? ' AND users.id <> ' . intval($params['verifierid']) : '')
                     . ' AND (ntype & ?) > 0',
@@ -2226,7 +2226,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                         'SELECT DISTINCT phone
 					FROM users, rtrights
 					WHERE users.id=userid AND queueid = ? AND phone != \'\'
-						AND (rtrights.rights & ' . RT_RIGHT_NOTICE . ') > 0 AND deleted = 0 AND access = 1
+						AND (rtrights.rights & ' . RT_RIGHT_SMS_NOTICE . ') > 0 AND deleted = 0 AND access = 1
 						AND (ntype & ?) > 0',
                         array($params['oldqueue'], MSG_SMS)
                     );
