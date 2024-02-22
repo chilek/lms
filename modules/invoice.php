@@ -492,26 +492,26 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             }
             $jpk_data .= "\t\t</IdentyfikatorPodmiotu>\n";
             $jpk_data .= "\t\t<AdresPodmiotu>\n";
-            $jpk_data .= "\t\t\t<${tns}KodKraju>PL</${tns}KodKraju>\n";
-            $jpk_data .= "\t\t\t<${tns}Wojewodztwo>" . (!empty($division['state']) ? $division['state']
-                    : ConfigHelper::getConfig('jpk.division_state', '', true)) . "</${tns}Wojewodztwo>\n";
-            $jpk_data .= "\t\t\t<${tns}Powiat>" . (!empty($division['district']) ? $division['district']
-                    : ConfigHelper::getConfig('jpk.division_district', '', true)) . "</${tns}Powiat>\n";
-            $jpk_data .= "\t\t\t<${tns}Gmina>" . (!empty($division['borough']) ? $division['borough']
-                    : ConfigHelper::getConfig('jpk.division_borough', '', true)) . "</${tns}Gmina>\n";
+            $jpk_data .= "\t\t\t<{$tns}KodKraju>PL</{$tns}KodKraju>\n";
+            $jpk_data .= "\t\t\t<{$tns}Wojewodztwo>" . (!empty($division['state']) ? $division['state']
+                    : ConfigHelper::getConfig('jpk.division_state', '', true)) . "</{$tns}Wojewodztwo>\n";
+            $jpk_data .= "\t\t\t<{$tns}Powiat>" . (!empty($division['district']) ? $division['district']
+                    : ConfigHelper::getConfig('jpk.division_district', '', true)) . "</{$tns}Powiat>\n";
+            $jpk_data .= "\t\t\t<{$tns}Gmina>" . (!empty($division['borough']) ? $division['borough']
+                    : ConfigHelper::getConfig('jpk.division_borough', '', true)) . "</{$tns}Gmina>\n";
             $address = parse_address($division['address']);
-            $jpk_data .= "\t\t\t<${tns}Ulica>" . $address['street'] . "</${tns}Ulica>\n";
-            $jpk_data .= "\t\t\t<${tns}NrDomu>" . $address['house'] . "</${tns}NrDomu>\n";
+            $jpk_data .= "\t\t\t<{$tns}Ulica>" . $address['street'] . "</{$tns}Ulica>\n";
+            $jpk_data .= "\t\t\t<{$tns}NrDomu>" . $address['house'] . "</{$tns}NrDomu>\n";
             if (isset($address['flat'])) {
-                $jpk_data .= "\t\t\t<${tns}NrLokalu>" . $address['flat'] . "</${tns}NrLokalu>\n";
+                $jpk_data .= "\t\t\t<{$tns}NrLokalu>" . $address['flat'] . "</{$tns}NrLokalu>\n";
             }
-            $jpk_data .= "\t\t\t<${tns}Miejscowosc>" . $division['city'] . "</${tns}Miejscowosc>\n";
-            $jpk_data .= "\t\t\t<${tns}KodPocztowy>" . $division['zip'] . "</${tns}KodPocztowy>\n";
+            $jpk_data .= "\t\t\t<{$tns}Miejscowosc>" . $division['city'] . "</{$tns}Miejscowosc>\n";
+            $jpk_data .= "\t\t\t<{$tns}KodPocztowy>" . $division['zip'] . "</{$tns}KodPocztowy>\n";
             if ($jpk_type == 'vat') {
-                $jpk_data .= "\t\t\t<${tns}Poczta>" . ConfigHelper::getConfig(
+                $jpk_data .= "\t\t\t<{$tns}Poczta>" . ConfigHelper::getConfig(
                     'jpk.division_postal_city',
                     $division['city']
-                ) . "</${tns}Poczta>\n";
+                ) . "</{$tns}Poczta>\n";
             }
             $jpk_data .= "\t\t</AdresPodmiotu>\n";
 
