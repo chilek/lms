@@ -77,10 +77,7 @@ class USERPANEL
             if (!function_exists('cmp')) {
                 function cmp($a, $b)
                 {
-                    if ($a['prio'] == $b['prio']) {
-                        return 0;
-                    }
-                    return ($a['prio'] < $b['prio']) ? -1 : 1;
+                    return $a['prio'] <=> $b['prio'];
                 }
             }
             uasort($this->MODULES, 'cmp');

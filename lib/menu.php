@@ -989,11 +989,7 @@ if (!function_exists('menu_cmp')) {
         if (!isset($b['prio'])) {
             $b['prio'] = 9999;
         }
-
-        if ($a['prio'] == $b['prio']) {
-            return 0;
-        }
-        return ($a['prio'] < $b['prio']) ? -1 : 1;
+        return $a['prio'] <=> $b['prio'];
     }
 }
 
