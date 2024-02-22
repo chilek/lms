@@ -1311,6 +1311,7 @@ if ($report_type == 'full') {
                         WHERE n.ownerid IS NOT NULL
                             AND n.netdev IS NOT NULL
                             " . ($division ? ' AND c.divisionid = ' . $division : '') . "
+                            AND n.netdev IN ?
                             AND n.linktype = ?
                             AND n.linktechnology = ?
                             AND addr.city_id = ?
@@ -1325,6 +1326,7 @@ if ($report_type == 'full') {
                             AND allsuspended.total IS NULL
                         GROUP BY na.nodeid, n.name, n.longitude, n.latitude, n.linktype, n.linktechnology, n.address_id",
                         array(
+                            $netnode['netdevices'],
                             $range['linktype'],
                             $range['linktechnology'],
                             $range['location_city'],
