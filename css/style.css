@@ -12070,7 +12070,7 @@ a.lms-ui-button:not(.lms-ui-link-button) > i:before {
 }
 a.lms-ui-button:not(.lms-ui-link-button) > i {
   text-align: center;
-  margin: 0 0.1em;
+  padding: 0 0.1em;
 }
 a.lms-ui-button:not(.lms-ui-link-button):hover {
   cursor: pointer;
