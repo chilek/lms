@@ -2017,8 +2017,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         extract($params);
         foreach (array('search', 'cat', 'group', 'numberplan', 'division', 'exclude', 'hideclosed', 'notsent', 'page', 'customer') as $var) {
-            if (!isset($$var)) {
-                $$var = null;
+            if (!isset(${$var})) {
+                ${$var} = null;
             }
         }
         if (!isset($order)) {
@@ -2818,8 +2818,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         extract($params);
         foreach (array('search', 'cat', 'group', 'exclude', 'hideclosed') as $var) {
-            if (!isset($$var)) {
-                $$var = null;
+            if (!isset(${$var})) {
+                ${$var} = null;
             }
         }
         if (!isset($order)) {
@@ -3648,8 +3648,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         extract($params);
         foreach (array('search', 'cat', 'group', 'exclude') as $var) {
-            if (!isset($$var)) {
-                $$var = null;
+            if (!isset(${$var})) {
+                ${$var} = null;
             }
         }
         if (!isset($count)) {
@@ -4238,16 +4238,16 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         extract($params);
         foreach (array('search', 'cat') as $var) {
-            if (!isset($$var)) {
-                $$var = null;
+            if (!isset(${$var})) {
+                ${$var} = null;
             }
         }
         if (!isset($order)) {
             $order = '';
         }
         foreach (array('from', 'to', 'advances') as $var) {
-            if (!isset($$var)) {
-                $$var = 0;
+            if (!isset(${$var})) {
+                ${$var} = 0;
             }
         }
         if (!isset($count)) {

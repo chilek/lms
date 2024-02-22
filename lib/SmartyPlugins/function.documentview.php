@@ -44,7 +44,7 @@ function smarty_function_documentview($params, $template)
     $result = '';
     foreach ($vars as $var) {
         if (isset($params[$var])) {
-            $$var = $params[$var];
+            ${$var} = $params[$var];
         } else {
             return $result;
         }

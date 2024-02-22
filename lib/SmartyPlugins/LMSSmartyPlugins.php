@@ -68,7 +68,7 @@ class LMSSmartyPlugins
                 case 'resourceid':
                 // optional - contents copied to clipboard
                 case 'clipboard':
-                    $$name = $value;
+                    ${$name} = $value;
                     break;
                 // optional - text tip,
                 case 'tip':
@@ -76,7 +76,7 @@ class LMSSmartyPlugins
                 case 'label':
                 case 'text':
                     if (isset($value)) {
-                        $$name = trans($value);
+                        ${$name} = trans($value);
                     }
                     break;
                 // optional - allow to specify javascript code lauched after click,
@@ -89,7 +89,7 @@ class LMSSmartyPlugins
                 case 'visible':
                 // optional - if element should be initially disabled
                 case 'disabled':
-                    $$name = !empty($value);
+                    ${$name} = !empty($value);
                     break;
                 default:
                     $other_attributes .= ' ' . str_replace('_', '-', $name) . '="' . $value . '"';
@@ -382,7 +382,7 @@ class LMSSmartyPlugins
         $result = '';
         foreach ($vars as $var) {
             if (array_key_exists($var, $params)) {
-                $$var = $params[$var];
+                ${$var} = $params[$var];
             } else {
                 return $result;
             }
@@ -394,7 +394,7 @@ class LMSSmartyPlugins
             switch ($key) {
                 case 'item_custom_contents':
                 case 'new_item_custom_content':
-                    $$key = $value;
+                    ${$key} = $value;
                     break;
             }
         }
