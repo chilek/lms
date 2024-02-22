@@ -39,7 +39,7 @@ if ($userinfo) {
 
     if ($userinfo['login'] == '') {
         $error['login'] = trans('Login can\'t be empty!');
-    } elseif (!eregi('^[a-z0-9.-_]+$', $userinfo['login'])) {
+    } elseif (!preg_match('#^[a-z0-9\.-_]+$#mi', $userinfo['login'])) {
         $error['login'] = trans('Login contains forbidden characters!');
     } elseif ($LMS->GetUserIDByLogin($userinfo['login']) && $LMS->GetUserIDByLogin($userinfo['login']) != $_GET['id']) {
         $error['login'] = trans('User with specified login exists or that login was used in the past!');
