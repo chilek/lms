@@ -53,7 +53,7 @@ if (isset($_POST['networkdata'])) {
     }
 
     $networkdata['id'] = $_GET['id'];
-    $networkdata['size'] = pow(2, 32-$networkdata['prefix']);
+    $networkdata['size'] = 2 ** (32-$networkdata['prefix']);
     $networkdata['addresslong'] = ip_long($networkdata['address']);
     $networkdata['mask'] = prefix2mask($networkdata['prefix']);
     $networkdata['snatlong'] = ip_long($networkdata['snat']);

@@ -427,7 +427,7 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
     if ($max_val < 1000) {
         $max_val = 1000;
     }
-    $max_pow = floor(pow(10, floor(log10($max_val))));
+    $max_pow = floor(10 ** floor(log10($max_val)));
     $max_v = ceil($max_val / $max_pow);
     $max_step = ($crtY2 - $crtY1) / ($max_v);
     if ($max_v < 2) {
