@@ -284,7 +284,7 @@ if (isset($_POST['customeradd'])) {
     }
 
     if (isset($customeradd['cutoffstopindefinitely'])) {
-        $cutoffstop = intval(pow(2, 31) - 1);
+        $cutoffstop = intval(2 ** 31 - 1);
     } elseif ($customeradd['cutoffstop'] == '') {
         $cutoffstop = 0;
     } elseif ($cutoffstop = date_to_timestamp($customeradd['cutoffstop'])) {

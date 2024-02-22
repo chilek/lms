@@ -178,7 +178,7 @@ if (isset($_GET['ajax'])) {
     if ($mask < 24) {
         $SMARTY->assign('mask', 24);
 
-        $counter = 2 * pow(2, 24-$mask-1) - 1;
+        $counter = 2 * 2 ** (24-$mask-1) - 1;
         for ($i=0; $i<=$counter; ++$i) {
             $SMARTY->assign('ip', long_ip(ip_long($ip) + $i * 256));
             $SMARTY->assign('hosts', array(array('host'=>$host, 'net_name'=>$_POST['netname'])));
@@ -187,7 +187,7 @@ if (isset($_GET['ajax'])) {
         }
     } else {
         $ip_start = ip_long($ip);
-        $ip_end   = $ip_start + pow(2, 32-$mask) - 1;
+        $ip_end   = $ip_start + 2 ** (32-$mask) - 1;
         $data     = array($ip_start , $ip_end);
 
         // if host is set then get only networks for specified host

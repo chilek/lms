@@ -334,7 +334,7 @@ if (!isset($_POST['xjxfun'])) {
             }
 
             if (isset($customerdata['cutoffstopindefinitely'])) {
-                $cutoffstop = intval(pow(2, 31) - 1);
+                $cutoffstop = intval(2 ** 31 - 1);
             } elseif ($customerdata['cutoffstop'] == '') {
                 $cutoffstop = 0;
             } elseif ($cutoffstop = date_to_timestamp($customerdata['cutoffstop'])) {
@@ -475,7 +475,7 @@ if (!isset($_POST['xjxfun'])) {
 
             $customerinfo['cutoffstopindefinitely'] = 0;
             if ($customerinfo['cutoffstop']) {
-                if ($customerinfo['cutoffstop'] == intval(pow(2, 31) - 1)) {
+                if ($customerinfo['cutoffstop'] == intval(2 ** 31 - 1)) {
                     $customerinfo['cutoffstop'] = 0;
                     $customerinfo['cutoffstopindefinitely'] = 1;
                 } else {
