@@ -760,7 +760,7 @@ final class xajax
         if ($sJsFullFilename) {
             $realJsFile = $sJsFullFilename;
         } else {
-            $realPath = realpath(dirname(dirname(__FILE__)));
+            $realPath = realpath(dirname(__FILE__, 2));
             $realJsFile = $realPath . '/'. $sJsFile;
         }
 
@@ -797,7 +797,7 @@ final class xajax
     private function _compressSelf($sFolder = null)
     {
         if (null == $sFolder) {
-            $sFolder = dirname(dirname(__FILE__));
+            $sFolder = dirname(__FILE__, 2);
         }
             
         require_once(dirname(__FILE__) . '/xajaxCompress.inc.php');
