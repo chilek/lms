@@ -2244,7 +2244,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function CleanupTicketLastView()
     {
-        if (rand(0, 100) <= 1) {
+        if (random_int(0, 100) <= 1) {
             $this->db->Execute('DELETE FROM rtticketlastview
 				WHERE ticketid IN (
 					SELECT t.id FROM rttickets t

@@ -54,7 +54,7 @@ class lms_smspasswords_plugin
         $SESSION = $LMS->AUTH->SESSION;
 
         $retries = 3;
-        $smspassword = strval(rand(10000000, 99999999));
+        $smspassword = strval(random_int(10000000, 99999999));
         $LMS->SendSMS($phone, trans('Your one-time password is $a', $smspassword));
         $SESSION->save('session_smspassword', $smspassword);
         $SESSION->save('session_retries', $retries);

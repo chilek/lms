@@ -198,7 +198,7 @@ self::addLanguageFunctions(
          * \return string
          */
         'generateRandomPostcode' => function () {
-            return sprintf("%02d", rand(0, 99)) . '-' . sprintf("%03d", rand(0, 999));
+            return sprintf("%02d", random_int(0, 99)) . '-' . sprintf("%03d", random_int(0, 999));
         },
         'get_currency_value' => function ($currency, $date = null) {
             if ($date) {

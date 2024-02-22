@@ -525,7 +525,7 @@ final class xajax
 
         // TODO: Move to configuration option
         if (null === $value) {
-            $value = rand(100000, 999999);
+            $value = random_int(100000, 999999);
         }
 
         return hash($algo, $value);

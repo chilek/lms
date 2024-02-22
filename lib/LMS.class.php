@@ -2848,7 +2848,7 @@ class LMS
     {
         if (!($uiid = $this->DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype=?', array('unique_installation_id')))) {
             list($usec, $sec) = explode(' ', microtime());
-            $uiid = md5(uniqid(rand(), true)) . sprintf('%09x', $sec) . sprintf('%07x', ($usec * 10000000));
+            $uiid = md5(uniqid(random_int(0, mt_getrandmax()), true)) . sprintf('%09x', $sec) . sprintf('%07x', ($usec * 10000000));
             $this->DB->Execute('INSERT INTO dbinfo (keytype, keyvalue) VALUES (?, ?)', array('unique_installation_id', $uiid));
         }
         return $uiid;
