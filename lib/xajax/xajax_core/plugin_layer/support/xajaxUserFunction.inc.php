@@ -116,7 +116,7 @@ final class xajaxUserFunction
 //      $this->sInclude = $sInclude;
 //      foreach ($aConfiguration as $sKey => $sValue)
 //          $this->configure($sKey, $sValue);
-        
+
         if (is_array($this->uf) && 2 < count($this->uf)) {
             $this->sAlias = $this->uf[0];
             $this->uf = array_slice($this->uf, 1);
@@ -228,7 +228,7 @@ final class xajaxUserFunction
             ob_start();
             require_once $this->sInclude;
             $sOutput = ob_get_clean();
-            
+
 //SkipDebug
             if (0 < strlen($sOutput)) {
                 $sOutput = 'From include file: ' . $this->sInclude . ' => ' . $sOutput;
