@@ -558,7 +558,7 @@ abstract class LMSDB_common implements LMSDBInterface
             if ($param_count != $array_count) {
                 $error = array(
                     'query' => $query,
-                    'error' => "SQL query parser error: parameter count differs from passed argument count (${param_count} != ${array_count}): "
+                    'error' => "SQL query parser error: parameter count differs from passed argument count ({$param_count} != {$array_count}): "
                         . ($array_count ? var_export($inputarray, true) : ''),
                 );
                 $this->errors[] = $error;
