@@ -458,10 +458,7 @@ final class xajax
     */
     public function getConfiguration($sName)
     {
-        if (isset($this->aSettings[$sName])) {
-            return $this->aSettings[$sName];
-        }
-        return null;
+        return $this->aSettings[$sName] ?? null;
     }
 
     /*
