@@ -38,6 +38,8 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'co
 
 class LMSTCPDF extends TCPDF
 {
+    private $producer = '';
+
     /* set own Header function */
     public function Header()
     {
