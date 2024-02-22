@@ -582,10 +582,7 @@ class Session
         }
 
         if (isset($id)) {
-            if (isset($this->_persistent_settings['filters'][$module]['subfilters'][$id][$name])) {
-                return $this->_persistent_settings['filters'][$module]['subfilters'][$id][$name];
-            }
-            return array();
+            return $this->_persistent_settings['filters'][$module]['subfilters'][$id][$name] ?? array();
         } elseif (!isset($this->_persistent_settings['filters'][$module][$name])) {
             return array();
         }

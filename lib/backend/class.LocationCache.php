@@ -112,11 +112,7 @@ class LocationCache
                         array( $id )
                     );
 
-                    if (isset($this->city_by_id[ $id ])) {
-                        return $this->city_by_id[ $id ];
-                    }
-
-                    return null;
+                    return $this->city_by_id[ $id ] ?? null;
                 }
                 break;
         }
