@@ -211,7 +211,7 @@ final class xajax
                 'generateStubs' => true,
                 'logFile' => '',
                 'timeout' => 6000,
-                'version' => $this->getVersion()
+                'version' => self::getVersion()
                 )
         );
 
