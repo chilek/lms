@@ -14717,8 +14717,8 @@ IMG {
 }
 .lms-ui-crossed {
   text-decoration: line-through;
-  text-decoration-color: rgba(0, 0, 0, 0.3);
-  text-decoration-thickness: 0.3em;
+  text-decoration-color: rgba(0, 0, 0, 0.2);
+  text-decoration-thickness: 0.2em;
 }
 .pre {
   font-size: 10pt;
@@ -15032,8 +15032,8 @@ IMG {
 }
 .lms-ui-assignment-not-commited {
   text-decoration: line-through;
-  text-decoration-color: rgba(0, 0, 0, 0.3);
-  text-decoration-thickness: 0.3em;
+  text-decoration-color: rgba(0, 0, 0, 0.2);
+  text-decoration-thickness: 0.2em;
 }
 .lms-ui-document-closed > td:not(:last-child),
 .lms-ui-document-closed .lms-ui-tab-table-column:not(.buttons) {
