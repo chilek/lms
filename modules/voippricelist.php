@@ -26,7 +26,7 @@
 
 $layout['pagetitle'] = trans('Price lists');
 
-$pricelist = (isset($_POST['pricelist'])) ? $_POST['pricelist'] : null;
+$pricelist = $_POST['pricelist'] ?? null;
 $error = array();
 
 if (isset($_GET['id'])) {
