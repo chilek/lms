@@ -60,7 +60,7 @@ abstract class LMSPlugin implements ObserverInterface
      */
     public static function loadLocales()
     {
-        $reflector = new ReflectionClass(get_called_class());
+        $reflector = new ReflectionClass(static::class);
         Localisation::appendUiLanguage(
             dirname($reflector->getFileName()) . DIRECTORY_SEPARATOR . 'lib'
                 . DIRECTORY_SEPARATOR . 'locale'
@@ -73,7 +73,7 @@ abstract class LMSPlugin implements ObserverInterface
     public static function insertDefaultTemplateDir(Smarty $smarty)
     {
         $template_dirs = $smarty->getTemplateDir();
-        $reflector = new ReflectionClass(get_called_class());
+        $reflector = new ReflectionClass(static::class);
         $plugin_templates = dirname($reflector->getFileName()) . DIRECTORY_SEPARATOR . 'templates';
         array_unshift($template_dirs, $plugin_templates);
         $smarty->setTemplateDir($template_dirs);
