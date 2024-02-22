@@ -47,7 +47,7 @@ class Auth
     public $ip;
     public $lastip;
     private $passwdforcechange = false;
-    private $asswdexpiration = null;
+    private $passwdexpiration = null;
     private $passwdlastchange = null;
     private $passwdrequiredchange = false;
     private $twofactorauthrequiredchange = false;
