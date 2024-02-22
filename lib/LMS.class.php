@@ -72,6 +72,7 @@ class LMS
     protected $division_manager;
     protected $project_manager;
     protected $file_manager;
+    protected $tariff_price_variant_manager;
 
     const DB_DUMP_MULTI_RECORD_LIMIT = 500;
 
