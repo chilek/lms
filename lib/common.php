@@ -1376,12 +1376,12 @@ function handle_file_uploads($elemid, &$error)
                 $file['sizestr'] = sprintf("%.02f", $size) . ' ' . $unit;
             }
             unset($file);
-            $$elemid = $fileupload[$elemid];
+            ${$elemid} = $fileupload[$elemid];
         } else {
-            $$elemid = array();
+            ${$elemid} = array();
         }
     } else {
-        $$elemid = array();
+        ${$elemid} = array();
     }
     return compact('fileupload', 'tmppath', $elemid);
 }

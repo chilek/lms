@@ -221,8 +221,8 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
     {
         extract($params);
         foreach (array('search', 'cat', 'status') as $var) {
-            if (!isset($$var)) {
-                $$var = null;
+            if (!isset(${$var})) {
+                ${$var} = null;
             }
         }
         if (!isset($order)) {
