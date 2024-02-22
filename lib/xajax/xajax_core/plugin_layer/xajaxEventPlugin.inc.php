@@ -35,7 +35,7 @@ if (!defined('XAJAX_EVENT_HANDLER')) {
 }
 
 //SkipAIO
-require dirname(__FILE__) . '/support/xajaxEvent.inc.php';
+require __DIR__ . '/support/xajaxEvent.inc.php';
 //EndSkipAIO
 
 /*
