@@ -19,7 +19,7 @@
 */
 
 //SkipAIO
-require(dirname(__FILE__) . '/xajaxPlugin.inc.php');
+require(__DIR__ . '/xajaxPlugin.inc.php');
 //EndSkipAIO
 
 /*
@@ -612,7 +612,7 @@ final class xajaxPluginManager
 
                 $sScriptCode = stripslashes(ob_get_clean());
 
-                require_once(dirname(__FILE__) . '/xajaxCompress.inc.php');
+                require_once(__DIR__ . '/xajaxCompress.inc.php');
                 $sScriptCode = xajaxCompressFile($sScriptCode);
 
                 file_put_contents($sOutPath.$sOutFile, $sScriptCode);

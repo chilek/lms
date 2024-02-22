@@ -30,7 +30,7 @@ if (!defined('XAJAX_FUNCTION')) {
 
 // require_once is necessary here as the xajaxEvent class will include this also
 //SkipAIO
-require_once dirname(__FILE__) . '/support/xajaxUserFunction.inc.php';
+require_once __DIR__ . '/support/xajaxUserFunction.inc.php';
 //EndSkipAIO
 
 /*
