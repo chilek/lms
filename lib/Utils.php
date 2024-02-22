@@ -1083,7 +1083,7 @@ class Utils
         if (preg_match('/^rynek$/i', $args['type']) &&
             (preg_match('/^rynek/i', $args['name']) || preg_match('/^rynek/i', $args['name2']))) {
             $args['type'] = '';
-        } else if (!strlen($args['name2']) && preg_match('/^[0-9]+(\.|-go)?$/', $args['name'])) {
+        } else if ((!isset($args['name2']) || !strlen($args['name2'])) && preg_match('/^[0-9]+(\.|-go)?$/', $args['name'])) {
             $args['type'] = '';
         }
         return trim(preg_replace(
