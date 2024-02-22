@@ -95,7 +95,7 @@ final class xajaxPluginManager
         $this->aClientScriptGenerators = array();
 
         $this->sJsURI = '';
-        $this->sJsDir = dirname(dirname(__FILE__)) . '/xajax_js';
+        $this->sJsDir = dirname(__FILE__, 2) . '/xajax_js';
         $this->aJsFiles = array();
         $this->sDefer = '';
         $this->sDeferDir = 'deferred';
