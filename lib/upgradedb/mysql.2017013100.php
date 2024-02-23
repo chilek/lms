@@ -93,10 +93,10 @@ function moveTableLocation($DB, $table)
 
     if ($locations) {
         foreach ($locations as $v) {
-            $city   = ($v['location_city'])   ? $v['location_city']          : null;
-            $street = ($v['location_street']) ? $v['location_street']        : null;
-            $house  = ($v['location_house'])  ? $v['location_house'] : null;
-            $flat   = ($v['location_flat'])   ? $v['location_flat']  : null;
+            $city   = $v['location_city'] ?: null;
+            $street = $v['location_street'] ?: null;
+            $house  = $v['location_house'] ?: null;
+            $flat   = $v['location_flat'] ?: null;
 
             $DB->Execute('INSERT INTO addresses (city_id, street_id, house, flat) VALUES (?, ?, ?, ?)', array($city,$street,$house,$flat));
             $DB->Execute('UPDATE ' . $table . ' SET address_id = ? WHERE id = ?', array( $DB->GetLastInsertID('addresses'), $v['id']));
@@ -162,10 +162,10 @@ $customer_nodes = array();
 
 if ($locations) {
     foreach ($locations as $v) {
-        $city   = ($v['location_city'])   ? $v['location_city']          : null;
-        $street = ($v['location_street']) ? $v['location_street']        : null;
-        $house  = ($v['location_house'])  ? $v['location_house'] : null;
-        $flat   = ($v['location_flat'])   ? $v['location_flat']  : null;
+        $city   = $v['location_city'] ?: null;
+        $street = $v['location_street'] ?: null;
+        $house  = $v['location_house'] ?: null;
+        $flat   = $v['location_flat'] ?: null;
         $loc    = parse_address($v['location']);
 
         if ($city == null && $street == null && $house == null && $flat == null && !$v['location']) {
@@ -231,10 +231,10 @@ $locations = $this->GetAll('SELECT id, location, location_city, location_street,
 
 if ($locations) {
     foreach ($locations as $v) {
-        $city   = ($v['location_city'])   ? $v['location_city']          : null;
-        $street = ($v['location_street']) ? $v['location_street']        : null;
-        $house  = ($v['location_house'])  ? $v['location_house'] : null;
-        $flat   = ($v['location_flat'])   ? $v['location_flat']  : null;
+        $city   = $v['location_city'] ?: null;
+        $street = $v['location_street'] ?: null;
+        $house  = $v['location_house'] ?: null;
+        $flat   = $v['location_flat'] ?: null;
         $loc    = parse_address($v['location']);
 
         if (isset($loc['zip'])) {
@@ -275,10 +275,10 @@ $locations = $this->GetAll('SELECT id, location, location_city, location_street,
 
 if ($locations) {
     foreach ($locations as $v) {
-        $city   = ($v['location_city'])   ? $v['location_city']          : null;
-        $street = ($v['location_street']) ? $v['location_street']        : null;
-        $house  = ($v['location_house'])  ? $v['location_house'] : null;
-        $flat   = ($v['location_flat'])   ? $v['location_flat']  : null;
+        $city   = $v['location_city'] ?: null;
+        $street = $v['location_street'] ?: null;
+        $house  = $v['location_house'] ?: null;
+        $flat   = $v['location_flat'] ?: null;
         $loc    = parse_address($v['location']);
 
         $tmp = strtolower(((!empty($loc['city'])) ? $loc['city'] : '') . "|$city|" . ((!empty($loc['street'])) ? $loc['street'] : $v['location']) . "|$street|$house|$flat");
@@ -335,9 +335,9 @@ $locations = $this->GetAll('SELECT id, address, city, zip, countryid
 
 if ($locations) {
     foreach ($locations as $v) {
-        $city      = ($v['city'])      ? $v['city'] : null;
-        $zip       = ($v['zip'])       ? $v['zip']  : null;
-        $countryid = ($v['countryid']) ? $v['countryid']    : null;
+        $city      = $v['city'] ?: null;
+        $zip       = $v['zip'] ?: null;
+        $countryid = $v['countryid'] ?: null;
 
         $loc    = parse_address($v['address'], false);
         $street = (!empty($loc['street'])) ? $loc['street'] : $v['address'];
@@ -381,10 +381,10 @@ $locations = $this->GetAll('SELECT id, location, location_city, location_street,
 
 if ($locations) {
     foreach ($locations as $v) {
-        $city   = ($v['location_city'])   ? $v['location_city']          : null;
-        $street = ($v['location_street']) ? $v['location_street']        : null;
-        $house  = ($v['location_house'])  ? $v['location_house'] : null;
-        $flat   = ($v['location_flat'])   ? $v['location_flat']  : null;
+        $city   = $v['location_city'] ?: null;
+        $street = $v['location_street'] ?: null;
+        $house  = $v['location_house'] ?: null;
+        $flat   = $v['location_flat'] ?: null;
         $loc    = parse_address($v['location']);
 
         $tmp = strtolower(((!empty($loc['city'])) ? $loc['city'] : '') . "|$city|" . ((!empty($loc['street'])) ? $loc['street'] : $v['location']) . "|$street|$house|$flat");

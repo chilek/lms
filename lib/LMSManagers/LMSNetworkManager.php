@@ -101,7 +101,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     {
         for ($i = 31; $i > 15; $i--) {
             $prefixlist['id'][] = $i;
-            $prefixlist['value'][] = trans('$a ($b addresses)', $i, pow(2, 32 - $i));
+            $prefixlist['value'][] = trans('$a ($b addresses)', $i, 2 ** (32 - $i));
         }
 
         return $prefixlist;
@@ -847,7 +847,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
         if ($network['hostid']) {
             $network['hostname'] = $this->db->GetOne('SELECT name FROM hosts WHERE id=?', array($network['hostid']));
         }
-        $network['size'] = pow(2, 32 - $network['prefix']);
+        $network['size'] = 2 ** (32 - $network['prefix']);
         $network['assigned'] = empty($nodes) ? 0 : count($nodes);
         $network['free'] = $network['size'] - $network['assigned'];
         if (!$prefix_31) {

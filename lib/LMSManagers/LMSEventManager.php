@@ -341,13 +341,13 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
     {
         extract($params);
         foreach (array('year', 'month', 'day') as $var) {
-            if (!isset($$var)) {
-                $$var = null;
+            if (!isset(${$var})) {
+                ${$var} = null;
             }
         }
         foreach (array('forward', 'customerid', 'userid', 'type', 'privacy') as $var) {
-            if (!isset($$var)) {
-                $$var = 0;
+            if (!isset(${$var})) {
+                ${$var} = 0;
             }
         }
         if (!isset($closed)) {

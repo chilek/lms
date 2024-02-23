@@ -130,8 +130,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         extract($params);
         foreach (array('ids', 'state', 'priority', 'source', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
             'serviceids', 'typeids', 'unread', 'parentids', 'verifierids', 'rights', 'projectids', 'cid', 'subject', 'fromdate', 'todate', 'short', 'watching') as $var) {
-            if (!isset($$var)) {
-                $$var = null;
+            if (!isset(${$var})) {
+                ${$var} = null;
             }
         }
         if (!isset($order) || !$order) {
@@ -2244,7 +2244,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function CleanupTicketLastView()
     {
-        if (rand(0, 100) <= 1) {
+        if (random_int(0, 100) <= 1) {
             $this->db->Execute('DELETE FROM rtticketlastview
 				WHERE ticketid IN (
 					SELECT t.id FROM rttickets t

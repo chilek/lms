@@ -175,7 +175,7 @@ function getLongitudeDistDiff($m, $lat)
 function getGPSdistance($p1_lon, $p1_lat, $p2_lon, $p2_lat)
 {
     // get distance between two points in kilometers
-    $distance = sqrt(pow($p2_lat - $p1_lat, 2) + pow(cos($p1_lat * M_PI / 180) * ($p2_lon - $p1_lon), 2)) * 40075.704 / 360;
+    $distance = sqrt(($p2_lat - $p1_lat) ** 2 + (cos($p1_lat * M_PI / 180) * ($p2_lon - $p1_lon)) ** 2) * 40075.704 / 360;
 
     // change kilometers to meters
     $distance *= 1000;

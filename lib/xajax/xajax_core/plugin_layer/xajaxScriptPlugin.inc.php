@@ -73,12 +73,12 @@ class xajaxScriptPlugin extends xajaxRequestPlugin
         $this->sRequestURI = '';
         $this->bDeferScriptGeneration = false;
         $this->bValidateHash = true;
-        
+
         $this->bWorking = false;
 
         $this->sRequest = '';
         $this->sHash = null;
-        
+
 /*      if (isset($_GET['xjxGenerateJavascript'])) {
             $this->sRequest = 'script';
             $this->sHash = $_GET['xjxGenerateJavascript'];

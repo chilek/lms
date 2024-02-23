@@ -74,7 +74,7 @@ function module_main()
 
                     if (isset($_GET['send'])) {
                         if (!$SESSION->is_set('smsauthcode') || time() - $SESSION->get('smsauthcode_timestamp') > 60) {
-                            $sms_authcode = strval(rand(10000000, 99999999));
+                            $sms_authcode = strval(random_int(10000000, 99999999));
                             $SESSION->save('smsauthcode', $sms_authcode);
                             $SESSION->save('smsauthcode_timestamp', time());
                             $sms_body = str_replace('%password%', $sms_authcode, $sms_onetime_password_body);

@@ -211,7 +211,7 @@ final class xajax
                 'generateStubs' => true,
                 'logFile' => '',
                 'timeout' => 6000,
-                'version' => $this->getVersion()
+                'version' => self::getVersion()
                 )
         );
 
@@ -266,7 +266,7 @@ final class xajax
     public function __wakeup()
     {
 
-        $sLocalFolder = dirname(__FILE__);
+        $sLocalFolder = __DIR__;
         
 //SkipAIO
         require $sLocalFolder . '/xajaxPluginManager.inc.php';
@@ -458,10 +458,7 @@ final class xajax
     */
     public function getConfiguration($sName)
     {
-        if (isset($this->aSettings[$sName])) {
-            return $this->aSettings[$sName];
-        }
-        return null;
+        return $this->aSettings[$sName] ?? null;
     }
 
     /*
@@ -525,7 +522,7 @@ final class xajax
 
         // TODO: Move to configuration option
         if (null === $value) {
-            $value = rand(100000, 999999);
+            $value = random_int(100000, 999999);
         }
 
         return hash($algo, $value);
@@ -760,7 +757,7 @@ final class xajax
         if ($sJsFullFilename) {
             $realJsFile = $sJsFullFilename;
         } else {
-            $realPath = realpath(dirname(dirname(__FILE__)));
+            $realPath = realpath(dirname(__FILE__, 2));
             $realJsFile = $realPath . '/'. $sJsFile;
         }
 
@@ -776,7 +773,7 @@ final class xajax
                 );
             }
             
-            require_once(dirname(__FILE__) . '/xajaxCompress.inc.php');
+            require_once(__DIR__ . '/xajaxCompress.inc.php');
             $javaScript = implode('', file($srcFile));
             $compressedScript = xajaxCompressFile($javaScript);
             $fH = @fopen($realJsFile, 'w');
@@ -797,10 +794,10 @@ final class xajax
     private function _compressSelf($sFolder = null)
     {
         if (null == $sFolder) {
-            $sFolder = dirname(dirname(__FILE__));
+            $sFolder = dirname(__FILE__, 2);
         }
             
-        require_once(dirname(__FILE__) . '/xajaxCompress.inc.php');
+        require_once(__DIR__ . '/xajaxCompress.inc.php');
 
         if ($handle = opendir($sFolder)) {
             while (!(false === ($sName = readdir($handle)))) {
@@ -852,10 +849,10 @@ final class xajax
     public function _compile($sFolder = null, $bWriteFile = true)
     {
         if (null == $sFolder) {
-            $sFolder = dirname(__FILE__);
+            $sFolder = __DIR__;
         }
             
-        require_once(dirname(__FILE__) . '/xajaxCompress.inc.php');
+        require_once(__DIR__ . '/xajaxCompress.inc.php');
         
         $aOutput = array();
 

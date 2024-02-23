@@ -153,7 +153,7 @@ include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 
 setlocale(LC_NUMERIC, 'en_US');
 
-$options['action'] = (isset($options['action'])) ? $options['action'] : '';
+$options['action'] = $options['action'] ?? '';
 
 define(
     'VOIP_CACHE_DIR',

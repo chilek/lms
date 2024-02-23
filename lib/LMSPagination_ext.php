@@ -149,7 +149,7 @@ class LMSPagination_ext
     {
         $pages        = array();
         $pages_count  = ceil($this->items/$this->perPage);
-        $range        = ($this->range)       ? $this->range       : 0;
+        $range        = $this->range ?: 0;
         $current_page = ($this->currentPage) ?: 1;
 
         for ($i=1; $i<=$pages_count; ++$i) {

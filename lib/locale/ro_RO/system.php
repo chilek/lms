@@ -78,7 +78,7 @@ self::addLanguageFunctions(
          * \return string
          */
         'generateRandomPostcode' => function () {
-            return sprintf("%06d", rand(0, 999999));
+            return sprintf("%06d", random_int(0, 999999));
         },
         'get_currency_value' => function ($currency, $date = null) {
             return exchangeratesapi_get_currency_value($currency, $date);

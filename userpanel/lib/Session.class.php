@@ -218,7 +218,7 @@ class Session
                                 $this->_createSession();
                             }
 
-                            if (rand(1, 100) <= $this->GCprob) {
+                            if (random_int(1, 100) <= $this->GCprob) {
                                 $this->_garbageCollector();
                             }
 
@@ -373,7 +373,7 @@ class Session
     private function makeSID()
     {
         list($usec, $sec) = explode(' ', microtime());
-        return md5(uniqid(rand(), true)) . sprintf('%09x', $sec) . sprintf('%07x', ($usec * 10000000));
+        return md5(uniqid(random_int(0, mt_getrandmax()), true)) . sprintf('%09x', $sec) . sprintf('%07x', ($usec * 10000000));
     }
 
     private function _createSession()

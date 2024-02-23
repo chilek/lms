@@ -69,7 +69,7 @@ class Session
             $this->_restoreSession();
         }
 
-        if (rand(1, 100) <= $this->GCprob) {
+        if (random_int(1, 100) <= $this->GCprob) {
             $this->_garbageCollector();
         }
 
@@ -94,7 +94,7 @@ class Session
     public function makeSID()
     {
         list($usec, $sec) = explode(' ', microtime());
-        return md5(uniqid(rand(), true)).sprintf('%09x', $sec).sprintf('%07x', ($usec * 10000000));
+        return md5(uniqid(random_int(0, mt_getrandmax()), true)).sprintf('%09x', $sec).sprintf('%07x', ($usec * 10000000));
     }
 
     public function restore_user_settings($force_settings_restore = false)
@@ -582,10 +582,7 @@ class Session
         }
 
         if (isset($id)) {
-            if (isset($this->_persistent_settings['filters'][$module]['subfilters'][$id][$name])) {
-                return $this->_persistent_settings['filters'][$module]['subfilters'][$id][$name];
-            }
-            return array();
+            return $this->_persistent_settings['filters'][$module]['subfilters'][$id][$name] ?? array();
         } elseif (!isset($this->_persistent_settings['filters'][$module][$name])) {
             return array();
         }
