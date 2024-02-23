@@ -53,6 +53,8 @@ class Auth
     private $twofactorauthrequiredchange = false;
     private $twofactorauth = null;
     private $twofactorauthsecretkey = null;
+    private $authcode = null;
+    private $trusteddevice = false;
     public $error;
     public $_version = '1.11-git';
     public $_revision = '$Revision$';
