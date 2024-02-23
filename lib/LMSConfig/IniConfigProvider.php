@@ -31,7 +31,7 @@
  */
 class IniConfigProvider implements ConfigProviderInterface
 {
-    const NAME = 'INI_CONFIG_PROVIDER';
+    public const NAME = 'INI_CONFIG_PROVIDER';
     
     /**
      * Loads ini file and returns it as raw config

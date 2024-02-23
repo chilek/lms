@@ -33,16 +33,16 @@
  */
 class LMSDB
 {
-    const MYSQL = 'mysql';
-    const MYSQLI = 'mysqli';
-    const POSTGRESQL = 'postgres';
+    public const MYSQL = 'mysql';
+    public const MYSQLI = 'mysqli';
+    public const POSTGRESQL = 'postgres';
 
-    const RESOURCE_TYPE_TABLE = 1;
-    const RESOURCE_TYPE_VIEW = 2;
-    const RESOURCE_TYPE_COLUMN = 3;
-    const RESOURCE_TYPE_CONSTRAINT = 4;
-    const RESOURCE_TYPE_INDEX = 5;
-    const RESOURCE_TYPE_COLUMN_TYPE = 6;
+    public const RESOURCE_TYPE_TABLE = 1;
+    public const RESOURCE_TYPE_VIEW = 2;
+    public const RESOURCE_TYPE_COLUMN = 3;
+    public const RESOURCE_TYPE_CONSTRAINT = 4;
+    public const RESOURCE_TYPE_INDEX = 5;
+    public const RESOURCE_TYPE_COLUMN_TYPE = 6;
 
     private static $db;
     

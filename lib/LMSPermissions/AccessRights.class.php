@@ -26,7 +26,7 @@
 
 class AccessRights
 {
-    const FIRST_FORBIDDEN_PERMISSION = 'backup_management_forbidden';
+    public const FIRST_FORBIDDEN_PERMISSION = 'backup_management_forbidden';
     private $permissions;
     private static $accessrights = null;
 

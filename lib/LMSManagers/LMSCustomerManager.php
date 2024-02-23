@@ -30,7 +30,7 @@
  */
 class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterface
 {
-    const CUSTOMER_LAST_BALANCE_TABLE_STYLE = '<style>
+    public const CUSTOMER_LAST_BALANCE_TABLE_STYLE = '<style>
         .customer-last-balance-table th {
             border: 1px solid black;
             white-space: nowrap;

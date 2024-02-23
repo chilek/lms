@@ -26,10 +26,10 @@
 
 class LMSSmartyPlugins
 {
-    const HINT_TYPE_ROLLOVER = 'rollover';
-    const HINT_TYPE_TOGGLE = 'toggle';
+    public const HINT_TYPE_ROLLOVER = 'rollover';
+    public const HINT_TYPE_TOGGLE = 'toggle';
 
-    const LOCATION_BOX_INPUT_SIZE = 30;
+    public const LOCATION_BOX_INPUT_SIZE = 30;
 
     public static function buttonFunction(array $params, $template)
     {

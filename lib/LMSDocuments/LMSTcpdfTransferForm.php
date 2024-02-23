@@ -27,11 +27,11 @@
 class LMSTcpdfTransferForm extends LMSDocument
 {
     // default font
-    const TCPDF_FONT = 'liberationsans';
+    public const TCPDF_FONT = 'liberationsans';
 
-    const VALUE_BALANCE = 1;
-    const VALUE_ASSIGNMENTS = 2;
-    const VALUE_CUSTOM = 3;
+    public const VALUE_BALANCE = 1;
+    public const VALUE_ASSIGNMENTS = 2;
+    public const VALUE_CUSTOM = 3;
 
     public function __construct($title, $pagesize = 'A4', $orientation = 'portrait')
     {

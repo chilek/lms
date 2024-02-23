@@ -34,9 +34,9 @@ use Phine\Observer\Subject;
  */
 class LMSPluginManager extends Subject implements SubjectInterface
 {
-    const NEW_STYLE = 1;
-    const OLD_STYLE = 2;
-    const ALL_STYLES = 3;
+    public const NEW_STYLE = 1;
+    public const OLD_STYLE = 2;
+    public const ALL_STYLES = 3;
 
     protected $hook_name;
     protected $hook_data;

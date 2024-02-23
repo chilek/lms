@@ -27,7 +27,7 @@
 class LMSTcpdfInvoice extends LMSInvoice
 {
     // default font
-    const TCPDF_FONT = 'liberationsans';
+    public const TCPDF_FONT = 'liberationsans';
 
     private $use_alert_color;
 

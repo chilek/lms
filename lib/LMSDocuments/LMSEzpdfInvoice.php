@@ -29,7 +29,7 @@
 
 class LMSEzpdfInvoice extends LMSInvoice
 {
-    const HEADER_IMAGE_HEIGHT = 40;
+    public const HEADER_IMAGE_HEIGHT = 40;
 
     private $use_alert_color;
 

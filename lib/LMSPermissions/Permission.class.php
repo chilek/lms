@@ -26,10 +26,10 @@
 
 class Permission
 {
-    const REGEXP_ALLOW = 1;
-    const REGEXP_DENY = 2;
+    public const REGEXP_ALLOW = 1;
+    public const REGEXP_DENY = 2;
 
-    const MENU_ALL = 1;
+    public const MENU_ALL = 1;
 
     private $name;
     private $label;

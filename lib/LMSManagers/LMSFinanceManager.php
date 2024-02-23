@@ -30,9 +30,9 @@
  */
 class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 {
-    const INVOICE_CONTENT_DETAIL_GENERAL = 1;
-    const INVOICE_CONTENT_DETAIL_MORE = 2;
-    const INVOICE_CONTENT_DETAIL_ALL = 3;
+    public const INVOICE_CONTENT_DETAIL_GENERAL = 1;
+    public const INVOICE_CONTENT_DETAIL_MORE = 2;
+    public const INVOICE_CONTENT_DETAIL_ALL = 3;
 
     private $currency_values = array();
 

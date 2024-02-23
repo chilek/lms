@@ -46,7 +46,7 @@ class Session
 
     private $tabId = null;
 
-    const HISTORY_SIZE = 10;
+    public const HISTORY_SIZE = 10;
 
     private static $oldHistoryEntry = '';
     private static $historyEntry = '';
