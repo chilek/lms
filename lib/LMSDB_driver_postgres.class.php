@@ -84,7 +84,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
     public function _driver_connect($dbhost, $dbuser, $dbpasswd, $dbname)
     {
         if (strpos($dbhost, ':') !== false) {
-            list ($host, $port) = explode(':', $dbhost);
+            [$host, $port] = explode(':', $dbhost);
         } else {
             $host = $dbhost;
             $port = '';
@@ -472,7 +472,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
                 ) > 0;
                 break;
             case LMSDB::RESOURCE_TYPE_COLUMN:
-                list ($table_name, $column_name) = explode('.', $name);
+                [$table_name, $column_name] = explode('.', $name);
                 return $this->GetOne(
                     'SELECT COUNT(*) FROM information_schema.columns
 					WHERE table_catalog = ? AND table_name = ? AND column_name = ?',
@@ -493,7 +493,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
                 ) > 0;
                 break;
             case LMSDB::RESOURCE_TYPE_COLUMN_TYPE:
-                list ($table_name, $column_name, $column_type) = explode('.', $name);
+                [$table_name, $column_name, $column_type] = explode('.', $name);
                 if (preg_match('/^(?<type>[^\(]+)(?:\((?<length>[0-9]+)\))?$/', $column_type, $m)) {
                     $column_type = $m['type'];
                     $column_length = $m['length'];

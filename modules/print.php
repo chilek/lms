@@ -48,14 +48,14 @@ switch ($type) {
 
         // date format 'yyyy/mm/dd'
         if ($from && preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $from)) {
-            list($year, $month, $day) = explode('/', $from);
+            [$year, $month, $day] = explode('/', $from);
             $date['from'] = mktime(0, 0, 0, (int)$month, (int)$day, (int)$year);
         } else {
             $date['from'] = 0;
         }
 
         if ($to && preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $to)) {
-            list($year, $month, $day) = explode('/', $to);
+            [$year, $month, $day] = explode('/', $to);
             $date['to'] = mktime(23, 59, 59, $month, $day, $year);
         } else {
             $to = date('Y/m/d', time());
@@ -178,12 +178,12 @@ switch ($type) {
 
         // date format 'yyyy/mm/dd'
         if ($from) {
-            list($year, $month, $day) = explode('/', $from);
+            [$year, $month, $day] = explode('/', $from);
             $date['from'] = mktime(0, 0, 0, (int)$month, (int)$day, (int)$year);
         }
 
         if ($to) {
-            list($year, $month, $day) = explode('/', $to);
+            [$year, $month, $day] = explode('/', $to);
             $date['to'] = mktime(23, 59, 59, $month, $day, $year);
         } else {
             $to = date('Y/m/d', time());
@@ -376,11 +376,11 @@ switch ($type) {
         $to = $_POST['to'];
 
         // date format 'yyyy/mm/dd'
-        list($year, $month, $day) = explode('/', $from);
+        [$year, $month, $day] = explode('/', $from);
         $date['from'] = mktime(0, 0, 0, (int)$month, (int)$day, (int)$year);
 
         if ($to) {
-            list($year, $month, $day) = explode('/', $to);
+            [$year, $month, $day] = explode('/', $to);
             $date['to'] = mktime(23, 59, 59, $month, $day, $year);
         } else {
             $to = date("Y/m/d", time());
@@ -423,14 +423,14 @@ switch ($type) {
 
         // date format 'yyyy/mm/dd'
         if ($from) {
-            list($year, $month, $day) = explode('/', $from);
+            [$year, $month, $day] = explode('/', $from);
             $date['from'] = mktime(0, 0, 0, (int)$month, (int)$day, (int)$year);
         } else {
             $date['from'] = 0;
         }
 
         if ($to) {
-            list($year, $month, $day) = explode('/', $to);
+            [$year, $month, $day] = explode('/', $to);
             $date['to'] = mktime(23, 59, 59, $month, $day, $year);
         } else {
             $to = date("Y/m/d", time());
@@ -472,7 +472,7 @@ switch ($type) {
 
         // date format 'yyyy/mm/dd'
         if ($to) {
-            list($year, $month, $day) = explode('/', $to);
+            [$year, $month, $day] = explode('/', $to);
             $date['to'] = mktime(23, 59, 59, $month, $day, $year);
         } else {
             $to = date('Y/m/d', time());
@@ -480,7 +480,7 @@ switch ($type) {
         }
 
         if ($from) {
-            list($year, $month, $day) = explode('/', $from);
+            [$year, $month, $day] = explode('/', $from);
             $date['from'] = mktime(0, 0, 0, $month, $day, $year);
         } else {
             $from = date('Y/m/d', time());
@@ -533,7 +533,7 @@ switch ($type) {
                 $to = $_POST['invoiceto'];
 
                 if ($to) {
-                    list($year, $month, $day) = explode('/', $to);
+                    [$year, $month, $day] = explode('/', $to);
                     $date['to'] = mktime(23, 59, 59, $month, $day, $year);
                 } else {
                     $to = date('Y/m/d', time());
@@ -541,7 +541,7 @@ switch ($type) {
                 }
 
                 if ($from) {
-                    list($year, $month, $day) = explode('/', $from);
+                    [$year, $month, $day] = explode('/', $from);
                     $date['from'] = mktime(0, 0, 0, $month, $day, $year);
                 } else {
                     $from = date('Y/m/d', time());
@@ -576,7 +576,7 @@ switch ($type) {
         }
 
         if (isset($_POST['day']) && $_POST['day']) {
-            list($year, $month, $day) = explode('/', $_POST['day']);
+            [$year, $month, $day] = explode('/', $_POST['day']);
             $reportday = mktime(0, 0, 0, $month, $day, $year);
             $today = $reportday;
         } else {
@@ -804,14 +804,14 @@ switch ($type) {
         }
 
         if (!empty($_POST['from'])) {
-            list($year, $month, $day) = explode('/', $_POST['from']);
+            [$year, $month, $day] = explode('/', $_POST['from']);
             $from = mktime(0, 0, 0, $month, $day, $year);
         } else {
             $from = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
         }
 
         if (!empty($_POST['to'])) {
-            list($year, $month, $day) = explode('/', $_POST['to']);
+            [$year, $month, $day] = explode('/', $_POST['to']);
             $to = mktime(23, 59, 59, $month, $day, $year);
         } else {
             $to = mktime(23, 59, 59, date('m'), date('d'), date('Y'));

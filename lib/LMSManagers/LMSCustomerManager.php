@@ -30,7 +30,7 @@
  */
 class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterface
 {
-    const CUSTOMER_LAST_BALANCE_TABLE_STYLE = '<style>
+    public const CUSTOMER_LAST_BALANCE_TABLE_STYLE = '<style>
         .customer-last-balance-table th {
             border: 1px solid black;
             white-space: nowrap;
@@ -852,7 +852,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $days = 0;
         }
 
-        list($order, $direction) = sscanf($order, '%[^,],%s');
+        [$order, $direction] = sscanf($order, '%[^,],%s');
 
         ($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
 
@@ -2665,11 +2665,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                              WHERE
                                                 ca.customer_id = ?', 'type', array($customer_id));
 
-        if (isset($addresses[DEFAULT_LOCATION_ADDRESS])) {
-            return $addresses[DEFAULT_LOCATION_ADDRESS];
-        }
-
-        return $addresses[BILLING_ADDRESS] ?? null;
+        return $addresses[DEFAULT_LOCATION_ADDRESS] ?? $addresses[BILLING_ADDRESS] ?? null;
     }
 
     public function detectCustomerLocationAddress($customer_id)
@@ -2745,7 +2741,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         if (empty($cdate)) {
             $cdate = time();
         } else {
-            list ($year, $month, $day) = explode('/', $cdate);
+            [$year, $month, $day] = explode('/', $cdate);
             $cdate = mktime(0, 0, 0, $month, $day, $year);
         }
 
@@ -3435,7 +3431,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
 
         if (isset($params['order'])) {
-            list ($field, $sort) = explode(',', $params['order']);
+            [$field, $sort] = explode(',', $params['order']);
             switch ($field) {
                 case 'id':
                     $order = 'c.id';

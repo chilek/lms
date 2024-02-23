@@ -51,14 +51,14 @@ switch (intval($_POST['customer_ten'])) {
 
 // date format 'yyyy/mm/dd'
 if ($from) {
-    list($year, $month, $day) = explode('/', $from);
+    [$year, $month, $day] = explode('/', $from);
     $unixfrom = mktime(0, 0, 0, $month, $day, $year);
 } else {
     $from = date('Y/m/d', time());
     $unixfrom = mktime(0, 0, 0); //today
 }
 if ($to) {
-    list($year, $month, $day) = explode('/', $to);
+    [$year, $month, $day] = explode('/', $to);
     $unixto = mktime(23, 59, 59, $month, $day, $year);
 } else {
     $to = date('Y/m/d', time());

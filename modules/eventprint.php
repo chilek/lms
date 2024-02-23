@@ -30,7 +30,7 @@ if (empty($date)) {
     $date = time();
 }
 
-list ($year, $month, $day) = explode('/', date('Y/m/d', $date));
+[$year, $month, $day] = explode('/', date('Y/m/d', $date));
 
 $eventlist = $LMS->GetEventList(
     array(

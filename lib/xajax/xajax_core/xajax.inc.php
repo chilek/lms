@@ -956,13 +956,13 @@ final class xajax
         if (empty($aURL['host'])) {
             if (!empty($_SERVER['HTTP_X_FORWARDED_HOST'])) {
                 if (strpos($_SERVER['HTTP_X_FORWARDED_HOST'], ':') > 0) {
-                    list($aURL['host'], $aURL['port']) = explode(':', $_SERVER['HTTP_X_FORWARDED_HOST']);
+                    [$aURL['host'], $aURL['port']] = explode(':', $_SERVER['HTTP_X_FORWARDED_HOST']);
                 } else {
                     $aURL['host'] = $_SERVER['HTTP_X_FORWARDED_HOST'];
                 }
             } else if (!empty($_SERVER['HTTP_HOST'])) {
                 if (strpos($_SERVER['HTTP_HOST'], ':') > 0) {
-                    list($aURL['host'], $aURL['port']) = explode(':', $_SERVER['HTTP_HOST']);
+                    [$aURL['host'], $aURL['port']] = explode(':', $_SERVER['HTTP_HOST']);
                 } else {
                     $aURL['host'] = $_SERVER['HTTP_HOST'];
                 }

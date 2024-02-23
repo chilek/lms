@@ -29,13 +29,13 @@
 
 class LMS
 {
-    const SOFTWARE_NAME = 'LMS';
-    const SOFTWARE_VERSION = '28-git';
-    const SOFTWARE_URL = 'https://lms.org.pl';
-    const SOFTWARE_DOCUMENTATION_URL = 'doc/html/%lang%';
-    const SOFTWARE_REPO_URL = 'https://git.lms.org.pl';
-    const SOFTWARE_SUPPORT_URL = 'https://github.com/chilek/lms/issues';
-    const SOFTWARE_REVISION = '$Format:%cI$'; // %H for last commit checksum
+    public const SOFTWARE_NAME = 'LMS';
+    public const SOFTWARE_VERSION = '28-git';
+    public const SOFTWARE_URL = 'https://lms.org.pl';
+    public const SOFTWARE_DOCUMENTATION_URL = 'doc/html/%lang%';
+    public const SOFTWARE_REPO_URL = 'https://git.lms.org.pl';
+    public const SOFTWARE_SUPPORT_URL = 'https://github.com/chilek/lms/issues';
+    public const SOFTWARE_REVISION = '$Format:%cI$'; // %H for last commit checksum
 
     public $DB;   // database object
     public $AUTH;   // object from Session.class.php (session management)
@@ -75,7 +75,7 @@ class LMS
     protected $tariff_tag_manager;
     protected $tariff_price_variant_manager;
 
-    const DB_DUMP_MULTI_RECORD_LIMIT = 500;
+    public const DB_DUMP_MULTI_RECORD_LIMIT = 500;
 
     public function __construct(&$DB, &$AUTH, &$SYSLOG)
     {
@@ -2779,7 +2779,7 @@ class LMS
         }
         if ($inputbuf) {
             foreach (explode("\n", $inputbuf) as $line) {
-                list($ip, $hwaddr) = explode(' ', $line);
+                [$ip, $hwaddr] = explode(' ', $line);
                 if (check_mac($hwaddr)) {
                     $result['mac'][] = $hwaddr;
                     $result['ip'][] = $ip;
@@ -2798,7 +2798,7 @@ class LMS
         if (ConfigHelper::getConfig('phpui.arp_table_backend') != '') {
             exec(ConfigHelper::getConfig('phpui.arp_table_backend'), $result);
             foreach ($result as $arpline) {
-                list($ip, $mac) = explode(' ', $arpline);
+                [$ip, $mac] = explode(' ', $arpline);
                 $result['mac'][] = $mac;
                 $result['ip'][] = $ip;
                 $result['longip'][] = ip_long($ip);
@@ -2816,7 +2816,7 @@ class LMS
                         $line = fgets($file, 4096);
                         $line = preg_replace('/[\t ]+/', ' ', $line);
                         if (preg_match('/[0-9]/', $line)) { // skip header line
-                            list($ip, $hwtype, $flags, $hwaddr, $mask, $device) = explode(' ', $line);
+                            [$ip, $hwtype, $flags, $hwaddr, $mask, $device] = explode(' ', $line);
                             if ($flags != '0x6' && $hwaddr != '00:00:00:00:00:00' && check_mac($hwaddr)) {
                                 $result['mac'][] = $hwaddr;
                                 $result['ip'][] = $ip;
@@ -2830,7 +2830,7 @@ class LMS
                 default:
                     exec('arp -an|grep -v incompl', $result);
                     foreach ($result as $arpline) {
-                        list($fqdn, $ip, $at, $mac, $hwtype, $perm) = explode(' ', $arpline);
+                        [$fqdn, $ip, $at, $mac, $hwtype, $perm] = explode(' ', $arpline);
                         $ip = str_replace('(', '', str_replace(')', '', $ip));
                         if ($perm != "PERM") {
                             $result['mac'][] = $mac;
@@ -2849,7 +2849,7 @@ class LMS
     public function GetUniqueInstallationID()
     {
         if (!($uiid = $this->DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype=?', array('unique_installation_id')))) {
-            list($usec, $sec) = explode(' ', microtime());
+            [$usec, $sec] = explode(' ', microtime());
             $uiid = md5(uniqid(random_int(0, mt_getrandmax()), true)) . sprintf('%09x', $sec) . sprintf('%07x', ($usec * 10000000));
             $this->DB->Execute('INSERT INTO dbinfo (keytype, keyvalue) VALUES (?, ?)', array('unique_installation_id', $uiid));
         }
@@ -2867,7 +2867,7 @@ class LMS
             $lastcheck = 0;
         }
         if ($lastcheck + ConfigHelper::getConfig('phpui.check_for_updates_period') < $time) {
-            list($v, ) = explode(' ', self::SOFTWARE_VERSION);
+            [$v, ] = explode(' ', self::SOFTWARE_VERSION);
 
             if ($content = fetch_url('http://register.lms.org.pl/update.php?uiid=' . $uiid . '&v=' . $v)) {
                 if ($lastcheck == 0) {
@@ -5154,7 +5154,7 @@ class LMS
                 $commented_balance = trans('Billing status: $a', moneyf($balance, $currency));
             }
 
-            list ($now_y, $now_m) = explode('/', date('Y/m', time()));
+            [$now_y, $now_m] = explode('/', date('Y/m', time()));
 
             $alternative_accounts = $document['document']['bankaccounts'];
 

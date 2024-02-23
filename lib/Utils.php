@@ -36,17 +36,17 @@ use Ramsey\Uuid\Uuid;
 
 class Utils
 {
-    const GUS_REGON_API_RESULT_BAD_KEY = 1;
-    const GUS_REGON_API_RESULT_NO_DATA = 2;
-    const GUS_REGON_API_RESULT_AMBIGUOUS = 3;
-    const GUS_REGON_API_RESULT_UNKNOWN_ERROR = 4;
+    public const GUS_REGON_API_RESULT_BAD_KEY = 1;
+    public const GUS_REGON_API_RESULT_NO_DATA = 2;
+    public const GUS_REGON_API_RESULT_AMBIGUOUS = 3;
+    public const GUS_REGON_API_RESULT_UNKNOWN_ERROR = 4;
 
-    const GUS_REGON_API_SEARCH_TYPE_TEN = 1;
-    const GUS_REGON_API_SEARCH_TYPE_REGON = 2;
-    const GUS_REGON_API_SEARCH_TYPE_RBE = 3;
+    public const GUS_REGON_API_SEARCH_TYPE_TEN = 1;
+    public const GUS_REGON_API_SEARCH_TYPE_REGON = 2;
+    public const GUS_REGON_API_SEARCH_TYPE_RBE = 3;
 
-    const PESEL_STATUS_RESERVED = 'ZASTRZEZONY';
-    const PESEL_STATUS_NOT_RESERVED = 'NIEZASTRZEZONY';
+    public const PESEL_STATUS_RESERVED = 'ZASTRZEZONY';
+    public const PESEL_STATUS_NOT_RESERVED = 'NIEZASTRZEZONY';
 
     public static function filterIntegers(array $params)
     {
@@ -167,7 +167,7 @@ class Utils
             if (strpos($value, '/') === false) {
                 $net = $value;
             } else {
-                list ($net, $mask) = explode('/', $value);
+                [$net, $mask] = explode('/', $value);
             }
 
             $net = trim($net);
@@ -285,7 +285,7 @@ class Utils
         foreach ($content as $line) {
             if (preg_match('/^##\s+(?<variable>.+)\r?/', $line, $m)) {
                 if ($variable && $buffer) {
-                    list ($section, $var) = explode('.', $variable);
+                    [$section, $var] = explode('.', $variable);
                     if (!isset($result[$section])) {
                         $result[$section] = array();
                     }
@@ -295,7 +295,7 @@ class Utils
                 $buffer = '';
             } elseif (preg_match('/^\*\*\*/', $line)) {
                 if ($variable && $buffer) {
-                    list ($section, $var) = explode('.', $variable);
+                    [$section, $var] = explode('.', $variable);
                     if (!isset($result[$section])) {
                         $result[$section] = array();
                     }
@@ -308,7 +308,7 @@ class Utils
             }
         }
         if ($variable && $buffer) {
-            list ($section, $var) = explode('.', $variable);
+            [$section, $var] = explode('.', $variable);
             if (!isset($result[$section])) {
                 $result[$section] = array();
             }
@@ -363,7 +363,7 @@ class Utils
         $properties = explode(';', $text);
         if (!empty($properties)) {
             foreach ($properties as $property) {
-                list ($name, $value) = explode(':', $property);
+                [$name, $value] = explode(':', $property);
                 $result[$name] = $value;
             }
         }
@@ -374,7 +374,7 @@ class Utils
     {
         $holidaysByYear = array();
 
-        list ($year, $month, $day, $weekday) = explode('/', date('Y/m/j/N', $date ?: time()));
+        [$year, $month, $day, $weekday] = explode('/', date('Y/m/j/N', $date ?: time()));
         $date = mktime(0, 0, 0, $month, $day, $year);
 
         while (true) {
@@ -385,7 +385,7 @@ class Utils
                 return $date;
             }
             $date = strtotime('+1 day', $date);
-            list ($year, $weekday) = explode('/', date('Y/N', $date));
+            [$year, $weekday] = explode('/', date('Y/N', $date));
         }
     }
 

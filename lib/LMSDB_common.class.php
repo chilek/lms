@@ -280,7 +280,7 @@ abstract class LMSDB_common implements LMSDBInterface
 
         $result = null;
 
-        list($result) = $this->_driver_fetchrow_num();
+        [$result] = $this->_driver_fetchrow_num();
 
         return $result;
     }

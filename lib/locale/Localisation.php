@@ -26,8 +26,8 @@
 
 class Localisation
 {
-    const UI_FUNCTION = 'ui_functions';
-    const SYSTEM_FUNCTION = 'system_functions';
+    public const UI_FUNCTION = 'ui_functions';
+    public const SYSTEM_FUNCTION = 'system_functions';
 
     private static $langDefs = array();
     private static $defaultUiLanguage = null;

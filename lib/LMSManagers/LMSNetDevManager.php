@@ -30,8 +30,8 @@
  */
 class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 {
-    const NETDEV_URL = 1;
-    const NODE_URL = 2;
+    public const NETDEV_URL = 1;
+    public const NODE_URL = 2;
 
     public function GetNetDevLinkedNodes($id)
     {
@@ -741,7 +741,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         $limit = $search['limit'] ?? null;
         $short = !empty($search['short']);
 
-        list($order, $direction) = sscanf($order, '%[^,],%s');
+        [$order, $direction] = sscanf($order, '%[^,],%s');
 
         ($direction == 'desc') ? $direction = 'desc' : $direction = 'asc';
 

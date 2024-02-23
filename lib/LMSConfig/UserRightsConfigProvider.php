@@ -32,7 +32,7 @@
  */
 class UserRightsConfigProvider implements ConfigProviderInterface
 {
-    const NAME = 'USER_RIGHTS_CONFIG_PROVIDER';
+    public const NAME = 'USER_RIGHTS_CONFIG_PROVIDER';
     
     /**
      * Return user rights array

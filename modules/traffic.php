@@ -124,20 +124,20 @@ function Traffic($from = 0, $to = 0, $net = 0, $customerid = 0, $order = '', $li
 
         foreach ($traffic['download']['data'] as $data) {
             $traffic['download']['bar'][] = round($data * 150 / $maximum);
-            list($traffic['download']['data'][$x], $traffic['download']['unit'][$x]) = setunits($data);
+            [$traffic['download']['data'][$x], $traffic['download']['unit'][$x]] = setunits($data);
             $x++;
         }
         $x = 0;
 
         foreach ($traffic['upload']['data'] as $data) {
             $traffic['upload']['bar'][] = round($data * 150 / $maximum);
-            list($traffic['upload']['data'][$x], $traffic['upload']['unit'][$x]) = setunits($data);
+            [$traffic['upload']['data'][$x], $traffic['upload']['unit'][$x]] = setunits($data);
             $x++;
         }
 
         //set units for data
-        list($traffic['download']['sum']['data'], $traffic['download']['sum']['unit']) = setunits($traffic['download']['sum']['data']);
-        list($traffic['upload']['sum']['data'], $traffic['upload']['sum']['unit']) = setunits($traffic['upload']['sum']['data']);
+        [$traffic['download']['sum']['data'], $traffic['download']['sum']['unit']] = setunits($traffic['download']['sum']['data']);
+        [$traffic['upload']['sum']['data'], $traffic['upload']['sum']['unit']] = setunits($traffic['upload']['sum']['data']);
     }
 
     return $traffic;

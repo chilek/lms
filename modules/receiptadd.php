@@ -506,7 +506,7 @@ switch ($action) {
         }
 
         if (isset($receipt['cdate']) && $receipt['cdate']) {
-            list($year, $month, $day) = explode('/', $receipt['cdate']);
+            [$year, $month, $day] = explode('/', $receipt['cdate']);
             if (checkdate($month, $day, $year)) {
                 $receipt['cdate'] = mktime(date('G', time()), date('i', time()), date('s', time()), $month, $day, $year);
             } else {

@@ -362,7 +362,7 @@ function convert_pna_to_teryt($data)
             if ($parity < 3) {
                 $token = preg_replace('/\([pn]\)$/', '', $token);
             }
-            list ($from, $to) = explode("-", $token);
+            [$from, $to] = explode("-", $token);
             if ($to == 'DK') {
                 $to = null;
             } elseif (empty($to) && !empty($from)) {

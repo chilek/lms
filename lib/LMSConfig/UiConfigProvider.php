@@ -29,7 +29,7 @@
  */
 class UiConfigProvider implements ConfigProviderInterface
 {
-    const NAME = 'UI_CONFIG_PROVIDER';
+    public const NAME = 'UI_CONFIG_PROVIDER';
 
     /**
      * Return uiconfig database table

@@ -56,7 +56,7 @@ $filename = ConfigHelper::getConfig('directories.backup_dir') . DIRECTORY_SEPARA
 $suffix = '';
 
 header('Content-Type: application/octet-stream');
-list ($db_dump_date, $db_schema_date) = explode('-', $_GET['db']);
+[$db_dump_date, $db_schema_date] = explode('-', $_GET['db']);
 if (extension_loaded('zlib') && strstr($_GET['file'], 'sql.gz')) {
     $suffix = '.gz';
     $filename .= '.gz';

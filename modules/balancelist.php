@@ -35,7 +35,7 @@ if (isset($_POST['search'])) {
     $SESSION->restore('bls', $s);
 }
 if (!isset($s) && $default_current_period) {
-    list ($year, $month, $day) = explode('/', date('Y/m/d'));
+    [$year, $month, $day] = explode('/', date('Y/m/d'));
     if ($default_current_period == 'day') {
         $s = date('Y/m/d', mktime(0, 0, 0, $month, $day, $year));
     } else {
@@ -82,7 +82,7 @@ if (($c == 'cdate' || $c == 'month' || $c == 'year') && $s) {
         }
     }
     if (!isset($date)) {
-        list ($year, $month, $day) = explode('/', date('Y/m/d'));
+        [$year, $month, $day] = explode('/', date('Y/m/d'));
         $s = mktime(0, 0, 0, $month, $c == 'cdate' ? $day : 1, $year);
     }
 }

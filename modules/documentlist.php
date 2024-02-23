@@ -94,7 +94,7 @@ if (!isset($_GET['init'])) {
 
     if (isset($_GET['from'])) {
         if ($_GET['from'] != '') {
-            list ($year, $month, $day) = explode('/', $_GET['from']);
+            [$year, $month, $day] = explode('/', $_GET['from']);
             $filter['from'] = mktime(0, 0, 0, $month, $day, $year);
         } else {
             $filter['from'] = 0;
@@ -105,7 +105,7 @@ if (!isset($_GET['init'])) {
 
     if (isset($_GET['to'])) {
         if ($_GET['to'] != '') {
-            list ($year, $month, $day) = explode('/', $_GET['to']);
+            [$year, $month, $day] = explode('/', $_GET['to']);
             $filter['to'] = mktime(23, 59, 59, $month, $day, $year);
         } else {
             $filter['to'] = 0;
@@ -137,7 +137,7 @@ if (!isset($_GET['init'])) {
 if (isset($_GET['init'])) {
     $default_current_period = ConfigHelper::getConfig('phpui.documentlist_default_current_period', '', true);
     if (preg_match('/^(day|month)$/', $default_current_period)) {
-        list ($year, $month, $day) = explode('/', date('Y/m/d'));
+        [$year, $month, $day] = explode('/', date('Y/m/d'));
         if ($default_current_period == 'day') {
             $filter['from'] = mktime(0, 0, 0, $month, $day, $year);
         } else {

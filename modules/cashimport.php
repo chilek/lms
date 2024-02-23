@@ -96,7 +96,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
                 array($id)
             );
             if ($SYSLOG) {
-                list ($customerid, $sourceid, $sourcefileid) = array_values(
+                [$customerid, $sourceid, $sourcefileid] = array_values(
                     $DB->GetRow('SELECT customerid, sourceid, sourcefileid
 						FROM cashimport WHERE id = ?', array($id))
                 );
@@ -119,7 +119,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
                 array(empty($id) ? null : $id, $idx)
             );
             if ($SYSLOG) {
-                list ($sourceid, $sourcefileid) = array_values(
+                [$sourceid, $sourcefileid] = array_values(
                     $DB->GetRow('SELECT sourceid, sourcefileid
                     FROM cashimport WHERE id = ?', array($idx))
                 );

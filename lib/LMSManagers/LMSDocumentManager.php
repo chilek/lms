@@ -140,7 +140,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $order='cdate,asc';
         }
 
-        list($order,$direction) = sscanf($order, '%[^,],%s');
+        [$order, $direction] = sscanf($order, '%[^,],%s');
         ($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
 
         switch ($order) {

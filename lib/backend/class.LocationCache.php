@@ -24,8 +24,8 @@ class LocationCache
     private $streets_loaded       = false;
 
     // load policy types
-    const LOAD_FULL = 'full';
-    const LOAD_ONE  = 'one';
+    public const LOAD_FULL = 'full';
+    public const LOAD_ONE  = 'one';
 
     // choosen load policy
     private $load_policy = self::LOAD_ONE;

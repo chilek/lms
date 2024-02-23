@@ -515,7 +515,7 @@ function BodyVars(&$body, $data, $format)
         $body = str_replace('%bankaccount', $all_accounts, $body);
     }
 
-    list ($now_year, $now_month, $now_day) = explode('/', date('Y/m/d'));
+    [$now_year, $now_month, $now_day] = explode('/', date('Y/m/d'));
 
     $currency = Localisation::getCurrentCurrency();
 

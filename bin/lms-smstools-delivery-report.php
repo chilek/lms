@@ -203,7 +203,7 @@ if (!empty($msgitem)) {
         $number = $prefix . $number;
     }
     if ($number == $phone) {
-        list ($code, $status, $text_status) = explode(',', $status);
+        [$code, $status, $text_status] = explode(',', $status);
         if ($status == 'Ok') {
             $DB->Execute(
                 'UPDATE messageitems SET status = ?, lastdate = ? WHERE id = ?',

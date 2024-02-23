@@ -149,9 +149,9 @@ $nodesessions = $DB->GetAll('SELECT s.*, c.name, c.lastname FROM nodesessions s
 
 if (!empty($nodesessions)) {
     foreach ($nodesessions as &$session) {
-        list ($number, $unit) = setunits($session['download']);
+        [$number, $unit] = setunits($session['download']);
         $session['download'] = round($number, 2) . ' ' . $unit;
-        list ($number, $unit) = setunits($session['upload']);
+        [$number, $unit] = setunits($session['upload']);
         $session['upload'] = round($number, 2) . ' ' . $unit;
         $session['duration'] = $session['stop']
         ? ($session['stop'] - $session['start'] < 60 ? trans('shorter than minute') : uptimef($session['stop'] - $session['start']))

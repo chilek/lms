@@ -32,7 +32,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
         $search = $search ?? array();
         $order = $order ?? 'name,asc';
 
-        list ($order, $dir) = sscanf($order, '%[^,],%s');
+        [$order, $dir] = sscanf($order, '%[^,],%s');
         ($dir == 'desc') ? $dir = 'desc' : $dir = 'asc';
         $short = !empty($search['short']);
 

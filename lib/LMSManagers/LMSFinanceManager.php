@@ -30,9 +30,9 @@
  */
 class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 {
-    const INVOICE_CONTENT_DETAIL_GENERAL = 1;
-    const INVOICE_CONTENT_DETAIL_MORE = 2;
-    const INVOICE_CONTENT_DETAIL_ALL = 3;
+    public const INVOICE_CONTENT_DETAIL_GENERAL = 1;
+    public const INVOICE_CONTENT_DETAIL_MORE = 2;
+    public const INVOICE_CONTENT_DETAIL_ALL = 3;
 
     private $currency_values = array();
 
@@ -476,7 +476,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             );
 
             foreach ($data_tariff as $idx => $dt) {
-                list($value, $period) = explode(':', $dt);
+                [$value, $period] = explode(':', $dt);
 
                 if (isset($data['modifiedvalues'][$idx])) {
                     $value = str_replace(',', '.', $data['modifiedvalues'][$idx]);
@@ -788,12 +788,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         }
                         $discounted_val = $val;
 
-                        list ($year, $month, $dom) = explode('/', date('Y/m/d', $orig_datefrom));
+                        [$year, $month, $dom] = explode('/', date('Y/m/d', $orig_datefrom));
                         $nextperiod = mktime(0, 0, 0, $month + 1, 1, $year);
                         $partial_dateto = !empty($data['dateto']) && $nextperiod > $data['dateto'] ? $data['dateto'] + 1 : $nextperiod;
                         $diffdays = round(($partial_dateto - $orig_datefrom) / 86400);
                         if ($diffdays > 0) {
-                            list ($y, $m) = explode('/', date('Y/m', $partial_dateto - 1));
+                            [$y, $m] = explode('/', date('Y/m', $partial_dateto - 1));
                             $month_days = date('d', mktime(0, 0, 0, $m + 1, 0, $y));
 
                             $partial_dateto--;
@@ -893,12 +893,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     }
 
                     if ($align_periods) {
-                        list ($year, $month, $dom) = explode('/', date('Y/m/d', $data['dateto']));
+                        [$year, $month, $dom] = explode('/', date('Y/m/d', $data['dateto']));
                         $prevperiod = mktime(0, 0, 0, $month, 1, $year);
                         $diffdays = sprintf("%d", ($data['dateto'] + 1 - $prevperiod) / 86400);
                         $_dateto = $data['dateto'];
                     } else {
-                        list ($year, $month, $dom) = explode('/', date('Y/m/d', $dateto + 1));
+                        [$year, $month, $dom] = explode('/', date('Y/m/d', $dateto + 1));
                         $prevperiod = mktime(0, 0, 0, $month, 1, $year);
                         $diffdays = $cday - 1;
                         $_dateto = mktime(23, 59, 59, $month, $diffdays, $year);
@@ -1038,12 +1038,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
             // creates assignment record for starting partial period
             if ($data['datefrom'] && isset($data['settlement']) && $data['settlement'] == 2 && $data['period'] == MONTHLY) {
-                list ($year, $month, $dom) = explode('/', date('Y/m/d', $data['datefrom']));
+                [$year, $month, $dom] = explode('/', date('Y/m/d', $data['datefrom']));
                 $nextperiod = mktime(0, 0, 0, $month + 1, 1, $year);
                 $partial_dateto = !empty($data['dateto']) && $nextperiod > $data['dateto'] ? $data['dateto'] + 1: $nextperiod;
                 $diffdays = round(($partial_dateto - $data['datefrom']) / 86400);
                 if ($diffdays > 0) {
-                    list ($y, $m) = explode('/', date('Y/m', $partial_dateto - 1));
+                    [$y, $m] = explode('/', date('Y/m', $partial_dateto - 1));
                     $month_days = date('d', mktime(0, 0, 0, $m + 1, 0, $y));
                     $value = $diffdays * $discounted_val / $month_days;
                     $partial_vdiscount = str_replace(',', '.', round(abs($value - $val), 3));
@@ -1123,7 +1123,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
             // creates assignment record for ending partial period
             if ($data['dateto'] && $data['datefrom'] < $data['dateto'] && isset($data['last-settlement']) && $data['period'] == MONTHLY) {
-                list ($year, $month, $dom) = explode('/', date('Y/m/d', $data['dateto']));
+                [$year, $month, $dom] = explode('/', date('Y/m/d', $data['dateto']));
                 $prevperiod = mktime(0, 0, 0, $month, 1, $year);
                 $diffdays = round(($data['dateto'] + 1 - $prevperiod) / 86400);
                 if ($diffdays > 0) {
@@ -1393,7 +1393,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 } elseif (!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at'])) {
                     $error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
                 } else {
-                    list($d,$m) = explode('/', $a['at']);
+                    [$d, $m] = explode('/', $a['at']);
                 }
 
                 if (!$error) {
@@ -1417,7 +1417,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $m = date('n', time());
                     $a['at'] = $d.'/'.$m;
                 } else {
-                    list($d,$m) = explode('/', $a['at']);
+                    [$d, $m] = explode('/', $a['at']);
                 }
 
                 if (!$error) {
@@ -1441,7 +1441,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 } elseif (!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at'])) {
                     $error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
                 } else {
-                    list($d,$m) = explode('/', $a['at']);
+                    [$d, $m] = explode('/', $a['at']);
                 }
 
                 if (!$error) {
@@ -1757,7 +1757,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $args['refid'] = $refid;
                 }
                 if (empty($data['datefrom'])) {
-                    list ($year, $month, $day) = explode('/', date('Y/m/d'));
+                    [$year, $month, $day] = explode('/', date('Y/m/d'));
                     $args['datefrom'] = mktime(0, 0, 0, $month, $day, $year);
                 } else {
                     $args['datefrom'] = $data['datefrom'];
@@ -2035,7 +2035,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $order='id,asc';
         }
 
-        list($order,$direction) = sscanf($order, '%[^,],%s');
+        [$order, $direction] = sscanf($order, '%[^,],%s');
         ($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
 
         switch ($order) {
@@ -2833,7 +2833,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $order='id,asc';
         }
 
-        list($order,$direction) = sscanf($order, '%[^,],%s');
+        [$order, $direction] = sscanf($order, '%[^,],%s');
         ($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
 
         switch ($order) {
@@ -3617,7 +3617,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         if ($itemid) {
             if ($this->syslog) {
-                list ($dnotecontid, $customerid) = array_values($this->db->GetRow('SELECT dn.id, customerid FROM debitnotecontents dn
+                [$dnotecontid, $customerid] = array_values($this->db->GetRow('SELECT dn.id, customerid FROM debitnotecontents dn
 					JOIN documents d ON d.id = dn.docid WHERE docid=? AND itemid=?', array($docid, $itemid)));
                 $args = array(
                     SYSLOG::RES_DNOTECONT => $dnotecontid,
@@ -4254,7 +4254,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $count = false;
         }
 
-        list($order,$direction) = sscanf($order, '%[^,],%s');
+        [$order, $direction] = sscanf($order, '%[^,],%s');
 
         ($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
 
@@ -4537,7 +4537,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             if (isset($item['docid'])) {
                 $this->db->Execute('UPDATE documents SET closed=1 WHERE id=?', array($item['docid']));
                 if ($SYSLOG) {
-                    list ($customerid, $numplanid) = array_values($this->db->GetRow('SELECT customerid, numberplanid
+                    [$customerid, $numplanid] = array_values($this->db->GetRow('SELECT customerid, numberplanid
 							FROM documents WHERE id = ?', array($item['docid'])));
                     $args = array(
                         SYSLOG::RES_DOC => $item['docid'],
@@ -4552,7 +4552,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 foreach ($item['references'] as $ref) {
                     $this->db->Execute('UPDATE documents SET closed=1 WHERE id=?', array($ref));
                     if ($SYSLOG) {
-                        list ($customerid, $numplanid) = array_values($this->db->GetRow('SELECT customerid, numberplanid
+                        [$customerid, $numplanid] = array_values($this->db->GetRow('SELECT customerid, numberplanid
 								FROM documents WHERE id = ?', array($ref)));
                         $args = array(
                             SYSLOG::RES_DOC => $ref,
@@ -5008,7 +5008,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             if (empty($date)) {
                 $date = mktime(12, 0, 0);
             } elseif (strpos($date, '/') !== false) {
-                list ($year, $month, $day) = explode('/', $date);
+                [$year, $month, $day] = explode('/', $date);
                 $date = mktime(12, 0, 0, $month, $day, $year);
             } elseif ($date > time()) {
                 $date = mktime(12, 0, 0);

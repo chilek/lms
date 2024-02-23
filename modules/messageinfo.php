@@ -32,7 +32,7 @@ function GetItemList($id, $order = 'id,desc', $search = null, $cat = null, $stat
         $order='id,desc';
     }
 
-    list($order,$direction) = sscanf($order, '%[^,],%s');
+    [$order, $direction] = sscanf($order, '%[^,],%s');
     ($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
 
     switch ($order) {

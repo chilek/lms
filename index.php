@@ -455,7 +455,7 @@ if ($AUTH->islogged) {
                     $resource_tabs = explode(';', $resource_tabs);
                     $all_tabs = array();
                     foreach ($resource_tabs as $resource_tab) {
-                        list ($resource_tab_id, $resource_tab_state) = explode(':', $resource_tab);
+                        [$resource_tab_id, $resource_tab_state] = explode(':', $resource_tab);
                         $all_tabs[$resource_tab_id] = intval($resource_tab_state) != 0;
                     }
                     $resource_tabs = $all_tabs;

@@ -41,11 +41,11 @@ $big_networks = ConfigHelper::checkConfig('phpui.big_networks');
 $params['userid'] = Auth::GetCurrentUser();
 
 if (!empty($filter['edate'])) {
-    list ($filter['year'], $filter['month'], $filter['day']) = explode('/', $filter['edate']);
+    [$filter['year'], $filter['month'], $filter['day']] = explode('/', $filter['edate']);
 }
 
 if (!isset($_POST['loginform']) && !empty($_POST)) {
-    list ($filter['year'], $filter['month'], $filter['day']) = explode('/', !empty($_POST['date']) ? $_POST['date'] : date('Y/m/d'));
+    [$filter['year'], $filter['month'], $filter['day']] = explode('/', !empty($_POST['date']) ? $_POST['date'] : date('Y/m/d'));
 
     if (isset($filter['edate']) && $filter['edate']) {
         if (empty($filter['month'])) {

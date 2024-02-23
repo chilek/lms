@@ -190,7 +190,7 @@ switch ($action) {
 
         if (ConfigHelper::checkPrivilege('invoice_consent_date')) {
             if ($cnote['cdate']) {
-                list ($year, $month, $day) = explode('/', $cnote['cdate']);
+                [$year, $month, $day] = explode('/', $cnote['cdate']);
                 if (checkdate($month, $day, $year)) {
                     $cnote['cdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $month, $day, $year);
                     if ($cnote['cdate'] < $invoice['cdate']) {
@@ -209,7 +209,7 @@ switch ($action) {
 
         if (ConfigHelper::checkPrivilege('invoice_sale_date')) {
             if ($cnote['sdate']) {
-                list ($syear, $smonth, $sday) = explode('/', $cnote['sdate']);
+                [$syear, $smonth, $sday] = explode('/', $cnote['sdate']);
                 if (checkdate($smonth, $sday, $syear)) {
                     $sdate = mktime(23, 59, 59, $smonth, $sday, $syear);
                     $cnote['sdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $smonth, $sday, $syear);

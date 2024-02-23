@@ -344,7 +344,7 @@ switch ($action) {
 
         if (ConfigHelper::checkPrivilege('invoice_consent_date')) {
             if ($invoice['cdate']) { // && !$invoice['cdatewarning'])
-                list ($year, $month, $day) = explode('/', $invoice['cdate']);
+                [$year, $month, $day] = explode('/', $invoice['cdate']);
                 if (checkdate($month, $day, $year)) {
                     $oldday = date('d', $invoice['oldcdate']);
                     $oldmonth = date('m', $invoice['oldcdate']);
@@ -372,7 +372,7 @@ switch ($action) {
 
         if (ConfigHelper::checkPrivilege('invoice_sale_date')) {
             if ($invoice['sdate']) {
-                list ($syear, $smonth, $sday) = explode('/', $invoice['sdate']);
+                [$syear, $smonth, $sday] = explode('/', $invoice['sdate']);
                 if (checkdate($smonth, $sday, $syear)) {
                     $oldsday = date('d', $invoice['oldsdate']);
                     $oldsmonth = date('m', $invoice['oldsdate']);
@@ -399,7 +399,7 @@ switch ($action) {
         }
 
         if ($invoice['deadline']) {
-            list ($dyear, $dmonth, $dday) = explode('/', $invoice['deadline']);
+            [$dyear, $dmonth, $dday] = explode('/', $invoice['deadline']);
             if (checkdate($dmonth, $dday, $dyear)) {
                 $olddday = date('d', $invoice['olddeadline']);
                 $olddmonth = date('m', $invoice['olddeadline']);
