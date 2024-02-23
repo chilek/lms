@@ -75,10 +75,10 @@ $SESSION->save('dnlg', $g);
 $SESSION->save('dnlge', $ge);
 
 if ($c == 'cdate' && $s && preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $s)) {
-    list($year, $month, $day) = explode('/', $s);
+    [$year, $month, $day] = explode('/', $s);
     $s = mktime(0, 0, 0, $month, $day, $year);
 } elseif ($c == 'month' && $s && preg_match('/^[0-9]{4}\/[0-9]{2}$/', $s)) {
-    list($year, $month) = explode('/', $s);
+    [$year, $month] = explode('/', $s);
         $s = mktime(0, 0, 0, $month, 1, $year);
 }
 

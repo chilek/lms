@@ -38,7 +38,7 @@ function hourRange($lower, $upper, $step)
 
 function parseWorkTimeHours($period)
 {
-    list ($begin, $end) = explode('-', $period);
+    [$begin, $end] = explode('-', $period);
     $parsed_begin = date_parse($begin . (strpos($begin, ':') === false ? ':00' : ''));
     $parsed_end = date_parse($end . (strpos($end, ':') === false ? ':00' : ''));
 
@@ -63,11 +63,11 @@ if (isset($_GET['action']) && $_GET['action'] == 'eventmove') {
 }
 
 if (!empty($filter['edate'])) {
-    list ($filter['year'], $filter['month'], $filter['day']) = explode('/', $filter['edate']);
+    [$filter['year'], $filter['month'], $filter['day']] = explode('/', $filter['edate']);
 }
 
 if (!isset($_POST['loginform']) && !empty($_POST)) {
-    list ($filter['year'], $filter['month'], $filter['day']) = explode('/', !empty($_POST['date']) ? $_POST['date'] : date('Y/m/d'));
+    [$filter['year'], $filter['month'], $filter['day']] = explode('/', !empty($_POST['date']) ? $_POST['date'] : date('Y/m/d'));
 
     if (!empty($filter['edate'])) {
         if (empty($filter['month'])) {

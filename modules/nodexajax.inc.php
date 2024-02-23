@@ -29,8 +29,8 @@ function NodeStats($id, $dt)
     global $DB;
     if ($stats = $DB->GetRow('SELECT SUM(download) AS download, SUM(upload) AS upload 
 		FROM stats WHERE nodeid=? AND dt>?', array($id, time() - $dt))) {
-            list($result['download']['data'], $result['download']['units']) = setunits($stats['download']);
-            list($result['upload']['data'], $result['upload']['units']) = setunits($stats['upload']);
+            [$result['download']['data'], $result['download']['units']] = setunits($stats['download']);
+            [$result['upload']['data'], $result['upload']['units']] = setunits($stats['upload']);
             $result['downavg'] = $stats['download'] * 8 / 1000 / $dt;
             $result['upavg'] = $stats['upload'] * 8 / 1000 / $dt;
     }

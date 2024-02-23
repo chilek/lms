@@ -549,7 +549,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                                 }
                                 $newdst = date('I', $row['date']);
                             }
-                            list ($year, $month, $day) = explode('/', date('Y/n/j', $row['date']));
+                            [$year, $month, $day] = explode('/', date('Y/n/j', $row['date']));
                             $row['date'] = mktime(0, 0, 0, $month, $day, $year);
                             $row['enddate'] = $row['date'] + 86400;
                             if ($days > 1 || $endtime) {
@@ -570,7 +570,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
     public function EventSearch($search, $order = 'date,asc', $simple = false)
     {
-        list($order, $direction) = sscanf($order, '%[^,],%s');
+        [$order, $direction] = sscanf($order, '%[^,],%s');
 
         (strtolower($direction) != 'desc') ? $direction = 'ASC' : $direction = 'DESC';
 

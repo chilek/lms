@@ -34,7 +34,7 @@ global $LMS, $SESSION;
  */
 function is_date($date)
 {
-    list($year,$month,$day) = explode('/', $date);
+    [$year, $month, $day] = explode('/', $date);
     return checkdate((int)$month, (int)$day, (int)$year);
 }
 

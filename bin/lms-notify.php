@@ -133,7 +133,7 @@ if (empty($fakedate)) {
 
 $omit_free_days = isset($options['omit-free-days']);
 
-list ($year, $month, $day) = explode('/', date('Y/n/j', $current_time));
+[$year, $month, $day] = explode('/', date('Y/n/j', $current_time));
 
 $weekday = date('N', $current_time);
 $holidays = array(
@@ -143,7 +143,7 @@ if ($omit_free_days && ($weekday > 5 || isset($holidays[$year][$current_time])))
     die('Notifications are omitted, because current day is free day!' . PHP_EOL);
 }
 
-list ($year, $month, $day) = explode('/', date('Y/n/j', $currtime));
+[$year, $month, $day] = explode('/', date('Y/n/j', $currtime));
 
 $daystart = mktime(0, 0, 0, $month, $day, $year);
 $dayend = mktime(23, 59, 59, $month, $day, $year);
@@ -606,7 +606,7 @@ function parse_customer_data($data, $format, $row)
         $deadline = $row['cdate'] + $row['paytime'] * 86400;
     }
 
-    list ($now_y, $now_m) = explode('/', date('Y/m'));
+    [$now_y, $now_m] = explode('/', date('Y/m'));
 
     if ($row['totalbalance'] < 0) {
         $commented_balance = trans('Billing status: $a (to pay)', moneyf(-$row['totalbalance']));

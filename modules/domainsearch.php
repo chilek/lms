@@ -28,7 +28,7 @@ function GetDomainList($search, $customer = '', $order = 'name,asc')
 {
     global $DB;
 
-    list($order,$direction) = sscanf($order, '%[^,],%s');
+    [$order, $direction] = sscanf($order, '%[^,],%s');
 
     ($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
 

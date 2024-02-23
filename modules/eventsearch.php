@@ -56,12 +56,12 @@ if (isset($_POST['event'])) {
     }
 
     if ($event['datefrom']) {
-        list($year, $month, $day) = explode('/', $event['datefrom']);
+        [$year, $month, $day] = explode('/', $event['datefrom']);
         $event['datefrom'] = mktime(0, 0, 0, $month, $day, $year);
     }
 
     if ($event['dateto']) {
-        list($year, $month, $day) = explode('/', $event['dateto']);
+        [$year, $month, $day] = explode('/', $event['dateto']);
         $event['dateto'] = mktime(0, 0, 0, $month, $day, $year);
     }
 

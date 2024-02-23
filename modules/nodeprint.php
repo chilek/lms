@@ -57,7 +57,7 @@ switch ($type) {
                     $order='name,asc';
                 }
 
-                list($order,$direction) = explode(',', $order);
+                [$order, $direction] = explode(',', $order);
 
                 ($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
 

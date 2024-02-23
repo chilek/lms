@@ -134,7 +134,7 @@ switch ($action) {
 
         if (ConfigHelper::checkPrivilege('invoice_consent_date')) {
             if ($note['cdate']) { // && !$note['cdatewarning'])
-                list($year, $month, $day) = explode('/', $note['cdate']);
+                [$year, $month, $day] = explode('/', $note['cdate']);
                 if (checkdate($month, $day, $year)) {
                     $oldday = date('d', $note['oldcdate']);
                     $oldmonth = date('m', $note['oldcdate']);

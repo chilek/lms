@@ -50,14 +50,14 @@ $LMS = new LMS($DB, $AUTH, $SYSLOG);
 $customerid = isset($options['customerid']) && intval($options['customerid']) ? $options['customerid'] : null;
 
 if (isset($options['from'])) {
-    list ($year, $month, $day) = explode('/', $options['from']);
+    [$year, $month, $day] = explode('/', $options['from']);
     $from = mktime(0, 0, 0, $month, $day, $year);
 } else {
     $from = mktime(0, 0, 0);
 }
 
 if (isset($options['to'])) {
-    list ($year, $month, $day) = explode('/', $options['to']);
+    [$year, $month, $day] = explode('/', $options['to']);
     $to = mktime(23, 59, 59, $month, $day, $year) + 1;
 } else {
     $to = mktime(23, 59, 59) + 1;

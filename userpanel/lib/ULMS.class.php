@@ -213,7 +213,7 @@ class ULMS extends LMS
         $ticket['queuename'] = $this->DB->GetOne('SELECT name FROM rtqueues WHERE id = ?', array($ticket['queueid']));
         $ticket['lastmod'] = $this->DB->GetOne('SELECT MAX(createtime) FROM rtmessages WHERE ticketid = ?', array($id));
 
-        list($ticket['requestoremail']) = sscanf($ticket['requestor'], "<%[^>]");
+        [$ticket['requestoremail']] = sscanf($ticket['requestor'], "<%[^>]");
 
         return $ticket;
     }

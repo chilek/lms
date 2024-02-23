@@ -157,7 +157,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         extract($params);
 
         if (isset($order)) {
-            list ($column, $asc) = explode(',', $order);
+            [$column, $asc] = explode(',', $order);
             $sqlord = $column . ' ' . ($asc == 'desc' ? 'DESC' : 'ASC');
         } else {
             $sqlord = 'login ASC';

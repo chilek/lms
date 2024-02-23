@@ -99,8 +99,8 @@ switch ($type) {
                 $listdata[0]['upavg'] += $stats[0][$i]['upavg'];
                 $listdata[0]['downavg'] += $stats[0][$i]['downavg'];
 
-                list($stats[0][$i]['upload'], $stats[0][$i]['uploadunit']) = setunits($stats[0][$i]['upload']);
-                list($stats[0][$i]['download'], $stats[0][$i]['downloadunit']) = setunits($stats[0][$i]['download']);
+                [$stats[0][$i]['upload'], $stats[0][$i]['uploadunit']] = setunits($stats[0][$i]['upload']);
+                [$stats[0][$i]['download'], $stats[0][$i]['downloadunit']] = setunits($stats[0][$i]['download']);
 
                 if ($stats[0][$i]['upmax'] > $listdata[0]['upmax']) {
                     $listdata[0]['upmax'] = $stats[0][$i]['upmax'];
@@ -112,8 +112,8 @@ switch ($type) {
 
             $listdata[0]['upavg'] = $listdata[0]['upavg'] / date('t', $from);
             $listdata[0]['downavg'] = $listdata[0]['downavg'] / date('t', $from);
-            list($listdata[0]['upload'], $listdata[0]['uploadunit']) = setunits($listdata[0]['upload']);
-            list($listdata[0]['download'], $listdata[0]['downloadunit']) = setunits($listdata[0]['download']);
+            [$listdata[0]['upload'], $listdata[0]['uploadunit']] = setunits($listdata[0]['upload']);
+            [$listdata[0]['download'], $listdata[0]['downloadunit']] = setunits($listdata[0]['download']);
 
             $SMARTY->assign('stats', $stats);
             $SMARTY->assign('listdata', $listdata);

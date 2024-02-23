@@ -25,7 +25,7 @@
  */
 
 $id = intval($_GET['id']);
-list ($regid, $userid) = array_values($DB->GetRow('SELECT regid, userid FROM cashreglog WHERE id = ?', array($id)));
+[$regid, $userid] = array_values($DB->GetRow('SELECT regid, userid FROM cashreglog WHERE id = ?', array($id)));
 
 if (!$regid) {
     $SESSION->redirect('?m=cashreglist');

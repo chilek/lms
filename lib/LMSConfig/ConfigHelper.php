@@ -81,7 +81,7 @@ class ConfigHelper
      */
     public static function checkConfig($name, $default = false)
     {
-        list($section_name, $variable_name) = explode('.', $name, 2);
+        [$section_name, $variable_name] = explode('.', $name, 2);
 
         if (empty($variable_name)) {
             return $default;
@@ -133,7 +133,7 @@ class ConfigHelper
 
     public static function variableExists($name)
     {
-        list ($section_name, $variable_name) = explode('.', $name, 2);
+        [$section_name, $variable_name] = explode('.', $name, 2);
 
         if (empty($variable_name)) {
             return false;

@@ -28,7 +28,7 @@ function GetAliasList($search, $customer = '', $domain = '', $order = 'login,asc
 {
     global $DB;
 
-    list($order,$direction) = sscanf($order, '%[^,],%s');
+    [$order, $direction] = sscanf($order, '%[^,],%s');
 
     ($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
 

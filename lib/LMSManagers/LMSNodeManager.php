@@ -386,7 +386,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             $order = 'name,asc';
         }
 
-        list($order, $direction) = sscanf($order, '%[^,],%s');
+        [$order, $direction] = sscanf($order, '%[^,],%s');
 
         ($direction == 'desc') ? $direction = 'desc' : $direction = 'asc';
 
@@ -1373,9 +1373,9 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         );
         if (!empty($nodesessions)) {
             foreach ($nodesessions as &$session) {
-                list ($number, $unit) = setunits($session['download']);
+                [$number, $unit] = setunits($session['download']);
                 $session['download'] = round($number, 2) . ' ' . $unit;
-                list ($number, $unit) = setunits($session['upload']);
+                [$number, $unit] = setunits($session['upload']);
                 $session['upload'] = round($number, 2) . ' ' . $unit;
                 $session['duration'] = $session['stop']
                     ? ($session['stop'] - $session['start'] < 60 ? trans('shorter than minute') : uptimef($session['stop'] - $session['start']))

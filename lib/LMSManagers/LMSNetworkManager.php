@@ -261,7 +261,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
         $order = !empty($search['order']) ? $search['order'] : 'id,asc';
 
-        list($order, $direction) = sscanf($order, '%[^,],%s');
+        [$order, $direction] = sscanf($order, '%[^,],%s');
 
         ($direction == 'desc') ? $direction = 'desc' : $direction = 'asc';
 
@@ -931,7 +931,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                 if ($res = execute_program('nbtscan', '-q -s: ' . $network['address'] . '/' . $network['prefix'])) {
                     $out = explode("\n", $res);
                     foreach ($out as $line) {
-                        list($ipaddr, $name, $null, $login, $mac) = explode(':', $line, 5);
+                        [$ipaddr, $name, $null, $login, $mac] = explode(':', $line, 5);
                         $row['ipaddr'] = trim($ipaddr);
                         if ($row['ipaddr']) {
                             $row['name'] = trim($name);

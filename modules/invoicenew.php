@@ -366,7 +366,7 @@ switch ($action) {
 
         if (ConfigHelper::checkPrivilege('invoice_consent_date')) {
             if ($invoice['cdate']) {
-                list ($year, $month, $day) = explode('/', $invoice['cdate']);
+                [$year, $month, $day] = explode('/', $invoice['cdate']);
                 if (checkdate($month, $day, $year)) {
                     $invoice['cdate'] = mktime(
                         date('G', $currtime),
@@ -414,7 +414,7 @@ switch ($action) {
 
         if (ConfigHelper::checkPrivilege('invoice_sale_date')) {
             if ($invoice['sdate']) {
-                list($syear, $smonth, $sday) = explode('/', $invoice['sdate']);
+                [$syear, $smonth, $sday] = explode('/', $invoice['sdate']);
                 if (checkdate($smonth, $sday, $syear)) {
                     $invoice['sdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $smonth, $sday, $syear);
                     $scurrmonth = $smonth;
@@ -437,7 +437,7 @@ switch ($action) {
         }
 
         if ($invoice['deadline']) {
-            list ($dyear, $dmonth, $dday) = explode('/', $invoice['deadline']);
+            [$dyear, $dmonth, $dday] = explode('/', $invoice['deadline']);
             if (checkdate($dmonth, $dday, $dyear)) {
                 $invoice['deadline'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $dmonth, $dday, $dyear);
                 $dcurrmonth = $dmonth;

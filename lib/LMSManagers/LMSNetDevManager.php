@@ -741,7 +741,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         $limit = $search['limit'] ?? null;
         $short = !empty($search['short']);
 
-        list($order, $direction) = sscanf($order, '%[^,],%s');
+        [$order, $direction] = sscanf($order, '%[^,],%s');
 
         ($direction == 'desc') ? $direction = 'desc' : $direction = 'asc';
 

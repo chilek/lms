@@ -33,7 +33,7 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
         $order = 'name,asc';
     }
 
-    list($order,$direction) = sscanf($order, '%[^,],%s');
+    [$order, $direction] = sscanf($order, '%[^,],%s');
 
     ($direction == 'desc') ? $direction = 'desc' : $direction = 'asc';
 

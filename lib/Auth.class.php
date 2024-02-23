@@ -318,7 +318,7 @@ class Auth
             if (strpos($value, '/') === false) {
                 $net = $value;
             } else {
-                list($net, $mask) = explode('/', $value);
+                [$net, $mask] = explode('/', $value);
             }
 
             $net = trim($net);
@@ -639,7 +639,7 @@ class Auth
                 $plain_content = openssl_decrypt($encrypted_content, 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv);
                 if ($plain_content !== false) {
                     $now = time();
-                    list ($expires, $rand, $signature) = explode(':', $plain_content, 3);
+                    [$expires, $rand, $signature] = explode(':', $plain_content, 3);
                     if ($this->DB->GetOne(
                         'SELECT COUNT(*) FROM twofactorauthtrusteddevices
                         WHERE userid = ? AND cookiename = ? AND expires = ?',
