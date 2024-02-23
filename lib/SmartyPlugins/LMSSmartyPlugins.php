@@ -871,7 +871,7 @@ class LMSSmartyPlugins
         if (isset($params['popup']) && $popup = $params['popup']) {
             if (is_array($params)) {
                 foreach ($params as $paramid => $paramval) {
-                    $popup = str_replace('$'.$paramid, $paramval, $popup);
+                    $popup = str_replace('$'.$paramid, $paramval ?? '', $popup);
                 }
             }
 
