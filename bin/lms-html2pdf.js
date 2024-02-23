@@ -3,7 +3,8 @@
 /*jshint esversion: 8 */
 
 const puppeteer = require('puppeteer-core');
-const program = require('commander');
+const commander = require('commander');
+const program = new commander.Command();
 const fs = require('fs');
 
 program
