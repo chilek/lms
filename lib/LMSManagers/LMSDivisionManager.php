@@ -70,7 +70,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             $order = 'shortname,asc';
         }
 
-        list($order, $direction) = sscanf($order, '%[^,],%s');
+        [$order, $direction] = sscanf($order, '%[^,],%s');
 
         ($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
 

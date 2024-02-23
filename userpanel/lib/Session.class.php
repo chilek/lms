@@ -372,7 +372,7 @@ class Session
 
     private function makeSID()
     {
-        list($usec, $sec) = explode(' ', microtime());
+        [$usec, $sec] = explode(' ', microtime());
         return md5(uniqid(random_int(0, mt_getrandmax()), true)) . sprintf('%09x', $sec) . sprintf('%07x', ($usec * 10000000));
     }
 

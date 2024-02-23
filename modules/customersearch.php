@@ -34,7 +34,7 @@ if (isset($_POST['search'])) {
     }
 
     if ($search['balance_date']) {
-        list ($year, $month, $day) = explode('/', $search['balance_date']);
+        [$year, $month, $day] = explode('/', $search['balance_date']);
         $search['balance_date'] = mktime(23, 59, 59, $month, $day, $year);
     }
 }

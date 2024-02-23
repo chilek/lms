@@ -45,7 +45,7 @@ class LMSTcpdfTransferForm extends LMSDocument
         $this->backend->SetFont($font, 'BI', 7);
         $this->backend->SetFont($font, '', 7);
 
-        list ($margin_top, $margin_right, $margin_bottom, $margin_left) = explode(',', ConfigHelper::getConfig('invoices.tcpdf_margins', '27,15,25,15'));
+        [$margin_top, $margin_right, $margin_bottom, $margin_left] = explode(',', ConfigHelper::getConfig('invoices.tcpdf_margins', '27,15,25,15'));
         $this->backend->SetMargins(trim($margin_left), trim($margin_top), trim($margin_right));
         $this->backend->SetAutoPageBreak(true, trim($margin_bottom));
     }

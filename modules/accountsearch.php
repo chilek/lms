@@ -28,7 +28,7 @@ function GetAccountList($search, $customer = null, $type = null, $kind = null, $
 {
     global $DB, $ACCOUNTTYPES;
 
-    list($order,$direction) = sscanf($order, '%[^,],%s');
+    [$order, $direction] = sscanf($order, '%[^,],%s');
 
     ($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
 

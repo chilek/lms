@@ -346,8 +346,7 @@ foreach ($nodes as $node) {
         }
     }
 
-    list ($uprate, $downrate, $upceil, $downceil, $uprate_n, $downrate_n, $upceil_n, $downceil_n,
-        $climit, $plimit, $nodeid, $nodeip, $assignmentid) =
+    [$uprate, $downrate, $upceil, $downceil, $uprate_n, $downrate_n, $upceil_n, $downceil_n, $climit, $plimit, $nodeid, $nodeip, $assignmentid] =
         array(
             $node['uprate'],
             $node['downrate'],

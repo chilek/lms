@@ -36,7 +36,7 @@ class EtherCodes
             $maclines = @file(LIB_DIR . DIRECTORY_SEPARATOR . 'ethercodes.txt', FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES);
             if (!empty($maclines)) {
                 foreach ($maclines as $line) {
-                    list ($prefix, $producer) = explode(':', $line);
+                    [$prefix, $producer] = explode(':', $line);
                     self::$producers[$prefix] = $producer;
                 }
             }

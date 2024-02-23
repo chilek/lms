@@ -140,8 +140,8 @@ if (empty($fakedate)) {
     $today = $currtime = strtotime($fakedate);
 }
 $issuetime = isset($issuedate) ? strtotime($issuedate) : $currtime;
-list ($year, $month, $dom) = explode('/', date('Y/n/j', $currtime));
-list ($backward_year, $backward_month) = explode('/', date('Y/m', strtotime($year . '/' . $month. '/' . $dom . ' - 1 month')));
+[$year, $month, $dom] = explode('/', date('Y/n/j', $currtime));
+[$backward_year, $backward_month] = explode('/', date('Y/m', strtotime($year . '/' . $month. '/' . $dom . ' - 1 month')));
 $weekday = date('N', $currtime);
 $yearday = sprintf('%03d', date('z', $currtime) + 1);
 $last_dom = date('j', mktime(0, 0, 0, $month + 1, 0, $year)) == date('j', $currtime);

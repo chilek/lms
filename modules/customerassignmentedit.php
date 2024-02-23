@@ -125,7 +125,7 @@ if (isset($_POST['assignment'])) {
             } elseif (!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at'])) {
                 $error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
             } else {
-                list($d,$m) = explode('/', $a['at']);
+                [$d, $m] = explode('/', $a['at']);
             }
 
             if (!$error) {
@@ -148,7 +148,7 @@ if (isset($_POST['assignment'])) {
                 $m = date('n', time());
                 $a['at'] = $d.'/'.$m;
             } else {
-                list($d,$m) = explode('/', $a['at']);
+                [$d, $m] = explode('/', $a['at']);
             }
 
             if (!$error) {
@@ -171,7 +171,7 @@ if (isset($_POST['assignment'])) {
             } elseif (!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at'])) {
                 $error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
             } else {
-                list($d,$m) = explode('/', $a['at']);
+                [$d, $m] = explode('/', $a['at']);
             }
 
             if (!$error) {
@@ -191,7 +191,7 @@ if (isset($_POST['assignment'])) {
             $period = DISPOSABLE;
 
             if (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['at'])) {
-                list($y, $m, $d) = explode('/', $a['at']);
+                [$y, $m, $d] = explode('/', $a['at']);
                 if (checkdate($m, $d, $y)) {
                     $at = mktime(0, 0, 0, $m, $d, $y);
                     if (empty($a['atwarning']) && $at < mktime(0, 0, 0)) {

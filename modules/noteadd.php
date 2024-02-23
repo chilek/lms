@@ -95,7 +95,7 @@ switch ($action) {
 
         if (ConfigHelper::checkPrivilege('invoice_consent_date')) {
             if ($note['cdate']) {
-                list ($year, $month, $day) = explode('/', $note['cdate']);
+                [$year, $month, $day] = explode('/', $note['cdate']);
                 if (checkdate($month, $day, $year)) {
                     $note['cdate'] = mktime(
                         date('G', $currtime),

@@ -44,7 +44,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             $order = 'login,asc';
         }
 
-        list($order, $direction) = sscanf($order, '%[^,],%s');
+        [$order, $direction] = sscanf($order, '%[^,],%s');
         $direction = ($direction == 'desc') ? 'desc' : 'asc';
 
         switch ($order) {
@@ -808,12 +808,12 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 
         // CALL BILLING RANGE
         if (!empty($params['frangefrom'])) {
-            list($year,$month,$day) = explode('/', $params['frangefrom']);
+            [$year, $month, $day] = explode('/', $params['frangefrom']);
             $where[] = 'call_start_time >= ' . mktime(0, 0, 0, $month, $day, $year);
         }
 
         if (!empty($params['frangeto'])) {
-            list($year,$month,$day) = explode('/', $params['frangeto']);
+            [$year, $month, $day] = explode('/', $params['frangeto']);
             $where[] = 'call_start_time <= ' . mktime(23, 59, 59, $month, $day, $year);
         }
 

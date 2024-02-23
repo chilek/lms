@@ -343,7 +343,7 @@ function getmicrotime()
 {
     // This function has been taken from PHP manual
 
-    list($usec, $sec) = explode(' ', microtime());
+    [$usec, $sec] = explode(' ', microtime());
     return ((float)$usec + (float)$sec);
 }
 
@@ -1372,7 +1372,7 @@ function handle_file_uploads($elemid, &$error)
             die;
         } elseif (isset($fileupload[$elemid])) {
             foreach ($fileupload[$elemid] as &$file) {
-                list ($size, $unit) = setunits($file['size']);
+                [$size, $unit] = setunits($file['size']);
                 $file['sizestr'] = sprintf("%.02f", $size) . ' ' . $unit;
             }
             unset($file);

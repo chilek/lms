@@ -454,7 +454,7 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
                 ) > 0;
                 break;
             case LMSDB::RESOURCE_TYPE_COLUMN:
-                list ($table_name, $column_name) = explode('.', $name);
+                [$table_name, $column_name] = explode('.', $name);
                 return $this->GetOne(
                     'SELECT COUNT(*) FROM information_schema.columns
 					WHERE table_schema = ? AND table_name = ? AND column_name = ?',
@@ -463,7 +463,7 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
                 break;
             case LMSDB::RESOURCE_TYPE_CONSTRAINT:
                 if (strpos($name, '.') !== false) {
-                    list ($table_name, $constraint_name) = explode('.', $name);
+                    [$table_name, $constraint_name] = explode('.', $name);
                     return $this->GetOne(
                         'SELECT COUNT(*) FROM information_schema.table_constraints
 						WHERE table_schema = ? AND table_name = ? AND constraint_name = ?',
@@ -485,7 +485,7 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
                 ) > 0;
                 break;
             case LMSDB::RESOURCE_TYPE_COLUMN_TYPE:
-                list ($table_name, $column_name, $column_type) = explode('.', $name);
+                [$table_name, $column_name, $column_type] = explode('.', $name);
                 return $this->GetOne(
                     'SELECT COUNT(*) FROM information_schema.columns
                     WHERE table_schema = ? AND table_name = ? AND column_name = ? AND column_type = ?',

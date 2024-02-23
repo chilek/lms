@@ -258,9 +258,9 @@ function RTSearch($search, $order = 'createtime,desc')
     if ($result) {
         foreach ($result as &$ticket) {
             if (!isset($ticket['custid']) || !$ticket['custid']) {
-                list ($ticket['requestor'], $ticket['requestor_mail']) = sscanf($ticket['req'], "%[^<]<%[^>]");
+                [$ticket['requestor'], $ticket['requestor_mail']] = sscanf($ticket['req'], "%[^<]<%[^>]");
             } else {
-                list ($ticket['requestor_mail']) = sscanf($ticket['req'], "<%[^>]");
+                [$ticket['requestor_mail']] = sscanf($ticket['req'], "<%[^>]");
             }
 
             if (!empty($ticket['deadline'])) {

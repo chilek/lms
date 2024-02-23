@@ -254,7 +254,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
         }
 
 
-        list($order,$direction) = sscanf($order, '%[^,],%s');
+        [$order, $direction] = sscanf($order, '%[^,],%s');
         ($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
 
         switch ($order) {

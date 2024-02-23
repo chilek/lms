@@ -1349,7 +1349,7 @@ if (isset($options['buildings'])) {
             $coords = $Geometry->getArray();
             $pointSrc = new \proj4php\Point($coords['x'], $coords['y'], $projEPSG2180);
             $pointDest = $proj4->transform($projWGS84, $pointSrc);
-            list ($longitude, $latitude,) = $pointDest->toArray();
+            [$longitude, $latitude, ] = $pointDest->toArray();
             $coords = compact('longitude', 'latitude');
 
             $v = array_merge($address, $coords);

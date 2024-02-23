@@ -363,7 +363,7 @@ if ($type == 'openlayers') {
                 $cely = $idy - $miny;
                 if (preg_match('/^n/', $device)) {
                     $device = str_replace('n', '', $device);
-                    list($nodeid,$device,$linktype) = explode('.', $device);
+                    [$nodeid, $device, $linktype] = explode('.', $device);
                     $nodemap[$nodeid]['x'] = (($celx * ($cellw)) + $celllmargin) +4;
                     $nodemap[$nodeid]['y'] = (($cely * ($cellh)) + $celltmargin) +4;
                     $nodemap[$nodeid]['id'] = $nodeid;
@@ -440,7 +440,7 @@ if ($type == 'openlayers') {
             $cely = $idy - $miny;
             if (preg_match('/^n/', $device)) {
                 $device = str_replace('n', '', $device);
-                list($nodeid,$device,$linktype) = explode('.', $device);
+                [$nodeid, $device, $linktype] = explode('.', $device);
                 $nodemap[$nodeid]['x'] = $celx;
                 $nodemap[$nodeid]['y'] = $cely;
                 $nodemap[$nodeid]['device'] = $device;
@@ -661,7 +661,7 @@ if ($type == 'openlayers') {
             $cely = $idy - $miny;
             if (preg_match('/^n/', $device)) {
                 $device = str_replace('n', '', $device);
-                list($nodeid,$device,$linktype) = explode('.', $device);
+                [$nodeid, $device, $linktype] = explode('.', $device);
                 $nodemap[$nodeid]['x'] = $celx;
                 $nodemap[$nodeid]['y'] = $cely;
                 $nodemap[$nodeid]['device'] = $device;

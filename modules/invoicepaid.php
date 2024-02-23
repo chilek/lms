@@ -41,7 +41,7 @@ if (count($ilm)) {
 
 if (count($ids)) {
     foreach ($ids as $invoiceid) {
-        list ($cid, $closed) = array_values($DB->GetRow('SELECT customerid, closed FROM documents
+        [$cid, $closed] = array_values($DB->GetRow('SELECT customerid, closed FROM documents
 			WHERE id = ?', array($invoiceid)));
         // add payment
         if (ConfigHelper::checkConfig('phpui.invoice_check_payment') && $cid && !$closed) {

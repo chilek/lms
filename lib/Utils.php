@@ -167,7 +167,7 @@ class Utils
             if (strpos($value, '/') === false) {
                 $net = $value;
             } else {
-                list ($net, $mask) = explode('/', $value);
+                [$net, $mask] = explode('/', $value);
             }
 
             $net = trim($net);
@@ -285,7 +285,7 @@ class Utils
         foreach ($content as $line) {
             if (preg_match('/^##\s+(?<variable>.+)\r?/', $line, $m)) {
                 if ($variable && $buffer) {
-                    list ($section, $var) = explode('.', $variable);
+                    [$section, $var] = explode('.', $variable);
                     if (!isset($result[$section])) {
                         $result[$section] = array();
                     }
@@ -295,7 +295,7 @@ class Utils
                 $buffer = '';
             } elseif (preg_match('/^\*\*\*/', $line)) {
                 if ($variable && $buffer) {
-                    list ($section, $var) = explode('.', $variable);
+                    [$section, $var] = explode('.', $variable);
                     if (!isset($result[$section])) {
                         $result[$section] = array();
                     }
@@ -308,7 +308,7 @@ class Utils
             }
         }
         if ($variable && $buffer) {
-            list ($section, $var) = explode('.', $variable);
+            [$section, $var] = explode('.', $variable);
             if (!isset($result[$section])) {
                 $result[$section] = array();
             }
@@ -363,7 +363,7 @@ class Utils
         $properties = explode(';', $text);
         if (!empty($properties)) {
             foreach ($properties as $property) {
-                list ($name, $value) = explode(':', $property);
+                [$name, $value] = explode(':', $property);
                 $result[$name] = $value;
             }
         }
@@ -374,7 +374,7 @@ class Utils
     {
         $holidaysByYear = array();
 
-        list ($year, $month, $day, $weekday) = explode('/', date('Y/m/j/N', $date ?: time()));
+        [$year, $month, $day, $weekday] = explode('/', date('Y/m/j/N', $date ?: time()));
         $date = mktime(0, 0, 0, $month, $day, $year);
 
         while (true) {
@@ -385,7 +385,7 @@ class Utils
                 return $date;
             }
             $date = strtotime('+1 day', $date);
-            list ($year, $weekday) = explode('/', date('Y/N', $date));
+            [$year, $weekday] = explode('/', date('Y/N', $date));
         }
     }
 
