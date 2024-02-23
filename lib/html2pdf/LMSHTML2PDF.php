@@ -27,7 +27,7 @@
 class LMSHTML2PDF extends \Spipu\Html2Pdf\Html2Pdf
 {
     // default font
-    const TCPDF_FONT = 'liberationsans';
+    public const TCPDF_FONT = 'liberationsans';
 
     /**
      * class constructor

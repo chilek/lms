@@ -36,17 +36,17 @@ use Ramsey\Uuid\Uuid;
 
 class Utils
 {
-    const GUS_REGON_API_RESULT_BAD_KEY = 1;
-    const GUS_REGON_API_RESULT_NO_DATA = 2;
-    const GUS_REGON_API_RESULT_AMBIGUOUS = 3;
-    const GUS_REGON_API_RESULT_UNKNOWN_ERROR = 4;
+    public const GUS_REGON_API_RESULT_BAD_KEY = 1;
+    public const GUS_REGON_API_RESULT_NO_DATA = 2;
+    public const GUS_REGON_API_RESULT_AMBIGUOUS = 3;
+    public const GUS_REGON_API_RESULT_UNKNOWN_ERROR = 4;
 
-    const GUS_REGON_API_SEARCH_TYPE_TEN = 1;
-    const GUS_REGON_API_SEARCH_TYPE_REGON = 2;
-    const GUS_REGON_API_SEARCH_TYPE_RBE = 3;
+    public const GUS_REGON_API_SEARCH_TYPE_TEN = 1;
+    public const GUS_REGON_API_SEARCH_TYPE_REGON = 2;
+    public const GUS_REGON_API_SEARCH_TYPE_RBE = 3;
 
-    const PESEL_STATUS_RESERVED = 'ZASTRZEZONY';
-    const PESEL_STATUS_NOT_RESERVED = 'NIEZASTRZEZONY';
+    public const PESEL_STATUS_RESERVED = 'ZASTRZEZONY';
+    public const PESEL_STATUS_NOT_RESERVED = 'NIEZASTRZEZONY';
 
     public static function filterIntegers(array $params)
     {

@@ -26,7 +26,7 @@
 
 class LMSPdfUniteBackend
 {
-    const MAX_PDF_INPUT_FILES = 100;
+    public const MAX_PDF_INPUT_FILES = 100;
 
     private $input_files;
     private $output_file;

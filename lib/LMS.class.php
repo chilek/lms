@@ -29,13 +29,13 @@
 
 class LMS
 {
-    const SOFTWARE_NAME = 'LMS';
-    const SOFTWARE_VERSION = '28-git';
-    const SOFTWARE_URL = 'https://lms.org.pl';
-    const SOFTWARE_DOCUMENTATION_URL = 'doc/html/%lang%';
-    const SOFTWARE_REPO_URL = 'https://git.lms.org.pl';
-    const SOFTWARE_SUPPORT_URL = 'https://github.com/chilek/lms/issues';
-    const SOFTWARE_REVISION = '$Format:%cI$'; // %H for last commit checksum
+    public const SOFTWARE_NAME = 'LMS';
+    public const SOFTWARE_VERSION = '28-git';
+    public const SOFTWARE_URL = 'https://lms.org.pl';
+    public const SOFTWARE_DOCUMENTATION_URL = 'doc/html/%lang%';
+    public const SOFTWARE_REPO_URL = 'https://git.lms.org.pl';
+    public const SOFTWARE_SUPPORT_URL = 'https://github.com/chilek/lms/issues';
+    public const SOFTWARE_REVISION = '$Format:%cI$'; // %H for last commit checksum
 
     public $DB;   // database object
     public $AUTH;   // object from Session.class.php (session management)
@@ -75,7 +75,7 @@ class LMS
     protected $tariff_tag_manager;
     protected $tariff_price_variant_manager;
 
-    const DB_DUMP_MULTI_RECORD_LIMIT = 500;
+    public const DB_DUMP_MULTI_RECORD_LIMIT = 500;
 
     public function __construct(&$DB, &$AUTH, &$SYSLOG)
     {
