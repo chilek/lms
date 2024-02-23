@@ -2665,11 +2665,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                              WHERE
                                                 ca.customer_id = ?', 'type', array($customer_id));
 
-        if (isset($addresses[DEFAULT_LOCATION_ADDRESS])) {
-            return $addresses[DEFAULT_LOCATION_ADDRESS];
-        }
-
-        return $addresses[BILLING_ADDRESS] ?? null;
+        return $addresses[DEFAULT_LOCATION_ADDRESS] ?? $addresses[BILLING_ADDRESS] ?? null;
     }
 
     public function detectCustomerLocationAddress($customer_id)
