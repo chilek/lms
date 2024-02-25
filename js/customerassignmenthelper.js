@@ -600,7 +600,7 @@ $('#assignment-period').change(function() {
 	$('#last-day-of-month').closest('label').toggle($(this).val() == lmsSettings.monthlyPeriod);
 });
 
-const settlementElem = $('#a_settlement');
+const firstSettlementElem = $('#first-settlement');
 const lastSettlementElem = $('#last-settlement');
 
 function tariffSelectionHandler() {
@@ -633,16 +633,16 @@ function tariffSelectionHandler() {
 
 	let dateFrom = $('#a_datefrom').datepicker( "getDate" );
 	if (dateFrom == null || (dateFrom != null && checkDate.ifFirstDayOfMonth(dateFrom))) {
-		if (settlementElem.is('input')) {
-			settlementElem.prop({checked: false, disabled: true});
+		if (firstSettlementElem.is('input')) {
+			firstSettlementElem.prop({checked: false, disabled: true});
 		} else {
-			settlementElem.val(0).prop('disabled', true);
+			firstSettlementElem.val(0).prop('disabled', true);
 		}
 	} else {
-		if (settlementElem.is('input')) {
-			settlementElem.prop({checked: false, disabled: false});
+		if (firstSettlementElem.is('input')) {
+			firstSettlementElem.prop({checked: false, disabled: false});
 		} else {
-			settlementElem.val(0).prop('disabled', false);
+			firstSettlementElem.val(0).prop('disabled', false);
 		}
 	}
 
@@ -1017,16 +1017,16 @@ $('#align-periods').change(function() {
 $('#a_datefrom').on('change', function () {
 	let dateFrom = $('#a_datefrom').datepicker( "getDate" );
 	if (dateFrom == null || (dateFrom != null && checkDate.ifFirstDayOfMonth(dateFrom))) {
-		if (settlementElem.is('input')) {
-			settlementElem.prop({checked: false, disabled: true});
+		if (firstSettlementElem.is('input')) {
+			firstSettlementElem.prop({checked: false, disabled: true});
 		} else {
-			settlementElem.val(0).prop('disabled', true);
+			firstSettlementElem.val(0).prop('disabled', true);
 		}
 	} else {
-		if (settlementElem.is('input')) {
-			settlementElem.prop({checked: false, disabled: false});
+		if (firstSettlementElem.is('input')) {
+			firstSettlementElem.prop({checked: false, disabled: false});
 		} else {
-			settlementElem.val(0).prop('disabled', false);
+			firstSettlementElem.val(0).prop('disabled', false);
 		}
 	}
 });
