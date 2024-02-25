@@ -598,13 +598,13 @@
 								</TD>
 								<TD>
 									{trans("from:")}
-									<input type="text" name="{$variable_prefix}[datefrom]"
+									<input type="text" id="a_datefrom" name="{$variable_prefix}[datefrom]"
 										value="{if $variables.datefrom}{$variables.datefrom}{/if}"
 										placeholder="{trans("yyyy/mm/dd")}"
 										{tip class="lms-ui-date lms-ui-date-unix" text="Enter accounting start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="datefrom"}
 										size="10">
 									{trans("to:")}
-									<input type="text" name="{$variable_prefix}[dateto]"
+									<input type="text" id="a_dateto" name="{$variable_prefix}[dateto]"
 										value="{if $variables.dateto}{$variables.dateto}{/if}"
 										placeholder="{trans("yyyy/mm/dd")}"
 										{tip class="lms-ui-date lms-ui-date-unix" text="Enter accounting end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="dateto"}
@@ -878,11 +878,11 @@
 						<br>
 						<label>
 							{if $variables.id}
-							<INPUT type="checkbox" name="{$variable_prefix}[settlement]" value="1"{if $variables.settlement} checked{/if}>
+							<INPUT type="checkbox" id="a_settlement" name="{$variable_prefix}[settlement]" value="1"{if $variables.settlement} checked{/if}>
 							{trans("with settlement of first deficient period")}
 							{else}
 							{trans("settlement type of first deficient period:")}
-							<SELECT name="{$variable_prefix}[settlement]">
+							<SELECT id="a_settlement" name="{$variable_prefix}[settlement]">
 								<OPTION value="0">{trans("<!settlement>— none —")}</OPTION>
 								<OPTION value="1"{if $variables.settlement == 1} selected{/if}>{trans("<!settlement>next period")}</OPTION>
 								<OPTION value="2"{if $variables.settlement == 2} selected{/if}>{trans("<!settlement>current period")}</OPTION>

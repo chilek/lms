@@ -600,6 +600,9 @@ $('#assignment-period').change(function() {
 	$('#last-day-of-month').closest('label').toggle($(this).val() == lmsSettings.monthlyPeriod);
 });
 
+const settlementElem = $('#a_settlement');
+const lastSettlementElem = $('#last-settlement');
+
 function tariffSelectionHandler() {
 	var promotion_select = parseInt($('#promotion-select').val());
 	var tariff_select = $('#tariff-select');
@@ -627,6 +630,28 @@ function tariffSelectionHandler() {
 
 	$('#last-settlement').prop('disabled', $('#align-periods').prop('checked') && val == -2)
 		.closest('label').toggleClass('lms-ui-disabled', $('#align-periods').prop('checked') && val == -2);
+
+	let dateFrom = $('#a_datefrom').datepicker( "getDate" );
+	if (dateFrom == null || (dateFrom != null && checkDate.ifFirstDayOfMonth(dateFrom))) {
+		if (settlementElem.is('input')) {
+			settlementElem.prop({checked: false, disabled: true});
+		} else {
+			settlementElem.val(0).prop('disabled', true);
+		}
+	} else {
+		if (settlementElem.is('input')) {
+			settlementElem.prop({checked: false, disabled: false});
+		} else {
+			settlementElem.val(0).prop('disabled', false);
+		}
+	}
+
+	let dateTo = $('#a_dateto').datepicker( "getDate" );
+	if (dateTo == null || (dateTo != null && checkDate.ifLastDayOfMonth(dateTo))) {
+		lastSettlementElem.prop({checked: false, disabled: true});
+	} else {
+		lastSettlementElem.prop({checked: false, disabled: false});
+	}
 
 	$('#netflag, #tax, #taxcategory, #splitpayment').prop('disabled', false);
 	$('#a_tax, #a_taxcategory, #a_splitpayment').removeClass('lms-ui-disabled');
@@ -988,3 +1013,29 @@ $('#align-periods').change(function() {
 		"checked": $(this).prop('checked') ? false : $('#last-settlement').prop('checked')
 	}).closest('label').toggleClass('lms-ui-disabled', $(this).prop('checked'));
 }).change();
+
+$('#a_datefrom').on('change', function () {
+	let dateFrom = $('#a_datefrom').datepicker( "getDate" );
+	if (dateFrom == null || (dateFrom != null && checkDate.ifFirstDayOfMonth(dateFrom))) {
+		if (settlementElem.is('input')) {
+			settlementElem.prop({checked: false, disabled: true});
+		} else {
+			settlementElem.val(0).prop('disabled', true);
+		}
+	} else {
+		if (settlementElem.is('input')) {
+			settlementElem.prop({checked: false, disabled: false});
+		} else {
+			settlementElem.val(0).prop('disabled', false);
+		}
+	}
+});
+
+$('#a_dateto').on('change', function () {
+	let dateTo = $('#a_dateto').datepicker( "getDate" );
+	if (dateTo == null || (dateTo != null && checkDate.ifLastDayOfMonth(dateTo))) {
+		lastSettlementElem.prop({checked: false, disabled: true});
+	} else {
+		lastSettlementElem.prop({checked: false, disabled: false});
+	}
+});

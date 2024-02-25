@@ -1080,3 +1080,16 @@ function financeRound(value, precision) {
 	roundedValue = roundedValue.toFixed(precision).replace(/[\.]+/, ',');
 	return roundedValue;
 }
+
+// dedicated to some data checks
+let checkDate = {
+	ifFirstDayOfMonth: function(date){
+		let day = new Date(date).getDate();
+		return (day === 1);
+	},
+	ifLastDayOfMonth: function(date) {
+		let day = new Date(date).getDate();
+		let lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+		return (lastDayOfMonth === day);
+	}
+};
