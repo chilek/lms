@@ -450,16 +450,14 @@ if ($customer_netdevices) {
 				AND EXISTS (
 					SELECT na.id FROM nodeassignments na
 					JOIN assignments a ON a.id = na.assignmentid
-					WHERE na.nodeid = n.id AND a.suspended = 0
+					LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                            AND vas.suspension_datefrom <= ?NOW?
+                            AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                            AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
+					WHERE na.nodeid = n.id 
+                        AND vas.suspended IS NULL
 						AND a.period IN (" . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ")
 						AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
-				)
-				AND NOT EXISTS (
-					SELECT id FROM assignments aa
-					WHERE aa.customerid = (CASE WHEN n.ownerid IS NULL THEN nd.ownerid ELSE n.ownerid END)
-						AND aa.tariffid IS NULL AND aa.liabilityid IS NULL
-						AND aa.datefrom < ?NOW?
-						AND (aa.dateto > ?NOW? OR aa.dateto = 0)
 				)
 			GROUP BY customerid_netdev",
             'customerid_netdev'
@@ -581,14 +579,15 @@ if ($netdevices) {
 				AND EXISTS
 					(SELECT na.id FROM nodeassignments na
 						JOIN assignments a ON a.id = na.assignmentid
-						WHERE na.nodeid = n.id AND a.suspended = 0
+						LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                            AND vas.suspension_datefrom <= ?NOW?
+                            AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                            AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
+						WHERE na.nodeid = n.id 
+                            AND vas.suspended IS NULL
 							AND a.period IN (" . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ")
 							AND (a.datefrom = 0 OR a.datefrom < ?NOW?) AND (a.dateto = 0 OR a.dateto > ?NOW?))
-				AND NOT EXISTS
-					(SELECT id FROM assignments aa
-						WHERE aa.customerid = c.id AND aa.tariffid IS NULL AND aa.liabilityid IS NULL
-							AND (aa.datefrom < ?NOW? OR aa.datefrom = 0)
-							AND (aa.dateto > ?NOW? OR aa.dateto = 0))
+                    )
 			GROUP BY linktype, linktechnology, linkspeed, rs.frequency, c.type
 			ORDER BY c.type", array($netdevice['id']));
 
@@ -1447,17 +1446,16 @@ if ($netnodes) {
 				JOIN assignments a       ON a.id = na.assignmentid
 				JOIN tariffs t           ON t.id = a.tariffid
 				JOIN customers c ON c.id = n.ownerid
-				LEFT JOIN (SELECT aa.customerid AS cid, COUNT(id) AS total FROM assignments aa
-					WHERE aa.tariffid IS NULL AND aa.liabilityid IS NULL
-						AND aa.datefrom < ?NOW?
-						AND (aa.dateto > ?NOW? OR aa.dateto = 0) GROUP BY aa.customerid)
-					AS allsuspended ON allsuspended.cid = c.id
+				LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                            AND vas.suspension_datefrom <= ?NOW?
+                            AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                            AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
 				JOIN netdevices nd ON nd.id = n.netdev
 				WHERE n.ownerid IS NOT NULL AND n.netdev IS NOT NULL AND n.linktype = ? AND n.linktechnology = ? AND addr.city_id = ?
 					AND (addr.street_id = ? OR addr.street_id IS NULL) AND addr.house = ?
-					AND a.suspended = 0 AND a.period IN (".implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)).")
+					AND a.period IN (".implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)).")
 					AND (a.datefrom = 0 OR a.datefrom < ?NOW?) AND (a.dateto = 0 OR a.dateto > ?NOW?)
-					AND allsuspended.total IS NULL
+					AND vas.suspended IS NULL
 				GROUP BY na.nodeid, c.type, n.invprojectid, nd.id, nd.status",
                     array($range['linktype'], $range['linktechnology'], $range['location_city'], $range['location_street'], $range['location_house'])
                 );
@@ -1482,16 +1480,15 @@ if ($netnodes) {
 				JOIN assignments a       ON a.id = na.assignmentid
 				JOIN tariffs t           ON t.id = a.tariffid
 				JOIN customers c ON c.id = n.ownerid
-				LEFT JOIN (SELECT aa.customerid AS cid, COUNT(id) AS total FROM assignments aa
-					WHERE aa.tariffid IS NULL AND aa.liabilityid IS NULL
-						AND aa.datefrom < ?NOW?
-						AND (aa.dateto > ?NOW? OR aa.dateto = 0) GROUP BY aa.customerid)
-					AS allsuspended ON allsuspended.cid = c.id
+				LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                    AND vas.suspension_datefrom <= ?NOW?
+                    AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                    AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
 				JOIN netdevices nd ON nd.id = n.netdev
 				WHERE n.id IN (" . implode(',', $uni_link['nodes']) . ")
-					AND a.suspended = 0 AND a.period IN (".implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)).")
+					AND a.period IN (".implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)).")
 					AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
-					AND allsuspended.total IS NULL
+					AND vas.suspended IS NULL
 				GROUP BY na.nodeid, c.type",
                     array()
                 );

@@ -36,7 +36,13 @@ interface LMSFinanceManagerInterface
 
     public function GetCustomerTariffsValue($id);
 
-    public function GetCustomerAssignments($id, $show_expired = false, $show_approved = true);
+    public function getCustomerAssignments($customer_id, $params = array());
+
+    public function getAssignments($params = array());
+
+    public function getAssignment($assignment_id);
+
+    public function getSuspensions($params = array());
 
     public function GetCustomerServiceSummary($id);
 
@@ -46,11 +52,23 @@ interface LMSFinanceManagerInterface
 
     public function ValidateAssignment($data);
 
+    public function ValidateSuspension($params = array());
+
     public function CheckSchemaModifiedValues(&$data);
 
     public function UpdateExistingAssignments($data);
 
-    public function SuspendAssignment($id, $suspend = true);
+    public function addSuspension($params = array());
+
+    public function updateSuspension($params = array());
+
+    public function addAssignmentSuspension($params = array());
+
+    public function deleteSuspension($suspension_id);
+
+    public function deleteAssignmentSuspension($params = array());
+
+    public function suspendAssignment($assignment_id);
 
     public function toggleAssignmentSuspension($id);
 

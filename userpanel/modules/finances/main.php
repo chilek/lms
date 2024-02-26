@@ -34,7 +34,7 @@ if (isset($_GET['aggregate_documents'])) {
 
 $balance = $LMS->GetCustomerBalanceList($SESSION->id, null, 'ASC', $aggregate_documents);
 $userinfo = $LMS->GetCustomer($SESSION->id);
-$assignments = $LMS->GetCustomerAssignments($SESSION->id);
+$assignments = $LMS->getCustomerAssignments($SESSION->id, array('show_expired' => false, 'show_approved' => true));
 
 if (isset($balance['docid'])) {
     foreach ($balance['docid'] as $idx => $val) {

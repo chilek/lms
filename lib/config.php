@@ -123,8 +123,12 @@ $DEFAULTS = array(
         'paytime' => 14,
         'paytype' => 1, // cash
     ),
-    'finances' => array(
-        'suspension_percentage' => 0,
+    'suspensions' => array(
+        'default_charge_method' => 2,
+        'default_calculation_method' => 1,
+        'default_percentage' => 0,
+        'default_value' => 0,
+        'default_netflag' => 0,
     ),
     'receipts' => array(
         'template_file' => 'receipt.html',

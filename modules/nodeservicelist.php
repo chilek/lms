@@ -55,14 +55,11 @@ if (!empty($nodes)) {
 			SELECT na.nodeid, t.type FROM nodeassignments na
 			JOIN assignments a ON a.id = na.assignmentid
 			JOIN tariffs t ON t.id = a.tariffid
-			LEFT JOIN (
-				SELECT customerid, COUNT(id) AS allsuspended FROM assignments
-				WHERE tariffid IS NULL AND liabilityid IS NULL
-				AND datefrom <= ?NOW?
-				AND (dateto = 0 OR dateto > ?NOW?)
-				GROUP BY customerid
-			) s ON s.customerid = a.customerid
-			WHERE s.allsuspended IS NULL AND a.suspended = 0 AND a.commited = 1
+            LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                AND vas.suspension_datefrom <= ?NOW?
+                AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
+			WHERE vas.suspended IS NULL AND a.commited = 1
 				AND a.datefrom <= ?NOW?
 				AND (a.dateto = 0 OR a.dateto >= ?NOW?)
 				AND t.type IN (?, ?, ?)

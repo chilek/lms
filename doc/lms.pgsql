@@ -1105,7 +1105,6 @@ CREATE TABLE assignments (
 	datefrom integer	DEFAULT 0 NOT NULL,
 	dateto integer		DEFAULT 0 NOT NULL,
 	invoice smallint 	DEFAULT 0 NOT NULL,
-	suspended smallint	DEFAULT 0 NOT NULL,
 	settlement smallint	DEFAULT 0 NOT NULL,
 	pdiscount numeric(5,2)	DEFAULT 0 NOT NULL,
 	vdiscount numeric(9,3) DEFAULT 0 NOT NULL,
@@ -3150,6 +3149,49 @@ CREATE TABLE up_sessions (
 	PRIMARY KEY (id)
 );
 
+/* --------------------------------------------------------
+  Structure of table "suspensions"
+-------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS suspensions_id_seq;
+CREATE SEQUENCE suspensions_id_seq;
+DROP TABLE IF EXISTS suspensions CASCADE;
+CREATE TABLE suspensions (
+    id                 integer       DEFAULT nextval('suspensions_id_seq'::text) NOT NULL,
+    at                 integer       DEFAULT NULL,
+    datefrom           integer       DEFAULT 0 NOT NULL,
+    dateto             integer       DEFAULT 0 NOT NULL,
+    chargemethod       smallint      NOT NULL,
+    calculationmethod  smallint      NOT NULL,
+    value              numeric(9, 3) DEFAULT NULL,
+    percentage         numeric(3, 2) DEFAULT NULL,
+    netflag            smallint      DEFAULT NULL,
+    currency           varchar(3)    DEFAULT NULL,
+    note               text          DEFAULT NULL,
+    customerid         integer       DEFAULT NULL
+     CONSTRAINT suspensions_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    taxid             integer        DEFAULT NULL
+     CONSTRAINT suspensions_taxid_fkey REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (id)
+);
+
+
+/* --------------------------------------------------------
+  Structure of table "assignmentsuspensions"
+-------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS assignmentsuspensions_id_seq;
+CREATE SEQUENCE assignmentsuspensions_id_seq;
+DROP TABLE IF EXISTS assignmentsuspensions CASCADE;
+CREATE TABLE assignmentsuspensions (
+    id              integer DEFAULT nextval('assignmentsuspensions_id_seq'::text) NOT NULL,
+    suspensionid   integer NOT NULL
+       CONSTRAINT suspensions_suspensionid_fkey REFERENCES suspensions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    assignmentid   integer NOT NULL
+       CONSTRAINT assignments_assignmentid_fkey REFERENCES assignments (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (id),
+    CONSTRAINT assignmentsuspensions_assignmentid_suspensionid_ukey UNIQUE (assignmentid, suspensionid)
+);
+
+
 /* ---------------------------------------------------
  Functions and Views
 ------------------------------------------------------*/
@@ -3397,14 +3439,12 @@ CREATE VIEW vnodetariffs AS
         JOIN nodeassignments na ON na.nodeid = n.id
         JOIN assignments a ON a.id = na.assignmentid
         JOIN tariffs t ON t.id = a.tariffid
-        LEFT JOIN (
-            SELECT customerid, COUNT(id) AS allsuspended FROM assignments
-            WHERE tariffid IS NULL AND liabilityid IS NULL
-                AND datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer
-                AND (dateto = 0 OR dateto > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer)
-            GROUP BY customerid
-        ) s ON s.customerid = n.ownerid
-        WHERE s.allsuspended IS NULL AND a.suspended = 0 AND a.commited = 1
+        LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+            AND vas.suspension_datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer
+            AND (vas.suspension_dateto >= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer OR vas.suspension_dateto = 0)
+            AND a.datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer
+            AND (a.dateto > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer OR a.dateto = 0)
+        WHERE vas.suspended IS NULL AND a.commited = 1
             AND a.datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer
             AND (a.dateto = 0 OR a.dateto >= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer)
             AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
@@ -3497,14 +3537,12 @@ CREATE VIEW vnodealltariffs AS
             JOIN nodeassignments na ON na.assignmentid = a.id
             JOIN nodes n ON n.id = na.nodeid
             JOIN tariffs t ON t.id = a.tariffid
-            LEFT JOIN (
-                SELECT customerid, COUNT(id) AS allsuspended FROM assignments
-                WHERE tariffid IS NULL AND liabilityid IS NULL
-                    AND datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer
-                    AND (dateto = 0 OR dateto > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer)
-                GROUP BY customerid
-            ) s ON s.customerid = n.ownerid
-            WHERE s.allsuspended IS NULL AND a.suspended = 0 AND a.commited = 1
+            LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                AND vas.suspension_datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer
+                AND (vas.suspension_dateto >= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer OR vas.suspension_dateto = 0)
+                AND a.datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer
+                AND (a.dateto > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer OR a.dateto = 0)
+            WHERE vas.suspended IS NULL AND a.commited = 1
                 AND a.datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer
                 AND (a.dateto = 0 OR a.dateto >= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer)
                 AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
@@ -3567,14 +3605,12 @@ CREATE VIEW vnodealltariffs AS
                 WHERE (vn.ownerid IS NOT NULL AND nd.id IS NULL)
                     OR (vn.ownerid IS NULL AND nd.id IS NOT NULL)
             ) n ON n.ownerid = a.customerid
-            LEFT JOIN (
-                SELECT customerid, COUNT(id) AS allsuspended FROM assignments
-                WHERE tariffid IS NULL AND liabilityid IS NULL
-                    AND datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer
-                    AND (dateto = 0 OR dateto > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer)
-                GROUP BY customerid
-            ) s ON s.customerid = a.customerid
-            WHERE s.allsuspended IS NULL AND a.suspended = 0 AND a.commited = 1
+            LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                AND vas.suspension_datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer
+                AND (vas.suspension_dateto >= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer OR vas.suspension_dateto = 0)
+                AND a.datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer
+                AND (a.dateto > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer OR a.dateto = 0)
+            WHERE vas.suspended IS NULL AND a.commited = 1
                 AND a.datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer
                 AND (a.dateto = 0 OR a.dateto >= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer)
                 AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
@@ -3818,6 +3854,311 @@ CREATE TRIGGER cash_customerbalances_update_trigger AFTER INSERT OR UPDATE OR DE
 CREATE TRIGGER cash_customerbalances_truncate_trigger AFTER TRUNCATE ON cash
     EXECUTE PROCEDURE customerbalances_update();
 
+CREATE VIEW vassignmentssuspensionsgroupcounts AS
+    SELECT COUNT(vasg.suspension_assignment_id) AS suspensiongroup_assignments_count,
+           vasg.suspension_id AS suspensiongroup_suspension_id
+    FROM (SELECT
+              (CASE WHEN suspensions.assignment_id IS NOT NULL
+                    THEN suspensions.assignment_id
+                    ELSE a.id
+                  END) AS suspension_assignment_id,
+              (CASE WHEN suspensions.suspension_id IS NOT NULL
+                    THEN suspensions.suspension_id
+                    ELSE suspensions_all.suspension_id
+                  END) AS suspension_id
+          FROM assignments a
+          LEFT JOIN (
+              SELECT
+                  assignmentsuspensions.assignmentid AS assignment_id,
+                  assignmentsuspensions.suspensionid AS suspension_id,
+                  suspensions1.id AS id
+              FROM assignmentsuspensions
+                       JOIN suspensions AS suspensions1 ON suspensions1.id = assignmentsuspensions.suspensionid
+                       LEFT JOIN taxes ON taxes.id = suspensions1.taxid
+          ) suspensions ON suspensions.assignment_id = a.id
+          LEFT JOIN (
+              SELECT
+                  suspensions2.id AS suspension_id,
+                  suspensions2.customerid,
+                  (CASE WHEN suspensions2.customerid IS NULL THEN 0 ELSE 1 END) AS suspend_all
+              FROM suspensions AS suspensions2
+          ) AS suspensions_all ON suspensions_all.customerid = a.customerid
+          WHERE suspensions.suspension_id IS NOT NULL OR suspensions_all.suspend_all = 1
+         ) AS vasg
+    GROUP BY vasg.suspension_id;
+
+CREATE VIEW vassignmentssuspensionsvalues AS
+    SELECT
+        suspension_assignment_id AS suspensionvalues_assignment_id,
+        suspension_id AS suspensionvalues_suspension_id,
+        assignment_base_price AS suspensionvalues_assignment_base_price,
+        assignment_tpv_price AS suspensionvalues_assignment_tpv_price,
+        assignment_price AS suspensionvalues_assignment_price,
+        suspensiongroup_assignments_count AS suspensionvalues_assignments_count
+    FROM (
+        SELECT
+            (CASE WHEN suspensions.assignment_id IS NOT NULL
+                THEN suspensions.assignment_id
+                ELSE a.id
+            END) AS suspension_assignment_id,
+            (CASE WHEN suspensions.suspension_id IS NOT NULL
+                THEN suspensions.suspension_id
+                ELSE suspensions_all.suspension_id
+            END) AS suspension_id,
+            (CASE WHEN suspensions.suspension_id IS NOT NULL
+                THEN suspensions.suspensiongroup_assignments_count
+                ELSE suspensions_all.suspensiongroup_assignments_count
+            END) AS suspensiongroup_assignments_count,
+            ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount), 3) AS assignment_base_price,
+            assignments_tpvariants.tpvprice AS assignment_tpv_price,
+            (CASE WHEN assignments_tpvariants.tpvprice IS NULL
+                    THEN ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount), 3)
+                ELSE assignments_tpvariants.tpvprice
+            END) AS assignment_price
+        FROM assignments a
+        LEFT JOIN (
+            SELECT
+                tariffs.*,
+                taxes.value AS taxrate, taxes.label AS taxlabel,
+                (CASE WHEN tariffs.flags & 16 > 0 THEN tariffs.netvalue ELSE tariffs.value END) AS tvalue
+            FROM tariffs
+            JOIN taxes ON taxes.id = tariffs.taxid
+        ) t ON a.tariffid = t.id
+        LEFT JOIN (
+            SELECT
+                liabilities.*,
+                taxes.value AS taxrate, taxes.label AS taxlabel,
+                (CASE WHEN liabilities.flags & 16 > 0 THEN liabilities.netvalue ELSE liabilities.value END) AS lvalue
+            FROM liabilities
+            JOIN taxes ON taxes.id = liabilities.taxid
+        ) l ON a.liabilityid = l.id
+        LEFT JOIN (
+            SELECT
+                assignmentsuspensions.assignmentid AS assignment_id,
+                assignmentsuspensions.suspensionid AS suspension_id,
+                suspensions1.id AS id,
+                vasg.suspensiongroup_assignments_count AS suspensiongroup_assignments_count
+            FROM assignmentsuspensions
+            JOIN suspensions AS suspensions1 ON suspensions1.id = assignmentsuspensions.suspensionid
+            JOIN vassignmentssuspensionsgroupcounts vasg ON vasg.suspensiongroup_suspension_id = suspensions1.id
+            LEFT JOIN taxes ON taxes.id = suspensions1.taxid
+        ) suspensions ON suspensions.assignment_id = a.id
+        LEFT JOIN (
+          SELECT
+              suspensions2.id AS suspension_id,
+              suspensions2.customerid,
+              (CASE WHEN suspensions2.customerid IS NULL THEN 0 ELSE 1 END) AS suspend_all,
+              vasg.suspensiongroup_assignments_count AS suspensiongroup_assignments_count
+          FROM suspensions AS suspensions2
+          JOIN vassignmentssuspensionsgroupcounts vasg ON vasg.suspensiongroup_suspension_id = suspensions2.id
+        ) AS suspensions_all ON suspensions_all.customerid = a.customerid
+        LEFT JOIN (
+            SELECT
+                tpv.*
+            FROM assignments a
+            JOIN (
+                SELECT
+                    tariffpricevariants.quantity_threshold AS tpv_quantity_threshold, tariffs.id AS tpv_tariffid,
+                    (CASE WHEN tariffs.flags & 16 > 0 THEN tariffpricevariants.net_price ELSE tariffpricevariants.gross_price END) AS tpvprice
+                FROM tariffs
+                JOIN tariffpricevariants ON tariffs.id = tariffpricevariants.tariffid
+            ) tpv ON a.tariffid = tpv.tpv_tariffid AND tpv.tpv_quantity_threshold <= a.count AND tpv.tpv_tariffid = a.tariffid
+            ORDER BY tpv.tpv_quantity_threshold DESC LIMIT 1
+        ) AS assignments_tpvariants ON a.tariffid = assignments_tpvariants.tpv_tariffid
+        WHERE suspensions.suspension_id IS NOT NULL OR suspensions_all.suspend_all = 1
+    ) AS vasv
+;
+
+CREATE VIEW vassignmentsuspensions AS
+    SELECT
+        (CASE WHEN suspensions.assignment_id IS NOT NULL
+            THEN suspensions.assignment_id
+            ELSE a.id
+        END) AS suspension_assignment_id,
+        (CASE WHEN suspensions.suspension_id IS NOT NULL OR suspensions_all.suspend_all = 1 THEN 1 ELSE 0 END) AS suspended,
+        (CASE WHEN suspensions.suspension_id IS NULL AND suspensions_all.suspend_all = 1 THEN 1 ELSE 0 END) AS suspension_suspend_all,
+        (CASE WHEN suspensions.suspension_id IS NOT NULL
+            THEN suspensions.suspension_id
+            ELSE suspensions_all.suspension_id
+        END) AS suspension_id,
+        (CASE WHEN suspensions.suspension_id IS NOT NULL
+            THEN suspensions.at
+            ELSE suspensions_all.at
+        END) AS suspension_at,
+        (CASE WHEN suspensions.suspension_id IS NOT NULL
+            THEN suspensions.datefrom
+            ELSE suspensions_all.datefrom
+        END) AS suspension_datefrom,
+        (CASE WHEN suspensions.suspension_id IS NOT NULL
+            THEN suspensions.dateto
+            ELSE suspensions_all.dateto
+        END) AS suspension_dateto,
+        (CASE WHEN suspensions.suspension_id IS NOT NULL
+            THEN suspensions.chargemethod
+            ELSE suspensions_all.chargemethod
+        END) AS suspension_charge_method,
+        (CASE WHEN suspensions.suspension_id IS NOT NULL
+            THEN suspensions.calculationmethod
+            ELSE suspensions_all.calculationmethod
+        END) AS suspension_calculation_method,
+        (CASE WHEN suspensions.suspension_id IS NOT NULL
+            THEN suspensions.value
+            ELSE suspensions_all.value
+        END) AS suspension_value,
+        (CASE WHEN suspensions.suspension_id IS NOT NULL
+            THEN suspensions.percentage
+            ELSE suspensions_all.percentage
+        END) AS suspension_percentage,
+        (CASE WHEN suspensions.suspension_id IS NOT NULL
+            THEN suspensions.netflag
+            ELSE suspensions_all.netflag
+        END) AS suspension_netflag,
+        (CASE WHEN suspensions.suspension_id IS NOT NULL
+            THEN suspensions.currency
+            ELSE suspensions_all.currency
+        END) AS suspension_currency,
+        (CASE WHEN suspensions.suspension_id IS NOT NULL
+            THEN suspensions.taxid
+            ELSE suspensions_all.taxid
+        END) AS suspension_tax_id,
+        (CASE WHEN suspensions.suspension_id IS NOT NULL
+            THEN suspensions.note
+            ELSE suspensions_all.note
+        END) AS suspension_note,
+        (CASE WHEN suspensions.customerid IS NOT NULL
+            THEN suspensions_all.customerid
+            ELSE a.customerid
+        END) AS suspension_customer_id,
+        (CASE WHEN suspensions.taxrate IS NOT NULL
+            THEN suspensions.taxrate
+            ELSE suspensions_all.taxrate
+        END) AS suspension_taxrate,
+        (CASE WHEN suspensions.taxlabel IS NOT NULL
+            THEN suspensions.taxlabel
+            ELSE suspensions_all.taxlabel
+        END) AS suspension_taxlabel,
+        vasv.suspensionvalues_assignment_base_price,
+        vasv.suspensionvalues_assignment_tpv_price,
+        vasv.suspensionvalues_assignment_price,
+        vasv.suspensionvalues_assignments_count,
+        (CASE
+            WHEN suspensions.chargemethod = 3 OR suspensions.chargemethod = 2
+                    OR suspensions_all.chargemethod = 3 OR suspensions_all.chargemethod = 2
+                THEN (CASE
+                    WHEN suspensions.calculationmethod = 1
+                        THEN vasv.suspensionvalues_assignment_price *
+                             (CASE
+                                WHEN suspensions.percentage IS NOT NULL
+                                    THEN ROUND(suspensions.percentage / 100, 2)
+                                ELSE
+                                    ROUND((SELECT CAST(uiconfig.value AS numeric)
+                                    FROM uiconfig
+                                    WHERE uiconfig.section = 'suspensions'
+                                    AND uiconfig.var = 'default_percentage'
+                                    AND uiconfig.configid IS NULL
+                                    LIMIT 1) / 100, 2)
+                             END)
+                    WHEN suspensions_all.calculationmethod = 1
+                        THEN vasv.suspensionvalues_assignment_price *
+                             (CASE
+                                 WHEN suspensions_all.percentage IS NOT NULL
+                                    THEN ROUND(suspensions_all.percentage / 100, 2)
+                                 ELSE
+                                    ROUND((SELECT CAST(uiconfig.value AS numeric)
+                                    FROM uiconfig
+                                    WHERE uiconfig.section = 'suspensions'
+                                    AND uiconfig.var = 'default_percentage'
+                                    AND uiconfig.configid IS NULL
+                                    LIMIT 1) / 100, 2)
+                             END)
+                    WHEN suspensions.calculationmethod = 2
+                        THEN
+                             (CASE
+                                  WHEN suspensions.value IS NOT NULL
+                                      THEN ROUND(suspensions.value / vasv.suspensionvalues_assignments_count, 2)
+                                  ELSE
+                                    ROUND((SELECT CAST(uiconfig.value AS numeric)
+                                    FROM uiconfig
+                                    WHERE uiconfig.section = 'suspensions'
+                                    AND uiconfig.var = 'default_percentage'
+                                    AND uiconfig.configid IS NULL
+                                    LIMIT 1) / 100, 2)
+                             END)
+                    WHEN suspensions_all.calculationmethod = 2
+                        THEN
+                            (CASE
+                                WHEN suspensions_all.value IS NOT NULL
+                                    THEN ROUND(suspensions_all.value / vasv.suspensionvalues_assignments_count, 2)
+                                ELSE
+                                    ROUND((SELECT CAST(uiconfig.value AS numeric)
+                                    FROM uiconfig
+                                    WHERE uiconfig.section = 'suspensions'
+                                    AND uiconfig.var = 'default_percentage'
+                                    AND uiconfig.configid IS NULL
+                                    LIMIT 1) / 100, 2)
+                            END)
+                    END)
+            WHEN suspensions.chargemethod = 1 OR suspensions_all.chargemethod = 1
+            THEN 0
+        END) AS suspension_price
+    FROM assignments a
+    LEFT JOIN (
+        SELECT
+            tariffs.*,
+            taxes.value AS taxrate, taxes.label AS taxlabel,
+            (CASE WHEN tariffs.flags & 16 > 0 THEN tariffs.netvalue ELSE tariffs.value END) AS tvalue
+        FROM tariffs
+        JOIN taxes ON taxes.id = tariffs.taxid
+    ) t ON a.tariffid = t.id
+    LEFT JOIN (
+        SELECT
+            tpv.*
+        FROM assignments a
+        JOIN (
+            SELECT
+                tariffpricevariants.quantity_threshold AS tpv_quantity_threshold,
+                tariffs.id AS tpv_tariffid,
+               (CASE WHEN tariffs.flags & 16 > 0 THEN tariffpricevariants.net_price ELSE tariffpricevariants.gross_price END) AS tpvprice
+            FROM tariffs
+            JOIN tariffpricevariants ON tariffs.id = tariffpricevariants.tariffid
+        ) tpv ON a.tariffid = tpv.tpv_tariffid AND tpv.tpv_quantity_threshold <= a.count AND tpv.tpv_tariffid = a.tariffid
+        ORDER BY tpv.tpv_quantity_threshold DESC LIMIT 1
+    ) AS assignments_tpvariants ON a.tariffid = assignments_tpvariants.tpv_tariffid
+    LEFT JOIN (
+        SELECT
+            liabilities.*,
+            taxes.value AS taxrate, taxes.label AS taxlabel,
+            (CASE WHEN liabilities.flags & 16 > 0 THEN liabilities.netvalue ELSE liabilities.value END) AS lvalue
+        FROM liabilities
+        JOIN taxes ON taxes.id = liabilities.taxid
+    ) l ON a.liabilityid = l.id
+    LEFT JOIN (
+        SELECT
+            assignmentsuspensions.id AS assignmentsuspension_id,
+            assignmentsuspensions.assignmentid AS assignment_id,
+            assignmentsuspensions.suspensionid AS suspension_id,
+            suspensions1.id AS id,
+            suspensions1.at, suspensions1.datefrom, suspensions1.dateto, suspensions1.chargemethod, suspensions1.calculationmethod,
+            suspensions1.value, suspensions1.percentage, suspensions1.netflag, suspensions1.currency, suspensions1.note, suspensions1.taxid,
+            suspensions1.customerid,
+            taxes.value AS taxrate, taxes.label AS taxlabel
+        FROM assignmentsuspensions
+        JOIN suspensions AS suspensions1 ON suspensions1.id = assignmentsuspensions.suspensionid
+        LEFT JOIN taxes ON taxes.id = suspensions1.taxid
+    ) suspensions ON suspensions.assignment_id = a.id
+    LEFT JOIN (
+        SELECT suspensions2.id AS suspension_id, suspensions2.at, suspensions2.datefrom, suspensions2.dateto,
+               suspensions2.chargemethod, suspensions2.calculationmethod,
+               suspensions2.value, suspensions2.percentage, suspensions2.netflag, suspensions2.currency, suspensions2.note, suspensions2.taxid,
+               suspensions2.customerid,
+               (CASE WHEN suspensions2.customerid IS NULL THEN 0 ELSE 1 END) AS suspend_all,
+               taxes.value AS taxrate, taxes.label AS taxlabel
+        FROM suspensions AS suspensions2
+        LEFT JOIN taxes ON taxes.id = suspensions2.taxid
+    ) AS suspensions_all ON suspensions_all.customerid = a.customerid
+    LEFT JOIN vassignmentssuspensionsvalues vasv ON vasv.suspensionvalues_assignment_id = a.id
+    WHERE suspensions.suspension_id IS NOT NULL OR suspensions_all.suspend_all = 1;
+
 /* ---------------------------------------------------
  Data records
 ------------------------------------------------------*/
@@ -3972,7 +4313,11 @@ URL: %url
 ('receipts', 'content_type', 'text/html', '', 0),
 ('receipts', 'type', 'html', '', 0),
 ('receipts', 'attachment_name', '', '', 0),
-('payments', 'suspension_percentage', '0', '', 0),
+('suspensions', 'default_percentage', '0', '', 0),
+('suspensions', 'default_value', '0', '', 0),
+('suspensions', 'default_netflag', '0', '', 0),
+('suspensions', 'default_charge_method', '2', '[1-none|2-once|3-periodically]', 0),
+('suspensions', 'default_calculation_method', '1', '[1-percent|2-value]', 0),
 ('mail', 'debug_email', '', '', 0),
 ('mail', 'smtp_host', '127.0.0.1', '', 0),
 ('mail', 'smtp_port', '25', '', 0),
@@ -4416,6 +4761,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024050700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024052400');
 
 COMMIT;

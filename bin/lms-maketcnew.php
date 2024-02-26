@@ -258,16 +258,14 @@ $query .= "SELECT ROUND(t.downrate * a.count) AS downrate,
 	JOIN assignments a ON (na.assignmentid = a.id)
 	" . ($ignore_assignment_suspensions
         ? ''
-        : "LEFT JOIN (
-		SELECT customerid, COUNT(id) AS allsuspended FROM assignments
-		WHERE tariffid IS NULL AND liabilityid IS NULL
-			AND datefrom <= ?NOW? AND (dateto = 0 OR dateto > ?NOW?)
-		GROUP BY customerid
-	) s ON s.customerid = a.customerid") . "
+        : "LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                AND vas.suspension_datefrom <= ?NOW?
+                AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)") . "
 	JOIN tariffs t ON (a.tariffid = t.id)
 	JOIN vnodes n ON (na.nodeid = n.id)
 	JOIN customers c ON (a.customerid = c.id)
-	WHERE " . ($ignore_assignment_suspensions ? '' : "s.allsuspended IS NULL AND a.suspended = 0 AND ") . "a.commited = 1
+	WHERE " . ($ignore_assignment_suspensions ? '' : "vas.suspended IS NOT NULL AND ") . "a.commited = 1
 		AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
 		AND n.access = 1
 		AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
@@ -292,12 +290,10 @@ if ($all_assignments) {
 	FROM assignments a
 	" . ($ignore_assignment_suspensions
         ? ''
-        : "LEFT JOIN (
-		SELECT customerid, COUNT(id) AS allsuspended FROM assignments
-		WHERE tariffid IS NULL AND liabilityid IS NULL
-			AND datefrom <= ?NOW? AND (dateto = 0 OR dateto > ?NOW?)
-		GROUP BY customerid
-	) s ON s.customerid = a.customerid") . "
+        : "LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = na.assignmentid
+                AND vas.suspension_datefrom <= ?NOW?
+                AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)") . "
 	JOIN tariffs t ON t.id = a.tariffid
 	JOIN customers c ON c.id = a.customerid
 	JOIN (
@@ -308,7 +304,7 @@ if ($all_assignments) {
 		WHERE (vn.ownerid > 0 AND nd.id IS NULL)
 			OR (vn.ownerid IS NULL AND nd.id IS NOT NULL)
 	) n ON n.ownerid = c.id
-	WHERE " . ($ignore_assignment_suspensions ? '' : "s.allsuspended IS NULL AND a.suspended = 0 AND ") . "a.commited = 1
+	WHERE " . ($ignore_assignment_suspensions ? '' : "vas.suspended IS NOT NULL AND ") . "a.commited = 1
 		AND n.id NOT IN (SELECT DISTINCT nodeid FROM nodeassignments)
 		AND a.id NOT IN (SELECT DISTINCT assignmentid FROM nodeassignments)
 		AND a.datefrom <= ?NOW?
