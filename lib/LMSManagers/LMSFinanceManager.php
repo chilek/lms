@@ -794,7 +794,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $diffdays = round(($partial_dateto - $orig_datefrom) / 86400);
                         if ($diffdays > 0) {
                             [$y, $m] = explode('/', date('Y/m', $partial_dateto - 1));
-                            $month_days = date('d', mktime(0, 0, 0, $m + 1, 0, $y));
+                            $month_days = date('t', mktime(0, 0, 0, $m, 1, $y));
 
                             $partial_dateto--;
                             if (($data['at'] > 0 && $data['at'] >= $dom + 1) || ($data['at'] === 0 && $month_days >= $dom + 1)) {
@@ -905,7 +905,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     }
 
                     if ($diffdays > 0) {
-                        $month_days = date('d', mktime(0, 0, 0, $month + 1, 0, $year));
+                        $month_days = date('t', mktime(0, 0, 0, $month, 1, $year));
                         if (!empty($lid) || $value != 'NULL') {
                             $v = $diffdays * $discounted_val / $month_days;
                             $partial_vdiscount = str_replace(',', '.', round(abs($v - $val), 3));
@@ -1044,7 +1044,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $diffdays = round(($partial_dateto - $data['datefrom']) / 86400);
                 if ($diffdays > 0) {
                     [$y, $m] = explode('/', date('Y/m', $partial_dateto - 1));
-                    $month_days = date('d', mktime(0, 0, 0, $m + 1, 0, $y));
+                    $month_days = date('t', mktime(0, 0, 0, $m, 1, $y));
                     $value = $diffdays * $discounted_val / $month_days;
                     $partial_vdiscount = str_replace(',', '.', round(abs($value - $val), 3));
                     $partial_dateto--;
@@ -1127,7 +1127,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $prevperiod = mktime(0, 0, 0, $month, 1, $year);
                 $diffdays = round(($data['dateto'] + 1 - $prevperiod) / 86400);
                 if ($diffdays > 0) {
-                    $month_days = date('d', mktime(0, 0, 0, $month + 1, 0, $year));
+                    $month_days = date('t', mktime(0, 0, 0, $month, 1, $year));
                     $value = $diffdays * $discounted_val / $month_days;
                     $partial_vdiscount = str_replace(',', '.', round(abs($value - $val), 3));
                     $partial_datefrom = $prevperiod;
@@ -1445,7 +1445,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 }
 
                 if (!$error) {
-                    $month_days = date('d', mktime(0, 0, 0, $m + 1, 0));
+                    $month_days = date('t', mktime(0, 0, 0, $m, 1));
 
                     if (($m == 2 && $d > 28) || ($m != 2 && $d > $month_days)) {
                         $error['at'] = trans('This month doesn\'t contain specified number of days');

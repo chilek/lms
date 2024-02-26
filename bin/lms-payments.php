@@ -2158,7 +2158,7 @@ foreach ($assigns as $assign) {
                     $m = $month;
                     $y = $year;
                     $partial_price = 0;
-                    $month_days = date('d', mktime(0, 0, 0, $m + 1, 0, $y));
+                    $month_days = date('t', mktime(0, 0, 0, $m, 1, $y));
                     while ($diffdays) {
                         if ($d - $diffdays <= 0) {
                             $partial_price += ($d - 1) * $price / $month_days;
