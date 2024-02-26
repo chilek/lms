@@ -631,6 +631,8 @@ version 28-git (????-??-??):
   - improvement: added '- without technology -' selection in link technology filter
     of customer search form [chilan]
   - improvement: separated help queue rights for sms and e-mail notices [chilan]
+  - improvement: uke/pit: new form option 'verify feeding network nodes of flexibility points' checked
+    by default [chilan]
 
 version 27.0 (2021-08-20):
 
