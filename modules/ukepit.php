@@ -410,6 +410,7 @@ $validate_wireless_links = isset($_POST['validate-wireless-links']);
 $complete_breakdown_points = isset($_POST['complete-breakdown-points']);
 $detect_loops = isset($_POST['detectloops']);
 $report_elements_outside_network_infrastructure = isset($_POST['report-elements-outside-network-infrastructure']);
+$verify_feeding_netnodes_of_flexibility_points = isset($POST['uke-pit-verify-feeding-netnodes-of-flexibility-points']);
 
 $pit_ethernet_technologies = array();
 
@@ -1988,6 +1989,7 @@ if ($report_type == 'full') {
 
     foreach ($netnodes as $netnodename => $netnode) {
         if ($netnode['mode'] != 2 && !isset($netnode['parent_netnodename'])
+            && $verify_feeding_netnodes_of_flexibility_points
             && (isset($processed_netnodes[$netnodename]) || $report_elements_outside_network_infrastructure)) {
             $errors['flexibility-points'][] = array(
                 'name' => $netnodename,
