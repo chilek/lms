@@ -95,7 +95,7 @@
 				</tr>
 			</table>
 		</form>
-		<a href="doc/html/{Localisation::getCurrentUiLanguage()}/"><span class="blend">{trans("Documentation")}</span></a>
+		<a href="doc/html/{substr(Localisation::getCurrentUiLanguage(), 0, 2)}/"><span class="blend">{trans("Documentation")}</span></a>
 		<a href="{LMS::SOFTWARE_URL}"><span class="blend">{trans("LMS Project Homepage")}</span></a>
 	</div>
 	{if $layout.dberrors}
