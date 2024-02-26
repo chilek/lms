@@ -1445,7 +1445,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 }
 
                 if (!$error) {
-                    if ($d>30 || $d<1 || ($d>28 && $m==2)) {
+                    $month_days = date('d', mktime(0, 0, 0, $m + 1, 0));
+
+                    if (($m == 2 && $d > 28) || ($m != 2 && $d > $month_days)) {
                         $error['at'] = trans('This month doesn\'t contain specified number of days');
                     }
 
