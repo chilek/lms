@@ -5219,7 +5219,7 @@ class LMS
                     $document['document']['division_address'],
                     $document['document']['division_zip'],
                     $document['document']['division_city'],
-                    date('d', mktime(12, 0, 0, $now_m + 1, 0, $now_y)),
+                    date('t', mktime(12, 0, 0, $now_m, 1, $now_y)),
                     moneyf($document['document']['total'], $document['document']['currency']),
                     date('Y', $document['document']['cdate']),
                     date('m', $document['document']['cdate']),

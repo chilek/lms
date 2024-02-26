@@ -738,7 +738,7 @@ function parse_customer_data($data, $format, $row)
             isset($row['cdate']) ? date('Y', $row['cdate']) : '',
             isset($row['cdate']) ? date('m', $row['cdate']) : '',
             isset($row['cdate']) ? date('d', $row['cdate']) : '',
-            date('d', mktime(12, 0, 0, $now_m + 1, 0, $now_y)),
+            date('t', mktime(12, 0, 0, $now_m, 1, $now_y)),
         ),
         $data
     );
