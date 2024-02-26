@@ -414,16 +414,7 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 		(CASE WHEN a.liabilityid IS NULL THEN t.taxid ELSE l.taxid END) AS taxid,
 		(CASE WHEN a.liabilityid IS NULL THEN t.prodid ELSE l.prodid END) AS prodid,
 		voipphones.phones,
-		ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount) *
-			(CASE a.suspended WHEN 0
-				THEN 1.0
-				ELSE ?
-			END), 3) AS unitary_value,
-		ROUND(ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount) *
-			(CASE a.suspended WHEN 0
-				THEN 1.0
-				ELSE ?
-			END), 3) * a.count, 2) AS value,
+		ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount), 3) AS price,
 		(CASE WHEN a.liabilityid IS NULL THEN t.taxrate ELSE l.taxrate END) AS taxrate,
 		(CASE WHEN a.liabilityid IS NULL THEN t.currency ELSE l.currency END) AS currency,
 		a.count AS count,
@@ -489,8 +480,6 @@ $services = $DB->GetAll(
         LIABILITY_FLAG_SPLIT_PAYMENT,
         TARIFF_FLAG_NET_ACCOUNT,
         LIABILITY_FLAG_NET_ACCOUT,
-        round($suspension_percentage / 100, 2),
-        round($suspension_percentage / 100, 2),
         TARIFF_FLAG_NET_ACCOUNT,
         LIABILITY_FLAG_NET_ACCOUT,
         DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $doms, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
@@ -516,8 +505,7 @@ $query = "SELECT
 			d.inv_paytime AS d_paytime, d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
 			0 AS flags,
 			t.taxid AS taxid, '' as prodid,
-			COALESCE(voipcost.value, 0) AS value,
-			COALESCE(voipcost.value, 0) AS unitary_value,
+			COALESCE(voipcost.value, 0) AS price,
 			COALESCE(voipcost.totaltime, 0) AS call_time,
 			" . ($billing_invoice_separate_fractions ? ' COALESCE(voipcost.call_count, 0) AS call_count, COALESCE(voipcost.call_fraction, \'\') AS call_fraction , ' : '') . "
 			taxes.value AS taxrate,
@@ -1042,11 +1030,11 @@ if (!empty($assigns)) {
             if (!empty($priceVariant)) {
                 $suspension = empty($assign['suspended']) && empty($assign['allsuspended']) ? 1 : ($suspension_percentage / 100);
                 if (!empty($assign['netflag'])) {
-                    $assign['unitary_value'] = round(((((100 - $assign['pdiscount']) * $priceVariant['net_price']) / 100) - $assign['vdiscount']) * $suspension, 3);
-                    $assign['netvalue'] = round($assign['unitary_value'] * $assign['count'], 2);
+                    $assign['price'] = round(((((100 - $assign['pdiscount']) * $priceVariant['net_price']) / 100) - $assign['vdiscount']) * $suspension, 3);
+                    $assign['netvalue'] = round($assign['price'] * $assign['count'], 2);
                 } else {
-                    $assign['unitary_value'] = round(((((100 - $assign['pdiscount']) * $priceVariant['gross_price']) / 100) - $assign['vdiscount']) * $suspension, 3);
-                    $assign['value'] = round($assign['unitary_value'] * $assign['count'], 2);
+                    $assign['price'] = round(((((100 - $assign['pdiscount']) * $priceVariant['gross_price']) / 100) - $assign['vdiscount']) * $suspension, 3);
+                    $assign['value'] = round($assign['price'] * $assign['count'], 2);
                 }
             }
         }
@@ -1361,8 +1349,8 @@ foreach ($assigns as $assign) {
     $cid = $assign['customerid'];
     $divid = ($assign['divisionid'] ?: 0);
 
-    $assign['value'] = round($assign['value'], 2);
-    $assign['unitary_value'] = round($assign['unitary_value'], 3);
+    $assign['price'] = round($assign['price'], 3);
+    $assign['value'] = round($assign['price'] * $assign['count'], 2);
 
     if (empty($assign['value']) && ($assign['liabilityid'] != 'set' || !$empty_billings)) {
         continue;
@@ -1398,9 +1386,9 @@ foreach ($assigns as $assign) {
 
     $linktechnology = isset($assignment_linktechnologies[$assign['id']]) ? $assignment_linktechnologies[$assign['id']]['technology'] : null;
 
-    if (!$assign['suspended'] && $assign['allsuspended']) {
-        $assign['unitary_value'] = $assign['unitary_value'] - round($assign['unitary_value'] * $suspension_percentage / 100, 3);
-        $assign['value'] = $assign['value'] - round($assign['value'] * $suspension_percentage / 100, 2);
+    if (!empty($assign['suspended']) || !empty($assign['allsuspended'])) {
+        $assign['price'] = $assign['price'] - round($assign['price'] * $suspension_percentage / 100, 3);
+        $assign['value'] = round($assign['price'] * $assign['count'], 2);
     }
     if (empty($assign['value']) && ($assign['liabilityid'] != 'set' || !$empty_billings)) {
         continue;
@@ -1571,8 +1559,8 @@ foreach ($assigns as $assign) {
         $numberplans[$cid] = 0;
     }
 
-    if ($assign['unitary_value'] != 0 || $empty_billings && $assign['liabilityid'] == 'set') {
-        $price = $assign['unitary_value'];
+    if ($assign['price'] != 0 || $empty_billings && $assign['liabilityid'] == 'set') {
+        $price = $assign['price'];
         $currency = $assign['currency'];
         $netflag = intval($assign['netflag']);
         $splitpayment = $assign['splitpayment'];
