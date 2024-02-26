@@ -52,7 +52,7 @@
 {$speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000)}
 {$speed_unit_aggregation_threshold = ConfigHelper::getConfig('phpui.speed_unit_aggregation_threshold', 5)}
 
-<FORM method="POST" name="assignment" action="?m={$layout.module}{if $assignment.id}&id={$assignment.id}{if $assignment.liabilityid}&lid={$assignment.liabilityid}{/if}{else}&id={$customerinfo.id}{/if}">
+<FORM method="POST" id="assignment" name="assignment" action="?m={$layout.module}{if $assignment.id}&id={$assignment.id}{if $assignment.liabilityid}&lid={$assignment.liabilityid}{/if}{else}&id={$customerinfo.id}{/if}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
 	<COLGROUP>
@@ -101,7 +101,7 @@
 							<select id="tariff-select" name="assignment[tariffid]" {tip class="lms-ui-advanced-select" text="Select liability type" trigger="tariffid"}>
 								{block name="customerassignmentsedit-special-tariffs"}
 								<option value=""   data-tarifftype="0" {if !$assignment.tariffid} selected{/if}>— {trans("tariffless liability")} —</option>
-								<option value="-1" data-tarifftype="0" {if $assignment.tariffid == -1} selected{/if}>{trans("— all liabilities suspended —")}</option>
+								<option value="-3" data-tarifftype="0" {if $assignment.tariffid == -3} selected{/if}>{trans("— selected liabilities suspending —")}</option>
 
 								{if !empty($promotions)}
 									<option value="-2" data-tarifftype="0" {if $assignment.tariffid == -2} selected{/if}>— {trans("per promotion schema")} —</option>
@@ -147,8 +147,8 @@
 		<tr>
 			<td colspan="3" class="container">
                 {include file="customer/customerassignmenthelper.html" variable_prefix="assignment" variables=$assignment}
-            </TD>
-		</TR>
+            </td>
+		</tr>
 
 		<TR>
 			<TD class="lms-ui-box-buttons" colspan="3">
@@ -171,6 +171,27 @@
 	var assignmentNote = '{$assignment.note}';
 	var assignmentTaxid = '{$assignment.taxid}';
 	var assignmentTariffId = '{$assignment.tariffid}';
+
+	let suspensionGrossValue = '{$assignment.suspension_gross_value}';
+	let suspensionNetValue = '{$assignment.suspension_net_value}';
+	let suspensionNetflag = '{$assignment.netflag}';
+	let suspensionChargeMethod = '{$assignment.suspension_charge_method}';
+	let suspensionCalculationMethod = '{$assignment.suspension_calculation_method}';
+	const suspensionDefaultChargeMethod = '{ConfigHelper::getConfig('suspensions.default_charge_method', 2)}';
+	const suspensionDefaultCalculationMethod = '{ConfigHelper::getConfig('suspensions.default_calculation_method', 1)}';
+	const suspensionDefaultValue = '{ConfigHelper::getConfig('suspensions.default_value', 0)}';
+	const suspensionDefaultNetFlag = '{ConfigHelper::getConfig('suspensions.default_netflag', 0)}';
+	const suspensionDefaultPercentage = '{ConfigHelper::getConfig('suspensions.default_percentage',
+		ConfigHelper::getConfig('payments.suspension_percentage',
+			ConfigHelper::getConfig('finances.suspension_percentage', 0)
+		)
+	)}';
+	const suspensionDefaultPlaceholder = '{trans("<!suspension>Default")}:';
+	const suspensionDefaultCurrency = '{Localisation::getCurrentCurrency()}';
+
+	const yearlyPeriod = '{$smarty.const.YEARLY}';
+	const halfyearlyPeriod = '{$smarty.const.HALFYEARLY}';
+	const quarterlyPeriod = '{$smarty.const.QUARTERLY}';
 
 	var tariffTypes = [];
 	{foreach $tariffs as $tariff}
@@ -204,6 +225,21 @@
 		$('#submit-button').click(function(e) {
 			var tariffid = parseInt($('form[name="assignment"] select[name="assignment[tariffid]"]').val());
 			$("#netflag, #grossprice, #netprice, #tax").prop('disabled', false);
+
+			if (tariffid == -3){
+				if (!$('.check-suspension').is(':checked') && !$('#suspend_all').is(':checked')) {
+					alertDialog($t("No assignment has been selected!"), this);
+					return;
+				}
+				{if $layout.module == 'customerassignmentedit'}
+					$('.check-suspension').each(function (idx) {
+						if ($(this).is(':checked')) {
+							$(this).prop('disabled', false);
+						}
+					});
+					$('#assignment').attr('action', '?m=customerassignmentedit&action=edit_suspension&sid={$assignment.suspension_id}&cid={$customerinfo.id}').submit();
+				{/if}
+			}
 
 			{if ConfigHelper::checkConfig('assignments.missed_node_warning', ConfigHelper::checkConfig('phpui.node_assignment_warning'))}
 			if (isNaN(tariffid)) {

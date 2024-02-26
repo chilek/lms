@@ -1,0 +1,346 @@
+<!--// $Id$ //-->
+
+{css}
+
+{$today = strtotime('today')}
+
+{if !isset($suspensions_tab_id)}
+	{$suspensions_tab_id = "customerassignmentssuspensions"}
+{/if}
+{if !isset($suspensions_content_id)}
+	{$suspensions_content_id = "customerassignmentssuspensionspanel"}
+{/if}
+
+{if !isset($suspensions_data_label)}{$suspensions_data_label="Customer Liabilities"}{/if}
+{tab_container id=$suspensions_tab_id label=$suspensions_data_label}
+	{tab_header content_id=$suspensions_content_id}
+		{tab_header_cell icon="lms-ui-icon-assignment"}
+			<strong>{trans("Customer Liabilities:")}</strong>
+			<label class="suspensions-assignment-type-filter">
+				{trans("Type:")}
+				<select class="suspensions-assignment-type">
+					<option value="">{trans("— all —")}</option>
+				</select>
+			</label>
+			<label class="suspensions-document-filter">
+				{trans("Document")}
+				<select class="suspensions-document">
+					<option value="">{trans("— all —")}</option>
+				</select>
+			</label>
+			<label class="suspensions-period-filter">
+				{trans("Period")}
+				<select class="suspensions-period-selection">
+					<option value="">{trans("— all —")}</option>
+				</select>
+			</label>
+			<label class="suspensions-expired-filter">
+				<input type="checkbox" class="suspensions-expired" value="1"{if $expired} checked{/if}>
+				{trans("<!assignment>Expired")}
+			</label>
+			<label class="suspensions-commited-filter">
+				<input type="checkbox" class="suspensions-commited" value="1"{if $commited} checked{/if}>
+				{trans("<!assignment>Commited")}
+			</label>
+			{button type="link" class="clear-filter" icon="delete" href="#" tip="Clear filter"}
+			{capture assign="assignment_hint"}
+				<strong>{trans("Assignments color markings:")}</strong>
+				<br><br>
+				<span style='color:maroon'><strong>{trans("Active tariff assignment")}</strong></span>
+				<br>
+				<strong>{trans("Active tariffless assignment")}</strong>
+				<br>
+				<span class='suspended'><strong>{trans("Suspended assignment")}</strong></span>
+				<br>
+				<span class='alertblend'><strong>{trans("Future assignment")}</strong></span>
+				<br>
+				<span class='blend'><strong>{trans("Expired assignment")}</strong></span>
+				<br>
+				<span class='lms-ui-assignment-not-commited'><strong>{trans("Assignment from not approved document")}</strong></span>
+			{/capture}
+			{hint text=$assignment_hint}
+		{/tab_header_cell}
+	{/tab_header}
+
+	{tab_contents id=$suspensions_content_id class="assignmentssuspensionspanel"}
+		{tab_table}
+			{if $assignments}
+			<div class="lms-ui-tab-table-row header">
+				<div class="lms-ui-tab-table-wrapper col-4">
+					<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-column suspensions-liability">
+							{trans("Liability")}
+						</div>
+						<div class="lms-ui-tab-table-column suspensions-accounting">
+							{trans("Accounting")}
+						</div>
+					</div>
+					<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-column suspensions-accounting-period">
+							{trans("Period")}
+						</div>
+						<div class="lms-ui-tab-table-column"></div>
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+					&nbsp;
+				</div>
+			</div>
+			{/if}
+
+			{foreach $assignments as $a}
+				<div class="lms-ui-tab-table-row {strip}
+						{if $a.expired}
+							blend
+						{elseif $a.future}
+							alertblend
+						{elseif $a.suspended}
+							suspended
+						{/if}
+						{if !$a.commited}
+							lms-ui-assignment-not-commited
+						{/if}{/strip}"
+					data-class="{strip}
+						{if $a.expired}
+							blend
+						{elseif $a.future}
+							alertblend
+						{elseif $a.suspended}
+							suspended
+						{/if}
+						{if !$a.commited}
+							lms-ui-assignment-not-commited
+						{/if}{/strip}"
+					data-tariff-type="{$a.tarifftype}"
+					data-expired="{$a.expired}"
+					data-suspended="{$a.suspended}"
+					data-future="{$a.future}"
+					data-commited="{$a.commited}"
+					data-period="{$a.period}"
+					data-document="{if $a.doctype}{t a=$_DOCTYPES[$a.doctype] b=$a.fullnumber c=$a.cdate|date_format:"Y-m-d"}$a no. $b issued on $c{/t}{/if}"
+					data-target-url="?m=customerassignmentedit&id={$a.id}">
+						<div class="lms-ui-tab-table-wrapper col-4">
+							<div class="lms-ui-tab-table-wrapper col-2">
+								<div class="lms-ui-tab-table-column suspensions-liability">
+									{if $a.tariffid}
+										<strong>
+											<a href="?m=tariffinfo&id={$a.tariffid}" {if !$a.commited} class="lms-ui-assignment-not-commited"{/if}>
+												{$a.name} {if count($assignments)>1} ({$a.id}){/if}
+											</a>
+										</strong>
+									{else}
+										{$a.name} ({$a.id})
+									{/if}
+								</div>
+								<div class="lms-ui-tab-table-column suspensions-accounting">
+									{$a.payday}
+									{if $a.netflag}
+										&nbsp;({trans('net')})
+									{else}
+										&nbsp;({trans('gross')})
+									{/if}
+									{if $a.backwardperiod}
+										&nbsp;{icon name="lms-ui-icon-previous" tip="<!assignment>backward"}
+									{/if}
+									{if $a.settlement}
+										&nbsp;{icon name="lms-ui-icon-next" tip="with settlement"}
+									{/if}
+								</div>
+							</div>
+							<div class="lms-ui-tab-table-wrapper col-2">
+								<div class="lms-ui-tab-table-column suspensions-accounting-period">
+									{if $a.datefrom}{trans("from")} {$a.datefrom|date_format:"Y-m-d"}{/if}
+									{if $a.dateto}{trans("to")} {$a.dateto|date_format:"Y-m-d"}{/if}
+									{if !$a.datefrom && !$a.dateto}-{/if}
+								</div>
+								<div class="lms-ui-tab-table-column"></div>
+							</div>
+						</div>
+
+						<div class="lms-ui-tab-table-column buttons">
+							<i class="lms-ui-icon-options lms-ui-hint-rollover" data-url="?m=customerassignmentinfo&id={$a.id}"></i>
+
+							<input type="checkbox"
+								   name="assignment[suspended_assignments][{$a.id}][assignment_id][{$a.id}]"
+								   form="assignment"
+								   value="{$a.id}"
+								   class="lms-ui-multi-check check-suspension"
+									{if !empty($a.suspended) || !empty($a.expired) || empty($a.commited)}
+										disabled
+									{/if}
+									{if isset($assignment['suspended_assignments'][{$a.id}])}
+										checked
+									{/if}
+							>
+						</div>
+				</div>
+			{foreachelse}
+				<div class="lms-ui-tab-empty-table">
+					{trans("That customer hasn't got any assigned subscriptions.")}
+				</div>
+			{/foreach}
+
+			{if $assignments}
+				<div class="lms-ui-tab-table-row footer">
+					<div class="lms-ui-tab-table-wrapper col-4">
+					</div>
+					<div class="lms-ui-tab-table-column buttons">
+						<label for="check-all-assignments-suspend">
+							{trans("Check All")}
+						</label>
+						<input type="checkbox" id="check-all-assignments-suspend" class="lms-ui-multi-check-all">
+					</div>
+				</div>
+			{/if}
+		{/tab_table}
+	{/tab_contents}
+{/tab_container}
+
+<script>
+
+	let suspensionsTariffTypes = [];
+	if (typeof(tariff_types) === 'undefined') {
+		{foreach $_SERVICETYPES as $type => $name}
+		suspensionsTariffTypes[{$type}] = '{$name}';
+		{/foreach}
+	} else {
+		suspensionsTariffTypes = tariff_types;
+	}
+
+	function suspensionMamange () {
+		$('#customerassignmentssuspensions .lms-ui-tab-header').off('click').css('cursor', 'default');
+		$('#customerassignmentssuspensionspanel').show();
+
+		let suspensions_default_period = null;
+		let suspensions_assignment_types = [];
+		let suspensions_documents = [];
+		let suspensions_periods = [];
+		let suspensions_tab_elem = $('#{$suspensions_tab_id}.lms-ui-tab-container');
+		suspensions_tab_elem.find('.lms-ui-tab-table-row[data-tariff-type]').each(function () {
+			let suspensions_tariff_type = $(this).attr('data-tariff-type');
+			let suspensions_document = $(this).attr('data-document');
+			let suspensions_period = $(this).attr('data-period');
+			if (suspensions_tariff_type.length && suspensions_assignment_types.indexOf(suspensions_tariff_type) == -1) {
+				suspensions_assignment_types.push(suspensions_tariff_type);
+			}
+			if (suspensions_document.length && suspensions_documents.indexOf(suspensions_document) == -1) {
+				suspensions_documents.push(suspensions_document);
+			}
+			if (suspensions_period.length && suspensions_periods.indexOf(suspensions_period) == -1) {
+				suspensions_periods.push(suspensions_period);
+			}
+		});
+		suspensions_documents.sort();
+
+		let suspensions_selected_type = getStorageItem('{$suspensions_tab_id}_tariff_type_{$customerinfo.id}');
+		let suspensions_selected_document = getStorageItem('{$suspensions_tab_id}_document_{$customerinfo.id}');
+		let suspensions_selected_period = getStorageItem('{$suspensions_tab_id}_period_{$customerinfo.id}');
+		let suspensions_expired_checked = getStorageItem('{$suspensions_tab_id}_expired_{$customerinfo.id}');
+		let suspensions_commited_checked = getStorageItem('{$suspensions_tab_id}_commited_{$customerinfo.id}');
+
+		if (suspensions_selected_period === null && suspensions_default_period) {
+			suspensions_selected_period = suspensions_default_period;
+		}
+
+		$.each(suspensions_assignment_types, function (key, value) {
+			suspensions_tab_elem.find('.suspensions-assignment-type').append('<option value="' + value + '"'
+					+ (parseInt(suspensions_selected_type) == value ? ' selected' : '') + '>' + suspensionsTariffTypes[value] + '</option>');
+		});
+		if (suspensions_assignment_types.length <= 1) {
+			suspensions_tab_elem.find('.suspensions-assignment-type-filter').hide();
+		}
+		$.each(suspensions_documents, function (key, value) {
+			suspensions_tab_elem.find('.suspensions-document').append('<option value="' + value + '"'
+					+ (suspensions_selected_document && suspensions_selected_document.length && suspensions_selected_document == value ? ' selected' : '') + '>'
+					+ value + '</option>');
+		});
+		if (suspensions_documents.length <= 1) {
+			suspensions_tab_elem.find('.suspensions-document-filter').hide();
+		}
+		$.each(suspensions_periods, function (key, value) {
+			suspensions_tab_elem.find('.suspensions-period-selection').append('<option value="' + value + '"'
+					+ (suspensions_selected_period && suspensions_selected_period.length && suspensions_selected_period == value ? ' selected' : '') + '>'
+					+ value + '</option>');
+		});
+		if (suspensions_periods.length <= 1) {
+			suspensions_tab_elem.find('.suspensions-period-filter').hide();
+		}
+		suspensions_tab_elem.find('.suspensions-expired').prop('checked', suspensions_expired_checked === null ? {if $expired}true{else}false{/if} : parseInt(suspensions_expired_checked) == 1);
+		suspensions_tab_elem.find('.suspensions-commited').prop('checked', suspensions_commited_checked === null ? {if $commited}true{else}false{/if} : parseInt(suspensions_commited_checked) == 1);
+
+		function updateSuspensionsAssignments() {
+			let suspensions_selected_type = suspensions_tab_elem.find('.suspensions-assignment-type').val();
+			let suspensions_selected_document = suspensions_tab_elem.find('.suspensions-document').val();
+			let suspensions_selected_period = suspensions_tab_elem.find('.suspensions-period-selection').val();
+			let suspensions_expired_checked = suspensions_tab_elem.find('.suspensions-expired').prop('checked');
+			let suspensions_commited_checked = suspensions_tab_elem.find('.suspensions-commited').prop('checked');
+			let suspensions_selector = '';
+			if (suspensions_selected_type.length) {
+				suspensions_selector += '[data-tariff-type="' + suspensions_selected_type + '"]';
+			}
+			if (suspensions_selected_document.length) {
+				suspensions_selector += '[data-document="' + suspensions_selected_document + '"]';
+			}
+			if (suspensions_selected_period.length) {
+				suspensions_selector += '[data-period="' + suspensions_selected_period + '"]';
+			}
+			if (!suspensions_expired_checked) {
+				suspensions_selector += '[data-expired="0"]';
+			}
+			if (suspensions_commited_checked) {
+				suspensions_selector += '[data-commited="1"]';
+			}
+			if (!suspensions_selector.length) {
+				suspensions_selector = '[data-tariff-type]';
+			}
+
+			let backgrounds = ['lucid', 'light'];
+			suspensions_tab_elem.find('.lms-ui-tab-table-row[data-tariff-type]').hide().removeClass(backgrounds.join(' '));
+			suspensions_tab_elem.find('.lms-ui-tab-table-row' + suspensions_selector).show().each(function (key) {
+				$(this).addClass(backgrounds[key & 1]);
+			});
+
+			// if (suspensions_tab_elem.find('.lms-ui-tab-table-row[data-tariff-type]').length) {
+			// 	suspensions_tab_elem.find('.lms-ui-tab-table-row[data-tariff-type]').closest('.lms-ui-tab-contents').get(0).updateCheckAll();
+			// }
+
+			setStorageItem('{$suspensions_tab_id}_tariff_type_{$customerinfo.id}', suspensions_selected_type);
+			setStorageItem('{$suspensions_tab_id}_document_{$customerinfo.id}', suspensions_selected_document);
+			setStorageItem('{$suspensions_tab_id}_period_{$customerinfo.id}', suspensions_selected_period);
+			setStorageItem('{$suspensions_tab_id}_expired_{$customerinfo.id}', suspensions_expired_checked ? 1 : 0);
+			setStorageItem('{$suspensions_tab_id}_commited_{$customerinfo.id}', suspensions_commited_checked ? 1 : 0);
+		}
+
+		// don't allow to trigger click event on title bar
+		suspensions_tab_elem.find('.suspensions-expired-filter,.suspensions-commited-filter').click(function(e) {
+			e.stopPropagation();
+		});
+		suspensions_tab_elem.find('.suspensions-assignment-type').change(updateSuspensionsAssignments).trigger('change');
+		suspensions_tab_elem.find('.suspensions-document').change(updateSuspensionsAssignments);
+		suspensions_tab_elem.find('.suspensions-period-selection').change(updateSuspensionsAssignments);
+		suspensions_tab_elem.find('.suspensions-expired').change(updateSuspensionsAssignments);
+		suspensions_tab_elem.find('.suspensions-commited').change(updateSuspensionsAssignments);
+		suspensions_tab_elem.find('.clear-filter').click(function() {
+			suspensions_tab_elem.find('.suspensions-document').val('');
+			suspensions_tab_elem.find('.suspensions-period-selection').val('');
+			suspensions_tab_elem.find('.suspensions-assignment-type').val('');
+			suspensions_tab_elem.find('.suspensions-expired').prop('checked', false);
+			suspensions_tab_elem.find('.suspensions-commited').prop('checked', true).trigger('change');
+
+			removeStorageItem('{$suspensions_tab_id}_tariff_type_{$customerinfo.id}');
+			removeStorageItem('{$suspensions_tab_id}_document_{$customerinfo.id}');
+			removeStorageItem('{$suspensions_tab_id}_period_{$customerinfo.id}');
+			removeStorageItem('{$suspensions_tab_id}_expired_{$customerinfo.id}');
+			removeStorageItem('{$suspensions_tab_id}_commited_{$customerinfo.id}');
+
+			return false;
+		});
+
+	}
+
+	$(function() {
+		suspensionMamange();
+	});
+
+</script>

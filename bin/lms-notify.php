@@ -375,7 +375,6 @@ $smtp_options = array(
     'ssl_allow_self_signed' => ConfigHelper::checkConfig($config_section . '.smtp_ssl_allow_self_signed'),
 );
 
-$suspension_percentage = floatval(ConfigHelper::getConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0)));
 $debug_email = ConfigHelper::getConfig($config_section . '.debug_email', '', true);
 $mail_from = ConfigHelper::getConfig($config_section . '.sender_email', ConfigHelper::getConfig($config_section . '.mailfrom', '', true));
 $mail_fname = ConfigHelper::getConfig($config_section . '.sender_name', ConfigHelper::getConfig($config_section . '.mailfname', '', true));
@@ -684,30 +683,29 @@ function parse_customer_data($data, $format, $row)
     );
     if (preg_match("/\%abonament/", $data)) {
         $assignments = $DB->GetAll(
-            'SELECT SUM(ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN t.value ELSE l.value END)) / 100) - a.vdiscount) *
-                (CASE a.suspended WHEN 0
-                    THEN 1.0
-                    ELSE ?
-                END), 2)) AS value,
+            'SELECT SUM(
+                (CASE WHEN vas.suspended IS NULL
+                    THEN ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN t.value ELSE l.value END)) / 100) - a.vdiscount), 2)
+                    ELSE vas.suspension_price
+                END)
+            ) AS value,
             (CASE WHEN a.liabilityid IS NULL THEN t.currency ELSE l.currency END) AS acurrency
             FROM assignments a
             LEFT JOIN tariffs t ON t.id = a.tariffid
             LEFT JOIN liabilities l ON l.id = a.liabilityid
-            WHERE a.customerid = ? AND (t.id IS NOT NULL OR l.id IS NOT NULL)
-                AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)
-                AND NOT EXISTS (
-                    SELECT 1 FROM assignments
-                    WHERE customerid = a.customerid AND tariffid IS NULL AND liabilityid IS NULL
-                        AND datefrom <= ? AND (dateto > ? OR dateto = 0)
-                    )
+            LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                AND vas.suspension_datefrom <= ?
+                AND (vas.suspension_dateto >= ? OR vas.suspension_dateto = 0)
+                AND datefrom <= ? AND (dateto > ? OR dateto = 0)
+            WHERE a.customerid = ? 
+                AND vas.suspended IS NULL
             GROUP BY acurrency',
             array(
-                round($GLOBALS['suspension_percentage'] / 100, 2),
+                $GLOBALS['currtime'],
+                $GLOBALS['currtime'],
+                $GLOBALS['currtime'],
+                $GLOBALS['currtime'],
                 $row['id'],
-                $GLOBALS['currtime'],
-                $GLOBALS['currtime'],
-                $GLOBALS['currtime'],
-                $GLOBALS['currtime'],
             )
         );
         $saldo = array();
@@ -3500,8 +3498,13 @@ if (!empty($intersect)) {
                                     WHERE status <> ' . $target_cstatus . ' AND customers.id = c.id)';
                                 break;
                             case 'all-assignment-suspension':
-                                $where_customers[] = 'NOT EXISTS (SELECT id FROM assignments
-                                    WHERE customerid = c.id AND tariffid IS NULL AND liabilityid IS NULL)';
+                                $where_customers[] = 'NOT EXISTS (SELECT id 
+                                    FROM assignments
+                                    LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                                    AND vas.suspension_datefrom <= ?NOW?
+                                    AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                                    AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
+                                    WHERE customerid = c.id AND vas.suspension_suspend_all = 1)';
                                 break;
                             case 'customer-group':
                                 $where_customers[] = 'NOT EXISTS (
@@ -3709,7 +3712,10 @@ if (!empty($intersect)) {
                                 );
                                 foreach ($customers as $cid) {
                                     if (!$DB->GetOne(
-                                        "SELECT id FROM assignments WHERE customerid = ? AND tariffid IS NULL AND liabilityid IS NULL",
+                                        "SELECT id 
+                                        FROM assignments
+                                        LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                                        WHERE customerid = ? AND vas.suspension_suspend_all = 1",
                                         array($cid)
                                     )) {
                                         if (!$quiet) {
@@ -3839,8 +3845,10 @@ if (!empty($intersect)) {
                                     WHERE status <> ' . $target_cstatus . ' AND customers.id = c.id)';
                                 break;
                             case 'all-assignment-suspension':
-                                $where_customers[] = 'EXISTS (SELECT id FROM assignments
-                                    WHERE customerid = c.id AND tariffid IS NULL AND liabilityid IS NULL)';
+                                $where_customers[] = 'EXISTS (SELECT id 
+                                FROM assignments
+                                LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                                WHERE customerid = c.id AND vas.suspension_suspend_all = 1)';
                                 break;
                             case 'customer-group':
                                 $where_customers[] = 'EXISTS (
@@ -4037,15 +4045,23 @@ if (!empty($intersect)) {
                                         $SYSLOG->NewTransaction('lms-notify.php');
                                     }
                                     if ($datefrom = $DB->GetOne(
-                                        "SELECT datefrom FROM assignments WHERE customerid = ? AND tariffid IS NULL AND liabilityid IS NULL",
+                                        "SELECT datefrom 
+                                        FROM assignments 
+                                        LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                                        WHERE customerid = ? AND vas.suspension_suspend_all = 1",
                                         array($cid)
                                     )) {
                                         $year = intval(date('Y', $datefrom));
                                         $month = intval(date('m', $datefrom));
                                         if ($year < $current_year || ($year == $current_year && $month < $current_month)) {
                                             $aids = $DB->GetCol(
-                                                "SELECT id FROM assignments
-                                                WHERE customerid = ? AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
+                                                "SELECT id 
+                                                FROM assignments
+                                                LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                                                    AND vas.suspension_datefrom <= ?NOW?
+                                                    AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                                                    AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
+                                                WHERE customerid = ? AND vas.suspension_suspend_all = 1
                                                     AND datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?)",
                                                 array($cid)
                                             );
@@ -4068,8 +4084,13 @@ if (!empty($intersect)) {
                                             }
                                         }
                                     }
-                                    $aids = $DB->GetCol("SELECT id FROM assignments
-                                        WHERE customerid = ? AND tariffid IS NULL AND liabilityid IS NULL", array($cid));
+                                    $aids = $DB->GetCol(
+                                        "SELECT id 
+                                        FROM assignments
+                                        LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                                        WHERE customerid = ? AND vas.suspension_suspend_all = 1",
+                                        array($cid)
+                                    );
                                     if (!empty($aids)) {
                                         foreach ($aids as $aid) {
                                             if (!$quiet) {

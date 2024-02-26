@@ -4,6 +4,14 @@ const netPriceElem = $("#netprice");
 const grossPriceElem = $("#grossprice");
 const invoiceElem = $("#invoice");
 
+const suspensionNetflagElem = $("#suspension_netflag");
+const suspensionNetValueElem = $("#suspension_net_value");
+const suspensionGrossValueElem = $("#suspension_gross_value");
+const suspensionChargeMethodElem = $("#suspension_charge_method");
+const suspensionCalculationMethodElem = $('#suspension_calculation_method');
+const suspensionPercentageElem = $('#suspension_percentage');
+const suspensionCurrencyElem = $('#currency');
+
 function CustomerAssignmentHelper(options) {
 	var helper = this;
 
@@ -624,12 +632,19 @@ function tariffSelectionHandler() {
 	}
 
 	$('#a_promotions,#a_align_periods').toggle(val == -2);
+	$('#a_assignments_suspensions, #a_suspension_charge_method, #a_suspension_type,' +
+		'#a_suspension_calculation_method, #a_suspension_value, #a_suspension_percentage,' +
+		'#a_currency')
+		.toggle(val == -3);
+
+	$('[data-lmsbox-content="customerassignmentsuspensionspanel"]').off('click');
+	$('#assignment-period').find('option').prop('disabled', false);
 
 	$('#last-settlement').prop('disabled', $('#align-periods').prop('checked') && val == -2)
 		.closest('label').toggleClass('lms-ui-disabled', $('#align-periods').prop('checked') && val == -2);
 
-	$('#netflag, #tax, #taxcategory, #splitpayment').prop('disabled', false);
-	$('#a_tax, #a_taxcategory, #a_splitpayment').removeClass('lms-ui-disabled');
+	$('#netflag, #tax, #taxcategory, #splitpayment, #currency').prop('disabled', false);
+	$('#a_tax, #a_taxcategory, #a_splitpayment, #a_currency').removeClass('lms-ui-disabled');
 
 	if (val == '') {
 		$('#a_tax,#a_type,#a_price,#a_currency,#a_splitpayment,#a_taxcategory,#a_productid,#a_name').show();
@@ -705,10 +720,11 @@ function tariffSelectionHandler() {
 
 		$('#tax').val(tariffTaxId).prop('disabled', true);
 
-		if (val == -1) {
-			$('#tax').val(tariffDefaultTaxId).prop('disabled', false);
+		if (val == -3){
+			$('#a_type,#a_price,#a_splitpayment,#a_taxcategory,#a_productid,#a_name,#a_attribute').hide();
+			$('#a_currency').show();
 
-			$('#a_tax,#a_type,#a_price,#a_currency,#a_splitpayment,#a_taxcategory,#a_productid,#a_name,#a_attribute').hide();
+			suspensionFieldsHandler(suspensionChargeMethodElem, suspensionCalculationMethodElem);
 		} else if (val == -2){
 			$('#tax').val(tariffDefaultTaxId).prop('disabled', false);
 
@@ -721,7 +737,7 @@ function tariffSelectionHandler() {
 		}
 	}
 
-	if (val == -1) {
+	if (val == -3) {
 		$('#a_numberplan,#a_paytime,#a_paytype,#a_address,#a_day,#a_options,#a_existingassignments').hide();
 		$('#a_properties').show();
 	} else {
@@ -739,7 +755,7 @@ function tariffSelectionHandler() {
 		$('#a_netdevnodes').hide();
 	} else {
 		$('#a_phones').hide();
-		if (val == -1 || val == -2) {
+		if (val == -2 || val == -3) {
 			$('#a_nodes,#a_netdevnodes,#a_checkall').hide();
 		} else {
 			$('#a_nodes,#a_netdevnodes,#a_checkall').show();
@@ -747,7 +763,7 @@ function tariffSelectionHandler() {
 	}
 
 	if (!assignment_settings.hideFinances) {
-		if (val <= -1) {
+		if (val <= -2) {
 			$('.a_discount').hide();
 		} else {
 			$('.a_discount').show();
@@ -771,21 +787,21 @@ function tariffSelectionHandler() {
 
 $('#tariff-select').change(tariffSelectionHandler);
 
-function claculatePriceFromGross() {
-	let grossPriceElemVal = grossPriceElem.val();
+function claculateNetFromGross(netPriceElem, grossPriceElem, precision = 3, grossPriceVal = null) {
+	let grossPriceElemVal = (grossPriceVal == null ? grossPriceElem.val() : grossPriceVal);
 	grossPriceElemVal = parseFloat(grossPriceElemVal.replace(/[\,]+/, '.'));
 
 	if (!isNaN(grossPriceElemVal)) {
 		let selectedTaxId = $("#tax").find('option:selected').val();
 		let tax = $('#tax' + selectedTaxId).val();
 
-		let grossPrice = financeDecimals.round(grossPriceElemVal, 3);
-		let netPrice = financeDecimals.round(grossPrice / (tax / 100 + 1), 3);
+		let grossPrice = financeDecimals.round(grossPriceElemVal, precision);
+		let netPrice = financeDecimals.round(grossPrice / (tax / 100 + 1), precision);
 
-		netPrice = netPrice.toFixed(3).replace(/[\.]+/, ',');
+		netPrice = netPrice.toFixed(precision).replace(/[\.]+/, ',');
 		netPriceElem.val(netPrice);
 
-		grossPrice = grossPrice.toFixed(3).replace(/[\.]+/, ',');
+		grossPrice = grossPrice.toFixed(precision).replace(/[\.]+/, ',');
 		grossPriceElem.val(grossPrice);
 	} else {
 		netPriceElem.val('');
@@ -793,21 +809,21 @@ function claculatePriceFromGross() {
 	}
 }
 
-function claculatePriceFromNet() {
-	let netPriceElemVal = netPriceElem.val();
+function claculateGrossFromNet(netPriceElem, grossPriceElem, precision = 3, netPriceVal = null) {
+	let netPriceElemVal = (netPriceVal == null ? netPriceElem.val() : netPriceVal);
 	netPriceElemVal = parseFloat(netPriceElemVal.replace(/[\,]+/, '.'))
 
 	if (!isNaN(netPriceElemVal)) {
 		let selectedTaxId = $("#tax").find('option:selected').val();
 		let tax = $('#tax' + selectedTaxId).val();
 
-		let netPrice = financeDecimals.round(netPriceElemVal, 3);
-		let grossPrice = financeDecimals.round(netPrice * (tax / 100 + 1), 3);
+		let netPrice = financeDecimals.round(netPriceElemVal, precision);
+		let grossPrice = financeDecimals.round(netPrice * (tax / 100 + 1), precision);
 
-		grossPrice = grossPrice.toFixed(3).replace(/[\.]+/, ',');
+		grossPrice = grossPrice.toFixed(precision).replace(/[\.]+/, ',');
 		grossPriceElem.val(grossPrice);
 
-		netPrice = netPrice.toFixed(3).replace(/[\.]+/, ',');
+		netPrice = netPrice.toFixed(precision).replace(/[\.]+/, ',');
 		netPriceElem.val(netPrice);
 	} else {
 		grossPriceElem.val('');
@@ -815,11 +831,154 @@ function claculatePriceFromNet() {
 	}
 }
 
+function suspendAllFieldsHandler(suspenAllElem) {
+	let suspensionsElem = $('#customerassignmentssuspensions');
+	let suspensions = suspensionsElem.find('.lms-ui-tab-table-row').not( ".header,.footer");
+
+	if (suspenAllElem.is(':checked')) {
+		suspensionsElem.addClass('lms-ui-disabled');
+		suspensions.each(function (index) {
+			let rowData = $(this).data();
+			if (rowData.class !== 'blend') {
+				$(this).removeClass('suspended alertblend lms-ui-assignment-not-commited');
+				$(this).addClass('blend');
+			}
+			$(this).find('input').prop('disabled', true);
+		});
+		$('#check-all-assignments-suspend').prop('disabled', true);
+	} else {
+		suspensionsElem.removeClass('lms-ui-disabled');
+		suspensions.each(function (index) {
+			$(this).removeClass('blend');
+			$(this).find('input').prop('disabled', false);
+			let rowData = $(this).data();
+			let rowCheckElem = $(this).find('input');
+			if (rowData.suspended == 1) {
+				$(this).removeClass('suspended alertblend lms-ui-assignment-not-commited');
+				$(this).addClass('blend');
+				rowCheckElem.prop('disabled', !rowCheckElem.is(':checked'));
+			} else if (rowData.class) {
+				$(this).addClass(rowData.class);
+				rowCheckElem.prop('disabled', rowData.class == 'blend' || rowData.class == 'suspended' || rowData.class == 'lms-ui-assignment-not-commited');
+			}
+		});
+		$('#check-all-assignments-suspend').prop('disabled', false);
+	}
+}
+$('#suspend_all').on('change', function () {
+	suspendAllFieldsHandler($(this));
+});
+
+function suspensionFieldsHandler(suspensionChargeMethodElem, suspensionCalculationMethodElem) {
+	suspendAllFieldsHandler($('#suspend_all'));
+
+	if (suspensionChargeMethodElem.val()) {
+		suspensionChargeMethod = suspensionChargeMethodElem.val();
+	} else if (suspensionChargeMethod == '') {
+		suspensionChargeMethod = suspensionDefaultChargeMethod;
+	}
+	let chargeMethod = suspensionChargeMethod;
+
+	if (suspensionCalculationMethodElem.val()) {
+		suspensionCalculationMethod = suspensionCalculationMethodElem.val();
+	} else if (suspensionCalculationMethod == '') {
+		suspensionCalculationMethod = suspensionDefaultCalculationMethod;
+	}
+	let calculationMethod = suspensionCalculationMethod;
+
+	$('#a_suspension_calculation_method, #a_suspension_percentage, #a_suspension_value, #a_currency, #a_tax').addClass('lms-ui-disabled');
+	$('#suspension_calculation_method, #suspension_percentage, #suspension_gross_value, #suspension_net_value, #suspension_netflag, #currency, #tax').prop('disabled', true);
+	$('#suspension_percentage, #suspension_gross_value, #suspension_net_value').val('').attr('placeholder', '');
+
+	if (chargeMethod == 1) {
+		$('#suspension_calculation_method').val('');
+	} else  {
+		$('#a_suspension_calculation_method').removeClass('lms-ui-disabled');
+		$('#suspension_calculation_method').prop('disabled', false);
+
+
+		suspensionCalculationMethodElem.val(calculationMethod);
+
+		if (calculationMethod == 1) {
+			$('#a_suspension_value, #a_currency, #a_tax').addClass('lms-ui-disabled');
+			$('#suspension_gross_value, #suspension_net_value, #suspension_netflag, #currency, #tax').prop('disabled', true);
+			$('#suspension_gross_value, #suspension_net_value').val('').attr('placeholder', '');
+			$('#tax').prop('disabled', true);
+			$('#a_suspension_percentage').removeClass('lms-ui-disabled');
+			suspensionPercentageElem.prop('disabled', false);
+
+			$('#tax').val('').prop('disabled', true);
+			suspensionCurrencyElem.val('');
+
+			if (suspensionPercentageElem.val() == '') {
+				suspensionPercentageElem.attr('placeholder', suspensionDefaultPlaceholder.concat(" ", suspensionDefaultPercentage, " %"));
+			}
+		} else if (calculationMethod == 2) {
+			$('#a_suspension_percentage').addClass('lms-ui-disabled');
+			suspensionPercentageElem.prop('disabled', true).val('').attr('placeholder', '');
+			$('#a_suspension_value, #a_currency, #a_tax').removeClass('lms-ui-disabled');
+			$('#suspension_gross_value, #suspension_net_value, #suspension_netflag, #currency, #tax').prop('disabled', false);
+			$('#tax').prop('disabled', false);
+
+			if (!$('#tax').val()) {
+				$('#tax').val(tariffDefaultTaxId);
+			}
+
+			if (!suspensionCurrencyElem.val()) {
+				suspensionCurrencyElem.val(suspensionDefaultCurrency);
+			}
+
+			if (suspensionNetflag == '') {
+				suspensionNetflag = suspensionDefaultNetFlag;
+			}
+
+			if (suspensionNetflag && parseInt(suspensionNetflag) != 0) {
+				suspensionNetflagElem.prop({checked: true, disabled: false});
+				suspensionGrossValueElem.prop('disabled', true);
+				suspensionNetValueElem.prop('disabled', false);
+
+				if (suspensionNetValue != '') {
+					suspensionNetValueElem.val(suspensionNetValue);
+					claculateGrossFromNet(suspensionNetValueElem, suspensionGrossValueElem, 2);
+				} else {
+					suspensionNetValueElem.val(suspensionDefaultValue);
+					claculateGrossFromNet(suspensionNetValueElem, suspensionGrossValueElem, 2, suspensionDefaultValue);
+					suspensionNetValueElem.val('').attr('placeholder', suspensionDefaultPlaceholder.concat(" ", suspensionDefaultValue));
+					suspensionGrossValueElem.attr('placeholder', suspensionDefaultPlaceholder.concat(" ", suspensionGrossValueElem.val()));
+					suspensionGrossValueElem.val('');
+				}
+			} else {
+				suspensionNetflagElem.prop({checked: false, disabled: false});
+				suspensionGrossValueElem.prop('disabled', false);
+				suspensionNetValueElem.prop('disabled', true);
+
+				if (suspensionGrossValue != '') {
+					suspensionGrossValueElem.val(suspensionGrossValue);
+					claculateNetFromGross(suspensionNetValueElem, suspensionGrossValueElem, 2);
+				} else {
+					suspensionGrossValueElem.val(suspensionDefaultValue);
+					claculateNetFromGross(suspensionNetValueElem, suspensionGrossValueElem, 2, suspensionDefaultValue);
+					suspensionGrossValueElem.val('').attr('placeholder', suspensionDefaultPlaceholder.concat(" ", suspensionDefaultValue));
+					suspensionNetValueElem.attr('placeholder', suspensionDefaultPlaceholder.concat(" ", suspensionNetValueElem.val()));
+					suspensionNetValueElem.val('');
+				}
+			}
+		}
+	}
+}
+suspensionChargeMethodElem.on('change', function () {
+	suspensionFieldsHandler(suspensionChargeMethodElem, suspensionCalculationMethodElem);
+});
+
+suspensionCalculationMethodElem.on('change', function () {
+	suspensionFieldsHandler(suspensionChargeMethodElem, suspensionCalculationMethodElem);
+});
+
 $('#netflag').on('change', function () {
 	if (netFlagElem.is(':checked')) {
 		grossPriceElem.prop('disabled', true);
 		netPriceElem.prop('disabled', false);
-		claculatePriceFromNet();
+		claculateGrossFromNet(netPriceElem, grossPriceElem);
 		invoiceElem.prop('required', true);
 		if (invoiceElem.val() === assignment_settings.DOC_DNOTE) {
 			invoiceElem.val('');
@@ -828,28 +987,82 @@ $('#netflag').on('change', function () {
 	} else {
 		grossPriceElem.prop('disabled', false);
 		netPriceElem.prop('disabled', true);
-		claculatePriceFromGross();
+		claculateNetFromGross(netPriceElem, grossPriceElem);
 		invoiceElem.prop('required', false).removeClass('lms-ui-error');
 		invoiceElem.find('option[value="' + assignment_settings.DOC_DNOTE + '"]').prop('disabled', false);
 	}
 });
 
-$("#tax").on('change', function () {
-	if (netFlagElem.is(':checked')) {
-		claculatePriceFromNet();
+$('#suspension_netflag').on('change', function () {
+	if (suspensionNetflagElem.is(':checked')) {
+		if (suspensionNetValueElem.val() != '') {
+			suspensionNetValueElem.val(suspensionNetValue);
+			claculateGrossFromNet(suspensionNetValueElem, suspensionGrossValueElem, 2);
+		} else {
+			suspensionNetValueElem.val(suspensionDefaultValue);
+			claculateGrossFromNet(suspensionNetValueElem, suspensionGrossValueElem, 2, suspensionDefaultValue);
+			suspensionNetValueElem.val('').attr('placeholder', suspensionDefaultPlaceholder.concat(" ", suspensionDefaultValue));
+			suspensionGrossValueElem.attr('placeholder', suspensionDefaultPlaceholder.concat(" ", suspensionGrossValueElem.val()));
+			suspensionGrossValueElem.val('');
+		}
 	} else {
-		claculatePriceFromGross();
+		if (suspensionGrossValueElem.val() != '') {
+			suspensionGrossValueElem.val(suspensionGrossValue);
+			claculateNetFromGross(suspensionNetValueElem, suspensionGrossValueElem, 2);
+		} else {
+			suspensionGrossValueElem.val(suspensionDefaultValue);
+			claculateNetFromGross(suspensionNetValueElem, suspensionGrossValueElem, 2, suspensionDefaultValue);
+			suspensionGrossValueElem.val('').attr('placeholder', suspensionDefaultPlaceholder.concat(" ", suspensionDefaultValue));
+			suspensionNetValueElem.attr('placeholder', suspensionDefaultPlaceholder.concat(" ", suspensionNetValueElem.val()));
+			suspensionNetValueElem.val('');
+		}
 	}
 });
 
-$("#grossprice").change(function () {
-	claculatePriceFromGross();
+$("#tax").on('change', function () {
+	if (netFlagElem.is(':checked')) {
+		claculateGrossFromNet(netPriceElem, grossPriceElem);
+		claculateGrossFromNet(suspensionNetValueElem, suspensionGrossValueElem, 2);
+	} else {
+		claculateNetFromGross(netPriceElem, grossPriceElem);
+		claculateNetFromGross(suspensionNetValueElem, suspensionGrossValueElem, 2);
+	}
+});
+
+$("#grossprice").on('change', function () {
+	claculateNetFromGross(netPriceElem, grossPriceElem);
 	$("#target_price").change();
 });
 
-$("#netprice").change(function () {
-	claculatePriceFromNet();
+$("#netprice").on('change', function () {
+	claculateGrossFromNet(netPriceElem, grossPriceElem);
 	$("#target_price").change();
+});
+
+$("#suspension_gross_value").on('change', function () {
+	if ($(this).val() != '') {
+		suspensionNetValueElem.val(suspensionNetValue);
+		claculateGrossFromNet(suspensionNetValueElem, suspensionGrossValueElem, 2);
+	} else {
+		suspensionNetValueElem.val(suspensionDefaultValue);
+		claculateGrossFromNet(suspensionNetValueElem, suspensionGrossValueElem, 2, suspensionDefaultValue);
+		suspensionNetValueElem.val('').attr('placeholder', suspensionDefaultPlaceholder.concat(" ", suspensionDefaultValue));
+		suspensionGrossValueElem.attr('placeholder', suspensionDefaultPlaceholder.concat(" ", suspensionGrossValueElem.val()));
+		suspensionGrossValueElem.val('');
+	}
+});
+
+$("#suspension_net_value").on('change', function () {
+	if ($(this).val() != '') {
+		suspensionGrossValueElem.val(suspensionGrossValue);
+		claculateGrossFromNet(suspensionNetValueElem, suspensionGrossValueElem, 2);
+	} else {
+		suspensionGrossValueElem.val(suspensionDefaultValue);
+		claculateNetFromGross(suspensionNetValueElem, suspensionGrossValueElem, 2, suspensionDefaultValue);
+		suspensionGrossValueElem.val('').attr('placeholder', suspensionDefaultPlaceholder.concat(" ", suspensionDefaultValue));
+		suspensionNetValueElem.attr('placeholder', suspensionDefaultPlaceholder.concat(" ", suspensionNetValueElem.val()));
+		suspensionNetValueElem.val('');
+	}
 });
 
 $(".format-3f").on('change', function () {

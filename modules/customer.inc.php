@@ -79,7 +79,11 @@ if (!isset($resource_tabs['customerassignments']) || $resource_tabs['customerass
     } else {
         $period = null;
     }
-    $assignments = $LMS->GetCustomerAssignments($customerid, true, false);
+    $assignmentsWithSuspensions = $LMS->getCustomerAssignments($customerid, array('show_expired' => true, 'show_approved' => false, 'with_suspensions' => true));
+    if (!empty($assignmentsWithSuspensions)) {
+        $assignments = !empty($assignmentsWithSuspensions['assignments']) ? $assignmentsWithSuspensions['assignments'] : array();
+        $suspensions = !empty($assignmentsWithSuspensions['suspensions']) ? $assignmentsWithSuspensions['suspensions'] : array();
+    }
 }
 if (!isset($resource_tabs['customergroups']) || $resource_tabs['customergroups']) {
     $customergroups = $LMS->CustomergroupGetForCustomer($customerid);
@@ -286,6 +290,7 @@ $SMARTY->assignByRef('customerdevices', $customerdevices);
 $SMARTY->assignByRef('customernetnodes', $customernetnodes);
 $SMARTY->assignByRef('customerstats', $customerstats);
 $SMARTY->assignByRef('assignments', $assignments);
+$SMARTY->assignByRef('suspensions', $suspensions);
 $SMARTY->assignByRef('nodeassignments', $nodeassignments);
 $SMARTY->assignByRef('customergroups', $customergroups);
 $SMARTY->assignByRef('othercustomergroups', $othercustomergroups);

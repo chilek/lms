@@ -983,15 +983,20 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL))';
                     break;
                 case 56:
-                    $state_conditions[] = 'EXISTS (SELECT 1 FROM assignments a
-                    WHERE a.customerid = c.id AND (
-                        (tariffid IS NULL AND liabilityid IS NULL
-                            AND datefrom <= ?NOW?
-                            AND (dateto >= ?NOW? OR dateto = 0))
-                        OR (datefrom <= ?NOW?
-                            AND (dateto >= ?NOW? OR dateto = 0)
-                            AND suspended = 1 AND commited = 1)
-                        ))';
+                    $state_conditions[] = 'EXISTS (SELECT 1 
+                    FROM assignments a
+                    LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                        AND vas.suspension_datefrom <= ?NOW?
+                        AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                        AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
+                    WHERE a.customerid = c.id
+                     AND (
+                        (vas.suspension_suspend_all = 1)
+                        OR (vas.suspended IS NOT NULL
+                            AND vas.suspension_suspend_all = 0
+                            AND commited = 1)
+                        )
+                    )';
                     break;
                 case 57:
                     $state_conditions[] = 'b.balance < -t.value';
@@ -1141,35 +1146,78 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         FROM assignments a
                         LEFT JOIN tariffs t ON t.id = a.tariffid
                         LEFT JOIN liabilities l ON (l.id = a.liabilityid AND a.period <> 0)
-                        WHERE a.suspended = 0
+                        LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                            AND vas.suspension_datefrom <= ?NOW?
+                            AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                            AND a.dateto = 0
+                        WHERE vas.suspended IS NULL
                         AND a.commited = 1
                         AND a.dateto = 0
                         AND (t.type = ' . intval($search['tarifftype']) . ' OR l.type = ' . intval($search['tarifftype']) . ')';
                 } else {
-                    $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.commited = 1 AND a.dateto = 0';
+                    $assignment = 'SELECT DISTINCT(a.customerid) 
+                        FROM assignments a
+                        LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                            AND vas.suspension_datefrom <= ?NOW?
+                            AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                            AND a.dateto = 0
+                        WHERE vas.suspended IS NULL 
+                          AND a.commited = 1 
+                          AND a.dateto = 0';
                 }
                 break;
             case -2:
-                $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.commited = 1 '
-                    . 'AND (a.dateto = 0 OR a.dateto > ?NOW?) AND ((a.at + 86400) > ?NOW? OR a.period <> 0)';
+                $assignment = 'SELECT DISTINCT(a.customerid) 
+                    FROM assignments a
+                    LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                        AND vas.suspension_datefrom <= ?NOW?
+                        AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                        AND (a.dateto = 0 OR a.dateto > ?NOW?) AND ((a.at + 86400) > ?NOW? OR a.period <> 0)
+                    WHERE vas.suspended IS NULL AND a.commited = 1
+                    AND (a.dateto = 0 OR a.dateto > ?NOW?) AND ((a.at + 86400) > ?NOW? OR a.period <> 0)';
                 break;
             case -3:
-                $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.invoice = ' . DOC_INVOICE
-                    . ' AND a.suspended = 0 AND a.commited = 1
+                $assignment = 'SELECT DISTINCT(a.customerid) 
+                    FROM assignments a
+                    LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                        AND vas.suspension_datefrom <= ?NOW?
+                        AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                        AND (a.dateto = 0 OR a.dateto > ?NOW?) AND (a.period <> ' . DISPOSABLE . ' OR (a.at + 86400) > ?NOW?)
+                    WHERE a.invoice = ' . DOC_INVOICE
+                    . ' AND vas.suspended IS NULL 
+                    AND a.commited = 1
                     AND (a.dateto = 0 OR a.dateto > ?NOW?) AND (a.period <> ' . DISPOSABLE . ' OR (a.at + 86400) > ?NOW?)';
                 break;
             case -4:
-                $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended <> 0';
+                $assignment = 'SELECT DISTINCT(a.customerid)
+                    FROM assignments a
+                    JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                        AND vas.suspension_datefrom <= ?NOW?
+                        AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                    WHERE vas.suspended IS NOT NULL AND vas.suspension_suspend_all = 0';
                 break;
             case -5:
-                $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.invoice = ' . DOC_INVOICE_PRO
-                    . ' AND a.suspended = 0 AND a.commited = 1
+                $assignment = 'SELECT DISTINCT(a.customerid)
+                    FROM assignments a
+                    JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                        AND vas.suspension_datefrom <= ?NOW?
+                        AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                        AND (a.dateto = 0 OR a.dateto > ?NOW?) AND ((a.at + 86400) > ?NOW? or a.period != 0)
+                    WHERE a.invoice = ' . DOC_INVOICE_PRO
+                    . ' AND vas.suspended IS NOT NULL
+                    AND a.commited = 1
                     AND (a.dateto = 0 OR a.dateto > ?NOW?) AND ((a.at + 86400) > ?NOW? or a.period != 0)';
                 break;
             case -6:
-                $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a
+                $assignment = 'SELECT DISTINCT(a.customerid)
+                    FROM assignments a
                     LEFT JOIN documents d ON d.id = a.docid
-                    WHERE a.suspended = 0 AND a.commited = 1
+                    LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                        AND vas.suspension_datefrom <= ?NOW?
+                        AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                        AND (a.dateto = 0 OR a.dateto > ?NOW?) AND a.period <> 0
+                    WHERE vas.suspended IS NULL 
+                        AND a.commited = 1
                         AND (a.dateto = 0 OR a.dateto > ?NOW?) AND a.period <> 0
                     GROUP BY a.customerid, d.id
                     HAVING MIN(a.datefrom) > ?NOW?';
@@ -1177,7 +1225,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             case -7:
                 $assignment = 'SELECT DISTINCT(a.customerid)
                     FROM assignments a
-                    WHERE a.suspended = 0 AND a.commited = 1
+                    LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                        AND vas.suspension_datefrom <= ?NOW?
+                        AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                        AND (a.dateto = 0 OR a.dateto > ?NOW?) AND ((a.at + 86400) > ?NOW? OR a.period <> 0)
+                    WHERE vas.suspended IS NULL 
+                        AND a.commited = 1
                         AND (a.dateto = 0 OR a.dateto > ?NOW?) AND ((a.at + 86400) > ?NOW? OR a.period <> 0)
                         AND NOT EXISTS (SELECT 1 FROM nodeassignments WHERE assignmentid = a.id)';
                 break;
@@ -1185,7 +1238,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $assignment = 'SELECT DISTINCT(a.customerid)
                     FROM assignments a
                     LEFT JOIN documents d ON d.id = a.docid
-                    WHERE a.suspended = 0 AND a.commited = 1
+                    LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                        AND vas.suspension_datefrom <= ?NOW?
+                        AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                        AND (a.dateto = 0 OR a.dateto > ?NOW?) AND a.period <> 0
+                    WHERE vas.suspended IS NULL 
+                        AND a.commited = 1
                         AND (a.dateto = 0 OR a.dateto > ?NOW?) AND a.period <> 0
                         AND NOT EXISTS (SELECT 1 FROM nodeassignments WHERE assignmentid = a.id)
                     GROUP BY a.customerid, d.id
@@ -1194,12 +1252,24 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             case -9:
                 $assignment = 'SELECT DISTINCT(a.customerid)
                     FROM assignments a
-                    WHERE a.commited = 1 AND tariffid IS NULL AND liabilityid IS NULL
-                        AND datefrom <= ?NOW?
-                        AND (dateto >= ?NOW? OR dateto = 0)';
+                    LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                        AND vas.suspension_datefrom <= ?NOW?
+                        AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                        AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
+                    WHERE a.commited = 1 
+                        AND vas.suspension_suspend_all = 1
+                        AND datefrom <= ?NOW? AND (dateto >= ?NOW? OR dateto = 0)';
                 break;
             case -10:
-                $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.commited = 1 AND a.datefrom = 0';
+                $assignment = 'SELECT DISTINCT(a.customerid) 
+                    FROM assignments a
+                    LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                        AND vas.suspension_datefrom <= ?NOW?
+                        AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                        AND a.datefrom = 0)
+                    WHERE vas.suspended IS NULL 
+                        AND a.commited = 1 
+                        AND a.datefrom = 0';
                 break;
             case -11:
                 $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.commited = 1';
@@ -1208,15 +1278,29 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.commited = 0';
                 break;
             case -13:
-                $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.invoice = 0
-                    AND a.suspended = 0 AND a.commited = 1
-                    AND (a.dateto = 0 OR a.dateto > ?NOW?) AND (a.period <> ' . DISPOSABLE . ' OR (a.at + 86400) > ?NOW?)';
+                $assignment = 'SELECT DISTINCT(a.customerid) 
+                    FROM assignments a
+                    LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                        AND vas.suspension_datefrom <= ?NOW?
+                        AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                        AND (a.dateto = 0 OR a.dateto > ?NOW?) AND (a.period <> ' . DISPOSABLE . ' OR (a.at + 86400) > ?NOW?)
+                    WHERE a.invoice = 0
+                        AND vas.suspended IS NULL 
+                        AND a.commited = 1
+                        AND (a.dateto = 0 OR a.dateto > ?NOW?) AND (a.period <> ' . DISPOSABLE . ' OR (a.at + 86400) > ?NOW?)';
                 break;
             default:
                 if ($as > 0) {
-                    $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE
-                        a.suspended = 0 AND a.commited = 1 AND a.dateto > ' . time() . ' AND a.dateto <= ' . (time() + ($as * 86400))
-                        . ' AND NOT EXISTS (SELECT 1 FROM assignments aa WHERE aa.customerid = a.customerid AND aa.datefrom > a.dateto LIMIT 1)';
+                    $assignment = 'SELECT DISTINCT(a.customerid) 
+                        FROM assignments a
+                        LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                            AND vas.suspension_datefrom <= ?NOW?
+                            AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                            AND a.dateto > ' . time() . ' AND a.dateto <= ' . (time() + ($as * 86400)). '
+                        WHERE vas.suspended IS NULL 
+                            AND a.commited = 1 
+                            AND a.dateto > ' . time() . ' AND a.dateto <= ' . (time() + ($as * 86400)). ' 
+                            AND NOT EXISTS (SELECT 1 FROM assignments aa WHERE aa.customerid = a.customerid AND aa.datefrom > a.dateto LIMIT 1)';
                 } else {
                     $assignment = null;
                 }
@@ -1544,8 +1628,6 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $sqlsarg = implode(' ' . $sqlskey . ' ', $searchargs);
         }
 
-        $suspension_percentage = f_round(ConfigHelper::getConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0)));
-
         $sql = '';
 
         if ($count) {
@@ -1565,6 +1647,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     WHEN s.warnsum > 0 THEN 2 ELSE 0 END) AS nodewarn ';
         }
 
+        //todo
         $sql .= 'FROM customerview c
             ' . ($overduereceivables ? '
             LEFT JOIN (
@@ -1614,41 +1697,44 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             . '
             LEFT JOIN (
                 SELECT a.customerid,
-                    SUM(
-                        (
-                            CASE a.suspended
-                                WHEN 0 THEN (((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount)
-                                ELSE ((((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount) * ' . $suspension_percentage . ' / 100)
+                    SUM(ROUND(
+                    (CASE
+                        WHEN vas.suspended IS NULL
+                           THEN ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN t.value ELSE l.value END)) / 100) - a.vdiscount), 3)
+                        ELSE vas.suspension_price
+                    END) *
+                    (CASE WHEN a.period = ' . DISPOSABLE . ' THEN 0
+                        ELSE (
+                            CASE WHEN a.period <> ' . DISPOSABLE . ' AND t.period > 0 AND t.period <> a.period THEN (
+                                    CASE t.period
+                                        WHEN ' . YEARLY . ' THEN 1/12.0
+                                        WHEN ' . HALFYEARLY . ' THEN 1/6.0
+                                        WHEN ' . QUARTERLY . ' THEN 1/3.0
+                                        ELSE 1
+                                    END
+                                ) ELSE (
+                                    CASE a.period
+                                        WHEN ' . YEARLY . ' THEN 1/12.0
+                                        WHEN ' . HALFYEARLY . ' THEN 1/6.0
+                                        WHEN ' . QUARTERLY . ' THEN 1/3.0
+                                        WHEN ' . WEEKLY . ' THEN 4.0
+                                        WHEN ' . DAILY . ' THEN 30.0
+                                        ELSE 1
+                                    END
+                                )
                             END
-                        ) * (
-                            CASE WHEN a.period = ' . DISPOSABLE . ' THEN 0
-                            ELSE (
-                                CASE WHEN a.period <> ' . DISPOSABLE . ' AND t.period > 0 AND t.period <> a.period THEN (
-                                        CASE t.period
-                                            WHEN ' . YEARLY . ' THEN 1/12.0
-                                            WHEN ' . HALFYEARLY . ' THEN 1/6.0
-                                            WHEN ' . QUARTERLY . ' THEN 1/3.0
-                                            ELSE 1
-                                        END
-                                    ) ELSE (
-                                        CASE a.period
-                                            WHEN ' . YEARLY . ' THEN 1/12.0
-                                            WHEN ' . HALFYEARLY . ' THEN 1/6.0
-                                            WHEN ' . QUARTERLY . ' THEN 1/3.0
-                                            WHEN ' . WEEKLY . ' THEN 4.0
-                                            WHEN ' . DAILY . ' THEN 30.0
-                                            ELSE 1
-                                        END
-                                    )
-                                END
-                            )
-                            END
-                        ) * a.count
-                    ) AS value
+                        )
+                    END) * 
+                    a.count, 2)) AS value
                     FROM assignments a
                     LEFT JOIN tariffs t ON (t.id = a.tariffid)
                     LEFT JOIN liabilities l ON (l.id = a.liabilityid AND a.period <> ' . DISPOSABLE . ')
-                    WHERE a.commited = 1 AND a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0)
+                    LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                        AND vas.suspension_datefrom <= ?NOW?
+                        AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                        AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
+                    WHERE a.commited = 1
+                    AND a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0)
                     GROUP BY a.customerid
                 ) t ON (t.customerid = c.id)
                 LEFT JOIN (SELECT ownerid,

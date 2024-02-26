@@ -48,22 +48,28 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function GetCustomerTariffsValue($id)
     {
-        return $this->db->GetAllByKey('SELECT SUM(tariffs.value * a.count) AS value, tariffs.currency
-		    FROM assignments a, tariffs
-			WHERE tariffid = tariffs.id AND customerid = ? AND suspended = 0 AND commited = 1
-			    AND a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0)
-			GROUP BY tariffs.currency', 'currency', array($id));
+        return $this->db->GetAllByKey(
+            'SELECT SUM(tariffs.value * a.count) AS value, tariffs.currency
+            FROM assignments a, tariffs
+            WHERE tariffid = tariffs.id AND customerid = ? AND suspended = 0 AND commited = 1
+                AND a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0)
+            GROUP BY tariffs.currency',
+            'currency',
+            array($id)
+        );
     }
 
     public function GetCustomerAssignmentValue($id)
     {
-        $suspension_percentage = f_round(ConfigHelper::getConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0)));
-
-        return $this->db->GetAllByKey('SELECT SUM(sum), currency FROM
-            (SELECT SUM((CASE a.suspended
-                WHEN 0 THEN (((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount)
-                ELSE ((((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount) * ' . $suspension_percentage . ' / 100) END)
-                * (CASE t.period
+        return $this->db->GetAllByKey(
+            'SELECT SUM(ca.sum), ca.acurrency AS scurrency FROM
+                (SELECT SUM(ROUND(
+                (CASE
+                    WHEN vas.suspended IS NULL
+                       THEN ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN t.value ELSE l.value END)) / 100) - a.vdiscount), 3)
+                    ELSE vas.suspension_price
+                END) *
+                (CASE t.period
                 WHEN ' . MONTHLY . ' THEN 1
                 WHEN ' . YEARLY . ' THEN 1/12.0
                 WHEN ' . HALFYEARLY . ' THEN 1/6.0
@@ -74,16 +80,26 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     WHEN ' . HALFYEARLY . ' THEN 1/6.0
                     WHEN ' . QUARTERLY . ' THEN 1/3.0
                     ELSE 0 END)
-                END) * a.count) AS sum,
-                (CASE WHEN t.currency IS NULL THEN l.currency ELSE t.currency END) AS currency
-                FROM assignments a
+                END) *
+                a.count, 2)) AS sum,
+                (CASE WHEN a.liabilityid IS NULL THEN t.currency ELSE l.currency END) AS acurrency
+                 FROM assignments a
                 LEFT JOIN tariffs t ON t.id = a.tariffid
                 LEFT JOIN liabilities l ON l.id = a.liabilityid
-                WHERE customerid = ? AND suspended = 0 AND commited = 1 AND a.period <> ' . DISPOSABLE . '
-                    AND a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0)
-                GROUP BY t.currency, l.currency
+                LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                    AND vas.suspension_datefrom <= ?NOW?
+                    AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                    AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
+                WHERE a.customerid = ?
+                AND a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0)
+                GROUP BY acurrency
             ) as ca
-            GROUP BY ca.currency', 'currency', array($id));
+            GROUP BY scurrency',
+            'scurrency',
+            array(
+                $id
+            )
+        );
     }
 
     private function getAssignmentPresentation($tariff)
@@ -114,118 +130,385 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         );
     }
 
-    public function GetCustomerAssignments($id, $show_expired = false, $show_approved = true)
+    /**
+     * @param $params
+     * @return mixed
+     */
+    public function getAssignments($params = array())
     {
-        $now = mktime(0, 0, 0, date('n'), date('d'), date('Y'));
-        $suspension_percentage = f_round(ConfigHelper::getConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0)));
+        if (empty($params['reportdate'])) {
+            $currtime = time();
+            $today = strtotime('today');
+        } else {
+            $today = $currtime = strtotime($params['reportdate']);
+        }
 
-        $assignments = $this->db->GetAll(
-            'SELECT a.id AS id, a.tariffid, a.customerid, a.period AS periodvalue, a.backwardperiod, a.note,
-            a.at, a.suspended, a.invoice, a.settlement, a.recipient_address_id,
-            a.datefrom, a.dateto, a.pdiscount,
-            a.vdiscount AS unitary_vdiscount,
-            (a.vdiscount * a.count) AS vdiscount,
-            a.attribute, a.liabilityid,
-            a.separatedocument, a.separateitem,
-            (CASE WHEN t.flags IS NULL
-                THEN
-                    (CASE WHEN (l.flags & ' . LIABILITY_FLAG_SPLIT_PAYMENT . ') > 0 THEN 1 ELSE 0 END)
+        [$year, $month, $dom] = explode('/', date('Y/n/j', $currtime));
+        $weekday = date('N', $currtime);
+        $yearday = date('z', $currtime) + 1;
+        $last_dom = date('j', mktime(0, 0, 0, $month + 1, 0, $year)) == date('j', $currtime);
+        if (is_leap_year($year) && $yearday > 31 + 28) {
+            $yearday -= 1;
+        }
+        if ($month == 1 || $month == 4 || $month == 7 || $month == 10) {
+            $quarter = $dom;
+        } elseif ($month == 2 || $month == 5 || $month == 8 || $month == 11) {
+            $quarter = $dom + 100;
+        } else {
+            $quarter = $dom + 200;
+        }
+        if ($month > 6) {
+            $halfyear = $dom + ($month - 7) * 100;
+        } else {
+            $halfyear = $dom + ($month - 1) * 100;
+        }
+
+        $query = 'SELECT '
+        . $this->db->Concat('UPPER(c.lastname)', "' '", 'c.name') . ' AS customername, '
+        . $this->db->Concat('c.city', "' '", 'c.address') . ' AS address,
+        c.ten,
+        a.id, 
+        a.id AS assignmentid,
+        a.at, 
+        a.tariffid, 
+        a.liabilityid, 
+        a.customerid,
+        a.period,
+        a.period as periodvalue,
+        a.count AS count,
+        a.datefrom, 
+        a.dateto, 
+        a.pdiscount, 
+        a.vdiscount,
+        (CASE WHEN a.liabilityid IS NULL
+            THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
+            ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
+        END) AS netflag,
+        t.period AS t_period, 
+        (CASE WHEN price_variants.tpv_price IS NULL 
+                THEN 
+                     (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END) 
                 ELSE
-                    (CASE WHEN (t.flags & ' . TARIFF_FLAG_SPLIT_PAYMENT . ') > 0 THEN 1 ELSE 0 END)
-            END) AS splitpayment,
-            (CASE WHEN t.flags IS NULL
-                THEN
-                    (CASE WHEN (l.flags & ' . LIABILITY_FLAG_NET_ACCOUT . ') > 0 THEN 1 ELSE 0 END)
+                    price_variants.tpv_price
+            END) AS base_price,
+            (CASE WHEN price_variants.tpv_price IS NULL 
+                THEN 
+                    ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount), 3) 
                 ELSE
-                    (CASE WHEN (t.flags & ' . TARIFF_FLAG_NET_ACCOUNT . ') > 0 THEN 1 ELSE 0 END)
-            END) AS netflag,
-            (CASE WHEN t.taxcategory IS NULL THEN l.taxcategory ELSE t.taxcategory END) AS taxcategory,
-            ROUND(t.uprate * a.count) AS uprate,
-            uprate AS unitary_uprate,
-            ROUND(t.upceil * a.count) AS upceil,
-            upceil AS unitary_upceil,
-            ROUND(t.downceil * a.count) AS downceil,
-            downceil AS unitary_downceil,
-            ROUND(t.downrate * a.count) AS downrate,
-            downrate AS unitary_downrate,
-            (CASE WHEN t.flags IS NULL THEN l.flags ELSE t.flags END) AS flags,
-            tax.value AS tax_value, tax.label AS tax_label,
-            taxl.value AS taxl_value, taxl.label AS taxl_label,
-            (CASE WHEN t.type IS NULL THEN l.type ELSE t.type END) AS tarifftype,
-            (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) AS unitary_value,
-            (CASE WHEN t.netvalue IS NULL THEN l.netvalue ELSE t.netvalue END) AS unitary_netvalue,
-            a.count,
-            (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) * a.count AS value,
-            (CASE WHEN t.netvalue IS NULL THEN l.netvalue ELSE t.netvalue END) * a.count AS netvalue,
-            (CASE WHEN t.currency IS NULL THEN l.currency ELSE t.currency END) AS currency,
-            (CASE WHEN t.name IS NULL THEN l.name ELSE t.name END) AS name,
-            p.name AS promotion_name, ps.name AS promotion_schema_name, ps.length AS promotion_schema_length,
-            d.number AS docnumber, d.type AS doctype, d.cdate, np.template,
+                    ROUND(((((100 - a.pdiscount) * price_variants.tpv_price) / 100) - a.vdiscount), 3)
+            END) AS price,
+        (CASE WHEN a.liabilityid IS NULL THEN t.taxid ELSE l.taxid END) AS taxid,
+        (CASE WHEN a.liabilityid IS NULL THEN t.taxrate ELSE l.taxrate END) AS taxrate,
+        (CASE WHEN a.liabilityid IS NULL THEN t.taxlabel ELSE l.taxlabel END) AS taxlabel,
+        (CASE WHEN a.liabilityid IS NULL THEN t.currency ELSE l.currency END) AS currency,
+        vas.*,
+        (CASE 
+            WHEN vas.suspended IS NOT NULL
+                AND 
+                (
+                    (
+                        vas.suspension_charge_method = ? AND vas.suspension_at = ?
+                    )
+                    OR
+                    (
+                        (
+                            vas.suspension_charge_method = ? 
+                            OR 
+                            (vas.suspension_charge_method = ? AND vas.suspension_at IN ?)
+                        ) 
+                        AND vas.suspension_datefrom <= ?
+                        AND (vas.suspension_dateto > ? OR vas.suspension_dateto = 0)
+                    )
+                )
+            THEN 1
+            ELSE 0
+        END) AS charge_suspension
+        FROM assignments a
+        JOIN customerview c ON (a.customerid = c.id)
+        LEFT JOIN (
+            SELECT tariffs.*,
+                taxes.value AS taxrate, taxes.label AS taxlabel,
+                (CASE WHEN tariffs.flags & ? > 0 THEN tariffs.netvalue ELSE tariffs.value END) AS tvalue
+            FROM tariffs
+            JOIN taxes ON taxes.id = tariffs.taxid
+        ) t ON a.tariffid = t.id
+        LEFT JOIN (
+            SELECT liabilities.*,
+                taxes.value AS taxrate, taxes.label AS taxlabel,
+                (CASE WHEN liabilities.flags & ? > 0 THEN liabilities.netvalue ELSE liabilities.value END) AS lvalue
+            FROM liabilities
+            JOIN taxes ON taxes.id = liabilities.taxid
+        ) l ON a.liabilityid = l.id
+        LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+            AND vas.suspension_datefrom <= ?
+            AND (vas.suspension_dateto > ? OR vas.suspension_dateto = 0)
+        LEFT JOIN (
+            SELECT
+              tpv.*
+            FROM assignments a
+            JOIN (
+              SELECT
+                  tariffpricevariants.quantity_threshold AS tpv_quantity_threshold, tariffs.id AS tpv_tariffid,
+                  (CASE WHEN tariffs.flags & ? > 0 THEN tariffpricevariants.net_price ELSE tariffpricevariants.gross_price END) AS tpv_price
+              FROM tariffs
+              JOIN tariffpricevariants ON tariffs.id = tariffpricevariants.tariffid
+            ) tpv ON a.tariffid = tpv.tpv_tariffid AND tpv.tpv_quantity_threshold <= a.count AND tpv.tpv_tariffid = a.tariffid
+            ORDER BY tpv.tpv_quantity_threshold DESC LIMIT 1
+        ) AS price_variants ON a.tariffid = price_variants.tpv_tariffid
+        WHERE a.commited = 1
+        AND (
+            (a.period = ? AND at = ?)
+            OR (
+                (
+                    a.period = ?
+                    OR (a.period = ? AND at = ?)
+                    OR (a.period = ? AND at IN ?)
+                    OR (a.period = ? AND at = ?)
+                    OR (a.period = ? AND at = ?)
+                    OR (a.period = ? AND at = ?)
+                )
+                AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)
+            )
+            OR (
+                (vas.suspension_charge_method = ? AND vas.suspension_at = ?)
+                OR (
+                    (
+                        vas.suspension_charge_method = ?
+                        OR 
+                        (vas.suspension_charge_method = ? AND vas.suspension_at IN ?)
+                    )    
+                    AND vas.suspension_datefrom <= ?
+                    AND (vas.suspension_dateto >= ? OR vas.suspension_dateto = 0)
+                    AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)
+                )
+            )
+        )'
+        . (!empty($params['customer_id']) ? ' AND c.id = ' . $params['customer_id'] : '')
+        . (!empty($params['division_id']) ? ' AND c.divisionid = ' . $params['division_id'] : '')
+        .' ORDER BY customername, address, a.id';
+
+        $doms = array($dom);
+
+        if ($last_dom) {
+            $doms[] = 0;
+        }
+
+        return $this->db->GetAllByKey(
+            $query,
+            'id',
+            array(
+                TARIFF_FLAG_NET_ACCOUNT,
+                LIABILITY_FLAG_NET_ACCOUT,
+                SUSPENSION_CHARGE_METHOD_ONCE, $today,
+                SUSPENSION_CHARGE_METHOD_NONE,
+                SUSPENSION_CHARGE_METHOD_PERIODICALLY, $doms,
+                $currtime, $currtime,
+                TARIFF_FLAG_NET_ACCOUNT,
+                LIABILITY_FLAG_NET_ACCOUT,
+                $currtime, $currtime,
+                TARIFF_FLAG_NET_ACCOUNT,
+                DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $doms, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
+                $currtime, $currtime,
+                SUSPENSION_CHARGE_METHOD_ONCE, $today,
+                SUSPENSION_CHARGE_METHOD_NONE,
+                SUSPENSION_CHARGE_METHOD_PERIODICALLY, $doms,
+                $currtime, $currtime,
+                $currtime, $currtime,
+            )
+        );
+    }
+
+    /**
+     * @param $customer_id
+     * @param array $params
+     * @return mixed
+     */
+    public function getCustomerAssignments($customer_id, $params = array())
+    {
+        $result = array();
+        $currtime = time();
+        $today = strtotime('today');
+
+        $query = 'SELECT a.id AS id, 
+            a.tariffid,
+            a.liabilityid,
+            a.customerid,
+            a.recipient_address_id,
+            a.period,
+            a.period as periodvalue,
+            a.backwardperiod,
+            a.at,
+            a.settlement,
+            a.datefrom,
+            a.dateto,
+            a.pdiscount,
+            a.vdiscount,
+            a.attribute,
+            a.invoice,
+            a.separatedocument,
+            a.separateitem,
+            a.commited,
+            a.count AS count,
+            a.id AS assignmentid,
+            a.paytime AS a_paytime,
+            a.paytype AS a_paytype,
+            a.numberplanid, 
+            a.attribute,
+            c.type AS customertype,
+            c.divisionid, 
+            c.paytime, 
+            c.paytype, 
+            c.flags AS customerflags,
+            d.number AS docnumber,
+            d.type AS doctype,
+            d.cdate,
             d.fullnumber,
-            (CASE WHEN
-                    ((a.period <> ' . DISPOSABLE . ' OR (a.tariffid IS NULL AND a.liabilityid IS NULL)) AND (a.dateto > ' . $now . ' OR a.dateto = 0) AND (a.at >= ' . $now . ' OR a.at < 531))
-                    OR (a.period = ' . DISPOSABLE . ' AND a.at >= ' . $now . ')
+            np.template,
+            p.name AS promotion_name,
+            ps.name AS promotion_schema_name,
+            ps.length AS promotion_schema_length,
+            t.description AS description,
+            t.period AS t_period,
+            uprate AS unitary_uprate,
+            ROUND(t.uprate * a.count) AS total_uprate,
+            upceil AS unitary_upceil,
+            ROUND(t.upceil * a.count) AS total_upceil,
+            downceil AS unitary_downceil,
+            ROUND(t.downceil * a.count) AS total_downceil,
+            downrate AS unitary_downrate,
+            ROUND(t.downrate * a.count) AS total_downrate,
+            (CASE WHEN a.period = ? THEN ? ELSE ? END) AS assignment_charge_method,
+            vas.*,
+            (CASE WHEN c.type = ? THEN 0 ELSE (CASE WHEN a.liabilityid IS NULL
+                THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
+                ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
+            END) END) AS splitpayment,
+            (CASE WHEN a.liabilityid IS NULL
+                THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
+                ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
+            END) AS netflag,
+            (CASE WHEN a.liabilityid IS NULL THEN t.taxcategory ELSE l.taxcategory END) AS taxcategory,
+            (CASE WHEN a.tariffid IS NULL THEN l.type ELSE t.type END) AS tarifftype,
+            (CASE WHEN a.liabilityid IS NULL THEN t.name ELSE l.name END) AS name,
+            (CASE WHEN a.liabilityid IS NULL THEN t.taxid ELSE l.taxid END) AS taxid,
+            (CASE WHEN a.liabilityid IS NULL THEN t.prodid ELSE l.prodid END) AS prodid,
+            price_variants.tpv_price AS price_variant,
+            (CASE WHEN price_variants.tpv_price IS NULL 
+                THEN 
+                     (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END) 
+                ELSE
+                    price_variants.tpv_price
+            END) AS base_price,
+            (CASE WHEN price_variants.tpv_price IS NULL 
+                THEN 
+                    ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount), 3) 
+                ELSE
+                    ROUND(((((100 - a.pdiscount) * price_variants.tpv_price) / 100) - a.vdiscount), 3)
+            END) AS price,
+            (CASE WHEN a.liabilityid IS NULL THEN t.taxrate ELSE l.taxrate END) AS taxrate,
+            (CASE WHEN a.liabilityid IS NULL THEN t.taxlabel ELSE l.taxlabel END) AS taxlabel,
+            (CASE WHEN a.liabilityid IS NULL THEN t.currency ELSE l.currency END) AS currency,
+            (CASE WHEN t.flags IS NULL THEN l.flags ELSE t.flags END) AS flags,
+            (CASE WHEN (a.period <> ? AND (a.dateto > ? OR a.dateto = 0) AND (a.at >= ? OR a.at < 531))
+                    OR (a.period = ? AND a.at >= ?)
                 THEN 0
                 ELSE 1
             END) AS expired,
-            commited
-            FROM
-            assignments a
-            LEFT JOIN tariffs t     ON (a.tariffid = t.id)
-            LEFT JOIN liabilities l ON (a.liabilityid = l.id)
-            LEFT JOIN taxes tax     ON (tax.id = t.taxid)
-            LEFT JOIN taxes taxl    ON (taxl.id = l.taxid)
+            (CASE WHEN (a.period <> ? AND a.datefrom > ?) OR (a.period = ? AND a.at >= ?)
+                THEN 1
+                ELSE 0
+            END) AS future
+            FROM assignments a
+            JOIN customers c ON (a.customerid = c.id)
+            LEFT JOIN (
+                SELECT tariffs.*,
+                    taxes.value AS taxrate, taxes.label AS taxlabel,
+                    (CASE WHEN tariffs.flags & ? > 0 THEN tariffs.netvalue ELSE tariffs.value END) AS tvalue
+                FROM tariffs
+                JOIN taxes ON taxes.id = tariffs.taxid
+            ) t ON a.tariffid = t.id
+            LEFT JOIN (
+                SELECT liabilities.*,
+                    taxes.value AS taxrate, taxes.label AS taxlabel,
+                    (CASE WHEN liabilities.flags & ? > 0 THEN liabilities.netvalue ELSE liabilities.value END) AS lvalue
+                FROM liabilities
+                JOIN taxes ON taxes.id = liabilities.taxid
+            ) l ON a.liabilityid = l.id
             LEFT JOIN promotionschemas ps ON ps.id = a.promotionschemaid
             LEFT JOIN promotions p ON p.id = ps.promotionid
             LEFT JOIN documents d ON d.id = a.docid
             LEFT JOIN numberplans np ON np.id = d.numberplanid
-            WHERE a.customerid=? ' . ($show_approved ? 'AND a.commited = 1 ' : '')
-            . (!$show_expired ? 'AND ((a.period <> ' . DISPOSABLE . ' AND (a.dateto > ' . $now . ' OR a.dateto = 0) AND (a.at >= ' . $now . ' OR a.at < 531))
-                OR (a.period = ' . DISPOSABLE . ' AND a.at > ' . $now . '))' : '') . '
-            ORDER BY
-            a.datefrom, t.name, value',
-            array($id)
+            LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+            LEFT JOIN (
+                SELECT
+                  tpv.*
+                FROM assignments a
+                JOIN (
+                  SELECT
+                      tariffpricevariants.quantity_threshold AS tpv_quantity_threshold, tariffs.id AS tpv_tariffid,
+                      (CASE WHEN tariffs.flags & ? > 0 THEN tariffpricevariants.net_price ELSE tariffpricevariants.gross_price END) AS tpv_price
+                  FROM tariffs
+                  JOIN tariffpricevariants ON tariffs.id = tariffpricevariants.tariffid
+                ) tpv ON a.tariffid = tpv.tpv_tariffid AND tpv.tpv_quantity_threshold <= a.count AND tpv.tpv_tariffid = a.tariffid
+                ORDER BY tpv.tpv_quantity_threshold DESC LIMIT 1
+            ) AS price_variants ON a.tariffid = price_variants.tpv_tariffid
+            WHERE a.customerid = ?'
+            . (!empty($params['show_approved']) ? ' AND a.commited = 1' : '')
+            . (empty($params['show_expired']) ? ' AND ((a.period <> ' . DISPOSABLE . ' AND (a.dateto > ' . $currtime . ' OR a.dateto = 0) AND (a.at >= ' . $currtime . ' OR a.at < 531))
+                OR (a.period = ' . DISPOSABLE . ' AND a.at > ' . $currtime . '))' : '')
+            . (!empty($params['not_suspended']) ? ' AND vas.suspension_id IS NULL' : '')
+            . (!empty($params['suspended']) ? ' AND vas.suspended != 0' : '')
+            . (!empty($params['suspend_group']) ? ' AND vas.suspension_id IS NOT NULL AND vas.suspension_suspend_all = 0' : '')
+            . (!empty($params['suspend_all']) ? ' AND vas.suspension_suspend_all = 1' : '')
+            . (!empty($params['suspension_id']) ? ' AND vas.suspension_id = ' . $params['suspension_id'] : '')
+            . (!empty($params['assignments']) ? ' AND a.id IN (' . $params['assignments'] . ')' : '')
+            . ' ORDER BY t.name, a.datefrom';
+
+        $assignments = $this->db->GetAllByKey(
+            $query,
+            'id',
+            array(
+                DISPOSABLE,
+                SUSPENSION_CHARGE_METHOD_ONCE,
+                SUSPENSION_CHARGE_METHOD_PERIODICALLY,
+                CTYPES_PRIVATE,
+                TARIFF_FLAG_SPLIT_PAYMENT,
+                LIABILITY_FLAG_SPLIT_PAYMENT,
+                TARIFF_FLAG_NET_ACCOUNT,
+                LIABILITY_FLAG_NET_ACCOUT,
+                DISPOSABLE,
+                $currtime,
+                $currtime,
+                DISPOSABLE,
+                $currtime,
+                DISPOSABLE,
+                $currtime,
+                DISPOSABLE,
+                $currtime,
+                TARIFF_FLAG_NET_ACCOUNT,
+                LIABILITY_FLAG_NET_ACCOUT,
+                TARIFF_FLAG_NET_ACCOUNT,
+                $customer_id
+            )
         );
 
-        if ($assignments) {
-            foreach ($assignments as $idx => $row) {
-                switch ($row['periodvalue']) {
-                    case DISPOSABLE:
-                        $row['payday'] = date('Y/m/d', $row['at']);
-                        $row['period'] = trans('disposable');
-                        break;
-                    case DAILY:
-                        $row['period'] = trans('daily');
-                        $row['payday'] = trans('daily');
-                        break;
-                    case WEEKLY:
-                        $row['at'] = date('D', mktime(0, 0, 0, 0, $row['at'] + 5, 0));
-                        $row['payday'] = trans('weekly ($a)', $row['at']);
-                        $row['period'] = trans('weekly');
-                        break;
-                    case MONTHLY:
-                        $row['payday'] = trans('monthly ($a)', $row['at'] ?: trans('last day'));
-                        $row['period'] = trans('monthly');
-                        break;
-                    case QUARTERLY:
-                        $row['at'] = sprintf('%02d/%02d', $row['at'] % 100, $row['at'] / 100 + 1);
-                        $row['payday'] = trans('quarterly ($a)', $row['at']);
-                        $row['period'] = trans('quarterly');
-                        break;
-                    case HALFYEARLY:
-                        $row['at'] = sprintf('%02d/%02d', $row['at'] % 100, $row['at'] / 100 + 1);
-                        $row['payday'] = trans('half-yearly ($a)', $row['at']);
-                        $row['period'] = trans('half-yearly');
-                        break;
-                    case YEARLY:
-                        $row['at'] = date('d/m', ($row['at'] - 1) * 86400);
-                        $row['payday'] = trans('yearly ($a)', $row['at']);
-                        $row['period'] = trans('yearly');
-                        break;
-                }
+        $suspensionsByCurrency = array();
+        $suspensionsById = array();
 
+        if (!empty($assignments)) {
+            $lms = LMS::getInstance();
+
+            //region Suspensions defaults
+            $defaultSuspensionPercentage = ConfigHelper::getConfig(
+                'suspensions.default_percentage',
+                ConfigHelper::getConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0))
+            );
+            $defaultSuspensionPercentage = f_round($defaultSuspensionPercentage);
+            $defaultSuspensionValue = f_round(ConfigHelper::getConfig('suspensions.default_value', 0));
+            //endregion
+
+            foreach ($assignments as $idx => &$row) {
                 $row['name'] = $this->getAssignmentPresentation($row);
-                $lms = LMS::getInstance();
                 $recipient_address = !empty($row['recipient_address_id']) ? $lms->GetAddress($row['recipient_address_id']) : null;
                 $row['recipient_location'] = $recipient_address ? $recipient_address['location'] : null;
 
@@ -233,156 +516,678 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     'number' => $row['docnumber'],
                     'template' => $row['numtemplate'] ?? null,
                     'cdate' => $row['cdate'],
-                    'customerid' => $id,
+                    'customerid' => $customer_id,
                 ));
 
-                $assignments[$idx] = $row;
+                switch ($row['periodvalue']) {
+                    case DISPOSABLE:
+                        $row['payday'] = date('Y/m/d', $row['at']);
+                        break;
+                    case DAILY:
+                        $row['payday'] = trans('daily');
+                        break;
+                    case WEEKLY:
+                        $row['at'] = date('D', mktime(0, 0, 0, 0, $row['at'] + 5, 0));
+                        $row['payday'] = trans('weekly ($a)', $row['at']);
+                        break;
+                    case MONTHLY:
+                        $row['payday'] = trans('monthly ($a)', $row['at'] ?: trans('last day'));
+                        break;
+                    case QUARTERLY:
+                        $row['at'] = sprintf('%02d/%02d', $row['at'] % 100, $row['at'] / 100 + 1);
+                        $row['payday'] = trans('quarterly ($a)', $row['at']);
+                        break;
+                    case HALFYEARLY:
+                        $row['at'] = sprintf('%02d/%02d', $row['at'] % 100, $row['at'] / 100 + 1);
+                        $row['payday'] = trans('half-yearly ($a)', $row['at']);
+                        break;
+                    case YEARLY:
+                        $row['at'] = date('d/m', ($row['at'] - 1) * 86400);
+                        $row['payday'] = trans('yearly ($a)', $row['at']);
+                        break;
+                }
+
+                if ($row['t_period'] && $row['period'] != DISPOSABLE
+                    && $row['t_period'] != $row['period']) {
+                    if ($row['t_period'] == YEARLY) {
+                        $row['base_price'] = $row['base_price'] / 12.0;
+                        $row['price'] = $row['price'] / 12.0;
+                    } elseif ($row['t_period'] == HALFYEARLY) {
+                        $row['base_price'] = $row['base_price'] / 6.0;
+                        $row['price'] = $row['price'] / 6.0;
+                    } elseif ($row['t_period'] == QUARTERLY) {
+                        $row['base_price'] = $row['base_price'] / 3.0;
+                        $row['price'] = $row['price'] / 3.0;
+                    }
+
+                    if ($row['period'] == YEARLY) {
+                        $row['base_price'] = $row['base_price'] * 12.0;
+                        $row['price'] = $row['price'] * 12.0;
+                    } elseif ($row['period'] == HALFYEARLY) {
+                        $row['base_price'] = $row['base_price'] * 6.0;
+                        $row['price'] = $row['price'] * 6.0;
+                    } elseif ($row['period'] == QUARTERLY) {
+                        $row['base_price'] = $row['base_price'] * 3.0;
+                        $row['price'] = $row['price'] * 3.0;
+                    } elseif ($row['period'] == WEEKLY) {
+                        $row['base_price'] = $row['base_price'] / 4.0;
+                        $row['price'] = $row['price'] / 4.0;
+                    } elseif ($row['period'] == DAILY) {
+                        $row['base_price'] = $row['base_price'] / 30.0;
+                        $row['price'] = $row['price'] / 30.0;
+                    }
+                }
+
+                //<editor-fold desc="assignment values">
+                if (!empty($row['netflag'])) {
+                    $row['base_net_price'] = $row['base_price'];
+                    $row['base_net_value'] = f_round($row['base_net_price'] * $row['count']);
+                    $row['base_gross_price'] = f_round($row['base_net_price'] * ($row['taxrate'] / 100 + 1), 3);
+                    $row['base_tax_value'] = f_round($row['base_net_value'] * ($row['taxrate'] / 100));
+                    $row['base_gross_value'] = f_round($row['base_net_value'] + $row['base_tax_value']);
+
+                    $row['net_price'] = $row['price']; // price is discounted in sql already
+
+                    $row['net_price_discount'] = f_round($row['base_net_price'] - $row['net_price'], 3);
+                    $row['net_value'] = f_round($row['net_price'] * $row['count']);
+                    $row['gross_price'] = f_round($row['net_price'] * ($row['taxrate'] / 100 + 1), 3);
+                    $row['gross_price_discount'] = f_round($row['net_price_discount'] * ($row['taxrate'] / 100 + 1), 3);
+                    $row['tax_value'] = f_round($row['net_value'] * ($row['taxrate'] / 100));
+                    $row['gross_value'] = f_round($row['net_value'] + $row['tax_value']);
+                } else {
+                    $row['base_gross_price'] = $row['base_price'];
+                    $row['base_gross_value'] = f_round($row['base_gross_price'] * $row['count']);
+                    $row['base_net_price'] =  f_round($row['base_gross_price'] / ($row['taxrate'] / 100 + 1), 3);
+                    $row['base_tax_value'] = f_round(($row['base_gross_value'] * $row['taxrate']) / (100 + $row['taxrate']));
+                    $row['base_net_value'] = f_round($row['base_gross_value'] - $row['base_tax_value']);
+
+                    $row['gross_price'] = $row['price']; // price is discounted in sql already
+
+                    $row['gross_price_discount'] = f_round($row['base_gross_price'] - $row['gross_price'], 3);
+                    $row['gross_value'] = f_round($row['gross_price'] * $row['count']);
+                    $row['net_price'] = f_round($row['gross_price'] / ($row['taxrate'] / 100 + 1), 3);
+                    $row['net_price_discount'] = f_round($row['gross_price_discount'] / ($row['taxrate'] / 100 + 1), 3);
+                    $row['tax_value'] = f_round(($row['gross_value'] * $row['taxrate']) / (100 + $row['taxrate']));
+                    $row['net_value'] = f_round(($row['gross_value'] - $row['tax_value']));
+                }
+
+                $row['net_value_discount'] = f_round($row['base_net_value'] - $row['net_value']);
+                $row['gross_value_discount'] = f_round($row['base_gross_value'] - $row['gross_value']);
+
+                if (empty($row['expired']) && empty($row['future']) && !empty($row['commited'])) {
+                    $row['current_base_net_value'] = $row['base_net_value'];
+                    $row['current_base_gross_value'] = $row['base_gross_value'];
+                    $row['current_net_value'] = $row['net_value'];
+                    $row['current_gross_value'] = $row['gross_value'];
+                    $row['current_net_value_discount'] = $row['net_value_discount'];
+                    $row['current_gross_value_discount'] = $row['gross_value_discount'];
+                    $row['current_gross_value_discount'] = $row['gross_value_discount'];
+                    $row['current_downrate'] = $row['total_downrate'];
+                    $row['current_downceil'] = $row['total_downceil'];
+                    $row['current_uprate'] = $row['total_uprate'];
+                    $row['current_upceil'] = $row['total_upceil'];
+                }
+                //</editor-fold>
+
+                if (!empty($row['suspended'])) {
+                    if ($row['suspension_charge_method'] != SUSPENSION_CHARGE_METHOD_NONE) {
+                        switch ($row['suspension_calculation_method']) {
+                            case SUSPENSION_CALCULATION_METHOD_PERCENTAGE:
+                                if (!isset($suspensionsByCurrency[$row['currency']][$row['taxid']][$row['suspension_id']])) {
+                                    $suspensionsByCurrency[$row['currency']][$row['taxid']][$row['suspension_id']] = array(
+                                        'name' => !empty($row['suspension_suspend_all']) ? trans("Suspension of all") : trans("Suspension"),
+                                        'taxid' => $row['taxid'],
+                                        'currency' => $row['currency'],
+                                        'customerid' => $row['customerid'],
+                                        'suspensionid' => $row['suspension_id'],
+                                        'taxid' => $row['taxid'],
+                                        'taxlabel' => $row['taxlabel'],
+                                        'taxrate' => $row['taxrate'],
+                                        'note' => $row['suspension_note'],
+                                        'at' => $row['suspension_at'],
+                                        'datefrom' => $row['suspension_datefrom'],
+                                        'dateto' => $row['suspension_dateto'],
+                                        'charge_method' => $row['suspension_charge_method'],
+                                        'calculation_method' => $row['suspension_calculation_method'],
+                                        'suspension_percentage' => !is_null($row['suspension_percentage']) ? $row['suspension_percentage'] : $defaultSuspensionPercentage,
+                                        'default_suspension_percentage' => is_null($row['suspension_percentage']),
+                                        'netflag' => $row['netflag'],
+                                        'currency' => $row['currency'],
+                                        'total_net_value' => 0,
+                                        'total_gross_value' => 0,
+                                        'total_tax_value' => 0,
+                                        'current_total_net_value' => 0,
+                                        'current_total_gross_value' => 0,
+                                        'current_total_tax_value' => 0,
+                                    );
+                                }
+                                if (!isset($suspensionsById[$row['suspension_id']])) {
+                                    $suspensionsById[$row['suspension_id']]['suspension_id'] = $row['suspension_id'];
+                                }
+
+                                $suspension = $suspensionsByCurrency[$row['currency']][$row['taxid']][$row['suspension_id']];
+                                $suspension['suspend_assignments'][$idx]['assignment_id'] = $idx;
+
+                                //region set 'at'
+                                switch ($row['suspension_charge_method']) {
+                                    case SUSPENSION_CHARGE_METHOD_ONCE:
+                                        $suspension['payday'] = date('Y/m/d', $row['suspension_at']);
+                                        break;
+                                    case SUSPENSION_CHARGE_METHOD_PERIODICALLY:
+                                        $suspension['payday'] = trans('monthly ($a)', $row['suspension_at'] ?: trans('last day'));
+                                        break;
+                                }
+                                //endregion
+
+                                $suspensionPercentage = !is_null($row['suspension_percentage']) ? f_round($row['suspension_percentage']) : $defaultSuspensionPercentage;
+                                if (!empty($row['netflag'])) {
+                                    $suspension['net_price'] = f_round($row['net_price'] * ($suspensionPercentage / 100), 3);
+                                    if ($row['suspension_charge_method'] == SUSPENSION_CHARGE_METHOD_PERIODICALLY) {
+                                        if ($row['period'] == YEARLY) {
+                                            $suspension['net_price'] = $suspension['net_price'] / 12;
+                                        } elseif ($row['period'] == HALFYEARLY) {
+                                            $suspension['net_price'] = $suspension['net_price'] / 6;
+                                        } elseif ($row['period'] == QUARTERLY) {
+                                            $suspension['net_price'] = $suspension['net_price'] / 3;
+                                        } elseif ($row['period'] == WEEKLY) {
+                                            $suspension['net_price'] = $suspension['net_price'] * 4;
+                                        } elseif ($row['period'] == DAILY) {
+                                            $suspension['net_price'] = $suspension['net_price'] * 30;
+                                        }
+                                    }
+                                    $suspension['net_value'] = f_round($suspension['net_price'] * $row['count']);
+                                    $suspension['gross_price'] = f_round($suspension['net_price'] * ($row['taxrate'] / 100 + 1), 3);
+                                    $suspension['tax_value'] = f_round($suspension['net_value'] * ($row['taxrate'] / 100));
+                                    $suspension['gross_value'] = f_round($suspension['net_value'] + $suspension['tax_value']);
+                                } else {
+                                    $suspension['gross_price'] = f_round($row['gross_price'] * ($suspensionPercentage / 100), 3);
+                                    if ($row['suspension_charge_method'] == SUSPENSION_CHARGE_METHOD_PERIODICALLY) {
+                                        if ($row['period'] == YEARLY) {
+                                            $suspension['gross_price'] = $suspension['gross_price'] / 12;
+                                        } elseif ($row['period'] == HALFYEARLY) {
+                                            $suspension['gross_price'] = $suspension['gross_price'] / 6;
+                                        } elseif ($row['period'] == QUARTERLY) {
+                                            $suspension['gross_price'] = $suspension['gross_price'] / 3;
+                                        } elseif ($row['period'] == WEEKLY) {
+                                            $suspension['gross_price'] = $suspension['gross_price'] * 4;
+                                        } elseif ($row['period'] == DAILY) {
+                                            $suspension['gross_price'] = $suspension['gross_price'] * 30;
+                                        }
+                                    }
+                                    $suspension['gross_value'] = f_round($suspension['gross_price'] * $row['count']);
+                                    $suspension['net_price'] = f_round($suspension['gross_price'] / ($row['taxrate'] / 100 + 1), 3);
+                                    $suspension['tax_value'] = f_round(($suspension['gross_value'] * $row['taxrate']) / (100 + $row['taxrate']));
+                                    $suspension['net_value'] = f_round(($suspension['gross_value'] - $suspension['tax_value']));
+                                }
+
+                                $suspension['total_net_value'] += $suspension['net_value'];
+                                $suspension['total_tax_value'] += $suspension['tax_value'];
+                                $suspension['total_gross_value'] += $suspension['gross_value'];
+
+                                if (empty($row['expired']) && empty($row['future']) && !empty($row['commited'])) {
+                                    $suspension['current_total_net_value'] += $suspension['net_value'];
+                                    $suspension['current_total_tax_value'] += $suspension['tax_value'];
+                                    $suspension['current_total_gross_value'] += $suspension['gross_value'];
+                                }
+
+                                $suspensionsByCurrency[$row['currency']][$row['taxid']][$row['suspension_id']] = $suspension;
+                                break;
+
+                            case SUSPENSION_CALCULATION_METHOD_VALUE:
+                                // account only once for all assignemnts having this suspension
+                                if (!isset($suspensionsByCurrency[$row['suspension_currency']][$row['suspension_tax_id']][$row['suspension_id']])
+                                    && !isset($suspensionsById[$row['suspension_id']])) {
+                                    $suspensionsByCurrency[$row['suspension_currency']][$row['suspension_tax_id']][$row['suspension_id']] = array(
+                                        'name' => !empty($row['suspension_suspend_all']) ? trans("Suspension of all") : trans("Suspension"),
+                                        'customerid' => $row['suspension_customer_id'],
+                                        'suspensionid' => $row['suspension_id'],
+                                        'taxid' => $row['suspension_tax_id'],
+                                        'taxlabel' => $row['suspension_taxlabel'],
+                                        'taxrate' => $row['suspension_taxrate'],
+                                        'note' => $row['suspension_note'],
+                                        'datefrom' => $row['suspension_datefrom'],
+                                        'dateto' => $row['suspension_dateto'],
+                                        'charge_method' => $row['suspension_charge_method'],
+                                        'calculation_method' => $row['suspension_calculation_method'],
+                                        'value' => !is_null($row['suspension_value']) ? $row['suspension_value'] : $defaultSuspensionValue,
+                                        'suspension_value' => !is_null($row['suspension_value']) ? $row['suspension_value'] : $defaultSuspensionValue,
+                                        'default_suspension_value' => is_null($row['suspension_value']),
+                                        'netflag' => $row['suspension_netflag'],
+                                        'currency' => $row['suspension_currency'],
+                                        'total_net_value' => 0,
+                                        'total_gross_value' => 0,
+                                        'total_tax_value' => 0,
+                                        'current_total_net_value' => 0,
+                                        'current_total_gross_value' => 0,
+                                        'current_total_tax_value' => 0,
+                                    );
+
+                                    $suspensionsById[$row['suspension_id']]['suspension_id'] = $row['suspension_id'];
+
+                                    $suspension = $suspensionsByCurrency[$row['suspension_currency']][$row['suspension_tax_id']][$row['suspension_id']];
+                                    $suspension['suspend_assignments'][$idx]['assignment_id'] = $idx;
+
+                                    switch ($row['suspension_charge_method']) {
+                                        case SUSPENSION_CHARGE_METHOD_ONCE:
+                                            $suspension['payday'] = date('Y/m/d', $row['suspension_at']);
+                                            break;
+                                        case SUSPENSION_CHARGE_METHOD_PERIODICALLY:
+                                            $suspension['payday'] = trans('monthly ($a)', $row['suspension_at'] ?: trans('last day'));
+                                            break;
+                                    }
+
+                                    if (!empty($row['suspension_netflag'])) {
+                                        $suspension['net_value'] = f_round($suspension['value']);
+                                        if ($row['suspension_charge_method'] == SUSPENSION_CHARGE_METHOD_PERIODICALLY) {
+                                            if ($row['period'] == YEARLY) {
+                                                $suspension['net_value'] = $suspension['net_value'] / 12;
+                                            } elseif ($row['period'] == HALFYEARLY) {
+                                                $suspension['net_value'] = $suspension['net_value'] / 6;
+                                            } elseif ($row['period'] == QUARTERLY) {
+                                                $suspension['net_value'] = $suspension['net_value'] / 3;
+                                            } elseif ($row['period'] == WEEKLY) {
+                                                $suspension['net_value'] = $suspension['net_value'] * 4;
+                                            } elseif ($row['period'] == DAILY) {
+                                                $suspension['net_value'] = $suspension['net_value'] * 30;
+                                            }
+                                        }
+                                        $suspension['tax_value'] = f_round($suspension['net_value'] * ($row['suspension_taxrate'] / 100));
+                                        $suspension['gross_value'] = f_round($suspension['net_value'] + $suspension['tax_value']);
+                                    } else {
+                                        $suspension['gross_value'] = f_round($suspension['value']);
+                                        if ($row['suspension_charge_method'] == SUSPENSION_CHARGE_METHOD_PERIODICALLY) {
+                                            if ($row['period'] == YEARLY) {
+                                                $suspension['gross_value'] = $suspension['gross_value'] / 12;
+                                            } elseif ($row['period'] == HALFYEARLY) {
+                                                $suspension['gross_value'] = $suspension['gross_value'] / 6;
+                                            } elseif ($row['period'] == QUARTERLY) {
+                                                $suspension['gross_value'] = $suspension['gross_value'] / 3;
+                                            } elseif ($row['period'] == WEEKLY) {
+                                                $suspension['gross_value'] = $suspension['gross_value'] * 4;
+                                            } elseif ($row['period'] == DAILY) {
+                                                $suspension['gross_value'] = $suspension['gross_value'] * 30;
+                                            }
+                                        }
+                                        $suspension['tax_value'] = f_round(($suspension['gross_value'] * $row['suspension_taxrate']) / (100 + $row['suspension_taxrate']));
+                                        $suspension['net_value'] = f_round(($suspension['gross_value'] - $suspension['tax_value']));
+                                    }
+
+                                    $suspension['total_net_value'] = $suspension['net_value'];
+                                    $suspension['total_gross_value'] = $suspension['gross_value'];
+                                    $suspension['total_tax_value'] = $suspension['tax_value'];
+
+                                    if (empty($row['expired']) && empty($row['future']) && !empty($row['commited'])) {
+                                        $suspension['current_total_net_value'] = $suspension['net_value'];
+                                        $suspension['current_total_tax_value'] = $suspension['tax_value'];
+                                        $suspension['current_total_gross_value'] = $suspension['gross_value'];
+                                    }
+
+                                    $suspensionsByCurrency[$row['suspension_currency']][$row['suspension_tax_id']][$row['suspension_id']] = $suspension;
+                                }
+
+                                $suspensionsByCurrency[$row['suspension_currency']][$row['suspension_tax_id']][$row['suspension_id']]['suspend_assignments'][$idx]['assignment_id'] = $idx;
+                                break;
+                        }
+                    } else {
+                        switch ($row['suspension_calculation_method']) {
+                            case SUSPENSION_CALCULATION_METHOD_PERCENTAGE:
+                                if (!isset($suspensionsByCurrency[$row['currency']][$row['taxid']][$row['suspension_id']])) {
+                                    $suspensionsByCurrency[$row['currency']][$row['taxid']][$row['suspension_id']] = array(
+                                        'name' => !empty($row['suspension_suspend_all']) ? trans("Suspension of all") : trans("Suspension"),
+                                        'taxid' => $row['taxid'],
+                                        'currency' => $row['currency'],
+                                        'customerid' => $row['customerid'],
+                                        'suspensionid' => $row['suspension_id'],
+                                        'taxid' => $row['taxid'],
+                                        'taxlabel' => $row['taxlabel'],
+                                        'taxrate' => $row['taxrate'],
+                                        'note' => $row['suspension_note'],
+                                        'datefrom' => $row['suspension_datefrom'],
+                                        'dateto' => $row['suspension_dateto'],
+                                        'charge_method' => $row['suspension_charge_method'],
+                                        'calculation_method' => $row['suspension_calculation_method'],
+                                        'netflag' => $row['netflag'],
+                                        'currency' => $row['currency'],
+                                        'total_net_value' => 0,
+                                        'total_gross_value' => 0,
+                                        'total_tax_value' => 0,
+                                        'current_total_net_value' => 0,
+                                        'current_total_gross_value' => 0,
+                                        'current_total_tax_value' => 0,
+                                    );
+                                }
+                                if (!isset($suspensionsById[$row['suspension_id']])) {
+                                    $suspensionsById[$row['suspension_id']]['suspension_id'] = $row['suspension_id'];
+                                }
+
+                                $suspension = $suspensionsByCurrency[$row['currency']][$row['taxid']][$row['suspension_id']];
+                                $suspension['suspend_assignments'][$idx]['assignment_id'] = $idx;
+
+                                $suspension['net_price'] = 0;
+                                $suspension['net_value'] = 0;
+                                $suspension['gross_price'] = 0;
+                                $suspension['tax_value'] = 0;
+                                $suspension['gross_value'] = 0;
+
+                                $suspension['total_net_value'] = 0;
+                                $suspension['total_tax_value'] = 0;
+                                $suspension['total_gross_value'] = 0;
+
+                                $suspension['current_total_net_value'] = 0;
+                                $suspension['current_total_tax_value'] = 0;
+                                $suspension['current_total_gross_value'] = 0;
+
+//                                $suspension['suspension_paydate'] = 0;
+                                $suspension['payday'] = null;
+
+                                $suspensionsByCurrency[$row['currency']][$row['taxid']][$row['suspension_id']] = $suspension;
+                                break;
+
+                            case SUSPENSION_CALCULATION_METHOD_VALUE:
+                                // account only once for all assignemnts having this suspension
+                                if (!isset($suspensionsByCurrency[$row['suspension_currency']][$row['suspension_tax_id']][$row['suspension_id']])
+                                    && !isset($suspensionsById[$row['suspension_id']])) {
+                                    $suspensionsByCurrency[$row['suspension_currency']][$row['suspension_tax_id']][$row['suspension_id']] = array(
+                                        'name' => !empty($row['suspension_suspend_all']) ? trans("Suspension of all") : trans("Suspension"),
+                                        'customerid' => $row['suspension_customer_id'],
+                                        'suspensionid' => $row['suspension_id'],
+                                        'taxid' => '',
+                                        'taxlabel' => '',
+                                        'taxrate' => '',
+                                        'note' => $row['suspension_note'],
+                                        'datefrom' => $row['suspension_datefrom'],
+                                        'dateto' => $row['suspension_dateto'],
+                                        'charge_method' => $row['suspension_charge_method'],
+                                        'calculation_method' => $row['suspension_calculation_method'],
+                                        'value' => is_null($row['suspension_value']) ? $defaultSuspensionValue : $row['suspension_value'],
+                                        'netflag' => $row['suspension_netflag'],
+                                        'currency' => $row['suspension_currency'],
+                                        'total_net_value' => 0,
+                                        'total_gross_value' => 0,
+                                        'total_tax_value' => 0,
+                                        'current_total_net_value' => 0,
+                                        'current_total_gross_value' => 0,
+                                        'current_total_tax_value' => 0,
+                                    );
+
+                                    $suspensionsById[$row['suspension_id']]['suspension_id'] = $row['suspension_id'];
+
+                                    $suspension = $suspensionsByCurrency[$row['suspension_currency']][$row['suspension_tax_id']][$row['suspension_id']];
+                                    $suspension['suspend_assignments'][$idx]['assignment_id'] = $idx;
+
+                                    $suspension['net_price'] = 0;
+                                    $suspension['net_value'] = 0;
+                                    $suspension['gross_price'] = 0;
+                                    $suspension['tax_value'] = 0;
+                                    $suspension['gross_value'] = 0;
+
+                                    $suspension['total_net_value'] = 0;
+                                    $suspension['total_tax_value'] = 0;
+                                    $suspension['total_gross_value'] = 0;
+
+                                    $suspension['current_total_net_value'] = 0;
+                                    $suspension['current_total_tax_value'] = 0;
+                                    $suspension['current_total_gross_value'] = 0;
+
+//                                    $suspension['suspension_paydate'] = 0;
+                                    $suspension['payday'] = null;
+
+                                    $suspensionsByCurrency[$row['suspension_currency']][$row['suspension_tax_id']][$row['suspension_id']] = $suspension;
+                                }
+
+                                $suspensionsByCurrency[$row['suspension_currency']][$row['suspension_tax_id']][$row['suspension_id']]['suspend_assignments'][$idx]['assignment_id'] = $idx;
+
+                                break;
+                        }
+                    }
+                }
 
                 // assigned nodes
-                $assignments[$idx]['nodes'] = $this->db->GetAll('SELECT vn.name, vn.id, vn.location, vn.ownerid,
-                                                                    nd.id AS netdev_id, nd.name AS netdev_name,
-                                                                    nd.ownerid AS netdev_ownerid
-                                                                 FROM
-                                                                   nodeassignments, vnodes vn
-                                                                   LEFT JOIN netdevices nd ON vn.netdev = nd.id
-                                                                 WHERE
-                                                                   nodeid = vn.id AND
-                                                                   assignmentid = ?', array($row['id']));
+                $row['nodes'] = $this->db->GetAll(
+                    'SELECT vn.name, vn.id, vn.location, vn.ownerid, nd.id AS netdev_id, nd.name AS netdev_name,
+                    nd.ownerid AS netdev_ownerid
+                    FROM nodeassignments, vnodes vn
+                    LEFT JOIN netdevices nd ON vn.netdev = nd.id
+                    WHERE nodeid = vn.id
+                    AND assignmentid = ?',
+                    array($row['id'])
+                );
 
-                $assignments[$idx]['phones'] = $this->db->GetAllByKey('SELECT vn.phone
-                                                                       FROM
-                                                                         voip_number_assignments vna
-                                                                         LEFT JOIN voip_numbers vn ON vna.number_id = vn.id
-                                                                       WHERE
-                                                                         assignment_id = ?', 'phone', array($row['id']));
+                $row['phones'] = $this->db->GetAllByKey(
+                    'SELECT vn.phone
+                    FROM voip_number_assignments vna
+                    LEFT JOIN voip_numbers vn ON vna.number_id = vn.id
+                    WHERE assignment_id = ?',
+                    'phone',
+                    array($row['id'])
+                );
+            }
+            unset($row, $suspension);
 
-                if (!empty($row['tariffid'])) {
-                    $priceVariant = $lms->getTariffPriceVariantByQuantityThreshold($row['tariffid'], $row['count']);
-                    if (!empty($priceVariant)) {
-                        $row['netvalue'] = $priceVariant['net_price'] * $row['count'];
-                        $row['value'] = $priceVariant['gross_price'] * $row['count'];
-                        $row['unitary_netvalue'] = $priceVariant['net_price'];
-                        $row['unitary_value'] = $priceVariant['gross_price'];
-                        $assignments[$idx]['unitary_netvalue'] = $priceVariant['net_price'];
-                        $assignments[$idx]['unitary_value'] = $priceVariant['gross_price'];
-                        $assignments[$idx]['netvalue'] = $priceVariant['net_price'] * $row['count'];
-                        $assignments[$idx]['value'] = $priceVariant['gross_price'] * $row['count'];
+            $suspensions = $suspensionsByCurrency;
+            if (!empty($params['with_suspensions'])) {
+                $result['suspensions'] = $suspensions;
+                $result['assignments'] = $assignments;
+            } elseif (!empty($params['suspensions'])) {
+                $result = $suspensions;
+            } else {
+                $result = $assignments;
+            }
+        }
+
+        return $result;
+    }
+
+    public function getAssignment($assignment_id)
+    {
+        return $this->db->GetRow(
+            'SELECT 
+                a.id AS id, 
+                a.at, 
+                a.datefrom, 
+                a.dateto, 
+                a.period, 
+                a.tariffid, 
+                a.liabilityid, 
+                a.customerid,
+                (CASE WHEN a.period = ? THEN ? ELSE ? END) AS assignment_charge_method,
+                (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END) AS base_price,
+                ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount), 3) AS price,
+                (CASE WHEN a.liabilityid IS NULL THEN t.currency ELSE l.currency END) AS currency,
+                (CASE WHEN a.liabilityid IS NULL THEN t.taxid ELSE l.taxid END) AS taxid,
+                (CASE WHEN a.liabilityid IS NULL
+                        THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
+                        ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
+                    END) AS netflag,
+                vas.*
+                FROM assignments a
+                LEFT JOIN (
+                    SELECT tariffs.*,
+                        taxes.value AS taxrate, taxes.label AS taxlabel,
+                        (CASE WHEN tariffs.flags & ? > 0 THEN tariffs.netvalue ELSE tariffs.value END) AS tvalue
+                    FROM tariffs
+                    JOIN taxes ON taxes.id = tariffs.taxid
+                ) t ON a.tariffid = t.id
+                LEFT JOIN (
+                    SELECT liabilities.*,
+                        taxes.value AS taxrate, taxes.label AS taxlabel,
+                        (CASE WHEN liabilities.flags & ? > 0 THEN liabilities.netvalue ELSE liabilities.value END) AS lvalue
+                    FROM liabilities
+                    JOIN taxes ON taxes.id = liabilities.taxid
+                ) l ON a.liabilityid = l.id
+                LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                WHERE a.id = ?',
+            array(
+                DISPOSABLE,
+                SUSPENSION_CHARGE_METHOD_ONCE,
+                SUSPENSION_CHARGE_METHOD_PERIODICALLY,
+                TARIFF_FLAG_NET_ACCOUNT,
+                LIABILITY_FLAG_NET_ACCOUT,
+                TARIFF_FLAG_NET_ACCOUNT,
+                LIABILITY_FLAG_NET_ACCOUT,
+                $assignment_id
+            )
+        );
+    }
+
+    public function getSuspensions($params = array())
+    {
+        $result = array();
+//        $params['by_customer_id'] = true;
+
+        if (!empty($params)) {
+//            $suspensions = $this->db->GetAllByKey(
+//                'SELECT *
+//                FROM vsuspensions
+//                WHERE 1=1'
+//                . (!empty($params['suspension_id']) ? ' AND suspension_id = ' . $params['suspension_id'] : ''),
+//                'suspension_id'
+//            );
+//
+//            if (!empty($suspensions)) {
+//                foreach ($suspensions as $skey => &$suspension) {
+//                    $suspensionAssignments = $this->db->GetAllByKey(
+//                        'SELECT suspension_assignment_id AS assignment_id
+//                        FROM vassignmentsuspensions
+//                        WHERE suspension_id = ?',
+//                        'assignment_id',
+//                        array(
+//                            $skey
+//                        )
+//                    );
+//                    $suspension['suspended_assignments'] = $suspensionAssignments;
+//                }
+//                unset($suspension);
+//            }
+
+
+            $suspensions = $this->db->GetAll(
+                'SELECT *  
+                FROM vassignmentsuspensions
+                WHERE 1=1'
+                . (!empty($params['suspension_id']) ? ' AND suspension_id = ' . $params['suspension_id'] : '')
+                . (!empty($params['customer_id']) ? ' AND suspension_customer_id = ' . $params['suspension_id'] : ''),
+            );
+
+            if (!empty($suspensions)) {
+                if (!empty($params['by_suspension_id'])) {
+                    $suspensionsBySuspensionId = array();
+                    foreach ($suspensions as $suspension) {
+                        if (!isset($suspensionsBySuspensionId[$suspension['suspension_id']])) {
+                            $suspensionsBySuspensionId[$suspension['suspension_id']] = $suspension;
+                        }
+                        if (!isset($suspensionsBySuspensionId[$suspension['suspension_id']]['suspended_assignments'][$suspension['suspension_assignment_id']])) {
+                            $suspensionsBySuspensionId[$suspension['suspension_id']]['suspended_assignments'][$suspension['suspension_assignment_id']]['assignemnt_id'] = $suspension['suspension_assignment_id'];
+                        }
                     }
-                }
 
-                if ($assignments[$idx]['netflag']) {
-                    $assignments[$idx]['discounted_netprice'] = f_round(($row['unitary_netvalue'] - $row['unitary_netvalue'] * $row['pdiscount'] / 100) - ($row['unitary_vdiscount']), 3);
-                    if ($row['suspended'] == 1) {
-                        $assignments[$idx]['discounted_netprice'] = $assignments[$idx]['discounted_netprice'] * $suspension_percentage / 100;
+                    $result = $suspensionsBySuspensionId;
+                } elseif (!empty($params['by_customer_id'])) {
+                    $suspensionsByCustomerId = array();
+                    foreach ($suspensions as $suspension) {
+                        if (!isset($suspensionsByCustomerId[$suspension['suspension_customer_id']])) {
+                            $suspensionsByCustomerId[$suspension['suspension_customer_id']]['customer_id'] = $suspension['suspension_customer_id'];
+                        }
+
+                        if (!isset($suspensionsByCustomerId[$suspension['suspension_customer_id']][$suspension['suspension_id']])) {
+                            $suspensionsByCustomerId[$suspension['suspension_customer_id']][$suspension['suspension_id']] = $suspension;
+                        }
+                        if (!isset($suspensionsByCustomerId[$suspension['suspension_customer_id']][$suspension['suspension_id']]['suspended_assignments'][$suspension['suspension_assignment_id']])) {
+                            $suspensionsByCustomerId[$suspension['suspension_customer_id']][$suspension['suspension_id']]['suspended_assignments'][$suspension['suspension_assignment_id']]['assignemnt_id'] = $suspension['suspension_assignment_id'];
+                        }
                     }
-                    $assignments[$idx]['discounted_netvalue'] = f_round($assignments[$idx]['discounted_netprice'] * $row['count']);
-                    $assignments[$idx]['unitary_netdiscount'] = f_round($row['unitary_netvalue'] - $assignments[$idx]['discounted_netprice'], 3);
-
-                    if (!empty($assignments[$idx]['tax_value'])) {
-                        $assignments[$idx]['discounted_price'] = f_round($assignments[$idx]['discounted_netprice'] * ($assignments[$idx]['tax_value'] / 100 + 1), 3);
-
-                        $assignments[$idx]['tax_from_discounted_value'] = f_round($assignments[$idx]['discounted_netvalue'] * ($assignments[$idx]['tax_value'] / 100));
-                    } elseif (!empty($assignments[$idx]['taxl_value'])) {
-                        $assignments[$idx]['discounted_price'] = f_round($assignments[$idx]['discounted_netprice'] * ($assignments[$idx]['taxl_value'] / 100 + 1), 3);
-
-                        $assignments[$idx]['tax_from_discounted_value'] = f_round($assignments[$idx]['discounted_netvalue'] * ($assignments[$idx]['taxl_value'] / 100));
-                    } else {
-                        $assignments[$idx]['discounted_price'] = 0;
-                        $assignments[$idx]['tax_from_discounted_value'] = 0;
-                    }
-                    $assignments[$idx]['discounted_value'] = f_round(($assignments[$idx]['discounted_netvalue'] + $assignments[$idx]['tax_from_discounted_value']));
-                    $assignments[$idx]['unitary_discount'] = f_round($row['unitary_value'] - $assignments[$idx]['discounted_price'], 3);
-                } else {
-                    $assignments[$idx]['discounted_price'] = f_round(($row['unitary_value'] - $row['unitary_value'] * $row['pdiscount'] / 100) - ($row['unitary_vdiscount']), 3);
-                    if ($row['suspended'] == 1) {
-                        $assignments[$idx]['discounted_price'] = $assignments[$idx]['discounted_price'] * $suspension_percentage / 100;
-                    }
-                    $assignments[$idx]['discounted_value'] = f_round($assignments[$idx]['discounted_price'] * $row['count']);
-                    $assignments[$idx]['unitary_discount'] = f_round($row['unitary_value'] - $assignments[$idx]['discounted_price'], 3);
-
-                    if (!empty($assignments[$idx]['tax_value'])) {
-                        $assignments[$idx]['discounted_netprice'] = f_round($assignments[$idx]['discounted_price'] / ($assignments[$idx]['tax_value'] / 100 + 1), 3);
-
-                        $assignments[$idx]['tax_from_discounted_value'] = f_round(($assignments[$idx]['discounted_value'] * $assignments[$idx]['tax_value'])
-                            / (100 + $assignments[$idx]['tax_value']));
-                    } elseif (!empty($assignments[$idx]['taxl_value'])) {
-                        $assignments[$idx]['discounted_netprice'] = f_round($assignments[$idx]['discounted_price'] / ($assignments[$idx]['taxl_value'] / 100 + 1), 3);
-
-                        $assignments[$idx]['tax_from_discounted_value'] = f_round(($assignments[$idx]['discounted_value'] * $assignments[$idx]['taxl_value'])
-                            / (100 + $assignments[$idx]['taxl_value']));
-                    } else {
-                        $assignments[$idx]['discounted_netprice'] = 0;
-                        $assignments[$idx]['tax_from_discounted_value'] = 0;
-                    }
-                    $assignments[$idx]['discounted_netvalue'] = f_round(($assignments[$idx]['discounted_value'] - $assignments[$idx]['tax_from_discounted_value']));
-                    $assignments[$idx]['unitary_netdiscount'] = f_round($row['unitary_netvalue'] - $assignments[$idx]['discounted_netprice'], 3);
-                }
-
-                $now = time();
-
-                if ($row['suspended'] == 0 &&
-                        (($row['datefrom'] == 0 || $row['datefrom'] < $now) &&
-                        ($row['dateto'] == 0 || $row['dateto'] > $now))) {
-                    // for proper summary
-                    $assignments[$idx]['real_unitary_price'] = $assignments[$idx]['discounted_price'];
-                    $assignments[$idx]['real_unitary_netprice'] = $assignments[$idx]['discounted_netprice'];
-                    $assignments[$idx]['real_count'] = $row['count'];
-                    $assignments[$idx]['real_value'] = $row['value'];
-                    $assignments[$idx]['real_netvalue'] = $row['netvalue'];
-                    $assignments[$idx]['real_unitary_discount'] = $assignments[$idx]['unitary_discount'];
-                    $assignments[$idx]['real_unitary_netdiscount'] = $assignments[$idx]['unitary_netdiscount'];
-                    $assignments[$idx]['real_discount'] = round($assignments[$idx]['real_unitary_discount'] * $row['count'], 3);
-                    $assignments[$idx]['real_netdiscount'] = round($assignments[$idx]['real_unitary_netdiscount'] * $row['count'], 3);
-                    $assignments[$idx]['real_disc_value'] = $assignments[$idx]['discounted_value'];
-                    $assignments[$idx]['real_disc_netvalue'] = $assignments[$idx]['discounted_netvalue'];
-                    $assignments[$idx]['real_unitary_downrate'] = $row['unitary_downrate'];
-                    $assignments[$idx]['real_downrate'] = $row['downrate'];
-                    $assignments[$idx]['real_unitary_downceil'] = $row['unitary_downceil'];
-                    $assignments[$idx]['real_downceil'] = $row['downceil'];
-                    $assignments[$idx]['real_unitary_uprate'] = $row['unitary_uprate'];
-                    $assignments[$idx]['real_uprate'] = $row['uprate'];
-                    $assignments[$idx]['real_unitary_upceil'] = $row['unitary_upceil'];
-                    $assignments[$idx]['real_upceil'] = $row['upceil'];
+                    $result = $suspensionsByCustomerId;
                 }
             }
         }
 
-        return $assignments;
+        return $result;
     }
+
+//    public function getSuspensions($customer_id = null)
+//    {
+//        $suspensions = $this->db->GetAll(
+//            'SELECT id AS suspension_id,
+//                at AS suspension_at,
+//                datefrom,
+//                dateto,
+//                chargemethod AS suspension_charge_method,
+//                calculationmethod AS suspension_calculation_method,
+//                value AS suspension_value,
+//                percentage AS suspension_percentage,
+//                netflag AS suspension_netflag,
+//                currency AS suspension_currency,
+//                note,
+//                (CASE WHEN suspensions.customerid IS NULL THEN 0 ELSE 1 END) AS suspend_all,
+//                taxid AS suspension_tax_id
+//                FROM suspensions
+//                WHERE suspensions.id = ?',
+//            array(
+//                $suspension_id
+//            )
+//        );
+//
+//        if(!empty($suspension)) {
+//            $suspension['suspended_assignments'] = $this->getCustomerAssignments($customer_id,
+//                array('show_approved' => true,
+//                    'show_expired' => true,
+//                    'suspension_id' => $suspension_id
+//                )
+//            );
+//        }
+//
+//        return $suspension;
+//    }
 
     public function GetCustomerServiceSummary($id)
     {
         global $SERVICETYPES;
 
-        $now = mktime(0, 0, 0, date('n'), date('d'), date('Y'));
-        $suspension_percentage = f_round(ConfigHelper::getConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0)));
+        $now = strtotime('today');
 
-        $servicesassignments = $this->db->GetAll('SELECT
-            t.type AS tarifftype,
-            ROUND(SUM((CASE a.suspended
-                    WHEN 0 THEN (((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount)
-                    ELSE ((((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount) * ' . $suspension_percentage . ' / 100) END)
-            * (CASE t.period
+        $servicesassignments = $this->db->GetAll(
+            'SELECT SUM(ROUND(
+            (CASE
+                WHEN vas.suspended IS NULL
+                   THEN ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN t.value ELSE l.value END)) / 100) - a.vdiscount), 3)
+                ELSE vas.suspension_price
+            END) *
+            (CASE t.period
+                WHEN ' . MONTHLY . ' THEN 1
+                WHEN ' . YEARLY . ' THEN 1/12.0
+                WHEN ' . HALFYEARLY . ' THEN 1/6.0
+                WHEN ' . QUARTERLY . ' THEN 1/3.0
+                ELSE (CASE a.period
                     WHEN ' . MONTHLY . ' THEN 1
                     WHEN ' . YEARLY . ' THEN 1/12.0
                     WHEN ' . HALFYEARLY . ' THEN 1/6.0
                     WHEN ' . QUARTERLY . ' THEN 1/3.0
-                    ELSE (CASE a.period
-                        WHEN ' . MONTHLY . ' THEN 1
-                        WHEN ' . YEARLY . ' THEN 1/12.0
-                        WHEN ' . HALFYEARLY . ' THEN 1/6.0
-                        WHEN ' . QUARTERLY . ' THEN 1/3.0
-                        ELSE 0 END)
-                END) * a.count), 2) AS sumvalue
-            FROM
-            assignments a
-            LEFT JOIN tariffs t ON a.tariffid = t.id
-            LEFT JOIN liabilities l ON a.liabilityid = l.id
-            WHERE a.customerid= ?
+                    ELSE 0 END)
+            END) *
+            a.count, 2)) AS sumvalue,
+            t.type AS tarifftype
+            FROM assignments a
+            LEFT JOIN tariffs t ON t.id = a.tariffid
+            LEFT JOIN liabilities l ON l.id = a.liabilityid
+            LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                    AND vas.suspension_datefrom <= ?
+                    AND (vas.suspension_dateto >= ? OR vas.suspension_dateto = 0)
+                    AND a.datefrom <= ? AND (a.dateto >= ? OR a.dateto = 0)
+            WHERE a.customerid = ?
             AND a.commited = 1
             AND a.period <> ' . DISPOSABLE . '
-            AND a.datefrom <= ' . $now . ' AND (a.dateto > ' . $now . ' OR a.dateto = 0)
-            GROUP BY tarifftype', array($id));
+            AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)
+            GROUP BY tarifftype',
+            array(
+                $now,
+                $now,
+                $now,
+                $now,
+                $id,
+                $now,
+                $now
+            )
+        );
 
         if ($servicesassignments) {
             $total_value = 0;
@@ -1300,6 +2105,152 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return $id;
     }
 
+    /**
+     * Add suspension.
+     *
+     * @params array suspension data
+     * @return void Inserted suspension ID
+     */
+    public function addSuspension($params = array())
+    {
+        if (!empty($params)) {
+            $args = $params;
+            $this->db->Execute(
+                'INSERT INTO suspensions (at, datefrom, dateto, chargemethod, calculationmethod,
+                value, percentage, netflag, currency, taxid, note, customerid)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                array_values($args)
+            );
+
+            $suspensionId = $this->db->GetLastInsertID('suspensions');
+
+            if (!empty($suspensionId)) {
+                if ($this->syslog) {
+                    $args = array(
+                        SYSLOG::RES_SUSPENSION => $suspensionId,
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_SUSPENSION, SYSLOG::OPER_ADD, $args);
+                }
+
+                return $suspensionId;
+            }
+        }
+    }
+
+    /**
+     * Update suspension.
+     *
+     * @params array suspension data
+     * @return void
+     */
+    public function updateSuspension($params = array())
+    {
+        if (!empty($params)) {
+            $args = $params;
+            $this->db->Execute(
+                'UPDATE suspensions SET at = ?, datefrom = ?, dateto = ?, chargemethod = ?, calculationmethod = ?,
+                value = ?, percentage = ?, netflag = ?, currency = ?, taxid = ?, note = ?, customerid = ?
+                WHERE id = ?',
+                array_values($args)
+            );
+        }
+
+        if ($this->syslog) {
+            $args = array(
+                SYSLOG::RES_SUSPENSION => $params['id'],
+            );
+            $this->syslog->AddMessage(SYSLOG::RES_SUSPENSION, SYSLOG::OPER_UPDATE, $args);
+        }
+    }
+
+    /**
+     * Add assignment suspension.
+     *
+     * @params array suspension data
+     * @return void Inserted assignment suspension ID
+     */
+    public function addAssignmentSuspension($params = array())
+    {
+        if (!empty($params)) {
+            if (!empty($params['suspension_id']) && !empty($params['assignment_id'])) {
+                $this->db->Execute(
+                    'INSERT INTO assignmentsuspensions (suspensionid, assignmentid)
+                    VALUES (?, ?)',
+                    array(
+                        $params['suspension_id'],
+                        $params['assignment_id'],
+                    )
+                );
+
+                $assignemntSuspensionId = $this->db->GetLastInsertID('assignmentsuspensions');
+
+                if (!empty($assignemntSuspensionId) && $this->syslog) {
+                    $args = array(
+                        SYSLOG::RES_ASSIGN => $params['assignment_id'],
+                        SYSLOG::RES_CUST => $params['customerid'],
+                        'suspend' => 1,
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_UPDATE, $args);
+                }
+            }
+        }
+    }
+
+    /**
+     * Delete suspension.
+     *
+     * @params int suspension ID
+     * @return void
+     */
+    public function deleteSuspension($suspension_id)
+    {
+        if (!empty($suspension_id)) {
+            $this->db->Execute('DELETE FROM assignmentsuspensions WHERE suspensionid = ?', array($suspension_id));
+            $this->db->Execute('DELETE FROM suspensions WHERE id = ?', array($suspension_id));
+        }
+    }
+
+    /**
+     * Delete assignment suspension.
+     *
+     * @params array assignment suspension data
+     * @return void
+     */
+    public function deleteAssignmentSuspension($params = array())
+    {
+        if (!empty($params)) {
+            $suspensionsGroupCount = $this->db->GetOne(
+                'SELECT COUNT(id)
+                FROM assignmentsuspensions
+                WHERE suspensionid = ?',
+                array($params['suspension_id'])
+            );
+
+            if ($suspensionsGroupCount == 1) {
+                $this->db->Execute('DELETE FROM suspensions WHERE id = ?', array($params['suspension_id']));
+            }
+
+            $this->db->Execute(
+                'DELETE FROM assignmentsuspensions 
+                WHERE suspensionid = ? 
+                AND assignmentid = ?',
+                array(
+                    $params['suspension_id'],
+                    $params['assignment_id'],
+                )
+            );
+
+            if ($this->syslog) {
+                $args = array(
+                    SYSLOG::RES_ASSIGN => $params['assignment_id'],
+                    SYSLOG::RES_CUST => $params['customerid'],
+                    'suspend' => 0,
+                );
+                $this->syslog->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_UPDATE, $args);
+            }
+        }
+    }
+
     private function insertNodeAssignments($args)
     {
         if (!empty($args['nodes'])) {
@@ -1653,6 +2604,114 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return $result;
     }
 
+    public function ValidateSuspension($params = array())
+    {
+        $error = array();
+        $suspension = r_trim($params);
+
+        //region charging validation
+        $suspensionChargeMethod = $suspension['suspension_charge_method'];
+        if (!isset($GLOBALS['SUSPENSION_CHARGE_METHODS'][$suspensionChargeMethod])) {
+            $error['suspension_charge_method'] = trans('Incorrect value!');
+        }
+
+        $suspensionCalculationMethod = $suspension['suspension_calculation_method'];
+        if (!isset($GLOBALS['SUSPENSION_CALCULATION_METHODS'][$suspensionCalculationMethod])) {
+            $error['suspension_calculation_method'] = trans('Incorrect value!');
+        }
+        //endregion
+
+        if (empty($error)) {
+            //region charging validation
+            if ($suspensionChargeMethod != SUSPENSION_CHARGE_METHOD_NONE) {
+                if ($suspensionCalculationMethod == SUSPENSION_CALCULATION_METHOD_VALUE) {
+                    if (!empty($suspension['suspension_netflag'])) {
+                        if (!empty($suspension['suspension_net_value'])) {
+                            if (!preg_match('/^[0-9\.,]+$/', $suspension['suspension_net_value'])) {
+                                $error['suspension_net_value'] = trans('Incorrect value!');
+                            }
+                        } else {
+                            if (!preg_match('/^[0-9\.,]+$/', ConfigHelper::getConfig('suspensions.default_value', 0))) {
+                                $error['suspension_net_value'] = trans('Incorrect value!');
+                            }
+                        }
+                    } else {
+                        if (!empty($suspension['suspension_gross_value'])) {
+                            if (!preg_match('/^[0-9\.,]+$/', $suspension['suspension_gross_value'])) {
+                                $error['suspension_gross_value'] = trans('Incorrect value!');
+                            }
+                        } else {
+                            if (!preg_match('/^[0-9\.,]+$/', ConfigHelper::getConfig('suspensions.default_value', 0))) {
+                                $error['suspension_gross_value'] = trans('Incorrect value!');
+                            }
+                        }
+                    }
+
+                    if (!isset($GLOBALS['CURRENCIES'][$suspension['currency']])) {
+                        $error['currency'] = trans('Invalid currency selection!');
+                    }
+                }
+                if ($suspensionCalculationMethod == SUSPENSION_CALCULATION_METHOD_PERCENTAGE) {
+                    if (!empty($suspension['suspension_percentage'])) {
+                        if (!preg_match('/^[0-9\.,]+$/', $suspension['suspension_percentage'])) {
+                            $error['suspension_percentage'] = trans('Incorrect value!');
+                        }
+                    } else {
+                        if (!preg_match('/^[0-9\.,]+$/', ConfigHelper::getConfig('suspensions.default_percentage', 0))) {
+                            $error['suspension_percentage'] = trans('Incorrect value!');
+                        }
+                    }
+                }
+            }
+            //endregion
+
+            if (empty($error)) {
+                //region Dates Validation
+                if (empty($suspension['datefrom'])) {
+                    if ($suspensionChargeMethod == SUSPENSION_CHARGE_METHOD_ONCE) {
+                        $error['datefrom'] = trans('Date from is required!');
+                    } else {
+                        $from = 0;
+                    }
+                } elseif (preg_match('/^[0-9]+$/', $suspension['datefrom'])) {
+                    $from = $suspension['datefrom'];
+                } else {
+                    $error['datefrom'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+                }
+                if (empty($suspension['dateto'])) {
+                    $to = 0;
+                } elseif (preg_match('/^[0-9]+$/', $suspension['dateto'])) {
+                    $to = strtotime('+ 1 day', $suspension['dateto']) - 1;
+                } else {
+                    $error['dateto'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+                }
+                if (isset($from) && isset($to)) {
+                    if ($to < $from && $to != 0 && $from != 0) {
+                        $error['dateto'] = trans('Start date can\'t be greater than end date!');
+                    }
+                }
+                //endregion
+
+                if (empty($error)) {
+                    if (!empty($suspension['existing_suspend_all'])) {
+                        $error['suspend_all'] = trans('This suspension exists already!');
+                    }
+
+                    if (!empty($suspension['existing_suspensions'])) {
+                        foreach ($suspension['suspended_assignments'] as $skey => $asuspension) {
+                            if (isset($suspension['existing_suspensions'][$skey])) {
+                                $error['suspensions'] = trans('Assignment is suspended already!');
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $error;
+    }
+
     public function CheckSchemaModifiedValues(&$data)
     {
         $schemaid = $data['schemaid'];
@@ -1751,7 +2810,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         if ($data['existing_assignments']['operation'] == EXISTINGASSIGNMENT_DELETE) {
                             $this->DeleteAssignment($aid);
                         } else {
-                            $this->SuspendAssignment($aid);
+                            $this->suspendAssignment($aid);
                         }
                     }
                 }
@@ -1814,36 +2873,184 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         }
     }
 
-    public function SuspendAssignment($id, $suspend = true)
+    //todo sprawdzić użycie
+//    public function SuspendAssignment($id, $suspend = true, $suspensionid = null)
+//    {
+//        if ($this->syslog) {
+//            $assign = $this->db->GetRow('SELECT id, tariffid, liabilityid, customerid FROM assignments WHERE id = ?', array($id));
+//            $args = array(
+//                SYSLOG::RES_ASSIGN => $assign['id'],
+//                SYSLOG::RES_TARIFF => $assign['tariffid'],
+//                SYSLOG::RES_LIAB => $assign['liabilityid'],
+//                SYSLOG::RES_CUST => $assign['customerid'],
+//                'suspend' => ($suspend || !empty($suspensionid) ? 1 : 0),
+//                'suspentionid' => ($suspensionid ?? null)
+//            );
+//            $this->syslog->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_UPDATE, $args);
+//        }
+//        return $this->db->Execute('
+//            UPDATE assignments SET suspended = ?, suspensionid = ?
+//            WHERE id = ?',
+//            array(
+//                $suspend ? 1 : 0,
+//                $suspensionid ?? null,
+//                $id
+//            )
+//        );
+//    }
+
+    public function suspendAssignment($assignment_id)
     {
-        if ($this->syslog) {
-            $assign = $this->db->GetRow('SELECT id, tariffid, liabilityid, customerid FROM assignments WHERE id = ?', array($id));
-            $args = array(
-                SYSLOG::RES_ASSIGN => $assign['id'],
-                SYSLOG::RES_TARIFF => $assign['tariffid'],
-                SYSLOG::RES_LIAB => $assign['liabilityid'],
-                SYSLOG::RES_CUST => $assign['customerid'],
-                'suspend' => ($suspend ? 1 : 0)
-            );
-            $this->syslog->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_UPDATE, $args);
+        $assignmentId = !empty($assignment_id) && is_numeric($assignment_id) ? intval($assignment_id) : null;
+
+        if (!empty($assignmentId) && $assignmentId == $assignment_id) {
+            $this->db->BeginTrans();
+            $this->db->LockTables(array('suspensions', 'assignmentsuspensions'));
+
+            $assignment = $this->getAssignment($assignmentId);
+
+            if (empty($assignment['suspension_suspend_all'])) {
+                if (empty($assignment['suspended'])) {
+                    $args = array(
+                        'at' => $assignment['at'],
+                        'datefrom' => $assignment['datefrom'],
+                        'dateto' => $assignment['dateto'],
+                        'chargemethod' => $assignment['assignment_charge_method'],
+                        'calculationmethod' => null,
+                        'value' => null,
+                        'percentage' => null,
+                        'netflag' => $assignment['netflag'],
+                        'currency' => $assignment['currency'],
+                        'taxid' => $assignment['taxid'],
+                        'note' => null,
+                        'customerid' => null,
+                    );
+
+                    $suspensionId = $this->addSuspension($args);
+
+                    if (!empty($suspensionId)) {
+                        $args = array(
+                            'suspension_id' => $suspensionId,
+                            'assignment_id' => $assignmentId,
+                            'customerid' => $assignment['customerid'],
+                        );
+
+                        $this->addAssignmentSuspension($args);
+                    }
+                }
+            }
+
+            $this->db->UnLockTables();
+            $this->db->CommitTrans();
         }
-        return $this->db->Execute('UPDATE assignments SET suspended=? WHERE id=?', array($suspend ? 1 : 0, $id));
     }
 
     public function toggleAssignmentSuspension($id)
     {
-        if ($this->syslog) {
-            $assign = $this->db->GetRow('SELECT id, tariffid, liabilityid, customerid, suspended FROM assignments WHERE id = ?', array($id));
-            $args = array(
-                SYSLOG::RES_ASSIGN => $assign['id'],
-                SYSLOG::RES_TARIFF => $assign['tariffid'],
-                SYSLOG::RES_LIAB => $assign['liabilityid'],
-                SYSLOG::RES_CUST => $assign['customerid'],
-                'suspend' => empty($assign['suspend']) ? 1 : 0,
-            );
-            $this->syslog->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_UPDATE, $args);
+        $assignmentId = !empty($id) && is_numeric($id) ? intval($id) : null;
+
+        if (!empty($assignmentId) && $assignmentId == $id) {
+            $today = strtotime('today');
+
+            $this->db->BeginTrans();
+            $this->db->LockTables(array('suspensions', 'assignmentsuspensions'));
+
+            $assignment = $this->getAssignment($assignmentId);
+            $defaultSuspensionCalculationMethod = ConfigHelper::getConfig('suspensions.default_calculation_method', SUSPENSION_CALCULATION_METHOD_PERCENTAGE);
+
+            if (empty($assignment['suspension_suspend_all'])) {
+                if (empty($assignment['suspended'])) {
+                    [$year, $month, $dom] = explode('/', date('Y/n/j', $today));
+                    $at = null;
+                    $netflag = null;
+                    $currency = null;
+                    $taxid = null;
+
+                    switch ($assignment['period']) {
+                        case DISPOSABLE:
+                            $charge_method = SUSPENSION_CHARGE_METHOD_ONCE;
+                            $at = $assignment['at'];
+                            break;
+                        case DAILY:
+                            $charge_method = SUSPENSION_CHARGE_METHOD_PERIODICALLY;
+                            $at = $dom;
+                            break;
+                        case WEEKLY:
+                            $charge_method = SUSPENSION_CHARGE_METHOD_PERIODICALLY;
+                            $atdate = date('Y/n/j', mktime(0, 0, 0, 0, $assignment['at'] + 5, 0));
+                            [$wyear, $wmonth, $wdom] = explode('/', date('Y/n/j', $atdate));
+                            $at = $wdom;
+                            break;
+                        case MONTHLY:
+                            $charge_method = SUSPENSION_CHARGE_METHOD_PERIODICALLY;
+                            $at = $assignment['at'];
+                            break;
+                        case QUARTERLY:
+                            $charge_method = SUSPENSION_CHARGE_METHOD_PERIODICALLY;
+                            $atdate = sprintf('%02d/%02d', $assignment['at'] % 100, $assignment['at'] / 100 + 1);
+                            [$qday, $qmonth] = explode('/', $atdate);
+                            $at = $qday;
+                            break;
+                        case HALFYEARLY:
+                            $charge_method = SUSPENSION_CHARGE_METHOD_PERIODICALLY;
+                            $atdate = sprintf('%02d/%02d', $assignment['at'] % 100, $assignment['at'] / 100 + 1);
+                            [$hday, $hmonth] = explode('/', $atdate);
+                            $at = $hday;
+                            break;
+                        case YEARLY:
+                            $charge_method = SUSPENSION_CHARGE_METHOD_PERIODICALLY;
+                            $atdate = date('d/m', ($assignment['at'] - 1) * 86400);
+                            [$yday, $tmonth] = explode('/', $atdate);
+                            $at = $yday;
+                            break;
+                    }
+
+                    if ($defaultSuspensionCalculationMethod == SUSPENSION_CALCULATION_METHOD_VALUE) {
+                        $netflag = intval($assignment['netflag']);
+                        $currency = $assignment['currency'];
+                        $taxid = intval($assignment['taxid']);
+                    }
+
+                    $args = array(
+                        'at' => $at,
+                        'datefrom' => $assignment['datefrom'],
+                        'dateto' => $assignment['dateto'],
+                        'chargemethod' => $charge_method,
+                        'calculationmethod' => $defaultSuspensionCalculationMethod,
+                        'value' => null,
+                        'percentage' => null,
+                        'netflag' => $netflag,
+                        'currency' => $currency,
+                        'taxid' => $taxid,
+                        'note' => null,
+                        'customerid' => null,
+                    );
+
+                    $suspensionId = $this->addSuspension($args);
+
+                    if (!empty($suspensionId)) {
+                        $args = array(
+                            'suspension_id' => $suspensionId,
+                            'assignment_id' => $assignmentId,
+                            'customerid' => $assignment['customerid'],
+                        );
+
+                        $this->addAssignmentSuspension($args);
+                    }
+                } else {
+                    $args = array(
+                        'suspension_id' => $assignment['suspension_id'],
+                        'assignment_id' => $assignmentId,
+                        'customerid' => $assignment['customerid'],
+                    );
+
+                    $this->deleteAssignmentSuspension($args);
+                }
+            }
+
+            $this->db->UnLockTables();
+            $this->db->CommitTrans();
         }
-        return $this->db->Execute('UPDATE assignments SET suspended = (suspended + 1) % 2 WHERE id = ?', array($id));
     }
 
     public function GetTradeDocumentArchiveStats($ids)
@@ -3360,14 +4567,24 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         );
 
         $result['customers'] = $this->db->GetAll('SELECT c.id AS id, COUNT(c.id) AS cnt,
-                COUNT(CASE WHEN s.customerid IS NULL AND commited = 1 AND suspended = 0 AND datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE NULL END) AS active, '
+                COUNT(CASE WHEN s.customerid IS NULL AND commited = 1 AND vas1.suspended IS NULL AND datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE NULL END) AS active, '
                 . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS customername '
                 . ($network ? ', COUNT(vnodes.id) AS nodescount ' : '')
-                . 'FROM assignments, customerview c
+                . '
+                FROM assignments
+                LEFT JOIN vassignmentsuspensions vas1 ON vas1.suspension_assignment_id = assignments.id
+                    AND vas1.suspension_datefrom <= ?NOW?
+                    AND (vas1.suspension_dateto >= ?NOW? OR vas1.suspension_dateto = 0)
+                    AND assignments.datefrom <= ?NOW? AND (assignments.dateto >= ?NOW? OR assignments.dateto = 0),
+                customerview c
                 LEFT JOIN (
                     SELECT DISTINCT a.customerid
                     FROM assignments a
-                    WHERE a.tariffid IS NULL AND a.liabilityid IS NULL
+                    LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                        AND vas.suspension_datefrom <= ?NOW?
+                        AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                        AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
+                    WHERE vas.suspension_suspend_all = 1
                         AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
                 ) s ON s.customerid = c.id '
                 . ($network ? 'LEFT JOIN vnodes ON (c.id = vnodes.ownerid) ' : '')
@@ -3412,18 +4629,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 t.currency
             FROM assignments a
             JOIN tariffs t ON (t.id = a.tariffid)
-            WHERE t.id = ? AND a.commited = 1 AND (
-                a.suspended = 1
-                OR a.datefrom > ?NOW?
-                OR (a.dateto <= ?NOW? AND a.dateto != 0)
-                OR EXISTS (
-                    SELECT 1 FROM assignments b
-                    WHERE b.customerid = a.customerid
-                        AND liabilityid IS NULL AND tariffid IS NULL
-                        AND b.datefrom <= ?NOW? AND (b.dateto > ?NOW? OR b.dateto = 0)
-                )
-			)
-			GROUP BY t.currency', 'currency', array($id));
+            LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                AND vas.suspension_datefrom <= ?NOW?
+                AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
+            WHERE t.id = ? AND a.commited = 1 AND vas.suspended IS NOT NULL
+            GROUP BY t.currency', 'currency', array($id));
 
         $all = $this->db->GetAllByKey('SELECT COUNT(*) AS count,
             SUM(
@@ -5309,7 +6520,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             LEFT JOIN (
                 SELECT DISTINCT a.customerid
                 FROM assignments a
-                WHERE a.tariffid IS NULL AND a.liabilityid IS NULL
+                LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                    AND vas.suspension_datefrom <= ?NOW?
+                    AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                    AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
+                WHERE vas.suspension_suspend_all = 1
                     AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
             ) s ON s.customerid = assignments.customerid
             WHERE tariffid = ?',

@@ -1461,10 +1461,28 @@ class LMS
         return $manager->GetCustomerAssignmentValue($id);
     }
 
-    public function GetCustomerAssignments($id, $show_expired = false, $show_approved = true)
+    public function getCustomerAssignments($customer_id, $params = array())
     {
         $manager = $this->getFinanceManager();
-        return $manager->GetCustomerAssignments($id, $show_expired, $show_approved);
+        return $manager->getCustomerAssignments($customer_id, $params);
+    }
+
+    public function getAssignments($params = array())
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->getAssignments($params);
+    }
+
+    public function getAssignment($assignment_id)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->getAssignment($assignment_id);
+    }
+
+    public function getSuspensions($params = array())
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->getSuspensions($params);
     }
 
     public function GetCustomerServiceSummary($id)
@@ -1491,6 +1509,12 @@ class LMS
         return $manager->ValidateAssignment($data);
     }
 
+    public function ValidateSuspension($params = array())
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->ValidateSuspension($params);
+    }
+
     public function CheckSchemaModifiedValues(&$data)
     {
         $manager = $this->getFinanceManager();
@@ -1503,10 +1527,45 @@ class LMS
         return $manager->UpdateExistingAssignments($data);
     }
 
-    public function SuspendAssignment($id, $suspend = true)
+    public function addSuspension($params = array())
     {
         $manager = $this->getFinanceManager();
-        return $manager->SuspendAssignment($id, $suspend);
+        return $manager->addSuspension($params);
+    }
+
+    public function updateSuspension($params = array())
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->updateSuspension($params);
+    }
+
+    public function addAssignmentSuspension($params = array())
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->addAssignmentSuspension($params);
+    }
+
+    public function deleteSuspension($suspension_id)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->deleteSuspension($suspension_id);
+    }
+
+    public function deleteAssignmentSuspension($params = array())
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->deleteAssignmentSuspension($params);
+    }
+
+//    public function SuspendAssignment($id, $suspend = true, $suspensionid = null)
+//    {
+//        $manager = $this->getFinanceManager();
+//        return $manager->SuspendAssignment($id, $suspend, $suspensionid);
+//    }
+    public function suspendAssignment($assignment_id)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->suspendAssignment($assignment_id);
     }
 
     public function toggleAssignmentSuspension($id)

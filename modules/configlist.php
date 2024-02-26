@@ -109,7 +109,13 @@ function GetConfigList()
         'payments' => array(
             'date_format' => 'Define date format for variable: %period, %aligned_period, %current_month used in payments.comment and payments.settlement_comment',
             'default_unit_name' => 'Unit name on invoice, default: "pcs."',
-            'suspension_percentage' => 'Percentage of suspended liabilities. Default: 0',
+        ),
+        'suspensions' => array(
+            'default_percentage' => 'Default suspension percentage. Default: 0',
+            'default_value' => 'Default suspension value. Default: 0',
+            'default_netflag' => 'Default suspension netflag. Default: 0',
+            'default_charge_method' => 'Default suspension charge method. Default: 2',
+            'default_calculation_method' => 'Default suspension calculation method. Default: 1',
         ),
         'finances' => array(
             'cashimport_checkinvoices' => 'Check invoices as accounted when importing cash operations. Default: false',

@@ -37,7 +37,7 @@ $SMARTY->assign('xajax', $LMS->RunXajax());
 if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled by netdevxajax.inc.php
     $netdev = $LMS->GetNetDev($id);
     if (!empty($netdev['ownerid'])) {
-        $assignments = $LMS->GetCustomerAssignments($netdev['ownerid'], true, false);
+        $assignments = $LMS->getCustomerAssignments($netdev['ownerid'], array('show_expired' => true, 'show_approved' => false));
         $assignments = $LMS->GetNetDevCustomerAssignments($id, $assignments);
         $SMARTY->assign(array(
             'assignments' => $assignments,

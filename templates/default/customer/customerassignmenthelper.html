@@ -1,5 +1,14 @@
 {$promotion_show_period_values = ConfigHelper::checkConfig('promotions.show_period_values', ConfigHelper::checkConfig('phpui.promotion_show_period_values'))}
 {$promotion_schema_name_limit = intval(ConfigHelper::getConfig('promotions.schema_name_limit', ConfigHelper::getConfig('phpui.promotion_schema_name_limit', 40)))}
+{$defaultSuspensionChargeMethod = ConfigHelper::getConfig('suspensions.default_charge_method', $smarty.const.SUSPENSION_CHARGE_METHOD_PERIODICALLY)}
+{$defaultSuspensionCalculationMethod = ConfigHelper::getConfig('suspensions.default_calculation_method', $smarty.const.SUSPENSION_CALCULATION_METHOD_PERCENTAGE)}
+{$defaultSuspensionPercentage = ConfigHelper::getConfig('suspensions.default_percentage',
+	ConfigHelper::getConfig('payments.suspension_percentage',
+		ConfigHelper::getConfig('finances.suspension_percentage', 0)
+	)
+)}
+{$defaultSuspensionValue = ConfigHelper::getConfig('suspensions.default_value', 0)}
+{$defaultSuspensionNetflag = ConfigHelper::getConfig('suspensions.default_netflag', 0)}
 
 <style>
 
@@ -546,13 +555,30 @@
 								</TD>
 							</TR>
 
-							<TR id="a_note">
-                                                                <TD>{icon name="notes"}</TD>
-                                                                <TD class="bold nobr">{trans("Note")}</TD>
-                                                                <TD>
-                                                                        <INPUT type="text" name="{$variable_prefix}[note]" value="{if $variables.note}{$variables.note|escape}{/if}" size="30" {tip text="Enter assignment/liability note" trigger="note"}>
-                                                                </TD>
-                                                        </TR>
+							<tr id="a_suspension_type" style="display: none;">
+								<td colspan="3">
+									<label>
+										<input type="checkbox" id="suspend_all" name="{$variable_prefix}[suspend_all]" value="1"
+												{if !empty($variables.suspend_all)} checked{/if}>
+										{trans("zawieś wszystkie")}
+									</label>
+								</td>
+							</tr>
+							<tr id="a_assignments_suspensions" style="display: none;">
+								<td colspan="3">
+									{include file="customer/customerassignmentssuspend.html"}
+								</td>
+							</tr>
+
+							<tr id="a_note">
+								<td>{icon name="notes"}</td>
+								<td class="bold nobr">{trans("Note")}</td>
+								<td>
+									<input type="text" name="{$variable_prefix}[note]"
+										   value="{if $variables.note}{$variables.note|escape}{/if}" size="30"
+											{tip text="Enter assignment/liability note" trigger="note"}>
+								</td>
+							</tr>
 
 							<TR id="a_day" style="display: none;">
 								<TD>
@@ -594,23 +620,134 @@
 									{icon name="period"}
 								</TD>
 								<TD class="bold nobr">
-									{trans("Period:")}
+									{trans("Period")}
 								</TD>
 								<TD>
 									{trans("from:")}
-									<input type="text" name="{$variable_prefix}[datefrom]"
+									<input type="text" id="a_datefrom" name="{$variable_prefix}[datefrom]"
 										value="{if $variables.datefrom}{$variables.datefrom}{/if}"
 										placeholder="{trans("yyyy/mm/dd")}"
 										{tip class="lms-ui-date lms-ui-date-unix" text="Enter accounting start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="datefrom"}
 										size="10">
 									{trans("to:")}
-									<input type="text" name="{$variable_prefix}[dateto]"
+									<input type="text" id="a_dateto" name="{$variable_prefix}[dateto]"
 										value="{if $variables.dateto}{$variables.dateto}{/if}"
 										placeholder="{trans("yyyy/mm/dd")}"
 										{tip class="lms-ui-date lms-ui-date-unix" text="Enter accounting end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="dateto"}
 										size="10">
 								</TD>
 							</TR>
+
+							<tr id="a_suspension_charge_method" style="display: none;">
+								<td>
+									{icon name="money"}
+								</td>
+								<td class="bold" style="min-width: 140px;">
+									{trans("Naliczanie zawieszenia")}
+								</td>
+								<td>
+									<select id="suspension_charge_method" name="{$variable_prefix}[suspension_charge_method]"
+											{tip trigger="suspension_charge_method"}>
+										<option value="{$smarty.const.SUSPENSION_CHARGE_METHOD_NONE}"
+											{if (empty($variables.suspension_charge_method) && $defaultSuspensionChargeMethod == $smarty.const.SUSPENSION_CHARGE_METHOD_NONE)
+												|| $variables.suspension_charge_method == $smarty.const.SUSPENSION_CHARGE_METHOD_NONE} selected{/if}
+										>{$_SUSPENSION_CHARGE_METHODS[$smarty.const.SUSPENSION_CHARGE_METHOD_NONE]}</option>
+										<option value="{$smarty.const.SUSPENSION_CHARGE_METHOD_ONCE}"
+											{if (empty($variables.suspension_charge_method) && $defaultSuspensionChargeMethod == $smarty.const.SUSPENSION_CHARGE_METHOD_ONCE)
+												|| $variables.suspension_charge_method == $smarty.const.SUSPENSION_CHARGE_METHOD_ONCE} selected{/if}
+										>{$_SUSPENSION_CHARGE_METHODS[$smarty.const.SUSPENSION_CHARGE_METHOD_ONCE]}</option>
+										<option value="{$smarty.const.SUSPENSION_CHARGE_METHOD_PERIODICALLY}"
+											{if (empty($variables.suspension_charge_method) && $defaultSuspensionChargeMethod == $smarty.const.SUSPENSION_CHARGE_METHOD_PERIODICALLY)
+												|| $variables.suspension_charge_method == $smarty.const.SUSPENSION_CHARGE_METHOD_PERIODICALLY} selected{/if}
+										>{$_SUSPENSION_CHARGE_METHODS[$smarty.const.SUSPENSION_CHARGE_METHOD_PERIODICALLY]}</option>
+									</select>
+								</td>
+							</tr>
+
+							<tr id="a_suspension_calculation_method" style="display: none;">
+								<td>
+									{icon name="money"}
+								</td>
+								<td class="bold" style="min-width: 140px;">
+									{trans("Metoda naliczania")}
+								</td>
+								<td>
+									<select id="suspension_calculation_method" name="{$variable_prefix}[suspension_calculation_method]"
+											{tip trigger="suspension_calculation_method"}>
+										<option value="{$smarty.const.SUSPENSION_CALCULATION_METHOD_PERCENTAGE}"
+											{if $variables.suspension_calculation_method == $smarty.const.SUSPENSION_CALCULATION_METHOD_PERCENTAGE
+											} selected{/if}
+										>{$_SUSPENSION_CALCULATION_METHODS[$smarty.const.SUSPENSION_CALCULATION_METHOD_PERCENTAGE]}</option>
+										<option value="{$smarty.const.SUSPENSION_CALCULATION_METHOD_VALUE}"
+											{if $variables.suspension_calculation_method == $smarty.const.SUSPENSION_CALCULATION_METHOD_VALUE
+											} selected{/if}
+										>{$_SUSPENSION_CALCULATION_METHODS[$smarty.const.SUSPENSION_CALCULATION_METHOD_VALUE]}</option>
+									</select>
+								</td>
+							</tr>
+
+							<tr id="a_suspension_percentage" style="display: none;">
+								<td>
+									{icon name="discount"}
+								</td>
+								<td class="bold" style="min-width: 140px;">
+									{trans("<!suspension>Percentage")}
+								</td>
+								<td>
+									<input type="text" size="11" id="suspension_percentage" name="{$variable_prefix}[suspension_percentage]"
+										   placeholder="{if empty($variables.suspension_percentage)}{trans('<!suspension>Default')}: {$defaultSuspensionPercentage} %{/if}"
+										   value="{if !empty($variables.suspension_percentage)}{$variables.suspension_percentage}{/if}"
+											{tip trigger="suspension_percentage"}
+									>
+								</td>
+							</tr>
+
+							<tr id="a_suspension_value" style="display: none;">
+								<td>
+									{icon name="money"}
+								</td>
+								<td class="bold">
+									{trans("<!suspension>Amount")}
+								</td>
+								<td>
+									<table>
+										<tr>
+											<td>
+												<label for="suspension_net_value">
+													{trans('net')}
+												</label>
+											</td>
+											<td>
+												<input type="text" size="11" id="suspension_net_value" name="{$variable_prefix}[suspension_net_value]"
+													   value="{if !empty($variables.suspension_net_value) || $variables.suspension_net_value == 0}{$variables.suspension_net_value}{/if}"
+														{tip trigger="suspension_net_value"}>
+											</td>
+											<td rowspan="2">
+												<label>
+													<input type="checkbox" id="suspension_netflag" name="{$variable_prefix}[suspension_netflag]" value="1"
+															{tip text="Billing according to the net"}
+															{if !empty($variables.suspension_netflag) || !empty($defaultSuspensionNetflag)}
+																 checked
+															{/if}>
+													<span class="lms-ui-label">{trans('calculated from net')}</span>
+												</label>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<label for="suspension_gross_value">
+													{trans('gross')}
+												</label>
+											</td>
+											<td>
+												<input type="text" size="11" id="suspension_gross_value" name="{$variable_prefix}[suspension_gross_value]"
+													   value="{if !empty($variables.suspension_gross_value) || $variables.suspension_gross_value == 0}{$variables.suspension_gross_value}{/if}"
+														{tip trigger="suspension_gross_value"}>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
 
 							<tr id="a_price" style="display: none;">
 								<td>
@@ -663,7 +800,7 @@
 									{trans("Currency")}
 								</td>
 								<td class="nobr">
-									{currency_selection selected=$variables.currency elementname=$variable_prefix|cat:"[currency]"}
+									{currency_selection selected=$variables.currency elemid="currency" elementname=$variable_prefix|cat:"[currency]"}
 								</td>
 							</tr>
 
@@ -911,35 +1048,39 @@
 							<input type="checkbox" name="{$variable_prefix}[separateitem]" value="1"{if $variables.separateitem} checked{/if}>
 							{trans("separate document position")}
 						</label>
-						<br>
-						<label>
-							{if $variables.id}
-							<INPUT type="checkbox" name="{$variable_prefix}[settlement]" value="1"{if $variables.settlement} checked{/if}>
-							{trans("with settlement of first deficient period")}
-							{else}
-							{trans("settlement type of first deficient period:")}
-							<SELECT name="{$variable_prefix}[settlement]">
-								<OPTION value="0">{trans("<!settlement>— none —")}</OPTION>
-								<OPTION value="1"{if $variables.settlement == 1} selected{/if}>{trans("<!settlement>next period")}</OPTION>
-								<OPTION value="2"{if $variables.settlement == 2} selected{/if}>{trans("<!settlement>current period")}</OPTION>
-							</SELECT>
-							{/if}
-						</label>
-						{if !$variables.id}
-						<br>
-						<label>
-							<input type="checkbox" name="{$variable_prefix}[last-settlement]" value="1"
-								id="last-settlement" {if $variables['last-settlement']} checked{/if}>
-							{trans("with settlement of last deficient period")}
-						</label>
-						<span id="a_align_periods">
+						<span id="a_settlement">
 							<br>
 							<label>
-								<input type="checkbox" name="{$variable_prefix}[align-periods]" value="1"
-									id="align-periods" {if $variables['align-periods']} checked{/if}>
-								{trans("full calendar periods")}
+								{if $variables.id}
+								<INPUT type="checkbox" id="first-settlement" name="{$variable_prefix}[settlement]" value="1"{if $variables.settlement} checked{/if}>
+								{trans("with settlement of first deficient period")}
+								{else}
+								{trans("settlement type of first deficient period:")}
+								<SELECT id="first-settlement" name="{$variable_prefix}[settlement]">
+									<OPTION value="0">{trans("<!settlement>— none —")}</OPTION>
+									<OPTION value="1"{if $variables.settlement == 1} selected{/if}>{trans("<!settlement>next period")}</OPTION>
+									<OPTION value="2"{if $variables.settlement == 2} selected{/if}>{trans("<!settlement>current period")}</OPTION>
+								</SELECT>
+								{/if}
 							</label>
 						</span>
+						{if !$variables.id}
+							<span id="a_last-settlement">
+								<br>
+								<label>
+									<input type="checkbox" name="{$variable_prefix}[last-settlement]" value="1"
+										id="last-settlement" {if $variables['last-settlement']} checked{/if}>
+									{trans("with settlement of last deficient period")}
+								</label>
+							</span>
+							<span id="a_align_periods">
+								<br>
+								<label>
+									<input type="checkbox" name="{$variable_prefix}[align-periods]" value="1"
+										id="align-periods" {if $variables['align-periods']} checked{/if}>
+									{trans("full calendar periods")}
+								</label>
+							</span>
 						{/if}
 					</TD>
 				</TR>
