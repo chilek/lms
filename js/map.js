@@ -1253,7 +1253,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 	if (mapBaseLayer != null)
 		map.setBaseLayer(map.layers[mapBaseLayer]);
 	else
-		map.setBaseLayer(gmap);
+		map.setBaseLayer(osm);
 
 	var mapLayers = getCookie('mapLayers');
 	if (mapLayers != null) {
