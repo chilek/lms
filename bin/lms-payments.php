@@ -390,7 +390,10 @@ if ($test) {
 $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_address_id,
         (CASE WHEN ca2.address_id IS NULL THEN ca1.address_id ELSE ca2.address_id END) AS post_address_id,
 		a.period, a.backwardperiod, a.at, a.suspended, a.settlement, a.datefrom, a.dateto, a.pdiscount, a.vdiscount,
-		a.invoice, a.separatedocument, c.type AS customertype,
+		a.invoice,
+		a.separatedocument,
+		a.separateitem,
+		c.type AS customertype,
 		(CASE WHEN c.type = ? THEN 0 ELSE (CASE WHEN a.liabilityid IS NULL
 			THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
 			ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
@@ -467,7 +470,7 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
         . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
         . ($tariff_tags ?: '')
     ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytime, c.paytime, d.inv_paytime,
-        a.paytype, c.paytype, d.inv_paytype, a.numberplanid, a.separatedocument, currency, netflag, price DESC, a.id";
+        a.paytype, c.paytype, d.inv_paytype, a.numberplanid, a.separatedocument, a.separateitem, currency, netflag, price DESC, a.id";
 $doms = array($dom);
 if ($last_dom) {
     $doms[] = 0;
@@ -495,7 +498,10 @@ $query = "SELECT
 			a.id, a.tariffid, a.customerid, a.recipient_address_id,
 			(CASE WHEN ca2.address_id IS NULL THEN ca1.address_id ELSE ca2.address_id END) AS post_address_id,
 			a.period, a.backwardperiod, a.at, a.suspended, a.settlement, a.datefrom,
-			0 AS pdiscount, 0 AS vdiscount, a.invoice, a.separatedocument, c.type AS customertype,
+			0 AS pdiscount, 0 AS vdiscount, a.invoice,
+			a.separatedocument,
+			a.separateitem,
+			c.type AS customertype,
 			t.type AS tarifftype,
 			t.taxcategory AS taxcategory,
 			t.description AS description, a.id AS assignmentid,
@@ -633,7 +639,7 @@ $query = "SELECT
         . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
         . ($tariff_tags ?: '')
     ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytime, c.paytime, d.inv_paytime,
-        a.paytype, c.paytype, d.inv_paytype, a.numberplanid, a.separatedocument, currency, netflag, voipcost.value DESC, a.id";
+        a.paytype, c.paytype, d.inv_paytype, a.numberplanid, a.separatedocument, a.separateitem, currency, netflag, voipcost.value DESC, a.id";
 
 $billings = $DB->GetAll(
     $query,
@@ -1783,7 +1789,7 @@ foreach ($assigns as $assign) {
             }
 
             if (!$prefer_settlement_only || !$assign['settlement'] || !$assign['datefrom']) {
-                if ($assign['invoice'] == DOC_DNOTE) {
+                if ($assign['invoice'] == DOC_DNOTE || !empty($assign['separateitem'])) {
                     $tmp_itemid = 0;
                 } else {
                     if (empty($assign['tariffid'])) {
@@ -2235,7 +2241,7 @@ foreach ($assigns as $assign) {
                 }
 
                 if ($assign['invoice']) {
-                    if ($assign['invoice'] == DOC_DNOTE) {
+                    if ($assign['invoice'] == DOC_DNOTE || !empty($assign['separateitem'])) {
                         $tmp_itemid = 0;
                     } else {
                         if (empty($assign['tariffid'])) {

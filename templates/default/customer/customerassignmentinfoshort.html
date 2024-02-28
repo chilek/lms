@@ -114,17 +114,28 @@
 				{/if}
 			</TD>
 		</TR>
-		<TR>
-			<TD>
+		<tr>
+			<td>
 				{icon name="options"}
-			</TD>
-			<TD class="nobr">
+			</td>
+			<td class="nobr">
 				{trans("separate document")}
-			</TD>
-			<TD>
-				{if $assignment.separatedocument}{trans("yes")}{else}{trans("no")}{/if}
-			</TD>
-		</TR>
+			</td>
+			<td>
+				{if empty($assignment.separatedocument)}{trans("no")}{else}{trans("yes")}{/if}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="options"}
+			</td>
+			<td class="nobr">
+				{trans("separate document position")}
+			</td>
+			<td>
+				{if empty($assignment.separateitem)}{trans("no")}{else}{trans("yes")}{/if}
+			</td>
+		</tr>
 		<TR>
 			<TD>
 				{icon name="money"}

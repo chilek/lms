@@ -124,8 +124,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             a.at, a.suspended, a.invoice, a.settlement, a.recipient_address_id,
             a.datefrom, a.dateto, a.pdiscount,
             a.vdiscount AS unitary_vdiscount,
-            (a.vdiscount * a.count) AS vdiscount,                                                                                        
-            a.attribute, a.liabilityid, a.separatedocument,
+            (a.vdiscount * a.count) AS vdiscount,
+            a.attribute, a.liabilityid,
+            a.separatedocument, a.separateitem,
             (CASE WHEN t.flags IS NULL
                 THEN
                     (CASE WHEN (l.flags & ' . LIABILITY_FLAG_SPLIT_PAYMENT . ') > 0 THEN 1 ELSE 0 END)
@@ -823,7 +824,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                     'at' => $partial_at,
                                     'count' => $data['count'],
                                     'invoice' => isset($data['invoice']) ? intval($data['invoice']) : 0,
-                                    'separatedocument' => isset($data['separatedocument']) ? 1 : 0,
+                                    'separatedocument' => empty($data['separatedocument']) ? 0 : 1,
+                                    'separateitem' => empty($data['separateitem']) ? 0 : 1,
                                     'settlement' => 0,
                                     SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : null,
                                     'paytime' => !empty($data['paytime']) && $data['paytime'] != -1 ? $data['paytime'] : null,
@@ -926,7 +928,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                 'at' => $align_periods ? $partial_at : $data['at'],
                                 'count' => $data['count'],
                                 'invoice' => isset($data['invoice']) ? intval($data['invoice']) : 0,
-                                'separatedocument' => isset($data['separatedocument']) ? 1 : 0,
+                                'separatedocument' => empty($data['separatedocument']) ? 0 : 1,
+                                'separateitem' => empty($data['separateitem']) ? 0 : 1,
                                 'settlement' => 0,
                                 SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : null,
                                 'paytime' => !empty($data['paytime']) && $data['paytime'] != -1 ? $data['paytime'] : null,
@@ -970,7 +973,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         'at' => $at,
                         'count' => $data['count'],
                         'invoice' => isset($data['invoice']) ? intval($data['invoice']) : 0,
-                        'separatedocument' => isset($data['separatedocument']) ? 1 : 0,
+                        'separatedocument' => empty($data['separatedocument']) ? 0 : 1,
+                        'separateitem' => empty($data['separateitem']) ? 0 : 1,
                         'settlement' => isset($data['settlement']) && $data['settlement'] == 1 && ($idx == 1 || !$align_periods) ? 1 : 0,
                         SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : null,
                         'paytime' => !empty($data['paytime']) && $data['paytime'] != -1 ? $data['paytime'] : null,
@@ -1095,7 +1099,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         'at'                => $partial_at,
                         'count'             => $data['count'] ?? 1,
                         'invoice'           => isset($data['invoice']) ? intval($data['invoice']) : 0,
-                        'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
+                        'separatedocument'  => empty($data['separatedocument']) ? 0 : 1,
+                        'separateitem'      => empty($data['separateitem']) ? 0 : 1,
                         'settlement'        => 0,
                         SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : null,
                         'paytime'           => !empty($data['paytime']) && $data['paytime'] != -1 ? $data['paytime'] : null,
@@ -1174,7 +1179,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         'at'                => $partial_at,
                         'count'             => $data['count'] ?? 1,
                         'invoice'           => isset($data['invoice']) ? intval($data['invoice']) : 0,
-                        'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
+                        'separatedocument'  => empty($data['separatedocument']) ? 0 : 1,
+                        'separateitem'      => empty($data['separateitem']) ? 0 : 1,
                         'settlement'        => 0,
                         SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : null,
                         'paytime'           => !empty($data['paytime']) && $data['paytime'] != -1 ? $data['paytime'] : null,
@@ -1237,7 +1243,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     'at' => $data['at'],
                     'count'             => $data['count'] ?? 1,
                     'invoice' => isset($data['invoice']) ? intval($data['invoice']) : 0,
-                    'separatedocument' => isset($data['separatedocument']) ? 1 : 0,
+                    'separatedocument' => empty($data['separatedocument']) ? 0 : 1,
+                    'separateitem' => empty($data['separateitem']) ? 0 : 1,
                     'settlement' => !isset($data['settlement']) || $data['settlement'] != 1 ? 0 : 1,
                     SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : null,
                     'paytime' => !empty($data['paytime']) && $data['paytime'] != -1 ? $data['paytime'] : null,
@@ -1274,11 +1281,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         $this->db->Execute(
             'INSERT INTO assignments
-                (tariffid, customerid, period, backwardperiod, at, count, invoice, separatedocument,
+                (tariffid, customerid, period, backwardperiod, at, count, invoice,
+                separatedocument, separateitem,
                 settlement, numberplanid,
                 paytime, paytype, datefrom, dateto, pdiscount, vdiscount, attribute, liabilityid, recipient_address_id,
                 docid, promotionschemaid, commited)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array_values($args)
         );
 

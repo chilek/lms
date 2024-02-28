@@ -420,7 +420,8 @@ if (isset($_POST['assignment'])) {
             'count' => $count,
             'note' => htmlspecialchars($a['note']),
             'invoice' => isset($a['invoice']) ? intval($a['invoice']) : 0,
-            'separatedocument' => isset($a['separatedocument']) ? 1 : 0,
+            'separatedocument' => empty($a['separatedocument']) ? 0 : 1,
+            'separateitem' => empty($a['separateitem']) ? 0 : 1,
             'settlement' => empty($a['settlement']) ? 0 : 1,
             'datefrom' => $from,
             'dateto' => $to,
@@ -436,7 +437,7 @@ if (isset($_POST['assignment'])) {
 
         $DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, attribute=?, period=?,
             backwardperiod=?, at=?, count=?, note=?,
-			invoice=?, separatedocument=?, settlement=?, datefrom=?, dateto=?, pdiscount=?, vdiscount=?,
+			invoice=?, separatedocument=?, separateitem = ?, settlement=?, datefrom=?, dateto=?, pdiscount=?, vdiscount=?,
 			liabilityid=?, numberplanid=?, paytime = ?, paytype=?, recipient_address_id=?
 			WHERE id=?', array_values($args));
         if ($SYSLOG) {
@@ -506,7 +507,9 @@ if (isset($_POST['assignment'])) {
     $a = $DB->GetRow(
         'SELECT a.id AS id, a.customerid, a.tariffid, a.period, a.backwardperiod,
         a.at, a.count, a.datefrom, a.dateto, a.numberplanid, a.paytime, a.paytype,
-        a.invoice, a.separatedocument, a.note,
+        a.invoice,
+        a.separatedocument, a.separateitem,
+        a.note,
         liabilities.type,
         (CASE WHEN liabilityid IS NULL
             THEN (CASE WHEN tariffs.flags & ? > 0 THEN 1 ELSE 0 END)
