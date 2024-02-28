@@ -633,6 +633,8 @@ version 28-git (????-??-??):
   - improvement: separated help queue rights for sms and e-mail notices [chilan]
   - improvement: uke/pit: new form option 'verify feeding network nodes of flexibility points' checked
     by default [chilan]
+  - enhancement: assignment option 'separate document position' allows to force disabling items aggregation
+    to single document position [chilan]
 
 version 27.0 (2021-08-20):
 
