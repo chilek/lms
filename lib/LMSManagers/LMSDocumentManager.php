@@ -2713,8 +2713,6 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 $subject
             );
 
-            $doc['name'] = '"' . $doc['name'] . '"';
-
             $mailto = array();
             $mailto_qp_encoded = array();
             foreach (explode(',', $custemail) as $email) {
