@@ -5533,6 +5533,7 @@ $_LANG['invoice transfer form'] = 'druczek przelewu na fakturze';
 
 $_LANG['Copy from billing address'] = 'Kopiuj z adresu billingowego';
 $_LANG['Copy from post address'] = 'Kopiuj z adresu korespondencyjnego';
+$_LANG['copy consent date'] = 'kopiuj datę wystawienia';
 
 $_LANG['Choose TERYT location'] = 'Wybierz lokalizację TERYT';
 $_LANG['Ticket watching'] = 'Obserwowanie zgłoszeń';

@@ -150,6 +150,7 @@ switch ($action) {
         $currtime = time();
         $invoice['cdate'] = $currtime;
         $invoice['sdate'] = $currtime;
+        $invoice['copy-cdate'] = 1;
 
         $invoice['proforma'] = isset($_GET['proforma']) ? 1 : 0;
 

@@ -82,6 +82,9 @@ if (isset($_GET['id']) && $action == 'init') {
     $cnote['cdate'] = $currtime;
     //$cnote['sdate'] = $currtime;
     $cnote['sdate'] = $invoice['sdate'];
+    if (date('Y/m/d', $cnote['cdate']) == date('Y/m/d', $cnote['sdate'])) {
+        $cnote['copy-cdate'] = 1;
+    }
     $cnote['customerid'] = $invoice['customerid'];
     $cnote['reason'] = '';
     $cnote['paytype'] = $invoice['paytype'];

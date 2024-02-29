@@ -98,6 +98,10 @@ if (isset($_GET['id']) && ($action == 'edit' || $action == 'init')) {
     $invoice['oldcomment'] = $invoice['comment'];
     $invoice['oldmemo'] = $invoice['memo'];
 
+    if (date('Y/m/d', $invoice['cdate']) == date('Y/m/d', $invoice['sdate'])) {
+        $invoice['copy-cdate'] = 1;
+    }
+
     $hook_data = array(
         'contents' => $invoicecontents,
         'invoice' => $invoice,

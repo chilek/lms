@@ -57,7 +57,7 @@
 					{/if}
 					{numberplan_selection
 						customer_selector = "#ownerid_input"
-						cdate_selector    = "#cdate"
+						cdate_selector    = "[name='invoice[cdate]']"
 						numberplanlist    = $numberplanlist
 						input_name        = "invoice[number]"
 						input_value       = $invoice.number
@@ -77,7 +77,7 @@
 				</td>
 				<td class="nobr">
 					{if ConfigHelper::checkPrivilege("invoice_consent_date")}
-						<input type="text" name="invoice[cdate]" id="cdate" value="{$invoice.cdate|date_format:"Y/m/d"}" size="12"
+						<input type="text" name="invoice[cdate]" value="{$invoice.cdate|date_format:"Y/m/d"}" size="12"
 							placeholder="{trans("yyyy/mm/dd")}" data-cdate="{$invoice.cdate}"
 							{tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}
 						>
@@ -95,15 +95,20 @@
 					{trans("Sale date:")}
 				</td>
 				<td class="nobr">
+					<input type="hidden" name="invoice[sdate]" value="{$invoice.sdate|date_format:"Y/m/d"}">
 					{if ConfigHelper::checkPrivilege("invoice_sale_date")}
 						<input type="text" name="invoice[sdate]" value="{$invoice.sdate|date_format:"Y/m/d"}" size="12"
 							placeholder="{trans("yyyy/mm/dd")}"
 							{tip class="lms-ui-date" text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}
-						>
+							{if !empty($invoice['copy-cdate'])} disabled{/if}>
 					{else}
-						<input type="hidden" name="invoice[sdate]" value="{$invoice.sdate|date_format:"Y/m/d"}">
 						{$invoice.sdate|date_format:"Y-m-d"}
 					{/if}
+					<label>
+						<input type="checkbox" name="invoice[copy-cdate]" id="copy-cdate" value="1"
+								{if !empty($invoice['copy-cdate'])} checked{/if}>
+						{trans("copy consent date")}
+					</label>
 				</td>
 			</tr>
 			<tr>
@@ -111,7 +116,7 @@
 					{trans("Deadline:")}
 				</td>
 				<td class="nobr">
-					{deadline_selection name="invoice[deadline]" id="deadline" cdate_selector="#cdate" value=$invoice.deadline}
+					{deadline_selection name="invoice[deadline]" id="deadline" cdate_selector="[name='invoice[cdate]']" value=$invoice.deadline}
 				</td>
 			</tr>
 			<tr>
@@ -256,7 +261,7 @@
 			data: {
 				updatedocumentflags: 1,
 				customerid: $('#ownerid_input').val(),
-				cdate: $('#cdate').val(),
+				cdate: $('[name="invoice[cdate]"]').val(),
 				value: $('#s-valuebrutto').val()
 			},
 			dataType: "json",
@@ -302,9 +307,22 @@
 	$(function() {
 		$('form[name="setcustomer"] [name="invoice[number]"]').focus();
 
-		$('#cdate').change(function() {
+		$('[name="invoice[cdate]"]').change(function() {
 			updateDocumentFlags();
+			if ($("#copy-cdate").prop('checked')) {
+				var date = $(this).datepicker("getDate");
+				$('input[type="text"][name="invoice[sdate]').datepicker("setDate", date);
+				$('[type="hidden"][name="invoice[sdate]"]').val(sprintf("%04d/%02d/%02d", date.getFullYear(), date.getMonth() + 1, date.getDate()));
+			}
 		});
+
+		$('#copy-cdate').change(function() {
+			var checked = $(this).prop('checked');
+			$('input[type="text"][name="invoice[sdate]"]').datepicker("option", "disabled", checked);
+			if (checked) {
+				$('[name="invoice[cdate]"]').change();
+			}
+		}).change();
 	});
 
 </script>

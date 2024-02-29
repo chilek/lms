@@ -121,6 +121,10 @@ if (isset($_GET['id']) && $action == 'edit') {
     );
     $cnote['content_diff'] = 1;
 
+    if (date('Y/m/d', $cnote['cdate']) == date('Y/m/d', $cnote['sdate'])) {
+        $cnote['copy-cdate'] = 1;
+    }
+
     $hook_data = array(
         'contents' => $cnotecontents,
         'cnote' => $cnote,

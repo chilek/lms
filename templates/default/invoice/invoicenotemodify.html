@@ -60,7 +60,7 @@
 			data: {
 				updatedocumentflags: 1,
 				customerid: {$refdoc.customerid},
-				cdate: $('#cdate').val(),
+				cdate: $('[name="cnote[cdate]"]').val(),
 				value: $('#s-valuebrutto').val()
 			},
 			dataType: "json",
@@ -85,9 +85,22 @@
 			return;
 		});
 
-		$('#cdate').change(function() {
+		$('[name="cnote[cdate]"]').change(function() {
 			updateDocumentFlags();
+			if ($("#copy-cdate").prop('checked')) {
+				var date = $(this).datepicker("getDate");
+				$('input[type="text"][name="cnote[sdate]').datepicker("setDate", date);
+				$('[type="hidden"][name="cnote[sdate]"]').val(sprintf("%04d/%02d/%02d", date.getFullYear(), date.getMonth() + 1, date.getDate()));
+			}
 		});
+
+		$('#copy-cdate').change(function() {
+			var checked = $(this).prop('checked');
+			$('input[type="text"][name="cnote[sdate]"]').datepicker("option", "disabled", checked);
+			if (checked) {
+				$('[name="cnote[cdate]"]').change();
+			}
+		}).change();
 	});
 
 	$('body').on('change', '.template-selector', function() {
@@ -123,7 +136,7 @@
 				</td>
 				<td class="nobr">
 					{numberplan_selection
-						cdate_selector    = "#cdate"
+						cdate_selector    = "[name='cnode[cdate]']"
 						numberplanlist    = $numberplanlist
 						input_name        = "cnote[number]"
 						input_value       = $cnote.number
@@ -143,7 +156,7 @@
 				</td>
 				<td class="nobr">
 					{if ConfigHelper::checkPrivilege("invoice_consent_date")}
-						<input type="text" name="cnote[cdate]" id="cdate" value="{$cnote.cdate|date_format:"Y/m/d"}" size="12"
+						<input type="text" name="cnote[cdate]" value="{$cnote.cdate|date_format:"Y/m/d"}" size="12"
 							placeholder="{trans("yyyy/mm/dd")}" data-cdate="{$cnote.cdate}"
 							{tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}
 						>
@@ -151,7 +164,7 @@
 							<input type="hidden" name="cnote[cdatewarning]" value="1">
 						{/if}
 					{else}
-						<input type="hidden" name="cnote[cdate]" id="cdate" value="{$cnote.cdate|date_format:"Y/m/d"}">
+						<input type="hidden" name="cnote[cdate]" value="{$cnote.cdate|date_format:"Y/m/d"}">
 						{$cnote.cdate|date_format:"Y-m-d"}
 					{/if}
 				</td>
@@ -161,15 +174,20 @@
 					{trans("Sale date:")}
 				</td>
 				<td class="nobr">
+					<input type="hidden" name="cnote[sdate]" value="{$cnote.sdate|date_format:"Y/m/d"}">
 					{if ConfigHelper::checkPrivilege("invoice_sale_date")}
 						<input type="text" name="cnote[sdate]" value="{$cnote.sdate|date_format:"Y/m/d"}" size="12"
 							placeholder="{trans("yyyy/mm/dd")}"
 							{tip class="lms-ui-date" text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}
-						>
+							{if !empty($cnote['copy-cdate'])} disabled{/if}>
 					{else}
-						<input type="hidden" name="cnote[sdate]" value="{$cnote.sdate|date_format:"Y/m/d"}">
 						{$cnote.sdate|date_format:"Y-m-d"}
 					{/if}
+					<label>
+						<input type="checkbox" name="cnote[copy-cdate]" id="copy-cdate" value="1"
+								{if !empty($cnote['copy-cdate'])} checked{/if}>
+						{trans("copy consent date")}
+					</label>
 				</td>
 			</tr>
 			<tr>
@@ -177,7 +195,7 @@
 					{trans("Deadline:")}
 				</td>
 				<td class="nobr">
-					{deadline_selection name="cnote[deadline]" id="deadline" cdate_selector="#cdate" value=$cnote.deadline}
+					{deadline_selection name="cnote[deadline]" id="deadline" cdate_selector="[name='cnote[cdate]']" value=$cnote.deadline}
 				</td>
 			</tr>
 			<tr>
