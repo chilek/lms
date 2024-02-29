@@ -12381,6 +12381,13 @@ html .ui-button.ui-state-disabled:active {
   margin-left: 0.3em;
   padding: 0;
 }
+input[disabled] + .ui-datepicker-trigger {
+  color: #888888 !important;
+  cursor: no-drop;
+}
+input[disabled] + .ui-datepicker-trigger:before {
+  color: #888888 !important;
+}
 .ui-tooltip.voipaccountinfo,
 .ui-tooltip.invoiceinfo,
 .ui-tooltip.docnumber,
