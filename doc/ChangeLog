@@ -635,6 +635,8 @@ version 28-git (????-??-??):
     by default [chilan]
   - enhancement: assignment option 'separate document position' allows to force disabling items aggregation
     to single document position [chilan]
+  - improvement: 'assignments.default_net_account' with default value of 'false' controls default state
+    of net account flag option in customer assignment forms [chilan]
 
 version 27.0 (2021-08-20):
 
