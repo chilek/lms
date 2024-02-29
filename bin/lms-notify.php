@@ -693,11 +693,11 @@ function parse_customer_data($data, $format, $row)
             FROM assignments a
             LEFT JOIN tariffs t ON t.id = a.tariffid
             LEFT JOIN liabilities l ON l.id = a.liabilityid
-            WHERE customerid = ? AND (t.id IS NOT NULL OR l.id IS NOT NULL)
+            WHERE a.customerid = ? AND (t.id IS NOT NULL OR l.id IS NOT NULL)
                 AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)
                 AND NOT EXISTS (
                     SELECT 1 FROM assignments
-                    WHERE customerid = ? AND tariffid IS NULL AND liabilityid IS NULL
+                    WHERE customerid = a.customerid AND tariffid IS NULL AND liabilityid IS NULL
                         AND datefrom <= ? AND (dateto > ? OR dateto = 0)
                     )
             GROUP BY acurrency',
@@ -706,7 +706,6 @@ function parse_customer_data($data, $format, $row)
                 $row['id'],
                 $GLOBALS['currtime'],
                 $GLOBALS['currtime'],
-                $row['id'],
                 $GLOBALS['currtime'],
                 $GLOBALS['currtime'],
             )
