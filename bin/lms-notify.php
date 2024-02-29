@@ -684,25 +684,26 @@ function parse_customer_data($data, $format, $row)
     );
     if (preg_match("/\%abonament/", $data)) {
         $assignments = $DB->GetAll(
-            'SELECT ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN t.value ELSE l.value END)) / 100) - a.vdiscount) *
-			    (CASE a.suspended WHEN 0
-				    THEN 1.0
-				    ELSE ?
-			    END), 2) AS value, t.currency
+            'SELECT SUM(ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN t.value ELSE l.value END)) / 100) - a.vdiscount) *
+                (CASE a.suspended WHEN 0
+                    THEN 1.0
+                    ELSE ?
+                END), 2)) AS value,
+            (CASE WHEN a.liabilityid IS NULL THEN t.currency ELSE l.currency END) AS acurrency
             FROM assignments a
             LEFT JOIN tariffs t ON t.id = a.tariffid
             LEFT JOIN liabilities l ON l.id = a.liabilityid
-            WHERE customerid = ? AND (t.id IS NOT NULL OR l.id IS NOT NULL)
+            WHERE a.customerid = ? AND (t.id IS NOT NULL OR l.id IS NOT NULL)
                 AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)
                 AND NOT EXISTS (
-                    SELECT COUNT(id) FROM assignments
-                    WHERE customerid = c.id AND tariffid IS NULL AND liabilityid IS NULL
-                        AND datefrom <= ? AND (dateto > ? OR dateto = 0
-                )
-            GROUP BY tariffs.currency',
+                    SELECT 1 FROM assignments
+                    WHERE customerid = a.customerid AND tariffid IS NULL AND liabilityid IS NULL
+                        AND datefrom <= ? AND (dateto > ? OR dateto = 0)
+                    )
+            GROUP BY acurrency',
             array(
-                $row['id'],
                 round($GLOBALS['suspension_percentage'] / 100, 2),
+                $row['id'],
                 $GLOBALS['currtime'],
                 $GLOBALS['currtime'],
                 $GLOBALS['currtime'],
