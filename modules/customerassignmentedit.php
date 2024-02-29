@@ -592,6 +592,10 @@ if (isset($_POST['assignment'])) {
         );
         $a['discount_type'] = $default_assignment_discount_type == 'percentage' ? DISCOUNT_PERCENTAGE : DISCOUNT_AMOUNT;
     }
+
+    if (!empty($a['tariffid'])) {
+        $a['netflag'] = ConfigHelper::checkConfig('assignments.default_net_account');
+    }
 }
 
 $layout['pagetitle'] = trans('Liability Edit: $a', '<A href="?m=customerinfo&id='.$customer['id'].'">'.$customer['name'].'</A>');

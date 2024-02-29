@@ -221,6 +221,8 @@ if (isset($_POST['assignment'])) {
         );
     }
 
+    $a['netflag'] = ConfigHelper::checkConfig('assignments.default_net_account');
+
     $a['count'] = 1;
     $a['currency'] = Localisation::getDefaultCurrency();
 }

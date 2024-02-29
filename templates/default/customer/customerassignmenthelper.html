@@ -634,7 +634,8 @@
 											<td rowspan="2">
 												<label>
 													<input type="checkbox" id="netflag" name="{$variable_prefix}[netflag]" value="1"
-														{tip text="Billing according to the net price"}>
+														{tip text="Billing according to the net price"}
+														{if !empty($variables.netflag)} checked{/if}>
 													<span class="lms-ui-label">{trans('calculated from net')}</span>
 												</label>
 												<span id="tariff-price-variants"></span>
