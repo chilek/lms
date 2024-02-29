@@ -2023,19 +2023,6 @@ foreach ($tmp_netlinkpoints as $netlinkpoint) {
 unset($tmp_netlinkpoints);
 
 if ($report_type == 'full') {
-    $po_buffer = 'po01_id_podmiotu_obcego,po02_nip_pl,po03_nip_nie_pl' . EOL;
-    foreach ($foreigners as $name => $foreigner) {
-        if (isset($used_foreigners[$name])) {
-            $data = array(
-                // alternatively $foreingerid can be used
-                'po01_id_podmiotu_obcego' => 'PO-' . $foreigner,
-                'po02_nip_pil' => '',
-                'po03_nip_nie_pl' => '',
-            );
-            $po_buffer .= to_csv($data) . EOL;
-        }
-    }
-
     //prepare info about network links (only between different network nodes)
     $processed_netlinks = array();
     $netlinks = array();
@@ -2599,6 +2586,19 @@ if ($report_type == 'full') {
         }
     }
     unset($netnode);
+
+    $po_buffer = 'po01_id_podmiotu_obcego,po02_nip_pl,po03_nip_nie_pl' . EOL;
+    foreach ($foreigners as $name => $foreigner) {
+        if (isset($used_foreigners[$name])) {
+            $data = array(
+                // alternatively $foreingerid can be used
+                'po01_id_podmiotu_obcego' => 'PO-' . $foreigner,
+                'po02_nip_pil' => '',
+                'po03_nip_nie_pl' => '',
+            );
+            $po_buffer .= to_csv($data) . EOL;
+        }
+    }
 } elseif (!$summary_only) {
     if (!empty($ranges)) {
         foreach ($ranges as $range_key => $range) {
