@@ -1393,7 +1393,7 @@ foreach ($assigns as $assign) {
     $linktechnology = isset($assignment_linktechnologies[$assign['id']]) ? $assignment_linktechnologies[$assign['id']]['technology'] : null;
 
     if (!empty($assign['suspended']) || !empty($assign['allsuspended'])) {
-        $assign['price'] = $assign['price'] - round($assign['price'] * $suspension_percentage / 100, 3);
+        $assign['price'] = round($assign['price'] * $suspension_percentage / 100, 3);
         $assign['value'] = round($assign['price'] * $assign['count'], 2);
     }
     if (empty($assign['value']) && ($assign['liabilityid'] != 'set' || !$empty_billings)) {
@@ -1546,7 +1546,7 @@ foreach ($assigns as $assign) {
     }
 
     if ($suspension_percentage && ($assign['suspended'] || $assign['allsuspended'])) {
-        $desc .= " ".$suspension_description;
+        $desc .= ' ' . $suspension_description;
     }
 
     if (!isset($invoices[$cid]) || $assign['separatedocument']) {
