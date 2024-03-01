@@ -95,7 +95,7 @@ switch ($mode) {
                     cc2.contact AS bankaccount,
                     full_address AS address,
                     post_name,
-                    post_full_address AS post_address,
+                    CASE WHEN full_address = post_full_address THEN NULL ELSE post_full_address END AS post_address,
                     deleted,
                     altname,
                     " . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . " AS customername,
