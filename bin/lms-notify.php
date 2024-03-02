@@ -151,9 +151,7 @@ $dayend = mktime(23, 59, 59, $month, $day, $year);
 if ($omit_free_days) {
     $yesterday = strtotime('yesterday', $current_time);
     $yesterday_year = date('Y', $yesterday);
-    if (!isset($holidays[$yesterday_year])) {
-        $holidays[$yesterday_year] = getHolidays($yesterday_year);
-    }
+    $holidays[$yesterday_year] = getHolidays($yesterday_year);
     if (date('N', $yesterday) > 5 || isset($holidays[$yesterday_year][$yesterday])) {
         $prevday = $daystart;
         do {
@@ -3195,23 +3193,19 @@ if (empty($types) || in_array('events', $types)) {
                 if (!empty($customers[$cid]['email'])) {
                     $emails = explode(',', $debug_email ?: $customers[$cid]['email']);
                     foreach ($emails as $contact) {
-                        if (!isset($emails[$contact])) {
-                            $contacts[$contact] = array(
-                                'cid' => $cid,
-                                'email' => $contact,
-                            );
-                        }
+                        $contacts[$contact] = array(
+                            'cid' => $cid,
+                            'email' => $contact,
+                        );
                     }
                 }
                 if (!empty($customers[$cid]['phone'])) {
                     $phones = explode(',', $debug_phone ?: $customers[$cid]['phone']);
                     foreach ($phones as $contact) {
-                        if (!isset($phones[$contact])) {
-                            $contacts[$contact] = array(
-                                'cid' => $cid,
-                                'phone' => $contact,
-                            );
-                        }
+                        $contacts[$contact] = array(
+                            'cid' => $cid,
+                            'phone' => $contact,
+                        );
                     }
                 }
             }

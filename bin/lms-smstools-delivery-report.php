@@ -44,9 +44,7 @@ $parameters = array(
 $long_to_shorts = array();
 foreach ($parameters as $long => $short) {
     $long = str_replace(':', '', $long);
-    if (isset($short)) {
-        $short = str_replace(':', '', $short);
-    }
+    $short = str_replace(':', '', $short);
     $long_to_shorts[$long] = $short;
 }
 

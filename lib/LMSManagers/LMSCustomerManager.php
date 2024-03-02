@@ -643,9 +643,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $this->syslog->AddMessage(SYSLOG::RES_CUSTCONSENT, SYSLOG::OPER_ADD, $args);
                 }
             }
-            if (!empty($records)) {
-                $this->db->Execute('INSERT INTO customerconsents (customerid, type, cdate) VALUES ' . implode(',', $records));
-            }
+            $this->db->Execute('INSERT INTO customerconsents (customerid, type, cdate) VALUES ' . implode(',', $records));
         }
     }
 

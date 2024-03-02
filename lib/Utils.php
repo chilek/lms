@@ -361,11 +361,9 @@ class Utils
         $result = array();
         $text = preg_replace('/\s/', '', $text);
         $properties = explode(';', $text);
-        if (!empty($properties)) {
-            foreach ($properties as $property) {
-                [$name, $value] = explode(':', $property);
-                $result[$name] = $value;
-            }
+        foreach ($properties as $property) {
+            [$name, $value] = explode(':', $property);
+            $result[$name] = $value;
         }
         return $result;
     }

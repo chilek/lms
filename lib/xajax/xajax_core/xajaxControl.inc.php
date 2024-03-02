@@ -367,9 +367,7 @@ class xajaxControl
         if ('forbidden' == $this->sEndTag) {
             if ('HTML' == XAJAX_HTML_CONTROL_DOCTYPE_FORMAT) {
                 echo '>';
-            } else if ('XHTML' == XAJAX_HTML_CONTROL_DOCTYPE_FORMAT) {
-                echo '/>';
-            }
+            } else echo '/>';
 
             if ('%inline' != $sClass) {
                 // this odd syntax is necessary to detect request for no formatting

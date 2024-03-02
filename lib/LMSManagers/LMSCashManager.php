@@ -391,40 +391,36 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 $customer_names = array_filter($customer_names, function ($customer_name) {
                     return strlen($customer_name);
                 });
-
-                if (!empty($customer_names)) {
-                    if (count($customer_names) > 1) {
-                        $uids = $this->db->GetCol(
-                            'SELECT id
+                if (count($customer_names) > 1) {
+                    $uids = $this->db->GetCol(
+                        'SELECT id
                             FROM customers
                             WHERE UPPER(' . $this->db->Concat('lastname', "(CASE WHEN name <> '' THEN ' ' ELSE '' END)", 'name') . ') = UPPER(?)
                                 OR UPPER(' . $this->db->Concat('lastname', "(CASE WHEN name <> '' THEN ' ' ELSE '' END)", 'name') . ') = UPPER(?)
                                 OR UPPER(' . $this->db->Concat('name', "(CASE WHEN name <> '' THEN ' ' ELSE '' END)", 'lastname') . ') = UPPER(?)
                                 OR UPPER(' . $this->db->Concat('name', "(CASE WHEN name <> '' THEN ' ' ELSE '' END)", 'lastname') . ') = UPPER(?)',
-                            array(
-                                reset($customer_names),
-                                end($customer_names),
-                                reset($customer_names),
-                                end($customer_names),
-                            )
-                        );
-                    } else {
-                        $uids = $this->db->GetCol(
-                            'SELECT id
+                        array(
+                            reset($customer_names),
+                            end($customer_names),
+                            reset($customer_names),
+                            end($customer_names),
+                        )
+                    );
+                } else {
+                    $uids = $this->db->GetCol(
+                        'SELECT id
                             FROM customers
                             WHERE UPPER(' . $this->db->Concat('lastname', "(CASE WHEN name <> '' THEN ' ' ELSE '' END)", 'name') . ') = UPPER(?)
                                 OR UPPER(' . $this->db->Concat('name', "(CASE WHEN name <> '' THEN ' ' ELSE '' END)", 'lastname') . ') = UPPER(?)',
-                            array(
-                                reset($customer_names),
-                                reset($customer_names),
-                            )
-                        );
-                    }
-
-                    if (!empty($uids) && count($uids) == 1) {
-                        $id = $uids[0];
-                        $found_by_name = true;
-                    }
+                        array(
+                            reset($customer_names),
+                            reset($customer_names),
+                        )
+                    );
+                }
+                if (!empty($uids) && count($uids) == 1) {
+                    $id = $uids[0];
+                    $found_by_name = true;
                 }
             }
 

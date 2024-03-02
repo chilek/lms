@@ -1696,12 +1696,8 @@ if ($report_type == 'full') {
         );
 
         if (isset($nodecoords[$node['nodeid']])) {
-            if (!strlen($netrange['longitude'])) {
-                $netrange['longitude'] = 0;
-            }
-            if (!strlen($netrange['latitude'])) {
-                $netrange['latitude'] = 0;
-            }
+            $netrange['longitude'] = 0;
+            $netrange['latitude'] = 0;
             $netrange['longitude'] += $nodecoords[$node['nodeid']]['longitude'];
             $netrange['latitude'] += $nodecoords[$node['nodeid']]['latitude'];
             $netrange['count']++;

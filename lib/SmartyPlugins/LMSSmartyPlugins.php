@@ -869,10 +869,8 @@ class LMSSmartyPlugins
         $result = '';
 
         if (isset($params['popup']) && $popup = $params['popup']) {
-            if (is_array($params)) {
-                foreach ($params as $paramid => $paramval) {
-                    $popup = str_replace('$'.$paramid, $paramval ?? '', $popup);
-                }
+            foreach ($params as $paramid => $paramval) {
+                $popup = str_replace('$'.$paramid, $paramval ?? '', $popup);
             }
 
             $text = " onclick=\"popup('$popup',1," . (isset($params['sticky']) && $params['sticky'] ? 1 : 0) . ",10,10)\" onmouseout=\"pophide();\"";

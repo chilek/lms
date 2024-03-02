@@ -617,9 +617,7 @@ final class xajax
                 $mResult = (false === $bEndRequest);
             }
 
-            if (true === $mResult) {
-                $mResult = $this->objPluginManager->processRequest();
-            }
+            $mResult = $this->objPluginManager->processRequest();
 
             if (true === $mResult) {
                 if ($this->bCleanBuffer) {

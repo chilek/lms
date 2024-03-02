@@ -629,26 +629,23 @@ if (defined('USERPANEL_SETUPMODE')) {
             if (!empty($mail_subject) && !empty($mail_body) && !empty($rejected_changes)) {
                 $mail_sender = ConfigHelper::getConfig('userpanel.change_notification_mail_sender', ConfigHelper::getConfig('mail.smtp_username'));
                 foreach ($rejected_changes as $customerid => $changes) {
-                    if (!empty($changes)) {
-                        $customerinfo = $LMS->GetCustomer($customerid);
-                        $mail_recipients = array();
-                        foreach ($customerinfo['emails'] as $email) {
-                            if (($email['type'] & (CONTACT_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_NOTIFICATIONS) {
-                                $mail_recipients[] = $email['contact'];
-                            }
+                    $customerinfo = $LMS->GetCustomer($customerid);
+                    $mail_recipients = array();
+                    foreach ($customerinfo['emails'] as $email) {
+                        if (($email['type'] & (CONTACT_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_NOTIFICATIONS) {
+                            $mail_recipients[] = $email['contact'];
                         }
+                    }
+                    if (!empty($mail_recipients)) {
+                        $subject = parse_customer_mail($mail_subject, array('changes' => $changes));
+                        $body = parse_customer_mail($mail_body, array('changes' => $changes));
 
-                        if (!empty($mail_recipients)) {
-                            $subject = parse_customer_mail($mail_subject, array('changes' => $changes));
-                            $body = parse_customer_mail($mail_body, array('changes' => $changes));
-
-                            foreach ($mail_recipients as $mail_recipient) {
-                                $LMS->SendMail($mail_recipient, array(
-                                    'From' => $mail_sender,
-                                    'To' => $mail_recipient,
-                                    'Subject' => $subject,
-                                ), $body);
-                            }
+                        foreach ($mail_recipients as $mail_recipient) {
+                            $LMS->SendMail($mail_recipient, array(
+                                'From' => $mail_sender,
+                                'To' => $mail_recipient,
+                                'Subject' => $subject,
+                            ), $body);
                         }
                     }
                 }

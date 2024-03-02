@@ -1949,14 +1949,11 @@ if (isset($options['delete'])) {
     if (!$quiet) {
         echo 'Deleting downloaded files...' . PHP_EOL;
     }
-
-    if (!empty($building_base_provider['archived_filename_pattern'])) {
-        $files = getdir($teryt_dir);
-        if (!empty($files)) {
-            foreach ($files as $file) {
-                if (preg_match('/' . $building_base_provider['archived_filename_pattern'] . '/', $file)) {
-                    @unlink($teryt_dir . DIRECTORY_SEPARATOR . $file);
-                }
+    $files = getdir($teryt_dir);
+    if (!empty($files)) {
+        foreach ($files as $file) {
+            if (preg_match('/' . $building_base_provider['archived_filename_pattern'] . '/', $file)) {
+                @unlink($teryt_dir . DIRECTORY_SEPARATOR . $file);
             }
         }
     }

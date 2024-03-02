@@ -608,13 +608,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             foreach ($result as &$ticket) {
                 if (!empty($ticket['categories']) && ConfigHelper::checkConfig('rt.show_ticket_categories')) {
                     $categories = explode(',', $ticket['categories']);
-                    if (!empty($categories)) {
-                        foreach ($categories as $idx2 => $categoryid) {
-                            if (isset($ticket_categories[$categoryid])) {
-                                $categories[$idx2] = $ticket_categories[$categoryid];
-                            } else {
-                                unset($categories[$idx2]);
-                            }
+                    foreach ($categories as $idx2 => $categoryid) {
+                        if (isset($ticket_categories[$categoryid])) {
+                            $categories[$idx2] = $ticket_categories[$categoryid];
+                        } else {
+                            unset($categories[$idx2]);
                         }
                     }
                     $ticket['categories'] = $categories;
@@ -1375,26 +1373,24 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             array($ticketid)
         );
 
-        if (!$hide_attachments) {
-            foreach ($messages as &$message) {
-                $message['attachments'] = array();
-                $attachments = $this->GetTicketMessageAttachments($message['id']);
-                if ($attachments) {
-                    if ($message['contenttype'] == 'text/html') {
-                        $url_prefix = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
-                            . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1);
-                    }
+        foreach ($messages as &$message) {
+            $message['attachments'] = array();
+            $attachments = $this->GetTicketMessageAttachments($message['id']);
+            if ($attachments) {
+                if ($message['contenttype'] == 'text/html') {
+                    $url_prefix = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
+                        . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1);
+                }
 
-                    foreach ($attachments as $attachment) {
-                        if (empty($attachment['cid'])) {
-                            $message['attachments'][] = $attachment;
-                        } elseif ($message['contenttype'] == 'text/html') {
-                            $message['body'] = str_ireplace(
-                                '"CID:' . $attachment['cid'] . '"',
-                                '"' . $url_prefix . '?m=rtmessageview&api=1&cid=' . $attachment['cid'] . '&tid=' . $ticketid . '&mid=' . $message['id'] . '"',
-                                $message['body']
-                            );
-                        }
+                foreach ($attachments as $attachment) {
+                    if (empty($attachment['cid'])) {
+                        $message['attachments'][] = $attachment;
+                    } elseif ($message['contenttype'] == 'text/html') {
+                        $message['body'] = str_ireplace(
+                            '"CID:' . $attachment['cid'] . '"',
+                            '"' . $url_prefix . '?m=rtmessageview&api=1&cid=' . $attachment['cid'] . '&tid=' . $ticketid . '&mid=' . $message['id'] . '"',
+                            $message['body']
+                        );
                     }
                 }
             }

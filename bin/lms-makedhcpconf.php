@@ -44,9 +44,7 @@ $parameters = array(
 $long_to_shorts = array();
 foreach ($parameters as $long => $short) {
     $long = str_replace(':', '', $long);
-    if (isset($short)) {
-        $short = str_replace(':', '', $short);
-    }
+    $short = str_replace(':', '', $short);
     $long_to_shorts[$long] = $short;
 }
 
@@ -489,16 +487,14 @@ foreach ($networks as $networkid => $net) {
             while (($host = current($hosts)) !== false && $host['name'] != $name) {
                 next($hosts);
             }
-            if ($host !== false) {
-                if (!empty($CONFIG['dhcp-' . $name]['fixed_address'])) {
-                    $hosts[key($hosts)]['fixed_address'] = $CONFIG['dhcp-' . $name]['fixed_address'];
-                }
-                if (!empty($CONFIG['dhcp-' . $name]['hardware_ethernet'])) {
-                    $hosts[key($hosts)]['hardware_ethernet'] = $CONFIG['dhcp-' . $name]['hardware_ethernet'];
-                }
-                if (!empty($CONFIG['dhcp-' . $name]['options'])) {
-                    $hosts[key($hosts)]['options'] = array_merge($hosts[key($hosts)]['options'], $CONFIG['dhcp-' . $name]['options']);
-                }
+            if (!empty($CONFIG['dhcp-' . $name]['fixed_address'])) {
+                $hosts[key($hosts)]['fixed_address'] = $CONFIG['dhcp-' . $name]['fixed_address'];
+            }
+            if (!empty($CONFIG['dhcp-' . $name]['hardware_ethernet'])) {
+                $hosts[key($hosts)]['hardware_ethernet'] = $CONFIG['dhcp-' . $name]['hardware_ethernet'];
+            }
+            if (!empty($CONFIG['dhcp-' . $name]['options'])) {
+                $hosts[key($hosts)]['options'] = array_merge($hosts[key($hosts)]['options'], $CONFIG['dhcp-' . $name]['options']);
             }
         }
         foreach ($ini_macs as $ini_mac => $config_mac) {

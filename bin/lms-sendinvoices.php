@@ -347,9 +347,7 @@ if ($backup || $archive) {
     if ($omit_free_days) {
         $yesterday = strtotime('yesterday', $current_time);
         $yesterday_year = date('Y', $yesterday);
-        if (!isset($holidays[$yesterday_year])) {
-            $holidays[$yesterday_year] = getHolidays($yesterday_year);
-        }
+        $holidays[$yesterday_year] = getHolidays($yesterday_year);
         if (date('N', $yesterday) > 5 || isset($holidays[$yesterday_year][$yesterday])) {
             $prevday = $daystart;
             do {

@@ -121,14 +121,12 @@ switch ($p) {
     case 'down':
         $SESSION->restore('ntlp.page.' . $netid, $network['page']);
         $SESSION->restore('ntlp.pages.' . $netid, $network['pages']);
-        if (!isset($network['pages'])) {
-            $network = $LMS->GetNetworkRecord(
-                $netid,
-                $page,
-                ConfigHelper::getConfig('phpui.networkhosts_pagelimit'),
-                isset($firstfree)
-            );
-        }
+        $network = $LMS->GetNetworkRecord(
+            $netid,
+            $page,
+            ConfigHelper::getConfig('phpui.networkhosts_pagelimit'),
+            isset($firstfree)
+        );
         $SESSION->save('ntlp.pages.' . $netid, $network['pages']);
         $SESSION->save('ntlp.page.' . $netid, $network['page']);
         break;
