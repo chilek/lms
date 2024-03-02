@@ -545,7 +545,7 @@ if (!function_exists('bcmod')) {
             $x = substr($x, $take);
             $mod = $a % $y;
         } while (strlen($x));
-        return (int)$mod;
+        return $mod;
     }
 }
 

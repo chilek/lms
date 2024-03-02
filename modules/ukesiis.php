@@ -845,7 +845,7 @@ if ($netdevices) {
                     }
                 }
                 if (!empty($linkfrequency)) {
-                    $linkfrequency = str_replace(',', '.', (float) $linkfrequency);
+                    $linkfrequency = str_replace(',', '.', $linkfrequency);
                 }
                 if (!isset($netnodes[$netnodename]['backboneports'][$prj][$status][$linktype][$linktechnology][$linkspeed][$linkfrequency])) {
                     $netnodes[$netnodename]['backboneports'][$prj][$status][$linktype][$linktechnology][$linkspeed][$linkfrequency] = 0;
@@ -894,7 +894,7 @@ if ($netdevices) {
                 }
 
                 if (!empty($linkfrequency)) {
-                    $linkfrequency = str_replace(',', '.', (float) $linkfrequency);
+                    $linkfrequency = str_replace(',', '.', $linkfrequency);
                 }
                 if (!isset($netnodes[$netnodename]['distports'][$prj][$status][$linktype][$linktechnology][$linkspeed][$linkfrequency])) {
                     $netnodes[$netnodename]['distports'][$prj][$status][$linktype][$linktechnology][$linkspeed][$linkfrequency] = 0;
@@ -942,7 +942,7 @@ if ($netdevices) {
                     }
                 }
                 if (!empty($linkfrequency)) {
-                    $linkfrequency = str_replace(',', '.', (float) $linkfrequency);
+                    $linkfrequency = str_replace(',', '.', $linkfrequency);
                 }
                 if (!isset($netnodes[$netnodename]['accessports'][$prj][$status][$linktype][$linktechnology][$linkspeed][$linkfrequency]['customers'][$customertype])) {
                     $netnodes[$netnodename]['accessports'][$prj][$status][$linktype][$linktechnology][$linkspeed][$linkfrequency]['customers'][$customertype] = 0;
