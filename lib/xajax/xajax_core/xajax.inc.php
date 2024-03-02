@@ -878,10 +878,12 @@ final class xajax
                                         ++$nSkip;
                                     } else if ('//EndSkipAIO' == substr($aFile[$sKey], 0, 12)) {
                                         --$nSkip;
-                                    } else if ('<'.'?php' == substr($aFile[$sKey], 0, 5)) {
-                                    } else if ('?'.'>' == substr($aFile[$sKey], 0, 2)) {
-                                    } else if (0 == $nSkip) {
-                                        $aParsed[] = $aFile[$sKey];
+                                    } else if ('<'.'?php' != substr($aFile[$sKey], 0, 5)) {
+                                        if ('?'.'>' != substr($aFile[$sKey], 0, 2)) {
+                                            if (0 == $nSkip) {
+                                                $aParsed[] = $aFile[$sKey];
+                                            }
+                                        }
                                     }
                                 }
                                 unset($aFile);
