@@ -37,7 +37,7 @@ class Session
     public $isPasswdChangeRequired = false;
     public $error;
 
-    private $SID = null;            // session unique ID
+    private $SID;            // session unique ID
     private $_vdata = array();
     private $_content = array();    // session content array
     private $_updated = false;      // indicates that content has

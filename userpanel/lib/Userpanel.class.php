@@ -29,7 +29,7 @@ class USERPANEL
     private $DB;
     private $SESSION;
     public $MODULES = array();
-    private $module_order = null;
+    private $module_order;
     private $callbacks = array();
     private $module_dirs = array();
 

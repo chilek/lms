@@ -7,7 +7,7 @@
 class SqlProvider extends VoipDataProvider
 {
 
-    private static $instance = null;
+    private static $instance;
 
     /*!
      * \brief Array with cache for SqlProvider::getGroupByPrefix() method.

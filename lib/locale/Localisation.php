@@ -30,15 +30,15 @@ class Localisation
     public const SYSTEM_FUNCTION = 'system_functions';
 
     private static $langDefs = array();
-    private static $defaultUiLanguage = null;
-    private static $uiLanguage = null;
-    private static $systemLanguage = null;
-    private static $defaultSystemLanguage = null;
-    private static $defaultCurrency = null;
+    private static $defaultUiLanguage;
+    private static $uiLanguage;
+    private static $systemLanguage;
+    private static $defaultSystemLanguage;
+    private static $defaultCurrency;
     private static $uiStrings = array();
 
-    private static $numberFormatter = null;
-    private static $numberSmartFormatter = null;
+    private static $numberFormatter;
+    private static $numberSmartFormatter;
 
     public static function init()
     {

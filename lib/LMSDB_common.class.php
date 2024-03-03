@@ -50,27 +50,27 @@ abstract class LMSDB_common implements LMSDBInterface
     protected $_dbtype = 'NONE';
 
     /** @var resource|null Database link * */
-    protected $_dblink = null;
+    protected $_dblink;
 
     /** @var string|null Database host * */
-    protected $_dbhost = null;
+    protected $_dbhost;
 
     /** @var string|null Database user * */
-    protected $_dbuser = null;
+    protected $_dbuser;
 
     /** @var string|null Database name * */
-    protected $_dbname = null;
+    protected $_dbname;
 
     /** @var boolean Query error * */
     protected $_error = false;
 
     /** @var string|null Database query * */
-    protected $_query = null;
+    protected $_query;
 
     /** @var resource|null Query result * */
-    protected $_result = null;
+    protected $_result;
 
-    protected $_connection_error = null;
+    protected $_connection_error;
 
     /** @var array Query errors * */
     protected $errors = array();

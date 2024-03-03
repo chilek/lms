@@ -30,7 +30,7 @@
  */
 class LMSLocationManager extends LMSManager implements LMSLocationManagerInterface
 {
-    private static $cities_with_sections = null;
+    private static $cities_with_sections;
 
     /**
      * Inserts or updates country state

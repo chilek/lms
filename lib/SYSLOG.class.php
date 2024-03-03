@@ -279,12 +279,12 @@ class SYSLOG
         self::OPER_USERLOGOUT => 'color: darkgray',
     );
 
-    private static $syslog = null;
+    private static $syslog;
 
-    private static $resourceKeyByName = null;
+    private static $resourceKeyByName;
 
     private $DB;
-    private $userid = null;
+    private $userid;
     private $transid = 0;
     private $module = '';
 

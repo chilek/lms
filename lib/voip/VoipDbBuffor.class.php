@@ -22,12 +22,12 @@ class VoipDbBuffor
     /*!
      * \brief Method of providing information for the class.
      */
-    private $provider = null;
+    private $provider;
 
     /*!
      * \brief Container for estimate class.
      */
-    private $estimate = null;
+    private $estimate;
 
     /*!
      * \brief Pattern for changing cdr text to array.

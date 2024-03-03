@@ -39,7 +39,7 @@ abstract class LMSPlugin implements ObserverInterface
 {
     protected $handlers;
     private $dirname;
-    private $dbschversion = null;
+    private $dbschversion;
 
     public function __construct()
     {

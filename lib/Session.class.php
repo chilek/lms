@@ -26,7 +26,7 @@
 
 class Session
 {
-    public $SID = null;         // session unique ID
+    public $SID;         // session unique ID
     public $_version = '1.11-git';      // library version
     public $_revision = '$Revision$';   // library revision
     private $_content = array();        // session content array
@@ -34,7 +34,7 @@ class Session
     private $_persistent_settings = array();    // user persistent settings
     public $_updated = false;           // indicates that content has
                         // been altered
-    public $DB = null;              // database library object
+    public $DB;              // database library object
     public $timeout = 600;          // timeout since session will
                         // be destroyed
     private $settings_timeout = 28800;          // timeout since user settings will
@@ -44,7 +44,7 @@ class Session
     public $GCprob = 10;            // probality (in percent) of
                         // garbage collector procedure
 
-    private $tabId = null;
+    private $tabId;
 
     public const HISTORY_SIZE = 10;
 

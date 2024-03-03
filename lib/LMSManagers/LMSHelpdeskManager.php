@@ -30,7 +30,7 @@
  */
 class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterface
 {
-    private $lastmessageid = null;
+    private $lastmessageid;
 
     public function GetQueue($id, $short = false)
     {

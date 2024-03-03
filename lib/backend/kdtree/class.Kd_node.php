@@ -31,9 +31,9 @@
 class Kd_node
 {
 
-    public $loc   = null;
-    public $left  = null;
-    public $right = null;
+    public $loc;
+    public $left;
+    public $right;
 
     public function __construct(array $p = null)
     {

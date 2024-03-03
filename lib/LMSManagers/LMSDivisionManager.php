@@ -30,7 +30,7 @@
  */
 class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterface
 {
-    private static $currentDivision = null;
+    private static $currentDivision;
 
     public static function setCurrentDivision($division)
     {

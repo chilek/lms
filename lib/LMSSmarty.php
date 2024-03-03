@@ -27,7 +27,7 @@
 class LMSSmarty extends Smarty
 {
     private $plugin_manager;
-    private static $smarty = null;
+    private static $smarty;
 
     public function __construct()
     {

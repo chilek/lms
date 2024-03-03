@@ -4,7 +4,7 @@ class LocationCache
 {
 
     // database connection instance
-    private $DB                   = null;
+    private $DB;
 
     // cache array with key as LMS database ID
     private $city_by_id           = array();

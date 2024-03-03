@@ -29,9 +29,9 @@ use PragmaRX\Google2FA\Google2FA;
 class Auth
 {
 
-    private $id = null;
+    private $id;
     public $login;
-    private $targetLogin = null;
+    private $targetLogin;
     public $logname;
     public $passwd;
     public $islogged = false;
@@ -47,22 +47,22 @@ class Auth
     public $ip;
     public $lastip;
     private $passwdforcechange = false;
-    private $passwdexpiration = null;
-    private $passwdlastchange = null;
+    private $passwdexpiration;
+    private $passwdlastchange;
     private $passwdrequiredchange = false;
     private $twofactorauthrequiredchange = false;
-    private $twofactorauth = null;
-    private $twofactorauthsecretkey = null;
-    private $authcode = null;
+    private $twofactorauth;
+    private $twofactorauthsecretkey;
+    private $authcode;
     private $trusteddevice = false;
     public $error;
     public $_version = '1.11-git';
     public $_revision = '$Revision$';
-    public $DB = null;
-    public $SESSION = null;
-    public $SYSLOG = null;
+    public $DB;
+    public $SESSION;
+    public $SYSLOG;
 
-    private static $auth = null;
+    private static $auth;
 
     public static function GetCurrentUser()
     {

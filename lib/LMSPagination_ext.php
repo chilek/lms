@@ -10,7 +10,7 @@ class LMSPagination_ext
     /*
      * \brief Number of items per page.
      */
-    private $perPage = null;
+    private $perPage;
 
     /*
      * \brief Total number of items.
@@ -20,12 +20,12 @@ class LMSPagination_ext
     /*
      * \brief Range (limit) for page numbering.
      */
-    private $range = null;
+    private $range;
 
     /*
      * \brief Number of current selected page.
      */
-    private $currentPage = null;
+    private $currentPage;
 
     /*
      * \brief $_GET query with deleted page variable.

@@ -6,7 +6,7 @@
  */
 class Estimate
 {
-    private $provider = null;
+    private $provider;
 
     /*!
      * \brief Class constructor

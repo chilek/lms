@@ -43,8 +43,8 @@ class LMS
     public $cache;  // internal cache
     public $hooks = array(); // registered plugin hooks
     public $xajax;  // xajax object
-    private $mail_object = null;
-    private static $lms = null;
+    private $mail_object;
+    private static $lms;
 
     private $message_template = '%body';
     private $html_message_template = '%body';

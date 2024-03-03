@@ -29,7 +29,7 @@ class UserpanelDocumentHandler
     private $db;
     private $smarty;
     private $customerid;
-    private static $instance = null;
+    private static $instance;
 
     public function __construct($db, $smarty, $customerid)
     {
