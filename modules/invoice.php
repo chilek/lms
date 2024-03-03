@@ -249,7 +249,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
     $count = count($ids) * Utils::docEntityCount($which);
     $i = 0;
 
-    foreach ($ids as $idx => $invoiceid) {
+    foreach ($ids as $invoiceid) {
         $invoice = $LMS->GetInvoiceContent($invoiceid);
         if (count($ids) == 1) {
             $docnumber = docnumber(array(
@@ -646,7 +646,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                     $tax_categories = array_unique($tax_categories);
                     sort($tax_categories, SORT_NUMERIC);
                     if (!empty($tax_categories)) {
-                        foreach ($tax_categories as $idx => $tax_category) {
+                        foreach ($tax_categories as $tax_category) {
                             $jpk_data .= "\t\t<GTU_" . sprintf("%02d", $tax_category)
                                 . ">1</GTU_" . sprintf("%02d", $tax_category) . ">\n";
                         }

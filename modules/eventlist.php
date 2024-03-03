@@ -157,7 +157,7 @@ $filter['forward'] = $default_forward_day_limit;
 $eventlist = $LMS->GetEventList($filter);
 
 if ($eventlist) {
-    foreach ($eventlist as $ekey => &$item) {
+    foreach ($eventlist as &$item) {
         if ($item['userlist']) {
             $usersWithoutAccess = 0;
             $usersCount = count($item['userlist']);

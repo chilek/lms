@@ -1128,7 +1128,7 @@ if (isset($options['update'])) {
     $ulic = array();
 
     if ($tmp_ulic) {
-        foreach ($tmp_ulic as $k => $v) {
+        foreach ($tmp_ulic as $v) {
             $ulic[$v['ident'] . ':' . $v['city']] = array(
                 'id'     => $v['id'],
                 'nazwa'  => $v['name'],
@@ -1224,7 +1224,7 @@ if (isset($options['update'])) {
         echo 'Loaded ' . $i . PHP_EOL;
     }
 
-    foreach ($ulic as $k => $v) {
+    foreach ($ulic as $v) {
         if (empty($v['valid'])) {
             $DB->Execute('DELETE FROM location_streets WHERE id=?', array($v['id']));
         }
@@ -1842,7 +1842,7 @@ if (isset($options['reverse'])) {
 
     $cities_with_sections = $LMS->GetCitiesWithSections();
     $cities_with_sections_by_cityid = array();
-    foreach ($cities_with_sections as $city => $city_with_section) {
+    foreach ($cities_with_sections as $city_with_section) {
         $cities_with_sections_by_cityid[$city_with_section['cityid']] = $city_with_section;
     }
     unset($cities_with_sections);

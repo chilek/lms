@@ -148,7 +148,7 @@ switch ($mode) {
                     }
                     $customer_count[$customername]++;
                 }
-                foreach ($candidates as $idx => $row) {
+                foreach ($candidates as $row) {
                     $icon = 'fa-fw lms-ui-icon-customer-status-' . $CSTATUSES[$row['status']]['alias'];
 
                     $name = truncate_str('(#' . $row['id'] . ') ' . $row['customername'], 50);
@@ -318,7 +318,7 @@ switch ($mode) {
 
             $result = array();
             if ($candidates) {
-                foreach ($candidates as $idx => $row) {
+                foreach ($candidates as $row) {
                     if (!empty($properties)
                         && (!isset($properties['default']) && empty($row['serviceprovidername'])
                             || !empty($row['serviceprovidername']) && !isset($properties[$row['serviceprovidername']]))) {
@@ -536,7 +536,7 @@ switch ($mode) {
             $result = array();
             if ($candidates) {
                 $lastonline_limit = ConfigHelper::getConfig('phpui.lastonline_limit');
-                foreach ($candidates as $idx => $row) {
+                foreach ($candidates as $row) {
                     $name = $row['name'];
 
                     $name_classes = array();
@@ -645,7 +645,7 @@ switch ($mode) {
 
                 $result = array();
             if ($candidates) {
-                foreach ($candidates as $idx => $row) {
+                foreach ($candidates as $row) {
                     $name = truncate_str($row['name'], 50);
                     $name_class = '';
 
@@ -732,7 +732,7 @@ switch ($mode) {
             if ($candidates) {
                 $lastonline_limit = ConfigHelper::getConfig('phpui.lastonline_limit');
 
-                foreach ($candidates as $idx => $row) {
+                foreach ($candidates as $row) {
                     $name = truncate_str($row['name'], 50);
                     $name_class = '';
 
@@ -845,7 +845,7 @@ switch ($mode) {
 
             $result = array();
             if ($candidates) {
-                foreach ($candidates as $idx => $row) {
+                foreach ($candidates as $row) {
                     $name = $row['subject'];
 
                     $name_classes = array();
@@ -950,7 +950,7 @@ switch ($mode) {
 
             $result = array();
             if ($candidates) {
-                foreach ($candidates as $idx => $row) {
+                foreach ($candidates as $row) {
                     $name = truncate_str($row['name'], 50);
                     $name_classes[] = 'lms-ui-suggestion-wireless-' . $NETWORK_INTERFACE_TYPES[$row['type']]['alias'];
                     $name_class = implode(' ', $name_classes);
@@ -1004,7 +1004,7 @@ switch ($mode) {
 
             $result = array();
             if ($candidates) {
-                foreach ($candidates as $idx => $row) {
+                foreach ($candidates as $row) {
                     $name = truncate_str($row['name'], 50);
                     $name_class = '';
 
@@ -1086,7 +1086,7 @@ switch ($mode) {
             $result = array();
 
             if ($candidates) {
-                foreach ($candidates as $idx => $row) {
+                foreach ($candidates as $row) {
                     $name = $row['login'] . '@' . $row['domain'];
                     $name_class = '';
                     $icon = 'fa-fw lms-ui-icon-hosting';
@@ -1144,7 +1144,7 @@ switch ($mode) {
             $result = array();
 
             if ($candidates) {
-                foreach ($candidates as $idx => $row) {
+                foreach ($candidates as $row) {
     /*
                     switch ($row['type']) {
                     case DOC_INVOICE:

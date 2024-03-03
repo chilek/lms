@@ -150,7 +150,7 @@ if (isset($_GET['ajax']) && (isset($_POST['what']) || isset($_GET['what']))) {
 
         $result = array();
         if ($list) {
-            foreach ($list as $idx => $row) {
+            foreach ($list as $row) {
                 $name_alternative = sprintf(
                     '%s (%s)<br><span class="terc">%s, %s%s, %s</span>',
                     preg_replace('/(' . $what . ')/i', '<strong>$1</strong>', $row['name']),

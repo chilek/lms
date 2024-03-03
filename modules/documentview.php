@@ -27,7 +27,7 @@
 $docids = array();
 
 if (!empty($_POST['marks'])) {
-    foreach ($_POST['marks'] as $id => $mark) {
+    foreach ($_POST['marks'] as $mark) {
         if (is_numeric($mark)) {
             $docids[] = intval($mark);
         }

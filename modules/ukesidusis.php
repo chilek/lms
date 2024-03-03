@@ -228,7 +228,7 @@ if (empty($projects)) {
         $subproject_buildings[$invprojectid][$subproject_key]['buildings'][] = $building;
     }
 
-    foreach ($subproject_buildings as $invprojectid => $subprojects) {
+    foreach ($subproject_buildings as $subprojects) {
         foreach ($subprojects as $subproject_key => $subproject) {
             fputcsv(
                 $fh,

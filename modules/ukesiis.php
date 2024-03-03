@@ -1933,7 +1933,7 @@ if ($max_range > 0) {
         $building_count = count($buildings);
         $offset += $building_count;
 
-        foreach ($buildings as $k => $b) {
+        foreach ($buildings as $b) {
             if (empty($b['street_ident'])) {
                 $b['street'] = "BRAK ULICY";
                 $b['street_ident'] = "99999";

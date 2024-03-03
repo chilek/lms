@@ -263,7 +263,7 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
     }
 
     if (isset($traffic)) {
-        foreach ($traffic as $idx => $elem) {
+        foreach ($traffic as $elem) {
             $total_up += $elem['upload'];
             $total_down += $elem['download'];
 

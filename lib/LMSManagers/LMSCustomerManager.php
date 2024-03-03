@@ -343,7 +343,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $result = $finance_manager->AggregateDocuments($result);
             }
 
-            foreach ($result['list'] as $idx => &$row) {
+            foreach ($result['list'] as &$row) {
                 $row['customlinks'] = array();
                 if ($row['doctype'] == DOC_INVOICE_PRO && !ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment')) {
                     $row['after'] = $result['balance'];
@@ -461,7 +461,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 // ok, now we are going to rise up system's load
                 if ($format == 'html') {
                     $lN = '<table class="customer-last-balance-table"><thead><tr>' . PHP_EOL;
-                    foreach ($cols as $col_name => $col) {
+                    foreach ($cols as $col) {
                         $lN .= '<th style="text-align: ' . $col['align'] . ';">' . $col['label'] . '</th>' . PHP_EOL;
                     }
                     $lN .= '</thead><tbody>' . PHP_EOL;
@@ -505,7 +505,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         . '</tr>' . PHP_EOL;
                     } else {
                         $chunks = array();
-                        foreach ($cols as $col_name => $col) {
+                        foreach ($cols as $col) {
                             $chunks[] = ' ' . str_pad($col['value'], $col['length'] - 2, ' ', $col['align'] == 'right' ? STR_PAD_LEFT : STR_PAD_RIGHT) . ' ';
                         }
                         $lN .= implode('|', $chunks) . PHP_EOL;

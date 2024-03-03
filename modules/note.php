@@ -163,7 +163,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 
     $count = count($ids);
     $i = 0;
-    foreach ($ids as $idx => $noteid) {
+    foreach ($ids as $noteid) {
         $note = $LMS->GetNoteContent($noteid);
         if ($count == 1) {
             $docnumber = docnumber(array(
@@ -240,7 +240,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
     $count = count($ids);
     $i = 0;
 
-    foreach ($ids as $idx => $noteid) {
+    foreach ($ids as $noteid) {
         $note = $LMS->GetNoteContent($noteid);
         if ($count == 1) {
             $docnumber = docnumber(array(

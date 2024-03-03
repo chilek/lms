@@ -104,7 +104,7 @@ function Traffic($from = 0, $to = 0, $owner = 0, $order = '')
         $downloadsum = 0;
         $uploadsum = 0;
         
-        foreach ($traffic as $idx => $row) {
+        foreach ($traffic as $row) {
             $traffic['upload']['data'][] = $row['upload'];
             $traffic['download']['data'][] = $row['download'];
             $traffic['upload']['name'][] = ($row['name'] ?: 'nieznany (ID: '.$row['nodeid'].')');

@@ -229,7 +229,7 @@ if (!empty($accounts)) {
             fprintf($fheo, "exten => _X.,%d,Goto(outgoing,\${EXTEN},1)\n", $prio++);
 
             if (isset($boroughs[$boroughid])) {
-                foreach ($boroughs[$boroughid] as $number => $record) {
+                foreach ($boroughs[$boroughid] as $record) {
                     $prio = 1;
                     if ($flags & (BILLING_RECORD_FLAG_ADMIN_RECORDING | BILLING_RECORD_FLAG_CUSTOMER_RECORDING)) {
                         fprintf(

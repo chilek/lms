@@ -56,7 +56,7 @@ function write_ini_file($configs_arr)
 function write_sql_file($configs_arr)
 {
     $content = "";
-    foreach ($configs_arr as $key => $elem) {
+    foreach ($configs_arr as $elem) {
         unset($elem['id'], $elem['userid'], $elem['configid'], $elem['divisionid']);
         $content .= "INSERT INTO uiconfig (section, var, value, description, disabled, type)";
         $content .= " VALUES ("

@@ -43,7 +43,7 @@ if (!empty($assignments)) {
 }
 
 if (!empty($schemas)) {
-    foreach ($schemas as $schemaid => $schema) {
+    foreach ($schemas as $schema) {
         if (!empty($schema['continuation']) && !empty($schema['ctariffid'])) {
             $periods = array();
             if (strlen($schema['data'])) {

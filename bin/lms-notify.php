@@ -3431,7 +3431,7 @@ $intersect = array_intersect(array('block', 'unblock'), $channels);
 if (!empty($intersect)) {
     $existing_or_deleted_customers = array();
     $existing_customers = array();
-    foreach ($notifications as $type => $notification) {
+    foreach ($notifications as $notification) {
         if (!empty($notification['customers'])) {
             if ($notification['deleted_customers']) {
                 $existing_or_deleted_customers = array_merge($existing_or_deleted_customers, $notification['customers']);

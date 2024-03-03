@@ -83,7 +83,7 @@ function GetAccountList($search, $customer = null, $type = null, $kind = null, $
     $where = isset($where) ? 'WHERE '.implode(' AND ', $where) : '';
 
     $quota_fields = array();
-    foreach ($ACCOUNTTYPES as $typeidx => $atype) {
+    foreach ($ACCOUNTTYPES as $atype) {
         $quota_fields[] = 'p.quota_' . $atype['alias'];
     }
     $list = $DB->GetAll('SELECT p.id, p.ownerid, p.login, p.lastlogin,

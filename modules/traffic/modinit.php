@@ -91,7 +91,7 @@ function Traffic($from = 0, $to = 0, $net = 0, $order = '', $limit = 0)
         $downloadsum = 0;
         $uploadsum = 0;
         
-        foreach ($traffic as $idx => $row) {
+        foreach ($traffic as $row) {
             $traffic['upload']['data'][] = $row['upload'];
             $traffic['download']['data'][] = $row['download'];
             $traffic['upload']['avg'][] = $row['upload']*8/($delta*1000);

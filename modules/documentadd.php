@@ -656,7 +656,7 @@ if (isset($document['customerid'])) {
 }
 
 $promotionattachments = array();
-foreach ($promotions as $promotionid => $promotion) {
+foreach ($promotions as $promotion) {
     foreach ($promotion['schemas'] as $schemaid => $schema) {
         if (!isset($promotionattachments[$schemaid])) {
             $promotionattachments[$schemaid] = array(

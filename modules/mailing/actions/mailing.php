@@ -64,7 +64,7 @@ function GetEmails($group, $network = null, $customergroup = null)
             $access = $DB->GetAllByKey('SELECT ownerid AS id FROM vnodes GROUP BY ownerid HAVING (SUM(access) != COUNT(access))', 'id');
         }
 
-        foreach ($emails as $idx => $row) {
+        foreach ($emails as $row) {
             if ($disabled && $access[$row['id']]) {
                 $emails2[] = $row;
             } elseif ($indebted) {

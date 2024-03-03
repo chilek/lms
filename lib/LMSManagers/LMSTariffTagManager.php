@@ -60,7 +60,7 @@ class LMSTariffTagManager extends LMSManager implements LMSTariffTagManagerInter
 				FROM tarifftags ORDER BY name ASC')) {
             $totalcount = 0;
 
-            foreach ($tarifftaglist as $idx => $row) {
+            foreach ($tarifftaglist as $row) {
                 $totalcount += $row['tariffscount'];
             }
 

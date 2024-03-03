@@ -235,7 +235,7 @@ if ($bandwidths) {
                 $bandwidth_variation[$bandwidth_type] = $bandwidth_intervals;
             }
             $downceil = intval($customer_link['downceil']);
-            foreach ($bandwidth_variation[$bandwidth_type] as $label => &$bandwidth_interval) {
+            foreach ($bandwidth_variation[$bandwidth_type] as &$bandwidth_interval) {
                 if ($downceil >= $bandwidth_interval['min']
                     && (!isset($bandwidth_interval['max']) || $downceil < $bandwidth_interval['max'])) {
                     $bandwidth_interval['total'] += $customer_link['total'];

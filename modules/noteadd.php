@@ -328,7 +328,7 @@ switch ($action) {
             }
 
             $itemid = 0;
-            foreach ($contents as $idx => $item) {
+            foreach ($contents as $item) {
                 $itemid++;
                 $item['value'] = str_replace(',', '.', $item['value']);
 

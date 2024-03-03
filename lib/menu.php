@@ -993,7 +993,7 @@ if (!function_exists('menu_cmp')) {
     }
 }
 
-foreach ($menu as $idx => $item) {
+foreach ($menu as $item) {
     if (isset($item['submenu'])) {
         uasort($item['submenu'], 'menu_cmp');
     }

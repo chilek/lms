@@ -2347,7 +2347,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         }
 
         $itemid = 0;
-        foreach ($invoice['contents'] as $idx => $item) {
+        foreach ($invoice['contents'] as $item) {
             $itemid++;
             $item['valuebrutto'] = str_replace(',', '.', $item['valuebrutto']);
             $item['valuenetto'] = str_replace(',', '.', $item['valuenetto']);
@@ -3178,7 +3178,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'netvalue' => $tariff['netvalue'],
         );
         $args2 = array();
-        foreach ($ACCOUNTTYPES as $typeidx => $type) {
+        foreach ($ACCOUNTTYPES as $type) {
             $args2[$type['alias'] . '_limit'] = $tariff[$type['alias'] . '_limit'];
             $args2['quota_' . $type['alias'] . '_limit'] = $tariff['quota_' . $type['alias'] . '_limit'];
         }
@@ -3280,7 +3280,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'netvalue' => $tariff['netvalue'],
         );
         $args2 = array();
-        foreach ($ACCOUNTTYPES as $typeidx => $type) {
+        foreach ($ACCOUNTTYPES as $type) {
             $args2[$type['alias'] . '_limit'] = $tariff[$type['alias'] . '_limit'];
             $args2['quota_' . $type['alias'] . '_limit'] = $tariff['quota_' . $type['alias'] . '_limit'];
         }
@@ -4370,7 +4370,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             . (isset($offset) ? ' OFFSET ' . $offset : ''),
             array($registry)
         )) {
-            foreach ($list as $idx => &$row) {
+            foreach ($list as &$row) {
                 $row['number'] = docnumber(array(
                     'number' => $row['number'],
                     'template' => $row['template'],
@@ -4705,7 +4705,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             return array();
         }
 
-        foreach ($promotions as $promotionid => &$promotion) {
+        foreach ($promotions as &$promotion) {
             $promotion['schemas'] = array();
             $promotion['attachments'] = array();
         }
@@ -5241,7 +5241,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             );
         }
 
-        foreach ($proforma['content'] as $idx => $item) {
+        foreach ($proforma['content'] as $item) {
             $args = array(
                 SYSLOG::RES_DOC => $invoiceid,
                 'itemid' => $item['itemid'],

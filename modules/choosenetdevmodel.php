@@ -55,7 +55,7 @@ if (isset($_GET['ajax']) && isset($_GET['what'])) {
 
     $result = array();
     if ($list) {
-        foreach ($list as $idx => $row) {
+        foreach ($list as $row) {
             $name = $row['name'];
             $name_class = '';
             $description = $description_class = '';

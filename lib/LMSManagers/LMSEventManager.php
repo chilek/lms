@@ -503,7 +503,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         $list2 = array();
         $customerstuffaddresses = array();
         if ($list) {
-            foreach ($list as $idx => $row) {
+            foreach ($list as $row) {
                 if (!empty($row['nodeid']) && empty($row['nodelocation'])) {
                     if (!isset($customer_manager)) {
                         $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache);
@@ -615,7 +615,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
             $list2 = $list3 = array();
         if ($list) {
-            foreach ($list as $idx => $row) {
+            foreach ($list as $row) {
                 if (!$simple) {
                     $row['userlist'] = $this->db->GetAll('SELECT userid AS id, vusers.name
 						FROM eventassignments, vusers

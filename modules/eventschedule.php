@@ -262,7 +262,7 @@ $SMARTY->assign('times', $times);
 $usereventlistgrid = $usereventlistdates;
 $allevents = 0;
 foreach ($usereventlistgrid as $guserid => $guserevents) {
-    foreach ($guserevents['events'] as $gdekey => $gdateevent) {
+    foreach ($guserevents['events'] as $gdateevent) {
             $allevents += count($gdateevent);
     }
 }
@@ -315,7 +315,7 @@ foreach ($usereventlistgrid as $guserid => $guserevents) {
         foreach ($guserevents['addedevents'] as $gdekey => $gdateevent) {
             $usereventlistgrid[$guserid]['gridhelper'][$gdekey] = array();
             foreach ($gdateevent['columns'] as $colkey => $column) {
-                foreach ($column as $ekey => $event) {
+                foreach ($column as $event) {
                     foreach ($times as $ktime => $time) {
                         if (($ktime > ($event['begintime'] - $work_time_step_ts) && $ktime < $event['endtime'] && $event['endtime'] != $event['begintime'])
                             || ($ktime > ($event['begintime'] - $work_time_step_ts) && $ktime <= $event['endtime'] && $event['endtime'] == $event['begintime'])) {

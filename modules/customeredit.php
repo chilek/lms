@@ -304,14 +304,14 @@ if (!isset($_POST['xjxfun'])) {
 
             $emaileinvoice = false;
 
-            foreach ($CUSTOMERCONTACTTYPES as $contacttype => $properties) {
+            foreach ($CUSTOMERCONTACTTYPES as $properties) {
                 $properties['validator']($customerdata, $contacts, $error);
             }
 
             $customer_invoice_notice_consent_check = ConfigHelper::getConfig('phpui.customer_invoice_notice_consent_check', 'error');
             if ($customer_invoice_notice_consent_check != 'none') {
                 if (isset($customerdata['emails']) && $customerdata['emails']) {
-                    foreach ($customerdata['emails'] as $idx => $val) {
+                    foreach ($customerdata['emails'] as $val) {
                         if ($val['type'] & (CONTACT_INVOICES | CONTACT_DISABLED)) {
                             $emaileinvoice = true;
                         }

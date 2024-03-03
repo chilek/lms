@@ -379,7 +379,7 @@ switch ($action) {
             $DB->Execute('DELETE FROM cash WHERE docid = ?', array($note['id']));
 
             $itemid = 0;
-            foreach ($contents as $idx => $item) {
+            foreach ($contents as $item) {
                 $itemid++;
                 $item['value'] = str_replace(',', '.', $item['value']);
 

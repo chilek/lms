@@ -46,7 +46,7 @@ if (isset($_GET['ajax'])) {
     $result = array();
 
     if ($candidates) {
-        foreach ($candidates as $idx => $row) {
+        foreach ($candidates as $row) {
             $name = $row['ipaddr']
             && preg_match('/' . str_replace('.', '\\.', $search) . '/', long_ip($row['ipaddr']))
             ? long_ip($row['ipaddr']) : $row['item'];

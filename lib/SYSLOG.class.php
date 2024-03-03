@@ -646,7 +646,7 @@ class SYSLOG
         }
 
         if (!empty($transaction['messages'])) {
-            foreach ($transaction['messages'] as $messageid => &$msg) {
+            foreach ($transaction['messages'] as &$msg) {
                 $msg['text'] = '<span class="bold">' . self::getResourceName($msg['resource']);
                 $msg['text'] .= ': ' . self::getOperationName($msg['operation']) . '</span>';
                 if (!empty($msg['keys'])) {

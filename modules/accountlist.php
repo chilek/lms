@@ -58,7 +58,7 @@ function GetAccountList($order = 'login,asc', $customer = null, $type = null, $k
     }
 
     $quota_fields = array();
-    foreach ($ACCOUNTTYPES as $typeidx => $atype) {
+    foreach ($ACCOUNTTYPES as $atype) {
         $quota_fields[] = 'p.quota_' . $atype['alias'];
     }
     $list = $DB->GetAll('SELECT p.id, p.ownerid, p.login, p.lastlogin, 

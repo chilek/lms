@@ -46,7 +46,7 @@ class UiConfigParser implements ConfigParserInterface
         $sections = array();
 
         foreach ($raw_config as $sectionkey => $section) {
-            foreach ($section as $varkey => $section_variable) {
+            foreach ($section as $section_variable) {
                 $section_name = $sectionkey;
                 $variable_name = $section_variable['var'];
                 $variable_value = $section_variable['value'];

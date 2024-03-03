@@ -213,7 +213,7 @@ function validate_customer_representatives(&$customerdata, &$contacts, &$error)
     if (!isset($customerdata['representatives'])) {
         return;
     }
-    foreach ($customerdata['representatives'] as $idx => &$val) {
+    foreach ($customerdata['representatives'] as &$val) {
         $name = trim($val['contact']);
         $data = trim($val['name']);
         $type = !empty($val['type']) ? array_sum($val['type']) : null;

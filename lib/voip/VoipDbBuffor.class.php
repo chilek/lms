@@ -181,7 +181,7 @@ class VoipDbBuffor
                       VALUES ' . implode(',', $insert));
 
         //update customer account balance
-        foreach ($cust_load as $k => $v) {
+        foreach ($cust_load as $v) {
             $DB->Execute("UPDATE voipaccounts SET balance=balance-$v WHERE id = " . $caller['voipaccountid']);
         }
 

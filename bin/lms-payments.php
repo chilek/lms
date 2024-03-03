@@ -665,7 +665,7 @@ if ($billings) {
         // intelligent merge of service and billing assignment records
         $billing_idx = 0;
         $billing_count = count($billings);
-        foreach ($services as $service_idx => &$service) {
+        foreach ($services as &$service) {
             $assigns[] = $service;
             if ($billing_idx == $billing_count || $service['tarifftype'] != SERVICE_PHONE) {
                 continue;
@@ -857,7 +857,7 @@ if (!empty($assigns)) {
 
             // collect customer node/node-netdev identifiers connected to customer subnetwork
             // and then fill assignment linktechnologies relations
-            foreach ($uni_links as $netlinkid => &$netlink) {
+            foreach ($uni_links as &$netlink) {
                 $nodes = find_nodes_for_netdev(
                     $netlink,
                     $customer_nodes,

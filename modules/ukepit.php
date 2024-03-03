@@ -414,7 +414,7 @@ $verify_feeding_netnodes_of_flexibility_points = isset($POST['uke-pit-verify-fee
 
 $pit_ethernet_technologies = array();
 
-foreach ($LINKTECHNOLOGIES as $linktype => $linktechnologies) {
+foreach ($LINKTECHNOLOGIES as $linktechnologies) {
     foreach ($linktechnologies as $linktechnology => $label) {
         if (stripos($label, 'ethernet') !== false) {
             $pit_ethernet_technologies[$linktechnology] = $linktechnology;
@@ -2429,7 +2429,7 @@ if ($report_type == 'full') {
                     $data['pe03_id_wezla'] = isset($netnode['parent_netnodename']) ? 'W-' . $netnode['parent_netnodename'] . '-' . $mediaCode : '';
 
                     $access_media = array();
-                    foreach ($netnode['ranges'] as $range_key => $range) {
+                    foreach ($netnode['ranges'] as $range) {
                         $access_media[$range['medium']] = true;
                     }
 

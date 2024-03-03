@@ -412,7 +412,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             $assigned = 0;
             $online = 0;
 
-            foreach ($networks as $idx => $row) {
+            foreach ($networks as $row) {
                 $size += $row['size'];
                 $assigned += $row['assigned'];
                 $online += $row['online'];
@@ -925,7 +925,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
         $networks = $this->GetNetworks();
         if ($networks) {
             $node_manager = new LMSNodeManager($this->db, $this->auth, $this->cache, $this->syslog);
-            foreach ($networks as $idx => $network) {
+            foreach ($networks as $network) {
                 if ($res = execute_program('nbtscan', '-q -s: ' . $network['address'] . '/' . $network['prefix'])) {
                     $out = explode("\n", $res);
                     foreach ($out as $line) {

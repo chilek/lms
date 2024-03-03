@@ -56,7 +56,7 @@ if (isset($_GET['ajax'])) {
 
     $result = array();
     if ($candidates) {
-        foreach ($candidates as $idx => $row) {
+        foreach ($candidates as $row) {
             $name = $row['item'];
             $name_class = '';
             $description = $row['entries'] . ' ' . trans('entries');
@@ -264,7 +264,7 @@ if (isset($_POST['customeradd'])) {
     $customer_invoice_notice_consent_check = ConfigHelper::getConfig('phpui.customer_invoice_notice_consent_check', 'error');
     if ($customer_invoice_notice_consent_check != 'none') {
         if (!empty($customeradd['emails'])) {
-            foreach ($customeradd['emails'] as $idx => $val) {
+            foreach ($customeradd['emails'] as $val) {
                 if ($val['type'] & (CONTACT_INVOICES | CONTACT_DISABLED)) {
                     $emaileinvoice = true;
                 }

@@ -229,7 +229,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
 				ORDER BY name ASC')) {
             $totalcount = 0;
 
-            foreach ($customergrouplist as $idx => $row) {
+            foreach ($customergrouplist as $row) {
                 $totalcount += $row['customerscount'];
             }
 

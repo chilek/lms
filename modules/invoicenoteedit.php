@@ -764,7 +764,7 @@ switch ($action) {
             $DB->Execute('DELETE FROM cash WHERE docid = ?', array($iid));
 
             $itemid=0;
-            foreach ($contents as $idx => $item) {
+            foreach ($contents as $item) {
                 $itemid++;
 
                 $args = array(

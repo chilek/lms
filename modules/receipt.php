@@ -149,7 +149,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached' && !empty($_POST['marks'
 
     $i = 0;
     $count = count($ids);
-    foreach ($ids as $idx => $receiptid) {
+    foreach ($ids as $receiptid) {
         if ($receipt = GetReceipt($receiptid)) {
             if ($count == 1) {
                 $docnumber = $receipt['number'];

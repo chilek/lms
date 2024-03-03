@@ -72,7 +72,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
             $is_sum = false;
 
             if ($patterns_cnt) {
-                foreach ($patterns as $idx => $pattern) {
+                foreach ($patterns as $pattern) {
                     $theline = $line;
 
                     if (strtoupper($pattern['encoding']) != 'UTF-8') {
@@ -632,7 +632,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
         }
 
         if ($patterns_cnt && !empty($sum)) {
-            foreach ($patterns as $idx => $pattern) {
+            foreach ($patterns as $pattern) {
                 if (isset($pattern['pattern_sum']) && isset($pattern['pattern_sum_check']) && !$pattern['pattern_sum_check']($data, $sum)) {
                     $error['sum'] = true;
                 }

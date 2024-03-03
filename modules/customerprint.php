@@ -145,7 +145,7 @@ switch ($type) {
                 unset($customerlist['over']);
                 unset($customerlist['direction']);
 
-                foreach ($customerlist as $idx => $row) {
+                foreach ($customerlist as $row) {
                     if (! $row['account']) {
                         $ncustomerlist[] = $row;
                     }
@@ -422,7 +422,7 @@ switch ($type) {
             foreach ($landline_customers as $customerid => $landline_customer) {
                 $customer = $LMS->GetCustomer($customerid);
 
-                foreach ($landline_customer['locations'] as $location => $address) {
+                foreach ($landline_customer['locations'] as $address) {
                     $content .= "\t\t\t<Abonent>\n";
 
                     $content .= "\t\t\t\t<Nazwisko>" . htmlspecialchars($customer['lastname']) . "</Nazwisko>\n";

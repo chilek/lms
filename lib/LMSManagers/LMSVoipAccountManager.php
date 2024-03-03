@@ -142,7 +142,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         );
         $phone_list = array();
         if (!empty($tmp_phone_list)) {
-            foreach ($tmp_phone_list as $k => $v) {
+            foreach ($tmp_phone_list as $v) {
                 if (isset($phone_list[$v['voip_account_id']])) {
                     $phone_list[$v['voip_account_id']][] = $v['phone'];
                 } else {

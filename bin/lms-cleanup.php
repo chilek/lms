@@ -114,7 +114,7 @@ if (isset($resources['finances'])) {
     $DB->BeginTrans();
 
     echo 'Creating starting balance records... ';
-    foreach ($balances as $customerid => $balance) {
+    foreach ($balances as $balance) {
         $DB->Execute(
             'INSERT INTO cash (time, type, value, currency, comment) VALUES (?, ?, ?, ?, ?)',
             array(

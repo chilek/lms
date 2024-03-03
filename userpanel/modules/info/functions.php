@@ -564,7 +564,7 @@ if (defined('USERPANEL_SETUPMODE')) {
             }
 
             if ($LMS->SYSLOG && !empty($args)) {
-                foreach ($args as $customerid => $fields) {
+                foreach ($args as $fields) {
                     if (count($fields) > 2) {
                         $LMS->SYSLOG->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_UPDATE, $fields);
                     }

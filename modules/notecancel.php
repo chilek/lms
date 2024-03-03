@@ -32,7 +32,7 @@ if ($id) {
 
         $note = $LMS->GetNoteContent($id);
 
-        foreach ($note['content'] as $idx => $content) {
+        foreach ($note['content'] as $content) {
             $LMS->AddBalance(array(
                 'time' => $note['cdate'],
                 'value' => $content['value'] * -1,

@@ -166,7 +166,7 @@ if (isset($_GET['ajax'])) {
 
     $result = array();
     if ($candidates) {
-        foreach ($candidates as $idx => $row) {
+        foreach ($candidates as $row) {
             $name = $row['item'];
             $name_class = '';
             $description = $row['id'] . ' :id';

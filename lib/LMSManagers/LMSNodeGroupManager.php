@@ -109,7 +109,7 @@ class LMSNodeGroupManager extends LMSManager implements LMSNodeGroupManagerInter
         $this->db->LockTables('nodegroups');
         if ($nodegroups = $this->db->GetAll('SELECT id, prio FROM nodegroups ORDER BY prio ASC')) {
             $prio = 1;
-            foreach ($nodegroups as $idx => $row) {
+            foreach ($nodegroups as $row) {
                 $this->db->Execute('UPDATE nodegroups SET prio=? WHERE id=?', array($prio, $row['id']));
                 if ($this->syslog) {
                     $args = array(

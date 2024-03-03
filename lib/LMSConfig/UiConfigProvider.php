@@ -88,8 +88,8 @@ class UiConfigProvider implements ConfigProviderInterface
 
         $configs = call_user_func_array('array_merge_recursive', $arrays);
 
-        foreach ($configs as $section => &$variables) {
-            foreach ($variables as $variable_name => &$variable) {
+        foreach ($configs as &$variables) {
+            foreach ($variables as &$variable) {
                 foreach ($variable as $property_name => $property_value) {
                     if (is_array($property_value)) {
                         $variable[$property_name] = array_pop($property_value);

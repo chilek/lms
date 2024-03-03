@@ -53,7 +53,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
 		WHERE i.closed = 0 AND i.value > 0'
         .$div
         .' ORDER BY i.date')) {
-        foreach ($importlist as $idx => $row) {
+        foreach ($importlist as $row) {
             printf(
                 "%s,%s,\"%s\",\"%s\"\r\n",
                 date('Y-m-d', $row['date']),
@@ -77,7 +77,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
 		LEFT JOIN customers c ON (i.customerid = c.id)
 		WHERE i.closed = 0 AND i.value > 0'
         .' ORDER BY i.date')) {
-        foreach ($importlist as $idx => $row) {
+        foreach ($importlist as $row) {
             printf(
                 "%s\t%s\t%s\t%s\r\n",
                 date('Y-m-d', $row['date']),

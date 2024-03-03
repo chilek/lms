@@ -236,7 +236,7 @@ if (isset($_POST['tariff'])) {
     $tariff['authtype'] = $authtype;
 
     $items = array('domain_limit', 'alias_limit');
-    foreach ($ACCOUNTTYPES as $typeidx => $type) {
+    foreach ($ACCOUNTTYPES as $type) {
         $items[] = $type['alias'] . '_limit';
         $items[] = 'quota_' . $type['alias'] . '_limit';
     }
@@ -280,7 +280,7 @@ if (isset($_POST['tariff'])) {
 } else {
     $tariff['domain_limit'] = 0;
     $tariff['alias_limit'] = 0;
-    foreach ($ACCOUNTTYPES as $typeidx => $type) {
+    foreach ($ACCOUNTTYPES as $type) {
         $tariff[$type['alias'] . '_limit'] = 0;
         $tariff['quota_' . $type['alias'] . '_limit'] = 0;
     }

@@ -94,7 +94,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
             }
         }
 
-        foreach ($list as $idx => $row) {
+        foreach ($list as $row) {
             $line = $record ?: $cash_record;
             $i++;
 
