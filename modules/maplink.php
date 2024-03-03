@@ -72,7 +72,6 @@ switch ($action) {
             die('[]');
         }
         die(json_encode($coordinates));
-        break;
     default:
         break;
 }

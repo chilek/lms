@@ -53,7 +53,6 @@ switch ($action) {
     case 'updatenodefield':
         $LMS->updateNodeField($_POST['nodeid'], $_POST['field'], $_POST['val']);
         die();
-    break;
 
     case 'replace':
         $dev1 = $LMS->GetNetDev($_GET['id']);

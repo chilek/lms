@@ -159,7 +159,6 @@ if (isset($_GET['oper'])) {
             break;
         case 'showlabels':
             die(json_encode($lms->GetNetdevsMacLabels()));
-            break;
     }
 }
 

@@ -78,8 +78,6 @@ if (isset($_GET['action'])) {
 
                 die(json_encode(array('id' => $id)));
             }
-
-            break;
     }
     die;
 }

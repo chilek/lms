@@ -189,9 +189,6 @@ switch ($_GET['action']) {
             die(json_encode(array('name' => trans("Operation failed!"))));
         }
 
-        return 0;
-    break;
-
     case 'edit':
         $id = (empty($_POST['poolid'])) ? 0 : intval($_POST['poolid']);
         $p  = array_map('trim', $_POST);
@@ -221,9 +218,6 @@ switch ($_GET['action']) {
             die(json_encode(array('name' => trans("Operation failed!"))));
         }
 
-        return 0;
-    break;
-
     case 'remove':
         $id = (empty($_POST['poolid'])) ? 0 : intval($_POST['poolid']);
 
@@ -238,7 +232,6 @@ switch ($_GET['action']) {
         }
 
         return 0;
-    break;
 
     case 'changestate':
         $id    = (empty($_POST['poolid'])) ? 0 : intval($_POST['poolid']);
@@ -255,7 +248,6 @@ switch ($_GET['action']) {
         }
 
         return 0;
-    break;
 }
 
 $pool_list = $DB->GetAll("SELECT id, disabled, name, poolstart, poolend, description, type as typeid,

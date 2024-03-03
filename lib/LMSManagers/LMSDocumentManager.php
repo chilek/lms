@@ -1271,7 +1271,6 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 );
 
                 return $number ? ++$number : 1;
-                break;
         }
 
         $number = $this->db->GetOne(

@@ -177,7 +177,6 @@ class LMSFileManager extends LMSManager implements LMSFileManagerInterface
                 if (filesize($name) != $filesize
                     || hash_file('sha256', $name) != $sha256sum) {
                     die(trans('Specified file exists in database!'));
-                    break;
                 }
             }
 

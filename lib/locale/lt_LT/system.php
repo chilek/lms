@@ -86,44 +86,6 @@ self::addLanguageFunctions(
             $regon = str_replace(' ', '', $regon);
 
             return check_ten($regon);
-
-            $sum_nb = 0;
-
-            if (strlen($regon) == 9) {
-                $steps = array(8, 9, 2, 3, 4, 5, 6, 7);
-
-                for ($x = 0; $x < 8; $x++) {
-                    $sum_nb += $steps[$x] * $regon[$x];
-                }
-
-                $mod = $sum_nb % 11;
-
-                if ($mod == 10) {
-                    $mod = 0;
-                }
-
-                if ($mod == $regon[8]) {
-                    return true;
-                }
-            } elseif (strlen($regon) == 7) {
-                $steps = array(2, 3, 4, 5, 6, 7);
-
-                for ($x = 0; $x < 6; $x++) {
-                    $sum_nb += $steps[$x] * $regon[$x];
-                }
-
-                $mod = $sum_nb % 11;
-
-                if ($mod == 10) {
-                    $mod = 0;
-                }
-
-                if ($mod == $regon[6]) {
-                    return true;
-                }
-            }
-
-            return false;
         },
         'check_icn' => function ($icn) {
             $icn = str_replace(' ', '', $icn);

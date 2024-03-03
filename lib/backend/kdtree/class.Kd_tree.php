@@ -167,7 +167,6 @@ class Kd_tree
             // compare 2D points
             case 2:
                 return sqrt(($P2[0]-$P1[0]) ** 2 + ($P2[1]-$P1[1]) ** 2);
-            break;
 
             default:
                 throw new Exception('Unsupported dimension number exception.');

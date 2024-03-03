@@ -367,7 +367,6 @@ function writesyslog($message, $type)
             break;
         default:
             return false;
-        break;
     }
 
     return true;
@@ -1013,7 +1012,6 @@ function html2pdf($content, $subject = null, $title = null, $type = null, $id = 
                 break;
             case 'S':
                 return $html2pdf->Output('', 'S');
-                break;
             default:
                 $html2pdf->Output();
                 break;

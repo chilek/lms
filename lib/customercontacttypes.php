@@ -55,20 +55,16 @@ function format_customer_im($contact)
         case CONTACT_IM_GG:
             return trans('Gadu-Gadu') . ': ' . '<IMG src="http://status.gadu-gadu.pl/users/status.asp?id=' . $contact['contact'] . '&styl=1" alt=""> '
                 . '<a href="gg:' . htmlspecialchars($contact['contact']) . '">' . htmlspecialchars($contact['contact']) . '</a>';
-            break;
         case CONTACT_IM_YAHOO:
             return trans('Yahoo') . ': ' . '<IMG src="http://opi.yahoo.com/online?u=' . $contact['contact'] . '&m=g&t=5"  alt=""> '
                 . '<a href="ymsgr:sendIM?' . htmlspecialchars($contact['contact']) . '">' . htmlspecialchars($contact['contact']) . '</a>';
-            break;
         case CONTACT_IM_SKYPE:
 //          return trans('Skype') . ': ' . '<IMG src="http://mystatus.skype.com/smallicon/' . $contact['contact'] . '"  alt=""> '
             return trans('Skype') . ': '
                 . '<a href="skype:' . htmlspecialchars($contact['contact']) . '">' . htmlspecialchars($contact['contact']) . '</a>';
-            break;
         case CONTACT_IM_FACEBOOK:
             return trans('Facebook') . ': '
                 . '<a href="https://m.me/' . htmlspecialchars($contact['contact']) . '">' . htmlspecialchars($contact['contact']) . '</a>';
-            break;
     }
 }
 

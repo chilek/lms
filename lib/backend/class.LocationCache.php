@@ -94,7 +94,6 @@ class LocationCache
                 }
 
                 return $this->city_by_id[$id] ?? null;
-                break;
 
             case self::LOAD_ONE:
                 if (isset($this->city_by_id[ $id ])) {
@@ -114,7 +113,6 @@ class LocationCache
 
                     return $this->city_by_id[ $id ] ?? null;
                 }
-                break;
         }
     }
 
@@ -137,7 +135,6 @@ class LocationCache
                 }
 
                 return $this->city_by_ident[$terc . '|' . $simc] ?? null;
-                break;
 
             case self::LOAD_ONE:
                 if (isset($this->city_by_ident[ $terc . '|' . $simc ])) {
@@ -157,7 +154,6 @@ class LocationCache
 
                     return $this->city_by_ident[$terc . '|' . $simc] ?? null;
                 }
-                break;
         }
     }
 
@@ -180,7 +176,6 @@ class LocationCache
                 }
 
                 return $this->city_by_ident[$terc . '|' . $simc] ?? null;
-                break;
 
             case self::LOAD_ONE:
                 if (isset($this->city_by_ident[ $terc . '|' . $simc ])) {
@@ -199,7 +194,6 @@ class LocationCache
 
                     return $this->city_by_ident[$terc . '|' . $simc] ?? null;
                 }
-                break;
         }
     }
 
@@ -240,7 +234,6 @@ class LocationCache
                 } else {
                     return null;
                 }
-                break;
 
             case self::LOAD_ONE:
                 if (!isset($this->streets[$cityid . '|' . $ulic])) {
@@ -262,7 +255,6 @@ class LocationCache
                 } else {
                     return null;
                 }
-                break;
         }
     }
 

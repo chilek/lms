@@ -202,7 +202,6 @@ self::addLanguageFunctions(
                     break;
                 case 0:
                     return;
-                    break;
             }
 
             switch ($h) {

@@ -70,7 +70,6 @@ if (isset($_GET['attachmentaction'])) {
                     'error' => trans('Cannot update file container description!'),
                 )));
             }
-            break;
         case 'deletecontainer':
             $LMS->DeleteFileContainer($_GET['id']);
             break;
@@ -106,12 +105,10 @@ if (isset($_GET['attachmentaction'])) {
             }
             echo @file_get_contents($file['filepath']);
             die;
-            break;
 
         case 'downloadzippedcontainer':
             $LMS->GetZippedFileContainer($_GET['id']);
             die;
-            break;
     }
     if (!empty($_GET['restore'])) {
         $SESSION->redirect('?' . $SESSION->remove_history_entry() . '&restore=1&resourceid=' . $_GET['resourceid']);

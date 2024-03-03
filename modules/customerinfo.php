@@ -49,7 +49,6 @@ if (isset($_GET['action'])) {
             }
 
             die(json_encode($sensible_data));
-            break;
     }
 
     die('[]');

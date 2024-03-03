@@ -52,7 +52,6 @@ switch ($_GET['action']) {
         $range = array_values($range);
 
         die(json_encode($range));
-    break;
 }
 
 $voipaccountdata['access'] = 1;

@@ -93,14 +93,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         switch ($customer_deleted) {
             case '0':
                 return true;
-                break;
             case '1':
                 return -1;
-                break;
             case '':
             default:
                 return false;
-                break;
         }
     }
 
@@ -2689,7 +2686,6 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         } else {
                             return $address['address_id'];
                         }
-                        break;
                     case LOCATION_ADDRESS:
                         $location_address_id = $address['address_id'];
                         $locations++;

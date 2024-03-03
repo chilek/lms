@@ -375,14 +375,11 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         switch ($this->db->GetOne('SELECT deleted FROM users WHERE id=?', array($id))) {
             case '0':
                 return true;
-                break;
             case '1':
                 return -1;
-                break;
             case '':
             default:
                 return false;
-                break;
         }
     }
 

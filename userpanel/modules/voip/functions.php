@@ -57,7 +57,6 @@ switch ($_GET['action']) {
                                   WHERE voip_account_id = ? ORDER BY vn.number_index', array($id));
 
         die(json_encode($info));
-    break;
 
     case 'updateaccountinfo':
         $rec = ($_POST['recording'] == 1) ? 1 : 0;
@@ -109,8 +108,7 @@ switch ($_GET['action']) {
         }
 
         $LMS->DB->CommitTrans();
-        die(json_encode(1)); // success
-    break;
+        die(json_encode(1));
 }
 
 if (isset($_GET['record'])) {

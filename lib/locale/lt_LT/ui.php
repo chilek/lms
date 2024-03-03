@@ -139,7 +139,6 @@ self::addLanguageFunctions(
                     break;
                 case 0:
                     return;
-                    break;
             }
 
             if ($h > 1) {

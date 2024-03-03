@@ -41,7 +41,6 @@ switch ($action) {
     case 'updatenodefield':
         $LMS->updateNodeField($_POST['nodeid'], $_POST['field'], $_POST['val']);
         die();
-    break;
 
     case 'link':
         if (empty($_GET['devid']) || !($netdev = $LMS->GetNetDev($_GET['devid']))) {

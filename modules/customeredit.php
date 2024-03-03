@@ -103,12 +103,10 @@ if (isset($_GET['oper'])) {
             header('Content-Type: application/json');
             $result = $LMS->raiseCustomerKarma($_GET['id']);
             die(json_encode($result));
-            break;
         case 'karma-lower':
             header('Content-Type: application/json');
             $result = $LMS->lowerCustomerKarma($_GET['id']);
             die(json_encode($result));
-            break;
         case 'check-conflict':
             header('Content-Type: application/json');
             $SESSION->restore('customer_edit_start', $customer_edit_start, true);
@@ -125,7 +123,6 @@ if (isset($_GET['oper'])) {
                 empty($modification['username']) ? trans('unknown') : htmlspecialchars($modification['username']),
                 date('Y/m/d H:i:s')
             )));
-            break;
     }
 }
 if (!isset($_POST['xjxfun'])) {

@@ -256,13 +256,11 @@ if (isset($_GET['action'])) {
                 die;
             }
             die(getNodeStats($_GET['id']));
-            break;
         case 'get_throughput':
             if (!isset($_GET['ip']) || !isset($_GET['id'])) {
                 die;
             }
             die(getThroughput($_GET['ip']));
-            break;
     }
 }
 

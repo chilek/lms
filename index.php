@@ -493,7 +493,6 @@ if ($AUTH->islogged) {
                             $SESSION->close();
                             header('Content-type: application/json');
                             die(json_encode($persistent_filters));
-                            break;
                         case 'delete':
                             $SESSION->removePersistentFilter(
                                 $_GET['persistent-filter'],
@@ -504,7 +503,6 @@ if ($AUTH->islogged) {
                             $SESSION->close();
                             header('Content-type: application/json');
                             die(json_encode($persistent_filters));
-                            break;
                     }
                 }
             }

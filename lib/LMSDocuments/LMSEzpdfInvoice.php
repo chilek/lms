@@ -1421,16 +1421,13 @@ class LMSEzpdfInvoice extends LMSInvoice
             case 'gif':
                 $this->backend->addGifFromFile($image_path, $x, $y, 0, self::HEADER_IMAGE_HEIGHT);
                 return true;
-                break;
             case 'jpg':
             case 'jpeg':
                 $this->backend->addJpegFromFile($image_path, $x, $y, 0, self::HEADER_IMAGE_HEIGHT);
                 return true;
-                break;
             case 'png':
                 $this->backend->addPngFromFile($image_path, $x, $y, 0, self::HEADER_IMAGE_HEIGHT);
                 return true;
-                break;
         }
 
         return false;
