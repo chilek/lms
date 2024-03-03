@@ -225,8 +225,8 @@ switch ($_GET['action']) {
         $query = $DB->Execute("DELETE FROM voip_pool_numbers WHERE id = ?", array($id));
 
         if ($query == 0) {
-            die(json_encode(array( trans("Operation failed!"))));
             $DB->RollbackTrans();
+            die(json_encode(array(trans("Operation failed!"))));
         } else {
             $DB->CommitTrans();
         }

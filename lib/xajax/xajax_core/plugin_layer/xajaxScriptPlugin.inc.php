@@ -226,9 +226,8 @@ class xajaxScriptPlugin extends xajaxRequestPlugin
 
                 return true;
             }
-            
-            return 'Invalid script or style request.';
             trigger_error('Hash mismatch: ' . $this->sRequest . ': ' . $sHash . ' <==> ' . $this->sHash, E_USER_ERROR);
+            return 'Invalid script or style request.';
         }
     }
 }
