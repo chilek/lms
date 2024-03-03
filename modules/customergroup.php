@@ -47,15 +47,13 @@ if ($action == 'delete') {
     }
     $uid = intval($_GET['id']);
 
-    if (!empty($groupids)) {
-        foreach ($groupids as $groupid) {
-            if ($LMS->CustomerGroupExists($groupid)
-                && !$LMS->CustomerassignmentExist($groupid, $uid)
-                && $LMS->CustomerExists($uid)) {
-                $LMS->CustomerAssignmentAdd(
-                    array('customerid' => $uid, 'customergroupid' => $groupid)
-                );
-            }
+    foreach ($groupids as $groupid) {
+        if ($LMS->CustomerGroupExists($groupid)
+            && !$LMS->CustomerassignmentExist($groupid, $uid)
+            && $LMS->CustomerExists($uid)) {
+            $LMS->CustomerAssignmentAdd(
+                array('customerid' => $uid, 'customergroupid' => $groupid)
+            );
         }
     }
 } elseif ($action == 'replace') {
@@ -76,16 +74,14 @@ if ($action == 'delete') {
         }
     }
 
-    if (!empty($groupids)) {
-        foreach ($groupids as $groupid) {
-            if ($LMS->CustomerGroupExists($groupid)
-                && !$LMS->CustomerassignmentExist($groupid, $cid)
-                && $LMS->CustomerExists($cid)) {
-                $LMS->CustomerAssignmentAdd(array(
-                    'customerid' => $cid,
-                    'customergroupid' => $groupid
-                ));
-            }
+    foreach ($groupids as $groupid) {
+        if ($LMS->CustomerGroupExists($groupid)
+            && !$LMS->CustomerassignmentExist($groupid, $cid)
+            && $LMS->CustomerExists($cid)) {
+            $LMS->CustomerAssignmentAdd(array(
+                'customerid' => $cid,
+                'customergroupid' => $groupid
+            ));
         }
     }
 } elseif (!empty($_POST['setwarnings'])) {

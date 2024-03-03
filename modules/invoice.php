@@ -645,11 +645,9 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                     }
                     $tax_categories = array_unique($tax_categories);
                     sort($tax_categories, SORT_NUMERIC);
-                    if (!empty($tax_categories)) {
-                        foreach ($tax_categories as $tax_category) {
-                            $jpk_data .= "\t\t<GTU_" . sprintf("%02d", $tax_category)
-                                . ">1</GTU_" . sprintf("%02d", $tax_category) . ">\n";
-                        }
+                    foreach ($tax_categories as $tax_category) {
+                        $jpk_data .= "\t\t<GTU_" . sprintf("%02d", $tax_category)
+                            . ">1</GTU_" . sprintf("%02d", $tax_category) . ">\n";
                     }
 
                     if (!empty($invoice['flags'][DOC_FLAG_TELECOM_SERVICE])) {

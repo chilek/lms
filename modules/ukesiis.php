@@ -1019,278 +1019,298 @@ $snetranges = '';
 $snetbuildings = '';
 $teryt_netranges = array();
 
-if ($netnodes) {
-    foreach ($netnodes as $netnodename => &$netnode) {
-        // if teryt location is not set then try to get location address from network node name
-        if (!isset($netnode['area_woj'])) {
-            $address = mb_split("[[:blank:]]+", $netnodename);
-            $street = mb_ereg_replace("[[:blank:]][[:alnum:]]+$", "", $netnodename);
+foreach ($netnodes as $netnodename => &$netnode) {
+    // if teryt location is not set then try to get location address from network node name
+    if (!isset($netnode['area_woj'])) {
+        $address = mb_split("[[:blank:]]+", $netnodename);
+        $street = mb_ereg_replace("[[:blank:]][[:alnum:]]+$", "", $netnodename);
+    }
+
+    // count gps coordinates basing on average longitude and latitude of all network devices located in this network node
+    if (isset($netnode['longitudes']) && count($netnode['longitudes'])) {
+        $netnode['longitude'] = $netnode['latitude'] = 0.0;
+        foreach ($netnode['longitudes'] as $longitude) {
+            $netnode['longitude'] += floatval($longitude);
         }
-
-        // count gps coordinates basing on average longitude and latitude of all network devices located in this network node
-        if (isset($netnode['longitudes']) && count($netnode['longitudes'])) {
-            $netnode['longitude'] = $netnode['latitude'] = 0.0;
-            foreach ($netnode['longitudes'] as $longitude) {
-                $netnode['longitude'] += floatval($longitude);
-            }
-            foreach ($netnode['latitudes'] as $latitude) {
-                $netnode['latitude'] += floatval($latitude);
-            }
-            $netnode['longitude'] = to_wgs84($netnode['longitude'] / count($netnode['longitudes']));
-            $netnode['latitude'] = to_wgs84($netnode['latitude'] / count($netnode['latitudes']));
+        foreach ($netnode['latitudes'] as $latitude) {
+            $netnode['latitude'] += floatval($latitude);
         }
+        $netnode['longitude'] = to_wgs84($netnode['longitude'] / count($netnode['longitudes']));
+        $netnode['latitude'] = to_wgs84($netnode['latitude'] / count($netnode['latitudes']));
+    }
 
-        if (empty($netnode['location_street_name'])) {
-            // no street specified for address
-            if (strlen(trim($netnode['address_budynek']))
-                && (!isset($teryt_cities[$netnode['location_city']]) || empty($teryt_cities[$netnode['location_city']]['with_streets']))) {
-                $netnode['address_ulica'] = "BRAK ULICY";
-                $netnode['address_symul'] = "99999";
-            } else {
-                $netnode['address_ulica'] = '';
-                $netnode['address_symul'] = '';
-                $netnode['address_budynek'] = '';
-            }
-        } elseif (!isset($netnode['address_symul'])) {
-            // specified street is from outside teryt
-            $netnode['address_ulica'] = "ul. SPOZA ZAKRESU";
-            $netnode['address_symul'] = "99998";
-        }
-
-        if (is_array($netnode['invproject'])) {
-            $netnodes[$netnodename]['invproject'] = $netnode['invproject'] =
-            count($netnode['invproject']) == 1 ? $netnode['invproject'][0] : '';
-        }
-
-        if ($netnode['ownership'] < 2) {
-            $data = array(
-                'ww_id' => $netnode['id'],
-                'ww_ownership' => $NETELEMENTOWNERSHIPS[$netnode['ownership']],
-                'ww_coowner' => $netnode['coowner'],
-                'ww_coloc' => '',
-                'ww_state' => $netnode['area_woj'] ?? "LMS netdevinfo ID's:" . implode(
-                    ' ',
-                    $netnode['netdevices']
-                ) . "," . implode(',', array_fill(0, 9, '')),
-                'ww_district' => $netnode['area_pow'] ?? '',
-                'ww_borough' => $netnode['area_gmi'] ?? '',
-                'ww_terc' => $netnode['area_terc'] ?? '',
-                'ww_city' => $netnode['area_city'] ?? $netnode['location_city_name'],
-                'ww_simc' => $netnode['area_simc'] ?? '',
-                'ww_street' => isset($netnode['address_ulica']) ? ((!empty($netnode['address_cecha']) && $netnode['address_cecha'] != 'inne'
-                    ? $netnode['address_cecha'] . ' ' : '') . $netnode['address_ulica']) : $netnode['location_street_name'],
-                'ww_ulic' => $netnode['address_symul'] ?? '',
-                'ww_house' => str_replace(' ', '', $netnode['address_budynek']),
-                'ww_zip' => $netnode['location_zip'],
-                'ww_latitude' => $netnode['latitude'] ?? '',
-                'ww_longitude' => $netnode['longitude'] ?? '',
-                'ww_objtype' => $NETELEMENTTYPES[$netnode['type']],
-                'ww_uip' => $netnode['uip'] ? 'Tak' : 'Nie',
-                'ww_miar' => $netnode['miar'] ? 'Tak' : 'Nie',
-                'ww_eu' => $netnode['invproject'] ? 'Tak' : 'Nie',
-                'ww_invproject' => $netnode['invproject'],
-                'ww_invstatus' => $netnode['invproject'] ? $NETELEMENTSTATUSES[$netnode['status']] : '',
-            );
-
-            if (in_array('ww', $sheets)) {
-                $buffer .= 'WW,' . to_csv($data) . EOL;
-            }
+    if (empty($netnode['location_street_name'])) {
+        // no street specified for address
+        if (strlen(trim($netnode['address_budynek']))
+            && (!isset($teryt_cities[$netnode['location_city']]) || empty($teryt_cities[$netnode['location_city']]['with_streets']))) {
+            $netnode['address_ulica'] = "BRAK ULICY";
+            $netnode['address_symul'] = "99999";
         } else {
-            $data = array(
-                'wo_id' => $netnode['id'],
-                'wo_agreement' => 'Umowa o dostęp do sieci telekomunikacyjnej',
-                'wo_coowner' => $netnode['coowner'],
-                'wo_state' => $netnode['area_woj'] ?? "LMS netdevinfo ID's:" . implode(
-                    ' ',
-                    $netnode['netdevices']
-                ) . "," . implode(',', array_fill(0, 9, '')),
-                'wo_district' => $netnode['area_pow'] ?? '',
-                'wo_borough' => $netnode['area_gmi'] ?? '',
-                'wo_terc' => $netnode['area_terc'] ?? '',
-                'wo_city' => $netnode['area_city'] ?? $netnode['location_city_name'],
-                'wo_simc' => $netnode['area_simc'] ?? '',
-                'wo_street' => isset($netnode['address_ulica']) ? ((!empty($netnode['address_cecha']) && $netnode['address_cecha'] != 'inne'
-                    ? $netnode['address_cecha'] . ' ' : '') . $netnode['address_ulica']) : $netnode['location_street_name'],
-                'wo_ulic' => $netnode['address_symul'] ?? '',
-                'wo_house' => str_replace(' ', '', $netnode['address_budynek']),
-                'wo_zip' => $netnode['location_zip'],
-                'wo_latitude' => $netnode['latitude'] ?? '',
-                'wo_longitude' => $netnode['longitude'] ?? '',
-                'wo_objtype' => $NETELEMENTTYPES[$netnode['type']],
-                'wo_invproject' => $netnode['invproject'],
-            );
-
-            if (in_array('wo', $sheets)) {
-                $buffer .= 'WO,' . to_csv($data) . EOL;
-            }
+            $netnode['address_ulica'] = '';
+            $netnode['address_symul'] = '';
+            $netnode['address_budynek'] = '';
         }
+    } elseif (!isset($netnode['address_symul'])) {
+        // specified street is from outside teryt
+        $netnode['address_ulica'] = "ul. SPOZA ZAKRESU";
+        $netnode['address_symul'] = "99998";
+    }
 
-        if ($netnode['ownership'] == 2) {
-            continue;
+    if (is_array($netnode['invproject'])) {
+        $netnodes[$netnodename]['invproject'] = $netnode['invproject'] =
+        count($netnode['invproject']) == 1 ? $netnode['invproject'][0] : '';
+    }
+
+    if ($netnode['ownership'] < 2) {
+        $data = array(
+            'ww_id' => $netnode['id'],
+            'ww_ownership' => $NETELEMENTOWNERSHIPS[$netnode['ownership']],
+            'ww_coowner' => $netnode['coowner'],
+            'ww_coloc' => '',
+            'ww_state' => $netnode['area_woj'] ?? "LMS netdevinfo ID's:" . implode(
+                ' ',
+                $netnode['netdevices']
+            ) . "," . implode(',', array_fill(0, 9, '')),
+            'ww_district' => $netnode['area_pow'] ?? '',
+            'ww_borough' => $netnode['area_gmi'] ?? '',
+            'ww_terc' => $netnode['area_terc'] ?? '',
+            'ww_city' => $netnode['area_city'] ?? $netnode['location_city_name'],
+            'ww_simc' => $netnode['area_simc'] ?? '',
+            'ww_street' => isset($netnode['address_ulica']) ? ((!empty($netnode['address_cecha']) && $netnode['address_cecha'] != 'inne'
+                ? $netnode['address_cecha'] . ' ' : '') . $netnode['address_ulica']) : $netnode['location_street_name'],
+            'ww_ulic' => $netnode['address_symul'] ?? '',
+            'ww_house' => str_replace(' ', '', $netnode['address_budynek']),
+            'ww_zip' => $netnode['location_zip'],
+            'ww_latitude' => $netnode['latitude'] ?? '',
+            'ww_longitude' => $netnode['longitude'] ?? '',
+            'ww_objtype' => $NETELEMENTTYPES[$netnode['type']],
+            'ww_uip' => $netnode['uip'] ? 'Tak' : 'Nie',
+            'ww_miar' => $netnode['miar'] ? 'Tak' : 'Nie',
+            'ww_eu' => $netnode['invproject'] ? 'Tak' : 'Nie',
+            'ww_invproject' => $netnode['invproject'],
+            'ww_invstatus' => $netnode['invproject'] ? $NETELEMENTSTATUSES[$netnode['status']] : '',
+        );
+
+        if (in_array('ww', $sheets)) {
+            $buffer .= 'WW,' . to_csv($data) . EOL;
         }
+    } else {
+        $data = array(
+            'wo_id' => $netnode['id'],
+            'wo_agreement' => 'Umowa o dostęp do sieci telekomunikacyjnej',
+            'wo_coowner' => $netnode['coowner'],
+            'wo_state' => $netnode['area_woj'] ?? "LMS netdevinfo ID's:" . implode(
+                ' ',
+                $netnode['netdevices']
+            ) . "," . implode(',', array_fill(0, 9, '')),
+            'wo_district' => $netnode['area_pow'] ?? '',
+            'wo_borough' => $netnode['area_gmi'] ?? '',
+            'wo_terc' => $netnode['area_terc'] ?? '',
+            'wo_city' => $netnode['area_city'] ?? $netnode['location_city_name'],
+            'wo_simc' => $netnode['area_simc'] ?? '',
+            'wo_street' => isset($netnode['address_ulica']) ? ((!empty($netnode['address_cecha']) && $netnode['address_cecha'] != 'inne'
+                ? $netnode['address_cecha'] . ' ' : '') . $netnode['address_ulica']) : $netnode['location_street_name'],
+            'wo_ulic' => $netnode['address_symul'] ?? '',
+            'wo_house' => str_replace(' ', '', $netnode['address_budynek']),
+            'wo_zip' => $netnode['location_zip'],
+            'wo_latitude' => $netnode['latitude'] ?? '',
+            'wo_longitude' => $netnode['longitude'] ?? '',
+            'wo_objtype' => $NETELEMENTTYPES[$netnode['type']],
+            'wo_invproject' => $netnode['invproject'],
+        );
 
-        // save info about network interfaces located in backbone layer
-        if (!empty($netnode['totalbackboneports'])) {
-            foreach ($netnode['backboneports'] as $prj => $statuses) {
-                foreach ($statuses as $status => $backboneports) {
-                    foreach ($backboneports as $linktype => $linktechnologies) {
-                        foreach ($linktechnologies as $linktechnology => $linkspeeds) {
-                            if ($linktechnology < 50 || $linktechnology >= 100) {
-                                $technology = $linktypes[$linktype]['technologia'];
-                            } else {
-                                $technology = 'kablowe współosiowe miedziane';
-                            }
-                            $ltech = $LINKTECHNOLOGIES[$linktype][$linktechnology];
+        if (in_array('wo', $sheets)) {
+            $buffer .= 'WO,' . to_csv($data) . EOL;
+        }
+    }
 
-                            foreach ($linkspeeds as $linkspeed => $linkfrequencies) {
-                                foreach ($linkfrequencies as $linkfrequency => $totalbackboneports) {
-                                    $data = array(
-                                    'int_id' => $netintid,
-                                    'int_wwid' => $netnode['id'],
-                                    'int_blayer' => 'Tak',
-                                    'int_dlayer' => 'Nie',
-                                    'int_alayer' => 'Nie',
-                                    'int_tech' => $technology,
-                                    'int_bandwidth' => strlen($linkfrequency) ? str_replace(',', '.', sprintf("%.2f", $linkfrequency)) : '',
-                                    'int_ltech' => $ltech,
-                                    'int_maxdown' => round($linkspeed / 1000),
-                                    'int_maxup' => round($linkspeed / 1000),
-                                    'int_totalports' => $totalbackboneports,
-                                    'int_usedports' => $totalbackboneports,
-                                    'int_freeports' => 0,
-                                    'int_portleasing' => 'Nie',
-                                    'int_invproject' => strlen($prj) ? $prj : '',
-                                    'int_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
-                                    );
-                                    if (in_array('int', $sheets)) {
-                                        $buffer .= 'I,' . to_csv($data) . EOL;
-                                    }
-                                    $netnodes[$netnodename]['backbonenetintid'][$prj][$status][$linktype][$linktechnology][$linkspeed] =
-                                    $netintid;
-                                    $netintid++;
+    if ($netnode['ownership'] == 2) {
+        continue;
+    }
+
+    // save info about network interfaces located in backbone layer
+    if (!empty($netnode['totalbackboneports'])) {
+        foreach ($netnode['backboneports'] as $prj => $statuses) {
+            foreach ($statuses as $status => $backboneports) {
+                foreach ($backboneports as $linktype => $linktechnologies) {
+                    foreach ($linktechnologies as $linktechnology => $linkspeeds) {
+                        if ($linktechnology < 50 || $linktechnology >= 100) {
+                            $technology = $linktypes[$linktype]['technologia'];
+                        } else {
+                            $technology = 'kablowe współosiowe miedziane';
+                        }
+                        $ltech = $LINKTECHNOLOGIES[$linktype][$linktechnology];
+
+                        foreach ($linkspeeds as $linkspeed => $linkfrequencies) {
+                            foreach ($linkfrequencies as $linkfrequency => $totalbackboneports) {
+                                $data = array(
+                                'int_id' => $netintid,
+                                'int_wwid' => $netnode['id'],
+                                'int_blayer' => 'Tak',
+                                'int_dlayer' => 'Nie',
+                                'int_alayer' => 'Nie',
+                                'int_tech' => $technology,
+                                'int_bandwidth' => strlen($linkfrequency) ? str_replace(',', '.', sprintf("%.2f", $linkfrequency)) : '',
+                                'int_ltech' => $ltech,
+                                'int_maxdown' => round($linkspeed / 1000),
+                                'int_maxup' => round($linkspeed / 1000),
+                                'int_totalports' => $totalbackboneports,
+                                'int_usedports' => $totalbackboneports,
+                                'int_freeports' => 0,
+                                'int_portleasing' => 'Nie',
+                                'int_invproject' => strlen($prj) ? $prj : '',
+                                'int_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
+                                );
+                                if (in_array('int', $sheets)) {
+                                    $buffer .= 'I,' . to_csv($data) . EOL;
                                 }
+                                $netnodes[$netnodename]['backbonenetintid'][$prj][$status][$linktype][$linktechnology][$linkspeed] =
+                                $netintid;
+                                $netintid++;
                             }
                         }
                     }
                 }
             }
         }
+    }
 
-        // save info about network interfaces located in distribution layer
-        if ($netnode['totaldistports'] > 0
-        || $netnode['personalaccessports'] + $netnode['commercialaccessports'] == 0) {
-            foreach ($netnode['distports'] as $prj => $statuses) {
-                foreach ($statuses as $status => $distports) {
-                    foreach ($distports as $linktype => $linktechnologies) {
-                        foreach ($linktechnologies as $linktechnology => $linkspeeds) {
-                            if ($linktechnology < 50 || $linktechnology >= 100) {
-                                $technology = $linktypes[$linktype]['technologia'];
-                            } else {
-                                $technology = 'kablowe współosiowe miedziane';
-                            }
-                            $ltech = $LINKTECHNOLOGIES[$linktype][$linktechnology];
+    // save info about network interfaces located in distribution layer
+    if ($netnode['totaldistports'] > 0
+    || $netnode['personalaccessports'] + $netnode['commercialaccessports'] == 0) {
+        foreach ($netnode['distports'] as $prj => $statuses) {
+            foreach ($statuses as $status => $distports) {
+                foreach ($distports as $linktype => $linktechnologies) {
+                    foreach ($linktechnologies as $linktechnology => $linkspeeds) {
+                        if ($linktechnology < 50 || $linktechnology >= 100) {
+                            $technology = $linktypes[$linktype]['technologia'];
+                        } else {
+                            $technology = 'kablowe współosiowe miedziane';
+                        }
+                        $ltech = $LINKTECHNOLOGIES[$linktype][$linktechnology];
 
-                            foreach ($linkspeeds as $linkspeed => $linkfrequencies) {
-                                foreach ($linkfrequencies as $linkfrequency => $totaldistports) {
-                                    $data = array(
-                                    'int_id' => $netintid,
-                                    'int_wwid' => $netnode['id'],
-                                    'int_blayer' => 'Nie',
-                                    'int_dlayer' => 'Tak',
-                                    'int_alayer' => 'Nie',
-                                    'int_tech' => $technology,
-                                    'int_bandwidth' => strlen($linkfrequency) ? str_replace(',', '.', sprintf("%.2f", $linkfrequency)) : '',
-                                    'int_ltech' => $ltech,
-                                    'int_maxdown' => round($linkspeed / 1000),
-                                    'int_maxup' => round($linkspeed / 1000),
-                                    'int_totalports' => $totaldistports,
-                                    'int_usedports' => $totaldistports,
-                                    'int_freeports' => 0,
-                                    'int_portleasing' => 'Nie',
-                                    'int_invproject' => strlen($prj) ? $prj : '',
-                                    'int_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
-                                    );
-                                    if (in_array('int', $sheets)) {
-                                        $buffer .= 'I,' . to_csv($data) . EOL;
-                                    }
-                                    $netintid++;
+                        foreach ($linkspeeds as $linkspeed => $linkfrequencies) {
+                            foreach ($linkfrequencies as $linkfrequency => $totaldistports) {
+                                $data = array(
+                                'int_id' => $netintid,
+                                'int_wwid' => $netnode['id'],
+                                'int_blayer' => 'Nie',
+                                'int_dlayer' => 'Tak',
+                                'int_alayer' => 'Nie',
+                                'int_tech' => $technology,
+                                'int_bandwidth' => strlen($linkfrequency) ? str_replace(',', '.', sprintf("%.2f", $linkfrequency)) : '',
+                                'int_ltech' => $ltech,
+                                'int_maxdown' => round($linkspeed / 1000),
+                                'int_maxup' => round($linkspeed / 1000),
+                                'int_totalports' => $totaldistports,
+                                'int_usedports' => $totaldistports,
+                                'int_freeports' => 0,
+                                'int_portleasing' => 'Nie',
+                                'int_invproject' => strlen($prj) ? $prj : '',
+                                'int_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
+                                );
+                                if (in_array('int', $sheets)) {
+                                    $buffer .= 'I,' . to_csv($data) . EOL;
                                 }
+                                $netintid++;
                             }
                         }
                     }
                 }
             }
         }
+    }
 
-        // save info about network interfaces located in access layer
-        if (!empty($netnode['accessports'])) {
-            $idx = 0;
-            foreach ($netnode['accessports'] as $prj => $statuses) {
-                foreach ($statuses as $status => $accessports) {
-                    foreach ($accessports as $linktype => $linktechnologies) {
-                        foreach ($linktechnologies as $linktechnology => $linkspeeds) {
-                            if ($linktechnology < 50 || $linktechnology >= 100) {
-                                $technology = $linktypes[$linktype]['technologia'];
-                            } else {
-                                $technology = 'kablowe współosiowe miedziane';
-                            }
-                            $ltech = $LINKTECHNOLOGIES[$linktype][$linktechnology];
+    // save info about network interfaces located in access layer
+    if (!empty($netnode['accessports'])) {
+        $idx = 0;
+        foreach ($netnode['accessports'] as $prj => $statuses) {
+            foreach ($statuses as $status => $accessports) {
+                foreach ($accessports as $linktype => $linktechnologies) {
+                    foreach ($linktechnologies as $linktechnology => $linkspeeds) {
+                        if ($linktechnology < 50 || $linktechnology >= 100) {
+                            $technology = $linktypes[$linktype]['technologia'];
+                        } else {
+                            $technology = 'kablowe współosiowe miedziane';
+                        }
+                        $ltech = $LINKTECHNOLOGIES[$linktype][$linktechnology];
 
-                            foreach ($linkspeeds as $linkspeed => $linkfrequencies) {
-                                foreach ($linkfrequencies as $linkfrequency => $customertypes) {
-                                    $ports = 0;
-                                    foreach ($customertypes['customers'] as $customertypeports) {
-                                        $ports += $customertypeports;
-                                    }
-                                    $data = array(
-                                    'int_id' => $netintid,
-                                    'int_wwid' => $netnode['id'],
-                                    'int_blayer' => 'Nie',
-                                    'int_dlayer' => 'Nie',
-                                    'int_alayer' => 'Tak',
-                                    'int_tech' => $technology,
-                                    'int_bandwidth' => strlen($linkfrequency) ? str_replace(',', '.', sprintf("%.2f", $linkfrequency)) : '',
-                                    'int_ltech' => $ltech,
-                                    'int_maxdown' => round($linkspeed / 1000),
-                                    'int_maxup' => round($linkspeed / 1000),
-                                    'int_totalports' => ($netnode['ports'] - $netnode['totaldistports']
+                        foreach ($linkspeeds as $linkspeed => $linkfrequencies) {
+                            foreach ($linkfrequencies as $linkfrequency => $customertypes) {
+                                $ports = 0;
+                                foreach ($customertypes['customers'] as $customertypeports) {
+                                    $ports += $customertypeports;
+                                }
+                                $data = array(
+                                'int_id' => $netintid,
+                                'int_wwid' => $netnode['id'],
+                                'int_blayer' => 'Nie',
+                                'int_dlayer' => 'Nie',
+                                'int_alayer' => 'Tak',
+                                'int_tech' => $technology,
+                                'int_bandwidth' => strlen($linkfrequency) ? str_replace(',', '.', sprintf("%.2f", $linkfrequency)) : '',
+                                'int_ltech' => $ltech,
+                                'int_maxdown' => round($linkspeed / 1000),
+                                'int_maxup' => round($linkspeed / 1000),
+                                'int_totalports' => ($netnode['ports'] - $netnode['totaldistports']
+                                - $netnode['personalaccessports'] - $netnode['commercialaccessports']
+                                + $ports),
+                                'int_usedports' => $ports,
+                                'int_freeports' => ($netnode['ports'] - $netnode['totaldistports']
+                                - $netnode['personalaccessports'] - $netnode['commercialaccessports']),
+                                'int_portleasing' => 'Nie',
+                                'int_invproject' => strlen($prj) ? $prj : '',
+                                'int_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
+                                );
+                                if (!$idx) {
+                                    $data['int_totalports'] = $netnode['ports'] - $netnode['totaldistports']
                                     - $netnode['personalaccessports'] - $netnode['commercialaccessports']
-                                    + $ports),
-                                    'int_usedports' => $ports,
-                                    'int_freeports' => ($netnode['ports'] - $netnode['totaldistports']
-                                    - $netnode['personalaccessports'] - $netnode['commercialaccessports']),
-                                    'int_portleasing' => 'Nie',
-                                    'int_invproject' => strlen($prj) ? $prj : '',
-                                    'int_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
-                                    );
-                                    if (!$idx) {
-                                        $data['int_totalports'] = $netnode['ports'] - $netnode['totaldistports']
-                                        - $netnode['personalaccessports'] - $netnode['commercialaccessports']
-                                        + $ports;
-                                        $data['int_usedports'] = $ports;
-                                        $data['int_freeports'] = $netnode['ports'] - $netnode['totaldistports']
-                                        - $netnode['personalaccessports'] - $netnode['commercialaccessports'];
+                                    + $ports;
+                                    $data['int_usedports'] = $ports;
+                                    $data['int_freeports'] = $netnode['ports'] - $netnode['totaldistports']
+                                    - $netnode['personalaccessports'] - $netnode['commercialaccessports'];
+                                } else {
+                                    $data['int_totalports'] = $ports;
+                                    $data['int_usedports'] = $ports;
+                                    $data['int_freeports'] = 0;
+                                }
+                                if (in_array('int', $sheets)) {
+                                        $buffer .= 'I,' . to_csv($data) . EOL;
+                                }
+                                if ($linktype == 1) {
+                                    $radiosectors = $customertypes['radiosectors'];
+                                    if (empty($radiosectors)) {
+                                        $data = array(
+                                            'sr_id' => $radiosectorid,
+                                            'sr_wwid' => $netnode['id'],
+                                            'sr_intid' => $netintid,
+                                            'sr_license' => 'Nie',
+                                            'sr_licensenr' => '',
+                                            'sr_azimuth' => 0,
+                                            'sr_width' => 360,
+                                            'sr_altitude' => 20,
+                                            'sr_range' => 500,
+                                            'sr_maxspeed' => round($linkspeed / 1000),
+                                            'sr_invproject' => strlen($prj) ? $prj : '',
+                                            'sr_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
+                                        );
+                                        if (in_array('sr', $sheets)) {
+                                            $buffer .= 'Z,' . to_csv($data) . EOL;
+                                        }
+                                        $radiosectorid++;
                                     } else {
-                                        $data['int_totalports'] = $ports;
-                                        $data['int_usedports'] = $ports;
-                                        $data['int_freeports'] = 0;
-                                    }
-                                    if (in_array('int', $sheets)) {
-                                            $buffer .= 'I,' . to_csv($data) . EOL;
-                                    }
-                                    if ($linktype == 1) {
-                                        $radiosectors = $customertypes['radiosectors'];
-                                        if (empty($radiosectors)) {
+                                        foreach ($radiosectors as $radiosector) {
+                                            $radiosector = $allradiosectors[$radiosector];
                                             $data = array(
                                                 'sr_id' => $radiosectorid,
                                                 'sr_wwid' => $netnode['id'],
                                                 'sr_intid' => $netintid,
-                                                'sr_license' => 'Nie',
-                                                'sr_licensenr' => '',
-                                                'sr_azimuth' => 0,
-                                                'sr_width' => 360,
-                                                'sr_altitude' => 20,
-                                                'sr_range' => 500,
+                                                'sr_license' => empty($radiosector['license']) ? 'Nie' : 'Tak',
+                                                'sr_licensenr' => empty($radiosector['license']) ? '' : $radiosector['license'],
+                                                'sr_azimuth' => round($radiosector['azimuth']),
+                                                'sr_width' => round($radiosector['width']),
+                                                'sr_altitude' => $radiosector['altitude'],
+                                                'sr_range' => $radiosector['rsrange'],
                                                 'sr_maxspeed' => round($linkspeed / 1000),
                                                 'sr_invproject' => strlen($prj) ? $prj : '',
                                                 'sr_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
@@ -1299,41 +1319,20 @@ if ($netnodes) {
                                                 $buffer .= 'Z,' . to_csv($data) . EOL;
                                             }
                                             $radiosectorid++;
-                                        } else {
-                                            foreach ($radiosectors as $radiosector) {
-                                                $radiosector = $allradiosectors[$radiosector];
-                                                $data = array(
-                                                    'sr_id' => $radiosectorid,
-                                                    'sr_wwid' => $netnode['id'],
-                                                    'sr_intid' => $netintid,
-                                                    'sr_license' => empty($radiosector['license']) ? 'Nie' : 'Tak',
-                                                    'sr_licensenr' => empty($radiosector['license']) ? '' : $radiosector['license'],
-                                                    'sr_azimuth' => round($radiosector['azimuth']),
-                                                    'sr_width' => round($radiosector['width']),
-                                                    'sr_altitude' => $radiosector['altitude'],
-                                                    'sr_range' => $radiosector['rsrange'],
-                                                    'sr_maxspeed' => round($linkspeed / 1000),
-                                                    'sr_invproject' => strlen($prj) ? $prj : '',
-                                                    'sr_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
-                                                );
-                                                if (in_array('sr', $sheets)) {
-                                                    $buffer .= 'Z,' . to_csv($data) . EOL;
-                                                }
-                                                $radiosectorid++;
-                                            }
                                         }
                                     }
-                                    $netintid++;
                                 }
+                                $netintid++;
                             }
                         }
                     }
                 }
             }
         }
+    }
 
-        // save info about network ranges
-        $ranges = $DB->GetAll("SELECT n.linktype, n.linktechnology,
+    // save info about network ranges
+    $ranges = $DB->GetAll("SELECT n.linktype, n.linktechnology,
 			a.city_id AS location_city, a.city AS location_city_name,
 			a.street_id AS location_street, a.street AS location_street_name,
 			a.house AS location_house, a.zip AS location_zip, 0 AS from_uni_link
@@ -1341,103 +1340,103 @@ if ($netnodes) {
 		LEFT JOIN addresses a ON n.address_id = a.id
 		WHERE n.ownerid IS NOT NULL AND a.city_id IS NOT NULL AND n.netdev IN (" . implode(',', $netnode['netdevices']) . ")
 		GROUP BY n.linktype, n.linktechnology, a.street, a.street_id, a.city_id, a.city, a.house, a.zip");
-        if (empty($ranges)) {
-            $ranges = array();
-        }
+    if (empty($ranges)) {
+        $ranges = array();
+    }
 
-        if ($customer_netdevices) {
-            // collect ranges from customer uni links
-            $uni_ranges = array();
-            if (!empty($netnode['uni_links'])) {
-                foreach ($netnode['uni_links'] as $uni_link_id) {
-                    $uni_link = &$uni_links[$uni_link_id];
-                    // $uni_link['nodes']
-                    $uni_ranges[] = array(
-                    'linktype' => $uni_link['type'],
-                    'linktechnology' => $uni_link['technology'],
-                    'location_city' => $uni_link['location_city'],
-                    'location_city_name' => $uni_link['location_city_name'],
-                    'location_street' => $uni_link['location_street'],
-                    'location_street_name' => $uni_link['location_street_name'],
-                    'location_house' => $uni_link['location_house'],
-                    'location_zip' => $uni_link['location_zip'],
-                    'from_uni_link' => $uni_link_id,
-                    );
-                }
+    if ($customer_netdevices) {
+        // collect ranges from customer uni links
+        $uni_ranges = array();
+        if (!empty($netnode['uni_links'])) {
+            foreach ($netnode['uni_links'] as $uni_link_id) {
+                $uni_link = &$uni_links[$uni_link_id];
+                // $uni_link['nodes']
+                $uni_ranges[] = array(
+                'linktype' => $uni_link['type'],
+                'linktechnology' => $uni_link['technology'],
+                'location_city' => $uni_link['location_city'],
+                'location_city_name' => $uni_link['location_city_name'],
+                'location_street' => $uni_link['location_street'],
+                'location_street_name' => $uni_link['location_street_name'],
+                'location_house' => $uni_link['location_house'],
+                'location_zip' => $uni_link['location_zip'],
+                'from_uni_link' => $uni_link_id,
+                );
             }
-            $ranges = array_merge($ranges, $uni_ranges);
         }
+        $ranges = array_merge($ranges, $uni_ranges);
+    }
 
-        if (empty($ranges)) {
-            continue;
-        }
+    if (empty($ranges)) {
+        continue;
+    }
 
-        // this variable will change its value to true if network node will have range with the same location (city, street, house)
-        $range_netbuilding = false;
+    // this variable will change its value to true if network node will have range with the same location (city, street, house)
+    $range_netbuilding = false;
 
-        $range_maxdownstream = 0;
-        foreach ($ranges as $range) {
-            $teryt = array();
+    $range_maxdownstream = 0;
+    foreach ($ranges as $range) {
+        $teryt = array();
 
-            // get teryt info for group of computers connected to network node
-            if (isset($teryt_cities[$range['location_city']])) {
-                $teryt = $teryt_cities[$range['location_city']];
+        // get teryt info for group of computers connected to network node
+        if (isset($teryt_cities[$range['location_city']])) {
+            $teryt = $teryt_cities[$range['location_city']];
 
-                $teryt['location_zip'] = empty($teryt['location_zip']) ? '' : $teryt['location_zip'];
+            $teryt['location_zip'] = empty($teryt['location_zip']) ? '' : $teryt['location_zip'];
 
-                if (!empty($range['location_street']) && isset($teryt_streets[$range['location_street']])) {
-                    $teryt_street = $teryt_streets[$range['location_street']];
+            if (!empty($range['location_street']) && isset($teryt_streets[$range['location_street']])) {
+                $teryt_street = $teryt_streets[$range['location_street']];
 
-                    $teryt['address_cecha'] = $teryt_street['address_cecha'];
-                    $teryt['address_ulica'] = $teryt_street['address_ulica'];
-                    $teryt['address_symul'] = $teryt_street['address_symul'];
-                    $teryt['location_zip'] = empty($teryt_street['location_zip']) ? '' : $teryt_street['location_zip'];
-                }
+                $teryt['address_cecha'] = $teryt_street['address_cecha'];
+                $teryt['address_ulica'] = $teryt_street['address_ulica'];
+                $teryt['address_symul'] = $teryt_street['address_symul'];
+                $teryt['location_zip'] = empty($teryt_street['location_zip']) ? '' : $teryt_street['location_zip'];
             }
+        }
 
-            $teryt['address_budynek'] = $range['location_house'];
-            $teryt['location_zip'] = empty($range['location_zip']) ? $teryt['location_zip'] : $range['location_zip'];
+        $teryt['address_budynek'] = $range['location_house'];
+        $teryt['location_zip'] = empty($range['location_zip']) ? $teryt['location_zip'] : $range['location_zip'];
 
-            if (empty($range['location_street_name'])) {
-                if (!isset($teryt_cities[$range['location_city']]) || empty($teryt['with_streets'])) {
+        if (empty($range['location_street_name'])) {
+            if (!isset($teryt_cities[$range['location_city']]) || empty($teryt['with_streets'])) {
+                $teryt['address_ulica'] = "BRAK ULICY";
+                $teryt['address_symul'] = "99999";
+            } else {
+                $teryt['address_ulica'] = '';
+                $teryt['address_symul'] = '';
+                $teryt['address_budynek'] = '';
+            }
+        } else {
+            if (!isset($teryt['address_symul'])) {
+                if (isset($teryt_cities[$range['location_city']]) && !empty($teryt['with_streets'])) {
+                    $teryt['address_ulica'] = "ul. SPOZA ZAKRESU";
+                    $teryt['address_symul'] = "99998";
+                } else {
                     $teryt['address_ulica'] = "BRAK ULICY";
                     $teryt['address_symul'] = "99999";
-                } else {
-                    $teryt['address_ulica'] = '';
-                    $teryt['address_symul'] = '';
-                    $teryt['address_budynek'] = '';
-                }
-            } else {
-                if (!isset($teryt['address_symul'])) {
-                    if (isset($teryt_cities[$range['location_city']]) && !empty($teryt['with_streets'])) {
-                        $teryt['address_ulica'] = "ul. SPOZA ZAKRESU";
-                        $teryt['address_symul'] = "99998";
-                    } else {
-                        $teryt['address_ulica'] = "BRAK ULICY";
-                        $teryt['address_symul'] = "99999";
-                    }
                 }
             }
+        }
 
-            if ($range['linktechnology']) {
-                if ($range['linktechnology'] < 50 || $range['linktechnology'] >= 100) {
-                    $technology = $linktypes[$range['linktype']]['technologia'];
-                } else {
-                    $technology = 'kablowe współosiowe miedziane';
-                }
-                $linktechnology = $LINKTECHNOLOGIES[$range['linktype']][$range['linktechnology']];
-            } else {
+        if ($range['linktechnology']) {
+            if ($range['linktechnology'] < 50 || $range['linktechnology'] >= 100) {
                 $technology = $linktypes[$range['linktype']]['technologia'];
-                $linktechnology = $linktypes[$range['linktype']]['technologia_dostepu'];
+            } else {
+                $technology = 'kablowe współosiowe miedziane';
             }
+            $linktechnology = $LINKTECHNOLOGIES[$range['linktype']][$range['linktechnology']];
+        } else {
+            $technology = $linktypes[$range['linktype']]['technologia'];
+            $linktechnology = $linktypes[$range['linktype']]['technologia_dostepu'];
+        }
 
-            $nodes = array();
-            $uni_nodes = array();
-            if (!$customer_netdevices || empty($range['from_uni_link'])) {
-                // get info about computers connected to network node
-                $nodes = $DB->GetAll(
-                    "SELECT na.nodeid, c.type, n.invprojectid, nd.id AS netdevid, nd.status,"
-                    . $DB->GroupConcat("DISTINCT (CASE t.type WHEN " . SERVICE_TYPE_INTERNET . " THEN 'INT'
+        $nodes = array();
+        $uni_nodes = array();
+        if (!$customer_netdevices || empty($range['from_uni_link'])) {
+            // get info about computers connected to network node
+            $nodes = $DB->GetAll(
+                "SELECT na.nodeid, c.type, n.invprojectid, nd.id AS netdevid, nd.status,"
+                . $DB->GroupConcat("DISTINCT (CASE t.type WHEN " . SERVICE_TYPE_INTERNET . " THEN 'INT'
 					WHEN " . SERVICE_TYPE_PHONE . " THEN 'TEL'
 					WHEN " . SERVICE_TYPE_TV . " THEN 'TV'
 					ELSE 'INT' END)") . " AS servicetypes, SUM(t.downceil) AS downstream, SUM(t.upceil) AS upstream
@@ -1459,21 +1458,21 @@ if ($netnodes) {
 					AND (a.datefrom = 0 OR a.datefrom < ?NOW?) AND (a.dateto = 0 OR a.dateto > ?NOW?)
 					AND allsuspended.total IS NULL
 				GROUP BY na.nodeid, c.type, n.invprojectid, nd.id, nd.status",
-                    array($range['linktype'], $range['linktechnology'], $range['location_city'], $range['location_street'], $range['location_house'])
-                );
-                if (empty($nodes)) {
-                    $nodes = array();
-                }
-            } elseif ($customer_netdevices) {
-                // get info about computers or network devices connected to network node though customer network device
-                $uni_link_id = $range['from_uni_link'];
-                $uni_link = &$uni_links[$uni_link_id];
-                $uni_nodes = $DB->GetAll(
-                    "SELECT na.nodeid, c.type, "
-                    . (empty($uni_link['invprojectid']) ? 'null' : $uni_link['invprojectid']) . " AS invprojectid, "
-                    . $uni_link['operator_netdevid'] . " AS netdevid, "
-                    . $uni_link['operator_netdevstatus'] . " AS status, "
-                    . $DB->GroupConcat("DISTINCT (CASE t.type WHEN " . SERVICE_TYPE_INTERNET . " THEN 'INT'
+                array($range['linktype'], $range['linktechnology'], $range['location_city'], $range['location_street'], $range['location_house'])
+            );
+            if (empty($nodes)) {
+                $nodes = array();
+            }
+        } elseif ($customer_netdevices) {
+            // get info about computers or network devices connected to network node though customer network device
+            $uni_link_id = $range['from_uni_link'];
+            $uni_link = &$uni_links[$uni_link_id];
+            $uni_nodes = $DB->GetAll(
+                "SELECT na.nodeid, c.type, "
+                . (empty($uni_link['invprojectid']) ? 'null' : $uni_link['invprojectid']) . " AS invprojectid, "
+                . $uni_link['operator_netdevid'] . " AS netdevid, "
+                . $uni_link['operator_netdevstatus'] . " AS status, "
+                . $DB->GroupConcat("DISTINCT (CASE t.type WHEN " . SERVICE_TYPE_INTERNET . " THEN 'INT'
 					WHEN " . SERVICE_TYPE_PHONE . " THEN 'TEL'
 					WHEN " . SERVICE_TYPE_TV . " THEN 'TV'
 					ELSE 'INT' END)") . " AS servicetypes, SUM(t.downceil) AS downstream, SUM(t.upceil) AS upstream
@@ -1493,328 +1492,327 @@ if ($netnodes) {
 					AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
 					AND allsuspended.total IS NULL
 				GROUP BY na.nodeid, c.type",
-                    array()
-                );
-                if (empty($uni_nodes)) {
-                    $uni_nodes = array();
-                }
-            }
-            $nodes = array_merge($nodes, $uni_nodes);
-
-            if (empty($nodes)) {
-                continue;
-            }
-
-            $netnode['tech'][$range['linktype']] = true;
-
-            // check if this is range with the same location as owning network node
-            if ($range['location_city'] == $netnode['location_city']
-            && $range['location_street'] == $netnode['location_street']
-            && $range['location_house'] == $netnode['location_house']) {
-                $range_netbuilding = true;
-            }
-
-            $netrange = array(
-            'longitude' => '',
-            'latitude' => '',
-            'count' => 0,
+                array()
             );
-
-            $prjnodes = array();
-            foreach ($nodes as $node) {
-                $status = $node['status'];
-                if (!strlen($node['invprojectid'])) {
-                    $prj = '';
-                } elseif ($node['invprojectid'] > 1) {
-                    $prj = $projects[$node['invprojectid']]['name'];
-                } else {
-                    $prj = $netdevices[$node['netdevid']]['invproject'];
-                }
-                if (!isset($prjnodes[$prj][$status])) {
-                    $prjnodes[$prj][$status] = array();
-                }
-                $prjnodes[$prj][$status][] = $node;
-
-                if (isset($nodecoords[$node['nodeid']])) {
-                    if (!strlen($netrange['longitude'])) {
-                        $netrange['longitude'] = 0;
-                    }
-                    if (!strlen($netrange['latitude'])) {
-                        $netrange['latitude'] = 0;
-                    }
-                    $netrange['longitude'] += $nodecoords[$node['nodeid']]['longitude'];
-                    $netrange['latitude'] += $nodecoords[$node['nodeid']]['latitude'];
-                    $netrange['count']++;
-                }
+            if (empty($uni_nodes)) {
+                $uni_nodes = array();
             }
-            // calculate network range gps coordinates as all nodes gps coordinates mean value
-            if ($netrange['count']) {
-                $netrange['longitude'] /= $netrange['count'];
-                $netrange['latitude'] /= $netrange['count'];
+        }
+        $nodes = array_merge($nodes, $uni_nodes);
+
+        if (empty($nodes)) {
+            continue;
+        }
+
+        $netnode['tech'][$range['linktype']] = true;
+
+        // check if this is range with the same location as owning network node
+        if ($range['location_city'] == $netnode['location_city']
+        && $range['location_street'] == $netnode['location_street']
+        && $range['location_house'] == $netnode['location_house']) {
+            $range_netbuilding = true;
+        }
+
+        $netrange = array(
+        'longitude' => '',
+        'latitude' => '',
+        'count' => 0,
+        );
+
+        $prjnodes = array();
+        foreach ($nodes as $node) {
+            $status = $node['status'];
+            if (!strlen($node['invprojectid'])) {
+                $prj = '';
+            } elseif ($node['invprojectid'] > 1) {
+                $prj = $projects[$node['invprojectid']]['name'];
+            } else {
+                $prj = $netdevices[$node['netdevid']]['invproject'];
             }
+            if (!isset($prjnodes[$prj][$status])) {
+                $prjnodes[$prj][$status] = array();
+            }
+            $prjnodes[$prj][$status][] = $node;
 
-            foreach ($prjnodes as $prj => $statuses) {
-                foreach ($statuses as $status => $nodes) {
-                    // count all kinds of link speeds for computers connected to this network node
-                    $personalnodes = array();
-                    $commercialnodes = array();
-                    $maxdownstream = 0;
-                    foreach ($nodes as $node) {
-                        if ($node['downstream'] <= 1000) {
-                            $set = 1;
-                        } elseif ($node['downstream'] < 2000) {
-                            $set = 2;
-                        } elseif ($node['downstream'] == 2000) {
-                            $set = 3;
-                        } elseif ($node['downstream'] <= 10000) {
-                            $set = 4;
-                        } elseif ($node['downstream'] <= 20000) {
-                            $set = 5;
-                        } elseif ($node['downstream'] < 30000) {
-                            $set = 6;
-                        } elseif ($node['downstream'] == 30000) {
-                            $set = 7;
-                        } elseif ($node['downstream'] < 100000) {
-                            $set = 8;
-                        } elseif ($node['downstream'] == 100000) {
-                            $set = 9;
-                        } else {
-                            $set = 10;
+            if (isset($nodecoords[$node['nodeid']])) {
+                if (!strlen($netrange['longitude'])) {
+                    $netrange['longitude'] = 0;
+                }
+                if (!strlen($netrange['latitude'])) {
+                    $netrange['latitude'] = 0;
+                }
+                $netrange['longitude'] += $nodecoords[$node['nodeid']]['longitude'];
+                $netrange['latitude'] += $nodecoords[$node['nodeid']]['latitude'];
+                $netrange['count']++;
+            }
+        }
+        // calculate network range gps coordinates as all nodes gps coordinates mean value
+        if ($netrange['count']) {
+            $netrange['longitude'] /= $netrange['count'];
+            $netrange['latitude'] /= $netrange['count'];
+        }
+
+        foreach ($prjnodes as $prj => $statuses) {
+            foreach ($statuses as $status => $nodes) {
+                // count all kinds of link speeds for computers connected to this network node
+                $personalnodes = array();
+                $commercialnodes = array();
+                $maxdownstream = 0;
+                foreach ($nodes as $node) {
+                    if ($node['downstream'] <= 1000) {
+                        $set = 1;
+                    } elseif ($node['downstream'] < 2000) {
+                        $set = 2;
+                    } elseif ($node['downstream'] == 2000) {
+                        $set = 3;
+                    } elseif ($node['downstream'] <= 10000) {
+                        $set = 4;
+                    } elseif ($node['downstream'] <= 20000) {
+                        $set = 5;
+                    } elseif ($node['downstream'] < 30000) {
+                        $set = 6;
+                    } elseif ($node['downstream'] == 30000) {
+                        $set = 7;
+                    } elseif ($node['downstream'] < 100000) {
+                        $set = 8;
+                    } elseif ($node['downstream'] == 100000) {
+                        $set = 9;
+                    } else {
+                        $set = 10;
+                    }
+                    if ($node['type'] == 0) {
+                        if (!isset($personalnodes[$node['servicetypes']][$set])) {
+                            $personalnodes[$node['servicetypes']][$set] = 0;
                         }
-                        if ($node['type'] == 0) {
-                            if (!isset($personalnodes[$node['servicetypes']][$set])) {
-                                $personalnodes[$node['servicetypes']][$set] = 0;
-                            }
-                            $personalnodes[$node['servicetypes']][$set]++;
-                        } else {
-                            if (!isset($commercialnodes[$node['servicetypes']][$set])) {
-                                $commercialnodes[$node['servicetypes']][$set] = 0;
-                            }
-                            $commercialnodes[$node['servicetypes']][$set]++;
+                        $personalnodes[$node['servicetypes']][$set]++;
+                    } else {
+                        if (!isset($commercialnodes[$node['servicetypes']][$set])) {
+                            $commercialnodes[$node['servicetypes']][$set] = 0;
                         }
-                        if ($node['downstream'] > $maxdownstream) {
-                            $maxdownstream = $node['downstream'];
+                        $commercialnodes[$node['servicetypes']][$set]++;
+                    }
+                    if ($node['downstream'] > $maxdownstream) {
+                        $maxdownstream = $node['downstream'];
+                    }
+                }
+                // save info about computers connected to this network node
+                foreach ($personalnodes as $servicetype => $servicenodes) {
+                    $services = array();
+                    foreach (array_fill(0, 11, '0') as $key => $value) {
+                        $services[] = $servicenodes[$key] ?? $value;
+                    }
+                    $personalnodes[$servicetype] = $services;
+                }
+                foreach ($commercialnodes as $servicetype => $servicenodes) {
+                    $services = array();
+                    foreach (array_fill(0, 11, '0') as $key => $value) {
+                        $services[] = $servicenodes[$key] ?? $value;
+                    }
+                    $commercialnodes[$servicetype] = $services;
+                }
+
+                // mark network range as handled - later used in potential range determination
+                $teryt_netranges[sprintf(
+                    "%s_%07d_%05d_%s",
+                    $teryt['area_terc'],
+                    $teryt['area_simc'],
+                    $teryt['address_symul'],
+                    $teryt['address_budynek']
+                )] = true;
+
+                $data = array(
+                    'zas_id' => $netbuildingid,
+                    'zas_ownership' => 'Własna',
+                    'zas_leasetype' => '',
+                    'zas_foreignerid' => '',
+                    'zas_nodeid' => $netnode['id'],
+                    'zas_state' => $teryt['area_woj'] ?? '',
+                    'zas_district' => $teryt['area_pow'] ?? '',
+                    'zas_borough' => $teryt['area_gmi'] ?? '',
+                    'zas_terc' => $teryt['area_terc'] ?? '',
+                    'zas_city' => $teryt['area_city'] ?? $range['location_city_name'],
+                    'zas_simc' => $teryt['area_simc'] ?? '',
+                    'zas_street' => isset($teryt['address_ulica']) ? ((!empty($teryt['address_cecha']) && $teryt['address_cecha'] != 'inne'
+                        ? $teryt['address_cecha'] . ' ' : '') . $teryt['address_ulica']) : $range['location_street_name'],
+                    'zas_ulic' => $teryt['address_symul'],
+                    'zas_house' => str_replace(' ', '', $teryt['address_budynek']),
+                    'zas_zip' => $teryt['location_zip'],
+                    'zas_latitude' => (!isset($netrange['latitude']) || !strlen($netrange['latitude']))
+                        && (!isset($netnode['latitude']) || !strlen($netnode['latitude']))
+                        ? '' : str_replace(',', '.', sprintf('%.6f', (!isset($netrange['latitude']) || !strlen($netrange['latitude'])) ? $netnode['latitude'] : $netrange['latitude'])),
+                    'zas_longitude' => !strlen($netrange['longitude']) && !strlen($netnode['longitude'])
+                        ? '' : str_replace(',', '.', sprintf('%.6f', !strlen($netrange['longitude']) ? $netnode['longitude'] : $netrange['longitude'])),
+                    'zas_tech' => $technology,
+                    'zas_ltech' => $linktechnology,
+                );
+
+                $allservices = array();
+
+                foreach (array_unique(array_merge(array_keys($personalnodes), array_keys($commercialnodes))) as $servicetype) {
+                    $services = array_flip(explode(',', $servicetype));
+                    $ukeservices = array();
+                    foreach (array('TEL', 'INT', 'TV') as $service) {
+                        if (isset($services[$service])) {
+                            $ukeservices[] = $service;
+                            $allservices[] = $service;
                         }
                     }
-                    // save info about computers connected to this network node
-                    foreach ($personalnodes as $servicetype => $servicenodes) {
-                        $services = array();
-                        foreach (array_fill(0, 11, '0') as $key => $value) {
-                            $services[] = $servicenodes[$key] ?? $value;
-                        }
-                        $personalnodes[$servicetype] = $services;
-                    }
-                    foreach ($commercialnodes as $servicetype => $servicenodes) {
-                        $services = array();
-                        foreach (array_fill(0, 11, '0') as $key => $value) {
-                            $services[] = $servicenodes[$key] ?? $value;
-                        }
-                        $commercialnodes[$servicetype] = $services;
-                    }
-
-                    // mark network range as handled - later used in potential range determination
-                    $teryt_netranges[sprintf(
-                        "%s_%07d_%05d_%s",
-                        $teryt['area_terc'],
-                        $teryt['area_simc'],
-                        $teryt['address_symul'],
-                        $teryt['address_budynek']
-                    )] = true;
-
-                    $data = array(
-                        'zas_id' => $netbuildingid,
-                        'zas_ownership' => 'Własna',
-                        'zas_leasetype' => '',
-                        'zas_foreignerid' => '',
-                        'zas_nodeid' => $netnode['id'],
-                        'zas_state' => $teryt['area_woj'] ?? '',
-                        'zas_district' => $teryt['area_pow'] ?? '',
-                        'zas_borough' => $teryt['area_gmi'] ?? '',
-                        'zas_terc' => $teryt['area_terc'] ?? '',
-                        'zas_city' => $teryt['area_city'] ?? $range['location_city_name'],
-                        'zas_simc' => $teryt['area_simc'] ?? '',
-                        'zas_street' => isset($teryt['address_ulica']) ? ((!empty($teryt['address_cecha']) && $teryt['address_cecha'] != 'inne'
-                            ? $teryt['address_cecha'] . ' ' : '') . $teryt['address_ulica']) : $range['location_street_name'],
-                        'zas_ulic' => $teryt['address_symul'],
-                        'zas_house' => str_replace(' ', '', $teryt['address_budynek']),
-                        'zas_zip' => $teryt['location_zip'],
-                        'zas_latitude' => (!isset($netrange['latitude']) || !strlen($netrange['latitude']))
-                            && (!isset($netnode['latitude']) || !strlen($netnode['latitude']))
-                            ? '' : str_replace(',', '.', sprintf('%.6f', (!isset($netrange['latitude']) || !strlen($netrange['latitude'])) ? $netnode['latitude'] : $netrange['latitude'])),
-                        'zas_longitude' => !strlen($netrange['longitude']) && !strlen($netnode['longitude'])
-                            ? '' : str_replace(',', '.', sprintf('%.6f', !strlen($netrange['longitude']) ? $netnode['longitude'] : $netrange['longitude'])),
-                        'zas_tech' => $technology,
-                        'zas_ltech' => $linktechnology,
+                    $us_data = array(
+                    'us_id' => $netrangeid,
+                    'us_netbuildingid' => $netbuildingid,
+                    'us_phonepots' => array_search('TEL', $ukeservices) !== false
+                        && $range['linktechnology'] == 12 ? 'Tak' : 'Nie',
+                    'us_phonevoip' => array_search('TEL', $ukeservices) !== false && $range['linktechnology'] != 12
+                        && ($range['linktechnology'] < 105 || $range['linktechnology'] >= 200) ? 'Tak' : 'Nie',
+                    'us_phonemobile' => array_search('TEL', $ukeservices) !== false
+                        && $range['linktechnology'] >= 105 && $range['linktechnology'] < 200 ? 'Tak' : 'Nie',
+                    'us_internetstationary' => array_search('INT', $ukeservices) !== false
+                        && ($range['linktechnology'] < 105 || $range['linktechnology'] >= 200) ? 'Tak' : 'Nie',
+                    'us_internetmobile' => array_search('INT', $ukeservices) !== false
+                        && $range['linktechnology'] >= 105 && $range['linktechnology'] < 200 ? 'Tak' : 'Nie',
+                    'us_tv' => array_search('TV', $ukeservices) !== false ? 'Tak' : 'Nie',
+                    'us_other' => '',
                     );
 
-                    $allservices = array();
-
-                    foreach (array_unique(array_merge(array_keys($personalnodes), array_keys($commercialnodes))) as $servicetype) {
-                        $services = array_flip(explode(',', $servicetype));
-                        $ukeservices = array();
-                        foreach (array('TEL', 'INT', 'TV') as $service) {
-                            if (isset($services[$service])) {
-                                $ukeservices[] = $service;
-                                $allservices[] = $service;
-                            }
-                        }
-                        $us_data = array(
-                        'us_id' => $netrangeid,
-                        'us_netbuildingid' => $netbuildingid,
-                        'us_phonepots' => array_search('TEL', $ukeservices) !== false
-                            && $range['linktechnology'] == 12 ? 'Tak' : 'Nie',
-                        'us_phonevoip' => array_search('TEL', $ukeservices) !== false && $range['linktechnology'] != 12
-                            && ($range['linktechnology'] < 105 || $range['linktechnology'] >= 200) ? 'Tak' : 'Nie',
-                        'us_phonemobile' => array_search('TEL', $ukeservices) !== false
-                            && $range['linktechnology'] >= 105 && $range['linktechnology'] < 200 ? 'Tak' : 'Nie',
-                        'us_internetstationary' => array_search('INT', $ukeservices) !== false
-                            && ($range['linktechnology'] < 105 || $range['linktechnology'] >= 200) ? 'Tak' : 'Nie',
-                        'us_internetmobile' => array_search('INT', $ukeservices) !== false
-                            && $range['linktechnology'] >= 105 && $range['linktechnology'] < 200 ? 'Tak' : 'Nie',
-                        'us_tv' => array_search('TV', $ukeservices) !== false ? 'Tak' : 'Nie',
-                        'us_other' => '',
-                        );
-
-                        if (isset($personalnodes[$servicetype])) {
-                            if (array_search('INT', $ukeservices) !== false) {
-                                $personalservices = $personalnodes[$servicetype];
-                            } else {
-                                $count = 0;
-                                foreach ($personalnodes[$servicetype] as $nodes) {
-                                    $count += $nodes;
-                                }
-                                $personalservices = array_fill(0, 10, '0');
-                                array_unshift($personalservices, $count);
-                            }
+                    if (isset($personalnodes[$servicetype])) {
+                        if (array_search('INT', $ukeservices) !== false) {
+                            $personalservices = $personalnodes[$servicetype];
                         } else {
-                            $personalservices = array_fill(0, 11, '0');
-                        }
-
-                        if (isset($commercialnodes[$servicetype])) {
-                            if (array_search('INT', $ukeservices) !== false) {
-                                $commercialservices = $commercialnodes[$servicetype];
-                            } else {
-                                $count = 0;
-                                foreach ($commercialnodes[$servicetype] as $nodes) {
-                                    $count += $nodes;
-                                }
-                                $commercialservices = array_fill(0, 10, '0');
-                                array_unshift($commercialservices, $count);
+                            $count = 0;
+                            foreach ($personalnodes[$servicetype] as $nodes) {
+                                $count += $nodes;
                             }
+                            $personalservices = array_fill(0, 10, '0');
+                            array_unshift($personalservices, $count);
+                        }
+                    } else {
+                        $personalservices = array_fill(0, 11, '0');
+                    }
+
+                    if (isset($commercialnodes[$servicetype])) {
+                        if (array_search('INT', $ukeservices) !== false) {
+                            $commercialservices = $commercialnodes[$servicetype];
                         } else {
-                            $commercialservices = array_fill(0, 11, '0');
+                            $count = 0;
+                            foreach ($commercialnodes[$servicetype] as $nodes) {
+                                $count += $nodes;
+                            }
+                            $commercialservices = array_fill(0, 10, '0');
+                            array_unshift($commercialservices, $count);
                         }
-
-                        foreach ($personalservices as $idx => $service) {
-                            $us_data['us_personal' . $idx] = $service;
-                        }
-                        foreach ($commercialservices as $idx => $service) {
-                            $us_data['us_commercial' . $idx] = $service;
-                        }
-
-                        $us_data = array_merge($us_data, array(
-                        'us_invproject' => strlen($prj) ? $prj : '',
-                        'us_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
-                        ));
-
-                        if (in_array('us', $sheets)) {
-                            $buffer .= 'U,' . to_csv($us_data) . EOL;
-                        }
-                        $netrangeid++;
+                    } else {
+                        $commercialservices = array_fill(0, 11, '0');
                     }
 
-                    $allservices = array_unique($allservices);
-                    $maxdownstream = parseNetworkSpeed($maxdownstream);
-
-                    if ($maxdownstream > $range_maxdownstream) {
-                        $range_maxdownstream = $maxdownstream;
-                        $range_technology = $technology;
-                        $range_linktechnology = $linktechnology;
+                    foreach ($personalservices as $idx => $service) {
+                        $us_data['us_personal' . $idx] = $service;
+                    }
+                    foreach ($commercialservices as $idx => $service) {
+                        $us_data['us_commercial' . $idx] = $service;
                     }
 
-                    if (array_search('TV', $allservices)) {
-                        $netnode['tv_avible'] = true;
-                    }
-
-                    if (array_search('TEL', $allservices)) {
-                        $netnode['tel_avible'] = true;
-                    }
-
-                    $data = array_merge($data, array(
-                    'zas_phonepots' => array_search('TEL', $allservices) !== false && $range['linktechnology'] == 12 ? 'Tak' : 'Nie',
-                    'zas_phonevoip' => array_search('TEL', $allservices) !== false && $range['linktechnology'] != 12 && ($range['linktechnology'] < 105 || $range['linktechnology'] >= 200) ? 'Tak' : 'Nie',
-                    'zas_phonemobile' => array_search('TEL', $allservices) !== false && $range['linktechnology'] >= 105 && $range['linktechnology'] < 200 ? 'Tak' : 'Nie',
-                    'zas_internetstationary' => array_search('INT', $allservices) !== false && ($range['linktechnology'] < 105 || $range['linktechnology'] >= 200) ? 'Tak' : 'Nie',
-                    'zas_internetmobile' => array_search('INT', $allservices) !== false && $range['linktechnology'] >= 105 && $range['linktechnology'] < 200 ? 'Tak' : 'Nie',
-                    'zas_tv' => array_search('TV', $allservices) !== false ? 'Tak' : 'Nie',
-                    'zas_other' => '',
-                    'zas_stationarymaxspeed' => array_search('INT', $allservices) !== false && ($range['linktechnology'] < 105 || $range['linktechnology'] >= 200) ? $maxdownstream : '0',
-                    'zas_mobilemaxspeed' => array_search('INT', $allservices) !== false && $range['linktechnology'] >= 105 && $range['linktechnology'] < 200 ? $maxdownstream : '0',
-                    'zas_invproject' => strlen($prj) ? $prj : '',
-                    'zas_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
+                    $us_data = array_merge($us_data, array(
+                    'us_invproject' => strlen($prj) ? $prj : '',
+                    'us_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
                     ));
 
-                    $customers[ strtolower($data['zas_city'] . '|' . $data['zas_street'] . '|' . $data['zas_house']) ] = 1;
-
-                    if (in_array('zas', $sheets)) {
-                        $buffer .= 'ZS,' . to_csv($data) . EOL;
+                    if (in_array('us', $sheets)) {
+                        $buffer .= 'U,' . to_csv($us_data) . EOL;
                     }
-                    $netbuildingid++;
+                    $netrangeid++;
                 }
-            }
-        }
-        // unfortunately network node doesn't have range with the same location
-        if (!$range_netbuilding) {
-            // mark network range as handled - later used in potential range determination
-            $teryt_netranges[sprintf(
-                "%s_%07d_%05d_%s",
-                $teryt['area_terc'],
-                $teryt['area_simc'],
-                $teryt['address_symul'],
-                $teryt['address_budynek']
-            )] = true;
 
-            $data = array(
-                'zas_id' => $netbuildingid,
-                'zas_ownership' => 'Własna',
-                'zas_leasetype' => '',
-                'zas_foreignerid' => '',
-                'zas_nodeid' => $netnode['id'],
-                'zas_state' => $netnode['area_woj'] ?? '',
-                'zas_district' => $netnode['area_pow'] ?? '',
-                'zas_borough' => $netnode['area_gmi'] ?? '',
-                'zas_terc' => $netnode['area_terc'] ?? '',
-                'zas_city' => $netnode['area_city'] ?? $range['location_city_name'],
-                'zas_simc' => $netnode['area_simc'] ?? '',
-                'zas_street' => isset($netnode['address_ulica']) ? ((!empty($netnode['address_cecha']) && $netnode['address_cecha'] != 'inne'
-                    ? $netnode['address_cecha'] . ' ' : '') . $netnode['address_ulica']) : $range['location_street_name'],
-                'zas_ulic' => $netnode['address_symul'] ?? '',
-                'zas_house' => str_replace(' ', '', $netnode['address_budynek']),
-                'zas_zip' => $netnode['location_zip'] ?? '',
-                'zas_latitude' => $netnode['latitude'] ?? '',
-                'zas_longitude' => $netnode['longitude'] ?? '',
-                'zas_tech' => $range_technology,
-                'zas_ltech' => $range_linktechnology,
-                'zas_phonepots' => 'Nie',
-                'zas_phonevoip' => 'Nie',
-                'zas_phonemobile' => 'Nie',
-                'zas_internetstationary' => 'Tak',
-                'zas_internetmobile' => 'Nie',
-                'zas_tv' => 'Nie',
+                $allservices = array_unique($allservices);
+                $maxdownstream = parseNetworkSpeed($maxdownstream);
+
+                if ($maxdownstream > $range_maxdownstream) {
+                    $range_maxdownstream = $maxdownstream;
+                    $range_technology = $technology;
+                    $range_linktechnology = $linktechnology;
+                }
+
+                if (array_search('TV', $allservices)) {
+                    $netnode['tv_avible'] = true;
+                }
+
+                if (array_search('TEL', $allservices)) {
+                    $netnode['tel_avible'] = true;
+                }
+
+                $data = array_merge($data, array(
+                'zas_phonepots' => array_search('TEL', $allservices) !== false && $range['linktechnology'] == 12 ? 'Tak' : 'Nie',
+                'zas_phonevoip' => array_search('TEL', $allservices) !== false && $range['linktechnology'] != 12 && ($range['linktechnology'] < 105 || $range['linktechnology'] >= 200) ? 'Tak' : 'Nie',
+                'zas_phonemobile' => array_search('TEL', $allservices) !== false && $range['linktechnology'] >= 105 && $range['linktechnology'] < 200 ? 'Tak' : 'Nie',
+                'zas_internetstationary' => array_search('INT', $allservices) !== false && ($range['linktechnology'] < 105 || $range['linktechnology'] >= 200) ? 'Tak' : 'Nie',
+                'zas_internetmobile' => array_search('INT', $allservices) !== false && $range['linktechnology'] >= 105 && $range['linktechnology'] < 200 ? 'Tak' : 'Nie',
+                'zas_tv' => array_search('TV', $allservices) !== false ? 'Tak' : 'Nie',
                 'zas_other' => '',
-                'zas_stationarymaxspeed' => $range_maxdownstream,
-                'zas_mobilemaxspeed' => 0,
-                'zas_invproject' => '',
-                'zas_invstatus' => '',
-            );
+                'zas_stationarymaxspeed' => array_search('INT', $allservices) !== false && ($range['linktechnology'] < 105 || $range['linktechnology'] >= 200) ? $maxdownstream : '0',
+                'zas_mobilemaxspeed' => array_search('INT', $allservices) !== false && $range['linktechnology'] >= 105 && $range['linktechnology'] < 200 ? $maxdownstream : '0',
+                'zas_invproject' => strlen($prj) ? $prj : '',
+                'zas_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
+                ));
 
-            $customers[ strtolower($data['zas_city'] . '|' . $data['zas_street'] . '|' . $data['zas_house']) ] = 1;
+                $customers[ strtolower($data['zas_city'] . '|' . $data['zas_street'] . '|' . $data['zas_house']) ] = 1;
 
-            if (in_array('zas', $sheets)) {
-                $buffer .= 'ZS,' . to_csv($data) . EOL;
+                if (in_array('zas', $sheets)) {
+                    $buffer .= 'ZS,' . to_csv($data) . EOL;
+                }
+                $netbuildingid++;
             }
-            $netbuildingid++;
         }
+    }
+    // unfortunately network node doesn't have range with the same location
+    if (!$range_netbuilding) {
+        // mark network range as handled - later used in potential range determination
+        $teryt_netranges[sprintf(
+            "%s_%07d_%05d_%s",
+            $teryt['area_terc'],
+            $teryt['area_simc'],
+            $teryt['address_symul'],
+            $teryt['address_budynek']
+        )] = true;
+
+        $data = array(
+            'zas_id' => $netbuildingid,
+            'zas_ownership' => 'Własna',
+            'zas_leasetype' => '',
+            'zas_foreignerid' => '',
+            'zas_nodeid' => $netnode['id'],
+            'zas_state' => $netnode['area_woj'] ?? '',
+            'zas_district' => $netnode['area_pow'] ?? '',
+            'zas_borough' => $netnode['area_gmi'] ?? '',
+            'zas_terc' => $netnode['area_terc'] ?? '',
+            'zas_city' => $netnode['area_city'] ?? $range['location_city_name'],
+            'zas_simc' => $netnode['area_simc'] ?? '',
+            'zas_street' => isset($netnode['address_ulica']) ? ((!empty($netnode['address_cecha']) && $netnode['address_cecha'] != 'inne'
+                ? $netnode['address_cecha'] . ' ' : '') . $netnode['address_ulica']) : $range['location_street_name'],
+            'zas_ulic' => $netnode['address_symul'] ?? '',
+            'zas_house' => str_replace(' ', '', $netnode['address_budynek']),
+            'zas_zip' => $netnode['location_zip'] ?? '',
+            'zas_latitude' => $netnode['latitude'] ?? '',
+            'zas_longitude' => $netnode['longitude'] ?? '',
+            'zas_tech' => $range_technology,
+            'zas_ltech' => $range_linktechnology,
+            'zas_phonepots' => 'Nie',
+            'zas_phonevoip' => 'Nie',
+            'zas_phonemobile' => 'Nie',
+            'zas_internetstationary' => 'Tak',
+            'zas_internetmobile' => 'Nie',
+            'zas_tv' => 'Nie',
+            'zas_other' => '',
+            'zas_stationarymaxspeed' => $range_maxdownstream,
+            'zas_mobilemaxspeed' => 0,
+            'zas_invproject' => '',
+            'zas_invstatus' => '',
+        );
+
+        $customers[ strtolower($data['zas_city'] . '|' . $data['zas_street'] . '|' . $data['zas_house']) ] = 1;
+
+        if (in_array('zas', $sheets)) {
+            $buffer .= 'ZS,' . to_csv($data) . EOL;
+        }
+        $netbuildingid++;
     }
 }
 unset($netnode);
@@ -2204,113 +2202,109 @@ if ($netdevices) {
 $netlineid = 1;
 $snetcablelines = '';
 $snetradiolines = '';
-if ($netlinks) {
-    foreach ($netlinks as $netlink) {
-        if ($netnodes[$netlink['src']]['id'] != $netnodes[$netlink['dst']]['id']) {
-            if ($netlink['type'] == 1) {
-                $linktechnology = empty($netlink['technology']) ? $netlink['technology'] : 0;
-                if (!$linktechnology) {
-                    $linktechnology = 101;
-                }
-                switch ($linktechnology) {
-                    case 100:
-                    case 101:
-                        $linktransmission = 'WiFi';
-                        break;
-                    case 102:
-                    case 103:
-                    case 104:
-                        $linktransmission = $LINKTECHNOLOGIES[1][$linktechnology];
-                        break;
-                    default:
-                        $linktransmission = '';
-                }
-                $linkfrequency = $netlink['frequency'];
-                if (empty($linkfrequency)) {
-                    $linkfrequency = '5.5';
-                } else {
-                    $linkfrequency = str_replace(',', '.', (float) $linkfrequency);
-                }
-                $data = array(
-                'rl_id' => $netlineid,
-                'rl_anodeid' => $netnodes[$netlink['src']]['id'],
-                'rl_bnodeid' => $netnodes[$netlink['dst']]['id'],
-                'rl_mediumtype' => empty($netlink['license'])
-                ? 'radiowe na częstotliwości ogólnodostępnej'
-                : 'radiowe na częstotliwości wymagającej uzyskanie pozwolenia radiowego',
-                'rl_licencenr' => empty($netlink['license']) ? '' : $netlink['license'],
-                'rl_bandwidth' => $linkfrequency,
-                'rl_transmission' => $linktransmission,
-                'rl_throughput' => $netlink['speed'],
-                'rl_leaseavail' => 'Nie',
-                'rl_invproject' => $netlink['invproject'],
-                'rl_invstatus' => strlen($netlink['invproject']) ? $NETELEMENTSTATUSES[$netlink['status']] : '',
-                );
-                if (in_array('rl', $sheets)) {
-                    $buffer .= 'LB,' . to_csv($data) . EOL;
-                }
-            } else {
-                $data = array(
-                'lp_id' => $netlineid,
-                'lp_owner' => 'Własna',
-                'lp_foreingerid' => '',
-                'lp_anodetype' => $NETELEMENTOWNERSHIPS[$netnodes[$netlink['src']]['ownership']],
-                'lp_anodeid' => $netnodes[$netlink['src']]['id'],
-                'lp_bnodetype' => $NETELEMENTOWNERSHIPS[$netnodes[$netlink['dst']]['ownership']],
-                'lp_bnodeid' => $netnodes[$netlink['dst']]['id'],
-                'lp_tech' => $linktypes[$netlink['type']]['technologia'],
-                'lp_fibertype' => $netlink['type'] == 2 ? $linktypes[$netlink['type']]['typ'] : '',
-                'lp_fibertotal' => $netlink['type'] == 2 ? $linktypes[$netlink['type']]['liczba_jednostek'] : '',
-                'lp_fiberused' => $netlink['type'] == 2 ? $linktypes[$netlink['type']]['liczba_jednostek'] : '',
-                'lp_eu' => strlen($netlink['invproject']) ? 'Tak' : 'Nie',
-                'lp_passiveavail' => 'Brak danych',
-                'lp_passivetype' => '',
-                'lp_fiberlease' => $netlink['type'] == 2 ? 'Nie' : '',
-                'lp_fiberleasecount' => '',
-                'lp_bandwidthlease' => 'Nie',
-                'lp_duct' => ($netnodes[$netlink['src']]['type'] == 14 && $netnodes[$netlink['dst']]['type'] == 14
-                ? 'napowietrzny' : $linktypes[$netlink['type']]['trakt']),
-                'lp_length' => $netlink['type'] == 2 ? '0.1' : '',
-                'lp_invproject' => $netlink['invproject'],
-                'lp_invstatus' => strlen($netlink['invproject']) ? $NETELEMENTSTATUSES[$netlink['status']] : '',
-                );
-                if (in_array('lp', $sheets)) {
-                    $buffer .= 'LK,' . to_csv($data) . EOL;
-                }
+foreach ($netlinks as $netlink) {
+    if ($netnodes[$netlink['src']]['id'] != $netnodes[$netlink['dst']]['id']) {
+        if ($netlink['type'] == 1) {
+            $linktechnology = empty($netlink['technology']) ? $netlink['technology'] : 0;
+            if (!$linktechnology) {
+                $linktechnology = 101;
             }
-            $netlineid++;
+            switch ($linktechnology) {
+                case 100:
+                case 101:
+                    $linktransmission = 'WiFi';
+                    break;
+                case 102:
+                case 103:
+                case 104:
+                    $linktransmission = $LINKTECHNOLOGIES[1][$linktechnology];
+                    break;
+                default:
+                    $linktransmission = '';
+            }
+            $linkfrequency = $netlink['frequency'];
+            if (empty($linkfrequency)) {
+                $linkfrequency = '5.5';
+            } else {
+                $linkfrequency = str_replace(',', '.', (float) $linkfrequency);
+            }
+            $data = array(
+            'rl_id' => $netlineid,
+            'rl_anodeid' => $netnodes[$netlink['src']]['id'],
+            'rl_bnodeid' => $netnodes[$netlink['dst']]['id'],
+            'rl_mediumtype' => empty($netlink['license'])
+            ? 'radiowe na częstotliwości ogólnodostępnej'
+            : 'radiowe na częstotliwości wymagającej uzyskanie pozwolenia radiowego',
+            'rl_licencenr' => empty($netlink['license']) ? '' : $netlink['license'],
+            'rl_bandwidth' => $linkfrequency,
+            'rl_transmission' => $linktransmission,
+            'rl_throughput' => $netlink['speed'],
+            'rl_leaseavail' => 'Nie',
+            'rl_invproject' => $netlink['invproject'],
+            'rl_invstatus' => strlen($netlink['invproject']) ? $NETELEMENTSTATUSES[$netlink['status']] : '',
+            );
+            if (in_array('rl', $sheets)) {
+                $buffer .= 'LB,' . to_csv($data) . EOL;
+            }
+        } else {
+            $data = array(
+            'lp_id' => $netlineid,
+            'lp_owner' => 'Własna',
+            'lp_foreingerid' => '',
+            'lp_anodetype' => $NETELEMENTOWNERSHIPS[$netnodes[$netlink['src']]['ownership']],
+            'lp_anodeid' => $netnodes[$netlink['src']]['id'],
+            'lp_bnodetype' => $NETELEMENTOWNERSHIPS[$netnodes[$netlink['dst']]['ownership']],
+            'lp_bnodeid' => $netnodes[$netlink['dst']]['id'],
+            'lp_tech' => $linktypes[$netlink['type']]['technologia'],
+            'lp_fibertype' => $netlink['type'] == 2 ? $linktypes[$netlink['type']]['typ'] : '',
+            'lp_fibertotal' => $netlink['type'] == 2 ? $linktypes[$netlink['type']]['liczba_jednostek'] : '',
+            'lp_fiberused' => $netlink['type'] == 2 ? $linktypes[$netlink['type']]['liczba_jednostek'] : '',
+            'lp_eu' => strlen($netlink['invproject']) ? 'Tak' : 'Nie',
+            'lp_passiveavail' => 'Brak danych',
+            'lp_passivetype' => '',
+            'lp_fiberlease' => $netlink['type'] == 2 ? 'Nie' : '',
+            'lp_fiberleasecount' => '',
+            'lp_bandwidthlease' => 'Nie',
+            'lp_duct' => ($netnodes[$netlink['src']]['type'] == 14 && $netnodes[$netlink['dst']]['type'] == 14
+            ? 'napowietrzny' : $linktypes[$netlink['type']]['trakt']),
+            'lp_length' => $netlink['type'] == 2 ? '0.1' : '',
+            'lp_invproject' => $netlink['invproject'],
+            'lp_invstatus' => strlen($netlink['invproject']) ? $NETELEMENTSTATUSES[$netlink['status']] : '',
+            );
+            if (in_array('lp', $sheets)) {
+                $buffer .= 'LK,' . to_csv($data) . EOL;
+            }
         }
+        $netlineid++;
     }
 }
 
 // save info about network links
 $netlinkid = 1;
 $snetlinks = '';
-if ($netlinks) {
-    foreach ($netlinks as $netlink) {
-        if ($netnodes[$netlink['src']]['id'] != $netnodes[$netlink['dst']]['id']) {
-            $data = array(
-            'pol_id' => $netlinkid,
-            'pol_owner' => 'Własna',
-            'pol_foreignerid' => '',
-            'pol_wa' => $netnodes[$netlink['src']]['id'],
-            'pol_wb' => $netnodes[$netlink['dst']]['id'],
-            'pol_blayer' => $netlink['foreign'] ? 'Tak' : 'Nie',
-            'pol_dlayer' => $netlink['foreign'] ? 'Nie' : 'Tak',
-            'pol_alayer' => 'Nie',
-            'pol_internetusage' => 'Tak',
-            'pol_voiceusage' => 'Nie',
-            'pol_otherusage' => 'Nie',
-            'pol_totalspeed' => $netlink['speed'],
-            'pol_internetspeed' => $netlink['speed'],
-            'pol_invproject' => $netlink['invproject'],
-            'pol_invstatus' => strlen($netlink['invproject']) ? $NETELEMENTSTATUSES[$netlink['status']] : '',
-            );
-            if (in_array('pol', $sheets)) {
-                $buffer .= 'P,' . to_csv($data) . EOL;
-            }
-            $netlinkid++;
+foreach ($netlinks as $netlink) {
+    if ($netnodes[$netlink['src']]['id'] != $netnodes[$netlink['dst']]['id']) {
+        $data = array(
+        'pol_id' => $netlinkid,
+        'pol_owner' => 'Własna',
+        'pol_foreignerid' => '',
+        'pol_wa' => $netnodes[$netlink['src']]['id'],
+        'pol_wb' => $netnodes[$netlink['dst']]['id'],
+        'pol_blayer' => $netlink['foreign'] ? 'Tak' : 'Nie',
+        'pol_dlayer' => $netlink['foreign'] ? 'Nie' : 'Tak',
+        'pol_alayer' => 'Nie',
+        'pol_internetusage' => 'Tak',
+        'pol_voiceusage' => 'Nie',
+        'pol_otherusage' => 'Nie',
+        'pol_totalspeed' => $netlink['speed'],
+        'pol_internetspeed' => $netlink['speed'],
+        'pol_invproject' => $netlink['invproject'],
+        'pol_invstatus' => strlen($netlink['invproject']) ? $NETELEMENTSTATUSES[$netlink['status']] : '',
+        );
+        if (in_array('pol', $sheets)) {
+            $buffer .= 'P,' . to_csv($data) . EOL;
         }
+        $netlinkid++;
     }
 }
 

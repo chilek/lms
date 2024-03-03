@@ -182,10 +182,8 @@ if (empty($ids)) {
         $docids = array();
     }
     $diff = array_diff($docids, $ids);
-    if (!empty($diff)) {
-        foreach ($diff as $id) {
-            $this->Execute("UPDATE cash SET docid = NULL WHERE docid = ?", array($id));
-        }
+    foreach ($diff as $id) {
+        $this->Execute("UPDATE cash SET docid = NULL WHERE docid = ?", array($id));
     }
 
     $refids = $this->GetCol("SELECT reference FROM documents WHERE reference IS NOT NULL");
@@ -193,10 +191,8 @@ if (empty($ids)) {
         $refids = array();
     }
     $diff = array_diff($refids, $allids);
-    if (!empty($diff)) {
-        foreach ($diff as $id) {
-            $this->Execute("UPDATE documents SET reference = NULL WHERE reference = ?", array($id));
-        }
+    foreach ($diff as $id) {
+        $this->Execute("UPDATE documents SET reference = NULL WHERE reference = ?", array($id));
     }
 }
 
@@ -269,10 +265,8 @@ if (empty($ids)) {
         $importids = array();
     }
     $diff = array_diff($importids, $ids);
-    if (!empty($diff)) {
-        foreach ($diff as $id) {
-            $this->Execute("UPDATE cash SET importid = NULL WHERE importid = ?", array($id));
-        }
+    foreach ($diff as $id) {
+        $this->Execute("UPDATE cash SET importid = NULL WHERE importid = ?", array($id));
     }
 }
 

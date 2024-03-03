@@ -152,28 +152,22 @@ class AccessRights
             if (is_int($menuperms['deny_menu_items'])) {
                 if ($menuperms['deny_menu_items'] == Permission::MENU_ALL) {
                     $effective_menus = array_diff_key($effective_menus, $all_menus);
-                    if (!empty($effective_menus)) {
-                        foreach ($effective_menus as $menukey => $menuitem) {
-                            $effective_menus[$menukey] = array_diff_key($menuitem, $all_menus[$menukey]);
-                        }
+                    foreach ($effective_menus as $menukey => $menuitem) {
+                        $effective_menus[$menukey] = array_diff_key($menuitem, $all_menus[$menukey]);
                     }
                 }
             } else {
                 $effective_menus = array_diff_key($effective_menus, $menuperms['deny_menu_items']);
-                if (!empty($effective_menus)) {
-                    foreach ($effective_menus as $menukey => $menuitem) {
-                        if (isset($menuperms['deny_menu_items'][$menukey])) {
-                            $effective_menus[$menukey] = array_diff_key($menuitem, $menuperms['deny_menu_items'][$menukey]);
-                        }
+                foreach ($effective_menus as $menukey => $menuitem) {
+                    if (isset($menuperms['deny_menu_items'][$menukey])) {
+                        $effective_menus[$menukey] = array_diff_key($menuitem, $menuperms['deny_menu_items'][$menukey]);
                     }
                 }
             }
         }
-        if (!empty($effective_menus)) {
-            foreach ($effective_menus as $menukey => $menuitem) {
-                if (is_array($menuitem) && !empty($menuitem)) {
-                    $effective_menus[$menukey] = array_flip(array_unique($menuitem));
-                }
+        foreach ($effective_menus as $menukey => $menuitem) {
+            if (is_array($menuitem) && !empty($menuitem)) {
+                $effective_menus[$menukey] = array_flip(array_unique($menuitem));
             }
         }
         foreach ($menu as $menukey => &$menuitem) {

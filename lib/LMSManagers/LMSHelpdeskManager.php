@@ -1782,23 +1782,19 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     break;
             }
 
-            if (!empty($categories_removed)) {
-                foreach ($categories_removed as $category) {
-                    $this->db->Execute(
-                        'DELETE FROM rtticketcategories WHERE ticketid = ? AND categoryid = ?',
-                        array($ticketid, $category)
-                    );
-                    $notes[] = trans('Category $a has been removed from ticket.', $categories[$category]['name']);
-                }
+            foreach ($categories_removed as $category) {
+                $this->db->Execute(
+                    'DELETE FROM rtticketcategories WHERE ticketid = ? AND categoryid = ?',
+                    array($ticketid, $category)
+                );
+                $notes[] = trans('Category $a has been removed from ticket.', $categories[$category]['name']);
             }
-            if (!empty($categories_added)) {
-                foreach ($categories_added as $category) {
-                    $this->db->Execute(
-                        'INSERT INTO rtticketcategories (ticketid, categoryid) VALUES (?, ?)',
-                        array($ticketid, $category)
-                    );
-                    $notes[] = trans('Category $a has been added to ticket.', $categories[$category]['name']);
-                }
+            foreach ($categories_added as $category) {
+                $this->db->Execute(
+                    'INSERT INTO rtticketcategories (ticketid, categoryid) VALUES (?, ?)',
+                    array($ticketid, $category)
+                );
+                $notes[] = trans('Category $a has been added to ticket.', $categories[$category]['name']);
             }
             $type = $type | RTMESSAGE_CATEGORY_CHANGE;
         }
@@ -1975,10 +1971,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }
 
         $relations_to_remove = array_diff(array_keys($relatedtickets), array_values($props['relatedtickets']));
-        if (!empty($relations_to_remove)) {
-            foreach ($relations_to_remove as $tid) {
-                $this->updateTicketParentID($tid);
-            }
+        foreach ($relations_to_remove as $tid) {
+            $this->updateTicketParentID($tid);
         }
         if (!empty($props['parentid'])) {
             if ($props['parentid'] != $ticket['parentid']) {
@@ -1986,10 +1980,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             } else {
                 $relations_to_add = array_diff(array_values($props['relatedtickets']), array_keys($relatedtickets));
             }
-            if (!empty($relations_to_add)) {
-                foreach ($relations_to_add as $tid) {
-                    $this->updateTicketParentID($tid, $props['parentid']);
-                }
+            foreach ($relations_to_add as $tid) {
+                $this->updateTicketParentID($tid, $props['parentid']);
             }
         }
     }

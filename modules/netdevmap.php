@@ -476,24 +476,22 @@ if ($type == 'openlayers') {
         }
     }
 
-    if ($nodemap) {
-        foreach ($nodemap as $node) {
-            $src_celx = $node['x'];
-            $src_cely = $node['y'];
-            $dst_celx = $devicemap[$node['device']]['x'];
-            $dst_cely = $devicemap[$node['device']]['y'];
-            $src_px = (($src_celx * $cellw) + $celllmargin);
-            $src_py = (($src_cely * $cellh) + $celltmargin);
-            $dst_px = (($dst_celx * $cellw) + $celllmargin);
-            $dst_py = (($dst_cely * $cellh) + $celltmargin);
-            if ($node['linktype']=="0") {
-                $connections->setLine(1, 255, 0, 0);
-            } else {
-                $connections->setLine(1, 0, 200, 255);
-            }
-            $connections->movePenTo($src_px+4, $src_py+4);
-            $connections->drawLineTo($dst_px+4, $dst_py+4);
+    foreach ($nodemap as $node) {
+        $src_celx = $node['x'];
+        $src_cely = $node['y'];
+        $dst_celx = $devicemap[$node['device']]['x'];
+        $dst_cely = $devicemap[$node['device']]['y'];
+        $src_px = (($src_celx * $cellw) + $celllmargin);
+        $src_py = (($src_cely * $cellh) + $celltmargin);
+        $dst_px = (($dst_celx * $cellw) + $celllmargin);
+        $dst_py = (($dst_cely * $cellh) + $celltmargin);
+        if ($node['linktype']=="0") {
+            $connections->setLine(1, 255, 0, 0);
+        } else {
+            $connections->setLine(1, 0, 200, 255);
         }
+        $connections->movePenTo($src_px+4, $src_py+4);
+        $connections->drawLineTo($dst_px+4, $dst_py+4);
     }
 
     $m->add($connections);
@@ -507,40 +505,38 @@ if ($type == 'openlayers') {
     
     $nodes = $DB->GetAllByKey('SELECT id, name, INET_NTOA(ipaddr) AS ip, lastonline FROM vnodes', 'id');
 
-    if ($nodemap) {
-        foreach ($nodemap as $nodeid => $node) {
-            $button = new SWFButton();
-            $squareshape=new SWFShape();
-            $celx = $node['x'];
-            $cely = $node['y'];
-            $px = (($celx * ($cellw)) + $celllmargin);
-            $py = (($cely * ($cellh)) + $celltmargin);
+    foreach ($nodemap as $nodeid => $node) {
+        $button = new SWFButton();
+        $squareshape=new SWFShape();
+        $celx = $node['x'];
+        $cely = $node['y'];
+        $px = (($celx * ($cellw)) + $celllmargin);
+        $py = (($cely * ($cellh)) + $celltmargin);
 
-            $n = $nodes[$nodeid];
-        
-            if ($n['lastonline']) {
-                if ((time()-$n['lastonline'])>ConfigHelper::getConfig('phpui.lastonline_limit')) {
-                    $myfill = $squareshape->addFill($im_n_off, SWFFILL_TILED_BITMAP);
-                } else {
-                    $myfill = $squareshape->addFill($im_n_on, SWFFILL_TILED_BITMAP);
-                }
+        $n = $nodes[$nodeid];
+    
+        if ($n['lastonline']) {
+            if ((time()-$n['lastonline'])>ConfigHelper::getConfig('phpui.lastonline_limit')) {
+                $myfill = $squareshape->addFill($im_n_off, SWFFILL_TILED_BITMAP);
             } else {
-                $myfill = $squareshape->addFill($im_n_unk, SWFFILL_TILED_BITMAP);
+                $myfill = $squareshape->addFill($im_n_on, SWFFILL_TILED_BITMAP);
             }
-            $myfill->scaleto(9, 9);
-            $squareshape->setRightFill($myfill);
-            $squareshape->drawLine(15, 0);
-            $squareshape->drawLine(0, 15);
-            $squareshape->drawLine(-15, 0);
-            $squareshape->drawLine(0, -15);
-            $button->addShape($squareshape, SWFBUTTON_HIT | SWFBUTTON_UP | SWFBUTTON_DOWN | SWFBUTTON_OVER);
-            $button->addAction(new SWFAction("this.getURL('?m=nodeinfo&id=".$nodeid."');"), SWFBUTTON_MOUSEDOWN); // press
-            $i=$m->add($button);
-            $i->moveTo($px, $py);
-
-            drawtext($px + 15, $py - 4, $n['ip'], 0, 0, 255);
-            drawtext($px + 15, $py + 10, $n['name'], 0, 0, 0);
+        } else {
+            $myfill = $squareshape->addFill($im_n_unk, SWFFILL_TILED_BITMAP);
         }
+        $myfill->scaleto(9, 9);
+        $squareshape->setRightFill($myfill);
+        $squareshape->drawLine(15, 0);
+        $squareshape->drawLine(0, 15);
+        $squareshape->drawLine(-15, 0);
+        $squareshape->drawLine(0, -15);
+        $button->addShape($squareshape, SWFBUTTON_HIT | SWFBUTTON_UP | SWFBUTTON_DOWN | SWFBUTTON_OVER);
+        $button->addAction(new SWFAction("this.getURL('?m=nodeinfo&id=".$nodeid."');"), SWFBUTTON_MOUSEDOWN); // press
+        $i=$m->add($button);
+        $i->moveTo($px, $py);
+
+        drawtext($px + 15, $py - 4, $n['ip'], 0, 0, 255);
+        drawtext($px + 15, $py + 10, $n['name'], 0, 0, 0);
     }
 
     $devices = $DB->GetAllByKey('SELECT n.id, n.name, a.location, MAX(lastonline) AS lastonline 
@@ -694,20 +690,18 @@ if ($type == 'openlayers') {
 
     imagesetthickness($im, 1);
     
-    if ($nodemap) {
-        foreach ($nodemap as $node) {
-            $src_celx = $node['x'];
-            $src_cely = $node['y'];
-            $dst_celx = $devicemap[$node['device']]['x'];
-            $dst_cely = $devicemap[$node['device']]['y'];
-            $src_px = (($src_celx * $cellw) + $celllmargin);
-            $src_py = (($src_cely * $cellh) + $celltmargin);
-            $dst_px = (($dst_celx * $cellw) + $celllmargin);
-            $dst_py = (($dst_cely * $cellh) + $celltmargin);
+    foreach ($nodemap as $node) {
+        $src_celx = $node['x'];
+        $src_cely = $node['y'];
+        $dst_celx = $devicemap[$node['device']]['x'];
+        $dst_cely = $devicemap[$node['device']]['y'];
+        $src_px = (($src_celx * $cellw) + $celllmargin);
+        $src_py = (($src_cely * $cellh) + $celltmargin);
+        $dst_px = (($dst_celx * $cellw) + $celllmargin);
+        $dst_py = (($dst_cely * $cellh) + $celltmargin);
 
-            $color = $node['linktype'] ? $lightblue : $red;
-            imageline($im, $src_px+4, $src_py+4, $dst_px+4, $dst_py+4, $color);
-        }
+        $color = $node['linktype'] ? $lightblue : $red;
+        imageline($im, $src_px+4, $src_py+4, $dst_px+4, $dst_py+4, $color);
     }
 
     $im_n_unk = imagecreatefrompng('img/node_unk.png');
@@ -719,28 +713,26 @@ if ($type == 'openlayers') {
 
     $nodes = $DB->GetAllByKey('SELECT id, name, INET_NTOA(ipaddr) AS ip, lastonline FROM vnodes', 'id');
 
-    if ($nodemap) {
-        foreach ($nodemap as $nodeid => $node) {
-            $celx = $node['x'];
-            $cely = $node['y'];
-            $px = (($celx * ($cellw)) + $celllmargin);
-            $py = (($cely * ($cellh)) + $celltmargin);
+    foreach ($nodemap as $nodeid => $node) {
+        $celx = $node['x'];
+        $cely = $node['y'];
+        $px = (($celx * ($cellw)) + $celllmargin);
+        $py = (($cely * ($cellh)) + $celltmargin);
 
-            $n = $nodes[$nodeid];
+        $n = $nodes[$nodeid];
 
-            if ($n['lastonline']) {
-                if ((time()-$n['lastonline'])>ConfigHelper::getConfig('phpui.lastonline_limit')) {
-                    imagecopy($im, $im_n_off, $px, $py, 0, 0, 16, 16);
-                } else {
-                    imagecopy($im, $im_n_on, $px, $py, 0, 0, 16, 16);
-                }
+        if ($n['lastonline']) {
+            if ((time()-$n['lastonline'])>ConfigHelper::getConfig('phpui.lastonline_limit')) {
+                imagecopy($im, $im_n_off, $px, $py, 0, 0, 16, 16);
             } else {
-                imagecopy($im, $im_n_unk, $px, $py, 0, 0, 16, 16);
+                imagecopy($im, $im_n_on, $px, $py, 0, 0, 16, 16);
             }
-        
-            pngdrawtext($im, 1, $px + 15, $py - 8, $n['ip'], $blue, $lightbrown);
-            pngdrawtext($im, 1, $px + 15, $py + 2, $n['name'], $black, $lightbrown);
+        } else {
+            imagecopy($im, $im_n_unk, $px, $py, 0, 0, 16, 16);
         }
+    
+        pngdrawtext($im, 1, $px + 15, $py - 8, $n['ip'], $blue, $lightbrown);
+        pngdrawtext($im, 1, $px + 15, $py + 2, $n['name'], $black, $lightbrown);
     }
 
     $devices = $DB->GetAllByKey('SELECT n.id, n.name, a.location, MAX(lastonline) AS lastonline 

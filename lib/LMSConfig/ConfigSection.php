@@ -79,10 +79,8 @@ class ConfigSection
      */
     public function addVariables(array $config_variables)
     {
-        if ($config_variables !== array()) {
-            foreach ($config_variables as $config_variable) {
-                $this->addVariable($config_variable);
-            }
+        foreach ($config_variables as $config_variable) {
+            $this->addVariable($config_variable);
         }
     }
     

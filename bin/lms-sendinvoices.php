@@ -513,15 +513,13 @@ if (!empty($docs)) {
                     fclose($fh);
                 }
 
-                if (!empty($files)) {
-                    foreach ($files as $file) {
-                        if (isset($output_file)) {
-                            $fpdi->AppendPage($file['data']);
-                        } else {
-                            $fh = fopen($output_dir . DIRECTORY_SEPARATOR . $file['filename'], 'w');
-                            fwrite($fh, $file['data'], strlen($file['data']));
-                            fclose($fh);
-                        }
+                foreach ($files as $file) {
+                    if (isset($output_file)) {
+                        $fpdi->AppendPage($file['data']);
+                    } else {
+                        $fh = fopen($output_dir . DIRECTORY_SEPARATOR . $file['filename'], 'w');
+                        fwrite($fh, $file['data'], strlen($file['data']));
+                        fclose($fh);
                     }
                 }
             }

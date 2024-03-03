@@ -219,22 +219,18 @@ class LMSTariffTagManager extends LMSManager implements LMSTariffTagManagerInter
         }
 
         $to_remove = array_diff($current_tags, $tags);
-        if (!empty($to_remove)) {
-            foreach ($to_remove as $id) {
-                $this->TariffassignmentDelete(array(
-                    'tarifftagid' => $id,
-                    'tariffid' => $tariffid,
-                ));
-            }
+        foreach ($to_remove as $id) {
+            $this->TariffassignmentDelete(array(
+                'tarifftagid' => $id,
+                'tariffid' => $tariffid,
+            ));
         }
         $to_add = array_diff($tags, $current_tags);
-        if (!empty($to_add)) {
-            foreach ($to_add as $id) {
-                $this->TariffassignmentAdd(array(
-                    'tarifftagid' => $id,
-                    'tariffid' => $tariffid,
-                ));
-            }
+        foreach ($to_add as $id) {
+            $this->TariffassignmentAdd(array(
+                'tarifftagid' => $id,
+                'tariffid' => $tariffid,
+            ));
         }
     }
 }

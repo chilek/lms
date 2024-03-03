@@ -96,10 +96,8 @@ if (!empty($ids)) {
         $LMS->DelBalance($cashid);
     }
 
-    if (!empty($refdocs)) {
-        foreach ($refdocs as $refdoc) {
-            $LMS->DeleteDocument($refdoc['docid']);
-        }
+    foreach ($refdocs as $refdoc) {
+        $LMS->DeleteDocument($refdoc['docid']);
     }
 }
 

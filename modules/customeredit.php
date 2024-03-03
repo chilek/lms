@@ -403,43 +403,41 @@ if (!isset($_POST['xjxfun'])) {
 
                 $DB->BeginTrans();
                 $DB->Execute('DELETE FROM customercontacts WHERE customerid = ?', array($customerdata['id']));
-                if (!empty($contacts)) {
-                    foreach ($contacts as $contact) {
-                        if ($contact['type'] & CONTACT_BANKACCOUNT) {
-                            $contact['contact'] = preg_replace('/[^a-zA-Z0-9]/', '', $contact['contact']);
-                        }
-                        $DB->Execute(
-                            'INSERT INTO customercontacts (customerid, contact, name, type) VALUES (?, ?, ?, ?)',
-                            array($customerdata['id'], $contact['contact'], $contact['name'], $contact['type'])
-                        );
+                foreach ($contacts as $contact) {
+                    if ($contact['type'] & CONTACT_BANKACCOUNT) {
+                        $contact['contact'] = preg_replace('/[^a-zA-Z0-9]/', '', $contact['contact']);
+                    }
+                    $DB->Execute(
+                        'INSERT INTO customercontacts (customerid, contact, name, type) VALUES (?, ?, ?, ?)',
+                        array($customerdata['id'], $contact['contact'], $contact['name'], $contact['type'])
+                    );
 
-                        if ($contact['type'] & CONTACT_EMAIL && !empty($contact['properties'])) {
-                            $contactid = $DB->GetLastInsertID('customercontacts');
-                            foreach ($contact['properties'] as $property) {
-                                $DB->Execute(
-                                    'INSERT INTO customercontactproperties (contactid, name, value)
+                    if ($contact['type'] & CONTACT_EMAIL && !empty($contact['properties'])) {
+                        $contactid = $DB->GetLastInsertID('customercontacts');
+                        foreach ($contact['properties'] as $property) {
+                            $DB->Execute(
+                                'INSERT INTO customercontactproperties (contactid, name, value)
                                     VALUES (?, ?, ?)',
-                                    array(
-                                        $contactid,
-                                        $property['name'],
-                                        $property['value']
-                                    )
-                                );
-                            }
-                        }
-
-                        if ($SYSLOG) {
-                            $contactid = $DB->GetLastInsertID('customercontacts');
-                            $args = array(
-                                SYSLOG::RES_CUSTCONTACT => $contactid,
-                                SYSLOG::RES_CUST => $customerdata['id'],
-                                'contact' => $contact['contact'],
-                                'name' => $contact['name'],
-                                'type' => $contact['type'],
-                                'properties' => isset($contact['properties']) ? serialize($contact['properties']) : null,
+                                array(
+                                    $contactid,
+                                    $property['name'],
+                                    $property['value']
+                                )
                             );
-                            $SYSLOG->AddMessage(SYSLOG::RES_CUSTCONTACT, SYSLOG::OPER_ADD, $args);
                         }
+                    }
+
+                    if ($SYSLOG) {
+                        $contactid = $DB->GetLastInsertID('customercontacts');
+                        $args = array(
+                            SYSLOG::RES_CUSTCONTACT => $contactid,
+                            SYSLOG::RES_CUST => $customerdata['id'],
+                            'contact' => $contact['contact'],
+                            'name' => $contact['name'],
+                            'type' => $contact['type'],
+                            'properties' => isset($contact['properties']) ? serialize($contact['properties']) : null,
+                        );
+                        $SYSLOG->AddMessage(SYSLOG::RES_CUSTCONTACT, SYSLOG::OPER_ADD, $args);
                     }
                 }
                 $DB->CommitTrans();

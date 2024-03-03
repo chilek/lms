@@ -719,38 +719,36 @@ switch ($type) {
 
                 $list = array_merge((array) $list1, (array) $list2);
 
-                if ($list) {
-                    foreach ($list as $row) {
-                        $idx = $row['id'];
-                        if (!isset($reportlist[$idx])) {
-                            $reportlist[$idx]['id'] = $row['id'];
-                            $reportlist[$idx]['customername'] = $row['customername'];
-                            $reportlist[$idx]['address'] = $row['address'];
-                            $reportlist[$idx]['ten'] = $row['ten'];
-                            $reportlist[$idx]['values'] = array();
-                        }
-                        if (!isset($reportlist[$idx]['values'][$row['currency']])) {
-                            $reportlist[$idx]['values'][$row['currency']] = array(
-                                'value' => 0,
-                                'taxsum' => 0,
-                            );
-                        }
-                        $reportlist[$idx]['values'][$row['currency']]['value'] += $row['value'];
-                        $reportlist[$idx]['values'][$row['currency']][$tax['id']]['netto'] =
-                            round($row['value']/($tax['value']+100)*100, 2);
-                        $reportlist[$idx]['values'][$row['currency']][$tax['id']]['tax'] =
-                            $row['value'] - $reportlist[$idx]['values'][$row['currency']][$tax['id']]['netto'];
-                        $reportlist[$idx]['values'][$row['currency']]['taxsum'] +=
-                            $reportlist[$idx]['values'][$row['currency']][$tax['id']]['tax'];
-                        if (!isset($total['netto'][$row['currency']][$tax['id']])) {
-                            $total['netto'][$row['currency']][$tax['id']] = 0;
-                            $total['tax'][$row['currency']][$tax['id']] = 0;
-                        }
-                        $total['netto'][$row['currency']][$tax['id']] +=
-                            $reportlist[$idx]['values'][$row['currency']][$tax['id']]['netto'];
-                        $total['tax'][$row['currency']][$tax['id']] +=
-                            $reportlist[$idx]['values'][$row['currency']][$tax['id']]['tax'];
+                foreach ($list as $row) {
+                    $idx = $row['id'];
+                    if (!isset($reportlist[$idx])) {
+                        $reportlist[$idx]['id'] = $row['id'];
+                        $reportlist[$idx]['customername'] = $row['customername'];
+                        $reportlist[$idx]['address'] = $row['address'];
+                        $reportlist[$idx]['ten'] = $row['ten'];
+                        $reportlist[$idx]['values'] = array();
                     }
+                    if (!isset($reportlist[$idx]['values'][$row['currency']])) {
+                        $reportlist[$idx]['values'][$row['currency']] = array(
+                            'value' => 0,
+                            'taxsum' => 0,
+                        );
+                    }
+                    $reportlist[$idx]['values'][$row['currency']]['value'] += $row['value'];
+                    $reportlist[$idx]['values'][$row['currency']][$tax['id']]['netto'] =
+                        round($row['value']/($tax['value']+100)*100, 2);
+                    $reportlist[$idx]['values'][$row['currency']][$tax['id']]['tax'] =
+                        $row['value'] - $reportlist[$idx]['values'][$row['currency']][$tax['id']]['netto'];
+                    $reportlist[$idx]['values'][$row['currency']]['taxsum'] +=
+                        $reportlist[$idx]['values'][$row['currency']][$tax['id']]['tax'];
+                    if (!isset($total['netto'][$row['currency']][$tax['id']])) {
+                        $total['netto'][$row['currency']][$tax['id']] = 0;
+                        $total['tax'][$row['currency']][$tax['id']] = 0;
+                    }
+                    $total['netto'][$row['currency']][$tax['id']] +=
+                        $reportlist[$idx]['values'][$row['currency']][$tax['id']]['netto'];
+                    $total['tax'][$row['currency']][$tax['id']] +=
+                        $reportlist[$idx]['values'][$row['currency']][$tax['id']]['tax'];
                 }
             }
 

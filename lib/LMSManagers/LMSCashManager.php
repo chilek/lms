@@ -647,14 +647,12 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 if (!$quiet) {
                     printf("File %s: %d records." . PHP_EOL, $filename, count($data));
                 }
-                if (!empty($syslog_records)) {
-                    foreach ($syslog_records as $syslog_record) {
-                        $this->syslog->AddMessage(
-                            $syslog_record['resource'],
-                            $syslog_record['operation'],
-                            $syslog_record['args']
-                        );
-                    }
+                foreach ($syslog_records as $syslog_record) {
+                    $this->syslog->AddMessage(
+                        $syslog_record['resource'],
+                        $syslog_record['operation'],
+                        $syslog_record['args']
+                    );
                 }
             }
         }

@@ -1327,15 +1327,13 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         fclose($file);
 
         $configs = array();
-        if ($configs_combine) {
-            foreach ($configs_combine as $config) {
-                $section = $config['section'];
-                $var = $config['var'];
-                $configs[$section][$var]['value'] = $config['value'];
-                $configs[$section][$var]['description'] = $config['description'];
-                $configs[$section][$var]['disabled'] = $config['disabled'];
-                $configs[$section][$var]['type'] = $config['type'];
-            }
+        foreach ($configs_combine as $config) {
+            $section = $config['section'];
+            $var = $config['var'];
+            $configs[$section][$var]['value'] = $config['value'];
+            $configs[$section][$var]['description'] = $config['description'];
+            $configs[$section][$var]['disabled'] = $config['disabled'];
+            $configs[$section][$var]['type'] = $config['type'];
         }
 
         return $configs;
@@ -1347,29 +1345,25 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         if (!empty($fileExtension) && !empty($file) && !empty($targetType)) {
             if ($fileExtension == 'ini') {
                 $configs = (array) parse_ini_file($file, true);
-                if (!empty($configs)) {
-                    foreach ($configs as $section => $variables) {
-                        foreach ($variables as $variable => $value) {
-                            $params['targetSection'] = $section;
-                            $params['targetVariable'] = $variable;
-                            $params['targetValue'] = $value;
-                            $this->importConfig($params);
-                        }
+                foreach ($configs as $section => $variables) {
+                    foreach ($variables as $variable => $value) {
+                        $params['targetSection'] = $section;
+                        $params['targetVariable'] = $variable;
+                        $params['targetValue'] = $value;
+                        $this->importConfig($params);
                     }
                 }
             } else {
                 $configs = (array) $this->parseSqlConfigImportFile($file);
-                if (!empty($configs)) {
-                    foreach ($configs as $section => $variables) {
-                        foreach ($variables as $variable => $feature) {
-                            $params['targetSection'] = $section;
-                            $params['targetVariable'] = $variable;
-                            $params['targetValue'] = $feature['value'];
-                            $params['targetDescription'] = $feature['description'];
-                            $params['targetDisabled'] = $feature['disabled'];
-                            $params['targetVariableType'] = $feature['type'];
-                            $this->importConfig($params);
-                        }
+                foreach ($configs as $section => $variables) {
+                    foreach ($variables as $variable => $feature) {
+                        $params['targetSection'] = $section;
+                        $params['targetVariable'] = $variable;
+                        $params['targetValue'] = $feature['value'];
+                        $params['targetDescription'] = $feature['description'];
+                        $params['targetDisabled'] = $feature['disabled'];
+                        $params['targetVariableType'] = $feature['type'];
+                        $this->importConfig($params);
                     }
                 }
             }

@@ -507,20 +507,18 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                 (array) $this->db->GetAll('SELECT id, ownerid, ipaddr_pub FROM vnodes
 					WHERE netid = ? AND ipaddr_pub >= inet_aton(?) AND ipaddr_pub <= inet_aton(?)', array($netid, $network, getbraddr($network, $mask)))
             );
-            if (!empty($nodes)) {
-                foreach ($nodes as $node) {
-                    $args = array(
-                    SYSLOG::RES_NODE => $node['id'],
-                    SYSLOG::RES_CUST => $node['ownerid'],
-                    SYSLOG::RES_NETWORK => $netid,
-                    );
-                    unset($node['id']);
-                    unset($node['ownerid']);
-                    foreach ($node as $key => $value) {
-                        $args[$key] = $value + $shift;
-                    }
-                    $this->syslog->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_UPDATE, $args);
+            foreach ($nodes as $node) {
+                $args = array(
+                SYSLOG::RES_NODE => $node['id'],
+                SYSLOG::RES_CUST => $node['ownerid'],
+                SYSLOG::RES_NETWORK => $netid,
+                );
+                unset($node['id']);
+                unset($node['ownerid']);
+                foreach ($node as $key => $value) {
+                    $args[$key] = $value + $shift;
                 }
+                $this->syslog->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_UPDATE, $args);
             }
         }
         return ($this->db->Execute('UPDATE nodes SET ipaddr = ipaddr + ? 

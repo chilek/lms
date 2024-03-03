@@ -1028,46 +1028,42 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $divisions_to_add = array_diff($numberplan['divisions'], $old_divisions);
         $divisions_to_remove = array_diff($old_divisions, $numberplan['divisions']);
 
-        if (!empty($divisions_to_add)) {
-            foreach ($divisions_to_add as $divisionid) {
-                $res = $this->db->Execute(
-                    'INSERT INTO numberplanassignments (planid, divisionid) VALUES (?, ?)',
-                    array($numberplan['id'], $divisionid)
-                );
+        foreach ($divisions_to_add as $divisionid) {
+            $res = $this->db->Execute(
+                'INSERT INTO numberplanassignments (planid, divisionid) VALUES (?, ?)',
+                array($numberplan['id'], $divisionid)
+            );
 
-                if ($res && $this->syslog) {
-                    $args = array(
-                        SYSLOG::RES_NUMPLANASSIGN => $this->db->GetLastInsertID('numberplanassignments'),
-                        SYSLOG::RES_NUMPLAN => $numberplan['id'],
-                        SYSLOG::RES_DIV => $divisionid,
-                    );
-                    $this->syslog->AddMessage(SYSLOG::RES_NUMPLANASSIGN, SYSLOG::OPER_ADD, $args);
-                }
+            if ($res && $this->syslog) {
+                $args = array(
+                    SYSLOG::RES_NUMPLANASSIGN => $this->db->GetLastInsertID('numberplanassignments'),
+                    SYSLOG::RES_NUMPLAN => $numberplan['id'],
+                    SYSLOG::RES_DIV => $divisionid,
+                );
+                $this->syslog->AddMessage(SYSLOG::RES_NUMPLANASSIGN, SYSLOG::OPER_ADD, $args);
             }
         }
 
-        if (!empty($divisions_to_remove)) {
-            foreach ($divisions_to_remove as $divisionid) {
-                if ($this->syslog) {
-                    $assignid = $this->db->GetOne(
-                        'SELECT id FROM numberplanassignments WHERE planid = ? AND divisionid = ?',
-                        array($numberplan['id'], $divisionid)
-                    );
-                }
-
-                $res = $this->db->Execute(
-                    'DELETE FROM numberplanassignments WHERE planid = ? AND divisionid = ?',
+        foreach ($divisions_to_remove as $divisionid) {
+            if ($this->syslog) {
+                $assignid = $this->db->GetOne(
+                    'SELECT id FROM numberplanassignments WHERE planid = ? AND divisionid = ?',
                     array($numberplan['id'], $divisionid)
                 );
+            }
 
-                if ($res && $assignid && $this->syslog) {
-                    $args = array(
-                        SYSLOG::RES_NUMPLANASSIGN => $assignid,
-                        SYSLOG::RES_NUMPLAN => $numberplan['id'],
-                        SYSLOG::RES_DIV => $divisionid,
-                    );
-                    $this->syslog->AddMessage(SYSLOG::RES_NUMPLANASSIGN, SYSLOG::OPER_DELETE, $args);
-                }
+            $res = $this->db->Execute(
+                'DELETE FROM numberplanassignments WHERE planid = ? AND divisionid = ?',
+                array($numberplan['id'], $divisionid)
+            );
+
+            if ($res && $assignid && $this->syslog) {
+                $args = array(
+                    SYSLOG::RES_NUMPLANASSIGN => $assignid,
+                    SYSLOG::RES_NUMPLAN => $numberplan['id'],
+                    SYSLOG::RES_DIV => $divisionid,
+                );
+                $this->syslog->AddMessage(SYSLOG::RES_NUMPLANASSIGN, SYSLOG::OPER_DELETE, $args);
             }
         }
 
@@ -1089,37 +1085,33 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $users_to_add = array_diff($numberplan['users'], $old_users);
         $users_to_remove = array_diff($old_users, $numberplan['users']);
 
-        if (!empty($users_to_add)) {
-            foreach ($users_to_add as $userid) {
-                $res = $this->db->Execute(
-                    'INSERT INTO numberplanusers (planid, userid) VALUES (?, ?)',
-                    array($numberplan['id'], $userid)
-                );
+        foreach ($users_to_add as $userid) {
+            $res = $this->db->Execute(
+                'INSERT INTO numberplanusers (planid, userid) VALUES (?, ?)',
+                array($numberplan['id'], $userid)
+            );
 
-                if ($res && $this->syslog) {
-                    $args = array(
-                        SYSLOG::RES_NUMPLAN => $numberplan['id'],
-                        SYSLOG::RES_USER => $userid,
-                    );
-                    $this->syslog->AddMessage(SYSLOG::RES_NUMPLANUSER, SYSLOG::OPER_ADD, $args);
-                }
+            if ($res && $this->syslog) {
+                $args = array(
+                    SYSLOG::RES_NUMPLAN => $numberplan['id'],
+                    SYSLOG::RES_USER => $userid,
+                );
+                $this->syslog->AddMessage(SYSLOG::RES_NUMPLANUSER, SYSLOG::OPER_ADD, $args);
             }
         }
 
-        if (!empty($users_to_remove)) {
-            foreach ($users_to_remove as $userid) {
-                $res = $this->db->Execute(
-                    'DELETE FROM numberplanusers WHERE planid = ? AND userid = ?',
-                    array($numberplan['id'], $userid)
-                );
+        foreach ($users_to_remove as $userid) {
+            $res = $this->db->Execute(
+                'DELETE FROM numberplanusers WHERE planid = ? AND userid = ?',
+                array($numberplan['id'], $userid)
+            );
 
-                if ($res && $this->syslog) {
-                    $args = array(
-                        SYSLOG::RES_NUMPLAN => $numberplan['id'],
-                        SYSLOG::RES_USER => $userid,
-                    );
-                    $this->syslog->AddMessage(SYSLOG::RES_NUMPLANUSER, SYSLOG::OPER_DELETE, $args);
-                }
+            if ($res && $this->syslog) {
+                $args = array(
+                    SYSLOG::RES_NUMPLAN => $numberplan['id'],
+                    SYSLOG::RES_USER => $userid,
+                );
+                $this->syslog->AddMessage(SYSLOG::RES_NUMPLANUSER, SYSLOG::OPER_DELETE, $args);
             }
         }
 

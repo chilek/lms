@@ -310,19 +310,17 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             }
             $excludedgroups_to_add = array_diff($customergroups, $user['customergroups']);
 
-            if (!empty($excludedgroups_to_add)) {
-                foreach ($excludedgroups_to_add as $group) {
-                    if ($this->db->Execute(
-                        'INSERT INTO excludedgroups (userid, customergroupid) VALUES (?, ?)',
-                        array($id, $group)
-                    ) && $this->syslog) {
-                        $args = array(
-                            SYSLOG::RES_EXCLGROUP => $this->db->GetLastInsertID('excludedgroups'),
-                            SYSLOG::RES_CUSTGROUP => $group,
-                            SYSLOG::RES_USER => $id,
-                        );
-                        $this->syslog->AddMessage(SYSLOG::RES_EXCLGROUP, SYSLOG::OPER_ADD, $args);
-                    }
+            foreach ($excludedgroups_to_add as $group) {
+                if ($this->db->Execute(
+                    'INSERT INTO excludedgroups (userid, customergroupid) VALUES (?, ?)',
+                    array($id, $group)
+                ) && $this->syslog) {
+                    $args = array(
+                        SYSLOG::RES_EXCLGROUP => $this->db->GetLastInsertID('excludedgroups'),
+                        SYSLOG::RES_CUSTGROUP => $group,
+                        SYSLOG::RES_USER => $id,
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_EXCLGROUP, SYSLOG::OPER_ADD, $args);
                 }
             }
 
@@ -552,21 +550,17 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             $usergroups_to_remove = array_diff($usergroups, $user['usergroups']);
             $usergroups_to_add = array_diff($user['usergroups'], $usergroups);
 
-            if (!empty($usergroups_to_remove)) {
-                foreach ($usergroups_to_remove as $group) {
-                    $usergroup_manager->UserassignmentDelete(array(
-                        'userid' => $user['id'],
-                        'usergroupid' => $group,
-                    ));
-                }
+            foreach ($usergroups_to_remove as $group) {
+                $usergroup_manager->UserassignmentDelete(array(
+                    'userid' => $user['id'],
+                    'usergroupid' => $group,
+                ));
             }
-            if (!empty($usergroups_to_add)) {
-                foreach ($usergroups_to_add as $group) {
-                    $usergroup_manager->UserassignmentAdd(array(
-                        'userid' => $user['id'],
-                        'usergroupid' => $group,
-                    ));
-                }
+            foreach ($usergroups_to_add as $group) {
+                $usergroup_manager->UserassignmentAdd(array(
+                    'userid' => $user['id'],
+                    'usergroupid' => $group,
+                ));
             }
 
             $customergroup_manager = new LMSCustomerGroupManager($this->db, $this->auth, $this->cache, $this->syslog);
@@ -594,34 +588,30 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             $excludedgroups_to_remove = array_diff(array_keys($excludedgroups), array_diff($customergroups, $user['customergroups']));
             $excludedgroups_to_add = array_diff($customergroups, $user['customergroups'], array_keys($excludedgroups));
 
-            if (!empty($excludedgroups_to_remove)) {
-                foreach ($excludedgroups_to_remove as $group) {
-                    if ($this->db->Execute(
-                        'DELETE FROM excludedgroups WHERE userid = ? AND customergroupid = ?',
-                        array($user['id'], $group)
-                    ) && $this->syslog) {
-                        $args = array(
-                            SYSLOG::RES_EXCLGROUP => $excludedgroups[$group]['id'],
-                            SYSLOG::RES_CUSTGROUP => $group,
-                            SYSLOG::RES_USER => $user['id'],
-                        );
-                        $this->syslog->AddMessage(SYSLOG::RES_EXCLGROUP, SYSLOG::OPER_DELETE, $args);
-                    }
+            foreach ($excludedgroups_to_remove as $group) {
+                if ($this->db->Execute(
+                    'DELETE FROM excludedgroups WHERE userid = ? AND customergroupid = ?',
+                    array($user['id'], $group)
+                ) && $this->syslog) {
+                    $args = array(
+                        SYSLOG::RES_EXCLGROUP => $excludedgroups[$group]['id'],
+                        SYSLOG::RES_CUSTGROUP => $group,
+                        SYSLOG::RES_USER => $user['id'],
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_EXCLGROUP, SYSLOG::OPER_DELETE, $args);
                 }
             }
-            if (!empty($excludedgroups_to_add)) {
-                foreach ($excludedgroups_to_add as $group) {
-                    if ($this->db->Execute(
-                        'INSERT INTO excludedgroups (userid, customergroupid) VALUES (?, ?)',
-                        array($user['id'], $group)
-                    ) && $this->syslog) {
-                        $args = array(
-                            SYSLOG::RES_EXCLGROUP => $this->db->GetLastInsertID('excludedgroups'),
-                            SYSLOG::RES_CUSTGROUP => $group,
-                            SYSLOG::RES_USER => $user['id'],
-                        );
-                        $this->syslog->AddMessage(SYSLOG::RES_EXCLGROUP, SYSLOG::OPER_ADD, $args);
-                    }
+            foreach ($excludedgroups_to_add as $group) {
+                if ($this->db->Execute(
+                    'INSERT INTO excludedgroups (userid, customergroupid) VALUES (?, ?)',
+                    array($user['id'], $group)
+                ) && $this->syslog) {
+                    $args = array(
+                        SYSLOG::RES_EXCLGROUP => $this->db->GetLastInsertID('excludedgroups'),
+                        SYSLOG::RES_CUSTGROUP => $group,
+                        SYSLOG::RES_USER => $user['id'],
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_EXCLGROUP, SYSLOG::OPER_ADD, $args);
                 }
             }
         }
