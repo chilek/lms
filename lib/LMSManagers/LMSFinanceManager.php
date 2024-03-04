@@ -1648,9 +1648,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         if (!isset($schemaid)) {
             $schemaid = null;
         }
-        $result = array_merge($result, compact('period', 'at', 'from', 'to', 'schemaid', 'count', 'paytime'));
 
-        return $result;
+        return array_merge($result, compact('period', 'at', 'from', 'to', 'schemaid', 'count', 'paytime'));
     }
 
     public function CheckSchemaModifiedValues(&$data)
@@ -4596,15 +4595,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				JOIN numberplans np ON np.id = in_numberplanid ';
             $where = ' AND npa.divisionid = ' . intval($divisionid);
         }
-
-        $result = $this->db->GetAllByKey('SELECT r.id, name,
+        return $this->db->GetAllByKey('SELECT r.id, name,
 				in_numberplanid, out_numberplanid' . $select . '
 			FROM cashregs r
 			JOIN cashrights cr ON regid = r.id
 			' . $join . '
 			WHERE rights > 1 AND userid = ? ' . $where . '
 			ORDER BY name', 'id', array($userid));
-        return $result;
     }
 
     public function GetOpenedLiabilities($customerid)

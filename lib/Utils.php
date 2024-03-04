@@ -105,9 +105,7 @@ class Utils
         {
             return 'old_'.$k;
         }
-
-        $result = array_combine(array_map('addkeyprefix', array_keys($array)), $array);
-        return $result;
+        return array_combine(array_map('addkeyprefix', array_keys($array)), $array);
     }
 
     // taken from RoundCube

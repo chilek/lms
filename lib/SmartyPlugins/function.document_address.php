@@ -37,7 +37,5 @@ function smarty_function_document_address($params, $template)
         'city' => $params['city'],
     ));
 
-    $result .= implode('<br>', $lines);
-
-    return $result;
+    return $result . implode('<br>', $lines);
 }

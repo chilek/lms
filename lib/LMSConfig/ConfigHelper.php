@@ -88,8 +88,7 @@ class ConfigHelper
         }
 
         if ($section_name === 'privileges') {
-            $value = self::getConfig($name);
-            return $value;
+            return self::getConfig($name);
         }
 
         if (!LMSConfig::getConfig()->hasSection($section_name)) {

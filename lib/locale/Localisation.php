@@ -438,9 +438,7 @@ class Localisation
             $content = str_replace('$' . chr(97 + $i - 1), $args[$i - 1] ?? '-', $content);
         }
 
-        $content = preg_replace('/<![^>]+>/', '', $content);
-
-        return $content;
+        return preg_replace('/<![^>]+>/', '', $content);
     }
 
     private static function callFunction()

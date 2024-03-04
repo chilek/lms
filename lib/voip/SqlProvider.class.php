@@ -79,7 +79,8 @@ class SqlProvider extends VoipDataProvider
     public function getCustomerByPhone($number)
     {
         $DB = LMSDB::getInstance();
-        $c = $DB->GetRow(
+
+        return $DB->GetRow(
             'SELECT
                             va.id as voipaccountid, vn.phone, va.balance,
                             t.voip_tariff_id as tariffid,
@@ -95,8 +96,6 @@ class SqlProvider extends VoipDataProvider
                             t.type = ?',
             array($number, SERVICE_PHONE)
         );
-
-        return $c;
     }
 
     /*!
@@ -180,7 +179,8 @@ class SqlProvider extends VoipDataProvider
     public function getCustomerRuleStates($vid, $groupid)
     {
         $DB = LMSDB::getInstance();
-        $s = $DB->GetAll(
+
+        return $DB->GetAll(
             'SELECT
                             vrs.rule_id, vrs.units_left
                           FROM
@@ -192,8 +192,6 @@ class SqlProvider extends VoipDataProvider
                             vr.rule_group_id = ?',
             array($vid, $groupid)
         );
-
-        return $s;
     }
 
     /*!

@@ -1931,7 +1931,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         );
 
         $document = $data['document'];
-        $string = str_replace(
+
+        return str_replace(
             array(
                 '%docid%',
                 '%document%',
@@ -1948,8 +1949,6 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             ),
             $string
         );
-
-        return $string;
     }
 
     public function NewDocumentCustomerNotifications(array $document)

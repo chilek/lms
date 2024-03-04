@@ -607,8 +607,7 @@ function docnumber($number = null, $template = null, $cdate = null, $ext_num = '
 function f_round($value, $precision = 2)
 {
     $value = str_replace(',', '.', $value);
-    $value = round((float) $value, $precision);
-    return $value;
+    return round((float) $value, $precision);
 }
 
 function fetch_url($url)

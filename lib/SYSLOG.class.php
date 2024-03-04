@@ -701,21 +701,19 @@ class SYSLOG
 
     public function GetResourcePropertyNames($type)
     {
-        $names = $this->DB->GetCol('SELECT DISTINCT name FROM logmessagedata lmd
+        return $this->DB->GetCol('SELECT DISTINCT name FROM logmessagedata lmd
 			JOIN logmessages lm ON lm.id = lmd.logmessageid
 			WHERE lm.resource = ? ORDER BY name', array($type));
-        return $names;
     }
 
     public function GetResourcePropertyValues($type, $name)
     {
-        $values = $this->DB->GetCol(
+        return $this->DB->GetCol(
             'SELECT DISTINCT value FROM logmessagedata lmd
 			JOIN logmessages lm ON lm.id = lmd.logmessageid
 			WHERE lm.resource = ? AND lmd.name = ? AND lmd.value <> ? ORDER BY value LIMIT 20',
             array($type, $name, '')
         );
-        return $values;
     }
 
     public function GetResourceProperties($resource)

@@ -890,7 +890,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             );
         }
 
-        $bill_list = $DB->GetAll('SELECT
+        return $DB->GetAll('SELECT
                                      cdr.id, caller, callee, price, call_start_time as begintime, cdr.uniqueid,
                                      totaltime, billedtime,
                                      cdr.direction as direction, cdr.type AS type, callervoipaccountid, calleevoipaccountid,
@@ -913,8 +913,6 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                                      ' . $where_string . $order_string
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : ''));
-
-        return $bill_list;
     }
 
     /**

@@ -200,9 +200,7 @@ function _smarty_function_img($params, $template)
         $result .= 'border="' . $params['border'] . '" ';
     }
 
-    $result .= '/>';
-
-    return $result;
+    return $result . '/>';
 }
 
 // register the resource name "module"

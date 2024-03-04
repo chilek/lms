@@ -1084,9 +1084,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             $this->syslog->AddMessage(SYSLOG::RES_NETDEV_MAC, SYSLOG::OPER_DELETE, $args);
         }
 
-        $res = $this->db->Execute('DELETE FROM netdevicemacs WHERE id = ?', array($id));
-
-        return $res;
+        return $this->db->Execute('DELETE FROM netdevicemacs WHERE id = ?', array($id));
     }
 
     public function getNetDevMac($macid)

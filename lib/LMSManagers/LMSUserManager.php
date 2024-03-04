@@ -636,9 +636,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             $rights = $this->db->GetOne('SELECT rights FROM users WHERE id = ?', array($id));
         }
 
-        $rights = explode(',', $rights);
-
-        return $rights;
+        return explode(',', $rights);
     }
 
     public function PasswdExistsInHistory($id, $passwd)

@@ -2081,10 +2081,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             : $locations[$address_id]['location']), $text);
         $text = str_replace('%phone', !empty($params['phones'])
             ? implode(', ', $params['phones']) : '-', $text);
-        $text = str_replace('%email', !empty($params['emails'])
-        ? implode(', ', $params['emails']) : '-', $text);
 
-        return $text;
+        return str_replace('%email', !empty($params['emails'])
+        ? implode(', ', $params['emails']) : '-', $text);
     }
 
     public function NotifyUsers(array $params)

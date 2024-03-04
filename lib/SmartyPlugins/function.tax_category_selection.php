@@ -47,7 +47,6 @@ function smarty_function_tax_category_selection($params, $template)
             . LMSSmartyPlugins::tipFunction(array('text' => $category['description']), $template) . '>'
             . '(' . sprintf('%02d', $categoryid) . ') ' . $category['label'] . '</option>';
     }
-    $result .= '</select>';
 
-    return $result;
+    return $result . '</select>';
 }

@@ -109,8 +109,7 @@ function module_updateuserform()
 function parse_notification_mail($string, $customerinfo)
 {
     $string = str_replace('%cid%', $customerinfo['id'], $string);
-    $string = str_replace('%customername%', $customerinfo['customername'], $string);
-    return $string;
+    return str_replace('%customername%', $customerinfo['customername'], $string);
 }
 
 function module_updateusersave()

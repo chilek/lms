@@ -183,9 +183,7 @@ function getNodeStats($nodeid)
     $SMARTY->assign('nodeip', $nodeip);
     $SMARTY->assign('nodestats', $nodestats);
 
-    $contents = $SMARTY->fetch('node/nodestats.html');
-
-    return $contents;
+    return $SMARTY->fetch('node/nodestats.html');
 }
 
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'managementurls.inc.php');

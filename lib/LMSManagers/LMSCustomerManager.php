@@ -1876,7 +1876,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     public function GetCustomerNetDevs($customer_id)
     {
 
-        $netdevs = $this->db->GetAllByKey('SELECT
+        return $this->db->GetAllByKey('SELECT
                                               nd.id, nd.name, va.city AS location_city, va.city_id AS location_city_id, va.street AS location_street,
                                               va.street_id AS location_street_id, va.zip AS location_zip, va.location_house, va.location_flat,
                                               nd.description,
@@ -1895,8 +1895,6 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                               LEFT JOIN nodes no ON nd.id = no.netdev
                                            WHERE
                                               nd.ownerid = ?', 'id', array(intval($customer_id)));
-
-        return $netdevs;
     }
 
     /**
@@ -2962,8 +2960,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $string = str_replace('%customername%', $customerinfo['customername'], $string);
         $document = $data['document'];
         $string = str_replace('%document%', $document['fullnumber'], $string);
-        $string = str_replace('%docid%', $document['id'], $string);
-        return $string;
+        return str_replace('%docid%', $document['id'], $string);
     }
 
     public function addCustomerConsents($customerid, $consents)
@@ -3210,9 +3207,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $this->syslog->AddMessage(SYSLOG::RES_CUSTNOTE, SYSLOG::OPER_DELETE, $args);
         }
 
-        $res = $this->db->Execute('DELETE FROM customernotes WHERE id = ?', array($id));
-
-        return $res;
+        return $this->db->Execute('DELETE FROM customernotes WHERE id = ?', array($id));
     }
 
     private function changeCustomerKarma($id, $diff)

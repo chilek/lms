@@ -27,8 +27,7 @@
 function GetHostList()
 {
     global $DB;
-    $list = $DB->GetAll("SELECT id, name, description, lastreload FROM hosts ORDER BY name");
-    return $list;
+    return $DB->GetAll("SELECT id, name, description, lastreload FROM hosts ORDER BY name");
 }
 
 $layout['pagetitle'] = trans('Hosts List');

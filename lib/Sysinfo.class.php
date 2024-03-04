@@ -173,8 +173,7 @@ class Sysinfo
         if ($result=='') {
             $result = 'N.A.';
         }
-        $result .= ' ('.PHP_OS.')';
-        return $result;
+        return $result . (' ('.PHP_OS.')');
     }
 
     public function users()

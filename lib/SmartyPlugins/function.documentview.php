@@ -63,7 +63,6 @@ function smarty_function_documentview($params, $template)
         $result .= ' id="documentview-' . $id . '" data-dialog-id="documentviewdialog-' . $id . '" '
             . 'class="lms-ui-button documentview documentview-' . $type . '"';
     }
-    $result .= '>' . $text . '</a>';
 
-    return $result;
+    return $result . ('>' . $text . '</a>');
 }

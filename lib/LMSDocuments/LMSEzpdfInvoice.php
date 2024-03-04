@@ -285,8 +285,7 @@ class LMSEzpdfInvoice extends LMSInvoice
         } else if (!ConfigHelper::checkConfig('invoices.hide_ssn', true) && $this->data['ssn']) {
             $y=$y-$this->backend->text_align_left($x, $y, $font_size, trans('SSN').' '.$this->data['ssn']);
         }
-        $y=$y-$this->backend->text_align_left($x, $y, $font_size, '<b>' . trans('Customer No.: $a', sprintf('%04d', $this->data['customerid'])) . '</b>');
-        return $y;
+        return $y-$this->backend->text_align_left($x, $y, $font_size, '<b>' . trans('Customer No.: $a', sprintf('%04d', $this->data['customerid'])) . '</b>');
     }
 
     protected function invoice_seller($x, $y)
@@ -1349,14 +1348,12 @@ class LMSEzpdfInvoice extends LMSInvoice
             $comment = trans('gross');
         }
 
-        $y = $y - $this->backend->text_align_left(
+        return $y - $this->backend->text_align_left(
             $x,
             $y,
             9,
             '<b>' . trans('The document is issued according to the $a price', $comment) . '</b>'
         );
-
-        return $y;
     }
 
     protected function invoice_expositor($x, $y)

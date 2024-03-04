@@ -570,9 +570,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                 'name2' => $v['location_street_name2'],
             ));
             unset($v['location_street_name2'], $v['location_street_type_name']);
-
-            $v = array_merge($address, $v);
-            return $v;
+            return array_merge($address, $v);
         }
 
         $v = $this->db->GetRow(

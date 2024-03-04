@@ -133,7 +133,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
     {
         extract($params);
         if (isset($section)) {
-            $test =  $this->db->GetOne(
+            return $this->db->GetOne(
                 'SELECT id FROM uiconfig WHERE section = ? AND var = ?'
                 . (!empty($userid) ? ' AND userid = ' . intval($userid) : ' AND userid IS NULL')
                 . (!isset($userid) ? ' AND userid IS NULL' : '')
@@ -144,8 +144,6 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                     $variable
                 )
             );
-
-            return $test;
         } else {
             return $this->db->GetOne('SELECT id FROM uiconfig WHERE id = ?', array($id));
         }

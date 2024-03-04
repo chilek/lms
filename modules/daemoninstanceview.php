@@ -27,11 +27,10 @@
 function GetOptionList($instanceid)
 {
     global $DB;
-    $list = $DB->GetAll('SELECT id, var, value, description, disabled
+    return $DB->GetAll('SELECT id, var, value, description, disabled
 		FROM daemonconfig
 		WHERE instanceid = ?
 		ORDER BY var', array($instanceid));
-    return $list;
 }
 
 $instance = $DB->GetRow(

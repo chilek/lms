@@ -747,7 +747,7 @@ function parse_customer_data($data, $format, $row)
 
 function parse_node_data($data, $row)
 {
-    $data = str_replace(
+    return str_replace(
         array(
             '%i',
             '%cid',
@@ -760,9 +760,6 @@ function parse_node_data($data, $row)
         ),
         $data
     );
-    //$data = preg_replace("/\%nas/", $row['nasip'], $data);
-
-    return $data;
 }
 
 function parse_event_data($text, $event, $customer)

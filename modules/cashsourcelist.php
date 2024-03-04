@@ -27,9 +27,7 @@
 function GetSourceList()
 {
     $DB = LMSDB::getInstance();
-
-    $list = $DB->GetAll("SELECT * FROM cashsources ORDER BY name");
-    return $list;
+    return $DB->GetAll("SELECT * FROM cashsources ORDER BY name");
 }
 
 if (isset($_GET['action'])) {

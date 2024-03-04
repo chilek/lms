@@ -237,9 +237,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
         $this->db->Execute("INSERT INTO netnodes (" . implode(', ', array_keys($args))
             . ") VALUES (" . implode(', ', array_fill(0, count($args), '?')) . ")", array_values($args));
 
-        $id = $this->db->GetLastInsertID('netnodes');
-
-        return $id;
+        return $this->db->GetLastInsertID('netnodes');
     }
 
     public function NetNodeExists($id)

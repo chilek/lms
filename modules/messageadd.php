@@ -233,7 +233,7 @@ function GetRecipients($filter, $type = MSG_MAIL)
 
     $suspension_percentage = f_round(ConfigHelper::getConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0)));
 
-    $recipients = $LMS->DB->GetAll(
+    return $LMS->DB->GetAll(
         'SELECT c.id, pin, c.divisionid, '
             . ($type == MSG_MAIL ? 'cc.email, ' : '')
             . ($type == MSG_SMS ? 'x.phone, ' : '')
@@ -398,8 +398,6 @@ function GetRecipients($filter, $type = MSG_MAIL)
             DOC_DNOTE,
         )
     );
-
-    return $recipients;
 }
 
 function GetCustomers($customers)

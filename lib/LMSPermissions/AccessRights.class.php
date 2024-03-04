@@ -70,8 +70,7 @@ class AccessRights
         if (!array_key_exists($permname, $this->permissions)) {
             return null;
         }
-        $perm = $this->permissions[$permname];
-        return $perm;
+        return $this->permissions[$permname];
     }
 
     public function removePermission($permname)

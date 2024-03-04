@@ -91,9 +91,7 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
             $precision = 2;
         }
 
-        $string = sprintf("%".$width.".".$precision."f", $value).$units[$unit];
-
-        return $string;
+        return sprintf("%".$width.".".$precision."f", $value).$units[$unit];
     }
 
     global $LMS;
