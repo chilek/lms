@@ -127,7 +127,6 @@ abstract class LMSDB_common implements LMSDBInterface
      * Executes sql query.
      *
      * @param string $query
-     * @param array $inputarray
      * @return int|false
      */
     public function Execute($query, array $inputarray = null)
@@ -156,7 +155,6 @@ abstract class LMSDB_common implements LMSDBInterface
      * Executes multiple queries delimited by semicollon.
      *
      * @param string $query
-     * @param array $inputarray
      * @return int|false
      */
     public function MultiExecute($query, array $inputarray = null)
@@ -185,7 +183,6 @@ abstract class LMSDB_common implements LMSDBInterface
      * Executes query and returns all rows.
      *
      * @param string $query
-     * @param array $inputarray
      * @return array
      */
     public function GetAll($query = null, array $inputarray = null)
@@ -209,7 +206,6 @@ abstract class LMSDB_common implements LMSDBInterface
      *
      * @param string $query
      * @param string $key
-     * @param array $inputarray
      * @return array
      */
     public function GetAllByKey($query = null, $key = null, array $inputarray = null)
@@ -231,7 +227,6 @@ abstract class LMSDB_common implements LMSDBInterface
      * Executes query and return single row.
      *
      * @param string $query
-     * @param array $inputarray
      * @return array
      */
     public function GetRow($query = null, array $inputarray = null)
@@ -247,7 +242,6 @@ abstract class LMSDB_common implements LMSDBInterface
      * Executes query and returns single, first column.
      *
      * @param string $query
-     * @param array $inputarray
      * @return array
      */
     public function GetCol($query = null, array $inputarray = null)
@@ -269,7 +263,6 @@ abstract class LMSDB_common implements LMSDBInterface
      * Executes query and returns single value.
      *
      * @param srting $query
-     * @param array $inputarray
      * @return string|int|null
      */
     public function GetOne($query = null, array $inputarray = null)
@@ -292,7 +285,6 @@ abstract class LMSDB_common implements LMSDBInterface
      * consumptive way than using GetAll() & foreach().
      *
      * @param string $query
-     * @param array $inputarray
      * @return null
      */
     public function Exec($query, array $inputarray = null)
@@ -543,7 +535,6 @@ abstract class LMSDB_common implements LMSDBInterface
      * Replaces metadata and placeholders.
      *
      * @param string $query
-     * @param array $inputarray
      * @return string
      */
     protected function _query_parser($query, array $inputarray = null)
@@ -604,7 +595,6 @@ abstract class LMSDB_common implements LMSDBInterface
     /**
      * Quotes array.
      *
-     * @param array $input
      * @return string
      */
     protected function _quote_array(array $input)
@@ -706,8 +696,6 @@ abstract class LMSDB_common implements LMSDBInterface
 
     /**
      * Sets errors.
-     *
-     * @param array $errors
      */
     public function SetErrors(array $errors = array())
     {
