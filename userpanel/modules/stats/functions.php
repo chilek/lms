@@ -164,7 +164,6 @@ function Traffic($from = 0, $to = 0, $owner = 0, $order = '')
 function module_main()
 {
     global $SMARTY, $SESSION;
-    $bars = 1;
 
     if (isset($_GET['bar']) && isset($_POST['order'])) {
         $SESSION->save('trafficorder', $_POST['order']);

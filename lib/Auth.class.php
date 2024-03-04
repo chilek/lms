@@ -311,7 +311,6 @@ class Auth
     private function verifyAddressList($addresslist = '')
     {
         $addresslist = preg_split("/([\s]+|[\s]*,[\s]*)/", $addresslist, -1, PREG_SPLIT_NO_EMPTY);
-        $isin = false;
 
         foreach ($addresslist as $value) {
             $net = '';

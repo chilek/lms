@@ -78,7 +78,6 @@ function _smarty_function_body($params, $template)
 
 function _smarty_function_userpaneltip($params, $template)
 {
-    $repeat = false;
     $text = trans(array_merge(isset($params['test']) ? array($params['text']) : array(), $params));
 
     $tpl = $template->getTemplateVars('error');
@@ -154,8 +153,6 @@ function _smarty_function_img($params, $template)
 
     $result  = '<img ';
     $result .= 'src="'.$file.'" ';
-
-    $repeat = false;
     if (isset($params['alt'])) {
         $result .= 'alt="' . trans($params['alt']) . '" ';
     } else {

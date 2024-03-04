@@ -957,7 +957,7 @@ function send_mail_to_user($rmail, $rname, $subject, $body)
     if (!empty($notify_email)) {
         $headers['Cc'] = $notify_email;
     }
-    $result = $LMS->SendMail($rmail, $headers, $body, null, null, $smtp_options);
+    $LMS->SendMail($rmail, $headers, $body, null, null, $smtp_options);
 }
 
 function send_sms_to_user($phone, $data)

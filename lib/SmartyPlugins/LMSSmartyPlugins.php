@@ -1722,7 +1722,7 @@ class LMSSmartyPlugins
         $tip = isset($params['tip']) ? trans($params['tip']) : null;
         $target = $params['target'] ?? '[data-default-value]';
 
-        $result = $script = '';
+        $script = '';
         if (!$loaded) {
             $script = '<script src="js/lms-ui-reset-to-defaults.js"></script>';
             $loaded = true;

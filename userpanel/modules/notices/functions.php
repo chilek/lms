@@ -76,7 +76,6 @@ function module_main()
 
 function setNoticeRead($noticeid)
 {
-    $db = LMSDB::getInstance();
     $result = new xajaxResponse();
 
     $notice_handler = UserpanelNoticeHandler::getInstance();

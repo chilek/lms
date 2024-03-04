@@ -26,7 +26,6 @@
 
 function smarty_function_persistent_filter($params, $template)
 {
-    $layout = $template->getTemplateVars('layout');
     $filter_id = $params['id'] ?? null;
     $form = $params['form'] ?? null;
 

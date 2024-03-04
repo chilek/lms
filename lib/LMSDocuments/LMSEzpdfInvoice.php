@@ -1513,7 +1513,7 @@ class LMSEzpdfInvoice extends LMSInvoice
             $this->invoice_memo(30, $top);
         }
 
-        $page = $this->backend->ezStopPageNumbers(1, 1, $page);
+        $this->backend->ezStopPageNumbers(1, 1, $page);
 
         if (!$this->data['disable_protection'] && $this->data['protection_password']) {
             $this->backend->setEncryption(
@@ -1593,7 +1593,7 @@ class LMSEzpdfInvoice extends LMSInvoice
                 $this->invoice_simple_form_fill(14, 3, 0.4);
             }
         }
-        $page = $this->backend->ezStopPageNumbers(1, 1, $page);
+        $this->backend->ezStopPageNumbers(1, 1, $page);
 
         if (!$this->data['disable_protection'] && $this->data['protection_password']) {
             $this->backend->setEncryption(

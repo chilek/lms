@@ -27,7 +27,6 @@
 function getUsersForGroup($groupid)
 {
     global $LMS;
-    $DB = LMSDB::getInstance();
 
     $JSResponse = new xajaxResponse();
 

@@ -140,8 +140,6 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
 
     public function note_recipient()
     {
-        $oldy = $this->backend->GetY();
-
         $recipient = '<b>' . trans('Note recipient:') . '</b><br>';
 
         $recipient .= $this->data['name'] . '<br>';

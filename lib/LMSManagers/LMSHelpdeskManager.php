@@ -1511,7 +1511,6 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     protected function updateTicketParentID($ticketid, $parentid = null)
     {
-        $notes = array();
         if ($parentid) {
             $note = trans('Ticket parent ID has been set to $a.', $parentid);
         } else {
