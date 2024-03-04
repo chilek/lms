@@ -139,7 +139,7 @@ class Auth
             $this->islogged = true;
             $this->nousers = true;
             $_GET['m'] = 'useradd';
-            return true;
+            return;
         }
 
         if ($this->islogged || ($this->login && $this->VerifyUser())) {
