@@ -51,7 +51,7 @@ if (!empty($_POST['invprojectedit'])) {
 $layout['pagetitle'] = trans('Edit investment project: $a', $oldinv['name']);
 
 $SESSION->add_history_entry();
-$SMARTY->assign('invprojectedit', !empty($invproject) ? $invproject : $oldinv);
+$SMARTY->assign('invprojectedit', empty($invproject) ? $oldinv : $invproject);
 $SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('error', $error);
 $SMARTY->display('invproject/invprojectedit.html');

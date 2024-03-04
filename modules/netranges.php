@@ -355,7 +355,7 @@ function getBuildings(array $filter)
             JOIN location_districts ld ON ld.id = lb.districtid
             JOIN location_states ls ON ls.id = ld.stateid
             LEFT JOIN netranges r ON r.buildingid = b.id'
-            . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
+            . (empty($where) ? '' : ' WHERE ' . implode(' AND ', $where))
         );
 
         if (empty($ranges)) {
@@ -430,7 +430,7 @@ function getBuildings(array $filter)
             JOIN location_districts ld ON ld.id = lb.districtid
             JOIN location_states ls ON ls.id = ld.stateid
             LEFT JOIN netranges r ON r.buildingid = b.id'
-            . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
+            . (empty($where) ? '' : ' WHERE ' . implode(' AND ', $where))
             . ' ORDER BY ls.name, ld.name, lb.name, lc.name, lst.name, b.building_num'
             . (empty($existing) ? (
                 (isset($limit) ? ' LIMIT ' . $limit : '')

@@ -204,8 +204,8 @@ function RTSearch($search, $order = 'createtime,desc')
             LEFT JOIN customeraddressview c ON c.id = t.customerid
             LEFT JOIN vaddresses va ON va.id = t.address_id
             WHERE '
-            . (!empty($where) ? '(' . implode($op, $where) . ')' : '1 = 1')
-            . (!empty($where_AND) ? ' AND (' . implode($op, $where_AND) . ')' : '')
+            . (empty($where) ? '1 = 1' : '(' . implode($op, $where) . ')')
+            . (empty($where_AND) ? '' : ' AND (' . implode($op, $where_AND) . ')')
         );
     }
 
@@ -244,8 +244,8 @@ function RTSearch($search, $order = 'createtime,desc')
             GROUP BY ticketid
         ) ev ON ev.ticketid = t.id
         WHERE '
-        . (!empty($where) ? '(' . implode($op, $where) . ')' : '1 = 1')
-        . (!empty($where_AND) ? ' AND (' . implode($op, $where_AND) . ')' : '')
+        . (empty($where) ? '1 = 1' : '(' . implode($op, $where) . ')')
+        . (empty($where_AND) ? '' : ' AND (' . implode($op, $where_AND) . ')')
         . ' GROUP BY t.id, t.customerid, t.subject, t.state, t.owner, t.service, t.type,
 			t.address_id, va.name, va.city, va.street, va.house, va.flat, c.address, c.city,
 			vusers.name, rtqueues.name,
@@ -349,7 +349,7 @@ if (isset($search) || isset($_GET['s'])) {
         $search['count'] = true;
         $search['total'] = intval(RTSearch($search, $o));
 
-        $search['page'] = intval((! isset($_GET['page']) ? 1 : $_GET['page']));
+        $search['page'] = intval((isset($_GET['page']) ? $_GET['page'] : 1));
         $search['limit'] = intval(ConfigHelper::getConfig(
             'rt.ticketlist_pagelimit',
             ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $search['total'])

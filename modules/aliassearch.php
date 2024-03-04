@@ -136,7 +136,7 @@ if (count($search) || isset($_GET['s'])) {
         unset($aliaslist['domain']);
         unset($aliaslist['direction']);
 
-        $page = (! isset($_GET['page']) ? 1 : $_GET['page']);
+        $page = (isset($_GET['page']) ? $_GET['page'] : 1);
         $pagelimit = ConfigHelper::getConfig('phpui.aliaslist_pagelimit', $queuedata['total']);
         $start = ($page - 1) * $pagelimit;
 

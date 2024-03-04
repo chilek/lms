@@ -124,7 +124,7 @@ $summary = $LMS->GetReceiptList(array('registry' => $regid, 'order' => $o, 'sear
 $total = intval($summary['total']);
 
 $limit = intval(ConfigHelper::getConfig('phpui.receiptlist_pagelimit', 100));
-$page = !isset($_GET['page']) ? ceil($total / $limit) : $_GET['page'];
+$page = isset($_GET['page']) ? $_GET['page'] : ceil($total / $limit);
 if (empty($page)) {
     $page = 1;
 }
@@ -171,7 +171,7 @@ if ($from > 0) {
 $listdata['endbalance'] = $listdata['startbalance'] + $listdata['totalincome'] - $listdata['totalexpense'];
 
 $pagelimit = ConfigHelper::getConfig('phpui.receiptlist_pagelimit');
-$page = (!isset($_GET['page']) ? ceil($listdata['total']/$pagelimit) : $_GET['page']);
+$page = (isset($_GET['page']) ? $_GET['page'] : ceil($listdata['total']/$pagelimit));
 if (empty($page)) {
     $page = 1;
 }

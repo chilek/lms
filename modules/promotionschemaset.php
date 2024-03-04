@@ -28,7 +28,7 @@ $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 if ($id) {
     $args = array(
-        'disabled' => !empty($_GET['access']) ? 0 : 1,
+        'disabled' => empty($_GET['access']) ? 1 : 0,
         SYSLOG::RES_PROMOSCHEMA => $id
     );
     $DB->Execute(

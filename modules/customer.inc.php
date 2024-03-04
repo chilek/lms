@@ -213,7 +213,7 @@ $customerstats = array(
 		FROM rttickets t
 		LEFT JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ?
 		WHERE (r.queueid IS NOT NULL' . ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')'
-        . (!ConfigHelper::checkConfig('privileges.superuser') ? ' AND t.deleted = 0': '')
+        . (ConfigHelper::checkConfig('privileges.superuser') ? '': ' AND t.deleted = 0')
         . ' AND customerid = ' . intval($customerid), array(array(RT_RESOLVED, RT_DEAD), $userid)),
     'domains' => $DB->GetOne('SELECT COUNT(*) FROM domains WHERE ownerid = ?', array($customerid)),
     'accounts' => $DB->GetOne('SELECT COUNT(*) FROM passwd WHERE ownerid = ?', array($customerid))

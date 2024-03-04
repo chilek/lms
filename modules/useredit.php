@@ -208,7 +208,7 @@ if ($userinfo) {
 
         $SESSION->redirect('?m=userinfo&id='.$userinfo['id']);
     } else {
-        $SMARTY->assign('selectedusergroups', !empty($userinfo['usergroups']) ? array_flip($userinfo['usergroups']) : array());
+        $SMARTY->assign('selectedusergroups', empty($userinfo['usergroups']) ? array() : array_flip($userinfo['usergroups']));
 
         $customergroups = $LMS->getAllCustomerGroups();
         $SMARTY->assign('selectedgroups', array_flip($userinfo['customergroups'] ?? array()));

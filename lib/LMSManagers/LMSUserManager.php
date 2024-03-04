@@ -169,11 +169,11 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                 accessfrom, accessto, rname, twofactorauth
             FROM vallusers
             WHERE deleted = 0'
-                . (!empty($divisions) ? ' AND id IN (SELECT userid
+                . (empty($divisions) ? '' : ' AND id IN (SELECT userid
                     FROM userdivisions
                     WHERE divisionid IN (' . $divisions . ')
-                    )' : '')
-                . (!empty($excludedUsers) ? ' AND id NOT IN (' . $excludedUsers . ')' : '') .
+                    )')
+                . (empty($excludedUsers) ? '' : ' AND id NOT IN (' . $excludedUsers . ')') .
                 ' ORDER BY ' . $sqlord,
                 'id'
             );
@@ -183,11 +183,11 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                     accessfrom, accessto, rname, twofactorauth
                 FROM vusers
                 WHERE deleted = 0'
-                . (!empty($divisions) ? ' AND id IN (SELECT userid
+                . (empty($divisions) ? '' : ' AND id IN (SELECT userid
                         FROM userdivisions
                         WHERE divisionid IN (' . $divisions . ')
-                        )' : '')
-                . (!empty($excludedUsers) ? ' AND id NOT IN (' . $excludedUsers . ')' : '') .
+                        )')
+                . (empty($excludedUsers) ? '' : ' AND id NOT IN (' . $excludedUsers . ')') .
                 ' ORDER BY ' . $sqlord,
                 'id'
             );
@@ -216,11 +216,11 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             . ' WHERE 1=1'
             . $deletedFilter
             . $disabledFilter
-            . (!empty($divisions) ? ' AND id IN 
+            . (empty($divisions) ? '' : ' AND id IN
                 (SELECT userid
                 FROM userdivisions
                 WHERE divisionid IN (' . $divisions . ')
-                )' : '')
+                )')
             . ' ORDER BY login ASC',
             'id'
         );
@@ -278,13 +278,13 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'hosts' => $user['hosts'],
             'trustedhosts' => $user['trustedhosts'],
             'position' => $user['position'],
-            'ntype' => !empty($user['ntype']) ? $user['ntype'] : null,
-            'phone' => !empty($user['phone']) ? $user['phone'] : null,
+            'ntype' => empty($user['ntype']) ? null : $user['ntype'],
+            'phone' => empty($user['phone']) ? null : $user['phone'],
             'passwdforcechange' => isset($user['passwdforcechange']) ? 1 : 0,
-            'passwdexpiration' => !empty($user['passwdexpiration']) ? $user['passwdexpiration'] : 0,
-            'access' => !empty($user['access']) ? 1 : 0,
-            'accessfrom' => !empty($user['accessfrom']) ? $user['accessfrom'] : 0,
-            'accessto' => !empty($user['accessto']) ? $user['accessto'] : 0,
+            'passwdexpiration' => empty($user['passwdexpiration']) ? 0 : $user['passwdexpiration'],
+            'access' => empty($user['access']) ? 0 : 1,
+            'accessfrom' => empty($user['accessfrom']) ? 0 : $user['accessfrom'],
+            'accessto' => empty($user['accessto']) ? 0 : $user['accessto'],
             'twofactorauth' => $user['twofactorauth'],
             'twofactorauthsecretkey' => $user['twofactorauthsecretkey'],
         );
@@ -508,13 +508,13 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'hosts' => $user['hosts'],
             'trustedhosts' => $user['trustedhosts'],
             'position' => $user['position'],
-            'ntype' => !empty($user['ntype']) ? $user['ntype'] : null,
-            'phone' => !empty($user['phone']) ? $user['phone'] : null,
+            'ntype' => empty($user['ntype']) ? null : $user['ntype'],
+            'phone' => empty($user['phone']) ? null : $user['phone'],
             'passwdforcechange' => isset($user['passwdforcechange']) ? 1 : 0,
-            'passwdexpiration' => !empty($user['passwdexpiration']) ? $user['passwdexpiration'] : 0,
-            'access' => !empty($user['access']) ? 1 : 0,
-            'accessfrom' => !empty($user['accessfrom']) ? $user['accessfrom'] : 0,
-            'accessto' => !empty($user['accessto']) ? $user['accessto'] : 0,
+            'passwdexpiration' => empty($user['passwdexpiration']) ? 0 : $user['passwdexpiration'],
+            'access' => empty($user['access']) ? 0 : 1,
+            'accessfrom' => empty($user['accessfrom']) ? 0 : $user['accessfrom'],
+            'accessto' => empty($user['accessto']) ? 0 : $user['accessto'],
             'twofactorauth' => empty($user['twofactorauth']) ? 0 : 1,
             'twofactorauthsecretkey' => $user['twofactorauthsecretkey'],
             SYSLOG::RES_USER => $user['id']

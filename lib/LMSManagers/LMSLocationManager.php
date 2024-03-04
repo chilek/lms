@@ -682,7 +682,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                             : '((p.cityid IS NOT NULL AND (CASE WHEN lc2.id IS NULL THEN lc.name ELSE '
                             . $this->db->Concat('lc.name', "' '", 'lc2.name') . ' END) = ' . $escaped_city . ')
                                 OR LOWER(p.cityname) = LOWER(' . $escaped_city . '))') . '
-                            AND parity & ? > 0' . (!empty($street) ? ' AND (lst.name = ' . $escaped_street . '
+                            AND parity & ? > 0' . (empty($street) ? '' : ' AND (lst.name = ' . $escaped_street . '
                                 OR (CASE WHEN lst.name2 IS NULL
                                     THEN \'\'
                                     ELSE ' . $this->db->Concat('lst.name', "' '", 'lst.name2')
@@ -693,7 +693,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                                 . ' END) = ' . $escaped_street
                             . ' OR (
                                 p.streetname IS NOT NULL
-                                AND LOWER(p.streetname) = LOWER(' . $escaped_street . ')))' : '') . '
+                                AND LOWER(p.streetname) = LOWER(' . $escaped_street . ')))') . '
                             AND ' . $from . ' AND ' . $to . '
                             ORDER BY fromnumber DESC, tonumber DESC LIMIT 1',
                         array($parity)
@@ -710,8 +710,9 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                                 : '(b.city_id IS NOT NULL AND (CASE WHEN lc2.id IS NULL THEN lc.name ELSE '
                                 . $this->db->Concat('lc.name', "' '", 'lc2.name') . ' END) = ' . $escaped_city . ')'
                             )
-                            . (!empty($street)
-                                ? ' AND (lst.name = ' . $escaped_street . '
+                            . (empty($street)
+                                ? ''
+                                : ' AND (lst.name = ' . $escaped_street . '
                                         OR (CASE WHEN lst.name2 IS NULL
                                             THEN \'\'
                                             ELSE ' . $this->db->Concat('lst.name', "' '", 'lst.name2')
@@ -720,7 +721,6 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                                             THEN \'\'
                                             ELSE ' . $this->db->Concat('lst.name2', "' '", 'lst.name')
                                         . ' END) = ' . $escaped_street . ')'
-                                : ''
                             )
                             . ' AND building_num = ' . mb_strtoupper($this->db->Escape($house)),
                         array($parity)

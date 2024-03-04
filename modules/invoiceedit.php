@@ -69,7 +69,7 @@ if (isset($_GET['id']) && ($action == 'edit' || $action == 'init')) {
         $invoicecontents[$item['itemid']] = array(
             'itemid' => $item['itemid'],
             'tariffid' => $item['tariffid'],
-            'tariff' => !empty($item['tariffid']) ? $LMS->GetTariff($item['tariffid']) : array(),
+            'tariff' => empty($item['tariffid']) ? array() : $LMS->GetTariff($item['tariffid']),
             'servicetype' => $item['servicetype'],
             'name' => $item['description'],
             'prodid' => $item['prodid'],
@@ -200,7 +200,7 @@ switch ($action) {
             }
         }
 
-        $itemdata['discount'] = (!empty($itemdata['discount']) ? str_replace(',', '.', $itemdata['discount']) : 0);
+        $itemdata['discount'] = (empty($itemdata['discount']) ? 0 : str_replace(',', '.', $itemdata['discount']));
         $itemdata['pdiscount'] = 0;
         $itemdata['vdiscount'] = 0;
         if (preg_match('/^[0-9]+(\.[0-9]+)*$/', $itemdata['discount'])) {
@@ -643,7 +643,7 @@ switch ($action) {
                 + (empty($invoice['flags'][DOC_FLAG_TELECOM_SERVICE]) || $customer['type'] == CTYPES_COMPANY ? 0 : DOC_FLAG_TELECOM_SERVICE)
                 + ($use_current_customer_data
                     ? (isset($customer['flags'][CUSTOMER_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY : 0)
-                    : (!empty($invoice['oldflags'][DOC_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY : 0)
+                    : (empty($invoice['oldflags'][DOC_FLAG_RELATED_ENTITY]) ? 0 : DOC_FLAG_RELATED_ENTITY)
                 )
                 + (empty($invoice['splitpayment']) ? 0 : DOC_FLAG_SPLIT_PAYMENT)
                 + (empty($invoice['netflag']) ? 0 : DOC_FLAG_NET_ACCOUNT),

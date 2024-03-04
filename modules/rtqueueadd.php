@@ -99,7 +99,7 @@ if (isset($_POST['queue'])) {
                 $queue['newmessagesubject'], $queue['newmessagebody'],
                 $queue['resolveticketsubject'], $queue['resolveticketbody'], $queue['verifierticketsubject'],
                 $queue['verifierticketbody'],
-                !empty($queue['verifierid']) ? $queue['verifierid'] : null,
+                empty($queue['verifierid']) ? null : $queue['verifierid'],
                 empty($queue['newticketsmsbody']) ? null : $queue['newticketsmsbody'],
                 empty($queue['newmessagesmsbody']) ? null : $queue['newmessagesmsbody'],
                 empty($queue['resolveticketsmsbody']) ? null : $queue['resolveticketsmsbody'],

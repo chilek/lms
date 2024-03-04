@@ -695,7 +695,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'cutoffstop'     => $customeradd['cutoffstop'],
             SYSLOG::RES_DIV  => empty($customeradd['divisionid']) ? null : $customeradd['divisionid'],
             'paytime'        => $customeradd['paytime'],
-            'paytype'        => !empty($customeradd['paytype']) ? $customeradd['paytype'] : null,
+            'paytype'        => empty($customeradd['paytype']) ? null : $customeradd['paytype'],
             'flags'          => $flags,
         );
 
@@ -1429,9 +1429,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             $val = explode(':', $value); // <doctype>:<fromdate>:<todate>
                             $searchargs[] = 'EXISTS (SELECT 1 FROM documents
 								WHERE customerid = c.id'
-                                . (!empty($val[0]) ? ' AND type = ' . intval($val[0]) : '')
-                                . (!empty($val[1]) ? ' AND cdate >= ' . intval($val[1]) : '')
-                                . (!empty($val[2]) ? ' AND cdate <= ' . intval($val[2]) : '')
+                                . (empty($val[0]) ? '' : ' AND type = ' . intval($val[0]))
+                                . (empty($val[1]) ? '' : ' AND cdate >= ' . intval($val[1]))
+                                . (empty($val[2]) ? '' : ' AND cdate <= ' . intval($val[2]))
                                 . ')';
                             break;
                         case 'stateid':
@@ -1535,17 +1535,17 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             OR d.type IN (' . DOC_INVOICE . ',' . DOC_DNOTE . ')) AND d.cdate + (d.paytime' . ($days > 0 ? ' + ' . $days : '') . ')  * 86400 < ' . ($time ?: time()) . ')))
                 GROUP BY cash.customerid
             ) b2 ON b2.customerid = c.id ' : '')
-            . (!empty($customergroup) ? 'LEFT JOIN (SELECT vcustomerassignments.customerid, COUNT(*) AS gcount
+            . (empty($customergroup) ? '' : 'LEFT JOIN (SELECT vcustomerassignments.customerid, COUNT(*) AS gcount
             	FROM vcustomerassignments '
-                    . (is_array($customergroup) || $customergroup > 0 ? ' WHERE customergroupid IN ('
-                        . (is_array($customergroup) ? implode(',', Utils::filterIntegers($customergroup)) : intval($customergroup)) . ')' : '') . '
-            		GROUP BY vcustomerassignments.customerid) ca ON ca.customerid = c.id ' : '')
-            . (!empty($nodegroup) ? 'LEFT JOIN (SELECT nodes.ownerid AS customerid, COUNT(*) AS gcount
+            . (is_array($customergroup) || $customergroup > 0 ? ' WHERE customergroupid IN ('
+                . (is_array($customergroup) ? implode(',', Utils::filterIntegers($customergroup)) : intval($customergroup)) . ')' : '') . '
+                GROUP BY vcustomerassignments.customerid) ca ON ca.customerid = c.id ')
+            . (empty($nodegroup) ? '' : 'LEFT JOIN (SELECT nodes.ownerid AS customerid, COUNT(*) AS gcount
                 FROM nodegroupassignments
                 JOIN nodes ON nodes.id = nodeid'
-                . (is_array($nodegroup) || $nodegroup > 0 ? ' WHERE nodegroupid IN ('
-                    . (is_array($nodegroup) ? implode(',', Utils::filterIntegers($nodegroup)) : intval($nodegroup)) . ')' : '') . '
-                GROUP BY ownerid) na ON na.customerid = c.id ' : '')
+            . (is_array($nodegroup) || $nodegroup > 0 ? ' WHERE nodegroupid IN ('
+                . (is_array($nodegroup) ? implode(',', Utils::filterIntegers($nodegroup)) : intval($nodegroup)) . ')' : '') . '
+                GROUP BY ownerid) na ON na.customerid = c.id ')
             . ($count ? '' : '
                 LEFT JOIN (SELECT customerid, (' . $this->db->GroupConcat('contact') . ') AS email
                 FROM customercontacts WHERE (type & ' . CONTACT_EMAIL .' > 0) GROUP BY customerid) cc ON cc.customerid = c.id
@@ -1686,8 +1686,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         : ($customergroupsqlskey == 'AND' ? '= ' . (is_array($customergroup) ? count($customergroup) : 1) : '> 0')
                     ) : '')
                 . (isset($customergroup) && $customergroup == -1 ? ' AND ca.gcount IS NULL ' : '')
-                . (!empty($nodegroup) ? ($nodegroupnegation ? ' AND na.gcount IS NULL' : ' AND na.gcount = ' . (is_array($nodegroup) ? count($nodegroup) : 1)) : '')
-                . (!empty($consent_condition) ? ' AND ' . $consent_condition : '')
+                . (empty($nodegroup) ? '' : ($nodegroupnegation ? ' AND na.gcount IS NULL' : ' AND na.gcount = ' . (is_array($nodegroup) ? count($nodegroup) : 1)))
+                . (empty($consent_condition) ? '' : ' AND ' . $consent_condition)
                 . (isset($sqlsarg) ? ' AND (' . $sqlsarg . ')' : '')
                 . ($sqlord != ''  && !$count ? $sqlord . ' ' . $direction . ', c.id ASC' : '')
                 . (isset($limit) && !$count ? ' LIMIT ' . $limit : '')
@@ -1966,7 +1966,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $result['modifiedby'] = $user_manager->getUserName($result['modid']);
                 $result['creationdateh'] = date('Y/m/d, H:i', $result['creationdate']);
                 $result['moddateh'] = date('Y/m/d, H:i', $result['moddate']);
-                $result['consentdate'] = !empty($result['consentdate']) ? date('Y/m/d', $result['consentdate']) : '';
+                $result['consentdate'] = empty($result['consentdate']) ? '' : date('Y/m/d', $result['consentdate']);
                 $result['up_logins'] = $this->db->GetRow('SELECT lastlogindate, lastloginip,
 					failedlogindate, failedloginip
 					FROM up_customers WHERE customerid = ?', array($result['id']));
@@ -3582,7 +3582,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             VALUES (?, ?, ?, ?, ?, ?)',
             array(
                 $params['dt'],
-                !empty($params['userid']) ? intval($params['userid']) : null,
+                empty($params['userid']) ? null : intval($params['userid']),
                 $params['filename'],
                 empty($params['outgoing']) ? 0 : 1,
                 $params['phone'],

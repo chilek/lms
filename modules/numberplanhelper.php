@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$documentType = !empty($_POST['documentType']) ? intval($_POST['documentType']) : null;
-$cdate = !empty($_POST['cdate']) ? strtotime($_POST['cdate']) : time();
-$customerID = !empty($_POST['customerID']) ? intval($_POST['customerID']) :  null;
+$documentType = empty($_POST['documentType']) ? null : intval($_POST['documentType']);
+$cdate = empty($_POST['cdate']) ? time() : strtotime($_POST['cdate']);
+$customerID = empty($_POST['customerID']) ? null :  intval($_POST['customerID']);
 $numberplanlist = array();
 
 $lms = LMS::getInstance();

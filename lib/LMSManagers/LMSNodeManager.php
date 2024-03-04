@@ -67,8 +67,8 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 ? intval($nodedata['linkspeed']) : null,
             'port'              => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
             'nas'               => $nodedata['nas'] ?? 0,
-            'longitude'         => !empty($nodedata['longitude']) ? str_replace(',', '.', $nodedata['longitude']) : null,
-            'latitude'          => !empty($nodedata['latitude'])  ? str_replace(',', '.', $nodedata['latitude'])  : null,
+            'longitude'         => empty($nodedata['longitude']) ? null : str_replace(',', '.', $nodedata['longitude']),
+            'latitude'          => empty($nodedata['latitude'])  ? null  : str_replace(',', '.', $nodedata['latitude']),
             SYSLOG::RES_NETWORK => $nodedata['netid'],
             'invprojectid'      => empty($nodedata['invprojectid']) ? null : $nodedata['invprojectid'],
             'authtype'          => $nodedata['authtype']   ?: 0,
@@ -604,7 +604,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
 				LEFT JOIN location_states ls ON ls.id = ld.stateid '
-                . (!empty($customergroup) ? 'JOIN vcustomerassignments ON (vcustomerassignments.customerid = c.id) ' : '')
+                . (empty($customergroup) ? '' : 'JOIN vcustomerassignments ON (vcustomerassignments.customerid = c.id) ')
                 . (isset($nodegroup) && $nodegroup ? ($nodegroup > 0 ? '' : 'LEFT ') . 'JOIN nodegroupassignments ON (nodeid = n.id) ' : '')
                 . ' WHERE 1=1 '
                 . (isset($network) && $network ? ' AND (n.netid = ' . $network . ' OR (n.ipaddr_pub > ' . $net['address'] . ' AND n.ipaddr_pub < ' . $net['broadcast'] . '))' : '')
@@ -625,10 +625,10 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 . ($status == 8 ? ' AND (n.latitude IS NULL OR n.longitude IS NULL)' : '')
                 . ($status == 9 ? ' AND (n.linktype = ' . LINKTYPE_WIRELESS . ' AND n.linkradiosector IS NULL)' : '')
                 . ($status == 10 ? ' AND EXISTS (SELECT 1 FROM nodelocks WHERE disabled = 0 AND nodeid = n.id)' : '')
-                . (!empty($customergroup) ? ' AND customergroupid = ' . intval($customergroup) : '')
+                . (empty($customergroup) ? '' : ' AND customergroupid = ' . intval($customergroup))
                 . (isset($nodegroup) ? ($nodegroup > 0 ? ' AND nodegroupid = ' . intval($nodegroup)
                     : ($nodegroup == -1 ? ' AND NOT EXISTS (SELECT 1 FROM nodegroupassignments nga WHERE nga.nodeid = n.id)' : '')) : '')
-                . (!empty($searchargs) ? $searchargs : '')
+                . (empty($searchargs) ? '' : $searchargs)
                 . ($sqlord != '' && !$count ? $sqlord . ' ' . $direction : '')
                 . (isset($limit) && !$count ? ' LIMIT ' . $limit : '')
                 . (isset($offset) && !$count ? ' OFFSET ' . $offset : '');
@@ -870,8 +870,8 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'chkmac'            => $nodedata['chkmac'],
             'halfduplex'        => $nodedata['halfduplex'],
             'nas'               => $nodedata['nas'] ?? 0,
-            'longitude'         => !empty($nodedata['longitude']) ? str_replace(',', '.', $nodedata['longitude']) : null,
-            'latitude'          => !empty($nodedata['latitude'])  ? str_replace(',', '.', $nodedata['latitude'])  : null,
+            'longitude'         => empty($nodedata['longitude']) ? null : str_replace(',', '.', $nodedata['longitude']),
+            'latitude'          => empty($nodedata['latitude'])  ? null  : str_replace(',', '.', $nodedata['latitude']),
             SYSLOG::RES_NETWORK => $nodedata['netid'],
             'invprojectid'      => isset($nodedata['invprojectid']) ? intval($nodedata['invprojectid']) : null,
             'authtype'          => $nodedata['authtype'],
@@ -1019,7 +1019,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         } else {
             $link['radiosectors'] = $this->db->GetAll(
                 'SELECT id, name FROM netradiosectors WHERE netdev = ?'
-                . (!empty($link['technology']) ? ' AND (technology = ' . $link['technology'] . ' OR technology IS NULL)' : '')
+                . (empty($link['technology']) ? '' : ' AND (technology = ' . $link['technology'] . ' OR technology IS NULL)')
                 . ' ORDER BY name',
                 array($devid)
             );

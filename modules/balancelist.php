@@ -161,7 +161,7 @@ $summary = $LMS->GetBalanceList(array('search' => $s, 'cat' => $c, 'group' => $g
 $total = intval($summary['total']);
 
 $limit = intval(ConfigHelper::getConfig('phpui.balancelist_pagelimit', 100));
-$page = !isset($_GET['page']) ? ceil($total / $limit) : $_GET['page'];
+$page = isset($_GET['page']) ? $_GET['page'] : ceil($total / $limit);
 if (empty($page)) {
     $page = 1;
 }

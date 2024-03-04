@@ -31,7 +31,7 @@ if (!$schemaid) {
     die;
 }
 
-$action = !empty($_GET['action']) ? $_GET['action'] : null;
+$action = empty($_GET['action']) ? null : $_GET['action'];
 
 if ($action == 'tariff' && !empty($_POST['form'])) {
     $form = $_POST['form'];

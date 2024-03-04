@@ -80,7 +80,7 @@ if (isset($_GET['id']) && $action == 'edit') {
             $nitem['count']     = str_replace(',', '.', $item['count']);
             $pdiscount = floatval($item['pdiscount']);
             $vdiscount = floatval($item['vdiscount']);
-            $nitem['discount']  = (!empty($pdiscount) ? str_replace(',', '.', $item['pdiscount']) : str_replace(',', '.', $item['vdiscount']));
+            $nitem['discount']  = (empty($pdiscount) ? str_replace(',', '.', $item['vdiscount']) : str_replace(',', '.', $item['pdiscount']));
             $nitem['discount_type'] = ((!empty($pdiscount) && empty($vdiscount)) || (empty($pdiscount) && empty($vdiscount)) ? DISCOUNT_PERCENTAGE : DISCOUNT_AMOUNT);
             $nitem['pdiscount'] = str_replace(',', '.', $item['pdiscount']);
             $nitem['vdiscount'] = str_replace(',', '.', $item['vdiscount']);
@@ -676,7 +676,7 @@ switch ($action) {
                 + (empty($cnote['flags'][DOC_FLAG_TELECOM_SERVICE]) || $customer['type'] == CTYPES_COMPANY ? 0 : DOC_FLAG_TELECOM_SERVICE)
                 + ($use_current_customer_data
                     ? (isset($customer['flags'][CUSTOMER_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY : 0)
-                    : (!empty($cnote['oldflags'][DOC_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY : 0)
+                    : (empty($cnote['oldflags'][DOC_FLAG_RELATED_ENTITY]) ? 0 : DOC_FLAG_RELATED_ENTITY)
                 )
                 + (empty($cnote['splitpayment']) ? 0 : DOC_FLAG_SPLIT_PAYMENT)
                 + (empty($cnote['netflag']) ? 0 : DOC_FLAG_NET_ACCOUNT),
@@ -720,7 +720,7 @@ switch ($action) {
             'cdate' => $cnote['cdate'],
             'customerid' => $cnote['customerid'],
         ));
-        $args[SYSLOG::RES_NUMPLAN] = !empty($cnote['numberplanid']) ? $cnote['numberplanid'] : null;
+        $args[SYSLOG::RES_NUMPLAN] = empty($cnote['numberplanid']) ? null : $cnote['numberplanid'];
         $args[SYSLOG::RES_DOC] = $iid;
 
         $DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, flags = ?, customerid = ?,

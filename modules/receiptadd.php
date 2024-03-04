@@ -868,7 +868,7 @@ switch ($action) {
             $args = array(
                 'type' => DOC_RECEIPT,
                 'number' => $number,
-                SYSLOG::RES_NUMPLAN => !empty($numberplan) ? $numberplan : null,
+                SYSLOG::RES_NUMPLAN => empty($numberplan) ? null : $numberplan,
                 'cdate' => $receipt['cdate'],
                 SYSLOG::RES_USER => Auth::GetCurrentUser(),
                 'closed' => 1,

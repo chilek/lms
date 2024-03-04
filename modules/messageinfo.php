@@ -87,7 +87,7 @@ function GetItemList($id, $order = 'id,desc', $search = null, $cat = null, $stat
 			WHERE e.userid = lms_current_user()
 		) e ON (e.customerid = c.id) 
 		WHERE e.customerid IS NULL AND i.messageid = '.intval($id)
-        .(!empty($where) ? $where : '')
+        .(empty($where) ? '' : $where)
         .$sqlord.' '.$direction);
 
     $result['status'] = $status;

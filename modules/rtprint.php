@@ -34,13 +34,13 @@ switch ($type) {
     case 'stats':
         /******************************************/
 
-        $days  = !empty($_GET['days']) ? intval($_GET['days']) : intval($_POST['days']);
-        $times = !empty($_GET['times']) ? intval($_GET['times']) : intval($_POST['times']);
-        $queue = !empty($_GET['queue']) ? intval($_GET['queue']) : intval($_POST['queue']);
-        $removed = !empty($_GET['removed']) ? $_GET['removed'] : $_POST['removed'];
-        $categories = !empty($_GET['categories']) ? $_GET['categories'] : $_POST['categories'];
-        $datefrom  = !empty($_GET['datefrom']) ? $_GET['datefrom'] : $_POST['datefrom'];
-        $dateto  = !empty($_GET['dateto']) ? $_GET['dateto'] : $_POST['dateto'];
+        $days  = empty($_GET['days']) ? intval($_POST['days']) : intval($_GET['days']);
+        $times = empty($_GET['times']) ? intval($_POST['times']) : intval($_GET['times']);
+        $queue = empty($_GET['queue']) ? intval($_POST['queue']) : intval($_GET['queue']);
+        $removed = empty($_GET['removed']) ? $_POST['removed'] : $_GET['removed'];
+        $categories = empty($_GET['categories']) ? $_POST['categories'] : $_GET['categories'];
+        $datefrom  = empty($_GET['datefrom']) ? $_POST['datefrom'] : $_GET['datefrom'];
+        $dateto  = empty($_GET['dateto']) ? $_POST['dateto'] : $_GET['dateto'];
 
         if ($queue) {
             $where[] = 'queueid = '.$queue;
@@ -122,20 +122,20 @@ switch ($type) {
     case 'ticketlist':
         /******************************************/
 
-        $days     = !empty($_GET['days']) ? intval($_GET['days']) : intval($_POST['days']);
-        $customer = !empty($_GET['customer']) ? intval($_GET['customer']) : intval($_POST['customer']);
-        $queue    = !empty($_GET['queue']) ? intval($_GET['queue']) : intval($_POST['queue']);
+        $days     = empty($_GET['days']) ? intval($_POST['days']) : intval($_GET['days']);
+        $customer = empty($_GET['customer']) ? intval($_POST['customer']) : intval($_GET['customer']);
+        $queue    = empty($_GET['queue']) ? intval($_POST['queue']) : intval($_GET['queue']);
         $status   = $_GET['status'] ?? $_POST['status'];
         $removed  = $_GET['removed'] ?? $_POST['removed'];
-        $subject  = !empty($_GET['subject']) ? $_GET['subject'] : $_POST['subject'];
-        $extended = !empty($_GET['extended']) || ((!empty($_POST['extended']) ? true : false));
+        $subject  = empty($_GET['subject']) ? $_POST['subject'] : $_GET['subject'];
+        $extended = !empty($_GET['extended']) || ((empty($_POST['extended']) ? false : true));
         $comment_details = !empty($_GET['comment-details']) || !empty($_POST['comment-details']);
-        $categories = !empty($_GET['categories']) ? $_GET['categories'] : $_POST['categories'];
-        $datefrom  = !empty($_GET['datefrom']) ? $_GET['datefrom'] : $_POST['datefrom'];
-        $dateto  = !empty($_GET['dateto']) ? $_GET['dateto'] : $_POST['dateto'];
-        $address  = !empty($_GET['address']) ? $_GET['address'] : $_POST['address'];
-        $zip  = !empty($_GET['zip']) ? $_GET['zip'] : $_POST['zip'];
-        $city  = !empty($_GET['city']) ? $_GET['city'] : $_POST['city'];
+        $categories = empty($_GET['categories']) ? $_POST['categories'] : $_GET['categories'];
+        $datefrom  = empty($_GET['datefrom']) ? $_POST['datefrom'] : $_GET['datefrom'];
+        $dateto  = empty($_GET['dateto']) ? $_POST['dateto'] : $_GET['dateto'];
+        $address  = empty($_GET['address']) ? $_POST['address'] : $_GET['address'];
+        $zip  = empty($_GET['zip']) ? $_POST['zip'] : $_GET['zip'];
+        $city  = empty($_GET['city']) ? $_POST['city'] : $_GET['city'];
 
         if ($queue) {
             $where[] = 't.queueid = '.$queue;

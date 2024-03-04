@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$id = !empty($_GET['id']) ? $_GET['id'] : null;
+$id = empty($_GET['id']) ? null : $_GET['id'];
 
 if (!$id || !$LMS->TarifftagExists($id)) {
     $SESSION->redirect('?m=tarifftaglist');

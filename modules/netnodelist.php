@@ -88,7 +88,7 @@ if ($api) {
     if ($SESSION->is_set('nnlp') && !isset($_GET['page'])) {
         $SESSION->restore('nnlp', $_GET['page']);
     }
-    $page = !isset($_GET['page']) ? 1 : intval($_GET['page']);
+    $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
     $offset = ($page - 1) * $limit;
     $search['offset'] = $offset;
     $search['limit'] = $limit;

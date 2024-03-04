@@ -416,13 +416,13 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             $args['community'] = empty($data['community']) ? '' : $data['community'];
         }
         if (array_key_exists('channelid', $data)) {
-            $args['channelid'] = !empty($data['channelid']) ? $data['channelid'] : null;
+            $args['channelid'] = empty($data['channelid']) ? null : $data['channelid'];
         }
         if (array_key_exists('longitude', $data)) {
-            $args['longitude'] = !empty($data['longitude']) ? str_replace(',', '.', $data['longitude']) : null;
+            $args['longitude'] = empty($data['longitude']) ? null : str_replace(',', '.', $data['longitude']);
         }
         if (array_key_exists('latitude', $data)) {
-            $args['latitude'] = !empty($data['latitude']) ? str_replace(',', '.', $data['latitude']) : null;
+            $args['latitude'] = empty($data['latitude']) ? null : str_replace(',', '.', $data['latitude']);
         }
         if (array_key_exists('projectid', $data)) {
             $args['invprojectid'] = $data['projectid'];
@@ -434,7 +434,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             $args['status'] = empty($data['status']) ? 0 : $data['status'];
         }
         if (array_key_exists('netdevicemodelid', $data)) {
-            $args['netdevicemodelid'] = !empty($data['netdevicemodelid']) ? $data['netdevicemodelid'] : null;
+            $args['netdevicemodelid'] = empty($data['netdevicemodelid']) ? null : $data['netdevicemodelid'];
         }
         if (array_key_exists('ownerid', $data)) {
             $args['ownerid'] = empty($data['ownerid']) ? null : $data['ownerid'];
@@ -540,16 +540,16 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'login'            => empty($data['login']) ? '' : $data['login'],
             'secret'           => empty($data['secret']) ? '' : $data['secret'],
             'community'        => empty($data['community']) ? '' : $data['community'],
-            'channelid'        => !empty($data['channelid']) ? $data['channelid'] : null,
-            'longitude'        => !empty($data['longitude']) ? str_replace(',', '.', $data['longitude']) : null,
-            'latitude'         => !empty($data['latitude'])  ? str_replace(',', '.', $data['latitude'])  : null,
+            'channelid'        => empty($data['channelid']) ? null : $data['channelid'],
+            'longitude'        => empty($data['longitude']) ? null : str_replace(',', '.', $data['longitude']),
+            'latitude'         => empty($data['latitude'])  ? null  : str_replace(',', '.', $data['latitude']),
             'invprojectid'     => $data['projectid'],
             'netnodeid'        => $data['netnodeid'],
             'status'           => empty($data['status']) ? 0 : $data['status'],
             'netdevicemodelid' => null,
             'address_id'       => !empty($data['ownerid']) && $data['customer_address_id'] > 0 ? $data['customer_address_id'] : null,
-            'ownerid'          => !empty($data['ownerid'])  ? $data['ownerid']    : null,
-            'divisionid'       => !empty($data['divisionid']) ? $data['divisionid'] : null,
+            'ownerid'          => empty($data['ownerid'])  ? null    : $data['ownerid'],
+            'divisionid'       => empty($data['divisionid']) ? null : $data['divisionid'],
         );
 
         if (preg_match('/^[0-9]+$/', $data['producerid'])) {
@@ -866,7 +866,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
 				LEFT JOIN location_states ls    ON ls.id = ld.stateid
 				LEFT JOIN customers cu ON cu.id = d.ownerid '
-                . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : ''));
+                . (empty($where) ? '' : ' WHERE ' . implode(' AND ', $where)));
         }
 
         $netdevlist = $this->db->GetAll('SELECT d.id, d.name' . ($short ? '' : ',
@@ -908,7 +908,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
 				LEFT JOIN location_states ls    ON ls.id = ld.stateid
 				LEFT JOIN customers cu ON cu.id = d.ownerid '
-                . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
+                . (empty($where) ? '' : ' WHERE ' . implode(' AND ', $where))
                 . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
                 . (isset($limit) ? ' LIMIT ' . $limit : '')
                 . (isset($offset) ? ' OFFSET ' . $offset : ''));
@@ -1095,13 +1095,13 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
     public function getNetDevMacs($netdevid, $main = null)
     {
-        $mainMac = !empty($main) ? intval($main) : null;
+        $mainMac = empty($main) ? null : intval($main);
         $id = intval($netdevid);
         return $this->db->GetAll(
             'SELECT *
             FROM netdevicemacs
             WHERE netdevid = ?'
-            . (!empty($mainMac) ? ' AND main = 1' : '')
+            . (empty($mainMac) ? '' : ' AND main = 1')
             . ' ORDER BY label',
             array($id)
         );
@@ -1430,7 +1430,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			LEFT JOIN (
 				SELECT dstradiosector, COUNT(*) AS devices FROM netlinks GROUP BY dstradiosector
 			) l2 ON l2.dstradiosector = s.id
-			WHERE s.netdev = ?' . (!empty($technology) ? ' AND (technology = ' . intval($technology) . ' OR technology IS NULL)' : '') . '
+			WHERE s.netdev = ?' . (empty($technology) ? '' : ' AND (technology = ' . intval($technology) . ' OR technology IS NULL)') . '
 			ORDER BY s.name', array($netdevid));
 
         if (!empty($radiosectors)) {

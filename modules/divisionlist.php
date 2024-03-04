@@ -33,7 +33,7 @@ if ($SESSION->is_set('cdlp', true) && !isset($_GET['page'])) {
     $SESSION->restore('cdlp', $_GET['page']);
 }
 
-$page = (!isset($_GET['page']) ? 1 : intval($_GET['page']));
+$page = (isset($_GET['page']) ? intval($_GET['page']) : 1);
 
 $SESSION->save('cdlp', $page);
 $SESSION->save('cdlp', $page, true);

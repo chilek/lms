@@ -203,10 +203,10 @@ switch ($bar) {
         break;
 
     case 'user':
-        $from = !empty($_POST['from']) ? $_POST['from'] : time()-(60*60*24);
-        $to = !empty($_POST['to']) ? $_POST['to'] : time();
-        $net = !empty($_POST['net']) ? $_POST['net'] : 0;
-        $customer = !empty($_POST['customerid']) ? $_POST['customerid'] : 0;
+        $from = empty($_POST['from']) ? time()-(60*60*24) : $_POST['from'];
+        $to = empty($_POST['to']) ? time() : $_POST['to'];
+        $net = empty($_POST['net']) ? 0 : $_POST['net'];
+        $customer = empty($_POST['customerid']) ? 0 : $_POST['customerid'];
 
         if (is_array($from)) {
             $from = mktime($from['Hour'], $from['Minute'], 0, $from['Month'], $from['Day'], $from['Year']);

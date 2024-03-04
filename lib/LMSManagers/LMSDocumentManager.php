@@ -2661,7 +2661,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 continue;
             }
 
-            $custemail = (!empty($debug_email) ? $debug_email : $doc['email']);
+            $custemail = (empty($debug_email) ? $doc['email'] : $debug_email);
             $body = $mail_body;
             $subject = $mail_subject;
 

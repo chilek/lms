@@ -124,8 +124,8 @@ define('CONFIG_FILE', $CONFIG_FILE);
 $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 
 // Check for configuration vars and set default values
-$CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
-$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib' : $CONFIG['directories']['lib_dir']);
+$CONFIG['directories']['sys_dir'] = (isset($CONFIG['directories']['sys_dir']) ? $CONFIG['directories']['sys_dir'] : getcwd());
+$CONFIG['directories']['lib_dir'] = (isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['lib_dir'] : $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib');
 
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
@@ -300,7 +300,7 @@ foreach ($networks as $networkid => $net) {
         $options['routers'] = $net['gateway'];
     }
     if (!empty($net['dns'])) {
-        $options['domain-name-servers'] = $net['dns'] . (!empty($net['dns2']) ? ", " . $net['dns2'] : "");
+        $options['domain-name-servers'] = $net['dns'] . (empty($net['dns2']) ? "" : ", " . $net['dns2']);
     }
     if (!empty($net['domain'])) {
         $options['domain-name'] = '"' . $net['domain'] . '"';
@@ -461,8 +461,8 @@ foreach ($networks as $networkid => $net) {
         }
 
         // get node configuration from ini
-        $fixed_address = (!empty($CONFIG['dhcp-' . $node['ip']]) ? $node['ip'] : null);
-        $name = (!empty($CONFIG['dhcp-' . $node['name']]) ? $node['name'] : null);
+        $fixed_address = (empty($CONFIG['dhcp-' . $node['ip']]) ? null : $node['ip']);
+        $name = (empty($CONFIG['dhcp-' . $node['name']]) ? null : $node['name']);
         $ini_macs = array();
         foreach ($macs as $mac) {
             foreach ($config_macs as $config_mac) {

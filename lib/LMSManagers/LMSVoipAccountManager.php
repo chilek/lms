@@ -707,7 +707,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
      */
     public function getCustomerVoipAccounts($id, $extid = null, $serviceproviderid = null)
     {
-        $extId = !empty($extid) ? strval($extid) : null;
+        $extId = empty($extid) ? null : strval($extid);
         $result = $this->db->GetAll(
             'SELECT v.id, login, passwd, ownerid, access, flags, balance, cost_limit, extid, serviceproviderid,
                 lb.name AS borough_name, ld.name AS district_name,

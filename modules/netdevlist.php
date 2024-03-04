@@ -118,7 +118,7 @@ if ($api) {
     if ($SESSION->is_set('ndlp') && !isset($_GET['page'])) {
         $SESSION->restore('ndlp', $_GET['page']);
     }
-    $page = !isset($_GET['page']) ? 1 : intval($_GET['page']);
+    $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
     $offset = ($page - 1) * $limit;
 
     $search['count'] = false;

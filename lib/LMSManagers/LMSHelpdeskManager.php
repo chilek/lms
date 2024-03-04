@@ -698,7 +698,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				FROM rtqueues q
 				' . ((ConfigHelper::checkPrivilege('full_access') && $only_accessible)
                     || !ConfigHelper::checkPrivilege('full_access') ? ' JOIN rtrights r ON r.queueid = q.id' : '')
-                . ' WHERE ' . (!$deleted ? 'q.deleted = 0' : (ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? '1=1' : 'q.deleted = 0'))
+                . ' WHERE ' . ($deleted ? (ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? '1=1' : 'q.deleted = 0') : ('q.deleted = 0'))
                 . ((ConfigHelper::checkPrivilege('full_access') && $only_accessible)
                     || !ConfigHelper::checkPrivilege('full_access') ? ' AND r.rights <> 0 AND r.userid = ' . $userid : '')
                 . ' ORDER BY name')) {
@@ -1144,23 +1144,23 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $ticket['requestor_phone'] ?? null,
             empty($ticket['requestor_userid']) ? null : $ticket['requestor_userid'],
             $ticket['subject'],
-            !empty($ticket['state']) ? $ticket['state'] : RT_NEW,
-            !empty($ticket['owner']) ? $ticket['owner'] : null,
+            empty($ticket['state']) ? RT_NEW : $ticket['state'],
+            empty($ticket['owner']) ? null : $ticket['owner'],
             $createtime,
             $createtime,
             $ticket['cause'] ?? 0,
             $ticket['userid'] ?? Auth::GetCurrentUser(),
             $ticket['source'] ?? 0,
             isset($ticket['priority']) && strlen($ticket['priority']) ? $ticket['priority'] : null,
-            !empty($ticket['address_id']) ? $ticket['address_id'] : null,
-            !empty($ticket['nodeid']) ? $ticket['nodeid'] : null,
-            !empty($ticket['netnodeid']) ? $ticket['netnodeid'] : null,
-            !empty($ticket['netdevid']) ? $ticket['netdevid'] : null,
-            !empty($ticket['verifierid']) ? $ticket['verifierid'] : null,
-            !empty($ticket['deadline']) ? $ticket['deadline'] : null,
-            !empty($ticket['service']) ? $ticket['service'] : SERVICE_OTHER,
-            !empty($ticket['type']) ? $ticket['type'] : RT_TYPE_OTHER,
-            !empty($ticket['invprojectid']) ? $ticket['invprojectid'] : null,
+            empty($ticket['address_id']) ? null : $ticket['address_id'],
+            empty($ticket['nodeid']) ? null : $ticket['nodeid'],
+            empty($ticket['netnodeid']) ? null : $ticket['netnodeid'],
+            empty($ticket['netdevid']) ? null : $ticket['netdevid'],
+            empty($ticket['verifierid']) ? null : $ticket['verifierid'],
+            empty($ticket['deadline']) ? null : $ticket['deadline'],
+            empty($ticket['service']) ? SERVICE_OTHER : $ticket['service'],
+            empty($ticket['type']) ? RT_TYPE_OTHER : $ticket['type'],
+            empty($ticket['invprojectid']) ? null : $ticket['invprojectid'],
             empty($ticket['parentid']) ? null : $ticket['parentid'],
         ));
 
@@ -1279,7 +1279,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             t.address_id, va.location, t.nodeid, n.name AS node_name, n.location AS node_location,
             t.netnodeid, nn.name AS netnode_name, t.netdevid, nd.name AS netdev_name, va.city_id, va.street_id, va.house,
             t.verifierid, e.name AS verifier_username, t.deadline, openeventcount, t.type, t.service, t.parentid' .
-            (!empty($userid) ? ', (CASE WHEN t.id = w.ticketid AND w.userid = ' . $userid . ' THEN 1 ELSE 0 END) as watching ' : '') . '
+            (empty($userid) ? '' : ', (CASE WHEN t.id = w.ticketid AND w.userid = ' . $userid . ' THEN 1 ELSE 0 END) as watching ') . '
             FROM rttickets t
             LEFT JOIN rtqueues ON (t.queueid = rtqueues.id)
             LEFT JOIN vusers o ON (t.owner = o.id)
@@ -2019,9 +2019,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $text = str_replace('%body', $params['body'] ?? '', $text);
         }
         $text = str_replace('%priority', $params['priority'] ?? '', $text);
-        $text = (!empty($params['deadline']))
-            ? str_replace('%deadline', date('Y/m/d H:i', $params['deadline']), $text)
-            : str_replace('%deadline', '-', $text);
+        $text = (empty($params['deadline']))
+            ? str_replace('%deadline', '-', $text)
+            : str_replace('%deadline', date('Y/m/d H:i', $params['deadline']), $text);
         $text = str_replace('%service', $params['service'] ?? '', $text);
         $text = str_replace('%type', $params['type'] ?? '', $text);
         $text = str_replace('%invproject', $params['invproject_name'] ?? '', $text);
@@ -2041,10 +2041,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $text = str_replace('%ownerid', $params['ownerid'] ?? '', $text);
         $text = str_replace('%verifier', $params['verifier'] ?? '', $text);
         $text = str_replace('%verifierid', $params['verifierid'] ?? '', $text);
-        $url_prefix = (!empty($params['url']) ? $params['url']
-            : 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
-            . $_SERVER['HTTP_HOST']
-            . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1));
+        $url_prefix = (empty($params['url']) ? 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
+        . $_SERVER['HTTP_HOST']
+        . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
+            : $params['url']);
         $url = $url_prefix . '?m=rtticketview&id=' . $params['id']
                 . (isset($params['messageid']) ? '#rtmessage-' . $params['messageid'] : '');
         if (isset($params['contenttype']) && $params['contenttype'] == 'text/html') {
@@ -2079,11 +2079,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $text = str_replace('%cid', sprintf("%04d", $params['customerid']), $text);
         $text = str_replace('%address', (empty($address_id) ? $params['customer']['address'] . ', ' . $params['customer']['zip'] . ' ' . $params['customer']['city']
             : $locations[$address_id]['location']), $text);
-        $text = str_replace('%phone', !empty($params['phones'])
-            ? implode(', ', $params['phones']) : '-', $text);
+        $text = str_replace('%phone', empty($params['phones'])
+            ? '-' : implode(', ', $params['phones']), $text);
 
-        return str_replace('%email', !empty($params['emails'])
-        ? implode(', ', $params['emails']) : '-', $text);
+        return str_replace('%email', empty($params['emails'])
+        ? '-' : implode(', ', $params['emails']), $text);
     }
 
     public function NotifyUsers(array $params)
@@ -2134,7 +2134,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			WHERE users.id=userid AND queueid = ? AND email != \'\'
 				AND (rtrights.rights & ' . RT_RIGHT_EMAIL_NOTICE . ') > 0 AND deleted = 0 AND access = 1'
                 . (!isset($args['user']) || $notify_author ? '' : ' AND users.id <> ?')
-                . (!empty($params['verifierid']) ? ' AND users.id <> ' . intval($params['verifierid']) : '')
+                . (empty($params['verifierid']) ? '' : ' AND users.id <> ' . intval($params['verifierid']))
                 . ' AND (ntype & ?) > 0',
                 array_values($args)
             );
@@ -2174,7 +2174,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                         $email,
                         $params['mail_headers'],
                         $params['mail_body'],
-                        !empty($attachments) ? $attachments : null,
+                        empty($attachments) ? null : $attachments,
                         null,
                         $smtp_options
                     );
@@ -2203,7 +2203,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				WHERE users.id=userid AND queueid = ? AND phone != \'\'
 					AND (rtrights.rights & ' . RT_RIGHT_SMS_NOTICE . ') > 0 AND deleted = 0 AND access = 1'
                     . (!isset($args['user']) || $notify_author ? '' : ' AND users.id <> ?')
-                    . (!empty($params['verifierid']) ? ' AND users.id <> ' . intval($params['verifierid']) : '')
+                    . (empty($params['verifierid']) ? '' : ' AND users.id <> ' . intval($params['verifierid']))
                     . ' AND (ntype & ?) > 0',
                 array_values($args)
             ))) {

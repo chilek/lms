@@ -59,10 +59,10 @@ function valid_pool($p, $id = 0)
     $id    = (int) $id;
     $pool_list = $DB->GetAllByKey("SELECT id, name, poolstart, poolend FROM voip_pool_numbers;", 'name');
 
-    $name   = (!empty($p['name']))      ? trim($p['name'])      : null;
-    $pstart = (!empty($p['poolstart'])) ? trim($p['poolstart']) : null;
-    $pend   = (!empty($p['poolend']))   ? trim($p['poolend'])   : null;
-    $type   = (!empty($p['pooltype']))  ? trim($p['pooltype'])  : null;
+    $name   = (empty($p['name']))      ? null      : trim($p['name']);
+    $pstart = (empty($p['poolstart'])) ? null : trim($p['poolstart']);
+    $pend   = (empty($p['poolend']))   ? null   : trim($p['poolend']);
+    $type   = (empty($p['pooltype']))  ? null  : trim($p['pooltype']);
 
     if (empty($name)) {
         $error['name'] = trans('Name is required!');

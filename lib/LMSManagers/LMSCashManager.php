@@ -547,8 +547,8 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 
             $hash = md5(
                 (empty($pattern['use_line_hash']) ? $time . $value . $customer . $comment : $theline)
-                    . (!empty($pattern['line_idx_hash']) ? $ln : '')
-                    . (!empty($pattern['filename_hash']) ? $filename : '')
+                    . (empty($pattern['line_idx_hash']) ? '' : $ln)
+                    . (empty($pattern['filename_hash']) ? '' : $filename)
             );
 
             if (is_numeric($value)) {

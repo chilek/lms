@@ -72,8 +72,8 @@ $cdr = $DB->GetAll(
     'SELECT cdr.*
     FROM voip_cdr cdr
     WHERE 1 = 1'
-    . (!empty($params['frangefrom']) ? ' AND call_start_time >= ' . strtotime($params['frangefrom']) : '')
-    . (!empty($params['frangeto']) ? ' AND call_start_time < ' . (strtotime($params['frangeto']) + 86400) : '')
+    . (empty($params['frangefrom']) ? '' : ' AND call_start_time >= ' . strtotime($params['frangefrom']))
+    . (empty($params['frangeto']) ? '' : ' AND call_start_time < ' . (strtotime($params['frangeto']) + 86400))
     . (isset($params['fstatus']) ? ' AND status = ' . $params['fstatus'] : '')
     . (isset($params['fdirection']) ? ' AND direction = ' . $params['fdirection'] : '')
     . (isset($params['id']) ? ' AND callervoipaccountid IN (' . implode(',', $params['id']) . ')' : '')

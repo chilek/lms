@@ -650,7 +650,7 @@ if ($netdevices) {
         }
 
         $netdevices[$netdevid]['invproject'] = $netdevice['invproject'] =
-        !strlen($netdevice['invprojectid']) ? '' : $projects[$netdevice['invprojectid']]['name'];
+        strlen($netdevice['invprojectid']) ? $projects[$netdevice['invprojectid']]['name'] : '';
 
         $projectname = $prj = '';
         if (array_key_exists($netdevice['netnodeid'], $real_netnodes)) {
@@ -1641,7 +1641,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
                         && (!isset($netnode['latitude']) || !strlen($netnode['latitude']))
                         ? '' : str_replace(',', '.', sprintf('%.6f', (!isset($netrange['latitude']) || !strlen($netrange['latitude'])) ? $netnode['latitude'] : $netrange['latitude'])),
                     'zas_longitude' => !strlen($netrange['longitude']) && !strlen($netnode['longitude'])
-                        ? '' : str_replace(',', '.', sprintf('%.6f', !strlen($netrange['longitude']) ? $netnode['longitude'] : $netrange['longitude'])),
+                        ? '' : str_replace(',', '.', sprintf('%.6f', strlen($netrange['longitude']) ? $netrange['longitude'] : $netnode['longitude'])),
                     'zas_tech' => $technology,
                     'zas_ltech' => $linktechnology,
                 );

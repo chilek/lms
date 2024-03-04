@@ -114,7 +114,7 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
 			LEFT JOIN taxes ON (t.taxid = taxes.id)
 			WHERE 1=1'
             . ($customergroupid || $promotionid ? ' AND a.tariffid IS NOT NULL' : '')
-            . (!empty($tags) ? ' AND t.id IN (SELECT DISTINCT tariffid FROM tariffassignments WHERE tarifftagid IN (' . implode(',', $tags) . '))' : '')
+            . (empty($tags) ? '' : ' AND t.id IN (SELECT DISTINCT tariffid FROM tariffassignments WHERE tarifftagid IN (' . implode(',', $tags) . '))')
             .($type ? ' AND t.type = '.intval($type) : '')
             . ($netflag == 1 ? ' AND t.flags & ' . TARIFF_FLAG_NET_ACCOUNT . ' > 0' : '')
             . ($netflag == 2 ? ' AND t.flags & ' . TARIFF_FLAG_NET_ACCOUNT . ' = 0' : '')
@@ -174,7 +174,7 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
         foreach ($tarifflist as $idx => &$row) {
             // get tariff price variants
             $priceVariants = $LMS->getTariffPriceVariants($row['id']);
-            $row['price_variants'] = !empty($priceVariants) ? $priceVariants : array();
+            $row['price_variants'] = empty($priceVariants) ? array() : $priceVariants;
             // count of 'active' assignments
             $row['activecount'] = $row['count'] - (isset($unactive[$row['id']]) ? $unactive[$row['id']]['count'] : 0);
             // avg monthly income
@@ -213,7 +213,7 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
 			FROM tariffs t
 			JOIN tariffassignments ta ON (ta.tariffid = t.id)
 			JOIN tarifftags tt ON (ta.tarifftagid = tt.id)'
-            . (!empty($tags) ? ' WHERE tarifftagid IN (' . implode(',', $tags). ')' : ''));
+            . (empty($tags) ? '' : ' WHERE tarifftagid IN (' . implode(',', $tags). ')'));
         if (!empty($tarifftags)) {
             foreach ($tarifftags as $tarifftag) {
                 if (isset($tarifflist[$tarifftag['tariff_id']])) {

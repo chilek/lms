@@ -43,7 +43,7 @@ function smarty_block_box_header($params, $content, $template, $repeat)
 		<div' . ($id ? ' id="' . $id . '"' : '') . ' class="lms-ui-box-header">
 		' . (isset($icon) ? (strpos($icon, '/') !== false ? '<IMG src="' . $icon . '" alt="">'
                     : '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0 ? $icon : 'lms-ui-icon-' . $icon)
-                    . (!empty($icon_class) ? ' ' . $icon_class : '') . '"></i>') : '')
+                    . (empty($icon_class) ? '' : ' ' . $icon_class) . '"></i>') : '')
                   . (isset($label) ? '<label' . (isset($content_id) ? ' for="' . $content_id . '"' : '') . '>' . trans($label) . '</label>' : '')
                   . $content . '
 				</div>';

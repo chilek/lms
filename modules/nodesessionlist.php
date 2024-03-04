@@ -160,7 +160,7 @@ if (!empty($nodesessions)) {
 }
 
 $pagelimit = ConfigHelper::getConfig('phpui.nodesession_pagelimit', 100);
-$page = !isset($_GET['page']) ? 1 : intval($_GET['page']);
+$page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 
 $listdata['total'] = empty($nodesessions) ? 0 : count($nodesessions);
 

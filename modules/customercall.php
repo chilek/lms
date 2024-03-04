@@ -37,12 +37,12 @@ if (isset($_GET['delete'])) {
             intval($_POST['callid']),
             array(
                 'notes' => $_POST['notes'],
-                'added-customers' => !empty($_POST['added-customers'])
-                    ? Utils::filterIntegers($_POST['added-customers']):
-                    array(),
-                'removed-customers' => !empty($_POST['removed-customers'])
-                    ? Utils::filterIntegers($_POST['removed-customers'])
-                    : array(),
+                'added-customers' => empty($_POST['added-customers'])
+                    ? array():
+                    Utils::filterIntegers($_POST['added-customers']),
+                'removed-customers' => empty($_POST['removed-customers'])
+                    ? array()
+                    : Utils::filterIntegers($_POST['removed-customers']),
             )
         );
     }

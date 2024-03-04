@@ -33,7 +33,7 @@ if ($SESSION->is_set('ciplp') && !isset($_GET['page'])) {
         $SESSION->restore('ciplp', $_GET['page']);
 }
 
-$page = (!isset($_GET['page']) ? 1 : $_GET['page']);
+$page = (isset($_GET['page']) ? $_GET['page'] : 1);
 $pagelimit = ConfigHelper::getConfig('phpui.invprojectlist_pagelimit', $listdata['total']);
 $start = ($page - 1) * $pagelimit;
 

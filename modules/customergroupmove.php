@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$from = !empty($_GET['from']) ? intval($_GET['from']) : 0;
-$to = !empty($_GET['to']) ? intval($_GET['to']) : 0;
+$from = empty($_GET['from']) ? 0 : intval($_GET['from']);
+$to = empty($_GET['to']) ? 0 : intval($_GET['to']);
 
 if ($LMS->CustomergroupExists($from) && $LMS->CustomergroupExists($to) && $_GET['is_sure'] == 1) {
     $DB->BeginTrans();

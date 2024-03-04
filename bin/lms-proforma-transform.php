@@ -120,9 +120,9 @@ define('CONFIG_FILE', $CONFIG_FILE);
 $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 
 // Check for configuration vars and set default values
-$CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
-$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib' : $CONFIG['directories']['lib_dir']);
-$CONFIG['directories']['plugin_dir'] = (!isset($CONFIG['directories']['plugin_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'plugins' : $CONFIG['directories']['plugin_dir']);
+$CONFIG['directories']['sys_dir'] = (isset($CONFIG['directories']['sys_dir']) ? $CONFIG['directories']['sys_dir'] : getcwd());
+$CONFIG['directories']['lib_dir'] = (isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['lib_dir'] : $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib');
+$CONFIG['directories']['plugin_dir'] = (isset($CONFIG['directories']['plugin_dir']) ? $CONFIG['directories']['plugin_dir'] : $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'plugins');
 $CONFIG['directories']['plugins_dir'] = $CONFIG['directories']['plugin_dir'];
 
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
@@ -204,7 +204,7 @@ $customers = $DB->GetAll(
             )
         ) c
         WHERE c.id IN (SELECT DISTINCT customerid FROM documents WHERE type = ? AND closed = 0)'
-    . (!empty($groupnames) ? $customergroups : '') . '
+    . (empty($groupnames) ? '' : $customergroups) . '
     GROUP BY c.id
     ORDER BY c.id',
     array(DOC_INVOICE_PRO, DOC_INVOICE_PRO)

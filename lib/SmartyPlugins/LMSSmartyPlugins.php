@@ -81,7 +81,7 @@ class LMSSmartyPlugins
                     break;
                 // optional - allow to specify javascript code lauched after click,
                 case 'onclick':
-                    $onclick = !empty($value) ? $value : null;
+                    $onclick = empty($value) ? null : $value;
                     break;
                 // optional - if open in new window after click
                 case 'external':
@@ -138,9 +138,9 @@ class LMSSmartyPlugins
         }
 
         if (function_exists('get_currency_value') && !$locked) {
-            $result = '<select class="' . (!$selected ? 'lms-ui-warning' : '')
+            $result = '<select class="' . ($selected ? '' : 'lms-ui-warning')
                 .'" name="' . $elementname . '" ' . $elemid
-                . self::tipFunction(array('text' => !$selected ? 'Select currency and save' : 'Select currency'), $template)
+                . self::tipFunction(array('text' => $selected ? 'Select currency' : 'Select currency and save'), $template)
                 . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . '>';
             foreach ($currencies as $currency) {
                 $result .= '<option value="' . $currency . '"'
@@ -174,8 +174,8 @@ class LMSSmartyPlugins
         $id = $params['id'] ?? $name;
         $icon = empty($params['icon']) ? null : $params['icon'];
         $selected = $params['selected'] ?? null;
-        $superuser = !empty($params['superuser']) ? $params['superuser'] : null;
-        $onchange = !empty($params['onchange']) ? $params['onchange'] : null;
+        $superuser = empty($params['superuser']) ? null : $params['superuser'];
+        $onchange = empty($params['onchange']) ? null : $params['onchange'];
         $tip = trans($params['tip'] ?? 'Select division');
 
         if (isset($user_divisions) && empty($user_divisions)) {
@@ -192,7 +192,7 @@ class LMSSmartyPlugins
 
         if ($force_global_division_context) {
             $result .= ($label ? '<label>' : '') . ($label ? trans($label) : '')
-                . '<span class="division-context bold">' . (!empty($user_divisions) ? htmlspecialchars($user_divisions['label']) : trans("all"))
+                . '<span class="division-context bold">' . (empty($user_divisions) ? trans("all") : htmlspecialchars($user_divisions['label']))
                 . (empty($icon) ? '' : '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0
                     || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>&nbsp;') . '</span>'
                 . ($label ? '</label>' : '')
@@ -208,7 +208,7 @@ class LMSSmartyPlugins
                     . (empty($tip) ? '' : ' title="' . $tip . '"')
                     . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '')
                     . ($onchange ? ' onchange="' . $onchange . '"' : '') . '>'
-                    . '<option value=""' . (!$selected ? ' selected' : '') . '>' . trans("— all —") . '</option>';
+                    . '<option value=""' . ($selected ? '' : ' selected') . '>' . trans("— all —") . '</option>';
                 foreach ($user_divisions as $division) {
                     $result .= '<option value="' . $division['id'] . '"'
                         . ($selected == $division['id'] ? ' selected' : '') . '>' . htmlspecialchars($division['label']) . '</option>';
@@ -250,8 +250,8 @@ class LMSSmartyPlugins
         $result .= '<div class="lms-ui-customer-select-container" data-version="' . $version . '"'
             . ($version == 2 ? ' data-show-id="1"' : '') . '>' . PHP_EOL;
 
-        $result .= (!empty($icon) ? '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0
-            || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>' : '');
+        $result .= (empty($icon) ? '' : '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0
+                || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>');
 
         if (!empty($params['customers'])) {
             $result .= sprintf('<select name="%s" value="%s"', $params['selectname'], $params['selected']);
@@ -400,7 +400,7 @@ class LMSSmartyPlugins
         }
 
         $form = $params['form'] ?? null;
-        $accept = !empty($params['accept']) ? $params['accept'] : null;
+        $accept = empty($params['accept']) ? null : $params['accept'];
         $multiple = !isset($params['multiple']) || ConfigHelper::checkValue($params['multiple']);
 
         $image_resize = !isset($params['image_resize']) || !empty($params['image_resize']);
@@ -542,7 +542,7 @@ class LMSSmartyPlugins
         echo '<tr' . (isset($params['hide_name']) ? ' style="display: none;"' : '') . '>
               <td>' . trans('Name') . '</td>
               <td>
-                  <input type="text"   value="' . (!empty($params['location_name']) ? htmlspecialchars($params['location_name']) : '' ) . '" name="' . $input_name_location . '" size="' . self::LOCATION_BOX_INPUT_SIZE . '" data-address="location-name">
+                  <input type="text"   value="' . (empty($params['location_name']) ? '' : htmlspecialchars($params['location_name']) ) . '" name="' . $input_name_location . '" size="' . self::LOCATION_BOX_INPUT_SIZE . '" data-address="location-name">
                   <input type="hidden" value="' . ($params['location'] ?? '') . '" name="' . $input_name . '" data-address="location">
               </td>
           </tr>';
@@ -575,15 +575,15 @@ class LMSSmartyPlugins
         }
 
         echo '<input type="text"
-                 value="' . (!empty($params['location_state_name']) ? htmlspecialchars($params['location_state_name']) : '' ) . '"
+                 value="' . (empty($params['location_state_name']) ? '' : htmlspecialchars($params['location_state_name']) ) . '"
                  size="' . self::LOCATION_BOX_INPUT_SIZE . '"
                  data-address="state"
                  name="' . $input_name_state . '"
                  ' . (empty($params['teryt']) ? 'style="display:none;"' : '') . '
                  maxlength="64">
 
-          <input type="hidden" value="' . (!empty($params['location_state']) ? $params['location_state'] : '' ) . '" data-address="state-hidden" name="' . $input_name_state_id . '">
-          <input type="hidden" value="' . (!empty($params['location_state']) ? $params['terc'] : '' ) . '" data-address="terc">
+          <input type="hidden" value="' . (empty($params['location_state']) ? '' : $params['location_state'] ) . '" data-address="state-hidden" name="' . $input_name_state_id . '">
+          <input type="hidden" value="' . (empty($params['location_state']) ? '' : $params['terc'] ) . '" data-address="terc">
           </td>
           </tr>';
 
@@ -591,37 +591,37 @@ class LMSSmartyPlugins
               <td>' . trans('City') . '</td>
               <td>
                   <input type="text"   value="'
-                    . (!empty($params['location_city_name']) ? htmlspecialchars($params['location_city_name']) : '' )
+                    . (empty($params['location_city_name']) ? '' : htmlspecialchars($params['location_city_name']) )
                     . '" size="' . self::LOCATION_BOX_INPUT_SIZE . '" data-address="city" name="' . $input_name_city . '" maxlength="32"'
                     . (isset($params['location_address_type']) && $params['location_address_type'] == BILLING_ADDRESS ? ' required' : '') . '>
-                  <input type="hidden" value="' . (!empty($params['location_city'])      ? $params['location_city']      : '' ) . '" data-address="city-hidden" name="' . $input_name_city_id . '">
-                  <input type="hidden" value="' . (!empty($params['location_city']) ? $params['simc'] : '' ) . '" data-address="simc">
+                  <input type="hidden" value="' . (empty($params['location_city'])      ? ''      : $params['location_city'] ) . '" data-address="city-hidden" name="' . $input_name_city_id . '">
+                  <input type="hidden" value="' . (empty($params['location_city']) ? '' : $params['simc'] ) . '" data-address="simc">
               </td>
           </tr>';
 
         echo '<tr>
               <td>' . trans('Street') . '</td>
               <td>
-                  <input type="text"   value="' . (!empty($params['location_street_name']) ? htmlspecialchars($params['location_street_name']) : '' ) . '" size="' . self::LOCATION_BOX_INPUT_SIZE . '" data-address="street" name="' . $input_name_street . '" maxlength="255">
-                  <input type="hidden" value="' . (!empty($params['location_street'])      ? $params['location_street']      : '' ) . '" data-address="street-hidden" name="' . $input_name_street_id . '">
-                  <input type="hidden" value="' . (!empty($params['location_street']) ? $params['ulic'] : '' ) . '" data-address="ulic">
+                  <input type="text"   value="' . (empty($params['location_street_name']) ? '' : htmlspecialchars($params['location_street_name']) ) . '" size="' . self::LOCATION_BOX_INPUT_SIZE . '" data-address="street" name="' . $input_name_street . '" maxlength="255">
+                  <input type="hidden" value="' . (empty($params['location_street'])      ? ''      : $params['location_street'] ) . '" data-address="street-hidden" name="' . $input_name_street_id . '">
+                  <input type="hidden" value="' . (empty($params['location_street']) ? '' : $params['ulic'] ) . '" data-address="ulic">
               </td>
           </tr>';
 
         echo '<tr>
               <td class="nobr">' . trans('House No.') . '</td>
-              <td><input type="text"   value="' . (!empty($params['location_house']) ? htmlspecialchars($params['location_house']) : '' ) . '" name="' . $input_name_house . '" data-address="house" size="7" maxlength="20"></td>
+              <td><input type="text"   value="' . (empty($params['location_house']) ? '' : htmlspecialchars($params['location_house']) ) . '" name="' . $input_name_house . '" data-address="house" size="7" maxlength="20"></td>
           </tr>';
 
         echo '<tr>
               <td class="nobr">' . trans('Flat No.') . '</td>
-              <td><input type="text"   value="' . (!empty($params['location_flat']) ? htmlspecialchars($params['location_flat']) : '' ) . '" name="' . $input_name_flat . '" data-address="flat" size="7" maxlength="20"></td>
+              <td><input type="text"   value="' . (empty($params['location_flat']) ? '' : htmlspecialchars($params['location_flat']) ) . '" name="' . $input_name_flat . '" data-address="flat" size="7" maxlength="20"></td>
           </tr>';
 
         echo '<tr>
               <td class="nobr">' . trans('Postcode') . '</td>
               <td>
-                <input type="text" value="' . (!empty($params['location_zip']) ? $params['location_zip'] : '' ) . '" name="' . $input_name_zip
+                <input type="text" value="' . (empty($params['location_zip']) ? '' : $params['location_zip'] ) . '" name="' . $input_name_zip
                     . '" data-address="zip" size="7" maxlength="10"' . ($zipcode_required ? ' required' : '') . '>
                 <a class="zip-code-button" href="#" title="' . trans('Click here to autocomplete zip code') . '">&raquo;&raquo;&raquo;</a>
               </td>
@@ -629,7 +629,7 @@ class LMSSmartyPlugins
 
         echo '<tr>
               <td class="nobr">' . trans('Post office') . '</td>
-              <td><input type="text"   value="' . (!empty($params['location_postoffice']) ? htmlspecialchars($params['location_postoffice']) : '' ) . '" size="' . self::LOCATION_BOX_INPUT_SIZE . '" name="' . $input_name_postoffice . '" data-address="postoffice" maxlength="32"></td>
+              <td><input type="text"   value="' . (empty($params['location_postoffice']) ? '' : htmlspecialchars($params['location_postoffice']) ) . '" size="' . self::LOCATION_BOX_INPUT_SIZE . '" name="' . $input_name_postoffice . '" data-address="postoffice" maxlength="32"></td>
           </tr>';
 
         if (empty($params['countryid'])) {
@@ -674,7 +674,7 @@ class LMSSmartyPlugins
 
         echo '<tr>
               <td colspan="2">
-                  <label><input type="checkbox" name="' . $input_name_teryt . '" class="lms-ui-address-teryt-checkbox" ' . (!empty($params['teryt']) ? 'checked' : '') . ' data-address="teryt-checkbox">' . trans('TERYT base') . '</label>
+                  <label><input type="checkbox" name="' . $input_name_teryt . '" class="lms-ui-address-teryt-checkbox" ' . (empty($params['teryt']) ? '' : 'checked') . ' data-address="teryt-checkbox">' . trans('TERYT base') . '</label>
                   ' . self::buttonFunction(array('icon' => 'popup', 'class' => 'teryt-address-button'), $template) . '
               </td>
           </tr>';
@@ -1068,7 +1068,7 @@ class LMSSmartyPlugins
         // optional - allow to easily attach event handler in jquery,
         $id = $params['id'] ?? null;
         // optional - additional css classes which are appended to class attribute
-        $class = !empty($params['class']) ? $params['class'] : null;
+        $class = empty($params['class']) ? null : $params['class'];
         // optional - icon selection transformed to css class
         $name = $params['name'] ?? null;
         // optional - text tip,
@@ -1108,8 +1108,8 @@ class LMSSmartyPlugins
         }
 
         $elemname = $params['elemname'];
-        $id = !empty($params['id']) ? $params['id'] : null;
-        $selected = !empty($params['selected']) ? $params['selected'] : 0;
+        $id = empty($params['id']) ? null : $params['id'];
+        $selected = empty($params['selected']) ? 0 : $params['selected'];
         $tip = $params['tip'] ?? trans('Select payment type');
         $trigger = $params['trigger'] ?? 'paytype';
         $form = $params['form'] ?? null;
@@ -1122,7 +1122,7 @@ class LMSSmartyPlugins
         return '<select' . (isset($id) ? ' id="' . $id . '"' : '')
             . ' name="' . $elemname . '" ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template)
             . (isset($form) ? ' form="' . $form . '"' : '') . '>
-			<option value=""' . (!$selected ? ' selected' : '') . '>— ' . trans("default") . '—</option>'
+			<option value=""' . ($selected ? '' : ' selected') . '>— ' . trans("default") . '—</option>'
             . $options
             . '</select>';
     }
@@ -1317,7 +1317,7 @@ class LMSSmartyPlugins
         }
 
         $elemname = $params['elemname'];
-        $selected = !empty($params['selected']) ? $params['selected'] : 0;
+        $selected = empty($params['selected']) ? 0 : $params['selected'];
         $tip = $params['tip'] ?? trans('Select network device type');
         $trigger = $params['trigger'] ?? 'netdevtype';
         $form = $params['form'] ?? null;
@@ -1330,7 +1330,7 @@ class LMSSmartyPlugins
             . (isset($form) ? ' form="' . $form . '"' : '')
             . ' ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template)
             . (isset($params['onchange']) ? ' onChange="' . $params['onchange'] . '"' : '') . '>
-			<option value=""' . (!$selected ? ' selected' : '') . '> ' . trans('<!netdevtype>— undefined —') . '</option>'
+			<option value=""' . ($selected ? '' : ' selected') . '> ' . trans('<!netdevtype>— undefined —') . '</option>'
             . $options
             . '</select>';
     }
@@ -1406,9 +1406,9 @@ class LMSSmartyPlugins
             $template
         );
 
-        $class = 'class="netdev-list lms-ui-advanced-select ' . (!empty($params['class']) ? $params['class'] : null) . '"';
+        $class = 'class="netdev-list lms-ui-advanced-select ' . (empty($params['class']) ? null : $params['class']) . '"';
 
-        $options = '<option value=""' . (!$selected ? ' selected' : '') . '> ' . trans("— none —") . '</option>';
+        $options = '<option value=""' . ($selected ? '' : ' selected') . '> ' . trans("— none —") . '</option>';
         foreach ($netdevicelist as $item) {
             $options .= '<option value="' . $item['id'] . '"' . ($selected == $item['id'] ? ' selected' : '') . '>'
                 . trans($item['name']) . ' (#' . $item['id'] . ')</option>';
@@ -1443,9 +1443,9 @@ class LMSSmartyPlugins
             $template
         );
 
-        $class = 'class="netnode-list lms-ui-advanced-select ' . (!empty($params['class']) ? $params['class'] : null) . '"';
+        $class = 'class="netnode-list lms-ui-advanced-select ' . (empty($params['class']) ? null : $params['class']) . '"';
 
-        $options = '<option value=""' . (!$selected ? ' selected' : '') . '> ' . trans("— none —") . '</option>';
+        $options = '<option value=""' . ($selected ? '' : ' selected') . '> ' . trans("— none —") . '</option>';
         foreach ($netnodelist as $item) {
             $options .= '<option value="' . $item['id'] . '"' . ($selected == $item['id'] ? ' selected' : '') . '>'
                 . trans($item['name']) . ' (#' . $item['id'] . ')</option>';
@@ -1463,7 +1463,7 @@ class LMSSmartyPlugins
         }
 
         $elemname = $params['elemname'];
-        $selected = !empty($params['selected']) ? intval($params['selected']) : null;
+        $selected = empty($params['selected']) ? null : intval($params['selected']);
         $tip = $params['tip'] ?? trans('Select identity type');
         $trigger = $params['trigger'] ?? 'ict';
 

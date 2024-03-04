@@ -1276,4 +1276,4 @@ if (!empty($quicksearch['target'])) {
     $target = $quicksearch['target'];
 }
 
-$SESSION->redirect(!empty($target) ? $target : '?' . $SESSION->remove_history_entry());
+$SESSION->redirect(empty($target) ? '?' . $SESSION->remove_history_entry() : $target);

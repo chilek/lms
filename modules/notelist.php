@@ -86,7 +86,7 @@ $total = intval($LMS->GetNoteList(array('search' => $s, 'cat' => $c, 'group' => 
     'hideclosed' => $h, 'order' => $o, 'count' => true)));
 
 $limit = intval(ConfigHelper::getConfig('phpui.debitnotelist_pagelimit', $total));
-$page = !isset($_GET['page']) ? 1 : intval($_GET['page']);
+$page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 $offset = ($page - 1) * $limit;
 
 $notelist = $LMS->GetNoteList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude' => $ge,

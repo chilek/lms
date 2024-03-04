@@ -116,7 +116,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             FROM vdivisions d
             WHERE 1 = 1'
             . ((isset($superuser) && empty($superuser)) || !isset($superuser) ? ' AND id IN (' . $user_divisions . ')' : '')
-            . (!empty($exludedDivisions) ? ' AND id NOT IN (' . $exludedDivisions . ')' : '') .
+            . (empty($exludedDivisions) ? '' : ' AND id NOT IN (' . $exludedDivisions . ')') .
             ' ORDER BY (CASE WHEN d.label IS NULL THEN d.shortname ELSE d.label END)'
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : '')
@@ -267,7 +267,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             'email'           => empty($division['email']) ? null : $division['email'],
             'phone'           => empty($division['phone']) ? null : $division['phone'],
             'description' => $division['description'],
-            'status'      => !empty($division['status']) ? 1 : 0,
+            'status'      => empty($division['status']) ? 0 : 1,
             'tax_office_code' => $division['tax_office_code'],
             'url'             => isset($division['url']) && strlen($division['url']) ? $division['url'] : null,
             'userpanel_url'   => isset($division['userpanel_url']) && strlen($division['userpanel_url']) ? $division['userpanel_url'] : null,

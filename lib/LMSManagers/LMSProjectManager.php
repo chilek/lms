@@ -114,7 +114,7 @@ class LMSProjectManager extends LMSManager implements LMSProjectManagerInterface
             "INSERT INTO invprojects (name, divisionid, cdate, type) VALUES (?, ?, ?, ?)",
             array(
                 Utils::removeInsecureHtml($project['project']),
-                !empty($project['divisionid']) ? $project['divisionid'] : null,
+                empty($project['divisionid']) ? null : $project['divisionid'],
                 empty($project['cdate']) ? null : $project['cdate'],
                 INV_PROJECT_REGULAR
             )

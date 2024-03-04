@@ -100,9 +100,9 @@ if (isset($_POST['channel'])) {
             array($channel['name'],
                     $channel['upceil'],
                     $channel['downceil'],
-                    !empty($channel['upceil_n']) ? $channel['upceil_n'] : null,
-                    !empty($channel['downceil_n']) ? $channel['downceil_n'] : null,
-                    !empty($channel['halfduplex']) ? 1 : null,
+                    empty($channel['upceil_n']) ? null : $channel['upceil_n'],
+                    empty($channel['downceil_n']) ? null : $channel['downceil_n'],
+                    empty($channel['halfduplex']) ? null : 1,
                 $channel['id'],
             )
         );

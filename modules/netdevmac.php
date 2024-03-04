@@ -32,8 +32,8 @@ if (isset($_GET['oper'])) {
         case 'add':
             $params = $_POST;
             $netdevid = intval($params['netdevid']);
-            $label = (!empty($params['label']) ? trim($params['label']) : null);
-            $mac = (!empty($params['mac']) ? strtoupper(trim($params['mac'])) : null);
+            $label = (empty($params['label']) ? null : trim($params['label']));
+            $mac = (empty($params['mac']) ? null : strtoupper(trim($params['mac'])));
             $main = intval($params['main']);
 
             // validate mac
@@ -97,8 +97,8 @@ if (isset($_GET['oper'])) {
             $params = $_POST;
             $macid = intval($params['macid']);
             $netdevid = intval($params['netdevid']);
-            $label = (!empty($params['label']) ? trim($params['label']) : null);
-            $mac = (!empty($params['mac']) ? strtoupper(trim($params['mac'])) : null);
+            $label = (empty($params['label']) ? null : trim($params['label']));
+            $mac = (empty($params['mac']) ? null : strtoupper(trim($params['mac'])));
             $main = intval($params['main']);
 
             $oldMacData = $lms->getNetDevMac($macid);

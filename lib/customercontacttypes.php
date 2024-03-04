@@ -81,7 +81,7 @@ function validate_customer_phones(&$customerdata, &$contacts, &$error)
     foreach ($customerdata['phones'] as $idx => &$val) {
         $phone = trim($val['contact']);
         $name = trim($val['name']);
-        $type = !empty($val['type']) ? array_sum($val['type']) : null;
+        $type = empty($val['type']) ? null : array_sum($val['type']);
         if (!($type & CONTACT_MOBILE)) {
             $type |= CONTACT_LANDLINE;
         }
@@ -104,8 +104,8 @@ function validate_customer_emails(&$customerdata, &$contacts, &$error)
     foreach ($customerdata['emails'] as $idx => &$val) {
         $email = trim($val['contact']);
         $name = trim($val['name']);
-        $properties = !empty($val['properties']) ? $val['properties'] : array();
-        $type = !empty($val['type']) ? array_sum($val['type']) : null;
+        $properties = empty($val['properties']) ? array() : $val['properties'];
+        $type = empty($val['type']) ? null : array_sum($val['type']);
         $type |= CONTACT_EMAIL;
 
         if (!empty($properties)) {
@@ -143,7 +143,7 @@ function validate_customer_accounts(&$customerdata, &$contacts, &$error)
     foreach ($customerdata['accounts'] as $idx => &$val) {
         $account = trim($val['contact']);
         $name = trim($val['name']);
-        $type = !empty($val['type']) ? array_sum($val['type']) : null;
+        $type = empty($val['type']) ? null : array_sum($val['type']);
         $type |= CONTACT_BANKACCOUNT;
 
         $val['type'] = $type;
@@ -166,7 +166,7 @@ function validate_customer_urls(&$customerdata, &$contacts, &$error)
     foreach ($customerdata['urls'] as $idx => &$val) {
         $url = trim($val['contact']);
         $name = trim($val['name']);
-        $type = !empty($val['type']) ? array_sum($val['type']) : null;
+        $type = empty($val['type']) ? null : array_sum($val['type']);
         $type |= CONTACT_URL;
 
         $val['type'] = $type;
@@ -189,7 +189,7 @@ function validate_customer_ims(&$customerdata, &$contacts, &$error)
     foreach ($customerdata['ims'] as $idx => &$val) {
         $im = trim($val['contact']);
         $name = trim($val['name']);
-        $type = !empty($val['type']) ? array_sum($val['type']) : 0;
+        $type = empty($val['type']) ? 0 : array_sum($val['type']);
         $type |= $val['typeselector'];
 
         $val['type'] = $type;
@@ -216,7 +216,7 @@ function validate_customer_representatives(&$customerdata, &$contacts, &$error)
     foreach ($customerdata['representatives'] as &$val) {
         $name = trim($val['contact']);
         $data = trim($val['name']);
-        $type = !empty($val['type']) ? array_sum($val['type']) : null;
+        $type = empty($val['type']) ? null : array_sum($val['type']);
         $type |= CONTACT_REPRESENTATIVE;
 
         $val['type'] = $type;

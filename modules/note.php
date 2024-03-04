@@ -215,13 +215,13 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
     $ids = $DB->GetCol(
         'SELECT d.id FROM documents d
 		WHERE d.cdate >= ? AND d.cdate <= ? AND d.type = ?'
-        . (!empty($_GET['customerid']) ? ' AND d.customerid = '.intval($_GET['customerid']) : '')
-        . (!empty($_GET['numberplanid']) ? ' AND d.numberplanid = '.intval($_GET['numberplanid']) : '')
-        . (!empty($_GET['groupid']) ?
-        ' AND '.(!empty($_GET['groupexclude']) ? 'NOT' : '').'
+        . (empty($_GET['customerid']) ? '' : ' AND d.customerid = '.intval($_GET['customerid']))
+        . (empty($_GET['numberplanid']) ? '' : ' AND d.numberplanid = '.intval($_GET['numberplanid']))
+        . (empty($_GET['groupid']) ?
+        '' : ' AND '.(empty($_GET['groupexclude']) ? '' : 'NOT').'
 			EXISTS (SELECT 1 FROM vcustomerassignments a
 				WHERE a.customergroupid = ' . intval($_GET['groupid']) . '
-					AND a.customerid = d.customerid)' : '')
+					AND a.customerid = d.customerid)')
         . ' AND NOT EXISTS (
 			SELECT 1 FROM vcustomerassignments a
 			JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)

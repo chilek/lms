@@ -45,7 +45,7 @@ if (!empty($filter['edate'])) {
 }
 
 if (!isset($_POST['loginform']) && !empty($_POST)) {
-    [$filter['year'], $filter['month'], $filter['day']] = explode('/', !empty($_POST['date']) ? $_POST['date'] : date('Y/m/d'));
+    [$filter['year'], $filter['month'], $filter['day']] = explode('/', empty($_POST['date']) ? date('Y/m/d') : $_POST['date']);
 
     if (isset($filter['edate']) && $filter['edate']) {
         if (empty($filter['month'])) {

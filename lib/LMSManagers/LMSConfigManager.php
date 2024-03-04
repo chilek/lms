@@ -135,10 +135,10 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         if (isset($section)) {
             return $this->db->GetOne(
                 'SELECT id FROM uiconfig WHERE section = ? AND var = ?'
-                . (!empty($userid) ? ' AND userid = ' . intval($userid) : ' AND userid IS NULL')
-                . (!isset($userid) ? ' AND userid IS NULL' : '')
-                . (!empty($divisionid) ? ' AND divisionid = ' . intval($divisionid) : ' AND divisionid IS NULL')
-                . (!isset($divisionid) ? ' AND divisionid IS NULL' : ''),
+                . (empty($userid) ? ' AND userid IS NULL' : ' AND userid = ' . intval($userid))
+                . (isset($userid) ? '' : ' AND userid IS NULL')
+                . (empty($divisionid) ? ' AND divisionid IS NULL' : ' AND divisionid = ' . intval($divisionid))
+                . (isset($divisionid) ? '' : ' AND divisionid IS NULL'),
                 array(
                     $section,
                     $variable

@@ -103,7 +103,7 @@ switch ($action) {
             foreach ($invoice['content'] as $item) {
                 $contents[] = array(
                     'tariffid' => $item['tariffid'],
-                    'tariff' => !empty($item['tariffid']) ? $LMS->GetTariff($item['tariffid']) : array(),
+                    'tariff' => empty($item['tariffid']) ? array() : $LMS->GetTariff($item['tariffid']),
                     'name' => $item['description'],
                     'prodid' => $item['prodid'],
                     'count' => str_replace(',', '.', $item['count']),
@@ -766,7 +766,7 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 
 $args = array(
-    'doctype' => !empty($invoice['proforma']) ? DOC_INVOICE_PRO : DOC_INVOICE,
+    'doctype' => empty($invoice['proforma']) ? DOC_INVOICE : DOC_INVOICE_PRO,
     'cdate' => $invoice['cdate'],
 );
 if (isset($customer)) {

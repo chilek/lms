@@ -454,7 +454,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 . $netnodefilter
                 . $netdevfilter
                 . $overduefilter
-                . (!empty($type) ? ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', Utils::filterIntegers($type)) . ')' : '=' . intval($type)) : '')
+                . (empty($type) ? '' : ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', Utils::filterIntegers($type)) . ')' : '=' . intval($type)))
                 . $closedfilter,
                 array($startdate, $enddate, $enddate, $startdate)
             );
@@ -487,7 +487,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             . $netnodefilter
             . $netdevfilter
             . $overduefilter
-            . (!empty($type) ? ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', Utils::filterIntegers($type)) . ')' : '=' . intval($type)) : '')
+            . (empty($type) ? '' : ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', Utils::filterIntegers($type)) . ')' : '=' . intval($type)))
             . $closedfilter
             .' ORDER BY date, begintime, events.type'
             . (isset($limit) ? ' LIMIT ' . $limit : '')
@@ -592,13 +592,13 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 			WHERE (private = 0 OR (private = 1 AND userid = ?)) '
                 . ($datefrom ? " AND (date >= $datefrom OR (enddate <> 0 AND enddate >= $datefrom))" : '')
                 . ($dateto ? " AND (date <= $dateto OR (enddate <> 0 AND enddate <= $dateto))" : '')
-                . (!empty($search['customerid']) ? ' AND customerid = ' . intval($search['customerid']) : '')
-                . (!empty($search['type']) ? ' AND events.type = ' . intval($search['type']) : '')
+                . (empty($search['customerid']) ? '' : ' AND customerid = ' . intval($search['customerid']))
+                . (empty($search['type']) ? '' : ' AND events.type = ' . intval($search['type']))
                 . ($ticketid ? " AND ticketid = " . $ticketid : '')
                 . (isset($search['closed']) ? ($search['closed'] == '' ? '' : ' AND closed = ' . intval($search['closed'])) : ' AND closed = 0')
-                . (!empty($search['title']) ? ' AND title ?LIKE? ' . $this->db->Escape('%' . $search['title'] . '%') : '')
-                . (!empty($search['description']) ? ' AND description ?LIKE? ' . $this->db->Escape('%' . $search['description'] . '%') : '')
-                . (!empty($search['note']) ? ' AND note ?LIKE? ' . $this->db->Escape('%' . $search['note'] . '%') : '')
+                . (empty($search['title']) ? '' : ' AND title ?LIKE? ' . $this->db->Escape('%' . $search['title'] . '%'))
+                . (empty($search['description']) ? '' : ' AND description ?LIKE? ' . $this->db->Escape('%' . $search['description'] . '%'))
+                . (empty($search['note']) ? '' : ' AND note ?LIKE? ' . $this->db->Escape('%' . $search['note'] . '%'))
             . $sqlord,
             array(Auth::GetCurrentUser())
         );

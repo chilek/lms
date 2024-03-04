@@ -360,8 +360,8 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 					WHERE e.customerid IS NULL
 					GROUP BY i.messageid
 				) x ON (x.messageid = m.id) '
-                .(!empty($userjoin) ? 'JOIN vusers u ON (u.id = m.userid) ' : '')
-                .(!empty($where) ? $where : ''));
+                .(empty($userjoin) ? '' : 'JOIN vusers u ON (u.id = m.userid) ')
+                .(empty($where) ? '' : $where));
         }
 
         $result = $this->db->GetAll('SELECT m.id, m.cdate, m.type, m.subject,
@@ -385,8 +385,8 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 				GROUP BY i.messageid
 			) x ON (x.messageid = m.id)
 			LEFT JOIN filecontainers fc ON fc.messageid = m.id '
-            .(!empty($userjoin) ? 'JOIN vusers u ON (u.id = m.userid) ' : '')
-            .(!empty($where) ? $where : '')
+            .(empty($userjoin) ? '' : 'JOIN vusers u ON (u.id = m.userid) ')
+            .(empty($where) ? '' : $where)
             .$sqlord.' '.$direction
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : ''));
@@ -460,7 +460,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
                         $destination,
                         $row['status'] ?? MSG_NEW,
                         $row['error'] ?? null,
-                        !empty($row['externalmsgid']) ? $row['externalmsgid'] : null,
+                        empty($row['externalmsgid']) ? null : $row['externalmsgid'],
                     )
                 );
                 if (!isset($msgitems[$customerid])) {
@@ -482,7 +482,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
             return $this->db->Execute(
                 'UPDATE messageitems SET body = ?
                 WHERE messageid = ? AND customerid '
-                . (!empty($params['customerid']) ? '= ' . intval($params['customerid']) : 'IS NULL'),
+                . (empty($params['customerid']) ? 'IS NULL' : '= ' . intval($params['customerid'])),
                 array($params['real_body'], $params['messageid'])
             );
         }

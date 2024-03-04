@@ -218,7 +218,7 @@ foreach ($message_files as $message_file) {
                 $cats[$catid] = $category;
             }
         }
-        $requestor = !empty($customer['name']) ? $customer['name'] : (empty($phone) ? '' : $formatted_phone);
+        $requestor = empty($customer['name']) ? (empty($phone) ? '' : $formatted_phone) : ($customer['name']);
 
         if (empty($customer['cid']) || !$detect_customer_location_address) {
             $address_id = null;
@@ -232,7 +232,7 @@ foreach ($message_files as $message_file) {
             'requestor' => $requestor,
             'requestor_phone' => empty($phone) ? null : $phone,
             'subject' => trans('SMS from $a', (empty($phone) ? trans('unknown') : $formatted_phone)),
-            'customerid' => !empty($customer['cid']) ? $customer['cid'] : 0,
+            'customerid' => empty($customer['cid']) ? 0 : $customer['cid'],
             'address_id' => $address_id,
             'body' => $message,
             'phonefrom' => empty($phone) ? '' : $phone,

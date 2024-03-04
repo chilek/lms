@@ -312,7 +312,7 @@ switch ($action) {
             break;
         }
 
-        $cid = !empty($_GET['customerid']) ? $_GET['customerid'] : (empty($_POST['customerid']) ? null : $_POST['customerid']);
+        $cid = empty($_GET['customerid']) ? (empty($_POST['customerid']) ? null : $_POST['customerid']) : ($_GET['customerid']);
 
         if (!$cid) {
             $cid = $oldcid;
@@ -414,7 +414,7 @@ switch ($action) {
             $args = array(
                 'type' => DOC_RECEIPT,
                 'number' => $receipt['number'],
-                'extnumber' => !empty($receipt['extnumber']) ? $receipt['extnumber'] : '',
+                'extnumber' => empty($receipt['extnumber']) ? '' : $receipt['extnumber'],
                 SYSLOG::RES_NUMPLAN => empty($receipt['numberplanid']) ? null : $receipt['numberplanid'],
                 'cdate' => $receipt['cdate'],
                 SYSLOG::RES_CUST => $customer['id'],

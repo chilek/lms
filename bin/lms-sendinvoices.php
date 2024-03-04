@@ -426,7 +426,7 @@ $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid,
         . ($archive ? " AND d.archived = 0" : '') . "
         AND d.cdate >= $daystart AND d.cdate <= $dayend"
         . ($customergroups ?: '')
-    . " ORDER BY d.number" . (!empty($part_size) ? " LIMIT $part_size OFFSET $part_offset" : '');
+    . " ORDER BY d.number" . (empty($part_size) ? '' : " LIMIT $part_size OFFSET $part_offset");
 $docs = $DB->GetAll($query, $args);
 
 if (!empty($docs)) {

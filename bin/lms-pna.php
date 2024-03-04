@@ -120,8 +120,8 @@ define('CONFIG_FILE', $CONFIG_FILE);
 $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 
 // Check for configuration vars and set default values
-$CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
-$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib' : $CONFIG['directories']['lib_dir']);
+$CONFIG['directories']['sys_dir'] = (isset($CONFIG['directories']['sys_dir']) ? $CONFIG['directories']['sys_dir'] : getcwd());
+$CONFIG['directories']['lib_dir'] = (isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['lib_dir'] : $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib');
 
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
@@ -428,7 +428,7 @@ function convert_pna_to_teryt($data)
 			JOIN location_streets lst ON (lst.cityid = lc.id)
 			JOIN location_street_types lstt ON lstt.id = lst.typeid
 			WHERE lc.id = ?'
-                . (!empty($street_common_parts) ? ' AND LOWER(lstt.name) IN (' . $street_common_parts . ')' : '')
+                . (empty($street_common_parts) ? '' : ' AND LOWER(lstt.name) IN (' . $street_common_parts . ')')
                 . ' AND (LOWER(CASE WHEN lst.name2 IS NOT NULL THEN ' . $DB->Concat('lst.name', "' '", 'lst.name2')
                     .' ELSE lst.name END) IN (' . $streets . ') OR
 					LOWER(CASE WHEN lst.name2 IS NOT NULL THEN ' . $DB->Concat('lst.name2', "' '", 'lst.name')

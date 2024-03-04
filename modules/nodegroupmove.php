@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$from = !empty($_GET['from']) ? intval($_GET['from']) : 0;
-$to = !empty($_GET['to']) ? intval($_GET['to']) : 0;
+$from = empty($_GET['from']) ? 0 : intval($_GET['from']);
+$to = empty($_GET['to']) ? 0 : intval($_GET['to']);
 
 if ($DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array($from))
     && $DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array($to))

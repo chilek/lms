@@ -1405,8 +1405,8 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
     if (isset($_GET['messageid'])) {
         $msg = $LMS->getSingleMessage($_GET['messageid']);
         $message['type'] = $msg['type'];
-        $message['subject'] = !empty($msg['subject']) ? $msg['subject'] : '';
-        $message['body'] = !empty($msg['body']) ? $msg['body'] : '';
+        $message['subject'] = empty($msg['subject']) ? '' : $msg['subject'];
+        $message['body'] = empty($msg['body']) ? '' : $msg['body'];
         if ($msg['contenttype'] == 'text/html') {
             $message['wysiwyg']['mailbody'] = 'true';
         }
@@ -1422,8 +1422,8 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
     if (isset($_GET['messageid'])) {
         $msg = $LMS->getSingleMessage($_GET['messageid']);
         $message['type'] = $msg['type'];
-        $message['subject'] = !empty($msg['subject']) ? $msg['subject'] : '';
-        $message['body'] = !empty($msg['body']) ? $msg['body'] : '';
+        $message['subject'] = empty($msg['subject']) ? '' : $msg['subject'];
+        $message['body'] = empty($msg['body']) ? '' : $msg['body'];
         if ($msg['contenttype'] == 'text/html') {
             $message['wysiwyg']['mailbody'] = 'true';
         }

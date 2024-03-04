@@ -106,7 +106,7 @@ if ($SESSION->is_set('crlp') && !isset($_GET['page'])) {
     $SESSION->restore('crlp', $_GET['page']);
 }
 
-$page = (!isset($_GET['page']) ? 1 : $_GET['page']);
+$page = (isset($_GET['page']) ? $_GET['page'] : 1);
 $pagelimit = ConfigHelper::getConfig('phpui.cashreglog_pagelimit', $listdata['total']);
 $start = ($page - 1) * $pagelimit;
 

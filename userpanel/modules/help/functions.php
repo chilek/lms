@@ -157,7 +157,7 @@ if (defined('USERPANEL_SETUPMODE')) {
     function module_add()
     {
         global $SMARTY,$_GET;
-        $solution['refid'] = !empty($_GET['refid']) ? $_GET['refid'] : 0;
+        $solution['refid'] = empty($_GET['refid']) ? 0 : $_GET['refid'];
         $SMARTY->assign('solution', $solution);
         $SMARTY->display('module:help:add.html');
     }

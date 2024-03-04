@@ -322,21 +322,21 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         WHERE d.cdate >= ? AND d.cdate <= ? AND (d.type = ? OR d.type = ?) AND d.cancelled = 0'
         .($einvoice ? ' AND d.customerid IN (SELECT id FROM customeraddressview WHERE ' . ($einvoice == 1 ? 'einvoice = 1' : 'einvoice = 0 OR einvoice IS NULL') . ')' : '')
         .($ctype !=  -1 ? ' AND d.customerid IN (SELECT id FROM customers WHERE type = ' . intval($ctype) .')' : '')
-        .(!empty($_GET['divisionid']) ? ' AND d.divisionid = ' . intval($_GET['divisionid']) : '')
-        .(!empty($_GET['customerid']) ? ' AND d.customerid = '.intval($_GET['customerid']) : '')
-        .(!empty($_GET['numberplanid']) ? ' AND d.numberplanid' . (is_array($_GET['numberplanid'])
-                ? ' IN (' . implode(',', Utils::filterIntegers($_GET['numberplanid'])) . ')'
-                : ' = ' . intval($_GET['numberplanid']))
-            : '')
-        .(!empty($_GET['autoissued']) ? ' AND d.userid IS NULL' : '')
-        .(!empty($_GET['manualissued']) ? ' AND d.userid IS NOT NULL' : '')
-        .(!empty($_GET['groupid']) ?
-        ' AND ' . (!empty($_GET['groupexclude']) ? 'NOT' : '') . '
+        .(empty($_GET['divisionid']) ? '' : ' AND d.divisionid = ' . intval($_GET['divisionid']))
+        .(empty($_GET['customerid']) ? '' : ' AND d.customerid = '.intval($_GET['customerid']))
+        .(empty($_GET['numberplanid']) ? ''
+            : ' AND d.numberplanid' . (is_array($_GET['numberplanid'])
+                    ? ' IN (' . implode(',', Utils::filterIntegers($_GET['numberplanid'])) . ')'
+                    : ' = ' . intval($_GET['numberplanid'])))
+        .(empty($_GET['autoissued']) ? '' : ' AND d.userid IS NULL')
+        .(empty($_GET['manualissued']) ? '' : ' AND d.userid IS NOT NULL')
+        .(empty($_GET['groupid']) ?
+        ''
+            : ' AND ' . (empty($_GET['groupexclude']) ? '' : 'NOT') . '
             EXISTS (SELECT 1 FROM vcustomerassignments a
             WHERE a.customerid = d.customerid AND a.customergroupid' . (is_array($_GET['groupid'])
-                ? ' IN (' . implode(',', Utils::filterIntegers($_GET['groupid'])) . ')'
-                : ' = ' . intval($_GET['groupid'])) . ')'
-            : '')
+                    ? ' IN (' . implode(',', Utils::filterIntegers($_GET['groupid'])) . ')'
+                    : ' = ' . intval($_GET['groupid'])) . ')')
         .' AND NOT EXISTS (
             SELECT 1 FROM vcustomerassignments a
             JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
@@ -453,8 +453,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t\t<DataWytworzeniaJPK>" . date('Y-m-d') . 'T' . date('H:i:s') . "</DataWytworzeniaJPK>\n";
                 $jpk_data .= "\t\t<NazwaSystemu>LMS</NazwaSystemu>\n";
                 $jpk_data .= "\t\t<CelZlozenia poz=\"P_7\">1</CelZlozenia>\n";
-                $jpk_data .= "\t\t<KodUrzedu>" . (!empty($division['tax_office_code']) ? $division['tax_office_code']
-                        : ConfigHelper::getConfig('jpk.tax_office_code', '', true)) . "</KodUrzedu>\n";
+                $jpk_data .= "\t\t<KodUrzedu>" . (empty($division['tax_office_code']) ? ConfigHelper::getConfig('jpk.tax_office_code', '', true)
+                        : $division['tax_office_code']) . "</KodUrzedu>\n";
                 $jpk_data .= "\t\t<Rok>" . date('Y', $datefrom) . "</Rok>\n";
                 $jpk_data .= "\t\t<Miesiac>" . date('m', $datefrom) . "</Miesiac>\n";
             }
@@ -473,8 +473,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             $jpk_data .= "\t\t<DataWytworzeniaJPK>" . date('Y-m-d') . 'T' . date('H:i:s') . "</DataWytworzeniaJPK>\n";
             $jpk_data .= "\t\t<DataOd>" . date('Y-m-d', $datefrom) . "</DataOd>\n";
             $jpk_data .= "\t\t<DataDo>" . date('Y-m-d', $dateto) . "</DataDo>\n";
-            $jpk_data .= "\t\t<KodUrzedu>" . (!empty($division['tax_office_code']) ? $division['tax_office_code']
-                    : ConfigHelper::getConfig('jpk.tax_office_code', '', true)) . "</KodUrzedu>\n";
+            $jpk_data .= "\t\t<KodUrzedu>" . (empty($division['tax_office_code']) ? ConfigHelper::getConfig('jpk.tax_office_code', '', true)
+                    : $division['tax_office_code']) . "</KodUrzedu>\n";
         }
 
         $jpk_data .= "\t</Naglowek>\n";
@@ -493,12 +493,12 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             $jpk_data .= "\t\t</IdentyfikatorPodmiotu>\n";
             $jpk_data .= "\t\t<AdresPodmiotu>\n";
             $jpk_data .= "\t\t\t<{$tns}KodKraju>PL</{$tns}KodKraju>\n";
-            $jpk_data .= "\t\t\t<{$tns}Wojewodztwo>" . (!empty($division['state']) ? $division['state']
-                    : ConfigHelper::getConfig('jpk.division_state', '', true)) . "</{$tns}Wojewodztwo>\n";
-            $jpk_data .= "\t\t\t<{$tns}Powiat>" . (!empty($division['district']) ? $division['district']
-                    : ConfigHelper::getConfig('jpk.division_district', '', true)) . "</{$tns}Powiat>\n";
-            $jpk_data .= "\t\t\t<{$tns}Gmina>" . (!empty($division['borough']) ? $division['borough']
-                    : ConfigHelper::getConfig('jpk.division_borough', '', true)) . "</{$tns}Gmina>\n";
+            $jpk_data .= "\t\t\t<{$tns}Wojewodztwo>" . (empty($division['state']) ? ConfigHelper::getConfig('jpk.division_state', '', true)
+                    : $division['state']) . "</{$tns}Wojewodztwo>\n";
+            $jpk_data .= "\t\t\t<{$tns}Powiat>" . (empty($division['district']) ? ConfigHelper::getConfig('jpk.division_district', '', true)
+                    : $division['district']) . "</{$tns}Powiat>\n";
+            $jpk_data .= "\t\t\t<{$tns}Gmina>" . (empty($division['borough']) ? ConfigHelper::getConfig('jpk.division_borough', '', true)
+                    : $division['borough']) . "</{$tns}Gmina>\n";
             $address = parse_address($division['address']);
             $jpk_data .= "\t\t\t<{$tns}Ulica>" . $address['street'] . "</{$tns}Ulica>\n";
             $jpk_data .= "\t\t\t<{$tns}NrDomu>" . $address['house'] . "</{$tns}NrDomu>\n";
@@ -1048,7 +1048,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t\t<P_2A>" . $invoice['fullnumber'] . "</P_2A>\n";
                 $jpk_data .= "\t\t<P_3A>" . htmlspecialchars($invoice['name']) . "</P_3A>\n";
                 $jpk_data .= "\t\t<P_3B>" . (!empty($invoice['postoffice']) && $invoice['postoffice'] != $invoice['city'] && $invoice['street'] ? $invoice['city'] . ', ' : '')
-                    . $invoice['address'] . ', ' . (empty($invoice['zip']) ? '' : $invoice['zip'] . ' ') . (!empty($invoice['postoffice']) ? $invoice['postoffice'] : $invoice['city']) . "</P_3B>\n";
+                    . $invoice['address'] . ', ' . (empty($invoice['zip']) ? '' : $invoice['zip'] . ' ') . (empty($invoice['postoffice']) ? $invoice['city'] : $invoice['postoffice']) . "</P_3B>\n";
                 $jpk_data .= "\t\t<P_3C>" . htmlspecialchars($invoice['division_name']) . "</P_3C>\n";
                 $jpk_data .= "\t\t<P_3D>" . $invoice['division_address'] . ', '
                     . (empty($invoice['division_zip']) ? $invoice['division_city'] : $invoice['division_zip'] . ' ' . $invoice['division_city']) . "</P_3D>\n";

@@ -289,7 +289,7 @@ switch ($action) {
                 }
             }
 
-            $cdate = !empty($note['cdate']) ? $note['cdate'] : time();
+            $cdate = empty($note['cdate']) ? time() : $note['cdate'];
 
             $division = $LMS->GetDivision($customer['divisionid']);
 
@@ -304,7 +304,7 @@ switch ($action) {
 
             $args = array(
                 'number' => $note['number'],
-                SYSLOG::RES_NUMPLAN => !empty($note['numberplanid']) ? $note['numberplanid'] : null,
+                SYSLOG::RES_NUMPLAN => empty($note['numberplanid']) ? null : $note['numberplanid'],
                 'cdate' => $cdate,
                 SYSLOG::RES_CUST => $customer['id'],
                 'name' => $customer['customername'],
@@ -315,14 +315,14 @@ switch ($action) {
                 'ssn' => $customer['ssn'],
                 'zip' => $customer['zip'],
                 'city' => $customer['city'],
-                SYSLOG::RES_COUNTRY => !empty($customer['countryid']) ? $division['countryid'] : null,
-                SYSLOG::RES_DIV => !empty($customer['divisionid']) ? $customer['divisionid'] : null,
+                SYSLOG::RES_COUNTRY => empty($customer['countryid']) ? null : $division['countryid'],
+                SYSLOG::RES_DIV => empty($customer['divisionid']) ? null : $customer['divisionid'],
                 'div_name' => ($division['name'] ?: ''),
                 'div_shortname' => ($division['shortname'] ?: ''),
                 'div_address' => ($division['address'] ?: ''),
                 'div_city' => ($division['city'] ?: ''),
                 'div_zip' => ($division['zip'] ?: ''),
-                'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => (!empty($division['countryid']) ? $division['countryid'] : null),
+                'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => (empty($division['countryid']) ? null : $division['countryid']),
                 'div_ten'=> ($division['ten'] ?: ''),
                 'div_regon' => ($division['regon'] ?: ''),
                 'div_bank' => $division['bank'] ?: null,

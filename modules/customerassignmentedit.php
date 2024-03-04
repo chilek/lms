@@ -413,7 +413,7 @@ if (isset($_POST['assignment'])) {
         $args = array(
             SYSLOG::RES_TARIFF => empty($a['tariffid']) ? null : intval($a['tariffid']),
             SYSLOG::RES_CUST => $customer['id'],
-            'attribute' => !empty($a['attribute']) ? $a['attribute'] : null,
+            'attribute' => empty($a['attribute']) ? null : $a['attribute'],
             'period' => $period,
             'backwardperiod' => isset($a['backwardperiod']) ? 1 : 0,
             'at' => $at,
@@ -428,9 +428,9 @@ if (isset($_POST['assignment'])) {
             'pdiscount' => str_replace(',', '.', $a['pdiscount']),
             'vdiscount' => str_replace(',', '.', $a['vdiscount']),
             SYSLOG::RES_LIAB => $a['liabilityid'],
-            SYSLOG::RES_NUMPLAN => !empty($a['numberplanid']) ? $a['numberplanid'] : null,
+            SYSLOG::RES_NUMPLAN => empty($a['numberplanid']) ? null : $a['numberplanid'],
             'paytime' => $paytime ?? null,
-            'paytype' => !empty($a['paytype']) ? $a['paytype'] : null,
+            'paytype' => empty($a['paytype']) ? null : $a['paytype'],
             'recipient_address_id' => ($a['recipient_address_id'] >= 0) ? $a['recipient_address_id'] : null,
             SYSLOG::RES_ASSIGN => $a['id']
         );

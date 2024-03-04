@@ -60,8 +60,8 @@ if (isset($_GET['id']) && $action == 'init') {
         $nitem['prodid']    = $item['prodid'];
         $nitem['count']     = str_replace(',', '.', $item['count']);
         $pdiscount = floatval($item['pdiscount']);
-        $nitem['discount']  = (!empty($pdiscount) ? str_replace(',', '.', $item['pdiscount']) : str_replace(',', '.', $item['vdiscount']));
-        $nitem['discount_type'] = (!empty($pdiscount) ? DISCOUNT_PERCENTAGE : DISCOUNT_AMOUNT);
+        $nitem['discount']  = (empty($pdiscount) ? str_replace(',', '.', $item['vdiscount']) : str_replace(',', '.', $item['pdiscount']));
+        $nitem['discount_type'] = (empty($pdiscount) ? DISCOUNT_AMOUNT : DISCOUNT_PERCENTAGE);
         $nitem['pdiscount'] = str_replace(',', '.', $item['pdiscount']);
         $nitem['vdiscount'] = str_replace(',', '.', $item['vdiscount']);
         $nitem['content']       = str_replace(',', '.', $item['content']);
@@ -286,7 +286,7 @@ switch ($action) {
         $cnote['oldheader'] = $oldHeader;
 
         // finally check if selected customer can use selected numberplan
-        $divisionid = !empty($cnote['use_current_division']) ? $invoice['current_divisionid'] : $invoice['divisionid'];
+        $divisionid = empty($cnote['use_current_division']) ? $invoice['divisionid'] : $invoice['current_divisionid'];
 
         $args = array(
             'doctype' => DOC_CNOTE,
@@ -530,8 +530,8 @@ switch ($action) {
             'doctype' => DOC_CNOTE,
             'cdate' => $cnote['cdate'],
             'customerid' => $invoice['customerid'],
-            'division' => !empty($cnote['use_current_division']) ? $invoice['current_divisionid']
-                : (!empty($invoice['divisionid']) ? $invoice['divisionid'] : null),
+            'division' => empty($cnote['use_current_division']) ? (!empty($invoice['divisionid']) ? $invoice['divisionid'] : null)
+                : ($invoice['current_divisionid']),
             'customertype' => $invoice['customertype'],
             'next' => false,
         );
@@ -611,7 +611,7 @@ switch ($action) {
             }
         }
 
-        $division = $LMS->GetDivision(!empty($cnote['use_current_division']) ? $invoice['current_divisionid'] : $invoice['divisionid']);
+        $division = $LMS->GetDivision(empty($cnote['use_current_division']) ? $invoice['divisionid'] : $invoice['current_divisionid']);
 
         $fullnumber = docnumber(array(
             'number' => $cnote['number'],
@@ -639,7 +639,7 @@ switch ($action) {
 
         $args = array(
             'number' => $cnote['number'],
-            SYSLOG::RES_NUMPLAN => !empty($cnote['numberplanid']) ? $cnote['numberplanid'] : null,
+            SYSLOG::RES_NUMPLAN => empty($cnote['numberplanid']) ? null : $cnote['numberplanid'],
             'type' => DOC_CNOTE,
             'cdate' => $cnote['cdate'],
             'sdate' => $cnote['sdate'],
@@ -649,7 +649,7 @@ switch ($action) {
                 + (empty($cnote['flags'][DOC_FLAG_TELECOM_SERVICE]) || $invoice['customertype'] == CTYPES_COMPANY ? 0 : DOC_FLAG_TELECOM_SERVICE)
                 + ($use_current_customer_data
                     ? (isset($customer['flags'][CUSTOMER_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY : 0)
-                    : (!empty($invoice['flags'][DOC_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY : 0)
+                    : (empty($invoice['flags'][DOC_FLAG_RELATED_ENTITY]) ? 0 : DOC_FLAG_RELATED_ENTITY)
                 )
                 + (empty($cnote['splitpayment']) ? 0 : DOC_FLAG_SPLIT_PAYMENT)
                 + (empty($invoice['netflag']) ? 0 : DOC_FLAG_NET_ACCOUNT),
@@ -667,14 +667,14 @@ switch ($action) {
                 : (empty($invoice['countryid']) ? null : $invoice['countryid']),
             'reference' => $invoice['id'],
             'reason' => $cnote['reason'],
-            SYSLOG::RES_DIV => !empty($cnote['use_current_division']) ? $invoice['current_divisionid']
-                : (!empty($invoice['divisionid']) ? $invoice['divisionid'] : null),
+            SYSLOG::RES_DIV => empty($cnote['use_current_division']) ? (!empty($invoice['divisionid']) ? $invoice['divisionid'] : null)
+                : ($invoice['current_divisionid']),
             'div_name' => $division['name'] ?: '',
             'div_shortname' => $division['shortname'] ?: '',
             'div_address' => $division['address'] ?: '',
             'div_city' => $division['city'] ?: '',
             'div_zip' => $division['zip'] ?: '',
-            'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => !empty($division['countryid']) ? $division['countryid'] : null,
+            'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => empty($division['countryid']) ? null : $division['countryid'],
             'div_ten' => $division['ten'] ?: '',
             'div_regon' => $division['regon'] ?: '',
             'div_bank' => $division['bank'] ?: null,

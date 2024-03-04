@@ -392,18 +392,18 @@ class SYSLOG
 
     public function GetTransactions($params)
     {
-        $key = (!empty($params['key']) ? $params['key'] : '');
+        $key = (empty($params['key']) ? '' : $params['key']);
         $value = (isset($params['value']) && preg_match('/^[0-9]+$/', $params['value']) ? $params['value'] : '');
-        $propname = (!empty($params['propname']) ? $params['propname'] : '');
+        $propname = (empty($params['propname']) ? '' : $params['propname']);
         $propvalue = ($params['propvalue'] ?? '');
-        $userid = (!empty($params['userid']) ? intval($params['userid']) : null);
+        $userid = (empty($params['userid']) ? null : intval($params['userid']));
         $module = isset($params['module']) && strlen($params['module']) ? $params['module'] : null;
-        $offset = (!empty($params['offset']) ? intval($params['offset']) : 0);
-        $limit = (!empty($params['limit']) ? intval($params['limit']) : 20);
+        $offset = (empty($params['offset']) ? 0 : intval($params['offset']));
+        $limit = (empty($params['limit']) ? 20 : intval($params['limit']));
         $order = (isset($params['order']) && preg_match('/ASC/i', $params['order']) ? 'ASC' : 'DESC');
-        $datefrom = (!empty($params['datefrom']) ? intval($params['datefrom']) : 0);
-        $dateto = (!empty($params['dateto']) ? intval($params['dateto']) : 0);
-        $resource = (!empty($params['resource']) ? $params['resource'] : 0);
+        $datefrom = (empty($params['datefrom']) ? 0 : intval($params['datefrom']));
+        $dateto = (empty($params['dateto']) ? 0 : intval($params['dateto']));
+        $resource = (empty($params['resource']) ? 0 : $params['resource']);
         $details = !empty($params['details']);
 
         $args = array();
@@ -445,9 +445,9 @@ class SYSLOG
             'SELECT DISTINCT lt.id, lt.time, lt.userid, u.login, lt.module FROM logtransactions lt
             JOIN logmessages lm ON lm.transactionid = lt.id
             LEFT JOIN users u ON u.id = lt.userid ' . implode(' ', $joins)
-            . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
+            . (empty($where) ? '' : ' WHERE ' . implode(' AND ', $where))
             . ' ORDER BY lt.id ' . $order
-            . ' LIMIT ' . $limit . (!empty($offset) ? ' OFFSET ' . $offset : ''),
+            . ' LIMIT ' . $limit . (empty($offset) ? '' : ' OFFSET ' . $offset),
             $args
         );
 
@@ -538,7 +538,7 @@ class SYSLOG
             case 'time':
             case 'sdate':
             case 'cdate':
-                $data['value'] = !empty($data['value']) ? $data['value'] = date('Y.m.d', $data['value']) : $data['value'];
+                $data['value'] = empty($data['value']) ? $data['value'] : ($data['value'] = date('Y.m.d', $data['value']));
                 break;
             case 'at':
                 $data['value'] = strlen($data['value']) > 6 ? date('Y.m.d', $data['value']) : $data['value'];
@@ -577,7 +577,7 @@ class SYSLOG
                 $data['value'] = $LINKTYPES[$data['value']];
                 break;
             case 'linkspeed':
-                $data['value'] = !empty($data['value']) ? $LINKSPEEDS[$data['value']] : '';
+                $data['value'] = empty($data['value']) ? '' : $LINKSPEEDS[$data['value']];
                 break;
             case 'port':
                 $data['value'] = $data['value'] == 0 ? trans('none') : $data['value'];
@@ -592,7 +592,7 @@ class SYSLOG
                 break;
             default:
                 if (isset($data['name']) && strpos($data['name'], 'chkconsent') === 0) {
-                    $data['value'] = !empty($data['value']) ? $data['value'] = date('Y.m.d', $data['value']) : $data['value'];
+                    $data['value'] = empty($data['value']) ? $data['value'] : ($data['value'] = date('Y.m.d', $data['value']));
                 }
         }
         if (isset($data['value'])) {

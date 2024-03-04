@@ -2996,15 +2996,15 @@ class LMS
 
         if ($mail_backend == 'pear') {
             if (!is_object($this->mail_object) || !$persist) {
-                $params['host'] = (!isset($smtp_options['host']) ? $smtp_host : $smtp_options['host']);
-                $params['port'] = (!isset($smtp_options['port']) ? $smtp_port : $smtp_options['port']);
+                $params['host'] = (isset($smtp_options['host']) ? $smtp_options['host'] : $smtp_host);
+                $params['port'] = (isset($smtp_options['port']) ? $smtp_options['port'] : $smtp_port);
                 if (!empty($smtp_username) || isset($smtp_options['user'])) {
-                    $params['auth'] = (!isset($smtp_options['auth']) ? $smtp_auth_type : $smtp_options['auth']);
+                    $params['auth'] = (isset($smtp_options['auth']) ? $smtp_options['auth'] : $smtp_auth_type);
                     if ($params['auth'] == 'false') {
                         $params['auth'] = false;
                     }
-                    $params['username'] = (!isset($smtp_options['user']) ? $smtp_username : $smtp_options['user']);
-                    $params['password'] = (!isset($smtp_options['pass']) ? $smtp_password : $smtp_options['pass']);
+                    $params['username'] = (isset($smtp_options['user']) ? $smtp_options['user'] : $smtp_username);
+                    $params['password'] = (isset($smtp_options['pass']) ? $smtp_options['pass'] : $smtp_password);
                 } else {
                     $params['auth'] = false;
                 }
@@ -3092,11 +3092,11 @@ class LMS
 
             $this->mail_object->SMTPKeepAlive = $persist;
 
-            $this->mail_object->Host = (!isset($smtp_options['host']) ? $smtp_host : $smtp_options['host']);
-            $this->mail_object->Port = (!isset($smtp_options['port']) ? $smtp_port : $smtp_options['port']);
+            $this->mail_object->Host = (isset($smtp_options['host']) ? $smtp_options['host'] : $smtp_host);
+            $this->mail_object->Port = (isset($smtp_options['port']) ? $smtp_options['port'] : $smtp_port);
             if (!empty($smtp_username) || isset($smtp_options['user'])) {
-                $this->mail_object->Username = (!isset($smtp_options['user']) ? $smtp_username : $smtp_options['user']);
-                $this->mail_object->Password = (!isset($smtp_options['pass']) ? $smtp_password : $smtp_options['pass']);
+                $this->mail_object->Username = (isset($smtp_options['user']) ? $smtp_options['user'] : $smtp_username);
+                $this->mail_object->Password = (isset($smtp_options['pass']) ? $smtp_options['pass'] : $smtp_password);
                 $auth_type = $smtp_options['auth'] ?? $smtp_auth_type;
                 if (is_bool($auth_type)) {
                     $this->mail_object->SMTPAuth = $auth_type;
@@ -3110,9 +3110,9 @@ class LMS
                 $this->mail_object->SMTPAuth = false;
             }
 
-            $this->mail_object->SMTPSecure = (!isset($smtp_options['secure'])
-                ? $smtp_secure
-                : $smtp_options['secure']);
+            $this->mail_object->SMTPSecure = (isset($smtp_options['secure'])
+                ? $smtp_options['secure']
+                : $smtp_secure);
             if ($this->mail_object->SMTPSecure == 'false') {
                 $this->mail_object->SMTPSecure = '';
                 $this->mail_object->SMTPAutoTLS = false;
@@ -3247,18 +3247,18 @@ class LMS
 
 
             $smime = array(
-                'cert' => !isset($smtp_options['smime_certificate'])
-                    ? $smime_certificate
-                    : $smtp_options['smime_certificate'],
-                'key' => !isset($smtp_options['smime_key'])
-                    ? $smime_key
-                    : $smtp_options['smime_key'],
-                'ca_chain' => !isset($smtp_options['smime_ca_chain'])
-                    ? $smime_ca_chain
-                    : $smtp_options['smime_ca_chain'],
-                'sender_email' => !isset($smtp_options['smime_sender_email'])
-                    ? (strlen($smime_sender_email) ? $smime_sender_email : $sender_email)
-                    : $smtp_options['smime_sender_email'],
+                'cert' => isset($smtp_options['smime_certificate'])
+                    ? $smtp_options['smime_certificate']
+                    : $smime_certificate,
+                'key' => isset($smtp_options['smime_key'])
+                    ? $smtp_options['smime_key']
+                    : $smime_key,
+                'ca_chain' => isset($smtp_options['smime_ca_chain'])
+                    ? $smtp_options['smime_ca_chain']
+                    : $smime_ca_chain,
+                'sender_email' => isset($smtp_options['smime_sender_email'])
+                    ? ($smtp_options['smime_sender_email'])
+                    : (strlen($smime_sender_email) ? $smime_sender_email : $sender_email),
             );
 
             // set email digital signature
@@ -5123,8 +5123,8 @@ class LMS
                 $filename = $document['filename'];
             }
 
-            $custemail = (!empty($debug_email) ? $debug_email : $doc['email']);
-            $invoice_number = (!empty($doc['template']) ? $doc['template'] : '%N/LMS/%Y');
+            $custemail = (empty($debug_email) ? $doc['email'] : $debug_email);
+            $invoice_number = (empty($doc['template']) ? '%N/LMS/%Y' : $doc['template']);
             if (!is_null($mail_body)) {
                 if (is_readable($mail_body) && ($mail_body[0] == DIRECTORY_SEPARATOR)) {
                     $body = file_get_contents($mail_body);

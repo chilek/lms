@@ -280,7 +280,7 @@ if (isset($_POST['tariff'])) {
             $tariff['netflag'] = 0;
         }
         if ($netflag != $tariff['netflag'] || $taxid != $tariff['taxid']) {
-            $calculation_method = !empty($tariff['netflag']) ? 'from_net' : 'from_gross';
+            $calculation_method = empty($tariff['netflag']) ? 'from_gross' : 'from_net';
             $LMS->recalculateTariffPriceVariants($tariff, $calculation_method);
         }
         $SESSION->redirect('?m=tariffinfo&id='.$tariff['id']);

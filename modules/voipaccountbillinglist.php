@@ -59,7 +59,7 @@ function getVoipAccountList($fownerid = null)
 }
 
 if (isset($_POST['str'])) {
-    $str = !empty($_POST['str']) ? $_POST['str'] : null;
+    $str = empty($_POST['str']) ? null : $_POST['str'];
     $voipaccounts = getVoipAccountList($str);
 
     $SMARTY->assign('voipaccounts', $voipaccounts);
@@ -126,7 +126,7 @@ $params = $hook_data['params'];
 $params['count'] = true;
 $total = intval($LMS->getVoipBillings($params));
 
-$page  = !isset($_GET['page']) ? (!isset($_POST['page']) ? ($SESSION->is_set('vablp') ? $SESSION->get('vablp') : 1) : intval($_POST['page'])) : intval($_GET['page']);
+$page  = isset($_GET['page']) ? (intval($_GET['page'])) : (isset($_POST['page']) ? (intval($_POST['page'])) : ($SESSION->is_set('vablp') ? $SESSION->get('vablp') : 1));
 $limit = intval(ConfigHelper::getConfig('phpui.billinglist_pagelimit', 100));
 $offset = ($page - 1) * $limit;
 
@@ -174,7 +174,7 @@ if (isset($params['ftype'])) {
     $listdata['ftype'] = is_numeric($params['ftype']) ? $params['ftype'] : null;
 }
 
-$fvownerid = !empty($params['fvownerid']) ? $params['fvownerid'] : null;
+$fvownerid = empty($params['fvownerid']) ? null : $params['fvownerid'];
 $voipaccountlist = getVoipAccountList($fvownerid);
 $voipownerlist = Utils::array_column($voipaccountlist, "owner", "ownerid");
 

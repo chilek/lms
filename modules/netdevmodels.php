@@ -458,7 +458,7 @@ $modellist = $LMS->GetModelList($pid);
 
 $listdata['total'] = empty($modellist) ? 0 : count($modellist);
 
-$page = (!$_GET['page'] ? 1 : $_GET['page']);
+$page = ($_GET['page'] ? $_GET['page'] : 1);
 $pagelimit = ConfigHelper::getConfig('phpui.netdevmodel_pagelimit', $listdata['total']);
 $start = ($page - 1) * $pagelimit;
 

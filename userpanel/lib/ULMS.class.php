@@ -136,7 +136,7 @@ class ULMS extends LMS
         }
         $sources = str_replace(';', ',', ConfigHelper::getConfig('userpanel.visible_ticket_sources'));
         $tickets = $this->DB->GetAll('SELECT * FROM rttickets WHERE customerid=?'
-            . (!empty($queues) ? ' AND queueid IN (' . implode(',', $queues) . ')' : '')
+            . (empty($queues) ? '' : ' AND queueid IN (' . implode(',', $queues) . ')')
             . ('AND deleted = 0')
             . ' AND source IN (' . $sources . ')'
             . ' ORDER BY createtime DESC', array($id));

@@ -30,9 +30,9 @@ function smarty_function_network_container($params, $template)
         $params = array();
     }
 
-    $template->assign('ip', !empty($params['ip'])    ? $params['ip']    : 0);
-    $template->assign('mask', !empty($params['mask'])  ? $params['mask']  : 0);
-    $template->assign('hosts', !empty($params['hosts']) ? $params['hosts'] : array());
+    $template->assign('ip', empty($params['ip'])    ? 0    : $params['ip']);
+    $template->assign('mask', empty($params['mask'])  ? 0  : $params['mask']);
+    $template->assign('hosts', empty($params['hosts']) ? array() : $params['hosts']);
 
     return $template->fetch('net/network_container.html');
 }

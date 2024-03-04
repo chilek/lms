@@ -236,7 +236,7 @@ if (isset($_GET['search'])) {
         $SESSION->restore('cslp', $_GET['page']);
     }
 
-    $page = (! $_GET['page'] ? 1 : $_GET['page']);
+    $page = ($_GET['page'] ? $_GET['page'] : 1);
     $pagelimit = ConfigHelper::getConfig('phpui.customerlist_pagelimit', $listdata['total']);
     $start = ($page - 1) * $pagelimit;
 

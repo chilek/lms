@@ -103,12 +103,12 @@ function select_location($what, $id)
 			FROM location_districts WHERE stateid = ?
 			ORDER BY name', array($stateid));
 
-        $JSResponse->call('update_selection', 'district', $list ?: array(), !$what ? $districtid : 0);
+        $JSResponse->call('update_selection', 'district', $list ?: array(), $what ? 0 : $districtid);
     }
 
     if ($districtid) {
         $list = get_loc_boroughs($districtid);
-        $JSResponse->call('update_selection', 'borough', $list ?: array(), !$what ? $boroughid : 0);
+        $JSResponse->call('update_selection', 'borough', $list ?: array(), $what ? 0 : $boroughid);
     }
 
     return $JSResponse;
@@ -347,7 +347,7 @@ if (isset($_GET['search'])) {
             $SESSION->restore('nslp', $_GET['page']);
         }
 
-        $page = (!isset($_GET['page']) ? 1 : $_GET['page']);
+        $page = (isset($_GET['page']) ? $_GET['page'] : 1);
 
         $pagelimit = ConfigHelper::getConfig('phpui.nodelist_pagelimit', $listdata['total']);
         $start = ($page - 1) * $pagelimit;

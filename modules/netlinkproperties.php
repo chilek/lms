@@ -69,10 +69,10 @@ function update_netlink_properties($id, $devid, $link)
     }
 
     $tech_content = ($link['technology'] ? $LINKTECHNOLOGIES[$link['type']][$link['technology']]
-            . (!$isnetlink ? ($radiosectorname ? " ($radiosectorname)" : '')
-                : ($srcradiosectorname || $dstradiosectorname ? ' ('
-                    . ($srcradiosectorname ?: '-')
-                    . '/' . ($dstradiosectorname ?: '-') . ')' : ''))
+            . ($isnetlink ? (($srcradiosectorname || $dstradiosectorname ? ' ('
+                . ($srcradiosectorname ?: '-')
+                . '/' . ($dstradiosectorname ?: '-') . ')' : ''))
+                : ($radiosectorname ? " ($radiosectorname)" : ''))
             : '-');
 
     $speed_content = $LINKSPEEDS[$link['speed']];
@@ -80,9 +80,9 @@ function update_netlink_properties($id, $devid, $link)
     $port_content = '<i class="' . $icon . '" 
 			 title="<span class=&quot;nobr;&quot;>' . trans("Link type:") . ' ' . $LINKTYPES[$link['type']] . '<br>'
             . ($isnetlink && $link['type'] == LINKTYPE_FIBER ? trans('Fiber/Line count:') . ' ' . $link['linecount'] . '<br>': '')
-            . (!$isnetlink ? ($radiosectorname ? trans("Radio sector:") . ' ' . $radiosectorname . '<br>' : '')
-                : ($srcradiosectorname ? trans("Radio sector:") . ' ' . $srcradiosectorname . '<br>' : '')
-                    . ($dstradiosectorname ? trans("Destination radio sector:") . ' ' . $dstradiosectorname . '<br>' : ''))
+            . ($isnetlink ? (($srcradiosectorname ? trans("Radio sector:") . ' ' . $srcradiosectorname . '<br>' : '')
+                . ($dstradiosectorname ? trans("Destination radio sector:") . ' ' . $dstradiosectorname . '<br>' : ''))
+                : ($radiosectorname ? trans("Radio sector:") . ' ' . $radiosectorname . '<br>' : ''))
             . ($link['technology'] ? trans("Link technology:") . ' ' . $LINKTECHNOLOGIES[$link['type']][$link['technology']] . '<br>' : '')
             . trans("Link speed:") . ' ' . $LINKSPEEDS[$link['speed']]
             . (empty($link['routetype']) ? '' : '<br><p class=&quot;lms-ui-route-type&quot;>' . trans('Duct type:') . ' ' . $NETWORK_DUCT_TYPES[$link['routetype']] . '</p>')

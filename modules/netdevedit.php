@@ -45,7 +45,7 @@ if ($api) {
     }
 }
 
-$action = !empty($_GET['action']) ? $_GET['action'] : '';
+$action = empty($_GET['action']) ? '' : $_GET['action'];
 $edit = '';
 $subtitle = '';
 
@@ -232,9 +232,9 @@ switch ($action) {
         $dstradiosector = $linktype == LINKTYPE_WIRELESS && ctype_digit($_GET['dstradiosector']) ? intval($_GET['dstradiosector']) : null;
         $linktechnology = !empty($_GET['linktechnology']) && ctype_digit($_GET['linktechnology']) ? intval($_GET['linktechnology']) : null;
         $linkspeed = !empty($_GET['linkspeed']) && ctype_digit($_GET['linkspeed']) ? intval($_GET['linkspeed']) : null;
-        $dev['srcport'] = !empty($_GET['srcport']) ? intval($_GET['srcport']) : '0';
-        $dev['dstport'] = !empty($_GET['dstport']) ? intval($_GET['dstport']) : '0';
-        $dev['id'] = !empty($_GET['netdev']) ? intval($_GET['netdev']) : '0';
+        $dev['srcport'] = empty($_GET['srcport']) ? '0' : intval($_GET['srcport']);
+        $dev['dstport'] = empty($_GET['dstport']) ? '0' : intval($_GET['dstport']);
+        $dev['id'] = empty($_GET['netdev']) ? '0' : intval($_GET['netdev']);
         $routetype = !empty($_GET['routetype']) && ctype_digit($_GET['routetype']) ? intval($_GET['routetype']) : null;
         $linecount = !empty($_GET['linecount']) && ctype_digit($_GET['linecount']) ? intval($_GET['linecount']) : null;
 
@@ -300,8 +300,8 @@ switch ($action) {
         $linkradiosector = $linktype == LINKTYPE_WIRELESS && ctype_digit($_GET['radiosector']) ? intval($_GET['radiosector']) : null;
         $linktechnology = !empty($_GET['linktechnology']) && ctype_digit($_GET['linktechnology']) ? intval($_GET['linktechnology']) : null;
         $linkspeed = !empty($_GET['linkspeed']) && ctype_digit($_GET['linkspeed']) ? intval($_GET['linkspeed']) : null;
-        $node['port'] = !empty($_GET['port']) ? intval($_GET['port']) : '0';
-        $node['id'] = !empty($_GET['nodeid']) ? intval($_GET['nodeid']) : '0';
+        $node['port'] = empty($_GET['port']) ? '0' : intval($_GET['port']);
+        $node['id'] = empty($_GET['nodeid']) ? '0' : intval($_GET['nodeid']);
 
         $ports = $DB->GetOne('SELECT ports FROM netdevices WHERE id = ?', array($_GET['id']));
         $takenports = $LMS->CountNetDevLinks($_GET['id']);
@@ -342,7 +342,7 @@ switch ($action) {
         $subtitle = trans('New IP address');
         $nodeipdata['access'] = 1;
         $mac = $LMS->getNetDevMacs($id, 1);
-        $macAddress = (!empty($mac) ? $mac[0]['mac'] : '');
+        $macAddress = (empty($mac) ? '' : $mac[0]['mac']);
         $nodeipdata['macs'] = array(0 => $macAddress);
         $SMARTY->assign('nodeipdata', $nodeipdata);
         $edit = 'addip';

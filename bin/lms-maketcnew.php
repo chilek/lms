@@ -127,8 +127,8 @@ if (!is_readable($CONFIG_FILE)) {
 $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 
 // Check for configuration vars and set default values
-$CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
-$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib' : $CONFIG['directories']['lib_dir']);
+$CONFIG['directories']['sys_dir'] = (isset($CONFIG['directories']['sys_dir']) ? $CONFIG['directories']['sys_dir'] : getcwd());
+$CONFIG['directories']['lib_dir'] = (isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['lib_dir'] : $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib');
 
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
@@ -515,13 +515,13 @@ foreach ($channels as $channel) {
 
     // make rules...
     $uprate = $channel['uprate'];
-    $upceil = (!$channel['upceil'] ? $uprate : $channel['upceil']);
+    $upceil = ($channel['upceil'] ? $channel['upceil'] : $uprate);
     $downrate = $channel['downrate'];
-    $downceil = (!$channel['downceil'] ? $downrate : $channel['downceil']);
+    $downceil = ($channel['downceil'] ? $channel['downceil'] : $downrate);
     $uprate_n = $channel['uprate_n'];
-    $upceil_n = (!$channel['upceil_n'] ? $uprate_n : $channel['upceil_n']);
+    $upceil_n = ($channel['upceil_n'] ? $channel['upceil_n'] : $uprate_n);
     $downrate_n = $channel['downrate_n'];
-    $downceil_n = (!$channel['downceil_n'] ? $downrate_n : $channel['downceil_n']);
+    $downceil_n = ($channel['downceil_n'] ? $channel['downceil_n'] : $downrate_n);
 
     $from = array('\\n', '%cid', '%cname', '%h', '%class',
         '%uprate', '%upceil', '%downrate', '%downceil', '%date', '%uts');

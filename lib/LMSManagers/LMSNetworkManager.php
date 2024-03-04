@@ -131,7 +131,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             'vlanid' => empty($netadd['vlanid']) ? null : intval($netadd['vlanid']),
             SYSLOG::RES_HOST => $netadd['hostid'],
             'authtype' => $netadd['authtype'],
-            'snat' => !empty($netadd['snat']) ? $netadd['snat'] : null,
+            'snat' => empty($netadd['snat']) ? null : $netadd['snat'],
             'pubnetid' => empty($netadd['pubnetid']) ? null : $netadd['pubnetid'],
         );
         if ($this->db->Execute('INSERT INTO networks (name, address, mask, interface, gateway,
@@ -259,7 +259,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             );
         }
 
-        $order = !empty($search['order']) ? $search['order'] : 'id,asc';
+        $order = empty($search['order']) ? 'id,asc' : $search['order'];
 
         [$order, $direction] = sscanf($order, '%[^,],%s');
 
@@ -1039,9 +1039,9 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     {
         $args = array(
             'vlanid' => $args['vlanid'],
-            'description' => !empty($args['description']) ? $args['description'] : null,
-            'customerid' => !empty($args['customerid']) ? $args['customerid'] : null,
-            'netnodeid' => !empty($args['netnodeid']) ? $args['netnodeid'] : null,
+            'description' => empty($args['description']) ? null : $args['description'],
+            'customerid' => empty($args['customerid']) ? null : $args['customerid'],
+            'netnodeid' => empty($args['netnodeid']) ? null : $args['netnodeid'],
         );
 
         $result = $this->db->Execute(
