@@ -720,9 +720,7 @@ if (empty($filter['cityid'])) {
 }
 
 $streets = empty($filter['cityid']) ? array() : getStreets($filter['cityid']);
-if (isset($filter['numberparity'])) {
-    $filter['numberparity'] = $filter['numberparity'];
-} else {
+if (!isset($filter['numberparity'])) {
     $filter['numberparity'] = $oldfilter['numberparity'] ?? '';
 }
 if (empty($filter['cityid']) || !empty($streets) && empty($filter['streetid'])) {
