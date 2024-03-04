@@ -470,7 +470,7 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
         . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
         . ($tariff_tags ?: '')
     ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytime, c.paytime, d.inv_paytime,
-        a.paytype, c.paytype, d.inv_paytype, a.numberplanid, a.separatedocument, a.separateitem, currency, netflag, price DESC, a.id";
+        a.paytype, c.paytype, d.inv_paytype, a.numberplanid, t.numberplanid, a.separatedocument, a.separateitem, currency, netflag, price DESC, a.id";
 $doms = array($dom);
 if ($last_dom) {
     $doms[] = 0;
