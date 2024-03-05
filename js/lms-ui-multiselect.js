@@ -157,6 +157,7 @@ function multiselect(options) {
 
 	var old_class = $(old_element).removeClass('lms-ui-multiselect').attr('class');
 	var selection_group = $(old_element).hasClass('lms-ui-multiselect-selection-group');
+	var placeholder = $(old_element).attr('data-placeholder');
 
 	var container = $('<div class="lms-ui-multiselect-container' + (tiny ? ' tiny' : '') +
 		(bottom ? ' bottom' : '') +
@@ -236,6 +237,10 @@ function multiselect(options) {
 			selected.push(def);
 		}
 		var selected_string = selected.join(separator);
+		if (!selected_string.length && placeholder) {
+			selected_string = placeholder;
+		}
+
 		if (tiny) {
 			if (tooltipMessage.length) {
 				launcher.removeAttr('data-tooltip').attr('title', $t(tooltipMessage, selected_string.length ?
