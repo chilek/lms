@@ -106,10 +106,8 @@ if (isset($_POST['customeradd'])) {
         $error['name'] = trans('First name cannot be empty!');
     }
 
-    if (ConfigHelper::checkConfig('phpui.add_customer_group_required')) {
-        if ($customeradd['group'] == 0) {
-            $error['group'] = trans('Group name required!');
-        }
+    if (ConfigHelper::checkConfig('phpui.add_customer_group_required') && empty($customeradd['group'])) {
+        $error['group'] = trans('Group name required!');
     }
 
     // check addresses

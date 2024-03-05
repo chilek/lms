@@ -209,19 +209,20 @@
 				</tr>
 				{/if}
 				{if $groups}
-				<TR>
-					<TD>
-						{icon name="cg"}
-					</TD>
-					<TD>
-						<SELECT SIZE="1" NAME="customeradd[group]" {tip text="Select group to assign to customer" trigger="group"}>
-							<OPTION VALUE="0">{trans("… select group …")}</OPTION>
-							{foreach $groups as $group}
-							<OPTION VALUE="{$group.id}" {if $customeradd.group == $group.id}SELECTED{/if}>{$group.name} ({$group.id|string_format:"%04d"})</OPTION>
-							{/foreach}
-						</SELECT>
-					</TD>
-				</TR>
+					<tr>
+						<td>
+							{icon name="cg"}
+						</td>
+						<td>
+							<select size="1" name="customeradd[group][]" multiple
+								{tip text="Select group to assign to customer" trigger="group" class="lms-ui-multiselect"}>
+								{foreach $groups as $group}
+									<option value="{$group.id}" {if !empty($customeradd.group) && in_array($group.id, $customeradd.group)} selected{/if}
+										>{$group.name|escape} (#{$group.id})</option>
+								{/foreach}
+							</select>
+						</td>
+					</tr>
 				{/if}
 				<TR>
 					<TD>

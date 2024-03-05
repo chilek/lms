@@ -787,17 +787,26 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             );
 
             if (ConfigHelper::checkConfig('phpui.add_customer_group_required')) {
-                $gargs = array(
-                        'customerid' => $id,
-                        'customergroupid' => $customeradd['group']
+                $args = array(
+                    'customerid' => $id,
                 );
-                $res = $this->db->Execute('INSERT INTO customerassignments (customerid, customergroupid) VALUES (?,?)', array_values($gargs));
-                if ($this->syslog && $res) {
-                    $args = array(
-                        SYSLOG::RES_CUST => $id,
-                        SYSLOG::RES_CUSTGROUP => $customeradd['group']
-                    );
-                    $this->syslog->AddMessage(SYSLOG::RES_CUSTASSIGN, SYSLOG::OPER_ADD, $args);
+                if (!isset($customeradd['group'])) {
+                    $customeradd['group'] = array();
+                }
+                if (!is_array($customeradd['group'])) {
+                    $customeradd['group'] = array($customeradd['group']);
+                }
+                $customeradd['group'] = Utils::filterIntegers($customeradd['group']);
+                if (!empty($customeradd['group'])) {
+                    foreach ($customeradd['group'] as $groupid) {
+                        $args[SYSLOG::RES_CUSTGROUP] = $groupid;
+
+                        $res = $this->db->Execute('INSERT INTO customerassignments (customerid, customergroupid) VALUES (?, ?)', array_values($args));
+
+                        if ($this->syslog && $res) {
+                            $this->syslog->AddMessage(SYSLOG::RES_CUSTASSIGN, SYSLOG::OPER_ADD, $args);
+                        }
+                    }
                 }
             }
             return $id;
