@@ -637,6 +637,7 @@ version 28-git (????-??-??):
     to single document position [chilan]
   - improvement: 'assignments.default_net_account' with default value of 'false' controls default state
     of net account flag option in customer assignment forms [chilan]
+  - improvement: allow to select many customer groups in customer add form [chilan]
 
 version 27.0 (2021-08-20):
 
