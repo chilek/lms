@@ -12647,6 +12647,15 @@ input[disabled] + .ui-datepicker-trigger:before {
 .lms-ui-multiselect-container .lms-ui-multiselect-label-workaround {
   display: none;
 }
+.lms-ui-multiselect-container .lms-ui-multiselect-launcher.lms-ui-error {
+  border: 1px solid red;
+  box-shadow: 0 0 3px 1px red;
+}
+.lms-ui-multiselect-container .lms-ui-multiselect-launcher.lms-ui-error:focus {
+  border: 1px solid #a32828;
+  box-shadow: 0 0 1px 1px #a32828;
+  outline: none;
+}
 .lms-ui-multiselect-container.lms-ui-error {
   color: unset !important;
 }
