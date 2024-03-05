@@ -32,6 +32,16 @@
     display: none;
   }
 
+  .lms-ui-multiselect-launcher.lms-ui-error {
+    border: @error-outline;
+    box-shadow: @error-box-shadow;
+    &:focus {
+      border: @error-outline-focus;
+      box-shadow: @error-box-shadow-focus;
+      outline: none;
+    }
+  }
+
   &.lms-ui-error {
     color: unset !important;
 
