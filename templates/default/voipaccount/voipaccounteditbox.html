@@ -238,6 +238,28 @@
                                             </td>
                                         </tr>
                                         {/block}
+                                        {block name="voipaccounteditbox-serviceprovider"}
+                                            {if !empty($serviceproviders)}
+                                                <tr>
+                                                    <td>
+                                                        {icon name="service"}
+                                                    </td>
+                                                    <td class="nobr">
+                                                        <strong>{trans("Service provider")}</strong>
+                                                    </td>
+                                                    <td>
+                                                        <select name="voipaccountedit[serviceproviderid]">
+                                                            <option value="">{trans("— select —")}</option>
+                                                            {foreach $serviceproviders as $serviceprovider}
+                                                                <option value="{$serviceprovider.id}"
+                                                                    {if $serviceprovider.id == $voipaccountinfo.serviceproviderid} selected{/if}
+                                                                    >{$serviceprovider.name|escape}</option>
+                                                            {/foreach}
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                            {/if}
+                                        {/block}
                                         {block name="voipaccounteditbox-flags"}
                                         <tr>
                                             <td class="valign-top">

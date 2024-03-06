@@ -96,7 +96,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         $voipaccountlist = $this->db->GetAll(
             'SELECT v.id, v.login, v.passwd, v.ownerid, '
                 . $this->db->Concat('c.lastname', "' '", 'c.name')
-                . ' AS owner, v.access, v.description,
+                . ' AS owner, v.access, v.description, v.serviceproviderid,
 				lb.name AS borough_name, ld.name AS district_name, lst.name AS state_name,
 				lc.name AS city_name,
 				(CASE WHEN ls.name2 IS NOT NULL THEN ' . $this->db->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END) AS street_name,
@@ -454,7 +454,8 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         $result = $this->db->GetRow(
             '
             SELECT v.id, ownerid, login, passwd, creationdate, moddate, creatorid,
-                modid, access, balance, description, lb.name AS borough_name,
+                modid, access, balance, description, v.serviceproviderid,
+                lb.name AS borough_name,
                 ld.name AS district_name, lst.name AS state_name, lc.name AS city_name,
                 (CASE WHEN ls.name2 IS NOT NULL THEN ' . $this->db->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END) AS street_name,
                 lt.name AS street_type, v.address_id, v.flags, v.balance,
@@ -591,6 +592,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             'cost_limit' => $data['cost_limit'] ?: null,
             SYSLOG::RES_ADDRESS => $data['address_id'] ?: null,
             'description' => isset($data['description']) ? Utils::removeInsecureHtml($data['description']) : '',
+            'serviceproviderid' => empty($data['serviceproviderid']) ? null : $data['serviceproviderid'],
             SYSLOG::RES_VOIP_ACCOUNT => $data['id'],
         );
 
@@ -598,7 +600,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             'UPDATE voipaccounts
              SET login=?, passwd=?, moddate=?NOW?, access=?, modid=?,
                  ownerid=?, flags=?, balance=?, cost_limit=?, address_id=?,
-                 description = ?
+                 description = ?, serviceproviderid = ?
              WHERE id = ?',
             array_values($args)
         );

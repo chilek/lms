@@ -214,6 +214,26 @@
                                                 </td>
                                             </tr>
                                         {/block}
+                                        {block name="voipaccountaddbox-serviceprovider"}
+                                            {if !empty($serviceproviders)}
+                                                <tr>
+                                                    <td class="nobr">
+                                                        {icon name="service"}
+                                                        <strong>{trans("Service provider")}</strong>
+                                                    </td>
+                                                    <td>
+                                                        <select name="voipaccountdata[serviceproviderid]">
+                                                            <option value="">{trans("— select —")}</option>
+                                                            {foreach $serviceproviders as $serviceprovider}
+                                                                <option value="{$serviceprovider.id}"
+                                                                    {if $serviceprovider.id == $voipaccountdata.serviceproviderid} selected{/if}
+                                                                    >{$serviceprovider.name|escape}</option>
+                                                            {/foreach}
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                            {/if}
+                                        {/block}
                                         {block name="voipaccountaddbox-flags"}
                                             <tr>
                                                 <td class="bold nobr">

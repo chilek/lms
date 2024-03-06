@@ -127,6 +127,21 @@
                                 </tr>
                                 {/if}
                                 {/block}
+                                {block name="voipaccountinfobox-serviceprovider"}
+                                    {if !empty($serviceproviders) && !empty($voipaccountinfo.serviceproviderid)}
+                                        <tr>
+                                            <td>
+                                                {icon name="service"}
+                                            </td>
+                                            <td class="nobr">
+                                                <strong>{trans("Service provider")}</strong>
+                                            </td>
+                                            <td>
+                                                {$serviceproviders[$voipaccountinfo.serviceproviderid].name|escape}
+                                            </td>
+                                        </tr>
+                                    {/if}
+                                {/block}
                                 {block name="voipaccountinfobox-status"}
                                 <tr>
                                     <td>
