@@ -95,6 +95,16 @@ if (!isset($_POST['hidessn'])) {
 }
 $SESSION->save('cshidessn', $hidessn);
 
+if (isset($_POST['showassignments'])) {
+    $showassignments = (int) $_POST['showassignments'];
+} else {
+    $SESSION->restore('csshowassignments', $showassignments);
+    if (!isset($showassignments)) {
+        $showassignments = 1;
+    }
+}
+$SESSION->save('csshowassignments', $showassignments);
+
 if (!isset($_POST['fk'])) {
     $SESSION->restore('cslfk', $flagsqlskey);
 } else {
@@ -217,6 +227,7 @@ if (isset($_GET['search'])) {
     $listdata['state'] = $state;
     $listdata['flags'] = $flags;
     $listdata['hidessn'] = $hidessn;
+    $listdata['showassignments'] = $showassignments;
     $listdata['karma'] = $karma;
     $listdata['network'] = $network;
     $listdata['customergroup'] = empty($customergroup) ? array() : $customergroup;
@@ -231,6 +242,15 @@ if (isset($_GET['search'])) {
     unset($customerlist['order']);
     unset($customerlist['below']);
     unset($customerlist['over']);
+
+    if ($showassignments) {
+        foreach ($customerlist as $idx => $c) {
+            $ca = $LMS->GetCustomerAssignments($c['id'], false, false);
+            if (isset($ca)) {
+                $customerlist[$idx]['assignmentsnames'] = implode(",", array_column($ca, 'name'));
+            }
+        }
+    }
 
     if (! isset($_GET['page'])) {
         $SESSION->restore('cslp', $_GET['page']);
@@ -276,6 +296,7 @@ if (isset($_GET['search'])) {
     $listdata['state'] = $state;
     $listdata['flags'] = $flags;
     $listdata['hidessn'] = $hidessn;
+    $listdata['showassignments'] = $showassignments;
     $listdata['karma'] = $karma;
     $listdata['network'] = $network;
     $listdata['customergroup'] = empty($customergroup) ? array() : $customergroup;
