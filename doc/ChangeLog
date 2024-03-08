@@ -639,6 +639,8 @@ version 28-git (????-??-??):
     of net account flag option in customer assignment forms [chilan]
   - improvement: allow to select many customer groups in customer add form [chilan]
   - enhancement: allow to manipulate of voip account service providerid property from web interface [chilan]
+  - enhancement: search customers by finish date property of documents using type and date interval
+    form filters [chilan]
 
 version 27.0 (2021-08-20):
 
