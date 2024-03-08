@@ -219,29 +219,33 @@ if (isset($_GET['search'])) {
         "division"
     ));
 
-    $listdata['total'] = $customerlist['total'];
-    $listdata['direction'] = $customerlist['direction'];
-    $listdata['order'] = $customerlist['order'];
-    $listdata['below'] = $customerlist['below'];
-    $listdata['over'] = $customerlist['over'];
-    $listdata['state'] = $state;
-    $listdata['flags'] = $flags;
-    $listdata['hidessn'] = $hidessn;
-    $listdata['showassignments'] = $showassignments;
-    $listdata['karma'] = $karma;
-    $listdata['network'] = $network;
-    $listdata['customergroup'] = empty($customergroup) ? array() : $customergroup;
-    $listdata['nodegroup'] = $nodegroup;
-    $listdata['division'] = $division;
+    $listdata = array(
+        'total' => $customerlist['total'],
+        'direction' => $customerlist['direction'],
+        'order' => $customerlist['order'],
+        'below' => $customerlist['below'],
+        'over' => $customerlist['over'],
+        'state' => $state,
+        'flags' => $flags,
+        'hidessn' => $hidessn,
+        'showassignments' => $showassignments,
+        'karma' => $karma,
+        'network' => $network,
+        'customergroup' => empty($customergroup) ? array() : $customergroup,
+        'nodegroup' => $nodegroup,
+        'division' => $division
+    );
 
-    unset($customerlist['total']);
-    unset($customerlist['state']);
-    unset($customerlist['flags']);
-    unset($customerlist['karma']);
-    unset($customerlist['direction']);
-    unset($customerlist['order']);
-    unset($customerlist['below']);
-    unset($customerlist['over']);
+    unset(
+        $customerlist['total'],
+        $customerlist['state'],
+        $customerlist['flags'],
+        $customerlist['karma'],
+        $customerlist['direction'],
+        $customerlist['order'],
+        $customerlist['below'],
+        $customerlist['over']
+    );
 
     if ($showassignments) {
         foreach ($customerlist as $idx => $c) {
@@ -262,18 +266,22 @@ if (isset($_GET['search'])) {
 
     $SESSION->save('cslp', $page);
 
-    $SMARTY->assign('customerlist', $customerlist);
-    $SMARTY->assign('listdata', $listdata);
-    $SMARTY->assign('pagelimit', $pagelimit);
-    $SMARTY->assign('page', $page);
-    $SMARTY->assign('start', $start);
+    $SMARTY->assign(
+        array(
+            'customerlist' => $customerlist,
+            'listdata' => $listdata,
+            'pagelimit' => $pagelimit,
+            'page' => $page,
+            'start' => $start
+        )
+    );
 
     if (isset($_GET['print'])) {
         $SMARTY->display('print/printcustomerlist.html');
     } elseif (isset($_GET['export'])) {
         $SMARTY->assign('contactlist', $DB->GetAllByKey(
             'SELECT customerid, (' . $DB->GroupConcat('contact') . ') AS phone
-			FROM customercontacts WHERE contact <> \'\' AND type & ? > 0 GROUP BY customerid',
+                FROM customercontacts WHERE contact <> \'\' AND type & ? > 0 GROUP BY customerid',
             'customerid',
             array(CONTACT_MOBILE | CONTACT_LANDLINE)
         ));
@@ -293,32 +301,38 @@ if (isset($_GET['search'])) {
 } else {
     $layout['pagetitle'] = trans('Customer Search');
 
-    $listdata['state'] = $state;
-    $listdata['flags'] = $flags;
-    $listdata['hidessn'] = $hidessn;
-    $listdata['showassignments'] = $showassignments;
-    $listdata['karma'] = $karma;
-    $listdata['network'] = $network;
-    $listdata['customergroup'] = empty($customergroup) ? array() : $customergroup;
-    $listdata['nodegroup'] = $nodegroup;
-    $listdata['division'] = $division;
-
-    $SMARTY->assign('listdata', $listdata);
+    $listdata = array(
+        'state' => $state,
+        'flags' => $flags,
+        'hidessn' => $hidessn,
+        'showassignments' => $showassignments,
+        'karma' => $karma,
+        'network' => $network,
+        'customergroup' => empty($customergroup) ? array() : $customergroup,
+        'nodegroup' => $nodegroup,
+        'division' => $division
+    );
 
     $SESSION->remove('cslp');
 
-    $SMARTY->assign('networks', $LMS->GetNetworks());
-    $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
-    $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
-    $SMARTY->assign('cstateslist', $LMS->GetCountryStates());
-    $SMARTY->assign('tariffs', $LMS->GetTariffs());
-    $SMARTY->assign('divisions', $LMS->GetDivisions());
-    $SMARTY->assign('k', $sqlskey);
-    $SMARTY->assign('sk', $statesqlskey);
-    $SMARTY->assign('cgk', $customergroupsqlskey);
-    $SMARTY->assign('cgnot', $customergroupnegation);
-    $SMARTY->assign('fk', $flagsqlskey);
-    $SMARTY->assign('ngnot', $nodegroupnegation);
-    $SMARTY->assign('karma', $karma);
+    $SMARTY->assign(
+        array(
+            'listdata' => $listdata,
+            'networks' => $LMS->GetNetworks(),
+            'customergroups' => $LMS->CustomergroupGetAll(),
+            'nodegroups' => $LMS->GetNodeGroupNames(),
+            'cstateslist' => $LMS->GetCountryStates(),
+            'tariffs' => $LMS->GetTariffs(),
+            'divisions' => $LMS->GetDivisions(),
+            'k' => $sqlskey,
+            'sk' => $statesqlskey,
+            'cgk' => $customergroupsqlskey,
+            'cgnot' => $customergroupnegation,
+            'fk' => $flagsqlskey,
+            'ngnot' => $nodegroupnegation,
+            'karma' => $karma
+        )
+    );
+    
     $SMARTY->display('customer/customersearch.html');
 }
