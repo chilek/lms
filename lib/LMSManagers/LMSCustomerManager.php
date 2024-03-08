@@ -1511,7 +1511,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $dateto = false;
             if (!empty($document['dateto'])) {
                 $dateto = strtotime($document['dateto']);
-                if ($dateo !== false) {
+                if ($dateto !== false) {
                     $dateto = strtotime('tomorrow', $dateto);
                 }
             }
