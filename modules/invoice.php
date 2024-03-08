@@ -1530,11 +1530,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
     $SESSION->redirect('?m=invoicelist');
 }
 
-if (!is_null($attachment_name) && isset($docnumber)) {
-    $attachment_name = str_replace('%number', $docnumber, $attachment_name);
-    $attachment_name = preg_replace('/[^[:alnum:]_\.]/i', '_', $attachment_name);
-    $attachment_name .= '.' . ($invoice_type == 'pdf' ? 'pdf' : 'html');
-} elseif ($jpk) {
+if ($jpk) {
     if ($jpk_type == 'fa') {
         $attachment_name = 'JPK_FA_' . date('Y-m-d', $datefrom) . '_' . date('Y-m-d', $dateto)
             . '_' . date('Y-m-d-H-i-s') . '.xml';
@@ -1542,6 +1538,10 @@ if (!is_null($attachment_name) && isset($docnumber)) {
         $attachment_name = 'JPK_VAT_' . date('Y-m-d', $datefrom) . '_' . date('Y-m-d', $dateto)
             . '_' . date('Y-m-d-H-i-s') . '.' . ($jpk_format == 'xml' ? 'xml' : 'csv');
     }
+} elseif (!is_null($attachment_name) && isset($docnumber)) {
+    $attachment_name = str_replace('%number', $docnumber, $attachment_name);
+    $attachment_name = preg_replace('/[^[:alnum:]_\.]/i', '_', $attachment_name);
+    $attachment_name .= '.' . ($invoice_type == 'pdf' ? 'pdf' : 'html');
 } else {
     $attachment_name = 'invoices.' . ($invoice_type == 'pdf' ? 'pdf' : 'html');
 }
