@@ -50,6 +50,21 @@
 		margin-right: 0.5em;
 	}
 
+	.document-filters {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.document-filter {
+		display: flex;
+		align-items: center;
+		margin: 0.3em 0 0.3em 0;
+	}
+
+	.document-filter > :not(:first-child) {
+		margin-left: 0.3em;
+	}
+
 </style>
 
 <script>
@@ -120,6 +135,22 @@
 	</TR>
 	</THEAD>
 	<TBODY>
+	<tr>
+		<td class="nobr">
+			{icon name="spacer"}
+			<strong>{trans("Qualification operator")}</strong>
+		</td>
+		<td>
+			<label>
+				<input type="radio" value="AND" name="k"{if $k != 'OR'} checked{/if}>
+				{trans("and")}
+			</label>
+			<label>
+				<input type="radio" value="OR" name="k"{if $k == 'OR'} checked{/if}>
+				{trans("or")}
+			</label>
+		</td>
+	</tr>
 	<tr>
 		<td class="bold nobr">
 			<label for="hidessn">
@@ -592,15 +623,6 @@
 			</span>
 		</td>
 	</tr>
-	<TR>
-		<TD class="bold nobr">
-			{icon name="spacer"} {trans("Qualification operator:")}
-		</TD>
-		<TD>
-			<INPUT class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}><label for="operator0">{trans("and")}</label>
-			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}><label for="operator1">{trans("or")}</label>
-		</TD>
-	</TR>
 	<tr>
 		<td colspan="2">&nbsp;</td>
 	</tr>
@@ -676,6 +698,39 @@
 			</div>
 		</TD>
 	</TR>
+	<tr>
+		<td class="nobr valign-top">
+			{icon name="document"}
+			<strong>{trans("Documents")}</strong>
+		</td>
+		<td>
+			<div class="document-filters">
+				<div class="document-filter">
+					<span>
+						{trans("<!document>Type")}
+					</span>
+					<select name="document[type][]" class="lms-ui-multiselect" multiple
+						data-default-value="{trans("<!document-type>— any —")}">
+						{foreach Localisation::arraySort($_DOCTYPES) as $doctypeidx => $doctype}
+							{if $doctypeidx >= 0}
+								{continue}
+							{/if}
+							<option value="{$doctypeidx}">{$doctype}</option>
+						{/foreach}
+					</select>
+				</div>
+				<div class="document-filter">
+					{date_period_preset from="[name=\"document[datefrom]\"]" to="[name=\"document[dateto]\"]"}
+					<span>{trans("from")}</span>
+					<input type="text" name="document[datefrom]" size="10" maxlength="10"
+						{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+					<span>{trans("to")}</span>
+					<input type="text" name="document[dateto]" size="10" maxlength="10"
+						{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+				</div>
+			</div>
+		</td>
+	</tr>
 	<TR>
 		<TD class="bold nobr">
 			{icon name="money"} {trans("Balance:")}

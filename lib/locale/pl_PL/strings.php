@@ -1873,6 +1873,7 @@ $_LANG['Purchase date cannot be empty when guarantee period is set!'] = 'Data za
 $_LANG['Purchaser:'] = 'Nabywca:';
 $_LANG['Put in order'] = 'Uporządkuj';
 $_LANG['Qualification operator:'] = 'Operator warunkowy';
+$_LANG['Qualification operator'] = 'Operator warunkowy';
 $_LANG['Qualify to use current day of month for payment day. Default: 0 (off).'] = 'Wybieraj aktualny dzień miesiąca jako dzień tworzenia nowych płatności. Domyślnie: 0 (Wyłączone).';
 $_LANG['Qualify the day of month for payment day. Default: 0 (undefined).'] = 'Domyślny dzień miesiąca przypisywany nowym płatnościom miesięcznym. Domyślnie: 0 (niezdefiniowany).';
 $_LANG['quarterly'] = 'kwartalnie';
@@ -4695,6 +4696,8 @@ $_LANG['AJAX: Error during persistent setting save on server:'] = 'AJAX: Błąd 
 
 $_LANG['Enter street'] = 'Podaj ulicę';
 $_LANG['— any —'] = '— dowolne —';
+$_LANG['<!document-type>— any —'] = '— dowolne —';
+$_LANG['<!document>Type'] = 'Typ';
 
 $_LANG['Import from files:'] = 'Import z plików:';
 $_LANG['Non plain text file detected!'] = 'Wykryto plik nietekstowy!';

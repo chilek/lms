@@ -831,6 +831,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      * @param int $nodegroup Node group
      * @param boolean $nodegroupnegation negate node group assignments
      * @param int $division Division id
+     * @param array $document Document parameters
      * @param int $days Days after expiration
      * @param int $limit Limit
      * @param int $offset Offset
@@ -1497,6 +1498,28 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     }
                 }
             }
+        }
+
+        if (!empty($document)) {
+            if (!empty($document['type'])) {
+                $doctype = Utils::filterIntegers($document['type']);
+            }
+            $datefrom = false;
+            if (!empty($document['datefrom'])) {
+                $datefrom = strtotime($document['datefrom']);
+            }
+            $dateto = false;
+            if (!empty($document['dateto'])) {
+                $dateto = strtotime($document['dateto']);
+                if ($dateo !== false) {
+                    $dateto = strtotime('tomorrow', $dateto);
+                }
+            }
+            $searchargs[] = 'EXISTS (SELECT 1 FROM documents JOIN documentcontents ON documentcontents.docid = documents.id WHERE documents.customerid = c.id'
+                . (empty($doctype) ? '' : ' AND documents.type IN (' . implode(', ', $doctype) . ')')
+                . ($datefrom === false ? '' : ' AND documentcontents.todate >= ' . $datefrom)
+                . ($dateto === false ? '' : ' AND documentcontents.todate < ' . $dateto)
+                . ')';
         }
 
         if (isset($searchargs)) {

@@ -180,6 +180,13 @@ if (!isset($_POST['d'])) {
 }
 $SESSION->save('csld', $division);
 
+if (!isset($_POST['document'])) {
+    $SESSION->restore('csdocument', $document);
+} else {
+    $document = $_POST['document'];
+}
+$SESSION->save('csdocument', $document);
+
 if (isset($_GET['search'])) {
     $layout['pagetitle'] = trans('Customer Search Results');
     if (!isset($time)) {
@@ -206,7 +213,8 @@ if (isset($_GET['search'])) {
         "sqlskey",
         "nodegroupnegation",
         "nodegroup",
-        "division"
+        "division",
+        "document"
     ));
 
     $listdata['total'] = $customerlist['total'];
