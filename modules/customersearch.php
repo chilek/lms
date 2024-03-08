@@ -39,22 +39,18 @@ if (isset($_POST['search'])) {
     }
 }
 
-if (!isset($search)) {
-    $SESSION->restore('customersearch', $search);
-} else {
+if (isset($search)) {
     $SESSION->save('customersearch', $search);
+} else {
+    $SESSION->restore('customersearch', $search);
 }
 
 if (!empty($search['balance_date'])) {
-    $time = intval($search['balance_date']);
+    $time = (int) $search['balance_date'];
 }
 
 if (isset($search['balance_days'])) {
-    if (strlen($search['balance_days'])) {
-        $days = intval($search['balance_days']);
-    } else {
-        $days = -1;
-    }
+    $days = strlen($search['balance_days']) !== 0 ? (int) $search['balance_days'] : -1;
 }
 
 if (!isset($_GET['o'])) {
@@ -64,34 +60,34 @@ if (!isset($_GET['o'])) {
 }
 $SESSION->save('cslo', $order);
 
-if (!isset($_POST['s'])) {
-    $SESSION->restore('csls', $state);
-} else {
+if (isset($_POST['s'])) {
     $state = $_POST['s'];
+} else {
+    $SESSION->restore('csls', $state);
 }
 $SESSION->save('csls', $state);
 
-if (!isset($_POST['sk'])) {
-    $SESSION->restore('cslsk', $statesqlskey);
-} else {
+if (isset($_POST['sk'])) {
     $statesqlskey = $_POST['sk'];
+} else {
+    $SESSION->restore('cslsk', $statesqlskey);
 }
 $SESSION->save('cslsk', $statesqlskey);
 
-if (!isset($_POST['flags'])) {
-    $SESSION->restore('cslf', $flags);
-} else {
+if (isset($_POST['flags'])) {
     $flags = $_POST['flags'];
+} else {
+    $SESSION->restore('cslf', $flags);
 }
 $SESSION->save('cslf', $flags);
 
-if (!isset($_POST['hidessn'])) {
+if (isset($_POST['hidessn'])) {
+    $hidessn = (int) $_POST['hidessn'];
+} else {
     $SESSION->restore('cshidessn', $hidessn);
     if (!isset($hidessn)) {
         $hidessn = 1;
     }
-} else {
-    $hidessn = intval($_POST['hidessn']);
 }
 $SESSION->save('cshidessn', $hidessn);
 
@@ -106,29 +102,29 @@ if (isset($_POST['showassignments'])) {
 $SESSION->save('csshowassignments', $showassignments);
 
 if (!isset($_POST['fk'])) {
-    $SESSION->restore('cslfk', $flagsqlskey);
-} else {
     $flagsqlskey = $_POST['fk'];
+} else {
+    $SESSION->restore('cslfk', $flagsqlskey);
 }
 $SESSION->save('cslfk', $flagsqlskey);
 
-if (!isset($_POST['consents'])) {
-    $SESSION->restore('csconsents', $consents);
-} else {
+if (isset($_POST['consents'])) {
     $consents = $_POST['consents'];
+} else {
+    $SESSION->restore('csconsents', $consents);
 }
 $SESSION->save('csconsents', $consents);
 
-if (!isset($_POST['karma'])) {
-    $SESSION->restore('cslkarma', $karma);
-} else {
+if (isset($_POST['karma'])) {
     $karma = $_POST['karma'];
+} else {
+    $SESSION->restore('cslkarma', $karma);
 }
 $SESSION->save('cslkarma', $karma);
 
 if (!isset($_POST['n'])) {
     $SESSION->restore('csln', $network);
-} else if ($_POST['n'] == 'all') {
+} elseif ($_POST['n'] == 'all') {
     $network = array();
 } else {
     $network = Utils::filterIntegers($_POST['n']);
@@ -137,56 +133,54 @@ $SESSION->save('csln', $network);
 
 if (!isset($_POST['g'])) {
     $SESSION->restore('cslg', $customergroup);
-} else if ($_POST['g'] == 'all') {
+} elseif ($_POST['g'] == 'all') {
     $customergroup = array();
+} elseif (count($_POST['g']) == 1 && (int) $_POST['g'][0] <= 0) {
+    $customergroup = reset($_POST['g']);
 } else {
-    if (count($_POST['g']) == 1 && intval($_POST['g'][0]) <= 0) {
-        $customergroup = reset($_POST['g']);
-    } else {
-        $customergroup = $_POST['g'];
-    }
+    $customergroup = $_POST['g'];
 }
 $SESSION->save('cslg', $customergroup);
 
-if (!isset($_POST['cgk'])) {
-    $SESSION->restore('cslcgk', $customergroupsqlskey);
-} else {
+if (isset($_POST['cgk'])) {
     $customergroupsqlskey = $_POST['cgk'];
+} else {
+    $SESSION->restore('cslcgk', $customergroupsqlskey);
 }
 $SESSION->save('cslcgk', $customergroupsqlskey);
 
-if (!isset($_POST['cgnot'])) {
-    $SESSION->restore('cslcgnot', $customergroupnegation);
-} else {
+if (isset($_POST['cgnot'])) {
     $customergroupnegation = !empty($_POST['cgnot']);
+} else {
+    $SESSION->restore('cslcgnot', $customergroupnegation);
 }
 $SESSION->save('cslcgnot', $customergroupnegation);
 
-if (!isset($_POST['k'])) {
-    $SESSION->restore('cslk', $sqlskey);
-} else {
+if (isset($_POST['k'])) {
     $sqlskey = $_POST['k'];
+} else {
+    $SESSION->restore('cslk', $sqlskey);
 }
 $SESSION->save('cslk', $sqlskey);
 
-if (!isset($_POST['ng'])) {
-    $SESSION->restore('cslng', $nodegroup);
-} else {
+if (isset($_POST['ng'])) {
     $nodegroup = $_POST['ng'];
+} else {
+    $SESSION->restore('cslng', $nodegroup);
 }
 $SESSION->save('cslng', $nodegroup);
 
-if (!isset($_POST['ngnot'])) {
-    $SESSION->restore('cslngnot', $nodegroupnegation);
-} else {
+if (isset($_POST['ngnot'])) {
     $nodegroupnegation = !empty($_POST['ngnot']);
+} else {
+    $SESSION->restore('cslngnot', $nodegroupnegation);
 }
 $SESSION->save('cslngnot', $nodegroupnegation);
 
-if (!isset($_POST['d'])) {
-    $SESSION->restore('csld', $division);
-} else {
+if (isset($_POST['d'])) {
     $division = $_POST['d'];
+} else {
+    $SESSION->restore('csld', $division);
 }
 $SESSION->save('csld', $division);
 
@@ -256,11 +250,11 @@ if (isset($_GET['search'])) {
         }
     }
 
-    if (! isset($_GET['page'])) {
+    if (!isset($_GET['page'])) {
         $SESSION->restore('cslp', $_GET['page']);
     }
 
-    $page = (! $_GET['page'] ? 1 : $_GET['page']);
+    $page = $_GET['page'] ?? 1;
     $pagelimit = ConfigHelper::getConfig('phpui.customerlist_pagelimit', $listdata['total']);
     $start = ($page - 1) * $pagelimit;
 
