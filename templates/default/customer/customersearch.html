@@ -720,6 +720,18 @@
 					</select>
 				</div>
 				<div class="document-filter">
+					<span>
+						{trans("Date selection")}
+					</span>
+					<select name="document[dateselection]">
+						<option value="creationdate">{trans("creation date")}</option>
+						<option value="confirmationdate">{trans("confirmation date")}</option>
+						<option value="archivizationdate">{trans("archivization date")}</option>
+						<option value="fromdate">{trans("'from' date")}</option>
+						<option value="todate" selected>{trans("'to' date")}</option>
+					</select>
+				</div>
+				<div class="document-filter">
 					{date_period_preset from="[name=\"document[datefrom]\"]" to="[name=\"document[dateto]\"]"}
 					<span>{trans("from")}</span>
 					<input type="text" name="document[datefrom]" size="10" maxlength="10"

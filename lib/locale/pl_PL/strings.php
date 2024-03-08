@@ -899,6 +899,7 @@ $_LANG['Data older than one month will be combined into one hour'] = 'Dane stars
 $_LANG['Data precision level:'] = 'Poziom dokładności danych:';
 $_LANG['Date'] = 'Data';
 $_LANG['Date:'] = 'Data:';
+$_LANG['Date selection'] = 'Wybór daty';
 $_LANG['date (YYYY/MM/DD)'] = 'data (RRRR/MM/DD)';
 $_LANG['Validity period'] = 'Okres obowiązywania';
 $_LANG['Day:'] = 'Dzień:';
