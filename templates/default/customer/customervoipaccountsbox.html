@@ -67,11 +67,15 @@
 							<div class="lms-ui-tab-table-column serviceprovider">
 								{if !empty($voipaccount.serviceproviderid)}
 									{$voipaccount.serviceprovidername}
+								{else}
+									-
 								{/if}
 							</div>
 							<div class="lms-ui-tab-table-column extid">
 								{if !empty($voipaccount.serviceproviderid) && !empty($voipaccount.extid)}
-									(#{$voipaccount.extid})
+									#{$voipaccount.extid}
+								{else}
+									-
 								{/if}
 							</div>
 						</div>
