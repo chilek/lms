@@ -29,6 +29,10 @@ class Localisation
     public const UI_FUNCTION = 'ui_functions';
     public const SYSTEM_FUNCTION = 'system_functions';
 
+    const DATE_FORMAT_FULL = 1;
+    const DATE_FORMAT_DATE = 2;
+    const DATE_FORMAT_TIME = 3;
+
     private static $langDefs = array();
     private static $defaultUiLanguage = null;
     private static $uiLanguage = null;
@@ -362,6 +366,32 @@ class Localisation
     public static function resetUiLanguage()
     {
         self::$uiLanguage = self::$defaultUiLanguage;
+    }
+
+    public static function dateFormat($date, $format = self::DATE_FORMAT_DATE) {
+        static $intlDateFormatter = null;
+
+        if (!isset($intlDateFormatter)) {
+            $intlDateFormatter = array(
+                self::DATE_FORMAT_FULL => IntlDateFormatter::create(
+                    self::$uiLanguage,
+                    IntlDateFormatter::LONG,
+                    IntlDateFormatter::LONG
+                ),
+                self::DATE_FORMAT_DATE => IntlDateFormatter::create(
+                    self::$uiLanguage,
+                    IntlDateFormatter::LONG,
+                    IntlDateFormatter::NONE
+                ),
+                self::DATE_FORMAT_TIME => IntlDateFormatter::create(
+                    self::$uiLanguage,
+                    IntlDateFormatter::NONE,
+                    IntlDateFormatter::LONG
+                ),
+            );
+        }
+
+        return datefmt_format($intlDateFormatter[$format], $date);
     }
 
     public static function getCurrentSystemLanguage()
