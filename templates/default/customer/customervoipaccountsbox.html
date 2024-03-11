@@ -16,25 +16,33 @@
 	{tab_contents id="voipaccountspanel"}
 		{tab_table}
 		{block name="customervoipaccountsbox-list-columns"}
-				{assign var='number_of_table_columns' value='5'}
+			{assign var='number_of_table_columns' value='7'}
 		{/block}
 			<div class="lms-ui-tab-table-row header">
 			{block name="customervoipaccountsbox-list-header"}
-				<div class="lms-ui-tab-table-wrapper col-4">
+				<div class="lms-ui-tab-table-wrapper col-6">
 					<div class="lms-ui-tab-table-wrapper col-2">
 						<div class="lms-ui-tab-table-column login">
-							<strong>{trans("Login:")}</strong>
+							<strong>{trans("<!voipaccount>Login")}</strong>
 						</div>
 						<div class="lms-ui-tab-table-column id">
-							{trans("ID:")}
+							{trans("ID")}
+						</div>
+					</div>
+					<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-column serviceprovider">
+							{trans("Service provider")}
+						</div>
+						<div class="lms-ui-tab-table-column extid">
+							{trans("External ID")}
 						</div>
 					</div>
 					<div class="lms-ui-tab-table-wrapper col-2">
 						<div class="lms-ui-tab-table-column password">
-							{trans("Password:")}
+							{trans("Password")}
 						</div>
 						<div class="lms-ui-tab-table-column number">
-							{trans("Phone number:")}
+							{trans("Phone number")}
 						</div>
 					</div>
 				</div>
@@ -46,13 +54,25 @@
 			{foreach $customervoipaccounts as $voipaccount}
 				{block name="customervoipaccountsbox-list-row"}
 				<div class="lms-ui-tab-table-row" data-target-url="?m=voipaccountinfo&id={$voipaccount.id}">
-					<div class="lms-ui-tab-table-wrapper col-4">
+					<div class="lms-ui-tab-table-wrapper col-6">
 						<div class="lms-ui-tab-table-wrapper col-2">
 							<div class="lms-ui-tab-table-column login">
 								{$voipaccount.login}
 							</div>
 							<div class="lms-ui-tab-table-column id">
 								({$voipaccount.id|string_format:"%04d"})
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column serviceprovider">
+								{if !empty($voipaccount.serviceproviderid)}
+									{$voipaccount.serviceprovidername}
+								{/if}
+							</div>
+							<div class="lms-ui-tab-table-column extid">
+								{if !empty($voipaccount.serviceproviderid) && !empty($voipaccount.extid)}
+									(#{$voipaccount.extid})
+								{/if}
 							</div>
 						</div>
 						<div class="lms-ui-tab-table-wrapper col-2">

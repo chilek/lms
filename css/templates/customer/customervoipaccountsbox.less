@@ -24,16 +24,22 @@
 
 #voipaccountspanel {
 	.login {
-		width: 30em;
+		width: 25em;
 	}
 	.id {
 		width: 8em;
 	}
+	.serviceprovider {
+		width: 8em;
+	}
+	.extid {
+		width: 8em;
+	}
 	.password {
-		width: 20em;
+		width: 15em;
 	}
 	.number {
-		width: 20em;
+		width: 15em;
 	}
 	.buttons {
 		width: 10em;
@@ -41,9 +47,9 @@
 	}
 
 	@media all and (max-width: 1700px) {
-		.col-4 .col-2:first-child {
+		.col-6 .col-2:first-child {
 			flex-direction: column !important;
-			width: 23em !important;
+			width: 20em !important;
 			div {
 				flex-grow: 0 !important;
 				width: 100% !important;
@@ -52,9 +58,19 @@
 
 	}
 	@media all and (max-width: 1300px) {
-		.col-4 .col-2:nth-child(2) {
+		.col-6 .col-2:nth-child(2) {
 			flex-direction: column !important;
-			width: 16em !important;
+			width: 8em !important;
+			div {
+				flex-grow: 0 !important;
+				width: 100% !important;
+			}
+		}
+	}
+	@media all and (max-width: 1000px) {
+		.col-6 .col-2:nth-child(3) {
+			flex-direction: column !important;
+			width: 15em !important;
 			div {
 				flex-grow: 0 !important;
 				width: 100% !important;
@@ -62,7 +78,7 @@
 		}
 	}
 	@media all and (max-width: 768px) {
-		.col-4 {
+		.col-6 {
 			flex-direction: column !important;
 			width: 20em !important;
 			div {

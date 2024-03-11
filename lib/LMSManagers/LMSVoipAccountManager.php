@@ -715,7 +715,8 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
     {
         $extId = !empty($extid) ? strval($extid) : null;
         $result = $this->db->GetAll(
-            'SELECT v.id, login, passwd, ownerid, access, flags, balance, cost_limit, extid, serviceproviderid,
+            'SELECT v.id, v.login, v.passwd, v.ownerid, v.access, v.flags, v.balance, v.cost_limit,
+                v.extid, v.serviceproviderid, sp.name AS serviceprovidername,
                 lb.name AS borough_name, ld.name AS district_name,
                 lst.name AS state_name, lc.name AS city_name,
                 (CASE WHEN ls.name2 IS NOT NULL THEN ' . $this->db->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END) AS street_name,
@@ -724,6 +725,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 addr.city_id as location_city, addr.street_id as location_street,
                 addr.house as location_house, addr.flat as location_flat, addr.location
             FROM voipaccounts v
+                LEFT JOIN serviceproviders sp      ON sp.id = v.serviceproviderid
                 LEFT JOIN vaddresses addr          ON addr.id = v.address_id
                 LEFT JOIN location_cities lc       ON lc.id   = addr.city_id
                 LEFT JOIN location_streets ls      ON ls.id   = addr.street_id
@@ -732,9 +734,9 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 LEFT JOIN location_districts ld    ON ld.id   = lb.districtid
                 LEFT JOIN location_states lst      ON lst.id  = ld.stateid
             WHERE ownerid = ?'
-            . (empty($extid) ? '' : ' AND extid ?LIKE? ' . $this->db->Escape("%$extid%"))
-            . (empty($serviceproviderid) ? '' : ' AND serviceproviderid = ' . intval($serviceproviderid))
-            . ' ORDER BY login ASC',
+            . (empty($extid) ? '' : ' AND v.extid ?LIKE? ' . $this->db->Escape("%$extid%"))
+            . (empty($serviceproviderid) ? '' : ' AND v.serviceproviderid = ' . intval($serviceproviderid))
+            . ' ORDER BY v.login ASC',
             array($id)
         );
 

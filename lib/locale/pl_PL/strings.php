@@ -1521,6 +1521,7 @@ $_LANG['Location:'] = 'Lokalizacja:';
 $_LANG['Location'] = 'Lokalizacja';
 $_LANG['Login'] = 'Zaloguj się';
 $_LANG['Login:'] = 'Login:';
+$_LANG['<!voipaccount>Login'] = 'Login';
 $_LANG['<!radius>Login'] = 'Login';
 $_LANG['<!node>Login'] = 'Login';
 $_LANG['Login<!second>'] = 'Login';
