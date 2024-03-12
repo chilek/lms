@@ -641,6 +641,7 @@ version 28-git (????-??-??):
   - enhancement: allow to manipulate of voip account service providerid property from web interface [chilan]
   - enhancement: search customers by finish date property of documents using type and date interval
     form filters [chilan]
+  - enhancement: added service provider selection in voip account search and list forms [chilan]
 
 version 27.0 (2021-08-20):
 
