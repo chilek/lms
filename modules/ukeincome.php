@@ -269,7 +269,12 @@ if ($type == 'linktechnologies') {
     $SMARTY->assign('linktechnologies', $linktechnologies);
 }
 
-$layout['pagetitle'] = trans('UKE income report for period $a - $b', $from, $to);
+$layout['pagetitle'] = trans(
+    'UKE income report ($a) for period $b - $c',
+    trans(empty($filter['uke-income']['brutto']) ? 'gross' : 'net'),
+    $from,
+    $to
+);
 
 $SMARTY->assign('income', $income);
 $SMARTY->display('print/printukeincome.html');
