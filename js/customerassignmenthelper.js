@@ -715,6 +715,7 @@ function tariffSelectionHandler() {
 			$('#a_tax,#a_type,#a_price,#a_currency,#a_splitpayment,#a_taxcategory,#a_productid,#a_name').hide();
 			$('#a_attribute').show();
 		} else {
+			$('#target_value').change();
 			$('#a_attribute').show();
 		}
 	}
@@ -746,9 +747,9 @@ function tariffSelectionHandler() {
 
 	if (!assignment_settings.hideFinances) {
 		if (val <= -1) {
-			$('#a_discount').hide();
+			$('.a_discount').hide();
 		} else {
-			$('#a_discount').show();
+			$('.a_discount').show();
 		}
 	}
 
@@ -840,12 +841,14 @@ $("#tax").on('change', function () {
 	}
 });
 
-$("#grossprice").on('change', function () {
+$("#grossprice").change(function () {
 	claculatePriceFromGross();
+	$("#target_value").change();
 });
 
-$("#netprice").on('change', function () {
+$("#netprice").change(function () {
 	claculatePriceFromNet();
+	$("#target_value").change();
 });
 
 $(".format-3f").on('change', function () {
@@ -855,29 +858,103 @@ $(".format-3f").on('change', function () {
 	}
 });
 
-$("#discount_value").on('change', function () {
-	if ($("#discount_type").val() == 2) {
-		let roundedValue = financeRound($(this).val().replaceAll(' ', ''), 3);
-		$(this).val(roundedValue);
-	}
+$("#discount_value").change(function () {
+	let discountType = parseInt($("#discount_type").val());
+	let discountValue = parseFloat($(this).val().replaceAll(' ', ''));
+	let netFlag = $('#netflag').prop('checked');
+	let targetValueElem = $("#target_value");
+	let targetValue;
 
-	if ($("#discount_type").val() == 1) {
-		let roundedValue = financeRound($(this).val().replaceAll(' ', ''), 2);
-		$(this).val(roundedValue);
+	let price;
+	if (netFlag) {
+		price = $('#netprice').val();
+	} else {
+		price = $('#grossprice').val();
+	}
+	price = parseFloat(price);
+
+	switch (discountType) {
+		case lmsSettings.discountPercentage:
+			discountValue = parseFloat(financeRound(discountValue.toString(), 3));
+			targetValue = financeRound((price * (100 - discountValue) / 100).toString(), 3);
+			break;
+		case lmsSettings.discountAmount:
+			discountValue = parseFloat(financeRound(discountValue.toString(), 3));
+			targetValue = financeRound((price - discountValue).toString(), 3);
+			break;
+	}
+	$(this).val(discountValue);
+	targetValueElem.val(targetValue);
+});
+
+$("#discount_type").change(function () {
+	let discountType = parseInt($(this).val());
+	let discountValueElem = $("#discount_value");
+	let discountValue = parseFloat(discountValueElem.val().replaceAll(' ', ''));
+	let netFlag = $('#netflag').prop('checked');
+	let targetValueElem = $("#target_value");
+	let targetValue;
+
+	let price;
+	if (netFlag) {
+		price = $('#netprice').val();
+	} else {
+		price = $('#grossprice').val();
+	}
+	price = parseFloat(price);
+
+	if (!isNaN(discountValue)) {
+		switch (discountType) {
+			case lmsSettings.discountPercentage:
+				discountValue = parseFloat(financeRound(discountValue.toString(), 3));
+				targetValue = financeRound((price * (100 - discountValue) / 100).toString(), 3);
+				break;
+			case lmsSettings.discountAmount:
+				discountValue = parseFloat(financeRound(discountValue.toString(), 3));
+				targetValue = financeRound((price - discountValue).toString(), 3);
+				break;
+		}
+		discountValueElem.val(discountValue);
+		targetValueElem.val(targetValue);
 	}
 });
 
-$("#discount_type").on('change', function () {
-	let discountValueElem = $("#discount_value");
-	let discountValueElemVal = discountValueElem.val();
-	if (discountValueElemVal) {
-		if ($(this).val() == 2) {
-			let roundedValue = financeRound(discountValueElemVal, 3);
-			discountValueElem.val(roundedValue);
+$('#target_value_trigger').change(function() {
+	var checked = $(this).prop('checked');
+	$('#discount_value,#discount_label').toggle(!checked);
+	$('#target_value,#target_value_label').toggle(checked);
+});
+
+$('#target_value').change(function() {
+	let targetValue = parseFloat($(this).val());
+	if (isNaN(targetValue)) {
+		$(this).val('');
+	} else {
+		let netFlag = $('#netflag').prop('checked');
+		let discountValueElem = $('#discount_value');
+		let discountValue = discountValueElem.val();
+		let discountType = parseInt($("#discount_type").val());
+		let price;
+		if (netFlag) {
+			price = $('#netprice').val();
+		} else {
+			price = $('#grossprice').val();
 		}
-		if ($(this).val() == 1) {
-			let roundedValue = financeRound(discountValueElemVal, 2);
-			discountValueElem.val(roundedValue);
+		price = parseFloat(price);
+		if (!isNaN(price)) {
+			let targetDiscount;
+			switch (discountType) {
+				case lmsSettings.discountPercentage:
+					targetDiscount = financeRound((((price - targetValue) / price) * 100).toString(), 3);
+					break;
+				case lmsSettings.discountAmount:
+					targetDiscount = financeRound((price - targetValue).toString(), 3);
+					break;
+				default:
+					targetDiscount = discountValue;
+					break;
+			}
+			discountValueElem.val(targetDiscount);
 		}
 	}
 });

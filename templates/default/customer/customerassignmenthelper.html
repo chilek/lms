@@ -667,22 +667,41 @@
 								</td>
 							</tr>
 
-							<TR id="a_discount" style="display: none;">
-								<TD style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
+							<tr id="a_discount_type" class="a_discount" style="display: none;">
+								<td style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
 									{icon name="discount"}
-								</TD>
-								<TD class="bold" style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
-									<span class="bold">{trans("Discount:")}</span>
-								</TD>
-								<TD style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
-									<INPUT type="text" size="8" id="discount_value" name="{$variable_prefix}[discount]" value="{if $variables.pdiscount != 0}{Localisation::formatNumber($variables.pdiscount)}{else}{if $variables.vdiscount != 0}{Localisation::smartFormatNumber($variables.vdiscount)}{/if}{/if}" {tip text="Enter discount percentage or amount" trigger="discount"}>
-									<SELECT id="discount_type" name="{$variable_prefix}[discount_type]">
-										{foreach from=$_DISCOUNTTYPES item=item key=key}
-										<OPTION value="{$key}"{if $variables.discount_type == $key} selected{/if}>{$item}</OPTION>
+								</td>
+								<td style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
+									<strong>{trans("Discount type")}</strong>
+								</td>
+								<td style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
+									<select id="discount_type" name="{$variable_prefix}[discount_type]">
+										{foreach $_DISCOUNTTYPES as $key => $item}
+											<option value="{$key}"{if $variables.discount_type == $key} selected{/if}>{$item}</option>
 										{/foreach}
-									</SELECT>
-								</TD>
-							</TR>
+									</select>
+								</td>
+							</tr>
+
+							<tr id="a_discount_value" class="a_discount" style="display: none;">
+								<td style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
+									{icon name="discount"}
+								</td>
+								<td style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
+									<span id="discount_label"><strong>{trans("Discount value")}</strong></span>
+									<span id="target_value_label" style="display: none;"><strong>{trans("Discounted value")}</strong></span>
+								</td>
+								<td style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
+									<input type="text" size="8" id="discount_value" name="{$variable_prefix}[discount]"
+										value="{if $variables.pdiscount != 0}{Localisation::formatNumber($variables.pdiscount)}{else}{if $variables.vdiscount != 0}{Localisation::smartFormatNumber($variables.vdiscount)}{/if}{/if}"
+										{tip text="Enter discount percentage or amount" trigger="discount"}>
+									<input type="text" size="8" id="target_value" style="display: none;">
+									<label>
+										<input type="checkbox" id="target_value_trigger">
+										{trans("target value")}
+									</label>
+								</td>
+							</tr>
 
 							<TR id="a_type" style="display: none;">
 								<TD>
