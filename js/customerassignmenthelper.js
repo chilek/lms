@@ -715,7 +715,7 @@ function tariffSelectionHandler() {
 			$('#a_tax,#a_type,#a_price,#a_currency,#a_splitpayment,#a_taxcategory,#a_productid,#a_name').hide();
 			$('#a_attribute').show();
 		} else {
-			$('#target_value').change();
+			$('#target_price').change();
 			$('#a_attribute').show();
 		}
 	}
@@ -843,12 +843,12 @@ $("#tax").on('change', function () {
 
 $("#grossprice").change(function () {
 	claculatePriceFromGross();
-	$("#target_value").change();
+	$("#target_price").change();
 });
 
 $("#netprice").change(function () {
 	claculatePriceFromNet();
-	$("#target_value").change();
+	$("#target_price").change();
 });
 
 $(".format-3f").on('change', function () {
@@ -862,8 +862,8 @@ $("#discount_value").change(function () {
 	let discountType = parseInt($("#discount_type").val());
 	let discountValue = parseFloat($(this).val().replaceAll(' ', ''));
 	let netFlag = $('#netflag').prop('checked');
-	let targetValueElem = $("#target_value");
-	let targetValue;
+	let targetPriceElem = $("#target_price");
+	let targetPrice;
 
 	let price;
 	if (netFlag) {
@@ -876,15 +876,15 @@ $("#discount_value").change(function () {
 	switch (discountType) {
 		case lmsSettings.discountPercentage:
 			discountValue = parseFloat(financeRound(discountValue.toString(), 3));
-			targetValue = financeRound((price * (100 - discountValue) / 100).toString(), 3);
+			targetPrice = financeRound((price * (100 - discountValue) / 100).toString(), 3);
 			break;
 		case lmsSettings.discountAmount:
 			discountValue = parseFloat(financeRound(discountValue.toString(), 3));
-			targetValue = financeRound((price - discountValue).toString(), 3);
+			targetPrice = financeRound((price - discountValue).toString(), 3);
 			break;
 	}
 	$(this).val(discountValue);
-	targetValueElem.val(targetValue);
+	targetPriceElem.val(targetPrice);
 });
 
 $("#discount_type").change(function () {
@@ -892,8 +892,8 @@ $("#discount_type").change(function () {
 	let discountValueElem = $("#discount_value");
 	let discountValue = parseFloat(discountValueElem.val().replaceAll(' ', ''));
 	let netFlag = $('#netflag').prop('checked');
-	let targetValueElem = $("#target_value");
-	let targetValue;
+	let targetPriceElem = $("#target_price");
+	let targetPrice;
 
 	let price;
 	if (netFlag) {
@@ -907,27 +907,27 @@ $("#discount_type").change(function () {
 		switch (discountType) {
 			case lmsSettings.discountPercentage:
 				discountValue = parseFloat(financeRound(discountValue.toString(), 3));
-				targetValue = financeRound((price * (100 - discountValue) / 100).toString(), 3);
+				targetPrice = financeRound((price * (100 - discountValue) / 100).toString(), 3);
 				break;
 			case lmsSettings.discountAmount:
 				discountValue = parseFloat(financeRound(discountValue.toString(), 3));
-				targetValue = financeRound((price - discountValue).toString(), 3);
+				targetPrice = financeRound((price - discountValue).toString(), 3);
 				break;
 		}
 		discountValueElem.val(discountValue);
-		targetValueElem.val(targetValue);
+		targetPriceElem.val(targetPrice);
 	}
 });
 
-$('#target_value_trigger').change(function() {
+$('#target_price_trigger').change(function() {
 	var checked = $(this).prop('checked');
 	$('#discount_value,#discount_label').toggle(!checked);
-	$('#target_value,#target_value_label').toggle(checked);
+	$('#target_price,#target_price_label').toggle(checked);
 });
 
-$('#target_value').change(function() {
-	let targetValue = parseFloat($(this).val());
-	if (isNaN(targetValue)) {
+$('#target_price').change(function() {
+	let targetPrice = parseFloat($(this).val());
+	if (isNaN(targetPrice)) {
 		$(this).val('');
 	} else {
 		let netFlag = $('#netflag').prop('checked');
@@ -945,10 +945,10 @@ $('#target_value').change(function() {
 			let targetDiscount;
 			switch (discountType) {
 				case lmsSettings.discountPercentage:
-					targetDiscount = financeRound((((price - targetValue) / price) * 100).toString(), 3);
+					targetDiscount = financeRound((((price - targetPrice) / price) * 100).toString(), 3);
 					break;
 				case lmsSettings.discountAmount:
-					targetDiscount = financeRound((price - targetValue).toString(), 3);
+					targetDiscount = financeRound((price - targetPrice).toString(), 3);
 					break;
 				default:
 					targetDiscount = discountValue;

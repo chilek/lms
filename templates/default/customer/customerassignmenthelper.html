@@ -688,10 +688,10 @@
 									{icon name="discount"}
 								</td>
 								<td style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
-									<span id="discount_label"{if !empty($variables.target_value_trigger)} style="display: none;"{/if}>
+									<span id="discount_label"{if !empty($variables.target_price_trigger)} style="display: none;"{/if}>
 										<strong>{trans("Discount")}</strong>
 									</span>
-									<span id="target_value_label"{if empty($variables.target_value_trigger)} style="display: none;"{/if}>
+									<span id="target_price_label"{if empty($variables.target_price_trigger)} style="display: none;"{/if}>
 										<strong>{trans("Discounted price")}</strong>
 									</span>
 								</td>
@@ -699,17 +699,17 @@
 									<input type="text" size="8" id="discount_value"
 										name="{$variable_prefix}[discount]"
 										value="{if $variables.pdiscount != 0}{Localisation::formatNumber($variables.pdiscount)}{else}{if $variables.vdiscount != 0}{Localisation::smartFormatNumber($variables.vdiscount)}{/if}{/if}"
-										{if !empty($variables.target_value_trigger)} style="display: none;"{/if}
+										{if !empty($variables.target_price_trigger)} style="display: none;"{/if}
 										{tip text="Enter discount percentage or amount" trigger="discount"}>
-									<input type="text" size="8" id="target_value"
-										{if empty($variables.target_value_trigger)} style="display: none;"{/if}
-										name="{$variable_prefix}[target_value]"
-										value="{$variables.target_value}">
+									<input type="text" size="8" id="target_price"
+										{if empty($variables.target_price_trigger)} style="display: none;"{/if}
+										name="{$variable_prefix}[target_price]"
+										value="{$variables.target_price}">
 									<label>
-										<input type="checkbox" id="target_value_trigger"
-											name="{$variable_prefix}[target_value_trigger]"
-											{if !empty($variables.target_value_trigger)} checked{/if}>
-										{trans("target value")}
+										<input type="checkbox" id="target_price_trigger"
+											name="{$variable_prefix}[target_price_trigger]"
+											{if !empty($variables.target_price_trigger)} checked{/if}>
+										{trans("target price")}
 									</label>
 								</td>
 							</tr>
