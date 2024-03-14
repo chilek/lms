@@ -153,7 +153,7 @@ if (!empty($docids)) {
             }
 
             $filename = preg_replace(
-                '/[^[:alnum:]_\.]/i',
+                '/[^[:alnum:]_\.]/iu',
                 '_',
                 str_replace(
                     array(
