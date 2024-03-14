@@ -688,16 +688,27 @@
 									{icon name="discount"}
 								</td>
 								<td style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
-									<span id="discount_label"><strong>{trans("Discount value")}</strong></span>
-									<span id="target_value_label" style="display: none;"><strong>{trans("Discounted value")}</strong></span>
+									<span id="discount_label"{if !empty($variables.target_value_trigger)} style="display: none;"{/if}>
+										<strong>{trans("Discount value")}</strong>
+									</span>
+									<span id="target_value_label"{if empty($variables.target_value_trigger)} style="display: none;"{/if}>
+										<strong>{trans("Discounted value")}</strong>
+									</span>
 								</td>
 								<td style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
-									<input type="text" size="8" id="discount_value" name="{$variable_prefix}[discount]"
+									<input type="text" size="8" id="discount_value"
+										name="{$variable_prefix}[discount]"
 										value="{if $variables.pdiscount != 0}{Localisation::formatNumber($variables.pdiscount)}{else}{if $variables.vdiscount != 0}{Localisation::smartFormatNumber($variables.vdiscount)}{/if}{/if}"
+										{if !empty($variables.target_value_trigger)} style="display: none;"{/if}
 										{tip text="Enter discount percentage or amount" trigger="discount"}>
-									<input type="text" size="8" id="target_value" style="display: none;">
+									<input type="text" size="8" id="target_value"
+										{if empty($variables.target_value_trigger)} style="display: none;"{/if}
+										name="{$variable_prefix}[target_value]"
+										value="{$variables.target_value}">
 									<label>
-										<input type="checkbox" id="target_value_trigger">
+										<input type="checkbox" id="target_value_trigger"
+											name="{$variable_prefix}[target_value_trigger]"
+											{if !empty($variables.target_value_trigger)} checked{/if}>
 										{trans("target value")}
 									</label>
 								</td>
