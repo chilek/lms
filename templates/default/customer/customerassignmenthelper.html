@@ -689,10 +689,10 @@
 								</td>
 								<td style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
 									<span id="discount_label"{if !empty($variables.target_value_trigger)} style="display: none;"{/if}>
-										<strong>{trans("Discount value")}</strong>
+										<strong>{trans("Discount")}</strong>
 									</span>
 									<span id="target_value_label"{if empty($variables.target_value_trigger)} style="display: none;"{/if}>
-										<strong>{trans("Discounted value")}</strong>
+										<strong>{trans("Discounted price")}</strong>
 									</span>
 								</td>
 								<td style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
