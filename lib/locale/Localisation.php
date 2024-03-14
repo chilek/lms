@@ -368,7 +368,8 @@ class Localisation
         self::$uiLanguage = self::$defaultUiLanguage;
     }
 
-    public static function dateFormat($date, $format = self::DATE_FORMAT_DATE) {
+    public static function dateFormat($date, $format = self::DATE_FORMAT_DATE)
+    {
         static $intlDateFormatter = null;
 
         if (!isset($intlDateFormatter)) {
