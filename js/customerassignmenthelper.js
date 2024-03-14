@@ -716,6 +716,7 @@ function tariffSelectionHandler() {
 			$('#a_attribute').show();
 		} else {
 			$('#target_price').change();
+			$("#discount_value").change();
 			$('#a_attribute').show();
 		}
 	}
