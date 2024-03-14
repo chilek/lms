@@ -866,6 +866,10 @@ $("#discount_value").change(function () {
 	let targetPriceElem = $("#target_price");
 	let targetPrice;
 
+	if (isNaN(discountValue)) {
+		return;
+	}
+
 	let price;
 	if (netFlag) {
 		price = $('#netprice').val();
