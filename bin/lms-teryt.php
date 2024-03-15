@@ -1740,11 +1740,11 @@ if (isset($options['buildings'])) {
         }
     }
 
-    if (!$quiet) {
-        echo 'Removing old buildings...' . PHP_EOL;
-    }
-
     if (isset($allowed_building_operations[BUILDING_BASE_OPERATION_DELETE])) {
+        if (!$quiet) {
+            echo 'Removing old buildings...' . PHP_EOL;
+        }
+
         $DB->Execute('DELETE FROM location_buildings WHERE updated = 0');
     }
     $DB->Execute('UPDATE location_buildings SET updated = 0');
