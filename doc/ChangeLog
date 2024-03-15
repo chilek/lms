@@ -643,6 +643,8 @@ version 28-git (????-??-??):
     form filters [chilan]
   - enhancement: added service provider selection in voip account search and list forms [chilan]
   - enhancement: allow to set assignment discount entering target value [chilan]
+  - enhancement: teryt backend script: --allowed-building-operations allows to limit allowed operations
+    on building base during load it from external provider [chilan]
 
 version 27.0 (2021-08-20):
 
