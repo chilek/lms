@@ -33,6 +33,7 @@ $script_parameters = array(
     'delete'  => 'd',
     'buildings'  => 'b',
     'building-base-provider:' => null,
+    'allowed-building-operations:' => null,
     'only-unique-city-matches'  => 'o',
     'explicit-node-locations'  => 'e',
     'reverse'  => 'r',
@@ -46,6 +47,9 @@ $script_help = <<<EOF
 -b, --buildings                    analyze building base and load it into database
     --building-base-provider=<gugik|sidusis>
                                    specify which building base provider should be used
+    --allowed-building-operations=add,update,delete
+                                   specify which building base operations are allowed
+                                   when we load new building base
 -l, --list                         state names or ids which will be taken into account
 -o, --only-unique-city-matches     update TERYT location only if city matches uniquely
 -e, --explicit-node-locations      set explicit TERYT locations for nodes
@@ -433,6 +437,41 @@ if (!isset($supported_building_base_providers[$building_base_provider_type])) {
     die('Building base provider \'' . $building_base_provider_type . '\' is not supported!' . PHP_EOL);
 }
 $building_base_provider = $supported_building_base_providers[$building_base_provider_type];
+
+define('BUILDING_BASE_OPERATION_ADD', 1);
+define('BUILDING_BASE_OPERATION_UPDATE', 2);
+define('BUILDING_BASE_OPERATION_DELETE', 3);
+
+$allowed_building_operations_map = array(
+    'add' => BUILDING_BASE_OPERATION_ADD,
+    'update' => BUILDING_BASE_OPERATION_UPDATE,
+    'delete' => BUILDING_BASE_OPERATION_DELETE,
+);
+$allowed_building_operations = array();
+if (isset($options['allowed-building-operations'])) {
+    if (!isset($options['buildings'])) {
+        die('Fatal error: option \'--allowed-building-operations\' can be used only with \'--buildings\' option!' . PHP_EOL);
+    }
+    $allowed_building_operations = array_filter(
+        explode(',', $options['allowed-building-operations']),
+        function ($operation) use ($allowed_building_operations_map) {
+            if (!isset($allowed_building_operations_map[$operation])) {
+                die('Fatal error: invalid building operation name \'' . $operation . '\'!' . PHP_EOL);
+            }
+            return true;
+        }
+    );
+} else {
+    $allowed_building_operations = $allowed_building_operations_map;
+}
+$allowed_building_operations = array_flip(
+    array_map(
+        function ($operation) use ($allowed_building_operations_map) {
+            return $allowed_building_operations_map[$operation];
+        },
+        $allowed_building_operations
+    )
+);
 
 if (isset($options['fetch'])) {
     if (!function_exists('curl_init')) {
@@ -1318,11 +1357,13 @@ if (isset($options['buildings'])) {
                 $step_incremented = true;
 
                 if ($to_insert) {
-                    $DB->Execute(
-                        'INSERT INTO location_buildings
-                        (city_id, street_id, building_num, zip, latitude, longitude, updated)
-                        VALUES ' . implode(',', $to_insert)
-                    );
+                    if (isset($allowed_building_operations[BUILDING_BASE_OPERATION_ADD])) {
+                        $DB->Execute(
+                            'INSERT INTO location_buildings
+                            (city_id, street_id, building_num, zip, latitude, longitude, updated)
+                            VALUES ' . implode(',', $to_insert)
+                        );
+                    }
                     $to_insert = array();
                 }
 
@@ -1406,7 +1447,12 @@ if (isset($options['buildings'])) {
                 }
 
                 if (!empty($fields_to_update)) {
-                    $DB->Execute('UPDATE location_buildings SET updated = 1, ' . implode(',', $fields_to_update) . ' WHERE id = ' . $building['id']);
+                    $DB->Execute(
+                        'UPDATE location_buildings
+                        SET updated = 1'
+                        . (isset($allowed_building_operations[BUILDING_BASE_OPERATION_UPDATE]) ? ', ' . implode(',', $fields_to_update) : '')
+                        . ' WHERE id = ' . $building['id']
+                    );
                 } else {
                     $to_update[] = $building['id'];
                 }
@@ -1429,11 +1475,13 @@ if (isset($options['buildings'])) {
                 }
 
                 if ($to_insert) {
-                    $DB->Execute(
-                        'INSERT INTO location_buildings
-                        (city_id, street_id, building_num, zip, latitude, longitude, updated)
-                        VALUES ' . implode(',', $to_insert)
-                    );
+                    if (isset($allowed_building_operations[BUILDING_BASE_OPERATION_ADD])) {
+                        $DB->Execute(
+                            'INSERT INTO location_buildings
+                            (city_id, street_id, building_num, zip, latitude, longitude, updated)
+                            VALUES ' . implode(',', $to_insert)
+                        );
+                    }
                     $to_insert = array();
                 }
 
@@ -1525,11 +1573,13 @@ if (isset($options['buildings'])) {
 
                     if (!($i % 10000)) {
                         if ($to_insert) {
-                            $DB->Execute(
-                                'INSERT INTO location_buildings
-                                (city_id, street_id, building_num, zip, latitude, longitude, updated, extid)
-                                VALUES ' . implode(',', $to_insert)
-                            );
+                            if (isset($allowed_building_operations[BUILDING_BASE_OPERATION_ADD])) {
+                                $DB->Execute(
+                                    'INSERT INTO location_buildings
+                                    (city_id, street_id, building_num, zip, latitude, longitude, updated, extid)
+                                    VALUES ' . implode(',', $to_insert)
+                                );
+                            }
                             $to_insert = array();
                         }
 
@@ -1632,7 +1682,14 @@ if (isset($options['buildings'])) {
                         }
 
                         if (!empty($fields_to_update)) {
-                            $DB->Execute('UPDATE location_buildings SET updated = 1, ' . implode(',', $fields_to_update) . ' WHERE id = ' . $building['id']);
+                            if (isset($allowed_building_operations[BUILDING_BASE_OPERATION_UPDATE])) {
+                                $DB->Execute(
+                                    'UPDATE location_buildings
+                                    SET updated = 1'
+                                    . (isset($allowed_building_operations[BUILDING_BASE_OPERATION_UPDATE]) ? ', ' . implode(',', $fields_to_update) : '')
+                                    . ' WHERE id = ' . $building['id']
+                                );
+                            }
                         } else {
                             $to_update[] = $building['id'];
                         }
@@ -1652,11 +1709,13 @@ if (isset($options['buildings'])) {
 
                     if (!(($i - 1) % 10000)) {
                         if ($to_insert) {
-                            $DB->Execute(
-                                'INSERT INTO location_buildings
-                                (city_id, street_id, building_num, zip, latitude, longitude, updated, extid)
-                                VALUES ' . implode(',', $to_insert)
-                            );
+                            if (isset($allowed_building_operations[BUILDING_BASE_OPERATION_ADD])) {
+                                $DB->Execute(
+                                    'INSERT INTO location_buildings
+                                    (city_id, street_id, building_num, zip, latitude, longitude, updated, extid)
+                                    VALUES ' . implode(',', $to_insert)
+                                );
+                            }
                             $to_insert = array();
                         }
 
@@ -1685,7 +1744,9 @@ if (isset($options['buildings'])) {
         echo 'Removing old buildings...' . PHP_EOL;
     }
 
-    $DB->Execute('DELETE FROM location_buildings WHERE updated = 0');
+    if (isset($allowed_building_operations[BUILDING_BASE_OPERATION_DELETE])) {
+        $DB->Execute('DELETE FROM location_buildings WHERE updated = 0');
+    }
     $DB->Execute('UPDATE location_buildings SET updated = 0');
 
     unset(
