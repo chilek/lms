@@ -462,7 +462,7 @@ if (isset($options['allowed-building-operations'])) {
         }
     );
 } else {
-    $allowed_building_operations = $allowed_building_operations_map;
+    $allowed_building_operations = array_flip($allowed_building_operations_map);
 }
 $allowed_building_operations = array_flip(
     array_map(
