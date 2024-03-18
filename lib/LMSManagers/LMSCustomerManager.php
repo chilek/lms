@@ -1504,40 +1504,42 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             if (!empty($document['type'])) {
                 $doctype = Utils::filterIntegers($document['type']);
             }
-            $datefrom = false;
-            if (!empty($document['datefrom'])) {
-                $datefrom = strtotime($document['datefrom']);
-            }
-            $dateto = false;
-            if (!empty($document['dateto'])) {
-                $dateto = strtotime($document['dateto']);
-                if ($dateto !== false) {
-                    $dateto = strtotime('tomorrow', $dateto);
+            if (!empty($doctype)) {
+                $datefrom = false;
+                if (!empty($document['datefrom'])) {
+                    $datefrom = strtotime($document['datefrom']);
                 }
+                $dateto = false;
+                if (!empty($document['dateto'])) {
+                    $dateto = strtotime($document['dateto']);
+                    if ($dateto !== false) {
+                        $dateto = strtotime('tomorrow', $dateto);
+                    }
+                }
+                switch ($document['dateselection']) {
+                    case 'creationdate':
+                        $documentfield = 'documents.cdate';
+                        break;
+                    case 'confirmationdate':
+                        $documentfield = 'documents.sdate';
+                        break;
+                    case 'archivizationdate':
+                        $documentfield = 'documents.adate';
+                        break;
+                    case 'fromdate':
+                        $documentfield = 'documentcontents.fromdate';
+                        break;
+                    case 'todate':
+                    default:
+                        $documentfield = 'documentcontents.todate';
+                        break;
+                }
+                $searchargs[] = 'EXISTS (SELECT 1 FROM documents JOIN documentcontents ON documentcontents.docid = documents.id WHERE documents.customerid = c.id'
+                    . (empty($doctype) ? '' : ' AND documents.type IN (' . implode(', ', $doctype) . ')')
+                    . ($datefrom === false ? '' : ' AND ' . $documentfield . ' >= ' . $datefrom)
+                    . ($dateto === false ? '' : ' AND ' . $documentfield . ' < ' . $dateto)
+                    . ')';
             }
-            switch ($document['dateselection']) {
-                case 'creationdate':
-                    $documentfield = 'documents.cdate';
-                    break;
-                case 'confirmationdate':
-                    $documentfield = 'documents.sdate';
-                    break;
-                case 'archivizationdate':
-                    $documentfield = 'documents.adate';
-                    break;
-                case 'fromdate':
-                    $documentfield = 'documentcontents.fromdate';
-                    break;
-                case 'todate':
-                default:
-                    $documentfield = 'documentcontents.todate';
-                    break;
-            }
-            $searchargs[] = 'EXISTS (SELECT 1 FROM documents JOIN documentcontents ON documentcontents.docid = documents.id WHERE documents.customerid = c.id'
-                . (empty($doctype) ? '' : ' AND documents.type IN (' . implode(', ', $doctype) . ')')
-                . ($datefrom === false ? '' : ' AND ' . $documentfield . ' >= ' . $datefrom)
-                . ($dateto === false ? '' : ' AND ' . $documentfield . ' < ' . $dateto)
-                . ')';
         }
 
         if (isset($searchargs)) {
