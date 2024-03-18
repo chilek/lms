@@ -264,11 +264,36 @@ $access_table = array(
         'label' => trans('summaries hiding'),
     ),
     'voip_account_management' => array(
-        'label' => trans('VoIP accounts management'),
-        'allow_regexp' => '^(voipimport|voipaccount(list|search|info|add|del|edit|rules))$',
+        'label' => trans('VoIP account management'),
+        'allow_regexp' => '^voipaccount(list|search|set|info|add|del|edit)$',
+        'allow_menu_items' => array(
+            'VoIP' => array('voipaccountadd', 'voipaccountlist', 'voipaccountsearch'),
+        ),
+    ),
+    'voip_billings' => array(
+        'label' => trans('VoIP billings'),
+        'allow_regexp' => '^voipaccountbilling(info|list)$',
+        'allow_menu_items' => array(
+            'VoIP' => array('voipaccountbillinglist'),
+        ),
+    ),
+    'voip_number_pool_management' => array(
+        'label' => trans('VoIP number pool management'),
+        'allow_regexp' => '^voippoolnumberlist$',
+        'allow_menu_items' => array(
+            'VoIP' => array('voip'),
+        ),
+    ),
+    'voip_price_list_management' => array(
+        'label' => trans('VoIP price list management'),
+        'allow_regexp' => '^voip(pricelist|tariffrules)$',
         'allow_menu_items' => array(
             'VoIP' => Permission::MENU_ALL,
         ),
+    ),
+    'voip_call_recordings' => array(
+        'label' => trans('VoIP call recordings'),
+        'allow_regexp' => '^voipcallrecording$',
     ),
     'userpanel_management' => array(
         'label' => trans('Userpanel management'),
