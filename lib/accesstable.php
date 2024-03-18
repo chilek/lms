@@ -281,14 +281,14 @@ $access_table = array(
         'label' => trans('VoIP number pool management'),
         'allow_regexp' => '^voippoolnumberlist$',
         'allow_menu_items' => array(
-            'VoIP' => array('voip'),
+            'VoIP' => array('voippoolnumberlist'),
         ),
     ),
     'voip_price_list_management' => array(
         'label' => trans('VoIP price list management'),
         'allow_regexp' => '^voip(pricelist|tariffrules)$',
         'allow_menu_items' => array(
-            'VoIP' => Permission::MENU_ALL,
+            'VoIP' => array('voippricelist', 'voiptariffrules'),
         ),
     ),
     'voip_call_recordings' => array(
