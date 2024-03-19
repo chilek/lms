@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2022 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,25 +24,7 @@
  *  $Id$
  */
 
-if (!$_GET['id']) {
-    $SESSION->redirect('?m=eventlist');
+function smarty_function_user_compact_list($params, $template)
+{
+    return LMSSmartyPlugins::userCompactListFunction($params, $template);
 }
-$user_row_limit = ConfigHelper::getConfig(
-    'timetable.row_user_limit',
-    ConfigHelper::getConfig('phpui.timetable_user_row_limit', 4)
-);
-
-$event = $LMS->GetEvent($_GET['id']);
-
-$layout['pagetitle'] = trans('Event Info');
-
-$SESSION->add_history_entry();
-
-$SMARTY->assign(
-    array(
-        'event' => $event,
-        'user_row_limit' => $user_row_limit,
-    )
-);
-
-$SMARTY->display('event/eventinfo.html');
