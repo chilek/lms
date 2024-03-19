@@ -645,6 +645,10 @@ version 28-git (????-??-??):
   - enhancement: allow to set assignment discount entering target value [chilan]
   - enhancement: teryt backend script: --allowed-building-operations allows to limit allowed operations
     on building base during load it from external provider [chilan]
+  - enhancement: lms-sendinvoices.php --extra-file option allows to send all regular files from specified
+    directory [chilan]
+  - enhancement: 'sendinvoices.extra_file' configuration variable can be used as alternative to --extra-file
+    script option [chilan]
 
 version 27.0 (2021-08-20):
 
