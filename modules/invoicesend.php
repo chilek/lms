@@ -131,6 +131,11 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                 $dsn_email = ConfigHelper::getConfig('sendinvoices.dsn_email', '', true);
                 $mdn_email = ConfigHelper::getConfig('sendinvoices.mdn_email', '', true);
 
+                $extrafile = ConfigHelper::getConfig('sendinvoices.extra_file', null, true);
+                if ($extrafile && !is_readable($extrafile)) {
+                    $extrafile = null;
+                }
+
                 if (empty($sender_email)) {
                     echo '<span class="red">' . trans("Fatal error: sender_email unset! Can't continue, exiting.") . '</span><br>';
                 }
@@ -140,7 +145,6 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                     echo '<span class="red">' . trans("Fatal error: smtp_auth value not supported! Can't continue, exiting.") . '</span><br>';
                 }
 
-                $extrafile = null;
                 $quiet = false;
                 $test = false;
 

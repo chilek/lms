@@ -236,9 +236,14 @@ if ($backup || $archive) {
         $part_number = intval(date('H', time()));
     }
 
-    $extrafile = $options['extra-file'] ?? null;
+    if (isset($options['extra-file'])) {
+        $extrafile = $options['extra-file'] ?? null;
+    } else {
+        $extrafile = ConfigHelper::getConfig('sendinvoices.extra_file', null, true);
+    }
     if ($extrafile && !is_readable($extrafile)) {
-        die("Unable to read additional file [$extrafile]!" . PHP_EOL);
+        echo "Warning: unable to read additional file or directory contents [$extrafile]!" . PHP_EOL;
+        $extrafile = null;
     }
 }
 

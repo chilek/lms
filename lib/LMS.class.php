@@ -5303,11 +5303,27 @@ class LMS
                     }
 
                     if ($extrafile) {
-                        $files[] = array(
-                            'content_type' => mime_content_type($extrafile),
-                            'filename' => basename($extrafile),
-                            'data' => file_get_contents($extrafile)
-                        );
+                        if (is_dir($extrafile)) {
+                            $direntries = getdir($extrafile);
+                            if (!empty($direntries)) {
+                                foreach ($direntries as $direntry) {
+                                    $filename = $extrafile . DIRECTORY_SEPARATOR . $direntry;
+                                    if (is_file($filename)) {
+                                        $files[] = array(
+                                            'content_type' => mime_content_type($filename),
+                                            'filename' => $direntry,
+                                            'data' => file_get_contents($filename)
+                                        );
+                                    }
+                                }
+                            }
+                        } else {
+                            $files[] = array(
+                                'content_type' => mime_content_type($extrafile),
+                                'filename' => basename($extrafile),
+                                'data' => file_get_contents($extrafile)
+                            );
+                        }
                     }
                 }
 
