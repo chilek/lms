@@ -62,8 +62,8 @@
 	{/block}
 	{block name=pagecontent}
 		{include file="spinner.html"}
-		{$__old_history_entry = SESSION::getOldHistoryEntry()}
-		{$__history_entry = SESSION::getHistoryEntry()}
+		{$__old_history_entry = Session::getOldHistoryEntry()}
+		{$__history_entry = Session::getHistoryEntry()}
 		<input type="hidden" id="old-history-entry" value="{$__old_history_entry}">
 		<input type="hidden" id="history-entry" value="{$__history_entry}">
 		<script>

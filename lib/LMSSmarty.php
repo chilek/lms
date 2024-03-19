@@ -39,6 +39,15 @@ class LMSSmarty extends Smarty
         $this->registerClass('Session', 'Session');
         $this->registerClass('LMS', 'LMS');
         $this->registerClass('Auth', 'Auth');
+
+        $this->registerPlugin('modifier', 'trans', 'trans');
+        $this->registerPlugin('modifier', 'strtolower', 'strtolower');
+        $this->registerPlugin('modifier', 'preg_split', 'preg_split');
+        $this->registerPlugin('modifier', 'moneyf', 'moneyf');
+        $this->registerPlugin('modifier', 'intval', 'intval');
+        $this->registerPlugin('modifier', 'sprintf', 'sprintf');
+        $this->registerPlugin('modifier', 'array_keys', 'array_keys');
+        $this->registerPlugin('modifier', 'floor', 'floor');
     }
 
     public static function getInstance()

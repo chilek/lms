@@ -221,3 +221,6 @@ $SMARTY->registerClass('ConfigHelper', 'ConfigHelper');
 $SMARTY->registerClass('Localisation', 'Localisation');
 $SMARTY->registerClass('Session', 'Session');
 $SMARTY->registerClass('LMS', 'LMS');
+
+$SMARTY->registerPlugin('modifier', 'trans', 'trans');
+$SMARTY->registerPlugin('modifier', 'moneyf', 'moneyf');
