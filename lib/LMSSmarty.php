@@ -38,6 +38,7 @@ class LMSSmarty extends Smarty
         $this->registerClass('Localisation', 'Localisation');
         $this->registerClass('Session', 'Session');
         $this->registerClass('LMS', 'LMS');
+        $this->registerClass('Auth', 'Auth');
     }
 
     public static function getInstance()
