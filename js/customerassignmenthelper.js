@@ -932,7 +932,6 @@ $('#target_price_trigger').change(function() {
 
 $('#target_price').change(function() {
 	let targetPrice = parseFloat($(this).val().replace(',', '.'));
-	console.log(targetPrice);
 	if (isNaN(targetPrice)) {
 		$(this).val('');
 	} else {
