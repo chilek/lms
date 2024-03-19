@@ -26,15 +26,17 @@
 
 if (!$_GET['id']) {
     $SESSION->redirect('?m=eventlist');
+} else {
+    $id = intval($_GET['id']);
 }
 $user_row_limit = ConfigHelper::getConfig(
     'timetable.row_user_limit',
     ConfigHelper::getConfig('phpui.timetable_user_row_limit', 4)
 );
 
-$event = $LMS->GetEvent($_GET['id']);
+$event = $LMS->GetEvent($id);
 
-$layout['pagetitle'] = trans('Event Info');
+$layout['pagetitle'] = trans('Event Info') . '#' . $id;
 
 $SESSION->add_history_entry();
 
