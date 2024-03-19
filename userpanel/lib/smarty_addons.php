@@ -217,7 +217,7 @@ $SMARTY->registerPlugin('function', 'img', '_smarty_function_img');
 $SMARTY->registerPlugin('function', 'body', '_smarty_function_body');
 $SMARTY->registerPlugin('function', 'stylefile', '_smarty_function_stylefile');
 
-$SMARTY->registerClass('ConfigHelper');
-$SMARTY->registerClass('Localisation');
-$SMARTY->registerClass('SESSION');
-$SMARTY->registerClass('LMS');
+$SMARTY->registerClass('ConfigHelper', 'ConfigHelper');
+$SMARTY->registerClass('Localisation', 'Localisation');
+$SMARTY->registerClass('Session', 'Session');
+$SMARTY->registerClass('LMS', 'LMS');

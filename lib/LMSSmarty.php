@@ -33,6 +33,11 @@ class LMSSmarty extends Smarty
     {
         parent::__construct();
         self::$smarty = $this;
+
+        $this->registerClass('ConfigHelper', 'ConfigHelper');
+        $this->registerClass('Localisation', 'Localisation');
+        $this->registerClass('Session', 'Session');
+        $this->registerClass('LMS', 'LMS');
     }
 
     public static function getInstance()
