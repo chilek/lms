@@ -110,28 +110,6 @@ try {
     die("Fatal error: cannot connect to database!<BR>");
 }
 
-// Initialize templates engine (must be before locale settings)
-$SMARTY = new LMSSmarty;
-
-$SMARTY->muteUndefinedOrNullWarnings();
-
-// test for proper version of Smarty
-
-if (constant('Smarty::SMARTY_VERSION')) {
-    $ver_chunks = preg_split('/[- ]/', preg_replace('/^smarty-/i', '', Smarty::SMARTY_VERSION), -1, PREG_SPLIT_NO_EMPTY);
-} else {
-    $ver_chunks = null;
-}
-
-if (count($ver_chunks) < 1 || version_compare('3.1', $ver_chunks[0]) > 0) {
-    die('<B>Wrong version of Smarty engine! We support only Smarty-3.x greater than 3.0.</B>');
-}
-
-define('SMARTY_VERSION', $ver_chunks[0]);
-
-// add LMS's custom plugins directory
-$SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
-
 // Redirect to SSL
 $_FORCE_SSL = ConfigHelper::checkConfig('userpanel.force_ssl', ConfigHelper::getConfig('phpui.force_ssl'));
 if ($_FORCE_SSL && (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on')) {
@@ -159,6 +137,28 @@ $LMS = new LMS($DB, $AUTH, $SYSLOG);
 require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'Session.class.php');
 require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'Userpanel.class.php');
 require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'ULMS.class.php');
+
+// Initialize templates engine (must be before locale settings)
+$SMARTY = new LMSSmarty;
+
+$SMARTY->muteUndefinedOrNullWarnings();
+
+// test for proper version of Smarty
+
+if (constant('Smarty::SMARTY_VERSION')) {
+    $ver_chunks = preg_split('/[- ]/', preg_replace('/^smarty-/i', '', Smarty::SMARTY_VERSION), -1, PREG_SPLIT_NO_EMPTY);
+} else {
+    $ver_chunks = null;
+}
+
+if (count($ver_chunks) < 1 || version_compare('3.1', $ver_chunks[0]) > 0) {
+    die('<B>Wrong version of Smarty engine! We support only Smarty-3.x greater than 3.0.</B>');
+}
+
+define('SMARTY_VERSION', $ver_chunks[0]);
+
+// add LMS's custom plugins directory
+$SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
 
 Localisation::appendUiLanguage(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'locale');
 
