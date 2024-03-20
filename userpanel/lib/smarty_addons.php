@@ -224,3 +224,5 @@ $SMARTY->registerClass('LMS', 'LMS');
 
 $SMARTY->registerPlugin('modifier', 'trans', 'trans');
 $SMARTY->registerPlugin('modifier', 'moneyf', 'moneyf');
+$SMARTY->registerPlugin('modifier', 'array_multisort', 'array_multisort');
+$SMARTY->registerPlugin('modifier', 'preg_match', 'preg_match');
