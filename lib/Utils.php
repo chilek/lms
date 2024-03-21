@@ -1063,6 +1063,7 @@ class Utils
                 break;
             case 401:
             case 403:
+            case 429:
             case 500:
             case 503:
                 $result['errors'][] = $reply['komunikat'];
