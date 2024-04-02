@@ -861,7 +861,7 @@ $(".format-3f").on('change', function () {
 
 $("#discount_value").change(function () {
 	let discountType = parseInt($("#discount_type").val());
-	let discountValue = parseFloat($(this).val().replaceAll(' ', ''));
+	let discountValue = parseFloat($(this).val().replaceAll(' ', '').replace(',', '.'));
 	let netFlag = $('#netflag').prop('checked');
 	let targetPriceElem = $("#target_price");
 	let targetPrice;
@@ -880,12 +880,12 @@ $("#discount_value").change(function () {
 
 	switch (discountType) {
 		case lmsSettings.discountPercentage:
-			discountValue = parseFloat(financeRound(discountValue.toString(), 3));
-			targetPrice = financeRound((price * (100 - discountValue) / 100).toString(), 3);
+			discountValue = parseFloat(financeRound(discountValue.toFixed(3), 3).replace(',', '.'));
+			targetPrice = financeRound((price * (100 - discountValue) / 100).toFixed(3), 3);
 			break;
 		case lmsSettings.discountAmount:
-			discountValue = parseFloat(financeRound(discountValue.toString(), 3));
-			targetPrice = financeRound((price - discountValue).toString(), 3);
+			discountValue = parseFloat(financeRound(discountValue.toFixed(3), 3).replace(',', '.'));
+			targetPrice = financeRound((price - discountValue).toFixed(3), 3);
 			break;
 	}
 	$(this).val(discountValue);
@@ -895,7 +895,7 @@ $("#discount_value").change(function () {
 $("#discount_type").change(function () {
 	let discountType = parseInt($(this).val());
 	let discountValueElem = $("#discount_value");
-	let discountValue = parseFloat(discountValueElem.val().replaceAll(' ', ''));
+	let discountValue = parseFloat(discountValueElem.val().replaceAll(' ', '').replace(',', '.'));
 	let netFlag = $('#netflag').prop('checked');
 	let targetPriceElem = $("#target_price");
 	let targetPrice;
@@ -911,12 +911,12 @@ $("#discount_type").change(function () {
 	if (!isNaN(discountValue)) {
 		switch (discountType) {
 			case lmsSettings.discountPercentage:
-				discountValue = parseFloat(financeRound(discountValue.toString(), 3));
-				targetPrice = financeRound((price * (100 - discountValue) / 100).toString(), 3);
+				discountValue = parseFloat(financeRound(discountValue.toFixed(3), 3).replace(',', '.'));
+				targetPrice = financeRound((price * (100 - discountValue) / 100).toFixed(3), 3);
 				break;
 			case lmsSettings.discountAmount:
-				discountValue = parseFloat(financeRound(discountValue.toString(), 3));
-				targetPrice = financeRound((price - discountValue).toString(), 3);
+				discountValue = parseFloat(financeRound(discountValue.toFixed(3), 3).replace(',', '.'));
+				targetPrice = financeRound((price - discountValue).toFixed(3), 3);
 				break;
 		}
 		discountValueElem.val(discountValue);
@@ -950,10 +950,10 @@ $('#target_price').change(function() {
 			let targetDiscount;
 			switch (discountType) {
 				case lmsSettings.discountPercentage:
-					targetDiscount = financeRound((((price - targetPrice) / price) * 100).toString(), 3);
+					targetDiscount = financeRound((((price - targetPrice) / price) * 100).toFixed(3), 3);
 					break;
 				case lmsSettings.discountAmount:
-					targetDiscount = financeRound((price - targetPrice).toString(), 3);
+					targetDiscount = financeRound((price - targetPrice).toFixed(3), 3);
 					break;
 				default:
 					targetDiscount = discountValue;
