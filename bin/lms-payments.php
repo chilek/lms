@@ -687,7 +687,8 @@ if ($billings) {
                 $billing_idx++;
             }
 
-            while ($billing_idx < $billing_count && $billings[$billing_idx]['customerid'] == $service_customerid) {
+            while ($billing_idx < $billing_count && $billings[$billing_idx]['customerid'] == $service_customerid
+                && $service['id'] == $billings[$billing_idx]['id']) {
                 $assigns[] = $billings[$billing_idx];
                 //$billing_idx = $old_billing_idx;
                 $billing_idx++;
@@ -1396,7 +1397,7 @@ foreach ($assigns as $assign) {
         $assign['price'] = round($assign['price'] * $suspension_percentage / 100, 3);
         $assign['value'] = round($assign['price'] * $assign['count'], 2);
     }
-    if (empty($assign['value']) && ($assign['liabilityid'] != 'set' || !$empty_billings)) {
+    if (empty($assign['value']) && ($assign['liabilityid'] != 'set' || !$empty_billings || !empty($assign['suspended']))) {
         continue;
     }
 
@@ -1645,7 +1646,7 @@ foreach ($assigns as $assign) {
                 || !isset($paytimes[$cid]) || $paytimes[$cid] != $inv_paytime
                 || $paytypes[$cid] != $inv_paytype
                 || $numberplans[$cid] != $plan || $assign['recipient_address_id'] != $addresses[$cid]
-                || $currencies[$cid] != $currency || $netflags[$cid] != $netflag) {
+                || !isset($currencies[$cid]) || $currencies[$cid] != $currency || $netflags[$cid] != $netflag) {
                 if (!array_key_exists($plan, $numbertemplates)) {
                     $numbertemplates[$plan] = $DB->GetOne("SELECT template FROM numberplans WHERE id = ?", array($plan));
                 }
@@ -1955,7 +1956,7 @@ foreach ($assigns as $assign) {
                             }
                         }
 
-                        $fullnumber = docnumber(array(
+                        $doc_fullnumber = docnumber(array(
                             'number' => $newnumber,
                             'template' => $numbertemplates[$billing_plan],
                             'cdate' => $issuetime,
@@ -2002,7 +2003,7 @@ foreach ($assigns as $assign) {
                                 $division['inv_footer'] ?: '',
                                 $division['inv_author'] ?: '',
                                 $division['inv_cplace'] ?: '',
-                                $fullnumber,
+                                $doc_fullnumber,
                                 $invoices[$cid],
                                 $billing_document_template['name'],
                                 DOC_CLOSED,
@@ -2048,7 +2049,7 @@ foreach ($assigns as $assign) {
                         $invoices_with_billings[$invoices[$cid]] = $billing_docid;
 
                         if (!$test) {
-                            $bobj = $barcode->getBarcodeObj('C128', iconv('UTF-8', 'ASCII//TRANSLIT', $fullnumber), -1, -30, 'black');
+                            $bobj = $barcode->getBarcodeObj('C128', iconv('UTF-8', 'ASCII//TRANSLIT', $doc_fullnumber), -1, -30, 'black');
 
                             $document = array(
                                 'customerid' => $cid,
