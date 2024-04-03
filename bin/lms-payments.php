@@ -969,7 +969,7 @@ if (!empty($assigns)) {
             WHERE c.customerid = ?
                 AND c.value <> 0
                 AND c.time >= ? AND c.time < ?
-            ORDER BY deadline',
+            ORDER BY deadline, value DESC',
             array(
                 $reward_penalty_deadline_grace_days,
                 array(DOC_INVOICE, DOC_CNOTE, DOC_DNOTE, DOC_INVOICE_PRO),
