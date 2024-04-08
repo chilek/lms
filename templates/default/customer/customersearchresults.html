@@ -488,6 +488,12 @@
 
 		$('#customer-action-apply').click(function() {
 			var action = parseInt($('#customer-action').val());
+
+			if (isNaN(action)) {
+				alertDialog($t("No action selected!"), this);
+				return;
+			}
+
 			switch (action) {
 				case 1:
 					setWarnings(1);

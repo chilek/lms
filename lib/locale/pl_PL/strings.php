@@ -5895,3 +5895,5 @@ $_LANG['hide customer sensitive data'] = 'ukrywanie danych wrażliwych klientów
 
 $_LANG['No email address is selected while customer email notification is checked!'] = 'Nie wybrano adresu e-mail, podczas gdy powiadomienie e-mail klienta zostało zaznaczone!';
 $_LANG['No phone number is selected while customer sms notification is checked!'] = 'Nie wybrano numeru telefonu, podczas gdy powiadomienie SMS klienta zostało zaznaczone!';
+
+$_LANG['No action selected!'] = 'Nie wybrano czynności!';
