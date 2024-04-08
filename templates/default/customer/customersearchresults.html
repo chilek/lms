@@ -175,7 +175,8 @@
 		<TD COLSPAN="4" class="nobr">
 			<div id="action-panel">
 				<span class="bold">{trans("<!customersearch>Action:")}</span>
-				<select id="customer-action">
+				<select id="customer-action" required>
+					<option value="">{trans("— select —")}</option>
 					<optgroup label="{trans("Warnings")}">
 						<option value="1">{trans("<!customersearch>Enable warning")}</option>
 						<option value="2">{trans("<!customersearch>Disable warning")}</option>
