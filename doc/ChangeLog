@@ -649,6 +649,7 @@ version 28-git (????-??-??):
     directory [chilan]
   - enhancement: 'sendinvoices.extra_file' configuration variable can be used as alternative to --extra-file
     script option [chilan]
+  - enhancement: allow to resolve many helpdesk tickets quickly with dedicated button [chilan]
 
 version 27.0 (2021-08-20):
 
