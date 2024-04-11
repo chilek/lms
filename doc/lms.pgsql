@@ -825,7 +825,7 @@ CREATE TABLE voip_cdr (
 	callee_flags smallint NOT NULL DEFAULT 0,
 	caller_prefix_group varchar(100) NULL,
 	callee_prefix_group varchar(100) NULL,
-	uniqueid varchar(20) NOT NULL,
+	uniqueid varchar(80) NOT NULL,
 	fraction varchar(256) DEFAULT NULL,
 	prefix varchar(256) DEFAULT NULL,
 	prefixname varchar(256) DEFAULT NULL,
@@ -4411,6 +4411,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024022800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024041100');
 
 COMMIT;

@@ -25,7 +25,7 @@
  */
 
 // here should be always the newest version of database!
-define('DBVERSION', '2024022800');
+define('DBVERSION', '2024041100');
 
 /**
  *
