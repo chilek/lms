@@ -1352,20 +1352,18 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             }
                             break;
                         case 'deletedfrom':
-                            if ($search['deletedto']) {
-                                $searchargs['deletedfrom'] = '(moddate >= ' . intval($value)
+                            if (empty($search['deletedto'])) {
+                                $searchargs[] = '(c.deleted = 1 AND moddate >= ' . intval($value) . ')';
+                            } else {
+                                $searchargs['deletedfrom'] = '(c.deleted = 1 AND moddate >= ' . intval($value)
                                     . ' AND moddate <= ' . intval($search['deletedto']) . ')';
                                 unset($search['deletedto']);
-                            } else {
-                                $searchargs[] = 'moddate >= ' . intval($value);
                             }
-                            $state_conditions[] = 'c.deleted = 1';
                             break;
                         case 'deletedto':
-                            if (!isset($searchargs['deletedfrom'])) {
-                                $searchargs[] = 'moddate <= ' . intval($value);
+                            if (empty($searchargs['deletedfrom'])) {
+                                $searchargs[] = '(c.deleted = 1 AND moddate <= ' . intval($value) . ')';
                             }
-                            $state_conditions[] = 'c.deleted = 1';
                             break;
                         case 'cutoffstopfrom':
                             if ($search['cutoffstopto']) {
@@ -1724,7 +1722,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             . '
                         ) d ON d.customerid = c.id' : ''))))
                 . ' WHERE '
-                . (empty($state_conditions) ? '1 = 1' : implode(' ' . $statesqlskey . ' ', $state_conditions))
+                . (empty($state_conditions) ? '1 = 1' : '(' . implode(' ' . $statesqlskey . ' ', $state_conditions) . ')')
                 . ($ignore_deleted_customers ? ' AND c.deleted = 0' : '')
                 . ($flag_condition ? ' AND ' . $flag_condition : '')
                 . (isset($division) && $division ? ' AND c.divisionid = ' . intval($division) : '')
