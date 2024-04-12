@@ -3127,6 +3127,7 @@ $_LANG['Phone number:'] = 'Numer telefonu:';
 $_LANG['Phone number'] = 'Numer telefonu';
 $_LANG['<!phone>number'] = 'numer';
 $_LANG['Phone numbers:'] = 'Numery telefonów:';
+$_LANG['Phone numbers'] = 'Numery telefonów';
 $_LANG['No such VoIP accounts in database.'] = 'Brak kont VoIP w bazie.';
 $_LANG['That customer does not own any VoIP account.'] = 'Klient nie posiada kont VoIP.';
 $_LANG['No such VoIP accounts matching search criteria.'] = 'Brak kont VoIP spełniających zadane kryteria.';
