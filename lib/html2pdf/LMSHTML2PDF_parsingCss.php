@@ -40,7 +40,7 @@ class LMSHTML2PDF_parsingCss extends \Spipu\Html2Pdf\Parsing\Css
         $style = $b.$i;
 
         if ($this->defaultFont) {
-            if ($family == 'helvetica') {
+            if ($family == 'helvetica' || $family == 'arial') {
                 $family = 'liberationsans';
             } elseif ($family == 'symbol' || $family == 'zapfdingbats') {
                 $style='';
@@ -52,7 +52,7 @@ class LMSHTML2PDF_parsingCss extends \Spipu\Html2Pdf\Parsing\Css
             }
         }
 
-        if ($family == 'helvetica') {
+        if ($family == 'helvetica' || $family == 'arial') {
             $family = 'liberationsans';
         } elseif ($family == 'symbol' || $family == 'zapfdingbats') {
             $style='';
