@@ -440,6 +440,9 @@ class Localisation
         if (is_string($number)) {
             $number = floatval($number);
         }
+        if ($number ** -1 === -INF) {
+            $number = 0;
+        }
         return self::$numberSmartFormatter->format($number);
     }
 
@@ -447,6 +450,9 @@ class Localisation
     {
         if (is_string($number)) {
             $number = floatval($number);
+        }
+        if ($number ** -1 === -INF) {
+            $number = 0;
         }
         return self::$numberFormatter->format($number);
     }
