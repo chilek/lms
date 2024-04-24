@@ -1644,7 +1644,7 @@ if (isset($options['buildings'])) {
                         }
                     }
 
-                    if (strlen($record['gml_id']) && isset($buildings[$record['gml_id']])) {
+                    if (isset($record['gml_id']) && strlen($record['gml_id']) && isset($buildings[$record['gml_id']])) {
                         $building = $buildings[$record['gml_id']];
                     } else {
                         $building = $location_cache->buildingExists($city['id'], $street['id'], $record['Nr budynku']);
@@ -1702,7 +1702,7 @@ if (isset($options['buildings'])) {
                         $data[] = $record['Szerokość geograficzna'] ?: 'null';
                         $data[] = $record['Długość geograficzna'] ?: 'null';
                         $data[] = 1;
-                        $data[] = $record['gml_id'] ? $DB->Escape($record['gml_id']) : 'null';
+                        $data[] = isset($record['gml_id']) && strlen($record['gml_id']) ? $DB->Escape($record['gml_id']) : 'null';
 
                         $to_insert[] = '(' . implode(',', $data) . ')';
                     }
