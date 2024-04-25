@@ -838,6 +838,18 @@ if (isset($netdev)) {
 } else {
     $netdev = $LMS->GetNetDev($id);
 
+    if (isset($netdev['producer'])) {
+        $netdev['pagetitle'] = trans('Device Edit: $a ($b)', $netdev['name'], $netdev['producer'] . ($netdev['model'] ? ' ' . $netdev['model'] : ''));
+    } else {
+        $netdev['pagetitle'] = trans('Device Edit: $a', $netdev['name']);
+    }
+
+    if (isset($netdev['producerid']) && preg_match('/^[0-9]+$/', $netdev['producerid'])
+        && isset($netdev['modelid']) && preg_match('/^[0-9]+$/', $netdev['modelid'])) {
+        $netdev['producer'] = $netdev['producerid'];
+        $netdev['model'] = $netdev['modelid'];
+    }
+
     $attachmenttype = 'netdevid';
     $attachmentresourceid = $id;
     $SMARTY->assign('attachmenttype', $attachmenttype);
@@ -891,11 +903,7 @@ unset($netdevlist['total']);
 unset($netdevlist['order']);
 unset($netdevlist['direction']);
 
-if ($netdev['producer']) {
-    $layout['pagetitle'] = trans('Device Edit: $a ($b)', $netdev['name'], $netdev['producer'] . ($netdev['model'] ? ' ' . $netdev['model'] : ''));
-} else {
-    $layout['pagetitle'] = trans('Device Edit: $a', $netdev['name']);
-}
+$layout['pagetitle'] = $netdev['pagetitle'];
 
 $hook_data = $LMS->executeHook(
     'netdevedit_before_display',

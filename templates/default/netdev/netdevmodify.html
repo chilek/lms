@@ -13,6 +13,7 @@
 
 <form name="netdev" id="netdev" method="post" action="?m={$layout.module}{if $layout.module == 'netdevedit'}&id={$netdev.id}{/if}">
 	<input type="submit" class="hiddenbtn">
+	<input type="hidden" name="netdev[pagetitle]" value="{$netdev.pagetitle|escape}">
 
 	{box_container id="netdev"}
 		{box_header icon="netdev" icon_class="fa-fw" label="Name"}
