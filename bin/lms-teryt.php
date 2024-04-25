@@ -1653,8 +1653,8 @@ if (isset($options['buildings'])) {
                     if ($building) {
                         $fields_to_update = array();
 
-                        if ($record['gml_id'] != $building['extid']) {
-                            $fields_to_update[] = 'extid = ' . ($record['gml_id'] ? $DB->Escape($record['gml_id']) : 'null');
+                        if (isset($record['gml_id']) && $record['gml_id'] != $building['extid'] || !isset($record['gml_id']) && isset($record['extid']) && strlen($record['extid'])) {
+                            $fields_to_update[] = 'extid = ' . (isset($record['gml_id']) ? $DB->Escape($record['gml_id']) : 'null');
                         }
 
                         if (!isset($building['city_id']) || $city['id'] != $building['city_id']) {
