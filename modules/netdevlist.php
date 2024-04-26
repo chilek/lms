@@ -115,10 +115,12 @@ if ($api) {
     $total = intval($LMS->GetNetDevList($o, $search));
 
     $limit = intval(ConfigHelper::getConfig('phpui.nodelist_pagelimit', $total));
-    if ($SESSION->is_set('ndlp') && !isset($_GET['page'])) {
-        $SESSION->restore('ndlp', $_GET['page']);
+    if ($SESSION->is_set('ndlp')) {
+        $SESSION->restore('ndlp', $oldpage);
+    } else {
+        $oldpage = 1;
     }
-    $page = !isset($_GET['page']) ? 1 : intval($_GET['page']);
+    $page = isset($_GET['page']) && !empty($_GET['page']) ? intval($_GET['page']) : $oldpage;
     $offset = ($page - 1) * $limit;
 
     $search['count'] = false;
