@@ -591,8 +591,6 @@ if (is_array($defaultTaxIds)) {
     $defaultTaxId = 0;
 }
 $SMARTY->assign('defaultTaxId', $defaultTaxId);
-//$SMARTY->assign('defaultCurrency', Localisation::getDefaultCurrency());
-//$SMARTY->assign('defaultNetflag', ConfigHelper::getConfig('suspensions.default_netflag', 0));
 
 $assignmentsWithSuspensions = $LMS->getCustomerAssignments($customer['id'], array('show_expired' => true, 'show_approved' => false, 'with_suspensions' => true));
 if (!empty($assignmentsWithSuspensions)) {

@@ -876,8 +876,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                 $suspension['current_total_net_value'] = 0;
                                 $suspension['current_total_tax_value'] = 0;
                                 $suspension['current_total_gross_value'] = 0;
-
-//                                $suspension['suspension_paydate'] = 0;
                                 $suspension['payday'] = null;
 
                                 $suspensionsByCurrency[$row['currency']][$row['taxid']][$row['suspension_id']] = $suspension;
@@ -928,8 +926,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                     $suspension['current_total_net_value'] = 0;
                                     $suspension['current_total_tax_value'] = 0;
                                     $suspension['current_total_gross_value'] = 0;
-
-//                                    $suspension['suspension_paydate'] = 0;
                                     $suspension['payday'] = null;
 
                                     $suspensionsByCurrency[$row['suspension_currency']][$row['suspension_tax_id']][$row['suspension_id']] = $suspension;
@@ -1033,34 +1029,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     public function getSuspensions($params = array())
     {
         $result = array();
-//        $params['by_customer_id'] = true;
-
         if (!empty($params)) {
-//            $suspensions = $this->db->GetAllByKey(
-//                'SELECT *
-//                FROM vsuspensions
-//                WHERE 1=1'
-//                . (!empty($params['suspension_id']) ? ' AND suspension_id = ' . $params['suspension_id'] : ''),
-//                'suspension_id'
-//            );
-//
-//            if (!empty($suspensions)) {
-//                foreach ($suspensions as $skey => &$suspension) {
-//                    $suspensionAssignments = $this->db->GetAllByKey(
-//                        'SELECT suspension_assignment_id AS assignment_id
-//                        FROM vassignmentsuspensions
-//                        WHERE suspension_id = ?',
-//                        'assignment_id',
-//                        array(
-//                            $skey
-//                        )
-//                    );
-//                    $suspension['suspended_assignments'] = $suspensionAssignments;
-//                }
-//                unset($suspension);
-//            }
-
-
             $suspensions = $this->db->GetAll(
                 'SELECT *  
                 FROM vassignmentsuspensions
@@ -1103,41 +1072,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         return $result;
     }
-
-//    public function getSuspensions($customer_id = null)
-//    {
-//        $suspensions = $this->db->GetAll(
-//            'SELECT id AS suspension_id,
-//                at AS suspension_at,
-//                datefrom,
-//                dateto,
-//                chargemethod AS suspension_charge_method,
-//                calculationmethod AS suspension_calculation_method,
-//                value AS suspension_value,
-//                percentage AS suspension_percentage,
-//                netflag AS suspension_netflag,
-//                currency AS suspension_currency,
-//                note,
-//                (CASE WHEN suspensions.customerid IS NULL THEN 0 ELSE 1 END) AS suspend_all,
-//                taxid AS suspension_tax_id
-//                FROM suspensions
-//                WHERE suspensions.id = ?',
-//            array(
-//                $suspension_id
-//            )
-//        );
-//
-//        if(!empty($suspension)) {
-//            $suspension['suspended_assignments'] = $this->getCustomerAssignments($customer_id,
-//                array('show_approved' => true,
-//                    'show_expired' => true,
-//                    'suspension_id' => $suspension_id
-//                )
-//            );
-//        }
-//
-//        return $suspension;
-//    }
 
     public function GetCustomerServiceSummary($id)
     {
@@ -2872,32 +2806,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 break;
         }
     }
-
-    //todo sprawdzić użycie
-//    public function SuspendAssignment($id, $suspend = true, $suspensionid = null)
-//    {
-//        if ($this->syslog) {
-//            $assign = $this->db->GetRow('SELECT id, tariffid, liabilityid, customerid FROM assignments WHERE id = ?', array($id));
-//            $args = array(
-//                SYSLOG::RES_ASSIGN => $assign['id'],
-//                SYSLOG::RES_TARIFF => $assign['tariffid'],
-//                SYSLOG::RES_LIAB => $assign['liabilityid'],
-//                SYSLOG::RES_CUST => $assign['customerid'],
-//                'suspend' => ($suspend || !empty($suspensionid) ? 1 : 0),
-//                'suspentionid' => ($suspensionid ?? null)
-//            );
-//            $this->syslog->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_UPDATE, $args);
-//        }
-//        return $this->db->Execute('
-//            UPDATE assignments SET suspended = ?, suspensionid = ?
-//            WHERE id = ?',
-//            array(
-//                $suspend ? 1 : 0,
-//                $suspensionid ?? null,
-//                $id
-//            )
-//        );
-//    }
 
     public function suspendAssignment($assignment_id)
     {

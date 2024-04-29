@@ -1647,7 +1647,6 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     WHEN s.warnsum > 0 THEN 2 ELSE 0 END) AS nodewarn ';
         }
 
-        //todo
         $sql .= 'FROM customerview c
             ' . ($overduereceivables ? '
             LEFT JOIN (
