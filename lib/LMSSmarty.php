@@ -66,9 +66,13 @@ class LMSSmarty extends Smarty
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'implode', 'implode');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'htmlspecialchars', 'htmlspecialchars');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'call_user_func', 'call_user_func');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'trim', 'trim');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'rtrim', 'rtrim');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'strtotime', 'strtotime');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'mb_strlen', 'mb_strlen');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'base64_encode', 'base64_encode');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'urlencode', 'urlencode');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'addslashes', 'addslashes');
 
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'format_bankaccount', 'format_bankaccount');
 
