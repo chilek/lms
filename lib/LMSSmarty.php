@@ -45,8 +45,12 @@ class LMSSmarty extends Smarty
         $this->registerClass('LMS', 'LMS');
         $this->registerClass('Auth', 'Auth');
         $this->registerClass('Utils', 'Utils');
+        $this->registerClass('EtherCodes', 'EtherCodes');
 
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'trans', 'trans');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'date', 'date');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'count', 'count');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'key', 'key');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'strtolower', 'strtolower');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'str_replace', 'str_replace');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'preg_split', 'preg_split');
@@ -57,8 +61,19 @@ class LMSSmarty extends Smarty
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'array_keys', 'array_keys');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'array_merge', 'array_merge');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'floor', 'floor');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'pow', 'pow');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'implode', 'implode');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'htmlspecialchars', 'htmlspecialchars');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'call_user_func', 'call_user_func');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'rtrim', 'rtrim');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'strtotime', 'strtotime');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'mb_strlen', 'mb_strlen');
+
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'format_bankaccount', 'format_bankaccount');
+
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'bankaccount', 'bankaccount');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'size', 'LMSSmartyPlugins::sizeModifier');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'convert_to_units', 'convert_to_units');
     }
 
     public static function getInstance()

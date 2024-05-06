@@ -135,10 +135,6 @@ if ($_FORCE_SSL && (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on')) {
 $_SERVER['REMOTE_ADDR'] = str_replace("::ffff:", "", $_SERVER['REMOTE_ADDR']);
 
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'checkip.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'accesstable.php');
-
 if (!$api) {
     // Initialize templates engine (must be before locale settings)
     $SMARTY = new LMSSmarty;
@@ -163,6 +159,10 @@ if (!$api) {
     // uncomment this line if you're not gonna change template files no more
     //$SMARTY->compile_check = false;
 }
+
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'checkip.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'accesstable.php');
 
 $SYSLOG = SYSLOG::getInstance();
 
