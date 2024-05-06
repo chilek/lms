@@ -39,6 +39,7 @@ class LMSSmarty extends Smarty
         $this->registerClass('Session', 'Session');
         $this->registerClass('LMS', 'LMS');
         $this->registerClass('Auth', 'Auth');
+        $this->registerClass('Utils', 'Utils');
 
         $this->registerPlugin('modifier', 'trans', 'trans');
         $this->registerPlugin('modifier', 'strtolower', 'strtolower');
