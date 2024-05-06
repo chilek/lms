@@ -222,7 +222,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      */
     public function getCustomerBalance($id, $totime = null, $expired = false)
     {
-        if ($expired) {
+        if ($expired || $expired !== false) {
             $deadline = ConfigHelper::getConfig('payments.deadline', ConfigHelper::getConfig('invoices.paytime', 0));
             if (empty($totime)) {
                 $totime = time();
