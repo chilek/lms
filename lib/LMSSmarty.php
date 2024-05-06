@@ -56,6 +56,7 @@ class LMSSmarty extends Smarty
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'preg_split', 'preg_split');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'preg_match', 'preg_match');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'moneyf', 'moneyf');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'moneyf_in_words', 'moneyf_in_words');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'intval', 'intval');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'sprintf', 'sprintf');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'array_keys', 'array_keys');
