@@ -34,6 +34,11 @@ class LMSSmarty extends Smarty
         parent::__construct();
         self::$smarty = $this;
 
+        // add LMS's custom plugins directory
+        $this->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
+
+        $this->muteUndefinedOrNullWarnings();
+
         $this->registerClass('ConfigHelper', 'ConfigHelper');
         $this->registerClass('Localisation', 'Localisation');
         $this->registerClass('Session', 'Session');
@@ -41,14 +46,19 @@ class LMSSmarty extends Smarty
         $this->registerClass('Auth', 'Auth');
         $this->registerClass('Utils', 'Utils');
 
-        $this->registerPlugin('modifier', 'trans', 'trans');
-        $this->registerPlugin('modifier', 'strtolower', 'strtolower');
-        $this->registerPlugin('modifier', 'preg_split', 'preg_split');
-        $this->registerPlugin('modifier', 'moneyf', 'moneyf');
-        $this->registerPlugin('modifier', 'intval', 'intval');
-        $this->registerPlugin('modifier', 'sprintf', 'sprintf');
-        $this->registerPlugin('modifier', 'array_keys', 'array_keys');
-        $this->registerPlugin('modifier', 'floor', 'floor');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'trans', 'trans');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'strtolower', 'strtolower');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'str_replace', 'str_replace');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'preg_split', 'preg_split');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'preg_match', 'preg_match');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'moneyf', 'moneyf');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'intval', 'intval');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'sprintf', 'sprintf');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'array_keys', 'array_keys');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'array_merge', 'array_merge');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'floor', 'floor');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'implode', 'implode');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'format_bankaccount', 'format_bankaccount');
     }
 
     public static function getInstance()

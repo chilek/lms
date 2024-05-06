@@ -120,34 +120,6 @@ if (!$api) {
                 . " or add 'database.auto_update' configuration variable with value 'true' to lms.ini file (not recommended)<br>"
         );
     }
-
-    // Initialize templates engine (must be before locale settings)
-    $SMARTY = new LMSSmarty;
-
-    // test for proper version of Smarty
-
-    if (defined('Smarty::SMARTY_VERSION')) {
-        $ver_chunks = preg_split('/[- ]/', preg_replace('/^smarty-/i', '', Smarty::SMARTY_VERSION), -1, PREG_SPLIT_NO_EMPTY);
-    } else {
-        $ver_chunks = null;
-    }
-    if (count($ver_chunks) < 1 || version_compare('3.1', $ver_chunks[0]) > 0) {
-        die('<B>Wrong version of Smarty engine! We support only Smarty-3.x greater than 3.1.</B>');
-    }
-
-    define('SMARTY_VERSION', $ver_chunks[0]);
-
-    // add LMS's custom plugins directory
-    $SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
-
-    $SMARTY->setMergeCompiledIncludes(true);
-
-    $SMARTY->setDefaultResourceType('extendsall');
-
-    $SMARTY->muteUndefinedOrNullWarnings();
-
-    // uncomment this line if you're not gonna change template files no more
-    //$SMARTY->compile_check = false;
 }
 
 // Redirect to SSL
@@ -166,6 +138,31 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'checkip.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'accesstable.php');
+
+if (!$api) {
+    // Initialize templates engine (must be before locale settings)
+    $SMARTY = new LMSSmarty;
+
+    // test for proper version of Smarty
+
+    if (defined('Smarty::SMARTY_VERSION')) {
+        $ver_chunks = preg_split('/[- ]/', preg_replace('/^smarty-/i', '', Smarty::SMARTY_VERSION), -1, PREG_SPLIT_NO_EMPTY);
+    } else {
+        $ver_chunks = null;
+    }
+    if (count($ver_chunks) < 1 || version_compare('3.1', $ver_chunks[0]) > 0) {
+        die('<B>Wrong version of Smarty engine! We support only Smarty-3.x greater than 3.1.</B>');
+    }
+
+    define('SMARTY_VERSION', $ver_chunks[0]);
+
+    $SMARTY->setMergeCompiledIncludes(true);
+
+    $SMARTY->setDefaultResourceType('extendsall');
+
+    // uncomment this line if you're not gonna change template files no more
+    //$SMARTY->compile_check = false;
+}
 
 $SYSLOG = SYSLOG::getInstance();
 

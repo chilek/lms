@@ -141,8 +141,6 @@ require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'ULMS.class.php');
 // Initialize templates engine (must be before locale settings)
 $SMARTY = new LMSSmarty;
 
-$SMARTY->muteUndefinedOrNullWarnings();
-
 // test for proper version of Smarty
 
 if (constant('Smarty::SMARTY_VERSION')) {
@@ -156,9 +154,6 @@ if (count($ver_chunks) < 1 || version_compare('3.1', $ver_chunks[0]) > 0) {
 }
 
 define('SMARTY_VERSION', $ver_chunks[0]);
-
-// add LMS's custom plugins directory
-$SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
 
 Localisation::appendUiLanguage(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'locale');
 
