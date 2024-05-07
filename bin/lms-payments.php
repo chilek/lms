@@ -37,6 +37,7 @@ $script_parameters = array(
     'customergroups:' => 'g:',
     'customer-status:' => null,
     'tariff-tags:' => null,
+    'voip-cdr-only' => null,
 );
 
 $script_help = <<<EOF
@@ -57,6 +58,8 @@ $script_help = <<<EOF
     --tariff-tags=<tariff-tag1,tariff-tag-2,...>
                                 create financial charges using only tariffs which have
                                 assigned specified tariff tags
+    --voip-cdr-only
+                                issue only voip billing record settlements
 EOF;
 
 require_once('script-options.php');
@@ -132,6 +135,7 @@ if (isset($options['force-date'])) {
 }
 $issuedate = $options['issue-date'] ?? null;
 $customerid = isset($options['customerid']) && intval($options['customerid']) ? $options['customerid'] : null;
+$voip_cdr_only = isset($options['voip-cdr-only']);
 
 if (empty($fakedate)) {
     $currtime = time();
@@ -386,109 +390,143 @@ if ($test) {
     echo "WARNING! You are using test mode." . PHP_EOL;
 }
 
-// let's go, fetch *ALL* assignments in given day
-$query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_address_id,
-        (CASE WHEN ca2.address_id IS NULL THEN ca1.address_id ELSE ca2.address_id END) AS post_address_id,
-		a.period, a.backwardperiod, a.at, a.suspended, a.settlement, a.datefrom, a.dateto, a.pdiscount, a.vdiscount,
-		a.invoice,
-		a.separatedocument,
-		a.separateitem,
-		c.type AS customertype,
-		(CASE WHEN c.type = ? THEN 0 ELSE (CASE WHEN a.liabilityid IS NULL
-			THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
-			ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
-		END) END) AS splitpayment,
-		(CASE WHEN a.liabilityid IS NULL
-			THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
-			ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
-		END) AS netflag,
-		(CASE WHEN a.liabilityid IS NULL THEN t.taxcategory ELSE l.taxcategory END) AS taxcategory,
-		t.description AS description, a.id AS assignmentid,
-		c.divisionid, c.paytime, c.paytype, c.flags AS customerflags,
-		a.paytime AS a_paytime, a.paytype AS a_paytype, a.numberplanid, a.attribute,
-		p.name AS promotion_name, ps.name AS promotion_schema_name, ps.length AS promotion_schema_length,
-		d.inv_paytime AS d_paytime, d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
-		t.flags,
-		(CASE WHEN cc1.type IS NULL THEN 0 ELSE 1 END) AS einvoice,
-		(CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS mail_marketing,
-		(CASE WHEN cc3.type IS NULL THEN 0 ELSE 1 END) AS sms_marketing,
-		(CASE WHEN a.tariffid IS NULL THEN l.type ELSE t.type END) AS tarifftype,
-		(CASE WHEN a.liabilityid IS NULL THEN t.name ELSE l.name END) AS name,
-		(CASE WHEN a.liabilityid IS NULL THEN t.taxid ELSE l.taxid END) AS taxid,
-		(CASE WHEN a.liabilityid IS NULL THEN t.prodid ELSE l.prodid END) AS prodid,
-		voipphones.phones,
-		ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount), 3) AS price,
-		(CASE WHEN a.liabilityid IS NULL THEN t.taxrate ELSE l.taxrate END) AS taxrate,
-		(CASE WHEN a.liabilityid IS NULL THEN t.currency ELSE l.currency END) AS currency,
-		a.count AS count,
-		(SELECT COUNT(id) FROM assignments
-			WHERE customerid = c.id AND tariffid IS NULL AND liabilityid IS NULL
-			AND datefrom <= $currtime
-			AND (dateto > $currtime OR dateto = 0)) AS allsuspended
-	FROM assignments a
-	JOIN customers c ON (a.customerid = c.id)
-	LEFT JOIN customerconsents cc1 ON cc1.customerid = c.id AND cc1.type = " . CCONSENT_EINVOICE . "
-	LEFT JOIN customerconsents cc2 ON cc2.customerid = c.id AND cc2.type = " . CCONSENT_MAIL_MARKETING . "
-	LEFT JOIN customerconsents cc3 ON cc3.customerid = c.id AND cc3.type = " . CCONSENT_SMS_MARKETING . "
-	LEFT JOIN customer_addresses ca1 ON ca1.customer_id = c.id AND ca1.type = " . BILLING_ADDRESS . "
-	LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c.id AND ca2.type = " . POSTAL_ADDRESS . "
-	LEFT JOIN promotionschemas ps ON ps.id = a.promotionschemaid
-	LEFT JOIN promotions p ON p.id = ps.promotionid
-	LEFT JOIN (
-	    SELECT tariffs.*,
-	        taxes.value AS taxrate,
-	        (CASE WHEN tariffs.flags & ? > 0 THEN tariffs.netvalue ELSE tariffs.value END) AS tvalue
-	    FROM tariffs
-	    JOIN taxes ON taxes.id = tariffs.taxid
-	) t ON a.tariffid = t.id
-	LEFT JOIN (
-	    SELECT liabilities.*,
-	        taxes.value AS taxrate,
-	        (CASE WHEN liabilities.flags & ? > 0 THEN liabilities.netvalue ELSE liabilities.value END) AS lvalue
-	    FROM liabilities
-	    JOIN taxes ON taxes.id = liabilities.taxid
-	) l ON a.liabilityid = l.id
-	LEFT JOIN (
-		SELECT vna.assignment_id, " . $DB->GroupConcat('vn.phone', ',') . " AS phones
-		FROM voip_number_assignments vna
-		LEFT JOIN voip_numbers vn ON vn.id = vna.number_id
-		GROUP BY vna.assignment_id
-	) voipphones ON voipphones.assignment_id = a.id
-	LEFT JOIN divisions d ON (d.id = c.divisionid)
-	WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
-        . $customer_status_condition
-        . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
-        . " AND a.commited = 1
-		AND ((a.period = ? AND at = ?)
-			OR ((a.period = ?
-			OR (a.period = ? AND at = ?)
-			OR (a.period = ? AND at IN ?)
-			OR (a.period = ? AND at = ?)
-			OR (a.period = ? AND at = ?)
-			OR (a.period = ? AND at = ?))
-			AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)))"
-        . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
-        . ($tariff_tags ?: '')
-    ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytime, c.paytime, d.inv_paytime,
-        a.paytype, c.paytype, d.inv_paytype, a.numberplanid, t.numberplanid, a.separatedocument, a.separateitem, currency, netflag, price DESC, a.id";
 $doms = array($dom);
 if ($last_dom) {
     $doms[] = 0;
 }
-$services = $DB->GetAll(
-    $query,
-    array(
-        CTYPES_PRIVATE,
-        TARIFF_FLAG_SPLIT_PAYMENT,
-        LIABILITY_FLAG_SPLIT_PAYMENT,
-        TARIFF_FLAG_NET_ACCOUNT,
-        LIABILITY_FLAG_NET_ACCOUT,
-        TARIFF_FLAG_NET_ACCOUNT,
-        LIABILITY_FLAG_NET_ACCOUT,
-        DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $doms, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
-        $currtime, $currtime
-    )
-);
+
+if ($voip_cdr_only) {
+    $services = array();
+} else {
+    // let's go, fetch *ALL* assignments in given day
+    $query = "SELECT
+            a.id,
+            a.tariffid,
+            a.liabilityid,
+            a.customerid,
+            a.recipient_address_id,
+            (CASE WHEN ca2.address_id IS NULL THEN ca1.address_id ELSE ca2.address_id END) AS post_address_id,
+            a.period,
+            a.backwardperiod,
+            a.at,
+            a.suspended,
+            a.settlement,
+            a.datefrom,
+            a.dateto,
+            a.pdiscount,
+            a.vdiscount,
+            a.invoice,
+            a.separatedocument,
+            a.separateitem,
+            c.type AS customertype,
+            (CASE WHEN c.type = ? THEN 0 ELSE (CASE WHEN a.liabilityid IS NULL
+                THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
+                ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
+            END) END) AS splitpayment,
+            (CASE WHEN a.liabilityid IS NULL
+                THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
+                ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
+            END) AS netflag,
+            (CASE WHEN a.liabilityid IS NULL THEN t.taxcategory ELSE l.taxcategory END) AS taxcategory,
+            t.description AS description,
+            a.id AS assignmentid,
+            c.divisionid,
+            c.paytime,
+            c.paytype,
+            c.flags AS customerflags,
+            a.paytime AS a_paytime,
+            a.paytype AS a_paytype,
+            a.numberplanid,
+            a.attribute,
+            p.name AS promotion_name,
+            ps.name AS promotion_schema_name,
+            ps.length AS promotion_schema_length,
+            d.inv_paytime AS d_paytime,
+            d.inv_paytype AS d_paytype,
+            t.period AS t_period,
+            t.numberplanid AS tariffnumberplanid,
+            t.flags,
+            (CASE WHEN cc1.type IS NULL THEN 0 ELSE 1 END) AS einvoice,
+            (CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS mail_marketing,
+            (CASE WHEN cc3.type IS NULL THEN 0 ELSE 1 END) AS sms_marketing,
+            (CASE WHEN a.tariffid IS NULL THEN l.type ELSE t.type END) AS tarifftype,
+            (CASE WHEN a.liabilityid IS NULL THEN t.name ELSE l.name END) AS name,
+            (CASE WHEN a.liabilityid IS NULL THEN t.taxid ELSE l.taxid END) AS taxid,
+            (CASE WHEN a.liabilityid IS NULL THEN t.prodid ELSE l.prodid END) AS prodid,
+            voipphones.phones,
+            ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount), 3) AS price,
+            (CASE WHEN a.liabilityid IS NULL THEN t.taxrate ELSE l.taxrate END) AS taxrate,
+            (CASE WHEN a.liabilityid IS NULL THEN t.currency ELSE l.currency END) AS currency,
+            a.count AS count,
+            (SELECT COUNT(id) FROM assignments
+                WHERE customerid = c.id AND tariffid IS NULL AND liabilityid IS NULL
+                AND datefrom <= $currtime
+                AND (dateto > $currtime OR dateto = 0)) AS allsuspended
+        FROM assignments a
+        JOIN customers c ON a.customerid = c.id
+        LEFT JOIN customerconsents cc1 ON cc1.customerid = c.id AND cc1.type = " . CCONSENT_EINVOICE . "
+        LEFT JOIN customerconsents cc2 ON cc2.customerid = c.id AND cc2.type = " . CCONSENT_MAIL_MARKETING . "
+        LEFT JOIN customerconsents cc3 ON cc3.customerid = c.id AND cc3.type = " . CCONSENT_SMS_MARKETING . "
+        LEFT JOIN customer_addresses ca1 ON ca1.customer_id = c.id AND ca1.type = " . BILLING_ADDRESS . "
+        LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c.id AND ca2.type = " . POSTAL_ADDRESS . "
+        LEFT JOIN promotionschemas ps ON ps.id = a.promotionschemaid
+        LEFT JOIN promotions p ON p.id = ps.promotionid
+        LEFT JOIN (
+            SELECT
+                tariffs.*,
+                taxes.value AS taxrate,
+                (CASE WHEN tariffs.flags & ? > 0 THEN tariffs.netvalue ELSE tariffs.value END) AS tvalue
+            FROM tariffs
+            JOIN taxes ON taxes.id = tariffs.taxid
+        ) t ON a.tariffid = t.id
+        LEFT JOIN (
+            SELECT
+                liabilities.*,
+                taxes.value AS taxrate,
+                (CASE WHEN liabilities.flags & ? > 0 THEN liabilities.netvalue ELSE liabilities.value END) AS lvalue
+            FROM liabilities
+            JOIN taxes ON taxes.id = liabilities.taxid
+        ) l ON a.liabilityid = l.id
+        LEFT JOIN (
+            SELECT
+                vna.assignment_id, " . $DB->GroupConcat('vn.phone', ',') . " AS phones
+            FROM voip_number_assignments vna
+            LEFT JOIN voip_numbers vn ON vn.id = vna.number_id
+            GROUP BY vna.assignment_id
+        ) voipphones ON voipphones.assignment_id = a.id
+        LEFT JOIN divisions d ON d.id = c.divisionid
+        WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
+            . $customer_status_condition
+            . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+            . " AND a.commited = 1
+            AND ((a.period = ? AND at = ?)
+                OR ((a.period = ?
+                OR (a.period = ? AND at = ?)
+                OR (a.period = ? AND at IN ?)
+                OR (a.period = ? AND at = ?)
+                OR (a.period = ? AND at = ?)
+                OR (a.period = ? AND at = ?))
+                AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)))"
+            . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
+            . ($tariff_tags ?: '')
+        . " ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytime, c.paytime, d.inv_paytime,
+            a.paytype, c.paytype, d.inv_paytype, a.numberplanid, t.numberplanid, a.separatedocument, a.separateitem, currency, netflag, price DESC, a.id";
+
+    $services = $DB->GetAll(
+        $query,
+        array(
+            CTYPES_PRIVATE,
+            TARIFF_FLAG_SPLIT_PAYMENT,
+            LIABILITY_FLAG_SPLIT_PAYMENT,
+            TARIFF_FLAG_NET_ACCOUNT,
+            LIABILITY_FLAG_NET_ACCOUT,
+            TARIFF_FLAG_NET_ACCOUNT,
+            LIABILITY_FLAG_NET_ACCOUT,
+            DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $doms, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
+            $currtime, $currtime
+        )
+    );
+}
 
 $billing_invoice_description = ConfigHelper::getConfig($config_section . '.billing_invoice_description', 'Phone calls between %backward_periods (for %phones)');
 $billing_invoice_separate_fractions = ConfigHelper::checkConfig($config_section . '.billing_invoice_separate_fractions');
