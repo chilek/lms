@@ -2313,13 +2313,14 @@ CREATE TABLE domains (
 	master varchar(128) 	DEFAULT NULL,
 	last_check integer 	DEFAULT NULL,
 	type text		 	DEFAULT '' NOT NULL,
-	notified_serial integer DEFAULT NULL,
+	notified_serial bigint DEFAULT NULL,
 	account varchar(40) 	DEFAULT NULL,
 	mxbackup smallint	DEFAULT 0 NOT NULL,
 	options text DEFAULT NULL,
 	catalog text DEFAULT NULL,
 	PRIMARY KEY (id),
-	UNIQUE (name)
+	UNIQUE (name),
+	CONSTRAINT domains_name_check CHECK (((name)::text = LOWER((name)::text))
 );
 CREATE INDEX domains_ownerid_idx ON domains (ownerid);
 CREATE INDEX domains_catalog_idx ON domains(catalog);
@@ -2378,10 +2379,13 @@ CREATE TABLE records (
 	disabled boolean	DEFAULT '0',
 	auth boolean		DEFAULT '1',
 	ordername varchar(255) DEFAULT NULL,
-	PRIMARY KEY (id)
+	PRIMARY KEY (id),
+	CONSTRAINT records_name_check CHECK (((name)::text = LOWER((name)::text)))
 );
 CREATE INDEX records_name_type_idx ON records (name, type, domain_id);
 CREATE INDEX records_domain_id_idx ON records (domain_id);
+CREATE INDEX records_name_idx ON records (name);
+CREATE INDEX records_domain_id_ordername_idx ON records (domain_id, ordername text_pattern_ops);
 
 /* ---------------------------------------------------
  Structure of table "domainmetadata" (DNS)
@@ -2444,6 +2448,7 @@ CREATE TABLE cryptokeys (
 		CONSTRAINT cryptokeys_domain_id_fkey REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	flags			integer NOT NULL,
 	active			boolean,
+	published       boolean DEFAULT 't',
 	content			text,
 	PRIMARY KEY (id)
 );
@@ -4411,6 +4416,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024041100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024050700');
 
 COMMIT;

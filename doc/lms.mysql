@@ -2479,9 +2479,9 @@ CREATE TABLE records (
   PRIMARY KEY(id),
   INDEX domain_id (domain_id),
   INDEX name_type (name, type, domain_id),
+  INDEX records_ordername_idx (ordername),
   FOREIGN KEY (domain_id) REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
-
 
 # --------------------------------------------------------
 #
@@ -2538,6 +2538,7 @@ CREATE TABLE cryptokeys (
 	domain_id		int(11) NOT NULL,
 	flags			int(11) NOT NULL,
 	active			bool,
+	published       bool DEFAULT 1,
 	content			text,
 	PRIMARY KEY (id),
 	INDEX domain_id (domain_id),
@@ -4368,4 +4369,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024041100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024050700');
