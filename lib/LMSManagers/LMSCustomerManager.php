@@ -1613,18 +1613,34 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 : 'LEFT JOIN customerbalances b ON b.customerid = c.id')
             . '
             LEFT JOIN (
-                SELECT a.customerid,
+                SELECT
+                    a.customerid,
                     SUM(
                         (
-                            CASE a.suspended
-                                WHEN 0 THEN (((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount)
-                                ELSE ((((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount) * ' . $suspension_percentage . ' / 100)
-                            END
-                        ) * (
+                            (
+                                (100 - a.pdiscount)
+                                * (CASE WHEN ca.netflag = 1
+                                    THEN ca.netvalue
+                                    ELSE ca.value
+                                END)
+                                / 100
+                            ) - a.vdiscount
+                        )
+                        * a.count
+                        * (CASE WHEN ca.netflag = 1
+                            THEN (100 + ca.taxrate) / 100
+                            ELSE 1
+                        END)
+                        * (CASE WHEN a.suspended = 0
+                            THEN 1
+                            ELSE ' . $suspension_percentage . ' / 100
+                        END)
+                        * (
                             CASE WHEN a.period = ' . DISPOSABLE . ' THEN 0
                             ELSE (
-                                CASE WHEN a.period <> ' . DISPOSABLE . ' AND t.period > 0 AND t.period <> a.period THEN (
-                                        CASE t.period
+                                CASE WHEN a.period <> ' . DISPOSABLE . ' AND ca.period > 0 AND ca.period <> a.period
+                                    THEN (
+                                        CASE ca.period
                                             WHEN ' . YEARLY . ' THEN 1/12.0
                                             WHEN ' . HALFYEARLY . ' THEN 1/6.0
                                             WHEN ' . QUARTERLY . ' THEN 1/3.0
@@ -1643,14 +1659,42 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                 END
                             )
                             END
-                        ) * a.count
+                        )
                     ) AS value
-                    FROM assignments a
-                    LEFT JOIN tariffs t ON (t.id = a.tariffid)
-                    LEFT JOIN liabilities l ON (l.id = a.liabilityid AND a.period <> ' . DISPOSABLE . ')
-                    WHERE a.commited = 1 AND a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0)
-                    GROUP BY a.customerid
-                ) t ON (t.customerid = c.id)
+                FROM assignments a
+                JOIN (
+                    SELECT
+                        a2.id,
+                        COALESCE(t.period, 0) AS period,
+                        COALESCE(t.netvalue, l.netvalue) AS netvalue,
+                        COALESCE(t.value, l.value) AS value,
+                        COALESCE(tt.value, lt.value) AS taxrate,
+                        COALESCE(
+                            CASE WHEN t.value IS NULL
+                                THEN (
+                                    CASE WHEN l.flags & ' . TARIFF_FLAG_NET_ACCOUNT . ' > 0
+                                        THEN 1
+                                        ELSE 0
+                                    END
+                                ) ELSE (
+                                    CASE WHEN t.flags & ' . TARIFF_FLAG_NET_ACCOUNT . ' > 0
+                                        THEN 1
+                                        ELSE 0
+                                    END
+                                )
+                            END
+                        ) AS netflag
+                    FROM assignments a2
+                    LEFT JOIN tariffs t ON t.id = a2.tariffid
+                    LEFT JOIN taxes tt ON tt.id = t.taxid
+                    LEFT JOIN liabilities l ON l.id = a2.liabilityid
+                    LEFT JOIN taxes lt ON lt.id = l.taxid
+                    WHERE a2.commited = 1
+                        AND a2.datefrom <= ?NOW?
+                        AND (a2.dateto > ?NOW? OR a2.dateto = 0)
+                ) ca ON ca.id = a.id
+                GROUP BY a.customerid
+            ) t ON (t.customerid = c.id)
                 LEFT JOIN (SELECT ownerid,
                     SUM(access) AS acsum, COUNT(access) AS account,
                     SUM(warning) AS warnsum, COUNT(warning) AS warncount,
