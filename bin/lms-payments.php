@@ -103,6 +103,7 @@ $customergroups = ConfigHelper::getConfig($config_section . '.customergroups', '
 $tariff_tags = ConfigHelper::getConfig($config_section . '.tariff_tags', '', true);
 
 $reward_penalty_deadline_grace_days = intval(ConfigHelper::getConfig($config_section . '.reward_penalty_deadline_grace_days'));
+$reward_penalty_period_start_check = ConfigHelper::checkConfig($config_section . '.reward_penalty_period_start_check', true);
 
 $force_telecom_service_flag = ConfigHelper::checkConfig('invoices.force_telecom_service_flag', true);
 $check_customer_vat_payer_flag_for_telecom_service = ConfigHelper::checkConfig('invoices.check_customer_vat_payer_flag_for_telecom_service');
@@ -995,7 +996,7 @@ if (!empty($assigns)) {
         $balance = $LMS->GetCustomerBalance($cid, $period_start, $reward_penalty_deadline_grace_days);
         if (!isset($balance)) {
             $balance = 0;
-        } elseif ($balance < 0) {
+        } elseif ($reward_penalty_period_start_check && $balance < 0) {
             $rewards[$cid] = false;
             continue;
         }
