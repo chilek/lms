@@ -650,6 +650,8 @@ version 28-git (????-??-??):
   - enhancement: 'sendinvoices.extra_file' configuration variable can be used as alternative to --extra-file
     script option [chilan]
   - enhancement: allow to resolve many helpdesk tickets quickly with dedicated button [chilan]
+  - improvement: 'payments.reward_penalty_period_start_check' configuration variable with default value of 'true'
+    controls if expired balance is checked during financial analysis of previous period start [chilan]
 
 version 27.0 (2021-08-20):
 
