@@ -174,6 +174,22 @@ if ($omit_free_days) {
     }
 }
 
+// Initialize templates engine (must be before locale settings)
+$SMARTY = new LMSSmarty;
+
+// test for proper version of Smarty
+
+if (defined('Smarty::SMARTY_VERSION')) {
+    $ver_chunks = preg_split('/[- ]/', preg_replace('/^smarty-/i', '', Smarty::SMARTY_VERSION), -1, PREG_SPLIT_NO_EMPTY);
+} else {
+    $ver_chunks = null;
+}
+if (count($ver_chunks) < 1 || version_compare('3.1', $ver_chunks[0]) > 0) {
+    die('Wrong version of Smarty engine! We support only Smarty-3.x greater than 3.1.' . PHP_EOL);
+}
+
+define('SMARTY_VERSION', $ver_chunks[0]);
+
 $SYSLOG = SYSLOG::getInstance();
 
 // Initialize Session, Auth and LMS classes
@@ -184,6 +200,26 @@ $LMS = new LMS($DB, $AUTH, $SYSLOG);
 $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
 $LMS->executeHook('lms_initialized', $LMS);
+
+// Set some template and layout variables
+
+$SMARTY->setTemplateDir(null);
+$custom_templates_dir = ConfigHelper::getConfig('phpui.custom_templates_dir');
+if (!empty($custom_templates_dir) && file_exists(SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . $custom_templates_dir)
+    && !is_file(SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . $custom_templates_dir)) {
+    $SMARTY->AddTemplateDir(SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . $custom_templates_dir);
+}
+$SMARTY->AddTemplateDir(
+    array(
+        SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . 'default',
+        SMARTY_TEMPLATES_DIR,
+    )
+);
+$SMARTY->setCompileDir(SMARTY_COMPILE_DIR);
+
+$SMARTY->assignByRef('layout', $layout);
+
+$plugin_manager->executeHook('smarty_initialized', $SMARTY);
 
 define('ACTION_PARAM_NONE', 0);
 define('ACTION_PARAM_REQUIRED', 1);
