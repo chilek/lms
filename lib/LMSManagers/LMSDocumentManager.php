@@ -220,6 +220,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             case 5:
                 $status_sql = ' AND d.closed = ' . DOC_CLOSED_AFTER_CUSTOMER_SCAN;
                 break;
+            case 6:
+                $status_sql = ' AND d.closed = ' . DOC_OPEN . ' AND d.confirmdate > 0 AND d.confirmdate < ?NOW?';
+                break;
             default:
                 $status_sql = '';
         }

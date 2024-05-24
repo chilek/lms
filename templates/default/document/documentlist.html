@@ -186,6 +186,7 @@
 							<OPTION value="5"{if $filter.status == 4} selected{/if}>{trans("confirmed (sms authorization)")}</OPTION>
 							<OPTION value="2"{if $filter.status == 2} selected{/if}>{trans("review (signed document scan)")}</OPTION>
 							<OPTION value="3"{if $filter.status == 3} selected{/if}>{trans("waiting for signed document scan")}</OPTION>
+							<option value="6"{if $filter.status == 6} selected{/if}>{trans("waiting for customer action (expired)")}</option>
 						</SELECT>
 					</label>
 

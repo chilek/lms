@@ -4406,6 +4406,7 @@ $_LANG['confirmed (sms authorization)'] = 'zatwierdzony (autoryzacja SMS-em)';
 $_LANG['unconfirmed'] = 'niezatwierdzony';
 $_LANG['review (signed document scan)'] = 'do przejrzenia (skan z podpisem klienta)';
 $_LANG['waiting for signed document scan'] = 'oczekujący na skan z podpisem klienta';
+$_LANG['waiting for customer action (expired)'] = 'oczekujące na działanie klienta (po terminie)';
 
 $_LANG['Customer ID and PIN'] = 'ID klienta i PIN';
 $_LANG['Phone number and PIN'] = 'Numer telefonu i PIN';
