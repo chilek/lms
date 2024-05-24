@@ -652,6 +652,8 @@ version 28-git (????-??-??):
   - enhancement: allow to resolve many helpdesk tickets quickly with dedicated button [chilan]
   - improvement: 'payments.reward_penalty_period_start_check' configuration variable with default value of 'true'
     controls if expired balance is checked during financial analysis of previous period start [chilan]
+  - improvement: new status filter selection in document list form: waiting for customer
+    action (expired) [chilan]
 
 version 27.0 (2021-08-20):
 
