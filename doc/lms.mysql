@@ -3542,7 +3542,7 @@ CREATE VIEW vassignmentsuspensions AS
                                 WHEN suspensions.percentage IS NOT NULL
                                     THEN ROUND(suspensions.percentage / 100, 2)
                                 ELSE
-                                    ROUND((SELECT CAST(uiconfig.value AS numeric)
+                                    ROUND((SELECT CAST(uiconfig.value AS decimal)
                                     FROM uiconfig
                                     WHERE uiconfig.section = 'suspensions'
                                     AND uiconfig.var = 'default_percentage'
@@ -3555,7 +3555,7 @@ CREATE VIEW vassignmentsuspensions AS
                                  WHEN suspensions_all.percentage IS NOT NULL
                                     THEN ROUND(suspensions_all.percentage / 100, 2)
                                  ELSE
-                                    ROUND((SELECT CAST(uiconfig.value AS numeric)
+                                    ROUND((SELECT CAST(uiconfig.value AS decimal)
                                     FROM uiconfig
                                     WHERE uiconfig.section = 'suspensions'
                                     AND uiconfig.var = 'default_percentage'
@@ -3568,7 +3568,7 @@ CREATE VIEW vassignmentsuspensions AS
                                   WHEN suspensions.value IS NOT NULL
                                       THEN ROUND(suspensions.value / vasv.suspensionvalues_assignments_count, 2)
                                   ELSE
-                                    ROUND((SELECT CAST(uiconfig.value AS numeric)
+                                    ROUND((SELECT CAST(uiconfig.value AS decimal)
                                     FROM uiconfig
                                     WHERE uiconfig.section = 'suspensions'
                                     AND uiconfig.var = 'default_percentage'
@@ -3581,7 +3581,7 @@ CREATE VIEW vassignmentsuspensions AS
                                 WHEN suspensions_all.value IS NOT NULL
                                     THEN ROUND(suspensions_all.value / vasv.suspensionvalues_assignments_count, 2)
                                 ELSE
-                                    ROUND((SELECT CAST(uiconfig.value AS numeric)
+                                    ROUND((SELECT CAST(uiconfig.value AS decimal)
                                     FROM uiconfig
                                     WHERE uiconfig.section = 'suspensions'
                                     AND uiconfig.var = 'default_percentage'
