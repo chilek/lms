@@ -97,6 +97,7 @@ if (file_exists($composer_autoload_path)) {
 }
 
 require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'checkdirs.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 
 // Initialize database
 
@@ -119,24 +120,10 @@ if ($_FORCE_SSL && (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on')) {
 
 $_TIMEOUT = ConfigHelper::getConfig('userpanel.timeout');
 
-// Include required files (including sequence is important)
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
-include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
-
 $_SERVER['REMOTE_ADDR'] = str_replace("::ffff:", "", $_SERVER['REMOTE_ADDR']);
 
-$AUTH = null;
-$SYSLOG = SYSLOG::getInstance();
-if ($SYSLOG) {
-    $SYSLOG->NewTransaction('userpanel');
-}
-
-$LMS = new LMS($DB, $AUTH, $SYSLOG);
-
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'Session.class.php');
-require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'Userpanel.class.php');
-require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'ULMS.class.php');
 
 // Initialize templates engine (must be before locale settings)
 $SMARTY = new LMSSmarty;
@@ -154,6 +141,20 @@ if (count($ver_chunks) < 1 || version_compare('3.1', $ver_chunks[0]) > 0) {
 }
 
 define('SMARTY_VERSION', $ver_chunks[0]);
+
+// Include required files (including sequence is important)
+include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
+
+$AUTH = null;
+$SYSLOG = SYSLOG::getInstance();
+if ($SYSLOG) {
+    $SYSLOG->NewTransaction('userpanel');
+}
+
+$LMS = new LMS($DB, $AUTH, $SYSLOG);
+
+require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'Userpanel.class.php');
+require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'ULMS.class.php');
 
 Localisation::appendUiLanguage(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'locale');
 
