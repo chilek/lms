@@ -1051,6 +1051,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $month_days = date('t', mktime(0, 0, 0, $m, 1, $y));
                     $value = $diffdays * $discounted_val / $month_days;
                     $partial_vdiscount = str_replace(',', '.', round(abs($value - $val), 3));
+                    if ($val < 0) {
+                        $partial_vdiscount *= -1;
+                    }
                     $partial_dateto--;
 
                     if (($data['at'] > 0 && $data['at'] >= $dom + 1) || ($data['at'] === 0 && $month_days >= $dom + 1)) {
