@@ -474,14 +474,14 @@ $this->Execute("DROP VIEW vnodealltariffs_tariffs");
 $this->Execute("DROP VIEW vnodetariffs_tariffs");
 $this->Execute("DROP VIEW vnodetariffs_allsuspended");
 $this->Execute("DROP VIEW vassignmentsuspensions");
-$this->Execute("DROP VIEW vassignmentssuspensionsvalues");
-$this->Execute("DROP VIEW vassignmentssuspensionsgroupcounts");
+$this->Execute("DROP VIEW vassignmentsuspensionvalues");
+$this->Execute("DROP VIEW vassignmentsuspensiongroupcounts");
 
 /* --------------------------------------------------------
-  Structure of view "vassignmentssuspensionsgroupcounts"
+  Structure of view "vassignmentsuspensiongroupcounts"
 -------------------------------------------------------- */
 $this->Execute("
-CREATE VIEW vassignmentssuspensionsgroupcounts AS
+CREATE VIEW vassignmentsuspensiongroupcounts AS
     SELECT COUNT(vasg.suspension_assignment_id) AS suspensiongroup_assignments_count,
            vasg.suspension_id AS suspensiongroup_suspension_id
     FROM (SELECT
@@ -516,10 +516,10 @@ CREATE VIEW vassignmentssuspensionsgroupcounts AS
 ");
 
 /* --------------------------------------------------------
-  Structure of view "vassignmentssuspensionsvalues"
+  Structure of view "vassignmentsuspensionvalues"
 -------------------------------------------------------- */
 $this->Execute("
-CREATE VIEW vassignmentssuspensionsvalues AS
+CREATE VIEW vassignmentsuspensionvalues AS
     SELECT
         suspension_assignment_id AS suspensionvalues_assignment_id,
         suspension_id AS suspensionvalues_suspension_id,
@@ -572,7 +572,7 @@ CREATE VIEW vassignmentssuspensionsvalues AS
                 vasg.suspensiongroup_assignments_count AS suspensiongroup_assignments_count
             FROM assignmentsuspensions
             JOIN suspensions AS suspensions1 ON suspensions1.id = assignmentsuspensions.suspensionid
-            JOIN vassignmentssuspensionsgroupcounts vasg ON vasg.suspensiongroup_suspension_id = suspensions1.id
+            JOIN vassignmentsuspensiongroupcounts vasg ON vasg.suspensiongroup_suspension_id = suspensions1.id
             LEFT JOIN taxes ON taxes.id = suspensions1.taxid
         ) suspensions ON suspensions.assignment_id = a.id
         LEFT JOIN (
@@ -582,7 +582,7 @@ CREATE VIEW vassignmentssuspensionsvalues AS
               (CASE WHEN suspensions2.customerid IS NULL THEN 0 ELSE 1 END) AS suspend_all,
               vasg.suspensiongroup_assignments_count AS suspensiongroup_assignments_count
           FROM suspensions AS suspensions2
-          JOIN vassignmentssuspensionsgroupcounts vasg ON vasg.suspensiongroup_suspension_id = suspensions2.id
+          JOIN vassignmentsuspensiongroupcounts vasg ON vasg.suspensiongroup_suspension_id = suspensions2.id
         ) AS suspensions_all ON suspensions_all.customerid = a.customerid
         LEFT JOIN (
             SELECT
@@ -790,7 +790,7 @@ CREATE VIEW vassignmentsuspensions AS
         FROM suspensions AS suspensions2
         LEFT JOIN taxes ON taxes.id = suspensions2.taxid
     ) AS suspensions_all ON suspensions_all.customerid = a.customerid
-    LEFT JOIN vassignmentssuspensionsvalues vasv ON vasv.suspensionvalues_assignment_id = a.id
+    LEFT JOIN vassignmentsuspensionvalues vasv ON vasv.suspensionvalues_assignment_id = a.id
     WHERE suspensions.suspension_id IS NOT NULL OR suspensions_all.suspend_all = 1
 ");
 
