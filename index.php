@@ -267,6 +267,12 @@ $documents_dirs = $plugin_manager->executeHook('documents_dir_initialized', $doc
 
 // Check privileges and execute modules
 if ($AUTH->islogged) {
+    if (isset($_GET['clear_timeout'])) {
+        $SESSION->clearTimeout();
+        header('Content-Type: application/json');
+        die('[]');
+    }
+
     $qs_properties = $SESSION->get_persistent_setting('qs-properties');
     if (empty($qs_properties)) {
         $qs_properties = array();

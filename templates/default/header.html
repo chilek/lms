@@ -144,13 +144,28 @@
 				setCookie('tabId', lmsTabId);
 			}
 
-			$(window).focus(function() {
-				setCookie('tabId', lmsTabId);
+			var sessionTimeout = parseInt('{ConfigHelper::getConfig('phpui.timeout')}');
+			var lastClearTimeout = Date.now();
 
-				// check if login timeout condition is met - in newer web browser
-				// timers are not active when window is not visible
-				if (Date.now() > lms_login_timeout_ts) {
-					window.location.assign(window.location.href);
+			$(window).on('mousemove keypress focus', function(e) {
+				if (e.type == 'focus') {
+					setCookie('tabId', lmsTabId);
+
+					// check if login timeout condition is met - in newer web browser
+					// timers are not active when window is not visible
+					if (Date.now() > lms_login_timeout_ts) {
+						window.location.assign(window.location.href);
+					}
+				} else {
+					start_login_timeout(sessionTimeout);
+					if (Date.now() - lastClearTimeout > (sessionTimeout * 1000 / 2)) {
+						$.ajax({
+							url: '?clear_timeout=1&api=1',
+							method: "POST",
+							dataType: 'json'
+						});
+						lastClearTimeout = Date.now();
+					}
 				}
 			});
 

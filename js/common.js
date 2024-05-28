@@ -458,36 +458,52 @@ function CheckAll(form, elem, excl)
 }
 
 var lms_login_timeout_value,
-    lms_login_timeout,
+    lms_login_timeout = 0,
     lms_login_timeout_update = 0,
 	lms_login_timeout_ts,
     lms_sticky_popup,
 	lms_session_expire_elem;
 
-function start_login_timeout(sec)
-{
-    if (!sec) sec = 600;
-    lms_login_timeout_value = sec;
-    lms_login_timeout_ts = Date.now() + sec * 1000;
-    lms_login_timeout = setTimeout(function() {
-            window.location.assign(window.location.href);
-        }, (sec + 1) * 1000);
+function start_login_timeout(sec) {
+	if (!sec) {
+		sec = 600;
+	}
+	lms_login_timeout_value = sec;
+	lms_login_timeout_ts = Date.now() + sec * 1000;
+	if (lms_login_timeout) {
+		clearTimeout(lms_login_timeout);
+	}
+	if (lms_login_timeout_update) {
+		clearInterval(lms_login_timeout_update);
+	}
+	lms_login_timeout = setTimeout(function () {
+		window.location.assign(window.location.href);
+	}, (sec + 1) * 1000);
 	lms_session_expire_elem = $('#lms-ui-session-expire');
-    if (lms_session_expire_elem.length) {
-	    lms_login_timeout_update = setInterval(function() {
-				var time_to_expire = lms_login_timeout_ts - Date.now();
-				if (time_to_expire < 0) {
-					time_to_expire = 0;
-				}
-				time_to_expire = Math.round(time_to_expire / 1000);
-	    		lms_session_expire_elem.text(sprintf("%02d:%02d",
-					Math.floor(time_to_expire / 60),
-					time_to_expire % 60
-				));
-	    		if (typeof(session_expiration_warning_handler) == 'function') {
-	    			session_expiration_warning_handler(time_to_expire);
-				}
-	    }, 1000);
+	if (lms_session_expire_elem.length) {
+		var time_to_expire = lms_login_timeout_ts - Date.now();
+		if (time_to_expire < 0) {
+			time_to_expire = 0;
+		}
+		time_to_expire = Math.round(time_to_expire / 1000);
+		lms_session_expire_elem.text(sprintf("%02d:%02d",
+			Math.floor(time_to_expire / 60),
+			time_to_expire % 60
+		));
+		lms_login_timeout_update = setInterval(function () {
+			var time_to_expire = lms_login_timeout_ts - Date.now();
+			if (time_to_expire < 0) {
+				time_to_expire = 0;
+			}
+			time_to_expire = Math.round(time_to_expire / 1000);
+			lms_session_expire_elem.text(sprintf("%02d:%02d",
+				Math.floor(time_to_expire / 60),
+				time_to_expire % 60
+			));
+			if (typeof (session_expiration_warning_handler) == 'function') {
+				session_expiration_warning_handler(time_to_expire);
+			}
+		}, 1000);
 	}
 }
 

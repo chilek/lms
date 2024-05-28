@@ -679,4 +679,9 @@ class Session
         header('Location: '.$location);
         die;
     }
+
+    public function clearTimeout()
+    {
+        $this->DB->Execute('UPDATE sessions SET atime = ?NOW? WHERE id = ?', array($this->SID));
+    }
 }
