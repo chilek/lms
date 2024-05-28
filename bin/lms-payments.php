@@ -500,7 +500,7 @@ if ($voip_cdr_only) {
         LEFT JOIN promotionschemas ps ON ps.id = a.promotionschemaid
         LEFT JOIN promotions p ON p.id = ps.promotionid
         LEFT JOIN (
-            SELECT 
+            SELECT
                 tariffs.*,
                 taxes.value AS taxrate,
                 (CASE WHEN tariffs.flags & ? > 0 THEN tariffs.netvalue ELSE tariffs.value END) AS tvalue
@@ -508,7 +508,7 @@ if ($voip_cdr_only) {
             JOIN taxes ON taxes.id = tariffs.taxid
         ) t ON a.tariffid = t.id
         LEFT JOIN (
-            SELECT 
+            SELECT
                 liabilities.*,
                 taxes.value AS taxrate,
                 (CASE WHEN liabilities.flags & ? > 0 THEN liabilities.netvalue ELSE liabilities.value END) AS lvalue
@@ -516,7 +516,7 @@ if ($voip_cdr_only) {
             JOIN taxes ON taxes.id = liabilities.taxid
         ) l ON a.liabilityid = l.id
         LEFT JOIN (
-            SELECT 
+            SELECT
                 vna.assignment_id,
                 " . $DB->GroupConcat('vn.phone', ',') . " AS phones
             FROM voip_number_assignments vna

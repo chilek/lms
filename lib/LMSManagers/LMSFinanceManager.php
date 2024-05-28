@@ -977,7 +977,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     public function getAssignment($assignment_id)
     {
         return $this->db->GetRow(
-            'SELECT 
+            'SELECT
                 a.id AS id, 
                 a.at, 
                 a.datefrom, 

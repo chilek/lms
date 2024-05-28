@@ -177,7 +177,7 @@ define('LIABILITY_FLAG_NET_ACCOUT', 16);
 define('SUSPENSION_CALCULATION_METHOD_PERCENTAGE', 1);
 
 $allSuspendedAssignments = $this->GetAll(
-    'SELECT 
+    'SELECT
         a.id,
         a.at,
         a.datefrom,
@@ -206,7 +206,7 @@ if (!empty($allSuspendedAssignments)) {
         $suspensionExist = $this->getOne('SELECT customerid FROM suspensions WHERE customerid = ?', array($allSuspendedAssignment['customerid']));
         if (empty($suspensionExist)) {
             $assignments = $this->getAll(
-                'SELECT 
+                'SELECT
                     a.id,
                     a.at,
                     a.datefrom,
@@ -546,7 +546,7 @@ CREATE VIEW vassignmentssuspensionsvalues AS
             END) AS assignment_price
         FROM assignments a
         LEFT JOIN (
-            SELECT 
+            SELECT
                 tariffs.*,
                 taxes.value AS taxrate, taxes.label AS taxlabel,
                 (CASE WHEN tariffs.flags & 16 > 0 THEN tariffs.netvalue ELSE tariffs.value END) AS tvalue
@@ -554,7 +554,7 @@ CREATE VIEW vassignmentssuspensionsvalues AS
             JOIN taxes ON taxes.id = tariffs.taxid
         ) t ON a.tariffid = t.id
         LEFT JOIN (
-            SELECT 
+            SELECT
                 liabilities.*,
                 taxes.value AS taxrate, taxes.label AS taxlabel,
                 (CASE WHEN liabilities.flags & 16 > 0 THEN liabilities.netvalue ELSE liabilities.value END) AS lvalue
