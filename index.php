@@ -267,8 +267,8 @@ $documents_dirs = $plugin_manager->executeHook('documents_dir_initialized', $doc
 
 // Check privileges and execute modules
 if ($AUTH->islogged) {
-    if (isset($_GET['clear_timeout'])) {
-        $SESSION->clearTimeout();
+    if (isset($_GET['clear_login_timeout'])) {
+        $SESSION->clearLoginTimeout();
         header('Content-Type: application/json');
         die('[]');
     }

@@ -144,8 +144,9 @@
 				setCookie('tabId', lmsTabId);
 			}
 
-			var sessionTimeout = parseInt('{ConfigHelper::getConfig('phpui.timeout')}');
-			var lastClearTimeout = Date.now();
+			var loginTimeout = parseInt('{ConfigHelper::getConfig('phpui.timeout')}');
+			var lastClearLoginTimeout = Date.now();
+			var clearLoginTimeoutHandle = null;
 
 			$(window).on('mousemove keypress focus', function(e) {
 				if (e.type == 'focus') {
@@ -157,14 +158,30 @@
 						window.location.assign(window.location.href);
 					}
 				} else {
-					start_login_timeout(sessionTimeout);
-					if (Date.now() - lastClearTimeout > (sessionTimeout * 1000 / 2)) {
+					start_login_timeout(loginTimeout);
+
+					if (Date.now() - lastClearLoginTimeout > (loginTimeout * 1000 / 2)) {
 						$.ajax({
-							url: '?clear_timeout=1&api=1',
+							url: '?clear_login_timeout=1&api=1',
 							method: "POST",
 							dataType: 'json'
 						});
-						lastClearTimeout = Date.now();
+						lastClearLoginTimeout = Date.now();
+					} else {
+						if (clearLoginTimeoutHandle) {
+							clearTimeout(clearLoginTimeoutHandle);
+						}
+						clearLoginTimeoutHandle = setTimeout(
+							function () {
+								$.ajax({
+									url: '?clear_login_timeout=1&api=1',
+									method: "POST",
+									dataType: 'json'
+								});
+								lastClearLoginTimeout = Date.now();
+							},
+							loginTimeout * 1000 / 2
+						);
 					}
 				}
 			});

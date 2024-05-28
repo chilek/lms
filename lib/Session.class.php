@@ -680,7 +680,7 @@ class Session
         die;
     }
 
-    public function clearTimeout()
+    public function clearLoginTimeout()
     {
         $this->DB->Execute('UPDATE sessions SET atime = ?NOW? WHERE id = ?', array($this->SID));
     }
