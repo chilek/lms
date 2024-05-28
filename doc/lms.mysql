@@ -3389,14 +3389,8 @@ CREATE VIEW vassignmentsuspensionvalues AS
         suspensiongroup_assignments_count AS suspensionvalues_assignments_count
     FROM (
         SELECT
-            (CASE WHEN suspensions.assignment_id IS NOT NULL
-                THEN suspensions.assignment_id
-                ELSE a.id
-            END) AS suspension_assignment_id,
-            (CASE WHEN suspensions.suspension_id IS NOT NULL
-                THEN suspensions.suspension_id
-                ELSE suspensions_all.suspension_id
-            END) AS suspension_id,
+            CALESCE(suspensions.assignment_id, a.id) AS suspension_assignment_id,
+            CALESCE(suspensions.suspension_id, suspensions_all.suspension_id) AS suspension_id,
             (CASE WHEN suspensions.suspension_id IS NOT NULL
                 THEN suspensions.suspensiongroup_assignments_count
                 ELSE suspensions_all.suspensiongroup_assignments_count

@@ -65,6 +65,7 @@ if (isset($_POST['assignment'])) {
                 }
             }
         }
+
         $hook_data = $LMS->executeHook(
             'customerassignmentadd_validation_before_submit',
             array(

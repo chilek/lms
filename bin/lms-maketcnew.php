@@ -259,9 +259,9 @@ $query .= "SELECT ROUND(t.downrate * a.count) AS downrate,
 	" . ($ignore_assignment_suspensions
         ? ''
         : "LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
-                AND vas.suspension_datefrom <= ?NOW?
-                AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
-                AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)") . "
+            AND vas.suspension_datefrom <= ?NOW?
+            AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+            AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)") . "
 	JOIN tariffs t ON (a.tariffid = t.id)
 	JOIN vnodes n ON (na.nodeid = n.id)
 	JOIN customers c ON (a.customerid = c.id)
@@ -291,9 +291,9 @@ if ($all_assignments) {
 	" . ($ignore_assignment_suspensions
         ? ''
         : "LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = na.assignmentid
-                AND vas.suspension_datefrom <= ?NOW?
-                AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
-                AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)") . "
+            AND vas.suspension_datefrom <= ?NOW?
+            AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+            AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)") . "
 	JOIN tariffs t ON t.id = a.tariffid
 	JOIN customers c ON c.id = a.customerid
 	JOIN (

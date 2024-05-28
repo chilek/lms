@@ -3858,33 +3858,27 @@ CREATE VIEW vassignmentsuspensiongroupcounts AS
     SELECT COUNT(vasg.suspension_assignment_id) AS suspensiongroup_assignments_count,
            vasg.suspension_id AS suspensiongroup_suspension_id
     FROM (SELECT
-              (CASE WHEN suspensions.assignment_id IS NOT NULL
-                    THEN suspensions.assignment_id
-                    ELSE a.id
-                  END) AS suspension_assignment_id,
-              (CASE WHEN suspensions.suspension_id IS NOT NULL
-                    THEN suspensions.suspension_id
-                    ELSE suspensions_all.suspension_id
-                  END) AS suspension_id
-          FROM assignments a
-          LEFT JOIN (
-              SELECT
-                  assignmentsuspensions.assignmentid AS assignment_id,
-                  assignmentsuspensions.suspensionid AS suspension_id,
-                  suspensions1.id AS id
-              FROM assignmentsuspensions
-                       JOIN suspensions AS suspensions1 ON suspensions1.id = assignmentsuspensions.suspensionid
-                       LEFT JOIN taxes ON taxes.id = suspensions1.taxid
-          ) suspensions ON suspensions.assignment_id = a.id
-          LEFT JOIN (
-              SELECT
-                  suspensions2.id AS suspension_id,
-                  suspensions2.customerid,
-                  (CASE WHEN suspensions2.customerid IS NULL THEN 0 ELSE 1 END) AS suspend_all
-              FROM suspensions AS suspensions2
-          ) AS suspensions_all ON suspensions_all.customerid = a.customerid
-          WHERE suspensions.suspension_id IS NOT NULL OR suspensions_all.suspend_all = 1
-         ) AS vasg
+            COALESCE(suspensions.assignment_id, a.id) AS suspension_assignment_id,
+            COALESCE(suspensions.suspension_id, suspensions_all.suspension_id) AS suspension_id
+        FROM assignments a
+        LEFT JOIN (
+            SELECT
+                assignmentsuspensions.assignmentid AS assignment_id,
+                assignmentsuspensions.suspensionid AS suspension_id,
+                suspensions1.id AS id
+            FROM assignmentsuspensions
+            JOIN suspensions AS suspensions1 ON suspensions1.id = assignmentsuspensions.suspensionid
+            LEFT JOIN taxes ON taxes.id = suspensions1.taxid
+        ) suspensions ON suspensions.assignment_id = a.id
+        LEFT JOIN (
+            SELECT
+            suspensions2.id AS suspension_id,
+            suspensions2.customerid,
+            (CASE WHEN suspensions2.customerid IS NULL THEN 0 ELSE 1 END) AS suspend_all
+            FROM suspensions AS suspensions2
+        ) AS suspensions_all ON suspensions_all.customerid = a.customerid
+        WHERE suspensions.suspension_id IS NOT NULL OR suspensions_all.suspend_all = 1
+        ) AS vasg
     GROUP BY vasg.suspension_id;
 
 CREATE VIEW vassignmentsuspensionvalues AS
@@ -3897,14 +3891,8 @@ CREATE VIEW vassignmentsuspensionvalues AS
         suspensiongroup_assignments_count AS suspensionvalues_assignments_count
     FROM (
         SELECT
-            (CASE WHEN suspensions.assignment_id IS NOT NULL
-                THEN suspensions.assignment_id
-                ELSE a.id
-            END) AS suspension_assignment_id,
-            (CASE WHEN suspensions.suspension_id IS NOT NULL
-                THEN suspensions.suspension_id
-                ELSE suspensions_all.suspension_id
-            END) AS suspension_id,
+            COALESCE(suspensions.assignment_id, a.id) AS suspension_assignment_id,
+            COALESCE(suspensions.suspension_id, suspensions_all.suspension_id) AS suspension_id,
             (CASE WHEN suspensions.suspension_id IS NOT NULL
                 THEN suspensions.suspensiongroup_assignments_count
                 ELSE suspensions_all.suspensiongroup_assignments_count
@@ -3971,10 +3959,7 @@ CREATE VIEW vassignmentsuspensionvalues AS
 
 CREATE VIEW vassignmentsuspensions AS
     SELECT
-        (CASE WHEN suspensions.assignment_id IS NOT NULL
-            THEN suspensions.assignment_id
-            ELSE a.id
-        END) AS suspension_assignment_id,
+        COALESCE(suspensions.assignment_id, a.id) AS suspension_assignment_id,
         (CASE WHEN suspensions.suspension_id IS NOT NULL OR suspensions_all.suspend_all = 1 THEN 1 ELSE 0 END) AS suspended,
         (CASE WHEN suspensions.suspension_id IS NULL AND suspensions_all.suspend_all = 1 THEN 1 ELSE 0 END) AS suspension_suspend_all,
         COALESCE(suspensions.suspension_id, suspensions_all.suspension_id) AS suspension_id,

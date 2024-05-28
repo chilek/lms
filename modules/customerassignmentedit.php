@@ -886,7 +886,9 @@ $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
     'division' => $customer['divisionid'],
     'next' => false,
 )));
+
 $SMARTY->assign('tags', $LMS->TarifftagGetAll());
+
 $SMARTY->assign('tariffs', $LMS->GetTariffs($a['tariffid']));
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());
 $defaultTaxIds = $LMS->GetTaxes(null, null, true);

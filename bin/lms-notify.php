@@ -3537,9 +3537,9 @@ if (!empty($intersect)) {
                                 $where_customers[] = 'NOT EXISTS (SELECT id 
                                     FROM assignments
                                     LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
-                                    AND vas.suspension_datefrom <= ?NOW?
-                                    AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
-                                    AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
+                                        AND vas.suspension_datefrom <= ?NOW?
+                                        AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                                        AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
                                     WHERE customerid = c.id AND vas.suspension_suspend_all = 1)';
                                 break;
                             case 'customer-group':

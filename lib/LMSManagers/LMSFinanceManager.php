@@ -83,7 +83,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 END) *
                 a.count, 2)) AS sum,
                 (CASE WHEN a.liabilityid IS NULL THEN t.currency ELSE l.currency END) AS acurrency
-                 FROM assignments a
+                FROM assignments a
                 LEFT JOIN tariffs t ON t.id = a.tariffid
                 LEFT JOIN liabilities l ON l.id = a.liabilityid
                 LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
@@ -91,7 +91,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
                     AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
                 WHERE a.customerid = ?
-                AND a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0)
+                    AND a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0)
                 GROUP BY acurrency
             ) as ca
             GROUP BY scurrency',
@@ -164,128 +164,128 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         }
 
         $query = 'SELECT '
-        . $this->db->Concat('UPPER(c.lastname)', "' '", 'c.name') . ' AS customername, '
-        . $this->db->Concat('c.city', "' '", 'c.address') . ' AS address,
-        c.ten,
-        a.id, 
-        a.id AS assignmentid,
-        a.at, 
-        a.tariffid, 
-        a.liabilityid, 
-        a.customerid,
-        a.period,
-        a.period as periodvalue,
-        a.count AS count,
-        a.datefrom, 
-        a.dateto, 
-        a.pdiscount, 
-        a.vdiscount,
-        (CASE WHEN a.liabilityid IS NULL
-            THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
-            ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
-        END) AS netflag,
-        t.period AS t_period, 
-        (CASE WHEN price_variants.tpv_price IS NULL 
-                THEN 
-                     (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END) 
-                ELSE
-                    price_variants.tpv_price
-            END) AS base_price,
-            (CASE WHEN price_variants.tpv_price IS NULL 
-                THEN 
-                    ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount), 3) 
-                ELSE
-                    ROUND(((((100 - a.pdiscount) * price_variants.tpv_price) / 100) - a.vdiscount), 3)
-            END) AS price,
-        (CASE WHEN a.liabilityid IS NULL THEN t.taxid ELSE l.taxid END) AS taxid,
-        (CASE WHEN a.liabilityid IS NULL THEN t.taxrate ELSE l.taxrate END) AS taxrate,
-        (CASE WHEN a.liabilityid IS NULL THEN t.taxlabel ELSE l.taxlabel END) AS taxlabel,
-        (CASE WHEN a.liabilityid IS NULL THEN t.currency ELSE l.currency END) AS currency,
-        vas.*,
-        (CASE 
-            WHEN vas.suspended IS NOT NULL
-                AND 
-                (
-                    (
-                        vas.suspension_charge_method = ? AND vas.suspension_at = ?
-                    )
-                    OR
-                    (
+                . $this->db->Concat('UPPER(c.lastname)', "' '", 'c.name') . ' AS customername, '
+                . $this->db->Concat('c.city', "' '", 'c.address') . ' AS address,
+                c.ten,
+                a.id, 
+                a.id AS assignmentid,
+                a.at, 
+                a.tariffid, 
+                a.liabilityid, 
+                a.customerid,
+                a.period,
+                a.period as periodvalue,
+                a.count AS count,
+                a.datefrom, 
+                a.dateto, 
+                a.pdiscount, 
+                a.vdiscount,
+                (CASE WHEN a.liabilityid IS NULL
+                    THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
+                    ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
+                END) AS netflag,
+                t.period AS t_period, 
+                (CASE WHEN price_variants.tpv_price IS NULL 
+                        THEN 
+                             (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END) 
+                        ELSE
+                            price_variants.tpv_price
+                    END) AS base_price,
+                    (CASE WHEN price_variants.tpv_price IS NULL 
+                        THEN 
+                            ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount), 3) 
+                        ELSE
+                            ROUND(((((100 - a.pdiscount) * price_variants.tpv_price) / 100) - a.vdiscount), 3)
+                    END) AS price,
+                (CASE WHEN a.liabilityid IS NULL THEN t.taxid ELSE l.taxid END) AS taxid,
+                (CASE WHEN a.liabilityid IS NULL THEN t.taxrate ELSE l.taxrate END) AS taxrate,
+                (CASE WHEN a.liabilityid IS NULL THEN t.taxlabel ELSE l.taxlabel END) AS taxlabel,
+                (CASE WHEN a.liabilityid IS NULL THEN t.currency ELSE l.currency END) AS currency,
+                vas.*,
+                (CASE 
+                    WHEN vas.suspended IS NOT NULL
+                        AND 
                         (
-                            vas.suspension_charge_method = ? 
-                            OR 
-                            (vas.suspension_charge_method = ? AND vas.suspension_at IN ?)
-                        ) 
-                        AND vas.suspension_datefrom <= ?
-                        AND (vas.suspension_dateto > ? OR vas.suspension_dateto = 0)
-                    )
-                )
-            THEN 1
-            ELSE 0
-        END) AS charge_suspension
-        FROM assignments a
-        JOIN customerview c ON a.customerid = c.id
-        LEFT JOIN (
-            SELECT tariffs.*,
-                taxes.value AS taxrate, taxes.label AS taxlabel,
-                (CASE WHEN tariffs.flags & ? > 0 THEN tariffs.netvalue ELSE tariffs.value END) AS tvalue
-            FROM tariffs
-            JOIN taxes ON taxes.id = tariffs.taxid
-        ) t ON a.tariffid = t.id
-        LEFT JOIN (
-            SELECT liabilities.*,
-                taxes.value AS taxrate, taxes.label AS taxlabel,
-                (CASE WHEN liabilities.flags & ? > 0 THEN liabilities.netvalue ELSE liabilities.value END) AS lvalue
-            FROM liabilities
-            JOIN taxes ON taxes.id = liabilities.taxid
-        ) l ON a.liabilityid = l.id
-        LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
-            AND vas.suspension_datefrom <= ?
-            AND (vas.suspension_dateto > ? OR vas.suspension_dateto = 0)
-        LEFT JOIN (
-            SELECT
-              tpv.*
+                            (
+                                vas.suspension_charge_method = ? AND vas.suspension_at = ?
+                            )
+                            OR
+                            (
+                                (
+                                    vas.suspension_charge_method = ? 
+                                    OR 
+                                    (vas.suspension_charge_method = ? AND vas.suspension_at IN ?)
+                                ) 
+                                AND vas.suspension_datefrom <= ?
+                                AND (vas.suspension_dateto > ? OR vas.suspension_dateto = 0)
+                            )
+                        )
+                    THEN 1
+                    ELSE 0
+                END) AS charge_suspension
             FROM assignments a
-            JOIN (
-              SELECT
-                  tariffpricevariants.quantity_threshold AS tpv_quantity_threshold, tariffs.id AS tpv_tariffid,
-                  (CASE WHEN tariffs.flags & ? > 0 THEN tariffpricevariants.net_price ELSE tariffpricevariants.gross_price END) AS tpv_price
-              FROM tariffs
-              JOIN tariffpricevariants ON tariffs.id = tariffpricevariants.tariffid
-            ) tpv ON a.tariffid = tpv.tpv_tariffid AND tpv.tpv_quantity_threshold <= a.count AND tpv.tpv_tariffid = a.tariffid
-            ORDER BY tpv.tpv_quantity_threshold DESC LIMIT 1
-        ) AS price_variants ON a.tariffid = price_variants.tpv_tariffid
-        WHERE a.commited = 1
-        AND (
-            (a.period = ? AND at = ?)
-            OR (
-                (
-                    a.period = ?
-                    OR (a.period = ? AND at = ?)
-                    OR (a.period = ? AND at IN ?)
-                    OR (a.period = ? AND at = ?)
-                    OR (a.period = ? AND at = ?)
-                    OR (a.period = ? AND at = ?)
-                )
-                AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)
-            )
-            OR (
-                (vas.suspension_charge_method = ? AND vas.suspension_at = ?)
+            JOIN customerview c ON a.customerid = c.id
+            LEFT JOIN (
+                SELECT tariffs.*,
+                    taxes.value AS taxrate, taxes.label AS taxlabel,
+                    (CASE WHEN tariffs.flags & ? > 0 THEN tariffs.netvalue ELSE tariffs.value END) AS tvalue
+                FROM tariffs
+                JOIN taxes ON taxes.id = tariffs.taxid
+            ) t ON a.tariffid = t.id
+            LEFT JOIN (
+                SELECT liabilities.*,
+                    taxes.value AS taxrate, taxes.label AS taxlabel,
+                    (CASE WHEN liabilities.flags & ? > 0 THEN liabilities.netvalue ELSE liabilities.value END) AS lvalue
+                FROM liabilities
+                JOIN taxes ON taxes.id = liabilities.taxid
+            ) l ON a.liabilityid = l.id
+            LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                AND vas.suspension_datefrom <= ?
+                AND (vas.suspension_dateto > ? OR vas.suspension_dateto = 0)
+            LEFT JOIN (
+                SELECT
+                  tpv.*
+                FROM assignments a
+                JOIN (
+                  SELECT
+                      tariffpricevariants.quantity_threshold AS tpv_quantity_threshold, tariffs.id AS tpv_tariffid,
+                      (CASE WHEN tariffs.flags & ? > 0 THEN tariffpricevariants.net_price ELSE tariffpricevariants.gross_price END) AS tpv_price
+                  FROM tariffs
+                  JOIN tariffpricevariants ON tariffs.id = tariffpricevariants.tariffid
+                ) tpv ON a.tariffid = tpv.tpv_tariffid AND tpv.tpv_quantity_threshold <= a.count AND tpv.tpv_tariffid = a.tariffid
+                ORDER BY tpv.tpv_quantity_threshold DESC LIMIT 1
+            ) AS price_variants ON a.tariffid = price_variants.tpv_tariffid
+            WHERE a.commited = 1
+            AND (
+                (a.period = ? AND at = ?)
                 OR (
                     (
-                        vas.suspension_charge_method = ?
-                        OR 
-                        (vas.suspension_charge_method = ? AND vas.suspension_at IN ?)
-                    )    
-                    AND vas.suspension_datefrom <= ?
-                    AND (vas.suspension_dateto >= ? OR vas.suspension_dateto = 0)
+                        a.period = ?
+                        OR (a.period = ? AND at = ?)
+                        OR (a.period = ? AND at IN ?)
+                        OR (a.period = ? AND at = ?)
+                        OR (a.period = ? AND at = ?)
+                        OR (a.period = ? AND at = ?)
+                    )
                     AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)
                 )
-            )
-        )'
-        . (!empty($params['customer_id']) ? ' AND c.id = ' . $params['customer_id'] : '')
-        . (!empty($params['division_id']) ? ' AND c.divisionid = ' . $params['division_id'] : '')
-        .' ORDER BY customername, address, a.id';
+                OR (
+                    (vas.suspension_charge_method = ? AND vas.suspension_at = ?)
+                    OR (
+                        (
+                            vas.suspension_charge_method = ?
+                            OR 
+                            (vas.suspension_charge_method = ? AND vas.suspension_at IN ?)
+                        )    
+                        AND vas.suspension_datefrom <= ?
+                        AND (vas.suspension_dateto >= ? OR vas.suspension_dateto = 0)
+                        AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)
+                    )
+                )
+            )'
+            . (!empty($params['customer_id']) ? ' AND c.id = ' . $params['customer_id'] : '')
+            . (!empty($params['division_id']) ? ' AND c.divisionid = ' . $params['division_id'] : '')
+            .' ORDER BY customername, address, a.id';
 
         $doms = array($dom);
 
@@ -329,95 +329,96 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $currtime = time();
         $today = strtotime('today');
 
-        $query = 'SELECT a.id AS id, 
-            a.tariffid,
-            a.liabilityid,
-            a.customerid,
-            a.recipient_address_id,
-            a.period,
-            a.period as periodvalue,
-            a.backwardperiod,
-            a.at,
-            a.settlement,
-            a.datefrom,
-            a.dateto,
-            a.pdiscount,
-            a.vdiscount,
-            a.attribute,
-            a.invoice,
-            a.separatedocument,
-            a.separateitem,
-            a.commited,
-            a.count AS count,
-            a.id AS assignmentid,
-            a.paytime AS a_paytime,
-            a.paytype AS a_paytype,
-            a.numberplanid, 
-            a.attribute,
-            c.type AS customertype,
-            c.divisionid, 
-            c.paytime, 
-            c.paytype, 
-            c.flags AS customerflags,
-            d.number AS docnumber,
-            d.type AS doctype,
-            d.cdate,
-            d.fullnumber,
-            np.template,
-            p.name AS promotion_name,
-            ps.name AS promotion_schema_name,
-            ps.length AS promotion_schema_length,
-            t.description AS description,
-            t.period AS t_period,
-            uprate AS unitary_uprate,
-            ROUND(t.uprate * a.count) AS total_uprate,
-            upceil AS unitary_upceil,
-            ROUND(t.upceil * a.count) AS total_upceil,
-            downceil AS unitary_downceil,
-            ROUND(t.downceil * a.count) AS total_downceil,
-            downrate AS unitary_downrate,
-            ROUND(t.downrate * a.count) AS total_downrate,
-            (CASE WHEN a.period = ? THEN ? ELSE ? END) AS assignment_charge_method,
-            vas.*,
-            (CASE WHEN c.type = ? THEN 0 ELSE (CASE WHEN a.liabilityid IS NULL
-                THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
-                ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
-            END) END) AS splitpayment,
-            (CASE WHEN a.liabilityid IS NULL
-                THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
-                ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
-            END) AS netflag,
-            (CASE WHEN a.liabilityid IS NULL THEN t.taxcategory ELSE l.taxcategory END) AS taxcategory,
-            (CASE WHEN a.tariffid IS NULL THEN l.type ELSE t.type END) AS tarifftype,
-            (CASE WHEN a.liabilityid IS NULL THEN t.name ELSE l.name END) AS name,
-            (CASE WHEN a.liabilityid IS NULL THEN t.taxid ELSE l.taxid END) AS taxid,
-            (CASE WHEN a.liabilityid IS NULL THEN t.prodid ELSE l.prodid END) AS prodid,
-            price_variants.tpv_price AS price_variant,
-            (CASE WHEN price_variants.tpv_price IS NULL 
-                THEN 
-                     (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END) 
-                ELSE
-                    price_variants.tpv_price
-            END) AS base_price,
-            (CASE WHEN price_variants.tpv_price IS NULL 
-                THEN 
-                    ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount), 3) 
-                ELSE
-                    ROUND(((((100 - a.pdiscount) * price_variants.tpv_price) / 100) - a.vdiscount), 3)
-            END) AS price,
-            (CASE WHEN a.liabilityid IS NULL THEN t.taxrate ELSE l.taxrate END) AS taxrate,
-            (CASE WHEN a.liabilityid IS NULL THEN t.taxlabel ELSE l.taxlabel END) AS taxlabel,
-            (CASE WHEN a.liabilityid IS NULL THEN t.currency ELSE l.currency END) AS currency,
-            (CASE WHEN t.flags IS NULL THEN l.flags ELSE t.flags END) AS flags,
-            (CASE WHEN (a.period <> ? AND (a.dateto > ? OR a.dateto = 0) AND (a.at >= ? OR a.at < 531))
-                    OR (a.period = ? AND a.at >= ?)
-                THEN 0
-                ELSE 1
-            END) AS expired,
-            (CASE WHEN (a.period <> ? AND a.datefrom > ?) OR (a.period = ? AND a.at >= ?)
-                THEN 1
-                ELSE 0
-            END) AS future
+        $query = 'SELECT
+                a.id AS id, 
+                a.tariffid,
+                a.liabilityid,
+                a.customerid,
+                a.recipient_address_id,
+                a.period,
+                a.period as periodvalue,
+                a.backwardperiod,
+                a.at,
+                a.settlement,
+                a.datefrom,
+                a.dateto,
+                a.pdiscount,
+                a.vdiscount,
+                a.attribute,
+                a.invoice,
+                a.separatedocument,
+                a.separateitem,
+                a.commited,
+                a.count AS count,
+                a.id AS assignmentid,
+                a.paytime AS a_paytime,
+                a.paytype AS a_paytype,
+                a.numberplanid, 
+                a.attribute,
+                c.type AS customertype,
+                c.divisionid, 
+                c.paytime, 
+                c.paytype, 
+                c.flags AS customerflags,
+                d.number AS docnumber,
+                d.type AS doctype,
+                d.cdate,
+                d.fullnumber,
+                np.template,
+                p.name AS promotion_name,
+                ps.name AS promotion_schema_name,
+                ps.length AS promotion_schema_length,
+                t.description AS description,
+                t.period AS t_period,
+                uprate AS unitary_uprate,
+                ROUND(t.uprate * a.count) AS total_uprate,
+                upceil AS unitary_upceil,
+                ROUND(t.upceil * a.count) AS total_upceil,
+                downceil AS unitary_downceil,
+                ROUND(t.downceil * a.count) AS total_downceil,
+                downrate AS unitary_downrate,
+                ROUND(t.downrate * a.count) AS total_downrate,
+                (CASE WHEN a.period = ? THEN ? ELSE ? END) AS assignment_charge_method,
+                vas.*,
+                (CASE WHEN c.type = ? THEN 0 ELSE (CASE WHEN a.liabilityid IS NULL
+                    THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
+                    ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
+                END) END) AS splitpayment,
+                (CASE WHEN a.liabilityid IS NULL
+                    THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
+                    ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
+                END) AS netflag,
+                (CASE WHEN a.liabilityid IS NULL THEN t.taxcategory ELSE l.taxcategory END) AS taxcategory,
+                (CASE WHEN a.tariffid IS NULL THEN l.type ELSE t.type END) AS tarifftype,
+                (CASE WHEN a.liabilityid IS NULL THEN t.name ELSE l.name END) AS name,
+                (CASE WHEN a.liabilityid IS NULL THEN t.taxid ELSE l.taxid END) AS taxid,
+                (CASE WHEN a.liabilityid IS NULL THEN t.prodid ELSE l.prodid END) AS prodid,
+                price_variants.tpv_price AS price_variant,
+                (CASE WHEN price_variants.tpv_price IS NULL 
+                    THEN 
+                         (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END) 
+                    ELSE
+                        price_variants.tpv_price
+                END) AS base_price,
+                (CASE WHEN price_variants.tpv_price IS NULL 
+                    THEN 
+                        ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount), 3) 
+                    ELSE
+                        ROUND(((((100 - a.pdiscount) * price_variants.tpv_price) / 100) - a.vdiscount), 3)
+                END) AS price,
+                (CASE WHEN a.liabilityid IS NULL THEN t.taxrate ELSE l.taxrate END) AS taxrate,
+                (CASE WHEN a.liabilityid IS NULL THEN t.taxlabel ELSE l.taxlabel END) AS taxlabel,
+                (CASE WHEN a.liabilityid IS NULL THEN t.currency ELSE l.currency END) AS currency,
+                (CASE WHEN t.flags IS NULL THEN l.flags ELSE t.flags END) AS flags,
+                (CASE WHEN (a.period <> ? AND (a.dateto > ? OR a.dateto = 0) AND (a.at >= ? OR a.at < 531))
+                        OR (a.period = ? AND a.at >= ?)
+                    THEN 0
+                    ELSE 1
+                END) AS expired,
+                (CASE WHEN (a.period <> ? AND a.datefrom > ?) OR (a.period = ? AND a.at >= ?)
+                    THEN 1
+                    ELSE 0
+                END) AS future
             FROM assignments a
             JOIN customers c ON a.customerid = c.id
             LEFT JOIN (

@@ -990,13 +990,13 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
                         AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
                     WHERE a.customerid = c.id
-                     AND (
-                        (vas.suspension_suspend_all = 1)
-                        OR (vas.suspended IS NOT NULL
-                            AND vas.suspension_suspend_all = 0
-                            AND commited = 1)
-                        )
-                    )';
+                        AND (
+                            (vas.suspension_suspend_all = 1)
+                            OR (vas.suspended IS NOT NULL
+                                AND vas.suspension_suspend_all = 0
+                                AND commited = 1)
+                            )
+                        )';
                     break;
                 case 57:
                     $state_conditions[] = 'b.balance < -t.value';
@@ -1776,9 +1776,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         AND (a2.dateto > ?NOW? OR a2.dateto = 0)
                 ) ca ON ca.id = a.id
                 LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
-                        AND vas.suspension_datefrom <= ?NOW?
-                        AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
-                        AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
+                    AND vas.suspension_datefrom <= ?NOW?
+                    AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                    AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
                 GROUP BY a.customerid
             ) t ON (t.customerid = c.id)
                 LEFT JOIN (SELECT ownerid,

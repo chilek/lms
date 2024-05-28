@@ -1557,11 +1557,6 @@ class LMS
         return $manager->deleteAssignmentSuspension($params);
     }
 
-//    public function SuspendAssignment($id, $suspend = true, $suspensionid = null)
-//    {
-//        $manager = $this->getFinanceManager();
-//        return $manager->SuspendAssignment($id, $suspend, $suspensionid);
-//    }
     public function suspendAssignment($assignment_id)
     {
         $manager = $this->getFinanceManager();
