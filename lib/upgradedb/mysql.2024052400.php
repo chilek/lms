@@ -614,10 +614,7 @@ CREATE VIEW vassignmentsuspensions AS
         END) AS suspension_assignment_id,
         (CASE WHEN suspensions.suspension_id IS NOT NULL OR suspensions_all.suspend_all = 1 THEN 1 ELSE 0 END) AS suspended,
         (CASE WHEN suspensions.suspension_id IS NULL AND suspensions_all.suspend_all = 1 THEN 1 ELSE 0 END) AS suspension_suspend_all,
-        (CASE WHEN suspensions.suspension_id IS NOT NULL
-            THEN suspensions.suspension_id
-            ELSE suspensions_all.suspension_id
-        END) AS suspension_id,
+        COALESCE(suspensions.suspension_id, suspensions_all.suspension_id) AS suspension_id,
         (CASE WHEN suspensions.suspension_id IS NOT NULL
             THEN suspensions.at
             ELSE suspensions_all.at
@@ -666,11 +663,11 @@ CREATE VIEW vassignmentsuspensions AS
             THEN suspensions_all.customerid
             ELSE a.customerid
         END) AS suspension_customer_id,
-        (CASE WHEN suspensions.taxrate IS NOT NULL
+        (CASE WHEN suspensions.suspension_id IS NOT NULL
             THEN suspensions.taxrate
             ELSE suspensions_all.taxrate
         END) AS suspension_taxrate,
-        (CASE WHEN suspensions.taxlabel IS NOT NULL
+        (CASE WHEN suspensions.suspension_id IS NOT NULL
             THEN suspensions.taxlabel
             ELSE suspensions_all.taxlabel
         END) AS suspension_taxlabel,
