@@ -529,8 +529,8 @@ CREATE VIEW vassignmentsuspensionvalues AS
         suspensiongroup_assignments_count AS suspensionvalues_assignments_count
     FROM (
         SELECT
-            CALESCE(suspensions.assignment_id, a.id) AS suspension_assignment_id,
-            CALESCE(suspensions.suspension_id, suspensions_all.suspension_id) AS suspension_id,
+            COALESCE(suspensions.assignment_id, a.id) AS suspension_assignment_id,
+            COALESCE(suspensions.suspension_id, suspensions_all.suspension_id) AS suspension_id,
             (CASE WHEN suspensions.suspension_id IS NOT NULL
                 THEN suspensions.suspensiongroup_assignments_count
                 ELSE suspensions_all.suspensiongroup_assignments_count
@@ -602,7 +602,7 @@ CREATE VIEW vassignmentsuspensionvalues AS
 $this->Execute("
 CREATE VIEW vassignmentsuspensions AS
     SELECT
-        CALESCE(suspensions.assignment_id, a.id) AS suspension_assignment_id,
+        COALESCE(suspensions.assignment_id, a.id) AS suspension_assignment_id,
         (CASE WHEN suspensions.suspension_id IS NOT NULL OR suspensions_all.suspend_all = 1 THEN 1 ELSE 0 END) AS suspended,
         (CASE WHEN suspensions.suspension_id IS NULL AND suspensions_all.suspend_all = 1 THEN 1 ELSE 0 END) AS suspension_suspend_all,
         COALESCE(suspensions.suspension_id, suspensions_all.suspension_id) AS suspension_id,
