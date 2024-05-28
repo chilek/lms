@@ -491,7 +491,7 @@ if ($voip_cdr_only) {
             ELSE 0
         END) AS charge_suspension
         FROM assignments a
-        JOIN customers c ON (a.customerid = c.id)
+        JOIN customers c ON a.customerid = c.id
         LEFT JOIN customerconsents cc1 ON cc1.customerid = c.id AND cc1.type = " . CCONSENT_EINVOICE . "
         LEFT JOIN customerconsents cc2 ON cc2.customerid = c.id AND cc2.type = " . CCONSENT_MAIL_MARKETING . "
         LEFT JOIN customerconsents cc3 ON cc3.customerid = c.id AND cc3.type = " . CCONSENT_SMS_MARKETING . "
@@ -523,7 +523,7 @@ if ($voip_cdr_only) {
             LEFT JOIN voip_numbers vn ON vn.id = vna.number_id
             GROUP BY vna.assignment_id
         ) voipphones ON voipphones.assignment_id = a.id
-        LEFT JOIN divisions d ON (d.id = c.divisionid)
+        LEFT JOIN divisions d ON d.id = c.divisionid
         LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
                 AND vas.suspension_datefrom <= ?
                 AND (vas.suspension_dateto > ? OR vas.suspension_dateto = 0)
@@ -658,7 +658,7 @@ $query = "SELECT
     voipphones.phones,
     (CASE WHEN EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type IN ?) THEN 1 ELSE 0 END) AS billingconsent
 FROM assignments a
-JOIN customers c ON (a.customerid = c.id)
+JOIN customers c ON a.customerid = c.id
 JOIN tariffs t ON t.id = a.tariffid
 JOIN taxes ON taxes.id = t.taxid
 LEFT JOIN promotionschemas ps ON ps.id = a.promotionschemaid
@@ -735,7 +735,7 @@ LEFT JOIN (
     LEFT JOIN voip_numbers vn2 ON vn2.id = vna2.number_id
     GROUP BY vna2.assignment_id
 ) voipphones ON voipphones.assignment_id = a.id
-LEFT JOIN divisions d ON (d.id = c.divisionid)
+LEFT JOIN divisions d ON d.id = c.divisionid
 WHERE "
     . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
     . $customer_status_condition

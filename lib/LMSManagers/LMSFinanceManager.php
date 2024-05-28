@@ -224,7 +224,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             ELSE 0
         END) AS charge_suspension
         FROM assignments a
-        JOIN customerview c ON (a.customerid = c.id)
+        JOIN customerview c ON a.customerid = c.id
         LEFT JOIN (
             SELECT tariffs.*,
                 taxes.value AS taxrate, taxes.label AS taxlabel,
@@ -419,7 +419,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 ELSE 0
             END) AS future
             FROM assignments a
-            JOIN customers c ON (a.customerid = c.id)
+            JOIN customers c ON a.customerid = c.id
             LEFT JOIN (
                 SELECT tariffs.*,
                     taxes.value AS taxrate, taxes.label AS taxlabel,
