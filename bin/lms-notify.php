@@ -633,7 +633,7 @@ function parse_customer_data($data, $format, $row)
 
     $amount = -$row['balance'];
     $totalamount = -$row['totalbalance'];
-    $hook_data = $LMS->executeHook('notify_parse_customer_data', array('data' => $data, 'customer' => $row));
+    $hook_data = $LMS->executeHook('notify_parse_customer_data', array('data' => $data, 'format' => $format, 'customer' => $row));
     $data = $hook_data['data'];
 
     if (isset($row['deadline'])) {
