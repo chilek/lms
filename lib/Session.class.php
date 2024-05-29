@@ -351,13 +351,28 @@ class Session
         $row = $this->DB->GetRow('SELECT *, ?NOW? AS tt FROM sessions WHERE id = ?', array($this->SID));
 
         if ($row && serialize($this->makeVData()) == $row['vdata']) {
+            $content = unserialize($row['content']);
+
+            // login timeout specific for current user (hacky code but should work)
+            $user_timeout = $this->DB->GetOne(
+                'SELECT value FROM uiconfig WHERE section = ? AND var = ? AND userid = ?',
+                array(
+                    'phpui',
+                    'timeout',
+                    $content['session_id'],
+                )
+            );
+            if (!empty($user_timeout)) {
+                $this->timeout = $user_timeout;
+            }
+
             if (($row['mtime'] < $row['tt'] - $this->timeout) && ($row['atime'] < $row['tt'] - $this->timeout)) {
                 $this->_destroySession();
             } else {
                 if (!isset($_POST['xjxfun']) && !isset($_GET['ajax'])) {
                     $this->DB->Execute('UPDATE sessions SET atime = ?NOW? WHERE id = ?', array($this->SID));
                 }
-                $this->_content = unserialize($row['content']);
+                $this->_content = $content;
                 $this->restore_user_settings(true);
                 return;
             }
