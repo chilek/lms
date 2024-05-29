@@ -148,7 +148,7 @@
 			var lastClearLoginTimeout = Date.now();
 			var clearLoginTimeoutHandle = null;
 
-			$(window).on('mousemove keypress focus', function(e) {
+			$(window).on('mousemove keypress focus scroll', function(e) {
 				if (e.type == 'focus') {
 					setCookie('tabId', lmsTabId);
 
