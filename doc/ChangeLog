@@ -654,6 +654,7 @@ version 28-git (????-??-??):
     controls if expired balance is checked during financial analysis of previous period start [chilan]
   - improvement: new status filter selection in document list form: waiting for customer
     action (expired) [chilan]
+  - login timeout specific for current user (hacky code but should work) [chilan]
 
 version 27.0 (2021-08-20):
 
