@@ -1001,7 +1001,7 @@ class Utils
             //'PESEL' => '70030158839', // reserved
         );
 
-        curl_setopt($curl, CURLOPT_URL, $api_url . '/status-zastrzezenia/aktualny');
+        curl_setopt($curl, CURLOPT_URL, $api_url . (substr($api_url, -1) == '/' ? '' : '/') . 'status-zastrzezenia/aktualny');
         curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data, JSON_FORCE_OBJECT));
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
