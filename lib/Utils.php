@@ -970,7 +970,7 @@ class Utils
         static $curl = null;
 
         if (empty($api_url)) {
-            $api_url = ConfigHelper::getConfig('pesel.api_url', 'https://rejestr-zastrzezen.obywatel.gov.pl:2443/api/v1');
+            $api_url = ConfigHelper::getConfig('pesel.api_url', 'https://rejestr-zastrzezen.obywatel.gov.pl:20443/api/v1/');
             $api_key = ConfigHelper::getConfig('pesel.api_key', '', true);
             $api_request_reason = ConfigHelper::getConfig('pesel.api_request_reason', trans('telecommunication service contract'));
 
