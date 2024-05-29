@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $lastupgrade = $this->GetOne("SELECT keyvalue FROM dbinfo where keytype='dbversion'");
 
@@ -44,7 +43,3 @@ if ($lastupgrade == '2005092900') {
 // "type" values after change:
 // 1 - cash operations
 // 0 - non-cash operations
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005101700', 'dbversion'));
-
-$this->CommitTrans();

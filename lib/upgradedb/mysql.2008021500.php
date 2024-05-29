@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE TABLE aliasassignments (
@@ -44,7 +43,3 @@ $this->Execute("INSERT INTO aliasassignments (aliasid, accountid)
     
 $this->Execute("ALTER TABLE aliases DROP accountid");
 $this->Execute("ALTER TABLE aliases ADD UNIQUE KEY (login, domainid)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008021500', 'dbversion'));
-
-$this->CommitTrans();

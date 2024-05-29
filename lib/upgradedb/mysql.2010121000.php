@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->EXECUTE("DROP VIEW customersview");
 
@@ -57,7 +56,3 @@ $this->EXECUTE("ALTER TABLE excludedgroups MODIFY customergroupid int(11) NOT NU
 $this->EXECUTE("ALTER TABLE excludedgroups ADD INDEX customergroupid (customergroupid)");
 $this->EXECUTE("ALTER TABLE excludedgroups ADD FOREIGN KEY (customergroupid)
 	REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010121000', 'dbversion'));
-
-$this->CommitTrans();

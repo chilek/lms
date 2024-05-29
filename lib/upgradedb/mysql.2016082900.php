@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("CREATE TABLE voip_numbers (
                    id int(11) AUTO_INCREMENT,
@@ -36,7 +35,3 @@ $this->Execute("INSERT INTO voip_numbers (voip_account_id, phone)
                 SELECT id, phone FROM voipaccounts;");
 
 $this->Execute("ALTER TABLE voipaccounts DROP COLUMN phone;");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016082900', 'dbversion'));
-
-$this->CommitTrans();

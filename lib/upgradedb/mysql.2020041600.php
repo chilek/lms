@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 if (!$this->ResourceExists('cash_importid_ukey', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
     $cash_import_duplicates = $this->GetAll(
@@ -44,7 +43,3 @@ if (!$this->ResourceExists('cash_importid_ukey', LMSDB::RESOURCE_TYPE_CONSTRAINT
 
     $this->Execute("ALTER TABLE cash ADD UNIQUE KEY cash_importid_ukey (importid)");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020041600', 'dbversion'));
-
-$this->CommitTrans();
