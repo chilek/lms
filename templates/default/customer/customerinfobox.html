@@ -208,6 +208,9 @@
 															{$customerinfo.ssn|escape}
 														</span>
 														{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.ssn}
+														{if ConfigHelper::getConfig('pesel.api_key', '', true)}
+															{button type="link" icon="check" id="check-ssn-button" tip="Check in PESEL Reservation Registry"}
+														{/if}
 													{else}
 														<span class="customer-sensible-data" data-type="ssn">
 															{preg_replace('/[^\s]/', '*', $customerinfo.ssn)}
@@ -215,7 +218,6 @@
 														{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_handler=true
 															data_type="ssn"}
 													{/if}
-													{button type="link" icon="check" id="check-ssn-button" tip="Check in PESEL Reservation Registry"}
 												</td>
 											</tr>
 										{/if}
