@@ -441,8 +441,8 @@
 												{$disabled = true}
 											{/if}
 											<input type="text" name="customerdata[ssn]" value="{$ssn}" size="30"
-												class="customer-sensible-data" data-type="ssn"
-												{tip trigger="ssn"}
+												data-type="ssn"
+												{tip trigger="ssn" class="customer-sensible-data"}
 												{if $disabled} disabled{/if}>
 											{if $customerinfo.ssnwarning}
 												<input type="hidden" name="customerdata[ssnwarning]" value="1">
