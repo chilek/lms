@@ -4046,6 +4046,8 @@ $_LANG['tariff price variant<!syslog>'] = 'wariant cenowy taryfy';
 $_LANG['ticket message<!syslog>'] = 'wiadomość do zgłoszenia';
 $_LANG['queue<!syslog>'] = 'kolejka';
 $_LANG['network node<!syslog>'] = 'węzeł sieciowy';
+$_LANG['SSN reservation check<!syslog>'] = 'sprawdzenie zastrzeżenia PESEL';
+$_LANG['SSN reservation check error<!syslog>'] = 'błąd sprawdzenia zastrzeżenia PESEL';
 
 $_LANG['Choose network'] = 'Wybierz sieć';
 $_LANG['— automatic selection —'] = '— wybór automatyczny —';

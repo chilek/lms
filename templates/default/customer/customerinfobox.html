@@ -933,7 +933,7 @@
 			btn.prop('disabled', true);
 
 			$.ajax({
-				url: '?m=customerssncheck&api=1&ssn=' + ssnElem.text().trim(),
+				url: '?m=customerssncheck&api=1&id={$customerinfo.id}&ssn=' + ssnElem.text().trim(),
 				//url: '?m=customerssncheck&api=1&ssn=80103193344', // not reserved
 				//url: '?m=customerssncheck&api=1&ssn=70030158839', // reserved
 				dataType: "json",

@@ -102,6 +102,8 @@ class SYSLOG
     public const OPER_UPDATE = 3;
 
     public const OPER_GET = 4;
+    public const OPER_SSN_RESERVATION_CHECK_ERROR = 238;
+    public const OPER_SSN_RESERVATION_CHECK = 239;
     public const OPER_DBBACKUPRECOVER = 240;
     public const OPER_USERPASSWDCHANGE = 251;
     public const OPER_USERNOACCESS = 252;
@@ -259,6 +261,8 @@ class SYSLOG
         self::OPER_DELETE => 'deletion<!syslog>',
         self::OPER_UPDATE => 'update<!syslog>',
         self::OPER_GET => 'get<!syslog>',
+        self::OPER_SSN_RESERVATION_CHECK_ERROR => 'SSN reservation check error<!syslog>',
+        self::OPER_SSN_RESERVATION_CHECK => 'SSN reservation check<!syslog>',
         self::OPER_DBBACKUPRECOVER => 'recover<!syslog>',
         self::OPER_USERPASSWDCHANGE => 'password change<!syslog>',
         self::OPER_USERNOACCESS => 'access denied<!syslog>',
@@ -271,6 +275,8 @@ class SYSLOG
         self::OPER_DELETE => 'color: red',
         self::OPER_UPDATE => 'color: blue',
         self::OPER_GET => 'color: black',
+        self::OPER_SSN_RESERVATION_CHECK_ERROR => 'color: red',
+        self::OPER_SSN_RESERVATION_CHECK => 'color: red',
         self::OPER_DBBACKUPRECOVER => 'color: aqua',
         self::OPER_USERPASSWDCHANGE => 'color: navy',
         self::OPER_USERNOACCESS => 'color: purple',
