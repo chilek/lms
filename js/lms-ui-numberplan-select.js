@@ -103,7 +103,7 @@ $(function () {
                                 alreadySelected = true;
                             }
                         }
-                        options += '<option value="' + item.id + '"' + (isDefault ? ' selected' : '') + '>';
+                        options += '<option value="' + item.id + '"' + (isDefault ? ' selected data-default="1"' : '') + '>';
                         options += item.nextNumber + ' (' + item.period_name + ')';
                         options += '</option>';
                     });

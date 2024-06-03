@@ -126,6 +126,12 @@ function GetPlugin($template, $customer, $update_title, $JSResponse)
         $JSResponse->assign('title', 'value', $engine['form_title'] ?? $engine['title']);
     }
 
+    if (isset($engine['default_number_plan_id']) && (ctype_digit($engine['default_number_plan_id']) || is_int($engine['default_number_plan_id']))) {
+        $JSResponse->script('$(\'[name="document[numberplanid]"]\').val(\'' . intval($engine['default_number_plan_id']) . '\')');
+    } else {
+        $JSResponse->script('$(\'[name="document[numberplanid]"] option[data-default]\').prop(\'selected\', true)');
+    }
+
     $JSResponse->script('$("#documentpromotions").toggle(' . (empty($engine['promotion-schema-selection']) ? 'false' : 'true') . ')');
 }
 
