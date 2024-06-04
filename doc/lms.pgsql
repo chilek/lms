@@ -2320,7 +2320,7 @@ CREATE TABLE domains (
 	catalog text DEFAULT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (name),
-	CONSTRAINT domains_name_check CHECK (((name)::text = LOWER((name)::text))
+	CONSTRAINT domains_name_check CHECK (((name)::text = LOWER((name)::text)))
 );
 CREATE INDEX domains_ownerid_idx ON domains (ownerid);
 CREATE INDEX domains_catalog_idx ON domains(catalog);
