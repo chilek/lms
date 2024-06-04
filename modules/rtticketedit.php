@@ -143,6 +143,7 @@ if ($id && !isset($_POST['ticket'])) {
                     // don't notify regular users when ticket has been sent to verification
                     //'queue' => $ticket['queue'],
                     'queue' => null,
+                    'ticketid' => $id,
                     'verifierid' => $ticket['verifierid'],
                     'mail_headers' => $headers,
                     'mail_body' => $body,
@@ -416,6 +417,7 @@ if ($id && !isset($_POST['ticket'])) {
 
                         $LMS->NotifyUsers(array(
                             'queue' => $queue['id'],
+                            'ticketid' => $ticketid,
                             'mail_headers' => $headers,
                             'mail_body' => $body,
                             'sms_body' => $sms_body,
@@ -750,6 +752,7 @@ if (isset($_POST['ticket'])) {
             $LMS->NotifyUsers(array(
                 'queue' => $ticketedit['queue'],
                 'oldqueue' => $ticket['queueid'] == $ticketedit['queue'] ? null : $ticket['queueid'],
+                'ticketid' => $ticket['ticketid'],
                 'verifierid' => $verifierid == $ticketedit['verifierid'] ? null : $ticketedit['verifierid'],
                 'mail_headers' => $headers,
                 'mail_body' => $body,

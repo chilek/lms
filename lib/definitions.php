@@ -305,7 +305,9 @@ const RT_RIGHT_READ = 1,
     RT_RIGHT_SMS_NOTICE = 8,
     RT_RIGHT_INDICATOR = 16,
     RT_RIGHT_EMAIL_NOTICE = 32,
-    RT_RIGHT_NOTICE = 40;
+    RT_RIGHT_NOTICE = 40,
+    RT_RIGHT_SMS_WATCHING_NOTICE = 64,
+    RT_RIGHT_EMAIL_WATCHING_NOTICE = 128;
 
 $RT_RIGHTS = array(
     RT_RIGHT_READ => trans("Read"),
@@ -313,6 +315,8 @@ $RT_RIGHTS = array(
     RT_RIGHT_DELETE => trans("Delete (+R)"),
     RT_RIGHT_SMS_NOTICE => trans("SMS Notice (+R)"),
     RT_RIGHT_EMAIL_NOTICE => trans("E-mail Notice (+R)"),
+    RT_RIGHT_SMS_WATCHING_NOTICE => trans("Watcher SMS Notice"),
+    RT_RIGHT_EMAIL_WATCHING_NOTICE => trans("Watcher E-mail Notice"),
     RT_RIGHT_INDICATOR => trans("Indicator (+R)"),
 );
 

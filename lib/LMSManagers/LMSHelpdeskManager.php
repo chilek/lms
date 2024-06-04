@@ -2112,6 +2112,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $args = array(
             'queue' => $params['queue'],
+            'contact' => '',
         );
         if (!$notify_author && $userid) {
             $args['user'] = $userid;
@@ -2124,9 +2125,18 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         if (isset($params['verifierid']) && $params['verifierid'] && (!isset($params['recipients']) || ($params['recipients'] & RT_NOTIFICATION_VERIFIER))) {
             $verifier_email = $this->db->GetOne(
-                'SELECT email FROM users WHERE email <> \'\' AND deleted = 0 AND access = 1 AND users.id = ?
-                AND (ntype & ?) > 0',
-                array($params['verifierid'], MSG_MAIL)
+                'SELECT email
+                FROM users
+                WHERE email <> ?
+                    AND deleted = 0
+                    AND access = 1
+                    AND users.id = ?
+                    AND (ntype & ?) > 0',
+                array(
+                    '',
+                    $params['verifierid'],
+                    MSG_MAIL,
+                )
             );
             if (!empty($verifier_email)) {
                 $params['mail_headers']['To'] = '<' . $verifier_email . '>';
@@ -2143,13 +2153,24 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         if ($params['queue'] && (!isset($params['recipients']) || ($params['recipients'] & RT_NOTIFICATION_USER))) {
             $recipients = $this->db->GetCol(
-                'SELECT DISTINCT email
-			FROM users, rtrights
-			WHERE users.id=userid AND queueid = ? AND email != \'\'
-				AND (rtrights.rights & ' . RT_RIGHT_EMAIL_NOTICE . ') > 0 AND deleted = 0 AND access = 1'
+                'SELECT DISTINCT users.email
+                FROM users
+                JOIN rtrights ON rtrights.userid = users.id
+                ' . (!empty($params['ticketid']) && intval($params['ticketid'])
+                    ? 'LEFT JOIN rttickets ON rttickets.queueid = rtrights.queueid AND rttickets.id = ' . intval($params['ticketid']) . '
+                    LEFT JOIN rtticketwatchers ON rtticketwatchers.ticketid = rttickets.id AND rtticketwatchers.userid = users.id'
+                    : '') . '
+                WHERE rtrights.queueid = ?
+                    AND users.deleted = 0
+                    AND users.access = 1
+                    AND users.email <> ?
+                    AND (
+                        (rtrights.rights & ' . RT_RIGHT_EMAIL_NOTICE . ') > 0
+                        OR (rtrights.rights & ' . RT_RIGHT_EMAIL_WATCHING_NOTICE . ') > 0 AND rtticketwatchers.id IS NOT NULL
+                    )'
                 . (!isset($args['user']) || $notify_author ? '' : ' AND users.id <> ?')
                 . (!empty($params['verifierid']) ? ' AND users.id <> ' . intval($params['verifierid']) : '')
-                . ' AND (ntype & ?) > 0',
+                . ' AND (users.ntype & ?) > 0',
                 array_values($args)
             );
 
@@ -2161,11 +2182,26 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 if (isset($params['oldqueue'])) {
                     $oldrecipients = $this->db->GetCol(
                         'SELECT DISTINCT email
-					FROM users, rtrights
-					WHERE users.id=userid AND queueid = ? AND email != \'\'
-						AND (rtrights.rights & ' . RT_RIGHT_EMAIL_NOTICE . ') > 0 AND deleted = 0 AND access = 1
-						AND (ntype & ?) > 0',
-                        array($params['oldqueue'], MSG_MAIL)
+                        FROM users
+                        JOIN rtrights ON rtrights.userid = users.id
+                        ' . (!empty($params['ticketid']) && intval($params['ticketid'])
+                                    ? 'LEFT JOIN rttickets ON rttickets.queueid = rtrights.queueid AND rttickets.id = ' . intval($params['ticketid']) . '
+                            LEFT JOIN rtticketwatchers ON rtticketwatchers.ticketid = rttickets.id AND rtticketwatchers.userid = users.id'
+                                    : '') . '
+                        WHERE queueid = ?
+                            AND deleted = 0
+                            AND access = 1
+                            AND email <> ?
+                            AND (
+                                (rtrights.rights & ' . RT_RIGHT_EMAIL_NOTICE . ') > 0
+                                OR (rtrights.rights & ' . RT_RIGHT_EMAIL_WATCHING_NOTICE . ') > 0 AND rtticketwatchers.id IS NOT NULL
+                            )
+                            AND (ntype & ?) > 0',
+                        array(
+                            $params['oldqueue'],
+                            '',
+                            MSG_MAIL,
+                        )
                     );
                     if (!empty($oldrecipients)) {
                         $recipients = array_diff($recipients, $oldrecipients);
@@ -2201,9 +2237,18 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         if (isset($params['verifierid']) && $params['verifierid'] && (!isset($params['recipients']) || ($params['recipients'] & RT_NOTIFICATION_VERIFIER))) {
             $verifier_phone = $this->db->GetOne(
-                'SELECT phone FROM users WHERE phone <> \'\' AND deleted = 0 AND access = 1 AND users.id = ?
-                AND (ntype & ?) > 0',
-                array($params['verifierid'], MSG_SMS)
+                'SELECT phone
+                FROM users
+                WHERE phone <> ?
+                    AND deleted = 0
+                    AND access = 1
+                    AND users.id = ?
+                    AND (ntype & ?) > 0',
+                array(
+                    '',
+                    $params['verifierid'],
+                    MSG_SMS,
+                )
             );
             if (!empty($verifier_phone)) {
                 $LMS->SendSMS($verifier_phone, $params['sms_body']);
@@ -2213,22 +2258,48 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         if ($params['queue'] && (!isset($params['recipients']) || ($params['recipients'] & RT_NOTIFICATION_USER))) {
             if (!empty($sms_service) && ($recipients = $this->db->GetCol(
                 'SELECT DISTINCT phone
-			FROM users, rtrights
-				WHERE users.id=userid AND queueid = ? AND phone != \'\'
-					AND (rtrights.rights & ' . RT_RIGHT_SMS_NOTICE . ') > 0 AND deleted = 0 AND access = 1'
-                    . (!isset($args['user']) || $notify_author ? '' : ' AND users.id <> ?')
-                    . (!empty($params['verifierid']) ? ' AND users.id <> ' . intval($params['verifierid']) : '')
-                    . ' AND (ntype & ?) > 0',
+                FROM users
+                JOIN rtrights ON rtrights.userid = users.id
+                ' . (!empty($params['ticketid']) && intval($params['ticketid'])
+                    ? 'LEFT JOIN rttickets ON rttickets.queueid = rtrights.queueid AND rttickets.id = ' . intval($params['ticketid']) . '
+                    LEFT JOIN rtticketwatchers ON rtticketwatchers.ticketid = rttickets.id AND rtticketwatchers.userid = users.id'
+                    : '') . '
+                WHERE queueid = ?
+                    AND deleted = 0
+                    AND access = 1
+                    AND phone <> ?
+                    AND (
+                        (rtrights.rights & ' . RT_RIGHT_SMS_NOTICE . ') > 0
+                        OR (rtrights.rights & ' . RT_RIGHT_SMS_WATCHING_NOTICE . ') > 0 AND rtticketwatchers.id IS NOT NULL
+                    )'
+                . (!isset($args['user']) || $notify_author ? '' : ' AND users.id <> ?')
+                . (!empty($params['verifierid']) ? ' AND users.id <> ' . intval($params['verifierid']) : '')
+                . ' AND (ntype & ?) > 0',
                 array_values($args)
             ))) {
                 if (isset($params['oldqueue'])) {
                     $oldrecipients = $this->db->GetCol(
                         'SELECT DISTINCT phone
-					FROM users, rtrights
-					WHERE users.id=userid AND queueid = ? AND phone != \'\'
-						AND (rtrights.rights & ' . RT_RIGHT_SMS_NOTICE . ') > 0 AND deleted = 0 AND access = 1
-						AND (ntype & ?) > 0',
-                        array($params['oldqueue'], MSG_SMS)
+                        FROM users
+                        JOIN rtrights ON rtrights.userid = users.id
+                        ' . (!empty($params['ticketid']) && intval($params['ticketid'])
+                                    ? 'LEFT JOIN rttickets ON rttickets.queueid = rtrights.queueid AND rttickets.id = ' . intval($params['ticketid']) . '
+                            LEFT JOIN rtticketwatchers ON rtticketwatchers.ticketid = rttickets.id AND rtticketwatchers.userid = users.id'
+                                    : '') . '
+                        WHERE queueid = ?
+                            AND deleted = 0
+                            AND access = 1
+                            AND phone <> ?
+                        AND (
+                            (rtrights.rights & ' . RT_RIGHT_SMS_NOTICE . ') > 0
+                            OR (rtrights.rights & ' . RT_RIGHT_SMS_WATCHING_NOTICE . ') > 0 AND rtticketwatchers.id IS NOT NULL
+                        )
+                        AND (ntype & ?) > 0',
+                        array(
+                            $params['oldqueue'],
+                            '',
+                            MSG_SMS,
+                        )
                     );
                     if (!empty($oldrecipients)) {
                         $recipients = array_diff($recipients, $oldrecipients);

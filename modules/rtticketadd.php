@@ -388,6 +388,7 @@ if (isset($_POST['ticket'])) {
 
                 $LMS->NotifyUsers(array(
                     'queue' => $queue,
+                    'ticketid' => $id,
                     'verifierid' => $ticket['verifierid'],
                     'mail_headers' => $headers,
                     'mail_body' => $body,

@@ -402,6 +402,7 @@ foreach ($message_files as $message_file) {
 
             $LMS->NotifyUsers(array(
                 'queue' => $queueid,
+                'ticketid' => $tid,
                 'mail_headers' => $headers,
                 'mail_body' => $message,
                 'sms_body' => $sms_body,

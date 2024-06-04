@@ -851,6 +851,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
 
             $LMS->NotifyUsers(array(
                 'queue' => $queue,
+                'ticketid' => $ticket_id,
                 'mail_headers' => $headers,
                 'mail_body' => $body,
                 'sms_body' => $sms_body,
