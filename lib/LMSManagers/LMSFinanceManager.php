@@ -764,7 +764,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
                     // creates assignment record for starting partial period
                     if (isset($data['settlement']) && $data['settlement'] == 2 && $period == MONTHLY && ($align_periods && $idx == 1 || !$align_periods)) {
-                        $val = $value;
+                        $val = floatval($value);
                         if ($tariff['period'] && $period != DISPOSABLE
                             && $tariff['period'] != $period) {
                             if ($tariff['period'] == YEARLY) {
@@ -868,7 +868,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     && (($idx == count($data_tariff) - 1 && isset($data['last-settlement']) && $align_periods && $data['dateto'] && $data['dateto'] > $dateto)
                         || ($idx < count($data_tariff) - 1 && !$align_periods))) {
                     if (!empty($lid) || $value != 'NULL') {
-                        $val = $value;
+                        $val = floatval($value);
                         if ($tariff['period'] && $period != DISPOSABLE
                             && $tariff['period'] != $period) {
                             if ($tariff['period'] == YEARLY) {
@@ -897,7 +897,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     if ($align_periods) {
                         [$year, $month, $dom] = explode('/', date('Y/m/d', $data['dateto']));
                         $prevperiod = mktime(0, 0, 0, $month, 1, $year);
-                        $diffdays = sprintf("%d", ($data['dateto'] + 1 - $prevperiod) / 86400);
+                        $diffdays = intval(($data['dateto'] + 1 - $prevperiod) / 86400);
                         $_dateto = $data['dateto'];
                     } else {
                         [$year, $month, $dom] = explode('/', date('Y/m/d', $dateto + 1));
