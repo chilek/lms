@@ -60,6 +60,7 @@ $_LANG['monthly'] = 'miesięcznie';
 $_LANG['No modules found!'] = 'Nie odnaleziono żadnych modułów!';
 $_LANG['none'] = 'żaden';
 $_LANG['PIN:'] = 'PIN:';
+$_LANG['PIN'] = 'PIN';
 $_LANG['Please login.'] = 'Proszę się zalogować.';
 $_LANG['Prio'] = 'Prio';
 $_LANG['quarterly'] = 'kwartalnie';

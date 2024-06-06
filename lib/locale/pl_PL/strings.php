@@ -4417,8 +4417,11 @@ $_LANG['Phone number and PIN'] = 'Numer telefonu i PIN';
 $_LANG['Document number and PIN'] = 'Numer dokumentu i PIN';
 $_LANG['Customer e-mail and PIN'] = 'E-mail klienta i PIN';
 $_LANG['Document number:'] = 'Numer dokumentu:';
+$_LANG['Document number'] = 'Numer dokumentu';
 $_LANG['Customer e-mail:'] = 'E-mail klienta:';
+$_LANG['Customer e-mail'] = 'E-mail klienta';
 $_LANG['SSN/TEN:'] = 'PESEL/NIP:';
+$_LANG['SSN/TEN'] = 'PESEL/NIP';
 $_LANG['SSN/TEN and PIN'] = 'PESEL/NIP i PIN';
 
 $_LANG['Contracts'] = 'Umowy';
@@ -4940,6 +4943,8 @@ $_LANG['Send documents'] = 'Wyślij dokumenty';
 
 $_LANG['PPPoE login:'] = 'Login PPPoE:';
 $_LANG['PPPoE password:'] = 'Hasło PPPoE:';
+$_LANG['PPPoE login'] = 'Login PPPoE';
+$_LANG['PPPoE password'] = 'Hasło PPPoE';
 $_LANG['PPPoE login and password'] = 'Login i hasło PPPoE';
 
 $_LANG['Customer has not checked \'electronic invoice\' consent and you are trying to mark this mail contact for invoice sending!'] = 'Klient nie ma zaznaczonej zgody na \'faktury elektroniczne\', podczas gdy próbujesz oznaczyć mail kontaktowy do wysyłki faktur!';

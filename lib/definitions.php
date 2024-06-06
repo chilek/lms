@@ -1411,33 +1411,33 @@ $NETELEMENTOWNERSHIPS = array(
 
 $USERPANEL_AUTH_TYPES = array(
     1   => array(
-        'label' => trans('Customer ID:'),
-        'label_secret' => trans('PIN:'),
+        'label' => trans('Customer ID'),
+        'label_secret' => trans('PIN'),
         'selection' => trans('Customer ID and PIN'),
     ),
     2   => array(
-        'label' => trans('Phone number:'),
-        'label_secret' => trans('PIN:'),
+        'label' => trans('Phone number'),
+        'label_secret' => trans('PIN'),
         'selection' => trans('Phone number and PIN'),
     ),
     3   => array(
-        'label' => trans('Document number:'),
-        'label_secret' => trans('PIN:'),
+        'label' => trans('Document number'),
+        'label_secret' => trans('PIN'),
         'selection' => trans('Document number and PIN'),
     ),
     4   => array(
-        'label' => trans('Customer e-mail:'),
-        'label_secret' => trans('PIN:'),
+        'label' => trans('Customer e-mail'),
+        'label_secret' => trans('PIN'),
         'selection' => trans('Customer e-mail and PIN'),
     ),
     5   => array(
-        'label' => trans('PPPoE login:'),
-        'label_secret' => trans('PPPoE password:'),
+        'label' => trans('PPPoE login'),
+        'label_secret' => trans('PPPoE password'),
         'selection' => trans('PPPoE login and password'),
     ),
     6   => array(
-        'label' => trans('SSN/TEN:'),
-        'label_secret' => trans('PIN:'),
+        'label' => trans('SSN/TEN'),
+        'label_secret' => trans('PIN'),
         'selection' => trans('SSN/TEN and PIN'),
     ),
 );
