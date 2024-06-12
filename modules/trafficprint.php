@@ -121,7 +121,11 @@ switch ($type) {
 
         if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
             $output = $SMARTY->fetch('print/printcustomertraffic.html');
-            html2pdf($output, trans('Reports'), $layout['pagetitle']);
+            Utils::html2pdf(array(
+                'content' => $output,
+                'subject' => trans('Reports'),
+                'title' => $layout['pagetitle'],
+            ));
         } else {
             $SMARTY->display('print/printcustomertraffic.html');
         }

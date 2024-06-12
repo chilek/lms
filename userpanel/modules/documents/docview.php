@@ -99,7 +99,16 @@ if (!empty($_GET['id'])) {
             $htmlbuffer = ob_get_contents();
             ob_end_clean();
             $margins = explode(",", ConfigHelper::getConfig('documents.margins', ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5')));
-            html2pdf($htmlbuffer, $subject, $title, $doc['type'], $doc['id'], 'P', $margins, !empty($_GET['save']), $copy);
+            Utils::html2pdf(array(
+                'content' => $htmlbuffer,
+                'subject' => $subject,
+                'title' => $title,
+                'type' => $doc['type'],
+                'id' => $doc['id'],
+                'margins' => $margins,
+                'dest' => !empty($_GET['save']),
+                'copy' => $copy,
+            ));
         } else {
             header('Content-Type: '.$doc['contenttype']);
 

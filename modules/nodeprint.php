@@ -102,11 +102,15 @@ switch ($type) {
                         .' GROUP BY vnodes.id, ipaddr, mac, vnodes.name, vnodes.info, customers.lastname, customers.name
 					    HAVING SUM(value) < 0'
                         .($sqlord != '' ? $sqlord.' '.$direction : ''));
-                
+
                 $SMARTY->assign('nodelist', $nodelist);
                 if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
                     $output = $SMARTY->fetch('print/printindebtnodelist.html');
-                    html2pdf($output, trans('Reports'), $layout['pagetitle']);
+                    Utils::html2pdf(array(
+                        'content' => $output,
+                        'subject' => trans('Reports'),
+                        'title' => $layout['pagetitle'],
+                    ));
                 } else {
                     $SMARTY->display('print/printindebtnodelist.html');
                 }
@@ -120,11 +124,15 @@ switch ($type) {
         unset($nodelist['direction']);
         unset($nodelist['totalon']);
         unset($nodelist['totaloff']);
-        
+
         $SMARTY->assign('nodelist', $nodelist);
         if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
             $output = $SMARTY->fetch('print/printnodelist.html');
-            html2pdf($output, trans('Reports'), $layout['pagetitle']);
+            Utils::html2pdf(array(
+                'content' => $output,
+                'subject' => trans('Reports'),
+                'title' => $layout['pagetitle'],
+            ));
         } else {
             $SMARTY->display('print/printnodelist.html');
         }
@@ -132,7 +140,7 @@ switch ($type) {
 
     default:
         $layout['pagetitle'] = trans('Reports');
-        
+
         $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
         $SMARTY->assign('networks', $LMS->GetNetworks());
         $SMARTY->assign('printmenu', 'node');

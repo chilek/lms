@@ -176,7 +176,12 @@ switch ($type) {
 
         if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
             $output = $SMARTY->fetch("$print_template");
-            html2pdf($output, trans('Reports'), $layout['pagetitle'], null, null, 'L');
+            Utils::html2pdf(array(
+                'content' => $output,
+                'subject' => trans('Reports'),
+                'title' => $layout['pagetitle'],
+                'orientation' => 'L',
+            ));
         } else {
             $SMARTY->display("$print_template");
         }
@@ -252,7 +257,11 @@ switch ($type) {
         $SMARTY->assign('balancelist', $list);
         if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
             $output = $SMARTY->fetch('print/printcustomerbalance.html');
-            html2pdf($output, trans('Reports'), $layout['pagetitle']);
+            Utils::html2pdf(array(
+                'content' => $output,
+                'subject' => trans('Reports'),
+                'title' => $layout['pagetitle'],
+            ));
         } else {
             $SMARTY->display('print/printcustomerbalance.html');
         }

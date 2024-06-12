@@ -142,7 +142,11 @@ switch ($type) {
         $SMARTY->assign('balancelist', $list);
         if (strtolower($report_type) == 'pdf') {
             $output = $SMARTY->fetch('print/printcustomerbalance.html');
-            html2pdf($output, trans('Reports'), $layout['pagetitle']);
+            Utils::html2pdf(array(
+                'content' => $output,
+                'subject' => trans('Reports'),
+                'title' => $layout['pagetitle'],
+            ));
         } else {
             $SMARTY->display('print/printcustomerbalance.html');
         }
@@ -351,7 +355,11 @@ switch ($type) {
 
         if (strtolower($report_type) == 'pdf') {
             $output = $SMARTY->fetch('print/printbalancelist.html');
-            html2pdf($output, trans('Reports'), $layout['pagetitle']);
+            Utils::html2pdf(array(
+                'content' => $output,
+                'subject' => trans('Reports'),
+                'title' => $layout['pagetitle'],
+            ));
         } else {
             if (isset($_POST['disposition']) && $_POST['disposition'] == 'csv') {
                 $filename = 'history-' . date('YmdHis') . '.csv';
@@ -404,7 +412,11 @@ switch ($type) {
         $SMARTY->assign('incomelist', $incomelist);
         if (strtolower($report_type) == 'pdf') {
             $output = $SMARTY->fetch('print/printincomereport.html');
-            html2pdf($output, trans('Reports'), $layout['pagetitle']);
+            Utils::html2pdf(array(
+                'content' => $output,
+                'subject' => trans('Reports'),
+                'title' => $layout['pagetitle'],
+            ));
         } else {
             $SMARTY->display('print/printincomereport.html');
         }
@@ -454,7 +466,11 @@ switch ($type) {
         $SMARTY->assign('importlist', $importlist);
         if (strtolower($report_type) == 'pdf') {
             $output = $SMARTY->fetch('print/printimportlist.html');
-            html2pdf($output, trans('Reports'), $layout['pagetitle']);
+            Utils::html2pdf(array(
+                'content' => $output,
+                'subject' => trans('Reports'),
+                'title' => $layout['pagetitle'],
+            ));
         } else {
             $SMARTY->display('print/printimportlist.html');
         }
@@ -792,7 +808,11 @@ switch ($type) {
 
         if (strtolower($report_type) == 'pdf') {
             $output = $SMARTY->fetch('print/printliabilityreport.html');
-            html2pdf($output, trans('Reports'), $layout['pagetitle']);
+            Utils::html2pdf(array(
+                'content' => $output,
+                'subject' => trans('Reports'),
+                'title' => $layout['pagetitle'],
+            ));
         } else {
             $SMARTY->display('print/printliabilityreport.html');
         }
@@ -1013,14 +1033,22 @@ switch ($type) {
             $SMARTY->assign('reccount', count($list));
             if (strtolower($report_type) == 'pdf') {
                 $output = $SMARTY->fetch('print/printreceiptlist-ext.html');
-                html2pdf($output, trans('Reports'), $layout['pagetitle']);
+                Utils::html2pdf(array(
+                    'content' => $output,
+                    'subject' => trans('Reports'),
+                    'title' => $layout['pagetitle'],
+                ));
             } else {
                 $SMARTY->display('print/printreceiptlist-ext.html');
             }
         } else {
             if (strtolower($report_type) == 'pdf') {
                 $output = $SMARTY->fetch('print/printreceiptlist.html');
-                html2pdf($output, trans('Reports'), $layout['pagetitle']);
+                Utils::html2pdf(array(
+                    'content' => $output,
+                    'subject' => trans('Reports'),
+                    'title' => $layout['pagetitle'],
+                ));
             } else {
                 $SMARTY->display('print/printreceiptlist.html');
             }

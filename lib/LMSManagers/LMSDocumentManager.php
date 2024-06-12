@@ -2528,29 +2528,26 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         && strtolower(ConfigHelper::getConfig('documents.type', ConfigHelper::getConfig('phpui.document_type'))) == 'pdf') {
                         $margins = explode(",", ConfigHelper::getConfig('documents.margins', ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5')));
                         if (ConfigHelper::checkConfig('documents.cache', ConfigHelper::checkConfig('phpui.cache_documents'))) {
-                            $contents = html2pdf(
-                                $contents,
-                                $document['title'],
-                                $document['title'],
-                                $document['type'],
-                                $id,
-                                'P',
-                                $margins,
-                                'S',
-                                false,
-                                $attachment['md5sum']
-                            );
+                            $contents = Utils::html2pdf(array(
+                                'content' => $contents,
+                                'subject' => $document['title'],
+                                'title' => $document['title'],
+                                'type' => $document['type'],
+                                'id' => $id,
+                                'margins' => $margins,
+                                'dest' => 'S',
+                                'md5sum' => $attachment['md5sum'],
+                            ));
                         } else {
-                            $contents = html2pdf(
-                                $contents,
-                                $document['title'],
-                                $document['title'],
-                                $document['type'],
-                                $id,
-                                'P',
-                                $margins,
-                                'S'
-                            );
+                            $contents = Utils::html2pdf(array(
+                                'content' => $contents,
+                                'subject' => $document['title'],
+                                'title' => $document['title'],
+                                'type' => $document['type'],
+                                'id' => $id,
+                                'margins' => $margins,
+                                'dest' => 'S',
+                            ));
                         }
                         $pdf = true;
                         $contenttype = 'application/pdf';

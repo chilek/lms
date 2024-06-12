@@ -272,16 +272,12 @@ if (!empty($docids)) {
                                 </body>
                             </html>";
 
-                        $content = html2pdf(
-                            $content,
-                            trans('Document'),
-                            null,
-                            null,
-                            null,
-                            'P',
-                            $margins,
-                            'S'
-                        );
+                        $content = Utils::html2pdf(array(
+                            'content' => $content,
+                            'subject' => trans('Document'),
+                            'margins' => $margins,
+                            'dest' => 'S',
+                        ));
                     }
 
                     try {
@@ -351,15 +347,11 @@ if (!empty($docids)) {
             }
 
             if ($document_type == 'pdf') {
-                html2pdf(
-                    $htmlbuffer,
-                    trans('Document'),
-                    null,
-                    null,
-                    null,
-                    'P',
-                    $margins
-                );
+                Utils::html2pdf(array(
+                    'content' => $htmlbuffer,
+                    'subject' => trans('Document'),
+                    'margins' => $margins,
+                ));
             } else {
                 echo $htmlbuffer;
             }
