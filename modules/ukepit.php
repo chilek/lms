@@ -430,11 +430,6 @@ function to_csv($data)
     return implode(',', array_values($data));
 }
 
-function to_wgs84($coord, $ifLongitude = true)
-{
-    return str_replace(',', '.', sprintf("%.04f", $coord));
-}
-
 $borough_types = array(
     1 => 'gm. miejska',
     2 => 'gm. wiejska',
@@ -1166,8 +1161,8 @@ if ($report_type == 'full') {
                 foreach ($netnode['latitudes'] as $latitude) {
                     $netnode['latitude'] += floatval($latitude);
                 }
-                $netnode['longitude'] = to_wgs84($netnode['longitude'] / count($netnode['longitudes']));
-                $netnode['latitude'] = to_wgs84($netnode['latitude'] / count($netnode['latitudes']));
+                $netnode['longitude'] = round($netnode['longitude'] / count($netnode['longitudes']), 6);
+                $netnode['latitude'] = round($netnode['latitude'] / count($netnode['latitudes']), 6);
             } else {
                 if (empty($netnode['longitude']) || empty($netnode['latitude'])) {
                     if (empty($netnode['real_id'])) {
@@ -2711,6 +2706,7 @@ if ($report_type == 'full') {
                                 'latitude' => $srcnetnode['latitude'],
                             ),
                         );
+
                         if (isset($netlinkpoints[$netlink['id']])) {
                             foreach ($netlinkpoints[$netlink['id']] as $netlinkpoint) {
                                 $points[$netlinkpoint['id']] = array(
@@ -2718,18 +2714,19 @@ if ($report_type == 'full') {
                                     'latitude' => $netlinkpoint['latitude'],
                                 );
                             }
+                        } else {
+                            if (isset($complete_breakdown_points)) {
+                                $points[1] = array(
+                                    'longitude' => round(($points[0]['longitude'] + $dstnetnode['longitude']) / 2, 6),
+                                    'latitude' => round(($points[0]['latitude'] + $dstnetnode['latitude']) / 2, 6),
+                                );
+                            }
                         }
+
                         $points[PHP_INT_MAX] = array(
                             'longitude' => $dstnetnode['longitude'],
                             'latitude' => $dstnetnode['latitude'],
                         );
-
-                        if (isset($complete_breakdown_points) && count($points) == 2) {
-                            $points[1] = array(
-                                'longitude' => round(($points[0]['longitude'] + $points[PHP_INT_MAX]['longitude']) / 2, 5),
-                                'latitude' => round(($points[0]['latitude'] + $points[PHP_INT_MAX]['latitude']) / 2, 5),
-                            );
-                        }
 
                         $data = array(
                             'lk01_id_lk' => 'LK-' . $netlink['id'],
