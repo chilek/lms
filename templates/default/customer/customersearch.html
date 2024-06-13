@@ -164,6 +164,18 @@
 				{if !empty($listdata.hidessn) || !isset($listdata.hidessn)} checked{/if}>
 		</td>
 	</tr>
+	<tr>
+		<td class="bold nobr">
+			<label for="showassignments">
+				{icon name="id" label="show assignment names"}
+			</label>
+		</td>
+		<td>
+			<input type="hidden" name="showassignments" value="0">
+			<input type="checkbox" name="showassignments" id="showassignments" value="1"
+			{if !empty($listdata.showassignments)} checked{/if}>
+		</td>
+	</tr>
 	<TR>
 		<TD class="bold nobr">
 			{icon name="customer"} {trans("First/last or Company name:")}
