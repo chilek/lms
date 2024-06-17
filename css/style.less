@@ -2405,6 +2405,15 @@ div.lms-ui-tab-container {
 			flex-direction: column;
 		}
 	}
+	.lms-ui-tab-header-suspensions {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		background-color: @dark;
+		border-top: @dotted-line;
+		padding: 0.2em;
+		cursor: pointer;
+	}
 
 	.lms-ui-tab-contents {
 		display: flex;
@@ -2456,6 +2465,10 @@ div.lms-ui-tab-container {
 			background-color: @light;
 		}
 		&.header {
+			background-color: @light;
+			border-bottom: @frame;
+		}
+		&.suspensions {
 			background-color: @light;
 			border-bottom: @frame;
 		}

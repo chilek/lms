@@ -215,7 +215,11 @@ function GetRecipients($filter, $type = MSG_MAIL)
         $tarifftable = 'JOIN (
 			SELECT DISTINCT a.customerid FROM assignments a
 			JOIN tariffs t ON t.id = a.tariffid
-			WHERE a.suspended = 0
+			LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                    AND vas.suspension_datefrom <= ?NOW?
+                    AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                    AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
+			WHERE vas.suspended IS NULL
 				AND (a.datefrom = 0 OR a.datefrom < ?NOW?)
 				AND (a.dateto = 0 OR a.dateto > ?NOW?)
 				AND t.type = ' . $tarifftype . '
@@ -230,8 +234,6 @@ function GetRecipients($filter, $type = MSG_MAIL)
 				WHERE n.ownerid IS NOT NULL AND netdev IN (' . implode(',', $netdevices) . ')
 			) nd ON nd.ownerid = c.id ';
     }
-
-    $suspension_percentage = f_round(ConfigHelper::getConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0)));
 
     $recipients = $LMS->DB->GetAll(
         'SELECT c.id, pin, c.divisionid, '
@@ -274,9 +276,10 @@ function GetRecipients($filter, $type = MSG_MAIL)
         ) b2 ON b2.customerid = c.id
 		LEFT JOIN (SELECT a.customerid,
 			SUM(
-				(CASE a.suspended
-					WHEN 0 THEN (((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount)
-					ELSE ((((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount) * ' . $suspension_percentage . ' / 100) END)
+				(CASE WHEN vas.suspended IS NULL
+					THEN (((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount)
+					ELSE vas.suspension_price 
+                END)
 				* (CASE t.period
 					WHEN ' . MONTHLY . ' THEN 1
 					WHEN ' . YEARLY . ' THEN 1/12.0
@@ -294,6 +297,10 @@ function GetRecipients($filter, $type = MSG_MAIL)
 			FROM assignments a
 			LEFT JOIN tariffs t ON (t.id = a.tariffid)
 			LEFT JOIN liabilities l ON (l.id = a.liabilityid AND a.period != ' . DISPOSABLE . ')
+			LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                AND vas.suspension_datefrom <= ?NOW?
+                AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
 			WHERE a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0) 
 			GROUP BY a.customerid
         ) t ON (t.customerid = c.id) '
@@ -381,8 +388,13 @@ function GetRecipients($filter, $type = MSG_MAIL)
         . ($unapproved_documents ? ' AND c.id IN (SELECT DISTINCT customerid FROM documents
 			WHERE documents.closed = 0
 				AND documents.type < 0)' : '')
-        . ($tarifftype ? ' AND NOT EXISTS (SELECT id FROM assignments
-			WHERE customerid = c.id AND tariffid IS NULL AND liabilityid IS NULL
+        . ($tarifftype ? ' AND NOT EXISTS (SELECT id 
+            FROM assignments
+            LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                AND vas.suspension_datefrom <= ?NOW?
+                AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
+			WHERE customerid = c.id AND vas.suspension_suspen_all = 1
 				AND (datefrom = 0 OR datefrom < ?NOW?)
 				AND (dateto = 0 OR dateto > ?NOW?))' : '')
         .' ORDER BY c.divisionid, customername',

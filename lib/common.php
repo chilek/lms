@@ -495,7 +495,7 @@ function r_trim($array)
     foreach ($array as $key => $value) {
         if (is_array($value)) {
             $array[$key] = r_trim($value);
-        } else {
+        } elseif (!is_null($value)) {
             $array[$key] = trim($value);
         }
     }

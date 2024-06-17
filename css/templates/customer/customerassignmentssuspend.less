@@ -22,7 +22,14 @@
  *  $Id$
  */
 
-.assignmentpanel {
+#customerassignmentssuspensions {
+	margin-top: 0em;
+	max-width: 60em;
+}
+.assignmentssuspensionspanel {
+	.lms-ui-tab-table .footer .liability {
+		text-align: right;
+	}
 	.lms-ui-tab-button-panel {
 		border-top: 0 !important;
 		height: 0.1em !important;
@@ -34,56 +41,32 @@
 			right: 0;
 			margin-bottom: 0.5em;
 			flex-wrap: initial;
-
-			button.suspend-assignments {
-				margin-bottom: 0;
-			}
-
-			button.delete-assignments {
-				margin-bottom: 0;
-			}
 		}
 	}
-
 	.lms-ui-tab-table-row.footer {
 		min-height: 2.5em;
 	}
-
-	.lms-ui-tab-table .footer .liability {
+	.lms-ui-tab-table .footer .suspensions-liability {
 		text-align: left;
 	}
-
-	.liability {
-		width: 25em;
+	.suspensions-liability {
+		width: 20em;
 	}
-	.base_price {
-		width: 4em;
+	.suspensions-accounting {
+		width: 17em;
+		white-space: nowrap;
 	}
-	.ptu_quantity {
-		width: 2em;
+	.suspensions-accounting-period {
+		width: 13em;
+		white-space: nowrap;
 	}
-	.discount {
-		width: 8em;
-	}
-	.price {
-		width: 4em;
-	}
-	.total {
-		width: 4em;
-	}
-	.downceil_upceil {
-		width: 6em;
-	}
-	.accounting-period {
-		width: 16em;
-	}
-	.buttons {
+	.suspensions-buttons {
 		width: 4em;
 	}
 
 	@media all and (max-width: 1500px) {
 		.col-4:first-child {
-			.liability {
+			.suspensions-liability {
 				width: 20em;
 			}
 			.col-2 {
@@ -136,47 +119,5 @@
 		.lms-ui-tab-table .footer .liability {
 			text-align: left;
 		}
-
-		.col-8 {
-			flex-direction: column !important;
-			width: 17em !important;
-			div {
-				flex-grow: 0 !important;
-				width: 100% !important;
-			}
-		}
 	}
-
-	.suspend-assignments,
-	.delete-assignments {
-		margin-top: -0.7em;
-		margin-right: 0.5em;
-	}
-
-	.suspensions-panel {
-		.suspension {
-			width: 10em !important;
-		}
-		.liabilities {
-			width: 22em !important;
-		}
-		.ptu-value {
-			width: 6em !important;
-		}
-		.calculation-charge {
-			width: 30em !important;
-		}
-		.total {
-			width: 8em !important;
-		}
-		.accounting-period {
-			width: 8em !important;
-		}
-	}
-}
-
-.reward-flags {
-	margin-block-start: 0.5em;
-	margin-block-end: 0.5em;
-	padding-inline-start: 1.5em;
 }

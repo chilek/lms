@@ -590,221 +590,464 @@ switch ($type) {
         if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.finances_management')) {
             access_denied();
         }
-
-        if (isset($_POST['day']) && $_POST['day']) {
-            [$year, $month, $day] = explode('/', $_POST['day']);
-            $reportday = mktime(0, 0, 0, $month, $day, $year);
-            $today = $reportday;
-        } else {
-            $reportday = time();
-            $today = mktime(0, 0, 0);
-        }
-
-        if (isset($_POST['period']) && $_POST['period'] != '') {
-            $period = intval($_POST['period']);
-        }
-
-        $layout['pagetitle'] = trans('Liability Report on $a', date('Y/m/d', $reportday));
-
+        $reportlist = array();
+        $total = array();
         $order = $_POST['order'];
         $direction = $_POST['direction'];
         $divisionid = (isset($_POST['division']) ? intval($_POST['division']) : 0);
         $customerid = (isset($_POST['customer']) ? intval($_POST['customer']) : 0);
+        $reportdate = !empty($_POST['day']) ? $_POST['day'] : null;
 
-        $year = date('Y', $reportday);
-        $yearday = date('z', $reportday) + 1;
-        $month = date('n', $reportday);
-        $monthday = date('j', $reportday);
-        $weekday = date('w', $reportday);
-
-        switch ($month) {
-            case 1:
-            case 4:
-            case 7:
-            case 10:
-                $quarterday = $monthday;
-                break;
-            case 2:
-            case 5:
-            case 8:
-            case 11:
-                $quarterday = $monthday + 100;
-                break;
-            default:
-                $quarterday = $monthday + 200;
-                break;
-        }
-
-        if ($month > 6) {
-            $halfyear = $monthday + ($month - 7) * 100;
+        //region get taxes
+        if (empty($reportdate)) {
+            $currtime = time();
+            $today = strtotime('today');
         } else {
-            $halfyear = $monthday + ($month - 1) * 100;
+            $today = $currtime = strtotime($reportdate);
         }
+        $taxes = $LMS->GetTaxes($currtime, $currtime);
+        //endregion
 
-        if (is_leap_year($year) && $yearday > 31 + 28) {
-            $yearday -= 1;
-        }
+        $args = array(
+            'customer_id' =>  isset($_POST['customer']) ? intval($_POST['customer']) : null,
+            'division_id' =>  isset($_POST['division']) ? intval($_POST['division']) : null,
+            'reportdate' =>  $reportdate,
+        );
 
-        $suspension_percentage = ConfigHelper::getConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0));
+        $assignments = $LMS->getAssignments($args);
 
-        $reportlist = array();
-        if ($taxes = $LMS->GetTaxes($reportday, $reportday)) {
-            $total = array();
+        //region Suspensions defaults
+        $defaultSuspensionPercentage = ConfigHelper::getConfig(
+            'suspensions.default_percentage',
+            ConfigHelper::getConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0))
+        );
+        $defaultSuspensionPercentage = f_round($defaultSuspensionPercentage);
+        $defaultSuspensionValue = f_round(ConfigHelper::getConfig('suspensions.default_value', 0));
+        //endregion
 
-            foreach ($taxes as $taxidx => $tax) {
-                $list1 = $DB->GetAllByKey(
-                    'SELECT a.customerid AS id, '.$DB->Concat('UPPER(lastname)', "' '", 'c.name').' AS customername, '
-                    .$DB->Concat('city', "' '", 'address').' AS address, ten,
-					SUM((((((100 - a.pdiscount) * t.value) / 100) - a.vdiscount) *
-						((CASE WHEN a.suspended = 0 AND allsuspended.suspended IS NULL THEN 100.0 ELSE '.$suspension_percentage.' END) / 100))
-					* (CASE a.period
-						WHEN '.YEARLY.' THEN 12
-						WHEN '.HALFYEARLY.' THEN 6
-						WHEN '.QUARTERLY.' THEN 3
-						WHEN '.WEEKLY.' THEN 1.0/4
-						WHEN '.DAILY.' THEN 1.0/30
-						ELSE 1 END)
-					* (CASE t.period
-						WHEN '.YEARLY.' THEN 1.0/12
-						WHEN '.HALFYEARLY.' THEN 1.0/6
-						WHEN '.QUARTERLY.' THEN 1.0/3
-						ELSE 1 END)
-					) AS value, t.currency
-                    FROM assignments a
-                    LEFT JOIN tariffs t ON t.id = a.tariffid
-                    LEFT JOIN customerview c ON c.id = a.customerid
-                    LEFT JOIN (
-                        SELECT COUNT(id) AS suspended, customerid FROM assignments
-                        WHERE tariffid IS NULL AND liabilityid IS NULL
-                            AND datefrom <= ? AND (dateto >= ? OR dateto = 0)
-                        GROUP BY customerid
-                    ) allsuspended ON allsuspended.customerid = a.customerid
-                    WHERE c.status = ?
-                        AND t.taxid=?
-                        AND c.deleted=0
-                        AND a.datefrom <= ? AND (a.dateto >= ? OR a.dateto = 0)
-                        ' . (isset($period) ? ' AND a.period = ' . $period : '') . '
-                        AND ((a.period='.DISPOSABLE.' AND a.at=?)
-                            OR (a.period='.WEEKLY.'. AND a.at=?)
-                            OR (a.period='.MONTHLY.' AND a.at=?)
-                            OR (a.period='.QUARTERLY.' AND a.at=?)
-                            OR (a.period='.HALFYEARLY.' AND a.at=?)
-                            OR (a.period='.YEARLY.' AND a.at=?)) '
-                        . ($customerid ? ' AND a.customerid=' . $customerid : '')
-                        . ($divisionid ? ' AND c.divisionid=' . $divisionid : '')
-                    . ' GROUP BY a.customerid, lastname, c.name, city, address, ten, t.currency',
-                    'id',
-                    array($reportday, $reportday, CSTATUS_CONNECTED, $tax['id'], $reportday, $reportday, $today, $weekday, $monthday, $quarterday, $halfyear, $yearday)
-                );
+        if (!empty($assignments)) {
+            $suspensionsByCurrency = array();
+            $suspensionsById = array();
 
-                $list2 = $DB->GetAllByKey(
-                    'SELECT a.customerid AS id, '.$DB->Concat('UPPER(lastname)', "' '", 'c.name').' AS customername, '
-                    .$DB->Concat('city', "' '", 'address').' AS address, ten,
-					SUM(((((100 - a.pdiscount) * l.value) / 100) - a.vdiscount) *
-						((CASE WHEN a.suspended = 0 AND allsuspended.customerid IS NULL THEN 100.0 ELSE '.$suspension_percentage.' END) / 100)) AS value,
-						l.currency
-                    FROM assignments a
-                    LEFT JOIN liabilities l ON l.id = a.liabilityid
-                    LEFT JOIN customerview c ON c.id = a.customerid
-                    LEFT JOIN (
-                        SELECT COUNT(id) AS suspended, customerid FROM assignments
-                        WHERE tariffid IS NULL AND liabilityid IS NULL
-                            AND datefrom <= ? AND (dateto >= ? OR dateto = 0)
-                        GROUP BY customerid
-                    ) allsuspended ON allsuspended.customerid = a.customerid
-                    WHERE c.status = ?
-                        AND l.taxid=?
-                        AND c.deleted=0
-                        AND a.datefrom <= ? AND (a.dateto>=? OR a.dateto=0)
-                        ' . (isset($period) ? ' AND a.period = ' . $period : '') . '
-                        AND ((a.period='.DISPOSABLE.' AND a.at=?)
-                            OR (a.period='.WEEKLY.'. AND a.at=?)
-                            OR (a.period='.MONTHLY.' AND a.at=?)
-                            OR (a.period='.QUARTERLY.' AND a.at=?)
-                            OR (a.period='.HALFYEARLY.' AND a.at=?)
-                            OR (a.period='.YEARLY.' AND a.at=?)) '
-                        .($customerid ? 'AND a.customerid='.$customerid : '').
-                    ' GROUP BY a.customerid, lastname, c.name, city, address, ten, l.currency',
-                    'id',
-                    array($reportday, $reportday, CSTATUS_CONNECTED, $tax['id'], $reportday, $reportday, $today, $weekday, $monthday, $quarterday, $halfyear, $yearday)
-                );
+            foreach ($assignments as $idx => &$row) {
+                if ($row['t_period'] && $row['period'] != DISPOSABLE
+                    && $row['t_period'] != $row['period']) {
+                    if ($row['t_period'] == YEARLY) {
+                        $row['base_price'] = $row['base_price'] / 12.0;
+                        $row['price'] = $row['price'] / 12.0;
+                    } elseif ($row['t_period'] == HALFYEARLY) {
+                        $row['base_price'] = $row['base_price'] / 6.0;
+                        $row['price'] = $row['price'] / 6.0;
+                    } elseif ($row['t_period'] == QUARTERLY) {
+                        $row['base_price'] = $row['base_price'] / 3.0;
+                        $row['price'] = $row['price'] / 3.0;
+                    }
 
-                if (empty($list1) && empty($list2)) {
-                    unset($taxes[$taxidx]);
+                    if ($row['period'] == YEARLY) {
+                        $row['base_price'] = $row['base_price'] * 12.0;
+                        $row['price'] = $row['price'] * 12.0;
+                    } elseif ($row['period'] == HALFYEARLY) {
+                        $row['base_price'] = $row['base_price'] * 6.0;
+                        $row['price'] = $row['price'] * 6.0;
+                    } elseif ($row['period'] == QUARTERLY) {
+                        $row['base_price'] = $row['base_price'] * 3.0;
+                        $row['price'] = $row['price'] * 3.0;
+                    } elseif ($row['period'] == WEEKLY) {
+                        $row['base_price'] = $row['base_price'] / 4.0;
+                        $row['price'] = $row['price'] / 4.0;
+                    } elseif ($row['period'] == DAILY) {
+                        $row['base_price'] = $row['base_price'] / 30.0;
+                        $row['price'] = $row['price'] / 30.0;
+                    }
                 }
 
-                $list = array_merge((array) $list1, (array) $list2);
+                //<editor-fold desc="assignment values">
+                if (!empty($row['netflag'])) {
+                    $row['base_net_price'] = $row['base_price'];
+                    $row['base_net_value'] = f_round($row['base_net_price'] * $row['count']);
+                    $row['base_gross_price'] = f_round($row['base_net_price'] * ($row['taxrate'] / 100 + 1), 3);
+                    $row['base_tax_value'] = f_round($row['base_net_value'] * ($row['taxrate'] / 100));
+                    $row['base_gross_value'] = f_round($row['base_net_value'] + $row['base_tax_value']);
 
-                if ($list) {
-                    foreach ($list as $row) {
-                        $idx = $row['id'];
-                        if (!isset($reportlist[$idx])) {
-                            $reportlist[$idx]['id'] = $row['id'];
-                            $reportlist[$idx]['customername'] = $row['customername'];
-                            $reportlist[$idx]['address'] = $row['address'];
-                            $reportlist[$idx]['ten'] = $row['ten'];
-                            $reportlist[$idx]['values'] = array();
+                    $row['net_price'] = $row['price']; // price is discounted in sql already
+
+                    $row['net_price_discount'] = f_round($row['base_net_price'] - $row['net_price'], 3);
+                    $row['net_value'] = f_round($row['net_price'] * $row['count']);
+                    $row['gross_price'] = f_round($row['net_price'] * ($row['taxrate'] / 100 + 1), 3);
+                    $row['gross_price_discount'] = f_round($row['net_price_discount'] * ($row['taxrate'] / 100 + 1), 3);
+                    $row['tax_value'] = f_round($row['net_value'] * ($row['taxrate'] / 100));
+                    $row['gross_value'] = f_round($row['net_value'] + $row['tax_value']);
+                } else {
+                    $row['base_gross_price'] = $row['base_price'];
+                    $row['base_gross_value'] = f_round($row['base_gross_price'] * $row['count']);
+                    $row['base_net_price'] =  f_round($row['base_gross_price'] / ($row['taxrate'] / 100 + 1), 3);
+                    $row['base_tax_value'] = f_round(($row['base_gross_value'] * $row['taxrate']) / (100 + $row['taxrate']));
+                    $row['base_net_value'] = f_round($row['base_gross_value'] - $row['base_tax_value']);
+
+                    $row['gross_price'] = $row['price']; // price is discounted in sql already
+
+                    $row['gross_price_discount'] = f_round($row['base_gross_price'] - $row['gross_price'], 3);
+                    $row['gross_value'] = f_round($row['gross_price'] * $row['count']);
+                    $row['net_price'] = f_round($row['gross_price'] / ($row['taxrate'] / 100 + 1), 3);
+                    $row['net_price_discount'] = f_round($row['gross_price_discount'] / ($row['taxrate'] / 100 + 1), 3);
+                    $row['tax_value'] = f_round(($row['gross_value'] * $row['taxrate']) / (100 + $row['taxrate']));
+                    $row['net_value'] = f_round(($row['gross_value'] - $row['tax_value']));
+                }
+
+                $row['net_value_discount'] = f_round($row['base_net_value'] - $row['net_value']);
+                $row['gross_value_discount'] = f_round($row['base_gross_value'] - $row['gross_value']);
+                //</editor-fold>
+
+                if (!empty($row['suspended'])) {
+                    if (!empty($row['charge_suspension'])) {
+                        if ($row['suspension_charge_method'] != SUSPENSION_CHARGE_METHOD_NONE) {
+                            switch ($row['suspension_calculation_method']) {
+                                case SUSPENSION_CALCULATION_METHOD_PERCENTAGE:
+                                    if (!isset($suspensionsByCurrency[$row['currency']][$row['taxid']][$row['suspension_id']])) {
+                                        $suspensionsByCurrency[$row['currency']][$row['taxid']][$row['suspension_id']] = array(
+                                            'name' => trans("Suspension"),
+                                            'taxid' => $row['taxid'],
+                                            'currency' => $row['currency'],
+                                            'customerid' => $row['customerid'],
+                                            'suspensionid' => $row['suspension_id'],
+                                            'customername' => $row['customername'],
+                                            'address' => $row['address'],
+                                            'ten' => $row['ten'],
+                                            'total_net_value' => 0,
+                                            'total_gross_value' => 0,
+                                            'total_tax_value' => 0,
+                                        );
+                                    }
+                                    if (!isset($suspensionsById[$row['suspension_id']])) {
+                                        $suspensionsById[$row['suspension_id']]['suspension_id'] = $row['suspension_id'];
+                                    }
+
+                                    $suspension = $suspensionsByCurrency[$row['currency']][$row['taxid']][$row['suspension_id']];
+                                    $suspension['suspend_assignments'][$idx]['assignment_id'] = $idx;
+
+                                    $suspensionPercentage = !is_null($row['suspension_percentage']) ? f_round($row['suspension_percentage']) : $defaultSuspensionPercentage;
+                                    if (!empty($row['netflag'])) {
+                                        $suspension['net_price'] = f_round($row['net_price'] * ($suspensionPercentage / 100), 3);
+                                        if ($row['suspension_charge_method'] == SUSPENSION_CHARGE_METHOD_PERIODICALLY) {
+                                            if ($row['period'] == YEARLY) {
+                                                $suspension['net_price'] = $suspension['net_price'] / 12;
+                                            } elseif ($row['period'] == HALFYEARLY) {
+                                                $suspension['net_price'] = $suspension['net_price'] / 6;
+                                            } elseif ($row['period'] == QUARTERLY) {
+                                                $suspension['net_price'] = $suspension['net_price'] / 3;
+                                            } elseif ($row['period'] == WEEKLY) {
+                                                $suspension['net_price'] = $suspension['net_price'] * 4;
+                                            } elseif ($row['period'] == DAILY) {
+                                                $suspension['net_price'] = $suspension['net_price'] * 30;
+                                            }
+                                        }
+                                        $suspension['net_value'] = f_round($suspension['net_price'] * $row['count']);
+                                        $suspension['gross_price'] = f_round($suspension['net_price'] * ($row['taxrate'] / 100 + 1), 3);
+                                        $suspension['tax_value'] = f_round($suspension['net_value'] * ($row['taxrate'] / 100));
+                                        $suspension['gross_value'] = f_round($suspension['net_value'] + $suspension['tax_value']);
+                                    } else {
+                                        $suspension['gross_price'] = f_round($row['gross_price'] * ($suspensionPercentage / 100), 3);
+                                        if ($row['suspension_charge_method'] == SUSPENSION_CHARGE_METHOD_PERIODICALLY) {
+                                            if ($row['period'] == YEARLY) {
+                                                $suspension['gross_price'] = $suspension['gross_price'] / 12;
+                                            } elseif ($row['period'] == HALFYEARLY) {
+                                                $suspension['gross_price'] = $suspension['gross_price'] / 6;
+                                            } elseif ($row['period'] == QUARTERLY) {
+                                                $suspension['gross_price'] = $suspension['gross_price'] / 3;
+                                            } elseif ($row['period'] == WEEKLY) {
+                                                $suspension['gross_price'] = $suspension['gross_price'] * 4;
+                                            } elseif ($row['period'] == DAILY) {
+                                                $suspension['gross_price'] = $suspension['gross_price'] * 30;
+                                            }
+                                        }
+                                        $suspension['gross_value'] = f_round($suspension['gross_price'] * $row['count']);
+                                        $suspension['net_price'] = f_round($suspension['gross_price'] / ($row['taxrate'] / 100 + 1), 3);
+                                        $suspension['tax_value'] = f_round(($suspension['gross_value'] * $row['taxrate']) / (100 + $row['taxrate']));
+                                        $suspension['net_value'] = f_round(($suspension['gross_value'] - $suspension['tax_value']));
+                                    }
+
+                                    $suspension['total_net_value'] += $suspension['net_value'];
+                                    $suspension['total_tax_value'] += $suspension['tax_value'];
+                                    $suspension['total_gross_value'] += $suspension['gross_value'];
+
+                                    $suspensionsByCurrency[$row['currency']][$row['taxid']][$row['suspension_id']] = $suspension;
+                                    break;
+                                case SUSPENSION_CALCULATION_METHOD_VALUE:
+                                    // account only once for all assignemnts having this suspension
+                                    if (!isset($suspensionsByCurrency[$row['suspension_currency']][$row['suspension_tax_id']][$row['suspension_id']])
+                                        && !isset($suspensionsById[$row['suspension_id']])) {
+                                        $suspensionsByCurrency[$row['suspension_currency']][$row['suspension_tax_id']][$row['suspension_id']] = array(
+                                            'name' => trans("Suspension"),
+                                            'customerid' => $row['suspension_customer_id'],
+                                            'suspensionid' => $row['suspension_id'],
+                                            'customername' => $row['customername'],
+                                            'address' => $row['address'],
+                                            'ten' => $row['ten'],
+                                            'taxid' => $row['suspension_tax_id'],
+                                            'taxlabel' => $row['suspension_taxlabel'],
+                                            'taxrate' => $row['suspension_taxrate'],
+                                            'note' => $row['suspension_note'],
+                                            'datefrom' => $row['suspension_datefrom'],
+                                            'dateto' => $row['suspension_dateto'],
+                                            'charge_method' => $row['suspension_charge_method'],
+                                            'calculation_method' => $row['suspension_calculation_method'],
+                                            'value' => !is_null($row['suspension_value']) ? $row['suspension_value'] : $defaultSuspensionValue,
+                                            'netflag' => $row['suspension_netflag'],
+                                            'currency' => $row['suspension_currency'],
+                                            'total_net_value' => 0,
+                                            'total_gross_value' => 0,
+                                            'total_tax_value' => 0,
+                                        );
+
+                                        $suspensionsById[$row['suspension_id']]['suspension_id'] = $row['suspension_id'];
+
+                                        $suspension = $suspensionsByCurrency[$row['suspension_currency']][$row['suspension_tax_id']][$row['suspension_id']];
+                                        $suspension['suspend_assignments'][$idx]['assignment_id'] = $idx;
+
+                                        if (!empty($row['suspension_netflag'])) {
+                                            $suspension['net_value'] = f_round($suspension['value']);
+                                            if ($row['suspension_charge_method'] == SUSPENSION_CHARGE_METHOD_PERIODICALLY) {
+                                                if ($row['period'] == YEARLY) {
+                                                    $suspension['net_value'] = $suspension['net_value'] / 12;
+                                                } elseif ($row['period'] == HALFYEARLY) {
+                                                    $suspension['net_value'] = $suspension['net_value'] / 6;
+                                                } elseif ($row['period'] == QUARTERLY) {
+                                                    $suspension['net_value'] = $suspension['net_value'] / 3;
+                                                } elseif ($row['period'] == WEEKLY) {
+                                                    $suspension['net_value'] = $suspension['net_value'] * 4;
+                                                } elseif ($row['period'] == DAILY) {
+                                                    $suspension['net_value'] = $suspension['net_value'] * 30;
+                                                }
+                                            }
+                                            $suspension['tax_value'] = f_round($suspension['net_value'] * ($row['suspension_taxrate'] / 100));
+                                            $suspension['gross_value'] = f_round($suspension['net_value'] + $suspension['tax_value']);
+                                        } else {
+                                            $suspension['gross_value'] = f_round($suspension['value']);
+                                            if ($row['suspension_charge_method'] == SUSPENSION_CHARGE_METHOD_PERIODICALLY) {
+                                                if ($row['period'] == YEARLY) {
+                                                    $suspension['gross_value'] = $suspension['gross_value'] / 12;
+                                                } elseif ($row['period'] == HALFYEARLY) {
+                                                    $suspension['gross_value'] = $suspension['gross_value'] / 6;
+                                                } elseif ($row['period'] == QUARTERLY) {
+                                                    $suspension['gross_value'] = $suspension['gross_value'] / 3;
+                                                } elseif ($row['period'] == WEEKLY) {
+                                                    $suspension['gross_value'] = $suspension['gross_value'] * 4;
+                                                } elseif ($row['period'] == DAILY) {
+                                                    $suspension['gross_value'] = $suspension['gross_value'] * 30;
+                                                }
+                                            }
+                                            $suspension['tax_value'] = f_round(($suspension['gross_value'] * $row['suspension_taxrate']) / (100 + $row['suspension_taxrate']));
+                                            $suspension['net_value'] = f_round(($suspension['gross_value'] - $suspension['tax_value']));
+                                        }
+
+                                        $suspension['total_net_value'] = $suspension['net_value'];
+                                        $suspension['total_gross_value'] = $suspension['gross_value'];
+                                        $suspension['total_tax_value'] = $suspension['tax_value'];
+
+                                        $suspensionsByCurrency[$row['suspension_currency']][$row['suspension_tax_id']][$row['suspension_id']] = $suspension;
+                                    }
+                                    $suspensionsByCurrency[$row['suspension_currency']][$row['suspension_tax_id']][$row['suspension_id']]['suspend_assignments'][$idx]['assignment_id'] = $idx;
+
+                                    break;
+                            }
+                        } else {
+                            switch ($row['suspension_calculation_method']) {
+                                case SUSPENSION_CALCULATION_METHOD_PERCENTAGE:
+                                    if (!isset($suspensionsByCurrency[$row['currency']][$row['taxid']][$row['suspension_id']])) {
+                                        $suspensionsByCurrency[$row['currency']][$row['taxid']][$row['suspension_id']] = array(
+                                            'name' => trans("Suspension"),
+                                            'taxid' => $row['taxid'],
+                                            'currency' => $row['currency'],
+                                            'customerid' => $row['customerid'],
+                                            'suspensionid' => $row['suspension_id'],
+                                            'customername' => $row['customername'],
+                                            'address' => $row['address'],
+                                            'ten' => $row['ten'],
+                                            'total_net_value' => 0,
+                                            'total_gross_value' => 0,
+                                            'total_tax_value' => 0,
+                                        );
+                                    }
+                                    if (!isset($suspensionsById[$row['suspension_id']])) {
+                                        $suspensionsById[$row['suspension_id']]['suspension_id'] = $row['suspension_id'];
+                                    }
+
+                                    $suspension = $suspensionsByCurrency[$row['currency']][$row['taxid']][$row['suspension_id']];
+                                    $suspension['suspend_assignments'][$idx]['assignment_id'] = $idx;
+
+                                    $suspension['net_price'] = 0;
+                                    $suspension['net_value'] = 0;
+                                    $suspension['gross_price'] = 0;
+                                    $suspension['tax_value'] = 0;
+                                    $suspension['gross_value'] = 0;
+
+                                    $suspension['total_net_value'] = 0;
+                                    $suspension['total_tax_value'] = 0;
+                                    $suspension['total_gross_value'] = 0;
+
+                                    $suspensionsByCurrency[$row['currency']][$row['taxid']][$row['suspension_id']] = $suspension;
+                                    break;
+                                case SUSPENSION_CALCULATION_METHOD_VALUE:
+                                    // account only once for all assignemnts having this suspension
+                                    if (!isset($suspensionsByCurrency[$row['suspension_currency']][$row['suspension_tax_id']][$row['suspension_id']])
+                                        && !isset($suspensionsById[$row['suspension_id']])) {
+                                        $suspensionsByCurrency[$row['suspension_currency']][$row['suspension_tax_id']][$row['suspension_id']] = array(
+                                            'name' => trans("Suspension"),
+                                            'customerid' => $row['suspension_customer_id'],
+                                            'suspensionid' => $row['suspension_id'],
+                                            'customername' => $row['customername'],
+                                            'address' => $row['address'],
+                                            'ten' => $row['ten'],
+                                            'taxid' => $row['suspension_tax_id'],
+                                            'taxlabel' => $row['suspension_taxlabel'],
+                                            'taxrate' => $row['suspension_taxrate'],
+                                            'note' => $row['suspension_note'],
+                                            'datefrom' => $row['suspension_datefrom'],
+                                            'dateto' => $row['suspension_dateto'],
+                                            'charge_method' => $row['suspension_charge_method'],
+                                            'calculation_method' => $row['suspension_calculation_method'],
+                                            'value' => !is_null($row['suspension_value']) ? $row['suspension_value'] : $defaultSuspensionValue,
+                                            'netflag' => $row['suspension_netflag'],
+                                            'currency' => $row['suspension_currency'],
+                                            'total_net_value' => 0,
+                                            'total_gross_value' => 0,
+                                            'total_tax_value' => 0,
+                                        );
+
+                                        $suspensionsById[$row['suspension_id']]['suspension_id'] = $row['suspension_id'];
+
+                                        $suspension = $suspensionsByCurrency[$row['suspension_currency']][$row['suspension_tax_id']][$row['suspension_id']];
+                                        $suspension['suspend_assignments'][$idx]['assignment_id'] = $idx;
+
+                                        $suspension['net_value'] = 0;
+                                        $suspension['tax_value'] = 0;
+                                        $suspension['gross_value'] = 0;
+
+                                        $suspension['total_net_value'] = 0;
+                                        $suspension['total_gross_value'] = 0;
+                                        $suspension['total_tax_value'] = 0;
+
+                                        $suspensionsByCurrency[$row['suspension_currency']][$row['suspension_tax_id']][$row['suspension_id']] = $suspension;
+                                    }
+
+                                    $suspensionsByCurrency[$row['suspension_currency']][$row['suspension_tax_id']][$row['suspension_id']]['suspend_assignments'][$idx]['assignment_id'] = $idx;
+
+                                    break;
+                            }
                         }
-                        if (!isset($reportlist[$idx]['values'][$row['currency']])) {
-                            $reportlist[$idx]['values'][$row['currency']] = array(
-                                'value' => 0,
-                                'taxsum' => 0,
-                            );
+                    }
+                    unset($assignments[$idx]);
+                }
+            }
+            unset($row, $suspension);
+
+            if (!empty($suspensionsByCurrency)) {
+                $suspensions = array();
+                foreach ($suspensionsByCurrency as $currency => $currencySuspensions) {
+                    foreach ($currencySuspensions as $taxid => $currencyTaxesSuspensions) {
+                        foreach ($currencyTaxesSuspensions as $sid => $currencyTaxSuspension) {
+                            if ($currencyTaxSuspension['total_net_value'] != 0) {
+                                $suspensions[] = array(
+                                    'currency' => $currencyTaxSuspension['currency'],
+                                    'taxid' => $currencyTaxSuspension['taxid'],
+                                    'gross_value' => $currencyTaxSuspension['total_gross_value'],
+                                    'net_value' => $currencyTaxSuspension['total_net_value'],
+                                    'tax_value' => $currencyTaxSuspension['total_tax_value'],
+                                    'customerid' => $currencyTaxSuspension['customerid'],
+                                    'customername' => $currencyTaxSuspension['customername'],
+                                    'address' => $currencyTaxSuspension['address'],
+                                    'ten' => $currencyTaxSuspension['ten'],
+                                );
+                            }
                         }
-                        $reportlist[$idx]['values'][$row['currency']]['value'] += $row['value'];
-                        $reportlist[$idx]['values'][$row['currency']][$tax['id']]['netto'] =
-                            round($row['value']/($tax['value']+100)*100, 2);
-                        $reportlist[$idx]['values'][$row['currency']][$tax['id']]['tax'] =
-                            $row['value'] - $reportlist[$idx]['values'][$row['currency']][$tax['id']]['netto'];
-                        $reportlist[$idx]['values'][$row['currency']]['taxsum'] +=
-                            $reportlist[$idx]['values'][$row['currency']][$tax['id']]['tax'];
-                        if (!isset($total['netto'][$row['currency']][$tax['id']])) {
-                            $total['netto'][$row['currency']][$tax['id']] = 0;
-                            $total['tax'][$row['currency']][$tax['id']] = 0;
-                        }
-                        $total['netto'][$row['currency']][$tax['id']] +=
-                            $reportlist[$idx]['values'][$row['currency']][$tax['id']]['netto'];
-                        $total['tax'][$row['currency']][$tax['id']] +=
-                            $reportlist[$idx]['values'][$row['currency']][$tax['id']]['tax'];
                     }
                 }
             }
 
-            switch ($order) {
-                case 'customername':
-                    $table = array();
-                    foreach ($reportlist as $idx => $row) {
-                        $table['idx'][] = $idx;
-                        $table['customername'][] = $row['customername'];
-                    }
-                    if (!empty($table)) {
-                        array_multisort($table['customername'], ($direction == 'desc' ? SORT_DESC : SORT_ASC), $table['idx']);
-                        foreach ($table['idx'] as $idx) {
-                            $tmplist[] = $reportlist[$idx];
-                        }
-                    }
-                    $reportlist = empty($tmplist) ? array() : $tmplist;
-                    break;
-                default:
-                    foreach ($reportlist as $idx => $row) {
-                        $table['idx'][] = $idx;
-                        $table['value'][] = $row['value'];
-                    }
-                    if (is_array($table)) {
-                        array_multisort($table['value'], ($direction == 'desc' ? SORT_DESC : SORT_ASC), $table['idx']);
-                        foreach ($table['idx'] as $idx) {
-                            $tmplist[] = $reportlist[$idx];
-                        }
-                    }
-                    $reportlist = $tmplist;
-                    break;
+            if (!empty($suspensions)) {
+                $assignments = array_values($assignments);
+                $assignments = array_merge($assignments, $suspensions);
             }
 
-            $SMARTY->assign('reportlist', $reportlist);
-            $SMARTY->assign('total', $total);
-            $SMARTY->assign('taxes', $taxes);
-            $SMARTY->assign('taxescount', count($taxes));
+            //<editor-fold desc="Report array">
+            $assignmentsByTax = array();
+            foreach ($assignments as $row) {
+                if (!isset($assignmentsByTax[$row['customerid']])) {
+                    $assignmentsByTax[$row['customerid']] = array(
+                        'id' => $row['customerid'],
+                        'customername' => $row['customername'],
+                        'address' => $row['address'],
+                        'ten' => $row['ten'],
+                        'values' => array(),
+                    );
+                }
+
+                if (!isset($assignmentsByTax[$row['customerid']]['values'][$row['currency']])) {
+                    $assignmentsByTax[$row['customerid']]['values'][$row['currency']] = array(
+                        'value' => 0,
+                        'taxsum' => 0,
+                    );
+                }
+
+                if (!isset($assignmentsByTax[$row['customerid']]['values'][$row['currency']][$row['taxid']])) {
+                    $assignmentsByTax[$row['customerid']]['values'][$row['currency']][$row['taxid']]['netto'] = 0;
+                    $assignmentsByTax[$row['customerid']]['values'][$row['currency']][$row['taxid']]['tax'] = 0;
+                }
+
+                $assignmentsByTax[$row['customerid']]['values'][$row['currency']]['value'] += $row['gross_value'];
+                $assignmentsByTax[$row['customerid']]['values'][$row['currency']][$row['taxid']]['netto'] += $row['net_value'];
+                $assignmentsByTax[$row['customerid']]['values'][$row['currency']][$row['taxid']]['tax'] += $row['tax_value'];
+                $assignmentsByTax[$row['customerid']]['values'][$row['currency']]['taxsum'] += $row['tax_value'];
+
+                if (!isset($total['netto'][$row['currency']][$row['taxid']])) {
+                    $total['netto'][$row['currency']][$row['taxid']] = 0;
+                    $total['tax'][$row['currency']][$row['taxid']] = 0;
+                }
+
+                $total['netto'][$row['currency']][$row['taxid']] += $assignmentsByTax[$row['customerid']]['values'][$row['currency']][$row['taxid']]['netto'];
+                $total['tax'][$row['currency']][$row['taxid']] += $assignmentsByTax[$row['customerid']]['values'][$row['currency']][$row['taxid']]['tax'];
+            }
+            //</editor-fold>
+
+            $reportlist = $assignmentsByTax;
+            if (!empty($reportlist)) {
+                $table = array();
+                $tmplist = array();
+                switch ($order) {
+                    case 'customername':
+                        foreach ($reportlist as $idx => $row) {
+                            $table['idx'][] = $idx;
+                            $table['customername'][] = $row['customername'];
+                        }
+                        if (!empty($table)) {
+                            array_multisort($table['customername'], ($direction == 'desc' ? SORT_DESC : SORT_ASC), $table['idx']);
+                            foreach ($table['idx'] as $idx) {
+                                $tmplist[] = $reportlist[$idx];
+                            }
+                        }
+                        $reportlist = empty($tmplist) ? array() : $tmplist;
+                        break;
+                    default:
+                        foreach ($reportlist as $idx => $row) {
+                            $table['idx'][] = $idx;
+                            $table['value'][] = $row['value'];
+                        }
+                        if (is_array($table)) {
+                            array_multisort($table['value'], ($direction == 'desc' ? SORT_DESC : SORT_ASC), $table['idx']);
+                            foreach ($table['idx'] as $idx) {
+                                $tmplist[] = $reportlist[$idx];
+                            }
+                        }
+                        $reportlist = $tmplist;
+                        break;
+                }
+            }
         }
+
+        $SMARTY->assign('reportlist', $reportlist);
+        $SMARTY->assign('total', $total);
+        $SMARTY->assign('taxes', $taxes);
+        $SMARTY->assign('taxescount', count($taxes));
 
         if (strtolower($report_type) == 'pdf') {
             $output = $SMARTY->fetch('print/printliabilityreport.html');

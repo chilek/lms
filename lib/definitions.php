@@ -1670,6 +1670,25 @@ $IDENTITY_TYPES = array(
     5   => 'permanent residence card',
 );
 
+// assignment suspensions
+const SUSPENSION_CHARGE_METHOD_NONE = 1,
+    SUSPENSION_CHARGE_METHOD_ONCE = 2,
+    SUSPENSION_CHARGE_METHOD_PERIODICALLY = 3;
+
+$SUSPENSION_CHARGE_METHODS = array(
+    SUSPENSION_CHARGE_METHOD_NONE => trans('<!suspension>None'),
+    SUSPENSION_CHARGE_METHOD_ONCE => trans('<!suspension>Once'),
+    SUSPENSION_CHARGE_METHOD_PERIODICALLY => trans('<!suspension>Periodically'),
+);
+
+const SUSPENSION_CALCULATION_METHOD_PERCENTAGE = 1,
+    SUSPENSION_CALCULATION_METHOD_VALUE = 2;
+
+$SUSPENSION_CALCULATION_METHODS = array(
+    SUSPENSION_CALCULATION_METHOD_PERCENTAGE => trans('Percentage calculated on each liability'),
+    SUSPENSION_CALCULATION_METHOD_VALUE => trans('Amount calculated on all liabilities'),
+);
+
 if (isset($SMARTY)) {
     $SMARTY->assign(
         array(
@@ -1715,6 +1734,8 @@ if (isset($SMARTY)) {
             '_CURRENCIES' => $CURRENCIES,
             '_TAX_CATEGORIES' => $TAX_CATEGORIES,
             '_IDENTITY_TYPES' => $IDENTITY_TYPES,
+            '_SUSPENSION_CHARGE_METHODS' => $SUSPENSION_CHARGE_METHODS,
+            '_SUSPENSION_CALCULATION_METHODS' => $SUSPENSION_CALCULATION_METHODS,
         )
     );
     $SMARTY->assignByRef('_EVENTTYPES', $EVENTTYPES);

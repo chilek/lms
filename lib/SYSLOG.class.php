@@ -97,6 +97,8 @@ class SYSLOG
     public const RES_TICKET_MESSAGE = 69;
     public const RES_QUEUE = 70;
 
+    public const RES_SUSPENSION = 71;
+
     public const OPER_ADD = 1;
     public const OPER_DELETE = 2;
     public const OPER_UPDATE = 3;
@@ -115,6 +117,7 @@ class SYSLOG
     private static $resources = array(
         self::RES_USER => 'user<!syslog>',
         self::RES_ASSIGN => 'assignment<!syslog>',
+        self::RES_SUSPENSION => 'suspension<!syslog>',
         self::RES_LIAB => 'liability<!syslog>',
         self::RES_NODEASSIGN => 'node assignment<!syslog>',
         self::RES_NODE => 'node<!syslog>',
@@ -187,6 +190,7 @@ class SYSLOG
     private static $resource_keys = array(
         self::RES_USER => 'userid',
         self::RES_ASSIGN => 'assignmentid',
+        self::RES_SUSPENSION => 'suspensionid',
         self::RES_LIAB => 'liabilityid',
         self::RES_NODEASSIGN => 'nodeassignmentid',
         self::RES_NODE => 'nodeid',

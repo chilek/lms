@@ -92,7 +92,12 @@ $backward_on_the_last_day = ConfigHelper::checkConfig($config_section . '.backwa
 $s_comment = ConfigHelper::getConfig($config_section . '.settlement_comment', $comment);
 $s_backward_comment = ConfigHelper::getConfig($config_section . '.settlement_backward_comment', $s_comment);
 $suspension_description = ConfigHelper::getConfig($config_section . '.suspension_description', '');
-$suspension_percentage = ConfigHelper::getConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0));
+$defaultSuspensionPercentage = ConfigHelper::getConfig(
+    'suspensions.default_percentage',
+    ConfigHelper::getConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0))
+);
+$defaultSuspensionPercentage = f_round($defaultSuspensionPercentage);
+$defaultSuspensionValue = f_round(ConfigHelper::getConfig('suspensions.default_value', 0));
 $unit_name = trans(ConfigHelper::getConfig($config_section . '.default_unit_name'));
 $check_invoices = ConfigHelper::checkConfig($config_section . '.check_invoices');
 $proforma_generates_commitment = ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment');
@@ -232,7 +237,7 @@ if ($sdate_next) {
 // calculate start and end of numbering period
 function get_period($period)
 {
-    global $dom, $month, $year;
+    global $dom, $weekday, $month, $year;
     if (empty($period)) {
         $period = YEARLY;
     }
@@ -401,25 +406,43 @@ if ($voip_cdr_only) {
 } else {
     // let's go, fetch *ALL* assignments in given day
     $query = "SELECT
-            a.id,
-            a.tariffid,
-            a.liabilityid,
-            a.customerid,
-            a.recipient_address_id,
-            (CASE WHEN ca2.address_id IS NULL THEN ca1.address_id ELSE ca2.address_id END) AS post_address_id,
-            a.period,
-            a.backwardperiod,
             a.at,
-            a.suspended,
-            a.settlement,
-            a.datefrom,
-            a.dateto,
-            a.pdiscount,
-            a.vdiscount,
+            a.attribute,
+            a.backwardperiod,
+            a.count AS count,
+            a.customerid, 
+            a.datefrom, 
+            a.dateto, 
+            a.id,
+            a.id AS assignmentid,
             a.invoice,
+            a.liabilityid, 
+            a.numberplanid, 
+            a.paytime AS a_paytime, 
+            a.paytype AS a_paytype, 
+            a.pdiscount, 
+            a.period, 
+            a.recipient_address_id,
             a.separatedocument,
             a.separateitem,
+            a.settlement, 
+            a.tariffid, 
+            a.vdiscount,
+            c.divisionid, 
+            c.flags AS customerflags,
+            c.paytime, 
+            c.paytype, 
             c.type AS customertype,
+            d.inv_paytime AS d_paytime, 
+            d.inv_paytype AS d_paytype, 
+            p.name AS promotion_name, 
+            ps.length AS promotion_schema_length,
+            ps.name AS promotion_schema_name, 
+            t.description AS description,
+            t.flags,
+            t.numberplanid AS tariffnumberplanid,
+            t.period AS t_period, 
+            (CASE WHEN ca2.address_id IS NULL THEN ca1.address_id ELSE ca2.address_id END) AS post_address_id,
             (CASE WHEN c.type = ? THEN 0 ELSE (CASE WHEN a.liabilityid IS NULL
                 THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
                 ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
@@ -429,24 +452,6 @@ if ($voip_cdr_only) {
                 ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
             END) AS netflag,
             (CASE WHEN a.liabilityid IS NULL THEN t.taxcategory ELSE l.taxcategory END) AS taxcategory,
-            t.description AS description,
-            a.id AS assignmentid,
-            c.divisionid,
-            c.paytime,
-            c.paytype,
-            c.flags AS customerflags,
-            a.paytime AS a_paytime,
-            a.paytype AS a_paytype,
-            a.numberplanid,
-            a.attribute,
-            p.name AS promotion_name,
-            ps.name AS promotion_schema_name,
-            ps.length AS promotion_schema_length,
-            d.inv_paytime AS d_paytime,
-            d.inv_paytype AS d_paytype,
-            t.period AS t_period,
-            t.numberplanid AS tariffnumberplanid,
-            t.flags,
             (CASE WHEN cc1.type IS NULL THEN 0 ELSE 1 END) AS einvoice,
             (CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS mail_marketing,
             (CASE WHEN cc3.type IS NULL THEN 0 ELSE 1 END) AS sms_marketing,
@@ -454,15 +459,37 @@ if ($voip_cdr_only) {
             (CASE WHEN a.liabilityid IS NULL THEN t.name ELSE l.name END) AS name,
             (CASE WHEN a.liabilityid IS NULL THEN t.taxid ELSE l.taxid END) AS taxid,
             (CASE WHEN a.liabilityid IS NULL THEN t.prodid ELSE l.prodid END) AS prodid,
-            voipphones.phones,
-            ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount), 3) AS price,
             (CASE WHEN a.liabilityid IS NULL THEN t.taxrate ELSE l.taxrate END) AS taxrate,
             (CASE WHEN a.liabilityid IS NULL THEN t.currency ELSE l.currency END) AS currency,
-            a.count AS count,
-            (SELECT COUNT(id) FROM assignments
-                WHERE customerid = c.id AND tariffid IS NULL AND liabilityid IS NULL
-                AND datefrom <= $currtime
-                AND (dateto > $currtime OR dateto = 0)) AS allsuspended
+            (CASE WHEN price_variants.tpv_price IS NULL 
+                THEN 
+                    ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount), 3) 
+                ELSE
+                    ROUND(((((100 - a.pdiscount) * price_variants.tpv_price) / 100) - a.vdiscount), 3)
+            END) AS price,
+            voipphones.phones,
+            vas.*,
+            (CASE 
+                WHEN vas.suspended IS NOT NULL
+                    AND 
+                    (
+                        (
+                            vas.suspension_charge_method = ? AND vas.suspension_at = ?
+                        )
+                        OR
+                        (
+                            (
+                                vas.suspension_charge_method = ? 
+                                OR 
+                                (vas.suspension_charge_method = ? AND vas.suspension_at IN ?)
+                            ) 
+                            AND vas.suspension_datefrom <= ?
+                            AND (vas.suspension_dateto > ? OR vas.suspension_dateto = 0)
+                        )
+                    )
+                THEN 1
+                ELSE 0
+            END) AS charge_suspension
         FROM assignments a
         JOIN customers c ON a.customerid = c.id
         LEFT JOIN customerconsents cc1 ON cc1.customerid = c.id AND cc1.type = " . CCONSENT_EINVOICE . "
@@ -490,28 +517,64 @@ if ($voip_cdr_only) {
         ) l ON a.liabilityid = l.id
         LEFT JOIN (
             SELECT
-                vna.assignment_id, " . $DB->GroupConcat('vn.phone', ',') . " AS phones
+                vna.assignment_id,
+                " . $DB->GroupConcat('vn.phone', ',') . " AS phones
             FROM voip_number_assignments vna
             LEFT JOIN voip_numbers vn ON vn.id = vna.number_id
             GROUP BY vna.assignment_id
         ) voipphones ON voipphones.assignment_id = a.id
         LEFT JOIN divisions d ON d.id = c.divisionid
+        LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                AND vas.suspension_datefrom <= ?
+                AND (vas.suspension_dateto > ? OR vas.suspension_dateto = 0)
+        LEFT JOIN (
+            SELECT
+              tpv.*
+            FROM assignments a
+            JOIN (
+              SELECT
+                  tariffpricevariants.quantity_threshold AS tpv_quantity_threshold, tariffs.id AS tpv_tariffid,
+                  (CASE WHEN tariffs.flags & ? > 0 THEN tariffpricevariants.net_price ELSE tariffpricevariants.gross_price END) AS tpv_price
+              FROM tariffs
+              JOIN tariffpricevariants ON tariffs.id = tariffpricevariants.tariffid
+            ) tpv ON a.tariffid = tpv.tpv_tariffid AND tpv.tpv_quantity_threshold <= a.count AND tpv.tpv_tariffid = a.tariffid
+            ORDER BY tpv.tpv_quantity_threshold DESC LIMIT 1
+        ) AS price_variants ON a.tariffid = price_variants.tpv_tariffid
         WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
             . $customer_status_condition
             . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
             . " AND a.commited = 1
-            AND ((a.period = ? AND at = ?)
-                OR ((a.period = ?
-                OR (a.period = ? AND at = ?)
-                OR (a.period = ? AND at IN ?)
-                OR (a.period = ? AND at = ?)
-                OR (a.period = ? AND at = ?)
-                OR (a.period = ? AND at = ?))
-                AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)))"
+            AND (
+                (a.period = ? AND at = ?)
+                OR (
+                    (
+                        a.period = ?
+                        OR (a.period = ? AND at = ?)
+                        OR (a.period = ? AND at IN ?)
+                        OR (a.period = ? AND at = ?)
+                        OR (a.period = ? AND at = ?)
+                        OR (a.period = ? AND at = ?)
+                    )
+                    AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)
+                )
+                OR (
+                    (vas.suspension_charge_method = ? AND vas.suspension_at = ?)
+                    OR (
+                        (
+                            vas.suspension_charge_method = ?
+                            OR 
+                            (vas.suspension_charge_method = ? AND vas.suspension_at IN ?)
+                        )    
+                        AND vas.suspension_datefrom <= ?
+                        AND (vas.suspension_dateto >= ? OR vas.suspension_dateto = 0)
+                        AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)
+                    )
+                )
+            )"
             . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
             . ($tariff_tags ?: '')
-        . " ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytime, c.paytime, d.inv_paytime,
-            a.paytype, c.paytype, d.inv_paytype, a.numberplanid, t.numberplanid, a.separatedocument, a.separateitem, currency, netflag, price DESC, a.id";
+        ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytime, c.paytime, d.inv_paytime,
+        a.paytype, c.paytype, d.inv_paytype, a.numberplanid, t.numberplanid, a.separatedocument, a.separateitem, currency, netflag, price DESC, a.id";
 
     $services = $DB->GetAll(
         $query,
@@ -534,26 +597,43 @@ $billing_invoice_separate_fractions = ConfigHelper::checkConfig($config_section 
 $empty_billings = ConfigHelper::checkConfig('voip.empty_billings');
 
 $query = "SELECT
-			a.id, a.tariffid, a.customerid, a.recipient_address_id,
-			(CASE WHEN ca2.address_id IS NULL THEN ca1.address_id ELSE ca2.address_id END) AS post_address_id,
-			a.period, a.backwardperiod, a.at, a.suspended, a.settlement, a.datefrom,
-			0 AS pdiscount, 0 AS vdiscount, a.invoice,
-			a.separatedocument,
-			a.separateitem,
-			c.type AS customertype,
-			t.type AS tarifftype,
-			t.taxcategory AS taxcategory,
-			t.description AS description, a.id AS assignmentid,
-			c.divisionid, c.paytype, c.paytime, c.flags AS customerflags,
-			a.paytime AS a_paytime, a.paytype AS a_paytype, a.numberplanid, a.attribute,
-			p.name AS promotion_name, ps.name AS promotion_schema_name, ps.length AS promotion_schema_length,
-			d.inv_paytime AS d_paytime, d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
-			0 AS flags,
-			t.taxid AS taxid, '' as prodid,
-			COALESCE(voipcost.value, 0) AS price,
-			COALESCE(voipcost.totaltime, 0) AS call_time,
-			" . ($billing_invoice_separate_fractions ? ' COALESCE(voipcost.call_count, 0) AS call_count, COALESCE(voipcost.call_fraction, \'\') AS call_fraction , ' : '') . "
-			taxes.value AS taxrate,
+            a.at,
+            a.attribute,
+            a.backwardperiod,
+            ? AS count,
+            a.customerid,
+            a.datefrom,
+            a.dateto,
+            a.id,
+            a.id AS assignmentid,
+            a.invoice,
+            'set' AS liabilityid,
+            a.numberplanid,
+            a.paytime AS a_paytime,
+            a.paytype AS a_paytype,
+            0 AS pdiscount,
+            a.period, 
+            a.recipient_address_id,
+            a.separatedocument,
+            a.separateitem,
+            a.settlement, 
+            a.tariffid,
+            0 AS vdiscount,
+            c.divisionid,
+            c.flags AS customerflags,
+            c.paytime,
+            c.paytype,
+            c.type AS customertype,
+            d.inv_paytime AS d_paytime,
+            d.inv_paytype AS d_paytype,
+            p.name AS promotion_name,
+            ps.length AS promotion_schema_length,
+            ps.name AS promotion_schema_name,
+            t.description AS description,
+            0 AS flags,
+            t.numberplanid AS tariffnumberplanid,
+            t.period AS t_period,
+            (CASE WHEN ca2.address_id IS NULL THEN ca1.address_id ELSE ca2.address_id END) AS post_address_id,
             (CASE WHEN c.type = ?
                 THEN 0
                 ELSE (CASE WHEN t.flags & ? > 0
@@ -565,128 +645,129 @@ $query = "SELECT
                 THEN 1
                 ELSE 0
             END) AS netflag,
-			t.currency, voipphones.phones,
-			'set' AS liabilityid, '$billing_invoice_description' AS name,
-			? AS count,
-			(SELECT COUNT(id)
-				FROM assignments
-				WHERE
-					customerid  = c.id    AND
-					tariffid    IS NULL   AND
-					liabilityid IS NULL   AND
-					datefrom <= $currtime AND
-					(dateto > $currtime OR dateto = 0)) AS allsuspended,
-			(CASE WHEN EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type IN ?) THEN 1 ELSE 0 END) AS billingconsent
-			FROM assignments a
+            t.taxcategory AS taxcategory,
+            t.type AS tarifftype,
+            '$billing_invoice_description' AS name,
+            t.taxid AS taxid,
+            '' as prodid,
+            taxes.value AS taxrate,
+            t.currency,
+            COALESCE(voipcost.value, 0) AS price,
+            COALESCE(voipcost.totaltime, 0) AS call_time,
+            " . ($billing_invoice_separate_fractions ? ' COALESCE(voipcost.call_count, 0) AS call_count, COALESCE(voipcost.call_fraction, \'\') AS call_fraction , ' : '') . "
+            voipphones.phones,
+            (CASE WHEN EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type IN ?) THEN 1 ELSE 0 END) AS billingconsent
+            FROM assignments a
+            JOIN customers c ON a.customerid = c.id
             JOIN tariffs t ON t.id = a.tariffid
             JOIN taxes ON taxes.id = t.taxid
             LEFT JOIN promotionschemas ps ON ps.id = a.promotionschemaid
             LEFT JOIN promotions p ON p.id = ps.promotionid
-			JOIN customers c ON (a.customerid = c.id)
             LEFT JOIN customer_addresses ca1 ON ca1.customer_id = c.id AND ca1.type = " . BILLING_ADDRESS . "
             LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c.id AND ca2.type = " . POSTAL_ADDRESS . "
-			" . ($empty_billings ? 'LEFT ' : '') . "JOIN (
-				SELECT ROUND(sum(price), 2) AS value,
-					SUM(vc.billedtime) AS totaltime,
-					" . ($billing_invoice_separate_fractions ? ' COUNT(vc.*) AS call_count, vc.fraction AS call_fraction, ' : '')
+            " . ($empty_billings ? 'LEFT ' : '') . "JOIN (
+                SELECT ROUND(sum(price), 2) AS value,
+                    SUM(vc.billedtime) AS totaltime,
+                    " . ($billing_invoice_separate_fractions ? ' COUNT(vc.*) AS call_count, vc.fraction AS call_fraction, ' : '')
                     . "va.ownerid AS customerid,
-					a2.id AS assignmentid
-				FROM voip_cdr vc
-				JOIN voipaccounts va ON va.id = vc.callervoipaccountid AND vc.direction = " . BILLING_RECORD_DIRECTION_OUTGOING . " OR va.id = vc.calleevoipaccountid AND vc.direction = " . BILLING_RECORD_DIRECTION_INCOMING . "
-				JOIN voip_numbers vn ON vn.voip_account_id = va.id
-					AND (
-						(
-							vn.voip_account_id = vc.callervoipaccountid
-							AND
-							vn.phone = vc.caller
-							AND
-							vc.direction = " . BILLING_RECORD_DIRECTION_OUTGOING . "
-						) OR (
-							vn.voip_account_id = vc.calleevoipaccountid
-							AND
-							vn.phone = vc.callee
-							AND
-							vc.direction = " . BILLING_RECORD_DIRECTION_INCOMING . "
-						)
-					)
-				JOIN voip_number_assignments vna ON vna.number_id = vn.id
-				JOIN assignments a2 ON a2.id = vna.assignment_id
-				JOIN tariffs t ON t.id = a2.tariffid AND t.type = ?
-				WHERE (
-					(
-						vc.call_start_time >= (CASE a2.period
-							WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month, 1, $year-1) . '
-							WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month-6, 1, $year)   . '
-							WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month-3, 1, $year)   . '
-							WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month-1, 1, $year)   . '
-							WHEN ' . DISPOSABLE . ' THEN ' . $currtime . "
-						END)
-						AND
-						vc.call_start_time < (CASE a2.period
-							WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
-							WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
-							WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
-							WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
-							WHEN ' . DISPOSABLE . ' THEN ' . ($currtime + 86400) . "
-						END)
-					) OR (
-						vc.call_start_time + totaltime >= (CASE a2.period
-							WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month, 1, $year-1) . '
-							WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month-6, 1, $year)   . '
-							WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month-3, 1, $year)   . '
-							WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month-1, 1, $year)   . '
-							WHEN ' . DISPOSABLE . ' THEN ' . $currtime . "
-						END)
-						AND
-						vc.call_start_time + totaltime < (CASE a2.period
-							WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
-							WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
-							WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
-							WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
-							WHEN ' . DISPOSABLE . ' THEN ' . ($currtime + 86400) . "
-						END)
-					)
-				)
-				GROUP BY va.ownerid, a2.id" . ($billing_invoice_separate_fractions ? ', vc.fraction' : '') . "
-			) voipcost ON voipcost.customerid = a.customerid AND voipcost.assignmentid = a.id
-			LEFT JOIN (
-				SELECT vna2.assignment_id, " . $DB->GroupConcat('vn2.phone', ', ') . " AS phones
-				FROM voip_number_assignments vna2
-				LEFT JOIN voip_numbers vn2 ON vn2.id = vna2.number_id
-				GROUP BY vna2.assignment_id
-			) voipphones ON voipphones.assignment_id = a.id
-			LEFT JOIN divisions d ON (d.id = c.divisionid)
-	    WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
-           . $customer_status_condition
-           . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
-           . " AND t.type = ? AND
-	      a.commited = 1 AND
-		  ((a.period = ? AND at = ?) OR
-		  ((a.period = ? OR
-		  (a.period  = ? AND at = ?) OR
-		  (a.period  = ? AND at IN ?) OR
-		  (a.period  = ? AND at = ?) OR
-		  (a.period  = ? AND at = ?) OR
-		  (a.period  = ? AND at = ?)) AND
-		   a.datefrom <= ? AND
-		  (a.dateto = 0 OR a.dateto > (CASE a.period
-			WHEN " . YEARLY . ' THEN ' . mktime(0, 0, 0, $month, 1, $year - 1) . "
-			WHEN " . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month - 6, 1, $year)   . "
-			WHEN " . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month - 3, 1, $year)   . "
-			WHEN " . MONTHLY . ' THEN ' . mktime(0, 0, 0, $month - 1, 1, $year)
-        . " END))))"
-        . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
-        . ($tariff_tags ?: '')
+                    a2.id AS assignmentid
+                FROM voip_cdr vc
+                JOIN voipaccounts va ON va.id = vc.callervoipaccountid AND vc.direction = " . BILLING_RECORD_DIRECTION_OUTGOING . " OR va.id = vc.calleevoipaccountid AND vc.direction = " . BILLING_RECORD_DIRECTION_INCOMING . "
+                JOIN voip_numbers vn ON vn.voip_account_id = va.id
+                    AND (
+                        (
+                            vn.voip_account_id = vc.callervoipaccountid
+                            AND
+                            vn.phone = vc.caller
+                            AND
+                            vc.direction = " . BILLING_RECORD_DIRECTION_OUTGOING . "
+                        ) OR (
+                            vn.voip_account_id = vc.calleevoipaccountid
+                            AND
+                            vn.phone = vc.callee
+                            AND
+                            vc.direction = " . BILLING_RECORD_DIRECTION_INCOMING . "
+                        )
+                    )
+                JOIN voip_number_assignments vna ON vna.number_id = vn.id
+                JOIN assignments a2 ON a2.id = vna.assignment_id
+                JOIN tariffs t ON t.id = a2.tariffid AND t.type = ?
+                WHERE (
+                    (
+                        vc.call_start_time >= (CASE a2.period
+                            WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month, 1, $year-1) . '
+                            WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month-6, 1, $year)   . '
+                            WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month-3, 1, $year)   . '
+                            WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month-1, 1, $year)   . '
+                            WHEN ' . DISPOSABLE . ' THEN ' . $currtime . "
+                        END)
+                        AND
+                        vc.call_start_time < (CASE a2.period
+                            WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
+                            WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
+                            WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
+                            WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
+                            WHEN ' . DISPOSABLE . ' THEN ' . ($currtime + 86400) . "
+                        END)
+                    ) OR (
+                        vc.call_start_time + totaltime >= (CASE a2.period
+                            WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month, 1, $year-1) . '
+                            WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month-6, 1, $year)   . '
+                            WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month-3, 1, $year)   . '
+                            WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month-1, 1, $year)   . '
+                            WHEN ' . DISPOSABLE . ' THEN ' . $currtime . "
+                        END)
+                        AND
+                        vc.call_start_time + totaltime < (CASE a2.period
+                            WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
+                            WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
+                            WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
+                            WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
+                            WHEN ' . DISPOSABLE . ' THEN ' . ($currtime + 86400) . "
+                        END)
+                    )
+                )
+                GROUP BY va.ownerid, a2.id" . ($billing_invoice_separate_fractions ? ', vc.fraction' : '') . "
+            ) voipcost ON voipcost.customerid = a.customerid AND voipcost.assignmentid = a.id
+            LEFT JOIN (
+                SELECT vna2.assignment_id, " . $DB->GroupConcat('vn2.phone', ', ') . " AS phones
+                FROM voip_number_assignments vna2
+                LEFT JOIN voip_numbers vn2 ON vn2.id = vna2.number_id
+                GROUP BY vna2.assignment_id
+            ) voipphones ON voipphones.assignment_id = a.id
+            LEFT JOIN divisions d ON d.id = c.divisionid
+        WHERE "
+            . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
+            . $customer_status_condition
+            . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+            . " AND t.type = ? AND
+              a.commited = 1 AND
+              ((a.period = ? AND at = ?) OR
+              ((a.period = ? OR
+              (a.period  = ? AND at = ?) OR
+              (a.period  = ? AND at IN ?) OR
+              (a.period  = ? AND at = ?) OR
+              (a.period  = ? AND at = ?) OR
+              (a.period  = ? AND at = ?)) AND
+               a.datefrom <= ? AND
+              (a.dateto = 0 OR a.dateto > (CASE a.period
+                WHEN " . YEARLY . ' THEN ' . mktime(0, 0, 0, $month, 1, $year - 1) . "
+                WHEN " . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month - 6, 1, $year)   . "
+                WHEN " . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month - 3, 1, $year)   . "
+                WHEN " . MONTHLY . ' THEN ' . mktime(0, 0, 0, $month - 1, 1, $year)
+            . " END))))"
+            . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
+            . ($tariff_tags ?: '')
     ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytime, c.paytime, d.inv_paytime,
         a.paytype, c.paytype, d.inv_paytype, a.numberplanid, a.separatedocument, a.separateitem, currency, netflag, voipcost.value DESC, a.id";
 
 $billings = $DB->GetAll(
     $query,
     array(
+        1,
         CTYPES_PRIVATE,
         TARIFF_FLAG_SPLIT_PAYMENT,
         TARIFF_FLAG_NET_ACCOUNT,
-        1,
         array(CCONSENT_FULL_PHONE_BILLING, CCONSENT_SIMPLIFIED_PHONE_BILLING),
         SERVICE_PHONE,
         SERVICE_PHONE,
@@ -771,18 +852,15 @@ if (!empty($assigns)) {
 		JOIN nodes n ON n.id = na.nodeid
 		JOIN assignments a ON a.id = na.assignmentid
 		LEFT JOIN netdevices nd ON nd.id = n.netdev
+		LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+            AND vas.suspension_datefrom <= ?NOW?
+            AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+            AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
 		WHERE nd.ownerid IS NOT NULL AND ((n.ownerid IS NULL AND n.netdev IS NOT NULL)
 			OR n.ownerid IS NOT NULL)
-			AND a.suspended = 0
+			AND vas.suspended IS NULL
 			AND a.period IN (" . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ")
 			AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
-			AND NOT EXISTS (
-				SELECT id FROM assignments aa
-				WHERE aa.customerid = (CASE WHEN n.ownerid IS NULL THEN nd.ownerid ELSE n.ownerid END)
-					AND aa.tariffid IS NULL AND aa.liabilityid IS NULL
-					AND aa.datefrom < ?NOW?
-					AND (aa.dateto > ?NOW? OR aa.dateto = 0)
-			)
 		GROUP BY na.nodeid", 'nodeid');
     if (empty($node_assignments)) {
         $node_assignments = array();
@@ -880,16 +958,14 @@ if (!empty($assigns)) {
 						AND EXISTS (
 							SELECT na.id FROM nodeassignments na
 							JOIN assignments a ON a.id = na.assignmentid
-							WHERE na.nodeid = n.id AND a.suspended = 0
+							LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                                AND vas.suspension_datefrom <= ?NOW?
+                                AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                                AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
+							WHERE na.nodeid = n.id 
+							    AND vas.suspended IS NULL
 								AND a.period IN (" . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ")
 								AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
-						)
-						AND NOT EXISTS (
-							SELECT id FROM assignments aa
-							WHERE aa.customerid = (CASE WHEN n.ownerid IS NULL THEN nd.ownerid ELSE n.ownerid END)
-								AND aa.tariffid IS NULL AND aa.liabilityid IS NULL
-								AND aa.datefrom < ?NOW?
-								AND (aa.dateto > ?NOW? OR aa.dateto = 0)
 						)
 					GROUP BY customerid_netdev",
                 'customerid_netdev'
@@ -1067,29 +1143,12 @@ if ($prefer_netto) {
 }
 
 if (!empty($assigns)) {
-    // determine currency values for assignments with foreign currency
-    // if payments.prefer_netto = true, use value netto+tax
-    // if assignment based on tariff with price variants get price by quantity
-    foreach ($assigns as &$assign) {
-        if (!empty($assign['tariffid'])) {
-            $priceVariant = $LMS->getTariffPriceVariantByQuantityThreshold($assign['tariffid'], $assign['count']);
-            if (!empty($priceVariant)) {
-                $suspension = empty($assign['suspended']) && empty($assign['allsuspended']) ? 1 : ($suspension_percentage / 100);
-                if (!empty($assign['netflag'])) {
-                    $assign['price'] = round(((((100 - $assign['pdiscount']) * $priceVariant['net_price']) / 100) - $assign['vdiscount']) * $suspension, 3);
-                    $assign['netvalue'] = round($assign['price'] * $assign['count'], 2);
-                } else {
-                    $assign['price'] = round(((((100 - $assign['pdiscount']) * $priceVariant['gross_price']) / 100) - $assign['vdiscount']) * $suspension, 3);
-                    $assign['value'] = round($assign['price'] * $assign['count'], 2);
-                }
-            }
-        }
-        if ($prefer_netto) {
-            if (!empty($assign['netvalue'])) {
-                $assign['value'] = round($assign['netvalue'] * (100 + $taxeslist[$assign['taxid']]['value']) / 100, 2);
-            }
-        }
+    $suspensionsByCurrency = array();
+    $suspensionsById = array();
+    $suspendedAssignemnts = array();
 
+    foreach ($assigns as &$assign) {
+        // determine currency values for assignments with foreign currency
         $currency = $assign['currency'];
         if (empty($currency)) {
             $assign['currency'] = Localisation::getCurrentCurrency();
@@ -1103,9 +1162,427 @@ if (!empty($assigns)) {
                 }
             }
         }
+
+        if ($assign['liabilityid'] != 'set') {
+            if ($assign['t_period'] && $assign['period'] != DISPOSABLE
+                && $assign['t_period'] != $assign['period']) {
+                if ($assign['t_period'] == YEARLY) {
+                    $assign['price'] = $assign['price'] / 12.0;
+                } elseif ($assign['t_period'] == HALFYEARLY) {
+                    $assign['price'] = $assign['price'] / 6.0;
+                } elseif ($assign['t_period'] == QUARTERLY) {
+                    $assign['price'] = $assign['price'] / 3.0;
+                }
+
+                if ($assign['period'] == YEARLY) {
+                    $assign['price'] = $assign['price'] * 12.0;
+                } elseif ($assign['period'] == HALFYEARLY) {
+                    $assign['price'] = $assign['price'] * 6.0;
+                } elseif ($assign['period'] == QUARTERLY) {
+                    $assign['price'] = $assign['price'] * 3.0;
+                } elseif ($assign['period'] == WEEKLY) {
+                    $assign['price'] = $assign['price'] / 4.0;
+                } elseif ($assign['period'] == DAILY) {
+                    $assign['price'] = $assign['price'] / 30.0;
+                }
+            }
+
+            if (!empty($assign['netflag'])) {
+                $assign['net_price'] = $assign['price']; // calcualted variant and discount in main sql already
+
+                $assign['net_value'] = f_round($assign['net_price'] * $assign['count']);
+                $assign['gross_price'] = f_round($assign['net_price'] * ($assign['taxrate'] / 100 + 1), 3);
+                $assign['tax_value'] = f_round($assign['net_value'] * ($assign['taxrate'] / 100));
+                $assign['gross_value'] = f_round($assign['net_value'] + $assign['tax_value']);
+            } else {
+                $assign['gross_price'] = $assign['price']; // price is discounted in sql already
+
+                $assign['gross_value'] = f_round($assign['gross_price'] * $assign['count']);
+                $assign['net_price'] = f_round($assign['gross_price'] / ($assign['taxrate'] / 100 + 1), 3);
+                $assign['tax_value'] = f_round(($assign['gross_value'] * $assign['taxrate']) / (100 + $assign['taxrate']));
+                $assign['net_value'] = f_round(($assign['gross_value'] - $assign['tax_value']));
+            }
+
+            if (!empty($assign['suspended'])) {
+                if (!empty($assign['charge_suspension'])) {
+                    if ($assign['suspension_charge_method'] != SUSPENSION_CHARGE_METHOD_NONE) {
+                        switch ($assign['suspension_calculation_method']) {
+                            case SUSPENSION_CALCULATION_METHOD_PERCENTAGE:
+                                if (!isset($suspensionsByCurrency[$assign['currency']][$assign['taxid']][$assign['suspension_id']])) {
+                                    $suspensionDatefrom = !empty($assign['suspension_datefrom']) ? (' '. trans('From:')  .date('Y-m-d', $assign['suspension_datefrom'])) : '';
+                                    $suspensionDateto = !empty($assign['suspension_dateto']) ? (' '. trans('To:') . date('Y-m-d', $assign['suspension_dateto'])) : '';
+                                    $suspensionCommon = array(
+                                        'tariffid' => null,
+                                        'liabilityid' => null,
+                                        'count' => 1,
+                                        'invoice' => DOC_INVOICE,
+                                        'a_paytype' => null,
+                                        'paytype' => null,
+                                        'd_paytype' => null,
+                                        'a_paytime' => null,
+                                        'paytime' => '-1',
+                                        'd_paytime' => null,
+                                        'numberplanid' => null,
+                                        'tariffnumberplanid' => null,
+                                        'settlement' => '0',
+                                        'splitpayment' => '0',
+                                        'separatedocument' => '0',
+                                        'separateitem' => '1',
+                                        'backwardperiod' => '0',
+                                        'taxcategory' => '0',
+                                        'prodid' => '',
+                                        'tarifftype' => '-1',
+                                        'suspended' => '0',
+                                        'period' => $assign['suspension_charge_method'] == SUSPENSION_CHARGE_METHOD_PERIODICALLY ? MONTHLY : DISPOSABLE,
+                                        'name' => trans("Suspension") . $suspensionDatefrom . $suspensionDateto,
+                                        'total_net_value' => 0,
+                                        'total_gross_value' => 0,
+                                        'datefrom' =>  $assign['suspension_datefrom'],
+                                        'dateto' =>  $assign['suspension_dateto'],
+                                        'pdiscount' =>  0,
+                                        'vdiscount' =>  0,
+                                    );
+                                    $suspensionsByCurrency[$assign['currency']][$assign['taxid']][$assign['suspension_id']] = array_merge($assign, $suspensionCommon);
+                                }
+                                if (!isset($suspensionsById[$assign['suspension_id']])) {
+                                    $suspensionsById[$assign['suspension_id']]['suspension_id'] = $assign['suspension_id'];
+                                }
+
+                                $suspension = $suspensionsByCurrency[$assign['currency']][$assign['taxid']][$assign['suspension_id']];
+
+                                $suspension['suspend_assignments'][$assign['id']]['assignment_id'] = $assign['id'];
+                                $suspension['suspend_assignments'][$assign['id']]['assignment_name'] = $assign['name'];
+
+                                $suspensionPercentage = !is_null($assign['suspension_percentage']) ? f_round($assign['suspension_percentage']) : $defaultSuspensionPercentage;
+                                if (!empty($assign['netflag'])) {
+                                    $suspension['net_price'] = f_round($assign['net_price'] * ($suspensionPercentage / 100), 3);
+                                    if ($assign['suspension_charge_method'] == SUSPENSION_CHARGE_METHOD_PERIODICALLY) {
+                                        if ($assign['period'] == YEARLY) {
+                                            $suspension['net_price'] = $suspension['net_price'] / 12;
+                                        } elseif ($assign['period'] == HALFYEARLY) {
+                                            $suspension['net_price'] = $suspension['net_price'] / 6;
+                                        } elseif ($assign['period'] == QUARTERLY) {
+                                            $suspension['net_price'] = $suspension['net_price'] / 3;
+                                        } elseif ($assign['period'] == WEEKLY) {
+                                            $suspension['net_price'] = $suspension['net_price'] * 4;
+                                        } elseif ($assign['period'] == DAILY) {
+                                            $suspension['net_price'] = $suspension['net_price'] * 30;
+                                        }
+                                    }
+                                    $suspension['net_value'] = f_round($suspension['net_price'] * $assign['count']);
+                                    $suspension['gross_price'] = f_round($suspension['net_price'] * ($assign['taxrate'] / 100 + 1), 3);
+                                    $suspension['tax_value'] = f_round($suspension['net_value'] * ($assign['taxrate'] / 100));
+                                    $suspension['gross_value'] = f_round($suspension['net_value'] + $suspension['tax_value']);
+                                } else {
+                                    $suspension['gross_price'] = f_round($assign['gross_price'] * ($suspensionPercentage / 100), 3);
+                                    if ($assign['suspension_charge_method'] == SUSPENSION_CHARGE_METHOD_PERIODICALLY) {
+                                        if ($assign['period'] == YEARLY) {
+                                            $suspension['gross_price'] = $suspension['gross_price'] / 12;
+                                        } elseif ($assign['period'] == HALFYEARLY) {
+                                            $suspension['gross_price'] = $suspension['gross_price'] / 6;
+                                        } elseif ($assign['period'] == QUARTERLY) {
+                                            $suspension['gross_price'] = $suspension['gross_price'] / 3;
+                                        } elseif ($assign['period'] == WEEKLY) {
+                                            $suspension['gross_price'] = $suspension['gross_price'] * 4;
+                                        } elseif ($assign['period'] == DAILY) {
+                                            $suspension['gross_price'] = $suspension['gross_price'] * 30;
+                                        }
+                                    }
+                                    $suspension['gross_value'] = f_round($suspension['gross_price'] * $assign['count']);
+                                    $suspension['net_price'] = f_round($suspension['gross_price'] / ($assign['taxrate'] / 100 + 1), 3);
+                                    $suspension['tax_value'] = f_round(($suspension['gross_value'] * $assign['taxrate']) / (100 + $assign['taxrate']));
+                                    $suspension['net_value'] = f_round(($suspension['gross_value'] - $suspension['tax_value']));
+                                }
+
+                                $suspension['total_net_value'] += $suspension['net_value'];
+                                $suspension['total_gross_value'] += $suspension['gross_value'];
+
+                                $suspensionsByCurrency[$assign['currency']][$assign['taxid']][$assign['suspension_id']] = $suspension;
+                                break;
+                            case SUSPENSION_CALCULATION_METHOD_VALUE:
+                                // account only once for all assignemnts having this suspension
+                                if (!isset($suspensionsByCurrency[$assign['suspension_currency']][$assign['suspension_tax_id']][$assign['suspension_id']])
+                                    && !isset($suspensionsById[$assign['suspension_id']])) {
+                                    $suspensionDatefrom = !empty($assign['suspension_datefrom']) ? (' '. trans('From:')  .date('Y-m-d', $assign['suspension_datefrom'])) : '';
+                                    $suspensionDateto = !empty($assign['suspension_dateto']) ? (' '. trans('To:') . date('Y-m-d', $assign['suspension_dateto'])) : '';
+                                    $suspensionCommon = array(
+                                        'tariffid' => null,
+                                        'liabilityid' => null,
+                                        'count' => 1,
+                                        'invoice' => DOC_INVOICE,
+                                        'a_paytype' => null,
+                                        'paytype' => null,
+                                        'd_paytype' => null,
+                                        'a_paytime' => null,
+                                        'paytime' => '-1',
+                                        'd_paytime' => null,
+                                        'numberplanid' => null,
+                                        'tariffnumberplanid' => null,
+                                        'settlement' => '0',
+                                        'splitpayment' => '0',
+                                        'separatedocument' => '0',
+                                        'separateitem' => '1',
+                                        'backwardperiod' => '0',
+                                        'taxcategory' => '0',
+                                        'prodid' => '',
+                                        'tarifftype' => '-1',
+                                        'suspended' => '0',
+                                        'period' => $assign['suspension_charge_method'] == SUSPENSION_CHARGE_METHOD_PERIODICALLY ? MONTHLY : DISPOSABLE,
+                                        'name' => trans("Suspension") . $suspensionDatefrom . $suspensionDateto,
+                                        'total_net_value' => 0,
+                                        'total_gross_value' => 0,
+                                        'value' => !is_null($assign['suspension_value']) ? $assign['suspension_value'] : $defaultSuspensionValue,
+                                        'netflag' =>  $assign['suspension_netflag'],
+                                        'taxid' =>  $assign['suspension_tax_id'],
+                                        'taxlabel' =>  $assign['suspension_taxlabel'],
+                                        'taxrate' =>  $assign['suspension_taxrate'],
+                                        'currency' =>  $assign['suspension_currency'],
+                                        'datefrom' =>  $assign['suspension_datefrom'],
+                                        'dateto' =>  $assign['suspension_dateto'],
+                                        'pdiscount' =>  0,
+                                        'vdiscount' =>  0,
+
+                                    );
+                                    $suspensionsByCurrency[$assign['suspension_currency']][$assign['suspension_tax_id']][$assign['suspension_id']] = array_merge($assign, $suspensionCommon);
+                                    $suspensionsById[$assign['suspension_id']]['suspension_id'] = $assign['suspension_id'];
+
+                                    $suspension = $suspensionsByCurrency[$assign['suspension_currency']][$assign['suspension_tax_id']][$assign['suspension_id']];
+                                    $suspension['suspend_assignments'][$assign['id']]['assignment_id'] = $assign['id'];
+                                    $suspension['suspend_assignments'][$assign['id']]['assignment_name'] = $assign['name'];
+
+                                    if (!empty($assign['suspension_netflag'])) {
+                                        $suspension['net_value'] = f_round($suspension['value']);
+                                        if ($assign['suspension_charge_method'] == SUSPENSION_CHARGE_METHOD_PERIODICALLY) {
+                                            if ($assign['period'] == YEARLY) {
+                                                $suspension['net_value'] = $suspension['net_value'] / 12;
+                                            } elseif ($assign['period'] == HALFYEARLY) {
+                                                $suspension['net_value'] = $suspension['net_value'] / 6;
+                                            } elseif ($assign['period'] == QUARTERLY) {
+                                                $suspension['net_value'] = $suspension['net_value'] / 3;
+                                            } elseif ($assign['period'] == WEEKLY) {
+                                                $suspension['net_value'] = $suspension['net_value'] * 4;
+                                            } elseif ($assign['period'] == DAILY) {
+                                                $suspension['net_value'] = $suspension['net_value'] * 30;
+                                            }
+                                        }
+                                        $suspension['tax_value'] = f_round($suspension['net_value'] * ($assign['suspension_taxrate'] / 100));
+                                        $suspension['gross_value'] = f_round($suspension['net_value'] + $suspension['tax_value']);
+                                    } else {
+                                        $suspension['gross_value'] = f_round($suspension['value']);
+                                        if ($assign['suspension_charge_method'] == SUSPENSION_CHARGE_METHOD_PERIODICALLY) {
+                                            if ($assign['period'] == YEARLY) {
+                                                $suspension['gross_value'] = $suspension['gross_value'] / 12;
+                                            } elseif ($assign['period'] == HALFYEARLY) {
+                                                $suspension['gross_value'] = $suspension['gross_value'] / 6;
+                                            } elseif ($assign['period'] == QUARTERLY) {
+                                                $suspension['gross_value'] = $suspension['gross_value'] / 3;
+                                            } elseif ($assign['period'] == WEEKLY) {
+                                                $suspension['gross_value'] = $suspension['gross_value'] * 4;
+                                            } elseif ($assign['period'] == DAILY) {
+                                                $suspension['gross_value'] = $suspension['gross_value'] * 30;
+                                            }
+                                        }
+                                        $suspension['tax_value'] = f_round(($suspension['gross_value'] * $assign['suspension_taxrate']) / (100 + $assign['suspension_taxrate']));
+                                        $suspension['net_value'] = f_round(($suspension['gross_value'] - $suspension['tax_value']));
+                                    }
+
+                                    $suspension['total_net_value'] = $suspension['net_value'];
+                                    $suspension['total_gross_value'] = $suspension['gross_value'];
+                                    $suspension['total_tax_value'] = $suspension['tax_value'];
+
+                                    $suspensionsByCurrency[$assign['suspension_currency']][$assign['suspension_tax_id']][$assign['suspension_id']] = $suspension;
+                                }
+                                $suspensionsByCurrency[$assign['suspension_currency']][$assign['suspension_tax_id']][$assign['suspension_id']]['suspend_assignments'][$assign['id']]['assignment_id'] = $assign['id'];
+                                $suspensionsByCurrency[$assign['suspension_currency']][$assign['suspension_tax_id']][$assign['suspension_id']]['suspend_assignments'][$assign['id']]['assignment_name'] = $assign['name'];
+
+                                break;
+                        }
+                    } else {
+                        switch ($assign['suspension_calculation_method']) {
+                            case SUSPENSION_CALCULATION_METHOD_PERCENTAGE:
+                                if (!isset($suspensionsByCurrency[$assign['currency']][$assign['taxid']][$assign['suspension_id']])) {
+                                    $suspensionDatefrom = !empty($assign['suspension_datefrom']) ? (' '. trans('From:')  .date('Y-m-d', $assign['suspension_datefrom'])) : '';
+                                    $suspensionDateto = !empty($assign['suspension_dateto']) ? (' '. trans('To:') . date('Y-m-d', $assign['suspension_dateto'])) : '';
+                                    $suspensionCommon = array(
+                                        'tariffid' => null,
+                                        'liabilityid' => null,
+                                        'count' => 1,
+                                        'invoice' => DOC_INVOICE,
+                                        'a_paytype' => null,
+                                        'paytype' => null,
+                                        'd_paytype' => null,
+                                        'a_paytime' => null,
+                                        'paytime' => '-1',
+                                        'd_paytime' => null,
+                                        'numberplanid' => null,
+                                        'tariffnumberplanid' => null,
+                                        'settlement' => '0',
+                                        'splitpayment' => '0',
+                                        'separatedocument' => '0',
+                                        'separateitem' => '1',
+                                        'backwardperiod' => '0',
+                                        'taxcategory' => '0',
+                                        'prodid' => '',
+                                        'tarifftype' => '-1',
+                                        'suspended' => '0',
+                                        'period' => $assign['suspension_charge_method'] == SUSPENSION_CHARGE_METHOD_PERIODICALLY ? MONTHLY : DISPOSABLE,
+                                        'name' => trans("Suspension") . $suspensionDatefrom . $suspensionDateto,
+                                        'total_net_value' => 0,
+                                        'total_gross_value' => 0,
+                                        'datefrom' =>  $assign['suspension_datefrom'],
+                                        'dateto' =>  $assign['suspension_dateto'],
+                                        'pdiscount' =>  0,
+                                        'vdiscount' =>  0,
+                                    );
+                                    $suspensionsByCurrency[$assign['currency']][$assign['taxid']][$assign['suspension_id']] = array_merge($assign, $suspensionCommon);
+                                }
+                                if (!isset($suspensionsById[$assign['suspension_id']])) {
+                                    $suspensionsById[$assign['suspension_id']]['suspension_id'] = $assign['suspension_id'];
+                                }
+
+                                $suspension = $suspensionsByCurrency[$assign['currency']][$assign['taxid']][$assign['suspension_id']];
+                                $suspension['suspend_assignments'][$assign['id']]['assignment_id'] = $assign['id'];
+                                $suspension['suspend_assignments'][$assign['id']]['assignment_name'] = $assign['name'];
+
+                                $suspension['net_price'] = 0;
+                                $suspension['net_value'] = 0;
+                                $suspension['gross_price'] = 0;
+                                $suspension['tax_value'] = 0;
+                                $suspension['gross_value'] = 0;
+
+                                $suspension['total_net_value'] = 0;
+                                $suspension['total_tax_value'] = 0;
+                                $suspension['total_gross_value'] = 0;
+
+                                $suspensionsByCurrency[$assign['currency']][$assign['taxid']][$assign['suspension_id']] = $suspension;
+                                break;
+                            case SUSPENSION_CALCULATION_METHOD_VALUE:
+                                // account only once for all assignemnts having this suspension
+                                if (!isset($suspensionsByCurrency[$assign['suspension_currency']][$assign['suspension_tax_id']][$assign['suspension_id']])
+                                    && !isset($suspensionsById[$assign['suspension_id']])) {
+                                    $suspensionDatefrom = !empty($assign['suspension_datefrom']) ? (' '. trans('From:')  .date('Y-m-d', $assign['suspension_datefrom'])) : '';
+                                    $suspensionDateto = !empty($assign['suspension_dateto']) ? (' '. trans('To:') . date('Y-m-d', $assign['suspension_dateto'])) : '';
+                                    $suspensionCommon = array(
+                                        'tariffid' => null,
+                                        'liabilityid' => null,
+                                        'count' => 1,
+                                        'invoice' => DOC_INVOICE,
+                                        'a_paytype' => null,
+                                        'paytype' => null,
+                                        'd_paytype' => null,
+                                        'a_paytime' => null,
+                                        'paytime' => '-1',
+                                        'd_paytime' => null,
+                                        'numberplanid' => null,
+                                        'tariffnumberplanid' => null,
+                                        'settlement' => '0',
+                                        'splitpayment' => '0',
+                                        'separatedocument' => '0',
+                                        'separateitem' => '1',
+                                        'backwardperiod' => '0',
+                                        'taxcategory' => '0',
+                                        'prodid' => '',
+                                        'tarifftype' => '-1',
+                                        'suspended' => '0',
+                                        'period' => $assign['suspension_charge_method'] == SUSPENSION_CHARGE_METHOD_PERIODICALLY ? MONTHLY : DISPOSABLE,
+                                        'name' => trans("Suspension") . $suspensionDatefrom . $suspensionDateto,
+                                        'total_net_value' => 0,
+                                        'total_gross_value' => 0,
+                                        'value' => !is_null($assign['suspension_value']) ? $assign['suspension_value'] : $defaultSuspensionValue,
+                                        'netflag' =>  $assign['suspension_netflag'],
+                                        'taxid' =>  $assign['suspension_tax_id'],
+                                        'taxlabel' =>  $assign['suspension_taxlabel'],
+                                        'taxrate' =>  $assign['suspension_taxrate'],
+                                        'currency' =>  $assign['suspension_currency'],
+                                        'datefrom' =>  $assign['suspension_datefrom'],
+                                        'dateto' =>  $assign['suspension_dateto'],
+                                        'pdiscount' =>  0,
+                                        'vdiscount' =>  0,
+
+                                    );
+                                    $suspensionsByCurrency[$assign['suspension_currency']][$assign['suspension_tax_id']][$assign['suspension_id']] = array_merge($assign, $suspensionCommon);
+                                    $suspensionsById[$assign['suspension_id']]['suspension_id'] = $assign['suspension_id'];
+
+                                    $suspension = $suspensionsByCurrency[$assign['suspension_currency']][$assign['suspension_tax_id']][$assign['suspension_id']];
+                                    $suspension['suspend_assignments'][$assign['id']]['assignment_id'] = $assign['id'];
+                                    $suspension['suspend_assignments'][$assign['id']]['assignment_name'] = $assign['name'];
+
+                                    $suspension['net_value'] = 0;
+                                    $suspension['tax_value'] = 0;
+                                    $suspension['gross_value'] = 0;
+
+                                    $suspension['total_net_value'] = 0;
+                                    $suspension['total_gross_value'] = 0;
+                                    $suspension['total_tax_value'] = 0;
+
+                                    $suspensionsByCurrency[$assign['suspension_currency']][$assign['suspension_tax_id']][$assign['suspension_id']] = $suspension;
+                                }
+
+                                $suspensionsByCurrency[$assign['suspension_currency']][$assign['suspension_tax_id']][$assign['suspension_id']]['suspend_assignments'][$assign['id']]['assignment_id'] = $assign['id'];
+                                $suspensionsByCurrency[$assign['suspension_currency']][$assign['suspension_tax_id']][$assign['suspension_id']]['suspend_assignments'][$assign['id']]['assignment_name'] = $assign['name'];
+
+                                break;
+                        }
+                    }
+                }
+                $suspendedAssignemnts[$assign['id']]['id'] = $assign['id'];
+            }
+        } else {
+            // if payments.prefer_netto = true, ignore assignment netflag and calculate billing gross price from net price
+            if (!empty($assign['netflag']) || $prefer_netto) {
+                $assign['net_price'] = $assign['price']; // variant and discount are calcualted in main sql already
+
+                $assign['net_value'] = f_round($assign['net_price'] * $assign['count']);
+                $assign['gross_price'] = f_round($assign['net_price'] * ($assign['taxrate'] / 100 + 1), 3);
+                $assign['tax_value'] = f_round($assign['net_value'] * ($assign['taxrate'] / 100));
+                $assign['gross_value'] = f_round($assign['net_value'] + $assign['tax_value']);
+            } else {
+                $assign['gross_price'] = $assign['price']; // price is discounted in sql already
+
+                $assign['gross_value'] = f_round($assign['gross_price'] * $assign['count']);
+                $assign['net_price'] = f_round($assign['gross_price'] / ($assign['taxrate'] / 100 + 1), 3);
+                $assign['tax_value'] = f_round(($assign['gross_value'] * $assign['taxrate']) / (100 + $assign['taxrate']));
+                $assign['net_value'] = f_round(($assign['gross_value'] - $assign['tax_value']));
+            }
+        }
     }
-    unset($assign);
+    unset($assign, $suspension);
 }
+
+//region get rid of suspended assignments and add suspension
+if (!empty($suspendedAssignemnts)) {
+    foreach ($assigns as $idx => $assign) {
+        if ($assign['liabilityid'] != 'set' && isset($suspendedAssignemnts[$assign['id']])) {
+            unset($assigns[$idx]);
+        }
+    }
+    $assigns = array_values($assigns);
+}
+
+if (!empty($suspensionsByCurrency)) {
+    $suspensions = array();
+    foreach ($suspensionsByCurrency as $currency => $currencySuspensions) {
+        foreach ($currencySuspensions as $taxid => $currencyTaxesSuspensions) {
+            foreach ($currencyTaxesSuspensions as $sid => $currencyTaxSuspension) {
+                if ($currencyTaxSuspension['total_net_value'] != 0) {
+                    $suspensions[$sid] = $currencyTaxSuspension;
+                    $suspensions[$sid]['net_price'] = $currencyTaxSuspension['total_net_value'];
+                    $suspensions[$sid]['gross_price'] = $currencyTaxSuspension['total_gross_value'];
+                    $suspensions[$sid]['net_value'] = $currencyTaxSuspension['total_net_value'];
+                    $suspensions[$sid]['gross_value'] = $currencyTaxSuspension['total_gross_value'];
+                    $suspensions[$sid]['suspend_assignments'] = $currencyTaxSuspension['suspend_assignments'];
+                }
+            }
+        }
+    }
+
+    $suspensions = array_values($suspensions);
+}
+
+if (!empty($suspensions)) {
+    $assigns = array_merge($assigns, $suspensions);
+}
+//endregion
 
 if (!empty($currencyvalues) && !$quiet) {
     print "Currency quotes:" . PHP_EOL;
@@ -1429,16 +1906,13 @@ foreach ($assigns as $assign) {
 
     $linktechnology = isset($assignment_linktechnologies[$assign['id']]) ? $assignment_linktechnologies[$assign['id']]['technology'] : null;
 
-    if (!empty($assign['suspended']) || !empty($assign['allsuspended'])) {
-        $assign['price'] = round($assign['price'] * $suspension_percentage / 100, 3);
-        $assign['value'] = round($assign['price'] * $assign['count'], 2);
-    }
-    if (empty($assign['value']) && ($assign['liabilityid'] != 'set' || !$empty_billings || !empty($assign['suspended']))) {
-        continue;
-    }
-
     if ($assign['liabilityid'] && !$use_comment_for_liabilities) {
         $desc = $assign['name'];
+    } elseif (!empty($assign['suspend_assignments'])) {
+        foreach ($assign['suspend_assignments'] as $suspend_assignment) {
+            $suspendedAssignemntsNames[] = $suspend_assignment['assignment_name'];
+        }
+        $desc = $assign['name'] . ' ' . $suspension_description . ' (' . implode(',', $suspendedAssignemntsNames) . ')';
     } else {
         if (empty($assign['backwardperiod'])) {
             $desc = $comment;
@@ -1582,10 +2056,6 @@ foreach ($assigns as $assign) {
         $desc = str_replace('%phones', $assign['phones'], $desc);
     }
 
-    if ($suspension_percentage && ($assign['suspended'] || $assign['allsuspended'])) {
-        $desc .= ' ' . $suspension_description;
-    }
-
     if (!isset($invoices[$cid]) || $assign['separatedocument']) {
         $invoices[$cid] = 0;
     }
@@ -1603,45 +2073,16 @@ foreach ($assigns as $assign) {
     }
 
     if ($assign['price'] != 0 || $empty_billings && $assign['liabilityid'] == 'set') {
-        $price = $assign['price'];
         $currency = $assign['currency'];
         $netflag = intval($assign['netflag']);
         $splitpayment = $assign['splitpayment'];
-        if ($assign['t_period'] && $assign['period'] != DISPOSABLE
-            && $assign['t_period'] != $assign['period']) {
-            if ($assign['t_period'] == YEARLY) {
-                $price = $price / 12.0;
-            } elseif ($assign['t_period'] == HALFYEARLY) {
-                $price = $price / 6.0;
-            } elseif ($assign['t_period'] == QUARTERLY) {
-                $price = $price / 3.0;
-            }
-
-            if ($assign['period'] == YEARLY) {
-                $price = $price * 12.0;
-            } elseif ($assign['period'] == HALFYEARLY) {
-                $price = $price * 6.0;
-            } elseif ($assign['period'] == QUARTERLY) {
-                $price = $price * 3.0;
-            } elseif ($assign['period'] == WEEKLY) {
-                $price = $price / 4.0;
-            } elseif ($assign['period'] == DAILY) {
-                $price = $price / 30.0;
-            }
-        }
-
-        $price = round($price, 3);
-        $value = round($price * $assign['count'], 2);
 
         $telecom_service = $force_telecom_service_flag && $assign['tarifftype'] != SERVICE_OTHER
             && ($assign['customertype'] == CTYPES_PRIVATE || ($check_customer_vat_payer_flag_for_telecom_service
                 && !($assign['customerflags'] & CUSTOMER_FLAG_VAT_PAYER))) && $issuetime < mktime(0, 0, 0, 7, 1, 2021);
 
-        if ($netflag) {
-            $grossvalue = $value + round($value * ($assign['taxrate'] / 100), 2);
-        } else {
-            $grossvalue = $value;
-        }
+        $price = $netflag ? $assign['net_price'] : $assign['gross_price'];
+        $grossvalue = $assign['gross_value'];
 
         if ($assign['invoice']) {
             if ($assign['a_paytype']) {

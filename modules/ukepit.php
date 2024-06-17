@@ -680,20 +680,27 @@ if ($report_type == 'full') {
                     AND EXISTS (
                         SELECT na.id FROM nodeassignments na
                         JOIN assignments a ON a.id = na.assignmentid
+                        LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                            AND vas.suspension_datefrom <= ?NOW?
+                            AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                            AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
                         WHERE na.nodeid = n.id
                             AND a.commited = 1
-                            AND a.suspended = 0
+                            AND vas.suspended IS NULL
                             AND a.period IN ?
                             AND a.datefrom < ?NOW?
                             AND (a.dateto = 0 OR a.dateto > ?NOW?)
                     )
                     AND NOT EXISTS (
                         SELECT id FROM assignments aa
+                        LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = aa.id
+                            AND vas.suspension_datefrom <= ?NOW?
+                            AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                            AND (aa.dateto = 0 OR aa.dateto > ?NOW?)
                         WHERE aa.customerid = (CASE WHEN n.ownerid IS NULL THEN nd.ownerid ELSE n.ownerid END)
                             AND aa.commited = 1
                             AND aa.tariffid IS NULL
-                            AND aa.liabilityid IS NULL
-                            AND aa.datefrom < ?NOW?
+                            AND vas.suspension_suspend_all = 1
                             AND (aa.dateto = 0 OR aa.dateto > ?NOW?)
                     )
                 GROUP BY customerid_netdev",
@@ -810,19 +817,27 @@ if ($report_type == 'full') {
                     AND EXISTS (
                         SELECT na.id FROM nodeassignments na
                         JOIN assignments a ON a.id = na.assignmentid
+                        LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                            AND vas.suspension_datefrom <= ?NOW?
+                            AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                            AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
                         WHERE na.nodeid = n.id
                             AND a.commited = 1
-                            AND a.suspended = 0
+                            AND vas.suspended IS NULL
                             AND a.period IN ?
                             AND a.datefrom < ?NOW?
                             AND (a.dateto = 0 OR a.dateto > ?NOW?)
                     )
                     AND NOT EXISTS (
-                        SELECT id FROM assignments aa
+                        SELECT id 
+                        FROM assignments aa
+                        LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = aa.id
+                            AND vas.suspension_datefrom <= ?NOW?
+                            AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                            AND (aa.dateto > ?NOW? OR aa.dateto = 0)
                         WHERE aa.customerid = c.id
                             AND aa.commited = 1
-                            AND aa.tariffid IS NULL
-                            AND aa.liabilityid IS NULL
+                            AND vas.suspension_suspend_all = 1
                             AND aa.datefrom < ?NOW?
                             AND (aa.dateto > ?NOW? OR aa.dateto = 0)
                     )
@@ -1293,17 +1308,10 @@ if ($report_type == 'full') {
                         JOIN customers c ON c.id = n.ownerid
                         JOIN assignments a       ON a.id = na.assignmentid
                         JOIN tariffs t           ON t.id = a.tariffid
-                        LEFT JOIN (
-                            SELECT
-                                aa.customerid AS cid,
-                                COUNT(id) AS total
-                            FROM assignments aa
-                            WHERE aa.tariffid IS NULL
-                                AND aa.liabilityid IS NULL
-                                AND aa.datefrom < ?NOW?
-                                AND (aa.dateto > ?NOW? OR aa.dateto = 0)
-                            GROUP BY aa.customerid
-                        ) allsuspended ON allsuspended.cid = a.customerid
+                        LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                            AND vas.suspension_datefrom <= ?NOW?
+                            AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                            AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
                         WHERE n.ownerid IS NOT NULL
                             AND n.netdev IS NOT NULL
                             " . ($division ? ' AND c.divisionid = ' . $division : '') . "
@@ -1315,11 +1323,10 @@ if ($report_type == 'full') {
                             AND (addr.street_id = ? OR addr.street_id IS NULL)
                             AND addr.house = ?
                             AND a.commited = 1
-                            AND a.suspended = 0
                             AND a.period IN ?
                             AND a.datefrom < ?NOW?
                             AND (a.dateto = 0 OR a.dateto > ?NOW?)
-                            AND allsuspended.total IS NULL
+                            AND vas.suspended IS NULL
                         GROUP BY na.nodeid, n.name, n.longitude, n.latitude, n.linktype, n.linktechnology, n.address_id",
                         array(
                             $netnode['netdevices'],
@@ -1359,28 +1366,19 @@ if ($report_type == 'full') {
                         JOIN nodes n             ON n.id = na.nodeid
                         JOIN assignments a       ON a.id = na.assignmentid
                         JOIN tariffs t           ON t.id = a.tariffid
-                        LEFT JOIN (
-                            SELECT
-                                aa.customerid AS cid,
-                                COUNT(id) AS total
-                            FROM assignments aa
-                            WHERE aa.commited = 1
-                                AND aa.tariffid IS NULL
-                                AND aa.liabilityid IS NULL
-                                AND aa.datefrom < ?NOW?
-                                AND (aa.dateto > ?NOW? OR aa.dateto = 0)
-                            GROUP BY aa.customerid
-                        ) allsuspended ON allsuspended.cid = a.customerid
+                        LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                            AND vas.suspension_datefrom <= ?NOW?
+                            AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                            AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
                         JOIN netdevices nd ON nd.id = n.netdev
                         JOIN customers c ON c.id = nd.ownerid
                         WHERE n.id IN ?
                             " . ($division ? ' AND c.divisionid = ' . $division : '') . "
                             AND a.commited = 1
-                            AND a.suspended = 0
                             AND a.period IN ?
                             AND a.datefrom < ?NOW?
                             AND (a.dateto = 0 OR a.dateto > ?NOW?)
-                            AND allsuspended.total IS NULL
+                            AND vas.suspended IS NULL
                         GROUP BY na.nodeid, n.name, n.linktype, n.linktechnology, n.address_id",
                         array(
                             $uni_link['nodes'],
@@ -1627,26 +1625,18 @@ if ($report_type == 'full') {
             : '')
         . " JOIN assignments a       ON a.id = na.assignmentid
         JOIN tariffs t           ON t.id = a.tariffid
-        LEFT JOIN (
-            SELECT
-                aa.customerid AS cid,
-                COUNT(id) AS total
-            FROM assignments aa
-            WHERE aa.tariffid IS NULL
-                AND aa.liabilityid IS NULL
-                AND aa.datefrom < ?NOW?
-                AND (aa.dateto > ?NOW? OR aa.dateto = 0)
-            GROUP BY aa.customerid
-        ) allsuspended ON allsuspended.cid = a.customerid
+        LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+            AND vas.suspension_datefrom <= ?NOW?
+            AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+            AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
         WHERE n.ownerid IS NOT NULL
             " . ($division ? ' AND c.divisionid = ' . $division : '') . "
             AND n.access = 1
             AND a.commited = 1
-            AND a.suspended = 0
             AND a.period IN ?
             AND a.datefrom < ?NOW?
             AND (a.dateto = 0 OR a.dateto > ?NOW?)
-            AND allsuspended.total IS NULL
+            AND vas.suspended IS NULL
         GROUP BY na.nodeid,
             n.name,
             n.linktype,

@@ -146,20 +146,14 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
 			FROM (
                 SELECT a.tariffid, a.count, t.period, a.period AS aperiod, a.pdiscount, a.vdiscount, t.value
                 FROM assignments a
-                JOIN tariffs t ON (t.id = a.tariffid)'
+                JOIN tariffs t ON (t.id = a.tariffid)
+                LEFT JOIN vassignmentsuspensions vas ON vas.suspension_assignment_id = a.id
+                    AND vas.suspension_datefrom <= ?NOW?
+                    AND (vas.suspension_dateto >= ?NOW? OR vas.suspension_dateto = 0)
+                    AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)'
                 . ($customergroupid ? ' JOIN vcustomerassignments cc ON (cc.customerid = a.customerid)' : '')
                 . ($tax ? ' JOIN taxes ON (t.taxid = taxes.id)' : '')
-                . ' WHERE a.commited = 1 AND (
-					a.suspended = 1
-					OR a.datefrom > ?NOW?
-					OR (a.dateto <= ?NOW? AND a.dateto != 0)
-					OR EXISTS (
-						SELECT 1 FROM assignments b
-						WHERE b.customerid = a.customerid
-							AND liabilityid IS NULL AND tariffid IS NULL
-							AND b.datefrom <= ?NOW? AND (b.dateto > ?NOW? OR b.dateto = 0)
-					)
-				)'
+                . ' WHERE a.commited = 1 AND vas.suspended IS NOT NULL'
                 . ($type ? ' AND t.type = '.intval($type) : '')
                 . ($netflag == 1 ? ' AND t.flags & ' . TARIFF_FLAG_NET_ACCOUNT . ' > 0' : '')
                 . ($netflag == 2 ? ' AND t.flags & ' . TARIFF_FLAG_NET_ACCOUNT . ' = 0' : '')

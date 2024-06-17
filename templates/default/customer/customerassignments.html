@@ -4,6 +4,7 @@
 
 {$today = strtotime('today')}
 {$defaultDataset = ConfigHelper::getConfig('assignments.default_list_dataset', ConfigHelper::getConfig('phpui.default_assignment_list_dataset', 'gross'))}
+{$defaultSuspensions = ConfigHelper::getConfig('assignments.default_list_suspensions', true)}
 {$speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000)}
 {$speed_unit_aggregation_threshold = ConfigHelper::getConfig('phpui.speed_unit_aggregation_threshold', 5)}
 
@@ -12,6 +13,9 @@
 {/if}
 {if !isset($content_id)}
 	{$content_id = "customerassignmentpanel"}
+{/if}
+{if !isset($suspensions_content_id)}
+	{$suspensions_content_id = "customerassignmentsuspensionspanel"}
 {/if}
 
 <form method="post" name="{$tab_id}" id="{$tab_id}-form" action="?m=customerassignmentdel">
@@ -41,6 +45,20 @@
 					<option value="">{trans("— all —")}</option>
 				</select>
 			</label>
+			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+				<label class="dataset-filter">
+					{trans("Dataset")}
+					<select class="dataset-selection">
+						<option value="gross">{trans("Gross values")}</option>
+						<option value="net">{trans("Net values")}</option>
+						<option value="gross,net">{trans("Gross and net values")}</option>
+					</select>
+				</label>
+			{/if}
+			<label class="suspensions-filter">
+				<input type="checkbox" class="suspensions-selection" value="1"{if $suspensions} checked{/if}>
+				{trans("<!assignment>Suspensions")}
+			</label>
 			<label class="expired-filter">
 				<input type="checkbox" class="expired" value="1"{if $expired} checked{/if}>
 				{trans("<!assignment>Expired")}
@@ -49,16 +67,10 @@
 				<input type="checkbox" class="commited" value="1"{if $commited} checked{/if}>
 				{trans("<!assignment>Commited")}
 			</label>
-			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-			<label>
-				{trans("Dataset")}
-				<select class="dataset-filter">
-					<option value="gross">{trans("Gross values")}</option>
-					<option value="net">{trans("Net values")}</option>
-					<option value="gross,net">{trans("Gross and net values")}</option>
-				</select>
+			<label class="suspended-filter">
+				<input type="checkbox" class="suspended" value="1"{if $suspended} checked{/if}>
+				{trans("<!assignment>Suspended")}
 			</label>
-			{/if}
 			{button type="link" class="clear-filter" icon="delete" href="#" tip="Clear filter"}
 			{capture assign="assignment_hint"}
 				<strong>{trans("Assignments color markings:")}</strong>
@@ -91,403 +103,39 @@
 		{tab_table}
 
 			{if $assignments}
-			{block name=$tab_id|cat:"-list-header"}
-			<div class="lms-ui-tab-table-row header">
-				<div class="lms-ui-tab-table-wrapper col-8">
-					<div class="lms-ui-tab-table-wrapper col-4">
-						<div class="lms-ui-tab-table-wrapper col-2">
-							<div class="lms-ui-tab-table-column liability">
-								{trans("Liability")} ({trans("Note")})<br>
-								{trans("Recipient")}
-							</div>
-							{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-							<div class="lms-ui-tab-table-column base_value">
-								<span class="net">{trans("Base net price")}</span>
-								<span class="net-gross"><br></span>
-								<span class="gross">{trans("Base gross price")}</span>
-							</div>
-							{/if}
-						</div>
-						<div class="lms-ui-tab-table-wrapper col-2">
-							<div class="lms-ui-tab-table-column ptu_quantity">
-								{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-									{trans("PTU")}
-								<br>
-								{/if}
-									{trans("Quantity")}
-							</div>
-							{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-							<div class="lms-ui-tab-table-column discount">
-								<span class="net">{trans("Net discount")}</span>
-								<span class="net-gross"><br></span>
-								<span class="gross">{trans("Gross discount")}</span>
-							</div>
-							{/if}
-						</div>
-					</div>
-
-					<div class="lms-ui-tab-table-wrapper col-4">
-						{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-						<div class="lms-ui-tab-table-wrapper col-2">
-							<div class="lms-ui-tab-table-column price">
-								<span class="net">{trans("Net price")}</span>
-								<span class="net-gross"><br></span>
-								<span class="gross">{trans("Gross price")}</span>
-							</div>
-							<div class="lms-ui-tab-table-column total">
-								<span class="net">{trans("Net value")}</span>
-								<span class="net-gross"><br></span>
-								<span class="gross">{trans("Gross value")}</span>
-							</div>
-						</div>
-						{/if}
-						<div class="lms-ui-tab-table-wrapper col-2">
-							<div class="lms-ui-tab-table-column downceil_upceil">
-								{trans("Downceil")}<br>
-								{trans("Upceil")}
-							</div>
-							<div class="lms-ui-tab-table-column accounting-period">
-								{trans("Accounting")}<br>
-								{trans("Period")}
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="lms-ui-tab-table-column buttons">
-					&nbsp;
-				</div>
-			</div>
-			{/block}
-			{/if}
-
-			{foreach $assignments as $a}
-			{block name=$tab_id|cat:"-list-row"}
-			<div class="lms-ui-tab-table-row
-				{if ($a.dateto < $today && $a.dateto && ($a.periodvalue != $smarty.const.DISPOSABLE
-						|| (empty($a.tariffid) && empty($a.liabilityid))))
-					|| ($a.at < $today && $a.at > 365 && $a.periodvalue == $smarty.const.DISPOSABLE)}
-					blend
-				{elseif $a.suspended}
-					suspended
-				{elseif ($a.datefrom > $today && $a.datefrom && ($a.periodvalue != $smarty.const.DISPOSABLE
-						|| (empty($a.tariffid) && empty($a.liabilityid))))
-					|| ($a.periodvalue == $smarty.const.DISPOSABLE && $a.at > $today)}
-					alertblend
-				{/if}
-				{if !$a.commited}
-					lms-ui-assignment-not-commited
-				{/if}"
-				data-tariff-type="{$a.tarifftype}"
-				data-expired="{$a.expired}"
-				data-period="{$a.period}"
-				data-commited="{$a.commited}"
-				data-document="{if $a.doctype}{t a=$_DOCTYPES[$a.doctype] b=$a.fullnumber c=$a.cdate|date_format:"Y-m-d"}$a no. $b issued on $c{/t}{/if}"
-				{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-					data-net-value="{$a.real_netvalue|default:"0"|replace:",":"."}"
-					data-gross-value="{$a.real_value|default:"0"|replace:",":"."}"
-					data-currency="{$a.currency}"
-					data-gross-disc-value="{$a.real_disc_value|default:"0"|replace:",":"."}"
-					data-net-disc-value="{$a.real_disc_netvalue|default:"0"|replace:",":"."}"
-					data-discount-value="{$a.real_discount|default:"0"|replace:",":"."}"
-					data-discount-netvalue="{$a.real_netdiscount|default:"0"|replace:",":"."}"
-				{/if}
-				data-downceil="{$a.real_downceil|default:"0"}"
-				data-upceil="{$a.real_upceil|default:"0"}"
-				{if $a.tariffid || $a.liabilityid}data-target-url="?m=customerassignmentedit&id={$a.id}"{/if}>
-				<div class="lms-ui-tab-table-wrapper col-8">
-					<div class="lms-ui-tab-table-wrapper col-4">
-						<div class="lms-ui-tab-table-wrapper col-2">
-							<div class="lms-ui-tab-table-column liability">
-								{if !$a.tariffid && !$a.liabilityid}
-									<strong>{trans("Suspending of all liabilities")}</strong>
-								{else}
-									{if $a.tariffid}
-										<strong>
-											<A href="?m=tariffinfo&id={$a.tariffid}" {if !$a.commited} class="lms-ui-assignment-not-commited"{/if}>
-												{$a.name} {if count($assignments)>1} ({$a.id}){/if}
-											</A>
-										</strong>
-										{if $a.note}<span class="green" {tip text="{$a.note|escape}"}>({$a.note|trunescape:20})</span>{/if}
-										{if $a.attribute} - {$a.attribute|escape}{/if}
-										{if ($a.flags & $smarty.const.TARIFF_FLAG_ALL_REWARD_PENALTY_FLAGS) > 0}
-											{capture assign="reward_flags"}
-												{if $a.value < 0}
-													{trans("reward for")}
-												{else}
-													{trans("penalty for")}
-												{/if}
-												<ul class='reward-flags'>
-													{foreach $_TARIFF_FLAGS as $flag => $label}
-														{if intval($a.flags) & intval($flag)}
-															<li>
-																<strong>{$label}</strong>
-															</li>
-														{/if}
-													{/foreach}
-												</ul>
-											{/capture}
-											{if $a.value < 0}
-												{icon name="reward" tip=$reward_flags}
-											{else}
-												{icon name="penalty" tip=$reward_flags}
-											{/if}
-										{/if}
-									{else}
-										{$a.name}
-										{if $a.note}<span class="green" {tip text="{$a.note|escape}"}>({$a.note|trunescape:20})</span>{/if}
-									{/if}
-
-									{if $a.nodes}
-										({foreach $a.nodes as $v}{$v.name}{if !empty($v.netdev_name) && $v.netdev_ownerid == $customerinfo.id} / {$v.netdev_name}{/if}{if !$v@last}, {/if}{/foreach})
-									{/if}
-
-									{if $a.phones}
-										({foreach $a.phones as $v}{trans("phone:")} {$v.phone}{if !$v@last}, {/if}{/foreach})
-									{/if}
-								{/if}
-								<br>
-								{$a.recipient_location|default:"-"}
-							</div>
-							{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-							<div class="lms-ui-tab-table-column base_value">
-								<span class="net">
-									{if $a.tariffid || $a.liabilityid}
-										{Utils::smartFormatMoney($a.unitary_netvalue, $a.currency)}
-									{/if}
-								</span>
-								<span class="net-gross"><br></span>
-								<span class="gross">
-									{if $a.tariffid || $a.liabilityid}
-										{Utils::smartFormatMoney($a.unitary_value, $a.currency)}
-									{/if}
-								</span>
-							</div>
-							{/if}
-						</div>
-						<div class="lms-ui-tab-table-wrapper col-2">
-							<div class="lms-ui-tab-table-column ptu_quantity">
-								{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-									{if $a.tariffid || $a.liabilityid}
-										{if $a.tax_label}
-											{$a.tax_label}
-										{elseif $a.taxl_label}
-											{$a.taxl_label}
-										{/if}
-									{/if}
-									<br>
-								{/if}
-								{rtrim(rtrim($a.count, '0'), '.')}
-							</div>
-							{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-							<div class="lms-ui-tab-table-column discount">
-								<span class="net">
-									{if $a.tariffid || $a.liabilityid}
-										{if $a.pdiscount != 0}
-											{if $a.suspended == 1}
-												{$a.pdiscount}% + {ConfigHelper::getConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0))}%
-											{else}
-												{$a.pdiscount}%
-											{/if}
-										{elseif $a.vdiscount != 0}
-											{if isset($a.real_unitary_netdiscount)}
-												{Utils::smartFormatMoney($a.real_unitary_netdiscount, $a.currency)}
-												{if $a.count != 1}
-													<span title="{trans("Total net discount")}">
-														({Utils::smartFormatMoney($a.real_netdiscount, $a.currency)})
-													</span>
-												{/if}
-											{else}
-												{Utils::smartFormatMoney($a.unitary_netdiscount, $a.currency)}
-												{if $a.count != 1}
-													<span title="{trans("Total net discount")}">
-														({Utils::smartFormatMoney($a.unitary_netdiscount * $a.count, $a.currency)})
-													</span>
-												{/if}
-											{/if}
-										{else}
-											-
-										{/if}
-									{/if}
-								</span>
-								<span class="net-gross"><br></span>
-								<span class="gross">
-									{if $a.tariffid || $a.liabilityid}
-										{if $a.pdiscount != 0}
-											{if $a.suspended == 1}
-												{$a.pdiscount}% + {ConfigHelper::getConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0))}%
-											{else}
-												{$a.pdiscount}%
-											{/if}
-										{elseif $a.vdiscount != 0}
-											{if isset($a.real_unitary_discount)}
-												{Utils::smartFormatMoney($a.real_unitary_discount, $a.currency)}
-												{if $a.count != 1}
-													<span title="{trans("Total gross discount")}">
-														{Utils::smartFormatMoney($a.real_discount, $a.currency)}
-													</span>
-												{/if}
-											{else}
-												{Utils::smartFormatMoney($a.unitary_discount, $a.currency)}
-												{if $a.count != 1}
-													<span title="{trans("Total net discount")}">
-														({Utils::smartFormatMoney($a.unitary_discount * $a.count, $a.currency)})
-													</span>
-												{/if}
-											{/if}
-										{else}
-											-
-										{/if}
-									{/if}
-								</span>
-							</div>
-							{/if}
-						</div>
-					</div>
-
-					<div class="lms-ui-tab-table-wrapper col-4">
-						{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-						<div class="lms-ui-tab-table-wrapper col-2">
-							<div class="lms-ui-tab-table-column price">
-								<span class="net">
-									{if isset($a.real_unitary_netprice)}
-										{Utils::smartFormatMoney($a.real_unitary_netprice, $a.currency)}
-									{else}
-										{Utils::smartFormatMoney($a.discounted_netprice, $a.currency)}
-									{/if}
-								</span>
-								<span class="net-gross"><br></span>
-								<span class="gross">
-									{if isset($a.real_unitary_price)}
-										{Utils::smartFormatMoney($a.real_unitary_price, $a.currency)}
-									{else}
-										{Utils::smartFormatMoney($a.discounted_price, $a.currency)}
-									{/if}
-
-								</span>
-							</div>
-							<div class="lms-ui-tab-table-column total">
-								<span class="net">
-									{if isset($a.real_disc_netvalue)}
-										{Utils::formatMoney($a.real_disc_netvalue, $a.currency)}
-									{else}
-										{Utils::formatMoney($a.discounted_netvalue, $a.currency)}
-									{/if}
-								</span>
-								<span class="net-gross"><br></span>
-								<span class="gross">
-									{if isset($a.real_disc_value)}
-										{Utils::formatMoney($a.real_disc_value, $a.currency)}
-									{else}
-										{Utils::formatMoney($a.discounted_value, $a.currency)}
-									{/if}
-								</span>
-							</div>
-						</div>
-						{/if}
-						<div class="lms-ui-tab-table-wrapper col-2">
-							<div class="lms-ui-tab-table-column downceil_upceil">
-								{if $a.tariffid || $a.liabilityid}
-									{if $a.downceil}
-										{convert_to_units($a.unitary_downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s
-										{if $a.count != 1}
-											<span title="{trans("Total downceil")}">
-												({convert_to_units($a.downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s)
-											</span>
-										{/if}
-									{else}
-										-
-									{/if}
-								{/if}
-								<br>
-								{if $a.tariffid || $a.liabilityid}
-									{if $a.upceil}
-										{convert_to_units($a.unitary_upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s
-										{if $a.count != 1}
-											<span title="{trans("Total upceil")}">
-												({convert_to_units($a.upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s)
-											</span>
-										{/if}
-									{else}
-										-
-									{/if}
-								{/if}
-							</div>
-							<div class="lms-ui-tab-table-column accounting-period">
-								{if $a.tariffid || $a.liabilityid}
-									{$a.payday}
-									{if $a.netflag}
-										&nbsp;({trans('net')})
-									{else}
-										&nbsp;({trans('gross')})
-									{/if}
-									{if $a.backwardperiod}
-										&nbsp;{icon name="lms-ui-icon-previous" tip="<!assignment>backward"}
-									{/if}
-									{if $a.settlement}
-										&nbsp;{icon name="lms-ui-icon-next" tip="with settlement"}
-									 {/if}
-								{/if}
-								<br>
-								{if $a.datefrom}{trans("from")} {$a.datefrom|date_format:"Y-m-d"}{/if}
-								{if $a.dateto}{trans("to")} {$a.dateto|date_format:"Y-m-d"}{/if}
-								{if !$a.datefrom && !$a.dateto}-{/if}
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="lms-ui-tab-table-column buttons">
-					{if $a.tariffid || $a.liabilityid}
-						<i class="lms-ui-icon-options lms-ui-hint-rollover" data-url="?m=customerassignmentinfo&id={$a.id}"></i>
-					{/if}
-
-					{if ($a.tariffid || $a.liabilityid) && (($a.dateto > $today || !$a.dateto) || ($a.liabilityid && $a.at > $today))}
-						{button type="link" icon="wait" href="?m=customerassignmentedit&action=suspend&id={$a.id}"
-							tip="{if $a.suspended}Enable{else}Disable{/if} accounting of selected liability"}
-					{/if}
-					{button type="link" icon="delete" class="delete-assignment" href="?m=customerassignmentdel&id={$a.id}"
-						tip="Delete customer's liability"}
-					{button type="link" icon="edit" href="?m=customerassignmentedit&id={$a.id}" tip="Edit"}
-					<input type="checkbox" name="{$tab_id}[{$a.id}]" form="{$tab_id}-form"
-							value="{$a.id}" class="lms-ui-multi-check">
-				</div>
-			</div>
-			{/block}
-			{foreachelse}
-			{block name=$tab_id|cat:"-list-empty-row"}
-			<div class="lms-ui-tab-empty-table">
-				{trans("That customer hasn't got any assigned subscriptions.")}
-			</div>
-			{/block}
-			{/foreach}
-
-			{if $assignments}
-			{block name=$tab_id|cat:"-list-footer"}
-				<div class="lms-ui-tab-table-row footer">
+				{block name=$tab_id|cat:"-list-header"}
+				<div class="lms-ui-tab-table-row header">
 					<div class="lms-ui-tab-table-wrapper col-8">
 						<div class="lms-ui-tab-table-wrapper col-4">
 							<div class="lms-ui-tab-table-wrapper col-2">
 								<div class="lms-ui-tab-table-column liability">
-									<strong>{trans("Current liabilities total")}</strong>
+									{trans("Liability")} ({trans("Note")})<br>
+									<span class="suspensions">
+										{trans("Suspension")}<br>
+									</span>
+									{trans("Recipient")}
 								</div>
 								{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-								<div class="lms-ui-tab-table-column base_value">
-									<span class="total_net_value net"></span>
+								<div class="lms-ui-tab-table-column base_price">
+									<span class="net">{trans("Base net price")}</span>
 									<span class="net-gross"><br></span>
-									<span class="total_gross_value gross"></span>
+									<span class="gross">{trans("Base gross price")}</span>
 								</div>
 								{/if}
 							</div>
 							<div class="lms-ui-tab-table-wrapper col-2">
 								<div class="lms-ui-tab-table-column ptu_quantity">
-									&nbsp;
+									{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+										{trans("PTU")}
+									<br>
+									{/if}
+										{trans("Quantity")}
 								</div>
 								{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 								<div class="lms-ui-tab-table-column discount">
-									<span class="total_net_discount net"></span>
+									<span class="net">{trans("Net discount")}</span>
 									<span class="net-gross"><br></span>
-									<span class="total_gross_discount gross"></span>
+									<span class="gross">{trans("Gross discount")}</span>
 								</div>
 								{/if}
 							</div>
@@ -497,49 +145,581 @@
 							{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 							<div class="lms-ui-tab-table-wrapper col-2">
 								<div class="lms-ui-tab-table-column price">
-									&nbsp;
+									<span class="net">{trans("Net price")}</span>
+									<span class="net-gross"><br></span>
+									<span class="gross">{trans("Gross price")}</span>
 								</div>
 								<div class="lms-ui-tab-table-column total">
-									<span class="total_net_disc_value net"></span>
+									<span class="net">{trans("Net value")}</span>
 									<span class="net-gross"><br></span>
-									<span class="total_gross_disc_value gross"></span>
+									<span class="gross">{trans("Gross value")}</span>
 								</div>
 							</div>
 							{/if}
 							<div class="lms-ui-tab-table-wrapper col-2">
 								<div class="lms-ui-tab-table-column downceil_upceil">
-									<span class="total-downceil"></span>
-									<br>
-									<span class="total-upceil"></span>
+									{trans("Downceil")}<br>
+									{trans("Upceil")}
 								</div>
 								<div class="lms-ui-tab-table-column accounting-period">
+									{trans("Accounting")}<br>
+									{trans("Period")}
 								</div>
 							</div>
 						</div>
 					</div>
+
 					<div class="lms-ui-tab-table-column buttons">
+						&nbsp;
 					</div>
 				</div>
-			{/block}
+				{/block}
+
+				{foreach $assignments as $a}
+					{block name=$tab_id|cat:"-list-row"}
+					<div class="lms-ui-tab-table-row {strip}
+						{if $a.expired}
+							blend
+						{elseif $a.future}
+							alertblend
+						{elseif $a.suspended}
+							suspended
+						{/if}
+						{if !$a.commited}
+							lms-ui-assignment-not-commited
+						{/if}{/strip}"
+						data-tariff-type="{$a.tarifftype}"
+						data-expired="{$a.expired}"
+						data-period="{$a.period}"
+						data-commited="{$a.commited}"
+						data-suspended="{$a.suspended}"
+						data-document="{if $a.doctype}{t a=$_DOCTYPES[$a.doctype] b=$a.fullnumber c=$a.cdate|date_format:"Y-m-d"}$a no. $b issued on $c{/t}{/if}"
+						{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+							data-base-net-value="{$a.current_base_net_value|default:"0"|replace:",":"."}"
+							data-base-gross-value="{$a.current_base_gross_value|default:"0"|replace:",":"."}"
+							data-currency="{$a.currency}"
+							data-gross-value="{$a.current_gross_value|default:"0"|replace:",":"."}"
+							data-net-value="{$a.current_net_value|default:"0"|replace:",":"."}"
+							data-gross-value-discount="{$a.current_gross_value_discount|default:"0"|replace:",":"."}"
+							data-net-value-discount="{$a.current_net_value_discount|default:"0"|replace:",":"."}"
+							data-current-downceil="{$a.current_downceil|default:"0"|replace:",":"."}"
+							data-current-upceil="{$a.current_upceil|default:"0"|replace:",":"."}"
+						{/if}
+						data-downceil="{$a.real_downceil|default:"0"}"
+						data-upceil="{$a.real_upceil|default:"0"}"
+						data-target-url="?m=customerassignmentedit&id={$a.id}">
+						<div class="lms-ui-tab-table-wrapper col-8">
+							<div class="lms-ui-tab-table-wrapper col-4">
+								<div class="lms-ui-tab-table-wrapper col-2">
+									<div class="lms-ui-tab-table-column liability">
+										{if $a.tariffid}
+											<strong>
+												<a href="?m=tariffinfo&id={$a.tariffid}" {if !$a.commited} class="lms-ui-assignment-not-commited"{/if}>
+													{$a.name} ({$a.id})
+												</a>
+											</strong>
+											{if $a.note}<span class="green" {tip text="{$a.note|escape}"}>({$a.note|trunescape:20})</span>{/if}
+											{if $a.attribute} - {$a.attribute|escape}{/if}
+											{if ($a.flags & $smarty.const.TARIFF_FLAG_ALL_REWARD_PENALTY_FLAGS) > 0}
+												{capture assign="reward_flags"}
+													{if $a.net_value < 0}
+														{trans("reward for")}
+													{else}
+														{trans("penalty for")}
+													{/if}
+													<ul class='reward-flags'>
+														{foreach $_TARIFF_FLAGS as $flag => $label}
+															{if intval($a.flags) & intval($flag)}
+																<li>
+																	<strong>{$label}</strong>
+																</li>
+															{/if}
+														{/foreach}
+													</ul>
+												{/capture}
+												{if $a.net_value < 0}
+													{icon name="reward" tip=$reward_flags}
+												{else}
+													{icon name="penalty" tip=$reward_flags}
+												{/if}
+											{/if}
+										{else}
+											{$a.name} ({$a.id})
+											{if $a.note}<span class="green" {tip text="{$a.note|escape}"}>({$a.note|trunescape:20})</span>{/if}
+										{/if}
+
+										{if $a.nodes}
+											({foreach $a.nodes as $v}{$v.name}{if !empty($v.netdev_name) && $v.netdev_ownerid == $customerinfo.id} / {$v.netdev_name}{/if}{if !$v@last}, {/if}{/foreach})
+										{/if}
+
+										{if $a.phones}
+											({foreach $a.phones as $v}{trans("phone:")} {$v.phone}{if !$v@last}, {/if}{/foreach})
+										{/if}
+										<br>
+										<span class="net-gross"><br></span>
+										{if !empty($a.suspension_id)}
+											<span class="suspensions">
+												{trans("Suspension")} (#{$a.suspension_id})<br>
+											</span>
+										{else}
+											-<br>
+										{/if}
+										{$a.recipient_location|default:"-"}
+									</div>
+									{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+										<div class="lms-ui-tab-table-column base_price">
+											<span class="net">
+												{Utils::smartFormatMoney($a.base_net_price, $a.currency)}
+											</span>
+											<span class="net-gross"><br></span>
+											<span class="gross">
+												{Utils::smartFormatMoney($a.base_gross_price, $a.currency)}
+											</span>
+										</div>
+									{/if}
+								</div>
+								<div class="lms-ui-tab-table-wrapper col-2">
+									<div class="lms-ui-tab-table-column ptu_quantity">
+										{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+											{$a.taxlabel}
+											<br>
+										{/if}
+										{rtrim(rtrim($a.count, '0'), '.')}
+									</div>
+									{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+									<div class="lms-ui-tab-table-column discount">
+										<span class="net">
+												{if !empty($a.net_price_discount)}
+													{Utils::smartFormatMoney($a.net_price_discount, $a.currency)}
+													{if $a.count != 1}
+														<span title="{trans("Total net discount")}">
+															({Utils::smartFormatMoney($a.net_value_discount, $a.currency)})
+														</span>
+													{/if}
+												{else}
+													-
+												{/if}
+										</span>
+										<span class="net-gross"><br></span>
+										<span class="gross">
+											{if !empty($a.gross_price_discount)}
+												{Utils::smartFormatMoney($a.gross_price_discount, $a.currency)}
+												{if $a.count != 1}
+													<span title="{trans("Total gross discount")}">
+															({Utils::smartFormatMoney($a.gross_value_discount, $a.currency)})
+														</span>
+												{/if}
+											{else}
+												-
+											{/if}
+										</span>
+									</div>
+									{/if}
+								</div>
+							</div>
+
+							<div class="lms-ui-tab-table-wrapper col-4">
+								{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+								<div class="lms-ui-tab-table-wrapper col-2">
+									<div class="lms-ui-tab-table-column price">
+										<span class="net">
+											{Utils::smartFormatMoney($a.net_price, $a.currency)}
+										</span>
+										<span class="net-gross"><br></span>
+										<span class="gross">
+												{Utils::smartFormatMoney($a.gross_price, $a.currency)}
+										</span>
+									</div>
+									<div class="lms-ui-tab-table-column total">
+										<span class="net">
+											{Utils::formatMoney($a.net_value, $a.currency)}
+										</span>
+										<span class="net-gross"><br></span>
+										<span class="gross">
+											{Utils::formatMoney($a.gross_value, $a.currency)}
+										</span>
+									</div>
+								</div>
+								{/if}
+								<div class="lms-ui-tab-table-wrapper col-2">
+									<div class="lms-ui-tab-table-column downceil_upceil">
+										{if $a.unitary_downceil}
+											{convert_to_units($a.unitary_downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s
+											{if $a.count != 1}
+												<span title="{trans("Total downceil")}">
+													({convert_to_units($a.total_downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s)
+												</span>
+											{/if}
+										{else}
+											-
+										{/if}
+										<br>
+										{if $a.unitary_upceil}
+											{convert_to_units($a.unitary_upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s
+											{if $a.count != 1}
+												<span title="{trans("Total upceil")}">
+													({convert_to_units($a.total_upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s)
+												</span>
+											{/if}
+										{else}
+											-
+										{/if}
+									</div>
+									<div class="lms-ui-tab-table-column accounting-period">
+										{$a.payday}
+										{if $a.netflag}
+											&nbsp;({trans('net')})
+										{else}
+											&nbsp;({trans('gross')})
+										{/if}
+										{if $a.backwardperiod}
+											&nbsp;{icon name="lms-ui-icon-previous" tip="<!assignment>backward"}
+										{/if}
+										{if $a.settlement}
+											&nbsp;{icon name="lms-ui-icon-next" tip="with settlement"}
+										{/if}
+										<br>
+										{if $a.datefrom}{trans("from")} {$a.datefrom|date_format:"Y-m-d"}{/if}
+										{if $a.dateto}{trans("to")} {$a.dateto|date_format:"Y-m-d"}{/if}
+										{if !$a.datefrom && !$a.dateto}-{/if}
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="lms-ui-tab-table-column buttons">
+							<i class="lms-ui-icon-options lms-ui-hint-rollover" data-url="?m=customerassignmentinfo&id={$a.id}"></i>
+
+							{if !empty($a.commited) && empty($a.expired) && empty($a.suspension_suspend_all)}
+								{button type="link" icon="wait" href="?m=customerassignmentedit&action=toggle_suspension&id={$a.id}"
+									tip="{if $a.suspended}Enable{else}Disable{/if} accounting of selected liability"}
+							{/if}
+							{button type="link" icon="delete" class="delete-assignment" href="?m=customerassignmentdel&id={$a.id}"
+								tip="Delete customer's liability"}
+							{button type="link" icon="edit" href="?m=customerassignmentedit&id={$a.id}" tip="Edit"}
+
+							<input type="checkbox" name="{$tab_id}[{$a.id}]" form="{$tab_id}-form"
+								   value="{$a.id}" class="lms-ui-multi-check"
+									{if empty($a.commited) || !empty($a.expired) || !empty($a.suspension_suspend_all)}
+										 disabled
+									{/if}>
+						</div>
+					</div>
+					{/block}
+				{foreachelse}
+					{block name=$tab_id|cat:"-list-empty-row"}
+					<div class="lms-ui-tab-empty-table">
+						{trans("That customer hasn't got any assigned subscriptions.")}
+					</div>
+					{/block}
+				{/foreach}
+
+				{block name=$tab_id|cat:"-list-footer"}
+					<div class="lms-ui-tab-table-row footer">
+						<div class="lms-ui-tab-table-wrapper col-8">
+							<div class="lms-ui-tab-table-wrapper col-4">
+								<div class="lms-ui-tab-table-wrapper col-2">
+									<div class="lms-ui-tab-table-column liability">
+										<strong>{trans("Current liabilities total")}</strong>
+									</div>
+									{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+									<div class="lms-ui-tab-table-column base_price">
+										<span class="total_base_net_value net"></span>
+										<span class="net-gross"><br></span>
+										<span class="total_base_gross_value gross"></span>
+									</div>
+									{/if}
+								</div>
+								<div class="lms-ui-tab-table-wrapper col-2">
+									<div class="lms-ui-tab-table-column ptu_quantity">
+										&nbsp;
+									</div>
+									{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+									<div class="lms-ui-tab-table-column discount">
+										<span class="total_net_discount net"></span>
+										<span class="net-gross"><br></span>
+										<span class="total_gross_discount gross"></span>
+									</div>
+									{/if}
+								</div>
+							</div>
+
+							<div class="lms-ui-tab-table-wrapper col-4">
+								{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+								<div class="lms-ui-tab-table-wrapper col-2">
+									<div class="lms-ui-tab-table-column price">
+										&nbsp;
+									</div>
+									<div class="lms-ui-tab-table-column total">
+										<span class="total_net_value net"></span>
+										<span class="net-gross"><br></span>
+										<span class="total_gross_value gross"></span>
+									</div>
+								</div>
+								{/if}
+								<div class="lms-ui-tab-table-wrapper col-2">
+									<div class="lms-ui-tab-table-column downceil_upceil">
+										<span class="total-downceil"></span>
+										<br>
+										<span class="total-upceil"></span>
+									</div>
+									<div class="lms-ui-tab-table-column accounting-period">
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-column buttons">
+						</div>
+					</div>
+				{/block}
 			{/if}
 
 		{/tab_table}
 
 		{if $assignments}
-		{tab_button_panel}
-			{tab_buttons}
-			{/tab_buttons}
-			{tab_buttons}
-				{button class="suspend-assignments" icon="wait" label="Suspend/Enable"}
-				{button class="delete-assignments" icon="delete" label="Delete"}
-				<label>
-					{trans("Check All")}
-					<INPUT TYPE="checkbox" class="lms-ui-multi-check-all" VALUE="1">
-				</label>
-			{/tab_buttons}
-		{/tab_button_panel}
+			{tab_button_panel}
+				{tab_buttons}
+				{/tab_buttons}
+				{tab_buttons}
+					{button class="suspend-assignments" icon="wait" label="Suspend/Enable"}
+					{button class="delete-assignments" icon="delete" label="Delete"}
+					<label>
+						{trans("Check All")}
+						<INPUT TYPE="checkbox" class="lms-ui-multi-check-all" VALUE="1">
+					</label>
+				{/tab_buttons}
+			{/tab_button_panel}
 		{/if}
 
+		{if !empty($suspensions)}
+			{tab_header content_id=$content_id suspensions_content_id=$suspensions_content_id}
+				{tab_header_cell icon="lms-ui-icon-assignment"}
+					<strong>{if isset($tab_label)}{$tab_label}{else}{trans("Suspentions of the customer liabilities")}{/if}</strong>
+				{/tab_header_cell}
+			{/tab_header}
+
+			<div class="suspensions-panel">
+			{tab_table}
+
+				<div class="lms-ui-tab-table-row header">
+					<div class="lms-ui-tab-table-wrapper col-8">
+						<div class="lms-ui-tab-table-wrapper col-4">
+							<div class="lms-ui-tab-table-wrapper col-2">
+								<div class="lms-ui-tab-table-column suspension">
+									{trans("Suspension")} (#ID) ({trans("Note")})
+								</div>
+								<div class="lms-ui-tab-table-column liabilities">
+									{trans("Suspended liabilities")}
+								</div>
+							</div>
+							<div class="lms-ui-tab-table-wrapper col-2">
+								<div class="lms-ui-tab-table-column calculation-charge">
+									{trans("<!suspension>Charge method")}
+									<br>
+									{trans("<!suspension>Calcullation method")}
+								</div>
+								{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+									<div class="lms-ui-tab-table-column ptu-value">
+										{trans("<!suspension>Amount")}
+										<br>
+										{trans("PTU")}
+									</div>
+								{/if}
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-wrapper col-4">
+							<div class="lms-ui-tab-table-wrapper col-2">
+								<div class="lms-ui-tab-table-wrapper col-2">
+									{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+										<div class="lms-ui-tab-table-column total">
+											<span class="net">{trans("Net value")}</span>
+											<span class="net-gross"><br></span>
+											<span class="gross">{trans("Gross value")}</span>
+										</div>
+									{/if}
+								</div>
+							</div>
+							<div class="lms-ui-tab-table-wrapper col-2">
+								<div class="lms-ui-tab-table-column accounting-period">
+									{trans("Accounting")}<br>
+									{trans("Period")}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="lms-ui-tab-table-column buttons">
+						&nbsp;
+					</div>
+				</div>
+
+				{foreach $suspensions as $currency => $currency_suspensions}
+					{foreach $currency_suspensions as $taxid => $tax_suspensions}
+						{foreach $tax_suspensions as $sid => $s}
+							<div class="lms-ui-tab-table-row"
+								 data-period="{$s.period}"
+									{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+										data-suspension="1"
+										data-suspension-total-net-value="{$s.current_total_net_value|default:"0"|replace:",":"."}"
+										data-suspension-total-gross-value="{$s.current_total_gross_value|default:"0"|replace:",":"."}"
+										data-suspension-currency="{$s.currency}"
+									{/if}
+								{if $s.liabilityid}data-target-url="?m=customerassignmentedit&id={$s.id}"{/if}>
+									<div class="lms-ui-tab-table-wrapper col-8">
+										<div class="lms-ui-tab-table-wrapper col-4">
+											<div class="lms-ui-tab-table-wrapper col-2">
+												<div class="lms-ui-tab-table-column suspension">
+														{$s.name} (#{$sid})
+														{if $s.note}<span class="green" {tip text="{$s.note|escape}"}>({$s.note|trunescape:20})</span>{/if}
+												</div>
+												<div class="lms-ui-tab-table-column liabilities">
+													{foreach $s.suspend_assignments as $sa => $suspended_assignment}
+														{$suspended_assignment['name']}
+														<a href="?m=customerassignmentedit&id={$sa}">
+															(#{$suspended_assignment['assignment_id']})
+														</a>
+														{if !$suspended_assignment@last}
+															<br>
+														{/if}
+													{/foreach}
+												</div>
+											</div>
+											<div class="lms-ui-tab-table-wrapper col-2">
+												<div class="lms-ui-tab-table-column calculation-charge">
+													{if $s.charge_method == $smarty.const.SUSPENSION_CHARGE_METHOD_NONE}
+														{trans('<!suspension>None')}
+													{elseif $s.charge_method == $smarty.const.SUSPENSION_CHARGE_METHOD_ONCE}
+														{trans('<!suspension>Once')}
+													{elseif $s.charge_method == $smarty.const.SUSPENSION_CHARGE_METHOD_PERIODICALLY}
+														{trans('<!suspension>Periodically')}
+													{else}
+														-
+													{/if}
+													<br>
+													{if $s.charge_method != $smarty.const.SUSPENSION_CHARGE_METHOD_NONE}
+														{if $s.calculation_method == $smarty.const.SUSPENSION_CALCULATION_METHOD_PERCENTAGE}
+															{trans('Percentage calculated on each liability')}
+														{elseif $s.calculation_method == $smarty.const.SUSPENSION_CALCULATION_METHOD_VALUE}
+															{trans('Amount calculated on all liabilities')}
+														{else}
+															-
+														{/if}
+													{else}
+														-
+													{/if}
+												</div>
+												{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+													<div class="lms-ui-tab-table-column ptu-value">
+														{if $s.charge_method != $smarty.const.SUSPENSION_CHARGE_METHOD_NONE}
+															{if $s.calculation_method == $smarty.const.SUSPENSION_CALCULATION_METHOD_PERCENTAGE}
+																{$s.suspension_percentage} %
+																{if $s.default_suspension_percentage} ({trans("<!suspension>Default")}){/if}
+															{elseif $s.calculation_method == $smarty.const.SUSPENSION_CALCULATION_METHOD_VALUE}
+																{Utils::formatMoney($s.suspension_value, $s.currency)}
+																{if $s.default_suspension_value} ({trans("<!suspension>Default")}){/if}
+															{/if}
+														{else}
+															-
+														{/if}
+														<br>
+														{if !empty($s.taxlabel)}
+															{$s.taxlabel}
+														{else}
+															-
+														{/if}
+													</div>
+												{/if}
+											</div>
+										</div>
+
+										<div class="lms-ui-tab-table-wrapper col-4">
+											<div class="lms-ui-tab-table-wrapper col-2">
+												{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+													<div class="lms-ui-tab-table-column total">
+														<span class="net">
+															{Utils::formatMoney($s.total_net_value, $s.currency)}
+														</span>
+														<span class="net-gross"><br></span>
+														<span class="gross">
+															{Utils::formatMoney($s.total_gross_value, $s.currency)}
+														</span>
+													</div>
+												{/if}
+											</div>
+											<div class="lms-ui-tab-table-wrapper col-2">
+												<div class="lms-ui-tab-table-column accounting-period">
+													{$s.payday}
+													{if $s.netflag}
+														&nbsp;({trans('net')})
+													{else}
+														&nbsp;({trans('gross')})
+													{/if}
+													<br>
+													{if !empty($s.datefrom)}{trans("from")} {$s.datefrom|date_format:"Y-m-d"}{/if}
+													{if !empty($s.dateto)}{trans("to")} {$s.dateto|date_format:"Y-m-d"}{/if}
+													{if empty($s.datefrom) && empty($s.dateto)}-{/if}
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="lms-ui-tab-table-column buttons">
+										{button type="link" icon="delete" class="delete-suspension"
+											href="?m=suspensiondel&sid={$sid}&cid={$customerinfo.id}"
+											tip="Delete suspension"}
+										{button type="link" icon="edit" class="edit-suspension"
+											href="?m=customerassignmentedit&action=edit_suspension&sid={$sid}&cid={$customerinfo.id}"
+											tip="Edit suspension"}
+									</div>
+							</div>
+						{foreachelse}
+							<div class="lms-ui-tab-empty-table">
+								{trans("That customer hasn't got any suspended liabilities.")}
+							</div>
+						{/foreach}
+					{/foreach}
+				{/foreach}
+
+				<div class="lms-ui-tab-table-row footer">
+					{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+						<div class="lms-ui-tab-table-wrapper col-8">
+							<div class="lms-ui-tab-table-wrapper col-4">
+								<div class="lms-ui-tab-table-wrapper col-2">
+									<div class="lms-ui-tab-table-column suspension">
+										<strong>{trans("Current suspensions total")}</strong>
+									</div>
+									<div class="lms-ui-tab-table-column liabilities"></div>
+								</div>
+								<div class="lms-ui-tab-table-wrapper col-2">
+									<div class="lms-ui-tab-table-column calculation-charge"></div>
+									{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+										<div class="lms-ui-tab-table-column ptu-value"></div>
+									{/if}
+								</div>
+							</div>
+							<div class="lms-ui-tab-table-wrapper col-4">
+								<div class="lms-ui-tab-table-wrapper col-2">
+									{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+										<div class="lms-ui-tab-table-column total">
+											<span class="suspension_total_net_value net"></span>
+											<span class="net-gross"><br></span>
+											<span class="suspension_total_gross_value gross"></span>
+										</div>
+									{/if}
+								</div>
+								<div class="lms-ui-tab-table-wrapper col-2">
+									<div class="lms-ui-tab-table-column accounting-period"></div>
+								</div>
+							</div>
+						</div>
+					{/if}
+
+					<div class="lms-ui-tab-table-column buttons"></div>
+				</div>
+
+			{/tab_table}
+			</div>
+		{/if}
 	{/tab_contents}
 {/tab_container}
 
@@ -555,6 +735,7 @@
 	$(function() {
 		var default_period = {if $period}'{$period}'{else}null{/if};
 		var defaultDataset = '{$defaultDataset}';
+		var defaultSuspensions = '{$defaultSuspensions}';
 		var assignment_types = [];
 		var documents = [];
 		var periods = [];
@@ -580,6 +761,7 @@
 		var selected_period = getStorageItem('{$tab_id}_period_{$customerinfo.id}');
 		var expired_checked = getStorageItem('{$tab_id}_expired_{$customerinfo.id}');
 		var commited_checked = getStorageItem('{$tab_id}_commited_{$customerinfo.id}');
+		var suspended_checked = getStorageItem('{$tab_id}_suspended_{$customerinfo.id}');
 
 		if (selected_period === null && default_period) {
 			selected_period = default_period;
@@ -610,6 +792,7 @@
 		}
 		tab_elem.find('.expired').prop('checked', expired_checked === null ? {if $expired}true{else}false{/if} : parseInt(expired_checked) == 1);
 		tab_elem.find('.commited').prop('checked', commited_checked === null ? {if $commited}true{else}false{/if} : parseInt(commited_checked) == 1);
+		tab_elem.find('.suspended').prop('checked', suspended_checked === null ? {if $suspended}true{else}false{/if} : parseInt(suspended_checked) == 1);
 
 		/*
             if (assignment_types.length <= 1 && documents.length <= 1) {
@@ -618,12 +801,14 @@
         */
 
 		function updateAssignments() {
-			var selected_type = tab_elem.find('.assignment-type').val();
-			var selected_document = tab_elem.find('.document').val();
-			var selected_period = tab_elem.find('.period-selection').val();
-			var expired_checked = tab_elem.find('.expired').prop('checked');
-			var commited_checked = tab_elem.find('.commited').prop('checked');
-			var selector = '';
+			let selected_type = tab_elem.find('.assignment-type').val(),
+			selected_document = tab_elem.find('.document').val(),
+			selected_period = tab_elem.find('.period-selection').val(),
+			expired_checked = tab_elem.find('.expired').prop('checked'),
+			commited_checked = tab_elem.find('.commited').prop('checked'),
+			suspended_checked = tab_elem.find('.suspended').prop('checked');
+
+			let selector = '';
 			if (selected_type.length) {
 				selector += '[data-tariff-type="' + selected_type + '"]';
 			}
@@ -639,104 +824,119 @@
 			if (commited_checked) {
 				selector += '[data-commited="1"]';
 			}
+			if (suspended_checked) {
+				selector += '[data-suspended="1"]';
+			}
 			if (!selector.length) {
 				selector = '[data-tariff-type]';
 			}
 
-			var backgrounds = ['lucid', 'light'];
+			let backgrounds = ['lucid', 'light'];
 			tab_elem.find('.lms-ui-tab-table-row[data-tariff-type]').hide().removeClass(backgrounds.join(' '));
 			tab_elem.find('.lms-ui-tab-table-row' + selector).show().each(function (key) {
 				$(this).addClass(backgrounds[key & 1]);
 			});
+			let totalDownceil = 0,
+				totalUpceil = 0;
+			const totalBaseGrossValue = {},
+				totalBaseNetValue = {},
+				totalGrossValue = {},
+				totalNetValue = {},
+				totalNetDiscount = {},
+				totalGrossDiscount = {};
 
-			var total_downceil = 0;
-			var total_upceil = 0;
-			var total_gross_value = {};
-			var total_net_value = {};
-			var total_gross_disc_value = {};
-			var total_net_disc_value = {};
-			var total_net_discount = {};
-			var total_gross_discount = {};
 			tab_elem.find('.lms-ui-tab-table-row' + selector).each(function () {
-				total_downceil += parseInt($(this).attr('data-downceil'));
-				total_upceil += parseInt($(this).attr('data-upceil'));
+				totalDownceil += parseInt($(this).attr('data-current-downceil'));
+				totalUpceil += parseInt($(this).attr('data-current-upceil'));
 				{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-				var currency = $(this).attr('data-currency');
-				if (!total_gross_value.hasOwnProperty(currency)) {
-					total_gross_value[currency] = 0;
-					total_net_value[currency] = 0;
-					total_net_discount[currency] = 0;
-					total_gross_discount[currency] = 0;
-				}
-				total_gross_value[currency] += parseFloat($(this).attr('data-gross-value'));
-				total_net_value[currency] += parseFloat($(this).attr('data-net-value'));
-				if (!total_gross_disc_value.hasOwnProperty(currency)) {
-					total_gross_disc_value[currency] = 0;
-					total_net_disc_value[currency] = 0;
-				}
-				total_gross_disc_value[currency] += parseFloat($(this).attr('data-gross-disc-value'));
-				total_net_disc_value[currency] += parseFloat($(this).attr('data-net-disc-value'));
-				total_net_discount[currency] += parseFloat($(this).attr('data-discount-netvalue'));
-				total_gross_discount[currency] += parseFloat($(this).attr('data-discount-value'));
+					let currency = $(this).attr('data-currency');
+					if (!totalBaseGrossValue.hasOwnProperty(currency)) {
+						totalBaseGrossValue[currency] = 0;
+						totalBaseNetValue[currency] = 0;
+						totalNetDiscount[currency] = 0;
+						totalGrossDiscount[currency] = 0;
+					}
+					totalBaseGrossValue[currency] += parseFloat($(this).attr('data-base-gross-value'));
+					totalBaseNetValue[currency] += parseFloat($(this).attr('data-base-net-value'));
+					if (!totalGrossValue.hasOwnProperty(currency)) {
+						totalGrossValue[currency] = 0;
+						totalNetValue[currency] = 0;
+					}
+					totalGrossValue[currency] += parseFloat($(this).attr('data-gross-value'));
+					totalNetValue[currency] += parseFloat($(this).attr('data-net-value'));
+					totalNetDiscount[currency] += parseFloat($(this).attr('data-net-value-discount'));
+					totalGrossDiscount[currency] += parseFloat($(this).attr('data-gross-value-discount'));
 				{/if}
 			});
 
-			tab_elem.find('.total-downceil').html(total_downceil ? convert_to_units(total_downceil * {$speed_unit_type}, {$speed_unit_aggregation_threshold}, {$speed_unit_type}) + '/s' : '-');
-			tab_elem.find('.total-upceil').html(total_upceil ? convert_to_units(total_upceil * {$speed_unit_type}, {$speed_unit_aggregation_threshold}, {$speed_unit_type}) + '/s' : '-');
+			tab_elem.find('.total-downceil').html(totalDownceil ? convert_to_units(totalDownceil * {$speed_unit_type}, {$speed_unit_aggregation_threshold}, {$speed_unit_type}) + '/s' : '-');
+			tab_elem.find('.total-upceil').html(totalUpceil ? convert_to_units(totalUpceil * {$speed_unit_type}, {$speed_unit_aggregation_threshold}, {$speed_unit_type}) + '/s' : '-');
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-			var html = '';
-			$.each(total_gross_value, function (currency, value) {
-				if (html.length) {
-					html += '<br>';
+				let html = '';
+				if (totalBaseGrossValue) {
+					$.each(totalBaseGrossValue, function (currency, value) {
+						if (html.length) {
+							html += '<br>';
+						}
+						html += lms.utils.smartFormatMoney(value, currency);
+					});
+					tab_elem.find('.total_base_gross_value').html('(' + (html.length ? html : '-') + ')');
 				}
-				html += lms.utils.smartFormatMoney(value, currency);
-			});
-			tab_elem.find('.total_gross_value').html('(' + (html.length ? html : '-') + ')');
 
-			var html = '';
-			$.each(total_net_value, function (currency, value) {
-				if (html.length) {
-					html += '<br>';
+				if (totalBaseNetValue) {
+					html = '';
+					$.each(totalBaseNetValue, function (currency, value) {
+						if (html.length) {
+							html += '<br>';
+						}
+						html += lms.utils.smartFormatMoney(value, currency);
+					});
+					tab_elem.find('.total_base_net_value').html('(' + (html.length ? html : '-') + ')');
 				}
-				html += lms.utils.smartFormatMoney(value, currency);
-			});
-			tab_elem.find('.total_net_value').html('(' + (html.length ? html : '-') + ')');
 
-			var html = '';
-			$.each(total_gross_disc_value, function (currency, value) {
-				if (html.length) {
-					html += '<br>';
+				if (totalGrossDiscount) {
+					html = '';
+					$.each(totalGrossDiscount, function (currency, value) {
+						if (html.length) {
+							html += '<br>';
+						}
+						html += lms.utils.smartFormatMoney(value, currency);
+					});
+					tab_elem.find('.total_gross_discount').html('(' + (html.length ? html : '-') + ')');
 				}
-				html += lms.utils.formatMoney(value, currency);
-			});
-			tab_elem.find('.total_gross_disc_value').html('(' + (html.length ? html : '-') + ')');
 
-			var html = '';
-			$.each(total_net_disc_value, function (currency, value) {
-				if (html.length) {
-					html += '<br>';
+				if (totalNetDiscount) {
+					html = '';
+					$.each(totalNetDiscount, function (currency, value) {
+						if (html.length) {
+							html += '<br>';
+						}
+						html += lms.utils.smartFormatMoney(value, currency);
+					});
+					tab_elem.find('.total_net_discount').html('(' + (html.length ? html : '-') + ')');
 				}
-				html += lms.utils.formatMoney(value, currency);
-			});
-			tab_elem.find('.total_net_disc_value').html('(' + (html.length ? html : '-') + ')');
 
-			var html = '';
-			$.each(total_gross_discount, function (currency, value) {
-				if (html.length) {
-					html += '<br>';
+				if (totalGrossValue) {
+					html = '';
+					$.each(totalGrossValue, function (currency, value) {
+						if (html.length) {
+							html += '<br>';
+						}
+						html += lms.utils.formatMoney(value, currency);
+					});
+					tab_elem.find('.total_gross_value').html('(' + (html.length ? html : '-') + ')');
 				}
-				html += lms.utils.smartFormatMoney(value, currency);
-			});
-			tab_elem.find('.total_gross_discount').html('(' + (html.length ? html : '-') + ')');
 
-			var html = '';
-			$.each(total_net_discount, function (currency, value) {
-				if (html.length) {
-					html += '<br>';
+				if (totalNetValue) {
+					html = '';
+					$.each(totalNetValue, function (currency, value) {
+						if (html.length) {
+							html += '<br>';
+						}
+						html += lms.utils.formatMoney(value, currency);
+					});
+					tab_elem.find('.total_net_value').html('(' + (html.length ? html : '-') + ')');
 				}
-				html += lms.utils.smartFormatMoney(value, currency);
-			});
-			tab_elem.find('.total_net_discount').html('(' + (html.length ? html : '-') + ')');
 			{/if}
 
 			if (tab_elem.find('.lms-ui-tab-table-row[data-tariff-type]').length) {
@@ -748,10 +948,11 @@
 			setStorageItem('{$tab_id}_period_{$customerinfo.id}', selected_period);
 			setStorageItem('{$tab_id}_expired_{$customerinfo.id}', expired_checked ? 1 : 0);
 			setStorageItem('{$tab_id}_commited_{$customerinfo.id}', commited_checked ? 1 : 0);
+			setStorageItem('{$tab_id}_suspended_{$customerinfo.id}', suspended_checked ? 1 : 0);
 		}
 
 		// don't allow to trigger click event on title bar
-		tab_elem.find('.expired-filter,.commited-filter').click(function(e) {
+		tab_elem.find('.expired-filter,.commited-filter,.suspended-filter,.suspensions-filter').click(function(e) {
 			e.stopPropagation();
 		});
 		tab_elem.find('.assignment-type').change(updateAssignments).trigger('change');
@@ -759,26 +960,38 @@
 		tab_elem.find('.period-selection').change(updateAssignments);
 		tab_elem.find('.expired').change(updateAssignments);
 		tab_elem.find('.commited').change(updateAssignments);
+		tab_elem.find('.suspended').change(updateAssignments);
 		tab_elem.find('.clear-filter').click(function() {
 			tab_elem.find('.document').val('');
 			tab_elem.find('.period-selection').val('');
 			tab_elem.find('.assignment-type').val('');
 			tab_elem.find('.expired').prop('checked', false);
-			tab_elem.find('.commited').prop('checked', true).trigger('change');
+			tab_elem.find('.commited').prop('checked', true);
+			tab_elem.find('.suspended').prop('checked', true).trigger('change');
 
 			removeStorageItem('{$tab_id}_tariff_type_{$customerinfo.id}');
 			removeStorageItem('{$tab_id}_document_{$customerinfo.id}');
 			removeStorageItem('{$tab_id}_period_{$customerinfo.id}');
 			removeStorageItem('{$tab_id}_expired_{$customerinfo.id}');
 			removeStorageItem('{$tab_id}_commited_{$customerinfo.id}');
+			removeStorageItem('{$tab_id}_suspended_{$customerinfo.id}');
 			removeStorageItem('{$tab_id}_dataset_{$customerinfo.id}');
+			removeStorageItem('{$tab_id}_suspensions_{$customerinfo.id}');
 			updateDataset(defaultDataset);
+			updateSuspensions(defaultSuspensions);
 
 			return false;
 		});
 
 		tab_elem.find('.delete-assignment').click(function() {
 			confirmDialog($t('Are you sure, you want to delete this liability?'), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+
+		tab_elem.find('.delete-suspension').click(function() {
+			confirmDialog($t('Are you sure, you want to delete this suspension?'), this).done(function() {
 				location.href = $(this).attr('href');
 			});
 			return false;
@@ -803,15 +1016,19 @@
 		tab_elem.find('.suspend-assignments').click(function() {
 			if ($(this).closest('.lms-ui-tab-contents.lms-ui-multi-check').find('input:checked').length) {
 				confirmDialog($t("Are you sure, you want to change suspension state of selected liabilities?"), this).done(function () {
-					$('#{$tab_id}-form').attr('action', '?m=customerassignmentedit&action=suspend&cid={$customerinfo.id}').submit();
+					$('#{$tab_id}-form').attr('action', '?m=customerassignmentedit&action=toggle_suspension&cid={$customerinfo.id}').submit();
 				});
 			}
 		});
 
-		function updateDataset (datasetFilter) {
-			tab_elem.find('.dataset-filter').find('option[value="' + datasetFilter + '"]').prop('selected', true);
+		tab_elem.find('.edit-suspension').click(function(e) {
+			$('#{$tab_id}-form').attr('action', $(this).attr('href')).submit();
+		});
 
-			switch(datasetFilter) {
+		function updateDataset (datasetSelection) {
+			tab_elem.find('.dataset-selection').find('option[value="' + datasetSelection + '"]').prop('selected', true);
+
+			switch(datasetSelection) {
 				case "gross":
 					tab_elem.find('.net').hide();
 					tab_elem.find('.gross').show().removeClass('bold');
@@ -829,17 +1046,72 @@
 			}
 		}
 
-		var selected_dataset = getStorageItem('{$tab_id}_dataset_{$customerinfo.id}');
+		let selected_dataset = getStorageItem('{$tab_id}_dataset_{$customerinfo.id}');
 
 		if (!selected_dataset) {
 			selected_dataset = defaultDataset;
 		}
+
 		updateDataset(selected_dataset);
 
-		tab_elem.find('.dataset-filter').change(function() {
-			var datasetFilter = $(this).val();
-			setStorageItem('{$tab_id}_dataset_{$customerinfo.id}', datasetFilter);
-			updateDataset(datasetFilter);
+		tab_elem.find('.dataset-selection').change(function() {
+			let datasetSelection = $(this).val();
+			setStorageItem('{$tab_id}_dataset_{$customerinfo.id}', datasetSelection);
+			updateDataset(datasetSelection);
+		});
+
+		function updateSuspensions (suspensionsSelection) {
+			tab_elem.find('.suspensions-selection').prop('checked', suspensionsSelection == 1);
+			tab_elem.find('.suspensions').toggle(suspensionsSelection == 1);
+
+			let suspension_total_gross_value = {};
+			let suspension_total_net_value = {};
+
+			tab_elem.find('.lms-ui-tab-table-row[data-suspension="1"]').each(function () {
+				{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+					let currency = $(this).attr('data-suspension-currency');
+					if (!suspension_total_gross_value.hasOwnProperty(currency)) {
+						suspension_total_gross_value[currency] = 0;
+						suspension_total_net_value[currency] = 0;
+					}
+					suspension_total_gross_value[currency] += parseFloat($(this).attr('data-suspension-total-gross-value'));
+					suspension_total_net_value[currency] += parseFloat($(this).attr('data-suspension-total-net-value'));
+				{/if}
+			});
+
+			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+				let html = '';
+				$.each(suspension_total_gross_value, function (currency, value) {
+					if (html.length) {
+						html += '<br>';
+					}
+					html += lms.utils.formatMoney(value, currency);
+				});
+				tab_elem.find('.suspension_total_gross_value').html('(' + (html.length ? html : '-') + ')');
+
+				html = '';
+				$.each(suspension_total_net_value, function (currency, value) {
+					if (html.length) {
+						html += '<br>';
+					}
+					html += lms.utils.formatMoney(value, currency);
+				});
+				tab_elem.find('.suspension_total_net_value').html('(' + (html.length ? html : '-') + ')');
+			{/if}
+		}
+
+		let suspensions_selected = getStorageItem('{$tab_id}_suspensions_{$customerinfo.id}');
+
+		if (suspensions_selected === 'false') {
+			suspensions_selected = defaultSuspensions;
+		}
+
+		updateSuspensions(suspensions_selected);
+
+		tab_elem.find('.suspensions-selection').change(function() {
+			let suspensionsSelection = $(this).is(':checked') ? 1 : 0;
+			setStorageItem('{$tab_id}_suspensions_{$customerinfo.id}', suspensionsSelection);
+			updateSuspensions(suspensionsSelection);
 		});
 	});
 

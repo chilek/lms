@@ -24,6 +24,37 @@
  *  $Id$
  */
 
+$_LANG['Suspension'] = 'Zawieszenie';
+$_LANG['Suspension of all'] = 'Zawieszenie wszystkich';
+$_LANG['Suspension value'] = 'Wartość zawieszenia';
+$_LANG['All customer liabilities are suspended'] = 'Wszystkie zobowiązania klienta są zawieszone';
+$_LANG['Suspentions of the customer liabilities'] = 'Zawieszenia zobowiązań klienta';
+$_LANG['Suspended liabilities'] = 'Zawieszone zobowiązania';
+$_LANG['No assignment has been selected!'] = 'Nie zostało wybrane żadne zobowiązanie!';
+$_LANG['Suspended assignments period'] = 'Okres zawieszanych zobowiązań';
+$_LANG['Current suspensions total'] = 'Bieżące zawieszenia razem';
+$_LANG['<!suspension>Amount'] = 'Kwota';
+$_LANG['<!suspension>Percentage'] = 'Procent';
+$_LANG['<!suspension>Charge method'] = 'Metoda naliczania';
+$_LANG['<!suspension>Calcullation method'] = 'Metoda obliczania';
+$_LANG['<!suspension>Accounting'] = 'Rozliczenie';
+$_LANG['<!suspension>Default'] = 'Domyślnie';
+$_LANG['<!suspension>None'] = 'Bez naliczania';
+$_LANG['<!suspension>Once'] = 'Jednorazowo';
+$_LANG['<!suspension>Periodically'] = 'Okresowo';
+$_LANG['<!suspension>Assignment suspension'] = 'Zawieszenie zobowiązania';
+$_LANG['<!suspension>Liabilities'] = 'Zobowiązania';
+$_LANG['— selected liabilities suspending —'] = '— zawieszenie wybranych zobowiązań —';
+$_LANG['<!assignment>Suspended'] = 'Zawieszone';
+$_LANG['<!assignment>Suspensions'] = 'Zawieszenia';
+$_LANG['Percentage calculated on each liability'] = 'Procent liczony od każdego zobowiązania';
+$_LANG['Amount calculated on all liabilities'] = 'Kwota liczona od wszystkich zobowiązań';
+$_LANG['Are you sure, you want to delete this suspension?'] = 'Jesteś pewien, że chcesz usunąć to zawieszenie?';
+$_LANG['Date from is required!'] = 'Data od jest wymagana!';
+$_LANG['Delete suspension'] = 'Usuń zawieszenie';
+$_LANG['Edit suspension'] = 'Edytuj zawieszenie';
+$_LANG['suspension<!syslog>'] = 'zawieszenie';
+
 $_LANG['Check in PESEL Reservation Registry'] = 'Sprawdź w Rejestrze Zastrzeżeń PESEL';
 $_LANG['Empty PESEL Reservation Registry API secret key!'] = 'Pusty klucz API Rejestru Zastrzeżeń PESEL!';
 $_LANG['Incorrect PESEL format!'] = 'Błędny format PESEL!';
@@ -1830,6 +1861,9 @@ $_LANG['Period:'] = 'Okres:';
 $_LANG['Period'] = 'Okres';
 $_LANG['Allow nodes addition with duplicated MAC address (not checking that some computer have that MAC yet). Default: 0 (off).'] = 'Zezwolenie na dodawanie komputerów ze zduplikowanymi adresami MAC (LMS nie sprawdza, czy inny komputer nie ma już przypisanego danego adresu MAC). Domyślnie: 0 (wyłączone).';
 $_LANG['Percentage of suspended liabilities. Default: 0'] = 'Wartość procentowa zawieszonych zobowiązań. Domyślnie: 0';
+$_LANG['Amount of suspended liabilities. Default: 0'] = 'Kwota zawieszonych zobowiązań. Domyślnie: 0';
+$_LANG['Charge method for assignment suspension. Default: none'] = 'Metoda naliczania zawieszenia zobowiązań. Domyślnie: brak';
+$_LANG['Calculation method for assignment suspension. Default: percent'] = 'Metoda obliczania zawieszenia zobowiązań. Domyślnie: procent';
 $_LANG['Permissions:'] = 'Prawa:';
 $_LANG['Permissions'] = 'Uprawnienia';
 $_LANG['Phone'] = 'Telefon';
