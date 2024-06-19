@@ -721,33 +721,7 @@ function clear_utf($str)
 
 function mazovia_to_utf8($text)
 {
-    static $mazovia_regexp = array(
-        '/\x86/', // ą
-        '/\x92/', // ł
-        '/\x9e/', // ś
-        '/\x8d/', // ć
-        '/\xa4/', // ń
-        '/\xa6/', // ź
-        '/\x91/', // ę
-        '/\xa2/', // ó
-        '/\xa7/', // ż
-        '/\x8f/', // Ą
-        '/\x9c/', // Ł
-        '/\x98/', // Ś
-        '/\x95/', // Ć
-        '/\xa5/', // Ń
-        '/\xa0/', // Ź
-        '/\x90/', // Ę
-        '/\xa3/', // Ó
-        '/\xa1/', // Ż
-    );
-
-    static $utf8_codes = array(
-        'ą', 'ł', 'ś', 'ć', 'ń', 'ź', 'ę', 'ó', 'ż',
-        'Ą', 'Ł', 'Ś', 'Ć', 'Ń', 'Ź', 'Ę', 'Ó', 'Ż',
-    );
-
-    return preg_replace($mazovia_regexp, $utf8_codes, $text);
+    return Utils::mazovia_to_utf8($text);
 }
 
 function lastonline_date($timestamp)

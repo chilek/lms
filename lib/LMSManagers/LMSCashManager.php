@@ -55,7 +55,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 
         static $unique_source_accounts;
 
-        $file = preg_split('/\r?\n/', $contents);
+        $lines = preg_split('/\r?\n/', $contents);
         $patterns_cnt = isset($patterns) ? count($patterns) : 0;
         $ln = 0;
         $sum = array();
@@ -65,28 +65,44 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 
         $sourcefileid = null;
 
-        foreach ($file as $line) {
+        foreach ($lines as $line) {
+            $line = trim($line);
+
             $id = null;
             $count = 0;
             $ln++;
             $is_sum = false;
 
+            $auto_decoded_line = null;
+
             if ($patterns_cnt) {
                 foreach ($patterns as $idx => $pattern) {
-                    $theline = $line;
+                    $decoded_line = null;
 
-                    if (strtoupper($pattern['encoding']) != 'UTF-8') {
-                        if (strtoupper($pattern['encoding']) == 'MAZOVIA') {
-                            $theline = mazovia_to_utf8($theline);
-                        } else {
-                            $theline = @iconv($pattern['encoding'], 'UTF-8//TRANSLIT', $theline);
+                    if (isset($pattern['encoding'])) {
+                        $encoding = strtoupper($pattern['encoding']);
+                        if ($encoding != 'UTF-8') {
+                            if ($encoding == 'MAZOVIA') {
+                                $decoded_line = Utils::mazovia_to_utf8($line);
+                            } else {
+                                $decoded_line = @iconv($encoding, 'UTF-8//TRANSLIT', $line);
+                            }
+                        }
+                    } else {
+                        if (!isset($auto_decoded_line)) {
+                            $auto_decoded_line = Utils::str_utf8($line);
+                        }
+
+                        if ($auto_decoded_line !== false) {
+                            $decoded_line = $auto_decoded_line;
                         }
                     }
 
-                    if (preg_match($pattern['pattern'], $theline, $matches)) {
+                    if (preg_match($pattern['pattern'], $decoded_line, $matches)) {
                         break;
                     }
-                    if (isset($pattern['pattern_sum']) && preg_match($pattern['pattern_sum'], $theline, $matches)) {
+
+                    if (isset($pattern['pattern_sum']) && preg_match($pattern['pattern_sum'], $decoded_line, $matches)) {
                         $is_sum = true;
                         break;
                     }
@@ -94,16 +110,26 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 }
             }
 
+            if (!isset($decoded_line)) {
+                $decoded_line = $line;
+            }
+
+            $theline = $decoded_line;
+
             $hook_data = $LMS->executeHook(
                 'cashimport_error_before_submit',
-                compact("pattern", "count", "patterns_cnt", "error", "line", "theline", "ln")
+                compact("pattern", "count", "patterns_cnt", "error", "line", "theline", "decoded_line", "ln")
             );
             extract($hook_data);
 
             // line isn't matching to any pattern
             if ($count == $patterns_cnt) {
-                if (trim($line) != '') {
-                    $error['lines'][$ln] = $patterns_cnt == 1 ? $theline : $line;
+                if ($line != '') {
+                    if ($patterns_cnt > 1 && !isset($auto_decoded_line)) {
+                        $auto_decoded_line = Utils::str_utf8($line);
+                    }
+
+                    $error['lines'][$ln] = $patterns_cnt == 1 ? $decoded_line : (isset($auto_decoded_line) ? $auto_decoded_line : $line);
                 }
                 continue; // go to next line
             }
@@ -214,7 +240,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 }
 
                 foreach ($regexps as $regexp) {
-                    if (preg_match($regexp, $theline, $matches)) {
+                    if (preg_match($regexp, $decoded_line, $matches)) {
                         $id = $matches[1];
                         break;
                     }
@@ -243,7 +269,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 
             // seek invoice number
             if (!$id && !empty($pattern['invoice_regexp'])) {
-                if (preg_match($pattern['invoice_regexp'], $theline, $matches)) {
+                if (preg_match($pattern['invoice_regexp'], $decoded_line, $matches)) {
                     if (!isset($pattern['pinvoice_year'], $pattern['pinvoice_month'], $pattern['pinvoice_number'])
                         && !isset($matches['invoice_year'], $matches['invoice_month'], $matches['invoice_number'])) {
                         $id = $this->db->GetOne(
@@ -550,7 +576,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
             $comment = trim($comment);
 
             $hash = md5(
-                (empty($pattern['use_line_hash']) ? $time . $value . $customer . $comment : $theline)
+                (empty($pattern['use_line_hash']) ? $time . $value . $customer . $comment : $decoded_line)
                     . (!empty($pattern['line_idx_hash']) ? $ln : '')
                     . (!empty($pattern['filename_hash']) ? $filename : '')
             );

@@ -1345,4 +1345,74 @@ class Utils
             }
         }
     }
+
+    public static function mazovia_to_utf8($text)
+    {
+        static $mazovia_regexp = array(
+            '/\x86/', // ą
+            '/\x92/', // ł
+            '/\x9e/', // ś
+            '/\x8d/', // ć
+            '/\xa4/', // ń
+            '/\xa6/', // ź
+            '/\x91/', // ę
+            '/\xa2/', // ó
+            '/\xa7/', // ż
+            '/\x8f/', // Ą
+            '/\x9c/', // Ł
+            '/\x98/', // Ś
+            '/\x95/', // Ć
+            '/\xa5/', // Ń
+            '/\xa0/', // Ź
+            '/\x90/', // Ę
+            '/\xa3/', // Ó
+            '/\xa1/', // Ż
+        );
+
+        static $utf8_codes = array(
+            'ą', 'ł', 'ś', 'ć', 'ń', 'ź', 'ę', 'ó', 'ż',
+            'Ą', 'Ł', 'Ś', 'Ć', 'Ń', 'Ź', 'Ę', 'Ó', 'Ż',
+        );
+
+        return preg_replace($mazovia_regexp, $utf8_codes, $text);
+    }
+
+    private static function check_string_national_unicode_characters($text)
+    {
+        static $utf8_letters = array(
+            'ą', 'ł', 'ś', 'ć', 'ń', 'ź', 'ę', 'ó', 'ż',
+            'Ą', 'Ł', 'Ś', 'Ć', 'Ń', 'Ź', 'Ę', 'Ó', 'Ż',
+        );
+        static $utf8_letter_codes = array();
+        if (empty($utf8_letter_codes)) {
+            foreach ($utf8_letters as $utf8_letter) {
+                $utf8_letter_codes[bin2hex($utf8_letter)] = $utf8_letter;
+            }
+        }
+        for ($i = 0; $i < mb_strlen($text); $i++) {
+            $decoded_character = bin2hex(mb_substr($text, $i, 1));
+            if (strlen($decoded_character) > 2 && !isset($utf8_letter_codes[$decoded_character])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static function str_utf8($text)
+    {
+        foreach (array('WINDOWS-1250', 'ISO-8859-2',) as $encoding) {
+            $decoded_text = @iconv($encoding, 'UTF-8', $text);
+            if ($decoded_text !== false && self::check_string_national_unicode_characters($decoded_text)) {
+                return $decoded_text;
+            }
+        }
+
+        $decoded_text = self::mazovia_to_utf8($text);
+        if ($decoded_text !== false && self::check_string_national_unicode_characters($decoded_text)) {
+            return $decoded_text;
+        }
+
+        return false;
+    }
 }
