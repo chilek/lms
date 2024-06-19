@@ -1348,26 +1348,32 @@ class Utils
 
     public static function mazovia_to_utf8($text)
     {
-        static $character_map = array(
-            chr(0x86) => 'ą',
-            chr(0x92) => 'ł',
-            chr(0x9e) => 'ś',
-            chr(0x8d) => 'ć',
-            chr(0xa4) => 'ń',
-            chr(0xa6) => 'ź',
-            chr(0x91) => 'ę',
-            chr(0xa2) => 'ó',
-            chr(0xa7) => 'ż',
-            chr(0x8f) => 'Ą',
-            chr(0x9c) => 'Ł',
-            chr(0x98) => 'Ś',
-            chr(0x95) => 'Ć',
-            chr(0xa5) => 'Ń',
-            chr(0xa0) => 'Ź',
-            chr(0x90) => 'Ę',
-            chr(0xa3) => 'Ó',
-            chr(0xa1) => 'Ż',
+        static $mazovia_code_to_utf8_letter_map = array(
+            0x86 => 'ą',
+            0x92 => 'ł',
+            0x9e => 'ś',
+            0x8d => 'ć',
+            0xa4 => 'ń',
+            0xa6 => 'ź',
+            0x91 => 'ę',
+            0xa2 => 'ó',
+            0xa7 => 'ż',
+            0x8f => 'Ą',
+            0x9c => 'Ł',
+            0x98 => 'Ś',
+            0x95 => 'Ć',
+            0xa5 => 'Ń',
+            0xa0 => 'Ź',
+            0x90 => 'Ę',
+            0xa3 => 'Ó',
+            0xa1 => 'Ż',
         );
+        static $character_map = array();
+        if (empty($character_map)) {
+            foreach ($mazovia_code_to_utf8_letter_map as $mazovia_code => $utf8_letter) {
+                $character_map[chr($mazovia_code)] = $utf8_letter;
+            }
+        }
 
         $decoded_text = '';
 
