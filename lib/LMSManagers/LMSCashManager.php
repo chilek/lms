@@ -98,6 +98,10 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                         }
                     }
 
+                    if (!isset($decoded_line)) {
+                        $decoded_line = $line;
+                    }
+
                     if (preg_match($pattern['pattern'], $decoded_line, $matches)) {
                         break;
                     }
