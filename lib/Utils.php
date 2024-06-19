@@ -1348,33 +1348,43 @@ class Utils
 
     public static function mazovia_to_utf8($text)
     {
-        static $mazovia_regexp = array(
-            '/\x86/', // ą
-            '/\x92/', // ł
-            '/\x9e/', // ś
-            '/\x8d/', // ć
-            '/\xa4/', // ń
-            '/\xa6/', // ź
-            '/\x91/', // ę
-            '/\xa2/', // ó
-            '/\xa7/', // ż
-            '/\x8f/', // Ą
-            '/\x9c/', // Ł
-            '/\x98/', // Ś
-            '/\x95/', // Ć
-            '/\xa5/', // Ń
-            '/\xa0/', // Ź
-            '/\x90/', // Ę
-            '/\xa3/', // Ó
-            '/\xa1/', // Ż
+        static $character_map = array(
+            chr(0x86) => 'ą',
+            chr(0x92) => 'ł',
+            chr(0x9e) => 'ś',
+            chr(0x8d) => 'ć',
+            chr(0xa4) => 'ń',
+            chr(0xa6) => 'ź',
+            chr(0x91) => 'ę',
+            chr(0xa2) => 'ó',
+            chr(0xa7) => 'ż',
+            chr(0x8f) => 'Ą',
+            chr(0x9c) => 'Ł',
+            chr(0x98) => 'Ś',
+            chr(0x95) => 'Ć',
+            chr(0xa5) => 'Ń',
+            chr(0xa0) => 'Ź',
+            chr(0x90) => 'Ę',
+            chr(0xa3) => 'Ó',
+            chr(0xa1) => 'Ż',
         );
 
-        static $utf8_codes = array(
-            'ą', 'ł', 'ś', 'ć', 'ń', 'ź', 'ę', 'ó', 'ż',
-            'Ą', 'Ł', 'Ś', 'Ć', 'Ń', 'Ź', 'Ę', 'Ó', 'Ż',
-        );
+        $decoded_text = '';
 
-        return preg_replace($mazovia_regexp, $utf8_codes, $text);
+        if (strlen($text) != mb_strlen($text)) {
+            return false;
+        }
+
+        for ($i = 0; $i < strlen($text); $i++) {
+            $character = $text[$i];
+            if (isset($character_map[$character])) {
+                $decoded_text .= $character_map[$character];
+            } else {
+                $decoded_text .= $character;
+            }
+        }
+
+        return $decoded_text;
     }
 
     private static function check_string_national_unicode_characters($text)
@@ -1411,8 +1421,8 @@ class Utils
         $decoded_text = self::mazovia_to_utf8($text);
         if ($decoded_text !== false && self::check_string_national_unicode_characters($decoded_text)) {
             return $decoded_text;
+        } else {
+            return $text;
         }
-
-        return false;
     }
 }
