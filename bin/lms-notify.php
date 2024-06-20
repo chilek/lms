@@ -1400,7 +1400,7 @@ if (empty($types) || in_array('contracts', $types)) {
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
         WHERE "
-            . ($expiration_type == 'assignments' ? '1 = 1' : 'NOT EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type < 0)')
+            . ($expiration_type == 'assignments' ? '1 = 1' : 'NOT EXISTS (SELECT 1 FROM documents d2 JOIN documentcontents dc2 ON dc2.docid = d2.id WHERE d2.reference = d.id AND d2.type < 0 AND dc2.todate > d.dateto)')
             . $customer_status_condition
             . $customer_type_condition
             . " AND d.dateto >= ? AND d.dateto <= ?"
