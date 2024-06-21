@@ -2,200 +2,246 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<FORM method="post" action="?m=netadd" name="netadd" id="netadd">
-<p style="display: none;">
-<INPUT type="submit" class="hiddenbtn">
-</p>
-<TABLE class="lmsbox">
-	<COLGROUP>
-		<COL style="width: 2%;">
-		<COL style="width: 48%;">
-		<COL style="width: 2%;">
-		<COL style="width: 48%;">
-	</COLGROUP>
-	<THEAD>
-	<TR>
-		<TD class="bold nobr">
-			<IMG src="img/network.gif" alt="">
-			{trans("Network name:")}
-		</TD>
-		<TD class="bold" colspan="3">
-			<INPUT type="text" size="23" name="netadd[name]" value="{$netadd.name}" required {tip trigger="name" bold=1}>
-		</TD>
-	</TR>
-	</THEAD>
-	<TBODY>
-	<tr>
-		<td class="nobr">
-			<img src="img/ip.gif" alt="">
-			<strong>{trans("Address/prefix:")}</strong>
-		</td>
-		<td>
-			<input type="text" size="23" name="netadd[address]" value="{$netadd.address}" required
-				{tip text="Enter IP address and select mask" trigger="address"}>
-			/
-			<select size="1" name="netadd[prefix]" {tip text='Choose prefix'}>
-				{section name=prefixlist loop=$prefixlist.id}
-					<option value="{$prefixlist.id[prefixlist]}"
-						{if $prefixlist.id[prefixlist] == $netadd.prefix} selected{/if}
-						>{$prefixlist.value[prefixlist]}</option>
-				{/section}
-			</select>
-		</td>
-		<td class="nobr" rowspan="2">
-			<img src="img/dhcp.gif" alt="">
-			<strong>{trans("DHCP range:")}</strong>
-		</td>
-		<td rowspan="2">
-			<input type="text" size="23" name="netadd[dhcpstart]" value="{$netadd.dhcpstart}"
-				{tip text="Enter beginning of DHCP range (optional)" trigger="dhcpstart"}>
-			<br>
-			<input type="text" size="23" name="netadd[dhcpend]" value="{$netadd.dhcpend}"
-				{tip text="Enter end of DHCP range (optional)" trigger="dhcpend"}>
-		</td>
-	</tr>
-	<TR>
-		<TD class="bold nobr"><IMG src="img/mac.gif" alt=""> {trans("Interface:")}</TD>
-		<TD colspan="3">
-			<INPUT type="text" size="23" name="netadd[interface]" value="{$netadd.interface}" {tip text="Enter network interface (optional)" trigger="interface"}>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold">
-			{icon name="vlan" label="VLAN"}
-		</TD>
-		<TD colspan="3">
-			<select name="netadd[vlanid]" class="lms-ui-advanced-select">
-				<option value="">{trans("— none —")}</option>
-				{foreach $vlanlist as $v}
-					<option value="{$v.id}">({$v.vlanid}){if $v.description}, {$v.description|trunescape:45}{/if}{if $v.customerid}, {$v.customername|escape} (#{$v.customerid}){/if}</option>
-				{/foreach}
-			</select>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr"><IMG src="img/gateway.gif" alt=""> Gateway:</TD>
-		<TD><INPUT type="text" size="23" name="netadd[gateway]" value="{$netadd.gateway}" {tip text="Enter gateway address (optional)" trigger="gateway"}></TD>
-		<TD class="bold nobr"><IMG src="img/dns.gif" alt=""> {trans("DNS servers:")}</TD>
-		<TD>
-			<INPUT type="text" size="23" name="netadd[dns]" value="{$netadd.dns}" {tip text="Enter primary DNS address (optional)" trigger="dns"}><BR>
-			<INPUT type="text" size="23" name="netadd[dns2]" value="{$netadd.dns2}" {tip text="Enter secondary DNS address (optional)" trigger="dns2"}>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr"><IMG src="img/wins.gif" alt=""> {trans("WINS server:")}</TD>
-		<TD><INPUT type="text" size="23" name="netadd[wins]" value="{$netadd.wins}" {tip text="Enter WINS address (optional)" trigger="wins"}></TD>
-		<TD class="bold nobr"><IMG src="img/node.gif" alt=""> {trans("Domain:")}</TD>
-		<TD><INPUT type="text" size="23" name="netadd[domain]" value="{$netadd.domain}" {tip text="Enter network domain (optional)" trigger="domain"}></TD>
-	</TR>
-	<tr>
-		<TD class="bold nobr">
-			<img src="img/customer.gif" alt=""> {trans("Customer:")}
-		</td>
-		<TD colspan="3">
-			{customerlist form="netadd" customers=$customers selected=$netadd.ownerid version=2
-				selectname="netadd[customerid]" inputname="netadd[ownerid]" selecttip="Assign network to customer"
-				inputtip="Enter customer ID (optional)"}
-		</td>
-	</tr>
-	<TR>
-		<TD class="bold nobr">
-				<IMG SRC="img/network.gif" ALT="">
-				{trans("Public network:")}
-		</TD>
-		<TD colspan="3">
-			<select size="1" name="netadd[pubnetid]" {tip text="Assign public network (optional)"}>
-				<option value="0">{trans("— select public network —")}</option>
-				{foreach $networks as $net}
-				{if $net.id neq $network.id}
-				<option value="{$net.id}" {if $netadd.pubnetid == $net.id} selected{/if}>{$net.name} ({$net.address}/{$net.prefix})</option>
-				{/if}
-				{/foreach}
-			</select>
-		</TD>
-	</TR>
-	<tr>
-		<TD class="bold nobr"><img src="img/host.gif" alt="">{trans("Host:")}</td>
-		<td colspan="3">
-			{* if only one host was created then select him *}
-			{if !empty($hostlist) && count($hostlist) == 1}
-				{$netadd.hostid = $hostlist[0]['id']}
-			{/if}
+<h1>{$layout.pagetitle}</h1>
 
-			<select size="1" name="netadd[hostid]" {tip text="Select host" trigger="hostid"}>
-				<option value="0">{trans("— none —")}</option>
-				{foreach $hostlist as $host}
-				<option value="{$host.id}"{if $host.id == $netadd.hostid} selected{/if}>{$host.name}</option>
-				{/foreach}
-			</select>
-		</td>
-	</tr>
-	<TR>
-		<TD class="bold nobr">
-			<img src="img/node.gif" alt=""> {trans("SNAT IP:")}
-		</TD>
-		<TD colspan="3">
-			<INPUT type="text" name="netadd[snat]" value="{$netadd.snat}" {tip text="Enter network snat address(optional)" trigger="snat"}>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
-			<IMG SRC="img/netdev.gif" ALT=""> {trans("Type:")}
-		</TD>
-		<TD class="nobr" colspan="3">
-			{foreach $_SESSIONTYPES as $idx => $sessiontype}
-			<label>
-				<INPUT TYPE="checkbox" NAME="netadd[authtype][{$idx}]" value="{$idx}" id="authtype{$idx}" {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"}{if $netadd.authtype & $idx} checked{/if}>
-				{$sessiontype.label}
-			</label>
-			{/foreach}
-		</TD>
-	</TR>
-	<tr>
-		<td class="bold nobr">
-			<label for="allassignable">
+<form method="post" action="?m=netadd" name="netadd" id="netadd">
+	<input type="submit" class="hiddenbtn">
+</form>
+
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 2%;">
+		<col style="width: 48%;">
+		<col style="width: 2%;">
+		<col style="width: 48%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<td class="nobr">
 				{icon name="network"}
-				{trans("All assignable")}
-			</label>
-		</td>
-		<td colspan="3" class="nobr">
-			<input type="checkbox" name="networkdata[allassignable]" value="1" id="allassignable"
-				{tip text="Check if network and broadcast addresses are assignable" trigger="allassignable"}
-				{if !empty($network.allassignable)} checked{/if}>
-		</td>
-	</tr>
-	<TR>
-		<TD colspan="2">
-			<TABLE class="lmsbox-inner">
-				<COLGROUP>
-					<COL style="width: 1%;">
-					<COL style="width: 99%;">
-				</COLGROUP>
-				<TBODY>
-				<TR>
-					<TD class="nobr">
-						<IMG src="img/info1.gif" alt="">
-					</TD>
-					<TD>
-						<TEXTAREA name="netadd[notes]" cols="50" rows="5" {tip text="Enter notes (optional)"}>{$netadd.notes}</TEXTAREA>
-					</TD>
-				</TR>
-				</TBODY>
-			</TABLE>
-		</TD>
-		<TD colspan="2">
-		</TD>
-	</TR>
-	<TR>
-		<TD class="buttons" colspan="4">
-			<A href="javascript:document.netadd.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=netlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
-</FORM>
+				<strong>{trans("Network name")}</strong>
+			</td>
+			<td colspan="3">
+				<input type="text" size="23" name="netadd[name]" value="{$netadd.name}" form="netadd"
+					required {tip trigger="name" bold=1}>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td class="nobr">
+				{icon name="network"}
+				<strong>{trans("Address/prefix")}</strong>
+			</td>
+			<td>
+				<input type="text" size="23" name="netadd[address]" value="{$netadd.address}" form="netadd"
+					required
+					{tip text="Enter IP address and select mask" trigger="address"}>
+				/
+				<select size="1" name="netadd[prefix]" form="netadd"
+					{tip text='Choose prefix'}>
+					{section name=prefixlist loop=$prefixlist.id}
+						<option value="{$prefixlist.id[prefixlist]}"
+							{if $prefixlist.id[prefixlist] == $netadd.prefix} selected{/if}
+							>{$prefixlist.value[prefixlist]}</option>
+					{/section}
+				</select>
+			</td>
+			<td class="nobr" rowspan="2">
+				{icon name="hosting"}
+				<strong>{trans("DHCP range")}</strong>
+			</td>
+			<td rowspan="2">
+				<input type="text" size="23" name="netadd[dhcpstart]" value="{$netadd.dhcpstart}" form="netadd"
+					{tip text="Enter beginning of DHCP range (optional)" trigger="dhcpstart"}>
+				<br>
+				<input type="text" size="23" name="netadd[dhcpend]" value="{$netadd.dhcpend}" form="netadd"
+					{tip text="Enter end of DHCP range (optional)" trigger="dhcpend"}>
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">
+				{icon name="hardware"}
+				<strong>{trans("Interface")}</strong>
+			</td>
+			<td colspan="3">
+				<input type="text" size="23" name="netadd[interface]" value="{$netadd.interface}" form="netadd"
+					{tip text="Enter network interface (optional)" trigger="interface"}>
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">
+				{icon name="vlan"}
+				<strong>{trans("VLAN")}</strong>
+			</td>
+			<td colspan="3">
+				<select name="netadd[vlanid]" class="lms-ui-advanced-select" form="netadd">
+					<option value="">{trans("— none —")}</option>
+					{foreach $vlanlist as $v}
+						<option value="{$v.id}">({$v.vlanid}){if $v.description}, {$v.description|trunescape:45}{/if}{if $v.customerid}, {$v.customername|escape} (#{$v.customerid}){/if}</option>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">
+				{icon name="routing"}
+				<strong>{trans("Gateway")}</strong>
+			</td>
+			<td>
+				<input type="text" size="23" name="netadd[gateway]" value="{$netadd.gateway}" form="netadd"
+					{tip text="Enter gateway address (optional)" trigger="gateway"}>
+			</td>
+			<td class="nobr">
+				{icon name="hosting"}
+				<strong>{trans("DNS servers")}</strong>
+			</td>
+			<td>
+				<input type="text" size="23" name="netadd[dns]" value="{$netadd.dns}" form="netadd"
+					{tip text="Enter primary DNS address (optional)" trigger="dns"}>
+				<br>
+				<input type="text" size="23" name="netadd[dns2]" value="{$netadd.dns2}" form="netadd"
+					{tip text="Enter secondary DNS address (optional)" trigger="dns2"}>
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">
+				{icon name="hosting"}
+				<strong>{trans("WINS server")}</strong>
+			</td>
+			<td>
+				<input type="text" size="23" name="netadd[wins]" value="{$netadd.wins}" form="netadd"
+					{tip text="Enter WINS address (optional)" trigger="wins"}>
+			</td>
+			<td class="nobr">
+				{icon name="node"}
+				<strong>{trans("Domain")}</strong>
+			</td>
+			<td>
+				<input type="text" size="23" name="netadd[domain]" value="{$netadd.domain}" form="netadd"
+					{tip text="Enter network domain (optional)" trigger="domain"}>
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">
+				{icon name="customer"}
+				<strong>{trans("Customer")}</strong>
+			</td>
+			<td colspan="3">
+				{customerlist form="netadd" customers=$customers selected=$netadd.ownerid version=2
+					selectname="netadd[customerid]" inputname="netadd[ownerid]" selecttip="Assign network to customer"
+					inputtip="Enter customer ID (optional)"
+					form="netadd"}
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">
+				{icon name="network"}
+				<strong>{trans("Public network")}</strong>
+			</td>
+			<td colspan="3">
+				<select size="1" name="netadd[pubnetid]" form="netadd"
+					{tip text="Assign public network (optional)"}>
+					<option value="0">{trans("— select public network —")}</option>
+					{foreach $networks as $net}
+						{if $net.id neq $network.id}
+							<option value="{$net.id}" {if $netadd.pubnetid == $net.id} selected{/if}>{$net.name} ({$net.address}/{$net.prefix})</option>
+						{/if}
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">
+				{icon name="hosting"}
+				<strong>{trans("Host")}</strong>
+			</td>
+			<td colspan="3">
+				{* if only one host was created then select him *}
+				{if !empty($hostlist) && count($hostlist) == 1}
+					{$netadd.hostid = $hostlist[0]['id']}
+				{/if}
+
+				<select size="1" name="netadd[hostid]" form="netadd"
+					{tip text="Select host" trigger="hostid"}>
+					<option value="0">{trans("— none —")}</option>
+					{foreach $hostlist as $host}
+						<option value="{$host.id}"{if $host.id == $netadd.hostid} selected{/if}>{$host.name}</option>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">
+				{icon name="node"}
+				<strong>{trans("SNAT IP")}</strong>
+			</td>
+			<td colspan="3">
+				<input type="text" name="netadd[snat]" value="{$netadd.snat}" form="netadd"
+					{tip text="Enter network snat address(optional)" trigger="snat"}>
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">
+				{icon name="netdev"}
+				<strong>{trans("Type")}</strong>
+			</td>
+			<td class="nobr" colspan="3">
+				{foreach $_SESSIONTYPES as $idx => $sessiontype}
+					<label {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"}>
+						<input type="checkbox" name="netadd[authtype][{$idx}]" value="{$idx}" id="authtype{$idx}"
+							form="netadd"
+							{if $netadd.authtype & $idx} checked{/if}>
+						{$sessiontype.label}
+					</label>
+				{/foreach}
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">
+				<label for="allassignable">
+					{icon name="network"}
+					<strong>{trans("All assignable")}</strong>
+				</label>
+				{hint content="Check if network and broadcast addresses are assignable"}
+			</td>
+			<td colspan="3">
+				<input type="checkbox" name="networkdata[allassignable]" value="1" id="allassignable" form="netadd"
+					{tip trigger="allassignable"}
+					{if !empty($network.allassignable)} checked{/if}>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<table class="lmsbox-inner">
+					<colgroup>
+						<col style="width: 1%;">
+						<col style="width: 99%;">
+					</colgroup>
+					<tbody>
+						<tr>
+							<td>
+								{icon name="info"}
+							</td>
+							<td>
+								<textarea name="netadd[notes]" cols="50" rows="5" form="netadd"
+									{tip text="Enter notes (optional)"}>{$netadd.notes}</textarea>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+			<td colspan="2">
+			</td>
+		</tr>
+		<tr>
+			<td class="lms-ui-box-buttons" colspan="4">
+				{button accesskey="S" onclick="document.netadd.submit();" icon="save" label="Submit"}
+				{button href="?m=netlist" icon="cancel" label="Cancel"}
+			</td>
+		</tr>
+	</tbody>
+</table>
 <script>
 
 	$(function() {
