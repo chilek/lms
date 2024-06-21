@@ -658,6 +658,8 @@ version 28-git (????-??-??):
     in window [chilan]
   - login timeout specific for current user (hacky code but should work) [chilan]
   - enhancement: new helpdesk queue rights: ticket watcher SMS and e-mail notifications [chilan]
+  - improvement: 'phpui.usable_network_broadcast_addresses' with 'false' as default value allows to enable assigning
+    network broadcast addresses to nodes and network devices (when set to 'true' value) [chilan]
 
 version 27.0 (2021-08-20):
 
