@@ -139,6 +139,19 @@
 			<INPUT type="text" name="netadd[snat]" value="{$netadd.snat}" {tip text="Enter network snat address(optional)" trigger="snat"}>
 		</TD>
 	</TR>
+	<tr>
+		<td class="bold nobr">
+			<label for="allassignable">
+				{icon name="network"}
+				{trans("All assignable")}
+			</label>
+		</td>
+		<td colspan="3" class="nobr">
+			<input type="checkbox" name="networkdata[allassignable]" value="1" id="allassignable"
+				{tip text="Check if network and broadcast addresses are assignable" trigger="allassignable"}
+				{if !empty($network.allassignable)} checked{/if}>
+		</td>
+	</tr>
 	<TR>
 		<TD class="bold nobr">
 			<IMG SRC="img/netdev.gif" ALT=""> {trans("Type:")}
