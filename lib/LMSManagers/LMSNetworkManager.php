@@ -457,7 +457,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
     public function IsIPValid($ip, $checkbroadcast = false, $ignoreid = 0)
     {
-        $usable_all_addresses = ConfigHelper::checkConfig('phpui.usable_network_all_addresses');
+        $network_all_addresses_assignable = ConfigHelper::checkConfig('phpui.network_all_addresses_assignable');
 
         $ip = ip_long($ip);
         return $this->db->GetOne(
@@ -465,7 +465,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             WHERE id <> ?
                 AND (
                     (
-                        (mask = ? OR allassignable = 1 OR 1 = ' . ($usable_all_addresses ? '1' : '0') . '
+                        (mask = ? OR allassignable = 1 OR 1 = ' . ($network_all_addresses_assignable ? '1' : '0') . '
                         AND address <= ?
                         AND broadcast(address, inet_aton(mask)) >= ?)
                     ) OR (
