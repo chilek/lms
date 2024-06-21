@@ -142,7 +142,7 @@ if (isset($_POST['nodedata'])) {
         $error['ipaddr'] = trans('Node IP address is required!');
     } else if (!check_ip($nodedata['ipaddr'])) {
         $error['ipaddr'] = trans('Incorrect node IP address!');
-    } else if (!$LMS->IsIPValid($nodedata['ipaddr'])) {
+    } else if (!$LMS->IsIPValid($nodedata['ipaddr'], ConfigHelper::checkConfig('phpui.usable_network_broadcast_addresses'))) {
         $error['ipaddr'] = trans('Specified IP address doesn\'t overlap with any network!');
     } else {
         if (empty($nodedata['netid'])) {
@@ -163,7 +163,7 @@ if (isset($_POST['nodedata'])) {
     if ($nodedata['ipaddr_pub']!='0.0.0.0' && $nodedata['ipaddr_pub']!='') {
         if (!check_ip($nodedata['ipaddr_pub'])) {
             $error['ipaddr_pub'] = trans('Incorrect node IP address!');
-        } else if (!$LMS->IsIPValid($nodedata['ipaddr_pub'])) {
+        } else if (!$LMS->IsIPValid($nodedata['ipaddr_pub'], ConfigHelper::checkConfig('phpui.usable_network_broadcast_addresses'))) {
             $error['ipaddr_pub'] = trans('Specified IP address doesn\'t overlap with any network!');
         } else if (!$LMS->IsIPFree($nodedata['ipaddr_pub'])) {
             $error['ipaddr_pub'] = trans('Specified IP address is in use!');

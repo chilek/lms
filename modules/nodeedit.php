@@ -120,7 +120,7 @@ if (isset($_POST['nodeedit'])) {
             $error['netid'] = trans('Selected network is already assigned to customer $a ($b)!', $net['customername'], $net['ownerid']);
         }
     } elseif (check_ip($nodeedit['ipaddr'])) {
-        if ($LMS->IsIPValid($nodeedit['ipaddr'])) {
+        if ($LMS->IsIPValid($nodeedit['ipaddr'], ConfigHelper::checkConfig('phpui.usable_network_broadcast_addresses'))) {
             if (empty($nodeedit['netid'])) {
                 $nodeedit['netid'] = $DB->GetOne(
                     'SELECT id FROM networks WHERE INET_ATON(?) & INET_ATON(mask) = address ORDER BY id LIMIT 1',
@@ -148,7 +148,7 @@ if (isset($_POST['nodeedit'])) {
 
     if ($nodeedit['ipaddr_pub'] != '0.0.0.0' && $nodeedit['ipaddr_pub'] != '') {
         if (check_ip($nodeedit['ipaddr_pub'])) {
-            if ($LMS->IsIPValid($nodeedit['ipaddr_pub'])) {
+            if ($LMS->IsIPValid($nodeedit['ipaddr_pub'], ConfigHelper::checkConfig('phpui.usable_network_broadcast_addresses'))) {
                 $ip = $LMS->GetNodePubIPByID($nodeedit['id']);
                 if ($ip != $nodeedit['ipaddr_pub'] && !$LMS->IsIPFree($nodeedit['ipaddr_pub'])) {
                     $error['ipaddr_pub'] = trans('Specified IP address is in use!');
