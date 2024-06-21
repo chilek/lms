@@ -5908,3 +5908,6 @@ $_LANG['No email address is selected while customer email notification is checke
 $_LANG['No phone number is selected while customer sms notification is checked!'] = 'Nie wybrano numeru telefonu, podczas gdy powiadomienie SMS klienta zostało zaznaczone!';
 
 $_LANG['No action selected!'] = 'Nie wybrano czynności!';
+
+$_LANG['All assignable'] = 'Przydział wszystkich';
+$_LANG['Check if network and broadcast addresses are assignable'] = 'Zaznacz, jeśli ma być możliwy przydział adresów sieci i rozgłoszeniowego';

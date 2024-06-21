@@ -133,10 +133,14 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             'authtype' => $netadd['authtype'],
             'snat' => !empty($netadd['snat']) ? $netadd['snat'] : null,
             'pubnetid' => empty($netadd['pubnetid']) ? null : $netadd['pubnetid'],
+            'allassignable' => empty($netadd['allassignable']) ? 0 : 1,
         );
-        if ($this->db->Execute('INSERT INTO networks (name, address, mask, interface, gateway,
-				dns, dns2, domain, wins, dhcpstart, dhcpend, notes, vlanid, hostid, authtype, snat, pubnetid)
-				VALUES (?, inet_aton(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, inet_aton(?), ?)', array_values($args))) {
+        if ($this->db->Execute(
+            'INSERT INTO networks (name, address, mask, interface, gateway,
+            dns, dns2, domain, wins, dhcpstart, dhcpend, notes, vlanid, hostid, authtype, snat, pubnetid, allassignable)
+            VALUES (?, inet_aton(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, inet_aton(?), ?, ?)',
+            array_values($args)
+        )) {
             $netid = $this->db->GetLastInsertID('networks');
             if (!$netid) {
                 return false;
@@ -206,15 +210,36 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     public function GetNetworks($with_disabled = true)
     {
         if ($with_disabled == false) {
-            return $this->db->GetAll('SELECT id, name, inet_ntoa(address) AS address, 
-				address AS addresslong, mask, mask2prefix(inet_aton(mask)) AS prefix, disabled,
-				pubnetid
-				FROM networks WHERE disabled=0 ORDER BY name');
+            return $this->db->GetAll(
+                'SELECT
+                    id,
+                    name,
+                    inet_ntoa(address) AS address,
+                    address AS addresslong,
+                    mask,
+                    mask2prefix(inet_aton(mask)) AS prefix,
+                    disabled,
+                    pubnetid,
+                    allassignable
+                FROM networks
+                WHERE disabled = 0
+                ORDER BY name'
+            );
         } else {
-            return $this->db->GetAll('SELECT id, name, inet_ntoa(address) AS address, 
-				address AS addresslong, mask, mask2prefix(inet_aton(mask)) AS prefix, disabled,
-				pubnetid
-				FROM networks ORDER BY name');
+            return $this->db->GetAll(
+                'SELECT
+                    id,
+                    name,
+                    inet_ntoa(address) AS address,
+                    address AS addresslong,
+                    mask,
+                    mask2prefix(inet_aton(mask)) AS prefix,
+                    disabled,
+                    pubnetid,
+                    allassignable
+                FROM networks
+                ORDER BY name'
+            );
         }
     }
 
@@ -432,21 +457,30 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
     public function IsIPValid($ip, $checkbroadcast = false, $ignoreid = 0)
     {
+        $usable_all_addresses = ConfigHelper::checkConfig('phpui.usable_network_all_addresses');
+
         $ip = ip_long($ip);
         return $this->db->GetOne(
             'SELECT 1 FROM networks
-			WHERE id <> ? AND ((mask = ? AND address <= ?) OR (mask <> ? AND address < ?))
-			AND ((mask <> ? AND broadcast(address, inet_aton(mask)) >' . ($checkbroadcast ? '=' : '') . ' ?)
-			    OR (mask = ? AND broadcast(address, inet_aton(mask)) >= ?))',
+            WHERE id <> ?
+                AND (
+                    (
+                        (mask = ? OR allassignable = 1 OR 1 = ' . ($usable_all_addresses ? '1' : '0') . '
+                        AND address <= ?
+                        AND broadcast(address, inet_aton(mask)) >= ?)
+                    ) OR (
+                        mask <> ?
+                        AND address < ?
+                        AND broadcast(address, inet_aton(mask)) >' . ($checkbroadcast ? '=' : '') . ' ?)
+                    )
+                )',
             array(
                 intval($ignoreid),
                 '255.255.255.254',
                 $ip,
-                '255.255.255.254',
                 $ip,
                 '255.255.255.254',
                 $ip,
-                '255.255.255.254',
                 $ip,
             )
         );
@@ -551,12 +585,17 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             'authtype' => $networkdata['authtype'],
             'snat' => $networkdata['snatlong'],
             'pubnetid' => empty($networkdata['pubnetid']) ? null : $networkdata['pubnetid'],
+            'allassignable' => empty($networkdata['allassignable']) ? 0 : 1,
             SYSLOG::RES_NETWORK => $networkdata['id']
         );
 
-        $res = $this->db->Execute('UPDATE networks SET name=?, address=inet_aton(?), 
+        $res = $this->db->Execute(
+            'UPDATE networks SET name=?, address=inet_aton(?),
             mask=?, interface=?, vlanid=?, gateway=?, dns=?, dns2=?, domain=?, wins=?,
-            dhcpstart=?, dhcpend=?, notes=?, hostid=?, authtype=?, snat=?, pubnetid=? WHERE id=?', array_values($args));
+            dhcpstart=?, dhcpend=?, notes=?, hostid=?, authtype=?, snat=?, pubnetid=?, allassignable = ?
+            WHERE id=?',
+            array_values($args)
+        );
 
         if ($res && $this->syslog) {
             $this->syslog->AddMessage(SYSLOG::RES_NETWORK, SYSLOG::OPER_UPDATE, $args);
@@ -772,18 +811,22 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     {
         global $LMS;
 
-        $network = $this->db->GetRow('SELECT no.ownerid, ne.id, ne.name,
+        $network = $this->db->GetRow(
+            'SELECT no.ownerid, ne.id, ne.name,
                 vl.vlanid, vl.description AS vlandescription,
                 vl.customerid AS vlancustomerid,
                 inet_ntoa(ne.address) AS address,
                 ne.address AS addresslong, ne.mask, ne.interface, ne.gateway, ne.dns, ne.dns2,
                 ne.domain, ne.wins, ne.dhcpstart, ne.dhcpend, ne.hostid, ne.authtype, inet_ntoa(ne.snat) AS snat,
                 mask2prefix(inet_aton(ne.mask)) AS prefix, ne.notes, ne.pubnetid,
-                inet_ntoa(broadcast(ne.address, inet_aton(ne.mask))) AS broadcast
+                inet_ntoa(broadcast(ne.address, inet_aton(ne.mask))) AS broadcast,
+                allassignable
             FROM networks ne
             LEFT JOIN nodes no ON (no.netid = ne.id AND no.ipaddr = 0 AND no.ipaddr_pub = 0)
             LEFT JOIN vlans vl ON (vl.id = ne.vlanid)
-            WHERE ne.id = ?', array($id));
+            WHERE ne.id = ?',
+            array($id)
+        );
 
         if (!empty($network['ownerid'])) {
             $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);

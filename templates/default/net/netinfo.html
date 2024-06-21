@@ -276,6 +276,25 @@
 		</TD>
 	</TR>
 	{/if}
+	{if !empty($network.allassignable) || $unlockedit}
+		<tr>
+			<td class="bold nobr">
+				<label for="allassignable">
+					{icon name="network"}
+					{trans("All assignable")}
+				</label>
+			</td>
+			<td colspan="3" class="nobr">
+				{if $unlockedit}
+					<input type="checkbox" name="networkdata[allassignable]" value="1" id="allassignable"
+						{tip text="Check if network and broadcast addresses are assignable" trigger="allassignable"}
+						{if !empty($network.allassignable)} checked{/if}>
+				{else}
+					{if !empty($network.allassignable)}{icon name="checked"}{/if}
+				{/if}
+			</td>
+		</tr>
+	{/if}
 	{if $network.notes || $unlockedit}
 	<TR>
 		<TD colspan="2">

@@ -1641,6 +1641,7 @@ CREATE TABLE networks (
   hostid int(11) DEFAULT NULL,
   authtype tinyint(1) NOT NULL DEFAULT '0',
   pubnetid int(11) DEFAULT NULL,
+  allassignable tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY  (id),
   UNIQUE KEY name (name),
   UNIQUE KEY address (address, hostid),
@@ -4369,4 +4370,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024050700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024062100');
