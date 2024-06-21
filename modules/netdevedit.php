@@ -437,7 +437,7 @@ switch ($action) {
             $error['ipaddr'] = trans('IP address is required!');
         } elseif (!check_ip($nodeipdata['ipaddr'])) {
             $error['ipaddr'] = trans('Incorrect IP address!');
-        } elseif (!$LMS->IsIPValid($nodeipdata['ipaddr'], ConfigHelper::checkConfig('phpui.usable_network_broadcast_addresses'))) {
+        } elseif (!$LMS->IsIPValid($nodeipdata['ipaddr'])) {
             $error['ipaddr'] = trans('Specified address does not belong to any network!');
         } else {
             if (empty($nodeipdata['netid'])) {
@@ -458,7 +458,7 @@ switch ($action) {
         if ($nodeipdata['ipaddr_pub'] != '0.0.0.0' && $nodeipdata['ipaddr_pub'] != '') {
             if (!check_ip($nodeipdata['ipaddr_pub'])) {
                 $error['ipaddr_pub'] = trans('Incorrect IP address!');
-            } elseif (!$LMS->IsIPValid($nodeipdata['ipaddr_pub'], ConfigHelper::checkConfig('phpui.usable_network_broadcast_addresses'))) {
+            } elseif (!$LMS->IsIPValid($nodeipdata['ipaddr_pub'])) {
                 $error['ipaddr_pub'] = trans('Specified address does not belongs to any network!');
             } elseif (!$LMS->IsIPFree($nodeipdata['ipaddr_pub'])) {
                 $error['ipaddr_pub'] = trans('Specified IP address is in use!');
@@ -556,7 +556,7 @@ switch ($action) {
             $error['ipaddr'] = trans('IP address is required!');
         } elseif (!check_ip($nodeipdata['ipaddr'])) {
             $error['ipaddr'] = trans('Incorrect IP address!');
-        } elseif (!$LMS->IsIPValid($nodeipdata['ipaddr'], ConfigHelper::checkConfig('phpui.usable_network_broadcast_addresses'))) {
+        } elseif (!$LMS->IsIPValid($nodeipdata['ipaddr'])) {
             $error['ipaddr'] = trans('Specified address does not belong to any network!');
         } else {
             if (empty($nodeipdata['netid'])) {
@@ -577,7 +577,7 @@ switch ($action) {
 
         if ($nodeipdata['ipaddr_pub'] != '0.0.0.0' && $nodeipdata['ipaddr_pub'] != '') {
             if (check_ip($nodeipdata['ipaddr_pub'])) {
-                if ($LMS->IsIPValid($nodeipdata['ipaddr_pub'], ConfigHelper::checkConfig('phpui.usable_network_broadcast_addresses'))) {
+                if ($LMS->IsIPValid($nodeipdata['ipaddr_pub'])) {
                     $ip = $LMS->GetNodePubIPByID($nodeipdata['id']);
                     if ($ip != $nodeipdata['ipaddr_pub'] && !$LMS->IsIPFree($nodeipdata['ipaddr_pub'])) {
                         $error['ipaddr_pub'] = trans('Specified IP address is in use!');
