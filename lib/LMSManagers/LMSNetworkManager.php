@@ -465,13 +465,13 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             WHERE id <> ?
                 AND (
                     (
-                        (mask = ? OR allassignable = 1 OR 1 = ' . ($network_all_addresses_assignable ? '1' : '0') . '
+                        (mask = ? OR allassignable = 1 OR 1 = ' . ($network_all_addresses_assignable ? '1' : '0') . ')
                         AND address <= ?
-                        AND broadcast(address, inet_aton(mask)) >= ?)
+                        AND broadcast(address, inet_aton(mask)) >= ?
                     ) OR (
                         mask <> ?
                         AND address < ?
-                        AND broadcast(address, inet_aton(mask)) >' . ($checkbroadcast ? '=' : '') . ' ?)
+                        AND broadcast(address, inet_aton(mask)) >' . ($checkbroadcast ? '=' : '') . ' ?
                     )
                 )',
             array(
