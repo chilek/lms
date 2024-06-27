@@ -85,8 +85,10 @@
 			return;
 		});
 
-		$('[name="cnote[cdate]"]').change(function() {
-			updateDocumentFlags();
+		$('[name="cnote[cdate]"]').change(function(e, init) {
+			if (typeof(init) === 'undefined' || !init) {
+				updateDocumentFlags();
+			}
 			if ($("#copy-cdate").prop('checked')) {
 				var date = $(this).datepicker("getDate");
 				$('input[type="text"][name="cnote[sdate]').datepicker("setDate", date);
@@ -94,13 +96,13 @@
 			}
 		});
 
-		$('#copy-cdate').change(function() {
+		$('#copy-cdate').change(function(e, init) {
 			var checked = $(this).prop('checked');
 			$('input[type="text"][name="cnote[sdate]"]').datepicker("option", "disabled", checked);
 			if (checked) {
-				$('[name="cnote[cdate]"]').change();
+				$('[name="cnote[cdate]"]').trigger('change', typeof(init) !== 'undefined' && init);
 			}
-		}).change();
+		}).trigger('change', true);
 	});
 
 	$('body').on('change', '.template-selector', function() {

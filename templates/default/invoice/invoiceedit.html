@@ -307,8 +307,10 @@
 	$(function() {
 		$('form[name="setcustomer"] [name="invoice[number]"]').focus();
 
-		$('[name="invoice[cdate]"]').change(function() {
-			updateDocumentFlags();
+		$('[name="invoice[cdate]"]').change(function(e, init) {
+			if (typeof(init) === 'undefined' || !init) {
+				updateDocumentFlags();
+			}
 			if ($("#copy-cdate").prop('checked')) {
 				var date = $(this).datepicker("getDate");
 				$('input[type="text"][name="invoice[sdate]').datepicker("setDate", date);
@@ -316,13 +318,13 @@
 			}
 		});
 
-		$('#copy-cdate').change(function() {
+		$('#copy-cdate').change(function(e, init) {
 			var checked = $(this).prop('checked');
 			$('input[type="text"][name="invoice[sdate]"]').datepicker("option", "disabled", checked);
 			if (checked) {
-				$('[name="invoice[cdate]"]').change();
+				$('[name="invoice[cdate]"]').trigger('change', typeof(init) !== 'undefined' && init);
 			}
-		}).change();
+		}).trigger('change' true);
 	});
 
 </script>
