@@ -53,6 +53,8 @@ switch ($_RELOAD_TYPE) {
         if ((isset($_GET['setreloads']) && isset($_POST['hosts'])) || count($hosts) == 1) {
             $SMARTY->display('header.html');
 
+            echo '<script> show_pagecontent(); </script>';
+
             echo '<H1>'.$layout['pagetitle'].'</H1>';
 
             $execlist = explode(';', $_EXECCMD);
