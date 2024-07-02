@@ -25,7 +25,7 @@ $this->BeginTrans();
 
 if (!$this->ResourceExists('netlinks.linecount', LMSDB::RESOURCE_TYPE_COLUMN)) {
     if ($this->ResourceExists('netlinks.lines', LMSDB::RESOURCE_TYPE_COLUMN)) {
-        $this->Execute("ALTER TABLE netlinks CHANGE COLUMN lines linecount smallint DEFAULT NULL");
+        $this->Execute("ALTER TABLE netlinks CHANGE COLUMN `lines` linecount smallint DEFAULT NULL");
     } else {
         $this->Execute("ALTER TABLE netlinks ADD COLUMN linecount smallint DEFAULT NULL");
     }

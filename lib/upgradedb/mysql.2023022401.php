@@ -25,7 +25,7 @@ $this->BeginTrans();
 
 if (!$this->ResourceExists('netlinks.routetype', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("ALTER TABLE netlinks ADD COLUMN routetype smallint DEFAULT NULL");
-    $this->Execute("ALTER TABLE netlinks ADD COLUMN lines smallint DEFAULT NULL");
+    $this->Execute("ALTER TABLE netlinks ADD COLUMN `lines` smallint DEFAULT NULL");
 }
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2023022401', 'dbversion'));
