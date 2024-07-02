@@ -811,6 +811,8 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     {
         global $LMS;
 
+        $network_all_addresses_assignable = ConfigHelper::checkConfig('phpui.network_all_addresses_assignable');
+
         $network = $this->db->GetRow(
             'SELECT no.ownerid, ne.id, ne.name,
                 vl.vlanid, vl.description AS vlandescription,
@@ -852,14 +854,14 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                 FROM vnodes
                 JOIN networks net ON net.id = vnodes.netid
                 WHERE netid = ?
-                    AND ((net.mask <> ? AND ipaddr > ? AND ipaddr < ?) OR (net.mask = ? AND ipaddr >= ? AND ipaddr <= ?))
+                    AND ((net.mask <> ? AND ipaddr > ? AND ipaddr < ?) OR ((net.mask = ? OR net.allassignable = 1 OR 1 = ' . ($network_all_addresses_assignable ? '1' : '0') . ') AND ipaddr >= ? AND ipaddr <= ?))
             )
             UNION ALL
             (
                 SELECT vnodes.id, vnodes.name, ipaddr_pub AS ipaddr, ownerid, netdev
                 FROM vnodes
                 JOIN networks net ON ipaddr_pub & INET_ATON(net.mask) = net.address
-                WHERE ((net.mask <> ? AND ipaddr_pub > ? AND ipaddr_pub < ?) OR (net.mask = ? AND ipaddr_pub >= ? AND ipaddr_pub <= ?))
+                WHERE ((net.mask <> ? AND ipaddr_pub > ? AND ipaddr_pub < ?) OR ((net.mask = ? OR net.allassignable = 1 OR 1 = ' . ($network_all_addresses_assignable ? '1' : '0') . ') AND ipaddr_pub >= ? AND ipaddr_pub <= ?))
             )',
             'ipaddr',
             array(
@@ -934,9 +936,9 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                 } else {
                     $network['nodes']['id'][$i] = 0;
 
-                    if (!$prefix_31 && $longip == $network['addresslong']) {
+                    if (!$prefix_31 && !$network_all_addresses_assignable && empty($network['allassignable']) && $longip == $network['addresslong']) {
                         $network['nodes']['name'][$i] = '<b>NETWORK</b>';
-                    } elseif (!$prefix_31 && $network['nodes']['address'][$i] == $network['broadcast']) {
+                    } elseif (!$prefix_31 && !$network_all_addresses_assignable && empty($network['allassignable']) && $network['nodes']['address'][$i] == $network['broadcast']) {
                         $network['nodes']['name'][$i] = '<b>BROADCAST</b>';
                     } elseif ($network['nodes']['address'][$i] == $network['gateway']) {
                         $network['nodes']['name'][$i] = '<b>GATEWAY</b>';
