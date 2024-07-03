@@ -2136,7 +2136,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     SELECT DISTINCT a.customerid FROM vcustomerassignments a
                     JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
                     WHERE e.userid = lms_current_user()
-                ) e ON (e.customerid = d.customerid)
+                ) e ON (e.customerid = d.customerid)'
+                . (!empty($notsent) ?
+                    ' LEFT JOIN (
+                        SELECT DISTINCT c.id AS customerid, 1 AS sendinvoices FROM customeraddressview c
+                        JOIN customercontacts cc ON cc.customerid = c.id
+                        WHERE invoicenotice = 1 AND cc.type & ' . (CONTACT_INVOICES | CONTACT_DISABLED) . ' = ' . CONTACT_INVOICES . '
+                    ) i ON i.customerid = d.customerid'
+                    : '') . '
                 WHERE e.customerid IS NULL AND '
                 . ($proforma ? 'd.type = ' . DOC_INVOICE_PRO
                     : '(d.type = '.DOC_CNOTE.(($cat != 'cnotes') ? ' OR d.type = '.DOC_INVOICE : '').')')
@@ -2145,6 +2152,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     ' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
 				SELECT 1 FROM vcustomerassignments WHERE customergroupid IN (' . implode(',', $group) . ')
 					AND customerid = d.customerid)' : '')
+                . (empty($notsent) ? '' : ' AND d.senddate = 0 AND i.sendinvoices = 1')
                 . (!empty($splitpayment) ? ' AND d.flags & ' . DOC_FLAG_SPLIT_PAYMENT . ' > 0' : '')
                 . (!empty($withreceipt) ? ' AND d.flags & ' . DOC_FLAG_RECEIPT . ' > 0' : '')
                 . (!empty($telecomservice) ? ' AND d.flags & ' . DOC_FLAG_TELECOM_SERVICE . ' > 0' : '')
@@ -2196,7 +2204,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 ' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
 			SELECT 1 FROM vcustomerassignments WHERE customergroupid IN (' . implode(',', $group) . ')
 						AND customerid = d.customerid)' : '')
-            . (empty($notsent) ? '' : ' AND d.senddate = 0')
+            . (empty($notsent) ? '' : ' AND d.senddate = 0 AND i.sendinvoices = 1')
             . (!empty($splitpayment) ? ' AND d.flags & ' . DOC_FLAG_SPLIT_PAYMENT . ' > 0' : '')
             . (!empty($withreceipt) ? ' AND d.flags & ' . DOC_FLAG_RECEIPT . ' > 0' : '')
             . (!empty($telecomservice) ? ' AND d.flags & ' . DOC_FLAG_TELECOM_SERVICE . ' > 0' : '')
