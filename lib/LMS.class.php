@@ -5348,6 +5348,10 @@ class LMS
                     $headers['Cc'] = $notify_email;
                 }
 
+                if (!empty($blind_notify_email)) {
+                    $headers['Bcc'] = $blind_notify_email;
+                }
+
                 if (isset($mail_format) && $mail_format == 'html') {
                     $headers['X-LMS-Format'] = 'html';
                     $content_type = 'text/html';

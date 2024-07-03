@@ -186,6 +186,7 @@ if ($backup || $archive) {
     $mail_body = ConfigHelper::getConfig('sendinvoices.mail_body', ConfigHelper::getConfig('mail.sendinvoice_mail_body'));
     $mail_format = ConfigHelper::getConfig('sendinvoices.mail_format', 'text');
     $notify_email = ConfigHelper::getConfig('sendinvoices.notify_email', '', true);
+    $blind_notify_email = ConfigHelper::getConfig('sendinvoices.blind_notify_email', '', true);
     $reply_email = ConfigHelper::getConfig('sendinvoices.reply_email', '', true);
     $add_message = ConfigHelper::checkConfig('sendinvoices.add_message');
     $message_attachments = ConfigHelper::checkConfig('sendinvoices.message_attachments');
@@ -588,6 +589,7 @@ if (!empty($docs)) {
             'reply_email',
             'mdn_email',
             'notify_email',
+            'blind_notify_email',
             'quiet',
             'test',
             'add_message',
