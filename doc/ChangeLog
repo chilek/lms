@@ -661,6 +661,8 @@ version 28-git (????-??-??):
   - improvement: 'phpui.network_all_addresses_assignable' with 'false' as default value allows to assign network
     and broadcast addresses to nodes and network devices; similar new property for networks
     controls it more specific [chilan]
+  - enhancement: 'sendinvoices.blind_notify_email' allow to set 'Bcc' mail headers in posts with attached
+    invoices [chilan]
 
 version 27.0 (2021-08-20):
 
