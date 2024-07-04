@@ -426,6 +426,7 @@ $mail_content_type = $mail_format == 'html' ? 'text/html' : 'text/plain';
 $customergroups = ConfigHelper::getConfig($config_section . '.customergroups', '', true);
 $ignore_customer_consents = ConfigHelper::checkConfig($config_section . '.ignore_customer_consents');
 $ignore_contact_flags = ConfigHelper::checkConfig($config_section . '.ignore_contact_flags');
+$assignment_settlement_update = ConfigHelper::checkConfig($config_section . '.assignment_settlement_update', true);
 
 $required_phone_contact_flags = CONTACT_MOBILE | ($ignore_contact_flags ? 0 : CONTACT_NOTIFICATIONS);
 $checked_phone_contact_flags = $required_phone_contact_flags | CONTACT_DISABLED;
@@ -4075,7 +4076,7 @@ if (!empty($intersect)) {
                                     if ($SYSLOG) {
                                         $SYSLOG->NewTransaction('lms-notify.php');
                                     }
-                                    if ($datefrom = $DB->GetOne(
+                                    if ($assignment_settlement_update && $datefrom = $DB->GetOne(
                                         "SELECT datefrom FROM assignments WHERE customerid = ? AND tariffid IS NULL AND liabilityid IS NULL",
                                         array($cid)
                                     )) {
