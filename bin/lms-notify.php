@@ -3774,6 +3774,9 @@ if (!empty($intersect)) {
                                         }
 
                                         if (!$debug) {
+                                            if ($SYSLOG) {
+                                                $SYSLOG->NewTransaction('lms-notify.php');
+                                            }
                                             $LMS->CustomerassignmentAdd(
                                                 array(
                                                     'customergroupid' => $customergroupid,
@@ -4135,6 +4138,9 @@ if (!empty($intersect)) {
                                         }
 
                                         if (!$debug) {
+                                            if ($SYSLOG) {
+                                                $SYSLOG->NewTransaction('lms-notify.php');
+                                            }
                                             $LMS->CustomerassignmentDelete(
                                                 array(
                                                     'customergroupid' => $customergroupid,
