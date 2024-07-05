@@ -5,56 +5,53 @@
 <script>
 
 $(function() {
-	$("#resolve").change(function() {
-                var stateelem = $("#state");
-                var ownerelem = $("#owner");
-                if ($(this).prop("checked")) {
-                        stateelem.attr("prev-state", stateelem.val()).val({$smarty.const.RT_RESOLVED});
-                        ownerelem.attr("prev-state", ownerelem.val()).val({$layout.logid});
-                } else {
-                        var state_prev_state = stateelem.attr("prev-state");
-                        if (state_prev_state) {
-                                stateelem.val(state_prev_state);
-                        }
-                        var owner_prev_state = ownerelem.attr("prev-state");
-                        if (owner_prev_state) {
-                                ownerelem.val(owner_prev_state);
-                        }
-                }
-                updateAdvancedSelects(stateelem);
-                updateAdvancedSelects(ownerelem);
-        });
+    var assignToMeElem = $("#assign-to-me");
+    var ownerElem = $("#owner");
+    var stateElem = $("#state");
 
-        $("#queue-selection").change(function() {
-                {if !empty($reset_ticket_state)}
-                        $('#state option:eq("{$smarty.const.RT_NEW}")').prop("selected", true);
-                        updateAdvancedSelects(state);
-                        $("#resolve").prop("checked", false);
-                {/if}
-                xajax_queue_changed($(this).val(), $("#rtverifiers select").val());
-        });
+    $("#resolve").change(function() {
+        if ($(this).prop("checked")) {
+            stateElem.attr("prev-state", stateElem.val()).val({$smarty.const.RT_RESOLVED});
+            ownerElem.attr("prev-state", ownerElem.val()).val({$layout.logid});
+        } else {
+            var state_prev_state = stateElem.attr("prev-state");
+            if (state_prev_state) {
+                stateElem.val(state_prev_state);
+            }
+            var owner_prev_state = ownerElem.attr("prev-state");
+            if (owner_prev_state) {
+                ownerElem.val(owner_prev_state);
+            }
+        }
+        updateAdvancedSelects(stateElem);
+        updateAdvancedSelects(ownerElem);
+    });
 
-        $("#state").change(function() {
-                $('#resolve').prop('checked', $(this).val() == {$smarty.const.RT_RESOLVED});
-        });
+    $("#queue-selection").change(function() {
+        {if !empty($reset_ticket_state)}
+            $('#state option:eq("{$smarty.const.RT_NEW}")').prop("selected", true);
+            updateAdvancedSelects(stateElem);
+            $("#resolve").prop("checked", false);
+        {/if}
+        xajax_queue_changed($(this).val(), $("#rtverifiers select").val());
+    });
 
-        $("#owner").change(function() {
-                if ($(this).val == {$layout.logid}) {
-	                $('#assign-to-me').prop('checked', false);
-                } else {
-                        $('#assign-to-me').prop('checked', true);
-                }
-        });
+    $("#state").change(function() {
+        $('#resolve').prop('checked', $(this).val() == {$smarty.const.RT_RESOLVED});
+    });
 
-        $("#assign-to-me").change(function() {
-                var select = $('#owner');
-                if ($(this).prop('checked')) {
-                        select.val($(this).attr('data-old-userid', select.val()).attr('data-userid'));
-                } else {
-                        select.val($(this).attr('data-old-userid'));
-                }
-		updateAdvancedSelects(select);
-        });
+    ownerElem.change(function() {
+        assignToMeElem.prop('checked', $(this).val() == assignToMeElem.attr('data-userid'));
+    });
+
+    assignToMeElem.change(function() {
+        if ($(this).prop('checked')) {
+            ownerElem.val($(this).attr('data-old-userid', ownerElem.val()).attr('data-userid'));
+        } else {
+            ownerElem.val($(this).attr('data-old-userid'));
+        }
+        updateAdvancedSelects(ownerElem);
+    });
 });
 
 </script>
