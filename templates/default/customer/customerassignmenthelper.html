@@ -398,9 +398,9 @@
 																						{if $period.modifiable}
 																							{textformat assign="elemid"}value-{$schemaid}-{iconv('UTF-8', 'ASCII//TRANSLIT', preg_replace('/[ _]/', '-', $label))}-{$item.single.assignmentid}-{$key}{/textformat}
 																							<input id="{$elemid}" type="text" name="{$variable_prefix}[values][{$schemaid}][{$label}][{$item.single.assignmentid}][{$key}]" class="format-3f"
-																									value="{if isset($variables.values[$schemaid][$label][$item.single.assignmentid][$key])}{$variables.values[$schemaid][$label][$item.single.assignmentid][$key]}{else}{Localisation::smartFormatNumber($period.value)}{/if}"
+																									value="{if isset($variables.values[$schemaid][$label][$item.single.assignmentid][$key])}{$variables.values[$schemaid][$label][$item.single.assignmentid][$key]}{else}{Localisation::smartFormatNumber($period.value, true)}{/if}"
 																									{tip trigger=$elemid}>
-																							<i class="lms-ui-icon-restore" data-restore-selector="#{$elemid}" data-restore-value="{Localisation::smartFormatNumber($period.value)}"></i>
+																							<i class="lms-ui-icon-restore" data-restore-selector="#{$elemid}" data-restore-value="{Localisation::smartFormatNumber($period.value, true)}"></i>
 																						{else}
 																							{if $period.value == ''}
 																								-
@@ -698,7 +698,7 @@
 								<td style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
 									<input type="text" size="8" id="discount_value"
 										name="{$variable_prefix}[discount]"
-										value="{if $variables.pdiscount != 0}{Localisation::formatNumber($variables.pdiscount)}{else}{if $variables.vdiscount != 0}{Localisation::smartFormatNumber($variables.vdiscount)}{/if}{/if}"
+										value="{if $variables.pdiscount != 0}{Localisation::formatNumber($variables.pdiscount)}{else}{if $variables.vdiscount != 0}{Localisation::smartFormatNumber($variables.vdiscount, true)}{/if}{/if}"
 										{if !empty($variables.target_price_trigger)} style="display: none;"{/if}
 										{tip text="Enter discount percentage or amount" trigger="discount"}>
 									<input type="text" size="8" id="target_price"

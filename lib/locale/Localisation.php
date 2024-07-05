@@ -42,7 +42,9 @@ class Localisation
     private static $uiStrings = array();
 
     private static $numberFormatter = null;
+    private static $editableNumberFormatter = null;
     private static $numberSmartFormatter = null;
+    private static $editableNumberSmartFormatter = null;
 
     public static function init()
     {
@@ -248,13 +250,29 @@ class Localisation
 
             $fmt = new NumberFormatter($locale, NumberFormatter::DECIMAL);
             $fmt->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 2);
+            $fmt->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 3);
+            $fmt->setSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL, '');
+
+            self::$langDefs[self::$systemLanguage]['editable_number_smart_formatter'] = $fmt;
+
+            $fmt = new NumberFormatter($locale, NumberFormatter::DECIMAL);
+            $fmt->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 2);
             $fmt->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 2);
 
             self::$langDefs[self::$systemLanguage]['number_formatter'] = $fmt;
+
+            $fmt = new NumberFormatter($locale, NumberFormatter::DECIMAL);
+            $fmt->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 2);
+            $fmt->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 2);
+            $fmt->setSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL, '');
+
+            self::$langDefs[self::$systemLanguage]['editable_number_formatter'] = $fmt;
         }
 
         self::$numberSmartFormatter = self::$langDefs[self::$systemLanguage]['number_smart_formatter'];
+        self::$editableNumberSmartFormatter = self::$langDefs[self::$systemLanguage]['editable_number_smart_formatter'];
         self::$numberFormatter = self::$langDefs[self::$systemLanguage]['number_formatter'];
+        self::$editableNumberFormatter = self::$langDefs[self::$systemLanguage]['editable_number_formatter'];
     }
 
     public static function getCurrentCurrency()
@@ -435,7 +453,7 @@ class Localisation
         }
     }
 
-    public static function smartFormatNumber($number)
+    public static function smartFormatNumber($number, $editable = false)
     {
         if (is_string($number)) {
             $number = floatval($number);
@@ -443,10 +461,14 @@ class Localisation
         if ($number ** -1 === -INF) {
             $number = 0;
         }
-        return self::$numberSmartFormatter->format($number);
+        if ($editable) {
+            return self::$editableNumberSmartFormatter->format($number);
+        } else {
+            return self::$numberSmartFormatter->format($number);
+        }
     }
 
-    public static function formatNumber($number)
+    public static function formatNumber($number, $editable = false)
     {
         if (is_string($number)) {
             $number = floatval($number);
@@ -454,7 +476,11 @@ class Localisation
         if ($number ** -1 === -INF) {
             $number = 0;
         }
-        return self::$numberFormatter->format($number);
+        if ($editable) {
+            return self::$editableNumberFormatter->format($number);
+        } else {
+            return self::$numberFormatter->format($number);
+        }
     }
 
     public static function trans()
