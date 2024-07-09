@@ -354,7 +354,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             SYSLOG::RES_ADDRESS => empty($voipaccountdata['address_id']) ? null : $voipaccountdata['address_id'],
             'description' => isset($voipaccountdata['description']) ? Utils::removeInsecureHtml($voipaccountdata['description']) : '',
             'extid' => isset($voipaccountdata['extid']) ? strval($voipaccountdata['extid']) : null,
-            'serviceproviderid' => isset($voipaccountdata['serviceproviderid']) ? intval($voipaccountdata['serviceproviderid']) : null,
+            'serviceproviderid' => empty($voipaccountdata['serviceproviderid']) ? null : intval($voipaccountdata['serviceproviderid']),
         );
 
         $voip_account_inserted = $DB->Execute(
