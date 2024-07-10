@@ -45,25 +45,29 @@
 			{/if}
 		{/tab_header_cell}
 		{tab_header_cell}
-			<A id="newtransferformanchor" rel="external" href="?m=customertransferform&id={$balancelist.customerid}&type={LMSTcpdfTransferForm::VALUE_ASSIGNMENTS}">{trans("Transfer form:")}</A>
-			<SELECT name="newtransferform" onchange="javascript:new_transfer_form_type_changed()" form="addbalance-form">
-				<OPTION value="{LMSTcpdfTransferForm::VALUE_ASSIGNMENTS}">{trans("<!transferform>assignments")}</OPTION>
-				<OPTION value="{LMSTcpdfTransferForm::VALUE_BALANCE}">{trans("<!transferform>balance")}</OPTION>
-				<OPTION value="{LMSTcpdfTransferForm::VALUE_CUSTOM}">{trans("<!transferform>custom")}</OPTION>
-			</SELECT>
+			<a id="newtransferformanchor" rel="external" class="lms-ui-button" {if $customerinfo.deleted} disabled{/if}
+				href="?m=customertransferform&id={$balancelist.customerid}&type={LMSTcpdfTransferForm::VALUE_ASSIGNMENTS}">{trans("Transfer form")}</a>
+			<select name="newtransferform" onchange="javascript:new_transfer_form_type_changed()" form="addbalance-form"
+				{if $customerinfo.deleted} disabled{/if}>
+				<option value="{LMSTcpdfTransferForm::VALUE_ASSIGNMENTS}">{trans("<!transferform>assignments")}</option>
+				<option value="{LMSTcpdfTransferForm::VALUE_BALANCE}">{trans("<!transferform>balance")}</option>
+				<option value="{LMSTcpdfTransferForm::VALUE_CUSTOM}">{trans("<!transferform>custom")}</option>
+			</select>
 			<input type="text" name="newtransferformcustomvalue" pattern="[0-9]+(\.[0-9]{literal}{1,2}{/literal})?" size="5" style="display: none;" form="addbalance-form">
-			{if  ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management')}
-				<A id="newdocanchor" href="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{trans("New document:")}</A>
-				<SELECT name="newdocument" onchange="javascript:new_doc_type_changed(this.options[this.selectedIndex].value)" form="addbalance-form">
-					<OPTION value="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{trans("invoice")}</OPTION>
-					<OPTION value="?m=invoicenew&action=init&proforma=1&customerid={$balancelist.customerid}">{trans("pro forma invoice")}</OPTION>
-					<OPTION value="?m=receiptadd&type=in&action=init&customerid={$balancelist.customerid}">{trans("cash-in receipt")}</OPTION>
-					<OPTION value="?m=receiptadd&type=out&action=init&customerid={$balancelist.customerid}">{trans("cash-out receipt")}</OPTION>
-					<OPTION value="?m=noteadd&action=init&customerid={$balancelist.customerid}">{trans("debit note")}</OPTION>
-				</SELECT>
+			{if ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management')}
+				<a id="newdocanchor" class="lms-ui-button" {if $customerinfo.deleted} disabled{/if}
+					ref="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{trans("New document")}</a>
+				<select name="newdocument" onchange="javascript:new_doc_type_changed(this.options[this.selectedIndex].value)" form="addbalance-form"
+					{if $customerinfo.deleted} disabled{/if}>
+					<option value="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{trans("invoice")}</option>
+					<option value="?m=invoicenew&action=init&proforma=1&customerid={$balancelist.customerid}">{trans("pro forma invoice")}</option>
+					<option value="?m=receiptadd&type=in&action=init&customerid={$balancelist.customerid}">{trans("cash-in receipt")}</option>
+					<option value="?m=receiptadd&type=out&action=init&customerid={$balancelist.customerid}">{trans("cash-out receipt")}</option>
+					<option value="?m=noteadd&action=init&customerid={$balancelist.customerid}">{trans("debit note")}</option>
+				</select>
 			{/if}
 			{if  ConfigHelper::checkPrivilege('finances_management')}
-				<A href="javascript:show_list()">{trans("Show All:")}</A>
+				<A href="javascript:show_list()">{trans("Show All")}</A>
 				<input type="hidden" value="{$balancelist.customerid}" name="customer">
 				<SELECT name="showlist" id="showlistselect" form="addbalance-form">
 					{if $limit}<OPTION value="list">{trans("transactions")}</OPTION>{/if}
@@ -935,8 +939,15 @@
 			.click(function() {
 				transfer_balance_dialog.open();
 			});
+
+		$('#newtransferformanchor,#newdocanchor').click(function(e) {
+			if ($(this).is('.disabled')) {
+				e.preventDefault();
+				e.stopImmediatePropagation();
+			}
+		});
 	});
 
-	new_doc_type_changed($("[name=newdocument]").val());
+	new_doc_type_changed($('[name="newdocument"]').val());
 
 </script>

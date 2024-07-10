@@ -3398,7 +3398,9 @@ $_LANG['cash-in receipt'] = 'KP';
 $_LANG['cash-out receipt'] = 'KW';
 $_LANG['cash receipts'] = 'dok. kasowe';
 $_LANG['New document:'] = 'Nowy dokument:';
+$_LANG['New document'] = 'Nowy dokument';
 $_LANG['Show All:'] = 'Pokaż wszystkie:';
+$_LANG['Show All'] = 'Pokaż wszystkie';
 $_LANG['transactions'] = 'transakcje';
 $_LANG['debit notes'] = 'noty obciążeniowe';
 $_LANG['Debit Note Edit: $a'] = 'Edycja noty: $a';
@@ -5015,6 +5017,7 @@ $_LANG['Enter network device name or ip address'] = 'Wprowadź nazwę urządzeni
 $_LANG['Event is assigned to users which already have assigned an event in the same time: $a!'] = 'Zdarzenie jest przypisane do użytkowników, którzy posiadają już przypisane zdarzenia w tym samym czasie: $a!';
 
 $_LANG['Transfer form:'] = 'Formularz przelewu:';
+$_LANG['Transfer form'] = 'Formularz przelewu';
 $_LANG['<!transferform>assignments'] = 'zobowiązania';
 $_LANG['<!transferform>balance'] = 'saldo';
 $_LANG['<!transferform>custom'] = 'dowolne';
