@@ -939,13 +939,6 @@
 			.click(function() {
 				transfer_balance_dialog.open();
 			});
-
-		$('#newtransferformanchor,#newdocanchor').click(function(e) {
-			if ($(this).is('.disabled')) {
-				e.preventDefault();
-				e.stopImmediatePropagation();
-			}
-		});
 	});
 
 	new_doc_type_changed($('[name="newdocument"]').val());
