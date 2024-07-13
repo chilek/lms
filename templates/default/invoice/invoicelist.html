@@ -167,8 +167,8 @@
 						{trans("Send to email")}
 						<select size="1" name="sendtoemail">
 							<option value="">{trans("- any -")}</option>
-							<option value="notsent"{if $listdata.sendtoemail == 'notsent'} selected{/if}>{trans("not sent to email")}</option>
-							<option value="withoutemailconsent"{if $listdata.sendtoemail == 'withoutemailconsent'} selected{/if}>{trans("without send to email consent")}</option>
+							<option value="notsent"{if $listdata.sendtoemail == 'notsent'} selected{/if}>{trans("not sent")}</option>
+							<option value="withoutconsent"{if $listdata.sendtoemail == 'withoutconsent'} selected{/if}>{trans("without consent")}</option>
 						</select>
 					</label>
 					<label>
