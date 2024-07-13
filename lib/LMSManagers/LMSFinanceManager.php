@@ -2029,7 +2029,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     public function GetInvoiceList(array $params)
     {
         extract($params);
-        foreach (array('search', 'cat', 'group', 'numberplan', 'division', 'exclude', 'hideclosed', 'notsent', 'page', 'customer') as $var) {
+        foreach (array('search', 'cat', 'group', 'numberplan', 'division', 'exclude', 'hideclosed', 'sendtoemail', 'page', 'customer') as $var) {
             if (!isset(${$var})) {
                 ${$var} = null;
             }
@@ -2137,7 +2137,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
                     WHERE e.userid = lms_current_user()
                 ) e ON (e.customerid = d.customerid)'
-                . (!empty($notsent) ?
+                . (!empty($sendtoemail) ?
                     ' LEFT JOIN (
                         SELECT DISTINCT c.id AS customerid, 1 AS sendinvoices FROM customeraddressview c
                         JOIN customercontacts cc ON cc.customerid = c.id
@@ -2152,7 +2152,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     ' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
 				SELECT 1 FROM vcustomerassignments WHERE customergroupid IN (' . implode(',', $group) . ')
 					AND customerid = d.customerid)' : '')
-                . (empty($notsent) ? '' : ' AND d.senddate = 0 AND i.sendinvoices = 1')
+                . (empty($sendtoemail) || $sendtoemail != 'notsent' ? '' : ' AND d.senddate = 0 AND i.sendinvoices = 1')
+                . (empty($sendtoemail) || $sendtoemail != 'withoutemailconsent' ? '' : ' AND i.sendinvoices IS NULL')
                 . (!empty($splitpayment) ? ' AND d.flags & ' . DOC_FLAG_SPLIT_PAYMENT . ' > 0' : '')
                 . (!empty($withreceipt) ? ' AND d.flags & ' . DOC_FLAG_RECEIPT . ' > 0' : '')
                 . (!empty($telecomservice) ? ' AND d.flags & ' . DOC_FLAG_TELECOM_SERVICE . ' > 0' : '')
@@ -2187,7 +2188,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
             LEFT JOIN taxes ON a.taxid = taxes.id
 			LEFT JOIN (
-			SELECT DISTINCT c.id AS customerid, 1 AS sendinvoices FROM customeraddressview c
+				SELECT DISTINCT c.id AS customerid, 1 AS sendinvoices FROM customeraddressview c
 				JOIN customercontacts cc ON cc.customerid = c.id
 				WHERE invoicenotice = 1 AND cc.type & ' . (CONTACT_INVOICES | CONTACT_DISABLED) . ' = ' . CONTACT_INVOICES . '
 			) i ON i.customerid = d.customerid
@@ -2204,7 +2205,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 ' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
 			SELECT 1 FROM vcustomerassignments WHERE customergroupid IN (' . implode(',', $group) . ')
 						AND customerid = d.customerid)' : '')
-            . (empty($notsent) ? '' : ' AND d.senddate = 0 AND i.sendinvoices = 1')
+            . (empty($sendtoemail) || $sendtoemail != 'notsent' ? '' : ' AND d.senddate = 0 AND i.sendinvoices = 1')
+            . (empty($sendtoemail) || $sendtoemail != 'withoutemailconsent' ? '' : ' AND i.sendinvoices IS NULL')
             . (!empty($splitpayment) ? ' AND d.flags & ' . DOC_FLAG_SPLIT_PAYMENT . ' > 0' : '')
             . (!empty($withreceipt) ? ' AND d.flags & ' . DOC_FLAG_RECEIPT . ' > 0' : '')
             . (!empty($telecomservice) ? ' AND d.flags & ' . DOC_FLAG_TELECOM_SERVICE . ' > 0' : '')

@@ -131,12 +131,11 @@ $SESSION->save('ilg', $g);
 $SESSION->save('ilge', $ge);
 
 if (isset($_POST['search'])) {
-    $ns = isset($_POST['notsent']);
+    $stm = $_POST['sendtoemail'];
 } else {
-    $SESSION->restore('ilns', $ns);
+    $SESSION->restore('ilstm', $stm);
 }
-$SESSION->save('ilns', $ns);
-
+$SESSION->save('ilstm', $stm);
 
 if (isset($_POST['search'])) {
     $sp = isset($_POST['splitpayment']);
@@ -180,7 +179,7 @@ if ($c == 'cdate' && $s && preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $s)) {
 $total = intval($LMS->GetInvoiceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
     'numberplan' => $np, 'division' => $div, 'hideclosed' => $h, 'order' => $o, 'proforma' => $proforma,
     'splitpayment' => $sp, 'withreceipt' => $wr, 'telecomservice' => $ts, 'relatedentity' => $re,
-    'notsent' => $ns, 'count' => true, 'customer' => $cid)));
+    'sendtoemail' => $stm, 'count' => true, 'customer' => $cid)));
 
 $limit = intval(ConfigHelper::getConfig('phpui.invoicelist_pagelimit', 100));
 if (isset($_GET['page'])) {
@@ -201,7 +200,7 @@ $SESSION->save('ilpage', $page);
 $invoicelist = $LMS->GetInvoiceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
     'numberplan' => $np, 'division' => $div, 'hideclosed' => $h, 'order' => $o, 'limit' => $limit, 'offset' => $offset,
     'proforma' => $proforma, 'splitpayment' => $sp, 'withreceipt' => $wr, 'telecomservice' => $ts, 'relatedentity' => $re,
-    'notsent' => $ns, 'count' => false, 'customer' => $cid));
+    'sendtoemail' => $stm, 'count' => false, 'customer' => $cid));
 
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
@@ -209,7 +208,7 @@ $SESSION->restore('ilc', $listdata['cat']);
 $SESSION->restore('ils', $listdata['search']);
 $SESSION->restore('ilg', $listdata['group']);
 $SESSION->restore('ilge', $listdata['groupexclude']);
-$SESSION->restore('ilns', $listdata['notsent']);
+$SESSION->restore('ilstm', $listdata['sendtoemail']);
 $SESSION->restore('ilnp', $listdata['numberplanid']);
 $SESSION->restore('ildiv', $listdata['divisionid']);
 $SESSION->restore('ilh', $listdata['hideclosed']);

@@ -164,12 +164,16 @@
 						{trans("exclude group")}
 					</label>
 					<label>
-						<input type="checkbox" name="hideclosed"{if $listdata.hideclosed} checked{/if}>
-						{trans("hide accounted<!plural>")}
+						{trans("Send to email")}
+						<select size="1" name="sendtoemail">
+							<option value="">{trans("- any -")}</option>
+							<option value="notsent"{if $listdata.sendtoemail == 'notsent'} selected{/if}>{trans("not sent to email")}</option>
+							<option value="withoutemailconsent"{if $listdata.sendtoemail == 'withoutemailconsent'} selected{/if}>{trans("without send to email consent")}</option>
+						</select>
 					</label>
 					<label>
-						<input type="checkbox" name="notsent"{if $listdata.notsent} checked{/if}>
-						{trans("not sent to email")}
+						<input type="checkbox" name="hideclosed"{if $listdata.hideclosed} checked{/if}>
+						{trans("hide accounted<!plural>")}
 					</label>
 					<label {tip text="translates into JPK MPP flag"}>
 						<input type="checkbox" name="splitpayment"{if $listdata.splitpayment} checked{/if}>
