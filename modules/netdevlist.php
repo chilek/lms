@@ -120,7 +120,7 @@ if ($api) {
     } else {
         $oldpage = 1;
     }
-    $page = isset($_GET['page']) && !empty($_GET['page']) ? intval($_GET['page']) : $oldpage;
+    $page = intval(isset($_GET['page']) && !empty($_GET['page']) ? $_GET['page'] : $oldpage);
     $offset = ($page - 1) * $limit;
 
     $search['count'] = false;
