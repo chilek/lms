@@ -171,7 +171,7 @@ foreach ($dirs as $dir) {
 
     foreach ($files as $file_idx => $src_file_name) {
         if (!$quiet && !($file_idx % $progress_part)) {
-            echo 'Progress: ' . round(($file_idx  * 100) / $file_count) . '%' . PHP_EOL;
+            echo 'Progress: ' . round((($file_idx + 1) * 100) / $file_count) . '%' . PHP_EOL;
         }
 
         if (!preg_match('/' . $file_name_pattern . '/', $src_file_name, $m)) {
