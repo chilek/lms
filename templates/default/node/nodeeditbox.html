@@ -396,9 +396,9 @@
 										</td>
 										<td>
 											{foreach $_SESSIONTYPES as $idx => $sessiontype}
-												<label>
+												<label {tip text="`$sessiontype.tip`"}>
 													<input type="checkbox" name="nodeedit[authtype][{$idx}]" value="{$idx}"
-														id="authtype{$idx}" {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"}
+														id="authtype{$idx}" {tip trigger="authtype`$idx`"}
 														{if ($nodeinfo.authtype & $idx) == $idx} checked{/if}>
 													{$sessiontype.label}
 												</label><br>

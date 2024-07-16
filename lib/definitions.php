@@ -1512,7 +1512,9 @@ const SESSIONTYPE_PPPOE = 1,
     SESSIONTYPE_WIFI = 8,
     SESSIONTYPE_VOIP = 16,
     SESSIONTYPE_STB = 32,
-    SESSIONTYPE_DOCSIS = 64;
+    SESSIONTYPE_DOCSIS = 64,
+    SESSIONTYPE_LLU = 128,
+    SESSIONTYPE_BSA = 256;
 
 $SESSIONTYPES = array(
     SESSIONTYPE_PPPOE => array(
@@ -1549,6 +1551,16 @@ $SESSIONTYPES = array(
         'label' => trans('DOCSIS access'),
         'tip' => 'Enable/disable DOCSIS access',
         'alias' => 'docsis',
+    ),
+    SESSIONTYPE_LLU => array(
+        'label' => trans('LLU service'),
+        'tip' => 'Mark as LLU service',
+        'alias' => 'llu',
+    ),
+    SESSIONTYPE_BSA => array(
+        'label' => trans('BSA service'),
+        'tip' => 'Mark as BSA service',
+        'alias' => 'bsa',
     ),
 );
 

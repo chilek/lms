@@ -309,8 +309,8 @@
                                             </td>
                                             <td>
                                                 {foreach $_SESSIONTYPES as $idx => $sessiontype}
-                                                <label>
-                                                    <input type="checkbox" name="tariff[authtype][{$idx}]" value="{$idx}" id="authtype{$idx}" {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"}{if ($tariff.authtype & $idx) == $idx} checked{/if}>
+                                                <label {tip text="`$sessiontype.tip`"}>
+                                                    <input type="checkbox" name="tariff[authtype][{$idx}]" value="{$idx}" id="authtype{$idx}" {tip trigger="authtype`$idx`"}{if ($tariff.authtype & $idx) == $idx} checked{/if}>
                                                     {$sessiontype.label}
                                                 </label><br>
                                                 {/foreach}

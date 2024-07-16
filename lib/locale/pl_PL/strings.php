@@ -5928,3 +5928,8 @@ $_LANG['No action selected!'] = 'Nie wybrano czynności!';
 
 $_LANG['All assignable'] = 'Przydział wszystkich';
 $_LANG['Check if network and broadcast addresses are assignable'] = 'Zaznacz, jeśli ma być możliwy przydział adresów sieci i rozgłoszeniowego';
+
+$_LANG['LLU service'] = 'Usługa LLU';
+$_LANG['Mark as LLU service'] = 'Oznacz jako usługę LLU';
+$_LANG['BSA service'] = 'Usługa BSA';
+$_LANG['Mark as BSA service'] = 'Oznacz jako usługę BSA';

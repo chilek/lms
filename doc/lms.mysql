@@ -1077,7 +1077,7 @@ CREATE TABLE tariffs (
 	voip_tariff_rule_id int(11) DEFAULT NULL,
 	datefrom            int(11) NOT NULL DEFAULT '0',
 	dateto              int(11) NOT NULL DEFAULT '0',
-	authtype tinyint(1) NOT NULL DEFAULT '0',
+	authtype smallint NOT NULL DEFAULT '0',
     currency varchar(3),
     flags tinyint(1) DEFAULT 0 NOT NULL,
 	netvalue decimal(9,3) DEFAULT NULL,
@@ -1639,7 +1639,7 @@ CREATE TABLE networks (
   notes text NOT NULL DEFAULT '',
   vlanid smallint DEFAULT NULL,
   hostid int(11) DEFAULT NULL,
-  authtype tinyint(1) NOT NULL DEFAULT '0',
+  authtype smallint NOT NULL DEFAULT '0',
   pubnetid int(11) DEFAULT NULL,
   allassignable tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY  (id),
@@ -1803,7 +1803,7 @@ CREATE TABLE nodes (
   port smallint NOT NULL DEFAULT '0',
   access tinyint(1) NOT NULL DEFAULT '1',
   warning tinyint(1) NOT NULL DEFAULT '0',
-  authtype tinyint(1) NOT NULL DEFAULT '0',
+  authtype smallint NOT NULL DEFAULT '0',
   chkmac tinyint(1) NOT NULL DEFAULT '1',
   halfduplex tinyint(1) NOT NULL DEFAULT '0',
   lastonline int(11) NOT NULL DEFAULT '0',
@@ -4370,4 +4370,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024062100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024071600');
