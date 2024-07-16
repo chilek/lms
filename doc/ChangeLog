@@ -663,6 +663,7 @@ version 28-git (????-??-??):
     controls it more specific [chilan]
   - enhancement: 'sendinvoices.blind_notify_email' allow to set 'Bcc' mail headers in posts with attached
     invoices [chilan]
+  - improvement: new tariff/network/node flags - LLU service and BSA service [chilan]
 
 version 27.0 (2021-08-20):
 
