@@ -301,6 +301,20 @@
                                     {trans("<!netrange>retail")}
                                 </label>
                             </span>
+                            <label class="filter-item">
+                                <span{if empty($foreign_entities)} class="lms-ui-disabled"{/if}>
+                                    {trans("<!netrange>Foreign entity")}
+                                </span>
+                                <select name="filter[foreign-entity]" form="netranges"
+                                    {if empty($foreign_entities)} disabled{/if}>
+                                    <option value="">{trans("<!netrange-foreign-entity>— any —")}</option>
+                                    <option value="-1"{if $filter['foreign-entity'] == '-1'} selected{/if}>{trans("<!netrange-foreign-entity>— none —")}</option>
+                                    {foreach $foreign_entities as $foreign_entity_id => $foreign_entity_name}
+                                        <option value="{$foreign_entity_id|escape}"
+                                            {if $filter['foreign-entity'] == $foreign_entity_id} selected{/if}>{$foreign_entity_name|escape}</option>
+                                    {/foreach}
+                                </select>
+                            </label>
                         </div>
                     </div>
                     <div class="lms-ui-filter-buttons">
@@ -344,6 +358,8 @@
                 <strong>{trans("Type")}</strong>
                 <br>
                 <strong>{trans("<!netrange>Services")}</strong>
+                <br>
+                <strong>{trans("<!netrange>Foreign entity")}</strong>
             </td>
             <td class="nobr">
                 <strong>{trans("<!netrange>Existing")}</strong>
@@ -377,7 +393,7 @@
                     <br>
                     {if !empty($building.netrangeid)}
                         {if empty($building.invprojectid)}
-                            -
+                            —
                         {else}
                             <span class="nobr">
                                 <a href="?m=invprojectedit&id={$building.invprojectid}">
@@ -430,6 +446,20 @@
                                 {trans("<!netrange>retail")}
                             {/if}
                         {/strip}</span>
+                    {/if}
+                    {if !empty($building.netrangeid)}
+                        <br>
+                        <span class="nobr">
+                            {if strlen($building.foreignentity)}
+                                {if isset($foreign_entities[$building.foreignentity])}
+                                    {$foreign_entities[$building.foreignentity]|escape}
+                                {else}
+                                    {$building.foreignentity|escape}
+                                {/if}
+                            {else}
+                                —
+                            {/if}
+                        </span>
                     {/if}
                 </td>
                 <td class="text-center">
@@ -625,12 +655,25 @@
                                         </label>
                                         <label>
                                             <input type="hidden" name="range[services][2]" value="0" form="update-range">
-                                            <input type="checkbox" name="range[services][2]" value="1" class="range-services"
+                                            <input type="checkbox" name="range[services][2]" value="2" class="range-services"
                                                 form="update-range" required
                                                 {if ($range.services & 2) > 0} checked{/if}>
                                             {trans("<!netrange>retail")}
                                         </label>
                                     </span>
+                                    <label>
+                                        <span{if empty($foreign_entities)} class="lms-ui-disabled"{/if}>
+                                            {trans("<!netrange>Foreign entity")}
+                                        </span>
+                                        <select name="range[foreign-entity]" form="update-range"
+                                            {if empty($foreign_entities)} disabled{/if}>
+                                            <option value="">{trans("<!netrange-foreign-entity>— none —")}</option>
+                                            {foreach $foreign_entities as $foreign_entity_id => $foreign_entity_name}
+                                                <option value="{$foreign_entity_id|escape}"
+                                                    {if $range['foreign-entity'] == $foreign_entity_id} selected{/if}>{$foreign_entity_name|escape}</option>
+                                            {/foreach}
+                                        </select>
+                                    </label>
                                 </div>
                                 <div class="operation-panel">
                                     {button id="update-button" icon="apply" label="Update" form="update-range" type="submit"}
@@ -845,6 +888,13 @@
             $.each(rangeServices, function () {
                 $(this).prop('required', !rangeServices.filter(':checked').length);
             });
+            var foreignEntityDisabled = $(this).val() == '2' && !$(this).prop('checked');
+            $('[name="range[foreign-entity]"]').prop('disabled', foreignEntityDisabled).prev().toggleClass('lms-ui-disabled', foreignEntityDisabled);
+        }).change();
+
+        $('[name="filter[services][2]"]').change(function() {
+            var checked = $(this).prop('checked');
+            $('[name="filter[foreign-entity]"]').prop('disabled', !checked).prev().toggleClass('lms-ui-disabled', !checked);
         }).change();
 
         $('#update-range').submit(function(e) {

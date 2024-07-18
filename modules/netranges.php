@@ -56,6 +56,17 @@ $linkspeeds = array(
     10000 => '10000 Mb/s',
 );
 
+$foreign_entities_array = preg_split("/([\s]+|[\s]*[,;][\s]*)/", ConfigHelper::getConfig('sidusis.foreign_entities', '', true), -1, PREG_SPLIT_NO_EMPTY);
+$foreign_entities = array();
+foreach ($foreign_entities_array as $foreign_entity) {
+    if (preg_match('/^(?<id>[^(]+)(?:\((?<name>[^\)]+)\))?$/', $foreign_entity, $m)) {
+        $foreign_entities[$m['id']] = isset($m['name']) ? $m['name'] : null;
+    } else {
+        $foreign_entities[$foreign_entity] = null;
+    }
+}
+unset($foreign_entity);
+
 function getTerritoryUnits()
 {
     global $BOROUGHTYPES;
@@ -244,6 +255,10 @@ function getBuildings(array $filter)
         $where[] = 'r.services = ' . intval($filter['services']);
     }
 
+    if (($filter['services'] & 2) && strlen($filter['foreign-entity'])) {
+        $where[] = $filter['foreign-entity'] == '-1' ? 'r.foreignentity = \'\'' : 'r.foreignentity = ' . $DB->Escape($filter['foreign-entity']);
+    }
+
     if (!isset($nodes)) {
         $node_addresses = $DB->GetAll(
             'SELECT
@@ -421,6 +436,7 @@ function getBuildings(array $filter)
                 r.uplink,
                 r.type,
                 r.services,
+                r.foreignentity,
                 r.invprojectid
             FROM location_buildings b
             LEFT JOIN location_streets lst ON lst.id = b.street_id
@@ -548,6 +564,12 @@ if (isset($range['services']['2'])) {
 }
 $range['services'] = $services;
 
+if (isset($range['foreign-entity'])) {
+    $range['foreign-entity'] = strlen($range['foreign-entity']) ? $range['foreign-entity'] : '';
+} else {
+    $range['foreign-entity'] = $oldrange['foreign-entity'] ?? '';
+}
+
 $SESSION->save('netranges_update_range', $range);
 
 if (isset($_POST['range'])) {
@@ -567,14 +589,15 @@ if (isset($_POST['range'])) {
             } elseif (isset($_GET['update'])) {
                 $args = $range;
                 unset($args['buildings'], $args['ranges']);
+                $args['foreign-entity'] = ($range['services'] & 2) ? $range['foreign-entity'] : '';
                 if (!empty($buildings)) {
                     foreach ($buildings as $buildingid) {
                         $args['buildingid'] = $buildingid;
                         if (!$DB->GetOne('SELECT 1 FROM netranges WHERE buildingid = ? LIMIT 1', array($buildingid))) {
                             $DB->Execute(
                                 'INSERT INTO netranges
-                                (invprojectid, linktype, linktechnology, downlink, uplink, type, services, buildingid)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                                (invprojectid, linktype, linktechnology, downlink, uplink, type, services, buildingid, foreignentity)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
                                 array_values($args)
                             );
                         }
@@ -597,6 +620,7 @@ if (isset($_POST['range'])) {
                                     downlink = ?,
                                     uplink = ?,
                                     type = ?,
+                                    foreignentity = ?,
                                     services = ?
                                 WHERE id = ?',
                                 array_values($args)
@@ -606,8 +630,8 @@ if (isset($_POST['range'])) {
                             $args['buildingid'] = $buildingid;
                             $DB->Execute(
                                 'INSERT INTO netranges
-                                (invprojectid, linktype, linktechnology, downlink, uplink, type, services, buildingid)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                                (invprojectid, linktype, linktechnology, downlink, uplink, type, services, foreignentity, buildingid)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
                                 array_values($args)
                             );
                             unset($args['buildingid']);
@@ -620,27 +644,29 @@ if (isset($_POST['range'])) {
                 }
                 $args = $range;
                 unset($args['buildings'], $args['ranges']);
+                $args['foreign-entity'] = ($range['services'] & 2) ? $range['foreign-entity'] : '';
                 if (!empty($buildings)) {
                     foreach ($buildings as $buildingid) {
                         $args['buildingid'] = $buildingid;
                         if (!$DB->GetOne(
                             'SELECT 1
                             FROM netranges
-                            WHERE invprojectid = ?
+                            WHERE (invprojectid = ?' . (isset($args['project']) ? '' : ' OR invprojectid IS NULL') . ')
                                 AND linktype = ?
                                 AND linktechnology = ?
                                 AND downlink = ?
                                 AND uplink = ?
                                 AND type = ?
                                 AND services = ?
+                                AND foreignentity = ?
                                 AND buildingid = ?
                             LIMIT 1',
                             array_values($args)
                         )) {
                             $DB->Execute(
                                 'INSERT INTO netranges
-                                (invprojectid, linktype, linktechnology, downlink, uplink, type, services, buildingid)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                                (invprojectid, linktype, linktechnology, downlink, uplink, type, services, foreignentity, buildingid)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
                                 array_values($args)
                             );
                         }
@@ -776,6 +802,12 @@ if (isset($filter['services']['2'])) {
 }
 $filter['services'] = $services;
 
+if (isset($filter['foreign-entity'])) {
+    $filter['foreign-entity'] = strlen($filter['foreign-entity']) ? $filter['foreign-entity'] : '';
+} else {
+    $filter['foreign-entity'] = $oldfilter['foreign-entity'] ?? '';
+}
+
 $SESSION->save('netranges_filter', $filter);
 
 $filter['count'] = true;
@@ -819,6 +851,8 @@ if (!empty($total)) {
 }
 
 $SMARTY->assign('buildings', $buildings);
+//$foreign_entities = array();
+$SMARTY->assign('foreign_entities', $foreign_entities);
 
 $SMARTY->assign('boroughs', getTerritoryUnits());
 $SMARTY->assign('cities', empty($filter['boroughid']) ? array() : getCities($filter['boroughid']));

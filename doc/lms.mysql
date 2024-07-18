@@ -1552,6 +1552,7 @@ CREATE TABLE netranges (
 	uplink int(11) NOT NULL,
 	type smallint NOT NULL,
 	services smallint NOT NULL,
+	foreignentity varchar(20) DEFAULT '' NOT NULL,
 	invprojectid int(11) DEFAULT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT netranges_buildingid_fkey
@@ -4370,4 +4371,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024071600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024071800');

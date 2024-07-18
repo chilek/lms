@@ -1413,6 +1413,7 @@ CREATE TABLE netranges (
     uplink integer NOT NULL,
     type smallint NOT NULL,
     services smallint NOT NULL,
+    foreignentity varchar(20) DEFAULT '' NOT NULL,
     invprojectid integer DEFAULT NULL
         CONSTRAINT netranges_invprojectid_fkey REFERENCES invprojects (id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (id)
@@ -4417,6 +4418,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024071600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024071800');
 
 COMMIT;
