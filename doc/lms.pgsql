@@ -1357,7 +1357,7 @@ DROP TABLE IF EXISTS ewx_stm_channels CASCADE;
 CREATE TABLE ewx_stm_channels (
     id 		integer 	DEFAULT nextval('ewx_stm_channels_id_seq'::text) NOT NULL,
     cid 	integer      	DEFAULT NULL
-		CONSTRAINT ewx_stm_channels_cid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT ewx_stm_channels_cid_fkey REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE,
     upceil 	integer         DEFAULT 0 NOT NULL,
     downceil 	integer        	DEFAULT 0 NOT NULL,
     halfduplex  smallint    DEFAULT NULL,
@@ -4418,6 +4418,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024071800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024071900');
 
 COMMIT;
