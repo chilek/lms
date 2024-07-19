@@ -311,7 +311,7 @@
                                     <option value="-1"{if $filter['foreign-entity'] == '-1'} selected{/if}>{trans("<!netrange-foreign-entity>— none —")}</option>
                                     {foreach $foreign_entities as $foreign_entity_id => $foreign_entity_name}
                                         <option value="{$foreign_entity_id|escape}"
-                                            {if $filter['foreign-entity'] == $foreign_entity_id} selected{/if}>{$foreign_entity_name|escape}</option>
+                                            {if $filter['foreign-entity'] == $foreign_entity_id} selected{/if}>{if isset($foreign_entity_name)}{$foreign_entity_name|escape}{else}{$foreign_entity_id|escape}{/if}</option>
                                     {/foreach}
                                 </select>
                             </label>
@@ -670,7 +670,7 @@
                                             <option value="">{trans("<!netrange-foreign-entity>— none —")}</option>
                                             {foreach $foreign_entities as $foreign_entity_id => $foreign_entity_name}
                                                 <option value="{$foreign_entity_id|escape}"
-                                                    {if $range['foreign-entity'] == $foreign_entity_id} selected{/if}>{$foreign_entity_name|escape}</option>
+                                                    {if $range['foreign-entity'] == $foreign_entity_id} selected{/if}>{if isset($foreign_entity_name)}{$foreign_entity_name|escape}{else}{$foreign_entity_id|escape}{/if}</option>
                                             {/foreach}
                                         </select>
                                     </label>
