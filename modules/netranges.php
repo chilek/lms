@@ -56,7 +56,7 @@ $linkspeeds = array(
     10000 => '10000 Mb/s',
 );
 
-$foreign_entities_array = preg_split("/([\s]+|[\s]*[,;][\s]*)/", ConfigHelper::getConfig('sidusis.foreign_entities', '', true), -1, PREG_SPLIT_NO_EMPTY);
+$foreign_entities_array = preg_split("/([\s]+|[\s]*[,;][\s]*)/", ConfigHelper::getConfig('uke.sidusis_foreign_entities', '', true), -1, PREG_SPLIT_NO_EMPTY);
 $foreign_entities = array();
 foreach ($foreign_entities_array as $foreign_entity) {
     if (preg_match('/^(?<id>[^(]+)(?:\((?<name>[^\)]+)\))?$/', $foreign_entity, $m)) {
