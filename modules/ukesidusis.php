@@ -64,6 +64,7 @@ $buildings = $DB->GetAll(
         r.uplink,
         r.type,
         r.services,
+        r.foreignentity,
         r.invprojectid,
         p.name AS invprojectname,
         p.cdate AS invprojectcdate,
@@ -164,8 +165,8 @@ if (empty($projects)) {
                     $building['type'] == '1' ? 'rzeczywisty' : 'teoretyczny',
                     ($building['services'] & 1) ? 'TAK' : 'NIE',
                     ($building['services'] & 2) ? 'TAK' : 'NIE',
-                    ($building['services'] & 2) ? 'TAK' : '',
-                    ($building['services'] & 2) ? '' : '',
+                    ($building['services'] & 2) ? (strlen($building['foreignentity']) ? 'NIE' : 'TAK') : '',
+                    ($building['services'] & 2) ? $building['foreignentity'] : '',
                     OPERATOR_REPRESENTATIVE_ID,
                 )
             );
