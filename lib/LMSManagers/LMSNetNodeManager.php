@@ -108,6 +108,17 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
                     if ($val != -1 && !empty($val)) {
                         $where[] = 'n.divisionid = ' . $val;
                     }
+                    break;
+                case 'flags':
+                    if (!empty($val)) {
+                        $where[] = '(n.flags & ' . $val . ') > 0';
+                    }
+                    break;
+                case 'services':
+                    if (!empty($val)) {
+                        $where[] = '(n.services ?LIKE? \'%,' . $val . ',%\' OR n.services ?LIKE? \'' . $val . ',%\' OR n.services ?LIKE? \'%,' . $val . '\' OR n.services = \'' . $val . '\')';
+                    }
+                    break;
             }
         }
 

@@ -73,12 +73,28 @@ if ($api) {
     }
     $SESSION->save('nnfd', $d);
 
+    if (!isset($_GET['flags'])) {
+        $SESSION->restore('nnfflags', $flags);
+    } else {
+        $flags = $_GET['flags'];
+    }
+    $SESSION->save('nnfflags', $flags);
+
+    if (!isset($_GET['services'])) {
+        $SESSION->restore('nnfservices', $services);
+    } else {
+        $services = $_GET['services'];
+    }
+    $SESSION->save('nnfservices', $services);
+
     $search = array(
         'status' => $s,
         'type' => $t,
         'invprojectid' => $p,
         'ownership' => $w,
         'divisionid' => $d,
+        'flags' => $flags,
+        'services' => $services,
     );
 
     $search['count'] = true;

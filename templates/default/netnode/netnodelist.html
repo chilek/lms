@@ -142,6 +142,24 @@
 						{/foreach}
 					</select>
 				</label>
+				<label>
+					{trans("Flags")}
+					<select size="1" name="flags" form="choosefilter" onchange="document.choosefilter.submit();">
+						<option value="">{trans("— all —")}</option>
+						{foreach $_NETWORK_NODE_FLAGS as $flag => $label}
+							<option value="{$flag}"{if $flag == $listdata.flags} selected{/if}>{$label}</option>
+						{/foreach}
+					</select>
+				</label>
+				<label>
+					{trans("Services")}
+					<select size="1" name="services" form="choosefilter" onchange="document.choosefilter.submit();">
+						<option value="">{trans("— all —")}</option>
+						{foreach $_NETWORK_NODE_SERVICES as $service => $label}
+							<option value="{$service}"{if $service == $listdata.services} selected{/if}>{$label}</option>
+						{/foreach}
+					</select>
+				</label>
 			</td>
 			<td class="text-right" colspan="4">
 				{button icon="add" label="Add network node" onclick="location.href = '?m=netnodeadd';"}
