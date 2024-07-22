@@ -29,6 +29,8 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 
     public function GetNetNodeList($search = array(), $order = 'name,asc')
     {
+        global $NETWORK_NODE_FLAGS, $NETWORK_NODE_SERVICES;
+
         $search = $search ?? array();
         $order = $order ?? 'name,asc';
 
@@ -128,6 +130,8 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
                 'SELECT n.id, n.name' . ($short ? ''
                     : ', n.type, n.status, n.invprojectid, n.info, n.lastinspectiontime, p.name AS project,
                     n.divisionid, d.shortname AS division, longitude, latitude, ownership, coowner, uip, miar,
+                    n.flags,
+                    n.services,
                     netdevcount.netdevcount,
                     lc.ident AS location_city_ident,
                     (CASE WHEN lst.ident IS NULL
@@ -166,6 +170,23 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
                 'id'
             );
         }
+
+        foreach ($nlist as &$netnode) {
+            $flags = $netnode['flags'];
+            $netnode['flags'] = array();
+            foreach ($NETWORK_NODE_FLAGS as $flag => $label) {
+                if ($flags & $flag) {
+                    $netnode['flags'][$flag] = $flag;
+                }
+            }
+
+            $services = explode(',', $netnode['services']);
+            $netnode['services'] = array();
+            foreach ($services as $service) {
+                $netnodes['services'][$service] = $service;
+            }
+        }
+        unset($netnode);
 
         if (!$short && $nlist) {
             $filecontainers = $this->db->GetAllByKey(
@@ -233,6 +254,17 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             'address_id'       => $address_id,
             'ownerid'          => !empty($netnodedata['ownerid']) && !empty($netnodedata['ownership']) ? $netnodedata['ownerid'] : null
         );
+
+        if (array_key_exists('flags', $netnodedata)) {
+            $args['flags'] = 0;
+            foreach ($netnodedata['flags'] as $flag) {
+                $args['flags'] += $flag;
+            }
+        }
+
+        if (array_key_exists('services', $netnodedata)) {
+            $args['services'] = implode(',', $netnodedata['services']);
+        }
 
         $this->db->Execute("INSERT INTO netnodes (" . implode(', ', array_keys($args))
             . ") VALUES (" . implode(', ', array_fill(0, count($args), '?')) . ")", array_values($args));
@@ -310,6 +342,17 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             $args['ownerid'] = empty($netnodedata['ownerid']) || empty($netnodedata['ownership']) ? null : $netnodedata['ownerid'];
         }
 
+        if (array_key_exists('flags', $netnodedata)) {
+            $args['flags'] = 0;
+            foreach ($netnodedata['flags'] as $flag) {
+                $args['flags'] += $flag;
+            }
+        }
+
+        if (array_key_exists('services', $netnodedata)) {
+            $args['services'] = implode(',', $netnodedata['services']);
+        }
+
         if (empty($args)) {
             return null;
         }
@@ -359,6 +402,8 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 
     public function GetNetNode($id)
     {
+        global $NETWORK_NODE_FLAGS;
+
         $result = $this->db->GetRow("SELECT n.*, p.name AS projectname,
 				addr.location, addr.name as location_name, addr.id as address_id,
 				addr.state as location_state_name, addr.state_id as location_state,
@@ -379,6 +424,20 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
 				LEFT JOIN location_states ls ON ls.id = ld.stateid
 			WHERE n.id=?", array($id));
+
+        $flags = $result['flags'];
+        $result['flags'] = array();
+        foreach ($NETWORK_NODE_FLAGS as $flag => $label) {
+            if ($flags & $flag) {
+                $result['flags'][$flag] = $flag;
+            }
+        }
+
+        $services = explode(',', $result['services']);
+        $result['services'] = array();
+        foreach ($services as $service) {
+            $result['services'][$service] = $service;
+        }
 
         if (!empty($result['location_city'])) {
             $result['teryt'] = 1;

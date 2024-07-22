@@ -5937,3 +5937,17 @@ $_LANG['LLU service'] = 'Usługa LLU';
 $_LANG['Mark as LLU service'] = 'Oznacz jako usługę LLU';
 $_LANG['BSA service'] = 'Usługa BSA';
 $_LANG['Mark as BSA service'] = 'Oznacz jako usługę BSA';
+
+$_LANG['<!uke-pit>BSA service'] = 'usługa BSA';
+$_LANG['<!uke-pit>critical infrastructure'] = 'infrastruktura krytyczna';
+$_LANG['<!uke-pit>interface count increase possibility'] = 'możliwość zwiększenia liczby interfejsów';
+$_LANG['<!uke-pit-service>access to cable ducting'] = 'dostęp do kanalizacji kablowej';
+$_LANG['<!uke-pit-service>access to dark fibers'] = 'dostęp do ciemnych włókien';
+$_LANG['<!uke-pit-service>LLU'] = 'LLU';
+$_LANG['<!uke-pit-service>VULA'] = 'VULA';
+$_LANG['<!uke-pit-service>access to pole substructure, towers and masts'] = 'dostęp do podbudowy słupowej, wież i masztów';
+$_LANG['<!uke-pit-service>collocation'] = 'kolokacja';
+$_LANG['<!uke-pit-service>network connection in collocation mode'] = 'połączenie sieci w trybie kolokacji';
+$_LANG['<!uke-pit-service>network connection in linear mode'] = 'połączenie sieci w trybie liniowym';
+$_LANG['<!uke-pit-service>provided to end user'] = 'świadczona dla użytkowników końcowych';
+$_LANG['<!uke-pit-service>other'] = 'inna';

@@ -15,6 +15,15 @@
 		flex-direction: column !important;
 	}
 
+	#netnode-services {
+		align-items: flex-start;
+	}
+
+	#netnode-services .lms-ui-box-row-field {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
 </style>
 
 <script src="js/location_box.js"></script>
@@ -193,6 +202,26 @@
 						{if empty($netnode['miar'])} checked{/if}>
 					{trans("no")}
 				</label>
+			{/box_row}
+
+			{box_row icon="options" icon_class="fa-fw" label="Flags"}
+				{foreach $_NETWORK_NODE_FLAGS as $flag => $label}
+					<label>
+						<input type="checkbox" name="netnode[flags][{$flag}]" value="{$flag}"
+							{if !empty($netnode.flags[$flag])} checked{/if}>
+						{$label}
+					</label>
+				{/foreach}
+			{/box_row}
+
+			{box_row icon="money" icon_class="fa-fw" label="Services" id="netnode-services"}
+				{foreach $_NETWORK_NODE_SERVICES as $service => $label}
+					<label>
+						<input type="checkbox" name="netnode[services][{$service}]" value="{$service}"
+							{if !empty($netnode.services[$service])} checked{/if}>
+						{$label}
+					</label>
+				{/foreach}
 			{/box_row}
 
 			{box_row icon="note" icon_class="fa-fw" label="Note"}

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2023 LMS Developers
+ *  (C) Copyright 2001-2024 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -23,6 +23,9 @@
  *
  *  $Id$
  */
+
+define('ELEMENT_MODE_FLEXIBILITY_POINT', 1);
+define('ELEMENT_MODE_NETWORK_NODE', 2);
 
 ini_set('memory_limit', '512M');
 ini_set('max_execution_time', '0');
@@ -489,6 +492,8 @@ if ($report_type == 'full') {
     $real_netnodes = $DB->GetAllByKey(
         "SELECT nn.id, nn.name, nn.invprojectid, nn.type, nn.status, nn.ownership, nn.coowner,
             nn.longitude, nn.latitude,
+            nn.flags,
+            nn.services,
             a.city_id as location_city, a.street_id as location_street, a.house as location_house, a.flat as location_flat,
             a.city as location_city_name, a.street as location_street_name,
             a.zip AS location_zip,
@@ -933,6 +938,8 @@ if ($report_type == 'full') {
                 $netnodes[$netnodename]['id'] = $netnodeid;
                 $netnodes[$netnodename]['invproject'] = strlen($projectname) ? array($projectname) : array();
                 $netnodes[$netnodename]['name'] = $netnodename;
+                $netnodes[$netnodename]['flags'] = array();
+                $netnodes[$netnodename]['services'] = array();
 
                 if (array_key_exists($netdevice['netnodeid'], $real_netnodes)) {
                     $netnode = $real_netnodes[$netdevice['netnodeid']];
@@ -948,6 +955,21 @@ if ($report_type == 'full') {
                     $netnodes[$netnodename]['type'] = intval($netnode['type']);
                     $netnodes[$netnodename]['ownership'] = intval($netnode['ownership']);
                     $netnodes[$netnodename]['coowner'] = $netnode['coowner'];
+
+                    $flags = $netnodes[$netnodename]['flags'];
+                    $netnodes[$netnodename]['flags'] = array();
+                    foreach ($NETWORK_NODE_FLAGS as $flag => $label) {
+                        if ($flags & $flag) {
+                            $netnodes[$netnodename]['flags'][$flag] = $flag;
+                        }
+                    }
+
+                    $netnodes[$netnodename]['services'] = array_map(
+                        function ($service) {
+                            return sprintf('%02d', $service);
+                        },
+                        $netnodes[$netnodename]['services']
+                    );
 
                     if (strlen($netnode['coowner'])) {
                         $coowner = $netnode['coowner'];
@@ -1082,7 +1104,7 @@ if ($report_type == 'full') {
                     $netnodes[$netnodename]['latitudes'] = array();
                 }
 
-                $netnodes[$netnodename]['mode'] = empty($netdevice['passive']) ? 2 : 1;
+                $netnodes[$netnodename]['mode'] = empty($netdevice['passive']) ? ELEMENT_MODE_NETWORK_NODE : ELEMENT_MODE_FLEXIBILITY_POINT;
 
                 $netnodes[$netnodename]['media'] = array();
                 $netnodes[$netnodename]['technologies'] = array();
@@ -1090,8 +1112,8 @@ if ($report_type == 'full') {
                 $netnodes[$netnodename]['parent_netnodename'] = null;
 
                 $netnodeid++;
-            } elseif (empty($netdevice['passive']) && $netnodes[$netnodename]['mode'] < 2) {
-                $netnodes[$netnodename]['mode'] = 2;
+            } elseif (empty($netdevice['passive']) && $netnodes[$netnodename]['mode'] < ELEMENT_MODE_NETWORK_NODE) {
+                $netnodes[$netnodename]['mode'] = ELEMENT_MODE_NETWORK_NODE;
             }
 
             $netdevice['ownership'] = $netnodes[$netnodename]['ownership'];
@@ -1891,7 +1913,7 @@ if ($report_type == 'full') {
                     echo '&nbsp;&nbsp;&nbsp;&nbsp;komentarz: <span style="color: red; font-weight: bold;">' . $nd['comment'] . '</span><br>';
                 }
                 echo '&nbsp;&nbsp;&nbsp;&nbsp;' . trans('<!uke-pit>location: $a', $nd['location']) . '<br>';
-                echo '&nbsp;&nbsp;&nbsp;&nbsp;typ: ' . ($netnode['mode'] == 1 ? 'punkt elastyczności' : 'węzeł') . '<br>';
+                echo '&nbsp;&nbsp;&nbsp;&nbsp;typ: ' . ($netnode['mode'] == ELEMENT_MODE_FLEXIBILITY_POINT ? 'punkt elastyczności' : 'węzeł') . '<br>';
                 echo '&nbsp;&nbsp;&nbsp;&nbsp;' . trans(
                     '<!uke-pit>device: $a (#$b)',
                     '<a href="' . $url . '?m=netdevinfo&id=' . $nd['netdevid'] . '">' . $netdevices[$nd['netdevid']]['name'] . '</a>',
@@ -1916,7 +1938,7 @@ if ($report_type == 'full') {
         $processed_netdevices[$netnode_netdevid] = true;
 
         if (!$same_netnode) {
-            if ($netnode['mode'] == 2) {
+            if ($netnode['mode'] == ELEMENT_MODE_NETWORK_NODE) {
                 $current_netnode_name = $netnode_name;
             } else {
                 $netnode['parent_netnodename'] = $current_netnode_name;
@@ -1957,7 +1979,7 @@ if ($report_type == 'full') {
     }
 
     foreach ($netnodes as $netnodename => $netnode) {
-        if ($netnodename == $root_netnode_name && $netnode['mode'] != 2) {
+        if ($netnodename == $root_netnode_name && $netnode['mode'] != ELEMENT_MODE_NETWORK_NODE) {
             echo trans(
                 '<!uke-pit>Root network node \'$a\' does not contain any active network devices!',
                 empty($netnode['real_id'])
@@ -1983,7 +2005,7 @@ if ($report_type == 'full') {
     $processed_netnodes = analyze_network_tree($root_netnode_name, $root_netdevice_id, null, false, $root_netnode_name, array(), $netnodes, $netdevices, $all_netlinks);
 
     foreach ($netnodes as $netnodename => $netnode) {
-        if ($netnode['mode'] != 2 && !isset($netnode['parent_netnodename'])
+        if ($netnode['mode'] != ELEMENT_MODE_NETWORK_NODE && !isset($netnode['parent_netnodename'])
             && $verify_feeding_netnodes_of_flexibility_points
             && (isset($processed_netnodes[$netnodename]) || $report_elements_outside_network_infrastructure)) {
             $errors['flexibility-points'][] = array(
@@ -2163,10 +2185,10 @@ if ($report_type == 'full') {
                                 'dstname' => $othernetdevice['name'],
                                 'dstnetnode' => $othernetnode,
                             );
-                            if ($netdevnetnode['mode'] == 1) {
+                            if ($netdevnetnode['mode'] == ELEMENT_MODE_FLEXIBILITY_POINT) {
                                 $error['srcerror'] = true;
                             }
-                            if ($othernetnode['mode'] == 1) {
+                            if ($othernetnode['mode'] == ELEMENT_MODE_FLEXIBILITY_POINT) {
                                 $error['dsterror'] = true;
                             }
                             if (isset($error['srcerror']) || isset($error['dsterror'])) {
@@ -2303,6 +2325,17 @@ if ($report_type == 'full') {
                 $netnodes[$netnode['parent_netnodename']]['technologies'][$netnode['uplink_technology']] = $netnode['uplink_technology'];
             }
         }
+
+        if ($netnode['mode'] < ELEMENT_MODE_NETWORK_NODE && !empty($netnode['parent_netnodename'])) {
+            if (!empty($netnode['flags'])) {
+                $netnodes[$netnode['parent_netnodename']]['flags'] = array_merge($netnodes[$netnode['parent_netnodename']]['flags'], $netnode['flags']);
+            }
+
+            if (!empty($netnode['services'])) {
+                $netnodes[$netnode['parent_netnodename']]['services'] = array_merge($netnodes[$netnode['parent_netnodename']]['services'], $netnode['services']);
+            }
+        }
+
         $netnode['ethernet_technologies'] = array_filter(
             array_unique($netnode['local_technologies']),
             function ($technology) use ($pit_ethernet_technologies) {
@@ -2330,7 +2363,7 @@ if ($report_type == 'full') {
                 $media[$mediaCode][$technology] = $technology;
             }
 
-            if ($netnode['mode'] == 2) {
+            if ($netnode['mode'] == ELEMENT_MODE_NETWORK_NODE) {
                 if (strlen($netnode['coowner']) && !empty($netnode['ownership'])) {
                     $used_foreigners[$netnode['coowner']] = true;
                 }
@@ -2346,15 +2379,15 @@ if ($report_type == 'full') {
                     'we08_szerokosc' => $netnode['latitude'] ?? '',
                     'we09_dlugosc' => $netnode['longitude'] ?? '',
                     'we10_medium' => '',
-                    'we11_bsa' => 'Nie',
+                    'we11_bsa' => isset($netnode['flags'][NETWORK_NODE_FLAG_BSA]) ? 'Tak' : 'Nie',
                     'we12_technologia_dostepowa' => '',
                     'we13_uslugi_transmisji_danych' => '',
-                    'we14_mozliwosc_zwiekszenia_liczby_interfejsow' => 'Nie',
+                    'we14_mozliwosc_zwiekszenia_liczby_interfejsow' => isset($netnode['flags'][NETWORK_NODE_FLAG_INTERFACE_COUNT_INCREASE_POSSIBILITY]) ? 'Tak' : 'Nie',
                     'we15_finansowanie_publ' => empty($netnode['invproject']) ? 'Nie' : 'Tak',
                     'we16_numery_projektow_publ' => empty($netnode['invproject'])
                         ? ''
                         : implode(';', $netnode['invproject']),
-                    'we17_infrastruktura_o_duzym_znaczeniu' => 'Nie',
+                    'we17_infrastruktura_o_duzym_znaczeniu' => isset($netnode['flags'][NETWORK_NODE_FLAG_CRITICAL_INFRASTRUCTURE]) ? 'Tak' : 'Nie',
                     'we18_typ_interfejsu' => empty($netnode['ethernet_technologies'])
                         ? ''
                         : implode(
@@ -2400,6 +2433,11 @@ if ($report_type == 'full') {
                     $w_buffer .= to_csv($data) . EOL;
                 }
             } else {
+                if (!empty($netnode['technologies'])) {
+                    $netnode['services'][] = '09';
+                }
+                $netnode['services'] = array_unique($netnode['services']);
+
                 $data = array(
                     'pe01_id_pe' => '',
                     'pe02_typ_pe' => pointCodeByNetNodeType($netnode['type']),
@@ -2413,7 +2451,7 @@ if ($report_type == 'full') {
                     'pe10_dlugosc' => $netnode['longitude'] ?? '',
                     'pe11_medium_transmisyjne' => '',
                     'pe12_technologia_dostepowa' => '',
-                    'pe13_mozliwosc_swiadczenia_uslug' => empty($netnode['technologies']) ? '' : '09',
+                    'pe13_mozliwosc_swiadczenia_uslug' => implode(';', $netnode['services']),
                     'pe14_finansowanie_publ' => empty($netnode['invproject']) ? 'Nie' : 'Tak',
                     'pe15_numery_projektow_publ' => empty($netnode['invproject'])
                         ? ''
@@ -2463,9 +2501,9 @@ if ($report_type == 'full') {
 
             if (!empty($netnode['ranges'])) {
                 foreach ($netnode['ranges'] as $range_key => $range) {
-                    if ($netnode['mode'] == 2) {
+                    if ($netnode['mode'] == ELEMENT_MODE_NETWORK_NODE) {
                         $new_pe = $netnodes[$netnodename];
-                        $new_pe['mode'] = 1;
+                        $new_pe['mode'] = ELEMENT_MODE_FLEXIBILITY_POINT;
                         $new_pe['parent_netnodename'] = $netnodename;
                         $new_netnodename = 'V-' . (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY');
                         $netnodes[$new_netnodename] = $new_pe;
@@ -2528,7 +2566,7 @@ if ($report_type == 'full') {
         } else {
             echo '<strong>' . (isset($netnode['real_id']) ? '<a href="' . $url . '?m=netnodeinfo&id=' . $netnode['real_id'] . '">' . $netnodename . '</a>' : $netnodename) . '</strong>:<br>';
             echo '&nbsp;&nbsp;&nbsp;&nbsp;lokalizacja: ' . $netnode['location_city_name'] . (empty($netnode['location_street_name']) ? '' : ', ' . $netnode['location_street_name']) . ' ' . $netnode['location_house'] . '<br>';
-            echo '&nbsp;&nbsp;&nbsp;&nbsp;typ: ' . ($netnode['mode'] == 1 ? 'punkt elastyczności' : 'węzeł') . '<br>';
+            echo '&nbsp;&nbsp;&nbsp;&nbsp;typ: ' . ($netnode['mode'] == ELEMENT_MODE_FLEXIBILITY_POINT ? 'punkt elastyczności' : 'węzeł') . '<br>';
             echo '&nbsp;&nbsp;&nbsp;&nbsp;obecny w drzewie: ';
 
             if (isset($processed_netnodes[$netnodename])) {
@@ -2538,7 +2576,7 @@ if ($report_type == 'full') {
             }
             echo '<br>';
 
-            if ($netnode['mode'] == 1) {
+            if ($netnode['mode'] == ELEMENT_MODE_FLEXIBILITY_POINT) {
                 echo '&nbsp;&nbsp;&nbsp;&nbsp;zasilany z węzła: <strong>' . ($netnode['parent_netnodename'] ?? '-') . '</strong><br>';
             }
 
@@ -2554,7 +2592,7 @@ if ($report_type == 'full') {
                 }
             }
 
-            if ($netnode['mode'] == 2) {
+            if ($netnode['mode'] == ELEMENT_MODE_NETWORK_NODE) {
                 echo '&nbsp;&nbsp;&nbsp;&nbsp;technologie ethernetowe w węźle:<br>';
                 if (empty($netnode['ethernet_technologies'])) {
                     echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(brak)<br>';
@@ -2688,8 +2726,8 @@ if ($report_type == 'full') {
 
                         $data = array(
                             'lb01_id_lb' => 'LB-' . $netlink['id'],
-                            'lb02_id_punktu_poczatkowego' => ($srcnetnode['mode'] == 1 ? 'P' : 'W') . '-' . $srcnetnodename,
-                            'lb03_id_punktu_koncowego' => ($dstnetnode['mode'] == 1 ? 'P' : 'W') . '-' . $dstnetnodename,
+                            'lb02_id_punktu_poczatkowego' => ($srcnetnode['mode'] == ELEMENT_MODE_FLEXIBILITY_POINT ? 'P' : 'W') . '-' . $srcnetnodename,
+                            'lb03_id_punktu_koncowego' => ($dstnetnode['mode'] == ELEMENT_MODE_FLEXIBILITY_POINT ? 'P' : 'W') . '-' . $dstnetnodename,
                             'lb04_medium_transmisyjne' => strlen($netlink['license']) ? 'radiowe na częstotliwości wymagającej uzyskanie pozwolenia radiowego' : 'radiowe na częstotliwości ogólnodostępnej',
                             'lb05_nr_pozwolenia_radiowego' => $netlink['license'],
                             'lb06_pasmo_radiowe' => strlen($netlink['license']) ? '' : $frequency,
@@ -2730,7 +2768,7 @@ if ($report_type == 'full') {
 
                         $data = array(
                             'lk01_id_lk' => 'LK-' . $netlink['id'],
-                            'lk02_id_punktu_poczatkowego' => ($srcnetnode['mode'] == 1 ? 'P' : 'W') . '-' . $srcnetnodename,
+                            'lk02_id_punktu_poczatkowego' => ($srcnetnode['mode'] == ELEMENT_MODE_FLEXIBILITY_POINT ? 'P' : 'W') . '-' . $srcnetnodename,
                             'lk03_punkty_zalamania' => 'LINESTRING('
                                 . implode(
                                     ',',
@@ -2741,7 +2779,7 @@ if ($report_type == 'full') {
                                         $points
                                     )
                                 ) . ')',
-                            'lk04_id_punktu_koncowego' => ($dstnetnode['mode'] == 1 ? 'P' : 'W') . '-' . $dstnetnodename,
+                            'lk04_id_punktu_koncowego' => ($dstnetnode['mode'] == ELEMENT_MODE_FLEXIBILITY_POINT ? 'P' : 'W') . '-' . $dstnetnodename,
                             'lk05_medium_transmisyjne' => mediaNameByTechnology($technology),
                             'lk06_rodzaj_linii_kablowej' => routeTypeName($netlink['routetype']),
                             'lk07_liczba_wlokien' => $netlink['type'] == LINKTYPE_FIBER

@@ -1590,6 +1590,8 @@ CREATE TABLE netnodes (
 	address_id int(11) DEFAULT NULL,
 	info text DEFAULT NULL,
 	ownerid int(11) DEFAULT NULL,
+	flags smallint NOT NULL DEFAULT 0,
+	services varchar(100) NOT NULL DEFAULT '',
 	PRIMARY KEY (id),
 	CONSTRAINT netnodes_address_id_fkey
 		FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -4371,4 +4373,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024071900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024072200');

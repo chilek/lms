@@ -1,4 +1,14 @@
 <!--// $Id$ //-->
+<style>
+
+	#netnodeinfo-services {
+		margin-block-start: 0;
+		margin-block-end: 0;
+		padding-inline-start: 0;
+		list-style-type: none;
+	}
+
+</style>
 <table class="lmsbox">
 	<colgroup>
 		<col style="width: 1%;">
@@ -204,6 +214,46 @@
 										{/if}
 									</td>
 								</tr>
+								{if !empty($nodeinfo.flags)}
+									<tr>
+										<td>
+											{icon name="options" class="fa-fw"}
+										</td>
+										<td>
+											<strong>{trans("Flags")}</strong>
+										</td>
+										<td>
+											{strip}
+												{foreach $nodeinfo.flags as $flag}
+													{$_NETWORK_NODE_FLAGS[$flag]}
+													{if !$flag@last},{/if}
+													<br>
+												{/foreach}
+											{/strip}
+										</td>
+									</tr>
+								{/if}
+								{if !empty($nodeinfo.services)}
+									<tr>
+										<td class="valign-top">
+											{icon name="money" class="fa-fw"}
+										</td>
+										<td class="valign-top">
+											<strong>{trans("Services")}</strong>
+										</td>
+										<td>
+											<ul id="netnodeinfo-services">
+												{foreach $nodeinfo.services as $service}
+													{strip}
+														<li>
+															{$_NETWORK_NODE_SERVICES[$service]}
+														</li>
+													{/strip}
+												{/foreach}
+											</ul>
+										</td>
+									</tr>
+								{/if}
 								{if $nodeinfo.info}
 									<tr>
 										<td>

@@ -426,6 +426,29 @@ const RTMESSAGE_REGULAR = 0,
     RTMESSAGE_ASSIGNED_EVENT_CHANGE = 4194304,
     RTMESSAGE_ASSIGNED_EVENT_DELETE = 8388608;
 
+const NETWORK_NODE_FLAG_BSA = 1,
+    NETWORK_NODE_FLAG_INTERFACE_COUNT_INCREASE_POSSIBILITY = 2,
+    NETWORK_NODE_FLAG_CRITICAL_INFRASTRUCTURE = 4;
+
+$NETWORK_NODE_FLAGS = array(
+    NETWORK_NODE_FLAG_BSA => trans('<!uke-pit>BSA service'),
+    NETWORK_NODE_FLAG_INTERFACE_COUNT_INCREASE_POSSIBILITY => trans('<!uke-pit>interface count increase possibility'),
+    NETWORK_NODE_FLAG_CRITICAL_INFRASTRUCTURE => trans('<!uke-pit>critical infrastructure'),
+);
+
+$NETWORK_NODE_SERVICES = array(
+    1 => trans('<!uke-pit-service>access to cable ducting'),
+    2 => trans('<!uke-pit-service>access to dark fibers'),
+    3 => trans('<!uke-pit-service>LLU'),
+    4 => trans('<!uke-pit-service>VULA'),
+    5 => trans('<!uke-pit-service>access to pole substructure, towers and masts'),
+    6 => trans('<!uke-pit-service>collocation'),
+    7 => trans('<!uke-pit-service>network connection in collocation mode'),
+    8 => trans('<!uke-pit-service>network connection in linear mode'),
+    9 => trans('<!uke-pit-service>provided to end user'),
+    10 => trans('<!uke-pit-service>other'),
+);
+
 const NETWORK_INTERFACE_TYPE_UNI = 0,
     NETWORK_INTERFACE_TYPE_NNI = 1;
 
@@ -1685,6 +1708,8 @@ $IDENTITY_TYPES = array(
 if (isset($SMARTY)) {
     $SMARTY->assign(
         array(
+            '_NETWORK_NODE_FLAGS' => $NETWORK_NODE_FLAGS,
+            '_NETWORK_NODE_SERVICES' => $NETWORK_NODE_SERVICES,
             '_NETWORK_INTERFACE_TYPES' => $NETWORK_INTERFACE_TYPES,
             '_CTYPES' => $CTYPES,
             '_CSTATUSES' => $CSTATUSES,
