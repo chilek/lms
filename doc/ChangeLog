@@ -667,6 +667,8 @@ version 28-git (????-??-??):
   - improvement: 'expired' assignments filter selection in customer search form [chilan]
   - enhancement: uke/sidusis: implement foreign entity property for network ranges - new configuration
     variable 'uke.sidusis_foreign_entities' allows to define foreign entity dictionary [chilan]
+  - enhancement: uke/pit: implemented network node flags and services support (used among others
+    for BSA and LLU flaging) [chilan]
 
 version 27.0 (2021-08-20):
 
