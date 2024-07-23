@@ -110,7 +110,7 @@
 						{if empty($netnodeid)}
 							{network_node_selection
 								id='netnodeid'
-								name='event[netnodeid]'
+								elemname='event[netnodeid]'
 								form='event'
 								selected=$event.netnodeid
 								onchange="xajax_netnode_changed($(this).val(), $('#eventnetdevid').val(), 'event', 'eventnetdevs', 'eventnetdevid')"}
