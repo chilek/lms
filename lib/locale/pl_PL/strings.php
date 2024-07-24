@@ -5951,3 +5951,5 @@ $_LANG['<!uke-pit-service>network connection in collocation mode'] = 'połączen
 $_LANG['<!uke-pit-service>network connection in linear mode'] = 'połączenie sieci w trybie liniowym';
 $_LANG['<!uke-pit-service>provided to end user'] = 'świadczona dla użytkowników końcowych';
 $_LANG['<!uke-pit-service>other'] = 'inna';
+
+$_LANG['Expired identity card'] = 'Nieważny dokument tożsamości';

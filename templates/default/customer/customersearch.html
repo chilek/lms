@@ -246,6 +246,20 @@
 			<INPUT type="text" name="search[icn]" VALUE="{$search.icn}">
 		</TD>
 	</TR>
+
+	<tr>
+		<td class="nobr">
+			<label for="ic-expired">
+				{icon name="calendar"}
+				<strong>{trans("Expired identity card")}</strong>
+			</label>
+		</td>
+		<td>
+			<input type="checkbox" name="search[ic-expired]" id="ic-expired"
+				value="1" {if !empty($search['ic-expired'])} checked{/if}
+		</td>
+	</tr>
+
 	<TR>
 		<TD class="bold nobr">
 			{icon name="user-id-number"} {trans("SSN:")}

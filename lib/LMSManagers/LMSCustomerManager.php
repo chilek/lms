@@ -1394,6 +1394,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                 $searchargs[] = 'ict = ' . intval($value);
                             }
                             break;
+                        case 'ic-expired':
+                            if (!empty($value)) {
+                                $searchargs[] = '(c.icexpires > 0 AND c.icexpires < ?NOW?)';
+                            }
+                            break;
                         case 'linktype':
                             $searchargs[] = '(EXISTS (
                                     SELECT 1 FROM vnodes
