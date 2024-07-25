@@ -73,6 +73,7 @@ class LMSSmarty extends Smarty
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'base64_encode', 'base64_encode');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'urlencode', 'urlencode');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'addslashes', 'addslashes');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'json_decode', 'json_decode');
 
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'format_bankaccount', 'format_bankaccount');
 
