@@ -254,10 +254,10 @@
 										{button type="link" icon="edit" tip="Edit" class="customer-call-view customer-call-edit-button"}
 										{button type="link" icon="save" tip="Save" class="customer-call-edit customer-call-save-button"}
 										{button type="link" icon="cancel" tip="Cancel" class="customer-call-edit customer-call-cancel-button"}
+										{button type="link" icon="download" tip="<!customer-call>Download"
+											href="?m=customercall&id={$call.id}"
+											download="{trans("phone-call")}-{$direction}-{$call.dt|date_format:"Y_m_d_H_i_s"}-{$call.phone}"}
 									{/if}
-									{button type="link" icon="download" tip="<!customer-call>Download"
-										href="?m=customercall&id={$call.id}"
-										download="{trans("phone-call")}-{$direction}-{$call.dt|date_format:"Y_m_d_H_i_s"}-{$call.phone}"}
 									{if ConfigHelper::checkPrivilege('customer_call_management')}
 										{button type="link" icon="delete" tip="Delete"
 											href="?m=customercall&id={$call.id}&cid={$customerinfo.id}&delete"}
