@@ -3642,18 +3642,21 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 array($callid, $customerid)
             );
         } else {
-            $customer_call_dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'customercalls';
-
             $call = $this->db->GetRow('SELECT * FROM customercalls WHERE id = ?', array($callid));
 
             if (empty($call)) {
                 return false;
             }
 
-            @unlink(
-                $customer_call_dir . DIRECTORY_SEPARATOR . date('Y-m-d', $call['dt'])
-                    . DIRECTORY_SEPARATOR . $call['filename']
-            );
+            if (strpos($call['filename'], DIRECTORY_SEPARATOR) === 0) {
+                $file_path = $call['filename'];
+            } else {
+                $file_path = STORAGE_DIR . DIRECTORY_SEPARATOR . 'customercalls' . DIRECTORY_SEPARATOR
+                    . date('Y-m-d', $call['dt']) . DIRECTORY_SEPARATOR . $call['filename'];
+            }
+
+            @unlink($file_path);
+
             return $this->db->Execute('DELETE FROM customercalls WHERE id = ?', array($callid));
         }
     }
@@ -3666,10 +3669,13 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             die;
         }
 
-        $customer_call_dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'customercalls'
-            . DIRECTORY_SEPARATOR . date('Y-m-d', $call['dt']);
+        if (strpos($call['filename'], DIRECTORY_SEPARATOR) === 0) {
+            $file_path = $call['filename'];
+        } else {
+            $file_path = STORAGE_DIR . DIRECTORY_SEPARATOR . 'customercalls' . DIRECTORY_SEPARATOR
+                . date('Y-m-d', $call['dt']) . DIRECTORY_SEPARATOR . $call['filename'];
+        }
 
-        $file_path = $customer_call_dir . DIRECTORY_SEPARATOR . $call['filename'];
         if (!is_file($file_path) || !is_readable($file_path)) {
             die;
         }
