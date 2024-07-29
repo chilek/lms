@@ -959,7 +959,7 @@ if ($report_type == 'full') {
                     $flags = $netnodes[$netnodename]['flags'];
                     $netnodes[$netnodename]['flags'] = array();
                     foreach ($NETWORK_NODE_FLAGS as $flag => $label) {
-                        if ($flags & $flag) {
+                        if (intval($flags) & $flag) {
                             $netnodes[$netnodename]['flags'][$flag] = $flag;
                         }
                     }
