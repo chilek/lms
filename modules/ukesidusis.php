@@ -144,7 +144,7 @@ if (empty($projects)) {
                 break;
         }
 
-        if (time() >= strtotime('2024/08/12')) {
+        if (time() >= strtotime('2024/10/14')) {
             fputcsv(
                 $fh,
                 array(
