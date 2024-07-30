@@ -592,7 +592,7 @@ if (isset($_POST['range'])) {
                         if (!$DB->GetOne('SELECT 1 FROM netranges WHERE buildingid = ? LIMIT 1', array($buildingid))) {
                             $DB->Execute(
                                 'INSERT INTO netranges
-                                (invprojectid, linktype, linktechnology, downlink, uplink, type, services, buildingid, foreignentity)
+                                (invprojectid, linktype, linktechnology, downlink, uplink, type, services, foreignentity, buildingid)
                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
                                 array_values($args)
                             );
