@@ -723,7 +723,8 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 lt.name AS street_type, addr.name as location_name,
                 addr.city as location_city_name, addr.street as location_street_name,
                 addr.city_id as location_city, addr.street_id as location_street,
-                addr.house as location_house, addr.flat as location_flat, addr.location
+                addr.house as location_house, addr.flat as location_flat, addr.location,
+                (CASE WHEN addr.city_id IS NOT NULL THEN 1 ELSE 0 END) AS teryt
             FROM voipaccounts v
                 LEFT JOIN serviceproviders sp      ON sp.id = v.serviceproviderid
                 LEFT JOIN vaddresses addr          ON addr.id = v.address_id
