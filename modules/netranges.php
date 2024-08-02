@@ -616,8 +616,8 @@ if (isset($_POST['range'])) {
                                     downlink = ?,
                                     uplink = ?,
                                     type = ?,
-                                    foreignentity = ?,
-                                    services = ?
+                                    services = ?,
+                                    foreignentity = ?
                                 WHERE id = ?',
                                 array_values($args)
                             );
