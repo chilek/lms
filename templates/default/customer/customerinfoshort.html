@@ -59,6 +59,24 @@
 	</TR>
 {/if}
 
+
+	{foreach $customerinfo.addresses as $address}
+		{if $address.location_address_type >= $smarty.const.LOCATION_ADDRESS}
+			<tr>
+				<td>
+					{if $address.location_address_type == $smarty.const.LOCATION_ADDRESS}
+						{icon name="customer-location"}
+					{else}
+						{icon name="default-customer-location"}
+					{/if}
+				</td>
+				<td class="nobr">
+					{if $address.location_name != ""}{$address.location_name|escape}<br>{/if}
+					{$address.location|escape}
+				</td>
+			</tr>
+		{/if}
+	{/foreach}
 {foreach $_CUSTOMERCONTACTTYPES as $type => $properties}
 	{if isset($customerinfo[$type|cat:"s"])}
 		<TR>
