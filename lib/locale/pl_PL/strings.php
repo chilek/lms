@@ -5524,6 +5524,8 @@ $_LANG['Ticket has already been assigned to other user in mean-time. Are you sur
 
 $_LANG['Enter document memo (optional)'] = 'Wprowadź notatkę widoczną na dokumentach (opcjonalnie)';
 $_LANG['Memo:'] = 'Notatka:';
+$_LANG['<!qs>document memo'] = 'notatka na dokumentach';
+$_LANG['Document memo:'] = 'Notatka na dokumentach:';
 
 $_LANG['close event'] = 'zamknij zdarzenie';
 

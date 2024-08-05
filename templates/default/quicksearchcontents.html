@@ -21,6 +21,7 @@
 		<option value="ssn"{if !isset($qs_properties.customer) || isset($qs_properties.customer.ssn)} selected{/if}>{trans("<!qs>SSN")}</option>
 		<option value="additional-info"{if !isset($qs_properties.customer) || isset($qs_properties.customer['additional-info'])} selected{/if}>{trans("<!qs>additional information")}</option>
 		<option value="notes"{if !isset($qs_properties.customer) || isset($qs_properties.customer['notes'])} selected{/if}>{trans("<!qs>notes")}</option>
+		<option value="documentmemo"{if !isset($qs_properties.customer) || isset($qs_properties.customer['documentmemo'])} selected{/if}>{trans("<!qs>document memo")}</option>
 	</select>
 </div>
 {/if}

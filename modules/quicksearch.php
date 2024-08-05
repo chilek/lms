@@ -105,7 +105,8 @@ switch ($mode) {
                     c.ten,
                     c.ssn,
                     c.info,
-                    c.notes
+                    c.notes,
+                    c.documentmemo
                 FROM customerview c
                 LEFT JOIN customer_addresses ca ON ca.customer_id = c.id AND ca.type IN ?
                 LEFT JOIN vaddresses va ON va.id = ca.address_id
@@ -124,7 +125,8 @@ switch ($mode) {
                     . (empty($properties) || isset($properties['ten']) ? " OR REPLACE(REPLACE(c.ten, '-', ''), ' ', '') ?LIKE? REPLACE(REPLACE($sql_search, '-', ''), ' ', '')" : '')
                     . (empty($properties) || isset($properties['ssn']) ? " OR REPLACE(REPLACE(c.ssn, '-', ''), ' ', '') ?LIKE? REPLACE(REPLACE($sql_search, '-', ''), ' ', '')" : '')
                     . (empty($properties) || isset($properties['additional-info']) ? " OR LOWER(c.info) ?LIKE? LOWER($sql_search)" : '')
-                    . (empty($properties) || isset($properties['notes']) ? " OR LOWER(c.notes) ?LIKE? LOWER($sql_search)" : '') . "
+                    . (empty($properties) || isset($properties['notes']) ? " OR LOWER(c.notes) ?LIKE? LOWER($sql_search)" : '')
+                    . (empty($properties) || isset($properties['documentmemo']) ? " OR LOWER(c.documentmemo) ?LIKE? LOWER($sql_search)" : '') . "
                 ORDER by deleted, customername, cc.contact, full_address
                 LIMIT ?",
                 array(
@@ -203,6 +205,8 @@ switch ($mode) {
                         $description = trans('Additional information:') . ' ' . $row['info'];
                     } else if ((empty($properties) || isset($properties['notes'])) && preg_match("~$search~i", $row['notes'])) {
                         $description = trans('Notes:') . ' ' . $row['notes'];
+                    } else if ((empty($properties) || isset($properties['documentmemo'])) && preg_match("~$search~i", $row['documentmemo'])) {
+                        $description = trans('Document memo:') . ' ' . $row['documentmemo'];
                     }
 
                     $result[$row['id']] = array_merge(
@@ -271,6 +275,9 @@ switch ($mode) {
         }
         if (empty($properties) || isset($properties['notes'])) {
             $s['notes'] = $search;
+        }
+        if (empty($properties) || isset($properties['documentmemo'])) {
+            $s['documentmemo'] = $search;
         }
 
         $SESSION->save('customersearch', $s);
