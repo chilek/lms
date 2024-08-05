@@ -670,6 +670,7 @@ version 28-git (????-??-??):
   - enhancement: uke/pit: implemented network node flags and services support (used among others
     for BSA and LLU flaging) [chilan]
   - enhancement: expired identity card filter in customer search form [chilan]
+  - enhancement: quick search customer by his document memo property [chilan]
 
 version 27.0 (2021-08-20):
 
