@@ -332,12 +332,13 @@ function CustomerAssignmentHelper(options) {
 		}));
 
 		selects.each(function() {
+			var select = $(this);
 			$(this).find('option').each(function() {
 				if (checked) {
 					var authtype = parseInt($(this).attr('data-tariffaccess'));
 					var location = $(this).attr('data-location');
 					$(this).toggle(
-						((authtype && (authtype & tariffAccess)) || !tariffAccess) &&
+						((authtype && (authtype & tariffAccess)) || !tariffAccess || select.attr('name').indexOf('sphones') != -1) &&
 						(location == location_select || !location_select.length)
 					);
 				} else {
