@@ -496,7 +496,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
                 [$table_name, $column_name, $column_type] = explode('.', $name);
                 if (preg_match('/^(?<type>[^\(]+)(?:\((?<length>[0-9]+)\))?$/', $column_type, $m)) {
                     $column_type = $m['type'];
-                    $column_length = $m['length'];
+                    $column_length = $m['length'] ?? null;
                 }
                 if (isset($column_length)) {
                     if ($column_type == 'varchar') {
