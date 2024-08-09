@@ -119,10 +119,10 @@
 				{icon name="options"}
 			</td>
 			<td class="nobr">
-				{trans("separate document")}
+				{trans("Document separation group")}
 			</td>
 			<td>
-				{if empty($assignment.separatedocument)}{trans("no")}{else}{trans("yes")}{/if}
+				{if empty($assignment.separatedocument) && !strlen($assignment.separatedocument)}—{else}{$assignment.separatedocument|escape}{/if}
 			</td>
 		</tr>
 		<tr>

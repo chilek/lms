@@ -1119,7 +1119,7 @@ CREATE TABLE assignments (
 	docid integer DEFAULT NULL
 		CONSTRAINT assignments_docid_fkey REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	commited smallint DEFAULT 1 NOT NULL,
-	separatedocument smallint DEFAULT 0 NOT NULL,
+	separatedocument varchar(100) DEFAULT NULL,
 	count numeric(9,3) DEFAULT 1 NOT NULL,
 	promotionschemaid integer DEFAULT NULL
 		CONSTRAINT assignments_promotionschemaid_fkey REFERENCES promotionschemas (id) ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -4420,6 +4420,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024072200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024080900');
 
 COMMIT;

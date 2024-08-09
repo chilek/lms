@@ -2070,6 +2070,7 @@ $_LANG['Sending messages to:'] = 'Wysyłanie wiadomości do:';
 $_LANG['Send'] = 'Wyślij';
 $_LANG['Send registration info'] = 'Wyślij dane rejestracyjne';
 $_LANG['separate document'] = 'oddzielny dokument';
+$_LANG['Document separation group'] = 'Grupa separowania dokumentów';
 $_LANG['separate document position'] = 'oddzielna pozycja w dokumencie';
 $_LANG['Serial number:'] = 'Numer seryjny:';
 $_LANG['Serial number'] = 'Numer seryjny';

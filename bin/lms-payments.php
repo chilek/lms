@@ -940,6 +940,7 @@ $paytimes = array();
 $paytypes = array();
 $addresses = array();
 $numberplans = array();
+$separatedocuments = array();
 $divisions = array();
 
 $old_locale = setlocale(LC_NUMERIC, '0');
@@ -1586,7 +1587,7 @@ foreach ($assigns as $assign) {
         $desc .= ' ' . $suspension_description;
     }
 
-    if (!isset($invoices[$cid]) || $assign['separatedocument']) {
+    if (!isset($invoices[$cid])) {
         $invoices[$cid] = 0;
     }
     if (!isset($doctypes[$cid])) {
@@ -1600,6 +1601,9 @@ foreach ($assigns as $assign) {
     }
     if (!isset($numberplans[$cid])) {
         $numberplans[$cid] = 0;
+    }
+    if (!isset($separatedocuments[$cid])) {
+        $separatedocuments[$cid] = 0;
     }
 
     if ($assign['price'] != 0 || $empty_billings && $assign['liabilityid'] == 'set') {
@@ -1682,6 +1686,7 @@ foreach ($assigns as $assign) {
                 || !isset($paytimes[$cid]) || $paytimes[$cid] != $inv_paytime
                 || $paytypes[$cid] != $inv_paytype
                 || $numberplans[$cid] != $plan || $assign['recipient_address_id'] != $addresses[$cid]
+                || $separatedocuments[$cid] != $assign['separatedocument']
                 || !isset($currencies[$cid]) || $currencies[$cid] != $currency || $netflags[$cid] != $netflag) {
                 if (!array_key_exists($plan, $numbertemplates)) {
                     $numbertemplates[$plan] = $DB->GetOne("SELECT template FROM numberplans WHERE id = ?", array($plan));
@@ -1813,6 +1818,7 @@ foreach ($assigns as $assign) {
                 $paytypes[$cid] = $inv_paytype;
                 $addresses[$cid] = $assign['recipient_address_id'];
                 $numberplans[$cid] = $plan;
+                $separatedocuments[$cid] = $assign['separatedocument'];
             }
 
             if ($splitpayment) {

@@ -903,8 +903,18 @@
 						</label>
 						<br>
 						<label>
-							<input type="checkbox" name="{$variable_prefix}[separatedocument]" value="1"{if $variables.separatedocument} checked{/if}>
-							{trans("separate document")}
+							{trans("Document separation group")}
+							<input type="hidden" id="document-separation-group-value" name="{$variable_prefix}[separatedocumentvalue]">
+							<input type="hidden" id="document-separation-group" name="{$variable_prefix}[separatedocument]">
+							<select id="separatedocument" class="lms-ui-combobox"
+								data-value="{$variables.separatedocumentvalue}"
+								data-id-value="{$variables.separatedocument}"
+								data-alt-field="#document-separation-group"
+								data-alt-invalid-field="#document-separation-group-value">
+								{foreach $document_separation_groups as $document_separation_group}
+									<option value="{$document_separation_group}"{if $variables.separatedocument == $document_separation_group} selected{/if}>{$document_separation_group|escape}</option>
+								{/foreach}
+							</select>
 						</label>
 						<br>
 						<label>

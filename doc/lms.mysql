@@ -1260,7 +1260,7 @@ CREATE TABLE assignments (
 	recipient_address_id int(11),
 	docid int(11) DEFAULT NULL,
 	commited tinyint(1) NOT NULL DEFAULT '1',
-	separatedocument tinyint(1) NOT NULL DEFAULT 0,
+	separatedocument varchar(100) DEFAULT NULL,
 	count numeric(9,3) DEFAULT 1 NOT NULL,
 	promotionschemaid int(11) DEFAULT NULL,
 	separateitem tinyint(1) NOT NULL DEFAULT 0,
@@ -4373,4 +4373,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024072200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024080900');

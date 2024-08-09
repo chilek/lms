@@ -265,7 +265,17 @@ if (is_array($defaultTaxIds)) {
     $defaultTaxId = 0;
 }
 $SMARTY->assign('defaultTaxId', $defaultTaxId);
-$SMARTY->assign('assignments', $LMS->GetCustomerAssignments($customer['id'], true, false));
+$assignments = $LMS->GetCustomerAssignments($customer['id'], true, false);
+$SMARTY->assign('assignments', $assignments);
 $SMARTY->assign('customerinfo', $customer);
+
+$document_separation_groups = array();
+foreach ($assignments as $assignment) {
+    if (isset($assignment['separatedocument'])) {
+        $document_separation_groups[$assignment['separatedocument']] = $assignment['separatedocument'];
+    }
+}
+sort($document_separation_groups, SORT_STRING);
+$SMARTY->assign('document_separation_groups', $document_separation_groups);
 
 $SMARTY->display('customer/customerassignmentsedit.html');

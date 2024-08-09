@@ -420,7 +420,7 @@ if (isset($_POST['assignment'])) {
             'count' => $count,
             'note' => htmlspecialchars($a['note']),
             'invoice' => isset($a['invoice']) ? intval($a['invoice']) : 0,
-            'separatedocument' => empty($a['separatedocument']) ? 0 : 1,
+            'separatedocument'  => strlen($a['separatedocumentvalue']) ? $a['separatedocumentvalue'] : (strlen($a['separatedocument']) ? $a['separatedocument'] : null),
             'separateitem' => empty($a['separateitem']) ? 0 : 1,
             'settlement' => empty($a['settlement']) ? 0 : 1,
             'datefrom' => $from,
@@ -639,6 +639,17 @@ if (!empty($a['nodes']) && is_array($a['nodes'])) {
     $a['nodes'] = array_flip($a['nodes']);
 }
 $SMARTY->assign('assignment', $a);
-$SMARTY->assign('assignments', $LMS->GetCustomerAssignments($customer['id'], true, false));
+$assignments = $LMS->GetCustomerAssignments($customer['id'], true, false);
+$SMARTY->assign('assignments', $assignments);
 $SMARTY->assign('customerinfo', $customer);
+
+$document_separation_groups = array();
+foreach ($assignments as $assignment) {
+    if (isset($assignment['separatedocument'])) {
+        $document_separation_groups[$assignment['separatedocument']] = $assignment['separatedocument'];
+    }
+}
+sort($document_separation_groups, SORT_STRING);
+$SMARTY->assign('document_separation_groups', $document_separation_groups);
+
 $SMARTY->display('customer/customerassignmentsedit.html');
