@@ -671,6 +671,7 @@ version 28-git (????-??-??):
     for BSA and LLU flaging) [chilan]
   - enhancement: expired identity card filter in customer search form [chilan]
   - enhancement: quick search customer by his document memo property [chilan]
+  - enhancement: document separation group for assignments [chilan]
 
 version 27.0 (2021-08-20):
 
