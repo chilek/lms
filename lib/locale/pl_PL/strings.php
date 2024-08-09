@@ -4944,6 +4944,7 @@ $_LANG['Access:'] = 'Dostęp:';
 $_LANG['<!access>— any —'] = '— dowolny —';
 
 $_LANG['Existing assignments:'] = 'Istniejące zobowiązania:';
+$_LANG['Existing assignments'] = 'Istniejące zobowiązania';
 $_LANG['<!existingassignment>keep'] = 'zachowaj';
 $_LANG['<!existingassignment>suspend'] = 'zawieś';
 $_LANG['<!existingassignment>cut'] = 'skróć';
@@ -4987,6 +4988,7 @@ $_LANG['Click here to autocomplete company data from GUS REGON database'] = 'Kli
 $_LANG['Click here to autocomplete zip code'] = 'Kliknij tutaj, aby automatycznie uzupełnić kod pocztowy';
 
 $_LANG['settlement type of first deficient period:'] = 'sposób wyrównania początkowego okresu niepełnego:';
+$_LANG['settlement type of first deficient period'] = 'sposób wyrównania początkowego okresu niepełnego';
 $_LANG['<!settlement>— none —'] = '— brak —';
 $_LANG['<!settlement>next period'] = 'następny okres';
 $_LANG['<!settlement>current period'] = 'bieżący okres';
