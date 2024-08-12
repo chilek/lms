@@ -322,7 +322,7 @@ CREATE TABLE customers (
 	rbename varchar(255)	DEFAULT '' NOT NULL,
     ict smallint        DEFAULT 0 NOT NULL, -- typ dokumentu tożsamości
 	icn varchar(255) 	DEFAULT '' NOT NULL, -- numer dokumentu tożsamości
-    icexpires integer 	DEFAULT NULL, -- ważność dokumentu tożsamości
+    icexpires bigint 	DEFAULT NULL, -- ważność dokumentu tożsamości
 	info text		DEFAULT '' NOT NULL,
 	notes text		DEFAULT '' NOT NULL,
 	creationdate integer 	DEFAULT 0 NOT NULL,
@@ -4420,6 +4420,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024080900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024081200');
 
 COMMIT;

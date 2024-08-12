@@ -490,7 +490,7 @@ CREATE TABLE customers (
   rbename varchar(255)	NOT NULL DEFAULT '',
   ict smallint NOT NULL DEFAULT 0,
   icn varchar(255) 	NOT NULL DEFAULT '',
-  icexpires int(11)	DEFAULT NULL,
+  icexpires int(16)	DEFAULT NULL,
   info text 		NOT NULL,
   notes text 		NOT NULL DEFAULT '',
   creationdate int(11) 	NOT NULL DEFAULT '0',
@@ -4373,4 +4373,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024080900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024081200');
