@@ -23,9 +23,9 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE networks MODIFY COLUMN authtype smallint DEFAUL 0 NOT NULL");
-$this->Execute("ALTER TABLE nodes MODIFY COLUMN authtype smallint DEFAUL 0 NOT NULL");
-$this->Execute("ALTER TABLE tariffs MODIFY COLUMN authtype smallint DEFAUL 0 NOT NULL");
+$this->Execute("ALTER TABLE networks MODIFY COLUMN authtype smallint DEFAULT 0 NOT NULL");
+$this->Execute("ALTER TABLE nodes MODIFY COLUMN authtype smallint DEFAULT 0 NOT NULL");
+$this->Execute("ALTER TABLE tariffs MODIFY COLUMN authtype smallint DEFAULT 0 NOT NULL");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2024071600', 'dbversion'));
 
