@@ -672,6 +672,9 @@ version 28-git (????-??-??):
   - enhancement: expired identity card filter in customer search form [chilan]
   - enhancement: quick search customer by his document memo property [chilan]
   - enhancement: document separation group for assignments [chilan]
+  - improvement: 'default_info', 'default_notes', 'default_message' and 'default_documentmemo' configuration variable
+    in 'customers' section allow to initialise corresponding customer properties with specific value on add customer
+    form start [chilan]
 
 version 27.0 (2021-08-20):
 
