@@ -404,6 +404,11 @@ if (isset($_POST['customeradd'])) {
         },
         preg_split("/([\s]+|[\s]*,[\s]*)/", strtolower($customer_flags), -1, PREG_SPLIT_NO_EMPTY)
     );
+
+    $customeradd['info'] = ConfigHelper::getConfig('customers.default_info', '', true);
+    $customeradd['notes'] = ConfigHelper::getConfig('customers.default_notes', '', true);
+    $customeradd['message'] = ConfigHelper::getConfig('customers.default_message', '', true);
+    $customeradd['documentmemo'] = ConfigHelper::getConfig('customers.default_documentmemo', '', true);
 }
 
 if (!isset($customeradd['cutoffstopindefinitely'])) {
