@@ -137,6 +137,20 @@ if (isset($netdev)) {
         $error['netdev[teryt]'] = trans('TERYT address is required!');
     }
 
+    $allow_empty_streets = ConfigHelper::checkConfig('teryt.allow_empty_streets', true);
+    $allow_empty_building_numbers = ConfigHelper::checkConfig('teryt.allow_empty_building_numbers', true);
+    if (empty($netdev['ownerid'])) {
+        if ($allow_empty_streets && empty($netdev['location_street'])
+            || $allow_empty_building_numbers && !strlen($netdev['location_house'])) {
+            if (!strlen($netdev['longitude'])) {
+                $error['netdev[longitude]'] = trans('Longitude and latitude cannot be empty!');
+            }
+            if (!strlen($netdev['latitude'])) {
+                $error['netdev[latitude]'] = trans('Longitude and latitude cannot be empty!');
+            }
+        }
+    }
+
     if (!empty($netdev['location_country_id'])) {
         Localisation::setSystemLanguage($LMS->getCountryCodeById($netdev['location_country_id']));
     }

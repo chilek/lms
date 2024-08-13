@@ -3931,6 +3931,12 @@ class LMS
         return $manager->isTerritState($state);
     }
 
+    public function isCityWithStreets($cityid)
+    {
+        $manager = $this->getLocationManager();
+        return $manager->isCityWithStreets($cityid);
+    }
+
     public function GetNAStypes()
     {
         return $this->DB->GetAllByKey('SELECT id, name FROM nastypes ORDER BY name', 'id');

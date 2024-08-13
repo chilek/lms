@@ -324,6 +324,8 @@ if (!empty($data['cityid'])) {
 $data['varname']   = $_GET['name'] ?? null;
 $data['formname']  = $_GET['form'] ?? null;
 $data['boxid']     = ( !empty($_GET['boxid'])) ? $_GET['boxid'] : null;
+$data['allow_empty_streets'] = !empty($_GET['allow_empty_streets']);
+$data['allow_empty_building_numbers'] = !empty($_GET['allow_empty_building_numbers']);
 $data['countries'] = $DB->GetAll('SELECT id, name FROM countries');
 
 $SMARTY->assign('data', $data);

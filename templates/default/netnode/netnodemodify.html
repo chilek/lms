@@ -148,6 +148,8 @@
 					location_zip         = "{$netnode.location_zip}"
 					location_country_id  = "{$netnode.location_country}"
 					teryt                = "{$netnode.teryt}"
+					allow_empty_streets = ConfigHelper::checkConfig('teryt.allow_empty_streets', true)
+					allow_empty_building_numbers = ConfigHelper::checkConfig('teryt.allow_empty_building_numbers', true)
 				}
 			{/box_row}
 

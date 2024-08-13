@@ -205,36 +205,38 @@ if ( typeof $ !== 'undefined' ) {
 		});
 
         // open location dialog window if teryt is checked
-        $('body').on('click', '.teryt-address-button', function() {
+		$('body').on('click', '.teryt-address-button', function () {
 
-            var box = $( this ).closest( ".lms-ui-address-box" );
-
+			var box = $(this).closest(".lms-ui-address-box");
+			var locationBox = box.closest(".location-box");
 			var addressType = parseInt(box.closest('.location-box-expandable').find('[data-address="address_type"]').val());
 
-            // if teryt checkbox is not checked during teryt button click then
-            // we check it automatically for user convenience
-            if ( ! box.find("input[data-address='teryt-checkbox']").is(':checked') ) {
-                box.find("input[data-address='teryt-checkbox']").prop('checked', true);
-                // simulate click for update input state
-                $( '.lms-ui-address-teryt-checkbox' ).trigger( 'change' );
-            }
+			// if teryt checkbox is not checked during teryt button click then
+			// we check it automatically for user convenience
+			if (!box.find("input[data-address='teryt-checkbox']").is(':checked')) {
+				box.find("input[data-address='teryt-checkbox']").prop('checked', true);
+				// simulate click for update input state
+				$('.lms-ui-address-teryt-checkbox').trigger('change');
+			}
 
-            var city   = box.find("input[data-address='city-hidden']").val();
-            if (city == '' && lmsSettings.defaultTerytCity) {
-                city = lmsSettings.defaultTerytCity;
-            }
-            var street = box.find("input[data-address='street-hidden']").val();
+			var city = box.find("input[data-address='city-hidden']").val();
+			if (city == '' && lmsSettings.defaultTerytCity) {
+				city = lmsSettings.defaultTerytCity;
+			}
+			var street = box.find("input[data-address='street-hidden']").val();
 
 			openPopupWindow({
 				url: '?m=chooselocation' + (addressType ? '&addresstype=' + addressType : '') +
-					'&city=' + city + '&street=' + street + "&boxid=" + box.attr('id'),
+					'&city=' + city + '&street=' + street + "&boxid=" + box.attr('id') +
+					(locationBox.is('[data-allow-empty-streets]') ? '&allow_empty_streets=1' : '') +
+					(locationBox.is('[data-allow-empty-building-numbers]') ? '&allow_empty_building_numbers=1' : ''),
 				selector: this,
 				title: $t("Choose TERYT location"),
-				onLoaded: function() {
+				onLoaded: function () {
 					$('#search [name="searchcity"]').focus();
 				}
 			});
-        });
+		});
 
         // disable and enable inputs after click
         $('body').on('change', '.lms-ui-address-teryt-checkbox', function() {

@@ -768,4 +768,39 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
             array($state)
         ) > 0;
     }
+
+    public function isCityWithStreets($cityid)
+    {
+        // exceptional query for cities with subcities
+        $street_count = $this->db->GetOne(
+            'SELECT
+                COUNT(lst.id) AS street_count
+            FROM location_cities lc
+            JOIN location_boroughs lb ON lb.id = lc.boroughid
+            JOIN location_districts ld ON ld.id = lb.districtid
+            JOIN location_boroughs lb2 ON lb2.districtid = lb.districtid AND lb2.type IN (8, 9)
+            JOIN location_cities lc2 ON lc2.boroughid = lb2.id
+            JOIN location_streets lst ON lst.cityid = lc2.id
+            WHERE lc.id = ?
+                AND lb.type = 1',
+            array(
+                $cityid,
+            )
+        );
+        if (!empty($street_count)) {
+            return true;
+        }
+
+        $street_count = $this->db->GetOne(
+            'SELECT
+                COUNT(lst.id) AS street_count
+            FROM location_cities lc
+            LEFT JOIN location_streets lst ON lst.cityid = lc.id
+            WHERE lc.id = ?',
+            array(
+                $cityid,
+            )
+        );
+        return !empty($street_count);
+    }
 }

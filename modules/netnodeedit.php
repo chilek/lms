@@ -121,6 +121,20 @@ if (isset($netnodedata)) {
         $error['netnode[teryt]'] = trans('TERYT address is required!');
     }
 
+    $allow_empty_streets = ConfigHelper::checkConfig('teryt.allow_empty_streets', true);
+    $allow_empty_building_numbers = ConfigHelper::checkConfig('teryt.allow_empty_building_numbers', true);
+    if (empty($netnodedata['ownerid'])) {
+        if ($allow_empty_streets && empty($netnodedata['location_street'])
+            || $allow_empty_building_numbers && !strlen($netnodedata['location_house'])) {
+            if (!strlen($netnodedata['longitude'])) {
+                $error['netnode[longitude]'] = trans('Longitude and latitude cannot be empty!');
+            }
+            if (!strlen($netnodedata['latitude'])) {
+                $error['netnode[latitude]'] = trans('Longitude and latitude cannot be empty!');
+            }
+        }
+    }
+
     if (!$error) {
         if ($netnodedata['projectid'] == -1) {
             $netnodedata['projectid'] = $LMS->AddProject($netnodedata);

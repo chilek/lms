@@ -526,7 +526,14 @@ class LMSSmartyPlugins
             unset($prefix);
         }
 
-        echo '<div class="location-box">';
+        echo '<div class="location-box"';
+        if (!empty($params['allow_empty_streets'])) {
+            echo ' data-allow-empty-streets="true"';
+        }
+        if (!empty($params['allow_empty_building_numbers'])) {
+            echo ' data-allow-empty-building-numbers="true"';
+        }
+        echo '>';
 
         echo '<fieldset class="lms-ui-address-box" id="' . $LOCATION_ID . '">';
 

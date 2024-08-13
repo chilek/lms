@@ -116,7 +116,10 @@
 						location_flat="{$netdev.location_flat}"
 						location_zip="{$netdev.location_zip}"
 						location_country_id="{$netdev.location_country_id}"
-						teryt="{$netdev.teryt}"}
+						teryt="{$netdev.teryt}"
+						allow_empty_streets = ConfigHelper::checkConfig('teryt.allow_empty_streets', true)
+						allow_empty_building_numbers = ConfigHelper::checkConfig('teryt.allow_empty_building_numbers', true)
+					}
 				{/box_row}
 
 				{box_row}

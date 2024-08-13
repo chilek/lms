@@ -78,7 +78,9 @@
 </script>
 {/if}
 
-<table id="location-table" cellpadding="3">
+<table id="location-table" cellpadding="3"
+	{if !empty($data.allow_empty_streets)} data-allow-empty-streets="true"{/if}
+	{if !empty($data.allow_empty_building_numbers)} data-allow-empty-building-numbers="true"{/if}>
 	<colgroup>
 		<col style="width: 1%;">
 		<col style="width: 99%;">
@@ -133,6 +135,9 @@
 		<td>{trans("Street")}:</td>
 		<td>
 			<select id="street_sel" name="street" class="location-property-selection" {tip text="Select street"}>
+				{if !empty($data.allow_empty_streets)}
+					<option value="">{trans("<!street-name>— none —")}</option>
+				{/if}
 				{foreach $streets as $street}
 					<option value="{$street.id}"
 						data-street-type="{$street.typename}"
@@ -213,7 +218,12 @@ function update_selection(type, data, selected) {
 	var select = $('#' + type + '_sel');
 	var options = '';
 
-	options += '<option value="0"></option>';
+
+	if (type == 'street') {
+		options += '<option value="">{trans("<!street-name>— none —")}</option>';
+	} else {
+		options += '<option value="0"></option>';
+	}
 
 	$.each(data, function (index, value) {
 		if (type == 'street' && value.name.length) {
@@ -257,13 +267,16 @@ function submit_location() {
     var flat   = $('#flat_input' );
     var cr     = $('#city');
     var tmp, input_str;
+	var locationTable = $('#location-table');
+	var allowEmptyStreets = locationTable.is('[data-allow-empty-streets]');
+	var allowEmptyBuildingNumbers = locationTable.is('[data-allow-empty-building-numbers]');
 
     if (!cr.is(':visible') || !city.val()) {
 		window.parent.alertDialog($t("City has not been selected!"));
 		return;
     }
 
-    if (!house.val().length) {
+    if (!allowEmptyBuildingNumbers && !house.val().length) {
 		window.parent.alertDialog($t("House number is required!"));
 		return;
     }
