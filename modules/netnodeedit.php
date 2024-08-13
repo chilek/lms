@@ -123,7 +123,7 @@ if (isset($netnodedata)) {
 
     $allow_empty_streets = ConfigHelper::checkConfig('teryt.allow_empty_streets', true);
     $allow_empty_building_numbers = ConfigHelper::checkConfig('teryt.allow_empty_building_numbers', true);
-    if (empty($netnodedata['ownerid'])) {
+    if (empty($netnodedata['ownerid']) && !empty($netnodedata['teryt'])) {
         if ($allow_empty_streets && empty($netnodedata['location_street'])
             || $allow_empty_building_numbers && !strlen($netnodedata['location_house'])) {
             if (!strlen($netnodedata['longitude'])) {
