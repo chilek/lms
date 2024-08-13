@@ -675,6 +675,9 @@ version 28-git (????-??-??):
   - improvement: 'default_info', 'default_notes', 'default_message' and 'default_documentmemo' configuration variable
     in 'customers' section allow to initialise corresponding customer properties with specific value on add customer
     form start [chilan]
+  - improvement: netnode and netdevices addresses can have empty street and building components if longitude and latitude
+    were specified (this behavior is active when corresponding configuration variables 'teryt.allow_empty_streets'
+    and 'teryt.allow_empty_building_numbers' are set to 'true' - their default values) [chilan]
 
 version 27.0 (2021-08-20):
 
