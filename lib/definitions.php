@@ -1463,6 +1463,39 @@ $USERPANEL_AUTH_TYPES = array(
         'label_secret' => trans('PIN'),
         'selection' => trans('SSN/TEN and PIN'),
     ),
+    7 => array(
+        'label' => trans('Customer External ID/PIN'),
+        'label_secret' => trans('PIN'),
+        'selection' => trans('Customer External ID and PIN'),
+        'options-label' => trans('Customer External ID/PIN authentication options'),
+        'options' => array(
+            array(
+                'type' => 'single-select',
+                'name' => 'authentication_customer_extid_service_provider_id',
+                'label' => trans('Service provider'),
+                'getter' => function () {
+                    $DB = LMSDB::getInstance();
+                    $options = array(
+                        array(
+                            'id' => '',
+                            'label' => trans('<!service-provider>— default —'),
+                        ),
+                    );
+                    $db_options = $DB->GetAll(
+                        'SELECT
+                            id,
+                            name AS label
+                        FROM serviceproviders
+                        ORDER BY name'
+                    );
+                    if (!empty($db_options)) {
+                        $options = array_merge($options, $db_options);
+                    }
+                    return $options;
+                }
+            ),
+        ),
+    ),
 );
 
 const EVENT_OTHER = 1,

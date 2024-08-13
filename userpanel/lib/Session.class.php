@@ -793,6 +793,52 @@ class Session
         return $authinfo;
     }
 
+    private function GetCustomerIDByExtIDAndPIN()
+    {
+        if (!$this->validPIN()) {
+            return null;
+        }
+
+        $allowed_customer_status = $this->getAllowedCustomerStatus();
+
+        $customer_extid_service_provider_id = intval(ConfigHelper::getConfig('userpanel.authentication_customer_extid_service_provider_id', ''));
+        $authinfo['id'] = $this->db->GetOne(
+            'SELECT
+                c.id
+            FROM customers c
+            JOIN customerextids e ON e.customerid = c.id
+            WHERE c.deleted = 0
+                AND e.extid = ?
+                AND e.serviceproviderid ' . (empty($customer_extid_service_provider_id) ? ' IS NULL' : ' = ' . $customer_extid_service_provider_id) . '
+                ' . (isset($allowed_customer_status) ? ' AND c.status IN (' . implode(', ', $allowed_customer_status) . ')' : '') . '
+                LIMIT 1',
+            array(
+                $this->login,
+            )
+        );
+
+        if (empty($authinfo['id'])) {
+            return null;
+        }
+
+        $customer = $this->db->GetRow(
+            'SELECT pin, pinlastchange
+            FROM customers
+            WHERE id = ?',
+            array(
+                $authinfo['id'],
+            )
+        );
+
+        if ($this->checkPIN($customer['pin'], $customer['pinlastchange'])) {
+            $authinfo['passwd'] = $customer['pin'];
+        } else {
+            $authinfo['passwd'] = null;
+        }
+
+        return $authinfo;
+    }
+
     private function GetCustomerAuthInfo($customerid)
     {
         return $this->db->GetRow(
@@ -872,6 +918,9 @@ class Session
                 break;
             case 6:
                 $authinfo = $this->GetCustomerIDBySsnTenAndPIN();
+                break;
+            case 7:
+                $authinfo = $this->GetCustomerIDByExtIDAndPIN();
                 break;
         }
 

@@ -205,10 +205,54 @@
                 <select name="auth_type" {tip text="Userpanel authentication type" } form="general-settings-form">
                     {foreach $_USERPANEL_AUTH_TYPES as $typeidx => $type}
                         <option value="{$typeidx}"{if $auth_type == $typeidx} selected{/if}>{$type.selection}</option>
+                        {if isset($type['options'])}
+                            {capture append="auth_option_elements"}
+                            <tr class="auth-options" data-auth-type="{$typeidx}">
+                                <td>
+                                </td>
+                                <td>
+                                    <fieldset>
+                                        <legend class="bold">
+                                            {$type['options-label']}
+                                        </legend>
+                                        <table>
+                                            {foreach $type['options'] as $option_idx => $option}
+                                                <tr>
+                                                    <td>
+                                                        <label for="auth-option-{$typeidx}-{$option_idx}">
+                                                            {$option.label}
+                                                        </label>
+                                                    </td>
+                                                    <td>
+                                                        {if $option.type == 'single-select'}
+                                                            {$auth_options = call_user_func($option['getter'])}
+                                                            <select id="auth-option-{$typeidx}-{$option_idx}"
+                                                                name="{$option.name}"
+                                                                form="general-settings-form">
+                                                                {foreach $auth_options as $auth_option_idx => $auth_option}
+                                                                    <option value="{$auth_option.id}"
+                                                                        {if $auth_option.id == $options[$option.name]} selected{/if}>{$auth_option.label}</option>
+                                                                {/foreach}
+                                                            </select>
+                                                        {/if}
+                                                    </td>
+                                                </tr>
+                                            {/foreach}
+                                        </table>
+                                    </fieldset>
+                                </td>
+                            </tr>
+                            {/capture}
+                       {/if}
                     {/foreach}
                 </select>
             </td>
         </tr>
+        {if !empty($auth_option_elements)}
+            {foreach $auth_option_elements as $auth_option_element}
+                {$auth_option_element}
+            {/foreach}
+        {/if}
         <tr>
             <td class="nobr">
                 <label for="allowed_customer_status">
@@ -377,6 +421,11 @@
         $('#sms_credential_reminders').change(function () {
             $('.sms-credential-reminders').toggle($(this).prop('checked'));
         }).trigger('change');
+
+        $('[name="auth_type"]').change(function () {
+            $(".auth-options").find('fieldset').toggleClass('lms-ui-disabled').find("[form]").prop('disabled', true).toggleClass('lms-ui-disabled');
+            $('.auth-options[data-auth-type="' + $(this).val() + '"]').find('fieldset').removeClass('lms-ui-disabled').find("[form]").prop('disabled', false).removeClass('lms-ui-disabled');
+        }).change();
 	});
 
 </script>

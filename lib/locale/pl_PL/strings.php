@@ -4444,6 +4444,10 @@ $_LANG['Customer e-mail'] = 'E-mail klienta';
 $_LANG['SSN/TEN:'] = 'PESEL/NIP:';
 $_LANG['SSN/TEN'] = 'PESEL/NIP';
 $_LANG['SSN/TEN and PIN'] = 'PESEL/NIP i PIN';
+$_LANG['Customer External ID/PIN'] = 'Zewnętrzny ID klienta/PIN';
+$_LANG['Customer External ID and PIN'] = 'Zewnętrzny ID klienta i PIN';
+$_LANG['Customer External ID/PIN authentication options'] = 'Opcje uwierzytelniania zewnętrznym ID klienta i PIN';
+$_LANG['<!service-provider>— default —'] = '— domyślny —';
 
 $_LANG['Contracts'] = 'Umowy';
 $_LANG['without contracts'] = 'bez umów';
