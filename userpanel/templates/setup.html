@@ -423,7 +423,7 @@
         }).trigger('change');
 
         $('[name="auth_type"]').change(function () {
-            $(".auth-options").find('fieldset').toggleClass('lms-ui-disabled').find("[form]").prop('disabled', true).toggleClass('lms-ui-disabled');
+            $(".auth-options").find('fieldset').addClass('lms-ui-disabled').find("[form]").prop('disabled', true).addClass('lms-ui-disabled');
             $('.auth-options[data-auth-type="' + $(this).val() + '"]').find('fieldset').removeClass('lms-ui-disabled').find("[form]").prop('disabled', false).removeClass('lms-ui-disabled');
         }).change();
 	});
