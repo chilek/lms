@@ -539,6 +539,23 @@ function CustomerAssignmentHelper(options) {
 					options += '</optgroup>';
 				}
 
+				if (data.hasOwnProperty('document-separation-groups')) {
+					var values = [
+						{
+							value: "",
+							text: ""
+						}
+					];
+					$.each(data['document-separation-groups'], function (key, item) {
+						values.push({
+							value: escapeHtml(item),
+							text: escapeHtml(item)
+						});
+					});
+					$('#separatedocument').scombobox('fill', values);
+					$('#separatedocument').scombobox('val', '');
+				}
+
 				$('#location-select').toggleClass('lms-ui-error', location_count > 1).html(options);
 				initAdvancedSelects('#location-select');
 				$('#location-select').chosen().change(function() {

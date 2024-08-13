@@ -30,6 +30,7 @@ $data = array(
     'netdevnodes' => array(),
     'voipaccounts' => array(),
     'addresses' => array(),
+    'document-separation-groups' => array(),
 );
 
 if (isset($_GET['customerid'])) {
@@ -39,6 +40,15 @@ if (isset($_GET['customerid'])) {
     $data['netdevnodes'] = $LMS->getCustomerNetDevNodes($_GET['customerid']);
     $data['voipaccounts'] = $LMS->GetCustomerVoipAccounts($_GET['customerid']);
     $data['addresses'] = $LMS->getCustomerAddresses($_GET['customerid']);
+    $data['document-separation-groups'] = $DB->GetCol(
+        'SELECT DISTINCT separatedocument
+        FROM assignments
+        WHERE customerid = ?
+            AND separatedocument IS NOT NULL',
+        array(
+            $_GET['customerid'],
+        )
+    );
 }
 
 header('Content-Type: application/json');
