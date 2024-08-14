@@ -190,6 +190,10 @@ DROP TABLE IF EXISTS tsigkeys;
 SET FOREIGN_KEY_CHECKS = 1;
 SET SESSION sql_mode   = '';
 
+DROP FUNCTION IF EXISTS UNIX_TIMESTAMP64;
+CREATE FUNCTION UNIX_TIMESTAMP64() RETURNS BIGINT DETERMINISTIC
+    RETURN TIMESTAMPDIFF(SECOND, DATE '1970-01-01', NOW());
+
 # --------------------------------------------------------
 #
 # Structure of table  users
@@ -211,16 +215,16 @@ CREATE TABLE users (
   netpasswd varchar(255)   DEFAULT NULL,
   passwdforcechange smallint NOT NULL DEFAULT 0,
   ntype smallint        DEFAULT NULL,
-  lastlogindate int(11) NOT NULL DEFAULT '0',
+  lastlogindate int(16) NOT NULL DEFAULT 0,
   lastloginip varchar(16) NOT NULL DEFAULT '',
-  failedlogindate int(11) NOT NULL DEFAULT '0',
+  failedlogindate int(16) NOT NULL DEFAULT 0,
   failedloginip varchar(16) NOT NULL DEFAULT '',
   deleted tinyint(1)    NOT NULL DEFAULT '0',
-  passwdexpiration int(11) NOT NULL DEFAULT '0',
-  passwdlastchange int(11) NOT NULL DEFAULT '0',
+  passwdexpiration int(16) NOT NULL DEFAULT 0,
+  passwdlastchange int(16) NOT NULL DEFAULT 0,
   access tinyint(1) NOT NULL DEFAULT '1',
-  accessfrom int(11) NOT NULL DEFAULT '0',
-  accessto int(11) NOT NULL DEFAULT '0',
+  accessfrom int(16) NOT NULL DEFAULT 0,
+  accessto int(16) NOT NULL DEFAULT 0,
   settings mediumtext NOT NULL DEFAULT '',
   persistentsettings mediumtext NOT NULL DEFAULT '',
   twofactorauth smallint NOT NULL DEFAULT 0,
@@ -238,7 +242,7 @@ CREATE TABLE twofactorauthcodehistory (
     id int(11) NOT NULL auto_increment,
     userid int(11) NOT NULL,
     authcode varchar(10) NOT NULL,
-    uts int(11) NOT NULL,
+    uts int(16) NOT NULL,
     ipaddr int(16) DEFAULT NULL,
     success smallint NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
@@ -257,7 +261,7 @@ CREATE TABLE twofactorauthtrusteddevices (
     cookiename varchar(64)  NOT NULL,
     useragent  varchar(256) NOT NULL,
     ipaddr int(16) DEFAULT NULL,
-    expires    int(11)      NOT NULL,
+    expires    int(16)      NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT twofactorauthtrusteddevices_userid_fkey
         FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -557,9 +561,9 @@ CREATE TABLE customernotes (
     id int(11) NOT NULL auto_increment,
     userid int(11) DEFAULT NULL,
     customerid int(11) NOT NULL,
-    dt int(11) NOT NULL,
+    dt int(16) NOT NULL,
     message text NOT NULL,
-    moddate int(11) DEFAULT NULL,
+    moddate int(16) DEFAULT NULL,
     moduserid int(11) DEFAULT NULL,
     PRIMARY KEY (id),
     CONSTRAINT customernotes_userid_fkey
@@ -576,7 +580,7 @@ CREATE TABLE customernotes (
 #
 CREATE TABLE customerkarmalastchanges (
     id int(11) NOT NULL auto_increment,
-    timestamp int(11) NOT NULL,
+    timestamp int(16) NOT NULL,
     customerid int(11) NOT NULL,
     userid int(11) NOT NULL,
     PRIMARY KEY (id),
@@ -594,7 +598,7 @@ CREATE TABLE customerkarmalastchanges (
 CREATE TABLE customercalls (
     id int(11) NOT NULL AUTO_INCREMENT,
     userid int(11) DEFAULT NULL,
-    dt int(11) DEFAULT 0 NOT NULL,
+    dt int(16) DEFAULT 0 NOT NULL,
     filename varchar(150) NOT NULL,
     outgoing tinyint(1) DEFAULT 0 NOT NULL,
     phone varchar(20) NOT NULL,
@@ -634,8 +638,8 @@ CREATE TABLE numberplans (
 	period smallint NOT NULL DEFAULT '0',
 	doctype int(11) NOT NULL DEFAULT '0',
 	isdefault tinyint(1) NOT NULL DEFAULT '0',
-	datefrom int(11) NOT NULL DEFAULT 0,
-	dateto int(11) NOT NULL DEFAULT 0,
+	datefrom int(16) NOT NULL DEFAULT 0,
+	dateto int(16) NOT NULL DEFAULT 0,
 	customertype smallint DEFAULT NULL,
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
@@ -779,8 +783,8 @@ CREATE TABLE documents (
 CREATE TABLE documentcontents (
 	docid int(11) NOT NULL,
 	title text DEFAULT '' NOT NULL,
-	fromdate int(11) DEFAULT '0' NOT NULL,
-	todate int(11) DEFAULT '0' NOT NULL,
+	fromdate int(16) NOT NULL DEFAULT 0,
+	todate int(16) NOT NULL DEFAULT 0,
 	description text DEFAULT '' NOT NULL,
 	INDEX fromdate (fromdate),
 	INDEX todate (todate),
@@ -799,7 +803,7 @@ CREATE TABLE documentattachments (
 	contenttype varchar(255) NOT NULL,
 	md5sum varchar(32) NOT NULL,
     type smallint DEFAULT 1 NOT NULL,
-    cdate integer NOT NULL DEFAULT 0,
+    cdate int(16) NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
 	INDEX md5sum (md5sum),
 	UNIQUE KEY docid (docid, md5sum),
@@ -852,8 +856,8 @@ CREATE TABLE taxes (
 	value decimal(4,2) NOT NULL DEFAULT '0',
 	taxed tinyint NOT NULL DEFAULT '0',
 	label varchar(16) NOT NULL DEFAULT '',
-	validfrom int(11) NOT NULL DEFAULT '0',
-	validto int(11) NOT NULL DEFAULT '0',
+	validfrom int(16) NOT NULL DEFAULT 0,
+	validto int(16) NOT NULL DEFAULT 0,
 	reversecharge tinyint(1) NOT NULL DEFAULT '0',
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
@@ -868,8 +872,8 @@ CREATE TABLE voipaccounts (
 	login		    varchar(255)  NOT NULL DEFAULT '',
 	passwd		    varchar(255)  NOT NULL DEFAULT '',
 	access          tinyint(1)    NOT NULL DEFAULT '1',
-	creationdate	int(11)		  NOT NULL DEFAULT 0,
-	moddate		    int(11)		  NOT NULL DEFAULT 0,
+	creationdate	int(16)		  NOT NULL DEFAULT 0,
+	moddate		    int(16)		  NOT NULL DEFAULT 0,
 	creatorid	    int(11)		  DEFAULT NULL,
 	modid		    int(11)		  DEFAULT NULL,
 	balance			decimal(12,5) NOT NULL DEFAULT 0,
@@ -877,7 +881,7 @@ CREATE TABLE voipaccounts (
 	cost_limit		decimal(12,2) NULL DEFAULT NULL,
 	address_id      int(11)       NULL DEFAULT NULL,
 	description text NOT NULL DEFAULT '',
-	serviceproviderid integer DEFAULT NULL,
+	serviceproviderid int(11) DEFAULT NULL,
 	extid varchar(64) DEFAULT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT voipaccounts_address_id_fkey
@@ -897,7 +901,7 @@ CREATE TABLE voipaccounts (
 # Structure of table voip_rule_groups
 #
 CREATE TABLE voip_rule_groups (
-	id integer NOT NULL AUTO_INCREMENT,
+	id int(11) NOT NULL AUTO_INCREMENT,
 	name text NOT NULL,
 	description text NULL,
 	PRIMARY KEY (id)
@@ -919,9 +923,9 @@ CREATE TABLE voip_prefix_groups (
 # Structure of table voip_rules
 #
 CREATE TABLE voip_rules (
-	id              integer NOT NULL AUTO_INCREMENT,
-	rule_group_id   integer NOT NULL,
-	prefix_group_id integer NOT NULL,
+	id              int(11) NOT NULL AUTO_INCREMENT,
+	rule_group_id   int(11) NOT NULL,
+	prefix_group_id int(11) NOT NULL,
 	settings        text    NULL,
 	FOREIGN KEY (rule_group_id)   REFERENCES voip_rule_groups(id)   ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (prefix_group_id) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -975,7 +979,7 @@ CREATE TABLE voip_cdr (
 	id int(11) AUTO_INCREMENT,
 	caller              varchar(20)   NOT NULL,
 	callee              varchar(20)   NOT NULL,
-	call_start_time     int(11)       NOT NULL,
+	call_start_time     int(16)       NOT NULL,
 	totaltime           bigint        NOT NULL,
 	billedtime          bigint        NOT NULL,
 	price               decimal(12,5) NOT NULL,
@@ -1031,7 +1035,7 @@ CREATE TABLE tariffs (
 	value decimal(9,3) 	NOT NULL DEFAULT '0',
     taxcategory smallint DEFAULT 0 NOT NULL,
 	taxid int(11) 	NOT NULL,
-	numberplanid integer DEFAULT NULL,
+	numberplanid int(11) DEFAULT NULL,
 	period smallint   DEFAULT NULL,
 	prodid varchar(255) 	NOT NULL DEFAULT '',
 	uprate int(11) 	NOT NULL DEFAULT '0',
@@ -1077,8 +1081,8 @@ CREATE TABLE tariffs (
 	disabled tinyint  NOT NULL DEFAULT '0',
 	voip_tariff_id      int(11) DEFAULT NULL,
 	voip_tariff_rule_id int(11) DEFAULT NULL,
-	datefrom            int(11) NOT NULL DEFAULT '0',
-	dateto              int(11) NOT NULL DEFAULT '0',
+	datefrom            int(16) NOT NULL DEFAULT 0,
+	dateto              int(16) NOT NULL DEFAULT 0,
 	authtype smallint NOT NULL DEFAULT '0',
     currency varchar(3),
     flags tinyint(1) DEFAULT 0 NOT NULL,
@@ -1171,8 +1175,8 @@ CREATE TABLE promotions (
     description text    DEFAULT NULL,
     disabled tinyint(1) DEFAULT '0' NOT NULL,
     deleted tinyint(1)  DEFAULT 0 NOT NULL,
-    datefrom int(11)    DEFAULT '0' NOT NULL,
-    dateto   int(11)    DEFAULT '0' NOT NULL,
+    datefrom int(16)    DEFAULT 0 NOT NULL,
+    dateto   int(16)    DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY name (name)
 ) ENGINE=InnoDB;
@@ -1190,8 +1194,8 @@ CREATE TABLE promotionschemas (
     disabled tinyint(1) DEFAULT '0' NOT NULL,
     deleted tinyint(1)  DEFAULT 0 NOT NULL,
     length tinyint(1)   DEFAULT NULL,
-    datefrom int(11)    DEFAULT 0 NOT NULL,
-    dateto   int(11)    DEFAULT 0 NOT NULL,
+    datefrom int(16)    DEFAULT 0 NOT NULL,
+    dateto   int(16)    DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY promotionid (promotionid, name),
     FOREIGN KEY (promotionid) REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -1248,8 +1252,8 @@ CREATE TABLE assignments (
     backwardperiod smallint NOT NULL DEFAULT 0,
 	note text DEFAULT NULL,
     at int(11) NOT NULL DEFAULT '0',
-	datefrom int(11) NOT NULL DEFAULT '0',
-	dateto int(11) NOT NULL DEFAULT '0',
+	datefrom int(16) NOT NULL DEFAULT 0,
+	dateto int(16) NOT NULL DEFAULT 0,
 	invoice tinyint(1) NOT NULL DEFAULT '0',
 	suspended tinyint(1) NOT NULL DEFAULT '0',
 	settlement tinyint(1) NOT NULL DEFAULT '0',
@@ -1365,9 +1369,9 @@ CREATE TABLE cashsources (
 #
 CREATE TABLE sourcefiles (
 	id      int(11)         NOT NULL auto_increment,
-	userid integer     DEFAULT NULL,
+	userid int(11)     DEFAULT NULL,
 	name	varchar(255)    NOT NULL,
-	idate	int(11)	        NOT NULL,
+	idate	int(16)	        NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE KEY idate (idate, name),
 	INDEX userid (userid),
@@ -1380,7 +1384,7 @@ CREATE TABLE sourcefiles (
 #
 CREATE TABLE cashimport (
 	id int(11) NOT NULL auto_increment,
-	date int(11) NOT NULL DEFAULT '0',
+	date int(16) NOT NULL DEFAULT 0,
 	value decimal(9,2) NOT NULL DEFAULT '0',
 	customer text NOT NULL DEFAULT '',
 	description text NOT NULL DEFAULT '',
@@ -1390,7 +1394,7 @@ CREATE TABLE cashimport (
 	sourceid int(11) DEFAULT NULL,
 	sourcefileid int(11) DEFAULT NULL,
 	srcaccount varchar(60) DEFAULT NULL,
-	operdate int(11) DEFAULT NULL,
+	operdate int(16) DEFAULT NULL,
 	extid varchar(64) DEFAULT NULL,
 	PRIMARY KEY (id),
 	UNIQUE KEY cashimport_sourceid_extid_ukey (sourceid, extid),
@@ -1424,7 +1428,7 @@ CREATE TABLE customerbalances (
 #
 CREATE TABLE cash (
   id int(11) NOT NULL auto_increment,
-  time int(11) NOT NULL DEFAULT '0',
+  time int(16) NOT NULL DEFAULT 0,
   type smallint NOT NULL DEFAULT '0',
   servicetype smallint DEFAULT NULL,
   userid int(11) DEFAULT NULL,
@@ -1521,7 +1525,7 @@ CREATE TABLE hosts (
     id int(11) NOT NULL auto_increment,
     name varchar(255) DEFAULT '' NOT NULL,
     description text DEFAULT '' NOT NULL,
-    lastreload int(11) DEFAULT '0' NOT NULL,
+    lastreload int(16) DEFAULT 0 NOT NULL,
     reload tinyint(1) DEFAULT '0' NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY name (name)
@@ -1536,7 +1540,7 @@ CREATE TABLE invprojects (
 	name varchar(255) NOT NULL,
 	type tinyint DEFAULT 0,
 	divisionid int(11) DEFAULT NULL,
-	cdate int(11) DEFAULT NULL,
+	cdate int(16) DEFAULT NULL,
 	PRIMARY KEY (id),
 	FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=INNODB;
@@ -1585,8 +1589,8 @@ CREATE TABLE netnodes (
 	coowner varchar(255) DEFAULT '',
 	uip tinyint(1) DEFAULT 0,
 	miar tinyint(1) DEFAULT 0,
-	createtime int(11),
-	lastinspectiontime int(11) DEFAULT NULL,
+	createtime int(16),
+	lastinspectiontime int(16) DEFAULT NULL,
 	admcontact text DEFAULT NULL,
 	divisionid int(11) DEFAULT NULL,
 	address_id int(11) DEFAULT NULL,
@@ -1709,7 +1713,7 @@ CREATE TABLE netdevices (
   model 	varchar(256) 	NOT NULL DEFAULT '',
   serialnumber 	varchar(32) 	NOT NULL DEFAULT '',
   ports 	int(11) 	NOT NULL DEFAULT '0',
-  purchasetime 	int(11) 	NOT NULL DEFAULT '0',
+  purchasetime 	int(16) 	NOT NULL DEFAULT 0,
   guaranteeperiod tinyint unsigned DEFAULT '0',
   shortname 	varchar(32) 	NOT NULL DEFAULT '',
   nastype 	int(11) 	NOT NULL DEFAULT '0',
@@ -1796,8 +1800,8 @@ CREATE TABLE nodes (
   ipaddr_pub int(16) unsigned NOT NULL DEFAULT '0',
   passwd varchar(32) NOT NULL DEFAULT '',
   ownerid int(11) DEFAULT NULL,
-  creationdate int(11) NOT NULL DEFAULT '0',
-  moddate int(11) NOT NULL DEFAULT '0',
+  creationdate int(16) NOT NULL DEFAULT 0,
+  moddate int(16) NOT NULL DEFAULT 0,
   creatorid int(11) DEFAULT NULL,
   modid int(11) DEFAULT NULL,
   netdev int(11) DEFAULT NULL,
@@ -1811,7 +1815,7 @@ CREATE TABLE nodes (
   authtype smallint NOT NULL DEFAULT '0',
   chkmac tinyint(1) NOT NULL DEFAULT '1',
   halfduplex tinyint(1) NOT NULL DEFAULT '0',
-  lastonline int(11) NOT NULL DEFAULT '0',
+  lastonline int(16) NOT NULL DEFAULT 0,
   info text NOT NULL DEFAULT '',
   nas tinyint(1) NOT NULL DEFAULT '0',
   longitude decimal(10, 6) DEFAULT NULL,
@@ -2065,8 +2069,8 @@ CREATE TABLE customerassignments (
   id int(11) NOT NULL auto_increment,
   customergroupid int(11) NOT NULL,
   customerid int(11) NOT NULL,
-  startdate int(11) NOT NULL DEFAULT 0,
-  enddate int(11) DEFAULT 0 NOT NULL,
+  startdate int(16) NOT NULL DEFAULT 0,
+  enddate int(16) NOT NULL DEFAULT 0,
   PRIMARY KEY (id),
   UNIQUE KEY customerassignments_customergroupid_ukey (customergroupid, customerid, enddate),
   INDEX customerid (customerid),
@@ -2088,8 +2092,8 @@ CREATE TABLE nodesessions (
 	nodeid int(11)		DEFAULT NULL,
 	ipaddr int(16) unsigned NOT NULL DEFAULT '0',
 	mac varchar(17)		NOT NULL DEFAULT '',
-	start int(11)		NOT NULL DEFAULT '0',
-	stop int(11)		NOT NULL DEFAULT '0',
+	start int(16)		NOT NULL DEFAULT 0,
+	stop int(16)		NOT NULL DEFAULT 0,
 	download bigint		DEFAULT '0',
 	upload bigint		DEFAULT '0',
 	tag varchar(32)		NOT NULL DEFAULT '',
@@ -2114,7 +2118,7 @@ CREATE TABLE nodesessions (
 #
 CREATE TABLE stats (
 	nodeid int(11)		DEFAULT NULL,
-	dt int(11)		NOT NULL DEFAULT '0',
+	dt int(16)		NOT NULL DEFAULT 0,
 	upload bigint		DEFAULT '0',
 	download bigint		DEFAULT '0',
 	nodesessionid int(11)	DEFAULT NULL,
@@ -2191,7 +2195,7 @@ CREATE TABLE rtqueues (
   newmessagesmsbody text DEFAULT NULL,
   resolveticketsmsbody text DEFAULT NULL,
   deleted tinyint(1) NOT NULL DEFAULT '0',
-  deltime int(11) NOT NULL DEFAULT '0',
+  deltime int(16) NOT NULL DEFAULT 0,
   deluserid int(11) DEFAULT NULL,
   verifierid int(11) DEFAULT NULL,
   PRIMARY KEY (id),
@@ -2219,21 +2223,21 @@ CREATE TABLE rttickets (
   owner int(11) DEFAULT NULL,
   customerid int(11) DEFAULT NULL,
   creatorid int(11) DEFAULT NULL,
-  createtime int(11) NOT NULL DEFAULT '0',
-  resolvetime int(11) NOT NULL DEFAULT '0',
-  modtime int(11) NOT NULL DEFAULT '0',
+  createtime int(16) NOT NULL DEFAULT 0,
+  resolvetime int(16) NOT NULL DEFAULT 0,
+  modtime int(16) NOT NULL DEFAULT 0,
   source tinyint(4) NOT NULL DEFAULT '0',
   priority tinyint(4) DEFAULT NULL,
   deleted tinyint(1) NOT NULL DEFAULT '0',
-  deltime int(11) NOT NULL DEFAULT '0',
+  deltime int(16) NOT NULL DEFAULT 0,
   deluserid int(11) DEFAULT NULL,
   address_id int(11) DEFAULT NULL,
   nodeid int(11) DEFAULT NULL,
   netnodeid int(11) DEFAULT NULL,
   netdevid int(11) DEFAULT NULL,
   verifierid int(11) DEFAULT NULL,
-  verifier_rtime int(11) DEFAULT NULL,
-  deadline int(11) DEFAULT NULL,
+  verifier_rtime int(16) DEFAULT NULL,
+  deadline int(16) DEFAULT NULL,
   service int(11) DEFAULT NULL,
   type int(11) DEFAULT NULL,
   parentid int(11) DEFAULT NULL,
@@ -2276,7 +2280,7 @@ CREATE TABLE rttickets (
 CREATE TABLE rtticketlastview (
 	ticketid int(11) NOT NULL,
 	userid int(11) NOT NULL,
-	vdate int(11) NOT NULL,
+	vdate int(16) NOT NULL,
 	INDEX vdate (vdate),
 	UNIQUE KEY rtticketlastview_ticketid_key (ticketid, userid),
 	CONSTRAINT rtticketlastview_ticketid_fkey
@@ -2302,10 +2306,10 @@ CREATE TABLE rtmessages (
   replyto text NOT NULL DEFAULT '',
   headers text NOT NULL DEFAULT '',
   body mediumtext NOT NULL DEFAULT '',
-  createtime int(11) NOT NULL DEFAULT '0',
+  createtime int(16) NOT NULL DEFAULT 0,
   type int(11) NOT NULL DEFAULT 0,
   deleted tinyint(1) NOT NULL DEFAULT '0',
-  deltime int(11) NOT NULL DEFAULT '0',
+  deltime int(16) NOT NULL DEFAULT 0,
   deluserid int(11) DEFAULT NULL,
   contenttype varchar(255) DEFAULT 'text/plain',
   extid varchar(64)	DEFAULT NULL,
@@ -2440,11 +2444,11 @@ CREATE TABLE passwd (
     ownerid int(11) DEFAULT NULL,
     login varchar(200) NOT NULL DEFAULT '',
     password varchar(200) NOT NULL DEFAULT '',
-    lastlogin int(11) NOT NULL DEFAULT 0,
+    lastlogin int(16) NOT NULL DEFAULT 0,
     uid int(11)	NOT NULL DEFAULT 0,
     home varchar(255) NOT NULL DEFAULT '',
     type smallint NOT NULL DEFAULT 0,
-    expdate int(11) NOT NULL DEFAULT 0,
+    expdate int(16) NOT NULL DEFAULT 0,
     domainid int(11) NOT NULL,
     quota_sh int(11) NOT NULL DEFAULT 0,
     quota_mail int(11) NOT NULL DEFAULT 0,
@@ -2453,7 +2457,7 @@ CREATE TABLE passwd (
     quota_sql int(11) NOT NULL DEFAULT 0,
     quota_cloud int(11) NOT NULL DEFAULT 0,
     realname varchar(255) NOT NULL DEFAULT '',
-    createtime int(11) NOT NULL DEFAULT 0,
+    createtime int(16) NOT NULL DEFAULT 0,
     mail_forward varchar(255) NOT NULL DEFAULT '',
     mail_bcc varchar(255) NOT NULL DEFAULT '',
     description text NOT NULL DEFAULT '',
@@ -2630,18 +2634,18 @@ CREATE TABLE events (
     title varchar(255) NOT NULL DEFAULT '',
     description text NOT NULL DEFAULT '',
     note text NOT NULL DEFAULT '',
-    date int(11) NOT NULL DEFAULT '0',
+    date int(16) NOT NULL DEFAULT 0,
     begintime int(11) NOT NULL DEFAULT '0',
-    enddate int(11) NOT NULL DEFAULT '0',
+    enddate int(16) NOT NULL DEFAULT 0,
     endtime int(11) NOT NULL DEFAULT '0',
     userid int(11) DEFAULT NULL,
     customerid int(11) DEFAULT NULL,
     private tinyint(1) NOT NULL DEFAULT '0',
     closed tinyint(1) NOT NULL DEFAULT '0',
-    closeddate int(11) NOT NULL DEFAULT '0',
+    closeddate int(16) NOT NULL DEFAULT 0,
     closeduserid int(11) DEFAULT NULL,
-    creationdate int(11) NOT NULL DEFAULT '0',
-    moddate int(11) NOT NULL DEFAULT '0',
+    creationdate int(16) NOT NULL DEFAULT 0,
+    moddate int(16) NOT NULL DEFAULT 0,
     moduserid int(11) DEFAULT NULL,
     type smallint NOT NULL DEFAULT 1,
     nodeid int(11) DEFAULT NULL,
@@ -2694,9 +2698,9 @@ CREATE TABLE eventassignments (
 #
 CREATE TABLE sessions (
     id varchar(50) NOT NULL DEFAULT '',
-    ctime int(11) NOT NULL DEFAULT 0,
-    mtime int(11) NOT NULL DEFAULT 0,
-    atime int(11) NOT NULL DEFAULT 0,
+    ctime int(16) NOT NULL DEFAULT 0,
+    mtime int(16) NOT NULL DEFAULT 0,
+    atime int(16) NOT NULL DEFAULT 0,
     vdata text NOT NULL,
     content mediumtext NOT NULL,
     PRIMARY KEY (id)
@@ -2777,7 +2781,7 @@ CREATE TABLE cashreglog (
     id int(11) 			NOT NULL auto_increment,
     regid int(11)          	NOT NULL,
     userid int(11)		DEFAULT NULL,
-    time int(11)		DEFAULT '0' NOT NULL,
+    time int(16)		DEFAULT 0 NOT NULL,
     value decimal(9,2)      	DEFAULT '0' NOT NULL,
     snapshot decimal(9,2)      	DEFAULT '0' NOT NULL,
     description text		DEFAULT '' NOT NULL,
@@ -2869,7 +2873,7 @@ CREATE TABLE messages (
         id 	int(11) 	NOT NULL auto_increment,
         subject varchar(255)	DEFAULT '' NOT NULL,
 	body 	text		DEFAULT '' NOT NULL,
-	cdate 	int(11)		DEFAULT '0' NOT NULL,
+	cdate 	int(16)		DEFAULT 0 NOT NULL,
 	type 	smallint	DEFAULT '0' NOT NULL,
 	userid 	int(11)		DEFAULT NULL,
 	sender 	varchar(255) 	DEFAULT NULL,
@@ -2890,10 +2894,10 @@ CREATE TABLE messageitems (
 	messageid 	int(11)		NOT NULL,
 	customerid 	int(11) 	DEFAULT NULL,
 	destination 	varchar(255) 	DEFAULT '' NOT NULL,
-	lastdate 	int(11)		DEFAULT '0' NOT NULL,
+	lastdate 	int(16)		DEFAULT 0 NOT NULL,
 	status 		smallint	DEFAULT '0' NOT NULL,
 	error 		text		DEFAULT NULL,
-	lastreaddate 	int(11)		DEFAULT '0' NOT NULL,
+	lastreaddate 	int(16)		DEFAULT 0 NOT NULL,
 	externalmsgid	varchar(64) DEFAULT NULL,
     body 		text		DEFAULT NULL,
         PRIMARY KEY (id),
@@ -2938,7 +2942,7 @@ CREATE TABLE managementurls (
 CREATE TABLE logtransactions (
 	id int(11)		NOT NULL auto_increment,
 	userid int(11)		DEFAULT NULL,
-	time int(11)		DEFAULT '0' NOT NULL,
+	time int(16)		DEFAULT 0 NOT NULL,
 	module varchar(50)	DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
 	INDEX userid (userid),
@@ -3096,7 +3100,7 @@ CREATE TABLE passwdhistory (
 #
 CREATE TABLE filecontainers (
 	id int(11) NOT NULL AUTO_INCREMENT,
-	creationdate int(11) NOT NULL DEFAULT 0,
+	creationdate int(16) NOT NULL DEFAULT 0,
 	creatorid int(11) DEFAULT NULL,
 	description text NOT NULL,
 	netdevid int(11) DEFAULT NULL,
@@ -3183,9 +3187,9 @@ CREATE TABLE up_rights_assignments (
 CREATE TABLE up_customers (
 	id int(11) NOT NULL auto_increment,
 	customerid int(11) DEFAULT NULL,
-	lastlogindate int(11) NOT NULL DEFAULT '0',
+	lastlogindate int(16) NOT NULL DEFAULT 0,
 	lastloginip varchar(16) NOT NULL DEFAULT '',
-	failedlogindate int(11) NOT NULL DEFAULT '0',
+	failedlogindate int(16) NOT NULL DEFAULT 0,
 	failedloginip varchar(16) NOT NULL DEFAULT '',
 	enabled int(10) NOT NULL DEFAULT '0',
 	PRIMARY KEY (id),
@@ -3228,9 +3232,9 @@ CREATE TABLE up_info_changes (
 CREATE TABLE up_sessions (
 	id varchar(50) NOT NULL DEFAULT '',
 	customerid int(11) NOT NULL,
-	ctime int(11) NOT NULL DEFAULT 0,
-	mtime int(11) NOT NULL DEFAULT 0,
-	atime int(11) NOT NULL DEFAULT 0,
+	ctime int(16) NOT NULL DEFAULT 0,
+	mtime int(16) NOT NULL DEFAULT 0,
+	atime int(16) NOT NULL DEFAULT 0,
 	vdata text NOT NULL,
 	content mediumtext NOT NULL,
 	PRIMARY KEY (id),
@@ -3245,7 +3249,7 @@ CREATE TABLE up_sessions (
 CREATE VIEW vcustomerassignments AS
 	SELECT ca.*
 	FROM customerassignments ca
-	WHERE startdate <= UNIX_TIMESTAMP() AND enddate = 0;
+	WHERE startdate <= UNIX_TIMESTAMP64() AND enddate = 0;
 
 CREATE VIEW nas AS
 	SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
@@ -3311,8 +3315,8 @@ CREATE VIEW vnodes AS
 CREATE VIEW vnodetariffs_allsuspended AS
 	SELECT customerid, COUNT(id) AS allsuspended FROM assignments
 	WHERE tariffid IS NULL AND liabilityid IS NULL
-		AND datefrom <= UNIX_TIMESTAMP()
-		AND (dateto = 0 OR dateto > UNIX_TIMESTAMP())
+		AND datefrom <= UNIX_TIMESTAMP64()
+		AND (dateto = 0 OR dateto > UNIX_TIMESTAMP64())
 	GROUP BY customerid;
 
 CREATE VIEW vnodetariffs_tariffs AS
@@ -3343,8 +3347,8 @@ CREATE VIEW vnodetariffs_tariffs AS
     JOIN tariffs t ON t.id = a.tariffid
     LEFT JOIN vnodetariffs_allsuspended s ON s.customerid = n.ownerid
     WHERE s.allsuspended IS NULL AND a.suspended = 0 AND a.commited = 1
-        AND a.datefrom <= UNIX_TIMESTAMP()
-        AND (a.dateto = 0 OR a.dateto >= UNIX_TIMESTAMP())
+        AND a.datefrom <= UNIX_TIMESTAMP64()
+        AND (a.dateto = 0 OR a.dateto >= UNIX_TIMESTAMP64())
         AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
     GROUP BY n.id;
 
@@ -3406,8 +3410,8 @@ CREATE VIEW vnodealltariffs_tariffs AS
     JOIN vnodealltariffs_nodes n ON n.ownerid = a.customerid
     LEFT JOIN vnodetariffs_allsuspended s ON s.customerid = a.customerid
     WHERE s.allsuspended IS NULL AND a.suspended = 0 AND a.commited = 1
-        AND a.datefrom <= UNIX_TIMESTAMP()
-        AND (a.dateto = 0 OR a.dateto >= UNIX_TIMESTAMP())
+        AND a.datefrom <= UNIX_TIMESTAMP64()
+        AND (a.dateto = 0 OR a.dateto >= UNIX_TIMESTAMP64())
         AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
         AND n.id NOT IN (SELECT nodeid FROM nodeassignments)
         AND a.id NOT IN (SELECT assignmentid FROM nodeassignments)
@@ -3719,7 +3723,7 @@ CREATE TRIGGER customerassignments_insert_trigger BEFORE INSERT ON customerassig
     FOR EACH ROW
 BEGIN
     IF NEW.startdate = 0 THEN
-        SET NEW.startdate = UNIX_TIMESTAMP();
+        SET NEW.startdate = UNIX_TIMESTAMP64();
     END IF;
 END $$
 DELIMITER ;
@@ -4376,4 +4380,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024081400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024081401');

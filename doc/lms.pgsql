@@ -24,16 +24,16 @@ CREATE TABLE users (
 	netpasswd varchar(255) DEFAULT NULL,
 	passwdforcechange smallint NOT NULL DEFAULT 0,
 	ntype smallint      DEFAULT NULL,
-	lastlogindate integer 	DEFAULT 0  NOT NULL,
+	lastlogindate bigint 	DEFAULT 0  NOT NULL,
 	lastloginip varchar(16) DEFAULT '' NOT NULL,
-	failedlogindate integer DEFAULT 0  NOT NULL,
+	failedlogindate bigint DEFAULT 0  NOT NULL,
 	failedloginip varchar(16) DEFAULT '' NOT NULL,
 	deleted smallint	DEFAULT 0 NOT NULL,
-	passwdexpiration integer DEFAULT 0 NOT NULL,
-	passwdlastchange integer DEFAULT 0 NOT NULL,
+	passwdexpiration bigint DEFAULT 0 NOT NULL,
+	passwdlastchange bigint DEFAULT 0 NOT NULL,
 	access smallint DEFAULT 1 NOT NULL,
-	accessfrom integer DEFAULT 0 NOT NULL,
-	accessto integer DEFAULT 0 NOT NULL,
+	accessfrom bigint DEFAULT 0 NOT NULL,
+	accessto bigint DEFAULT 0 NOT NULL,
 	settings text NOT NULL DEFAULT '',
 	persistentsettings text NOT NULL DEFAULT '',
 	twofactorauth smallint NOT NULL DEFAULT 0,
@@ -53,7 +53,7 @@ CREATE TABLE twofactorauthcodehistory (
     userid integer NOT NULL
         CONSTRAINT twofactorauthcodehistory_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
     authcode varchar(10) NOT NULL,
-    uts integer NOT NULL,
+    uts bigint NOT NULL,
     ipaddr bigint DEFAULT NULL,
     success smallint NOT NULL DEFAULT 0,
     PRIMARY KEY (id)
@@ -72,7 +72,7 @@ CREATE TABLE twofactorauthtrusteddevices (
     cookiename varchar(64) NOT NULL,
     useragent varchar(256) NOT NULL,
     ipaddr bigint DEFAULT NULL,
-    expires integer NOT NULL,
+    expires bigint NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -355,7 +355,7 @@ DROP TABLE IF EXISTS customerconsents;
 CREATE TABLE customerconsents (
     customerid integer NOT NULL
         CONSTRAINT customerconsents_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    cdate integer DEFAULT 0 NOT NULL,
+    cdate bigint DEFAULT 0 NOT NULL,
     type smallint NOT NULL,
     CONSTRAINT customerconsents_ukey UNIQUE (customerid, type)
 );
@@ -387,9 +387,9 @@ CREATE TABLE customernotes (
        CONSTRAINT customernotes_userid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
     customerid integer NOT NULL
        CONSTRAINT customernotes_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    dt integer NOT NULL,
+    dt bigint NOT NULL,
     message text NOT NULL,
-    moddate integer DEFAULT NULL,
+    moddate bigint DEFAULT NULL,
     moduserid integer DEFAULT NULL
         CONSTRAINT customernotes_moduserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE SET NULL,
     PRIMARY KEY (id)
@@ -403,7 +403,7 @@ CREATE SEQUENCE customerkarmalastchanges_id_seq;
 DROP TABLE IF EXISTS customerkarmalastchanges;
 CREATE TABLE customerkarmalastchanges (
     id integer NOT NULL DEFAULT nextval('customerkarmalastchanges_id_seq'::text),
-    timestamp integer NOT NULL,
+    timestamp bigint NOT NULL,
     customerid integer NOT NULL
         CONSTRAINT customerkarmalastchanges_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
     userid integer NOT NULL
@@ -422,7 +422,7 @@ CREATE TABLE customercalls (
     id integer DEFAULT nextval('customercalls_id_seq'::text) NOT NULL,
     userid integer DEFAULT NULL
         CONSTRAINT customercalls_userid_fkey REFERENCES users (id) ON UPDATE CASCADE ON DELETE SET NULL,
-    dt integer DEFAULT 0 NOT NULL,
+    dt bigint DEFAULT 0 NOT NULL,
     filename varchar(150) NOT NULL,
     outgoing smallint DEFAULT 0 NOT NULL,
     phone varchar(20) NOT NULL,
@@ -463,8 +463,8 @@ CREATE TABLE numberplans (
 	period smallint DEFAULT 0 NOT NULL,
 	doctype integer DEFAULT 0 NOT NULL,
 	isdefault smallint DEFAULT 0 NOT NULL,
-	datefrom integer DEFAULT 0 NOT NULL,
-	dateto integer DEFAULT 0 NOT NULL,
+	datefrom bigint DEFAULT 0 NOT NULL,
+	dateto bigint DEFAULT 0 NOT NULL,
 	customertype smallint DEFAULT NULL,
 	PRIMARY KEY (id)
 );
@@ -604,8 +604,8 @@ CREATE TABLE documentcontents (
 	docid integer		NOT NULL
 		REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	title text 		DEFAULT '' NOT NULL,
-	fromdate integer 	DEFAULT 0 NOT NULL,
-	todate integer 		DEFAULT 0 NOT NULL,
+	fromdate bigint 	DEFAULT 0 NOT NULL,
+	todate bigint 		DEFAULT 0 NOT NULL,
 	description text 	DEFAULT '' NOT NULL,
 	UNIQUE (docid)
 );
@@ -626,7 +626,7 @@ CREATE TABLE documentattachments (
 	contenttype varchar(255) NOT NULL,
 	md5sum varchar(32) NOT NULL,
 	type smallint DEFAULT 1 NOT NULL,
-	cdate integer NOT NULL DEFAULT 0,
+	cdate bigint NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
 	UNIQUE (docid, md5sum)
 );
@@ -678,8 +678,8 @@ CREATE TABLE taxes (
 	value numeric(4,2) DEFAULT 0 NOT NULL,
 	taxed smallint DEFAULT 0 NOT NULL,
 	label varchar(16) DEFAULT '' NOT NULL,
-	validfrom integer DEFAULT 0 NOT NULL,
-	validto integer DEFAULT 0 NOT NULL,
+	validfrom bigint DEFAULT 0 NOT NULL,
+	validto bigint DEFAULT 0 NOT NULL,
 	reversecharge smallint DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
@@ -812,7 +812,7 @@ CREATE TABLE voip_cdr (
 	id integer DEFAULT nextval('voip_cdr_id_seq'::text) NOT NULL,
 	caller varchar(20) NOT NULL,
 	callee varchar(20) NOT NULL,
-	call_start_time integer NOT NULL,
+	call_start_time bigint NOT NULL,
 	totaltime bigint NOT NULL,
 	billedtime bigint NOT NULL,
 	price numeric(12,5) NOT NULL,
@@ -922,8 +922,8 @@ CREATE TABLE tariffs (
 		REFERENCES voip_tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	voip_tariff_rule_id integer DEFAULT NULL
 		CONSTRAINT tariffs_voip_tariff_rule_id_fkey REFERENCES voip_rule_groups (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	datefrom integer	NOT NULL DEFAULT 0,
-	dateto integer		NOT NULL DEFAULT 0,
+	datefrom bigint	NOT NULL DEFAULT 0,
+	dateto bigint		NOT NULL DEFAULT 0,
 	authtype smallint 	DEFAULT 0 NOT NULL,
     currency varchar(3),
     flags smallint DEFAULT 0 NOT NULL,
@@ -1018,8 +1018,8 @@ CREATE TABLE promotions (
     description text    DEFAULT NULL,
     disabled smallint   DEFAULT 0 NOT NULL,
     deleted smallint    DEFAULT 0 NOT NULL,
-    datefrom integer	DEFAULT 0 NOT NULL,
-    dateto integer		DEFAULT 0 NOT NULL,
+    datefrom bigint	DEFAULT 0 NOT NULL,
+    dateto bigint		DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
     UNIQUE (name)
 );
@@ -1040,8 +1040,8 @@ CREATE TABLE promotionschemas (
     disabled smallint   DEFAULT 0 NOT NULL,
     deleted smallint    DEFAULT 0 NOT NULL,
     length smallint     DEFAULT NULL,
-    datefrom integer	DEFAULT 0 NOT NULL,
-    dateto integer		DEFAULT 0 NOT NULL,
+    datefrom bigint	DEFAULT 0 NOT NULL,
+    dateto bigint		DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT promotionschemas_promotionid_key UNIQUE (promotionid, name)
 );
@@ -1104,8 +1104,8 @@ CREATE TABLE assignments (
 	backwardperiod smallint DEFAULT 0 NOT NULL,
 	note text 		DEFAULT NULL,
 	at integer 		DEFAULT 0 NOT NULL,
-	datefrom integer	DEFAULT 0 NOT NULL,
-	dateto integer		DEFAULT 0 NOT NULL,
+	datefrom bigint	DEFAULT 0 NOT NULL,
+	dateto bigint		DEFAULT 0 NOT NULL,
 	invoice smallint 	DEFAULT 0 NOT NULL,
 	suspended smallint	DEFAULT 0 NOT NULL,
 	settlement smallint	DEFAULT 0 NOT NULL,
@@ -1216,7 +1216,7 @@ CREATE TABLE sourcefiles (
 	userid integer     DEFAULT NULL
 		REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	name varchar(255)   NOT NULL,
-	idate integer	    NOT NULL,
+	idate bigint	    NOT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT sourcefiles_idate_key UNIQUE (idate, name)
 );
@@ -1231,7 +1231,7 @@ CREATE SEQUENCE cashimport_id_seq;
 DROP TABLE IF EXISTS cashimport CASCADE;
 CREATE TABLE cashimport (
 	id integer 			DEFAULT nextval('cashimport_id_seq'::text) NOT NULL,
-	date integer 		DEFAULT 0 NOT NULL,
+	date bigint 		DEFAULT 0 NOT NULL,
 	value numeric(9,2) 		DEFAULT 0 NOT NULL,
 	customer text		DEFAULT '' NOT NULL,
 	description text	DEFAULT '' NOT NULL,
@@ -1244,7 +1244,7 @@ CREATE TABLE cashimport (
 	sourcefileid integer    DEFAULT NULL
 		REFERENCES sourcefiles (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	srcaccount varchar(60) DEFAULT NULL,
-	operdate integer DEFAULT NULL,
+	operdate bigint DEFAULT NULL,
 	extid varchar(64) DEFAULT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT cashimport_sourceid_extid_ukey UNIQUE (sourceid, extid)
@@ -1274,7 +1274,7 @@ CREATE SEQUENCE cash_id_seq;
 DROP TABLE IF EXISTS cash CASCADE;
 CREATE TABLE cash (
 	id integer 		DEFAULT nextval('cash_id_seq'::text) NOT NULL,
-	time integer 		DEFAULT 0 NOT NULL,
+	time bigint 		DEFAULT 0 NOT NULL,
 	type smallint 		DEFAULT 0 NOT NULL,
 	servicetype smallint    DEFAULT NULL,
 	userid integer 		DEFAULT NULL
@@ -1377,7 +1377,7 @@ CREATE TABLE hosts (
     id integer DEFAULT nextval('hosts_id_seq'::text) NOT NULL,
     name varchar(255) 		DEFAULT '' NOT NULL,
     description text 		DEFAULT '' NOT NULL,
-    lastreload integer 		DEFAULT 0 NOT NULL,
+    lastreload bigint 		DEFAULT 0 NOT NULL,
     reload smallint 		DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
     UNIQUE (name)
@@ -1395,7 +1395,7 @@ CREATE TABLE invprojects (
 	type smallint DEFAULT 0,
 	divisionid integer DEFAULT NULL
 		REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	cdate integer DEFAULT NULL,
+	cdate bigint DEFAULT NULL,
 	PRIMARY KEY(id)
 );
 
@@ -1446,8 +1446,8 @@ CREATE TABLE netnodes (
 	coowner varchar(255) DEFAULT '',
 	uip smallint DEFAULT 0,
 	miar smallint DEFAULT 0,
-	createtime integer,
-	lastinspectiontime integer DEFAULT NULL,
+	createtime bigint,
+	lastinspectiontime bigint DEFAULT NULL,
 	admcontact text DEFAULT NULL,
 	divisionid integer
 		REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -1577,7 +1577,7 @@ CREATE TABLE netdevices (
 	model varchar(256) 	DEFAULT '' NOT NULL,
 	serialnumber varchar(32) DEFAULT '' NOT NULL,
 	ports integer 		DEFAULT 0 NOT NULL,
-	purchasetime integer	DEFAULT 0 NOT NULL,
+	purchasetime bigint	DEFAULT 0 NOT NULL,
 	guaranteeperiod smallint DEFAULT 0,
 	shortname varchar(32) 	DEFAULT '' NOT NULL,
 	nastype integer 	DEFAULT 0 NOT NULL,
@@ -1675,8 +1675,8 @@ CREATE TABLE nodes (
 	linkspeed integer	DEFAULT NULL,
 	linktechnology integer	DEFAULT NULL,
 	port smallint		DEFAULT 0 NOT NULL,
-	creationdate integer 	DEFAULT 0 NOT NULL,
-	moddate integer 	DEFAULT 0 NOT NULL,
+	creationdate bigint 	DEFAULT 0 NOT NULL,
+	moddate bigint 	DEFAULT 0 NOT NULL,
 	creatorid integer 	DEFAULT NULL
 		CONSTRAINT nodes_creatorid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	modid integer 		DEFAULT NULL
@@ -1686,7 +1686,7 @@ CREATE TABLE nodes (
 	authtype smallint 	DEFAULT 0 NOT NULL,
 	chkmac smallint 	DEFAULT 1 NOT NULL,
 	halfduplex smallint	DEFAULT 0 NOT NULL,
-	lastonline integer	DEFAULT 0 NOT NULL,
+	lastonline bigint	DEFAULT 0 NOT NULL,
 	info text		    DEFAULT '' NOT NULL,
 	nas smallint 		DEFAULT 0 NOT NULL,
 	longitude numeric(10, 6) DEFAULT NULL,
@@ -1952,8 +1952,8 @@ CREATE TABLE customerassignments (
 	    REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	customerid integer NOT NULL
 	    CONSTRAINT customerassignments_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    startdate integer DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer NOT NULL,
-    enddate integer DEFAULT 0 NOT NULL,
+    startdate bigint DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::bigint NOT NULL,
+    enddate bigint DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT customerassignments_customergroupid_ukey UNIQUE (customergroupid, customerid, enddate)
 );
@@ -1976,8 +1976,8 @@ CREATE TABLE nodesessions (
 		CONSTRAINT nodesessions_nodeid_fkey REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	ipaddr bigint		DEFAULT 0 NOT NULL,
 	mac varchar(17)		DEFAULT '' NOT NULL,
-	start integer		DEFAULT 0 NOT NULL,
-	stop integer		DEFAULT 0 NOT NULL,
+	start bigint		DEFAULT 0 NOT NULL,
+	stop bigint		DEFAULT 0 NOT NULL,
 	download bigint		DEFAULT 0,
 	upload bigint		DEFAULT 0,
 	tag varchar(32)		DEFAULT '' NOT NULL,
@@ -1999,7 +1999,7 @@ DROP TABLE IF EXISTS stats CASCADE;
 CREATE TABLE stats (
 	nodeid integer 		DEFAULT NULL
 		CONSTRAINT stats_nodeid_fkey REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	dt integer 		DEFAULT 0 NOT NULL,
+	dt bigint 		DEFAULT 0 NOT NULL,
 	upload bigint 		DEFAULT 0,
 	download bigint 	DEFAULT 0,
 	nodesessionid integer	DEFAULT NULL
@@ -2106,7 +2106,7 @@ CREATE TABLE rtqueues (
   newmessagesmsbody text DEFAULT NULL,
   resolveticketsmsbody text DEFAULT NULL,
   deleted smallint	DEFAULT 0 NOT NULL,
-  deltime integer	DEFAULT 0 NOT NULL,
+  deltime bigint	DEFAULT 0 NOT NULL,
   deluserid integer	DEFAULT NULL
 	CONSTRAINT rtqueues_deluserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
   verifierid integer DEFAULT NULL
@@ -2136,13 +2136,13 @@ CREATE TABLE rttickets (
     CONSTRAINT rttickets_customerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
   creatorid integer 	DEFAULT NULL
 	CONSTRAINT rttickets_creatorid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  createtime integer 	DEFAULT 0 NOT NULL,
-  resolvetime integer 	DEFAULT 0 NOT NULL,
-  modtime integer NOT NULL DEFAULT 0,
+  createtime bigint 	DEFAULT 0 NOT NULL,
+  resolvetime bigint 	DEFAULT 0 NOT NULL,
+  modtime bigint NOT NULL DEFAULT 0,
   source smallint	DEFAULT 0 NOT NULL,
   priority smallint	DEFAULT NULL,
   deleted smallint	DEFAULT 0 NOT NULL,
-  deltime integer	DEFAULT 0 NOT NULL,
+  deltime bigint	DEFAULT 0 NOT NULL,
   deluserid integer	DEFAULT NULL
 	CONSTRAINT rttickets_deluserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
   address_id integer	DEFAULT NULL
@@ -2154,8 +2154,8 @@ CREATE TABLE rttickets (
     CONSTRAINT rttickets_netdevid_fkey REFERENCES netdevices (id) ON UPDATE CASCADE ON DELETE SET NULL,
   verifierid integer DEFAULT NULL
         CONSTRAINT rttickets_verifierid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  verifier_rtime integer DEFAULT NULL,
-  deadline integer DEFAULT NULL,
+  verifier_rtime bigint DEFAULT NULL,
+  deadline bigint DEFAULT NULL,
   service integer DEFAULT NULL,
   type integer DEFAULT NULL,
   parentid integer DEFAULT NULL
@@ -2176,7 +2176,7 @@ CREATE TABLE rtticketlastview (
 		CONSTRAINT rtticketlastview_ticketid_fkey REFERENCES rttickets (id) ON UPDATE CASCADE ON DELETE CASCADE,
 	userid integer NOT NULL
 		CONSTRAINT rtticketlastview_userid_fkey REFERENCES users (id) ON UPDATE CASCADE ON DELETE CASCADE,
-	vdate integer NOT NULL,
+	vdate bigint NOT NULL,
 	CONSTRAINT rtticketlastview_ticketid_key UNIQUE (ticketid, userid)
 );
 CREATE INDEX rtticketlastview_vdate_idx ON rtticketlastview (vdate);
@@ -2343,15 +2343,15 @@ CREATE TABLE passwd (
 		CONSTRAINT passwd_ownerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	login varchar(200) 	DEFAULT '' NOT NULL,
 	password varchar(200) 	DEFAULT '' NOT NULL,
-	lastlogin integer 	DEFAULT 0 NOT NULL,
+	lastlogin bigint 	DEFAULT 0 NOT NULL,
 	uid integer 		DEFAULT 0 NOT NULL,
 	home varchar(255) 	DEFAULT '' NOT NULL,
 	type smallint 		DEFAULT 0 NOT NULL,
-	expdate	integer		DEFAULT 0 NOT NULL,
+	expdate	bigint		DEFAULT 0 NOT NULL,
 	domainid integer	NOT NULL
 		CONSTRAINT passwd_domainid_fkey REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	realname varchar(255)	DEFAULT '' NOT NULL,
-	createtime integer	DEFAULT 0 NOT NULL,
+	createtime bigint	DEFAULT 0 NOT NULL,
 	quota_sh integer	DEFAULT 0 NOT NULL,
 	quota_mail integer	DEFAULT 0 NOT NULL,
 	quota_www integer	DEFAULT 0 NOT NULL,
@@ -2542,9 +2542,9 @@ CREATE TABLE events (
 	title 		varchar(255) 	DEFAULT '' NOT NULL,
 	description 	text 		DEFAULT '' NOT NULL,
 	note 		text 		DEFAULT '' NOT NULL,
-	date 		integer 	DEFAULT 0 NOT NULL,
+	date 		bigint 	DEFAULT 0 NOT NULL,
 	begintime 	integer 	DEFAULT 0 NOT NULL,
-	enddate 	integer 	DEFAULT 0 NOT NULL,
+	enddate 	bigint 	DEFAULT 0 NOT NULL,
 	endtime 	integer 	DEFAULT 0 NOT NULL,
 	userid 		integer 	DEFAULT NULL
 		CONSTRAINT events_userid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -2552,11 +2552,11 @@ CREATE TABLE events (
 		CONSTRAINT events_customerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	private 	smallint 	DEFAULT 0 NOT NULL,
 	closed 		smallint 	DEFAULT 0 NOT NULL,
-	closeddate	integer		DEFAULT 0 NOT NULL,
+	closeddate	bigint		DEFAULT 0 NOT NULL,
 	closeduserid	integer		DEFAULT NULL
 		CONSTRAINT events_closeduserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	creationdate	integer		DEFAULT 0 NOT NULL,
-	moddate		integer		DEFAULT 0 NOT NULL,
+	creationdate	bigint		DEFAULT 0 NOT NULL,
+	moddate		bigint		DEFAULT 0 NOT NULL,
 	moduserid	integer		DEFAULT NULL
 		CONSTRAINT events_moduserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	type		smallint	DEFAULT 1 NOT NULL,
@@ -2595,9 +2595,9 @@ CREATE TABLE eventassignments (
 DROP TABLE IF EXISTS sessions CASCADE;
 CREATE TABLE sessions (
     id 		varchar(50) 	NOT NULL DEFAULT '',
-    ctime 	integer 	NOT NULL DEFAULT 0,
-    mtime 	integer 	NOT NULL DEFAULT 0,
-    atime 	integer 	NOT NULL DEFAULT 0,
+    ctime 	bigint 	NOT NULL DEFAULT 0,
+    mtime 	bigint 	NOT NULL DEFAULT 0,
+    atime 	bigint 	NOT NULL DEFAULT 0,
     vdata 	text 		NOT NULL,
     content 	text 		NOT NULL,
     PRIMARY KEY (id)
@@ -2685,7 +2685,7 @@ CREATE TABLE cashreglog (
 		CONSTRAINT cashreglog_regid_fkey REFERENCES cashregs (id) ON DELETE CASCADE ON UPDATE CASCADE,
     userid 	integer		DEFAULT NULL
 		CONSTRAINT cashreglog_userid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    time 	integer		DEFAULT 0 NOT NULL,
+    time 	bigint		DEFAULT 0 NOT NULL,
     value 	numeric(9,2)    DEFAULT 0 NOT NULL,
     snapshot 	numeric(9,2)    DEFAULT 0 NOT NULL,
     description text		DEFAULT '' NOT NULL,
@@ -2806,10 +2806,10 @@ CREATE TABLE messageitems (
 	customerid 	integer 	DEFAULT NULL
 		CONSTRAINT messageitems_customerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	destination 	varchar(255) 	DEFAULT '' NOT NULL,
-	lastdate 	integer		DEFAULT 0 NOT NULL,
+	lastdate 	bigint		DEFAULT 0 NOT NULL,
 	status 		smallint	DEFAULT 0 NOT NULL,
 	error 		text		DEFAULT NULL,
-	lastreaddate 	integer		DEFAULT 0 NOT NULL,
+	lastreaddate 	bigint		DEFAULT 0 NOT NULL,
 	externalmsgid	varchar(64)	DEFAULT NULL,
     body 		text		DEFAULT NULL,
         PRIMARY KEY (id)
@@ -2858,7 +2858,7 @@ CREATE TABLE logtransactions (
 	id integer		DEFAULT nextval('logtransactions_id_seq'::text) NOT NULL,
 	userid integer		DEFAULT NULL
 		CONSTRAINT logtransactions REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	time integer		DEFAULT 0 NOT NULL,
+	time bigint		DEFAULT 0 NOT NULL,
 	module varchar(50)	DEFAULT '' NOT NULL,
 	PRIMARY KEY (id)
 );
@@ -3029,7 +3029,7 @@ CREATE SEQUENCE filecontainers_id_seq;
 DROP TABLE IF EXISTS filecontainers CASCADE;
 CREATE TABLE filecontainers (
 	id integer DEFAULT nextval('filecontainers_id_seq'::text) NOT NULL,
-	creationdate integer NOT NULL DEFAULT 0,
+	creationdate bigint NOT NULL DEFAULT 0,
 	creatorid integer DEFAULT NULL
 		CONSTRAINT filecontainers_creatorid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	description text NOT NULL,
@@ -3102,9 +3102,9 @@ CREATE TABLE up_customers (
 	id integer 		        DEFAULT nextval('up_customers_id_seq'::text) NOT NULL,
     customerid integer 	    DEFAULT NULL
 		CONSTRAINT up_customers_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	lastlogindate integer 	DEFAULT 0 NOT NULL,
+	lastlogindate bigint 	DEFAULT 0 NOT NULL,
 	lastloginip varchar(16) DEFAULT '' NOT NULL,
-	failedlogindate integer DEFAULT 0 NOT NULL,
+	failedlogindate bigint DEFAULT 0 NOT NULL,
 	failedloginip varchar(16) DEFAULT '' NOT NULL,
 	enabled smallint 	    DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
@@ -3148,9 +3148,9 @@ CREATE TABLE up_sessions (
 	id		varchar(50) 	NOT NULL DEFAULT '',
 	customerid  integer NOT NULL
 		CONSTRAINT up_sessions_customerid_fkey REFERENCES customers (id) ON UPDATE CASCADE ON DELETE CASCADE,
-	ctime	integer 	NOT NULL DEFAULT 0,
-	mtime	integer 	NOT NULL DEFAULT 0,
-	atime 	integer		NOT NULL DEFAULT 0,
+	ctime	bigint 	NOT NULL DEFAULT 0,
+	mtime	bigint 	NOT NULL DEFAULT 0,
+	atime 	bigint		NOT NULL DEFAULT 0,
 	vdata	text		NOT NULL,
 	content 	text		NOT NULL,
 	PRIMARY KEY (id)
@@ -3171,7 +3171,7 @@ END
 CREATE VIEW vcustomerassignments AS
     SELECT ca.*
     FROM customerassignments ca
-    WHERE startdate <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer AND enddate = 0;
+    WHERE startdate <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::bigint AND enddate = 0;
 
 CREATE VIEW vaddresses AS
     SELECT a.*, c.ccode AS ccode, country_id AS countryid, city_id AS location_city, street_id AS location_street,
@@ -3229,7 +3229,7 @@ CREATE VIEW vnetworks AS
 
 CREATE VIEW customerconsentview AS
     SELECT c.id AS customerid,
-        SUM(CASE WHEN cc.type = 1 THEN cc.cdate ELSE 0 END)::integer AS consentdate,
+        SUM(CASE WHEN cc.type = 1 THEN cc.cdate ELSE 0 END)::bigint AS consentdate,
         SUM(CASE WHEN cc.type = 2 THEN 1 ELSE 0 END)::smallint AS invoicenotice,
         SUM(CASE WHEN cc.type = 3 THEN 1 ELSE 0 END)::smallint AS mailingnotice,
         SUM(CASE WHEN cc.type = 8 THEN 1 ELSE 0 END)::smallint AS smsnotice,
@@ -3406,13 +3406,13 @@ CREATE VIEW vnodetariffs AS
         LEFT JOIN (
             SELECT customerid, COUNT(id) AS allsuspended FROM assignments
             WHERE tariffid IS NULL AND liabilityid IS NULL
-                AND datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer
-                AND (dateto = 0 OR dateto > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer)
+                AND datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::bigint
+                AND (dateto = 0 OR dateto > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::bigint)
             GROUP BY customerid
         ) s ON s.customerid = n.ownerid
         WHERE s.allsuspended IS NULL AND a.suspended = 0 AND a.commited = 1
-            AND a.datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer
-            AND (a.dateto = 0 OR a.dateto >= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer)
+            AND a.datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::bigint
+            AND (a.dateto = 0 OR a.dateto >= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::bigint)
             AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
         GROUP BY n.id
     ) t ON t.nodeid = n.id
@@ -3506,13 +3506,13 @@ CREATE VIEW vnodealltariffs AS
             LEFT JOIN (
                 SELECT customerid, COUNT(id) AS allsuspended FROM assignments
                 WHERE tariffid IS NULL AND liabilityid IS NULL
-                    AND datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer
-                    AND (dateto = 0 OR dateto > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer)
+                    AND datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::bigint
+                    AND (dateto = 0 OR dateto > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::bigint)
                 GROUP BY customerid
             ) s ON s.customerid = n.ownerid
             WHERE s.allsuspended IS NULL AND a.suspended = 0 AND a.commited = 1
-                AND a.datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer
-                AND (a.dateto = 0 OR a.dateto >= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer)
+                AND a.datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::bigint
+                AND (a.dateto = 0 OR a.dateto >= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::bigint)
                 AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
             GROUP BY n.id, a.count
         ) a ON a.id = n.id
@@ -3576,13 +3576,13 @@ CREATE VIEW vnodealltariffs AS
             LEFT JOIN (
                 SELECT customerid, COUNT(id) AS allsuspended FROM assignments
                 WHERE tariffid IS NULL AND liabilityid IS NULL
-                    AND datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer
-                    AND (dateto = 0 OR dateto > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer)
+                    AND datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::bigint
+                    AND (dateto = 0 OR dateto > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::bigint)
                 GROUP BY customerid
             ) s ON s.customerid = a.customerid
             WHERE s.allsuspended IS NULL AND a.suspended = 0 AND a.commited = 1
-                AND a.datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer
-                AND (a.dateto = 0 OR a.dateto >= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer)
+                AND a.datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::bigint
+                AND (a.dateto = 0 OR a.dateto >= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::bigint)
                 AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
                 AND n.id NOT IN (SELECT nodeid FROM nodeassignments)
                 AND a.id NOT IN (SELECT assignmentid FROM nodeassignments)
@@ -4423,6 +4423,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024081400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024081401');
 
 COMMIT;
