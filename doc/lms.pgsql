@@ -325,8 +325,8 @@ CREATE TABLE customers (
     icexpires bigint 	DEFAULT NULL, -- ważność dokumentu tożsamości
 	info text		DEFAULT '' NOT NULL,
 	notes text		DEFAULT '' NOT NULL,
-	creationdate integer 	DEFAULT 0 NOT NULL,
-	moddate integer 	DEFAULT 0 NOT NULL,
+	creationdate bigint 	DEFAULT 0 NOT NULL,
+	moddate bigint 	DEFAULT 0 NOT NULL,
 	creatorid integer 	DEFAULT NULL
 		CONSTRAINT customers_creatorid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	modid integer 		DEFAULT NULL
@@ -334,8 +334,8 @@ CREATE TABLE customers (
 	deleted smallint 	DEFAULT 0 NOT NULL,
 	message text		DEFAULT '' NOT NULL,
 	pin varchar(255)		DEFAULT 0 NOT NULL,
-	pinlastchange integer DEFAULT 0 NOT NULL,
-	cutoffstop integer	DEFAULT 0 NOT NULL,
+	pinlastchange bigint DEFAULT 0 NOT NULL,
+	cutoffstop bigint	DEFAULT 0 NOT NULL,
 	divisionid integer	DEFAULT NULL
 		CONSTRAINT customers_divisionid_fkey REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
     paytime smallint 	DEFAULT -1 NOT NULL,
@@ -343,6 +343,7 @@ CREATE TABLE customers (
     documentmemo text   DEFAULT NULL,
     flags smallint NOT NULL DEFAULT 0,
     karma smallint NOT NULL DEFAULT 0,
+    origin smallint DEFAULT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX customers_lastname_idx ON customers (lastname, name);
@@ -527,8 +528,8 @@ CREATE TABLE documents (
 	numberplanid integer	DEFAULT NULL
 		CONSTRAINT documents_numberplanid_fkey REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	extnumber varchar(255)	DEFAULT '' NOT NULL,
-	cdate integer		DEFAULT 0 NOT NULL,
-	sdate integer		DEFAULT 0 NOT NULL,
+	cdate bigint    	DEFAULT 0 NOT NULL,
+	sdate bigint		DEFAULT 0 NOT NULL,
 	customerid integer	DEFAULT NULL
 		CONSTRAINT documents_customerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	userid integer		DEFAULT NULL
@@ -579,14 +580,15 @@ CREATE TABLE documents (
 	archived smallint DEFAULT 0 NOT NULL,
 	auserid integer DEFAULT NULL
 		CONSTRAINT documents_auserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	adate integer DEFAULT 0 NOT NULL,
+	adate bigint DEFAULT 0 NOT NULL,
     currency varchar(3),
     currencyvalue numeric(17,10) DEFAULT 1.0,
-    senddate integer	DEFAULT 0 NOT NULL,
+    senddate bigint DEFAULT 0 NOT NULL,
     memo text           DEFAULT NULL,
-    confirmdate integer NOT NULL DEFAULT 0,
+    confirmdate bigint NOT NULL DEFAULT 0,
     flags smallint DEFAULT 0 NOT NULL,
-	PRIMARY KEY (id)
+    origin smallint DEFAULT NULL,
+    PRIMARY KEY (id)
 );
 CREATE INDEX documents_cdate_idx ON documents(cdate);
 CREATE INDEX documents_numberplanid_idx ON documents(numberplanid);
@@ -4421,6 +4423,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024081300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024081400');
 
 COMMIT;
