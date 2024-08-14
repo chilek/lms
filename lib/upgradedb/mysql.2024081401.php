@@ -27,27 +27,27 @@ $this->Execute("DROP VIEW vallusers");
 $this->Execute("DROP VIEW vusers");
 
 if ($this->ResourceExists('users.lastlogindate.int(11)', LMSDB::RESOURCE_TYPE_COLUMN_TYPE)) {
-    $this->Execute("ALTER TABLE users MODIFY COLIMN lastlogindate NOT NULL DEFAULT 0");
+    $this->Execute("ALTER TABLE users MODIFY COLUMN lastlogindate NOT NULL DEFAULT 0");
 }
 
 if ($this->ResourceExists('users.failedlogindate.int(11)', LMSDB::RESOURCE_TYPE_COLUMN_TYPE)) {
-    $this->Execute("ALTER TABLE users MODIFY COLIMN failedlogindate NOT NULL DEFAULT 0");
+    $this->Execute("ALTER TABLE users MODIFY COLUMN failedlogindate NOT NULL DEFAULT 0");
 }
 
 if ($this->ResourceExists('users.passwdexpiration.int(11)', LMSDB::RESOURCE_TYPE_COLUMN_TYPE)) {
-    $this->Execute("ALTER TABLE users MODIFY COLIMN passwdexpiration NOT NULL DEFAULT 0");
+    $this->Execute("ALTER TABLE users MODIFY COLUMN passwdexpiration NOT NULL DEFAULT 0");
 }
 
 if ($this->ResourceExists('users.passwdlastchange.int(11)', LMSDB::RESOURCE_TYPE_COLUMN_TYPE)) {
-    $this->Execute("ALTER TABLE users MODIFY COLIMN passwdlastchange NOT NULL DEFAULT 0");
+    $this->Execute("ALTER TABLE users MODIFY COLUMN passwdlastchange NOT NULL DEFAULT 0");
 }
 
 if ($this->ResourceExists('users.accessfrom.int(11)', LMSDB::RESOURCE_TYPE_COLUMN_TYPE)) {
-    $this->Execute("ALTER TABLE users MODIFY COLIMN accessfrom NOT NULL DEFAULT 0");
+    $this->Execute("ALTER TABLE users MODIFY COLUMN accessfrom NOT NULL DEFAULT 0");
 }
 
 if ($this->ResourceExists('users.accessto.int(11)', LMSDB::RESOURCE_TYPE_COLUMN_TYPE)) {
-    $this->Execute("ALTER TABLE users MODIFY COLIMN accessto NOT NULL DEFAULT 0");
+    $this->Execute("ALTER TABLE users MODIFY COLUMN accessto NOT NULL DEFAULT 0");
 }
 
 $this->Execute(
