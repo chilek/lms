@@ -196,6 +196,19 @@
 							</select>
 						</TD>
 					</TR>
+					<tr>
+						<td>
+							{icon name="origin" class="fa-fw"}
+						</td>
+						<td>
+							<select size="1" name="customerdata[origin]" {tip trigger="origin"}>
+								<option value="">{trans("<!origin>— unspecified —")}</option>
+								{foreach Localisation::arraySort($_ORIGINS) as $originidx => $origin}
+									<option value="{$originidx}"{if $customerinfo.origin == $originidx} selected{/if}>{$origin}</option>
+								{/foreach}
+							</select>
+						</td>
+					</tr>
 					{if $divisions}
 					<TR>
 						<TD>

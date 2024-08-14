@@ -78,6 +78,13 @@ if (!isset($_POST['sk'])) {
 }
 $SESSION->save('cslsk', $statesqlskey);
 
+if (!isset($_POST['origin'])) {
+    $SESSION->restore('cslorigin', $origin);
+} else {
+    $origin = intval($_POST['origin']);
+}
+$SESSION->save('cslorigin', $origin);
+
 if (!isset($_POST['flags'])) {
     $SESSION->restore('cslf', $flags);
 } else {
@@ -203,6 +210,7 @@ if (isset($_GET['search'])) {
         "customergroupnegation",
         "flags",
         "flagsqlskey",
+        "origin",
         "consents",
         "karma",
         "network",

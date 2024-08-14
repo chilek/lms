@@ -702,6 +702,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'paytime'        => $customeradd['paytime'],
             'paytype'        => !empty($customeradd['paytype']) ? $customeradd['paytype'] : null,
             'flags'          => $flags,
+            'origin'         => empty($customeradd['origin']) ? null : intval($customeradd['origin']),
         );
 
         $reuse_customer_id = ConfigHelper::checkConfig('phpui.reuse_customer_id');
@@ -729,9 +730,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'INSERT INTO customers (name, lastname, altname, type,
             ten, ssn, status, creationdate,
             creatorid, info, notes, message, documentmemo, pin, pinlastchange, regon, rbename, rbe,
-            ict, icn, icexpires, cutoffstop, divisionid, paytime, paytype, flags' . ($reuse_customer_id ? ', id' : ''). ')
+            ict, icn, icexpires, cutoffstop, divisionid, paytime, paytype, flags, origin' . ($reuse_customer_id ? ', id' : ''). ')
             VALUES (?, ' . ($capitalize_customer_names ? 'UPPER(?)' : '?') . ', ?, ?, ?, ?, ?, ?NOW?,
-                    ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?' . ($reuse_customer_id ? ', ?' : '') . ')',
+                    ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?' . ($reuse_customer_id ? ', ?' : '') . ')',
             array_values($args)
         );
 
@@ -1501,6 +1502,14 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         case 'karma':
                             if (intval($value)) {
                                 $searchargs[] = 'c.karma ' . ($value > 0 ? '>' : '<') . '= ' . $value;
+                            }
+                            break;
+                        case 'origin':
+                            $value = intval($value);
+                            if ($value > 0) {
+                                $searchargs[] = 'c.origin = ' . $value;
+                            } elseif (empty($value)) {
+                                $searchargs[] = 'c.origin IS NULL';
                             }
                             break;
                         default:
@@ -2275,6 +2284,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'paytime'        => $customerdata['paytime'],
             'paytype'        => $customerdata['paytype'] ?: null,
             'flags'          => $flags,
+            'origin'         => empty($customerdata['origin']) ? null : intval($customerdata['origin']),
             SYSLOG::RES_CUST => $customerdata['id']
         );
 
@@ -2316,7 +2326,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'UPDATE customers SET status = ?, type = ?, ten = ?, ssn = ?, moddate = ?NOW?, modid = ?,
             info = ?, notes = ?, lastname=' . ($capitalize_customer_names ? 'UPPER(?)' : '?') . ', name = ?, altname = ?,
             deleted = 0, message = ?, documentmemo = ?, pin = ?, pinlastchange = ?, regon = ?, ict = ?, icn = ?, icexpires = ?,
-            rbename = ?, rbe = ?, cutoffstop = ?, divisionid = ?, paytime = ?, paytype = ?, flags = ?
+            rbename = ?, rbe = ?, cutoffstop = ?, divisionid = ?, paytime = ?, paytype = ?, flags = ?, origin = ?
             WHERE id = ?',
             array_values($args)
         );

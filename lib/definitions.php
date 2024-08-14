@@ -201,6 +201,32 @@ $CCONSENTS = array(
     CCONSENT_FULL_PHONE_BILLING => CCONSENT_PHONE_BILLING,
 );
 
+const ORIGIN_FACEBOOK = 1,
+    ORIGIN_COMPANY_WEBSITE = 2,
+    ORIGIN_SEARCH_ENGINE = 3,
+    ORIGIN_ONLINE_ADVERTISING = 4,
+    ORIGIN_CAR_ADVERTISING = 5,
+    ORIGIN_BANNER = 6,
+    ORIGIN_LEAFLET = 7,
+    ORIGIN_WORKER = 8,
+    ORIGIN_RECOMMENDATION = 9,
+    ORIGIN_NEIGHBOUR = 10,
+    ORIGIN_EVENT = 11;
+
+$ORIGINS = array(
+    ORIGIN_FACEBOOK => '<!origin>Facebook',
+    ORIGIN_COMPANY_WEBSITE => '<!origin>company website',
+    ORIGIN_SEARCH_ENGINE => '<!origin>search engine',
+    ORIGIN_ONLINE_ADVERTISING => '<!origin>online advertising',
+    ORIGIN_CAR_ADVERTISING => '<!origin>car advertising',
+    ORIGIN_BANNER => '<!origin>banner',
+    ORIGIN_LEAFLET => '<!origin>leaflet',
+    ORIGIN_WORKER => '<!origin>worker',
+    ORIGIN_RECOMMENDATION => '<!origin>recommendation',
+    ORIGIN_NEIGHBOUR => '<!origin>neighbour',
+    ORIGIN_EVENT => '<!origin>event',
+);
+
 // Config types
 const CONFIG_TYPE_AUTO = 0,
     CONFIG_TYPE_BOOLEAN = 1,
@@ -1748,6 +1774,7 @@ if (isset($SMARTY)) {
             '_CSTATUSES' => $CSTATUSES,
             '_CUSTOMERFLAGS' => $CUSTOMERFLAGS,
             '_CCONSENTS' => $CCONSENTS,
+            '_ORIGINS' => $ORIGINS,
             '_MESSAGETEMPLATES' => $MESSAGETEMPLATES,
             '_ACCOUNTTYPES' => $ACCOUNTTYPES,
             '_DOCTYPES' => $DOCTYPES,

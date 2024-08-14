@@ -118,6 +118,16 @@
 											<strong>{$_CSTATUSES[$customerinfo.status].singularlabel}</strong>
 										</td>
 									</tr>
+									{if !empty($customerinfo.origin)}
+										<tr>
+											<td>
+												{icon name="origin" class="fa-fw"}
+											</td>
+											<td>
+												{trans($_ORIGINS[$customerinfo.origin])}
+											</td>
+										</tr>
+									{/if}
 									{if !empty($customerinfo.flags)}
 									<tr>
 										<td>

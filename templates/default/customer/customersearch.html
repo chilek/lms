@@ -713,6 +713,23 @@
 			</div>
 		</TD>
 	</TR>
+
+	<tr>
+		<td class="nobr valign-top">
+			{icon name="origin" class="fa-fw"}
+			<strong>{trans("<!origin>Origin")}</strong>
+		</td>
+		<td>
+			<select size="1" name="search[origin]" {tip trigger="origin"}>
+				<option value="-1">{trans("<!origin>— any —")}</option>
+				<option value="0">{trans("<!origin>— unspecified —")}</option>
+				{foreach Localisation::arraySort($_ORIGINS) as $originidx => $origin}
+					<option value="{$originidx}">{$origin}</option>
+				{/foreach}
+			</select>
+		</td>
+	</tr>
+
 	<tr>
 		<td class="nobr valign-top">
 			{icon name="document"}

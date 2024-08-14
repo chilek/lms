@@ -5963,3 +5963,18 @@ $_LANG['<!uke-pit-service>provided to end user'] = 'świadczona dla użytkownik�
 $_LANG['<!uke-pit-service>other'] = 'inna';
 
 $_LANG['Expired identity card'] = 'Nieważny dokument tożsamości';
+
+$_LANG['<!origin>Facebook'] = 'Facebook';
+$_LANG['<!origin>company website'] = 'witryna firmowa';
+$_LANG['<!origin>search engine'] = 'wyszukiwarka';
+$_LANG['<!origin>online advertising'] = 'reklama online';
+$_LANG['<!origin>car advertising'] = 'reklama na samochodzie';
+$_LANG['<!origin>banner'] = 'baner';
+$_LANG['<!origin>leaflet'] = 'ulotka';
+$_LANG['<!origin>worker'] = 'pracownik';
+$_LANG['<!origin>recommendation'] = 'polecenie';
+$_LANG['<!origin>neighbour'] = 'sąsiad';
+$_LANG['<!origin>event'] = 'wydarzenie';
+$_LANG['<!origin>— unspecified —'] = '— nieokreślone —';
+$_LANG['<!origin>Origin'] = 'Pochodzenie';
+$_LANG['<!origin>— any —'] = '— dowolne —';
