@@ -87,6 +87,7 @@ if ($this->ResourceExists('customerconsents.cdate.int4', LMSDB::RESOURCE_TYPE_CO
 
 if ($this->ResourceExists('customerassignments.startdate.int4', LMSDB::RESOURCE_TYPE_COLUMN_TYPE)) {
     $this->Execute("ALTER TABLE customerassignments ALTER COLUMN startdate TYPE bigint");
+    $this->Execute("ALTER TABLE customerassignments ALTER COLUMN startdate SET DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::bigint");
 }
 
 if ($this->ResourceExists('customerassignments.enddate.int4', LMSDB::RESOURCE_TYPE_COLUMN_TYPE)) {

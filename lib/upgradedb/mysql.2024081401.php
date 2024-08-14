@@ -682,6 +682,17 @@ if ($this->ResourceExists('up_sessions.atime.int(11)', LMSDB::RESOURCE_TYPE_COLU
     $this->Execute("ALTER TABLE up_sessions MODIFY COLUMN atime int(16) NOT NULL DEFAULT 0");
 }
 
+$this->Execute("DROP TRIGGER IF EXISTS customerassignments_insert_trigger");
+$this->Execute(
+    "CREATE TRIGGER customerassignments_insert_trigger BEFORE INSERT ON customerassignments
+        FOR EACH ROW
+    BEGIN
+        IF NEW.startdate = 0 THEN
+            SET NEW.startdate = UNIX_TIMESTAMP64();
+       END IF;
+    END"
+);
+
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2024081401', 'dbversion'));
 
 $this->CommitTrans();
