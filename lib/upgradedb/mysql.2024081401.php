@@ -23,31 +23,31 @@
 
 $this->BeginTrans();
 
-$this->Execute("DROP VIEW vallusers");
-$this->Execute("DROP VIEW vusers");
+$this->Execute("DROP VIEW IF EXISTS vallusers");
+$this->Execute("DROP VIEW IF EXISTS vusers");
 
 if ($this->ResourceExists('users.lastlogindate.int(11)', LMSDB::RESOURCE_TYPE_COLUMN_TYPE)) {
-    $this->Execute("ALTER TABLE users MODIFY COLUMN lastlogindate NOT NULL DEFAULT 0");
+    $this->Execute("ALTER TABLE users MODIFY COLUMN lastlogindate int(16) NOT NULL DEFAULT 0");
 }
 
 if ($this->ResourceExists('users.failedlogindate.int(11)', LMSDB::RESOURCE_TYPE_COLUMN_TYPE)) {
-    $this->Execute("ALTER TABLE users MODIFY COLUMN failedlogindate NOT NULL DEFAULT 0");
+    $this->Execute("ALTER TABLE users MODIFY COLUMN failedlogindate int(16) NOT NULL DEFAULT 0");
 }
 
 if ($this->ResourceExists('users.passwdexpiration.int(11)', LMSDB::RESOURCE_TYPE_COLUMN_TYPE)) {
-    $this->Execute("ALTER TABLE users MODIFY COLUMN passwdexpiration NOT NULL DEFAULT 0");
+    $this->Execute("ALTER TABLE users MODIFY COLUMN passwdexpiration int(16) NOT NULL DEFAULT 0");
 }
 
 if ($this->ResourceExists('users.passwdlastchange.int(11)', LMSDB::RESOURCE_TYPE_COLUMN_TYPE)) {
-    $this->Execute("ALTER TABLE users MODIFY COLUMN passwdlastchange NOT NULL DEFAULT 0");
+    $this->Execute("ALTER TABLE users MODIFY COLUMN passwdlastchange int(16) NOT NULL DEFAULT 0");
 }
 
 if ($this->ResourceExists('users.accessfrom.int(11)', LMSDB::RESOURCE_TYPE_COLUMN_TYPE)) {
-    $this->Execute("ALTER TABLE users MODIFY COLUMN accessfrom NOT NULL DEFAULT 0");
+    $this->Execute("ALTER TABLE users MODIFY COLUMN accessfrom int(16) NOT NULL DEFAULT 0");
 }
 
 if ($this->ResourceExists('users.accessto.int(11)', LMSDB::RESOURCE_TYPE_COLUMN_TYPE)) {
-    $this->Execute("ALTER TABLE users MODIFY COLUMN accessto NOT NULL DEFAULT 0");
+    $this->Execute("ALTER TABLE users MODIFY COLUMN accessto int(16) NOT NULL DEFAULT 0");
 }
 
 $this->Execute(
@@ -75,11 +75,11 @@ if ($this->ResourceExists('twofactorauthtrusteddevices.expires.int(11)', LMSDB::
     $this->Execute("ALTER TABLE twofactorauthtrusteddevices MODIFY COLUMN expires int(16) NOT NULL");
 }
 
-$this->Execute("DROP VIEW customeraddressview");
-$this->Execute("DROP VIEW contractorview");
-$this->Execute("DROP VIEW customerview");
-$this->Execute("DROP VIEW customerconsentview");
-$this->Execute("DROP VIEW vcustomerassignments");
+$this->Execute("DROP VIEW IF EXISTS customeraddressview");
+$this->Execute("DROP VIEW IF EXISTS contractorview");
+$this->Execute("DROP VIEW IF EXISTS customerview");
+$this->Execute("DROP VIEW IF EXISTS customerconsentview");
+$this->Execute("DROP VIEW IF EXISTS vcustomerassignments");
 
 if ($this->ResourceExists('customerconsents.cdate.int(11)', LMSDB::RESOURCE_TYPE_COLUMN_TYPE)) {
     $this->Execute("ALTER TABLE customerconsents MODIFY COLUMN cdate int(16) NOT NULL DEFAULT 0");
@@ -93,6 +93,7 @@ if ($this->ResourceExists('customerassignments.enddate.int(11)', LMSDB::RESOURCE
     $this->Execute("ALTER TABLE customerassignments MODIFY COLUMN enddate int(16) NOT NULL DEFAULT 0");
 }
 
+$this->Execute("DROP FUNCTION IF EXISTS UNIX_TIMESTAMP64");
 $this->Execute(
     "CREATE FUNCTION UNIX_TIMESTAMP64() RETURNS BIGINT DETERMINISTIC
     RETURN TIMESTAMPDIFF(SECOND, DATE '1970-01-01', NOW())"
@@ -213,15 +214,15 @@ $this->Execute(
         WHERE c.type < 2"
 );
 
-$this->Execute("DROP VIEW vnodealltariffs");
-$this->Execute("DROP VIEW vnodealltariffs_tariffs");
-$this->Execute("DROP VIEW vnodealltariffs_nodes");
-$this->Execute("DROP VIEW vnodetariffs");
-$this->Execute("DROP VIEW vnodetariffs_tariffs");
-$this->Execute("DROP VIEW vnodetariffs_allsuspended");
-$this->Execute("DROP VIEW vmacs");
-$this->Execute("DROP VIEW vnodes");
-$this->Execute("DROP VIEW vnodes_mac");
+$this->Execute("DROP VIEW IF EXISTS vnodealltariffs");
+$this->Execute("DROP VIEW IF EXISTS vnodealltariffs_tariffs");
+$this->Execute("DROP VIEW IF EXISTS vnodealltariffs_nodes");
+$this->Execute("DROP VIEW IF EXISTS vnodetariffs");
+$this->Execute("DROP VIEW IF EXISTS vnodetariffs_tariffs");
+$this->Execute("DROP VIEW IF EXISTS vnodetariffs_allsuspended");
+$this->Execute("DROP VIEW IF EXISTS vmacs");
+$this->Execute("DROP VIEW IF EXISTS vnodes");
+$this->Execute("DROP VIEW IF EXISTS vnodes_mac");
 
 if ($this->ResourceExists('assignments.datefrom.int(11)', LMSDB::RESOURCE_TYPE_COLUMN_TYPE)) {
     $this->Execute("ALTER TABLE assignments MODIFY COLUMN datefrom int(16) NOT NULL DEFAULT 0");
@@ -463,11 +464,11 @@ if ($this->ResourceExists('documentattachments.cdate.int(11)', LMSDB::RESOURCE_T
 }
 
 if ($this->ResourceExists('taxes.validfrom.int(11)', LMSDB::RESOURCE_TYPE_COLUMN_TYPE)) {
-    $this->Execute("ALTER TABLE taxes MODIFY COLUMN validfrom NOT NULL DEFAULT 0");
+    $this->Execute("ALTER TABLE taxes MODIFY COLUMN validfrom int(16) NOT NULL DEFAULT 0");
 }
 
 if ($this->ResourceExists('taxes.validto.int(11)', LMSDB::RESOURCE_TYPE_COLUMN_TYPE)) {
-    $this->Execute("ALTER TABLE taxes MODIFY COLUMN validto NOT NULL DEFAULT 0");
+    $this->Execute("ALTER TABLE taxes MODIFY COLUMN validto int(16) NOT NULL DEFAULT 0");
 }
 
 if ($this->ResourceExists('voipaccounts.creationdate.int(11)', LMSDB::RESOURCE_TYPE_COLUMN_TYPE)) {
