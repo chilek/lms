@@ -680,6 +680,7 @@ version 28-git (????-??-??):
     and 'teryt.allow_empty_building_numbers' are set to 'true' - their default values) [chilan]
   - enhancement: customer external ID and PIN authentication to userpanel support added with option of service
     provider selection [chilan]
+  - enhancement: 'origin' property of customers and documents [chilan]
 
 version 27.0 (2021-08-20):
 
