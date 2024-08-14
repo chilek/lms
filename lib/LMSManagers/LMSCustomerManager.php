@@ -907,7 +907,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $nodegroupnegation = false;
         }
 
-        if (!is_array($state) && !empty($state)) {
+        if (isset($state) && !is_array($state) && !empty($state)) {
             $state = array($state);
         }
 
