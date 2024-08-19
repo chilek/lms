@@ -230,7 +230,68 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 $optional_string = '';
             }
 
-            if (empty($matches['id']) && empty($pattern['pid'])) {
+            if (isset($matches['id'])) {
+                $id = intval(preg_replace('/\s+/', '', $matches['id']));
+            } elseif (isset($pattern['pid'], $matches[$pattern['pid']])) {
+                $id = intval(preg_replace('/\s+/', '', $matches[$pattern['pid']]));
+            }
+
+            // seek by explicitly given source or destination customer account numbers
+            if (!$id) {
+                if (strlen($dstaccount)) {
+                    $id = $this->db->GetOne(
+                        'SELECT customerid FROM customercontacts
+                        WHERE contact = ? AND (type & ?) = ?',
+                        array(
+                            $dstaccount,
+                            CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+                            CONTACT_BANKACCOUNT | CONTACT_INVOICES,
+                        )
+                    );
+                } elseif (strlen($srcaccount)) {
+                    $id = $this->db->GetOne(
+                        'SELECT customerid FROM customercontacts
+                        WHERE contact = ? AND (type & ?) = ?',
+                        array(
+                            $srcaccount,
+                            CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+                            CONTACT_BANKACCOUNT,
+                        )
+                    );
+                    if (empty($id)) {
+                        // find customer by source accounts stored in cash import record;
+                        // if customer has unique source account assigned to all his cash import records
+                        // then we matched customer by source account
+                        if (!isset($unique_source_accounts)) {
+                            $days = intval(ConfigHelper::getConfig($config_section . '.source_account_match_threshold_days'));
+                            $unique_source_accounts = $this->db->GetALl(
+                                'SELECT i.customerid, i.srcaccount
+                                FROM cashimport i
+                                JOIN (
+                                    SELECT i2.srcaccount
+                                    FROM cashimport i2
+                                    WHERE i2.customerid IS NOT NULL AND i2.srcaccount IS NOT NULL
+                                        ' . ($days ? ' AND i2.date >= ?NOW? - ' . $days . ' * 86400' : '') . '
+                                    GROUP BY i2.srcaccount
+                                    HAVING COUNT(DISTINCT i2.customerid) = 1
+                                ) i3 ON i3.srcaccount = i.srcaccount
+                                WHERE i.customerid IS NOT NULL AND i.srcaccount IS NOT NULL
+                                    ' . ($days ? ' AND i.date >= ?NOW? - ' . $days . ' * 86400' : '')
+                            );
+                            if (empty($unique_source_accounts)) {
+                                $unique_source_accounts = array();
+                            } else {
+                                $unique_source_accounts = Utils::array_column($unique_source_accounts, 'customerid', 'srcaccount');
+                            }
+                        }
+                        if (!empty($unique_source_accounts) && isset($unique_source_accounts[$srcaccount])) {
+                            $id = $unique_source_accounts[$srcaccount];
+                        }
+                     }
+                 }
+            }
+
+            if (!$id && empty($matches['id']) && empty($pattern['pid'])) {
                 if (isset($pattern['pid_regexp'])) {
                     if (is_array($pattern['pid_regexp'])) {
                         $regexps = array_filter($pattern['pid_regexp'], function ($regexp) {
@@ -249,12 +310,6 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                         break;
                     }
                 }
-            } elseif (isset($matches['id'])) {
-                $id = intval(preg_replace('/\s+/', '', $matches['id']));
-            } elseif (isset($pattern['pid'], $matches[$pattern['pid']])) {
-                $id = intval(preg_replace('/\s+/', '', $matches[$pattern['pid']]));
-            } else {
-                $id = null;
             }
 
             if (isset($matches['extid'])) {
@@ -336,61 +391,6 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                                     array(DOC_INVOICE, DOC_CNOTE)
                                 )
                             );
-                        }
-                    }
-                }
-            }
-
-            // seek by explicitly given source or destination customer account numbers
-            if (!$id) {
-                if (strlen($dstaccount)) {
-                    $id = $this->db->GetOne(
-                        'SELECT customerid FROM customercontacts
-                        WHERE contact = ? AND (type & ?) = ?',
-                        array(
-                            $dstaccount,
-                            CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
-                            CONTACT_BANKACCOUNT | CONTACT_INVOICES,
-                        )
-                    );
-                } elseif (strlen($srcaccount)) {
-                    $id = $this->db->GetOne(
-                        'SELECT customerid FROM customercontacts
-                        WHERE contact = ? AND (type & ?) = ?',
-                        array(
-                            $srcaccount,
-                            CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
-                            CONTACT_BANKACCOUNT,
-                        )
-                    );
-                    if (empty($id)) {
-                        // find customer by source accounts stored in cash import record;
-                        // if customer has unique source account assigned to all his cash import records
-                        // then we matched customer by source account
-                        if (!isset($unique_source_accounts)) {
-                            $days = intval(ConfigHelper::getConfig($config_section . '.source_account_match_threshold_days'));
-                            $unique_source_accounts = $this->db->GetALl(
-                                'SELECT i.customerid, i.srcaccount
-                                FROM cashimport i
-                                JOIN (
-                                    SELECT i2.srcaccount
-                                    FROM cashimport i2
-                                    WHERE i2.customerid IS NOT NULL AND i2.srcaccount IS NOT NULL
-                                        ' . ($days ? ' AND i2.date >= ?NOW? - ' . $days . ' * 86400' : '') . '
-                                    GROUP BY i2.srcaccount
-                                    HAVING COUNT(DISTINCT i2.customerid) = 1
-                                ) i3 ON i3.srcaccount = i.srcaccount
-                                WHERE i.customerid IS NOT NULL AND i.srcaccount IS NOT NULL
-                                    ' . ($days ? ' AND i.date >= ?NOW? - ' . $days . ' * 86400' : '')
-                            );
-                            if (empty($unique_source_accounts)) {
-                                $unique_source_accounts = array();
-                            } else {
-                                $unique_source_accounts = Utils::array_column($unique_source_accounts, 'customerid', 'srcaccount');
-                            }
-                        }
-                        if (!empty($unique_source_accounts) && isset($unique_source_accounts[$srcaccount])) {
-                            $id = $unique_source_accounts[$srcaccount];
                         }
                     }
                 }
