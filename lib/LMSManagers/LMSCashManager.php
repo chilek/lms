@@ -232,7 +232,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 
             if (isset($matches['id'])) {
                 $id = intval(preg_replace('/\s+/', '', $matches['id']));
-            } elseif (isset($pattern['pid'], $matches[$pattern['pid']])) {
+            } elseif (!empty($pattern['pid']) && isset($matches[$pattern['pid']])) {
                 $id = intval(preg_replace('/\s+/', '', $matches[$pattern['pid']]));
             }
 
