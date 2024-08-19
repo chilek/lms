@@ -287,8 +287,8 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                         if (!empty($unique_source_accounts) && isset($unique_source_accounts[$srcaccount])) {
                             $id = $unique_source_accounts[$srcaccount];
                         }
-                     }
-                 }
+                    }
+                }
             }
 
             if (!$id && empty($matches['id']) && empty($pattern['pid'])) {
