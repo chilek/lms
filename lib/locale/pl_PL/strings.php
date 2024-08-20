@@ -5978,3 +5978,6 @@ $_LANG['<!origin>event'] = 'wydarzenie';
 $_LANG['<!origin>— unspecified —'] = '— nieokreślone —';
 $_LANG['<!origin>Origin'] = 'Pochodzenie';
 $_LANG['<!origin>— any —'] = '— dowolne —';
+
+$_LANG['Customer origin is empty!'] = 'Puste pochodzenie klienta!';
+$_LANG['Customer origin is required!'] = 'Wymagane pochodzenie klienta!';

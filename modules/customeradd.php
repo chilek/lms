@@ -163,6 +163,23 @@ if (isset($_POST['customeradd'])) {
         }
     }
 
+    if (empty($customeradd['origin'])) {
+        $origin_check = ConfigHelper::getConfig(
+            'customers.origin_check',
+            'none'
+        );
+        switch ($origin_check) {
+            case 'warning':
+                if (!isset($warnings['customeradd-origin-'])) {
+                    $warning['customeradd[origin]'] = trans('Customer origin is empty!');
+                }
+                break;
+            case 'error':
+                $error['origin'] = trans('Customer origin is required!');
+                break;
+        }
+    }
+
     if (isset($customeradd['ten'])) {
         if ($customeradd['ten'] != '') {
             if (!isset($customeradd['tenwarning']) && !check_ten($customeradd['ten'])) {
