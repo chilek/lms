@@ -240,20 +240,20 @@ function getNamesWithSubcities($subcities, $street_id)
 {
     $DB = LMSDB::getInstance();
 
-    return array(
-        'city' => $DB->GetOne(
-            "SELECT name FROM location_cities WHERE id = ?",
-            array($subcities['cityid'])
-        ),
-        'street' => $DB->GetOne(
-            "SELECT t.name AS streettype, s.name AS street, s.name2 AS street2
-			FROM location_streets s
-			JOIN location_street_types t ON t.id = s.typeid
-			WHERE s.cityid IN (" . $subcities['cities'] . ")
-				AND s.id = ?",
-            array($street_id)
-        ),
+    $result = $DB->GetRow(
+        "SELECT t.name AS streettype, s.name AS street, s.name2 AS street2
+        FROM location_streets s
+        JOIN location_street_types t ON t.id = s.typeid
+        WHERE s.cityid IN (" . $subcities['cities'] . ")
+            AND s.id = ?",
+        array($street_id)
     );
+    $result['city'] = $DB->GetOne(
+        "SELECT name FROM location_cities WHERE id = ?",
+        array($subcities['cityid'])
+    );
+
+    return $result;
 }
 
 function getNames($city_id, $street_id)
