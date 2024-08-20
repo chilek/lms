@@ -266,8 +266,8 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             'ownerid'          => !empty($netnodedata['ownerid']) && !empty($netnodedata['ownership']) ? $netnodedata['ownerid'] : null
         );
 
+        $args['flags'] = 0;
         if (array_key_exists('flags', $netnodedata)) {
-            $args['flags'] = 0;
             foreach ($netnodedata['flags'] as $flag) {
                 $args['flags'] += $flag;
             }
@@ -275,6 +275,8 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 
         if (array_key_exists('services', $netnodedata)) {
             $args['services'] = implode(',', $netnodedata['services']);
+        } else {
+            $args['services'] = '';
         }
 
         $this->db->Execute("INSERT INTO netnodes (" . implode(', ', array_keys($args))
@@ -353,8 +355,8 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             $args['ownerid'] = empty($netnodedata['ownerid']) || empty($netnodedata['ownership']) ? null : $netnodedata['ownerid'];
         }
 
+        $args['flags'] = 0;
         if (array_key_exists('flags', $netnodedata)) {
-            $args['flags'] = 0;
             foreach ($netnodedata['flags'] as $flag) {
                 $args['flags'] += $flag;
             }
@@ -362,6 +364,8 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 
         if (array_key_exists('services', $netnodedata)) {
             $args['services'] = implode(',', $netnodedata['services']);
+        } else {
+            $args['services'] = '';
         }
 
         if (empty($args)) {
