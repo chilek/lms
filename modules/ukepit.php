@@ -956,7 +956,7 @@ if ($report_type == 'full') {
                     $netnodes[$netnodename]['ownership'] = intval($netnode['ownership']);
                     $netnodes[$netnodename]['coowner'] = $netnode['coowner'];
 
-                    $flags = $netnodes[$netnodename]['flags'];
+                    $flags = $netnode['flags'];
                     $netnodes[$netnodename]['flags'] = array();
                     foreach ($NETWORK_NODE_FLAGS as $flag => $label) {
                         if (intval($flags) & $flag) {
@@ -964,11 +964,12 @@ if ($report_type == 'full') {
                         }
                     }
 
+                    $services = $netnode['services'];
                     $netnodes[$netnodename]['services'] = array_map(
                         function ($service) {
                             return sprintf('%02d', $service);
                         },
-                        $netnodes[$netnodename]['services']
+                        explode(',', $services)
                     );
 
                     if (strlen($netnode['coowner'])) {
