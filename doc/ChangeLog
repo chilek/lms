@@ -681,6 +681,8 @@ version 28-git (????-??-??):
   - enhancement: customer external ID and PIN authentication to userpanel support added with option of service
     provider selection [chilan]
   - enhancement: 'origin' property of customers and documents [chilan]
+  - enhancement: 'customers.origin_check' configuration variable with 'none' as default value control if origin
+    selection is required or recommended in new customer form [chilan]
 
 version 27.0 (2021-08-20):
 
