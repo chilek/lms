@@ -256,7 +256,7 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
      */
     public function _driver_now()
     {
-        return 'UNIX_TIMESTAMP()';
+        return 'UNIX_TIMESTAMP64()';
     }
 
     /**
