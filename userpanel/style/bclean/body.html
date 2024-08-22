@@ -34,6 +34,7 @@
 						<a class="nav-link" href="?m={$menuitem.module}" {userpaneltip text=$menuitem.tip}>
 							{if $menuitem.icon}<i class="{$menuitem.icon}"></i>{/if}
 							{$menuitem.name|replace:" ":"&nbsp;"}
+							<i class="lms-userpanel-{$menuitem.module}"></i>
 						</a>
 					</li>
 				{/foreach}
