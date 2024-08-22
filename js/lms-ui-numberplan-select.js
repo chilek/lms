@@ -29,6 +29,7 @@ $(function () {
         let doctypeElemId = planElem.attr('data-doctype-selector');
         let customerElemId = planElem.attr('data-customer-selector');
         let cdateElemId = planElem.attr('data-cdate-selector');
+        let referenceSelector = planElem.attr('data-reference-selector');
         let number = planElem.find('.lms-ui-numberplan-number input');
         let selectElem = planElem.find('.lms-ui-numberplan-plan select');
 
@@ -41,8 +42,9 @@ $(function () {
                 let documentType = $(this).val();
                 let customerId = $(customerElemId).val();
                 let cdate = $(cdateElemId).val();
+                let reference = $(referenceSelector).val();
                 number.val('');
-                getNumberPlans(planElem, documentType, customerId, cdate);
+                getNumberPlans(planElem, documentType, customerId, cdate, reference);
             });
         }
 
@@ -51,7 +53,8 @@ $(function () {
                 let customerId = $(this).val();
                 let documentType = $(doctypeElemId).val();
                 let cdate = $(cdateElemId).val();
-                getNumberPlans(planElem, documentType, customerId, cdate);
+                let reference = $(referenceSelector).val();
+                getNumberPlans(planElem, documentType, customerId, cdate, reference);
             });
         }
 
@@ -60,14 +63,25 @@ $(function () {
                 let cdate = $(this).val();
                 let documentType = $(doctypeElemId).val();
                 let customerId = $(customerElemId).val();
-                getNumberPlans(planElem, documentType, customerId, cdate);
+                let reference = $(referenceSelector).val();
+                getNumberPlans(planElem, documentType, customerId, cdate, reference);
             });
         }
 
-        getNumberPlans(planElem, $(doctypeElemId).val(), $(customerElemId).val(), $(cdateElemId).val());
+        if (referenceSelector) {
+            $('#referencedocument').on('change', '.refdoc', function() {
+                let cdate = $(cdateElemId).val();
+                let documentType = $(doctypeElemId).val();
+                let customerId = $(customerElemId).val();
+                let reference = $(this).val();
+                getNumberPlans(planElem, documentType, customerId, cdate, reference);
+            });
+        }
+
+        getNumberPlans(planElem, $(doctypeElemId).val(), $(customerElemId).val(), $(cdateElemId).val(), $(referenceSelector).val());
     });
 
-    function getNumberPlans(planElem, documentType, customerId, cdate) {
+    function getNumberPlans(planElem, documentType, customerId, cdate, reference) {
         if (!documentType) {
             documentType = planElem.attr('data-plan-document-type');
         }
@@ -77,7 +91,7 @@ $(function () {
         let selectElem = planElem.find('.lms-ui-numberplan-plan select');
         let currentPlanId = selectElem.val();
 
-        let data = $.extend({ documentType: documentType }, customerId ? { customerID: customerId } : {}, cdate ? { cdate: cdate } : {});
+        let data = $.extend({ documentType: documentType }, customerId ? { customerID: customerId } : {}, cdate ? { cdate: cdate } : {}, reference ? { reference: reference } : {});
         $.ajax('?m=numberplanhelper', {
             async: true,
             method: 'POST',
@@ -96,6 +110,7 @@ $(function () {
                     }
                     $.each(data, function(key, item) {
                         let isDefault = parseInt(item.isdefault) !== 0;
+                        let refFlag = parseInt(item.refflag) !== 0;
                         if (isDefault) {
                             if (alreadySelected) {
                                 isDefault = false;
@@ -103,7 +118,9 @@ $(function () {
                                 alreadySelected = true;
                             }
                         }
-                        options += '<option value="' + item.id + '"' + (isDefault ? ' selected data-default="1"' : '') + '>';
+                        options += '<option value="' + item.id + '"' + (isDefault ? ' selected data-default="1"' : '') +
+                            (refFlag ? ' data-refflag="1"' : '') +
+                            '>';
                         options += item.nextNumber + ' (' + item.period_name + ')';
                         options += '</option>';
                     });

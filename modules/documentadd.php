@@ -70,6 +70,7 @@ if (isset($_POST['document'])) {
                 'doctype' => $document['type'],
                 'planid' => $document['numberplanid'],
                 'customerid' => $document['customerid'],
+                'reference' => empty($document['reference']) ? null : $document['reference'],
             ));
             $document['number'] = $tmp ?: 0;
             $autonumber = true;
@@ -80,6 +81,7 @@ if (isset($_POST['document'])) {
             'doctype' => $document['type'],
             'planid' => $document['numberplanid'],
             'customerid' => $document['customerid'],
+            'reference' => empty($document['reference']) ? null : $document['reference'],
         ))) {
             $error['number'] = trans('Document with specified number exists!');
         }

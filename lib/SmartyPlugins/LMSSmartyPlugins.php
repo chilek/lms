@@ -1535,6 +1535,7 @@ class LMSSmartyPlugins
                 . (isset($params['doctype_selector']) ? ' data-doctype-selector="' . $params['doctype_selector'] . '"' : '')
                 . (isset($params['customer_selector']) ? ' data-customer-selector="' . $params['customer_selector'] . '"' : '')
                 . (isset($params['cdate_selector']) ? ' data-cdate-selector="' . $params['cdate_selector'] . '"' : '')
+                . (isset($params['reference_selector']) ? ' data-reference-selector="' . $params['reference_selector'] . '"' : '')
                 . ' data-plan-document-type="'. $params['planDocumentType'] .'"'
                 . ' data-plan-customer-id="'. $params['customer_id'] .'"'
                 . '>' . PHP_EOL;
@@ -1587,6 +1588,9 @@ class LMSSmartyPlugins
             }
             foreach ($params['numberplanlist'] as $plan) {
                 $result .= '<option value="' . $plan['id'] . '"';
+                if (!empty($plan['refflag'])) {
+                    $result .= ' data-refflag="1"';
+                }
                 if ($plan['id'] == $params['selected']) {
                     $result .= ' selected';
                 }

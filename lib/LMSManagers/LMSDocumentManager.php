@@ -366,6 +366,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         if (!isset($customertype)) {
             $customertype = null;
         }
+        if (!isset($reference)) {
+            $reference = null;
+        }
 
         if (is_array($doctype)) {
             $where[] = 'n.doctype IN (' . implode(',', $doctype) . ')';
@@ -411,6 +414,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 n.customertype,
                 n.datefrom,
                 n.dateto,
+                n.refflag,
                 ((CASE WHEN n.customertype IS NULL THEN 100 ELSE 0 END)
                     + (CASE WHEN EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id) THEN 1 ELSE 2 END)) AS idx
             FROM numberplans n
@@ -472,10 +476,14 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     'SELECT MAX(number) AS max
 					FROM documents
 					LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-					WHERE numberplanid = ? AND ' . (!preg_match('/%[0-9]*C/', $item['template']) || empty($customerid)
-                        ? '' : 'customerid = ' . intval($customerid) . ' AND ')
-                    . ($doctype ? 'numberplanid IN (' . implode(',', array_keys($list)) . ') AND ' : '')
-                    . ' cdate >= (CASE period
+					WHERE numberplanid = ? '
+                        . (!preg_match('/%[0-9]*C/', $item['template']) || empty($customerid)
+                            ? ''
+                            : ' AND customerid = ' . intval($customerid)
+                        )
+                        . ($doctype ? ' AND numberplanid IN (' . implode(',', array_keys($list)) . ')' : '')
+                        . ($reference ? ' AND numberplans.refflag = 1 AND documents.reference = ' . intval($reference) : '')
+                    . ' AND cdate >= (CASE period
 					WHEN ' . YEARLY . ' THEN ' . $yearstart . '
 					WHEN ' . HALFYEARLY . ' THEN ' . $halfyearstart . '
 					WHEN ' . QUARTERLY . ' THEN ' . $quarterstart . '
@@ -609,7 +617,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
     public function getNumberPlan($id)
     {
         $numberplan = $this->db->GetRow(
-            'SELECT id, period, template, doctype, isdefault, customertype, datefrom, dateto
+            'SELECT id, period, template, doctype, isdefault, customertype, datefrom, dateto, refflag
             FROM numberplans n
             WHERE id = ?'
             . (ConfigHelper::checkPrivilege('superuser')
@@ -702,7 +710,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
 
         if ($list = $this->db->GetAllByKey(
-            'SELECT n.id, n.template, n.period, n.doctype, n.isdefault, n.customertype, n.datefrom, n.dateto
+            'SELECT n.id, n.template, n.period, n.doctype, n.isdefault, n.customertype, n.datefrom, n.dateto, n.refflag
             FROM numberplans n
             WHERE' . (ConfigHelper::checkPrivilege('superuser')
                 ? ' 1 = 1'
@@ -937,10 +945,11 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             'dateto' => empty($numberplan['dateto']) ? 0 : strtotime('tomorrow', $numberplan['dateto']) - 1,
             'customertype' => isset($numberplan['customertype']) && strlen($numberplan['customertype']) ? intval($numberplan['customertype']) : null,
             'isdefault' => isset($numberplan['isdefault']) ? 1 : 0,
+            'refflag' => empty($numberplan['refflag']) ? 0 : 1,
         );
         $this->db->Execute(
-            'INSERT INTO numberplans (template, doctype, period, datefrom, dateto, customertype, isdefault)
-            VALUES (?, ?, ?, ?, ?, ?, ?)',
+            'INSERT INTO numberplans (template, doctype, period, datefrom, dateto, customertype, isdefault, refflag)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
             array_values($args)
         );
 
@@ -1001,11 +1010,12 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             'dateto' => empty($numberplan['dateto']) ? 0 : strtotime('tomorrow', $numberplan['dateto']) - 1,
             'customertype' => isset($numberplan['customertype']) && strlen($numberplan['customertype']) ? intval($numberplan['customertype']) : null,
             'isdefault' => $numberplan['isdefault'],
+            'refflag' => empty($numberplan['refflag']) ? 0 : 1,
             SYSLOG::RES_NUMPLAN => $numberplan['id']
         );
         $res = $this->db->Execute(
             'UPDATE numberplans
-            SET template = ?, doctype = ?, period = ?, datefrom = ?, dateto = ?, customertype = ?, isdefault = ?
+            SET template = ?, doctype = ?, period = ?, datefrom = ?, dateto = ?, customertype = ?, isdefault = ?, refflag = ?
             WHERE id = ?',
             array_values($args)
         );
@@ -1186,6 +1196,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         if (!isset($customerid)) {
             $customerid = null;
         }
+        if (!isset($reference)) {
+            $reference = null;
+        }
 
         if ($planid) {
             $numplan = $this->db->GetRow('SELECT template, period FROM numberplans WHERE id=?', array($planid));
@@ -1266,10 +1279,19 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 break;
             case CONTINUOUS:
                 $number = $this->db->GetOne(
-                    'SELECT MAX(number) FROM documents
-					WHERE type = ? AND ' . ($planid ? 'numberplanid = ' . intval($planid) : 'numberplanid IS NULL')
+                    'SELECT MAX(documents.number)
+                    FROM documents
+                    LEFT JOIN numberplans ON numberplans.id = documents.numberplanid
+                    WHERE documents.type = ? AND '
+                    . ($planid ? 'documents.numberplanid = ' . intval($planid) : 'documents.numberplanid IS NULL')
+                    . ($reference
+                        ? ' AND (numberplans.refflag = 0 OR numberplans.refflag IS NULL OR numberplans.refflag = 1 AND documents.reference = ' . intval($reference) . ')'
+                        : ''
+                    )
                     . (!isset($numtemplate) || !preg_match('/%[0-9]*C/', $numtemplate) || empty($customerid)
-                        ? '' : ' AND customerid = ' . intval($customerid)),
+                        ? ''
+                        : ' AND documents.customerid = ' . intval($customerid)
+                    ),
                     array($doctype)
                 );
 
@@ -1278,12 +1300,19 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
 
         $number = $this->db->GetOne(
-            '
-				SELECT MAX(number)
-				FROM documents
-				WHERE cdate >= ? AND cdate < ? AND type = ? AND ' . ($planid ? 'numberplanid = ' . intval($planid) : 'numberplanid IS NULL')
+            'SELECT MAX(documents.number)
+                FROM documents
+                LEFT JOIN numberplans ON numberplans.id = documents.numberplanid
+                WHERE documents.cdate >= ? AND documents.cdate < ? AND documents.type = ? AND '
+                . ($planid ? 'documents.numberplanid = ' . intval($planid) : 'documents.numberplanid IS NULL')
+                . ($reference
+                    ? ' AND (numberplans.refflag = 0 OR numberplans.refflag IS NULL OR numberplans.refflag = 1 AND documents.reference = ' . intval($reference) . ')'
+                    : ''
+                )
                 . (!isset($numtemplate) || !preg_match('/%[0-9]*C/', $numtemplate) || empty($customerid)
-                    ? '' : ' AND customerid = ' . intval($customerid)),
+                    ? ''
+                    : ' AND documents.customerid = ' . intval($customerid)
+                ),
             array($start, $end, $doctype)
         );
 
@@ -1320,6 +1349,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
         if (!isset($customerid)) {
             $customerid = null;
+        }
+        if (!isset($reference)) {
+            $reference = null;
         }
 
         if ($planid) {
@@ -1401,19 +1433,37 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 break;
             case CONTINUOUS:
                 return $this->db->GetOne(
-                    'SELECT id FROM documents
-                    WHERE type = ? AND number = ? AND ' . ($planid ? 'numberplanid = ' . intval($planid) : 'numberplanid IS NULL')
+                    'SELECT documents.id
+                    FROM documents
+                    LEFT JOIN numberplans ON numberplans.id = documents.numberplanid
+                    WHERE documents.type = ? AND documents.number = ? AND '
+                    . ($planid ? 'documents.numberplanid = ' . intval($planid) : 'documents.numberplanid IS NULL')
+                    . ($reference
+                        ? ' AND (numberplans.refflag = 0 OR numberplans.refflag IS NULL OR numberplans.refflag = 1 AND documents.reference = ' . intval($reference) . ')'
+                        : ''
+                    )
                     . (!isset($numtemplate) || !preg_match('/%[0-9]*C/', $numtemplate) || empty($customerid)
-                        ? '' : ' AND customerid = ' . intval($customerid)),
+                        ? ''
+                        : ' AND documents.customerid = ' . intval($customerid)
+                    ),
                     array($doctype, $number)
                 );
         }
 
         return $this->db->GetOne(
-            'SELECT id FROM documents
-            WHERE cdate >= ? AND cdate < ? AND type = ? AND number = ? AND ' . ($planid ? 'numberplanid = ' . intval($planid) : 'numberplanid IS NULL')
+            'SELECT documents.id
+            FROM documents
+            LEFT JOIN numberplans ON numberplans.id = documents.numberplanid
+            WHERE documents.cdate >= ? AND documents.cdate < ? AND documents.type = ? AND documents.number = ? AND '
+            . ($planid ? 'documents.numberplanid = ' . intval($planid) : 'documents.numberplanid IS NULL')
+            . ($reference
+                ? ' AND (numberplans.refflag = 0 OR numberplans.refflag IS NULL OR numberplans.refflag = 1 AND documents.reference = ' . intval($reference) . ')'
+                : ''
+            )
             . (!isset($numtemplate) || !preg_match('/%[0-9]*C/', $numtemplate) || empty($customerid)
-                ? '' : ' AND customerid = ' . intval($customerid)),
+                ? ''
+                : ' AND documents.customerid = ' . intval($customerid)
+            ),
             array($start, $end, $doctype, $number)
         );
     }

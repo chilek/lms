@@ -15,10 +15,10 @@
 	</colgroup>
 	<thead>
 		<tr>
-			<td>
+			<td rowspan="2">
 				{icon name="id"}
 			</td>
-			<td>
+			<td rowspan="2">
 				<strong>{trans("Template")}</strong>
 			</td>
 			<td>
@@ -38,6 +38,18 @@
 					Other symbols can be used which are described in PHP <a href="https://php.net/strftime"><strong>strftime</strong></a> function documentation.
 				{/strip}{/capture}
 				{hint content=$template_hint}
+			</td>
+		</tr>
+		<tr style="border-top: none;">
+			<td>
+				<label>{strip}
+					<input type="checkbox" name="numberplanedit[refflag]"
+						value="1"
+						form="numberplanedit"
+						{tip trigger="refflag"}
+						{if !empty($numberplanedit.refflag)} checked{/if}>
+					{trans("relative to reference document")}
+				{/strip}</label>
 			</td>
 		</tr>
 	</thead>

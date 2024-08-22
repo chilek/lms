@@ -308,9 +308,8 @@ function GetReferenceDocuments($doctemplate, $customerid, $JSResponse)
     $JSResponse->assign('referencedocument', 'innerHTML', $template);
 
     $JSResponse->script('$(\'[name="document[reference]"]\').change(function() {'
-        . ' if (parseInt($(this).val())) { $("#a_reference_document_limit").show(); }'
-        . ' else { $("#a_reference_document_limit").hide(); }'
-        . '}).trigger("change")');
+        . ' $("#a_reference_document_limit").toggle(parseInt($(this).val())); '
+        . '}); $("#a_reference_document_limit").toggle(parseInt($(this).val()));');
 
     $JSResponse->script('$(\'[name="document[reference]"]\').prop("required", $(\'[name="document[templ]"] option:selected\').is("[data-refdoc-required]"));');
 }

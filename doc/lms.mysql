@@ -641,6 +641,7 @@ CREATE TABLE numberplans (
 	datefrom int(16) NOT NULL DEFAULT 0,
 	dateto int(16) NOT NULL DEFAULT 0,
 	customertype smallint DEFAULT NULL,
+	refflag tinyint(1) NOT NULL DEFAULT 0,
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
@@ -4380,4 +4381,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024081401');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024082200');

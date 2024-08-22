@@ -5982,3 +5982,6 @@ $_LANG['<!origin>— any —'] = '— dowolne —';
 
 $_LANG['Customer origin is empty!'] = 'Puste pochodzenie klienta!';
 $_LANG['Customer origin is required!'] = 'Wymagane pochodzenie klienta!';
+
+$_LANG['relative to reference document'] = 'względem dokumentu odniesienia';
+$_LANG['Relative to reference document'] = 'Względem dokumentu odniesienia';

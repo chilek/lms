@@ -165,18 +165,19 @@
 			</td>
 			<td>
 				{numberplan_selection
-				customer_selector = "#customerid_input"
-				doctype_selector  = "#doctype"
-				numberplanlist    = $numberplans
-				input_name        = "document[number]"
-				input_value       = $document.number
-				select_name       = "document[numberplanid]"
-				selected          = $document.numberplanid
-				number_trigger    = "number"
-				plan_trigger      = "numberplanid"
-				time              = $document.cdate
-				customer_id       = $cid
-				planDocumentType  = $planDocumentType
+					customer_selector = "#customerid_input"
+					doctype_selector  = "#doctype"
+					numberplanlist    = $numberplans
+					input_name        = "document[number]"
+					input_value       = $document.number
+					select_name       = "document[numberplanid]"
+					selected          = $document.numberplanid
+					number_trigger    = "number"
+					plan_trigger      = "numberplanid"
+					time              = $document.cdate
+					customer_id       = $cid
+					planDocumentType  = $planDocumentType
+					reference_selector = '#refdoc'
 				}
 			</td>
 		</tr>

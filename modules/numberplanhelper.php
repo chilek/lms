@@ -27,6 +27,7 @@
 $documentType = !empty($_POST['documentType']) ? intval($_POST['documentType']) : null;
 $cdate = !empty($_POST['cdate']) ? strtotime($_POST['cdate']) : time();
 $customerID = !empty($_POST['customerID']) ? intval($_POST['customerID']) :  null;
+$reference = empty($_POST['reference']) ? null : intval($_POST['reference']);
 $numberplanlist = array();
 
 $lms = LMS::getInstance();
@@ -36,6 +37,7 @@ if ($documentType) {
     $args = array(
         'doctype' => $documentType,
         'cdate' => $cdate,
+        'reference' => $reference,
     );
     if (!empty($customerID)) {
         $args['customerid'] = $customerID;
