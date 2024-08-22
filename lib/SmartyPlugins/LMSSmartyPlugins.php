@@ -1588,9 +1588,6 @@ class LMSSmartyPlugins
             }
             foreach ($params['numberplanlist'] as $plan) {
                 $result .= '<option value="' . $plan['id'] . '"';
-                if (!empty($plan['refflag'])) {
-                    $result .= ' data-refflag="1"';
-                }
                 if ($plan['id'] == $params['selected']) {
                     $result .= ' selected';
                 }

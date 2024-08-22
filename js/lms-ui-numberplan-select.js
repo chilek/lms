@@ -110,7 +110,6 @@ $(function () {
                     }
                     $.each(data, function(key, item) {
                         let isDefault = parseInt(item.isdefault) !== 0;
-                        let refFlag = parseInt(item.refflag) !== 0;
                         if (isDefault) {
                             if (alreadySelected) {
                                 isDefault = false;
@@ -118,9 +117,7 @@ $(function () {
                                 alreadySelected = true;
                             }
                         }
-                        options += '<option value="' + item.id + '"' + (isDefault ? ' selected data-default="1"' : '') +
-                            (refFlag ? ' data-refflag="1"' : '') +
-                            '>';
+                        options += '<option value="' + item.id + '"' + (isDefault ? ' selected data-default="1"' : '') + '>';
                         options += item.nextNumber + ' (' + item.period_name + ')';
                         options += '</option>';
                     });
