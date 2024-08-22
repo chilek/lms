@@ -1,7 +1,7 @@
 {if $unread_notices}
 <script>
 
-    $('.lms-userpanel-notices').addClass('lms-userpanel-icon-warning');
+    $('#lms-userpanel-menu-item-notices .warning-icon').addClass('lms-userpanel-icon-warning');
 
 </script>
 {/if}
@@ -30,7 +30,7 @@
                         success: function(data) {
                             $('#urgent-notice-dialog').modal('hide');
                             if (!parseInt(data["unread_notices"])) {
-                                $('.lms-userpanel-notices').removeClass('lms-userpanel-icon-warning');
+                                $('#lms-userpanel-menu-item-notices .warning-icon').removeClass('lms-userpanel-icon-warning');
                             }
                             if (typeof(data["urgent_notice"]) == 'object') {
                                 $('#urgent-notice-dialog').one('hidden.bs.modal', function() {

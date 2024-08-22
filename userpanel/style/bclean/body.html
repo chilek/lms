@@ -31,10 +31,10 @@
 			<ul class="navbar-nav mr-auto">
 				{foreach from=$modules item=menuitem}
 					<li class="nav-item {if strpos($smarty.get.m, $menuitem.module) !== false && strlen($smarty.get.m)==strlen($menuitem.module) }active{/if}">
-						<a class="nav-link" href="?m={$menuitem.module}" {userpaneltip text=$menuitem.tip}>
+						<a class="nav-link" href="?m={$menuitem.module}" id="lms-userpanel-menu-item-{$menuitem.module}" {userpaneltip text=$menuitem.tip}>
 							{if $menuitem.icon}<i class="{$menuitem.icon}"></i>{/if}
 							{$menuitem.name|replace:" ":"&nbsp;"}
-							<i class="lms-userpanel-{$menuitem.module}"></i>
+							<i class="warning-icon"></i>
 						</a>
 					</li>
 				{/foreach}

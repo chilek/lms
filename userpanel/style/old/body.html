@@ -32,9 +32,10 @@
     	    <img src="style/old/{if $menuitem.selected}button_a_l.gif{else}button_b_l.gif{/if}" alt=""/>
 	</td>
         <td style="vertical-align: center; background-image: url(style/old/{if $menuitem.selected}button_a.gif{else}button_b.gif{/if}); background-repeat: repeat-x; width: 1px; white-space: nowrap;">
-    	    <a href="?m={$menuitem.module}" {userpaneltip text=$menuitem.tip} class="nobr">
+			<a href="?m={$menuitem.module}" id="lms-userpanel-menu-item-{$menuitem.module}" {userpaneltip text=$menuitem.tip} class="nobr">
 				{if $menuitem.icon}<i class="{$menuitem.icon}"></i>{/if}
 				<strong>{$menuitem.name|replace:" ":"&nbsp;"}</strong>
+				<i class="warning-icon"></i>
 			</a>
         </td>
         <td style="vertical-align: top; width: 1px; white-space: nowrap;">
