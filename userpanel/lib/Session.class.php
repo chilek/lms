@@ -169,8 +169,8 @@ class Session
                 $pin_max_size = intval(ConfigHelper::getConfig(
                     'customers.pin_max_length',
                     ConfigHelper::getConfig(
-                       'phpui.pin_max_size',
-                         6
+                        'phpui.pin_max_size',
+                        6
                     )
                 ));
                 if (!$pin_max_size) {
