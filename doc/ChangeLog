@@ -685,6 +685,7 @@ version 28-git (????-??-??):
     selection is required or recommended in new customer form [chilan]
   - enhancement: support of reference related document numbering [chilan]
   - enhancement: added new privilege/permission 'assignment managament' which is dedicated to assignments [chilan]
+  - improvement: copy customer email and phone contacts to clipboard with single button click [chilan]
 
 version 27.0 (2021-08-20):
 
