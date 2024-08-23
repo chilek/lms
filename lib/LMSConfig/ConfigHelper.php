@@ -164,4 +164,32 @@ class ConfigHelper
         }
         return self::checkConfig("privileges.$privilege");
     }
+
+    public static function checkPrivileges()
+    {
+        $args = func_get_args();
+
+        if (empty($args)) {
+            return false;
+        }
+
+        if (is_bool($args[count($args) - 1])) {
+            $checkIfSuperUser = $args[count($args) - 1];
+        } else {
+            $checkIfSuperUser = true;
+        }
+
+        if (!empty($args)) {
+            foreach ($args as $arg) {
+                if ($checkIfSuperUser && self::checkConfig('privileges.superuser')) {
+                    return !preg_match('/^hide_/', $arg);
+                }
+                if (self::checkConfig('privileges.' . $arg)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }
