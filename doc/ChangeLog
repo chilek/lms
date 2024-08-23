@@ -730,6 +730,34 @@ version 28-git (????-??-??):
   - devel/cleanup: renamed configuration variable 'phpui.supported_customer_contact_types'
     to 'customers.supported_contact_types' [chilan]
   - devel/cleanup: renamed configuration variable 'phpui.default_divisionid' to 'customers.default_divisionid' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.call_phone_url'
+    to 'customers.call_phone_url' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.default_billing_address_state'
+    to 'customers.default_billing_address_state' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.default_location_address_state'
+    to 'customers.default_location_address_state' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.default_postal_address_state'
+    to 'customers.default_postal_address_state' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.default_status'
+    to 'customers.default_status' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.ignore_deleted_customers'
+    to 'customers.ignore_deleted' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.legal_person_required_properties'
+    to 'customers.legal_person_required_properties' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.natural_person_required_properties'
+    to 'customers.natural_person_required_properties' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.pin_allowed_characters'
+    to 'customers.pin_allowed_characters' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.pin_max_size'
+    to 'customers.pin_min_length' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.pin_max_size'
+    to 'customers.pin_max_length' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.pin_restriction_description'
+    to 'customers.pin_restriction_description' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.unsecure_pin_validity'
+    to 'customers.unsecure_pin_validity' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.validate_changed_pin'
+    to 'customers.validate_changed_pin' [chilan]
 
 version 27.0 (2021-08-20):
 
