@@ -4911,6 +4911,7 @@ $_LANG['Enter external customer ID fragment and press Enter'] = 'Podaj fragment 
 
 $_LANG['Customer count'] = 'Liczba klientów';
 $_LANG['Assignment count'] = 'Liczba zobowiązań';
+$_LANG['assignment management'] = 'zarządzanie zobowiązaniami';
 $_LANG['Active assignment count'] = 'Liczba aktywnych zobowiązań';
 $_LANG['Active assignments not found!'] = 'Nie znaleziono aktywnych zobowiązań';
 

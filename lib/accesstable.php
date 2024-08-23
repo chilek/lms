@@ -79,6 +79,10 @@ $access_table = array(
             'finances' => array('balancelist', 'invoicelist', 'invoicelist-proforma', 'notelist'),
         ),
     ),
+    'assignment_management' => array(
+        'label' => trans('assignment management'),
+        'allow_regexp' => '^customerassignment(add|info|edit|del|helper)$',
+    ),
     'used_tariff_edit' => array(
         'label' => trans('used tariff edit'),
     ),

@@ -79,9 +79,11 @@
 		{/tab_header_cell}
 		{tab_header_cell}
 			{if !$customerinfo.deleted}
-				<A href="?m=customerassignmentadd&id={$customerinfo.id}{if isset($nodeinfo.id)}&nodeid={$nodeinfo.id}{/if}">{trans("New Liability")} &raquo;</A>
-				<input type="hidden" value="{$customerinfo.id}">
-				<A class="delete-all-assignments" href="#">{trans("Delete all")} &raquo;</A>
+				{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('assignment_management') || ConfigHelper::checkPrivilege('financial_operations')}
+					<A href="?m=customerassignmentadd&id={$customerinfo.id}{if isset($nodeinfo.id)}&nodeid={$nodeinfo.id}{/if}">{trans("New Liability")} &raquo;</A>
+					<input type="hidden" value="{$customerinfo.id}">
+					<A class="delete-all-assignments" href="#">{trans("Delete all")} &raquo;</A>
+				{/if}
 			{/if}
 		{/tab_header_cell}
 	{/tab_header}
@@ -442,15 +444,17 @@
 						<i class="lms-ui-icon-options lms-ui-hint-rollover" data-url="?m=customerassignmentinfo&id={$a.id}"></i>
 					{/if}
 
-					{if ($a.tariffid || $a.liabilityid) && (($a.dateto > $today || !$a.dateto) || ($a.liabilityid && $a.at > $today))}
-						{button type="link" icon="wait" href="?m=customerassignmentedit&action=suspend&id={$a.id}"
-							tip="{if $a.suspended}Enable{else}Disable{/if} accounting of selected liability"}
-					{/if}
-					{button type="link" icon="delete" class="delete-assignment" href="?m=customerassignmentdel&id={$a.id}"
-						tip="Delete customer's liability"}
-					{button type="link" icon="edit" href="?m=customerassignmentedit&id={$a.id}" tip="Edit"}
-					<input type="checkbox" name="{$tab_id}[{$a.id}]" form="{$tab_id}-form"
+					{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('assignment_management') || ConfigHelper::checkPrivilege('financial_operations')}
+						{if ($a.tariffid || $a.liabilityid) && (($a.dateto > $today || !$a.dateto) || ($a.liabilityid && $a.at > $today))}
+							{button type="link" icon="wait" href="?m=customerassignmentedit&action=suspend&id={$a.id}"
+								tip="{if $a.suspended}Enable{else}Disable{/if} accounting of selected liability"}
+						{/if}
+						{button type="link" icon="delete" class="delete-assignment" href="?m=customerassignmentdel&id={$a.id}"
+							tip="Delete customer's liability"}
+						{button type="link" icon="edit" href="?m=customerassignmentedit&id={$a.id}" tip="Edit"}
+						<input type="checkbox" name="{$tab_id}[{$a.id}]" form="{$tab_id}-form"
 							value="{$a.id}" class="lms-ui-multi-check">
+					{/if}
 				</div>
 			</div>
 			{/block}
@@ -530,12 +534,14 @@
 			{tab_buttons}
 			{/tab_buttons}
 			{tab_buttons}
-				{button class="suspend-assignments" icon="wait" label="Suspend/Enable"}
-				{button class="delete-assignments" icon="delete" label="Delete"}
-				<label>
-					{trans("Check All")}
-					<INPUT TYPE="checkbox" class="lms-ui-multi-check-all" VALUE="1">
-				</label>
+				{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('assignment_management') || ConfigHelper::checkPrivilege('financial_operations')}
+					{button class="suspend-assignments" icon="wait" label="Suspend/Enable"}
+					{button class="delete-assignments" icon="delete" label="Delete"}
+					<label>
+						{trans("Check All")}
+						<INPUT TYPE="checkbox" class="lms-ui-multi-check-all" VALUE="1">
+					</label>
+				{/if}
 			{/tab_buttons}
 		{/tab_button_panel}
 		{/if}
