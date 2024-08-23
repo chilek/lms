@@ -361,7 +361,10 @@ if (isset($_POST['nodeedit'])) {
     } elseif ($nodeedit['access']) {
         $allowed_statuses = array_flip(
             Utils::determineAllowedCustomerStatus(
-                ConfigHelper::getConfig('phpui.node_access_change_allowed_customer_statuses'),
+                ConfigHelper::getConfig(
+                    'customers.node_access_change_allowed_on_statuses',
+                    ConfigHelper::getConfig('phpui.node_access_change_allowed_customer_statuses')
+                ),
                 array(
                     CSTATUS_CONNECTED,
                 )

@@ -333,7 +333,11 @@ class Utils
 
         $result = array();
 
-        $value = ConfigHelper::getConfig('phpui.default_customer_consents', 'data_processing,transfer_form', true);
+        $value = ConfigHelper::getConfig(
+            'customers.default_consents',
+            ConfigHelper::getConfig('phpui.default_customer_consents', 'data_processing,transfer_form', true),
+            true
+        );
         if (!empty($value)) {
             $values = array_flip(preg_split('/[\s\.,;]+/', $value, -1, PREG_SPLIT_NO_EMPTY));
             foreach ($CCONSENTS as $consent_id => $consent) {

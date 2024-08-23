@@ -764,7 +764,7 @@
 												{/if}
 											</td>
 										</tr>
-										{if ConfigHelper::checkConfig('phpui.show_customer_due_balance', ConfigHelper::checkConfig('phpui.show_customer_expired_balance'))}
+										{if ConfigHelper::checkConfig('customers.show_due_balance', ConfigHelper::checkConfig('phpui.show_customer_due_balance', ConfigHelper::checkConfig('customers.show_expired_balance', ConfigHelper::checkConfig('phpui.show_customer_expired_balance'))))}
 											<tr>
 												<td>
 													{icon name="money"}

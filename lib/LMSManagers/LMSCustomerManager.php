@@ -661,7 +661,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
 
-        $capitalize_customer_names = ConfigHelper::checkConfig('phpui.capitalize_customer_names', true);
+        $capitalize_customer_names = ConfigHelper::checkConfig('customers.capitalize_names', ConfigHelper::checkConfig('phpui.capitalize_customer_names', true));
 
         $customeradd['name'] = str_replace(array('”', '„'), '"', $customeradd['name']);
         $customeradd['lastname'] = str_replace(array('”', '„'), '"', $customeradd['lastname']);
@@ -705,7 +705,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'origin'         => empty($customeradd['origin']) ? null : intval($customeradd['origin']),
         );
 
-        $reuse_customer_id = ConfigHelper::checkConfig('phpui.reuse_customer_id');
+        $reuse_customer_id = ConfigHelper::checkConfig('customers.reuse_id', ConfigHelper::checkConfig('phpui.reuse_customer_id'));
 
         if ($reuse_customer_id) {
             $this->db->BeginTrans();
@@ -787,7 +787,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $customeradd['extids']
             );
 
-            if (ConfigHelper::checkConfig('phpui.add_customer_group_required')) {
+            if (ConfigHelper::checkConfig(
+                'customers.groups_required_on_add',
+                ConfigHelper::checkConfig(
+                    'phpui.add_customer_group_required'
+                )
+            )) {
                 $args = array(
                     'customerid' => $id,
                 );
@@ -1574,7 +1579,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             	SUM(CASE WHEN b.balance > 0 THEN b.balance ELSE 0 END) AS balanceover,
             	SUM(CASE WHEN b.balance < 0 THEN b.balance ELSE 0 END) AS balancebelow ';
         } else {
-            $capitalize_customer_names = ConfigHelper::checkConfig('phpui.capitalize_customer_names', true);
+            $capitalize_customer_names = ConfigHelper::checkConfig('customers.capitalize_names', ConfigHelper::checkConfig('phpui.capitalize_customer_names', true));
             $sql .= 'SELECT c.id AS id, c.lastname, c.name, ' . $this->db->Concat($capitalize_customer_names ? 'UPPER(lastname)' : 'lastname', "' '", 'c.name') . ' AS customername,
                 c.karma, c.type, c.deleted,
                 status, full_address, post_full_address, c.address, c.zip, c.city, countryid, countries.name AS country, cc.email, ccp.phone, ten, ssn, c.info AS info,
@@ -2075,7 +2080,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
-        $capitalize_customer_names = ConfigHelper::checkConfig('phpui.capitalize_customer_names', true);
+        $capitalize_customer_names = ConfigHelper::checkConfig('customers.capitalize_names', ConfigHelper::checkConfig('phpui.capitalize_customer_names', true));
         if ($result = $this->db->GetRow('SELECT c.*, '
                 . $this->db->Concat($capitalize_customer_names ? 'UPPER(c.lastname)' : 'c.lastname', "' '", 'c.name') . ' AS customername,
 			d.shortname AS division, d.label AS division_label, d.account, c.altname
@@ -2123,7 +2128,16 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $result['extids'] = $this->getCustomerExternalIDs($id);
             }
             $result['balance'] = $this->getCustomerBalance($result['id']);
-            if (ConfigHelper::checkConfig('phpui.show_customer_due_balance', ConfigHelper::checkConfig('phpui.show_customer_expired_balance'))) {
+            if (ConfigHelper::checkConfig(
+                'customers.show_due_balance',
+                ConfigHelper::checkConfig(
+                    'phpui.show_customer_due_balance',
+                    ConfigHelper::checkConfig(
+                        'customers.show_expired_balance',
+                        ConfigHelper::checkConfig('phpui.show_customer_expired_balance')
+                    )
+                )
+            )) {
                 $result['expiredbalance'] = $this->getCustomerBalance($result['id'], null, true);
             }
             $result['bankaccount'] = bankaccount($result['id'], $result['account']);
@@ -2319,7 +2333,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             }
         }
 
-        $capitalize_customer_names = ConfigHelper::checkConfig('phpui.capitalize_customer_names', true);
+        $capitalize_customer_names = ConfigHelper::checkConfig('customers.capitalize_names', ConfigHelper::checkConfig('phpui.capitalize_customer_names', true));
 
         // UPDATE CUSTOMER FIELDS
         $res = $this->db->Execute(
@@ -2366,12 +2380,18 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     {
         global $LMS;
 
-        $disable_customer_contacts = ConfigHelper::checkConfig('phpui.disable_contacts_during_customer_delete');
+        $disable_customer_contacts = ConfigHelper::checkConfig(
+            'customers.disable_contacts_on_delete',
+            ConfigHelper::checkConfig('phpui.disable_contacts_during_customer_delete')
+        );
         $delete_related_resources = preg_split(
             '/[\s\.,;]+/',
             ConfigHelper::getConfig(
-                'phpui.delete_related_customer_resources',
-                'assignments,customergroups,nodegroups,nodes,userpanel'
+                'customers.delete_related_resources',
+                ConfigHelper::getConfig(
+                    'phpui.delete_related_customer_resources',
+                    'assignments,customergroups,nodegroups,nodes,userpanel'
+                )
             ),
             -1,
             PREG_SPLIT_NO_EMPTY
@@ -3350,7 +3370,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             );
         }
 
-        $customerKarmaChangeInterval = intval(ConfigHelper::getConfig('phpui.customer_karma_change_interval', '86400'));
+        $customerKarmaChangeInterval = intval(ConfigHelper::getConfig(
+            'customers.karma_change_interval',
+            ConfigHelper::getConfig('phpui.customer_karma_change_interval', '86400')
+        ));
         if (!$customerKarmaChangeInterval) {
             $customerKarmaChangeInterval = 86400;
         }

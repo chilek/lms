@@ -27,6 +27,9 @@
 function GetConfigList()
 {
     $configuration_variables = array(
+        'customers' => array(
+            'groups_required_on_add' => 'If isset "true" when adding new customer select group is required. Default "false"',
+        ),
         'phpui' => array(
             'autosuggest_max_length' => 'Max length of auto suggest proposal, further characters will be dotted.',
             'default_autosuggest_placement' => 'Default placement of suggestion window (left/right/top/bottom)',

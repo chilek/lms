@@ -201,8 +201,11 @@ if (!isset($_POST['xjxfun'])) {
                 $ic_expires = $customerdata['icexpires'] > 0 && $customerdata['icexpires'] < time();
                 if ($ic_expires) {
                     $identity_card_expiration_check = ConfigHelper::getConfig(
-                        'phpui.customer_identity_card_expiration_check',
-                        'none'
+                        'customers.identity_card_expiration_check',
+                        ConfigHelper::getConfig(
+                            'phpui.customer_identity_card_expiration_check',
+                            'none'
+                        )
                     );
                     switch ($identity_card_expiration_check) {
                         case 'warning':
@@ -223,8 +226,14 @@ if (!isset($_POST['xjxfun'])) {
                         $warning['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
                         $tenwarning = 1;
                     }
-                    $ten_existence_check = ConfigHelper::getConfig('phpui.customer_ten_existence_check', 'none');
-                    $ten_existence_scope = ConfigHelper::getConfig('phpui.customer_ten_existence_scope', 'global');
+                    $ten_existence_check = ConfigHelper::getConfig(
+                        'customers.ten_existence_check',
+                        ConfigHelper::getConfig('phpui.customer_ten_existence_check', 'none')
+                    );
+                    $ten_existence_scope = ConfigHelper::getConfig(
+                        'customers.ten_existence_scope',
+                        ConfigHelper::getConfig('phpui.customer_ten_existence_scope', 'global')
+                    );
                     if (preg_match('/^(global|division)$/', $ten_existence_scope)) {
                         $ten_existence_scope = 'global';
                     }
@@ -255,8 +264,14 @@ if (!isset($_POST['xjxfun'])) {
                         $warning['ssn'] = trans('Incorrect Social Security Number! If you are sure you want to accept it, then click "Submit" again.');
                         $ssnwarning = 1;
                     }
-                    $ssn_existence_check = ConfigHelper::getConfig('phpui.customer_ssn_existence_check', 'none');
-                    $ssn_existence_scope = ConfigHelper::getConfig('phpui.customer_ssn_existence_scope', 'global');
+                    $ssn_existence_check = ConfigHelper::getConfig(
+                        'customers.ssn_existence_check',
+                        ConfigHelper::getConfig('phpui.customer_ssn_existence_check', 'none')
+                    );
+                    $ssn_existence_scope = ConfigHelper::getConfig(
+                        'customers.ssn_existence_scope',
+                        ConfigHelper::getConfig('phpui.customer_ssn_existence_scope', 'global')
+                    );
                     if (preg_match('/^(global|division)$/', $ssn_existence_scope)) {
                         $ssn_existence_scope = 'global';
                     }
@@ -311,7 +326,10 @@ if (!isset($_POST['xjxfun'])) {
                 $properties['validator']($customerdata, $contacts, $error);
             }
 
-            $customer_invoice_notice_consent_check = ConfigHelper::getConfig('phpui.customer_invoice_notice_consent_check', 'error');
+            $customer_invoice_notice_consent_check = ConfigHelper::getConfig(
+                'customers.invoice_notice_consent_check',
+                ConfigHelper::getConfig('phpui.customer_invoice_notice_consent_check', 'error')
+            );
             if ($customer_invoice_notice_consent_check != 'none') {
                 if (isset($customerdata['emails']) && $customerdata['emails']) {
                     foreach ($customerdata['emails'] as $idx => $val) {

@@ -106,7 +106,7 @@ if (isset($_POST['customeradd'])) {
         $error['name'] = trans('First name cannot be empty!');
     }
 
-    if (ConfigHelper::checkConfig('phpui.add_customer_group_required') && empty($customeradd['group'])) {
+    if (ConfigHelper::checkConfig('customers.groups_required_on_add', ConfigHelper::checkConfig('phpui.add_customer_group_required')) && empty($customeradd['group'])) {
         $error['group'] = trans('Group name required!');
     }
 
@@ -147,8 +147,11 @@ if (isset($_POST['customeradd'])) {
         $ic_expires = $customeradd['icexpires'] && $customeradd['icexpires'] < time();
         if ($ic_expires) {
             $identity_card_expiration_check = ConfigHelper::getConfig(
-                'phpui.customer_identity_card_expiration_check',
-                'none'
+                'customers.identity_card_expiration_check',
+                ConfigHelper::getConfig(
+                    'phpui.customer_identity_card_expiration_check',
+                    'none'
+                )
             );
             switch ($identity_card_expiration_check) {
                 case 'warning':
@@ -186,8 +189,14 @@ if (isset($_POST['customeradd'])) {
                 $warning['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
                 $customeradd['tenwarning'] = 1;
             }
-            $ten_existence_check = ConfigHelper::getConfig('phpui.customer_ten_existence_check', 'none');
-            $ten_existence_scope = ConfigHelper::getConfig('phpui.customer_ten_existence_scope', 'global');
+            $ten_existence_check = ConfigHelper::getConfig(
+                'customers.ten_existence_check',
+                ConfigHelper::getConfig('phpui.customer_ten_existence_check', 'none')
+            );
+            $ten_existence_scope = ConfigHelper::getConfig(
+                'customers.ten_existence_scope',
+                ConfigHelper::getConfig('phpui.customer_ten_existence_scope', 'global')
+            );
             if (preg_match('/^(global|division)$/', $ten_existence_scope)) {
                 $ten_existence_scope = 'global';
             }
@@ -220,8 +229,14 @@ if (isset($_POST['customeradd'])) {
                 $warning['ssn'] = trans('Incorrect Social Security Number! If you are sure you want to accept it, then click "Submit" again.');
                 $customeradd['ssnwarning'] = 1;
             }
-            $ssn_existence_check = ConfigHelper::getConfig('phpui.customer_ssn_existence_check', 'none');
-            $ssn_existence_scope = ConfigHelper::getConfig('phpui.customer_ssn_existence_scope', 'global');
+            $ssn_existence_check = ConfigHelper::getConfig(
+                'customers.ssn_existence_check',
+                ConfigHelper::getConfig('phpui.customer_ssn_existence_check', 'none')
+            );
+            $ssn_existence_scope = ConfigHelper::getConfig(
+                'customers.ssn_existence_scope',
+                ConfigHelper::getConfig('phpui.customer_ssn_existence_scope', 'global')
+            );
             if (preg_match('/^(global|division)$/', $ssn_existence_scope)) {
                 $ssb_existence_scope = 'global';
             }
@@ -276,7 +291,10 @@ if (isset($_POST['customeradd'])) {
         $properties['validator']($customeradd, $contacts, $error);
     }
 
-    $customer_invoice_notice_consent_check = ConfigHelper::getConfig('phpui.customer_invoice_notice_consent_check', 'error');
+    $customer_invoice_notice_consent_check = ConfigHelper::getConfig(
+        'customers.invoice_notice_consent_check',
+        ConfigHelper::getConfig('phpui.customer_invoice_notice_consent_check', 'error')
+    );
     if ($customer_invoice_notice_consent_check != 'none') {
         if (!empty($customeradd['emails'])) {
             foreach ($customeradd['emails'] as $idx => $val) {
@@ -400,17 +418,28 @@ if (isset($_POST['customeradd'])) {
 
     $customeradd['divisionid'] = intval(ConfigHelper::getConfig('phpui.default_divisionid'));
 
-    $customeradd['documentmemo'] = ConfigHelper::getConfig('phpui.default_customer_document_memo', '', true);
+    $customeradd['documentmemo'] = ConfigHelper::getConfig(
+        'customers.default_document_memo',
+        ConfigHelper::getConfig('phpui.default_customer_document_memo', '', true),
+        true
+    );
 
     $customeradd['consents'] = Utils::getDefaultCustomerConsents();
 
-    $customer_type = trim(ConfigHelper::getConfig('phpui.default_customer_type', $CTYPE_ALIASES[CTYPES_PRIVATE]));
+    $customer_type = trim(ConfigHelper::getConfig(
+        'customers.default_type',
+        ConfigHelper::getConfig('phpui.default_customer_type', $CTYPE_ALIASES[CTYPES_PRIVATE])
+    ));
     $ctype_aliases_flipped = array_flip($CTYPE_ALIASES);
     if (isset($ctype_aliases_flipped[$customer_type])) {
         $customeradd['type'] = $ctype_aliases_flipped[$customer_type];
     }
 
-    $customer_flags = trim(ConfigHelper::getConfig('phpui.default_customer_flags', '', true));
+    $customer_flags = trim(ConfigHelper::getConfig(
+        'customers.default_flags',
+        ConfigHelper::getConfig('phpui.default_customer_flags', '', true),
+        true
+    ));
     $customer_flags_flipped = array();
     foreach ($CUSTOMERFLAGS as $customer_flag => $customer_flag_properties) {
         $customer_flags_flipped[$customer_flag_properties['alias']] = $customer_flag;
@@ -478,7 +507,7 @@ $SMARTY->assign('legal_person_required_properties', $legal_person_required_prope
 $SMARTY->assign('natural_person_required_properties', $natural_person_required_properties);
 $SMARTY->assign('divisions', $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())));
 $SMARTY->assign('customeradd', $customeradd);
-if (ConfigHelper::checkConfig('phpui.add_customer_group_required')) {
+if (ConfigHelper::checkConfig('customers.groups_required_on_add', ConfigHelper::checkConfig('phpui.add_customer_group_required'))) {
         $SMARTY->assign('groups', $DB->GetAll('SELECT id,name FROM customergroups ORDER BY id'));
 }
 
