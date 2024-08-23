@@ -686,36 +686,50 @@ version 28-git (????-??-??):
   - enhancement: support of reference related document numbering [chilan]
   - enhancement: added new privilege/permission 'assignment managament' which is dedicated to assignments [chilan]
   - improvement: copy customer email and phone contacts to clipboard with single button click [chilan]
-  - renamed configuration variable 'phpui.add_customer_group_required' to 'customers.groups_required_on_add' [chilan]
-  - renamed configuration variable 'phpui.capitalize_customer_names' to 'customers.capitalize_names' [chilan]
-  - renamed configuration variable 'phpui.customer_event_limit' to 'customers.event_limit' [chilan]
-  - renamed configuration variable 'phpui.customer_identity_card_expiration_check'
+  - devel/cleanup: renamed configuration variable 'phpui.add_customer_group_required'
+    to 'customers.groups_required_on_add' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.capitalize_customer_names'
+    to 'customers.capitalize_names' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.customer_event_limit' to 'customers.event_limit' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.customer_identity_card_expiration_check'
     to 'customers.identity_card_expiration_check' [chilan]
-  - renamed configuration variable 'phpui.customer_invoice_notice_consent_check'
+  - devel/cleanup: renamed configuration variable 'phpui.customer_invoice_notice_consent_check'
     to 'customers.invoice_notice_consent_check' [chilan]
-  - renamed configuration variable 'phpui.customer_karma_change_interval' to 'customers.karma_change_interval' [chilan]
-  - renamed configuration variable 'phpui.customer_ssn_existence_check' to 'customers.ssn_existence_check' [chilan]
-  - renamed configuration variable 'phpui.customer_ssn_existence_scope' to 'customers.ssn_existence_scope' [chilan]
-  - renamed configuration variable 'phpui.customer_ten_existence_check' to 'customers.ten_existence_check' [chilan]
-  - renamed configuration variable 'phpui.customer_ten_existence_scope' to 'customers.ten_existence_scope' [chilan]
-  - renamed configuration variable 'phpui.default_customer_consents' to 'customers.default_consents' [chilan]
-  - renamed configuration variable 'phpui.default_customer_document_memo' to 'customers.default_document_memo' [chilan]
-  - renamed configuration variable 'phpui.default_customer_email_flags' to 'customers.default_email_flags' [chilan]
-  - renamed configuration variable 'phpui.default_customer_flags' to 'customers.default_flags' [chilan]
-  - renamed configuration variable 'phpui.default_customer_phone_flags' to 'customers.default_phone_flags' [chilan]
-  - renamed configuration variable 'phpui.default_customer_type' to 'customers.default_type' [chilan]
-  - renamed configuration variable 'phpui.delete_related_customer_resources'
+  - devel/cleanup: renamed configuration variable 'phpui.customer_karma_change_interval'
+    to 'customers.karma_change_interval' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.customer_ssn_existence_check'
+    to 'customers.ssn_existence_check' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.customer_ssn_existence_scope'
+    to 'customers.ssn_existence_scope' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.customer_ten_existence_check'
+    to 'customers.ten_existence_check' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.customer_ten_existence_scope'
+    to 'customers.ten_existence_scope' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.default_customer_consents'
+    to 'customers.default_consents' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.default_customer_document_memo'
+    to 'customers.default_document_memo' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.default_customer_email_flags'
+    to 'customers.default_email_flags' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.default_customer_flags'
+    to 'customers.default_flags' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.default_customer_phone_flags'
+    to 'customers.default_phone_flags' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.default_customer_type' to 'customers.default_type' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.delete_related_customer_resources'
     to 'customers.delete_related_resources' [chilan]
-  - renamed configuration variable 'phpui.disable_contacts_during_customer_delete'
+  - devel/cleanup: renamed configuration variable 'phpui.disable_contacts_during_customer_delete'
     to 'customers.disable_contacts_on_delete' [chilan]
-  - renamed configuration variable 'phpui.node_access_change_allowed_customer_statuses'
+  - devel/cleanup: renamed configuration variable 'phpui.node_access_change_allowed_customer_statuses'
     to 'customers.node_access_change_allowed_on_statuses' [chilan]
-  - renamed configuration variable 'phpui.reuse_customer_id' to 'customers.reuse_id' [chilan]
-  - renamed configuration variable 'phpui.show_customer_due_balance' to 'customers.show_due_balance' [chilan]
-  - renamed configuration variable 'phpui.show_customer_expired_balance'
+  - devel/cleanup: renamed configuration variable 'phpui.reuse_customer_id' to 'customers.reuse_id' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.show_customer_due_balance'
+    to 'customers.show_due_balance' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.show_customer_expired_balance'
     to 'customers.show_expired_balance' [chilan]
-  - renamed configuration variable 'phpui.supported_customer_contact_types'
+  - devel/cleanup: renamed configuration variable 'phpui.supported_customer_contact_types'
     to 'customers.supported_contact_types' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.default_divisionid' to 'customers.default_divisionid' [chilan]
 
 version 27.0 (2021-08-20):
 
