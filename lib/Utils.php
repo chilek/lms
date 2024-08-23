@@ -835,7 +835,15 @@ class Utils
         static $call_phone_url = null;
 
         if (!isset($call_phone_url)) {
-            $call_phone_url = ConfigHelper::getConfig('phpui.call_phone_url', '', true);
+            $call_phone_url = ConfigHelper::getConfig(
+                'customers.call_phone_url',
+                ConfigHelper::getConfig(
+                    'phpui.call_phone_url',
+                    '',
+                    true
+                ),
+                true
+            );
         }
 
         if (empty($call_phone_url)) {

@@ -1,5 +1,5 @@
 <!--// $Id$ //-->
-{$unsecure_pin_validity = intval(ConfigHelper::getConfig('phpui.unsecure_pin_validity', 0, true))}
+{$unsecure_pin_validity = intval(ConfigHelper::getConfig('customers.unsecure_pin_validity', ConfigHelper::getConfig('phpui.unsecure_pin_validity', 0, true), true))}
 {$gps_location_url = ConfigHelper::getConfig('phpui.gps_location_url', 'https://www.google.com/maps/place/%location')}
 {$show_numeric_identifiers = ConfigHelper::checkConfig('teryt.show_numeric_identifiers')}
 

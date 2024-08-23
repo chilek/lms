@@ -54,8 +54,22 @@ class Session
         global $LMS;
 
         $this->db = &$DB;
-        $this->pin_allowed_characters = ConfigHelper::getConfig('phpui.pin_allowed_characters', '0123456789');
-        $this->unsecure_pin_validity = intval(ConfigHelper::getConfig('phpui.unsecure_pin_validity', 0, true));
+        $this->pin_allowed_characters = ConfigHelper::getConfig(
+            'customers.pin_allowed_characters',
+            ConfigHelper::getConfig(
+                'phpui.pin_allowed_characters',
+                '0123456789'
+            )
+        );
+        $this->unsecure_pin_validity = intval(ConfigHelper::getConfig(
+            'customers.unsecure_pin_validity',
+            ConfigHelper::getConfig(
+                'phpui.unsecure_pin_validity',
+                0,
+                true
+            ),
+            true
+        ));
         $this->ip = str_replace('::ffff:', '', $_SERVER['REMOTE_ADDR']);
         $this->timeout = $timeout;
 
@@ -142,11 +156,23 @@ class Session
             }
 
             if (preg_match('/^\$[0-9a-z]+\$/', $customer['pin']) || $this->unsecure_pin_validity && time() - $customer['pinlastchange'] > $this->unsecure_pin_validity) {
-                $pin_min_size = intval(ConfigHelper::getConfig('phpui.pin_min_size', 4));
+                $pin_min_size = intval(ConfigHelper::getConfig(
+                    'customers.pin_min_length',
+                    ConfigHelper::getConfig(
+                        'phpui.pin_min_size',
+                        4
+                    )
+                ));
                 if (!$pin_min_size) {
                     $pin_min_size = 4;
                 }
-                $pin_max_size = intval(ConfigHelper::getConfig('phpui.pin_max_size', 6));
+                $pin_max_size = intval(ConfigHelper::getConfig(
+                    'customers.pin_max_length',
+                    ConfigHelper::getConfig(
+                       'phpui.pin_max_size',
+                         6
+                    )
+                ));
                 if (!$pin_max_size) {
                     $pin_max_size = 6;
                 }

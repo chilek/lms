@@ -75,9 +75,25 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
 $customeradd = array();
 
-$natural_person_required_properties = ConfigHelper::getConfig('phpui.natural_person_required_properties', '', true);
+$natural_person_required_properties = ConfigHelper::getConfig(
+    'customers.natural_person_required_properties',
+    ConfigHelper::getConfig(
+        'phpui.natural_person_required_properties',
+        '',
+        true
+    ),
+    true
+);
 $natural_person_required_properties = array_flip(preg_split('/([\s]+|[\s]*,[\s]*)/', $natural_person_required_properties));
-$legal_person_required_properties = ConfigHelper::getConfig('phpui.legal_person_required_properties', '', true);
+$legal_person_required_properties = ConfigHelper::getConfig(
+    'customers.legal_person_required_properties',
+    ConfigHelper::getConfig(
+        'phpui.legal_person_required_properties',
+        '',
+        true
+    ),
+    true
+);
 $legal_person_required_properties = array_flip(preg_split('/([\s]+|[\s]*,[\s]*)/', $legal_person_required_properties));
 
 if (isset($_POST['customeradd'])) {
@@ -414,9 +430,15 @@ if (isset($_POST['customeradd'])) {
         )
     );
 
-    $customeradd['status'] = intval(ConfigHelper::getConfig('phpui.default_status'));
+    $customeradd['status'] = intval(ConfigHelper::getConfig(
+        'customers.default_status',
+        ConfigHelper::getConfig('phpui.default_status')
+    ));
 
-    $customeradd['divisionid'] = intval(ConfigHelper::getConfig('phpui.default_divisionid'));
+    $customeradd['divisionid'] = intval(ConfigHelper::getConfig(
+        'customers.default_divisionid',
+        ConfigHelper::getConfig('phpui.default_divisionid')
+    ));
 
     $customeradd['documentmemo'] = ConfigHelper::getConfig(
         'customers.default_document_memo',
@@ -478,17 +500,26 @@ $default_states = array();
 foreach (array(BILLING_ADDRESS, POSTAL_ADDRESS, LOCATION_ADDRESS) as $addressType) {
     switch ($addressType) {
         case BILLING_ADDRESS:
-            $variable_name = 'phpui.default_billing_address_state';
+            $variable_name = 'customers.default_billing_address_state';
+            $variable_name_compat = 'phpui.default_billing_address_state';
             break;
         case POSTAL_ADDRESS:
-            $variable_name = 'phpui.default_postal_address_state';
+            $variable_name = 'customers.default_postal_address_state';
+            $variable_name_compat = 'phpui.default_postal_address_state';
             break;
         case LOCATION_ADDRESS:
-            $variable_name = 'phpui.default_location_address_state';
+            $variable_name = 'customers.default_location_address_state';
+            $variable_name_compat = 'phpui.default_location_address_state';
             break;
     }
     if (isset($variable_name)) {
-        $default_state = ConfigHelper::getConfig($variable_name, ConfigHelper::getConfig('phpui.default_address_state'));
+        $default_state = ConfigHelper::getConfig(
+            $variable_name,
+            ConfigHelper::getConfig(
+                $variable_name_compat,
+                ConfigHelper::getConfig('phpui.default_address_state')
+            )
+        );
     } else {
         $default_state = ConfigHelper::getConfig('phpui.default_address_state');
     }

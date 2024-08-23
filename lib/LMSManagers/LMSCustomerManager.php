@@ -950,7 +950,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $overduereceivables = 0;
         $archived_document_condition = '';
 
-        $ignore_deleted_customers = ConfigHelper::checkConfig('phpui.ignore_deleted_customers');
+        $ignore_deleted_customers = ConfigHelper::checkConfig('customers.ignore_deleted', ConfigHelper::checkConfig('phpui.ignore_deleted_customers'));
 
         foreach ($state as $state_item) {
             switch ($state_item) {
@@ -2256,7 +2256,15 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         $customer = $this->db->GetRow('SELECT ssn, ict, icn, icexpires, pin, pinlastchange FROM customers WHERE id = ?', array($customerdata['id']));
 
-        $unsecure_pin_validity = intval(ConfigHelper::getConfig('phpui.unsecure_pin_validity', 0, true));
+        $unsecure_pin_validity = intval(ConfigHelper::getConfig(
+            'customers.unsecure_pin_validity',
+            ConfigHelper::getConfig(
+                'phpui.unsecure_pin_validity',
+                0,
+                true
+            ),
+            true
+        ));
         if (empty($unsecure_pin_validity)) {
             $pinlastchange = $customer['pin'] == $customerdata['pin'] ? $customer['pinlastchange'] : time();
             $pin = $customerdata['pin'];
@@ -3441,18 +3449,36 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
     public function getCustomerPinRequirements()
     {
-        $pin_min_size = intval(ConfigHelper::getConfig('phpui.pin_min_size', 4));
+        $pin_min_size = intval(ConfigHelper::getConfig(
+            'customers.pin_min_length',
+            ConfigHelper::getConfig(
+                'phpui.pin_min_size',
+                4
+            )
+        ));
         if (!$pin_min_size) {
             $pin_min_size = 4;
         }
-        $pin_max_size = intval(ConfigHelper::getConfig('phpui.pin_max_size', 6));
+        $pin_max_size = intval(ConfigHelper::getConfig(
+            'customers.pin_max_length',
+            ConfigHelper::getConfig(
+                'phpui.pin_max_size',
+                6
+            )
+        ));
         if (!$pin_max_size) {
             $pin_max_size = 6;
         }
         if ($pin_min_size > $pin_max_size) {
             $pin_max_size = $pin_min_size;
         }
-        $pin_allowed_characters = ConfigHelper::getConfig('phpui.pin_allowed_characters', '0123456789');
+        $pin_allowed_characters = ConfigHelper::getConfig(
+            'customers.pin_allowed_characters',
+            ConfigHelper::getConfig(
+                'phpui.pin_allowed_characters',
+                '0123456789'
+            )
+        );
 
         return compact('pin_min_size', 'pin_max_size', 'pin_allowed_characters');
     }
@@ -3463,7 +3489,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $oldpin = '';
             $hashed_oldpin = false;
         } else {
-            $validate_changed_pin = ConfigHelper::checkConfig('phpui.validate_changed_pin');
+            $validate_changed_pin = ConfigHelper::checkConfig(
+                'customers.validate_changed_pin',
+                ConfigHelper::getConfig(
+                    'phpui.validate_changed_pin'
+                )
+            );
             $oldpin = $this->getCustomerPin($id);
             $hashed_oldpin = preg_match('/^\$[0-9a-z]+\$/', $oldpin);
         }

@@ -1,6 +1,6 @@
 <!--// $Id$ //-->
-{$unsecure_pin_validity = intval(ConfigHelper::getConfig('phpui.unsecure_pin_validity', 0, true))}
-{$pin_tip = ConfigHelper::getConfig('phpui.pin_restriction_description')}
+{$unsecure_pin_validity = intval(ConfigHelper::getConfig('customers.unsecure_pin_validity', ConfigHelper::getConfig('phpui.unsecure_pin_validity', 0, true), true))}
+{$pin_tip = ConfigHelper::getConfig('customers.pin_restriction_description', ConfigHelper::getConfig('phpui.pin_restriction_description'))}
 {if !$pin_tip}
 	{if $pin_min_size == $pin_max_size}
 		{$pin_tip=trans("Enter \$a characters PIN code", $pin_min_size)}

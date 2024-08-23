@@ -3908,7 +3908,7 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui', 'homedir_prefix', '/home/', '', 0),
 ('phpui', 'default_taxrate', '23', '', 0),
 ('phpui', 'default_zip', '', '', 0),
-('phpui', 'default_city', '', '', 0),
+('customers', 'default_city', '', '', 0),
 ('phpui', 'default_address', '', '', 0),
 ('phpui', 'smarty_debug', 'false', '', 0),
 ('phpui', 'force_ssl', 'false', '', 0),
@@ -4424,6 +4424,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024082301');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024082302');
 
 COMMIT;

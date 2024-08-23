@@ -383,17 +383,34 @@ function module_updatepin()
     } elseif ($userinfo['pin'] == $userdata['pin']) {
         $error['pin'] = $error['pin2'] = trans('New PIN should be different than old PIN!');
     } else {
-        $pin_min_size = intval(ConfigHelper::getConfig('phpui.pin_min_size', 4));
-        $pin_max_size = intval(ConfigHelper::getConfig('phpui.pin_max_size', 6));
-        $pin_allowed_characters = ConfigHelper::getConfig('phpui.pin_allowed_characters', '0123456789');
+        $pin_min_size = intval(ConfigHelper::getConfig(
+            'customers.pin_min_length',
+            ConfigHelper::getConfig(
+                'phpui.pin_min_size',
+                4
+            )
+        ));
+        $pin_max_size = intval(ConfigHelper::getConfig(
+            'customers.pin_max_length',
+            ConfigHelper::getConfig(
+                'phpui.pin_max_size',
+                6
+            )
+        ));
+        $pin_allowed_characters = ConfigHelper::getConfig(
+            'customers.pin_allowed_characters',
+            ConfigHelper::getConfig(
+                'phpui.pin_allowed_characters',
+                '0123456789'
+            )
+        );
         if (!validate_random_string($userdata['pin'], $pin_min_size, $pin_max_size, $pin_allowed_characters)) {
-            $pin_allowed_characters = ConfigHelper::getConfig('phpui.pin_allowed_characters', '0123456789');
-            $pin_allowed_characters = str_split($pin_allowed_characters, 30);
+            $splitted_pin_allowed_characters = str_split($pin_allowed_characters, 30);
             $error['pin'] = $error['pin2'] = trans(
                 'PIN should have at least $a, maximum $b characters and contain only \'$c\' characters!',
-                ConfigHelper::getConfig('phpui.pin_min_size', 4),
-                ConfigHelper::getConfig('phpui.pin_max_size', 6),
-                implode('<br>', $pin_allowed_characters)
+                $pin_min_size,
+                $pin_max_size,
+                implode('<br>', $splitted_pin_allowed_characters)
             );
         }
     }
