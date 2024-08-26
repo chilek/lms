@@ -104,7 +104,7 @@
 															{if $net.disabled == 1} class="lms-ui-alert"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</option>
 													{/foreach}
 												</select>
-												{if ConfigHelper::checkConfig('phpui.show_assigned_networks_only') && ConfigHelper::checkConfig('phpui.public_ip', true)}
+												{if ConfigHelper::checkConfig('phpui.show_assigned_networks_only') && ConfigHelper::checkConfig('nodes.public_ip', ConfigHelper::checkConfig('phpui.public_ip', true))}
 													<script>
 
 														$('[name="nodeedit[netid]"]').change(function() {
@@ -150,7 +150,7 @@
 										</td>
 									</tr>
 
-									{if ConfigHelper::checkConfig('phpui.public_ip', true)}
+									{if ConfigHelper::checkConfig('nodes.public_ip', ConfigHelper::checkConfig('phpui.public_ip', true))}
 										<tr>
 											<td>
 												{icon name="routed"}
@@ -232,7 +232,7 @@
 														onclick="return netDevChooseWin(document.editnode.elements['nodeedit[netdev]']);"}
 
 													<select size="1" name="nodeedit[netdev]" id="netdev" {tip trigger="netdev" class="lms-ui-advanced-select"}
-															{if ConfigHelper::checkConfig('phpui.node_to_network_device_connection_required')} required{/if}>
+															{if ConfigHelper::checkConfig('nodes.network_device_connection_required', ConfigHelper::checkConfig('phpui.node_to_network_device_connection_required'))} required{/if}>
 														<option value="0"{if !$nodeinfo.netdev} selected{/if}>— {trans("no device")} —</option>
 														{foreach $netdevices as $netdev}
 															<option value="{$netdev.id}"
@@ -583,16 +583,16 @@
 		});
 
 		$('#genpasswd').click(function() {
-			var length = {ConfigHelper::getConfig('phpui.node_password_length', ConfigHelper::getConfig('phpui.nodepassword_length', '16'))};
+			var length = {ConfigHelper::getConfig('nodes.password_length', ConfigHelper::getConfig('phpui.node_password_length', ConfigHelper::getConfig('phpui.nodepassword_length', '16')))};
 			if (length > 32) {
 				length = 32;
 			}
 			if ($('#passwordcontainer').val().length > 0) {
 				confirmDialog($t("Are you sure, you want to generate new password?"), this).done(function() {
-					$( '#passwordcontainer' ).val(generate_random_string(length, "{ConfigHelper::getConfig('phpui.node_password_allowed_characters', ConfigHelper::getConfig('phpui.nodepassword_allowed_characters', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'))|replace:'"':'\"'}"));
+					$( '#passwordcontainer' ).val(generate_random_string(length, "{ConfigHelper::getConfig('nodes.password_allowed_characters', ConfigHelper::getConfig('phpui.node_password_allowed_characters', ConfigHelper::getConfig('phpui.nodepassword_allowed_characters', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')))|replace:'"':'\"'}"));
 				});
 			} else {
-				$( '#passwordcontainer' ).val(generate_random_string(length, "{ConfigHelper::getConfig('phpui.node_password_allowed_characters', ConfigHelper::getConfig('phpui.nodepassword_allowed_characters', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'))|replace:'"':'\"'}"));
+				$( '#passwordcontainer' ).val(generate_random_string(length, "{ConfigHelper::getConfig('nodes.password_allowed_characters', ConfigHelper::getConfig('phpui.node_password_allowed_characters', ConfigHelper::getConfig('phpui.nodepassword_allowed_characters', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')))|replace:'"':'\"'}"));
 			}
 			return false;
 		});

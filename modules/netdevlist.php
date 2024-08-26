@@ -114,7 +114,7 @@ if ($api) {
 
     $total = intval($LMS->GetNetDevList($o, $search));
 
-    $limit = intval(ConfigHelper::getConfig('phpui.nodelist_pagelimit', $total));
+    $limit = intval(ConfigHelper::getConfig('nodes.list_page_limit', ConfigHelper::getConfig('phpui.nodelist_pagelimit', $total)));
     if ($SESSION->is_set('ndlp')) {
         $SESSION->restore('ndlp', $oldpage);
     } else {

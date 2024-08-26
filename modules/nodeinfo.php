@@ -57,7 +57,7 @@ if (isset($_GET['devid'])) {
 
 $nodeinfo = $LMS->GetNode($nodeid);
 
-$node_empty_mac = ConfigHelper::getConfig('phpui.node_empty_mac', '', true);
+$node_empty_mac = ConfigHelper::getConfig('nodes.empty_mac', ConfigHelper::getConfig('phpui.node_empty_mac', '', true));
 if (strlen($node_empty_mac)) {
     $node_empty_mac = Utils::normalizeMac($node_empty_mac);
     $nodeinfo['macs'] = array_filter($nodeinfo['macs'], function ($mac) use ($node_empty_mac) {

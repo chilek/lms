@@ -107,6 +107,13 @@ $DEFAULTS = array(
         'auto_remove_investment_project' => true,
         'logout_confirmation' => false
     ),
+    'customers' => array(
+        'list_page_limit' => 100,
+    ),
+    'nodes' => array(
+        'list_page_limit' => 100,
+        'public_ip' => 1,
+    ),
     'assignments' => array(
         'default_document_type' => 0,
         'default_period' => 3,

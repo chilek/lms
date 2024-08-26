@@ -226,7 +226,7 @@ if (isset($_GET['search'])) {
         }
 
         $page = (! $_GET['page'] ? 1 : $_GET['page']);
-        $pagelimit = ConfigHelper::getConfig('phpui.nodelist_pagelimit', $listdata['total']);
+        $pagelimit = ConfigHelper::getConfig('nodes.list_page_limit', ConfigHelper::getConfig('phpui.nodelist_pagelimit', $listdata['total']));
         $start = ($page - 1) * $pagelimit;
 
         $SESSION->save('ndlsp', $page);

@@ -3833,9 +3833,9 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui','default_module','welcome','',0),
 ('phpui','timeout','600','',0),
 ('phpui','settings_timeout','28800','',0),
-('phpui','customerlist_pagelimit','100','',0),
+('customers','list_page_limit','100','',0),
 ('phpui','billinglist_pagelimit','100','',0),
-('phpui','nodelist_pagelimit','100','',0),
+('nodes','list_page_limit','100','',0),
 ('phpui','balancelist_pagelimit','100','',0),
 ('phpui','invoicelist_pagelimit','100','',0),
 ('phpui','debitnotelist_pagelimit','100','',0),
@@ -3901,7 +3901,7 @@ URL: %url
 ('phpui','invoice_check_payment','false','',0),
 ('phpui','note_check_payment','false','',0),
 ('phpui','radius','1','',0),
-('phpui','public_ip','1','',0),
+('nodes','public_ip','1','',0),
 ('assignments','default_period','3','',0),
 ('assignments','default_document_type','0','',0),
 ('phpui','default_editor','html','',0),
@@ -4381,4 +4381,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024082302');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024082600');

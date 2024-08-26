@@ -296,9 +296,12 @@ if (isset($_POST['assignment'])) {
     if ($a['tariffid'] > 0 && !empty($a['nodes'])) {
         $restricted_nodes = $LMS->CheckNodeTariffRestrictions($a['id'], $a['nodes'], $from, $to);
         $node_multi_tariff_restriction = ConfigHelper::getConfig(
-            'phpui.node_multi_tariff_restriction',
-            '',
-            true
+            'nodes.multi_tariff_restriction',
+            ConfigHelper::getConfig(
+                'phpui.node_multi_tariff_restriction',
+                '',
+                true
+            )
         );
         if (preg_match('/^(error|warning)$/', $node_multi_tariff_restriction) && !empty($restricted_nodes)) {
             foreach ($restricted_nodes as $nodeid) {

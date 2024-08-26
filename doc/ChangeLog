@@ -758,6 +758,46 @@ version 28-git (????-??-??):
     to 'customers.unsecure_pin_validity' [chilan]
   - devel/cleanup: renamed configuration variable 'phpui.validate_changed_pin'
     to 'customers.validate_changed_pin' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.customerlist_pagelimit'
+    to 'customers.list_page_limit' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.customerlist_default_order'
+    to 'customers.list_default_order' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.nodelist_pagelimit'
+    to 'nodes.list_page_limit' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.capitalize_node_names'
+    to 'nodes.capitalize_names' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.default_node_auth_types'
+    to 'nodes.default_auth_types' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.default_node_check_mac'
+    to 'nodes.default_check_mac' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.disable_active_links_in_nodeinfo'
+    to 'nodes.disable_active_links_in_info' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.node_empty_mac'
+    to 'nodes.empty_mac' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.node_gps_coordinates_required'
+    to 'nodes.gps_coordinates_required' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.node_link_technology_required'
+    to 'nodes.link_technology_required' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.node_login_required'
+    to 'nodes.login_required' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.node_login_regexp'
+    to 'nodes.login_regexp' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.node_to_network_device_connection_required'
+    to 'nodes.network_device_connection_required' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.node_name_regexp'
+    to 'nodes.name_regexp' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.node_password_allowed_characters'
+    to 'nodes.password_allowed_characters' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.node_password_length'
+    to 'nodes.password_length' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.node_password_required'
+    to 'nodes.password_required' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.node_password_required_for_auth_types'
+    to 'nodes.password_required_for_auth_types' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.node_multi_tariff_restriction'
+    to 'nodes.multi_tariff_restriction' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.public_ip'
+    to 'nodes.public_ip' [chilan]
 
 version 27.0 (2021-08-20):
 

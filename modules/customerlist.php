@@ -55,8 +55,8 @@ if ($api) {
 
     if (isset($_GET['o'])) {
         $filter['order'] = $_GET['o'];
-    } elseif (empty($filter['order']) && ConfigHelper::variableExists('phpui.customerlist_default_order')) {
-        $filter['order'] = ConfigHelper::getConfig('phpui.customerlist_default_order');
+    } elseif (empty($filter['order']) && (ConfigHelper::variableExists('phpui.customerlist_default_order') || ConfigHelper::variableExists('customers.list_default_order'))) {
+        $filter['order'] = ConfigHelper::getConfig('customers.list_default_order', ConfigHelper::getConfig('phpui.customerlist_default_order'));
     }
 
     if (isset($_GET['s'])) {
@@ -108,7 +108,7 @@ if ($api) {
     $summary = $LMS->GetCustomerList($filter);
 
     $filter['total'] = intval($summary['total']);
-    $filter['limit'] = intval(ConfigHelper::getConfig('phpui.customerlist_pagelimit', 100));
+    $filter['limit'] = intval(ConfigHelper::getConfig('customers.list_page_limit', ConfigHelper::getConfig('phpui.customerlist_pagelimit', 100)));
     $filter['offset'] = ($filter['page'] - 1) * $filter['limit'];
     if ($filter['total'] && $filter['total'] < $filter['offset']) {
         $filter['page'] = 1;

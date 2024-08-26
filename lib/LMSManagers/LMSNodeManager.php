@@ -41,7 +41,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         static $node_empty_mac = null;
 
         $args = array(
-            'name' => ConfigHelper::checkConfig('phpui.capitalize_node_names', true)
+            'name' => ConfigHelper::checkConfig('nodes.capitalize_names', ConfigHelper::checkConfig('phpui.capitalize_node_names', true))
                 ? strtoupper($nodedata['name']) : $nodedata['name'],
             'ipaddr_pub'        => $nodedata['ipaddr_pub'],
             'ipaddr'            => $nodedata['ipaddr'],
@@ -110,7 +110,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         $this->db->Execute('DELETE FROM macs WHERE nodeid=?', array($nodedata['id']));
 
         if (!isset($node_empty_mac)) {
-            $node_empty_mac = ConfigHelper::getConfig('phpui.node_empty_mac', '', true);
+            $node_empty_mac = ConfigHelper::getConfig('nodes.empty_mac', ConfigHelper::getConfig('phpui.node_empty_mac', '', true));
             if (strlen($node_empty_mac) && check_mac($node_empty_mac)) {
                 $node_empty_mac = Utils::normalizeMac($node_empty_mac);
             } else {
@@ -844,7 +844,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         static $node_empty_mac = null;
 
         $args = array(
-            'name'              => ConfigHelper::checkConfig('phpui.capitalize_node_names', true)
+            'name'              => ConfigHelper::checkConfig('nodes.capitalize_names', ConfigHelper::checkConfig('phpui.capitalize_node_names', true))
                 ? strtoupper($nodedata['name']) : $nodedata['name'],
             'ipaddr'            => $nodedata['ipaddr'],
             'ipaddr_pub'        => $nodedata['ipaddr_pub'],
@@ -930,7 +930,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 }
             } else {
                 if (!isset($node_empty_mac)) {
-                    $node_empty_mac = ConfigHelper::getConfig('phpui.node_empty_mac', '', true);
+                    $node_empty_mac = ConfigHelper::getConfig('nodes.empty_mac', ConfigHelper::getConfig('phpui.node_empty_mac', '', true));
                     if (strlen($node_empty_mac) && check_mac($node_empty_mac)) {
                         $node_empty_mac = Utils::normalizeMac($node_empty_mac);
                     }

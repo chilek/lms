@@ -83,7 +83,7 @@ if ($api) {
     $filter['total'] = intval($LMS->GetNodeList($filter));
 
     $filter['count'] = false;
-    $filter['limit'] = intval(ConfigHelper::getConfig('phpui.nodelist_pagelimit', $filter['total']));
+    $filter['limit'] = intval(ConfigHelper::getConfig('nodes.list_page_limit', ConfigHelper::getConfig('phpui.nodelist_pagelimit', $filter['total'])));
     $filter['offset'] = ($filter['page'] - 1) * $filter['limit'];
 }
 

@@ -29,6 +29,12 @@ function GetConfigList()
     $configuration_variables = array(
         'customers' => array(
             'groups_required_on_add' => 'If isset "true" when adding new customer select group is required. Default "false"',
+            'list_page_limit' => 'Limit of records displayed on one page in customers list. Default: 100.',
+        ),
+        'nodes' => array(
+            'list_page_limit' => 'Limit of records displayed on one page in nodes list. Default: 100.',
+            'password_length' => 'Length of (auto-generated) node password. Max.32. Default: 16.',
+            'public_ip' => 'Enable public IP address fields. Default: 1',
         ),
         'phpui' => array(
             'autosuggest_max_length' => 'Max length of auto suggest proposal, further characters will be dotted.',
@@ -37,7 +43,6 @@ function GetConfigList()
             'allow_from' => 'List of networks and IP addresses, with access to LMS. If empty, every IP address has access to LMS. When you write list of addresses or address pools here, LMS will dismiss every unwanted user with HTTP 403 error.',
             'lang' => 'System language code. If not set, language will be determined on browser settings. Default: en.',
             'timeout' => 'WWW session timeout. After that time (in seconds) user will be logged out if action has been made. Default: 600.',
-            'customerlist_pagelimit' => 'Limit of records displayed on one page in customers list. Default: 100.',
             'nodelist_pagelimit' => 'Limit of records displayed on one page in nodes list. Default: 100.',
             'voipaccountlist_pagelimit' => 'Limit of records displayed on one page in voip accounts list. Default: 100.',
             'voipaccountbilling_pagelimit' => 'Limit of records displayed on one page in voip billings list. Default: 100.',
@@ -108,6 +113,7 @@ function GetConfigList()
             'helpdesk_notification_sms_body' => 'Template for user notice relevant to ticket in Helpdesk. %status - ticket status ; %cat - ticket categories ; %tid - ticket id ; %cid - customer id ; %subject - ticket subject ; %body - ticket body ; %url - ticket url ; %customerinfo - customer information',
             'helpdesk_customerinfo_mail_body' => 'Template for user email notice relevant to customer info in ticket in Helpdesk. %custname - customer name ; %cid  - customer id ; %address - address ; %email - e-mails ; %phone - phones',
             'helpdesk_customerinfo_sms_body' => 'Template for user sms notice relevant to customer info in ticket in Helpdesk. %custname - customer name ; %cid  - customer id ; %address - address ; %email - e-mails ; %phone - phones',
+            'public_ip' => 'Enable public IP address fields. Default: 1',
         ),
         'payments' => array(
             'date_format' => 'Define date format for variable: %period, %aligned_period, %current_month used in payments.comment and payments.settlement_comment',
@@ -131,7 +137,6 @@ function GetConfigList()
             'print_balance_history_limit' => 'Number of Records on customer balance list on invoice. Specify last x records. Default: 10.',
             'default_printpage' => 'Coma-separated list of default invoice printout pages. You can use "original", "copy", "duplicate". Default: "original,copy".',
             'radius' => 'Enable RADIUS support. Default: 1',
-            'public_ip' => 'Enable public IP address fields. Default: 1',
             'paytime' => 'Default documents paytime in days. Default: 14',
             'paytype' => 'Default invoices paytype. Default: "1" (cash)',
             'customer_bankaccount' => 'Show bankaccount on invoice. Default: 0',
