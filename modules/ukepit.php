@@ -969,7 +969,12 @@ if ($report_type == 'full') {
                         function ($service) {
                             return sprintf('%02d', $service);
                         },
-                        explode(',', $services)
+                        array_filter(
+                            explode(',', $services),
+                            function ($service) {
+                                return !empty($service);
+                            }
+                        )
                     );
 
                     if (strlen($netnode['coowner'])) {
