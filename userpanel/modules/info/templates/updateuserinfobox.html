@@ -146,18 +146,22 @@
 {/if}
 		</td>
 	</tr>
-	<tr class="dark">
-		<td width="1%" align="center">
-			<strong>{trans("SSN")}</strong>
-		</td>
-		<td width="99%">
-{if $rights.info.edit_addr || $rights.info.edit_addr_ack}
-			<INPUT TYPE="TEXT" NAME="userdata[ssn]" VALUE="{$userinfo.ssn}"  {userpaneltip text="Enter social security number"}>
-{else}
-			{$userinfo.ssn}
-{/if}
-		</td>
-	</tr>
+	{if ConfigHelper::checkConfig('userpanel.show_customer_sensitive_data') || ($rights.info.edit_addr || $rights.info.edit_addr_ack)}
+		<tr class="dark">
+			<td width="1%" align="center">
+				<strong>{trans("SSN")}</strong>
+			</td>
+			<td width="99%">
+				{if $rights.info.edit_addr || $rights.info.edit_addr_ack}
+					<INPUT TYPE="TEXT" NAME="userdata[ssn]" VALUE="{$userinfo.ssn}"  {userpaneltip text="Enter social security number"}>
+				{else}
+					{if ConfigHelper::checkConfig('userpanel.show_customer_sensitive_data')}
+						{$userinfo.ssn}
+					{/if}
+				{/if}
+			</td>
+		</tr>
+	{/if}
 {if $rights.info.edit_addr ||
     $rights.info.edit_addr_ack ||
     $rights.info.edit_contact ||

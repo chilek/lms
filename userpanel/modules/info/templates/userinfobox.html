@@ -94,16 +94,21 @@
 		</td>
 	</tr>
 {/if}
-{if $userinfo.ssn != ""}
-	<tr>
-		<td width="1%" align="center">
-			<strong>{trans("SSN")}</strong>
-		</td>
-		<td width="99%" colspan="2">
-			{$userinfo.ssn}{if isset($fields_changed.ssn)} <span class="lms-ui-customer-property-changed">({$fields_changed.ssn.fieldvalue})</span>{/if}
-		</td>
-	</tr>
-{/if}
+	{if $userinfo.ssn != "" && (isset($fields_changed.ssn) || ConfigHelper::checkConfig('userpanel.show_customer_sensitive_data'))}
+		<tr>
+			<td align="center">
+				<strong>{trans("SSN")}</strong>
+			</td>
+			<td colspan="2">
+				{if ConfigHelper::checkConfig('userpanel.show_customer_sensitive_data')}
+					{$userinfo.ssn}
+				{/if}
+				{if isset($fields_changed.ssn)}
+					<span class="lms-ui-customer-property-changed">({$fields_changed.ssn.fieldvalue})</span>
+				{/if}
+			</td>
+		</tr>
+	{/if}
 	<tr>
 		<td width="1%">
 			{img src="cash.gif" alt=""}

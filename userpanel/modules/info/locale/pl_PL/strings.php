@@ -144,3 +144,5 @@ $_LANG['MAC address'] = 'Adres MAC';
 $_LANG['IP address'] = 'Adres IP';
 
 $_LANG['PIN change required!'] = 'Wymagana zmiana PIN!';
+
+$_LANG['Show sensitive data'] = 'Pokaż dane wrażliwe';

@@ -284,20 +284,25 @@ function module_updateusersave()
                     }
                     break;
                 case 'ssn':
-                    if ($val!='' && !check_ssn($val)) {
-                        $error['ssn']=1;
-                    } else {
-                        if (isset($right['edit_addr'])) {
-                            $userinfo[$field] = $val;
-                            $needupdate = 1;
-                        } elseif (isset($right['edit_addr_ack'])) {
-                            $LMS->DB->Execute(
-                                'DELETE FROM up_info_changes WHERE customerid = ? AND fieldname = ?',
-                                array($id, $field)
-                            );
-                            $LMS->DB->Execute('INSERT INTO up_info_changes(customerid, fieldname, fieldvalue)
-						VALUES(?, ?, ?)', array($id, $field, $val));
-                            $need_change_notification = true;
+                    if (ConfigHelper::checkConfig('userpanel.show_customer_sensitive_data') || $val != '***') {
+                        if ($val != '' && !check_ssn($val)) {
+                            $error['ssn'] = 1;
+                        } else {
+                            if (isset($right['edit_addr'])) {
+                                $userinfo[$field] = $val;
+                                $needupdate = 1;
+                            } elseif (isset($right['edit_addr_ack'])) {
+                                $LMS->DB->Execute(
+                                    'DELETE FROM up_info_changes WHERE customerid = ? AND fieldname = ?',
+                                    array($id, $field)
+                                );
+                                $LMS->DB->Execute(
+                                    'INSERT INTO up_info_changes (customerid, fieldname, fieldvalue)
+                                    VALUES(?, ?, ?)',
+                                    array($id, $field, $val)
+                                );
+                                $need_change_notification = true;
+                            }
                         }
                     }
                     break;
@@ -682,6 +687,7 @@ if (defined('USERPANEL_SETUPMODE')) {
         $SMARTY->assign('hide_nodesbox', ConfigHelper::getConfig('userpanel.hide_nodesbox'));
         $SMARTY->assign('consent_text', ConfigHelper::getConfig('userpanel.data_consent_text'));
         $SMARTY->assign('pin_changes', ConfigHelper::checkConfig('userpanel.pin_changes'));
+        $SMARTY->assign('show_sensitive_data', ConfigHelper::checkConfig('userpanel.show_customer_sensitive_data'));
         $SMARTY->assign('change_notification_mail_sender', ConfigHelper::getConfig('userpanel.change_notification_mail_sender'));
         $SMARTY->assign('change_notification_mail_recipient', ConfigHelper::getConfig('userpanel.change_notification_mail_recipient'));
         $SMARTY->assign('change_notification_mail_subject', ConfigHelper::getConfig('userpanel.change_notification_mail_subject'));
@@ -709,6 +715,10 @@ if (defined('USERPANEL_SETUPMODE')) {
         $DB->Execute(
             'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
             array(isset($_POST['pin_changes']) ? 'true' : 'false', 'userpanel', 'pin_changes')
+        );
+        $DB->Execute(
+            'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
+            array(isset($_POST['show_sensitive_data']) ? 'true' : 'false', 'userpanel', 'show_customer_sensitive_data')
         );
         $DB->Execute(
             'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',

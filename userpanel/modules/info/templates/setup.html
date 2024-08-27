@@ -50,6 +50,17 @@
 									{if $pin_changes} checked{/if} {tip text="Allow customer to change PIN"}>
 							</td>
 						</tr>
+						<tr>
+							<td class="nobr">
+								<label for="show_sensitive_data">
+									{trans("Show sensitive data")}
+								</label>
+							</td>
+							<td class="nobr">
+								<input type="checkbox" name="show_sensitive_data" id="show_sensitive_data" value="1"
+									{if $show_sensitive_data} checked{/if}>
+							</td>
+						</tr>
 
 						<tr>
 							<td class="nobr" colspan="2">
