@@ -1123,40 +1123,42 @@ if ($report_type == 'full') {
                     $netnodes[$netnodename]['mode'] = ELEMENT_MODE_NETWORK_NODE;
                 }
 
-                if (isset($teryt_cities[$netdevice['location_city']])) {
-                    $teryt_city = $teryt_cities[$netdevice['location_city']];
+                if (!array_key_exists($netdevice['netnodeid'], $real_netnodes)) {
+                    if (isset($teryt_cities[$netdevice['location_city']])) {
+                        $teryt_city = $teryt_cities[$netdevice['location_city']];
 
-                    if (!empty($netdevice['location_street']) && isset($teryt_streets[$netdevice['location_street']])) {
-                        $teryt_street = $teryt_streets[$netdevice['location_street']];
-                    }
+                        if (!empty($netdevice['location_street']) && isset($teryt_streets[$netdevice['location_street']])) {
+                            $teryt_street = $teryt_streets[$netdevice['location_street']];
+                        }
 
-                    if (!strlen($teryt_city['area_terc']) || !strlen($teryt_city['area_simc']) || !strlen($netdevice['location_house'])) {
+                        if (!strlen($teryt_city['area_terc']) || !strlen($teryt_city['area_simc']) || !strlen($netdevice['location_house'])) {
+                            $error = array(
+                                'id' => $netdevice['id'],
+                                'name' => $netdevice['name'],
+                            );
+                            if (!strlen($teryt_city['area_terc'])) {
+                                $error['terc'] = true;
+                            }
+                            if (!strlen($teryt_city['area_simc'])) {
+                                $error['simc'] = true;
+                            }
+                            if (!strlen($netdevice['location_house'])) {
+                                $error['location_house'] = true;
+                            }
+                            $errors['netdevices'][] = $error;
+                        }
+                    } else {
                         $error = array(
                             'id' => $netdevice['id'],
                             'name' => $netdevice['name'],
+                            'terc' => true,
+                            'simc' => true,
                         );
-                        if (!strlen($teryt_city['area_terc'])) {
-                            $error['terc'] = true;
-                        }
-                        if (!strlen($teryt_city['area_simc'])) {
-                            $error['simc'] = true;
-                        }
-                        if (!strlen($netdevice['location_house'])) {
+                        if (!isset($netdevice['location_house']) || !strlen($netdevice['location_house'])) {
                             $error['location_house'] = true;
                         }
                         $errors['netdevices'][] = $error;
                     }
-                } else {
-                    $error = array(
-                        'id' => $netdevice['id'],
-                        'name' => $netdevice['name'],
-                        'terc' => true,
-                        'simc' => true,
-                    );
-                    if (!isset($netdevice['location_house']) || !strlen($netdevice['location_house'])) {
-                        $error['location_house'] = true;
-                    }
-                    $errors['netdevices'][] = $error;
                 }
             }
 
