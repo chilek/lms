@@ -798,6 +798,7 @@ version 28-git (????-??-??):
     to 'nodes.multi_tariff_restriction' [chilan]
   - devel/cleanup: renamed configuration variable 'phpui.public_ip'
     to 'nodes.public_ip' [chilan]
+  - enhancement: new 'show sensitive data' userpanel info module option [chilan]
 
 version 27.0 (2021-08-20):
 
