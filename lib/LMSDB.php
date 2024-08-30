@@ -51,9 +51,9 @@ class LMSDB
      *
      * @return \LMSDBInterface
      */
-    public static function getInstance()
+    public static function getInstance($force_new = false)
     {
-        if (self::$db === null) {
+        if (self::$db === null || $force_new) {
             $_DBTYPE = LMSConfig::getIniConfig()->getSection('database')->getVariable('type')->getValue();
             $_DBHOST = LMSConfig::getIniConfig()->getSection('database')->getVariable('host')->getValue();
             $_DBUSER = LMSConfig::getIniConfig()->getSection('database')->getVariable('user')->getValue();
