@@ -347,7 +347,7 @@ switch ($action) {
         $currtime = time();
 
         if (ConfigHelper::checkPrivilege('invoice_consent_date')) {
-            if ($invoice['cdate']) { // && !$invoice['cdatewarning'])
+            if ($invoice['cdate']) {
                 [$year, $month, $day] = explode('/', $invoice['cdate']);
                 if (checkdate($month, $day, $year)) {
                     $oldday = date('d', $invoice['oldcdate']);
@@ -372,6 +372,30 @@ switch ($action) {
             }
         } else {
             $invoice['cdate'] = $invoice['oldcdate'];
+        }
+
+        if (ConfigHelper::checkPrivilege('invoice_consent_date') && $invoice['cdate'] && !isset($warnings['invoice-cdate-'])) {
+            if (empty($invoice['numberplanid'])) {
+                $maxdate = $DB->GetOne(
+                    'SELECT MAX(cdate) FROM documents WHERE type = ? AND numberplanid IS NULL',
+                    array($invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE)
+                );
+            } else {
+                $maxdate = $DB->GetOne(
+                    'SELECT MAX(cdate) FROM documents WHERE type = ? AND numberplanid = ?',
+                    array($invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE, $invoice['numberplanid'])
+                );
+            }
+
+            if ($invoice['cdate'] < $maxdate) {
+                $warning['invoice[cdate]'] = trans(
+                    'Last date of invoice settlement is $a. If sure, you want to write invoice with date of $b, then click "Submit" again.',
+                    date('Y/m/d H:i', $maxdate),
+                    date('Y/m/d H:i', $invoice['cdate'])
+                );
+            }
+        } elseif (!$invoice['cdate']) {
+            $invoice['cdate'] = $currtime;
         }
 
         if (ConfigHelper::checkPrivilege('invoice_sale_date')) {
@@ -445,6 +469,8 @@ switch ($action) {
         if ($numberplans && count($numberplans) && empty($invoice['numberplanid']) && $invoice['numberplanid'] != 0) {
             $error['numberplanid'] = trans('Select numbering plan');
         }
+
+        $SESSION->restore('invoiceid', $invoice['id'], true);
 
         if ($invoice['number']) {
             if (!preg_match('/^[0-9]+$/', $invoice['number'])) {
@@ -822,7 +848,7 @@ $SESSION->save('invoicecontents', $contents, true);
 $SESSION->save('invoicecustomer', $customerid, true);
 $SESSION->save('invoiceediterror', $error, true);
 
-if ($action && !$error) {
+if ($action && empty($error) && empty($warning)) {
     // redirect needed because we don't want to destroy contents of invoice in order of page refresh
     $SESSION->redirect('?m=invoiceedit');
 }

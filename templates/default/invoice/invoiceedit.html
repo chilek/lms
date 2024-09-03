@@ -81,9 +81,6 @@
 							placeholder="{trans("yyyy/mm/dd")}" data-cdate="{$invoice.cdate}"
 							{tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}
 						>
-						{if $invoice.cdatewarning}
-							<input type="hidden" name="invoice[cdatewarning]" value="1">
-						{/if}
 					{else}
 						<input type="hidden" name="invoice[cdate]" value="{$invoice.cdate|date_format:"Y/m/d"}">
 						{$invoice.cdate|date_format:"Y-m-d"}

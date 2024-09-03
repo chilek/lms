@@ -388,7 +388,7 @@ switch ($action) {
             $invoice['cdate'] = $currtime;
         }
 
-        if (ConfigHelper::checkPrivilege('invoice_consent_date') && $invoice['cdate'] && !isset($invoice['cdatewarning'])) {
+        if (ConfigHelper::checkPrivilege('invoice_consent_date') && $invoice['cdate'] && !isset($warnings['invoice-cdate-'])) {
             if (empty($invoice['numberplanid'])) {
                 $maxdate = $DB->GetOne(
                     'SELECT MAX(cdate) FROM documents WHERE type = ? AND numberplanid IS NULL',
@@ -402,12 +402,11 @@ switch ($action) {
             }
 
             if ($invoice['cdate'] < $maxdate) {
-                $error['cdate'] = trans(
+                $warning['invoice[cdate]'] = trans(
                     'Last date of invoice settlement is $a. If sure, you want to write invoice with date of $b, then click "Submit" again.',
                     date('Y/m/d H:i', $maxdate),
                     date('Y/m/d H:i', $invoice['cdate'])
                 );
-                $invoice['cdatewarning'] = 1;
             }
         } elseif (!$invoice['cdate']) {
             $invoice['cdate'] = $currtime;
@@ -723,7 +722,7 @@ $SESSION->save('invoicecontents', $contents ?? null, true);
 $SESSION->save('invoicecustomer', $customer ?? null, true);
 $SESSION->save('invoicenewerror', $error ?? null, true);
 
-if ($action && (!isset($error) || !$error)) {
+if ($action && empty($error) && empty($warning)) {
     // redirect needed because we don't want to destroy contents of invoice in order of page refresh
     $SESSION->redirect('?m=invoicenew');
 }
