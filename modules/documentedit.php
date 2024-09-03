@@ -120,6 +120,56 @@ if (isset($_POST['document'])) {
         }
     }
 
+    $currtime = time();
+
+    if (ConfigHelper::checkPrivilege('document_consent_date')) {
+        if ($documentedit['cdate']) {
+            [$year, $month, $day] = explode('/', $documentedit['cdate']);
+            if (checkdate($month, $day, $year)) {
+                $documentedit['cdate'] = mktime(
+                    date('G', $currtime),
+                    date('i', $currtime),
+                    date('s', $currtime),
+                    $month,
+                    $day,
+                    $year
+                );
+                $currmonth = $month;
+            } else {
+                $error['cdate'] = trans('Incorrect date format!');
+                $documentedit['cdate'] = $currtime;
+            }
+        }
+    } else {
+        $documentedit['cdate'] = $document['cdate'];
+    }
+
+    if (ConfigHelper::checkPrivilege('document_consent_date') && $documentedit['cdate'] && !isset($warnings['document-cdate-'])) {
+        if ($documentedit['type'] && strtotime(date('Y/m/d', $document['cdate'])) != strtotime(date('Y/m/d', $documentedit['cdate']))) {
+            if (empty($documentedit['numberplanid'])) {
+                $maxdate = $DB->GetOne(
+                    'SELECT MAX(cdate) FROM documents WHERE type = ? AND numberplanid IS NULL AND id <> ?',
+                    array($documentedit['type'], $documentedit['id'])
+                );
+            } else {
+                $maxdate = $DB->GetOne(
+                    'SELECT MAX(cdate) FROM documents WHERE type = ? AND numberplanid = ? AND id <> ?',
+                    array($documentedit['type'], $documentedit['numberplanid'], $documentedit['id'])
+                );
+            }
+
+            if ($documentedit['cdate'] < $maxdate) {
+                $warning['document[cdate]'] = trans(
+                    'Last date of document settlement is $a. If sure, you want to write document with date of $b, then click "Submit" again.',
+                    date('Y/m/d H:i', $maxdate),
+                    date('Y/m/d H:i', $documentedit['cdate'])
+                );
+            }
+        }
+    } elseif (!$documentedit['cdate']) {
+        $documentedit['cdate'] = $document['cdate'];
+    }
+
     if ($documentedit['fromdate']) {
         $date = explode('/', $documentedit['fromdate']);
         if (checkdate($date[1], $date[2], $date[0])) {
@@ -185,7 +235,7 @@ if (isset($_POST['document'])) {
         }
     }
 
-    if (!$error) {
+    if (!$error && !$warning) {
         $DB->BeginTrans();
 
         $fullnumber = docnumber(array(
@@ -209,13 +259,14 @@ if (isset($_POST['document'])) {
 
         $allowed_archiving = ($document['docrights'] & DOCRIGHT_ARCHIVE) > 0;
         $DB->Execute(
-            'UPDATE documents SET type=?, closed=?, sdate=?, cuserid=?, confirmdate = ?,
+            'UPDATE documents SET type=?, closed=?, cdate = ?, sdate=?, cuserid=?, confirmdate = ?,
 			        archived = ?, adate = ?, auserid = ?, number=?, numberplanid=?, fullnumber=?
 				WHERE id=?',
             array(  $documentedit['type'],
                     ($document['docrights'] & DOCRIGHT_CONFIRM)
                         ? ($closed == DOC_OPEN && !$document['closed'] ? DOC_OPEN : $closed)
                         : $document['closed'],
+                    $documentedit['cdate'],
                     ($document['docrights'] & DOCRIGHT_CONFIRM)
                         ? $documentedit['closed'] ? ($document['closed'] ? $document['sdate'] : time()) : 0
                         : $document['sdate'],
@@ -273,6 +324,7 @@ if (isset($_POST['document'])) {
         $document['title'] = $documentedit['title'];
         $document['type'] = $documentedit['type'];
         $document['description'] = $documentedit['description'];
+        $document['cdate'] = $documentedit['cdate'];
         $document['closed'] = $documentedit['closed'];
         $document['number'] = $documentedit['number'];
         $document['numberplanid'] = $documentedit['numberplanid'];

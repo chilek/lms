@@ -62,6 +62,7 @@ if (isset($_POST['document'])) {
             $error['numberplanid'] = trans('Permission denied!');
         }
     }
+
     $currtime = time();
 
     if (ConfigHelper::checkPrivilege('document_consent_date')) {
@@ -86,7 +87,7 @@ if (isset($_POST['document'])) {
         $document['cdate'] = $currtime;
     }
 
-    if (ConfigHelper::checkPrivilege('document_consent_date') && $document['cdate'] && !isset($document['cdatewarning'])) {
+    if (ConfigHelper::checkPrivilege('document_consent_date') && $document['cdate'] && !isset($warnings['document-cdate-'])) {
         if ($document['type']) {
             if (empty($document['numberplanid'])) {
                 $maxdate = $DB->GetOne(
@@ -101,12 +102,11 @@ if (isset($_POST['document'])) {
             }
 
             if ($document['cdate'] < $maxdate) {
-                $error['cdate'] = trans(
+                $warning['document[cdate]'] = trans(
                     'Last date of document settlement is $a. If sure, you want to write document with date of $b, then click "Submit" again.',
                     date('Y/m/d H:i', $maxdate),
                     date('Y/m/d H:i', $document['cdate'])
                 );
-                $document['cdatewarning'] = 1;
             }
         }
     } elseif (!$document['cdate']) {
