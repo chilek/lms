@@ -145,7 +145,7 @@ if (isset($_POST['document'])) {
     }
 
     if (ConfigHelper::checkPrivilege('document_consent_date') && $documentedit['cdate'] && !isset($warnings['document-cdate-'])) {
-        if ($documentedit['type'] && strtotime(date('Y/m/d', $document['cdate'])) != strtotime(date('Y/m/d', $documentedit['cdate']))) {
+        if ($documentedit['type'] && strtotime('today', $document['cdate']) != strtotime('today', $documentedit['cdate'])) {
             if (empty($documentedit['numberplanid'])) {
                 $maxdate = $DB->GetOne(
                     'SELECT MAX(cdate) FROM documents WHERE type = ? AND numberplanid IS NULL AND id <> ?',
