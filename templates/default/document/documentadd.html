@@ -167,6 +167,7 @@
 				{numberplan_selection
 					customer_selector = "#customerid_input"
 					doctype_selector  = "#doctype"
+					cdate_selector    = "[name='document[cdate]']"
 					numberplanlist    = $numberplans
 					input_name        = "document[number]"
 					input_value       = $document.number
@@ -179,6 +180,28 @@
 					planDocumentType  = $planDocumentType
 					reference_selector = '#refdoc'
 				}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="calendar"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Consent date")}</strong>
+			</td>
+			<td class="nobr">
+				{if ConfigHelper::checkPrivilege("document_consent_date")}
+					<input type="text" name="document[cdate]" value="{$document.cdate|date_format:"Y/m/d"}" size="12"
+						placeholder="{trans("yyyy/mm/dd")}" data-cdate="{$document.cdate}"
+							{tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}
+					>
+					{if $document.cdatewarning}
+						<input type="hidden" name="document[cdatewarning]" value="1">
+					{/if}
+				{else}
+					<input type="hidden" name="document[cdate]" value="{$document.cdate|date_format:"Y/m/d"}">
+					{$document.cdate|date_format:"Y-m-d"}
+				{/if}
 			</td>
 		</tr>
 		<tr>

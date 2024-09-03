@@ -1467,6 +1467,7 @@ $_LANG['Last:'] = 'Ostatni:';
 $_LANG['last $a transactions'] = 'ostatnie $a transakcji';
 $_LANG['Last 30 Days'] = 'Ostatnie 30 dni';
 $_LANG['Last date of invoice settlement is $a. If sure, you want to write invoice with date of $b, then click "Submit" again.'] = 'Ostatnia data wystawienia faktury to $a. Jeżeli jesteś pewien, że chcesz zapisać fakturę z datą $b, to ponownie kliknij "Zapisz".';
+$_LANG['Last date of document settlement is $a. If sure, you want to write document with date of $b, then click "Submit" again.'] = 'Ostatnia data wystawienia dokumentu to $a. Jeżeli jesteś pewien, że chcesz zapisać dokument z datą $b, to ponownie kliknij "Zapisz".';
 $_LANG['Last Day'] = 'Ostatni dzień';
 $_LANG['Last day stats for all networks'] = 'Statystyki z ostatniego dnia dla wszystkich sieci';
 $_LANG['Last date of receipt settlement is $a. If sure, you want to write receipt with date of $b, then click "Submit" again.'] = 'Ostatnia data wystawienia pokwitowania to $a. Jeśli na pewno chcesz wystawić dowód wpłaty z datą $b kliknij ponownie "Zapisz".';
@@ -5264,6 +5265,9 @@ $_LANG['Category selection is recommended but not required!'] = 'Wybór kategori
 
 $_LANG['invoice sale date manipulation'] = 'manipulowanie datą sprzedaży faktur';
 $_LANG['invoice consent date manipulation'] = 'manipulowanie datą wystawienia faktur';
+
+$_LANG['Consent date'] = 'Data wystawienia';
+$_LANG['document consent date manipulation'] = 'manipulowanie datą wystawienia dokumentu';
 
 $_LANG['Network name'] = 'Nazwa sieci';
 

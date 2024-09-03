@@ -62,6 +62,56 @@ if (isset($_POST['document'])) {
             $error['numberplanid'] = trans('Permission denied!');
         }
     }
+    $currtime = time();
+
+    if (ConfigHelper::checkPrivilege('document_consent_date')) {
+        if ($document['cdate']) {
+            [$year, $month, $day] = explode('/', $document['cdate']);
+            if (checkdate($month, $day, $year)) {
+                $document['cdate'] = mktime(
+                    date('G', $currtime),
+                    date('i', $currtime),
+                    date('s', $currtime),
+                    $month,
+                    $day,
+                    $year
+                );
+                $currmonth = $month;
+            } else {
+                $error['cdate'] = trans('Incorrect date format!');
+                $document['cdate'] = $currtime;
+            }
+        }
+    } else {
+        $document['cdate'] = $currtime;
+    }
+
+    if (ConfigHelper::checkPrivilege('document_consent_date') && $document['cdate'] && !isset($document['cdatewarning'])) {
+        if ($document['type']) {
+            if (empty($document['numberplanid'])) {
+                $maxdate = $DB->GetOne(
+                    'SELECT MAX(cdate) FROM documents WHERE type = ? AND numberplanid IS NULL',
+                    array($document['type'])
+                );
+            } else {
+                $maxdate = $DB->GetOne(
+                    'SELECT MAX(cdate) FROM documents WHERE type = ? AND numberplanid = ?',
+                    array($document['type'], $document['numberplanid'])
+                );
+            }
+
+            if ($document['cdate'] < $maxdate) {
+                $error['cdate'] = trans(
+                    'Last date of document settlement is $a. If sure, you want to write document with date of $b, then click "Submit" again.',
+                    date('Y/m/d H:i', $maxdate),
+                    date('Y/m/d H:i', $document['cdate'])
+                );
+                $document['cdatewarning'] = 1;
+            }
+        }
+    } elseif (!$document['cdate']) {
+        $document['cdate'] = $currtime;
+    }
 
     if (!$error) {
         if ($document['number'] == '') {
@@ -71,6 +121,7 @@ if (isset($_POST['document'])) {
                 'planid' => $document['numberplanid'],
                 'customerid' => $document['customerid'],
                 'reference' => empty($document['reference']) ? null : $document['reference'],
+                'cdate' => $document['cdate'],
             ));
             $document['number'] = $tmp ?: 0;
             $autonumber = true;
@@ -82,6 +133,7 @@ if (isset($_POST['document'])) {
             'planid' => $document['numberplanid'],
             'customerid' => $document['customerid'],
             'reference' => empty($document['reference']) ? null : $document['reference'],
+            'cdate' => $document['cdate'],
         ))) {
             $error['number'] = trans('Document with specified number exists!');
         }
@@ -166,7 +218,7 @@ if (isset($_POST['document'])) {
         $fullnumber = docnumber(array(
             'number' => $document['number'],
             'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($document['numberplanid'])),
-            'cdate' => time(),
+            'cdate' => $document['cdate'],
             'customerid' => $document['customerid'],
         ));
 
@@ -372,7 +424,7 @@ if (isset($_POST['document'])) {
             array($document['type'],
                 $document['number'],
                 empty($document['numberplanid']) ? null : $document['numberplanid'],
-                $time,
+                $document['cdate'],
                 isset($document['closed']) ? $time : 0,
                 isset($document['closed']) ? Auth::GetCurrentUser() : null,
                 isset($document['closed']) || empty($document['confirmdate']) ? 0 : strtotime('+ 1 day', $document['confirmdate']) - 1,
@@ -608,6 +660,8 @@ if (isset($_POST['document'])) {
     } else {
         $document['assignment']['existing_assignments']['operation'] = EXISTINGASSIGNMENT_KEEP;
     }
+
+    $document['cdate'] = time();
 }
 
 $SMARTY->setDefaultResourceType('extendsall');

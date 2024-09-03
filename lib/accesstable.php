@@ -112,6 +112,9 @@ $access_table = array(
     'published_document_modification' => array(
         'label' => trans('published document modification'),
     ),
+    'document_consent_date' => array(
+        'label' => trans('document consent date manipulation'),
+    ),
     'reload' => array(
         'label' => trans('configuration reload'),
         'allow_regexp' => '^reload$',
