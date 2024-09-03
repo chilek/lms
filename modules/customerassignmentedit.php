@@ -417,6 +417,7 @@ if (isset($_POST['assignment'])) {
             SYSLOG::RES_TARIFF => empty($a['tariffid']) ? null : intval($a['tariffid']),
             SYSLOG::RES_CUST => $customer['id'],
             'attribute' => !empty($a['attribute']) ? $a['attribute'] : null,
+            'suspended' => empty($a['suspended']) ? 0 : 1,
             'period' => $period,
             'backwardperiod' => isset($a['backwardperiod']) ? 1 : 0,
             'at' => $at,
@@ -438,7 +439,7 @@ if (isset($_POST['assignment'])) {
             SYSLOG::RES_ASSIGN => $a['id']
         );
 
-        $DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, attribute=?, period=?,
+        $DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, attribute=?, suspended = ?, period=?,
             backwardperiod=?, at=?, count=?, note=?,
 			invoice=?, separatedocument=?, separateitem = ?, settlement=?, datefrom=?, dateto=?, pdiscount=?, vdiscount=?,
 			liabilityid=?, numberplanid=?, paytime = ?, paytype=?, recipient_address_id=?
@@ -523,7 +524,7 @@ if (isset($_POST['assignment'])) {
             ELSE (CASE WHEN liabilities.flags & ? > 0 THEN 1 ELSE 0 END)
         END) AS netflag,
         (CASE WHEN liabilityid IS NULL THEN tariffs.taxcategory ELSE liabilities.taxcategory END) AS taxcategory,
-        a.settlement, a.pdiscount, a.vdiscount, a.attribute, a.liabilityid,
+        a.settlement, a.pdiscount, a.vdiscount, a.attribute, a.suspended, a.liabilityid,
         (CASE WHEN liabilityid IS NULL THEN tariffs.name ELSE liabilities.name END) AS name,
         liabilities.value AS value, liabilities.currency AS currency,
         liabilities.netvalue AS netvalue,

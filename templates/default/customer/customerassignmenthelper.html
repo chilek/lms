@@ -958,6 +958,11 @@
 								</label>
 							</span>
 							{/if}
+							<label>
+								<input type="checkbox" name="{$variable_prefix}[suspended]" value="1"
+									id="suspended" {if !empty($variables.suspended)} checked{/if}>
+								{trans("suspended")}
+							</label>
 						</div>
 					</td>
 				</tr>
