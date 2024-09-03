@@ -802,6 +802,8 @@ version 28-git (????-??-??):
   - improvement: allow to change 'suspended' flag during assignment create/edit [chilan]
   - improvement: 'assignments.default_suspended' configuration variable with 'false' as default
     value allow to set default state of 'suspended' check option in new assignment form [chilan]
+  - improvement: allow to manually set document consent/create date (users with 'full_access'
+    or 'document_consent_date' privilleges are allowed to do that) [chilan]
 
 version 27.0 (2021-08-20):
 
