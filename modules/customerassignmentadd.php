@@ -218,6 +218,8 @@ if (isset($_POST['assignment'])) {
         $a['existing_assignments']['operation'] = EXISTINGASSIGNMENT_KEEP;
     }
 
+    $a['suspended'] = ConfigHelper::checkConfig('assignments.default_suspended');
+
     if (isset($_GET['nodeid']) && ($nodeid = intval($_GET['nodeid'])) > 0) {
         $a['nodes'] = array(
             $nodeid => $nodeid,
