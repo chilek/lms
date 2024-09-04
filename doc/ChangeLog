@@ -804,6 +804,7 @@ version 28-git (????-??-??):
     value allow to set default state of 'suspended' check option in new assignment form [chilan]
   - improvement: allow to manually set document consent/create date (users with 'full_access'
     or 'document_consent_date' privilleges are allowed to do that) [chilan]
+  - enhancement: userpanel: '%extid' substitution symbol support in credential reminders [chilan]
 
 version 27.0 (2021-08-20):
 
