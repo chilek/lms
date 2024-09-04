@@ -80,7 +80,7 @@
 			{if $error}<div style="color: red;" class="text-center bold">{$error}</div>{else}&nbsp;{/if}
 			<br />
 			<form id="login" method="post" action="{$target}">
-			{$auth_type=ConfigHelper::getConfig('userpanel.auth_type', 1)}
+			{$auth_type=ConfigHelper::getConfig('userpanel.auth_type', $smarty.const.USERPANEL_AUTH_TYPE_ID_PIN)}
 			<table id="logindata" style="height: 100%; width: 100%;">
 				<tr>
 					<td class="text-right bold nobr">

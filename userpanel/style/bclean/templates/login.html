@@ -113,7 +113,7 @@
                             </div>
                         </div>
                     {/if}
-                    {$auth_type=ConfigHelper::getConfig('userpanel.auth_type', 1)}
+                    {$auth_type=ConfigHelper::getConfig('userpanel.auth_type', $smarty.const.USERPANEL_AUTH_TYPE_ID_PIN)}
                     <form id="login" class="form-signin" method="post" action="{$target}">
                         <fieldset class="form-group">
                             <label for="inputLogin">{$_USERPANEL_AUTH_TYPES[$auth_type].label}</label>

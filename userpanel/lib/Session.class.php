@@ -51,7 +51,7 @@ class Session
 
     public function __construct(&$DB, $timeout = 600)
     {
-        global $LMS;
+        global $LMS, $USERPANEL_AUTH_TYPES;
 
         $this->db = &$DB;
         $this->pin_allowed_characters = ConfigHelper::getConfig(
@@ -132,11 +132,26 @@ class Session
 
             $allowed_customer_status = $this->getAllowedCustomerStatus();
 
+            $auth_type = intval(ConfigHelper::getConfig('userpanel.auth_type', USERPANEL_AUTH_TYPE_ID_PIN));
+            if ($auth_type == USERPANEL_AUTH_TYPE_EXTID_PIN) {
+                $auth_options = array();
+                foreach ($USERPANEL_AUTH_TYPES[USERPANEL_AUTH_TYPE_EXTID_PIN]['options'] as $option) {
+                    $auth_options[$option['name']] = ConfigHelper::getConfig('userpanel.' . $option['name'], '');
+                }
+                $service_provider_id = intval($auth_options['authentication_customer_extid_service_provider_id']);
+            }
+
             $customer = $this->db->GetRow(
-                'SELECT c.id, pin, pinlastchange
+                'SELECT
+                    c.id,
+                    c.pin,
+                    c.pinlastchange,
+                    e.extid
                 FROM customers c
                 ' . $join . "
-                WHERE c.deleted = 0
+                LEFT JOIN customerextids e ON e.customerid = c.id AND e.serviceproviderid "
+                    . ($auth_type != USERPANEL_AUTH_TYPE_EXTID_PIN || empty($service_provider_id) ? ' IS NULL' : ' = ' . $service_provider_id) .
+                " WHERE c.deleted = 0
                     AND ((ten <> '' AND REPLACE(REPLACE(ten, '-', ''), ' ', '') = ?)
                         OR (ssn <> '' AND ssn = ?))
                     " . (isset($allowed_customer_status) ? ' AND c.status IN (' . implode(', ', $allowed_customer_status) . ')' : '')
@@ -192,8 +207,19 @@ class Session
                 );
             }
 
-            $body = str_replace('%id', $customer['id'], $body);
-            $body = str_replace('%pin', $customer['pin'], $body);
+            $body = str_replace(
+                array(
+                    '%id',
+                    '%pin',
+                    '%extid',
+                ),
+                array(
+                    $customer['id'],
+                    $customer['pin'],
+                    $customer['extid'],
+                ),
+                $body
+            );
             if ($remindform['type'] == 1) {
                 $LMS->SendMail(
                     $remindform['email'],
@@ -926,26 +952,26 @@ class Session
             return null;
         }
 
-        switch (ConfigHelper::getConfig('userpanel.auth_type', 1)) {
-            case 1:
+        switch (ConfigHelper::getConfig('userpanel.auth_type', USERPANEL_AUTH_TYPE_ID_PIN)) {
+            case USERPANEL_AUTH_TYPE_ID_PIN:
                 $authinfo = $this->GetCustomerIDByIDAndPIN();
                 break;
-            case 2:
+            case USERPANEL_AUTH_TYPE_PHONE_PIN:
                 $authinfo = $this->GetCustomerIDByPhoneAndPIN();
                 break;
-            case 3:
+            case USERPANEL_AUTH_TYPE_DOCUMENT_PIN:
                 $authinfo = $this->GetCustomerIDByDocumentAndPIN();
                 break;
-            case 4:
+            case USERPANEL_AUTH_TYPE_EMAIL_PIN:
                 $authinfo = $this->GetCustomerIDByEmailAndPIN();
                 break;
-            case 5:
+            case USERPANEL_AUTH_TYPE_PPPOE_LOGIN_PASSWORD:
                 $authinfo = $this->GetCustomerIDByNodeNameAndPassword();
                 break;
-            case 6:
+            case USERPANEL_AUTH_TYPE_TEN_SSN_PIN:
                 $authinfo = $this->GetCustomerIDBySsnTenAndPIN();
                 break;
-            case 7:
+            case USERPANEL_AUTH_TYPE_EXTID_PIN:
                 $authinfo = $this->GetCustomerIDByExtIDAndPIN();
                 break;
         }

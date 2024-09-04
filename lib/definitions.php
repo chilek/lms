@@ -1458,38 +1458,46 @@ $NETELEMENTOWNERSHIPS = array(
     2   => trans('Foreign node'),
 );
 
+const USERPANEL_AUTH_TYPE_ID_PIN = 1,
+    USERPANEL_AUTH_TYPE_PHONE_PIN = 2,
+    USERPANEL_AUTH_TYPE_DOCUMENT_PIN = 3,
+    USERPANEL_AUTH_TYPE_EMAIL_PIN = 4,
+    USERPANEL_AUTH_TYPE_PPPOE_LOGIN_PASSWORD = 5,
+    USERPANEL_AUTH_TYPE_TEN_SSN_PIN = 6,
+    USERPANEL_AUTH_TYPE_EXTID_PIN = 7;
+
 $USERPANEL_AUTH_TYPES = array(
-    1   => array(
+    USERPANEL_AUTH_TYPE_ID_PIN => array(
         'label' => trans('Customer ID'),
         'label_secret' => trans('PIN'),
         'selection' => trans('Customer ID and PIN'),
     ),
-    2   => array(
+    USERPANEL_AUTH_TYPE_PHONE_PIN => array(
         'label' => trans('Phone number'),
         'label_secret' => trans('PIN'),
         'selection' => trans('Phone number and PIN'),
     ),
-    3   => array(
+    USERPANEL_AUTH_TYPE_DOCUMENT_PIN => array(
         'label' => trans('Document number'),
         'label_secret' => trans('PIN'),
         'selection' => trans('Document number and PIN'),
     ),
-    4   => array(
+    USERPANEL_AUTH_TYPE_EMAIL_PIN => array(
         'label' => trans('Customer e-mail'),
         'label_secret' => trans('PIN'),
         'selection' => trans('Customer e-mail and PIN'),
     ),
-    5   => array(
+    USERPANEL_AUTH_TYPE_PPPOE_LOGIN_PASSWORD => array(
         'label' => trans('PPPoE login'),
         'label_secret' => trans('PPPoE password'),
         'selection' => trans('PPPoE login and password'),
     ),
-    6   => array(
+    USERPANEL_AUTH_TYPE_TEN_SSN_PIN => array(
         'label' => trans('SSN/TEN'),
         'label_secret' => trans('PIN'),
         'selection' => trans('SSN/TEN and PIN'),
     ),
-    7 => array(
+    USERPANEL_AUTH_TYPE_EXTID_PIN => array(
         'label' => trans('Customer External ID/PIN'),
         'label_secret' => trans('PIN'),
         'selection' => trans('Customer External ID and PIN'),
