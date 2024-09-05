@@ -275,12 +275,14 @@ $SMARTY->assign('assignments', $assignments);
 $SMARTY->assign('customerinfo', $customer);
 
 $document_separation_groups = array();
-foreach ($assignments as $assignment) {
-    if (isset($assignment['separatedocument'])) {
-        $document_separation_groups[$assignment['separatedocument']] = $assignment['separatedocument'];
+if (!empty($assignments)) {
+    foreach ($assignments as $assignment) {
+        if (isset($assignment['separatedocument'])) {
+            $document_separation_groups[$assignment['separatedocument']] = $assignment['separatedocument'];
+        }
     }
+    sort($document_separation_groups, SORT_STRING);
 }
-sort($document_separation_groups, SORT_STRING);
 $SMARTY->assign('document_separation_groups', $document_separation_groups);
 
 $SMARTY->display('customer/customerassignmentsedit.html');
