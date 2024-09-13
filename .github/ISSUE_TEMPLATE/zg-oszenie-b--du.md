@@ -17,15 +17,15 @@ Jasny i precyzyjny opis czym jest znaleziony błąd.
 **Odtworzenie problemu**
 Kroki odtwarzające błędne zachowanie:
 1. Przejdź do '...'
-2. Kliknij na '....'
+2. Kliknij  '....'
 3. Przewiń do '....'
 4. Zaobserwuj błąd.
 
 **Oczekiwane zachowanie**
-Jasny i precyzyjny opis tego, czego oczekujesz by miało miejsce.
+Jasny i precyzyjny opis tego, czego oczekujesz, by miało miejsce.
 
 **Zrzuty ekranu**
-Jeśli dotyczy prosimy o dodanie zrzutów ekranu, które pomogą wyjaśnić Twój problem.
+Jeśli dotyczy, prosimy o dodanie zrzutów ekranu, które pomogą wyjaśnić Twój problem.
 
 **Środowisko - prosimy o uzupełnienie następującej informacji:**
  - system operacyjny, np. _Linux CentOS 8.1 x86_64_,
