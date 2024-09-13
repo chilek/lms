@@ -12,16 +12,19 @@ mkdir /var/www/html/lms/contrib/tele.centrum.v2/templates_c/;
 chmod 755 /var/www/html/lms/contrib/tele.centrum.v2/templates_c/;
 chown 48:48 /var/www/html/lms/contrib/tele.centrum.v2/templates_c/;
 
-Uzupełniamy sekcje o zmienne:
+Uzupełniamy zmienne konfiguracyjne z sekcji callcenter:
 - callcenterip - podać adres IP z którego łączyć się będą agenci callcenter,
 - networks - adresacja sieci, która może wyświetlać formularz callcenter np. 10.10.10.0/24 (można podać kilka sieci oddzielonych przecinkiem), 
-- queues - id kolejek w LMS, odzielone przecinkami. 
 
-Kolejno: Zgłoszenie awarii, informacja handlowa oraz sprawy finansowe,
-- categories - id kategorii zgłoszeń w LMS, odzielone przecinkami. 
+- fault_issues_queue - ID kolejki helpdesk dla zgłoszeń usterek,
+- offer_issues_queue - ID kolejki helpdesk dla zgłoszeń ze sprawami handlowymi,
+- payment_issues_queue - ID kolejki helpdesk dla zgłoszeń ze sprawami księgowymi,
 
-Kolejno: Internet, telewizja, telefon oraz ogólna, 
-(UWAGA! ZACHOWANIE KOLEJNOŚCI JEST WYMAGANE DO POPRAWNEGO DZIAŁANIA.)
+- service_internet_category - kategoria nadawana zgłoszeniom które dotyczą usługi internet
+- service_phone_category - kategoria nadawana zgłoszeniom które dotyczą usługi telefon
+- service_tv_category - kategoria nadawana zgłoszeniom które dotyczą usługi telewizja
+- default_category - domyślna kategoria, która zostanie nadana zgłoszeniu bez przypisanej usługi
+
 - queueuser - id użytkownika do którego ma być przypisane zgłoszenie (może być 0),
 - warning - treść wiadomości specjalnej wyświetlanej na górze strony,
 - information - możliwość dodanie dodatkowych informacji do wysuwającego się panelu (np. tabela z godzinami pracy).
