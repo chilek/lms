@@ -805,6 +805,8 @@ version 28-git (????-??-??):
   - improvement: allow to manually set document consent/create date (users with 'full_access'
     or 'document_consent_date' privilleges are allowed to do that) [chilan]
   - enhancement: userpanel: '%extid' substitution symbol support in credential reminders [chilan]
+  - enhacement: 'customers.show_timetable_event_notes' with 'false' as default value allows to enable
+    event note presentation in customer events box (when set to 'true' value) [chilan]
 
 version 27.0 (2021-08-20):
 
