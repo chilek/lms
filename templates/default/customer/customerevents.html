@@ -1,8 +1,24 @@
 <!--// $Id$ //-->
+{$show_timetable_event_notes = ConfigHelper::checkConfig('customers.show_timetable_event_notes')}
 
 {css}
 {js}
 
+{if !$show_timetable_event_notes}
+<style>
+
+	#eventspanel .title {
+		width: 30em;
+	}
+	#eventspanel .description {
+		width: 30em;
+	}
+	#eventspanel .note {
+		width: 0em;
+	}
+
+</style>
+{/if}
 <script>
 
 	$(function() {
@@ -57,16 +73,21 @@
 					<strong>{trans("Type:")}</strong>
 					<br>{trans("Ticket ID:")}
 				</div>
-				<div class="lms-ui-tab-table-wrapper col-3">
+				<div class="lms-ui-tab-table-wrapper col-4">
 					<div class="lms-ui-tab-table-column creation-date">
 						<strong>{trans("Date:")}</strong>
 					</div>
-					<div class="lms-ui-tab-table-wrapper title-description col-2">
+					<div class="lms-ui-tab-table-wrapper title-description col-3">
 						<div class="lms-ui-tab-table-column title">
 							{trans("Title:")}
 						</div>
 						<div class="lms-ui-tab-table-column description">
 							{trans("Description:")}
+						</div>
+						<div class="lms-ui-tab-table-column note">
+							{if $show_timetable_event_notes}
+								{trans("Note")}
+							{/if}
 						</div>
 					</div>
 				</div>
@@ -85,7 +106,7 @@
 							<br><A href="?m=rtticketview&id={$event.ticketid}">#{$event.ticketid}</A>
 						{/if}
 					</div>
-					<div class="lms-ui-tab-table-wrapper col-3">
+					<div class="lms-ui-tab-table-wrapper col-4">
 						<div class="lms-ui-tab-table-column creation-date">
 							{$event.date|date_format:"Y-m-d"}
 							{if $event.endtime == 86400}
@@ -98,12 +119,17 @@
 								{/if}
 							{/if}
 						</div>
-						<div class="lms-ui-tab-table-wrapper title-description col-2">
+						<div class="lms-ui-tab-table-wrapper title-description col-3">
 							<div class="lms-ui-tab-table-column title">
 								{$event.title|escape}
 							</div>
 							<div class="lms-ui-tab-table-column description">
 								{$event.description|default:"-"}
+							</div>
+							<div class="lms-ui-tab-table-column note">
+								{if $show_timetable_event_notes}
+									{$event.note|escape|replace:"\n":"<BR>"}
+								{/if}
 							</div>
 						</div>
 					</div>

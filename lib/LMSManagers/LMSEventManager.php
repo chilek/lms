@@ -585,7 +585,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         $ticketid = isset($search['ticketid']) ? intval($search['ticketid']) : 0;
 
         $list = $this->db->GetAll(
-            'SELECT events.id AS id, title, description, date, begintime, enddate, endtime, customerid, closed, events.type, events.ticketid,'
+            'SELECT events.id AS id, title, description, date, begintime, enddate, endtime, customerid, closed, events.type, events.ticketid, events.note, '
                 . $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername
 			FROM events
 			LEFT JOIN customers ON (customerid = customers.id)
