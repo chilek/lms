@@ -388,7 +388,7 @@ if (isset($_POST['document'])) {
         $error['files'] = trans('You must to specify file for upload or select document template!');
     }
 
-    if (!$error) {
+    if (!$error && !$warning) {
         $error = $LMS->AddDocumentFileAttachments($files);
         if (empty($error) && !empty($tmppath)) {
             rrmdir($tmppath);
