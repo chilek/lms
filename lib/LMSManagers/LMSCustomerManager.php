@@ -2076,7 +2076,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      */
     public function GetCustomer($id, $short = false)
     {
-        global $CONTACTTYPES, $CUSTOMERCONTACTTYPES, $CUSTOMERFLAGS;
+        global $CONTACTTYPES, $CUSTOMERCONTACTTYPES, $CUSTOMERFLAGS, $USERPANEL_AUTH_TYPES;
 
         require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
@@ -2126,6 +2126,22 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 }
                 $result['consents'] = $this->getCustomerConsents($id);
                 $result['extids'] = $this->getCustomerExternalIDs($id);
+
+                $auth_type = intval(ConfigHelper::getConfig('userpanel.auth_type', USERPANEL_AUTH_TYPE_ID_PIN));
+
+                switch ($auth_type) {
+                    case USERPANEL_AUTH_TYPE_ID_PIN:
+                        $result['login'] = $result['id'];
+                        break;
+                    case USERPANEL_AUTH_TYPE_EXTID_PIN:
+                        $auth_options = array();
+                        foreach ($USERPANEL_AUTH_TYPES[USERPANEL_AUTH_TYPE_EXTID_PIN]['options'] as $option) {
+                            $auth_options[$option['name']] = ConfigHelper::getConfig('userpanel.' . $option['name'], '');
+                        }
+                        $service_provider_id = intval($auth_options['authentication_customer_extid_service_provider_id']);
+                        $result['extid'] = $result['login'] = isset($result['extids'][$service_provider_id]) ? $result['extids'][$service_provider_id]['extid'] : '';
+                        break;
+                }
             }
             $result['balance'] = $this->getCustomerBalance($result['id']);
             if (ConfigHelper::checkConfig(

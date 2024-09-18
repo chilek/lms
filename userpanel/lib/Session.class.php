@@ -212,11 +212,13 @@ class Session
                     '%id',
                     '%pin',
                     '%extid',
+                    '%login',
                 ),
                 array(
                     $customer['id'],
                     $customer['pin'],
                     $customer['extid'],
+                    $customer['id'],
                 ),
                 $body
             );
