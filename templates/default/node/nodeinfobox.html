@@ -569,6 +569,27 @@
 												</td>
 											</tr>
 										{/if}
+										{if $nodesession.mac}
+											<tr>
+												<td>
+													{icon name="mac"}
+												</td>
+												<td>
+													{trans("last MAC address")}
+												</td>
+												<td class="cell-flex">
+													<div>
+														{$nodesession.mac}
+														{$producer = EtherCodes::GetProducer($nodesession.mac)}
+														{if $producer}
+															<span class="lms-ui-font-smaller">
+																({$producer})
+															</span>
+														{/if}
+													</div>
+												</td>
+											</tr>
+										{/if}
 									{/if}
 
 									<tr>

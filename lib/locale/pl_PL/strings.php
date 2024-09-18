@@ -1550,6 +1550,7 @@ $_LANG['low'] = 'niski';
 $_LANG['MAC address'] = 'Adres MAC';
 $_LANG['MAC address:'] = 'Adres MAC:';
 $_LANG['MAC address is in use!'] = 'Adres MAC jest już używany!';
+$_LANG['last MAC address'] = 'ostatni adres MAC';
 $_LANG['used'] = 'używany';
 $_LANG['Address is used by the following resources:'] = 'Adres jest używany przez poniższe zasoby:';
 $_LANG['assigned to <strong>$a</strong> nodes'] = 'przypisany do <strong>$a</strong> komputerów';
