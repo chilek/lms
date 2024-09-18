@@ -807,6 +807,7 @@ version 28-git (????-??-??):
   - enhancement: userpanel: '%extid' substitution symbol support in credential reminders [chilan]
   - enhacement: 'customers.show_timetable_event_notes' with 'false' as default value allows to enable
     event note presentation in customer events box (when set to 'true' value) [chilan]
+  - enhancement: show node MAC address from last session [chilan]
 
 version 27.0 (2021-08-20):
 
