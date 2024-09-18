@@ -1177,6 +1177,16 @@ class LMSTcpdfInvoice extends LMSInvoice
         }
 
         $tranferform_common_data = $transferform->GetCommonData(array('customerid' => $this->data['customerid'], 'export' => $this->data['export']));
+
+        $account = null;
+        if (!ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')
+            || empty($this->data['bankaccounts'])) {
+            $account = bankaccount($this->data['customerid'], $this->data['account'], $this->data['export']);
+        } elseif (ConfigHelper::checkConfig('invoices.show_all_accounts')
+            || ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')) {
+            $account = reset($this->data['bankaccounts']);
+        }
+
         $tranferform_custom_data = array(
             'title' => $payment_title,
             'value' => $payment_value < 0 ? 0 : $payment_value,
@@ -1184,6 +1194,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             'currency' => $this->data['currency'],
             'paytype' => $this->data['paytype'],
             'pdate' => $this->data['pdate'],
+            'account' => $account,
             'barcode' => $payment_barcode,
             'division_shortname' => $this->data['division_shortname'],
             'division_name' => $this->data['division_name'],

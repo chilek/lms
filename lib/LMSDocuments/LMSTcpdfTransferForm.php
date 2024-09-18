@@ -363,7 +363,7 @@ class LMSTcpdfTransferForm extends LMSDocument
         // customer data
         if (!empty($customerinfo['accounts'])) {
             $customerinfo['accounts'] = array_filter($customerinfo['accounts'], function ($account) {
-                return ($account['type'] & CONTACT_INVOICES) > 0;
+                return ($account['type'] & (CONTACT_INVOICES | CONTACT_DISABLED)) == CONTACT_INVOICES;
             });
         }
         if (!empty($customerinfo['accounts'])) {
