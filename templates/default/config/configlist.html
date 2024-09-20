@@ -193,21 +193,25 @@
 			<td colspan="8" class="text-right bold">
 				<div class="row-container">
 					<div class="row-container-actions">
-						<fieldset id="clone" style="display: none;">
-							<legend>{trans('Cloning')}</legend>
+						<fieldset id="clone">
+							<legend>{trans("Cloning")}</legend>
 							<div id="clone-container">
-								<div class="clone-container-section-input" style="display: none;">
+								<div class="clone-container-section-input">
 									<div>
-										{trans('Target section')}
+										<label for="section-name-input" class="lms-ui-label">
+											{trans("Target section")}
+										</label>
 									</div>
 									<div>
 										<input type="text" id="section-name-input" {tip text="Enter new section name"}>
 									</div>
 								</div>
 
-								<div class="clone-container-section-select" style="display: none;">
+								<div class="clone-container-section-select">
 									<div>
-										{trans('Target section')}
+										<label for="section-name-select" class="lms-ui-label">
+											{trans("Target section")}
+										</label>
 									</div>
 									<div>
 										<select size="1" id="section-name-select" {tip class="lms-ui-combobox" text="Select section" trigger="section"}>
@@ -219,9 +223,11 @@
 									</div>
 								</div>
 
-								<div class="clone-container-user" style="display: none;">
+								<div class="clone-container-user">
 									<div>
-										{trans('Target user')}
+										<label for="user-name" class="lms-ui-label">
+											{trans("Target user")}
+										</label>
 									</div>
 									<div>
 										<select size="1" id="user-name" {tip text="Select user" trigger="user"}>
@@ -232,12 +238,14 @@
 									</div>
 								</div>
 
-								<div class="clone-container-division" style="display: none;">
+								<div class="clone-container-division">
 									<div>
-										{trans('Target division')}
+										<label for="division-name" class="lms-ui-label">
+											{trans("Target division")}
+										</label>
 									</div>
 									<div>
-										<select size="1" id="division-name" {tip text="Select user" trigger="division"}>
+										<select size="1" id="division-name" {tip text="Select user" trigger="division"}0>
 											{foreach $divisions as $division}
 												<option value="{$division.id}">{$division.label|escape}</option>
 											{/foreach}
@@ -245,21 +253,31 @@
 									</div>
 								</div>
 
-								<div class="withchildbindings" style="display: none;">
-									<label for="withchildbindings">{trans('With child bindings')}</label>
-									<input type="checkbox" id="withchildbindings">
+								<div class="withchildbindings">
+									<label>{strip}
+										<input type="checkbox" id="withchildbindings">
+										<span class="lms-ui-label">
+											{trans("descendant bindings")}
+										</span>
+									{/strip}</label>
 								</div>
 
-								<div class="withparentbindings" style="display: none;">
-									<label>{trans('Create the missing parent bindings')}
+								<div class="withparentbindings">
+									<label>{strip}
 										<input type="checkbox" id="withparentbindings">
-									</label>
+										<span class="lms-ui-label">
+											{trans("create the missing ancestor bindings")}
+										</span>
+									{/strip}</label>
 								</div>
 
 								<div class="override">
-									<label>{trans('Override existing')}
+									<label>{strip}
 										<input type="checkbox" id="override">
-									</label>
+										<span class="lms-ui-label">
+											{trans("override existing")}
+										</span>
+									{/strip}</label>
 								</div>
 
 								<div>
@@ -267,16 +285,22 @@
 								</div>
 							</div>
 						</fieldset>
-						<fieldset id="export" style="display: none;">
+						<fieldset id="export">
 							<legend>{trans("Export")}</legend>
 							<div id="export-container">
 								<div>
-									<label>ini
+									<label>{strip}
 										<input type="radio" name="export_filetype" id="export_ini" value="ini" checked>
-									</label>
-									<label>sql
+										<span class="lms-ui-label">
+											{trans("ini")}
+										</span>
+									{/strip}</label>
+									<label>{strip}
 										<input type="radio" name="export_filetype" id="export_sql" value="sql">
-									</label>
+										<span class="lms-ui-label">
+											{trans("sql")}
+										</span>
+									{/strip}</label>
 								</div>
 
 								<div>
@@ -353,24 +377,24 @@ $(function() {
 			alertDialog($t("No option has been selected!"), this);
 			return;
 		} else {
-			var type_filer = $('#type-filter').val();
-			var user_filer = $('#user-filter').val();
-			var division_filer = $('#division-filter').val();
+			var type_filter = $('#type-filter').val();
+			var user_filter = $('#user-filter').val();
+			var division_filter = $('#division-filter').val();
 			var fileType = $('input[name="export_filetype"]:checked').val();
 			var export_args = '';
 
-			if (typeof(type_filer) === 'undefined'
+			if (typeof(type_filter) === 'undefined'
 					|| (
-							type_filer === $t("global value")
+							type_filter === $t("global value")
 							&& (
-									typeof(division_filer) === 'undefined'
-									|| division_filer === $t("<!filter>— none —")
-									|| (typeof(division_filer) !== 'undefined' && division_filer.length === 0)
+									typeof(division_filter) === 'undefined'
+									|| division_filter === $t("<!filter>— none —")
+									|| (typeof(division_filter) !== 'undefined' && division_filter.length === 0)
 							)
 							&& (
-									typeof(user_filer) === 'undefined'
-									|| user_filer === $t("<!filter>— none —")
-									|| (typeof(user_filer) !== 'undefined' && user_filer.length === 0)
+									typeof(user_filter) === 'undefined'
+									|| user_filter === $t("<!filter>— none —")
+									|| (typeof(user_filter) !== 'undefined' && user_filter.length === 0)
 							)
 					)
 			) {
@@ -378,35 +402,35 @@ $(function() {
 				export_args += '&source-type=' + export_type_filter + '';
 			}
 
-			if (type_filer === $t("division value")
-				&& division_filer != $t("<!filter>— none —")
-				&& division_filer.length > 0
+			if (type_filter === $t("division value")
+				&& division_filter != $t("<!filter>— none —")
+				&& division_filter.length > 0
 				&& (
-					typeof(user_filer) === 'undefined'
-					|| user_filer === $t("<!filter>— none —")
-					|| (typeof(user_filer) !== 'undefined' && user_filer.length === 0)
+					typeof(user_filter) === 'undefined'
+					|| user_filter === $t("<!filter>— none —")
+					|| (typeof(user_filter) !== 'undefined' && user_filter.length === 0)
 				)
 			) {
-				export_args += '&source-division=' + division_filer + '';
+				export_args += '&source-division=' + division_filter + '';
 			}
 
-			if (type_filer === $t("user in division value")
-					&& division_filer != $t("<!filter>— none —") && division_filer.length > 0
-					&& user_filer !== $t("<!filter>— none —") && user_filer.length > 0) {
-				export_args += '&source-division=' + division_filer + '';
-				export_args += '&source-user=' + user_filer + '';
+			if (type_filter === $t("user in division value")
+					&& division_filter != $t("<!filter>— none —") && division_filter.length > 0
+					&& user_filter !== $t("<!filter>— none —") && user_filter.length > 0) {
+				export_args += '&source-division=' + division_filter + '';
+				export_args += '&source-user=' + user_filter + '';
 			}
 
-			if (type_filer === $t("user value")
-				&& user_filer !== $t("<!filter>— none —")
-				&& user_filer.length > 0
+			if (type_filter === $t("user value")
+				&& user_filter !== $t("<!filter>— none —")
+				&& user_filter.length > 0
 				&& (
-					typeof(division_filer) === 'undefined'
-					|| division_filer === $t("<!filter>— none —")
-					|| (typeof(division_filer) !== 'undefined' && division_filer.length === 0)
+					typeof(division_filter) === 'undefined'
+					|| division_filter === $t("<!filter>— none —")
+					|| (typeof(division_filter) !== 'undefined' && division_filter.length === 0)
 				)
 			) {
-				export_args += '&source-user=' + user_filer + '';
+				export_args += '&source-user=' + user_filter + '';
 			}
 
 			export_args += '&fileType=' + fileType + '';
@@ -516,65 +540,108 @@ $(function() {
 	});
 
 	function toggleActions() {
-		$('#export, #clone, .clone-container-section-input, .clone-container-section-select, .clone-container-user, .withchildbindings, .withparentbindings, .override').hide();
+		$("#clone").find("legend").addClass("lms-ui-disabled").end()
+			.find("input,select,button").prop("disabled", true).end()
+			.find(".lms-ui-label").addClass("lms-ui-disabled").end()
+			.find(".clone-container-section-select,.clone-container-section-input").hide();
+		$("#export").find("legend").addClass("lms-ui-disabled").end()
+			.find("input,select,button").prop("disabled", true).end()
+			.find(".lms-ui-label").addClass("lms-ui-disabled");
+
 		{if !empty($configlist)}
-			var type_filer = $('#type-filter').val();
-			var user_filer = $('#user-filter').val();
-			var division_filer = $('#division-filter').val();
+			var type_filter = $('#type-filter').val();
+			var user_filter = $('#user-filter').val();
+			var division_filter = $('#division-filter').val();
 
-			if (typeof(type_filer) === 'undefined'
+			if (typeof(type_filter) === 'undefined'
 				|| (
-					type_filer === $t("global value")
+					type_filter === $t("global value")
 					&& (
-						typeof(division_filer) === 'undefined'
-						|| division_filer === $t("<!filter>— none —")
-						|| (typeof(division_filer) !== 'undefined' && division_filer.length === 0)
+						typeof(division_filter) === 'undefined'
+						|| division_filter === $t("<!filter>— none —")
+						|| (typeof(division_filter) !== 'undefined' && division_filter.length === 0)
 					)
 					&& (
-						typeof(user_filer) === 'undefined'
-						|| user_filer === $t("<!filter>— none —")
-						|| (typeof(user_filer) !== 'undefined' && user_filer.length === 0)
+						typeof(user_filter) === 'undefined'
+						|| user_filter === $t("<!filter>— none —")
+						|| (typeof(user_filter) !== 'undefined' && user_filter.length === 0)
 					)
 				)
 			) {
-				$('#export, #clone, .clone-container-section-input, .withchildbindings').show();
-				$('.clone-container-section-select, .clone-container-user, .clone-container-division, .withparentbindings, .override').hide();
+				$("#clone").find("legend").removeClass("lms-ui-disabled").end()
+					.find("input,select,button").prop("disabled", false).end()
+					.find(".lms-ui-label").removeClass("lms-ui-disabled").end()
+					.find(".clone-container-section-input").show().end()
+					.find(".withparentbindings,.override,.clone-container-user,.clone-container-division")
+						.find("input,select,button").prop("disabled", true).end()
+						.find(".lms-ui-label").addClass("lms-ui-disabled");
+				$("#export").find("legend").removeClass('lms-ui-disabled').end()
+					.find("input,select,button").prop('disabled', false).end()
+					.find(".lms-ui-label").removeClass("lms-ui-disabled");
+
 				return;
 			}
 
-			if (type_filer === $t("division value")
-				&& division_filer != $t("<!filter>— none —")
-				&& division_filer.length > 0
+			if (type_filter === $t("division value")
+				&& division_filter != $t("<!filter>— none —")
+				&& division_filter.length > 0
 				&& (
-					typeof(user_filer) === 'undefined'
-					|| user_filer === $t("<!filter>— none —")
-					|| (typeof(user_filer) !== 'undefined' && user_filer.length === 0)
+					typeof(user_filter) === 'undefined'
+					|| user_filter === $t("<!filter>— none —")
+					|| (typeof(user_filter) !== 'undefined' && user_filter.length === 0)
 				)
 			) {
-				$('#export, #clone, .clone-container-section-select, .clone-container-division, .withchildbindings, .withparentbindings, .override').show();
-				$('.clone-container-section-input, .clone-container-user').hide();
+				$("#clone").find("legend").removeClass("lms-ui-disabled").end()
+					.find("input,select,button").prop("disabled", false).end()
+					.find(".lms-ui-label").removeClass("lms-ui-disabled").end()
+					.find(".clone-container-section-select").show().end()
+					.find(".clone-container-user")
+						.find("input,select,button").prop("disabled", true).end()
+						.find(".lms-ui-label").addClass("lms-ui-disabled");
+				$("#export").find("legend").removeClass('lms-ui-disabled').end()
+					.find("input,select,button").prop("disabled", false).end()
+					.find(".lms-ui-label").removeClass("lms-ui-disabled");
+
 				return;
 			}
 
-			if (type_filer === $t("user in division value")
-					&& division_filer != $t("<!filter>— none —") && division_filer.length > 0
-					&& user_filer !== $t("<!filter>— none —") && user_filer.length > 0) {
-				$('#export, #clone, .clone-container-user, .clone-container-section-select, .clone-container-division, .withparentbindings, .override').show();
-				$('.clone-container-section-input, .withchildbindings').hide();
+			if (type_filter === $t("user in division value")
+					&& division_filter != $t("<!filter>— none —") && division_filter.length > 0
+					&& user_filter !== $t("<!filter>— none —") && user_filter.length > 0) {
+				$("#clone").find("legend").removeClass("lms-ui-disabled").end()
+					.find("input,select,button").prop("disabled", false).end()
+					.find(".lms-ui-label").removeClass("lms-ui-disabled").end()
+					.find(".clone-container-section-select").show().end()
+					.find(".withchildbindings")
+						.find("input,select,button").prop("disabled", true).end()
+						.find(".lms-ui-label").addClass("lms-ui-disabled");
+				$("#export").find("legend").removeClass('lms-ui-disabled').end()
+					.find("input,select,button").prop("disabled", false).end()
+					.find(".lms-ui-label").removeClass("lms-ui-disabled");
+
 				return;
 			}
 
-			if (type_filer === $t("user value")
-				&& user_filer !== $t("<!filter>— none —")
-				&& user_filer.length > 0
+			if (type_filter === $t("user value")
+				&& user_filter !== $t("<!filter>— none —")
+				&& user_filter.length > 0
 				&& (
-					typeof(division_filer) === 'undefined'
-					|| division_filer === $t("<!filter>— none —")
-					|| (typeof(division_filer) !== 'undefined' && division_filer.length === 0)
+					typeof(division_filter) === 'undefined'
+					|| division_filter === $t("<!filter>— none —")
+					|| (typeof(division_filter) !== 'undefined' && division_filter.length === 0)
 				)
 			) {
-				$('#export, #clone, .clone-container-section-select, .clone-container-user, .withparentbindings, .override').show();
-				$('.clone-container-section-input, .clone-container-division, .withchildbindings').hide();
+				$("#clone").find("legend").removeClass("lms-ui-disabled").end()
+					.find("input,select,button").prop("disabled", false).end()
+					.find(".lms-ui-label").removeClass("lms-ui-disabled").end()
+					.find(".clone-container-section-select").show().end()
+					.find(".withchildbindings,.clone-container-division")
+						.find("input,select,button").prop("disabled", true).end()
+						.find(".lms-ui-label").addClass("lms-ui-disabled");
+				$("#export").find("legend").removeClass('lms-ui-disabled').end()
+					.find("input,select,button").prop("disabled", false).end()
+					.find(".lms-ui-label").removeClass("lms-ui-disabled");
+
 				return;
 			}
 		{/if}
