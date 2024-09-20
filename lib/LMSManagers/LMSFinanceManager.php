@@ -4419,7 +4419,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     public function AddReceipt(array $receipt)
     {
         $this->db->BeginTrans();
-        $this->db->LockTables(array('documents', 'numberplans'));
+        $this->db->LockTables(array('documents', 'numberplans', 'vdivisions'));
 
         $SYSLOG = SYSLOG::getInstance();
         $document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);

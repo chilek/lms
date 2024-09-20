@@ -185,7 +185,7 @@ switch ($action) {
 
             $DB->BeginTrans();
             $tables = array('documents', 'cash', 'debitnotecontents', 'numberplans', 'divisions', 'vdivisions',
-                'addresses', 'customers', 'customer_addresses');
+                'addresses', 'customers', 'customer_addresses', 'logtransactions');
             if (ConfigHelper::getConfig('database.type') != 'postgres') {
                 $tables = array_merge($tables, array('addresses a', 'customers c', 'customer_addresses ca'));
             }
