@@ -390,7 +390,8 @@ switch ($action) {
 
         if ($contents && $customer) {
             $DB->BeginTrans();
-            $DB->LockTables('documents');
+            $tables = array('documents', 'numberplans', 'logtransactions');
+            $DB->LockTables($tables);
 
             // delete old receipt
             $DB->Execute('DELETE FROM documents WHERE id = ?', array($receipt['id']));
@@ -514,7 +515,8 @@ switch ($action) {
             $DB->CommitTrans();
         } elseif ($contents && ($receipt['o_type'] == 'other' || $receipt['o_type'] == 'advance')) {
             $DB->BeginTrans();
-            $DB->LockTables('documents');
+            $tables = array('documents', 'numberplans', 'logtransactions');
+            $DB->LockTables($tables);
 
             // delete old receipt
             $DB->Execute('DELETE FROM documents WHERE id = ?', array($receipt['id']));

@@ -250,9 +250,9 @@ switch ($action) {
             $DB->LockTables(array('documents', 'cash', 'debitnotecontents', 'numberplans'));
             $DB->BeginTrans();
             $tables = array('documents', 'cash', 'debitnotecontents', 'numberplans',
-                'addresses', 'customers', 'customer_addresses');
+                'addresses', 'customers', 'customer_addresses', 'vdivisions', 'vaddresses', 'logtransactions');
             if (ConfigHelper::getConfig('database.type') != 'postgres') {
-                $tables = array_merge($tables, array('addresses a', 'customers c', 'customer_addresses ca'));
+                $tables = array_merge($tables, array('addresses a', 'customers c', 'customer_addresses ca', 'location_cities lc', 'location_boroughs lb', 'location_districts ld', 'location_states ls', 'location_streets lst'));
             }
             $DB->LockTables($tables);
 
