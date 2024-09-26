@@ -492,6 +492,13 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
                     array($this->_dbname, $table_name, $column_name, $column_type)
                 ) > 0;
                 break;
+            case LMSDB::RESOURCE_TYPE_TRIGGER:
+                return $this->GetOne(
+                    'SELECT COUNT(*) FROM information_schema.triggers
+                    WHERE trigger_schema = ? AND trigger_name = ?',
+                    array($this->_dbname, $name)
+                ) > 0;
+                break;
         }
     }
 }
