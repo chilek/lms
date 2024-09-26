@@ -809,6 +809,8 @@ version 28-git (????-??-??):
     event note presentation in customer events box (when set to 'true' value) [chilan]
   - enhancement: show node MAC address from last session [chilan]
   - enhancement: 'all without end date' selection in 'assignments' filter of customer search form [chilan]
+  - improvement/devel: core prepares some document template variables in add document
+    and document generator forms [chilan]
 
 version 27.0 (2021-08-20):
 
