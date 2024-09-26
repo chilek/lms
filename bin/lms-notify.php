@@ -612,13 +612,15 @@ $sms_options = $LMS->getCustomerSMSOptions();
 
 //include(LIB_DIR . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'mtsms.php');
 
+$barcode = new \Com\Tecnick\Barcode\Barcode();
+
 function parse_customer_data($data, $format, $row)
 {
     static $use_only_alternative_accounts = null,
         $use_all_accounts = null,
         $config_section = null;
 
-    global $LMS;
+    global $LMS, $barcode;
 
     $DB = LMSDB::getInstance();
 
@@ -666,6 +668,7 @@ function parse_customer_data($data, $format, $row)
     if ($use_all_accounts || $use_only_alternative_accounts) {
         $accounts = array_merge($accounts, $alternative_accounts);
     }
+    $first_account = reset($accounts);
     foreach ($accounts as &$account) {
         $account = format_bankaccount($account);
     }
@@ -780,6 +783,59 @@ function parse_customer_data($data, $format, $row)
         ),
         $data
     );
+
+    if (strpos($data, '%qr2pay') !== false) {
+        if ($format == 'html' && isset($row['value'], $row['currency'])) {
+            if (isset($row['doctype']) && $row['doctype'] == DOC_INVOICE) {
+                $qr2pay_comment = ConfigHelper::getConfig(
+                    'invoices.qr2pay_comment',
+                    trans('QR Payment for Internet Invoice no. %number')
+                );
+            } else {
+                $qr2pay_comment = ConfigHelper::getConfig(
+                    'notes.qr2pay_comment',
+                    ConfigHelper::getConfig(
+                        'invoices.qr2pay_comment',
+                        trans('QR Payment for Internet Invoice no. %number')
+                    )
+                );
+            }
+
+            $bobj = $barcode->getBarcodeObj(
+                'QRCODE',
+                preg_replace('/[^0-9]/', '', $row['div_ten'])
+                    . '|PL|'
+                    . $first_account
+                    . '|'
+                    . str_pad(($row['totalbalance'] < 0 ? -$row['totalbalance'] : 0) * 100, 6, 0, STR_PAD_LEFT)
+                    . '|'
+                    . mb_substr($row['div_shortname'], 0, 20)
+                    . '|'
+                    . str_replace(
+                        array(
+                            '%number',
+                        ),
+                        array(
+                            isset($row['doc_number']) ? $row['doc_number'] : '',
+                        ),
+                        preg_replace_callback(
+                            '/%(\\d*)cid/',
+                            function ($m) use ($row) {
+                                return sprintf('%0' . $m[1] . 'd', $row['id']);
+                            },
+                            $qr2pay_comment
+                        )
+                    )
+                    . '|||',
+                -3,
+                -3,
+                'black'
+            );
+            $data = str_replace('%qr2pay', '<img alt="Embedded Image" src="data:image/png;base64,' . base64_encode($bobj->getPngData()) . '">', $data);
+        } else {
+            $data = str_replace('%qr2pay', '', $data);
+        }
+    }
 
     return $data;
 }
@@ -1563,7 +1619,9 @@ if (empty($types) || in_array('debtors', $types)) {
     $customers = $DB->GetAll(
         "SELECT c.id, c.pin, c.lastname, c.name,
             b2.balance AS balance, b.balance AS totalbalance, m.email, x.phone, divisions.account,
-            acc.alternative_accounts
+            acc.alternative_accounts,
+            divisions.shortname AS div_shortname,
+            divisions.ten AS div_ten
         FROM customeraddressview c
         LEFT JOIN divisions ON divisions.id = c.divisionid
         LEFT JOIN (
@@ -1800,7 +1858,7 @@ if (empty($types) || in_array('reminder', $types)) {
     $days = $notifications['reminder']['days'];
     $limit = $notifications['reminder']['limit'];
     $documents = $DB->GetAll(
-        "SELECT d.id AS docid, c.id, c.pin, d.name,
+        "SELECT d.id AS docid, c.id, c.pin, d.name, d.type AS doctype, d.div_shortname, d.div_ten,
             d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
             b2.balance AS balance, b.balance AS totalbalance, v.value, v.currency,
             acc.alternative_accounts
