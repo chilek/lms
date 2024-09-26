@@ -256,10 +256,27 @@ if (isset($_POST['document'])) {
                 'customerid' => $document['customerid'],
             ));
 
+            $document['template'] = $numtemplate;
+            $document['nr'] = $document['fullnumber'] = $fullnumber;
+
             if ($document['templ']) {
                 $barcode = new \Com\Tecnick\Barcode\Barcode();
                 $bobj = $barcode->getBarcodeObj('C128', iconv('UTF-8', 'ASCII//TRANSLIT', $fullnumber), -1, -30, 'black');
                 $document['barcode'] = base64_encode($bobj->getPngData());
+
+                $customer = $LMS->GetCustomer($document['customerid']);
+                $division = $LMS->GetDivision($customer['divisionid']);
+
+                $customer['identity']['type'] = (isset($customer['ict']) && isset($GLOBALS['IDENTITY_TYPES'][$customer['ict']]) ? $GLOBALS['IDENTITY_TYPES'][$customer['ict']] : 'ICN');
+                $customer['identity']['number'] = $customer['icn'];
+
+                $SMARTY->assign(array(
+                    'customer' => $customer,
+                    'customerinfo' => $customer,
+                    'division' => $division,
+                    'document' => $document,
+                    'engine' => $engine,
+                ));
 
                 // run template engine
                 if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
@@ -328,8 +345,6 @@ if (isset($_POST['document'])) {
             }
 
             $DB->BeginTrans();
-
-            $division = $LMS->GetDivision($gencust['divisionid']);
 
             $DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, customerid, userid, divisionid, name, address, zip, city, ten, ssn, closed,
 					div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,

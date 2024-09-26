@@ -210,17 +210,22 @@ if (isset($_POST['document'])) {
 
     if (!isset($_GET['ajax'])) {
         if (isset($document['reference']) && $document['reference']) {
-            $document['reference'] = $DB->GetRow('SELECT id, type, fullnumber, cdate FROM documents
-				WHERE id = ?', array($document['reference']));
+            $document['reference'] = $DB->GetRow(
+                'SELECT id, type, fullnumber, cdate
+                FROM documents
+                WHERE id = ?',
+                array($document['reference'])
+            );
         }
-        $SMARTY->assignByRef('document', $document);
 
+        $document['template'] = $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($document['numberplanid']));
         $fullnumber = docnumber(array(
             'number' => $document['number'],
-            'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($document['numberplanid'])),
+            'template' => $document['template'],
             'cdate' => $document['cdate'],
             'customerid' => $document['customerid'],
         ));
+        $document['nr'] = $document['fullnumber'] = $fullnumber;
 
         if (!empty($document['templ'])) {
             foreach ($documents_dirs as $doc) {
@@ -262,9 +267,24 @@ if (isset($_POST['document'])) {
                 $document['attachments'] ?? array()
             ));
 
+            // prepare some useful customer properties to use in document templates
             $barcode = new Barcode();
             $bobj = $barcode->getBarcodeObj('C128', iconv('UTF-8', 'ASCII//TRANSLIT', $fullnumber), -1, -30, 'black');
             $document['barcode'] = base64_encode($bobj->getPngData());
+
+            $customer = $LMS->GetCustomer($document['customerid']);
+            $division = $LMS->GetDivision($customer['divisionid']);
+
+            $customer['identity']['type'] = (isset($customer['ict']) && isset($GLOBALS['IDENTITY_TYPES'][$customer['ict']]) ? $GLOBALS['IDENTITY_TYPES'][$customer['ict']] : 'ICN');
+            $customer['identity']['number'] = $customer['icn'];
+
+            $SMARTY->assign(array(
+                'customer' => $customer,
+                'customerinfo' => $customer,
+                'division' => $division,
+                'document' => $document,
+                'engine' => $engine,
+            ));
 
             // run template engine
             if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
@@ -396,12 +416,9 @@ if (isset($_POST['document'])) {
     }
 
     if (!$error && !$warning) {
-        $customer = $LMS->GetCustomer($document['customerid']);
         $time = time();
 
         $DB->BeginTrans();
-
-        $division = $LMS->GetDivision($customer['divisionid']);
 
         // if document will not be closed now we should store commit flags in documents table
         // to allow restore commit flags later during document close process
