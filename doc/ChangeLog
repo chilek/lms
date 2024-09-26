@@ -811,6 +811,7 @@ version 28-git (????-??-??):
   - enhancement: 'all without end date' selection in 'assignments' filter of customer search form [chilan]
   - improvement/devel: core prepares some document template variables in add document
     and document generator forms [chilan]
+  - enhancement: '%qr2pay' symbol support in 'debtors' and 'reminder' notifications [chilan]
 
 version 27.0 (2021-08-20):
 
