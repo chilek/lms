@@ -4594,6 +4594,7 @@ $_LANG['active, with invoice'] = 'aktywne, z fakturą';
 $_LANG['active, with pro forma'] = 'aktywne, z pro forma';
 $_LANG['active, without document'] = 'aktywne, bez dokumentu';
 $_LANG['without end date'] = 'bez daty zakończenia';
+$_LANG['all without end date'] = 'wszystkie bez daty zakończenia';
 $_LANG['without start date'] = 'bez daty rozpoczęcia';
 $_LANG['with end date'] = 'z datą zakończenia';
 $_LANG['with end date:'] = 'z datą zakończenia:';

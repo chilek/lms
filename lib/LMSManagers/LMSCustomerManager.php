@@ -1225,6 +1225,14 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         AND a.dateto > 0
                         AND a.dateto < ?NOW?';
                 break;
+            case -15:
+                $assignment = 'SELECT a.customerid
+                    FROM assignments a
+                    WHERE a.suspended = 0
+                        AND a.commited = 1
+                    GROUP BY a.customerid
+                    HAVING COUNT(a.*) = SUM(CASE WHEN a.dateto = 0 THEN 1 ELSE 0 END)';
+                break;
             default:
                 if ($as > 0) {
                     $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE
