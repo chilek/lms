@@ -14,16 +14,18 @@
 				<colgroup>
 					<col style="width: 30%;">
 					<col style="width: 15%;">
-					<col style="width: 25%;">
-					<col style="width: 25%;">
+					<col style="width: 22%;">
+					<col style="width: 22%;">
+					<col style="width: 6%;">
 					<col style="width: 5%;">
 				</colgroup>
 				<thead>
 					<tr>
-						<td class="bold nobr">{trans("Customer:")}</td>
-						<td class="nobr">{trans("Field:")}</td>
-						<td class="nobr">{trans("Old value:")}</td>
-						<td class="nobr">{trans("New value:")}</td>
+						<td class="bold nobr">{trans("Customer")}</td>
+						<td class="nobr">{trans("Field")}</td>
+						<td class="nobr">{trans("Old value")}</td>
+						<td class="nobr">{trans("New value")}</td>
+						<td class="nobr">{trans("Date")}</td>
 						<td>&nbsp;</td>
 					</tr>
 				</thead>
@@ -36,6 +38,7 @@
 							<td class="nobr">{t}{$change.fieldname|regex_replace:"/[^a-z]/":""}{/t}</td>
 							<td class="nobr">{$change.oldvalue}</td>
 							<td class="nobr">{$change.newvalue}</td>
+							<td class="nobr">{$change.cdate|date_format:"Y/m/d H:i:s"}</td>
 							<td>
 								<input class="lms-ui-multi-check" type="checkbox" name="userchanges[]" value="{$change.changeid}"
 									form="changes-form">
@@ -43,7 +46,7 @@
 						</tr>
 					{foreachelse}
 						<tr>
-							<td class="empty-table" colspan="5">
+							<td class="empty-table" colspan="6">
 								{trans("There are any changes to accept.")}
 							</td>
 						</tr>
@@ -51,7 +54,7 @@
 				</tbody>
 				<tfoot>
 					<tr class="dark">
-						<td class="buttons" colspan="4">
+						<td class="buttons" colspan="5">
 							{button icon="save" label="Save" class="submit-changes-button" data_action="save"}
 							/
 							{button icon="delete" label="Delete" class="submit-changes-button" data_action="delete"}

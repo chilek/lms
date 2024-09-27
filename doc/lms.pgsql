@@ -3138,6 +3138,7 @@ CREATE TABLE up_info_changes (
 		CONSTRAINT up_info_changes_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	fieldname varchar(255) 	DEFAULT 0 NOT NULL,
 	fieldvalue varchar(255) DEFAULT 0 NOT NULL,
+	cdate bigint DEFAULT NULL,
 	PRIMARY KEY (id)
 );
 
@@ -4425,6 +4426,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024092700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024092701');
 
 COMMIT;

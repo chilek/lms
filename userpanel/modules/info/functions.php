@@ -54,7 +54,7 @@ function module_main()
     //$balancelist = $LMS->GetCustomerBalanceList($SESSION->id);
 
     $fields_changed = $LMS->DB->GetAllByKey(
-        'SELECT id, fieldname, fieldvalue FROM up_info_changes WHERE customerid = ?',
+        'SELECT id, fieldname, fieldvalue, cdate FROM up_info_changes WHERE customerid = ?',
         'fieldname',
         array($SESSION->id)
     );
@@ -181,8 +181,11 @@ function module_updateusersave()
                                 'DELETE FROM up_info_changes WHERE customerid = ? AND fieldname = ?',
                                 array($id, $field . $i)
                             );
-                            $LMS->DB->Execute('INSERT INTO up_info_changes(customerid, fieldname, fieldvalue)
-						VALUES(?, ?, ?)', array($id, $field . $i, $v));
+                            $LMS->DB->Execute(
+                                'INSERT INTO up_info_changes (customerid, fieldname, fieldvalue, cdate)
+                                VALUES (?, ?, ?, ?NOW?)',
+                                array($id, $field . $i, $v)
+                            );
                             $need_change_notification = true;
                         }
                     }
@@ -227,8 +230,11 @@ function module_updateusersave()
                             'DELETE FROM up_info_changes WHERE customerid = ? AND fieldname = ?',
                             array($id, $field)
                         );
-                        $LMS->DB->Execute('INSERT INTO up_info_changes(customerid, fieldname, fieldvalue)
-					VALUES(?, ?, ?)', array($id, $field, $val));
+                        $LMS->DB->Execute(
+                            'INSERT INTO up_info_changes (customerid, fieldname, fieldvalue, cdate)
+                            VALUES (?, ?, ?, ?NOW?)',
+                            array($id, $field, $val)
+                        );
                         $need_change_notification = true;
                     }
                     break;
@@ -242,8 +248,11 @@ function module_updateusersave()
                             'DELETE FROM up_info_changes WHERE customerid = ? AND fieldname = ?',
                             array($id, $field)
                         );
-                        $LMS->DB->Execute('INSERT INTO up_info_changes(customerid, fieldname, fieldvalue)
-					VALUES(?, ?, ?)', array($id, $field, $val));
+                        $LMS->DB->Execute(
+                            'INSERT INTO up_info_changes (customerid, fieldname, fieldvalue, cdate)
+                            VALUES (?, ?, ?, ?NOW?)',
+                            array($id, $field, $val)
+                        );
                         $need_change_notification = true;
                     }
                     break;
@@ -259,8 +268,11 @@ function module_updateusersave()
                                 'DELETE FROM up_info_changes WHERE customerid = ? AND fieldname = ?',
                                 array($id, $field)
                             );
-                            $LMS->DB->Execute('INSERT INTO up_info_changes(customerid, fieldname, fieldvalue)
-						VALUES(?, ?, ?)', array($id, $field, $val));
+                            $LMS->DB->Execute(
+                                'INSERT INTO up_info_changes (customerid, fieldname, fieldvalue, cdate)
+                                VALUES (?, ?, ?, ?NOW?)',
+                                array($id, $field, $val)
+                            );
                             $need_change_notification = true;
                         }
                     }
@@ -277,8 +289,11 @@ function module_updateusersave()
                                 'DELETE FROM up_info_changes WHERE customerid = ? AND fieldname = ?',
                                 array($id, $field)
                             );
-                            $LMS->DB->Execute('INSERT INTO up_info_changes(customerid, fieldname, fieldvalue)
-						VALUES(?, ?, ?)', array($id, $field, $val));
+                            $LMS->DB->Execute(
+                                'INSERT INTO up_info_changes (customerid, fieldname, fieldvalue, cdate)
+                                VALUES (?, ?, ?, ?NOW?)',
+                                array($id, $field, $val)
+                            );
                             $need_change_notification = true;
                         }
                     }
@@ -297,8 +312,8 @@ function module_updateusersave()
                                     array($id, $field)
                                 );
                                 $LMS->DB->Execute(
-                                    'INSERT INTO up_info_changes (customerid, fieldname, fieldvalue)
-                                    VALUES(?, ?, ?)',
+                                    'INSERT INTO up_info_changes (customerid, fieldname, fieldvalue, cdate)
+                                    VALUES (?, ?, ?, ?NOW?)',
                                     array($id, $field, $val)
                                 );
                                 $need_change_notification = true;
@@ -446,10 +461,18 @@ if (defined('USERPANEL_SETUPMODE')) {
 
         $layout['pagetitle'] = trans('Changes affirmation');
 
-        $userchanges = $DB->GetAll('SELECT up_info_changes.id AS changeid, customerid, fieldname, fieldvalue AS newvalue, '.
-                    $DB->Concat('UPPER(lastname)', "' '", 'c.name').' AS customername, c.* 
-					FROM up_info_changes
-					JOIN customerview c ON (c.id = up_info_changes.customerid)');
+        $userchanges = $DB->GetAll(
+            'SELECT
+                up_info_changes.id AS changeid,
+                customerid,
+                fieldname,
+                fieldvalue AS newvalue,
+                up_info_changes.cdate, '
+                . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . ' AS customername,
+                c.*
+            FROM up_info_changes
+            JOIN customerview c ON c.id = up_info_changes.customerid'
+        );
 
         if (isset($userchanges)) {
             foreach ($userchanges as $key => $change) {
@@ -499,8 +522,12 @@ if (defined('USERPANEL_SETUPMODE')) {
             $addresses = array();
             $confirmed_changes = array();
             foreach ($_POST['userchanges'] as $changeid) {
-                $changes = $DB->GetRow('SELECT customerid, fieldname, fieldvalue FROM up_info_changes
-					WHERE id = ?', array($changeid));
+                $changes = $DB->GetRow(
+                    'SELECT customerid, fieldname, fieldvalue, cdate
+                    FROM up_info_changes
+                    WHERE id = ?',
+                    array($changeid)
+                );
                 if (!isset($args[$changes['customerid']])) {
                     $args[$changes['customerid']] = array(
                         SYSLOG::RES_CUST => $changes['customerid'],
