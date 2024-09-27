@@ -817,6 +817,7 @@ version 28-git (????-??-??):
   - enhancement: 'documents.default_header' and 'documents.default_footer' configuration variables
     (with empty defaults) allowed to define default header and footer for all document templates
     where can be used as (respectively) 'header' and 'footer' smarty variables in template [chilan]
+  - improvement: show total time in event search result form [chilan]
 
 version 27.0 (2021-08-20):
 
