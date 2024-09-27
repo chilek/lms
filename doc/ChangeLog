@@ -814,6 +814,9 @@ version 28-git (????-??-??):
   - enhancement: '%qr2pay' symbol support in 'debtors' and 'reminder' notifications [chilan]
   - enhancement: node passwords can have 256 characters maximum length; 'nodes.password_max_length' with
     default value '32' controls how long passwords are accepted by user interface [chilan]
+  - enhancement: 'documents.default_header' and 'documents.default_footer' configuration variables
+    (with empty defaults) allowed to define default header and footer for all document templates
+    where can be used as (respectively) 'header' and 'footer' smarty variables in template [chilan]
 
 version 27.0 (2021-08-20):
 
