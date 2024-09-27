@@ -30,18 +30,27 @@
 			<INPUT type="text" name="event[title]" value="{$event.title}" size="50" {tip text="Enter event title" trigger="title"}>
 		</TD>
 	</TR>
-	<TR>
-		<TD>
+	<tr>
+		<td>
 			{icon name="timetable"}
-		</TD>
-		<TD class="bold">
-			{trans("Date:")}
-		</TD>
-		<TD>
-			{trans("From:")} <INPUT type="text" placeholder="{trans("yyyy/mm/dd")}" name="event[datefrom]" size="12" {tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
-			{trans("To:")} <INPUT type="text" placeholder="{trans("yyyy/mm/dd")}" name="event[dateto]" size="12" {tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
-		</TD>
-	</TR>
+		</td>
+		<td>
+			<strong>{trans("Period")}</strong>
+		</td>
+		<td>
+			<span class="lms-ui-date-period-container">
+				{date_period_preset from="[name=\"event[datefrom]\"]" to="[name=\"event[dateto]\"]"}
+				<label>
+					{trans("From")}
+					<input type="text" placeholder="{trans("yyyy/mm/dd")}" name="event[datefrom]" size="12" {tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
+				</label>
+				<label>
+					{trans("To")}
+					<input type="text" placeholder="{trans("yyyy/mm/dd")}" name="event[dateto]" size="12" {tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
+				</label>
+			</span>
+		</td>
+	</tr>
 	<TR>
 		<TD>
 			{icon name="description"}
