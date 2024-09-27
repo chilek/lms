@@ -586,10 +586,11 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
         $list = $this->db->GetAll(
             'SELECT events.id AS id, title, description, date, begintime, enddate, endtime, customerid, closed, events.type, events.ticketid, events.note, '
-                . $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername
-			FROM events
-			LEFT JOIN customers ON (customerid = customers.id)
-			WHERE (private = 0 OR (private = 1 AND userid = ?)) '
+                . $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername,
+                (endtime - begintime) AS total_time
+            FROM events
+            LEFT JOIN customers ON (customerid = customers.id)
+            WHERE (private = 0 OR (private = 1 AND userid = ?)) '
                 . ($datefrom ? " AND (date >= $datefrom OR (enddate <> 0 AND enddate >= $datefrom))" : '')
                 . ($dateto ? " AND (date <= $dateto OR (enddate <> 0 AND enddate <= $dateto))" : '')
                 . (!empty($search['customerid']) ? ' AND customerid = ' . intval($search['customerid']) : '')
@@ -613,17 +614,23 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             $users = array();
         }
 
-            $list2 = $list3 = array();
+        $list2 = $list3 = array();
         if ($list) {
-            foreach ($list as $idx => $row) {
+            foreach ($list as $row) {
                 if (!$simple) {
-                    $row['userlist'] = $this->db->GetAll('SELECT userid AS id, vusers.name
-						FROM eventassignments, vusers
-						WHERE userid = vusers.id AND eventid = ? ', array($row['id']));
+                    $row['userlist'] = $this->db->GetAll(
+                        'SELECT
+                            userid AS id,
+                            vusers.name
+                        FROM eventassignments
+                        JOIN vusers ON vusers.id = userid
+                        WHERE eventid = ? ',
+                        array($row['id'])
+                    );
                 }
-                    $endtime = $row['endtime'];
+                $endtime = $row['endtime'];
 
-                    $userfilter = false;
+                $userfilter = false;
                 if (!empty($users) && !empty($row['userlist'])) {
                     foreach ($row['userlist'] as $user) {
                         if (in_array($user['id'], $users)) {
@@ -659,7 +666,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                         $days--;
                     }
                 } else if ((!$datefrom || $row['date'] >= $datefrom) &&
-                        (!$dateto || $row['date'] <= $dateto)) {
+                    (!$dateto || $row['date'] <= $dateto)) {
                     $list2[] = $row;
                     if ($userfilter) {
                         $list3[] = $row;

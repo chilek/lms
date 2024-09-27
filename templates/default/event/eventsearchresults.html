@@ -14,8 +14,13 @@
         {include file="event/eventlistheader.html"}
     </THEAD>
     <TBODY>
+        {$total_time=0 scope="global"}
         {include file="event/eventlistbox.html"}
     </TBODY>
 </TABLE>
-<H2>{trans("Total events:")} {if empty($eventlist)}0{else}{count($eventlist)}{/if}</H2>
+<H2>
+    {trans("Total events:")}
+    {if empty($eventlist)}0{else}{count($eventlist)}{/if},
+    {t a=$total_time|duration_format}Total time: $a{/t}
+</H2>
 {/block}
