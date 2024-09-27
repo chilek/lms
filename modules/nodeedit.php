@@ -223,8 +223,10 @@ if (isset($_POST['nodeedit'])) {
 
     $password_required = ConfigHelper::getConfig('nodes.password_required', ConfigHelper::getConfig('phpui.node_password_required', ConfigHelper::getConfig('phpui.nodepassword_required', 'none')));
 
-    if (strlen($nodeedit['passwd']) > 32) {
-        $error['passwd'] = trans('Password is too long (max. 32 characters)!');
+    $password_max_length = intval(ConfigHelper::getConfig('nodes.password_max_length', 32));
+
+    if (strlen($nodeedit['passwd']) > $password_max_length) {
+        $error['passwd'] = trans('Password is too long (max. $a characters)!', $password_max_length);
     } elseif (!strlen($nodeedit['passwd']) && $password_required != 'none') {
         $auth_types = ConfigHelper::getConfig('nodes.password_required_for_auth_types', ConfigHelper::getConfig('phpui.node_password_required_for_auth_types', 'all'));
         if ($auth_types == 'all') {

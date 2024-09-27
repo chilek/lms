@@ -1824,6 +1824,7 @@ $_LANG['Password Change for User $a'] = 'Zmiana hasła dla użytkownika $a';
 $_LANG['User $a has been set as verifier to ticket.'] = 'Użytkownik $a został przypisany jako weryfikator zgłoszenia.';
 $_LANG['Verifier has been removed from ticket.'] = 'Weryfikator został usunięty ze zgłoszenia.';
 $_LANG['Password is too long (max. 32 characters)!'] = 'Hasło jest za długie (maks. 32 znaki)!';
+$_LANG['Password is too long (max. $a characters)!'] = 'Hasło jest za długie (maks. $a znaki)!';
 $_LANG['Password is required!'] = 'Wymagane wpisanie hasła!';
 $_LANG['Password is empty!'] = 'Wpisano puste hasło!';
 $_LANG['Login is too long (max. 32 characters)!'] = 'Login jest za długi (maks. 32 znaki)!';
@@ -4399,6 +4400,8 @@ $_LANG['Enable/disable EAP Server Client'] = 'Włącza/wyłącza komputer jako k
 $_LANG['Enable/disable WiFi AP Client access'] = 'Włącza/wyłącza komputer jako klient WiFi AP';
 $_LANG['Enable/disable VoIP Gateway access'] = 'Włącza/wyłącza komputer jako bramkę VoIP';
 $_LANG['Enable/disable DOCSIS access'] = 'Włącza/wyłącza dostęp DOCSIS';
+$_LANG['VPN access'] = 'Dostęp VPN';
+$_LANG['Mark as VPN access'] = 'Oznacz jako dostęp VPN';
 
 $_LANG['WiFi'] = 'WiFi';
 $_LANG['Potential range'] = 'Potencjalne zasięgi';

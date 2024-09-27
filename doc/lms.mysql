@@ -1799,7 +1799,7 @@ CREATE TABLE nodes (
   login varchar(128) DEFAULT NULL,
   ipaddr int(16) unsigned NOT NULL DEFAULT '0',
   ipaddr_pub int(16) unsigned NOT NULL DEFAULT '0',
-  passwd varchar(32) NOT NULL DEFAULT '',
+  passwd varchar(256) NOT NULL DEFAULT '',
   ownerid int(11) DEFAULT NULL,
   creationdate int(16) NOT NULL DEFAULT 0,
   moddate int(16) NOT NULL DEFAULT 0,
@@ -4382,4 +4382,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024092600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024092700');
