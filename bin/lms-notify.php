@@ -612,15 +612,14 @@ $sms_options = $LMS->getCustomerSMSOptions();
 
 //include(LIB_DIR . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'mtsms.php');
 
-$barcode = new \Com\Tecnick\Barcode\Barcode();
-
 function parse_customer_data($data, $format, $row)
 {
     static $use_only_alternative_accounts = null,
         $use_all_accounts = null,
-        $config_section = null;
+        $config_section = null,
+        $barcode = null;
 
-    global $LMS, $barcode;
+    global $LMS;
 
     $DB = LMSDB::getInstance();
 
@@ -786,6 +785,10 @@ function parse_customer_data($data, $format, $row)
 
     if (strpos($data, '%qr2pay') !== false) {
         if ($format == 'html' && isset($row['value'], $row['currency'])) {
+            if (!isset($barcode)) {
+                $barcode = new \Com\Tecnick\Barcode\Barcode();
+            }
+
             if (isset($row['doctype']) && $row['doctype'] == DOC_INVOICE) {
                 $qr2pay_comment = ConfigHelper::getConfig(
                     'invoices.qr2pay_comment',
