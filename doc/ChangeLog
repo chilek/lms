@@ -812,6 +812,8 @@ version 28-git (????-??-??):
   - improvement/devel: core prepares some document template variables in add document
     and document generator forms [chilan]
   - enhancement: '%qr2pay' symbol support in 'debtors' and 'reminder' notifications [chilan]
+  - enhancement: node passwords can have 256 characters maximum length; 'nodes.password_max_length' with
+    default value '32' controls how long passwords are accepted by user interface [chilan]
 
 version 27.0 (2021-08-20):
 
