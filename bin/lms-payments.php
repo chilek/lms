@@ -2114,6 +2114,34 @@ foreach ($assigns as $assign) {
 
                             $engine = $billing_document_template;
 
+                            $customerinfo = $LMS->GetCustomer($cid);
+
+                            $SMARTY->assign(array(
+                                'customer' => $customerinfo,
+                                'customerinfo' => $customerinfo,
+                                'division' => $division,
+                                'document' => $document,
+                                'engine' => $engine,
+                            ));
+
+                            ConfigHelper::setFilter($customerinfo['divisionid']);
+
+                            $default_header = ConfigHelper::getConfig('documents.default_header', '', true);
+                            if (strlen($default_header) && file_exists($default_header)) {
+                                $header = $SMARTY->fetch($default_header);
+                            } else {
+                                $header = '';
+                            }
+                            $SMARTY->assign('header', $header);
+
+                            $default_footer = ConfigHelper::getConfig('documents.default_footer', '', true);
+                            if (strlen($default_footer) && file_exists($default_footer)) {
+                                $footer = $SMARTY->fetch($default_footer);
+                            } else {
+                                $footer = '';
+                            }
+                            $SMARTY->assign('footer', $footer);
+
                             // run template engine
                             if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
                                 . $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php')) {

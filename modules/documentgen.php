@@ -267,9 +267,6 @@ if (isset($_POST['document'])) {
                 $customer = $LMS->GetCustomer($document['customerid']);
                 $division = $LMS->GetDivision($customer['divisionid']);
 
-                $customer['identity']['type'] = (isset($customer['ict']) && isset($GLOBALS['IDENTITY_TYPES'][$customer['ict']]) ? $GLOBALS['IDENTITY_TYPES'][$customer['ict']] : 'ICN');
-                $customer['identity']['number'] = $customer['icn'];
-
                 $SMARTY->assign(array(
                     'customer' => $customer,
                     'customerinfo' => $customer,
@@ -277,6 +274,24 @@ if (isset($_POST['document'])) {
                     'document' => $document,
                     'engine' => $engine,
                 ));
+
+                ConfigHelper::setFilter($customer['divisionid'], Auth::GetCurrentUser());
+
+                $default_header = ConfigHelper::getConfig('documents.default_header', '', true);
+                if (strlen($default_header) && file_exists($default_header)) {
+                    $header = $SMARTY->fetch($default_header);
+                } else {
+                    $header = '';
+                }
+                $SMARTY->assign('header', $header);
+
+                $default_footer = ConfigHelper::getConfig('documents.default_footer', '', true);
+                if (strlen($default_footer) && file_exists($default_footer)) {
+                    $footer = $SMARTY->fetch($default_footer);
+                } else {
+                    $footer = '';
+                }
+                $SMARTY->assign('footer', $footer);
 
                 // run template engine
                 if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
