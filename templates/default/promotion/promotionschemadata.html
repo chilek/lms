@@ -147,7 +147,7 @@
 						</span>
 						<input class="tariff-edit" type="checkbox" name="form[{$tariff.id}][backwardperiod]" value="1"
 							   {tip text="Check if tariff should be accounted backward"}
-								{if $formdata[$tariff.id].backwardperiod} checked{/if}
+								{if isset($formdata[$tariff.id].backwardperiod) && $formdata[$tariff.id].backwardperiod} checked{/if}
 								{if !$error || $formdata.aid != $tariff.id} style="display: none;"{/if}>
 					</td>
 					<TD class="text-right valign-top nobr">
@@ -157,7 +157,7 @@
 						</SPAN>
 						<INPUT type="checkbox" class="tariff-edit optional-edit" name="form[{$tariff.id}][optional]" value="1"
 								{tip text="Check if tariff should be optional"}
-								{if $formdata[$tariff.id].optional} checked{/if}
+								{if isset($formdata[$tariff.id].optional) && $formdata[$tariff.id].optional} checked{/if}
 								{if !$error || $formdata.aid != $tariff.id} style="display: none;"{/if}>
 					</TD>
 					<TD class="text-right valign-top nobr">
@@ -167,16 +167,16 @@
 						</SPAN>
 						<span class="tariff-edit"{if !$error || $formdata.aid != $tariff.id} style="display: none;"{/if}>
 							<SELECT name="form[{$tariff.id}][selectable]" class="selectable selectable-edit" {tip text="Choose tag from list"}>
-								<OPTION value="0"{if !$formdata[$tariff.id].selectable} selected{/if}>{trans("<!promotionassignment>— none —")}</OPTION>
-								<OPTION value="-1"{if $formdata[$tariff.id].selectable == -1} selected{/if}>{trans("<!promotionassignment>— new —")}</OPTION>
+								<OPTION value="0"{if !isset($formdata[$tariff.id].selectable) || !$formdata[$tariff.id].selectable} selected{/if}>{trans("<!promotionassignment>— none —")}</OPTION>
+								<OPTION value="-1"{if isset($formdata[$tariff.id].selectable) && $formdata[$tariff.id].selectable == -1} selected{/if}>{trans("<!promotionassignment>— new —")}</OPTION>
 								{foreach $schema.selections as $selid}
-								<OPTION value="{$selid}"{if $selid == $formdata[$tariff.id].selectable} selected{/if}>{$selid}</OPTION>
+								<OPTION value="{$selid}"{if isset($formdata[$tariff.id].selectable) && $selid == $formdata[$tariff.id].selectable} selected{/if}>{$selid}</OPTION>
 								{/foreach}
 							</SELECT>
 							<br>
 							<input type="text" size="15" name="form[{$tariff.id}][label]" class="label-edit"
-									value="{$formdata[$tariff.id].label}"
-									{if $formdata[$tariff.id].selectable != -1} style="display: none;"{/if}
+									value="{if isset($formdata[$tariff.id].label)}{$formdata[$tariff.id].label}{/if}"
+									{if !isset($formdata[$tariff.id].selectable) || $formdata[$tariff.id].selectable != -1} style="display: none;"{/if}
 									{tip text="<!promotionassignment>Enter new label"}>
 						</span>
 					</TD>
@@ -214,10 +214,10 @@
 							<BR>
 							<SELECT name="form[{$tariff.id}][period][{$key}]" class="period-edit"
 									{tip text="Select accounting period (optional) - overwrites customer liability's period"}>
-								<OPTION value="0" {if !$formdata[$tariff.id].period[$key]} selected{/if}>-</OPTION>
+								<OPTION value="0" {if !isset($formdata[$tariff.id].period[$key]) || !$formdata[$tariff.id].period[$key]} selected{/if}>-</OPTION>
 								{foreach $_PERIODS as $pkey => $item}
 									{if $pkey}
-									<OPTION value="{$pkey}"{if $pkey == $formdata[$tariff.id].period[$key]} selected{/if}>{$item}</OPTION>
+									<OPTION value="{$pkey}"{if isset($formdata[$tariff.id].period[$key]) && $pkey == $formdata[$tariff.id].period[$key]} selected{/if}>{$item}</OPTION>
 									{/if}
 								{/foreach}
 							</SELECT>
