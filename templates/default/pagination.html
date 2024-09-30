@@ -39,11 +39,15 @@
 	<script>
 
 		function pagechange(pageid) {
-			var elem = $('#' + pageid)
+			var elem = $('#' + pageid);
+			var pageNr = parseInt(elem.val());
+			if (isNaN(pageNr) || !elem[0].checkValidity()) {
+				return;
+			}
 			var pageelem = elem.prev('.page');
 			if (pageelem.length) {
 				$('.page').not(pageelem).prop('disabled', true);
-				pageelem.val(elem.val());
+				pageelem.val(pageNr);
 				pageelem[0].form.submit();
 			}
 		}
