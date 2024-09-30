@@ -62,6 +62,6 @@
 		<input type="hidden" name="instance" class="instance" value="{$instance_name}"{if isset($form)} form="{$form}"{/if}>
 	{/if}
 	<input type="hidden" name="page" class="page" value="1"{if isset($form)} form="{$form}"{/if}>
-	{t a="<input class=\"scroller\" type=\"number\" min=\"1\" max=\"`$pagination->getPages()`\" id=\"{$pageid}\" value=\"\" size=\"3\">"}Go to $a page{/t}
+	{t a="<input class=\"scroller\" type=\"number\" min=\"1\" max=\"`$pagination->getPages()`\" id=\"{$pageid}\" value=\"\" size=\"3\" required>"}Go to $a page{/t}
 	<a href="#" onclick="javascript: pagechange('{$pageid}');">{'&raquo;'|str_repeat:3}</a>
 {/if}
