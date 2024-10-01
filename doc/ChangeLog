@@ -819,6 +819,7 @@ version 28-git (????-??-??):
     where can be used as (respectively) 'header' and 'footer' smarty variables in template [chilan]
   - improvement: show total time in event search result form [chilan]
   - improvement: store creation date of data changes proposed via userpanel by customer [chilan]
+  - enhancement: support of tax net accounted tariffs in promotion schemas [chilan]
 
 version 27.0 (2021-08-20):
 
