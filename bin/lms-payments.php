@@ -2304,7 +2304,7 @@ foreach ($assigns as $assign) {
                     $sdesc
                 );
 
-                if (strpos($comment, '%aligned_partial_period') !== false) {
+                if (strpos($sdesc, '%aligned_partial_period') !== false) {
                     $sdesc = str_replace('%aligned_partial_period', $period, $sdesc);
                 }
 
