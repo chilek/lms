@@ -150,7 +150,9 @@ $_LANG['Gross'] = 'Brutto';
 $_LANG['gross'] = 'brutto';
 $_LANG['Net'] = 'Netto';
 $_LANG['gross'] = 'brutto';
+$_LANG['(gross)'] = '(brutto)';
 $_LANG['net'] = 'netto';
+$_LANG['(net)'] = '(netto)';
 $_LANG['Currency'] = 'Waluta';
 $_LANG['Unitary gross value'] = 'Cena jedn. brutto';
 
@@ -254,6 +256,7 @@ $_LANG['<!node-location>(implicit)'] = '(niejawna)';
 
 $_LANG['<!assignment>backward'] = 'wstecz';
 $_LANG['<!assignment>Backward:'] = 'Wstecz:';
+$_LANG['<!assignment>Backward'] = 'Wstecz';
 $_LANG['Check if tariff should be accounted backward'] = 'Zaznacz, jeśli taryfa powinna być naliczana za okres wsteczny';
 
 $_LANG['(limited to first 100)'] = '(ograniczone do pierwszych 100)';
@@ -1009,6 +1012,7 @@ $_LANG['Domains'] = 'Domeny';
 $_LANG['Domains List'] = 'Lista domen';
 $_LANG['Domain with specified name exists!'] = 'Domena o podanej nazwie już istnieje!';
 $_LANG['Downceil:'] = 'Downceil:';
+$_LANG['Downceil'] = 'Downceil';
 $_LANG['Download'] = 'Download';
 $_LANG['Download ceil:'] = 'Download ceil:';
 $_LANG['Download rate:'] = 'Download rate:';
@@ -2242,6 +2246,7 @@ $_LANG['Unknown option. No description.'] = 'Nieznana opcja. Brak opisu.';
 $_LANG['unknown OS ($a)'] = 'nieznany OS ($a)';
 $_LANG['Unresolved:'] = 'Nierozwiązane:';
 $_LANG['Upceil:'] = 'Upceil:';
+$_LANG['Upceil'] = 'Upceil';
 $_LANG['Upload'] = 'Upload';
 $_LANG['Upload ceil:'] = 'Upload ceil:';
 $_LANG['Upload rate:'] = 'Upload rate:';
@@ -5996,3 +6001,5 @@ $_LANG['Customer origin is required!'] = 'Wymagane pochodzenie klienta!';
 
 $_LANG['relative to reference document'] = 'względem dokumentu odniesienia';
 $_LANG['Relative to reference document'] = 'Względem dokumentu odniesienia';
+
+$_LANG['(taxation)'] = '(opodatkowanie)';

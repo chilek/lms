@@ -24,12 +24,15 @@
 				</colgroup>
 				<THEAD>
 				<TR class="fbottom">
-					<TD class="bold nobr">{trans("Name:")}</TD>
-					<TD class="text-right nobr">{trans("ID:")}</TD>
-					<TD class="nobr">{trans("Type")}:</TD>
-					<TD class="text-right bold nobr">{trans("Value")}:</TD>
-					<TD class="text-right nobr">{trans("Downceil:")}</TD>
-					<TD class="text-right nobr">{trans("Upceil:")}</TD>
+					<TD class="bold nobr">
+						{trans("Name")}
+						{trans("(taxation)")}
+					</TD>
+					<TD class="text-right nobr">{trans("ID")}</TD>
+					<TD class="nobr">{trans("Type")}</TD>
+					<TD class="text-right bold nobr">{trans("Value")}</TD>
+					<TD class="text-right nobr">{trans("Downceil")}</TD>
+					<TD class="text-right nobr">{trans("Upceil")}</TD>
 					<TD>&nbsp;</TD>
 				</TR>
 				</THEAD>
@@ -38,6 +41,11 @@
 				<TR class="highlight">
 					<TD class="bold nobr" onClick="return self.location.href='?m=tariffinfo&id={$tariff.id}';">
 						{$tariff.name}
+						{if ($tariff.flags & $smarty.const.TARIFF_FLAG_NET_ACCOUNT) > 0}
+							{trans("(net)")}
+						{else}
+							{trans("(gross)")}
+						{/if}
 					</TD>
 					<TD class="text-right nobr" onClick="return self.location.href='?m=tariffinfo&id={$tariff.id}';">
 						({$tariff.id|string_format:"%04d"})
@@ -46,7 +54,11 @@
 						{$_SERVICETYPES[$tariff.type]}
 					</TD>
 					<TD class="bold nobr" onClick="return self.location.href='?m=tariffinfo&id={$tariff.id}';">
-						{$tariff.value|string_format:"%.2f"}
+						{if ($tariff.flags & $smarty.const.TARIFF_FLAG_NET_ACCOUNT) > 0}
+							{Localisation::smartFormatNumber($tariff.netvalue)}
+						{else}
+							{Localisation::smartFormatNumber($tariff.value)}
+						{/if}
 					</TD>
 					<TD class="nobr" onClick="return self.location.href='?m=tariffinfo&id={$tariff.id}';">
 						{if $tariff.downceil}{$tariff.downceil} kbit/s{else}-{/if}

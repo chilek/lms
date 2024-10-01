@@ -67,13 +67,13 @@ if (!empty($promotion['schemas'])) {
     $schemas = implode(', ', array_keys($promotion['schemas']));
     $promotion['tariffs'] = $DB->GetAll(
         'SELECT
-        t.name, t.id, t.type, t.value, t.upceil, t.downceil
+            t.name, t.id, t.type, t.value, t.netvalue, t.flags, t.upceil, t.downceil
         FROM tariffs t
         WHERE t.id IN (SELECT DISTINCT tariffid
             FROM promotionassignments
             WHERE promotionschemaid IN ('.$schemas.')
         )
-        ORDER BY t.name, t.value DESC'
+        ORDER BY t.name, t.value, t.netvalue DESC'
     );
 }
 

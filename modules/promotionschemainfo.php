@@ -75,7 +75,7 @@ $schema['attachments'] = $DB->GetAllByKey(
 );
 
 $schema['tariffs'] = $DB->GetAll(
-    'SELECT t.name, t.value, t.type,
+    'SELECT t.name, t.value, t.netvalue, t.type,
         a.tariffid, a.id, a.data, a.backwardperiod, a.optional, a.label,
         t.flags
     FROM promotionassignments a
@@ -115,14 +115,14 @@ if (!empty($schema['tariffs'])) {
 }
 
 $tariffs = $DB->GetAllByKey(
-    'SELECT t.id, t.name, t.value, t.currency, t.authtype,
-    datefrom, dateto, (CASE WHEN datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid,
-    uprate, downrate, upceil, downceil,
-    t.type AS tarifftype, ' . $DB->GroupConcat('ta.tarifftagid') . ' AS tags,
-    (CASE WHEN t.flags & ' . TARIFF_FLAG_SPLIT_PAYMENT . ' > 0 THEN 1 ELSE 0 END) AS splitpayment
+    'SELECT t.id, t.name, t.value, t.netvalue, t.currency, t.authtype, t.flags,
+        datefrom, dateto, (CASE WHEN datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid,
+        uprate, downrate, upceil, downceil,
+        t.type AS tarifftype, ' . $DB->GroupConcat('ta.tarifftagid') . ' AS tags,
+        (CASE WHEN t.flags & ' . TARIFF_FLAG_SPLIT_PAYMENT . ' > 0 THEN 1 ELSE 0 END) AS splitpayment
     FROM tariffs t
     LEFT JOIN tariffassignments ta ON ta.tariffid = t.id
-    WHERE t.disabled = 0 AND (t.flags & ' . TARIFF_FLAG_NET_ACCOUNT . ') = 0'
+    WHERE t.disabled = 0'
         . (ConfigHelper::checkConfig(
             'promotions.tariff_duplicates',
             ConfigHelper::checkConfig('phpui.promotion_tariff_duplicates')
@@ -131,7 +131,7 @@ $tariffs = $DB->GetAllByKey(
             : ' AND t.id NOT IN (
                 SELECT tariffid FROM promotionassignments
                 WHERE promotionschemaid = ' . $schema['id'] . ')') . '
-    GROUP BY t.id, t.name, t.value, splitpayment, t.authtype, datefrom, dateto, uprate, downrate, upceil, downceil, t.type
+    GROUP BY t.id, t.name, t.value, t.netvalue, splitpayment, t.authtype, t.flags, datefrom, dateto, uprate, downrate, upceil, downceil, t.type
     ORDER BY t.name, t.value DESC',
     'id'
 );

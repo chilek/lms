@@ -225,6 +225,10 @@
 		padding-bottom: 0.2em;
 	}
 
+	.tariff-default-values {
+		float: right;
+	}
+
 </style>
 
 {$default_taxrate = ConfigHelper::getConfig('phpui.default_taxrate')}
@@ -373,17 +377,31 @@
 																		<td>
 																			<label>
 																				<input class="schema-tariff-checkbox" type="checkbox" name="{$variable_prefix}[sassignmentid][{$schemaid}][{$label}]"
-																						value="{$item.single.assignmentid}" data-label="{$label}"
-																						data-tarifftype="{$item.single.type}"
-																						data-assignment-id="{$item.single.assignmentid}"
-																						{if isset($variables.sassignmentid[$schemaid][$label]) || !$item.single.optional} checked{/if}
-																				{if !$item.single.optional} disabled data-mandatory="1"{/if}
-																				data-tariffaccess="{$item.single.authtype}">
-																				{if $promotion_show_period_values}
-																					{t a=$item.single.tariff b=Utils::smartFormatMoney($item.single.value, $item.single.currency) c=implode(' / ', $item.single.periodvalues)}$a (default: $b; $c){/t}
-																				{else}
-																					{t a=$item.single.tariff b=Utils::smartFormatMoney($item.single.value, $item.single.currency)}$a (default: $b){/t}
-																				{/if}
+																					value="{$item.single.assignmentid}" data-label="{$label}"
+																					data-tarifftype="{$item.single.type}"
+																					data-assignment-id="{$item.single.assignmentid}"
+																					{if isset($variables.sassignmentid[$schemaid][$label]) || !$item.single.optional} checked{/if}
+																					{if !$item.single.optional} disabled data-mandatory="1"{/if}
+																					data-tariffaccess="{$item.single.authtype}">
+																				<span class="tariff-default-values">
+																					{if ($item.single.flags & $smarty.const.TARIFF_FLAG_NET_ACCOUNT) > 0}
+																						{if $promotion_show_period_values}
+																							{t a=$item.single.tariff b=Utils::smartFormatMoney($item.single.netvalue, $item.single.currency) c=implode(' / ', $item.single.periodvalues)}$a (default: $b; $c){/t}
+																						{else}
+																							{t a=$item.single.tariff b=Utils::smartFormatMoney($item.single.netvalue, $item.single.currency)}$a (default: $b){/t}
+																						{/if}
+																						<br>
+																						{trans("(net)")}
+																					{else}
+																						{if $promotion_show_period_values}
+																							{t a=$item.single.tariff b=Utils::smartFormatMoney($item.single.value, $item.single.currency) c=implode(' / ', $item.single.periodvalues)}$a (default: $b; $c){/t}
+																						{else}
+																							{t a=$item.single.tariff b=Utils::smartFormatMoney($item.single.value, $item.single.currency)}$a (default: $b){/t}
+																						{/if}
+																						<br>
+																						{trans("(gross)")}
+																					{/if}
+																				</span>
 																			</label>
 																			<span class="schema-tariff-count">
 																				{trans("Count:")}
@@ -439,7 +457,23 @@
 																				<option value="{$item.assignmentid}" data-tariffaccess="{$item.authtype}"
 																						data-tarifftype="{$item.type}" data-assignment-id="{$item.assignmentid}"
 																						{if in_array($item.assignmentid, (array)$variables.sassignmentid[$schemaid])} selected{/if}
-																					>{if $promotion_show_period_values}{t a=$item.tariff b=Utils::smartFormatMoney($item.value, $item.currency) c=implode(' / ', $item.periodvalues)}$a (default: $b; $c){/t}{else}{t a=$item.tariff b=Utils::smartFormatMoney($item.value, $item.currency)}$a (default: $b){/t}{/if}</option>
+																					>{strip}
+																						{if ($item.flags & $smarty.const.TARIFF_FLAG_NET_ACCOUNT) > 0}
+																							{if $promotion_show_period_values}
+																								{t a=$item.tariff b=Utils::smartFormatMoney($item.netvalue, $item.currency) c=implode(' / ', $item.periodvalues)}$a (default: $b; $c){/t}
+																							{else}
+																								{t a=$item.tariff b=Utils::smartFormatMoney($item.netvalue, $item.currency)}$a (default: $b){/t}
+																							{/if}
+																							{trans("(net)")}
+																						{else}
+																							{if $promotion_show_period_values}
+																								{t a=$item.tariff b=Utils::smartFormatMoney($item.value, $item.currency) c=implode(' / ', $item.periodvalues)}$a (default: $b; $c){/t}
+																							{else}
+																								{t a=$item.tariff b=Utils::smartFormatMoney($item.value, $item.currency)}$a (default: $b){/t}
+																							{/if}
+																							{trans("(gross)")}
+																						{/if}
+																				{/strip}</option>
 																				{/foreach}
 																			</select>
 																			<span class="schema-tariff-count">

@@ -88,17 +88,18 @@
 				<TR>
 					<TD class="bold nobr">
 						<INPUT type="submit" class="hiddenbtn">
-						{trans("Name:")}
+						{trans("Name")}
+						{trans("(taxation)")}
 					</TD>
 					<TD class="nobr">
 						{trans("Type")}
 					</TD>
-					<TD class="text-right bold nobr">{trans("Value")}:</TD>
-					<TD class="text-right nobr">{trans("<!assignment>Backward:")}</TD>
-					<TD class="text-right nobr">{trans("Optional")}:</TD>
-					<TD class="text-right nobr">{trans("<!promotionassignment>Label")}:</TD>
+					<TD class="text-right bold nobr">{trans("Value")}</TD>
+					<TD class="text-right nobr">{trans("<!assignment>Backward")}</TD>
+					<TD class="text-right nobr">{trans("Optional")}</TD>
+					<TD class="text-right nobr">{trans("<!promotionassignment>Label")}</TD>
 					{foreach $schema.periods as $period}
-						<TD class="text-right nobr">{$period}:</TD>
+						<TD class="text-right nobr">{$period}</TD>
 					{/foreach}
 					<TD>&nbsp;</TD>
 				</TR>
@@ -133,12 +134,21 @@
 								{icon name="penalty" tip=$reward_flags}
 							{/if}
 						{/if}
+						{if ($tariff.flags & $smarty.const.TARIFF_FLAG_NET_ACCOUNT) > 0}
+							{trans("(net)")}
+						{else}
+							{trans("(gross)")}
+						{/if}
 					</TD>
 					<TD class="nobr valign-top">
 						{$_SERVICETYPES[$tariff.type]}
 					</TD>
 					<TD class="text-right valign-top bold nobr">
-						{Localisation::smartFormatNumber($tariff.value)}
+						{if ($tariff.flags & $smarty.const.TARIFF_FLAG_NET_ACCOUNT) > 0}
+							{Localisation::smartFormatNumber($tariff.netvalue)}
+						{else}
+							{Localisation::smartFormatNumber($tariff.value)}
+						{/if}
 					</TD>
 					<td class="text-right valign-top nobr">
 						<span class="tariff-view"{if $error && $formdata.aid == $tariff.id} style="display: none;"{/if}
