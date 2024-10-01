@@ -2304,6 +2304,10 @@ foreach ($assigns as $assign) {
                     $sdesc
                 );
 
+                if (strpos($comment, '%aligned_partial_period') !== false) {
+                    $sdesc = str_replace('%aligned_partial_period', $period, $sdesc);
+                }
+
                 $partial_value = round($partial_price * $assign['count'], 2);
                 if ($netflag) {
                     $partial_grossvalue = $partial_value + round($partial_value * ($assign['taxrate'] / 100), 2);
