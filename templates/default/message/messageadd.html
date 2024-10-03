@@ -728,7 +728,11 @@
 			});
 
 			if (elem == 'typesms' || elem == 'typeanysms' || elem == 'typewww' || elem == 'typeuserpanel' || elem == 'typeuserpanelurgent') {
-				$('#mailfrom,#mailsender,#attachment').hide();
+				$('#mailfrom,#mailsender').hide();
+
+				if (elem == 'typesms' || elem == 'typeanysms' || elem == 'typewww') {
+					$('#attachment').hide();
+				}
 
 				{if $message.emailcount}
 					$('#customermails').hide();

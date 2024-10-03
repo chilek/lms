@@ -970,7 +970,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         )));
     }
 
-    if ($message['type'] == MSG_MAIL) {
+    if ($message['type'] == MSG_MAIL || $message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT) {
         $result = handle_file_uploads('files', $error);
         extract($result);
         $SMARTY->assign('fileupload', $fileupload);
@@ -1022,7 +1022,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         }
         unset($row);
 
-        if ($message['type'] == MSG_MAIL) {
+        if ($message['type'] == MSG_MAIL || $message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT) {
             if (!empty($files)) {
                 foreach ($files as &$file) {
                     $file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
