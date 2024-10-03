@@ -820,6 +820,7 @@ version 28-git (????-??-??):
   - improvement: show total time in event search result form [chilan]
   - improvement: store creation date of data changes proposed via userpanel by customer [chilan]
   - enhancement: support of tax net accounted tariffs in promotion schemas [chilan]
+  - enhancement: allow to attach files to messages sent to userpanel [chilan]
 
 version 27.0 (2021-08-20):
 
