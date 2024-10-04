@@ -821,6 +821,7 @@ version 28-git (????-??-??):
   - improvement: store creation date of data changes proposed via userpanel by customer [chilan]
   - enhancement: support of tax net accounted tariffs in promotion schemas [chilan]
   - enhancement: allow to attach files to messages sent to userpanel [chilan]
+  - enhancement: allow to send mail messages from www message add form in scheduled date/time [chilan]
 
 version 27.0 (2021-08-20):
 
