@@ -63,6 +63,19 @@
 			{$message.cdate|date_format:"Y-m-d H:i"}
 		</TD>
 	</TR>
+	{if !empty($message.startdate)}
+		<tr>
+			<td>
+				{icon name="calendar"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Start date")}</strong>
+			</td>
+			<td{if $message.startdate < $smarty.now} class="blend"{/if}>
+				{$message.startdate|date_format:"Y-m-d H:i"}
+			</td>
+		</tr>
+	{/if}
 {if $message.sender}
 	<TR>
 		<TD>

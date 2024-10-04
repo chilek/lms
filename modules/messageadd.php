@@ -780,6 +780,8 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
     $html_format = isset($message['wysiwyg']) && isset($message['wysiwyg']['mailbody']) && ConfigHelper::checkValue($message['wysiwyg']['mailbody']);
 
+    $startdate = null;
+
     if ($message['type'] == MSG_MAIL) {
         $message['body'] = $html_format ? Utils::removeInsecureHtml($message['mailbody']) : $message['mailbody'];
         if ($division_count <= 1) {
@@ -797,6 +799,15 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             : $message['sender'];
         if ($message['from'] == '') {
             $error['from'] = trans('Sender name is required!');
+        }
+
+        if (strlen($message['startdate'])) {
+            $startdate = datetime_to_timestamp($message['startdate']);
+            if (empty($startdate)) {
+                $error['startdate'] = trans('Incorrect date format!');
+            } else {
+                $message['startdate'] = $startdate;
+            }
         }
     } elseif ($message['type'] == MSG_WWW || $message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT) {
         $message['body'] = $html_format ? Utils::removeInsecureHtml($message['mailbody']) : $message['mailbody'];
@@ -1002,6 +1013,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 'mail' => $message['sender'],
             ),
             'contenttype' => $message['contenttype'],
+            'startdate' => $startdate,
             'recipients' => $recipients,
         ));
         $msgid = $result['id'];
@@ -1169,6 +1181,8 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 );
                 flush();
 
+                $attributes = null;
+
                 switch ($message['type']) {
                     case MSG_MAIL:
                         if (isset($message['copytosender'])) {
@@ -1178,23 +1192,37 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                             $headers['X-LMS-Message-Item-Id'] = $msgitems[$customerid][$orig_destination];
                             $headers['Message-ID'] = '<messageitem-' . $msgitems[$customerid][$orig_destination] . '@rtsystem.' . gethostname() . '>';
                         }
-                        $result = $LMS->SendMail(
-                            $destination,
-                            $headers,
-                            $LMS->applyMessageTemplates(
-                                $body,
-                                $message['contenttype']
-                            ),
-                            $attachments
-                        );
+                        if (empty($startdate) || $startdate <= time()) {
+                            $result = $LMS->SendMail(
+                                $destination,
+                                $headers,
+                                $LMS->applyMessageTemplates(
+                                    $body,
+                                    $message['contenttype']
+                                ),
+                                $attachments
+                            );
 
-                        if (!empty($interval)) {
-                            if ($interval == -1) {
-                                $delay = mt_rand(500, 5000);
-                            } else {
-                                $delay = $interval;
+                            if (!empty($interval)) {
+                                if ($interval == -1) {
+                                    $delay = mt_rand(500, 5000);
+                                } else {
+                                    $delay = $interval;
+                                }
+                                usleep($delay * 1000);
                             }
-                            usleep($delay * 1000);
+                        } else {
+                            $attributes = array(
+                                'destination' => $destination,
+                                'headers' => $headers,
+                                'body' => $LMS->applyMessageTemplates(
+                                    $body,
+                                    $message['contenttype']
+                                ),
+                            );
+                            $result = array(
+                                'status' => MSG_NEW,
+                            );
                         }
 
                         break;
@@ -1242,13 +1270,25 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 if ($status == MSG_SENT || isset($result['id']) || !empty($errors)) {
                     $DB->Execute(
                         'UPDATE messageitems SET status = ?, lastdate = ?NOW?,
-                            error = ?, externalmsgid = ? WHERE messageid = ? AND '
+                            error = ?, externalmsgid = ?, attributes = ? WHERE messageid = ? AND '
                             . (empty($customerid) ? 'customerid IS NULL' : 'customerid = ' . intval($customerid)) . '
                             AND destination = ?',
                         array(
                             $status,
                             empty($errors) ? null : implode(', ', $errors),
                             !is_array($result) || empty($result['id']) ? null : $result['id'],
+                            serialize($attributes),
+                            $msgid,
+                            $orig_destination,
+                        )
+                    );
+                } elseif (!empty($attributes)) {
+                    $DB->Execute(
+                        'UPDATE messageitems SET attributes = ? WHERE messageid = ? AND '
+                        . (empty($customerid) ? 'customerid IS NULL' : 'customerid = ' . intval($customerid)) . '
+                            AND destination = ?',
+                        array(
+                            serialize($attributes),
                             $msgid,
                             $orig_destination,
                         )

@@ -497,6 +497,19 @@
 				</td>
 			</tr>
 		{/if}
+		<tr id="startdate"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
+			<td>
+				{icon name="calendar"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Start date")}</strong>
+			</td>
+			<td>
+				<input type="text" name="message[startdate]" value="{if $message.startdate}{$message.startdate|date_format:"Y/m/d H:i"}{/if}"
+					size="20" maxlength="20"
+					{tip trigger="startdate" class="lms-ui-datetime"}>
+			</td>
+		</tr>
 		<tr id="mailsender"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
 			<td>
 				{icon name="mail"}
@@ -728,7 +741,7 @@
 			});
 
 			if (elem == 'typesms' || elem == 'typeanysms' || elem == 'typewww' || elem == 'typeuserpanel' || elem == 'typeuserpanelurgent') {
-				$('#mailfrom,#mailsender').hide();
+				$('#mailfrom,#mailsender,#startdate').hide();
 
 				if (elem == 'typesms' || elem == 'typeanysms' || elem == 'typewww') {
 					$('#attachment').hide();
@@ -769,7 +782,7 @@
 					xajax_getMessageTemplates({$smarty.const.TMPL_SMS});
 				}
 			} else {
-				$('#mailbody,#mailfrom,#mailsender,#attachment').show();
+				$('#mailbody,#mailfrom,#mailsender,#startdate,#attachment').show();
 
 				{if $message.emailcount}
 					$('#customermails').show();

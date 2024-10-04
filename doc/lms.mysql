@@ -2871,15 +2871,17 @@ CREATE TABLE excludedgroups (
 # Structure of table messages
 #
 CREATE TABLE messages (
-        id 	int(11) 	NOT NULL auto_increment,
-        subject varchar(255)	DEFAULT '' NOT NULL,
+	id 	int(11) 	NOT NULL auto_increment,
+	subject varchar(255)	DEFAULT '' NOT NULL,
 	body 	text		DEFAULT '' NOT NULL,
 	cdate 	int(16)		DEFAULT 0 NOT NULL,
 	type 	smallint	DEFAULT '0' NOT NULL,
 	userid 	int(11)		DEFAULT NULL,
 	sender 	varchar(255) 	DEFAULT NULL,
 	contenttype 	varchar(255) 	DEFAULT 'text/plain',
-        PRIMARY KEY (id),
+	startdate int(16) DEFAULT NULL,
+	PRIMARY KEY (id),
+	INDEX messages_startdate_idx (startdate),
 	INDEX cdate (cdate, type),
 	INDEX userid (userid),
 	CONSTRAINT messages_userid_fkey
@@ -2891,7 +2893,7 @@ CREATE TABLE messages (
 # Structure of table messageitems
 #
 CREATE TABLE messageitems (
-        id 		int(11) 	NOT NULL auto_increment,
+	id 		int(11) 	NOT NULL auto_increment,
 	messageid 	int(11)		NOT NULL,
 	customerid 	int(11) 	DEFAULT NULL,
 	destination 	varchar(255) 	DEFAULT '' NOT NULL,
@@ -2900,8 +2902,9 @@ CREATE TABLE messageitems (
 	error 		text		DEFAULT NULL,
 	lastreaddate 	int(16)		DEFAULT 0 NOT NULL,
 	externalmsgid	varchar(64) DEFAULT NULL,
-    body 		text		DEFAULT NULL,
-        PRIMARY KEY (id),
+	body 		text		DEFAULT NULL,
+	attributes text DEFAULT NULL,
+	PRIMARY KEY (id),
 	INDEX messageid (messageid),
 	INDEX customerid (customerid),
 	CONSTRAINT messageitems_customerid_fkey
@@ -4383,4 +4386,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024092701');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024100400');

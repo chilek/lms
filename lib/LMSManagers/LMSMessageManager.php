@@ -33,16 +33,30 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 
     public function GetMessages($customerid, $limit = null)
     {
-        $result = $this->db->GetAll('SELECT i.messageid AS id, i.status, i.error,
-		        i.destination, i.lastdate, i.lastreaddate, m.subject, m.type, m.cdate,
-		        u.name AS username, u.id AS userid, fc.id AS filecontainerid
-			FROM messageitems i
-			JOIN messages m ON (m.id = i.messageid)
-			LEFT JOIN filecontainers fc ON fc.messageid = m.id
-			LEFT JOIN vusers u ON u.id = m.userid
-			WHERE i.customerid = ?
-			ORDER BY m.cdate DESC'
-                        . ($limit ? ' LIMIT ' . $limit : ''), array($customerid));
+        $result = $this->db->GetAll(
+            'SELECT
+                i.messageid AS id,
+                i.status,
+                i.error,
+                i.destination,
+                i.lastdate,
+                i.lastreaddate,
+                m.subject,
+                m.type,
+                m.cdate,
+                m.startdate,
+                u.name AS username,
+                u.id AS userid,
+                fc.id AS filecontainerid
+            FROM messageitems i
+            JOIN messages m ON m.id = i.messageid
+            LEFT JOIN filecontainers fc ON fc.messageid = m.id
+            LEFT JOIN vusers u ON u.id = m.userid
+            WHERE i.customerid = ?
+            ORDER BY m.cdate DESC'
+            . ($limit ? ' LIMIT ' . $limit : ''),
+            array($customerid)
+        );
 
         if (!empty($result)) {
             foreach ($result as &$message) {
@@ -364,32 +378,40 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
                 .(!empty($where) ? $where : ''));
         }
 
-        $result = $this->db->GetAll('SELECT m.id, m.cdate, m.type, m.subject,
-			x.cnt, x.sent, x.error, x.delivered, fc.id AS filecontainerid
-			FROM messages m
-			JOIN (
-				SELECT i.messageid,
-					COUNT(*) AS cnt,
-					COUNT(CASE WHEN i.status = ' . MSG_SENT . ' THEN 1 ELSE NULL END) AS sent,
-					COUNT(CASE WHEN i.status = ' . MSG_DELIVERED . ' THEN 1 ELSE NULL END) AS delivered,
-					COUNT(CASE WHEN i.status = ' . MSG_ERROR . ' THEN 1 ELSE NULL END) AS error,
-					COUNT(CASE WHEN i.status = ' . MSG_CANCELLED . ' THEN 1 ELSE NULL END) AS cancelled,
-					COUNT(CASE WHEN i.status = ' . MSG_BOUNCED . ' THEN 1 ELSE NULL END) AS bounced
-				FROM messageitems i
-				LEFT JOIN (
-					SELECT DISTINCT a.customerid FROM vcustomerassignments a
-						JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-					WHERE e.userid = lms_current_user()
-				) e ON (e.customerid = i.customerid)
-				WHERE e.customerid IS NULL
-				GROUP BY i.messageid
-			) x ON (x.messageid = m.id)
-			LEFT JOIN filecontainers fc ON fc.messageid = m.id '
-            .(!empty($userjoin) ? 'JOIN vusers u ON (u.id = m.userid) ' : '')
+        $result = $this->db->GetAll(
+            'SELECT
+                m.id,
+                m.cdate,
+                m.startdate,
+                m.type,
+                m.subject,
+                x.cnt, x.sent, x.error, x.delivered, fc.id AS filecontainerid
+            FROM messages m
+            JOIN (
+                SELECT i.messageid,
+                    COUNT(*) AS cnt,
+                    COUNT(CASE WHEN i.status = ' . MSG_SENT . ' THEN 1 ELSE NULL END) AS sent,
+                    COUNT(CASE WHEN i.status = ' . MSG_DELIVERED . ' THEN 1 ELSE NULL END) AS delivered,
+                    COUNT(CASE WHEN i.status = ' . MSG_ERROR . ' THEN 1 ELSE NULL END) AS error,
+                    COUNT(CASE WHEN i.status = ' . MSG_CANCELLED . ' THEN 1 ELSE NULL END) AS cancelled,
+                    COUNT(CASE WHEN i.status = ' . MSG_BOUNCED . ' THEN 1 ELSE NULL END) AS bounced
+                FROM messageitems i
+                LEFT JOIN (
+                    SELECT DISTINCT a.customerid
+                    FROM vcustomerassignments a
+                    JOIN excludedgroups e ON a.customergroupid = e.customergroupid
+                    WHERE e.userid = lms_current_user()
+                ) e ON e.customerid = i.customerid
+                WHERE e.customerid IS NULL
+                GROUP BY i.messageid
+            ) x ON x.messageid = m.id
+            LEFT JOIN filecontainers fc ON fc.messageid = m.id '
+            .(!empty($userjoin) ? 'JOIN vusers u ON u.id = m.userid ' : '')
             .(!empty($where) ? $where : '')
-            .$sqlord.' '.$direction
+            .$sqlord . ' ' . $direction
             . (isset($limit) ? ' LIMIT ' . $limit : '')
-            . (isset($offset) ? ' OFFSET ' . $offset : ''));
+            . (isset($offset) ? ' OFFSET ' . $offset : '')
+        );
 
         if (!empty($result)) {
             foreach ($result as &$message) {
@@ -416,15 +438,20 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
     {
         $result = array();
 
-        $this->db->Execute('INSERT INTO messages (type, cdate, subject, body, userid, sender, contenttype)
-			VALUES (?, ?NOW?, ?, ?, ?, ?, ?)', array(
-            $params['type'],
-            $params['subject'],
-            $params['body'],
-            $params['userid'] ?? Auth::GetCurrentUser(),
-            $params['type'] == MSG_MAIL && isset($params['sender']) ? '"' . $params['sender']['name'] . '" <' . $params['sender']['mail'] . '>' : '',
-            $params['contenttype'] ?? 'text/plain',
-        ));
+        $this->db->Execute(
+            'INSERT INTO messages
+            (type, cdate, subject, body, userid, sender, contenttype, startdate)
+            VALUES (?, ?NOW?, ?, ?, ?, ?, ?, ?)',
+            array(
+                $params['type'],
+                $params['subject'],
+                $params['body'],
+                $params['userid'] ?? Auth::GetCurrentUser(),
+                $params['type'] == MSG_MAIL && isset($params['sender']) ? '"' . $params['sender']['name'] . '" <' . $params['sender']['mail'] . '>' : '',
+                $params['contenttype'] ?? 'text/plain',
+                $params['startdate'],
+            )
+        );
 
         $result['id'] = $msgid  = $this->db->GetLastInsertID('messages');
 

@@ -2779,8 +2779,8 @@ DROP SEQUENCE IF EXISTS messages_id_seq;
 DROP TABLE IF EXISTS messages CASCADE;
 CREATE SEQUENCE messages_id_seq;
 CREATE TABLE messages (
-        id 	integer 	DEFAULT nextval('messages_id_seq'::text) NOT NULL,
-        subject varchar(255)	DEFAULT '' NOT NULL,
+	id 	integer 	DEFAULT nextval('messages_id_seq'::text) NOT NULL,
+	subject varchar(255)	DEFAULT '' NOT NULL,
 	body 	text		DEFAULT '' NOT NULL,
 	cdate 	integer		DEFAULT 0 NOT NULL,
 	type 	smallint	DEFAULT 0 NOT NULL,
@@ -2788,11 +2788,12 @@ CREATE TABLE messages (
 		CONSTRAINT messages_userid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	sender 	varchar(255) 	DEFAULT NULL,
 	contenttype 	varchar(255) 	DEFAULT 'text/plain',
-        PRIMARY KEY (id)
+	startdate bigint DEFAULT NULL,
+	PRIMARY KEY (id)
 );
-
 CREATE INDEX messages_cdate_idx ON messages (cdate, type);
 CREATE INDEX messages_userid_idx ON messages (userid);
+CREATE INDEX messages_startdate_idx ON messages (startdate);
 
 /* ---------------------------------------------------
  Structure of table "messageitems"
@@ -2801,7 +2802,7 @@ DROP SEQUENCE IF EXISTS messageitems_id_seq;
 DROP TABLE IF EXISTS messageitems CASCADE;
 CREATE SEQUENCE messageitems_id_seq;
 CREATE TABLE messageitems (
-        id 		integer 	DEFAULT nextval('messageitems_id_seq'::text) NOT NULL,
+	id 		integer 	DEFAULT nextval('messageitems_id_seq'::text) NOT NULL,
 	messageid 	integer		NOT NULL
 		CONSTRAINT messageitems_messageid_fkey REFERENCES messages (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	customerid 	integer 	DEFAULT NULL
@@ -2812,10 +2813,10 @@ CREATE TABLE messageitems (
 	error 		text		DEFAULT NULL,
 	lastreaddate 	bigint		DEFAULT 0 NOT NULL,
 	externalmsgid	varchar(64)	DEFAULT NULL,
-    body 		text		DEFAULT NULL,
-        PRIMARY KEY (id)
+	body 		text		DEFAULT NULL,
+	attributes text DEFAULT NULL,
+	PRIMARY KEY (id)
 );
-
 CREATE INDEX messageitems_messageid_idx ON messageitems (messageid);
 CREATE INDEX messageitems_customerid_idx ON messageitems (customerid);
 
@@ -4426,6 +4427,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024092701');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024100400');
 
 COMMIT;
