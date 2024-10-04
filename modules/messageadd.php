@@ -749,11 +749,13 @@ foreach ($divisions as $division) {
 
 $userinfo = $LMS->GetUserInfo(Auth::GetCurrentUser());
 $sender_name = ConfigHelper::getConfig('messages.sender_name', $userinfo['name']);
+$default_send_attempts = intval(ConfigHelper::getConfig('messages.default_send_attempts', 3));
 
 $SMARTY->assign(
     array(
         'division_count' => $division_count,
-        'sender_name' => $sender_name
+        'sender_name' => $sender_name,
+        'default_send_attempts' => $default_send_attempts,
     )
 );
 
@@ -780,7 +782,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
     $html_format = isset($message['wysiwyg']) && isset($message['wysiwyg']['mailbody']) && ConfigHelper::checkValue($message['wysiwyg']['mailbody']);
 
-    $startdate = null;
+    $startdate = $attempts = null;
 
     if ($message['type'] == MSG_MAIL) {
         $message['body'] = $html_format ? Utils::removeInsecureHtml($message['mailbody']) : $message['mailbody'];
@@ -807,6 +809,20 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 $error['startdate'] = trans('Incorrect date format!');
             } else {
                 $message['startdate'] = $startdate;
+            }
+
+            $attempts = filter_var(
+                $message['attempts'],
+                FILTER_VALIDATE_INT,
+                array(
+                    'options' => array(
+                        'min_range' => 1,
+                        'max_range' => 10,
+                    ),
+                )
+            );
+            if ($attempts === false) {
+                $error['attempts'] = trans('Incorrect value!');
             }
         }
     } elseif ($message['type'] == MSG_WWW || $message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT) {
@@ -1014,6 +1030,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             ),
             'contenttype' => $message['contenttype'],
             'startdate' => $startdate,
+            'attempts' => $attempts,
             'recipients' => $recipients,
         ));
         $msgid = $result['id'];

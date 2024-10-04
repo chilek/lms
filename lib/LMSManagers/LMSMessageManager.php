@@ -478,9 +478,9 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
             $customerid = $row['id'] ?? 0;
             foreach ($row['destination'] as $destination) {
                 $this->db->Execute(
-                    'INSERT INTO messageitems (messageid, customerid,
-					destination, status, error, externalmsgid)
-					VALUES (?, ?, ?, ?, ?, ?)',
+                    'INSERT INTO messageitems
+                    (messageid, customerid, destination, status, error, externalmsgid, attempts)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)',
                     array(
                         $msgid,
                         empty($customerid) ? null : $customerid,
@@ -488,6 +488,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
                         $row['status'] ?? MSG_NEW,
                         $row['error'] ?? null,
                         !empty($row['externalmsgid']) ? $row['externalmsgid'] : null,
+                        !empty($params['attempts']) ? $params['attempts'] : null,
                     )
                 );
                 if (!isset($msgitems[$customerid])) {

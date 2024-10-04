@@ -2904,9 +2904,11 @@ CREATE TABLE messageitems (
 	externalmsgid	varchar(64) DEFAULT NULL,
 	body 		text		DEFAULT NULL,
 	attributes text DEFAULT NULL,
+	attempts smallint DEFAULT NULL,
 	PRIMARY KEY (id),
 	INDEX messageid (messageid),
 	INDEX customerid (customerid),
+    INDEX messageitems_attempts_idx (attempts),
 	CONSTRAINT messageitems_customerid_fkey
 		FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT messageitems_messageid_fkey
@@ -4386,4 +4388,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024100400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024100401');

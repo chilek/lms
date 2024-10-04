@@ -2815,10 +2815,12 @@ CREATE TABLE messageitems (
 	externalmsgid	varchar(64)	DEFAULT NULL,
 	body 		text		DEFAULT NULL,
 	attributes text DEFAULT NULL,
+	attempts smallint DEFAULT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX messageitems_messageid_idx ON messageitems (messageid);
 CREATE INDEX messageitems_customerid_idx ON messageitems (customerid);
+CREATE INDEX messageitems_attempts_idx ON messageitems (attemtps);
 
 /* ---------------------------------------------------
  Structure of table "nastypes"
@@ -4427,6 +4429,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024100400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024100401');
 
 COMMIT;

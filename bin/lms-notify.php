@@ -3492,19 +3492,25 @@ if (empty($types) || in_array('messages', $types)) {
                 mi.id AS messageitemid,
                 mi.customerid,
                 (' . $DB->Concat('c.lastname', "' '", 'c.name') . ') AS name,
-                mi.attributes
+                mi.attributes,
+                mi.attempts
             FROM messages m
             JOIN messageitems mi ON mi.messageid = m.id
             JOIN customers c ON c.id = mi.customerid
             WHERE m.type = ?
                 AND m.startdate > 0
                 AND m.startdate <= ?NOW?
-                AND mi.status = ?
-            ORDER BY m.startdate,
-                 mi.id',
+                AND mi.attempts > 0
+                AND mi.status IN ?
+            ORDER BY mi.status,
+                m.startdate,
+                mi.id',
             array(
                 MSG_MAIL,
-                MSG_NEW,
+                array(
+                    MSG_NEW,
+                    MSG_ERROR,
+                ),
             )
         );
 
@@ -3597,6 +3603,8 @@ if (empty($types) || in_array('messages', $types)) {
                             $errors = $result['errors'] ?? array();
                         }
 
+                        $attempts = $messageitem['attempts'] - 1;
+
                         if (!$quiet) {
                             switch ($status) {
                                 case MSG_SENT:
@@ -3604,10 +3612,14 @@ if (empty($types) || in_array('messages', $types)) {
                                     break;
                                 case MSG_ERROR:
                                     if (empty($errors)) {
-                                        echo 'error.';
+                                        echo 'error';
                                     } else {
                                         echo 'error: ' . implode(', ', $errors);
                                     }
+                                    if (!empty($attempts)) {
+                                        echo ' (will retry)';
+                                    }
+                                    echo '.';
                                     break;
                                 default:
                                     echo 'unknown.';
@@ -3616,15 +3628,16 @@ if (empty($types) || in_array('messages', $types)) {
                             echo PHP_EOL;
                         }
 
-                        if ($status == MSG_SENT || !empty($errors)) {
+                        if ($status == MSG_SENT || $status == MSG_ERROR || !empty($errors)) {
                             $DB->Execute(
                                 'UPDATE messageitems
-                                SET status = ?, lastdate = ?NOW?, error = ?
+                                SET status = ?, lastdate = ?NOW?, error = ?, attempts = ?
                                 WHERE messageid = ?
                                     AND id = ?',
                                 array(
                                     $status,
                                     empty($errors) ? null : implode(', ', $errors),
+                                    $attempts,
                                     $messageitem['messageid'],
                                     $messageitem['messageitemid'],
                                 )

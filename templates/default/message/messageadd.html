@@ -497,17 +497,39 @@
 				</td>
 			</tr>
 		{/if}
-		<tr id="startdate"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
+		<tr id="startdate-row" class="scheduled-message"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
 			<td>
 				{icon name="calendar"}
 			</td>
 			<td class="nobr">
-				<strong>{trans("Start date")}</strong>
+				<strong>
+					<label for="startdate">
+						{trans("Start date")}
+					</label>
+				</strong>
 			</td>
 			<td>
-				<input type="text" name="message[startdate]" value="{if $message.startdate}{$message.startdate|date_format:"Y/m/d H:i"}{/if}"
+				<input type="text" name="message[startdate]" id="startdate"
+					value="{if $message.startdate}{$message.startdate|date_format:"Y/m/d H:i"}{/if}"
 					size="20" maxlength="20"
 					{tip trigger="startdate" class="lms-ui-datetime"}>
+			</td>
+		</tr>
+		<tr id="attemtps-row" class="scheduled-message"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
+			<td>
+				{icon name="reload" class="attempts-field"}
+			</td>
+			<td class="nobr">
+				<strong>
+					<label for="attempts" class="attempts-field">
+						{trans("Attempts")}
+					</label>
+				</strong>
+			</td>
+			<td>
+				<input type="number" name="message[attempts]" id="attempts"
+					value="{if isset($message.attempts)}{$message.attempts}{else}{$default_send_attempts}{/if}"
+					size="10" maxlength="5" min="1" max="10">
 			</td>
 		</tr>
 		<tr id="mailsender"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
@@ -741,7 +763,7 @@
 			});
 
 			if (elem == 'typesms' || elem == 'typeanysms' || elem == 'typewww' || elem == 'typeuserpanel' || elem == 'typeuserpanelurgent') {
-				$('#mailfrom,#mailsender,#startdate').hide();
+				$('#mailfrom,#mailsender,.scheduled-message').hide();
 
 				if (elem == 'typesms' || elem == 'typeanysms' || elem == 'typewww') {
 					$('#attachment').hide();
@@ -782,7 +804,7 @@
 					xajax_getMessageTemplates({$smarty.const.TMPL_SMS});
 				}
 			} else {
-				$('#mailbody,#mailfrom,#mailsender,#startdate,#attachment').show();
+				$('#mailbody,#mailfrom,#mailsender,.scheduled-message,#attachment').show();
 
 				{if $message.emailcount}
 					$('#customermails').show();
@@ -800,6 +822,12 @@
 			}
 			$('#msgtmplid').prop('disabled', true);
 		});
+
+		$('#startdate').change(function() {
+			var disabled = !$(this).val().length;
+			$('#attempts').prop('disabled', disabled).prop('required', !disabled);
+			$('.attempts-field').toggleClass('lms-ui-disabled', disabled);
+		}).change();
 
 		$('#usergroup-selection').change(function() {
 			var userms = $('#user-selection').data('multiselect-object');

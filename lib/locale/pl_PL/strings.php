@@ -6005,3 +6005,4 @@ $_LANG['Relative to reference document'] = 'Względem dokumentu odniesienia';
 $_LANG['(taxation)'] = '(opodatkowanie)';
 
 $_LANG['Start date'] = 'Data rozpoczęcia';
+$_LANG['Attempts'] = 'Liczba prób';
