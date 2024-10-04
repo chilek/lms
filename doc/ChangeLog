@@ -822,6 +822,8 @@ version 28-git (????-??-??):
   - enhancement: support of tax net accounted tariffs in promotion schemas [chilan]
   - enhancement: allow to attach files to messages sent to userpanel [chilan]
   - enhancement: allow to send mail messages from www message add form in scheduled date/time [chilan]
+  - enhancement: 'messages.default_send_attempts' with default value of '3' allows to control how many
+    send retries are made in case of send errors [chilan]
 
 version 27.0 (2021-08-20):
 
