@@ -3538,14 +3538,19 @@ if (empty($types) || in_array('messages', $types)) {
             $files_by_messageids = array();
             $idx = 0;
             foreach ($messageitems as $messageitem) {
+                if ($idx >= $start_idx && $idx <= $end_idx) {
+                    $attributes = unserialize($messageitem['attributes']);
+                }
+
                 if (!$quiet) {
                     if ($idx >= $start_idx && $idx <= $end_idx) {
                         printf(
-                            "[mail/messages] %s (#%d) message: #%d, message item: #%d, status: ",
+                            "[mail/messages] %s (#%d) message #%d, message item #%d: %s, status: ",
                             $messageitem['name'],
                             $messageitem['customerid'],
                             $messageitem['messageid'],
-                            $messageitem['messageitemid']
+                            $messageitem['messageitemid'],
+                            $attributes['destination']
                         );
                     }
                 }
@@ -3574,7 +3579,6 @@ if (empty($types) || in_array('messages', $types)) {
                             $files = $files_by_messageids[$messageitem['messageid']];
                         }
 
-                        $attributes = unserialize($messageitem['attributes']);
                         $result = $LMS->SendMail(
                             $attributes['destination'],
                             $attributes['headers'],
