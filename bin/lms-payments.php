@@ -135,7 +135,20 @@ if (isset($options['force-date'])) {
     $fakedate = null;
 }
 $issuedate = $options['issue-date'] ?? null;
-$customerid = isset($options['customerid']) && intval($options['customerid']) ? $options['customerid'] : null;
+if (isset($options['customerid'])) {
+    if (preg_match('/^[0-9]+(,[0-9]+)*$/', $options['customerid'])) {
+        $customerid = array_map(
+            function ($customerid) {
+                return intval($customerid);
+            },
+            explode(',', $options['customerid']),
+        );
+    } else {
+        $customerid = null;
+    }
+} else {
+    $customerid = null;
+}
 $voip_cdr_only = isset($options['voip-cdr-only']);
 
 if (empty($fakedate)) {
@@ -496,7 +509,7 @@ if ($voip_cdr_only) {
             GROUP BY vna.assignment_id
         ) voipphones ON voipphones.assignment_id = a.id
         LEFT JOIN divisions d ON d.id = c.divisionid
-        WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
+        WHERE " . (empty($customerid) ? '1 = 1' : 'c.id IN (' . implode(', ', $customerid) . ')')
             . $customer_status_condition
             . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
             . " AND a.commited = 1
@@ -656,7 +669,7 @@ $query = "SELECT
 				GROUP BY vna2.assignment_id
 			) voipphones ON voipphones.assignment_id = a.id
 			LEFT JOIN divisions d ON (d.id = c.divisionid)
-	    WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
+	    WHERE " . (empty($customerid) ? '1 = 1' : 'c.id IN (' . implode(', ', $customerid) . ')')
            . $customer_status_condition
            . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
            . " AND t.type = ? AND
@@ -1119,7 +1132,7 @@ $currencyvalues[Localisation::getCurrentCurrency()] = 1.0;
 $documents = $DB->GetAll(
     'SELECT d.id, d.currency FROM documents d
     JOIN customers c ON c.id = d.customerid
-    WHERE ' . ($customerid ? 'd.customerid = ' . $customerid : '1 = 1')
+    WHERE ' . (empty($customerid) ? '1 = 1' : 'd.customerid IN (' . implode(', ', $customerid) . ')')
         . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
         . ' AND d.type IN (?, ?, ?, ?, ?) AND ((sdate = 0 AND cdate >= ? AND cdate <= ?)
         OR (sdate > 0 AND ((sdate < cdate  AND sdate >= ? AND sdate <= ?) OR (sdate >= cdate AND cdate >= ? AND cdate <= ?))))
@@ -1143,7 +1156,7 @@ $documents = $DB->GetAll(
 $cashes = $DB->GetAll(
     'SELECT cash.id, cash.currency FROM cash
     LEFT JOIN customers c ON c.id = cash.customerid
-    WHERE ' . ($customerid ? 'cash.customerid = ' . $customerid : '1 = 1')
+    WHERE ' . (empty($customerid) ? '1 = 1' : 'cash.customerid IN (' . implode(', ', $customerid) . ')')
     . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
     . ' AND cash.docid IS NULL AND cash.currency <> ? AND cash.time >= ? AND cash.time <= ?',
     array(
@@ -1248,7 +1261,7 @@ if (!empty($payments)) {
 if ($check_invoices) {
     $DB->Execute(
         "UPDATE documents SET closed = 1
-		WHERE " . ($customerid ? 'customerid = ' . $customerid : '1 = 1') . " AND customerid IN (
+		WHERE " . (empty($customerid) ? '1 = 1' : 'customerid IN (' . implode(', ', $customerid) . ')') . " AND customerid IN (
 			SELECT cash.customerid
 			FROM cash
 			JOIN customers c ON c.id = cash.customerid
@@ -2005,54 +2018,6 @@ foreach ($assigns as $assign) {
                             'customerid' => $cid,
                         ));
 
-                        $DB->Execute(
-                            "INSERT INTO documents (number, numberplanid, type, countryid, divisionid,
-                                customerid, name, address, zip, city, ten, ssn, cdate,
-                                div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
-                                div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
-                                reference, template, closed)
-                                VALUES (?, ?, ?, ?, ?,
-                                    ?, ?, ?, ?, ?, ?, ?, ?,
-                                    ?, ?, ?, ?, ?, ?, ?, ?,
-                                    ?, ?, ?, ?, ?, ?, ?,
-                                    ?, ?, ?)",
-                            array(
-                                $newnumber,
-                                $billing_plan ?: null,
-                                DOC_BILLING,
-                                $customer['countryid'] ?: null,
-                                $customer['divisionid'],
-                                $cid,
-                                $customer['lastname'] . ' ' . $customer['name'],
-                                ($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
-                                    ? $customer['city'] . ', ' : '') . $customer['address'],
-                                $customer['zip'] ?: null,
-                                $customer['postoffice'] ?: ($customer['city'] ?: null),
-                                $customer['ten'],
-                                $customer['ssn'],
-                                $issuetime,
-                                $division['name'] ?: '',
-                                $division['shortname'] ?: '',
-                                $division['address'] ?: '',
-                                $division['city'] ?: '',
-                                $division['zip'] ?: '',
-                                $division['countryid'] ?: null,
-                                $division['ten'] ?: '',
-                                $division['regon'] ?: '',
-                                $division['bank'] ?: null,
-                                $division['account'] ?: '',
-                                $division['inv_header'] ?: '',
-                                $division['inv_footer'] ?: '',
-                                $division['inv_author'] ?: '',
-                                $division['inv_cplace'] ?: '',
-                                $doc_fullnumber,
-                                $invoices[$cid],
-                                $billing_document_template['name'],
-                                DOC_CLOSED,
-                            )
-                        );
-                        $billing_docid = $DB->GetLastInsertID('documents');
-
                         switch ($assign['period']) {
                             case YEARLY:
                                 $datefrom = mktime(0, 0, 0, $month, 1, $year - 1);
@@ -2075,20 +2040,6 @@ foreach ($assigns as $assign) {
                                 $dateto = strtotime('+ 1 day', $currtime) - 1;
                                 break;
                         }
-
-                        $DB->Execute(
-                            "INSERT INTO documentcontents
-                            (docid, title, fromdate, todate)
-                            VALUES (?, ?, ?, ?)",
-                            array(
-                                $billing_docid,
-                                $billing_document_template['title'],
-                                $datefrom,
-                                $dateto,
-                            )
-                        );
-
-                        $invoices_with_billings[$invoices[$cid]] = $billing_docid;
 
                         if (!$test) {
                             $bobj = $barcode->getBarcodeObj('C128', iconv('UTF-8', 'ASCII//TRANSLIT', $doc_fullnumber), -1, -30, 'black');
@@ -2142,6 +2093,8 @@ foreach ($assigns as $assign) {
                             }
                             $SMARTY->assign('footer', $footer);
 
+                            $output = null;
+
                             // run template engine
                             if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
                                 . $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php')) {
@@ -2170,17 +2123,88 @@ foreach ($assigns as $assign) {
                                     'newfile' => $path . DIRECTORY_SEPARATOR . $md5sum,
                                 );
                                 $files[] = $docfile;
-                            } else {
+                            } elseif ($output !== false) {
                                 die('Fatal error: Problem during billing document generation!' . PHP_EOL);
                             }
 
                             $error = $LMS->AddDocumentFileAttachments($files);
-                            if (empty($error)) {
-                                $LMS->AddDocumentAttachments($billing_docid, $files);
-                            }
 
                             if (file_exists($file)) {
                                 @unlink($file);
+                            }
+                        } else {
+                            $output = $error = null;
+                        }
+
+                        if ($test || isset($output) && $output !== false) {
+                            $DB->Execute(
+                                "INSERT INTO documents (number, numberplanid, type, countryid, divisionid,
+                                    customerid, name, address, zip, city, ten, ssn, cdate,
+                                    div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
+                                    div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
+                                    reference, template, closed)
+                                    VALUES (?, ?, ?, ?, ?,
+                                        ?, ?, ?, ?, ?, ?, ?, ?,
+                                        ?, ?, ?, ?, ?, ?, ?, ?,
+                                        ?, ?, ?, ?, ?, ?, ?,
+                                        ?, ?, ?)",
+                                array(
+                                    $newnumber,
+                                    $billing_plan ?: null,
+                                    DOC_BILLING,
+                                    $customer['countryid'] ?: null,
+                                    $customer['divisionid'],
+                                    $cid,
+                                    $customer['lastname'] . ' ' . $customer['name'],
+                                    ($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
+                                        ? $customer['city'] . ', ' : '') . $customer['address'],
+                                    $customer['zip'] ?: null,
+                                    $customer['postoffice'] ?: ($customer['city'] ?: null),
+                                    $customer['ten'],
+                                    $customer['ssn'],
+                                    $issuetime,
+                                    $division['name'] ?: '',
+                                    $division['shortname'] ?: '',
+                                    $division['address'] ?: '',
+                                    $division['city'] ?: '',
+                                    $division['zip'] ?: '',
+                                    $division['countryid'] ?: null,
+                                    $division['ten'] ?: '',
+                                    $division['regon'] ?: '',
+                                    $division['bank'] ?: null,
+                                    $division['account'] ?: '',
+                                    $division['inv_header'] ?: '',
+                                    $division['inv_footer'] ?: '',
+                                    $division['inv_author'] ?: '',
+                                    $division['inv_cplace'] ?: '',
+                                    $doc_fullnumber,
+                                    $invoices[$cid],
+                                    $billing_document_template['name'],
+                                    DOC_CLOSED,
+                                )
+                            );
+                            $billing_docid = $DB->GetLastInsertID('documents');
+
+                            $DB->Execute(
+                                "INSERT INTO documentcontents
+                                (docid, title, fromdate, todate)
+                                VALUES (?, ?, ?, ?)",
+                                array(
+                                    $billing_docid,
+                                    $billing_document_template['title'],
+                                    $datefrom,
+                                    $dateto,
+                                )
+                            );
+
+                            if (isset($output) && $output !== false && empty($error)) {
+                                $LMS->AddDocumentAttachments($billing_docid, $files);
+                            }
+
+                            $invoices_with_billings[$invoices[$cid]] = $billing_docid;
+
+                            if (!$quiet) {
+                                echo 'CID:' . $cid . "\tBILLING-NUMBER:" . $doc_fullnumber . "\tREFERENCED-DOCUMENT-NUMBER:" . $fullnumber . "\tREFERENCED-DOCUMENT-ID:" . $invoices[$cid] . PHP_EOL;
                             }
                         }
                     }
@@ -2208,7 +2232,7 @@ foreach ($assigns as $assign) {
 
         if (!$quiet && (!$prefer_settlement_only || !$assign['settlement'] || !$assign['datefrom'])) {
             if ($assign['invoice']) {
-                echo 'CID:' . $cid . "\tDOCNUMBER:" . $fullnumber . "\tVAL:" . $grossvalue . ' ' . $currency. "\tDESC:" . $desc . PHP_EOL;
+                echo 'CID:' . $cid . "\tDOCNUMBER:" . $fullnumber . "\tDOCID:" . $invoices[$cid] . "\tVAL:" . $grossvalue . ' ' . $currency. "\tDESC:" . $desc . PHP_EOL;
             } else {
                 echo 'CID:' . $cid . "\tVAL:" . $grossvalue . ' ' . $currency. "\tDESC:" . $desc . PHP_EOL;
             }
@@ -2452,7 +2476,7 @@ foreach ($assigns as $assign) {
 if ($check_invoices) {
     $DB->Execute(
         "UPDATE documents SET closed = 1
-		WHERE " . ($customerid ? 'customerid = ' . $customerid : '1 = 1') . " AND customerid IN (
+		WHERE " . (empty($customerid) ? '1 = 1' : 'customerid IN (' . implode(', ', $customerid) . ')') . " AND customerid IN (
 			SELECT cash.customerid
 			FROM cash
 			JOIN customers c ON c.id = cash.customerid
@@ -2474,7 +2498,7 @@ if ($delete_old_assignments_after_days) {
         "DELETE FROM liabilities WHERE id IN (
 			SELECT a.liabilityid FROM assignments a
 			JOIN customers c ON c.id = a.customerid
-            WHERE " . ($customerid ? 'a.customerid = ' . $customerid : '1 = 1')
+            WHERE " . (empty($customerid) ? '1 = 1' : 'a.customerid IN (' . implode(', ', $customerid) . ')')
                 . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
                 . " AND ((a.dateto <> 0 AND a.dateto < $today - ? * 86400
                     OR (a.period = ? AND a.at < $today - ? * 86400))
@@ -2484,7 +2508,7 @@ if ($delete_old_assignments_after_days) {
     );
     $DB->Execute(
         "DELETE FROM assignments
-		WHERE " . ($customerid ? 'customerid = ' . $customerid : '1 = 1')
+		WHERE " . (empty($customerid) ? '1 = 1' : 'customerid IN (' . implode(', ', $customerid) . ')')
             . ($divisionid ? ' AND EXISTS (SELECT c.id FROM customers c WHERE c.divisionid = ' . $divisionid . ' AND c.id = customerid)' : '')
             . " AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
             AND ((dateto <> 0 AND dateto < $today - ? * 86400)
