@@ -3498,6 +3498,7 @@ if (empty($types) || in_array('messages', $types)) {
             JOIN customers c ON c.id = mi.customerid
             WHERE m.type = ?
                 AND m.startdate > 0
+                AND m.startdate <= ?NOW?
                 AND mi.status = ?
             ORDER BY m.startdate,
                  mi.id',
