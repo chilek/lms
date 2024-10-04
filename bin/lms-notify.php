@@ -3424,65 +3424,222 @@ if (empty($types) || in_array('events', $types)) {
 }
 
 // send message to customers which have awaiting www messages
-if (in_array('www', $channels) && (empty($types) || in_array('messages', $types))) {
-    if (!$debug) {
-        $fh = fopen($notifications['messages']['file'], 'w');
-    }
-
-    $nodes = $DB->GetAll(
-        "SELECT INET_NTOA(ipaddr) AS ip
-            FROM vnodes n
-        JOIN customeraddressview c ON c.id = n.ownerid
-        JOIN (SELECT DISTINCT customerid FROM messageitems
-            JOIN messages m ON m.id = messageid
-            WHERE type = ? AND status = ?
-        ) m ON m.customerid = n.ownerid
-        WHERE 1 = 1"
-        . ($customerid ? ' AND n.ownerid = ' . $customerid : '')
-        . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
-        . " ORDER BY ipaddr",
-        array(
-            MSG_WWW,
-            MSG_NEW
-        )
-    );
-
-    if (!$debug && $fh) {
-        fwrite($fh, str_replace("\\n", PHP_EOL, $notifications['messages']['header']));
-    }
-
-    if (!empty($nodes)) {
-        foreach ($nodes as $node) {
-            if (!$quiet) {
-                printf("[www/messages] %s" . PHP_EOL, $node['ip']);
-            }
-            if (!$debug && $fh) {
-                fwrite($fh, str_replace(
-                    "\\n",
-                    PHP_EOL,
-                    parse_node_data($notifications['messages']['rule'], $node)
-                ));
-            }
-        }
+if (empty($types) || in_array('messages', $types)) {
+    if (in_array('www', $channels)) {
         if (!$debug) {
-            $DB->Execute(
-                "UPDATE messageitems
-                SET status = ?
-                WHERE messageid IN (
-                    SELECT id FROM messages WHERE type = ? AND status = ?
-                )",
-                array(
-                    MSG_SENT,
-                    MSG_WWW,
-                    MSG_NEW,
-                )
-            );
+            $fh = fopen($notifications['messages']['file'], 'w');
         }
-    }
 
-    if (!$debug && $fh) {
-        fwrite($fh, str_replace("\\n", PHP_EOL, $notifications['messages']['footer']));
-        fclose($fh);
+        $nodes = $DB->GetAll(
+            "SELECT INET_NTOA(ipaddr) AS ip
+                FROM vnodes n
+            JOIN customeraddressview c ON c.id = n.ownerid
+            JOIN (SELECT DISTINCT customerid FROM messageitems
+                JOIN messages m ON m.id = messageid
+                WHERE type = ? AND status = ?
+            ) m ON m.customerid = n.ownerid
+            WHERE 1 = 1"
+            . ($customerid ? ' AND n.ownerid = ' . $customerid : '')
+            . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+            . " ORDER BY ipaddr",
+            array(
+                MSG_WWW,
+                MSG_NEW
+            )
+        );
+
+        if (!$debug && $fh) {
+            fwrite($fh, str_replace("\\n", PHP_EOL, $notifications['messages']['header']));
+        }
+
+        if (!empty($nodes)) {
+            foreach ($nodes as $node) {
+                if (!$quiet) {
+                    printf("[www/messages] %s" . PHP_EOL, $node['ip']);
+                }
+                if (!$debug && $fh) {
+                    fwrite($fh, str_replace(
+                        "\\n",
+                        PHP_EOL,
+                        parse_node_data($notifications['messages']['rule'], $node)
+                    ));
+                }
+            }
+            if (!$debug) {
+                $DB->Execute(
+                    "UPDATE messageitems
+                    SET status = ?
+                    WHERE messageid IN (
+                        SELECT id FROM messages WHERE type = ? AND status = ?
+                    )",
+                    array(
+                        MSG_SENT,
+                        MSG_WWW,
+                        MSG_NEW,
+                    )
+                );
+            }
+        }
+
+        if (!$debug && $fh) {
+            fwrite($fh, str_replace("\\n", PHP_EOL, $notifications['messages']['footer']));
+            fclose($fh);
+        }
+    } elseif (in_array('mail', $channels)) {
+        $messageitems = $DB->GetAll(
+            'SELECT
+                m.id AS messageid,
+                mi.id AS messageitemid,
+                mi.customerid,
+                (' . $DB->Concat('c.lastname', "' '", 'c.name') . ') AS name,
+                mi.attributes
+            FROM messages m
+            JOIN messageitems mi ON mi.messageid = m.id
+            JOIN customers c ON c.id = mi.customerid
+            WHERE m.type = ?
+                AND m.startdate > 0
+                AND mi.status = ?
+            ORDER BY m.startdate,
+                 mi.id',
+            array(
+                MSG_MAIL,
+                MSG_NEW,
+            )
+        );
+
+        if (!empty($messageitems)) {
+            $count = count($messageitems);
+            if (!empty($part_size)) {
+                if (preg_match('/^(?<percent>[0-9]+)%$/', $part_size, $m)) {
+                    $percent = intval($m['percent']);
+                    if ($percent < 1 || $percent > 99) {
+                        $start_idx = 0;
+                        $end_idx = $count;
+                    } else {
+                        $part_size = ceil(($percent * $count) / 100);
+                        $part_offset = $part_number * $part_size;
+                        $start_idx = $part_offset;
+                        if ((!$part_offset && $part_number) || $part_offset >= $count) {
+                            $end_idx = $part_offset - 1;
+                        } else {
+                            $end_idx = $part_offset + ($part_size ?: $count) - 1;
+                        }
+                    }
+                } else {
+                    $start_idx = $part_offset;
+                    $end_idx = $start_idx + $part_size - 1;
+                }
+            } else {
+                $start_idx = 0;
+                $end_idx = $count;
+            }
+
+            $files_by_messageids = array();
+            $idx = 0;
+            foreach ($messageitems as $messageitem) {
+                if (!$quiet) {
+                    if ($idx >= $start_idx && $idx <= $end_idx) {
+                        printf(
+                            "[mail/messages] %s (#%d) message: #%d, message item: #%d, status: ",
+                            $messageitem['name'],
+                            $messageitem['customerid'],
+                            $messageitem['messageid'],
+                            $messageitem['messageitemid']
+                        );
+                    }
+                }
+
+                if (!$debug) {
+                    if ($idx >= $start_idx && $idx <= $end_idx) {
+                        $files = array();
+
+                        if (!isset($files_by_messageids[$messageitem['messageid']])) {
+                            $file_containers = $LMS->GetFileContainers('messageid', $messageitem['messageid']);
+                            if (!empty($file_containers)) {
+                                foreach ($file_containers as $file_container) {
+                                    foreach ($file_container['files'] as $file) {
+                                        $file = $LMS->GetFile($file['id']);
+                                        $files[] = array(
+                                            'content_type' => $file['contenttype'],
+                                            'filename' => $file['filename'],
+                                            'data' => file_get_contents($file['filepath']),
+                                        );
+                                    }
+                                }
+
+                                $files_by_messageids[$messageitem['messageid']] = $files;
+                            }
+                        } else {
+                            $files = $files_by_messageids[$messageitem['messageid']];
+                        }
+
+                        $attributes = unserialize($messageitem['attributes']);
+                        $result = $LMS->SendMail(
+                            $attributes['destination'],
+                            $attributes['headers'],
+                            $attributes['body'],
+                            $files
+                        );
+
+                        if (is_int($result)) {
+                            $status = $result;
+                            $errors = array();
+                        } elseif (is_string($result)) {
+                            $status = MSG_ERROR;
+                            $errors = array($result);
+                        } else {
+                            $status = $result['status'];
+                            $errors = $result['errors'] ?? array();
+                        }
+
+                        if (!$quiet) {
+                            switch ($status) {
+                                case MSG_SENT:
+                                    echo 'sent.';
+                                    break;
+                                case MSG_ERROR:
+                                    if (empty($errors)) {
+                                        echo 'error.';
+                                    } else {
+                                        echo 'error: ' . implode(', ', $errors);
+                                    }
+                                    break;
+                                default:
+                                    echo 'unknown.';
+                                    break;
+                            }
+                            echo PHP_EOL;
+                        }
+
+                        if ($status == MSG_SENT || !empty($errors)) {
+                            $DB->Execute(
+                                'UPDATE messageitems
+                                SET status = ?, lastdate = ?NOW?, error = ?
+                                WHERE messageid = ?
+                                    AND id = ?',
+                                array(
+                                    $status,
+                                    empty($errors) ? null : implode(', ', $errors),
+                                    $messageitem['messageid'],
+                                    $messageitem['messageitemid'],
+                                )
+                            );
+                        }
+
+                        if (!empty($interval)) {
+                            if ($interval == -1) {
+                                $delay = mt_rand(500, 5000);
+                            } else {
+                                $delay = intval($interval);
+                            }
+                            usleep($delay * 1000);
+                        }
+                    }
+                }
+
+                $idx++;
+            }
+        }
     }
 }
 
