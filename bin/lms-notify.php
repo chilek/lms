@@ -3617,7 +3617,7 @@ if (empty($types) || in_array('messages', $types)) {
                                         echo 'error: ' . implode(', ', $errors);
                                     }
                                     if (!empty($attempts)) {
-                                        echo ' (will retry)';
+                                        echo ' (' . $attempts . ' attempts left)';
                                     }
                                     echo '.';
                                     break;
