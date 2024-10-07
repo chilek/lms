@@ -2964,6 +2964,7 @@ $_LANG['Selected port number is taken by node!'] = 'Port o wybranym numerze jest
 $_LANG['Wireless'] = 'Bezprzewodowo';
 $_LANG['IP address edit'] = 'Edycja adresu IP';
 $_LANG['New IP address'] = 'Nowy adres IP';
+$_LANG['Destination'] = 'Cel';
 $_LANG['Destination:'] = 'Cel:';
 $_LANG['Login<!account>'] = 'Login';
 $_LANG['Accounts number:'] = 'Liczba kont:';
@@ -4141,8 +4142,8 @@ $_LANG['Casual'] = 'Zwykła';
 $_LANG['Unread'] = 'Nieprzeczytana';
 $_LANG['Read status:'] = 'Status przeczytania:';
 $_LANG['Was read on:'] = 'Przeczytana dnia:';
-$_LANG['Last read on:'] = 'Ostatnio czytana dnia:';
-$_LANG['Was confirm on:'] = 'Potwierdzona dnia:';
+$_LANG['Last read'] = 'Ostatnio czytana';
+$_LANG['Confirmed'] = 'Potwierdzona';
 $_LANG['only userpanel message'] = 'tylko wiadomości panelu klienta';
 
 $_LANG['Subject (new ticket)'] = 'Temat (nowe zgłoszenie)';
@@ -6006,3 +6007,5 @@ $_LANG['(taxation)'] = '(opodatkowanie)';
 
 $_LANG['Start date'] = 'Data rozpoczęcia';
 $_LANG['Attempts'] = 'Liczba prób';
+$_LANG['Attempts left'] = 'Zostało prób';
+$_LANG['Increase attempts'] = 'Zwiększ liczbę prób';

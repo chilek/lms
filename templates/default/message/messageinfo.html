@@ -9,315 +9,357 @@
 		margin-top: 0.5em;
 	}
 
+	#messageitems-filter > *:not(:first-child) {
+		margin-left: 0.5em;
+	}
+
 </style>
-<TABLE class="lmsbox">
-	<COLGROUP>
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 98%;">
-	</COLGROUP>
-    <THEAD>
-	<TR>
-		<TD>
-			{if $message.type == $smarty.const.MSG_SMS}
-				{$icon = "sms"}
-			{elseif $message.type == $smarty.const.MSG_WWW}
-				{$icon = "www"}
-			{elseif $message.type == $smarty.const.MSG_USERPANEL || $message.type == $smarty.const.MSG_USERPANEL_URGENT}
-				{$icon = "userpanel"}
-			{else}
-				{$icon = "mail"}
-			{/if}
-			{icon name=$icon}
-		</TD>
-		<TD class="bold nobr">
-			{trans("Subject:")}
-		</TD>
-		<TD>
-			{$message.subject|escape}
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR>
-		<TD>
-			{icon name="user"}
-		</TD>
-		<TD class="bold">
-			{trans("User:")}
-		</TD>
-		<TD>
-			{if $message.userid}
-			<a href="?m=userinfo&id={$message.userid}">{$message.username|escape}</a>
-			{else}LMS{/if}
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			{icon name="calendar"}
-		</TD>
-		<TD class="bold">
-			{trans("Creation date:")}
-		</TD>
-		<TD>
-			{$message.cdate|date_format:"Y-m-d H:i"}
-		</TD>
-	</TR>
-	{if !empty($message.startdate)}
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 98%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<td>
+				{if $message.type == $smarty.const.MSG_SMS}
+					{$icon = "sms"}
+				{elseif $message.type == $smarty.const.MSG_WWW}
+					{$icon = "www"}
+				{elseif $message.type == $smarty.const.MSG_USERPANEL || $message.type == $smarty.const.MSG_USERPANEL_URGENT}
+					{$icon = "userpanel"}
+				{else}
+					{$icon = "mail"}
+				{/if}
+				{icon name=$icon}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Subject")}</strong>
+			</td>
+			<td>
+				{$message.subject|escape}
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				{icon name="user"}
+			</td>
+			<td>
+				<strong>{trans("User")}</strong>
+			</td>
+			<td>
+				{if $message.userid}
+					<a href="?m=userinfo&id={$message.userid}">{$message.username|escape}</a>
+				{else}
+					LMS
+				{/if}
+			</td>
+		</tr>
 		<tr>
 			<td>
 				{icon name="calendar"}
 			</td>
-			<td class="nobr">
-				<strong>{trans("Start date")}</strong>
+			<td>
+				<strong>{trans("Creation date")}</strong>
 			</td>
-			<td{if $message.startdate < $smarty.now} class="blend"{/if}>
-				{$message.startdate|date_format:"Y-m-d H:i"}
+			<td>
+				{$message.cdate|date_format:"Y-m-d H:i"}
 			</td>
 		</tr>
-	{/if}
-{if $message.sender}
-	<TR>
-		<TD>
-			{icon name="mail"}
-		</TD>
-		<TD class="bold">
-			{trans("Sender:")}
-		</TD>
-		<TD>
-			{$message.sender|escape:"html"}
-		</TD>
-	</TR>
-{/if}
-	<TR>
-		<TD>
-			{icon name="edit"}
-		</TD>
-		<TD class="bold nobr">
-			{trans("Message body:")}
-		</TD>
-		<TD>
-			<TABLE WIDTH="100%" CELLPADDING="5">
-				<TR>
-					<TD CLASS="fall superlight">
-						{if $message.contenttype == 'text/plain'}
-							{nl2br(htmlspecialchars($message.body), false)}
-						{elseif $message.contenttype == 'text/html'}
-							{$message.body}
-						{else}
-							{nl2br($message.body, false)}
-						{/if}
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	{if $filecontainers}
-		<TR>
-			<TD class="valign-top">
-				{icon name="attachment"}
-			</TD>
-			<TD class="bold valign-top">
-				{trans("Attachments:")}
-			</TD>
-			<TD>
-				{foreach $filecontainers as $container}
-						{foreach $container.files as $file}
-							{documentview id="{$container.id}-{$file.id}" type=$file.contenttype name=$file.filename
-								url="?m=attachments&attachmentaction=viewfile&type=messageid&id={$container.id}&fileid={$file.id}" external=true
-								text="{$file.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$file.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$file.contenttype)} xls{/if}\"></i>"}
-							<br>
-						{/foreach}
-					{button id="downloadzippedcontainer" onclick="location.href = '?m=attachments&attachmentaction=downloadzippedcontainer&type=messageid&id={$container.id}';" label="Download as zip archive" icon="download"}
-				{/foreach}
-			</TD>
-		</TR>
-	{/if}
-	<TR>
-		<TD COLSPAN="3" class="lms-ui-box-buttons">
-			{button id="delete-message" icon="delete" label="Delete"}
-			{button icon="cancel" label="Cancel" onclick="location.href = '?m=messagelist';"}
-			{button icon="resend" label="Resend" onclick="location.href = '?m=messageadd&messageid={$message.id}';"}
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
-<BR>
-<TABLE class="lmsbox lms-ui-background-cycle">
-	<COLGROUP>
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 95%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-	</COLGROUP>
-    <THEAD>
-	<TR>
-		<TD class="nobr">
-			<A href="?m=messageinfo&id={$message.id}&o=customer{if $listdata.direction == "asc" && $listdata.order == "customer"},desc{/if}">{trans("Customer:")}</A> {if $listdata.order == "customer"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-		</TD>
-		<TD class="nobr">
-			<A href="?m=messageinfo&id={$message.id}&o=destination{if $listdata.direction == "asc" && $listdata.order == "destination"},desc{/if}">{trans("Destination:")}</A> {if $listdata.order == "destination"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-		</TD>
-		<TD class="text-right nobr">
-			<a href="?m=messageinfo&id={$message.id}&o=status{if $listdata.direction == "asc" && $listdata.order == "status"},desc{/if}">
-				{trans("Status")} ({trans("Description")})
-			</a>
-			{if $listdata.order == "status"}
-				<img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
-			{/if}
-		</TD>
-		<TD class="text-right nobr">
-			{trans("Last read on:")}
-		</TD>
-		<TD class="text-right nobr">
-			{trans("Was confirm on:")} ({trans("only userpanel message")})
-		</TD>
-		<TD class="bold nobr">
-			{t a=$listdata.total}Total: $a{/t}&nbsp;
-		</TD>
-	</TR>
-	<TR>
-		<TD colspan="6" class="nobr">
-			<FORM METHOD="POST" NAME="page" action="?m=messageinfo&id={$message.id}">
-			<span class="bold">{trans("Filter:")}</span>
-			<INPUT type="text" name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
-			<SELECT size="1" name="cat">
-				<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("— select filter category —")}</OPTION>
-				<OPTION value="name"{if $listdata.cat == "name"} SELECTED{/if}>{trans("customer name")}</OPTION>
-				<OPTION value="customerid"{if $listdata.cat == "customerid"} SELECTED{/if}>{trans("customer ID")}</OPTION>
-				<OPTION value="destination"{if $listdata.cat == "destination"} SELECTED{/if}>{trans("destination number/email")}</OPTION>
-			</SELECT>&nbsp;
-			{trans("Status:")}
-			<SELECT size="1" name="status">
-				<OPTION value=""{if !$listdata.status} SELECTED{/if}>{trans("— all statuses —")}</OPTION>
-				<OPTION value="{$smarty.const.MSG_NEW}"{if $listdata.status == $smarty.const.MSG_NEW} SELECTED{/if}>{trans("waiting<!plural>")}</OPTION>
-			{*
-				<OPTION value="{$smarty.const.MSG_DRAFT}"{if $listdata.status == $smarty.const.MSG_DRAFT} SELECTED{/if}>{trans("drafts")}</OPTION>
-			*}
-				<OPTION value="{$smarty.const.MSG_SENT}"{if $listdata.status == $smarty.const.MSG_SENT} SELECTED{/if}>{trans("sent<!plural>")}</OPTION>
-				<OPTION value="{$smarty.const.MSG_ERROR}"{if $listdata.status == $smarty.const.MSG_ERROR} SELECTED{/if}>{trans("errornous<!plural>")}</OPTION>
-				<OPTION value="{$smarty.const.MSG_DELIVERED}"{if $listdata.status == $smarty.const.MSG_DELIVERED} SELECTED{/if}>{trans("delivered<!plural>")}</OPTION>
-				<OPTION value="{$smarty.const.MSG_CANCELLED}"{if $listdata.status == $smarty.const.MSG_CANCELLED} selected{/if}>{trans("cancelled<!plural>")}</OPTION>
-				<OPTION value="{$smarty.const.MSG_BOUNCED}"{if $listdata.status == $smarty.const.MSG_BOUNCED} selected{/if}>{trans("bounced<!plural>")}</OPTION>
-			</SELECT>
-			&nbsp;<A href="javascript: document.page.submit();">&raquo;&raquo;&raquo;</A>
-			</FORM>
-		</TD>
-	</TR>
-	{if $listdata.total != 0}
-	<TR>
-		<TD class="lms-ui-pagination" COLSPAN="6">
-			{include file="scroller.html" loop=$itemlist scrollerno=1}
-		</TD>
-	</TR>
-	{/if}
-    </THEAD>
-    <TBODY>
-	{section name=itemlist loop=$itemlist start=$start max=$pagelimit}
-	{assign var=item value=$itemlist[itemlist]}
-	<TR class="highlight{if $item.body} showitem{/if} {strip}
-			{if $item.status == $smarty.const.MSG_ERROR}
-				lms-ui-message-error
-			{elseif $item.status == $smarty.const.MSG_SENT}
-				lms-ui-message-sent
-			{elseif $item.status == $smarty.const.MSG_DELIVERED}
-				lms-ui-message-delivered
-			{elseif $item.status == $smarty.const.MSG_CANCELLED}
-				lms-ui-message-cancelled
-			{elseif $item.status == $smarty.const.MSG_BOUNCED}
-				lms-ui-message-bounced
-			{else}
-				lms-ui-message-new
-			{/if}
-		{/strip}" data-itemid="{$item.id}">
-		<TD class="nobr valign-top">
-			{if $item.customerid}
-				<A href="?m=customerinfo&id={$item.customerid}">{$item.customer|truncate:45:"&hellip;":true} ({$item.customerid|string_format:"%04d"})</A>
-			{else}
-				{trans("none")}
-			{/if}
-		</TD>
-		<TD class="nobr valign-top">
-			{trans("{$item.destination|escape}")}
-			{if $item.body}
-				<div id="{$item.id}" style="display: none;" class="fall superlight">
-					{if $message.contenttype == 'text/plain'}
-						{nl2br(htmlspecialchars($item.body), false)}
-					{elseif $message.contenttype == 'text/html'}
-						{$item.body}
-					{else}
-						{nl2br($item.body, false)}
-					{/if}
-				</div>
-			{/if}
-		</TD>
-		<TD class="text-right valign-top">
-			{if $item.status == $smarty.const.MSG_SENT}
-				{trans("sent")}
-				{if $item.error} ({$item.error|escape}){/if}
-			{elseif $item.status == $smarty.const.MSG_ERROR}
-				{trans("errornous")}
-				{if $item.error} ({$item.error|escape}){/if}
-			{elseif $item.status == $smarty.const.MSG_DELIVERED}
-				{trans("delivered")} ({$item.lastdate|date_format:"Y-m-d H:i"})
-			{elseif $item.status == $smarty.const.MSG_CANCELLED}
-				{trans("cancelled")} ({$item.lastdate|date_format:"Y-m-d H:i"})
-			{elseif $item.status == $smarty.const.MSG_BOUNCED}
-				{trans("bounced")} ({$item.lastdate|date_format:"Y-m-d H:i"})
-			{else}
-				{trans("waiting")}
-			{/if}
-		</TD>
-		<TD class="text-right valign-top">
-			{if $item.lastreaddate}{$item.lastreaddate|date_format:"Y-m-d H:i"}{else} - {/if}
-		</TD>
-		<TD class="text-right">
-			{if $item.status == $smarty.const.MSG_DELIVERED && $item.lastdate}{$item.lastdate|date_format:"Y-m-d H:i"}{else} - {/if}
-		</TD>
-		<TD class="text-right nobr valign-top">
-			{if $item.body}
-				{button type="link" icon="info" tip="Show message body"}
-			{/if}
-		</TD>
-	</TR>
-	{sectionelse}
-	<tr>
-		<td colspan="6" class="empty-table">
-			{trans("No such recipients in database.")}
-		</td>
-	</tr>
-	{/section}
-    </TBODY>
-    <TFOOT>
-	{if $listdata.total != 0}
-	<TR>
-		<TD class="lms-ui-pagination" COLSPAN="6">
-			{include file="scroller.html" loop=$itemlist scrollerno=2}
-		</TD>
-	</TR>
-	{/if}
-	<TR>
-		<TD colspan="6" class="bold text-right">
-			{t a=$listdata.total}Total: $a{/t}
-		</TD>
-	</TR>
-    </TFOOT>
-</TABLE>
-	<script>
-		$(function () {
-			$('.showitem').on('click', function () {
-				var itemid = $(this).attr('data-itemid');
-				$('#'+itemid).toggle();
-			});
+		{if !empty($message.startdate)}
+			<tr>
+				<td>
+					{icon name="calendar"}
+				</td>
+				<td class="nobr">
+					<strong>{trans("Start date")}</strong>
+				</td>
+				<td{if $message.startdate < $smarty.now} class="blend"{/if}>
+					{$message.startdate|date_format:"Y-m-d H:i"}
+				</td>
+			</tr>
+		{/if}
+		{if $message.sender}
+			<tr>
+				<td>
+					{icon name="mail"}
+				</td>
+				<td>
+					<strong>{trans("Sender")}</strong>
+				</td>
+				<td>
+					{$message.sender|escape:"html"}
+				</td>
+			</tr>
+		{/if}
+		<tr>
+			<td>
+				{icon name="edit"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Message body")}</strong>
+			</td>
+			<td>
+				<table style="width: 100%;" cellpadding="5">
+					<tr>
+						<td class="fall superlight">
+							{if $message.contenttype == 'text/plain'}
+								{nl2br(htmlspecialchars($message.body), false)}
+							{elseif $message.contenttype == 'text/html'}
+								{$message.body}
+							{else}
+								{nl2br($message.body, false)}
+							{/if}
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		{if $filecontainers}
+			<tr>
+				<td class="valign-top">
+					{icon name="attachment"}
+				</td>
+				<td class="valign-top">
+					<strong>{trans("Attachments")}</strong>
+				</td>
+				<td>
+					{foreach $filecontainers as $container}
+							{foreach $container.files as $file}
+								{documentview id="{$container.id}-{$file.id}" type=$file.contenttype name=$file.filename
+									url="?m=attachments&attachmentaction=viewfile&type=messageid&id={$container.id}&fileid={$file.id}" external=true
+									text="{$file.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$file.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$file.contenttype)} xls{/if}\"></i>"}
+								<br>
+							{/foreach}
+						{button id="downloadzippedcontainer" onclick="location.href = '?m=attachments&attachmentaction=downloadzippedcontainer&type=messageid&id={$container.id}';" label="Download as zip archive" icon="download"}
+					{/foreach}
+				</td>
+			</tr>
+		{/if}
+		<tr>
+			<td colspan="3" class="lms-ui-box-buttons">
+				{button id="delete-message" icon="delete" label="Delete"}
+				{button icon="cancel" label="Cancel" onclick="location.href = '?m=messagelist';"}
+				{if !empty($itemerrorlist)}
+					{button icon="reload" label="Increase attempts" href="?m={$layout.module}&id={$message.id}&action=increase-attempts"}
+				{/if}
+				{button icon="resend" label="Resend" onclick="location.href = '?m=messageadd&messageid={$message.id}';"}
+			</td>
+		</tr>
+	</tbody>
+</table>
 
-			$('#delete-message').click(function() {
-				confirmDialog($t("Are you sure, you want to delete that message?"), this).done(function() {
-					location.href =  '?m=messagedel&id={$message.id}';
-				});
-				return false;
-			});
+<br>
+
+<form method="POST" name="page" id="messageitems" action="?m=messageinfo&id={$message.id}">
+</form>
+
+<table class="lmsbox lms-ui-background-cycle">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 94%;">
+		<col style="width: 1%;">
+		{if !empty($message.startdate)}
+			<col style="width: 1%;">
+		{/if}
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<td class="nobr">
+				<a href="?m=messageinfo&id={$message.id}&o=customer{if $listdata.direction == "asc" && $listdata.order == "customer"},desc{/if}">
+					{trans("Customer")}
+				</a>
+				{if $listdata.order == "customer"}
+					<img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif">
+				{/if}
+			</td>
+			<td class="nobr">
+				<a href="?m=messageinfo&id={$message.id}&o=destination{if $listdata.direction == "asc" && $listdata.order == "destination"},desc{/if}">
+					{trans("Destination")}
+				</a>
+				{if $listdata.order == "destination"}
+					<img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif">
+				{/if}
+			</td>
+			<td class="text-right nobr">
+				<a href="?m=messageinfo&id={$message.id}&o=status{if $listdata.direction == "asc" && $listdata.order == "status"},desc{/if}">
+					{trans("Status")} ({trans("Description")})
+				</a>
+				{if $listdata.order == "status"}
+					<img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif">
+				{/if}
+			</td>
+			{if !empty($message.startdate)}
+				<td class="text-right nobr">
+					{trans("Attempts left")}
+				</td>
+			{/if}
+			<td class="text-right nobr">
+				{trans("Last read")}
+			</td>
+			<td class="text-right nobr">
+				{trans("Confirmed")}<br>
+				({trans("only userpanel message")})
+			</td>
+			<td class="nobr">
+				<strong>{t a=$listdata.total}Total: $a{/t}</strong>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="{if !empty($message.startdate)}7{else}6{/if}" class="nobr" id="messageitems-filter">
+				{icon name="filter"}
+				<input type="text" name="search" form="messageitems" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>
+				<select size="1" name="cat" form="messageitems">
+					<option value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("— select filter category —")}</option>
+					<option value="name"{if $listdata.cat == "name"} SELECTED{/if}>{trans("customer name")}</option>
+					<option value="customerid"{if $listdata.cat == "customerid"} SELECTED{/if}>{trans("customer ID")}</option>
+					<option value="destination"{if $listdata.cat == "destination"} SELECTED{/if}>{trans("destination number/email")}</option>
+				</select>
+				<span>{trans("Status")}</span>
+				<select size="1" name="status" form="messageitems">
+					<option value=""{if !$listdata.status} selected{/if}>{trans("— all statuses —")}</option>
+					<option value="{$smarty.const.MSG_NEW}"{if $listdata.status == $smarty.const.MSG_NEW} selected{/if}>{trans("waiting<!plural>")}</option>
+					{*
+					<option value="{$smarty.const.MSG_DRAFT}"{if $listdata.status == $smarty.const.MSG_DRAFT} selected{/if}>{trans("drafts")}</OPTION>
+					*}
+					<option value="{$smarty.const.MSG_SENT}"{if $listdata.status == $smarty.const.MSG_SENT} selected{/if}>{trans("sent<!plural>")}</option>
+					<option value="{$smarty.const.MSG_ERROR}"{if $listdata.status == $smarty.const.MSG_ERROR} selected{/if}>{trans("errornous<!plural>")}</option>
+					<option value="{$smarty.const.MSG_DELIVERED}"{if $listdata.status == $smarty.const.MSG_DELIVERED} selected{/if}>{trans("delivered<!plural>")}</option>
+					<option value="{$smarty.const.MSG_CANCELLED}"{if $listdata.status == $smarty.const.MSG_CANCELLED} selected{/if}>{trans("cancelled<!plural>")}</option>
+					<option value="{$smarty.const.MSG_BOUNCED}"{if $listdata.status == $smarty.const.MSG_BOUNCED} selected{/if}>{trans("bounced<!plural>")}</option>
+				</select>
+				<a href="javascript: document.page.submit();">&raquo;&raquo;&raquo;</a>
+			</td>
+		</tr>
+		{if $listdata.total != 0}
+			<tr>
+				<td class="lms-ui-pagination" colspan="{if !empty($message.startdate)}7{else}6{/if}">
+					{include file="scroller.html" loop=$itemlist scrollerno=1}
+				</td>
+			</tr>
+		{/if}
+	</thead>
+	<tbody>
+		{section name=itemlist loop=$itemlist start=$start max=$pagelimit}
+			{assign var=item value=$itemlist[itemlist]}
+			<tr class="highlight{if $item.body} showitem{/if} {strip}
+					{if $item.status == $smarty.const.MSG_ERROR}
+						lms-ui-message-error
+					{elseif $item.status == $smarty.const.MSG_SENT}
+						lms-ui-message-sent
+					{elseif $item.status == $smarty.const.MSG_DELIVERED}
+						lms-ui-message-delivered
+					{elseif $item.status == $smarty.const.MSG_CANCELLED}
+						lms-ui-message-cancelled
+					{elseif $item.status == $smarty.const.MSG_BOUNCED}
+						lms-ui-message-bounced
+					{else}
+						lms-ui-message-new
+					{/if}
+				{/strip}" data-itemid="{$item.id}">
+				<td class="nobr valign-top">
+					{if $item.customerid}
+						<a href="?m=customerinfo&id={$item.customerid}">{$item.customer|truncate:45:"&hellip;":true} ({$item.customerid|string_format:"%04d"})</a>
+					{else}
+						{trans("none")}
+					{/if}
+				</td>
+				<td class="nobr valign-top">
+					{trans("{$item.destination|escape}")}
+					{if $item.body}
+						<div id="{$item.id}" style="display: none;" class="fall superlight">
+							{if $message.contenttype == 'text/plain'}
+								{nl2br(htmlspecialchars($item.body), false)}
+							{elseif $message.contenttype == 'text/html'}
+								{$item.body}
+							{else}
+								{nl2br($item.body, false)}
+							{/if}
+						</div>
+					{/if}
+				</td>
+				<td class="text-right valign-top">
+					{if $item.status == $smarty.const.MSG_SENT}
+						{trans("sent")}
+						{if $item.error} ({$item.error|escape}){/if}
+					{elseif $item.status == $smarty.const.MSG_ERROR}
+						{trans("errornous")}
+						{if $item.error} ({$item.error|escape}){/if}
+					{elseif $item.status == $smarty.const.MSG_DELIVERED}
+						{trans("delivered")} ({$item.lastdate|date_format:"Y-m-d H:i"})
+					{elseif $item.status == $smarty.const.MSG_CANCELLED}
+						{trans("cancelled")} ({$item.lastdate|date_format:"Y-m-d H:i"})
+					{elseif $item.status == $smarty.const.MSG_BOUNCED}
+						{trans("bounced")} ({$item.lastdate|date_format:"Y-m-d H:i"})
+					{else}
+						{trans("waiting")}
+					{/if}
+				</td>
+				{if !empty($message.startdate)}
+					<td class="text-right nobr">
+						{if !empty($item.attempts)}
+							{icon name="reload" class="fa-fw"}
+						{/if}
+						{$item.attempts}
+					</td>
+				{/if}
+				<td class="text-right valign-top">
+					{if $item.lastreaddate}{$item.lastreaddate|date_format:"Y-m-d H:i"}{else} - {/if}
+				</td>
+				<td class="text-right">
+					{if $item.status == $smarty.const.MSG_DELIVERED && $item.lastdate}{$item.lastdate|date_format:"Y-m-d H:i"}{else} - {/if}
+				</td>
+				<td class="text-right nobr valign-top">
+					{if $item.body}
+						{button type="link" icon="info" tip="Show message body"}
+					{/if}
+				</td>
+			</tr>
+		{sectionelse}
+			<tr>
+				<td colspan="{if !empty($message.startdate)}7{else}6{/if}" class="empty-table">
+					{trans("No such recipients in database.")}
+				</td>
+			</tr>
+		{/section}
+	</tbody>
+	<tfoot>
+		{if $listdata.total != 0}
+			<tr>
+				<td class="lms-ui-pagination" colspan="{if !empty($message.startdate)}7{else}6{/if}">
+					{include file="scroller.html" loop=$itemlist scrollerno=2}
+				</td>
+			</tr>
+		{/if}
+		<tr>
+			<td colspan="{if !empty($message.startdate)}7{else}6{/if}" class="text-right">
+				<strong>{t a=$listdata.total}Total: $a{/t}</strong>
+			</td>
+		</tr>
+	</tfoot>
+</table>
+
+<script>
+
+	$(function() {
+		$('.showitem').on('click', function () {
+			var itemid = $(this).attr('data-itemid');
+			$('#'+itemid).toggle();
 		});
-	</script>
+
+		$('#delete-message').click(function() {
+			confirmDialog($t("Are you sure, you want to delete that message?"), this).done(function() {
+				location.href =  '?m=messagedel&id={$message.id}';
+			});
+			return false;
+		});
+	});
+
+</script>
 {/block}
