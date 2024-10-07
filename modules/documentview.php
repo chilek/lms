@@ -158,7 +158,7 @@ if (!empty($docids)) {
                 }
 
                 if (empty($idx) && count($list) > 1) {
-                    $zip_filename = ConfigHelper::getConfig('documents.zip_filename', 'document-%docid.zip');
+                    $zip_filename = ConfigHelper::getConfig('documents.zip_filename', 'document-%document.zip');
 
                     $zip_filename = preg_replace(
                         '/[^[:alnum:]_\.\-]/iu',
