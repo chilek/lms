@@ -103,7 +103,7 @@ if (!empty($docids)) {
             FROM documentattachments dc
             JOIN documents d ON d.id = dc.docid
             WHERE dc.docid IN ?'
-                . ($attachments || !empty($attachmentid) ? '' : ' AND dc.type = 1')
+                . ($attachments || !empty($attachmentid) || isset($_GET['save']) ? '' : ' AND dc.type = 1')
                 . (empty($attachmentid) ? '' : ' AND dc.id = ' . $attachmentid)
             . ' ORDER BY dc.docid ASC, dc.type DESC',
             array(
