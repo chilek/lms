@@ -3653,6 +3653,8 @@ if (empty($types) || in_array('messages', $types)) {
                             usleep($delay * 1000);
                         }
                     }
+                } else {
+                    echo 'tested.' . PHP_EOL;
                 }
 
                 $idx++;
