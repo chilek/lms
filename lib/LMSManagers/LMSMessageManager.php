@@ -449,7 +449,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
                 $params['userid'] ?? Auth::GetCurrentUser(),
                 $params['type'] == MSG_MAIL && isset($params['sender']) ? '"' . $params['sender']['name'] . '" <' . $params['sender']['mail'] . '>' : '',
                 $params['contenttype'] ?? 'text/plain',
-                $params['startdate'],
+                isset($params['startdate']) ? $params['startdate'] : null,
             )
         );
 
