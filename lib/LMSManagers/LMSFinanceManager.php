@@ -3167,8 +3167,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $args = array(
             'name' => $tariff['name'],
-            'description' => $tariff['description'],
-            'notes' => isset($tariff['notes']) ? $tariff['notes'] : null,
+            'description' => Utils::removeInsecureHtml($tariff['description']),
+            'notes' => isset($tariff['notes']) ? Utils::removeInsecureHtml($tariff['notes']) : null,
             'value' => $tariff['value'],
             'taxcategory' => $tariff['taxcategory'],
             'currency' => $tariff['currency'] ?? Localisation::getCurrentCurrency(),
@@ -3268,8 +3268,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $args = array(
             'name' => $tariff['name'],
-            'description' => $tariff['description'],
-            'notes' => isset($tariff['notes']) ? $tariff['notes'] : null,
+            'description' => Utils::removeInsecureHtml($tariff['description']),
+            'notes' => isset($tariff['notes']) ? Utils::removeInsecureHtml($tariff['notes']) : null,
             'value' => $tariff['value'],
             'taxcategory' => $tariff['taxcategory'],
             'currency' => $tariff['currency'],
