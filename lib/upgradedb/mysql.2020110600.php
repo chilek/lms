@@ -21,12 +21,7 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE rtqueues ADD COLUMN newticketsmsbody text DEFAULT NULL");
 $this->Execute("ALTER TABLE rtqueues ADD COLUMN newmessagesmsbody text DEFAULT NULL");
 $this->Execute("ALTER TABLE rtqueues ADD COLUMN resolveticketsmsbody text DEFAULT NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020110600', 'dbversion'));
-
-$this->CommitTrans();

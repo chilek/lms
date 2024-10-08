@@ -21,13 +21,8 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE tariffs ADD COLUMN datefrom integer NOT NULL DEFAULT 0;
 	ALTER TABLE tariffs ADD COLUMN dateto integer NOT NULL DEFAULT 0
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017010900', 'dbversion'));
-
-$this->CommitTrans();

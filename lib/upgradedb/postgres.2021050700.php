@@ -21,11 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE netdevices ALTER COLUMN producer TYPE varchar(256)");
 $this->Execute("ALTER TABLE netdevices ALTER COLUMN model TYPE varchar(256)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021050700', 'dbversion'));
-
-$this->CommitTrans();

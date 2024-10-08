@@ -21,10 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE assignments ADD COLUMN 	count numeric(9,3) DEFAULT 1 NOT NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019083000', 'dbversion'));
-
-$this->CommitTrans();

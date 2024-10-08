@@ -44,7 +44,6 @@ if (!defined('DOC_INVOICE_PRO')) {
     define('DOC_INVOICE_PRO', 6);
 }
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE cash ADD COLUMN currency varchar(3)");
 $this->Execute("ALTER TABLE cash ADD COLUMN currencyvalue decimal(17,10) DEFAULT 1.0");
@@ -65,7 +64,3 @@ $this->Execute(
 foreach (array('tariffs', 'assignments', 'liabilities') as $sql_table) {
     $this->Execute("UPDATE " . $sql_table . " SET currency = ?", array($_currency));
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019102500', 'dbversion'));
-
-$this->CommitTrans();

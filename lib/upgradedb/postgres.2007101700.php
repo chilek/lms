@@ -24,10 +24,5 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE users ADD position varchar(255) NOT NULL DEFAULT ''");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007101700', 'dbversion'));
-
-$this->CommitTrans();
