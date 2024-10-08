@@ -2147,7 +2147,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             $auth_options[$option['name']] = ConfigHelper::getConfig('userpanel.' . $option['name'], '');
                         }
                         $service_provider_id = intval($auth_options['authentication_customer_extid_service_provider_id']);
-                        $result['extid'] = $result['login'] = isset($result['extids'][$service_provider_id]) ? $result['extids'][$service_provider_id]['extid'] : '';
+                        $result['login'] = isset($result['extids'][$service_provider_id]) ? $result['extids'][$service_provider_id]['extid'] : '';
                         break;
                 }
             }
