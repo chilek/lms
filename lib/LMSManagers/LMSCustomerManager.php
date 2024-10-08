@@ -1295,14 +1295,38 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 if ($value != '') {
                     switch ($key) {
                         case 'phone':
-                            $searchargs[] = 'EXISTS (SELECT 1 FROM customercontacts
-					WHERE customerid = c.id AND (customercontacts.type & ' . (CONTACT_MOBILE | CONTACT_LANDLINE)
-                            . ') > 0 AND REPLACE(contact, \'-\', \'\') ?LIKE? ' . $this->db->Escape("%$value%") . ')';
+                            if (!isset($search['without-phone'])) {
+                                $searchargs[] = 'EXISTS (
+                                    SELECT 1 FROM customercontacts
+                                    WHERE customerid = c.id
+                                        AND (customercontacts.type & ' . (CONTACT_MOBILE | CONTACT_LANDLINE) . ') > 0
+                                        AND REPLACE(contact, \'-\', \'\') ?LIKE? ' . $this->db->Escape("%$value%")
+                                    . ')';
+                            }
+                            break;
+                        case 'without-phone':
+                            $searchargs[] = 'NOT EXISTS (
+                                SELECT 1 FROM customercontacts
+                                WHERE customerid = c.id
+                                    AND (customercontacts.type & ' . (CONTACT_MOBILE | CONTACT_LANDLINE) .') > 0
+                                )';
                             break;
                         case 'email':
-                            $searchargs[] = 'EXISTS (SELECT 1 FROM customercontacts
-					WHERE customerid = c.id AND customercontacts.type & ' . CONTACT_EMAIL .' = '. CONTACT_EMAIL
-                            . ' AND contact ?LIKE? ' . $this->db->Escape("%$value%") . ')';
+                            if (!isset($search['without-email'])) {
+                                $searchargs[] = 'EXISTS (
+                                    SELECT 1 FROM customercontacts
+                                    WHERE customerid = c.id
+                                        AND (customercontacts.type & ' . CONTACT_EMAIL .') > 0
+                                        AND contact ?LIKE? ' . $this->db->Escape("%$value%")
+                                    . ')';
+                            }
+                            break;
+                        case 'without-email':
+                            $searchargs[] = 'NOT EXISTS (
+                                SELECT 1 FROM customercontacts
+                                WHERE customerid = c.id
+                                    AND (customercontacts.type & ' . CONTACT_EMAIL .') > 0
+                                )';
                             break;
                         case 'zip':
                         case 'city':

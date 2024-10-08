@@ -204,19 +204,33 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="bold nobr">
-			{icon name="phone"} {trans("Phone:")}
+		<TD class="nobr">
+			<label for="phone">
+				{icon name="phone"}
+				<strong>{trans("Phone")}</strong>
+			</label>
 		</TD>
 		<TD class="nobr">
-			<INPUT type="tel" name="search[phone]" VALUE="{$search.phone}">
+			<INPUT type="tel" name="search[phone]" id="phone" VALUE="{$search.phone}">
+			<label>
+				<input type="checkbox" name="search[without-phone]" value="1" class="without-contact">
+				{trans("without phone contact")}
+			</label>
 		</TD>
 	</TR>
 	<TR>
-		<TD class="bold nobr">
-			{icon name="mail"} {trans("E-mail:")}
+		<TD class="nobr">
+			<label for="email">
+				{icon name="mail"}
+				<strong>{trans("E-mail")}</strong>
+			</label>
 		</TD>
 		<TD>
-			<INPUT type="email" name="search[email]" VALUE="{$search.email}">
+			<INPUT type="email" name="search[email]" id="email" VALUE="{$search.email}">
+			<label>
+				<input type="checkbox" name="search[without-email]" value="1" class="without-contact">
+				{trans("without e-mail contact")}
+			</label>
 		</TD>
 	</TR>
 	{*
@@ -907,6 +921,12 @@
 						break;
 				}
 			}
+		});
+
+		$('.without-contact').change(function() {
+			var checkboxElement = $(this).parent().prev();
+			checkboxElement.prop('disabled', $(this).prop('checked'));
+			$('label[for="' + checkboxElement.attr('id') + '"]').toggleClass('lms-ui-disabled', $(this).prop('checked'));
 		});
 
 		$('[name="s[]"]').change(function() {
