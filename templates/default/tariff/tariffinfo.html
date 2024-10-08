@@ -359,6 +359,19 @@
                                             </td>
                                         </tr>
                                     {/if}
+                                    {if isset($tariff.notes) && strlen($tariff.notes)}
+                                        <tr>
+                                            <td>
+                                                {icon name="notes"}
+                                            </td>
+                                            <td>
+                                                {trans("Notes")}
+                                            </td>
+                                            <td class="fall superlight line-break">
+                                                {$tariff.notes|replace:"\n":"<BR>"}
+                                            </td>
+                                        </tr>
+                                    {/if}
                                     {if $tariff.promotions}
                                         <tr>
                                             <td>

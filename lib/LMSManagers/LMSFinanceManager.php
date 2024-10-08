@@ -3168,6 +3168,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $args = array(
             'name' => $tariff['name'],
             'description' => $tariff['description'],
+            'notes' => isset($tariff['notes']) ? $tariff['notes'] : null,
             'value' => $tariff['value'],
             'taxcategory' => $tariff['taxcategory'],
             'currency' => $tariff['currency'] ?? Localisation::getCurrentCurrency(),
@@ -3215,7 +3216,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $args2['quota_' . $type['alias'] . '_limit'] = $tariff['quota_' . $type['alias'] . '_limit'];
         }
         $result = $this->db->Execute(
-            'INSERT INTO tariffs (name, description, value, taxcategory, currency,
+            'INSERT INTO tariffs (name, description, notes, value, taxcategory, currency,
 				period, taxid, numberplanid, datefrom, dateto, prodid, uprate, downrate,
 				upceil, up_burst_time, up_burst_threshold, up_burst_limit,
 				downceil, down_burst_time, down_burst_threshold, down_burst_limit,
@@ -3224,7 +3225,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				downceil_n, down_burst_time_n, down_burst_threshold_n, down_burst_limit_n,
 				climit_n, plimit_n, dlimit, type, domain_limit, alias_limit, authtype, flags, netvalue, '
                 . implode(', ', array_keys($args2)) . ')
-				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
+				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
 					?,?,?,?,?,?,?,?,?,?,?,?, ?,' . implode(',', array_fill(0, count($args2), '?')) . ')',
             array_values(array_merge($args, $args2))
         );
@@ -3268,6 +3269,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $args = array(
             'name' => $tariff['name'],
             'description' => $tariff['description'],
+            'notes' => isset($tariff['notes']) ? $tariff['notes'] : null,
             'value' => $tariff['value'],
             'taxcategory' => $tariff['taxcategory'],
             'currency' => $tariff['currency'],
@@ -3319,7 +3321,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $fields = array_keys($args2);
         $args = array_merge($args, $args2);
         $args[SYSLOG::RES_TARIFF] = $tariff['id'];
-        $res = $this->db->Execute('UPDATE tariffs SET name = ?, description = ?, value = ?,
+        $res = $this->db->Execute('UPDATE tariffs SET name = ?, description = ?, notes = ?, value = ?,
             taxcategory = ?, currency = ?,
             period = ?, taxid = ?, numberplanid = ?, datefrom = ?, dateto = ?, prodid = ?,
             uprate = ?, downrate = ?,

@@ -295,10 +295,30 @@
 												{icon name="description"}
 											</td>
 											<td>
-												{trans("Description:")}
+												{trans("Description")}
 											</td>
 											<td>
-												<textarea name="tariff[description]" COLS="45" ROWS="4" {tip text="Enter additional information (optional)"}>{$tariff.description}</textarea>
+												<div class="valign-middle">
+													<textarea name="tariff[description]" class="lms-ui-autogrow"
+														rows="4"
+														cols="45">{$tariff.description|escape}</textarea>
+													{hint content="Enter additional information (optional)<br>Text entered here can be visible on customer documents such as contracts, annexes, etc."}
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												{icon name="notes"}
+											</td>
+											<td>
+												{trans("Notes")}
+											</td>
+											<td>
+												<textarea name="tariff[notes]" class="lms-ui-autogrow"
+													cols="45"
+													rows="4"
+													{tip text="Enter notes (optional)"}>{$tariff.notes|escape}</textarea>
+												{hint content="Enter notes (optional)<br>Text entered here will not be visible on customer documents such as contracts, annexes, etc."}
 											</td>
 										</tr>
 									</table>

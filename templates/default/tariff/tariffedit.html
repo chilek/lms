@@ -321,13 +321,31 @@
                                                 {icon name="description"}
                                             </td>
                                             <td>
-                                                {trans("Description:")}
+                                                {trans("Description")}
                                             </td>
                                             <td>
-                                                <textarea name="tariff[description]"
-                                                       ROWS="4"
-                                                       COLS="45"
-                                                       {tip text="Enter additional information (optional)"}>{$tariff.description}</textarea>
+                                                <div class="valign-middle">
+                                                    <textarea name="tariff[description]" class="lms-ui-autogrow"
+                                                        rows="4"
+                                                        cols="45">{$tariff.description|escape}</textarea>
+                                                    {hint content="Enter additional information (optional)<br>Text entered here can be visible on customer documents such as contracts, annexes, etc."}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                {icon name="notes"}
+                                            </td>
+                                            <td>
+                                                {trans("Notes")}
+                                            </td>
+                                            <td>
+                                                <div class="valign-middle">
+                                                    <textarea name="tariff[notes]" class="lms-ui-autogrow"
+                                                        rows="4"
+                                                        cols="45">{$tariff.notes|escape}</textarea>
+                                                    {hint content="Enter notes (optional)<br>Text entered here will not be visible on customer documents such as contracts, annexes, etc."}
+                                                </div>
                                             </td>
                                         </tr>
                                     </table>

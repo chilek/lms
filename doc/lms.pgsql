@@ -929,6 +929,7 @@ CREATE TABLE tariffs (
     currency varchar(3),
     flags smallint DEFAULT 0 NOT NULL,
     netvalue numeric(9,3) DEFAULT NULL,
+    notes text DEFAULT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT tariffs_name_key UNIQUE (name, value, currency, period)
 );
@@ -4429,6 +4430,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024100401');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024100800');
 
 COMMIT;
