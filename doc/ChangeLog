@@ -825,6 +825,8 @@ version 28-git (????-??-??):
   - enhancement: 'messages.default_send_attempts' with default value of '3' allows to control how many
     send retries are made in case of send errors [chilan]
   - enhancement: allow to search for customers without email and phone contacts assigned [chilan]
+  - enhancement: added 'notes' field to tariffs - text entered in this field will not be visible
+    on customer documents such as contracts, annexes, etc. [chilan]
 
 version 27.0 (2021-08-20):
 
