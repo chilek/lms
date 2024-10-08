@@ -824,6 +824,7 @@ version 28-git (????-??-??):
   - enhancement: allow to send mail messages from www message add form in scheduled date/time [chilan]
   - enhancement: 'messages.default_send_attempts' with default value of '3' allows to control how many
     send retries are made in case of send errors [chilan]
+  - enhancement: allow to search for customers without email and phone contacts assigned [chilan]
 
 version 27.0 (2021-08-20):
 
