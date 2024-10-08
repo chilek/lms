@@ -3516,6 +3516,7 @@ if (empty($types) || in_array('messages', $types)) {
 
         if (!empty($messageitems)) {
             $count = count($messageitems);
+            $part_number = $part_offset = 0;
             if (!empty($part_size)) {
                 if (preg_match('/^(?<percent>[0-9]+)%$/', $part_size, $m)) {
                     $percent = intval($m['percent']);
@@ -3653,7 +3654,7 @@ if (empty($types) || in_array('messages', $types)) {
                             usleep($delay * 1000);
                         }
                     }
-                } else {
+                } elseif ($idx >= $start_idx && $idx <= $end_idx) {
                     echo 'tested.' . PHP_EOL;
                 }
 
