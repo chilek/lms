@@ -43,6 +43,7 @@
             margin-block-end: 0.5em;
             padding-inline-start: 1.5em;
         }
+
     </style>
 
     {function bitrate_restrictions}
@@ -354,8 +355,10 @@
                                             <td>
                                                 {trans("Description")}
                                             </td>
-                                            <td class="fall superlight line-break">
-                                                {$tariff.description|replace:"\n":"<BR>"}
+                                            <td>
+                                                <div class="lms-ui-multiline-box">
+                                                    {$tariff.description|replace:"\n":"<BR>"}
+                                                </div>
                                             </td>
                                         </tr>
                                     {/if}
@@ -367,8 +370,10 @@
                                             <td>
                                                 {trans("Notes")}
                                             </td>
-                                            <td class="fall superlight line-break">
-                                                {$tariff.notes|replace:"\n":"<BR>"}
+                                            <td>
+                                                <div class="lms-ui-multiline-box">
+                                                    {$tariff.notes|replace:"\n":"<BR>"}
+                                                </div>
                                             </td>
                                         </tr>
                                     {/if}
