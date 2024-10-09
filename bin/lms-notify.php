@@ -3587,9 +3587,15 @@ if (empty($types) || in_array('messages', $types)) {
                             $files = $files_by_messageids[$messageitem['messageid']];
                         }
 
+                        $headers = $attributes['headers'];
+                        if (isset($headers['Cc']) && $headers['Cc'] == $headers['From']) {
+                            $headers['Cc'] = $mail_from;
+                        }
+                        $headers['From'] = $mail_from;
+
                         $result = $LMS->SendMail(
                             $attributes['destination'],
-                            $attributes['headers'],
+                            $headers,
                             $attributes['body'],
                             $files
                         );
