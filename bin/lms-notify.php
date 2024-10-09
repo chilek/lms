@@ -3499,7 +3499,7 @@ if (empty($types) || in_array('messages', $types)) {
             JOIN customers c ON c.id = mi.customerid
             WHERE m.type = ?
                 AND m.startdate > 0
-                AND m.startdate <= ?NOW?
+                AND m.startdate <= ?
                 AND mi.attempts > 0
                 AND mi.status IN ?
             ORDER BY mi.status,
@@ -3507,6 +3507,7 @@ if (empty($types) || in_array('messages', $types)) {
                 mi.id',
             array(
                 MSG_MAIL,
+                $currtime,
                 array(
                     MSG_NEW,
                     MSG_ERROR,
