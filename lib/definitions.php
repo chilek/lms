@@ -583,6 +583,37 @@ const MSG_NEW = 1,
     MSG_CANCELLED = 6,
     MSG_BOUNCED = 7;
 
+$MESSAGESTATUSES = array(
+    MSG_NEW => array(
+        'class' => 'lms-ui-message-new',
+        'label' => trans('waiting<!plural>'),
+    ),
+    MSG_SENT => array(
+        'class' => 'lms-ui-message-sent',
+        'label' => trans('sent<!plural>'),
+    ),
+    MSG_ERROR => array(
+        'class' => 'lms-ui-message-error',
+        'label' => trans('errornous<!plural>'),
+    ),
+    MSG_DRAFT => array(
+        'class' => 'lms-ui-message-draft',
+        'label' => trans('drafts'),
+    ),
+    MSG_DELIVERED => array(
+        'class' => 'lms-ui-message-delivered',
+        'label' => trans('delivered<!plural>'),
+    ),
+    MSG_CANCELLED => array(
+        'class' => 'lms-ui-message-cancelled',
+        'label' => trans('cancelled<!plural>'),
+    ),
+    MSG_BOUNCED => array(
+        'class' => 'lms-ui-message-bounced',
+        'label' => trans('bounced<!plural>'),
+    ),
+);
+
 // Messages types
 const MSG_MAIL = 1,
     MSG_SMS = 2,
@@ -1789,6 +1820,7 @@ if (isset($SMARTY)) {
             '_CUSTOMERFLAGS' => $CUSTOMERFLAGS,
             '_CCONSENTS' => $CCONSENTS,
             '_ORIGINS' => $ORIGINS,
+            '_MESSAGESTATUSES' => $MESSAGESTATUSES,
             '_MESSAGETEMPLATES' => $MESSAGETEMPLATES,
             '_ACCOUNTTYPES' => $ACCOUNTTYPES,
             '_DOCTYPES' => $DOCTYPES,

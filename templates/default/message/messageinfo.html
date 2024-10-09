@@ -13,6 +13,30 @@
 		margin-left: 0.5em;
 	}
 
+	#summary-table {
+		width: auto;
+	}
+
+	#summary-table thead {
+		border: 1px dotted grey;
+	}
+
+	#summary-table thead td {
+		font-weight: bold;
+	}
+
+	#summary-table tbody {
+		border: 1px dotted grey;
+	}
+
+	#summary-table td:not(:first-child) {
+		border-left: 1px dotted grey;
+	}
+
+	#summary-table tr:not(:first-child) td {
+		border-top: 1px dotted grey;
+	}
+
 </style>
 <table class="lmsbox">
 	<colgroup>
@@ -139,6 +163,42 @@
 				</td>
 			</tr>
 		{/if}
+		{if !empty($summary)}
+			<tr>
+				<td class="valign-top">
+					{icon name="stats"}
+				</td>
+				<td class="valign-top">
+					<strong>{trans("Summary")}</strong>
+				</td>
+				<td>
+					<table id="summary-table" class="lmsbox lms-ui-background-cycle">
+						<thead>
+							<tr>
+								<td>
+									{trans("Status")}
+								</td>
+								<td>
+									{trans("Volume")}
+								</td>
+							</tr>
+						</thead>
+						<tbody>
+							{foreach $summary as $status => $count}
+								<tr class="highlight {$_MESSAGESTATUSES[$status].class}">
+									<td>
+										{$_MESSAGESTATUSES[$status].label}
+									</td>
+									<td>
+										{$count}
+									</td>
+								</tr>
+							{/foreach}
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		{/if}
 		<tr>
 			<td colspan="3" class="lms-ui-box-buttons">
 				{button id="delete-message" icon="delete" label="Delete"}
@@ -248,21 +308,7 @@
 	<tbody>
 		{section name=itemlist loop=$itemlist start=$start max=$pagelimit}
 			{assign var=item value=$itemlist[itemlist]}
-			<tr class="highlight{if $item.body} showitem{/if} {strip}
-					{if $item.status == $smarty.const.MSG_ERROR}
-						lms-ui-message-error
-					{elseif $item.status == $smarty.const.MSG_SENT}
-						lms-ui-message-sent
-					{elseif $item.status == $smarty.const.MSG_DELIVERED}
-						lms-ui-message-delivered
-					{elseif $item.status == $smarty.const.MSG_CANCELLED}
-						lms-ui-message-cancelled
-					{elseif $item.status == $smarty.const.MSG_BOUNCED}
-						lms-ui-message-bounced
-					{else}
-						lms-ui-message-new
-					{/if}
-				{/strip}" data-itemid="{$item.id}">
+			<tr class="highlight{if $item.body} showitem{/if} {$_MESSAGESTATUSES[$item.status].class}" data-itemid="{$item.id}">
 				<td class="nobr valign-top">
 					{if $item.customerid}
 						<a href="?m=customerinfo&id={$item.customerid}">{$item.customer|truncate:45:"&hellip;":true} ({$item.customerid|string_format:"%04d"})</a>

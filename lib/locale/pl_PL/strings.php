@@ -6014,3 +6014,6 @@ $_LANG['Increase attempts'] = 'Zwiększ liczbę prób';
 
 $_LANG['without e-mail contact'] = 'bez kontaktu e-mail';
 $_LANG['without phone contact'] = 'bez kontaktu telefonicznego';
+
+$_LANG['Summary'] = 'Podsumowanie';
+$_LANG['Volume'] = 'Ilość';

@@ -228,7 +228,16 @@ $layout['pagetitle'] = trans('Message Info: $a', $subject);
 
 $SESSION->add_history_entry();
 
+$summary = array();
+foreach ($itemlist as $item) {
+    if (!isset($summary[$item['status']])) {
+        $summary[$item['status']] = 0;
+    }
+        $summary[$item['status']]++;
+}
+
 $SMARTY->assign('message', $message);
+$SMARTY->assign('summary', $summary);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('start', ($page - 1) * $pagelimit);
