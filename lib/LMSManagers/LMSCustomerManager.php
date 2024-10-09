@@ -2423,7 +2423,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $customerdata['extids'] = array();
             } else {
                 $customerdata['extids'] = array_filter($customerdata['extids'], function ($customerextid) {
-                    return strlen($customerextid['extid']) > 0;
+                    return strlen($customerextid['extid']) > 0 || empty($customerextid['serviceproviderid']);
                 });
             }
             $this->updateCustomerExternalIDs(
@@ -3952,7 +3952,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         $current_customerextids = $this->getCustomerExternalIDs($customerid);
 
-        if (!empty($service_providers)) {
+        if (isset($service_providers)) {
             $current_customerextids = array_filter($current_customerextids, function ($customerextid) use ($service_providers) {
                 $serviceprovider = $customerextid['serviceproviderid'];
                 return isset($service_providers[$serviceprovider]);
