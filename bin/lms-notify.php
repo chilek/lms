@@ -605,7 +605,7 @@ if (!empty($dsn_email)) {
 }
 
 if (!empty($mail_fname)) {
-    $mail_from = qp_encode($mail_fname) . ' <' . $mail_from . '>';
+    $mail_from = (empty($mail_fname) ? '' : qp_encode($mail_fname) . ' ') . '<' . $mail_from . '>';
 }
 
 $sms_options = $LMS->getCustomerSMSOptions();
@@ -3588,10 +3588,25 @@ if (empty($types) || in_array('messages', $types)) {
                         }
 
                         $headers = $attributes['headers'];
-                        if (isset($headers['Cc']) && $headers['Cc'] == $headers['From']) {
+
+                        if (!empty($dsn_email) || !empty($mdn_email)) {
+                            if (!empty($dsn_email)) {
+                                $headers['Delivery-Status-Notification-To'] = true;
+                            }
+                            if (!isset($headers['X-LMS-Message-Item-Id'], $headers['Message-ID'])) {
+                                $headers['X-LMS-Message-Item-Id'] = $messageitem['messageitemid'];
+                                $headers['Message-ID'] = '<messageitem-' . $messageitem['messageitemid'] . '@rtsystem.' . gethostname() . '>';
+                            }
+                        }
+
+                        if (isset($headers['Cc']) && $headers['Cc'] == $headers['From'] || !empty($attributes['copytosender'])) {
                             $headers['Cc'] = $mail_from;
                         }
-                        $headers['From'] = $mail_from;
+                        if (empty($dsn_email)) {
+                            $headers['From'] = $mail_from;
+                        } else {
+                            $headers['From'] = (empty($mail_fname) ? '' : qp_encode($mail_fname) . ' ') . '<' . $dsn_email . '>';
+                        }
 
                         $result = $LMS->SendMail(
                             $attributes['destination'],

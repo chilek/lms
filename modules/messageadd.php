@@ -1117,6 +1117,10 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             $sms_options = $LMS->getCustomerSMSOptions();
         }
 
+        $permanent_attributes = array(
+            'copytosender' => isset($message['copytosender']),
+        );
+
         $divisionid = 0;
         $key = 1;
         foreach ($recipients as $row) {
@@ -1129,6 +1133,10 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                         'messages.sender_email',
                         ConfigHelper::getConfig('phpui.message_sender_email', $message['sender'])
                     );
+
+                    $permanent_attributes['sender_name'] = $message['from'];
+                    $permanent_attributes['sender_email'] = $sender_email;
+
                     $headers['From'] = '"' . qp_encode($message['from']) . '"' . ' <' . $sender_email . '>';
                     if (isset($message['copytosender'])) {
                         $headers['Cc'] = $headers['From'];
@@ -1141,7 +1149,8 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                     $mdn_email = ConfigHelper::getConfig('mail.mdn_email', '', true);
 
                     if (!empty($dsn_email)) {
-                        $headers['From'] = $dsn_email;
+                        $permanent_attributes['sender_email'] = $dsn_email;
+                        $headers['From'] = (empty($message['from']) ? '' : qp_encode($message['from']) . ' ') . '<' . $dsn_email . '>';
                         $headers['Delivery-Status-Notification-To'] = true;
                     }
                     if (!empty($mdn_email)) {
@@ -1294,7 +1303,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                             $status,
                             empty($errors) ? null : implode(', ', $errors),
                             !is_array($result) || empty($result['id']) ? null : $result['id'],
-                            serialize($attributes),
+                            empty($attributes) ? null : serialize(array_merge($permanent_attributes, $attributes)),
                             $msgid,
                             $orig_destination,
                         )
@@ -1305,7 +1314,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                         . (empty($customerid) ? 'customerid IS NULL' : 'customerid = ' . intval($customerid)) . '
                             AND destination = ?',
                         array(
-                            serialize($attributes),
+                            serialize(array_merge($permanent_attributes, $attributes)),
                             $msgid,
                             $orig_destination,
                         )
