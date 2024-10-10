@@ -2821,7 +2821,7 @@ CREATE TABLE messageitems (
 );
 CREATE INDEX messageitems_messageid_idx ON messageitems (messageid);
 CREATE INDEX messageitems_customerid_idx ON messageitems (customerid);
-CREATE INDEX messageitems_attempts_idx ON messageitems (attemtps);
+CREATE INDEX messageitems_attempts_idx ON messageitems (attempts);
 
 /* ---------------------------------------------------
  Structure of table "nastypes"
