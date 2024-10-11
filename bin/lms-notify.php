@@ -3501,8 +3501,10 @@ if (empty($types) || in_array('messages', $types)) {
                 AND m.startdate > 0
                 AND m.startdate <= ?
                 AND mi.attempts > 0
-                AND mi.status IN ?
-            ORDER BY mi.status,
+                AND mi.status IN ?'
+                . ($customerid ? ' AND c.id = ' . $customerid : '')
+                . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+            . ' ORDER BY mi.status,
                 m.startdate,
                 mi.id',
             array(
