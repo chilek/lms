@@ -259,13 +259,13 @@ if (isset($_POST['document'])) {
             $document['template'] = $numtemplate;
             $document['nr'] = $document['fullnumber'] = $fullnumber;
 
+            $customer = $LMS->GetCustomer($document['customerid']);
+            $division = $LMS->GetDivision($customer['divisionid']);
+
             if ($document['templ']) {
                 $barcode = new \Com\Tecnick\Barcode\Barcode();
                 $bobj = $barcode->getBarcodeObj('C128', iconv('UTF-8', 'ASCII//TRANSLIT', $fullnumber), -1, -30, 'black');
                 $document['barcode'] = base64_encode($bobj->getPngData());
-
-                $customer = $LMS->GetCustomer($document['customerid']);
-                $division = $LMS->GetDivision($customer['divisionid']);
 
                 $SMARTY->assign(array(
                     'customer' => $customer,
