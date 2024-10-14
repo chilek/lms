@@ -227,6 +227,9 @@ if (isset($_POST['document'])) {
         ));
         $document['nr'] = $document['fullnumber'] = $fullnumber;
 
+        $customer = $LMS->GetCustomer($document['customerid']);
+        $division = $LMS->GetDivision($customer['divisionid']);
+
         if (!empty($document['templ'])) {
             foreach ($documents_dirs as $doc) {
                 if (file_exists($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'])) {
@@ -271,9 +274,6 @@ if (isset($_POST['document'])) {
             $barcode = new Barcode();
             $bobj = $barcode->getBarcodeObj('C128', iconv('UTF-8', 'ASCII//TRANSLIT', $fullnumber), -1, -30, 'black');
             $document['barcode'] = base64_encode($bobj->getPngData());
-
-            $customer = $LMS->GetCustomer($document['customerid']);
-            $division = $LMS->GetDivision($customer['divisionid']);
 
             $SMARTY->assign(array(
                 'customer' => $customer,
@@ -462,7 +462,7 @@ if (isset($_POST['document'])) {
                 isset($document['closed']) || empty($document['confirmdate']) ? 0 : strtotime('+ 1 day', $document['confirmdate']) - 1,
                 $document['customerid'],
                 Auth::GetCurrentUser(),
-                trim($customer['lastname'] . ' ' . $customer['name']),
+                $customer['customername'],
                 $customer['address'] ?: '',
                 $customer['zip'] ?: '',
                 $customer['city'] ?: '',
