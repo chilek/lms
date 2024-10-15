@@ -3016,7 +3016,7 @@ class LMS
                 }
             }
 
-            $headers['X-Mailer'] = 'LMS-' . self::SOFTWARE_VERSION;
+            $headers['X-Mailer'] = self::SOFTWARE_NAME . '-' . self::SOFTWARE_VERSION;
             if (!$hide_sensitive_headers) {
                 if (!empty($_SERVER['REMOTE_ADDR'])) {
                     $headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
@@ -3126,7 +3126,7 @@ class LMS
                 )
             );
 
-            $this->mail_object->XMailer = 'LMS-' . self::SOFTWARE_VERSION;
+            $this->mail_object->XMailer = self::SOFTWARE_NAME . '-' . self::SOFTWARE_VERSION;
             if (!$hide_sensitive_headers) {
                 if (!empty($_SERVER['REMOTE_ADDR'])) {
                     $this->mail_object->addCustomHeader('X-Remote-IP: '.$_SERVER['REMOTE_ADDR']);
