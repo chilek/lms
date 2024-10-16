@@ -78,7 +78,7 @@ function GenerateAttachmentHTML($template_dir, $engine, $selected = null)
     return implode('<br>', $output);
 }
 
-function GetPlugin($template, $customer, $update_title, $JSResponse)
+function GetPlugin($template, $customerid, $update_title, $JSResponse)
 {
     global $documents_dirs;
 
