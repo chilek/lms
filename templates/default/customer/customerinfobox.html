@@ -281,7 +281,7 @@
 															{$v.location|default:""|escape}
 														{/if}
 													</span>
-													{$gps_location_url = str_replace(
+													{$gps_location_url_replaced = str_replace(
 														array(
 															'%location',
 															'%state',
@@ -310,7 +310,7 @@
 														type="link"
 														tip="Show on map"
 														icon="location"
-														href=$gps_location_url|escape
+														href=$gps_location_url_replaced|escape
 													}
 													{show_on_map_button
 														type="default"
@@ -368,11 +368,36 @@
 															{$v.location|escape}
 														{/if}
 													</span>
+													{$gps_location_url_replaced = str_replace(
+														array(
+															'%location',
+															'%state',
+															'%city',
+															'%zip',
+															'%street',
+															'%full_street',
+															'%full_reversed_street',
+															'%short_street',
+															'%house'
+														),
+														array(
+															$v.location,
+															$v.location_state_name,
+															$v.location_city_name,
+															$v.location_zip,
+															$v.location_street_name,
+															$v.location_full_street_name,
+															$v.location_full_reversed_street_name,
+															$v.location_short_street_name,
+															$v.location_house
+														),
+														$gps_location_url
+													)}
 													{button
 														type="link"
 														tip="Show on map"
 														icon="location"
-														href="{$gps_location_url|replace:"%location":$v.location|replace:"%state":$v.location_state_name|replace:"%city":$v.location_city_name|replace:"%zip":$v.location_zip|replace:"%street":$v.location_street_name|replace:"%full_street":$v.location_full_street_name|replace:"%full_reversed_street":$v.location_full_reversed_street_name|replace:"%short_street":$v.location_short_street_name|replace:"%house":$v.location_house|escape}"
+														href=$gps_location_url_replaced|escape
 													}
 													{show_on_map_button
 														type="default"
@@ -438,11 +463,36 @@
 															{$v.location|default:""|escape}
 														{/if}
 													</span>
+													{$gps_location_url_replaced = str_replace(
+														array(
+															'%location',
+															'%state',
+															'%city',
+															'%zip',
+															'%street',
+															'%full_street',
+															'%full_reversed_street',
+															'%short_street',
+															'%house'
+														),
+														array(
+															$v.location,
+															$v.location_state_name,
+															$v.location_city_name,
+															$v.location_zip,
+															$v.location_street_name,
+															$v.location_full_street_name,
+															$v.location_full_reversed_street_name,
+															$v.location_short_street_name,
+															$v.location_house
+														),
+														$gps_location_url
+													)}
 													{button
 														type="link"
 														tip="Show on map"
 														icon="location"
-														href="{$gps_location_url|replace:"%location":$v.location|replace:"%state":$v.location_state_name|replace:"%city":$v.location_city_name|replace:"%zip":$v.location_zip|replace:"%street":$v.location_street_name|replace:"%full_street":$v.location_full_street_name|replace:"%full_reversed_street":$v.location_full_reversed_street_name|replace:"%short_street":$v.location_short_street_name|replace:"%house":$v.location_house|escape}"
+														href=$gps_location_url_replaced|escape
 													}
 													{show_on_map_button
 														type="default"
