@@ -449,6 +449,30 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
     }
 
     /**
+     * Substring match by regular expression for selected field.
+     *
+     * @param string $field
+     * @param string $regexp
+     * @return regexp match string
+     */
+    public function _driver_substringregexp($field, $regexp)
+    {
+        return 'SUBSTRING(' . $field . ' FROM \'' . $regexp . '\')';
+    }
+
+    /**
+     * Convert field variable to specified type.
+     *
+     * @param string $field
+     * @param string $type
+     * @return converted field
+     */
+    public function _driver_cast($field, $type)
+    {
+        return $field . '::' . $type;
+    }
+
+    /**
     * Check if database resource exists (table, view)
     *
     * @param string $name

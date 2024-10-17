@@ -431,6 +431,30 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
     }
 
     /**
+     * Substring match by regular expression for selected field.
+     *
+     * @param string $field
+     * @param string $regexp
+     * @return regexp match string
+     */
+    public function _driver_substringregexp($field, $regexp)
+    {
+        return 'REGEXP_SUBSTR(' . $field . ' FROM \'' . $regexp . '\')';
+    }
+
+    /**
+     * Convert field variable to specified type.
+     *
+     * @param string $field
+     * @param string $type
+     * @return converted field
+     */
+    public function _driver_cast($field, $type)
+    {
+        return 'CAST(' . $field . ' AS ' . $type . ')';
+    }
+
+    /**
     * Check if database resource exists (table, view)
     *
     * @param string $name

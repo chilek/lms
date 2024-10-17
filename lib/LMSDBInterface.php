@@ -66,6 +66,12 @@ interface LMSDBInterface
 
     public function Day($date);
 
+    public function RegExp($field, $regexp);
+
+    public function SubstringRegExp($field, $regexp);
+
+    public function Cast($field, $type);
+
     public function ListTables();
 
     public function BeginTrans();

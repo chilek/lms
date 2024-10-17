@@ -516,6 +516,30 @@ abstract class LMSDB_common implements LMSDBInterface
     }
 
     /**
+     * Substring match by regular expression for selected field.
+     *
+     * @param string $field
+     * @param string $regexp
+     * @return regexp match string
+     */
+    public function SubstringRegExp($field, $regexp)
+    {
+        return $this->_driver_substringregexp($field, $regexp);
+    }
+
+    /**
+     * Convert field variable to specified type.
+     *
+     * @param string $field
+     * @param string $type
+     * @return converted field
+     */
+    public function Cast($field, $type)
+    {
+        return $this->_driver_cast($field, $type);
+    }
+
+    /**
     * Check if database resource exists (table, view)
     *
     * @param string $name
