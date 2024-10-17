@@ -444,8 +444,7 @@ function getBuildings(array $filter)
             LEFT JOIN netranges r ON r.buildingid = b.id'
             . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
             . ' ORDER BY ls.name, ld.name, lb.name, lc.name, lst.name, '
-                . $DB->Cast($DB->SubstringRegExp('b.building_num', '^[0-9]+'), 'integer') . ', '
-                . $DB->SubstringRegExp('b.building_num', '[^[0-9]]*$')
+                . $DB->Cast($DB->SubstringRegExp('b.building_num', '^[0-9]+'), 'integer') . ', b.building_num'
             . (empty($existing) ? (
                 (isset($limit) ? ' LIMIT ' . $limit : '')
                 . (isset($offset) ? ' OFFSET ' . $offset : '')
