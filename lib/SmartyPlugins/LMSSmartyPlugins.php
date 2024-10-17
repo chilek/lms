@@ -1840,6 +1840,7 @@ class LMSSmartyPlugins
         $transliterate = !isset($params['transliterate']) || ConfigHelper::checkValue($params['transliterate']);
         $text = $params['text'] ?? 'text not set';
         $type = isset($params['type']) && isset($types[$params['type']]) ? $params['type'] : 'C128';
+        $show_text = isset($params['show_text']) ? ConfigHelper::checkValue($params['show_text']) : true;
         $scale = isset($params['scale']) ? filter_var($params['scale'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE) : null;
         if (!isset($scale)) {
             $scale = 1;
@@ -1849,8 +1850,15 @@ class LMSSmartyPlugins
             ? $params['padding']
             : array(0, 0, 0, 0);
 
-        $bobj = $barcode->getBarcodeObj($type, $transliterate ? iconv('UTF-8', 'ASCII//TRANSLIT', $text) : $text, $scale * -1, $scale * -1, $color, $padding);
+        $bobj = $barcode->getBarcodeObj($type, $transliterate ? iconv('UTF-8', 'ASCII//TRANSLIT', $text) : $text, $scale * -1, $scale * -1 * 30, $color, $padding);
 
-        return '<img src="data:image/png;base64,' . base64_encode($bobj->getPngData()) . '">';
+        $img_element = '<img src="data:image/png;base64,' . base64_encode($bobj->getPngData()) . '">';
+        if ($show_text) {
+            return '<div style="display: flex; flex-direction: column; padding-top: 0.2cm; padding-bottom: 0.2cm; font-size: 12pt; justify-content: center; align-items: center; font-weight: bold;">'
+                . $img_element
+                . '<span style="widht: 100%; text-align: center;">' . $text . '</span></div>';
+        } else {
+            return $img_element;
+        }
     }
 }
