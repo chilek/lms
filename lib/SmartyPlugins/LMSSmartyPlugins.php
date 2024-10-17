@@ -1762,7 +1762,15 @@ class LMSSmartyPlugins
 
     public static function imageDataFunction(array $params, Smarty_Internal_Template $template)
     {
-        if (!isset($params['file']) || !is_file($params['file'])) {
+        if (!isset($params['file'])) {
+            return '';
+        }
+
+        if (strpos($params['file'], DIRECTORY_SEPARATOR) !== 0) {
+            $params['file'] = SYS_DIR . DIRECTORY_SEPARATOR . $params['file'];
+        }
+
+        if (!is_file($params['file'])) {
             return '';
         }
 
@@ -1779,7 +1787,15 @@ class LMSSmartyPlugins
 
     public static function imageFunction(array $params, Smarty_Internal_Template $template)
     {
-        if (!isset($params['file']) || !is_file($params['file'])) {
+        if (!isset($params['file'])) {
+            return '';
+        }
+
+        if (strpos($params['file'], DIRECTORY_SEPARATOR) !== 0) {
+            $params['file'] = SYS_DIR . DIRECTORY_SEPARATOR . $params['file'];
+        }
+
+        if (!is_file($params['file'])) {
             return '';
         }
 
