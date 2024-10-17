@@ -443,7 +443,9 @@ function getBuildings(array $filter)
             JOIN location_states ls ON ls.id = ld.stateid
             LEFT JOIN netranges r ON r.buildingid = b.id'
             . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
-            . ' ORDER BY ls.name, ld.name, lb.name, lc.name, lst.name, b.building_num'
+            . ' ORDER BY ls.name, ld.name, lb.name, lc.name, lst.name, '
+                . $DB->Cast($DB->SubstringRegExp('b.building_num', '^[0-9]+'), 'integer') . ', '
+                . $DB->SubstringRegExp('b.building_num', '[a-zA-Z]*$')
             . (empty($existing) ? (
                 (isset($limit) ? ' LIMIT ' . $limit : '')
                 . (isset($offset) ? ' OFFSET ' . $offset : '')
