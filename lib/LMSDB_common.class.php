@@ -522,9 +522,9 @@ abstract class LMSDB_common implements LMSDBInterface
      * @param string $regexp
      * @return regexp match string
      */
-    public function SubstringRegExp($field, $regexp)
+    public function SubstringByRegExp($field, $regexp)
     {
-        return $this->_driver_substringregexp($field, $regexp);
+        return $this->_driver_substringbyregexp($field, $regexp);
     }
 
     /**

@@ -455,7 +455,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
      * @param string $regexp
      * @return regexp match string
      */
-    public function _driver_substringregexp($field, $regexp)
+    public function _driver_substringbyregexp($field, $regexp)
     {
         return 'SUBSTRING(' . $field . ' FROM \'' . $regexp . '\')';
     }

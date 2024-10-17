@@ -437,7 +437,7 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
      * @param string $regexp
      * @return regexp match string
      */
-    public function _driver_substringregexp($field, $regexp)
+    public function _driver_substringbyregexp($field, $regexp)
     {
         return 'REGEXP_SUBSTR(' . $field . ' FROM \'' . $regexp . '\')';
     }

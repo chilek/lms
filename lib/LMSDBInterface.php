@@ -68,7 +68,7 @@ interface LMSDBInterface
 
     public function RegExp($field, $regexp);
 
-    public function SubstringRegExp($field, $regexp);
+    public function SubstringByRegExp($field, $regexp);
 
     public function Cast($field, $type);
 
