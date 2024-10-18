@@ -122,7 +122,7 @@ $rtparser_password = ConfigHelper::getConfig(
     $smtp_options['pass'] ?? ConfigHelper::GetConfig('mail.smtp_password')
 );
 $rtparser_use_seen_flag = ConfigHelper::checkConfig($config_section . '.imap_use_seen_flag', true);
-$rtparser_use_flagged_flag = ConfigHelper::checkConfig($config_section . '.imap_use_flagged_flag', false);
+$rtparser_use_flagged_flag = ConfigHelper::checkConfig($config_section . '.imap_use_flagged_flag');
 $rtparser_folder = ConfigHelper::getConfig($config_section . '.imap_folder', 'INBOX');
 
 $url_props = parse_url($lms_url);
