@@ -122,6 +122,7 @@ $rtparser_password = ConfigHelper::getConfig(
     $smtp_options['pass'] ?? ConfigHelper::GetConfig('mail.smtp_password')
 );
 $rtparser_use_seen_flag = ConfigHelper::checkConfig($config_section . '.imap_use_seen_flag', true);
+$rtparser_use_flagged_flag = ConfigHelper::checkConfig($config_section . '.imap_use_flagged_flag', false);
 $rtparser_folder = ConfigHelper::getConfig($config_section . '.imap_folder', 'INBOX');
 
 $url_props = parse_url($lms_url);
@@ -203,7 +204,17 @@ if ($mode == MODE_IMAP) {
         exit(7);
     }
 
-    $posts = imap_search($ih, $rtparser_use_seen_flag ? 'UNSEEN' : 'ALL');
+    $search_filter = array();
+    $set_flags = array();
+    if ($rtparser_use_seen_flag) {
+        $search_filter[] = 'UNSEEN';
+        $set_flags[] = "\\Seen";
+    }
+    if ($rtparser_use_flagged_flag) {
+        $search_filter[] = 'UNFLAGGED';
+        $set_flags[] = "\\Flagged";
+    }
+    $posts = imap_search($ih, empty($search_filter) ? 'ALL' : implode(' ', $search_filter));
     if (empty($posts)) {
         imap_close($ih);
         die;
@@ -225,10 +236,10 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
     if ($postid !== false && $postid !== null) {
         $buffer = imap_fetchbody($ih, $postid, '');
 
-        if ($rtparser_use_seen_flag) {
-            imap_setflag_full($ih, $postid, "\\Seen");
+        if (!empty($set_flags)) {
+            imap_setflag_full($ih, $postid, implode(' ', $set_flags));
         } else {
-            imap_clearflag_full($ih, $postid, "\\Seen");
+            imap_clearflag_full($ih, $postid, "\\Seen \\Flagged");
         }
     }
 
@@ -267,10 +278,10 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 mailparse_msg_free($mail);
 
                 if ($postid !== false && $postid !== null) {
-                    if ($rtparser_use_seen_flag) {
-                        imap_setflag_full($ih, $postid, "\\Seen");
+                    if (!empty($set_flags)) {
+                        imap_setflag_full($ih, $postid, implode(' ', $set_flags));
                     } else {
-                        imap_clearflag_full($ih, $postid, "\\Seen");
+                        imap_clearflag_full($ih, $postid, "\\Seen \\Flagged");
                     }
 
                     $postid = next($posts);
@@ -906,10 +917,10 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
     }
 
     if ($postid !== false && $postid !== null) {
-        if ($rtparser_use_seen_flag) {
-            imap_setflag_full($ih, $postid, "\\Seen");
+        if (!empty($set_flags)) {
+            imap_setflag_full($ih, $postid, implode(' ', $set_flags));
         } else {
-            imap_clearflag_full($ih, $postid, "\\Seen");
+            imap_clearflag_full($ih, $postid, "\\Seen \\Flagged");
         }
 
         $postid = next($posts);
