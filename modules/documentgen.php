@@ -263,10 +263,6 @@ if (isset($_POST['document'])) {
             $division = $LMS->GetDivision($customer['divisionid']);
 
             if ($document['templ']) {
-                $barcode = new \Com\Tecnick\Barcode\Barcode();
-                $bobj = $barcode->getBarcodeObj('C128', iconv('UTF-8', 'ASCII//TRANSLIT', $fullnumber), -1, -30, 'black');
-                $document['barcode'] = base64_encode($bobj->getPngData());
-
                 $SMARTY->assign(array(
                     'customer' => $customer,
                     'customerinfo' => $customer,

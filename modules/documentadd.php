@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-use Com\Tecnick\Barcode\Barcode;
-
 check_file_uploads();
 
 $SMARTY->setDefaultResourceType('file');
@@ -271,10 +269,6 @@ if (isset($_POST['document'])) {
             ));
 
             // prepare some useful customer properties to use in document templates
-            $barcode = new Barcode();
-            $bobj = $barcode->getBarcodeObj('C128', iconv('UTF-8', 'ASCII//TRANSLIT', $fullnumber), -1, -30, 'black');
-            $document['barcode'] = base64_encode($bobj->getPngData());
-
             $SMARTY->assign(array(
                 'customer' => $customer,
                 'customerinfo' => $customer,
