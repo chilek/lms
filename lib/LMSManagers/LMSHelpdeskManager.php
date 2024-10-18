@@ -1182,6 +1182,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $body = Utils::removeInsecureHtml($ticket['body']);
         }
 
+        // auto fix for misconfigured mail servers which mix character encodings in post headers
+        $headers = empty($ticket['headers']) ? '' : mb_convert_encoding($ticket['headers'], 'UTF-8', 'UTF-8');
+
         $this->db->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime,
 				subject, body, mailfrom, phonefrom, messageid, replyto, headers, contenttype, extid)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($id,
@@ -1193,7 +1196,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             empty($ticket['phonefrom']) || $ticket['phonefrom'] == -1 ? '' : $ticket['phonefrom'],
             $ticket['messageid'] ?? $this->lastmessageid,
             $ticket['replyto'] ?? '',
-            $ticket['headers'] ?? '',
+            $headers,
             $ticket['contenttype'] ?? 'text/plain',
             $ticket['extid'] ?? null,
         ));
