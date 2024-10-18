@@ -1183,7 +1183,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }
 
         // auto fix for misconfigured mail servers which mix character encodings in post headers
-        $headers = empty($ticket['headers']) ? '' : mb_convert_encoding($ticket['headers'], 'UTF-8', 'UTF-8');
+        $headers = isset($ticket['headers']) ? mb_convert_encoding($ticket['headers'], 'UTF-8', 'UTF-8') : '';
 
         $this->db->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime,
 				subject, body, mailfrom, phonefrom, messageid, replyto, headers, contenttype, extid)
