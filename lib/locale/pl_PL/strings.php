@@ -6017,3 +6017,5 @@ $_LANG['without phone contact'] = 'bez kontaktu telefonicznego';
 
 $_LANG['Summary'] = 'Podsumowanie';
 $_LANG['Volume'] = 'Ilość';
+
+$_LANG['Last change'] = 'Ostatnia zmiana';

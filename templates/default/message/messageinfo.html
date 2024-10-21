@@ -254,6 +254,8 @@
 				{if $listdata.order == "status"}
 					<img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif">
 				{/if}
+				<br>
+				{trans("Last change")}
 			</td>
 			{if !empty($message.startdate)}
 				<td class="text-right nobr">
@@ -264,8 +266,7 @@
 				{trans("Last read")}
 			</td>
 			<td class="text-right nobr">
-				{trans("Confirmed")}<br>
-				({trans("only userpanel message")})
+				{trans("Confirmed")}
 			</td>
 			<td class="nobr">
 				<strong>{t a=$listdata.total}Total: $a{/t}</strong>
@@ -338,14 +339,16 @@
 						{trans("errornous")}
 						{if $item.error} ({$item.error|escape}){/if}
 					{elseif $item.status == $smarty.const.MSG_DELIVERED}
-						{trans("delivered")} ({$item.lastdate|date_format:"Y-m-d H:i"})
+						{trans("delivered")}
 					{elseif $item.status == $smarty.const.MSG_CANCELLED}
-						{trans("cancelled")} ({$item.lastdate|date_format:"Y-m-d H:i"})
+						{trans("cancelled")}
 					{elseif $item.status == $smarty.const.MSG_BOUNCED}
-						{trans("bounced")} ({$item.lastdate|date_format:"Y-m-d H:i"})
+						{trans("bounced")}
 					{else}
 						{trans("waiting")}
 					{/if}
+					<br>
+					{if $item.lastdate}{$item.lastdate|date_format:"Y-m-d H:i"}{else} - {/if}
 				</td>
 				{if !empty($message.startdate)}
 					<td class="text-right nobr">
@@ -355,10 +358,10 @@
 						{$item.attempts}
 					</td>
 				{/if}
-				<td class="text-right valign-top">
+				<td class="text-right valign-top nobr">
 					{if $item.lastreaddate}{$item.lastreaddate|date_format:"Y-m-d H:i"}{else} - {/if}
 				</td>
-				<td class="text-right">
+				<td class="text-right nobr">
 					{if $item.status == $smarty.const.MSG_DELIVERED && $item.lastdate}{$item.lastdate|date_format:"Y-m-d H:i"}{else} - {/if}
 				</td>
 				<td class="text-right nobr valign-top">
@@ -369,7 +372,7 @@
 			</tr>
 		{sectionelse}
 			<tr>
-				<td colspan="{if !empty($message.startdate)}7{else}6{/if}" class="empty-table">
+				<td colspan="{if !empty($message.startdate)}8{else}7{/if}" class="empty-table">
 					{trans("No such recipients in database.")}
 				</td>
 			</tr>
