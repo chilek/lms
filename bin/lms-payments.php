@@ -141,7 +141,7 @@ if (isset($options['customerid'])) {
             function ($customerid) {
                 return intval($customerid);
             },
-            explode(',', $options['customerid']),
+            explode(',', $options['customerid'])
         );
     } else {
         $customerid = null;
