@@ -828,6 +828,7 @@ version 28-git (????-??-??):
   - enhancement: added 'notes' field to tariffs - text entered in this field will not be visible
     on customer documents such as contracts, annexes, etc. [chilan]
   - improvement: show status summary in message info form [chilan]
+  - improvement: allow to delete found customers permanently [chilan]
 
 version 27.0 (2021-08-20):
 
