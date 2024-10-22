@@ -189,6 +189,9 @@
 					</optgroup>
 					<optgroup label="{trans("<!customersearch>Customer deletion")}">
 						<option value="14">{trans("<!customersearch>Deletion")}</option>
+						{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
+							<option value="16">{trans("<!customersearch>Permanent deletion")}</option>
+						{/if}
 						<option value="15">{trans("<!customersearch>Restoration")}</option>
 					</optgroup>
 					{if is_array($listdata.customergroup)}
@@ -437,8 +440,9 @@
 			$('#customersearchresults').attr('action', action).submit();
 		}
 
-		function deleteCustomer() {
-			var action = '?m=customerdel';
+		function deleteCustomer(permanent) {
+			permanent = typeof(permanent) != 'undefined' && permanent;
+			var action = '?m=customerdel' + (permanent ? '&type=permanent' : '');
 
 			$('#customersearchresults').attr('action', action).submit();
 		}
@@ -540,6 +544,9 @@
 					break;
 				case 15:
 					restoreCustomer();
+					break;
+				case 16:
+					deleteCustomer(true);
 					break;
 				default:
 					if (action >= {($smarty.const.CSTATUS_CONNECTED + 100)} && action <= {($smarty.const.CSTATUS_LAST + 100)}) {

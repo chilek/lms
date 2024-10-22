@@ -932,6 +932,7 @@ $_LANG['Number of units at a promotion price'] = 'Liczba jednostek w cenie promo
 $_LANG['Unit size in seconds'] = 'Rozmiar jednostki w sekundach';
 $_LANG['Delete'] = 'Usuń';
 $_LANG['Delete permanently'] = 'Usuń trwale';
+$_LANG['<!customersearch>Permanent deletion'] = 'Usunięcie trwałe';
 $_LANG['delete'] = 'usuń';
 $_LANG['Delete connection'] = 'Usuń połączenie';
 $_LANG['Delete customer\'s liability'] = 'Usuń zobowiązanie klienta';
