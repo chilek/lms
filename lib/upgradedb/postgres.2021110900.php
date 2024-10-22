@@ -23,7 +23,7 @@
 
 $this->BeginTrans();
 
-if (!$this->ResourceExists('customers', LMSDB::RESOURCE_TYPE_TABLE)) {
+if (!$this->ResourceExists('up_sessions', LMSDB::RESOURCE_TYPE_TABLE)) {
     $this->Execute("
         CREATE TABLE up_sessions (
             id		varchar(50) 	NOT NULL DEFAULT '',
