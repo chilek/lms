@@ -40,7 +40,8 @@
 					data-order='[[ 0, "desc" ]]' style="display: none;"{/if} width="100%">
 				<COLGROUP>
 					<COL style="width: 1%;">
-					<COL style="width: 95%;">
+					<COL style="width: 93%;">
+					<COL style="width: 1%;">
 					<COL style="width: 1%;">
 					<COL style="width: 1%;">
 					<COL style="width: 1%;">
@@ -61,32 +62,21 @@
 					<TH class="nobr">
 						{trans("Destination")}
 					</TH>
+					<th class="nobr">
+						{trans("Last change")}
+					</th>
+					<th class="nobr">
+						{trans("Attempts left")}
+					</th>
 					<TH class="nobr" data-orderable="false" data-searchable="false">
 						{trans("Last read")}
-					</TH>
-					<TH class="nobr" data-orderable="false" data-searchable="false">
-						{trans("Confirmed")} ({trans("only userpanel message")})
 					</TH>
 					<TH class="nobr" data-orderable="false" data-searchable="false"></TH>
 				</TR>
 				</THEAD>
 				<TBODY>
 				{foreach $messagelist as $item}
-				<TR class="{strip}
-					{if $item.status == $smarty.const.MSG_ERROR}
-						lms-ui-message-error
-					{elseif $item.status == $smarty.const.MSG_SENT}
-						lms-ui-message-sent
-					{elseif $item.status == $smarty.const.MSG_DELIVERED}
-						lms-ui-message-delivered
-					{elseif $item.status == $smarty.const.MSG_CANCELLED}
-						lms-ui-message-cancelled
-					{elseif $item.status == $smarty.const.MSG_BOUNCED}
-						lms-ui-message-bounced
-					{else}
-						lms-ui-message-new
-					{/if}
-				{/strip}">
+				<TR class="{$_MESSAGESTATUSES[$item.status].class}">
 					<TD class="nobr" onClick="return self.location.href='?m=messageinfo&id={$item.id}'">
 						{$item.cdate|date_format:"Y-m-d"}
 					</TD>
@@ -111,11 +101,18 @@
 						{$item.destination}
 					</TD>
 					<TD class="text-right nobr">
-						{if $item.lastreaddate}{$item.lastreaddate|date_format:"Y-m-d H:i"}{else} - {/if}
+						{if $item.lastdate}{$item.lastdate|date_format:"Y-m-d H:i"}{else} - {/if}
 					</TD>
+					<td class="text-right nobr">
+						{if !empty($message.startdate)}
+							{if !empty($item.attempts)}
+								{icon name="reload" class="fa-fw"}
+							{/if}
+							{$item.attempts}
+						{/if}
+					</td>
 					<TD class="text-right nobr">
-						{if $item.status == $smarty.const.MSG_DELIVERED
-							&& $item.lastdate}{$item.lastdate|date_format:"Y-m-d H:i"}{else} - {/if}
+						{if $item.lastreaddate}{$item.lastreaddate|date_format:"Y-m-d H:i"}{else} - {/if}
 					</TD>
 					<TD class="text-right nobr">
 						{if $item.files}

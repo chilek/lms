@@ -217,6 +217,11 @@
 <form method="POST" name="page" id="messageitems" action="?m=messageinfo&id={$message.id}">
 </form>
 
+{if empty($message.startdate)}
+	{$colspan=6}
+{else}
+	{$colspan=7}
+{/if}
 <table class="lmsbox lms-ui-background-cycle">
 	<colgroup>
 		<col style="width: 1%;">
@@ -254,7 +259,8 @@
 				{if $listdata.order == "status"}
 					<img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif">
 				{/if}
-				<br>
+			</td>
+			<td class="text-right nobr">
 				{trans("Last change")}
 			</td>
 			{if !empty($message.startdate)}
@@ -265,15 +271,12 @@
 			<td class="text-right nobr">
 				{trans("Last read")}
 			</td>
-			<td class="text-right nobr">
-				{trans("Confirmed")}
-			</td>
 			<td class="nobr">
 				<strong>{t a=$listdata.total}Total: $a{/t}</strong>
 			</td>
 		</tr>
 		<tr>
-			<td colspan="{if !empty($message.startdate)}7{else}6{/if}" class="nobr" id="messageitems-filter">
+			<td colspan="{$colspan}" class="nobr" id="messageitems-filter">
 				{icon name="filter"}
 				<input type="text" name="search" form="messageitems" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>
 				<select size="1" name="cat" form="messageitems">
@@ -300,7 +303,7 @@
 		</tr>
 		{if $listdata.total != 0}
 			<tr>
-				<td class="lms-ui-pagination" colspan="{if !empty($message.startdate)}7{else}6{/if}">
+				<td class="lms-ui-pagination" colspan="{$colspan}">
 					{include file="scroller.html" loop=$itemlist scrollerno=1}
 				</td>
 			</tr>
@@ -308,7 +311,7 @@
 	</thead>
 	<tbody>
 		{section name=itemlist loop=$itemlist start=$start max=$pagelimit}
-			{assign var=item value=$itemlist[itemlist]}
+			{$item = $itemlist[itemlist]}
 			<tr class="highlight{if $item.body} showitem{/if} {$_MESSAGESTATUSES[$item.status].class}" data-itemid="{$item.id}">
 				<td class="nobr valign-top">
 					{if $item.customerid}
@@ -347,7 +350,8 @@
 					{else}
 						{trans("waiting")}
 					{/if}
-					<br>
+				</td>
+				<td class="text-right nobr">
 					{if $item.lastdate}{$item.lastdate|date_format:"Y-m-d H:i"}{else} - {/if}
 				</td>
 				{if !empty($message.startdate)}
@@ -361,9 +365,6 @@
 				<td class="text-right valign-top nobr">
 					{if $item.lastreaddate}{$item.lastreaddate|date_format:"Y-m-d H:i"}{else} - {/if}
 				</td>
-				<td class="text-right nobr">
-					{if $item.status == $smarty.const.MSG_DELIVERED && $item.lastdate}{$item.lastdate|date_format:"Y-m-d H:i"}{else} - {/if}
-				</td>
 				<td class="text-right nobr valign-top">
 					{if $item.body}
 						{button type="link" icon="info" tip="Show message body"}
@@ -372,7 +373,7 @@
 			</tr>
 		{sectionelse}
 			<tr>
-				<td colspan="{if !empty($message.startdate)}8{else}7{/if}" class="empty-table">
+				<td colspan="{$colspan}" class="empty-table">
 					{trans("No such recipients in database.")}
 				</td>
 			</tr>
@@ -381,13 +382,13 @@
 	<tfoot>
 		{if $listdata.total != 0}
 			<tr>
-				<td class="lms-ui-pagination" colspan="{if !empty($message.startdate)}7{else}6{/if}">
+				<td class="lms-ui-pagination" colspan="{$colspan}">
 					{include file="scroller.html" loop=$itemlist scrollerno=2}
 				</td>
 			</tr>
 		{/if}
 		<tr>
-			<td colspan="{if !empty($message.startdate)}7{else}6{/if}" class="text-right">
+			<td colspan="{$colspan}" class="text-right">
 				<strong>{t a=$listdata.total}Total: $a{/t}</strong>
 			</td>
 		</tr>
