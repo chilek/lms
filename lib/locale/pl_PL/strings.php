@@ -5836,6 +5836,7 @@ $_LANG['electronic invoice'] = 'faktura elektroniczna';
 $_LANG['e-mail marketing'] = 'marketing pocztą elektroniczną';
 $_LANG['sms marketing'] = 'marketing SMS-em';
 $_LANG['telephone marketing'] = 'marketing telefoniczny';
+$_LANG['direct marketing'] = 'marketing bezpośredni';
 $_LANG['phone billing'] = 'billing telefoniczny';
 
 $_LANG['Issuer'] = 'Wystawca';

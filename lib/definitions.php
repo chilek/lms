@@ -126,7 +126,8 @@ const CCONSENT_DATE = 1,
     CCONSENT_NONE_PHONE_BILLING = 12,
     CCONSENT_FULL_PHONE_BILLING = 13,
     CCONSENT_SIMPLIFIED_PHONE_BILLING = 14,
-    CCONSENT_PHONE_MARKETING = 15;
+    CCONSENT_PHONE_MARKETING = 15,
+    CCONSENT_DIRECT_MARKETING = 16;
 
 $CCONSENTS = array(
     CCONSENT_DATE => array(
@@ -167,6 +168,11 @@ $CCONSENTS = array(
     CCONSENT_PHONE_MARKETING => array(
         'label' => trans('telephone marketing'),
         'name' => 'phone_marketing',
+        'type' => 'boolean',
+    ),
+    CCONSENT_DIRECT_MARKETING => array(
+        'label' => trans('direct marketing'),
+        'name' => 'direct_marketing',
         'type' => 'boolean',
     ),
     CCONSENT_USERPANEL_SMS => array(
