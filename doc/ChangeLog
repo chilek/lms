@@ -829,8 +829,8 @@ version 28-git (????-??-??):
     on customer documents such as contracts, annexes, etc. [chilan]
   - improvement: show status summary in message info form [chilan]
   - improvement: allow to delete found customers permanently [chilan]
-  - enhancement: new customer consent: telephone marketing with 'phone_marketing' as system/logical
-    name [chilan]
+  - enhancement: new customer consents: telephone marketing with 'phone_marketing' and direct marketing
+    with 'direct_marketing' as system/logical names [chilan]
 
 version 27.0 (2021-08-20):
 
