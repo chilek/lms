@@ -67,7 +67,7 @@ if ($to) {
 
 $layout['pagetitle'] = trans('Sale Registry for period $a - $b', $from, $to);
 
-$listdata = array('tax' => 0, 'brutto' => 0, 'tax_receipt' => 0, 'brutto_receipt' => 0);
+$listdata = array('tax' => 0, 'brutto' => 0, 'tax_receipt' => 0, 'brutto_receipt' => 0, 'brutto_correction_note_receipt' => 0, 'tax_correction_note_receipt' => 0);
 $invoicelist = array();
 $taxeslist = array();
 $taxes = array();
@@ -303,6 +303,10 @@ if ($documents) {
             if (!isset($invoicelist[$idx][$taxid])) {
                 $invoicelist[$idx][$taxid]['tax'] = 0;
                 $invoicelist[$idx][$taxid]['val'] = 0;
+                $invoicelist[$idx][$taxid]['tax_receipt'] = 0;
+                $invoicelist[$idx][$taxid]['val_receipt'] = 0;
+                $invoicelist[$idx][$taxid]['tax_correction_note_receipt'] = 0;
+                $invoicelist[$idx][$taxid]['val_correction_note_receipt'] = 0;
             }
 
             if (!isset($invoicelist[$idx]['tax'])) {
@@ -311,12 +315,11 @@ if ($documents) {
             if (!isset($invoicelist[$idx]['brutto'])) {
                 $invoicelist[$idx]['brutto'] = 0;
             }
-
-            if (!isset($invoicelist[$idx]['tax_receipt'])) {
-                $invoicelist[$idx]['tax_receipt'] = 0;
+            if (!isset($invoicelist[$idx]['tax_correction_note_receipt'])) {
+                $invoicelist[$idx]['tax_correction_note_receipt'] = 0;
             }
-            if (!isset($invoicelist[$idx]['brutto_receipt'])) {
-                $invoicelist[$idx]['brutto_receipt'] = 0;
+            if (!isset($invoicelist[$idx]['brutto_correction_note_receipt'])) {
+                $invoicelist[$idx]['brutto_correction_note_receipt'] = 0;
             }
 
             $taxid2 = null;
@@ -368,17 +371,30 @@ if ($documents) {
                 $listdata[$taxid]['val'] = 0;
                 $listdata[$taxid]['tax_receipt'] = 0;
                 $listdata[$taxid]['val_receipt'] = 0;
+                $listdata[$taxid]['tax_correction_note_receipt'] = 0;
+                $listdata[$taxid]['val_correction_note_receipt'] = 0;
             }
 
             if (!empty($invoicelist[$idx]['flags'][DOC_FLAG_RECEIPT])) {
-                $listdata[$taxid]['tax_receipt'] += $tax * $document['currencyvalue'];
-                $listdata[$taxid]['val_receipt'] += $netto * $document['currencyvalue'];
-                if (isset($taxid2)) {
-                    $listdata[$taxid2]['tax_receipt'] += $tax2 * $document['currencyvalue'];
-                    $listdata[$taxid2]['val_receipt'] += $netto2 * $document['currencyvalue'];
+                if ($doctype == DOC_CNOTE) {
+                    $listdata[$taxid]['tax_correction_note_receipt'] += $tax * $document['currencyvalue'];
+                    $listdata[$taxid]['val_correction_note_receipt'] += $netto * $document['currencyvalue'];
+                    if (isset($taxid2)) {
+                        $listdata[$taxid2]['tax_correction_note_receipt'] += $tax2 * $document['currencyvalue'];
+                        $listdata[$taxid2]['val_correction_note_receipt'] += $netto2 * $document['currencyvalue'];
+                    }
+                    $listdata['tax_correction_note_receipt'] += ($tax + $tax2) * $document['currencyvalue'];
+                    $listdata['brutto_correction_note_receipt'] += ($brutto + $brutto2) * $document['currencyvalue'];
+                } else {
+                    $listdata[$taxid]['tax_receipt'] += $tax * $document['currencyvalue'];
+                    $listdata[$taxid]['val_receipt'] += $netto * $document['currencyvalue'];
+                    if (isset($taxid2)) {
+                        $listdata[$taxid2]['tax_receipt'] += $tax2 * $document['currencyvalue'];
+                        $listdata[$taxid2]['val_receipt'] += $netto2 * $document['currencyvalue'];
+                    }
+                    $listdata['tax_receipt'] += ($tax + $tax2) * $document['currencyvalue'];
+                    $listdata['brutto_receipt'] += ($brutto + $brutto2) * $document['currencyvalue'];
                 }
-                $listdata['tax_receipt'] += ($tax + $tax2) * $document['currencyvalue'];
-                $listdata['brutto_receipt'] += ($brutto + $brutto2) * $document['currencyvalue'];
             } else {
                 $listdata[$taxid]['tax'] += $tax * $document['currencyvalue'];
                 $listdata[$taxid]['val'] += $netto * $document['currencyvalue'];
@@ -431,20 +447,41 @@ if (isset($_POST['extended'])) {
             if (!isset($totals[$page]['total_receipt'])) {
                 $totals[$page]['total_receipt'] = 0;
             }
-            $totals[$page]['total_receipt'] += $row['brutto'] * $row['currencyvalue'];
-            if (!isset($totals[$page]['sumtax_receipt'])) {
-                $totals[$page]['sumtax_receipt'] = 0;
+            if (!isset($totals[$page]['total_correction_note_receipt'])) {
+                $totals[$page]['total_correction_note_receipt'] = 0;
             }
-            $totals[$page]['sumtax_receipt'] += $row['tax'] * $row['currencyvalue'];
-            foreach ($taxeslist as $idx => $tax) {
-                if (!isset($totals[$page]['val_receipt'][$idx])) {
-                    $totals[$page]['val_receipt'][$idx] = 0;
+            if ($row['doctype'] == DOC_CNOTE) {
+                $totals[$page]['total_correction_note_receipt'] += $row['brutto'] * $row['currencyvalue'];
+                if (!isset($totals[$page]['sumtax_correction_note_receipt'])) {
+                    $totals[$page]['sumtax_correction_note_receipt'] = 0;
                 }
-                $totals[$page]['val_receipt'][$idx] += $row[$idx]['val'] * $row['currencyvalue'];
-                if (!isset($totals[$page]['tax_receipt'][$idx])) {
-                    $totals[$page]['tax_receipt'][$idx] = 0;
+                $totals[$page]['sumtax_correction_note_receipt'] += $row['tax'] * $row['currencyvalue'];
+                foreach ($taxeslist as $idx => $tax) {
+                    if (!isset($totals[$page]['val_correction_note_receipt'][$idx])) {
+                        $totals[$page]['val_correction_note_receipt'][$idx] = 0;
+                    }
+                    $totals[$page]['val_correction_note_receipt'][$idx] += $row[$idx]['val'] * $row['currencyvalue'];
+                    if (!isset($totals[$page]['tax_correction_note_receipt'][$idx])) {
+                        $totals[$page]['tax_correction_note_receipt'][$idx] = 0;
+                    }
+                    $totals[$page]['tax_correction_note_receipt'][$idx] += $row[$idx]['tax'] * $row['currencyvalue'];
                 }
-                $totals[$page]['tax_receipt'][$idx] += $row[$idx]['tax'] * $row['currencyvalue'];
+            } else {
+                $totals[$page]['total_receipt'] += $row['brutto'] * $row['currencyvalue'];
+                if (!isset($totals[$page]['sumtax_receipt'])) {
+                    $totals[$page]['sumtax_receipt'] = 0;
+                }
+                $totals[$page]['sumtax_receipt'] += $row['tax'] * $row['currencyvalue'];
+                foreach ($taxeslist as $idx => $tax) {
+                    if (!isset($totals[$page]['val_receipt'][$idx])) {
+                        $totals[$page]['val_receipt'][$idx] = 0;
+                    }
+                    $totals[$page]['val_receipt'][$idx] += $row[$idx]['val'] * $row['currencyvalue'];
+                    if (!isset($totals[$page]['tax_receipt'][$idx])) {
+                        $totals[$page]['tax_receipt'][$idx] = 0;
+                    }
+                    $totals[$page]['tax_receipt'][$idx] += $row[$idx]['tax'] * $row['currencyvalue'];
+                }
             }
         } else {
             if (!isset($totals[$page]['total'])) {
@@ -482,6 +519,10 @@ if (isset($_POST['extended'])) {
             + ($t['total_receipt'] ?? 0);
         $totals[$page]['allsumtax_receipt'] = ($totals[$page - 1]['allsumtax_receipt'] ?? 0)
             + ($t['sumtax_receipt'] ?? 0);
+        $totals[$page]['alltotal_correction_note_receipt'] = ($totals[$page - 1]['alltotal_correction_note_receipt'] ?? 0)
+            + ($t['total_correction_note_receipt'] ?? 0);
+        $totals[$page]['allsumtax_correction_note_receipt'] = ($totals[$page - 1]['allsumtax_correction_note_receipt'] ?? 0)
+            + ($t['sumtax_correction_note_receipt'] ?? 0);
         $totals[$page]['alltotal'] = ($totals[$page - 1]['alltotal'] ?? 0)
             + $t['total'];
         $totals[$page]['allsumtax'] = ($totals[$page - 1]['allsumtax'] ?? 0)
@@ -492,6 +533,10 @@ if (isset($_POST['extended'])) {
                 + ($t['val_receipt'][$idx] ?? 0);
             $totals[$page]['alltax_receipt'][$idx] = (isset($totals[$page - 1]['alltax_receipt']) ? $totals[$page - 1]['alltax_receipt'][$idx] : 0)
                 + ($t['tax_receipt'][$idx] ?? 0);
+            $totals[$page]['allval_correction_note_receipt'][$idx] = (isset($totals[$page - 1]['allval_correction_note_receipt']) ? $totals[$page - 1]['allval_correction_note_receipt'][$idx] : 0)
+                + ($t['val_correction_note_receipt'][$idx] ?? 0);
+            $totals[$page]['alltax_correction_note_receipt'][$idx] = (isset($totals[$page - 1]['alltax_correction_note_receipt']) ? $totals[$page - 1]['alltax_correction_note_receipt'][$idx] : 0)
+                + ($t['tax_correction_note_receipt'][$idx] ?? 0);
             $totals[$page]['allval'][$idx] = ($totals[$page - 1]['allval'][$idx] ?? 0)
                 + $t['val'][$idx];
             $totals[$page]['alltax'][$idx] = ($totals[$page - 1]['alltax'][$idx] ?? 0)
