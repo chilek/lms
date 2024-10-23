@@ -712,13 +712,9 @@
 																		{$customerinfo.consents[$type]['cdate']|date_format:"Y-m-d"}
 																	{else}
 																		{if $consent.type != 'selection' || isset($consent.values[$customerinfo.consents[$type]].name)}
-																			{trans("yes")}
-																		{else}
-																			{trans("no")}
+																			{icon name="checked"}
 																		{/if}
 																	{/if}
-																{else}
-																	{trans("no")}
 																{/if}
 															</td>
 														</tr>
