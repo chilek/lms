@@ -315,5 +315,14 @@ if (isset($_GET['search'])) {
     $SMARTY->assign('fk', $flagsqlskey);
     $SMARTY->assign('ngnot', $nodegroupnegation);
     $SMARTY->assign('karma', $karma);
+
+    $hook_data = $LMS->executeHook(
+        'customersearch_before_display',
+        array(
+            'customer-consents' => $CCONSENTS,
+            'smarty' => $SMARTY,
+        )
+    );
+
     $SMARTY->display('customer/customersearch.html');
 }

@@ -846,6 +846,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      */
     public function getCustomerList($params = array())
     {
+        global $LMS;
+
         extract($params);
 
         if (empty($order)) {
@@ -926,10 +928,18 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         $customer_statuses = array();
         $state_conditions = array();
+        $consent_conditions = array();
+
+        $hook_data = $LMS->executeHook(
+            'get_customer_list_prepare_conditions',
+            array(
+                'customer-consents' => $consents,
+            )
+        );
+        $consent_conditions = array_merge($consent_conditions, $hook_data['customer-consent-conditions']);
 
         $consent_condition = '';
         if (!empty($consents)) {
-            $consent_conditions = array();
             foreach ($consents as $consentid => $consent) {
                 if ($consent >= 0) {
                     $consent_conditions[] = ($consent == 1 ? '' : 'NOT ')
