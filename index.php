@@ -522,6 +522,8 @@ if ($AUTH->islogged) {
             }
 
             try {
+                session_write_close();
+
                 include($module_dir . DIRECTORY_SEPARATOR . $module . '.php');
             } catch (Exception $e) {
                 if (!$api) {
