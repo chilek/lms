@@ -70,6 +70,27 @@
 		margin-left: 0.3em;
 	}
 
+	.consent-group {
+		display: flex;
+		padding-inline-end: 0.5em;
+	}
+
+	.lms-ui-separated-rows .lms-ui-separated-rows {
+		width: 100%;
+	}
+
+	.consent-group-row {
+		border-top: none !important;
+	}
+
+	.consent-group-row + tr {
+		border-top: none !important;
+	}
+
+	.consent-group-row > td {
+		padding: 0 !important;
+	}
+
 </style>
 
 <table class="lmsbox{if $customerpanel} lms-ui-tab-container lms-ui-sortable{/if}" id="customerinfobox"{if $customerpanel} data-label="{trans("Customer Info")}"{/if}>
@@ -694,9 +715,26 @@
 													</td>
 												</tr>
 												{block name="customerinfobox-options"}
+													{$current_customer_consent_group_id = 0}
 													{foreach $_CCONSENTS as $type => $consent}
 														{if !is_array($consent)}
 															{continue}
+														{/if}
+														{$customer_consent_group_id = Utils::findCustomerConsentGroupByCustomerConsent($type, $_CCONSENT_GROUPS)}
+														{if $current_customer_consent_group_id && $current_customer_consent_group_id != $customer_consent_group_id || $current_customer_consent_group_id && $consent@last}
+																		</table>
+																	</fieldset>
+																</td>
+															</tr>
+														{/if}
+														{if $customer_consent_group_id && $customer_consent_group_id != $current_customer_consent_group_id}
+															<tr class="consent-group-row">
+																<td colspan="2">
+																	<fieldset class="consent-group">
+																		<legend>
+																			<strong>{$_CCONSENT_GROUPS[$customer_consent_group_id].label}</strong>
+																		</legend>
+																		<table class="lms-ui-separated-rows">
 														{/if}
 														<tr>
 															<td>
@@ -718,6 +756,7 @@
 																{/if}
 															</td>
 														</tr>
+														{$current_customer_consent_group_id = $customer_consent_group_id}
 													{/foreach}
 												{/block}
 											</table>

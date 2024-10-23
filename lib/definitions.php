@@ -213,6 +213,20 @@ $CCONSENTS = array(
     CCONSENT_FULL_PHONE_BILLING => CCONSENT_PHONE_BILLING,
 );
 
+const CCONSENT_GROUP_MARKETING = 1;
+
+$CCONSENT_GROUPS = array(
+    CCONSENT_GROUP_MARKETING => array(
+        'label' => trans('<!consent-group>marketing'),
+        'consents' => array(
+            CCONSENT_MAIL_MARKETING,
+            CCONSENT_SMS_MARKETING,
+            CCONSENT_PHONE_MARKETING,
+            CCONSENT_DIRECT_MARKETING,
+        ),
+    ),
+);
+
 const ORIGIN_FACEBOOK = 1,
     ORIGIN_COMPANY_WEBSITE = 2,
     ORIGIN_SEARCH_ENGINE = 3,
@@ -1831,6 +1845,7 @@ if (isset($SMARTY)) {
             '_CSTATUSES' => $CSTATUSES,
             '_CUSTOMERFLAGS' => $CUSTOMERFLAGS,
             '_CCONSENTS' => $CCONSENTS,
+            '_CCONSENT_GROUPS' => $CCONSENT_GROUPS,
             '_ORIGINS' => $ORIGINS,
             '_MESSAGESTATUSES' => $MESSAGESTATUSES,
             '_MESSAGETEMPLATES' => $MESSAGETEMPLATES,

@@ -70,6 +70,30 @@
 		margin-left: 0;
 	}
 
+	.consent-group {
+		display: flex;
+	}
+
+	.lms-ui-separated-rows .lms-ui-separated-rows {
+		width: 100%;
+	}
+
+	.lms-ui-separated-rows .lms-ui-separated-rows td:not(:first-child) {
+		width: 1%;
+	}
+
+	.consent-group-row {
+		border-top: none !important;
+	}
+
+	.consent-group-row +  tr {
+		border-top: none !important;
+	}
+
+	.consent-group-row > td {
+		padding: 0 !important;
+	}
+
 </style>
 
 {include file="customer/customercompanyselectiondialog.html"}
@@ -610,6 +634,22 @@
 										{if !is_array($consent)}
 											{continue}
 										{/if}
+										{$customer_consent_group_id = Utils::findCustomerConsentGroupByCustomerConsent($type, $_CCONSENT_GROUPS)}
+										{if $current_customer_consent_group_id && $current_customer_consent_group_id != $customer_consent_group_id || $current_customer_consent_group_id && $consent@last}
+														</table>
+													</fieldset>
+												</td>
+											</tr>
+										{/if}
+										{if $customer_consent_group_id && $customer_consent_group_id != $current_customer_consent_group_id}
+											<tr class="consent-group-row">
+												<td colspan="2">
+													<fieldset class="consent-group">
+														<legend>
+															<strong>{$_CCONSENT_GROUPS[$customer_consent_group_id].label}</strong>
+														</legend>
+														<table class="lms-ui-separated-rows">
+										{/if}
 										{if $consent.type == 'selection'}
 											{foreach $consent.values as $subtype => $subconsent}
 												<tr>
@@ -637,6 +677,7 @@
 												</td>
 											</tr>
 										{/if}
+										{$current_customer_consent_group_id = $customer_consent_group_id}
 									{/foreach}
 								{/block}
 							</tbody>

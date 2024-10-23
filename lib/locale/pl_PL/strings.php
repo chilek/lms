@@ -6024,3 +6024,5 @@ $_LANG['Summary'] = 'Podsumowanie';
 $_LANG['Volume'] = 'Ilość';
 
 $_LANG['Last change'] = 'Ostatnia zmiana';
+
+$_LANG['<!consent-group>marketing'] = 'marketing';

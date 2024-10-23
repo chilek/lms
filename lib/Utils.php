@@ -1443,4 +1443,19 @@ class Utils
             return $text;
         }
     }
+
+    public static function findCustomerConsentGroupByCustomerConsent($customerConsentId, $customerConsentGroups)
+    {
+        static $customerConsentByCustomerConsentGroups;
+
+        if (empty($customerConsentByCustomerConsentGroups)) {
+            foreach ($customerConsentGroups as $customerConsentGroupId => $customerConsentGroup) {
+                if (in_array($customerConsentId, $customerConsentGroup['consents'])) {
+                    $customerConsentGroupsByCustomerConsents[$customerConsentId] = $customerConsentGroupId;
+                }
+            }
+        }
+
+        return isset($customerConsentGroupsByCustomerConsents[$customerConsentId]) ? $customerConsentGroupsByCustomerConsents[$customerConsentId] : null;
+    }
 }
