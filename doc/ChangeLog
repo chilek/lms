@@ -832,6 +832,8 @@ version 28-git (????-??-??):
   - enhancement: new customer consents: telephone marketing with 'phone_marketing' and direct marketing
     with 'direct_marketing' as system/logical names [chilan]
   - improvement: customer consent groups support [chilan]
+  - improvement/devel: new plugin hooks 'customersearch_before_display' and 'get_customer_list_prepare_conditions'
+    added [chilan]
 
 version 27.0 (2021-08-20):
 
