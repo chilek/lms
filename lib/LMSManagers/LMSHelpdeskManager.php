@@ -1187,10 +1187,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         // auto fix for misconfigured mail servers which mix character encodings in post headers
         $headers = isset($ticket['headers']) ? mb_convert_encoding($ticket['headers'], 'UTF-8', 'UTF-8') : '';
 
-        $this->db->Execute('INSERT INTO rtmessages (ticketid, userid, customerid, createtime,
+        $this->db->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime,
 				subject, body, mailfrom, phonefrom, messageid, replyto, headers, contenttype, extid)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($id,
-	    $ticket['userid'] ?? Auth::GetCurrentUser(),								       
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($id,
             empty($ticket['customerid']) ? null : $ticket['customerid'],
             $createtime,
             $ticket['subject'],
@@ -1205,11 +1204,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         ));
 
         if (isset($ticket['note']) && $ticket['note']) {
-            $this->db->Execute('INSERT INTO rtmessages (ticketid, userid, customerid, createtime,
+            $this->db->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime,
                         subject, body, mailfrom, phonefrom, messageid, replyto, headers, type)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($id,
-                $ticket['userid'] ?? Auth::GetCurrentUser(),
-		empty($ticket['customerid']) ? null : $ticket['customerid'],
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($id,
+                empty($ticket['customerid']) ? null : $ticket['customerid'],
                 $createtime,
                 $ticket['subject'],
                 preg_replace("/\r/", "", $ticket['note']),
