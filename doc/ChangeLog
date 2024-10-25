@@ -834,6 +834,7 @@ version 28-git (????-??-??):
   - improvement: customer consent groups support [chilan]
   - improvement/devel: new plugin hooks 'customersearch_before_display' and 'get_customer_list_prepare_conditions'
     added [chilan]
+  - improvement: added 'suspended, current' selection in 'assignments' filter of customer search form [chilan]
 
 version 27.0 (2021-08-20):
 
