@@ -41,32 +41,32 @@
 		cursor: pointer;
 	}
 
-	#identity-document-box {
-		padding-left: 0;
+	.identity-document-box {
+		padding-left: 0 !important;
 	}
 
-	#identity-document-box .identity-document-properties {
+	.identity-document-properties {
 		display: flex;
 		flex-direction: column;
 		flex-wrap: wrap;
 	}
 
-	#identity-document-box .identity-document-property {
+	.identity-document-property {
 		display: flex;
 		flex-direction: column;
 		flex-wrap: wrap;
 	}
 
-	#identity-document-box .identity-document-property > * {
+	.identity-document-property > * {
 		margin-top: 0.25em;
 		margin-bottom: 0.25em;
 	}
 
-	#identity-document-box .identity-document-property > input[type] {
+	.identity-document-property > input[type] {
 		margin-left: 0;
 	}
 
-	#identity-document-box .identity-document-property > select {
+	.identity-document-property > select {
 		margin-left: 0;
 	}
 
@@ -190,7 +190,7 @@
 				{block name="customeradd-leftcolumn"}
 				<TR>
 					<TD>
-						{if $customeradd.status}{icon name="customer-status-{$_CSTATUSES[$customerinfo.status].alias}"}{else}{icon name="customer-status-connected"}{/if}
+						{if $customeradd.status}{icon name="customer-status-{$_CSTATUSES[$customeradd.status].alias}"}{else}{icon name="customer-status-connected"}{/if}
 					</TD>
 					<TD>
 						<select size="1" name="customeradd[status]" {tip trigger="status"}>
@@ -283,61 +283,20 @@
 						</div>
 					</TD>
 				</TR>
-				{if !ConfigHelper::checkPrivilege('hide_customer_sensitive_data')}
-					<tr>
-						<td>{trans("SSN")}</td>
-						<td>
-							<input type="text" size="30" value="{$customeradd.ssn}" name="customeradd[ssn]"
-								{tip trigger="ssn"}>
-							{if $customeradd.ssnwarning}
-								<input type="hidden" name="customeradd[ssnwarning]" value="1">
-							{/if}
-							{if $customeradd.ssnexistencewarning}
-								<input type="hidden" name="customeradd[ssnexistencewarning]" value="1">
-							{/if}
-						</td>
-					</tr>
-				{/if}
 				<tr>
-					<td>{trans("TEN")}</td>
-					<td>
-						<input type="text" size="30" value="{$customeradd.ten}" name="customeradd[ten]"
-							{tip trigger="ten"}>
-						{if $customeradd.tenwarning}
-							<input type="hidden" name="customeradd[tenwarning]" value="1">
-						{/if}
-						{if $customeradd.tenexistencewarning}
-							<input type="hidden" name="customeradd[tenexistencewarning]" value="1">
-						{/if}
-						{button icon="division" class="gusapi-button" label="GUS"
-							data_type=Utils::GUS_REGON_API_SEARCH_TYPE_TEN
-							tip="Click here to autocomplete company data from GUS REGON database"}
+					<td class="valign-top">
+						{icon name="user-id-number"}
 					</td>
-				</tr>
-				<tr>
-					<td>{trans("REGON")}</td>
-					<td>
-						<input type="text" size="30" value="{$customeradd.regon}" name="customeradd[regon]"
-							{tip trigger="regon"}>
-						{button icon="division" class="gusapi-button" label="GUS"
-							data_type=Utils::GUS_REGON_API_SEARCH_TYPE_REGON
-							tip="Click here to autocomplete company data from GUS REGON database"}
-					</td>
-				</tr>
-				{if !ConfigHelper::checkPrivilege('hide_customer_sensitive_data')}
-					<tr>
-						<td class="valign-top">
-							{icon name="user-id-number"}
-						</td>
-						<td class="cell-flex">
-							<div>
-								<table width="100%">
-									<colgroup>
-										<col style="width: 1%;">
-										<col style="width: 99%;">
-									</colgroup>
+					<td class="cell-flex identity-document-box">
+						<div>
+							<table class="user-id-number">
+								<colgroup>
+									<col style="width: 1%;">
+									<col style="width: 99%;">
+								</colgroup>
+								{if !ConfigHelper::checkPrivilege('hide_customer_sensitive_data')}
 									<tr>
-										<td class="nobr" colspan="2" id="identity-document-box">
+										<td colspan="2">
 											<fieldset>
 												<legend class="bold">
 													{trans("Identity document")}
@@ -345,16 +304,25 @@
 												<div class="identity-document-properties">
 													<label class="identity-document-property">
 														<span>{trans("Type")}</span>
-														{identitytypes elemname="customeradd[ict]" selected=$customerinfo.ict
+														{identitytypes elemname="customeradd[ict]" selected=$customeradd.ict
 															tip="" trigger="ict"}
 													</label>
 													<label class="identity-document-property">
 														<span>{trans("Number")}</span>
-														{if $customerinfo.icnwarning}
+														{if $customeradd.icnwarning}
 															<input type="hidden" name="customeradd[icnwarning]" value="1">
 														{/if}
-														<input type="text" value="{$customeradd.icn}" name="customeradd[icn]" size="30"
-															{tip trigger="icn"}>
+														{if ConfigHelper::checkPrivilege('customer_sensitive_data_view')}
+															{$icn = $customeradd.icn}
+															{$disabled = false}
+														{else}
+															{$icn = preg_replace('/[^\s]/', '*', $customeradd.icn)}
+															{$disabled = true}
+														{/if}
+														<input type="text" value="{$icn}" name="customeradd[icn]" size="30"
+															class="customer-sensible-data" data-type="icn"
+															{tip trigger="icn"}
+															{if $disabled} disabled{/if}>
 													</label>
 													<label class="identity-document-property">
 														<span>{trans("Expires")}</span>
@@ -362,13 +330,12 @@
 															name="customeradd[icexpires]" size="10" id="icexpires"
 															class="lms-ui-date lms-ui-date-unix"
 															{tip trigger="icexpires"}
-															{if $customeradd.icexpires == -1} disabled{/if}>
+															{if $customeradd.icexpires == -1}disabled{/if}>
 													</label>
 													<label>
 														<input type="checkbox" name="customeradd[icexpires]"
 															id="icexpires-indefinitely"
-															value="-1"
-															{if $customeradd.icexpires == -1} checked{/if}
+															value="-1"{if $customeradd.icexpires == -1} checked{/if}
 															{tip trigger="icexpires-indefinitely"}>
 														{trans("indefinitely")}
 													</label>
@@ -376,32 +343,96 @@
 											</fieldset>
 										</td>
 									</tr>
-								</table>
-							</div>
-						</td>
-					</tr>
-				{/if}
-				<tr>
-					<td>{trans("RBE Name:")}</td>
-					<td>
-						<div class="valign-middle">
-							<textarea name="customeradd[rbename]" cols="45" rows="4"
-								{tip trigger="rbename"}
-								>{$customeradd.rbename|escape}</textarea>
-							{hint content="Enter National Court Register / Register of Business Entities Name (optional)"}
+									<tr>
+										<td>
+											{trans("SSN")}
+										</td>
+										<td>
+											{if ConfigHelper::checkPrivilege('customer_sensitive_data_view')}
+												{$ssn = $customeradd.ssn}
+												{$disabled = false}
+											{else}
+												{$ssn = preg_replace('/[^\s]/', '*', $customeradd.ssn)}
+												{$disabled = true}
+											{/if}
+											<input type="text" name="customeradd[ssn]" value="{$ssn}" size="30"
+												data-type="ssn"
+												{tip trigger="ssn" class="customer-sensible-data"}
+												{if $disabled} disabled{/if}>
+											{if $customeradd.ssnwarning}
+												<input type="hidden" name="customeradd[ssnwarning]" value="1">
+											{/if}
+											{if $customeradd.ssnexistencewarning}
+												<input type="hidden" name="customeradd[ssnexistencewarning]" value="1">
+											{/if}
+										</td>
+									</tr>
+								{/if}
+								<tr>
+									<td>{trans("TEN")}</td>
+									<td>
+										<input type="text" name="customeradd[ten]" value="{$customeradd.ten}" size="30"
+												{tip trigger="ten"}>
+										{if $customeradd.tenwarning}
+											<input type="hidden" name="customeradd[tenwarning]" value="1">
+										{/if}
+										{if $customeradd.tenexistencewarning}
+											<input type="hidden" name="customeradd[tenexistencewarning]" value="1">
+										{/if}
+										{button type="link" icon="division" class="gusapi-button"
+											data_type=Utils::GUS_REGON_API_SEARCH_TYPE_TEN
+											tip="Click here to autocomplete company data from GUS REGON database"}
+									</td>
+								</tr>
+								<tr>
+									<td>{trans("REGON")}</td>
+									<td>
+										<input type="text" value="{$customeradd.regon}" name="customeradd[regon]" size="30"
+											{tip trigger="regon"}>
+										{button type="link" icon="division" class="gusapi-button"
+											data_type=Utils::GUS_REGON_API_SEARCH_TYPE_REGON
+											tip="Click here to autocomplete company data from GUS REGON database"}
+									</td>
+								</tr>
+							</table>
 						</div>
 					</td>
 				</tr>
 				<tr>
-					<td>{trans("RBE")}</td>
-					<td>
-						<div class="valign-middle">
-							<input type="text" size="30" value="{$customeradd.rbe}" name="customeradd[rbe]"
-								{tip trigger="rbe"}>
-							{button type="link" icon="division" class="gusapi-button"
-								data_type=Utils::GUS_REGON_API_SEARCH_TYPE_RBE
-								tip="Click here to autocomplete company data from GUS REGON database"}
-							{hint content="Enter National Court Register / Register of Business Entities Number (optional)"}
+					<td class="valign-top">
+						{icon name="user-id-number"}
+					</td>
+					<td class="cell-flex identity-document-box">
+						<div>
+							<fieldset>
+								<legend class="bold">
+									{trans("Business register")}
+								</legend>
+								<div class="identity-document-properties">
+									<label class="identity-document-property">
+										<span>
+											{trans("Name")}
+											{hint content="Enter National Court Register / Register of Business Entities Name (optional)"}
+										</span>
+										<textarea name="customeradd[rbename]" cols="45" rows="4"
+											{tip trigger="rbename"}
+											>{$customeradd.rbename|escape}</textarea>
+									</label>
+									<label class="identity-document-property">
+										<span>
+											{trans("Number")}
+											{hint content="Enter National Court Register / Register of Business Entities Number (optional)"}
+										</span>
+										<span>
+											<input type="text" value="{$customeradd.rbe}" name="customeradd[rbe]" size="30"
+												{tip trigger="rbe"}>
+											{button type="link" icon="division" class="gusapi-button"
+												data_type=Utils::GUS_REGON_API_SEARCH_TYPE_RBE
+												tip="Click here to autocomplete company data from GUS REGON database"}
+										</span>
+									</label>
+								</div>
+							</fieldset>
 						</div>
 					</td>
 				</tr>
@@ -597,7 +628,7 @@
 									<div class="valign-middle nobr cutoffstop">
 										<input type="text" name="customeradd[cutoffstop]" id="cutoffstop"
 											{if $customeradd.cutoffstopindefinitely} style="display: none;"
-											{elseif $customeradd.cutoffstop} value="{$customerinfo.cutoffstop}"
+											{elseif $customeradd.cutoffstop} value="{$customeradd.cutoffstop}"
 											{/if}
 											size="10"
 											{tip class="lms-ui-date" trigger="cutoffstop"}>

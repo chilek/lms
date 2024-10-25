@@ -5,6 +5,19 @@
 
 <style>
 
+	.rbe-details td {
+		padding-left: 0 !important;
+	}
+
+	.rbe-name {
+		display: flex;
+		align-items: center;
+	}
+
+	.rbe-name > *:not(:first-child) {
+		margin-left: 0.3em;
+	}
+
 	.customer-header {
 		width: 100%;
 		display: flex;
@@ -616,34 +629,51 @@
 										</tr>
 									{/if}
 
-									{if $customerinfo.rbename != ""}
+									{if $customerinfo.rbename != "" || $customerinfo.rbe}
 										<tr>
 											<td class="valign-top">
-												{icon name="user-id-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.rbename}
+												{icon name="user-id-number"}
 											</td>
 											<td>
-												{trans("RBE Name")}
-												<table cellpadding="5">
-													<tr>
-														<td class="fall superlight">
-															{$customerinfo.rbename|escape|replace:"\n":"<BR>"}
-														</td>
-													</tr>
-												</table>
+												<fieldset>
+													<legend class="bold">
+														{trans("Business register")}
+													</legend>
+													<table class="rbe-details">
+														<tr>
+															<td>
+																{trans("Name")}
+															</td>
+															<td class="rbe-name">
+																{if $customerinfo.rbename != ""}
+																	<div class="lms-ui-multiline-box">
+																		{$customerinfo.rbename|escape|replace:"\n":"<BR>"}
+																	</div>
+																	{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.rbename}
+																{else}
+																	—
+																{/if}
+															</td>
+														</tr>
+														<tr>
+															<td>
+																{trans("Number")}
+															</td>
+															<td>
+																{if $customerinfo.rbe != ""}
+																	{$customerinfo.rbe|escape}
+																	{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.rbe}
+																{else}
+																	—
+																{/if}
+															</td>
+														</tr>
+													</table>
+												</fieldset>
 											</td>
 										</tr>
 									{/if}
-									{if $customerinfo.rbe != ""}
-										<tr>
-											<td>
-												{icon name="user-id-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.rbe}
-											</td>
-											<td>
-												{trans("RBE")}
-												{$customerinfo.rbe|escape}
-											</td>
-										</tr>
-									{/if}
+
 									{if $customerinfo.bankaccount}
 										<tr>
 											<td>
