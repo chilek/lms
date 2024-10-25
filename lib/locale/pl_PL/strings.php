@@ -4604,6 +4604,7 @@ $_LANG['closed<!plural:event>'] = 'zamknięte';
 $_LANG['Assignments:'] = 'Zobowiązania:';
 $_LANG['Assignments'] = 'Zobowiązania';
 $_LANG['suspended'] = 'zawieszone';
+$_LANG['suspended, current'] = 'zawieszone, bieżące';
 $_LANG['active, with invoice'] = 'aktywne, z fakturą';
 $_LANG['active, with pro forma'] = 'aktywne, z pro forma';
 $_LANG['active, without document'] = 'aktywne, bez dokumentu';
