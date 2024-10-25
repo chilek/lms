@@ -936,7 +936,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 'customer-consents' => $consents,
             )
         );
-        $consent_conditions = array_merge($consent_conditions, $hook_data['customer-consent-conditions']);
+        if (!empty($hook_data['customer-consent-conditions'])) {
+            $consent_conditions = array_merge($consent_conditions, $hook_data['customer-consent-conditions']);
+        }
 
         $consent_condition = '';
         if (!empty($consents)) {
