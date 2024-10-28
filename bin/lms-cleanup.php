@@ -97,11 +97,12 @@ if (isset($resources['finances'])) {
         echo '###################' . PHP_EOL;
     }
 
-    $balances = $DB->GetAll(
+    $balances = $DB->GetAllByKey(
         'SELECT customerid, SUM(value * currencyvalue) AS balance
         FROM cash
         WHERE time < ?
         GROUP BY customerid',
+        'customerid',
         array($time)
     );
 
@@ -116,8 +117,9 @@ if (isset($resources['finances'])) {
     echo 'Creating starting balance records... ';
     foreach ($balances as $customerid => $balance) {
         $DB->Execute(
-            'INSERT INTO cash (time, type, value, currency, comment) VALUES (?, ?, ?, ?, ?)',
+            'INSERT INTO cash (customerid, time, type, value, currency, comment) VALUES (?, ?, ?, ?, ?, ?)',
             array(
+                $customerid,
                 $time,
                 1,
                 $balance,
