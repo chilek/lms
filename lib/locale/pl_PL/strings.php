@@ -3072,6 +3072,7 @@ $_LANG['Consent to electronic invoices:'] = 'Zgoda na faktury elektroniczne:';
 $_LANG['Consent to electronic invoices'] = 'Zgoda na faktury elektroniczne';
 $_LANG['Consent to invoices delivery via e-mail:'] = 'Zgoda na dostarczanie faktur pocztą elektroniczną:';
 $_LANG['invoice delivery via e-mail'] = 'dostarczanie faktur pocztą elektroniczną';
+$_LANG['<!consent>delivery via e-mail'] = 'dostarczanie pocztą elektroniczną';
 $_LANG['Consent to messages delivery via e-mail:'] = 'Zgoda na dostarczanie informacji pocztą elektroniczną:';
 $_LANG['Consent to messages delivery via sms:'] = 'Zgoda na dostarczanie informacji SMS-em:';
 $_LANG['message delivery via e-mail'] = 'dostarczanie informacji pocztą elektroniczną';
@@ -5835,10 +5836,13 @@ $_LANG['Events which begin in the past are not allowed!'] = 'Zdarzenia rozpoczyn
 
 $_LANG['on time payments'] = 'terminowe płatności';
 $_LANG['electronic invoice'] = 'faktura elektroniczna';
-$_LANG['e-mail marketing'] = 'marketing pocztą elektroniczną';
-$_LANG['sms marketing'] = 'marketing SMS-em';
-$_LANG['telephone marketing'] = 'marketing telefoniczny';
-$_LANG['direct marketing'] = 'marketing bezpośredni';
+$_LANG['<!marketing>e-mail'] = 'pocztą elektroniczną';
+$_LANG['<!marketing>sms'] = 'SMS-em';
+$_LANG['<!marketing>telephone'] = 'telefoniczny';
+$_LANG['<!marketing>direct'] = 'bezpośredni';
+$_LANG['<!service-info>e-mail'] = 'pocztą elektroniczną';
+$_LANG['<!service-info>sms'] = 'SMS-em';
+$_LANG['<!service-info>telephone'] = 'telefonicznie';
 $_LANG['phone billing'] = 'billing telefoniczny';
 
 $_LANG['Issuer'] = 'Wystawca';
@@ -6028,3 +6032,5 @@ $_LANG['Volume'] = 'Ilość';
 $_LANG['Last change'] = 'Ostatnia zmiana';
 
 $_LANG['<!consent-group>marketing'] = 'marketing';
+$_LANG['<!consent-group>service information'] = 'informacje związane z usługą';
+$_LANG['<!consent-group>invoices'] = 'faktury';

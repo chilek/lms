@@ -114,12 +114,16 @@ $CUSTOMERFLAGS = array(
 // customer consents
 const CCONSENT_DATE = 1,
     CCONSENT_INVOICENOTICE = 2,
-    CCONSENT_MAILINGNOTICE = 3,
+    CCONSENT_MAIL_SERVICE_INFO = 3,
+    CCONSENT_MAILING_NOTICE = CCONSENT_MAIL_SERVICE_INFO,
+    CCONSENT_MAILINGNOTICE = CCONSENT_MAIL_SERVICE_INFO,
     CCONSENT_EINVOICE = 4,
     CCONSENT_USERPANEL_SMS = 5,
     CCONSENT_USERPANEL_SCAN = 6,
     CCONSENT_TRANSFERFORM = 7,
-    CCONSENT_SMSNOTICE = 8,
+    CCONSENT_SMS_SERVICE_INFO = 8,
+    CCONSENT_SMS_NOTICE = CCONSENT_SMS_SERVICE_INFO,
+    CCONSENT_SMSNOTICE = CCONSENT_SMS_SERVICE_INFO,
     CCONSENT_SMS_MARKETING = 9,
     CCONSENT_MAIL_MARKETING = 10,
     CCONSENT_PHONE_BILLING = 11,
@@ -127,7 +131,10 @@ const CCONSENT_DATE = 1,
     CCONSENT_FULL_PHONE_BILLING = 13,
     CCONSENT_SIMPLIFIED_PHONE_BILLING = 14,
     CCONSENT_PHONE_MARKETING = 15,
-    CCONSENT_DIRECT_MARKETING = 16;
+    CCONSENT_DIRECT_MARKETING = 16,
+    CCONSENT_PHONE_SERVICE_INFO = 17,
+    CCONSENT_PHONE_NOTICE = CCONSENT_PHONE_SERVICE_INFO,
+    CCONSENT_PHONENOTICE = CCONSENT_PHONE_SERVICE_INFO;
 
 $CCONSENTS = array(
     CCONSENT_DATE => array(
@@ -141,37 +148,42 @@ $CCONSENTS = array(
         'type' => 'boolean',
     ),
     CCONSENT_INVOICENOTICE => array(
-        'label' => trans('invoice delivery via e-mail'),
+        'label' => trans('<!consent>delivery via e-mail'),
         'name' => 'invoice_notice',
         'type' => 'boolean',
     ),
-    CCONSENT_MAILINGNOTICE => array(
-        'label' => trans('message delivery via e-mail'),
+    CCONSENT_MAIL_SERVICE_INFO => array(
+        'label' => trans('<!service-info>e-mail'),
         'name' => 'mailing_notice',
         'type' => 'boolean',
     ),
-    CCONSENT_SMSNOTICE => array(
-        'label' => trans('message delivery via sms'),
+    CCONSENT_SMS_SERVICE_INFO => array(
+        'label' => trans('<!service-info>sms'),
         'name' => 'sms_notice',
         'type' => 'boolean',
     ),
+    CCONSENT_PHONE_SERVICE_INFO => array(
+        'label' => trans('<!service-info>telephone'),
+        'name' => 'phone_service_info',
+        'type' => 'boolean',
+    ),
     CCONSENT_MAIL_MARKETING => array(
-        'label' => trans('e-mail marketing'),
+        'label' => trans('<!marketing>e-mail'),
         'name' => 'mail_marketing',
         'type' => 'boolean',
     ),
     CCONSENT_SMS_MARKETING => array(
-        'label' => trans('sms marketing'),
+        'label' => trans('<!marketing>sms'),
         'name' => 'sms_marketing',
         'type' => 'boolean',
     ),
     CCONSENT_PHONE_MARKETING => array(
-        'label' => trans('telephone marketing'),
+        'label' => trans('<!marketing>telephone'),
         'name' => 'phone_marketing',
         'type' => 'boolean',
     ),
     CCONSENT_DIRECT_MARKETING => array(
-        'label' => trans('direct marketing'),
+        'label' => trans('<!marketing>direct'),
         'name' => 'direct_marketing',
         'type' => 'boolean',
     ),
@@ -213,9 +225,26 @@ $CCONSENTS = array(
     CCONSENT_FULL_PHONE_BILLING => CCONSENT_PHONE_BILLING,
 );
 
-const CCONSENT_GROUP_MARKETING = 1;
+const CCONSENT_GROUP_MARKETING = 1,
+    CCONSENT_GROUP_SERVICE_INFO = 2,
+    CCONSENT_GROUP_INVOICES = 3;
 
 $CCONSENT_GROUPS = array(
+    CCONSENT_GROUP_INVOICES => array(
+        'label' => trans('<!consent-group>invoices'),
+        'consents' => array(
+            CCONSENT_EINVOICE,
+            CCONSENT_INVOICENOTICE,
+        ),
+    ),
+    CCONSENT_GROUP_SERVICE_INFO => array(
+        'label' => trans('<!consent-group>service information'),
+        'consents' => array(
+            CCONSENT_MAIL_SERVICE_INFO,
+            CCONSENT_SMS_SERVICE_INFO,
+            CCONSENT_PHONE_SERVICE_INFO,
+        ),
+    ),
     CCONSENT_GROUP_MARKETING => array(
         'label' => trans('<!consent-group>marketing'),
         'consents' => array(
