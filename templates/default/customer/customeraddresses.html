@@ -21,7 +21,7 @@
             <option value="{$address_id}" data-territ="{if empty($address.teryt)}0{else}1{/if}" data-icon="{$icon}"
                     {if (isset($selected_address_id) && $selected_address_id == $address_id)
                         || (!isset($selected_address_id) && (!isset($preselection) || $preselection) && isset($address.default_address))} selected{/if}
-            >{$address.location|escape}</option>
+            >{if !empty($address.location_name)}{$address.location_name}, {/if}{$address.location|escape}</option>
         {/foreach}
     {/if}
 </select>
