@@ -837,6 +837,7 @@ version 28-git (????-??-??):
   - improvement: added 'suspended, current' selection in 'assignments' filter of customer search form [chilan]
   - improvement: new customer consent: telephone service info with 'phone_service_info' as system/logical
     name [chilan]
+  - improvement: allow to select multiple event types in search form [chilan]
 
 version 27.0 (2021-08-20):
 
