@@ -85,15 +85,60 @@ if (isset($_POST['event'])) {
     $SMARTY->assign('getHolidays', getHolidays($year ?? null));
 
     $total_time = 0;
-    foreach ($daylist as $day) {
-        foreach ($eventlist as $event) {
-            if ($event['date'] == $day && !isset($event['hide'])) {
-                $total_time += $event['total_time'];
+    $calendar_intervals = array();
+    foreach ($eventlist as $event) {
+        if (empty($event['hide'])) {
+            $total_time += $event['total_time'];
+        }
+        $start_datetime = $event['date'] + $event['begintime'];
+        $end_datetime = $event['enddate'] + $event['endtime'];
+        $interval = $event['endtime'] - $event['begintime'];
+        if (!isset($calendar_intervals[$start_datetime]) || $interval > $calendar_intervals[$start_datetime]) {
+            $calendar_intervals[$start_datetime] = $interval;
+        }
+    }
+    uksort(
+        $calendar_intervals,
+        function ($a, $b) {
+            return $a - $b;
+        }
+    );
+
+    $calendar_final_intervals = array();
+    foreach ($calendar_intervals as $start_datetime => $interval) {
+        if (isset($calendar_final_intervals[$start_datetime])) {
+            if ($interval > $calendar_final_intervals[$start_datetime]) {
+                $calendar_final_intervals[$start_datetime] = $interval;
             }
+        } else {
+            $found = false;
+            foreach ($calendar_final_intervals as $start_final_datetime => &$final_interval) {
+                if ($start_datetime > $start_final_datetime
+                    && $start_datetime + $interval > $start_final_datetime + $final_interval
+                    && $start_datetime <= $start_final_datetime + $final_interval) {
+                    $final_interval += $start_datetime + $interval - ($start_final_datetime + $final_interval);
+                    $found = true;
+                    break;
+                } elseif ($start_datetime > $start_final_datetime && $start_datetime + $interval <= $start_final_datetime + $final_interval) {
+                    $found = true;
+                    break;
+                }
+            }
+            unset($final_interval);
+            if ($found) {
+                continue;
+            }
+            $calendar_final_intervals[$start_datetime] = $interval;
         }
     }
 
+    $calendar_total_time = 0;
+    foreach ($calendar_final_intervals as $final_interval) {
+        $calendar_total_time += $final_interval;
+    }
+
     $SMARTY->assign('total_time', $total_time);
+    $SMARTY->assign('calendar_total_time', $calendar_total_time);
 
     $SMARTY->display('event/eventsearchresults.html');
 

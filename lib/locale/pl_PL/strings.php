@@ -4661,7 +4661,9 @@ $_LANG['Prefix groups assigned to tariff rule'] = 'Grupy prefiksów przypisane d
 $_LANG['Allows you to search for IP address pools'] = 'Wyszukiwanie sieci';
 
 $_LANG['Total events:'] = 'Razem zdarzeń:';
-$_LANG['Total time: $a ($b h)'] = 'Całkowity czas: $a ($b h)';
+$_LANG['Events: $a'] = 'Zdarzeń: $a';
+$_LANG['Time: $a ($b h)'] = 'Czas: $a ($b h)';
+$_LANG['Calendar time: $a ($b h)'] = 'Czas kalendarzowy: $a ($b h)';
 $_LANG['Today'] = 'Dziś';
 
 $_LANG['Begin time:'] = 'Czas rozpoczęcia:';
