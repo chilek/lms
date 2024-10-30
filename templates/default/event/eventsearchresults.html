@@ -21,6 +21,6 @@
 <H2>
     {trans("Total events:")}
     {if empty($eventlist)}0{else}{count($eventlist)}{/if},
-    {t a=$total_time|duration_format}Total time: $a{/t}
+    {t a=$total_time|duration_format b=round($total_time / 3600, 1)}Total time: $a ($b h){/t}
 </H2>
 {/block}

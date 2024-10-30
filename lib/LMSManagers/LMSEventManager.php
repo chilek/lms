@@ -584,6 +584,15 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         $dateto = isset($search['dateto']) ? intval($search['dateto']) : 0;
         $ticketid = isset($search['ticketid']) ? intval($search['ticketid']) : 0;
 
+        if (empty($search['type'])) {
+            $types = array();
+        } elseif (is_array($search['type'])) {
+            $types = $search['type'];
+        } else {
+            $types = array($search['type']);
+        }
+        $types = Utils::filterIntegers($types);
+
         $list = $this->db->GetAll(
             'SELECT events.id AS id, title, description, date, begintime, enddate, endtime, customerid, closed, events.type, events.ticketid, events.note, '
                 . $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername,
@@ -594,7 +603,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 . ($datefrom ? " AND (date >= $datefrom OR (enddate <> 0 AND enddate >= $datefrom))" : '')
                 . ($dateto ? " AND (date <= $dateto OR (enddate <> 0 AND enddate <= $dateto))" : '')
                 . (!empty($search['customerid']) ? ' AND customerid = ' . intval($search['customerid']) : '')
-                . (!empty($search['type']) ? ' AND events.type = ' . intval($search['type']) : '')
+                . (empty($types) ? '' : ' AND events.type IN (' . implode(',', $types) . ')')
                 . ($ticketid ? " AND ticketid = " . $ticketid : '')
                 . (isset($search['closed']) ? ($search['closed'] == '' ? '' : ' AND closed = ' . intval($search['closed'])) : ' AND closed = 0')
                 . (!empty($search['title']) ? ' AND title ?LIKE? ' . $this->db->Escape('%' . $search['title'] . '%') : '')

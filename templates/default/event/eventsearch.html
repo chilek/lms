@@ -78,11 +78,11 @@
 			{icon name="type"}
 		</TD>
 		<TD class="bold">
-			{trans("Type:")}
+			{trans("Type")}
 		</TD>
 		<td>
-			<select name="event[type]" size="1">
-				<option value="0" selected>{trans("— all —")}</option>
+			<select name="event[type][]" size="1" class="lms-ui-multiselect" multiple
+				data-default-value="{trans("— all —")}">
 				{foreach Localisation::arraySort($_EVENTTYPES, 'label') as $idx => $eventtype}
 					<option value="{$idx}">{$eventtype.label}</option>
 				{/foreach}
