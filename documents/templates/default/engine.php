@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2024 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,12 +26,9 @@
 
 $cid = $document['customerid'];
 
-$customerinfo = $LMS->GetCustomer($cid);
 $assignments = $LMS->GetCustomerAssignments($cid);
 $customernodes = $LMS->GetCustomerNodes($cid);
 $tariffs = $LMS->GetTariffs();
-$divisionid = $LMS->GetCustomerDivision($cid);
-$division = $LMS->GetDivision($divisionid);
 
 unset($customernodes['total']);
 
@@ -41,12 +38,23 @@ if ($customernodes) {
     }
 }
 
-if ($customeraccounts = $DB->GetAll('SELECT passwd.*, domains.name AS domain
-				FROM passwd LEFT JOIN domains ON (domainid = domains.id)
-				WHERE passwd.ownerid = ? ORDER BY login', array($cid))) {
+if ($customeraccounts = $DB->GetAll(
+    'SELECT
+        passwd.*,
+        domains.name AS domain
+    FROM passwd
+    LEFT JOIN domains ON (domainid = domains.id)
+    WHERE passwd.ownerid = ?
+    ORDER BY login',
+    array($cid)
+)) {
     foreach ($customeraccounts as $idx => $account) {
-        $customeraccounts[$idx]['aliases'] = $DB->GetCol('SELECT login FROM aliases a 
-			LEFT JOIN aliasassignments aa ON a.id = aa.aliasid WHERE aa.accountid=?', array($account['id']));
+        $customeraccounts[$idx]['aliases'] = $DB->GetCol(
+            'SELECT login FROM aliases a 
+            LEFT JOIN aliasassignments aa ON a.id = aa.aliasid
+            WHERE aa.accountid = ?',
+            array($account['id'])
+        );
         /*// create random password
         $pass = '';
         for ($i = 0; $i < 8; $i++)
@@ -56,24 +64,15 @@ if ($customeraccounts = $DB->GetAll('SELECT passwd.*, domains.name AS domain
     }
 }
 
-$document['template'] = $DB->GetOne('SELECT template FROM numberplans WHERE id=?', array($document['numberplanid']));
-$document['nr'] = docnumber(array(
-    'number' => $document['number'],
-    'template' => $document['template'],
-    'customerid' => $document['customerid'],
-));
-
 $SMARTY->assign(
     array(
-            'customernodes' => $customernodes,
-            'assignments' => $assignments,
-            'customerinfo' => $customerinfo,
-            'tariffs' => $tariffs,
-            'customeraccounts' => $customeraccounts,
-            'document' => $document,
-            'engine' => $engine,
-            'division' => $division,
-             )
+        'customernodes' => $customernodes,
+        'assignments' => $assignments,
+        'tariffs' => $tariffs,
+        'customeraccounts' => $customeraccounts,
+        'document' => $document,
+        'engine' => $engine,
+    )
 );
 
-$output = $SMARTY->fetch(DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['template']);
+$output = $SMARTY->fetch(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $engine['name'] . DIRECTORY_SEPARATOR . $engine['template']);
