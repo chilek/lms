@@ -83,7 +83,20 @@ if (isset($_POST['event'])) {
     $SMARTY->assign('eventlist', $eventlist);
     $SMARTY->assign('daylist', $daylist);
     $SMARTY->assign('getHolidays', getHolidays($year ?? null));
+
+    $total_time = 0;
+    foreach ($daylist as $day) {
+        foreach ($eventlist as $event) {
+            if ($event['date'] == $day && !isset($event['hide'])) {
+                $total_time += $event['total_time'];
+            }
+        }
+    }
+
+    $SMARTY->assign('total_time', $total_time);
+
     $SMARTY->display('event/eventsearchresults.html');
+
     $SESSION->close();
     die;
 }

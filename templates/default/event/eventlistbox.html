@@ -44,9 +44,6 @@
     <TBODY class="event-day" data-event-day="{$day}">
         {foreach $eventlist as $event}
             {if $event.date == $day && !isset($event.hide)}
-                {if isset($total_time)}
-                    {$total_time=$total_time+$event.total_time scope="global"}
-                {/if}
                 {include file="event/eventlistboxrow.html" backid="event-day-{$day}"}
             {/if}
         {/foreach}
