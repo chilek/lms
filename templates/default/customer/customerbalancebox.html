@@ -28,19 +28,31 @@
 				{$n=$limit*-1}
 			{/if}
 			&nbsp;&nbsp;&nbsp;
-			<label id="aggregate_document_label">
-				<input type="checkbox" name="aggregate_documents" value="1"
-						{if $aggregate_documents} checked{/if}>
-				{trans("aggregate documents")}
-			</label>
+			{strip}
+				<label id="aggregate_document_label">
+					<input type="checkbox" name="aggregate_documents" value="1"
+							{if $aggregate_documents} checked{/if}>
+					{trans("aggregate documents")}
+				</label>
+			{/strip}
 
 			{if ConfigHelper::checkPrivilege('finances_management')}
-				{trans("From")}&nbsp;<INPUT type="text" name="from" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}"
-					{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means 1970/01/01) or click to choose it from calendar"}
-					form="printcustomerbalance">&nbsp;
-				{trans("To")}&nbsp;<INPUT type="text" name="to" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}"
-					{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}
-					form="printcustomerbalance">
+				<label>
+					<span class="lms-ui-label">
+						{trans("from")}
+					</span>
+					<input type="text" name="from" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}"
+						{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means 1970/01/01) or click to choose it from calendar"}
+						form="printcustomerbalance">
+				</label>
+				<label>
+					<span class="lms-ui-label">
+						{trans("to")}
+					</span>
+					<input type="text" name="to" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}"
+						{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}
+						form="printcustomerbalance">
+				</label>
 				<a href="javascript:document.printcustomerbalance.submit();">{trans("Customer Balance Sheet")}</a>
 			{/if}
 		{/tab_header_cell}
