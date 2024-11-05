@@ -288,7 +288,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      */
     public function getCustomerBalanceList($id, $totime = null, $direction = 'ASC', $aggregate_documents = false)
     {
-        ($direction == 'ASC' || $direction == 'asc') ? $direction == 'ASC' : $direction == 'DESC';
+        if (strtoupper($direction) != 'ASC') {
+            $direction = 'DESC';
+        }
 
         $result = array();
 
