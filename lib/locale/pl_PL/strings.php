@@ -865,6 +865,7 @@ $_LANG['Node Edit: $a'] = 'Edycja komputera: $a';
 $_LANG['Customer Liabilities:'] = 'Zobowiązania klienta:';
 $_LANG['Customer Liabilities'] = 'Zobowiązania klienta';
 $_LANG['Network Device Liabilities:'] = 'Zobowiązania urządzenia sieciowego:';
+$_LANG['Network Device Liabilities'] = 'Zobowiązania urządzenia sieciowego';
 $_LANG['Node Liabilities:'] = 'Zobowiązania komputera:';
 $_LANG['Node Liabilities'] = 'Zobowiązania komputera';
 $_LANG['customer name'] = 'nazwisko klienta';

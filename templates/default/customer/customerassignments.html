@@ -17,12 +17,12 @@
 <form method="post" name="{$tab_id}" id="{$tab_id}-form" action="?m=customerassignmentdel">
 </form>
 
-{if !isset($data_label)}{$data_label="Customer Liabilities"}{/if}
-{tab_container id=$tab_id label=$data_label}
+{if !isset($label)}{$label="Customer Liabilities"}{/if}
+{tab_container id=$tab_id label=$label}
 
 	{tab_header content_id=$content_id}
 		{tab_header_cell icon="lms-ui-icon-assignment"}
-			<strong>{if isset($tab_label)}{$tab_label}{else}{trans("Customer Liabilities")}{/if}</strong>
+			<strong>{if isset($label)}{$label}{else}{trans("Customer Liabilities")}{/if}</strong>
 			<label class="assignment-type-filter">
 				{trans("Type:")}
 				<select class="assignment-type">
