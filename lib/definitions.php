@@ -1627,7 +1627,8 @@ const EVENT_OTHER = 1,
     EVENT_DUTY = 7,
     EVENT_PHONE = 8,
     EVENT_TV = 9,
-    EVENT_TECHNICAL_VERIFICATION = 10;
+    EVENT_TECHNICAL_VERIFICATION = 10,
+    EVENT_REMINDER = 11;
 
 $EVENTTYPES = array(
     EVENT_OTHER => array(
@@ -1679,6 +1680,11 @@ $EVENTTYPES = array(
         'label' => 'technical verification',
         'style' => 'background-color: #30D5C8; color: black;',
         'alias' => 'technical_verification',
+    ),
+    EVENT_REMINDER => array(
+        'label' => 'reminder',
+        'style' => 'background-color: #FF66FF; color: black;',
+        'alias' => 'reminder',
     ),
 );
 
