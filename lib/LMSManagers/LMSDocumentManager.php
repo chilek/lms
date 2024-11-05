@@ -1518,7 +1518,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
 
         $docs = $this->db->GetAllByKey(
-            'SELECT d.id, d.customerid, d.fullnumber, dc.fromdate AS datefrom,
+            'SELECT d.id, d.customerid, d.fullnumber,
+                dc.fromdate AS datefrom,
+                dc.todate AS dateto,
                 d.type AS doctype,
                 d.reference, d.commitflags, d.confirmdate, d.closed,
                 (CASE WHEN (u.ntype & ?) > 0 AND u.email <> ? THEN u.email ELSE ? END) AS creatoremail,
@@ -1678,7 +1680,31 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             );
 
             if (isset($doc['attributes']) && strlen($doc['attributes'])) {
-                $finance_manager->addAssignmentsForSchema(unserialize($doc['attributes']));
+                $selected_assignment = unserialize($doc['attributes']);
+                $finance_manager->addAssignmentsForSchema($selected_assignment);
+
+                $diff_days = intval(round((strtotime('today') - $doc['datefrom']) / 86400));
+
+                $datefrom = empty($doc['datefrom']) ? 0 : strtotime(($diff_days < 0 ? '-' : '+') . $diff_days . ' days', $doc['datefrom']);
+                $dateto = $doc['dateto'];
+                if ($dateto) {
+                    if (!empty($selected_assignment['align-periods'])) {
+                        if (date('m', $doc['datefrom']) != date('m', $datefrom)) {
+                            $dateto = mktime(0, 0, 0, date('m', $dateto) + 1, 1, date('Y', $dateto)) - 1;
+                        }
+                    } else {
+                        $dateto = strtotime(($diff_days < 0 ? '-' : '+') . $diff_days . ' days', $dateto);
+                    }
+                }
+
+                $this->db->Execute(
+                    'UPDATE documentcontents SET fromdate = ?, todate = ? WHERE docid = ?',
+                    array(
+                        $datefrom,
+                        $dateto,
+                        $docid,
+                    )
+                );
             }
 
             if ($userpanel && empty($doc['customerawaits']) && empty($doc['operatorawaits'])) {
