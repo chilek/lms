@@ -3550,6 +3550,10 @@ if (empty($types) || in_array('messages', $types)) {
             foreach ($messageitems as $messageitem) {
                 if ($idx >= $start_idx && $idx <= $end_idx) {
                     $attributes = unserialize($messageitem['attributes']);
+                    if ($attributes === false) {
+                        $idx++;
+                        continue;
+                    }
                 }
 
                 if (!$quiet) {
