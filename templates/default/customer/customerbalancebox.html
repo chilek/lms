@@ -29,9 +29,9 @@
 			{/if}
 			&nbsp;&nbsp;&nbsp;
 			<label id="aggregate_document_label">
-				{trans("Aggregate documents")}
 				<input type="checkbox" name="aggregate_documents" value="1"
 						{if $aggregate_documents} checked{/if}>
+				{trans("aggregate documents")}
 			</label>
 
 			{if ConfigHelper::checkPrivilege('finances_management')}
