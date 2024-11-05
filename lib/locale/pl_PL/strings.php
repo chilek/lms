@@ -6048,3 +6048,6 @@ $_LANG['<!consent-group>service information'] = 'informacje związane z usługą
 $_LANG['<!consent-group>invoices'] = 'faktury';
 
 $_LANG['reminder'] = 'przypomnienie';
+
+$_LANG['<!document-period>dynamic'] = 'dynamiczny';
+$_LANG['<!document-period>(dynamic)'] = '(dynamiczny)';

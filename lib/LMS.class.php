@@ -1485,6 +1485,12 @@ class LMS
         return $manager->AddAssignment($data);
     }
 
+    public function addAssignmentsForSchema($data)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->addAssignmentsForSchema($data);
+    }
+
     public function ValidateAssignment($data)
     {
         $manager = $this->getFinanceManager();

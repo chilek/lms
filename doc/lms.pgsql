@@ -608,6 +608,8 @@ CREATE TABLE documentcontents (
 	fromdate bigint 	DEFAULT 0 NOT NULL,
 	todate bigint 		DEFAULT 0 NOT NULL,
 	description text 	DEFAULT '' NOT NULL,
+	dynamicperiod smallint DEFAULT 0 NOT NULL,
+	attributes text DEFAULT NULL,
 	UNIQUE (docid)
 );
 CREATE INDEX documentcontents_todate_idx ON documentcontents (todate);
@@ -4430,6 +4432,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024100800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2024110500');
 
 COMMIT;

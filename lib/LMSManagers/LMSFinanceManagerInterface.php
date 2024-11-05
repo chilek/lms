@@ -44,6 +44,8 @@ interface LMSFinanceManagerInterface
 
     public function AddAssignment($data);
 
+    public function addAssignmentsForSchema($data);
+
     public function ValidateAssignment($data);
 
     public function CheckSchemaModifiedValues(&$data);

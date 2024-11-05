@@ -47,6 +47,15 @@
 		border-top: none;
 	}
 
+	#document-period {
+		display: flex;
+		flex-direction: column;
+	}
+
+	#document-period > *:not(:first-child) {
+		margin-top: 0.3em;
+	}
+
 </style>
 
 <script>
@@ -205,28 +214,39 @@
 			</td>
 		</tr>
 		<tr>
-			<td>
+			<td class="valign-top">
 				{icon name="period"}
 			</td>
-			<td>
-				<strong>{trans("Period:")}</strong>
+			<td class="valign-top">
+				<strong>{trans("Period")}</strong>
 			</td>
 			<td>
-				{$allow_past_date = ConfigHelper::checkConfig('documents.allow_past_date', true)}
-				{trans("from:")}
-				<input type="text" name="document[fromdate]" id="fromdate"
-					value="{if $document.fromdate}{$document.fromdate}{/if}"
-					placeholder="{trans("yyyy/mm/dd")}"
-					{tip class="lms-ui-date lms-ui-date-unix" text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"}
-					{if !$allow_past_date}data-min-date="{date('Y-m-d')}"{/if}
-					size="10">&nbsp;
-				{trans("to:")}
-				<input type="text" name="document[todate]" id="todate"
-					value="{if $document.todate}{$document.todate}{/if}"
-					placeholder="{trans("yyyy/mm/dd")}"
-					{tip class="lms-ui-date lms-ui-date-unix" text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"}
-					{if !$allow_past_date}data-min-date="{date('Y-m-d')}"{/if}
-					size="10">
+				<div id="document-period">
+					<label>
+						<input type="checkbox" name="document[dynamicperiod]" value="1"
+							{if !empty($document.dynamicperiod)} checked{/if}>
+						{trans("<!document-period>dynamic")}
+					</label>
+					{$allow_past_date = ConfigHelper::checkConfig('documents.allow_past_date', true)}
+					<label>
+						{trans("from")}
+						<input type="text" name="document[fromdate]" id="fromdate"
+							value="{if $document.fromdate}{$document.fromdate}{/if}"
+							placeholder="{trans("yyyy/mm/dd")}"
+							{tip class="lms-ui-date lms-ui-date-unix" text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"}
+							{if !$allow_past_date}data-min-date="{date('Y-m-d')}"{/if}
+							size="10">&nbsp;
+					</label>
+					<label>
+						{trans("to")}
+						<input type="text" name="document[todate]" id="todate"
+							value="{if $document.todate}{$document.todate}{/if}"
+							placeholder="{trans("yyyy/mm/dd")}"
+							{tip class="lms-ui-date lms-ui-date-unix" text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"}
+							{if !$allow_past_date}data-min-date="{date('Y-m-d')}"{/if}
+							size="10">
+					</label>
+				</div>
 			</td>
 		</tr>
 		<tr>

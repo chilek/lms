@@ -1524,7 +1524,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 (CASE WHEN (u.ntype & ?) > 0 AND u.email <> ? THEN u.email ELSE ? END) AS creatoremail,
                 u.name AS creatorname,
                 (CASE WHEN d.confirmdate = -1 AND a.customerdocuments IS NOT NULL THEN 1 ELSE 0 END) AS customerawaits,
-                (CASE WHEN d.confirmdate > 0 AND d.confirmdate > ?NOW? THEN 1 ELSE 0 END) AS operatorawaits
+                (CASE WHEN d.confirmdate > 0 AND d.confirmdate > ?NOW? THEN 1 ELSE 0 END) AS operatorawaits,
+                dc.attributes
             FROM documents d
             JOIN documentcontents dc ON dc.docid = d.id
             LEFT JOIN docrights r ON r.doctype = d.type
@@ -1675,6 +1676,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 'UPDATE assignments SET commited = 1 WHERE docid = ? AND commited = 0',
                 array($docid)
             );
+
+            if (isset($doc['attributes']) && strlen($doc['attributes'])) {
+                $finance_manager->addAssignmentsForSchema(unserialize($doc['attributes']));
+            }
 
             if ($userpanel && empty($doc['customerawaits']) && empty($doc['operatorawaits'])) {
                 continue;

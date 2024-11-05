@@ -75,7 +75,7 @@
 		</TD>
 		<TD class="nobr">
 			<A href="?m=documentlist&amp;o=title{if $filter.direction == "asc" && $filter.order == "title"},desc{/if}">{trans("Title:")}</A>{if $filter.order == "title"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-			<BR>{trans("Period:")}
+			<BR>{trans("Period")}
 			<BR>{trans("Reference document:")}
 		</TD>
 		<TD class="nobr"> <A href="?m=documentlist&amp;o=customer{if $filter.direction == "asc" && $filter.order == "customer"},desc{/if}">{trans("Customer:")}</A>{if $filter.order == "customer"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</TD>
@@ -253,8 +253,9 @@
 				{hint icon="info" content=$doc.description|escape|replace:"\n":'<br>'}
 			{/if}
 			{if $doc.fromdate || $doc.todate}<BR>
-			    {if $doc.fromdate}{trans("from")} {$doc.fromdate|date_format:"Y-m-d"}{/if}
-			    {if $doc.todate}{trans("to")} {$doc.todate|date_format:"Y-m-d"}{/if}
+				{if $doc.fromdate}{trans("from")} {$doc.fromdate|date_format:"Y-m-d"}{/if}
+				{if $doc.todate}{trans("to")} {$doc.todate|date_format:"Y-m-d"}{/if}
+				{if empty($doc.closed) && ($doc.fromdate || $doc.todate)}{trans("<!document-period>(dynamic)")}{/if}
 			{/if}
 			{if $doc.reference}<br>
 			<a href="?m={if $doc.reference.type < 0}documentview{else}invoice{/if}&id={$doc.reference.id}" rel="external">

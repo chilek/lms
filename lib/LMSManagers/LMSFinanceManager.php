@@ -1292,6 +1292,36 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return $result;
     }
 
+    public function addAssignmentsForSchema($data)
+    {
+        if (!empty($data['sassignmentid']) && is_array($data['sassignmentid'])) {
+            $schemaid = $data['schemaid'];
+
+            $modifiedvalues = $data['values'] ?? array();
+            $counts = $data['counts'];
+            $backwardperiods = $data['backwardperiods'];
+            $snodes = $data['snodes'] ?? array();
+            $sphones = $data['sphones'] ?? array();
+
+            $copy_a = $data;
+
+            foreach ($data['sassignmentid'] as $label => $v) {
+                if (!$v) {
+                    continue;
+                }
+
+                $copy_a['promotionassignmentid'] = $v;
+                $copy_a['modifiedvalues'] = $modifiedvalues[$label][$v] ?? array();
+                $copy_a['count'] = $counts[$label];
+                $copy_a['backwardperiod'] = $backwardperiods[$label][$v];
+                $copy_a['nodes'] = $snodes[$label] ?? array();
+                $copy_a['phones'] = $sphones[$label] ?? array();
+
+                $this->AddAssignment($copy_a);
+            }
+        }
+    }
+
     /*
      * Helper method who insert assignment.
      *

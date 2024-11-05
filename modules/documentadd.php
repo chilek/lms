@@ -486,13 +486,18 @@ if (isset($_POST['document'])) {
 
         $docid = $DB->GetLastInsertID('documents');
 
-        $DB->Execute('INSERT INTO documentcontents (docid, title, fromdate, todate, description)
-			VALUES (?, ?, ?, ?, ?)', array($docid,
+        $DB->Execute(
+            'INSERT INTO documentcontents (docid, title, fromdate, todate, description, dynamicperiod)
+            VALUES (?, ?, ?, ?, ?, ?)',
+            array(
+                $docid,
                 $document['title'],
                 $document['fromdate'],
                 $document['todate'],
-                $document['description']
-        ));
+                $document['description'],
+                empty($document['dynamicperiod']) ? 0 : 1,
+            )
+        );
 
         $LMS->AddDocumentAttachments($docid, $files);
 
@@ -517,42 +522,39 @@ if (isset($_POST['document'])) {
                 $selected_assignment['datefrom'] = $document['startdate'];
             }
             $selected_assignment['dateto'] = $to;
+            $schemaid = $selected_assignment['schemaid'];
 
-            if (isset($document['closed'])) {
-                $LMS->UpdateExistingAssignments($selected_assignment);
+            // create assignments basing on selected promotion schema
+            $selected_assignment['period'] = $period;
+            $selected_assignment['at'] = $at;
+            $selected_assignment['commited'] = empty($document['closed']) ? 0 : 1;
+            $selected_assignment['align-periods'] = isset($document['assignment']['align-periods']);
+
+            if ($selected_assignment['schemaid'] && is_array($selected_assignment['sassignmentid'][$schemaid])) {
+                $selected_assignment['sassignmentid'] = $selected_assignment['sassignmentid'][$schemaid];
+                $selected_assignment['values'] = $selected_assignment['values'][$schemaid] ?? array();
+                $selected_assignment['counts'] = $selected_assignment['counts'][$schemaid];
+                $selected_assignment['backwardperiods'] = $selected_assignment['backwardperiods'][$schemaid];
+                $selected_assignment['snodes'] = $selected_assignment['snodes'][$schemaid] ?? array();
+                $selected_assignment['sphones'] = $selected_assignment['sphones'][$schemaid] ?? array();
             }
 
-            if ($selected_assignment['schemaid']) {
-                $schemaid = $selected_assignment['schemaid'];
-
-                // create assignments basing on selected promotion schema
-                $selected_assignment['period'] = $period;
-                $selected_assignment['at'] = $at;
-                $selected_assignment['commited'] = isset($document['closed']) ? 1 : 0;
-                $selected_assignment['align-periods'] = isset($document['assignment']['align-periods']);
-
-                if (is_array($selected_assignment['sassignmentid'][$schemaid])) {
-                    $modifiedvalues = $selected_assignment['values'][$schemaid] ?? array();
-                    $counts = $selected_assignment['counts'][$schemaid];
-                    $backwardperiods = $selected_assignment['backwardperiods'][$schemaid];
-                    $copy_a = $selected_assignment;
-                    $snodes = $selected_assignment['snodes'][$schemaid] ?? array();
-                    $sphones = $selected_assignment['sphones'][$schemaid] ?? array();
-
-                    foreach ($selected_assignment['sassignmentid'][$schemaid] as $label => $v) {
-                        if (!$v) {
-                            continue;
-                        }
-
-                        $copy_a['promotionassignmentid'] = $v;
-                        $copy_a['modifiedvalues'] = $modifiedvalues[$label][$v] ?? array();
-                        $copy_a['count'] = $counts[$label];
-                        $copy_a['backwardperiod'] = $backwardperiods[$label][$v];
-                        $copy_a['nodes'] = $snodes[$label] ?? array();
-                        $copy_a['phones'] = $sphones[$label] ?? array();
-                        $tariffid = $LMS->AddAssignment($copy_a);
-                    }
+            if (empty($document['dynamicperiod']) || $selected_assignment['commited']) {
+                if ($selected_assignment['commited']) {
+                    $LMS->UpdateExistingAssignments($selected_assignment);
                 }
+
+                $LMS->addAssignmentsForSchema($selected_assignment);
+            } else {
+                $selected_assignment['commited'] = 1;
+
+                $DB->Execute(
+                    'UPDATE documentcontents SET attributes = ? WHERE docid = ?',
+                    array(
+                        serialize($selected_assignment),
+                        $docid,
+                    )
+                );
             }
         }
 
@@ -686,6 +688,8 @@ if (isset($_POST['document'])) {
     } else {
         $document['assignment']['existing_assignments']['operation'] = EXISTINGASSIGNMENT_KEEP;
     }
+
+    $document['dynamicperiod'] = ConfigHelper::checkConfig('documents.default_dynamic_period');
 
     $document['cdate'] = time();
 }
