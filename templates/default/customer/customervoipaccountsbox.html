@@ -5,7 +5,7 @@
 {tab_container id="customervoipaccountsbox" label="VoIP Accounts"}
 	{tab_header content_id="voipaccountspanel"}
 		{tab_header_cell icon="lms-ui-icon-phone"}
-			<strong>{t a=$customervoipaccounts|size}VoIP Accounts ($a):{/t}</strong>
+			<strong>{t a=$customervoipaccounts|size}VoIP Accounts ($a){/t}</strong>
 		{/tab_header_cell}
 		{tab_header_cell}
 			{if $customerinfo.status != $smarty.const.CSTATUS_INTERESTED && !$customerinfo.deleted}

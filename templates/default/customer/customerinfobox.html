@@ -113,7 +113,7 @@
 				<div class="customer-header">
 					<div class="bold">
 						{icon name="customer" class="{if $customerpanel} lms-ui-sortable-handle{/if}"}
-						{if $customerpanel}{trans("Owner:")}{/if}
+						{if $customerpanel}{trans("Owner")}{/if}
 						{$customerinfo.customername|escape}
 						{if $customerinfo.altname}[{$customerinfo.altname|escape}]{/if}
 						({$customerinfo.id|string_format:"%04d"}{if $customerinfo.extid} / {$customerinfo.extid|escape}{/if})
