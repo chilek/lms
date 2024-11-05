@@ -9,7 +9,10 @@
 			<strong>{t a=$customernetnodes|size}Network Nodes ($a){/t}</strong>
 		{/tab_header_cell}
 		{tab_header_cell}
-			<A href="?m=netnodeadd&customerid={$customerinfo.id}">{trans("New network node")} &raquo;</A>
+			<a href="?m=netnodeadd&customerid={$customerinfo.id}">
+				{trans("New network node")}
+				{icon name="next" class="fa-fw"}
+			</a>
 		{/tab_header_cell}
 	{/tab_header}
 

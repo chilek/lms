@@ -9,7 +9,10 @@
 		{/tab_header_cell}
 		{tab_header_cell}
 			{if $customerinfo.status != $smarty.const.CSTATUS_INTERESTED && !$customerinfo.deleted}
-				<A href="?m=voipaccountadd&ownerid={$customerinfo.id}">{trans("New VoIP Account")} &raquo;</A>
+				<a href="?m=voipaccountadd&ownerid={$customerinfo.id}">
+					{trans("New VoIP Account")}
+					{icon name="next" class="fa-fw"}
+				</a>
 			{/if}
 		{/tab_header_cell}
 	{/tab_header}

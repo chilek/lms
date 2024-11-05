@@ -60,9 +60,18 @@
 			{button type="link" class="clear-event-filter" icon="delete" href="#" tip="Clear filter"}
 		{/tab_header_cell}
 		{tab_header_cell}
-			<A href="?m=eventadd&customerid={$customerinfo.id}">{trans("New Event")} &raquo;</A>
-			<a id="show-in-timetable" href="?m=eventlist&u={$customerinfo.id}">{trans("Show in timetable")} &raquo;</a>
-			<A href="?m={$layout.module}&id={if $nodeinfo.id}{$nodeinfo.id}{else}{$customerinfo.id}{/if}&allevents={if $allevents}0{else}1{/if}">{if $allevents}{trans("Hide closed")}{else}{trans("Show closed")}{/if} &raquo;</A>
+			<a href="?m=eventadd&customerid={$customerinfo.id}">
+				{trans("New Event")}
+				{icon name="next" class="fa-fw"}
+			</a>
+			<a id="show-in-timetable" href="?m=eventlist&u={$customerinfo.id}">
+				{trans("Show in timetable")}
+				{icon name="next" class="fa-fw"}
+			</a>
+			<a href="?m={$layout.module}&id={if $nodeinfo.id}{$nodeinfo.id}{else}{$customerinfo.id}{/if}&allevents={if $allevents}0{else}1{/if}">
+				{if $allevents}{trans("Hide closed")}{else}{trans("Show closed")}{/if}
+				{icon name="next" class="fa-fw"}
+			</a>
 		{/tab_header_cell}
 	{/tab_header}
 

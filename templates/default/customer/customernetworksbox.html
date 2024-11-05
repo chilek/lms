@@ -9,7 +9,10 @@
 		{/tab_header_cell}
 		{tab_header_cell}
 			{if $customerinfo.status != $smarty.const.CSTATUS_INTERESTED && !$customerinfo.deleted}
-				<A href="?m=netadd&ownerid={$customerinfo.id}">{trans("New Network")} &raquo;</A>
+				<a href="?m=netadd&ownerid={$customerinfo.id}">
+					{trans("New Network")}
+					{icon name="next" class="fa-fw"}
+				</a>
 			{/if}
 		{/tab_header_cell}
 	{/tab_header}

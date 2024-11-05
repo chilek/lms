@@ -1520,7 +1520,9 @@ table.lmsbox {
 				*:not(.lms-ui-button) > i {
 					width: 1.3em;
 					text-align: center;
-					margin-right: 0.5em;
+					&.lms-ui-sortable-handle {
+						margin-right: 0.2em;
+					}
 				}
 				.lms-ui-karma-container i {
 					width: auto;
@@ -1528,6 +1530,9 @@ table.lmsbox {
 				}
 				& > td:last-child {
 					padding-right: 0.5em;
+				}
+				& > td {
+					padding: 0.2em !important;
 				}
 			}
 		}
@@ -2375,9 +2380,18 @@ div.lms-ui-tab-container {
 			> :nth-child(n+2) {
 				margin-left: 0.2em;
 			}
-			> i {
+			&:last-child {
+				margin-right: 0.2em;
+			}
+			a {
+				display: flex;
+				align-items: center;
+			}
+			i {
 				.fa-fw;
-				margin-right: 0.5em;
+				&.lms-ui-sortable-handle {
+					margin-right: 0.2em;
+				}
 			}
 			display: flex;
 			flex-direction: row;

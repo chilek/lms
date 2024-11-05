@@ -121,7 +121,12 @@
 					</div>
 					<div>
 						{karma title="Karma" value=$customerinfo.karma handler="?m=customeredit&id={$customerinfo.id}&op=changekarma"}
-						{if $customerpanel}<a href="?m=customerinfo&amp;id={$customerinfo.id}">{trans('Navigate to the customer')} &raquo;</a>{/if}&nbsp;
+						{if $customerpanel}{strip}
+							<a href="?m=customerinfo&id={$customerinfo.id}">
+								{trans('Navigate to the customer')}
+								{icon name="next" class="fa-fw"}
+							</a>
+						{/strip}{/if}
 					</div>
 				</div>
 			</td>

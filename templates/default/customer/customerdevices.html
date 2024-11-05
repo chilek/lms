@@ -9,7 +9,10 @@
 			<strong>{t a=$customerdevices|size}Network Devices ($a){/t}</strong>
 		{/tab_header_cell}
 		{tab_header_cell}
-			<A href="?m=netdevadd&customerid={$customerinfo.id}">{trans("New device")} &raquo;</A>
+			<a href="?m=netdevadd&customerid={$customerinfo.id}">
+				{trans("New device")}
+				{icon name="next" class="fa-fw"}
+			</a>
 		{/tab_header_cell}
 	{/tab_header}
 

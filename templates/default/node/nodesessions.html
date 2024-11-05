@@ -10,7 +10,10 @@
 			<strong>{if isset($nodeipdata.id)}{trans("Network Device Sessions For Selected IP Address")}{else}{trans("Node Sessions")}{/if}</strong>
 		{/tab_header_cell}
 		{tab_header_cell}
-			<a href="?m=nodesessionlist&nodeid={$nodeinfo.id}">{trans("All sessions")} &raquo;</a>
+			<a href="?m=nodesessionlist&nodeid={$nodeinfo.id}">
+				{trans("All sessions")}
+				{icon name="next" class="fa-fw"}
+			</a>
 		{/tab_header_cell}
 	{/tab_header}
 

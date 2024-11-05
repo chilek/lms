@@ -80,9 +80,15 @@
 		{tab_header_cell}
 			{if !$customerinfo.deleted}
 				{if ConfigHelper::checkPrivileges('finances_management', 'assignment_management', 'financial_operations')}
-					<A href="?m=customerassignmentadd&id={$customerinfo.id}{if isset($nodeinfo.id)}&nodeid={$nodeinfo.id}{/if}">{trans("New Liability")} &raquo;</A>
+					<a href="?m=customerassignmentadd&id={$customerinfo.id}{if isset($nodeinfo.id)}&nodeid={$nodeinfo.id}{/if}">
+						{trans("New Liability")}
+						{icon name="next" class="fa-fw"}
+					</a>
 					<input type="hidden" value="{$customerinfo.id}">
-					<A class="delete-all-assignments" href="#">{trans("Delete all")} &raquo;</A>
+					<a class="delete-all-assignments" href="#">
+						{trans("Delete all")}
+						{icon name="next" class="fa-fw"}
+					</a>
 				{/if}
 			{/if}
 		{/tab_header_cell}

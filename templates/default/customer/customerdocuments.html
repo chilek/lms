@@ -15,8 +15,14 @@
 			<strong>{trans("Customer Documents")}</strong>&nbsp;({t a=$limit}last $a documents{/t})
 		{/tab_header_cell}
 		{tab_header_cell}
-			<A href="?m=documentadd&cid={$customerinfo.id}">{trans("New Document")} &raquo;</A>
-			<A href="?m=documentlist&c={$customerinfo.id}">{trans("All Documents")} &raquo;</A>
+			<a href="?m=documentadd&cid={$customerinfo.id}">
+				{trans("New Document")}
+				{icon name="next" class="fa-fw"}
+			</a>
+			<a href="?m=documentlist&c={$customerinfo.id}">
+				{trans("All Documents")}
+				{icon name="next" class="fa-fw"}
+			</a>
 		{/tab_header_cell}
 	{/tab_header}
 
