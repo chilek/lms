@@ -839,6 +839,7 @@ version 28-git (????-??-??):
     name [chilan]
   - improvement: allow to select multiple event types in search form [chilan]
   - improvement: show total calendar time summary in event search results [chilan]
+  - enhancement: added 'reminder' type event to timetable [chilan]
 
 version 27.0 (2021-08-20):
 
