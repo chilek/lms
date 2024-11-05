@@ -1527,6 +1527,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 u.name AS creatorname,
                 (CASE WHEN d.confirmdate = -1 AND a.customerdocuments IS NOT NULL THEN 1 ELSE 0 END) AS customerawaits,
                 (CASE WHEN d.confirmdate > 0 AND d.confirmdate > ?NOW? THEN 1 ELSE 0 END) AS operatorawaits,
+                dc.dynamicperiod,
                 dc.attributes
             FROM documents d
             JOIN documentcontents dc ON dc.docid = d.id
@@ -1679,21 +1680,25 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 array($docid)
             );
 
-            if (isset($doc['attributes']) && strlen($doc['attributes'])) {
+            if ( isset($doc['attributes']) && strlen($doc['attributes'])) {
                 $selected_assignment = unserialize($doc['attributes']);
                 $finance_manager->addAssignmentsForSchema($selected_assignment);
 
-                $diff_days = intval(round((strtotime('today') - $doc['datefrom']) / 86400));
-
-                $datefrom = empty($doc['datefrom']) ? 0 : strtotime(($diff_days < 0 ? '-' : '+') . $diff_days . ' days', $doc['datefrom']);
+                $datefrom = $doc['datefrom'];
                 $dateto = $doc['dateto'];
-                if ($dateto) {
-                    if (!empty($selected_assignment['align-periods'])) {
-                        if (date('m', $doc['datefrom']) != date('m', $datefrom)) {
-                            $dateto = mktime(0, 0, 0, date('m', $dateto) + 1, 1, date('Y', $dateto)) - 1;
+
+                if (!empty($doc['dynamicperiod'])) {
+                    $diff_days = intval(round((strtotime('today') - $doc['datefrom']) / 86400));
+
+                    $datefrom = empty($doc['datefrom']) ? 0 : strtotime(($diff_days < 0 ? '-' : '+') . $diff_days . ' days', $doc['datefrom']);
+                    if ($dateto) {
+                        if (!empty($selected_assignment['align-periods'])) {
+                            if (date('m', $doc['datefrom']) != date('m', $datefrom)) {
+                                $dateto = mktime(0, 0, 0, date('m', $dateto) + 1, 1, date('Y', $dateto)) - 1;
+                            }
+                        } else {
+                            $dateto = strtotime(($diff_days < 0 ? '-' : '+') . $diff_days . ' days', $dateto);
                         }
-                    } else {
-                        $dateto = strtotime(($diff_days < 0 ? '-' : '+') . $diff_days . ' days', $dateto);
                     }
                 }
 
