@@ -1724,8 +1724,11 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     $datefrom = empty($datefrom) ? 0 : strtotime(($diff_days < 0 ? '-' : '+') . $diff_days . ' days', $datefrom);
                     if ($dateto) {
                         if (!empty($selected_assignment['align-periods'])) {
-                            if (date('m', $doc['datefrom']) != date('m', $datefrom)) {
-                                $dateto = mktime(0, 0, 0, date('m', $dateto) + 1, 1, date('Y', $dateto)) - 1;
+                            $monthfrom = date('Y', $doc['datefrom']) * 12 + date('n', $doc['datefrom']);
+                            $new_monthfrom = date('Y', $datefrom) * 12 + date('n', $datefrom);
+
+                            if ($new_monthfrom > $monthfrom) {
+                                $dateto = mktime(0, 0, 0, date('n', $dateto) + ($new_monthfrom - $monthfrom) + 1, 1, date('Y', $dateto)) - 1;
                             }
                         } else {
                             $dateto = strtotime(($diff_days < 0 ? '-' : '+') . $diff_days . ' days', $dateto);
