@@ -1680,7 +1680,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 array($docid)
             );
 
-            if ( isset($doc['attributes']) && strlen($doc['attributes'])) {
+            if (isset($doc['attributes']) && strlen($doc['attributes'])) {
                 $selected_assignment = unserialize($doc['attributes']);
                 $finance_manager->addAssignmentsForSchema($selected_assignment);
 
