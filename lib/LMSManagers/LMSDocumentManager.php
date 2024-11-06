@@ -2769,9 +2769,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 break;
         }
 
-        $month = sprintf('%02d', intval(date('m', $currtime)));
-        $day = sprintf('%02d', intval(date('d', $currtime)));
-        $year = sprintf('%04d', intval(date('Y', $currtime)));
+        $month = date('m', $currtime);
+        $day = date('d', $currtime);
+        $year = date('Y', $currtime);
 
         if (empty($dsn_email)) {
             $from = $sender_email;

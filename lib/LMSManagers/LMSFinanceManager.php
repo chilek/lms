@@ -116,7 +116,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function GetCustomerAssignments($id, $show_expired = false, $show_approved = true)
     {
-        $now = mktime(0, 0, 0, date('n'), date('d'), date('Y'));
+        $now = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
         $suspension_percentage = f_round(ConfigHelper::getConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0)));
 
         $assignments = $this->db->GetAll(
@@ -354,7 +354,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         global $SERVICETYPES;
 
-        $now = mktime(0, 0, 0, date('n'), date('d'), date('Y'));
+        $now = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
         $suspension_percentage = f_round(ConfigHelper::getConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0)));
 
         $servicesassignments = $this->db->GetAll('SELECT
@@ -469,7 +469,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $data_schema = explode(';', $tariff['sdata']);
             $data_tariff = explode(';', $tariff['data']);
             $orig_datefrom = $datefrom = $data['datefrom'];
-            $cday        = date('d', $datefrom);
+            $cday        = date('j', $datefrom);
 
             $use_discounts = ConfigHelper::checkConfig(
                 'promotions.use_discounts',
@@ -495,7 +495,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 if (!$idx) {
                     // if activation value specified, create disposable liability
                     if (f_round($value, 3)) {
-                        $start_day   = date('d', $orig_datefrom);
+                        $start_day   = date('j', $orig_datefrom);
                         $start_month = date('n', $orig_datefrom);
                         $start_year  = date('Y', $orig_datefrom);
 
@@ -797,12 +797,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         }
                         $discounted_val = $val;
 
-                        [$year, $month, $dom] = explode('/', date('Y/m/d', $orig_datefrom));
+                        [$year, $month, $dom] = explode('/', date('Y/n/j', $orig_datefrom));
                         $nextperiod = mktime(0, 0, 0, $month + 1, 1, $year);
                         $partial_dateto = !empty($data['dateto']) && $nextperiod > $data['dateto'] ? $data['dateto'] + 1 : $nextperiod;
                         $diffdays = round(($partial_dateto - $orig_datefrom) / 86400);
                         if ($diffdays > 0) {
-                            [$y, $m] = explode('/', date('Y/m', $partial_dateto - 1));
+                            [$y, $m] = explode('/', date('Y/n', $partial_dateto - 1));
                             $month_days = date('t', mktime(0, 0, 0, $m, 1, $y));
 
                             $partial_dateto--;
@@ -811,12 +811,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             } else {
                                 if ($idx == 1 && ($force_at_next_day || $force_current_period_settlement_at_same_day)) {
                                     if ($force_current_period_settlement_at_same_day) {
-                                        $partial_at = $orig_datefrom <= $now ? date('d') : $dom;
+                                        $partial_at = $orig_datefrom <= $now ? date('j') : $dom;
                                     } elseif ($force_at_next_day) {
                                         $partial_at = date('d', strtotime('tomorrow', $orig_datefrom));
                                     }
                                 } else {
-                                    $partial_at = $orig_datefrom <= $now ? date('d', strtotime('tomorrow')) : $dom;
+                                    $partial_at = $orig_datefrom <= $now ? date('j', strtotime('tomorrow')) : $dom;
                                 }
                             }
 
@@ -908,12 +908,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     }
 
                     if ($align_periods) {
-                        [$year, $month, $dom] = explode('/', date('Y/m/d', $data['dateto']));
+                        [$year, $month, $dom] = explode('/', date('Y/n/j', $data['dateto']));
                         $prevperiod = mktime(0, 0, 0, $month, 1, $year);
                         $diffdays = intval(($data['dateto'] + 1 - $prevperiod) / 86400);
                         $_dateto = $data['dateto'];
                     } else {
-                        [$year, $month, $dom] = explode('/', date('Y/m/d', $dateto + 1));
+                        [$year, $month, $dom] = explode('/', date('Y/n/j', $dateto + 1));
                         $prevperiod = mktime(0, 0, 0, $month, 1, $year);
                         $diffdays = $cday - 1;
                         $_dateto = mktime(23, 59, 59, $month, $diffdays, $year);
@@ -1057,12 +1057,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
             // creates assignment record for starting partial period
             if ($data['datefrom'] && isset($data['settlement']) && $data['settlement'] == 2 && $data['period'] == MONTHLY) {
-                [$year, $month, $dom] = explode('/', date('Y/m/d', $data['datefrom']));
+                [$year, $month, $dom] = explode('/', date('Y/n/j', $data['datefrom']));
                 $nextperiod = mktime(0, 0, 0, $month + 1, 1, $year);
                 $partial_dateto = !empty($data['dateto']) && $nextperiod > $data['dateto'] ? $data['dateto'] + 1: $nextperiod;
                 $diffdays = round(($partial_dateto - $data['datefrom']) / 86400);
                 if ($diffdays > 0) {
-                    [$y, $m] = explode('/', date('Y/m', $partial_dateto - 1));
+                    [$y, $m] = explode('/', date('Y/n', $partial_dateto - 1));
                     $month_days = date('t', mktime(0, 0, 0, $m, 1, $y));
                     $value = $diffdays * $discounted_val / $month_days;
                     $partial_vdiscount = str_replace(',', '.', round(abs($value - $val), 3));
@@ -1076,9 +1076,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     } else {
                         $force_current_period_settlement_at_same_day = ConfigHelper::checkConfig('assignments.force_current_period_settlement_at_same_day');
                         if ($force_current_period_settlement_at_same_day) {
-                            $partial_at = $data['datefrom'] <= $now ? date('d', $now) : $dom;
+                            $partial_at = $data['datefrom'] <= $now ? date('j', $now) : $dom;
                         } else {
-                            $partial_at = $data['datefrom'] <= $now ? date('d', strtotime('tomorrow')) : $dom + 1;
+                            $partial_at = $data['datefrom'] <= $now ? date('j', strtotime('tomorrow')) : $dom + 1;
                         }
                     }
 
@@ -1147,7 +1147,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
             // creates assignment record for ending partial period
             if ($data['dateto'] && $data['datefrom'] < $data['dateto'] && isset($data['last-settlement']) && $data['period'] == MONTHLY) {
-                [$year, $month, $dom] = explode('/', date('Y/m/d', $data['dateto']));
+                [$year, $month, $dom] = explode('/', date('Y/n/j', $data['dateto']));
                 $prevperiod = mktime(0, 0, 0, $month, 1, $year);
                 $diffdays = round(($data['dateto'] + 1 - $prevperiod) / 86400);
                 if ($diffdays > 0) {
@@ -1826,7 +1826,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $args['refid'] = $refid;
                 }
                 if (empty($data['datefrom'])) {
-                    [$year, $month, $day] = explode('/', date('Y/m/d'));
+                    [$year, $month, $day] = explode('/', date('Y/n/j'));
                     $args['datefrom'] = mktime(0, 0, 0, $month, $day, $year);
                 } else {
                     $args['datefrom'] = $data['datefrom'];
