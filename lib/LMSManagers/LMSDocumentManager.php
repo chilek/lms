@@ -1528,7 +1528,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 (CASE WHEN d.confirmdate = -1 AND a.customerdocuments IS NOT NULL THEN 1 ELSE 0 END) AS customerawaits,
                 (CASE WHEN d.confirmdate > 0 AND d.confirmdate > ?NOW? THEN 1 ELSE 0 END) AS operatorawaits,
                 dc.dynamicperiod,
-                dc.attributes
+                dc.attributes,
+                n.nodeids,
+                vn.numberids
             FROM documents d
             JOIN documentcontents dc ON dc.docid = d.id
             LEFT JOIN docrights r ON r.doctype = d.type
@@ -1538,6 +1540,21 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 WHERE da.type = -1
                 GROUP BY da.docid
             ) a ON a.docid = d.id
+            LEFT JOIN (
+                SELECT
+                    nodes.ownerid AS customerid,
+                    ' . $this->db->GroupConcat('nodes.id') . ' AS nodeids
+                FROM nodes
+                GROUP BY nodes.ownerid
+            ) n ON n.customerid = d.customerid
+            LEFT JOIN (
+                SELECT
+                    voipaccounts.ownerid AS customerid,
+                    ' . $this->db->GroupConcat('voip_numbers.id') . ' AS numberids
+                FROM voip_numbers
+                JOIN voipaccounts ON voipaccounts.id = voip_numbers.voip_account_id
+                GROUP BY voipaccounts.ownerid
+            ) vn ON vn.customerid = d.customerid
             LEFT JOIN vusers u ON u.id = d.userid
             WHERE ' . ($check_close_flag ? 'd.closed = ' . DOC_OPEN : '1 = 1')
                 . ' AND d.type < 0 AND d.id IN (' . implode(',', $ids) . ')' . ($userid ? ' AND r.userid = ' . intval($userid) . ' AND (r.rights & ' . DOCRIGHT_CONFIRM . ') > 0' : ''),
@@ -1682,15 +1699,29 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
             if (isset($doc['attributes']) && strlen($doc['attributes'])) {
                 $selected_assignment = unserialize($doc['attributes']);
+
+                $nodeids = isset($doc['nodeids']) ? explode(',', $doc['nodeids']) : array();
+                $numberids = isset($doc['numberids']) ? explode(',', $doc['numberids']) : array();
+
+                foreach ($selected_assignment['snodes'] as $snodeids) {
+                    $snodeids = array_intersect($snodeids, $nodeids);
+                }
+                unset($snodeids);
+
+                foreach ($selected_assignment['sphones'] as &$snumberids) {
+                    $snumberids = array_intersect($snumberids, $numberids);
+                }
+                unset($snumberids);
+
                 $finance_manager->addAssignmentsForSchema($selected_assignment);
 
-                $datefrom = $doc['datefrom'];
-                $dateto = $doc['dateto'];
-
                 if (!empty($doc['dynamicperiod'])) {
-                    $diff_days = intval(round((strtotime('today') - $doc['datefrom']) / 86400));
+                    $datefrom = $doc['datefrom'];
+                    $dateto = $doc['dateto'];
 
-                    $datefrom = empty($doc['datefrom']) ? 0 : strtotime(($diff_days < 0 ? '-' : '+') . $diff_days . ' days', $doc['datefrom']);
+                    $diff_days = intval(round((strtotime('today') - $datefrom) / 86400));
+
+                    $datefrom = empty($datefrom) ? 0 : strtotime(($diff_days < 0 ? '-' : '+') . $diff_days . ' days', $datefrom);
                     if ($dateto) {
                         if (!empty($selected_assignment['align-periods'])) {
                             if (date('m', $doc['datefrom']) != date('m', $datefrom)) {
@@ -1700,16 +1731,16 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             $dateto = strtotime(($diff_days < 0 ? '-' : '+') . $diff_days . ' days', $dateto);
                         }
                     }
-                }
 
-                $this->db->Execute(
-                    'UPDATE documentcontents SET fromdate = ?, todate = ? WHERE docid = ?',
-                    array(
-                        $datefrom,
-                        $dateto,
-                        $docid,
-                    )
-                );
+                    $this->db->Execute(
+                        'UPDATE documentcontents SET fromdate = ?, todate = ? WHERE docid = ?',
+                        array(
+                            $datefrom,
+                            $dateto,
+                            $docid,
+                        )
+                    );
+                }
             }
 
             if ($userpanel && empty($doc['customerawaits']) && empty($doc['operatorawaits'])) {
