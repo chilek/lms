@@ -843,6 +843,7 @@ version 28-git (????-??-??):
   - enhancement: dynamic period document support - create assignments/liabilities during document commit;
   - enhancement: 'documents.default_dynamic_period' configuration variable with default value of 'false'
     controls if dynamic period option is checked when new document form starts [chilan]
+  - improvement: added 'donthypenate' smarty modifier and block support [chilan]
 
 version 27.0 (2021-08-20):
 
