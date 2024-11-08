@@ -487,8 +487,20 @@ class LMSTcpdfInvoice extends LMSInvoice
         $account_text = ($this->use_alert_color ? '<span style="color:red">' : '')
             . implode("\n", $accounts)
             . ($this->use_alert_color ? '</span>' : '');
-        $tmp = str_replace('%bankaccount', $account_text, $tmp);
-        $tmp = str_replace('%bankname', $this->data['div_bank'] ?? '', $tmp);
+
+        $tmp = str_replace(
+            array(
+                '%bankaccount',
+                '%bankname',
+                '%extid',
+            ),
+            array(
+                $account_text,
+                $this->data['div_bank'] ?? '',
+                $this->data['extid'] ?? '-',
+            )
+            $tmp
+        );
 
         if (ConfigHelper::checkConfig('invoices.customer_bankaccount', true)) {
             $tmp .= "\n" . trans('Bank account:') . "\n" . '<B>' . $account_text . '<B>';
@@ -880,7 +892,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                 array(
                     implode("\n", $accounts),
                     $this->data['div_bank'] ?? '',
-                    $this->data['extid'] ?? '',
+                    $this->data['extid'] ?? '-',
                 ),
                 $tmp
             );
