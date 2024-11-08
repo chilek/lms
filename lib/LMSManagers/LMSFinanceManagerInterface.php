@@ -68,6 +68,8 @@ interface LMSFinanceManagerInterface
 
     public function AddInvoice($invoice);
 
+    public function setInvoiceExtID(array $invoice);
+
     public function InvoiceDelete($invoiceid);
 
     public function InvoiceContentDelete($invoiceid, $itemid = 0);

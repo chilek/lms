@@ -2467,6 +2467,25 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return $iid;
     }
 
+    public function setInvoiceExtID(array $invoice)
+    {
+        if ($this->syslog) {
+            $args = array(
+                SYSLOG::RES_DOC => $invoice['id'],
+                SYSLOG::RES_USER => Auth::GetCurrentUser(),
+                SYSLOG::RES_CUST => $invoice['customerid'],
+                'extid' => $invoice['extid'],
+            );
+            $this->syslog->AddMessage(
+                SYSLOG::RES_DOC,
+                SYSLOG::OPER_UPDATE,
+                $args
+            );
+        }
+
+        return $this->db->Execute('UPDATE documents SET extid = ? WHERE id = ?', array($invoice['extid'], $invoice['id']));
+    }
+
     public function InvoiceDelete($invoiceid)
     {
         if ($this->syslog) {

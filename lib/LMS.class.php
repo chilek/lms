@@ -1533,6 +1533,12 @@ class LMS
         return $manager->AddInvoice($invoice);
     }
 
+    public function setInvoiceExtID(array $invoice)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->setInvoiceExtID($invoice);
+    }
+
     public function InvoiceDelete($invoiceid)
     {
         $manager = $this->getFinanceManager();

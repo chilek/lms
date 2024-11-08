@@ -656,6 +656,7 @@ switch ($action) {
         ));
         $invoice['userid'] = Auth::GetCurrentUser();
         $invoice['user'] = $layout['logname'];
+        $invoice['customerid'] = $customer['id'];
 
         $hook_data = array(
             'customer' => $customer,
@@ -666,12 +667,16 @@ switch ($action) {
 
         $iid = $LMS->AddInvoice($hook_data);
 
-        $hook_data['invoice']['id'] = $iid;
+        $hook_data['invoice']['id'] = $invoice['id'] = $iid;
         $hook_data['contents'] = $contents;
         $hook_data = $LMS->ExecuteHook('invoicenew_save_after_submit', $hook_data);
 
         $contents = $hook_data['contents'];
         $invoice = $hook_data['invoice'];
+        if (isset($hook_data['extid'])) {
+            $invoice['extid'] = $hook_data['extid'];
+            $LMS->setInvoiceExtID($invoice);
+        }
 
         // usuwamy wczesniejsze zobowiazania bez faktury
         foreach ($contents as $item) {
