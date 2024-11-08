@@ -322,7 +322,7 @@ class LMSEzpdfInvoice extends LMSInvoice
                 $account_text,
                 $this->data['div_bank'] ?? '',
                 $this->data['extid'] ?? '-',
-            )
+            ),
             $tmp
         );
 
