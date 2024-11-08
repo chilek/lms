@@ -646,6 +646,16 @@ switch ($action) {
         }
 
         $invoice['type'] = $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE;
+        $invoice['fullnumber'] = docnumber(array(
+            'number' => $invoice['number'],
+            'cdate' => $invoice['cdate'],
+            'template' => empty($invoice['numberplanid'])
+                ? null
+                : $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($invoice['numberplanid'])),
+            'customerid' => $customer['id'],
+        ));
+        $invoice['userid'] = Auth::GetCurrentUser();
+        $invoice['user'] = $layout['logname'];
 
         $hook_data = array(
             'customer' => $customer,
