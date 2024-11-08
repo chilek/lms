@@ -381,6 +381,7 @@
 		var form = $('#documentadd-form');
 		if (form.get(0).checkValidity()) {
 			$('.operation-button').prop('disabled', !$('#new-window-toggle').prop('checked'));
+			setStorageItem('documentadd_cdate', $('[name="document[cdate]"]').val());
 			if ($(this).is('#print-button')) {
 				form.attr('action', form.attr('action') + '&print=1');
 				{if empty($promotions)}
@@ -394,8 +395,17 @@
 		}
 	});
 
+	var cdate = getStorageItem("documentadd_cdate");
+	if (cdate !== null) {
+		$('[name="document[cdate]"]').val(cdate);
+	}
+
 	$(function() {
 		$('form[name="documentadd"] [name="document[title]"]').focus();
+
+		$('[name="document[cdate]"]').change(function() {
+			removeStorageItem("documentadd_cdate");
+		});
 
 		$('#new-window-toggle').click(function() {
 			if (this.checked) {
