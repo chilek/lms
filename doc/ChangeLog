@@ -844,6 +844,8 @@ version 28-git (????-??-??):
   - enhancement: 'documents.default_dynamic_period' configuration variable with default value of 'false'
     controls if dynamic period option is checked when new document form starts [chilan]
   - improvement: added 'donthypenate' smarty modifier and block support [chilan]
+  - enhancement: document external ID storage added [chilan]
+  - enhancement: %extid symbol in invoice footer is replaced by invoice external id [chilan]
 
 version 27.0 (2021-08-20):
 
