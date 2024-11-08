@@ -2585,7 +2585,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.div_inv_header AS division_header, d.div_inv_footer AS division_footer,
 				d.div_inv_author AS division_author, d.div_inv_cplace AS division_cplace,
 				d.recipient_address_id, d.post_address_id,
-				d.currency, d.currencyvalue, d.memo
+				d.currency, d.currencyvalue, d.memo,
+				d.extid
 				FROM documents d
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				LEFT JOIN vusers u ON u.id = d.userid
@@ -2644,7 +2645,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				    ELSE NULL
 				END) AS lang,
 				cdv.ccode AS div_ccode,
-				d.currency, d.currencyvalue, d.memo
+				d.currency, d.currencyvalue, d.memo,
+				d.extid
 				FROM documents d
 				LEFT JOIN customeraddressview c ON (c.id = d.customerid)
 				LEFT JOIN vusers u ON u.id = d.userid

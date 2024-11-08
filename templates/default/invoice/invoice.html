@@ -154,6 +154,7 @@
 				{$tmp = str_replace("\n", '<br>', $tmp)}
 				{$tmp = str_replace('%bankaccount', $account_text, $tmp)}
 				{$tmp = str_replace('%bankname', $invoice.div_bank, $tmp)}
+				{$tmp = str_replace('%extid', $invoice.extid, $tmp)}
 
 				{if ConfigHelper::checkConfig('invoices.customer_bankaccount', true)}
 					{textformat assign="tmp" wrap=5000}

@@ -1390,8 +1390,20 @@ class LMSEzpdfInvoice extends LMSInvoice
             foreach ($accounts as &$account) {
                 $account = format_bankaccount($account, $this->data['export']);
             }
-            $tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
-            $tmp = str_replace('%bankname', $this->data['div_bank'], $tmp);
+
+            $tmp = str_replace(
+                array(
+                    '%bankaccount',
+                    '%bankname',
+                    '%extid',
+                ),
+                array(
+                    implode("\n", $accounts),
+                    $this->data['div_bank'] ?? '',
+                    $this->data['extid'] ?? '',
+                ),
+                $tmp
+            );
 
             $tmp = preg_split('/\r?\n/', $tmp);
             foreach ($tmp as $line) {

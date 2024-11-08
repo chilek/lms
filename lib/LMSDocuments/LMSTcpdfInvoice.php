@@ -870,8 +870,20 @@ class LMSTcpdfInvoice extends LMSInvoice
             foreach ($accounts as &$account) {
                 $account = format_bankaccount($account, $this->data['export']);
             }
-            $tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
-            $tmp = str_replace('%bankname', $this->data['div_bank'] ?? '', $tmp);
+
+            $tmp = str_replace(
+                array(
+                    '%bankaccount',
+                    '%bankname',
+                    '%extid',
+                ),
+                array(
+                    implode("\n", $accounts),
+                    $this->data['div_bank'] ?? '',
+                    $this->data['extid'] ?? '',
+                ),
+                $tmp
+            );
 
             $this->backend->SetFont(null, '', 8);
             //$h = $this->backend->getStringHeight(0, $tmp);
