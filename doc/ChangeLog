@@ -846,6 +846,9 @@ version 28-git (????-??-??):
   - improvement: added 'donthypenate' smarty modifier and block support [chilan]
   - enhancement: document external ID storage added [chilan]
   - enhancement: %extid symbol in invoice header and footer is replaced by invoice external id [chilan]
+  - improvement: non-empty 'customers.groups_required_on_add'/'phpui.add_customer_group_required' configuration
+    variable with value different than 'false' means if customer group selection is required and if value
+    is different than 'true' then it is handled as pre-selected customer groups [chilan]
 
 version 27.0 (2021-08-20):
 
