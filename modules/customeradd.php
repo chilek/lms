@@ -96,7 +96,7 @@ $legal_person_required_properties = ConfigHelper::getConfig(
 );
 $legal_person_required_properties = array_flip(preg_split('/([\s]+|[\s]*,[\s]*)/', $legal_person_required_properties));
 
-$groups = trim(ConfigHelper::getConfig('customers.groups_required_on_add', ConfigHelper::getConfig('phpui.add_customer_group_required', 'false', true)));
+$groups = trim(ConfigHelper::getConfig('customers.groups_required_on_add', ConfigHelper::getConfig('phpui.add_customer_group_required', 'false')));
 if (preg_match('/^(0|n|no|off|false|nie|disabled)$/i', $groups)) {
     $groups_required = false;
 } else {
