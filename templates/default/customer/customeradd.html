@@ -249,7 +249,8 @@
 						</td>
 						<td>
 							<select size="1" name="customeradd[group][]" multiple data-placeholder="{trans("… select groups …")}"
-								{tip text="Select group to assign to customer" trigger="group" class="lms-ui-multiselect"}>
+								{tip text="Select group to assign to customer" trigger="group" class="lms-ui-multiselect"}
+								required>
 								{foreach $groups as $group}
 									<option value="{$group.id}" {if !empty($customeradd.group) && in_array($group.id, $customeradd.group)} selected{/if}
 										>{$group.name|escape} (#{$group.id})</option>

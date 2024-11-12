@@ -96,6 +96,18 @@ $legal_person_required_properties = ConfigHelper::getConfig(
 );
 $legal_person_required_properties = array_flip(preg_split('/([\s]+|[\s]*,[\s]*)/', $legal_person_required_properties));
 
+$groups = trim(ConfigHelper::getConfig('customers.groups_required_on_add', ConfigHelper::getConfig('phpui.add_customer_group_required', 'false', true)));
+if (preg_match('/^(0|n|no|off|false|nie|disabled)$/i', $groups)) {
+    $groups_required = false;
+} else {
+    $groups_required = strlen($groups) > 0;
+}
+
+if ($groups_required) {
+    $all_groups = $DB->GetAll('SELECT id, name FROM customergroups ORDER BY id');
+    $SMARTY->assign('groups', $all_groups);
+}
+
 if (isset($_POST['customeradd'])) {
     $customeradd = $_POST['customeradd'];
 
@@ -122,7 +134,7 @@ if (isset($_POST['customeradd'])) {
         $error['name'] = trans('First name cannot be empty!');
     }
 
-    if (ConfigHelper::checkConfig('customers.groups_required_on_add', ConfigHelper::checkConfig('phpui.add_customer_group_required')) && empty($customeradd['group'])) {
+    if ($groups_required && empty($customeradd['group'])) {
         $error['group'] = trans('Group name required!');
     }
 
@@ -477,6 +489,34 @@ if (isset($_POST['customeradd'])) {
     $customeradd['notes'] = ConfigHelper::getConfig('customers.default_notes', '', true);
     $customeradd['message'] = ConfigHelper::getConfig('customers.default_message', '', true);
     $customeradd['documentmemo'] = ConfigHelper::getConfig('customers.default_documentmemo', '', true);
+
+    $customeradd['group'] = array();
+    if ($groups_required && !preg_match('/^(1|y|on|yes|true|tak|t|enabled)$/i', $groups)) {
+        $all_groups = Utils::array_column(
+            array_map(
+                function ($group) {
+                    return array(
+                        'id' => $group['id'],
+                        'name' => mb_strtolower($group['name']),
+                    );
+                },
+                $all_groups
+            ),
+            'id',
+            'name'
+        );
+        $customeradd['group'] = array_map(
+            function ($groupname) use ($all_groups) {
+                return $all_groups[$groupname];
+            },
+            array_filter(
+                preg_split('/([\s]+|[\s]*,[\s]*)/', mb_strtolower($groups)),
+                function ($groupname) use ($all_groups) {
+                    return isset($all_groups[$groupname]);
+                }
+            )
+        );
+    }
 }
 
 if (!isset($customeradd['cutoffstopindefinitely'])) {
@@ -538,8 +578,5 @@ $SMARTY->assign('legal_person_required_properties', $legal_person_required_prope
 $SMARTY->assign('natural_person_required_properties', $natural_person_required_properties);
 $SMARTY->assign('divisions', $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())));
 $SMARTY->assign('customeradd', $customeradd);
-if (ConfigHelper::checkConfig('customers.groups_required_on_add', ConfigHelper::checkConfig('phpui.add_customer_group_required'))) {
-        $SMARTY->assign('groups', $DB->GetAll('SELECT id,name FROM customergroups ORDER BY id'));
-}
 
 $SMARTY->display('customer/customeradd.html');
