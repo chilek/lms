@@ -105,7 +105,11 @@ if (preg_match('/^(0|n|no|off|false|nie|disabled)$/i', $groups)) {
 
 if ($groups_required) {
     $all_groups = $DB->GetAll('SELECT id, name FROM customergroups ORDER BY id');
-    $SMARTY->assign('groups', $all_groups);
+    if (empty($all_groups)) {
+        $groups_required = false;
+    } else {
+        $SMARTY->assign('groups', $all_groups);
+    }
 }
 
 if (isset($_POST['customeradd'])) {
