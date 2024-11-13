@@ -851,7 +851,7 @@ version 28-git (????-??-??):
     is different than 'true' then it is handled as pre-selected customer groups [chilan]
   - enhancement: 'customer-consent-selection' property in document template 'info.php' file controls
     if customer consent panel/tab/box is supported for given document template [chilan]
-  - enhancement: new third party marketing customer consents added [chilan]
+  - enhancement: new third party marketing and complaint information customer consents added [chilan]
 
 version 27.0 (2021-08-20):
 
