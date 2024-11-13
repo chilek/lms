@@ -129,6 +129,7 @@ if (isset($_GET['oper'])) {
     }
 }
 if (!isset($_POST['xjxfun'])) {
+    require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customerconsents.php');
     require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
     $action = $_GET['action'] ?? '';

@@ -71,6 +71,7 @@ if (isset($_GET['ajax'])) {
     exit;
 }
 
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customerconsents.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
 $customeradd = array();

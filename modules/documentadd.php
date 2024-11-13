@@ -28,6 +28,7 @@ check_file_uploads();
 
 $SMARTY->setDefaultResourceType('file');
 
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customerconsents.php');
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'document.inc.php');
 
 if (isset($_POST['document'])) {
