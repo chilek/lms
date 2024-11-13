@@ -849,6 +849,8 @@ version 28-git (????-??-??):
   - improvement: non-empty 'customers.groups_required_on_add'/'phpui.add_customer_group_required' configuration
     variable with value different than 'false' means if customer group selection is required and if value
     is different than 'true' then it is handled as pre-selected customer groups [chilan]
+  - enhancement: 'customer-consent-selection' property in document template 'info.php' file controls
+    if customer consent panel/tab/box is supported for given document template [chilan]
 
 version 27.0 (2021-08-20):
 
