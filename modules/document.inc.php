@@ -45,6 +45,7 @@ if (isset($_GET['template'])) {
             echo file_get_contents($file);
         }
         echo '$("#documentpromotions").toggle(' . (empty($engine['promotion-schema-selection']) ? 'false' : 'true'). ');';
+        echo '$("#document-consents").toggle(' . (empty($engine['customer-consent-selection']) ? 'false' : 'true'). ');';
     }
     die;
 }
@@ -133,6 +134,7 @@ function GetPlugin($template, $customerid, $update_title, $JSResponse)
     }
 
     $JSResponse->script('$("#documentpromotions").toggle(' . (empty($engine['promotion-schema-selection']) ? 'false' : 'true') . ')');
+    $JSResponse->script('$("#document-consents").toggle(' . (empty($engine['customer-consent-selection']) ? 'false' : 'true') . ')');
 }
 
 function GetDocumentTemplates($rights, $type = null)
@@ -314,6 +316,21 @@ function GetReferenceDocuments($doctemplate, $customerid, $JSResponse)
     $JSResponse->script('$(\'[name="document[reference]"]\').prop("required", $(\'[name="document[templ]"] option:selected\').is("[data-refdoc-required]"));');
 }
 
+function GetCustomerConsents($customerid, $JSResponse)
+{
+    global $LMS, $SMARTY;
+
+    $document['consents'] = $document['default-consents'] = $LMS->getCustomerConsents($customerid);
+
+    $SMARTY->assign('variable_prefix', 'document');
+    $SMARTY->assign('variables', $document);
+
+    $template = $SMARTY->fetch('customer/customerconsents.html');
+
+    $JSResponse->assign('customer-consent-content', 'innerHTML', $template);
+    $JSResponse->script('initMultiChecks("#customer-consent-table .lms-ui-multi-check")');
+}
+
 function CustomerChanged($doctype, $doctemplate, $customerid)
 {
     $JSResponse = new XajaxResponse();
@@ -321,6 +338,7 @@ function CustomerChanged($doctype, $doctemplate, $customerid)
     GetPlugin($doctemplate, $customerid, false, $JSResponse);
     GetTemplates($doctype, $doctemplate, $JSResponse);
     GetReferenceDocuments($doctemplate, $customerid, $JSResponse);
+    GetCustomerConsents($customerid, $JSResponse);
 
     return $JSResponse;
 }
@@ -332,7 +350,7 @@ function DocTypeChanged($doctype, $customerid)
     GetTemplates($doctype, null, $JSResponse);
     GetReferenceDocuments(null, $customerid, $JSResponse);
 
-    $JSResponse->script('$("#documentpromotions").toggle(false)');
+    $JSResponse->script('$("#documentpromotions,#document-consents").toggle(false)');
 
     return $JSResponse;
 }
@@ -343,6 +361,7 @@ function DocTemplateChanged($doctype, $doctemplate, $customerid)
 
     GetPlugin($doctemplate, $customerid, true, $JSResponse);
     GetReferenceDocuments($doctemplate, $customerid, $JSResponse);
+    GetCustomerConsents($customerid, $JSResponse);
 
     return $JSResponse;
 }

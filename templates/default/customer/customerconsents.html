@@ -1,0 +1,93 @@
+<!--// $Id$ //-->
+<style>
+
+	.consent-group {
+		display: flex;
+	}
+
+	.lms-ui-separated-rows .lms-ui-separated-rows {
+		width: 100%;
+	}
+
+	.lms-ui-separated-rows .lms-ui-separated-rows td:not(:first-child) {
+		width: 1%;
+	}
+
+	.consent-group-row {
+		border-top: none !important;
+	}
+
+	.consent-group-row +  tr {
+		border-top: none !important;
+	}
+
+</style>
+<table cellpadding="0" class="lms-ui-separated-rows" id="customer-consent-table">
+	<tbody class="lms-ui-multi-check">
+		<tr>
+			<td class="bold">
+				<label for="check-all-consents">
+					{trans("Consents")}
+				</label>
+			</td>
+			<td>
+				<input type="checkbox" class="lms-ui-multi-check-all"
+					id="check-all-consents" value="1">
+					{icon name="reload" id="reset-consents" tip="Reset consents"}
+			</td>
+		</tr>
+		{block name="customer-consent-options"}
+			{foreach $_CCONSENTS as $type => $consent}
+				{if !is_array($consent)}
+					{continue}
+				{/if}
+				{$customer_consent_group_id = Utils::findCustomerConsentGroupByCustomerConsent($type, $_CCONSENT_GROUPS)}
+				{if $current_customer_consent_group_id && $current_customer_consent_group_id != $customer_consent_group_id || $current_customer_consent_group_id && $consent@last}
+								</table>
+							</fieldset>
+						</td>
+					</tr>
+				{/if}
+				{if $customer_consent_group_id && $customer_consent_group_id != $current_customer_consent_group_id}
+					<tr class="consent-group-row">
+						<td colspan="2">
+							<fieldset class="consent-group">
+								<legend>
+									<strong>{$_CCONSENT_GROUPS[$customer_consent_group_id].label}</strong>
+								</legend>
+								<table class="lms-ui-separated-rows">
+				{/if}
+				{if $consent.type == 'selection'}
+					{foreach $consent.values as $subtype => $subconsent}
+						<tr>
+							<td>
+								<label class="consent-label" for="chkconsent{$subtype}">
+									{t a=$consent.label b=$subconsent.label}<!subconsent-label>$a ($b){/t}
+								</label>
+							</td>
+							<td>
+								<input type="radio" name="{$variable_prefix}[consents][{$type}]" id="chkconsent{$subtype}"
+									value="{$subtype}"
+									{if isset($variables.consents[$type]) && $variables.consents[$type] == $subtype} checked{/if}
+									data-default-checked="{if isset($variables['default-consents'][$type]) && $variables['default-consents'][$type] == $subtype}{$subtype}{else}0{/if}">
+							</td>
+						</tr>
+					{/foreach}
+				{else}
+					<tr>
+						<td>
+							<span class="consent-label">{$consent.label}</span>
+						</td>
+						<td>
+							<input type="checkbox" name="{$variable_prefix}[consents][{$type}]" id="chkconsent{$type}"
+								value="{$smarty.now}"{if isset($variables.consents[$type])} checked{/if}
+								data-default-checked="{if isset($variables['default-consents'][$type])}1{else}0{/if}"
+								{tip trigger="chkconsent"|cat:$type class="lms-ui-multi-check"}>
+						</td>
+					</tr>
+				{/if}
+				{$current_customer_consent_group_id = $customer_consent_group_id}
+			{/foreach}
+		{/block}
+	</tbody>
+</table>

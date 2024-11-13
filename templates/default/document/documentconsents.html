@@ -1,0 +1,49 @@
+<!--// $Id$ //-->
+<table class="lmsbox" id="document-consents" style="display: none;">
+	<colgroup>
+		<col style="width: 100%;">
+	</colgroup>
+	<thead>
+		<tr class="hand lmsbox-titlebar" data-lmsbox-content="document-consent-panel">
+			<td>
+				{icon name="consent"}
+				<strong>{trans("Customer Consents")}</strong>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr id="document-consent-panel"  style="display: none;">
+			<td>
+				<table class="lmsbox-inner">
+					<tbody>
+						<tr>
+							<td id="customer-consent-content">
+								{include file="customer/customerconsents.html" variable_prefix="document" variables=$document}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<script>
+
+	$(function() {
+		$("#document-consent-panel").on("click", "#reset-consents", function() {
+			$("#customer-consent-table").find("[data-default-checked]").each(function() {
+				if ($(this).is(":checkbox")) {
+					$(this).prop("checked", $(this).attr("data-default-checked") == "1");
+				} else {
+					$(this).prop("checked", $(this).attr("data-default-checked") == $(this).val());
+				}
+			});
+		});
+	});
+
+	(function() {
+		$("#document-consent-panel").toggle(getStorageItem("document-consent-panel", "local") == "1");
+	})();
+
+</script>

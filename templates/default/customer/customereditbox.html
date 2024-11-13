@@ -89,27 +89,6 @@
 		margin-left: 0.3em;
 	}
 
-	.consent-group {
-		display: flex;
-		padding-inline-end: 0.4em;
-	}
-
-	.lms-ui-separated-rows .lms-ui-separated-rows {
-		width: 100%;
-	}
-
-	.lms-ui-separated-rows .lms-ui-separated-rows td:not(:first-child) {
-		width: 1%;
-	}
-
-	.consent-group-row {
-		border-top: none !important;
-	}
-
-	.consent-group-row + tr {
-		border-top: none !important;
-	}
-
 </style>
 
 {include file="customer/customercompanyselectiondialog.html"}
@@ -627,72 +606,7 @@
 							<i class="lms-ui-icon-consent"></i>
 						</TD>
 						<TD>
-							<TABLE cellpadding="0" class="lms-ui-separated-rows">
-								<tbody class="lms-ui-multi-check">
-									<tr>
-										<td>
-											<label for="check-all-consents">
-												<strong>{trans("Consents")}</strong>
-											</label>
-										</td>
-										<td>
-											<input type="checkbox" class="lms-ui-multi-check-all"
-												id="check-all-consents" value="1">
-										</td>
-									</tr>
-									{block name="customereditbox-options"}
-										{foreach $_CCONSENTS as $type => $consent}
-											{if !is_array($consent)}
-												{continue}
-											{/if}
-											{$customer_consent_group_id = Utils::findCustomerConsentGroupByCustomerConsent($type, $_CCONSENT_GROUPS)}
-											{if $current_customer_consent_group_id && $current_customer_consent_group_id != $customer_consent_group_id || $current_customer_consent_group_id && $consent@last}
-															</table>
-														</fieldset>
-													</td>
-												</tr>
-											{/if}
-											{if $customer_consent_group_id && $customer_consent_group_id != $current_customer_consent_group_id}
-												<tr class="consent-group-row">
-													<td colspan="2">
-														<fieldset class="consent-group">
-															<legend>
-																<strong>{$_CCONSENT_GROUPS[$customer_consent_group_id].label}</strong>
-															</legend>
-															<table class="lms-ui-separated-rows">
-											{/if}
-											{if $consent.type == 'selection'}
-												{foreach $consent.values as $subtype => $subconsent}
-													<tr>
-														<td>
-															<label class="consent-label" for="chkconsent{$subtype}">
-																{t a=$consent.label b=$subconsent.label}<!subconsent-label>$a ($b){/t}
-															</label>
-														</td>
-														<td>
-															<input type="radio" name="customerdata[consents][{$type}]" id="chkconsent{$subtype}"
-																value="{$subtype}"
-																{if isset($customerinfo.consents[$type]) && $customerinfo.consents[$type] == $subtype} checked{/if}>
-														</td>
-													</tr>
-												{/foreach}
-											{else}
-												<tr>
-													<td>
-														<span class="consent-label">{$consent.label}</span>
-													</td>
-													<td>
-														<input type="checkbox" name="customerdata[consents][{$type}]" id="chkconsent{$type}"
-															value="{$smarty.now}"{if isset($customerinfo.consents[$type])} checked{/if}
-															{tip trigger="chkconsent"|cat:$type class="lms-ui-multi-check"}>
-													</td>
-												</tr>
-											{/if}
-											{$current_customer_consent_group_id = $customer_consent_group_id}
-										{/foreach}
-									{/block}
-								</tbody>
-							</TABLE>
+							{include file="customer/customerconsents.html" variable_prefix="customerdata" variables=$customerinfo}
 						</TD>
 					</TR>
 					{/block}

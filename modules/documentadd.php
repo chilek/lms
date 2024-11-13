@@ -35,6 +35,8 @@ if (isset($_POST['document'])) {
 
     $document['customerid'] = isset($_POST['customerid']) ? intval($_POST['customerid']) : intval($_POST['customer']);
 
+    $document['default-consents'] = $LMS->getCustomerConsents($document['customerid']);
+
     $error = array();
 
     if (!$LMS->CustomerExists(intval($document['customerid']))) {
@@ -558,6 +560,10 @@ if (isset($_POST['document'])) {
             }
         }
 
+        if (!empty($engine['customer-consent-selection'])) {
+            $LMS->updateCustomerConsents($document['customerid'], array_keys($document['default-consents']), array_keys($document['consents']));
+        }
+
         $DB->CommitTrans();
 
         if ($LMS->DocumentExists($docid)) {
@@ -690,6 +696,8 @@ if (isset($_POST['document'])) {
     }
 
     $document['dynamicperiod'] = ConfigHelper::checkConfig('documents.default_dynamic_period');
+
+    $document['consents'] = $document['default-consents'] = isset($document['customerid']) && intval($document['customerid']) ? $LMS->getCustomerConsents($document['customerid']) : array();
 
     $document['cdate'] = time();
 }
