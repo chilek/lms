@@ -62,6 +62,7 @@ if (!isset($_POST['xjxfun'])) {
     $SMARTY->assign('visible_panels', $visible_panels);
 
     include(MODULES_DIR.'/customer.inc.php');
+    require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customerconsents.php');
     require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
     //if($customerinfo['cutoffstop'] > mktime(0,0,0))
