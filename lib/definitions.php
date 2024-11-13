@@ -134,7 +134,11 @@ const CCONSENT_DATE = 1,
     CCONSENT_DIRECT_MARKETING = 16,
     CCONSENT_PHONE_SERVICE_INFO = 17,
     CCONSENT_PHONE_NOTICE = CCONSENT_PHONE_SERVICE_INFO,
-    CCONSENT_PHONENOTICE = CCONSENT_PHONE_SERVICE_INFO;
+    CCONSENT_PHONENOTICE = CCONSENT_PHONE_SERVICE_INFO,
+    CCONSENT_SMS_3RDPARTY_MARKETING = 18,
+    CCONSENT_MAIL_3RDPARTY_MARKETING = 19,
+    CCONSENT_PHONE_3RDPARTY_MARKETING = 20,
+    CCONSENT_DIRECT_3RDPARTY_MARKETING = 21;
 
 $CCONSENTS = array(
     CCONSENT_DATE => array(
@@ -187,6 +191,26 @@ $CCONSENTS = array(
         'name' => 'direct_marketing',
         'type' => 'boolean',
     ),
+    CCONSENT_MAIL_3RDPARTY_MARKETING => array(
+        'label' => trans('<!marketing>e-mail'),
+        'name' => 'mail_3rdparty_marketing',
+        'type' => 'boolean',
+    ),
+    CCONSENT_SMS_3RDPARTY_MARKETING => array(
+        'label' => trans('<!marketing>sms'),
+        'name' => 'sms_3rdparty_marketing',
+        'type' => 'boolean',
+    ),
+    CCONSENT_PHONE_3RDPARTY_MARKETING => array(
+        'label' => trans('<!marketing>telephone'),
+        'name' => 'phone_3rdparty_marketing',
+        'type' => 'boolean',
+    ),
+    CCONSENT_DIRECT_3RDPARTY_MARKETING => array(
+        'label' => trans('<!marketing>direct'),
+        'name' => 'direct_3rdparty_marketing',
+        'type' => 'boolean',
+    ),
     CCONSENT_USERPANEL_SMS => array(
         'label' => trans('document form approval in customer panel using SMS authorization'),
         'name' => 'userpanel_document_sms_approval',
@@ -227,7 +251,8 @@ $CCONSENTS = array(
 
 const CCONSENT_GROUP_MARKETING = 1,
     CCONSENT_GROUP_SERVICE_INFO = 2,
-    CCONSENT_GROUP_INVOICES = 3;
+    CCONSENT_GROUP_INVOICES = 3,
+    CCONSENT_GROUP_3RDPARTY_MARKETING = 4;
 
 $CCONSENT_GROUPS = array(
     CCONSENT_GROUP_INVOICES => array(
@@ -252,6 +277,15 @@ $CCONSENT_GROUPS = array(
             CCONSENT_SMS_MARKETING,
             CCONSENT_PHONE_MARKETING,
             CCONSENT_DIRECT_MARKETING,
+        ),
+    ),
+    CCONSENT_GROUP_3RDPARTY_MARKETING => array(
+        'label' => trans('<!consent-group>third party marketing'),
+        'consents' => array(
+            CCONSENT_MAIL_3RDPARTY_MARKETING,
+            CCONSENT_SMS_3RDPARTY_MARKETING,
+            CCONSENT_PHONE_3RDPARTY_MARKETING,
+            CCONSENT_DIRECT_3RDPARTY_MARKETING,
         ),
     ),
 );

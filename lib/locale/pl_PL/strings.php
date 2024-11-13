@@ -6045,6 +6045,7 @@ $_LANG['Volume'] = 'Ilość';
 $_LANG['Last change'] = 'Ostatnia zmiana';
 
 $_LANG['<!consent-group>marketing'] = 'marketing';
+$_LANG['<!consent-group>third party marketing'] = 'marketing podmiotów trzecich';
 $_LANG['<!consent-group>service information'] = 'informacje związane z usługą';
 $_LANG['<!consent-group>invoices'] = 'faktury';
 
