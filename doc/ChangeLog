@@ -852,6 +852,9 @@ version 28-git (????-??-??):
   - enhancement: 'customer-consent-selection' property in document template 'info.php' file controls
     if customer consent panel/tab/box is supported for given document template [chilan]
   - enhancement: new third party marketing and complaint information customer consents added [chilan]
+  - improvement: supported customer consents can be limited to those specified by
+    'customers.supported_consents' configuration variable (by default all consents
+    are supported) [chilan]
 
 version 27.0 (2021-08-20):
 
