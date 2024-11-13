@@ -5853,6 +5853,9 @@ $_LANG['<!marketing>e-mail'] = 'pocztą elektroniczną';
 $_LANG['<!marketing>sms'] = 'SMS-em';
 $_LANG['<!marketing>telephone'] = 'telefoniczny';
 $_LANG['<!marketing>direct'] = 'bezpośredni';
+$_LANG['<!complaint>e-mail'] = 'pocztą elektroniczną';
+$_LANG['<!complaint>sms'] = 'SMS-em';
+$_LANG['<!complaint>telephone'] = 'telefonicznie';
 $_LANG['<!service-info>e-mail'] = 'pocztą elektroniczną';
 $_LANG['<!service-info>sms'] = 'SMS-em';
 $_LANG['<!service-info>telephone'] = 'telefonicznie';
@@ -6048,6 +6051,7 @@ $_LANG['<!consent-group>marketing'] = 'marketing';
 $_LANG['<!consent-group>third party marketing'] = 'marketing podmiotów trzecich';
 $_LANG['<!consent-group>service information'] = 'informacje związane z usługą';
 $_LANG['<!consent-group>invoices'] = 'faktury';
+$_LANG['<!consent-group>complaint information'] = 'informacje związane z reklamacją';
 
 $_LANG['reminder'] = 'przypomnienie';
 
