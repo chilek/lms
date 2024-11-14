@@ -855,6 +855,7 @@ version 28-git (????-??-??):
   - improvement: supported customer consents can be limited to those specified by
     'customers.supported_consents' configuration variable (by default all consents
     are supported) [chilan]
+  - enhancement: 'document external ID' option in sale report form [chilan]
 
 version 27.0 (2021-08-20):
 
