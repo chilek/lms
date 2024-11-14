@@ -1872,6 +1872,9 @@ CREATE INDEX tariffassignments_tarifftagid_idx ON tariffassignments (tarifftagid
   Structure of table "tariffpricevariants"
 -------------------------------------------------------- */
 
+DROP SEQUENCE IF EXISTS tariffpricevariants_id_seq;
+CREATE SEQUENCE tariffpricevariants_id_seq;
+DROP TABLE IF EXISTS tariffpricevariants CASCADE;
 CREATE TABLE tariffpricevariants (
     id integer DEFAULT nextval('tariffpricevariants_id_seq'::text) NOT NULL,
     tariffid integer NOT NULL
