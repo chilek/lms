@@ -39,4 +39,3 @@ if (!empty($supportedCustomerConsents)) {
         $SMARTY->assign('_CCONSENTS', $CCONSENTS);
     }
 }
-
