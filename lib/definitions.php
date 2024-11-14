@@ -142,7 +142,7 @@ const CCONSENT_DATE = 1,
     CCONSENT_SMS_COMPLAINT = 22,
     CCONSENT_MAIL_COMPLAINT = 23,
     CCONSENT_PHONE_COMPLAINT = 24,
-    CCONSENT_FIBER_LINE_SUSPENSION = 25;
+    CCONSENT_FIBER_OPTIC_LINE_SUSPENSION = 25;
 
 $CCONSENTS = array(
     CCONSENT_DATE => array(
@@ -230,9 +230,9 @@ $CCONSENTS = array(
         'name' => 'phone_complaint',
         'type' => 'boolean',
     ),
-    CCONSENT_FIBER_LINE_SUSPENSION => array(
+    CCONSENT_FIBER_OPTIC_LINE_SUSPENSION => array(
         'label' => trans('suspension of a fiber optic line over the customer plot'),
-        'name' => 'fiber_line_suspension',
+        'name' => 'fiber_optic_line_suspension',
         'type' => 'boolean',
     ),
     CCONSENT_USERPANEL_SMS => array(
@@ -325,7 +325,7 @@ $CCONSENT_GROUPS = array(
     CCONSENT_GROUP_TECHNICAL => array(
         'label' => trans('<!consent-group>technical'),
         'consents' => array(
-            CCONSENT_FIBER_LINE_SUSPENSION,
+            CCONSENT_FIBER_OPTIC_LINE_SUSPENSION,
         ),
     ),
 );
