@@ -6052,6 +6052,9 @@ $_LANG['<!consent-group>third party marketing'] = 'marketing podmiotów trzecich
 $_LANG['<!consent-group>service information'] = 'informacje związane z usługą';
 $_LANG['<!consent-group>invoices'] = 'faktury';
 $_LANG['<!consent-group>complaint information'] = 'informacje związane z reklamacją';
+$_LANG['<!consent-group>technical'] = 'techniczne';
+
+$_LANG['suspension of a fiber optic line over the customer plot'] = 'przewieszenie linii światłowodowej nad działką klienta';
 
 $_LANG['reminder'] = 'przypomnienie';
 

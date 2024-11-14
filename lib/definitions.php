@@ -141,7 +141,8 @@ const CCONSENT_DATE = 1,
     CCONSENT_DIRECT_3RDPARTY_MARKETING = 21,
     CCONSENT_SMS_COMPLAINT = 22,
     CCONSENT_MAIL_COMPLAINT = 23,
-    CCONSENT_PHONE_COMPLAINT = 24;
+    CCONSENT_PHONE_COMPLAINT = 24,
+    CCONSENT_FIBER_LINE_SUSPENSION = 25;
 
 $CCONSENTS = array(
     CCONSENT_DATE => array(
@@ -229,6 +230,11 @@ $CCONSENTS = array(
         'name' => 'phone_complaint',
         'type' => 'boolean',
     ),
+    CCONSENT_FIBER_LINE_SUSPENSION => array(
+        'label' => trans('suspension of a fiber optic line over the customer plot'),
+        'name' => 'fiber_line_suspension',
+        'type' => 'boolean',
+    ),
     CCONSENT_USERPANEL_SMS => array(
         'label' => trans('document form approval in customer panel using SMS authorization'),
         'name' => 'userpanel_document_sms_approval',
@@ -271,7 +277,8 @@ const CCONSENT_GROUP_MARKETING = 1,
     CCONSENT_GROUP_SERVICE_INFO = 2,
     CCONSENT_GROUP_INVOICES = 3,
     CCONSENT_GROUP_3RDPARTY_MARKETING = 4,
-    CCONSENT_GROUP_COMPLAINT = 5;
+    CCONSENT_GROUP_COMPLAINT = 5,
+    CCONSENT_GROUP_TECHNICAL = 6;
 
 $CCONSENT_GROUPS = array(
     CCONSENT_GROUP_INVOICES => array(
@@ -313,6 +320,12 @@ $CCONSENT_GROUPS = array(
             CCONSENT_MAIL_COMPLAINT,
             CCONSENT_SMS_COMPLAINT,
             CCONSENT_PHONE_COMPLAINT,
+        ),
+    ),
+    CCONSENT_GROUP_TECHNICAL => array(
+        'label' => trans('<!consent-group>technical'),
+        'consents' => array(
+            CCONSENT_FIBER_LINE_SUSPENSION,
         ),
     ),
 );
