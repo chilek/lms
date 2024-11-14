@@ -1,5 +1,11 @@
 <!--// $Id$ //-->
 {include file="clearheader.html"}
+{$colspan = 5 + $taxescount}
+{$colspan2 = 4}
+{if $printextid}
+	{$colspan = $colspan + 1}
+	{$colspan2 = $colspan2 + 1}
+{/if}
 <TABLE WIDTH="100%" CELLPADDING="3" ALIGN="CENTER">
 	<TR>
 		<TD WIDTH="800" ALIGN="LEFT">
@@ -34,6 +40,11 @@
 		<TD WIDTH="520" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Contractor")}
 		</TD>
+		{if $printextid}
+			<td width="25" class="HEAD" align="center">
+				{trans("Document external ID")}
+			</td>
+		{/if}
 		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
 			{if in_array(DOC_DNOTE, $doctypes)}{trans("Value")}{else}{trans("Gross value")}{/if}
 		</TD>
@@ -79,6 +90,11 @@
 			{$invoice.custaddress}
 			{/strip}
 		</TD>
+		{if $printextid}
+			<td width="25" class="head" align="center">
+				{$invoice.extid}
+			</td>
+		{/if}
 		<TD ALIGN="RIGHT">
 			{($invoice.brutto * $invoice.currencyvalue)|string_format:"%01.2f"}
 			{if $invoice.currency != Localisation::getCurrentCurrency()}<br>({moneyf($invoice.brutto, $invoice.currency)}){/if}
@@ -105,14 +121,14 @@
 	</TR>
 	{foreachelse}
 	<tr>
-		<td colspan="{math equation="5+x" x=$taxescount}" class="empty-table">
+		<td colspan="{$colspan}" class="empty-table">
 			{trans("No such invoices in selected time period.")}
 		</td>
 	</tr>
 	{/foreach}
 	{/if}
 	<TR>
-		<TD CLASS="HEADGREY" COLSPAN="4" ALIGN="RIGHT">
+		<TD CLASS="HEADGREY" COLSPAN="{$colspan2}" ALIGN="RIGHT">
 			<B>{trans("<!invoice>Invoices with receipt")}</B>
 		</TD>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT">
@@ -134,7 +150,7 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD CLASS="HEADGREY" COLSPAN="4" ALIGN="RIGHT">
+		<TD CLASS="HEADGREY" COLSPAN="{$colspan2}" ALIGN="RIGHT">
 			<B>{trans("<!invoice>Correction notes with receipt")}</B>
 		</TD>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT">
@@ -156,7 +172,7 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD CLASS="HEADGREY" COLSPAN="4" ALIGN="RIGHT">
+		<TD CLASS="HEADGREY" COLSPAN="{$colspan2}" ALIGN="RIGHT">
 			<B>{trans("<!invoice>Without receipt")}</B>
 		</TD>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT">
@@ -180,7 +196,7 @@
 		{/if}
 	</TR>
 	<TR>
-		<TD CLASS="HEADGREY" COLSPAN="4" ALIGN="RIGHT">
+		<TD CLASS="HEADGREY" COLSPAN="{$colspan2}" ALIGN="RIGHT">
 			<B>{trans("Total")}</B>
 		</TD>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT">

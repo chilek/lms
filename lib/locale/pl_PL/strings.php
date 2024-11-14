@@ -6060,3 +6060,6 @@ $_LANG['<!document-period>(dynamic)'] = '(dynamiczny)';
 
 $_LANG['Customer Consents'] = 'Zgody klienta';
 $_LANG['Reset consents'] = 'Zresetuj zgody';
+
+$_LANG['document external ID'] = 'zewnętrzny ID dokumentu';
+$_LANG['Document external ID'] = 'Zewnętrzny ID dokumentu';

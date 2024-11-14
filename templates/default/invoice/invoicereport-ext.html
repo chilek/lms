@@ -1,6 +1,12 @@
 {include file="clearheader.html" landscape=true}
 <!--// $Id$ //-->
 {$report_type = ConfigHelper::getConfig('phpui.report_type')}
+{$colspan = 6 + $taxescount}
+{$colspan2 = 4}
+{if $printextid}
+	{$colspan = $colspan + 1}
+	{$colspan2 = $colspan2 + 1}
+{/if}
 {foreach $pages as $item}{assign var=previtem value=$item-1}
 {if $report_type == 'pdf'}
 {if $item > 1}<page>{/if}
@@ -37,6 +43,11 @@
 		<TD WIDTH="520" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Contractor")}
 		</TD>
+		{if $printextid}
+			<td width="25" class="HEAD" align="center">
+				{trans("Document external ID")}
+			</td>
+		{/if}
 		{if !in_array(DOC_DNOTE, $doctypes)}
 		{foreach $taxes as $tax}
 		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
@@ -86,6 +97,11 @@
 			{$invoicelist[invoicelist].custaddress}
 			{/strip}
 		</TD>
+		{if $printextid}
+			<td width="25" class="head" align="center">
+				{$invoice.extid}
+			</td>
+		{/if}
 		{if !in_array(DOC_DNOTE, $doctypes)}
 		{foreach $taxes as $tax}
 		{assign var=taxid value=$tax.id}
@@ -115,7 +131,7 @@
 	{/section}
 	{/if}
 	<TR>
-		<TD COLSPAN="4" ALIGN="RIGHT" class="HEADGREY">
+		<TD COLSPAN="{$colspan2}" ALIGN="RIGHT" class="HEADGREY">
 			<B>{trans("Page total")}</B>
 		</TD>
 		{if !in_array(DOC_DNOTE, $doctypes)}
@@ -141,7 +157,7 @@
 		{/if}
 	</TR>
 	<TR>
-		<TD COLSPAN="4" ALIGN="RIGHT" class="HEADGREY">
+		<TD COLSPAN="{$colspan2}" ALIGN="RIGHT" class="HEADGREY">
 			<B>{trans("Transfered from previous page")}</B>
 		</TD>
 		{if !in_array(DOC_DNOTE, $doctypes)}
@@ -167,7 +183,7 @@
 		{/if}
 	</TR>
 	<TR>
-		<TD COLSPAN="4" ALIGN="RIGHT" class="HEADGREY">
+		<TD COLSPAN="{$colspan2}" ALIGN="RIGHT" class="HEADGREY">
 			<B>{trans("Total from start of period (invoices with receipt)")}</B>
 		</TD>
 		{foreach item=tax from=$taxes}
@@ -189,7 +205,7 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD COLSPAN="4" ALIGN="RIGHT" class="HEADGREY">
+		<TD COLSPAN="{$colspan2}" ALIGN="RIGHT" class="HEADGREY">
 			<B>{trans("Total from start of period (correction notes with receipt)")}</B>
 		</TD>
 		{foreach item=tax from=$taxes}
@@ -211,7 +227,7 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD COLSPAN="4" ALIGN="RIGHT" class="HEADGREY">
+		<TD COLSPAN="{$colspan2}" ALIGN="RIGHT" class="HEADGREY">
 			<B>{trans("Total from start of period (without receipt)")}</B>
 		</TD>
 		{if !in_array(DOC_DNOTE, $doctypes)}
@@ -237,7 +253,7 @@
 		{/if}
 	</TR>
 	<TR>
-		<TD COLSPAN="4" ALIGN="RIGHT" class="HEADGREY">
+		<TD COLSPAN="{$colspan2}" ALIGN="RIGHT" class="HEADGREY">
 			<B>{trans("Total from start of period")}</B>
 		</TD>
 		{foreach item=tax from=$taxes}
@@ -295,6 +311,11 @@
 		<TD WIDTH="520" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Contractor")}
 		</TD>
+		{if $printextid}
+			<td width="25" class="HEAD" align="center">
+				{trans("Document external ID")}
+			</td>
+		{/if}
 		{if !in_array(DOC_DNOTE, $doctypes)}
 		{foreach $taxes as $tax}
 		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
@@ -317,7 +338,7 @@
 		{/if}
 	</TR>
 	<tr>
-		<td colspan="{math equation="6+x" x=$taxescount}" class="empty-table">
+		<td colspan="{$colspan}" class="empty-table">
 			{trans("No such invoices in selected time period.")}
 		</td>
 	</tr>

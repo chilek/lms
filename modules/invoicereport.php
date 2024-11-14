@@ -227,7 +227,8 @@ $documents = $DB->GetAll('SELECT d.id, d.type,
                     ELSE cn.ccode
                 END)
                 ELSE NULL
-            END) AS lang
+            END) AS lang,
+            d.extid
 	    FROM documents d
         JOIN customeraddressview c ON (c.id = d.customerid)
         LEFT JOIN countries cn ON (cn.id = d.countryid)
@@ -296,6 +297,7 @@ if ($documents) {
         $invoicelist[$idx]['customerid'] = $document['customerid'];
         $invoicelist[$idx]['currency'] = $document['currency'];
         $invoicelist[$idx]['currencyvalue'] = $document['currencyvalue'];
+        $invoicelist[$idx]['extid'] = $document['extid'];
 
         foreach ($document['content'] as $itemid => $item) {
             $taxid = intval($item['taxid']);
@@ -554,6 +556,7 @@ if (isset($_POST['extended'])) {
     $SMARTY->assign('printcustomerid', isset($_POST['printcustomerid']));
     $SMARTY->assign('printcustomerssn', isset($_POST['printcustomerssn']));
     $SMARTY->assign('printonlysummary', isset($_POST['printonlysummary']));
+    $SMARTY->assign('printextid', isset($_POST['printextid']));
 
     if (strtolower(ConfigHelper::getConfig('phpui.report_type', '', true)) == 'pdf') {
         $output = $SMARTY->fetch('invoice/invoicereport-ext.html');
@@ -572,6 +575,7 @@ if (isset($_POST['extended'])) {
     $SMARTY->assign('printcustomerid', isset($_POST['printcustomerid']));
     $SMARTY->assign('printcustomerssn', isset($_POST['printcustomerssn']));
     $SMARTY->assign('printonlysummary', isset($_POST['printonlysummary']));
+    $SMARTY->assign('printextid', isset($_POST['printextid']));
 
     if (strtolower(ConfigHelper::getConfig('phpui.report_type', '', true)) == 'pdf') {
         $output = $SMARTY->fetch('invoice/invoicereport.html');
