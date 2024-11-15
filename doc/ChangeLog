@@ -858,6 +858,7 @@ version 28-git (????-??-??):
   - enhancement: 'document external ID' option in sale report form [chilan]
   - enhancement: added new customer consent 'suspension of a fiber optic line over
     the customer plot' [chilan]
+  - improvement: allow to transfer cash with any value between two customers [chilan]
 
 version 27.0 (2021-08-20):
 
