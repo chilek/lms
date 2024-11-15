@@ -568,6 +568,20 @@
 		padding-bottom: 5px;
 	}
 
+	#transfer-balance-dialog-value-field {
+		display: flex;
+		flex-direction: column;
+		width: fit-content;
+	}
+
+	#transfer-balance-dialog-value-field > * {
+		margin-left: 0;
+	}
+
+	#transfer-balance-dialog-value-field > *:not(:first-child) {
+		margin-top: 0.5em;
+	}
+
 </style>
 
 <div id="transfer-balance-dialog" class="lms-ui-dialog" title="{trans("Financial operation transfer")}">
@@ -583,6 +597,14 @@
 				inputtip=""
 				required=true
 				version=2}
+		</li>
+		<li id="transfer-balance-dialog-value-field" style="display: none;">
+			<strong>{trans("Value")}</strong>
+			<span>
+				<input type="text" size="8" name="value" pattern="[0-9]+([\.,][0-9]+)?"
+					form="transfer-balance-form">
+				{currency_selection selected=Localisation::getDefaultCurrency() elementname="currency" form="transfer-balance-form"}
+			</span>
 		</li>
 	</ol>
 	<div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
@@ -915,9 +937,11 @@
 			$(this).find('i').attr('class', 'lms-ui-icon-' + (attachmentView.is(':visible') ? 'less' : 'more'));
 		});""
 
+/*
 		$('#customerbalancebox .lms-ui-multi-check,.lms-ui-multi-check-all').change(function() {
 			$('#move-balances').prop('disabled', !$('#customerbalancebox .lms-ui-multi-check:checked').closest('[data-moveable]').length);
 		});
+*/
 
 		var transfer_balance_dialog = new LmsUiDialog('transfer-balance-dialog', {
 			position: {
@@ -933,9 +957,12 @@
 		{if !empty($balancelist.customerid)}
 			$('#transfer-balance-form').submit(function() {
 				var checkboxes = $('#customerbalancebox [data-moveable] .lms-ui-multi-check:checked');
+				var value = parseFloat($('#transfer-balance-dialog-value-field input').val().replace(',', '.'));
+				var currency = $('#transfer-balance-dialog-value-field select').val();
+				var valueVisible = $('#transfer-balance-dialog-value-field').is(':visible');
 				var old_customerid = {$balancelist.customerid};
 				var customerid = parseInt($('[name="customerid"][form="transfer-balance-form"]').val());
-				if (!checkboxes.length || customerid == old_customerid) {
+				if (!valueVisible && !checkboxes.length || valueVisible && (isNaN(value) || !currency.length) || customerid == old_customerid) {
 					$('#transfer-balance-apply-button').prop('disabled', false);
 					return false;
 				}
@@ -947,10 +974,12 @@
 			});
 		{/if}
 
-		$('#move-balances').prop('disabled', !$('#customerbalancebox .lms-ui-multi-check:checked').closest('[data-moveable]').length)
-			.click(function() {
-				transfer_balance_dialog.open();
-			});
+		//$('#move-balances').prop('disabled', !$('#customerbalancebox .lms-ui-multi-check:checked').closest('[data-moveable]').length)
+		$('#move-balances').click(function() {
+			var valueRequired = !$('#customerbalancebox .lms-ui-multi-check:checked').closest('[data-moveable]').length;
+			$("#transfer-balance-dialog-value-field").toggle(valueRequired).find('input,select').prop('required', valueRequired);
+			transfer_balance_dialog.open();
+		});
 	});
 
 	new_doc_type_changed($('[name="newdocument"]').val());
