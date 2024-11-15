@@ -255,7 +255,7 @@
 			{if $doc.fromdate || $doc.todate}<BR>
 				{if $doc.fromdate}{trans("from")} {$doc.fromdate|date_format:"Y-m-d"}{/if}
 				{if $doc.todate}{trans("to")} {$doc.todate|date_format:"Y-m-d"}{/if}
-				{if empty($doc.closed) && ($doc.fromdate || $doc.todate)}{trans("<!document-period>(dynamic)")}{/if}
+				{if empty($doc.closed) && ($doc.fromdate || $doc.todate) && !empty($doc.dynamicperiod)}{trans("<!document-period>(dynamic)")}{/if}
 			{/if}
 			{if $doc.reference}<br>
 			<a href="?m={if $doc.reference.type < 0}documentview{else}invoice{/if}&id={$doc.reference.id}" rel="external">

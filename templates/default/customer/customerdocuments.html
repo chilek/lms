@@ -122,7 +122,7 @@
 						<div class="lms-ui-tab-table-column period" data-target-url="{$url}">
 							{if $doc.fromdate}{trans("from")} {$doc.fromdate|date_format:"Y-m-d"}{/if}
 							{if $doc.todate}{trans("to")} {$doc.todate|date_format:"Y-m-d"}{/if}
-							{if empty($doc.closed) && ($doc.fromdate || $doc.todate)}{trans("<!document-period>(dynamic)")}{/if}
+							{if empty($doc.closed) && ($doc.fromdate || $doc.todate) && !empty($doc.dynamicperiod)}{trans("<!document-period>(dynamic)")}{/if}
 						</div>
 					</div>
 				</div>
