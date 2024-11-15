@@ -532,6 +532,7 @@ if (isset($_POST['document'])) {
             $selected_assignment['at'] = $at;
             $selected_assignment['commited'] = empty($document['closed']) ? 0 : 1;
             $selected_assignment['align-periods'] = isset($document['assignment']['align-periods']);
+            $selected_assignment['dynamicperiod'] = empty($document['dynamicperiod']) ? 0 : 1;
 
             if ($selected_assignment['schemaid'] && is_array($selected_assignment['sassignmentid'][$schemaid])) {
                 $selected_assignment['sassignmentid'] = $selected_assignment['sassignmentid'][$schemaid];

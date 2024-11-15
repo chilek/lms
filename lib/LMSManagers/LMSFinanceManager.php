@@ -1303,11 +1303,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $snodes = $data['snodes'] ?? array();
             $sphones = $data['sphones'] ?? array();
 
-            $diff_days = round((strtotime('today') - $data['datefrom']) / 86400);
+            if (!empty($data['dynamicperiod'])) {
+                $diff_days = round((strtotime('today') - $data['datefrom']) / 86400);
 
-            if (!empty($diff_days)) {
-                $data['datefrom'] = strtotime(($diff_days < 0 ? '-' : '+') . intval($diff_days) . ' days', $data['datefrom']);
-                $data['dateto'] = strtotime(($diff_days < 0 ? '-' : '+') . intval($diff_days) . ' days', $data['dateto']);
+                if (!empty($diff_days)) {
+                    $data['datefrom'] = strtotime(intval($diff_days) . ' days', $data['datefrom']);
+                    $data['dateto'] = strtotime(intval($diff_days) . ' days', $data['dateto']);
+                }
             }
 
             $copy_a = $data;

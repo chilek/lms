@@ -1713,15 +1713,15 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 }
                 unset($snumberids);
 
-                $finance_manager->addAssignmentsForSchema($selected_assignment);
-
                 if (!empty($doc['dynamicperiod'])) {
+                    $finance_manager->addAssignmentsForSchema($selected_assignment);
+
                     $datefrom = $doc['datefrom'];
                     $dateto = $doc['dateto'];
 
                     $diff_days = intval(round((strtotime('today') - $datefrom) / 86400));
 
-                    $datefrom = empty($datefrom) ? 0 : strtotime(($diff_days < 0 ? '-' : '+') . $diff_days . ' days', $datefrom);
+                    $datefrom = empty($datefrom) ? 0 : strtotime($diff_days . ' days', $datefrom);
                     if ($dateto) {
                         if (!empty($selected_assignment['align-periods'])) {
                             $monthfrom = date('Y', $doc['datefrom']) * 12 + date('n', $doc['datefrom']);
@@ -1731,7 +1731,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                                 $dateto = mktime(0, 0, 0, date('n', $dateto) + ($new_monthfrom - $monthfrom) + 1, 1, date('Y', $dateto)) - 1;
                             }
                         } else {
-                            $dateto = strtotime(($diff_days < 0 ? '-' : '+') . $diff_days . ' days', $dateto);
+                            $dateto = strtotime($diff_days . ' days', $dateto);
                         }
                     }
 
