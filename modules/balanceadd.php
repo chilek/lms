@@ -52,11 +52,13 @@ if (isset($_POST['addbalance'])) {
     $SESSION->save('addbc', $addbalance['comment']);
 }
 
+/*
 if ($currenttime) {
     $SESSION->remove('addbt');
 } else {
     $SESSION->save('addbt', $addbalance['time']);
 }
+*/
 
 $SESSION->save('addbtax', $addbalance['taxid'] ?? 0);
 

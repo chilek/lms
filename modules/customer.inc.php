@@ -271,7 +271,7 @@ $SMARTY->assign(array(
     'period' => $period ?? null,
     'allevents' => $allevents ?? 0,
     'alltickets' => $alltickets ?? 0,
-    'time' => $SESSION->get('addbt'),
+//    'time' => $SESSION->get('addbt'),
     'taxid' => $SESSION->get('addbtax'),
     'comment' => $SESSION->get('addbc'),
     'sourceid' => $SESSION->get('addsource'),
