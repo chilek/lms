@@ -142,7 +142,8 @@ const CCONSENT_DATE = 1,
     CCONSENT_SMS_COMPLAINT = 22,
     CCONSENT_MAIL_COMPLAINT = 23,
     CCONSENT_PHONE_COMPLAINT = 24,
-    CCONSENT_FIBER_OPTIC_LINE_SUSPENSION = 25;
+    CCONSENT_FIBER_OPTIC_LINE_SUSPENSION = 25,
+    CCONSENT_SERVICE_PROVISION_BEFORE_WITHDRAWAL_PERIOD_EXPIRES = 26;
 
 $CCONSENTS = array(
     CCONSENT_DATE => array(
@@ -233,6 +234,11 @@ $CCONSENTS = array(
     CCONSENT_FIBER_OPTIC_LINE_SUSPENSION => array(
         'label' => trans('suspension of a fiber optic line over the customer plot'),
         'name' => 'fiber_optic_line_suspension',
+        'type' => 'boolean',
+    ),
+    CCONSENT_SERVICE_PROVISION_BEFORE_WITHDRAWAL_PERIOD_EXPIRES => array(
+        'label' => trans('service provision before withdrawal period expires'),
+        'name' => 'service_provision_before_withdrawal_period_expires',
         'type' => 'boolean',
     ),
     CCONSENT_USERPANEL_SMS => array(

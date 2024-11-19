@@ -6057,6 +6057,7 @@ $_LANG['<!consent-group>complaint information'] = 'informacje związane z reklam
 $_LANG['<!consent-group>technical'] = 'techniczne';
 
 $_LANG['suspension of a fiber optic line over the customer plot'] = 'przewieszenie linii światłowodowej nad działką klienta';
+$_LANG['service provision before withdrawal period expires'] = 'świadczenie usług przed upływem okresu na odstąpienie od umowy';
 
 $_LANG['reminder'] = 'przypomnienie';
 
