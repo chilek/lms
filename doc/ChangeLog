@@ -859,6 +859,7 @@ version 28-git (????-??-??):
   - enhancement: added new customer consent 'suspension of a fiber optic line over
     the customer plot' [chilan]
   - improvement: allow to transfer cash with any value between two customers [chilan]
+  - enhancement: new customer consent 'service provision before withdrawal period expires' [chilan]
 
 version 27.0 (2021-08-20):
 
