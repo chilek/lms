@@ -5855,12 +5855,15 @@ $_LANG['<!marketing>e-mail'] = 'pocztą elektroniczną';
 $_LANG['<!marketing>sms'] = 'SMS-em';
 $_LANG['<!marketing>telephone'] = 'telefoniczny';
 $_LANG['<!marketing>direct'] = 'bezpośredni';
+$_LANG['<!marketing>via userpanel'] = 'poprzez panel klienta';
 $_LANG['<!complaint>e-mail'] = 'pocztą elektroniczną';
 $_LANG['<!complaint>sms'] = 'SMS-em';
 $_LANG['<!complaint>telephone'] = 'telefonicznie';
+$_LANG['<!complaint>via userpanel'] = 'poprzez panel klienta';
 $_LANG['<!service-info>e-mail'] = 'pocztą elektroniczną';
 $_LANG['<!service-info>sms'] = 'SMS-em';
 $_LANG['<!service-info>telephone'] = 'telefonicznie';
+$_LANG['<!service-info>via userpanel'] = 'poprzez panel klienta';
 $_LANG['phone billing'] = 'billing telefoniczny';
 
 $_LANG['Issuer'] = 'Wystawca';

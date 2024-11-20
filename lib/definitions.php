@@ -143,7 +143,11 @@ const CCONSENT_DATE = 1,
     CCONSENT_MAIL_COMPLAINT = 23,
     CCONSENT_PHONE_COMPLAINT = 24,
     CCONSENT_FIBER_OPTIC_LINE_SUSPENSION = 25,
-    CCONSENT_SERVICE_PROVISION_BEFORE_WITHDRAWAL_PERIOD_EXPIRES = 26;
+    CCONSENT_SERVICE_PROVISION_BEFORE_WITHDRAWAL_PERIOD_EXPIRES = 26,
+    CCONSENT_USERPANEL_SERVICE_INFO = 27,
+    CCONSENT_USERPANEL_MARKETING = 28,
+    CCONSENT_USERPANEL_3RDPARTY_MARKETING = 29,
+    CCONSENT_USERPANEL_COMPLAINT = 30;
 
 $CCONSENTS = array(
     CCONSENT_DATE => array(
@@ -176,6 +180,11 @@ $CCONSENTS = array(
         'name' => 'phone_service_info',
         'type' => 'boolean',
     ),
+    CCONSENT_USERPANEL_SERVICE_INFO => array(
+        'label' => trans('<!service-info>via userpanel'),
+        'name' => 'userpanel_service_info',
+        'type' => 'boolean',
+    ),
     CCONSENT_MAIL_MARKETING => array(
         'label' => trans('<!marketing>e-mail'),
         'name' => 'mail_marketing',
@@ -194,6 +203,11 @@ $CCONSENTS = array(
     CCONSENT_DIRECT_MARKETING => array(
         'label' => trans('<!marketing>direct'),
         'name' => 'direct_marketing',
+        'type' => 'boolean',
+    ),
+    CCONSENT_USERPANEL_MARKETING => array(
+        'label' => trans('<!marketing>via userpanel'),
+        'name' => 'userpanel_marketing',
         'type' => 'boolean',
     ),
     CCONSENT_MAIL_3RDPARTY_MARKETING => array(
@@ -216,6 +230,11 @@ $CCONSENTS = array(
         'name' => 'direct_3rdparty_marketing',
         'type' => 'boolean',
     ),
+    CCONSENT_USERPANEL_3RDPARTY_MARKETING => array(
+        'label' => trans('<!marketing>via userpanel'),
+        'name' => 'userpanel_3rdparty_marketing',
+        'type' => 'boolean',
+    ),
     CCONSENT_MAIL_COMPLAINT => array(
         'label' => trans('<!complaint>e-mail'),
         'name' => 'mail_complaint',
@@ -229,6 +248,11 @@ $CCONSENTS = array(
     CCONSENT_PHONE_COMPLAINT => array(
         'label' => trans('<!complaint>telephone'),
         'name' => 'phone_complaint',
+        'type' => 'boolean',
+    ),
+    CCONSENT_USERPANEL_COMPLAINT => array(
+        'label' => trans('<!complaint>via userpanel'),
+        'name' => 'userpanel_complaint',
         'type' => 'boolean',
     ),
     CCONSENT_FIBER_OPTIC_LINE_SUSPENSION => array(
@@ -300,6 +324,7 @@ $CCONSENT_GROUPS = array(
             CCONSENT_MAIL_SERVICE_INFO,
             CCONSENT_SMS_SERVICE_INFO,
             CCONSENT_PHONE_SERVICE_INFO,
+            CCONSENT_USERPANEL_SERVICE_INFO,
         ),
     ),
     CCONSENT_GROUP_MARKETING => array(
@@ -309,6 +334,7 @@ $CCONSENT_GROUPS = array(
             CCONSENT_SMS_MARKETING,
             CCONSENT_PHONE_MARKETING,
             CCONSENT_DIRECT_MARKETING,
+            CCONSENT_USERPANEL_MARKETING,
         ),
     ),
     CCONSENT_GROUP_3RDPARTY_MARKETING => array(
@@ -318,6 +344,7 @@ $CCONSENT_GROUPS = array(
             CCONSENT_SMS_3RDPARTY_MARKETING,
             CCONSENT_PHONE_3RDPARTY_MARKETING,
             CCONSENT_DIRECT_3RDPARTY_MARKETING,
+            CCONSENT_USERPANEL_3RDPARTY_MARKETING,
         ),
     ),
     CCONSENT_GROUP_COMPLAINT => array(
@@ -326,6 +353,7 @@ $CCONSENT_GROUPS = array(
             CCONSENT_MAIL_COMPLAINT,
             CCONSENT_SMS_COMPLAINT,
             CCONSENT_PHONE_COMPLAINT,
+            CCONSENT_USERPANEL_COMPLAINT,
         ),
     ),
     CCONSENT_GROUP_TECHNICAL => array(
