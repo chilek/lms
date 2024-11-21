@@ -151,6 +151,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             'inv_paytype'     => $division['inv_paytype'] ?: null,
             'email'           => empty($division['email']) ? null : $division['email'],
             'phone'           => empty($division['phone']) ? null : $division['phone'],
+            'servicephone'    => empty($division['servicephone']) ? null : $division['servicephone'],
             'description'     => $division['description'],
             'tax_office_code' => $division['tax_office_code'],
             'url'             => isset($division['url']) && strlen($division['url']) ? $division['url'] : null,
@@ -161,8 +162,8 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
 
         $this->db->Execute('INSERT INTO divisions (name, shortname, label, firstname, lastname, birthdate,
 			ten, regon, rbe, rbename, telecomnumber, bank, account, inv_header, inv_footer, inv_author,
-			inv_cplace, inv_paytime, inv_paytype, email, phone, description, tax_office_code, url, userpanel_url, address_id, office_address_id)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			inv_cplace, inv_paytime, inv_paytype, email, phone, servicephone, description, tax_office_code, url, userpanel_url, address_id, office_address_id)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
         $divisionid = $this->db->GetLastInsertID('divisions');
 
@@ -266,6 +267,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             'inv_paytype' => $division['inv_paytype'] ?: null,
             'email'           => empty($division['email']) ? null : $division['email'],
             'phone'           => empty($division['phone']) ? null : $division['phone'],
+            'servicephone'    => empty($division['servicephone']) ? null : $division['servicephone'],
             'description' => $division['description'],
             'status'      => !empty($division['status']) ? 1 : 0,
             'tax_office_code' => $division['tax_office_code'],
@@ -280,7 +282,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
                 firstname = ?, lastname = ?, birthdate = ?,
                 ten=?, regon=?, rbe=?, rbename=?, telecomnumber=?, bank=?, account=?, inv_header=?,
                 inv_footer=?, inv_author=?, inv_cplace=?, inv_paytime=?,
-                inv_paytype=?, email=?, phone = ?, description=?, status=?, tax_office_code = ?,
+                inv_paytype=?, email=?, phone = ?, servicephone = ?, description=?, status=?, tax_office_code = ?,
                 url = ?, userpanel_url = ?, office_address_id = ?
             WHERE id=?',
             array_values($args)

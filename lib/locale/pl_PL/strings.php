@@ -1866,6 +1866,7 @@ $_LANG['Percentage of suspended liabilities. Default: 0'] = 'Wartość procentow
 $_LANG['Permissions:'] = 'Prawa:';
 $_LANG['Permissions'] = 'Uprawnienia';
 $_LANG['Phone'] = 'Telefon';
+$_LANG['Service Phone'] = 'Telefon serwisowy';
 $_LANG['Phone contact options'] = 'Opcje kontaktów telefonicznych';
 $_LANG['Phone:'] = 'Telefon:';
 $_LANG['Pool numbers'] = 'Pule numeracyjne';

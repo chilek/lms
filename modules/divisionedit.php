@@ -169,6 +169,10 @@ if (!empty($_POST['division'])) {
         $error['phone'] = trans('Incorrect phone number!');
     }
 
+    if ($division['servicephone'] != '' && !preg_match('/^\+?[0-9\s\-]+$/', $division['servicephone'])) {
+        $error['servicephone'] = trans('Incorrect phone number!');
+    }
+
     if (strlen($division['url']) && !filter_var($division['url'], FILTER_VALIDATE_URL)) {
         $error['url'] = trans('Invalid URL address format!');
     }
