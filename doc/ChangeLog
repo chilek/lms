@@ -862,6 +862,7 @@ version 28-git (????-??-??):
   - enhancement: new customer consents 'service provision before withdrawal period expires',
     'userpanel marketing', 'userpanel 3rd party marketing', 'userpanel service information'
     and 'userpanel complaints' [chilan]
+  - enhancement: added 'service phone' property to divisions [chilan]
 
 version 27.0 (2021-08-20):
 
