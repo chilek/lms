@@ -29,9 +29,9 @@ if (!$this->ResourceExists('divisions.servicephone', LMSDB::RESOURCE_TYPE_COLUMN
     $this->Execute("ALTER TABLE divisions ADD COLUMN servicephone varchar(40) DEFAULT NULL");
 
     $this->Execute(
-         "CREATE VIEW vdivisions AS
+        "CREATE VIEW vdivisions AS
             SELECT d.*,
-                a.country_id AS countryid,
+               a.country_id AS countryid,
                 a.ccode,
                 a.zip AS zip,
                 a.city AS city,
