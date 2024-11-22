@@ -365,30 +365,96 @@
 		{$sum = 0}
 		{$call_time = 0}
 		{$talk_time = 0}
+		{$total_transfer = 0}
+		{$billed_transfer = 0}
+		{$smses = 0}
+		{$mmses = 0}
 
 		{foreach $billings as $b}
 			{$sum = $sum + $b.price}
-			{$call_time = $call_time + $b.totaltime}
-			{$call_talk = $call_talk + $b.billedtime}
+			{if $b.type == $smarty.const.BILLING_RECORD_TYPE_VOICE_CALL}
+				{$call_time = $call_time + $b.totaltime}
+				{$call_talk = $call_talk + $b.billedtime}
+			{elseif $b.type == $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}
+				{$total_transfer = $total_transfer + $b.totaltime}
+			{elseif $b.type == $smarty.const.BILLING_RECORD_TYPE_SMS}
+				{$smses = $smses + $b.totaltime}
+			{elseif $b.type == $smarty.const.BILLING_RECORD_TYPE_MMS}
+				{$mmses = $mmses + $b.totaltime}
+			{/if}
 		{/foreach}
 
         <tr>
-            <td class="text-right bold" colspan="{$number_of_table_columns-6}">
-                {trans("Page total")|lower}<br>
-                {trans("all")}:
+            <td class="text-right bold" colspan="{$number_of_table_columns-7}">
+				{trans("<!voip>Time on page")}<br>
+				{trans("<!voip>Time")}
+				{if $total_transfer}
+					<br>
+					{trans("<!voip>Transfer on page")}
+					<br>
+					{trans("<!voip>Transfer")}
+				{/if}
+				{if $smses}
+					<br>
+					{trans("<!voip>Number of SMS on page")}
+					<br>
+					{trans("<!voip>Number of SMS")}
+				{/if}
+				{if $mmses}
+					<br>
+					{trans("<!voip>Number of MMS on page")}
+					<br>
+					{trans("<!voip>Number of MMS")}
+				{/if}
             </td>
             <td>
 				{$call_time|duration_format}
 				<br>
 				{$stats.totaltime|duration_format}
+				{if $total_transfer}
+					<br>
+					—
+					<br>
+					—
+				{/if}
+				{if $smses}
+					<br>
+					—
+					<br>
+					—
+				{/if}
+				{if $mmses}
+					<br>
+					—
+					<br>
+					—
+				{/if}
             </td>
 
             <td>
 				{$call_talk|duration_format}
 				<br>
 				{$stats.billedtime|duration_format}
+				{if $total_transfer}
+					<br>
+					{$total_transfer|size_format}
+					<br>
+					{$stats.total_transfer|size_format}
+				{/if}
+				{if $smses}
+					<br>
+					{$smses}
+					<br>
+					{$stats.smses}
+				{/if}
+				{if $mmses}
+					<br>
+					{$mmses}
+					<br>
+					{$stats.mmses}
+				{/if}
             </td>
-            <td colspan="3" class="text-right">
+            <td colspan="4" class="text-right">
                 {$sum|money_format}<br>
                 {$stats.price|money_format}
             </td>

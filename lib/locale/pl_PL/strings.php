@@ -746,6 +746,14 @@ $_LANG['<!voip>incoming SMS'] = 'SMS przychodzący';
 $_LANG['<!voip>incoming MMS'] = 'MMS przychodzący';
 $_LANG['<!voip>Total time'] = 'Czas całkowity';
 $_LANG['<!voip>Billed time'] = 'Czas billingowy';
+$_LANG['<!voip>Time on page'] = 'Czas na stronie';
+$_LANG['<!voip>Time'] = 'Czas';
+$_LANG['<!voip>Transfer on page'] = 'Transfer na stronie';
+$_LANG['<!voip>Transfer'] = 'Transfer';
+$_LANG['<!voip>Number of SMS on page'] = 'Liczba SMS-ów na stronie';
+$_LANG['<!voip>Number of SMS'] = 'Liczba SMS-ów';
+$_LANG['<!voip>Number of MMS on page'] = 'Liczba MMS-ów na stronie';
+$_LANG['<!voip>Number of MMS'] = 'Liczba MMS-ów';
 
 $_LANG['ChangeLog'] = 'ChangeLog';
 $_LANG['Change password'] = 'Zmiana hasła';

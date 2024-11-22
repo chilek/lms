@@ -882,8 +882,11 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             return $DB->GetRow(
                 'SELECT
                 SUM(price) AS price,
-                SUM(totaltime) AS totaltime,
-                SUM(billedtime) AS billedtime,
+                SUM(CASE WHEN cdr.type = ? THEN totaltime ELSE 0 END) AS totaltime,
+                SUM(CASE WHEN cdr.type = ? THEN billedtime ELSE 0 END) AS billedtime,
+                SUM(CASE WHEN cdr.type = ? THEN 1 ELSE 0 END) AS smses,
+                SUM(CASE WHEN cdr.type = ? THEN 1 ELSE 0 END) AS mmses,
+                SUM(CASE WHEN cdr.type = ? THEN totaltime ELSE 0 END) AS total_transfer,
                 COUNT(*) AS cnt
                 FROM
                 voip_cdr cdr
@@ -895,7 +898,14 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 LEFT JOIN        addresses addr1 ON ca1.address_id = addr1.id
                 LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c2.id AND ca2.type = ' . BILLING_ADDRESS . '
                 LEFT JOIN        addresses addr2 ON ca2.address_id = addr2.id'
-                . $where_string
+                . $where_string,
+                array(
+                    BILLING_RECORD_TYPE_VOICE_CALL,
+                    BILLING_RECORD_TYPE_VOICE_CALL,
+                    BILLING_RECORD_TYPE_SMS,
+                    BILLING_RECORD_TYPE_MMS,
+                    BILLING_RECORD_TYPE_DATA_TRANSFER,
+                )
             );
         }
 
