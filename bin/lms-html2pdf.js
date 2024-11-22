@@ -14,6 +14,7 @@ program
     .option("-r, --orientation <paper-orientation>", "output paper orientation", "portrait")
     .option("-m, --media-type <screen|print|null>", "force specified media type", "print")
     .option("-w, --wait-until <load|domcontentloaded|networkidle0|networkidle2>", "wait for specified event in web browser", "load")
+    .option("-p, --page-numbers", "print page numbers in output footer")
     .parse(process.argv);
 
 var options = program.opts();
@@ -88,6 +89,13 @@ async function readStream(stream) {
         if (outFile) {
             opts.path = outFile;
         }
+        if (pageNumbers) {
+            opts.displayHeaderFooter = true;
+            opts.footerTemplate = '<div style="font-size: 10px; text-align: center; width: 100%;">' +
+                '<span class="pageNumber"></span> / <span class="totalPages"></span>' +
+                '</div>';
+        }
+
         const pdf = await page.pdf(opts);
         await page.close();
 
