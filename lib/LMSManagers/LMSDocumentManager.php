@@ -1713,6 +1713,18 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 }
                 unset($snumberids);
 
+                if (isset($selected_assignment['consents'])) {
+                    if (!isset($customer_manager)) {
+                        $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
+                    }
+
+                    $customer_manager->updateCustomerConsents(
+                        $doc['customerid'],
+                        array_keys($customer_manager->getCustomerConsents($doc['customerid'])),
+                        array_keys($selected_assignment['consents'])
+                    );
+                }
+
                 if (!empty($doc['dynamicperiod'])) {
                     $finance_manager->addAssignmentsForSchema($selected_assignment);
 

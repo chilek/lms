@@ -533,6 +533,9 @@ if (isset($_POST['document'])) {
             $selected_assignment['commited'] = empty($document['closed']) ? 0 : 1;
             $selected_assignment['align-periods'] = isset($document['assignment']['align-periods']);
             $selected_assignment['dynamicperiod'] = empty($document['dynamicperiod']) ? 0 : 1;
+            if (!empty($engine['customer-consent-selection'])) {
+                $selected_assignment['consents'] = isset($document['consents']) ? $document['consents'] : array();
+            }
 
             if ($selected_assignment['schemaid'] && is_array($selected_assignment['sassignmentid'][$schemaid])) {
                 $selected_assignment['sassignmentid'] = $selected_assignment['sassignmentid'][$schemaid];
@@ -562,7 +565,7 @@ if (isset($_POST['document'])) {
             }
         }
 
-        if (!empty($engine['customer-consent-selection'])) {
+        if (!empty($engine['customer-consent-selection']) && isset($document['closed'])) {
             $LMS->updateCustomerConsents($document['customerid'], array_keys($document['default-consents']), array_keys($document['consents']));
         }
 
