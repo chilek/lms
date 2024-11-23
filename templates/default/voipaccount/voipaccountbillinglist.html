@@ -388,19 +388,19 @@
             <td class="text-right bold" colspan="{$number_of_table_columns-7}">
 				{trans("<!voip>Time on page")}<br>
 				{trans("<!voip>Time")}
-				{if $total_transfer}
+				{if $stats.total_transfer}
 					<br>
 					{trans("<!voip>Transfer on page")}
 					<br>
 					{trans("<!voip>Transfer")}
 				{/if}
-				{if $smses}
+				{if $stats.smses}
 					<br>
 					{trans("<!voip>Number of SMS on page")}
 					<br>
 					{trans("<!voip>Number of SMS")}
 				{/if}
-				{if $mmses}
+				{if $stats.mmses}
 					<br>
 					{trans("<!voip>Number of MMS on page")}
 					<br>
@@ -411,19 +411,19 @@
 				{$call_time|duration_format}
 				<br>
 				{$stats.totaltime|duration_format}
-				{if $total_transfer}
+				{if $stats.total_transfer}
 					<br>
 					—
 					<br>
 					—
 				{/if}
-				{if $smses}
+				{if $stats.smses}
 					<br>
 					—
 					<br>
 					—
 				{/if}
-				{if $mmses}
+				{if $stats.mmses}
 					<br>
 					—
 					<br>
@@ -435,19 +435,19 @@
 				{$call_talk|duration_format}
 				<br>
 				{$stats.billedtime|duration_format}
-				{if $total_transfer}
+				{if $stats.total_transfer}
 					<br>
 					{$total_transfer|size_format}
 					<br>
 					{$stats.total_transfer|size_format}
 				{/if}
-				{if $smses}
+				{if $stats.smses}
 					<br>
 					{$smses}
 					<br>
 					{$stats.smses}
 				{/if}
-				{if $mmses}
+				{if $stats.mmses}
 					<br>
 					{$mmses}
 					<br>
