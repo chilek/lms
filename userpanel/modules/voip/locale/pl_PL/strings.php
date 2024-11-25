@@ -56,3 +56,11 @@ $_LANG['<!minibilling>Gross value'] = 'Wartość brutto';
 $_LANG['<!minibilling>Total'] = 'Razem';
 $_LANG['<!minibilling>$a seconds'] = '$a sekund';
 $_LANG['<!minibilling>$a pcs.'] = '$a szt.';
+
+$_LANG['<!minibilling>SMS type'] = 'Typ SMS-a';
+$_LANG['<!minibilling>MMS type'] = 'Typ MMS-a';
+$_LANG['<!minibilling>Data transfer type'] = 'Typ transmisji danych';
+$_LANG['<!minibilling>Video call type'] = 'Typ połączenia wideo';
+$_LANG['<!minibilling>Count'] = 'Liczba';
+$_LANG['<!minibilling>Volume'] = 'Wolumen';
+$_LANG['<!minibilling>Video call time'] = 'Czas połączeń wideo';

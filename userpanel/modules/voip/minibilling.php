@@ -86,23 +86,26 @@ $minibilling = array();
 if (!empty($cdr)) {
     foreach ($cdr as $rec) {
         $phone = $rec['caller'];
+        $type = $rec['type'];
         $group = $rec['callee_prefix_group'];
-        if (!isset($minibilling[$phone])) {
-            $minibilling[$phone] = array();
+        if (!isset($minibilling[$phone][$type])) {
+            $minibilling[$phone][$type] = array();
         }
         if (!empty($minibilling_groups)) {
             $group = $minibilling_groups[$group] ?? '(nieznane: ' . $group . ')';
         }
-        if (!isset($minibilling[$phone][$group])) {
-            $minibilling[$phone][$group] = array(
+        if (!isset($minibilling[$phone][$type][$group])) {
+            $minibilling[$phone][$type][$group] = array(
                 'count' => 0,
-                'time' => 0,
+                'total' => 0,
+                'billed' => 0,
                 'brutto' => 0,
             );
         }
-        $minibilling[$phone][$group]['count']++;
-        $minibilling[$phone][$group]['time'] += $rec['billedtime'];
-        $minibilling[$phone][$group]['brutto'] += $rec['price'];
+        $minibilling[$phone][$type][$group]['count']++;
+        $minibilling[$phone][$type][$group]['total'] += $rec['totaltime'];
+        $minibilling[$phone][$type][$group]['billed'] += $rec['billedtime'];
+        $minibilling[$phone][$type][$group]['brutto'] += $rec['price'];
     }
 }
 
