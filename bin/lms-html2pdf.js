@@ -89,7 +89,7 @@ async function readStream(stream) {
         if (outFile) {
             opts.path = outFile;
         }
-        if (pageNumbers) {
+        if (options.pageNumbers) {
             opts.displayHeaderFooter = true;
             opts.footerTemplate = '<div style="font-size: 10px; text-align: center; width: 100%;">' +
                 '<span class="pageNumber"></span> / <span class="totalPages"></span>' +
