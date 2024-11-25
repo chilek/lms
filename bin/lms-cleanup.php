@@ -171,7 +171,7 @@ if (isset($resources['finances'])) {
         )',
         array($time)
     );
-    echo $count . ' cash import(s) removed. ';
+    echo (empty($count) ? '0' : $count) . ' cash import(s) removed. ';
     $count = $DB->Execute(
         'DELETE FROM sourcefiles
         WHERE idate < ?
@@ -182,7 +182,7 @@ if (isset($resources['finances'])) {
           )',
         array($time)
     );
-    echo $count . ' source file(s) removed. ' . PHP_EOL;
+    echo (empty($count) ? '0' : $count) . ' source file(s) removed. ' . PHP_EOL;
 
     if (!$quiet) {
         echo 'Removing financial operations... ';
@@ -194,7 +194,7 @@ if (isset($resources['finances'])) {
             $time,
         )
     );
-    echo $count . ' operation(s) removed. ' . PHP_EOL;
+    echo (empty($count) ? '0' : $count) . ' operation(s) removed. ' . PHP_EOL;
 
     $DB->CommitTrans();
 }
