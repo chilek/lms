@@ -101,6 +101,7 @@ if (isset($resources['finances'])) {
         'SELECT customerid, SUM(value * currencyvalue) AS balance
         FROM cash
         WHERE time < ?
+            AND customerid IS NOT NULL
         GROUP BY customerid',
         'customerid',
         array($time)
