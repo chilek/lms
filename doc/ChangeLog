@@ -863,6 +863,8 @@ version 28-git (????-??-??):
     'userpanel marketing', 'userpanel 3rd party marketing', 'userpanel service information'
     and 'userpanel complaints' [chilan]
   - enhancement: added 'service phone' property to divisions [chilan]
+  - enhancement: 'dont create assignments' option in promotion schema selection panel of new document form
+    allows to create document without related assignments [chilan]
 
 version 27.0 (2021-08-20):
 
