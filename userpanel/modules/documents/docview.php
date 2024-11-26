@@ -64,6 +64,8 @@ if (!empty($_GET['id'])) {
     ));
     $filename = DOC_DIR. DIRECTORY_SEPARATOR .substr($doc['md5sum'], 0, 2). DIRECTORY_SEPARATOR .$doc['md5sum'];
     if (file_exists($filename)) {
+        $cache_pdf = ConfigHelper::checkConfig('documents.cache', ConfigHelper::checkConfig('phpui.cache_documents'));
+
         $filename_pdf = DOC_DIR . DIRECTORY_SEPARATOR . substr($doc['md5sum'], 0, 2) . DIRECTORY_SEPARATOR . $doc['md5sum'].'.pdf';
         if (file_exists($filename_pdf)) {
             if ($doc['type'] == DOC_CONTRACT) {
@@ -108,6 +110,7 @@ if (!empty($_GET['id'])) {
                 'margins' => $margins,
                 'dest' => !empty($_GET['save']),
                 'copy' => $copy,
+                'md5sum' => $cache_pdf ? $doc['md5sum'] : null,
             ));
         } else {
             header('Content-Type: '.$doc['contenttype']);
