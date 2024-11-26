@@ -6081,3 +6081,5 @@ $_LANG['Reset consents'] = 'Zresetuj zgody';
 
 $_LANG['document external ID'] = 'zewnętrzny ID dokumentu';
 $_LANG['Document external ID'] = 'Zewnętrzny ID dokumentu';
+
+$_LANG['Don\'t create assignments'] = 'Nie twórz zobowiązań';

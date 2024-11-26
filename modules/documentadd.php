@@ -511,62 +511,68 @@ if (isset($_POST['document'])) {
                 . DIRECTORY_SEPARATOR . $engine['post-action'] . '.php');
         }
 
-        if (isset($selected_assignment)) {
-            $selected_assignment['docid'] = $docid;
-            $selected_assignment['customerid'] = $document['customerid'];
-            $selected_assignment['reference'] = $document['reference']['id'] ?? null;
-            if (empty($from)) {
-                [$year, $month, $day] = explode('/', date('Y/n/j'));
-                $selected_assignment['datefrom'] = mktime(0, 0, 0, $month, $day, $year);
-            } else {
-                $selected_assignment['datefrom'] = $from;
-            }
-            if (!empty($document['startdate'])) {
-                $selected_assignment['datefrom'] = $document['startdate'];
-            }
-            $selected_assignment['dateto'] = $to;
-            $schemaid = $selected_assignment['schemaid'];
+        if (!isset($document['assignment']['dont-create-assignments'])) {
+            if (isset($selected_assignment)) {
+                $selected_assignment['docid'] = $docid;
+                $selected_assignment['customerid'] = $document['customerid'];
+                $selected_assignment['reference'] = $document['reference']['id'] ?? null;
+                if (empty($from)) {
+                    [$year, $month, $day] = explode('/', date('Y/n/j'));
+                    $selected_assignment['datefrom'] = mktime(0, 0, 0, $month, $day, $year);
+                } else {
+                    $selected_assignment['datefrom'] = $from;
+                }
+                if (!empty($document['startdate'])) {
+                    $selected_assignment['datefrom'] = $document['startdate'];
+                }
+                $selected_assignment['dateto'] = $to;
+                $schemaid = $selected_assignment['schemaid'];
 
-            // create assignments basing on selected promotion schema
-            $selected_assignment['period'] = $period;
-            $selected_assignment['at'] = $at;
-            $selected_assignment['commited'] = empty($document['closed']) ? 0 : 1;
-            $selected_assignment['align-periods'] = isset($document['assignment']['align-periods']);
-            $selected_assignment['dynamicperiod'] = empty($document['dynamicperiod']) ? 0 : 1;
-            if (!empty($engine['customer-consent-selection'])) {
-                $selected_assignment['consents'] = isset($document['consents']) ? $document['consents'] : array();
-            }
-
-            if ($selected_assignment['schemaid'] && is_array($selected_assignment['sassignmentid'][$schemaid])) {
-                $selected_assignment['sassignmentid'] = $selected_assignment['sassignmentid'][$schemaid];
-                $selected_assignment['values'] = $selected_assignment['values'][$schemaid] ?? array();
-                $selected_assignment['counts'] = $selected_assignment['counts'][$schemaid];
-                $selected_assignment['backwardperiods'] = $selected_assignment['backwardperiods'][$schemaid];
-                $selected_assignment['snodes'] = $selected_assignment['snodes'][$schemaid] ?? array();
-                $selected_assignment['sphones'] = $selected_assignment['sphones'][$schemaid] ?? array();
-            }
-
-            if (empty($document['dynamicperiod']) || $selected_assignment['commited']) {
-                if ($selected_assignment['commited']) {
-                    $LMS->UpdateExistingAssignments($selected_assignment);
+                // create assignments basing on selected promotion schema
+                $selected_assignment['period'] = $period;
+                $selected_assignment['at'] = $at;
+                $selected_assignment['commited'] = empty($document['closed']) ? 0 : 1;
+                $selected_assignment['align-periods'] = isset($document['assignment']['align-periods']);
+                $selected_assignment['dynamicperiod'] = empty($document['dynamicperiod']) ? 0 : 1;
+                if (!empty($engine['customer-consent-selection'])) {
+                    $selected_assignment['consents'] = isset($document['consents']) ? $document['consents'] : array();
                 }
 
-                $LMS->addAssignmentsForSchema($selected_assignment);
-            } else {
-                $selected_assignment['commited'] = 1;
+                if ($selected_assignment['schemaid'] && is_array($selected_assignment['sassignmentid'][$schemaid])) {
+                    $selected_assignment['sassignmentid'] = $selected_assignment['sassignmentid'][$schemaid];
+                    $selected_assignment['values'] = $selected_assignment['values'][$schemaid] ?? array();
+                    $selected_assignment['counts'] = $selected_assignment['counts'][$schemaid];
+                    $selected_assignment['backwardperiods'] = $selected_assignment['backwardperiods'][$schemaid];
+                    $selected_assignment['snodes'] = $selected_assignment['snodes'][$schemaid] ?? array();
+                    $selected_assignment['sphones'] = $selected_assignment['sphones'][$schemaid] ?? array();
+                }
 
-                $DB->Execute(
-                    'UPDATE documentcontents SET attributes = ? WHERE docid = ?',
-                    array(
-                        serialize($selected_assignment),
-                        $docid,
-                    )
+                if (empty($document['dynamicperiod']) || $selected_assignment['commited']) {
+                    if ($selected_assignment['commited']) {
+                        $LMS->UpdateExistingAssignments($selected_assignment);
+                    }
+
+                    $LMS->addAssignmentsForSchema($selected_assignment);
+                } else {
+                    $selected_assignment['commited'] = 1;
+
+                    $DB->Execute(
+                        'UPDATE documentcontents SET attributes = ? WHERE docid = ?',
+                        array(
+                            serialize($selected_assignment),
+                            $docid,
+                        )
+                    );
+                }
+            }
+
+            if (!empty($engine['customer-consent-selection']) && isset($document['closed'])) {
+                $LMS->updateCustomerConsents(
+                    $document['customerid'],
+                    array_keys($document['default-consents']),
+                    array_keys($document['consents'])
                 );
             }
-        }
-
-        if (!empty($engine['customer-consent-selection']) && isset($document['closed'])) {
-            $LMS->updateCustomerConsents($document['customerid'], array_keys($document['default-consents']), array_keys($document['consents']));
         }
 
         $DB->CommitTrans();

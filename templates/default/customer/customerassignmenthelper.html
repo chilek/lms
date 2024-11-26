@@ -251,12 +251,28 @@
 				<tr>
 					<td>
 						<table id="a_promotions" style="display: none;">
+							{if isset($promotion_only)}
+								<tr>
+									<td>
+										{icon name="assignment"}
+									</td>
+									<td>
+										<label for="dont-create-assignments">
+											<strong>{trans("Don't create assignments")}</strong>
+										</label>
+									</td>
+									<td>
+										<input type="checkbox" id="dont-create-assignments" name="{$variable_prefix}[dont-create-assignments]"
+											value="1">
+									</td>
+								</tr>
+							{/if}
 							<TR>
 								<TD>
 									{icon name="money"}
 								</TD>
 								<TD class="bold">
-									{trans("Schema")}:
+									{trans("Schema")}
 								</TD>
 								<TD style="width: 98%;">
 									<select size="1" name="{$variable_prefix}[schemaid]" id="promotion-select"
