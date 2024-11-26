@@ -58,6 +58,9 @@ if (!empty($docids)) {
         )
     )) {
         $document_type = strtolower(ConfigHelper::getConfig('documents.type', ConfigHelper::getConfig('phpui.document_type', '', true)));
+        if (isset($_GET['html2pdf']) && empty($_GET['html2pdf'])) {
+            $document_type = '';
+        }
         $margins = explode(',', ConfigHelper::getConfig('documents.margins', ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5')));
         $cache_pdf = ConfigHelper::checkConfig('documents.cache', ConfigHelper::checkConfig('phpui.cache_documents'));
 
