@@ -263,7 +263,8 @@
 									</td>
 									<td>
 										<input type="checkbox" id="dont-create-assignments" name="{$variable_prefix}[dont-create-assignments]"
-											value="1">
+											value="1"
+											{if !empty($variables['dont-create-assignments'])} checked{/if}>
 									</td>
 								</tr>
 							{/if}
