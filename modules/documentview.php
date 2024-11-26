@@ -59,6 +59,7 @@ if (!empty($docids)) {
     )) {
         $document_type = strtolower(ConfigHelper::getConfig('documents.type', ConfigHelper::getConfig('phpui.document_type', '', true)));
         $margins = explode(',', ConfigHelper::getConfig('documents.margins', ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5')));
+        $cache_pdf = ConfigHelper::checkConfig('documents.cache', ConfigHelper::checkConfig('phpui.cache_documents'));
 
         $attachments = isset($_GET['attachments']) || isset($_POST['attachments']);
         $docTypes = array();
@@ -235,6 +236,7 @@ if (!empty($docids)) {
                         'subject' => trans('Document'),
                         'margins' => $margins,
                         'dest' => 'S',
+                        'md5sum' => $cache_pdf ? $file['md5sum'] : null,
                     ));
                     if (count($list) > 1) {
                         $zip->addFromString($output_filename, $content);
@@ -420,6 +422,7 @@ if (!empty($docids)) {
                                 'subject' => trans('Document'),
                                 'margins' => $margins,
                                 'dest' => 'S',
+                                'md5sum' => $cache_pdf ? $doc['md5sum'] : null,
                             ));
                         }
 
@@ -494,6 +497,7 @@ if (!empty($docids)) {
                         'content' => $htmlbuffer,
                         'subject' => trans('Document'),
                         'margins' => $margins,
+                        'md5sum' => $cache_pdf ? $doc['md5sum'] : null,
                     ));
                 } else {
                     echo $htmlbuffer;
