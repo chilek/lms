@@ -213,6 +213,10 @@ if (!empty($docids)) {
                             $attachment_filename
                         )
                     );
+                    $i = strpos($filename, '.');
+                    if ($i === false && strlen($extension)) {
+                        $filename .= '.' . $extension;
+                    }
                 } else {
                     $filename = $file['filename'];
                 }
