@@ -865,6 +865,7 @@ version 28-git (????-??-??):
   - enhancement: added 'service phone' property to divisions [chilan]
   - enhancement: 'dont create assignments' option in promotion schema selection panel of new document form
     allows to create document without related assignments [chilan]
+  - enhancement: new customer consent 'contract_signed_outside_company_premises' [chilan]
 
 version 27.0 (2021-08-20):
 
