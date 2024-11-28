@@ -346,6 +346,8 @@
 									{trans("Location:")}
 								</td>
 								<td style="width: 98%;">
+									<input type="hidden" name="{$variable_prefix}[location_address_id]" id="location-address-id"
+										{if !empty($variables.location_address_id)} value="{$variables.location_address_id}"{/if}>
 									<select name="{$variable_prefix}[location]" id="location-select"
 										{tip text="Select promotion location" class="lms-ui-customer-address-select"}>
 										{*

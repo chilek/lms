@@ -272,10 +272,26 @@ if (isset($_POST['document'])) {
             ));
 
             // prepare some useful customer properties to use in document templates
+            if (!empty($document['assignment']['location_address_id'])) {
+                $location_address_id = intval($document['assignment']['location_address_id']);
+                $location_address = $LMS->GetAddress($location_address_id);
+            } else {
+                $location_address = null;
+            }
+
+            if (!empty($document['assignment']['recipient_address_id'])) {
+                $recipient_address_id = intval($document['assignment']['recipient_address_id']);
+                $recipient_address = $LMS->GetAddress($recipient_address_id);
+            } else {
+                $recipient_address = null;
+            }
+
             $SMARTY->assign(array(
                 'customer' => $customer,
                 'customerinfo' => $customer,
                 'division' => $division,
+                'location_address' => $location_address,
+                'recipient_address' => $recipient_address,
                 'document' => $document,
                 'engine' => $engine,
             ));
