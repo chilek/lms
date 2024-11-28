@@ -3123,15 +3123,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
             if ($result['content'] = $this->db->GetAll(
                 'SELECT
-                        dnc.value,
-                        dnc.itemid,
-                        dnc.description,
-                        cash.servicetype
-                    FROM debitnotecontents dnc
-                    LEFT JOIN cash ON cash.docid = dnc.docid AND cash.itemid = dnc.itemid
-                    WHERE dnc.docid = ?
-                    ORDER BY dnc.itemid',
-                    array($id)
+                    dnc.value,
+                    dnc.itemid,
+                    dnc.description,
+                    cash.servicetype
+                FROM debitnotecontents dnc
+                LEFT JOIN cash ON cash.docid = dnc.docid AND cash.itemid = dnc.itemid
+                WHERE dnc.docid = ?
+                ORDER BY dnc.itemid',
+                array($id)
             )) {
                 foreach ($result['content'] as $idx => $row) {
                     $result['content'][$idx]['value'] = $row['value'];
