@@ -147,7 +147,8 @@ const CCONSENT_DATE = 1,
     CCONSENT_USERPANEL_SERVICE_INFO = 27,
     CCONSENT_USERPANEL_MARKETING = 28,
     CCONSENT_USERPANEL_3RDPARTY_MARKETING = 29,
-    CCONSENT_USERPANEL_COMPLAINT = 30;
+    CCONSENT_USERPANEL_COMPLAINT = 30,
+    CCONSENT_CONTRACT_SIGNED_OUTSIDE_COMPANY_PREMISES = 31;
 
 $CCONSENTS = array(
     CCONSENT_DATE => array(
@@ -260,6 +261,11 @@ $CCONSENTS = array(
         'name' => 'fiber_optic_line_suspension',
         'type' => 'boolean',
     ),
+    CCONSENT_CONTRACT_SIGNED_OUTSIDE_COMPANY_PREMISES => array(
+        'label' => trans('contract signed outside the company premises'),
+        'name' => 'contract_signed_outside_company_premises',
+        'type' => 'boolean',
+    ),
     CCONSENT_SERVICE_PROVISION_BEFORE_WITHDRAWAL_PERIOD_EXPIRES => array(
         'label' => trans('service provision before withdrawal period expires'),
         'name' => 'service_provision_before_withdrawal_period_expires',
@@ -308,7 +314,8 @@ const CCONSENT_GROUP_MARKETING = 1,
     CCONSENT_GROUP_INVOICES = 3,
     CCONSENT_GROUP_3RDPARTY_MARKETING = 4,
     CCONSENT_GROUP_COMPLAINT = 5,
-    CCONSENT_GROUP_TECHNICAL = 6;
+    CCONSENT_GROUP_TECHNICAL = 6,
+    CCONSENT_GROUP_CONTRACT_SIGNING_RELATED = 7;
 
 $CCONSENT_GROUPS = array(
     CCONSENT_GROUP_INVOICES => array(
@@ -360,6 +367,13 @@ $CCONSENT_GROUPS = array(
         'label' => trans('<!consent-group>technical'),
         'consents' => array(
             CCONSENT_FIBER_OPTIC_LINE_SUSPENSION,
+        ),
+    ),
+    CCONSENT_GROUP_CONTRACT_SIGNING_RELATED => array(
+        'label' => trans('<!consent-group>contact signing related'),
+        'consents' => array(
+            CCONSENT_CONTRACT_SIGNED_OUTSIDE_COMPANY_PREMISES,
+            CCONSENT_SERVICE_PROVISION_BEFORE_WITHDRAWAL_PERIOD_EXPIRES,
         ),
     ),
 );

@@ -6067,8 +6067,10 @@ $_LANG['<!consent-group>service information'] = 'informacje związane z usługą
 $_LANG['<!consent-group>invoices'] = 'faktury';
 $_LANG['<!consent-group>complaint information'] = 'informacje związane z reklamacją';
 $_LANG['<!consent-group>technical'] = 'techniczne';
+$_LANG['<!consent-group>contact signing related'] = 'związane z podpisaniem umowy';
 
 $_LANG['suspension of a fiber optic line over the customer plot'] = 'przewieszenie linii światłowodowej nad działką klienta';
+$_LANG['contract signed outside the company premises'] = 'podpisanie umowy poza lokalem przedsiębiorstwa';
 $_LANG['service provision before withdrawal period expires'] = 'świadczenie usług przed upływem okresu na odstąpienie od umowy';
 
 $_LANG['reminder'] = 'przypomnienie';
