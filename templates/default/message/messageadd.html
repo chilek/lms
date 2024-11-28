@@ -765,9 +765,7 @@
 			if (elem == 'typesms' || elem == 'typeanysms' || elem == 'typewww' || elem == 'typeuserpanel' || elem == 'typeuserpanelurgent') {
 				$('#mailfrom,#mailsender,.scheduled-message').hide();
 
-				if (elem == 'typesms' || elem == 'typeanysms' || elem == 'typewww') {
-					$('#attachment').hide();
-				}
+				$('#attachment').toggle(elem != 'typesms' && elem != 'typeanysms' && elem != 'typewww');
 
 				{if $message.emailcount}
 					$('#customermails').hide();
