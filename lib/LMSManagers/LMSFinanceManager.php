@@ -3121,13 +3121,18 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         . ($result['division_ten'] != '' ? "\n" . trans('TEN') . ' ' . $result['division_ten'] : '');
             }
 
-            if ($result['content'] = $this->db->GetAll('SELECT
-				dnc.value, dnc.itemid, dnc.description, cash.servicetype
-				FROM debitnotecontents dnc
-                JOIN cash ON cash.docid = dnc.docid AND cash.itemid = dnc.itemid
-				WHERE dnc.docid = ?
-				ORDER BY dnc.itemid', array($id))
-            ) {
+            if ($result['content'] = $this->db->GetAll(
+                'SELECT
+                        dnc.value,
+                        dnc.itemid,
+                        dnc.description,
+                        cash.servicetype
+                    FROM debitnotecontents dnc
+                    LEFT JOIN cash ON cash.docid = dnc.docid AND cash.itemid = dnc.itemid
+                    WHERE dnc.docid = ?
+                    ORDER BY dnc.itemid',
+                    array($id)
+            )) {
                 foreach ($result['content'] as $idx => $row) {
                     $result['content'][$idx]['value'] = $row['value'];
                     $result['value'] += $row['value'];
