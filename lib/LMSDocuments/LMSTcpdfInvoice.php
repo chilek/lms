@@ -751,7 +751,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                 '',
                 '',
                 trans(
-                    'Your balance on date of invoice issue: $a $b',
+                    'Your balance on date of document issue: $a $b',
                     Utils::formatMoney($balance / $this->data['currencyvalue'], $this->data['currency']),
                     $comment
                 ),
