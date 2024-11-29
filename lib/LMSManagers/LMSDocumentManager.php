@@ -2906,7 +2906,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
                     $files[] = array(
                         'content_type' => $attachment['contenttype'],
-                        'filename' => preg_replace('/[^[:alnum:]_\.]/i', '_', $filename) . $extension,
+                        'filename' => iconv('UTF-8', 'ASCII//TRANSLIT', preg_replace('/[^[:alnum:]_\.]/iu', '_', $filename)) . $extension,
                         'data' => $attachment['contents'],
                     );
                 }
