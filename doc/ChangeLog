@@ -866,6 +866,8 @@ version 28-git (????-??-??):
   - enhancement: 'dont create assignments' option in promotion schema selection panel of new document form
     allows to create document without related assignments [chilan]
   - enhancement: new customer consent 'contract_signed_outside_company_premises' [chilan]
+  - improvement: 'phpui.remember_date_in_customerbalancebox' with 'false' as default controls
+    if operation date is remembered between form submits [chilan]
 
 version 27.0 (2021-08-20):
 
