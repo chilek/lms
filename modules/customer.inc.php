@@ -271,11 +271,14 @@ $SMARTY->assign(array(
     'period' => $period ?? null,
     'allevents' => $allevents ?? 0,
     'alltickets' => $alltickets ?? 0,
-//    'time' => $SESSION->get('addbt'),
     'taxid' => $SESSION->get('addbtax'),
     'comment' => $SESSION->get('addbc'),
     'sourceid' => $SESSION->get('addsource'),
 ));
+
+if (ConfigHelper::checkConfig('phpui.remember_date_in_customerbalancebox')) {
+    $SMARTY->assign('time', $SESSION->get('addbt'));
+}
 
 $SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources WHERE deleted = 0 ORDER BY name'));
 $SMARTY->assignByRef('customerextids', $customerextids);
