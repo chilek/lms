@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("DROP VIEW IF EXISTS customersview");
 
@@ -36,7 +35,3 @@ $this->Execute("CREATE VIEW customersview AS
 $this->Execute("CREATE VIEW contractorview AS
 		SELECT c.* FROM customers c
 		WHERE  c.type = ? ;", array(2));
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012111100', 'dbversion'));
-
-$this->CommitTrans();

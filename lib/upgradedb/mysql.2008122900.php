@@ -41,5 +41,3 @@ if ($divs = $this->GetAll('SELECT id FROM divisions')) {
 			SELECT id, ? FROM numberplans', array($div['id']));
     }
 }
-
-$this->Execute('UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?', array('2008122900', 'dbversion'));

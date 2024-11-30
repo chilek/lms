@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE FUNCTION mask2prefix(mask bigint) RETURNS smallint DETERMINISTIC
@@ -35,7 +34,3 @@ $this->Execute("
     CREATE FUNCTION broadcast(address bigint, mask bigint) RETURNS bigint DETERMINISTIC
     RETURN address + (pow(2, (32-mask2prefix(mask)))-1);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008012200', 'dbversion'));
-
-$this->CommitTrans();

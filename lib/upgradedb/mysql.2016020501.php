@@ -21,13 +21,8 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE invprojects ADD COLUMN divisionid int(11) NULL DEFAULT NULL");
 $this->Execute("ALTER TABLE invprojects ADD FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE");
 $this->Execute("ALTER TABLE netnodes ADD COLUMN divisionid int(11) NULL DEFAULT NULL");
 $this->Execute("ALTER TABLE netnodes ADD FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016020501', 'dbversion'));
-
-$this->CommitTrans();

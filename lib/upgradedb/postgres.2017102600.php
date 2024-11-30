@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	DROP VIEW vnodealltariffs;
@@ -154,7 +153,3 @@ CREATE VIEW vnodealltariffs AS
 			OR (t1.nodeid IS NULL AND t2.nodeid IS NOT NULL)
 			OR (t1.nodeid IS NULL AND t2.nodeid IS NULL))
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017102600', 'dbversion'));
-
-$this->CommitTrans();

@@ -38,7 +38,6 @@ function splitNameToFirstAndLastName($users_before)
     return $users;
 }
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE users ADD COLUMN firstname varchar(64) NOT NULL DEFAULT ''");
 $this->Execute("ALTER TABLE users ADD COLUMN lastname varchar(64) NOT NULL DEFAULT ''");
@@ -55,7 +54,3 @@ if ($users) {
 $this->Execute("ALTER TABLE users DROP COLUMN name");
 
 $this->Execute("CREATE VIEW vusers AS SELECT *, " . $this->Concat('firstname', "' '", 'lastname') . " AS name, " . $this->Concat('lastname', "' '", 'firstname') . " AS rname FROM users");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016102500', 'dbversion'));
-
-$this->CommitTrans();

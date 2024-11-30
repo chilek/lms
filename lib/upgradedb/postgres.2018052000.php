@@ -21,9 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE documents ADD COLUMN comment text DEFAULT NULL");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018052000', 'dbversion'));
-
-$this->CommitTrans();

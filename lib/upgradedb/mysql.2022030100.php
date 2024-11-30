@@ -21,12 +21,7 @@
  *
  */
 
-$this->BeginTrans();
 
 if (!$this->ResourceExists('rtmessages.extid', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("ALTER TABLE rtmessages ADD COLUMN extid varchar(64) DEFAULT NULL");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022030100', 'dbversion'));
-
-$this->CommitTrans();

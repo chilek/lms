@@ -25,7 +25,6 @@ define('DEFAULT_NUMBER_TEMPLATE_2014072500', '%N/LMS/%Y');
 
 $numberplans = $this->GetAllByKey("SELECT * FROM numberplans ORDER BY id", 'id');
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE documents ADD fullnumber varchar(50) DEFAULT NULL");
 $this->Execute("CREATE INDEX documents_fullnumber_idx ON documents (fullnumber)");
@@ -61,7 +60,3 @@ do {
 } while (!$stop);
 
 $this->UnLockTables("documents");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014072500', 'dbversion'));
-
-$this->CommitTrans();

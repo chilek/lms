@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE invoicecontents ADD itemid smallint;");
 $this->Execute("UPDATE invoicecontents set itemid = 0 where itemid is NULL;");
@@ -33,7 +32,3 @@ $this->Execute("ALTER TABLE invoicecontents CHANGE itemid itemid smallint NOT NU
 $this->Execute("ALTER TABLE cash add itemid smallint;");
 $this->Execute("UPDATE cash set itemid=0 where itemid is NULL;");
 $this->Execute("ALTER TABLE cash CHANGE itemid itemid smallint NOT NULL DEFAULT 0;");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = '2005013000' WHERE keytype = 'dbversion'");
-
-$this->CommitTrans();

@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("DROP VIEW vnodes; DROP VIEW vmacs; DROP VIEW IF EXISTS vnetworks");
 $this->Execute("
@@ -46,7 +45,3 @@ $this->Execute("
 		LEFT JOIN hosts h ON (h.id = ne.hostid)
 		WHERE no.ipaddr = 0 AND no.ipaddr_pub = 0;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015120200', 'dbversion'));
-
-$this->CommitTrans();

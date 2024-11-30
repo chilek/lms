@@ -21,14 +21,9 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
         ('userpanel', 'document_notification_mail_dsn_address', '', '', 0),
         ('userpanel', 'document_notification_mail_mdn_address', '', '', 0)
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020040903', 'dbversion'));
-
-$this->CommitTrans();
