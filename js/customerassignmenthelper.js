@@ -363,11 +363,6 @@ function CustomerAssignmentHelper(options) {
 			location_address_id.val('');
 		}
 		var validationError = !location_select.val().length && $('option:not([value=""])', location_select).length > 1;
-		if (validationError) {
-
-		} else {
-			console.log($(location_select.get(0).options[location_select.get(0).selectedIndex]).attr('data-address-id'));
-		}
 		var errorMessage = location_select.attr('title');
 		location_select.toggleClass('lms-ui-error', validationError)
 			.next().toggleClass('lms-ui-error', validationError)
