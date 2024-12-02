@@ -868,6 +868,9 @@ version 28-git (????-??-??):
   - enhancement: new customer consent 'contract_signed_outside_company_premises' [chilan]
   - improvement: 'phpui.remember_date_in_customerbalancebox' with 'false' as default controls
     if operation date is remembered between form submits [chilan]
+  - improvement: bin/lms-sms2rt.php is able to detect if received message is MMS (if 'mms_detect_regexp'
+    configuration variable is not empty) and then properly send auto reply message (if 'customer_mms_auto_reply_body'
+    configuration variable is not empty) [chilan]
 
 version 27.0 (2021-08-20):
 
