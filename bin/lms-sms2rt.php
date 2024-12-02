@@ -70,8 +70,11 @@ $helpdesk_customerinfo = ConfigHelper::checkConfig(
 );
 $helpdesk_sendername = ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name'));
 $customer_auto_reply_body = ConfigHelper::getConfig('sms.customer_auto_reply_body', '', true);
+$customer_mms_auto_reply_body = ConfigHelper::getConfig($config_section . '.customer_mms_auto_reply_body', '', true);
 
 $detect_customer_location_address = ConfigHelper::checkConfig($config_section . '.detect_customer_location_address');
+
+$mms_detect_regexp = ConfigHelper::getConfig($config_section . '.mms_detect_regexp', null, true);
 
 // Load plugin files and register hook callbacks
 $plugin_manager = new LMSPluginManager();
@@ -155,6 +158,7 @@ foreach ($message_files as $message_file) {
         $phone = null;
         $date = null;
         $ucs = false;
+        $binary = false;
         reset($lines);
         while (($line = current($lines)) !== false) {
             if (preg_match('/^From: ([0-9]{3,15})$/', $line, $matches) && $phone == null) {
@@ -168,6 +172,8 @@ foreach ($message_files as $message_file) {
             }
             if (preg_match('/^Alphabet:.*UCS2?$/', $line)) {
                 $ucs = true;
+            } elseif (preg_match('/^Alphabet:[\s]*binary$/', $line)) {
+                $binary = true;
             }
             if (empty($line) && !$body) {
                 $body = true;
@@ -181,6 +187,19 @@ foreach ($message_files as $message_file) {
         }
         if ($ucs) {
             $message = iconv('UNICODEBIG', 'UTF-8', $message);
+        }
+
+        $mms_detected = false;
+
+        if (isset($mms_detect_regexp)) {
+            if ($binary) {
+                $message = preg_replace('/[\x00-\x1F\x7F-\xFF]/', '', $message);
+            }
+            if (preg_match('#' . $mms_detect_regexp . '#i', $message, $m)
+                && isset($m['phone'])) {
+                $phone = $m['phone'];
+                $mms_detected = true;
+            }
         }
 
         if (!empty($phone)) {
@@ -200,9 +219,17 @@ foreach ($message_files as $message_file) {
             );
 
             $formatted_phone = preg_replace('/^([0-9]{3})([0-9]{3})([0-9]{3})$/', '$1 $2 $3', $phone);
-            if (!empty($customer_auto_reply_body)) {
-                $LMS->SendSMS($phone, $customer_auto_reply_body, null, $LMS->getCustomerSMSOptions());
-                sleep(1);
+
+            if ($mms_detected) {
+                if (!empty($customer_mms_auto_reply_body)) {
+                    $LMS->SendSMS($phone, $customer_mms_auto_reply_body, null, $LMS->getCustomerSMSOptions());
+                    sleep(1);
+                }
+            } else {
+                if (!empty($customer_auto_reply_body)) {
+                    $LMS->SendSMS($phone, $customer_auto_reply_body, null, $LMS->getCustomerSMSOptions());
+                    sleep(1);
+                }
             }
         } else {
             $customer = null;
