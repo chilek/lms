@@ -203,7 +203,7 @@ foreach ($message_files as $message_file) {
         }
 
         if (!empty($phone)) {
-            $phone = preg_replace('/^' . $prefix . '/', '', $phone);
+            $phone = preg_replace('/^(\+)?' . $prefix . '/', '', $phone);
 
             $customer = $DB->GetRow(
                 "SELECT customerid AS cid, " . $DB->Concat('lastname', "' '", 'c.name') . " AS name
