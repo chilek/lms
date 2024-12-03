@@ -153,10 +153,10 @@ $voip_cdr_only = isset($options['voip-cdr-only']);
 
 if (empty($fakedate)) {
     $currtime = time();
-    $today = strtotime('today');
 } else {
-    $today = $currtime = strtotime($fakedate);
+    $currtime = strtotime($fakedate);
 }
+$today = strtotime('today', $currtime);
 $issuetime = isset($issuedate) ? strtotime($issuedate) : $currtime;
 [$year, $month, $dom] = explode('/', date('Y/n/j', $currtime));
 [$backward_year, $backward_month] = explode('/', date('Y/m', strtotime($year . '/' . $month. '/' . $dom . ' - 1 month')));
@@ -632,7 +632,7 @@ $query = "SELECT
 							WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month-6, 1, $year)   . '
 							WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month-3, 1, $year)   . '
 							WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month-1, 1, $year)   . '
-							WHEN ' . DISPOSABLE . ' THEN ' . $currtime . "
+							WHEN ' . DISPOSABLE . ' THEN ' . strtotime('today', $currtime) . "
 						END)
 						AND
 						vc.call_start_time < (CASE a2.period
@@ -640,7 +640,7 @@ $query = "SELECT
 							WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
 							WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
 							WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
-							WHEN ' . DISPOSABLE . ' THEN ' . ($currtime + 86400) . "
+							WHEN ' . DISPOSABLE . ' THEN ' . strtotime('tomorrow', $currtime) . "
 						END)
 					) OR (
 						vc.call_start_time + totaltime >= (CASE a2.period
@@ -648,7 +648,7 @@ $query = "SELECT
 							WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month-6, 1, $year)   . '
 							WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month-3, 1, $year)   . '
 							WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month-1, 1, $year)   . '
-							WHEN ' . DISPOSABLE . ' THEN ' . $currtime . "
+							WHEN ' . DISPOSABLE . ' THEN ' . strtotime('today', $currtime) . "
 						END)
 						AND
 						vc.call_start_time + totaltime < (CASE a2.period
@@ -656,7 +656,7 @@ $query = "SELECT
 							WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
 							WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
 							WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
-							WHEN ' . DISPOSABLE . ' THEN ' . ($currtime + 86400) . "
+							WHEN ' . DISPOSABLE . ' THEN ' . strtotime('tomorrow', $currtime) . "
 						END)
 					)
 				)
