@@ -130,7 +130,7 @@ $_LANG['Logged as:'] = 'Zalogowany jako:';
 $_LANG['PIN validation'] = 'Walidacja PIN';
 $_LANG['Userpanel PIN validation'] = 'Walidacja PIN przy logowaniu do Panelu klienta';
 $_LANG['Update'] = 'Uaktualnij';
-$_LANG['<!userpanel>Confirm'] = 'Zapoznałem się';
+$_LANG['<!userpanel>Confirm'] = 'Zapoznałem/am się';
 
 $_LANG['Access is temporarily blocked. Please try again in 10 minutes.'] = 'Dostęp został tymczasowo zablokowany. Spróbuj ponownie za 10 minut.';
 
