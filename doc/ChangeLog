@@ -871,6 +871,9 @@ version 28-git (????-??-??):
   - improvement: bin/lms-sms2rt.php is able to detect if received message is MMS (if 'mms_detect_regexp'
     configuration variable is not empty) and then properly send auto reply message (if 'customer_mms_auto_reply_body'
     configuration variable is not empty) [chilan]
+  - improvement: bin/lms-sms2rt.php is able to detect if received message is unanswered voice call
+    (if 'voicecall_detect_regexp' configuration variable is not empty) and then properly send auto
+    reply message (if 'customer_voicecall_auto_reply_body' configuration variable is not empty) [chilan]
 
 version 27.0 (2021-08-20):
 
