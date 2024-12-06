@@ -317,6 +317,10 @@ $access_table = array(
     ),
     'hide_finances' => array(
         'label' => trans('finances hiding'),
+        'deny_regexp' => '^(tariff|payment|balance|invoice|note|cashreg|receipt|tarifftag)',
+        'deny_menu_items' => array(
+            'finances' => Permission::MENU_ALL,
+        ),
     ),
     'hide_customer_sensitive_data' => array(
         'label' => trans('hide customer sensitive data'),

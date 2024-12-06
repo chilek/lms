@@ -86,6 +86,7 @@ if (!isset($resource_tabs['customergroups']) || $resource_tabs['customergroups']
     $othercustomergroups = $LMS->GetGroupNamesWithoutCustomer($customerid);
 }
 if ((ConfigHelper::checkPrivilege('read_only') || ConfigHelper::checkPrivilege('finances_view') || ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management'))
+    && !ConfigHelper::checkPrivilege('hide_finances')
     && (!isset($resource_tabs['customerbalancebox']) || $resource_tabs['customerbalancebox'])) {
     if (isset($_GET['aggregate_documents'])) {
         $aggregate_documents = !empty($_GET['aggregate_documents']);
