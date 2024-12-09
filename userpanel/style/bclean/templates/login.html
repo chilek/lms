@@ -117,7 +117,7 @@
                     <form id="login" class="form-signin" method="post" action="{$target}">
                         <fieldset class="form-group">
                             <label for="inputLogin">{$_USERPANEL_AUTH_TYPES[$auth_type].label}</label>
-                            <input type="text"  name="loginform[login]" id="inputLogin" class="form-control" required autofocus>
+                            <input type="text"  name="loginform[login]" id="inputLogin" class="form-control" required>
                         </fieldset>
                         <fieldset class="form-group">
                             <label for="inputPassword">{$_USERPANEL_AUTH_TYPES[$auth_type].label_secret}</label>
@@ -155,16 +155,16 @@
                             {/if}
                             {if ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
                                 <fieldset id="email" class="form-group">
-                                    <label>{trans('E-Mail:')} <input type="text" name="remindform[email]" class="form-control"></label>
+                                    <label>{trans('E-Mail')} <input type="text" name="remindform[email]" class="form-control"></label>
                                 </fieldset>
                             {/if}
                             {if ConfigHelper::checkConfig('userpanel.sms_credential_reminders')}
                                 <fieldset id="phone" class="form-group" style="{if ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}display:none;{/if}">
-                                    <label>{trans('Phone:')} <input type="text" name="remindform[phone]"  class="form-control"></label>
+                                    <label>{trans('Phone')} <input type="text" name="remindform[phone]"  class="form-control"></label>
                                 </fieldset>
                             {/if}
                             <fieldset class="form-group">
-                                <label>{trans('SSN or TEN:')} <input type="text" name="remindform[ten]" id="inputSsnOrTen" class="form-control"></label>
+                                <label>{trans('SSN or TEN')} <input type="text" name="remindform[ten]" id="inputSsnOrTen" class="form-control"></label>
                             </fieldset>
                             {if $google_recaptcha_sitekey}
                                 <div id="remind-recaptcha" class="g-recaptcha"></div>
@@ -176,41 +176,56 @@
                 </div>
             </div>
         </div> <!-- /container -->
-        <script src="style/bclean/vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js" type="text/javascript"></script>
+        <script src="style/bclean/vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-        $(document).ready(function(){
-            $('.toast').toast('show');
-        });
-			function switch_form(type) {
-				if (type == 'login') {
-					document.getElementById('login').style.display = '';
-					document.getElementById('remind').style.display = 'none';
-				} else {
-					document.getElementById('login').style.display = 'none';
-					document.getElementById('remind').style.display = '';
-				}
-			}
 
-			function show_email_phone(type) {
-				if (type == 'email') {
-					var remindMail = document.getElementById("remindMail");
-					remindMail.classList.add("active");
-					var remindPhone = document.getElementById("remindPhone");
-					remindPhone.classList.remove("active");
-					document.getElementById('email').style.display = '';
-					document.getElementById('phone').style.display = 'none';
-					document.getElementById('remindType').value = '1';
-				} else {
-					var remindPhone = document.getElementById("remindPhone");
-					remindPhone.classList.add("active");
-					var remindMail = document.getElementById("remindMail");
-					remindMail.classList.remove("active");
-					document.getElementById('email').style.display = 'none';
-					document.getElementById('phone').style.display = '';
-					document.getElementById('remindType').value = '2';
-				}
-			}
-			document.forms['login'].elements['loginform[login]'].focus();
+            function switch_form(type) {
+                if (type == 'login') {
+                    document.getElementById('login').style.display = '';
+                    document.getElementById('remind').style.display = 'none';
+                } else {
+                    document.getElementById('login').style.display = 'none';
+                    document.getElementById('remind').style.display = '';
+                }
+            }
+
+            function show_email_phone(type) {
+                if (type == 'email') {
+                    var remindMail = document.getElementById("remindMail");
+                    remindMail.classList.add("active");
+                    var remindPhone = document.getElementById("remindPhone");
+                    remindPhone.classList.remove("active");
+                    document.getElementById('email').style.display = '';
+                    document.getElementById('phone').style.display = 'none';
+                    document.getElementById('remindType').value = '1';
+                } else {
+                    var remindPhone = document.getElementById("remindPhone");
+                    remindPhone.classList.add("active");
+                    var remindMail = document.getElementById("remindMail");
+                    remindMail.classList.remove("active");
+                    document.getElementById('email').style.display = 'none';
+                    document.getElementById('phone').style.display = '';
+                    document.getElementById('remindType').value = '2';
+                }
+            }
+
+            (function() {
+                var href = window.location.href;
+                if (href.match(/#remind.*$/)) {
+                    switch_form('remind');
+                    show_email_phone(href.match(/#remind-(sms|phone)$/) ? 'phone' : 'email');
+                }
+
+                $(function() {
+                    $('.toast').toast('show');
+                    if (href.match(/#remind.*$/)) {
+                        $("#remind").find(".form-control:visible").first().focus();
+                    } else {
+                        $("#inputlogin").focus();
+                    }
+                });
+            })();
+
         </script>
     </body>
 </html>

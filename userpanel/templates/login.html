@@ -35,29 +35,6 @@
 {/if}
 </head>
 <body>
-<script type="text/javascript">
-<!--
-	function switch_form(type) {
-		if (type == 'login') {
-			document.getElementById('logindata').style.display = '';
-			document.getElementById('reminddata').style.display = 'none';
-		} else {
-			document.getElementById('logindata').style.display = 'none';
-			document.getElementById('reminddata').style.display = '';
-		}
-	}
-
-	function show_email_phone(type) {
-		if (type == 'email') {
-			document.getElementById('email').style.display = '';
-			document.getElementById('phone').style.display = 'none';
-		} else {
-			document.getElementById('email').style.display = 'none';
-			document.getElementById('phone').style.display = '';
-		}
-	}
-//-->
-</script>
 <div class="login">
 <table style="vertical-align: middle; width:100%; height: 100%; margin:auto">
     <tr>
@@ -87,7 +64,7 @@
 						{$_USERPANEL_AUTH_TYPES[$auth_type].label}
 					</td>
 					<td class="text-left">
-						<input type="text" name="loginform[login]" style="width: 100pt;" />
+						<input type="text" id="inputlogin" name="loginform[login]" style="width: 100pt;" />
 					</td>
 				</tr>
 				<tr>
@@ -131,7 +108,7 @@
 								{if !empty($sms_service) && ConfigHelper::checkConfig('userpanel.sms_credential_reminders')}
 									<label>
 										<input type="radio" id="emailradio" name="remindform[type]" value="1"
-											   onclick="javascript:show_email_phone('email');" checked />
+											onclick="javascript:show_email_phone('email');" checked />
 										{trans("E-mail")}
 									</label>
 								{else}
@@ -154,26 +131,26 @@
 					</tr>
 					<tr id="email">
 						<td class="text-right bold nobr">
-							{trans("E-Mail:")}
+							{trans("E-Mail")}
 						</td>
 						<td class="text-left">
-							<input type="text" name="remindform[email]" style="width: 120pt;" />
+							<input type="text" name="remindform[email]" class="form-control" style="width: 120pt;" />
 						</td>
 					</tr>
 					<tr id="phone" style="display: none;">
 						<td class="text-right bold nobr">
-							{trans("Phone:")}
+							{trans("Phone")}
 						</td>
 						<td class="text-left">
-							<input type="text" name="remindform[phone]" style="width: 120pt;" />
+							<input type="text" name="remindform[phone]" class="form-control" style="width: 120pt;" />
 						</td>
 					</tr>
 					<tr>
 						<td class="text-right bold nobr">
-							{trans("SSN or TEN:")}
+							{trans("SSN or TEN")}
 						</td>
 						<td class="text-left">
-							<input type="text" name="remindform[ten]" style="width: 120pt;" />
+							<input type="text" name="remindform[ten]" class="form-control" style="width: 120pt;" />
 						</td>
 					</tr>
 					{if !empty($google_recaptcha_sitekey)}
@@ -207,10 +184,47 @@
 	</td>
     </tr>
 </table>
-<script type="text/javascript">
-<!--
-document.forms['login'].elements['loginform[login]'].focus();
-//-->
+<script>
+
+	function switch_form(type) {
+		if (type == 'login') {
+			document.getElementById('logindata').style.display = '';
+			document.getElementById('reminddata').style.display = 'none';
+		} else {
+			document.getElementById('logindata').style.display = 'none';
+			document.getElementById('reminddata').style.display = '';
+		}
+	}
+
+	function show_email_phone(type) {
+		if (type == 'email') {
+			document.getElementById('email').style.display = '';
+			document.getElementById('phone').style.display = 'none';
+			$("#emailradio").prop('checked', true);
+		} else {
+			document.getElementById('email').style.display = 'none';
+			document.getElementById('phone').style.display = '';
+			$("#smsradio").prop('checked', true);
+		}
+		$("#reminddata").find(".form-control:visible").first().focus();
+	}
+
+	(function() {
+		var href = window.location.href;
+		if (href.match(/#remind.*$/)) {
+			switch_form('remind');
+			show_email_phone(href.match(/#remind-(sms|phone)$/) ? 'phone' : 'email');
+		}
+
+		$(function() {
+			if (href.match(/#remind.*$/)) {
+				$("#reminddata").find(".form-control:visible").first().focus();
+			} else {
+				$("#inputlogin").focus();
+			}
+		});
+	})();
+
 </script>
 </div>
 </body>
