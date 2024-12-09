@@ -171,7 +171,7 @@ function GetDocumentTemplates($rights, $type = null)
                         if (!empty($intersect)) {
                             $docengines[$dir] = $engine;
                         }
-                    } else {
+                    } elseif (isset($engine)) {
                         $docengines[$dir] = $engine;
                     }
                 }
