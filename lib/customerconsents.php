@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$supportedCustomerConsents = ConfigHelper::getConfig('customers.supported_consents');
+$supportedCustomerConsents = ConfigHelper::getConfig('customers.supported_consents', '', true);
 $supportedCustomerConsents = array_flip(preg_split('/(\r?\n|\s*[;,]\s*|\s+)/', $supportedCustomerConsents, 0, PREG_SPLIT_NO_EMPTY));
 
 if (!empty($supportedCustomerConsents)) {
