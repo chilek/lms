@@ -27,19 +27,19 @@
 // support for dynamic loading of plugin javascript code
 if (isset($_GET['template'])) {
     foreach ($documents_dirs as $doc) {
-        if (file_exists($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $_GET['template'])) {
+        if (is_readable($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $_GET['template'] . DIRECTORY_SEPARATOR . 'info.php')) {
             $doc_dir = $doc;
             $template_dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $_GET['template'];
             break;
         }
     }
     // read template information
-    if (file_exists($file = $template_dir . DIRECTORY_SEPARATOR . 'info.php')) {
+    if (is_readable($file = $template_dir . DIRECTORY_SEPARATOR . 'info.php')) {
         include($file);
         if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
             $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
         }
-        if (file_exists($file = $doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+        if (is_readable($file = $doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
             . $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.js')) {
             header('Content-Type: text/javascript');
             echo file_get_contents($file);
@@ -86,7 +86,7 @@ function GetPlugin($template, $customerid, $update_title, $JSResponse)
     $result = '';
 
     foreach ($documents_dirs as $doc) {
-        if (file_exists($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template)) {
+        if (is_readable($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template . DIRECTORY_SEPARATOR . 'info.php')) {
             $doc_dir = $doc;
             $template_dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template;
             break;
@@ -94,7 +94,7 @@ function GetPlugin($template, $customerid, $update_title, $JSResponse)
     }
 
     // read template information
-    if (file_exists($file = $template_dir . DIRECTORY_SEPARATOR . 'info.php')) {
+    if (is_readable($file = $template_dir . DIRECTORY_SEPARATOR . 'info.php')) {
         include($file);
         if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
             $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
@@ -103,11 +103,11 @@ function GetPlugin($template, $customerid, $update_title, $JSResponse)
 
     // call plugin
     if (!empty($engine['plugin'])) {
-        if (file_exists($file = $doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+        if (is_readable($file = $doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
             . $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.php')) {
             include($file);
         }
-        if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+        if (is_readable($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
             . $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.js')) {
             $JSResponse->removeScript($_SERVER['REQUEST_URI'] . '&template=' . $template);
             $JSResponse->includeScript($_SERVER['REQUEST_URI'] . '&template=' . $template);
@@ -157,7 +157,7 @@ function GetDocumentTemplates($rights, $type = null)
             foreach ($dirs as $dir) {
                 $infofile = $doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
                 . $dir . DIRECTORY_SEPARATOR . 'info.php';
-                if (file_exists($infofile)) {
+                if (is_readable($infofile)) {
                     unset($engine);
                     include($infofile);
                     if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
@@ -260,7 +260,7 @@ function GetReferenceDocuments($doctemplate, $customerid, $JSResponse)
         ob_start();
         foreach ($documents_dirs as $doc_dir) {
             $infofile = $doc_dir . '/templates/' . $doctemplate . '/info.php';
-            if (file_exists($infofile)) {
+            if (is_readable($infofile)) {
                 include($infofile);
                 if (isset($engine['reference_templates'])) {
                     if (is_array($engine['reference_templates'])) {
