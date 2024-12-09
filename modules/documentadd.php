@@ -233,7 +233,7 @@ if (isset($_POST['document'])) {
 
         if (!empty($document['templ'])) {
             foreach ($documents_dirs as $doc) {
-                if (file_exists($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'])) {
+                if (is_readable($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'] . DIRECTORY_SEPARATOR . 'info.php')) {
                     $doc_dir = $doc;
                     $template_dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'];
                     break;
@@ -252,12 +252,12 @@ if (isset($_POST['document'])) {
 
             // call plugin
             if (!empty($engine['plugin'])) {
-                if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+                if (is_readable($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
                     . $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.php')) {
                     include($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $engine['name']
                         . DIRECTORY_SEPARATOR . $engine['plugin'] . '.php');
                 }
-                if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+                if (is_readable($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
                     . $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.js')) {
                     $script_result = '<script src="' . $_SERVER['REQUEST_URI'] . '&template=' . $engine['name'] . '"></script>';
                 }
@@ -299,7 +299,7 @@ if (isset($_POST['document'])) {
             ConfigHelper::setFilter($customer['divisionid'], Auth::GetCurrentUser());
 
             $default_header = ConfigHelper::getConfig('documents.default_header', '', true);
-            if (strlen($default_header) && file_exists($default_header)) {
+            if (strlen($default_header) && is_readable($default_header)) {
                 $header = $SMARTY->fetch($default_header);
             } else {
                 $header = '';
@@ -307,7 +307,7 @@ if (isset($_POST['document'])) {
             $SMARTY->assign('header', $header);
 
             $default_footer = ConfigHelper::getConfig('documents.default_footer', '', true);
-            if (strlen($default_footer) && file_exists($default_footer)) {
+            if (strlen($default_footer) && is_readable($default_footer)) {
                 $footer = $SMARTY->fetch($default_footer);
             } else {
                 $footer = '';
@@ -315,7 +315,7 @@ if (isset($_POST['document'])) {
             $SMARTY->assign('footer', $footer);
 
             // run template engine
-            if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+            if (is_readable($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
                 . $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php')) {
                 $SMARTY->AddTemplateDir(
                     array(
@@ -418,7 +418,7 @@ if (isset($_POST['document'])) {
                     . (empty($attachment['promotionschemaid']) ? 'promotions' : 'promotionschemas')
                     . DIRECTORY_SEPARATOR . $attachment[empty($attachment['promotionschemaid']) ? 'promotionid' : 'promotionschemaid']
                     . DIRECTORY_SEPARATOR . $attachment['filename'];
-                if (file_exists($filename)) {
+                if (is_readable($filename)) {
                     $files[] = array(
                         'tmpname' => null,
                         'filename' => basename($filename),
@@ -521,7 +521,7 @@ if (isset($_POST['document'])) {
         $LMS->AddDocumentAttachments($docid, $files);
 
         // template post-action
-        if (!empty($engine['post-action']) && file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates'
+        if (!empty($engine['post-action']) && is_readable($doc_dir . DIRECTORY_SEPARATOR . 'templates'
             . DIRECTORY_SEPARATOR . $engine['name'] . DIRECTORY_SEPARATOR . $engine['post-action'] . '.php')) {
             include($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $engine['name']
                 . DIRECTORY_SEPARATOR . $engine['post-action'] . '.php');
