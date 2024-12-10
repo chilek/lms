@@ -1,0 +1,71 @@
+{strip}
+{trans("ID")}
+|
+{trans("Node name")}
+|
+{trans("IP address")}
+|
+{trans("MAC address")}
+|
+{trans("Balance")}
+|
+{trans("Customer type")}
+|
+{trans("Owner")}
+|
+TERC
+|
+{trans("City")}
+|
+SIMC
+|
+{trans("Street")}
+|
+ULIC
+|
+{trans("Building")}
+|
+{trans("Apartment")}
+|
+{trans("Zip")}
+|
+{trans("Description")}
+{/strip}
+{foreach $nodelist as $node}{strip}
+{$node.id}
+|
+{$node.name}
+|
+{$node.ip}
+|
+{$node.mac}
+|
+{$node.balance|string_format:"%.2f"|replace:",":"."}
+|
+{if $node.ctype == $smarty.const.CTYPES_PRIVATE}
+	{trans("individual")}
+{else}
+	{trans("business")}
+{/if}
+|
+{$node.owner}
+|
+{$node.state_ident}{$node.district_ident}{$node.borough_ident}{$node.borough_type}
+|
+{$node.city_name}
+|
+{$node.city_ident}
+|
+{$node.street_name}
+|
+{$node.street_ident}
+|
+{$node.location_house}
+|
+{$node.location_flat}
+|
+{$node.zip}
+|
+{$node.info}
+{/strip}
+{/foreach}
