@@ -1619,96 +1619,127 @@
 </FORM>
 {/if}
 {if $printmenu=="node"}
-<FORM method="post" name="printnodelist" id="printnodelist" action="?m=nodeprint&type=nodelist">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox">
-    <COLGROUP>
-        <COL style="width: 1%;">
-        <COL style="width: 99%;">
-    </COLGROUP>
-    <THEAD>
-	<TR>
-		<TH scope="col">
-			<IMG src="img/node.gif" alt="">
-		</TH>
-		<TH scope="col" class="bold nobr">
-			{trans("Nodes List")}
-		</TH>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR>
-		<TD class="container" width="100%" colspan="2">
-			<TABLE cellpadding="3">
-				<TR>
-					<TD class="bold nobr">
-						<IMG src="img/node.gif" alt="">{trans("Status:")}
-					</TD>
-					<TD {tip text="Select nodes group"}>
-						<INPUT class="radio light" type="radio" id="nodelist-all" name="filter" value="0" CHECKED><label for="nodelist-all">{trans("all")}</label>
-						<INPUT class="radio light" type="radio" id="nodelist-connected" name="filter" value="1"><label for="nodelist-connected">{trans("connected<!plural:item>")}</label>
-						<INPUT class="radio light" type="radio" id="nodelist-disconnected" name="filter" value="2"><label for="nodelist-disconnected">{trans("disconnected<!plural:item>")}</label>
-						<INPUT class="radio light" type="radio" id="nodelist-indebt" name="filter" value="3"><label for="nodelist-indebt">{trans("indebted owner")}</label>
-					</TD>
-				</tr>
-				<tr>
-					<TD class="bold nobr">
-						<IMG src="img/network.gif" alt="">
-						{trans("Network:")}
-					</td>
-					<TD>
-						<SELECT size="1" name="network" {tip text="Select network"}>
-						    <OPTION value="0" SELECTED>{trans("— all networks —")}</OPTION>
-						    {section name="networks" loop=$networks}
-						    <OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"&hellip;":true}</OPTION>
-						    {/section}
-						</SELECT>
-					</TD>
-				</TR>
-				<TR>
-					<TD class="bold nobr">
-						<IMG src="img/group.gif" alt="">{trans("Group:")}
-					</TD>
-					<TD>
-					    <SELECT size="1" name="customergroup" {tip text="Select group"}>
-						    <OPTION value="0" SELECTED>{trans("— all groups —")}</OPTION>
-						    {section name="customergroups" loop=$customergroups}
-						    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:40:"&hellip;":true}</OPTION>
-						    {/section}
-					    </SELECT>
-					</TD>
-				</TR>
-				<tr>
-					<TD class="bold nobr">
-						<IMG src="img/view.gif" alt="">{trans("Sorting:")}
-					</TD>
-					<TD {tip text="Select sorting direction and criteria"}>
-							<SELECT SIZE="1" name="order">
-							    <OPTION value="name" SELECTED>{trans("Name")}</OPTION>
-							    <OPTION value="id">{trans("Id")}</OPTION>
-							    <OPTION value="owner">{trans("Customer name")}</OPTION>
-							    <OPTION value="ownerid">{trans("Customer ID")}</OPTION>
-							    <OPTION value="ip">{trans("IP address")}</OPTION>
-							    <OPTION value="mac">{trans("MAC address")}</OPTION>
-							</SELECT>
+<form method="post" name="printnodelist" id="printnodelist" action="?m=nodeprint&type=nodelist">
+	<input type="submit" class="hiddenbtn">
+	<input type="hidden" name="type" value="print">
+</form>
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<td>
+				{icon name="node"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Nodes List")}</strong>
+			</td>
+		</TR>
+	</thead>
+	<tbody>
+		<tr>
+			<td class="container" width="100%" colspan="2">
+				<table cellpadding="3">
+					<tr>
+						<td class="nobr">
+							{icon name="node"}
+							<strong>{trans("Status")}</strong>
+						</td>
+						<td {tip text="Select nodes group"}>
+							<label>
+								<input class="radio light" type="radio" form="printnodelist" name="filter" value="0" checked>
+								{trans("all")}
+							</label>
+							<label>
+								<input class="radio light" type="radio" form="printnodelist" name="filter" value="1">
+								{trans("connected<!plural:item>")}
+							</label>
+							<label>
+								<input class="radio light" type="radio" form="printnodelist" name="filter" value="2">
+								{trans("disconnected<!plural:item>")}
+							</label>
+							<label>
+								<input class="radio light" type="radio" form="printnodelist" name="filter" value="3">
+								{trans("indebted owner")}
+							</label>
+						</TD>
+					</tr>
+					<tr>
+						<td class="nobr">
+							{icon name="network"}
+							<strong>{trans("Network")}</strong>
+						</td>
+						<td>
+							<select size="1" name="network"
+								form="printnodelist"
+								{tip text="Select network"}>
+								<option value="0">{trans("— all networks —")}</option>
+								{foreach $networks as $network}
+									<option value="{$network.id}">{$network.name|truncate:40:"&hellip;":true}</option>
+								{/foreach}
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td class="nobr">
+							{icon name="customergroup"}
+							<strong>{trans("Group")}</strong>
+						</td>
+						<td>
+							<select size="1" name="customergroup"
+								form="printnodelist"
+								{tip text="Select group"}>
+								<option value="0">{trans("— all groups —")}</option>
+								{foreach $customergroups as $customergroup}
+									<option value="{$customergroup.id}">{$customergroup.name|truncate:40:"&hellip;":true}</option>
+								{/foreach}
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td class="nobr">
+							{icon name="view"}
+							<strong>{trans("Sorting")}</strong>
+						</td>
+						<td {tip text="Select sorting direction and criteria"}>
+							<select size="1" name="order" form="printnodelist">
+								<option value="name">{trans("Name")}</option>
+								<option value="id">{trans("Id")}</option>
+								<option value="owner">{trans("Customer name")}</option>
+								<option value="ownerid">{trans("Customer ID")}</option>
+								<option value="ip">{trans("IP address")}</option>
+								<option value="mac">{trans("MAC address")}</option>
+							</select>
+							<select size="1" name="direction" form="printnodelist">
+								<option value="asc">{trans("ascending")}</option>
+								<option value="desc">{trans("descending")}</option>
+							</select>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="lms-ui-box-buttons" colspan="2">
+				{button class="printnodelist-button" data_type="print" label="Print" icon="print"}
+				{button class="printnodelist-button" data_type="csv" label="Download (CSV)" icon="csv"}
+			</td>
+		</tr>
+	</tbody>
+</table>
+<script>
 
-							<SELECT SIZE="1" name="direction">
-							    <OPTION value="asc" SELECTED>{trans("ascending")}</OPTION>
-							    <OPTION value="desc">{trans("descending")}</OPTION>
-							</SELECT>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 100%;" colspan="2" align="right">
-			<A href="javascript:document.printnodelist.target='_blank';document.printnodelist.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
-</FORM>
+	$(function() {
+		$(".printnodelist-button").click(function() {
+			var type = $(this).attr("data-type");
+			$('#printnodelist [name="type"]').val(type);
+			$("#printnodelist").attr("target", type == "print" ? "_blank" : null).submit();
+		});
+	});
+
+</script>
 {/if}
 {if $printmenu=="traffic" || $printmenu=="customer"}
 <form method="post" name="printcustomertraffic" id="printcustomertraffic"  action="?m=trafficprint&type=customertraffic">

@@ -554,15 +554,23 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 					ELSE p.name END) AS project,
 				nd.netnodeid AS netnodeid, '
                 . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS owner, net.name AS netname, n.location,
+				lc.name AS city_name,
 				lc.ident AS city_ident,
-				lb.name AS borough_name, lb.ident AS borough_ident,
+				lb.name AS borough_name,
+				lb.ident AS borough_ident,
 				lb.type AS borough_type,
-				ld.name AS district_name, ld.ident AS district_ident,
-				ls.name AS state_name, ls.ident AS state_ident,
+				ld.name AS district_name,
+				ld.ident AS district_ident,
+				ls.name AS state_name,
+				ls.ident AS state_ident,
+				lst.name AS street_name,
 				(CASE WHEN lst.ident IS NULL
 					THEN (CASE WHEN c.street = \'\' THEN \'99999\' ELSE \'99998\' END)
 					ELSE lst.ident END) AS street_ident,
-				n.location_house, n.location_flat,
+				n.location_house,
+				n.location_flat,
+				a.zip,
+				c.type AS ctype,
 				(CASE WHEN EXISTS (
                     SELECT 1 FROM nodelocks
                     WHERE disabled = 0 AND (days & ' . $weekday . ') > 0 AND ' . $daysecond . ' >= fromsec
@@ -571,6 +579,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         }
 
         $sql .= 'FROM vnodes n
+                LEFT JOIN addresses a ON a.id = n.address_id
 				JOIN customerview c ON (n.ownerid = c.id)
 				JOIN networks net ON net.id = n.netid
                 ' . ($status == 11

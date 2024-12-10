@@ -32,6 +32,9 @@
 		<TD WIDTH="75" ALIGN="CENTER" CLASS="head">
 			{trans("MAC address")}
 		</TD>
+		<TD WIDTH="50" ALIGN="CENTER" CLASS="head">
+			{trans("Customer type")}
+		</TD>
 		<TD WIDTH="150" ALIGN="CENTER" CLASS="head">
 			{trans("Owner")}
 		</TD>
@@ -61,6 +64,13 @@
 		<TD ALIGN="CENTER">
 			{$node.mac|replace:",":"<BR>"}
 		</TD>
+		<td align="center">
+			{if $node.ctype == $smarty.const.CTYPES_PRIVATE}
+				{trans("individual")}
+			{else}
+				{trans("business")}
+			{/if}
+		</td>
 		<TD ALIGN="LEFT">
 			{$node.owner}
 		</TD>

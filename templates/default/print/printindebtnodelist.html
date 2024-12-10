@@ -34,6 +34,9 @@
 		<TD WIDTH="30" ALIGN="CENTER" CLASS="head">
 			{trans("Balance")}
 		</TD>
+		<TD WIDTH="50" ALIGN="CENTER" CLASS="head">
+			{trans("Customer type")}
+		</TD>
 		<TD WIDTH="200" ALIGN="CENTER" CLASS="head">
 			{trans("Owner")}
 		</TD>
@@ -62,6 +65,13 @@
 		<TD ALIGN="CENTER" nowrap>
 			{$nodelist[nodelist].balance|money_format}
 		</TD>
+		<td align="center">
+			{if $nodelist[nodelist].ctype == $smarty.const.CTYPES_PRIVATE}
+				{trans("individual")}
+			{else}
+				{trans("business")}
+			{/if}
+		</td>
 		<TD ALIGN="LEFT">
 			{$nodelist[nodelist].owner}
 		</TD>

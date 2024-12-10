@@ -4568,6 +4568,7 @@ $_LANG['Building:'] = 'Budynek:';
 $_LANG['Building'] = 'Budynek';
 $_LANG['<!netrange>Buildings: $a'] = 'Budynków: $a';
 $_LANG['Apartment:'] = 'Lokal:';
+$_LANG['Apartment'] = 'Lokal';
 $_LANG['Postal address'] = 'Adres korespondencyjny';
 
 $_LANG['Street name required!'] = 'Wymagana nazwa ulicy!';
@@ -6086,3 +6087,6 @@ $_LANG['document external ID'] = 'zewnętrzny ID dokumentu';
 $_LANG['Document external ID'] = 'Zewnętrzny ID dokumentu';
 
 $_LANG['Don\'t create assignments'] = 'Nie twórz zobowiązań';
+
+$_LANG['business'] = 'biznesowy';
+$_LANG['individual'] = 'indywidualny';
