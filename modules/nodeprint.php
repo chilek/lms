@@ -132,7 +132,8 @@ switch ($type) {
                     . ' GROUP BY n.id, n.ipaddr, n.mac, n.name, n.info, c.lastname, c.name, c.type, lc.name,
                         lc.ident, lb.name, lb.ident, lb.type, ld.name, ld.ident, ls.name, ls.ident, lst.ident, lst.name, n.location_house, n.location_flat, a.zip
                     HAVING SUM(value) < 0'
-                    . ($sqlord != '' ? $sqlord . ' ' . $direction : ''));
+                    . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
+                );
 
                 $SMARTY->assign('nodelist', $nodelist);
 
