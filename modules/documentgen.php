@@ -100,20 +100,25 @@ if (isset($_POST['document'])) {
     }
     $customergroupsqlskey = 'OR';
 
+    $search = array();
+    if (isset($document['ctype']) && strlen($document['ctype'])) {
+        $search['type'] = $document['ctype'];
+    }
+
     switch ($state) {
         case CSTATUS_DISCONNECTED:
         case 51:
         case 52:
         case CSTATUS_CONNECTED:
         case 0:
-            $customerlist = $LMS->GetCustomerList(compact('state', 'network', 'customergroup', 'customergroupsqlskey'));
+            $customerlist = $LMS->GetCustomerList(compact('state', 'network', 'customergroup', 'customergroupsqlskey', 'search'));
             break;
         case CSTATUS_INTERESTED:
         case CSTATUS_WAITING:
-            $customerlist = $LMS->GetCustomerList(compact('state'));
+            $customerlist = $LMS->GetCustomerList(compact('state', 'search'));
             break;
         case -1:
-            if ($customerlist = $LMS->GetCustomerList(compact('customergroup', 'customergroupsqlskey'))) {
+            if ($customerlist = $LMS->GetCustomerList(compact('customergroup', 'customergroupsqlskey', 'search'))) {
                 foreach ($customerlist as $idx => $row) {
                     if (!$row['account']) {
                         $ncustomerlist[] = $row;
