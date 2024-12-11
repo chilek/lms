@@ -5633,8 +5633,8 @@ $_LANG['Service start'] = 'Rozpoczęcie świadczenia usługi';
 $_LANG['Enter service start date in YYYY/MM/DD format (optional)'] = 'Wprowadź datę rozpoczęcia świadczenia usługi w formacie RRRR/MM/DD (opcjonalnie)';
 $_LANG['Start date can not be earlier than "from" date!'] = 'Data rozpoczęcia świadczenia usługi nie może być wcześniejsza od daty "od"!';
 $_LANG['Start date can not be earlier than current date!'] = 'Data rozpoczęcia świadczenia usługi nie może być wcześniejsza od daty bieżącej!';
-$_LANG['document form approval in customer panel using SMS authorization'] = 'zatwierdzanie przez panel klienta formy dokumentowej autoryzowanej przez SMS';
-$_LANG['document form approval in customer panel using scans'] = 'zatwierdzanie przez panel klienta formy dokumentowej w postaci skanów';
+$_LANG['approval in customer panel using SMS authorization'] = 'zatwierdzanie przez panel klienta po autoryzacji SMS-em';
+$_LANG['approval in customer panel using scans'] = 'zatwierdzanie przez panel klienta po przesłaniu w postaci skanów';
 $_LANG['invoice transfer form'] = 'druczek przelewu na fakturze';
 
 $_LANG['Copy from billing address'] = 'Kopiuj z adresu billingowego';
@@ -6070,10 +6070,12 @@ $_LANG['<!consent-group>invoices'] = 'faktury';
 $_LANG['<!consent-group>complaint information'] = 'informacje związane z reklamacją';
 $_LANG['<!consent-group>technical'] = 'techniczne';
 $_LANG['<!consent-group>contact signing related'] = 'związane z podpisaniem umowy';
+$_LANG['<!consent-group>document form'] = 'forma dokumentowa';
 
 $_LANG['suspension of a fiber optic line over the customer plot'] = 'przewieszenie linii światłowodowej nad działką klienta';
 $_LANG['contract signed outside the company premises'] = 'podpisanie umowy poza lokalem przedsiębiorstwa';
 $_LANG['service provision before withdrawal period expires'] = 'świadczenie usług przed upływem okresu na odstąpienie od umowy';
+$_LANG['digital content use results in loss of contract withdrawal possibility'] = 'wykorzystanie treści cyfrowych powoduję utratę możliwości odstąpienia od umowy';
 
 $_LANG['reminder'] = 'przypomnienie';
 

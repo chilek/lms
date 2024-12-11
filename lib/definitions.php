@@ -143,12 +143,13 @@ const CCONSENT_DATE = 1,
     CCONSENT_MAIL_COMPLAINT = 23,
     CCONSENT_PHONE_COMPLAINT = 24,
     CCONSENT_FIBER_OPTIC_LINE_SUSPENSION = 25,
+    CCONSENT_CONTRACT_SIGNED_OUTSIDE_COMPANY_PREMISES = 31,
     CCONSENT_SERVICE_PROVISION_BEFORE_WITHDRAWAL_PERIOD_EXPIRES = 26,
+    CCONSENT_DIGITAL_CONTENT_USE_RESULTS_IN_LOSS_OF_CONTRACT_WITHDRAWAL_POSSIBILITY = 32,
     CCONSENT_USERPANEL_SERVICE_INFO = 27,
     CCONSENT_USERPANEL_MARKETING = 28,
     CCONSENT_USERPANEL_3RDPARTY_MARKETING = 29,
-    CCONSENT_USERPANEL_COMPLAINT = 30,
-    CCONSENT_CONTRACT_SIGNED_OUTSIDE_COMPANY_PREMISES = 31;
+    CCONSENT_USERPANEL_COMPLAINT = 30;
 
 $CCONSENTS = array(
     CCONSENT_DATE => array(
@@ -271,13 +272,18 @@ $CCONSENTS = array(
         'name' => 'service_provision_before_withdrawal_period_expires',
         'type' => 'boolean',
     ),
+    CCONSENT_DIGITAL_CONTENT_USE_RESULTS_IN_LOSS_OF_CONTRACT_WITHDRAWAL_POSSIBILITY => array(
+        'label' => trans('digital content use results in loss of contract withdrawal possibility'),
+        'name' => 'digital_content_use_results_in_loss_of_contract_withdrawal_possibility',
+        'type' => 'boolean',
+    ),
     CCONSENT_USERPANEL_SMS => array(
-        'label' => trans('document form approval in customer panel using SMS authorization'),
+        'label' => trans('approval in customer panel using SMS authorization'),
         'name' => 'userpanel_document_sms_approval',
         'type' => 'boolean',
     ),
     CCONSENT_USERPANEL_SCAN => array(
-        'label' => trans('document form approval in customer panel using scans'),
+        'label' => trans('approval in customer panel using scans'),
         'name' => 'userpanel_document_scan_approval',
         'type' => 'boolean',
     ),
@@ -315,7 +321,8 @@ const CCONSENT_GROUP_MARKETING = 1,
     CCONSENT_GROUP_3RDPARTY_MARKETING = 4,
     CCONSENT_GROUP_COMPLAINT = 5,
     CCONSENT_GROUP_TECHNICAL = 6,
-    CCONSENT_GROUP_CONTRACT_SIGNING_RELATED = 7;
+    CCONSENT_GROUP_CONTRACT_SIGNING_RELATED = 7,
+    CCONSENT_GROUP_DOCUMENT_FORM = 8;
 
 $CCONSENT_GROUPS = array(
     CCONSENT_GROUP_INVOICES => array(
@@ -374,6 +381,14 @@ $CCONSENT_GROUPS = array(
         'consents' => array(
             CCONSENT_CONTRACT_SIGNED_OUTSIDE_COMPANY_PREMISES,
             CCONSENT_SERVICE_PROVISION_BEFORE_WITHDRAWAL_PERIOD_EXPIRES,
+            CCONSENT_DIGITAL_CONTENT_USE_RESULTS_IN_LOSS_OF_CONTRACT_WITHDRAWAL_POSSIBILITY,
+        ),
+    ),
+    CCONSENT_GROUP_DOCUMENT_FORM => array(
+        'label' => trans('<!consent-group>document form'),
+        'consents' => array(
+            CCONSENT_USERPANEL_SMS,
+            CCONSENT_USERPANEL_SCAN,
         ),
     ),
 );

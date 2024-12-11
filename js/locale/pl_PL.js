@@ -5593,8 +5593,8 @@ $_LANG['Service start'] = 'Rozpoczęcie świadczenia usługi';
 $_LANG['Enter service start date in YYYY/MM/DD format (optional)'] = 'Wprowadź datę rozpoczęcia świadczenia usługi w formacie RRRR/MM/DD (opcjonalnie)';
 $_LANG['Start date can not be earlier than "from" date!'] = 'Data rozpoczęcia świadczenia usługi nie może być wcześniejsza od daty "od"!';
 $_LANG['Start date can not be earlier than current date!'] = 'Data rozpoczęcia świadczenia usługi nie może być wcześniejsza od daty bieżącej!';
-$_LANG['document form approval in customer panel using SMS authorization'] = 'zatwierdzanie przez panel klienta formy dokumentowej autoryzowanej przez SMS';
-$_LANG['document form approval in customer panel using scans'] = 'zatwierdzanie przez panel klienta formy dokumentowej w postaci skanów';
+$_LANG['approval in customer panel using SMS authorization'] = 'zatwierdzanie przez panel klienta po autoryzacji SMS-em';
+$_LANG['approval in customer panel using scans'] = 'zatwierdzanie przez panel klienta po przesłaniu w postaci skanów';
 $_LANG['invoice transfer form'] = 'druczek przelewu na fakturze';
 
 $_LANG['Copy from billing address'] = 'Kopiuj z adresu billingowego';

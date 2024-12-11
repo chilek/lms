@@ -782,8 +782,12 @@
 																	{else}
 																		{if $consent.type != 'selection' || isset($consent.values[$customerinfo.consents[$type]].name)}
 																			{icon name="checked"}
+																		{else}
+																			{icon name="empty"}
 																		{/if}
 																	{/if}
+																{else}
+																	{icon name="empty"}
 																{/if}
 															</td>
 														</tr>
