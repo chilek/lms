@@ -879,6 +879,7 @@ version 28-git (????-??-??):
   - enhancement: node report allows to export data to CSV file [chilan]
   - improvement/enhancement: grouped userpanel customer consents and added new customer consent
     with system name 'digital_content_use_results_in_loss_of_contract_withdrawal_possibility' [chilan]
+  - enhancement: added customer legal personality filter in document generator form [chilan]
 
 version 27.0 (2021-08-20):
 
