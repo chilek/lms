@@ -877,6 +877,8 @@ version 28-git (????-??-??):
   - improvement: userpanel: #remind, #remind-phone, #remind-sms, #remind-email local anchors in URL login
     form allow to auto-activate corresponding credential reminder subforms [chilan]
   - enhancement: node report allows to export data to CSV file [chilan]
+  - improvement/enhancement: grouped userpanel customer consents and added new customer consent
+    with system name 'digital_content_use_results_in_loss_of_contract_withdrawal_possibility' [chilan]
 
 version 27.0 (2021-08-20):
 
