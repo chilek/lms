@@ -928,6 +928,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $flags = array($flags);
         }
 
+        if (!isset($consents)) {
+            $consents = array();
+        }
+
         $customer_statuses = array();
         $state_conditions = array();
         $consent_conditions = array();

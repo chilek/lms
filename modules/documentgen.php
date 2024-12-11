@@ -86,7 +86,7 @@ if (isset($_POST['document'])) {
         $error['todate'] = trans('Start date can\'t be greater than end date!');
     }
 
-    $state = $_POST['filter'];
+    $state = isset($_POST['filter']) ? $_POST['filter'] : null;
     $network = $_POST['network'];
 
     if (isset($_POST['customergroup'])) {
