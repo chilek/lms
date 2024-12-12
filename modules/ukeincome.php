@@ -108,10 +108,10 @@ switch ($customergroup_intersection) {
 $income = $DB->GetAll('
 	SELECT ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : 'cash.servicetype') . ' AS type,
 		COUNT(DISTINCT CASE WHEN c.type = ' . CTYPES_PRIVATE . ' THEN c.id ELSE null END) AS privatecount,
-		COUNT(DISTINCT CASE WHEN c.type = ' . CTYPES_COMPANY . ' THEN c.id ELSE null END) AS bussinesscount,
+		COUNT(DISTINCT CASE WHEN c.type = ' . CTYPES_COMPANY . ' THEN c.id ELSE null END) AS businesscount,
 		COUNT(DISTINCT c.id) AS totalcount,
 		SUM(CASE WHEN c.type = ' . CTYPES_PRIVATE . ' THEN ' . $value_formula . ' ELSE 0 END) * -1 AS privateincome,
-		SUM(CASE WHEN c.type = ' . CTYPES_COMPANY . ' THEN ' . $value_formula . ' ELSE 0 END) * -1 AS bussinessincome,
+		SUM(CASE WHEN c.type = ' . CTYPES_COMPANY . ' THEN ' . $value_formula . ' ELSE 0 END) * -1 AS businessincome,
 		SUM(' . $value_formula . ') * -1 AS totalincome
 	FROM cash
     LEFT JOIN documents d ON d.id = cash.docid
@@ -139,48 +139,48 @@ if ($bandwidths) {
             'max' => 2000,
             'total' => 0,
             'private' => 0,
-            'bussiness' => 0,
+            'business' => 0,
         ),
         '>= 2 Mbit/s < 10 Mbit/s' => array(
             'min' => 2000,
             'max' => 10000,
             'total' => 0,
             'private' => 0,
-            'bussiness' => 0,
+            'business' => 0,
         ),
         '>= 10 Mbit/s < 30 Mbit/s' => array(
             'min' => 10000,
             'max' => 30000,
             'total' => 0,
             'private' => 0,
-            'bussiness' => 0,
+            'business' => 0,
         ),
         '>= 30 Mbit/s < 100 Mbit/s' => array(
             'min' => 30000,
             'max' => 100000,
             'total' => 0,
             'private' => 0,
-            'bussiness' => 0,
+            'business' => 0,
         ),
         '>= 100 Mbit/s < 300 Mbit/s' => array(
             'min' => 100000,
             'max' => 300000,
             'total' => 0,
             'private' => 0,
-            'bussiness' => 0,
+            'business' => 0,
         ),
         '>= 300 Mbit/s < 1 Gbit/s' => array(
             'min' => 300000,
             'max' => 1000000,
             'total' => 0,
             'private' => 0,
-            'bussiness' => 0,
+            'business' => 0,
         ),
         '>= 1 Gbit/s' => array(
             'min' => 1000000,
             'total' => 0,
             'private' => 0,
-            'bussiness' => 0,
+            'business' => 0,
         ),
     );
 
@@ -206,7 +206,7 @@ if ($bandwidths) {
                     WHEN ic.period = ' . HALFYEARLY . ' THEN ' . str_replace(',', '.', 1 / $months / 6) . '
                     WHEN ic.period = ' . YEARLY . ' THEN ' . str_replace(',', '.', 1 / $months / 12) . '
                     ELSE 0 END)
-            )) AS bussiness,
+            )) AS business,
             (SUM(ROUND(ic.count)
                 * (CASE
                     WHEN ic.period IS NULL OR ic.period = ' . MONTHLY . ' THEN ' . str_replace(',', '.', 1 / $months) . '
@@ -240,7 +240,7 @@ if ($bandwidths) {
                     && (!isset($bandwidth_interval['max']) || $downceil < $bandwidth_interval['max'])) {
                     $bandwidth_interval['total'] += $customer_link['total'];
                     $bandwidth_interval['private'] += $customer_link['private'];
-                    $bandwidth_interval['bussiness'] += $customer_link['bussiness'];
+                    $bandwidth_interval['business'] += $customer_link['business'];
                     break;
                 }
             }
@@ -249,8 +249,8 @@ if ($bandwidths) {
         foreach ($bandwidth_variation as &$bv) {
             foreach ($bv as &$bi) {
                 $bi['private'] = round($bi['private']);
-                $bi['bussiness'] = round($bi['bussiness']);
-                $bi['total'] = $bi['private'] + $bi['bussiness'];
+                $bi['business'] = round($bi['business']);
+                $bi['total'] = $bi['private'] + $bi['business'];
             }
             unset($bi);
         }
