@@ -2639,26 +2639,34 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      *
      * @param int $id Customer id
      */
-    public function deleteCustomerPermanent($id)
+    public function deleteCustomerPermanent($id, $transaction = true)
     {
-        $this->db->BeginTrans();
+        if ($transaction) {
+            $this->db->BeginTrans();
+        }
 
         // Remove customer addresses
         $addr_ids = $this->db->GetCol('SELECT address_id FROM customer_addresses WHERE customer_id = ?', array($id));
-        $this->db->Execute(
-            'DELETE FROM addresses WHERE id IN ?',
-            array($addr_ids)
-        );
+        if (!empty($addr_ids)) {
+            $this->db->Execute(
+                'DELETE FROM addresses WHERE id IN ?',
+                array($addr_ids)
+            );
+        }
 
         $this->deleteCustomerHelper($id);
 
-        $this->db->Execute('DELETE FROM customers WHERE id = ?', array($id));
+        $result = $this->db->Execute('DELETE FROM customers WHERE id = ?', array($id));
 
         if ($this->syslog) {
             $this->syslog->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_DELETE, array(SYSLOG::RES_CUST => $id));
         }
 
-        $this->db->CommitTrans();
+        if ($transaction) {
+            $this->db->CommitTrans();
+        }
+
+        return $result;
     }
 
     public function restoreCustomer($id)

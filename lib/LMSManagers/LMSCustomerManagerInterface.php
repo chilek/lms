@@ -82,7 +82,7 @@ interface LMSCustomerManagerInterface
 
     public function deleteCustomer($id);
 
-    public function deleteCustomerPermanent($id);
+    public function deleteCustomerPermanent($id, $transaction = true);
 
     public function restoreCustomer($id);
 

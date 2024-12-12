@@ -542,10 +542,10 @@ class LMS
         return $manager->DeleteCustomer($id);
     }
 
-    public function DeleteCustomerPermanent($id)
+    public function DeleteCustomerPermanent($id, $transacton = true)
     {
         $manager = $this->getCustomerManager();
-        return $manager->deleteCustomerPermanent($id);
+        return $manager->deleteCustomerPermanent($id, $transacton);
     }
 
     public function restoreCustomer($id)

@@ -144,6 +144,13 @@ if ($http_mode) {
             die('Fatal error: option \'' . $option_presentation . '\' requires parameter!' . PHP_EOL);
         }
     }
+
+    foreach ($options as &$option) {
+        if (strpos($option, '\\-') === 0) {
+            $option = str_replace('\\-', '-', $option);
+        }
+    }
+    unset($option);
 }
 
 if (isset($options['force-http-mode'])) {
