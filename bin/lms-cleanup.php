@@ -26,18 +26,29 @@
  */
 
 $script_parameters = array(
+    'test' => 't',
     'resources:' => 'r:',
     'time-limit:' => 't:',
+    'balance-limit:' => 'b:',
 );
 
 $script_help = <<<EOF
--r, --resources=<finances>
+-t, --test                      no changes are made to database;
+-r, --resources=<finances,customers>
                                 system resource type list to clean up;
 -t, --time-limit=<days>
                                 only resources older than specified 'days' are cleaned up;
+-b, --balance-limit=<value>
+                                only resources related to customers with balance greater than
+                                or equal to specified 'value' are cleanup up;
 EOF;
 
 require_once('script-options.php');
+
+$test = isset($options['test']);
+if ($test) {
+    echo "WARNING! You are using test mode." . PHP_EOL;
+}
 
 $SYSLOG = SYSLOG::getInstance();
 
@@ -63,6 +74,7 @@ if (empty($resources)) {
 
 $supported_resources = array(
     'finances' => true,
+    'customers' => true,
 );
 foreach ($resources as $resource) {
     if (!isset($supported_resources[$resource])) {
@@ -81,12 +93,22 @@ if (isset($options['time-limit'])) {
 
 $time = strtotime($time_limit . ' days ago');
 
+if (isset($options['balance-limit'])) {
+    $balance_limit = filter_var($options['balance-limit'], FILTER_VALIDATE_FLOAT);
+    if ($balance_limit === false) {
+        $balance_limit = null;
+    }
+}
+
 $currency = Localisation::getDefaultCurrency();
 
 $resources = array_flip($resources);
 
 if (!$quiet) {
     echo PHP_EOL . 'Current time limit operation threshold: ' . $time_limit . ' days' . PHP_EOL;
+    if (isset($balance_limit)) {
+        echo 'Current balance limit operation threshold: ' . $balance_limit . PHP_EOL;
+    }
 }
 
 if (isset($resources['finances'])) {
@@ -115,7 +137,9 @@ if (isset($resources['finances'])) {
 
     $DB->BeginTrans();
 
-    echo 'Creating starting balance records... ';
+    if (!$quiet) {
+        echo 'Creating starting balance records... ';
+    }
     foreach ($balances as $customerid => $balance) {
         $DB->Execute(
             'INSERT INTO cash (customerid, time, type, value, currency, comment) VALUES (?, ?, ?, ?, ?, ?)',
@@ -129,7 +153,9 @@ if (isset($resources['finances'])) {
             )
         );
     }
-    echo count($balances) . ' record(s) created.' . PHP_EOL;
+    if (!$quiet) {
+        echo count($balances) . ' record(s) created.' . PHP_EOL;
+    }
 
     $documents = $DB->GetAll(
         'SELECT DISTINCT cash.docid AS id, d.archived
@@ -157,7 +183,9 @@ if (isset($resources['finances'])) {
             WHERE id IN ?',
             array(Utils::array_column($documents, 'id'))
         );
-        echo $count . ' removed.'. PHP_EOL;
+        if (!$quiet) {
+            echo $count . ' removed.' . PHP_EOL;
+        }
     }
 
     if (!$quiet) {
@@ -172,7 +200,10 @@ if (isset($resources['finances'])) {
         )',
         array($time)
     );
-    echo (empty($count) ? '0' : $count) . ' cash import(s) removed. ';
+    if (!$quiet) {
+        echo (empty($count) ? '0' : $count) . ' cash import(s) removed. ';
+    }
+
     $count = $DB->Execute(
         'DELETE FROM sourcefiles
         WHERE idate < ?
@@ -183,7 +214,10 @@ if (isset($resources['finances'])) {
           )',
         array($time)
     );
-    echo (empty($count) ? '0' : $count) . ' source file(s) removed. ' . PHP_EOL;
+
+    if (!$quiet) {
+        echo (empty($count) ? '0' : $count) . ' source file(s) removed. ' . PHP_EOL;
+    }
 
     if (!$quiet) {
         echo 'Removing financial operations... ';
@@ -195,7 +229,77 @@ if (isset($resources['finances'])) {
             $time,
         )
     );
-    echo (empty($count) ? '0' : $count) . ' operation(s) removed. ' . PHP_EOL;
 
-    $DB->CommitTrans();
+    if (!$quiet) {
+        echo (empty($count) ? '0' : $count) . ' operation(s) removed. ' . PHP_EOL;
+    }
+
+    if ($test) {
+        $DB->RollbackTrans();
+    } else {
+        $DB->CommitTrans();
+    }
+}
+
+if (isset($resources['customers'])) {
+    if (!$quiet) {
+        echo PHP_EOL;
+        echo '###################' . PHP_EOL;
+        echo 'Customer resources' . PHP_EOL;
+        echo '###################' . PHP_EOL;
+    }
+
+    $customers = $DB->GetAll(
+        'SELECT
+            c.id
+        FROM customers c
+        WHERE
+            NOT EXISTS (
+                SELECT 1
+                FROM documents d
+                WHERE d.customerid = c.id
+                    AND d.cdate > ?
+            )'
+            . (isset($balance_limit)
+                ? ' AND (EXISTS (
+                    SELECT 1
+                    FROM customerbalances b
+                    WHERE b.customerid = c.id
+                        AND b.balance >= ' . $balance_limit . '
+                ) OR NOT EXISTS (
+                    SELECT 1
+                    FROM customerbalances b
+                    WHERE b.customerid = c.id
+                ))'
+                : ''),
+        array(
+            $time,
+        )
+    );
+
+    $DB->BeginTrans();
+
+    if (!$quiet) {
+        echo 'Permanently deleting customer(s)... ';
+    }
+
+    $count = 0;
+    if (!empty($customers)) {
+        foreach ($customers as $customer) {
+            $result = $LMS->deleteCustomerPermanent($customer['id'], false);
+            if (!empty($result)) {
+                $count++;
+            }
+        }
+    }
+
+    if (!$quiet) {
+        echo $count . ' customer(s) deleted. ' . PHP_EOL;
+    }
+
+    if ($test) {
+        $DB->RollbackTrans();
+    } else {
+        $DB->CommitTrans();
+    }
 }
