@@ -286,6 +286,14 @@ if (isset($_POST['document'])) {
                 $recipient_address = null;
             }
 
+            $hook_data = $LMS->executeHook(
+                'documentadd_prepare_data',
+                compact('customer', 'division', 'location_address', 'recipient_address', 'document', 'engine')
+            );
+            if (!empty($hook_data) && is_array($hook_data)) {
+                extract($hook_data);
+            }
+
             $SMARTY->assign(array(
                 'customer' => $customer,
                 'customerinfo' => $customer,
