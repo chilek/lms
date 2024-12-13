@@ -881,6 +881,8 @@ version 28-git (????-??-??):
     with system name 'digital_content_use_results_in_loss_of_contract_withdrawal_possibility' [chilan]
   - enhancement: added customer legal personality filter in document generator form [chilan]
   - enhancement: 'customers' resource type support for 'bin/lms-cleanup.php' backend script [chilan]
+  - enhancement: 'documentadd_prepare_data' hook allows plugin to prepare data required
+    for document content generation [chilan]
 
 version 27.0 (2021-08-20):
 
