@@ -50,7 +50,7 @@ $config_section = isset($options['section']) && preg_match('/^[a-z0-9-_]+$/i', $
     ? $options['section']
     : 'cashimport';
 
-$plugin_manager = new LMSPluginManager();
+$plugin_manager = LMSPluginManager::getInstance();
 $LMS->setPluginManager($plugin_manager);
 
 if (array_key_exists('import-file', $options)) {

@@ -44,6 +44,17 @@ class LMSPluginManager extends Subject implements SubjectInterface
     private $old_style_plugins = array();
     private $enabled_plugins = array();
 
+    private static $instance = null;
+
+    public static function getInstance()
+    {
+        if (empty(self::$instance)) {
+            self::$instance = new LMSPluginManager();
+        }
+
+        return self::$instance;
+    }
+
     /**
      * Loads plugins
      *
@@ -149,9 +160,18 @@ class LMSPluginManager extends Subject implements SubjectInterface
         return $plugins;
     }
 
-    public function isPluginEnabled($plugin_alias)
+    private function isPluginEnabledHelper($plugin_alias)
     {
         return isset($this->enabled_plugins[$plugin_alias]);
+    }
+
+    public static function isPluginEnabled($plugin_alias)
+    {
+        if (empty(self::$instance)) {
+            return false;
+        } else {
+            return self::$instance->isPluginEnabledHelper($plugin_alias);
+        }
     }
 
     /**

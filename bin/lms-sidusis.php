@@ -54,7 +54,7 @@ $SYSLOG = SYSLOG::getInstance();
 $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 
-$plugin_manager = new LMSPluginManager();
+$plugin_manager = LMSPluginManager::getInstance();
 $LMS->setPluginManager($plugin_manager);
 
 $lmsUrl = ConfigHelper::getConfig('rt.lms_url', 'http://localhost/lms');

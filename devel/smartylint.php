@@ -122,7 +122,7 @@ $SMARTY->setDefaultResourceType('extendsall');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 
-$plugin_manager = new LMSPluginManager();
+$plugin_manager = LMSPluginManager::getInstance();
 $SMARTY->setPluginManager($plugin_manager);
 
 // Set some template and layout variables

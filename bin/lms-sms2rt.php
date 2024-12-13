@@ -80,7 +80,7 @@ $voicecall_detect_regexp = ConfigHelper::getConfig($config_section . '.voicecall
 $customer_voicecall_auto_reply_body = ConfigHelper::getConfig($config_section . '.customer_voicecall_auto_reply_body', '', true);
 
 // Load plugin files and register hook callbacks
-$plugin_manager = new LMSPluginManager();
+$plugin_manager = LMSPluginManager::getInstance();
 $LMS->setPluginManager($plugin_manager);
 
 $message_files = array();

@@ -162,7 +162,7 @@ unset($LMS); // reset LMS class to enable wrappers for LMS older versions
 
 $LMS = new ULMS($DB, $AUTH, $SYSLOG);
 
-$plugin_manager = new LMSPluginManager();
+$plugin_manager = LMSPluginManager::getInstance();
 $LMS->setPluginManager($plugin_manager);
 $SMARTY->setPluginManager($plugin_manager);
 

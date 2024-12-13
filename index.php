@@ -195,7 +195,7 @@ $LMS = new LMS($DB, $AUTH, $SYSLOG);
 
 Localisation::initDefaultCurrency();
 
-$plugin_manager = new LMSPluginManager();
+$plugin_manager = LMSPluginManager::getInstance();
 $LMS->setPluginManager($plugin_manager);
 
 if (!$api) {

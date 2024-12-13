@@ -163,7 +163,7 @@ foreach ($facilities as $facility) {
             echo 'DB schema version bumped to ' . $schema_version . PHP_EOL;
             break;
         case 'plugins':
-            $plugin_manager = new LMSPluginManager();
+            $plugin_manager = LMSPluginManager::getInstance();
             $plugin_info = $plugin_manager->getAllPluginInfo();
             if (!empty($plugin_info)) {
                 foreach ($plugin_info as $plugin) {
