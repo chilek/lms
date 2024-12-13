@@ -42,6 +42,7 @@ class LMSPluginManager extends Subject implements SubjectInterface
     protected $hook_data;
     private $new_style_plugins = array();
     private $old_style_plugins = array();
+    private $enabled_plugins = array();
 
     /**
      * Loads plugins
@@ -70,17 +71,18 @@ class LMSPluginManager extends Subject implements SubjectInterface
             if (class_exists($plugin_name)) {
                 $plugin_name::loadLocales();
                 $plugin_info = array(
-                'name' => $plugin_name,
-                'enabled' => false,
-                'new_style' => true,
-                'dbcurrschversion' => null,
-                'dbschversion' => defined($plugin_name . '::PLUGIN_DB_VERSION') ? constant($plugin_name . '::PLUGIN_DB_VERSION') : null,
-                'softwareversion' => defined($plugin_name . '::PLUGIN_SOFTWARE_VERSION') ? constant($plugin_name . '::PLUGIN_SOFTWARE_VERSION') : null,
-                'docurl' => defined($plugin_name . '::PLUGIN_DOC_URL') ? constant($plugin_name . '::PLUGIN_DOC_URL') : null,
-                'repourl' => defined($plugin_name . '::PLUGIN_REPO_URL') ? constant($plugin_name . '::PLUGIN_REPO_URL') : null,
-                'fullname' => defined($plugin_name . '::PLUGIN_NAME') ? trans(constant($plugin_name . '::PLUGIN_NAME')) : null,
-                'description' => defined($plugin_name . '::PLUGIN_DESCRIPTION') ? trans(constant($plugin_name . '::PLUGIN_DESCRIPTION')) : null,
-                'author' => defined($plugin_name . '::PLUGIN_AUTHOR') ? constant($plugin_name . '::PLUGIN_AUTHOR') : null,
+                   'name' => $plugin_name,
+                   'alias' => defined($plugin_name . '::PLUGIN_ALIAS') ? constant($plugin_name . '::PLUGIN_ALIAS') : $plugin_name,
+                   'enabled' => false,
+                   'new_style' => true,
+                   'dbcurrschversion' => null,
+                   'dbschversion' => defined($plugin_name . '::PLUGIN_DB_VERSION') ? constant($plugin_name . '::PLUGIN_DB_VERSION') : null,
+                   'softwareversion' => defined($plugin_name . '::PLUGIN_SOFTWARE_VERSION') ? constant($plugin_name . '::PLUGIN_SOFTWARE_VERSION') : null,
+                   'docurl' => defined($plugin_name . '::PLUGIN_DOC_URL') ? constant($plugin_name . '::PLUGIN_DOC_URL') : null,
+                   'repourl' => defined($plugin_name . '::PLUGIN_REPO_URL') ? constant($plugin_name . '::PLUGIN_REPO_URL') : null,
+                   'fullname' => defined($plugin_name . '::PLUGIN_NAME') ? trans(constant($plugin_name . '::PLUGIN_NAME')) : null,
+                   'description' => defined($plugin_name . '::PLUGIN_DESCRIPTION') ? trans(constant($plugin_name . '::PLUGIN_DESCRIPTION')) : null,
+                   'author' => defined($plugin_name . '::PLUGIN_AUTHOR') ? constant($plugin_name . '::PLUGIN_AUTHOR') : null,
                 );
                 if (array_key_exists($plugin_name, $plugin_priorities)) {
                     $plugin = new $plugin_name();
@@ -91,11 +93,12 @@ class LMSPluginManager extends Subject implements SubjectInterface
                     $plugin_info = array_merge(
                         $plugin_info,
                         array(
-                        'enabled' => true,
-                        'priority' => $plugin_priorities[$plugin_name],
-                        'dbcurrschversion' => $plugin->getDbSchemaVersion(),
+                           'enabled' => true,
+                           'priority' => $plugin_priorities[$plugin_name],
+                           'dbcurrschversion' => $plugin->getDbSchemaVersion(),
                         )
                     );
+                    $this->enabled_plugins[$plugin_info['alias']] = $plugin_name;
 
                     $this->registerObserver($plugin, $plugin_info['priority']);
                 }
@@ -119,11 +122,13 @@ class LMSPluginManager extends Subject implements SubjectInterface
             $plugin_name = str_replace('.php', '', $plugin_name);
             $plugin_info = array(
                 'name' => $plugin_name,
+                'alias' => $plugin_name,
                 'enabled' => false,
                 'new_style' => false,
             );
             if (array_key_exists($plugin_name, $plugin_priorities)) {
                 $plugin_info['enabled'] = true;
+                $this->enabled_plugins[$plugin_info['alias']] = $plugin_name;
             }
             $this->old_style_plugins[$plugin_name] = $plugin_info;
         }
@@ -142,6 +147,11 @@ class LMSPluginManager extends Subject implements SubjectInterface
             $plugins = array_merge($plugins, $this->old_style_plugins);
         }
         return $plugins;
+    }
+
+    public function isPluginEnabled($plugin_alias)
+    {
+        return isset($this->enabled_plugins[$plugin_alias]);
     }
 
     /**
