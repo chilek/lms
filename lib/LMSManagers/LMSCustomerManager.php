@@ -333,7 +333,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 WHERE ' . (ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment') ? '1=0 AND' : '')
                 . ' d.customerid = ? AND d.type = ?'
                 . ($totime ? ' AND d.cdate <= ' . intval($totime) : '') . ')
-            ORDER BY time ' . $direction . ', docid, id',
+            ORDER BY time, docid, id',
             array($id, $id, DOC_INVOICE_PRO)
         );
 
@@ -348,7 +348,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $result = $finance_manager->AggregateDocuments($result);
             }
 
-            foreach ($result['list'] as $idx => &$row) {
+            foreach ($result['list'] as &$row) {
                 $row['customlinks'] = array();
                 if ($row['doctype'] == DOC_INVOICE_PRO && !ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment')) {
                     $row['after'] = $result['balance'];
@@ -365,8 +365,13 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $row['refdocs'] = $document_manager->getDocumentReferences($row['docid']);
                 }
             }
+            unset($row);
 
             $result['total'] = count($result['list']);
+
+            if ($direction == 'DESC') {
+                $result['list'] = array_reverse($result['list']);
+            }
         }
 
         $result['sendinvoices'] = ($this->db->GetOne('SELECT 1 FROM customercontacts cc
