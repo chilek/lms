@@ -143,9 +143,12 @@
 					</label>
 					<label {tip text="translates into JPK FP flag"}>
 						<input type="checkbox" name="invoice[flags][{$smarty.const.DOC_FLAG_RECEIPT}]" value="1"
-								{if $invoice.flags[$smarty.const.DOC_FLAG_RECEIPT]} checked{/if}
+							{if $invoice.flags[$smarty.const.DOC_FLAG_RECEIPT]} checked{/if}
+							{if !empty($invoice.extid)} disabled{/if}
 						>
-						{trans("<!invoice>receipt")}
+						<span{if !empty($invoice.extid)} class="lms-ui-disabled"{/if}>
+							{trans("<!invoice>receipt")}
+						</span>
 					</label>
 					<label id="telecomservice" {tip text="translates into JPK EE flag"}
 							{if empty($suggested_flags.telecomservice)} style="display: none;"{/if}

@@ -304,6 +304,7 @@ switch ($action) {
         $oldflags = $invoice['oldflags'];
         $oldcomment = $invoice['oldcomment'];
         $oldmemo = $invoice['oldmemo'];
+        $extid = $invoice['extid'];
         $closed   = $invoice['closed'];
         $divisionid = $invoice['divisionid'];
         $name = $invoice['name'];
@@ -334,6 +335,7 @@ switch ($action) {
         $invoice['oldflags'] = $oldflags;
         $invoice['oldcomment'] = $oldcomment;
         $invoice['oldmemo'] = $invoice['memo'] = $oldmemo;
+        $invoice['extid'] = $extid;
         $invoice['divisionid'] = $divisionid;
         $invoice['name'] = $name;
         $invoice['address'] = $address;
@@ -343,6 +345,10 @@ switch ($action) {
         $invoice['city'] = $city;
         $invoice['countryid'] = $countryid;
         $invoice['recipient_address'] = $recipient_address;
+
+        if (!empty($invoice['extid']) && !empty($oldflags[DOC_FLAG_RECEIPT])) {
+            $invoice['flags'][DOC_FLAG_RECEIPT] = 1;
+        }
 
         $currtime = time();
 
