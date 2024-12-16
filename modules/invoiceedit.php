@@ -83,6 +83,7 @@ if (isset($_GET['id']) && ($action == 'edit' || $action == 'init')) {
             's_valuenetto' => str_replace(',', '.', $item['netvalue']),
             's_valuebrutto' => str_replace(',', '.', $item['grossvalue']),
             'tax' => isset($taxeslist[$item['taxid']]) ? $taxeslist[$item['taxid']]['label'] : '',
+            'taxvalue' => isset($taxeslist[$item['taxid']]) ? $taxeslist[$item['taxid']]['value'] : 0,
             'taxid' => $item['taxid'],
             'taxcategory' => $item['taxcategory'],
         );
@@ -247,6 +248,7 @@ switch ($action) {
             }
 
             $itemdata['tax'] = $taxeslist[$itemdata['taxid']]['label'];
+            $itemdata['taxvalue'] = $taxeslist[$itemdata['taxid']]['value'];
         }
 
         if ($itemdata['tariffid'] > 0) {
@@ -828,10 +830,17 @@ switch ($action) {
         }
 
         $hook_data = array(
+            'customer' => array(
+                'id' => $invoice['customerid'],
+            ),
             'contents' => $contents,
             'invoice' => $invoice,
         );
         $hook_data = $LMS->ExecuteHook('invoiceedit_save_after_submit', $hook_data);
+        if (isset($hook_data['extid'])) {
+            $invoice['extid'] = $hook_data['extid'];
+            $LMS->setInvoiceExtID($invoice);
+        }
 
         $DB->UnLockTables();
         $DB->CommitTrans();

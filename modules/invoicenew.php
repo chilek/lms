@@ -116,6 +116,7 @@ switch ($action) {
                     's_valuenetto' => str_replace(',', '.', $item['netvalue']),
                     's_valuebrutto' => str_replace(',', '.', $item['grossvalue']),
                     'tax' => isset($taxeslist[$item['taxid']]) ? $taxeslist[$item['taxid']]['label'] : '',
+                    'taxvalue' => isset($taxeslist[$item['taxid']]) ? $taxeslist[$item['taxid']]['value'] : 0,
                     'taxid' => $item['taxid'],
                     'taxcategory' => $item['taxcategory'],
                 );
@@ -276,6 +277,7 @@ switch ($action) {
             }
 
             $itemdata['tax'] = isset($itemdata['taxid']) ? $taxeslist[$itemdata['taxid']]['label'] : '';
+            $itemdata['taxvalue'] = isset($itemdata['taxid']) ? $taxeslist[$itemdata['taxid']]['value'] : 0;
         }
 
         if ($itemdata['tariffid'] > 0) {
@@ -317,12 +319,15 @@ switch ($action) {
             foreach ($marks as $id) {
                 $cash = $DB->GetRow('SELECT value, comment, taxid FROM cash WHERE id = ?', array($id));
 
+                $taxvalue = isset($itemdata['taxid']) ? $taxeslist[$itemdata['taxid']]['value'] : 0;
+
                 $itemdata['cashid'] = $id;
                 $itemdata['name'] = $cash['comment'];
                 $itemdata['taxid'] = $cash['taxid'];
                 $itemdata['servicetype'] = empty($_POST['l_servicetype'][$id]) ? null : $_POST['l_servicetype'][$id];
                 $itemdata['taxcategory'] = $_POST['l_taxcategory'][$id];
                 $itemdata['tax'] = isset($taxeslist[$itemdata['taxid']]) ? $taxeslist[$itemdata['taxid']]['label'] : '';
+                $itemdata['taxvalue'] = isset($taxeslist[$itemdata['taxid']]) ? $taxeslist[$itemdata['taxid']]['value'] : 0;
                 $itemdata['discount'] = 0;
                 $itemdata['pdiscount'] = 0;
                 $itemdata['vdiscount'] = 0;
