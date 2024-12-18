@@ -61,7 +61,8 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta http-equiv="content-language" content="{if isset($LANGDEFS)}{$LANGDEFS.$_ui_language.html}{else}{Localisation::getCurrentHtmlLanguage()}{/if}">
+		<meta http-equiv="content-type" content="text/html; charset={if isset($LANGDEFS)}{$LANGDEFS.$_ui_language.charset}{else}{Localisation::getCurrentHtmlCharset()}{/if}">
 		<title>{$engine.title}</title>
 		{if ConfigHelper::getConfig("documents.hyphenate_text")}
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/hyphenopoly/6.0.0/Hyphenopoly_Loader.min.js"
