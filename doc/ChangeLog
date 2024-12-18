@@ -883,6 +883,10 @@ version 28-git (????-??-??):
   - enhancement: 'customers' resource type support for 'bin/lms-cleanup.php' backend script [chilan]
   - enhancement: 'documentadd_prepare_data' hook allows plugin to prepare data required
     for document content generation [chilan]
+  - improvement: templates/default/document/template.html is generic document template which can be used
+    in all specific document templates [chilan]
+  - enhancement: 'documents.company_logo', 'documents.company_logo_width' and 'documents.project_logo'
+    allow to specify image files which should be used as all document logos [chilan]
 
 version 27.0 (2021-08-20):
 
