@@ -278,6 +278,20 @@ if (isset($_POST['document'])) {
 
                 ConfigHelper::setFilter($customer['divisionid'], Auth::GetCurrentUser());
 
+                $company_logo = ConfigHelper::getConfig('documents.company_logo', '', true);
+                if (strlen($company_logo) && strpos($company_logo, DIRECTORY_SEPARATOR) !== 0) {
+                    $company_logo = SYS_DIR . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . $company_logo;
+                }
+
+                $company_logo_width = intval(ConfigHelper::getConfig('documents.company_logo_width', '150'));
+
+                $project_logo = ConfigHelper::getConfig('documents.project_logo', '', true);
+                if (strlen($project_logo) && strpos($project_logo, DIRECTORY_SEPARATOR) !== 0) {
+                    $project_logo = SYS_DIR . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . $project_logo;
+                }
+
+                $SMARTY->assign(compact('company_logo', 'company_logo_width', 'project_logo'));
+
                 $default_header = ConfigHelper::getConfig('documents.default_header', '', true);
                 if (strlen($default_header) && is_readable($default_header)) {
                     $header = $SMARTY->fetch($default_header);
