@@ -1,5 +1,63 @@
 {$division.name = $division.name|donthyphenate}
 {$division.shortname = $division.shortname|donthyphenate}
+{function signature_box}
+	{if isset($margin)}
+		{$margin_top = intval($margin)}
+		{$margin_bottom = $margin_top}
+	{else}
+		{if isset($margin_top)}
+			{$margin_top = intval($margin_top)}
+		{else}
+			{$margin_top = 60}
+		{/if}
+		{if isset($margin_bottom)}
+			{$margin_bottom = intval($margin_bottom)}
+		{else}
+			{$margin_bottom = 30}
+		{/if}
+	{/if}
+	{if !empty($label)}
+		{$left_label = $label}
+	{/if}
+	<table class="signature-box" style="margin-top: {$margin_top}px; margin-bottom: {$margin_bottom}px;">
+		<colgroup>
+			{if !empty($left_label) && !empty($right_label)}
+				<col style="width: 50%;">
+				<col style="width: 50%;">
+			{else}
+				<col style="width: 100%;">
+			{/if}
+		</colgroup>
+		<tr>
+			{if !empty($left_label)}
+				<td>
+					<div class="signature-box-field">
+						<span class="signature-box-field-dots">{strip}
+							{$repeat = $left_label|strlen}
+							{"&hellip;"|str_repeat:$repeat}
+						{/strip}</span>
+						<span class="signature-box-field-label">{strip}
+							{$left_label}
+						{/strip}</span>
+					</div>
+				</td>
+			{/if}
+			{if !empty($right_label)}
+				<td>
+					<div class="signature-box-field">
+						<span class="signature-box-field-dots">{strip}
+							{$repeat = $right_label|strlen}
+							{"&hellip;"|str_repeat:$repeat}
+						{/strip}</span>
+						<span class="signature-box-field-label">{strip}
+							{$right_label}
+						{/strip}</span>
+					</div>
+				</td>
+			{/if}
+		</tr>
+	</table>
+{/function}
 <!DOCTYPE html>
 <html>
 	<head>
@@ -137,6 +195,33 @@
 
 			.nobr {
 				white-space: nowrap;
+			}
+
+			.signature-box {
+				width: 100%;
+			}
+
+			.signature-box td {
+				width: 50%;
+				border: 0;
+				text-align: center;
+				vertical-align: top;
+			}
+
+			.signature-box-field {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+
+			.signature-box-field-dots {
+				max-width: 40vw;
+				overflow: hidden;
+			}
+
+			.signature-box-field-label {
+				max-width: 40vw;
+				white-space: normal;
 			}
 
 			{block name="style"}{/block}
