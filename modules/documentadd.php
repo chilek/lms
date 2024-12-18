@@ -318,7 +318,7 @@ if (isset($_POST['document'])) {
                 $project_logo = SYS_DIR . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . $project_logo;
             }
 
-            $SMARTY->assign(compact('company_logo', 'company_logo_width', 'project_logo'));
+            $date_format = ConfigHelper::getConfig('documents.date_format', 'd.m.Y');
 
             $default_header = ConfigHelper::getConfig('documents.default_header', '', true);
             if (strlen($default_header) && is_readable($default_header)) {
@@ -326,7 +326,6 @@ if (isset($_POST['document'])) {
             } else {
                 $header = '';
             }
-            $SMARTY->assign('header', $header);
 
             $default_footer = ConfigHelper::getConfig('documents.default_footer', '', true);
             if (strlen($default_footer) && is_readable($default_footer)) {
@@ -334,7 +333,8 @@ if (isset($_POST['document'])) {
             } else {
                 $footer = '';
             }
-            $SMARTY->assign('footer', $footer);
+
+            $SMARTY->assign(compact('company_logo', 'company_logo_width', 'project_logo', 'date_format', 'header', 'footer'));
 
             // run template engine
             if (is_readable($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR

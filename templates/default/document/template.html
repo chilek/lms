@@ -58,6 +58,12 @@
 		</tr>
 	</table>
 {/function}
+{function date}{strip}
+	{if !isset($value)}
+		{$value = $smarty.now}
+	{/if}
+	{$value|date_format:$date_format}
+{/strip}{/function}
 <!DOCTYPE html>
 <html>
 	<head>
