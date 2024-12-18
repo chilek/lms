@@ -31,7 +31,11 @@ if (!empty($supportedCustomerConsents)) {
     $CCONSENTS = array_filter(
         $CCONSENTS,
         function ($consent) use ($supportedCustomerConsents) {
-            return isset($supportedCustomerConsents[$consent['name']]);
+            if (is_array($consent)) {
+                return isset($supportedCustomerConsents[$consent['name']]);
+            } else {
+                return true;
+            }
         }
     );
 
