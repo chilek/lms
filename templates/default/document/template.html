@@ -59,10 +59,13 @@
 	</table>
 {/function}
 {function date}{strip}
-	{if !isset($value)}
-		{$value = $smarty.now}
+	{if isset($date)}
+		{$date|date_format:$date_format}
+	{elseif isset($value)}
+		{$value|date_format:$date_format}
+	{else}
+		{$smarty.now|date_format:$date_format}
 	{/if}
-	{$value|date_format:$date_format}
 {/strip}{/function}
 <!DOCTYPE html>
 <html>
