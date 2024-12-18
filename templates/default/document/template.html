@@ -1,0 +1,190 @@
+{$division.name = $division.name|donthyphenate}
+{$division.shortname = $division.shortname|donthyphenate}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<title>{$engine.title}</title>
+		{if ConfigHelper::getConfig("documents.hyphenate_text")}
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/hyphenopoly/6.0.0/Hyphenopoly_Loader.min.js"
+				integrity="sha512-HfGXsquwKoNFT5XHY0HoO4rAWddD724JyV0VL/poEu5afw8GJ69bi+/7pRdC1v33xzchn7jyrLpzVUiMBeKQ1w=="
+				crossorigin="anonymous"
+				referrerpolicy="no-referrer"></script>
+			<script>
+
+				Hyphenopoly.config({
+					require: {
+						"en-us": "Supercalifragilisticexpialidocious",
+						"pl": "Konstantypolitańczykiwiczówna"
+					},
+					setup: {
+						CORScredentials: "omit",
+						selectors: {
+							"body": {}
+						}
+					}
+				});
+
+			</script>
+		{/if}
+
+		{block name="html-header"}{/block}
+		<style>
+
+			@page {
+				size: A4;
+				margin: 1cm;
+			}
+
+			.logo-project {
+				margin: 0 auto;
+				width: 600px;
+				height: 60px;
+			}
+
+			.signature-table {
+				width: 100%;
+				border: 0;
+				margin-top: 3em;
+			}
+
+			ul,ol {
+				text-align: justify;
+			}
+
+			p {
+				font-size: 8pt;
+				text-align: justify;
+				margin: 4px 0 0 0;
+			}
+
+			.paragraph-title {
+				font-weight: bold;
+				text-align: center;
+				margin-top: 1.5em;
+				margin-bottom: 1.5em;
+			}
+
+			table {
+				border-collapse: collapse;
+				margin-top: 0.5em;
+				margin-bottom: 0.5em;
+				break-inside: avoid;
+			}
+
+			table caption {
+				font-weight: bold;
+				text-align: left;
+				padding-top: 0.5em;
+				padding-bottom: 0.5em;
+			}
+
+			.centered-table {
+				display: flex;
+				justify-content: center;
+			}
+
+			.centered-table caption {
+				text-align: center;
+			}
+
+			td {
+				font-size: 8pt;
+				border:1px solid;
+				margin: 0;
+				padding: 0.2em;
+			}
+
+			.hidden {
+				display: none;
+			}
+
+			.page-break-before {
+				break-before: page;
+			}
+
+			.page-break-after {
+				break-after: page;
+			}
+
+			thead {
+				display: table-header-group;
+			}
+
+			thead td {
+				text-align: center;
+			}
+
+			tbody {
+				display: table-row-group;
+			}
+
+			tfoot {
+				display: table-footer-group;
+			}
+
+			.text-center {
+				text-align: center;
+			}
+
+			.text-right {
+				text-align: right;
+			}
+
+			{block name="style"}{/block}
+
+		</style>
+	</head>
+	<body lang="pl">
+		<table style="border-style: none;">
+			<thead>
+				<tr>
+					<td style="border-style: none;">
+						<p style="text-align:center">
+							{if $company_logo}
+								{image file=$company_logo width=$company_logo_width}
+							{elseif isset($company_logo)}
+								Brak zdefiniowanego logo firmy w szablonie umowy!
+							{/if}
+							{if $document.eu || !empty($document.project)}
+								{if $project_logo}
+									{image file=$project_logo class="logo-project"}
+								{elseif isset($project_logo)}
+									Brak zdefiniowanego logo projektu EU w szablonie umowy!
+								{/if}
+							{/if}
+						</p>
+						{block name="header"}{/block}
+					</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td style="border-style: none;">
+						{block name="content-header"}{/block}
+						{block name="number-barcode"}
+							{barcode text=$document.nr}
+						{/block}
+						{block name="content"}{/block}
+					</td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td style="border-style: none;">
+						{if $document.eu || !empty($document.project)}
+							<hr>
+							<p class="text-center">
+								<em>
+									Projekt {if isset($document.project)}{$document.project} {/if}współfinansowany
+									przez Unię Europejską ze środków Europejskiego Funduszu Rozwoju Regionalnego
+								</em>
+							</p>
+						{/if}
+						{block name="footer"}{/block}
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</body>
+</html>
