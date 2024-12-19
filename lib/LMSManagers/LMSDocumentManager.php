@@ -1475,6 +1475,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         return str_replace(
             array(
                 '%cid%',
+                '%extid%',
                 '%customername%',
                 '%docid%',
                 '%document%',
@@ -1483,6 +1484,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             ),
             array(
                 $customerinfo['id'],
+                $customerinfo['login'],
                 $customerinfo['customername'],
                 $document['id'],
                 $document['fullnumber'],
@@ -2063,11 +2065,13 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $string = str_replace(
             array(
                 '%cid%',
+                '%extid%',
                 '%pin%',
                 '%customername%',
             ),
             array(
                 $customerinfo['id'],
+                $customerinfo['login'],
                 $customerinfo['pin'],
                 $customerinfo['customername'],
             ),
