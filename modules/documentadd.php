@@ -749,6 +749,8 @@ if (isset($_POST['document'])) {
     $document['consents'] = $document['default-consents'] = isset($document['customerid']) && intval($document['customerid']) ? $LMS->getCustomerConsents($document['customerid']) : array();
 
     $document['cdate'] = time();
+
+    $document['reuse'] = ConfigHelper::checkConfig('documents.default_reuse');
 }
 
 $SMARTY->setDefaultResourceType('extendsall');
