@@ -887,6 +887,8 @@ version 28-git (????-??-??):
     in all specific document templates [chilan]
   - enhancement: 'documents.company_logo', 'documents.company_logo_width' and 'documents.project_logo'
     allow to specify image files which should be used as all document logos [chilan]
+  - improvement: 'documents.default_reuse' configuration variable with 'false' as default value
+    allows to check corresponding documentadd form option with first start of this form [chilan]
 
 version 27.0 (2021-08-20):
 
