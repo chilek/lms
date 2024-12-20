@@ -401,7 +401,6 @@
 	});
 
 	var cdateLastUse = getStorageItem("documentadd_cdate_lastuse");
-	console.log(cdateLastUse, new Date().getTime());
 	if (cdateLastUse == null || new Date().getTime() - cdateLastUse > 900 * 1000) {
 		removeStorageItem("documentadd_cdate");
 		removeStorageItem("documentadd_cdate_lastuse");
