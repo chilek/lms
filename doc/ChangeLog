@@ -889,6 +889,7 @@ version 28-git (????-??-??):
     allow to specify image files which should be used as all document logos [chilan]
   - improvement: 'documents.default_reuse' configuration variable with 'false' as default value
     allows to check corresponding documentadd form option with first start of this form [chilan]
+  - enhancement: 'send to customer email' option added in new document form [chilan]
 
 version 27.0 (2021-08-20):
 
