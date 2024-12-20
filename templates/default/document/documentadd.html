@@ -386,6 +386,7 @@
 		if (form.get(0).checkValidity()) {
 			$('.operation-button').prop('disabled', !$('#new-window-toggle').prop('checked'));
 			setStorageItem('documentadd_cdate', $('[name="document[cdate]"]').val());
+			setStorageItem('documentadd_cdate_lastuse', new Date().getTime());
 			if ($(this).is('#print-button')) {
 				form.attr('action', form.attr('action') + '&print=1');
 				{if empty($promotions)}
@@ -399,6 +400,12 @@
 		}
 	});
 
+	var cdateLastUse = getStorageItem("documentadd_cdate_lastuse");
+	console.log(cdateLastUse, new Date().getTime());
+	if (cdateLastUse == null || new Date().getTime() - cdateLastUse > 900 * 1000) {
+		removeStorageItem("documentadd_cdate");
+		removeStorageItem("documentadd_cdate_lastuse");
+	}
 	var cdate = getStorageItem("documentadd_cdate");
 	if (cdate !== null) {
 		$('[name="document[cdate]"]').val(cdate);
