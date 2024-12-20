@@ -1816,8 +1816,10 @@ class LMSSmartyPlugins
         $result = '<img src="' . $image_data . '" style="margin: 0 auto;'
             . ' width: ' . ($params['width'] ?? '600') . 'px;'
             . (isset($params['height']) ? ' height: ' . $params['height'] . 'px;' : '')
-            . (isset($params['style']) ? ' ' . $params['style'] : '')
-            . '">';
+            . (isset($params['style']) ? ' ' . $params['style'] : '') . '"'
+            . (isset($params['class']) ? ' class="' . $params['class'] . '"' : '')
+            . (isset($params['id']) ? ' id="' . $params['id'] . '"' : '')
+            . '>';
 
         if (isset($params['assign'])) {
             $template->assign($params['assign'], $result);

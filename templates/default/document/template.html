@@ -236,20 +236,22 @@
 			<thead>
 				<tr>
 					<td style="border-style: none;">
-						<p style="text-align:center">
-							{if $company_logo}
-								{image file=$company_logo width=$company_logo_width}
-							{elseif isset($company_logo)}
-								Brak zdefiniowanego logo firmy w szablonie umowy!
-							{/if}
-							{if $document.eu || !empty($document.project)}
-								{if $project_logo}
-									{image file=$project_logo class="logo-project"}
-								{elseif isset($project_logo)}
-									Brak zdefiniowanego logo projektu EU w szablonie umowy!
+						{block name="header-logos"}
+							<p style="text-align:center">
+								{if $company_logo}
+									{image file=$company_logo width=$company_logo_width class="company-logo logo-company"}
+								{elseif isset($company_logo)}
+									Brak zdefiniowanego logo firmy w szablonie umowy!
 								{/if}
-							{/if}
-						</p>
+								{if $document.eu || !empty($document.project)}
+									{if $project_logo}
+										{image file=$project_logo class="logo-project project-logo"}
+									{elseif isset($project_logo)}
+										Brak zdefiniowanego logo projektu EU w szablonie umowy!
+									{/if}
+								{/if}
+							</p>
+						{/block}
 						{block name="header"}{/block}
 					</td>
 				</tr>
