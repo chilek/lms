@@ -29,6 +29,8 @@ $script_parameters = array(
     'section:' => 's:',
     'message-file:' => 'm:',
     'force-http-mode' => 'f',
+    'fetch-only' => 'o',
+    'output-directory:' => null,
 );
 
 $script_help = <<<EOF
@@ -36,7 +38,11 @@ $script_help = <<<EOF
                                 are stored
 -m, --message-file=<message-file>       name of message file;
 -f, --force-http-mode           force callback url mode even if script is not launched under
-                                http server control
+                                http server control;
+-o, --fetch-only                only fetch incoming SMS messages and write them to files;
+    --output-directory=<directory>
+                                output directory is directory where fetched messages
+                                are stored;
 EOF;
 
 require_once('script-options.php');
@@ -86,6 +92,15 @@ $LMS->setPluginManager($plugin_manager);
 $message_files = array();
 
 if ($http_mode) {
+    if (isset($options['output-directory'])) {
+        $output_directory = $options['output-directory'];
+        if (!is_dir($output_directory)) {
+            die('Output directory \'' . $output_directory . '\' does not exist!' . PHP_EOL);
+        }
+    } else {
+        $output_directory = sys_get_temp_dir();
+    }
+
     // call external incoming SMS handler(s)
     $errors = array();
     $content = null;
@@ -116,14 +131,18 @@ if ($http_mode) {
 
     if (is_array($content)) {
         foreach ($content as $sms) {
-            $message_file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'LMS_INCOMING_MESSAGE-' . uniqid('', true);
+            $message_file = $output_directory . DIRECTORY_SEPARATOR . 'LMS_INCOMING_MESSAGE-' . uniqid('', true);
             file_put_contents($message_file, $sms);
             $message_files[] = $message_file;
         }
     } else {
-        $message_file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'LMS_INCOMING_MESSAGE-' . uniqid('', true);
+        $message_file = $output_directory . DIRECTORY_SEPARATOR . 'LMS_INCOMING_MESSAGE-' . uniqid('', true);
         file_put_contents($message_file, $content);
         $message_files[] = $message_file;
+    }
+
+    if (isset($options['fetch-only'])) {
+        die;
     }
 } else {
     if (isset($options['message-file'])) {
