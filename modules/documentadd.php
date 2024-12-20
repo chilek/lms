@@ -634,6 +634,119 @@ if (isset($_POST['document'])) {
                 $document['fullnumber'] = $fullnumber;
                 $LMS->NewDocumentCustomerNotifications($document);
             }
+
+            if (!empty($document['sendmail'])) {
+                $docs = $DB->GetAll(
+                    "SELECT
+                        d.id,
+                        d.customerid,
+                        d.name,
+                        m.email
+                    FROM documents d
+                    JOIN (
+                        SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
+                        FROM customercontacts
+                        WHERE (type & ?) = ?
+                        GROUP BY customerid
+                    ) m ON m.customerid = d.customerid
+                    WHERE d.id = ?",
+                    array(
+                        CONTACT_EMAIL | CONTACT_DOCUMENTS | CONTACT_DISABLED,
+                        CONTACT_EMAIL | CONTACT_DOCUMENTS,
+                        $docid,
+                    )
+                );
+
+                $smtp_options = array(
+                    'host' => ConfigHelper::getConfig('documents.smtp_host'),
+                    'port' => ConfigHelper::getConfig('documents.smtp_port'),
+                    'user' => ConfigHelper::getConfig('documents.smtp_user'),
+                    'pass' => ConfigHelper::getConfig('documents.smtp_pass'),
+                    'auth' => ConfigHelper::getConfig('documents.smtp_auth'),
+                    'ssl_verify_peer' => ConfigHelper::checkConfig('documents.smtp_ssl_verify_peer', true),
+                    'ssl_verify_peer_name' => ConfigHelper::checkConfig('documents.smtp_ssl_verify_peer_name', true),
+                    'ssl_allow_self_signed' => ConfigHelper::checkConfig('documents.smtp_ssl_allow_self_signed'),
+                );
+
+                $debug_email = ConfigHelper::getConfig('documents.debug_email', '', true);
+                $sender_name = ConfigHelper::getConfig('documents.sender_name', '', true);
+                $sender_email = ConfigHelper::getConfig('documents.sender_email', '', true);
+                $mail_subject = ConfigHelper::getConfig('documents.mail_subject', '%document');
+                $mail_body = ConfigHelper::getConfig('documents.mail_body', '%document');
+                $mail_format = ConfigHelper::getConfig('documents.mail_format', 'text');
+                $notify_email = ConfigHelper::getConfig('documents.notify_email', '', true);
+                $reply_email = ConfigHelper::getConfig('documents.reply_email', '', true);
+                $add_message = ConfigHelper::checkConfig('documents.add_message');
+                $message_attachments = ConfigHelper::checkConfig('documents.message_attachments');
+                $dsn_email = ConfigHelper::getConfig('documents.dsn_email', '', true);
+                $mdn_email = ConfigHelper::getConfig('documents.mdn_email', '', true);
+
+                $errors = array();
+
+                if (empty($sender_email)) {
+                    $errors[] = trans("Fatal error: sender_email unset! Can't continue, exiting.");
+                }
+
+                $smtp_auth = empty($smtp_auth) ? ConfigHelper::getConfig('mail.smtp_auth_type') : $smtp_auth;
+                if (!empty($smtp_auth) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $smtp_auth)) {
+                    $errors[] = trans("Fatal error: smtp_auth value not supported! Can't continue, exiting.");
+                }
+
+                if (empty($errors)) {
+                    $result = $LMS->SendDocuments(
+                        $docs,
+                        'userpanel',
+                        compact(
+                            'debug_email',
+                            'mail_body',
+                            'mail_subject',
+                            'mail_format',
+                            'currtime',
+                            'sender_email',
+                            'sender_name',
+                            'dsn_email',
+                            'reply_email',
+                            'mdn_email',
+                            'notify_email',
+                            'add_message',
+                            'message_attachments',
+                            'smtp_options'
+                        )
+                    );
+
+                    if (!empty($result['errors'])) {
+                        $errors = array_merge($errors, $result['errors']);
+                    }
+                }
+
+                if (!empty($errors)) {
+                    $doc = reset($docs);
+                    $doc['title'] = trans(
+                        '$a no. $b issued on $c',
+                        $DOCTYPES[$document['type']],
+                        $document['fullnumber'],
+                        date('Y/m/d', $document['cdate'])
+                    );
+
+                    $SMARTY->display('header.html');
+
+                    echo '<h1>' . trans('Document send') . '</h1>';
+
+                    echo htmlspecialchars($doc['title'] . ': ' . $doc['email']) . '<br>';
+                    flush();
+                    ob_flush();
+
+                    echo '<span class="red">' . implode('<br>', $errors) . '</span><br>';
+
+                    echo '<script type="text/javascript">';
+                    echo "history.replaceState({}, '', location.href.replace(/&(is_sure|sent)=1/gi, '') + '&sent=1');";
+                    echo '</script>';
+
+                    $SMARTY->display('footer.html');
+                    $SESSION->close();
+                    die;
+                }
+            }
         }
 
         if (!isset($document['reuse'])) {

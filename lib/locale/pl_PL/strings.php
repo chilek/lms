@@ -6096,3 +6096,5 @@ $_LANG['Don\'t create assignments'] = 'Nie twórz zobowiązań';
 
 $_LANG['business'] = 'biznesowy';
 $_LANG['individual'] = 'indywidualny';
+
+$_LANG['send to customer email'] = 'wyślij na e-mail klienta';

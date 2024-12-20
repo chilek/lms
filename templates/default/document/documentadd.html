@@ -357,6 +357,10 @@
 								<input type="checkbox" name="with-attachments" value="1">
 								{trans("attachments")}
 							</label>
+							<label>
+								<input type="checkbox" name="document[sendmail]" value="1"{if !empty($document.sendmail)} checked{/if}>
+								{trans("send to customer email")}
+							</label>
 						</div>
 					</div>
 				</div>

@@ -2773,6 +2773,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         extract($params);
 
+        if (!isset($currtime)) {
+            $currtime = time();
+        }
+
         $errors = array();
         $info = array();
 
