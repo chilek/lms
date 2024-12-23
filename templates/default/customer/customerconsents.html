@@ -30,7 +30,7 @@
 					{trans("Consents")}
 				</label>
 			</td>
-			<td>
+			<td class="text-right">
 				<input type="checkbox" class="lms-ui-multi-check-all"
 					id="check-all-consents" value="1">
 					{icon name="reload" id="reset-consents" tip="Reset consents"}
@@ -65,7 +65,7 @@
 									{t a=$consent.label b=$subconsent.label}<!subconsent-label>$a ($b){/t}
 								</label>
 							</td>
-							<td>
+							<td class="text-right">
 								<input type="radio" name="{$variable_prefix}[consents][{$type}]" id="chkconsent{$subtype}"
 									value="{$subtype}"
 									{if isset($variables.consents[$type]) && $variables.consents[$type] == $subtype} checked{/if}
@@ -78,7 +78,7 @@
 						<td>
 							<span class="consent-label">{$consent.label}</span>
 						</td>
-						<td>
+						<td class="text-right">
 							<input type="checkbox" name="{$variable_prefix}[consents][{$type}]" id="chkconsent{$type}"
 								value="{$smarty.now}"{if isset($variables.consents[$type])} checked{/if}
 								data-default-checked="{if isset($variables['default-consents'][$type])}1{else}0{/if}"
