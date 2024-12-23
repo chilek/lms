@@ -801,6 +801,16 @@
 		$('#cutoffstopindefinitely').change(function() {
 			$('.cutoffstop').toggle(!this.checked);
 		});
+
+		$("#reset-consents").click(function() {
+			$("#customer-consent-table").find("[data-default-checked]").each(function() {
+				if ($(this).is(":checkbox")) {
+					$(this).prop("checked", $(this).attr("data-default-checked") == "1");
+				} else {
+					$(this).prop("checked", $(this).attr("data-default-checked") == $(this).val());
+				}
+			});
+		});
 	});
 
 </script>

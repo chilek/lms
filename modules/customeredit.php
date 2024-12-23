@@ -533,6 +533,7 @@ if (!isset($_POST['xjxfun'])) {
                 $customerinfo['icexpires'] = -1;
             }
         }
+
         $SMARTY->assign('backurl', $backurl);
 
         $SESSION->save(
@@ -550,6 +551,8 @@ if (!isset($_POST['xjxfun'])) {
     $customerid = $customerinfo['id'];
 
     include(MODULES_DIR.'/customer.inc.php');
+
+    $customerinfo['default-consents'] = $LMS->getCustomerConsents($_GET['id']);
 }
 
 $LMS->InitXajax();

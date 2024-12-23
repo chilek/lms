@@ -113,6 +113,8 @@ if ($groups_required) {
     }
 }
 
+$default_consents = Utils::getDefaultCustomerConsents();
+
 if (isset($_POST['customeradd'])) {
     $customeradd = $_POST['customeradd'];
 
@@ -463,7 +465,7 @@ if (isset($_POST['customeradd'])) {
         true
     );
 
-    $customeradd['consents'] = Utils::getDefaultCustomerConsents();
+    $customeradd['consents'] = $default_consents;
 
     $customer_type = trim(ConfigHelper::getConfig(
         'customers.default_type',
@@ -523,6 +525,8 @@ if (isset($_POST['customeradd'])) {
         );
     }
 }
+
+$customeradd['default-consents'] = $default_consents;
 
 if (!isset($customeradd['cutoffstopindefinitely'])) {
     $customeradd['cutoffstopindefinitely'] = 0;
