@@ -3077,7 +3077,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         return $options;
     }
 
-    private function getCustomerAddressessWithOrWithoutEndPoints($customerid, $with = true)
+    private function getCustomerAddressesWithOrWithoutEndPoints($customerid, $with = true)
     {
         $customerid = intval($customerid);
 
@@ -3114,12 +3114,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
     public function GetCustomerAddressesWithEndPoints($customerid)
     {
-        return $this->getCustomerAddressessWithOrWithoutEndPoints($customerid);
+        return $this->getCustomerAddressesWithOrWithoutEndPoints($customerid);
     }
 
     public function GetCustomerAddressesWithoutEndPoints($customerid)
     {
-        return $this->getCustomerAddressessWithOrWithoutEndPoints($customerid, false);
+        return $this->getCustomerAddressesWithOrWithoutEndPoints($customerid, false);
     }
 
     public function checkCustomerTenExistence($customerid, $ten, $divisionid = null)
