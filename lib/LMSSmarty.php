@@ -56,6 +56,7 @@ class LMSSmarty extends Smarty
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'str_replace', 'str_replace');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'preg_split', 'preg_split');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'preg_match', 'preg_match');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'preg_replace', 'preg_replace');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'moneyf', 'moneyf');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'moneyf_in_words', 'moneyf_in_words');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'intval', 'intval');
@@ -75,6 +76,7 @@ class LMSSmarty extends Smarty
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'urlencode', 'urlencode');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'addslashes', 'addslashes');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'json_decode', 'json_decode');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'iconv', 'iconv');
 
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'format_bankaccount', 'format_bankaccount');
 
