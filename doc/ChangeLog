@@ -890,6 +890,9 @@ version 28-git (????-??-??):
   - improvement: 'documents.default_reuse' configuration variable with 'false' as default value
     allows to check corresponding documentadd form option with first start of this form [chilan]
   - enhancement: 'send to customer email' option added in new document form [chilan]
+  - improvement: 'documents.location_address_preselection' configuration variable with 'false' as default value
+    provides ability to enable automatic schema location address selection according to default customer address
+    determination procedure [chilan]
 
 version 27.0 (2021-08-20):
 
