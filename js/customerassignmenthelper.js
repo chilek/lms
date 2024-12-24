@@ -527,7 +527,7 @@ function CustomerAssignmentHelper(options) {
 						var location = value.teryt == '1' ? $t('$a (TERYT)', value.location) : value.location;
 						options += '<option value="' + location + '"' +
 							' data-address-id="' + value.id + '"' +
-							(("location" in selected) && selected.location == location ? ' selected' : '') +
+							(("location" in selected) && selected.location == location || ("default_address" in value) ? ' selected' : '') +
 							' data-icon="' + location_type_icons[value.location_type] + '">' +
 							location + '</option>';
 						location_count++;
@@ -540,7 +540,7 @@ function CustomerAssignmentHelper(options) {
 						var location = value.teryt == '1' ? $t('$a (TERYT)', value.location) : value.location;
 						options += '<option value="' + location + '"' +
 							' data-address-id="' + value.id + '"' +
-							(("location" in selected) && selected.location == location ? ' selected' : '') +
+							(("location" in selected) && selected.location == location || ("default_address" in value) ? ' selected' : '') +
 							' data-icon="' + location_type_icons[value.location_type] + '">' +
 							location + '</option>';
 						location_count++;

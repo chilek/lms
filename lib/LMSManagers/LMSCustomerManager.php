@@ -2735,7 +2735,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $v['location'] = trans('$a (TERYT)', $v['location']);
             }
 
-            switch ($v['location_address_type']) {
+            $location_address_type = (isset($v['location_address_type'])) ? $v['location_address_type'] : $v['location_type'];
+
+            switch ($location_address_type) {
                 case BILLING_ADDRESS:
                     $billing_address = $k;
                     break;
