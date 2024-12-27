@@ -36,7 +36,13 @@ $data = array(
 if (isset($_GET['customerid'])) {
     $locationAddressPreselection = ConfigHelper::checkConfig('documents.location_address_preselection');
     $addressesWithEndPoints = $LMS->GetCustomerAddressesWithEndPoints($_GET['customerid']);
+    if (empty($addressesWithEndPoints)) {
+        $addressesWithEndPoints = array();
+    }
     $addressesWithoutEndPoints = $LMS->GetCustomerAddressesWithoutEndPoints($_GET['customerid']);
+    if (empty($addressesWithoutEndPoints)) {
+        $addressesWithoutEndPoints = array();
+    }
     if ($locationAddressPreselection) {
         $allAddresses = array_merge($addressesWithEndPoints, $addressesWithoutEndPoints);
         $LMS->determineDefaultCustomerAddress($allAddresses);
