@@ -144,7 +144,7 @@
 						<td>
 							{if $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_VOICE_CALL}
 								{$billings[i].billedtime|duration_format}
-							{elseif $billings[i].type = $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}
+							{elseif $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}
 								{$billings[i].billedtime|size_format}
 							{else}
 								-
