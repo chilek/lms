@@ -21,19 +21,10 @@
  *
  */
 
-define('CONTACT_NOTIFICATIONS_2022092201', 32);
-define('CONTACT_HELPDESK_NOTIFICATIONS_2022092201', 131072);
-
 $this->BeginTrans();
 
-$this->Execute(
-    "UPDATE customercontacts SET type = type | ? WHERE (type & ?) > 0",
-    array(
-        CONTACT_HELPDESK_NOTIFICATIONS_2022092201,
-        CONTACT_NOTIFICATIONS_2022092201,
-    )
-);
+$this->Execute("ALTER TABLE assignments ADD COLUMN paytime smallint DEFAULT NULL");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022092201', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022092200', 'dbversion'));
 
 $this->CommitTrans();
