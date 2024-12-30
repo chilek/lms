@@ -623,7 +623,7 @@
 						{$comment = ""}
 					{/if}
 
-					{trans('Previous balance: $a $b', Utils::formatMoney(abs($previous_balance) / $invoice.currencyvalue, $invoice.currency), $comment))}
+					{trans('Previous balance: $a $b', Utils::formatMoney(abs($previous_balance) / $invoice.currencyvalue, $invoice.currency), $comment)}
 					<br>
 
 					{if $icustomerbalance > 0}
