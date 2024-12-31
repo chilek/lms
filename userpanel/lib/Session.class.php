@@ -449,6 +449,8 @@ class Session
                     LOG_WARNING
                 );
                 $this->LogOut();
+
+                return;
             } else {
                 $this->islogged = true;
                 $this->isPasswdChangeRequired = $this->get('passwd_change_required');
