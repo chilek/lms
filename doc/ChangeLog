@@ -893,6 +893,8 @@ version 28-git (????-??-??):
   - improvement: 'documents.location_address_preselection' configuration variable with 'false' as default value
     provides ability to enable automatic schema location address selection according to default customer address
     determination procedure [chilan]
+  - enhancement: userpanel: optional two factor authentication mechanism using SMS-es sent to customer
+    phone numbers [chilan]
 
 version 27.0 (2021-08-20):
 
