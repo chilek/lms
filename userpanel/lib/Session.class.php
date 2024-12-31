@@ -1013,7 +1013,7 @@ class Session
     {
         return $this->db->GetRow(
             'SELECT
-                up_customers.customerid AS id,
+                c.id AS id,
                 c.pin AS passwd,
                 c.pinlastchange,
                 lastlogindate,
@@ -1023,8 +1023,8 @@ class Session
                 enabled,
                 m.emails,
                 p.phones
-            FROM up_customers
-            JOIN customers c ON c.id = up_customers.customerid
+            FROM customers c
+            LEFT JOIN up_customers ON up_customers.customerid = c.id
             LEFT JOIN (
                 SELECT
                     customercontacts.customerid,
@@ -1041,7 +1041,7 @@ class Session
                 WHERE (customercontacts.type & ?) = ?
                 GROUP BY customercontacts.customerid
             ) p ON p.customerid = c.id
-            WHERE up_customers.customerid = ?',
+            WHERE c.id = ?',
             array(
                 CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
                 CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
