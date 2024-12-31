@@ -381,6 +381,7 @@ class Session
                                                     }
                                                 }
                                             }
+                                            break;
                                         case 'email':
                                             break;
                                     }
