@@ -439,20 +439,19 @@ class Session
                     }
                 }
             }
-        } else {
-            if (empty($this->authcoderequired) && isset($_COOKIE['USID'])) {
-                $this->_restoreSession();
-                if (!isset($this->_vdata['REMOTE_ADDR']) || $this->_vdata['REMOTE_ADDR'] != $this->ip) {
-                    $this->islogged = false;
-                    writesyslog(
-                        "Session ip address does not match to web browser ip address. Customer ID: " . $this->login,
-                        LOG_WARNING
-                    );
-                    $this->LogOut();
-                } else {
-                    $this->islogged = true;
-                    $this->isPasswdChangeRequired = $this->get('passwd_change_required');
-                }
+        }
+
+        if (($this->login || !isset($loginform)) && empty($this->authcoderequired) && isset($_COOKIE['USID'])) {
+            if (!isset($this->_vdata['REMOTE_ADDR']) || $this->_vdata['REMOTE_ADDR'] != $this->ip) {
+                $this->islogged = false;
+                writesyslog(
+                    "Session ip address does not match to web browser ip address. Customer ID: " . $this->login,
+                    LOG_WARNING
+                );
+                $this->LogOut();
+            } else {
+                $this->islogged = true;
+                $this->isPasswdChangeRequired = $this->get('passwd_change_required');
             }
         }
 
