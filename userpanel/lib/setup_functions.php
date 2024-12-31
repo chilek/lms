@@ -64,6 +64,8 @@ function module_setup()
     }
     $SMARTY->assign('options', $options);
 
+    $SMARTY->assign('twofactor_auth_type', ConfigHelper::getConfig('userpanel.twofactor_auth_type', '', true));
+
     $allowed_customer_status =
         Utils::determineAllowedCustomerStatus(ConfigHelper::getConfig('userpanel.allowed_customer_status', ''), -1);
     if ($allowed_customer_status === -1) {
@@ -182,6 +184,12 @@ function module_submit_setup()
         $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'auth_type'", array($_POST['auth_type']));
     } else {
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'auth_type', ?)", array($_POST['auth_type']));
+    }
+
+    if ($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'twofactor_auth_type'")) {
+        $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'twofactor_auth_type'", array($_POST['twofactor_auth_type']));
+    } else {
+        $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'twofactor_auth_type', ?)", array($_POST['twofactor_auth_type']));
     }
 
     foreach ($USERPANEL_AUTH_TYPES as $auth_type) {

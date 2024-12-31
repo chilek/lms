@@ -315,7 +315,13 @@ if ($SESSION->islogged) {
     }
 } else {
     $SMARTY->assign('error', $SESSION->error);
+    $SMARTY->assign('info', $SESSION->info);
     $SMARTY->assign('target', '?' . $_SERVER['QUERY_STRING']);
+
+    if ($SESSION->authCodeRequired()) {
+        $SMARTY->assign('authcode_required', true);
+    }
+
     $SMARTY->display('login.html');
 }
 

@@ -196,9 +196,9 @@
             </td>
         </tr>
         <tr>
-            <td class="nobr">
+            <td class="nobr valign-top">
                 <label for="auth_type">
-                    {trans("Authentication type:")}
+                    {trans("Authentication type")}
                 </label>
             </td>
             <td>
@@ -253,6 +253,20 @@
                 {$auth_option_element}
             {/foreach}
         {/if}
+        <tr>
+            <td>
+                <label for="twofactor_auth_type">
+                    {trans("Two factor authentication")}
+                </label>
+            </td>
+            <td>
+                <select name="twofactor_auth_type" form="general-settings-form" id="twofactor_auth_type">
+                    <option value="">{trans("<!twofactor-auth-type>— disabled —")}</option>
+                    <option value="sms"{if $twofactor_auth_type == "sms"} selected{/if}>{trans("sms")}</option>
+                    <option value="email"{if $twofactor_auth_type == "email"} selected{/if} disabled>{trans("email")}</option>
+                </select>
+            </td>
+        </tr>
         <tr>
             <td class="nobr">
                 <label for="allowed_customer_status">

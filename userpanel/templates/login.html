@@ -54,51 +54,83 @@
 			{box title="VCS"}
 			<div class="text-center bold nobr">{if $page_header}{$page_header}{else}{trans("Virtual Customer Service")}{/if}</div>
 			<br />
-			{if $error}<div style="color: red;" class="text-center bold">{$error}</div>{else}&nbsp;{/if}
-			<br />
+			{if $error}
+				<div style="color: red;" class="text-center bold">{$error}</div>
+				<br />
+			{/if}
+			{if $info}
+				<div style="color: blue;" class="text-center bold">{$info}</div>
+				<br />
+			{/if}
 			<form id="login" method="post" action="{$target}">
 			{$auth_type=ConfigHelper::getConfig('userpanel.auth_type', $smarty.const.USERPANEL_AUTH_TYPE_ID_PIN)}
 			<table id="logindata" style="height: 100%; width: 100%;">
-				<tr>
-					<td class="text-right bold nobr">
-						{$_USERPANEL_AUTH_TYPES[$auth_type].label}
-					</td>
-					<td class="text-left">
-						<input type="text" id="inputlogin" name="loginform[login]" style="width: 100pt;" />
-					</td>
-				</tr>
-				<tr>
-					<td class="text-right bold nobr">
-						{$_USERPANEL_AUTH_TYPES[$auth_type].label_secret}
-					</td>
-					<td class="text-left">
-						<input type="password" name="loginform[pwd]" style="width: 100pt;" />
-					</td>
-				</tr>
-				{if !empty($google_recaptcha_sitekey)}
-				<tr>
-					<td colspan="2">
-						<div id="login-recaptcha" class="g-recaptcha"></div>
-					</td>
-				</tr>
-				{/if}
-				<tr>
-					<td colspan="2" class="text-center">
-						<br /><input type="submit" name="loginform[submit]" class="bold" value="{trans("Login")}"{if $google_recaptcha_sitekey} disabled{/if} />
-					</td>
-				</tr>
-				{if ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
-					|| ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
+				{if empty($authcode_required)}
+					<tr>
+						<td class="text-right bold nobr">
+							{$_USERPANEL_AUTH_TYPES[$auth_type].label}
+						</td>
+						<td class="text-left">
+							<input type="text" id="inputlogin" name="loginform[login]" style="width: 100pt;" />
+						</td>
+					</tr>
+					<tr>
+						<td class="text-right bold nobr">
+							{$_USERPANEL_AUTH_TYPES[$auth_type].label_secret}
+						</td>
+						<td class="text-left">
+							<input type="password" name="loginform[pwd]" style="width: 100pt;" />
+						</td>
+					</tr>
+					{if !empty($google_recaptcha_sitekey)}
+					<tr>
+						<td colspan="2">
+							<div id="login-recaptcha" class="g-recaptcha"></div>
+						</td>
+					</tr>
+					{/if}
+					<tr>
+						<td colspan="2" class="text-center">
+							<br /><input type="submit" name="loginform[submit]" class="bold" value="{trans("Login")}"{if $google_recaptcha_sitekey} disabled{/if} />
+						</td>
+					</tr>
+					{if ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
+						|| ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
+						<tr>
+							<td colspan="2" class="text-center bold nobr">
+								<br /><a href="javascript:switch_form('remind');">{trans("Remind credentials")}</a>
+							</td>
+						</tr>
+					{/if}
+				{else}
+					<tr>
+						<td class="text-right bold nobr">
+							{trans("One-time password")}
+						</td>
+						<td class="text-left">
+							<input type="text"  name="loginform[authcode]" id="authcode" style="width: 100pt;"
+								pattern="{literal}[0-9]{6}{/literal}"
+								required>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2" class="text-center">
+							<br /><input type="submit" name="loginform[submit]" class="bold" value="{trans("Continue")}"/>
+						</td>
+					</tr>
 					<tr>
 						<td colspan="2" class="text-center bold nobr">
-							<br /><a href="javascript:switch_form('remind');">{trans("Remind credentials")}</a>
+							<br />
+							<input type="hidden" name="loginform[backtologinform]" value="1" disabled>
+							<a href="#" id="authcode-to-login-form-button">{trans("Login form")}</a>
 						</td>
 					</tr>
 				{/if}
 			</table>
 			</form>
-			{if ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
-				|| ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
+			{if empty($authcode_required)
+				&& (ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
+				|| ConfigHelper::checkConfig('userpanel.mail_credential_reminders'))}
 				<form id="remind" method="post" action="{$target}">
 				<table id="reminddata" style="height: 100%; width: 100%; display: none;">
 					<tr>
@@ -208,6 +240,13 @@
 		}
 		$("#reminddata").find(".form-control:visible").first().focus();
 	}
+
+	$(function() {
+		$("#authcode-to-login-form-button").click(function() {
+			$('[name="loginform[backtologinform]"]').prop('disabled', false);
+			$("#login").submit();
+		});
+	});
 
 	(function() {
 		var href = window.location.href;

@@ -103,6 +103,9 @@ $_LANG['Enter reminder sms body'] = 'Wprowadź treść SMS-a z danymi do logowan
 $_LANG['Credential reminder couldn\'t be sent!'] = 'Przypomnienie danych do logowania nie mogło zostać wysłane!';
 
 $_LANG['Authentication type:'] = 'Rodzaj uwierzytelniania:';
+$_LANG['Authentication type'] = 'Rodzaj uwierzytelniania';
+$_LANG['Two factor authentication'] = 'Uwierzytelnianie dwuetapowe';
+$_LANG['<!twofactor-auth-type>— disabled —'] = '— wyłączone —';
 $_LANG['Userpanel authentication type'] = 'Rodzaj uwierzytelniania używany przez Panel klienta';
 
 $_LANG['Page header'] = 'Nagłówek strony';
@@ -137,3 +140,15 @@ $_LANG['Access is temporarily blocked. Please try again in 10 minutes.'] = 'Dost
 $_LANG['Allowed customer status'] = 'Dozwolony status klienta';
 
 $_LANG['PIN is expired - use credential reminder form!'] = 'Przeterminowany kod PIN - użyj formularza przypomnienia danych do logowania!';
+
+$_LANG['Continue'] = 'Kontynuuj';
+$_LANG['One-time password'] = 'Hasło jednorazowe';
+$_LANG['Your one-time password is: $a'] = 'Twoje hasło jednorazowe to: $a';
+$_LANG['Incorrect one-time password!'] = 'Niepoprawne hasło jednorazowe!';
+$_LANG['Your one-time password has been sent via SMS to your phone number.'] = 'Hasło jednorazowe zostało wysłane SMS-em na Twój numer telefonu.';
+$_LANG['Your one-time password has already been sent via SMS to your phone number within the last 3 minutes.'] = 'Hasło jednorazowe zostało już wysłane SMS-em na Twój numer telefonu w ciągu ostatnich 3 minut!';
+$_LANG['Warning'] = 'Ostrzeżenie';
+$_LANG['Information'] = 'Informacja';
+
+$_LANG['SMS sending service is not configured!'] = 'Usługa wysyłki SMS-ów nie jest skonfigurowana!';
+$_LANG['You dont\'t have any phone numbers assigned to your account!'] = 'Nie masz przypisanych żadnych numerów telefonów do swojego konta!';

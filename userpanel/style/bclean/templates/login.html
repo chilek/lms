@@ -104,7 +104,7 @@
                             <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="10000">
                                 <div class="toast-header bg-light">
                                     <span class="badge badge-warning mr-1">&nbsp;</span>
-                                    <strong class="mr-auto">{trans("Notification")}</strong>
+                                    <strong class="mr-auto">{trans("Warning")}</strong>
                                     {button class="ml-2 mb-1 close" data-dismiss="toast" text="&times;"}
                                 </div>
                                 <div class="toast-body">
@@ -113,27 +113,56 @@
                             </div>
                         </div>
                     {/if}
+                    {if $info}
+                        <div aria-live="polite" aria-atomic="true" class="d-flex justify-content-center align-items-center">
+                            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="10000">
+                                <div class="toast-header bg-light">
+                                    <span class="badge badge-info mr-1">&nbsp;</span>
+                                    <strong class="mr-auto">{trans("Information")}</strong>
+                                    {button class="ml-2 mb-1 close" data-dismiss="toast" text="&times;"}
+                                </div>
+                                <div class="toast-body">
+                                    {$info}
+                                </div>
+                            </div>
+                        </div>
+                    {/if}
                     {$auth_type=ConfigHelper::getConfig('userpanel.auth_type', $smarty.const.USERPANEL_AUTH_TYPE_ID_PIN)}
                     <form id="login" class="form-signin" method="post" action="{$target}">
-                        <fieldset class="form-group">
-                            <label for="inputLogin">{$_USERPANEL_AUTH_TYPES[$auth_type].label}</label>
-                            <input type="text"  name="loginform[login]" id="inputLogin" class="form-control" required>
-                        </fieldset>
-                        <fieldset class="form-group">
-                            <label for="inputPassword">{$_USERPANEL_AUTH_TYPES[$auth_type].label_secret}</label>
-                            <input type="password" name="loginform[pwd]" id="inputPassword" class="form-control" required>
-                        </fieldset>
-                        {if $google_recaptcha_sitekey}
-                        <div id="login-recaptcha" class="g-recaptcha"></div>
-                        {/if}
-                        <button class="btn btn-lg btn-primary btn-block{if $google_recaptcha_sitekey} disabled{/if}" name="loginform[submit]" type="submit"{if $google_recaptcha_sitekey} disabled{/if}>{trans('Login')}</button>
-                        {if ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
-                            || ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
-                            <a href="javascript:switch_form('remind');">{trans("Remind credentials")}</a>
+                        {if empty($authcode_required)}
+                            <fieldset class="form-group">
+                                <label for="inputLogin">{$_USERPANEL_AUTH_TYPES[$auth_type].label}</label>
+                                <input type="text"  name="loginform[login]" id="inputLogin" class="form-control" required>
+                            </fieldset>
+                            <fieldset class="form-group">
+                                <label for="inputPassword">{$_USERPANEL_AUTH_TYPES[$auth_type].label_secret}</label>
+                                <input type="password" name="loginform[pwd]" id="inputPassword" class="form-control" required>
+                            </fieldset>
+                            {if $google_recaptcha_sitekey}
+                                <div id="login-recaptcha" class="g-recaptcha"></div>
+                            {/if}
+                            <button class="btn btn-lg btn-primary btn-block{if $google_recaptcha_sitekey} disabled{/if}" name="loginform[submit]" type="submit"{if $google_recaptcha_sitekey} disabled{/if}>{trans('Login')}</button>
+                            {if ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
+                                || ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
+                                <a href="javascript:switch_form('remind');">{trans("Remind credentials")}</a>
+                            {/if}
+                        {else}
+                            <fieldset class="form-group">
+                                <label for="authcode">{trans("One-time password")}</label>
+                                <input type="text"  name="loginform[authcode]" id="authcode" class="form-control"
+                                    pattern="{literal}[0-9]{6}{/literal}"
+                                    required>
+                            </fieldset>
+                            <button class="btn btn-lg btn-primary btn-block" name="loginform[authcode]" type="submit">{trans("Continue")}</button>
+                            <p>
+                                <input type="hidden" name="loginform[backtologinform]" value="1" disabled>
+                                <a href="#" id="authcode-to-login-form-button">{trans("Login form")}</a>
+                            </p>
                         {/if}
                     </form>
-                    {if ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
-                        || ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
+                    {if empty($authcode_required) &&
+                        (ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
+                        || ConfigHelper::checkConfig('userpanel.mail_credential_reminders'))}
                         <form id="remind" class="form-signin" method="post" action="{$target}" style="display:none;">
                             {if ConfigHelper::checkConfig('userpanel.sms_credential_reminders') && !ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
                                 <input type="hidden" name="remindform[type]" id="remindType" value="2">
@@ -208,6 +237,13 @@
                     document.getElementById('remindType').value = '2';
                 }
             }
+
+            $(function() {
+                $("#authcode-to-login-form-button").click(function() {
+                    $('[name="loginform[backtologinform]"]').prop('disabled', false);
+                    $("#login").submit();
+                });
+            });
 
             (function() {
                 var href = window.location.href;
