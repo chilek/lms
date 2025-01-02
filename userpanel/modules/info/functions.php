@@ -459,6 +459,10 @@ if (defined('USERPANEL_SETUPMODE')) {
     {
         global $layout, $SMARTY, $DB, $LMS;
 
+        if (!ConfigHelper::checkPrivilege('userpanel_management') && !ConfigHelper::checkPrivilege('userpanel_change_affirmation')) {
+            access_denied();
+        }
+
         $layout['pagetitle'] = trans('Changes affirmation');
 
         $userchanges = $DB->GetAll(
@@ -514,6 +518,10 @@ if (defined('USERPANEL_SETUPMODE')) {
     function module_submit_changes_save()
     {
         global $LMS;
+
+        if (!ConfigHelper::checkPrivilege('userpanel_management') && !ConfigHelper::checkPrivilege('userpanel_change_affirmation')) {
+            access_denied();
+        }
 
         $DB = LMSDB::getInstance();
 
@@ -658,6 +666,10 @@ if (defined('USERPANEL_SETUPMODE')) {
     {
         global $LMS;
 
+        if (!ConfigHelper::checkPrivilege('userpanel_management') && !ConfigHelper::checkPrivilege('userpanel_change_affirmation')) {
+            access_denied();
+        }
+
         $DB = LMSDB::getInstance();
 
         if (isset($_POST['userchanges'])) {
@@ -711,6 +723,10 @@ if (defined('USERPANEL_SETUPMODE')) {
     {
         global $SMARTY, $LMS;
 
+        if (!ConfigHelper::checkPrivilege('userpanel_management')) {
+            access_denied();
+        }
+
         $SMARTY->assign('hide_nodesbox', ConfigHelper::getConfig('userpanel.hide_nodesbox'));
         $SMARTY->assign('consent_text', ConfigHelper::getConfig('userpanel.data_consent_text'));
         $SMARTY->assign('pin_changes', ConfigHelper::checkConfig('userpanel.pin_changes'));
@@ -729,6 +745,10 @@ if (defined('USERPANEL_SETUPMODE')) {
 
     function module_submit_setup()
     {
+        if (!ConfigHelper::checkPrivilege('userpanel_management')) {
+            access_denied();
+        }
+
         $DB = LMSDB::getInstance();
 
         $DB->Execute(

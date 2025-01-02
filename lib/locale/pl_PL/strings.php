@@ -3439,6 +3439,7 @@ $_LANG['VoIP price list management'] = 'zarządzanie cennikami VoIP';
 $_LANG['VoIP call recordings'] = 'nagrania połączeń VoIP';
 $_LANG['VoIP prefix management'] = 'Zarządzanie prefiksami VoIP';
 $_LANG['Userpanel management'] = 'zarządzanie Panelem klienta';
+$_LANG['Userpanel change affirmation'] = 'zatwierdzanie zmian w Panelu klienta';
 $_LANG['cash-in receipt'] = 'KP';
 $_LANG['cash-out receipt'] = 'KW';
 $_LANG['cash receipts'] = 'dok. kasowe';

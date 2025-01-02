@@ -37,14 +37,14 @@ Localisation::appendUiLanguage(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'lib' . DIR
 $submenu = null;
 
 // Add Configutation submenu
-$submenu[] =
+$submenu['configuration'] =
     array(
         'name' => trans('Configuration'),
         'link' => '?m=userpanel',
         'tip' => trans('Userpanel Configuration'),
         'prio' => 10,
     );
-$submenu[] =
+$submenu['rights'] =
     array(
         'name' => trans('Rights'),
         'link' => '?m=userpanel&f=rights',
@@ -70,8 +70,8 @@ while (false !== ($filename = readdir($dh))) {
 
 foreach ($USERPANEL->MODULES as $menupos) {
     if (!empty($menupos['submenu'])) {
-        foreach ($menupos['submenu'] as $modulemenu) {
-            $submenu[] = $modulemenu;
+        foreach ($menupos['submenu'] as $modulelabel => $modulemenu) {
+            $submenu[$modulelabel] = $modulemenu;
         }
     }
 }

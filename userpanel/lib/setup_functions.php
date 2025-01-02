@@ -26,6 +26,10 @@
 
 function userpanel_style_change()
 {
+    if (!ConfigHelper::checkPrivilege('userpanel_management')) {
+        access_denied();
+    }
+
     $files = getdir(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'templates_c', '^.*\.html\.php$');
     if (!empty($files)) {
         foreach ($files as $file) {
@@ -37,6 +41,10 @@ function userpanel_style_change()
 function module_setup()
 {
     global $SMARTY, $DB, $USERPANEL, $USERPANEL_AUTH_TYPES, $layout, $LMS, $CSTATUSES;
+
+    if (!ConfigHelper::checkPrivilege('userpanel_management')) {
+        access_denied();
+    }
 
     $layout['pagetitle'] = trans('Userpanel Configuration');
     $SMARTY->assign('page_header', ConfigHelper::getConfig('userpanel.page_header', ''));
@@ -103,6 +111,10 @@ function module_setup()
 function module_submit_setup()
 {
     global $DB, $LMS, $CSTATUSES, $USERPANEL_AUTH_TYPES;
+
+    if (!ConfigHelper::checkPrivilege('userpanel_management')) {
+        access_denied();
+    }
 
     if (!isset($_POST['hint'])) {
         module_setup();
@@ -329,6 +341,10 @@ function module_rights()
 {
     global $SMARTY, $DB, $LMS, $layout;
 
+    if (!ConfigHelper::checkPrivilege('userpanel_management')) {
+        access_denied();
+    }
+
     $layout['pagetitle'] = trans('Customers\' rights');
 
     $customerlist = $LMS->GetCustomerNames();
@@ -342,6 +358,10 @@ function module_rights()
 function module_submit_rights()
 {
     global $DB;
+
+    if (!ConfigHelper::checkPrivilege('userpanel_management')) {
+        access_denied();
+    }
 
     $setrights=$_POST['setrights'];
     if (isset($setrights) && isset($setrights['mcustomerid'])) {
@@ -380,6 +400,10 @@ function module_submit_rights_default()
 {
     global $DB;
 
+    if (!ConfigHelper::checkPrivilege('userpanel_management')) {
+        access_denied();
+    }
+
     if (!isset($_POST['loginform'])) {
         $rights = $_POST['setdefaultrights'] ?? array();
         foreach ($DB->GetCol('SELECT id FROM up_rights') as $right) {
@@ -394,6 +418,10 @@ function module_submit_rights_default()
 
 function module_save_module_order()
 {
+    if (!ConfigHelper::checkPrivilege('userpanel_management')) {
+        access_denied();
+    }
+
     $DB = LMSDB::getInstance();
     $DB->Execute(
         'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',

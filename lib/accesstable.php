@@ -309,6 +309,15 @@ $access_table = array(
             'userpanel' => Permission::MENU_ALL,
         ),
     ),
+    'userpanel_change_affirmation' => array(
+        'label' => trans('Userpanel change affirmation'),
+        'allow_regexp' => '^userpanel$',
+        'allow_menu_items' => array(
+            'userpanel' => array(
+                'changeaffirmation', 'documentlist',
+            ),
+        ),
+    ),
     'hide_sysinfo' => array(
         'label' => trans('system information hiding'),
     ),
