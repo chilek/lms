@@ -899,6 +899,7 @@ version 28-git (????-??-??):
   - improvement: configuration variable 'invoices.transfer_form_on_separate_page' with default
     value of 'false' allows to force transfer form presentation of invoices generated using TCPDF PHP library
     on separate page [chilan]
+  - enhancement: new dedicated user permission to userpanel customer data change affirmation [chilan]
 
 version 27.0 (2021-08-20):
 
