@@ -346,9 +346,10 @@ class Session
 
                                 $authinfo = $this->GetCustomerAuthInfo($this->id);
 
+                                $this->save('session_id', $this->id);
+
                                 if ($this->authcoderequired) {
                                     $this->islogged = false;
-                                    $this->save('session_id', $this->id);
 
                                     $this->restore('session_authcode_dt', $session_authcode_dt);
 
