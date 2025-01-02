@@ -896,6 +896,9 @@ version 28-git (????-??-??):
   - enhancement: userpanel: optional two factor authentication mechanism using SMS-es sent to customer
     phone numbers [chilan]
   - enhancement: finances/report/invoices: option which toggles transfer forms on invoices [chilan]
+  - improvement: configuration variable 'invoices.transfer_form_on_separate_page' with default
+    value of 'false' allows to force transfer form presentation of invoices generated using TCPDF PHP library
+    on separate page [chilan]
 
 version 27.0 (2021-08-20):
 
