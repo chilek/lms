@@ -235,7 +235,9 @@ class Session
                     $body
                 );
             } else {
-                $LMS->SendSMS($phone, $body);
+                $sms_options = $LMS->getCustomerSMSOptions();
+
+                $LMS->SendSMS($phone, $body, null, $sms_options ?? null);
             }
             $this->error = trans('Credential reminder has been sent!');
             return;
@@ -371,10 +373,14 @@ class Session
                                                         $this->save('session_authcode', $authcode);
                                                         $this->save('session_authcode_dt', time());
 
+                                                        $sms_options = $LMS->getCustomerSMSOptions();
+
                                                         foreach (explode(',', $authinfo['phones']) as $phone) {
                                                             $LMS->SendSMS(
                                                                 $phone,
-                                                                trans('Your one-time password is: $a', $authcode)
+                                                                trans('Your one-time password is: $a', $authcode),
+                                                                null,
+                                                                $sms_options ?? null
                                                             );
                                                         }
 
