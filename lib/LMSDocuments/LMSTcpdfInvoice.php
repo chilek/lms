@@ -31,6 +31,8 @@ class LMSTcpdfInvoice extends LMSInvoice
 
     private $use_alert_color;
 
+    private $transfer_form_on_separate_page = false;
+
     public function __construct($title, $pagesize = 'A4', $orientation = 'portrait')
     {
         parent::__construct('LMSTcpdfBackend', $title, $pagesize, $orientation);
@@ -44,6 +46,8 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->backend->SetFont($font, '', 7);
 
         $this->use_alert_color = ConfigHelper::checkConfig('invoices.use_alert_color');
+
+        $this->transfer_form_on_separate_page = ConfigHelper::checkConfig('invoices.transfer_form_on_separate_page');
 
         [$margin_top, $margin_right, $margin_bottom, $margin_left] = explode(',', ConfigHelper::getConfig('invoices.tcpdf_margins', '27,15,25,15'));
 
@@ -1281,7 +1285,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             /* FT-0100 form */
             $lms = LMS::getInstance();
             if ($lms->checkCustomerConsent($this->data['customerid'], CCONSENT_TRANSFERFORM)) {
-                if ($this->backend->GetY() > 180) {
+                if ($this->backend->GetY() > 180 || $this->transfer_form_on_separate_page) {
                     $this->backend->AppendPage();
                 }
 
