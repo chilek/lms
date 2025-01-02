@@ -895,6 +895,7 @@ version 28-git (????-??-??):
     determination procedure [chilan]
   - enhancement: userpanel: optional two factor authentication mechanism using SMS-es sent to customer
     phone numbers [chilan]
+  - enhancement: finances/report/invoices: option which toggles transfer forms on invoices [chilan]
 
 version 27.0 (2021-08-20):
 
