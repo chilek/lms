@@ -1274,7 +1274,8 @@ class LMSTcpdfInvoice extends LMSInvoice
             $this->invoice_memo();
         }
 
-        if (($PAYTYPES[$this->data['paytype']]['features'] & INVOICE_FEATURE_TRANSFER_FORM)
+        if ((!isset($this->data['transfer-forms']) || !empty($this->data['transfer-forms']))
+            && ($PAYTYPES[$this->data['paytype']]['features'] & INVOICE_FEATURE_TRANSFER_FORM)
             && ($this->data['customerbalance'] < 0 || ConfigHelper::checkConfig('invoices.always_show_form', true))
             && !isset($this->data['rebate'])) {
             /* FT-0100 form */

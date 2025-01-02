@@ -281,6 +281,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
     $dateto = intval($_GET['to']);
     $einvoice = isset($_GET['einvoice']) ? intval($_GET['einvoice']) : 0;
     $related_documents = isset($_GET['related-documents']);
+    $transfer_forms = !empty($_GET['transfer-forms']);
 
     $documents = $DB->GetAllByKey(
         'SELECT
@@ -1293,6 +1294,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t</Faktura>\n";
             }
         } else {
+            $invoice['transfer-forms'] = $transfer_forms;
             foreach (array_keys($DOCENTITIES) as $type) {
                 if ($which & $type) {
                     $i++;
