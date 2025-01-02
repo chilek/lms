@@ -3270,6 +3270,7 @@ $_LANG['There are no open events in timetable.'] = 'Brak otwartych zdarzeń w te
 $_LANG['Allows you to send notices to customers'] = 'Pozwala wysyłać powiadomienia do klientów';
 $_LANG['Allows you to send messages to customers'] = 'Pozwala wysyłać wiadomości do klientów';
 $_LANG['Creation date:'] = 'Data utworzenia:';
+$_LANG['Creation date'] = 'Data utworzenia';
 $_LANG['Customers Messaging'] = 'Komunikacja z klientami';
 $_LANG['destination number/email'] = 'numer/adres odbiorcy';
 $_LANG['drafts'] = 'szkice';
