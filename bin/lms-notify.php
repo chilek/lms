@@ -139,7 +139,8 @@ $weekday = date('N', $current_time);
 $holidays = array(
     $year => getHolidays($year),
 );
-if ($omit_free_days && ($weekday > 5 || isset($holidays[$year][$current_time]))) {
+$current_day_time = strtotime('today', $current_time);
+if ($omit_free_days && ($weekday > 5 || isset($holidays[$year][$current_day_time]))) {
     die('Notifications are omitted, because current day is free day!' . PHP_EOL);
 }
 
