@@ -127,9 +127,22 @@
                             </div>
                         </div>
                     {/if}
-                    {$auth_type=ConfigHelper::getConfig('userpanel.auth_type', $smarty.const.USERPANEL_AUTH_TYPE_ID_PIN)}
-                    <form id="login" class="form-signin" method="post" action="{$target}">
-                        {if empty($authcode_required)}
+                    {if !empty($authcode_required) && !$error && !$info}
+                        <div aria-live="polite" aria-atomic="true" class="d-flex justify-content-center align-items-center">
+                            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="10000" style="display: none;">
+                                <div class="toast-header bg-light">
+                                    <span class="badge badge-info mr-1">&nbsp;</span>
+                                    <strong class="mr-auto">{trans("Information")}</strong>
+                                    {button class="ml-2 mb-1 close" data-dismiss="toast" text="&times;"}
+                                </div>
+                                <div class="toast-body">
+                                </div>
+                            </div>
+                        </div>
+                    {/if}
+                    {if empty($authcode_required)}
+                        {$auth_type=ConfigHelper::getConfig('userpanel.auth_type', $smarty.const.USERPANEL_AUTH_TYPE_ID_PIN)}
+                        <form id="login" class="form-signin" method="post" action="{$target}">
                             <fieldset class="form-group">
                                 <label for="inputLogin">{$_USERPANEL_AUTH_TYPES[$auth_type].label}</label>
                                 <input type="text"  name="loginform[login]" id="inputLogin" class="form-control" required>
@@ -146,20 +159,42 @@
                                 || ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
                                 <a href="javascript:switch_form('remind');">{trans("Remind credentials")}</a>
                             {/if}
-                        {else}
-                            <fieldset class="form-group">
+                        </form>
+                    {else}
+                        <form id="login" class="form-signin" method="post" action="{$target}">
+                            <fieldset class="form-group phone-number-ui-control"{if empty($phone_numbers)} style="display: none;"{/if}>
+                                <label for="phone-number">
+                                    {trans("Select phone number to which one-time password will be sent.")}
+                                </label>
+                                <select name="loginform[phone-number]" id="phone-number" class="form-control"
+                                    required
+                                    {if empty($phone_numbers)} disabled{/if}>
+                                    <option value="">-</option>
+                                    {foreach $phone_numbers as $phone_number}
+                                        {$masked_phone_number = Utils::maskPhoneNumber($phone_number)}
+                                        <option value="{$masked_phone_number}">{$masked_phone_number}</option>
+                                    {/foreach}
+                                </select>
+                            </fieldset>
+                            <button class="btn btn-lg btn-primary btn-block phone-number-ui-control" id="phone-number-submit"
+                                {if empty($phone_numbers)} style="display: none;"{/if}
+                                >{trans("Send one-time password")}</button>
+                            <fieldset class="form-group auth-code-ui-control"{if !empty($phone_numbers)} style="display: none;"{/if}>
                                 <label for="authcode">{trans("One-time password")}</label>
                                 <input type="text"  name="loginform[authcode]" id="authcode" class="form-control"
                                     pattern="{literal}[0-9]{6}{/literal}"
-                                    required>
+                                    required
+                                    {if !empty($phone_numbers)} disabled{/if}>
                             </fieldset>
-                            <button class="btn btn-lg btn-primary btn-block" name="loginform[authcode]" type="submit">{trans("Continue")}</button>
+                            <button class="btn btn-lg btn-primary btn-block auth-code-ui-control" name="loginform[authcode-submit]" type="submit"
+                                {if !empty($phone_numbers)} style="display: none;"{/if}
+                                >{trans("Continue")}</button>
                             <p>
                                 <input type="hidden" name="loginform[backtologinform]" value="1" disabled>
                                 <a href="#" id="authcode-to-login-form-button">{trans("Login form")}</a>
                             </p>
-                        {/if}
-                    </form>
+                        </form>
+                    {/if}
                     {if empty($authcode_required) &&
                         (ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
                         || ConfigHelper::checkConfig('userpanel.mail_credential_reminders'))}
@@ -243,6 +278,27 @@
                     $('[name="loginform[backtologinform]"]').prop('disabled', false);
                     $("#login").submit();
                 });
+
+                $("#phone-number-submit").click(function() {
+                    $(".auth-code-ui-control").show().find('.form-control').prop('disabled', false);
+                    $(".phone-number-ui-control").hide().prop('disabled', true);
+                    $.ajax({
+                        url: "{$target}",
+                        method: "POST",
+                        dataType: 'json',
+                        data: {
+                            loginform: {
+                                "phone-number": $("#phone-number").val()
+                            }
+                        },
+                        success: function(data) {
+                            if (data.hasOwnProperty("info")) {
+                                $(".toast-body").text(data.info);
+                                $(".toast").show().toast('show');
+                            }
+                        }
+                    });
+                });
             });
 
             (function() {
@@ -253,7 +309,7 @@
                 }
 
                 $(function() {
-                    $('.toast').toast('show');
+                    $(".toast").toast('show');
                     if (href.match(/#remind.*$/)) {
                         $("#remind").find(".form-control:visible").first().focus();
                     } else {

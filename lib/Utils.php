@@ -1458,4 +1458,20 @@ class Utils
 
         return isset($customerConsentGroupsByCustomerConsents[$customerConsentId]) ? $customerConsentGroupsByCustomerConsents[$customerConsentId] : null;
     }
+
+    public static function maskPhoneNumber($phoneNumber)
+    {
+        $normalizedPhoneNumber = preg_replace('/[^0-9]/', '', $phoneNumber);
+        $digitCount = strlen($normalizedPhoneNumber);
+        $i = 0;
+        while ($digitCount > 3) {
+            if (ctype_digit($phoneNumber[$i])) {
+                $phoneNumber[$i] = '*';
+                $digitCount--;
+            }
+            $i++;
+        }
+
+        return $phoneNumber;
+    }
 }

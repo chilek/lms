@@ -319,6 +319,7 @@ if ($SESSION->islogged) {
     $SMARTY->assign('target', '?' . $_SERVER['QUERY_STRING']);
 
     if ($SESSION->authCodeRequired()) {
+        $SMARTY->assign('phone_numbers', $SESSION->getCustomerPhoneNumbers());
         $SMARTY->assign('authcode_required', true);
     }
 

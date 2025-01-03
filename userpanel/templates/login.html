@@ -62,6 +62,10 @@
 				<div style="color: blue;" class="text-center bold">{$info}</div>
 				<br />
 			{/if}
+			{if !empty($authcode_required) && !$error && !$info}
+				<div style="color: blue; display: none;" class="text-center bold toast toast-body"></div>
+				<br />
+			{/if}
 			<form id="login" method="post" action="{$target}">
 			{$auth_type=ConfigHelper::getConfig('userpanel.auth_type', $smarty.const.USERPANEL_AUTH_TYPE_ID_PIN)}
 			<table id="logindata" style="height: 100%; width: 100%;">
@@ -103,17 +107,41 @@
 						</tr>
 					{/if}
 				{else}
-					<tr>
+					<tr class="phone-number-ui-control"{if empty($phone_numbers)} style="display: none;"{/if}>
+						<td colspan="2" class="text-center bold">
+							{trans("Select phone number to which one-time password will be sent.")}
+						</td>
+					</tr>
+					<tr class="phone-number-ui-control"{if empty($phone_numbers)} style="display: none;"{/if}>
+						<td colspan="2" class="text-center">
+							<select name="loginform[phone-number]" id="phone-number" class="form-control"
+								required
+								{if empty($phone_numbers)} disabled{/if}>
+								<option value="">-</option>
+								{foreach $phone_numbers as $phone_number}
+									{$masked_phone_number = Utils::maskPhoneNumber($phone_number)}
+									<option value="{$masked_phone_number}">{$masked_phone_number}</option>
+								{/foreach}
+							</select>
+						</td>
+					</tr>
+					<tr class="phone-number-ui-control"{if empty($phone_numbers)} style="display: none;"{/if}>
+						<td colspan="2" class="text-center">
+							<br /><input id="phone-number-submit" class="bold" value="{trans("Send one-time password")}"/>
+						</td>
+					</tr>
+					<tr class="auth-code-ui-control"{if !empty($phone_numbers)} style="display: none;"{/if}>
 						<td class="text-right bold nobr">
 							{trans("One-time password")}
 						</td>
 						<td class="text-left">
 							<input type="text"  name="loginform[authcode]" id="authcode" style="width: 100pt;"
 								pattern="{literal}[0-9]{6}{/literal}"
-								required>
+								required
+								class="form-control">
 						</td>
 					</tr>
-					<tr>
+					<tr class="auth-code-ui-control"{if !empty($phone_numbers)} style="display: none;"{/if}>
 						<td colspan="2" class="text-center">
 							<br /><input type="submit" name="loginform[submit]" class="bold" value="{trans("Continue")}"/>
 						</td>
@@ -246,6 +274,28 @@
 			$('[name="loginform[backtologinform]"]').prop('disabled', false);
 			$("#login").submit();
 		});
+
+		$("#phone-number-submit").click(function() {
+			$(".auth-code-ui-control").show().find('.form-control').prop('disabled', false);
+			$(".phone-number-ui-control").hide().find('.form-control').prop('disabled', true);
+			$.ajax({
+				url: "{$target}",
+				method: "POST",
+				dataType: 'json',
+				data: {
+					loginform: {
+						"phone-number": $("#phone-number").val()
+					}
+				},
+				success: function(data) {
+					if (data.hasOwnProperty("info")) {
+						$(".toast-body").text(data.info);
+						$(".toast").show();
+					}
+				}
+			});
+		});
+
 	});
 
 	(function() {

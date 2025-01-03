@@ -52,6 +52,7 @@ class Session
 
     private $authcoderequired = '';
     private $authcode = null;
+    private $phoneNumbers = array();
 
     public function __construct(&$DB, $timeout = 600)
     {
@@ -264,7 +265,59 @@ class Session
             $this->islogged = true;
         } elseif (isset($loginform)) {
             if ($this->authcoderequired && $this->id) {
-                if (empty($loginform['authcode'])) {
+                if (!empty($loginform['phone-number'])) {
+                    $authinfo = $this->GetCustomerAuthInfo($this->id);
+
+                    $this->islogged = false;
+
+                    $this->restore('session_authcode_dt', $session_authcode_dt);
+
+                    $authinfo = $this->GetCustomerAuthInfo($this->id);
+
+                    switch ($this->authcoderequired) {
+                        case 'sms':
+                            if (time() - $session_authcode_dt < 180) {
+                                $this->error = trans('Your one-time password has already been sent via SMS to your phone number within the last 3 minutes.');
+                            } else {
+                                $phones = explode(',', $authinfo['phones']);
+
+                                $maskedPhoneNumber = $loginform['phone-number'];
+
+                                $phone = null;
+                                foreach ($phones as $phoneNumber) {
+                                    if ($maskedPhoneNumber == Utils::maskPhoneNumber($phoneNumber)) {
+                                        $phone = $phoneNumber;
+                                        break;
+                                    }
+                                }
+
+                                if (isset($phone)) {
+                                    $authcode = mt_rand(100000, 999999);
+                                    $this->save('session_authcode', $authcode);
+                                    $this->save('session_authcode_dt', time());
+
+                                    $sms_options = $LMS->getCustomerSMSOptions();
+
+                                    $LMS->SendSMS(
+                                        $phone,
+                                        trans('Your one-time password is: $a', $authcode),
+                                        null,
+                                        $sms_options ?? null
+                                    );
+
+                                    $this->close();
+
+                                    header('Content-Type: application/json');
+                                    die(json_encode(array(
+                                        'info' => trans('Your one-time password has been sent via SMS to your phone number $a.', $maskedPhoneNumber),
+                                    )));
+                                }
+                            }
+                            break;
+                        case 'email':
+                            break;
+                    }
+                } elseif (empty($loginform['authcode'])) {
                     $this->authcoderequired = '';
                     $this->login = null;
                     $this->id = null;
@@ -369,22 +422,30 @@ class Session
                                                     if (time() - $session_authcode_dt < 180) {
                                                         $this->error = trans('Your one-time password has already been sent via SMS to your phone number within the last 3 minutes.');
                                                     } else {
-                                                        $authcode = mt_rand(100000, 999999);
-                                                        $this->save('session_authcode', $authcode);
-                                                        $this->save('session_authcode_dt', time());
+                                                        $phones = explode(',', $authinfo['phones']);
+                                                        if (count($phones) == 1) {
+                                                            $authcode = mt_rand(100000, 999999);
+                                                            $this->save('session_authcode', $authcode);
+                                                            $this->save('session_authcode_dt', time());
 
-                                                        $sms_options = $LMS->getCustomerSMSOptions();
+                                                            $sms_options = $LMS->getCustomerSMSOptions();
 
-                                                        foreach (explode(',', $authinfo['phones']) as $phone) {
+                                                            $phone = reset($phones);
                                                             $LMS->SendSMS(
                                                                 $phone,
                                                                 trans('Your one-time password is: $a', $authcode),
                                                                 null,
                                                                 $sms_options ?? null
                                                             );
-                                                        }
 
-                                                        $this->info = trans('Your one-time password has been sent via SMS to your phone number.');
+                                                            $this->info = trans('Your one-time password has been sent via SMS to your phone number $a.', Utils::maskPhoneNumber($phone));
+                                                        } else {
+                                                            foreach ($phones as &$phone) {
+                                                                $phone = Utils::maskPhoneNumber($phone);
+                                                            }
+                                                            unset($phone);
+                                                            $this->phoneNumbers = $phones;
+                                                        }
                                                     }
                                                 }
                                             }
@@ -1143,5 +1204,10 @@ class Session
     public function authCodeRequired()
     {
         return $this->authcoderequired != '';
+    }
+
+    public function getCustomerPhoneNumbers()
+    {
+        return $this->phoneNumbers;
     }
 }
