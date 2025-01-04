@@ -497,7 +497,7 @@
 				</td>
 			</tr>
 		{/if}
-		<tr id="startdate-row" class="scheduled-message"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
+		<tr id="startdate-row" class="scheduled-message"{if $message.type != $smarty.const.MSG_MAIL && $message.type != $smarty.const.MSG_SMS && !$message.type != $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>
 			<td>
 				{icon name="calendar"}
 			</td>
@@ -515,7 +515,7 @@
 					{tip trigger="startdate" class="lms-ui-datetime"}>
 			</td>
 		</tr>
-		<tr id="attemtps-row" class="scheduled-message"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
+		<tr id="attemtps-row" class="scheduled-message"{if $message.type != $smarty.const.MSG_MAIL && $message.type != $smarty.const.MSG_SMS && !$message.type != $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>
 			<td>
 				{icon name="reload" class="attempts-field"}
 			</td>
@@ -763,7 +763,9 @@
 			});
 
 			if (elem == 'typesms' || elem == 'typeanysms' || elem == 'typewww' || elem == 'typeuserpanel' || elem == 'typeuserpanelurgent') {
-				$('#mailfrom,#mailsender,.scheduled-message').hide();
+				$('#mailfrom,#mailsender').hide();
+
+				$('.scheduled-message').toggle(elem != 'typewww' && elem != 'typeuserpanel' && elem != 'typeuserpanelurgent');
 
 				$('#attachment').toggle(elem != 'typesms' && elem != 'typeanysms' && elem != 'typewww');
 

@@ -3486,10 +3486,13 @@ if (empty($types) || in_array('messages', $types)) {
             fwrite($fh, str_replace("\\n", PHP_EOL, $notifications['messages']['footer']));
             fclose($fh);
         }
-    } elseif (in_array('mail', $channels)) {
+    } elseif (in_array('mail', $channels) || in_array('sms', $channels)) {
         $messageitems = $DB->GetAll(
             'SELECT
                 m.id AS messageid,
+                m.type,
+                mi.destination,
+                mi.body,
                 mi.id AS messageitemid,
                 mi.customerid,
                 (' . $DB->Concat('c.lastname', "' '", 'c.name') . ') AS name,
@@ -3498,7 +3501,7 @@ if (empty($types) || in_array('messages', $types)) {
             FROM messages m
             JOIN messageitems mi ON mi.messageid = m.id
             JOIN customers c ON c.id = mi.customerid
-            WHERE m.type = ?
+            WHERE m.type IN ?
                 AND m.startdate > 0
                 AND m.startdate <= ?
                 AND mi.attempts > 0
@@ -3509,7 +3512,10 @@ if (empty($types) || in_array('messages', $types)) {
                 m.startdate,
                 mi.id',
             array(
-                MSG_MAIL,
+                array(
+                    MSG_MAIL,
+                    MSG_SMS,
+                ),
                 $currtime,
                 array(
                     MSG_NEW,
@@ -3559,68 +3565,89 @@ if (empty($types) || in_array('messages', $types)) {
 
                 if (!$quiet) {
                     if ($idx >= $start_idx && $idx <= $end_idx) {
-                        printf(
-                            "[mail/messages] %s (#%d) message #%d, message item #%d: %s, status: ",
-                            $messageitem['name'],
-                            $messageitem['customerid'],
-                            $messageitem['messageid'],
-                            $messageitem['messageitemid'],
-                            $attributes['destination']
-                        );
+                        if (in_array('mail', $channels)) {
+                            printf(
+                                "[mail/messages] %s (#%d) message #%d, message item #%d: %s, status: ",
+                                $messageitem['name'],
+                                $messageitem['customerid'],
+                                $messageitem['messageid'],
+                                $messageitem['messageitemid'],
+                                $attributes['destination']
+                            );
+                        }
+                        if (in_array('sms', $channels)) {
+                            printf(
+                                "[sms/messages] %s (#%d) message #%d, message item #%d: %s, status: ",
+                                $messageitem['name'],
+                                $messageitem['customerid'],
+                                $messageitem['messageid'],
+                                $messageitem['messageitemid'],
+                                $attributes['destination']
+                            );
+                        }
                     }
                 }
 
                 if (!$debug) {
                     if ($idx >= $start_idx && $idx <= $end_idx) {
-                        $files = array();
+                        if ($messageitem['type'] == MSG_MAIL) {
+                            $files = array();
 
-                        if (!isset($files_by_messageids[$messageitem['messageid']])) {
-                            $file_containers = $LMS->GetFileContainers('messageid', $messageitem['messageid']);
-                            if (!empty($file_containers)) {
-                                foreach ($file_containers as $file_container) {
-                                    foreach ($file_container['files'] as $file) {
-                                        $file = $LMS->GetFile($file['id']);
-                                        $files[] = array(
-                                            'content_type' => $file['contenttype'],
-                                            'filename' => $file['filename'],
-                                            'data' => file_get_contents($file['filepath']),
-                                        );
+                            if (!isset($files_by_messageids[$messageitem['messageid']])) {
+                                $file_containers = $LMS->GetFileContainers('messageid', $messageitem['messageid']);
+                                if (!empty($file_containers)) {
+                                    foreach ($file_containers as $file_container) {
+                                        foreach ($file_container['files'] as $file) {
+                                            $file = $LMS->GetFile($file['id']);
+                                            $files[] = array(
+                                                'content_type' => $file['contenttype'],
+                                                'filename' => $file['filename'],
+                                                'data' => file_get_contents($file['filepath']),
+                                            );
+                                        }
                                     }
+
+                                    $files_by_messageids[$messageitem['messageid']] = $files;
                                 }
-
-                                $files_by_messageids[$messageitem['messageid']] = $files;
+                            } else {
+                                $files = $files_by_messageids[$messageitem['messageid']];
                             }
+
+                            $headers = $attributes['headers'];
+
+                            if (!empty($dsn_email) || !empty($mdn_email)) {
+                                if (!empty($dsn_email)) {
+                                    $headers['Delivery-Status-Notification-To'] = true;
+                                }
+                                if (!isset($headers['X-LMS-Message-Item-Id'], $headers['Message-ID'])) {
+                                    $headers['X-LMS-Message-Item-Id'] = $messageitem['messageitemid'];
+                                    $headers['Message-ID'] = '<messageitem-' . $messageitem['messageitemid'] . '@rtsystem.' . gethostname() . '>';
+                                }
+                            }
+
+                            if (isset($headers['Cc']) && $headers['Cc'] == $headers['From'] || !empty($attributes['copytosender'])) {
+                                $headers['Cc'] = $mail_from;
+                            }
+                            if (empty($dsn_email)) {
+                                $headers['From'] = $mail_from;
+                            } else {
+                                $headers['From'] = (empty($mail_fname) ? '' : qp_encode($mail_fname) . ' ') . '<' . $dsn_email . '>';
+                            }
+
+                            $result = $LMS->SendMail(
+                                $attributes['destination'],
+                                $headers,
+                                $attributes['body'],
+                                $files
+                            );
                         } else {
-                            $files = $files_by_messageids[$messageitem['messageid']];
+                            $result = $LMS->SendSMS(
+                                $attributes['destination'],
+                                $attributes['body'],
+                                $messageitem['messageitemid'],
+                                $sms_options
+                            );
                         }
-
-                        $headers = $attributes['headers'];
-
-                        if (!empty($dsn_email) || !empty($mdn_email)) {
-                            if (!empty($dsn_email)) {
-                                $headers['Delivery-Status-Notification-To'] = true;
-                            }
-                            if (!isset($headers['X-LMS-Message-Item-Id'], $headers['Message-ID'])) {
-                                $headers['X-LMS-Message-Item-Id'] = $messageitem['messageitemid'];
-                                $headers['Message-ID'] = '<messageitem-' . $messageitem['messageitemid'] . '@rtsystem.' . gethostname() . '>';
-                            }
-                        }
-
-                        if (isset($headers['Cc']) && $headers['Cc'] == $headers['From'] || !empty($attributes['copytosender'])) {
-                            $headers['Cc'] = $mail_from;
-                        }
-                        if (empty($dsn_email)) {
-                            $headers['From'] = $mail_from;
-                        } else {
-                            $headers['From'] = (empty($mail_fname) ? '' : qp_encode($mail_fname) . ' ') . '<' . $dsn_email . '>';
-                        }
-
-                        $result = $LMS->SendMail(
-                            $attributes['destination'],
-                            $headers,
-                            $attributes['body'],
-                            $files
-                        );
 
                         if (is_int($result)) {
                             $status = $result;
@@ -3639,6 +3666,19 @@ if (empty($types) || in_array('messages', $types)) {
                             switch ($status) {
                                 case MSG_SENT:
                                     echo 'sent.';
+
+                                    if (isset($result['id'])) {
+                                        $DB->Execute(
+                                            'UPDATE messageitems
+                                            SET lastdate = ?NOW?, externalmsgid = ?
+                                            WHERE id = ?',
+                                            array(
+                                                $result['id'],
+                                                $messageitem['messageitemid']
+                                            )
+                                        );
+                                    }
+
                                     break;
                                 case MSG_ERROR:
                                     if (empty($errors)) {

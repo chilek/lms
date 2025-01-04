@@ -802,29 +802,6 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         if ($message['from'] == '') {
             $error['from'] = trans('Sender name is required!');
         }
-
-        if (strlen($message['startdate'])) {
-            $startdate = datetime_to_timestamp($message['startdate']);
-            if (empty($startdate)) {
-                $error['startdate'] = trans('Incorrect date format!');
-            } else {
-                $message['startdate'] = $startdate;
-            }
-
-            $attempts = filter_var(
-                $message['attempts'],
-                FILTER_VALIDATE_INT,
-                array(
-                    'options' => array(
-                        'min_range' => 1,
-                        'max_range' => 10,
-                    ),
-                )
-            );
-            if ($attempts === false) {
-                $error['attempts'] = trans('Incorrect value!');
-            }
-        }
     } elseif ($message['type'] == MSG_WWW || $message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT) {
         $message['body'] = $html_format ? Utils::removeInsecureHtml($message['mailbody']) : $message['mailbody'];
     } else {
@@ -850,6 +827,30 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             if (empty($phonenumbers)) {
                 $error['phonenumber'] = trans('Specified phone number is not correct!');
             }
+        }
+    }
+
+    if (($message['type'] == MSG_MAIL || $message['type'] == MSG_SMS || $message['type'] == MSG_ANYSMS)
+        && strlen($message['startdate'])) {
+        $startdate = datetime_to_timestamp($message['startdate']);
+        if (empty($startdate)) {
+            $error['startdate'] = trans('Incorrect date format!');
+        } else {
+            $message['startdate'] = $startdate;
+        }
+
+        $attempts = filter_var(
+            $message['attempts'],
+            FILTER_VALIDATE_INT,
+            array(
+                'options' => array(
+                    'min_range' => 1,
+                    'max_range' => 10,
+                ),
+            )
+        );
+        if ($attempts === false) {
+            $error['attempts'] = trans('Incorrect value!');
         }
     }
 
@@ -1254,12 +1255,26 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                         break;
                     case MSG_SMS:
                     case MSG_ANYSMS:
-                        $result = $LMS->SendSMS(
-                            $destination,
-                            $body,
-                            $msgitems[$customerid][$orig_destination],
-                            $sms_options ?? null
-                        );
+                        if (empty($startdate) || $startdate <= time()) {
+                            $result = $LMS->SendSMS(
+                                $destination,
+                                $body,
+                                $msgitems[$customerid][$orig_destination],
+                                $sms_options ?? null
+                            );
+                        } else {
+                            $attributes = array(
+                                'destination' => $destination,
+                                'body' => $LMS->applyMessageTemplates(
+                                    $body,
+                                    $message['contenttype']
+                                ),
+                            );
+                            $result = array(
+                                'status' => MSG_NEW,
+                            );
+                        }
+
                         break;
                     case MSG_USERPANEL:
                     case MSG_USERPANEL_URGENT:
