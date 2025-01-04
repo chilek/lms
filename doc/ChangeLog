@@ -900,6 +900,7 @@ version 28-git (????-??-??):
     value of 'false' allows to force transfer form presentation of invoices generated using TCPDF PHP library
     on separate page [chilan]
   - enhancement: new dedicated user permission to userpanel customer data change affirmation [chilan]
+  - enhancement: allow to send SMS messages from www message add form in scheduled date/time [chilan]
 
 version 27.0 (2021-08-20):
 
