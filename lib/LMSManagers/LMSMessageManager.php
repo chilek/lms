@@ -385,7 +385,13 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
                 m.startdate,
                 m.type,
                 m.subject,
-                x.cnt, x.sent, x.error, x.delivered, fc.id AS filecontainerid
+                x.cnt,
+                x.sent,
+                x.delivered,
+                x.error,
+                x.cancelled,
+                x.bounced,
+                fc.id AS filecontainerid
             FROM messages m
             JOIN (
                 SELECT i.messageid,
