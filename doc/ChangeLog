@@ -901,6 +901,7 @@ version 28-git (????-??-??):
     on separate page [chilan]
   - enhancement: new dedicated user permission to userpanel customer data change affirmation [chilan]
   - enhancement: allow to send SMS messages from www message add form in scheduled date/time [chilan]
+  - enhancement: allow to cancel message awaiting for send [chilan]
 
 version 27.0 (2021-08-20):
 
