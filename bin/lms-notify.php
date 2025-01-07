@@ -3966,7 +3966,7 @@ if (!empty($intersect)) {
                                     "SELECT id, customerid FROM assignments
                                     WHERE invoice = ? AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
                                         AND datefrom <= ?NOW? AND (dateto = 0 OR dateto >= ?NOW?)
-                                        AND customerid IN (" . implode(',', $customers) . ")",
+                                        AND customerid IN (" . implode(',', $all_customers) . ")",
                                     array(DOC_INVOICE)
                                 );
                                 if (!empty($assigns)) {
@@ -4013,7 +4013,7 @@ if (!empty($intersect)) {
                             case 'customer-status':
                                 $custids = $DB->GetCol(
                                     "SELECT id FROM customers
-                                    WHERE status <> ? AND id IN (" . implode(',', $customers) . ")",
+                                    WHERE status <> ? AND id IN (" . implode(',', $all_customers) . ")",
                                     array(CSTATUS_DEBT_COLLECTION)
                                 );
                                 if (!empty($custids)) {
@@ -4052,7 +4052,7 @@ if (!empty($intersect)) {
                                     SYSLOG::RES_TARIFF => null,
                                     SYSLOG::RES_LIAB => null,
                                 );
-                                foreach ($customers as $cid) {
+                                foreach ($all_customers as $cid) {
                                     if (!$DB->GetOne(
                                         "SELECT id FROM assignments WHERE customerid = ? AND tariffid IS NULL AND liabilityid IS NULL",
                                         array($cid)
@@ -4077,7 +4077,7 @@ if (!empty($intersect)) {
                             case 'customer-group':
                                 $customergroupid = $LMS->CustomergroupGetId(reset($action_params));
                                 if ($customergroupid) {
-                                    foreach ($customers as $cid) {
+                                    foreach ($all_customers as $cid) {
                                         if (!$quiet) {
                                             printf("[block/customer-group] Customer: #%d, CustomerGroup: #%d" . PHP_EOL, $cid, $customergroupid);
                                         }
@@ -4138,7 +4138,8 @@ if (!empty($intersect)) {
                     }
 
                     $plugin_manager->executeHook('notification_blocks', array(
-                        'customers' => $customers,
+                        'customers' => $all_customers,
+                        'nodes' => $all_nodes,
                         'actions' => $actions,
                         'quiet' => $quiet,
                         'debug' => $debug,
