@@ -202,7 +202,9 @@
 		<tr>
 			<td colspan="3" class="lms-ui-box-buttons">
 				{button id="delete-message" icon="delete" label="Delete"}
-				{button icon="cancel" label="Cancel" onclick="location.href = '?m=messagelist';"}
+				{if !empty($summary[$smarty.const.MSG_NEW]) || !empty($message.startdate) && !empty($summary[$smarty.const.MSG_ERROR])}
+					{button icon="cancel" label="Cancel" href="?m=messagecancel&id={$message.id}"}
+				{/if}
 				{if !empty($itemerrorlist)}
 					{button icon="reload" label="Increase attempts" href="?m={$layout.module}&id={$message.id}&action=increase-attempts"}
 				{/if}
