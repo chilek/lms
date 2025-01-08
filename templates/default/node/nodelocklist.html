@@ -1,14 +1,11 @@
 {if $nodelocks}
 <div class="lms-ui-tab-table-row header">
-	<div class="lms-ui-tab-table-wrapper col-3">
+	<div class="lms-ui-tab-table-wrapper col-2">
 		<div class="lms-ui-tab-table-column days">
 			<strong>{trans("Week days")}</strong>
 		</div>
-		<div class="lms-ui-tab-table-column from">
-			{trans("From:")}
-		</div>
-		<div class="lms-ui-tab-table-column to">
-			{trans("To:")}
+		<div class="lms-ui-tab-table-column time">
+			{trans("Time period")}
 		</div>
 	</div>
 
@@ -20,17 +17,25 @@
 
 {foreach $nodelocks as $nodelock}
 <div class="lms-ui-tab-table-row{if $nodelock.disabled} blend{/if}">
-	<div class="lms-ui-tab-table-wrapper col-3">
+	<div class="lms-ui-tab-table-wrapper col-2">
 		<div class="lms-ui-tab-table-column days">
 			{foreach $nodelock.days as $daynr => $day}
 				{$_DAYS[$daynr]}&nbsp;
 			{/foreach}
 		</div>
-		<div class="lms-ui-tab-table-column from">
-			{$nodelock.fhour|string_format:"%02d"}:{$nodelock.fminute|string_format:"%02d"}
-		</div>
-		<div class="lms-ui-tab-table-column to">
-			{$nodelock.thour|string_format:"%02d"}:{$nodelock.tminute|string_format:"%02d"}
+		<div class="lms-ui-tab-table-column time">
+			{if empty($nodelock.fromsec) && empty($nodelock.tosec)}
+				{trans("whole day")}
+			{else}
+				{if !empty($nodelock.fromsec)}
+					{trans("from")}
+					{($nodelock.fromsec / 3600)|string_format:"%02d"}:{(($nodelock.fromsec % 3600) / 60)|string_format:"%02d"}
+				{/if}
+				{if !empty($nodelock.tosec)}
+					{trans("to")}
+					{($nodelock.tosec / 3600)|string_format:"%02d"}:{(($nodelock.tosec % 3600) / 60)|string_format:"%02d"}
+				{/if}
+			{/if}
 		</div>
 	</div>
 

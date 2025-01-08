@@ -27,10 +27,69 @@ function getNodeLocks() {
 }
 
 function addNodeLock() {
+	const timeRegExp = /^(?<hour>[0-9]{2}):(?<minute>[0-9]{2})$/;
+	var formElem = $('#nodelockadd');
+	var fromElem = $('[form="nodelockadd"][name="time[from]"]');
+	var from = fromElem.val();
+	var fromSec = null;
+	var toElem = $('[form="nodelockadd"][name="time[to]"]');
+	var to = toElem.val();
+	var toSec = null;
+
+	if (from.length) {
+		var timeComponents = from.match(timeRegExp);
+		if (timeComponents !== null && timeComponents.hasOwnProperty("groups")) {
+			fromSec = timeComponents.groups.hour * 3600 + timeComponents.groups.minute * 60;
+		} else {
+			fromElem.get(0).setValidity({
+				patternMismatch: true
+			})
+		}
+	} else {
+		fromSec = 0;
+	}
+
+	if (to.length) {
+		var timeComponents = to.match(timeRegExp);
+		if (timeComponents !== null && timeComponents.hasOwnProperty("groups")) {
+			toSec = timeComponents.groups.hour * 3600 + timeComponents.groups.minute * 60;
+		} else {
+			toElem.get(0).setValidity({
+				patternMismatch: true
+			})
+		}
+	} else {
+		toSec = 0;
+	}
+
+	if (fromSec === null || toSec === null) {
+		return;
+	}
+
+	fromElem.get(0).setCustomValidity(
+		fromSec && toSec && fromSec >= toSec ?
+				$t("'From' time should be earlier than 'to' time!")
+				: ""
+	);
+
+	$('[id^="lockdays"]').get(0).setCustomValidity(
+		$('[id^="lockdays"]:checked').length ?
+			""
+			: $t("No day was checked!")
+	);
+
+	if (!$("#nodelockadd").get(0).checkValidity()) {
+		$("#nodelockadd").get(0).reportValidity();
+		return;
+	}
+
+	$('[name="time[fromsec]"]').val(fromSec);
+	$('[name="time[tosec]"]').val(toSec);
+
 	$('#nodelockaddlink').prop('disabled', true);
 	$('#nodelockspanel #nodelocktable').html(
 		$('#nodelockspanel .lms-ui-tab-hourglass-template').html());
-	xajax_addNodeLock($('#nodelockadd').serialize());
+	xajax_addNodeLock(formElem.serialize());
 }
 
 function delNodeLock(id) {
@@ -49,7 +108,7 @@ function toggleNodeLock(id) {
 
 $("#nodelockspanel .delete-button").click(function() {
 	$(this).parent().find('[id*="lockdays_"]').prop('checked', false).end()
-		.find('select').val(0);
+		.find('input[type="time"]').val("");
 });
 
 getNodeLocks();

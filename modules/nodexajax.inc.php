@@ -47,13 +47,19 @@ function getNodeLocks()
     $nodeid = intval($_GET['id']);
     $DB = LMSDB::getInstance();
     $locks = $DB->GetAll(
-        'SELECT id, days, fromsec, tosec, disabled FROM nodelocks WHERE nodeid = ? ORDER BY id',
+        'SELECT
+            id,
+            days,
+            fromsec,
+            tosec,
+            disabled
+        FROM nodelocks
+        WHERE nodeid = ?
+        ORDER BY id',
         array($nodeid)
     );
     if ($locks) {
         foreach ($locks as $lock) {
-            $fromsec = intval($lock['fromsec']);
-            $tosec = intval($lock['tosec']);
             $days = intval($lock['days']);
             $lockdays = array();
             for ($i = 0; $i < 7; $i++) {
@@ -61,9 +67,13 @@ function getNodeLocks()
                     $lockdays[$i] = 1;
                 }
             }
-            $disabled = intval($lock['disabled']);
-            $nodelocks[] = array('id' => $lock['id'], 'days' => $lockdays, 'fhour' => intval($fromsec / 3600), 'fminute' => intval(($fromsec % 3600) / 60),
-                'thour' => intval($tosec / 3600), 'tminute' => intval(($tosec % 3600) / 60), 'disabled' => $disabled);
+            $nodelocks[] = array(
+                'id' => $lock['id'],
+                'days' => $lockdays,
+                'fromsec' => intval($lock['fromsec']),
+                'tosec' => intval($lock['tosec']),
+                'disabled' => intval($lock['disabled']),
+            );
         }
     }
     $SMARTY->assign('nodelocks', $nodelocks);
@@ -88,12 +98,19 @@ function addNodeLock($params)
     parse_str($params, $formdata);
 
     $days = 0;
-    foreach ($formdata['days'] as $key => $value) {
-        $days += (1 << $key);
+    if (!empty($formdata['days'])) {
+        foreach ($formdata['days'] as $key => $value) {
+            $days += (1 << $key);
+        }
     }
-    $fromsec = $formdata['fhour'] * 3600 + $formdata['fminute'] * 60;
-    $tosec = $formdata['thour'] * 3600 + $formdata['tminute'] * 60;
-    if ($fromsec >= $tosec || !$days) {
+
+    if (empty($formdata['time'])) {
+        $fromsec = $tosec = 0;
+    } else {
+        $fromsec = empty($formdata['time']['fromsec']) ? 0 : $formdata['time']['fromsec'];
+        $tosec = empty($formdata['time']['tosec']) ? 0 : $formdata['time']['tosec'];
+    }
+    if ($fromsec && $tosec && $fromsec >= $tosec || !$days) {
         $result->assign('nodelockaddlink', 'disabled', false);
         return $result;
     }
@@ -101,9 +118,16 @@ function addNodeLock($params)
     $nodeid = intval($_GET['id']);
 
     $DB = LMSDB::getInstance();
+
     $DB->Execute(
-        'INSERT INTO nodelocks (nodeid, days, fromsec, tosec) VALUES (?, ?, ?, ?)',
-        array($nodeid, $days, $fromsec, $tosec)
+        'INSERT INTO nodelocks (nodeid, days, fromsec, tosec)
+        VALUES (?, ?, ?, ?)',
+        array(
+            $nodeid,
+            $days,
+            $fromsec,
+            $tosec,
+        )
     );
 
     $result->call('getNodeLocks');

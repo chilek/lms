@@ -5995,3 +5995,6 @@ $_LANG['Customer origin is required!'] = 'Wymagane pochodzenie klienta!';
 
 $_LANG['relative to reference document'] = 'względem dokumentu odniesienia';
 $_LANG['Relative to reference document'] = 'Względem dokumentu odniesienia';
+
+$_LANG['\'From\' time should be earlier than \'to\' time!'] = 'Czas \'od\' powinien być wcześniejszy niż czas \'do\'!';
+$_LANG['No day was checked!'] = 'Nie zaznaczono żadnego dnia!';
