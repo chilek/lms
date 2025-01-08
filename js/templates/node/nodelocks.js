@@ -35,9 +35,10 @@ function addNodeLock() {
 	var toElem = $('[form="nodelockadd"][name="time[to]"]');
 	var to = toElem.val();
 	var toSec = null;
+	var timeComponents;
 
 	if (from.length) {
-		var timeComponents = from.match(timeRegExp);
+		timeComponents = from.match(timeRegExp);
 		if (timeComponents !== null && timeComponents.hasOwnProperty("groups")) {
 			fromSec = timeComponents.groups.hour * 3600 + timeComponents.groups.minute * 60;
 		} else {
@@ -50,7 +51,7 @@ function addNodeLock() {
 	}
 
 	if (to.length) {
-		var timeComponents = to.match(timeRegExp);
+		timeComponents = to.match(timeRegExp);
 		if (timeComponents !== null && timeComponents.hasOwnProperty("groups")) {
 			toSec = timeComponents.groups.hour * 3600 + timeComponents.groups.minute * 60;
 		} else {
