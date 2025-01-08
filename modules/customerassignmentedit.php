@@ -417,12 +417,12 @@ if (isset($_POST['assignment'])) {
             SYSLOG::RES_TARIFF => empty($a['tariffid']) ? null : intval($a['tariffid']),
             SYSLOG::RES_CUST => $customer['id'],
             'attribute' => !empty($a['attribute']) ? $a['attribute'] : null,
+            'note' => !empty($a['note']) ? $a['note'] : null,
             'suspended' => empty($a['suspended']) ? 0 : 1,
             'period' => $period,
             'backwardperiod' => isset($a['backwardperiod']) ? 1 : 0,
             'at' => $at,
             'count' => $count,
-            'note' => htmlspecialchars($a['note']),
             'invoice' => isset($a['invoice']) ? intval($a['invoice']) : 0,
             'separatedocument'  => strlen($a['separatedocumentvalue']) ? $a['separatedocumentvalue'] : (strlen($a['separatedocument']) ? $a['separatedocument'] : null),
             'separateitem' => empty($a['separateitem']) ? 0 : 1,
@@ -439,8 +439,8 @@ if (isset($_POST['assignment'])) {
             SYSLOG::RES_ASSIGN => $a['id']
         );
 
-        $DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, attribute=?, suspended = ?, period=?,
-            backwardperiod=?, at=?, count=?, note=?,
+        $DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, attribute=?, note = ?, suspended = ?, period=?,
+            backwardperiod=?, at=?, count=?,
 			invoice=?, separatedocument=?, separateitem = ?, settlement=?, datefrom=?, dateto=?, pdiscount=?, vdiscount=?,
 			liabilityid=?, numberplanid=?, paytime = ?, paytype=?, recipient_address_id=?
 			WHERE id=?', array_values($args));
