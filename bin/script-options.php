@@ -145,7 +145,10 @@ if ($http_mode) {
         }
     }
 
-    foreach ($options as &$option) {
+    foreach ($options as $option_name => &$option) {
+        if (is_array($option)) {
+            $option = reset($option);
+        }
         if (strpos($option, '\\-') === 0) {
             $option = str_replace('\\-', '-', $option);
         }
