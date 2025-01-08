@@ -8,6 +8,15 @@
 	<input type="hidden" name="time[tosec]">
 </form>
 
+<form id="nodelockedit" name="nodelockedit">
+	<input type="hidden" name="id">
+	{foreach $_DAYS as $daynr => $dayname}
+		<input type="hidden" name="days[{$daynr}]">
+	{/foreach}
+	<input type="hidden" name="time[fromsec]">
+	<input type="hidden" name="time[tosec]">
+</form>
+
 {tab_container id="nodelocks" label="Node Locks"}
 
 	{tab_header content_id="nodelockspanel"}
@@ -26,11 +35,11 @@
 			{tab_buttons}
 				{foreach $_DAYS as $daynr => $dayname}
 					<label>
-						<input type="checkbox" name="days[{$daynr}]" id="lockdays_{$daynr}" value="1" form="nodelockadd">
+						<input type="checkbox" name="days[{$daynr}]" value="1" form="nodelockadd">
 						{$dayname}
 					</label>
 				{/foreach}
-				<input type="time" name="time[from]" form="nodelockadd"">
+				<input type="time" name="time[from]" form="nodelockadd">
 				<input type="time" name="time[to]" form="nodelockadd">
 				<a class="lms-ui-button delete-button">
 					<i class="lms-ui-icon-delete" title="{trans("Clear")}"></i>

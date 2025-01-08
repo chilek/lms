@@ -163,6 +163,55 @@ function toggleNodeLock($id)
     return $result;
 }
 
+function updateNodeLock($params)
+{
+    $result = new xajaxResponse();
+
+    if (empty($params)) {
+        $result->assign('nodelockaddlink', 'disabled', false);
+        return $result;
+    }
+
+    $formdata = array();
+    parse_str($params, $formdata);
+
+    $days = 0;
+    if (!empty($formdata['days'])) {
+        foreach ($formdata['days'] as $key => $value) {
+            $days += (1 << $key);
+        }
+    }
+
+    if (empty($formdata['time'])) {
+        $fromsec = $tosec = 0;
+    } else {
+        $fromsec = empty($formdata['time']['fromsec']) ? 0 : $formdata['time']['fromsec'];
+        $tosec = empty($formdata['time']['tosec']) ? 0 : $formdata['time']['tosec'];
+    }
+    if ($fromsec && $tosec && $fromsec >= $tosec || !$days) {
+        $result->assign('nodelockaddlink', 'disabled', false);
+        return $result;
+    }
+
+    $DB = LMSDB::getInstance();
+
+    $DB->Execute(
+        'UPDATE nodelocks
+        SET days = ?, fromsec = ?, tosec = ?
+        WHERE id = ?',
+        array(
+            $days,
+            $fromsec,
+            $tosec,
+            $formdata['id']
+        )
+    );
+
+    $result->call('getNodeLocks');
+
+    return $result;
+}
+
 function getThroughput($ip)
 {
     $cmd = ConfigHelper::getConfig('phpui.live_traffic_helper');
@@ -290,6 +339,6 @@ if (isset($_GET['action'])) {
     }
 }
 
-$LMS->RegisterXajaxFunction(array('getNodeLocks', 'addNodeLock', 'delNodeLock', 'toggleNodeLock',
+$LMS->RegisterXajaxFunction(array('getNodeLocks', 'addNodeLock', 'delNodeLock', 'toggleNodeLock', 'updateNodeLock',
     'getManagementUrls', 'addManagementUrl', 'delManagementUrl', 'updateManagementUrl', 'getRadioSectors',
     'getFirstFreeAddress'));

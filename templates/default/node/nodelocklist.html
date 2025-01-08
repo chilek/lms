@@ -16,26 +16,48 @@
 {/if}
 
 {foreach $nodelocks as $nodelock}
-<div class="lms-ui-tab-table-row{if $nodelock.disabled} blend{/if}">
+<div class="lms-ui-tab-table-row" data-node-lock-id="{$nodelock.id}">
 	<div class="lms-ui-tab-table-wrapper col-2">
 		<div class="lms-ui-tab-table-column days">
-			{foreach $nodelock.days as $daynr => $day}
-				{$_DAYS[$daynr]}&nbsp;
+			{foreach $_DAYS as $daynr => $dayname}
+				<span class="view-mode{if $nodelock.disabled} blend{/if}">
+					{if !empty($nodelock.days[$daynr])}
+						{$_DAYS[$daynr]}&nbsp;
+					{/if}
+				</span>
+				<span class="edit-mode">
+					<label>
+						<input type="checkbox" name="days[{$daynr}]" data-node-lock-id="{$nodelock.id}" value="1" form="nodelockedit"
+							{if !empty($nodelock.days[$daynr])} checked{/if}
+							data-prev-checked="{if empty($nodelock.days[$daynr])}0{else}1{/if}">
+						{$_DAYS[$daynr]}
+					</label>
+				</span>
 			{/foreach}
 		</div>
 		<div class="lms-ui-tab-table-column time">
-			{if empty($nodelock.fromsec) && empty($nodelock.tosec)}
-				{trans("whole day")}
-			{else}
-				{if !empty($nodelock.fromsec)}
-					{trans("from")}
-					{($nodelock.fromsec / 3600)|string_format:"%02d"}:{(($nodelock.fromsec % 3600) / 60)|string_format:"%02d"}
+			{capture assign="time_from"}{($nodelock.fromsec / 3600)|string_format:"%02d"}:{(($nodelock.fromsec % 3600) / 60)|string_format:"%02d"}{/capture}
+			{capture assign="time_to"}{($nodelock.tosec / 3600)|string_format:"%02d"}:{(($nodelock.tosec % 3600) / 60)|string_format:"%02d"}{/capture}
+			<span class="view-mode{if $nodelock.disabled} blend{/if}">
+				{if empty($nodelock.fromsec) && empty($nodelock.tosec)}
+					{trans("whole day")}
+				{else}
+					{if !empty($nodelock.fromsec)}
+						{trans("from")}
+						{$time_from}
+					{/if}
+					{if !empty($nodelock.tosec)}
+						{trans("to")}
+						{$time_to}
+					{/if}
 				{/if}
-				{if !empty($nodelock.tosec)}
-					{trans("to")}
-					{($nodelock.tosec / 3600)|string_format:"%02d"}:{(($nodelock.tosec % 3600) / 60)|string_format:"%02d"}
-				{/if}
-			{/if}
+			</span>
+			<span class="edit-mode">
+				<input type="time" name="time[from]" data-node-lock-id="{$nodelock.id}" form="nodelockedit" value="{$time_from}"
+					data-prev-value="{$time_from}">
+				<input type="time" name="time[to]" data-node-lock-id="{$nodelock.id}" form="nodelockedit" value="{$time_to}"
+					data-prev-value="{$time_to}">
+			</span>
 		</div>
 	</div>
 
@@ -48,7 +70,10 @@
 			{$tip = "Disable lock"}
 		{/if}
 		{button type="link" icon=$icon tip=$tip onclick="javascript:toggleNodeLock({$nodelock.id});"}
-		{button type="link" icon="delete" tip="Remove lock" onclick="javascript:delNodeLock({$nodelock.id});"}
+		{button type="link" icon="edit" class="start-edit-button view-mode" tip="Edit"}
+		{button type="link" icon="save" class="save-edit-button edit-mode" tip="Save"}
+		{button type="link" icon="cancel" class="cancel-edit-button edit-mode" tip="Cancel"}
+		{button type="link" icon="delete" tip="Remove lock" class="delete-button"}
 	</div>
 </div>
 

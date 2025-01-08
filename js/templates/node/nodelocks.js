@@ -26,13 +26,19 @@ function getNodeLocks() {
 	xajax_getNodeLocks();
 }
 
-function addNodeLock() {
+function validateNodeLock(params) {
 	const timeRegExp = /^(?<hour>[0-9]{2}):(?<minute>[0-9]{2})$/;
-	var formElem = $('#nodelockadd');
-	var fromElem = $('[form="nodelockadd"][name="time[from]"]');
+	var selectorSuffix = "";
+
+	if (params.hasOwnProperty("nodeLockId")) {
+		selectorSuffix += '[data-node-lock-id="' + params.nodeLockId + '"]';
+	}
+
+	var formElem = $('#' + params.formId);
+	var fromElem = $('[form="' + params.formId + '"][name="time[from]"]' + selectorSuffix);
 	var from = fromElem.val();
 	var fromSec = null;
-	var toElem = $('[form="nodelockadd"][name="time[to]"]');
+	var toElem = $('[form="' + params.formId + '"][name="time[to]"]' + selectorSuffix);
 	var to = toElem.val();
 	var toSec = null;
 	var timeComponents;
@@ -64,33 +70,50 @@ function addNodeLock() {
 	}
 
 	if (fromSec === null || toSec === null) {
-		return;
+		return false;
 	}
 
 	fromElem.get(0).setCustomValidity(
 		fromSec && toSec && fromSec >= toSec ?
-				$t("'From' time should be earlier than 'to' time!")
-				: ""
+			$t("'From' time should be earlier than 'to' time!")
+			: ""
 	);
 
-	$('[id^="lockdays"]').get(0).setCustomValidity(
-		$('[id^="lockdays"]:checked').length ?
+	$('[form="' + params.formId + '"][name^="days"]' + selectorSuffix).get(0).setCustomValidity(
+		$('[form="' + params.formId + '"][name^="days"]' + selectorSuffix + ":checked").length ?
 			""
 			: $t("No day was checked!")
 	);
 
-	if (!$("#nodelockadd").get(0).checkValidity()) {
-		$("#nodelockadd").get(0).reportValidity();
-		return;
+	if (!formElem.get(0).checkValidity()) {
+		formElem.get(0).reportValidity();
+		return false;
 	}
 
-	$('[name="time[fromsec]"]').val(fromSec);
-	$('[name="time[tosec]"]').val(toSec);
+	if (selectorSuffix.length) {
+		$('[form="' + params.formId + '"][name^="days"]' + selectorSuffix).each(function() {
+			formElem.find('[name="' + $(this).attr('name') + '"]').val($(this).prop('checked') ? "1" : "0");
+		});
+		formElem.find('[name="time[fromsec]"]').val(fromSec);
+		formElem.find('[name="time[tosec]"]').val(toSec);
+		formElem.find('[name="id"]').val(params.nodeLockId);
+	} else {
+		$('[form="' + params.formId + '"][name="time[fromsec]"]').val(fromSec);
+		$('[form="' + params.formId + '"][name="time[tosec]"]').val(toSec);
+	}
 
-	$('#nodelockaddlink').prop('disabled', true);
-	$('#nodelockspanel #nodelocktable').html(
-		$('#nodelockspanel .lms-ui-tab-hourglass-template').html());
-	xajax_addNodeLock(formElem.serialize());
+	return true;
+}
+
+function addNodeLock() {
+	if (validateNodeLock({
+		formId: "nodelockadd"
+	})) {
+		$('#nodelockaddlink').prop('disabled', true);
+		$('#nodelockspanel #nodelocktable').html(
+			$('#nodelockspanel .lms-ui-tab-hourglass-template').html());
+		xajax_addNodeLock($("#nodelockadd").serialize());
+	}
 }
 
 function delNodeLock(id) {
@@ -107,9 +130,37 @@ function toggleNodeLock(id) {
 	xajax_toggleNodeLock(id);
 }
 
-$("#nodelockspanel .delete-button").click(function() {
-	$(this).parent().find('[id*="lockdays_"]').prop('checked', false).end()
-		.find('input[type="time"]').val("");
+function updateNodeLock(nodeLockId) {
+	if (validateNodeLock({
+		formId: "nodelockedit",
+		nodeLockId: nodeLockId
+	})) {
+		$('#nodelockaddlink').prop('disabled', true);
+		$('#nodelockspanel #nodelocktable').html(
+			$('#nodelockspanel .lms-ui-tab-hourglass-template').html());
+		xajax_updateNodeLock($("#nodelockedit").serialize());
+	}
+}
+
+$(function() {
+	$("#nodelockspanel").on("click", ".delete-button", function () {
+		//$('[form="nodelockadd"][name^="days"]').prop('checked', false);
+		//$('[form="nocelockadd"]input[type="time"]').val("");
+		delNodeLock($(this).closest("[data-node-lock-id]").attr("data-node-lock-id"));
+	}).on("click", ".start-edit-button", function() {
+		$(this).closest('.lms-ui-tab-table-row').find('.view-mode,.edit-mode').toggle();
+	}).on("click", ".cancel-edit-button", function() {
+		$(this).closest('.lms-ui-tab-table-row').find('.view-mode,.edit-mode').toggle();
+		$('.edit-mode input').each(function() {
+			if ($(this).is('[type="time"]')) {
+				$(this).val($(this).attr("data-prev-value"));
+			} else {
+				$(this).prop('checked', $(this).attr("data-prev-checked") == "1");
+			}
+		});
+	}).on("click", ".save-edit-button", function() {
+		updateNodeLock($(this).closest("[data-node-lock-id]").attr("data-node-lock-id"));
+	});
 });
 
 getNodeLocks();
