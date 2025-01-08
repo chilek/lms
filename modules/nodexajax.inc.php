@@ -178,7 +178,9 @@ function updateNodeLock($params)
     $days = 0;
     if (!empty($formdata['days'])) {
         foreach ($formdata['days'] as $key => $value) {
-            $days += (1 << $key);
+            if (!empty($value)) {
+                $days += (1 << $key);
+            }
         }
     }
 

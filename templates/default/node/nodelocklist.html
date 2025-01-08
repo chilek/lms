@@ -36,8 +36,16 @@
 			{/foreach}
 		</div>
 		<div class="lms-ui-tab-table-column time">
-			{capture assign="time_from"}{($nodelock.fromsec / 3600)|string_format:"%02d"}:{(($nodelock.fromsec % 3600) / 60)|string_format:"%02d"}{/capture}
-			{capture assign="time_to"}{($nodelock.tosec / 3600)|string_format:"%02d"}:{(($nodelock.tosec % 3600) / 60)|string_format:"%02d"}{/capture}
+			{if empty($nodelock.fromsec)}
+				{$time_from = ""}
+			{else}
+				{capture assign="time_from"}{($nodelock.fromsec / 3600)|string_format:"%02d"}:{(($nodelock.fromsec % 3600) / 60)|string_format:"%02d"}{/capture}
+			{/if}
+			{if empty($nodelock.tosec)}
+				{$time_to = ""}
+			{else}
+				{capture assign="time_to"}{($nodelock.tosec / 3600)|string_format:"%02d"}:{(($nodelock.tosec % 3600) / 60)|string_format:"%02d"}{/capture}
+			{/if}
 			<span class="view-mode{if $nodelock.disabled} blend{/if}">
 				{if empty($nodelock.fromsec) && empty($nodelock.tosec)}
 					{trans("whole day")}
