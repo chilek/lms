@@ -20,10 +20,8 @@
 	<div class="lms-ui-tab-table-wrapper col-2">
 		<div class="lms-ui-tab-table-column days">
 			{foreach $_DAYS as $daynr => $dayname}
-				<span class="view-mode{if $nodelock.disabled} blend{/if}">
-					{if !empty($nodelock.days[$daynr])}
-						{$_DAYS[$daynr]}&nbsp;
-					{/if}
+				<span class="view-mode{if $nodelock.disabled} blend{/if}" {if empty($nodelock.days[$daynr])}style="visibility: hidden;"{/if}">
+					{$_DAYS[$daynr]}&nbsp;
 				</span>
 				<span class="edit-mode">
 					<label>
