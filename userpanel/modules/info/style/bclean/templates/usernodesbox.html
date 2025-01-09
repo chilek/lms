@@ -116,6 +116,12 @@
 											{button class="btn btn-primary btn-sm nodelock-delete-button" icon="delete" tip="Delete" data_node_lock_id=$nodelock.id}
 										</td>
 									</tr>
+								{foreachelse}
+									<tr>
+										<td colspan="4" class="text-center">
+											{trans("No locks defined.")}
+										</td>
+									</tr>
 								{/foreach}
 							</tbody>
 						</table>
@@ -145,6 +151,7 @@
 
 		$(".nodelock-delete-button").click(function() {
 			var nodeLockId = $(this).attr("data-node-lock-id");
+			var nodelockTable = $('.nodelock-table[data-node-id="' + nodeLockForm.find('[name="nodeid"]').val() + '"]');
 			nodeLockForm.find('[name="id"]').val(nodeLockId);
 
 			$.ajax({
@@ -158,6 +165,11 @@
 						alert("{trans("Error during lock deletion!")}");
 					} else {
 						$('tr[data-node-lock-id="' + nodeLockId + '"]').remove();
+						if (!$("tr[data-node-lock-id]").length) {
+							nodelockTable.find("tbody").html(
+								'<tr><td colspan="4" class="text-center">{trans("No locks defined.")}</td></tr>'
+							);
+						}
 					}
 				}
 			});
