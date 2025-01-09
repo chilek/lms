@@ -1,25 +1,168 @@
 {box title="Your computers"}
+<style>
+
+	@media (min-width: 576px) {
+		.modal-dialog {
+			max-width: 50%;
+			margin: 1.75rem auto;
+		}
+	}
+
+</style>
 
 <div class="table-responsive">
 	<table class="table table-sm table-hover table-bordered table-striped table-condensed">
+		<colgroup>
+			<col style="width: auto;">
+			<col style="width: auto;">
+			<col style="width: auto;">
+			<col style="width: 1%;">
+		</colgroup>
 		<thead class="bg-secondary font-weight-bold lms-userpanel-table-header">
 			<th>{trans("Device description")}</th>
 			<th>{trans("MAC address")}</th>
 			<th>{trans("IP address")}</th>
+			<th></th>
 		</thead>
 		{section name=usernodes loop=$usernodes}
 			{if $usernodes[usernodes].id}
-				<tr class="align-middle p-2 {if !$usernodes[usernodes].access}text-muted{/if}">
-					<td>{$usernodes[usernodes].name}</td>
+				<tr class="align-middle p-2 {if !$usernodes[usernodes].access}text-muted{/if}" data-node-id="{$usernodes[usernodes].id}">
+					<td>
+						{$usernodes[usernodes].name}
+						{if !empty($usernodes[usernodes].locked)}
+							{icon name="nodelock" tip="Active lock"}
+						{/if}
+					</td>
 					<td>{$usernodes[usernodes].mac|replace:",":"<br/>"}</td>
 					<td>{$usernodes[usernodes].ip}{if $usernodes[usernodes].ip_pub!="0.0.0.0"} ({$usernodes[usernodes].ip_pub}){/if}</td>
+					<td>
+						{button id="nodelocks" class="btn btn-primary btn-sm" data_toggle="modal" data_target="#nodelock-management" accesskey="L" icon="nodelock" tip="Lock management"}
+					</td>
 				</tr>
 			{/if}
 		{sectionelse}
 			<tr>
-				<td colspan="3" class="text-center">{trans("You don't have any computers.")}</td>
+				<td colspan="4" class="text-center">{trans("You don't have any computers.")}</td>
 			</tr>
 		{/section}
 	</table>
 </div>
+
+<form name="nodelock" id="nodelock">
+	<input type="hidden" name="nodeid">
+	<input type="hidden" name="id">
+</form>
+
+<div class="modal fade" id="nodelock-management" tabindex="-1" role="dialog" aria-labelledby="nodelock-management" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">{trans("Lock management")}</h4>
+				{button class="close" data_dismiss="modal" icon="cancel"}
+			</div>
+			<div class="modal-body">
+				{foreach $usernodes as $node}
+					<div class="table-responsive nodelock-table" data-node-id="{$node.id}" style="display: none;">
+						<table class="table table-sm table-hover table-bordered table-striped table-condensed">
+							<colgroup>
+								<col style="width: auto;">
+								<col style="width: auto;">
+								<col style="width: 1%;">
+							</colgroup>
+							<thead class="bg-secondary lms-userpanel-table-header">
+								<th class="text-nowrap">
+									{trans("Week days")}
+								</th>
+								<th class="text-nowrap">
+									{trans("Time period")}
+								</th>
+								<th></th>
+							</thead>
+							<tbody>
+								{foreach $node.locks as $nodelock}
+									<tr data-node-lock-id="{$nodelock.id}">
+										<td class="align-middle text-nowrap">
+											{foreach $_DAYS as $daynr => $day}
+												<span{if empty($nodelock.days[$daynr])} style="visibility: hidden;"{/if}>
+													{$day}
+												</span>
+											{/foreach}
+										</td>
+										<td class="align-middle text-nowrap">
+											{if empty($nodelock.fromsec)}
+												{$time_from = ""}
+											{else}
+												{capture assign="time_from"}{($nodelock.fromsec / 3600)|string_format:"%02d"}:{(($nodelock.fromsec % 3600) / 60)|string_format:"%02d"}{/capture}
+											{/if}
+											{if empty($nodelock.tosec)}
+												{$time_to = ""}
+											{else}
+												{capture assign="time_to"}{($nodelock.tosec / 3600)|string_format:"%02d"}:{(($nodelock.tosec % 3600) / 60)|string_format:"%02d"}{/capture}
+											{/if}
+											{if empty($nodelock.fromsec) && empty($nodelock.tosec)}
+												{trans("whole day")}
+											{else}
+												{if !empty($nodelock.fromsec)}
+													{trans("from")}
+													{$time_from}
+												{/if}
+												{if !empty($nodelock.tosec)}
+													{trans("to")}
+													{$time_to}
+												{/if}
+											{/if}
+										</td>
+										<td>
+											{button class="btn btn-primary btn-sm nodelock-delete-button" icon="delete" tip="Delete" data_node_lock_id=$nodelock.id}
+										</td>
+									</tr>
+								{/foreach}
+							</tbody>
+						</table>
+					</div>
+				{/foreach}
+			</div>
+			<div class="modal-footer">
+				{*button type="submit" class="btn btn-danger" href="javascript:document.userpin.submit()" accesskey="A" icon="save" label="Save"*}
+				{button class="btn btn-secondary" data_dismiss="modal" icon="close" label="Close"}
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+
+	$(function() {
+		var nodeLockForm = $("#nodelock");
+
+		$('[data-target="#nodelock-management"]').click(function() {
+			var nodeId = $(this).closest("[data-node-id]").attr("data-node-id");
+			nodeLockForm.find('[name="nodeid"]').val(nodeId);
+			$(".nodelock-table").each(function() {
+				$(this).toggle($(this).attr("data-node-id") == nodeId);
+			});
+		});
+
+		$(".nodelock-delete-button").click(function() {
+			var nodeLockId = $(this).attr("data-node-lock-id");
+			nodeLockForm.find('[name="id"]').val(nodeLockId);
+
+			$.ajax({
+				url: "?m=info&action=delete-nodelock&id=" + nodeLockId,
+				async: true,
+				method: 'GET',
+				dataType: 'json'
+			}).done(function(data) {
+				if (data.hasOwnProperty("result")) {
+					if (data.result != "1") {
+						alert("{trans("Error during lock deletion!")}");
+					} else {
+						$('tr[data-node-lock-id="' + nodeLockId + '"]').remove();
+					}
+				}
+			});
+		});
+	});
+
+</script>
 {/box}

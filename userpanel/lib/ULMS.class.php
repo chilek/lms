@@ -225,4 +225,47 @@ class ULMS extends LMS
 
         return $ticket;
     }
+
+    public function GetCustomerNodes($customerid, $count = null)
+    {
+        $nodes = parent::GetCustomerNodes($customerid);
+
+        if (empty($nodes)) {
+            return array();
+        }
+
+        $nodelocks = $this->DB->GetAll(
+            'SELECT
+                nl.*
+            FROM nodelocks nl
+            WHERE nl.disabled = ?
+                AND nl.nodeid IN ?',
+            array(
+                0,
+                Utils::array_column($nodes, 'id'),
+            )
+        );
+
+        foreach ($nodes as &$node) {
+            $nodeid = $node['id'];
+
+            if (!isset($node['locks'])) {
+                $node['locks'] = array();
+            }
+
+            foreach ($nodelocks as $lock) {
+                if ($lock['nodeid'] == $nodeid) {
+                    $days = array();
+                    for ($i = 0; $i < 7; $i++) {
+                        $days[$i] = $lock['days'] & (1 << $i);
+                    }
+                    $lock['days'] = $days;
+                    $node['locks'][$lock['id']] = $lock;
+                }
+            }
+        }
+        unset($node);
+
+        return $nodes;
+    }
 }

@@ -149,3 +149,7 @@ $_LANG['IP address'] = 'Adres IP';
 $_LANG['PIN change required!'] = 'Wymagana zmiana PIN!';
 
 $_LANG['Show sensitive data'] = 'Pokaż dane wrażliwe';
+
+$_LANG['Active lock'] = 'Aktywna blokada';
+$_LANG['Lock management'] = 'Zarządzanie blokadami';
+$_LANG['Error during lock deletion!'] = 'Błąd podczas usuwania blokady!';

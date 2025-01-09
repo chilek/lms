@@ -32,6 +32,41 @@ function module_main()
 
     $SMARTY = LMSSmarty::getInstance();
 
+    switch ($_GET['action']) {
+        case 'delete-nodelock':
+            $nodelockid = intval($_GET['id']);
+
+            if (!empty($nodelockid)) {
+                if ($LMS->DB->GetOne(
+                    'SELECT
+                        nl.id
+                    FROM nodelocks nl
+                    JOIN nodes n ON n.id = nl.nodeid
+                    WHERE nl.id = ?
+                        AND n.ownerid = ?',
+                    array(
+                        $nodelockid,
+                        $SESSION->id,
+                    )
+                )) {
+                    $result = $LMS->DB->Execute(
+                        'DELETE FROM nodelocks
+                        WHERE id = ?',
+                        array($nodelockid)
+                    );
+                } else {
+                    $result = 0;
+                }
+            } else {
+                $result = 0;
+            }
+
+            header('Content-Type: application/json');
+            die(json_encode(array(
+                'result' => $result,
+            )));
+    }
+
     if (!empty($_GET['consent'])) {
         if ($LMS->DB->GetOne(
             'SELECT customerid FROM customerconsents WHERE customerid = ? AND type = ?',
@@ -51,6 +86,7 @@ function module_main()
 
     $userinfo = $LMS->GetCustomer($SESSION->id);
     $usernodes = $LMS->GetCustomerNodes($SESSION->id);
+
     //$balancelist = $LMS->GetCustomerBalanceList($SESSION->id);
 
     $fields_changed = $LMS->DB->GetAllByKey(
