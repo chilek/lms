@@ -8,6 +8,11 @@
 		}
 	}
 
+	.empty-table {
+		padding: 3em;
+		text-align: center;
+	}
+
 </style>
 
 <div class="table-responsive">
@@ -118,7 +123,7 @@
 									</tr>
 								{foreachelse}
 									<tr>
-										<td colspan="4" class="text-center">
+										<td colspan="4" class="empty-table">
 											{trans("No locks defined.")}
 										</td>
 									</tr>
@@ -167,7 +172,7 @@
 						$('tr[data-node-lock-id="' + nodeLockId + '"]').remove();
 						if (!$("tr[data-node-lock-id]").length) {
 							nodelockTable.find("tbody").html(
-								'<tr><td colspan="4" class="text-center">{trans("No locks defined.")}</td></tr>'
+								'<tr><td colspan="4" class="empty-table">{trans("No locks defined.")}</td></tr>'
 							);
 						}
 					}
