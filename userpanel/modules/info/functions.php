@@ -43,9 +43,11 @@ function module_main()
                     FROM nodelocks nl
                     JOIN nodes n ON n.id = nl.nodeid
                     WHERE nl.id = ?
+                        AND nl.disabled = ?
                         AND n.ownerid = ?',
                     array(
                         $nodelockid,
+                        0,
                         $SESSION->id,
                     )
                 )) {
@@ -56,6 +58,49 @@ function module_main()
                     );
                 } else {
                     $result = 0;
+                }
+            } else {
+                $result = 0;
+            }
+
+            header('Content-Type: application/json');
+            die(json_encode(array(
+                'result' => $result,
+            )));
+
+        case 'add-nodelock':
+            $nodeid = intval($_POST['nodeid']);
+
+            if ($LMS->DB->GetOne(
+                'SELECT
+                    n.id
+                FROM nodes n
+                WHERE n.id = ?
+                    AND n.ownerid = ?',
+                array(
+                    $nodeid,
+                    $SESSION->id,
+                )
+            )) {
+                $time = $_POST['time'];
+                $days = 0;
+                foreach ($time as $daynr => $day) {
+                    $days |= 1 << intval($daynr);
+                }
+
+                $result = $LMS->DB->Execute(
+                    'INSERT INTO nodelocks
+                    (nodeid, days, fromsec, tosec)
+                    VALUES (?, ?, ?, ?)',
+                    array(
+                        $nodeid,
+                        $days,
+                        $time['fromsec'],
+                        $time['tosec'],
+                    )
+                );
+                if (!empty($result)) {
+                    $result = $LMS->DB->GetLastInsertId('nodelocks');
                 }
             } else {
                 $result = 0;

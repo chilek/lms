@@ -48,7 +48,7 @@ function validateNodeLock(params) {
 		if (timeComponents !== null && timeComponents.hasOwnProperty("groups")) {
 			fromSec = timeComponents.groups.hour * 3600 + timeComponents.groups.minute * 60;
 		} else {
-			fromElem.get(0).setValidity({
+			fromElem.get(0).setCustomValidity({
 				patternMismatch: true
 			})
 		}
@@ -61,7 +61,7 @@ function validateNodeLock(params) {
 		if (timeComponents !== null && timeComponents.hasOwnProperty("groups")) {
 			toSec = timeComponents.groups.hour * 3600 + timeComponents.groups.minute * 60;
 		} else {
-			toElem.get(0).setValidity({
+			toElem.get(0).setCustomValidity({
 				patternMismatch: true
 			})
 		}
@@ -143,9 +143,12 @@ function updateNodeLock(nodeLockId) {
 }
 
 $(function() {
+	$("#clear-button").click(function () {
+		$('[form="nodelockadd"][name^="days"]').prop('checked', false);
+		$('[form="nodelockadd"]input[type="time"]').val("");
+	});
+
 	$("#nodelockspanel").on("click", ".delete-button", function () {
-		//$('[form="nodelockadd"][name^="days"]').prop('checked', false);
-		//$('[form="nocelockadd"]input[type="time"]').val("");
 		delNodeLock($(this).closest("[data-node-lock-id]").attr("data-node-lock-id"));
 	}).on("click", ".start-edit-button", function() {
 		$(this).closest('.lms-ui-tab-table-row').find('.view-mode,.edit-mode').toggle();

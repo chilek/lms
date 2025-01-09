@@ -153,4 +153,5 @@ $_LANG['Show sensitive data'] = 'Pokaż dane wrażliwe';
 $_LANG['Active lock'] = 'Aktywna blokada';
 $_LANG['Lock management'] = 'Zarządzanie blokadami';
 $_LANG['Error during lock deletion!'] = 'Błąd podczas usuwania blokady!';
+$_LANG['Error during lock creation!'] = 'Błąd podczas tworzenia blokady!';
 $_LANG['No locks defined.'] = 'Brak zdefiniowanych blokad.';
