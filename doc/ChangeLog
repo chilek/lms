@@ -904,6 +904,7 @@ version 28-git (????-??-??):
   - enhancement: allow to cancel message awaiting for send [chilan]
   - improvement: node lock edit support added [chilan]
   - enhancement: userpanel: node lock management support [chilan]
+  - enhancement: optgroup support for lms-ui-multiselect [chilan]
 
 version 27.0 (2021-08-20):
 
