@@ -28,7 +28,7 @@ if (isset($_GET['search'])) {
     $SESSION->restore('customersearch', $search);
     $SESSION->restore('cslo', $order);
     $SESSION->restore('csls', $state);
-    $SESSION->restore('cslsk', $statesqlkey);
+    $SESSION->restore('cslsk', $statesqlskey);
     $SESSION->restore('csln', $network);
     $SESSION->restore('cslng', $nodegroup);
     $SESSION->restore('cslg', $customergroup);
@@ -38,7 +38,7 @@ if (isset($_GET['search'])) {
     $customerlist = $LMS->GetCustomerList(compact(
         'order',
         'state',
-        'statesqlkey',
+        'statesqlskey',
         'network',
         'customergroup',
         'search',
