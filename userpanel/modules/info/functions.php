@@ -32,84 +32,86 @@ function module_main()
 
     $SMARTY = LMSSmarty::getInstance();
 
-    switch ($_GET['action']) {
-        case 'delete-nodelock':
-            $nodelockid = intval($_GET['id']);
+    if (ConfigHelper::checkConfig('userpanel.node_lock_management')) {
+        switch ($_GET['action']) {
+            case 'delete-nodelock':
+                $nodelockid = intval($_GET['id']);
 
-            if (!empty($nodelockid)) {
-                if ($LMS->DB->GetOne(
-                    'SELECT
-                        nl.id
-                    FROM nodelocks nl
-                    JOIN nodes n ON n.id = nl.nodeid
-                    WHERE nl.id = ?
-                        AND nl.disabled = ?
-                        AND n.ownerid = ?',
-                    array(
-                        $nodelockid,
-                        0,
-                        $SESSION->id,
-                    )
-                )) {
-                    $result = $LMS->DB->Execute(
-                        'DELETE FROM nodelocks
-                        WHERE id = ?',
-                        array($nodelockid)
-                    );
+                if (!empty($nodelockid)) {
+                    if ($LMS->DB->GetOne(
+                        'SELECT
+                            nl.id
+                        FROM nodelocks nl
+                        JOIN nodes n ON n.id = nl.nodeid
+                        WHERE nl.id = ?
+                            AND nl.disabled = ?
+                            AND n.ownerid = ?',
+                        array(
+                            $nodelockid,
+                            0,
+                            $SESSION->id,
+                        )
+                    )) {
+                        $result = $LMS->DB->Execute(
+                            'DELETE FROM nodelocks
+                            WHERE id = ?',
+                            array($nodelockid)
+                        );
+                    } else {
+                        $result = 0;
+                    }
                 } else {
                     $result = 0;
                 }
-            } else {
-                $result = 0;
-            }
 
-            header('Content-Type: application/json');
-            die(json_encode(array(
-                'result' => $result,
-            )));
+                header('Content-Type: application/json');
+                die(json_encode(array(
+                    'result' => $result,
+                )));
 
-        case 'add-nodelock':
-            $nodeid = intval($_POST['nodeid']);
+            case 'add-nodelock':
+                $nodeid = intval($_POST['nodeid']);
 
-            if ($LMS->DB->GetOne(
-                'SELECT
-                    n.id
-                FROM nodes n
-                WHERE n.id = ?
-                    AND n.ownerid = ?',
-                array(
-                    $nodeid,
-                    $SESSION->id,
-                )
-            )) {
-                $time = $_POST['time'];
-                $days = 0;
-                foreach ($time as $daynr => $day) {
-                    $days |= 1 << intval($daynr);
-                }
-
-                $result = $LMS->DB->Execute(
-                    'INSERT INTO nodelocks
-                    (nodeid, days, fromsec, tosec)
-                    VALUES (?, ?, ?, ?)',
+                if ($LMS->DB->GetOne(
+                    'SELECT
+                        n.id
+                    FROM nodes n
+                    WHERE n.id = ?
+                        AND n.ownerid = ?',
                     array(
                         $nodeid,
-                        $days,
-                        $time['fromsec'],
-                        $time['tosec'],
+                        $SESSION->id,
                     )
-                );
-                if (!empty($result)) {
-                    $result = $LMS->DB->GetLastInsertId('nodelocks');
-                }
-            } else {
-                $result = 0;
-            }
+                )) {
+                    $time = $_POST['time'];
+                    $days = 0;
+                    foreach ($time as $daynr => $day) {
+                        $days |= 1 << intval($daynr);
+                    }
 
-            header('Content-Type: application/json');
-            die(json_encode(array(
-                'result' => $result,
-            )));
+                    $result = $LMS->DB->Execute(
+                        'INSERT INTO nodelocks
+                        (nodeid, days, fromsec, tosec)
+                        VALUES (?, ?, ?, ?)',
+                        array(
+                            $nodeid,
+                            $days,
+                            $time['fromsec'],
+                            $time['tosec'],
+                        )
+                    );
+                    if (!empty($result)) {
+                        $result = $LMS->DB->GetLastInsertId('nodelocks');
+                    }
+                } else {
+                    $result = 0;
+                }
+
+                header('Content-Type: application/json');
+                die(json_encode(array(
+                    'result' => $result,
+                )));
+        }
     }
 
     if (!empty($_GET['consent'])) {
@@ -809,6 +811,7 @@ if (defined('USERPANEL_SETUPMODE')) {
         }
 
         $SMARTY->assign('hide_nodesbox', ConfigHelper::getConfig('userpanel.hide_nodesbox'));
+        $SMARTY->assign('node_lock_management', ConfigHelper::checkConfig('userpanel.node_lock_management'));
         $SMARTY->assign('consent_text', ConfigHelper::getConfig('userpanel.data_consent_text'));
         $SMARTY->assign('pin_changes', ConfigHelper::checkConfig('userpanel.pin_changes'));
         $SMARTY->assign('show_sensitive_data', ConfigHelper::checkConfig('userpanel.show_customer_sensitive_data'));
@@ -836,6 +839,27 @@ if (defined('USERPANEL_SETUPMODE')) {
             'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
             array(isset($_POST['hide_nodesbox']) ? 1 : 0, 'userpanel', 'hide_nodesbox')
         );
+
+        if ($DB->GetOne('SELECT 1 FROM uiconfig WHERE section = ? AND var = ?', array('userpanel', 'node_lock_management'))) {
+            $DB->Execute(
+                'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
+                array(
+                    isset($_POST['node_lock_management']) ? 1 : 0,
+                    'userpanel',
+                    'node_lock_management',
+                )
+            );
+        } else {
+            $DB->Execute(
+                'INSERT INTO uiconfig (section, var, value) VALUES (?, ?, ?)',
+                array(
+                    'userpanel',
+                    'node_lock_management',
+                    isset($_POST['node_lock_management']) ? 1 : 0,
+                )
+            );
+        }
+
         $DB->Execute(
             'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
             array($_POST['consent_text'], 'userpanel', 'data_consent_text')

@@ -21,13 +21,17 @@
 			<col style="width: auto;">
 			<col style="width: auto;">
 			<col style="width: auto;">
-			<col style="width: 1%;">
+			{if ConfigHelper::checkConfig('userpanel.node_lock_management')}
+				<col style="width: 1%;">
+			{/if}
 		</colgroup>
 		<thead class="bg-secondary font-weight-bold lms-userpanel-table-header">
 			<th>{trans("Device description")}</th>
 			<th>{trans("MAC address")}</th>
 			<th>{trans("IP address")}</th>
-			<th></th>
+			{if ConfigHelper::checkConfig('userpanel.node_lock_management')}
+				<th></th>
+			{/if}
 		</thead>
 		{foreach $usernodes as $node}
 			{if $node.id}
@@ -40,331 +44,335 @@
 					</td>
 					<td>{$node.mac|replace:",":"<br/>"}</td>
 					<td>{$node.ip}{if $node.ip_pub!="0.0.0.0"} ({$node.ip_pub}){/if}</td>
-					<td>
-						{button id="nodelocks" class="btn btn-primary btn-sm" data_toggle="modal" data_target="#nodelock-management" accesskey="L" icon="nodelock" tip="Lock management"}
-					</td>
+					{if ConfigHelper::checkConfig('userpanel.node_lock_management')}
+						<td>
+							{button id="nodelocks" class="btn btn-primary btn-sm" data_toggle="modal" data_target="#nodelock-management" accesskey="L" icon="nodelock" tip="Lock management"}
+						</td>
+					{/if}
 				</tr>
 			{/if}
 		{foreachelse}
 			<tr>
-				<td colspan="4" class="text-center">{trans("You don't have any computers.")}</td>
+				<td colspan="{if ConfigHelper::checkConfig('userpanel.node_lock_management')}4{else}3{/if}" class="text-center">{trans("You don't have any computers.")}</td>
 			</tr>
 		{/foreach}
 	</table>
 </div>
 
-<form name="nodelock" id="nodelock">
-	<input type="hidden" name="nodeid">
-	<input type="hidden" name="id">
-</form>
+{if ConfigHelper::checkConfig('userpanel.node_lock_management')}
+	<form name="nodelock" id="nodelock">
+		<input type="hidden" name="nodeid">
+		<input type="hidden" name="id">
+	</form>
 
-<div class="modal fade" id="nodelock-management" tabindex="-1" role="dialog" aria-labelledby="nodelock-management" aria-hidden="true">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title">{trans("Lock management")}</h4>
-				{button class="close" data_dismiss="modal" icon="cancel"}
-			</div>
-			<div class="modal-body">
-				{foreach $usernodes as $node}
-					<div class="table-responsive nodelock-table" data-node-id="{$node.id}" style="display: none;">
-						<table class="table table-sm table-hover table-bordered table-striped table-condensed">
-							<colgroup>
-								<col style="width: auto;">
-								<col style="width: auto;">
-								<col style="width: 1%;">
-							</colgroup>
-							<thead class="bg-secondary lms-userpanel-table-header">
-								<th class="text-nowrap">
-									{trans("Week days")}
-								</th>
-								<th class="text-nowrap">
-									{trans("Time period")}
-								</th>
-								<th></th>
-							</thead>
-							<tbody>
-								{foreach $node.locks as $nodelock}
-									<tr data-node-lock-id="{$nodelock.id}">
-										<td class="align-middle text-nowrap">
-											{foreach $_DAYS as $daynr => $day}
-												<span{if empty($nodelock.days[$daynr])} style="visibility: hidden;"{/if}>
-													{$day}
-												</span>
-											{/foreach}
-										</td>
-										<td class="align-middle text-nowrap">
-											{if empty($nodelock.fromsec)}
-												{$time_from = ""}
-											{else}
-												{capture assign="time_from"}{($nodelock.fromsec / 3600)|string_format:"%02d"}:{(($nodelock.fromsec % 3600) / 60)|string_format:"%02d"}{/capture}
-											{/if}
-											{if empty($nodelock.tosec)}
-												{$time_to = ""}
-											{else}
-												{capture assign="time_to"}{($nodelock.tosec / 3600)|string_format:"%02d"}:{(($nodelock.tosec % 3600) / 60)|string_format:"%02d"}{/capture}
-											{/if}
-											{if empty($nodelock.fromsec) && empty($nodelock.tosec)}
-												{trans("whole day")}
-											{else}
-												{if !empty($nodelock.fromsec)}
-													{trans("from")}
-													{$time_from}
+	<div class="modal fade" id="nodelock-management" tabindex="-1" role="dialog" aria-labelledby="nodelock-management" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">{trans("Lock management")}</h4>
+					{button class="close" data_dismiss="modal" icon="cancel"}
+				</div>
+				<div class="modal-body">
+					{foreach $usernodes as $node}
+						<div class="table-responsive nodelock-table" data-node-id="{$node.id}" style="display: none;">
+							<table class="table table-sm table-hover table-bordered table-striped table-condensed">
+								<colgroup>
+									<col style="width: auto;">
+									<col style="width: auto;">
+									<col style="width: 1%;">
+								</colgroup>
+								<thead class="bg-secondary lms-userpanel-table-header">
+									<th class="text-nowrap">
+										{trans("Week days")}
+									</th>
+									<th class="text-nowrap">
+										{trans("Time period")}
+									</th>
+									<th></th>
+								</thead>
+								<tbody>
+									{foreach $node.locks as $nodelock}
+										<tr data-node-lock-id="{$nodelock.id}">
+											<td class="align-middle text-nowrap">
+												{foreach $_DAYS as $daynr => $day}
+													<span{if empty($nodelock.days[$daynr])} style="visibility: hidden;"{/if}>
+														{$day}
+													</span>
+												{/foreach}
+											</td>
+											<td class="align-middle text-nowrap">
+												{if empty($nodelock.fromsec)}
+													{$time_from = ""}
+												{else}
+													{capture assign="time_from"}{($nodelock.fromsec / 3600)|string_format:"%02d"}:{(($nodelock.fromsec % 3600) / 60)|string_format:"%02d"}{/capture}
 												{/if}
-												{if !empty($nodelock.tosec)}
-													{trans("to")}
-													{$time_to}
+												{if empty($nodelock.tosec)}
+													{$time_to = ""}
+												{else}
+													{capture assign="time_to"}{($nodelock.tosec / 3600)|string_format:"%02d"}:{(($nodelock.tosec % 3600) / 60)|string_format:"%02d"}{/capture}
 												{/if}
-											{/if}
-										</td>
-										<td>
-											{button class="btn btn-primary btn-sm nodelock-delete-button" icon="delete" tip="Delete" data_node_lock_id=$nodelock.id}
+												{if empty($nodelock.fromsec) && empty($nodelock.tosec)}
+													{trans("whole day")}
+												{else}
+													{if !empty($nodelock.fromsec)}
+														{trans("from")}
+														{$time_from}
+													{/if}
+													{if !empty($nodelock.tosec)}
+														{trans("to")}
+														{$time_to}
+													{/if}
+												{/if}
+											</td>
+											<td>
+												{button class="btn btn-primary btn-sm nodelock-delete-button" icon="delete" tip="Delete" data_node_lock_id=$nodelock.id}
+											</td>
+										</tr>
+									{/foreach}
+									<tr id="nodelock-empty-table"{if !empty($node.locks)} style="display: none;"{/if}>
+										<td colspan="3" class="empty-table">
+											{trans("No locks defined.")}
 										</td>
 									</tr>
-								{/foreach}
-								<tr id="nodelock-empty-table"{if !empty($node.locks)} style="display: none;"{/if}>
-									<td colspan="3" class="empty-table">
-										{trans("No locks defined.")}
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				{/foreach}
-				<div class="nodelock-add-form">
-					{foreach $_DAYS as $daynr => $dayname}
-						<label>
-							<input type="checkbox" name="days[{$daynr}]" value="{$daynr}" form="nodelock">
-							{$dayname}
-						</label>
+								</tbody>
+							</table>
+						</div>
 					{/foreach}
-					<input type="time" name="time[from]" form="nodelock">
-					<input type="time" name="time[to]" form="nodelock">
-					<input type="hidden" name="time[fromsec]" form="nodelock">
-					<input type="hidden" name="time[tosec]" form="nodelock">
-					{icon name="delete" id="nodelock-clear-button" tip="Clear"}
-					{button class="btn btn-primary" icon="add" label="Add" id="nodelock-add-button"}
+					<div class="nodelock-add-form">
+						{foreach $_DAYS as $daynr => $dayname}
+							<label>
+								<input type="checkbox" name="days[{$daynr}]" value="{$daynr}" form="nodelock">
+								{$dayname}
+							</label>
+						{/foreach}
+						<input type="time" name="time[from]" form="nodelock">
+						<input type="time" name="time[to]" form="nodelock">
+						<input type="hidden" name="time[fromsec]" form="nodelock">
+						<input type="hidden" name="time[tosec]" form="nodelock">
+						{icon name="delete" id="nodelock-clear-button" tip="Clear"}
+						{button class="btn btn-primary" icon="add" label="Add" id="nodelock-add-button"}
+					</div>
 				</div>
-			</div>
-			<div class="modal-footer">
-				{button class="btn btn-secondary" data_dismiss="modal" icon="close" label="Close"}
+				<div class="modal-footer">
+					{button class="btn btn-secondary" data_dismiss="modal" icon="close" label="Close"}
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
 
-<template id="nodelock-template">
-	<tr data-node-lock-id="%node-lock-id%">
-		<td class="align-middle text-nowrap">
-			%days%
-		</td>
-		<td class="align-middle text-nowrap">
-			%time-period%
-		</td>
-		<td>
-			{button class="btn btn-primary btn-sm nodelock-delete-button" data_node_lock_id="%node-lock-id%" icon="delete" tip="Delete"}
-		</td>
-	</tr>
-</template>
+	<template id="nodelock-template">
+		<tr data-node-lock-id="%node-lock-id%">
+			<td class="align-middle text-nowrap">
+				%days%
+			</td>
+			<td class="align-middle text-nowrap">
+				%time-period%
+			</td>
+			<td>
+				{button class="btn btn-primary btn-sm nodelock-delete-button" data_node_lock_id="%node-lock-id%" icon="delete" tip="Delete"}
+			</td>
+		</tr>
+	</template>
 
-<script>
+	<script>
 
-	$(function() {
-		var days = [];
-		{foreach $_DAYS as $daynr => $day}
-			days[{$daynr}] = "{$day}";
-		{/foreach}
+		$(function() {
+			var days = [];
+			{foreach $_DAYS as $daynr => $day}
+				days[{$daynr}] = "{$day}";
+			{/foreach}
 
-		{literal}
-		const timeRegExp = /^(?<hour>[0-9]{2}):(?<minute>[0-9]{2})$/;
-		{/literal}
+			{literal}
+			const timeRegExp = /^(?<hour>[0-9]{2}):(?<minute>[0-9]{2})$/;
+			{/literal}
 
-		var nodeLockForm = $("#nodelock");
+			var nodeLockForm = $("#nodelock");
 
-		function validateNodeLock(params) {
-			var selectorSuffix = "";
+			function validateNodeLock(params) {
+				var selectorSuffix = "";
 
-			if (params.hasOwnProperty("nodeLockId")) {
-				selectorSuffix += '[data-node-lock-id="' + params.nodeLockId + '"]';
-			}
-
-			var formElem = $('#' + params.formId);
-			var fromElem = $('[form="' + params.formId + '"][name="time[from]"]' + selectorSuffix);
-			var from = fromElem.val();
-			var fromSec = null;
-			var toElem = $('[form="' + params.formId + '"][name="time[to]"]' + selectorSuffix);
-			var to = toElem.val();
-			var toSec = null;
-			var timeComponents;
-
-			if (from.length) {
-				timeComponents = from.match(timeRegExp);
-				if (timeComponents !== null && timeComponents.hasOwnProperty("groups")) {
-					fromSec = timeComponents.groups.hour * 3600 + timeComponents.groups.minute * 60;
-				} else {
-					fromElem.get(0).setCustomValidity({
-						patternMismatch: true
-					})
+				if (params.hasOwnProperty("nodeLockId")) {
+					selectorSuffix += '[data-node-lock-id="' + params.nodeLockId + '"]';
 				}
-			} else {
-				fromSec = 0;
-			}
 
-			if (to.length) {
-				timeComponents = to.match(timeRegExp);
-				if (timeComponents !== null && timeComponents.hasOwnProperty("groups")) {
-					toSec = timeComponents.groups.hour * 3600 + timeComponents.groups.minute * 60;
-				} else {
-					toElem.get(0).setCustomValidity({
-						patternMismatch: true
-					})
-				}
-			} else {
-				toSec = 0;
-			}
+				var formElem = $('#' + params.formId);
+				var fromElem = $('[form="' + params.formId + '"][name="time[from]"]' + selectorSuffix);
+				var from = fromElem.val();
+				var fromSec = null;
+				var toElem = $('[form="' + params.formId + '"][name="time[to]"]' + selectorSuffix);
+				var to = toElem.val();
+				var toSec = null;
+				var timeComponents;
 
-			if (fromSec === null || toSec === null) {
-				return false;
-			}
-
-			fromElem.get(0).setCustomValidity(
-				fromSec && toSec && fromSec >= toSec ?
-					"{trans('\'From\' time should be earlier than \'to\' time!')}"
-					: ""
-			);
-
-			$('[form="' + params.formId + '"][name^="days"]' + selectorSuffix).get(0).setCustomValidity(
-				$('[form="' + params.formId + '"][name^="days"]' + selectorSuffix + ":checked").length ?
-					""
-					: $t("No day was checked!")
-			);
-
-			if (!formElem.get(0).checkValidity()) {
-				formElem.get(0).reportValidity();
-				return false;
-			}
-
-			if (selectorSuffix.length) {
-				$('[form="' + params.formId + '"][name^="days"]' + selectorSuffix).each(function() {
-					formElem.find('[name="' + $(this).attr('name') + '"]').val($(this).prop('checked') ? "1" : "0");
-				});
-				formElem.find('[name="time[fromsec]"]').val(fromSec);
-				formElem.find('[name="time[tosec]"]').val(toSec);
-				formElem.find('[name="id"]').val(params.nodeLockId);
-			} else {
-				$('[form="' + params.formId + '"][name="time[fromsec]"]').val(fromSec);
-				$('[form="' + params.formId + '"][name="time[tosec]"]').val(toSec);
-			}
-
-			return true;
-		}
-
-		$('[data-target="#nodelock-management"]').click(function() {
-			var nodeId = $(this).closest("[data-node-id]").attr("data-node-id");
-			nodeLockForm.find('[name="nodeid"]').val(nodeId);
-			$(".nodelock-table").each(function() {
-				$(this).toggle($(this).attr("data-node-id") == nodeId);
-			});
-		});
-
-		$(".modal-body").on("click", ".nodelock-delete-button", function() {
-			var that = $(this);
-			that.prop("disabled", true);
-
-			var nodeLockId = $(this).attr("data-node-lock-id");
-			nodeLockForm.find('[name="id"]').val(nodeLockId);
-
-			$.ajax({
-				url: "?m=info&action=delete-nodelock&id=" + nodeLockId,
-				async: true,
-				method: 'GET',
-				dataType: 'json'
-			}).done(function(data) {
-				if (data.hasOwnProperty("result")) {
-					if (data.result != "1") {
-						alert("{trans("Error during lock deletion!")}");
+				if (from.length) {
+					timeComponents = from.match(timeRegExp);
+					if (timeComponents !== null && timeComponents.hasOwnProperty("groups")) {
+						fromSec = timeComponents.groups.hour * 3600 + timeComponents.groups.minute * 60;
 					} else {
-						$('tr[data-node-lock-id="' + nodeLockId + '"]').remove();
-						$("#nodelock-empty-table").toggle(!$("tr[data-node-lock-id]").length);
+						fromElem.get(0).setCustomValidity({
+							patternMismatch: true
+						})
 					}
+				} else {
+					fromSec = 0;
 				}
 
-				that.prop("disabled", false);
+				if (to.length) {
+					timeComponents = to.match(timeRegExp);
+					if (timeComponents !== null && timeComponents.hasOwnProperty("groups")) {
+						toSec = timeComponents.groups.hour * 3600 + timeComponents.groups.minute * 60;
+					} else {
+						toElem.get(0).setCustomValidity({
+							patternMismatch: true
+						})
+					}
+				} else {
+					toSec = 0;
+				}
+
+				if (fromSec === null || toSec === null) {
+					return false;
+				}
+
+				fromElem.get(0).setCustomValidity(
+					fromSec && toSec && fromSec >= toSec ?
+						"{trans('\'From\' time should be earlier than \'to\' time!')}"
+						: ""
+				);
+
+				$('[form="' + params.formId + '"][name^="days"]' + selectorSuffix).get(0).setCustomValidity(
+					$('[form="' + params.formId + '"][name^="days"]' + selectorSuffix + ":checked").length ?
+						""
+						: $t("No day was checked!")
+				);
+
+				if (!formElem.get(0).checkValidity()) {
+					formElem.get(0).reportValidity();
+					return false;
+				}
+
+				if (selectorSuffix.length) {
+					$('[form="' + params.formId + '"][name^="days"]' + selectorSuffix).each(function() {
+						formElem.find('[name="' + $(this).attr('name') + '"]').val($(this).prop('checked') ? "1" : "0");
+					});
+					formElem.find('[name="time[fromsec]"]').val(fromSec);
+					formElem.find('[name="time[tosec]"]').val(toSec);
+					formElem.find('[name="id"]').val(params.nodeLockId);
+				} else {
+					$('[form="' + params.formId + '"][name="time[fromsec]"]').val(fromSec);
+					$('[form="' + params.formId + '"][name="time[tosec]"]').val(toSec);
+				}
+
+				return true;
+			}
+
+			$('[data-target="#nodelock-management"]').click(function() {
+				var nodeId = $(this).closest("[data-node-id]").attr("data-node-id");
+				nodeLockForm.find('[name="nodeid"]').val(nodeId);
+				$(".nodelock-table").each(function() {
+					$(this).toggle($(this).attr("data-node-id") == nodeId);
+				});
 			});
-		});
 
-		$("#nodelock-clear-button").click(function () {
-			$('[form="nodelock"][name^="days"]').prop('checked', false);
-			$('[form="nodelock"]input[type="time"]').val("");
-		});
+			$(".modal-body").on("click", ".nodelock-delete-button", function() {
+				var that = $(this);
+				that.prop("disabled", true);
 
-		$("#nodelock-add-button").click(function() {
-			var that = $(this);
-			that.prop("disabled", true);
+				var nodeLockId = $(this).attr("data-node-lock-id");
+				nodeLockForm.find('[name="id"]').val(nodeLockId);
 
-			if (validateNodeLock({
-				formId: "nodelock"
-			})) {
-				var formData = new FormData(nodeLockForm.get(0));
 				$.ajax({
-					url: "?m=info&action=add-nodelock",
+					url: "?m=info&action=delete-nodelock&id=" + nodeLockId,
 					async: true,
-					method: 'POST',
-					contentType: false,
-					processData: false,
-					dataType: 'json',
-					data: formData
+					method: 'GET',
+					dataType: 'json'
 				}).done(function(data) {
 					if (data.hasOwnProperty("result")) {
-						if (data.result == "0") {
-							alert("{trans("Error during lock creation!")}");
+						if (data.result != "1") {
+							alert("{trans("Error during lock deletion!")}");
 						} else {
-							var nodeId = $('#nodelock [name="nodeid"]').val();
-							var nodeLockId = data.result;
-							var nodeLockTemplate = $("#nodelock-template").html();
-
-							var daysHtml = "";
-							$('[name^="days"]').each(function() {
-								daysHtml += '<span' + ($(this).prop("checked") ? '' : ' style="visibility: hidden;"') + '>' + days[$(this).val()] + '</span>';
-							});
-
-							var timePeriodHtml = "";
-							var from = $('[name="time[from]"]').val();
-							var to = $('[name="time[to]"]').val();
-							if (!from.length && !to.length) {
-								timePeriodHtml += "{trans("whole day")}";
-							} else {
-								if (from.length) {
-									timePeriodHtml += $t("from") + ' ' + from;
-								}
-								if (to.length) {
-									timePeriodHtml += (timePeriodHtml.length ? ' ' : '') + $t("to") + ' ' + to;
-								}
-							}
-
-							var symbols = {
-								"node-lock-id": nodeLockId,
-								days: daysHtml,
-								"time-period": timePeriodHtml
-							};
-							nodeLockTemplate = nodeLockTemplate.replace(
-									/%([^%]+)%/g,
-									function(match, p1) {
-										return symbols[p1];
-									}
-							);
-							$('.nodelock-table[data-node-id="' + nodeId  + '"] tbody').append(nodeLockTemplate);
+							$('tr[data-node-lock-id="' + nodeLockId + '"]').remove();
 							$("#nodelock-empty-table").toggle(!$("tr[data-node-lock-id]").length);
 						}
 					}
 
 					that.prop("disabled", false);
 				});
-			} else {
-				that.prop("disabled", false);
-			}
-		});
-	});
+			});
 
-</script>
+			$("#nodelock-clear-button").click(function () {
+				$('[form="nodelock"][name^="days"]').prop('checked', false);
+				$('[form="nodelock"]input[type="time"]').val("");
+			});
+
+			$("#nodelock-add-button").click(function() {
+				var that = $(this);
+				that.prop("disabled", true);
+
+				if (validateNodeLock({
+					formId: "nodelock"
+				})) {
+					var formData = new FormData(nodeLockForm.get(0));
+					$.ajax({
+						url: "?m=info&action=add-nodelock",
+						async: true,
+						method: 'POST',
+						contentType: false,
+						processData: false,
+						dataType: 'json',
+						data: formData
+					}).done(function(data) {
+						if (data.hasOwnProperty("result")) {
+							if (data.result == "0") {
+								alert("{trans("Error during lock creation!")}");
+							} else {
+								var nodeId = $('#nodelock [name="nodeid"]').val();
+								var nodeLockId = data.result;
+								var nodeLockTemplate = $("#nodelock-template").html();
+
+								var daysHtml = "";
+								$('[name^="days"]').each(function() {
+									daysHtml += '<span' + ($(this).prop("checked") ? '' : ' style="visibility: hidden;"') + '>' + days[$(this).val()] + '</span>';
+								});
+
+								var timePeriodHtml = "";
+								var from = $('[name="time[from]"]').val();
+								var to = $('[name="time[to]"]').val();
+								if (!from.length && !to.length) {
+									timePeriodHtml += "{trans("whole day")}";
+								} else {
+									if (from.length) {
+										timePeriodHtml += $t("from") + ' ' + from;
+									}
+									if (to.length) {
+										timePeriodHtml += (timePeriodHtml.length ? ' ' : '') + $t("to") + ' ' + to;
+									}
+								}
+
+								var symbols = {
+									"node-lock-id": nodeLockId,
+									days: daysHtml,
+									"time-period": timePeriodHtml
+								};
+								nodeLockTemplate = nodeLockTemplate.replace(
+										/%([^%]+)%/g,
+										function(match, p1) {
+											return symbols[p1];
+										}
+								);
+								$('.nodelock-table[data-node-id="' + nodeId  + '"] tbody').append(nodeLockTemplate);
+								$("#nodelock-empty-table").toggle(!$("tr[data-node-lock-id]").length);
+							}
+						}
+
+						that.prop("disabled", false);
+					});
+				} else {
+					that.prop("disabled", false);
+				}
+			});
+		});
+
+	</script>
+{/if}
 {/box}

@@ -155,3 +155,4 @@ $_LANG['Lock management'] = 'Zarządzanie blokadami';
 $_LANG['Error during lock deletion!'] = 'Błąd podczas usuwania blokady!';
 $_LANG['Error during lock creation!'] = 'Błąd podczas tworzenia blokady!';
 $_LANG['No locks defined.'] = 'Brak zdefiniowanych blokad.';
+$_LANG['Node lock management'] = 'Zarządzanie blokadami komputerów';

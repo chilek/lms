@@ -32,6 +32,17 @@
 						</tr>
 						<tr>
 							<td class="nobr">
+								<label for="node_lock_management">
+									{trans("Node lock management")}
+								</label>
+							</td>
+							<td>
+								<input type="checkbox" name="node_lock_management" id="node_lock_management" value="1"
+									{if !empty($node_lock_management)} checked{/if}>
+							</td>
+						</tr>
+						<tr>
+							<td class="nobr">
 								{trans("Text of data processing agreement:")}
 							</td>
 							<td>
