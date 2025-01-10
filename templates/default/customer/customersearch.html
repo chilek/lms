@@ -18,6 +18,10 @@
 		border: 0;
 	}
 
+	#consent-table > .lmsbox-inner .in-consent-group > td:first-child {
+		padding-left: 2em;
+	}
+
 	#balance-days-container {
 		margin-top: 0.5em;
 	}
@@ -375,22 +379,23 @@
 					<col style="width: 30%;">
 				</colgroup>
 				<tbody>
+					{$in_consent_group = false}
 					{foreach $_CCONSENTS as $consentid => $consent}
 						{if !is_array($consent)}
 							{continue}
 						{/if}
 
 						{$customer_consent_group_id = Utils::findCustomerConsentGroupByCustomerConsent($consentid, $_CCONSENT_GROUPS)}
-						{*
-							{if $current_customer_consent_group_id && $current_customer_consent_group_id != $customer_consent_group_id || $current_customer_consent_group_id && $consent@last}
-							{/if}
-						*}
+						{if $current_customer_consent_group_id && $current_customer_consent_group_id != $customer_consent_group_id || $current_customer_consent_group_id && $consent@last}
+							{$in_consent_group = false}
+						{/if}
 						{if $customer_consent_group_id && $customer_consent_group_id != $current_customer_consent_group_id}
 							<tr class="superdark">
 								<td colspan="2" class="superdark">
 									<strong>{$_CCONSENT_GROUPS[$customer_consent_group_id].label}</strong>
 								</td>
 							</tr>
+							{$in_consent_group = true}
 						{/if}
 
 						{if $consent.type == 'selection'}
@@ -398,7 +403,7 @@
 								{if !isset($subconsent.name)}
 									{continue}
 								{/if}
-								<tr class="highlight">
+								<tr class="highlight{if $in_consent_group} in-consent-group{/if}">
 									<td>
 										{t a=$consent.label b=$subconsent.label}$a ($b){/t}
 									</td>
@@ -422,7 +427,7 @@
 								</tr>
 							{/foreach}
 						{else}
-							<tr class="highlight">
+							<tr class="highlight{if $in_consent_group} in-consent-group{/if}">
 								<td>
 									{$consent.label}
 								</td>
