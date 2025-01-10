@@ -74,7 +74,7 @@ function validateNodeLock(params) {
 	}
 
 	fromElem.get(0).setCustomValidity(
-		fromSec && toSec && fromSec >= toSec ?
+		(fromSec || from.length) && (toSec || to.length) && fromSec >= toSec ?
 			$t("'From' time should be earlier than 'to' time!")
 			: ""
 	);
