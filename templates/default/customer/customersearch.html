@@ -379,6 +379,20 @@
 						{if !is_array($consent)}
 							{continue}
 						{/if}
+
+						{$customer_consent_group_id = Utils::findCustomerConsentGroupByCustomerConsent($consentid, $_CCONSENT_GROUPS)}
+						{*
+							{if $current_customer_consent_group_id && $current_customer_consent_group_id != $customer_consent_group_id || $current_customer_consent_group_id && $consent@last}
+							{/if}
+						*}
+						{if $customer_consent_group_id && $customer_consent_group_id != $current_customer_consent_group_id}
+							<tr class="superdark">
+								<td colspan="2" class="superdark">
+									<strong>{$_CCONSENT_GROUPS[$customer_consent_group_id].label}</strong>
+								</td>
+							</tr>
+						{/if}
+
 						{if $consent.type == 'selection'}
 							{foreach $consent.values as $subconsentid => $subconsent}
 								{if !isset($subconsent.name)}
@@ -431,6 +445,7 @@
 								</td>
 							</tr>
 						{/if}
+						{$current_customer_consent_group_id = $customer_consent_group_id}
 					{/foreach}
 				</tbody>
 				<tfoot>
