@@ -3311,7 +3311,7 @@ class LMS
             $number = $debug_phone;
         }
 
-        $with_country_code = preg_match('/^(0|\+)/', $number);
+        $with_country_code = preg_match('/^\s*(0|\+)/', $number);
 
         $prefix = $sms_options['prefix'] ?? ConfigHelper::getConfig('sms.prefix', '');
         $number = preg_replace('/[^0-9]/', '', $number);
