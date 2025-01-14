@@ -907,6 +907,8 @@ version 28-git (????-??-??):
   - enhancement: optgroup support for lms-ui-multiselect [chilan]
   - improvement: capacity settings for phone tariffs are enabled [chilan]
   - enhancement: userpanel can use extra style sheet specified in its global configuration [chilan]
+  - enhancement: when customer is not selected in receipt add form then allow to select division in dedicated
+    form field to avoid empty seller data presentation on generated receipt [chilan]
 
 version 27.0 (2021-08-20):
 
