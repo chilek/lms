@@ -228,6 +228,8 @@ switch ($action) {
             $receipt['regid'] = key($cashreglist);
         }
 
+        $receipt['divisionid'] = $tabDivisionContext;
+
         if (!$receipt['regid'] || !$receipt['type']) {
             break;
         }

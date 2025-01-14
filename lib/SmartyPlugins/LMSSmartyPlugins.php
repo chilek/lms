@@ -176,6 +176,7 @@ class LMSSmartyPlugins
         $selected = $params['selected'] ?? null;
         $superuser = !empty($params['superuser']) ? $params['superuser'] : null;
         $onchange = !empty($params['onchange']) ? $params['onchange'] : null;
+        $disabled = !empty($params['disabled']);
         $tip = trans($params['tip'] ?? 'Select division');
 
         if (isset($user_divisions) && empty($user_divisions)) {
@@ -207,7 +208,8 @@ class LMSSmartyPlugins
                     . '<select class="division-context" id="' . $id . '" name="' . ($shortname ? $user_divisions['shortname'] : $name) . '" '
                     . (empty($tip) ? '' : ' title="' . $tip . '"')
                     . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '')
-                    . ($onchange ? ' onchange="' . $onchange . '"' : '') . '>'
+                    . ($onchange ? ' onchange="' . $onchange . '"' : '')
+                    . ($disabled ? ' disabled' : '') . '>'
                     . '<option value=""' . (!$selected ? ' selected' : '') . '>' . trans("— all —") . '</option>';
                 foreach ($user_divisions as $division) {
                     $result .= '<option value="' . $division['id'] . '"'

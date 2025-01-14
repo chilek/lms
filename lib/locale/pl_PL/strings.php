@@ -2647,6 +2647,7 @@ $_LANG['Moving assets to registry $a'] = 'Przeniesienie środków do rejestru $a
 $_LANG['Select cash registry'] = 'Wybierz rejestr kasowy';
 $_LANG['— select registry —'] = '— wybierz rejestr —';
 $_LANG['Target:'] = 'Cel:';
+$_LANG['Target'] = 'Cel';
 $_LANG['target price'] = 'cena docelowa';
 $_LANG['There is no cash in selected registry!'] = 'Brak środków w wybranym rejestrze!';
 $_LANG['There is no cash in selected registry! You can expense only $a.'] = 'Brak środków w wybranym rejestrze! Możesz wydać tylko $a.';

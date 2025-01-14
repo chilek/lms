@@ -4546,6 +4546,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         if ($customer && !empty($customer['divisionid'])) {
             $division_manager = new LMSDivisionManager($this->db, $this->auth, $this->cache, $this->syslog);
             $division = $division_manager->GetDivision($customer['divisionid']);
+        } elseif (!empty($receipt['divisionid'])) {
+            $division_manager = new LMSDivisionManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $division = $division_manager->GetDivision($receipt['divisionid']);
         }
 
         $fullnumber = docnumber(array(
@@ -4570,7 +4573,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'zip' => $customer ? $customer['zip'] : '',
             'city' => $customer ? ($customer['postoffice'] ?: $customer['city']) : '',
             SYSLOG::RES_COUNTRY => $customer && !empty($customer['countryid']) ? $customer['countryid'] : null,
-            SYSLOG::RES_DIV => $customer ? $customer['divisionid'] : null,
+            SYSLOG::RES_DIV => $customer ? $customer['divisionid'] : (empty($receipt['divisionid']) ? null : $receipt['divisionid']),
             'div_name' => !empty($division['name']) ? $division['name'] : '',
             'div_shortname' => !empty($division['shortname']) ? $division['shortname'] : '',
             'div_address' => !empty($division['address']) ? $division['address'] : '',

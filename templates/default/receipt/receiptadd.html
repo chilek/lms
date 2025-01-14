@@ -39,10 +39,16 @@
 {$default_printpage = ConfigHelper::getConfig('receipts.default_printpage')}
 <form name="setcustomer" id="setcustomer" method="POST"
 	action="?m=receiptadd{if $receipt.type}&type={$receipt.type}{/if}&action={if $receipt.regid && !$error.regid}setcustomer{else}setreg{/if}">
-<INPUT type="submit" class="hiddenbtn">
-<INPUT type="hidden" name="receipt[type]" value="{$receipt.type}">
-<INPUT type="hidden" name="receipt[numberplanid]" value="{$receipt.numberplanid}">
+	<input type="submit" class="hiddenbtn">
+	<input type="hidden" name="receipt[divisionid]" value="{$receipt.divisionid}"
+		{if $receipt.type && !isset($customer.id) && empty($receipt.customerid)} disabled{/if}>
+	<input type="hidden" name="receipt[type]" value="{$receipt.type}">
+	<input type="hidden" name="receipt[numberplanid]" value="{$receipt.numberplanid}">
 <TABLE class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
     <THEAD>
 	<TR>
 		<TD WIDTH="100%" COLSPAN="2">
@@ -108,76 +114,101 @@
 		</td>
 	</tr>
 	{if $receipt.type && $rights}
-	<TR>
-		<TD WIDTH="1%">
-			<B>{trans("Target:")}</B>
-		</TD>
-		<TD WIDTH="99%" NOWRAP>
-		    <TABLE>
-		    {if ($rights & 2)==2}
-			<TR>
-				<TD style="width: 1%;" class="nobr">
-					<label>
-						<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="customer" id="radio_customer" checked>
-						{trans("customer")}:
-					</label>
-				</TD>
-				<TD style="width: 99%;" class="nobr">
-					{if isset($customer.id)}
-					{customerlist form="setcustomer" customers=$customerlist selected=$customer.id version=2
-						selectname="customer" inputname="customerid"
-						customOnChange="document.getElementById('radio_customer').checked=true;xajax_GetCashRegistriesXajax($('[name=customerid]').val(), $('[name=\'receipt[regid]\']').val())"}
-					{else}
-					{customerlist form="setcustomer" customers=$customerlist selected=$receipt.customerid version=2
-						selectname="customer" inputname="customerid"
-						customOnChange="document.getElementById('radio_customer').checked=true;xajax_GetCashRegistriesXajax($('[name=customerid]').val(), $('[name=\'receipt[regid]\']').val())"}
+	<tr id="division-row">
+		<td class="nobr">
+			<label for="divisionid"{if isset($customer.id) || !empty($receipt.customerid)} class="lms-ui-disabled"{/if}>
+				<strong>
+					{trans("Division")}
+				</strong>
+			</label>
+		</td>
+		<td>
+			{division_selection name="receipt[divisionid]" selected=$receipt.divisionid superuser="{if !empty($superuser)}1{/if}"
+				id="division-selection"
+				disabled=(isset($customer.id) || !empty($receipt.customerid))}
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<strong>{trans("Target")}</strong>
+		</td>
+		<td class="nobr">
+			<table>
+				<colgroup>
+					<col style="width: 1%;">
+					<col style="width: 99%;">
+				</colgroup>
+				{if ($rights & 2) == 2}
+					<tr>
+						<td class="nobr">
+							<label>
+								<input type="radio" name="receipt[o_type]" value="customer" id="radio_customer" checked>
+								{trans("customer")}
+							</label>
+						</td>
+						<td class="nobr">
+							{if isset($customer.id)}
+								{customerlist form="setcustomer" customers=$customerlist selected=$customer.id version=2
+									selectname="customer" inputname="customerid" input_id="customerid"
+									customOnChange="document.getElementById('radio_customer').checked=true;xajax_GetCashRegistriesXajax($('[name=customerid]').val(), $('[name=\'receipt[regid]\']').val())"}
+							{else}
+								{customerlist form="setcustomer" customers=$customerlist selected=$receipt.customerid version=2
+									selectname="customer" inputname="customerid" input_id="customerid"
+									customOnChange="document.getElementById('radio_customer').checked=true;xajax_GetCashRegistriesXajax($('[name=customerid]').val(), $('[name=\'receipt[regid]\']').val())"}
+							{/if}
+						</td>
+					</tr>
+				{/if}
+				{if ($rights & 4) == 4}
+					{if $cashregcount > 1 && $receipt.type=="out"}
+						<tr>
+							<td colspan="2" class="nobr">
+								<label>
+									<input type="radio" name="receipt[o_type]" value="move"
+										{if $receipt.o_type=="move"} checked{/if}>
+									{trans("assets move")}
+								</label>
+							</td>
+						</tr>
 					{/if}
-				</TD>
-			</TR>
-		    {/if}
-		    {if ($rights & 4)==4}
-			{if  $cashregcount > 1 && $receipt.type=="out"}
-			<TR>
-			    <TD width="100%" colspan="2" nowrap>
-					<label>
-						<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="move" {if $receipt.o_type=="move"} checked{/if}>
-						{trans("assets move")}
-					</label>
-			    </TD>
-			</TR>
-			{/if}
-		    {/if}
-		    {if ($rights & 8)==8}
-			{if $receipt.type=="out"}
-			<TR>
-			    <TD width="1%" nowrap>
-					<label>
-						<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="advance" id="radio_advance" {if $receipt.o_type=="advance"} checked{/if}>
-						{trans("advance")}:
-					</label>
-			    </TD>
-			    <TD width="99%">
-				<INPUT TYPE="text" NAME="receipt[adv_name]" VALUE="{$receipt.adv_name}" SIZE="70" {tip text="Enter recipient" trigger="adv_name"} onclick="document.getElementById('radio_advance').checked=true">
-			    </TD>
-			</TR>
-			{/if}
-		    {/if}
-		    {if ($rights & 16)==16}
-			<TR>
-			    <TD width="1%" nowrap>
-					<label>
-						<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="other" id="radio_other" {if $receipt.o_type=="other"} checked{/if}>
-						{trans("other")}:
-					</label>
-			    </TD>
-			    <TD width="99%">
-				<INPUT TYPE="text" NAME="receipt[other_name]" VALUE="{$receipt.other_name}" SIZE="70" {if $receipt.type=="out"}{tip text="Enter recipient" trigger="o_name"}{else}{tip text="Enter payer" trigger="other_name"}{/if} onclick="document.getElementById('radio_other').checked=true">
-			    </TD>
-			</TR>
-		    {/if}
-		    </TABLE>
-		</TD>
-	</TR>
+				{/if}
+				{if ($rights & 8) == 8}
+					{if $receipt.type=="out"}
+						<tr>
+							<td class="nobr">
+								<label>
+									<input type="radio" name="receipt[o_type]" value="advance" id="radio_advance"
+										{if $receipt.o_type == "advance"} checked{/if}>
+									{trans("advance")}
+								</label>
+							</td>
+							<td>
+								<input type="text" name="receipt[adv_name]" value="{$receipt.adv_name}" size="70"
+									{tip text="Enter recipient" trigger="adv_name"}
+									onclick="document.getElementById('radio_advance').checked=true">
+							</td>
+						</tr>
+					{/if}
+				{/if}
+				{if ($rights & 16) == 16}
+					<tr>
+						<td class="nobr">
+							<label>
+								<input type="radio" name="receipt[o_type]" value="other" id="radio_other"
+									{if $receipt.o_type == "other"} checked{/if}>
+								{trans("other")}
+							</label>
+						</td>
+						<td>
+							<input type="text" name="receipt[other_name]" value="{$receipt.other_name}" size="70"
+								{if $receipt.type=="out"}{tip text="Enter recipient" trigger="o_name"}{else}{tip text="Enter payer" trigger="other_name"}{/if}
+								onclick="document.getElementById('radio_other').checked=true">
+						</td>
+					</tr>
+				{/if}
+			</table>
+		</td>
+	</tr>
 	{elseif $receipt.customerid}
 		<INPUT type="hidden" name="customerid" value="{$receipt.customerid}">
 	{/if}
@@ -500,11 +531,32 @@
 </TABLE>
 </P>
 {/if}
-<SCRIPT>
-{if !$receipt.selected}
-$(function() {
-	$('form[name="setcustomer"] [name="receipt[regid]"]').focus();
-});
-{/if}
-</SCRIPT>
+<script>
+
+	$(function() {
+		{if !$receipt.selected}
+			$('form[name="setcustomer"] [name="receipt[regid]"]').focus();
+		{/if}
+
+		$("#customerid").change(function() {
+			var customerId = $(this).val();
+			var customerSelected = customerId.length > 0;
+
+			$('[name="receipt[divisionid]"]').each(function() {
+				if ($(this).is("select")) {
+					$(this).prop("disabled", customerSelected);
+					$("#division-row label").toggleClass("lms-ui-disabled", customerSelected);
+				} else {
+					$(this).prop("disabled", !customerSelected);
+				}
+			});
+		});
+
+		$("#division-selection").change(function() {
+			console.log($(this).val());
+			$('[type="hidden"][name="receipt[divisionid]"]').val($(this).val());
+		});
+	});
+
+</script>
 {/block}
