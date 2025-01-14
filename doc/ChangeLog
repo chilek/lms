@@ -906,6 +906,7 @@ version 28-git (????-??-??):
   - enhancement: userpanel: node lock management support [chilan]
   - enhancement: optgroup support for lms-ui-multiselect [chilan]
   - improvement: capacity settings for phone tariffs are enabled [chilan]
+  - enhancement: userpanel can use extra style sheet specified in its global configuration [chilan]
 
 version 27.0 (2021-08-20):
 
