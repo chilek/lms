@@ -51,6 +51,7 @@ function module_setup()
     $SMARTY->assign('company_logo', ConfigHelper::getConfig('userpanel.company_logo', ''));
     $SMARTY->assign('shortcut_icon', ConfigHelper::getConfig('userpanel.shortcut_icon', ''));
     $SMARTY->assign('stylelist', getdir(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'style', '^[a-z0-9]*$'));
+    $SMARTY->assign('extra_style', ConfigHelper::getConfig('userpanel.extra_style', ''));
     $SMARTY->assign('style', ConfigHelper::getConfig('userpanel.style', 'default'));
     $SMARTY->assign('startupmodule', ConfigHelper::getConfig('userpanel.startup_module', 'info'));
     $SMARTY->assign('hint', ConfigHelper::getConfig('userpanel.hint', 'modern'));
@@ -136,6 +137,16 @@ function module_submit_setup()
         }
     } else {
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'style', ?)", array($_POST['style']));
+    }
+
+    $old_extra_style = $DB->GetOne("SELECT value FROM uiconfig WHERE section = 'userpanel' AND var = 'extra_style'");
+    if (is_string($old_extra_style)) {
+        $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'extra_style'", array($_POST['extra_style']));
+        if ($old_extra_style != $_POST['extra_style']) {
+            userpanel_style_change();
+        }
+    } else {
+        $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'extra_style', ?)", array($_POST['extra_style']));
     }
 
     if ($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'startup_module'")) {

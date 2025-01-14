@@ -235,6 +235,16 @@ $SMARTY->assign('page_header', ConfigHelper::getConfig('userpanel.page_header'))
 $SMARTY->assign('company_logo', ConfigHelper::getConfig('userpanel.company_logo'));
 $SMARTY->assign('timeout', $_TIMEOUT);
 
+$extra_css = ConfigHelper::getConfig('userpanel.extra_style', '');
+if (preg_match('#https?://#', $extra_css)) {
+    $extra_css = '<link type="text/css" rel="stylesheet" href="' . $extra_css . '">';
+} elseif (is_readable($extra_css)) {
+    $extra_css = '<style>' . PHP_EOL . file_get_contents((strpos($extra_css, DIRECTORY_SEPARATOR) === 0 ? '' : SYS_DIR . DIRECTORY_SEPARATOR) . $extra_css) . PHP_EOL . '</style>';
+} else {
+    $extra_css = '';
+}
+$SMARTY->assign('extra_css', $extra_css);
+
 header('X-Powered-By: LMS/'.$layout['lmsv']);
 
 $plugin_manager->executeHook('userpanel_lms_initialized', $LMS);
