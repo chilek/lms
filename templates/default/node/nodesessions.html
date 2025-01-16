@@ -23,16 +23,23 @@
 
 			{if $nodesessions}
 			<div class="lms-ui-tab-table-row header">
-				<div class="lms-ui-tab-table-wrapper col-9">
-					<div class="lms-ui-tab-table-wrapper col-3">
-						<div class="lms-ui-tab-table-column ip">
-							<strong>{trans("IP Address:")}</strong>
+				<div class="lms-ui-tab-table-wrapper col-10">
+					<div class="lms-ui-tab-table-wrapper col-4">
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column ip">
+								<strong>{trans("IP Address:")}</strong>
+							</div>
+							<div class="lms-ui-tab-table-column mac">
+								{trans("MAC:")}
+							</div>
 						</div>
-						<div class="lms-ui-tab-table-column mac">
-							{trans("MAC:")}
-						</div>
-						<div class="lms-ui-tab-table-column type">
-							{trans("Type:")}
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column type">
+								{trans("Type:")}
+							</div>
+							<div class="lms-ui-tab-table-column location">
+								{trans("Location")}
+							</div>
 						</div>
 					</div>
 
@@ -75,30 +82,39 @@
 
 			{foreach $nodesessions as $nodesession}
 			<div class="lms-ui-tab-table-row">
-				<div class="lms-ui-tab-table-wrapper col-9">
-					<div class="lms-ui-tab-table-wrapper col-3">
-						<div class="lms-ui-tab-table-column ip">
-							<strong>{$nodesession.ipaddr}</strong>
-						</div>
-						<div class="lms-ui-tab-table-column mac">
-							{$nodesession.mac}
-							{$producer = EtherCodes::GetProducer($nodesession.mac)}
-							{if $producer}
-								<span class="lms-ui-font-smaller">
-									({$producer})
-								</span>
-							{/if}
-						</div>
-						<div class="lms-ui-tab-table-column type">
-							{$unknowntype=1}{$firsttype=1}
-							{foreach $_SESSIONTYPES as $sessiontypeid => $sessiontype}
-								{if ($nodesession.type & $sessiontypeid) == $sessiontypeid}
-									{if !$firsttype}, {/if}{$sessiontype.label}
-									{$firsttype=0}
-									{$unknowntype=0}
+				<div class="lms-ui-tab-table-wrapper col-10">
+					<div class="lms-ui-tab-table-wrapper col-4">
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column ip">
+								<strong>{$nodesession.ipaddr}</strong>
+							</div>
+							<div class="lms-ui-tab-table-column mac">
+								{$nodesession.mac}
+								{$producer = EtherCodes::GetProducer($nodesession.mac)}
+								{if $producer}
+									<span class="lms-ui-font-smaller">
+										({$producer})
+									</span>
 								{/if}
-							{/foreach}
-							{if $unknowntype}-{/if}
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column type">
+								{$unknowntype=1}{$firsttype=1}
+								{foreach $_SESSIONTYPES as $sessiontypeid => $sessiontype}
+									{if ($nodesession.type & $sessiontypeid) == $sessiontypeid}
+										{if !$firsttype}, {/if}{$sessiontype.label}
+										{$firsttype=0}
+										{$unknowntype=0}
+									{/if}
+								{/foreach}
+								{if $unknowntype}-{/if}
+							</div>
+							<div class="lms-ui-tab-table-column location">
+								{if $nodesession.location}
+									{$nodesession.location|escape}
+								{/if}
+							</div>
 						</div>
 					</div>
 

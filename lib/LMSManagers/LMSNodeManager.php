@@ -1370,10 +1370,20 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
     public function GetNodeSessions($nodeid)
     {
         $nodesessions = $this->db->GetAll(
-            'SELECT id, INET_NTOA(ipaddr) AS ipaddr, mac, start, stop,
-                    download, upload, terminatecause, type,
-                    nasipaddr, INET_NTOA(nasipaddr) AS nasip,
-                    nasid
+            'SELECT
+                    id,
+                    INET_NTOA(ipaddr) AS ipaddr,
+                    mac,
+                    start,
+                    stop,
+                    download,
+                    upload,
+                    terminatecause,
+                    type,
+                    nasipaddr,
+                    INET_NTOA(nasipaddr) AS nasip,
+                    nasid,
+                    location
                 FROM nodesessions
                 WHERE nodeid = ?
                 ORDER BY stop DESC

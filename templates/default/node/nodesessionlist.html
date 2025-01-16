@@ -31,7 +31,7 @@
 <table style="width: 100%" class="lmsbox lms-ui-background-cycle">
 	<thead>
 		<tr>
-			<td colspan="10">
+			<td colspan="11">
 				<table style="width: 100%">
 					<colgroup>
 						<col style="width: 1%;">
@@ -99,6 +99,7 @@
 			<td class="fbt">{trans("Customer:")}</td>
 			<td class="fbt">{trans("MAC:")}</td>
 			<td class="fbt">{trans("Type:")}</td>
+			<td class="fbt">{trans("Location")}</td>
 			<td class="fbt bold">{trans("Started:")}</td>
 			<td class="fbt bold">{trans("Finished:")}</td>
 			<td class="fbt bold">{trans("Time Duration:")}</td>
@@ -108,7 +109,7 @@
 		</tr>
 		{if $listdata.total != 0}
 		<TR>
-			<TD class="lms-ui-pagination" COLSPAN="10">
+			<TD class="lms-ui-pagination" COLSPAN="11">
 				{include file="scroller.html" loop=$nodesessions scrollerno=1}
 			</TD>
 		</TR>
@@ -117,7 +118,7 @@
 	<tfoot>
 		{if $listdata.total != 0}
 		<TR>
-			<TD class="lms-ui-pagination" COLSPAN="10">
+			<TD class="lms-ui-pagination" COLSPAN="11">
 				{include file="scroller.html" loop=$nodesessions scrollerno=2}
 			</TD>
 		</TR>
@@ -157,6 +158,11 @@
 				{/foreach}
 				{if $unknowntype}-{/if}
 			</td>
+			<td>
+				{if $session.location}
+					{$session.location|escape}
+				{/if}
+			</td>
 			<td class="nobr">
 				<span class="bold">{$session.start|date_format:"Y.m.d"}</span> {$session.start|date_format:"H:i:s"}
 			</td>
@@ -172,7 +178,7 @@
 		</tr>
 		{sectionelse}
 		<tr>
-			<td class="empty-table" colspan="10">
+			<td class="empty-table" colspan="11">
 				<P>&nbsp;</P>
 				<P>{trans("There are no sessions matching defined filter.")}</P>
 				<P>&nbsp;</P>
