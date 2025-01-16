@@ -911,6 +911,7 @@ version 28-git (????-??-??):
     form field to avoid empty seller data presentation on generated receipt [chilan]
   - improvement: 'timetable.default_show_closed_events' or 'phpui.default_show_closed_events' configuration
     variables apply to eventlist and eventschedule forms [chilan]
+  - enhancement: added location column to node session lists [chilan]
 
 version 27.0 (2021-08-20):
 
