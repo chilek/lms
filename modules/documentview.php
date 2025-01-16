@@ -47,6 +47,7 @@ if (!empty($docids)) {
             d.fullnumber
         FROM documents d
         JOIN docrights r ON r.doctype = d.type
+        JOIN customerview c ON c.id = d.customerid
         WHERE d.id IN ?
             AND r.userid = ?
             AND (r.rights & ?) > 0',
