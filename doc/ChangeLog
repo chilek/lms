@@ -912,6 +912,8 @@ version 28-git (????-??-??):
   - improvement: 'timetable.default_show_closed_events' or 'phpui.default_show_closed_events' configuration
     variables apply to eventlist and eventschedule forms [chilan]
   - enhancement: added location column to node session lists [chilan]
+  - improvement: 'invoices.receipt_option_warning' configuration variable with 'false' as its default value
+    enables warning popup presentation after 'receipt' option check click [chilan]
 
 version 27.0 (2021-08-20):
 
