@@ -150,6 +150,7 @@
 						</label>
 						<label {tip text="translates into JPK FP flag"}>
 							<input type="checkbox" name="invoice[flags][{$smarty.const.DOC_FLAG_RECEIPT}]" value="1"
+								id="receipt-flag"
 								{if $invoice.flags[$smarty.const.DOC_FLAG_RECEIPT]} checked{/if}
 							>
 							{trans("<!invoice>receipt")}
@@ -389,6 +390,14 @@
 				$('[name="invoice[cdate]"]').trigger('change', typeof(init) !== 'undefined' && init);
 			}
 		}).trigger('change', true);
+
+		{if ConfigHelper::checkConfig('invoices.receipt_option_warning')}
+			$('#receipt-flag').change(function() {
+				if ($(this).prop('checked')) {
+					alertDialog($t("You select the receipt option, which may require issuing fiscal receipt!"), this);
+				}
+			});
+		{/if}
 	});
 
 </script>

@@ -6106,3 +6106,5 @@ $_LANG['send to customer email'] = 'wyślij na e-mail klienta';
 $_LANG['Time period'] = 'Zakres czasu';
 $_LANG['\'From\' time should be earlier than \'to\' time!'] = 'Czas \'od\' powinien być wcześniejszy niż czas \'do\'!';
 $_LANG['No day was checked!'] = 'Nie zaznaczono żadnego dnia!';
+
+$_LANG['You select the receipt option, which may require issuing fiscal receipt!'] = 'Zaznaczasz opcję paragonu, co może wiązać się z koniecznością wygenerowania paragonu fiskalnego!';
