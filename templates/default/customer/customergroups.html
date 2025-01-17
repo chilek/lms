@@ -78,14 +78,16 @@
 				</div>
 
 				<div class="lms-ui-tab-table-column buttons">
-					{textformat assign="onclick" wrap=5000}
-						confirmDialog($t('Are you sure, you want to remove customer from group?'), this).done(function() {
-							location.href = '?m=customergroup&customergroupid={$customergroup.id}&action=delete&id={$customerinfo.id}';
-						});
-					{/textformat}
-					{button type="link" icon="delete" onclick=$onclick tip="Remove customer from group"}
-					<input type="checkbox" name="markedcustomergroupid[{$customergroup.id}]"
+					{if ConfigHelper::checkPrivilege("customer_group_assignments")}
+						{textformat assign="onclick" wrap=5000}
+							confirmDialog($t('Are you sure, you want to remove customer from group?'), this).done(function() {
+								location.href = '?m=customergroup&customergroupid={$customergroup.id}&action=delete&id={$customerinfo.id}';
+							});
+						{/textformat}
+						{button type="link" icon="delete" onclick=$onclick tip="Remove customer from group"}
+						<input type="checkbox" name="markedcustomergroupid[{$customergroup.id}]"
 							value="{$customergroup.id}" class="lms-ui-multi-check" form="customergroupassignment">
+					{/if}
 				</div>
 			</div>
 			{foreachelse}
@@ -97,23 +99,27 @@
 
 		{tab_button_panel}
 			{tab_buttons}
-				{button icon="delete" label="Delete" id="delete-groups"}
-				{if !empty($othercustomergroups)}
-					{button icon="add" label="Add" id="add-groups" tip="Add customer to groups"}
-					{button icon="reload" label="Replace" id="replace-groups" tip="Replace customer group assignments"}
-					<select name="customergroupid[]" {tip text="Select group to attribute to customer" class="lms-ui-multiselect"}
-						form="customergroupassignment" multiple>
-						{foreach $othercustomergroups as $customergroup}
-							<option value="{$customergroup.id}">{$customergroup.name} (#{$customergroup.id})</option>
-						{/foreach}
-					</select>
+				{if ConfigHelper::checkPrivilege("customer_group_assignments")}
+					{button icon="delete" label="Delete" id="delete-groups"}
+					{if !empty($othercustomergroups)}
+						{button icon="add" label="Add" id="add-groups" tip="Add customer to groups"}
+						{button icon="reload" label="Replace" id="replace-groups" tip="Replace customer group assignments"}
+						<select name="customergroupid[]" {tip text="Select group to attribute to customer" class="lms-ui-multiselect"}
+							form="customergroupassignment" multiple>
+							{foreach $othercustomergroups as $customergroup}
+								<option value="{$customergroup.id}">{$customergroup.name} (#{$customergroup.id})</option>
+							{/foreach}
+						</select>
+					{/if}
 				{/if}
 			{/tab_buttons}
 			{tab_buttons}
-				<label>
-					{trans("Check All")}
-					<input type="checkbox" class="lms-ui-multi-check-all">
-				</label>
+				{if ConfigHelper::checkPrivilege("customer_group_assignments")}
+					<label>
+						{trans("Check All")}
+						<input type="checkbox" class="lms-ui-multi-check-all">
+					</label>
+				{/if}
 			{/tab_buttons}
 		{/tab_button_panel}
 
