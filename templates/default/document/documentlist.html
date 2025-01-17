@@ -199,6 +199,14 @@
 						</SELECT>
 					</label>
 
+                                                {trans("Document attachments")}
+                                                <select name="attachments" {tip text="Condition for the existence of document attachments"}>
+                                                        <option value="-1">{trans("— all —")} </option>
+                                                        <option value="0"{if !$filter.attachments} selected{/if}>{trans("no")}</option>
+                                                        <option value="1"{if $filter.attachments} selected{/if}>{trans("yes")}</option>
+                                                </select>
+                                        </label>
+
 					<A href="javascript:applyFilter();">&raquo;&raquo;&raquo;</A>
                     </form>
 				</div>
