@@ -182,24 +182,26 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             );
         }
 
-        foreach ($nlist as &$netnode) {
-            $flags = $netnode['flags'];
-            $netnode['flags'] = array();
-            foreach ($NETWORK_NODE_FLAGS as $flag => $label) {
-                if ($flags & $flag) {
-                    $netnode['flags'][$flag] = $flag;
+        if (!empty($nlist)) {
+            foreach ($nlist as &$netnode) {
+                $flags = $netnode['flags'];
+                $netnode['flags'] = array();
+                foreach ($NETWORK_NODE_FLAGS as $flag => $label) {
+                    if ($flags & $flag) {
+                        $netnode['flags'][$flag] = $flag;
+                    }
                 }
-            }
 
-            $netnode['services'] = array();
-            if (!empty($node['services'])) {
-                $services = explode(',', $netnode['services']);
-                foreach ($services as $service) {
-                    $netnodes['services'][$service] = $service;
+                $netnode['services'] = array();
+                if (!empty($node['services'])) {
+                    $services = explode(',', $netnode['services']);
+                    foreach ($services as $service) {
+                        $netnodes['services'][$service] = $service;
+                    }
                 }
             }
+            unset($netnode);
         }
-        unset($netnode);
 
         if (!$short && $nlist) {
             $filecontainers = $this->db->GetAllByKey(
