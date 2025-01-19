@@ -24,12 +24,7 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE assignments ADD COLUMN nodeid int(11) NOT NULL DEFAULT '0'");
 $this->Execute("ALTER TABLE assignments ADD INDEX nodeid (nodeid)");
 $this->Execute("ALTER TABLE assignments ADD INDEX customerid (customerid)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006082300', 'dbversion'));
-
-$this->CommitTrans();

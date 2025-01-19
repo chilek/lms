@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 $this->Execute("
     CREATE SEQUENCE aliases_id_seq;
     CREATE TABLE aliases (
@@ -35,6 +34,4 @@ $this->Execute("
 	UNIQUE (login)
     );
     
-    UPDATE dbinfo SET keyvalue = '2004120400' WHERE keytype = 'dbversion'
 ");
-$this->CommitTrans();

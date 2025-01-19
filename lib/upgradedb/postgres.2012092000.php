@@ -21,12 +21,7 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE users ADD access smallint NOT NULL DEFAULT 1;");
 $this->Execute("ALTER TABLE users ADD accessfrom integer NOT NULL DEFAULT 0;");
 $this->Execute("ALTER TABLE users ADD accessto integer NOT NULL DEFAULT 0;");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012092000', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("DROP TRIGGER cash_customerbalances_delete_trigger");
 $this->Execute("DROP TRIGGER cash_customerbalances_update_trigger");
@@ -79,7 +78,3 @@ $this->Execute("
             END IF;
         END
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020011000', 'dbversion'));
-
-$this->CommitTrans();

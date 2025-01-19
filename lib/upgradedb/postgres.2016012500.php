@@ -21,14 +21,9 @@
  *
  */
 
-$this->BeginTrans();
 
 define('CONFIG_TYPE_MAIL_BACKEND_2016012500', 9);
 define('CONFIG_TYPE_MAIL_SECURE_2016012500', 10);
 
 $this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('mail', 'backend', 'pear', ?)", array(CONFIG_TYPE_MAIL_BACKEND_2016012500));
 $this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('mail', 'smtp_secure', 'ssl', ?)", array(CONFIG_TYPE_MAIL_SECURE_2016012500));
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016012500', 'dbversion'));
-
-$this->CommitTrans();
