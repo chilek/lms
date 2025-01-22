@@ -290,16 +290,17 @@ function CustomerAssignmentHelper(options) {
 		}));
 
 		selects.each(function() {
-			$(this).find('option').each(function() {
+			var select = $(this);
+			select.find('option').each(function() {
 				var authtype = parseInt($(this).attr('data-tariffaccess'));
 				var location = $(this).attr('data-location');
 				$(this).toggle(
-					((authtype && (authtype & tariffAccess)) || !tariffAccess) &&
+					((authtype && (authtype & tariffAccess)) || !tariffAccess || select.attr('name').indexOf('sphones') != -1) &&
 					(location == location_select || !location_select.length)
 				);
 			});
-			$(this).trigger('lms:multiselect:updated');
-			$(this).trigger('lms:multiselect:toggle_check_all', { checked: $('#check_all_terminals').prop('checked') });
+			select.trigger('lms:multiselect:updated');
+			select.trigger('lms:multiselect:toggle_check_all', { checked: $('#check_all_terminals').prop('checked') });
 		});
 	}
 
