@@ -553,6 +553,8 @@ if (isset($_POST['ticket'])) {
         if (!isset($customcreatetime)) {
             $error['customcreatetime'] = trans('Invalid date format: $a.\\nFormat accepted is \'YYYY/MM/DD hh:mm\'.');
         }
+    } else {
+        $customcreatetime = null;
     }
 
     if (!empty($ticketedit['customresolvetime'])) {
@@ -560,6 +562,8 @@ if (isset($_POST['ticket'])) {
         if (!isset($customresolvetime)) {
             $error['customresolvetime'] = trans('Invalid date format: $a.\\nFormat accepted is \'YYYY/MM/DD hh:mm\'.');
         }
+    } else {
+        $customresolvetime = null;
     }
 
     if (isset($customcreatetime, $customresolvetime) && $customcreatetime > $customresolvetime) {

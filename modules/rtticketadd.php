@@ -138,6 +138,8 @@ if (isset($_POST['ticket'])) {
         if (!isset($customcreatetime)) {
             $error['customcreatetime'] = trans('Invalid date format: $a.\\nFormat accepted is \'YYYY/MM/DD hh:mm\'.');
         }
+    } else {
+        $customcreatetime = null;
     }
 
     if (!empty($ticket['customresolvetime'])) {
@@ -145,6 +147,8 @@ if (isset($_POST['ticket'])) {
         if (!isset($customresolvetime)) {
             $error['customresolvetime'] = trans('Invalid date format: $a.\\nFormat accepted is \'YYYY/MM/DD hh:mm\'.');
         }
+    } else {
+        $customresolvetime = null;
     }
 
     if (isset($customcreatetime, $customresolvetime) && $customcreatetime > $customresolvetime) {
@@ -224,13 +228,8 @@ if (isset($_POST['ticket'])) {
             unset($ticket['priority']);
         }
 
-        if (isset($customcreatetime)) {
-            $ticket['customcreatetime'] = $customcreatetime;
-        }
-
-        if (isset($customresolvetime)) {
-            $ticket['customresolvetime'] = $customresolvetime;
-        }
+        $ticket['customcreatetime'] = $customcreatetime;
+        $ticket['customresolvetime'] = $customresolvetime;
 
         $attachments = null;
 
