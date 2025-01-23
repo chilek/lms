@@ -133,6 +133,24 @@ if (isset($_POST['ticket'])) {
         }
     }
 
+    if (!empty($ticket['customcreatetime'])) {
+        $customcreatetime = datetime_to_timestamp($ticket['customcreatetime']);
+        if (!isset($customcreatetime)) {
+            $error['customcreatetime'] = trans('Invalid date format: $a.\\nFormat accepted is \'YYYY/MM/DD hh:mm\'.');
+        }
+    }
+
+    if (!empty($ticket['customresolvetime'])) {
+        $customresolvetime = datetime_to_timestamp($ticket['customresolvetime']);
+        if (!isset($customresolvetime)) {
+            $error['customresolvetime'] = trans('Invalid date format: $a.\\nFormat accepted is \'YYYY/MM/DD hh:mm\'.');
+        }
+    }
+
+    if (isset($customcreatetime, $customresolvetime) && $customcreatetime > $customresolvetime) {
+        $error['customcreatetime'] = $error['customresolvetime'] = trans('Custom resolve time should be later than custom create time!');
+    }
+
     $hook_data = $LMS->executeHook(
         'ticketadd_validation_before_submit',
         array(
@@ -204,6 +222,14 @@ if (isset($_POST['ticket'])) {
 
         if ($ticket['priority'] == '') {
             unset($ticket['priority']);
+        }
+
+        if (isset($customcreatetime)) {
+            $ticket['customcreatetime'] = $customcreatetime;
+        }
+
+        if (isset($customresolvetime)) {
+            $ticket['customresolvetime'] = $customresolvetime;
         }
 
         $attachments = null;

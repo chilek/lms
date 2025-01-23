@@ -105,6 +105,18 @@
 									{$ticket.createtime|date_format:"Y-m-d H:i:s"}
 								</TD>
 							</TR>
+							{if ConfigHelper::checkPrivilege('helpdesk_ticket_custom_times') && isset($ticket.customcreatetime)}
+								<tr>
+									<td class="nobr">
+										<strong>
+											{icon name="timetable" label="<!rtticket>Custom create time"}
+										</strong>
+									</td>
+									<td>
+										{$ticket.customcreatetime|date_format:"Y-m-d H:i"}
+									</td>
+								</tr>
+							{/if}
 							{if $ticket.creatorid}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
@@ -123,6 +135,18 @@
 									{$ticket.uptime}
 								</TD>
 							</TR>
+							{if ConfigHelper::checkPrivilege('helpdesk_ticket_custom_times') && isset($ticket.customresolvetime)}
+								<tr>
+									<td class="nobr">
+										<strong>
+											{icon name="timetable" label="<!rtticket>Custom resolve time"}
+										</strong>
+									</td>
+									<td>
+										{$ticket.customresolvetime|date_format:"Y-m-d H:i"}
+									</td>
+								</tr>
+							{/if}
 							{if !empty($ticket.categories)}
 							<TR>
 								<TD style="width: 1%;" class="valign-top bold nobr">

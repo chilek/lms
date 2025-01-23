@@ -48,6 +48,18 @@
 				{/foreach}
 			</select>
 		{/box_header}
+		{if ConfigHelper::checkPrivilege('helpdesk_ticket_custom_times')}
+			{box_header icon="calendar" label="<!rtticket>Custom create time" icon_class="fa-fw"}
+				<input type="text" name="ticket[customcreatetime]"
+					value="{if $ticket.customcreatetime}{$ticket.customcreatetime|date_format:"Y/m/d H:i"}{/if}"
+					{tip class="lms-ui-datetime" trigger="customcreatetime"}>
+			{/box_header}
+			{box_header icon="calendar" label="<!rtticket>Custom resolve time" icon_class="fa-fw"}
+				<input type="text" name="ticket[customresolvetime]"
+					value="{if $ticket.customresolvetime}{$ticket.customresolvetime|date_format:"Y/m/d H:i"}{/if}"
+					{tip class="lms-ui-datetime" trigger="customresolvetime"}>
+			{/box_header}
+		{/if}
 	{/box_header}
 
 	{box_contents}

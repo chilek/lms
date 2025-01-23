@@ -6108,3 +6108,14 @@ $_LANG['\'From\' time should be earlier than \'to\' time!'] = 'Czas \'od\' powin
 $_LANG['No day was checked!'] = 'Nie zaznaczono żadnego dnia!';
 
 $_LANG['You select the receipt option, which may require issuing fiscal receipt!'] = 'Zaznaczasz opcję paragonu, co może wiązać się z koniecznością wygenerowania paragonu fiskalnego!';
+
+$_LANG['<!rtticket>Custom create time'] = 'Własny czas utworzenia';
+$_LANG['<!rtticket>Custom resolve time'] = 'Własny czas rozwiązania';
+$_LANG['Helpdesk (RT) ticket custom create and resolve times'] = 'własne czasy utworzenia i rozwiązania zgłoszenia Helpdesk (RT)';
+$_LANG['Custom resolve time should be later than custom create time!'] = 'Własny czas rozwiązania powinien być późniejszy niż własny czas utworzenia!';
+$_LANG['Ticket custom create time has been changed from $a to $b.'] = 'Własny czas utworzenia zgłoszenia został zmieniony z $a na $b.';
+$_LANG['Ticket custom create time has been set to $a.'] = 'Własny czas utworzenia zgłoszenia został ustawiony na $a';
+$_LANG['Ticket custom create time has been removed.'] = 'Własny czas utworzenia zgłoszenia został usunięty';
+$_LANG['Ticket custom resolve time has been changed from $a to $b.'] = 'Własny czas rozwiązania zgłoszenia został zmieniony z $a na $b.';
+$_LANG['Ticket custom resolve time has been set to $a.'] = 'Własny czas rozwiązania zgłoszenia został ustawiony na $a';
+$_LANG['Ticket custom resolve time has been removed.'] = 'Własny czas rozwiązania zgłoszenia został usunięty';

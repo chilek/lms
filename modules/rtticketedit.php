@@ -548,12 +548,30 @@ if (isset($_POST['ticket'])) {
         $ticketedit['parentid'] = null;
     }
 
+    if (!empty($ticketedit['customcreatetime'])) {
+        $customcreatetime = datetime_to_timestamp($ticketedit['customcreatetime']);
+        if (!isset($customcreatetime)) {
+            $error['customcreatetime'] = trans('Invalid date format: $a.\\nFormat accepted is \'YYYY/MM/DD hh:mm\'.');
+        }
+    }
+
+    if (!empty($ticketedit['customresolvetime'])) {
+        $customresolvetime = datetime_to_timestamp($ticketedit['customresolvetime']);
+        if (!isset($customresolvetime)) {
+            $error['customresolvetime'] = trans('Invalid date format: $a.\\nFormat accepted is \'YYYY/MM/DD hh:mm\'.');
+        }
+    }
+
+    if (isset($customcreatetime, $customresolvetime) && $customcreatetime > $customresolvetime) {
+        $error['customcreatetime'] = $error['customresolvetime'] = trans('Custom resolve time should be later than custom create time!');
+    }
+
     $hook_data = $LMS->executeHook(
         'ticketedit_validation_before_submit',
         array(
-                'ticketedit' => $ticketedit,
-                'error' => $error
-              )
+            'ticketedit' => $ticketedit,
+            'error' => $error
+        )
     );
 
     $ticketedit = $hook_data['ticketedit'];
@@ -594,6 +612,8 @@ if (isset($_POST['ticket'])) {
                 || empty($ticketedit['requestor_phone']) ? null : $ticketedit['requestor_phone'],
             'parentid' => empty($ticketedit['parentid']) ? null : $ticketedit['parentid'],
             'relatedtickets' => $ticketedit['relatedtickets'] ?? array(),
+            'customcreatetime' => isset($customcreatetime) ? $customcreatetime : null,
+            'customresolvetime' => isset($customresolvetime) ? $customresolvetime : null,
         );
         $LMS->TicketChange($ticketedit['ticketid'], $props);
 
@@ -794,6 +814,8 @@ if (isset($_POST['ticket'])) {
     $ticket['requestor_phone'] = $ticketedit['requestor_phone'] ?? null;
     $ticket['parentid'] = $ticketedit['parentid'] ?? null;
     $ticket['categorywarn'] = $ticketedit['categorywarn'] ?? 0;
+    $ticket['customcreatetime'] = $ticketedit['customcreatetime'];
+    $ticket['customresolvetime'] = $ticketedit['customresolvetime'];
 
     if (!empty($ticketedit['relatedtickets'])) {
         $ticket['relatedtickets'] = $LMS->getTickets($ticketedit['relatedtickets']);

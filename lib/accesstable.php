@@ -194,6 +194,9 @@ $access_table = array(
         'label' => trans('Helpdesk (RT) advanced operation'),
         'allow_regexp' => '^(rtremove|rtrestore)$',
     ),
+    'helpdesk_ticket_custom_times' => array(
+        'label' => trans('Helpdesk (RT) ticket custom create and resolve times'),
+    ),
     'hosting_management' => array(
         'label' => trans('hosting management'),
         'allow_regexp' => '^(accountpasswd|(account|domain|alias|record)(list|edit|add|del|info|search))$',

@@ -2231,7 +2231,9 @@ CREATE TABLE rttickets (
   customerid int(11) DEFAULT NULL,
   creatorid int(11) DEFAULT NULL,
   createtime int(16) NOT NULL DEFAULT 0,
+  customcreatetime int(16) DEFAULT NULL,
   resolvetime int(16) NOT NULL DEFAULT 0,
+  customresolvetime int(16) DEFAULT NULL,
   modtime int(16) NOT NULL DEFAULT 0,
   source tinyint(4) NOT NULL DEFAULT '0',
   priority tinyint(4) DEFAULT NULL,
@@ -4394,4 +4396,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025011600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025012300');

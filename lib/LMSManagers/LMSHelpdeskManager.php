@@ -1138,35 +1138,41 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         $createtime = $ticket['createtime'] ?? time();
 
-        $this->db->Execute('INSERT INTO rttickets (queueid, customerid, requestor, requestor_mail, requestor_phone,
-			requestor_userid, subject, state, owner, createtime, modtime, cause, creatorid, source, priority, address_id, nodeid,
-			netnodeid, netdevid, verifierid, deadline, service, type, invprojectid, parentid)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($ticket['queue'],
-            empty($ticket['customerid']) ? null : $ticket['customerid'],
-            $ticket['requestor'] ?? null,
-            $ticket['requestor_mail'] ?? null,
-            $ticket['requestor_phone'] ?? null,
-            empty($ticket['requestor_userid']) ? null : $ticket['requestor_userid'],
-            $ticket['subject'],
-            !empty($ticket['state']) ? $ticket['state'] : RT_NEW,
-            !empty($ticket['owner']) ? $ticket['owner'] : null,
-            $createtime,
-            $createtime,
-            $ticket['cause'] ?? 0,
-            $ticket['userid'] ?? Auth::GetCurrentUser(),
-            $ticket['source'] ?? 0,
-            isset($ticket['priority']) && strlen($ticket['priority']) ? $ticket['priority'] : null,
-            !empty($ticket['address_id']) ? $ticket['address_id'] : null,
-            !empty($ticket['nodeid']) ? $ticket['nodeid'] : null,
-            !empty($ticket['netnodeid']) ? $ticket['netnodeid'] : null,
-            !empty($ticket['netdevid']) ? $ticket['netdevid'] : null,
-            !empty($ticket['verifierid']) ? $ticket['verifierid'] : null,
-            !empty($ticket['deadline']) ? $ticket['deadline'] : null,
-            !empty($ticket['service']) ? $ticket['service'] : SERVICE_OTHER,
-            !empty($ticket['type']) ? $ticket['type'] : RT_TYPE_OTHER,
-            !empty($ticket['invprojectid']) ? $ticket['invprojectid'] : null,
-            empty($ticket['parentid']) ? null : $ticket['parentid'],
-        ));
+        $this->db->Execute(
+            'INSERT INTO rttickets (queueid, customerid, requestor, requestor_mail, requestor_phone,
+            requestor_userid, subject, state, owner, createtime, modtime, cause, creatorid, source, priority, address_id, nodeid,
+            netnodeid, netdevid, verifierid, deadline, service, type, invprojectid, parentid, customcreatetime, customresolvetime)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            array(
+                $ticket['queue'],
+                empty($ticket['customerid']) ? null : $ticket['customerid'],
+                $ticket['requestor'] ?? null,
+                $ticket['requestor_mail'] ?? null,
+                $ticket['requestor_phone'] ?? null,
+                empty($ticket['requestor_userid']) ? null : $ticket['requestor_userid'],
+                $ticket['subject'],
+                !empty($ticket['state']) ? $ticket['state'] : RT_NEW,
+                !empty($ticket['owner']) ? $ticket['owner'] : null,
+                $createtime,
+                $createtime,
+                $ticket['cause'] ?? 0,
+                $ticket['userid'] ?? Auth::GetCurrentUser(),
+                $ticket['source'] ?? 0,
+                isset($ticket['priority']) && strlen($ticket['priority']) ? $ticket['priority'] : null,
+                !empty($ticket['address_id']) ? $ticket['address_id'] : null,
+                !empty($ticket['nodeid']) ? $ticket['nodeid'] : null,
+                !empty($ticket['netnodeid']) ? $ticket['netnodeid'] : null,
+                !empty($ticket['netdevid']) ? $ticket['netdevid'] : null,
+                !empty($ticket['verifierid']) ? $ticket['verifierid'] : null,
+                !empty($ticket['deadline']) ? $ticket['deadline'] : null,
+                !empty($ticket['service']) ? $ticket['service'] : SERVICE_OTHER,
+                !empty($ticket['type']) ? $ticket['type'] : RT_TYPE_OTHER,
+                !empty($ticket['invprojectid']) ? $ticket['invprojectid'] : null,
+                empty($ticket['parentid']) ? null : $ticket['parentid'],
+                isset($ticket['customcreatetime']) ? $ticket['customcreatetime'] : null,
+                isset($ticket['customresolvetime']) ? $ticket['customresolvetime'] : null,
+            )
+        );
 
         $id = $this->db->GetLastInsertID('rttickets');
 
@@ -1282,7 +1288,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             t.requestor_userid, d.name AS requestor_username, t.state, t.owner, t.customerid, t.cause, t.creatorid, c.name AS creator,
             t.source, t.priority, i.id AS invprojectid, i.name AS invproject_name, t.verifier_rtime, '
             . $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername,
-            o.name AS ownername, t.createtime, t.resolvetime, t.subject, t.deleted, t.deltime, t.deluserid,
+            o.name AS ownername, t.createtime, t.resolvetime,
+            t.customcreatetime,
+            t.customresolvetime,
+            t.subject, t.deleted, t.deltime, t.deluserid,
             t.address_id, va.location, t.nodeid, n.name AS node_name, n.location AS node_location,
             t.netnodeid, nn.name AS netnode_name, t.netdevid, nd.name AS netdev_name, va.city_id, va.street_id, va.house,
             t.verifierid, e.name AS verifier_username, t.deadline, openeventcount, t.type, t.service, t.parentid' .
@@ -1908,6 +1917,48 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['priority'] = null;
         }
 
+        if (isset($props['customcreatetime'])) {
+            if (isset($ticket['customcreatetime'])) {
+                if ($ticket['customcreatetime'] != $props['customcreatetime']) {
+                    $notes[] = trans(
+                        'Ticket custom create time has been changed from $a to $b.',
+                        date('Y/m/d H:i', $ticket['customcreatetime']),
+                        date('Y/m/d H:i', $props['customcreatetime'])
+                    );
+                }
+            } else {
+                $notes[] = trans(
+                    'Ticket custom create time has been set to $a.',
+                    date('Y/m/d H:i', $props['customcreatetime'])
+                );
+            }
+        } elseif (isset($ticket['customcreatetime'])) {
+            $notes[] = trans(
+                'Ticket custom create time has been removed.'
+            );
+        }
+
+        if (isset($props['customresolvetime'])) {
+            if (isset($ticket['customresolvetime'])) {
+                if ($ticket['customresolvetime'] != $props['customresolvetime']) {
+                    $notes[] = trans(
+                        'Ticket custom resolve time has been changed from $a to $b.',
+                        date('Y/m/d H:i', $ticket['customresolvetime']),
+                        date('Y/m/d H:i', $props['customresolvetime'])
+                    );
+                }
+            } else {
+                $notes[] = trans(
+                    'Ticket custom resolve time has been set to $a.',
+                    date('Y/m/d H:i', $props['customresolvetime'])
+                );
+            }
+        } elseif (isset($ticket['customresolvetime'])) {
+            $notes[] = trans(
+                'Ticket custom resolve time has been removed.'
+            );
+        }
+
         if ($type) {
             $note = implode("\n", $notes);
             $modtime = time();
@@ -1918,7 +1969,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 'UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, modtime = ?, resolvetime=?, subject = ?,
                 customerid = ?, source = ?, priority = ?, address_id = ?, nodeid = ?, netnodeid = ?, netdevid = ?,
                 verifierid = ?, verifier_rtime = ?, deadline = ?, service = ?, type = ?, invprojectid = ?,
-                requestor_userid = ?, requestor = ?, requestor_mail = ?, requestor_phone = ?, parentid = ?
+                requestor_userid = ?, requestor = ?, requestor_mail = ?, requestor_phone = ?, parentid = ?,
+                customcreatetime = ?, customresolvetime = ?
                 WHERE id = ?',
                 array(
                     $props['queueid'],
@@ -1946,6 +1998,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     $props['requestor_mail'],
                     $props['requestor_phone'],
                     $props['parentid'],
+                    $props['customcreatetime'],
+                    $props['customresolvetime'],
                     $ticketid
                 )
             );
