@@ -2521,7 +2521,7 @@ if ($report_type == 'full') {
                     $data['pe04_pdu'] = isset($access_media[$mediaCode]) ? 'Tak' : 'Nie';
 
                     $data['pe11_medium_transmisyjne'] = mediaNameByCode($mediaCode);
-                    $data['pe12_technologia_dostepowa'] = empty($netnode['technologies'])
+                    $data['pe12_technologia_dostepowa'] = empty($netnode['technologies']) || !isset($access_media[$mediaCode])
                         ? ''
                         : implode(
                             ';',
@@ -2538,6 +2538,8 @@ if ($report_type == 'full') {
                                 )
                             )
                         );
+
+                    $data['pe13_mozliwosc_swiadczenia_uslug'] = isset($access_media[$mediaCode]) ? implode(';', $netnode['services']) : '';
 
                     $first = false;
 
