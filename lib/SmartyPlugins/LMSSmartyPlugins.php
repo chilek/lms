@@ -41,6 +41,7 @@ class LMSSmartyPlugins
             'text' => null,
             'href' => null,
             'class' => null,
+            'icon_class' => null,
             'onclick' => null,
             'external' => false,
             'resourceid' => null,
@@ -64,6 +65,8 @@ class LMSSmartyPlugins
                 case 'href':
                 // optional - additional css classes which are appended to class attribute
                 case 'class':
+                // optional - additional css classes which are appended to icon class attribute
+                case 'icon_class':
                 // optional - data-resourceid attribute value
                 case 'resourceid':
                 // optional - contents copied to clipboard
@@ -112,7 +115,8 @@ class LMSSmartyPlugins
             . $other_attributes
             . ($visible ? '' : ' style="display: none;"')
             . ($disabled ? ' disabled' : '') . '>'
-            . ($icon ? '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0 || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>' : '')
+            . ($icon ? '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0 || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon)
+            . ($icon_class ? ' ' . $icon_class : '') . '"></i>' : '')
             . ($label ? '<span class="lms-ui-label">' . htmlspecialchars($label) . '</span>' : '')
             . ($text ? '<span class="lms-ui-label">' . $text . '</span>' : '') . '
 		</' . ($type == 'link' || $type == 'link-button' ? 'a' : 'button') . '>';
@@ -1514,6 +1518,7 @@ class LMSSmartyPlugins
                 'icon' => 'microphone',
                 'tip' => 'use speech recognition',
                 'class' => 'lms-ui-button-speech-recognition',
+                'icon_class' => 'fa-fw',
                 'data_target' => $params['target'],
             ),
             $template
