@@ -944,13 +944,26 @@ class LMSTcpdfInvoice extends LMSInvoice
         $image_path = $this->data['doctype'] != DOC_DNOTE
             ? ConfigHelper::getConfig('invoices.header_image', '', true)
             : ConfigHelper::getConfig('notes.header_image', ConfigHelper::getConfig('invoices.header_image', '', true), true);
-        if (!file_exists($image_path)) {
+
+        if (!strlen($image_path)) {
             return;
         }
-        if (preg_match('/\.svg$/i', $image_path)) {
-            $this->backend->ImageSVG($image_path, 12, 8, 40, 0);
-        } else {
-            $this->backend->Image($image_path, 12, 8, 40, 0);
+
+        if (strpos($image_path, DIRECTORY_SEPARATOR) !== 0) {
+            $image_path = SYS_DIR . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . $image_path;
+        }
+
+        if (!is_readable($image_path) || !preg_match('/\.(?<ext>svg|gif|jpg|jpeg|png)$/i', $image_path, $m)) {
+            return;
+        }
+
+        switch (strtolower($m['ext'])) {
+            case 'svg':
+                $this->backend->ImageSVG($image_path, 12, 8, 40, 0);
+                break;
+            default:
+                $this->backend->Image($image_path, 12, 8, 40, 0);
+                break;
         }
     }
 

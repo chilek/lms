@@ -1436,8 +1436,19 @@ class LMSEzpdfInvoice extends LMSInvoice
 
     protected function invoice_header_image($x, $y)
     {
-        $image_path = ConfigHelper::getConfig('invoices.header_image', '', true);
-        if (!file_exists($image_path) || !preg_match('/\.(?<ext>gif|jpg|jpeg|png)$/', $image_path, $m)) {
+        $image_path = $this->data['doctype'] != DOC_DNOTE
+            ? ConfigHelper::getConfig('invoices.header_image', '', true)
+            : ConfigHelper::getConfig('notes.header_image', ConfigHelper::getConfig('invoices.header_image', '', true), true);
+
+        if (!strlen($image_path)) {
+            return false;
+        }
+
+        if (strpos($image_path, DIRECTORY_SEPARATOR) !== 0) {
+            $image_path = SYS_DIR . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . $image_path;
+        }
+
+        if (!is_readable($image_path) || !preg_match('/\.(?<ext>gif|jpg|jpeg|png)$/i', $image_path, $m)) {
             return false;
         }
 
