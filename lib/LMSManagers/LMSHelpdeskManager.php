@@ -1917,46 +1917,59 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['priority'] = null;
         }
 
-        if (isset($props['customcreatetime'])) {
-            if (isset($ticket['customcreatetime'])) {
-                if ($ticket['customcreatetime'] != $props['customcreatetime']) {
+        if (ConfigHelper::checkPrivilege('helpdesk_ticket_custom_times')) {
+            if (array_key_exists('customcreatetime', $props)) {
+                if (isset($props['customcreatetime'])) {
+                    if (isset($ticket['customcreatetime'])) {
+                        if ($ticket['customcreatetime'] != $props['customcreatetime']) {
+                            $notes[] = trans(
+                                'Ticket custom create time has been changed from $a to $b.',
+                                date('Y/m/d H:i', $ticket['customcreatetime']),
+                                date('Y/m/d H:i', $props['customcreatetime'])
+                            );
+                        }
+                    } else {
+                        $notes[] = trans(
+                            'Ticket custom create time has been set to $a.',
+                            date('Y/m/d H:i', $props['customcreatetime'])
+                        );
+                    }
+                } elseif (isset($ticket['customcreatetime'])) {
                     $notes[] = trans(
-                        'Ticket custom create time has been changed from $a to $b.',
-                        date('Y/m/d H:i', $ticket['customcreatetime']),
-                        date('Y/m/d H:i', $props['customcreatetime'])
+                        'Ticket custom create time has been removed.'
                     );
                 }
             } else {
-                $notes[] = trans(
-                    'Ticket custom create time has been set to $a.',
-                    date('Y/m/d H:i', $props['customcreatetime'])
-                );
+                $props['customcreatetime'] = $ticket['customcreatetime'];
             }
-        } elseif (isset($ticket['customcreatetime'])) {
-            $notes[] = trans(
-                'Ticket custom create time has been removed.'
-            );
-        }
 
-        if (isset($props['customresolvetime'])) {
-            if (isset($ticket['customresolvetime'])) {
-                if ($ticket['customresolvetime'] != $props['customresolvetime']) {
+            if (array_key_exists('customresolvetime', $props)) {
+                if (isset($props['customresolvetime'])) {
+                    if (isset($ticket['customresolvetime'])) {
+                        if ($ticket['customresolvetime'] != $props['customresolvetime']) {
+                            $notes[] = trans(
+                                'Ticket custom resolve time has been changed from $a to $b.',
+                                date('Y/m/d H:i', $ticket['customresolvetime']),
+                                date('Y/m/d H:i', $props['customresolvetime'])
+                            );
+                        }
+                    } else {
+                        $notes[] = trans(
+                            'Ticket custom resolve time has been set to $a.',
+                            date('Y/m/d H:i', $props['customresolvetime'])
+                        );
+                    }
+                } elseif (isset($ticket['customresolvetime'])) {
                     $notes[] = trans(
-                        'Ticket custom resolve time has been changed from $a to $b.',
-                        date('Y/m/d H:i', $ticket['customresolvetime']),
-                        date('Y/m/d H:i', $props['customresolvetime'])
+                        'Ticket custom resolve time has been removed.'
                     );
                 }
             } else {
-                $notes[] = trans(
-                    'Ticket custom resolve time has been set to $a.',
-                    date('Y/m/d H:i', $props['customresolvetime'])
-                );
+                $props['customresolvetime'] = $ticket['customresolvetime'];
             }
-        } elseif (isset($ticket['customresolvetime'])) {
-            $notes[] = trans(
-                'Ticket custom resolve time has been removed.'
-            );
+        } else {
+            $props['customcreatetime'] = $ticket['customcreatetime'];
+            $props['customresolvetime'] = $ticket['customresolvetime'];
         }
 
         if ($type) {
