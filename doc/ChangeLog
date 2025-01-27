@@ -915,6 +915,7 @@ version 28-git (????-??-??):
   - improvement: 'invoices.receipt_option_warning' configuration variable with 'false' as its default value
     enables warning popup presentation after 'receipt' option check click [chilan]
   - enhancement: added helpdesk ticket custom create and resolve time properties [chilan]
+  - improvement: '%node_login' substitution symbol support in message add form [chilan]
 
 version 27.0 (2021-08-20):
 
