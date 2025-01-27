@@ -573,6 +573,7 @@ function BodyVars(&$body, $data, $format)
         $body = str_replace(
             array(
                 '%node_name',
+                '%node_login',
                 '%node_password',
                 '%node_ip_pub',
                 '%node_ip',
@@ -580,6 +581,7 @@ function BodyVars(&$body, $data, $format)
             ),
             array(
                 $data['node']['name'],
+                empty($data['node']['login']) ? $data['node']['name'] : $data['node']['login'],
                 $data['node']['passwd'] ?: '-',
                 $data['node']['ipaddr_pub'] ? $data['node']['ip_pub'] : '-',
                 $data['node']['ipaddr'] ? $data['node']['ip'] : '-',
