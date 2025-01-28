@@ -40,7 +40,17 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     'SELECT id, name, rname, login FROM vusers WHERE id=(SELECT verifierid FROM rtqueues WHERE id=?)',
                     array($id)
                 );
-                $users = $this->db->GetAll('SELECT id, name, rname, login FROM vusers WHERE deleted=0 ORDER BY rname');
+                $users = $this->db->GetAll(
+                    'SELECT
+                        id,
+                        name,
+                        rname,
+                        login,
+                        (CASE WHEN access = 1 AND accessfrom <= ?NOW? AND (accessto >= ?NOW? OR accessto = 0) THEN 1 ELSE 0 END) AS access
+                    FROM vusers
+                    WHERE deleted = 0
+                    ORDER BY rname'
+                );
                 foreach ($users as $user) {
                     $user['rights'] = $this->GetUserRightsRT($user['id'], $id);
                     $queue['rights'][] = $user;
