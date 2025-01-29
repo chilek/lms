@@ -916,6 +916,8 @@ version 28-git (????-??-??):
     enables warning popup presentation after 'receipt' option check click [chilan]
   - enhancement: added helpdesk ticket custom create and resolve time properties [chilan]
   - improvement: '%node_login' substitution symbol support in message add form [chilan]
+  - improvement: 'rt.hide_disabled_users/phpui.helpdesk_hide_disabled_users' configuration variable applies
+    to user list permissions in helpdesk queue/category forms [chilan]
 
 version 27.0 (2021-08-20):
 
