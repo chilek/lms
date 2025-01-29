@@ -921,6 +921,9 @@ version 28-git (????-??-??):
   - improvement: 'documents.hide_disabled_users' (default value: false) and 'documents.hide_deleted_users'
     (default value: false) configuration variables control if users are visible on lists in document forms
     depending on user access and deleted properties [chilan]
+  - improvement: 'finances.hide_disabled_users' (default value: false) and 'finances.hide_deleted_users'
+    (default value: false) configuration variables control if users are visible on lists in cash registry forms
+    depending on user access and deleted properties [chilan]
 
 version 27.0 (2021-08-20):
 
