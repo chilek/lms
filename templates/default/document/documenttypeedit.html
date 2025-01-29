@@ -1,6 +1,7 @@
 {extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
+{$hide_disabled_users = ConfigHelper::checkConfig('documents.hide_disabled_users')}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <FORM method="POST" action="?m=documenttypeedit&id={$documenttype.id}" name="typeedit">
@@ -28,46 +29,56 @@
 			{trans("Permissions:")}
 		</TD>
 		<TD>
-			<TABLE class="lmsbox lms-ui-background-cycle">
-				<COLGROUP>
-					<COL style="width: {math x=100 y=count($_DOCRIGHTS) equation="x-y"}%;">
+			<table class="lmsbox lms-ui-background-cycle">
+				<colgroup>
+					<col style="width: {math x=100 y=count($_DOCRIGHTS) equation="x-y"}%;">
 					{foreach $_DOCRIGHTS as $right}
-					<COL style="width: 1%;">
+						<col style="width: 1%;">
 					{/foreach}
-				</COLGROUP>
-				<THEAD>
-				<TR>
-					<TD class="bold">{trans("User")}</TD>
-					{foreach $_DOCRIGHTS as $right}
-					<TD class="bold text-center nobr">{$right}</TD>
+				</colgroup>
+				<thead>
+					<tr>
+						<td>
+							<strong>{trans("User")}</strong>
+						</td>
+						{foreach $_DOCRIGHTS as $right}
+							<td class="text-center nobr">
+								<strong>{$right}</strong>
+							</td>
+						{/foreach}
+					</tr>
+				</thead>
+				<tbody>
+					{foreach $documenttype.rights as $userid => $userrights}
+						<tr class="highlight lms-ui-row-all-check{if empty($userrights.access)} blend{/if}"
+							{if empty($userrights.access) && $hide_disabled_users} style="display: none;"{/if}>
+							<td>
+								<A href="?m=userinfo&id={$userid}">{$userrights.rname|escape} ({$userrights.login})</A>
+							</td>
+							{foreach $_DOCRIGHTS as $right => $label}
+								<td class="text-center nobr">
+									<input type="checkbox" name="rights[{$userid}][{$right}]" value="{$right}"{if ($userrights.rights & $right)} checked{/if}>
+								</td>
+							{/foreach}
+						</tr>
+						{if empty($userrights.access) && $hide_disabled_users}
+							<tr style="display: none;">
+								<td colspan="{count($_DOCRIGHTS) + 1}"></td>
+							</tr>
+						{/if}
 					{/foreach}
-				</TR>
-				</THEAD>
-				<TBODY>
-				{foreach $documenttype.rights as $userid => $userrights}
-				<TR class="highlight lms-ui-row-all-check">
-					<TD>
-						<A href="?m=userinfo&id={$userid}">{$userrights.rname|escape} ({$userrights.login})</A>
-					</TD>
-					{foreach $_DOCRIGHTS as $right => $label}
-					<TD class="text-center nobr">
-						<INPUT type="checkbox" name="rights[{$userid}][{$right}]" value="{$right}"{if ($userrights.rights & $right)} checked{/if}>
-					</TD>
-					{/foreach}
-				</TR>
-				{/foreach}
-				<TR class="highlight">
-					<TD class="nobr text-right">
-						{trans("Check All")}
-					</TD>
-					{foreach $_DOCRIGHTS as $right => $label}
-					<TD class="text-center">
-						<INPUT TYPE="checkbox" NAME="allbox[{$right}]" data-value="{$right}">
-					</TD>
-					{/foreach}
-				</TR>
-				</TBODY>
-		</TABLE>
+					<tr class="highlight">
+						<td class="nobr text-right">
+							{trans("Check All")}
+						</td>
+						{foreach $_DOCRIGHTS as $right => $label}
+							<td class="text-center">
+								<input type="checkbox" name="allbox[{$right}]" data-value="{$right}">
+							</td>
+						{/foreach}
+					</tr>
+				</tbody>
+			</table>
 		</TD>
 	</TR>
 	<TR>

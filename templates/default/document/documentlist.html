@@ -1,6 +1,10 @@
 {extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
+
+{$hide_disabled_users = ConfigHelper::checkConfig('documents.hide_disabled_users')}
+{$hide_deleted_users = ConfigHelper::checkConfig('documents.hide_deleted_users')}
+
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 
@@ -131,7 +135,16 @@
 							<input type="hidden" name="u[]" value="0">
 							<select name="u[]" multiple class="lms-ui-multiselect" data-default-value="{trans("— all —")}">
 								{foreach $users as $user}
-								<option value="{$user.id}"{if is_array($filter.userid) && in_array($user.id, $filter.userid)} selected{/if}>{$user.name|escape}</option>
+									{if (!is_array($filter.userid) || !in_array($user.id, $filter.userid))
+										&& ($hide_disabled_users && empty($user.access)
+										|| $hide_deleted_users && !empty($user.deleted))}
+										{continue}
+									{/if}
+									<option value="{$user.id}"
+										{if empty($user.access)} data-blend{/if}
+										{if !empty($user.deleted)} data-crossed{/if}
+										{if is_array($filter.userid) && in_array($user.id, $filter.userid)} selected{/if}
+											>{$user.rname|trunescape:40} ({$user.login})</option>
 								{/foreach}
 							</select>
 						{/if}
