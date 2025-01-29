@@ -26,6 +26,36 @@
 
 $id = intval($_GET['id']);
 
+$current_registry = $DB->GetRow(
+    'SELECT
+        id,
+        name,
+        description,
+        in_numberplanid,
+        out_numberplanid,
+        disabled
+    FROM cashregs
+    WHERE id = ?',
+    array($id)
+);
+
+$current_registry['rights'] = $DB->GetAllByKey(
+    'SELECT
+        u.id,
+        u.name,
+        u.rname,
+        u.login,
+        u.deleted,
+        (CASE WHEN u.access = 1 AND u.accessfrom <= ?NOW? AND (u.accessto >= ?NOW? OR u.accessto = 0) THEN 1 ELSE 0 END) AS access,
+        r.rights
+    FROM vusers u
+    LEFT JOIN cashrights r ON r.userid = u.id
+    WHERE r.regid IS NULL OR r.regid = ?
+    ORDER BY u.rname',
+    'id',
+    array($id)
+);
+
 if (isset($_POST['registry'])) {
     $registry = $_POST['registry'];
     $registry['id'] = $id;
@@ -44,9 +74,13 @@ if (isset($_POST['registry'])) {
         }
     }
 
+    $current_registry['name'] = $registry['name'];
+    $current_registry['description'] = $registry['description'];
+
     if (isset($registry['users'])) {
         foreach ($registry['users'] as $key => $value) {
-            $registry['rights'][] = array('id' => $key, 'rights' => array_sum($value), 'name' => $registry['usernames'][$key]);
+            $registry['rights'][] = array('id' => $key, 'rights' => array_sum($value));
+            $current_registry['rights'][$key]['rights'] = array_sum($value);
         }
     }
 
@@ -60,8 +94,12 @@ if (isset($_POST['registry'])) {
             'disabled' => isset($registry['disabled']) ? 1 : 0,
             SYSLOG::RES_CASHREG => $registry['id'],
         );
-        $DB->Execute('UPDATE cashregs SET name=?, description=?, in_numberplanid=?, out_numberplanid=?, disabled=?
-			WHERE id=?', array_values($args));
+        $DB->Execute(
+            'UPDATE cashregs
+            SET name = ?, description = ?, in_numberplanid = ?, out_numberplanid = ?, disabled = ?
+            WHERE id = ?',
+            array_values($args)
+        );
 
         if ($SYSLOG) {
             $SYSLOG->AddMessage(
@@ -84,17 +122,18 @@ if (isset($_POST['registry'])) {
             }
         }
 
-        $DB->Execute('DELETE FROM cashrights WHERE regid=?', array($registry['id']));
+        $DB->Execute('DELETE FROM cashrights WHERE regid = ?', array($registry['id']));
+
         if ($registry['rights']) {
             foreach ($registry['rights'] as $right) {
                 if ($right['rights']) {
                     $args = array(
-                    SYSLOG::RES_CASHREG => $id,
-                    SYSLOG::RES_USER => $right['id'],
-                    'rights' => $right['rights'],
+                        SYSLOG::RES_CASHREG => $id,
+                        SYSLOG::RES_USER => $right['id'],
+                        'rights' => $right['rights'],
                     );
                     $DB->Execute(
-                        'INSERT INTO cashrights (regid, userid, rights) VALUES(?, ?, ?)',
+                        'INSERT INTO cashrights (regid, userid, rights) VALUES (?, ?, ?)',
                         array_values($args)
                     );
                     if ($SYSLOG) {
@@ -108,22 +147,13 @@ if (isset($_POST['registry'])) {
         $DB->CommitTrans();
         $SESSION->redirect('?m=cashreginfo&id='.$id);
     }
-} else {
-    $registry = $DB->GetRow('SELECT id, name, description, in_numberplanid, out_numberplanid, disabled
-			FROM cashregs WHERE id=?', array($id));
-
-    $users = $DB->GetAll('SELECT id, name FROM vusers WHERE deleted=0');
-    foreach ($users as $user) {
-            $user['rights'] = $DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($user['id'], $id));
-            $registry['rights'][] = $user;
-    }
 }
 
 $layout['pagetitle'] = trans('Edit Cash Registry: $a', $registry['name']);
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('registry', $registry);
+$SMARTY->assign('registry', $current_registry);
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
     'doctype' => DOC_RECEIPT,
 )));

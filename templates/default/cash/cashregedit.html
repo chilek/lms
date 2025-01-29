@@ -1,6 +1,10 @@
 {extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
+
+{$hide_disabled_users = ConfigHelper::checkConfig('finances.hide_disabled_users')}
+{$hide_deleted_users = ConfigHelper::checkConfig('finances.hide_deleted_users')}
+
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <FORM METHOD="POST" NAME="registry" ACTION="?m=cashregedit&id={$registry.id}">
@@ -77,72 +81,84 @@
 		</TD>
 		<TD class="bold">{trans("Permissions:")}</TD>
 		<TD>
-			<TABLE class="lmsbox">
-				<COLGROUP>
-					<COL style="width: 93%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-				</COLGROUP>
-				<THEAD>
-				<TR>
-					<TD class="bold">{trans("User")}</TD>
-					<TD class="text-center bold nobr">{trans("Read")}</TD>
-					<TD colspan="5" class="text-center bold nobr">{trans("Write (+R)")}</TD>
-					<TD class="text-center bold nobr">{trans("Advanced (+R)")}</TD>
-				</TR>
-				<TR>
-					<TD></TD>
-					<TD class="text-center nobr"></TD>
-					<TD class="text-center">{trans("customer")}</TD>
-					<TD class="text-center nobr">{trans("ass. move")}</TD>
-					<TD class="text-center">{trans("advance")}</TD>
-					<TD class="text-center">{trans("other")}</TD>
-					<TD class="text-center">{trans("mod.")}</TD>
-					<TD class="text-center nobr"></TD>
-				</TR>
-				</THEAD>
-				<TBODY>
-				{cycle values="light,lucid" print=false}
-				{foreach from=$registry.rights item=right}
-				<TR class="highlight {cycle} lms-ui-row-all-check">
-					<TD>
-						<A href="?m=userinfo&id={$right.id}">{$right.name}</A>
-						<INPUT type="hidden" name="registry[usernames][{$right.id}]" value="{$right.name}">
-					</TD>
-					<TD class="text-center">
-						<INPUT type="checkbox" name="registry[users][{$right.id}][1]" value="1"{if ($right.rights & 1)} checked{/if}>
-					</TD>
-					<TD class="text-center nobr">
-						<INPUT type="checkbox" name="registry[users][{$right.id}][2]" value="2"{if ($right.rights & 2)} checked{/if}>
-					</TD>
-					<TD class="text-center nobr">
-						<INPUT type="checkbox" name="registry[users][{$right.id}][4]" value="4"{if ($right.rights & 4)} checked{/if}>
-					</TD>
-					<TD class="text-center nobr">
-						<INPUT type="checkbox" name="registry[users][{$right.id}][8]" value="8"{if ($right.rights & 8)} checked{/if}>
-					</TD>
-					<TD class="text-center nobr">
-						<INPUT type="checkbox" name="registry[users][{$right.id}][16]" value="16"{if ($right.rights & 16)} checked{/if}>
-					</TD>
-					<TD class="text-center nobr">
-						<INPUT type="checkbox" name="registry[users][{$right.id}][32]" value="32"{if ($right.rights & 32)} checked{/if}>
-					</TD>
-					<TD class="text-center">
-						<INPUT type="checkbox" name="registry[users][{$right.id}][256]" value="256"{if ($right.rights & 256)} checked{/if}>
-					</TD>
-				</TR>
-				{/foreach}
-				<TR>
-					<TD></TD>
-					<TD colspan="7"></TD>
-				</TR>
-				</TBODY>
-			</TABLE>
+			<table class="lmsbox lms-ui-background-cycle">
+				<colgroup>
+					<col style="width: 93%;">
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+				</colgroup>
+				<thead>
+					<tr>
+						<td>
+							<strong>{trans("User")}</strong>
+						</td>
+						<td class="text-center nobr">
+							<strong>{trans("Read")}</strong>
+						</td>
+						<td colspan="5" class="text-center nobr">
+							<strong>{trans("Write (+R)")}</strong>
+						</td>
+						<td class="text-center nobr">
+							<strong>{trans("Advanced (+R)")}</strong>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td class="text-center nobr"></td>
+						<td class="text-center">{trans("customer")}</td>
+						<td class="text-center nobr">{trans("ass. move")}</td>
+						<td class="text-center">{trans("advance")}</td>
+						<td class="text-center">{trans("other")}</td>
+						<td class="text-center">{trans("mod.")}</td>
+						<td class="text-center nobr"></td>
+					</tr>
+				</thead>
+				<tbody>
+					{foreach $registry.rights as $right}
+						<tr class="highlight lms-ui-row-all-check{if empty($right.access)} blend{/if}{if !empty($right.deleted)} crossed{/if}"
+							{if empty($right.access) && $hide_disabled_users || !empty($right.deleted) && $hide_deleted_users} style="display: none;"{/if}>
+							<td>
+								<a href="?m=userinfo&id={$right.id}">{$right.rname|trunescape:40} ({$right.login})</a>
+							</td>
+							<td class="text-center">
+								<input type="checkbox" name="registry[users][{$right.id}][1]" value="1"{if ($right.rights & 1)} checked{/if}>
+							</td>
+							<td class="text-center nobr">
+								<input type="checkbox" name="registry[users][{$right.id}][2]" value="2"{if ($right.rights & 2)} checked{/if}>
+							</td>
+							<td class="text-center nobr">
+								<input type="checkbox" name="registry[users][{$right.id}][4]" value="4"{if ($right.rights & 4)} checked{/if}>
+							</td>
+							<td class="text-center nobr">
+								<input type="checkbox" name="registry[users][{$right.id}][8]" value="8"{if ($right.rights & 8)} checked{/if}>
+							</td>
+							<td class="text-center nobr">
+								<input type="checkbox" name="registry[users][{$right.id}][16]" value="16"{if ($right.rights & 16)} checked{/if}>
+							</td>
+							<td class="text-center nobr">
+								<input type="checkbox" name="registry[users][{$right.id}][32]" value="32"{if ($right.rights & 32)} checked{/if}>
+							</td>
+							<td class="text-center">
+								<input type="checkbox" name="registry[users][{$right.id}][256]" value="256"{if ($right.rights & 256)} checked{/if}>
+							</td>
+						</tr>
+						{if empty($right.access) && $hide_disabled_users || !empty($right.deleted) && $hide_deleted_users}
+							<tr style="display: none;">
+								<td colspan="8"></td>
+							</tr>
+						{/if}
+					{/foreach}
+					<tr>
+						<td></td>
+						<td colspan="7"></td>
+					</tr>
+				</tbody>
+			</table>
 		</TD>
 	</TR>
 	<TR>
@@ -152,10 +168,12 @@
 		</TD>
 	</TR>
 	</TBODY>
-</TABLE></FORM></P>
-<SCRIPT type="text/javascript">
-<!--
-document.forms['registry'].elements['registry[name]'].focus();
-//-->
-</SCRIPT>
+</TABLE></FORM>
+<script>
+
+	$(function() {
+		document.forms['registry'].elements['registry[name]'].focus();
+	});
+
+</script>
 {/block}

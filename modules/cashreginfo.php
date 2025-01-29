@@ -27,22 +27,41 @@
 
 $id = intval($_GET['id']);
 
-$registry = $DB->GetRow('SELECT reg.id AS id, reg.name AS name, reg.description AS description,
-			i.template AS in_template, o.template AS out_template, disabled
-			FROM cashregs reg
-			LEFT JOIN numberplans i ON (in_numberplanid = i.id)
-			LEFT JOIN numberplans o ON (out_numberplanid = o.id)
-			WHERE reg.id=?', array($id));
+$registry = $DB->GetRow(
+    'SELECT
+        reg.id AS id,
+        reg.name AS name,
+        reg.description AS description,
+        i.template AS in_template,
+        o.template AS out_template,
+        disabled
+    FROM cashregs reg
+    LEFT JOIN numberplans i ON in_numberplanid = i.id
+    LEFT JOIN numberplans o ON out_numberplanid = o.id
+    WHERE reg.id = ?',
+    array($id)
+);
 
 if (!$registry) {
     $SESSION->redirect('?m=cashreglist');
 }
 
-$users = $DB->GetAll('SELECT id, name FROM vusers WHERE deleted=0');
-foreach ($users as $user) {
-        $user['rights'] = $DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($user['id'], $id));
-        $registry['rights'][] = $user;
-}
+$registry['rights'] = $DB->GetAllByKey(
+    'SELECT
+        u.id,
+        u.name,
+        u.rname,
+        u.login,
+        u.deleted,
+        (CASE WHEN u.access = 1 AND u.accessfrom <= ?NOW? AND (u.accessto >= ?NOW? OR u.accessto = 0) THEN 1 ELSE 0 END) AS access,
+        r.rights
+    FROM vusers u
+    LEFT JOIN cashrights r ON r.userid = u.id
+    WHERE r.regid IS NULL OR r.regid = ?
+    ORDER BY u.rname',
+    'id',
+    array($id)
+);
 
 $layout['pagetitle'] = trans('Cash Registry Info: $a', $registry['name']);
 

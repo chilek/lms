@@ -1,6 +1,10 @@
 {extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
+
+{$hide_disabled_users = ConfigHelper::checkConfig('finances.hide_disabled_users')}
+{$hide_deleted_users = ConfigHelper::checkConfig('finances.hide_deleted_users')}
+
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <TABLE class="lmsbox">
@@ -59,68 +63,104 @@
 	    </TD>
 	    <TD width="1%"><B>{trans("Privileges:")}</B></TD>
 	    <TD width="98%">
-		    <TABLE class="lmsbox">
-                        <THEAD>
-			<TR>
-			    <TD width="93%"><B>{trans("User")}</B></TD>
-			    <TD width="1%" align="center" nowrap><B>{trans("Read")}</B></TD>
-			    <TD width="5%" align="center" colspan="5" nowrap><B>{trans("Write (+R)")}</B></TD>
-			    <TD width="1%" align="center" nowrap><B>{trans("Advanced (+R)")}</B></TD>
-			</TR>
-			<TR>
-			    <TD width="93%"></TD>
-			    <TD width="1%" align="center" nowrap></TD>
-			    <TD width="1%" align="center">{trans("customer")}</TD>
-			    <TD width="1%" align="center" nowrap>{trans("ass. move")}</TD>
-			    <TD width="1%" align="center">{trans("advance")}</TD>
-			    <TD width="1%" align="center">{trans("other")}</TD>
-			    <TD width="1%" align="center">{trans("mod.")}</TD>
-			    <TD width="1%" align="center" nowrap></TD>
-			</TR>
-                        </THEAD>
-                        <TBODY>
-			{cycle values="light,lucid" print=false}
-			{foreach from=$registry.rights item=right}
-			{if $right.rights}
-			<TR class="highlight {cycle}"  >
-			    <TD width="93%">
-				<A href="?m=userinfo&id={$right.id}">{$right.name}</A>
-				<INPUT type="hidden" name="registry[usernames][{$right.id}]" value="{$right.name}">
-			    </TD>
-			    <TD width="1%" align="center">
-				{if $right.rights > 0}<IMG src="img/pass.gif" alt="">{/if}
-			    </TD>
-			    <TD width="1%" align="center">
-				{if ($right.rights & 2)==2}<IMG src="img/pass.gif" alt="">{/if}
-			    </TD>
-			    <TD width="1%" align="center">
-			    	{if ($right.rights & 4)==4}<IMG src="img/pass.gif" alt="">{/if}
-			    </TD>
-			    <TD width="1%" align="center">
-                                {if ($right.rights & 8)==8}<IMG src="img/pass.gif" alt="">{/if}
-			    </TD>
-			    <TD width="1%" align="center">
-                                {if ($right.rights & 16)==16}<IMG src="img/pass.gif" alt="">{/if}
-			    </TD>
-			    <TD width="1%" align="center">
-                                {if ($right.rights & 32)==32}<IMG src="img/pass.gif" alt="">{/if}
-			    </TD>
-			    <TD width="1%" align="center">
-				{if ($right.rights & 256)==256}<IMG src="img/pass.gif" alt="">{/if}
-			    </TD>
-			</TR>
-			{/if}
-			{/foreach}
-			<TR class=light">
-			    <TD width="93%"></TD>
-			    <TD width="7%" colspan="7"></TD>
-			</TR>
-                        </TBODY>
-		</TABLE>
+			<table class="lmsbox lms-ui-background-cycle">
+				<colgroup>
+					<col style="width: 93%;">
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+				</colgroup>
+				<thead>
+					<tr>
+						<td>
+							<strong>{trans("User")}</strong>
+						</td>
+						<td class="text-center nobr">
+							<strong>{trans("Read")}</strong>
+						</td>
+						<td class="text-center nobr" colspan="5">
+							<strong>{trans("Write (+R)")}</strong>
+						</td>
+						<td class="text-center nobr">
+							<strong>{trans("Advanced (+R)")}</strong>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td class="text-center nobr"></td>
+						<td class="text-center">{trans("customer")}</td>
+						<td class="text-center nobr">{trans("ass. move")}</td>
+						<td class="text-center">{trans("advance")}</td>
+						<td class="text-center">{trans("other")}</td>
+						<td class="text-center">{trans("mod.")}</td>
+						<td class="text-center nobr"></td>
+					</tr>
+				</thead>
+				<tbody>
+					{foreach $registry.rights as $right}
+						{if $right.rights}
+							<tr class="highlight{if empty($right.access)} blend{/if}{if !empty($right.deleted)} crossed{/if}"
+								{if empty($right.access) && $hide_disabled_users || !empty($right.deleted) && $hide_deleted_users} style="display: none;"{/if}>
+								<td>
+									<a href="?m=userinfo&id={$right.id}">{$right.rname|trunescape:40} ({$right.login})</a>
+								</td>
+								<td class="text-center">
+									{if $right.rights > 0}
+										{icon name="checked"}
+									{/if}
+								</td>
+								<td class="text-center">
+									{if ($right.rights & 2) == 2}
+										{icon name="checked"}
+									{/if}
+								</td>
+								<td class="text-center">
+									{if ($right.rights & 4) == 4}
+										{icon name="checked"}
+									{/if}
+								</td>
+								<td class="text-center">
+									{if ($right.rights & 8) == 8}
+										{icon name="checked"}
+									{/if}
+								</td>
+								<td class="text-center">
+									{if ($right.rights & 16) == 16}
+										{icon name="checked"}
+									{/if}
+								</td>
+								<td class="text-center">
+									{if ($right.rights & 32) == 32}
+										{icon name="checked"}
+									{/if}
+								</td>
+								<td class="text-center">
+									{if ($right.rights & 256) == 256}
+										{icon name="checked"}
+									{/if}
+								</td>
+							</tr>
+							{if empty($right.access) && $hide_disabled_users || !empty($right.deleted) && $hide_deleted_users}
+								<tr style="display: none;">
+									<td colspan="8"></td>
+								</tr>
+							{/if}
+						{/if}
+					{/foreach}
+					<tr>
+						<td></td>
+						<td colspan="7"></td>
+					</tr>
+				</tbody>
+			</table>
 	    </TD>
 	</TR>
 	<TR>
-	    <TD width="100%" COLSPAN="3" ALIGN="RIGHT"> 
+	    <TD width="100%" COLSPAN="3" ALIGN="RIGHT">
 	        <A HREF="?m=receiptlist&regid={$registry.id}">{trans("Browse")} <IMG src="img/view.gif" alt=""></A>
 	    	<A HREF="?m=cashregedit&id={$registry.id}">{trans("Edit")} <IMG src="img/save.gif" alt=""></A>
 	    </TD>
