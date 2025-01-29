@@ -34,5 +34,6 @@ $layout['pagetitle'] = trans('Category Info: $a', $category['name']);
 
 $SESSION->add_history_entry();
 
+$SMARTY->assign('users', $LMS->getUserNamesIndexedById());
 $SMARTY->assign('category', $category);
 $SMARTY->display('rt/rtcategoryinfo.html');

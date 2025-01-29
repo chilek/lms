@@ -81,6 +81,7 @@ $layout['pagetitle'] = trans('Category Edit: $a', $category['name']);
 
 $SESSION->add_history_entry();
 
+$SMARTY->assign('users', $LMS->getUserNamesIndexedById());
 $SMARTY->assign('category', $category);
 $SMARTY->assign('error', $error);
 $SMARTY->display('rt/rtcategoryedit.html');

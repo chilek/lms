@@ -1,6 +1,7 @@
 {extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
+{$hide_disabled_users = ConfigHelper::checkConfig('rt.hide_disabled_users', ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users'))}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <TABLE class="lmsbox">
@@ -35,50 +36,64 @@
 	    </TD>
 	</TR>
 	{/if}
-        <TR>
-            <TD>
-		{icon name="helpdesk"}
-            </TD>
-            <TD class="bold">{trans("<!rt-category>Look:")}
-	    </TD>
-            <TD class="bold">
+		<tr>
+			<td>
+				{icon name="helpdesk"}
+			</td>
+			<td>
+				<strong>{trans("<!rt-category>Look:")}</strong>
+			</td>
+			<td>
 				<div class="lms-ui-category-label" style="{$category.style}">
-					{$category.name}
+					<strong>{$category.name}</strong>
 				</div>
-            </TD>
-        </TR>
-	<TR>
-	    <TD>
-		{icon name="user"}
-	    </TD>
-	    <TD class="bold">{trans("Users:")}</TD>
-	    <TD>
-		    <TABLE class="lmsbox">
-                        <THEAD>
-			<TR>
-			    <TD class="bold">{trans("User")}</TD>
-			    <TD class="text-center nobr bold">{trans("Owner")}</TD>
-			</TR>
-                        </THEAD>
-                        <TBODY>
-			{cycle values="light,lucid" print=false}
-			{foreach from=$category.owners item=owner}
-			{if $owner}
-			<TR class="highlight {cycle}"  >
-			    <TD>
-				<A href="?m=userinfo&id={$owner.id}">{$owner.name}</A>
-				<INPUT type="hidden" name="category[usernames][{$right.id}]" value="{$right.name}">
-			    </TD>
-			    <TD class="text-center">
-				{if $owner.owner > 0}{icon name="permissions"}{/if}
-			    </TD>
-			</TR>
-			{/if}
-			{/foreach}
-                        </TBODY>
-		</TABLE>
-	    </TD>
-	</TR>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="user"}
+			</td>
+			<td>
+				<strong>{trans("Users")}</strong>
+			</td>
+			<td>
+				<table class="lmsbox lms-ui-background-cycle">
+					<thead>
+						<tr>
+							<td>
+								<strong>{trans("User")}</strong>
+							</td>
+							<td class="text-center nobr">
+								<strong>{trans("Owner")}</strong>
+							</td>
+						</tr>
+					</thead>
+					<tbody>
+						{foreach $category.owners as $owner}
+							{if $owner}
+								<tr class="highlight{if empty($users[$owner.id].access)} blend{/if}"
+									{if empty($users[$owner.id].access) && $hide_disabled_users} style="display: none;"{/if}>
+									<td>
+										<a href="?m=userinfo&id={$owner.id}">{$owner.name}</a>
+										<input type="hidden" name="category[usernames][{$right.id}]" value="{$right.name}">
+									</td>
+									<td class="text-center">
+										{if $owner.owner > 0}
+											{icon name="permissions"}
+										{/if}
+									</td>
+								</tr>
+								{if empty($users[$owner.id].access) && $hide_disabled_users}
+									<tr style="display: none;">
+										<td colspan="2"></td>
+									</tr>
+								{/if}
+							{/if}
+						{/foreach}
+					</tbody>
+				</table>
+			</td>
+		</tr>
 	<TR>
 		<TD COLSPAN="3" class="lms-ui-box-buttons">
 			{button icon="helpdesk" label="Tickets" onclick="location.href = '?m=rtqueueview&catid={$category.id}';"}
@@ -88,7 +103,7 @@
 		</TD>
 	</TR>
 	</TBODY>
-</TABLE></P>
+</TABLE>
 <script>
 
 	$(function() {
