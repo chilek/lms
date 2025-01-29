@@ -1,6 +1,7 @@
 {extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
+{$hide_disabled_users = ConfigHelper::checkConfig('rt.hide_disabled_users', ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users'))}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <TABLE class="lmsbox">
@@ -65,40 +66,49 @@
 	    </TD>
 	    <TD class="bold">{trans("Privileges:")}</TD>
 	    <TD>
-		    <TABLE class="lmsbox">
-				<COLGROUP>
-					<COL style="width: {100-count($_RT_RIGHTS)}%;">
+			<table class="lmsbox lms-ui-background-cycle">
+				<colgroup>
+					<col style="width: {100-count($_RT_RIGHTS)}%;">
 					{foreach $_RT_RIGHTS as $label}
-					<COL style="width: 1%;">
+						<col style="width: 1%;">
 					{/foreach}
-				</COLGROUP>
-				<THEAD>
-					<TR>
-						<TD class="bold">{trans("User")}</TD>
+				</colgroup>
+				<thead>
+					<tr>
+						<td>
+							<strong>{trans("User")}</strong>
+						</td>
 						{foreach $_RT_RIGHTS as $label}
-						<TD class="text-center bold nobr">{$label}</TD>
+							<td class="text-center nobr">
+								<strong>{$label}</strong>
+							</td>
 						{/foreach}
-					</TR>
-				</THEAD>
-				<TBODY>
-					{cycle values="light,lucid" print=false}
-					{foreach from=$queue.rights item=right}
-					{if $right.rights}
-					<TR class="highlight {cycle}"  >
-						<TD>
-							<A href="?m=userinfo&id={$right.id}">{$right.name}</A>
-							<INPUT type="hidden" name="queue[usernames][{$right.id}]" value="{$right.name}">
-						</TD>
-						{foreach $_RT_RIGHTS as $rightvalue => $label}
-						<TD class="text-center">
-							{if ($right.rights & $rightvalue) == $rightvalue}{icon name="permissions"}{/if}
-						</TD>
-						{/foreach}
-					</TR>
-					{/if}
+					</tr>
+				</thead>
+				<tbody>
+					{foreach $queue.rights as $right}
+						{if $right.rights}
+							<tr class="highlight{if empty($right.access)} blend{/if}"
+								{if empty($right.access) && $hide_disabled_users} style="display: none;"{/if}>
+								<td>
+									<a href="?m=userinfo&id={$right.id}">{$right.name}</a>
+									<input type="hidden" name="queue[usernames][{$right.id}]" value="{$right.name}">
+								</td>
+								{foreach $_RT_RIGHTS as $rightvalue => $label}
+									<td class="text-center">
+										{if ($right.rights & $rightvalue) == $rightvalue}{icon name="permissions"}{/if}
+									</td>
+								{/foreach}
+							</tr>
+							{if empty($right.access) && $hide_disabled_users}
+								<tr style="display: none;">
+									<td colspan="2"></td>
+								</tr>
+							{/if}
+						{/if}
 					{/foreach}
-				</TBODY>
-			</TABLE>
+				</tbody>
+			</table>
 	    </TD>
 	</TR>
 	{if !empty($queue.categories)}
