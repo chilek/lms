@@ -924,7 +924,7 @@ version 28-git (????-??-??):
   - improvement: 'finances.hide_disabled_users' (default value: false) and 'finances.hide_deleted_users'
     (default value: false) configuration variables control if users are visible on lists in cash registry forms
     depending on user access and deleted properties [chilan]
-  - enhancement: added operation type filter in balance list form [chilan]
+  - enhancement: added operation type and cash source filters in balance list form [chilan]
 
 version 27.0 (2021-08-20):
 
