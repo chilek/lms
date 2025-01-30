@@ -57,6 +57,13 @@ if (!isset($c) && $default_current_period) {
 }
 $SESSION->save('blc', $c);
 
+if (isset($_POST['type'])) {
+    $type = $_POST['type'];
+} else {
+    $SESSION->restore('bltype', $type);
+}
+$SESSION->save('bltype', $type);
+
 if (isset($_POST['group'])) {
         $g = $_POST['group'];
     $ge = isset($_POST['groupexclude']) ? 1 : 0;
@@ -156,8 +163,17 @@ if (isset($_GET['sourcefileid']) || $c == 'cashimport') {
     $SESSION->remove('blsfid');
 }
 
-$summary = $LMS->GetBalanceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
-    'from' => $from, 'to' => $to, 'count' => true));
+$args = array(
+    'search' => $s,
+    'cat' => $c,
+    'type' => $type,
+    'group' => $g,
+    'exclude'=> $ge,
+    'from' => $from,
+    'to' => $to,
+    'count' => true
+);
+$summary = $LMS->GetBalanceList($args);
 $total = intval($summary['total']);
 
 $limit = intval(ConfigHelper::getConfig('phpui.balancelist_pagelimit', 100));
@@ -168,8 +184,10 @@ if (empty($page)) {
 $page = intval($page);
 $offset = ($page - 1) * $limit;
 
-$balancelist = $LMS->GetBalanceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
-    'limit' => $limit, 'offset' => $offset, 'from' => $from, 'to' => $to, 'count' =>  false));
+$args['limit'] = $limit;
+$args['offset'] = $offset;
+$args['count'] = false;
+$balancelist = $LMS->GetBalanceList($args);
 
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
@@ -180,6 +198,7 @@ $listdata['totalval'] = $summary['income'] - $summary['expense'];
 $listdata['total'] = $total;
 
 $SESSION->restore('blc', $listdata['cat']);
+$SESSION->restore('bltype', $listdata['type']);
 $SESSION->restore('bls', $listdata['search']);
 $SESSION->restore('blg', $listdata['group']);
 $SESSION->restore('blge', $listdata['groupexclude']);

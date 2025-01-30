@@ -3762,7 +3762,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     public function GetBalanceList(array $params)
     {
         extract($params);
-        foreach (array('search', 'cat', 'group', 'exclude') as $var) {
+        foreach (array('search', 'cat', 'type', 'group', 'exclude') as $var) {
             if (!isset(${$var})) {
                 ${$var} = null;
             }
@@ -3820,6 +3820,21 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     break;
                 case 'notdocumented':
                     $where = ' AND cash.docid IS NULL';
+                    break;
+            }
+        }
+
+        if (isset($type) && strlen($type)) {
+            $type = intval($type);
+            switch ($type) {
+                case 0:
+                    $where .= ' AND cash.type = 0';
+                    break;
+                case 1:
+                    $where .= ' AND cash.type = 1 AND cash.value > 0';
+                    break;
+                case 2:
+                    $where .= ' AND cash.type = 1 AND cash.value < 0';
                     break;
             }
         }

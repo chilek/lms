@@ -163,6 +163,15 @@
 				<OPTION value="notdocumented"{if $listdata.cat == "notdocumented"} SELECTED{/if}>{trans("without document")}</OPTION>
 				<OPTION value="cashimport"{if $listdata.cat == "cashimport"} selected{/if}>{trans("cash import file")}</OPTION>
 			</SELECT>
+			<label>
+				{trans("Type")}
+				<select name="type" size="1">
+					<option value="">{trans("<!operation-type>— any —")}</option>
+					<option value="0"{if $listdata.type === "0"} selected{/if}>{trans("liability")}</option>
+					<option value="1"{if $listdata.type === "1"} selected{/if}>{trans("income")}</option>
+					<option value="2"{if $listdata.type === "2"} selected{/if}>{trans("expense")}</option>
+				</select>
+			</label>
 			{trans("Group:")}
 			<SELECT size="1" name="group">
 				<OPTION value="0"{if !$listdata.group} SELECTED{/if}>{trans("— all groups —")}</OPTION>

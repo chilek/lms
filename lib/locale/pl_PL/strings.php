@@ -2686,6 +2686,8 @@ $_LANG['Edit Document: $a'] = 'Edycja dokumentu: $a';
 $_LANG['Additional number:'] = 'Dodatkowy numer:';
 $_LANG['Enter additional document number'] = 'Wprowadź dodatkowy numer dokumentu';
 $_LANG['income/expense'] = 'przychód/rozchód';
+$_LANG['income'] = 'przychód';
+$_LANG['expense'] = 'rozchód';
 $_LANG['Liability'] = 'Zobowiązanie';
 $_LANG['Options:'] = 'Opcje:';
 $_LANG['Options'] = 'Opcje';
@@ -4795,6 +4797,7 @@ $_LANG['AJAX: Error during persistent setting save on server:'] = 'AJAX: Błąd 
 
 $_LANG['Enter street'] = 'Podaj ulicę';
 $_LANG['— any —'] = '— dowolne —';
+$_LANG['<!operation-type>— any —'] = '— dowolny —';
 $_LANG['<!document-type>— any —'] = '— dowolne —';
 $_LANG['<!document>Type'] = 'Typ';
 
