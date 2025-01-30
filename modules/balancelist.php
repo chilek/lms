@@ -64,6 +64,13 @@ if (isset($_POST['type'])) {
 }
 $SESSION->save('bltype', $type);
 
+if (isset($_POST['source'])) {
+    $source = $_POST['source'];
+} else {
+    $SESSION->restore('blsource', $source);
+}
+$SESSION->save('blsource', $source);
+
 if (isset($_POST['group'])) {
         $g = $_POST['group'];
     $ge = isset($_POST['groupexclude']) ? 1 : 0;
@@ -167,6 +174,7 @@ $args = array(
     'search' => $s,
     'cat' => $c,
     'type' => $type,
+    'source' => $source,
     'group' => $g,
     'exclude'=> $ge,
     'from' => $from,
@@ -199,6 +207,7 @@ $listdata['total'] = $total;
 
 $SESSION->restore('blc', $listdata['cat']);
 $SESSION->restore('bltype', $listdata['type']);
+$SESSION->restore('blsource', $listdata['source']);
 $SESSION->restore('bls', $listdata['search']);
 $SESSION->restore('blg', $listdata['group']);
 $SESSION->restore('blge', $listdata['groupexclude']);

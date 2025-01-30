@@ -175,13 +175,25 @@
 					<option value="2"{if $listdata.type === "2"} selected{/if}>{trans("expense")}</option>
 				</select>
 			</label>
-			{trans("Group:")}
-			<SELECT size="1" name="group">
-				<OPTION value="0"{if !$listdata.group} SELECTED{/if}>{trans("— all groups —")}</OPTION>
-				{section name="grouplist" loop=$grouplist}
-					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group == $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:40:"&hellip;":true}</OPTION>
-				{/section}
-			</SELECT>
+			<label{if empty($sourcelist)} style="display: none;"{/if}>
+				{trans("Source")}
+				<select name="source" size="1">
+					<option value="">{trans("<!cash-source>— any —")}</option>
+					<option value="-1"{if $listdata.source == -1} selected{/if}>{trans("<!cash-source>— none —")}</option>
+					{foreach $sourcelist as $item}
+						<option value="{$item.id}"{if $listdata.source == $item.id} selected{/if}>{$item.name}</option>
+					{/foreach}
+				</select>
+			</label>
+			<label>
+				{trans("Group")}
+				<select size="1" name="group">
+					<option value="0"{if !$listdata.group} selected{/if}>{trans("— all groups —")}</option>
+					{foreach $grouplist as $group}
+						<option value="{$group.id}"{if $listdata.group == $group.id} selected{/if}>{$group.name|trunescape:40}</option>
+					{/foreach}
+				</select>
+			</label>
 			<INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label
 					for="groupexclude">{trans("exclude group")}</label>&nbsp;
 			<span class="lms-ui-date-period-container">

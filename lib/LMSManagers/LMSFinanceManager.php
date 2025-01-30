@@ -3839,6 +3839,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
         }
 
+        if (!empty($source)) {
+            $source = intval($source);
+            if ($source > 0) {
+                $where .= ' AND cash.sourceid = ' . $source;
+            } else {
+                $where .= ' AND cash.sourceid IS NULL';
+            }
+        }
+
         if ($from) {
             $where .= ' AND cash.time >= '.intval($from);
         }
