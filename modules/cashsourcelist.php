@@ -24,14 +24,6 @@
  *  $Id$
  */
 
-function GetSourceList()
-{
-    $DB = LMSDB::getInstance();
-
-    $list = $DB->GetAll("SELECT * FROM cashsources ORDER BY name");
-    return $list;
-}
-
 if (isset($_GET['action'])) {
     if ($_GET['action'] == 'enable') {
         $DB->Execute("Update cashsources set deleted = 0 where id = ? ", array($_GET['id']));
@@ -44,9 +36,7 @@ if (isset($_GET['action'])) {
 
 $layout['pagetitle'] = trans('Cash Import Source List');
 
-$sourcelist = GetSourceList();
-
 $SESSION->add_history_entry();
 
-$SMARTY->assign('sourcelist', $sourcelist);
+$SMARTY->assign('sourcelist', $LMS->getCashSources());
 $SMARTY->display('cash/cashsourcelist.html');

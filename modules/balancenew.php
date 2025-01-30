@@ -50,5 +50,5 @@ $SMARTY->assign('taxid', $SESSION->get('addbtax'));
 $SMARTY->assign('time', $SESSION->get('addbt'));
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());
 $SMARTY->assign('customers', $LMS->GetCustomerNames());
-$SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources WHERE deleted = 0 ORDER BY name'));
+$SMARTY->assign('sourcelist', $LMS->getCashSources());
 $SMARTY->display('balance/balancenew.html');

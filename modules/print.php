@@ -1072,7 +1072,7 @@ switch ($type) {
         )));
         $SMARTY->assign('cashreglist', $DB->GetAllByKey('SELECT id, name FROM cashregs ORDER BY name', 'id'));
         $SMARTY->assign('divisions', $LMS->GetDivisions());
-        $SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources ORDER BY name'));
+        $SMARTY->assign('sourcelist', $LMS->getCashSources());
         $SMARTY->assign('printmenu', 'finances');
 
         $SMARTY->assign('invprojects', $LMS->GetProjects());

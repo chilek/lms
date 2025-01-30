@@ -173,4 +173,6 @@ interface LMSFinanceManagerInterface
     public function getPromotionSchema($id);
 
     public function getPromotion($id);
+
+    public function getCashSources();
 }

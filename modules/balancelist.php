@@ -222,4 +222,5 @@ $SMARTY->assign('balancelist', $balancelist);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('pagination', $pagination);
 $SMARTY->assign('grouplist', $LMS->CustomergroupGetAll());
+$SMARTY->assign('sourcelist', $LMS->getCashSources());
 $SMARTY->display('balance/balancelist.html');

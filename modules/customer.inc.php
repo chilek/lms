@@ -281,7 +281,7 @@ if (ConfigHelper::checkConfig('phpui.remember_date_in_customerbalancebox')) {
     $SMARTY->assign('time', $SESSION->get('addbt'));
 }
 
-$SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources WHERE deleted = 0 ORDER BY name'));
+$SMARTY->assign('sourcelist', $LMS->getCashSources());
 $SMARTY->assignByRef('customerextids', $customerextids);
 $SMARTY->assignByRef('customernotes', $customernotes);
 $SMARTY->assignByRef('customernodes', $customernodes);

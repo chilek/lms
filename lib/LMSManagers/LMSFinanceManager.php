@@ -5509,4 +5509,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         return $promotion;
     }
+
+    public function getCashSources()
+    {
+        return $this->db->GetAll(
+            'SELECT *
+            FROM cashsources
+            WHERE deleted = 0
+            ORDER BY name'
+        );
+    }
 }

@@ -4088,6 +4088,12 @@ class LMS
         return $manager->getPromotion($id);
     }
 
+    public function getCashSources()
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->getCashSources();
+    }
+
     /**
      * VoIP functions
      */
