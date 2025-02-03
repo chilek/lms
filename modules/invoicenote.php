@@ -628,7 +628,12 @@ switch ($action) {
             $cnote['recipient_address_id'] = null;
         }
 
-        if (empty($invoice['post_address_id'])) {
+        if ($use_current_customer_data) {
+            $invoice['post_address_id'] = $LMS->GetCustomerAddress($invoice['customerid'], POSTAL_ADDRESS);
+            if (empty($invoice['post_address_id'])) {
+                $invoice['post_address_id'] = $LMS->GetCustomerAddress($invoice['customerid']);
+            }
+        } elseif (empty($invoice['post_address_id'])) {
             $invoice['post_address_id'] = $LMS->GetCustomerAddress($invoice['customerid']);
         }
         $invoice['post_address_id'] = $LMS->CopyAddress($invoice['post_address_id']);
