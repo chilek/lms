@@ -1255,8 +1255,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         if (!empty($ticket['categories'])) {
             foreach (array_keys($ticket['categories']) as $catid) {
-                $this->db->Execute('INSERT INTO rtticketcategories (ticketid, categoryid)
-					VALUES (?, ?)', array($id, $catid));
+                if (!empty($catid)) {
+                    $this->db->Execute('INSERT INTO rtticketcategories (ticketid, categoryid)
+						VALUES (?, ?)', array($id, $catid));
+                }
             }
         }
 
