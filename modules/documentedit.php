@@ -126,7 +126,7 @@ if (isset($_POST['document'])) {
         if ($documentedit['cdate']) {
             [$year, $month, $day] = explode('/', $documentedit['cdate']);
             if (checkdate($month, $day, $year)) {
-                $documentedit['cdate'] = mktime(
+                $cdate = mktime(
                     date('G', $currtime),
                     date('i', $currtime),
                     date('s', $currtime),
@@ -134,7 +134,12 @@ if (isset($_POST['document'])) {
                     $day,
                     $year
                 );
-                $currmonth = $month;
+                if (strtotime('today', $cdate) != strtotime('today', intval($document['cdate']))) {
+                    $documentedit['cdate'] = $cdate;
+                    $currmonth = $month;
+                } else {
+                    $documentedit['cdate'] = $document['cdate'];
+                }
             } else {
                 $error['cdate'] = trans('Incorrect date format!');
                 $documentedit['cdate'] = $currtime;
@@ -145,7 +150,7 @@ if (isset($_POST['document'])) {
     }
 
     if (ConfigHelper::checkPrivilege('document_consent_date') && $documentedit['cdate'] && !isset($warnings['document-cdate-'])) {
-        if ($documentedit['type'] && strtotime('today', $document['cdate']) != strtotime('today', $documentedit['cdate'])) {
+        if ($documentedit['type'] && strtotime('today', intval($document['cdate'])) != strtotime('today', intval($documentedit['cdate']))) {
             if (empty($documentedit['numberplanid'])) {
                 $maxdate = $DB->GetOne(
                     'SELECT MAX(cdate) FROM documents WHERE type = ? AND numberplanid IS NULL AND id <> ?',
