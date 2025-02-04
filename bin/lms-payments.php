@@ -2361,7 +2361,7 @@ foreach ($assigns as $assign) {
                                 )
                             );
                         } else {
-                            $tmp_item = $DB->GetOne(
+                            $tmp_item = $DB->GetRow(
                                 "SELECT itemid, count FROM invoicecontents
                                 WHERE tariffid = ? AND value = ? AND docid = ? AND description = ?",
                                 array(
