@@ -1846,11 +1846,11 @@ foreach ($assigns as $assign) {
 
             if (!$prefer_settlement_only || !$assign['settlement'] || !$assign['datefrom']) {
                 if ($assign['invoice'] == DOC_DNOTE || !empty($assign['separateitem'])) {
-                    $tmp_itemid = 0;
+                    $tmp_item = null;
                 } else {
                     if (empty($assign['tariffid'])) {
-                        $tmp_itemid = $DB->GetOne(
-                            "SELECT itemid FROM invoicecontents
+                        $tmp_item = $DB->GetRow(
+                            "SELECT itemid, count FROM invoicecontents
                             WHERE tariffid IS NULL AND value=? AND docid=? AND description=? AND pdiscount=? AND vdiscount=?",
                             array(
                                 $price,
@@ -1861,8 +1861,8 @@ foreach ($assigns as $assign) {
                             )
                         );
                     } else {
-                        $tmp_itemid = $DB->GetOne(
-                            "SELECT itemid FROM invoicecontents
+                        $tmp_item = $DB->GetRow(
+                            "SELECT itemid, count FROM invoicecontents
                             WHERE tariffid=? AND value=? AND docid=? AND description=? AND pdiscount=? AND vdiscount=?",
                             array(
                                 $assign['tariffid'],
@@ -1876,25 +1876,32 @@ foreach ($assigns as $assign) {
                     }
                 }
 
-                if ($tmp_itemid != 0) {
+                if (!empty($tmp_item)) {
                     if ($assign['invoice'] == DOC_DNOTE) {
                         $DB->Execute(
                             "UPDATE debitnotecontents SET value = value + ?
                             WHERE docid = ? AND itemid = ?",
-                            array($grossvalue, $invoices[$cid], $tmp_itemid)
+                            array($grossvalue, $invoices[$cid], $tmp_item['itemid'])
                         );
                     } else {
                         $DB->Execute(
                             "UPDATE invoicecontents SET count = count + ?
                             WHERE docid = ? AND itemid = ?",
-                            array($assign['count'], $invoices[$cid], $tmp_itemid)
+                            array($assign['count'], $invoices[$cid], $tmp_item['itemid'])
                         );
                     }
                     if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment) {
                         $DB->Execute(
-                            "UPDATE cash SET value = value + ?
+                            "UPDATE cash
+                            SET value = ?
                             WHERE docid = ? AND itemid = ?",
-                            array(-$grossvalue, $invoices[$cid], $tmp_itemid)
+                            array(
+                                $netflag
+                                    ? -round(($price * (100 + $assign['taxrate']) / 100) * ($tmp_item['count'] + $assign['count']), 2)
+                                    : -$grossvalue * ($tmp_item['count'] + $assign['count']),
+                                $invoices[$cid],
+                                $tmp_item['itemid'],
+                            )
                         );
                     }
                 } else {
@@ -2341,11 +2348,11 @@ foreach ($assigns as $assign) {
 
                 if ($assign['invoice']) {
                     if ($assign['invoice'] == DOC_DNOTE || !empty($assign['separateitem'])) {
-                        $tmp_itemid = 0;
+                        $tmp_item = null;
                     } else {
                         if (empty($assign['tariffid'])) {
-                            $tmp_itemid = $DB->GetOne(
-                                "SELECT itemid FROM invoicecontents
+                            $tmp_item = $DB->GetRow(
+                                "SELECT itemid, count FROM invoicecontents
                                 WHERE tariffid IS NULL AND value = ? AND docid = ? AND description = ?",
                                 array(
                                     $partial_price,
@@ -2354,8 +2361,8 @@ foreach ($assigns as $assign) {
                                 )
                             );
                         } else {
-                            $tmp_itemid = $DB->GetOne(
-                                "SELECT itemid FROM invoicecontents
+                            $tmp_item = $DB->GetOne(
+                                "SELECT itemid, count FROM invoicecontents
                                 WHERE tariffid = ? AND value = ? AND docid = ? AND description = ?",
                                 array(
                                     $assign['tariffid'],
@@ -2367,17 +2374,28 @@ foreach ($assigns as $assign) {
                         }
                     }
 
-                    if ($tmp_itemid != 0) {
+                    if (!empty($tmp_item)) {
                         $DB->Execute(
                             "UPDATE invoicecontents SET count = count + ?
 							WHERE docid = ? AND itemid = ?",
-                            array($assign['count'], $invoices[$cid], $tmp_itemid)
+                            array($assign['count'], $invoices[$cid], $tmp_item['itemid'])
                         );
                         if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment) {
                             $DB->Execute(
                                 "UPDATE cash SET value = value + ?
 								WHERE docid = ? AND itemid = ?",
-                                array(-$partial_grossvalue, $invoices[$cid], $tmp_itemid)
+                                array(-$partial_grossvalue, $invoices[$cid], $tmp_item['itemid'])
+                            );
+                            $DB->Execute(
+                                "UPDATE cash SET value = ?
+                                WHERE docid = ? AND itemid = ?",
+                                array(
+                                    $netflag
+                                        ? -round(($partial_price * (100 + $assign['taxrate']) / 100) * ($tmp_item['count'] + $assign['count']), 2)
+                                        : -$partial_grossvalue * ($tmp_item['count'] + $assign['count']),
+                                    $invoices[$cid],
+                                    $tmp_item['itemid'],
+                                )
                             );
                         }
                     } else {
