@@ -82,6 +82,7 @@ function GetItemList($id, $order = 'id,desc', $search = null, $cat = null, $stat
             i.customerid,
             i.status,
             i.error,
+            i.subject,
             i.body,
             i.destination,
             i.lastdate,

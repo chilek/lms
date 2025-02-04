@@ -601,38 +601,7 @@
 					{tip trigger="phonenumber" text="Enter phone numbers separated by commas"}>
 			</td>
 		</tr>
-		<tr>
-			<td>
-				{icon name="message"}
-			</td>
-			<td>
-				<strong>{trans("Subject")}</strong>
-			</td>
-			<td>
-				<input type="text" name="message[subject]" id="subject" size="60" value="{$message.subject}"
-					{tip trigger="subject"}>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				{icon name="document"}
-			</td>
-			<td class="nobr">
-				<strong>{trans("Message template")}</strong>
-			</td>
-			<td>
-				<select name="message[tmplid]" id="msgtmplid" {tip class="lms-ui-advanced-select" trigger="msgtmplid" text="Select message template"}
-						onChange="javascript:change_message_template(this.options[this.selectedIndex].value);">
-					<option value="0">{trans("— none —")}</option>
-					{foreach $messagetemplates as $msgtmpl}
-						<option value="{$msgtmpl.id}"{if $message.tmplid == $msgtmpl.id} selected{/if}>{$msgtmpl.name}</option>
-					{/foreach}
-				</select>
-			</td>
-		</tr>
-		{capture assign="body_hint"}{strip}
-			Enter message body.<br>
-			<br>
+		{capture assign="content_hint"}{strip}
 			Supported substitutions/variables:<br>
 			<strong>%customer</strong> - customer first name and last name or name,<br>
 			<strong>%balance</strong>, <strong>%totalsaldo</strong>, <strong>%totalB</strong> - customer total balance,<br>
@@ -657,6 +626,36 @@
 			<strong>%node_ip_pub</strong> - customer node public ip address,<br>
 			<strong>%node_mac</strong> - customer node mac addresses.<br>
 		{/strip}{/capture}
+		<tr>
+			<td>
+				{icon name="message"}
+			</td>
+			<td>
+				<strong>{trans("Subject")}</strong>
+			</td>
+			<td>
+				<input type="text" name="message[subject]" id="subject" size="60" value="{$message.subject}"
+					{tip trigger="subject"}>
+				{hint text=trans("Enter message subject.")|cat:"<br><br>"|cat:trans($content_hint)}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="document"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Message template")}</strong>
+			</td>
+			<td>
+				<select name="message[tmplid]" id="msgtmplid" {tip class="lms-ui-advanced-select" trigger="msgtmplid" text="Select message template"}
+						onChange="javascript:change_message_template(this.options[this.selectedIndex].value);">
+					<option value="0">{trans("— none —")}</option>
+					{foreach $messagetemplates as $msgtmpl}
+						<option value="{$msgtmpl.id}"{if $message.tmplid == $msgtmpl.id} selected{/if}>{$msgtmpl.name}</option>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
 		<tr id="mailbody"{if $message.type > $smarty.const.MSG_MAIL && $message.type < $smarty.const.MSG_WWW} style="display: none"{/if}>
 			<td>
 				{icon name="edit"}
@@ -670,7 +669,7 @@
 						{tip class="lms-ui-wysiwyg-editor" trigger="mailbody"}
 						{if isset($message.wysiwyg.mailbody)} data-wysiwyg="{$message.wysiwyg.mailbody}"{/if}>{$message.body}</textarea>
 					<div class="lms-ui-util-buttons">
-						{hint content=$body_hint}
+						{hint text=trans("Enter message body.")|cat:"<br><br>"|cat:trans($content_hint)}
 						{speech_recognition target="#mailtext"}
 					</div>
 				</div>
@@ -689,7 +688,7 @@
 						onkeyup="countChars(this)" {tip trigger="smsbody"}
 						>{$message.body}</textarea>
 					<div class="lms-ui-util-buttons">
-						{hint content=$body_hint}
+						{hint text=trans("Enter message body.")|cat:"<br><br>"|cat:trans($content_hint)}
 						{speech_recognition target="#smstext"}
 					</div>
 				</div>

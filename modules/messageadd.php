@@ -463,7 +463,7 @@ function GetCustomers($customers)
     );
 }
 
-function BodyVars(&$body, $data, $format)
+function replaceSymbols(&$content, $data, $format)
 {
     static $use_only_alternative_accounts = null,
         $use_all_accounts = null;
@@ -486,7 +486,7 @@ function BodyVars(&$body, $data, $format)
     }
     $totalamount = -$data['totalbalance'];
 
-    if (strpos($body, '%bankaccount') !== false) {
+    if (strpos($content, '%bankaccount') !== false) {
         if (!isset($use_only_alternative_accounts)) {
             $use_only_alternative_accounts = ConfigHelper::checkConfig('messages.use_only_alternative_accounts');
             $use_all_accounts = ConfigHelper::checkConfig('messages.use_all_accounts');
@@ -512,7 +512,7 @@ function BodyVars(&$body, $data, $format)
 
         $all_accounts = implode($format == 'text' ? "\n" : '<br>', $accounts);
 
-        $body = str_replace('%bankaccount', $all_accounts, $body);
+        $content = str_replace('%bankaccount', $all_accounts, $content);
     }
 
     [$now_year, $now_month, $now_day] = explode('/', date('Y/m/d'));
@@ -527,7 +527,7 @@ function BodyVars(&$body, $data, $format)
         $commented_balance = trans('Billing status: $a', moneyf($data['totalbalance'], $currency));
     }
 
-    $body = str_replace(
+    $content = str_replace(
         array(
             '%date-y',
             '%date-m',
@@ -560,7 +560,7 @@ function BodyVars(&$body, $data, $format)
             $data['id'] ?? '',
             $data['pin'] ?? '',
         ),
-        $body
+        $content
     );
 
     if (isset($data['node'])) {
@@ -570,7 +570,7 @@ function BodyVars(&$body, $data, $format)
                 $macs[] = $mac['mac'];
             }
         }
-        $body = str_replace(
+        $content = str_replace(
             array(
                 '%node_name',
                 '%node_login',
@@ -587,21 +587,21 @@ function BodyVars(&$body, $data, $format)
                 $data['node']['ipaddr'] ? $data['node']['ip'] : '-',
                 empty($macs) ? '-' : implode(', ', $macs),
             ),
-            $body
+            $content
         );
     } else {
-        $body = str_replace(
+        $content = str_replace(
             array('%node_name', '%node_password', '%node_ip_pub', '%node_ip', '%node_mac'),
             array('-', '-', '-', '-', '-'),
-            $body
+            $content
         );
     }
 
     if (isset($data['id'])) {
-        $body = $LMS->getLastNInTable($body, $data['id'], $format, ConfigHelper::checkConfig('phpui.aggregate_documents'));
+        $content = $LMS->getLastNInTable($content, $data['id'], $format, ConfigHelper::checkConfig('phpui.aggregate_documents'));
     }
 
-    if (strpos($body, '%services') !== false) {
+    if (strpos($content, '%services') !== false) {
         $services = $data['services'];
         $lN = '';
         if (!empty($services)) {
@@ -613,14 +613,8 @@ function BodyVars(&$body, $data, $format)
                 $lN .= moneyf($row['sumvalue'], $currency) . ($format == 'html' ? '<br>' : PHP_EOL);
             }
         }
-        $body = str_replace('%services', $lN, $body);
+        $content = str_replace('%services', $lN, $content);
     }
-
-    $hook_data = $LMS->ExecuteHook('messageadd_variable_parser', array(
-        'body' => $body,
-        'data' => $data,
-    ));
-    $body = $hook_data['body'];
 }
 
 function FindNetDeviceUplink($netdevid)
@@ -1170,21 +1164,40 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             $customerid = $row['id'] ?? 0;
 
             if (!empty($customerid) || $message['type'] == MSG_ANYSMS) {
+                $subject = $message['subject'];
                 $plain_body = $body;
 
                 if ($message['type'] == MSG_ANYSMS && isset($customer)) {
-                    BodyVars($body, $customer, $format);
+                    replaceSymbols($body, $customer, $format);
+                    replaceSymbols($subject, $customer, 'text');
+                    $data = $customer;
                 } else {
                     $row['contenttype'] = $message['contenttype'];
-                    BodyVars($body, $row, $format);
+                    replaceSymbols($body, $row, $format);
+                    replaceSymbols($subject, $row, 'text');
+                    $data = $row;
                 }
+
+                $hook_data = $LMS->ExecuteHook('messageadd_variable_parser', array(
+                    'subject' => $subject,
+                    'body' => $body,
+                    'data' => $data,
+                ));
+                $subject = $hook_data['subject'];
+                $body = $hook_data['body'];
 
                 $LMS->updateMessageItems(array(
                     'messageid' => $msgid,
                     'original_body' => $plain_body,
                     'real_body' => $body,
+                    'original_subject' => $message['subject'],
+                    'real_subject' => $subject,
                     'customerid' => $customerid ?: null,
                 ));
+
+                if ($message['type'] == MSG_MAIL) {
+                    $headers['Subject'] = $subject;
+                }
             }
 
             foreach ($row['destination'] as $destination) {

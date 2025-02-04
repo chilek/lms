@@ -512,14 +512,26 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 
     public function updateMessageItems(array $params)
     {
+        $args = array();
+
+        if (strcmp($params['original_subject'], $params['real_subject'])) {
+            $args['subject'] = $params['real_subject'];
+        }
+
         if (strcmp($params['original_body'], $params['real_body'])) {
+            $args['body'] = $params['real_body'];
+        }
+
+        if (!empty($args)) {
             return $this->db->Execute(
-                'UPDATE messageitems SET body = ?
-                WHERE messageid = ? AND customerid '
-                . (!empty($params['customerid']) ? '= ' . intval($params['customerid']) : 'IS NULL'),
-                array($params['real_body'], $params['messageid'])
+                'UPDATE messageitems
+                SET ' . implode(' = ?, ', array_keys($args)) . ' = ?
+                WHERE messageid = ?
+                  AND customerid ' . (!empty($params['customerid']) ? '= ' . intval($params['customerid']) : 'IS NULL'),
+                $args
             );
         }
+
         return 0;
     }
 

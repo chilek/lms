@@ -2278,8 +2278,9 @@ $_LANG['URL:'] = 'Adres URL:';
 $_LANG['URL'] = 'Adres URL';
 $_LANG['URL of your homepage:'] = 'Adres twojej strony domowej:';
 $_LANG['USA'] = 'USA';
-$_LANG['Enter message body.<br><br>'
-    . 'Supported substitutions/variables:<br>'
+$_LANG['Enter message subject.'] = 'Wprowadź temat wiadomości.';
+$_LANG['Enter message body.'] = 'Wprowadź treść wiadomości.';
+$_LANG['Supported substitutions/variables:<br>'
     . '<strong>%customer</strong> - customer first name and last name or name,<br>'
     . '<strong>%balance</strong>, <strong>%totalsaldo</strong>, <strong>%totalB</strong> - customer total balance,<br>'
     . '<strong>%commented_balance</strong> - customer total balance as absolute value with text comment explaining customer billing status,<br>'
@@ -2301,8 +2302,7 @@ $_LANG['Enter message body.<br><br>'
     . '<strong>%node_ip</strong> - customer node ip address,<br>'
     . '<strong>%node_ip_pub</strong> - customer node public ip address,<br>'
     . '<strong>%node_mac</strong> - customer node mac addresses.<br>'] =
-    'Wprowadź treść wiadomości.<br><br>'
-    . 'Obsługiwane podstawienia/zmienne:<br>'
+    'Obsługiwane podstawienia/zmienne:<br>'
     . '<strong>%customer</strong> - imię i nazwisko lub nazwa klienta,<br>'
     . '<strong>%balance</strong>, <strong>%totalsaldo</strong>, <strong>%totalB</strong> - całkowite saldo klienta,<br>'
     . '<strong>%commented_balance</strong> - całkowite saldo klienta jako wartość bezwzględna z komentarzem tekstowym wyjaśniającym stan rozliczeń klienta,<br>'
