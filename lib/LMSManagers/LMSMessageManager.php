@@ -523,11 +523,12 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
         }
 
         if (!empty($args)) {
+            $fields = array_keys($args);
             $args['messageid'] = $params['messageid'];
 
             return $this->db->Execute(
                 'UPDATE messageitems
-                SET ' . implode(' = ?, ', array_keys($args)) . ' = ?
+                SET ' . implode(' = ?, ', $fields) . ' = ?
                 WHERE messageid = ?
                   AND customerid ' . (!empty($params['customerid']) ? '= ' . intval($params['customerid']) : 'IS NULL'),
                 $args
