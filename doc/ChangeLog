@@ -926,6 +926,8 @@ version 28-git (????-??-??):
     depending on user access and deleted properties [chilan]
   - enhancement: added operation type and cash source filters in balance list form [chilan]
   - enhancement: allow to use substitution symbols in subject field of message add form [chilan]
+  - improvement: 'ignore_deleted_customers' pattern property allows to disable matching of imported
+    bank payments to deleted customers [chilan]
 
 version 27.0 (2021-08-20):
 
