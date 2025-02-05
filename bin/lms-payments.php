@@ -432,6 +432,7 @@ if ($voip_cdr_only) {
             a.invoice,
             a.separatedocument,
             a.separateitem,
+            a.note,
             c.type AS customertype,
             (CASE WHEN c.type = ? THEN 0 ELSE (CASE WHEN a.liabilityid IS NULL
                 THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
@@ -553,6 +554,7 @@ $query = "SELECT
 			0 AS pdiscount, 0 AS vdiscount, a.invoice,
 			a.separatedocument,
 			a.separateitem,
+			a.note,
 			c.type AS customertype,
 			t.type AS tarifftype,
 			t.taxcategory AS taxcategory,
@@ -1490,6 +1492,7 @@ foreach ($assigns as $assign) {
             '%forward_period',
             '%forward_period_aligned',
             '%aligned_period',
+            '%note',
         ),
         array(
             $assign['tarifftype'] != SERVICE_OTHER ? $SERVICETYPES[$assign['tarifftype']] : '',
@@ -1515,6 +1518,7 @@ foreach ($assigns as $assign) {
             $forward_periods[$p],
             $forward_aligned_periods[$p],
             $forward_aligned_periods[$p],
+            empty($assign['note']) ? '' : $assign['note'],
         ),
         $desc
     );
