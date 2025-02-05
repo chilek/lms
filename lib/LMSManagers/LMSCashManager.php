@@ -550,7 +550,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 }
             }
 
-            if ($id && !$this->db->GetOne('SELECT id FROM customers WHERE id = ?', array($id))) {
+            if ($id && !$this->db->GetOne('SELECT id FROM customers WHERE id = ?' . (empty($pattern['ignore_deleted_customers']) ? '' : ' AND deleted = 0'), array($id))) {
                 $id = null;
             }
 
