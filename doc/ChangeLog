@@ -928,6 +928,7 @@ version 28-git (????-??-??):
   - enhancement: allow to use substitution symbols in subject field of message add form [chilan]
   - improvement: 'ignore_deleted_customers' pattern property allows to disable matching of imported
     bank payments to deleted customers [chilan]
+  - improvement: symbol '%note' support in 'payments.comment' configuration variable [chilan]
 
 version 27.0 (2021-08-20):
 
