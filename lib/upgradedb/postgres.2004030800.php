@@ -67,5 +67,3 @@ $this->Execute("
 	body text DEFAULT '' NOT NULL,
 	PRIMARY KEY (id))
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2004030800', 'dbversion'));

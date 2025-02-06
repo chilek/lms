@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE netnodes MODIFY COLUMN admcontact text DEFAULT NULL");
 $this->Execute("ALTER TABLE messageitems MODIFY COLUMN externalmsgid int(11) DEFAULT 0 NOT NULL");
@@ -32,7 +31,3 @@ if (!$this->ResourceExists('voip_numbers.tariff_id', LMSDB::RESOURCE_TYPE_COLUMN
     $this->Execute("ALTER TABLE voip_numbers ADD COLUMN tariff_id int(11) NULL");
     $this->Execute("ALTER TABLE voip_numbers ADD CONSTRAINT voip_numbers_tariff_id_fkey FOREIGN KEY (tariff_id) REFERENCES tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020042700', 'dbversion'));
-
-$this->CommitTrans();

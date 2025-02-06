@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 $this->Execute("
     CREATE SEQUENCE cashimport_id_seq;
     CREATE TABLE cashimport (
@@ -38,6 +37,3 @@ $this->Execute("
 	closed smallint DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id))
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005022300', 'dbversion'));
-$this->CommitTrans();

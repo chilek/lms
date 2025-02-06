@@ -21,9 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE rttickets ADD COLUMN source tinyint(4) DEFAULT 0 NOT NULL");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017070100', 'dbversion'));
-
-$this->CommitTrans();

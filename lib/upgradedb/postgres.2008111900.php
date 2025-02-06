@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 CREATE SEQUENCE voipaccounts_id_seq;
@@ -41,7 +40,3 @@ CREATE TABLE voipaccounts (
 	PRIMARY KEY (id)
 );
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008111900', 'dbversion'));
-
-$this->CommitTrans();

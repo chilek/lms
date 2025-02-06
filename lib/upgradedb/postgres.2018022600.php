@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE records ALTER COLUMN type TYPE varchar(10);
@@ -68,7 +67,3 @@ $this->Execute("
 		CONSTRAINT tsigkeys_name_key UNIQUE (name, algorithm)
 	);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018022600', 'dbversion'));
-
-$this->CommitTrans();
