@@ -1035,7 +1035,12 @@ if (!empty($assigns)) {
             )
         );
         $rewards[$cid] = true;
-        if (!empty($history)) {
+        if (empty($history)) {
+            $balance = $LMS->GetCustomerBalance($cid, $period_end, $reward_penalty_deadline_grace_days);
+            if ($balance < 0) {
+                $rewards[$cid] = false;
+            }
+        } else {
             foreach ($history as &$record) {
                 if (!empty($record['docid']) && $record['value'] < 0) {
                     $record['deadline'] = mktime(
