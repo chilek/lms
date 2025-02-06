@@ -903,10 +903,13 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         return ($owner === '1');
     }
 
-    public function GetCategoryList($stats = true)
+    public function GetCategoryList($stats = true, $owners = true)
     {
-        if ($result = $this->db->GetAll('SELECT id, name, description, style
-				FROM rtcategories ORDER BY name')) {
+        if ($result = $this->db->GetAll(
+            'SELECT id, name, description, style
+                FROM rtcategories
+                ORDER BY name'
+        )) {
             if ($stats) {
                 foreach ($result as $idx => $row) {
                     foreach ($this->GetCategoryStats($row['id']) as $sidx => $row2) {
@@ -914,13 +917,25 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     }
                 }
             }
-            foreach ($result as $idx => $category) {
-                $result[$idx]['owners'] = $this->db->GetAll('SELECT u.id, name FROM rtcategoryusers cu
-				LEFT JOIN vusers u ON cu.userid = u.id
-				WHERE categoryid = ?', array($category['id']));
+            if ($owners) {
+                foreach ($result as $idx => $row) {
+                    $result[$idx]['owners'] = $this->GetCategoryUsers($row['id']);
+                }
             }
         }
         return $result;
+    }
+
+    public function GetCategoryUsers($categoryid)
+    {
+        return $this->db->GetAll(
+            'SELECT u.id, u.name, u.deleted,
+            (CASE WHEN u.access = 1 AND u.accessfrom <= ?NOW? AND (u.accessto >=?NOW? OR u.accessto = 0) THEN 1 ELSE 0 END) AS access
+            FROM rtcategoryusers cu
+                LEFT JOIN vusers u ON cu.userid = u.id
+            WHERE categoryid = ?',
+            array($categoryid)
+        );
     }
 
     public function GetCategoryStats($id)

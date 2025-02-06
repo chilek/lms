@@ -15,7 +15,7 @@
             </a>
         {/if}
     </td>
-    <TD class="text-left nobr bold" style="min-width:100px" data-target-url="?m=eventinfo&id={$event.id}">
+    <TD class="text-left nobr bold" style="min-width:100px">
         {if $event.endtime == 86400}
             {trans("whole day")}
         {else}
@@ -28,24 +28,11 @@
         {if $overdue == 1}
             <br>{$event.date|date_format:"Y-m-d"}
         {/if}
-        {$imadded=0}
-        {$user_row_limit = intval(ConfigHelper::getConfig('timetable.row_user_limit', ConfigHelper::getConfig('phpui.timetable_user_row_limit', 4)))}
-        {if !empty($event.userlist)}
-            {if !$user_row_limit || count($event.userlist) <= $user_row_limit}
-                {foreach $event.userlist as $user}
-                    {if $layout.logid == $user.id}
-                        {$imadded=1}
-                    {/if}
-                    <br>
-                    <a href="?m=userinfo&amp;id={$user.id}"
-                       style="font-weight: normal;" {if isset($user.noaccess)} class="lms-ui-crossed"{/if}>{$user.name|trunescape:25}</a>
-                {/foreach}
-            {else}
-                <br>
-                <i class="lms-ui-icon-user lms-ui-hint-rollover"
-                   data-url="?m=eventinfoshort&id={$event.id}"></i>
-                {$event.userlist|@count}
-            {/if}
+        {user_compact_list limit=$user_row_limit userlist=$event.userlist}
+        {if in_array($layout.logid, array_column($event.userlist, 'id'))}
+            {assign var="imadded" value=1}
+        {else}
+            {assign var="imadded" value=0}
         {/if}
     </TD>
     <TD data-target-url="?m=eventinfo&id={$event.id}">
