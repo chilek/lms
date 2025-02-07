@@ -3099,10 +3099,16 @@ class LMS
                 return MSG_SENT;
             }
         } elseif ($mail_backend == 'phpmailer') {
-            $this->mail_object = new \PHPMailer\PHPMailer\PHPMailer();
-            $this->mail_object->isSMTP();
+            if (!is_object($this->mail_object) || !$persist) {
+                $this->mail_object = new \PHPMailer\PHPMailer\PHPMailer();
+                $this->mail_object->isSMTP();
 
-            $this->mail_object->SMTPKeepAlive = $persist;
+                $this->mail_object->SMTPKeepAlive = $persist;
+            } else {
+                $this->mail_object->clearAllRecipients();
+                $this->mail_object->clearCustomHeaders();
+                $this->mail_object->clearAttachments();
+            }
 
             $this->mail_object->Host = (!isset($smtp_options['host']) ? $smtp_host : $smtp_options['host']);
             $this->mail_object->Port = (!isset($smtp_options['port']) ? $smtp_port : $smtp_options['port']);
