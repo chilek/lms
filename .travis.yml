@@ -40,7 +40,9 @@ services:
   - postgresql
   - mysql
 
-#before_install:
+before_install:
+  - sudo apt-get update && sudo apt-get install -y php-mailparse || pecl install mailparse
+  - echo "extension=mailparse.so" >> $(php -i | grep -oP '(?<=Loaded Configuration File => )[^ ]+')
 #   - if ${INSTALL_PHP_ZIP_EXTENSION}; then sudo apt-get install libzip-dev; pecl install zip; fi
 #   - echo "extension = libzip.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 #  - echo "extension = snmp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
