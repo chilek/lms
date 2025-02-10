@@ -1627,7 +1627,7 @@ class LMSEzpdfInvoice extends LMSInvoice
             && ($PAYTYPES[$this->data['paytype']]['features'] & INVOICE_FEATURE_TRANSFER_FORM)
             && ($this->data['customerbalance'] < 0 || ConfigHelper::checkConfig('invoices.always_show_form', true))) {
             $lms = LMS::getInstance();
-            if ($lms->checkCustomerConsent($this->data['customerid'], CCONSENT_TRANSFERFORM)) {
+            if ($lms->checkCustomerConsent($this->data['customerid'], CCONSENT_TRANSFERFORM) || !empty($this->data['transfer-forms'])) {
                 $this->invoice_main_form_fill(187, 3, 0.4);
                 $this->invoice_simple_form_fill(14, 3, 0.4);
             }

@@ -1297,7 +1297,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             && !isset($this->data['rebate'])) {
             /* FT-0100 form */
             $lms = LMS::getInstance();
-            if ($lms->checkCustomerConsent($this->data['customerid'], CCONSENT_TRANSFERFORM)) {
+            if ($lms->checkCustomerConsent($this->data['customerid'], CCONSENT_TRANSFERFORM) || !empty($this->data['transfer-forms'])) {
                 if ($this->backend->GetY() > 180 || $this->transfer_form_on_separate_page) {
                     $this->backend->AppendPage();
                 }
