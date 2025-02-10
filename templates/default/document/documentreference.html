@@ -21,13 +21,13 @@
 <script>
 
     $(function() {
-        $('[name="document[reference]"]').change(function() {
-            if (parseInt($(this).val())) {
-                $('#a_reference_document_limit').show();
-            } else {
-                $('#a_reference_document_limit').hide();
-            }
-        }).trigger('change');
+        $("#referencedocument").on("change", '[name="document[reference]"]', function() {
+            $("#a_reference_document_limit").toggle(parseInt($(this).val()) > 0);
+        });
+
+        {if !empty($document.reference.id)}
+            $("#a_reference_document_limit").show();
+        {/if}
     });
 
 </script>

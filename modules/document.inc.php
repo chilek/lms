@@ -309,9 +309,7 @@ function GetReferenceDocuments($doctemplate, $customerid, $JSResponse)
 
     $JSResponse->assign('referencedocument', 'innerHTML', $template);
 
-    $JSResponse->script('$(\'[name="document[reference]"]\').change(function() {'
-        . ' $("#a_reference_document_limit").toggle(parseInt($(this).val())); '
-        . '}); $("#a_reference_document_limit").toggle(parseInt($(this).val()));');
+    $JSResponse->script('$("#a_reference_document_limit").toggle(parseInt($(this).val()) > 0);');
 
     $JSResponse->script('$(\'[name="document[reference]"]\').prop("required", $(\'[name="document[templ]"] option:selected\').is("[data-refdoc-required]"));');
 }
