@@ -2665,7 +2665,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'SELECT DISTINCT d.id
             FROM documents d
             JOIN documentattachments da ON da.docid = d.id
-            WHERE d.customerid = ?'
+            WHERE d.customerid = ?',
             array(
                 $id,
             )
