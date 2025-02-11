@@ -801,10 +801,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $nextperiod = mktime(0, 0, 0, $month + 1, 1, $year);
                         $partial_dateto = !empty($data['dateto']) && $nextperiod > $data['dateto'] ? $data['dateto'] + 1 : $nextperiod;
                         $diffdays = round(($partial_dateto - $orig_datefrom) / 86400);
-                        if ($diffdays > 0) {
-                            [$y, $m] = explode('/', date('Y/n', $partial_dateto - 1));
-                            $month_days = date('t', mktime(0, 0, 0, $m, 1, $y));
 
+                        [$y, $m] = explode('/', date('Y/n', $partial_dateto - 1));
+                        $month_days = date('t', mktime(0, 0, 0, $m, 1, $y));
+
+                        if ($diffdays > 0 && $diffdays < $month_days) {
                             $partial_dateto--;
                             if (($data['at'] > 0 && $data['at'] >= $dom + 1) || ($data['at'] === 0 && $month_days >= $dom + 1)) {
                                 $partial_at = $data['at'];
@@ -920,13 +921,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $_dateto = mktime(23, 59, 59, $month, $diffdays, $year);
                     }
 
-                    if ($diffdays > 0) {
-                        $month_days = date('t', mktime(0, 0, 0, $month, 1, $year));
+                    $month_days = date('t', mktime(0, 0, 0, $month, 1, $year));
+
+                    if ($diffdays > 0 && $diffdays < $month_days) {
                         if (!empty($lid) || $value != 'NULL') {
                             $v = $diffdays * $discounted_val / $month_days;
                             $partial_vdiscount = str_replace(',', '.', round(abs($v - $val), 3));
                         }
                         $partial_datefrom = $prevperiod;
+
                         if ($data['at'] > 0 && $data['at'] < $dom) {
                             $partial_at = $data['at'];
                         } else {
@@ -969,7 +972,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         }
                     }
 
-                    $ending_period_date = mktime(23, 59, 59, $month, 0, $year);
+                    if ($diffdays > 0) {
+                        if ($diffdays == $month_days) {
+                            $dateto = $_dateto;
+                        } elseif ($diffdays > $month_days) {
+                            $_dateto = $dateto;
+                        }
+                    } else {
+                        $ending_period_date = mktime(23, 59, 59, $month, 0, $year);
+                    }
                 }
 
                 $__datefrom = $idx ? $datefrom : 0;
