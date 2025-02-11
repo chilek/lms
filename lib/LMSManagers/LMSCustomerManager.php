@@ -2661,6 +2661,23 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         $this->deleteCustomerHelper($id);
 
+        $docids = $this->db->GetCol(
+            'SELECT DISTINCT d.id
+            FROM documents d
+            JOIN documentattachments da ON da.docid = d.id
+            WHERE d.customerid = ?'
+            array(
+                $id,
+            )
+        );
+        if (!empty($docids)) {
+            $document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
+
+            foreach ($docids as $docid) {
+                $document_manager->deleteDocumentAttachments($docid);
+            }
+        }
+
         $result = $this->db->Execute('DELETE FROM customers WHERE id = ?', array($id));
 
         if ($this->syslog) {

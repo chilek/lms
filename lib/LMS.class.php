@@ -3761,6 +3761,12 @@ class LMS
         return $manager->SendDocuments($docs, $type, $params);
     }
 
+    public function deleteDocumentAttachments($docid)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->deleteDocumentAttachments($docid);
+    }
+
     public function DeleteDocument($docid)
     {
         $manager = $this->getDocumentManager();

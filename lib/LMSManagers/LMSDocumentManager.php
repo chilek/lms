@@ -3045,20 +3045,17 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
     }
 
-    public function DeleteDocument($docid)
+    public function deleteDocumentAttachments($docid)
     {
-        $document = $this->db->GetRow(
-            'SELECT d.id, d.type, d.customerid FROM documents d
-			JOIN docrights r ON (r.doctype = d.type)
-			WHERE d.id = ? AND r.userid = ? AND (r.rights & ?) > 0',
-            array($docid, Auth::GetCurrentUser(), DOCRIGHT_DELETE)
+        $attachments = $this->db->GetAll(
+            'SELECT
+                id,
+                md5sum
+            FROM documentattachments
+            WHERE docid = ?',
+            array($docid)
         );
-        if (!$document) {
-            return false;
-        }
 
-        $attachments = $this->db->GetAll('SELECT id, md5sum FROM documentattachments
-			WHERE docid = ?', array($docid));
         foreach ($attachments as $attachment) {
             $md5sum = $attachment['md5sum'];
             if ($this->db->GetOne('SELECT COUNT(*) FROM documentattachments WHERE md5sum = ?', array((string)$md5sum)) == 1) {
@@ -3075,6 +3072,21 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 }
             }
         }
+    }
+
+    public function DeleteDocument($docid)
+    {
+        $document = $this->db->GetRow(
+            'SELECT d.id, d.type, d.customerid FROM documents d
+			JOIN docrights r ON (r.doctype = d.type)
+			WHERE d.id = ? AND r.userid = ? AND (r.rights & ?) > 0',
+            array($docid, Auth::GetCurrentUser(), DOCRIGHT_DELETE)
+        );
+        if (!$document) {
+            return false;
+        }
+
+        $this->deleteDocumentAttachments($docid);
 
         $this->db->Execute('DELETE FROM documents WHERE id = ?', array($docid));
         if ($this->syslog) {
