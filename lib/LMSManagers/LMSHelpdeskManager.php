@@ -1179,8 +1179,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 !empty($ticket['type']) ? $ticket['type'] : RT_TYPE_OTHER,
                 !empty($ticket['invprojectid']) ? $ticket['invprojectid'] : null,
                 empty($ticket['parentid']) ? null : $ticket['parentid'],
-                isset($ticket['customcreatetime']) ? $ticket['customcreatetime'] : null,
-                isset($ticket['customresolvetime']) ? $ticket['customresolvetime'] : null,
+                !empty($ticket['customcreatetime']) ? $ticket['customcreatetime'] : null,
+                !empty($ticket['customresolvetime']) ? $ticket['customresolvetime'] : null,
             )
         );
 
