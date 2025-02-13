@@ -1109,7 +1109,7 @@ CREATE TABLE assignments (
 	period smallint 	DEFAULT 0 NOT NULL,
 	backwardperiod smallint DEFAULT 0 NOT NULL,
 	note text 		DEFAULT NULL,
-	at integer 		DEFAULT 0 NOT NULL,
+	at bigint 		DEFAULT 0 NOT NULL,
 	datefrom bigint	DEFAULT 0 NOT NULL,
 	dateto bigint		DEFAULT 0 NOT NULL,
 	invoice smallint 	DEFAULT 0 NOT NULL,
@@ -4441,6 +4441,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025020400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025021300');
 
 COMMIT;
