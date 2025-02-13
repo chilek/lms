@@ -25,38 +25,10 @@ $this->BeginTrans();
 
 $this->Execute("DROP VIEW vnodealltariffs");
 $this->Execute("DROP VIEW vnodetariffs");
-$this->Execute("DROP VIEW vmacs");
-$this->Execute("DROP VIEW vnodes");
 
 if ($this->ResourceExists('assignments.at.int4', LMSDB::RESOURCE_TYPE_COLUMN_TYPE)) {
     $this->Execute("ALTER TABLE assignments ALTER COLUMN at TYPE bigint");
 }
-
-$this->Execute(
-    "CREATE VIEW vnodes AS
-        SELECT n.*, m.mac,
-            a.ccode,
-            a.city_id as location_city, a.street_id as location_street,
-            a.house as location_house, a.flat as location_flat,
-            a.location
-        FROM nodes n
-        LEFT JOIN (SELECT nodeid, array_to_string(array_agg(mac), ',') AS mac FROM macs GROUP BY nodeid) m ON (n.id = m.nodeid)
-        LEFT JOIN vaddresses a ON n.address_id = a.id
-        WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0"
-);
-
-$this->Execute(
-    "CREATE VIEW vmacs AS
-        SELECT n.*, m.mac, m.id AS macid,
-            a.ccode,
-            a.city_id as location_city,
-            a.street_id as location_street, a.location,
-            a.house as location_building, a.flat as location_flat
-        FROM nodes n
-        JOIN macs m ON (n.id = m.nodeid)
-        LEFT JOIN vaddresses a ON n.address_id = a.id
-        WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0"
-);
 
 $this->Execute(
     "CREATE VIEW vnodetariffs AS
