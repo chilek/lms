@@ -61,7 +61,7 @@
 		display: none;
 	}
 
-	.lms-ui-button-clipboard[data-type] > #check-ssn-button {
+	.lms-ui-button-clipboard[data-type] + #check-ssn-button {
 		display: none;
 	}
 
@@ -253,15 +253,15 @@
 															{$customerinfo.ssn|escape}
 														</span>
 														{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.ssn}
-														{if ConfigHelper::getConfig('pesel.api_key', '', true)}
-															{button type="link" icon="check" id="check-ssn-button" tip="Check in PESEL Reservation Registry"}
-														{/if}
 													{else}
 														<span class="customer-sensible-data" data-type="ssn">
 															{preg_replace('/[^\s]/', '*', $customerinfo.ssn)}
 														</span>
 														{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_handler=true
 															data_type="ssn"}
+													{/if}
+													{if ConfigHelper::getConfig('pesel.api_key', '', true)}
+														{button type="link" icon="check" id="check-ssn-button" tip="Check in PESEL Reservation Registry"}
 													{/if}
 												</td>
 											</tr>
@@ -1089,7 +1089,7 @@
 
 		$('#check-ssn-button').click(function() {
 			var btn = $(this);
-			var ssnElem = $('[data-type="ssn"]');
+			var ssnElem = $(':not(.lms-ui-button-clipboard)[data-type="ssn"]');
 
 			ssnElem.attr({
 				"data-tooltip": null,
