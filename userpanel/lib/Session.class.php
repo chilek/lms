@@ -519,7 +519,7 @@ class Session
                 $this->LogOut();
 
                 return;
-            } else {
+            } elseif (!empty($this->id)) {
                 $this->islogged = true;
                 $this->isPasswdChangeRequired = $this->get('passwd_change_required');
             }
