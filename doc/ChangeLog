@@ -930,6 +930,10 @@ version 28-git (????-??-??):
     bank payments to deleted customers [chilan]
   - improvement: symbol '%note' support in 'payments.comment' configuration variable [chilan]
   - enhancement: allow to search customers with specified network device relation [chilan]
+  - enhancement: all document file attachments can be sent to customer as single zip archive - new configuration
+    variables 'documents.send_zip_filename' (empty default value means feature is diabled)
+    and 'documents.send_zip_protection_password' (empty default value means no password protection) specify zip
+    archive file name format and password which protects main file document attachment [chilan]
 
 version 27.0 (2021-08-20):
 
