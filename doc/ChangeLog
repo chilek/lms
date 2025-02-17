@@ -929,6 +929,7 @@ version 28-git (????-??-??):
   - improvement: 'ignore_deleted_customers' pattern property allows to disable matching of imported
     bank payments to deleted customers [chilan]
   - improvement: symbol '%note' support in 'payments.comment' configuration variable [chilan]
+  - enhancement: allow to search customers with specified network device relation [chilan]
 
 version 27.0 (2021-08-20):
 
