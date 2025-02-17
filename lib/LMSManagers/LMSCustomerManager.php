@@ -1575,6 +1575,15 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                 $searchargs[] = 'c.origin IS NULL';
                             }
                             break;
+                        case 'netdevices':
+                            if (strlen($value)) {
+                                if (empty($value)) {
+                                    $searchargs[] = 'NOT EXISTS (SELECT 1 FROM netdevices WHERE netdevices.ownerid = c.id)';
+                                } else {
+                                    $searchargs[] = 'EXISTS (SELECT 1 FROM netdevices WHERE netdevices.ownerid = c.id)';
+                                }
+                            }
+                            break;
                         default:
                             $searchargs[] = "$key ?LIKE? " . $this->db->Escape("%$value%");
                     }
