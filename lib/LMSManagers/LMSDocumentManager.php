@@ -2953,7 +2953,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                                     '%docid',
                                 ),
                                 array(
-                                    $zip_filename . '.zip',
+                                    $zip_filename,
                                     $DOCTYPES[$document['type']],
                                     $document['fullnumber'],
                                     $doc['id'],
