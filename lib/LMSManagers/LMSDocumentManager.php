@@ -2769,7 +2769,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
     public function SendDocuments($docs, $type, $params)
     {
-        global $LMS, $DOCTYPES;
+        global $LMS, $DOCTYPES, $DOCTYPE_ALIASES;
 
         extract($params);
 
@@ -2804,6 +2804,25 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
 
         $attachment_filename = ConfigHelper::getConfig('documents.attachment_filename', '%filename');
+        $send_zip_filename = ConfigHelper::getConfig('documents.send_zip_filename');
+        $send_zip_protection_password = ConfigHelper::getConfig('documents.send_zip_protection_password');
+        $document_protected_document_types = ConfigHelper::getConfig(
+            'documents.protected_document_types',
+            '',
+            true
+        );
+        if (strlen($document_protected_document_types)) {
+            $protected_document_types = preg_split('/([\s]+|[\s]*,[\s]*)/', $document_protected_document_types, -1, PREG_SPLIT_NO_EMPTY);
+            $document_protected_document_types = array();
+            $doctype_aliases = array_flip($DOCTYPE_ALIASES);
+            foreach ($protected_document_types as $protected_document_type) {
+                if (isset($doctype_aliases[$protected_document_type])) {
+                    $document_protected_document_types[$doctype_aliases[$protected_document_type]] = $protected_document_type;
+                }
+            }
+        } else {
+            $document_protected_document_types = $DOCTYPE_ALIASES;
+        }
 
         foreach ($docs as $doc) {
             $document = $this->GetDocumentFullContents($doc['id']);
@@ -2881,10 +2900,11 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
             if (empty($test)) {
                 $files = array();
+                $first = true;
                 foreach ($document['attachments'] as $attachment) {
                     $extension = '';
 
-                    if (!empty($attachment['type'])) {
+                    if ($attachment['type'] == 1) {
                         $filename = str_replace(
                             array(
                                 '%filename',
@@ -2912,19 +2932,110 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         $filename = $attachment['filename'];
                     }
 
-                    $files[] = array(
-                        'content_type' => $attachment['contenttype'],
-                        'filename' => preg_replace('/[^[:alnum:]_\.]/iu', '_', $filename) . $extension,
-                        'data' => $attachment['contents'],
-                    );
+                    if (!empty($send_zip_filename) && $first) {
+                        $first = false;
+
+                        $zip_filename = $attachment['filename'];
+
+                        $i = strpos($zip_filename, '.');
+                        if ($i !== false) {
+                            $zip_filename = mb_substr($zip_filename, 0, $i);
+                        }
+
+                        $zip_filename = preg_replace(
+                            '/[^[:alnum:]_\.\-]/iu',
+                            '_',
+                            str_replace(
+                                array(
+                                    '%filename',
+                                    '%type',
+                                    '%document',
+                                    '%docid',
+                                ),
+                                array(
+                                    $zip_filename . '.zip',
+                                    $DOCTYPES[$document['type']],
+                                    $document['fullnumber'],
+                                    $doc['id'],
+                                ),
+                                $send_zip_filename
+                            )
+                        );
+
+                        if (!class_exists('ZipArchive')) {
+                            die('Error: ZipArchive class not found!');
+                        }
+
+                        $zip_temp_filename = tempnam(sys_get_temp_dir(), 'lms-documentsend');
+
+                        $zip = new ZipArchive;
+                        $zip->open($zip_temp_filename, ZipArchive::CREATE);
+                        if (empty($zip)) {
+                            die('Error: cannot create temporary ZipArchive: \'' . $zip_temp_filename . '\'!');
+                        }
+
+                        if (!empty($send_zip_protection_password)) {
+                            $ssn_is_present = strpos($send_zip_protection_password, '%ssn') !== false;
+
+                            if (isset($document_protected_document_types[$document['type']])
+                                && (!$ssn_is_present || strlen($document['ssn']))) {
+                                $zip_password = trim(str_replace(
+                                    array(
+                                        '%ssn',
+                                        '%pin',
+                                    ),
+                                    array(
+                                        $document['ssn'],
+                                        preg_match('/^\$[0-9]+\$/', $attachment['pin'])
+                                            ? ''
+                                            : $attachment['pin'],
+                                    ),
+                                    $send_zip_protection_password
+                                ));
+                                if (!empty($zip_password)) {
+                                    $zip->setPassword($zip_password);
+                                }
+                            }
+                        }
+                    }
+
+                    if (empty($send_zip_filename)) {
+                        $files[] = array(
+                            'content_type' => $attachment['contenttype'],
+                            'filename' => preg_replace('/[^[:alnum:]_\.]/iu', '_', $filename) . $extension,
+                            'data' => $attachment['contents'],
+                        );
+                    } else {
+                        $zip_archived_filename = preg_replace('/[^[:alnum:]_\.]/iu', '_', $filename) . $extension;
+                        $zip->addFromString($zip_archived_filename, $attachment['contents']);
+                        if (!empty($zip_password) && $attachment['type'] == 1) {
+                            $zip->setEncryptionName($zip_archived_filename, ZipArchive::EM_AES_256);
+                        }
+                    }
                 }
 
                 if (!empty($extrafile)) {
+                    if (empty($send_zip_filename)) {
+                        $files[] = array(
+                            'content_type' => mime_content_type($extrafile),
+                            'filename' => basename($extrafile),
+                            'data' => file_get_contents($extrafile)
+                        );
+                    } else {
+                        $zip_archived_filename = basename($extrafile);
+                        $zip->addFromString($zip_archived_filename, file_get_contents($extrafile));
+                    }
+                }
+
+                if (!empty($send_zip_filename)) {
+                    $zip->close();
+
                     $files[] = array(
-                        'content_type' => mime_content_type($extrafile),
-                        'filename' => basename($extrafile),
-                        'data' => file_get_contents($extrafile)
+                        'content_type' => 'application/zip',
+                        'filename' => $zip_filename . '.zip',
+                        'data' => file_get_contents($zip_temp_filename),
                     );
+                    unlink($zip_temp_filename);
                 }
 
                 $headers = array(
