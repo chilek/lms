@@ -230,15 +230,23 @@ $layout['pagetitle'] = trans('Message Info: $a', $subject);
 $SESSION->add_history_entry();
 
 $summary = array();
+$lastchanges = array();
 foreach ($itemlist as $item) {
     if (!isset($summary[$item['status']])) {
         $summary[$item['status']] = 0;
     }
-        $summary[$item['status']]++;
+    $summary[$item['status']]++;
+
+    if (isset($lastchanges[$item['status']])) {
+        $lastchanges[$item['status']] = max($lastchanges[$item['status']], $item['lastdate']);
+    } else {
+        $lastchanges[$item['status']] = $item['lastdate'];
+    }
 }
 
 $SMARTY->assign('message', $message);
 $SMARTY->assign('summary', $summary);
+$SMARTY->assign('lastchanges', $lastchanges);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('start', ($page - 1) * $pagelimit);

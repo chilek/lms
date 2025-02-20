@@ -6126,3 +6126,6 @@ $_LANG['Ticket custom create time has been removed.'] = 'Własny czas utworzenia
 $_LANG['Ticket custom resolve time has been changed from $a to $b.'] = 'Własny czas rozwiązania zgłoszenia został zmieniony z $a na $b.';
 $_LANG['Ticket custom resolve time has been set to $a.'] = 'Własny czas rozwiązania zgłoszenia został ustawiony na $a';
 $_LANG['Ticket custom resolve time has been removed.'] = 'Własny czas rozwiązania zgłoszenia został usunięty';
+
+$_LANG['Last error'] = 'Ostatni błąd';
+$_LANG['Last success'] = 'Ostatnie powodzenie';

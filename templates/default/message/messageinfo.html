@@ -106,6 +106,32 @@
 				</td>
 			</tr>
 		{/if}
+		{if !empty($lastchanges[$smarty.const.MSG_SENT])}
+			<tr>
+				<td>
+					{icon name="success"}
+				</td>
+				<td class="nobr">
+					<strong>{trans("Last success")}</strong>
+				</td>
+				<td>
+					{$lastchanges[$smarty.const.MSG_SENT]|date_format:"Y-m-d H:i"}
+				</td>
+			</tr>
+		{/if}
+		{if !empty($lastchanges[$smarty.const.MSG_ERROR])}
+			<tr>
+				<td>
+					{icon name="error"}
+				</td>
+				<td class="nobr">
+					<strong>{trans("Last error")}</strong>
+				</td>
+				<td>
+					{$lastchanges[$smarty.const.MSG_ERROR]|date_format:"Y-m-d H:i"}
+				</td>
+			</tr>
+		{/if}
 		{if $message.sender}
 			<tr>
 				<td>
