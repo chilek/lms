@@ -2804,8 +2804,16 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
 
         $attachment_filename = ConfigHelper::getConfig('documents.attachment_filename', '%filename');
+
         $send_zip_filename = ConfigHelper::getConfig('documents.send_zip_filename');
         $send_zip_protection_password = ConfigHelper::getConfig('documents.send_zip_protection_password');
+        $send_zip_protection_method = ConfigHelper::getConfig('documents.send_zip_protection_method');
+
+        $em_constant_name = 'ZipArchive::EM_' . strtoupper($send_zip_protection_method);
+        if (!defined($em_constant_name)) {
+            $em_constant_name = 'ZipArchive::EM_TRAD_PKWARE';
+        }
+
         $document_protected_document_types = ConfigHelper::getConfig(
             'documents.protected_document_types',
             '',
@@ -3009,7 +3017,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         $zip_archived_filename = preg_replace('/[^[:alnum:]_\.]/iu', '_', $filename) . $extension;
                         $zip->addFromString($zip_archived_filename, $attachment['contents']);
                         if (!empty($zip_password) && $attachment['type'] == 1) {
-                            $zip->setEncryptionName($zip_archived_filename, ZipArchive::EM_AES_256);
+                            $zip->setEncryptionName($zip_archived_filename, constant($em_constant_name));
                         }
                     }
                 }
