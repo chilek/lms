@@ -936,6 +936,7 @@ version 28-git (????-??-??):
     archive file name format and password which protects main file document attachment [chilan]
   - improvement: 'documents.send_zip_protection_algorithm' controls what encrypt method is used during
     zip-archived document creation (empty default value means EM_TRAD_PKWARE) [chilan]
+  - improvement: show last error and success dates in messages info form [chilan]
 
 version 27.0 (2021-08-20):
 
