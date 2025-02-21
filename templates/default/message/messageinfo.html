@@ -119,6 +119,19 @@
 				</td>
 			</tr>
 		{/if}
+		{if !empty($lastchanges[$smarty.const.MSG_DELIVERED])}
+			<tr>
+				<td>
+					{icon name="mail"}
+				</td>
+				<td class="nobr">
+					<strong>{trans("Last delivery")}</strong>
+				</td>
+				<td>
+					{$lastchanges[$smarty.const.MSG_DELIVERED]|date_format:"Y-m-d H:i"}
+				</td>
+			</tr>
+		{/if}
 		{if !empty($lastchanges[$smarty.const.MSG_ERROR])}
 			<tr>
 				<td>
