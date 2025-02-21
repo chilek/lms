@@ -67,6 +67,9 @@ function GetItemList($id, $order = 'id,desc', $search = null, $cat = null, $stat
             case MSG_ERROR:
             case MSG_SENT:
             case MSG_DELIVERED:
+            case MSG_CANCELLED:
+            case MSG_DRAFT:
+            case MSG_BOUNCED:
                 $where[] = 'i.status = '.$status;
                 break;
         }
