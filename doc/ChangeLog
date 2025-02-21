@@ -937,6 +937,9 @@ version 28-git (????-??-??):
   - improvement: 'documents.send_zip_protection_algorithm' controls what encrypt method is used during
     zip-archived document creation (empty default value means EM_TRAD_PKWARE) [chilan]
   - improvement: show last error, success and delivery dates in messages info form [chilan]
+  - improvement: 'documents-<document-type-alias-name>' sections can override configuration setting variables
+    from 'documents' sections for specific document types (for now only 'mail_body' and 'mail_subject'
+    are handled only) [chilan]
 
 version 27.0 (2021-08-20):
 
