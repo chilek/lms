@@ -324,7 +324,9 @@
 		data-target-url="?m=customerinfo&id={$customer.id}" data-name="{$customer.customername|escape:"javascript"|escape:"html"}">
 		<TD>
 			<i class="lms-ui-icon-customer-status-{$_CSTATUSES[$customer.status].alias} fa-fw"></i>
-			{if $customer.info}&nbsp;<i class="lms-ui-icon-optional-info" title="{nl2br(htmlspecialchars($customer.info))}"></i>{/if}
+			{if $customer.info}
+				<i class="lms-ui-icon-optional-info" title="{nl2br(htmlspecialchars($customer.info))}"></i>
+			{/if}
 			<a name="{$customer.id}" class="lms-ui-hint-rollover"
 				data-url="?m=customerinfoshort&id={$customer.id}">
 				<span class="bold">{$customer.customername|escape}</span>
@@ -334,7 +336,7 @@
 				(<span class="lms-ui-counter">{$customer.karma}</span>)
 			{/if}
 			<BR>
-			<i class="lms-ui-icon-home"></i>&nbsp;{$customer.full_address}{if $customer.country != ""}, {t}{$customer.country}{/t}{/if}
+			<i class="lms-ui-icon-home fa-fw"></i>&nbsp;{$customer.full_address}{if $customer.country != ""}, {t}{$customer.country}{/t}{/if}
 		</TD>
 		<TD class="text-right nobr">
 			({if $customer.extid}{$customer.extid|escape} / {/if}{$customer.id|string_format:"%04d"})

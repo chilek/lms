@@ -76,7 +76,7 @@
 		<TD onClick="return self.location.href='?m=customerinfo&id={$customerlist[customerlist].id}';" valign="top">
 			<i class="lms-ui-icon-customer-status-{$_CSTATUSES[$customerlist[customerlist].status].alias} fa-fw"></i>
 			{if $customerlist[customerlist].info}
-				<img src="img/info1.gif" alt="" {tip text=$customerlist[customerlist].info}>
+				<i class="lms-ui-icon-optional-info" title="{nl2br(htmlspecialchars($customerlist[customerlist].info))}"></i>
 			{/if}
 			<a name="{$customerlist[customerlist].id}" class="lms-ui-hint-rollover"
 				data-url="?m=customerinfoshort&id={$customerlist[customerlist].id}">
@@ -86,8 +86,8 @@
 				<i class="lms-ui-icon-star{if $customerlist[customerlist].karma > 0} green{else} red{/if}" title="{trans('Karma')}"></i>
 				(<span class="lms-ui-counter">{$customerlist[customerlist].karma}</span>)
 			{/if}
-			<BR>
-			<IMG src="img/home.gif" alt="">&nbsp;{$customerlist[customerlist].full_address}{if $customerlist[customerlist].country != ""}, {t}{$customerlist[customerlist].country}{/t}{/if}
+			<br>
+			<i class="lms-ui-icon-home fa-fw"></i>&nbsp;{$customerlist[customerlist].full_address}{if $customerlist[customerlist].country != ""}, {t}{$customerlist[customerlist].country}{/t}{/if}
 		</TD>
 		<TD valign="top" align="right" NOWRAP>
 			({$customerlist[customerlist].id|string_format:"%04d"})
