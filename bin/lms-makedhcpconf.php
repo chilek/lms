@@ -170,7 +170,7 @@ $config_begin = ConfigHelper::getConfig(
     'dhcp.begin',
     "ddns-update-style none;\nlog-facility local6;\ndefault-lease-time $default_lease_time;\nmax-lease-time $max_lease_time;\n"
 );
-$network_begin = ConfigHelper::getConfig('dhcp.network_begin', '', true);
+$global_network_begin = ConfigHelper::getConfig('dhcp.network_begin', '', true);
 $global_range_format = ConfigHelper::getConfig('dhcp.range_format', 'range %start% %end%;');
 
 // we're looking for dhcp-mac config sections
@@ -312,6 +312,7 @@ foreach ($networks as $networkid => $net) {
     }
 
     $range_format = $global_range_format;
+    $network_begin = $global_network_begin;
 
     if (!empty($CONFIG['dhcp-' . $net['name']])) {
         if (!empty($CONFIG['dhcp-' . $net['name']]['begin'])) {
@@ -328,6 +329,9 @@ foreach ($networks as $networkid => $net) {
         }
         if (!empty($CONFIG['dhcp-' . $net['name']]['range_format'])) {
             $range_format = $CONFIG['dhcp-' . $net['name']]['range_format'];
+        }
+        if (!empty($CONFIG['dhcp-' . $net['name']]['network_begin'])) {
+            $network_begin = $CONFIG['dhcp-' . $net['name']]['network_begin'];
         }
     } else {
         $begin = '';
