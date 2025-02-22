@@ -389,6 +389,8 @@
 						{trans("cancelled")}
 					{elseif $item.status == $smarty.const.MSG_BOUNCED}
 						{trans("bounced")}
+					{elseif $item.status == $smarty.const.MSG_READY_TO_SEND}
+						{trans("ready to send")}
 					{else}
 						{trans("waiting")}
 					{/if}
