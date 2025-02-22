@@ -49,4 +49,4 @@ if (!empty($ids)) {
     $DB->CommitTrans();
 }
 
-$SESSION->redirect('?' . $SESSION->get('backto'));
+$SESSION->redirect_to_history_entry();
