@@ -37,14 +37,16 @@ if (!empty($ids)) {
     $DB->Execute(
         'UPDATE messageitems
         SET status = ?
-        WHERE messageid IN ?',
+        WHERE messageid IN ?
+            AND status = ?',
         array(
             MSG_CANCELLED,
             $ids,
+            MSG_NEW,
         )
     );
 
     $DB->CommitTrans();
 }
 
-$SESSION->redirect_to_history_entry();
+$SESSION->redirect('?' . $SESSION->get('backto'));

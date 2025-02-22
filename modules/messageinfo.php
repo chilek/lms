@@ -247,6 +247,8 @@ foreach ($itemlist as $item) {
     }
 }
 
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+
 $SMARTY->assign('message', $message);
 $SMARTY->assign('summary', $summary);
 $SMARTY->assign('lastchanges', $lastchanges);
