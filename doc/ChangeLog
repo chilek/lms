@@ -940,6 +940,8 @@ version 28-git (????-??-??):
   - improvement: 'documents-<document-type-alias-name>' sections can override configuration setting variables
     from 'documents' sections for specific document types (for now only 'mail_body' and 'mail_subject'
     are handled only) [chilan]
+  - enhancement: new message item state 'ready to send' to mark items as handled by backend scripts
+    and as sent to physical device [chilan]
 
 version 27.0 (2021-08-20):
 
