@@ -773,12 +773,17 @@ const MSG_NEW = 1,
     MSG_DRAFT = 4,
     MSG_DELIVERED = 5,
     MSG_CANCELLED = 6,
-    MSG_BOUNCED = 7;
+    MSG_BOUNCED = 7,
+    MSG_READY_TO_SEND = 8;
 
 $MESSAGESTATUSES = array(
     MSG_NEW => array(
         'class' => 'lms-ui-message-new',
         'label' => trans('waiting<!plural>'),
+    ),
+    MSG_READY_TO_SEND => array(
+        'class' => 'lms-ui-message-ready-to-send',
+        'label' => trans('ready to send<!plural>'),
     ),
     MSG_SENT => array(
         'class' => 'lms-ui-message-sent',

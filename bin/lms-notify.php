@@ -3665,7 +3665,12 @@ if (empty($types) || in_array('messages', $types)) {
                         if (!$quiet) {
                             switch ($status) {
                                 case MSG_SENT:
-                                    echo 'sent.';
+                                case MSG_READY_TO_SEND:
+                                    if ($status == MSG_SENT) {
+                                        echo 'sent.';
+                                    } else {
+                                        echo 'ready to send.';
+                                    }
 
                                     if (isset($result['id'])) {
                                         $DB->Execute(
@@ -3698,7 +3703,7 @@ if (empty($types) || in_array('messages', $types)) {
                             echo PHP_EOL;
                         }
 
-                        if ($status == MSG_SENT || $status == MSG_ERROR || !empty($errors)) {
+                        if ($status == MSG_SENT || $status == MSG_READY_TO_SEND || $status == MSG_ERROR || !empty($errors)) {
                             $DB->Execute(
                                 'UPDATE messageitems
                                 SET status = ?, lastdate = ?NOW?, error = ?, attempts = ?

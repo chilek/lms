@@ -65,6 +65,7 @@
 						<SELECT size="1" name="status">
 							<OPTION value=""{if !$listdata.status} SELECTED{/if}>{trans("— all statuses —")}</OPTION>
 							<OPTION value="{$smarty.const.MSG_NEW}"{if $listdata.status == $smarty.const.MSG_NEW} SELECTED{/if}>{trans("waiting<!plural>")}</OPTION>
+							<OPTION value="{$smarty.const.MSG_READY_TO_SEND}"{if $listdata.status == $smarty.const.MSG_READY_TO_SEND} SELECTED{/if}>{trans("ready to send<!plural>")}</OPTION>
 						{*
 							<OPTION value="{$smarty.const.MSG_DRAFT}"{if $listdata.status == $smarty.const.MSG_DRAFT} SELECTED{/if}>{trans("drafts")}</OPTION>
 						*}

@@ -3298,6 +3298,7 @@ $_LANG['added'] = 'dodano';
 $_LANG['delivered'] = 'dostarczono';
 $_LANG['cancelled'] = 'anulowano';
 $_LANG['bounced'] = 'odesłano';
+$_LANG['ready to send<!plural>'] = 'gotowe do wysłania';
 $_LANG['delivered<!plural>'] = 'dostarczone';
 $_LANG['cancelled<!plural>'] = 'anulowane';
 $_LANG['bounced<!plural>'] = 'odesłane';

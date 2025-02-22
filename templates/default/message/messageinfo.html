@@ -330,6 +330,7 @@
 				<select size="1" name="status" form="messageitems">
 					<option value=""{if !$listdata.status} selected{/if}>{trans("— all statuses —")}</option>
 					<option value="{$smarty.const.MSG_NEW}"{if $listdata.status == $smarty.const.MSG_NEW} selected{/if}>{trans("waiting<!plural>")}</option>
+					<option value="{$smarty.const.MSG_READY_TO_SEND}"{if $listdata.status == $smarty.const.MSG_READY_TO_SEND} selected{/if}>{trans("ready to send<!plural>")}</option>
 					{*
 					<option value="{$smarty.const.MSG_DRAFT}"{if $listdata.status == $smarty.const.MSG_DRAFT} selected{/if}>{trans("drafts")}</OPTION>
 					*}
