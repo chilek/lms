@@ -3487,6 +3487,13 @@ if (empty($types) || in_array('messages', $types)) {
             fclose($fh);
         }
     } elseif (in_array('mail', $channels) || in_array('sms', $channels)) {
+        $messagetypes = array();
+        if (in_array('mail', $channels)) {
+            $messagetypes[] = MSG_MAIL;
+        }
+        if (in_array('sms', $channels)) {
+            $messagetypes[] = MSG_SMS;
+        }
         $messageitems = $DB->GetAll(
             'SELECT
                 m.id AS messageid,
@@ -3512,10 +3519,7 @@ if (empty($types) || in_array('messages', $types)) {
                 m.startdate,
                 mi.id',
             array(
-                array(
-                    MSG_MAIL,
-                    MSG_SMS,
-                ),
+                $messagetypes,
                 $currtime,
                 array(
                     MSG_NEW,
@@ -3565,7 +3569,7 @@ if (empty($types) || in_array('messages', $types)) {
 
                 if (!$quiet) {
                     if ($idx >= $start_idx && $idx <= $end_idx) {
-                        if (in_array('mail', $channels)) {
+                        if ($messageitem['type'] == MSG_MAIL && in_array('mail', $channels)) {
                             printf(
                                 "[mail/messages] %s (#%d) message #%d, message item #%d: %s, status: ",
                                 $messageitem['name'],
@@ -3575,7 +3579,7 @@ if (empty($types) || in_array('messages', $types)) {
                                 $attributes['destination']
                             );
                         }
-                        if (in_array('sms', $channels)) {
+                        if ($messageitem['type'] == MSG_SMS && in_array('sms', $channels)) {
                             printf(
                                 "[sms/messages] %s (#%d) message #%d, message item #%d: %s, status: ",
                                 $messageitem['name'],
