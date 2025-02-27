@@ -2429,8 +2429,8 @@ if ($report_type == 'full') {
                     'we12_technologia_dostepowa' => '',
                     'we13_uslugi_transmisji_danych' => '',
                     'we14_mozliwosc_zwiekszenia_liczby_interfejsow' => isset($netnode['flags'][NETWORK_NODE_FLAG_INTERFACE_COUNT_INCREASE_POSSIBILITY]) ? 'Tak' : 'Nie',
-                    'we15_finansowanie_publ' => empty($netnode['invproject']) ? 'Nie' : 'Tak',
-                    'we16_numery_projektow_publ' => empty($netnode['invproject'])
+                    'we15_finansowanie_publ' => strlen($netnode['coowner']) && !empty($netnode['ownership']) ? '' : (empty($netnode['invproject']) ? 'Nie' : 'Tak'),
+                    'we16_numery_projektow_publ' => empty($netnode['invproject']) || strlen($netnode['coowner']) && !empty($netnode['ownership'])
                         ? ''
                         : implode(';', $netnode['invproject']),
                     'we17_infrastruktura_o_duzym_znaczeniu' => isset($netnode['flags'][NETWORK_NODE_FLAG_CRITICAL_INFRASTRUCTURE]) ? 'Tak' : 'Nie',
