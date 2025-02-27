@@ -1576,7 +1576,8 @@ if ($report_type == 'full') {
 
                     $servicetypes = $node['servicetypes'];
 
-                    if (!isset($servicetypes['INT']) && (isset($servicetypes['TV']) || isset($servicetypes['TEL']))) {
+                    if (!isset($servicetypes['INT']) && (isset($servicetypes['TV']) || isset($servicetypes['TEL']))
+                        && !isset($range_key_by_customerids[$node['customerid']])) {
                         continue;
                     }
 
