@@ -2450,8 +2450,11 @@ if ($report_type == 'full') {
 
                 $first = true;
                 foreach ($media as $mediaCode => $technology) {
-                    if (!isset($netnode['fullname'])) {
-                        $netnode['fullname'] = (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY') . '-' . $mediaCode;
+                    if (!isset($netnode['fullnames'])) {
+                        $netnode['fullnames'] = array();
+                    }
+                    if (!isset($netnode['fullnames'][$mediaCode])) {
+                        $netnode['fullnames'][$mediaCode] = (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY') . '-' . $mediaCode;
                     }
 
                     $data['we01_id_wezla'] = 'W-' . (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY') . '-' . $mediaCode;
@@ -2506,8 +2509,11 @@ if ($report_type == 'full') {
 
                 $first = true;
                 foreach ($media as $mediaCode => $technology) {
-                    if (!isset($netnode['fullname'])) {
-                        $netnode['fullname'] = (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY') . '-' . $mediaCode;
+                    if (!isset($netnode['fullnames'])) {
+                        $netnode['fullnames'] = array();
+                    }
+                    if (!isset($netnode['fullnames'][$mediaCode])) {
+                        $netnode['fullnames'][$mediaCode] = (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY') . '-' . $mediaCode;
                     }
 
                     $data['pe01_id_pe'] = 'P-' . (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY') . '-' . $mediaCode;
@@ -2753,12 +2759,18 @@ if ($report_type == 'full') {
                     $srcnetnode = $netnodes[$netlink['src']];
                     $dstnetnode = $netnodes[$netlink['dst']];
 
-                    if (!isset($srcnetnode['fullname']) || !isset($dstnetnode['fullname'])) {
+                    if (empty($srcnetnode['fullnames']) || empty($dstnetnode['fullnames'])) {
                         continue;
                     }
 
-                    $srcnetnodename = $srcnetnode['fullname'];
-                    $dstnetnodename = $dstnetnode['fullname'];
+                    $mediaCode = mediaCodeByTechnology($netlink['type'] != LINKTYPE_WIRELESS || $technology ? $technology : 101);
+
+                    if (empty($srcnetnode['fullnames'][$mediaCode]) || empty($dstnetnode['fullnames'][$mediaCode])) {
+                        continue;
+                    }
+
+                    $srcnetnodename = $srcnetnode['fullnames'][$mediaCode];
+                    $dstnetnodename = $dstnetnode['fullnames'][$mediaCode];
 
                     if ($netlink['type'] == LINKTYPE_WIRELESS) {
                         if (!$technology) {
