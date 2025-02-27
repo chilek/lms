@@ -1576,6 +1576,10 @@ if ($report_type == 'full') {
 
                     $servicetypes = $node['servicetypes'];
 
+                    if (!isset($servicetypes['INT']) && (isset($servicetypes['TV']) || isset($servicetypes['TEL']))) {
+                        continue;
+                    }
+
                     $range_access_props = array(
                         'fixed-internet' => isset($servicetypes['INT']) && $node['linktype'] != LINKTYPE_WIRELESS,
                         'wireless-internet' => isset($servicetypes['INT']) && $node['linktype'] == LINKTYPE_WIRELESS,
