@@ -1341,7 +1341,6 @@ if ($report_type == 'full') {
                     $nodes = $DB->GetAll(
                         "SELECT
                             na.nodeid,
-                            c.id AS customerid,
                             n.name AS nodename,
                             n.longitude,
                             n.latitude,
@@ -1389,7 +1388,7 @@ if ($report_type == 'full') {
                             AND a.datefrom < ?NOW?
                             AND (a.dateto = 0 OR a.dateto > ?NOW?)
                             AND allsuspended.total IS NULL
-                        GROUP BY na.nodeid, c.id, n.name, n.longitude, n.latitude, n.linktype, n.linktechnology, n.address_id",
+                        GROUP BY na.nodeid, n.name, n.longitude, n.latitude, n.linktype, n.linktechnology, n.address_id",
                         array(
                             $netnode['netdevices'],
                             $range['linktype'],
@@ -1411,7 +1410,6 @@ if ($report_type == 'full') {
                     $uni_nodes = $DB->GetAll(
                         "SELECT
                             na.nodeid,
-                            c.id AS customerid,
                             n.name AS nodename, "
                         . $uni_link['type'] . " AS linktype, "
                         . $uni_link['technology'] . " AS linktechnology,
@@ -1451,7 +1449,7 @@ if ($report_type == 'full') {
                             AND a.datefrom < ?NOW?
                             AND (a.dateto = 0 OR a.dateto > ?NOW?)
                             AND allsuspended.total IS NULL
-                        GROUP BY na.nodeid, c.id, n.name, n.linktype, n.linktechnology, n.address_id",
+                        GROUP BY na.nodeid, n.name, n.linktype, n.linktechnology, n.address_id",
                         array(
                             $uni_link['nodes'],
                             array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE),
@@ -1468,8 +1466,6 @@ if ($report_type == 'full') {
                     continue;
                 }
 
-                $range_key_by_customerids = array();
-
                 // check if this is range with the same location as owning network node
                 if ($range['location_city'] == $netnode['location_city']
                     && $range['location_street'] == $netnode['location_street']
@@ -1483,9 +1479,7 @@ if ($report_type == 'full') {
                     'count' => 0,
                 );
 
-                foreach ($nodes as &$node) {
-                    $node['servicetypes'] = array_flip(explode(',', $node['servicetypes']));
-
+                foreach ($nodes as $node) {
                     if (empty($node['netdevid'])) {
                         if (isset($nodecoords[$node['nodeid']])) {
                             if (!strlen($netrange['longitude'])) {
@@ -1510,28 +1504,6 @@ if ($report_type == 'full') {
                         $netrange['count']++;
                     }
                 }
-                unset($node);
-
-                uasort(
-                    $nodes,
-                    function ($node1, $node2) {
-                        if (!isset($node1['servicetypes']['INT']) && isset($node2['servicetypes']['INT'])) {
-                            if (isset($node1['servicetypes']['TV']) || isset($node1['servicetypes']['TEL'])) {
-                                return 1;
-                            } else {
-                                return 0;
-                            }
-                        } elseif (!isset($node2['servicetypes']['INT']) && isset($node1['servicetypes']['INT'])) {
-                            if (isset($node2['servicetypes']['TV']) || isset($node2['servicetypes']['TEL'])) {
-                                return -1;
-                            } else {
-                                return 0;
-                            }
-                        } else {
-                            return 0;
-                        }
-                    }
-                );
 
                 // calculate network range gps coordinates as all nodes gps coordinates mean value
                 if ($netrange['count']) {
@@ -1574,7 +1546,7 @@ if ($report_type == 'full') {
                         $range['technology'] = $node['linktechnology'];
                     }
 
-                    $servicetypes = $node['servicetypes'];
+                    $servicetypes = array_flip(explode(',', $node['servicetypes']));
 
                     $range_access_props = array(
                         'fixed-internet' => isset($servicetypes['INT']) && $node['linktype'] != LINKTYPE_WIRELESS,
@@ -1607,22 +1579,6 @@ if ($report_type == 'full') {
                             ARRAY_FILTER_USE_BOTH
                         )
                     );
-
-                    if (isset($range_key_by_customerids[$node['customerid']])) {
-                       $range_key_by_customerid = $range_key_by_customerids[$node['customerid']];
-                       if (!isset($servicetypes['INT'])) {
-                           if (isset($servicetypes['TV'])) {
-                               $netnode['ranges'][$range_key_by_customerid]['tv'] = true;
-                           }
-                           if (isset($servicetypes['TEL'])) {
-                               $netnode['ranges'][$range_key_by_customerid]['phone'] = true;
-                           }
-                           //$netnode['ranges'][$range_key_by_customerid]['count']++;
-                           continue;
-                       }
-                    } elseif (isset($servicetypes['INT'])) {
-                        $range_key_by_customerids[$node['customerid']] = $range_key;
-                    }
 
                     if (!isset($netnode['ranges'][$range_key])) {
                         $range['count'] = 0;
