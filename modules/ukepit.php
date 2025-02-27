@@ -2836,7 +2836,7 @@ if ($report_type == 'full') {
                             'lk08_liczba_wlokien_wykorzystywanych' => $netlink['type'] == LINKTYPE_FIBER
                                 ? (empty($netlink['linecount']) ? '2' : $netlink['linecount'])
                                 : '',
-                            'lk09_liczba_wlokien_udostepnienia' => '0',
+                            'lk09_liczba_wlokien_udostepnienia' => $netlink['type'] == LINKTYPE_FIBER ? '0' : '',
                             'lk10_finansowanie_publ' => empty($netlink['invproject']) ? 'Nie' : 'Tak',
                             'lk11_numery_projektow_publ' => empty($netlink['invproject']) ? '' : $netlink['invproject'],
                             'lk12_infrastruktura_o_duzym_znaczeniu' => 'Nie',
