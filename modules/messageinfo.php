@@ -120,7 +120,7 @@ if (!$message) {
     $SESSION->redirect('?m=messagelist');
 }
 
-if (!empty($message['startdate']) && isset($_GET['action']) && $_GET['action'] == 'increase-attempts') {
+if (!empty($message['startdate']) && isset($_GET['action']) && $_GET['action'] == 'increase-attempts' && ConfigHelper::checkPrivileges('messaging', 'messaging_modification')) {
     $items = $DB->GetAll(
         'SELECT
             mi.id,

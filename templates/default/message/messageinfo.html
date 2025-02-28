@@ -240,14 +240,19 @@
 		{/if}
 		<tr>
 			<td colspan="3" class="lms-ui-box-buttons">
-				{button id="delete-message" icon="delete" label="Delete"}
-				{if !empty($summary[$smarty.const.MSG_NEW]) || !empty($message.startdate) && !empty($summary[$smarty.const.MSG_ERROR])}
+				{if ConfigHelper::checkPrivileges('messaging', 'messaging_removal')}
+					{button id="delete-message" icon="delete" label="Delete"}
+				{/if}
+				{if (!empty($summary[$smarty.const.MSG_NEW]) || !empty($message.startdate) && !empty($summary[$smarty.const.MSG_ERROR]))
+					&& ConfigHelper::checkPrivileges('messaging', 'messaging_modification')}
 					{button icon="cancel" label="Cancel" href="?m=messagecancel&id={$message.id}"}
 				{/if}
-				{if !empty($itemerrorlist)}
+				{if !empty($itemerrorlist) && ConfigHelper::checkPrivileges('messaging', 'messaging_modification')}
 					{button icon="reload" label="Increase attempts" href="?m={$layout.module}&id={$message.id}&action=increase-attempts"}
 				{/if}
-				{button icon="resend" label="Resend" onclick="location.href = '?m=messageadd&messageid={$message.id}';"}
+				{if ConfigHelper::checkPrivileges('messaging', 'messaging_creation')}
+					{button icon="resend" label="Resend" onclick="location.href = '?m=messageadd&messageid={$message.id}';"}
+				{/if}
 			</td>
 		</tr>
 	</tbody>

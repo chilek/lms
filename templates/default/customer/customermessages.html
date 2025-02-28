@@ -26,10 +26,12 @@
 			{hint text=$message_hint}
 		{/tab_header_cell}
 		{tab_header_cell}
-			<a href="?m=messageadd&customerid={$customerinfo.id}">
-				{trans("New Message")}
-				{icon name="next" class="fa-fw"}
-			</a>
+			{if ConfigHelper::checkPrivileges('messaging', 'messaging_creation')}
+				<a href="?m=messageadd&customerid={$customerinfo.id}">
+					{trans("New Message")}
+					{icon name="next" class="fa-fw"}
+				</a>
+			{/if}
 			<a href="?m=messagelist&cid={$customerinfo.id}">
 				{trans("All Messages")}
 				{icon name="next" class="fa-fw"}
@@ -124,9 +126,13 @@
 						{if $item.files}
 							{button class="toggle-file-list" type="link" icon="attachment" tip="Show file list" resourceid={$item.filecontainerid}}
 						{/if}
-						{button type="link" icon="delete" class="delete-message" href="?m=messagedel&id={$item.id}&customerid={$customerinfo.id}"
-							tip="Delete"}
-						{button type="link" icon="resend" href="?m=messageadd&customerid={$customerinfo.id}&messageid={$item.id}" tip="Resend"}
+						{if ConfigHelper::checkPrivileges('messaging', 'messaging_removal')}
+							{button type="link" icon="delete" class="delete-message" href="?m=messagedel&id={$item.id}&customerid={$customerinfo.id}"
+								tip="Delete"}
+						{/if}
+						{if ConfigHelper::checkPrivileges('messaging', 'messaging_creation')}
+							{button type="link" icon="resend" href="?m=messageadd&customerid={$customerinfo.id}&messageid={$item.id}" tip="Resend"}
+						{/if}
 						<input type="checkbox" class="lms-ui-multi-check" name="marks[{$item.id}]" value="{$item.id}"
 							form="customermessages-form">
 						<div id="files-{$item.filecontainerid}" style="display: none;" class="files">
@@ -146,7 +152,9 @@
 
 		{tab_button_panel}
 			{tab_buttons}
-				{button icon="delete" id="delete-messages" label="Delete"}
+				{if ConfigHelper::checkPrivileges('messaging', 'messaging_removal')}
+					{button icon="delete" id="delete-messages" label="Delete"}
+				{/if}
 			{/tab_buttons}
 			{tab_buttons}
 				<label>

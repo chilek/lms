@@ -25,7 +25,9 @@
 			<A href="?m=messagelist&amp;o=cnt{if $listdata.direction == "asc" && $listdata.order == "cnt"},desc{/if}">{trans("Recipients:")}</A> {if $listdata.order == "cnt"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="bold nobr">
-			{button icon="add" label="New Message" href="?m=messageadd"}
+			{if ConfigHelper::checkPrivileges('messaging', 'messaging_creation')}
+				{button icon="add" label="New Message" href="?m=messageadd"}
+			{/if}
 		</TD>
 	</TR>
 	<TR>
@@ -149,9 +151,13 @@
 				{button class="toggle-file-list" type="link" icon="attachment" tip="Show file list" resourceid={$message.filecontainerid}}
 			{/if}
 			{buttons}
-				{button type="link" icon="delete" class="delete-message" tip="Delete" href="?m=messagedel&id={$message.id}"}
+				{if ConfigHelper::checkPrivileges('messaging', 'messaging_removal')}
+					{button type="link" icon="delete" class="delete-message" tip="Delete" href="?m=messagedel&id={$message.id}"}
+				{/if}
 				{button type="link" icon="info" tip="Info" onclick="location.href = '?m=messageinfo&id={$message.id}';"}
-				{button type="link" icon="resend" tip="Resend" onclick="location.href = '?m=messageadd&messageid={$message.id}';"}
+				{if ConfigHelper::checkPrivileges('messaging', 'messaging_creation')}
+					{button type="link" icon="resend" tip="Resend" onclick="location.href = '?m=messageadd&messageid={$message.id}';"}
+				{/if}
 			{/buttons}
 			<input type="checkbox" name="marks[{$message.id}]" value="{$message.id}" class="lms-ui-multi-check"{if $marks.messageid} checked{/if}>
 			<div id="files-{$message.filecontainerid}" style="display: none;" class="files">
@@ -188,7 +194,9 @@
 			{t a=$listdata.total}Total: $a{/t}
 		</TD>
 		<TD colspan="2" class="text-right nobr">
-			{button icon="delete" id="delete-messages" label="Delete" tip="Delete"}
+			{if ConfigHelper::checkPrivileges('messaging', 'messaging_removal')}
+				{button icon="delete" id="delete-messages" label="Delete" tip="Delete"}
+			{/if}
 			<label>
 				{trans("Check All")}
 				<INPUT TYPE="checkbox" NAME="allbox" class="lms-ui-multi-check-all" VALUE="1">

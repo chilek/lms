@@ -207,7 +207,7 @@
 						<option value="7">{trans("<!customersearch>Add consents")}</option>
 						<option value="8">{trans("<!customersearch>Remove consents")}</option>
 					</optgroup>
-					{if ConfigHelper::checkPrivilege("messaging")}
+					{if ConfigHelper::checkPrivileges('messaging', 'messaging_creation')}
 						<optgroup label="{trans("<!customersearch>Messages")}">
 							<option value="10">{trans("<!customersearch>New email message")}</option>
 							<option value="11">{trans("<!customersearch>New sms message")}</option>

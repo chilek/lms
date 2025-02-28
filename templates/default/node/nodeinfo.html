@@ -60,7 +60,9 @@
 	{include file="customer/customerdocuments.html" limit=10}
 {/block}
 {block name="customermessages"}
-	{include file="customer/customermessages.html" limit=10}
+	{if ConfigHelper::checkPrivileges('messaging', 'messaging_view')}
+		{include file="customer/customermessages.html" limit=10}
+	{/if}
 {/block}
 {block name="customerevents"}
 	{include file="customer/customerevents.html" limit=ConfigHelper::getConfig('timetable.customer_event_limit', ConfigHelper::getConfig('customers.event_limit', ConfigHelper::getConfig('phpui.customer_event_limit', 10)))}

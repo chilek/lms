@@ -176,6 +176,28 @@ $access_table = array(
             'messages' => Permission::MENU_ALL,
         ),
     ),
+    'messaging_view' => array(
+        'label' => trans('messaging (email, sms) - view'),
+        'allow_regexp' => '^(message(list|info|templatelist)|attachments)$',
+        'allow_menu_items' => array(
+            'messages' => array('messagelist', 'messagetemplatelist'),
+        ),
+    ),
+    'messaging_creation' => array(
+        'label' => trans('messaging (email, sms) - creation'),
+        'allow_regexp' => '^messageadd$',
+        'allow_menu_items' => array(
+            'messages' => array('messageadd'),
+        ),
+    ),
+    'messaging_modification' => array(
+        'label' => trans('messaging (email, sms) - modification'),
+        'allow_regexp' => '^messagecancel$',
+    ),
+    'messaging_removal' => array(
+        'label' => trans('messaging (email, sms) - removal'),
+        'allow_regexp' => '^(message(del|templatedel)$',
+    ),
     'helpdesk_administration' => array(
         'label' => trans('Helpdesk (RT) administration'),
         'allow_regexp' => '^(rtsearch|rtprint|(rtqueue|rtticket|rtmessage|rtnote|rtcategory)(add|del|edit|info|view|list|print))$',
