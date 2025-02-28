@@ -214,7 +214,9 @@ function multiselect(options) {
 	var ul = popup.find('.lms-ui-multiselect-popup-list');
 
 	var new_selected;
+	var new_selected_count;
 	var old_selected;
+	var old_selected_count;
 	var all_items;
 	var all_enabled_items;
 	var all_checkboxes;
@@ -423,6 +425,8 @@ function multiselect(options) {
 
 	new_selected = this.generateSelectedString();
 	old_selected = new_selected;
+	new_selected_count = old_selected_count = $('input:checked', ul).length;
+
 	if (!tiny || selection_group) {
 		checkall = $('<div class="lms-ui-multiselect-popup-checkall"></div>').appendTo(popup);
 		$('<input type="checkbox" class="checkall" value="1"><span>' + $t('check all<!items>') + '</span>').appendTo(checkall);
@@ -458,10 +462,13 @@ function multiselect(options) {
 
 		updateCheckAll();
 
-		if (new_selected != old_selected) {
+		new_selected_count = $('input:checked', ul).length;
+
+		if (new_selected != old_selected || new_selected_count != old_selected_count) {
 			old_element.trigger('change');
 		}
 		old_selected = new_selected;
+		old_selected_count = new_selected_count
 
 		e.preventDefault();
 		e.stopPropagation();
@@ -514,10 +521,12 @@ function multiselect(options) {
 			popup.removeClass('fullscreen-popup');
 			container.removeClass('open');
 			disableFullScreenPopup();
-			if (new_selected != old_selected) {
+			new_selected_count = $('input:checked', ul).length;
+			if (new_selected != old_selected || new_selected_count != old_selected_count) {
 				old_element.trigger('change');
 			}
 			old_selected = new_selected;
+			old_selected_count = new_selected_count;
 			e.stopPropagation();
 			e.preventDefault();
 		}
@@ -528,10 +537,12 @@ function multiselect(options) {
 		popup.removeClass('fullscreen-popup');
 		container.removeClass('open');
 		launcher.focus();
-		if (new_selected != old_selected) {
+		new_selected_count = $('input:checked', ul).length;
+		if (new_selected != old_selected || new_selected_count != old_selected_count) {
 			old_element.trigger('change');
 		}
 		old_selected = new_selected;
+		old_selected_count = new_selected_count;
 		disableFullScreenPopup();
 		e.preventDefault();
 		e.stopPropagation();
@@ -569,10 +580,12 @@ function multiselect(options) {
 	}
 
 	old_element.on('lms:multiselect:change', function() {
-		if (new_selected != old_selected) {
+		new_selected_count = $('input:checked', ul).length;
+		if (new_selected != old_selected || new_selected_count != old_selected_count) {
 			$(this).trigger('change');
 		}
 		old_selected = new_selected;
+		old_selected_count = new_selected_count;
 		disableFullScreenPopup();
 	});
 
