@@ -271,7 +271,7 @@ if ($type == 'linktechnologies') {
 
 $layout['pagetitle'] = trans(
     'UKE income report ($a) for period $b - $c',
-    trans(empty($filter['uke-income']['brutto']) ? 'gross' : 'net'),
+    trans(empty($filter['uke-income']['brutto']) ? 'net' : 'gross'),
     $from,
     $to
 );
