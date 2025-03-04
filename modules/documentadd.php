@@ -662,15 +662,6 @@ if (isset($_POST['document'])) {
 
                 $errors = array();
 
-                if (empty($sender_email)) {
-                    $errors[] = trans("Fatal error: sender_email unset! Can't continue, exiting.");
-                }
-
-                $smtp_auth = empty($smtp_auth) ? ConfigHelper::getConfig('mail.smtp_auth_type') : $smtp_auth;
-                if (!empty($smtp_auth) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $smtp_auth)) {
-                    $errors[] = trans("Fatal error: smtp_auth value not supported! Can't continue, exiting.");
-                }
-
                 if (empty($errors)) {
                     $result = $LMS->SendDocuments(
                         $docs,
