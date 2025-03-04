@@ -59,7 +59,7 @@ matrix:
         PHPCS_STANDARD="phpcs3.xml"
         INSTALL_PHP_ZIP_EXTENSION=true
       addons:
-        postgresql: 14.3
+        postgresql: 14
 
 services:
   - postgresql
