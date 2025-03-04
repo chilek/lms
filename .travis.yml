@@ -33,6 +33,15 @@ matrix:
         PHPCS_STANDARD="phpcs3.xml"
         INSTALL_PHP_ZIP_EXTENSION=true
 
+    - os: linux
+      language: php
+      php: 8.1
+      dist: xenial
+      env:
+        PHPCS_VER="^3"
+        PHPCS_STANDARD="phpcs3.xml"
+        INSTALL_PHP_ZIP_EXTENSION=true
+
 addons:
   postgresql: 9.4
 
