@@ -1614,17 +1614,17 @@ if ($report_type == 'full') {
                     );
 
                     if (isset($range_key_by_customerids[$node['customerid']])) {
-                       $range_key_by_customerid = $range_key_by_customerids[$node['customerid']];
-                       if (!isset($servicetypes['INT'])) {
-                           if (isset($servicetypes['TV'])) {
-                               $netnode['ranges'][$range_key_by_customerid]['tv'] = true;
-                           }
-                           if (isset($servicetypes['TEL'])) {
-                               $netnode['ranges'][$range_key_by_customerid]['phone'] = true;
-                           }
-                           //$netnode['ranges'][$range_key_by_customerid]['count']++;
-                           continue;
-                       }
+                        $range_key_by_customerid = $range_key_by_customerids[$node['customerid']];
+                        if (!isset($servicetypes['INT'])) {
+                            if (isset($servicetypes['TV'])) {
+                                $netnode['ranges'][$range_key_by_customerid]['tv'] = true;
+                            }
+                            if (isset($servicetypes['TEL'])) {
+                                $netnode['ranges'][$range_key_by_customerid]['phone'] = true;
+                            }
+                            //$netnode['ranges'][$range_key_by_customerid]['count']++;
+                            continue;
+                        }
                     } elseif (isset($servicetypes['INT'])) {
                         $range_key_by_customerids[$node['customerid']] = $range_key;
                     }
