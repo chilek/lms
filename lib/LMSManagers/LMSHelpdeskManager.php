@@ -1105,7 +1105,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $body = Utils::removeInsecureHtml($body);
         }
 
-        $headers = isset($ticket['headers']) ? mb_convert_encoding($headers, 'UTF-8', 'UTF-8') : '';
+        $headers = strlen($headers) ? mb_convert_encoding($headers, 'UTF-8', 'UTF-8') : '';
 
         $this->db->Execute(
             'INSERT INTO rtmessages (ticketid, createtime, subject, body, userid, customerid, mailfrom,
