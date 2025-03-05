@@ -2984,7 +2984,7 @@ class LMS
 
     public function SendMail($recipients, $headers, $body, $files = null, $persist = null, $smtp_options = null)
     {
-        $persist = is_null($persist) ? ConfigHelper::getConfig('mail.smtp_persist', true) : $persist;
+        $persist = is_null($persist) ? ConfigHelper::checkConfig('mail.smtp_persist', true) : $persist;
 
         $mail_backend = ConfigHelper::getConfig('mail.backend');
         $hide_sensitive_headers = ConfigHelper::checkConfig('mail.hide_sensitive_headers');
