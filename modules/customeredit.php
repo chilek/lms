@@ -188,9 +188,12 @@ if (!isset($_POST['xjxfun'])) {
                 }
 
                 Localisation::setSystemLanguage($countryCode);
-                if ($v['location_zip'] && !check_zip($v['location_zip'])) {
-                    $error['customerdata[addresses][' . $k . '][location_zip]'] = trans('Incorrect ZIP code!');
-                    $customerdata['addresses'][ $k ]['show'] = true;
+                if ($v['location_zip']) {
+                    $zip_validation_result = check_zip($v['location_zip']);
+                    if (isset($zip_validation_result) && !$zip_validation_result) {
+                        $error['customerdata[addresses][' . $k . '][location_zip]'] = trans('Incorrect ZIP code!');
+                        $customerdata['addresses'][$k]['show'] = true;
+                    }
                 }
             }
 
@@ -223,9 +226,12 @@ if (!isset($_POST['xjxfun'])) {
 
             if (isset($customerdata['ten'])) {
                 if ($customerdata['ten'] != '' && $customerdata['ten'] != $LMS->getCustomerTen($_GET['id'])) {
-                    if (!isset($customerdata['tenwarning']) && !check_ten($customerdata['ten'])) {
-                        $warning['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
-                        $tenwarning = 1;
+                    if (!isset($customerdata['tenwarning'])) {
+                        $ten_validation_result = check_ten($customerdata['ten']);
+                        if (isset($ten_validation_result) && !$ten_validation_result) {
+                            $warning['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
+                            $tenwarning = 1;
+                        }
                     }
                     $ten_existence_check = ConfigHelper::getConfig(
                         'customers.ten_existence_check',
@@ -261,9 +267,12 @@ if (!isset($_POST['xjxfun'])) {
 
             if (isset($customerdata['ssn'])) {
                 if ($customerdata['ssn'] != '' && $customerdata['ssn'] != $LMS->getCustomerSsn($_GET['id'])) {
-                    if (!isset($customerdata['ssnwarning']) && !check_ssn($customerdata['ssn'])) {
-                        $warning['ssn'] = trans('Incorrect Social Security Number! If you are sure you want to accept it, then click "Submit" again.');
-                        $ssnwarning = 1;
+                    if (!isset($customerdata['ssnwarning'])) {
+                        $ssn_validation_result = check_ssn($customerdata['ssn']);
+                        if (isset($ssn_validation_result) && !$ssn_validation_result) {
+                            $warning['ssn'] = trans('Incorrect Social Security Number! If you are sure you want to accept it, then click "Submit" again.');
+                            $ssnwarning = 1;
+                        }
                     }
                     $ssn_existence_check = ConfigHelper::getConfig(
                         'customers.ssn_existence_check',
@@ -297,14 +306,20 @@ if (!isset($_POST['xjxfun'])) {
                 }
             }
 
-            if ($customerdata['regon'] != '' && !check_regon($customerdata['regon'])) {
-                $error['regon'] = trans('Incorrect Business Registration Number!');
+            if ($customerdata['regon'] != '') {
+                $regon_validation_result = check_regon($customerdata['regon']);
+                if (isset($regon_validation_result) && !$regon_validation_result) {
+                    $error['regon'] = trans('Incorrect Business Registration Number!');
+                }
             }
 
             if (isset($customerdata['icn'])) {
-                if ($customerdata['icn'] != '' && $customerdata['ict'] == 0 && !isset($customerdata['icnwarning']) && !check_icn($customerdata['icn'])) {
-                    $warning['icn'] = trans('Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.');
-                    $icnwarning = 1;
+                if ($customerdata['icn'] != '' && $customerdata['ict'] == 0 && !isset($customerdata['icnwarning'])) {
+                    $icn_validation_result = check_icn($customerdata['icn']);
+                    if (isset($icn_validation_result) && !$icn_validation_result) {
+                        $warning['icn'] = trans('Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.');
+                        $icnwarning = 1;
+                    }
                 }
             }
 

@@ -168,9 +168,12 @@ if (isset($_POST['customeradd'])) {
         }
 
         Localisation::setSystemLanguage($countryCode);
-        if ($v['location_zip'] && !check_zip($v['location_zip'])) {
-            $error['customeradd[addresses][' . $k . '][location_zip]'] = trans('Incorrect ZIP code!');
-            $customeradd['addresses'][ $k ]['show'] = true;
+        if ($v['location_zip']) {
+            $zip_validation_result = check_zip($v['location_zip']);
+            if (isset($zip_validation_result) && !$zip_validation_result) {
+                $error['customeradd[addresses][' . $k . '][location_zip]'] = trans('Incorrect ZIP code!');
+                $customeradd['addresses'][$k]['show'] = true;
+            }
         }
     }
 
@@ -220,9 +223,12 @@ if (isset($_POST['customeradd'])) {
 
     if (isset($customeradd['ten'])) {
         if ($customeradd['ten'] != '') {
-            if (!isset($customeradd['tenwarning']) && !check_ten($customeradd['ten'])) {
-                $warning['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
-                $customeradd['tenwarning'] = 1;
+            if (!isset($customeradd['tenwarning'])) {
+                $ten_validation_result = check_ten($customeradd['ten']);
+                if (isset($ten_validation_result) && !$ten_validation_result) {
+                    $warning['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
+                    $customeradd['tenwarning'] = 1;
+                }
             }
             $ten_existence_check = ConfigHelper::getConfig(
                 'customers.ten_existence_check',
@@ -260,9 +266,12 @@ if (isset($_POST['customeradd'])) {
 
     if (isset($customeradd['ssn'])) {
         if ($customeradd['ssn'] != '') {
-            if (!isset($customeradd['ssnwarning']) && !check_ssn($customeradd['ssn'])) {
-                $warning['ssn'] = trans('Incorrect Social Security Number! If you are sure you want to accept it, then click "Submit" again.');
-                $customeradd['ssnwarning'] = 1;
+            if (!isset($customeradd['ssnwarning'])) {
+                $ssn_validation_result = check_ssn($customeradd['ssn']);
+                if (isset($ssn_validation_result) && !$ssn_validation_result) {
+                    $warning['ssn'] = trans('Incorrect Social Security Number! If you are sure you want to accept it, then click "Submit" again.');
+                    $customeradd['ssnwarning'] = 1;
+                }
             }
             $ssn_existence_check = ConfigHelper::getConfig(
                 'customers.ssn_existence_check',
@@ -299,16 +308,22 @@ if (isset($_POST['customeradd'])) {
     }
 
     if (isset($customeradd['icn'])) {
-        if ($customeradd['icn'] != '' && $customeradd['ict'] == 0 && !isset($customeradd['icnwarning']) && !check_icn($customeradd['icn'])) {
-            $warning['icn'] = trans('Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.');
-            $icnwarning = 1;
+        if ($customeradd['icn'] != '' && $customeradd['ict'] == 0 && !isset($customeradd['icnwarning'])) {
+            $icn_validation_result = check_icn($customeradd['icn']);
+            if (isset($icn_validation_result) && !$icn_validation_result) {
+                $warning['icn'] = trans('Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.');
+                $icnwarning = 1;
+            }
         } elseif ($customeradd['icn'] == '' && isset($required_properties['icn'])) {
             $error['icn'] = trans('Missed required Identity Card Number!');
         }
     }
 
-    if ($customeradd['regon'] != '' && !check_regon($customeradd['regon'])) {
-        $error['regon'] = trans('Incorrect Business Registration Number!');
+    if ($customeradd['regon'] != '') {
+        $regon_validation_result = check_regon($customeradd['regon']);
+        if (isset($regon_validation_result) && !$regon_validation_result) {
+            $error['regon'] = trans('Incorrect Business Registration Number!');
+        }
     }
 
     Localisation::resetSystemLanguage();

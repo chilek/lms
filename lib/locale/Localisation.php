@@ -234,45 +234,55 @@ class Localisation
 
     private static function setLocales()
     {
-        $locale = self::$langDefs[self::$systemLanguage]['locale'];
+        if (isset(self::$langDefs[self::$systemLanguage])) {
+            $locale = self::$langDefs[self::$systemLanguage]['locale'];
+        } else {
+            $locale = 'en_US.UTF-8';
+        }
 
         setlocale(LC_COLLATE, $locale);
         setlocale(LC_CTYPE, $locale);
         setlocale(LC_TIME, $locale);
         setlocale(LC_NUMERIC, $locale);
 
-        if (!isset(self::$langDefs[self::$systemLanguage]['number_formatter'])) {
-            $fmt = new NumberFormatter($locale, NumberFormatter::DECIMAL);
-            $fmt->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 2);
-            $fmt->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 3);
-
-            self::$langDefs[self::$systemLanguage]['number_smart_formatter'] = $fmt;
-
-            $fmt = new NumberFormatter($locale, NumberFormatter::DECIMAL);
-            $fmt->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 2);
-            $fmt->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 3);
-            $fmt->setSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL, '');
-
-            self::$langDefs[self::$systemLanguage]['editable_number_smart_formatter'] = $fmt;
-
-            $fmt = new NumberFormatter($locale, NumberFormatter::DECIMAL);
-            $fmt->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 2);
-            $fmt->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 2);
-
-            self::$langDefs[self::$systemLanguage]['number_formatter'] = $fmt;
-
-            $fmt = new NumberFormatter($locale, NumberFormatter::DECIMAL);
-            $fmt->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 2);
-            $fmt->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 2);
-            $fmt->setSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL, '');
-
-            self::$langDefs[self::$systemLanguage]['editable_number_formatter'] = $fmt;
+        if (isset(self::$langDefs[self::$systemLanguage])) {
+            $locale = self::$systemLanguage;
+        } else {
+            $locale = 'en_US';
         }
 
-        self::$numberSmartFormatter = self::$langDefs[self::$systemLanguage]['number_smart_formatter'];
-        self::$editableNumberSmartFormatter = self::$langDefs[self::$systemLanguage]['editable_number_smart_formatter'];
-        self::$numberFormatter = self::$langDefs[self::$systemLanguage]['number_formatter'];
-        self::$editableNumberFormatter = self::$langDefs[self::$systemLanguage]['editable_number_formatter'];
+        if (!isset(self::$langDefs[$locale]['number_formatter'])) {
+            $fmt = new NumberFormatter($locale, NumberFormatter::DECIMAL);
+            $fmt->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 2);
+            $fmt->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 3);
+
+            self::$langDefs[$locale]['number_smart_formatter'] = $fmt;
+
+            $fmt = new NumberFormatter($locale, NumberFormatter::DECIMAL);
+            $fmt->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 2);
+            $fmt->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 3);
+            $fmt->setSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL, '');
+
+            self::$langDefs[$locale]['editable_number_smart_formatter'] = $fmt;
+
+            $fmt = new NumberFormatter($locale, NumberFormatter::DECIMAL);
+            $fmt->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 2);
+            $fmt->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 2);
+
+            self::$langDefs[$locale]['number_formatter'] = $fmt;
+
+            $fmt = new NumberFormatter($locale, NumberFormatter::DECIMAL);
+            $fmt->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 2);
+            $fmt->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 2);
+            $fmt->setSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL, '');
+
+            self::$langDefs[$locale]['editable_number_formatter'] = $fmt;
+        }
+
+        self::$numberSmartFormatter = self::$langDefs[$locale]['number_smart_formatter'];
+        self::$editableNumberSmartFormatter = self::$langDefs[$locale]['editable_number_smart_formatter'];
+        self::$numberFormatter = self::$langDefs[$locale]['number_formatter'];
+        self::$editableNumberFormatter = self::$langDefs[$locale]['editable_number_formatter'];
     }
 
     public static function getCurrentCurrency()
@@ -438,7 +448,8 @@ class Localisation
 
     public static function setSystemLanguage($lang)
     {
-        if ($lang == self::$systemLanguage || empty($lang) || !isset(self::$langDefs[$lang])) {
+        //if ($lang == self::$systemLanguage || empty($lang) || !isset(self::$langDefs[$lang])) {
+        if ($lang == self::$systemLanguage || empty($lang)) {
             return;
         }
 
@@ -449,6 +460,9 @@ class Localisation
                 self::$langDefs[self::$systemLanguage][self::SYSTEM_FUNCTION] = array();
                 self::loadSystemLanguage();
             }
+            self::setLocales();
+        } else {
+            self::$systemLanguage = $lang;
             self::setLocales();
         }
     }
