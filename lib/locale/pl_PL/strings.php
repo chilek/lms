@@ -6136,3 +6136,5 @@ $_LANG['Ticket custom resolve time has been removed.'] = 'Własny czas rozwiąza
 $_LANG['Last error'] = 'Ostatni błąd';
 $_LANG['Last success'] = 'Ostatnie powodzenie';
 $_LANG['Last delivery'] = 'Ostatnie dostarczenie';
+
+$_LANG['Promotion schema'] = 'Schemat promocyjny';

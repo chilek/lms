@@ -200,6 +200,45 @@ $taxes = $DB->GetAllByKey('SELECT id, value, label, taxed FROM taxes', 'id');
 
 $match_content_service_type = isset($_POST['print-match-content-service-type']);
 
+if (!empty($_POST['promotion-schema'])) {
+    $promotion_schema_tariffs_by_customers = $DB->GetAllByKey(
+        'SELECT
+            d.customerid,
+            ' . $DB->GroupConcat('t.id') . ' AS tariffids
+        FROM invoicecontents ic
+        JOIN documents d ON d.id = ic.docid
+        JOIN tariffs t ON t.id = ic.tariffid
+        JOIN assignments a ON a.customerid = d.customerid
+            AND a.tariffid = t.id
+            AND a.commited = 1
+            AND a.datefrom <= ?
+            AND (a.dateto = 0 OR a.dateto >= ?)
+        WHERE (' . $wherecol . ' BETWEEN ? AND ?)
+            AND d.type IN ?
+            AND a.promotionschemaid = ?
+        GROUP BY d.customerid',
+        'customerid',
+        array(
+            $unixto,
+            $unixfrom,
+            $unixfrom,
+            $unixto,
+            array(DOC_INVOICE, DOC_CNOTE),
+            $_POST['promotion-schema'],
+        )
+    );
+    if (empty($promotion_schema_tariffs_by_customers)) {
+        $promotion_schema_tariffs_by_customers = array();
+    }
+    foreach ($promotion_schema_tariffs_by_customers as &$tariffs) {
+        $tariffs['tariffids'] = array_flip(explode(',', $tariffs['tariffids']));
+    }
+    unset($tariffs);
+    $promotion_schema_tariffs_by_customers = Utils::array_column($promotion_schema_tariffs_by_customers, 'tariffids');
+//    var_dump($promotion_schema_tariffs_by_customers);
+//    die;
+}
+
 $documents = $DB->GetAll('SELECT d.id, d.type,
             cn.name AS country, n.template,
             a.state AS rec_state, a.state_id AS rec_state_id,
@@ -268,6 +307,10 @@ if ($documents) {
                 break;
         }
 
+        if (empty($document['content'])) {
+            $document['content'] = array();
+        }
+
         if ($match_content_service_type && !empty($servicetypes)) {
             $document['content'] = array_filter(
                 $document['content'],
@@ -276,6 +319,16 @@ if ($documents) {
                 }
             );
         }
+
+        if (!empty($_POST['promotion-schema'])) {
+            $document['content'] = array_filter(
+                $document['content'],
+                function ($item) use ($promotion_schema_tariffs_by_customers, $document) {
+                    return isset($promotion_schema_tariffs_by_customers[$document['customerid']][$item['tariffid']]);
+                }
+            );
+        }
+
         if (empty($document['content'])) {
             continue;
         }

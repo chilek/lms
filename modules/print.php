@@ -1077,6 +1077,8 @@ switch ($type) {
 
         $SMARTY->assign('invprojects', $LMS->GetProjects());
 
+        $SMARTY->assign('promotions', $LMS->GetPromotions());
+
         $SMARTY->display('print/printindex.html');
 
         break;
