@@ -188,7 +188,7 @@ $_LANG['Network address:'] = 'Adres sieci:';
 $_LANG['Service type'] = 'Typ usługi';
 $_LANG['Service types'] = 'Typy usług';
 
-$_LANG['Legal personality types'] = 'Typu osobowości prawnej';
+$_LANG['Legal personality types'] = 'Typy osobowości prawnej';
 
 $_LANG['Week days'] = 'Dni tygodnia';
 
