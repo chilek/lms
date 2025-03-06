@@ -943,6 +943,8 @@ version 28-git (????-??-??):
   - enhancement: new message item state 'ready to send' to mark items as handled by backend scripts
     and as sent to physical device [chilan]
   - improvement: more fine granular user permissions/rights to messaging actions [chilan]
+  - improvement: allow to define countries in database for which customer property validation is disabled
+    by default [chilan]
 
 version 27.0 (2021-08-20):
 
