@@ -109,10 +109,13 @@
 					{$v = ""}
 				{/if}
 				var name = "{$k|replace:'"':'\"'}";
+				var elem = $('[name="' + name + '"]');
+				var form = elem.attr('form');
+				var html = '<input type="hidden" name="warning[' + name.replace(/[\[\]]/g, '-') + ']" value="1"' + (typeof(form) != 'undefined' ? ' form="' + form + '"' : '') + '>';
 				$('[name="' + name + '"]')
 					.attr('title', "{$v|replace:'"':'\"'}")
 					.addClass('lms-ui-warning')
-					.after('<input type="hidden" name="warning[' + name.replace(/[\[\]]/g, '-') + ']" value="1" />');
+					.after(html);
 			{/foreach}
 		{/if}
 	});
