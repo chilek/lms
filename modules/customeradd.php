@@ -282,7 +282,7 @@ if (isset($_POST['customeradd'])) {
                 ConfigHelper::getConfig('phpui.customer_ssn_existence_scope', 'global')
             );
             if (preg_match('/^(global|division)$/', $ssn_existence_scope)) {
-                $ssb_existence_scope = 'global';
+                $ssn_existence_scope = 'global';
             }
             $ssn_exists = $LMS->checkCustomerSsnExistence(
                 null,
