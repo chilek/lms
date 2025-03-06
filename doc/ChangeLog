@@ -945,6 +945,7 @@ version 28-git (????-??-??):
   - improvement: more fine granular user permissions/rights to messaging actions [chilan]
   - improvement: allow to define countries in database for which customer property validation is disabled
     by default [chilan]
+  - enhancement: added promotion schema filter in invoice / sale registry report [chilan]
 
 version 27.0 (2021-08-20):
 
