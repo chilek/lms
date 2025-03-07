@@ -2860,7 +2860,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $custemail = (!empty($debug_email) ? $debug_email : $doc['email']);
 
             if (!array_key_exists($document['type'], $mail_bodies)) {
-                if (ConfigHelper::variableExists('documents-' . $DOCTYPE_ALIASES[$document['type']]) . '.mail_body') {
+                if (ConfigHelper::variableExists('documents-' . $DOCTYPE_ALIASES[$document['type']] . '.mail_body')) {
                     $mail_bodies[$document['type']] = ConfigHelper::getConfig('documents-' . $DOCTYPE_ALIASES[$document['type']] . '.mail_body');
                 } else {
                     $mail_bodies[$document['type']] = null;
@@ -2868,7 +2868,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             }
 
             if (!array_key_exists($document['type'], $mail_subjects)) {
-                if (ConfigHelper::variableExists('documents-' . $DOCTYPE_ALIASES[$document['type']]) . '.mail_subject') {
+                if (ConfigHelper::variableExists('documents-' . $DOCTYPE_ALIASES[$document['type']] . '.mail_subject')) {
                     $mail_subjects[$document['type']] = ConfigHelper::getConfig('documents-' . $DOCTYPE_ALIASES[$document['type']] . '.mail_subject');
                 } else {
                     $mail_subjects[$document['type']] = null;
