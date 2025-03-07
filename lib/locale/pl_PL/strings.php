@@ -6138,3 +6138,4 @@ $_LANG['Last success'] = 'Ostatnie powodzenie';
 $_LANG['Last delivery'] = 'Ostatnie dostarczenie';
 
 $_LANG['Promotion schema'] = 'Schemat promocyjny';
+$_LANG['Promotion schemas'] = 'Schematy promocyjne';

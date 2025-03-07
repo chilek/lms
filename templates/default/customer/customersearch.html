@@ -563,6 +563,29 @@
 			</SELECT>
 		</TD>
 	</TR>
+	<tr>
+		<td class="nobr">
+			{icon name="money"}
+			<strong>{trans("Promotion schemas")}</strong>
+		</td>
+		<td class="nobr">
+			<select size="1" name="search[promotion-schema][]" multiple class="lms-ui-multiselect"
+				data-placeholder="{trans("— any —")}">
+				{foreach $promotions as $promotion}
+					<optgroup title="{$promotion.description|trunescape:512}"
+						label="{$promotion.name}" data-valid="{$promotion.valid}"
+						{if !$promotion.valid} class="blend"{/if}>
+						{foreach $promotion.schemas as $schemaid => $schema}
+							<option title="{$schema.description|trunescape:512}"
+								value="{$schemaid}"{if $variables.schemaid == $schemaid} SELECTED{/if}
+								data-valid="{$promotion.valid}"{if !$promotion.valid} class="blend"{/if}
+							>{$schema.name|trunescape:40}</option>
+						{/foreach}
+				</optgroup>
+				{/foreach}
+			</select>
+		</td>
+	</tr>
 	<TR>
 		<TD class="bold nobr">
 			{icon name="money"} {trans("Assignments")}

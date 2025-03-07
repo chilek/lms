@@ -1584,6 +1584,18 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                 }
                             }
                             break;
+                        case 'promotion-schema':
+                            $searchargs[] = 'EXISTS (
+                                    SELECT assignments.customerid
+                                    FROM assignments
+                                    WHERE assignments.customerid = c.id
+                                        AND assignments.commited = 1
+                                        AND assignments.datefrom <= ?NOW?
+                                        AND (assignments.dateto = 0 OR assignments.dateto >= ?NOW?)
+                                        AND assignments.promotionschemaid'
+                                        . (is_array($value) ? ' IN (' . implode(', ', Utils::filterIntegers($value)) . ')' : ' = ' . intval($value)) . '
+                                )';
+                            break;
                         default:
                             $searchargs[] = "$key ?LIKE? " . $this->db->Escape("%$value%");
                     }

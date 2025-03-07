@@ -307,6 +307,7 @@ if (isset($_GET['search'])) {
     $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
     $SMARTY->assign('cstateslist', $LMS->GetCountryStates());
     $SMARTY->assign('tariffs', $LMS->GetTariffs());
+    $SMARTY->assign('promotions', $LMS->GetPromotions());
     $SMARTY->assign('divisions', $LMS->GetDivisions());
     $SMARTY->assign('k', $sqlskey);
     $SMARTY->assign('sk', $statesqlskey);
