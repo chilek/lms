@@ -245,31 +245,33 @@
 									</label>
 								</TD>
 							</TR>
-							<tr>
-								<td>
-									{icon name="money"}
-								</td>
-								<td class="nobr">
-									<strong>{trans("Promotion schema")}</strong>
-								</td>
-								<td colspan="2" class="nobr">
-									<select size="1" name="promotion-schema">
-										<option value="">{trans("— any —")}</option>
-										{foreach $promotions as $promotion}
-											<optgroup title="{$promotion.description|trunescape:512}"
-												label="{$promotion.name}" data-valid="{$promotion.valid}"
-												{if !$promotion.valid} class="blend"{/if}>
-												{foreach $promotion.schemas as $schemaid => $schema}
-													<option title="{$schema.description|trunescape:512}"
-														value="{$schemaid}"{if $variables.schemaid == $schemaid} SELECTED{/if}
-														data-valid="{$promotion.valid}"{if !$promotion.valid} class="blend"{/if}
-													>{$schema.name|trunescape:40}</option>
-												{/foreach}
-										</optgroup>
-										{/foreach}
-									</select>
-								</td>
-							</tr>
+							{if !empty($promotions)}
+								<tr>
+									<td>
+										{icon name="money"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("Promotion schema")}</strong>
+									</td>
+									<td colspan="2" class="nobr">
+										<select size="1" name="promotion-schema">
+											<option value="">{trans("— any —")}</option>
+											{foreach $promotions as $promotion}
+												<optgroup title="{$promotion.description|trunescape:512}"
+													label="{$promotion.name}" data-valid="{$promotion.valid}"
+													{if !$promotion.valid} class="blend"{/if}>
+													{foreach $promotion.schemas as $schemaid => $schema}
+														<option title="{$schema.description|trunescape:512}"
+															value="{$schemaid}"{if $variables.schemaid == $schemaid} SELECTED{/if}
+															data-valid="{$promotion.valid}"{if !$promotion.valid} class="blend"{/if}
+														>{$schema.name|trunescape:40}</option>
+													{/foreach}
+											</optgroup>
+											{/foreach}
+										</select>
+									</td>
+								</tr>
+							{/if}
 							<TR>
 								<TD>
 									<INPUT type="checkbox" name="customernodes" value="1" id="customernodes">
