@@ -417,38 +417,40 @@ if (isset($_POST['document'])) {
         }
     }
 
-    $promotionattachments = array();
-    if (!empty($document['assignment']['promotion-attachments'])) {
-        $promotionattachments = array_merge($promotionattachments, $document['assignment']['promotion-attachments']);
-    }
-    if (!empty($document['assignment']['promotion-schema-attachments'])) {
-        $promotionattachments = array_merge($promotionattachments, $document['assignment']['promotion-schema-attachments']);
-    }
-    $promotionattachments = Utils::filterIntegers($promotionattachments);
-    if (!empty($promotionattachments)) {
-        $promotionattachments = $DB->GetAll(
-            'SELECT *
-            FROM promotionattachments
-            WHERE id IN ?',
-            array(
-                $promotionattachments,
-            )
-        );
+    if (!empty($engine['promotion-schema-selection'])) {
+        $promotionattachments = array();
+        if (!empty($document['assignment']['promotion-attachments'])) {
+            $promotionattachments = array_merge($promotionattachments, $document['assignment']['promotion-attachments']);
+        }
+        if (!empty($document['assignment']['promotion-schema-attachments'])) {
+            $promotionattachments = array_merge($promotionattachments, $document['assignment']['promotion-schema-attachments']);
+        }
+        $promotionattachments = Utils::filterIntegers($promotionattachments);
         if (!empty($promotionattachments)) {
-            foreach ($promotionattachments as $attachment) {
-                $filename = STORAGE_DIR . DIRECTORY_SEPARATOR
-                    . (empty($attachment['promotionschemaid']) ? 'promotions' : 'promotionschemas')
-                    . DIRECTORY_SEPARATOR . $attachment[empty($attachment['promotionschemaid']) ? 'promotionid' : 'promotionschemaid']
-                    . DIRECTORY_SEPARATOR . $attachment['filename'];
-                if (is_readable($filename)) {
-                    $files[] = array(
-                        'tmpname' => null,
-                        'filename' => basename($filename),
-                        'name' => $filename,
-                        'type' => $attachment['contenttype'],
-                        'md5sum' => md5_file($filename),
-                        'attachmenttype' => 0,
-                    );
+            $promotionattachments = $DB->GetAll(
+                'SELECT *
+                FROM promotionattachments
+                WHERE id IN ?',
+                array(
+                    $promotionattachments,
+                )
+            );
+            if (!empty($promotionattachments)) {
+                foreach ($promotionattachments as $attachment) {
+                    $filename = STORAGE_DIR . DIRECTORY_SEPARATOR
+                        . (empty($attachment['promotionschemaid']) ? 'promotions' : 'promotionschemas')
+                        . DIRECTORY_SEPARATOR . $attachment[empty($attachment['promotionschemaid']) ? 'promotionid' : 'promotionschemaid']
+                        . DIRECTORY_SEPARATOR . $attachment['filename'];
+                    if (is_readable($filename)) {
+                        $files[] = array(
+                            'tmpname' => null,
+                            'filename' => basename($filename),
+                            'name' => $filename,
+                            'type' => $attachment['contenttype'],
+                            'md5sum' => md5_file($filename),
+                            'attachmenttype' => 0,
+                        );
+                    }
                 }
             }
         }

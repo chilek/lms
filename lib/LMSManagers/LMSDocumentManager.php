@@ -2511,7 +2511,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         );
     }
 
-    public function GetDocumentFullContents($id)
+    public function GetDocumentFullContents($id, $with_reference_document = false)
     {
         global $DOCTYPES, $DOCTYPE_ALIASES;
 
@@ -2521,11 +2521,18 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $document = $this->db->GetRow(
                 'SELECT d.id, d.number, d.cdate, d.type, d.customerid,
                     d.fullnumber, n.template, d.ssn, d.name, d.reference,
+                    d2.number AS ref_number,
+                    d2.cdate AS ref_date,
+                    d2.fullnumber AS ref_fullnumber,
+                    d2.type AS ref_type,
+                    n2.template AS ref_template,
                     dc.title AS content_title
                 FROM documents d
                 JOIN documentcontents dc ON dc.docid = d.id
                 LEFT JOIN numberplans n ON (d.numberplanid = n.id)
                 JOIN docrights r ON (r.doctype = d.type)
+                LEFT JOIN documents d2 ON d2.id = d.reference
+                LEFT JOIN numberplans n2 ON n2.id = d2.numberplanid
                 WHERE d.id = ? AND r.userid = ? AND (r.rights & ?) > 0',
                 array(
                     $id,
@@ -2537,11 +2544,18 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $document = $this->db->GetRow(
                 'SELECT d.id, d.number, d.cdate, d.type, d.customerid,
                     d.fullnumber, n.template, d.ssn, d.name, d.reference,
+                    d2.number AS ref_number,
+                    d2.cdate AS ref_date,
+                    d2.fullnumber AS ref_fullnumber,
+                    d2.type AS ref_type,
+                    n2.template AS ref_template,
                     dc.title AS content_title
                 FROM documents d
                 JOIN documentcontents dc ON dc.docid = d.id
                 LEFT JOIN numberplans n ON (d.numberplanid = n.id)
                 JOIN docrights r ON (r.doctype = d.type)
+                LEFT JOIN documents d2 ON d2.id = d.reference
+                LEFT JOIN numberplans n2 ON n2.id = d2.numberplanid
                 WHERE d.id = ?',
                 array($id)
             );
@@ -2555,6 +2569,15 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 'customerid' => $document['customerid'],
             ));
 
+            if (!empty($document['reference'])) {
+                $document['ref_fullnumber'] = docnumber(array(
+                    'number' => $document['ref_number'],
+                    'template' => $document['ref_template'],
+                    'cdate' => $document['ref_cdate'],
+                    'customerid' => $document['customerid'],
+                ));
+            }
+
             $document['title'] = trans(
                 '$a no. $b issued on $c',
                 $DOCTYPES[$document['type']],
@@ -2562,15 +2585,40 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 date('Y/m/d', $document['cdate'])
             );
 
+            $args = array($id);
+            if ($with_reference_document && !empty($document['reference'])) {
+                $args[] = $document['reference'];
+            }
+
             $document['attachments'] = $this->db->GetAllByKey(
-                'SELECT a.*, a.type AS main, c.pin
-                FROM documentattachments a
-                JOIN documents d ON d.id = a.docid
-                JOIN customers c ON c.id = d.customerid
-                WHERE a.docid = ?
-                ORDER BY a.type DESC',
+                '(
+                    SELECT
+                        a.*,
+                        a.type AS main,
+                        0 AS reference_document,
+                        c.pin
+                    FROM documentattachments a
+                    JOIN documents d ON d.id = a.docid
+                    JOIN customers c ON c.id = d.customerid
+                    WHERE a.docid = ?
+                    ORDER BY a.type DESC
+                )'
+                . (count($args) > 1
+                    ? ' UNION (
+                        SELECT
+                            a.*,
+                            a.type AS main,
+                            1 AS reference_document,
+                            c.pin
+                        FROM documentattachments a
+                        JOIN documents d ON d.id = a.docid
+                        JOIN customers c ON c.id = d.customerid
+                        WHERE a.docid = ?
+                        ORDER BY a.type DESC
+                    ) ORDER BY reference_document, type DESC'
+                    : ''),
                 'id',
-                array($id)
+                $args
             );
 
             $document_password = ConfigHelper::getConfig('documents.protection_password', ConfigHelper::getConfig('phpui.document_password', '', true), true);
@@ -2761,6 +2809,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         $attachment_filename = ConfigHelper::getConfig('documents.attachment_filename', '%filename');
 
+        $aggregate_reference_document_email = ConfigHelper::checkConfig('documents.aggregate_reference_document_email');
+
         $send_zip_filename = ConfigHelper::getConfig('documents.send_zip_filename');
         $send_zip_protection_password = ConfigHelper::getConfig('documents.send_zip_protection_password');
         $send_zip_protection_method = ConfigHelper::getConfig('documents.send_zip_protection_method');
@@ -2852,7 +2902,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $mail_subjects = array();
 
         foreach ($docs as $doc) {
-            $document = $this->GetDocumentFullContents($doc['id']);
+            $document = $this->GetDocumentFullContents($doc['id'], !empty($reference_document) && $aggregate_reference_document_email);
             if (empty($document)) {
                 continue;
             }
@@ -2952,10 +3002,28 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     $document['attachments'] = array();
                 }
 
+                $all_attachment_filenames = array();
+                $filename_duplicates = false;
+
                 foreach ($document['attachments'] as $attachment) {
                     $extension = '';
 
                     if ($attachment['type'] == 1) {
+                        if (empty($attachment['reference_document'])) {
+                            $replacements = array(
+                                $attachment['filename'],
+                                $DOCTYPES[$document['type']],
+                                $document['fullnumber'],
+                                $doc['id'],
+                            );
+                        } else {
+                            $replacements = array(
+                                $attachment['filename'],
+                                $DOCTYPES[$document['ref_type']],
+                                $document['ref_fullnumber'],
+                                $document['reference'],
+                            );
+                        }
                         $filename = str_replace(
                             array(
                                 '%filename',
@@ -2963,12 +3031,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                                 '%document',
                                 '%docid'
                             ),
-                            array(
-                                $attachment['filename'],
-                                $DOCTYPES[$document['type']],
-                                $document['fullnumber'],
-                                $doc['id'],
-                            ),
+                            $replacements,
                             $attachment_filename
                         );
 
@@ -3052,13 +3115,28 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     }
 
                     if (empty($send_zip_filename)) {
+                        $output_filename = preg_replace('/[^[:alnum:]_\.]/iu', '_', $filename) . $extension;
+                        if (isset($all_attachment_filenames[$output_filename])) {
+                            $filename_duplicates = true;
+                            break;
+                        }
+
+                        $all_attachment_filenames[$output_filename] = true;
+
                         $files[] = array(
                             'content_type' => $attachment['contenttype'],
-                            'filename' => preg_replace('/[^[:alnum:]_\.]/iu', '_', $filename) . $extension,
+                            'filename' => $output_filename,
                             'data' => $attachment['contents'],
                         );
                     } else {
                         $zip_archived_filename = preg_replace('/[^[:alnum:]_\.]/iu', '_', $filename) . $extension;
+                        if (isset($all_attachment_filenames[$zip_archived_filename])) {
+                            $filename_duplicates = true;
+                            break;
+                        }
+
+                        $all_attachment_filenames[$zip_archived_filename] = true;
+
                         $zip->addFromString($zip_archived_filename, $attachment['contents']);
                         if (!empty($zip_password) && $attachment['type'] == 1) {
                             $zip->setEncryptionName($zip_archived_filename, constant($em_constant_name));
@@ -3202,7 +3280,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 }
             }
 
-            if (!empty($reference_document) && !empty($document['reference'])) {
+            if (!empty($reference_document) && !empty($document['reference']) && (!$aggregate_reference_document_email || $filename_duplicates)) {
                 $this->SendDocuments(
                     array(
                         array(
