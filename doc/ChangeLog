@@ -950,6 +950,7 @@ version 28-git (????-??-??):
   - improvement: show group labels in lms-ui-multiselect and lms-ui-advanced-select ui controls - corresponding
     data-show-group-labels attribute and show-group-labels class control if group labels are visible [chilan]
   - improvement: %customer_name symbol support in 'documents*.mail_body' configuration variables [chilan]
+  - enhancement: allow to optionally send reference document via email to customer [chilan]
 
 version 27.0 (2021-08-20):
 
