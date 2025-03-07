@@ -157,7 +157,8 @@ function init_multiselects(selector) {
 				separator: $(this).attr('data-separator'),
 				maxVisible: lmsSettings.multiSelectMaxVisible,
 				substMessage: '— $a options selected —',
-				tooltipMessage: $(this).attr('data-tooltip-message')
+				tooltipMessage: $(this).attr('data-tooltip-message'),
+				showGroupLabels: $(this).attr('data-show-group-labels')
 			});
 		});
 	}
@@ -331,7 +332,8 @@ function initAdvancedSelects(selector) {
 			display_selected_options: false,
 			search_contains: true,
 			disable_search_threshold: 5,
-			inherit_select_classes: true
+			inherit_select_classes: true,
+			include_group_label_in_selected: $(this).is('.show-group-labels')
 		}, $(this).attr('data-options') ? JSON.parse($(this).attr('data-options')) : {}));
 		$(this).chosen().change(function (e, data) {
 			if (typeof ($(this).attr('required')) !== 'undefined') {

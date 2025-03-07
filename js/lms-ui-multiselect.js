@@ -148,6 +148,7 @@ function multiselect(options) {
 	var substMessage = typeof options.substMessage !== 'undefined' ? options.substMessage
 		: '— $a options selected —';
 	var tooltipMessage = typeof options.tooltipMessage !== 'undefined' ? options.tooltipMessage : '';
+	var showGroupLabels = typeof options.showGroupLabels !== 'undefined' || options.showGroupLabels == 'true';
 
 	var old_element = $('#' + elemid);
 	var form = (old_element.attr('form') ? $('#' + old_element.attr('form')) : old_element.closest('form'));
@@ -227,7 +228,17 @@ function multiselect(options) {
 		var selected = [];
 		old_element.find('option').removeAttr('selected').prop('selected', false);
 		$('input:checked', ul).each(function() {
-			selected.push($(this).next().html());
+			if (showGroupLabels) {
+				var li = $(this).closest('li');
+				if (li.is('.in-optgroup')) {
+					var groupName = li.prevAll('.optgroup').first().html();
+					selected.push('<strong>' + groupName + '</strong> / ' + $(this).next().html());
+				} else {
+					selected.push($(this).next().html());
+				}
+			} else {
+				selected.push($(this).next().html());
+			}
 			old_element.find('option[value="' + $(this).val() + '"]').attr('selected', 'selected').prop('selected', true);
 		});
 		var selectedCount = selected.length;

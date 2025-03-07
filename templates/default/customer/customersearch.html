@@ -571,7 +571,8 @@
 			</td>
 			<td class="nobr">
 				<select size="1" name="search[promotion-schema][]" multiple class="lms-ui-multiselect"
-					data-placeholder="{trans("— any —")}">
+					data-placeholder="{trans("— any —")}"
+					data-show-group-labels="true">
 					{foreach $promotions as $promotion}
 						<optgroup title="{$promotion.description|trunescape:512}"
 							label="{$promotion.name}" data-valid="{$promotion.valid}"
