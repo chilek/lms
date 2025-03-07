@@ -947,6 +947,8 @@ version 28-git (????-??-??):
     by default [chilan]
   - enhancement: added promotion schema filter in invoice / sale registry report [chilan]
   - enhancement: promotion schema filter in customer search form [chilan]
+  - improvement: show group labels in lms-ui-multiselect and lms-ui-advanced-select ui controls - corresponding
+    data-show-group-labels attribute and show-group-labels class control if group labels are visible [chilan]
 
 version 27.0 (2021-08-20):
 
