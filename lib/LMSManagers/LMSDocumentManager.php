@@ -2879,6 +2879,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     '%type',
                     '%title',
                     '%today',
+                    '%customer_name',
                     '\n',
                 ),
                 array(
@@ -2889,6 +2890,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     $DOCTYPES[$document['type']],
                     $document['content_title'],
                     $year . '-' . $month . '-' . $day,
+                    $document['name'],
                     "\n",
                 ),
                 $body
