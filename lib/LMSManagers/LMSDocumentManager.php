@@ -3249,6 +3249,15 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     @unlink(DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2) . DIRECTORY_SEPARATOR . $md5sum);
                 }
             }
+
+            if ($this->syslog) {
+                $args = array(
+                    SYSLOG::RES_DOCATTACH => $attachment['id'],
+                    SYSLOG::RES_DOC => $docid,
+                    'md5sum' => $attachment['md5sum'],
+                );
+                $this->syslog->AddMessage(SYSLOG::RES_DOCATTACH, SYSLOG::OPER_DELETE, $args);
+            }
         }
     }
 
@@ -3274,15 +3283,6 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 'type' => $document['type'],
             );
             $this->syslog->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
-
-            foreach ($attachments as $attachment) {
-                $args = array(
-                    SYSLOG::RES_DOCATTACH => $attachment['id'],
-                    SYSLOG::RES_DOC => $docid,
-                    'md5sum' => $attachment['md5sum'],
-                );
-                $this->syslog->AddMessage(SYSLOG::RES_DOCATTACH, SYSLOG::OPER_DELETE, $args);
-            }
         }
 
         return true;
