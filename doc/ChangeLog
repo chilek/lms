@@ -951,6 +951,9 @@ version 28-git (????-??-??):
     data-show-group-labels attribute and show-group-labels class control if group labels are visible [chilan]
   - improvement: %customer_name symbol support in 'documents*.mail_body' configuration variables [chilan]
   - enhancement: allow to optionally send reference document via email to customer [chilan]
+  - improvement: optional document and reference document attachment aggregation attempts are possible
+    depending of 'documents.aggregate_reference_document_email' configuration variable stable with 'false'
+    as its default value [chilan]
 
 version 27.0 (2021-08-20):
 
