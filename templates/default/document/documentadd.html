@@ -361,6 +361,14 @@
 								<input type="checkbox" name="document[sendmail]" value="1"{if !empty($document.sendmail)} checked{/if}>
 								{trans("send to customer email")}
 							</label>
+							<label>
+								<input type="checkbox" name="document[sendmail-with-reference-document]" value="1"
+									{if !empty($document['sendmail-with-reference-document'])} checked{/if}
+									{if empty($document.sendmail)} disabled{/if}>
+								<span class="lms-ui-label">
+									{trans("with reference document")}
+								</span>
+							</label>
 						</div>
 					</div>
 				</div>
@@ -431,6 +439,10 @@
 
 		$('[name="document[type]"]').change(function() {
 			$('#document-file-row').toggle(parseInt($(this).val()) != 0);
+		});
+
+		$('[name="document[sendmail]"]').change(function() {
+			$('[name="document[sendmail-with-reference-document]"]').prop('disabled', !$(this).prop('checked'));
 		});
 
 		var documentConfirmDateRequired = parseInt({$document_confirm_date_required});

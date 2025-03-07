@@ -663,11 +663,14 @@ if (isset($_POST['document'])) {
                 $errors = array();
 
                 if (empty($errors)) {
+                    $reference_document = !empty($document['sendmail-with-reference-document']);
+
                     $result = $LMS->SendDocuments(
                         $docs,
                         'userpanel',
                         compact(
-                            'currtime'
+                            'currtime',
+                            'reference_document'
                         )
                     );
 

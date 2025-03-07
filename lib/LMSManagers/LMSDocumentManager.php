@@ -2536,7 +2536,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         } else {
             $document = $this->db->GetRow(
                 'SELECT d.id, d.number, d.cdate, d.type, d.customerid,
-                    d.fullnumber, n.template, d.ssn, d.name,
+                    d.fullnumber, n.template, d.ssn, d.name, d.reference,
                     dc.title AS content_title
                 FROM documents d
                 JOIN documentcontents dc ON dc.docid = d.id
@@ -2611,8 +2611,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     $pdf = true;
                 } else {
                     $contents = file_get_contents($filename);
+                    $document_type = ConfigHelper::getConfig('documents.type', ConfigHelper::getConfig('phpui.document_type'));
                     if (preg_match('/html/i', $attachment['contenttype'])
-                        && strtolower(ConfigHelper::getConfig('documents.type', ConfigHelper::getConfig('phpui.document_type'))) == 'pdf') {
+                        && !empty($document_type)
+                        && strtolower($document_type) == 'pdf') {
                         $margins = explode(",", ConfigHelper::getConfig('documents.margins', ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5')));
                         if (ConfigHelper::checkConfig('documents.cache', ConfigHelper::checkConfig('phpui.cache_documents'))) {
                             $contents = Utils::html2pdf(array(
@@ -2763,9 +2765,15 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $send_zip_protection_password = ConfigHelper::getConfig('documents.send_zip_protection_password');
         $send_zip_protection_method = ConfigHelper::getConfig('documents.send_zip_protection_method');
 
-        $em_constant_name = 'ZipArchive::EM_' . strtoupper($send_zip_protection_method);
-        if (!defined($em_constant_name)) {
-            $em_constant_name = 'ZipArchive::EM_TRAD_PKWARE';
+        if (!empty($send_zip_protection_password)) {
+            if (!empty($send_zip_protection_method)) {
+                $em_constant_name = 'ZipArchive::EM_' . strtoupper($send_zip_protection_method);
+                if (!defined($em_constant_name)) {
+                    $em_constant_name = 'ZipArchive::EM_TRAD_PKWARE';
+                }
+            } else {
+                $em_constant_name = 'ZipArchive::EM_TRAD_PKWARE';
+            }
         }
 
         $document_protected_document_types = ConfigHelper::getConfig(
@@ -2939,6 +2947,11 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             if (empty($test)) {
                 $files = array();
                 $first = true;
+
+                if (empty($document['attachments'])) {
+                    $document['attachments'] = array();
+                }
+
                 foreach ($document['attachments'] as $attachment) {
                     $extension = '';
 
@@ -3005,6 +3018,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         }
 
                         $zip_temp_filename = tempnam(sys_get_temp_dir(), 'lms-documentsend');
+                        @unlink($zip_temp_filename);
 
                         $zip = new ZipArchive;
                         $zip->open($zip_temp_filename, ZipArchive::CREATE);
@@ -3186,6 +3200,21 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 							WHERE id = ?', array($status, $res, $msgitems[$doc['customerid']][$email]));
                     }
                 }
+            }
+
+            if (!empty($reference_document) && !empty($document['reference'])) {
+                $this->SendDocuments(
+                    array(
+                        array(
+                            'id' => $document['reference'],
+                            'email' => $doc['email'],
+                            'name' => $doc['name'],
+                            'customerid' => $doc['customerid'],
+                        ),
+                    ),
+                    $type,
+                    compact('currtime')
+                );
             }
         }
 
