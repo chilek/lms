@@ -33,6 +33,7 @@ $script_parameters = array(
     'delete'  => 'd',
     'buildings'  => 'b',
     'building-base-provider:' => null,
+    'building-base-archived-filename-pattern:' => null,
     'allowed-building-operations:' => null,
     'only-unique-city-matches'  => 'o',
     'explicit-node-locations'  => 'e',
@@ -47,6 +48,9 @@ $script_help = <<<EOF
 -b, --buildings                    analyze building base and load it into database
     --building-base-provider=<gugik|sidusis>
                                    specify which building base provider should be used
+    --building-base-archived-filename-pattern=<...>
+                                   regular expression to which files in download directory
+                                   are matched as building database
     --allowed-building-operations=add,update,delete
                                    specify which building base operations are allowed
                                    when we load new building base
@@ -1285,15 +1289,19 @@ if (isset($options['update'])) {
 } // close if ( isset($option['update']) )
 
 //==============================================================================
-// Read address point csv file
+// Read address point PRG database files
 //
 // -b, --buildings
 //==============================================================================
 
 if (isset($options['buildings'])) {
+    if (isset($options['building-base-archived-filename-pattern'])) {
+        $building_base_provider['archived_filename_pattern'] = $options['building-base-archived-filename-pattern'];
+    }
+
     $files = getdir($teryt_dir);
     if (empty($files)) {
-        fprintf($stderr, "Error: couldn't find files matching to '%s' regular expression!" . PHP_EOL, $building_base_provider['archived_filename_pattern']);
+        fprintf($stderr, "Error: couldn't find any files in '%s' directory!" . PHP_EOL, $teryt_dir);
         die;
     }
     $files = array_filter($files, function ($file) use ($building_base_provider) {
@@ -1302,7 +1310,7 @@ if (isset($options['buildings'])) {
     $file_count = count($files);
     if ($building_base_provider_type == 'gugik' && $file_count < 4
         || $building_base_provider_type == 'sidusis' && $file_count < 16) {
-        fprintf($stderr, "Error: couldn't find some files matching to '%s' regular expression!" . PHP_EOL, $building_base_provider['archived_filename_pattern']);
+        fprintf($stderr, "Error: couldn't find any files matching to '%s' regular expression!" . PHP_EOL, $building_base_provider['archived_filename_pattern']);
         die;
     }
 
