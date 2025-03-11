@@ -1504,6 +1504,7 @@ $_LANG['Last month stats for all networks'] = 'Statystyki z ostatniego miesiąca
 $_LANG['last online:'] = 'ostatnio włączony:';
 $_LANG['last online'] = 'ostatnio włączony';
 $_LANG['Last online:'] = 'Ostatnio włączony:';
+$_LANG['Last online'] = 'Ostatnio włączony';
 $_LANG['Last online: $a'] = 'Ostatnio włączony: $a';
 $_LANG['Last inspection:'] = 'Czas ostatniego przeglądu:';
 $_LANG['Last inspection'] = 'Czas ostatniego przeglądu';
