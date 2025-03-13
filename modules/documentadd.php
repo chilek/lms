@@ -729,6 +729,35 @@ if (isset($_POST['document'])) {
         if (isset($autonumber)) {
             $document['number'] = '';
         }
+
+        $supported_customer_consents = $CCONSENTS;
+        if (!empty($engine['supported-customer-consents'])) {
+            $engine['supported-customer-consents'] = array_flip($engine['supported-customer-consents']);
+            $supported_customer_consents = array_filter(
+                $supported_customer_consents,
+                function ($consent, $consent_id) use ($engine) {
+                    if (is_array($consent)) {
+                        return isset($engine['supported-customer-consents'][$consent_id]);
+                    } else {
+                        return isset($engine['supported-customer-consents'][$consent]);
+                    }
+                },
+                ARRAY_FILTER_USE_BOTH
+            );
+
+            $document['default-consents'] = array_filter(
+                $document['default-consents'],
+                function ($consent, $consent_id) use ($engine) {
+                    if (is_array($consent)) {
+                        return isset($engine['supported-customer-consents'][$consent_id]);
+                    } else {
+                        return isset($engine['supported-customer-consents'][$consent]);
+                    }
+                },
+                ARRAY_FILTER_USE_BOTH
+            );
+        }
+        $SMARTY->assign('supported_customer_consents', $supported_customer_consents);
     }
 } else {
     $document['customerid'] = isset($_GET['cid']) ? intval($_GET['cid']) : '';

@@ -62,9 +62,16 @@
 
 	function DocTemplateChanged() {
 		reset_login_timeout();
-		xajax_DocTemplateChanged($('[name="document[type]"]').val(),
+		var consents = {};
+		$("[data-consent-type]").each(function() {
+			consents[$(this).attr('data-consent-type')] = $(this).prop('checked');
+		});
+		xajax_DocTemplateChanged(
+			$('[name="document[type]"]').val(),
 			$('[name="document[templ]"]').val(),
-            $('[name="customerid"]').val());
+			$('[name="customerid"]').val(),
+			consents
+		);
 	}
 
 	function DocTypeChanged() {

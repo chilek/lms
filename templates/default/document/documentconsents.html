@@ -31,6 +31,11 @@
 <script>
 
 	$(function() {
+		function updateCheckAll() {
+			var allCheckboxes = $("#document-consent-panel .lms-ui-multi-check:checkbox");
+			$("#document-consent-panel .lms-ui-multi-check-all").prop("checked", allCheckboxes.length == allCheckboxes.filter(":checked").length);
+		}
+
 		$("#document-consent-panel").on("click", "#reset-consents", function() {
 			$("#customer-consent-table").find("[data-default-checked]").each(function() {
 				if ($(this).is(":checkbox")) {
@@ -39,7 +44,11 @@
 					$(this).prop("checked", $(this).attr("data-default-checked") == $(this).val());
 				}
 			});
+
+			updateCheckAll();
 		});
+
+		updateCheckAll();
 	});
 
 	(function() {

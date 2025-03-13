@@ -314,11 +314,64 @@ function GetReferenceDocuments($doctemplate, $customerid, $JSResponse)
     $JSResponse->script('$(\'[name="document[reference]"]\').prop("required", $(\'[name="document[templ]"] option:selected\').is("[data-refdoc-required]"));');
 }
 
-function GetCustomerConsents($customerid, $JSResponse)
+function GetCustomerConsents($template, $customerid, $JSResponse, $consents = null)
 {
-    global $LMS, $SMARTY;
+    global $documents_dirs, $LMS, $SMARTY, $CCONSENTS;
 
-    $document['consents'] = $document['default-consents'] = $LMS->getCustomerConsents($customerid);
+    $result = '';
+
+    foreach ($documents_dirs as $doc) {
+        if (is_readable($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template . DIRECTORY_SEPARATOR . 'info.php')) {
+            $doc_dir = $doc;
+            $template_dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template;
+            break;
+        }
+    }
+
+    // read template information
+    if (is_readable($file = $template_dir . DIRECTORY_SEPARATOR . 'info.php')) {
+        include($file);
+        if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
+            $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
+        }
+    }
+
+    $supported_customer_consents = $CCONSENTS;
+    if (!empty($engine['supported-customer-consents'])) {
+        $engine['supported-customer-consents'] = array_flip($engine['supported-customer-consents']);
+        $supported_customer_consents = array_filter(
+            $supported_customer_consents,
+            function ($consent, $consent_id) use ($engine) {
+                if (is_array($consent)) {
+                    return isset($engine['supported-customer-consents'][$consent_id]);
+                } else {
+                    return isset($engine['supported-customer-consents'][$consent]);
+                }
+            },
+            ARRAY_FILTER_USE_BOTH
+        );
+    }
+    $SMARTY->assign('supported_customer_consents', $supported_customer_consents);
+
+    $document['default-consents'] = array_filter(
+        $LMS->getCustomerConsents($customerid),
+        function ($consent) use ($supported_customer_consents) {
+            return isset($supported_customer_consents[$consent]);
+        },
+        ARRAY_FILTER_USE_KEY
+    );
+
+    if (!isset($consents)) {
+        $document['consents'] = $document['default-consents'];
+    } else {
+        $document['consents'] = array_filter(
+            $consents,
+            function ($checked, $consent) use ($supported_customer_consents) {
+                return isset($supported_customer_consents[$consent]) && !empty($checked);
+            },
+            ARRAY_FILTER_USE_BOTH
+        );
+    }
 
     $SMARTY->assign('variable_prefix', 'document');
     $SMARTY->assign('variables', $document);
@@ -336,7 +389,7 @@ function CustomerChanged($doctype, $doctemplate, $customerid)
     GetPlugin($doctemplate, $customerid, false, $JSResponse);
     GetTemplates($doctype, $doctemplate, $JSResponse);
     GetReferenceDocuments($doctemplate, $customerid, $JSResponse);
-    GetCustomerConsents($customerid, $JSResponse);
+    GetCustomerConsents($doctemplate, $customerid, $JSResponse);
 
     return $JSResponse;
 }
@@ -353,13 +406,13 @@ function DocTypeChanged($doctype, $customerid)
     return $JSResponse;
 }
 
-function DocTemplateChanged($doctype, $doctemplate, $customerid)
+function DocTemplateChanged($doctype, $doctemplate, $customerid, $consents)
 {
     $JSResponse = new XajaxResponse();
 
     GetPlugin($doctemplate, $customerid, true, $JSResponse);
     GetReferenceDocuments($doctemplate, $customerid, $JSResponse);
-    GetCustomerConsents($customerid, $JSResponse);
+    GetCustomerConsents($doctemplate, $customerid, $JSResponse, $consents);
 
     return $JSResponse;
 }
