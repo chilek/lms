@@ -959,6 +959,8 @@ version 28-git (????-??-??):
     files [chilan]
   - enhancement: random user password generator in user/password forms; 'users.default_password_length'
     configuration variable with default value of '14' controls default length of generated random password [chilan]
+  - enhancement: bulk grant/revoke users permissions to modify prices of promotion schema tariffs/assignments
+    in promotion schema data subform [chilan]
 
 version 27.0 (2021-08-20):
 
