@@ -6141,3 +6141,5 @@ $_LANG['Last delivery'] = 'Ostatnie dostarczenie';
 
 $_LANG['Promotion schema'] = 'Schemat promocyjny';
 $_LANG['Promotion schemas'] = 'Schematy promocyjne';
+
+$_LANG['Generate new password and copy it to clipboard'] = 'Wygeneruj nowe hasło i skopiuj je do schowka';
