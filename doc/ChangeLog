@@ -964,6 +964,8 @@ version 28-git (????-??-??):
   - improvement: 'assignments.default_dont_create_assignments' configuration variable with 'false' as default value
     controls starting state of 'dont create assignment' option of promotion schema selection panel
     in new document form [chilan]
+  - enhancement: new document customer consent list conent depends on 'supported-customer-consents' property
+    of document template definition in info.php file [chilan]
 
 version 27.0 (2021-08-20):
 
