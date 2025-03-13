@@ -957,6 +957,8 @@ version 28-git (????-??-??):
   - improvement: bin/lms-teryt.php: --building-base-archived-filename-pattern allows to specify alternative
     regular expression to which file names in teryt directory are matched to use them as PRG database
     files [chilan]
+  - enhancement: random user password generator in user/password forms; 'users.default_password_length'
+    configuration variable with default value of '14' controls default length of generated random password [chilan]
 
 version 27.0 (2021-08-20):
 
