@@ -612,10 +612,14 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         return $final_consents;
     }
 
-    public function updateCustomerConsents($customerid, $current_consents, $new_consents)
+    public function updateCustomerConsents($customerid, $current_consents, $new_consents, $consent_mask = null)
     {
         $consents_to_remove = array_diff($current_consents, $new_consents);
         $consents_to_add = array_diff($new_consents, $current_consents);
+        if (!empty($consent_mask)) {
+            $consents_to_remove = array_intersect($consents_to_remove, $consent_mask);
+            $consents_to_add = array_intersect($consents_to_add, $consent_mask);
+        }
 
         $userid = Auth::GetCurrentUser();
 
