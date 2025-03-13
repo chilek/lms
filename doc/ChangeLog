@@ -961,6 +961,9 @@ version 28-git (????-??-??):
     configuration variable with default value of '14' controls default length of generated random password [chilan]
   - enhancement: bulk grant/revoke users permissions to modify prices of promotion schema tariffs/assignments
     in promotion schema data subform [chilan]
+  - improvement: 'assignments.default_dont_create_assignments' configuration variable with 'false' as default value
+    controls starting state of 'dont create assignment' option of promotion schema selection panel
+    in new document form [chilan]
 
 version 27.0 (2021-08-20):
 
