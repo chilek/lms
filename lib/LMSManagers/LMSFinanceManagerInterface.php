@@ -172,6 +172,8 @@ interface LMSFinanceManagerInterface
 
     public function getPromotionSchema($id);
 
+    public function changePromotionSchemaTariffPermissions($schemaid, array $params);
+
     public function getPromotion($id);
 
     public function getCashSources();

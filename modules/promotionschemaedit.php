@@ -236,6 +236,18 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
 
     echo json_encode(array('result' => $result));
     die;
+} elseif ($action == 'change-permissions' && isset($_POST['users'], $_POST['assignments'], $_POST['action'])) {
+    $result = $LMS->changePromotionSchemaTariffPermissions(
+        $_GET['id'],
+        array(
+            'users' => $_POST['users'],
+            'assignments' => $_POST['assignments'],
+            'action' => $_POST['action'],
+        )
+    );
+
+    include(MODULES_DIR . DIRECTORY_SEPARATOR . 'promotionschemainfo.php');
+    die;
 }
 
 $oldschema = $LMS->getPromotionSchema($schemaid);

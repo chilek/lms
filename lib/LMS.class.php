@@ -4094,6 +4094,12 @@ class LMS
         return $manager->getPromotionSchema($id);
     }
 
+    public function changePromotionSchemaTariffPermissions($schemaid, array $params)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->changePromotionSchemaTariffPermissions($schemaid, $params);
+    }
+
     public function getPromotion($id)
     {
         $manager = $this->getFinanceManager();

@@ -5492,6 +5492,73 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return $schema;
     }
 
+    public function changePromotionSchemaTariffPermissions($schemaid, array $params)
+    {
+        $assignments = $this->db->GetAll(
+            'SELECT
+                a.id,
+                a.data
+            FROM promotionassignments a
+            WHERE a.promotionschemaid = ?
+                AND a.id IN ?',
+            array(
+                $schemaid,
+                $params['assignments'],
+            )
+        );
+        if (empty($assignments)) {
+            return 0;
+        }
+
+        $count = 0;
+
+        foreach ($assignments as $assignment) {
+            $data = explode(';', $assignment['data']);
+            foreach ($data as &$cell) {
+                $props = explode(':', $cell);
+                if ($props[0] == 'NULL') {
+                    continue;
+                }
+                if (isset($props[2]) && strlen($props[2])) {
+                    $users = explode(',', $props[2]);
+                } else {
+                    $users = array();
+                }
+
+                if ($params['action'] == 'grant') {
+                    $users = array_unique(array_merge($users, $params['users']));
+                } else {
+                    $users = array_diff($users, $params['users']);
+                }
+
+                $cell = implode(
+                    ':',
+                    array(
+                        $props[0],
+                        $props[1],
+                        implode(',', $users),
+                    )
+                );
+            }
+            unset($cell);
+
+            $result = $this->db->Execute(
+                'UPDATE promotionassignments
+                SET data = ?
+                WHERE id = ?',
+                array(
+                    implode(';', $data),
+                    $assignment['id'],
+                )
+            );
+            if (!empty($result)) {
+                $count += $result;
+            }
+        }
+
+        return $count;
+    }
+
     public function getPromotion($id)
     {
         $promotion = $this->db->GetRow(
