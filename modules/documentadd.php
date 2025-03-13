@@ -819,6 +819,8 @@ if (isset($_POST['document'])) {
         $document['assignment']['existing_assignments']['operation'] = EXISTINGASSIGNMENT_KEEP;
     }
 
+    $document['assignment']['dont-create-assignments'] = ConfigHelper::checkConfig('assignments.default_dont_create_assignments');
+
     $document['dynamicperiod'] = ConfigHelper::checkConfig('documents.default_dynamic_period');
 
     $document['consents'] = $document['default-consents'] = isset($document['customerid']) && intval($document['customerid']) ? $LMS->getCustomerConsents($document['customerid']) : array();
