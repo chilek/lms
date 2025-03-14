@@ -100,11 +100,45 @@ async function readStream(stream) {
         }
         if (options.margins) {
             var margins = options.margins.split(',');
-            var pdfMargin = {
-                bottom: margins[0],
-                left: margins[1],
-                right: margins[2],
-                top: margins[3]
+            margins.forEach(function(item, index, arr) {
+                if (!item.match(/[a-z]+$/)) {
+                    arr[index] = item + 'mm';
+                }
+            });
+            var pdfMargin;
+            switch (margins.length) {
+                case 1:
+                    pdfMargin = {
+                        top: margins[0],
+                        right: margins[0],
+                        bottom: margins[0],
+                        left: margins[0]
+                    }
+                    break;
+                case 2:
+                    pdfMargin = {
+                        top: margins[0],
+                        right: margins[1],
+                        bottom: margins[0],
+                        left: margins[1]
+                    }
+                    break;
+                case 3:
+                    pdfMargin = {
+                        top: margins[0],
+                        right: margins[1],
+                        bottom: margins[2],
+                        left: margins[1]
+                    }
+                    break;
+                default:
+                    pdfMargin = {
+                        top: margins[0],
+                        right: margins[1],
+                        bottom: margins[2],
+                        left: margins[3]
+                    }
+                    break;
             }
             opts.margin = pdfMargin;
         }
