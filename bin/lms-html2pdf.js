@@ -15,6 +15,7 @@ program
     .option("-m, --media-type <screen|print|null>", "force specified media type", "print")
     .option("-w, --wait-until <load|domcontentloaded|networkidle0|networkidle2>", "wait for specified event in web browser", "load")
     .option("-p, --page-numbers", "print page numbers in output footer")
+    .option("--margins <margins>", "set document margins")
     .parse(process.argv);
 
 var options = program.opts();
@@ -34,6 +35,7 @@ if (options.inFile) {
 }
 
 var outFile = options.outFile ? options.outFile : null;
+var margins = options.margins ? options.margins : null;
 
 if (["Letter", "Legal", "Tabloid", "Ledger", "A0", "A1", "A2", "A3", "A4", "A5", "A6"].lastIndexOf(options.format) == -1) {
     console.error('Invalid format value!');
@@ -95,6 +97,16 @@ async function readStream(stream) {
             opts.footerTemplate = '<div style="font-size: 10px; text-align: center; width: 100%;">' +
                 '<span class="pageNumber"></span> / <span class="totalPages"></span>' +
                 '</div>';
+        }
+        if (options.margins) {
+            var margins = options.margins.split(',');
+            var pdfMargin = {
+                bottom: margins[0],
+                left: margins[1],
+                right: margins[2],
+                top: margins[3]
+            }
+            opts.margin = pdfMargin;
         }
 
         const pdf = await page.pdf(opts);
