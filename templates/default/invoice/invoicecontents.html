@@ -359,7 +359,7 @@
                     <td class="text-right">
                         <input type="text" class="invoice-contents-field-edit invoice-contents-field-netprice" name="invoice-contents[{$posuid}][valuenetto]"
                             value="{$valuenetto|string_format:"%01.3f"}" data-old-value="{$valuenetto|string_format:"%01.3f"}" size="6"
-                            onchange="claculatePositionPriceFromNet({$posuid}, this)"
+                            onchange="calculatePositionPriceFromNet({$posuid}, this)"
                             {tip text="Enter unitary value without discount"} style="display: none;"
                             {if !$invoice.netflag} disabled{/if}
                         >
@@ -379,7 +379,7 @@
                     <td class="text-right nobr">
                         <select size="1" class="invoice-contents-field-edit" name="invoice-contents[{$posuid}][taxid]" id="invoice-contents-field-tax-{$posuid}"
                             data-old-value="{$item.taxid}" {tip text="Select Tax rate"} style="display: none;"
-                            onchange="claculatePositionPriceOnTaxChange({$posuid})"
+                            onchange="calculatePositionPriceOnTaxChange({$posuid})"
                         >
                             {foreach $taxeslist as $tax}
                                 <option value="{$tax.id}"{if $tax.id == $row.taxid} selected{/if}>{$tax.label}</option>
@@ -395,7 +395,7 @@
                     <td class="text-right">
                         <input type="text" class="invoice-contents-field-edit invoice-contents-field-grossprice" name="invoice-contents[{$posuid}][valuebrutto]"
                             value="{$valuebrutto|string_format:"%01.3f"}" data-old-value="{$valuebrutto|string_format:"%01.3f"}" size="6"
-                            onchange="claculatePositionPriceFromGross({$posuid}, this)"
+                            onchange="calculatePositionPriceFromGross({$posuid}, this)"
                             {tip text="Enter unitary value without discount"} style="display: none;"
                             {if $invoice.netflag} disabled{/if}
                         >
@@ -687,7 +687,6 @@
                 }
             {/foreach}
         }
-
     }
 
     function drawPriceVariants(tariffPriceVariants, elem) {
@@ -875,7 +874,7 @@
         return;
     });
 
-    function claculatePriceFromGross() {
+    function calculatePriceFromGross() {
         let grossPriceElemVal = grossPriceElem.val();
         grossPriceElemVal = parseFloat(grossPriceElemVal.replace(/[\,]+/, '.'));
 
@@ -897,7 +896,7 @@
         }
     }
 
-    function claculatePriceFromNet() {
+    function calculatePriceFromNet() {
         let netPriceElemVal = netPriceElem.val();
         netPriceElemVal = parseFloat(netPriceElemVal.replace(/[\,]+/, '.'))
 
@@ -921,21 +920,21 @@
 
     taxElem.on('change', function () {
         if (netFlagElem.is(':checked')) {
-            claculatePriceFromNet();
+            calculatePriceFromNet();
         } else {
-            claculatePriceFromGross();
+            calculatePriceFromGross();
         }
     });
 
     grossPriceElem.on('change', function () {
-        claculatePriceFromGross();
+        calculatePriceFromGross();
     });
 
     netPriceElem.on('change', function () {
-        claculatePriceFromNet();
+        calculatePriceFromNet();
     });
 
-    function claculatePositionPriceFromGross(posuid, elem) {
+    function calculatePositionPriceFromGross(posuid, elem) {
         let grossPriceElem = $(elem);
         let grossPriceElemVal = grossPriceElem.val();
         let netPriceElem = $('[name="invoice-contents[' + posuid + '][valuenetto]"]');
@@ -959,7 +958,7 @@
         }
     }
 
-    function claculatePositionPriceFromNet(posuid, elem) {
+    function calculatePositionPriceFromNet(posuid, elem) {
         let netPriceElem = $(elem);
         let netPriceElemVal = netPriceElem.val();
         let grossPriceElem = $('[name="invoice-contents[' + posuid + '][valuebrutto]"]');
@@ -983,14 +982,14 @@
         }
     }
 
-    function claculatePositionPriceOnTaxChange(posuid) {
+    function calculatePositionPriceOnTaxChange(posuid) {
         let netPriceElem = $('[name="invoice-contents[' + posuid + '][valuenetto]"]');
         let grossPriceElem = $('[name="invoice-contents[' + posuid + '][valuebrutto]"]');
 
         if (netFlagElem.is(':checked')) {
-            claculatePositionPriceFromNet(posuid, netPriceElem);
+            calculatePositionPriceFromNet(posuid, netPriceElem);
         } else {
-            claculatePositionPriceFromGross(posuid, grossPriceElem);
+            calculatePositionPriceFromGross(posuid, grossPriceElem);
         }
     }
 

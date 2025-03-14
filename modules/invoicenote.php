@@ -26,6 +26,23 @@
 
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'invoiceajax.inc.php');
 
+function cleanUpValue($value)
+{
+    return strlen($value) ? preg_replace(
+        array(
+            '/(\d{1,3})\s+(\d{3})/',
+            '/^(\d+(?:[\.,]\d+)?)(\s*[^\d].*)?$/',
+            '/,/',
+        ),
+        array(
+            '$1$2',
+            '$1',
+            '.',
+        ),
+        $value
+    ) : $value;
+}
+
 $action = $_GET['action'] ?? null;
 
 if (isset($_GET['id']) && $action == 'init') {
@@ -166,13 +183,21 @@ $ntempl = docnumber(array(
 ));
 $layout['pagetitle'] = trans('Credit Note for Invoice: $a', $ntempl);
 
+$value_regexp = ConfigHelper::checkConfig('invoices.allow_negative_values') ? '/^[-]?[0-9]+([\.,][0-9]+)*$/' : '/^[0-9]+([\.,][0-9]+)*$/';
+
 switch ($action) {
     case 'deletepos':
-        $contents[$_GET['itemid']]['deleted'] = true;
+        if (empty($contents[$_GET['itemid']]['newpos'])) {
+            $contents[$_GET['itemid']]['deleted'] = true;
+        } else {
+            unset($contents[$_GET['itemid']]);
+        }
         break;
 
     case 'recoverpos':
-        $contents[$_GET['itemid']]['deleted'] = false;
+        if (!empty($contents[$_GET['itemid']]['deleted'])) {
+            $contents[$_GET['itemid']]['deleted'] = false;
+        }
         break;
 
     case 'setheader':
@@ -309,6 +334,118 @@ switch ($action) {
 
         break;
 
+    case 'additem':
+        $error = array();
+
+        $itemdata = r_trim($_POST);
+
+        $error_index = '%variable';
+
+        if (empty($itemdata['name'])) {
+            $error[str_replace('%variable', 'name', $error_index)] = trans('Field cannot be empty!');
+        }
+
+        if (strlen($itemdata['count']) && !preg_match('/^[0-9]+([\.,][0-9]+)*$/', $itemdata['count'])) {
+            $error[str_replace('%variable', 'count', $error_index)] = trans('Invalid format!');
+        }
+
+        if (empty($itemdata['valuenetto']) && empty($itemdata['valuebrutto'])) {
+            $error[str_replace('%variable', 'valuenetto', $error_index)] = trans('Field cannot be empty!');
+            $error[str_replace('%variable', 'valuebrutto', $error_index)] = trans('Field cannot be empty!');
+        } else {
+            $itemdata['valuenetto'] = cleanUpValue($itemdata['valuenetto']);
+            if (strlen($itemdata['valuenetto']) && !preg_match($value_regexp, $itemdata['valuenetto'])) {
+                $error[str_replace('%variable', 'valuenetto', $error_index)] = trans('Invalid format!');
+            }
+            $itemdata['valuebrutto'] = cleanUpValue($itemdata['valuebrutto']);
+            if (strlen($itemdata['valuebrutto']) && !preg_match($value_regexp, $itemdata['valuebrutto'])) {
+                $error[str_replace('%variable', 'valuebrutto', $error_index)] = trans('Invalid format!');
+            }
+        }
+
+        $itemdata['discount'] = str_replace(',', '.', $itemdata['discount']);
+        $itemdata['pdiscount'] = 0;
+        $itemdata['vdiscount'] = 0;
+        if (preg_match('/^[0-9]+(\.[0-9]+)*$/', $itemdata['discount'])) {
+            $itemdata['pdiscount'] = ($itemdata['discount_type'] == DISCOUNT_PERCENTAGE ? floatval($itemdata['discount']) : 0);
+            $itemdata['vdiscount'] = ($itemdata['discount_type'] == DISCOUNT_AMOUNT ? floatval($itemdata['discount']) : 0);
+        } elseif (!empty($itemdata['discount'])) {
+            $error[str_replace('%variable', 'discount', $error_index)] =
+                trans('Wrong discount value!');
+        }
+        if ($itemdata['pdiscount'] < 0 || $itemdata['pdiscount'] > 99.9 || $itemdata['vdiscount'] < 0) {
+            $error[str_replace('%variable', 'discount', $error_index)] =
+                trans('Wrong discount value!');
+        }
+
+        if (ConfigHelper::checkConfig('phpui.tax_category_required')
+            && empty($itemdata['taxcategory'])) {
+            $error[str_replace('%variable', 'taxcategory', $error_index)] =
+                trans('Tax category selection is required!');
+        }
+
+        foreach (array('discount', 'pdiscount', 'vdiscount', 'valuenetto', 'valuebrutto', 'count') as $key) {
+            $itemdata[$key] = f_round($itemdata[$key], 3);
+        }
+
+        if ($itemdata['count'] > 0 && $itemdata['name'] != '') {
+            $taxvalue = isset($itemdata['taxid']) ? $taxeslist[$itemdata['taxid']]['value'] : 0;
+            $itemdata['count'] = f_round($itemdata['count'], 3);
+
+            if ($invoice['netflag']) {
+                $itemdata['valuenetto'] = f_round(($itemdata['valuenetto'] - $itemdata['valuenetto'] * f_round($itemdata['pdiscount']) / 100)
+                    - $itemdata['vdiscount'], 3);
+                $itemdata['s_valuenetto'] = f_round($itemdata['valuenetto'] * $itemdata['count']);
+                $itemdata['tax_from_s_valuenetto'] = f_round($itemdata['s_valuenetto'] * ($taxvalue / 100));
+                $itemdata['s_valuebrutto'] = f_round($itemdata['s_valuenetto'] + $itemdata['tax_from_s_valuenetto']);
+                $itemdata['valuebrutto'] = f_round($itemdata['valuenetto'] * ($taxvalue / 100 + 1), 3);
+            } else {
+                $itemdata['valuebrutto'] = f_round(($itemdata['valuebrutto'] - $itemdata['valuebrutto'] * f_round($itemdata['pdiscount']) / 100)
+                    - $itemdata['vdiscount'], 3);
+                $itemdata['s_valuebrutto'] = f_round($itemdata['valuebrutto'] * $itemdata['count']);
+                $itemdata['tax_from_s_valuebrutto'] = f_round(($itemdata['s_valuebrutto'] * $taxvalue)
+                    / (100 + $taxvalue));
+                $itemdata['s_valuenetto'] = f_round($itemdata['s_valuebrutto'] - $itemdata['tax_from_s_valuebrutto']);
+                $itemdata['valuenetto'] = f_round($itemdata['valuebrutto'] / ($taxvalue / 100 + 1), 3);
+            }
+
+            $itemdata['tax'] = isset($itemdata['taxid']) ? $taxeslist[$itemdata['taxid']]['label'] : '';
+            $itemdata['taxvalue'] = isset($itemdata['taxid']) ? $taxeslist[$itemdata['taxid']]['value'] : 0;
+        }
+
+        $itemdata['content'] = $itemdata['jm'];
+        $itemdata['newpos'] = true;
+
+        if ($itemdata['tariffid'] > 0) {
+            $itemdata['tariff'] = $LMS->GetTariff($itemdata['tariffid']);
+        }
+
+        $hook_data = array(
+            'contents' => $contents,
+            'itemdata' => $itemdata,
+            'invoice' => $invoice,
+        );
+        $hook_data = $LMS->ExecuteHook('invoicenote_savepos_validation', $hook_data);
+        if (isset($hook_data['error']) && is_array($hook_data['error'])) {
+            $error = array_merge($error, $hook_data['error']);
+        }
+
+        if (!empty($error)) {
+            $SMARTY->assign('itemdata', $hook_data['itemdata']);
+            if (isset($posuid)) {
+                $error['posuid'] = $posuid;
+            }
+            break;
+        }
+
+        $itemdata = $hook_data['itemdata'];
+
+        if ($itemdata['count'] > 0 && $itemdata['name'] != '') {
+            $itemdata['itemid'] = count($contents) + 1;
+            $contents[] = $itemdata;
+        }
+        break;
+
     case 'save':
         if (empty($contents) || empty($cnote)) {
             break;
@@ -396,12 +533,21 @@ switch ($action) {
                     && f_round($contents[$idx]['pdiscount']) === f_round($item['pdiscount'])
                     && f_round($contents[$idx]['vdiscount']) === f_round($item['vdiscount'])
                 ) {
-                    $contents[$idx]['cash'] = 0;
-                    $contents[$idx]['valuenetto'] = f_round($invoicecontents[$idx]['valuenetto']);
-                    $contents[$idx]['valuebrutto'] = f_round($invoicecontents[$idx]['valuebrutto']);
-                    $contents[$idx]['pdiscount'] = f_round($invoicecontents[$idx]['pdiscount']);
-                    $contents[$idx]['vdiscount'] = f_round($invoicecontents[$idx]['vdiscount']);
-                    $contents[$idx]['count'] = f_round($invoicecontents[$idx]['count'], 3);
+                    if (empty($contents[$idx]['newpos'])) {
+                        $contents[$idx]['cash'] = 0;
+                        $contents[$idx]['valuenetto'] = f_round($invoicecontents[$idx]['valuenetto']);
+                        $contents[$idx]['valuebrutto'] = f_round($invoicecontents[$idx]['valuebrutto']);
+                        $contents[$idx]['pdiscount'] = f_round($invoicecontents[$idx]['pdiscount']);
+                        $contents[$idx]['vdiscount'] = f_round($invoicecontents[$idx]['vdiscount']);
+                        $contents[$idx]['count'] = f_round($invoicecontents[$idx]['count'], 3);
+                    } else {
+                        $contents[$idx]['cash'] = $contents[$idx]['s_valuebrutto'] * -1;
+                        $contents[$idx]['valuenetto'] = f_round($contents[$idx]['valuenetto']);
+                        $contents[$idx]['valuebrutto'] = f_round($contents[$idx]['valuebrutto']);
+                        $contents[$idx]['pdiscount'] = f_round($contents[$idx]['pdiscount']);
+                        $contents[$idx]['vdiscount'] = f_round($contents[$idx]['vdiscount']);
+                        $contents[$idx]['count'] = f_round($contents[$idx]['count'], 3);
+                    }
                 } else {
                     if (f_round($contents[$idx]['valuenetto']) != f_round($item['valuenetto'])) {
                         $contents[$idx]['pdiscount'] = 0;
@@ -441,12 +587,21 @@ switch ($action) {
                     && f_round($contents[$idx]['pdiscount']) === f_round($item['pdiscount'])
                     && f_round($contents[$idx]['vdiscount']) === f_round($item['vdiscount'])
                 ) {
-                    $contents[$idx]['cash'] = 0;
-                    $contents[$idx]['valuebrutto'] = f_round($invoicecontents[$idx]['valuebrutto']);
-                    $contents[$idx]['valuenetto'] = f_round($invoicecontents[$idx]['valuenetto']);
-                    $contents[$idx]['pdiscount'] = f_round($invoicecontents[$idx]['pdiscount']);
-                    $contents[$idx]['vdiscount'] = f_round($invoicecontents[$idx]['vdiscount']);
-                    $contents[$idx]['count'] = f_round($invoicecontents[$idx]['count'], 3);
+                    if (empty($contents[$idx]['newpos'])) {
+                        $contents[$idx]['cash'] = 0;
+                        $contents[$idx]['valuebrutto'] = f_round($invoicecontents[$idx]['valuebrutto']);
+                        $contents[$idx]['valuenetto'] = f_round($invoicecontents[$idx]['valuenetto']);
+                        $contents[$idx]['pdiscount'] = f_round($invoicecontents[$idx]['pdiscount']);
+                        $contents[$idx]['vdiscount'] = f_round($invoicecontents[$idx]['vdiscount']);
+                        $contents[$idx]['count'] = f_round($invoicecontents[$idx]['count'], 3);
+                    } else {
+                        $contents[$idx]['cash'] = $contents[$idx]['s_valuebrutto'] * -1;
+                        $contents[$idx]['valuebrutto'] = f_round($contents[$idx]['valuebrutto']);
+                        $contents[$idx]['valuenetto'] = f_round($contents[$idx]['valuenetto']);
+                        $contents[$idx]['pdiscount'] = f_round($contents[$idx]['pdiscount']);
+                        $contents[$idx]['vdiscount'] = f_round($contents[$idx]['vdiscount']);
+                        $contents[$idx]['count'] = f_round($contents[$idx]['count'], 3);
+                    }
                 } else {
                     if (f_round($contents[$idx]['valuebrutto']) != f_round($item['valuebrutto'])) {
                         $contents[$idx]['pdiscount'] = 0;
@@ -506,6 +661,12 @@ switch ($action) {
                     if ($itemContentDiff) {
                         $contentDiff = true;
                         break;
+                    }
+                }
+
+                foreach ($contents as $idx => $item) {
+                    if (!empty($item['newpos'])) {
+                        $contentDiff = true;
                     }
                 }
             }
@@ -806,6 +967,8 @@ $SESSION->save('invoice', $invoice, true);
 $SESSION->save('cnote', $cnote, true);
 $SESSION->save('invoicecontents', $contents, true);
 $SESSION->save('cnoteerror', $error, true);
+
+$SMARTY->assign('tariffs', $LMS->GetTariffs());
 
 if ($action && !$error) {
     // redirect, to not prevent from invoice break with the refresh

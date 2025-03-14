@@ -32,14 +32,15 @@
 	function saveInvoice() {
 		$('.invoice-contents-field-grossprice').prop('disabled', false);
 		$('.invoice-contents-field-netprice').prop('disabled', false);
+		$('#additem-subform :input').prop('disabled', true);
 
 		var which = 0;
-		$('form[name="save"] [name^="which"]:checked').each(function() {
+		$('form[name="contents"] [name^="which"]:checked').each(function() {
 			which += parseInt($(this).val());
 		});
 
-		document.save.action += "&which=" + which;
-		document.save.submit();
+		document.contents.action += "&action=save&which=" + which;
+		document.contents.submit();
 	}
 
 	function printInvoice() {
@@ -47,12 +48,12 @@
 		$('.invoice-contents-field-netprice').prop('disabled', false);
 
 		var which = 0;
-		$('form[name="save"] [name^="which"]:checked').each(function() {
+		$('form[name="contents"] [name^="which"]:checked').each(function() {
 			which += parseInt($(this).val());
 		});
 
-		document.save.action = "?m={$layout.module}&action=save&print=1&which=" + which;
-		document.save.submit();
+		document.contents.action = "?m={$layout.module}&action=save&print=1&which=" + which;
+		document.contents.submit();
 	}
 
 	function updateDocumentFlags() {
@@ -114,6 +115,9 @@
 	});
 
 </script>
+
+{$default_taxrate = ConfigHelper::getConfig('phpui.default_taxrate')}
+{$default_taxlabel = ConfigHelper::getConfig('phpui.default_taxlabel')}
 
 <form name="setheader" method="POST" action="?m={$layout.module}&action=setheader">
 	<input type="submit" class="hiddenbtn">
@@ -325,7 +329,7 @@
 
 <br>
 
-<form name="save" method="POST" action="?m={$layout.module}&action=save">
+<form name="contents" id="contents" method="POST" action="?m={$layout.module}">
 	<input type="submit" class="hiddenbtn">
 
 	<table class="lmsbox lms-ui-background-cycle">
@@ -506,7 +510,7 @@
 					{else}
 						<input type="text" class="invoice-contents-field-netprice" name="valuenetto[{$itemid}]" size="6"
 							value="{$item.valuenetto|string_format:"%.2f"}"
-							onchange="claculatePositionPriceFromNet({$itemid}, this)"
+							onchange="calculatePositionPriceFromNet({$itemid}, this)"
 							{tip text="Enter unitary value without discount"}
 							{if !$cnote.netflag} disabled{/if}
 						>
@@ -522,7 +526,7 @@
 						{$item.tax}
 					{else}
 						<select size="1" name="taxid[{$itemid}]" id="invoice-contents-field-tax-{$itemid}" {tip text="Select Tax rate"}
-								onchange="claculatePositionPriceOnTaxChange({$itemid})"
+								onchange="calculatePositionPriceOnTaxChange({$itemid})"
 						>
 							{foreach $taxeslist as $tax}
 								<option value="{$tax.id}"{if $tax.id == $item.taxid} selected{/if}>{$tax.label}</option>
@@ -543,7 +547,7 @@
 					{else}
 						<input type="text" class="invoice-contents-field-grossprice" name="valuebrutto[{$itemid}]" size="6"
 							value="{if !empty($item.valuebrutto)}{$item.valuebrutto|string_format:"%.2f"}{/if}"
-							onchange="claculatePositionPriceFromGross({$itemid}, this)"
+							onchange="calculatePositionPriceFromGross({$itemid}, this)"
 							{tip text="Enter unitary value without discount"}
 							{if $cnote.netflag} disabled{/if}
 						>
@@ -585,39 +589,217 @@
 		{else}
 			<input type="hidden" id="s-valuebrutto" value="0">
 		{/if}
-		<tr class="lms-ui-button-panel">
-			<td colspan="10" class="text-right">
-				{$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
-				<label>
-					<input type="checkbox" name="which[{$smarty.const.DOC_ENTITY_ORIGINAL}]"
-						value="{$smarty.const.DOC_ENTITY_ORIGINAL}"
-						{if preg_match('/original/i', $default_printpage)} checked{/if}
-					>
-					{$_DOCENTITIES[$smarty.const.DOC_ENTITY_ORIGINAL]}
-				</label>
-				<label>
-					<input type="checkbox" name="which[{$smarty.const.DOC_ENTITY_COPY}]"
-						value="{$smarty.const.DOC_ENTITY_COPY}"
-						{if preg_match('/copy/i', $default_printpage)} checked{/if}
-					>
-					{$_DOCENTITIES[$smarty.const.DOC_ENTITY_COPY]}
-				</label>&nbsp;
-				{button icon="cancel" label="Cancel" href="?m=invoicelist"}
-				{button icon="save" label="Save" onclick="saveInvoice();"}
-				{button icon="print" label="Save & Print" onclick="printInvoice();"}
-			</td>
-		</tr>
 		</tbody>
+		<tfoot id="additem-subform">
+			{block name="`$layout.module`-additem"}
+				{if !$invoice.closed}
+					<tr>
+						<td class="bold nobr" rowspan="2">
+							{count($contents) + 1}.
+						</td>
+						<td class="nobr" id="other-selection" colspan="9">
+							{block name="`$layout.module`-other-selection"}
+							{/block}
+						</td>
+					</tr>
+					<tr style="border: none;">
+						<td>
+							<div id="tariff-selection">
+								{block name="`$layout.module`-tariff-selection"}
+									<select size="1" name="tariffid" id="tariff-select" style="width: 300px"
+											class="lms-ui-advanced-select" onchange="setItem(document.contents.tariffid.value)">
+										<option value="0">— {trans("Select tariff")} —</option>
+										{foreach $tariffs as $tariff}
+											{if $tariff.currency == $invoice.currency && $tariff.netflag == $invoice.netflag}
+												<option value="{$tariff.id}"
+													data-tariffvalue="{$tariff.value}"
+													data-tariffnetvalue="{$tariff.netvalue}"
+													data-tariffpricevariants='{json_encode($tariff.price_variants)}'
+												>{$tariff.name} ({moneyf($tariff.value, $tariff.currency, 3)})</option>
+											{/if}
+										{/foreach}
+									</select>
+								{/block}
+								{*
+								<input type="text" name="name" size="40" style="width:300px"
+									   value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.name}{/if}"
+									   placeholder="{trans('... or enter description')}"
+								>
+								*}
+								<textarea name="name" cols="40" rows="1" class="lms-ui-autogrow" style="width:300px"
+										  placeholder="{trans('... or enter description')}"
+								>{if isset($itemdata) && !isset($error.posuid)}{$itemdata.name|escape}{/if}</textarea>
+								<span id="tariff-price-variants"></span>
+							</div>
+						</td>
+						<td class="nobr">
+							<div class="servicetype-taxcategory">
+								<select name="servicetype">
+									<option value="">{trans("— none —")}</option>
+									{foreach $_SERVICETYPES as $servicetype => $label}
+										<option value="{$servicetype}">{$label}</option>
+									{/foreach}
+								</select>
+
+								{if isset($itemdata) && !isset($error.posuid)}
+									{$taxcategory = $itemdata.taxcategory}
+								{else}
+									{$taxcategory = 0}
+								{/if}
+
+								{tax_category_selection elementname="taxcategory" tip="Select tax category" selected=$taxcategory}
+							</div>
+						</td>
+						<td class="text-right">
+							<input type="text" name="prodid" size="6">
+						</td>
+						<td class="text-right">
+							<input type="text" id="quantity" name="count" size="3" value="{if $itemdata.count}{$itemdata.count}{else}1{/if}">
+							<input type="text" name="jm" size="3" value="{trans(ConfigHelper::getConfig('payments.default_unit_name'))}">
+						</td>
+						<td class="text-right">
+							<input type="text" id="discount_value" name="discount" size="6" {tip text="Enter discount percentage or amount"}
+								   value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.discount}{/if}"
+							>
+							<select id="discount_type" name="discount_type">
+								{foreach from=$_DISCOUNTTYPES item=item key=key}
+									<option value="{$key}">{$item}</option>
+								{/foreach}
+							</select>
+						</td>
+						<td class="text-right nobr">
+							<input type="text" id="netprice" name="valuenetto" size="6" {tip text="Enter unitary value without discount"}
+								   value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.valuenetto}{/if}"
+									{if !$invoice.netflag} disabled{/if}
+							>
+						</td>
+						<td class="text-right nobr">
+							<select size="1" id="tax" name="taxid" {tip text="Select Tax rate"}>
+								{foreach $taxeslist as $tax}
+									<option value="{$tax.id}"
+											{if $itemdata.taxid && $itemdata.taxid == $tax.id
+											|| (!$itemdata.taxid && (isset($default_taxlabel) && $tax.label == $default_taxlabel
+											|| !isset($default_taxlabel) && $tax.value == $default_taxrate))} selected{/if}
+									>{$tax.label}</option>
+								{/foreach}
+							</select>
+
+							{foreach $taxeslist as $tax}
+								<input type="hidden" id="tax{$tax.id}" name="tax{$tax.id}" value="{$tax.value}" disabled>
+							{/foreach}
+							<br>
+						</td>
+						<td class="text-right nobr">
+							<input type="text" id="grossprice" name="valuebrutto" size="6" {tip text="Enter unitary value without discount"}
+								   value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.valuebrutto}{/if}"
+									{if $invoice.netflag} disabled{/if}
+							>
+						</td>
+						<td>
+							{button type="link" icon="save" tip="Add item" onclick="addItem();"}
+						</td>
+					</tr>
+				{/if}
+			{/block}
+			<tr class="lms-ui-button-panel">
+				<td colspan="10" class="text-right">
+					{$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
+					<label>
+						<input type="checkbox" name="which[{$smarty.const.DOC_ENTITY_ORIGINAL}]"
+							   value="{$smarty.const.DOC_ENTITY_ORIGINAL}"
+								{if preg_match('/original/i', $default_printpage)} checked{/if}
+						>
+						{$_DOCENTITIES[$smarty.const.DOC_ENTITY_ORIGINAL]}
+					</label>
+					<label>
+						<input type="checkbox" name="which[{$smarty.const.DOC_ENTITY_COPY}]"
+							   value="{$smarty.const.DOC_ENTITY_COPY}"
+								{if preg_match('/copy/i', $default_printpage)} checked{/if}
+						>
+						{$_DOCENTITIES[$smarty.const.DOC_ENTITY_COPY]}
+					</label>&nbsp;
+					{button icon="cancel" label="Cancel" href="?m=invoicelist"}
+					{button icon="save" label="Save" onclick="saveInvoice();"}
+					{button icon="print" label="Save & Print" onclick="printInvoice();"}
+				</td>
+			</tr>
+		</tfoot>
 	</table>
 </form>
 
 <script>
 
 	const netFlagElem = $("#innet");
+	const netPriceElem = $("#netprice");
+	const grossPriceElem = $("#grossprice");
+	const taxElem = $("#tax");
 
 	initAdvancedSelects('#customer_addresses');
 
-	function claculatePositionPriceFromGross(posuid, elem) {
+	function setItem(index) {
+		$('#tariff-price-variants').html('');
+		taxElem.prop('disabled', false);
+
+		if (netFlagElem.is(':checked')) {
+			netPriceElem.prop('disabled', false);
+		} else {
+			grossPriceElem.prop('disabled', false);
+		}
+
+		let e = document.contents;
+
+		if (index == 0) {
+			e.name.innerHTML = '';
+			e.valuebrutto.value = '';
+			e.valuenetto.value = '';
+			e.prodid.value = '';
+			e.tariffid.value = '';
+			$(e.taxcategory).val(0);
+			$(e.servicetype).val('');
+			e.count.value = 1;
+		} else {
+			{foreach $tariffs as $tariff}
+			if (index == {$tariff.id}) {
+				let grossPrice = '{$tariff.value}';
+				let netPrice = '{$tariff.netvalue}';
+				e.name.innerHTML = '{str_replace("'", "\\'", $tariff.name)}';
+				e.taxid.value = '{$tariff.taxid}';
+				e.prodid.value = '{$tariff.prodid}';
+				e.tariffid.value = '{$tariff.id}';
+				$(e.taxcategory).val({$tariff.taxcategory});
+				$(e.servicetype).val({$tariff.tarifftype});
+
+				let tariffPriceVariants = '{json_encode($tariff.price_variants)}';
+				const tariffPriceVariantsObj = JSON.parse(tariffPriceVariants);
+				if (Object.keys(tariffPriceVariantsObj).length > 0) {
+					// draw info with tariff price variants
+					drawPriceVariants(tariffPriceVariantsObj, $('#tariff-price-variants'));
+
+					// get tariff price variants according to quantity
+					let quantity = $("#quantity").val();
+					let priceVariant = getPriceVariant(parseInt(quantity), tariffPriceVariantsObj);
+					if (Object.keys(priceVariant).length > 0) {
+						grossPrice = priceVariant.gross_price;
+						netPrice = priceVariant.net_price;
+					}
+				}
+				e.valuebrutto.value = (grossPrice ? grossPrice.replace(/[.]+/, ',') : '');
+				e.valuenetto.value = (netPrice ? netPrice.replace(/[.]+/, ',') : '');
+				return;
+			}
+			{/foreach}
+		}
+	}
+
+	function addItem() {
+		netPriceElem.prop('disabled', false);
+		grossPriceElem.prop('disabled', false);
+		taxElem.prop('disabled', false);
+		document.contents.action += '&action=additem';
+		document.contents.submit();
+	}
+
+	function calculatePositionPriceFromGross(posuid, elem) {
 		let grossPriceElem = $(elem);
 		let grossPriceElemVal = grossPriceElem.val();
 		let netPriceElem = $('[name="valuenetto[' + posuid + ']"]');
@@ -641,7 +823,7 @@
 		}
 	}
 
-	function claculatePositionPriceFromNet(posuid, elem) {
+	function calculatePositionPriceFromNet(posuid, elem) {
 		let netPriceElem = $(elem);
 		let netPriceElemVal = netPriceElem.val();
 		let grossPriceElem = $('[name="valuebrutto[' + posuid + ']"]');
@@ -665,15 +847,23 @@
 		}
 	}
 
-	function claculatePositionPriceOnTaxChange(posuid) {
+	function calculatePositionPriceOnTaxChange(posuid) {
 		let netPriceElem = $('[name="valuenetto[' + posuid + ']"]');
 		let grossPriceElem = $('[name="valuebrutto[' + posuid + ']"]');
 
 		if (netFlagElem.is(':checked')) {
-			claculatePositionPriceFromNet(posuid, netPriceElem);
+			calculatePositionPriceFromNet(posuid, netPriceElem);
 		} else {
-			claculatePositionPriceFromGross(posuid, grossPriceElem);
+			calculatePositionPriceFromGross(posuid, grossPriceElem);
 		}
+	}
+
+	function addItem() {
+		netPriceElem.prop('disabled', false);
+		grossPriceElem.prop('disabled', false);
+		taxElem.prop('disabled', false);
+		document.contents.action += '&action=additem';
+		document.contents.submit();
 	}
 
 </script>
