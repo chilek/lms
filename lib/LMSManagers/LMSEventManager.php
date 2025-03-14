@@ -293,9 +293,9 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         $event['helpdesk'] = !empty($event['ticketid']);
 
         $event['userlist'] = $this->db->GetAllByKey(
-            'SELECT u.id, u.rname, u.name, u.login
+            'SELECT u.id, u.rname, u.name, u.login, u.deleted, u.access
             FROM vusers u
-            JOIN eventassignments a ON a.userid = u.id
+                JOIN eventassignments a ON a.userid = u.id
             WHERE a.eventid = ?',
             'id',
             array($id)
@@ -514,11 +514,12 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                     $row['nodelocation'] = $customerstuffaddresses[$row['customerid']];
                 }
 
-                $row['userlist'] = $this->db->GetAll(
+                $row['userlist'] = $this->db->GetAllByKey(
                     'SELECT userid AS id, vusers.name,
                     vusers.access, vusers.deleted, vusers.accessfrom, vusers.accessto
                     FROM eventassignments, vusers
                     WHERE userid = vusers.id AND eventid = ? ',
+                    'id',
                     array($row['id'])
                 );
 
