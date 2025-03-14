@@ -387,9 +387,11 @@
 				<td>
 					{if $item.deleted}
 						<input type="hidden" value="{$item.name|escape}" name="name[{$itemid}]">
-						{$item.name|escape}
+						{$item.name|escape|nl2br}
 					{else}
-						<input type="text" value="{$item.name|escape}" name="name[{$itemid}]" size="48">
+						<textarea class="lms-ui-autogrow" name="name[{$itemid}]"
+							cols="40" rows="1" style="width: 300px;"
+						>{$item.name|escape}</textarea>
 					{/if}
 					{if isset($item.name_custom_contents)}
 						{$item.name_custom_contents}

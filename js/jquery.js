@@ -872,9 +872,11 @@ function init_attachment_lists(selector) {
 }
 
 function initAutoGrow(selector) {
-	$(selector + ':not(.lms-ui-autogrow-initiated)').each(function() {
+	$(selector).filter(':not(.lms-ui-autogrow-initiated)').each(function() {
 		if ($(this).is('textarea')) {
-			$(this).autoHeight();
+			if ($(this).is(':visible')) {
+				$(this).autoHeight();
+			}
 		} else {
 			$(this).inputAutogrow({
 				minWidth: 150,
