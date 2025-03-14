@@ -968,6 +968,7 @@ version 28-git (????-??-??):
     of document template definition in info.php file [chilan]
   - improvement: --margins parameter of bin/lms-html2pdf.js allows to set generated pdf document margins [chilan]
   - improvement: invoice item description/name field converted from text input to textarea [chilan]
+  - enhancement: new positions can be added on issued correction invoices [chilan]
 
 version 27.0 (2021-08-20):
 
