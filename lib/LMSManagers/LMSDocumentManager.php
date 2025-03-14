@@ -1723,7 +1723,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     $customer_manager->updateCustomerConsents(
                         $doc['customerid'],
                         array_keys($customer_manager->getCustomerConsents($doc['customerid'])),
-                        array_keys($selected_assignment['consents'])
+                        array_keys($selected_assignment['consents']),
+                        empty($selected_assignment['supported-customer-consents']) ? null : $selected_assignment['supported-customer-consents']
                     );
                 }
 

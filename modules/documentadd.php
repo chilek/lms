@@ -592,6 +592,7 @@ if (isset($_POST['document'])) {
                 $selected_assignment['dynamicperiod'] = empty($document['dynamicperiod']) ? 0 : 1;
                 if (!empty($engine['customer-consent-selection'])) {
                     $selected_assignment['consents'] = isset($document['consents']) ? $document['consents'] : array();
+                    $selected_assignment['supported-customer-consents'] = array_keys($supported_customer_consents);
                 }
 
                 if ($selected_assignment['schemaid'] && is_array($selected_assignment['sassignmentid'][$schemaid])) {
