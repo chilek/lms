@@ -191,7 +191,7 @@ function CustomerAssignmentHelper(options) {
 				var checked = helper.assignmentPromotionAttachments.hasOwnProperty(attachment.id) &&
 					helper.assignmentPromotionAttachments[attachment.id] == attachment.id ||
 					!helper.assignmentPromotionAttachments.hasOwnProperty(attachment.id) &&
-					attachment.checked;
+					parseInt(attachment.checked);
 				if (checked) {
 					allCheckedAttachments++;
 				}
@@ -223,7 +223,7 @@ function CustomerAssignmentHelper(options) {
 				var checked = helper.assignmentPromotionSchemaAttachments.hasOwnProperty(attachment.id) &&
 					helper.assignmentPromotionSchemaAttachments[attachment.id] == attachment.id ||
 					!helper.assignmentPromotionSchemaAttachments.hasOwnProperty(attachment.id) &&
-					attachment.checked;
+					parseInt(attachment.checked);
 				if (checked) {
 					allCheckedAttachments++;
 				}
