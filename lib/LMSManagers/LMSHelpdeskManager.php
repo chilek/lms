@@ -138,7 +138,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         $userid = Auth::GetCurrentUser();
         extract($params);
-        foreach (array('ids', 'state', 'priority', 'source', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
+        foreach (array('ids', 'state', 'priority', 'source', 'owner', 'catids', 'removed', 'nodeids', 'netdevids', 'netnodeids', 'deadline',
             'serviceids', 'typeids', 'unread', 'parentids', 'verifierids', 'rights', 'projectids', 'cid', 'subject', 'fromdate', 'todate', 'short', 'watching') as $var) {
             if (!isset(${$var})) {
                 ${$var} = null;
@@ -227,6 +227,14 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $sourcefilter = '';
         } else {
             $sourcefilter = ' AND t.source = ' . $source;
+        }
+
+        if (empty($nodeids)) {
+            $nodeidsfilter = '';
+        } elseif (is_array($nodeids)) {
+            $nodeidsfilter = ' AND t.nodeid IN (' . implode(',', $nodeids) . ')';
+        } else {
+            $nodeidsfilter = ' AND t.nodeid = ' . $nodeids;
         }
 
         if (empty($netdevids)) {
@@ -488,6 +496,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 . $sourcefilter
                 . $ownerfilter
                 . $removedfilter
+                . $nodeidsfilter
                 . $netdevidsfilter
                 . $netnodeidsfilter
                 . $deadlinefilter
@@ -597,6 +606,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             . $sourcefilter
             . $ownerfilter
             . $removedfilter
+            . $nodeidsfilter
             . $netdevidsfilter
             . $netnodeidsfilter
             . $deadlinefilter
