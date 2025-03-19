@@ -196,7 +196,7 @@ $access_table = array(
     ),
     'messaging_removal' => array(
         'label' => trans('messaging (email, sms) - removal'),
-        'allow_regexp' => '^(message(del|templatedel)$',
+        'allow_regexp' => '^(message(del|templatedel))$',
     ),
     'helpdesk_administration' => array(
         'label' => trans('Helpdesk (RT) administration'),
