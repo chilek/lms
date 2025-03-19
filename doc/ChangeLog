@@ -969,6 +969,8 @@ version 28-git (????-??-??):
   - improvement: --margins parameter of bin/lms-html2pdf.js allows to set generated pdf document margins [chilan]
   - improvement: invoice item description/name field converted from text input to textarea [chilan]
   - enhancement: new positions can be added on issued correction invoices [chilan]
+  - bugfix/improvement: use jquery-ui 'autocomplete' widget for lms-ui-autocomplete classed html elements
+    (useful for textarea's) [chilan]
 
 version 27.0 (2021-08-20):
 
