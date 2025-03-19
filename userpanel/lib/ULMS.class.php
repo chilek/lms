@@ -253,6 +253,10 @@ class ULMS extends LMS
                 $node['locks'] = array();
             }
 
+            if (empty($nodelocks)) {
+                continue;
+            }
+
             foreach ($nodelocks as $lock) {
                 if ($lock['nodeid'] == $nodeid) {
                     $days = array();
