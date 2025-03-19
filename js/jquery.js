@@ -77,7 +77,7 @@ jQuery.fn.extend({
 				.height(element.scrollHeight);
 		}
 		return this.each(function() {
-			autoHeight_(this).on('input', function() {
+			autoHeight_(this).on('input lms:textarea:changed', function() {
 				autoHeight_(this);
 			});
 		});
@@ -907,7 +907,7 @@ function initAutoComplete(selector) {
 				if (that.is('.lms-ui-autogrow')) {
 					setTimeout(
 						function() {
-							that.trigger('input');
+							that.trigger('lms:textarea:changed');
 						},
 						1
 					)
