@@ -312,6 +312,10 @@ input[disabled] + .ui-datepicker-trigger {
   cursor: grab;
 }
 
-.ui-menu.ui-autocomplete .ui-menu-item:not(:last-child) {
-  border-bottom: @dotted-line;
+.ui-menu.ui-autocomplete {
+  max-width: 40%;
+
+  .ui-menu-item:not(:last-child) {
+    border-bottom: @dotted-line;
+  }
 }
