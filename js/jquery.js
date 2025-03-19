@@ -903,8 +903,14 @@ function initAutoComplete(selector) {
 		elem.autocomplete({
 			source: textAreaNameValues,
 			select: function() {
-				if ($(this).is('.lms-ui-autogrow')) {
-					$(this).trigger('input');
+				var that = $(this);
+				if (that.is('.lms-ui-autogrow')) {
+					setTimeout(
+						function() {
+							that.trigger('input');
+						},
+						1
+					)
 				}
 			}
 		});
