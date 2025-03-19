@@ -886,6 +886,37 @@ function initAutoGrow(selector) {
 	});
 }
 
+function initAutoComplete(selector) {
+	if ($('body.lms-ui-mobile').length) {
+		return;
+	}
+
+	$(selector).each(function() {
+		var elem = $(this);
+		var storageItemName = 'autocomplete[form="' + $(this.form).attr('name') + '"][name="' + elem.attr('name') + '"]';
+		var textAreaNameValues = getStorageItem(storageItemName, 'local');
+		if (textAreaNameValues == null) {
+			textAreaNameValues = [];
+		} else {
+			textAreaNameValues = JSON.parse(textAreaNameValues);
+		}
+		elem.autocomplete({
+			source: textAreaNameValues
+		});
+
+		$(this.form).on('submit', function() {
+			var textAreaNameValues = getStorageItem(storageItemName, 'local');
+			if (textAreaNameValues == null) {
+				textAreaNameValues = [];
+			} else {
+				textAreaNameValues = JSON.parse(textAreaNameValues);
+			}
+			textAreaNameValues.push(elem.val());
+			setStorageItem(storageItemName, JSON.stringify(textAreaNameValues), 'local');
+		})
+	});
+}
+
 function initListQuickSearch(options) {
 	$.extend({
 		single: false,
@@ -2181,6 +2212,7 @@ $(function() {
 	}, false);
 
 	initAutoGrow('.lms-ui-autogrow');
+	initAutoComplete('.lms-ui-autocomplete');
 });
 
 function restoreStringSortable(sortable, value) {

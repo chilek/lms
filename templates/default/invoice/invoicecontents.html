@@ -492,8 +492,8 @@
                                        placeholder="{trans('... or enter description')}"
                                 >
                                 *}
-                                <textarea name="name" cols="40" rows="1" class="lms-ui-autogrow" style="width:300px"
-                                       placeholder="{trans('... or enter description')}"
+                                <textarea name="name" cols="40" rows="1" class="lms-ui-autogrow lms-ui-autocomplete" style="width:300px"
+                                    placeholder="{trans('... or enter description')}"
                                 >{if isset($itemdata) && !isset($error.posuid)}{$itemdata.name|escape}{/if}</textarea>
                                 <span id="tariff-price-variants"></span>
                             </div>
@@ -747,7 +747,7 @@
         grossPriceElem.prop('disabled', false);
         taxElem.prop('disabled', false);
         document.contents.action += '&action=additem';
-        document.contents.submit();
+        document.contents.requestSubmit();
     }
 
     function delItem(posuid) {
