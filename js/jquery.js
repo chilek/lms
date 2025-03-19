@@ -901,7 +901,12 @@ function initAutoComplete(selector) {
 			textAreaNameValues = JSON.parse(textAreaNameValues);
 		}
 		elem.autocomplete({
-			source: textAreaNameValues
+			source: textAreaNameValues,
+			select: function() {
+				if ($(this).is('.lms-ui-autogrow')) {
+					$(this).trigger('input');
+				}
+			}
 		});
 
 		$(this.form).on('submit', function() {
