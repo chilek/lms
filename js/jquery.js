@@ -922,8 +922,12 @@ function initAutoComplete(selector) {
 			} else {
 				textAreaNameValues = JSON.parse(textAreaNameValues);
 			}
-			textAreaNameValues.push(elem.val());
-			setStorageItem(storageItemName, JSON.stringify(textAreaNameValues), 'local');
+			var value = elem.val();
+			if (textAreaNameValues.indexOf(value) === -1) {
+				textAreaNameValues.push(value);
+				textAreaNameValues.sort();
+				setStorageItem(storageItemName, JSON.stringify(textAreaNameValues), 'local');
+			}
 		})
 	});
 }
