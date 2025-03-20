@@ -971,6 +971,12 @@ version 28-git (????-??-??):
   - enhancement: new positions can be added on issued correction invoices [chilan]
   - bugfix/improvement: use jquery-ui 'autocomplete' widget for lms-ui-autocomplete classed html elements
     (useful for textarea's) [chilan]
+  - enhancement: new configuration variables which control validation type and customer statuses during required
+    customer property validation: 'customers.natural_person_required_property_validation_error',
+    'customers.legal_person_required_property_validation_error' (with 'true' as default value for both)
+    and 'customers.natural_person_required_property_validation_customer_statuses',
+    'customers.legal_person_required_property_validation_customer_statuses' (with 'connected,debt-collection'
+    as default value for both) [chilan]
 
 version 27.0 (2021-08-20):
 
