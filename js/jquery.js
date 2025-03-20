@@ -901,6 +901,7 @@ function initAutoComplete(selector) {
 			textAreaNameValues = JSON.parse(textAreaNameValues);
 		}
 		elem.autocomplete({
+			minLength: 0,
 			source: textAreaNameValues,
 			select: function() {
 				var that = $(this);
@@ -913,6 +914,8 @@ function initAutoComplete(selector) {
 					)
 				}
 			}
+		}).click(function() {
+			$(this).autocomplete('search', '');
 		});
 
 		$(this.form).on('submit', function() {
