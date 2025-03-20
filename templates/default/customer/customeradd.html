@@ -170,7 +170,7 @@
 						{if $customeradd.status}{icon name="customer-status-{$_CSTATUSES[$customeradd.status].alias}"}{else}{icon name="customer-status-connected"}{/if}
 					</TD>
 					<TD>
-						<select size="1" name="customeradd[status]" {tip trigger="status"}>
+						<select size="1" name="customeradd[status]" id="customer-status" {tip trigger="status"}>
 							{foreach $_CSTATUSES as $statusidx => $status}
 								<option value="{$statusidx}"{if $customeradd.status == $statusidx} selected{/if}>{$status.singularlabel}</option>
 							{/foreach}
@@ -735,6 +735,24 @@
 			{/foreach}
 		{/if}
 
+		var legal_person_required_property_validation_error = {if empty($legal_person_required_property_validation_error)}false{else}true{/if};
+		var natural_person_required_property_validation_error = {if empty($natural_person_required_property_validation_error)}false{else}true{/if};
+
+		var legal_person_required_property_validation_customer_statuses = [];
+		var natural_person_required_property_validation_customer_statuses = [];
+
+		{if !empty($legal_person_required_property_validation_customer_statuses)}
+			{foreach $legal_person_required_property_validation_customer_statuses as $index => $status}
+				legal_person_required_property_validation_customer_statuses.push('{$status}');
+			{/foreach}
+		{/if}
+
+		{if !empty($natural_person_required_property_validation_customer_statuses)}
+			{foreach $natural_person_required_property_validation_customer_statuses as $index => $status}
+				natural_person_required_property_validation_customer_statuses.push('{$status}');
+			{/foreach}
+		{/if}
+
 		$('[name="customeradd[pin]"]').change(function() {
 			if (validate_random_string(this.value, {$pin_min_size}, {$pin_max_size}, '{str_replace("'", "\'", $pin_allowed_characters)}')) {
 				this.setCustomValidity('');
@@ -772,10 +790,21 @@
 
 		$('[name="customeradd[type]"]').change(function() {
 			var isPrivate = $('#private').prop('checked');
+			var status = $('#customer-status').val();
+
 			$('[name="customeradd[name]"]').prop('required', isPrivate);
+
 			var required_properties = isPrivate ? natural_person_required_properties : legal_person_required_properties;
+			var required_property_validation_error = isPrivate ? natural_person_required_property_validation_error : legal_person_required_property_validation_error;
+			var required_property_validation_customer_statuses = status ? natural_person_required_property_validation_customer_statuses : legal_person_required_property_validation_customer_statuses;
+			console.log(required_properties, required_property_validation_error, required_property_validation_customer_statuses);
 			$.each(['ten', 'ssn', 'icn'], function(index, property) {
-				$('[name="customeradd[' + property + ']"]').prop('required', required_properties.indexOf(property) !== -1);
+				$('[name="customeradd[' + property + ']"]').prop(
+					'required',
+					required_properties.indexOf(property) !== -1
+						&& required_property_validation_error
+						&& required_property_validation_customer_statuses.indexOf(status) !== -1
+				);
 			});
 		}).change();
 

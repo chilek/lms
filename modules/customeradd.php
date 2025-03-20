@@ -97,6 +97,21 @@ $legal_person_required_properties = ConfigHelper::getConfig(
 );
 $legal_person_required_properties = array_flip(preg_split('/([\s]+|[\s]*,[\s]*)/', $legal_person_required_properties));
 
+$natural_person_required_property_validation_error = ConfigHelper::checkConfig(
+    'customers.natural_person_required_property_validation_error',
+    true
+);
+$legal_person_required_property_validation_error = ConfigHelper::checkConfig(
+    'customers.legal_person_required_property_validation_error',
+    true
+);
+$natural_person_required_property_validation_customer_statuses = Utils::determineAllowedCustomerStatus(
+    ConfigHelper::getConfig('customers.natural_person_required_property_validation_customer_statuses')
+);
+$legal_person_required_property_validation_customer_statuses = Utils::determineAllowedCustomerStatus(
+    ConfigHelper::getConfig('customers.legal_person_required_property_validation_customer_statuses')
+);
+
 $groups = trim(ConfigHelper::getConfig('customers.groups_required_on_add', ConfigHelper::getConfig('phpui.add_customer_group_required', 'false')));
 if (preg_match('/^(0|n|no|off|false|nie|disabled)$/i', $groups)) {
     $groups_required = false;
@@ -119,6 +134,8 @@ if (isset($_POST['customeradd'])) {
     $customeradd = $_POST['customeradd'];
 
     $required_properties = $customeradd['type'] == CTYPES_COMPANY ? $legal_person_required_properties : $natural_person_required_properties;
+    $required_property_validation_error = $customeradd['type'] == CTYPES_COMPANY ? $legal_person_required_property_validation_error : $natural_person_required_property_validation_error;
+    $required_property_validation_customer_statuses = $customeradd['type'] == CTYPES_COMPANY ? $legal_person_required_property_validation_customer_statuses : $natural_person_required_property_validation_customer_statuses;
 
     $contacttypes = array_keys($CUSTOMERCONTACTTYPES);
     foreach ($contacttypes as &$contacttype) {
@@ -259,8 +276,13 @@ if (isset($_POST['customeradd'])) {
                     }
                     break;
             }
-        } elseif (isset($required_properties['ten'])) {
-            $error['ten'] = trans('Missed required TEN identifier!');
+        } elseif (in_array($customeradd['status'], $required_property_validation_customer_statuses)
+            && isset($required_properties['ten'])) {
+            if ($required_property_validation_error) {
+                $error['ten'] = trans('Missed required TEN identifier!');
+            } elseif (!isset($warnings['customeradd-ten-'])) {
+                $warning['customeradd[ten]'] = trans('Missed recommended TEN identifier!');
+            }
         }
     }
 
@@ -302,8 +324,13 @@ if (isset($_POST['customeradd'])) {
                     }
                     break;
             }
-        } elseif (isset($required_properties['ssn'])) {
-            $error['ssn'] = trans('Missed required SSN identifier!');
+        } elseif (in_array($customeradd['status'], $required_property_validation_customer_statuses)
+            && isset($required_properties['ssn'])) {
+            if ($required_property_validation_error) {
+                $error['ssn'] = trans('Missed required SSN identifier!');
+            } elseif (!isset($warnings['customeradd-ssn-'])) {
+                $warning['customeradd[ssn]'] = trans('Missed recommended SSN identifier!');
+            }
         }
     }
 
@@ -314,8 +341,14 @@ if (isset($_POST['customeradd'])) {
                 $warning['icn'] = trans('Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.');
                 $icnwarning = 1;
             }
-        } elseif ($customeradd['icn'] == '' && isset($required_properties['icn'])) {
-            $error['icn'] = trans('Missed required Identity Card Number!');
+        } elseif ($customeradd['icn'] == ''
+            && in_array($customeradd['status'], $required_property_validation_customer_statuses)
+            && isset($required_properties['icn'])) {
+            if ($required_property_validation_error) {
+                $error['icn'] = trans('Missed required Identity Card Number!');
+            } elseif (!isset($warnings['customeradd-icn-'])) {
+                $warning['customeradd[icn]'] = trans('Missed recommended Identity Card Number!');
+            }
         }
     }
 
@@ -600,6 +633,10 @@ $SMARTY->assign($LMS->getCustomerPinRequirements());
 $SMARTY->assign('default_states', $default_states);
 $SMARTY->assign('legal_person_required_properties', $legal_person_required_properties);
 $SMARTY->assign('natural_person_required_properties', $natural_person_required_properties);
+$SMARTY->assign('legal_person_required_property_validation_error', $legal_person_required_property_validation_error);
+$SMARTY->assign('natural_person_required_property_validation_error', $natural_person_required_property_validation_error);
+$SMARTY->assign('legal_person_required_property_validation_customer_statuses', $legal_person_required_property_validation_customer_statuses);
+$SMARTY->assign('natural_person_required_property_validation_customer_statuses', $natural_person_required_property_validation_customer_statuses);
 $SMARTY->assign('divisions', $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())));
 $SMARTY->assign('customeradd', $customeradd);
 
