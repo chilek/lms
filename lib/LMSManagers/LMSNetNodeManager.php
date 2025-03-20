@@ -182,7 +182,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             );
         }
 
-        if (!empty($nlist)) {
+        if (!empty($nlist) && !$short) {
             foreach ($nlist as &$netnode) {
                 $flags = $netnode['flags'];
                 $netnode['flags'] = array();
