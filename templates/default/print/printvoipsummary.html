@@ -1,0 +1,202 @@
+{include file="clearheader.html"}
+<!--// $Id$ //-->
+
+<style>
+
+	table {
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	.data {
+		margin-top: 2em;
+	}
+
+	.empty-table {
+		padding-top: 3em;
+		padding-bottom: 3em;
+		text-align: center;
+	}
+
+	td {
+		padding: 5px;
+	}
+
+	.data td {
+		border: 1px solid black;
+	}
+
+	td {
+		text-align: center;
+	}
+
+	h1 {
+		margin-block-end: 0;
+	}
+
+</style>
+
+<table width="100%">
+	<colgroup>
+		<col style="width: 535;">
+		<col style="width: 180;">
+	</colgroup>
+	<tr>
+		<td class="valign-top">
+			<h1>
+				{$layout.pagetitle}
+			</h1>
+			<strong>
+				{trans("<!voip-summary>for period")}
+				{if !empty($datefrom)}
+					{t a=$datefrom|date_format:"Y-m-d"}<!voip-summary>from $a{/t}
+				{/if}
+				{if !empty($dateto)}
+					{t a=$dateto|date_format:"Y-m-d"}<!voip-summary>to $a{/t}
+				{/if}
+			</strong>
+		</td>
+		<td class="valign-right nobr">
+			{LMS::SOFTWARE_NAME} {$layout.lmsv} @ {$layout.hostname}<BR>
+			{t a=trans($smarty.now|date_format:"l") b=$smarty.now|date_format:"Y-m-d"}<!date-format>$a, $b{/t}
+			<br>
+			{t a=$layout.logname}Prepared by: $a{/t}
+		</td>
+	</TR>
+</table>
+<table class="data">
+	<colgroup>
+		<col style="width: 20%;">
+		<col style="width: 20%;">
+		<col style="width: 20%;">
+		<col style="width: 20%;">
+		<col style="width: 20%;">
+	</colgroup>
+	<tr>
+		<td class="head nobr">
+		</td>
+		<td class="head nobr">
+			{trans("<!voip-summary>Private customers (domestic)")}
+		</td>
+		<td class="head nobr">
+			{trans("<!voip-summary>Private customers (international)")}
+		</td>
+		<td class="head nobr">
+			{trans("<!voip-summary>Business customers (domestic)")}
+		</td>
+		<td class="head nobr">
+			{trans("<!voip-summary>Business customers (international)")}
+		</td>
+	</tr>
+	{if !empty($summary)}
+		<tr>
+			<td>
+				{trans("<!voip-summary>Outgoing count")}
+			</td>
+			<td>
+				{$summary.outgoing_domestic_private_count}
+			</td>
+			<td>
+				{$summary.outgoing_international_private_count}
+			</td>
+			<td>
+				{$summary.outgoing_domestic_business_count}
+			</td>
+			<td>
+				{$summary.outgoing_international_business_count}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{trans("<!voip-summary>Incoming count")}
+			</td>
+			<td>
+				{$summary.incoming_domestic_private_count}
+			</td>
+			<td>
+				{$summary.incoming_international_private_count}
+			</td>
+			<td>
+				{$summary.incoming_domestic_business_count}
+			</td>
+			<td>
+				{$summary.incoming_international_business_count}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{trans("<!voip-summary>Outgoing time")}
+			</td>
+			<td>
+				{$summary.outgoing_domestic_private_time|duration_format}
+			</td>
+			<td>
+				{$summary.outgoing_international_private_time|duration_format}
+			</td>
+			<td>
+				{$summary.outgoing_domestic_business_time|duration_format}
+			</td>
+			<td>
+				{$summary.outgoing_international_business_time|duration_format}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{trans("<!voip-summary>Incoming time")}
+			</td>
+			<td>
+				{$summary.incoming_domestic_private_time|duration_format}
+			</td>
+			<td>
+				{$summary.incoming_international_private_time|duration_format}
+			</td>
+			<td>
+				{$summary.incoming_domestic_business_time|duration_format}
+			</td>
+			<td>
+				{$summary.incoming_international_business_time|duration_format}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{trans("<!voip-summary>Outgoing cost")}
+			</td>
+			<td>
+				{moneyf($summary.outgoing_domestic_private_cost)}
+			</td>
+			<td>
+				{moneyf($summary.outgoing_international_private_cost)}
+			</td>
+			<td>
+				{moneyf($summary.outgoing_domestic_business_cost)}
+			</td>
+			<td>
+				{moneyf($summary.outgoing_international_business_cost)}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{trans("<!voip-summary>Incoming cost")}
+			</td>
+			<td>
+				{moneyf($summary.incoming_domestic_private_cost)}
+			</td>
+			<td>
+				{moneyf($summary.incoming_international_private_cost)}
+			</td>
+			<td>
+				{moneyf($summary.incoming_domestic_business_cost)}
+			</td>
+			<td>
+				{moneyf($summary.incoming_international_business_cost)}
+			</td>
+		</tr>
+	{else}
+		<tr>
+			<td colspan="5" class="empty-table">
+				{trans("<!voip-summary>No billing records for selected period!")}
+			</td>
+		</tr>
+	{/if}
+</table>
+{include file="clearfooter.html"}

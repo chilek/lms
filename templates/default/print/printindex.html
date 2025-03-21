@@ -2680,4 +2680,68 @@
 
 {/if}
 
+{if $printmenu == "voip"}
+
+<form method="post" name="printvoipsummary" id="printvoipsummary" action="?m=voipprint&type=summary">
+	<input type="submit" class="hiddenbtn">
+</form>
+
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 98%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<td>
+				{icon name="money"}
+			</td>
+			<td class="nobr" colspan="2">
+				<strong>{trans("VoIP summary")}</strong>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				{icon name="country"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("<!voip-summary>Domestic prefix")}</strong>
+			</td>
+			<td>
+				<input type="text" size="5" name="domestic-prefix" form="printvoipsummary" value="{$domestic_prefix}">
+			</td>
+		<td>
+		<tr>
+			<td>
+				{icon name="calendar"}
+			</td>
+			<td>
+				<strong>{trans("Period")}</strong>
+			</td>
+			<td>
+				{date_period_preset from="[form=\"printvoipsummary\"][name=\"datefrom\"]" to="[form=\"printvoipsummary\"][name=\"dateto\"]"
+					periods="previous-year,previous-month,current-year,current-month,next-month,next-year"}
+				<span>{trans("From")}</span>
+				<input type="text" name="datefrom" form="printvoipsummary" size="10" maxlength="10"
+					placeholder="{trans("yyyy/mm/dd")}"
+					{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means 1970/01/01) or click to choose it from calendar"}>
+				<span>{trans("To")}</span>
+				<input type="text" name="dateto" form="printvoipsummary" size="10" maxlength="10"
+					placeholder="{trans("yyyy/mm/dd")}"
+					{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" class="lms-ui-box-buttons">
+				{button label="Print" icon="print" type="submit" form="printvoipsummary"}
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+{/if}
+
 {/block}

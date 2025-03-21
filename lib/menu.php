@@ -267,6 +267,12 @@ $menu = array(
                     'tip' => trans('Allows you to search VoIP account'),
                     'prio' => 80,
                 ),
+                'voipprint' => array(
+                    'name' => trans('Reports'),
+                    'link' =>'?m=voipprint',
+                    'tip' => trans('Lists and reports printing'),
+                    'prio' => 90,
+                ),
             ),
         ),
 
