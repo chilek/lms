@@ -977,6 +977,7 @@ version 28-git (????-??-??):
     and 'customers.natural_person_required_property_validation_customer_statuses',
     'customers.legal_person_required_property_validation_customer_statuses' (with 'connected,debt-collection'
     as default value for both) [chilan]
+  - enhancement: added voip summary reports (especially usefull for UKE reports) [chilan]
 
 version 27.0 (2021-08-20):
 
