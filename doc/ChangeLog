@@ -978,6 +978,8 @@ version 28-git (????-??-??):
     'customers.legal_person_required_property_validation_customer_statuses' (with 'connected,debt-collection'
     as default value for both) [chilan]
   - enhancement: added voip summary reports (especially usefull for UKE reports) [chilan]
+  - enhancement: added subsection support which names are formatted as pattern
+    '<section-name>-<subsection-type>:<subsection-name>' [chilan]
 
 version 27.0 (2021-08-20):
 
