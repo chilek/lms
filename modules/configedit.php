@@ -126,7 +126,7 @@ if (isset($_POST['config'])) {
         $error['var'] = trans('Option exists!');
     }
 
-    if (!preg_match('/^[a-z0-9_-]+$/', $cfg['section']) && $cfg['section']!='') {
+    if (!preg_match('/^[a-z0-9_-]+(-[a-z0-9_]+:[a-z0-9_-]+)?$/', $cfg['section']) && $cfg['section']!='') {
         $error['section'] = trans('Section name contains forbidden characters!');
     }
 

@@ -67,7 +67,7 @@ if (!empty($config)) {
     $section = $config['section'];
     if (empty($section)) {
         $error['section'] = trans('Section name can\'t be empty!');
-    } elseif (!preg_match('/^[a-z0-9_-]+$/', $section)) {
+    } elseif (!preg_match('/^[a-z0-9_-]+(-[a-z0-9_]+:[a-z0-9_-]+)?$/', $section)) {
         $error['section'] = trans('Section name contains forbidden characters!');
     }
 
