@@ -430,7 +430,7 @@ switch ($action) {
         } elseif ($LMS->GetNodeIDByName($nodeipdata['name']) || $LMS->GetNodeIDByNetName($nodeipdata['name'])) {
             $error['ipname'] = trans('Specified name is in use!');
         } elseif (!preg_match('/^[_a-z0-9-]+$/i', $nodeipdata['name'])) {
-            $error['ipname'] = trans('Name contains forbidden characters!');
+            $error['ipname'] = trans('<!node>Name contains forbidden characters!');
         }
 
         if ($nodeipdata['ipaddr'] == '') {
@@ -549,7 +549,7 @@ switch ($action) {
                 && strtoupper($LMS->GetNodeName($_GET['ip'])) != strtoupper($nodeipdata['name'])) {
             $error['ipname'] = trans('Specified name is in use!');
         } elseif (!preg_match('/^[_a-z0-9-]+$/i', $nodeipdata['name'])) {
-            $error['ipname'] = trans('Name contains forbidden characters!');
+            $error['ipname'] = trans('<!node>Name contains forbidden characters!');
         }
 
         if ($nodeipdata['ipaddr'] == '') {

@@ -1627,6 +1627,7 @@ $_LANG['First/last name:'] = 'Imię i nazwisko:';
 $_LANG['Sender First, Last name (name)'] = 'Imię i nazwisko nadawcy (nazwa)';
 $_LANG['Last and first name'] = 'Nazwisko i imię';
 $_LANG['Name contains forbidden characters!'] = 'Nazwisko zawiera niepoprawne znaki!';
+$_LANG['<!node>Name contains forbidden characters!'] = 'Nazwa zawiera niepoprawne znaki!';
 $_LANG['Name of messages sender or predefined variables: "queue" - queue name, "user" - logged user name. Default: none.'] = 'Nazwa nadawcy wiadomości lub jedna z predefiniowanych wartości: "queue" - nazwa kolejki, "user" - zalogowany użytkownik. Domyślnie: pusta.';
 $_LANG['Name of product, commodity or service'] = 'Nazwa produktu, towaru lub usługi';
 $_LANG['Name of Product, Commodity or Service'] = 'Nazwa produktu, towaru lub usługi';
