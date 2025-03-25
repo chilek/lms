@@ -980,6 +980,8 @@ version 28-git (????-??-??):
   - enhancement: added voip summary reports (especially usefull for UKE reports) [chilan]
   - enhancement: added subsection support which names are formatted as pattern
     '<section-name>-<subsection-type>:<subsection-name>' [chilan]
+  - enhancement: new configuration variable 'netdevices.ip_name_regexp' with default value of '^[_a-z0-9\-\.]+$' controls
+    what characters are allowed in network device ip host name [chilan]
 
 version 27.0 (2021-08-20):
 
