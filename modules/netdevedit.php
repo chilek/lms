@@ -429,7 +429,7 @@ switch ($action) {
             $error['ipname'] = trans('Specified name is too long (max. $a characters)!', '32');
         } elseif ($LMS->GetNodeIDByName($nodeipdata['name']) || $LMS->GetNodeIDByNetName($nodeipdata['name'])) {
             $error['ipname'] = trans('Specified name is in use!');
-        } elseif (!preg_match('/^[_a-z0-9-]+$/i', $nodeipdata['name'])) {
+        } elseif (!preg_match('/' . ConfigHelper::getConfig('netdevices.ip_name_regexp', '^[_a-z0-9\-\.]+$') . '/i', $nodeipdata['name'])) {
             $error['ipname'] = trans('<!node>Name contains forbidden characters!');
         }
 
@@ -548,7 +548,7 @@ switch ($action) {
         } elseif (($LMS->GetNodeIDByName($nodeipdata['name']) || $LMS->GetNodeIDByNetName($nodeipdata['name']))
                 && strtoupper($LMS->GetNodeName($_GET['ip'])) != strtoupper($nodeipdata['name'])) {
             $error['ipname'] = trans('Specified name is in use!');
-        } elseif (!preg_match('/^[_a-z0-9-]+$/i', $nodeipdata['name'])) {
+        } elseif (!preg_match('/' . ConfigHelper::getConfig('netdevices.ip_name_regexp', '^[_a-z0-9\-\.]+$') . '/i', $nodeipdata['name'])) {
             $error['ipname'] = trans('<!node>Name contains forbidden characters!');
         }
 
