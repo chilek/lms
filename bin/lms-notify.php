@@ -402,14 +402,55 @@ $LMS->executeHook('division_set_after', array(
 
 // now it's time for script settings
 $smtp_options = array(
-    'host' => ConfigHelper::getConfig($config_section . '.smtp_host'),
-    'port' => ConfigHelper::getConfig($config_section . '.smtp_port'),
-    'user' => ConfigHelper::getConfig($config_section . '.smtp_username', ConfigHelper::getConfig($config_section . '.smtp_user')),
-    'pass' => ConfigHelper::getConfig($config_section . '.smtp_password', ConfigHelper::getConfig($config_section . '.smtp_pass')),
-    'auth' => ConfigHelper::getConfig($config_section . '.smtp_auth_type', ConfigHelper::getConfig($config_section . '.smtp_auth')),
-    'ssl_verify_peer' => ConfigHelper::checkConfig($config_section . '.smtp_ssl_verify_peer', true),
-    'ssl_verify_peer_name' => ConfigHelper::checkConfig($config_section . '.smtp_ssl_verify_peer_name', true),
-    'ssl_allow_self_signed' => ConfigHelper::checkConfig($config_section . '.smtp_ssl_allow_self_signed'),
+    'host' => ConfigHelper::getConfig(
+        $config_section . '.smtp_host',
+        ConfigHelper::getConfig('mail.smtp_host')
+    ),
+    'port' => ConfigHelper::getConfig(
+        $config_section . '.smtp_port',
+        ConfigHelper::getConfig('mail.smtp_port')
+    ),
+    'user' => ConfigHelper::getConfig(
+        $config_section . '.smtp_username',
+        ConfigHelper::getConfig(
+            $config_section . '.smtp_user',
+            ConfigHelper::getConfig('mail.smtp_username')
+        )
+    ),
+    'pass' => ConfigHelper::getConfig(
+        $config_section . '.smtp_password',
+        ConfigHelper::getConfig(
+            $config_section . '.smtp_pass',
+            ConfigHelper::getConfig('mail.smtp_password')
+        )
+    ),
+    'auth' => ConfigHelper::getConfig(
+        $config_section . '.smtp_auth_type',
+        ConfigHelper::getConfig(
+            $config_section . '.smtp_auth',
+            ConfigHelper::getConfig('mail.smtp_auth_type')
+        )
+    ),
+    'ssl_verify_peer' => ConfigHelper::checkConfig(
+        $config_section . '.smtp_ssl_verify_peer',
+        ConfigHelper::checkConfig(
+            'mail.smtp_ssl_verify_peer',
+            true
+        )
+    ),
+    'ssl_verify_peer_name' => ConfigHelper::checkConfig(
+        $config_section . '.smtp_ssl_verify_peer_name',
+        ConfigHelper::checkConfig(
+            'mail.smtp_ssl_verify_peer_name',
+            true
+        )
+    ),
+    'ssl_allow_self_signed' => ConfigHelper::checkConfig(
+        $config_section . '.smtp_ssl_allow_self_signed',
+        ConfigHelper::checkConfig(
+            'mail.smtp_ssl_allow_self_signed'
+        )
+    ),
 );
 
 $suspension_percentage = floatval(ConfigHelper::getConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0)));
