@@ -982,6 +982,7 @@ version 28-git (????-??-??):
     '<section-name>-<subsection-type>:<subsection-name>' [chilan]
   - enhancement: new configuration variable 'netdevices.ip_name_regexp' with default value of '^[_a-z0-9\-\.]+$' controls
     what characters are allowed in network device ip host name [chilan]
+  - improvement: use 'mail' section 'smtp_*' configuration settings/variables as fallback [chilan]
 
 version 27.0 (2021-08-20):
 
