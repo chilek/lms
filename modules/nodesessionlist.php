@@ -68,7 +68,7 @@ $SESSION->save('nsldatefrom', $datefrom);
 $SESSION->save('nsldateto', $dateto);
 
 if (isset($_POST['filtertype'])) {
-    if (in_array($_POST['filtertype'], array('ip', 'mac', 'customer', 'nodeid'))) {
+    if (in_array($_POST['filtertype'], array('ip', 'mac', 'customer', 'nodeid', 'location'))) {
         $filtertype = $_POST['filtertype'];
     } else {
         $filtertype = '';
@@ -138,14 +138,23 @@ if (!empty($filtertype)) {
                 $filtervalue = '';
             }
             break;
+        case 'location':
+            $where[] = '(s.location ?LIKE? ' . $DB->Escape("%$filtervalue%") . ')';
+            break;
     }
 }
 
-$nodesessions = $DB->GetAll('SELECT s.*, c.name, c.lastname FROM nodesessions s
-	LEFT JOIN nodes n ON n.id = s.nodeid
-	LEFT JOIN customers c ON c.id = s.customerid
-	WHERE ' . implode(' AND ', $where) . '
-	ORDER BY s.start DESC LIMIT 5000');
+$nodesessions = $DB->GetAll(
+    'SELECT
+        s.*,
+        c.name,
+        c.lastname
+    FROM nodesessions s
+    LEFT JOIN nodes n ON n.id = s.nodeid
+    LEFT JOIN customers c ON c.id = s.customerid
+    WHERE ' . implode(' AND ', $where) . '
+    ORDER BY s.start DESC LIMIT 5000'
+);
 
 if (!empty($nodesessions)) {
     foreach ($nodesessions as &$session) {
