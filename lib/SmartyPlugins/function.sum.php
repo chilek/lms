@@ -33,8 +33,12 @@ function smarty_function_sum($params, $template)
 
     if ($array) {
         foreach ($array as $row) {
-            if (is_array($row) && isset($row[$params['column']])) {
-                $result += $row[$params['column']];
+            if (is_array($row)) {
+                if (isset($params['column'], $row[$params['column']])) {
+                    $result += $row[$params['column']];
+                }
+            } else {
+                $result += floatval($row);
             }
         }
     }
