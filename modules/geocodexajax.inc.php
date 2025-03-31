@@ -145,6 +145,8 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
                 $("' . $latitude_selector . '").val("' . $geocode['latitude'] . '");
                 $("' . $longitude_selector . '").val("' . $geocode['longitude'] . '");
             ');
+
+            break;
         } elseif (($provider == 'siis' || $provider == 'prg') && isset($address)) {
             $args = array(
                 'city_id' => $address['city_id'],
@@ -164,6 +166,8 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
 				$("' . $latitude_selector . '").val("' . $coordinates['latitude'] . '");
 				$("' . $longitude_selector . '").val("' . $coordinates['longitude'] . '");
 			');
+
+            break;
         }
     }
 
