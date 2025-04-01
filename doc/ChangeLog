@@ -984,6 +984,8 @@ version 28-git (????-??-??):
     what characters are allowed in network device ip host name [chilan]
   - improvement: use 'mail' section 'smtp_*' configuration settings/variables as fallback [chilan]
   - enhancement: new node session search criterion: location [chilan]
+  - improvement: customer quick search 'notes' property takes dedicated customer notes tab/panel
+    into consideration [chilan]
 
 version 27.0 (2021-08-20):
 
