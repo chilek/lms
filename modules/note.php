@@ -194,8 +194,9 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             foreach ($accounts as &$account) {
                 $account = format_bankaccount($account);
             }
+            unset($account);
             $tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
-            $note['bankaccounts'] = implode("\n", $accounts);
+            $note['bankaccounts'] = $accounts;
             $tmp = mb_ereg_replace('\r?\n', '<br>', $tmp);
             $note['division_footer'] = $tmp;
         }
@@ -267,8 +268,9 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             foreach ($accounts as &$account) {
                 $account = format_bankaccount($account);
             }
+            unset($account);
             $tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
-            $note['bankaccounts'] = implode("\n", $accounts);
+            $note['bankaccounts'] = $accounts;
             $tmp = mb_ereg_replace('\r?\n', '<br>', $tmp);
             $note['division_footer'] = $tmp;
         }
@@ -316,8 +318,9 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         foreach ($accounts as &$account) {
             $account = format_bankaccount($account);
         }
+        unset($account);
         $tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
-        $note['bankaccounts'] = implode("\n", $accounts);
+        $note['bankaccounts'] = $accounts;
         $tmp = mb_ereg_replace('\r?\n', '<br>', $tmp);
         $note['division_footer'] = $tmp;
     }

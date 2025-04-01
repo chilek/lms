@@ -91,6 +91,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         foreach ($accounts as &$account) {
             $account = format_bankaccount($account);
         }
+        unset($account);
         $account_text = ($this->use_alert_color ? '<span style="color:red">' : '')
             . implode("\n", $accounts)
             . ($this->use_alert_color ? '</span>' : '');
