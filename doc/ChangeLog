@@ -986,6 +986,9 @@ version 28-git (????-??-??):
   - enhancement: new node session search criterion: location [chilan]
   - improvement: customer quick search 'notes' property takes dedicated customer notes tab/panel
     into consideration [chilan]
+  - improvement: configuration variable 'sendinvoices.financial_history_reverse_order' ('true' as default value)
+    and 'sendinvoices.financial_history_item_description_format' ('%comment' as default value) controls the way
+    in which last N financial history table is generated during invoice send [chilan]
 
 version 27.0 (2021-08-20):
 
