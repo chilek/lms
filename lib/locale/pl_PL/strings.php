@@ -6176,3 +6176,6 @@ $_LANG['<!nodesession-search>MAC address'] = 'adres MAC';
 $_LANG['<!nodesession-search>customer'] = 'klient';
 $_LANG['<!nodesession-search>node ID'] = 'id komputera';
 $_LANG['<!nodesession-search>location'] = 'lokalizacja';
+
+$_LANG['<!financial-history>Charge'] = 'Obciążenie';
+$_LANG['<!financial-history>Payment'] = 'Wpłata';

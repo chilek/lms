@@ -678,10 +678,10 @@ class LMS
         return $manager->getCustomerShortBalanceList($customerid, $limit, $order);
     }
 
-    public function getLastNInTable($body, $customerid, $format, $aggregate_documents = false)
+    public function getLastNInTable($body, $customerid, $format, $aggregate_documents = false, $reverse_order = true, $item_description_format = null)
     {
         $manager = $this->getCustomerManager();
-        return $manager->getLastNInTable($body, $customerid, $format, $aggregate_documents);
+        return $manager->getLastNInTable($body, $customerid, $format, $aggregate_documents, $reverse_order, $item_description_format);
     }
 
     public function CustomerStats()
@@ -5142,6 +5142,18 @@ class LMS
             $no_attachments = false;
         }
 
+        if (!isset($aggregate_documents)) {
+            $aggregate_documents = false;
+        }
+
+        if (!isset($financial_history_reverse_order)) {
+            $financial_history_reverse_order = true;
+        }
+
+        if (!isset($financial_history_item_description_format)) {
+            $financial_history_item_description_format = '%comment';
+        }
+
         $month = sprintf('%02d', intval(date('m', $currtime)));
         $day = sprintf('%02d', intval(date('d', $currtime)));
         $year = sprintf('%04d', intval(date('Y', $currtime)));
@@ -5275,7 +5287,7 @@ class LMS
             $subject = preg_replace('/%invoice/', $invoice_number, $subject);
             $doc['name'] = '"' . $doc['name'] . '"';
 
-            $body = $this->getLastNInTable($body, $doc['customerid'], $mail_format, $aggregate_documents);
+            $body = $this->getLastNInTable($body, $doc['customerid'], $mail_format, $aggregate_documents, $financial_history_reverse_order, $financial_history_item_description_format);
 
             $mailto = array();
             $mailto_qp_encoded = array();

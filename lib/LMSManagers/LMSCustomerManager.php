@@ -384,14 +384,27 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
     public function GetCustomerShortBalanceList($customerid, $limit = 10, $order = 'DESC', $aggregate_documents = false)
     {
-        $result = $this->db->GetAll('SELECT cash.comment, cash.value, cash.currency, cash.currencyvalue,
-                    cash.time, cash.docid, d.type AS doctype, d.number, np.template, d.cdate
-                FROM cash
-                LEFT JOIN documents d ON d.id = cash.docid
-                LEFT JOIN numberplans np ON np.id = d.numberplanid
-                               WHERE cash.customerid = ?
-                               ORDER BY cash.time ' . $order
-                . (empty($limit) ? '' : ' LIMIT ' . intval($limit)), array($customerid));
+        $result = $this->db->GetAll(
+            'SELECT
+                cash.comment,
+                cash.value,
+                cash.currency,
+                cash.currencyvalue,
+                cash.time,
+                cash.docid,
+                d.type AS doctype,
+                d.number,
+                np.template,
+                d.cdate,
+                d.fullnumber
+            FROM cash
+            LEFT JOIN documents d ON d.id = cash.docid
+            LEFT JOIN numberplans np ON np.id = d.numberplanid
+            WHERE cash.customerid = ?
+            ORDER BY cash.time ' . $order
+            . (empty($limit) ? '' : ' LIMIT ' . intval($limit)),
+            array($customerid)
+        );
 
         if (empty($result)) {
             return null;
@@ -424,8 +437,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         return $result;
     }
 
-    public function getLastNInTable($body, $customerid, $format, $aggregate_documents = false)
+    public function getLastNInTable($body, $customerid, $format, $aggregate_documents = false, $reverse_order = true, $item_description_format = null)
     {
+        global $DOCTYPES;
+
         static $cols = null;
 
         if (preg_match('/%last_(?<number>[0-9]+)_in_a_table/', $body, $m)) {
@@ -434,22 +449,22 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     'date' => array(
                         'length' => 0,
                         'label' => trans('Date'),
-                        'align' => 'left',
+                        'align' => 'center',
                     ),
                     'liability' => array(
                         'length' => 0,
-                        'label' => trans('Liability'),
-                        'align' => 'right',
+                        'label' => trans('<!financial-history>Charge'),
+                        'align' => 'center',
                     ),
                     'payment' => array(
                         'length' => 0,
-                        'label' => trans('Payment'),
-                        'align' => 'right',
+                        'label' => trans('<!financial-history>Payment'),
+                        'align' => 'center',
                     ),
                     'balance' => array(
                         'length' => 0,
                         'label' => trans('Balance'),
-                        'align' => 'right',
+                        'align' => 'center',
                     ),
                     'description' => array(
                         'length' => 53,
@@ -459,12 +474,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 );
             }
 
-            if ($aggregate_documents) {
-                $lastN = $this->GetCustomerShortBalanceList($customerid, 0, 'DESC', $aggregate_documents);
-                $lastN = array_slice($lastN, 0, $m['number']);
-            } else {
-                $lastN = $this->GetCustomerShortBalanceList($customerid, $m['number'], 'DESC', $aggregate_documents);
-            }
+            $lastN = $this->GetCustomerShortBalanceList($customerid, 0, $reverse_order ? 'DESC' : 'ASC', $aggregate_documents);
+            $lastN = array_slice($lastN, $reverse_order ? 0 : $m['number'] * -1, $reverse_order ? $m['number'] : null);
             if (empty($lastN)) {
                 $lN = '';
             } else {
@@ -498,19 +509,31 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         $cols['payment']['value'] = moneyf($row_s['value'], $row_s['currency']);
                     }
                     $cols['balance']['value'] = moneyf($row_s['after'], Localisation::getCurrentCurrency());
-                    $cols['description']['value'] = $row_s['comment'];
+                    $cols['description']['value'] = str_replace(
+                        array(
+                            '%comment',
+                            '%doctype',
+                            '%docnumber',
+                        ),
+                        array(
+                            $row_s['comment'],
+                            empty($row_s['doctype']) ? '-' : $DOCTYPES[$row_s['doctype']],
+                            empty($row_s['fullnumber']) ? '' : $row_s['fullnumber'],
+                        ),
+                        $item_description_format
+                    );
                     if ($format == 'html') {
                         $lN .= '<tr>' . PHP_EOL
-                            . '<td>'
+                            . '<td style="text-align: ' . $cols['date']['align']. '">'
                                 . $cols['date']['value'] . '</td>' . PHP_EOL . '
-                            <td>'
+                            <td style="text-align: ' . $cols['liability']['align'] . '">'
                                 . $cols['liability']['value'] . '</td>' . PHP_EOL . '
-                            <td style="'
-                                . ($cols['payment']['value'] > 0 ? ' color: green;' : ($cols['payment'] < 0 ? 'color: red;' : '')) . '">'
+                            <td style="text-align: ' . $cols['payment']['align'] . ';'
+                                . ($cols['payment']['value'] > 0 ? ' color: green;' : ($cols['payment'] < 0 ? ' color: red;' : '')) . '">'
                                 . ($cols['payment']['value'] > 0 ? '+' : '') . $cols['payment']['value'] . '</td>' . PHP_EOL . '
-                            <td style="'
-                                . ($cols['balance']['value'] < 0 ? 'color: red;' : '') . '">' . $cols['balance']['value'] . '</td>' . PHP_EOL . '
-                            <td>'
+                            <td style="text-align: ' . $cols['balance']['align'] . ';'
+                                . ($cols['balance']['value'] < 0 ? ' color: red;' : '') . '">' . $cols['balance']['value'] . '</td>' . PHP_EOL . '
+                            <td style="text-align: ' . $cols['description']['align'] . '">'
                                 . $cols['description']['value'] . '</td>' . PHP_EOL
                         . '</tr>' . PHP_EOL;
                     } else {
