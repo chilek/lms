@@ -738,7 +738,7 @@ if (isset($_POST['document'])) {
             $SESSION->redirect('?m=documentlist&c=' . $document['customerid']);
         }
 
-        unset($document['title']);
+        //unset($document['title']);
         unset($document['number']);
         unset($document['description']);
         unset($document['fromdate']);
