@@ -6182,5 +6182,6 @@ $_LANG['<!financial-history>Payment'] = 'Wpłata';
 
 $_LANG['Blind carbon copy'] = 'Ukryte do wiadomości';
 $_LANG['Carbon copy'] = 'Do wiadomości';
-$_LANG['More e-mail recipients'] = 'Więcej adresów e-mail odbiorców';
-$_LANG['Less e-mail recipients'] = 'Mniej adresów e-mail odbiorców';
+$_LANG['Reply to'] = 'Odpowiedź do';
+$_LANG['More e-mail addresses'] = 'Więcej adresów e-mail';
+$_LANG['Less e-mail addresses'] = 'Mniej adresów e-mail';

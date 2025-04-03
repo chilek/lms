@@ -571,17 +571,28 @@
 			<td></td>
 			<td></td>
 			<td>
-				{if empty($message['cc-email']) && empty($message['bcc-email'])}
+				{if empty($message['cc-email']) && empty($message['bcc-email']) && empty($message['reply-email'])}
 					{$icon = "next"}
-					{$label = "More e-mail recipients"}
+					{$label = "More e-mail addresses"}
 				{else}
 					{$icon = "previous"}
-					{$label = "Less e-mail recipients"}
+					{$label = "Less e-mail addresses"}
 				{/if}
 				{button type="link" icon=$icon label=$label id="additional-email-addresses-button"}
 			</td>
 		</tr>
-		<tr class="additional-email-address{if empty($message['cc-email']) && empty($message['bcc-email'])} hidden{/if}"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
+		<tr class="additional-email-address{if empty($message['cc-email']) && empty($message['bcc-email']) && empty($message['reply-email'])} hidden{/if}"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
+			<td>
+				{icon name="mail"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Reply to")}</strong>
+			</td>
+			<td>
+				<input type="email" name="message[reply-email]" size="40"  value="{if !empty($message['reply-email'])}{$message['reply-email']}{/if}">
+			</td>
+		</tr>
+		<tr class="additional-email-address{if empty($message['cc-email']) && empty($message['bcc-email']) && empty($message['reply-email'])} hidden{/if}"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
 			<td>
 				{icon name="mail"}
 			</td>
@@ -592,7 +603,7 @@
 				<input type="email" multiple name="message[cc-email]" size="40"  value="{if !empty($message['cc-email'])}{$message['cc-email']}{/if}">
 			</td>
 		</tr>
-		<tr class="additional-email-address{if empty($message['cc-email']) && empty($message['bcc-email'])} hidden{/if}"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
+		<tr class="additional-email-address{if empty($message['cc-email']) && empty($message['bcc-email']) && empty($message['reply-email'])} hidden{/if}"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
 			<td>
 				{icon name="mail"}
 			</td>
@@ -846,7 +857,7 @@
 			} else {
 				$('#mailbody,#mailfrom,#mailsender,.additional-email-addresses,scheduled-message,#attachment').show();
 				$('.additional-email-address').css('display', '');
-				$('.additional-email-address').toggleClass('hidden', !$('[name="message[cc-email]"]').val().length && !$('[name="message[bcc-email]"]').val().length);
+				$('.additional-email-address').toggleClass('hidden', !$('[name="message[cc-email]"]').val().length && !$('[name="message[bcc-email]"]').val().length && !$('[name="message[reply-email]"]').val().length);
 
 				{if $message.emailcount}
 					$('#customermails').show();
@@ -870,8 +881,8 @@
 			$(this).find('i').toggleClass('lms-ui-icon-next lms-ui-icon-previous');
 			console.log($(this).find('i').is('.lms-ui-icon-next'));
 			$(this).find('.lms-ui-label').text($(this).find('i').is('.lms-ui-icon-next') ?
-				'{trans("More e-mail recipients")}' :
-				'{trans("Less e-mail recipients")}'
+				'{trans("More e-mail addresses")}' :
+				'{trans("Less e-mail addresses")}'
 			);
 		});
 
