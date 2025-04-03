@@ -989,6 +989,8 @@ version 28-git (????-??-??):
   - improvement: configuration variable 'sendinvoices.financial_history_reverse_order' ('true' as default value)
     and 'sendinvoices.financial_history_item_description_format' ('%comment' as default value) controls the way
     in which last N financial history table is generated during invoice send [chilan]
+  - improvement: '%cid' and '%pin' substitution symbols are supported in 'documents.mail_body'
+    configuration variable [chilan]
 
 version 27.0 (2021-08-20):
 
