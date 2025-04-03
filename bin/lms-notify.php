@@ -3670,9 +3670,24 @@ if (empty($types) || in_array('messages', $types)) {
                                 }
                             }
 
+                            if (!empty($attributes['reply'])) {
+                                $headers['Reply-To'] = $attributes['reply'];
+                            }
+
                             if (isset($headers['Cc']) && $headers['Cc'] == $headers['From'] || !empty($attributes['copytosender'])) {
                                 $headers['Cc'] = $mail_from;
+                            } else {
+                                $headers['Cc'] = '';
                             }
+
+                            if (!empty($attributes['cc'])) {
+                                $headers['Cc'] = (empty($headers['Cc']) ? '' : ',') . $attributes['cc'];
+                            }
+
+                            if (!empty($attributes['bcc'])) {
+                                $headers['Bcc'] = $attributes['bcc'];
+                            }
+
                             if (empty($dsn_email)) {
                                 $headers['From'] = $mail_from;
                             } else {
