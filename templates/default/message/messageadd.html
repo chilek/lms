@@ -61,6 +61,10 @@
 		margin-left: 0.5em;
 	}
 
+	.additional-email-address.hidden {
+		display: none;
+	}
+
 </style>
 
 {$xajax}
@@ -563,6 +567,42 @@
 					{tip trigger="from" text="Enter sender name"}>
 			</td>
 		</tr>
+		<tr class="additional-email-addresses"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
+			<td></td>
+			<td></td>
+			<td>
+				{if empty($message['cc-email']) && empty($message['bcc-email'])}
+					{$icon = "next"}
+					{$label = "More e-mail recipients"}
+				{else}
+					{$icon = "previous"}
+					{$label = "Less e-mail recipients"}
+				{/if}
+				{button type="link" icon=$icon label=$label id="additional-email-addresses-button"}
+			</td>
+		</tr>
+		<tr class="additional-email-address{if empty($message['cc-email']) && empty($message['bcc-email'])} hidden{/if}"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
+			<td>
+				{icon name="mail"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Carbon copy")}</strong>
+			</td>
+			<td>
+				<input type="email" multiple name="message[cc-email]" size="40"  value="{if !empty($message['cc-email'])}{$message['cc-email']}{/if}">
+			</td>
+		</tr>
+		<tr class="additional-email-address{if empty($message['cc-email']) && empty($message['bcc-email'])} hidden{/if}"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
+			<td>
+				{icon name="mail"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Blind carbon copy")}</strong>
+			</td>
+			<td>
+				<input type="email" multiple name="message[bcc-email]" size="40"  value="{if !empty($message['bcc-email'])}{$message['bcc-email']}{/if}">
+			</td>
+		</tr>
 		{if $users}
 		<tr id="users"{if $message.type != $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>
 			<td>
@@ -763,7 +803,7 @@
 			});
 
 			if (elem == 'typesms' || elem == 'typeanysms' || elem == 'typewww' || elem == 'typeuserpanel' || elem == 'typeuserpanelurgent') {
-				$('#mailfrom,#mailsender').hide();
+				$('#mailfrom,#mailsender,.additional-email-addresses,.additional-email-address').hide();
 
 				$('.scheduled-message').toggle(elem != 'typewww' && elem != 'typeuserpanel' && elem != 'typeuserpanelurgent');
 
@@ -804,7 +844,9 @@
 					xajax_getMessageTemplates({$smarty.const.TMPL_SMS});
 				}
 			} else {
-				$('#mailbody,#mailfrom,#mailsender,.scheduled-message,#attachment').show();
+				$('#mailbody,#mailfrom,#mailsender,.additional-email-addresses,scheduled-message,#attachment').show();
+				$('.additional-email-address').css('display', '');
+				$('.additional-email-address').toggleClass('hidden', !$('[name="message[cc-email]"]').val().length && !$('[name="message[bcc-email]"]').val().length);
 
 				{if $message.emailcount}
 					$('#customermails').show();
@@ -821,6 +863,16 @@
 				xajax_getMessageTemplates({$smarty.const.TMPL_MAIL});
 			}
 			$('#msgtmplid').prop('disabled', true);
+		});
+
+		$('#additional-email-addresses-button').click(function() {
+			$('.additional-email-address').toggleClass('hidden');
+			$(this).find('i').toggleClass('lms-ui-icon-next lms-ui-icon-previous');
+			console.log($(this).find('i').is('.lms-ui-icon-next'));
+			$(this).find('.lms-ui-label').text($(this).find('i').is('.lms-ui-icon-next') ?
+				'{trans("More e-mail recipients")}' :
+				'{trans("Less e-mail recipients")}'
+			);
 		});
 
 		$('#startdate').change(function() {

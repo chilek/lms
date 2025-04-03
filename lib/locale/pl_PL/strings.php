@@ -6179,3 +6179,8 @@ $_LANG['<!nodesession-search>location'] = 'lokalizacja';
 
 $_LANG['<!financial-history>Charge'] = 'Obciążenie';
 $_LANG['<!financial-history>Payment'] = 'Wpłata';
+
+$_LANG['Blind carbon copy'] = 'Ukryte do wiadomości';
+$_LANG['Carbon copy'] = 'Do wiadomości';
+$_LANG['More e-mail recipients'] = 'Więcej adresów e-mail odbiorców';
+$_LANG['Less e-mail recipients'] = 'Mniej adresów e-mail odbiorców';

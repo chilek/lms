@@ -1116,6 +1116,8 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
         $permanent_attributes = array(
             'copytosender' => isset($message['copytosender']),
+            'cc' => $message['cc-email'],
+            'bcc' => $message['bcc-email'],
         );
 
         $divisionid = 0;
@@ -1204,6 +1206,15 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 $orig_destination = $destination;
                 if ($message['type'] == MSG_MAIL) {
                     $headers['To'] = '<' . $destination . '>';
+
+                    if (!empty($permanent_attributes['cc'])) {
+                        $headers['Cc'] = $permanent_attributes['cc'];
+                    }
+
+                    if (!empty($permanent_attributes['bcc'])) {
+                        $headers['Bcc'] = $permanent_attributes['bcc'];
+                    }
+
                     echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> ';
                 } elseif ($message['type'] == MSG_WWW) {
                     echo '<img src="img/network.gif" border="0" align="absmiddle" alt=""> ';
