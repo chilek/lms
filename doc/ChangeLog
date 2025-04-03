@@ -991,6 +991,7 @@ version 28-git (????-??-??):
     in which last N financial history table is generated during invoice send [chilan]
   - improvement: '%cid' and '%pin' substitution symbols are supported in 'documents.mail_body'
     configuration variable [chilan]
+  - enhancement: CC and BCC recipient e-mail addresses can be specified in message add form [chilan]
 
 version 27.0 (2021-08-20):
 
