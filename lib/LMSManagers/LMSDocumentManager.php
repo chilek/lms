@@ -2520,7 +2520,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         if ($userid) {
             $document = $this->db->GetRow(
-                'SELECT d.id, d.number, d.cdate, d.type, d.customerid,
+                'SELECT d.id, d.number, d.cdate, d.type,
+                    d.customerid,
+                    c.pin,
                     d.fullnumber, n.template, d.ssn, d.name, d.reference,
                     d2.number AS ref_number,
                     d2.cdate AS ref_date,
@@ -2530,6 +2532,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     dc.title AS content_title
                 FROM documents d
                 JOIN documentcontents dc ON dc.docid = d.id
+                JOIN customers c ON c.id = d.customerid
                 LEFT JOIN numberplans n ON (d.numberplanid = n.id)
                 JOIN docrights r ON (r.doctype = d.type)
                 LEFT JOIN documents d2 ON d2.id = d.reference
@@ -2543,7 +2546,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             );
         } else {
             $document = $this->db->GetRow(
-                'SELECT d.id, d.number, d.cdate, d.type, d.customerid,
+                'SELECT d.id, d.number, d.cdate, d.type,
+                    d.customerid,
+                    c.pin,
                     d.fullnumber, n.template, d.ssn, d.name, d.reference,
                     d2.number AS ref_number,
                     d2.cdate AS ref_date,
@@ -2553,6 +2558,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     dc.title AS content_title
                 FROM documents d
                 JOIN documentcontents dc ON dc.docid = d.id
+                JOIN customers c ON c.id = d.customerid
                 LEFT JOIN numberplans n ON (d.numberplanid = n.id)
                 JOIN docrights r ON (r.doctype = d.type)
                 LEFT JOIN documents d2 ON d2.id = d.reference
@@ -2938,6 +2944,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     '%type',
                     '%title',
                     '%today',
+                    '%cid',
+                    '%pin',
                     '%customer_name',
                     '\n',
                 ),
@@ -2949,6 +2957,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     $DOCTYPES[$document['type']],
                     $document['content_title'],
                     $year . '-' . $month . '-' . $day,
+                    $document['customerid'],
+                    $document['pin'],
                     $document['name'],
                     "\n",
                 ),
