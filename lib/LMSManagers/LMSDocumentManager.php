@@ -555,8 +555,14 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         return $list;
     }
 
-    public function getDefaultNumberPlanID($doctype, $divisionid = null)
+    public function getDefaultNumberPlanID($doctype, $divisionid = null, $cdate = null)
     {
+        if (empty($cdate)) {
+            $cdate = time();
+        } else {
+            $cdate = intval($cdate);
+        }
+
         if (!empty($divisionid)) {
             return $this->db->GetOne(
                 'SELECT n.id,
@@ -567,6 +573,11 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 WHERE n.doctype = ? AND n.isdefault = 1
                     AND (u.planid IS NULL OR u.userid = ?)
                     AND (a.planid IS NULL OR a.divisionid = ?)
+                    ' . (empty($cdate)
+                        ? ''
+                        : ' AND n.datefrom <= ' . $cdate . '
+                            AND (n.dateto = 0 OR n.dateto >= ' . $cdate . ')'
+                    ) . '
                 ORDER BY idx
                 LIMIT 1',
                 array(
@@ -583,6 +594,11 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 LEFT JOIN numberplanusers u ON u.planid = n.id
                 WHERE n.doctype = ? AND n.isdefault = 1
                     AND (u.userid IS NULL OR u.userid = ?)
+                    ' . (empty($cdate)
+                        ? ''
+                        : ' AND n.datefrom <= ' . $cdate . '
+                            AND (n.dateto = 0 OR n.dateto >= ' . $cdate . ')'
+                    ) . '
                 ORDER BY idx
                 LIMIT 1',
                 array(

@@ -3599,10 +3599,10 @@ class LMS
         return $manager->getSystemDefaultNumberPlan($properties);
     }
 
-    public function getDefaultNumberPlanID($doctype, $divisionid = null)
+    public function getDefaultNumberPlanID($doctype, $divisionid = null, $cdate = null)
     {
         $manager = $this->getDocumentManager();
-        return $manager->getDefaultNumberPlanID($doctype, $divisionid);
+        return $manager->getDefaultNumberPlanID($doctype, $divisionid, $cdate);
     }
 
     public function checkNumberPlanAccess($id)
