@@ -2046,6 +2046,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $data = $this->GetInvoiceContent($doc['id']);
         }
 
+        if (empty($data)) {
+            return null;
+        }
+
         if ($type == 'pdf') {
             $fext = 'pdf';
         } else {

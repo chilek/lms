@@ -5176,6 +5176,9 @@ class LMS
 
             if (!$no_attachments) {
                 $document = $this->GetTradeDocument($doc);
+                if (empty($document)) {
+                    continue;
+                }
                 $filename = $document['filename'];
             }
 
