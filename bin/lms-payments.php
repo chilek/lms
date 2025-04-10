@@ -1907,7 +1907,7 @@ foreach ($assigns as $assign) {
                             array(
                                 $netflag
                                     ? -round(($price * (100 + $assign['taxrate']) / 100) * ($tmp_item['count'] + $assign['count']), 2)
-                                    : -$grossvalue * ($tmp_item['count'] + $assign['count']),
+                                    : -$price * ($tmp_item['count'] + $assign['count']),
                                 $invoices[$cid],
                                 $tmp_item['itemid'],
                             )
