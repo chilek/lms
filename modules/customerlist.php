@@ -83,6 +83,10 @@ if ($api) {
         $filter['division'] = $_GET['d'];
     }
 
+    if (isset($_GET['type'])) {
+        $filter['type'] = intval($_GET['type']);
+    }
+
     if (isset($_GET['assignments'])) {
         $filter['assignments'] = $_GET['assignments'];
     }
@@ -103,6 +107,9 @@ if ($api) {
     $SESSION->saveFilter($filter);
 
     $filter['search'] = array();
+    if (isset($filter['type']) && $filter['type'] !== -1) {
+        $filter['search']['type'] = $filter['type'];
+    }
     $filter['sqlskey'] = 'AND';
     $filter['count'] = true;
     $summary = $LMS->GetCustomerList($filter);

@@ -183,6 +183,16 @@
 
 			{division_selection name="d" selected=$filter.division onchange="document.choosefilter.submit();" label="Division" tip=""}
 
+			<label>
+				{trans("Legal personality")}
+				<select name="type" onchange="document.choosefilter.submit();">
+					<option value="-1">{trans("— all customers —")}</option>
+					{foreach $_CTYPES as $key => $item}
+						<option value="{$key}"{if $filter.type === $key} selected{/if}>{$item}</option>
+					{/foreach}
+				</select>
+			</label>
+
 			<label for="n" class="nobr">
 			{trans("Network")}
 			<SELECT SIZE="1" NAME="n" ONCHANGE="document.choosefilter.submit();">
