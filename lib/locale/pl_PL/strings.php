@@ -6185,3 +6185,5 @@ $_LANG['Carbon copy'] = 'Do wiadomości';
 $_LANG['Reply to'] = 'Odpowiedź do';
 $_LANG['More e-mail addresses'] = 'Więcej adresów e-mail';
 $_LANG['Less e-mail addresses'] = 'Mniej adresów e-mail';
+
+$_LANG['exact match'] = 'dokładne dopasowanie';

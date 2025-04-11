@@ -1722,11 +1722,30 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             OR d.type IN (' . DOC_INVOICE . ',' . DOC_DNOTE . ')) AND d.cdate + (d.paytime' . ($days > 0 ? ' + ' . $days : '') . ')  * 86400 < ' . ($time ?: time()) . ')))
                 GROUP BY cash.customerid
             ) b2 ON b2.customerid = c.id ' : '')
-            . (!empty($customergroup) ? 'LEFT JOIN (SELECT vcustomerassignments.customerid, COUNT(*) AS gcount
-            	FROM vcustomerassignments '
-                    . (is_array($customergroup) || $customergroup > 0 ? ' WHERE customergroupid IN ('
-                        . (is_array($customergroup) ? implode(',', Utils::filterIntegers($customergroup)) : intval($customergroup)) . ')' : '') . '
-            		GROUP BY vcustomerassignments.customerid) ca ON ca.customerid = c.id ' : '')
+            . (!empty($customergroup)
+                ? 'LEFT JOIN (
+                    SELECT
+                        vcustomerassignments.customerid,
+                        COUNT(*) AS gcount
+                    FROM vcustomerassignments '
+                    . (is_array($customergroup) || $customergroup > 0
+                        ? ' WHERE customergroupid IN (' . (is_array($customergroup) ? implode(',', Utils::filterIntegers($customergroup))
+                        : intval($customergroup)) . ')' : ''
+                    ) . '
+                    GROUP BY vcustomerassignments.customerid
+                ) ca ON ca.customerid = c.id '
+                : ''
+            )
+            . (!empty($customergroup) && $customergroupsqlskey == 'exact-match'
+                ? 'LEFT JOIN (
+                    SELECT
+                        vcustomerassignments.customerid,
+                        COUNT(*) AS gcount
+                    FROM vcustomerassignments
+                    GROUP BY vcustomerassignments.customerid
+                ) ca2 ON ca2.customerid = c.id '
+                : ''
+            )
             . (!empty($nodegroup) ? 'LEFT JOIN (SELECT nodes.ownerid AS customerid, COUNT(*) AS gcount
                 FROM nodegroupassignments
                 JOIN nodes ON nodes.id = nodeid'
@@ -1911,11 +1930,21 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 		WHERE netdevices.ownerid = c.id AND (netid'
                             . (is_array($network) ? ' IN (' . implode(',', $network) . ')' : ' = ' . $network) . '
                 		OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . '))))' : '')
-                . (!empty($customergroup) && $customergroup != -1 ? ' AND ca.gcount '
-                    . ($customergroupnegation
-                        ? ($customergroupsqlskey == 'AND' ? 'IS NULL' : ' < ' . (is_array($customergroup) ? count($customergroup) : 1))
-                        : ($customergroupsqlskey == 'AND' ? '= ' . (is_array($customergroup) ? count($customergroup) : 1) : '> 0')
-                    ) : '')
+                . (!empty($customergroup) && $customergroup != -1
+                    ? ' AND ca.gcount ' . (
+                        $customergroupnegation
+                            ? ($customergroupsqlskey == 'AND' ? 'IS NULL' : ' < ' . (is_array($customergroup) ? count($customergroup) : 1))
+                            : ($customergroupsqlskey == 'AND' || $customergroupsqlskey == 'exact-match'
+                                ? '= ' . (is_array($customergroup) ? count($customergroup) : 1)
+                                    . ($customergroupsqlskey == 'exact-match'
+                                        ? ' AND ca.gcount = ca2.gcount'
+                                        : ''
+                                    )
+                                : '> 0'
+                            )
+                    )
+                    : ''
+                )
                 . (isset($customergroup) && $customergroup == -1 ? ' AND ca.gcount IS NULL ' : '')
                 . (!empty($nodegroup) ? ($nodegroupnegation ? ' AND na.gcount IS NULL' : ' AND na.gcount = ' . (is_array($nodegroup) ? count($nodegroup) : 1)) : '')
                 . (!empty($consent_condition) ? ' AND ' . $consent_condition : '')
