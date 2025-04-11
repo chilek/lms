@@ -992,6 +992,7 @@ version 28-git (????-??-??):
   - improvement: '%cid' and '%pin' substitution symbols are supported in 'documents.mail_body'
     configuration variable [chilan]
   - enhancement: CC, BCC and Reply-To e-mail addresses can be specified in message add form [chilan]
+  - enhancement: added legal personality filter item in customer list form [chilan]
 
 version 27.0 (2021-08-20):
 
