@@ -21,12 +21,7 @@
  *
  */
 
-$this->BeginTrans();
 
 define('CONFIG_TYPE_POSITIVE_INTEGER_2016012600', 2);
 
 $this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('phpui', 'quicksearch_limit', '15', ?)", array(CONFIG_TYPE_POSITIVE_INTEGER_2016012600));
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016012600', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("CREATE TABLE location_buildings (
 					id           int(11) auto_increment,
@@ -36,7 +35,3 @@ $this->Execute("CREATE TABLE location_buildings (
 					FOREIGN KEY (street_id) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
 					INDEX location_cityid_index (city_id)
 				) ENGINE=InnoDB;");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016121400', 'dbversion'));
-
-$this->CommitTrans();

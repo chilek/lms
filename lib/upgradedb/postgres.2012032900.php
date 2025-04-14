@@ -22,7 +22,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE SEQUENCE pna_id_seq;
@@ -40,7 +39,3 @@ $this->Execute("
 		UNIQUE (zip, cityid, streetid, fromhouse, tohouse, parity)
 	);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012032900', 'dbversion'));
-
-$this->CommitTrans();

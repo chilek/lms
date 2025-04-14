@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 /* tariffs with nodes many-to-many assignments */
 
@@ -47,7 +46,3 @@ if ($assign = $this->GetAll('SELECT id, nodeid FROM assignments WHERE nodeid>0')
 }
 
 $this->Execute("ALTER TABLE assignments DROP COLUMN nodeid");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006082700', 'dbversion'));
-
-$this->CommitTrans();
