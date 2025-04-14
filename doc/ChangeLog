@@ -994,6 +994,7 @@ version 28-git (????-??-??):
   - enhancement: CC, BCC and Reply-To e-mail addresses can be specified in message add form [chilan]
   - enhancement: added legal personality filter item in customer list form [chilan]
   - enhancement: 'exact match' of customer group filter in customer search form added [chilan]
+  - improvement: use 'mail' section 'smtp_*' configuration settings/variables as fallback (document send) [chilan]
 
 version 27.0 (2021-08-20):
 
