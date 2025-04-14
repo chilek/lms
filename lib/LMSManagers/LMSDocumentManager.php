@@ -2805,14 +2805,14 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
 
         $smtp_options = array(
-            'host' => ConfigHelper::getConfig('documents.smtp_host'),
-            'port' => ConfigHelper::getConfig('documents.smtp_port'),
-            'user' => ConfigHelper::getConfig('documents.smtp_user'),
-            'pass' => ConfigHelper::getConfig('documents.smtp_pass'),
-            'auth' => ConfigHelper::getConfig('documents.smtp_auth'),
-            'ssl_verify_peer' => ConfigHelper::checkConfig('documents.smtp_ssl_verify_peer', true),
-            'ssl_verify_peer_name' => ConfigHelper::checkConfig('documents.smtp_ssl_verify_peer_name', true),
-            'ssl_allow_self_signed' => ConfigHelper::checkConfig('documents.smtp_ssl_allow_self_signed'),
+            'host' => ConfigHelper::getConfig('documents.smtp_host', ConfigHelper::getConfig('mail.smtp_host')),
+            'port' => ConfigHelper::getConfig('documents.smtp_port', ConfigHelper::getConfig('mail.smtp_port')),
+            'user' => ConfigHelper::getConfig('documents.smtp_user', ConfigHelper::getConfig('mail.smtp_username', ConfigHelper::getConfig('mail.smtp_user'))),
+            'pass' => ConfigHelper::getConfig('documents.smtp_pass', ConfigHelper::getConfig('mail.smtp_password', ConfigHelper::getConfig('mail.smtp_pass'))),
+            'auth' => ConfigHelper::getConfig('documents.smtp_auth', ConfigHelper::getConfig('mail.smtp_auth_type')),
+            'ssl_verify_peer' => ConfigHelper::checkConfig('documents.smtp_ssl_verify_peer', ConfigHelper::checkConfig('mail.smtp_ssl_verify_peer', true)),
+            'ssl_verify_peer_name' => ConfigHelper::checkConfig('documents.smtp_ssl_verify_peer_name', ConfigHelper::checkConfig('mail.smtp_ssl_verify_peer_name', true)),
+            'ssl_allow_self_signed' => ConfigHelper::checkConfig('documents.smtp_ssl_allow_self_signed', ConfigHelper::checkConfig('mail.smtp_ssl_allow_self_signed')),
         );
 
         $debug_email = ConfigHelper::getConfig('documents.debug_email', '', true);
