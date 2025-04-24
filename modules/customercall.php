@@ -32,22 +32,26 @@ if (isset($_GET['delete'])) {
         access_denied();
     }
 } elseif (isset($_GET['edit'])) {
-    if (isset($_POST['callid']) && intval($_POST['callid']) && isset($_POST['notes'])) {
-        $LMS->updateCustomerCall(
-            intval($_POST['callid']),
-            array(
-                'notes' => $_POST['notes'],
-                'added-customers' => !empty($_POST['added-customers'])
-                    ? Utils::filterIntegers($_POST['added-customers']):
-                    array(),
-                'removed-customers' => !empty($_POST['removed-customers'])
-                    ? Utils::filterIntegers($_POST['removed-customers'])
-                    : array(),
-            )
-        );
+    if (ConfigHelper::checkPrivilege('customer_call_management')) {
+        if (isset($_POST['callid']) && intval($_POST['callid']) && isset($_POST['notes'])) {
+            $LMS->updateCustomerCall(
+                intval($_POST['callid']),
+                array(
+                    'notes' => $_POST['notes'],
+                    'added-customers' => !empty($_POST['added-customers'])
+                        ? Utils::filterIntegers($_POST['added-customers']):
+                        array(),
+                    'removed-customers' => !empty($_POST['removed-customers'])
+                        ? Utils::filterIntegers($_POST['removed-customers'])
+                        : array(),
+                )
+            );
+        }
+        header('Contet-Type: application/json');
+        die('[]');
+    } else {
+        access_denied();
     }
-    header('Contet-Type: application/json');
-    die('[]');
 } else {
     $LMS->getCustomerCallContent($_GET['id']);
 }

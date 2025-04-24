@@ -135,7 +135,7 @@ $access_table = array(
     ),
     'customer_call_view' => array(
         'label' => trans('customer phone call view'),
-        'allow_regexp' => '^customercalllist$',
+        'allow_regexp' => '^customercall(|list)$',
         'allow_menu_items' => array(
             'customers' => array('customercalllist'),
         ),
