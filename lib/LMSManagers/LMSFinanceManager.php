@@ -3969,10 +3969,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             SYSLOG::RES_CASHSOURCE => !empty($addbalance['sourceid'])
                 ? ($addbalance['sourceid'] == -1 ? ($default_source_id ?: null) : $addbalance['sourceid'])
                 : null,
+            'notification' => isset($addbalance['notification']) ? (empty($addbalance['notification']) ? 0 : 1) : 1,
         );
         $res = $this->db->Execute('INSERT INTO cash (time, userid, value, currency, currencyvalue, type, taxid,
-			customerid, comment, docid, itemid, servicetype, importid, sourceid)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			customerid, comment, docid, itemid, servicetype, importid, sourceid, notification)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
         if ($res) {
             $cashid = $this->db->GetLastInsertID('cash');
@@ -4682,9 +4683,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 'comment' => $item['description'],
                 SYSLOG::RES_USER => Auth::GetCurrentUser(),
                 SYSLOG::RES_CUST => $customer ? $customer['id'] : null,
+                'notification' => isset($receipt['notification']) ? (empty($receipt['notification']) ? 0 : 1) : 1,
             );
-            $this->db->Execute('INSERT INTO cash (time, type, docid, itemid, value, currency, currencyvalue, comment, userid, customerid)
-						VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+            $this->db->Execute('INSERT INTO cash (time, type, docid, itemid, value, currency, currencyvalue, comment, userid, customerid, notification)
+						VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
             if ($SYSLOG) {
                 $args[SYSLOG::RES_CASH] = $this->db->GetLastInsertID('cash');
                 unset($args[SYSLOG::RES_USER]);

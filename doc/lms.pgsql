@@ -1301,6 +1301,7 @@ CREATE TABLE cash (
 	linktechnology integer DEFAULT NULL,
     currency varchar(3),
     currencyvalue numeric(17,10) DEFAULT 1.0,
+	notification smallint DEFAULT 1,
 	PRIMARY KEY (id),
 	CONSTRAINT cash_importid_ukey UNIQUE (importid)
 );
@@ -1310,6 +1311,7 @@ CREATE INDEX cash_importid_idx ON cash (importid);
 CREATE INDEX cash_sourceid_idx ON cash (sourceid);
 CREATE INDEX cash_time_idx ON cash (time);
 CREATE INDEX cash_linktechnology_idx ON cash (linktechnology);
+CREATE INDEX cash_notification_idx ON cash (notification);
 
 /* --------------------------------------------------------
   Structure of table "pna"
@@ -4441,6 +4443,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025021300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025042400');
 
 COMMIT;
