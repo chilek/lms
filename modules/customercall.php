@@ -47,7 +47,7 @@ if (isset($_GET['delete'])) {
                 )
             );
         }
-        header('Contet-Type: application/json');
+        header('Content-Type: application/json');
         die('[]');
     } else {
         access_denied();
