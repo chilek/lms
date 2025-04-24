@@ -132,7 +132,7 @@ function module_main()
     }
 
     $userinfo = $LMS->GetCustomer($SESSION->id);
-    $usernodes = $LMS->GetCustomerNodes($SESSION->id);
+    //$usernodes = $LMS->GetCustomerNodes($SESSION->id);
 
     //$balancelist = $LMS->GetCustomerBalanceList($SESSION->id);
 
@@ -182,7 +182,7 @@ function module_updateuserform()
     global $LMS,$SMARTY,$SESSION;
 
     $userinfo = $LMS->GetCustomer($SESSION->id);
-    $usernodes = $LMS->GetCustomerNodes($SESSION->id);
+    //$usernodes = $LMS->GetCustomerNodes($SESSION->id);
 
     $SMARTY->assign('userinfo', $userinfo);
     $SMARTY->assign('usernodes', $usernodes);
@@ -412,7 +412,7 @@ function module_updateusersave()
 
     if (isset($error)) {
         $usernodes = $LMS->GetCustomerNodes($SESSION->id);
-        $usernodes['ownerid'] = $SESSION->id;
+        //$usernodes['ownerid'] = $SESSION->id;
 
         $SMARTY->assign('userinfo', $userinfo);
         $SMARTY->assign('usernodes', $usernodes);
@@ -448,7 +448,7 @@ function module_updatepinform()
     $userinfo = $LMS->GetCustomer($SESSION->id);
 
     $usernodes = $LMS->GetCustomerNodes($SESSION->id);
-    $usernodes['ownerid'] = $SESSION->id;
+    //$usernodes['ownerid'] = $SESSION->id;
 
     $SMARTY->assign('userinfo', $userinfo);
     $SMARTY->assign('usernodes', $usernodes);
@@ -520,7 +520,7 @@ function module_updatepin()
 
     if (isset($error)) {
         $usernodes = $LMS->GetCustomerNodes($SESSION->id);
-        $usernodes['ownerid'] = $SESSION->id;
+        //$usernodes['ownerid'] = $SESSION->id;
 
         $SMARTY->assign('userinfo', $userinfo);
         $SMARTY->assign('usernodes', $usernodes);
