@@ -265,6 +265,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         $partdata = mailparse_msg_get_part_data($part);
         $headers = $partdata['headers'];
 
+        $return_paths = null;
         if (isset($headers['return-path'])) {
             if (is_array($headers['return-path'])) {
                 $return_paths = $headers['return-path'];
@@ -274,23 +275,24 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             $return_paths = array_filter($return_paths, function ($var) {
                 return $var == '<>' || strtolower($var) == '<mailer-daemon>';
             });
-            if (!empty($return_paths) || isset($headers['auto-submitted']) && $headers['auto-submitted'] == 'auto-replied') {
-                mailparse_msg_free($mail);
+        }
 
-                if ($postid !== false && $postid !== null) {
-                    if (!empty($set_flags)) {
-                        imap_setflag_full($ih, $postid, implode(' ', $set_flags));
-                    } else {
-                        imap_clearflag_full($ih, $postid, "\\Seen \\Flagged");
-                    }
+        if (!empty($return_paths) || isset($headers['auto-submitted']) && $headers['auto-submitted'] == 'auto-replied') {
+            mailparse_msg_free($mail);
 
-                    $postid = next($posts);
+            if ($postid !== false && $postid !== null) {
+                if (!empty($set_flags)) {
+                    imap_setflag_full($ih, $postid, implode(' ', $set_flags));
+                } else {
+                    imap_clearflag_full($ih, $postid, "\\Seen \\Flagged");
                 }
 
-                unset($buffer);
-
-                continue;
+                $postid = next($posts);
             }
+
+            unset($buffer);
+
+            continue;
         }
 
         $mh_from = iconv_mime_decode($headers['from']);
