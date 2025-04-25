@@ -998,6 +998,8 @@ version 28-git (????-??-??):
   - improvement: 'notify customer' option in add receipt form, new balance form and customer balance box/panel;
     'receipts.customer_notify', 'finances.customer_notify', 'cashimport.customer_notify' configuration variables
     with 'true' as default values control default state of related option of these forms [chilan]
+  - enhancement: customer group assignment date can be specified in dedicated form field in customer
+    search form [chilan]
 
 version 27.0 (2021-08-20):
 
