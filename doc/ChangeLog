@@ -995,8 +995,9 @@ version 28-git (????-??-??):
   - enhancement: added legal personality filter item in customer list form [chilan]
   - enhancement: 'exact match' of customer group filter in customer search form added [chilan]
   - improvement: use 'mail' section 'smtp_*' configuration settings/variables as fallback (document send) [chilan]
-  - improvement: 'notify customer' option in add receipt form - 'receipts.customer_notify' configuration variable
-    with 'true' as default value controls default state of this option [chilan]
+  - improvement: 'notify customer' option in add receipt form, new balance form and customer balance box/panel;
+    'receipts.customer_notify', 'finances.customer_notify', 'cashimport.customer_notify' configuration variables
+    with 'true' as default values control default state of related option of these forms [chilan]
 
 version 27.0 (2021-08-20):
 
