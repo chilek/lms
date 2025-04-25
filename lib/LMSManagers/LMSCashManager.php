@@ -711,6 +711,13 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
         if (!empty($imports)) {
             $idate  = ConfigHelper::checkConfig('finances.cashimport_use_idate');
             $icheck = ConfigHelper::checkConfig('finances.cashimport_checkinvoices');
+            $notification = ConfigHelper::checkConfig('cashimport.customer_notify', true);
+
+            $balance = array(
+                'type' => 1,
+                'userid' => null,
+                'notification' => $notification ? 1 : 0,
+            );
 
             $finance_manager = new LMSFinanceManager($this->db, $this->auth, $this->cache, $this->syslog);
             $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
@@ -720,13 +727,11 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 $this->db->BeginTrans();
 
                 $balance['time'] = $idate ? $import['idate'] : $import['date'];
-                $balance['type'] = 1;
                 $balance['value'] = $import['value'];
                 $balance['customerid'] = $import['customerid'];
                 $balance['comment'] = $import['description'];
                 $balance['importid'] = $import['id'];
                 $balance['sourceid'] = $import['sourceid'];
-                $balance['userid'] = null;
 
                 if ($import['value'] > 0 && $icheck) {
                     if ($invoices = $this->db->GetAll(

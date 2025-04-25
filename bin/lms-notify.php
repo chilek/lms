@@ -1025,11 +1025,15 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body)
         SET status = ?, lastdate = ?NOW?, error = ?
         WHERE messageid = ? AND customerid = ? AND id = ?";
 
+    $success = false;
+
     if (is_string($result)) {
         $DB->Execute($query, array(MSG_ERROR, $result, $msgid, $cid, $msgitemid));
         fprintf(STDERR, trans('Error sending mail: $a', $result) . PHP_EOL);
     } else { // MSG_SENT
         $DB->Execute($query, array($result, null, $msgid, $cid, $msgitemid));
+
+        $success = true;
     }
 
     if (!empty($interval)) {
@@ -1040,6 +1044,8 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body)
         }
         usleep($delay * 1000);
     }
+
+    return $success;
 }
 
 function send_sms($msgid, $cid, $phone, $data)
@@ -1070,6 +1076,8 @@ function send_sms($msgid, $cid, $phone, $data)
             $msgitemid,
         )
     );
+
+    return $result['status'] != MSG_ERROR;
 }
 
 function send_to_userpanel($msgid, $cid, $destination)
@@ -2171,10 +2179,20 @@ if (empty($types) || in_array('income', $types)) {
     $end = strtotime('+ 1 day', $start);
 
     $incomes = $DB->GetAll(
-        "SELECT c.id, c.pin, SUM(cash.value) AS value, cash.currency, cash.time AS cdate,
-            m.email, x.phone, divisions.account, acc.alternative_accounts,
+        "SELECT
+            c.id,
+            c.pin,
+            " . $DB->GroupConcat('cash.id') . " AS cashids,
+            SUM(cash.value) AS value,
+            cash.currency,
+            cash.time AS cdate,
+            m.email,
+            x.phone,
+            divisions.account,
+            acc.alternative_accounts,
             " . $DB->Concat('c.lastname', "' '", 'c.name') . " AS name,
-        b2.balance AS balance, b.balance AS totalbalance
+            b2.balance AS balance,
+            b.balance AS totalbalance
         FROM cash
         JOIN customeraddressview c ON c.id = cash.customerid
         LEFT JOIN divisions ON divisions.id = c.divisionid
@@ -2220,7 +2238,7 @@ if (empty($types) || in_array('income', $types)) {
         ) acc ON acc.customerid = c.id
         WHERE 1 = 1" . $customer_status_condition
             . $customer_type_condition
-            . " AND cash.type = 1 AND cash.value > 0 AND cash.time >= ? AND cash.time < ?"
+            . " AND cash.type = 1 AND cash.value > 0 AND cash.time >= ? AND cash.time < ? AND cash.notification = 1"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
             . ($notifications['income']['deleted_customers'] ? '' : ' AND c.deleted = 0')
@@ -2323,6 +2341,8 @@ if (empty($types) || in_array('income', $types)) {
             }
 
             if (!$debug) {
+                $success = false;
+
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
                     $msgid = create_message(
                         MSG_MAIL,
@@ -2330,7 +2350,7 @@ if (empty($types) || in_array('income', $types)) {
                         $message ?? ($mail_format == 'html' ? $message_html : $message_text)
                     );
                     foreach ($recipient_mails as $recipient_mail) {
-                        send_mail(
+                        $result = send_mail(
                             $msgid,
                             $row['id'],
                             $recipient_mail,
@@ -2338,6 +2358,8 @@ if (empty($types) || in_array('income', $types)) {
                             $subject,
                             $message ?? ($mail_format == 'html' ? $message_html : $message_text)
                         );
+
+                        $success |= $result;
                     }
                 }
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
@@ -2347,12 +2369,14 @@ if (empty($types) || in_array('income', $types)) {
                         $message ?? $message_text
                     );
                     foreach ($recipient_phones as $recipient_phone) {
-                        send_sms(
+                        $result = send_sms(
                             $msgid,
                             $row['id'],
                             $recipient_phone,
                             $message ?? $message_text
                         );
+
+                        $success |= $result;
                     }
                 }
                 if (in_array('userpanel', $channels)) {
@@ -2362,6 +2386,8 @@ if (empty($types) || in_array('income', $types)) {
                         $message ?? ($format == 'html' ? $message_html : $message_text)
                     );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel'));
+
+                    $success = true;
                 }
                 if (in_array('userpanel-urgent', $channels)) {
                     $msgid = create_message(
@@ -2370,6 +2396,20 @@ if (empty($types) || in_array('income', $types)) {
                         $message ?? ($format == 'html' ? $message_html : $message_text)
                     );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
+
+                    $success = true;
+                }
+
+                if ($success) {
+                    $DB->Execute(
+                        'UPDATE cash
+                        SET notification = ?
+                        WHERE id IN ?',
+                        array(
+                            0,
+                            explode(',', $row['cashids']),
+                        )
+                    );
                 }
             }
         }

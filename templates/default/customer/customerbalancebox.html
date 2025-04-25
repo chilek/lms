@@ -5,6 +5,7 @@
 {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
 {$default_taxrate = ConfigHelper::getConfig('phpui.default_taxrate')}
 {$default_taxlabel = ConfigHelper::getConfig('phpui.default_taxlabel')}
+{$notification = ConfigHelper::checkConfig('finances.customer_notify', true)}
 
 <FORM name="addbalance" method="POST" id="addbalance-form" action="?m=balanceadd&id={$balancelist.customerid}">
 </FORM>
@@ -538,6 +539,12 @@
 				{/tab_buttons}
 
 				{tab_buttons}
+					<label>
+						<input type="hidden" form="addbalance-form" name="addbalance[notification]" value="0">
+						<input type="checkbox" form="addbalance-form" name="addbalance[notification]" value="1"
+							{if !empty($notification)} checked{/if}>
+						{trans("Notify customer")}
+					</label>
 					{if $instantpayment}
 						{button icon="cash" onclick="javascript:AddBalance(true);" label="Instant payment"}
 					{/if}
