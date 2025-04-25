@@ -159,6 +159,16 @@ if (!isset($_POST['cgnot'])) {
 }
 $SESSION->save('cslcgnot', $customergroupnegation);
 
+if (!isset($_POST['group-date'])) {
+    $SESSION->restore('cslgd', $customergroupdate);
+} else {
+    $customergroupdate = date_to_timestamp($_POST['group-date']);
+    if (!empty($customergroupdate)) {
+        $customergroupdate = strtotime('tomorrow', $customergroupdate) - 1;
+    }
+}
+$SESSION->save('cslgd', $customergroupdate);
+
 if (!isset($_POST['k'])) {
     $SESSION->restore('cslk', $sqlskey);
 } else {
@@ -208,6 +218,7 @@ if (isset($_GET['search'])) {
         "statesqlskey",
         "customergroupsqlskey",
         "customergroupnegation",
+        "customergroupdate",
         "flags",
         "flagsqlskey",
         "origin",
@@ -313,6 +324,7 @@ if (isset($_GET['search'])) {
     $SMARTY->assign('sk', $statesqlskey);
     $SMARTY->assign('cgk', $customergroupsqlskey);
     $SMARTY->assign('cgnot', $customergroupnegation);
+    $SMARTY->assign('customergroupdate', $customergroupdate);
     $SMARTY->assign('fk', $flagsqlskey);
     $SMARTY->assign('ngnot', $nodegroupnegation);
     $SMARTY->assign('karma', $karma);

@@ -882,7 +882,7 @@
 		</TD>
 	</TR>
 	<tr>
-		<td class="nobr">
+		<td class="nobr valign-top" rowspan="2">
 			{icon name="customergroup"}
 			<strong>{trans("Group")}</strong>
 		</td>
@@ -917,6 +917,13 @@
 				<input type="radio" value="exact-match" name="cgk"{if $cgk == 'exact-match'} checked{/if}>
 				{trans("exact match")}
 			</label>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			{trans("on day")}
+			<input type="text" name="group-date"{if !empty($customergroupdate)} value="{$customergroupdate|date_format:"Y/m/d"}"{/if}
+				{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar"}>
 		</td>
 	</tr>
 	<TR>

@@ -1697,6 +1697,15 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     WHEN s.warnsum > 0 THEN 2 ELSE 0 END) AS nodewarn ';
         }
 
+        $customergroupwhere = array();
+        if (empty($customergroupdate)) {
+            $customergrouptable = 'vcustomerassignments';
+        } else {
+            $customergrouptable = 'customerassignments';
+            $customergroupwhere[] = 'customerassignments.startdate <= ' . $customergroupdate
+                . ' AND (customerassignments.enddate >= ' . $customergroupdate . ' OR customerassignments.enddate = 0)';
+        }
+
         $sql .= 'FROM customerview c
             ' . ($overduereceivables ? '
             LEFT JOIN (
@@ -1725,24 +1734,26 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             . (!empty($customergroup)
                 ? 'LEFT JOIN (
                     SELECT
-                        vcustomerassignments.customerid,
+                        ' . $customergrouptable . '.customerid,
                         COUNT(*) AS gcount
-                    FROM vcustomerassignments '
+                    FROM ' . $customergrouptable . ' WHERE '
                     . (is_array($customergroup) || $customergroup > 0
-                        ? ' WHERE customergroupid IN (' . (is_array($customergroup) ? implode(',', Utils::filterIntegers($customergroup))
-                        : intval($customergroup)) . ')' : ''
-                    ) . '
-                    GROUP BY vcustomerassignments.customerid
+                        ? 'customergroupid IN (' . (is_array($customergroup) ? implode(',', Utils::filterIntegers($customergroup))
+                        : intval($customergroup)) . ')' : '1 = 1'
+                    ) . ' '
+                    . (empty($customergroupwhere) ? '' : ' AND ' . implode(' AND ', $customergroupwhere))
+                    . ' GROUP BY ' . $customergrouptable . '.customerid
                 ) ca ON ca.customerid = c.id '
                 : ''
             )
             . (!empty($customergroup) && $customergroupsqlskey == 'exact-match'
                 ? 'LEFT JOIN (
                     SELECT
-                        vcustomerassignments.customerid,
+                        ' . $customergrouptable . '.customerid,
                         COUNT(*) AS gcount
-                    FROM vcustomerassignments
-                    GROUP BY vcustomerassignments.customerid
+                    FROM ' . $customergrouptable . ' '
+                    . (empty($customergroupwhere) ? '' : ' WHERE ' . implode(' AND ', $customergroupwhere))
+                    . ' GROUP BY ' . $customergrouptable . '.customerid
                 ) ca2 ON ca2.customerid = c.id '
                 : ''
             )
