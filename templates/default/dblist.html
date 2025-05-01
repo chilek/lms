@@ -92,7 +92,7 @@
 		});
 		$('.recover-backup').click(function() {
 			confirmDialog($t("Are you sure, you want to restore this database backup?\n\nWARNING!\n\nIt will backup current database content automatically"), this).done(function() {
-				location.href = $(this).attr('href');
+				location.href = $(this).attr('href') + '&is_sure=1';
 			});
 			return false;
 		});

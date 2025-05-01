@@ -121,7 +121,8 @@ if (isset($_GET['is_sure'])) {
     $layout['pagetitle'] = trans('Database Backup Recovery');
     $SMARTY->display('header.html');
     echo '<H1>'.trans('Database Backup Recovery').'</H1>';
-    echo '<P>'.trans('Are you sure, you want to recover database created at $a?', date('Y/m/d H:i.s', $_GET['db'])).'</P>';
+    $timestamp = explode('-', $_GET['db'])[0];
+    echo '<P>'.trans('Are you sure, you want to recover database created at $a?', date('Y/m/d H:i.s', $timestamp)).'</P>';
     echo '<A href="?m=dbrecover&db='.$_GET['db'].'&is_sure=1">'.trans('Yes, I am sure.').'</A>';
     $SMARTY->display('footer.html');
 }
