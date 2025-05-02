@@ -21,10 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE cashimport ALTER COLUMN customer TYPE text");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016082400', 'dbversion'));
-
-$this->CommitTrans();

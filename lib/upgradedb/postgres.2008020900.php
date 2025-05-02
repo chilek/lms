@@ -24,14 +24,9 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE OR REPLACE FUNCTION int2txt(bigint) RETURNS text AS $$
     SELECT $1::text;
     $$ LANGUAGE SQL IMMUTABLE;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008020900', 'dbversion'));
-
-$this->CommitTrans();

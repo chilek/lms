@@ -64,5 +64,3 @@ $this->Execute("
 	body mediumtext NOT NULL default '', 
 	PRIMARY KEY  (id) ) ENGINE=MyISAM
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2004030800', 'dbversion'));

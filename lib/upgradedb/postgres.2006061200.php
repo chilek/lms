@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE passwd ADD COLUMN quota_sql integer");
 $this->Execute("UPDATE passwd SET quota_sql = 0");
@@ -38,7 +37,3 @@ $this->Execute("ALTER TABLE domains ALTER COLUMN ownerid SET DEFAULT 0");
 
 $this->Execute("CREATE INDEX passwd_ownerid_idx ON passwd (ownerid)");
 $this->Execute("CREATE INDEX domains_ownerid_idx ON domains (ownerid)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006061200', 'dbversion'));
-
-$this->CommitTrans();
