@@ -22,7 +22,7 @@
  *  $Id$
  */
 
-function lmsFileUpload(elemid, formid, new_item_custom_content) {
+function lmsFileUpload(elemid, formid, new_item_custom_content, view_selector) {
 	var elem = $("#" + elemid);
 	var formelem = typeof(formid) != 'undefined' ? $('#' + formid) : $(this).closest("form");
 	var formdata = new FormData(formelem.get(0));
@@ -89,11 +89,14 @@ function lmsFileUpload(elemid, formid, new_item_custom_content) {
 							track: true
 						});
 						fileListItem.find('.file-view').click(function() {
-							lmsFileView(files[key]);
+							lmsFileView(files[key], view_selector);
 						});
 						fileListItem.find('.file-delete').click(function() {
 							$(this).closest('.fileupload-file').remove();
 						});
+						if (typeof(view_selector) !== 'undefined') {
+							lmsFileView(files[key], view_selector);
+						}
 					});
 				}
 			},
