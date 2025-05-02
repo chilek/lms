@@ -158,7 +158,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "*",
-        "squizlabs/php_codesniffer": "*"
+        "squizlabs/php_codesniffer": "*",
+        "phpcompatibility/php-compatibility": "^9.3"
     },
     "autoload": {
         "classmap": ["lib/", "plugins/"]
