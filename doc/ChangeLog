@@ -1000,6 +1000,7 @@ version 28-git (????-??-??):
     with 'true' as default values control default state of related option of these forms [chilan]
   - enhancement: customer group assignment date can be specified in dedicated form field in customer
     search form [chilan]
+  - enhancement: search customers by non-empty icn or ssn [chilan]
 
 version 27.0 (2021-08-20):
 
