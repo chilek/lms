@@ -1001,6 +1001,8 @@ version 28-git (????-??-??):
   - enhancement: customer group assignment date can be specified in dedicated form field in customer
     search form [chilan]
   - enhancement: search customers by non-empty icn or ssn [chilan]
+  - enhancement: 'default' property of template info.php configuration file support allows to pre-select given
+    template in document forms [chilan]
 
 version 27.0 (2021-08-20):
 
