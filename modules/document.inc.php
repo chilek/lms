@@ -186,7 +186,7 @@ function GetDocumentTemplates($rights, $type = null)
                                     return !empty($defaultFlag);
                                 }
                             );
-                            $default = array_intersect(array_keys($default), $intersect)r;
+                            $default = array_intersect(array_keys($default), $intersect);
                             $default = array_combine($default, array_fill(0, count($default), true));
                         } else {
                             foreach ($intersect as $doctype) {
