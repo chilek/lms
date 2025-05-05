@@ -1583,10 +1583,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             }
                             break;
                         case 'ten':
+                        case 'ssn':
+                        case 'icn':
                             if ($value == '*') {
-                                $searchargs[] = "ten <> ''";
+                                $searchargs[] = $key . " <> ''";
                             } else {
-                                $searchargs[] = "REPLACE(REPLACE(ten, '-', ''), ' ', '') ?LIKE? " . $this->db->Escape('%' . preg_replace('/[\- ]/', '', $value) . '%');
+                                $searchargs[] = "REPLACE(REPLACE(" . $key . ", '-', ''), ' ', '') ?LIKE? " . $this->db->Escape('%' . preg_replace('/[\- ]/', '', $value) . '%');
                             }
                             break;
                         case 'karma':
