@@ -240,6 +240,17 @@ function GetTemplates($doctype, $doctemplate, $JSResponse)
     } else {
         $JSResponse->call('disable_templates');
     }
+
+    $defaultDocEngine = array_filter(
+        $docengines,
+        function ($engine) use ($doctype) {
+            return !empty($engine['default'][$doctype]);
+        }
+    );
+    $defaultDocEngine = reset($defaultDocEngine);
+    if (!empty($defaultDocEngine)) {
+        $JSResponse->call('DocTemplateChanged');
+    }
 }
 
 function GetDocumentNumberPlans($doctype, $customerid = null)

@@ -557,6 +557,19 @@ $SMARTY->assign('planDocumentType', $document['type'] ?? null);
 
 $docengines = GetDocumentTemplates($rights, $document['type'] ?? null);
 
+if (isset($document['type']) && !empty($docengines)) {
+    $defaultDocEngine = array_filter(
+        $docengines,
+        function ($engine) use ($document) {
+            return !empty($engine['default'][$document['type']]);
+        }
+    );
+    $defaultDocEngine = reset($defaultDocEngine);
+    if (!empty($defaultDocEngine)) {
+        $SMARTY->assign('defaultDocEngine', $defaultDocEngine);
+    }
+}
+
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->assign('error', $error);
