@@ -1003,6 +1003,8 @@ version 28-git (????-??-??):
   - enhancement: search customers by non-empty icn or ssn [chilan]
   - enhancement: 'default' property of template info.php configuration file support allows to pre-select given
     template in document forms [chilan]
+  - improvement: 'assignments.default_target_discounted_price' configuration variable with 'false' as default
+    value allows to check target discounted price option during new customer assignment form start [chilan]
 
 version 27.0 (2021-08-20):
 
