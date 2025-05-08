@@ -1005,6 +1005,7 @@ version 28-git (????-??-??):
     template in document forms [chilan]
   - improvement: 'assignments.default_target_discounted_price' configuration variable with 'false' as default
     value allows to check target discounted price option during new customer assignment form start [chilan]
+  - enhancement: search customers by empty ten, icn or ssn [chilan]
 
 version 27.0 (2021-08-20):
 
