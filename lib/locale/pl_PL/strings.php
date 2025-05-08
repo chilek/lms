@@ -5880,6 +5880,8 @@ $_LANG['Are you sure, you want to permanently remove all selected tickets?'] = '
 $_LANG['Message #$a'] = 'Wiadomość #$a';
 
 $_LANG['non-empty'] = 'niepusty';
+$_LANG['empty'] = 'pusty';
+$_LANG['given value'] = 'podana wartość';
 
 $_LANG['Reward/penalty for'] = 'Nagroda/kara za';
 $_LANG['Rewards'] = 'Nagrody';

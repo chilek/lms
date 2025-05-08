@@ -1587,6 +1587,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         case 'icn':
                             if ($value == '*') {
                                 $searchargs[] = $key . " <> ''";
+                            } elseif ($value == '-') {
+                                $searchargs[] = $key . " = ''";
                             } else {
                                 $searchargs[] = "REPLACE(REPLACE(" . $key . ", '-', ''), ' ', '') ?LIKE? " . $this->db->Escape('%' . preg_replace('/[\- ]/', '', $value) . '%');
                             }

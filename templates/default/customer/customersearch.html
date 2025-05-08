@@ -267,12 +267,23 @@
 		</td>
 		<td>
 			<input type="text" name="search[icn]" value="{$search.icn}" data-customer-property="icn">
+			<span style="display: none;"></span>
 			<label>
-				<input type="checkbox" data-controlled-customer-property="icn">
+				<input type="radio" name="icn-match-selector" data-controlled-customer-property="icn" value="=" checked>
+				<span>{trans("given value")}</span>
+			</label>
+			<label>
+				<input type="radio" name="icn-match-selector" data-controlled-customer-property="icn" value="*">
 				<span>{trans("non-empty")}</span>
+			</label>
+			<label>
+				<input type="radio" name="icn-match-selector" data-controlled-customer-property="icn" value="-">
+				<span>{trans("empty")}</span>
 			</label>
 			<input type="hidden" name="search[icn]" data-customer-property="icn"
 				value="*"{if $search.icn != '*'} disabled{/if}>
+			<input type="hidden" name="search[icn]" data-customer-property="icn"
+				value="-"{if $search.icn != '-'} disabled{/if}>
 		</td>
 	</tr>
 
@@ -300,12 +311,23 @@
 		</td>
 		<td>
 			<input type="text" name="search[ssn]" value="{$search.ssn}" data-customer-property="ssn">
+			<span style="display: none;"></span>
 			<label>
-				<input type="checkbox" data-controlled-customer-property="ssn">
+				<input type="radio" name="ssn-match-selector" data-controlled-customer-property="ssn" value="=" checked>
+				<span>{trans("given value")}</span>
+			</label>
+			<label>
+				<input type="radio" name="ssn-match-selector" data-controlled-customer-property="ssn" value="*">
 				<span>{trans("non-empty")}</span>
+			</label>
+			<label>
+				<input type="radio" name="ssn-match-selector" data-controlled-customer-property="ssn" value="-">
+				<span>{trans("empty")}</span>
 			</label>
 			<input type="hidden" name="search[ssn]" data-customer-property="ssn"
 				value="*"{if $search.ssn != '*'} disabled{/if}>
+			<input type="hidden" name="search[ssn]" data-customer-property="ssn"
+				value="-"{if $search.ssn != '-'} disabled{/if}>
 		</td>
 	</tr>
 	<tr>
@@ -320,12 +342,23 @@
 		<td>
 			<input type="text" name="search[ten]" data-customer-property="ten"
 				{if $search.ten != '*'} value="{$search.ten}"{else} disabled{/if}>
+			<span style="display: none;"></span>
 			<label>
-				<input type="checkbox" data-controlled-customer-property="ten">
+				<input type="radio" name="ten-match-selector" data-controlled-customer-property="ten" value="=" checked>
+				<span>{trans("given value")}</span>
+			</label>
+			<label>
+				<input type="radio" name="ten-match-selector" data-controlled-customer-property="ten" value="*">
 				<span>{trans("non-empty")}</span>
+			</label>
+			<label>
+				<input type="radio" name="ten-match-selector" data-controlled-customer-property="ten" value="-">
+				<span>{trans("empty")}</span>
 			</label>
 			<input type="hidden" name="search[ten]" data-customer-property="ten"
 				value="*"{if $search.ten != '*'} disabled{/if}>
+			<input type="hidden" name="search[ten]" data-customer-property="ten"
+				value="-"{if $search.ten != '-'} disabled{/if}>
 		</td>
 	</tr>
 	<TR>
@@ -991,9 +1024,12 @@
 
 		$("[data-controlled-customer-property]").change(function() {
 			var customerProperty = $(this).attr("data-controlled-customer-property");
+			var value = $(this).val();
 			var checked = $(this).prop('checked');
-			$('input[type="text"][data-customer-property="' + customerProperty + '"]').prop('disabled', checked);
-			$('input[type="hidden"][data-customer-property="' + customerProperty + '"]').prop('disabled', !checked);
+			$('input[type="text"][data-customer-property="' + customerProperty + '"]').prop('disabled', checked && (value == '*' || value == '-'));
+			$('input[type="hidden"][data-customer-property="' + customerProperty + '"]').each(function() {
+				$(this).prop('disabled', $(this).val() != value);
+			});
 			$(this).closest('tr').find('.customer-property-label').toggleClass('lms-ui-disabled', checked);
 		});
 
