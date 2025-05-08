@@ -390,6 +390,13 @@ class Session
                             if ($this->id) {
                                 if (isset($_COOKIE['USID'])) {
                                     $this->_restoreSession();
+                                    if ($this->id != $authdata['id']) {
+                                        $this->_destroySession();
+                                        if (empty($this->error)) {
+                                            $this->error = trans('Access denied!');
+                                        }
+                                        return;
+                                    }
                                 }
                                 if (empty($this->_vdata)) {
                                     $this->_createSession();
