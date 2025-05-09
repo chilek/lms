@@ -72,16 +72,16 @@ matrix:
       addons:
         postgresql: 14
 
-#    - os: linux
-#      language: php
-#      php: 8.4
-#      dist: jammy
-#      env:
-#        PHPCS_VER="^3"
-#        PHPCS_STANDARD="phpcs3.xml"
-#        INSTALL_PHP_ZIP_EXTENSION=true
-#      addons:
-#        postgresql: 14
+    - os: linux
+      language: php
+      php: 8.4
+      dist: jammy
+      env:
+        PHPCS_VER="^3"
+        PHPCS_STANDARD="phpcs3.xml"
+        INSTALL_PHP_ZIP_EXTENSION=true
+      addons:
+        postgresql: 14
 
 services:
   - postgresql
