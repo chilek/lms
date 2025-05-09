@@ -36,7 +36,7 @@ abstract class LMSManager
     protected $cache;
     protected $syslog;
 
-    public function __construct(?LMSDBInterface $db, ?Auth $auth, ?LMSCache $cache, ?SYSLOG $syslog)
+    public function __construct(LMSDBInterface $db = null, Auth $auth = null, LMSCache $cache = null, SYSLOG $syslog = null)
     {
         $this->db = $db;
         $this->auth = $auth;
