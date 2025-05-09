@@ -38,21 +38,21 @@ interface LMSDBInterface
 
     public function Destroy();
 
-    public function Execute($query, array $inputarray = null);
+    public function Execute($query, ?array $inputarray);
 
-    public function MultiExecute($query, array $inputarray = null);
+    public function MultiExecute($query, ?array $inputarray);
 
-    public function GetAll($query = null, array $inputarray = null);
+    public function GetAll($query = null, ?array $inputarray);
 
-    public function GetAllByKey($query = null, $key = null, array $inputarray = null);
+    public function GetAllByKey($query = null, $key = null, ?array $inputarray);
 
-    public function GetRow($query = null, array $inputarray = null);
+    public function GetRow($query = null, ?array $inputarray);
 
-    public function GetCol($query = null, array $inputarray = null);
+    public function GetCol($query = null, ?array $inputarray);
 
-    public function GetOne($query = null, array $inputarray = null);
+    public function GetOne($query = null, ?array $inputarray);
 
-    public function Exec($query, array $inputarray = null);
+    public function Exec($query, ?array $inputarray);
 
     public function FetchRow($result);
 
