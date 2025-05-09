@@ -1006,6 +1006,9 @@ version 28-git (????-??-??):
   - improvement: 'assignments.default_target_discounted_price' configuration variable with 'false' as default
     value allows to check target discounted price option during new customer assignment form start [chilan]
   - enhancement: search customers by empty ten, icn or ssn [chilan]
+  - improvement: new 'invoices.proforma_conversion_paytype' configuration variable with undefined value controls
+    which payment type is set to invoice created from pro forma invoices (undefined value means presevation of payment
+    type from pro forma invoice) [chilan]
 
 version 27.0 (2021-08-20):
 
