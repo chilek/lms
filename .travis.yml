@@ -14,6 +14,7 @@ matrix:
         PHPCS_VER="^3"
         PHPCS_STANDARD="phpcs3.xml"
         INSTALL_PHP_ZIP_EXTENSION=false
+        COMPOSER_EXTRA_PARAMS=""
       addons:
         postgresql: 9.4
 
@@ -25,6 +26,7 @@ matrix:
         PHPCS_VER="^3"
         PHPCS_STANDARD="phpcs3.xml"
         INSTALL_PHP_ZIP_EXTENSION=true
+        COMPOSER_EXTRA_PARAMS=""
       addons:
         postgresql: 9.4
 
@@ -36,6 +38,7 @@ matrix:
         PHPCS_VER="^3"
         PHPCS_STANDARD="phpcs3.xml"
         INSTALL_PHP_ZIP_EXTENSION=true
+        COMPOSER_EXTRA_PARAMS=""
       addons:
         postgresql: 9.4
 
@@ -47,6 +50,7 @@ matrix:
         PHPCS_VER="^3"
         PHPCS_STANDARD="phpcs3.xml"
         INSTALL_PHP_ZIP_EXTENSION=true
+        COMPOSER_EXTRA_PARAMS=""
       addons:
         postgresql: 9.4
 
@@ -58,6 +62,7 @@ matrix:
         PHPCS_VER="^3"
         PHPCS_STANDARD="phpcs3.xml"
         INSTALL_PHP_ZIP_EXTENSION=true
+        COMPOSER_EXTRA_PARAMS=""
       addons:
         postgresql: 14
 
@@ -69,6 +74,7 @@ matrix:
         PHPCS_VER="^3"
         PHPCS_STANDARD="phpcs3.xml"
         INSTALL_PHP_ZIP_EXTENSION=true
+        COMPOSER_EXTRA_PARAMS=""
       addons:
         postgresql: 14
 
@@ -80,6 +86,7 @@ matrix:
         PHPCS_VER="^3"
         PHPCS_STANDARD="phpcs3.xml"
         INSTALL_PHP_ZIP_EXTENSION=true
+        COMPOSER_EXTRA_PARAMS="--ignore-platform-req=ext-zlib"
       addons:
         postgresql: 14
 
@@ -93,7 +100,7 @@ services:
 #  - echo "extension = snmp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 install:
-  - composer install
+  - composer install ${COMPOSER_EXTRA_PARAMS}
 
 before_script:
   - psql -c 'create database lms;' -U postgres
