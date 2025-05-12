@@ -134,5 +134,3 @@ Function Description:
 2. Plugin market: Supports the installation of third-party plugins (such as DDNS and traffic shaping tools).
 3. Multi platform support: Compatible with Windows/Linux/macOS and supports Docker deployment.
 
-2.Check off completed items
-
