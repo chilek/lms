@@ -65,6 +65,26 @@ computers inventory (IP, MAC), simple financial system suited for network operat
 ![项目界面截图](images/后端1.png)
 ```markdown
 ![项目界面截图](images/后端2.png)
+```markdown
+![项目界面截图](images/前端1.png)
+```markdown
+![项目界面截图](images/前端2.png)
+```markdown
+![项目界面截图](images/61.png)
+```markdown
+![项目界面截图](images/62.png)
+```markdown
+![项目界面截图](images/63.png)
+```markdown
+![项目界面截图](images/71.png)
+```markdown
+![项目界面截图](images/72.png)
+```markdown
+![项目界面截图](images/73.png)
+```markdown
+![项目界面截图](images/74.png)
+```markdown
+![项目界面截图](images/75.png)
 
 
 ## 📮 Primary function & Screenshot
