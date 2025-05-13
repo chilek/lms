@@ -10,3 +10,7 @@
 9. 在“Cloud-edge collaboration”部分，将“realized”替换为“achieve”以增强句子的动态感，并补充“governance”一词来强化管理的概念。  
 10. 在“IoT expansion”部分，将“Support the access and management”优化为“Facilitate the connection and administration”以提高表达的专业性和正式程度。  
 11. 在“Automatic operation and maintenance”部分，将“reduce manual intervention”改为“minimize manual intervention”以更准确地传达减少干预的目标，并补充“designed for fault resolution”来具体说明自愈脚本的功能。
+
+
+12.主要改进如下：增加了使用##符号的适当章节标题改进了命令格式和组织结构修正了语法错误和拼写错误增强了安全建议使网络界面的步骤更加结构化增加了适当的代码块格式标准化了术语（例如，将“官方網站”更改为“供应商网站”） 
+<王玥>

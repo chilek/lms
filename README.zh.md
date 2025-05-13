@@ -10,3 +10,52 @@ LMS（本地网络管理系统）是一款专为企业、学校、政府机构�
 - 云边协同：与云管理平台结合，实现跨区域局域网的统一治理。
 - 物联网扩展：支持新兴终端设备的连接与管理，包括 5G 和 LoRa 技术。
 - 自动化运维：通过故障解决的自愈脚本减少人工干预。<!--梁冰丽 著>
+
+# 详细安装步骤:
+-   以下是安装LMS系统的一般步骤，具体细节可能因您选择的LMS平台(如Moodle、Canvas、Blackboard等)而有所不同。
+
+    通用安装准备
+        1.系统要求检查
+-       Web服务器(Apache/Nginx/IIS)
+-       数据库(MySQL/MariaDB/PostgreSQL)
+-       PHP (特定版本，根据LMS要求)
+-       必要的PHP扩展
+
+        2.获取LMS软件
+-       从官方网站下载最新稳定版
+-       或通过Git克隆项目仓库
+
+详细安装步骤
+1. 环境配置
+    bash
+    # 以Linux系统为例
+    sudo apt update
+    sudo apt install apache2 mysql-server php libapache2-mod-php php-mysql php-xml php-curl php-zip php-gd php-mbstring
+
+2. 数据库设置
+    sql
+    CREATE DATABASE lmsdb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+    CREATE USER 'lmsuser'@'localhost' IDENTIFIED BY 'securepassword';
+    GRANT ALL PRIVILEGES ON lmsdb.* TO 'lmsuser'@'localhost';
+    FLUSH PRIVILEGES;
+
+3. 安装LMS核心文件
+    bash
+    # 解压或克隆到web目录
+    cd /var/www/html
+    sudo unzip lms.zip
+    # 或
+    sudo git clone https://github.com/lms-project/lms.git
+
+4. 设置文件权限
+    bash
+    sudo chown -R www-data:www-data /var/www/html/lms
+    sudo chmod -R 755 /var/www/html/lms
+
+5. 通过Web界面完成安装
+-       访问 http://yourserver/lms
+-       按照安装向导步骤操作
+-       提供数据库连接信息
+-       设置管理员账户
+-       完成初始配置     
+<!--王玥 著>
