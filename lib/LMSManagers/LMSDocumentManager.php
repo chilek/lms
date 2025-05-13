@@ -2528,6 +2528,42 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         );
     }
 
+    private function prepareDocumentAuthCode($authcodeSources, $data)
+    {
+        $authcode = null;
+
+        foreach ($authcodeSources as $source) {
+            if (strpos($source, 'random') === 0) {
+                if (preg_match('/^random(?<length>\d*)$/', $source, $matches)) {
+                    $min_value = pow(10, empty($matches['length']) ? 8 : $matches['length']);
+                    $authcode = mt_rand($min_value, $min_value * 10 - 1);
+                }
+            } else {
+                switch ($source) {
+                    case 'ssn':
+                        if (!empty($data['ssn'])) {
+                            $authcode = $data['ssn'];
+                            break 2;
+                        }
+                        break;
+                    case 'ten':
+                        if (!empty($data['ten'])) {
+                            $authcode = $data['ten'];
+                            break 2;
+                        }
+                    case 'pin':
+                        if (!empty($data['pin'])) {
+                            $authcode = $data['pin'];
+                            break 2;
+                        }
+                        break;
+                }
+            }
+        }
+
+        return $authcode;
+    }
+
     public function GetDocumentFullContents($id, $with_reference_document = false)
     {
         global $DOCTYPES, $DOCTYPE_ALIASES;
@@ -2539,7 +2575,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 'SELECT d.id, d.number, d.cdate, d.type,
                     d.customerid,
                     c.pin,
-                    d.fullnumber, n.template, d.ssn, d.name, d.reference,
+                    d.fullnumber, n.template, d.ssn, d.ten, d.name, d.reference,
                     d2.number AS ref_number,
                     d2.cdate AS ref_date,
                     d2.fullnumber AS ref_fullnumber,
@@ -2565,7 +2601,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 'SELECT d.id, d.number, d.cdate, d.type,
                     d.customerid,
                     c.pin,
-                    d.fullnumber, n.template, d.ssn, d.name, d.reference,
+                    d.fullnumber, n.template, d.ssn, d.ten, d.name, d.reference,
                     d2.number AS ref_number,
                     d2.cdate AS ref_date,
                     d2.fullnumber AS ref_fullnumber,
@@ -2644,7 +2680,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 $args
             );
 
-            $document_password = ConfigHelper::getConfig('documents.protection_password', ConfigHelper::getConfig('phpui.document_password', '', true), true);
+            $document_protection_password = ConfigHelper::getConfig('documents.protection_password', ConfigHelper::getConfig('phpui.document_password', '', true), true);
             $document_protection_command = ConfigHelper::getConfig(
                 'documents.protection_command',
                 ConfigHelper::getConfig(
@@ -2657,6 +2693,13 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 '',
                 true
             );
+            $document_protection_password_authcode_sources = preg_split(
+                '/([\s]+|[\s]*[,;][\s]*)/',
+                strtolower(ConfigHelper::getConfig('documents.protection_password_authcode_source', 'random8')),
+                -1,
+                PREG_SPLIT_NO_EMPTY
+            );
+
             if (strlen($document_protected_document_types)) {
                 $protected_document_types = preg_split('/([\s]+|[\s]*,[\s]*)/', $document_protected_document_types, -1, PREG_SPLIT_NO_EMPTY);
                 $document_protected_document_types = array();
@@ -2722,22 +2765,35 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 }
 
                 if ($pdf) {
-                    $ssn_is_present = strpos($document_password, '%ssn') !== false;
+                    $ssn_is_present = strpos($document_protection_password, '%ssn') !== false;
+                    $authcode_is_present = strpos($document_protection_password, '%authcode') !== false;
 
-                    if (!empty($document_password) && !empty($document_protection_command) && isset($document_protected_document_types[$document['type']])
-                        && (!$ssn_is_present || strlen($document['ssn']))) {
+                    if (!empty($document_protection_password) && !empty($document_protection_command) && isset($document_protected_document_types[$document['type']])
+                        && (!$ssn_is_present || strlen($document['ssn']) || $authcode_is_present)) {
+                        $customer_data = array(
+                            'ssn' => $document['ssn'],
+                            'ten' => $document['ten'],
+                            'pin' => preg_match('/^\$[0-9]+\$/', $attachment['pin'])
+                                ? ''
+                                : $attachment['pin']
+                        );
+
+                        if ($authcode_is_present) {
+                            $document['authcode'] = $this->prepareDocumentAuthCode($document_protection_password_authcode_sources, $customer_data);
+                        }
+
                         $password = trim(str_replace(
                             array(
                                 '%ssn',
                                 '%pin',
+                                '%authcode',
                             ),
                             array(
                                 $document['ssn'],
-                                preg_match('/^\$[0-9]+\$/', $attachment['pin'])
-                                    ? ''
-                                    : $attachment['pin'],
+                                $customer_data['pin'],
+                                empty($document['authcode']) ? '' : $document['authcode'],
                             ),
-                            $document_password
+                            $document_protection_password
                         ));
 
                         if (!empty($password)) {
@@ -2853,6 +2909,18 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             'documents.protected_document_types',
             '',
             true
+        );
+
+        $document_protection_password_authcode_sources = preg_split(
+            '/([\s]+|[\s]*,[\s]*)/',
+            strtolower(ConfigHelper::getConfig('documents.protection_password_authcode_source', 'random8')),
+            -1,
+            PREG_SPLIT_NO_EMPTY
+        );
+
+        $document_protection_password_authcode_message = ConfigHelper::getConfig(
+            'documents.protection_password_authcode_message',
+            '%authcode'
         );
 
         if (strlen($document_protected_document_types)) {
@@ -3118,19 +3186,32 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
                         if (!empty($send_zip_protection_password)) {
                             $ssn_is_present = strpos($send_zip_protection_password, '%ssn') !== false;
+                            $authcode_is_present = strpos($send_zip_protection_password, '%authcode') !== false;
 
                             if (isset($document_protected_document_types[$document['type']])
-                                && (!$ssn_is_present || strlen($document['ssn']))) {
+                                && (!$ssn_is_present || strlen($document['ssn']) || $authcode_is_present)) {
+                                $customer_data = array(
+                                    'ssn' => $document['ssn'],
+                                    'ten' => $document['ten'],
+                                    'pin' => preg_match('/^\$[0-9]+\$/', $attachment['pin'])
+                                        ? ''
+                                        : $attachment['pin']
+                                );
+
+                                if ($authcode_is_present) {
+                                    $document['authcode'] = $this->prepareDocumentAuthCode($document_protection_password_authcode_sources, $customer_data);
+                                }
+
                                 $zip_password = trim(str_replace(
                                     array(
                                         '%ssn',
                                         '%pin',
+                                        '%authcode',
                                     ),
                                     array(
                                         $document['ssn'],
-                                        preg_match('/^\$[0-9]+\$/', $attachment['pin'])
-                                            ? ''
-                                            : $attachment['pin'],
+                                        $customer_data['pin'],
+                                        empty($document['authcode']) ? '' : $document['authcode'],
                                     ),
                                     $send_zip_protection_password
                                 ));
@@ -3258,6 +3339,20 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             $msgitems[$doc['customerid']] = array();
                         }
                         $msgitems[$doc['customerid']][$email] = $msgitemid;
+                    }
+                }
+
+                if (!empty($document['authcode']) && !empty($doc['phone'])) {
+                    $phones = explode(',', $doc['phone']);
+                    foreach ($phones as $phone) {
+                        $LMS->SendSMS(
+                            $phone,
+                            str_replace(
+                                '%authcode',
+                                $document['authcode'],
+                                $document_protection_password_authcode_message
+                            )
+                        );
                     }
                 }
 
