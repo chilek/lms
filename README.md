@@ -1,8 +1,11 @@
 [![Build Status](https://travis-ci.com/chilek/lms.svg?branch=master)](https://travis-ci.com/chilek/lms)
 
-# Lan Management System (LMS)
-LMS (LAN Management System) is a package of applications for managing LAN networks. 
-Its main goal is to provide the best service to customers, as seen in large ISP companies. 
-LMS is written in PHP, Perl and C and can use MySQL or PostgreSQL as its database backends. 
-The following features are provided at the time: customer database (names, addresses, phones, comments, etc),
-computers inventory (IP, MAC), simple financial system suited for network operations, financial balances and invoices, email warnings to users, automatic billing schedule, ability to generate (almost) any kind of config file ie. ipchains/iptables firewall scripts, DHCP daemon configuration, zones for bind, /etc/ethers entries, oident, htb and more, visualization of bandwidth consumption per host, request tracker system (Helpdesk), timetable (Organizer).
+# LAN Management System (LMS)
+LMS (LAN Management System) is a comprehensive suite of applications<!-- by 梁冰丽--> designed for the management of LAN networks. Its primary objective is to deliver optimal service to customers<!-- by 梁冰丽-->, as exemplified by large Internet Service Providers (ISPs)<!-- by 梁冰丽-->. LMS is developed using PHP, Perl, and C programming languages and supports MySQL or PostgreSQL as database backends. The current feature set includes: a customer database (storing names, addresses, phone numbers, comments, etc.), an inventory system for tracking computers (IP and MAC addresses), a streamlined financial system tailored for network operations (including financial balances, invoices, and email notifications), an automated billing schedule, the ability to generate a wide range of configuration files (e.g., ipchains/iptables firewall scripts, DHCP daemon configurations, DNS zone files for bind, /etc/ethers entries, oident, htb settings, etc.), bandwidth consumption visualization per host, a request tracking system (Helpdesk functionality), and a scheduling organizer.<!-- by 梁冰丽-->
+ # LMS Project Background
+LMS (Local Network Management System) is a comprehensive management tool designed for enterprises, schools, government institutions and other local area network environments, aiming to improve the efficiency of LAN operation and maintenance, ensure network security, and optimize resource allocation. Through centralized management, real-time monitoring and intelligent control of devices, users, traffic and permissions in the LAN are realized.<!--by 梁冰丽-->
+# Future Development Trends 
+- AI Integration: Leverage machine learning algorithms to forecast traffic surges and dynamically adjust network policies for optimal performance.  
+- Cloud-Edge Collaboration: In conjunction with the cloud management platform, achieve unified governance over cross-regional local area networks (LANs).  
+- IoT Expansion: Facilitate the connection and administration of emerging terminal devices, including 5G and LoRa technologies.  
+- Automated Operations and Maintenance: Minimize manual intervention through self-healing scripts designed for fault resolution.  <!--by 梁冰丽-->
