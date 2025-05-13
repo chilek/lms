@@ -9,3 +9,34 @@ LMS (Local Network Management System) is a comprehensive management tool designe
 - Cloud-Edge Collaboration: In conjunction with the cloud management platform, achieve unified governance over cross-regional local area networks (LANs).  
 - IoT Expansion: Facilitate the connection and administration of emerging terminal devices, including 5G and LoRa technologies.  
 - Automated Operations and Maintenance: Minimize manual intervention through self-healing scripts designed for fault resolution.  <!--by 梁冰丽-->
+
+# Detailed installation
+-    steps:1. Clone the project repository
+        First, you need to clone the project repository to your local machine. Open the terminal and run the following command:
+
+    git clone https://github.com/jiugui321/lms.git
+    
+        
+-        2. Enter the project directory
+
+        After cloning, navigate to the project directory:
+
+    cd standard-readme
+        
+        
+ -       3. Install project dependencies
+
+        Use npm to install the required dependencies:
+        
+    npm install
+        
+        
+ -       4. Verify installation
+        
+        Once the installation is complete, you can verify if the installation was successful by running the following command:
+        
+    npm test
+    
+ -   If all tests pass, it means the project has been installed successfully.                                        
+ 
+    <!--by 王玥-->
