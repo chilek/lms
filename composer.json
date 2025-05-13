@@ -146,7 +146,7 @@
         "fortawesome/font-awesome": "^5",
         "html2text/html2text": "^4",
         "drmonty/datatables-responsive": "^2.2",
-        "pragmarx/google2fa": "^6",
+        "pragmarx/google2fa": "^8",
         "galleriajs/galleria": "^1",
         "rzani/zbar-qrdecoder": "^2",
         "dragonbe/vies": "*",
