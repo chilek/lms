@@ -2551,6 +2551,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             $authcode = $data['ten'];
                             break 2;
                         }
+                        break;
                     case 'pin':
                         if (!empty($data['pin'])) {
                             $authcode = $data['pin'];
