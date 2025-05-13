@@ -92,3 +92,52 @@ LMS (Local Network Management System) is a comprehensive management tool designe
     <!--by 王玥-->
 
 
+## 📮 Primary function & Screenshot
+
+一、 Equipment management
+Function Description:
+1. Automatic device discovery: Automatically identify devices within the local area network (computers, printers, IoT devices, etc.) through ARP scanning and SNMP protocol.
+2. Equipment classification and labeling: Automatically classified by type (terminal/server/IoT), department, and location, supporting custom labels.
+3. IP/MAC address binding: prevents illegal device access, supports static binding and dynamic allocation strategies.
+4. Equipment status monitoring: Real time display of equipment online/offline status, operating system, open ports, and other information.
+
+二、 Traffic monitoring and analysis
+Function Description:
+1. Real time traffic monitoring: Display the upload/download speed and bandwidth usage ranking of devices/IPs.
+2. Historical traffic statistics: Generate traffic trend charts by day/week/month, and support exporting to Excel.
+3. Traffic restriction strategy: Set bandwidth limits for devices or groups, and prioritize control (such as prioritizing video conferencing traffic).
+4. Protocol analysis: Identify the proportion of protocols such as HTTP/HTTPS, FTP, and gaming, and block illegal protocols.
+
+三、 Access Control and Security
+Function Description:
+1. Blacklist rule: Set access permissions based on IP/MAC address, port, and protocol.
+2. VLAN partitioning: Isolate different departments/devices into independent VLANs to enhance network security.
+3. Firewall linkage: Integrate with existing firewalls to automatically intercept illegal devices or abnormal traffic.
+4. Network topology diagram: Visualize device connection relationships and quickly locate faulty nodes.
+
+四、 Alarm and Notification
+Function Description:
+1. Abnormal alarm: device offline, traffic exceeding limit, illegal access and other events trigger alarms.
+2. Notification methods: push notifications through various channels such as email, SMS, WeChat, Webhook, etc.
+3. Alarm threshold setting: Custom traffic threshold (such as bandwidth usage exceeding 90% for 5 minutes).
+
+五、 Visualization and Reporting
+Function Description:
+1. Dashboard panel: Summarize core data such as device status, traffic, and alarms.
+2. Custom reports: Generate device inventory, traffic reports, and security audit logs.
+3. Network topology diagram: Drag and drop editing of topology, supports importing background images (such as computer room layout).
+
+六、 Permission Management and Audit
+Function Description:
+1. Multi role permissions: graded permission control for administrators, operations personnel, and auditors.
+2. Operation log: Record device configuration modifications, policy adjustments, and other operations, supporting traceability.
+3. Remote maintenance: Restart the device through the web interface and execute commands (requiring SSH/RDP support).
+
+七、 Expansion and Integration
+Function Description:
+1. API interface: Provides RESTful APIs that can be integrated with third-party systems such as Zabbix and Prometheus.
+2. Plugin market: Supports the installation of third-party plugins (such as DDNS and traffic shaping tools).
+3. Multi platform support: Compatible with Windows/Linux/macOS and supports Docker deployment.
+<!--by 韦思宇-->
+=======
+
