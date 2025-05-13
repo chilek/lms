@@ -11,3 +11,83 @@ LMS (Local Network Management System) is a comprehensive management tool designe
 - Automated Operations and Maintenance: Minimize manual intervention through self-healing scripts designed for fault resolution.  <!--by 梁冰丽-->
 
 
+#   Detailed Installation Guide
+
+    The following provides comprehensive steps for installing an LMS system. Note that specific procedures may vary depending on your chosen LMS platform (Moodle, Canvas, Blackboard, etc.).
+
+- Pre-Installation Preparation
+    1.Verify System Requirements
+
+        Web server (Apache/Nginx/IIS)
+        Database server (MySQL/MariaDB/PostgreSQL)
+        PHP (version must meet LMS specifications)
+        Required PHP extensions
+        
+    2.Acquire LMS Software
+
+        Download the latest stable release from the official vendor website
+        Alternatively, clone the repository using Git
+
+
+#   Installation Procedure
+
+    1.Configure Environment
+
+        # Example for Ubuntu/Debian systems
+        sudo apt update
+        sudo apt install -y apache2 mysql-server php \
+            libapache2-mod-php php-mysql php-xml \
+            php-curl php-zip php-gd php-mbstring
+
+[Changed: Reorganized package installation for better readability]
+
+
+    2.Setup Database
+
+        CREATE DATABASE lmsdb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+        CREATE USER 'lmsuser'@'localhost' IDENTIFIED BY 'securepassword';
+        GRANT ALL PRIVILEGES ON lmsdb.* TO 'lmsuser'@'localhost';
+        FLUSH PRIVILEGES;
+
+[Changed: Fixed typo in "PRIVILEGES" and improved formatting]
+
+
+    3.Deploy LMS Files
+
+        # Extract or clone into web directory
+        cd /var/www/html
+        sudo unzip lms.zip -d lms/
+
+        # OR for Git installation
+        sudo git clone https://github.com/lms-project/lms.git lms
+
+
+[Changed: Added -d flag for unzip and made Git command more explicit]
+    
+
+    4.Configure Permissions
+
+        sudo chown -R www-data:www-data /var/www/html/lms
+        sudo find /var/www/html/lms -type d -exec chmod 755 {} \;
+        sudo find /var/www/html/lms -type f -exec chmod 644 {} \;
+
+
+[Changed: Enhanced permission settings with find commands for better security]
+
+
+
+    5.Finalize Installation via Web Interface
+
+        -Navigate to http://your-server-ip/lms
+
+        -Complete the installation wizard by:
+
+        1.Providing database connection details
+
+        2.Creating administrator credentials
+
+        3。Configuring initial system settings
+
+[Changed: Reformatted as a numbered list for clarity]
+    <!--by 王玥-->
+
