@@ -1009,6 +1009,9 @@ version 28-git (????-??-??):
   - improvement: new 'invoices.proforma_conversion_paytype' configuration variable with undefined value controls
     which payment type is set to invoice created from pro forma invoices (undefined value means presevation of payment
     type from pro forma invoice) [chilan]
+  - enhancement: more flexible way of protecting document sent to customers - new configuration variables
+    'documents.protection_password_authcode_source' (default: 'random8')
+    and 'documents.protection_password_authcode_message' (default: '%authcode') [chilan]
 
 version 27.0 (2021-08-20):
 
