@@ -2534,7 +2534,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         foreach ($authcodeSources as $source) {
             if (strpos($source, 'random') === 0) {
-                if (preg_match('/^random(?<length>\d*)$/', $source, $matches)) {
+                if (!empty($data['phone']) && preg_match('/^random(?<length>\d*)$/', $source, $matches)) {
                     $min_value = pow(10, empty($matches['length']) ? 8 : $matches['length']);
                     $authcode = mt_rand($min_value, $min_value * 10 - 1);
                 }
@@ -2582,16 +2582,27 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     d2.fullnumber AS ref_fullnumber,
                     d2.type AS ref_type,
                     n2.template AS ref_template,
-                    dc.title AS content_title
+                    dc.title AS content_title,
+                    p.phone
                 FROM documents d
                 JOIN documentcontents dc ON dc.docid = d.id
                 JOIN customers c ON c.id = d.customerid
+                LEFT JOIN (
+                    SELECT
+                        customerid,
+                        ' . $this->db->GroupConcat('contact') . ' AS phone
+                    FROM customercontacts
+                    WHERE (type & ?) = ?
+                    GROUP BY customerid
+                ) p ON p.customerid = c.id
                 LEFT JOIN numberplans n ON (d.numberplanid = n.id)
                 JOIN docrights r ON (r.doctype = d.type)
                 LEFT JOIN documents d2 ON d2.id = d.reference
                 LEFT JOIN numberplans n2 ON n2.id = d2.numberplanid
                 WHERE d.id = ? AND r.userid = ? AND (r.rights & ?) > 0',
                 array(
+                    CONTACT_MOBILE | CONTACT_DOCUMENTS | CONTACT_DISABLED,
+                    CONTACT_MOBILE | CONTACT_DOCUMENTS,
                     $id,
                     $userid,
                     DOCRIGHT_VIEW,
@@ -2608,16 +2619,29 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     d2.fullnumber AS ref_fullnumber,
                     d2.type AS ref_type,
                     n2.template AS ref_template,
-                    dc.title AS content_title
+                    dc.title AS content_title,
+                    p.phone
                 FROM documents d
                 JOIN documentcontents dc ON dc.docid = d.id
                 JOIN customers c ON c.id = d.customerid
+                LEFT JOIN (
+                    SELECT
+                        customerid,
+                        ' . $this->db->GroupConcat('contact') . ' AS phone
+                    FROM customercontacts
+                    WHERE (type & ?) = ?
+                    GROUP BY customerid
+                ) p ON p.customerid = c.id
                 LEFT JOIN numberplans n ON (d.numberplanid = n.id)
                 JOIN docrights r ON (r.doctype = d.type)
                 LEFT JOIN documents d2 ON d2.id = d.reference
                 LEFT JOIN numberplans n2 ON n2.id = d2.numberplanid
                 WHERE d.id = ?',
-                array($id)
+                array(
+                    CONTACT_MOBILE | CONTACT_DOCUMENTS | CONTACT_DISABLED,
+                    CONTACT_MOBILE | CONTACT_DOCUMENTS,
+                    $id,
+                )
             );
         }
 
@@ -2776,7 +2800,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             'ten' => $document['ten'],
                             'pin' => preg_match('/^\$[0-9]+\$/', $attachment['pin'])
                                 ? ''
-                                : $attachment['pin']
+                                : $attachment['pin'],
+                            'phone' => $document['phone'],
                         );
 
                         if ($authcode_is_present) {
@@ -3196,7 +3221,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                                     'ten' => $document['ten'],
                                     'pin' => preg_match('/^\$[0-9]+\$/', $attachment['pin'])
                                         ? ''
-                                        : $attachment['pin']
+                                        : $attachment['pin'],
+                                    'phone' => $doc['phone'],
                                 );
 
                                 if ($authcode_is_present) {
