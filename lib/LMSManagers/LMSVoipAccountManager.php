@@ -797,11 +797,21 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         // VOIP ACCOUNT ID
         if (!empty($params['id'])) {
             if (is_array($params['id'])) {
-                $tmp = '(' . implode(',', $params['id']) . ')';
-                $where[] = '(cdr.callervoipaccountid in ' . $tmp . ' OR cdr.calleevoipaccountid in' . $tmp . ')';
+                $tmp = implode(',', $params['id']);
+                if (empty($params['fvownerid'])) {
+                    $where[] = '(cdr.callervoipaccountid IN (' . $tmp . ') OR cdr.calleevoipaccountid IN (' . $tmp . '))';
+                } else {
+                    $where[] = '(cdr.callervoipaccountid IN (' . $tmp . ') AND vacc.ownerid = ' . $params['fvownerid']
+                        . ' OR cdr.calleevoipaccountid IN (' . $tmp . ') AND vacc2.ownerid = ' . $params['fvownerid'] . ')';
+                }
                 unset($tmp);
             } else {
-                $where[] = '(cdr.callervoipaccountid = ' . $params['id'] . ' OR cdr.calleevoipaccountid = ' . $params['id'] . ')';
+                if (empty($params['fvownerid'])) {
+                    $where[] = '(cdr.callervoipaccountid = ' . $params['id'] . ' OR cdr.calleevoipaccountid = ' . $params['id'] . ')';
+                } else {
+                    $where[] = '(cdr.callervoipaccountid = ' . $params['id'] . ' AND vacc.ownerid = ' . $params['fvownerid']
+                        . ' OR cdr.calleevoipaccountid = ' . $params['id'] . ' AND vacc2.ownerid = ' . $params['fvownerid'] . ')';
+                }
             }
         }
 
@@ -811,7 +821,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         }
 
         // OWNERID
-        if (!empty($params['fvownerid'])) {
+        if (!empty($params['fvownerid']) && empty($params['id'])) {
             $where[] = "vacc.ownerid = " . $params['fvownerid'];
         }
 
@@ -914,7 +924,6 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                                      totaltime, billedtime,
                                      cdr.direction as direction, cdr.type AS type, callervoipaccountid, calleevoipaccountid,
                                      cdr.status as status, vacc.ownerid as callerownerid, vacc2.ownerid as calleeownerid,
-
                                      c1.name as caller_name, c1.lastname as caller_lastname, addr1.city as caller_city,
                                      addr1.street as caller_street, addr1.house as caller_building,
                                      c2.name as callee_name, c2.lastname as callee_lastname, addr2.city as callee_city,

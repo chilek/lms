@@ -52,7 +52,8 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                 d.type,
                 d.customerid,
                 d.name,
-                m.email
+                m.email,
+                p.phone
             FROM documents d
             JOIN (
                 SELECT
@@ -62,11 +63,21 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                 WHERE (type & ?) = ?
                 GROUP BY customerid
             ) m ON m.customerid = d.customerid
+            LEFT JOIN (
+                SELECT
+                    customerid, "
+                     . $DB->GroupConcat('contact') . " AS phone
+                FROM customercontacts
+                WHERE (type & ?) = ?
+                GROUP BY customerid
+            ) p ON p.customerid = d.customerid
             WHERE d.id IN ?
             ORDER BY d.id",
             array(
                 CONTACT_EMAIL | CONTACT_DOCUMENTS | CONTACT_DISABLED,
                 CONTACT_EMAIL | CONTACT_DOCUMENTS,
+                CONTACT_MOBILE | CONTACT_DOCUMENTS | CONTACT_DISABLED,
+                CONTACT_MOBILE | CONTACT_DOCUMENTS,
                 $docids,
             )
         );

@@ -70,7 +70,7 @@ if (!isset($_POST['xjxfun'])) {
 
     $SESSION->add_history_entry();
 
-    $layout['pagetitle'] = trans('Customer Info: $a', $customerinfo['customername']);
+    $layout['pagetitle'] = trans('Customer Info: $a', htmlspecialchars($customerinfo['customername']));
 } else {
     $customerinfo = array(
         'id' => $customerid,

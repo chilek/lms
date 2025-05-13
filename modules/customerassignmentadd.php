@@ -201,6 +201,7 @@ if (isset($_POST['assignment'])) {
         ConfigHelper::getConfig('phpui.default_assignment_discount_type', 'percentage')
     );
     $a['discount_type'] = $default_assignment_discount_type == 'percentage' ? DISCOUNT_PERCENTAGE : DISCOUNT_AMOUNT;
+    $a['target_price_trigger'] = ConfigHelper::checkConfig('assignments.default_target_discounted_price');
 
     $default_existing_assignment_operation = ConfigHelper::getConfig(
         'assignments.default_existing_operation',

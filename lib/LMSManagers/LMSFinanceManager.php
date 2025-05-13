@@ -5303,6 +5303,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $currtime = time();
 
+        $paytype = intval(ConfigHelper::getConfig('invoices.proforma_conversion_paytype'));
         $comment = ConfigHelper::getConfig('invoices.proforma_conversion_comment_format', '%comment');
         $comment = str_replace(
             array(
@@ -5320,7 +5321,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'cdate' => $currtime,
             'sdate' => $currtime,
             'paytime' => 0,
-            'paytype' => $proforma['paytype'],
+            'paytype' => empty($paytype) ? $proforma['paytype'] : $paytype,
             'flags' => (empty($proforma['splitpayment']) ? 0 : DOC_FLAG_SPLIT_PAYMENT)
                 + (empty($proforma['netflag']) ? 0 : DOC_FLAG_NET_ACCOUNT),
             SYSLOG::RES_CUST => $proforma['customerid'],

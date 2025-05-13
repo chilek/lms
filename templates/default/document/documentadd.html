@@ -472,6 +472,10 @@
 		if (documentConfirmDateRequired) {
 			$('#fromdate').change(confirmDateRequired).change();
 		}
+
+		{if !empty($defaultDocEngine)}
+			DocTemplateChanged();
+		{/if}
 	});
 	//setnumberplans();
 
