@@ -139,7 +139,7 @@ function GetPlugin($template, $customerid, $update_title, $JSResponse)
 
 function GetDocumentTemplates($rights, $type = null)
 {
-    global $documents_dirs;
+    global $documents_dirs, $DOCTYPES;
 
     $docengines = array();
 
@@ -163,6 +163,7 @@ function GetDocumentTemplates($rights, $type = null)
                     if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
                         $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
                     }
+
                     if (isset($engine['type'])) {
                         if (!is_array($engine['type'])) {
                             $engine['type'] = array($engine['type']);
@@ -173,6 +174,28 @@ function GetDocumentTemplates($rights, $type = null)
                         }
                     } elseif (isset($engine)) {
                         $docengines[$dir] = $engine;
+                        $intersect = $DOCTYPES;
+                    }
+
+                    $default = array();
+                    if (!empty($docengines[$dir]) && !empty($engine['default'])) {
+                        if (is_array($engine['default'])) {
+                            $default = array_filter(
+                                $engine['default'],
+                                function ($defaultFlag) {
+                                    return !empty($defaultFlag);
+                                }
+                            );
+                            $default = array_intersect(array_keys($default), $intersect);
+                            $default = array_combine($default, array_fill(0, count($default), true));
+                        } else {
+                            foreach ($intersect as $doctype) {
+                                $default[$doctype] = true;
+                            }
+                        }
+                    }
+                    if (!empty($docengines[$dir])) {
+                        $docengines[$dir]['default'] = $default;
                     }
                 }
             }
@@ -206,6 +229,7 @@ function GetTemplates($doctype, $doctemplate, $JSResponse)
     );
     $docengines = GetDocumentTemplates($rights, $doctype);
     $document['templ'] = $doctemplate;
+    $document['type'] = $doctype;
     $SMARTY->assign('docengines', $docengines);
     $SMARTY->assign('document', $document);
     $contents = $SMARTY->fetch('document/documenttemplateoptions.html');
@@ -215,6 +239,17 @@ function GetTemplates($doctype, $doctemplate, $JSResponse)
         $JSResponse->call('enable_templates');
     } else {
         $JSResponse->call('disable_templates');
+    }
+
+    $defaultDocEngine = array_filter(
+        $docengines,
+        function ($engine) use ($doctype) {
+            return !empty($engine['default'][$doctype]);
+        }
+    );
+    $defaultDocEngine = reset($defaultDocEngine);
+    if (!empty($defaultDocEngine)) {
+        $JSResponse->call('DocTemplateChanged');
     }
 }
 

@@ -60,7 +60,11 @@ if ($api) {
     $SESSION->save('nnfp', $p);
 
     if (!isset($_GET['w'])) {
-        $SESSION->restore('nnfw', $w);
+        if ($SESSION->is_set('nnfw')) {
+            $SESSION->restore('nnfw', $w);
+        } else {
+            $w = -1;
+        }
     } else {
         $w = $_GET['w'];
     }

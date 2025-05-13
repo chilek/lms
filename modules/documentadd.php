@@ -662,7 +662,8 @@ if (isset($_POST['document'])) {
                         d.type,
                         d.customerid,
                         d.name,
-                        m.email
+                        m.email,
+                        p.phone
                     FROM documents d
                     JOIN (
                         SELECT
@@ -672,10 +673,20 @@ if (isset($_POST['document'])) {
                         WHERE (type & ?) = ?
                         GROUP BY customerid
                     ) m ON m.customerid = d.customerid
+                    LEFT JOIN (
+                        SELECT
+                            customerid, "
+                            . $DB->GroupConcat('contact') . " AS phone
+                        FROM customercontacts
+                        WHERE (type & ?) = ?
+                        GROUP BY customerid
+                    ) p ON p.customerid = d.customerid
                     WHERE d.id = ?",
                     array(
                         CONTACT_EMAIL | CONTACT_DOCUMENTS | CONTACT_DISABLED,
                         CONTACT_EMAIL | CONTACT_DOCUMENTS,
+                        CONTACT_MOBILE | CONTACT_DOCUMENTS | CONTACT_DISABLED,
+                        CONTACT_MOBILE | CONTACT_DOCUMENTS,
                         $docid,
                     )
                 );
@@ -885,6 +896,19 @@ $SMARTY->assign('numberplans', $numberplans);
 $SMARTY->assign('planDocumentType', $document['type'] ?? null);
 
 $docengines = GetDocumentTemplates($rights, $document['type'] ?? null);
+
+if (isset($document['type']) && !empty($docengines)) {
+    $defaultDocEngine = array_filter(
+        $docengines,
+        function ($engine) use ($document) {
+            return !empty($engine['default'][$document['type']]);
+        }
+    );
+    $defaultDocEngine = reset($defaultDocEngine);
+    if (!empty($defaultDocEngine)) {
+        $SMARTY->assign('defaultDocEngine', $defaultDocEngine);
+    }
+}
 
 $references = empty($document['customerid']) ? null : $LMS->GetDocuments($document['customerid']);
 $SMARTY->assign('references', $references);

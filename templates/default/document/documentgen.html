@@ -328,6 +328,10 @@
 		$('[name="document[type]"]').change(function() {
 			$('#document-file-row').toggle(parseInt($(this).val()) != 0);
 		});
+
+		{if !empty($defaultDocEngine)}
+			DocTemplateChanged();
+		{/if}
 	});
 
 </script>

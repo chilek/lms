@@ -256,14 +256,36 @@
 			{identitytypes elemname="search[ict]" selected=$search.ict}
 		</TD>
 	</TR>
-	<TR>
-		<TD class="nobr bold">
-			{icon name="user-id-number"} {trans("Identity number:")}
-		</TD>
-		<TD>
-			<INPUT type="text" name="search[icn]" VALUE="{$search.icn}">
-		</TD>
-	</TR>
+	<tr>
+		<td class="nobr">
+			<span class="customer-property-label">
+				<strong>
+					{icon name="user-id-number"}
+					{trans("Identity number")}
+				</strong>
+			</span>
+		</td>
+		<td>
+			<input type="text" name="search[icn]" value="{$search.icn}" data-customer-property="icn">
+			<span style="display: none;"></span>
+			<label>
+				<input type="radio" name="icn-match-selector" data-controlled-customer-property="icn" value="=" checked>
+				<span>{trans("given value")}</span>
+			</label>
+			<label>
+				<input type="radio" name="icn-match-selector" data-controlled-customer-property="icn" value="*">
+				<span>{trans("non-empty")}</span>
+			</label>
+			<label>
+				<input type="radio" name="icn-match-selector" data-controlled-customer-property="icn" value="-">
+				<span>{trans("empty")}</span>
+			</label>
+			<input type="hidden" name="search[icn]" data-customer-property="icn"
+				value="*"{if $search.icn != '*'} disabled{/if}>
+			<input type="hidden" name="search[icn]" data-customer-property="icn"
+				value="-"{if $search.icn != '-'} disabled{/if}>
+		</td>
+	</tr>
 
 	<tr>
 		<td class="nobr">
@@ -278,29 +300,67 @@
 		</td>
 	</tr>
 
-	<TR>
-		<TD class="bold nobr">
-			{icon name="user-id-number"} {trans("SSN:")}
-		</TD>
-		<TD>
-			<INPUT type="text" name="search[ssn]" VALUE="{$search.ssn}">
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
-			{icon name="user-id-number"} {trans("TEN:")}
-		</TD>
-		<TD>
-			<input type="text" name="search[ten]" id="search-ten"
-				{if $search.ten != '*'} value="{$search.ten}"{else} disabled{/if}>
+	<tr>
+		<td class="nobr">
+			<span class="customer-property-label">
+				<strong>
+					{icon name="user-id-number"}
+					{trans("SSN")}
+				</strong>
+			</span>
+		</td>
+		<td>
+			<input type="text" name="search[ssn]" value="{$search.ssn}" data-customer-property="ssn">
+			<span style="display: none;"></span>
 			<label>
-				<input type="checkbox" id="non-empty-ten">
+				<input type="radio" name="ssn-match-selector" data-controlled-customer-property="ssn" value="=" checked>
+				<span>{trans("given value")}</span>
+			</label>
+			<label>
+				<input type="radio" name="ssn-match-selector" data-controlled-customer-property="ssn" value="*">
 				<span>{trans("non-empty")}</span>
 			</label>
-			<input type="hidden" name="search[ten]" id="search-non-empty-ten"
+			<label>
+				<input type="radio" name="ssn-match-selector" data-controlled-customer-property="ssn" value="-">
+				<span>{trans("empty")}</span>
+			</label>
+			<input type="hidden" name="search[ssn]" data-customer-property="ssn"
+				value="*"{if $search.ssn != '*'} disabled{/if}>
+			<input type="hidden" name="search[ssn]" data-customer-property="ssn"
+				value="-"{if $search.ssn != '-'} disabled{/if}>
+		</td>
+	</tr>
+	<tr>
+		<td class="bold nobr">
+			<span class="customer-property-label">
+				<strong>
+					{icon name="user-id-number"}
+					{trans("TEN")}
+				</strong>
+			</span>
+		</td>
+		<td>
+			<input type="text" name="search[ten]" data-customer-property="ten"
+				{if $search.ten != '*'} value="{$search.ten}"{else} disabled{/if}>
+			<span style="display: none;"></span>
+			<label>
+				<input type="radio" name="ten-match-selector" data-controlled-customer-property="ten" value="=" checked>
+				<span>{trans("given value")}</span>
+			</label>
+			<label>
+				<input type="radio" name="ten-match-selector" data-controlled-customer-property="ten" value="*">
+				<span>{trans("non-empty")}</span>
+			</label>
+			<label>
+				<input type="radio" name="ten-match-selector" data-controlled-customer-property="ten" value="-">
+				<span>{trans("empty")}</span>
+			</label>
+			<input type="hidden" name="search[ten]" data-customer-property="ten"
 				value="*"{if $search.ten != '*'} disabled{/if}>
-		</TD>
-	</TR>
+			<input type="hidden" name="search[ten]" data-customer-property="ten"
+				value="-"{if $search.ten != '-'} disabled{/if}>
+		</td>
+	</tr>
 	<TR>
 		<TD class="bold nobr">
 			{icon name="user-id-number"} {trans("REGON:")}
@@ -962,9 +1022,15 @@
 	$(function() {
 		$('form[name="customersearch"] [name="search[customername]"]').focus();
 
-		$('#non-empty-ten').change(function() {
-			$('#search-ten').prop('disabled', $(this).prop('checked'));
-			$('#search-non-empty-ten').prop('disabled', !$(this).prop('checked'));
+		$("[data-controlled-customer-property]").change(function() {
+			var customerProperty = $(this).attr("data-controlled-customer-property");
+			var value = $(this).val();
+			var checked = $(this).prop('checked');
+			$('input[type="text"][data-customer-property="' + customerProperty + '"]').prop('disabled', checked && (value == '*' || value == '-'));
+			$('input[type="hidden"][data-customer-property="' + customerProperty + '"]').each(function() {
+				$(this).prop('disabled', $(this).val() != value);
+			});
+			$(this).closest('tr').find('.customer-property-label').toggleClass('lms-ui-disabled', checked);
 		});
 
 		$('#reset-consents').click(function() {

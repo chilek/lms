@@ -390,6 +390,13 @@ class Session
                             if ($this->id) {
                                 if (isset($_COOKIE['USID'])) {
                                     $this->_restoreSession();
+                                    if ($this->id != $authdata['id']) {
+                                        $this->_destroySession();
+                                        if (empty($this->error)) {
+                                            $this->error = trans('Access denied!');
+                                        }
+                                        return;
+                                    }
                                 }
                                 if (empty($this->_vdata)) {
                                     $this->_createSession();
@@ -1092,7 +1099,8 @@ class Session
                 failedloginip,
                 enabled,
                 m.emails,
-                p.phones
+                p.phones,
+                up_customers.id AS lastlogininfo
             FROM customers c
             LEFT JOIN up_customers ON up_customers.customerid = c.id
             LEFT JOIN (
@@ -1125,7 +1133,7 @@ class Session
     private function SetCustomerAuthInfo($authinfo)
     {
         $actauthinfo = $this->GetCustomerAuthInfo($authinfo['id']);
-        if ($actauthinfo != null) {
+        if (!empty($actauthinfo['lastlogininfo'])) {
             $this->db->Execute(
                 'UPDATE up_customers
                     SET lastlogindate = ?, lastloginip = ?, failedlogindate = ?, failedloginip = ?, enabled = ? WHERE customerid = ?',
