@@ -1,0 +1,101 @@
+/*
+ * LMS version 1.11-git
+ *
+ *  (C) Copyright 2001-2025 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+
+.select2-container {
+  text-align: left;
+  min-width: 250px;
+  font-size: @font-size-high;
+  font-weight: initial;
+  @media screen and (max-width: @font-size-normal-max-width) {
+    font-size: @font-size-normal;
+  }
+  @media screen and (max-width: @font-size-mobile-max-width) {
+    font-size: @font-size-mobile;
+  }
+
+  .select2-selection {
+    height: unset;
+    min-height: 1.6em;
+    display: flex;
+    align-items: center;
+    border: @form-element-border;
+    background-color: @lucid;
+
+    .select2-selection__rendered {
+      line-height: initial;
+      color: inherit;
+    }
+
+    .select2-selection__arrow {
+      height: 100%;
+    }
+  }
+
+  .select2-results__group {
+    padding-top: 3px;
+    padding-bottom: 3px;
+  }
+
+  .select2-dropdown {
+    background-color: @lucid;
+  }
+
+  .select2-results__option .select2-results__option {
+    padding: 3px 15px;
+  }
+
+  .select2-results__option--selected {
+    background-color: #5895f7;
+    color: white;
+  }
+
+  .select2-results__option--selectable.select2-results__option--highlighted {
+    background-color: #3875d7;
+  }
+
+  .select2-results > .select2-results__options {
+    max-height: inherit;
+  }
+}
+
+.select2-results {
+  max-height: 30vh;
+
+  .select2-results__options.select2-results__options--nested {
+    padding-inline-start: 0;
+  }
+}
+
+.select2-results__option {
+  padding: 3px 3px;
+  & .select2-results__option {
+    padding: 3px 3px;
+  }
+
+  em {
+    background-color: @dark;
+    font-weight: bold;
+    text-decoration: none;
+  }
+}
