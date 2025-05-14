@@ -261,5 +261,36 @@ The project (LMS, LAN Management System) is mainly used for the automation manag
 Project Glossary (Chinese-English Glossary)
 [Here is the picture]
 markdown
-![Project Glossary](terms.md/2205308030301.png)
-<!--李金艳 著>
+![Project Glossary](terms.md/2205308030301.png)<!--李金艳 著>
+
+
+
+
+# Team Division
+1. English README.md - Project Introduction Writer: Liang Bingli
+。 Responsible for writing the project introduction section in both English README.md and Chinese README.zh.md, including project background, objectives, and functional overview.
+。 Ensure the content is concise, clear, logical, and uses professional English expressions. After completing the first draft, use AI to review professional terminology.
+。 Add author comment identifiers as required in the content.
+。 Submit at least twice, with each commit message clearly describing the submitted content, and each contribution having no fewer than 10 lines of Changes.
+2. English README.md and Chinese README.zh.md - Installation/Deployment Instructions Writer: Wang Yue
+。 Write the installation/deployment instructions section in the English README.md, detailing the project's required dependencies, installation steps, and deployment methods.
+Clearly describe each step, and you may add screenshots to aid understanding. After completion, use AI to review professional terminology to ensure accuracy.
+。 Add author comment identifiers to the corresponding content.
+。 Ensure at least 2 valid submissions, with each submission meeting the required number of Changes.
+3. English README.md and Chinese README.zh.md - Project Main Function Introduction with Screenshots Writer (including screenshots):
+。 Responsible for writing the usage tutorial section with screenshots for the main functions in both English README.md and Chinese README.zh.md. Operate the main functions of the project, record the operation steps, and capture key interface screenshots.
+Write detailed usage tutorials based on the screenshots, use AI to review professional terminology to make the tutorial content easy to understand. Add author comment identifiers in the content.
+。 Complete at least 2 valid submissions as required.
+4. Project Glossary Creator: Li Jinyan
+。 Collect professional terms involved in the project, create a bilingual glossary (terms.md) with Chinese-English correspondence, with no fewer than 5 terms.
+。 Accurately translate each term into Chinese and English. AI tools can be used for assistance, but manual review and confirmation are required.
+。 Ensure the glossary content is formatted correctly, clear, and easy to read.
+5. Chinese README.zh.md Translation and Polishing: Li Jinyan, Liang Bingli, Wang Yue, Wei Siyu
+。 Use AI assistance to translate the English README.md into Chinese README.zh.md. After translation, perform detailed polishing to ensure the Chinese expression is natural and fluent, accurately conveying the original meaning.
+。 Check and correct any errors or inappropriate expressions that may occur in the AI translation. Retain the original author comment identifiers in the translated content.
+。 Submit the translated and polished content at least twice, ensuring sufficient workload with each submission.
+6. AI Usage Document Writer and Screenshot Organizer: Li Jinyan, Liang Bingli, Wang Yue, Wei Siyu
+。 Write a usage document, briefly explaining the work of each team member using AI assistance, including the AI tools used, application scenarios, and purposes, etc.
+。 Organize the AI usage process screenshots of team members, name them in the format of student ID_file number (e.g., 2023001_1.jpg), and store them uniformly in the ai_usage_screenshots folder.
+。 Check if the screenshots meet the requirements (JPG or PNG format), ensure they are clear and can show the questioning process.
+Submit the organized results at least twice. <!-- Li Jinyan Author >
