@@ -113,7 +113,8 @@
 						<select size="1" name="linktechnology" class="lms-ui-advanced-select show-group-labels"
 							onchange="document.choosefilter.submit();">
 							<option value="-1"{if $listdata.linktechnology == -1} selected{/if}>{trans("— any —")}</option>
-							<option value="-2"{if $listdata.linktechnology == -2} selected{/if}>{trans("— none —")}</option>
+							<option value="-2"{if $listdata.linktechnology == -2} selected{/if}>{trans("— without technology —")}</option>
+							<option value="-2"{if $listdata.linktechnology == -3} selected{/if}>{trans("— none —")}</option>
 							{foreach $_LINKTYPES as $linktype => $linktypelabel}
 								<optgroup label="{$linktypelabel}">
 									{foreach $_LINKTECHNOLOGIES[$linktype] as $linktechnologyidx => $linktechnology}
