@@ -154,7 +154,7 @@
 										{/if}
 									</div>
 								</div>
-								{if !$doc.closed && $docattach.type == 1}
+								{if !$doc.closed && ($docattach.type == 1 || $doc.only_other_attachments && $docattach@last)}
 									<div class="row">
 										{if $scan_active}
 											<div class="awaits-scan col-md-auto alert alert-warning">

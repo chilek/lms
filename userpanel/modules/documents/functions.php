@@ -421,6 +421,15 @@ function module_main()
                     $doc['confirm_type'] = $doc['confirm_date'] = 0;
                     break;
             }
+
+            $doc['only_other_attachments'] = !count(
+                array_filter(
+                    $doc['attachments'],
+                    function ($attachment) {
+                        return $attachment['type'] == 1;
+                    }
+                )
+            );
         }
     }
 

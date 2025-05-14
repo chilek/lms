@@ -265,7 +265,7 @@
 			<a href="?m=documents&f=docview&id={$doc.id}&attachmentid={$docattach.id}" target="_blank">
 				{if $docattach.type == 1}{trans("View")}{else}{$docattach.filename}{/if} {img src="view.gif" alt="View"}
 			</a>
-			{if !$doc.closed && $docattach.type == 1 && $doc.confirmdate != -1}
+			{if !$doc.closed && ($docattach.type == 1 || $doc.only_other_attachments && $docattach@last) && $doc.confirmdate != -1}
 				{if $scan_active}
 					<a href="?m=documents&op=scans&documentid={$doc.id}">
 						{trans("Submit scan")} {img src="attach.gif"}
@@ -277,7 +277,7 @@
 					</a>
 				{/if}
 			{/if}
-			{if !$doc.closed && $docattach.type == 1}
+			{if !$doc.closed && ($docattach.type == 1 || $doc.only_other_attachments && $docattach@last)}
 				<br>
 				{if $scan_active}
 					<span class="awaits-scan">
