@@ -141,149 +141,127 @@ Function Description:
 <!--by 韦思宇-->
 =======
 
-<<<<<<< HEAD
-# Project Main Function Screenshots
-This file docgen.sh is a Bash script, whose main function is to automatically generate documents in different formats (HTML, TXT, or all) from SGML source files based on the input parameters (html, txt, or all). It calls tools like jade and lynx to convert SGML files into HTML or TXT formats, and moves or renames the generated files to the specified directory. The script supports three usages:
-html: Generate HTML format documents
-txt: Generate plain text format documents
-all: Generate both HTML and plain text documents
-If the parameter is incorrect, it will output usage instructions.
-【Project Main Function Screenshots】
+## Project Main Function Screenshots
+The `docgen.sh` file is a Bash script whose main function is to generate documents in different formats (HTML or plain text) from SGML source files based on the input parameters (html, txt, or all). It calls tools such as `jade` and `lynx` to convert SGML files into HTML or TXT formats and moves or renames the generated files to the specified directory. The script supports three usages:
+* **html**: Generate HTML format document
+* **txt**: Generate plain text format document
+* **all**: Generate both HTML and plain text documents
+* If the parameter is incorrect, a usage prompt will be output.
+[Project Main Function Screenshots]
 ![Main functional images/2205308030301-1.png
 ]<!--李金艳 著>
-The project (LMS, possibly "LAN Management System" or "Local Management System") mainly functions to manage and generate configuration files related to VoIP (such as Asterisk telephony system), automating the configuration process of telecommunication systems.
-Below are the main functions and core code explained separately:
-Main Function
-Automatically generate Asterisk configuration files
-By reading VoIP accounts, phone numbers, emergency numbers, and other information from the database, automatically generate the SIP and extension dialing rule configuration files required by Asterisk (such as sip-lms.conf, extensions-lms-incoming.conf, extensions-lms-outgoing.conf) for automated deployment and management of the telephone system.
-Configuration Management
-Support specifying configuration files, outputting detailed information, selecting configuration sections, etc., through command line parameters, facilitating flexible integration and operation and maintenance.
-Database Integration
-Obtain account, number, permission, and other information through the database to achieve seamless connection with the business system.
-Therefore
-The core of this project is to automatically generate and manage the configuration files required by Asterisk (open-source telephony system) by combining the database and configuration files to achieve centralized and automated management of the telecommunications system.
-The main code is concentrated in reading configuration, database, generating configuration files, and other automated processes.
-【Project Main Function Screenshots】
+The project (LMS, possibly "LAN Management System" or "Local Management System") is mainly used to manage and generate configuration files related to VoIP (such as the Asterisk voice switching system) and automate the configuration process of telecommunication systems.
+The following describes the main functions and core code separately:
+**Main Function**
+* **Automatically generate Asterisk configuration files**: By reading VoIP account, phone number, emergency number and other information from the database, automatically generate the SIP and extension configuration files (such as sip-lms.conf, extensions-lms-incoming.conf, extensions-lms-outgoing.conf) required by Asterisk, for automated deployment and management of the telephone system.
+* **Configuration management**: Supports specifying configuration files, outputting detailed information, selecting configuration sections, etc. through command line parameters, making it easy to flexibly integrate and maintain.
+* **Database integration**: Obtain account, number, permission and other information through the database to achieve seamless connection with the business system.
+* **Core function**: The core of this project is to automatically generate and manage the configuration files required by Asterisk (open source telephony system), and realize the centralized and automated management of telecommunication systems by combining database and configuration files.
+* **Main code**: Focuses on reading configuration, database, generating configuration files and other automated processes
+[Project Main Function Screenshots]
 ![Main functional images/2205308030301-2.png
-]
-The project (LMS, LAN Management System) is mainly used for automated management of telecommunications services, especially integration with VoIP (such as Asterisk). Its core functions cover telephone system configuration, call detail record billing, emergency number management, etc.
-Main Function
-Automatically generate Asterisk configuration files
-Automatically generate SIP account and extension dialing rule configuration files through database information to achieve automated deployment and management of the telephone system.
-Call Detail Record (CDR) Billing and Import
-Support batch import of call detail records (CDR) from files or standard input, and write them into the database to achieve automatic billing and invoice management.
-Emergency Number (Emergency Numbers) Management
-By parsing TERYT (Polish administrative division) data and emergency number CSV files, automatically associate emergency numbers with geographic areas and import them into the database for subsequent call routing and compliance management.
-Command line tools and configuration management
-All scripts support command line parameters, flexibly specify configuration files, operation types, input methods, etc., for automated operation and maintenance.
-Main code structure and core logic
-1. Emergency Number Import (lms-teryt-emergency-numbers.php)
-Function:
-After parsing the TERYT administrative division and emergency number CSV files, automatically match administrative divisions, districts, towns, and other information, and write the emergency numbers into the database table voip_emergency_numbers.
-【Project Main Function Screenshots】
-![Main functional images/2205308030301-3.png
 ]<!--李金艳 著>
-2. Call Detail Record Billing and Import (lms-billing.php)
-Function:
-Batch import call detail records (CDR), or estimate the maximum possible call duration for the caller and the callee.
-【Project Main Function Screenshots】
-![Main functional images/2205308030301-4.png
-]<!--李金艳 著>
-3. Asterisk Configuration Generation (lms-asterisk.php)
-Function:
-Automatically generate SIP account and extension dialing rule configuration files for easy automated deployment of the telephone system.
-【Project Main Function Screenshots】
-![Main functional images/2205308030301-5.png
-]<!--李金艳 著>
-The script is used to batch import cash flows (such as bank statements, payment records, etc.) into the LMS system database. It supports reading data from a specified file or standard input, parsing the content through the configured regular expression patterns (patterns), automatically identifying and importing various payment records, and can automatically commit to the database according to the configuration. Suitable for scenarios such as financial automatic reconciliation and batch top-up.
-【Project Main Function Screenshots】
-![Main functional images/2205308030301-6.png
-]<!--李金艳 著>
-Main Function
-The lms-smstools-delivery-report.php script in this project (LMS, LAN Management System) is used to process the delivery report files returned by the SMS gateway (such as SMSTools) and automatically update the SMS sending status in the database.
-Its main process is:
-Parse command line parameters to obtain configuration file and SMS delivery report file paths.
-Read and parse the SMS delivery report file, extract SMS ID, status, timestamp, phone number, and other information.
-Query the corresponding SMS sending record in the database.
-Automatically update the status of the SMS in the database (such as delivered, failed, etc.) according to the delivery report content.
-【Project Main Function Screenshots】
-![Main functional images/2205308030301-7.png
-]<!--李金艳 著>
-Main Function
-script-options.php is a common parameter parsing and environment initialization module for all command line scripts in the LMS system.
-Its main functions include:
-Uniformly parse command line parameters (support long and short parameters, required/optional parameters, parameter validation, etc.).
-Automatically load the configuration file (such as lms.ini) and define global directory constants (such as SYS_DIR, LIB_DIR, MODULES_DIR, etc.).
-Initialize the database connection $DB, load the Composer autoloader and LMS basic library.
-Support common parameters such as --help, --version, --quiet, and automatically output help and version information.
-Compatible with HTTP mode and CLI mode, adapting to different running environments.
-【Project Main Function Screenshots】
-![Main functional images/2205308030301-8.png
-]<!--李金艳 著>
-Main Function
-The cashimportcfg-id75.php file is a custom parsing configuration for the cash flow batch import function of the LMS system.
-Its role is to provide regular expression and field mapping rules for the lms-cashimport.php script, so that the system can automatically identify and import bank statements or payment flow data in a specific format.
-Main functions include:
-Define the regular matching pattern (pattern) for each line of data.
-Specify the position of each field (such as customer ID, amount, date, remarks, etc.) in the matching result.
-Define secondary regular extraction rules for date, customer ID, invoice number, etc.
-Support data encoding conversion, amount correction, remarks content replacement, etc.
-Support deduplication through full-line hash.
-【Project Main Function Screenshots】
-![Main functional images/2205308030301-9.png
-]<!--李金艳 著>
-Main Function
-The authLMS.php project is an LMS system user authentication plugin for MediaWiki, enabling MediaWiki users to log in and authenticate using the LMS system's account password.
-Main functions include:
-Allow MediaWiki to use the LMS system's user database for authentication (single sign-on).
-Support password verification, IP/host restrictions, validity period restrictions, etc. for LMS users.
-Automatically synchronize LMS user nicknames, email addresses, and other information to MediaWiki user profiles.
-Prohibit local password modification or account creation in MediaWiki; all user management is completed in the LMS system.
-【Project Main Function Screenshots】
-![Main functional images/2205308030301-10.png
-]<!--李金艳 著>
-Main Function
-The [lib/backend/class.LocationCache.php]class.LocationCache.php file is the geographic data cache and query class of the LMS system.
-Its main functions are:
-Efficiently cache and query geographic information such as cities, streets, and buildings, reduce database access times, and improve performance.
-Support two loading strategies (full load/on-demand load) to adapt to different data volumes and memory requirements.
-Provide interfaces to obtain information such as cities, streets, and buildings through ID, identifier, and other methods.
-Main Function
-The ConfigContainer.php file is the configuration partition container class of the LMS system, used to manage and operate multiple configuration partitions (section), implementing functions such as configuration grouping, batch addition, query, and sub-partition filtering.
-Main functions include:
-Store and manage multiple configuration partitions (ConfigSection objects).
-Support adding a single or multiple configuration partitions.
-Support obtaining partitions by name, judging whether partitions exist.
-Support obtaining all sub-partitions under a certain partition.
-Main Function
-The IniConfigProvider.php file is the INI configuration file reading adapter of the LMS system, which implements ConfigProviderInterface and is used to load system configuration from the specified INI file and return it in the form of an array.
-Main functions include:
-Load the specified INI configuration file on demand (support custom paths).
-As the underlying data provider for the configuration container, provide raw configuration data for other configuration management classes in the system.
-Main Function
-The LMSCustomerManagerInterface.php file is the customer management interface definition of the LMS system, used to standardize the implementation of all customer management related operations.
-Its main function is:
-Uniformly define all methods related to customer management (such as obtaining customer information, contact information, billing, address, consent, external ID, call records, etc.).
-Make it easier for different implementation classes (such as database implementation, Mock implementation, etc.) to follow the same interface, ensuring system scalability and maintainability.
-Support full-featured operations such as customer add, delete, modify, query, status change, consent management, external ID management, call management, etc.
-
-Main Function
-The LMSDocumentManager.php file is the document manager of the LMS system, responsible for all operations related to documents (such as invoices, contracts, notifications, etc.) in the system.
-Main functions include:
-Get customer document list, document details, attachments, archived documents, etc.
-Manage document numbering schemes (NumberPlan), such as obtaining, adding, updating, and deleting numbering schemes.
-Document archiving, publishing, deletion, permission copying, etc.
-Document email/SMS notification sending, attachment management, duplicate checking, etc.
-Support various filtering, permission checking, batch operations for documents.
-
-
-Project Glossary (English-Chinese Corresponding Table)
-【Here is the image】
+The project (LMS, LAN Management System) is mainly used for the automation management of telecommunication services, especially the integration with VoIP (such as Asterisk). Its core functions cover telephone system configuration, call detail record billing, emergency number management, etc.
+**Main Function**
+* **Automatically generate Asterisk configuration files**: Automatically generate SIP account and extension dialing rule configuration files through database information to realize the automated deployment and management of the telephone system.<!--李金艳 著>
+* **Call Detail Record (CDR) billing and import**: Supports batch import of call detail records (CDR) from files or standard input, and writes them to the database, realizing automatic billing and billing management.
+* **Emergency Number (Emergency Numbers) Management**: Automatically associate emergency numbers with geographic areas and import them into the database by parsing TERYT (Polish administrative division) data and emergency number CSV files, facilitating subsequent call routing and compliance management.<!--李金艳 著>
+* **Command line tool and configuration management**: All scripts support command line parameters, flexibly specify configuration files, operation types, input methods, etc., facilitating automated operations and maintenance.<!--李金艳 著>
+**Main code structure and core logic**
+1. **Emergency number import (lms-teryt-emergency-numbers.php)**
+    * **Function**: After parsing the TERYT administrative division and emergency number CSV files, automatically match the administrative division, district, township and other information, and write the emergency number to the database table `voip_emergency_numbers`.
+    * **Screenshot**: ![Main functional images/2205308030301-3.png
+    ]<!--李金艳 著>
+2. **Call Detail Record billing and import (lms-billing.php)**
+    * **Function**: Batch import call detail records (CDR), or estimate the maximum call duration for the caller and the callee.
+    * **Screenshot**: ![Main functional images/2205308030301-4.png
+    ]<!--李金艳 著>
+3. **Asterisk configuration generation (lms-asterisk.php)**
+    * **Function**: Automatically generate SIP account and extension dialing rule configuration files to facilitate the automated deployment of the telephone system.
+    * **Screenshot**: ![Main functional images/2205308030301-5.png
+    ]<!--李金艳 著>
+4. **Cash flow batch import (lms-cashimport.php)**
+    * **Function**: The script is used to batch import cash flow (such as bank statements, payment records, etc.) into the LMS system database. It supports reading data from a specified file or standard input, parsing the content through the regular expression pattern (pattern) in the configuration, automatically identifying and importing various payment records, and can automatically submit to the database according to the configuration. Suitable for financial automatic reconciliation, batch recharge and other scenarios.
+    * **Screenshot**: ![Main functional images/2205308030301-6.png
+    ]
+5. **SMS delivery report processing (lms-smstools-delivery-report.php)**
+    * **Function**: The `lms-smstools-delivery-report.php` script in this project (LMS, LAN Management System) is used to process the delivery report files sent by the SMS gateway (such as SMSTools) and automatically update the SMS sending status in the database.
+    * **Process**:
+        * Parse command line parameters to get configuration file and SMS delivery report file path.
+        * Read and parse the SMS delivery report file to extract SMS ID, status, timestamp, mobile number and other information.
+        * Query the corresponding SMS sending record in the database.
+        * Automatically update the status of the SMS in the database (such as delivered, failed, etc.) according to the delivery report content.
+    * **Screenshot**: ![Main functional images/2205308030301-7.png
+    ]
+6. **General parameter parsing and environment initialization (script-options.php)**
+    * **Function**: `script-options.php` is a common parameter parsing and environment initialization module for all command line scripts of the LMS system.
+    * **Main function**:
+        * Uniformly parse command line parameters (support long and short parameters, optional/optional parameters, parameter verification, etc.).
+        * Automatically load the configuration file (such as `lms.ini`) and define global directory constants (such as `SYS_DIR`, `LIB_DIR`, `MODULES_DIR`, etc.).
+        * Initialize the database connection `$DB`, load the Composer autoloader and LMS basic library.
+        * Support common parameters such as `--help`, `--version`, `--quiet`, and automatically output help and version information.
+        * Compatible with HTTP mode and CLI mode, adapt to different running environments.
+    * **Screenshot**: ![Main functional images/2205308030301-8.png
+    ]
+7. **Cash flow batch import configuration (cashimportcfg-id75.php)**
+    * **Function**: This file `cashimportcfg-id75.php` is a custom parsing configuration for the cash flow batch import function of the LMS system.
+    * **Function**: Provide regular expression and field mapping rules for the `lms-cashimport.php` script, so that the system can automatically identify and import bank statements or payment flow data in a specific format.
+    * **Main function**:
+        * Define the regular matching pattern (pattern) of each line of data.
+        * Specify the position of each field (such as customer ID, amount, date, remarks, etc.) in the matching result.
+        * Define the secondary regular extraction rules for date, customer ID, invoice number, etc.
+        * Support data encoding conversion, amount correction, remarks content replacement, etc.
+        * Support deduplication through the whole line hash.
+    * **Screenshot**: ![Main functional images/2205308030301-9.png
+    ]
+8. **MediaWiki authentication plugin (authLMS.php)**
+    * **Function**: This project `authLMS.php` is a LMS system user authentication plugin for MediaWiki, which realizes MediaWiki users login authentication through the account password of the LMS system.
+    * **Main function**:
+        * Let MediaWiki use the user database of the LMS system for authentication (single sign-on).
+        * Support LMS user password verification, IP/host restriction, validity period restriction, etc.
+        * Automatically synchronize LMS user nickname, email and other information to MediaWiki user profile.
+        * Prevent local modification of password or creation of new account in MediaWiki, and all user management is completed in the LMS system.
+    * **Screenshot**: ![Main functional images/2205308030301-10.png
+    ]<!--李金艳 著>
+9. **Location data cache and query class (class.LocationCache.php)**
+    * **Function**: This file `[lib/backend/class.LocationCache.php]class.LocationCache.php` ) is the location data cache and query class of the LMS system.
+    * **Main function**:
+        * Efficiently cache and query geographic information such as city, street, building, etc., reduce database access times, and improve performance.
+        * Support two loading strategies (all loading/on demand loading) to adapt to different data volumes and memory requirements.
+        * Provide interfaces to obtain city, street, building and other information through ID, identifier and other methods.
+10. **Configuration partition container class (ConfigContainer.php)**
+    * **Function**: This file `ConfigContainer.php` is the configuration partition container class of the LMS system, which is used to manage and operate multiple configuration partitions (section), realize the grouping, batch addition, query, sub-partition filtering and other functions of the configuration.
+    * **Main function**:
+        * Store and manage multiple configuration partitions (`ConfigSection` objects).
+        * Support adding a single or multiple configuration partitions.
+        * Support getting partitions by name, judging whether partitions exist.
+        * Support getting all sub-partitions under a partition.
+11. **INI configuration file reading adapter (IniConfigProvider.php)**
+    * **Function**: This file `IniConfigProvider.php` is the INI configuration file reading adapter of the LMS system, which implements `ConfigProviderInterface` and is used to load the system configuration from the specified INI file and return it in the form of an array.
+    * **Main function**:
+        * Load the INI configuration file at the specified path on demand (support custom path).
+        * As a bottom-level data provider for the configuration container, provide raw configuration data for other configuration management classes in the system.
+12. **Customer management interface definition (LMSCustomerManagerInterface.php)**
+    * **Function**: This file `LMSCustomerManagerInterface.php` is the customer management interface definition of the LMS system, which is used to standardize the implementation of all customer management related operations.
+    * **Main function**:
+        * Uniformly define all methods related to customer management (such as obtaining customer information, contact information, billing, address, consent, external ID, call records, etc.).
+        * Facilitate different implementation classes (such as database implementation, Mock implementation, etc.) to follow the same interface, ensuring system scalability and maintainability.
+        * Support full range operations such as customer add, delete, modify, query, status change, consent management, external ID management, call management, etc.
+13. **Document manager (LMSDocumentManager.php)**
+    * **Function**: This file `LMSDocumentManager.php` is the document manager of the LMS system, which is responsible for all operations related to documents (such as invoices, contracts, notices, etc.) in the system.
+    * **Main function**:
+        * Get customer document list, document details, attachments, archived documents, etc.
+        * Manage document numbering scheme (NumberPlan), such as get, add, update, delete numbering scheme.
+        * Document archiving, publishing, deletion, permission copying, etc.
+        * Document email/SMS notification sending, attachment management, duplicate checking, etc.
+        * Support multiple filtering, permission verification, batch operation of documents.
+**Project Glossary (Chinese-English Glossary)**
+[Here is the picture]
 markdown
-![Project Glossary](terms.md/2205308030301.png)
-Project Glossary (English-Chinese Corresponding Table)
-【Here is the image】
+![Project Glossary](terms.md/2205308030301.png)<!--李金艳 著>
+=======
+Project Glossary (Chinese-English Glossary)
+[Here is the picture]
 markdown
 ![Project Glossary](terms.md/2205308030301.png)
 <!--李金艳 著>
-=======
