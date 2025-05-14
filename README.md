@@ -257,9 +257,7 @@ The project (LMS, LAN Management System) is mainly used for the automation manag
         * Support multiple filtering, permission verification, batch operation of documents.
 **Project Glossary (Chinese-English Glossary)**
 [Here is the picture]
-markdown
-![Project Glossary](terms.md/2205308030301.png)<!--李金艳 著>
-=======
+
 Project Glossary (Chinese-English Glossary)
 [Here is the picture]
 markdown
