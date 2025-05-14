@@ -68,18 +68,6 @@
         {
             "type": "package",
             "package": {
-                "name": "fortawesome/font-awesome",
-                "version": "5.15.4",
-                "source": {
-                    "url": "https://github.com/FortAwesome/Font-Awesome.git",
-                    "type": "git",
-                    "reference": "5.15.4"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
                 "name": "galleriajs/galleria",
                 "version": "1.6.1",
                 "dist": {
@@ -143,7 +131,7 @@
         "ccampbell/mousetrap": "^1",
         "westonganger/input-autogrow": "^1",
         "ivkremer/jquery-simple-combobox": "^1",
-        "fortawesome/font-awesome": "^5",
+        "fortawesome/font-awesome": "^6",
         "html2text/html2text": "^4",
         "drmonty/datatables-responsive": "^2.2",
         "pragmarx/google2fa": "^8",
