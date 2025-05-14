@@ -365,6 +365,15 @@ function initAdvancedSelectsTest(selector) {
 					return item;
 				}
 		});
+
+		$(document).on('select2:open', function() {
+			setTimeout(
+				function() {
+					$('.select2-container--open .select2-search__field').focus();
+				},
+				100
+			);
+		});
 	});
 }
 
