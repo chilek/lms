@@ -95,6 +95,13 @@ function NetDevSearch($order = 'name,asc', $search = null, $sqlskey = 'AND')
                     case 'location':
                         $searchargs[] = "UPPER(a.$idx) ?LIKE? UPPER(".$DB->Escape("%$value%").')';
                         break;
+                    case 'linktechnology':
+                        if ($value == -2) {
+                            $searchargs[] = 'EXISTS (SELECT 1 FROM netlinks WHERE (netlinks.src = d.id OR netlinks.dst = d.id) AND (technology = 0 OR technology IS NULL))';
+                        } elseif ($value > 0) {
+                            $searchargs[] = 'EXISTS (SELECT 1 FROM netlinks WHERE (netlinks.src = d.id OR netlinks.dst = d.id) AND technology = ' . intval($value) . ')';
+                        }
+                        break;
                     default:
                         // UPPER here is a postgresql ILIKE bug workaround
                         $searchargs[] = "UPPER(d.$idx) ?LIKE? UPPER(".$DB->Escape("%$value%").')';

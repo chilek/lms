@@ -842,6 +842,13 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                     case 'ownerid':
                         $where[] = 'd.ownerid = ' . $value;
                         break;
+                    case 'linktechnology':
+                        if ($value == -2) {
+                            $where[] = 'EXISTS (SELECT 1 FROM netlinks WHERE (netlinks.src = d.id OR netlinks.dst = d.id) AND (technology = 0 OR technology IS NULL))';
+                        } elseif ($value > 0) {
+                            $where[] = 'EXISTS (SELECT 1 FROM netlinks WHERE (netlinks.src = d.id OR netlinks.dst = d.id) AND technology = ' . intval($value) . ')';
+                        }
+                        break;
                 }
             }
         }

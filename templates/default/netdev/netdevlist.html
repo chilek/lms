@@ -47,50 +47,84 @@
 	</TR>
 	<TR>
 		<TD colspan="6">
-			{trans("Status")}:
-			<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
-				<OPTION VALUE="-1" {if $listdata.status == -1}  SELECTED {/if}>{trans("— all —")}</OPTION>
-				{foreach $_NETELEMENTSTATUSES as $idx => $status}
-					<OPTION VALUE="{$idx}"{if $listdata.status == $idx} SELECTED{/if}>{$status}</OPTION>
-				{/foreach}
-				<OPTION value="100"{if $listdata.status == 100} selected{/if}>{trans("TERYT not specified")}</OPTION>
-				<OPTION value="101"{if $listdata.status == 101} selected{/if}>{trans("online")}</OPTION>
-				<option value="102"{if $listdata.status == 102} selected{/if}>{trans("no connections")}</option>
-			</SELECT>
-			{trans("Project:")}
-			<SELECT SIZE="1" NAME="p" ONCHANGE="document.choosefilter.submit();">
-				<OPTION VALUE="-1"{if $listdata.invprojectid == -1} selected{/if}>{trans("— all —")}</OPTION>
-				<OPTION VALUE="-2"{if $listdata.invprojectid == -2} selected{/if}>— {trans("without project")} —</OPTION>
-				{foreach $NNprojects as $project}
-					<OPTION value="{$project.id}"{if ($listdata.invprojectid == $project.id)} selected{/if}>{$project.name|escape}</OPTION>
-				{/foreach}
-			</SELECT>
-			{trans("Network node:")}
-			<SELECT NAME="n" ONCHANGE="document.choosefilter.submit();" {tip class="lms-ui-advanced-select" text="Select network node (optional)" trigger="netnodeid"}>
-				<OPTION VALUE="-1"{if $listdata.netnode == -1} selected{/if}>{trans("— all —")}</OPTION>
-				<OPTION VALUE="-2"{if $listdata.netnode == -2} selected{/if}>{trans("— none —")}</OPTION>
-				{foreach $netnodes as $netnode}
-				<OPTION VALUE="{$netnode.id}"{if $listdata.netnode == $netnode.id} selected{/if}>{$netnode.name}</OPTION>
-				{/foreach}
-			</SELECT>
-			{trans("Type")}
-			{networkDeviceTypes elemname="type" selected=$listdata.type onchange="document.choosefilter.submit();"}
-			{trans("Producer:")}
-			<SELECT SIZE="1" NAME="producer" ONCHANGE="document.choosefilter.submit();">
-				<OPTION VALUE="-1"{if $listdata.producer == -1} selected{/if}>{trans("— all —")}</OPTION>
-				<OPTION VALUE="-2"{if $listdata.producer == -2} selected{/if}>{trans("— none —")}</OPTION>
-				{foreach $producers as $producer}
-				<OPTION VALUE="{$producer}"{if $listdata.producer == $producer} selected{/if}>{$producer}</OPTION>
-				{/foreach}
-			</SELECT>
-			{trans("Model:")}
-			<SELECT SIZE="1" NAME="model" ONCHANGE="document.choosefilter.submit();">
-				<OPTION VALUE="-1"{if $listdata.model == -1} selected{/if}>{trans("— all —")}</OPTION>
-				<OPTION VALUE="-2"{if $listdata.model == -2} selected{/if}>{trans("— none —")}</OPTION>
-				{foreach $models as $model}
-				<OPTION VALUE="{$model}"{if $listdata.model == $model} selected{/if}>{$model}</OPTION>
-				{/foreach}
-			</SELECT>
+			<div class="lms-ui-filter-container">
+				<div class="lms-ui-filter-definition">
+					{icon name="filter"}
+					<label>
+						{trans("Status")}
+						<select size="1" name="s" onchange="document.choosefilter.submit();">
+							<option value="-1"{if $listdata.status == -1} selected{/if}>{trans("— all —")}</option>
+							{foreach $_NETELEMENTSTATUSES as $idx => $status}
+								<option value="{$idx}"{if $listdata.status == $idx} selected{/if}>{$status}</option>
+							{/foreach}
+							<option value="100"{if $listdata.status == 100} selected{/if}>{trans("TERYT not specified")}</option>
+							<option value="101"{if $listdata.status == 101} selected{/if}>{trans("online")}</option>
+							<option value="102"{if $listdata.status == 102} selected{/if}>{trans("no connections")}</option>
+						</select>
+					</label>
+					<label>
+						{trans("Project")}
+						<select size="1" name="p" onchange="document.choosefilter.submit();">
+							<option value="-1"{if $listdata.invprojectid == -1} selected{/if}>{trans("— all —")}</option>
+							<option value="-2"{if $listdata.invprojectid == -2} selected{/if}>— {trans("without project")} —</option>
+							{foreach $NNprojects as $project}
+								<option value="{$project.id}"{if ($listdata.invprojectid == $project.id)} selected{/if}>{$project.name|escape}</option>
+							{/foreach}
+						</select>
+					</label>
+					<label>
+						{trans("Network node")}
+						<select name="n" onchange="document.choosefilter.submit();"
+							{tip class="lms-ui-advanced-select" text="Select network node (optional)" trigger="netnodeid"}>
+							<option value="-1"{if $listdata.netnode == -1} selected{/if}>{trans("— all —")}</option>
+							<option value="-2"{if $listdata.netnode == -2} selected{/if}>{trans("— none —")}</option>
+							{foreach $netnodes as $netnode}
+								<option value="{$netnode.id}"{if $listdata.netnode == $netnode.id} selected{/if}>{$netnode.name}</option>
+							{/foreach}
+						</select>
+					</label>
+					<label>
+						{trans("Type")}
+						{networkDeviceTypes elemname="type" selected=$listdata.type onchange="document.choosefilter.submit();"}
+					</label>
+					<label>
+						{trans("Producer")}
+						<select size="1" name="producer" onchange="document.choosefilter.submit();">
+							<option value="-1"{if $listdata.producer == -1} selected{/if}>{trans("— all —")}</option>
+							<option value="-2"{if $listdata.producer == -2} selected{/if}>{trans("— none —")}</option>
+							{foreach $producers as $producer}
+								<option value="{$producer}"{if $listdata.producer == $producer} selected{/if}>{$producer}</option>
+							{/foreach}
+						</select>
+					</label>
+					<label>
+						{trans("Model")}
+						<select size="1" name="model" onchange="document.choosefilter.submit();">
+							<option value="-1"{if $listdata.model == -1} selected{/if}>{trans("— all —")}</option>
+							<option value="-2"{if $listdata.model == -2} selected{/if}>{trans("— none —")}</option>
+							{foreach $models as $model}
+								<option value="{$model}"{if $listdata.model == $model} selected{/if}>{$model}</option>
+							{/foreach}
+						</select>
+					</label>
+					<label>
+						{trans("Existing links")}
+						&nbsp;
+						<select size="1" name="linktechnology" class="lms-ui-advanced-select show-group-labels"
+							onchange="document.choosefilter.submit();">
+							<option value="-1"{if $listdata.linktechnology == -1} selected{/if}>{trans("— any —")}</option>
+							<option value="-2"{if $listdata.linktechnology == -2} selected{/if}>{trans("— none —")}</option>
+							{foreach $_LINKTYPES as $linktype => $linktypelabel}
+								<optgroup label="{$linktypelabel}">
+									{foreach $_LINKTECHNOLOGIES[$linktype] as $linktechnologyidx => $linktechnology}
+										<option value="{$linktechnologyidx}"{if $listdata.linktechnology == $linktechnologyidx} selected{/if}>{$linktechnology}</option>
+									{/foreach}
+								</optgroup>
+							{/foreach}
+						</select>
+					</label>
+				</div>
+			</div>
 		</TD>
 	</TR>
 	{if $pagination->getTotal() != 0}

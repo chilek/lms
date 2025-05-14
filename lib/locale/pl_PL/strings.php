@@ -2916,6 +2916,7 @@ $_LANG['Enter device name or it\'s fragment'] = 'Wprowadź nazwę urządzenia lu
 $_LANG['Enter network name or it\'s fragment'] = 'Wprowadź nazwę sieci lub jej fragment';
 $_LANG['Enter producer name or it\'s fragment'] = 'Wprowadź nazwę producenta lub jej fragment';
 $_LANG['Find devices matching the following search criteria:'] = 'Wyszukaj urządzenia pasujące do poniższych kryteriów:';
+$_LANG['Find devices matching the following search criteria'] = 'Wyszukaj urządzenia pasujące do poniższych kryteriów';
 $_LANG['Network Devices Search'] = 'Szukaj urządzeń';
 $_LANG['IP Network Search'] = 'Szukaj sieci IP';
 $_LANG['Network Devices Search Results'] = 'Wyniki wyszukiwania urządzeń';
@@ -4251,6 +4252,8 @@ $_LANG['Tariff type'] = 'Typ taryfy';
 $_LANG['consent required'] = 'wymagana zgoda';
 $_LANG['Check if ticket is expired'] = 'Zaznacz, jeśli zgłoszenie ma przekroczony termin ostateczny';
 $_LANG['Check if customer consent to messages delivery via e-mail or sms is required'] = 'Zaznacz, jeśli wymagana jest zgoda klienta na dostarczanie informacji pocztą elektroniczną lub SMS-em';
+
+$_LANG['Existing links'] = 'Istniejące połączenia';
 
 $_LANG['Select link technology'] = 'Wybierz technologię łącza';
 $_LANG['Link technology:'] = 'Technologia łącza:';

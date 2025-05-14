@@ -102,6 +102,17 @@ if ($api) {
         $SESSION->redirect('?' . preg_replace('/&producer=[^&]+/', '', $_SERVER['QUERY_STRING']));
     }
 
+    if (!isset($_GET['linktechnology'])) {
+        $SESSION->restore('ndflinktechnology', $linktechnology);
+    } else {
+        $linktechnology = $_GET['linktechnology'];
+    }
+    $SESSION->save('ndflinktechnology', $linktechnology);
+
+    if (empty($linktechnology)) {
+        $linktechnology = -1;
+    }
+
     $search = array(
         'status' => $s,
         'project' => $p,
@@ -109,6 +120,7 @@ if ($api) {
         'type' => $type,
         'producer' => $producer,
         'model' => $model,
+        'linktechnology' => $linktechnology,
         'count' => true,
     );
 
@@ -142,6 +154,7 @@ if (!$api) {
     $listdata['type'] = $type;
     $listdata['producer'] = $producer;
     $listdata['model'] = $model;
+    $listdata['linktechnology'] = $linktechnology;
 }
 
 unset($netdevlist['total']);

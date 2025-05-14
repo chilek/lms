@@ -3,139 +3,182 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<FORM NAME="search" METHOD="POST" ACTION="?m=netdevsearch&amp;search=1">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox">
-	<COLGROUP>
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 98%;">
-	</COLGROUP>
-    <THEAD>
-	<TR>
-		<TD COLSPAN="3" class="bold">
-			{trans("Find devices matching the following search criteria:")}
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR>
-		<TD>
-			<IMG SRC="img/search.gif" ALT="">
-		</TD>
-		<TD class="bold">
-			{trans("Name:")}
-		<TD>
-			<INPUT TYPE="TEXT" NAME="search[name]" VALUE="" {tip text="Enter device name or it's fragment"}>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<IMG SRC="img/producer.gif" ALT="">
-		</TD>
-		<TD class="bold nobr">
-			{trans("Manufacturer:")}
-		</TD>
-		<TD>
-			<INPUT TYPE="TEXT" NAME="search[producer]" VALUE="" {tip text="Enter producer name or it's fragment"}>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<IMG SRC="img/netdev_model.gif" ALT="">
-		</TD>
-		<TD class="bold nobr">
-			{trans("Model:")}
-		</TD>
-		<TD>
-			<INPUT TYPE="TEXT" NAME="search[model]" VALUE="" {tip text="Enter device model or it's fragment"}>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<IMG SRC="img/serialnumber.gif" ALT="">
-		</TD>
-		<TD class="bold nobr">
-			{trans("Serial number:")}
-		</TD>
-		<TD>
-			<INPUT TYPE="TEXT" NAME="search[serialnumber]" VALUE="" {tip text="Enter device serial number or it's fragment"}>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<IMG SRC="img/port.gif" ALT="">
-		</TD>
-		<TD class="bold nobr">
-			{trans("Number of ports:")}
-		</TD>
-		<TD>
-			<INPUT TYPE="TEXT" NAME="search[ports]" VALUE="" {tip text="Enter number of ports"}>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<IMG SRC="img/home.gif" ALT="">
-		</TD>
-		<TD class="bold nobr">
-			{trans("Location:")}
-		</TD>
-		<TD>
-			<INPUT TYPE="TEXT" NAME="search[location]" VALUE="" {tip text="Enter device location or it's fragment"}>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<IMG SRC="img/desc.gif" ALT="">
-		</TD>
-		<TD class="bold nobr">
-			{trans("Description:")}
-		</TD>
-		<TD>
-			<INPUT TYPE="TEXT" NAME="search[description]" VALUE="" {tip text="Enter additional information"}>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<IMG SRC="img/ip.gif" ALT="">
-		</TD>
-		<TD class="bold nobr">
-			{trans("IP address:")}
-		</TD>
-		<TD>
-			<INPUT TYPE="TEXT" NAME="search[ipaddr]" VALUE="" {tip text="Enter IP address or it's fragment"}>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<IMG SRC="img/mac.gif" ALT="">
-		</TD>
-		<TD  class="bold nobr">
-			{trans("MAC address:")}
-		</TD>
-		<TD>
-			<INPUT TYPE="TEXT" NAME="search[mac]" VALUE="" {tip text="Enter MAC address or it's fragment"}>
-		</TD>
-	</TR>
-	<TR>
-		<TD></TD>
-		<TD class="bold nobr">
-			{trans("Qualification operator:")}
-		</TD>
-		<TD>
-			<INPUT class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}><label for="operator0">{trans("and")}</label>
-			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}><label for="operator1">{trans("or")}</label>
-		</TD>
-	</TR>
-	<tr>
-		<td colspan="3" class="lms-ui-box-buttons">
-			{button icon="save" label="Submit" onclick="document.search.submit();"}
-			{button icon="cancel" label="Cancel" href="?m=netdevlist"}
-		</td>
-	</tr>
-    </TBODY>
-</TABLE>
-</FORM>
+
+<form name="search" id="search" method="POST" action="?m=netdevsearch&search=1">
+	<input type="submit" class="hiddenbtn">
+</form>
+
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 98%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<td colspan="3">
+				<strong>{trans("Find devices matching the following search criteria")}</strong>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				{icon name="netdevice"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Name")}</strong>
+			<td>
+				<input type="text" name="search[name]" value="" form="search"
+					{tip text="Enter device name or it's fragment"}>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="producer"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Manufacturer")}</strong>
+			</td>
+			<td>
+				<input type="text" name="search[producer]" value="" form="search"
+					{tip text="Enter producer name or it's fragment"}>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="model"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Model")}</strong>
+			</td>
+			<td>
+				<input type="text" name="search[model]" value="" form="search"
+					{tip text="Enter device model or it's fragment"}>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="serialnumber"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Serial number")}</strong>
+			</td>
+			<td>
+				<input type="text" name="search[serialnumber]" value="" form="search"
+					{tip text="Enter device serial number or it's fragment"}>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="port"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Number of ports")}</strong>
+			</td>
+			<td>
+				<input type="text" name="search[ports]" value="" form="search"
+					{tip text="Enter number of ports"}>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="location"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Location")}</strong>
+			</td>
+			<td>
+				<input type="text" name="search[location]" value="" form="search"
+					{tip text="Enter device location or it's fragment"}>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="description"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Description")}</strong>
+			</td>
+			<td>
+				<input type="text" name="search[description]" value="" form="search"
+					{tip text="Enter additional information"}>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="routed"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("IP address")}</strong>
+			</td>
+			<td>
+				<input type="text" name="search[ipaddr]" value="" form="search"
+					{tip text="Enter IP address or it's fragment"}>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="mac"}
+			</td>
+			<TD class="nobr">
+				<strong>{trans("MAC address")}</strong>
+			</td>
+			<td>
+				<input type="text" name="search[mac]" value="" form="search"
+					{tip text="Enter MAC address or it's fragment"}>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="netdevice"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Existing links")}</strong>
+			</td>
+			<td>
+				<select size="1" name="search[linktechnology]" form="search"
+					class="lms-ui-advanced-select show-group-labels"
+					onchange="document.choosefilter.submit();">
+					<option value="-1">{trans("— any —")}</option>
+					<option value="-2"}>{trans("— none —")}</option>
+					{foreach $_LINKTYPES as $linktype => $linktypelabel}
+						<optgroup label="{$linktypelabel}">
+							{foreach $_LINKTECHNOLOGIES[$linktype] as $linktechnologyidx => $linktechnology}
+								<option value="{$linktechnologyidx}">{$linktechnology}</option>
+							{/foreach}
+						</optgroup>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="qualification-operator"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Qualification operator")}</strong>
+			</td>
+			<td>
+				<label>
+					<input class="radio light" type="radio" value="AND" form="search" name="k"{if $k != 'OR'} checked{/if}>
+					{trans("and")}
+				</label>
+				<label>
+					<input class="radio light" type="radio" value="OR" form="search" name="k"{if $k == 'OR'} checked{/if}>
+					{trans("or")}
+				</label>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" class="lms-ui-box-buttons">
+				{button icon="search" label="Search" onclick="document.search.submit();" form="search"}
+				{button icon="cancel" label="Cancel" href="?m=netdevlist"}
+			</td>
+		</tr>
+	</tbody>
+</table>
+
 <script>
 
 	document.forms['search'].elements['search[name]'].focus();
