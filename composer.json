@@ -142,7 +142,8 @@
         "phpoffice/phpspreadsheet": "*",
         "gasparesganga/php-shapefile": "^3",
         "proj4php/proj4php": "^2.0.14",
-        "ramsey/uuid": "^4"
+        "ramsey/uuid": "^4",
+        "select2/select2": "^4.1@dev"
     },
     "require-dev": {
         "phpunit/phpunit": "*",

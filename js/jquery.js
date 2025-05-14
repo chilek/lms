@@ -343,6 +343,30 @@ function initAdvancedSelects(selector) {
 	});
 }
 
+function initAdvancedSelectsTest(selector) {
+	$(selector).each(function () {
+		var that = this;
+		$(this).select2({
+			placeholder: $t('Select an Option'),
+			minimumResultsForSearch: 5,
+			dropdownCssClass: ':all:',
+			templateResult: function (result) {
+					var term = $(that).data("select2").dropdown.$search.val();
+					var reg = new RegExp(term, 'gi');
+					var optionText = result.text;
+					var boldTermText = optionText.replace(
+						reg,
+						function (optionText) {
+							return "<em>" + optionText + "</em>";
+						}
+					);
+					var item = $("<span>" + boldTermText + "</span>");
+					return item;
+				}
+		});
+	});
+}
+
 function updateAdvancedSelects(selector) {
 	$(selector).each(function() {
 		$(this).trigger('chosen:updated');
@@ -1712,6 +1736,7 @@ $(function() {
 	});
 
 	initAdvancedSelects('select.lms-ui-advanced-select');
+	initAdvancedSelectsTest('select.lms-ui-advanced-select-test');
 
 	init_comboboxes('.lms-ui-combobox');
 
