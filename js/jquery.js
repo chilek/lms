@@ -347,6 +347,7 @@ function initAdvancedSelectsTest(selector) {
 	$(selector).each(function () {
 		var that = this;
 		$(this).select2({
+			language: lmsSettings.language,
 			placeholder: $t('Select an Option'),
 			minimumResultsForSearch: 5,
 			dropdownCssClass: ':all:',
