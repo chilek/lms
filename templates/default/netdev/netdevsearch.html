@@ -141,7 +141,7 @@
 					class="lms-ui-advanced-select show-group-labels">
 					<option value="-1">{trans("— any —")}</option>
 					<option value="-2">{trans("— without technology —")}</option>
-					<option value="-3">{trans("— none —")}</option>
+					<option value="-3">{trans("<!netlink>— none —")}</option>
 					{foreach $_LINKTYPES as $linktype => $linktypelabel}
 						<optgroup label="{$linktypelabel}">
 							{foreach $_LINKTECHNOLOGIES[$linktype] as $linktechnologyidx => $linktechnology}

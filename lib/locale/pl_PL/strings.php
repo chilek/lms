@@ -3432,6 +3432,7 @@ $_LANG['— auto —'] = '— automatycznie —';
 $_LANG['— none —'] = '— żadne —';
 $_LANG['<!street-name>— none —'] = '— brak —';
 $_LANG['<!promotionschema>— none —'] = '— żaden —';
+$_LANG['<!netlink>— none —'] = '— brak —';
 $_LANG['There are no types in database.'] = 'Brak typów w bazie danych.';
 $_LANG['Use current division data:'] = 'Zastosuj dane bieżącej firmy (oddziału):';
 $_LANG['Seller data change'] = 'Zmiana danych sprzedawcy';
