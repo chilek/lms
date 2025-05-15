@@ -314,7 +314,7 @@
 
     var remove_number      = '{$remove_number}';
     var pool_number_select = '{$pool_number_select}';
-    initAdvancedSelects("#customer_addresses");
+    initAdvancedSelectsTest("#customer_addresses");
 
     function checkIfTerritLocation() {
         {if ConfigHelper::checkConfig('phpui.teryt_required')}
@@ -395,7 +395,7 @@
 
         {if $voipaccountdata.address_id}
             $('#customer_addresses').val({$voipaccountdata.address_id});
-            updateAdvancedSelects("#customer_addresses");
+            updateAdvancedSelectsTest("#customer_addresses");
         {/if}
 
         checkIfTerritLocation();

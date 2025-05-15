@@ -40,7 +40,7 @@ $(function() {
 		} else {
 			select.val($(this).attr('data-old-userid'));
 		}
-		updateAdvancedSelects(select);
+		updateAdvancedSelectsTest(select);
 	});
 
 	$('[name="ticket[queue]"]').change(function () {
@@ -74,7 +74,7 @@ function change_customer(customer_selector, address_selector) {
 		setAddressList('#customer_addresses', addresses);
 		if (Object.keys(addresses).length == 1) {
 			$('#customer_addresses').val($('#customer_addresses option:last-child').val());
-			updateAdvancedSelects('#customer_addresses');
+			updateAdvancedSelectsTest('#customer_addresses');
 		}
 		xajax_select_location($(customer_selector).val(), $(address_selector).val());
 	});
@@ -90,8 +90,8 @@ function update_nodes(data) {
 }
 
 function initCustomerSelection() {
-	initAdvancedSelects('#customer_addresses');
-	$('#customer_addresses').chosen().change(function() {
+	initAdvancedSelectsTest('#customer_addresses');
+	$('#customer_addresses').change(function() {
 		xajax_select_location($('[name="ticket[custid]"]').val(), $(this).val());
 	});
 }

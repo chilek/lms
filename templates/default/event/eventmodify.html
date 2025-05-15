@@ -357,7 +357,7 @@
 				var users2 = jQuery.unique([].concat.apply(users, userms));
 				$("#userlist").val( users2 );
 			{/if}
-			updateAdvancedSelects(userlist);
+			updateAdvancedSelectsTest(userlist);
 
 		}
 
@@ -369,8 +369,8 @@
 			{/if}
 		{/if}
 
-		initAdvancedSelects('#customer_addresses');
-		$('#customer_addresses').chosen().change(function() {
+		initAdvancedSelectsTest('#customer_addresses');
+		$('#customer_addresses').change(function() {
 			xajax_select_location($('[name="event[custid]"]').val(), $(this).val());
 		});
 
@@ -380,7 +380,7 @@
 					setAddressList('#customer_addresses', addresses);
 					if (Object.keys(addresses).length == 1) {
 						$('#customer_addresses').val($('#customer_addresses option:last-child').val());
-						updateAdvancedSelects('#customer_addresses');
+						updateAdvancedSelectsTest('#customer_addresses');
 					}
 					xajax_select_location($(customer_selector).val(), $(address_selector).val());
 				});

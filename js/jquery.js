@@ -509,7 +509,7 @@ function setAddressList(selector, address_list, preselection) {
 	select.find('option[data-icon]').each(function() {
 		$(this).html('<i class="' + $(this).attr('data-icon') + '"></i>&nbsp;' + $(this).html());
 	});
-	updateAdvancedSelects(select);
+	updateAdvancedSelectsTest(select);
 }
 
 function init_comboboxes(selector) {
@@ -2312,8 +2312,8 @@ $(function() {
 		if (e.data.hasOwnProperty('targetValue') && e.data.hasOwnProperty('targetSelector')) {
 			var elem = $(e.data.targetSelector);
 			elem.val(e.data.targetValue);
-			updateAdvancedSelects(elem);
-			activateAdvancedSelect(elem);
+			updateAdvancedSelectsTest(elem);
+			activateAdvancedSelectTest(elem);
 		}
 	}, false);
 

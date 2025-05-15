@@ -485,13 +485,13 @@
 			$('option', tariff_select).each(function() {
 				if ($(this).css('display') != 'none') {
 					tariff_select.val($(this).val());
-					updateAdvancedSelects(tariff_select);
+					updateAdvancedSelectsTest(tariff_select);
 					return false;
 				}
 			});
 		}
 
-		updateAdvancedSelects(tariff_select);
+		updateAdvancedSelectsTest(tariff_select);
 	}
 
 	$(function() {

@@ -88,7 +88,7 @@
         $( "#submit-modal-button" ).html('<i class="lms-ui-icon-submit"></i><span class="lms-ui-label">{trans("Add")}</span>');
 
         $( "dialog-vlanid", "dialog-description", "dialog-netnode_selector").val();
-        updateAdvancedSelects("#dialog-netnode_selector");
+        updateAdvancedSelectsTest("#dialog-netnode_selector");
 
         $( "#dialog-customer_selector" ).val('').trigger('input');
         $( "#addvlanmodal" ).dialog( "option", "title", "{trans("Add VLAN")}").dialog( "open" );
@@ -102,7 +102,7 @@
             $("#dialog-vlanid").val($(row).find("[data-template-vlanid]").attr('data-template-vlanid'));
             $("#dialog-description").val($(row).find("[data-template-description]").attr('data-template-description'));
             $("select#dialog-netnode_selector").val( $(row).find("[data-template-netnodeid]").attr('data-template-netnodeid'));
-            updateAdvancedSelects("#dialog-netnode_selector");
+            updateAdvancedSelectsTest("#dialog-netnode_selector");
 
             var customeridedit = $(row).find("[data-template-customerid]").attr('data-template-customerid');
             $( "#dialog-customer_selector" ).removeAttr('data-customer-name', 'data-prev-value').val(customeridedit).trigger('input');

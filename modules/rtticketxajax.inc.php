@@ -90,7 +90,7 @@ function netnode_changed(
         'innerHTML',
         $content
     );
-    $JSResponse->script('initAdvancedSelects("#' . $target_selectid . '");');
+    $JSResponse->script('initAdvancedSelectsTest("#' . $target_selectid . '");');
 
     return $JSResponse;
 }
@@ -140,7 +140,7 @@ function queue_changed($queue)
 
     $JSResponse->assign('rtverifiers', 'innerHTML', $content);
 
-    $JSResponse->script('initAdvancedSelects("#rtverifiers select")');
+    $JSResponse->script('initAdvancedSelectsTest("#rtverifiers select")');
 
     return $JSResponse;
 }

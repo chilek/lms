@@ -719,7 +719,7 @@
                     elem.val('');
                     elem.closest('.filter-item').hide();
                     if (elem.is('.lms-ui-advanced-select-test')) {
-                        updateAdvancedSelects(elem);
+                        updateAdvancedSelectsTest(elem);
                     }
                 }
             } else {
@@ -753,7 +753,7 @@
                                         html += '<option value="' + option.id + '">' + escapeHtml(option.label) + '</option>';
                                     });
                                     elem.html(html);
-                                    updateAdvancedSelects(elem);
+                                    updateAdvancedSelectsTest(elem);
                                     elem.closest('.filter-item').show();
                                 }
                             });
@@ -771,7 +771,7 @@
                                         html += '<option value="' + option.id + '">' + escapeHtml(option.label) + '</option>';
                                     });
                                     elem.html(html);
-                                    updateAdvancedSelects(elem);
+                                    updateAdvancedSelectsTest(elem);
                                     elem.closest('.filter-item').show();
                                     elem.closest('.filter-item').next().toggle(!options.length || elem.val() != '').find('.filter-element').val('');
                                 }
@@ -786,7 +786,7 @@
                             html += '<option value="' + option.id + '">' + escapeHtml(option.label) + '</option>';
                         });
                         elem.html(html);
-                        updateAdvancedSelects(elem);
+                        updateAdvancedSelectsTest(elem);
                         elem.closest('.filter-item').show();
                     }
                     for (var j = i + 2; j < filterElements.length; j++) {
@@ -796,7 +796,7 @@
                             elem2.val('');
                             elem2.closest('.filter-item').hide();
                             if (elem2.is('.lms-ui-advanced-select-test')) {
-                                updateAdvancedSelects(elem);
+                                updateAdvancedSelectsTest(elem);
                             }
                         }
                     }
