@@ -343,28 +343,44 @@ function initAdvancedSelects(selector) {
 	});
 }
 
+function updateAdvancedSelects(selector) {
+	$(selector).each(function() {
+		$(this).trigger('chosen:updated');
+	});
+}
+
+function activateAdvancedSelect(selector) {
+	$(selector).trigger('chosen:activate');
+}
+
 function initAdvancedSelectsTest(selector) {
 	$(selector).each(function () {
 		var that = this;
+
+		if ($(this).is('.select2-hidden-accessible')) {
+			$(this).trigger('change.select2');
+			return;
+		}
+
 		$(this).select2({
 			language: lmsSettings.language,
 			placeholder: $t('Select an Option'),
 			minimumResultsForSearch: 5,
 			selectionCssClass: ':all:',
-			templateResult: function (result) {
-					var term = $(that).data("select2").dropdown.$search.val();
-					var reg = new RegExp(term, 'gi');
-					var optionText = result.text;
-					var boldTermText = optionText.replace(
-						reg,
-						function (optionText) {
-							return "<em>" + optionText + "</em>";
-						}
-					);
-					var item = $("<span>" + boldTermText + "</span>");
-					return item;
-				},
-			templateSelection: function (state) {
+			templateResult: function(result) {
+				var term = $(that).data("select2").dropdown.$search.val();
+				var reg = new RegExp(term, 'gi');
+				var optionText = result.text;
+				var boldTermText = optionText.replace(
+					reg,
+					function (optionText) {
+						return "<em>" + optionText + "</em>";
+					}
+				);
+				var item = $("<span>" + boldTermText + "</span>");
+				return item;
+			},
+			templateSelection: function(state) {
 				if (!state.id) {
 					return state.text;
 				}
@@ -375,6 +391,16 @@ function initAdvancedSelectsTest(selector) {
 				} else {
 					return state.text;
 				}
+			}
+		});
+
+		if (typeof ($(this).attr('required')) !== 'undefined') {
+			$(this).siblings('.select2').find('.select2-selection').toggleClass('lms-ui-error', RegExp("^0?$").test($(this).val()) || $(this).is('.lms-ui-error'));
+		}
+
+		$(this).on('change.select2', function() {
+			if (typeof ($(this).attr('required')) !== 'undefined') {
+				$(this).siblings('.select2').find('.select2-selection').toggleClass('lms-ui-error', RegExp("^0?$").test($(this).val()) || $(this).is('.lms-ui-error'));
 			}
 		});
 
@@ -389,14 +415,10 @@ function initAdvancedSelectsTest(selector) {
 	});
 }
 
-function updateAdvancedSelects(selector) {
+function updateAdvancedSelectsTest(selector) {
 	$(selector).each(function() {
-		$(this).trigger('chosen:updated');
+		$(this).trigger('change.select2');
 	});
-}
-
-function activateAdvancedSelect(selector) {
-	$(selector).trigger('chosen:activate');
 }
 
 function setAddressList(selector, address_list, preselection) {

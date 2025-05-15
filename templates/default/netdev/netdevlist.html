@@ -110,8 +110,7 @@
 					<label>
 						{trans("Existing links")}
 						&nbsp;
-						<select size="1" name="linktechnology" class="lms-ui-advanced-select-test"
-							onchange="document.choosefilter.submit();">
+						<select size="1" name="linktechnology" class="lms-ui-advanced-select-test">
 							<option value="-1"{if $listdata.linktechnology == -1} selected{/if}>{trans("— any —")}</option>
 							<option value="-2"{if $listdata.linktechnology == -2} selected{/if}>{trans("— without technology —")}</option>
 							<option value="-3"{if $listdata.linktechnology == -3} selected{/if}>{trans("<!netlink>— none —")}</option>
@@ -272,6 +271,10 @@
 			var containerid = parseInt($(this).attr('data-resourceid'));
 			var elem = $('#listfiles-' + containerid);
 			elem.toggle();
+		});
+
+		$('[name="linktechnology"]').change(function() {
+			document.choosefilter.submit();
 		});
 	});
 

@@ -50,6 +50,34 @@
     .select2-selection__arrow {
       height: 100%;
     }
+
+    &.alert,
+    &.lms-ui-error,
+    &:invalid {
+      &.select2-selection--single {
+        border: @error-outline;
+        box-shadow: @error-box-shadow;
+
+        &:focus {
+          border: @error-outline-focus;
+          box-shadow: @error-box-shadow-focus;
+          outline: none;
+        }
+      }
+    }
+    &.lms-ui-warning {
+      &.select2-selection--single {
+        border: @warning-outline;
+        background-color: @warning-background;
+        box-shadow: @warning-box-shadow;
+
+        &:focus {
+          border: @warning-outline-focus;
+          background-color: @warning-background;
+          box-shadow: @warning-box-shadow-focus;
+        }
+      }
+    }
   }
 
   .select2-results__group {
