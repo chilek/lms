@@ -103,6 +103,8 @@ $autoreply_subject = ConfigHelper::getConfig($config_section . '.autoreply_subje
 $autoreply_body = ConfigHelper::getConfig($config_section . '.autoreply_body', '', true);
 $autoreply = ConfigHelper::checkConfig($config_section . '.autoreply', true);
 $subject_ticket_regexp_match = ConfigHelper::getConfig($config_section . '.subject_ticket_regexp_match', '\[RT#(?<ticketid>[0-9]{6,})\]');
+$body_customer_phone_number_regexp_match = ConfigHelper::getConfig($config_section . '.body_customer_phone_number_regexp_match', '', true);
+
 $modify_ticket_timeframe = ConfigHelper::getConfig($config_section . '.allow_modify_resolved_tickets_newer_than', 604800);
 
 $detect_customer_location_address = ConfigHelper::checkConfig($config_section . '.detect_customer_location_address');
@@ -598,20 +600,50 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             exit(5);
         }
 
-        // find customerid
-        $reqcustid = $DB->GetCol(
-            "SELECT c.id FROM customers c
-            JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ?) > 0
-            WHERE cc.contact = ?",
-            array(
-                CONTACT_EMAIL,
-                $fromemail,
-            )
-        );
-        if (empty($reqcustid) || count($reqcustid) > 1) {
-            $reqcustid = 0;
-        } else {
+        // try to find customerid by phone number match
+        $phone = null;
+        if (!empty($body_customer_phone_number_regexp_match)) {
+            if (preg_match('/' . $body_customer_phone_number_regexp_match . '/im', $mail_body, $m)) {
+                if (!empty($m['phone'])) {
+                    $phone = $m['phone'];
+                } elseif (!empty($m['number'])) {
+                    $phone = $m['number'];
+                }
+            }
+            if (!empty($phone)) {
+                $phone = preg_replace('/[^0-9]/', '', $phone);
+
+                $reqcustid = $DB->GetCol(
+                    "SELECT c.id
+                    FROM customers c
+                    JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ?) > 0
+                    WHERE REPLACE(REPLACE(contact, ' ', ''), '-', '') ?LIKE? ?",
+                    array(
+                        CONTACT_MOBILE | CONTACT_LANDLINE,
+                        '%' . $phone,
+                    )
+                );
+            }
+        }
+
+        if (!empty($phone) && !empty($reqcustid) && count($reqcustid) == 1) {
             $reqcustid = reset($reqcustid);
+        } else {
+            // find customerid
+            $reqcustid = $DB->GetCol(
+                "SELECT c.id FROM customers c
+                JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ?) > 0
+                WHERE cc.contact = ?",
+                array(
+                    CONTACT_EMAIL,
+                    $fromemail,
+                )
+            );
+            if (empty($reqcustid) || count($reqcustid) > 1) {
+                $reqcustid = 0;
+            } else {
+                $reqcustid = reset($reqcustid);
+            }
         }
 
         // get sender e-mail if not specified
@@ -680,6 +712,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 'queue' => $queue,
                 'requestor' => empty($fromname) ? $mh_from : $fromname,
                 'requestor_mail' => empty($fromemail) ? null : $fromemail,
+                'requestor_phone' => empty($phone) ? null : $phone,
                 'customerid' => $reqcustid,
                 'address_id' => $address_id,
                 'subject' => $mh_subject,
@@ -691,6 +724,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 'headers' => $mail_headers,
                 'contenttype' => $contenttype,
                 'body' => $mail_body,
+                'phonefrom' => empty($phone) ? '' : $phone,
                 'categories' => $cats), $files);
 
             $message_id = $LMS->GetLastMessageID();
