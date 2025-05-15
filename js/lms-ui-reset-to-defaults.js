@@ -43,6 +43,7 @@ $(function() {
             }
         });
         updateAdvancedSelects(elems.filter('.lms-ui-advanced-select'));
+        updateAdvancedSelectsTest(elems.filter('.lms-ui-advanced-select-test'));
         updateComboBoxes(elems.filter('.scombobox'));
     }).on('mouseenter mouseleave', function(e) {
         var target = $($(this).attr('data-target'));
