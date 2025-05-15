@@ -14,4 +14,4 @@ components/**
 **/js/lms-ui-combobox.js
 **/js/locale/*.js
 **/js/galleria/**
-**/js/select2/js/i18n/*.js
+**/js/select2/js/**
