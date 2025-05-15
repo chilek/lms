@@ -34,6 +34,28 @@
     font-size: @font-size-mobile;
   }
 
+  .select2-selection.select2-selection--multiple {
+    padding-bottom: 3px;
+    display: block;
+
+    .select2-selection__choice {
+      background-color: @light;
+      background-image: none;
+      font-weight: bold;
+      border: 1px solid @darkbrown;
+      margin-top: 3px;
+      margin-left: 3px;
+    }
+
+    .select2-selection__choice__remove {
+      color: inherit;
+
+      &:hover {
+        background-color: @dark;
+      }
+    }
+  }
+
   .select2-selection {
     height: unset;
     min-height: 1.6em;
@@ -76,6 +98,17 @@
           background-color: @warning-background;
           box-shadow: @warning-box-shadow-focus;
         }
+      }
+    }
+
+    &.select2-selection--multiple {
+      max-width: 30vw;
+
+      .select2-selection__rendered {
+        margin-block-start: 0;
+        margin-block-end: 0;
+        white-space: normal;
+        line-height: 1.5em;
       }
     }
   }

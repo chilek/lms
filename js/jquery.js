@@ -369,7 +369,11 @@ function initAdvancedSelectsTest(selector) {
 			selectionCssClass: ':all:',
 			dropdownAutoWidth: true,
 			templateResult: function(result) {
-				var term = $(that).data("select2").dropdown.$search.val();
+				var search = $(that).data("select2").dropdown.$search;
+				if (!search) {
+					return result.text;
+				}
+				var term = search.val();
 				var reg = new RegExp(term, 'gi');
 				var option = $(result.element)
 				var optionText = result.text;
