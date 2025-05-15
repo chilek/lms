@@ -350,7 +350,7 @@ function initAdvancedSelectsTest(selector) {
 			language: lmsSettings.language,
 			placeholder: $t('Select an Option'),
 			minimumResultsForSearch: 5,
-			dropdownCssClass: ':all:',
+			selectionCssClass: ':all:',
 			templateResult: function (result) {
 					var term = $(that).data("select2").dropdown.$search.val();
 					var reg = new RegExp(term, 'gi');
@@ -363,7 +363,19 @@ function initAdvancedSelectsTest(selector) {
 					);
 					var item = $("<span>" + boldTermText + "</span>");
 					return item;
+				},
+			templateSelection: function (state) {
+				if (!state.id) {
+					return state.text;
 				}
+
+				var parent = $(state.element).parent();
+				if (parent.is('optgroup')) {
+					return $('<span><strong>' + parent.attr('label') + ':</strong> ' + state.text + '</span>');
+				} else {
+					return state.text;
+				}
+			}
 		});
 
 		$(document).on('select2:open', function() {
