@@ -440,6 +440,10 @@ function updateAdvancedSelectsTest(selector) {
 	});
 }
 
+function activateAdvancedSelectTest(selector) {
+	$(selector).select2('focus');
+}
+
 function setAddressList(selector, address_list, preselection) {
 	var icon;
 	var select = $(selector);
