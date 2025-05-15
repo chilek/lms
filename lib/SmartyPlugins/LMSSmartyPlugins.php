@@ -1390,7 +1390,7 @@ class LMSSmartyPlugins
             . ($form ? ' form="' . $form . '"' : '')
             . ($multiple ? ' multiple' : '')
             . ($required ? ' required' : '')
-            . ' class="lms-ui-advanced-select' . ($class ? ' ' . $class : '') . '"'
+            . ' class="lms-ui-advanced-select-test' . ($class ? ' ' . $class : '') . '"'
             . ' onChange="' . $onChange . '"'
             . ' ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template) . '>'
             . $options
@@ -1421,7 +1421,7 @@ class LMSSmartyPlugins
             $template
         );
 
-        $class = 'class="netdev-list lms-ui-advanced-select ' . (!empty($params['class']) ? $params['class'] : null) . '"';
+        $class = 'class="netdev-list lms-ui-advanced-select-test ' . (!empty($params['class']) ? $params['class'] : null) . '"';
 
         $options = '<option value=""' . (!$selected ? ' selected' : '') . '> ' . trans("— none —") . '</option>';
         foreach ($netdevicelist as $item) {
@@ -1458,7 +1458,7 @@ class LMSSmartyPlugins
             $template
         );
 
-        $class = 'class="netnode-list lms-ui-advanced-select ' . (!empty($params['class']) ? $params['class'] : null) . '"';
+        $class = 'class="netnode-list lms-ui-advanced-select-test ' . (!empty($params['class']) ? $params['class'] : null) . '"';
 
         $options = '<option value=""' . (!$selected ? ' selected' : '') . '> ' . trans("— none —") . '</option>';
         foreach ($netnodelist as $item) {
