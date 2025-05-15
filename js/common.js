@@ -304,6 +304,9 @@ function sendvalue(targetfield, value)
 	if (targetfield.className.indexOf('lms-ui-advanced-select') !== -1) {
 		targetfield.dispatchEvent(new Event('chosen:updated'))
 	}
+	if (targetfield.className.indexOf('lms-ui-advanced-select-test') !== -1) {
+		targetfield.dispatchEvent(new Event('change.select2'))
+	}
 	targetfield.dispatchEvent(new Event('change'))
 	targetfield.focus();
 }
