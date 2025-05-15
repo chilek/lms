@@ -367,18 +367,28 @@ function initAdvancedSelectsTest(selector) {
 			placeholder: $t('Select an Option'),
 			minimumResultsForSearch: 5,
 			selectionCssClass: ':all:',
+			dropdownAutoWidth: true,
 			templateResult: function(result) {
 				var term = $(that).data("select2").dropdown.$search.val();
 				var reg = new RegExp(term, 'gi');
+				var option = $(result.element)
 				var optionText = result.text;
-				var boldTermText = optionText.replace(
-					reg,
-					function (optionText) {
-						return "<em>" + optionText + "</em>";
-					}
-				);
-				var item = $("<span>" + boldTermText + "</span>");
-				return item;
+				var termText;
+				if (term.length) {
+					termText = optionText.replace(
+						reg,
+						function (optionText) {
+							return "<em>" + optionText + "</em>";
+						}
+					);
+				} else {
+					termText = optionText;
+				}
+				return $('<span>' +
+					(option.is("[data-icon]") ?
+						'<i class="' + option.attr('data-icon') + '"></i>&nbsp'
+						: ''
+					) + termText + '</span>');
 			},
 			templateSelection: function(state) {
 				if (!state.id) {
@@ -386,21 +396,26 @@ function initAdvancedSelectsTest(selector) {
 				}
 
 				var parent = $(state.element).parent();
-				if (parent.is('optgroup')) {
-					return $('<span><strong>' + parent.attr('label') + ':</strong> ' + state.text + '</span>');
-				} else {
-					return state.text;
-				}
+				var option = $(state.element)
+				return $(
+					'<span>' +
+					($(that).is('.show-group-labels') && parent.is('optgroup') ? '<strong>' + parent.attr('label') + ':</strong> ' : '') +
+					(option.is("[data-icon]") ?
+							'<i class="' + option.attr('data-icon') + '"></i>&nbsp'
+							: ''
+					) +
+					state.text + '</span>'
+				);
 			}
 		});
 
-		if (typeof ($(this).attr('required')) !== 'undefined') {
+		if (typeof($(this).attr('required')) !== 'undefined' || $(this).is('[data-required]')) {
 			$(this).siblings('.select2').find('.select2-selection').toggleClass('lms-ui-error', RegExp("^0?$").test($(this).val()) || $(this).is('.lms-ui-error'));
 		}
 
-		$(this).on('change.select2', function() {
-			if (typeof ($(this).attr('required')) !== 'undefined') {
-				$(this).siblings('.select2').find('.select2-selection').toggleClass('lms-ui-error', RegExp("^0?$").test($(this).val()) || $(this).is('.lms-ui-error'));
+		$(this).on('change', function() {
+			if (typeof($(this).attr('required')) !== 'undefined' || $(this).is('[data-required]')) {
+				$(this).siblings('.select2').find('.select2-selection').toggleClass('lms-ui-error', RegExp("^0?$").test($(this).val()));
 			}
 		});
 

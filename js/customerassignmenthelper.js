@@ -567,8 +567,8 @@ function CustomerAssignmentHelper(options) {
 				}
 
 				$('#location-select').toggleClass('lms-ui-error', location_count > 1).html(options);
-				initAdvancedSelects('#location-select');
-				$('#location-select').chosen().change(function() {
+				initAdvancedSelectsTest('#location-select');
+				$('#location-select').change(function() {
 					helper.locationSelectionHandler();
 				});
 
