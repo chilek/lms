@@ -160,7 +160,7 @@
 			</td>
 			<td>
 				<select size="1" name="note[queueid]" form="note-form" id="queue-selection"
-					{tip text="Select queue" trigger="queue" class="lms-ui-advanced-select"}>
+					{tip text="Select queue" trigger="queue" class="lms-ui-advanced-select-test"}>
 					{foreach $queuelist as $item}
 					<option value="{$item.id}"
 						{if $item.id == $note.queueid} selected{/if}>{$item.name}</option>
@@ -175,7 +175,7 @@
 			</td>
 			<td>
 				<select size="1" name="note[owner]" form="note-form" id="owner"
-					{tip text="Select user" trigger="owner" class="lms-ui-advanced-select"}>
+					{tip text="Select user" trigger="owner" class="lms-ui-advanced-select-test"}>
 					<option value="0">{trans("— select user —")}</option>
 					{foreach $userlist as $user}
 						{if $user.id != $note.owner
@@ -206,7 +206,7 @@
 			<td id="rtverifiers">
 				{if !$ticket.verifierid || $ticket.verifierid == $layout.logid}
 					<select size="1" name="note[verifierid]" form="note-form"
-						{tip text="Select user" trigger="verifierid" class="lms-ui-advanced-select"}>
+						{tip text="Select user" trigger="verifierid" class="lms-ui-advanced-select-test"}>
 						<option value="0">{trans("— select user —")}</option>
 						{foreach $userlist as $user}
 							{if $user.id != $note.verifierid

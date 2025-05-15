@@ -607,7 +607,7 @@
 							<div id="tariff-selection">
 								{block name="`$layout.module`-tariff-selection"}
 									<select size="1" name="tariffid" id="tariff-select" style="width: 300px"
-											class="lms-ui-advanced-select" onchange="setItem(document.contents.tariffid.value)">
+											class="lms-ui-advanced-select-test" onchange="setItem(document.contents.tariffid.value)">
 										<option value="0">— {trans("Select tariff")} —</option>
 										{foreach $tariffs as $tariff}
 											{if $tariff.currency == $invoice.currency && $tariff.netflag == $invoice.netflag}

@@ -132,7 +132,7 @@
                             {icon name="filter" class="fa-fw"}
                             <label class="filter-item">
                                 <span>{trans("State")}</span>
-                                <select name="filter[stateid]" form="netranges" class="lms-ui-advanced-select filter-element"
+                                <select name="filter[stateid]" form="netranges" class="lms-ui-advanced-select-test filter-element"
                                     data-placeholder="{trans("— none —")}"
                                     data-options='{ "allow_single_deselect": true }'>
                                     <option value=""></option>
@@ -144,7 +144,7 @@
                             </label>
                             <label class="filter-item"{if empty($filter.stateid)} style="display: none;"{/if}>
                                 <span>{trans("District")}</span>
-                                <select name="filter[districtid]" form="netranges" class="lms-ui-advanced-select filter-element"
+                                <select name="filter[districtid]" form="netranges" class="lms-ui-advanced-select-test filter-element"
                                     data-placeholder="{trans("— none —")}"
                                     data-options='{ "allow_single_deselect": true }'>
                                     <option value=""></option>
@@ -158,7 +158,7 @@
                             </label>
                             <label class="filter-item"{if empty($filter.districtid)} style="display: none;"{/if}>
                                 <span>{trans("Commune")}</span>
-                                <select name="filter[boroughid]" form="netranges" class="lms-ui-advanced-select filter-element"
+                                <select name="filter[boroughid]" form="netranges" class="lms-ui-advanced-select-test filter-element"
                                     data-placeholder="{trans("— none —")}"
                                     data-options='{ "allow_single_deselect": true }'>
                                     <option value=""></option>
@@ -172,7 +172,7 @@
                             </label>
                             <label class="filter-item"{if empty($filter.boroughid)} style="display: none;"{/if}>
                                 <span>{trans("City")}</span>
-                                <select name="filter[cityid]" form="netranges" class="lms-ui-advanced-select filter-element"
+                                <select name="filter[cityid]" form="netranges" class="lms-ui-advanced-select-test filter-element"
                                     data-placeholder="{trans("— none —")}"
                                     data-options='{ "allow_single_deselect": true }'>
                                     <option value=""></option>
@@ -186,7 +186,7 @@
                             </label>
                             <label class="filter-item"{if empty($filter.cityid)} style="display: none;"{/if}>
                                 <span>{trans("Street")}</span>
-                                <select name="filter[streetid]" form="netranges" class="lms-ui-advanced-select filter-element"
+                                <select name="filter[streetid]" form="netranges" class="lms-ui-advanced-select-test filter-element"
                                     data-placeholder="{trans("— none —")}"
                                     data-options='{ "allow_single_deselect": true }'>
                                     <option value=""></option>
@@ -718,7 +718,7 @@
                     elem.html('<option value="">{trans("— none —")}</option>');
                     elem.val('');
                     elem.closest('.filter-item').hide();
-                    if (elem.is('.lms-ui-advanced-select')) {
+                    if (elem.is('.lms-ui-advanced-select-test')) {
                         updateAdvancedSelects(elem);
                     }
                 }
@@ -795,7 +795,7 @@
                             elem2.html('<option value=""></option>');
                             elem2.val('');
                             elem2.closest('.filter-item').hide();
-                            if (elem2.is('.lms-ui-advanced-select')) {
+                            if (elem2.is('.lms-ui-advanced-select-test')) {
                                 updateAdvancedSelects(elem);
                             }
                         }

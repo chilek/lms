@@ -201,7 +201,7 @@
 					<strong>{trans("Connect")}:</strong>
 					<span class="nobr">
 						{trans("Device:")}
-						<SELECT NAME="netdev" id="srcnetdev" {tip class="lms-ui-advanced-select" trigger="link" text="Select from list device for connection"}
+						<SELECT NAME="netdev" id="srcnetdev" {tip class="lms-ui-advanced-select-test" trigger="link" text="Select from list device for connection"}
 								onchange="get_radio_sectors_for_netdev()" form="connect-form">
 							{foreach $restnetdevlist as $dev}
 								{$netdevname = $dev.name}

@@ -379,7 +379,7 @@
 								</label>
 							</td>
 							<td colspan="7" class="nobr">
-								<select name="message[netdev]" id="netdev" {tip class="lms-ui-advanced-select" trigger="netdev" text="Select network device"}>
+								<select name="message[netdev]" id="netdev" {tip class="lms-ui-advanced-select-test" trigger="netdev" text="Select network device"}>
 									<option value="">{trans("— none —")}</option>
 									{foreach $netdevices as $netdev}
 										<option value="{$netdev.id}"{if isset($message.netdev) && $netdev.id == $message.netdev} selected{/if}>{$netdev.name}</option>
@@ -698,7 +698,7 @@
 				<strong>{trans("Message template")}</strong>
 			</td>
 			<td>
-				<select name="message[tmplid]" id="msgtmplid" {tip class="lms-ui-advanced-select" trigger="msgtmplid" text="Select message template"}
+				<select name="message[tmplid]" id="msgtmplid" {tip class="lms-ui-advanced-select-test" trigger="msgtmplid" text="Select message template"}
 						onChange="javascript:change_message_template(this.options[this.selectedIndex].value);">
 					<option value="0">{trans("— none —")}</option>
 					{foreach $messagetemplates as $msgtmpl}

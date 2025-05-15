@@ -30,7 +30,7 @@
 		{/box_header}
 		{box_header icon="service" label="Service type" icon_class="fa-fw"}
 			<select name="ticket[service]" id="ticket-service"
-				{tip class="lms-ui-advanced-select" text="Choose service type" trigger="service"}
+				{tip class="lms-ui-advanced-select-test" text="Choose service type" trigger="service"}
 				{if ConfigHelper::checkConfig('rt.ticket_service_required')} required{/if}>
 				<option value="" selected hidden>{trans("select")}</option>
 				{foreach $_SERVICETYPES as $key => $service}
@@ -40,7 +40,7 @@
 		{/box_header}
 		{box_header icon="type" label="Ticket type" icon_class="fa-fw"}
 			<select name="ticket[type]" id="ticket-type"
-				{tip class="lms-ui-advanced-select" text="Choose ticket type" trigger="type"}
+				{tip class="lms-ui-advanced-select-test" text="Choose ticket type" trigger="type"}
 				{if ConfigHelper::checkConfig('rt.ticket_type_required')} required{/if}>
 				<option value="" selected hidden>{trans("select")}</option>
 				{foreach Localisation::arraySort($_RT_TYPES, 'label') as $key => $type}
@@ -78,7 +78,7 @@
 
 			{box_row icon="user" label="Requestor" field_id="requestor" icon_class="fa-fw"}
 				<div class="lms-ui-box-row">
-					<select name="ticket[requestor_userid]" {tip class="lms-ui-advanced-select" text="Select requestor from list" trigger="requestor_userid"}>
+					<select name="ticket[requestor_userid]" {tip class="lms-ui-advanced-select-test" text="Select requestor from list" trigger="requestor_userid"}>
 						<option value="">{trans("<!person>— none —")}</option>
 						<option value="0"{if $ticket.requestor_userid == '0'} selected{/if}>{trans("— indicated person —")}</option>
 						{foreach $userlist as $user}
@@ -182,7 +182,7 @@
 			{block name="rtticketmodify-rightcolumn"}
 			{box_row icon="owner" label="Owner" icon_class="fa-fw"}
 				<select size="1" name="ticket[owner]" id="owner"
-						{tip class="lms-ui-advanced-select" text="Select user" trigger="owner"}>
+						{tip class="lms-ui-advanced-select-test" text="Select user" trigger="owner"}>
 					<option value="0">{trans("— select user —")}</option>
 					{foreach $userlist as $user}
 						{if $user.id != $ticket.owner
@@ -208,7 +208,7 @@
 
 			{box_row icon="verifier" label="Verifier" field_id="rtverifiers" icon_class="fa-fw"}
 				{if $layout.module != 'rtticketedit' || !$ticket.oldverifierid || $ticket.oldverifierid == $layout.logid || ConfigHelper::checkConfig('privileges.superuser')}
-					<select size="1" name="ticket[verifierid]" {tip class="lms-ui-advanced-select" text="Select user" trigger="verifierid"}>
+					<select size="1" name="ticket[verifierid]" {tip class="lms-ui-advanced-select-test" text="Select user" trigger="verifierid"}>
 						<option value="">{trans("— select user —")}</option>
 						{foreach $userlist as $user}
 							{if $user.id != $ticket.verifierid
@@ -244,7 +244,7 @@
 			{/box_row}
 
 			{box_row icon="status" label="Status" icon_class="fa-fw"}
-				<SELECT name="ticket[state]" id="state" {tip class="lms-ui-advanced-select" text="Select status" trigger="state"}>
+				<SELECT name="ticket[state]" id="state" {tip class="lms-ui-advanced-select-test" text="Select status" trigger="state"}>
 					{foreach $_RT_STATES as $stateidx => $state}
 					<OPTION value="{$stateidx}"{if $ticket.state == $stateidx} selected{/if}>{$state.label}</OPTION>
 					{/foreach}
@@ -258,7 +258,7 @@
 
 			{box_row icon="queue" label="Queue" icon_class="fa-fw"}
 				<select size="1" name="ticket[queue]" id="queue-selection"
-						{tip class="lms-ui-advanced-select" text="Select queue" trigger="queue"}>
+						{tip class="lms-ui-advanced-select-test" text="Select queue" trigger="queue"}>
 					{foreach $queuelist as $item}
 						<option value="{$item.id}"
 							{if $item.newticketsubject && $item.newticketbody || $item.newticketsmsbody} data-newticket-notify="1"{/if}
@@ -344,7 +344,7 @@
 			{/box_row}
 
 			{box_row icon="invproject" label="Investment project" icon_class="fa-fw"}
-				<SELECT name="ticket[invprojectid]" {tip class="lms-ui-advanced-select" text="Select investment projects" trigger="invprojectid"}>
+				<SELECT name="ticket[invprojectid]" {tip class="lms-ui-advanced-select-test" text="Select investment projects" trigger="invprojectid"}>
 					<OPTION value="">{trans("— none —")}</OPTION>
 					{foreach $invprojectlist as $idx => $project}
 					<OPTION value="{$idx}" {if $idx == $ticket.invprojectid} selected{/if}>

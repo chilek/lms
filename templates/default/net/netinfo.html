@@ -117,7 +117,7 @@
 			</td>
 			<td colspan="3">
 				{if $unlockedit}
-					<select name="networkdata[vlanid]" class="lms-ui-advanced-select" form="netedit">
+					<select name="networkdata[vlanid]" class="lms-ui-advanced-select-test" form="netedit">
 						<option value="0"{if $network.vlanid == 0} selected{/if}>{trans("— none —")}</option>
 						{foreach $vlanlist as $v}
 							<option value="{$v.id}"{if $network.vlanid == $v.vlanid} selected{/if}>

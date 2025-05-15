@@ -75,7 +75,7 @@
 				<strong>{trans("VLAN")}</strong>
 			</td>
 			<td colspan="3">
-				<select name="netadd[vlanid]" class="lms-ui-advanced-select" form="netadd">
+				<select name="netadd[vlanid]" class="lms-ui-advanced-select-test" form="netadd">
 					<option value="">{trans("— none —")}</option>
 					{foreach $vlanlist as $v}
 						<option value="{$v.id}">({$v.vlanid}){if $v.description}, {$v.description|trunescape:45}{/if}{if $v.customerid}, {$v.customername|escape} (#{$v.customerid}){/if}</option>

@@ -7,7 +7,7 @@
 </td>
 <td class="nobr">
     <select name="document[reference]" class="refdoc"
-        {tip class="lms-ui-advanced-select" text="Select reference document" trigger="reference"}>
+        {tip class="lms-ui-advanced-select-test" text="Select reference document" trigger="reference"}>
         <option value=""{if !$document.reference} selected{/if}>{trans("— none —")}</option>
         {foreach $references as $doc}
             {number number=$doc.number template=$doc.template time=$doc.cdate customerid=$cid assign="number"}

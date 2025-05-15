@@ -75,7 +75,7 @@
 					<label>
 						{trans("Network node")}
 						<select name="n" onchange="document.choosefilter.submit();"
-							{tip class="lms-ui-advanced-select" text="Select network node (optional)" trigger="netnodeid"}>
+							{tip class="lms-ui-advanced-select-test" text="Select network node (optional)" trigger="netnodeid"}>
 							<option value="-1"{if $listdata.netnode == -1} selected{/if}>{trans("— all —")}</option>
 							<option value="-2"{if $listdata.netnode == -2} selected{/if}>{trans("— none —")}</option>
 							{foreach $netnodes as $netnode}
@@ -110,7 +110,7 @@
 					<label>
 						{trans("Existing links")}
 						&nbsp;
-						<select size="1" name="linktechnology" class="lms-ui-advanced-select-test show-group-labels">
+						<select size="1" name="linktechnology" class="lms-ui-advanced-select-test-test show-group-labels">
 							<option value="-1"{if $listdata.linktechnology == -1} selected{/if}>{trans("— any —")}</option>
 							<option value="-2"{if $listdata.linktechnology == -2} selected{/if}>{trans("— without technology —")}</option>
 							<option value="-3"{if $listdata.linktechnology == -3} selected{/if}>{trans("<!netlink>— none —")}</option>

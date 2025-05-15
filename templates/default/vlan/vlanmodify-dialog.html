@@ -51,7 +51,7 @@
                         {icon name="netnode" label="Network Node"}
                     </td>
                     <td>
-                        <select name="addvlan[netnodeid]" class="lms-ui-advanced-select" id="dialog-netnode_selector">
+                        <select name="addvlan[netnodeid]" class="lms-ui-advanced-select-test" id="dialog-netnode_selector">
                             <option value="">{trans("— none —")}</option>
                             {foreach $netnodelist as $nn}
                                 <option value="{$nn.id}" {if $nn.id == $vlaninfo.netnodeid} selected{/if}>{$nn.name|escape} ({$nn.id})</option>

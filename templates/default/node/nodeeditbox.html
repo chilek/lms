@@ -96,7 +96,7 @@
 										<td class="cell-flex">
 											<div>
 												<select size="1" name="nodeedit[netid]"
-													{tip class="lms-ui-advanced-select" trigger="netid"}>
+													{tip class="lms-ui-advanced-select-test" trigger="netid"}>
 													<option value="0">{trans("— automatic selection —")}</option>
 													{foreach $networks as $net}
 														<option value="{$net.id}" data-pubnetid="{$net.pubnetid}"
@@ -231,7 +231,7 @@
 													{button type="link" icon="search" tip="Search device"
 														onclick="return netDevChooseWin(document.editnode.elements['nodeedit[netdev]']);"}
 
-													<select size="1" name="nodeedit[netdev]" id="netdev" {tip trigger="netdev" class="lms-ui-advanced-select"}
+													<select size="1" name="nodeedit[netdev]" id="netdev" {tip trigger="netdev" class="lms-ui-advanced-select-test"}
 															{if ConfigHelper::checkConfig('nodes.network_device_connection_required', ConfigHelper::checkConfig('phpui.node_to_network_device_connection_required'))} required{/if}>
 														<option value="0"{if !$nodeinfo.netdev} selected{/if}>— {trans("no device")} —</option>
 														{foreach $netdevices as $netdev}

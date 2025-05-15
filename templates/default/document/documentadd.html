@@ -120,7 +120,7 @@
 			</td>
 			<td>
 				<select size="1" name="document[type]" id="doctype" onchange="DocTypeChanged();"
-						{tip class="lms-ui-advanced-select" text="Select document type" trigger="type"} required>
+						{tip class="lms-ui-advanced-select-test" text="Select document type" trigger="type"} required>
 					<option value="0">{trans("— select type —")}</option>
 					{foreach Localisation::arraySort($_DOCTYPES) as $key => $item}
 						{if $key < 0 && in_array($key, $docrights)}

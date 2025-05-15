@@ -154,7 +154,7 @@
 					{/box_row}
 
 					{box_row icon="user" label="Users:" field_class="multiselect" icon_class="fa-fw"}
-						<select name="event[userlist][]" class="lms-ui-advanced-select" id="userlist" multiple
+						<select name="event[userlist][]" class="lms-ui-advanced-select-test" id="userlist" multiple
 								{if ConfigHelper::checkConfig('timetable.event_user_required', ConfigHelper::checkConfig('phpui.event_user_required'))}required{/if}>
 							{foreach $userlist as $user}
 								{if (!is_array($event.userlist) || !in_array($user.id, $event.userlist))

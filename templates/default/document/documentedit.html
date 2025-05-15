@@ -36,7 +36,7 @@
 			</td>
 			<td>
 				<select size="1" name="document[type]" id="doctype" onchange="setnumberplans();"
-						{tip class="lms-ui-advanced-select" text="Select document type" trigger="type"}>
+						{tip class="lms-ui-advanced-select-test" text="Select document type" trigger="type"}>
 					{foreach Localisation::arraySort($_DOCTYPES) as $key => $item}
 						{if $key < 0 && in_array($key, $docrights)}
 							<option value="{$key}"{if $document.type==$key} selected{/if}>{$item}</option>

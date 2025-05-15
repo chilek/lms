@@ -230,7 +230,7 @@
 				{/box_row}
 
 				{box_row icon="netnode" icon_class="fa-fw" label="Network Node"}
-					<select name="netdev[netnodeid]" {tip class="lms-ui-advanced-select"}>
+					<select name="netdev[netnodeid]" {tip class="lms-ui-advanced-select-test"}>
 						<option value="-1">{trans("None")}</option>
 						{foreach $NNnodes as $node}
 							<option value="{$node.id}"

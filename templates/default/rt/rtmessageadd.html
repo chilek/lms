@@ -228,7 +228,7 @@
 
 			{box_row icon="queue" icon_class="fa-fw" label="Queue"}
 				<select size="1" name="message[queueid]" id="queue-selection"
-					{tip text="Select queue" trigger="queue" class="lms-ui-advanced-select"}>
+					{tip text="Select queue" trigger="queue" class="lms-ui-advanced-select-test"}>
 					{if $group_action}
 						<option value="-100"{if $message.queueid == -100} selected{/if} data-newmessage-notify="1">{trans("— no changes —")}</option>
 					{/if}
@@ -242,7 +242,7 @@
 
 			{box_row icon="owner" icon_class="fa-fw" label="Owner"}
 				<select size="1" name="message[owner]" id="owner"
-					{tip text="Select user" trigger="owner" class="lms-ui-advanced-select"}>
+					{tip text="Select user" trigger="owner" class="lms-ui-advanced-select-test"}>
 					<option value="0">{trans("— select user —")}</option>
 					{if $group_action}
 						<option value="-100"{if $message.owner == -100} selected{/if}>{trans("— no changes —")}</option>
@@ -271,7 +271,7 @@
 			{box_row icon="verifier" icon_class="fa-fw" label="Verifier" field_id="rtverifiers"}
 				{if $group_action || !$ticket.verifierid || $ticket.verifierid == $layout.logid}
 					<select size="1" name="message[verifierid]"
-						{tip text="Select user" trigger="verifierid" class="lms-ui-advanced-select"}>
+						{tip text="Select user" trigger="verifierid" class="lms-ui-advanced-select-test"}>
 						<option value="0">{trans("— select user —")}</option>
 						{if $group_action}
 							<option value="-1"{if $message.verifierid == -1} selected{/if}>{trans("— no changes —")}</option>

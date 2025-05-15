@@ -165,7 +165,7 @@
 					<strong>{trans("Connect")}:</strong>
 					<span class="nobr">
 						{trans("Node:")}
-						<SELECT NAME="nodeid" style="width: 300px" {tip class="lms-ui-advanced-select" trigger="linknode" text="Select node, which you want to connect to device"}
+						<SELECT NAME="nodeid" style="width: 300px" {tip class="lms-ui-advanced-select-test" trigger="linknode" text="Select node, which you want to connect to device"}
 								form="connectnode-form">
 							{foreach $nodelist as $node}
 								<OPTION VALUE="{$node.id}"{if $connectnode.id == $node.id} selected{/if}>{$node.name} ({$node.ip})</OPTION>

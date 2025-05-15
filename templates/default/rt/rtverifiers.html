@@ -1,7 +1,7 @@
 <select size="1" name="ticket[verifierid]"
 {$hide_disabled_users = ConfigHelper::checkConfig('rt.hide_disabled_users', ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users'))}
 {$hide_deleted_users = ConfigHelper::checkConfig('rt.hide_deleted_users', ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users'))}
-	{tip text="Select user" trigger="verifierid" class="lms-ui-advanced-select"}>
+	{tip text="Select user" trigger="verifierid" class="lms-ui-advanced-select-test"}>
 	<option value="">{trans("— select user —")}</option>
 	{foreach $userlist as $user}
 		{if $user.id != $ticket.verifierid

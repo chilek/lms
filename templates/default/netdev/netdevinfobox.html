@@ -458,7 +458,7 @@
 				{if !empty($targetnetdevs)}
 					<div class="lms-ui-box-button-container">
 						{button icon="convert" id="replace-netdev" label="Replace"}
-						<select id="target-netdev" class="lms-ui-advanced-select">
+						<select id="target-netdev" class="lms-ui-advanced-select-test">
 							<option value="">{trans("— select target network device —")}</option>
 							{foreach $targetnetdevs as $targetnetdev}
 								<option value="{$targetnetdev.id}" title="{$targetnetdev.producer} / {$targetnetdev.model}"

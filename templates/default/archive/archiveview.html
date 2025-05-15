@@ -63,7 +63,7 @@
 						</label>
 						<label>
 							<span>{trans("Module")}</span>
-							<select name="module" form="filter" class="lms-ui-advanced-select" data-default-value="">
+							<select name="module" form="filter" class="lms-ui-advanced-select-test" data-default-value="">
 								<option value="">{trans("— any —")}</option>
 								{foreach $listdata.modules as $module}
 									<option value="{$module}"{if $listdata.module == $module} selected{/if}>{$module}</option>

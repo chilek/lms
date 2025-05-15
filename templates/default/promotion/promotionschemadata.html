@@ -323,7 +323,7 @@
 								</div>
 								<div class="promoschema-tariff-selection-header-cell">
 									<select name="form[tariffid]" id="tariff-select" form="tariffs"
-										{tip class="lms-ui-advanced-select" text="Select subscription" trigger="tariffid"}>
+										{tip class="lms-ui-advanced-select-test" text="Select subscription" trigger="tariffid"}>
 										{foreach $tariffs as $tariff}
 											<OPTION value="{$tariff.id}" {if $tariff.id == $formdata.tariffid}selected{/if}
 													data-tarifftype="{$tariff.tarifftype}"
