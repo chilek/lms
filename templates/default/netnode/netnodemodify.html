@@ -55,7 +55,7 @@
 
 			{box_row icon="type" icon_class="fa-fw" label="Type"}
 				{$netelementtypes = Localisation::arraySort($_NETELEMENTTYPES)}
-				<select name="netnode[type]" {tip text="Enter node type" class="lms-ui-advanced-select-test"}>
+				<select name="netnode[type]" {tip text="Enter node type" class="lms-ui-advanced-select-test show-group-labels"}>
 					<option value="0">{trans("<!netelemtype>— other —")}</option>
 					{foreach $_NETELEMENTTYPEGROUPS as $group => $types}
 						<optgroup label="{$group}">
