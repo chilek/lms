@@ -362,56 +362,77 @@ function initAdvancedSelectsTest(selector) {
 			return;
 		}
 
-		$(this).select2({
-			language: lmsSettings.language,
-			placeholder: $t('Select an Option'),
-			minimumResultsForSearch: 5,
-			selectionCssClass: ':all:',
-			dropdownAutoWidth: true,
-			templateResult: function(result) {
-				var search = $(that).data("select2").dropdown.$search;
-				if (!search) {
-					return result.text;
+		var options = {};
+		var optionMap = {
+			"allow_single_deselect": "allowClear",
+			"disable_search_threshold": "minimumResultsForSearch"
+		}
+		var chosenOptions = $(this).attr('data-options');
+		if (chosenOptions) {
+			chosenOptions = JSON.parse(chosenOptions);
+			$.each(chosenOptions, function (key, value) {
+				if (optionMap.hasOwnProperty(key)) {
+					options[optionMap[key]] = value;
 				}
-				var term = search.val();
-				var reg = new RegExp(term, 'gi');
-				var option = $(result.element)
-				var optionText = result.text;
-				var termText;
-				if (term.length) {
-					termText = optionText.replace(
-						reg,
-						function (optionText) {
-							return "<em>" + optionText + "</em>";
-						}
-					);
-				} else {
-					termText = optionText;
-				}
-				return $('<span>' +
-					(option.is("[data-icon]") ?
-						'<i class="' + option.attr('data-icon') + '"></i>&nbsp'
-						: ''
-					) + termText + '</span>');
-			},
-			templateSelection: function(state) {
-				if (!state.id) {
-					return state.text;
-				}
+			});
+		}
 
-				var parent = $(state.element).parent();
-				var option = $(state.element)
-				return $(
-					'<span>' +
-					($(that).is('.show-group-labels') && parent.is('optgroup') ? '<strong>' + parent.attr('label') + ':</strong> ' : '') +
-					(option.is("[data-icon]") ?
-							'<i class="' + option.attr('data-icon') + '"></i>&nbsp'
-							: ''
-					) +
-					state.text + '</span>'
-				);
-			}
-		});
+		options = $.extend(
+			{},
+			{
+				language: lmsSettings.language,
+				placeholder: $t('Select an Option'),
+				minimumResultsForSearch: 5,
+				selectionCssClass: ':all:',
+				dropdownAutoWidth: true,
+				templateResult: function(result) {
+					var search = $(that).data("select2").dropdown.$search;
+					if (!search) {
+						return result.text;
+					}
+					var term = search.val();
+					var reg = new RegExp(term, 'gi');
+					var option = $(result.element)
+					var optionText = result.text;
+					var termText;
+					if (term.length) {
+						termText = optionText.replace(
+							reg,
+							function (optionText) {
+								return "<em>" + optionText + "</em>";
+							}
+						);
+					} else {
+						termText = optionText;
+					}
+					return $('<span>' +
+						(option.is("[data-icon]") ?
+								'<i class="' + option.attr('data-icon') + '"></i>&nbsp'
+								: ''
+						) + termText + '</span>');
+				},
+				templateSelection: function(state) {
+					if (!state.id) {
+						return state.text;
+					}
+
+					var parent = $(state.element).parent();
+					var option = $(state.element)
+					return $(
+						'<span>' +
+						($(that).is('.show-group-labels') && parent.is('optgroup') ? '<strong>' + parent.attr('label') + ':</strong> ' : '') +
+						(option.is("[data-icon]") ?
+								'<i class="' + option.attr('data-icon') + '"></i>&nbsp'
+								: ''
+						) +
+						state.text + '</span>'
+					);
+				}
+			},
+			options
+		);
+
+		$(this).select2(options);
 
 		if (typeof($(this).attr('required')) !== 'undefined' || $(this).is('[data-required]')) {
 			$(this).siblings('.select2').find('.select2-selection').toggleClass('lms-ui-error', RegExp("^0?$").test($(this).val()) || $(this).is('.lms-ui-error'));
