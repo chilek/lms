@@ -2150,6 +2150,8 @@ if ($report_type == 'full') {
                     nl.technology,
                     nl.routetype,
                     nl.linecount,
+                    nl.usedlines,
+                    nl.availablelines,
                     (CASE src WHEN ? THEN (CASE WHEN srcrs.license IS NULL THEN dstrs.license ELSE srcrs.license END)
                         ELSE (CASE WHEN dstrs.license IS NULL THEN srcrs.license ELSE dstrs.license END) END) AS license,
                     (CASE src WHEN ? THEN (CASE WHEN srcrs.frequency IS NULL THEN dstrs.frequency ELSE srcrs.frequency END)
@@ -2223,6 +2225,8 @@ if ($report_type == 'full') {
                                     'frequency' => $netlink['frequency'],
                                     'routetype' => $netlink['routetype'],
                                     'linecount' => $netlink['linecount'],
+                                    'usedlines' => $netlink['usedlines'],
+                                    'availablelines' => $netlink['availablelines'],
                                     'invproject' => $invproject,
                                     'status' => $status,
                                     'foreign' => $foreign,
@@ -2262,6 +2266,8 @@ if ($report_type == 'full') {
                                 'frequency' => $netlink['frequency'],
                                 'routetype' => $netlink['routetype'],
                                 'linecount' => $netlink['linecount'],
+                                'usedlines' => $netlink['usedlines'],
+                                'availablelines' => $netlink['availablelines'],
                                 'invproject' => $invproject,
                                 'status' => $status,
                                 'foreign' => $foreign,
@@ -2895,9 +2901,15 @@ if ($report_type == 'full') {
                                 ? (empty($netlink['linecount']) ? '2' : $netlink['linecount'])
                                 : '',
                             'lk08_liczba_wlokien_wykorzystywanych' => $netlink['type'] == LINKTYPE_FIBER
-                                ? (empty($netlink['linecount']) ? '2' : $netlink['linecount'])
+                                ? (strlen($netlink['usedlines'])
+                                    ? $netlink['usedlines']
+                                    : (empty($netlink['linecount']) ? '2' : $netlink['linecount']))
                                 : '',
-                            'lk09_liczba_wlokien_udostepnienia' => $netlink['type'] == LINKTYPE_FIBER ? '0' : '',
+                            'lk09_liczba_wlokien_udostepnienia' => $netlink['type'] == LINKTYPE_FIBER
+                                ? (empty($netlink['availablelines'])
+                                    ? '0'
+                                    : $netlink['availablelines'])
+                                : '',
                             'lk10_finansowanie_publ' => empty($netlink['invproject']) ? 'Nie' : 'Tak',
                             'lk11_numery_projektow_publ' => empty($netlink['invproject']) ? '' : $netlink['invproject'],
                             'lk12_infrastruktura_o_duzym_znaczeniu' => 'Nie',

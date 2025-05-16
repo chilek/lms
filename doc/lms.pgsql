@@ -2040,6 +2040,8 @@ CREATE TABLE netlinks (
 	dstport smallint	DEFAULT 0 NOT NULL,
 	routetype smallint DEFAULT NULL,
 	linecount smallint DEFAULT NULL,
+	usedlines smallint DEFAULT NULL,
+	availablelines smallint DEFAULT NULL,
 	srcradiosector integer	DEFAULT NULL
 		REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	dstradiosector integer	DEFAULT NULL
@@ -4443,6 +4445,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025042400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025051600');
 
 COMMIT;

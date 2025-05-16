@@ -192,6 +192,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             $speed = null;
             $routetype = null;
             $linecount = null;
+            $usedlines = null;
+            $availablelines = null;
         } else {
             $type = isset($link['type']) && (is_int($link['type']) || ctype_digit($link['type']))
                 ? intval($link['type']) : null;
@@ -207,9 +209,22 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 ? intval($link['routetype']) : null;
             $linecount = !empty($link['linecount']) && (is_int($link['linecount']) || ctype_digit($link['linecount']))
                 ? intval($link['linecount']) : null;
+            $usedlines = isset($link['usedlines']) && (is_int($link['usedlines']) || ctype_digit($link['usedlines']))
+                ? intval($link['usedlines']) : null;
+            $availablelines = isset($link['availablelines']) && (is_int($link['availablelines']) || ctype_digit($link['availablelines']))
+                ? intval($link['availablelines']) : null;
         }
 
-        $query = 'UPDATE netlinks SET type = ?, srcradiosector = ?, dstradiosector = ?, technology = ?, speed = ?, routetype = ?, linecount = ?';
+        $query = 'UPDATE netlinks
+            SET type = ?,
+                srcradiosector = ?,
+                dstradiosector = ?,
+                technology = ?,
+                speed = ?,
+                routetype = ?,
+                linecount = ?,
+                usedlines = ?,
+                availablelines = ?';
         $args = array(
             'type' => $type,
             'src_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR) => $dstradiosector,
@@ -218,6 +233,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'speed' => $speed,
             'routetype' => $routetype,
             'linecount' => $linecount,
+            'usedlines' => $usedlines,
+            'availablelines' => $availablelines,
         );
         if (isset($link['srcport']) && isset($link['dstport'])) {
             $query .= ', srcport = ?, dstport = ?';
@@ -289,6 +306,12 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         $linecount = !empty($link['linecount']) && (is_int($link['linecount']) || ctype_digit($link['linecount']))
             ? intval($link['linecount'])
             : null;
+        $usedlines = isset($link['usedlines']) && (is_int($link['usedlines']) || ctype_digit($link['usedlines']))
+            ? intval($link['usedlines'])
+            : null;
+        $availablelines = isset($link['availablelines']) && (is_int($link['availablelines']) || ctype_digit($link['availablelines']))
+            ? intval($link['availablelines'])
+            : null;
 
         if ($dev1 != $dev2) {
             if (!$this->IsNetDevLink($dev1, $dev2)) {
@@ -304,10 +327,15 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                     'dstport' => intval($dport),
                     'routetype' => $routetype,
                     'linecount' => $linecount,
+                    'usedlines' => $usedlines,
+                    'availablelines' => $availablelines,
                 );
-                $res = $this->db->Execute('INSERT INTO netlinks
-					(src, dst, type, srcradiosector, dstradiosector, technology, speed, srcport, dstport, routetype, linecount)
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+                $res = $this->db->Execute(
+                    'INSERT INTO netlinks
+                    (src, dst, type, srcradiosector, dstradiosector, technology, speed, srcport, dstport, routetype, linecount, usedlines, availablelines)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                    array_values($args)
+                );
                 if ($this->syslog && $res) {
                     $args[SYSLOG::RES_NETLINK] = $this->db->GetLastInsertID('netlinks');
                     $this->syslog->AddMessage(
@@ -652,7 +680,9 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 (CASE src WHEN ? THEN dstradiosector ELSE srcradiosector END) AS srcradiosector,
                 (CASE src WHEN ? THEN srcradiosector ELSE dstradiosector END) AS dstradiosector,
                 routetype,
-                linecount
+                linecount,
+                usedlines,
+                availablelines
             FROM netlinks
             WHERE (src = ? AND dst = ?) OR (dst = ? AND src = ?)',
             array($dev1, $dev1, $dev1, $dev1, $dev1, $dev2, $dev1, $dev2)
@@ -691,6 +721,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 l.technology AS linktechnology, l.speed AS linkspeed, l.srcport, l.dstport,
                 l.routetype,
                 l.linecount,
+                l.usedlines,
+                l.availablelines,
                 srcrs.name AS srcradiosector, dstrs.name AS dstradiosector,
                 (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id)
                     + (SELECT COUNT(*) FROM vnodes WHERE netdev = d.id AND ownerid IS NOT NULL)
@@ -706,6 +738,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 SELECT DISTINCT type, technology, speed,
                     routetype,
                     linecount,
+                    usedlines,
+                    availablelines,
                     (CASE src WHEN ? THEN dst ELSE src END) AS dev,
                     (CASE src WHEN ? THEN dstport ELSE srcport END) AS srcport,
                     (CASE src WHEN ? THEN srcport ELSE dstport END) AS dstport,

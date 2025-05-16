@@ -79,8 +79,12 @@ function update_netlink_properties($id, $devid, $link)
 
     $port_content = '<i class="' . $icon . '" 
 			 title="<span class=&quot;nobr;&quot;>' . trans("Link type:") . ' ' . $LINKTYPES[$link['type']] . '<br>'
-            . ($isnetlink && $link['type'] == LINKTYPE_FIBER ? trans('Fiber/Line count:') . ' ' . $link['linecount'] . '<br>': '')
-            . (!$isnetlink ? ($radiosectorname ? trans("Radio sector:") . ' ' . $radiosectorname . '<br>' : '')
+            . ($isnetlink && $link['type'] == LINKTYPE_FIBER ?
+                trans('Fiber/line count:') . ' ' . $link['linecount'] . '<br>'
+                . (strlen($link['usedlines']) ? trans('Used fibers/lines:') . ' ' . $link['usedlines'] . '<br>' : '')
+                . (strlen($link['availablelines']) ? trans('Available fibers/lines:') . ' ' . $link['availablelines'] . '<br>' : '')
+                : ''
+            ) . (!$isnetlink ? ($radiosectorname ? trans("Radio sector:") . ' ' . $radiosectorname . '<br>' : '')
                 : ($srcradiosectorname ? trans("Radio sector:") . ' ' . $srcradiosectorname . '<br>' : '')
                     . ($dstradiosectorname ? trans("Destination radio sector:") . ' ' . $dstradiosectorname . '<br>' : ''))
             . ($link['technology'] ? trans("Link technology:") . ' ' . $LINKTECHNOLOGIES[$link['type']][$link['technology']] . '<br>' : '')

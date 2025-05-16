@@ -137,4 +137,48 @@
 			}
 		}
 	}
+
+	.new-link {
+		display: flex;
+		width: 100%;
+
+		& > * {
+			margin-left: 0.5em;
+			margin-right: 0.5em;
+			display: flex;
+			align-items: center;
+
+			&:last-child {
+				justify-content: flex-end;
+				//flex-grow: 10;
+			}
+
+			&:nth-child(2) {
+				flex-direction: column;
+				align-items: flex-start;
+
+				& > * {
+					display: flex;
+					flex-wrap: wrap;
+					justify-content: flex-start;
+					padding-top: 0.2em;
+					padding-bottom: 0.2em;
+
+					& > * {
+						&:not(:first-child) {
+							margin-left: 0.5em;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	.lms-ui-tab-buttons {
+		width: 100%;
+
+		&.message {
+			padding: 0.3em;
+		}
+	}
 }

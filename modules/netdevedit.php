@@ -238,6 +238,8 @@ switch ($action) {
         $dev['id'] = !empty($_GET['netdev']) ? intval($_GET['netdev']) : '0';
         $routetype = !empty($_GET['routetype']) && ctype_digit($_GET['routetype']) ? intval($_GET['routetype']) : null;
         $linecount = !empty($_GET['linecount']) && ctype_digit($_GET['linecount']) ? intval($_GET['linecount']) : null;
+        $usedlines = isset($_GET['usedlines']) && ctype_digit($_GET['usedlines']) ? intval($_GET['usedlines']) : null;
+        $availablelines = isset($_GET['availablelines']) && ctype_digit($_GET['availablelines']) ? intval($_GET['availablelines']) : null;
 
         $ports1 = $DB->GetOne('SELECT ports FROM netdevices WHERE id = ?', array($_GET['id']));
         $takenports1 = $LMS->CountNetDevLinks($_GET['id']);
@@ -269,6 +271,30 @@ switch ($action) {
             }
         }
 
+        if (isset($usedlines)) {
+            if (isset($linecount)) {
+                if ($linecount < $usedlines) {
+                    $error['usedlines'] = trans('Used fiber/line count cannot be greater than fiber/line count!');
+                }
+            } else {
+                $error['linecount'] = trans('Fiber/line count cannot be empty when entered used fiber/line count!');
+            }
+        }
+
+        if (isset($availablelines)) {
+            if (isset($linecount)) {
+                if ($linecount < $availablelines) {
+                    $error['availablelines'] = trans('Available fiber/line count cannot be greater than fiber/line count!');
+                }
+            } else {
+                $error['linecount'] = trans('Fiber/line count cannot be empty when entered available fiber/line count!');
+            }
+        }
+
+        if (isset($linecount, $usedlines, $availablelines) && $linecount < $usedlines + $availablelines) {
+            $error['linecount'] = $error['usedlines'] = $error['availablelines'] = trans('Sum of used and available fiber/line count cannot be greater than fiber/line count!');
+        }
+
         $SESSION->save('devlinktype', $linktype);
         $SESSION->save('devlinksrcradiosector', $srcradiosector);
         $SESSION->save('devlinkdstradiosector', $dstradiosector);
@@ -276,6 +302,8 @@ switch ($action) {
         $SESSION->save('devlinkspeed', $linkspeed);
         $SESSION->save('devlinkroutetype', $routetype);
         $SESSION->save('devlinklinecount', $linecount);
+        $SESSION->save('devlinkusedlines', $usedlines);
+        $SESSION->save('devlinkavailablelines', $availablelines);
 
         if (!$error) {
             $LMS->NetDevLink($dev['id'], $_GET['id'], array(
@@ -288,6 +316,8 @@ switch ($action) {
                 'dstport' => $dev['dstport'],
                 'routetype' => $routetype,
                 'linecount' => $linecount,
+                'usedlines' => $usedlines,
+                'availablelines' => $availablelines,
             ));
             $SESSION->redirect('?m=netdevinfo&id=' . $_GET['id']);
         }
@@ -957,6 +987,8 @@ $SMARTY->assign('devlinktechnology', $SESSION->get('devlinktechnology'));
 $SMARTY->assign('devlinkspeed', $SESSION->get('devlinkspeed'));
 $SMARTY->assign('devlinkroutetype', $SESSION->get('devlinkroutetype'));
 $SMARTY->assign('devlinklinecount', $SESSION->get('devlinklinecount'));
+$SMARTY->assign('devlinkusedlines', $SESSION->get('devlinkusedlines'));
+$SMARTY->assign('devlinkavailablelines', $SESSION->get('devlinkavailablelines'));
 
 if ($SESSION->is_set('nodelinktype')) {
     $nodelinktype = $SESSION->get('nodelinktype');

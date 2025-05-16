@@ -16,7 +16,9 @@
 	<FORM name="netlinkproperties" method="GET">
 	<table id="propertiestable" class="lmsbox-inner" cellpadding="3">
 		<tr class="light">
-			<td style="width: 1%; white-space: nowrap;">{trans("Link type:")}</td>
+			<td class="nobr" style="width: 1%;">
+				{trans("Link type:")}
+			</td>
 			<td style="width: 99%;">
 				<select name="linktype" id="linktype" {tip text="Select link type"} style="width: 100%;" onchange="change_linktype(this.options[this.selectedIndex].value)">
 					<option value="0"{if $link.type == $smarty.const.LINKTYPE_WIRE} selected{/if}>{trans("wire")}</option>
@@ -27,14 +29,34 @@
 		</tr>
 		{if $link.isnetlink}
 			<tr class="light">
-				<td style="width: 1%; white-space: nowrap;">{trans("Fiber/Line count")}</td>
-				<td style="width: 99%;">
+				<td class="nobr">{trans("Fiber/Line count")}</td>
+				<td>
 					<input type="text" name="linecount" id="linecount" value="{if $link.linecount}{$link.linecount}{/if}" size="2"
 						{if $link.type != $smarty.const.LINKTYPE_FIBER} disabled{/if}>
 				</td>
 			</tr>
 			<tr class="light">
-				<td class="nobr">{trans("Port")}</td>
+				<td class="nobr">
+					{trans("Used fibers/lines")}
+				</td>
+				<td>
+					<input type="text" name="usedlines" id="usedlines" value="{if strlen($link.usedlines)}{$link.usedlines}{/if}" size="2"
+						{if $link.type != $smarty.const.LINKTYPE_FIBER} disabled{/if}>
+				</td>
+			</tr>
+			<tr class="light">
+				<td class="nobr">
+					{trans("Available fibers/lines")}
+				</td>
+				<td>
+					<input type="text" name="availablelines" id="availablelines" value="{if strlen($link.availablelines)}{$link.availablelines}{/if}" size="2"
+						{if $link.type != $smarty.const.LINKTYPE_FIBER} disabled{/if}>
+				</td>
+			</tr>
+			<tr class="light">
+				<td class="nobr">
+					{trans("Port")}
+				</td>
 				<td>
 					<input type="text" name="srcport" value="{if $link.srcport}{$link.srcport}{/if}" size="2"
 						{tip text="Enter port number in device for connection (optional)" trigger="srcport"}>
@@ -160,7 +182,7 @@
 		if (linktype != {$smarty.const.LINKTYPE_WIRELESS}) {
 			$('#radiosector,#srcradiosector,#dstradiosector').val(0);
 		}
-		$('[name="linecount"]').prop('disabled', linktype != {$smarty.const.LINKTYPE_FIBER});
+		$('[name="linecount"],[name="usedlines"],[name="availablelines"]').prop('disabled', linktype != {$smarty.const.LINKTYPE_FIBER});
 		$('[name="routetype"]').prop('disabled', linktype == {$smarty.const.LINKTYPE_WIRELESS});
 		$('#radiosector,#srcradiosector,#dstradiosector').prop('disabled', linktype != 1);
 	}
@@ -204,6 +226,54 @@
 			params.dstport = $('[name="dstport"]').val();
 			params.routetype = $('[name="routetype"]').val();
 			params.linecount = $('[name="linecount"]').val();
+			params.usedlines = $('[name="usedlines"]').val();
+			params.availablelines = $('[name="availablelines"]').val();
+			var linecount = parseInt(params.linecount);
+			var usedlines = parseInt(params.usedlines);
+			var availablelines = parseInt(params.availablelines);
+
+			$('[name="linecount"],[name="usedlines"],[name="availablelines"]')
+				.removeClass('lms-ui-error')
+				.removeAttr('data-tooltip');
+
+			var error = false;
+			if (!isNaN(usedlines)) {
+				if (isNaN(linecount)) {
+					$('[name="linecount"]')
+						.addClass('lms-ui-error')
+						.attr('title', '{trans("Fiber/line count cannot be empty when entered used fiber/line count!")}');
+					error = true;
+				} else if (linecount < usedlines) {
+					$('[name="usedlines"]')
+						.addClass('lms-ui-error')
+						.attr('title', '{trans("Used fiber/line count cannot be greater than fiber/line count!")}');
+					error = true
+				}
+			}
+			if (!isNaN(availablelines)) {
+				if (isNaN(linecount)) {
+					$('[name="linecount"]')
+						.addClass('lms-ui-error')
+						.attr('title', '{trans("Fiber/line count cannot be empty when entered available fiber/line count!")}');
+					error = true;
+				} else if (linecount < availablelines) {
+					$('[name="availablelines"]')
+						.addClass('lms-ui-error')
+						.attr('title', '{trans("Available fiber/line count cannot be greater than fiber/line count!")}');
+					error = true;
+				}
+			}
+			if (!isNaN(linecount) && !isNaN(usedlines) && !isNaN(availablelines)
+				&& linecount < usedlines + availablelines) {
+				$('[name="linecount"],[name="usedlines"],[name="availablelines"]')
+					.addClass('lms-ui-error')
+					.attr('title', '{trans("Sum of used and available fiber/line count cannot be greater than fiber/line count!")}');
+				error = true;
+			}
+
+			if (error) {
+				return;
+			}
 		{else}
 			params.port = $('[name="port"]').val();
 			params.radiosector = $('[name="radiosector"]').val();
