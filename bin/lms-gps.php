@@ -162,7 +162,7 @@ foreach ($types as $label => $type) {
                 if ($provider == 'google') {
                     $res = geocode((empty($row['state_name']) ? '' : $row['state_name'] . ', ' . $row['district_name'] . ', ' . $row['borough_name'])
                         . $row['location'] . " Poland");
-                    if (($res['status'] == "OK") && ($res['accuracy'] == "ROOFTOP")) {
+                    if (!empty($result) && $res['status'] == "OK" && $res['accuracy'] == "ROOFTOP") {
                         if (!$debug) {
                             $DB->Execute(
                                 "UPDATE " . $type . " SET latitude = ?, longitude = ? WHERE id = ?",
@@ -182,7 +182,7 @@ foreach ($types as $label => $type) {
                     } else {
                         if (!$quiet) {
                             echo 'google: #' . $row['id'] . " - ERROR - Building: " . $row['location']
-                                . " - Status: " . $res['status'] . ' (' . $res['error'] . ')' . PHP_EOL;
+                                . " - Status: " . (empty($res) ? 'unknown (geocoding API communication error?)' : $res['status'] . ' (' . $res['error'] . ')') . PHP_EOL;
                         }
                     }
                     if (empty($google_api_key)) {
