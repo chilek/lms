@@ -34,6 +34,7 @@
 	var lmsSettings = {
 		language: '{$language}',
 		uiLanguage: '{$lms_language}',
+		fontAwesomeName: 'Font Awesome 6 Free',
 		settingsTimeout: {intval(ConfigHelper::getConfig('phpui.settings_timeout', 28800))},
 		wysiwygEditor: {if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'}true{else}false{/if},
 		helpdeskWysiwygEditor: {if ConfigHelper::getConfig('rt.default_editor') == 'wysiwyg'}true{else}false{/if},

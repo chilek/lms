@@ -523,7 +523,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			labelOutlineWidth: 0,
 			fontSize: "1.3em",
 			fontOpacity: 1,
-			fontFamily: '"Font Awesome 5 Free"',
+			fontFamily: '"' + lmsSettings.fontAwesomeName + '"',
 			fontWeight: 900,
 			fontStrokeColor: "${fontStrokeColor}",
 			fontStrokeWidth: "${fontStrokeWidth}",
@@ -571,7 +571,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			labelOutlineWidth: 0,
 			fontSize: "1.2em",
 			fontOpacity: 1,
-			fontFamily: '"Font Awesome 5 Free"',
+			fontFamily: '"' + lmsSettings.fontAwesomeName + '"',
 			fontWeight: 900,
 			fontStrokeColor: "${fontStrokeColor}",
 			fontStrokeWidth: "${fontStrokeWidth}"
@@ -619,7 +619,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			labelOutlineWidth: 0,
 			fontSize: "1.2em",
 			fontOpacity: 1,
-			fontFamily: '"Font Awesome 5 Free"',
+			fontFamily: '"' + lmsSettings.fontAwesomeName + '"',
 			fontWeight: 900,
 		}, {
 			context: {
