@@ -1378,9 +1378,16 @@ class LMSSmartyPlugins
         $options = '';
 
         foreach ($userlist as $item) {
+            $classes = array();
+            if (empty($item['accessinfo'])) {
+                $classes[] = 'blend';
+            }
+            if (!empty($item['deleted'])) {
+                $classes[] = 'crossed';
+            }
             $options .= '<option value="' . $item['id'] . '"'
                 . (is_array($selected) && in_array($item['id'], $selected) ? ' selected' : '')
-                . ' class="' . (empty($item['accessinfo']) ? 'blend' : '') . (empty($item['deleted']) ? '' : ' crossed') . '"'
+                . ' class="' . implode(' ', $classes) . '"'
                 . '>' . htmlspecialchars(substr(trans($item['rname']), 0, 40)) . ' (' . $item['login'] . ')</option>';
         }
         $options .= '<option value="-1"' . (is_array($selected) && in_array('-1', $selected) ? ' selected' : '') . ' data-exclusive> ' . trans('— unassigned —') . '</option>';
