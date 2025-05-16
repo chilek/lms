@@ -432,8 +432,15 @@ function initAdvancedSelectsTest(selector) {
 
 					var parent = $(state.element).parent();
 					var option = $(state.element)
+					var classes = [];
+					if (option.is('.crossed')) {
+						classes.push('crossed');
+					}
+					if (option.is('.blend')) {
+						classes.push('blend');
+					}
 					return $(
-						'<span>' +
+						'<span'  + (classes.length ? ' class="' + classes.join(' ') + '"' : '') + '>' +
 						($(that).is('.show-group-labels') && parent.is('optgroup') ? '<strong>' + parent.attr('label') + ':</strong> ' : '') +
 						(option.is("[data-icon]") ?
 								'<i class="' + option.attr('data-icon') + '"></i>&nbsp'
