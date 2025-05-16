@@ -391,7 +391,7 @@ function initAdvancedSelectsTest(selector) {
 					var term;
 					var selection = $(select2.selection.$selection[0]);
 					var inlineSearch = selection.find('.select2-search--inline .select2-search__field');
-					if (inlineSearch) {
+					if (inlineSearch.length) {
 						term = inlineSearch.val();
 					} else if (search) {
 						term = search.val();
@@ -412,7 +412,14 @@ function initAdvancedSelectsTest(selector) {
 					} else {
 						termText = optionText;
 					}
-					return $('<span' + (option.is('.crossed') ? ' class="crossed"' : '') + '>' +
+					var classes = [];
+					if (option.is('.crossed')) {
+						classes.push('crossed');
+					}
+					if (option.is('.blend')) {
+						classes.push('blend');
+					}
+					return $('<span' + (classes.length ? ' class="' + classes.join(' ') + '"' : '') + '>' +
 						(option.is("[data-icon]") ?
 								'<i class="' + option.attr('data-icon') + '"></i>&nbsp'
 								: ''
