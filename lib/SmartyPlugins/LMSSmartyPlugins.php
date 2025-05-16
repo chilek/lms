@@ -1356,8 +1356,8 @@ class LMSSmartyPlugins
         $LMS = LMS::getInstance();
 
         $argv = array(
-            'userAccess' => empty($params['hide_disabled']),
-            'hideDeleted' => empty($params['hide_deleted']),
+            'userAccess' => !empty($params['hide_disabled']),
+            'hideDeleted' => !empty($params['hide_deleted']),
             'short' => true
         );
         $userlist = $LMS->getUserList($argv);
