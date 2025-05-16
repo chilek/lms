@@ -1013,6 +1013,7 @@ version 28-git (????-??-??):
     'documents.protection_password_authcode_source' (default: 'random8')
     and 'documents.protection_password_authcode_message' (default: '%authcode') [chilan]
   - enhancement: allow to search/filter network devices by network link technologies which they have assigned [chilan]
+  - enhancement: added used and available fibers/lines properties to netlinks [chilan]
 
 version 27.0 (2021-08-20):
 
