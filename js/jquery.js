@@ -386,11 +386,18 @@ function initAdvancedSelectsTest(selector) {
 				selectionCssClass: ':all:',
 				dropdownAutoWidth: true,
 				templateResult: function(result) {
-					var search = $(that).data("select2").dropdown.$search;
-					if (!search) {
+					var select2 = $(that).data("select2");
+					var search = select2.dropdown.$search;
+					var term;
+					var selection = $(select2.selection.$selection[0]);
+					var inlineSearch = selection.find('.select2-search--inline .select2-search__field');
+					if (inlineSearch) {
+						term = inlineSearch.val();
+					} else if (search) {
+						term = search.val();
+					} else {
 						return result.text;
 					}
-					var term = search.val();
 					var reg = new RegExp(term, 'gi');
 					var option = $(result.element)
 					var optionText = result.text;
@@ -405,7 +412,7 @@ function initAdvancedSelectsTest(selector) {
 					} else {
 						termText = optionText;
 					}
-					return $('<span>' +
+					return $('<span' + (option.is('.crossed') ? ' class="crossed"' : '') + '>' +
 						(option.is("[data-icon]") ?
 								'<i class="' + option.attr('data-icon') + '"></i>&nbsp'
 								: ''

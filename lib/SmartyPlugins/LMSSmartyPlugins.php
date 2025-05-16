@@ -1387,7 +1387,7 @@ class LMSSmartyPlugins
             }
             $options .= '<option value="' . $item['id'] . '"'
                 . (is_array($selected) && in_array($item['id'], $selected) ? ' selected' : '')
-                . ' class="' . implode(' ', $classes) . '"'
+                . ' class="' . implode(' ', $classes) . '"' . (empty($item['accessinfo']) ? ' disabled' : '')
                 . '>' . htmlspecialchars(substr(trans($item['rname']), 0, 40)) . ' (' . $item['login'] . ')</option>';
         }
         $options .= '<option value="-1"' . (is_array($selected) && in_array('-1', $selected) ? ' selected' : '') . ' data-exclusive> ' . trans('— unassigned —') . '</option>';
