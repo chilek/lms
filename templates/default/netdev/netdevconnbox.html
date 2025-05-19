@@ -134,7 +134,7 @@
 										<span>
 											{trans("Link type:")} {$_LINKTYPES[$netdevice.linktype]}
 											<br>
-											{if $netdevice.linktype == $smarty.const.LINKTYPE_FIBER}
+											{if $netdevice.linktype == $smarty.const.LINKTYPE_FIBER && strlen($netdevice.linecount)}
 												{trans("Fiber/line count:")} {$netdevice.linecount}
 												<br>
 											{/if}

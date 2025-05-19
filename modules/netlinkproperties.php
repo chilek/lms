@@ -80,7 +80,7 @@ function update_netlink_properties($id, $devid, $link)
     $port_content = '<i class="' . $icon . '" 
 			 title="<span class=&quot;nobr;&quot;>' . trans("Link type:") . ' ' . $LINKTYPES[$link['type']] . '<br>'
             . ($isnetlink && $link['type'] == LINKTYPE_FIBER ?
-                trans('Fiber/line count:') . ' ' . $link['linecount'] . '<br>'
+                (strlen($link['linecount']) ? trans('Fiber/line count:') . ' ' . $link['linecount'] . '<br>' : '')
                 . (strlen($link['usedlines']) ? trans('Used fibers/lines:') . ' ' . $link['usedlines'] . '<br>' : '')
                 . (strlen($link['availablelines']) ? trans('Available fibers/lines:') . ' ' . $link['availablelines'] . '<br>' : '')
                 : ''
