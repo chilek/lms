@@ -1014,6 +1014,11 @@ version 28-git (????-??-??):
     and 'documents.protection_password_authcode_message' (default: '%authcode') [chilan]
   - enhancement: allow to search/filter network devices by network link technologies which they have assigned [chilan]
   - enhancement: added used and available fibers/lines properties to netlinks [chilan]
+  - improvement: 'rt.body_date_regexp_match' configuration variable allows to specify regular expression by which
+    received mail body is being searched for incoming message date [chilan]
+  - enhancement: 'rt.subject_template' and 'rt.body_template' configuration variable (both with empty default value)
+    control format of subject and body of created helpdesk ticket depending on selected properties of incoming
+    e-mail message [chilan]
 
 version 27.0 (2021-08-20):
 
