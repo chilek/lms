@@ -29,27 +29,38 @@
 		</tr>
 		{if $link.isnetlink}
 			<tr class="light">
-				<td class="nobr">{trans("Fiber/Line count")}</td>
+				<td class="nobr">
+					<label for="linecount" class="line-fiber-property{if $link.type != $smarty.const.LINKTYPE_FIBER} lms-ui-disabled{/if}">
+						{trans("Fiber/line count")}
+					</label>
+				</td>
 				<td>
 					<input type="text" name="linecount" id="linecount" value="{if $link.linecount}{$link.linecount}{/if}" size="2"
+						class="line-fiber-property"
 						{if $link.type != $smarty.const.LINKTYPE_FIBER} disabled{/if}>
 				</td>
 			</tr>
 			<tr class="light">
 				<td class="nobr">
-					{trans("Used fibers/lines")}
+					<label for="usedlines" class="line-fiber-property{if $link.type != $smarty.const.LINKTYPE_FIBER} lms-ui-disabled{/if}">
+						{trans("Used fibers/lines")}
+					</label>
 				</td>
 				<td>
 					<input type="text" name="usedlines" id="usedlines" value="{if strlen($link.usedlines)}{$link.usedlines}{/if}" size="2"
+						class="line-fiber-property"
 						{if $link.type != $smarty.const.LINKTYPE_FIBER} disabled{/if}>
 				</td>
 			</tr>
 			<tr class="light">
 				<td class="nobr">
-					{trans("Available fibers/lines")}
+					<label for="availablelines" class="line-fiber-property{if $link.type != $smarty.const.LINKTYPE_FIBER} lms-ui-disabled{/if}">
+						{trans("Available fibers/lines")}
+					</label>
 				</td>
 				<td>
 					<input type="text" name="availablelines" id="availablelines" value="{if strlen($link.availablelines)}{$link.availablelines}{/if}" size="2"
+						class="line-fiber-property"
 						{if $link.type != $smarty.const.LINKTYPE_FIBER} disabled{/if}>
 				</td>
 			</tr>
@@ -182,7 +193,8 @@
 		if (linktype != {$smarty.const.LINKTYPE_WIRELESS}) {
 			$('#radiosector,#srcradiosector,#dstradiosector').val(0);
 		}
-		$('[name="linecount"],[name="usedlines"],[name="availablelines"]').prop('disabled', linktype != {$smarty.const.LINKTYPE_FIBER});
+		$('input.line-fiber-property').prop('disabled', linktype != {$smarty.const.LINKTYPE_FIBER});
+		$('label.line-fiber-property').toggleClass('lms-ui-disabled', linktype != {$smarty.const.LINKTYPE_FIBER})
 		$('[name="routetype"]').prop('disabled', linktype == {$smarty.const.LINKTYPE_WIRELESS});
 		$('#radiosector,#srcradiosector,#dstradiosector').prop('disabled', linktype != 1);
 	}
