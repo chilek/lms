@@ -104,6 +104,9 @@ $autoreply_body = ConfigHelper::getConfig($config_section . '.autoreply_body', '
 $autoreply = ConfigHelper::checkConfig($config_section . '.autoreply', true);
 $subject_ticket_regexp_match = ConfigHelper::getConfig($config_section . '.subject_ticket_regexp_match', '\[RT#(?<ticketid>[0-9]{6,})\]');
 $body_customer_phone_number_regexp_match = ConfigHelper::getConfig($config_section . '.body_customer_phone_number_regexp_match', '', true);
+$body_date_regexp_match = ConfigHelper::getConfig($config_section . '.body_date_regexp_match', '', true);
+$subject_template = ConfigHelper::getConfig($config_section . '.subject_template', '', true);
+$body_template = ConfigHelper::getConfig($config_section . '.body_template', '', true);
 
 $modify_ticket_timeframe = ConfigHelper::getConfig($config_section . '.allow_modify_resolved_tickets_newer_than', 604800);
 
@@ -626,6 +629,15 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             }
         }
 
+        $date = null;
+        if (!empty($body_date_regexp_match)) {
+            if (preg_match('/' . $body_date_regexp_match . '/im', $mail_body, $m)) {
+                if (!empty($m['date'])) {
+                    $date = trim($m['date']);
+                }
+            }
+        }
+
         if (!empty($phone) && !empty($reqcustid) && count($reqcustid) == 1) {
             $reqcustid = reset($reqcustid);
         } else {
@@ -715,7 +727,17 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 'requestor_phone' => empty($phone) ? null : $phone,
                 'customerid' => $reqcustid,
                 'address_id' => $address_id,
-                'subject' => $mh_subject,
+                'subject' => empty($subject_template)
+                    ? $mh_subject
+                    : str_replace(
+                        array(
+                            '%phone',
+                        ),
+                        array(
+                            empty($phone) ? '-' : $phone,
+                        ),
+                        $subject_template
+                    ),
                 'createtime' => $timestamp,
                 'source' => RT_SOURCE_EMAIL,
                 'mailfrom' => $mh_from,
@@ -723,7 +745,19 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 'messageid' => $mh_msgid,
                 'headers' => $mail_headers,
                 'contenttype' => $contenttype,
-                'body' => $mail_body,
+                'body' => empty($body_template)
+                    ? $mail_body
+                    : str_replace(
+                        array(
+                            '%phone',
+                            '%date',
+                        ),
+                        array(
+                            empty($phone) ? '-' : $phone,
+                            empty($date) ? '-' : $date,
+                        ),
+                        $body_template
+                    ),
                 'phonefrom' => empty($phone) ? '' : $phone,
                 'categories' => $cats), $files);
 
