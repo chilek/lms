@@ -250,7 +250,7 @@ if (isset($_POST['document'])) {
             'customerid' => $document['customerid'],
         ));
 
-        if ($documentedit['closed']) {
+        if (!empty($documentedit['closed'])) {
             if ($document['confirmdate'] == -1 && $document['closed'] < DOC_CLOSED_AFTER_CUSTOMER_SMS) {
                 $closed = DOC_CLOSED_AFTER_CUSTOMER_SMS;
             } elseif ($document['closed'] == DOC_CLOSED_AFTER_CUSTOMER_SCAN) {
@@ -258,8 +258,10 @@ if (isset($_POST['document'])) {
             } else {
                 $closed = DOC_CLOSED;
             }
+        } elseif (($document['docrights'] & DOCRIGHT_CONFIRM) && isset($documentedit['closed'])) {
+            $closed = $documentedit['closed'];
         } else {
-            $closed = DOC_OPEN;
+            $closed = $document['closed'];
         }
 
         $allowed_archiving = ($document['docrights'] & DOCRIGHT_ARCHIVE) > 0;
