@@ -46,7 +46,11 @@ if ($api) {
     $SESSION->save('nnft', $t);
 
     if (!isset($_GET['s'])) {
-        $SESSION->restore('nnfs', $s);
+        if ($SESSION->is_set('nnfs')) {
+            $SESSION->restore('nnfs', $s);
+        } else {
+            $s = -1;
+        }
     } else {
         $s = $_GET['s'];
     }
