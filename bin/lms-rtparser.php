@@ -107,6 +107,7 @@ $body_customer_phone_number_regexp_match = ConfigHelper::getConfig($config_secti
 $body_date_regexp_match = ConfigHelper::getConfig($config_section . '.body_date_regexp_match', '', true);
 $subject_template = ConfigHelper::getConfig($config_section . '.subject_template', '', true);
 $body_template = ConfigHelper::getConfig($config_section . '.body_template', '', true);
+$ignore_sender_email = ConfigHelper::checkConfig($config_section . '.ignore_sender_email');
 
 $modify_ticket_timeframe = ConfigHelper::getConfig($config_section . '.allow_modify_resolved_tickets_newer_than', 604800);
 
@@ -723,7 +724,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             $ticket_id = $LMS->TicketAdd(array(
                 'queue' => $queue,
                 'requestor' => empty($fromname) ? $mh_from : $fromname,
-                'requestor_mail' => empty($fromemail) ? null : $fromemail,
+                'requestor_mail' => $ignore_sender_email || empty($fromemail) ? null : $fromemail,
                 'requestor_phone' => empty($phone) ? null : $phone,
                 'customerid' => $reqcustid,
                 'address_id' => $address_id,
