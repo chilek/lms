@@ -1019,6 +1019,9 @@ version 28-git (????-??-??):
   - enhancement: 'rt.subject_template' and 'rt.body_template' configuration variable (both with empty default value)
     control format of subject and body of created helpdesk ticket depending on selected properties of incoming
     e-mail message [chilan]
+  - improvement: 'rt.ignore_sender_email' configuration variable with 'false' as default value allows to avoid
+    setting requestor e-mail address in created helpdesk ticket (useful when incoming posts are originated
+    from PBX) [chilan]
 
 version 27.0 (2021-08-20):
 
