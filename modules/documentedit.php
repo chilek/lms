@@ -201,7 +201,7 @@ if (isset($_POST['document'])) {
         $error['todate'] = trans('Start date can\'t be greater than end date!');
     }
 
-    $documentedit['closed'] = isset($documentedit['closed']) ? DOC_CLOSED : DOC_OPEN;
+    $documentedit['closed'] = isset($documentedit['closed']) ? DOC_CLOSED : $document['closed'];
     $documentedit['archived'] = isset($documentedit['archived']) ? 1 : 0;
     if ($documentedit['archived'] && !$documentedit['closed']) {
         $error['closed'] = trans('Cannot undo document confirmation while it is archived!');
