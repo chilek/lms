@@ -4,6 +4,7 @@
 <meta name="GENERATOR" content="LMS {$layout.lmsv}">
 {include file="language.html"}
 <title>LMS – {if $layout.pagetitle != ""}{$layout.pagetitle}{/if}</title>
+{include file="jquery.html" language=Localisation::getCurrentHtmlLanguage() lms_language=Localisation::getCurrentUiLanguage()}
 <link href="css/style.css" rel="stylesheet" type="text/css">
 <link href="css/map.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="js/common.js"></script>
