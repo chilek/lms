@@ -1405,8 +1405,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 $attachments = $this->GetTicketMessageAttachments($message['id']);
                 if ($attachments) {
                     if ($message['contenttype'] == 'text/html') {
-                        $url_prefix = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
-                            . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1);
+                        $url_prefix = isset($_SERVER['HTTP_HOST'])
+                            ? ('http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
+                                . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1))
+                            : '';
                     }
 
                     foreach ($attachments as $attachment) {
