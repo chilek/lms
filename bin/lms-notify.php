@@ -4210,7 +4210,8 @@ if (!empty($intersect)) {
                                         array($customer['id'])
                                     )) {
                                         if (!$quiet) {
-                                            printf("[block/all-assignment-suspension] Customer: %s (#%d)" . PHP_EOL,
+                                            printf(
+                                                "[block/all-assignment-suspension] Customer: %s (#%d)" . PHP_EOL,
                                                 $customer['lastname'] . ' ' . $customer['name'],
                                                 $customer['id']
                                             );
@@ -4283,7 +4284,8 @@ if (!empty($intersect)) {
                                     if (!empty($nodes)) {
                                         foreach ($nodes as $node) {
                                             if (!$quiet) {
-                                                printf("[block/node-group] Customer: %s (#%d), Node: #%d" . PHP_EOL,
+                                                printf(
+                                                    "[block/node-group] Customer: %s (#%d), Node: #%d" . PHP_EOL,
                                                     $node['lastname'] . ' ' . $node['name'],
                                                     $node['ownerid'],
                                                     $node['id']
@@ -4431,7 +4433,8 @@ if (!empty($intersect)) {
                                 if (!empty($nodes)) {
                                     foreach ($nodes as $node) {
                                         if (!$quiet) {
-                                            printf("[unblock/node-access] Customer: %s (#%d), Node: #%d" . PHP_EOL,
+                                            printf(
+                                                "[unblock/node-access] Customer: %s (#%d), Node: #%d" . PHP_EOL,
                                                 $node['lastname'] . ' ' . $node['name'],
                                                 $node['ownerid'],
                                                 $node['id']
