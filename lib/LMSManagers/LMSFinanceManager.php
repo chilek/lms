@@ -2204,14 +2204,16 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $numberplan = Utils::filterIntegers($numberplan);
         }
 
+        $userid = Auth::GetCurrentUser();
+
         if ($count) {
             return $this->db->GetOne('SELECT COUNT(DISTINCT id) FROM (SELECT d.id
                 FROM documents d'
                 . ($join_cash ?
                     ' JOIN invoicecontents a ON (a.docid = d.id)
                     LEFT JOIN cash ON cash.docid = d.id AND cash.itemid = a.itemid'
-                    : '') . '
-                LEFT JOIN (
+                    : '')
+                . ' LEFT JOIN (
                     SELECT DISTINCT a.customerid FROM vcustomerassignments a
                     JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
                     WHERE e.userid = lms_current_user()
@@ -2259,8 +2261,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			(CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type > 0) THEN 1 ELSE 0 END) AS referenced,
 			(CASE WHEN EXISTS (SELECT 1 FROM documents d3 WHERE d3.reference = d.id AND d3.type < 0) THEN 1 ELSE 0 END) AS documentreferenced
 			FROM documents d
-			JOIN vinvoicecontents a ON (a.docid = d.id)
-			LEFT JOIN cash ON cash.docid = d.id AND a.itemid = cash.itemid
+			JOIN vinvoicecontents a ON (a.docid = d.id)'
+            . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
+            . ' LEFT JOIN cash ON cash.docid = d.id AND a.itemid = cash.itemid
 			LEFT JOIN documents d2 ON d2.reference = d.id
 			LEFT JOIN invoicecontents b ON (d.reference = b.docid AND a.itemid = b.itemid)
 			LEFT JOIN countries ON (countries.id = d.countryid)
@@ -2589,6 +2592,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $nested_flag++;
         }
 
+        $userid = Auth::GetCurrentUser();
+
         if ($detail_level <= self::INVOICE_CONTENT_DETAIL_MORE) {
             $result = $this->db->GetRow(
                 'SELECT d.id, d.type AS doctype, d.number, d.fullnumber, d.name, d.customerid,
@@ -2610,8 +2615,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.recipient_address_id, d.post_address_id,
 				d.currency, d.currencyvalue, d.memo,
 				d.extid
-				FROM documents d
-				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+				FROM documents d'
+                . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
+                . ' LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				LEFT JOIN vusers u ON u.id = d.userid
 				WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)',
                 array(
@@ -2670,8 +2676,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				cdv.ccode AS div_ccode,
 				d.currency, d.currencyvalue, d.memo,
 				d.extid
-				FROM documents d
-				LEFT JOIN customeraddressview c ON (c.id = d.customerid)
+				FROM documents d'
+                . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
+                . ' LEFT JOIN customeraddressview c ON (c.id = d.customerid)
 				LEFT JOIN vusers u ON u.id = d.userid
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN countries cdv ON cdv.id = d.div_countryid
@@ -3016,10 +3023,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $where .= ' AND closed = 0';
         }
 
+        $userid = Auth::GetCurrentUser();
+
         if ($count) {
             return $this->db->GetOne('SELECT COUNT(*) FROM (SELECT d.id
-			FROM documents d
-			JOIN debitnotecontents n ON (n.docid = d.id)
+			FROM documents d'
+            . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.customerid AND ud.userid = ' . $userid)
+            . ' JOIN debitnotecontents n ON (n.docid = d.id)
 			LEFT JOIN countries c ON (c.id = d.countryid)
 			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
 			LEFT JOIN (
@@ -3043,8 +3053,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			d.customerid, d.name, address, zip, city, c.name AS country,
 			SUM(n.value) AS value, COUNT(n.docid) AS count,
 			d.currency, d.currencyvalue
-			FROM documents d
-			JOIN debitnotecontents n ON (n.docid = d.id)
+			FROM documents d'
+            . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.customerid AND ud.userid = ' . $userid)
+            . ' JOIN debitnotecontents n ON (n.docid = d.id)
 			LEFT JOIN countries c ON (c.id = d.countryid)
 			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
 			LEFT JOIN (
@@ -3079,6 +3090,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         global $LMS, $PAYTYPES;
 
+        $userid = Auth::GetCurrentUser();
+
         if ($result = $this->db->GetRow('SELECT d.id, d.type AS doctype, d.number, d.name, d.customerid,
                 d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
 				d.ten, d.ssn, d.cdate, d.numberplanid, d.closed, d.cancelled, d.published, d.archived, d.divisionid, d.paytime, d.paytype,
@@ -3111,8 +3124,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				    ELSE NULL
 				END) AS lang,
 				d.currency, d.currencyvalue
-				FROM documents d
-				JOIN customeraddressview c ON (c.id = d.customerid)
+				FROM documents d'
+                . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
+                . ' JOIN customeraddressview c ON (c.id = d.customerid)
 				LEFT JOIN vusers u ON u.id = d.userid 
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN countries cdv ON cdv.id = d.div_countryid
