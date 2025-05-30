@@ -33,6 +33,8 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 
     public function GetMessages($customerid, $limit = null)
     {
+        $userid = Auth::GetCurrentUser();
+
         $result = $this->db->GetAll(
             'SELECT
                 i.messageid AS id,
@@ -48,12 +50,18 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
                 u.name AS username,
                 u.id AS userid,
                 fc.id AS filecontainerid
-            FROM messageitems i
-            JOIN messages m ON m.id = i.messageid
+            FROM messageitems i'
+            . (empty($userid)
+                ? ''
+                : 'LEFT JOIN customers c ON c.id = i.customerid
+                LEFT JOIN userdivisions ud ON ud.divisionid = c.divisionid AND ud.userid = ' . $userid
+            )
+            . ' JOIN messages m ON m.id = i.messageid
             LEFT JOIN filecontainers fc ON fc.messageid = m.id
             LEFT JOIN vusers u ON u.id = m.userid
-            WHERE i.customerid = ?
-            ORDER BY m.cdate DESC'
+            WHERE i.customerid = ?'
+            . (empty($userid) ? '' : ' AND (c.id IS NULL OR ud.userid IS NOT NULL)')
+            . ' ORDER BY m.cdate DESC'
             . ($limit ? ' LIMIT ' . $limit : ''),
             array($customerid)
         );
@@ -354,6 +362,8 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
             $where = 'WHERE '.implode(' AND ', $where);
         }
 
+        $userid = Auth::GetCurrentUser();
+
         if ($count) {
             return $this->db->GetOne('SELECT COUNT(m.id)
 				FROM messages m
@@ -365,14 +375,16 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 						COUNT(CASE WHEN i.status = ' . MSG_ERROR . ' THEN 1 ELSE NULL END) AS error,
 						COUNT(CASE WHEN i.status = ' . MSG_CANCELLED . ' THEN 1 ELSE NULL END) AS cancelled,
 						COUNT(CASE WHEN i.status = ' . MSG_BOUNCED . ' THEN 1 ELSE NULL END) AS bounced
-					FROM messageitems i
-					LEFT JOIN (
+					FROM messageitems i'
+                    . (empty($userid) ? '' : ' LEFT JOIN customers c ON c.id = i.customerid LEFT JOIN userdivisions ud ON ud.divisionid = c.divisionid AND ud.userid = ' . $userid)
+                    . ' LEFT JOIN (
 						SELECT DISTINCT a.customerid FROM vcustomerassignments a
 							JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 						WHERE e.userid = lms_current_user()
 					) e ON (e.customerid = i.customerid)
-					WHERE e.customerid IS NULL
-					GROUP BY i.messageid
+					WHERE e.customerid IS NULL'
+                    . (empty($userid) ? '' : ' AND (c.id IS NULL OR ud.userid IS NOT NULL)')
+                    . ' GROUP BY i.messageid
 				) x ON (x.messageid = m.id) '
                 .(!empty($userjoin) ? 'JOIN vusers u ON (u.id = m.userid) ' : '')
                 .(!empty($where) ? $where : ''));
@@ -401,15 +413,17 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
                     COUNT(CASE WHEN i.status = ' . MSG_ERROR . ' THEN 1 ELSE NULL END) AS error,
                     COUNT(CASE WHEN i.status = ' . MSG_CANCELLED . ' THEN 1 ELSE NULL END) AS cancelled,
                     COUNT(CASE WHEN i.status = ' . MSG_BOUNCED . ' THEN 1 ELSE NULL END) AS bounced
-                FROM messageitems i
-                LEFT JOIN (
+                FROM messageitems i'
+                . (empty($userid) ? '' : ' LEFT JOIN customers c ON c.id = i.customerid LEFT JOIN userdivisions ud ON ud.divisionid = c.divisionid AND ud.userid = ' . $userid)
+                . ' LEFT JOIN (
                     SELECT DISTINCT a.customerid
                     FROM vcustomerassignments a
                     JOIN excludedgroups e ON a.customergroupid = e.customergroupid
                     WHERE e.userid = lms_current_user()
                 ) e ON e.customerid = i.customerid
-                WHERE e.customerid IS NULL
-                GROUP BY i.messageid
+                WHERE e.customerid IS NULL'
+                . (empty($userid) ? '' : ' AND (c.id IS NULL OR ud.userid IS NOT NULL)')
+                . ' GROUP BY i.messageid
             ) x ON x.messageid = m.id
             LEFT JOIN filecontainers fc ON fc.messageid = m.id '
             .(!empty($userjoin) ? 'JOIN vusers u ON u.id = m.userid ' : '')

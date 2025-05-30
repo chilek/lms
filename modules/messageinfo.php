@@ -79,6 +79,8 @@ function GetItemList($id, $order = 'id,desc', $search = null, $cat = null, $stat
         $where = ' AND '.implode(' AND ', $where);
     }
 
+    $userid = Auth::GetCurrentUser();
+
     $result = $DB->GetAll(
         'SELECT
             i.id,
@@ -93,19 +95,30 @@ function GetItemList($id, $order = 'id,desc', $search = null, $cat = null, $stat
             i.attempts, '
             . $DB->Concat('UPPER(c.lastname)', "' '", 'c.name') . ' AS customer
         FROM messageitems i
-        LEFT JOIN customers c ON c.id = i.customerid
-        LEFT JOIN (
+        LEFT JOIN customers c ON c.id = i.customerid'
+        . (empty($userid)
+            ? ''
+            : ' LEFT JOIN userdivisions ud ON ud.divisionid = c.divisionid AND ud.userid = ' . $userid
+        )
+        . ' LEFT JOIN (
             SELECT
                 DISTINCT a.customerid
             FROM vcustomerassignments a
             JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
             WHERE e.userid = lms_current_user()
         ) e ON e.customerid = c.id
-        WHERE e.customerid IS NULL
-            AND i.messageid = ' . intval($id)
+        WHERE e.customerid IS NULL'
+            . (empty($userid)
+                ? ''
+                : ' AND (c.id IS NULL OR ud.userid IS NOT NULL)'
+        )
+        . ' AND i.messageid = ' . intval($id)
         . (!empty($where) ? $where : '')
         . $sqlord . ' ' . $direction
     );
+    if (empty($result)) {
+        return $result;
+    }
 
     $result['status'] = $status;
     $result['order'] = $order;
@@ -121,15 +134,26 @@ if (!$message) {
 }
 
 if (!empty($message['startdate']) && isset($_GET['action']) && $_GET['action'] == 'increase-attempts' && ConfigHelper::checkPrivileges('messaging', 'messaging_modification')) {
+    $userid = Auth::GetCurrentUser();
+
     $items = $DB->GetAll(
         'SELECT
             mi.id,
             mi.attempts
-         FROM messageitems mi
-         WHERE mi.messageid = ?
+        FROM messageitems mi'
+        . (empty($userid)
+            ? ''
+            : ' LEFT JOIN customers c ON c.id = i.customerid
+            LEFT JOIN userdivisions ud ON ud.divisionid = c.divisionid AND ud.userid = ' . $userid
+        )
+        . ' WHERE mi.messageid = ?
             AND mi.status = ?
             AND mi.attempts IS NOT NULL
-            AND mi.attempts < ?',
+            AND mi.attempts < ?'
+            . (empty($userid)
+                ? ''
+                : ' AND (c.id IS NULL OR ud.userid IS NOT NULL)'
+            ),
         array(
             $_GET['id'],
             MSG_ERROR,
@@ -196,6 +220,9 @@ if (isset($_POST['status'])) {
 $SESSION->save('milst', $status);
 
 $itemlist = GetItemList($message['id'], $o, $s, $c, $status);
+if (empty($itemlist)) {
+    access_denied();
+}
 
 $listdata['status'] = $itemlist['status'];
 $listdata['order'] = $itemlist['order'];
