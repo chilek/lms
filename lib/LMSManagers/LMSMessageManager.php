@@ -53,7 +53,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
             FROM messageitems i'
             . (empty($userid)
                 ? ''
-                : 'LEFT JOIN customers c ON c.id = i.customerid
+                : ' LEFT JOIN customers c ON c.id = i.customerid
                 LEFT JOIN userdivisions ud ON ud.divisionid = c.divisionid AND ud.userid = ' . $userid
             )
             . ' JOIN messages m ON m.id = i.messageid
