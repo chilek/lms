@@ -118,6 +118,8 @@ if (!$no_attachments) {
     }
 
     define('SMARTY_VERSION', $ver_chunks[0]);
+
+    $SMARTY->assign('_PAYTYPES', $PAYTYPES);
 }
 
 $SYSLOG = SYSLOG::getInstance();
