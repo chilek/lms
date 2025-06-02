@@ -21,7 +21,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		{if (!$net && isset($current_password_required)) || ($net && !empty($passwd.netpasswd))}
+		{if $current_password_required}
 			<tr>
 				<td class="text-right nobr">
 					<strong>{trans("Current password")}</strong>
