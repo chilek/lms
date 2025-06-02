@@ -201,13 +201,13 @@ if (isset($_POST['document'])) {
         $error['todate'] = trans('Start date can\'t be greater than end date!');
     }
 
-    $documentedit['closed'] = isset($documentedit['closed']) ? DOC_CLOSED : $document['closed'];
+    $documentedit['closed'] = isset($documentedit['closed']) ? (empty($documentedit['closed']) ? DOC_OPEN : DOC_CLOSED) : $document['closed'];
     $documentedit['archived'] = isset($documentedit['archived']) ? 1 : 0;
-    if ($documentedit['archived'] && !$documentedit['closed']) {
+    if ($documentedit['archived'] && empty($documentedit['closed'])) {
         $error['closed'] = trans('Cannot undo document confirmation while it is archived!');
     }
 
-    if (isset($documentedit['confirmdate']) && $documentedit['confirmdate'] && !$documentedit['closed']) {
+    if (isset($documentedit['confirmdate']) && $documentedit['confirmdate'] && empty($documentedit['closed'])) {
         $date = explode('/', $documentedit['confirmdate']);
         if (checkdate($date[1], $date[2], $date[0])) {
             $documentedit['confirmdate'] = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
