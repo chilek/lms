@@ -562,7 +562,14 @@ if ($AUTH->islogged) {
         $SESSION->save('lastmodule', $module);
     }
 } else {
-    if (!$api) {
+    if ($api) {
+        header('HTTP/1.1 401 Unauthorized');
+        header('Content-Type: application/json');
+
+        die(json_encode(array(
+            'error' => empty($AUTH->error) ? trans('No authentication data?') : $AUTH->error,
+        )));
+    } else {
         $SMARTY->assign('error', $AUTH->error);
         $SMARTY->assign('target', '?'.$_SERVER['QUERY_STRING']);
         if ($AUTH->authCodeRequired()) {
