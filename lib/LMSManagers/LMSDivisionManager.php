@@ -172,8 +172,15 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
         if ($divisionid) {
             if (isset($division['users'])) {
                 foreach ($division['users'] as $userid) {
-                    $this->db->Execute('INSERT INTO userdivisions (userid, divisionid) VALUES(?, ?)',
-                        array($userid, $divisionid));
+                    $this->db->Execute(
+                        'INSERT INTO userdivisions
+                        (userid, divisionid)
+                        VALUES (?, ?)',
+                        array(
+                            $userid,
+                            $divisionid,
+                        )
+                    );
                 }
             }
 
