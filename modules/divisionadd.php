@@ -118,6 +118,10 @@ if (!empty($_POST['division'])) {
         $error['tax_office_code'] = trans('Invalid format of Tax Office Code!');
     }
 
+    if (!preg_match('/^([0-9a-fA-F]{64})?$/', $division['kseftoken'])) {
+        $error['kseftoken'] = trans('Invalid format of KSeF token!');
+    }
+
     if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')
         && !empty($division['location_city_name']) && ($division['location_country_id'] == 2 || empty($division['location_country_id']))
         && (!isset($division['teryt']) || empty($division['location_city'])) && $LMS->isTerritState($division['location_state_name'])) {

@@ -41,6 +41,8 @@ DROP TABLE IF EXISTS up_help;
 DROP TABLE IF EXISTS up_customers;
 DROP TABLE IF EXISTS up_rights_assignments;
 DROP TABLE IF EXISTS up_rights;
+DROP TABLE IF EXISTS ksefdivisions;
+DROP TABLE IF EXISTS ksefdocuments;
 DROP TABLE IF EXISTS rtticketwatchers;
 DROP TABLE IF EXISTS files;
 DROP TABLE IF EXISTS filecontainers;
@@ -3172,6 +3174,37 @@ CREATE TABLE rtticketwatchers (
 	UNIQUE KEY rtticketwatchers_ticketid_ukey (ticketid, userid)
 ) ENGINE=InnoDB;
 
+# ---------------------------------------------------
+#
+# Structure of table ksefdocuments
+#
+CREATE TABLE ksefdocuments (
+	docid int(11) NOT NULL,
+	refnumber varchar(40) NOT NULL,
+	elemrefnumber varchar(40) NOT NULL,
+	ksefnumber varchar(40) DEFAULT NULL,
+	status smallint NOT NULL DEFAULT 0,
+	statusdescription text DEFAULT NULL,
+	hash varchar(130) NOT NULL,
+	INDEX ksefdocuments_refnumber_idx (refnumber),
+	INDEX ksefdocuments_elemrefnumber_idx (elemrefnumber),
+	INDEX ksefdocuments_ksefnumber_idx (ksefnumber),
+	INDEX ksefdocuments_status_idx (status),
+	CONSTRAINT ksefdocuments_docid_fkey
+		FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# ---------------------------------------------------
+#
+# Structure of table ksefdivisions
+#
+CREATE TABLE ksefdivisions (
+	divisionid int(11) NOT NULL,
+	token varchar(70) NOT NULL,
+	CONSTRAINT ksefdivisions_divisionid_fkey
+		FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
 # --------------------------------------------------------
 #
 # Structure of table up_rights (Userpanel)
@@ -4401,4 +4434,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025051600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025060500');

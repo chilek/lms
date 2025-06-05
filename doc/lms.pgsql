@@ -3083,6 +3083,35 @@ CREATE TABLE files (
 CREATE INDEX files_md5sum_idx ON files (md5sum);
 
 /* ---------------------------------------------------
+ Structure of table ksefdocuments
+------------------------------------------------------*/
+DROP TABLE IF EXISTS ksefdocuments;
+CREATE TABLE ksefdocuments (
+	docid integer NOT NULL
+		CONSTRAINT ksefdocuments_docid_fkey REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	refnumber varchar(40) NOT NULL,
+	elemrefnumber varchar(40) NOT NULL,
+	ksefnumber varchar(40) DEFAULT NULL,
+	status smallint NOT NULL DEFAULT 0,
+	statusdescription text DEFAULT NULL,
+	hash varchar(130) NOT NULL
+);
+CREATE INDEX ksefdocuments_refnumber_idx ON ksefdocuments (refnumber);
+CREATE INDEX ksefdocuments_elemrefnumber_idx ON ksefdocuments (elemrefnumber);
+CREATE INDEX ksefdocuments_ksefnumber_idx ON ksefdocuments (ksefnumber);
+CREATE INDEX ksefdocuments_status_idx ON ksefdocuments (status)
+
+/* ---------------------------------------------------
+ Structure of table ksefdivisions
+------------------------------------------------------*/
+DROP TABLE IF EXISTS ksefdivisions;
+CREATE TABLE ksefdivisions (
+	divisionid integer NOT NULL
+		CONSTRAINT ksefdivisions_divisionid_fkey REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	token varchar(70) NOT NULL
+);
+
+/* ---------------------------------------------------
  Structure of table "up_rights" (Userpanel)
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS up_rights_id_seq;
@@ -4445,6 +4474,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025051600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025060500');
 
 COMMIT;
