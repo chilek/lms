@@ -1083,6 +1083,7 @@
 
 		$('#printreceiptlist-csv').click(function() {
 			$('#printreceiptlist').attr('target', null).find('[name="csv"]').prop('disabled', false).end().submit();
+			$('[form="printreceiptlist"][type="submit"]').prop('disabled', false);
 		});
 	});
 
