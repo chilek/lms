@@ -265,6 +265,15 @@ if (!$api) {
 $documents_dirs = array(DOC_DIR);
 $documents_dirs = $plugin_manager->executeHook('documents_dir_initialized', $documents_dirs);
 
+if ($api && $SESSION->isExpired()) {
+    header('HTTP/1.1 401 Unauthorized');
+    header('Content-Type: application/json');
+
+    die(json_encode(array(
+        'error' => trans('Session expired!'),
+    )));
+}
+
 // Check privileges and execute modules
 if ($AUTH->islogged) {
     if (isset($_GET['clear_login_timeout'])) {

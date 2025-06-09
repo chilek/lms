@@ -6207,6 +6207,7 @@ $_LANG['Less e-mail addresses'] = 'Mniej adresów e-mail';
 $_LANG['exact match'] = 'dokładne dopasowanie';
 
 $_LANG['No authentication data?'] = 'Brak danych uwierzytelniających?';
+$_LANG['Session expired!'] = 'Sesja wygasła!';
 
 $_LANG['KSeF token'] = 'Token KSeF';
 $_LANG['Invalid format of KSeF token!'] = 'Niepoprawny format tokenu KSeF!';

@@ -37,6 +37,7 @@ class Session
     public $DB = null;              // database library object
     public $timeout = 600;          // timeout since session will
                         // be destroyed
+    private $expired = false;
     private $settings_timeout = 28800;          // timeout since user settings will
                         // be cleared
     public $autoupdate = false;     // do automatic update on each
@@ -76,6 +77,11 @@ class Session
         if (isset($_COOKIE['tabId'])) {
             $this->tabId = $_COOKIE['tabId'];
         }
+    }
+
+    public function isExpired()
+    {
+        return $this->expired;
     }
 
     public function close()
@@ -367,6 +373,7 @@ class Session
             }
 
             if (($row['mtime'] < $row['tt'] - $this->timeout) && ($row['atime'] < $row['tt'] - $this->timeout)) {
+                $this->expired = true;
                 $this->_destroySession();
             } else {
                 if (!isset($_POST['xjxfun']) && !isset($_GET['ajax'])) {
