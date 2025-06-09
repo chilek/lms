@@ -3028,7 +3028,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         if ($count) {
             return $this->db->GetOne('SELECT COUNT(*) FROM (SELECT d.id
 			FROM documents d'
-            . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.customerid AND ud.userid = ' . $userid)
+            . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
             . ' JOIN debitnotecontents n ON (n.docid = d.id)
 			LEFT JOIN countries c ON (c.id = d.countryid)
 			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
@@ -3054,7 +3054,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			SUM(n.value) AS value, COUNT(n.docid) AS count,
 			d.currency, d.currencyvalue
 			FROM documents d'
-            . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.customerid AND ud.userid = ' . $userid)
+            . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
             . ' JOIN debitnotecontents n ON (n.docid = d.id)
 			LEFT JOIN countries c ON (c.id = d.countryid)
 			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
