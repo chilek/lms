@@ -924,128 +924,169 @@
 	</tbody>
 </table>
 {/if}
-{if $printmenu=="finances"}
-<FORM method="post" name="printreceiptlist" id="printreceiptlist" action="?m=print&type=receiptlist">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox">
-    <COLGROUP>
-        <COL style="width: 1%;">
-        <COL style="width: 99%;">
-    </COLGROUP>
-    <THEAD>
-	<TR>
-		<TH scope="col">
-			<IMG src="img/money.gif" alt="">
-		</TH>
-		<TH scope="col" class="bold nobr">
-			{trans("Cash Report")}
-		</TH>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR>
-		<TD class="container" width="100%" colspan="2">
-			<TABLE width="100%" cellpadding="3">
-				<TR>
-					<TD style="width: 1%;">
-					    <TABLE width="100%">
-						<TR>
-						    <TD style="width: 1%;">
-							<IMG src="img/queue.gif" alt="">
-						    </TD>
-						    <TD style="width: 1%;" class="bold nobr">
-							{trans("Registry:")}
-						    </TD>
-						    <TD style="width: 98%;" class="nobr">
-							<SELECT SIZE="1" name="registry" {tip text="Select cash registry"}>
-					    		    <OPTION value="0">{trans("— all —")}</OPTION>
-						    	    {foreach from=$cashreglist item=c}
-							    <OPTION value="{$c.id}">{$c.name|truncate:40:"&hellip;":true} ({$c.id|string_format:"%04d"})</OPTION>
-						    	    {/foreach}
-							</SELECT>
-						    </TD>
-						</TR>
-						<TR>
-						    <TD style="width: 1%;">
-							<IMG src="img/group.gif" alt="">
-						    </TD>
-						    <TD style="width: 1%;" class="bold nobr">
-							{trans("Group:")}
-						    </TD>
-						    <TD style="width: 98%;" class="nobr">
-							<SELECT size="1" name="group">
-							    <OPTION value="0" SELECTED>{trans("— all groups —")}</OPTION>
-			    				    {section name="customergroups" loop=$customergroups}
-							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"&hellip;":true}</OPTION>
-							    {/section}
-							</SELECT>
-    							<INPUT type="checkbox" name="groupexclude" id="receiptlist-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><label for="receiptlist-groupexclude">{trans("exclude group")}</label>
-						    </TD>
-						</TR>
-						<TR>
-						    <TD style="width: 1%;">
-							<IMG src="img/users.gif" alt="">
-						    </TD>
-						    <TD style="width: 1%;" class="bold nobr">
-							{trans("User:")}
-						    </TD>
-						    <TD style="width: 98%;" class="nobr">
-							<SELECT size="1" name="user" {tip text="You can select user to limit results"}>
-							    <OPTION value="">{trans("— all users —")}</OPTION>
-							    {section name="users" loop=$users}
-							    <OPTION value="{$users[users].id}">{$users[users].name|truncate:40:"&hellip;":true}</OPTION>
-							    {/section}
-							</SELECT>
-						    </TD>
-						</TR>
-					    </TABLE>
-					<TD style="width: 1%;">
-						<IMG src="img/calendar.gif" alt="">
-					</TD>
-					<TD style="width: 1%;">
-						<table style="width: 100%;">
-							<tr>
-								<td style="width: 1%;">
-									<span class="lms-ui-date-period-container">
-										<strong>{trans("Period:")}</strong>&nbsp;
-										{date_period_preset from="#printreceiptlist [name=\"from\"]" to="#printreceiptlist [name=\"to\"]"}
-										<span>{trans("From")}</span>
-										<input type="text" name="from" size="10" maxlength="10"
-											placeholder="{trans("yyyy/mm/dd")}"
-											{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-										<span>{trans("To")}</span>
-										<input type="text" name="to" size="10" maxlength="10"
-											placeholder="{trans("yyyy/mm/dd")}"
-											{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-									</span>
-								</td>
-							</tr>
-							<tr>
-								<td class="nobr">
-									{trans("Sorting")}
-									<select name="sorttype" {tip text="Select sorting criterion"}>
-										<option value="cdate">{trans("Draw-up date")}</option>
-										<option value="number">{trans("Document number")}</option>
-									</select>
-								</td>
-							</tr>
-						</table>
-					</td>
-					<TD style="width: 97%;" class="nobr">
-						<input type="checkbox" name="extended" value="1" id="receiptlist-extended"><label for="receiptlist-extended">{trans("extended format")}</label>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 100%;" colspan="2" align="right">
-			<A href="javascript:document.printreceiptlist.target='_blank';document.printreceiptlist.submit();">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
-</FORM>
+{if $printmenu == "finances"}
+<form method="post" name="printreceiptlist" id="printreceiptlist" action="?m=print&type=receiptlist">
+	<input type="submit" class="hiddenbtn">
+	<input type="hidden" name="csv" value="1" disabled>
+</form>
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<td>
+				{icon name="money"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Cash Report")}</strong>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td class="container" colspan="2">
+				<table style="width: 100%;" cellpadding="3">
+					<colgroup>
+						<col style="width: 1%;">
+						<col style="width: 1%;">
+						<col style="width: 1%;">
+						<col style="width: 97%;">
+					</colgroup>
+					<tr>
+						<td>
+							<table style="width: 100%;">
+								<colgroup>
+									<col style="width: 1%;">
+									<col style="width: 1%;">
+									<col style="width: 98%;">
+								</colgroup>
+								<tr>
+									<td>
+										{icon name="queue"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("Registry")}</strong>
+									</td>
+									<td class="nobr">
+										<select size="1" name="registry" form="printreceiptlist"
+											{tip text="Select cash registry"}>
+											<option value="0">{trans("— all —")}</option>
+											{foreach $cashreglist as $c}
+												<option value="{$c.id}">{$c.name|truncate:40:"&hellip;":true} ({$c.id|string_format:"%04d"})</option>
+											{/foreach}
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										{icon name="customergroup"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("Group")}</strong>
+									</td>
+									<td class="nobr">
+										<select size="1" name="group" form="printreceiptlist">
+											<option value="0" selected>{trans("— all groups —")}</option>
+											{foreach $customergroups as $customergroup}
+												<option value="{$customergroup.id}">{$customergroup.name|truncate:30:"&hellip;":true}</option>
+											{/foreach}
+										</select>
+										<label>
+											<input type="checkbox" name="groupexclude" form="printreceiptlist"
+												{if $listdata.groupexclude} checked{/if}>
+											{trans("exclude group")}
+										</label>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										{icon name="user"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("User")}</strong>
+									</td>
+									<td class="nobr">
+										<select size="1" name="user" form="printreceiptlist"
+											{tip text="You can select user to limit results"}>
+											<option value="">{trans("— all users —")}</option>
+											{foreach $users as $user}
+												<option value="{$user.id}">{$user.name|truncate:40:"&hellip;":true}</option>
+											{/foreach}
+										</select>
+									</td>
+								</tr>
+							</table>
+						</td>
+						<td>
+							{icon name="calendar"}
+						</td>
+						<td>
+							<table style="width: 100%;">
+								<colgroup>
+									<col style="width: 1%;">
+								</colgroup>
+								<tr>
+									<td>
+										<span class="lms-ui-date-period-container">
+											<strong>{trans("Period")}</strong>&nbsp;
+											{date_period_preset from="[form=\"printreceiptlist\"][name=\"from\"]" to="[form=\"printreceiptlist\"][name=\"to\"]"}
+											<span>{trans("From")}</span>
+											<input type="text" name="from" size="10" maxlength="10" form="printreceiptlist"
+												placeholder="{trans("yyyy/mm/dd")}"
+												{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+											<span>{trans("To")}</span>
+											<input type="text" name="to" size="10" maxlength="10" form="printreceiptlist"
+												placeholder="{trans("yyyy/mm/dd")}"
+												{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+										</span>
+									</td>
+								</tr>
+								<tr>
+									<td class="nobr">
+										{trans("Sorting")}
+										<select name="sorttype" form="printreceiptlist"
+											{tip text="Select sorting criterion"}>
+											<option value="cdate">{trans("Draw-up date")}</option>
+											<option value="number">{trans("Document number")}</option>
+										</select>
+									</td>
+								</tr>
+							</table>
+						</td>
+						<td class="nobr">
+							<label>
+								<input type="checkbox" name="extended" value="1" form="printreceiptlist">
+								{trans("extended format")}
+							</label>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="lms-ui-box-buttons">
+				{button icon="csv" label="CSV" id="printreceiptlist-csv"}
+				{button type="submit" label="Print" icon="print" form="printreceiptlist"}
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<script>
+
+	$(function() {
+		$('[form="printreceiptlist"][type="submit"]').click(function() {
+			$('#printreceiptlist').attr('target', '_blank').find('[name="csv"]').prop('disabled', true);
+		});
+
+		$('#printreceiptlist-csv').click(function() {
+			$('#printreceiptlist').attr('target', null).find('[name="csv"]').prop('disabled', false).end().submit();
+		});
+	});
+
+</script>
 {/if}
 {if $printmenu=="finances"}
 <form method="post" name="printinvoices" id="printinvoices" action="?m=print&type=invoices">

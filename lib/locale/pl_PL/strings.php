@@ -2677,6 +2677,7 @@ $_LANG['There is no cash in selected registry!'] = 'Brak środków w wybranym re
 $_LANG['There is no cash in selected registry! You can expense only $a.'] = 'Brak środków w wybranym rejestrze! Możesz wydać tylko $a.';
 $_LANG['You don\'t have permission to add receipt in selected cash registry!'] = 'Nie posiadasz uprawnień, aby dodać dokument w wybranym rejestrze!';
 $_LANG['Registry:'] = 'Rejestr:';
+$_LANG['Registry'] = 'Rejestr';
 $_LANG['Expense'] = 'Rozchód';
 $_LANG['Income'] = 'Przychód';
 $_LANG['No such cash receipts in database.'] = 'Brak dokumentów kasowych w bazie danych.';

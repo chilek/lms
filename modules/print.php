@@ -911,17 +911,17 @@ switch ($type) {
 			ORDER BY ' . $sortcol . ', d.id',
             array(DOC_RECEIPT)
         )) {
-            foreach ($list as $idx => $row) {
-                $list[$idx]['number'] = docnumber(array(
+            foreach ($list as $idx => &$row) {
+                $row['number'] = docnumber(array(
                     'number' => $row['number'],
                     'template' => $row['template'],
                     'cdate' => $row['cdate'],
                     'ext_num' => $row['extnumber'],
                 ));
-                $list[$idx]['customer'] = $row['name'].' '.$row['address'].' '.$row['zip'].' '.$row['city'];
+                $row['customer'] = $row['name'] . ' ' . $row['address'] . ' ' . $row['zip'] . ' ' . $row['city'];
 
                 if ($row['posnumber'] > 1) {
-                    $list[$idx]['title'] = $DB->GetCol('SELECT description FROM receiptcontents WHERE docid=? ORDER BY itemid', array($list[$idx]['id']));
+                    $row['title'] = $DB->GetCol('SELECT description FROM receiptcontents WHERE docid = ? ORDER BY itemid', array($row['id']));
                 }
 
                 // summary
@@ -931,16 +931,17 @@ switch ($type) {
                     $listdata['totalexpense'] += -$row['value'] * $row['currencyvalue'];
                 }
 
-                if ($idx==0) {
-                    $list[$idx]['after'] = $listdata['startbalance'] + $row['value'] * $row['currencyvalue'];
+                if (empty($idx)) {
+                    $row['after'] = $listdata['startbalance'] + $row['value'] * $row['currencyvalue'];
                 } else {
-                    $list[$idx]['after'] = $list[$idx-1]['after'] + $row['value'] * $row['currencyvalue'];
+                    $row['after'] = $list[$idx - 1]['after'] + $row['value'] * $row['currencyvalue'];
                 }
 
                 if (!$row['closed']) {
                     $listdata['advances'] -= $row['value'] * $row['currencyvalue'];
                 }
             }
+            unset($row);
         }
 
         $listdata['endbalance'] = $listdata['startbalance'] + $listdata['totalincome'] - $listdata['totalexpense'];
@@ -973,6 +974,20 @@ switch ($type) {
         }
         $SMARTY->assign('receiptlist', $list);
         $SMARTY->assign('listdata', $listdata);
+
+        $csv = !empty($_POST['csv']);
+
+        if ($csv) {
+            $filename = 'receipts-' . date('YmdHis') . '.csv';
+            header('Content-Type: text/csv; charset=utf-8');
+            header('Content-Disposition: attachment; filename=' . $filename);
+            header('Pragma: public');
+
+            $SMARTY->display('print/printreceiptlist-csv.html');
+
+            $SESSION->close();
+            die;
+        }
 
         if (isset($_POST['extended'])) {
                 $pages = array();
