@@ -131,6 +131,7 @@ if (!$api) {
 if ($api) {
     header('Content-Type: application/json');
     echo json_encode(array_values($nlist));
+    $SESSION->close();
 } else {
     $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 

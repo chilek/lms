@@ -164,6 +164,7 @@ unset($netdevlist['direction']);
 if ($api) {
     header('Content-Type: application/json');
     echo json_encode(array_values($netdevlist));
+    $SESSION->close();
     die;
 }
 

@@ -28,6 +28,7 @@ $id = intval($_GET['id']);
 
 if ($api) {
     if (!$LMS->NetDevExists($id)) {
+        $SESSION->close();
         die;
     }
 
@@ -859,6 +860,7 @@ if (isset($netdev)) {
                 header('Content-Type: application-json');
                 echo json_encode(array('id' => $id));
             }
+            $SESSION->close();
             die;
         }
 
@@ -873,6 +875,7 @@ if (isset($netdev)) {
     } elseif ($api) {
         header('Content-Type: application-json');
         echo json_encode($error);
+        $SESSION->close();
         die;
     }
 

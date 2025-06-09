@@ -28,6 +28,7 @@ $id = intval($_GET['id']);
 
 if ($api) {
     if (!$LMS->NetNodeExists($id)) {
+        $SESSION->close();
         die;
     }
 } elseif (!$LMS->NetNodeExists($id)) {
@@ -47,6 +48,7 @@ if ($api) {
         header('Content-Type: application/json');
         echo json_encode(array('id' => $id));
     }
+    $SESSION->close();
     die;
 } else {
     $SESSION->redirect('?m=netnodelist');

@@ -26,6 +26,7 @@
 
 if ($api) {
     if (!isset($_POST['in'])) {
+        $SESSION->close();
         die;
     }
     $netnodedata = json_decode(base64_decode($_POST['in']), true);
@@ -133,6 +134,7 @@ if (isset($netnodedata)) {
                 header('Content-Type: application/json');
                 echo json_encode(array('id' => $netnodeid));
             }
+            $SESSION->close();
             die;
         }
 
@@ -140,6 +142,7 @@ if (isset($netnodedata)) {
     } elseif ($api) {
         header('Content-Type: application/json');
         echo json_encode($error);
+        $SESSION->close();
         die;
     }
 

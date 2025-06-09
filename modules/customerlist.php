@@ -39,6 +39,7 @@ if ($api) {
     }
     header('Content-Type: application/json');
     echo json_encode(array_values($customerlist));
+    $SESSION->close();
     die;
 } else {
     $SESSION->add_history_entry();

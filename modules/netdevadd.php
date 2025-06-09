@@ -245,6 +245,7 @@ if (isset($netdev)) {
                 header('Content-Type: application/json');
                 echo json_encode(array('id' => $netdevid));
             }
+            $SESSION->close();
             die;
         }
 
@@ -252,6 +253,7 @@ if (isset($netdev)) {
     } elseif ($api) {
         header('Content-Type: application/json');
         echo json_encode($error);
+        $SESSION->close();
         die;
     }
 

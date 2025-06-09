@@ -32,10 +32,12 @@ if (empty($id)) {
 
 if ($api) {
     if (!$LMS->NetNodeExists($id)) {
+        $SESSION->close();
         die;
     }
 
     if (!isset($_POST['in'])) {
+        $SESSION->close();
         die;
     }
     $netnodedata = json_decode(base64_decode($_POST['in']), true);
@@ -150,6 +152,7 @@ if (isset($netnodedata)) {
                 header('Content-Type: application-json');
                 echo json_encode(array('id' => $id));
             }
+            $SESSION->close();
             die;
         } else {
             $SESSION->redirect('?m=netnodeinfo&id=' . $id);
@@ -157,6 +160,7 @@ if (isset($netnodedata)) {
     } elseif ($api) {
         header('Content-Type: application-json');
         echo json_encode($error);
+        $SESSION->close();
         die;
     }
 

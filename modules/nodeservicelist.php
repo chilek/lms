@@ -119,4 +119,5 @@ if (!empty($nodes)) {
 
 header('Content-Type: application/json');
 echo json_encode($nodeservices);
+$SESSION->close();
 die;
