@@ -1381,7 +1381,15 @@ class Utils
 
         $pipes = null;
         $process = proc_open(
-            $office2pdf_command,
+            str_replace(
+                array(
+                    '%doctype%',
+                ),
+                array(
+                    $doctype,
+                ),
+                $office2pdf_command
+            ),
             array(
                 0 => array('pipe', 'r'),
                 1 => array('pipe', 'w'),
