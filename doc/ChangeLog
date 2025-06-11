@@ -1023,6 +1023,8 @@ version 28-git (????-??-??):
     setting requestor e-mail address in created helpdesk ticket (useful when incoming posts are originated
     from PBX) [chilan]
   - enhancement: added export cash registry operations to csv file [chilan]
+  - enhancement/devel: 'documents.office2pdf_command' configuration variable with empty default value allows to enable
+    mechanism of office to PDF file conversion [chilan]
 
 version 27.0 (2021-08-20):
 
