@@ -263,7 +263,20 @@ if (empty($fh)) {
 }
 
 // prefix
-fwrite($fh, preg_replace("/\\\\n/", "\n", $config_begin));
+fwrite(
+    $fh,
+    preg_replace(
+        array(
+            '/\r/',
+            '/\\\\n/',
+        ),
+        array(
+            '',
+            "\n",
+        ),
+        $config_begin
+    )
+);
 $prefix = "";
 if (!empty($CONFIG['dhcp']['options'])) {
     foreach ($CONFIG['dhcp']['options'] as $name => $value) {
@@ -343,10 +356,12 @@ foreach ($networks as $networkid => $net) {
     if (!empty($begin)) {
         $begin = str_replace(
             array(
+                "\r",
                 '\\n',
                 '\\t',
             ),
             array(
+                '',
                 "\n",
                 "\t",
             ),
@@ -355,10 +370,12 @@ foreach ($networks as $networkid => $net) {
     } elseif (!empty($network_begin)) {
         $begin = str_replace(
             array(
+                "\r",
                 '\\n',
                 '\\t',
             ),
             array(
+                '',
                 "\n",
                 "\t",
             ),
@@ -377,12 +394,14 @@ foreach ($networks as $networkid => $net) {
     if (!empty($net['dhcpstart'])) {
         $range = str_replace(
             array(
+                "\r",
                 '\\n',
                 '\\t',
                 '%start%',
                 '%end%',
             ),
             array(
+                '',
                 "\n",
                 "\t",
                 $net['dhcpstart'],
