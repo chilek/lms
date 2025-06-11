@@ -1358,6 +1358,99 @@ class Utils
         }
     }
 
+    public static function office2pdf(array $params)
+    {
+        extract($params);
+
+        if (!isset($title)) {
+            $title = '';
+        }
+
+        if (!isset($office2pdf_command)) {
+            $office2pdf_command = ConfigHelper::getConfig('documents.office2pdf_command', '', true);
+        }
+        if (empty($office2pdf_command)) {
+            return 'Office to PDF file conversion mechanism is not enabled!';
+        }
+
+        if ($dest === true) {
+            $dest = 'D';
+        } elseif ($dest === false) {
+            $dest = 'I';
+        }
+
+        $pipes = null;
+        $process = proc_open(
+            $office2pdf_command,
+            array(
+                0 => array('pipe', 'r'),
+                1 => array('pipe', 'w'),
+                2 => array('pipe', 'w'),
+            ),
+            $pipes
+        );
+
+        if (is_resource($process)) {
+            fwrite($pipes[0], $content);
+            fclose($pipes[0]);
+
+            $content = stream_get_contents($pipes[1]);
+            fclose($pipes[1]);
+
+            $error = stream_get_contents($pipes[2]);
+            fclose($pipes[2]);
+
+            $result = proc_close($process);
+
+            if (!$result) {
+                if (function_exists('mb_convert_encoding')) {
+                    $filename = mb_convert_encoding($title, "ISO-8859-2", "UTF-8");
+                } else {
+                    $filename = iconv("UTF-8", "ISO-8859-2//TRANSLIT", $title);
+                }
+                $filename = preg_replace('/[^[:alnum:]_\-\.]/i', '_', $filename);
+
+                switch ($dest) {
+                    case 'D':
+                        header('Cache-Control: private, must-revalidate, post-check=0, pre-check=0, max-age=1');
+                        //header('Cache-Control: public, must-revalidate, max-age=0'); // HTTP/1.1
+                        header('Pragma: public');
+                        header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+                        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+                        // force download dialog
+                        header('Content-Type: application/pdf');
+                        // use the Content-Disposition header to supply a recommended filename
+                        header('Content-Disposition: attachment; filename="' . basename($filename) . '"');
+                        header('Content-Transfer-Encoding: binary');
+
+                        echo $content;
+
+                        break;
+
+                    case 'S':
+                        return $content;
+
+                    default:
+                        header('Content-Type: application/pdf');
+                        header('Cache-Control: private, must-revalidate, post-check=0, pre-check=0, max-age=1');
+                        //header('Cache-Control: public, must-revalidate, max-age=0'); // HTTP/1.1
+                        header('Pragma: public');
+                        header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+                        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+                        header('Content-Disposition: inline; filename="' . basename($filename) . '"');
+
+                        echo $content;
+
+                        break;
+                }
+            }
+        } else {
+            return 'Cannot create Office to PDF conversion process!';
+        }
+
+        return true;
+    }
+
     public static function mazovia_to_utf8($text)
     {
         static $mazovia_code_to_utf8_letter_map = array(
