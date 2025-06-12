@@ -2804,7 +2804,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             'phone' => $document['phone'],
                         );
 
-                        if ($authcode_is_present) {
+                        if ($authcode_is_present && empty($document['authcode'])) {
                             $document['authcode'] = $this->prepareDocumentAuthCode($document_protection_password_authcode_sources, $customer_data);
                         }
 
@@ -3225,7 +3225,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                                     'phone' => $doc['phone'],
                                 );
 
-                                if ($authcode_is_present) {
+                                if ($authcode_is_present && empty($document['authcode'])) {
                                     $document['authcode'] = $this->prepareDocumentAuthCode($document_protection_password_authcode_sources, $customer_data);
                                 }
 
