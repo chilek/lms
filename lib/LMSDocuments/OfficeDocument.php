@@ -41,6 +41,7 @@ class OfficeDocument
     private $type = null;
     private $clone = true;
     private $tempFileName;
+    private $variablePrefix = '';
 
     public function __construct($fileName, $clone = true)
     {
@@ -113,9 +114,23 @@ class OfficeDocument
         $this->mainDocumentContent = $this->za->getFromIndex($this->archivedFiles[$this->mainDocumentName]['index']);
     }
 
-    public function replace(array $from, array $to)
+    public function setVariablePrefix($variablePrefix)
     {
-        $this->mainDocumentContent = str_ireplace($from, $to, $this->mainDocumentContent);
+        $this->variablePrefix = $variablePrefix;
+    }
+
+    public function replace(array $replacements)
+    {
+        $this->mainDocumentContent = str_ireplace(
+            array_map(
+                function ($variable) {
+                    return $this->variablePrefix . $variable;
+                },
+                array_keys($replacements)
+            ),
+            $replacements,
+            $this->mainDocumentContent
+        );
     }
 
     public function save($remove = false)
