@@ -3229,7 +3229,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             die('Error: ZipArchive class not found!');
                         }
 
-                        $zip_temp_filename = tempnam(sys_get_temp_dir(), 'lms-documentsend');
+                        $zip_temp_filename = tempnam(sys_get_temp_dir(), 'lms-documentsend-');
                         @unlink($zip_temp_filename);
 
                         $zip = new ZipArchive;

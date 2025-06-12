@@ -342,7 +342,7 @@ if (isset($_POST['document'])) {
 
                 if (!empty($outputs)) {
                     foreach ($outputs as $output) {
-                        $file = tempnam(DOC_DIR, 'tmp.file');
+                        $file = tempnam(sys_get_temp_dir(), 'lms-document-attachment-');
                         file_put_contents($file, $output['output']);
 
                         $md5sum = md5_file($file);
