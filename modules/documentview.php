@@ -479,9 +479,70 @@ if (!empty($docids)) {
                                     . file_get_contents($filename)
                                     . "\n</div>\n";
                             }
-                        } else {
-                            readfile($filename);
+                        } elseif ($pdf) {
+                            if (!$cached_pdf) {
+                                $content = file_get_contents($filename);
+
+                                if (preg_match('/html$/i', $doc['contenttype'])) {
+                                    $content = "
+                                    <html>
+                                        <head>
+                                            <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">
+                                            <style>
+
+                                                @page {
+                                                    size: A4;
+                                                    margin: 1cm;
+                                                }
+
+                                                .document {
+                                                     break-after: page;
+                                                }
+
+                                            </style>
+                                        </head>
+                                        <body>
+                                            <div class=\"document\">"
+                                        . $content
+                                        . "</div>
+                                            <script>
+
+                                                let documents = document.querySelectorAll('.document');
+                                                if (documents.length) {
+                                                    documents.forEach(function(document) {
+                                                        let documentShadow = document.attachShadow({
+                                                            mode: \"closed\"
+                                                        });
+                                                        let innerHTML = document.innerHTML;
+                                                        document.innerHTML = '';
+                                                        documentShadow.innerHTML = innerHTML;
+                                                    });
+                                                }
+
+                                            </script>
+                                        </body>
+                                    </html>";
+
+                                    $content = Utils::html2pdf(array(
+                                        'content' => $content,
+                                        'subject' => trans('Document'),
+                                        'margins' => $margins,
+                                        'dest' => 'S',
+                                        'md5sum' => $cache_pdf ? $doc['md5sum'] : null,
+                                    ));
+                                } elseif (preg_match('#^application/(rtf|.+(oasis|opendocument|openxml).+)$#i', $doc['contenttype'])) {
+                                    $content = Utils::office2pdf(array(
+                                        'content' => $content,
+                                        'subject' => trans('Document'),
+                                        'doctype' => Utils::docTypeByMimeType($doc['contenttype']),
+                                        'dest' => 'S',
+                                        'md5sum' => $cache_pdf ? $doc['md5sum'] : null,
+                                    ));
+                                }
+                            }
                         }
+
+                        echo $content;
                     }
                 }
 
