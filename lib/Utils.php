@@ -1358,7 +1358,8 @@ class Utils
         }
     }
 
-    public static function docTypeByFileName($fileName) {
+    public static function docTypeByFileName($fileName)
+    {
         if (preg_match('/^.+\.(?<type>[[:alnum:]+]+)$/i', $fileName, $m)) {
             return strtolower($m['type']);
         } else {
@@ -1366,7 +1367,8 @@ class Utils
         }
     }
 
-    public static function docTypeByMimeType($mimeType) {
+    public static function docTypeByMimeType($mimeType)
+    {
         if (preg_match('#html$#i', $mimeType)) {
             return 'htm';
         } elseif (preg_match('#^application/rtf$#i', $mimeType)) {
@@ -1375,9 +1377,9 @@ class Utils
             return 'docx';
         } elseif (preg_match('#^application/vnd.openxmlformats-officedocument.spreadsheetml.sheet$#i', $mimeType)) {
             return 'xlsx';
-        } elseif (preg_match('#^application/vnd.oasis.opendocument.text.*$#i',$mimeType)) {
+        } elseif (preg_match('#^application/vnd.oasis.opendocument.text.*$#i', $mimeType)) {
             return 'odt';
-        } elseif (preg_match('#^application/vnd.oasis.opendocument.spreadsheet.*$#i',$mimeType)) {
+        } elseif (preg_match('#^application/vnd.oasis.opendocument.spreadsheet.*$#i', $mimeType)) {
             return 'ods';
         } else {
             return false;
