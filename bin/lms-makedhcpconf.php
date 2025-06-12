@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2025 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,153 +25,50 @@
  *  $Id$
  */
 
-// REPLACE THIS WITH PATH TO YOUR CONFIG FILE
-
-// PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
-// *EXACTLY* WHAT ARE YOU DOING!!!
-// *******************************************************************
-
-ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
-
-$parameters = array(
-    'config-file:' => 'C:',
-    'quiet' => 'q',
-    'help' => 'h',
-    'version' => 'v',
+$script_parameters = array(
+    'section:' => 's:',
     'customergroups:' => 'g:',
 );
 
-$long_to_shorts = array();
-foreach ($parameters as $long => $short) {
-    $long = str_replace(':', '', $long);
-    if (isset($short)) {
-        $short = str_replace(':', '', $short);
-    }
-    $long_to_shorts[$long] = $short;
-}
-
-$options = getopt(
-    implode(
-        '',
-        array_filter(
-            array_values($parameters),
-            function ($value) {
-                return isset($value);
-            }
-        )
-    ),
-    array_keys($parameters)
-);
-
-foreach (array_flip(array_filter($long_to_shorts, function ($value) {
-    return isset($value);
-})) as $short => $long) {
-    if (array_key_exists($short, $options)) {
-        $options[$long] = $options[$short];
-        unset($options[$short]);
-    }
-}
-
-if (array_key_exists('version', $options)) {
-    print <<<EOF
-lms-makedhcpconf.php
-(C) 2001-2021 LMS Developers
-
-EOF;
-    exit(0);
-}
-
-if (array_key_exists('help', $options)) {
-    print <<<EOF
-lms-makedhcpconf.php
-(C) 2001-2021 LMS Developers
-
--C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
--h, --help                      print this help and exit;
--v, --version                   print version info and exit;
--q, --quiet                     suppress any output, except errors;
+$script_help = <<<EOF
+-s, --section=<section-name>    section name from lms configuration where settings
+                                are stored
 -g, --customergroups=<group1,group2,...>
                                 allow to specify customer groups to which customers
                                 should be assigned
-
 EOF;
-    exit(0);
-}
 
-$quiet = array_key_exists('quiet', $options);
-if (!$quiet) {
-    print <<<EOF
-lms-makedhcpconf.php
-(C) 2001-2021 LMS Developers
+require_once('script-options.php');
 
-EOF;
-}
+$SYSLOG = SYSLOG::getInstance();
 
-if (array_key_exists('config-file', $options)) {
-    $CONFIG_FILE = $options['config-file'];
-} else {
-    $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
-}
+// Initialize Session, Auth and LMS classes
 
-if (!$quiet) {
-    echo "Using file " . $CONFIG_FILE . " as config." . PHP_EOL;
-}
+$AUTH = null;
+$LMS = new LMS($DB, $AUTH, $SYSLOG);
 
-if (!is_readable($CONFIG_FILE)) {
-    die('Unable to read configuration file [' . $CONFIG_FILE . ']!' . PHP_EOL);
-}
+// REPLACE THIS WITH PATH TO YOUR CONFIG FILE
 
-define('CONFIG_FILE', $CONFIG_FILE);
+$quiet = isset($options['quiet']);
 
-$CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
+$config_section = isset($options['section']) && preg_match('/^[a-z0-9-_]+$/i', $options['section'])
+    ? $options['section']
+    : 'dhcp';
 
-// Check for configuration vars and set default values
-$CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
-$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib' : $CONFIG['directories']['lib_dir']);
-
-define('SYS_DIR', $CONFIG['directories']['sys_dir']);
-define('LIB_DIR', $CONFIG['directories']['lib_dir']);
-
-// Load autoloader
-$composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-if (file_exists($composer_autoload_path)) {
-    require_once $composer_autoload_path;
-} else {
-    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More information at https://getcomposer.org/" . PHP_EOL);
-}
-
-// Init database
-
-$DB = null;
-
-try {
-    $DB = LMSDB::getInstance();
-} catch (Exception $ex) {
-    trigger_error($ex->getMessage(), E_USER_WARNING);
-    // can't work without database
-    die("Fatal error: cannot connect to database!" . PHP_EOL);
-}
-
-// Include required files (including sequence is important)
-
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
-
-$config_owneruid = ConfigHelper::getConfig('dhcp.config_owneruid', 0, true);
-$config_ownergid = ConfigHelper::getConfig('dhcp.config_ownergid', 0, true);
-$config_permission = ConfigHelper::getConfig('dhcp.config_permission', "0644");
-$config_file = ConfigHelper::getConfig('dhcp.config_file', "/etc/dhcpd.conf");
-$default_lease_time = ConfigHelper::getConfig('dhcp.default_lease_time', 86400);
-$max_lease_time = ConfigHelper::getConfig('dhcp.max_lease_time', 86400);
-$enable_option82 = ConfigHelper::checkConfig('dhcp.enable_option82');
-$use_network_authtype = ConfigHelper::checkConfig('dhcp.use_network_authtype');
+$config_owneruid = ConfigHelper::getConfig($config_section . '.config_owneruid', 0, true);
+$config_ownergid = ConfigHelper::getConfig($config_section . '.config_ownergid', 0, true);
+$config_permission = ConfigHelper::getConfig($config_section . '.config_permission', "0644");
+$config_file = ConfigHelper::getConfig($config_section . '.config_file', "/etc/dhcpd.conf");
+$default_lease_time = ConfigHelper::getConfig($config_section . '.default_lease_time', 86400);
+$max_lease_time = ConfigHelper::getConfig($config_section . '.max_lease_time', 86400);
+$enable_option82 = ConfigHelper::checkConfig($config_section . '.enable_option82');
+$use_network_authtype = ConfigHelper::checkConfig($config_section . '.use_network_authtype');
 $config_begin = ConfigHelper::getConfig(
-    'dhcp.begin',
+    $config_section . '.begin',
     "ddns-update-style none;\nlog-facility local6;\ndefault-lease-time $default_lease_time;\nmax-lease-time $max_lease_time;\n"
 );
-$global_network_begin = ConfigHelper::getConfig('dhcp.network_begin', '', true);
-$global_range_format = ConfigHelper::getConfig('dhcp.range_format', 'range %start% %end%;');
+$global_network_begin = ConfigHelper::getConfig($config_section . '.network_begin', '', true);
+$global_range_format = ConfigHelper::getConfig($config_section . '.range_format', 'range %start% %end%;');
 
 // we're looking for dhcp-mac config sections
 $config_macs = array();
@@ -181,21 +78,14 @@ foreach ($CONFIG as $key => $value) {
     }
 }
 
-/*
-$maxlease = $max_lease_time;
-if (!empty($maxlease)) {
-    $header .= "max-lease-time " . $maxlease . ";\n\n";
-}
-*/
-
 $existing_networks = $DB->GetCol("SELECT name FROM networks");
 
 // get selected networks from ini file
-$networks = ConfigHelper::getConfig('dhcp.networks', '', true);
+$networks = ConfigHelper::getConfig($config_section . '.networks', '', true);
 $networks = preg_split('/(\s+|\s*,\s*)/', $networks, -1, PREG_SPLIT_NO_EMPTY);
 
 // exclude networks set in config value
-$excluded_networks = ConfigHelper::getConfig('dhcp.excluded_networks', '', true);
+$excluded_networks = ConfigHelper::getConfig($config_section . '.excluded_networks', '', true);
 $excluded_networks = preg_split('/(\s+|\s*,\s*)/', $excluded_networks, -1, PREG_SPLIT_NO_EMPTY);
 
 if (empty($networks)) {
@@ -204,14 +94,29 @@ if (empty($networks)) {
     $networks = array_intersect(array_diff($networks, $excluded_networks), $existing_networks);
 }
 
-$networks = $DB->GetAllByKey("SELECT id, name, address, INET_ATON(mask) AS mask, gateway,
-		dns, dns2, domain, wins, dhcpstart, dhcpend, interface
-	FROM networks WHERE 1=1"
+$networks = $DB->GetAllByKey(
+    "SELECT
+        id,
+        name,
+        address,
+        INET_ATON(mask) AS mask,
+        gateway,
+        dns,
+        dns2,
+        domain,
+        wins,
+        dhcpstart,
+        dhcpend,
+        interface
+    FROM networks
+    WHERE 1 = 1"
     . ($use_network_authtype ? " AND (networks.authtype & " . SESSIONTYPE_DHCP . ") > 0" : '')
     . (empty($networks) ? '' : " AND UPPER(name) IN ('" . implode("','", array_map('mb_strtoupper', $networks)) . "')") . "
-	ORDER BY interface, name", 'id');
+    ORDER BY interface, name",
+    'id'
+);
 if (empty($networks)) {
-    die("Fatal error: No networks selected for processing, exiting." . PHP_EOL);
+    die('Fatal error: No networks selected for processing, exiting.' . PHP_EOL);
 }
 
 // fix interface names
@@ -221,7 +126,7 @@ foreach ($networks as &$network) {
 unset($network);
 
 // customer groups
-$customergroups = ConfigHelper::getConfig('dhcp.customergroups', '', true);
+$customergroups = ConfigHelper::getConfig($config_section . '.customergroups', '', true);
 
 // prepare customergroups in sql query
 if (isset($options['customergroups'])) {
@@ -259,7 +164,7 @@ if (!empty($customergroups)) {
 
 $fh = fopen($config_file, "w");
 if (empty($fh)) {
-    die("Fatal error: Unable to write " . $config_file . ", exiting." . PHP_EOL);
+    die('Fatal error: Unable to write ' . $config_file . ', exiting.' . PHP_EOL);
 }
 
 // prefix
@@ -280,7 +185,7 @@ fwrite(
 $prefix = "";
 if (!empty($CONFIG['dhcp']['options'])) {
     foreach ($CONFIG['dhcp']['options'] as $name => $value) {
-        $prefix .= "option " . $name . " " . $value . ";\n";
+        $prefix .= 'option ' . $name . ' ' . $value . ";\n";
     }
 }
 fwrite($fh, $prefix . "\n");
@@ -327,31 +232,31 @@ foreach ($networks as $networkid => $net) {
     $range_format = $global_range_format;
     $network_begin = $global_network_begin;
 
-    if (!empty($CONFIG['dhcp-' . $net['name']])) {
-        if (!empty($CONFIG['dhcp-' . $net['name']]['begin'])) {
-            $begin = $CONFIG['dhcp-' . $net['name']]['begin'];
+    if (!empty($CONFIG[$config_section . '-' . $net['name']])) {
+        if (!empty($CONFIG[$config_section . '-' . $net['name']]['begin'])) {
+            $begin = $CONFIG[$config_section . '-' . $net['name']]['begin'];
         }
-        if (!empty($CONFIG['dhcp-' . $net['name']]['default_lease_time'])) {
-            $default_lease = $CONFIG['dhcp-' . $net['name']]['default_lease_time'];
+        if (!empty($CONFIG[$config_section . '-' . $net['name']]['default_lease_time'])) {
+            $default_lease = $CONFIG[$config_section . '-' . $net['name']]['default_lease_time'];
         }
-        if (!empty($CONFIG['dhcp-' . $net['name']]['max_lease_time'])) {
-            $max_lease = $CONFIG['dhcp-' . $net['name']]['max_lease_time'];
+        if (!empty($CONFIG[$config_section . '-' . $net['name']]['max_lease_time'])) {
+            $max_lease = $CONFIG[$config_section . '-' . $net['name']]['max_lease_time'];
         }
-        if (!empty($CONFIG['dhcp-' . $net['name']]['options'])) {
-            $options = array_merge($options, $CONFIG['dhcp-' . $net['name']]['options']);
+        if (!empty($CONFIG[$config_section . '-' . $net['name']]['options'])) {
+            $options = array_merge($options, $CONFIG[$config_section . '-' . $net['name']]['options']);
         }
-        if (!empty($CONFIG['dhcp-' . $net['name']]['range_format'])) {
-            $range_format = $CONFIG['dhcp-' . $net['name']]['range_format'];
+        if (!empty($CONFIG[$config_section . '-' . $net['name']]['range_format'])) {
+            $range_format = $CONFIG[$config_section . '-' . $net['name']]['range_format'];
         }
-        if (!empty($CONFIG['dhcp-' . $net['name']]['network_begin'])) {
-            $network_begin = $CONFIG['dhcp-' . $net['name']]['network_begin'];
+        if (!empty($CONFIG[$config_section . '-' . $net['name']]['network_begin'])) {
+            $network_begin = $CONFIG[$config_section . '-' . $net['name']]['network_begin'];
         }
     } else {
         $begin = '';
     }
 
-    $net_prefix .= $line_prefix . "subnet " . long_ip($net['address']) . " netmask " . long_ip($net['mask'])
-        . " { # Network " . $net['name'] . " (ID: " . $net['id'] . ")\n";
+    $net_prefix .= $line_prefix . 'subnet ' . long_ip($net['address']) . ' netmask ' . long_ip($net['mask'])
+        . ' { # Network ' . $net['name'] . ' (ID: ' . $net['id'] . ")\n";
 
     if (!empty($begin)) {
         $begin = str_replace(
@@ -429,11 +334,18 @@ foreach ($networks as $networkid => $net) {
 
     // get nodes for current network
     $nodes = $DB->GetAll(
-        "SELECT n.id, n.name, mac, INET_NTOA(ipaddr) AS ip,
-            INET_NTOA(ipaddr_pub) AS ip_pub, ownerid FROM vnodes n
-        WHERE netid = ? AND (n.ownerid IS NULL OR 1 = 1"
-        . ($customergroups ? str_replace('%customerid_alias%', 'n.ownerid', $customergroups) : '')
-        . ')'
+        "SELECT
+            n.id,
+            n.name,
+            mac,
+            INET_NTOA(ipaddr) AS ip,
+            INET_NTOA(ipaddr_pub) AS ip_pub,
+            ownerid
+        FROM vnodes n
+        WHERE netid = ?
+            AND (n.ownerid IS NULL OR 1 = 1"
+            . ($customergroups ? str_replace('%customerid_alias%', 'n.ownerid', $customergroups) : '')
+            . ')'
         . ' ORDER BY ipaddr',
         array(
             $networkid,
@@ -459,11 +371,16 @@ foreach ($networks as $networkid => $net) {
         if ($enable_option82) {
             // get data for option 82
             $dhcp_relay = $DB->GetRow(
-                "SELECT nd.id, m.mac, n.port
-						FROM netdevices d, nodes n, nodes nd, macs m
-						WHERE n.id = ? AND n.netdev = d.id
-						AND d.id = nd.netdev AND nd.ownerid IS NULL
-						AND nd.id = m.nodeid",
+                "SELECT
+                    nd.id,
+                    m.mac,
+                    n.port
+                FROM netdevices d, nodes n, nodes nd, macs m
+                WHERE n.id = ?
+                    AND n.netdev = d.id
+                    AND d.id = nd.netdev
+                    AND nd.ownerid IS NULL
+                    AND nd.id = m.nodeid",
                 array($node['id'])
             );
         } else {
@@ -473,7 +390,7 @@ foreach ($networks as $networkid => $net) {
         $macs = explode(",", $node['mac']);
         $hosts = array();
         foreach ($macs as $key => $mac) {
-            $hosts[$mac]['name'] = $node['name'] . ($key == 0 ? "" : "-" . $node['id'] . "-" . $key);
+            $hosts[$mac]['name'] = $node['name'] . ($key == 0 ? '' : '-' . $node['id'] . '-' . $key);
             $hosts[$mac]['fixed_address'] = $node['ip'];
             $hosts[$mac]['id'] = $node['id'];
             $hosts[$mac]['options'] = array();
@@ -486,24 +403,24 @@ foreach ($networks as $networkid => $net) {
         }
 
         // get node configuration from ini
-        $fixed_address = (!empty($CONFIG['dhcp-' . $node['ip']]) ? $node['ip'] : null);
-        $name = (!empty($CONFIG['dhcp-' . $node['name']]) ? $node['name'] : null);
+        $fixed_address = (!empty($CONFIG[$config_section . '-' . $node['ip']]) ? $node['ip'] : null);
+        $name = (!empty($CONFIG[$config_section . '-' . $node['name']]) ? $node['name'] : null);
         $ini_macs = array();
         foreach ($macs as $mac) {
             foreach ($config_macs as $config_mac) {
                 if (preg_match('/' . $config_mac . '/i', $mac)) {
-                    $ini_macs[$mac] = $CONFIG['dhcp-' . $config_mac];
+                    $ini_macs[$mac] = $CONFIG[$config_section . '-' . $config_mac];
                 }
             }
         }
 
         if ($fixed_address != null) {
             foreach ($hosts as $key => $host) {
-                if (!empty($CONFIG['dhcp-' . $fixed_address]['name'])) {
-                    $hosts[$key]['name'] = $CONFIG['dhcp-' . $fixed_address]['name'];
+                if (!empty($CONFIG[$config_section . '-' . $fixed_address]['name'])) {
+                    $hosts[$key]['name'] = $CONFIG[$config_section . '-' . $fixed_address]['name'];
                 }
-                if (!empty($CONFIG['dhcp-' . $fixed_address]['options'])) {
-                    $hosts[$key]['options'] = array_merge($host['options'], $CONFIG['dhcp-' . $fixed_address]['options']);
+                if (!empty($CONFIG[$config_section . '-' . $fixed_address]['options'])) {
+                    $hosts[$key]['options'] = array_merge($host['options'], $CONFIG[$config_section . '-' . $fixed_address]['options']);
                 }
             }
         }
@@ -513,14 +430,14 @@ foreach ($networks as $networkid => $net) {
                 next($hosts);
             }
             if ($host !== false) {
-                if (!empty($CONFIG['dhcp-' . $name]['fixed_address'])) {
-                    $hosts[key($hosts)]['fixed_address'] = $CONFIG['dhcp-' . $name]['fixed_address'];
+                if (!empty($CONFIG[$config_section . '-' . $name]['fixed_address'])) {
+                    $hosts[key($hosts)]['fixed_address'] = $CONFIG[$config_section . '-' . $name]['fixed_address'];
                 }
-                if (!empty($CONFIG['dhcp-' . $name]['hardware_ethernet'])) {
-                    $hosts[key($hosts)]['hardware_ethernet'] = $CONFIG['dhcp-' . $name]['hardware_ethernet'];
+                if (!empty($CONFIG[$config_section . '-' . $name]['hardware_ethernet'])) {
+                    $hosts[key($hosts)]['hardware_ethernet'] = $CONFIG[$config_section . '-' . $name]['hardware_ethernet'];
                 }
-                if (!empty($CONFIG['dhcp-' . $name]['options'])) {
-                    $hosts[key($hosts)]['options'] = array_merge($hosts[key($hosts)]['options'], $CONFIG['dhcp-' . $name]['options']);
+                if (!empty($CONFIG[$config_section . '-' . $name]['options'])) {
+                    $hosts[key($hosts)]['options'] = array_merge($hosts[key($hosts)]['options'], $CONFIG[$config_section . '-' . $name]['options']);
                 }
             }
         }
@@ -538,7 +455,7 @@ foreach ($networks as $networkid => $net) {
 
         foreach ($hosts as $mac => $host) {
             if (empty($node['ownerid']) || !isset($netdevices[$mac])) {
-                $host_content .= "host " . $host['name'] . " { # ID: " . $host['id'] . "\n";
+                $host_content .= 'host ' . $host['name'] . ' { # ID: ' . $host['id'] . "\n";
                 $host_content .= "\thardware ethernet " . $mac . ";\n";
                 $host_content .= "\tfixed-address " . $host['fixed_address'] . ";\n";
                 $mac = preg_replace('/[^0-9a-fA-F]/', '', $mac);
