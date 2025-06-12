@@ -1027,6 +1027,7 @@ version 28-git (????-??-??):
     mechanism of office to PDF file conversion [chilan]
   - enhancement: office document attachments can be merge with other documents attachments if office2pdf mechanism
     is configured/enabled [chilan]
+  - enhancement: support many filled-in files for document templates [chilan]
 
 version 27.0 (2021-08-20):
 
