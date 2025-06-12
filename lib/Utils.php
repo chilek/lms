@@ -1358,6 +1358,32 @@ class Utils
         }
     }
 
+    public static function docTypeByFileName($fileName) {
+        if (preg_match('/^.+\.(?<type>[[:alnum:]+]+)$/i', $fileName, $m)) {
+            return strtolower($m['type']);
+        } else {
+            return false;
+        }
+    }
+
+    public static function docTypeByMimeType($mimeType) {
+        if (preg_match('#html$#i', $mimeType)) {
+            return 'htm';
+        } elseif (preg_match('#^application/rtf$#i', $mimeType)) {
+            return 'rtf';
+        } elseif (preg_match('#^application/vnd.openxmlformats-officedocument.wordprocessingml.document$#i', $mimeType)) {
+            return 'docx';
+        } elseif (preg_match('#^application/vnd.openxmlformats-officedocument.spreadsheetml.sheet$#i', $mimeType)) {
+            return 'xlsx';
+        } elseif (preg_match('#^application/vnd.oasis.opendocument.text.*$#i',$mimeType)) {
+            return 'odt';
+        } elseif (preg_match('#^application/vnd.oasis.opendocument.spreadsheet.*$#i',$mimeType)) {
+            return 'ods';
+        } else {
+            return false;
+        }
+    }
+
     public static function office2pdf(array $params)
     {
         extract($params);
@@ -1366,11 +1392,23 @@ class Utils
             $title = '';
         }
 
+        if (!isset($doctype)) {
+            if (stripos($content, 'PK') !== 0) {
+                $doctype = 'rtf';
+            } else {
+                $doctype = 'docx';
+            }
+        }
+
+        if (!isset($md5sum)) {
+            $md5sum = '';
+        }
+
         if (!isset($office2pdf_command)) {
             $office2pdf_command = ConfigHelper::getConfig('documents.office2pdf_command', '', true);
         }
         if (empty($office2pdf_command)) {
-            return 'Office to PDF file conversion mechanism is not enabled!';
+            throw new Exception('Office to PDF file conversion mechanism is not enabled!');
         }
 
         if ($dest === true) {
@@ -1411,6 +1449,14 @@ class Utils
             $result = proc_close($process);
 
             if (!$result) {
+                // cache pdf file
+                if ($md5sum) {
+                    file_put_contents(
+                        DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2) . DIRECTORY_SEPARATOR . $md5sum . '.pdf',
+                        $content
+                    );
+                }
+
                 if (function_exists('mb_convert_encoding')) {
                     $filename = mb_convert_encoding($title, "ISO-8859-2", "UTF-8");
                 } else {
@@ -1453,7 +1499,7 @@ class Utils
                 }
             }
         } else {
-            return 'Cannot create Office to PDF conversion process!';
+            throw new Exception('Cannot create Office to PDF conversion process!');
         }
 
         return true;
