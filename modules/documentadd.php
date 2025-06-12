@@ -336,6 +336,8 @@ if (isset($_POST['document'])) {
 
             $SMARTY->assign(compact('company_logo', 'company_logo_width', 'project_logo', 'date_format', 'header', 'footer'));
 
+            $outputs = array();
+
             // run template engine
             if (is_readable($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
                 . $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php')) {
@@ -358,20 +360,28 @@ if (isset($_POST['document'])) {
                     . 'default' . DIRECTORY_SEPARATOR . 'engine.php');
             }
 
-            if (!empty($output)) {
-                $file = tempnam(DOC_DIR, 'tmp.file');
-                $fh = fopen($file, 'w');
-                fwrite($fh, $output);
-                fclose($fh);
-
-                $files[] = array(
-                    'tmpname' => $file,
+            if (empty($outputs) && !empty($output)) {
+                $outputs[] = array(
                     'filename' => $engine['output'],
-                    'name' => $engine['output'],
-                    'type' => $engine['content_type'],
-                    'md5sum' => md5_file($file),
-                    'attachmenttype' => 1,
+                    'content-type' => $engine['content_type'],
+                    'output' => $output
                 );
+            }
+
+            if (!empty($outputs)) {
+                foreach ($outputs as $output) {
+                    $file = tempnam(DOC_DIR, 'tmp.file');
+                    file_put_contents($file, $output['output']);
+
+                    $files[] = array(
+                        'tmpname' => $file,
+                        'filename' => $output['filename'],
+                        'name' => $output['filename'],
+                        'type' => $output['content-type'],
+                        'md5sum' => md5_file($file),
+                        'attachmenttype' => 1,
+                    );
+                }
             } else if (empty($error)) {
                 $error['templ'] = trans('Problem during file generation!');
             }

@@ -2465,7 +2465,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         if (empty($error)) {
             foreach ($files as $file) {
-                @mkdir($file['path'], 0700);
+                if (!is_dir($file['path']) && !file_exists($file['path'])) {
+                    @mkdir($file['path'], 0700);
+                }
                 chown($file['path'], $stat['uid']);
                 chgrp($file['path'], $stat['gid']);
                 if (empty($file['tmpname'])) {
@@ -2476,6 +2478,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 } elseif (!file_exists($file['newfile']) && !@rename($file['tmpname'], $file['newfile'])) {
                     $error['files'] = trans('Can\'t save file in "$a" directory!', $file['path']);
                     break;
+                }
+                if (file_exists($file['tmpname'])) {
+                    @unlink($file['tmpname']);
                 }
                 chown($file['newfile'], $stat['uid']);
                 chgrp($file['newfile'], $stat['gid']);

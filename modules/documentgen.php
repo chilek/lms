@@ -308,6 +308,8 @@ if (isset($_POST['document'])) {
 
                 $SMARTY->assign(compact('company_logo', 'company_logo_width', 'project_logo', 'date_format', 'header', 'footer'));
 
+                $outputs = array();
+
                 // run template engine
                 if (is_readable($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
                     . $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php')) {
@@ -330,26 +332,35 @@ if (isset($_POST['document'])) {
                     );
                 }
 
-                if ($output) {
-                    $file = tempnam(DOC_DIR, 'tmp.file');
-                    $fh = fopen($file, 'w');
-                    fwrite($fh, $output);
-                    fclose($fh);
-
-                    $md5sum = md5_file($file);
-                    $path = DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2);
-                    $docfile = array(
-                        'md5sum' => $md5sum,
-                        'type' => $engine['content_type'],
-                        'name' => $engine['output'],
-                        'tmpname' => $file,
-                        'attachmenttype' => 1,
-                        'path' => $path,
-                        'newfile' => $path . DIRECTORY_SEPARATOR . $md5sum,
+                if (empty($outputs) && !empty($output)) {
+                    $outputs[] = array(
+                        'filename' => $engine['output'],
+                        'content-type' => $engine['content_type'],
+                        'output' => $output
                     );
-                    $files[] = $docfile;
-                } else {
-                    $error = trans('Problem during file generation!');
+                }
+
+                if (!empty($outputs)) {
+                    foreach ($outputs as $output) {
+                        $file = tempnam(DOC_DIR, 'tmp.file');
+                        file_put_contents($file, $output['output']);
+
+                        $md5sum = md5_file($file);
+                        $path = DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2);
+
+                        $files[] = array(
+                            'md5sum' => $md5sum,
+                            'type' => $output['content-type'],
+                            'filename' => $output['filename'],
+                            'name' => $output['filename'],
+                            'tmpname' => $file,
+                            'attachmenttype' => 1,
+                            'path' => $path,
+                            'newfile' => $path . DIRECTORY_SEPARATOR . $md5sum,
+                        );
+                    }
+                } else if (empty($error)) {
+                    $error['templ'] = trans('Problem during file generation!');
                 }
             }
 
