@@ -2738,24 +2738,36 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 $document_protected_document_types = $DOCTYPE_ALIASES;
             }
 
+            $ssn_is_present = strpos($document_protection_password, '%ssn') !== false;
+            $authcode_is_present = strpos($document_protection_password, '%authcode') !== false;
+
+            $document_type = ConfigHelper::getConfig('documents.type', ConfigHelper::getConfig('phpui.document_type'));
+            $cache_pdf = ConfigHelper::checkConfig('documents.cache', ConfigHelper::checkConfig('phpui.cache_documents'));
+            $margins = explode(',', ConfigHelper::getConfig('documents.margins', ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5')));
+
             foreach ($document['attachments'] as &$attachment) {
                 $filename = DOC_DIR . DIRECTORY_SEPARATOR . substr($attachment['md5sum'], 0, 2)
                     . DIRECTORY_SEPARATOR . $attachment['md5sum'];
                 $pdf = false;
+
+                $doctype = Utils::docTypeByMimeType($attachment['contenttype']);
+
                 if (file_exists($filename . '.pdf')) {
                     // try to get file from pdf document cache
                     $contents = file_get_contents($filename . '.pdf');
                     $contenttype = 'application/pdf';
-                    $contentname = str_replace('.html', '.pdf', $attachment['filename']);
+                    if (empty($doctype)) {
+                        $contentname = str_replace('.html', '.pdf', $attachment['filename']);
+                    } else {
+                        $contentname = preg_replace('/\.[[:alnum:]]+$/', '.pdf', $attachment['filename']);
+                    }
                     $pdf = true;
                 } else {
                     $contents = file_get_contents($filename);
-                    $document_type = ConfigHelper::getConfig('documents.type', ConfigHelper::getConfig('phpui.document_type'));
                     if (preg_match('/html/i', $attachment['contenttype'])
                         && !empty($document_type)
                         && strtolower($document_type) == 'pdf') {
-                        $margins = explode(",", ConfigHelper::getConfig('documents.margins', ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5')));
-                        if (ConfigHelper::checkConfig('documents.cache', ConfigHelper::checkConfig('phpui.cache_documents'))) {
+                        if ($cache_pdf) {
                             $contents = Utils::html2pdf(array(
                                 'content' => $contents,
                                 'subject' => $document['title'],
@@ -2780,6 +2792,20 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         $pdf = true;
                         $contenttype = 'application/pdf';
                         $contentname = str_replace('.html', '.pdf', $attachment['filename']);
+                    } elseif (preg_match('#^application/(rtf|.+(oasis|opendocument|openxml).+)$#i', $attachment['contenttype'])
+                        && !empty($document_type)
+                        && strtolower($document_type) == 'pdf') {
+                        $contents = Utils::office2pdf(array(
+                            'content' => $contents,
+                            'title' => $document['title'],
+                            'dest' => 'S',
+                            'md5sum' => $cache_pdf ? $attachment['md5sum'] : null,
+                        ));
+
+                        $pdf = true;
+                        $contenttype = 'application/pdf';
+                        $doctype = Utils::docTypeByFileName($attachment['filename']);
+                        $contentname = preg_replace('/\.[[:alnum:]]+$/', '.' . $doctype, $attachment['filename']);
                     } else {
                         $contenttype = $attachment['contenttype'];
                         $contentname = $attachment['filename'];
@@ -2790,9 +2816,6 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 }
 
                 if ($pdf) {
-                    $ssn_is_present = strpos($document_protection_password, '%ssn') !== false;
-                    $authcode_is_present = strpos($document_protection_password, '%authcode') !== false;
-
                     if (!empty($document_protection_password) && !empty($document_protection_command) && isset($document_protected_document_types[$document['type']])
                         && (!$ssn_is_present || strlen($document['ssn']) || $authcode_is_present)) {
                         $customer_data = array(
