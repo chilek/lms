@@ -42,6 +42,7 @@ class OfficeDocument
     private $clone = true;
     private $tempFileName;
     private $variablePrefix = '';
+    private $variableSuffix = '';
 
     public function __construct($fileName, $clone = true)
     {
@@ -119,12 +120,23 @@ class OfficeDocument
         $this->variablePrefix = $variablePrefix;
     }
 
+    public function setVariableSuffix($variableSuffix)
+    {
+        $this->variableSuffix = $variableSuffix;
+    }
+
+    public function setVariablePrefixSuffix($variablePrefix, $variableSuffix)
+    {
+        $this->variablePrefix = $variablePrefix;
+        $this->variableSuffix = $variableSuffix;
+    }
+
     public function replace(array $replacements)
     {
         $this->mainDocumentContent = str_ireplace(
             array_map(
                 function ($variable) {
-                    return $this->variablePrefix . $variable;
+                    return $this->variablePrefix . $variable . $this->variableSuffix;
                 },
                 array_keys($replacements)
             ),
