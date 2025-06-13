@@ -385,6 +385,7 @@ function initAdvancedSelectsTest(selector) {
 				minimumResultsForSearch: 5,
 				selectionCssClass: ':all:',
 				dropdownAutoWidth: true,
+				dropdownParent: $(that).parent(),
 				templateResult: function(result) {
 					var select2 = $(that).data("select2");
 					var search = select2.dropdown.$search;
