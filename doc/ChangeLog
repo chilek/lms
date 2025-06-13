@@ -1028,6 +1028,8 @@ version 28-git (????-??-??):
   - enhancement: office document attachments can be merge with other documents attachments if office2pdf mechanism
     is configured/enabled [chilan]
   - enhancement: support many filled-in files for document templates [chilan]
+  - improvement: ticket add and edit forms: requestor phone and mail fields are selection list updated accordingly
+    to current customer to ticket assignment while entering value outside list are still possible [chilan]
 
 version 27.0 (2021-08-20):
 
