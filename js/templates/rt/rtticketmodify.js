@@ -94,7 +94,6 @@ function update_nodes(data) {
 }
 
 function update_contacts(data) {
-	console.log(data);
 	var values = [];
 	$(data.emails).each(function(idx, item) {
 		values.push({
@@ -103,7 +102,6 @@ function update_contacts(data) {
 		});
 	});
 
-	console.log(values);
 	$('#requestor_mail_combobox')
 		.scombobox('fill', values)
 		.scombobox('val', '');
@@ -116,7 +114,6 @@ function update_contacts(data) {
 		});
 	});
 
-	console.log(values);
 	$('#requestor_phone_combobox')
 		.scombobox('fill', values)
 		.scombobox('val', '');
