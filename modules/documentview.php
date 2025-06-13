@@ -480,7 +480,9 @@ if (!empty($docids)) {
                                     . "\n</div>\n";
                             }
                         } elseif ($pdf) {
-                            if (!$cached_pdf) {
+                            if ($cached_pdf) {
+                                echo file_get_contents($filename);
+                            } else {
                                 $content = file_get_contents($filename);
 
                                 if (preg_match('/html$/i', $doc['contenttype'])) {
@@ -539,10 +541,11 @@ if (!empty($docids)) {
                                         'md5sum' => $cache_pdf ? $doc['md5sum'] : null,
                                     ));
                                 }
+
+                                echo $content;
                             }
                         }
 
-                        echo $content;
                     }
                 }
 
