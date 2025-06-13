@@ -20,6 +20,11 @@
 		display: flex;
 	}
 
+	#requestor_mail_combobox,
+	#requestor_phone_combobox {
+		width: 20em;
+	}
+
 </style>
 
 {box_container id="ticket"}
@@ -111,18 +116,46 @@
 				</div>
 				<div class="lms-ui-box-row indicated-person">
 					<div class="lms-ui-box-row-label">
-						<label for="requestor_mail">{trans("E-mail")}</label>
+						<label for="requestor_mail_combobox">{trans("E-mail")}</label>
 					</div>
 					<div class="lms-ui-box-row-field">
-						<input type="text" name="ticket[requestor_mail]" id="requestor_mail" value="{$ticket.requestor_mail}" {tip trigger="requestor_mail"}>
+						<input type="hidden" name="ticket[requestor_customer_mail]" id="requestor_customer_mail"
+							value="{$ticket.requestor_customer_mail}">
+						<input type="hidden" name="ticket[requestor_mail]" id="requestor_mail"
+							value="{$ticket.requestor_mail}">
+						<select id="requestor_mail_combobox" autocomplete="off"
+								data-value="{$ticket.requestor_mail}"
+								data-alt-invalid-field="#requestor_mail"
+								data-id-value="{$ticket.requestor_customer_mail}"
+								data-alt-field="#requestor_customer_mail"
+								{tip class="lms-ui-combobox" trigger="requestor_mail"}>
+							{foreach $customercontacts.emails as $item}
+								<option value="{$item.contact}"{if $item.contact == $ticket.requestor_customer_mail} selected{/if}
+									>{$item.contact}{if !empty($item.name)} ({$item.name|escape}){/if}</option>
+							{/foreach}
+						</select>
 					</div>
 				</div>
 				<div class="lms-ui-box-row indicated-person">
 					<div class="lms-ui-box-row-label">
-						<label for="requestor_phone">{trans("Phone")}</label>
+						<label for="requestor_phone_combobox">{trans("Phone")}</label>
 					</div>
 					<div class="lms-ui-box-row-field">
-						<input type="text" name="ticket[requestor_phone]" id="requestor_phone" value="{$ticket.requestor_phone}" {tip trigger="requestor_phone"}>
+						<input type="hidden" name="ticket[requestor_customer_phone]" id="requestor_customer_phone"
+							value="{$ticket.requestor_customer_phone}">
+						<input type="hidden" name="ticket[requestor_phone]" id="requestor_phone"
+							value="{$ticket.requestor_phone}">
+						<select id="requestor_phone_combobox" autocomplete="off"
+							data-value="{$ticket.requestor_phone}"
+							data-alt-invalid-field="#requestor_phone"
+							data-id-value="{$ticket.requestor_customer_phone}"
+							data-alt-field="#requestor_customer_phone"
+							{tip class="lms-ui-combobox" trigger="requestor_phone"}>
+							{foreach $customercontacts.phones as $item}
+								<option value="{$item.contact}"{if $item.contact == $ticket.requestor_customer_phone} selected{/if}
+									>{$item.contact}{if !empty($item.name)} ({$item.name|escape}){/if}</option>
+							{/foreach}
+						</select>
 					</div>
 				</div>
 			{/box_row}

@@ -67,6 +67,9 @@ $(function() {
 			.closest('.lms-ui-box-row').toggleClass('blend', !data.list.length)
 			.removeAttr('data-tooltip').attr('title', data.list.length ? '' : $t("No parent ticket is selected!"));
 	});
+
+	$('#requestor_mail_combobox').scombobox('val', '');
+	$('#requestor_phone_combobox').scombobox('val', '');
 });
 
 function change_customer(customer_selector, address_selector) {
@@ -77,6 +80,7 @@ function change_customer(customer_selector, address_selector) {
 			updateAdvancedSelectsTest('#customer_addresses');
 		}
 		xajax_select_location($(customer_selector).val(), $(address_selector).val());
+		xajax_update_contacts($(customer_selector).val());
 	});
 }
 
@@ -87,6 +91,35 @@ function update_nodes(data) {
 	});
 	$('.node-list').html(options);
 	$('.node-row').toggle(data.length > 0);
+}
+
+function update_contacts(data) {
+	console.log(data);
+	var values = [];
+	$(data.emails).each(function(idx, item) {
+		values.push({
+			value: item.contact,
+			text: item.contact + (item.name.length ? ' (' + escapeHtml(item.name) + ')' : '')
+		});
+	});
+
+	console.log(values);
+	$('#requestor_mail_combobox')
+		.scombobox('fill', values)
+		.scombobox('val', '');
+
+	values = [];
+	$(data.phones).each(function(idx, item) {
+		values.push({
+			value: item.contact,
+			text: item.contact + (item.name.length ? ' (' + escapeHtml(item.name) + ')' : '')
+		});
+	});
+
+	console.log(values);
+	$('#requestor_phone_combobox')
+		.scombobox('fill', values)
+		.scombobox('val', '');
 }
 
 function initCustomerSelection() {

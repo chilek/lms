@@ -538,7 +538,11 @@ if (isset($_POST['ticket'])) {
     $ticketedit['customerid'] = ($ticketedit['custid'] ?: 0);
 
     if ($ticketedit['requestor_userid'] == '0') {
-        if (empty($ticketedit['requestor_name']) && empty($ticketedit['requestor_mail']) && empty($ticketedit['requestor_phone'])) {
+        if (empty($ticketedit['requestor_name'])
+            && empty($ticketedit['requestor_mail'])
+            && empty($ticketedit['requestor_customer_mail'])
+            && empty($ticketedit['requestor_phone'])
+            && empty($ticketedit['requestor_customer_phone'])) {
             $error['requestor_name'] = $error['requestor_mail'] = $error['requestor_phone'] =
                 trans('At least requestor name, mail or phone should be filled!');
         }
@@ -610,10 +614,18 @@ if (isset($_POST['ticket'])) {
             'requestor_userid' => empty($ticketedit['requestor_userid']) ? null : $ticketedit['requestor_userid'],
             'requestor' => !empty($ticketedit['requestor_userid']) || $ticketedit['requestor_userid'] == ''
                 || empty($ticketedit['requestor_name']) ? '' : $ticketedit['requestor_name'],
-            'requestor_mail' => !empty($ticketedit['requestor_userid']) || $ticketedit['requestor_userid'] == ''
-                || empty($ticketedit['requestor_mail']) ? null : $ticketedit['requestor_mail'],
-            'requestor_phone' => !empty($ticketedit['requestor_userid']) || $ticketedit['requestor_userid'] == ''
-                || empty($ticketedit['requestor_phone']) ? null : $ticketedit['requestor_phone'],
+            'requestor_mail' => !empty($ticketedit['requestor_userid'])
+                || $ticketedit['requestor_userid'] == ''
+                || empty($ticketedit['requestor_mail'])
+                && empty($ticketedit['requestor_customer_mail'])
+                    ? null
+                    : (empty($ticketedit['requestor_mail']) ? $ticketedit['requestor_customer_mail'] : $ticketedit['requestor_mail']),
+            'requestor_phone' => !empty($ticketedit['requestor_userid'])
+                || $ticketedit['requestor_userid'] == ''
+                || empty($ticketedit['requestor_phone']
+                && empty($ticketedit['requestor_customer_phone']))
+                    ? null
+                    : (empty($ticketedit['requestor_phone']) ? $ticketedit['requestor_customer_phone'] : $ticketedit['requestor_phone']),
             'parentid' => empty($ticketedit['parentid']) ? null : $ticketedit['parentid'],
             'relatedtickets' => $ticketedit['relatedtickets'] ?? array(),
             'customcreatetime' => isset($customcreatetime) ? $customcreatetime : null,
@@ -885,6 +897,34 @@ if (!empty($ticket['customerid'])) {
     $addresses = $LMS->getCustomerAddresses($ticket['customerid']);
     $LMS->determineDefaultCustomerAddress($addresses);
     $SMARTY->assign('addresses', $addresses);
+
+    $emails = array_filter(
+        $LMS->getCustomerContacts($ticket['customerid'], CONTACT_EMAIL),
+        function ($contact) {
+            return !($contact['type'] & CONTACT_DISABLED);
+        }
+    );
+    usort(
+        $emails,
+        function ($a, $b) {
+            return ($a['contact'] < $b['contact']) ? -1 : 1;
+        }
+    );
+
+    $phones = array_filter(
+        $LMS->getCustomerContacts($ticket['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE),
+        function ($contact) {
+            return !($contact['type'] & CONTACT_DISABLED);
+        }
+    );
+    usort(
+        $phones,
+        function ($a, $b) {
+            return ($a['contact'] < $b['contact']) ? -1 : 1;
+        }
+    );
+
+    $SMARTY->assign('customercontacts', compact('emails', 'phones'));
 }
 
 $SMARTY->assign(

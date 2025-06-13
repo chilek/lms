@@ -127,7 +127,11 @@ if (isset($_POST['ticket'])) {
     }
 
     if ($ticket['requestor_userid'] == '0') {
-        if (empty($ticket['requestor_name']) && empty($ticket['requestor_mail']) && empty($ticket['requestor_phone'])) {
+        if (empty($ticket['requestor_name'])
+            && empty($ticket['requestor_mail'])
+            && empty($ticket['requestor_customer_mail'])
+            && empty($ticket['requestor_phone'])
+            && empty($ticket['requestor_customer_phone'])) {
             $error['requestor_name'] = $error['requestor_mail'] = $error['requestor_phone'] =
                 trans('At least requestor name, mail or phone should be filled!');
         }
@@ -176,7 +180,9 @@ if (isset($_POST['ticket'])) {
         if (!$ticket['customerid']) {
             if ((!isset($ticket['requestor_name']) || $ticket['requestor_name'] == '')
                 && (!isset($ticket['requestor_phone']) || $ticket['requestor_phone'] == '')
-                && (!isset($ticket['requestor_mail']) || $ticket['requestor_mail'] == '')) {
+                && (!isset($ticket['requestor_customer_phone']) || $ticket['requestor_customer_phone'] == '')
+                && (!isset($ticket['requestor_mail']) || $ticket['requestor_mail'] == '')
+                && (!isset($ticket['requestor_customer_mail']) || $ticket['requestor_customer_mail'] == '')) {
                 $userinfo = $LMS->GetUserInfo($userid);
                 $ticket['requestor_userid'] = $userinfo['id'];
             }
@@ -209,8 +215,8 @@ if (isset($_POST['ticket'])) {
         } else {
             $ticket['requestor_userid'] = null;
             $ticket['requestor'] = empty($ticket['requestor_name']) ? '' : $ticket['requestor_name'];
-            $ticket['requestor_mail'] = empty($ticket['requestor_mail']) ? null : $ticket['requestor_mail'];
-            $ticket['requestor_phone'] = empty($ticket['requestor_phone']) ? null : $ticket['requestor_phone'];
+            $ticket['requestor_mail'] = empty($ticket['requestor_mail']) ? (empty($ticket['requestor_customer_mail']) ? null : $ticket['requestor_customer_mail']) : $ticket['requestor_mail'];
+            $ticket['requestor_phone'] = empty($ticket['requestor_phone']) ? (empty($ticket['requestor_customer_phone']) ? null : $ticket['requestor_customer_phone']) : $ticket['requestor_phone'];
         }
 
         $ticket['verifierid'] = empty($ticket['verifierid']) ? null : $ticket['verifierid'];
@@ -656,6 +662,34 @@ if (!empty($ticket['customerid'])) {
     $addresses = $LMS->getCustomerAddresses($ticket['customerid']);
     $LMS->determineDefaultCustomerAddress($addresses);
     $SMARTY->assign('addresses', $addresses);
+
+    $emails = array_filter(
+        $LMS->getCustomerContacts($ticket['customerid'], CONTACT_EMAIL),
+        function ($contact) {
+            return !($contact['type'] & CONTACT_DISABLED);
+        }
+    );
+    usort(
+        $emails,
+        function ($a, $b) {
+            return ($a['contact'] < $b['contact']) ? -1 : 1;
+        }
+    );
+
+    $phones = array_filter(
+        $LMS->getCustomerContacts($ticket['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE),
+        function ($contact) {
+            return !($contact['type'] & CONTACT_DISABLED);
+        }
+    );
+    usort(
+        $phones,
+        function ($a, $b) {
+            return ($a['contact'] < $b['contact']) ? -1 : 1;
+        }
+    );
+
+    $SMARTY->assign('customercontacts', compact('emails', 'phones'));
 }
 
 $SMARTY->assign(

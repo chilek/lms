@@ -145,4 +145,41 @@ function queue_changed($queue)
     return $JSResponse;
 }
 
-$LMS->RegisterXajaxFunction(array('GetCategories', 'select_location', 'netnode_changed', 'queue_changed'));
+function update_contacts($customerid)
+{
+    global $LMS;
+
+    $JSResponse = new xajaxResponse();
+
+    $emails = array_filter(
+        $LMS->getCustomerContacts($customerid, CONTACT_EMAIL),
+        function ($contact) {
+            return !($contact['type'] & CONTACT_DISABLED);
+        }
+    );
+    usort(
+        $emails,
+        function ($a, $b) {
+            return ($a['contact'] < $b['contact']) ? -1 : 1;
+        }
+    );
+
+    $phones = array_filter(
+        $LMS->getCustomerContacts($customerid, CONTACT_LANDLINE | CONTACT_MOBILE),
+        function ($contact) {
+            return !($contact['type'] & CONTACT_DISABLED);
+        }
+    );
+    usort(
+        $phones,
+        function ($a, $b) {
+            return ($a['contact'] < $b['contact']) ? -1 : 1;
+        }
+    );
+
+    $JSResponse->call('update_contacts', compact('emails', 'phones'));
+
+    return $JSResponse;
+}
+
+$LMS->RegisterXajaxFunction(array('GetCategories', 'select_location', 'netnode_changed', 'queue_changed', 'update_contacts'));
