@@ -43,6 +43,7 @@ class OfficeDocument
     private $tempFileName;
     private $variablePrefix = '';
     private $variableSuffix = '';
+    private $encoding = 'UTF-8';
 
     public function __construct($fileName, $clone = true)
     {
@@ -73,6 +74,23 @@ class OfficeDocument
 
         if ($this->type === self::TYPE_RTF) {
             $this->mainDocumentContent = file_get_contents($this->fileName);
+
+            if (preg_match('#\\\ansi\\\ansi(?<charset>[^\\\]+)\\\#i', $this->mainDocumentContent, $m)) {
+                $this->encoding = strtoupper(
+                    str_replace(
+                        array(
+                            'cpg',
+                        ),
+                        array(
+                            'cp',
+                        ),
+                        $m['charset']
+                    )
+                );
+            } else {
+                $this->encoding = 'CP1252';
+            }
+
             return;
         }
 
@@ -133,6 +151,18 @@ class OfficeDocument
 
     public function replace(array $replacements)
     {
+        if ($this->encoding != 'UTF-8') {
+            foreach ($replacements as &$replacement) {
+                $newReplacement = iconv('UTF-8', $this->encoding, $replacement);
+                $replacement = '';
+                for ($i = 0; $i < strlen($newReplacement); $i++) {
+                    $ord = ord($newReplacement[$i]);
+                    $replacement .= $ord >= 128 ? sprintf("\\'%02x", $ord) : $newReplacement[$i];
+                }
+            }
+            unset($replacement);
+        }
+
         $this->mainDocumentContent = str_ireplace(
             array_map(
                 function ($variable) {
