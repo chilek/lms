@@ -57,7 +57,7 @@
 {block name="customerbalancebox"}
 	{if (ConfigHelper::checkPrivilege('read_only') || ConfigHelper::checkPrivilege('finances_view') || ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management'))
 		&& !ConfigHelper::checkPrivilege('hide_finances')}
-		{include file="customer/customerbalancebox.html" limit=-10}
+		{include file="customer/customerbalancebox.html" limit=intval(ConfigHelper::getConfig('customers.financial_operation_list_default_limit', 10)) * -1}
 	{/if}
 {/block}
 </div>
