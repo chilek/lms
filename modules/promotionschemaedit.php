@@ -236,15 +236,65 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
 
     echo json_encode(array('result' => $result));
     die;
-} elseif ($action == 'change-permissions' && isset($_POST['users'], $_POST['assignments'], $_POST['action'])) {
-    $result = $LMS->changePromotionSchemaTariffPermissions(
-        $_GET['id'],
-        array(
-            'users' => $_POST['users'],
-            'assignments' => $_POST['assignments'],
-            'action' => $_POST['action'],
-        )
-    );
+} elseif ($action == 'change-assignments' && isset($_POST['action'])) {
+    switch ($_POST['action']) {
+        case 'grant':
+        case 'revoke':
+            if (isset($_POST['users'], $_POST['assignments'])) {
+                $result = $LMS->changePromotionSchemaTariffPermissions(
+                    $_GET['id'],
+                    array(
+                        'users' => $_POST['users'],
+                        'assignments' => $_POST['assignments'],
+                        'action' => $_POST['action'],
+                    )
+                );
+            }
+
+            break;
+        case 'delete':
+            if (isset($_POST['assignments'])) {
+                $assignments = Utils::filterIntegers($_POST['assignments']);
+                if (!empty($assignments)) {
+                    foreach ($assignments as $aid) {
+                        if ($SYSLOG) {
+                            $assign = $DB->GetRow(
+                                'SELECT
+                                    promotionschemaid,
+                                    tariffid,
+                                    promotionid
+                                FROM promotionassignments a
+                                JOIN promotionschemas s ON s.id = a.promotionschemaid
+                                WHERE a.id = ?',
+                                array($aid)
+                            );
+                            $args = array(
+                                SYSLOG::RES_PROMOASSIGN => $aid,
+                                SYSLOG::RES_PROMOSCHEMA => $assign['promotionschemaid'],
+                                SYSLOG::RES_TARIFF => $assign['tariffid'],
+                                SYSLOG::RES_PROMO => $assign['promotionid']
+                            );
+                            $SYSLOG->AddMessage(SYSLOG::RES_PROMOASSIGN, SYSLOG::OPER_DELETE, $args);
+                        }
+
+                        $DB->Execute(
+                            'DELETE FROM promotionassignments
+                            WHERE id = ?',
+                            array(
+                                $aid,
+                            )
+                        );
+                    }
+                }
+            }
+
+            break;
+    }
+
+    $data['servicetype'] = $_POST['form']['servicetype'];
+    $data['tags'] = $_POST['form']['tags'] ?? array();
+    $data['alltariffs'] = empty($_POST['form']['alltariffs']) ? 0 : 1;
+    $SESSION->save('psdform', $data);
 
     include(MODULES_DIR . DIRECTORY_SEPARATOR . 'promotionschemainfo.php');
     die;
