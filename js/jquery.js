@@ -420,6 +420,9 @@ function initAdvancedSelectsTest(selector) {
 					if (option.is('.blend')) {
 						classes.push('blend');
 					}
+					if (option.css('display') == 'none') {
+						return null;
+					}
 					return $('<span' + (classes.length ? ' class="' + classes.join(' ') + '"' : '') + '>' +
 						(option.is("[data-icon]") ?
 								'<i class="' + option.attr('data-icon') + '"></i>&nbsp'
