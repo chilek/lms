@@ -1032,6 +1032,7 @@ version 28-git (????-??-??):
     to current customer to ticket assignment while entering value outside list are still possible [chilan]
   - improvement: 'customers.financial_operation_list_default_limit' with default value of '10' controls how many
     financial operations in customer balance box are presented on single page by default [chilan]
+  - enhancement: many promotion schema tariff assignments can be deleted in single action [chilan]
 
 version 27.0 (2021-08-20):
 
