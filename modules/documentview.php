@@ -545,7 +545,6 @@ if (!empty($docids)) {
                                 echo $content;
                             }
                         }
-
                     }
                 }
 
