@@ -5316,6 +5316,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $this->db->LockTables($tables);
 
         $currtime = time();
+        if ($proforma['cdate'] > $currtime) {
+            $currtime = $proforma['cdate'];
+        }
 
         $paytype = intval(ConfigHelper::getConfig('invoices.proforma_conversion_paytype'));
         $comment = ConfigHelper::getConfig('invoices.proforma_conversion_comment_format', '%comment');
