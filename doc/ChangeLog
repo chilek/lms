@@ -1033,6 +1033,7 @@ version 28-git (????-??-??):
   - improvement: 'customers.financial_operation_list_default_limit' with default value of '10' controls how many
     financial operations in customer balance box are presented on single page by default [chilan]
   - enhancement: many promotion schema tariff assignments can be deleted in single action [chilan]
+  - enhancement: bin/lms-proforma-transform.php backend script supports --customer parameter/option [chilan]
 
 version 27.0 (2021-08-20):
 
