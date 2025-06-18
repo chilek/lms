@@ -1034,6 +1034,8 @@ version 28-git (????-??-??):
     financial operations in customer balance box are presented on single page by default [chilan]
   - enhancement: many promotion schema tariff assignments can be deleted in single action [chilan]
   - enhancement: bin/lms-proforma-transform.php backend script supports --customer parameter/option [chilan]
+  - enhancement: user group filter allows to narrow user selection filter items in event list and schedule
+    forms [chilan]
 
 version 27.0 (2021-08-20):
 
