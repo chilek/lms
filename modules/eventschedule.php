@@ -86,6 +86,7 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
 
     $filter['userand'] = isset($_POST['userand']) ? intval($_POST['userand']) : 0;
     $filter['userid'] = $_POST['userid'] ?? array();
+    $filter['usergroups'] = $_POST['usergroups'] ?? null;
     $filter['customerid'] = $_POST['customerid'] ?? null;
     $filter['type'] = $_POST['type'] ?? null;
     $filter['privacy'] = isset($_POST['privacy']) ? intval($_POST['privacy']) : null;
@@ -127,6 +128,10 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
 
     if (isset($_GET['userid'])) {
         $filter['userid'] = $_GET['userid'];
+    }
+
+    if (isset($_GET['usergroups'])) {
+        $filter['usergroups'] = $_GET['usergroups'];
     }
 
     if (isset($_GET['customerid'])) {
@@ -379,6 +384,22 @@ $SESSION->add_history_entry();
 $SESSION->remove('backid');
 
 $today = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
+
+$visible_users = null;
+$usergroups = $LMS->UsergroupGetList();
+if (!empty($usergroups)) {
+    if (!empty($filter['usergroups'])) {
+        $visible_users = array();
+        foreach ($usergroups as $usergroup) {
+            if (!empty($usergroup['users']) && in_array($usergroup['id'], $filter['usergroups'])) {
+                $visible_users = array_merge($visible_users, explode(',', $usergroup['users']));
+            }
+        }
+        $visible_users = array_unique($visible_users);
+        $visible_users = array_combine($visible_users, $visible_users);
+    }
+}
+
 $SMARTY->assign(array(
     'today' => $today,
     'period' => $LMS->GetTimetableRange(),
@@ -388,6 +409,8 @@ $SMARTY->assign(array(
     'userlistcount' => $userlistcount,
     'usereventlistdates' => $usereventlistdates,
     'usereventlistgrid' => $usereventlistgrid,
+    'visible_users' => $visible_users,
+    'usergroups' => $usergroups,
     'days' => $days,
     'daylist' => $daylist,
     'date' => $date,

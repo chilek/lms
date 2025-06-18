@@ -64,6 +64,7 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
 
     $filter['userand'] = isset($_POST['userand']) ? intval($_POST['userand']) : 0;
     $filter['userid'] = $_POST['a'] ?? null;
+    $filter['usergroups'] = $_POST['g'] ?? null;
     $filter['customerid'] = $_POST['u'] ?? null;
     $filter['type'] = $_POST['type'] ?? null;
     $filter['privacy'] = isset($_POST['privacy']) ? intval($_POST['privacy']) : null;
@@ -107,6 +108,10 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
 
     if (isset($_GET['a'])) {
         $filter['userid'] = $_GET['a'];
+    }
+
+    if (isset($_GET['g'])) {
+        $filter['usergroups'] = $_GET['g'];
     }
 
     if (isset($_GET['u'])) {
@@ -241,6 +246,20 @@ $SESSION->remove('backid');
 
 $today = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
 
+$visible_users = null;
+$usergroups = $LMS->UsergroupGetList();
+if (!empty($usergroups)) {
+    if (!empty($filter['usergroups'])) {
+        $visible_users = array();
+        foreach ($usergroups as $usergroup) {
+            if (!empty($usergroup['users']) && in_array($usergroup['id'], $filter['usergroups'])) {
+                $visible_users = array_merge($visible_users, explode(',', $usergroup['users']));
+            }
+        }
+        $visible_users = array_unique($visible_users);
+    }
+}
+
 $SMARTY->assign(array(
         'today' => $today,
         'period' => $LMS->GetTimetableRange(),
@@ -252,6 +271,8 @@ $SMARTY->assign(array(
         'error' => $error,
         'netnodes' => $LMS->GetNetNodes(),
         'netdevices' => $LMS->GetNetDevList('name,asc', array('short' => true)),
+        'visible_users' => $visible_users,
+        'usergroups' => $usergroups,
         'overdue_events_only' => $overdue_events_only,
         'getHolidays', getHolidays($year ?? null),
         'customerlist' => $big_networks ? null : $LMS->GetCustomerNames(),

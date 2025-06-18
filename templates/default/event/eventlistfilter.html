@@ -25,11 +25,23 @@
 							{/foreach}
 						</SELECT>
 
+						<select name="g[]" multiple
+							class="lms-ui-advanced-select-test auto-width"
+							data-placeholder="{trans("User groups")}">
+							<option value="">{trans("- any -")}</option>
+							{foreach $usergroups as $usergroup}
+								<option value="{$usergroup.id}" data-users="{$usergroup.users}"
+									{if !empty($filter.usergroups) && in_array($usergroup.id, $filter.usergroups)} selected{/if}
+									>{$usergroup.name|escape}</option>
+							{/foreach}
+						</select>
+
 						{user_selection
 							elemname="a[]"
 							placeholder="Users"
 							multiple=true
 							selected=$filter.userid
+							visible=$visible_users
 							hide_disabled=$hide_disabled_users
 							hide_deleted=$hide_deleted_users
 						}
@@ -59,4 +71,25 @@
 			</div>
 		</TD>
 	</TR>
+
+	<script>
+
+		$(function() {
+			$('[name="g[]"]').change(function() {
+				var that = $(this);
+				var userInGroups = [];
+				var users = that.find('option:selected').attr('data-users');
+				if (typeof(users) !== 'undefined') {
+					userInGroups = that.find('option:selected').attr('data-users').split(',');
+				}
+				userInGroups = [...new Set(userInGroups)];
+				$('[name="a[]"] option').each(function() {
+					$(this).toggle(!userInGroups.length || !that.val().length || userInGroups.indexOf($(this).val()) !== -1);
+					$(this).prop('selected', $(this).prop('selected') && (!userInGroups.length || userInGroups.indexOf($(this).val()) !== -1));
+				});
+				updateAdvancedSelectsTest('[name="a[]"]');
+			});
+		});
+
+	</script>
 {/block}

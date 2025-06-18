@@ -26,7 +26,19 @@
 								<OPTION value="{$id}"{if is_array($filter.type) && in_array($id, $filter.type)} selected{/if}>{$eventtype.label}</OPTION>
 							{/foreach}
 						</SELECT>
-						{trans("User:")}
+
+						{trans("User groups")}
+						<select name="usergroups[]" multiple
+							class="lms-ui-advanced-select-test auto-width"
+							<option value="">{trans("- any -")}</option>
+							{foreach $usergroups as $usergroup}
+								<option value="{$usergroup.id}" data-users="{$usergroup.users}"
+									{if !empty($filter.usergroups) && in_array($usergroup.id, $filter.usergroups)} selected{/if}
+									>{$usergroup.name|escape}</option>
+							{/foreach}
+						</select>
+
+						{trans("User")}
 						<label>
 							{trans("AND")}
 							<input type="hidden" name="userand" value="0">
@@ -44,6 +56,7 @@
 									{continue}
 								{/if}
 								<option value="{$user.id}"
+									{if isset($visible_users) && !isset($visible_users[$user.id])} style="display: none;"{/if}
 									{if is_array($filter.userid) && in_array($user.id, $filter.userid)}} selected{/if}
 									{if !$user.access} data-blend{/if}
 									{if $user.deleted} data-crossed{/if}
@@ -74,4 +87,25 @@
 			</div>
 		</TD>
 	</TR>
+
+	<script>
+
+		$(function() {
+			$('[name="usergroups[]"]').change(function() {
+				var that = $(this);
+				var userInGroups = [];
+				var users = that.find('option:selected').attr('data-users');
+				if (typeof(users) !== 'undefined') {
+					userInGroups = that.find('option:selected').attr('data-users').split(',');
+				}
+				userInGroups = [...new Set(userInGroups)];
+				$('[name="userid[]"] option').each(function() {
+					$(this).toggle(!userInGroups.length || !that.val().length || $(this).val() == '-1' || userInGroups.indexOf($(this).val()) !== -1);
+					$(this).prop('selected', $(this).prop('selected') && (!userInGroups.length || $(this).val() == '-1' || userInGroups.indexOf($(this).val()) !== -1));
+				});
+				$('[name="userid[]"]').trigger('lms:multiselect:updated').trigger('change');
+			});
+		});
+
+	</script>
 {/block}
