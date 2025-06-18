@@ -1366,7 +1366,7 @@ class LMSSmartyPlugins
         $elemid = $params['elemid'] ?? false;
         $elemname = $params['elemname'] ?? false;
         $class = $params['class'] ?? false;
-        $selected = empty($params['selected']) ? false : (is_array($params['selected']) ? $params['selected'] : array($params['selected']));
+        $selected = empty($params['selected']) ? array() : (is_array($params['selected']) ? $params['selected'] : array($params['selected']));
         $placeholder = empty($params['placeholder']) ? trans('Select users') : trans($params['placeholder']);
         $tip = empty($params['tip']) ? trans('Select user(s) (optional)') : $params['tip'];
         $trigger = $params['trigger'] ?? $elemname;
@@ -1374,6 +1374,20 @@ class LMSSmartyPlugins
         $multiple = !empty($params['multiple']);
         $onChange = empty($params['onchange']) ? 'document.filter.submit();' : $params['onchange'];
         $required = !empty($params['required']);
+
+        $selected = array_combine($selected, $selected);
+
+        $visible = $params['visible'] ?? null;
+        if (!empty($visible)) {
+            $visible = array_combine($visible, $visible);
+            foreach ($userlist as &$user) {
+                $user['hidden'] = !isset($visible[$user['id']]);
+                if ($user['hidden'] && isset($selected[$user['id']])) {
+                    unset($selected[$user['id']]);
+                }
+            }
+            unset($user);
+        }
 
         $options = '';
 
@@ -1386,11 +1400,12 @@ class LMSSmartyPlugins
                 $classes[] = 'crossed';
             }
             $options .= '<option value="' . $item['id'] . '"'
-                . (is_array($selected) && in_array($item['id'], $selected) ? ' selected' : '')
+                . (isset($selected[$item['id']]) ? ' selected' : '')
                 . (empty($classes) ? '' : ' class="' . implode(' ', $classes) . '"')
+                . (empty($item['hidden']) ? '' : ' style="display: none;"')
                 . '>' . htmlspecialchars(substr(trans($item['rname']), 0, 40)) . ' (' . $item['login'] . ')</option>';
         }
-        $options .= '<option value="-1"' . (is_array($selected) && in_array('-1', $selected) ? ' selected' : '') . ' data-exclusive> ' . trans('— unassigned —') . '</option>';
+        $options .= '<option value="-1"' . (isset($selected['-1']) ? ' selected' : '') . ' data-exclusive> ' . trans('— unassigned —') . '</option>';
 
         return '<select data-placeholder="' . $placeholder . '"'
             . ($elemname ? ' name="' . $elemname . '"' : '')
