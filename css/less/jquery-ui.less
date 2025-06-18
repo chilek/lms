@@ -167,6 +167,10 @@ html .ui-button.ui-state-disabled:active {
     background-color: @dark;
     border-top: 0;
     padding-right: 6px;
+
+    button {
+      font-weight: bold;
+    }
   }
 }
 
@@ -318,4 +322,8 @@ input[disabled] + .ui-datepicker-trigger {
   .ui-menu-item:not(:last-child) {
     border-bottom: @dotted-line;
   }
+}
+
+.ui-button.lms-ui-button > i {
+  margin-right: 0.3em;
 }
