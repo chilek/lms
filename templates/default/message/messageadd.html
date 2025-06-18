@@ -116,19 +116,23 @@
 	}
 
 	function messageTemplateReceived(subjectelem, subject, messageelem, message, contentType) {
+		var type = $('[name="message[type]"]:checked').val();
+
 		$('#' + subjectelem).val(subject);
 		if (tinyMCE.editors.length) {
 			tinyMCE.editors[0].setContent(message);
 		}
 
-		$('#mailtext').trigger(
-			'lms:visual_editor_change_required',
-			{
-				ifShow: contentType == 'text/html' || contentType == ''
-			}
-		);
-
-		$('textarea[name="message[' + messageelem + ']"]').html(message);
+		var messageElem = $('textarea[name="message[' + messageelem + ']"]');
+		messageElem.html(message);
+		if (type < {$smarty.const.MSG_SMS} || type > {$smarty.const.MSG_ANYSMS}) {
+			messageElem.trigger(
+				'lms:visual_editor_change_required',
+				{
+					ifShow: contentType == 'text/html' || contentType == ''
+				}
+			);
+		}
 	}
 
 </script>
