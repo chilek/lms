@@ -402,6 +402,9 @@ function module_main()
         foreach ($documents as &$doc) {
             $doc['attachments'] = $DB->GetAllBykey('SELECT * FROM documentattachments WHERE docid = ?
 				ORDER BY type DESC, filename', 'id', array($doc['id']));
+            if (empty($doc['attachments'])) {
+                $doc['attachments'] = array();
+            }
 
             switch ($doc['closed']) {
                 case DOC_CLOSED_AFTER_CUSTOMER_SMS:
