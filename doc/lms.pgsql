@@ -2942,6 +2942,7 @@ CREATE TABLE templates (
 	name    varchar(100)	 NOT NULL,
 	subject varchar(255) DEFAULT '' NOT NULL,
 	message	text		 DEFAULT '' NOT NULL,
+	contenttype varchar(255) DEFAULT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (type, name)
 );
@@ -4474,6 +4475,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025060500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025061800');
 
 COMMIT;

@@ -31,8 +31,8 @@ function getMessageTemplate($tmplid, $subjectelem, $messageelem)
     global $DB;
 
     $result = new xajaxResponse();
-    $row = $DB->GetRow('SELECT subject, message FROM templates WHERE id = ?', array($tmplid));
-    $result->call('messageTemplateReceived', $subjectelem, $row['subject'], $messageelem, $row['message']);
+    $row = $DB->GetRow('SELECT subject, message, contenttype FROM templates WHERE id = ?', array($tmplid));
+    $result->call('messageTemplateReceived', $subjectelem, $row['subject'], $messageelem, $row['message'], $row['contenttype']);
 
     return $result;
 }
@@ -877,7 +877,16 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 if (empty($msgtmplid)) {
                     break;
                 }
-                $LMS->UpdateMessageTemplate($msgtmplid, $msgtmpltype, null, $message['subject'], null, null, $message['body']);
+                $LMS->UpdateMessageTemplate(
+                    $msgtmplid,
+                    $msgtmpltype,
+                    null,
+                    $message['subject'],
+                    null,
+                    null,
+                    $message['body'],
+                    $html_format ? 'text/html' : 'text/plain'
+                );
                 break;
             case 3:
                 if (!strlen($msgtmplname)) {
@@ -890,7 +899,8 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                         $message['subject'],
                         null,
                         null,
-                        $message['body']
+                        $message['body'],
+                        $html_format ? 'text/html' : 'text/plain'
                     );
                 }
                 break;

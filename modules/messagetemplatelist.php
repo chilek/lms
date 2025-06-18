@@ -45,7 +45,11 @@ if (isset($_GET['action'])) {
             if ($p['type'] == TMPL_SMS) {
                 $body_type = 'text';
             } else {
-                $body_type = 'html';
+                if (empty($p['content-type'])) {
+                    $body_type = empty($p['wysiwyg']['html-body']) ? 'text' : 'html';
+                } else {
+                    $body_type = $p['content-type'];
+                }
             }
             if (!strlen($p[$body_type . '-body'])) {
                 $error[$_GET['action'] . '-template-' . $body_type . '-body'] = trans('Empty message template body!');
@@ -62,7 +66,8 @@ if (isset($_GET['action'])) {
                         $p['subject'],
                         $p['helpdesk-queues'] ?? null,
                         $p['helpdesk-message-types'] ?? null,
-                        $body
+                        $body,
+                        $body_type
                     );
                 } else {
                     $id = $LMS->UpdateMessageTemplate(
@@ -72,7 +77,8 @@ if (isset($_GET['action'])) {
                         $p['subject'],
                         $p['helpdesk-queues'] ?? null,
                         $p['helpdesk-message-types'] ?? null,
-                        $body
+                        $body,
+                        $body_type
                     );
                 }
 

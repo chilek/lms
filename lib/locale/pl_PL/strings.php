@@ -5431,6 +5431,7 @@ $_LANG['new window'] = 'nowe okno';
 $_LANG['<!message>helpdesk'] = 'helpdesk';
 
 $_LANG['<!message-type>Message types:'] = 'Rodzaje wiadomości';
+$_LANG['<!message-type>Message types'] = 'Rodzaje wiadomości';
 $_LANG['<!message-type>message'] = 'wiadomość';
 $_LANG['<!message-type>note'] = 'notatka';
 
@@ -6215,3 +6216,8 @@ $_LANG['Invalid format of KSeF token!'] = 'Niepoprawny format tokenu KSeF!';
 
 $_LANG['Office to PDF file conversion mechanism is not enabled!'] = 'Mechanizm konwersji plików biurowych do PDF nie jest aktywny!';
 $_LANG['Cannot create Office to PDF conversion process!'] = 'Niemożliwe utworzenie procesu konwersji plików biurowych do PDF!';
+
+$_LANG['— based on \'visual editor\' option —'] = '— bazuje na opcji \'edytor wizualny\' —';
+$_LANG['HTML'] = 'HTML';
+$_LANG['plain text'] = 'zwykły tekst';
+$_LANG['Queues'] = 'Kolejki';

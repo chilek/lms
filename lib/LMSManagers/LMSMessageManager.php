@@ -90,16 +90,20 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
         );
     }
 
-    public function AddMessageTemplate($type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message)
+    public function AddMessageTemplate($type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype = 'text')
     {
         $args = array(
             'type' => $type,
             'name' => $name,
             'subject' => $subject,
             'message' => $message,
+            'contenttype' => stripos($contenttype, 'html') === false ? 'text/plain' : 'text/html',
         );
-        if ($this->db->Execute('INSERT INTO templates (type, name, subject, message)
-			VALUES (?, ?, ?, ?)', array_values($args))) {
+        if ($this->db->Execute(
+            'INSERT INTO templates (type, name, subject, message, contenttype)
+            VALUES (?, ?, ?, ?, ?)',
+            array_values($args)
+        )) {
             $id = $this->db->GetLastInsertID('templates');
 
             if ($this->syslog) {
@@ -127,22 +131,31 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
         return false;
     }
 
-    public function UpdateMessageTemplate($id, $type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message)
+    public function UpdateMessageTemplate($id, $type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype = 'text')
     {
         $args = array(
             'type' => $type,
             'name' => $name,
             'subject' => $subject,
             'message' => $message,
+            'contenttype' => $contenttype == 'html' ? 'text/html' : 'text/plain',
             SYSLOG::RES_TMPL => intval($id),
         );
         if (empty($name)) {
             unset($args['name']);
-            $res = $this->db->Execute('UPDATE templates SET type = ?, subject = ?, message = ?
-				WHERE id = ?', array_values($args));
+            $res = $this->db->Execute(
+                'UPDATE templates
+                SET type = ?, subject = ?, message = ?, contenttype = ?
+                WHERE id = ?',
+                array_values($args)
+            );
         } else {
-            $res = $this->db->Execute('UPDATE templates SET type = ?, name = ?, subject = ?, message = ?
-				WHERE id = ?', array_values($args));
+            $res = $this->db->Execute(
+                'UPDATE templates
+                SET type = ?, name = ?, subject = ?, message = ?, contenttype = ?
+                WHERE id = ?',
+                array_values($args)
+            );
         }
         if ($res && $this->syslog) {
             $args[SYSLOG::RES_TMPL] = $id;
@@ -191,7 +204,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
         $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache, $this->syslog);
         $queues = $helpdesk_manager->GetMyQueues();
 
-        return $this->db->GetAll('SELECT t.id, t.type, t.name, t.subject, t.message,
+        return $this->db->GetAll('SELECT t.id, t.type, t.name, t.subject, t.message, t.contenttype,
 				tt.messagetypes, tq.queues, tq.queuenames
 			FROM templates t
 			LEFT JOIN (

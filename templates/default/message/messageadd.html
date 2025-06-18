@@ -115,11 +115,19 @@
 		}
 	}
 
-	function messageTemplateReceived(subjectelem, subject, messageelem, message) {
+	function messageTemplateReceived(subjectelem, subject, messageelem, message, contentType) {
 		$('#' + subjectelem).val(subject);
 		if (tinyMCE.editors.length) {
 			tinyMCE.editors[0].setContent(message);
 		}
+
+		$('#mailtext').trigger(
+			'lms:visual_editor_change_required',
+			{
+				ifShow: contentType == 'text/html' || contentType == ''
+			}
+		);
+
 		$('textarea[name="message[' + messageelem + ']"]').html(message);
 	}
 

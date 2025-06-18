@@ -61,7 +61,7 @@
 	<TBODY class="lms-ui-multi-check">
 		{foreach $templates as $template}
 		<TR class="highlight" data-template-id="{$template.id}">
-			<TD class="nobr text-center" data-template-type="{$template.type}">
+			<TD class="nobr text-center" data-template-type="{$template.type}" data-template-content-type="{$template.contenttype}">
 				<i class="{$_MESSAGETEMPLATES[$template.type].class}" title="{$_MESSAGETEMPLATES[$template.type].label}"></i>
 			</TD>
 			<TD class="nobr" data-template-name="{$template.name|escape}">
