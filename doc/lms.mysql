@@ -52,6 +52,7 @@ DROP TABLE IF EXISTS userdivisions;
 DROP TABLE IF EXISTS usergroups;
 DROP TABLE IF EXISTS rttemplatetypes;
 DROP TABLE IF EXISTS rttemplatequeues;
+DROP TABLE IF EXISTS templateattachments;
 DROP TABLE IF EXISTS templates;
 DROP TABLE IF EXISTS logmessagedata;
 DROP TABLE IF EXISTS logmessagekeys;
@@ -3030,6 +3031,20 @@ CREATE TABLE templates (
 	UNIQUE KEY name (type, name)
 ) ENGINE=InnoDB;
 
+# --------------------------------------------------------
+#
+# Structure of table templateattachments
+#
+CREATE TABLE templateattachments (
+	id int(11) NOT NULL auto_increment,
+	templateid integer NOT NULL,
+	filename varchar(255) 	DEFAULT '' NOT NULL,
+	contenttype varchar(255) DEFAULT '' NOT NULL,
+	PRIMARY KEY (id),
+	CONSTRAINT templateattachments_templateid_fkey
+		FOREIGN KEY (templateid) REFERENCES templates (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
 # ---------------------------------------------------
 #
 # Structure of table "rttemplatetypes"
@@ -4435,4 +4450,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025061800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025062000');

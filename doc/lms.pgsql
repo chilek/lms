@@ -2948,6 +2948,21 @@ CREATE TABLE templates (
 );
 
 /* ---------------------------------------------------
+ Structure of table "templateattachments"
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS templateattachments_id_seq;
+CREATE SEQUENCE templateattachments_id_seq;
+DROP TABLE IF EXISTS templateattachments CASCADE;
+CREATE TABLE templateattachments (
+	id integer DEFAULT nextval('templateattachments_id_seq'::text) NOT NULL,
+	templateid integer NOT NULL
+		CONSTRAINT templateattachments_templateid_fkey REFERENCES templates (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	filename varchar(255) 	DEFAULT '' NOT NULL,
+	contenttype varchar(255) DEFAULT '' NOT NULL,
+	PRIMARY KEY (id)
+);
+
+/* ---------------------------------------------------
  Structure of table "rttemplatetypes"
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS rttemplatetypes_id_seq;
@@ -4475,6 +4490,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025061800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025062000');
 
 COMMIT;
