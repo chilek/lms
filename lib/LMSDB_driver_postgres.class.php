@@ -129,7 +129,9 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
     public function _driver_disconnect()
     {
         $this->_loaded = false;
-        @pg_close($this->_dblink);
+        if (!empty($this->_dblink)) {
+            @pg_close($this->_dblink);
+        }
     }
 
     /**

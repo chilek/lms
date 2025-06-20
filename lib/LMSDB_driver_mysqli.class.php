@@ -128,7 +128,11 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
      */
     public function _driver_disconnect()
     {
-        return @mysqli_close($this->_dblink);
+        if (empty($this->_dblink)) {
+            return true;
+        } else {
+            return @mysqli_close($this->_dblink);
+        }
     }
 
     /**
