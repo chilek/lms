@@ -24,7 +24,7 @@
 
 function lmsFileUpload(elemid, formid, new_item_custom_content) {
 	var elem = $("#" + elemid);
-	var formelem = typeof(formid) != 'undefined' ? $('#' + formid) : $(this).closest("form");
+	var formelem = typeof(formid) != 'undefined' && formid.length ? $('#' + formid) : elem.closest("form");
 	var formdata = new FormData(formelem.get(0));
 	var dontScaleImages = elem.find('.dont-scale-images');
 	var files;

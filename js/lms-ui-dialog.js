@@ -67,6 +67,7 @@ function LmsUiDialog(id, options) {
             },
             close: function () {
                 that.formReset();
+                $(that).trigger('lms:dialog:form_reset_required');
             }
         },
         typeof(options) === 'object' ? options : {}
@@ -105,7 +106,9 @@ LmsUiDialog.prototype.close = function() {
  * \brief Restore default forms value inside dialog box.
  */
 LmsUiDialog.prototype.formReset = function() {
-    $( this.dialog_body_id + " form" ).each( function() { this.reset() } );
+    $(this.dialog_body_id + " form").each(function() {
+        this.reset();
+    });
 }
 
 /*
