@@ -1037,6 +1037,7 @@ version 28-git (????-??-??):
   - enhancement: user group filter allows to narrow user selection filter items in event list and schedule
     forms [chilan]
   - enhancement: message templates can have specified their content types explicitly [chilan]
+  - enhancement: message template file attachment support [chilan]
 
 version 27.0 (2021-08-20):
 
