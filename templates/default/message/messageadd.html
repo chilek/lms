@@ -969,7 +969,6 @@
 		$('#additional-email-addresses-button').click(function() {
 			$('.additional-email-address').toggleClass('hidden');
 			$(this).find('i').toggleClass('lms-ui-icon-next lms-ui-icon-previous');
-			console.log($(this).find('i').is('.lms-ui-icon-next'));
 			$(this).find('.lms-ui-label').text($(this).find('i').is('.lms-ui-icon-next') ?
 				'{trans("More e-mail addresses")}' :
 				'{trans("Less e-mail addresses")}'
