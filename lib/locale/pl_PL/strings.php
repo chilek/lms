@@ -6221,3 +6221,5 @@ $_LANG['— based on \'visual editor\' option —'] = '— bazuje na opcji \'edy
 $_LANG['HTML'] = 'HTML';
 $_LANG['plain text'] = 'zwykły tekst';
 $_LANG['Queues'] = 'Kolejki';
+
+$_LANG['Existing attachments'] = 'Istniejące załączniki';

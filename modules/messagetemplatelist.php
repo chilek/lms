@@ -49,7 +49,8 @@ if (isset($_GET['action'])) {
             }
 
             $attachments = array();
-            if (!empty($fileupload[$_GET['action'] . '-template-attachments'])) {
+            if (($p['type'] == TMPL_MAIL || $p['type'] == TMPL_USERPANEL || $p['type'] == TMPL_USERPANEL_URGENT)
+                && !empty($fileupload[$_GET['action'] . '-template-attachments'])) {
                 $attachments = $fileupload[$_GET['action'] . '-template-attachments'];
                 foreach ($attachments as &$attachment) {
                     $attachment['tmpname'] = $tmppath . DIRECTORY_SEPARATOR . $attachment['name'];
@@ -93,6 +94,13 @@ if (isset($_GET['action'])) {
                         $attachments
                     );
                 } else {
+                    $attachments_to_delete = array();
+
+                    if (($p['type'] == TMPL_MAIL || $p['type'] == TMPL_USERPANEL || $p['type'] == TMPL_USERPANEL_URGENT)
+                        && !empty($p['deleted-existing-attachments'])) {
+                        $attachments_to_delete = $p['deleted-existing-attachments'];
+                    }
+
                     $id = $LMS->UpdateMessageTemplate(
                         $p['id'],
                         $p['type'],
@@ -102,7 +110,8 @@ if (isset($_GET['action'])) {
                         $p['helpdesk-message-types'] ?? null,
                         $body,
                         $body_type,
-                        $attachments
+                        $attachments,
+                        $attachments_to_delete
                     );
                 }
 

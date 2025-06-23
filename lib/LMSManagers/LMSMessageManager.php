@@ -90,6 +90,87 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
         );
     }
 
+    private function AddMessageTemplateAttachments($templateid, $attachments)
+    {
+        if (empty($attachments)) {
+            return true;
+        } else {
+            $dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'messagetemplates' . DIRECTORY_SEPARATOR . $templateid;
+
+            $storage_dir_permission = intval(ConfigHelper::getConfig('storage.dir_permission', '0700'), 8);
+            $storage_dir_owneruid = ConfigHelper::getConfig('storage.dir_owneruid', 'root');
+            $storage_dir_ownergid = ConfigHelper::getConfig('storage.dir_ownergid', 'root');
+
+            @umask(0007);
+
+            @mkdir($dir, $storage_dir_permission);
+            @chown($dir, $storage_dir_owneruid);
+            @chgrp($dir, $storage_dir_ownergid);
+
+            foreach ($attachments as $attachment) {
+                $dstfile = $dir . DIRECTORY_SEPARATOR . $attachment['name'];
+                if (!@rename($attachment['tmpname'], $dstfile)) {
+                    return 'Cannot move temporary file \'' . $attachment['tmpname'] . '\' to target file \'' . $dstfile . '\'!';
+                }
+
+                @chown($dstfile, $storage_dir_owneruid);
+                @chgrp($dstfile, $storage_dir_ownergid);
+
+                $this->db->Execute(
+                    'INSERT INTO templateattachments
+                        (templateid, filename, contenttype)
+                        VALUES (?, ?, ?)',
+                    array(
+                        $templateid,
+                        $attachment['name'],
+                        $attachment['type'],
+                    )
+                );
+            }
+
+            return true;
+        }
+    }
+
+    private function DeleteMessageTemplateAttachments($templateid, $attachments)
+    {
+        if (empty($attachments)) {
+            return true;
+        } else {
+            $dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'messagetemplates' . DIRECTORY_SEPARATOR . $templateid;
+
+            $attachments = $this->db->GetAll(
+                'SELECT ta.*
+                FROM templateattachments ta
+                WHERE ta.templateid = ?
+                    AND ta.id IN ?',
+                array(
+                    $templateid,
+                    $attachments,
+                )
+            );
+
+            if (!empty($attachments)) {
+                foreach ($attachments as $attachment) {
+                    $dstfile = $dir . DIRECTORY_SEPARATOR . $attachment['filename'];
+                    if (!@unlink($dstfile)) {
+                        return 'Cannot delete target file \'' . $dstfile . '\'!';
+                    }
+                }
+
+                $this->db->Execute(
+                    'DELETE FROM templateattachments
+                    WHERE id IN ?',
+                    array(
+                        Utils::array_column($attachments, 'id'),
+                    )
+                );
+            }
+
+            return true;
+        }
+    }
+
     public function AddMessageTemplate($type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype = 'text', array $attachments = array())
     {
         $this->db->BeginTrans();
@@ -116,53 +197,30 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
             if ($type == TMPL_HELPDESK) {
                 if (!empty($helpdesk_queues)) {
                     foreach ($helpdesk_queues as $queueid) {
-                        $this->db->Execute('INSERT INTO rttemplatequeues (templateid, queueid)
-							VALUES (?, ?)', array($id, $queueid));
+                        $this->db->Execute(
+                            'INSERT INTO rttemplatequeues
+                            (templateid, queueid)
+                            VALUES (?, ?)',
+                            array($id, $queueid)
+                        );
                     }
                 }
                 if (!empty($helpdesk_message_types)) {
                     foreach ($helpdesk_message_types as $message_type) {
-                        $this->db->Execute('INSERT INTO rttemplatetypes (templateid, messagetype)
-							VALUES (?, ?)', array($id, $message_type));
+                        $this->db->Execute(
+                            'INSERT INTO rttemplatetypes
+                            (templateid, messagetype)
+                            VALUES (?, ?)',
+                            array($id, $message_type)
+                        );
                     }
                 }
             }
 
-            if (!empty($attachments)) {
-                $dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'messagetemplates' . DIRECTORY_SEPARATOR . $id;
-
-                $storage_dir_permission = intval(ConfigHelper::getConfig('storage.dir_permission', '0700'), 8);
-                $storage_dir_owneruid = ConfigHelper::getConfig('storage.dir_owneruid', 'root');
-                $storage_dir_ownergid = ConfigHelper::getConfig('storage.dir_ownergid', 'root');
-
-                @umask(0007);
-
-                @mkdir($dir, $storage_dir_permission);
-                @chown($dir, $storage_dir_owneruid);
-                @chgrp($dir, $storage_dir_ownergid);
-
-                foreach ($attachments as $attachment) {
-                    $dstfile = $dir . DIRECTORY_SEPARATOR . $attachment['name'];
-                    if (!@rename($attachment['tmpname'], $dstfile)) {
-                        $this->db->RollbackTrans();
-
-                        die('Cannot move temporary file \'' . $attachment['tmpname'] . '\' to target file \'' . $dstfile . '\'!');
-                    }
-
-                    @chown($dstfile, $storage_dir_owneruid);
-                    @chgrp($dstfile, $storage_dir_ownergid);
-
-                    $this->db->Execute(
-                        'INSERT INTO templateattachments
-                        (templateid, filename, contenttype)
-                        VALUES (?, ?, ?)',
-                        array(
-                            $id,
-                            $attachment['name'],
-                            $attachment['type'],
-                        )
-                    );
-                }
+            $result = $this->AddMessageTemplateAttachments($id, $attachments);
+            if (is_string($result)) {
+                $this->db->RollbackTrans();
+                die($result);
             }
 
             $this->db->CommitTrans();
@@ -175,8 +233,10 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
         return false;
     }
 
-    public function UpdateMessageTemplate($id, $type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype = 'text', array $attachments = array())
+    public function UpdateMessageTemplate($id, $type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype = 'text', array $attachments = array(), array $attachments_to_delete = array())
     {
+        $this->db->BeginTrans();
+
         $args = array(
             'type' => $type,
             'name' => $name,
@@ -220,17 +280,39 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
         if ($type == TMPL_HELPDESK) {
             if (!empty($helpdesk_queues)) {
                 foreach ($helpdesk_queues as $queueid) {
-                    $this->db->Execute('INSERT INTO rttemplatequeues (templateid, queueid)
-							VALUES (?, ?)', array($id, $queueid));
+                    $this->db->Execute(
+                        'INSERT INTO rttemplatequeues
+                        (templateid, queueid)
+                        VALUES (?, ?)',
+                        array($id, $queueid)
+                    );
                 }
             }
             if (!empty($helpdesk_message_types)) {
                 foreach ($helpdesk_message_types as $message_type) {
-                    $this->db->Execute('INSERT INTO rttemplatetypes (templateid, messagetype)
-							VALUES (?, ?)', array($id, $message_type));
+                    $this->db->Execute(
+                        'INSERT INTO rttemplatetypes
+                        (templateid, messagetype)
+                        VALUES (?, ?)',
+                        array($id, $message_type)
+                    );
                 }
             }
         }
+
+        $result = $this->AddMessageTemplateAttachments($id, $attachments);
+        if (is_string($result)) {
+            $this->db->RollbackTrans();
+            die($result);
+        }
+
+        $result = $this->DeleteMessageTemplateAttachments($id, $attachments_to_delete);
+        if (is_string($result)) {
+            $this->db->RollbackTrans();
+            die($result);
+        }
+
+        $this->db->CommitTrans();
 
         return $res;
     }

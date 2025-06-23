@@ -4231,10 +4231,10 @@ class LMS
         return $manager->AddMessageTemplate($type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype, $attachments);
     }
 
-    public function UpdateMessageTemplate($id, $type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype = 'text', array $attachments = array())
+    public function UpdateMessageTemplate($id, $type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype = 'text', array $attachments = array(), array $attachments_to_delete = array())
     {
         $manager = $this->getMessageManager();
-        return $manager->UpdateMessageTemplate($id, $type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype, $attachments);
+        return $manager->UpdateMessageTemplate($id, $type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype, $attachments, $attachments_to_delete);
     }
 
     public function DeleteMessageTemplates(array $ids)

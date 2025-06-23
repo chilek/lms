@@ -1,4 +1,4 @@
-<DIV ID="{$operation}-template-dialog" CLASS="lms-ui-dialog" TITLE="{if $operation == "edit"}{trans("Edit message template")}{else}{trans("Add message template")}{/if}">
+<div id="{$operation}-template-dialog" class="lms-ui-dialog" title="{if $operation == "edit"}{trans("Edit message template")}{else}{trans("Add message template")}{/if}">
 	<style>
 
 		ol.dialog-box {
@@ -33,116 +33,153 @@
 			width: fit-content;
 		}
 
+		ol.dialog-box .existing-template-attachments ul {
+			list-style-type: none;
+			margin-block-start: 0;
+			margin-block-end: 0;
+			padding-inline-start: 0;
+			margin-top: 0.3em;
+		}
+
 	</style>
 
-	<form action="?m={$layout.module}" method="POST" enctype="multipart/form-data">
+	<form action="?m={$layout.module}" method="POST" id="{$operation}-template-form" enctype="multipart/form-data">
 		{if $operation == 'edit'}
 			<input type="hidden" id="{$operation}-template-id" name="template[id]">
 		{/if}
-
-		<ol class="dialog-box">
-			<li class="form-option">
-				<label for="{$operation}-template-type">
-					{trans("Type")}
-				</label>
-				<select id="{$operation}-template-type" name="template[type]" class="lms-ui-dialog-input">
-					{foreach $_MESSAGETEMPLATES as $template_type => $template}
-						<option value="{$template_type}">{$template.label|escape}</option>
-					{/foreach}
-				</select>
-			</li>
-			<li class="form-option">
-				<label for="{$operation}-template-name">
-					{trans("Name")}
-				</label>
-				<input type="text" id="{$operation}-template-name" name="template[name]" size="30" maxlength="45"
-					class="text ui-widget-content ui-corner lms-ui-dialog-input">
-			</li>
-			<li class="form-option">
-				<label for="{$operation}-template-subject">
-					{trans("Subject")}
-				</label>
-				<input type="text" id="{$operation}-template-subject" name="template[subject]" size="30" maxlength="255" min="0"
-					class="text ui-widget-content ui-corner lms-ui-dialog-input">
-			</Li>
-			<li class="{$operation}-helpdesk-properties">
-				<table>
-					<tr>
-						<td width="99%">
-							<div class="form-option">
-								<label for="{$operation}-template-helpdesk-queues">
-									{trans("Queues")}
-								</label>
-								<select name="template[helpdesk-queues][]" class="lms-ui-multiselect lms-ui-dialog-input lms-ui-multiselect-{$operation}"
-									id="{$operation}-template-helpdesk-queues"
-									size="25" multiple>
-									{foreach $queues as $queue}
-										<option value="{$queue.id}">{$queue.name}</option>
-									{/foreach}
-								</select>
-							</div>
-						</td>
-						<td width="1%" class="nobr">
-							<div class="form-option">
-								<label>
-									{trans("<!message-type>Message types")}
-								</label>
-								<span>
-									<label class="nobr">
-										<input type="checkbox" name="template[helpdesk-message-types][]" value="{$smarty.const.RTMESSAGE_REGULAR}">
-										{trans("<!message-type>message")}
-									</label>
-									<label class="nobr">
-										<input type="checkbox" name="template[helpdesk-message-types][]" value="{$smarty.const.RTMESSAGE_NOTE}">
-										{trans("<!message-type>note")}
-									</label>
-								</span>
-							</div>
-						</td>
-					</tr>
-				</table>
-			</li>
-			<li class="form-option" id="{$operation}-content-type">
-				<label for="{$operation}-template-content-type">
-					{trans("Content type")}
-				</label>
-				<select name="template[content-type]" id="{$operation}-template-content-type">
-					<option value="">{trans("— based on 'visual editor' option —")}&nbsp;&nbsp;&nbsp;</option>
-					<option value="html">{trans("HTML")}</option>
-					<option value="text">{trans("plain text")}</option>
-				</select>
-			</li>
-			<li class="form-option" id="{$operation}-html-message">
-				<label for="{$operation}-template-html-body">
-					{trans("Message")}
-				</label>
-				<textarea id="{$operation}-template-html-body" cols="80" rows="20" name="template[html-body]"
-					class="lms-ui-wysiwyg-editor text ui-corner lms-ui-dialog-input"></textarea>
-			</li>
-			<li class="form-option" id="{$operation}-text-message">
-				<label for="{$operation}-template-text-body">
-					{trans("Message")}
-				</label>
-				<textarea id="{$operation}-template-text-body" cols="80" rows="20" name="template[text-body]"
-					class="text ui-corner lms-ui-dialog-input"></textarea>
-			</li>
-			<li class="form-option" id="{$operation}-attachments">
-				<label>
-					{trans("Attachments")}
-				</label>
-				{fileupload id="{$operation}-template-attachments" fileupload=$fileupload}
-			</li>
-		</ol>
-
-		<input type="submit" style="position:absolute; top:-1000px">
 	</form>
-</DIV>
 
-<SCRIPT>
+	<ol class="dialog-box">
+		<li class="form-option">
+			<label for="{$operation}-template-type">
+				{trans("Type")}
+			</label>
+			<select id="{$operation}-template-type" name="template[type]" class="lms-ui-dialog-input"
+				form="{$operation}-template-form">
+				{foreach $_MESSAGETEMPLATES as $template_type => $template}
+					<option value="{$template_type}">{$template.label|escape}</option>
+				{/foreach}
+			</select>
+		</li>
+		<li class="form-option">
+			<label for="{$operation}-template-name">
+				{trans("Name")}
+			</label>
+			<input type="text" id="{$operation}-template-name" name="template[name]" size="30" maxlength="45"
+				form="{$operation}-template-form"
+				class="text ui-widget-content ui-corner lms-ui-dialog-input">
+		</li>
+		<li class="form-option">
+			<label for="{$operation}-template-subject">
+				{trans("Subject")}
+			</label>
+			<input type="text" id="{$operation}-template-subject" name="template[subject]" size="30" maxlength="255" min="0"
+				form="{$operation}-template-form"
+				class="text ui-widget-content ui-corner lms-ui-dialog-input">
+		</Li>
+		<li class="{$operation}-helpdesk-properties">
+			<table>
+				<tr>
+					<td width="99%">
+						<div class="form-option">
+							<label for="{$operation}-template-helpdesk-queues">
+								{trans("Queues")}
+							</label>
+							<select name="template[helpdesk-queues][]" class="lms-ui-multiselect lms-ui-dialog-input lms-ui-multiselect-{$operation}"
+								id="{$operation}-template-helpdesk-queues"
+								form="{$operation}-template-form"
+								size="25" multiple>
+								{foreach $queues as $queue}
+									<option value="{$queue.id}">{$queue.name}</option>
+								{/foreach}
+							</select>
+						</div>
+					</td>
+					<td width="1%" class="nobr">
+						<div class="form-option">
+							<label>
+								{trans("<!message-type>Message types")}
+							</label>
+							<span>
+								<label class="nobr">
+									<input type="checkbox" name="template[helpdesk-message-types][]" value="{$smarty.const.RTMESSAGE_REGULAR}"
+										form="{$operation}-template-form">
+									{trans("<!message-type>message")}
+								</label>
+								<label class="nobr">
+									<input type="checkbox" name="template[helpdesk-message-types][]" value="{$smarty.const.RTMESSAGE_NOTE}"
+										form="{$operation}-template-form">
+									{trans("<!message-type>note")}
+								</label>
+							</span>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</li>
+		<li class="form-option" id="{$operation}-content-type">
+			<label for="{$operation}-template-content-type">
+				{trans("Content type")}
+			</label>
+			<select name="template[content-type]" id="{$operation}-template-content-type"
+					form="{$operation}-template-form">
+				<option value="">{trans("— based on 'visual editor' option —")}&nbsp;&nbsp;&nbsp;</option>
+				<option value="html">{trans("HTML")}</option>
+				<option value="text">{trans("plain text")}</option>
+			</select>
+		</li>
+		<li class="form-option" id="{$operation}-html-message">
+			<label for="{$operation}-template-html-body">
+				{trans("Message")}
+			</label>
+			<textarea id="{$operation}-template-html-body" cols="80" rows="20" name="template[html-body]"
+				form="{$operation}-template-form"
+				class="lms-ui-wysiwyg-editor text ui-corner lms-ui-dialog-input"></textarea>
+		</li>
+		<li class="form-option" id="{$operation}-text-message">
+			<label for="{$operation}-template-text-body">
+				{trans("Message")}
+			</label>
+			<textarea id="{$operation}-template-text-body" cols="80" rows="20" name="template[text-body]"
+				form="{$operation}-template-form"
+				class="text ui-corner lms-ui-dialog-input"></textarea>
+		</li>
+		<li class="form-option" id="{$operation}-attachments">
+			<label>
+				{trans("Attachments")}
+			</label>
+			{fileupload id="{$operation}-template-attachments" fileupload=$fileupload form="{$operation}-template-form"}
+		</li>
+		<li class="form-option existing-template-attachments" id="{$operation}-existing-attachments" style="display: none;">
+			<label>
+				{trans("Existing attachments")}
+			</label>
+			<div id="{$operation}-existing-template-attachments" class="existing-template-attachment-list"></div>
+		</li>
+	</ol>
+
+	<input type="submit" style="position:absolute; top:-1000px" form="{$operation}-template-form">
+</div>
+
+<script>
 
 	var {$operation}_template_dialog;
 
 	function open_{$operation}_dialog(template_id) {
+		var viewContentTypes = {
+			'image/jpeg': 'image',
+			'image/png': 'image',
+			'image/gif': 'image',
+			'audio/mp3': 'audio',
+			'audio/ogg': 'audio',
+			'audio/oga': 'audio',
+			'audio/wav': 'audio',
+			'video/mp4': 'video',
+			'video/ogg': 'video',
+			'video/webm': 'video',
+			'application/pdf': 'pdf',
+		};
+
 		var editor = tinymce.get('{$operation}-template-html-body');
 		var contentType = 'text/html';
 		var templateType;
@@ -175,6 +212,61 @@
 				editor.setContent(body.html());
 			}
 			$("#{$operation}-template-text-body").text(body.text());
+
+			var templateAttachments = row.find('[data-template-attachments]').attr('data-template-attachments');
+			if (templateAttachments.length) {
+				templateAttachments = JSON.parse(Base64.decode(templateAttachments));
+			} else {
+				templateAttachments = [];
+			}
+
+			var html = '';
+
+			$.each(templateAttachments, function(id, attachment) {
+				html += '<li>';
+				var contentType = '';
+				if (viewContentTypes.hasOwnProperty(attachment.contenttype)) {
+					contentType = viewContentTypes[attachment.contenttype];
+				}
+
+				html += '<div class="documentviewdialog" id="documentviewdialog-' + attachment.id + '"' +
+					' title="' + attachment.filename + '"' +
+					' style="display: none;"' +
+					' data-url="?m=messagetemplatelist&action=attachment-view&id=' + attachment.id + '"></div>';
+
+				html += '<a href="?m=messagetemplatelist&action=attachment-view&id=' + attachment.id + '"'
+					+ ' data-title="' + attachment.filename + '"';
+				if (!contentType.length) {
+					html += ' class="lms-ui-button" rel="external"';
+				} else {
+					html += ' id="documentview-' + attachment.id + '"' +
+						' data-dialog-id="documentviewdialog-' + attachment.id + '"' +
+						' class="lms-ui-button documentview documentview-' + contentType + '"';
+				}
+
+				var size = get_size_unit(attachment.size);
+
+				html +=  '>' + attachment.filename + ' (' + size.size + ' ' + size.unit + ')' +
+					' <i class="lms-ui-icon-view' +
+					(attachment.contenttype.match(/pdf/)
+						? ' pdf'
+						: (attachment.contenttype.match(/csv|excel|spreadsheet/)
+							? ' xls'
+							: ''
+						)
+					) + '"></i>' +
+					'</a>';
+
+				html += '<a class="lms-ui-button">' +
+					'<input type="hidden" name="template[deleted-existing-attachments][' + attachment.id + ']"' +
+					' value="' + attachment.id + '"' +
+					' form="{$operation}-template-form"	disabled>' +
+					'<i class="lms-ui-icon-delete"></i></a></li>';
+			})
+
+			$('#{$operation}-existing-template-attachments').html(html.length ? '<ul>' + html + '</ul>' : '');
+			$('#{$operation}-existing-attachments').show();
+			initDocumentViewers('#{$operation}-existing-template-attachments .documentview');
 		} else if (parseInt($('#template-type').val())) {
 			templateType = $('#template-type').val();
 			$("#{$operation}-template-type").val(templateType);
@@ -203,11 +295,19 @@
 				$('#{$operation}-html-message').hide();
 				$('#{$operation}-text-message').show();
 				$('.{$operation}-helpdesk-properties').hide();
+				$('#{$operation}-attachments').hide();
+				$('#{$operation}-existing-attachments').hide();
 			} else {
 				$('#{$operation}-content-type').show();
 				$('#{$operation}-html-message').show();
 				$('#{$operation}-text-message').hide();
 				$('.{$operation}-helpdesk-properties').toggle(type == {$smarty.const.TMPL_HELPDESK});
+				$('#{$operation}-attachments,#{$operation}-existing-attachments').toggle(
+					type != {$smarty.const.TMPL_HELPDESK}
+						&& type != {$smarty.const.TMPL_CNOTE_REASON}
+						&& type != {$smarty.const.TMPL_WWW}
+						&& type != {$smarty.const.TMPL_WARNING}
+				);
 			}
 		}).change();
 
@@ -274,7 +374,16 @@
 
 		$({$operation}_template_dialog).on('lms:dialog:form_reset_required', function() {
 			$(this.dialog_body_id).find('.fileupload-files').empty();
+			$(this.dialog_body_id).find('.existing-template-attachment-list').empty();
+		});
+
+		$('#{$operation}-existing-template-attachments').on('click', '.lms-ui-button', function() {
+			var attachmentDeleteButton = $(this);
+			attachmentDeleteButton.find('[type="hidden"]').prop('disabled', function() {
+				return !$(this).prop('disabled');
+			}).end().siblings('.lms-ui-button').toggleClass('blend')
+				.end().find('i').toggleClass(['lms-ui-icon-delete', 'lms-ui-icon-restore']);
 		});
 	});
 
-</SCRIPT>
+</script>

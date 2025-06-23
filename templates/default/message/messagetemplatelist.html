@@ -89,7 +89,7 @@
 				{$template.message|truncate:5000:"&hellip;"|replace:"\n":"<BR>"}
 				<div style="display: none;" class="data-template-message">{$template.message}</div>
 			</TD>
-			<td>
+			<td data-template-attachments="{if !empty($template.attachments)}{base64_encode(json_encode($template.attachments))}{/if}">
 				{if !empty($template.attachments)}
 					{capture assign="attachments"}{strip}
 						<ul class="template-attachments">
