@@ -64,7 +64,6 @@ function lmsFileUpload(elemid, formid, new_item_custom_content) {
 					var fileupload_files = elem.find(".fileupload-files");
 					var count = fileupload_files.find(".fileupload-file").length;
 					$.each(data.files, function(key, file) {
-						var fileKey = fileList.length + key;
 						var fileClone = new File([files[key]], files[key].name, {
 							name: files[key].name,
 							type: files[key].type,
@@ -77,6 +76,7 @@ function lmsFileUpload(elemid, formid, new_item_custom_content) {
 							fileClone.contentElem = files[key].contentElem;
 						}
 						fileList.push(fileClone);
+						var fileKey = fileList.length - 1;
 						var size = get_size_unit(fileList[fileKey].size);
 						var fileListItem = $('<div class="fileupload-file">' +
 							'<div class="fileupload-file-info">' +
