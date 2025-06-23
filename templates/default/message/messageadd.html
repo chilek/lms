@@ -65,6 +65,14 @@
 		display: none;
 	}
 
+	#template-attachment-list ul {
+		list-style-type: none;
+		margin-block-start: 0;
+		margin-block-end: 0;
+		padding-inline-start: 0;
+		margin-top: 0.3em;
+	}
+
 </style>
 
 {$xajax}
@@ -80,6 +88,20 @@
 {/if}
 
 <script>
+
+	var viewContentTypes = {
+		'image/jpeg': 'image',
+		'image/png': 'image',
+		'image/gif': 'image',
+		'audio/mp3': 'audio',
+		'audio/ogg': 'audio',
+		'audio/oga': 'audio',
+		'audio/wav': 'audio',
+		'video/mp4': 'video',
+		'video/ogg': 'video',
+		'video/webm': 'video',
+		'application/pdf': 'pdf',
+	};
 
 	function checkaddr(email)
 	{
@@ -108,28 +130,75 @@
 		$('#charscounttext').html(elem.value.length);
 	}
 
-	function change_message_template(tmplid) {
-		if (tmplid) {
-			xajax_getMessageTemplate(tmplid, 'subject', {if $message.emailcount || empty($message.customers)}$('#typemail').prop('checked') || {/if}
-				$('#typewww').prop('checked') || $('#typeuserpanel').prop('checked') || $('#typeuserpanelurgent').prop('checked') ? 'mailbody' : 'smsbody');
-		}
-	}
-
-	function messageTemplateReceived(subjectelem, subject, messageelem, message, contentType) {
+	function messageTemplateReceived(data) {
 		var type = $('[name="message[type]"]:checked').val();
 
-		$('#' + subjectelem).val(subject);
+		$('#' + data.subjectElem).val(data.subject);
 		if (tinyMCE.editors.length) {
-			tinyMCE.editors[0].setContent(message);
+			tinyMCE.editors[0].setContent(data.message);
 		}
 
-		var messageElem = $('textarea[name="message[' + messageelem + ']"]');
-		messageElem.html(message);
+		var messageElem = $('textarea[name="message[' + data.messageElem + ']"]');
+		messageElem.html(data.message);
+
+		var templateAttachmentList = $('#template-attachment-list');
+		if (data.attachments.length) {
+			var html = '';
+			$.each(data.attachments, function(id, attachment) {
+				html += '<li>';
+
+				html += '<a class="lms-ui-button">' +
+					'<input type="hidden" name="message[template-attachments][' + attachment.id + ']"' +
+					' value="' + attachment.id + '">' +
+					'<i class="lms-ui-icon-delete"></i></a>';
+
+				var contentType = '';
+				if (viewContentTypes.hasOwnProperty(attachment.contenttype)) {
+					contentType = viewContentTypes[attachment.contenttype];
+				}
+
+				html += '<div class="documentviewdialog" id="documentviewdialog-' + attachment.id + '"' +
+					' title="' + attachment.filename + '"' +
+					' style="display: none;"' +
+					' data-url="?m=messagetemplatelist&action=attachment-view&id=' + attachment.id + '"></div>';
+
+				html += '<a href="?m=messagetemplatelist&action=attachment-view&id=' + attachment.id + '"'
+						+ ' data-title="' + attachment.filename + '"';
+				if (!contentType.length) {
+					html += ' class="lms-ui-button" rel="external"';
+				} else {
+					html += ' id="documentview-' + attachment.id + '"' +
+						' data-dialog-id="documentviewdialog-' + attachment.id + '"' +
+						' class="lms-ui-button documentview documentview-' + contentType + '"';
+				}
+
+				var size = get_size_unit(attachment.size);
+
+				html +=  '>' + attachment.filename + ' (' + size.size + ' ' + size.unit + ')' +
+					' <i class="lms-ui-icon-view' +
+					(attachment.contenttype.match(/pdf/)
+						? ' pdf'
+						: (attachment.contenttype.match(/csv|excel|spreadsheet/)
+							? ' xls'
+							: ''
+						)
+					) + '"></i>' +
+					'</a>';
+
+				html += '</li>';
+			});
+			templateAttachmentList.html('<ul>' + html + '</ul>');
+			initDocumentViewers(templateAttachmentList.find('.documentview'))
+		} else {
+			templateAttachmentList.empty();
+		}
+		$('#template-attachments').toggle(data.attachments.length > 0);
+
 		if (type < {$smarty.const.MSG_SMS} || type > {$smarty.const.MSG_ANYSMS}) {
-			messageElem.trigger(
+			data.messageElem.trigger(
 				'lms:visual_editor_change_required',
 				{
-					ifShow: contentType == 'text/html' || contentType == ''
+					ifShow: data.contentType == 'text/html' || data.contentType == ''
 				}
 			);
 		}
@@ -710,8 +779,7 @@
 				<strong>{trans("Message template")}</strong>
 			</td>
 			<td>
-				<select name="message[tmplid]" id="msgtmplid" {tip class="lms-ui-advanced-select-test" trigger="msgtmplid" text="Select message template"}
-						onChange="javascript:change_message_template(this.options[this.selectedIndex].value);">
+				<select name="message[tmplid]" id="msgtmplid" {tip class="lms-ui-advanced-select-test" trigger="msgtmplid" text="Select message template"}>
 					<option value="0">{trans("— none —")}</option>
 					{foreach $messagetemplates as $msgtmpl}
 						<option value="{$msgtmpl.id}"{if $message.tmplid == $msgtmpl.id} selected{/if}>{$msgtmpl.name}</option>
@@ -799,6 +867,16 @@
 			</td>
 			<td>
 				{fileupload id="files" fileupload=$fileupload form="message"}
+			</td>
+		</tr>
+		<tr id="template-attachments" style="display: none;">
+			<td class="valign-top">
+				{icon name="attachment"}
+			</td>
+			<td class="valign-top nobr">
+				<strong>{trans("Template attachments")}</strong>
+			</td>
+			<td id="template-attachment-list">
 			</td>
 		</tr>
 		<tr>
@@ -990,6 +1068,25 @@
 					}
 				}
 			});
+		});
+
+		$('#msgtmplid').change(function() {
+			var templateId = parseInt($(this).val());
+			if (templateId) {
+				xajax_getMessageTemplate(templateId, 'subject', {if $message.emailcount || empty($message.customers)}$('#typemail').prop('checked') || {/if}
+				$('#typewww').prop('checked') || $('#typeuserpanel').prop('checked') || $('#typeuserpanelurgent').prop('checked') ? 'mailbody' : 'smsbody');
+			} else {
+				$('#template-attachments').hide();
+				$('#template-attachment-list').empty();
+			}
+		});
+
+		$('#template-attachments').on('click', '.lms-ui-button', function() {
+			var attachmentDeleteButton = $(this);
+			attachmentDeleteButton.find('[type="hidden"]').prop('disabled', function() {
+				return !$(this).prop('disabled');
+			}).end().siblings('.lms-ui-button').toggleClass('blend')
+				.end().find('i').toggleClass(['lms-ui-icon-delete', 'lms-ui-icon-restore']);
 		});
 	});
 

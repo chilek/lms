@@ -331,6 +331,31 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
         );
     }
 
+    public function GetMessageTemplateAttachments($templateid)
+    {
+        $attachments = $this->db->GetAllByKey(
+            'SELECT
+                ta.*
+            FROM templateattachments ta
+            JOIN templates t ON t.id = ta.templateid
+            WHERE ta.templateid = ?',
+            'id',
+            array($templateid)
+        );
+        if (empty($attachments)) {
+            $attachments = array();
+        } else {
+            $dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'messagetemplates' . DIRECTORY_SEPARATOR . $templateid;
+
+            foreach ($attachments as &$attachment) {
+                $attachment['filepath'] = $dir . DIRECTORY_SEPARATOR . $attachment['filename'];
+            }
+            unset($attachment);
+        }
+
+        return $attachments;
+    }
+
     public function GetMessageTemplates($type = 0)
     {
         $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache, $this->syslog);

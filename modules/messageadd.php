@@ -31,8 +31,36 @@ function getMessageTemplate($tmplid, $subjectelem, $messageelem)
     global $DB;
 
     $result = new xajaxResponse();
+
     $row = $DB->GetRow('SELECT subject, message, contenttype FROM templates WHERE id = ?', array($tmplid));
-    $result->call('messageTemplateReceived', $subjectelem, $row['subject'], $messageelem, $row['message'], $row['contenttype']);
+    $attachments = $DB->GetAll(
+        'SELECT ta.*
+        FROM templateattachments ta
+        WHERE templateid = ?',
+        array($tmplid)
+    );
+    if (empty($attachments)) {
+        $attachments = array();
+    } else {
+        $dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'messagetemplates';
+
+        foreach ($attachments as &$attachment) {
+            $attachment['size'] = filesize($dir . DIRECTORY_SEPARATOR . $tmplid . DIRECTORY_SEPARATOR . $attachment['filename']);
+        }
+        unset($attachment);
+    }
+
+    $result->call(
+        'messageTemplateReceived',
+        array(
+            'subjectElem' => $subjectelem,
+            'subject' => $row['subject'],
+            'messageElem' => $messageelem,
+            'message' => $row['message'],
+            'contentType' => $row['contenttype'],
+            'attachments' => $attachments,
+        )
+    );
 
     return $result;
 }
@@ -1065,6 +1093,26 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                     $file['data'] = file_get_contents($file['name']);
                 }
                 unset($file);
+            }
+
+            if (!empty($msgtmplid) && !empty($message['template-attachments'])) {
+                $template_attachments = $LMS->GetMessageTemplateAttachments($msgtmplid);
+                $template_attachments = array_filter(
+                    $template_attachments,
+                    function ($attachment) use ($message) {
+                        return isset($message['template-attachments'][$attachment['id']]);
+                    }
+                );
+                foreach ($template_attachments as $attachment) {
+                    $files[] = array(
+                        'name' => $attachment['filepath'],
+                        'data' => file_get_contents($attachment['filepath']),
+                        'type' => $attachment['contenttype'],
+                    );
+                }
+            }
+
+            if (!empty($files)) {
                 $LMS->AddFileContainer(array(
                     'description' => 'message-' . $msgid,
                     'files' => $files,

@@ -4243,6 +4243,12 @@ class LMS
         return $manager->DeleteMessageTemplates($ids);
     }
 
+    public function GetMessageTemplateAttachments($templateid)
+    {
+        $manager = $this->getMessageManager();
+        return $manager->GetMessageTemplateAttachments($templateid);
+    }
+
     public function GetMessageTemplates($type = 0)
     {
         $manager = $this->getMessageManager();

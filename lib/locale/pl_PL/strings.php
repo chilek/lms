@@ -6223,3 +6223,4 @@ $_LANG['plain text'] = 'zwykły tekst';
 $_LANG['Queues'] = 'Kolejki';
 
 $_LANG['Existing attachments'] = 'Istniejące załączniki';
+$_LANG['Template attachments'] = 'Załączniki szablonu';

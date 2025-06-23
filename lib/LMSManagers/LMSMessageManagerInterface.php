@@ -40,6 +40,8 @@ interface LMSMessageManagerInterface
 
     public function DeleteMessageTemplates(array $ids);
 
+    public function GetMessageTemplateAttachments($templateid);
+
     public function GetMessageTemplates($type = 0);
 
     public function GetMessageTemplatesByQueueAndType($queueid, $type);
