@@ -90,8 +90,10 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
         );
     }
 
-    public function AddMessageTemplate($type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype = 'text')
+    public function AddMessageTemplate($type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype = 'text', array $attachments = array())
     {
+        $this->db->BeginTrans();
+
         $args = array(
             'type' => $type,
             'name' => $name,
@@ -126,12 +128,54 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
                 }
             }
 
+            if (!empty($attachments)) {
+                $dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'messagetemplates' . DIRECTORY_SEPARATOR . $id;
+
+                $storage_dir_permission = intval(ConfigHelper::getConfig('storage.dir_permission', '0700'), 8);
+                $storage_dir_owneruid = ConfigHelper::getConfig('storage.dir_owneruid', 'root');
+                $storage_dir_ownergid = ConfigHelper::getConfig('storage.dir_ownergid', 'root');
+
+                @umask(0007);
+
+                @mkdir($dir, $storage_dir_permission);
+                @chown($dir, $storage_dir_owneruid);
+                @chgrp($dir, $storage_dir_ownergid);
+
+                foreach ($attachments as $attachment) {
+                    $dstfile = $dir . DIRECTORY_SEPARATOR . $attachment['name'];
+                    if (!@rename($attachment['tmpname'], $dstfile)) {
+                        $this->db->RollbackTrans();
+
+                        die('Cannot move temporary file \'' . $attachment['tmpname'] . '\' to target file \'' . $dstfile . '\'!');
+                    }
+
+                    @chown($dstfile, $storage_dir_owneruid);
+                    @chgrp($dstfile, $storage_dir_ownergid);
+
+                    $this->db->Execute(
+                        'INSERT INTO templateattachments
+                        (templateid, filename, contenttype)
+                        VALUES (?, ?, ?)',
+                        array(
+                            $id,
+                            $attachment['name'],
+                            $attachment['type'],
+                        )
+                    );
+                }
+            }
+
+            $this->db->CommitTrans();
+
             return $id;
         }
+
+        $this->db->RollbackTrans();
+
         return false;
     }
 
-    public function UpdateMessageTemplate($id, $type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype = 'text')
+    public function UpdateMessageTemplate($id, $type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype = 'text', array $attachments = array())
     {
         $args = array(
             'type' => $type,
@@ -193,6 +237,12 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 
     public function DeleteMessageTemplates(array $ids)
     {
+        $dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'messagetemplates';
+
+        foreach ($ids as $id) {
+            rrmdir($dir . DIRECTORY_SEPARATOR . $id);
+        }
+
         return $this->db->Execute(
             'DELETE FROM templates WHERE id IN ?',
             array($ids)
@@ -204,24 +254,59 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
         $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache, $this->syslog);
         $queues = $helpdesk_manager->GetMyQueues();
 
-        return $this->db->GetAll('SELECT t.id, t.type, t.name, t.subject, t.message, t.contenttype,
-				tt.messagetypes, tq.queues, tq.queuenames
-			FROM templates t
-			LEFT JOIN (
-				SELECT templateid, ' . $this->db->GroupConcat('messagetype') . ' AS messagetypes
-				FROM rttemplatetypes
-				GROUP BY templateid
-			) tt ON tt.templateid = t.id
-			LEFT JOIN (
-				SELECT templateid, ' . $this->db->GroupConcat('queueid') . ' AS queues,
-					' . $this->db->GroupConcat('q.name') . ' AS queuenames
-				FROM rttemplatequeues
-				JOIN rtqueues q ON q.id = queueid
-				WHERE ' . (empty($queues) ? '1=0' : 'queueid IN (' . implode(',', $queues) . ')') . '
-				GROUP BY templateid
-			) tq ON tq.templateid = t.id
-			WHERE 1 = 1' . (empty($type) ? '' : ' AND t.type = ' . intval($type))
-            . ' ORDER BY t.name');
+        $templates = $this->db->GetAllByKey(
+            'SELECT
+                t.id,
+                t.type,
+                t.name,
+                t.subject,
+                t.message,
+                t.contenttype,
+                tt.messagetypes,
+                tq.queues,
+                tq.queuenames
+            FROM templates t
+            LEFT JOIN (
+                SELECT templateid, ' . $this->db->GroupConcat('messagetype') . ' AS messagetypes
+                FROM rttemplatetypes
+                GROUP BY templateid
+            ) tt ON tt.templateid = t.id
+            LEFT JOIN (
+                SELECT templateid, ' . $this->db->GroupConcat('queueid') . ' AS queues,
+                    ' . $this->db->GroupConcat('q.name') . ' AS queuenames
+                FROM rttemplatequeues
+                JOIN rtqueues q ON q.id = queueid
+                WHERE ' . (empty($queues) ? '1=0' : 'queueid IN (' . implode(',', $queues) . ')') . '
+                GROUP BY templateid
+            ) tq ON tq.templateid = t.id
+            WHERE 1 = 1'
+            . (empty($type) ? '' : ' AND t.type = ' . intval($type))
+            . ' ORDER BY t.name',
+            'id'
+        );
+
+        $attachments = $this->db->GetAll(
+            'SELECT
+                ta.*
+            FROM templateattachments ta
+            JOIN templates t ON t.id = ta.templateid
+            WHERE 1 = 1'
+            . (empty($type) ? '' : ' AND t.type = ' . intval($type))
+        );
+        if (!empty($attachments)) {
+            $dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'messagetemplates';
+
+            foreach ($attachments as $attachment) {
+                $templateid = $attachment['templateid'];
+                if (empty($templates[$templateid]['attachments'])) {
+                    $templates[$templateid]['attachments'] = array();
+                }
+                $attachment['size'] = filesize($dir . DIRECTORY_SEPARATOR . $templateid . DIRECTORY_SEPARATOR . $attachment['filename']);
+                $templates[$templateid]['attachments'][$attachment['id']] = $attachment;
+            }
+        }
+
+        return $templates;
     }
 
     public function GetMessageTemplatesByQueueAndType($queueid, $type)

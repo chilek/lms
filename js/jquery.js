@@ -1459,6 +1459,94 @@ function disableFullScreenPopup() {
 	}
 }
 
+function initDocumentViewers(selectors) {
+	if (!Array.isArray(selectors)) {
+		selectors = [ selectors ];
+	}
+
+	$.each(selectors, function(idx, selector) {
+		var documentViewers = $(selector);
+
+		documentViewers.tooltip({
+			track: true,
+			items: '.documentview-image',
+			show: false,
+			//hide: false,
+			tooltipClass: 'documentview',
+			content: function () {
+				var href = $(this).attr('href') + '&api=1&thumbnail=300';
+				return '<img src="' + href + '" style="max-width: 300px;">';
+				//return '';
+			}
+		});
+
+		documentViewers.on("click", function () {
+			var dialog = $('#' + $(this).attr('data-dialog-id'));
+			var url = dialog.attr('data-url');
+			if ($(this).hasClass('documentview-image')) {
+				$(this).tooltip('disable');
+				dialog.html('<img src="' + url + '" style="width: 100%;">');
+			} else if ($(this).hasClass('documentview-audio')) {
+				dialog.html('<audio src="' + url + '" style="width: 100%;" controls preload="none">' +
+					$t('Your browser does not support the audio element.') + '</audio>');
+				var audioelem = dialog.find('audio').get(0);
+				audioelem.currentTime = 0;
+				audioelem.play();
+			} else if ($(this).hasClass('documentview-video')) {
+				dialog.html('<video src="' + url + '" style="width: 100%;" controls preload="none">' +
+					$t('Your browser does not support the video element.') + '</video>');
+				var videoelem = dialog.find('video').get(0);
+				videoelem.currentTime = 0;
+				videoelem.play();
+			} else if ($(this).hasClass('documentview-pdf')) {
+				window.open(url, '_blank', 'left=' + (window.screen.availWidth * 0.1) +
+					',top=' + (window.screen.availHeight * 0.1) +
+					',width=' + (window.screen.availWidth * 0.8) +
+					',height=' + (window.screen.availHeight * 0.8));
+				return false;
+			}
+			dialog.dialog('open');
+			return false;
+		});
+
+		documentViewers.siblings('.documentviewdialog').dialog({
+			modal: true,
+			autoOpen: false,
+			resizable: false,
+			draggable: false,
+			minWidth: 0,
+			minHeight: 0,
+			dialogClass: 'documentviewdialog',
+			open: function (event, ui) {
+				var elem = $('#' + $(this).attr('id').replace(/dialog/, ''));
+				$(this).dialog('option', 'position', elem.hasClass('documentview-audio') ?
+					{my: 'center', at: 'center', of: window} : {my: 'top', at: 'top', of: window})
+					.dialog('option', {width: 'auto'});
+				$('.ui-widget-overlay').bind('click', function () {
+					$(this).siblings('.ui-dialog').find('.ui-dialog-content')
+						.dialog('close');
+				});
+			},
+			close: function (event, ui) {
+				var elem = $('#' + $(this).attr('id').replace(/dialog/, ''));
+				if (elem.hasClass('documentview-image')) {
+					elem.tooltip('enable');
+				} else if (elem.hasClass('documentview-audio')) {
+					$(this).find('audio').get(0).pause();
+				} else if (elem.hasClass('documentview-video')) {
+					$(this).find('video').get(0).pause();
+				}
+			}
+		})
+			//		.on('click', function() {
+			//			$(this).dialog('close');
+			//		})
+			.parent().resizable({
+			aspectRatio: true
+		}).draggable();
+	});
+}
+
 $(function() {
 	var autocomplete = "off";
 	var scrollTimeout = null;
@@ -1853,86 +1941,7 @@ $(function() {
 
 	init_comboboxes('.lms-ui-combobox');
 
-	var documentviews = $('.documentview');
-
-	documentviews.tooltip({
-		track: true,
-		items: '.documentview-image',
-		show: false,
-		//hide: false,
-		tooltipClass: 'documentview',
-		content: function() {
-			var href = $(this).attr('href') + '&api=1&thumbnail=300';
-			return '<img src="' + href + '" style="max-width: 300px;">';
-			//return '';
-		}
-	});
-
-	documentviews.on("click", function() {
-		var dialog = $('#' + $(this).attr('data-dialog-id'));
-		var url = dialog.attr('data-url');
-		if ($(this).hasClass('documentview-image')) {
-			$(this).tooltip('disable');
-			dialog.html('<img src="' + url + '" style="width: 100%;">');
-		} else if ($(this).hasClass('documentview-audio')) {
-			dialog.html('<audio src="' + url + '" style="width: 100%;" controls preload="none">' +
-				$t('Your browser does not support the audio element.') + '</audio>');
-			var audioelem = dialog.find('audio').get(0);
-			audioelem.currentTime = 0;
-			audioelem.play();
-		} else if ($(this).hasClass('documentview-video')) {
-			dialog.html('<video src="' + url + '" style="width: 100%;" controls preload="none">' +
-				$t('Your browser does not support the video element.') + '</video>');
-			var videoelem = dialog.find('video').get(0);
-			videoelem.currentTime = 0;
-			videoelem.play();
-		} else if ($(this).hasClass('documentview-pdf')) {
-			window.open(url, '_blank', 'left=' + (window.screen.availWidth * 0.1) +
-				',top=' + (window.screen.availHeight * 0.1) +
-				',width=' + (window.screen.availWidth * 0.8) +
-				',height=' + (window.screen.availHeight * 0.8));
-			return false;
-		}
-		dialog.dialog('open');
-		return false;
-	});
-
-	$('.documentviewdialog').dialog({
-		modal: true,
-		autoOpen: false,
-		resizable: false,
-		draggable: false,
-		minWidth: 0,
-		minHeight: 0,
-		dialogClass: 'documentviewdialog',
-		open: function(event, ui) {
-			var elem = $('#' + $(this).attr('id').replace(/dialog/, ''));
-			$(this).dialog('option', 'position', elem.hasClass('documentview-audio') ?
-				{ my: 'center', at: 'center', of: window } : { my: 'top', at: 'top', of: window })
-				.dialog('option', { width: 'auto' });
-			$('.ui-widget-overlay').bind('click', function() {
-				$(this).siblings('.ui-dialog').find('.ui-dialog-content')
-					.dialog('close');
-			});
-		},
-		close: function(event, ui) {
-			var elem = $('#' + $(this).attr('id').replace(/dialog/, ''));
-			if (elem.hasClass('documentview-image')) {
-				elem.tooltip('enable');
-			} else if (elem.hasClass('documentview-audio')) {
-				$(this).find('audio').get(0).pause();
-			} else if (elem.hasClass('documentview-video')) {
-				$(this).find('video').get(0).pause();
-			}
-		}
-	})
-//		.on('click', function() {
-//			$(this).dialog('close');
-//		})
-	.parent().resizable({
-		aspectRatio: true
-	})
-	.draggable();
+	initDocumentViewers('.documentview');
 
 	// we wanted to remove visual text selection effect earlier, but this caused
 	// some selection editing problems, so we commented it out and left it for better times

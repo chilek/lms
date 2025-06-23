@@ -4225,16 +4225,16 @@ class LMS
         return $manager->MessageTemplateExists($type, $name);
     }
 
-    public function AddMessageTemplate($type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype = 'text')
+    public function AddMessageTemplate($type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype = 'text', array $attachments = array())
     {
         $manager = $this->getMessageManager();
-        return $manager->AddMessageTemplate($type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype);
+        return $manager->AddMessageTemplate($type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype, $attachments);
     }
 
-    public function UpdateMessageTemplate($id, $type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype = 'text')
+    public function UpdateMessageTemplate($id, $type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype = 'text', array $attachments = array())
     {
         $manager = $this->getMessageManager();
-        return $manager->UpdateMessageTemplate($id, $type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype);
+        return $manager->UpdateMessageTemplate($id, $type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype, $attachments);
     }
 
     public function DeleteMessageTemplates(array $ids)

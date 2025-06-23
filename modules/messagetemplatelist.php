@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2022 LMS Developers
+ *  (C) Copyright 2001-2025 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,6 +24,19 @@
  *  $Id$
  */
 
+check_file_uploads();
+
+if (isset($_POST['template'])) {
+    if (!empty($_POST['template']['id'])) {
+        $result = handle_file_uploads('edit-template-attachments', $error);
+    } else {
+        $result = handle_file_uploads('add-template-attachments', $error);
+    }
+
+    extract($result);
+    //$SMARTY->assign('fileupload', $fileupload);
+}
+
 if (isset($_GET['action'])) {
     switch ($_GET['action']) {
         case 'add':
@@ -33,6 +46,15 @@ if (isset($_GET['action'])) {
                 if (!is_array($val)) {
                     $p[$idx] = trim($val);
                 }
+            }
+
+            $attachments = array();
+            if (!empty($fileupload[$_GET['action'] . '-template-attachments'])) {
+                $attachments = $fileupload[$_GET['action'] . '-template-attachments'];
+                foreach ($attachments as &$attachment) {
+                    $attachment['tmpname'] = $tmppath . DIRECTORY_SEPARATOR . $attachment['name'];
+                }
+                unset($attachment);
             }
 
             if (!strlen($p['name'])) {
@@ -67,7 +89,8 @@ if (isset($_GET['action'])) {
                         $p['helpdesk-queues'] ?? null,
                         $p['helpdesk-message-types'] ?? null,
                         $body,
-                        $body_type
+                        $body_type,
+                        $attachments
                     );
                 } else {
                     $id = $LMS->UpdateMessageTemplate(
@@ -78,12 +101,28 @@ if (isset($_GET['action'])) {
                         $p['helpdesk-queues'] ?? null,
                         $p['helpdesk-message-types'] ?? null,
                         $body,
-                        $body_type
+                        $body_type,
+                        $attachments
                     );
+                }
+
+                if (!empty($tmppath)) {
+                    rrmdir($tmppath);
                 }
 
                 die(json_encode(array('id' => $id)));
             }
+
+            break;
+
+        case 'attachment-view':
+            $attachment = $DB->GetRow('SELECT * FROM templateattachments WHERE id = ?', array($_GET['id']));
+            $file = STORAGE_DIR . DIRECTORY_SEPARATOR . 'messagetemplates' . DIRECTORY_SEPARATOR . $attachment['templateid'] . DIRECTORY_SEPARATOR . $attachment['filename'];
+
+            header('Content-Type: ' . $attachment['contenttype']);
+            header('Cache-Control: private');
+            header('Content-Disposition: ' . ($attachment['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename=' . $attachment['filename']);
+            echo @file_get_contents($file);
 
             break;
     }

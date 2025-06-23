@@ -35,9 +35,9 @@
 
 	</style>
 
-	<FORM ACTION="?m={$layout.module}" METHOD="POST">
+	<form action="?m={$layout.module}" method="POST" enctype="multipart/form-data">
 		{if $operation == 'edit'}
-		<INPUT TYPE="hidden" id="{$operation}-template-id" NAME="template[id]">
+			<input type="hidden" id="{$operation}-template-id" name="template[id]">
 		{/if}
 
 		<ol class="dialog-box">
@@ -126,10 +126,16 @@
 				<textarea id="{$operation}-template-text-body" cols="80" rows="20" name="template[text-body]"
 					class="text ui-corner lms-ui-dialog-input"></textarea>
 			</li>
+			<li class="form-option" id="{$operation}-attachments">
+				<label>
+					{trans("Attachments")}
+				</label>
+				{fileupload id="{$operation}-template-attachments" fileupload=$fileupload}
+			</li>
 		</ol>
 
-		<INPUT TYPE="submit" style="position:absolute; top:-1000px">
-	</FORM>
+		<input type="submit" style="position:absolute; top:-1000px">
+	</form>
 </DIV>
 
 <SCRIPT>
@@ -264,6 +270,10 @@
 				});
 
 			event.preventDefault();
+		});
+
+		$({$operation}_template_dialog).on('lms:dialog:form_reset_required', function() {
+			$(this.dialog_body_id).find('.fileupload-files').empty();
 		});
 	});
 

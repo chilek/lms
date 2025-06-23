@@ -4,6 +4,17 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 
+<style>
+
+	.template-attachments {
+		list-style-type: none;
+		margin-block-start: 0;
+		margin-block-end: 0;
+		padding-inline-start: 0;
+	}
+
+</style>
+
 <form method="post" action="?m=messagetemplatedel" name="messagetemplates" id="messagetemplates">
 </form>
 
@@ -17,6 +28,7 @@
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
 		<COL style="width: 96%;">
+		<COL style="width: 1%;">
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
@@ -35,6 +47,9 @@
 			<TD class="nobr">
 				{trans("Message:")}
 			</TD>
+			<td class="nobr">
+				{trans("Attachments")}
+			</td>
 			<TD class="nobr">
 				{trans("Queues:")}
 			</TD>
@@ -46,7 +61,7 @@
 			</TD>
 		</TR>
 		<TR>
-			<td colspan="7">
+			<td colspan="8">
 				<span class="bold">{trans("Filter:")}</span> {trans("Type:")}
 				<select name="type" id="template-type" form="filter" onchange="javascript:document.filter.submit();">
 					<option value="0">{trans("— all —")}</option>
@@ -74,6 +89,22 @@
 				{$template.message|truncate:5000:"&hellip;"|replace:"\n":"<BR>"}
 				<div style="display: none;" class="data-template-message">{$template.message}</div>
 			</TD>
+			<td>
+				{if !empty($template.attachments)}
+					{capture assign="attachments"}{strip}
+						<ul class="template-attachments">
+							{foreach $template.attachments as $attachment}
+								<li>
+									{documentview id="template-attachment-{$attachment.id}" type=$attachment.contenttype name=$attachment.filename
+										url="?m=messagetemplatelist&action=attachment-view&id={$attachment.id}" external=true
+										text="{$attachment.filename} ({$attachment.size|size_format}) <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$attachment.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$attachment.contenttype)} xls{/if}\"></i>"}
+								</li>
+							{/foreach}
+						</ul>
+					{/strip}{/capture}
+					{hint icon="attachment" text=$attachments data_template_id="message-template-{$template.id}"}
+				{/if}
+			</td>
 			<TD data-template-helpdesk-queues="{$template.queues}">
 				{$template.queuenames}
 			</TD>
@@ -97,7 +128,7 @@
 		</TR>
 		{foreachelse}
 		<tr>
-			<td colspan="7" class="empty-table">
+			<td colspan="8" class="empty-table">
 				{trans("No message templates in database.")}
 			</td>
 		</tr>
@@ -105,7 +136,7 @@
 	</TBODY>
 	<TFOOT>
 		<TR class="lms-ui-button-panel">
-			<TD colspan="5" class="nobr">
+			<TD colspan="6" class="nobr">
 				{button icon="add" class="add-template-dialog-btn" tip="Add" label="Add"
 					onclick="javascript:open_add_dialog();"}
 			</TD>
@@ -133,11 +164,16 @@
 				return false;
 			}
 		});
+
 		$('.delete-messagetemplate').click(function() {
 			confirmDialog($t("Are you sure, you want to delete that message template?"), this).done(function() {
 				location.href = $(this).attr('href');
 			});
 			return false;
+		});
+
+		$('#message-templates .lms-ui-hint-toggle').on('tooltipopen', function(e, ui) {
+			initDocumentViewers($(ui.tooltip[0]).find('.documentview'));
 		});
 	});
 </script>
