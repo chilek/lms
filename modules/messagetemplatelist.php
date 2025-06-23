@@ -124,6 +124,15 @@ if (isset($_GET['action'])) {
 
             break;
 
+        case 'cancel':
+            if (!empty($tmppath)) {
+                rrmdir($tmppath);
+            }
+
+            die('[]');
+
+            break;
+
         case 'attachment-view':
             $attachment = $DB->GetRow('SELECT * FROM templateattachments WHERE id = ?', array($_GET['id']));
             $file = STORAGE_DIR . DIRECTORY_SEPARATOR . 'messagetemplates' . DIRECTORY_SEPARATOR . $attachment['templateid'] . DIRECTORY_SEPARATOR . $attachment['filename'];

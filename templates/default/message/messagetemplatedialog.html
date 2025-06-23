@@ -375,6 +375,14 @@
 		});
 
 		$({$operation}_template_dialog).on('lms:dialog:form_reset_required', function() {
+			$.ajax({
+				method: "POST",
+				url: "?m=messagetemplatelist&action=cancel",
+				data: {$operation}_template_dialog.handler.find('form').serialize(),
+				beforeSend: function() {
+					{$operation}_template_dialog.disableButtons();
+				}
+			});
 			$(this.dialog_body_id).find('.fileupload-files').empty();
 			$(this.dialog_body_id).find('.existing-template-attachment-list').empty();
 		});
