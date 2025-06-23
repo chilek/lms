@@ -223,7 +223,13 @@
 			var html = '';
 
 			$.each(templateAttachments, function(id, attachment) {
-				html += '<li>';
+				html += '<li>' +
+					'<a class="lms-ui-button">' +
+					'<input type="hidden" name="template[deleted-existing-attachments][' + attachment.id + ']"' +
+					' value="' + attachment.id + '"' +
+					' form="{$operation}-template-form"	disabled>' +
+					'<i class="lms-ui-icon-delete"></i></a>';
+
 				var contentType = '';
 				if (viewContentTypes.hasOwnProperty(attachment.contenttype)) {
 					contentType = viewContentTypes[attachment.contenttype];
@@ -257,11 +263,7 @@
 					) + '"></i>' +
 					'</a>';
 
-				html += '<a class="lms-ui-button">' +
-					'<input type="hidden" name="template[deleted-existing-attachments][' + attachment.id + ']"' +
-					' value="' + attachment.id + '"' +
-					' form="{$operation}-template-form"	disabled>' +
-					'<i class="lms-ui-icon-delete"></i></a></li>';
+				html += '</li>';
 			})
 
 			$('#{$operation}-existing-template-attachments').html(html.length ? '<ul>' + html + '</ul>' : '');
