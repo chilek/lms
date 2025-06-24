@@ -289,9 +289,8 @@
 
 		$('#{$operation}-template-type').change();
 
-		console.log(contentType);
-		$('#{$operation}-html-message').toggle((contentType == 'text/html' || contentType == '') && templateType != {$smarty.const.TMPL_SMS});
-		$('#{$operation}-text-message').toggle(contentType == 'text/plain' || templateType == {$smarty.const.TMPL_SMS});
+		$('#{$operation}-html-message').toggle(templateType != {$smarty.const.TMPL_SMS});
+		$('#{$operation}-text-message').toggle(templateType == {$smarty.const.TMPL_SMS});
 
 		$('#{$operation}-template-html-body').trigger(
 			'lms:visual_editor_change_required',
