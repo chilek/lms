@@ -71,7 +71,7 @@ function lmsFileUpload(elemid, formid, new_item_custom_content) {
 						});
 						if (files[key].hasOwnProperty('imgElem')) {
 							fileClone.imgElem = files[key].imgElem;
-						};
+						}
 						if (files[key].hasOwnProperty('contentElem')) {
 							fileClone.contentElem = files[key].contentElem;
 						}
