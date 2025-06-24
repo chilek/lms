@@ -3115,7 +3115,7 @@ CREATE TABLE ksefdocuments (
 CREATE INDEX ksefdocuments_refnumber_idx ON ksefdocuments (refnumber);
 CREATE INDEX ksefdocuments_elemrefnumber_idx ON ksefdocuments (elemrefnumber);
 CREATE INDEX ksefdocuments_ksefnumber_idx ON ksefdocuments (ksefnumber);
-CREATE INDEX ksefdocuments_status_idx ON ksefdocuments (status)
+CREATE INDEX ksefdocuments_status_idx ON ksefdocuments (status);
 
 /* ---------------------------------------------------
  Structure of table ksefdivisions
