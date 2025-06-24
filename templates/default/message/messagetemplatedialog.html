@@ -164,6 +164,11 @@
 <script>
 
 	var {$operation}_template_dialog;
+	var allowedAttachmentsByTemplateTypes = [
+		{$smarty.const.TMPL_MAIL},
+		{$smarty.const.TMPL_USERPANEL},
+		{$smarty.const.TMPL_USERPANEL_URGENT}
+	];
 
 	function open_{$operation}_dialog(template_id) {
 		var viewContentTypes = {
@@ -266,9 +271,14 @@
 				html += '</li>';
 			})
 
-			$('#{$operation}-existing-template-attachments').html(html.length ? '<ul>' + html + '</ul>' : '');
-			$('#{$operation}-existing-attachments').show();
-			initDocumentViewers('#{$operation}-existing-template-attachments .documentview');
+			if (html.length) {
+				$('#{$operation}-existing-template-attachments').html(html.length ? '<ul>' + html + '</ul>' : '');
+				$('#{$operation}-existing-attachments').show();
+				initDocumentViewers('#{$operation}-existing-template-attachments .documentview');
+			} else {
+				$('#{$operation}-existing-template-attachments').empty();
+				$('#{$operation}-existing-attachments').hide();
+			}
 		} else if (parseInt($('#template-type').val())) {
 			templateType = $('#template-type').val();
 			$("#{$operation}-template-type").val(templateType);
@@ -279,8 +289,9 @@
 
 		$('#{$operation}-template-type').change();
 
-		$('#{$operation}-html-message').toggle(contentType == 'text/html' || contentType == '' || templateType != {$smarty.const.TMPL_SMS});
-		$('#{$operation}-text-message').toggle(templateType == {$smarty.const.TMPL_SMS});
+		console.log(contentType);
+		$('#{$operation}-html-message').toggle((contentType == 'text/html' || contentType == '') && templateType != {$smarty.const.TMPL_SMS});
+		$('#{$operation}-text-message').toggle(contentType == 'text/plain' || templateType == {$smarty.const.TMPL_SMS});
 
 		$('#{$operation}-template-html-body').trigger(
 			'lms:visual_editor_change_required',
@@ -305,11 +316,10 @@
 				$('#{$operation}-html-message').show();
 				$('#{$operation}-text-message').hide();
 				$('.{$operation}-helpdesk-properties').toggle(type == {$smarty.const.TMPL_HELPDESK});
-				$('#{$operation}-attachments,#{$operation}-existing-attachments').toggle(
-					type != {$smarty.const.TMPL_HELPDESK}
-						&& type != {$smarty.const.TMPL_CNOTE_REASON}
-						&& type != {$smarty.const.TMPL_WWW}
-						&& type != {$smarty.const.TMPL_WARNING}
+				$('#{$operation}-attachments').toggle(allowedAttachmentsByTemplateTypes.indexOf(type) != -1);
+				$('#{$operation}-existing-attachments').toggle(
+					allowedAttachmentsByTemplateTypes.indexOf(type) != -1
+						&& $('#{$operation}-existing-template-attachments').text().length > 0
 				);
 			}
 		}).change();
