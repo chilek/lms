@@ -86,7 +86,7 @@
 				{$template.subject|escape}
 			</TD>
 			<TD>
-				{$template.message|truncate:5000:"&hellip;"|replace:"\n":"<BR>"}
+				<span class="data-template-message-area">{$template.message|truncate:5000:"&hellip;"|replace:"\n":"<BR>"}</span>
 				<div style="display: none;" class="data-template-message">{$template.message}</div>
 			</TD>
 			<td data-template-attachments="{if !empty($template.attachments)}{base64_encode(json_encode($template.attachments))}{/if}">
@@ -170,6 +170,12 @@
 				location.href = $(this).attr('href');
 			});
 			return false;
+		});
+
+		$('[data-template-type],[data-template-name],[data-template-subject],.data-template-message-area').click(function() {
+			var templateId = $(this).closest('[data-template-id]').attr('data-template-id');
+			console.log(templateId);
+			open_edit_dialog(templateId);
 		});
 
 		$('#message-templates .lms-ui-hint-toggle').on('tooltipopen', function(e, ui) {
