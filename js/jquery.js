@@ -2113,6 +2113,7 @@ $(function() {
 	function init_visual_editor(id) {
 		tinymce.init({
 			selector: '#' + id,
+			deprecation_warnings: false,
 			init_instance_callback: function (ed) {
 				var textarea = $(ed.settings.selector);
 				if (textarea.hasClass('lms-ui-error') || textarea.hasClass('alert')) {
