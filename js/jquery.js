@@ -1460,6 +1460,20 @@ function disableFullScreenPopup() {
 }
 
 function initDocumentViewers(selectors) {
+	var previewContentTypes = {
+		'image/jpeg': 'image',
+		'image/png': 'image',
+		'image/gif': 'image',
+		'audio/mp3': 'audio',
+		'audio/ogg': 'audio',
+		'audio/oga': 'audio',
+		'audio/wav': 'audio',
+		'video/mp4': 'video',
+		'video/ogg': 'video',
+		'video/webm': 'video',
+		'application/pdf': 'pdf',
+	};
+
 	if (!Array.isArray(selectors)) {
 		selectors = [ selectors ];
 	}
@@ -1467,9 +1481,40 @@ function initDocumentViewers(selectors) {
 	$.each(selectors, function(idx, selector) {
 		var documentViewers = $(selector);
 
-		documentViewers.tooltip({
+		documentViewers.find('.preview').closest('[data-type]:not([data-preview-type])').each(function() {
+			var contentType = $(this).attr('data-type');
+			var previewType = previewContentTypes.hasOwnProperty(contentType) ? previewContentTypes[contentType] : '';
+			var officeDocument = false;
+
+			if (!previewType.length) {
+				officeDocument = contentType.match(/^application\/(rtf|.+(oasis|opendocument|openxml).+)$/i) ? true : false;
+				if (lmsSettings.office2pdfCommand.length && officeDocument) {
+					previewType = 'office';
+				}
+			}
+
+			if (previewType.length) {
+				$(this).attr('data-preview-type', previewType);
+			}
+
+			if (contentType.match(/pdf/i)) {
+				$(this).find('i').addClass('pdf');
+			} else if (officeDocument) {
+				if (contentType.match(/(text|rtf|msword|msword|openxmlformats.+document)/i)) {
+					$(this).find('i').addClass('doc');
+				} else if (contentType.match(/(spreadsheet|ms-excel|openxmlformats.+sheet)/i)) {
+					$(this).find('i').addClass('xls');
+				}
+			}
+
+			if (previewType == 'office') {
+				$(this).parent().append('<a class="lms-ui-button download"><i class="lms-ui-icon-download"></i></a>');
+			}
+		});
+
+		documentViewers.find('[data-preview-type]').tooltip({
 			track: true,
-			items: '.documentview-image',
+			items: '[data-preview-type="image"]',
 			show: false,
 			//hide: false,
 			tooltipClass: 'documentview',
@@ -1480,36 +1525,40 @@ function initDocumentViewers(selectors) {
 			}
 		});
 
-		documentViewers.on("click", function () {
+		documentViewers.find('[data-preview-type]').on("click", function () {
 			var dialog = $('#' + $(this).attr('data-dialog-id'));
 			var url = dialog.attr('data-url');
-			if ($(this).hasClass('documentview-image')) {
+			if ($(this).is('[data-preview-type="image"]')) {
 				$(this).tooltip('disable');
 				dialog.html('<img src="' + url + '" style="width: 100%;">');
-			} else if ($(this).hasClass('documentview-audio')) {
+			} else if ($(this).is('[data-preview-type="audio"]')) {
 				dialog.html('<audio src="' + url + '" style="width: 100%;" controls preload="none">' +
 					$t('Your browser does not support the audio element.') + '</audio>');
 				var audioelem = dialog.find('audio').get(0);
 				audioelem.currentTime = 0;
 				audioelem.play();
-			} else if ($(this).hasClass('documentview-video')) {
+			} else if ($(this).is('[data-preview-type="video"]')) {
 				dialog.html('<video src="' + url + '" style="width: 100%;" controls preload="none">' +
 					$t('Your browser does not support the video element.') + '</video>');
 				var videoelem = dialog.find('video').get(0);
 				videoelem.currentTime = 0;
 				videoelem.play();
-			} else if ($(this).hasClass('documentview-pdf')) {
-				window.open(url, '_blank', 'left=' + (window.screen.availWidth * 0.1) +
+			} else if ($(this).is('[data-preview-type="pdf"],[data-preview-type="office"]')) {
+				window.open(
+					url + '&preview-type=' + $(this).attr('data-preview-type'),
+					'_blank',
+					'left=' + (window.screen.availWidth * 0.1) +
 					',top=' + (window.screen.availHeight * 0.1) +
 					',width=' + (window.screen.availWidth * 0.8) +
-					',height=' + (window.screen.availHeight * 0.8));
+					',height=' + (window.screen.availHeight * 0.8)
+				);
 				return false;
 			}
 			dialog.dialog('open');
 			return false;
 		});
 
-		documentViewers.siblings('.documentviewdialog').dialog({
+		documentViewers.find('.documentviewdialog').dialog({
 			modal: true,
 			autoOpen: false,
 			resizable: false,
@@ -1519,7 +1568,7 @@ function initDocumentViewers(selectors) {
 			dialogClass: 'documentviewdialog',
 			open: function (event, ui) {
 				var elem = $('#' + $(this).attr('id').replace(/dialog/, ''));
-				$(this).dialog('option', 'position', elem.hasClass('documentview-audio') ?
+				$(this).dialog('option', 'position', elem.is('.documentview[data-preview-type="audio"]') ?
 					{my: 'center', at: 'center', of: window} : {my: 'top', at: 'top', of: window})
 					.dialog('option', {width: 'auto'});
 				$('.ui-widget-overlay').bind('click', function () {
@@ -1529,11 +1578,11 @@ function initDocumentViewers(selectors) {
 			},
 			close: function (event, ui) {
 				var elem = $('#' + $(this).attr('id').replace(/dialog/, ''));
-				if (elem.hasClass('documentview-image')) {
+				if (elem.is('.documentview[data-preview-type="image"]')) {
 					elem.tooltip('enable');
-				} else if (elem.hasClass('documentview-audio')) {
+				} else if (elem.is('.documentview[data-preview-type="audio"]')) {
 					$(this).find('audio').get(0).pause();
-				} else if (elem.hasClass('documentview-video')) {
+				} else if (elem.is('.documentview[data-preview-type="video"]')) {
 					$(this).find('video').get(0).pause();
 				}
 			}
@@ -1544,6 +1593,11 @@ function initDocumentViewers(selectors) {
 			.parent().resizable({
 			aspectRatio: true
 		}).draggable();
+
+		documentViewers.find('.download').click(function() {
+			var url = $(this).siblings('[data-preview-type]').attr('href');
+			location.href = url + '&save=1';
+		});
 	});
 }
 

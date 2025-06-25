@@ -51,7 +51,8 @@
 		terytShowNumericIdentifiers: {if ConfigHelper::checkConfig('teryt.show_numeric_identifiers')}true{else}false{/if},
 		missedNodeWarning: {if ConfigHelper::checkConfig('assignments.missed_node_warning', ConfigHelper::checkConfig('phpui.node_assignment_warning'))}true{else}false{/if},
 		discountPercentage: {$smarty.const.DISCOUNT_PERCENTAGE},
-		discountAmount: {$smarty.const.DISCOUNT_AMOUNT}
+		discountAmount: {$smarty.const.DISCOUNT_AMOUNT},
+		office2pdfCommand: '{ConfigHelper::getConfig('documents.office2pdf_command', '', true)}'
 	};
 
 	var lms = {

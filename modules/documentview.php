@@ -121,7 +121,7 @@ if (!empty($docids)) {
 
         $attachment_filename = ConfigHelper::getConfig('documents.attachment_filename', '%filename');
         $html2pdf_command = ConfigHelper::getConfig('documents.html2pdf_command', '', true);
-        $office2dpf_command = ConfigHelper::getConfig('documents.office2pdf_command', '', true);
+        $office2pdf_command = ConfigHelper::getConfig('documents.office2pdf_command', '', true);
 
         if (isset($_GET['save'])) {
             $docid = $list[0]['docid'];
@@ -160,7 +160,7 @@ if (!empty($docids)) {
 
                 if ($i !== false) {
                     $extension = mb_substr($filename, $i + 1);
-                    if ($pdf_on_output && preg_match('/^(htm|(odt|docx|rtf)$)/i', $extension)) {
+                    if ($pdf_on_output && preg_match('/^(htm|(odt|docx|xls|xlsx|rtf)$)/i', $extension)) {
                         $extension = 'pdf';
                     }
                     $filename = mb_substr($filename, 0, $i);
@@ -206,7 +206,7 @@ if (!empty($docids)) {
                     }
                 }
 
-                if ($file['type'] == 1 || count($list) == 1) {
+                if (($file['type'] == 1 || count($list) == 1) && empty($attachmentid)) {
                     $filename = preg_replace(
                         '/[^[:alnum:]_\.\-]/iu',
                         '_',
@@ -314,7 +314,7 @@ if (!empty($docids)) {
 
                 if ($i !== false) {
                     $extension = mb_substr($filename, $i + 1);
-                    if (preg_match('/^(htm|(odt|docx|rtf)$)/i', $extension) && $pdf) {
+                    if (preg_match('/^(htm|(odt|docx|xls|xlsx|rtf)$)/i', $extension) && $pdf) {
                         $extension = 'pdf';
                     }
                     $filename = mb_substr($filename, 0, $i);
@@ -324,25 +324,27 @@ if (!empty($docids)) {
                     $extension = '';
                 }
 
-                $filename = preg_replace(
-                    '/[^[:alnum:]_\.\-]/iu',
-                    '_',
-                    str_replace(
-                        array(
-                            '%filename',
-                            '%type',
-                            '%document',
-                            '%docid',
-                        ),
-                        array(
-                            $filename,
-                            $DOCTYPES[$docs[$docid]['type']],
-                            $docs[$docid]['fullnumber'],
-                            $docid,
-                        ),
-                        $attachment_filename
-                    )
-                );
+                if (intval($list[0]['type']) == 1) {
+                    $filename = preg_replace(
+                        '/[^[:alnum:]_\.\-]/iu',
+                        '_',
+                        str_replace(
+                            array(
+                                '%filename',
+                                '%type',
+                                '%document',
+                                '%docid',
+                            ),
+                            array(
+                                $filename,
+                                $DOCTYPES[$docs[$docid]['type']],
+                                $docs[$docid]['fullnumber'],
+                                $docid,
+                            ),
+                            $attachment_filename
+                        )
+                    );
+                }
 
                 if ($pdf || $others) {
                     header('Content-Disposition: ' . ($pdf && !isset($_GET['save']) ? 'inline' : 'attachment') . '; filename=' . $filename . '.' . $extension);
@@ -544,6 +546,8 @@ if (!empty($docids)) {
 
                                 echo $content;
                             }
+                        } else {
+                            echo file_get_contents($filename);
                         }
                     }
                 }

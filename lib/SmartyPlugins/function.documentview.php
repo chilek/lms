@@ -26,8 +26,8 @@
 
 function smarty_function_documentview($params, $template)
 {
-    static $vars = array('type', 'name', 'url', 'id', 'text');
-    static $types = array(
+    static $vars = array('type', 'name', 'url', 'id');
+    static $preview_types = array(
         'image/jpeg' => 'image',
         'image/png' => 'image',
         'image/gif' => 'image',
@@ -40,6 +40,11 @@ function smarty_function_documentview($params, $template)
         'video/webm' => 'video',
         'application/pdf' => 'pdf',
     );
+    static $office2pdf_command = null;
+
+    if (!isset($office2pdf_command)) {
+        $office2pdf_command = ConfigHelper::getConfig('documents.office2pdf_command', '', true);
+    }
 
     $result = '';
     foreach ($vars as $var) {
@@ -51,19 +56,64 @@ function smarty_function_documentview($params, $template)
     }
     $external = isset($params['external']) && $params['external'] == 'true';
 
-    $type = $types[$type] ?? '';
+    $preview_type = $preview_types[$type] ?? '';
 
-    $result .= '<div class="documentviewdialog" id="documentviewdialog-' . $id . '" title="' . $name . '" style="display: none;"
-		data-url="' . $url . '"></div>';
+    if (empty($params['text'])) {
+        $office_document = preg_match('#^application/(rtf|.+(oasis|opendocument|openxml).+)$#i', $type);
 
-    $result .= '<a href="' . $url . '" data-title="' . $name . '"';
-    if (empty($type)) {
+        if (!empty($office2pdf_command) && $office_document) {
+            $preview_type = 'office';
+        }
+    }
+
+    $result .= '<span class="documentview">';
+
+    $result .= '<div class="documentviewdialog" id="documentviewdialog-' . $id . '" title="' . $name . '" style="display: none;"'
+        . ' data-url="' . $url . '"></div>';
+
+    $result .= '<a href="' . $url . '" data-title="' . $name . '" data-name="' . $name . '" data-type="' . $type . '"';
+    if (empty($preview_type)) {
         $result .=  ' class="lms-ui-button" ' . ($external ? ' rel="external"' : '');
     } else {
         $result .= ' id="documentview-' . $id . '" data-dialog-id="documentviewdialog-' . $id . '" '
-            . 'class="lms-ui-button documentview documentview-' . $type . '"';
+            . 'class="lms-ui-button" data-preview-type="' . $preview_type . '"';
     }
+
+    if (empty($params['text'])) {
+        $icon_classes = array(
+            'lms-ui-icon-view',
+            'preview',
+        );
+
+        if (preg_match('/pdf/i', $type)) {
+            $icon_classes[] = 'pdf';
+        } elseif ($office_document) {
+            if (preg_match('/(text|rtf|msword|msword|openxmlformats.+document)/i', $type)) {
+                $icon_classes[] = 'doc';
+            } elseif (preg_match('/(spreadsheet|ms-excel|openxmlformats.+sheet)/i', $type)) {
+                $icon_classes[] = 'xls';
+            }
+        }
+
+        $text = $name . ' <i class="' . implode(' ', $icon_classes) . '"></i>';
+    } else {
+        $text = $params['text'];
+    }
+
     $result .= '>' . $text . '</a>';
+
+    if (empty($params['text']) && $preview_type == 'office') {
+        $result .= LMSSmartyPlugins::buttonFunction(
+            array(
+                'type' => 'link',
+                'icon' => 'download',
+                'class' => 'download',
+            ),
+            $template
+        );
+    }
+
+    $result .= '</span>';
 
     return $result;
 }

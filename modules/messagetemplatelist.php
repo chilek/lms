@@ -137,10 +137,35 @@ if (isset($_GET['action'])) {
             $attachment = $DB->GetRow('SELECT * FROM templateattachments WHERE id = ?', array($_GET['id']));
             $file = STORAGE_DIR . DIRECTORY_SEPARATOR . 'messagetemplates' . DIRECTORY_SEPARATOR . $attachment['templateid'] . DIRECTORY_SEPARATOR . $attachment['filename'];
 
-            header('Content-Type: ' . $attachment['contenttype']);
-            header('Cache-Control: private');
-            header('Content-Disposition: ' . ($attachment['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename=' . $attachment['filename']);
-            echo @file_get_contents($file);
+            $office2pdf_command = ConfigHelper::getConfig('documents.office2pdf_command', '', true);
+
+            if (!empty($office2pdf_command) && !empty($_GET['preview-type']) && $_GET['preview-type'] == 'office') {
+                $filename = $attachment['filename'];
+                $i = strpos($filename, '.');
+                if ($i !== false) {
+                    $extension = mb_substr($filename, $i + 1);
+                    if (preg_match('/^(htm|(odt|docx|xls|xlsx|rtf)$)/i', $extension)) {
+                        $extension = 'pdf';
+                    }
+                    $filename = mb_substr($filename, 0, $i) . '.' . $extension;
+                }
+
+                header('Content-Type: application/pdf');
+                header('Cache-Control: private');
+                header('Content-Disposition: inline; filename=' . $filename);
+
+                echo Utils::office2pdf(array(
+                    'content' => file_get_contents($file),
+                    'subject' => trans('Document'),
+                    'doctype' => Utils::docTypeByMimeType($attachment['contenttype']),
+                    'dest' => 'S',
+                ));
+            } else {
+                header('Content-Type: ' . $attachment['contenttype']);
+                header('Cache-Control: private');
+                header('Content-Disposition: ' . ($attachment['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename=' . $attachment['filename']);
+                echo @file_get_contents($file);
+            }
 
             break;
     }

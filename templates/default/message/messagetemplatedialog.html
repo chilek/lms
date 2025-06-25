@@ -171,22 +171,7 @@
 	];
 
 	function open_{$operation}_dialog(template_id) {
-		var viewContentTypes = {
-			'image/jpeg': 'image',
-			'image/png': 'image',
-			'image/gif': 'image',
-			'audio/mp3': 'audio',
-			'audio/ogg': 'audio',
-			'audio/oga': 'audio',
-			'audio/wav': 'audio',
-			'video/mp4': 'video',
-			'video/ogg': 'video',
-			'video/webm': 'video',
-			'application/pdf': 'pdf',
-		};
-
 		var editor = tinymce.get('{$operation}-template-html-body');
-		var contentType = 'text/html';
 		var templateType;
 
 		if (template_id) {
@@ -232,43 +217,34 @@
 					'<a class="lms-ui-button delete-button">' +
 					'<input type="hidden" name="template[deleted-existing-attachments][' + attachment.id + ']"' +
 					' value="' + attachment.id + '"' +
-					' form="{$operation}-template-form"	disabled>' +
+					' form="{$operation}-template-form" disabled>' +
 					'<i class="lms-ui-icon-delete"></i></a>';
 
-				var contentType = '';
-				if (viewContentTypes.hasOwnProperty(attachment.contenttype)) {
-					contentType = viewContentTypes[attachment.contenttype];
-				}
-
-				html += '<div class="documentviewdialog" id="documentviewdialog-' + attachment.id + '"' +
+				html += '<span class="documentview">' +
+					'<div class="documentviewdialog" id="documentviewdialog-' + attachment.id + '"' +
 					' title="' + attachment.filename + '"' +
 					' style="display: none;"' +
 					' data-url="?m=messagetemplatelist&action=attachment-view&id=' + attachment.id + '"></div>';
 
-				html += '<a href="?m=messagetemplatelist&action=attachment-view&id=' + attachment.id + '"'
-					+ ' data-title="' + attachment.filename + '"';
+				html += '<a href="?m=messagetemplatelist&action=attachment-view&id=' + attachment.id + '"' +
+					' data-title="' + attachment.filename + '"' +
+					' data-name="' + attachment.filename + '"' +
+					' data-type="' + attachment.contenttype + '"';
+
 				if (!contentType.length) {
 					html += ' class="lms-ui-button" rel="external"';
 				} else {
 					html += ' id="documentview-' + attachment.id + '"' +
 						' data-dialog-id="documentviewdialog-' + attachment.id + '"' +
-						' class="lms-ui-button documentview documentview-' + contentType + '"';
+						' class="lms-ui-button"';
 				}
 
 				var size = get_size_unit(attachment.size);
 
 				html +=  '>' + attachment.filename + ' (' + size.size + ' ' + size.unit + ')' +
-					' <i class="lms-ui-icon-view' +
-					(attachment.contenttype.match(/pdf/)
-						? ' pdf'
-						: (attachment.contenttype.match(/csv|excel|spreadsheet/)
-							? ' xls'
-							: ''
-						)
-					) + '"></i>' +
-					'</a>';
+					' <i class="lms-ui-icon-view preview"></i>';
 
-				html += '</li>';
+				html += '</a></span></li>';
 			})
 
 			if (html.length) {
@@ -401,8 +377,8 @@
 			var attachmentDeleteButton = $(this);
 			attachmentDeleteButton.find('[type="hidden"]').prop('disabled', function() {
 				return !$(this).prop('disabled');
-			}).end().siblings('.lms-ui-button').toggleClass('blend')
-				.end().find('i').toggleClass(['lms-ui-icon-delete', 'lms-ui-icon-restore']);
+			}).end().siblings('.documentview').find('.lms-ui-button').toggleClass('blend')
+				.end().end().find('i').toggleClass(['lms-ui-icon-delete', 'lms-ui-icon-restore']);
 		});
 	});
 

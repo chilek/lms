@@ -7,10 +7,6 @@
 
 <style>
 
-	.docattachrow a:nth-child(2) {
-		margin-left: 0.5em;
-	}
-
 	table.lmsbox > thead >tr:not(:first-child) {
 		border-top: none;
 	}
@@ -196,17 +192,22 @@
 			<td>
 				{foreach $document.attachments as $docattach}
 				<div class="docattachrow{if $docattach.type <= 0} docattach{if $document.attachments[$docattach.id].deleted} blend crossed{/if}{/if}">
-					<a href="#">
-						<i class="fa-fw lms-ui-icon-{if $document.attachments[$docattach.id].deleted}cancel{else}delete{/if}"
-								{if $docattach.type == 1} style="visibility: hidden;"{/if}></i>
+					<a class="lms-ui-button toggle-button">
+						<i class="fa-fw lms-ui-icon-{if $document.attachments[$docattach.id].deleted}restore{else}delete{/if}"
+							{if $docattach.type == 1} style="visibility: hidden;"{/if}></i>
 					</a>
 					{$class = ""}
 					{if $document.attachments[$docattach.id].deleted}
 						{$class = "blend"}
 					{/if}
-					{documentview id="{$document.id}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
-						url="?m=documentview&id={$document.id}&attachmentid={$docattach.id}" external=true class=$class
-						text="{$docattach.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"}
+					{documentview
+						id="{$document.id}-{$docattach.id}"
+						type=$docattach.contenttype
+						name=$docattach.filename
+						url="?m=documentview&id={$document.id}&attachmentid={$docattach.id}"
+						external=true
+						class=$class
+					}
 					{if $docattach.type == -1}<i class="lms-ui-icon-user" title="<strong>{t a=date("Y/m/d H:i", $docattach.cdate)}Sent by customer at $a{/t}</strong>"></i>{/if}
 					<input type="hidden" name="document[attachments][{$docattach.id}][deleted]" value="{$document.attachments[$docattach.id].deleted}">
 				</div>
@@ -282,11 +283,11 @@
 	$(function() {
 		$('form[name="documentedit"] [name="document[title]"]').focus();
 
-		$('.docattach').on('click', function() {
+		$('.toggle-button').on('click', function() {
 			var elem = $(this);
-			elem.toggleClass('blend crossed').find('.lms-ui-button').toggleClass('blend')
-			elem.find('i').toggleClass('lms-ui-icon-delete').toggleClass('lms-ui-icon-cancel');
-			elem.find('input').val(+ elem.hasClass('blend'));
+			elem.siblings('.documentview').find('.lms-ui-button').toggleClass('blend')
+			elem.find('i').toggleClass('lms-ui-icon-delete').toggleClass('lms-ui-icon-restore');
+			elem.siblings('input').val(+elem.find('i').is('.lms-ui-icon-restore'));
 			return false;
 		});
 
