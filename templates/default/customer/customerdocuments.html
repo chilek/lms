@@ -152,9 +152,13 @@
 						{/if}
 						{if is_array($doc.attachments)}
 							{if $docattach.type == 1 || count($doc.attachments) == 1}
-								{documentview id="global-{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
-									url=$url external=true
-									text="<i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"}
+								{documentview
+									id="global-{$doc.docid}-{$docattach.id}"
+									type=$docattach.contenttype
+									name=$docattach.filename
+									url=$url
+									external=true
+								}
 							{/if}
 							{if count($doc.attachments) > 1 || !$docattach.type < 1}
 								<a href="#" id="allattachments-toggle-{$doc.docid}" onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
@@ -167,9 +171,13 @@
 					<div id="allattachments-{$doc.docid}" class="document-attachment-container" style="display: none;">
 						{foreach $doc.attachments as $docattach}
 							{if $docattach@first && $docattach.type == 1}{continue}{/if}
-							{documentview id="local-{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
-								url="?m=documentview&id={$doc.docid}&attachmentid={$docattach.id}" external=true
-								text="{$docattach.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"}
+							{documentview
+								id="local-{$doc.docid}-{$docattach.id}"
+								type=$docattach.contenttype
+								name=$docattach.filename
+								url="?m=documentview&id={$doc.docid}&attachmentid={$docattach.id}"
+								external=true
+							}
 							{if $docattach.type == -1}<i class="lms-ui-icon-user" title="<strong>{t a=date("Y/m/d H:i", $docattach.cdate)}Sent by customer at $a{/t}</strong>"></i>{/if}
 							<br>
 						{/foreach}
