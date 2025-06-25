@@ -229,7 +229,7 @@
 
 			$.each(templateAttachments, function(id, attachment) {
 				html += '<li>' +
-					'<a class="lms-ui-button">' +
+					'<a class="lms-ui-button delete-button">' +
 					'<input type="hidden" name="template[deleted-existing-attachments][' + attachment.id + ']"' +
 					' value="' + attachment.id + '"' +
 					' form="{$operation}-template-form"	disabled>' +
@@ -397,7 +397,7 @@
 			$(this.dialog_body_id).find('.existing-template-attachment-list').empty();
 		});
 
-		$('#{$operation}-existing-template-attachments').on('click', '.lms-ui-button', function() {
+		$('#{$operation}-existing-template-attachments').on('click', '.lms-ui-button.delete-button', function() {
 			var attachmentDeleteButton = $(this);
 			attachmentDeleteButton.find('[type="hidden"]').prop('disabled', function() {
 				return !$(this).prop('disabled');
