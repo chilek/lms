@@ -158,6 +158,7 @@
 									name=$docattach.filename
 									url=$url
 									external=true
+									text="<i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"
 								}
 							{/if}
 							{if count($doc.attachments) > 1 || !$docattach.type < 1}
