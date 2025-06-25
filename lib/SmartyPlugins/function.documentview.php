@@ -59,7 +59,7 @@ function smarty_function_documentview($params, $template)
     $preview_type = $preview_types[$type] ?? '';
 
     if (empty($params['text'])) {
-        $office_document = preg_match('#^application/(rtf|.+(oasis|opendocument|openxml).+)$#i', $type);
+        $office_document = preg_match('#^application/(rtf|msword|ms-excel|.+(oasis|opendocument|openxml).+)$#i', $type);
 
         if (!empty($office2pdf_command) && $office_document) {
             $preview_type = 'office';
@@ -88,7 +88,7 @@ function smarty_function_documentview($params, $template)
         if (preg_match('/pdf/i', $type)) {
             $icon_classes[] = 'pdf';
         } elseif ($office_document) {
-            if (preg_match('/(text|rtf|msword|msword|openxmlformats.+document)/i', $type)) {
+            if (preg_match('/(text|rtf|msword|openxmlformats.+document)/i', $type)) {
                 $icon_classes[] = 'doc';
             } elseif (preg_match('/(spreadsheet|ms-excel|openxmlformats.+sheet)/i', $type)) {
                 $icon_classes[] = 'xls';

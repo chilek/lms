@@ -144,7 +144,7 @@ if (isset($_GET['action'])) {
                 $i = strpos($filename, '.');
                 if ($i !== false) {
                     $extension = mb_substr($filename, $i + 1);
-                    if (preg_match('/^(htm|(odt|docx|xls|xlsx|rtf)$)/i', $extension)) {
+                    if (preg_match('/^(odt|ods|doc|docx|xls|xlsx|rtf)$/i', $extension)) {
                         $extension = 'pdf';
                     }
                     $filename = mb_substr($filename, 0, $i) . '.' . $extension;

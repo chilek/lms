@@ -160,7 +160,7 @@ if (!empty($docids)) {
 
                 if ($i !== false) {
                     $extension = mb_substr($filename, $i + 1);
-                    if ($pdf_on_output && preg_match('/^(htm|(odt|docx|xls|xlsx|rtf)$)/i', $extension)) {
+                    if ($pdf_on_output && preg_match('/^(htm|(odt|ods|doc|docx|xls|xlsx|rtf)$)/i', $extension)) {
                         $extension = 'pdf';
                     }
                     $filename = mb_substr($filename, 0, $i);
@@ -314,7 +314,7 @@ if (!empty($docids)) {
 
                 if ($i !== false) {
                     $extension = mb_substr($filename, $i + 1);
-                    if (preg_match('/^(htm|(odt|docx|xls|xlsx|rtf)$)/i', $extension) && $pdf) {
+                    if (preg_match('/^(htm|(odt|ods|doc|docx|xls|xlsx|rtf)$)/i', $extension) && $pdf) {
                         $extension = 'pdf';
                     }
                     $filename = mb_substr($filename, 0, $i);

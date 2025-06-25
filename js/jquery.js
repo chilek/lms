@@ -1487,7 +1487,7 @@ function initDocumentViewers(selectors) {
 			var officeDocument = false;
 
 			if (!previewType.length) {
-				officeDocument = contentType.match(/^application\/(rtf|.+(oasis|opendocument|openxml).+)$/i) ? true : false;
+				officeDocument = contentType.match(/^application\/(rtf|msword|ms-excel|.+(oasis|opendocument|openxml).+)$/i) ? true : false;
 				if (lmsSettings.office2pdfCommand.length && officeDocument) {
 					previewType = 'office';
 				}
@@ -1500,7 +1500,7 @@ function initDocumentViewers(selectors) {
 			if (contentType.match(/pdf/i)) {
 				$(this).find('i').addClass('pdf');
 			} else if (officeDocument) {
-				if (contentType.match(/(text|rtf|msword|msword|openxmlformats.+document)/i)) {
+				if (contentType.match(/(text|rtf|msword|openxmlformats.+document)/i)) {
 					$(this).find('i').addClass('doc');
 				} else if (contentType.match(/(spreadsheet|ms-excel|openxmlformats.+sheet)/i)) {
 					$(this).find('i').addClass('xls');

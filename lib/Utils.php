@@ -1373,8 +1373,12 @@ class Utils
             return 'htm';
         } elseif (preg_match('#^application/rtf$#i', $mimeType)) {
             return 'rtf';
+        } elseif (preg_match('#^application/msword$#i', $mimeType)) {
+            return 'doc';
         } elseif (preg_match('#^application/vnd.openxmlformats-officedocument.wordprocessingml.document$#i', $mimeType)) {
             return 'docx';
+        } elseif (preg_match('#^application/ms-excel$#i', $mimeType)) {
+            return 'xls';
         } elseif (preg_match('#^application/vnd.openxmlformats-officedocument.spreadsheetml.sheet$#i', $mimeType)) {
             return 'xlsx';
         } elseif (preg_match('#^application/vnd.oasis.opendocument.text.*$#i', $mimeType)) {

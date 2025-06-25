@@ -145,9 +145,14 @@
 								{if $promotion.attachments[$promoattach.id].deleted}
 									{$class = "blend"}
 								{/if}
-								{documentview id="{$promotion.id}-{$promoattach.id}" type=$promoattach.contenttype name=$promoattach.filename
-									url="?m=promotionattachmentview&promotionid={$promotion.id}&attachmentid={$promoattach.id}" external=true class=$class
-									text="{$promoattach.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$promoattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/', $promoattach.contenttype)} xls{/if}\"></i>"}
+								{documentview
+									id="{$promotion.id}-{$promoattach.id}"
+									type=$promoattach.contenttype
+									name=$promoattach.filename
+									url="?m=promotionattachmentview&promotionid={$promotion.id}&attachmentid={$promoattach.id}"
+									external=true
+									class=$class
+								}
 								<input type="hidden" name="promotion[attachments][{$promoattach.id}][deleted]"
 									value="{$promotion.attachments[$promoattach.id].deleted}" form="promotionedit">
 							</div>

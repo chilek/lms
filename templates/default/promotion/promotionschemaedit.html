@@ -192,9 +192,14 @@
 								{if $schema.attachments[$schemaattach.id].deleted}
 									{$class = "blend"}
 								{/if}
-								{documentview id="{$schema.id}-{$schemaattach.id}" type=$schemaattach.contenttype name=$schemaattach.filename
-									url="?m=promotionattachmentview&schemaid={$schema.id}&attachmentid={$schemaattach.id}" external=true class=$class
-									text="{$schemaattach.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$schemaattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/', $schemaattach.contenttype)} xls{/if}\"></i>"}
+								{documentview
+									id="{$schema.id}-{$schemaattach.id}"
+									type=$schemaattach.contenttype
+									name=$schemaattach.filename
+									url="?m=promotionattachmentview&schemaid={$schema.id}&attachmentid={$schemaattach.id}"
+									external=true
+									class=$class
+								}
 								<input type="hidden" name="schema[attachments][{$schemaattach.id}][deleted]"
 									value="{$schema.attachments[$schemaattach.id].deleted}" form="schemaedit">
 							</div>
