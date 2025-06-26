@@ -71,6 +71,9 @@ function getMessageTemplates($tmpltype)
 
     $result = new xajaxResponse();
     $templates = $LMS->GetMessageTemplates($tmpltype);
+    if (empty($templates)) {
+        $templates = array();
+    }
     $result->call('messageTemplatesReceived', array_values($templates));
 
     return $result;
