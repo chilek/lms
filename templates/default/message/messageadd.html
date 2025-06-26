@@ -115,11 +115,9 @@
 
 	function messageTemplatesReceived(templates) {
 		var options = '<OPTION value="0">' + $t("— none —") + '</OPTION>';
-		if (templates) {
-			for (i = 0; i < templates.length; i++) {
-				options += '<option value="' + templates[i].id + '">' + templates[i].name + '</option>';
-			}
-		}
+		$.each(templates, function(index, template) {
+			options += '<option value="' + template.id + '">' + template.name + '</option>';
+		});
 		$('#msgtmplid').html(options).prop('disabled', false);
 		updateAdvancedSelectsTest('#msgtmplid');
 	}
