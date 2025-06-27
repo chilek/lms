@@ -26,6 +26,10 @@
 
 check_file_uploads();
 
+$LMS->InitXajax();
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtmessagexajax.inc.php');
+$SMARTY->assign('xajax', $LMS->RunXajax());
+
 $notification_options_by_divisionids = array(
     0 => array(
         'notification_sender_name' => ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name')),
@@ -52,10 +56,6 @@ $notify = ConfigHelper::checkConfig('rt.notify', ConfigHelper::checkConfig('phpu
 $customer_notify = ConfigHelper::checkConfig('rt.customer_notify', ConfigHelper::checkConfig('phpui.helpdesk_customer_notify'));
 $content_type = ConfigHelper::getConfig('rt.default_message_reply_content_type', 'text');
 $quote_body = ConfigHelper::checkConfig('rt.quote_body', ConfigHelper::checkConfig('phpui.helpdesk_reply_body'));
-
-$LMS->InitXajax();
-include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtmessagexajax.inc.php');
-$SMARTY->assign('xajax', $LMS->RunXajax());
 
 $categories = $LMS->GetUserCategories($userid);
 if (empty($categories)) {
