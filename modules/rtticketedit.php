@@ -251,10 +251,10 @@ if ($id && !isset($_POST['ticket'])) {
                     } elseif ($new_ticket_divisionid != $ticket_divisionid) {
                         $ticket_divisionid = $new_ticket_divisionid;
 
-                        if (!isset($smtp_options_by_division_ids[$new_ticket_divisionid])) {
-                            ConfigHelper::setFilter($new_ticket_divisionid, Auth::GetCurrentUser());
+                        if (!isset($smtp_options_by_division_ids[$ticket_divisionid])) {
+                            ConfigHelper::setFilter($ticket_divisionid, Auth::GetCurrentUser());
 
-                            $smtp_options_by_division_ids[$new_ticket_divisionid] = $LMS->GetRTSmtpOptions();
+                            $smtp_options_by_division_ids[$ticket_divisionid] = $LMS->GetRTSmtpOptions();
 
                             $notification_options_by_divisionids[$ticket_divisionid] = array(
                                 'block_ticket_close_with_open_events' => ConfigHelper::checkConfig('rt.block_ticket_close_with_open_events', ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events')),
