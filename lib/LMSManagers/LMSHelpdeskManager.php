@@ -2207,9 +2207,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         if (empty($params['smtp_options'])) {
             $smtp_options = $this->GetRTSmtpOptions();
-         } else {
+        } else {
             $smtp_options = $params['smtp_options'];
-         }
+        }
 
         if (isset($params['verifierid']) && $params['verifierid'] && (!isset($params['recipients']) || ($params['recipients'] & RT_NOTIFICATION_VERIFIER))) {
             $verifier_email = $this->db->GetOne(
