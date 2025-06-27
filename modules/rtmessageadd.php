@@ -28,7 +28,7 @@ check_file_uploads();
 
 $notification_options_by_divisionids = array(
     0 => array(
-        'helpdesk_sender_name' => ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name')),
+        'notification_sender_name' => ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name')),
         'customer_notification_mail_subject' => ConfigHelper::getConfig('rt.customer_notification_mail_subject', ConfigHelper::getConfig('phpui.helpdesk_customer_notification_mail_subject', '[RT#%tid] %subject')),
         'new_message_preserve_no_owner' => ConfigHelper::checkConfig('rt.new_message_preserve_no_owner'),
         'notification_customerinfo' => ConfigHelper::checkConfig('rt.notification_customerinfo', ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')),
@@ -205,7 +205,7 @@ if (isset($_POST['message'])) {
                     $smtp_options_by_division_ids[$new_ticket_divisionid] = $LMS->GetRTSmtpOptions();
 
                     $notification_options_by_divisionids[$ticket_divisionid] = array(
-                        'helpdesk_sender_name' => ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name')),
+                        'notification_sender_name' => ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name')),
                         'customer_notification_mail_subject' => ConfigHelper::getConfig('rt.customer_notification_mail_subject', ConfigHelper::getConfig('phpui.helpdesk_customer_notification_mail_subject', '[RT#%tid] %subject')),
                         'new_message_preserve_no_owner' => ConfigHelper::checkConfig('rt.new_message_preserve_no_owner'),
                         'notification_customerinfo' => ConfigHelper::checkConfig('rt.notification_customerinfo', ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')),
@@ -237,7 +237,7 @@ if (isset($_POST['message'])) {
             $message['customerid'] = null;
 
             $mailfname = '';
-            if (!empty($helpdesk_sender_name) && ($mailfname = $helpdesk_sender_name)) {
+            if (!empty($notification_sender_name) && ($mailfname = $notification_sender_name)) {
                 if ($mailfname == 'queue') {
                     $mailfname = $queue['name'];
                 } elseif ($mailfname == 'user') {
@@ -454,8 +454,8 @@ if (isset($_POST['message'])) {
             // User notifications
             if (isset($message['notify']) || isset($message['customernotify']) || !empty($message['verifierid'])) {
                 $mailfname = '';
-                if (!empty($helpdesk_sender_name)) {
-                    $mailfname = $helpdesk_sender_name;
+                if (!empty($notification_sender_name)) {
+                    $mailfname = $notification_sender_name;
 
                     if ($mailfname == 'queue') {
                         $mailfname = $queue['name'];

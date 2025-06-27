@@ -32,7 +32,7 @@ $SMARTY->assign('xajax', $LMS->RunXajax());
 
 $notification_options_by_division_ids = array(
     0 => array(
-        'helpdesk_sender_name' => ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name')),
+        'notification_sender_name' => ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name')),
         'notification_customerinfo' => ConfigHelper::checkConfig(
             'rt.notification_customerinfo',
             ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
@@ -186,7 +186,7 @@ if (isset($_GET['ticketid'])) {
 
                 $notification_options_by_division_ids[$ticket_divisionid] = array(
                     0 => array(
-                        'helpdesk_sender_name' => ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name')),
+                        'notification_sender_name' => ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name')),
                         'notification_customerinfo' => ConfigHelper::checkConfig(
                             'rt.notification_customerinfo',
                             ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
@@ -215,8 +215,8 @@ if (isset($_GET['ticketid'])) {
             $queue = $LMS->GetQueueByTicketId($note['ticketid']);
             $mailfname = '';
 
-            if (!empty($helpdesk_sender_name)) {
-                $mailfname = $helpdesk_sender_name;
+            if (!empty($notification_sender_name)) {
+                $mailfname = $notification_sender_name;
 
                 if ($mailfname == 'queue') {
                     $mailfname = $queue['name'];
