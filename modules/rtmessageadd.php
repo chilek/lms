@@ -26,21 +26,26 @@
 
 check_file_uploads();
 
+$notification_options_by_divisionids = array(
+    0 => array(
+        'helpdesk_sender_name' => ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name')),
+        'customer_notification_mail_subject' => ConfigHelper::getConfig('rt.customer_notification_mail_subject', ConfigHelper::getConfig('phpui.helpdesk_customer_notification_mail_subject', '[RT#%tid] %subject')),
+        'new_message_preserve_no_owner' => ConfigHelper::checkConfig('rt.new_message_preserve_no_owner'),
+        'notification_customerinfo' => ConfigHelper::checkConfig('rt.notification_customerinfo', ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')),
+        'notification_mail_body_customerinfo_format' => ConfigHelper::getConfig('rt.notification_mail_body_customerinfo_format', ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body')),
+        'notification_sms_body_customerinfo_format' => ConfigHelper::getConfig('rt.notification_sms_body_customerinfo_format', ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body')),
+        'notification_mail_subject' => ConfigHelper::getConfig('rt.notification_mail_subject', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject')),
+        'notification_mail_body' => ConfigHelper::getConfig('rt.notification_mail_body', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body')),
+        'notification_sms_body' => ConfigHelper::getConfig('rt.notification_sms_body', ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body')),
+    ),
+);
+
 $userid = Auth::GetCurrentUser();
 $block_ticket_close_with_open_events = ConfigHelper::checkConfig('rt.block_ticket_close_with_open_events', ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events'));
 $check_owner_verifier_conflict = ConfigHelper::checkConfig('rt.check_owner_verifier_conflict', ConfigHelper::checkConfig('phpui.helpdesk_check_owner_verifier_conflict', true));
 $allow_all_users_modify_deadline = ConfigHelper::checkConfig('rt.allow_all_users_modify_deadline', ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline'));
-$customer_notification_mail_subject = ConfigHelper::getConfig('rt.customer_notification_mail_subject', ConfigHelper::getConfig('phpui.helpdesk_customer_notification_mail_subject', '[RT#%tid] %subject'));
-$notification_customerinfo = ConfigHelper::checkConfig('rt.notification_customerinfo', ConfigHelper::checkConfig('phpui.helpdesk_customerinfo'));
-$notification_mail_subject = ConfigHelper::getConfig('rt.notification_mail_subject', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'));
-$notification_mail_body = ConfigHelper::getConfig('rt.notification_mail_body', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body'));
-$helpdesk_sender_name = ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name'));
 $service = ConfigHelper::getConfig('sms.service');
-$new_message_preserve_no_owner = ConfigHelper::checkConfig('rt.new_message_preserve_no_owner');
 $aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 86400);
-$notification_mail_body_customerinfo_format = ConfigHelper::getConfig('rt.notification_mail_body_customerinfo_format', ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body'));
-$notification_sms_body_customerinfo_format = ConfigHelper::getConfig('rt.notification_sms_body_customerinfo_format', ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'));
-$notification_sms_body = ConfigHelper::getConfig('rt.notification_sms_body', ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body'));
 $author_notify = ConfigHelper::checkConfig('rt.author_notify');
 $superuser = ConfigHelper::checkPrivilege('superuser');
 $notify = ConfigHelper::checkConfig('rt.notify', ConfigHelper::checkConfig('phpui.helpdesk_notify'));
@@ -181,6 +186,9 @@ if (isset($_POST['message'])) {
             0 => $smtp_options,
             $divisionid => $smtp_options,
         );
+
+        $notification_options_by_division_ids[$divisionid] = $notification_options_by_division_ids[0];
+
         $ticket_divisionid = $divisionid;
 
         foreach ($tickets as $ticketid) {
@@ -189,12 +197,29 @@ if (isset($_POST['message'])) {
             if (empty($new_ticket_divisionid)) {
                 $smtp_options = $smtp_options_by_division_ids[0];
             } elseif ($new_ticket_divisionid != $ticket_divisionid) {
+                $ticket_divisionid = $new_ticket_divisionid;
+
                 if (!isset($smtp_options_by_division_ids[$new_ticket_divisionid])) {
                     ConfigHelper::setFilter($new_ticket_divisionid, Auth::GetCurrentUser());
+
                     $smtp_options_by_division_ids[$new_ticket_divisionid] = $LMS->GetRTSmtpOptions();
+
+                    $notification_options_by_divisionids[$ticket_divisionid] = array(
+                        'helpdesk_sender_name' => ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name')),
+                        'customer_notification_mail_subject' => ConfigHelper::getConfig('rt.customer_notification_mail_subject', ConfigHelper::getConfig('phpui.helpdesk_customer_notification_mail_subject', '[RT#%tid] %subject')),
+                        'new_message_preserve_no_owner' => ConfigHelper::checkConfig('rt.new_message_preserve_no_owner'),
+                        'notification_customerinfo' => ConfigHelper::checkConfig('rt.notification_customerinfo', ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')),
+                        'notification_mail_body_customerinfo_format' => ConfigHelper::getConfig('rt.notification_mail_body_customerinfo_format', ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body')),
+                        'notification_sms_body_customerinfo_format' => ConfigHelper::getConfig('rt.notification_sms_body_customerinfo_format', ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body')),
+                        'notification_mail_subject' => ConfigHelper::getConfig('rt.notification_mail_subject', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject')),
+                        'notification_mail_body' => ConfigHelper::getConfig('rt.notification_mail_body', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body')),
+                        'notification_sms_body' => ConfigHelper::getConfig('rt.notification_sms_body', ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body')),
+                    );
                 }
-                $ticket_divisionid = $new_ticket_divisionid;
+
                 $smtp_options = $smtp_options_by_division_ids[$ticket_divisionid];
+
+                extract($notification_options_by_division_ids[$ticket_divisionid]);
             }
 
             $queue = $LMS->GetQueueByTicketId($ticketid);
