@@ -2672,6 +2672,12 @@ class LMS
         return $manager->deleteTicket($ticketid, $persistent);
     }
 
+    public function getDivisionIdByTicketId($ticketid)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->getDivisionIdByTicketId($ticketid);
+    }
+
     /*
      *  LMS-UI configuration
      */

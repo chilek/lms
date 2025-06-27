@@ -2205,7 +2205,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         // send email
         $args['type'] = MSG_MAIL;
 
-        $smtp_options = $this->GetRTSmtpOptions();
+        if (empty($params['smtp_options'])) {
+            $smtp_options = $this->GetRTSmtpOptions();
+         } else {
+            $smtp_options = $params['smtp_options'];
+         }
 
         if (isset($params['verifierid']) && $params['verifierid'] && (!isset($params['recipients']) || ($params['recipients'] & RT_NOTIFICATION_VERIFIER))) {
             $verifier_email = $this->db->GetOne(
@@ -2971,5 +2975,19 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
             return $result;
         }
+    }
+
+    public function getDivisionIdByTicketId($ticketid)
+    {
+        return $this->db->GetOne(
+            'SELECT
+                c.divisionid
+            FROM rttickets t
+            JOIN customers c ON c.id = t.customerid
+            WHERE t.id = ?',
+            array(
+                $ticketid,
+            )
+        );
     }
 }
