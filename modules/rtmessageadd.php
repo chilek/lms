@@ -196,6 +196,8 @@ if (isset($_POST['message'])) {
 
             if (empty($new_ticket_divisionid)) {
                 $smtp_options = $smtp_options_by_division_ids[0];
+
+                extract($notification_options_by_division_ids[0]);
             } elseif ($new_ticket_divisionid != $ticket_divisionid) {
                 $ticket_divisionid = $new_ticket_divisionid;
 
