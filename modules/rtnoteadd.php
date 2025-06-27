@@ -171,6 +171,14 @@ if (isset($_GET['ticketid'])) {
 
             $ticket = $LMS->GetTicketContents($note['ticketid']);
 
+            $ticket_divisionid = $LMS->getDivisionIdByTicketId($note['ticketid']);
+            if ($ticket_divisionid != $divisionid) {
+                ConfigHelper::setFilter($ticket_divisionid, Auth::GetCurrentUser());
+                $smtp_options = $LMS->GetRTSmtpOptions();
+            } else {
+                $smtp_options = array();
+            }
+
             $mailfrom = $LMS->DetermineSenderEmail($user['email'], $queue['email'], $ticket['requestor_mail']);
 
             $headers['From'] = $mailfname.' <'.$mailfrom.'>';
@@ -286,6 +294,7 @@ if (isset($_GET['ticketid'])) {
                 'attachments' => &$attachments,
                 'recipients' => ($note['notify'] ? RT_NOTIFICATION_USER : 0)
                     | (empty($note['verifierid']) ? 0 : RT_NOTIFICATION_VERIFIER),
+                'smtp_options', $smtp_options,
             ));
         }
 

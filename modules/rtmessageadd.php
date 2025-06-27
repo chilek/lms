@@ -174,11 +174,29 @@ if (isset($_POST['message'])) {
             $files = array();
         }
 
-        $smtp_options = $LMS->GetRTSmtpOptions();
-
         $message['userid'] = $userid;
 
+        $smtp_options = $LMS->GetRTSmtpOptions();
+        $smtp_options_by_division_ids = array(
+            0 => $smtp_options,
+            $divisionid => $smtp_options,
+        );
+        $ticket_divisionid = $divisionid;
+
         foreach ($tickets as $ticketid) {
+            $new_ticket_divisionid = $LMS->getDivisionIdByTicketId($ticketid);
+
+            if (empty($new_ticket_divisionid)) {
+                $smtp_options = $smtp_options_by_division_ids[0];
+            } elseif ($new_ticket_divisionid != $ticket_divisionid) {
+                if (!isset($smtp_options_by_division_ids[$new_ticket_divisionid])) {
+                    ConfigHelper::setFilter($new_ticket_divisionid, Auth::GetCurrentUser());
+                    $smtp_options_by_division_ids[$new_ticket_divisionid] = $LMS->GetRTSmtpOptions();
+                }
+                $ticket_divisionid = $new_ticket_divisionid;
+                $smtp_options = $smtp_options_by_division_ids[$ticket_divisionid];
+            }
+
             $queue = $LMS->GetQueueByTicketId($ticketid);
             if ($message['queueid'] != -100 && $message['queueid'] != $queue['id']) {
                 $queue = $LMS->GetQueue($message['queueid'], true);
@@ -537,6 +555,7 @@ if (isset($_POST['message'])) {
                         'attachments' => &$attachments,
                         'recipients' => ($message['notify'] ? RT_NOTIFICATION_USER : 0)
                             | (empty($message['verifierid']) ? 0 : RT_NOTIFICATION_VERIFIER),
+                        'smtp_options' => $smtp_options,
                     ));
                 }
             }
