@@ -70,6 +70,34 @@ if ($id && !isset($_POST['ticket'])) {
                     $SESSION->redirect('?m=rtticketview&id=' . $id);
                 }
 
+                $smtp_options = $LMS->GetRTSmtpOptions();
+
+                $notification_options_by_division_ids = array(
+                    0 => array(
+                        'notification_sender_name' => ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name')),
+                        'notification_sms_body' => ConfigHelper::getConfig('rt.notification_sms_body', ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body')),
+                    ),
+                );
+                $notification_options_by_division_ids[$divisionid] = $notification_options_by_division_ids[0];
+
+                $ticket_divisionid = $LMS->getDivisionIdByTicketId($id);
+
+                if (empty($ticket_divisionid)) {
+                    extract($notification_options_by_division_ids[0]);
+                } elseif ($ticket_divisionid != $divisionid) {
+                    ConfigHelper::setFilter($ticket_divisionid, Auth::GetCurrentUser());
+
+                    $smtp_options = $LMS->GetRTSmtpOptions();
+
+                    $notification_options_by_division_ids = array(
+                        $ticket_divisionid => array(
+                            'notification_sender_name' => ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name')),
+                            'notification_sms_body' => ConfigHelper::getConfig('rt.notification_sms_body', ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body')),
+                        ),
+                    );
+                    extract($notification_options_by_division_ids[$ticket_divisionid]);
+                }
+
                 $LMS->TicketChange($id, array('state' => RT_VERIFIED, 'verifier_rtime' => time()));
 
                 $queue = $LMS->GetQueueByTicketId($id);
@@ -102,13 +130,18 @@ if ($id && !isset($_POST['ticket'])) {
                     );
                 }
 
+                $smtp_options = $LMS->GetRTSmtpOptions();
+                $smtp_options_by_division_ids = array(
+                    0 => $smtp_options,
+                    $divisionid => $smtp_options,
+                );
+
                 $mailfname = '';
 
-                $helpdesk_sender_name = ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name'));
-                if (!empty($helpdesk_sender_name)) {
-                    if ($helpdesk_sender_name == 'queue') {
+                if (!empty($notification_sender_name)) {
+                    if ($notification_sender_name == 'queue') {
                         $mailfname = $queue['name'];
-                    } elseif ($helpdesk_sender_name == 'user') {
+                    } elseif ($notification_sender_name == 'user') {
                         $mailfname = $user['name'];
                     }
 
@@ -137,7 +170,7 @@ if ($id && !isset($_POST['ticket'])) {
                 );
                 $headers['Subject'] = $LMS->ReplaceNotificationSymbols($queue['verifierticketsubject'], $params);
                 $body = $LMS->ReplaceNotificationSymbols($queue['verifierticketbody'], $params);
-                $sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_sms_body', ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body')), $params);
+                $sms_body = $LMS->ReplaceNotificationSymbols($notification_sms_body, $params);
 
                 $LMS->NotifyUsers(array(
                     // don't notify regular users when ticket has been sent to verification
@@ -247,13 +280,11 @@ if ($id && !isset($_POST['ticket'])) {
                     if (empty($new_ticket_divisionid)) {
                         $smtp_options = $smtp_options_by_division_ids[0];
 
-                        extract($notifiction_options_by_division_ids[0]);
+                        extract($notification_options_by_division_ids[0]);
                     } elseif ($new_ticket_divisionid != $ticket_divisionid) {
                         $ticket_divisionid = $new_ticket_divisionid;
 
                         if (!isset($smtp_options_by_division_ids[$ticket_divisionid])) {
-                            ConfigHelper::setFilter($ticket_divisionid, Auth::GetCurrentUser());
-
                             $smtp_options_by_division_ids[$ticket_divisionid] = $LMS->GetRTSmtpOptions();
 
                             $notification_options_by_divisionids[$ticket_divisionid] = array(
@@ -625,7 +656,7 @@ if (isset($_POST['ticket'])) {
     if (empty($ticket_divisionid)) {
         $smtp_options = $smtp_options_by_division_ids[0];
 
-        extract($notifiction_options_by_division_ids[0]);
+        extract($notification_options_by_division_ids[0]);
     } elseif ($ticket_divisionid != $divisionid) {
         ConfigHelper::setFilter($ticket_divisionid, Auth::GetCurrentUser());
 

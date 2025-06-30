@@ -179,7 +179,11 @@ if (isset($_GET['ticketid'])) {
             $notification_options_by_division_ids[$divisionid] = $notification_options_by_division_ids[0];
 
             $ticket_divisionid = $LMS->getDivisionIdByTicketId($note['ticketid']);
-            if ($ticket_divisionid != $divisionid) {
+            if (empty($ticket_divisionid)) {
+                $smtp_options = $LMS->GetRTSmtpOptions();
+
+                extract($notification_options_by_division_ids[0]);
+            } elseif ($ticket_divisionid != $divisionid) {
                 ConfigHelper::setFilter($ticket_divisionid, Auth::GetCurrentUser());
 
                 $smtp_options = $LMS->GetRTSmtpOptions();
@@ -207,8 +211,6 @@ if (isset($_GET['ticketid'])) {
                 );
 
                 extract($notification_options_by_division_ids[$ticket_divisionid]);
-            } else {
-                $smtp_options = array();
             }
 
             $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
