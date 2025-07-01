@@ -17,9 +17,12 @@
 
 	function DocTemplateChanged() {
 		reset_login_timeout();
-		xajax_DocTemplateChanged($('[name="document[type]"]').val(),
+		xajax_DocTemplateChanged(
+			$('[name="document[type]"]').val(),
 			$('[name="document[templ]"]').val(),
-			0);
+			0,
+			{}
+		);
 	}
 
 	function DocTypeChanged() {
