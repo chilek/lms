@@ -286,8 +286,10 @@ if ($id && !isset($_POST['ticket'])) {
 
                         if (!isset($smtp_options_by_division_ids[$ticket_divisionid])) {
                             $smtp_options_by_division_ids[$ticket_divisionid] = $LMS->GetRTSmtpOptions();
+                        }
 
-                            $notification_options_by_divisionids[$ticket_divisionid] = array(
+                        if (!isset($notification_options_by_division_ids[$ticket_divisionid])) {
+                            $notification_options_by_division_ids[$ticket_divisionid] = array(
                                 'block_ticket_close_with_open_events' => ConfigHelper::checkConfig('rt.block_ticket_close_with_open_events', ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events')),
                                 'notification_sender_name' => ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name')),
                                 'ticket_property_change_notify' => ConfigHelper::checkConfig(
@@ -662,7 +664,7 @@ if (isset($_POST['ticket'])) {
 
         $smtp_options_by_division_ids[$ticket_divisionid] = $LMS->GetRTSmtpOptions();
 
-        $notification_options_by_divisionids[$ticket_divisionid] = array(
+        $notification_options_by_division_ids[$ticket_divisionid] = array(
             'block_ticket_close_with_open_events' => ConfigHelper::checkConfig('rt.block_ticket_close_with_open_events', ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events')),
             'notification_sender_name' => ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name')),
             'ticket_property_change_notify' => ConfigHelper::checkConfig(
