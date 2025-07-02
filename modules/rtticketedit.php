@@ -284,6 +284,13 @@ if ($id && !isset($_POST['ticket'])) {
                     } elseif ($new_ticket_divisionid != $ticket_divisionid) {
                         $ticket_divisionid = $new_ticket_divisionid;
 
+                        if (!isset(
+                            $smtp_options_by_division_ids[$ticket_divisionid],
+                            $notification_options_by_division_ids[$ticket_divisionid]
+                        )) {
+                            ConfigHelper::setFilter($ticket_divisionid, Auth::GetCurrentUser());
+                        }
+
                         if (!isset($smtp_options_by_division_ids[$ticket_divisionid])) {
                             $smtp_options_by_division_ids[$ticket_divisionid] = $LMS->GetRTSmtpOptions();
                         }
