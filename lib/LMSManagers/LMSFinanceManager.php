@@ -30,11 +30,17 @@
  */
 class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 {
+    const CALCULATE_INTEREST_NO_DEBT = 1;
+    const CALCULATE_INTEREST_NO_HISTORY = 2;
+    const CALCULATE_INTEREST_NO_EXPIRED_INVOICES = 3;
+
     public const INVOICE_CONTENT_DETAIL_GENERAL = 1;
     public const INVOICE_CONTENT_DETAIL_MORE = 2;
     public const INVOICE_CONTENT_DETAIL_ALL = 3;
 
     private $currency_values = array();
+
+    private $debtInterestPercentages = null;
 
     public function GetPromotionNameBySchemaID($id)
     {
@@ -5619,6 +5625,304 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             FROM cashsources
             WHERE deleted = 0
             ORDER BY name'
+        );
+    }
+
+    private function calculateInterest($periodStart, $periodEnd, $value)
+    {
+        if (empty($this->debtInterestPercentages)) {
+            $debtInterestPercentages = ConfigHelper::getConfig('finances.debt_interest_percentages', '2000.01.01:10.0');
+            if (empty($debtInterestPercentages)
+                || !preg_match('/^[0-9]{4}[\.\-][0-9]{2}[\.\-][0-9]{2}:[0-9]+([\.,][0-9]+)?'
+                    . '((;|\r?\n)[0-9]{4}[\.\-][0-9]{2}[\.\-][0-9]{2}:[0-9]+([\.,][0-9]+)?)*/', $debtInterestPercentages)) {
+                $debtInterestPercentages = '2000.01.01:10.0';
+            }
+
+            $this->debtInterestPercentages = array();
+            $periods = preg_split('/\s*(;|\r?\n)\s*/', $debtInterestPercentages);
+            foreach ($periods as $period) {
+                list ($date, $percent) = explode(':', $period);
+                list ($year, $month, $day) = preg_split('/[\.\-]/', $date);
+                if (!checkdate($month, $day, $year)) {
+                    continue;
+                }
+                $start = mktime(0, 0, 0, $month, $day, $year);
+                $this->debtInterestPercentages[$start] = floatval(str_replace(',', '.', $percent));
+            }
+        }
+
+        $interestValue = 0.0;
+
+        $periodDays = round(($periodEnd - $periodStart) / 86400);
+        $percentageStarts = array_keys($this->debtInterestPercentages);
+        foreach ($percentageStarts as $idx => $percentageStart) {
+            $percentage = $this->debtInterestPercentages[$percentageStart];
+            if ($percentageStart <= $periodStart) {
+                if (!isset($percentageStarts[$idx + 1])) {
+                    $interestValue += $value * $periodDays * $percentage / 100 / 365;
+                    break;
+                }
+
+                if ($percentageStarts[$idx + 1] > $periodStart) {
+                    $days = round(($percentageStarts[$idx + 1] - $periodStart) / 86400);
+                    if ($days > $periodDays) {
+                        $days = $periodDays;
+                    }
+                    $interestValue += $value * $days * $percentage / 100 / 365;
+                    $periodDays -= $days;
+                }
+            } elseif ($percentageStart < $periodEnd){
+                if (isset($percentageStarts[$idx + 1]) && $percentageStarts[$idx + 1] < $periodEnd) {
+                    $days = round(($percentageStarts[$idx + 1] - $percentageStart) / 86400);
+                    $interestValue += $value * $days * $percentage / 100 / 365;
+                    $periodDays -= $days;
+                } else {
+                    $interestValue += $value * $periodDays * $percentage / 100 / 365;
+                    break;
+                }
+            }
+
+            if ($periodDays <= 0) {
+                break;
+            }
+        }
+
+        return $interestValue;
+    }
+
+    public function calculateDebtForDocuments(array $params)
+    {
+        static $customerManager;
+
+        if (!isset($params['customer-id'])) {
+            throw new Exception('No customer identifier specified');
+        }
+
+        $customerId = intval($params['customer-id']);
+        if (empty($customerId)) {
+            throw new Exception('No customer identifier specified');
+        }
+
+        if (isset($params['from-date'])) {
+            $fromDate = 0;
+        } else {
+            $fromDate = intval($params['from-date']);
+        }
+
+        if (isset($params['to-date'])) {
+            $toDate = time();
+        } else {
+            $toDate = intval($params['to-date']);
+        }
+
+        $calculateInterests = !empty($params['calculate-interests']);
+
+        if (empty($customerManager)) {
+            $customerManager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
+        }
+
+        $balance = $customerManager->getCustomerBalance($customerId, $toDate);
+
+        if ($balance >= 0) {
+            return self::CALCULATE_INTEREST_NO_DEBT;
+        }
+
+        // zapytanie o numer faktury i datę płatności
+        $history = $this->db->GetAll(
+            'SELECT (CASE WHEN d.id IS NULL THEN c.time ELSE d.cdate END) AS cdate,
+                (CASE WHEN d.id IS NULL THEN 0 ELSE d.paytime END) AS deadline,
+                c.type AS cashtype,
+                d.id AS docid,
+                d.type AS doctype,
+                d.number,
+                d.extnumber,
+                np.template,
+                SUM(c.value * c.currencyvalue) AS value
+            FROM cash c
+            LEFT JOIN documents d ON d.id = c.docid AND d.type IN ?
+            LEFT JOIN numberplans np ON np.id = d.numberplanid
+            WHERE c.customerid = ?
+                AND c.time < ?
+            GROUP BY c.type, d.id, c.time, d.cdate, d.type, d.number, d.extnumber, np.template
+            ORDER BY cdate',
+            array(
+                array(DOC_INVOICE, DOC_CNOTE, DOC_DNOTE, DOC_INVOICE_PRO),
+                $customerId,
+                $toDate,
+            )
+        );
+
+        if (empty($history)) {
+            return self::CALCULATE_INTEREST_NO_HISTORY;
+        }
+
+        foreach ($history as &$record) {
+            $record['cdate'] = strtotime('today', $record['cdate']);
+            $record['pdate'] = strtotime('+' . $record['deadline'] . ' days', $record['cdate']);
+        }
+        unset($record);
+
+        usort($history, function ($a, $b) {
+            if ($a['pdate'] > $b['pdate']) {
+                return 1;
+            } elseif ($a['pdate'] < $b['pdate']) {
+                return -1;
+            } else {
+                return 0;
+            }
+        });
+
+        $balance = 0;
+        $invoices = array();
+        $leftValue = 0;
+
+        foreach ($history as &$record) {
+            $docId = $record['docid'];
+            $docType = $record['doctype'];
+            $value = $record['value'];
+            $pDate = $record['pdate'];
+            if (empty($docId) || $docType == DOC_CNOTE && $value > 0) {
+                $leftValue += $value;
+                foreach ($invoices as &$invoice) {
+                    if (empty($invoice['topay'])) {
+                        continue;
+                    }
+                    if ($invoice['topay'] < $leftValue) {
+                        $toPay = $invoice['topay'];
+                        $leftValue -= $toPay;
+                    } else {
+                        $toPay = $leftValue;
+                        $leftValue = 0;
+                    }
+                    $invoice['topay'] = round($invoice['topay'] - $toPay, 2);
+                    $invoice['topay_dates'][] = array(
+                        'pdate' => $pDate,
+                        'topay' => $invoice['topay'],
+                    );
+                    $leftValue = round($leftValue, 2);
+                    if (empty($leftValue)) {
+                        break;
+                    }
+                }
+                unset($invoice);
+            } else {
+                if ($balance + $value < 0) {
+                    if ($leftValue > 0) {
+                        if ($leftValue <= abs($value)) {
+                            $leftValue = 0;
+                        } else {
+                            $leftValue -= abs($value);
+                        }
+                        $leftValue = round($leftValue, 2);
+                    }
+
+                    $toPay = abs($balance + $value);
+                    if ($toPay > abs($value)) {
+                        $toPay = abs($value);
+                    }
+
+                    $invoices[$docId] = array(
+                        'fullnumber' => docnumber(array(
+                            'number' => $record['number'],
+                            'template' => $record['template'],
+                            'cdate' => $record['cdate'],
+                            'extnum' => $record['extnumber'],
+                            'customerid' => $customerId,
+                        )),
+                        'doctype' => $docType,
+                        'value' => -$value,
+                        'cdate' => $record['cdate'],
+                        'pdate' => $pDate,
+                        'topay' => $toPay,
+                        'interest' => 0,
+                        'interest_days' => 0,
+                        'days_after_pdate' => 0,
+                        'total_days_after_pdate' => 0,
+                        'debt_from' => $pDate,
+                        'debt_to' => $pDate,
+                        'topay_dates' => array(
+                            array(
+                                'pdate' => $pDate,
+                                'topay' => $toPay,
+                            ),
+                        ),
+                    );
+                } elseif ($leftValue > 0) {
+                    if ($leftValue <= abs($value)) {
+                        $leftValue = 0;
+                    } else {
+                        $leftValue -= abs($value);
+                    }
+                    $leftValue = round($leftValue, 2);
+                }
+            }
+            $balance += $value;
+        }
+        unset($record);
+
+        if (empty($invoices)) {
+            return self::CALCULATE_INTEREST_NO_EXPIRED_INVOICES;
+        }
+
+        foreach ($invoices as &$invoice) {
+            $invoice['debt_periods'] = array();
+            foreach ($invoice['topay_dates'] as $idx => $period) {
+                if (empty($period['topay'])) {
+                    continue;
+                }
+                $start = max($fromDate, $period['pdate']);
+                $totalStart = $period['pdate'];
+                if (isset($invoice['topay_dates'][intval($idx) + 1])) {
+                    $end = $invoice['topay_dates'][intval($idx) + 1]['pdate'];
+                } else {
+                    $end = $toDate;
+                }
+                if ($start < $end) {
+                    $invoice['debt_periods'][] = array(
+                        'start' => $start,
+                        'total_start' => $totalStart,
+                        'end' => $end,
+                        'value' => $period['topay'],
+                    );
+                }
+            }
+        }
+        unset($invoice);
+
+        $interest = 0;
+        $debt = 0;
+        $debitNoteTotalValue = 0;
+
+        foreach ($invoices as &$invoice) {
+            foreach ($invoice['debt_periods'] as $period) {
+                if (!isset($invoice['debt_from'])) {
+                    $invoice['debt_from'] = $period['start'];
+                }
+                if ($calculateInterests) {
+                    $invoice['interest'] += $this->calculateInterest($period['start'], $period['end'], $period['value']);
+                }
+                $invoice['days_after_pdate'] += round(($period['end'] - $period['start']) / 86400);
+                $invoice['total_days_after_pdate'] += round(($period['end'] - $period['total_start']) / 86400);
+                $invoice['interest_days'] += round(($period['end'] - $period['start']) / 86400);
+                $invoice['debt_to'] = $period['end'];
+            }
+
+            $interest += $invoice['interest'];
+            $debt += $invoice['topay'];
+
+            $debitNoteTotalValue = $interest;
+        }
+        unset($invoice);
+
+        $invoices = array_filter($invoices, function ($invoice) {
+            return !empty($invoice['topay']) || !empty($invoice['interest']);
+        });
+
+        return array(
+            'interest' => $interest,
+            'debt' => $debt,
+            'invoices' => $invoices,
+            'debit-note-total-value' => $debitNoteTotalValue,
         );
     }
 }

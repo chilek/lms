@@ -4118,6 +4118,12 @@ class LMS
         return $manager->getCashSources();
     }
 
+    public function calculateDebtForDocuments(array $params)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->calculateDebtForDocuments($params);
+    }
+
     /**
      * VoIP functions
      */

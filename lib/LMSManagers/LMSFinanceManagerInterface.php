@@ -177,4 +177,6 @@ interface LMSFinanceManagerInterface
     public function getPromotion($id);
 
     public function getCashSources();
+
+    public function calculateDebtForDocuments(array $params);
 }
