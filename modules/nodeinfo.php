@@ -72,6 +72,8 @@ if (!isset($resource_tabs['nodegroups']) || $resource_tabs['nodegroups']) {
 $customerid = $nodeinfo['ownerid'];
 
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'customer.inc.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customerconsents.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
 if (!isset($resource_tabs['nodeassignments']) || $resource_tabs['nodeassignments']) {
     $nodeassignments = array();

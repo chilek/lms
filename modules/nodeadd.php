@@ -531,7 +531,9 @@ if (!strlen($node_empty_mac) && empty($nodedata['macs'])) {
 $layout['pagetitle'] = trans('New Node');
 
 if (!empty($nodedata['ownerid']) && $LMS->CustomerExists($nodedata['ownerid']) && ($customerid = $nodedata['ownerid'])) {
-    include(MODULES_DIR.'/customer.inc.php');
+    include(MODULES_DIR . DIRECTORY_SEPARATOR . 'customer.inc.php');
+    require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customerconsents.php');
+    require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 } else {
     $SMARTY->assign('allnodegroups', $LMS->GetNodeGroupNames());
 }
