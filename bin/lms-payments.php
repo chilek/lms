@@ -245,7 +245,8 @@ if ($sdate_next) {
 // calculate start and end of numbering period
 function get_period($period)
 {
-    global $dom, $month, $year;
+    global $dom, $month, $year, $weekday;
+ 
     if (empty($period)) {
         $period = YEARLY;
     }
