@@ -5704,15 +5704,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         }
 
         if (isset($params['from-date'])) {
-            $fromDate = 0;
-        } else {
             $fromDate = intval($params['from-date']);
+        } else {
+            $fromDate = 0;
         }
 
         if (isset($params['to-date'])) {
-            $toDate = time();
-        } else {
             $toDate = intval($params['to-date']);
+        } else {
+            $toDate = time();
         }
 
         $calculateInterests = !empty($params['calculate-interests']);
