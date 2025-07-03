@@ -5758,7 +5758,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         foreach ($history as &$record) {
             $record['cdate'] = strtotime('today', $record['cdate']);
-            $record['pdate'] = strtotime('+' . $record['deadline'] . ' days', $record['cdate']);
+            $record['pdate'] = strtotime('+' . ($record['deadline'] + 1) . ' days', $record['cdate']) - 1;
         }
         unset($record);
 
