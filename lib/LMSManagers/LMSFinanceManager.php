@@ -5671,7 +5671,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $interestValue += $value * $days * $percentage / 100 / 365;
                     $periodDays -= $days;
                 }
-            } elseif ($percentageStart < $periodEnd){
+            } elseif ($percentageStart < $periodEnd) {
                 if (isset($percentageStarts[$idx + 1]) && $percentageStarts[$idx + 1] < $periodEnd) {
                     $days = round(($percentageStarts[$idx + 1] - $percentageStart) / 86400);
                     $interestValue += $value * $days * $percentage / 100 / 365;
