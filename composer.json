@@ -107,6 +107,11 @@
         "ext-ctype": "*",
         "ext-posix": "*",
         "ext-calendar": "*",
+        "ext-filter": "*",
+        "ext-zlib": "*",
+        "ext-imap": "*",
+        "ext-mailparse": "*",
+        "ext-session": "*",
         "phine/observer": "2.0",
         "phine/exception": "1.0",
         "phpmailer/phpmailer": "^6",
@@ -156,9 +161,10 @@
         "psr-4": { "LMS\\Tests\\": "tests/" }
     },
     "scripts": {
-        "pre-autoload-dump": [ "@repairHTML2PDF", "@repairTCPDF", "@repairEZPDF" ],
+        "pre-autoload-dump": [ "@repairHTML2PDF", "@repairTCPDF", "@repairEZPDF", "@db-requirement-checker" ],
         "repairHTML2PDF": "sed -i -e 's/class MyPdf extends \\\\TCPDF/class MyPdf extends \\\\LMSTCPDF/' vendor/spipu/html2pdf/src/MyPdf.php",
         "repairTCPDF": "sed -i -e 's/\\(\\s\\+\\)register_shutdown_function/\\1\\\/\\\/register_shutdown_function/' vendor/tecnickcom/tcpdf/tcpdf.php",
-        "repairEZPDF": "cp -f lib/ezpdf/fonts/arial* vendor/rospdf/pdf-php/src/fonts"
+        "repairEZPDF": "cp -f lib/ezpdf/fonts/arial* vendor/rospdf/pdf-php/src/fonts",
+        "db-requirement-checker": "php -m | grep -qE 'mysqli|pgsql' || { echo 'Install php-mysql or php-pgsql' && exit 1;}"
     }
 }
