@@ -5723,9 +5723,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $balance = $customerManager->getCustomerBalance($customerId, $toDate);
 
+/*
         if ($balance >= 0) {
             return self::CALCULATE_INTEREST_NO_DEBT;
         }
+*/
 
         // zapytanie o numer faktury i datę płatności
         $history = $this->db->GetAll(
@@ -5763,13 +5765,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         unset($record);
 
         usort($history, function ($a, $b) {
-            if ($a['pdate'] > $b['pdate']) {
-                return 1;
-            } elseif ($a['pdate'] < $b['pdate']) {
-                return -1;
-            } else {
-                return 0;
-            }
+            return $a['pdate'] <=> $b['pdate'];
         });
 
         $balance = 0;
@@ -5806,7 +5802,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 }
                 unset($invoice);
             } else {
-                if ($balance + $value < 0) {
+                if (round($balance + $value, 2) < 0) {
                     if ($leftValue > 0) {
                         if ($leftValue <= abs($value)) {
                             $leftValue = 0;
@@ -5838,7 +5834,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         'interest_days' => 0,
                         'days_after_pdate' => 0,
                         'total_days_after_pdate' => 0,
-                        'debt_from' => $pDate,
+                        'debt_from' => $pDate + 1,
                         'debt_to' => $pDate,
                         'topay_dates' => array(
                             array(
@@ -5915,7 +5911,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         unset($invoice);
 
         $invoices = array_filter($invoices, function ($invoice) {
-            return !empty($invoice['topay']) || !empty($invoice['interest']);
+            return !empty($invoice['topay']) || round($invoice['interest'], 2);
         });
 
         return array(
