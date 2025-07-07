@@ -99,6 +99,7 @@ $customerinfo = ConfigHelper::checkConfig($config_section . '.include_customerin
 $lms_url = ConfigHelper::getConfig($config_section . '.lms_url', 'http://localhost/lms/');
 $autoreply_from = ConfigHelper::getConfig($config_section . '.mail_from', '', true);
 $autoreply_name = ConfigHelper::getConfig($config_section . '.mail_from_name', '', true);
+$autoreply_format = ConfigHelper::getConfig($config_section . '.autoreply_format', 'text');
 $autoreply_subject = ConfigHelper::getConfig($config_section . '.autoreply_subject', "[RT#%tid] Receipt of request '%subject'");
 $autoreply_body = ConfigHelper::getConfig($config_section . '.autoreply_body', '', true);
 $autoreply = ConfigHelper::checkConfig($config_section . '.autoreply', true);
@@ -810,6 +811,10 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                     'In-Reply-To' => $mh_msgid,
                     'Message-ID' => "<confirm.$ticket_id.$queue.$timestamp@rtsystem.$hostname>",
                 );
+
+                if ($autoreply_format == 'html') {
+                    $headers['X-LMS-Format'] = 'html';
+                }
 
                 if (!empty($reqcustid) && !empty($ccemails)) {
                     $headers['Cc'] = implode(
