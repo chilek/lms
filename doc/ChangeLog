@@ -1038,6 +1038,8 @@ version 28-git (????-??-??):
     forms [chilan]
   - enhancement: message templates can have specified their content types explicitly [chilan]
   - enhancement: message template file attachment support [chilan]
+  - improvement: bin/lms-rtparser.php can send html formatted auto-replies after setting 'rt.autoreply_format'
+    to 'html' value ('text' is default value of this newly added configuration variable) [chilan]
 
 version 27.0 (2021-08-20):
 
