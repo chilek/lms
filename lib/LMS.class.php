@@ -472,10 +472,10 @@ class LMS
         return $manager->checkUserAccess($id);
     }
 
-    public function GetUserInfo($id)
+    public function GetUserInfo($id, $details = true)
     {
         $manager = $this->getUserManager();
-        return $manager->getUserInfo($id);
+        return $manager->getUserInfo($id, $details);
     }
 
     public function UserUpdate($user)
@@ -2959,16 +2959,20 @@ class LMS
     public function applyMessageTemplates($body, $content_type = 'text/plain')
     {
         static $username = null;
+        static $rusername = null;
 
         if (!isset($username)) {
             $userid = Auth::GetCurrentUser();
             if (empty($userid)) {
-                $username = trans('System');
+                $username = $rusername = trans('System');
             } else {
                 $user_manager = $this->getUserManager();
-                $username = $user_manager->getUserName($userid);
-                if (empty($username)) {
-                    $username = trans('System');
+                $user = $user_manager->GetUserInfo($userid, false);
+                if (empty($user)) {
+                    $username = $rusername = trans('System');
+                } else {
+                    $username = $user['name'];
+                    $rusername = $user['rname'];
                 }
             }
         }
@@ -2979,10 +2983,12 @@ class LMS
             array(
                 '%body',
                 '%username',
+                '%rusername',
             ),
             array(
                 $body,
                 $username,
+                $rusername,
             ),
             $message_template
         );
