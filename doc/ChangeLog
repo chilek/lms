@@ -1040,6 +1040,7 @@ version 28-git (????-??-??):
   - enhancement: message template file attachment support [chilan]
   - improvement: bin/lms-rtparser.php can send html formatted auto-replies after setting 'rt.autoreply_format'
     to 'html' value ('text' is default value of this newly added configuration variable) [chilan]
+  - improvement: '%rusername' support added in message template configuration variables [chilan]
 
 version 27.0 (2021-08-20):
 
