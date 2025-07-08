@@ -30,6 +30,10 @@ ULIC
 {trans("Zip")}
 |
 {trans("Description")}
+|
+{trans("Longitude")}
+|
+{trans("Latitude")}
 {/strip}
 {foreach $nodelist as $node}{strip}
 {$node.id}
@@ -67,5 +71,9 @@ ULIC
 {$node.zip}
 |
 {$node.info}
+|
+{$node.longitude}
+|
+{$node.latitude}
 {/strip}
 {/foreach}

@@ -116,6 +116,8 @@ switch ($type) {
                             ELSE lst.ident END) AS street_ident,
                         n.location_house,
                         n.location_flat,
+                        n.longitude,
+                        n.latitude,
                         a.zip
                     FROM vnodes n
                     LEFT JOIN addresses a ON a.id = n.address_id
