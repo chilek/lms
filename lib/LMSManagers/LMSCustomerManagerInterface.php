@@ -72,7 +72,7 @@ interface LMSCustomerManagerInterface
 
     public function getCustomerConsents($id);
 
-    public function getCustomerSensibleData($id);
+    public function getCustomerSensitiveData($id);
 
     public function GetCustomer($id, $short = false);
 

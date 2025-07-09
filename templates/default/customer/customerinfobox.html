@@ -2,6 +2,7 @@
 {$unsecure_pin_validity = intval(ConfigHelper::getConfig('customers.unsecure_pin_validity', ConfigHelper::getConfig('phpui.unsecure_pin_validity', 0, true), true))}
 {$gps_location_url = ConfigHelper::getConfig('phpui.gps_location_url', 'https://www.google.com/maps/place/%location')}
 {$show_numeric_identifiers = ConfigHelper::checkConfig('teryt.show_numeric_identifiers')}
+{$restrictive_sensitive_data_access = ConfigHelper::checkConfig('customers.restrictive_sensitive_data_access')}
 
 <style>
 
@@ -198,7 +199,7 @@
 											{/if}
 										</td>
 									</tr>
-									{if !ConfigHelper::checkPrivilege('hide_customer_sensitive_data')}
+									{if !ConfigHelper::checkPrivilege('hide_customer_sensitive_data', !$restrictive_sensitive_data_access)}
 										{if $customerinfo.icn != ""}
 											<tr>
 												<td class="valign-top">
@@ -210,15 +211,15 @@
 													{if isset($_IDENTITY_TYPES[$customerinfo.ict])}
 														{trans($_IDENTITY_TYPES[$customerinfo.ict])}
 													{/if}
-													{if ConfigHelper::checkPrivilege('customer_sensitive_data_view')}
+													{if ConfigHelper::checkPrivilege('customer_sensitive_data_view', !$restrictive_sensitive_data_access)}
 														{$icn = $customerinfo.icn|escape}
 													{else}
 														{$icn = preg_replace('/[^\s]/', '*', $customerinfo.icn)}
 													{/if}
-													<span class="customer-sensible-data" data-type="icn">
+													<span class="customer-sensitive-data" data-type="icn">
 														{$icn}
 													</span>
-													{if ConfigHelper::checkPrivilege('customer_sensitive_data_view')}
+													{if ConfigHelper::checkPrivilege('customer_sensitive_data_view', !$restrictive_sensitive_data_access)}
 														{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_text=$icn}
 													{else}
 														{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_handler=true
@@ -248,13 +249,13 @@
 												</td>
 												<td>
 													{trans("SSN")}
-													{if ConfigHelper::checkPrivilege('customer_sensitive_data_view')}
+													{if ConfigHelper::checkPrivilege('customer_sensitive_data_view', !$restrictive_sensitive_data_access)}
 														<span data-type="ssn">
 															{$customerinfo.ssn|escape}
 														</span>
 														{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.ssn}
 													{else}
-														<span class="customer-sensible-data" data-type="ssn">
+														<span class="customer-sensitive-data" data-type="ssn">
 															{preg_replace('/[^\s]/', '*', $customerinfo.ssn)}
 														</span>
 														{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_handler=true
@@ -1026,9 +1027,9 @@
 							{/if}
 						{/block}
 					</div>
-					{if !ConfigHelper::checkPrivilege('customer_sensitive_data_view') && !ConfigHelper::checkPrivilege('hide_customer_sensitive_data')}
+					{if !ConfigHelper::checkPrivilege('customer_sensitive_data_view', !$restrictive_sensitive_data_access) && !ConfigHelper::checkPrivilege('hide_customer_sensitive_data', !$restrictive_sensitive_data_access)}
 						<div class="customerinfo-buttons">
-							{button icon="sensible-data" label="Show sensible data" id="customer-sensible-data-button"}
+							{button icon="sensitive-data" label="Show sensitive data" id="customer-sensitive-data-button"}
 						</div>
 					{/if}
 				</div>
@@ -1064,14 +1065,14 @@
 			});
 		});
 
-		$('#customer-sensible-data-button').click(function() {
+		$('#customer-sensitive-data-button').click(function() {
 			var btn = $(this);
 
 			$.ajax({
-				url: "?m={$layout.module}&api=1&id={$customerinfo.id}&action=get_sensible_data",
+				url: "?m={$layout.module}&api=1&id={$customerinfo.id}&action=get_sensitive_data",
 				dataType: "json",
 				success: function(data) {
-					$('.customer-sensible-data[data-type]').each(function() {
+					$('.customer-sensitive-data[data-type]').each(function() {
 						var type = $(this).attr('data-type');
 						if (data.hasOwnProperty(type)) {
 							$(this).html(data[type]);
@@ -1084,7 +1085,7 @@
 		});
 
 		$('.lms-ui-button-clipboard[data-type]').on('lms:clipboard:click', function() {
-			return $('.customer-sensible-data[data-type="' + $(this).attr('data-type') + '"]').text().trim();
+			return $('.customer-sensitive-data[data-type="' + $(this).attr('data-type') + '"]').text().trim();
 		});
 
 		$('#check-ssn-button').click(function() {

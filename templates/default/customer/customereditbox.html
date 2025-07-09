@@ -1,4 +1,5 @@
 <!--// $Id$ //-->
+{$restrictive_sensitive_data_access = ConfigHelper::checkConfig('customers.restrictive_sensitive_data_access')}
 {$unsecure_pin_validity = intval(ConfigHelper::getConfig('customers.unsecure_pin_validity', ConfigHelper::getConfig('phpui.unsecure_pin_validity', 0, true), true))}
 {$pin_tip = ConfigHelper::getConfig('customers.pin_restriction_description', ConfigHelper::getConfig('phpui.pin_restriction_description'))}
 {if !$pin_tip}
@@ -392,7 +393,7 @@
 										<col style="width: 1%;">
 										<col style="width: 99%;">
 									</colgroup>
-									{if !ConfigHelper::checkPrivilege('hide_customer_sensitive_data')}
+									{if !ConfigHelper::checkPrivilege('hide_customer_sensitive_data', !$restrictive_sensitive_data_access)}
 										<tr>
 											<td colspan="2" class="identity-document-box">
 												<fieldset>
@@ -410,7 +411,7 @@
 															{if $customerinfo.icnwarning}
 																<input type="hidden" name="customerdata[icnwarning]" value="1">
 															{/if}
-															{if ConfigHelper::checkPrivilege('customer_sensitive_data_view')}
+															{if ConfigHelper::checkPrivilege('customer_sensitive_data_view', !$restrictive_sensitive_data_access)}
 																{$icn = $customerinfo.icn}
 																{$disabled = false}
 															{else}
@@ -418,7 +419,7 @@
 																{$disabled = true}
 															{/if}
 															<input type="text" value="{$icn}" name="customerdata[icn]" size="30"
-																class="customer-sensible-data" data-type="icn"
+																class="customer-sensitive-data" data-type="icn"
 																{tip trigger="icn"}
 																{if $disabled} disabled{/if}>
 														</label>
@@ -446,7 +447,7 @@
 												{trans("SSN")}
 											</td>
 											<td>
-												{if ConfigHelper::checkPrivilege('customer_sensitive_data_view')}
+												{if ConfigHelper::checkPrivilege('customer_sensitive_data_view', !$restrictive_sensitive_data_access)}
 													{$ssn = $customerinfo.ssn}
 													{$disabled = false}
 												{else}
@@ -455,7 +456,7 @@
 												{/if}
 												<input type="text" name="customerdata[ssn]" value="{$ssn}" size="30"
 													data-type="ssn"
-													{tip trigger="ssn" class="customer-sensible-data"}
+													{tip trigger="ssn" class="customer-sensitive-data"}
 													{if $disabled} disabled{/if}>
 												{if $customerinfo.ssnwarning}
 													<input type="hidden" name="customerdata[ssnwarning]" value="1">
@@ -708,9 +709,9 @@
 					{button type="submit" id="save-button" icon="save" label="Submit"}
 					{button id="cancel-button" icon="cancel" label="Cancel" onclick="location.href = '{$backurl}';"}
 				</div>
-				{if !ConfigHelper::checkPrivilege('customer_sensitive_data_view') && !ConfigHelper::checkPrivilege('hide_customer_sensitive_data')}
+				{if !ConfigHelper::checkPrivilege('customer_sensitive_data_view', !$restrictive_sensitive_data_access) && !ConfigHelper::checkPrivilege('hide_customer_sensitive_data', !$restrictive_sensitive_data_access)}
 					<div class="customeredit-buttons">
-						{button icon="sensible-data" label="Show sensible data" id="customer-sensible-data-button"}
+						{button icon="sensitive-data" label="Show sensitive data" id="customer-sensitive-data-button"}
 					</div>
 				{/if}
 			</div>
@@ -826,14 +827,14 @@
 			$('.cutoffstop').toggle(!this.checked);
 		});
 
-		$('#customer-sensible-data-button').click(function() {
+		$('#customer-sensitive-data-button').click(function() {
 			var btn = $(this);
 
 			$.ajax({
-				url: "?m=customerinfo&api=1&id={$customerinfo.id}&action=get_sensible_data",
+				url: "?m=customerinfo&api=1&id={$customerinfo.id}&action=get_sensitive_data",
 				dataType: "json",
 				success: function(data) {
-					$('.customer-sensible-data[data-type]').each(function() {
+					$('.customer-sensitive-data[data-type]').each(function() {
 						var type = $(this).attr('data-type');
 						if (data.hasOwnProperty(type)) {
 							$(this).val(data[type]).prop('disabled', false);

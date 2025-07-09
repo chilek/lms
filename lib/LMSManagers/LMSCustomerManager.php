@@ -2206,7 +2206,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         return $this->extractCustomerConsents($result);
     }
 
-    public function getCustomerSensibleData($id)
+    public function getCustomerSensitiveData($id)
     {
         return $this->db->GetRow(
             'SELECT c.ssn, c.icn

@@ -29,11 +29,17 @@ $customerid = intval($_GET['id']);
 if (isset($_GET['action'])) {
     header('Content-type: application/json');
 
+    $restrictive_sensitive_data_access = ConfigHelper::checkConfig('customers.restrictive_sensitive_data_access');
+
+    if (!ConfigHelper::checkPrivilege('customer_sensitive_data_view', !$restrictive_sensitive_data_access) && !ConfigHelper::checkPrivilege('hide_customer_sensitive_data', !$restrictive_sensitive_data_access)) {
+        die('[]');
+    }
+
     switch ($_GET['action']) {
-        case 'get_sensible_data':
-            $sensible_data = $LMS->getCustomerSensibleData($customerid);
-            if (empty($sensible_data)) {
-                $sensible_data = array();
+        case 'get_sensitive_data':
+            $sensitive_data = $LMS->getCustomerSensitiveData($customerid);
+            if (empty($sensitive_data)) {
+                $sensitive_data = array();
             }
 
             if ($SYSLOG) {
@@ -41,14 +47,14 @@ if (isset($_GET['action'])) {
                     SYSLOG::RES_USER => Auth::GetCurrentUser(),
                     SYSLOG::RES_CUST => $customerid,
                 );
-                foreach ($sensible_data as $key => $value) {
+                foreach ($sensitive_data as $key => $value) {
                     $args[$key] = $value;
                 }
 
                 $SYSLOG->addMessage(SYSLOG::RES_CUST, SYSLOG::OPER_GET, $args);
             }
 
-            die(json_encode($sensible_data));
+            die(json_encode($sensitive_data));
             break;
     }
 

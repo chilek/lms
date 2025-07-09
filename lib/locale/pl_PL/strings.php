@@ -31,7 +31,7 @@ $_LANG['Unexpected empty reply from PESEL Reservation Registry API server!'] = '
 $_LANG['Malformed reply from PESEL Reservation Registry API server!'] = 'Błędna odpowiedź serwera API Rejestru Zastrzeżeń PESEL!';
 $_LANG['telecommunication service contract'] = 'umowa na usługi telekomunikacyjne';
 
-$_LANG['Show sensible data'] = 'Pokaż dane wrażliwe';
+$_LANG['Show sensitive data'] = 'Pokaż dane wrażliwe';
 $_LANG['customer sensitive data view'] = 'podgląd danych wrażliwych klientów';
 
 $_LANG['(hidden)'] = '(ukryto)';
