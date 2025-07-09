@@ -1042,6 +1042,9 @@ version 28-git (????-??-??):
     to 'html' value ('text' is default value of this newly added configuration variable) [chilan]
   - improvement: '%rusername' support added in message template configuration variables [chilan]
   - improvement: added longitude and latitude properties of nodes to csv list export file [chilan]
+  - enhancement: 'customers.restrictive_sensitive_data_access' configuration variable with 'false' as default value
+    allows to enable checking related customer sensitive data user permissions/rights even for users with 'full access'
+    permission/right assigned [chilan]
 
 version 27.0 (2021-08-20):
 
