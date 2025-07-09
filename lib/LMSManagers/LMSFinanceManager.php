@@ -2865,7 +2865,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
             if ($detail_level >= self::INVOICE_CONTENT_DETAIL_MORE) {
                 $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
-                $result['customerbalance'] = $customer_manager->GetCustomerBalance($result['customerid'], $result['cdate'] + 1);
+                $result['customerbalance'] = $customer_manager->GetCustomerBalance($result['customerid'], array('totime' => $result['cdate'] + 1, 'docid' => $invoiceid,));
                 // NOTE: don't waste CPU/mem when printing history is not set:
                 if (ConfigHelper::checkConfig('invoices.print_balance_history')) {
                     if (ConfigHelper::checkConfig('invoices.print_balance_history_save')) {

@@ -222,11 +222,18 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      */
     public function getCustomerBalance($id, $totime = null, $expired = false)
     {
+        $docid = null;
+        if (empty($totime)) {
+            $totime = time();
+        } elseif (is_array($totime)) {
+            $docid = intval($totime['docid']);
+            $totime = intval($totime['totime']);
+        } else {
+            $totime = intval($totime);
+        }
+
         if ($expired || $expired !== false) {
             $deadline = ConfigHelper::getConfig('payments.deadline', ConfigHelper::getConfig('invoices.paytime', 0));
-            if (empty($totime)) {
-                $totime = time();
-            }
             return $this->db->GetOne(
                 'SELECT SUM(value * cash.currencyvalue)
                 FROM cash
@@ -255,7 +262,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         OR (cash.docid IS NOT NULL AND ((doc.type = ? AND cash.time < ' . $totime . ')
                             OR (doc.type = ? AND cash.time < ' . $totime . ' AND tv.totalvalue >= 0)
                             OR (((doc.type = ? AND tv.totalvalue < 0)
-                                OR doc.type IN (?, ?, ?)) AND doc.cdate + (doc.paytime + ' . (is_int($expired) ? $expired : '0') . ') * 86400 < ' . $totime . '))))',
+                                OR doc.type IN (?, ?, ?)) AND doc.cdate + (doc.paytime + ' . (is_int($expired) ? $expired : '0') . ') * 86400 < ' . $totime . '))'
+                                . (empty($docid) ? '' : ' AND doc.id <= ' . $docid) . '))',
                 array(
                     $id,
                     DOC_CNOTE,
@@ -271,8 +279,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         } else {
             return $this->db->GetOne(
                 'SELECT SUM(value * currencyvalue)
-				FROM cash
-				WHERE customerid = ?' . ($totime ? ' AND time < ' . intval($totime) : ''),
+                FROM cash
+                WHERE customerid = ?'
+                    . (empty($totime) ? '' : ' AND time < ' . intval($totime))
+                    . (empty($docid) ? '' : ' AND (docid IS NULL OR docid <= ' . $docid . ')'),
                 array($id)
             );
         }
