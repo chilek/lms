@@ -79,6 +79,7 @@ if ($id && !isset($_POST['ticket'])) {
                     ),
                 );
                 $notification_options_by_division_ids[$divisionid] = $notification_options_by_division_ids[0];
+                extract($notification_options_by_division_ids[0]);
 
                 $ticket_divisionid = $LMS->getDivisionIdByTicketId($id);
 
@@ -271,6 +272,7 @@ if ($id && !isset($_POST['ticket'])) {
                 );
 
                 $notification_options_by_division_ids[$divisionid] = $notification_options_by_division_ids[0];
+                extract($notification_options_by_division_ids[0]);
 
                 $ticket_divisionid = $divisionid;
 
