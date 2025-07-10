@@ -729,8 +729,10 @@
 			document.addbalance.action = '?m=invoicelist&proforma=1&customer={$balancelist.customerid}';
 		else if (type == 'note')
 			document.addbalance.action = '?m=notelist';
-		else
-			return window.location = '?m=customerbalance&id={$balancelist.customerid}';
+		else {
+			window.location.assign('?m=customerbalance&id={$balancelist.customerid}');
+			return;
+		}
 
 		document.addbalance.target = '';
 		document.addbalance.submit();
