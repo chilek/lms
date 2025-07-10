@@ -1045,6 +1045,7 @@ version 28-git (????-??-??):
   - enhancement: 'customers.restrictive_sensitive_data_access' configuration variable with 'false' as default value
     allows to enable checking related customer sensitive data user permissions/rights even for users with 'full access'
     permission/right assigned [chilan]
+  - enhancement: new user permission/right introduced: 'customer_view' [chilan]
 
 version 27.0 (2021-08-20):
 
