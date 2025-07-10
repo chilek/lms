@@ -110,47 +110,53 @@
 				{/if}
 			{/if}
 
-			{if $customerlist[customerlist].account}
-				{if $customerlist[customerlist].status == $smarty.const.CSTATUS_CONNECTED}
-					{if $customerlist[customerlist].nodeac == 1}
-						{button type="link" icon="connected" tip="Disconnect All" href="?m=nodeset&ownerid={$customerlist[customerlist].id}"}
-					{else}
-						{if $customerlist[customerlist].nodeac == 2}
-							{button type="link" icon="mixconnected" tip="Disconnect All" href="?m=nodeset&ownerid={$customerlist[customerlist].id}"}
+			{if ConfigHelper::checkPrivileges('customer_management', 'node_connections')}
+				{if $customerlist[customerlist].account}
+					{if $customerlist[customerlist].status == $smarty.const.CSTATUS_CONNECTED}
+						{if $customerlist[customerlist].nodeac == 1}
+							{button type="link" icon="connected" tip="Disconnect All" href="?m=nodeset&ownerid={$customerlist[customerlist].id}"}
 						{else}
-							{button type="link" icon="disconnected" tip="Connect All" href="?m=nodeset&ownerid={$customerlist[customerlist].id}&access=1"}
+							{if $customerlist[customerlist].nodeac == 2}
+								{button type="link" icon="mixconnected" tip="Disconnect All" href="?m=nodeset&ownerid={$customerlist[customerlist].id}"}
+							{else}
+								{button type="link" icon="disconnected" tip="Connect All" href="?m=nodeset&ownerid={$customerlist[customerlist].id}&access=1"}
+							{/if}
 						{/if}
 					{/if}
 				{/if}
 			{/if}
 
-			{if $customerlist[customerlist].warncount}
-				{if $customerlist[customerlist].status == $smarty.const.CSTATUS_CONNECTED}
-					{if $customerlist[customerlist].nodewarn == 1}
-						{if $customerlist[customerlist].message}{$tip=htmlspecialchars($customerlist[customerlist].message)}{else}{$tip="Disable notices for all"}{/if}
-						{button type="link" icon="warnon" tip=$tip href="?m=nodewarn&ownerid={$customerlist[customerlist].id}"}
-					{else}
-						{if $customerlist[customerlist].nodewarn == 2}
+			{if ConfigHelper::checkPrivileges('customer_management', 'node_management')}
+				{if $customerlist[customerlist].warncount}
+					{if $customerlist[customerlist].status == $smarty.const.CSTATUS_CONNECTED}
+						{if $customerlist[customerlist].nodewarn == 1}
 							{if $customerlist[customerlist].message}{$tip=htmlspecialchars($customerlist[customerlist].message)}{else}{$tip="Disable notices for all"}{/if}
-							{button type="link" icon="warnmix" tip=$tip href="?m=nodewarn&ownerid={$customerlist[customerlist].id}"}
+							{button type="link" icon="warnon" tip=$tip href="?m=nodewarn&ownerid={$customerlist[customerlist].id}"}
 						{else}
-							{if $customerlist[customerlist].message}{$tip=htmlspecialchars($customerlist[customerlist].message)}{else}{$tip="Enable notices for all"}{/if}
-							{button type="link" icon="warnoff" tip=$tip href="?m=nodewarn&ownerid={$customerlist[customerlist].id}&warning=1"}
+							{if $customerlist[customerlist].nodewarn == 2}
+								{if $customerlist[customerlist].message}{$tip=htmlspecialchars($customerlist[customerlist].message)}{else}{$tip="Disable notices for all"}{/if}
+								{button type="link" icon="warnmix" tip=$tip href="?m=nodewarn&ownerid={$customerlist[customerlist].id}"}
+							{else}
+								{if $customerlist[customerlist].message}{$tip=htmlspecialchars($customerlist[customerlist].message)}{else}{$tip="Enable notices for all"}{/if}
+								{button type="link" icon="warnoff" tip=$tip href="?m=nodewarn&ownerid={$customerlist[customerlist].id}&warning=1"}
+							{/if}
 						{/if}
 					{/if}
 				{/if}
 			{/if}
 
-			{if $customerlist[customerlist].deleted}
-				{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
-					{button type="link" class="remove-button" icon="clear" tip="Remove permanently" href="?m=customerdel&id={$customerlist[customerlist].id}&type=permanent"}
+			{if ConfigHelper::checkPrivilege('customer_management')}
+				{if $customerlist[customerlist].deleted}
+					{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
+						{button type="link" class="remove-button" icon="clear" tip="Remove permanently" href="?m=customerdel&id={$customerlist[customerlist].id}&type=permanent"}
+					{/if}
+					{button type="link" icon="restore" tip="Recover" href="?m=customeredit&id={$customerlist[customerlist].id}&action=recover"}
+				{else}
+					{if ConfigHelper::checkPrivilege('customer_removal')}
+						{button type="link" class="delete-customer" icon="delete" tip="Delete" href="?m=customerdel&id={$customerlist[customerlist].id}"}
+					{/if}
+					{button type="link" icon="edit" tip="Edit" href="?m=customeredit&id={$customerlist[customerlist].id}"}
 				{/if}
-				{button type="link" icon="restore" tip="Recover" href="?m=customeredit&id={$customerlist[customerlist].id}&action=recover"}
-			{else}
-				{if ConfigHelper::checkPrivilege('customer_removal')}
-					{button type="link" class="delete-customer" icon="delete" tip="Delete" href="?m=customerdel&id={$customerlist[customerlist].id}"}
-				{/if}
-				{button type="link" icon="edit" tip="Edit" href="?m=customeredit&id={$customerlist[customerlist].id}"}
 			{/if}
 
 			{button type="link" icon="info" tip="Info" href="?m=customerinfo&id={$customerlist[customerlist].id}"}
@@ -177,56 +183,66 @@
 				<span class="bold">{trans("<!customersearch>Action:")}</span>
 				<select id="customer-action" required>
 					<option value="">{trans("— select —")}</option>
-					<optgroup label="{trans("Warnings")}">
-						<option value="1">{trans("<!customersearch>Enable warning")}</option>
-						<option value="2">{trans("<!customersearch>Disable warning")}</option>
-						<option value="3">{trans("Set notice content")}</option>
-					</optgroup>
-					<optgroup label="{trans("Customer statuses")}">
-						{foreach $_CSTATUSES as $statusid => $status}
-							<option value="{($statusid + 100)}">{$status.singularlabel}</option>
-						{/foreach}
-					</optgroup>
-					<optgroup label="{trans("<!customersearch>Customer deletion")}">
-						<option value="14">{trans("<!customersearch>Deletion")}</option>
-						{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
-							<option value="16">{trans("<!customersearch>Permanent deletion")}</option>
-						{/if}
-						<option value="15">{trans("<!customersearch>Restoration")}</option>
-					</optgroup>
-					{if is_array($listdata.customergroup)}
-						<optgroup label="{trans("Customer groups")}">
-							{$groups = array_flip($listdata.customergroup)}
-							<option value="4">{trans("<!customersearch>Add to groups")}</option>
-							<option value="9">{trans("<!customersearch>Create new group")}</option>
-							<option value="5">{trans("<!customersearch>Remove from groups")}</option>
-							<option value="6">{trans("<!customersearch>Replace groups")}</option>
+					{if ConfigHelper::checkPrivileges('customer_management', 'node_management')}
+						<optgroup label="{trans("Warnings")}">
+							<option value="1">{trans("<!customersearch>Enable warning")}</option>
+							<option value="2">{trans("<!customersearch>Disable warning")}</option>
+							<option value="3">{trans("Set notice content")}</option>
 						</optgroup>
 					{/if}
-					<optgroup label="{trans("Customer consents")}">
-						<option value="7">{trans("<!customersearch>Add consents")}</option>
-						<option value="8">{trans("<!customersearch>Remove consents")}</option>
-					</optgroup>
+					{if ConfigHelper::checkPrivilege('customer_management')}
+						<optgroup label="{trans("Customer statuses")}">
+							{foreach $_CSTATUSES as $statusid => $status}
+								<option value="{($statusid + 100)}">{$status.singularlabel}</option>
+							{/foreach}
+						</optgroup>
+						<optgroup label="{trans("<!customersearch>Customer deletion")}">
+							<option value="14">{trans("<!customersearch>Deletion")}</option>
+							{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
+								<option value="16">{trans("<!customersearch>Permanent deletion")}</option>
+							{/if}
+							<option value="15">{trans("<!customersearch>Restoration")}</option>
+						</optgroup>
+					{/if}
+					{if ConfigHelper::checkPrivilege('customer_group_assignments')}
+						{if is_array($listdata.customergroup)}
+							<optgroup label="{trans("Customer groups")}">
+								{$groups = array_flip($listdata.customergroup)}
+								<option value="4">{trans("<!customersearch>Add to groups")}</option>
+								<option value="9">{trans("<!customersearch>Create new group")}</option>
+								<option value="5">{trans("<!customersearch>Remove from groups")}</option>
+								<option value="6">{trans("<!customersearch>Replace groups")}</option>
+							</optgroup>
+						{/if}
+					{/if}
+					{if ConfigHelper::checkPrivilege('customer_management')}
+						<optgroup label="{trans("Customer consents")}">
+							<option value="7">{trans("<!customersearch>Add consents")}</option>
+							<option value="8">{trans("<!customersearch>Remove consents")}</option>
+						</optgroup>
+					{/if}
 					{if ConfigHelper::checkPrivileges('messaging', 'messaging_creation')}
 						<optgroup label="{trans("<!customersearch>Messages")}">
 							<option value="10">{trans("<!customersearch>New email message")}</option>
 							<option value="11">{trans("<!customersearch>New sms message")}</option>
 						</optgroup>
 					{/if}
-					{foreach $_CUSTOMERCONTACTTYPES as $contacttypeidx => $contacttype}
-						<optgroup label="{$contacttype.ui.legend.text}">
-							<option value="{$contacttypeidx}-1" data-resource="{$contacttypeidx}" data-operation="1"
-								data-target-multiselect="#contactflags-{$contacttypeidx}"
-								>{trans("<!customersearch>Add flags")}</option>
-							<option value="{$contacttypeidx}-2" data-resource="{$contacttypeidx}" data-operation="2"
-								data-target-multiselect="#contactflags-{$contacttypeidx}"
-								>{trans("<!customersearch>Remove flags")}</option>
+					{if ConfigHelper::checkPrivilege('customer_management')}
+						{foreach $_CUSTOMERCONTACTTYPES as $contacttypeidx => $contacttype}
+							<optgroup label="{$contacttype.ui.legend.text}">
+								<option value="{$contacttypeidx}-1" data-resource="{$contacttypeidx}" data-operation="1"
+									data-target-multiselect="#contactflags-{$contacttypeidx}"
+									>{trans("<!customersearch>Add flags")}</option>
+								<option value="{$contacttypeidx}-2" data-resource="{$contacttypeidx}" data-operation="2"
+									data-target-multiselect="#contactflags-{$contacttypeidx}"
+									>{trans("<!customersearch>Remove flags")}</option>
+							</optgroup>
+						{/foreach}
+						<optgroup label="{trans("Legal personality types")}">
+							<option value="12">{$_CTYPES[$smarty.const.CTYPES_PRIVATE]}</option>
+							<option value="13">{$_CTYPES[$smarty.const.CTYPES_COMPANY]}</option>
 						</optgroup>
-					{/foreach}
-					<optgroup label="{trans("Legal personality types")}">
-						<option value="12">{$_CTYPES[$smarty.const.CTYPES_PRIVATE]}</option>
-						<option value="13">{$_CTYPES[$smarty.const.CTYPES_COMPANY]}</option>
-					</optgroup>
+					{/if}
 				</select>
 				{if isset($groups)}
 					<SELECT SIZE="1" class="lms-ui-multiselect-deferred" NAME="setwarnings[customergroup][]"

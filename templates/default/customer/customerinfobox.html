@@ -994,12 +994,14 @@
 					<div class="customerinfo-buttons">
 						{block name="customerinfobox-buttons"}
 							{if $customerinfo.deleted}
-								{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
-									{button id="remove-button" icon="remove" label="Remove permanently"
-										data_href="?m=customerdel&id={$customerinfo.id}&type=permanent"}
+								{if ConfigHelper::checkPrivilege('customer_management')}
+									{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
+										{button id="remove-button" icon="remove" label="Remove permanently"
+											data_href="?m=customerdel&id={$customerinfo.id}&type=permanent"}
+									{/if}
+									{button id="restore-button" icon="restore" label="Restore"
+										href="?m=customeredit&id={$customerinfo.id}&action=recover"}
 								{/if}
-								{button id="restore-button" icon="restore" label="Restore"
-									href="?m=customeredit&id={$customerinfo.id}&action=recover"}
 							{else}
 								{button type="link-button" id="rtsearch-button"
 									class="{if $customerstats['tickets']['notresolved']}bold{/if}"
@@ -1014,11 +1016,13 @@
 									href="?m=domainlist&c={$customerinfo.id}"}
 								{button type="link-button" id="stats-button" icon="stats" label="Stats"
 									href="?m=trafficprint&type=customertraffic&customer={$customerinfo.id}"}
-								{button type="link-button" id="edit-button" icon="edit" label="Edit"
-									href="?m=customeredit&id={$customerinfo.id}"}
-								{if ConfigHelper::checkPrivilege('customer_removal')}
-									{button id="delete-button" icon="delete" label="Delete"
-										data_href="?m=customerdel&id={$customerinfo.id}"}
+								{if ConfigHelper::checkPrivilege('customer_management')}
+									{button type="link-button" id="edit-button" icon="edit" label="Edit"
+										href="?m=customeredit&id={$customerinfo.id}"}
+									{if ConfigHelper::checkPrivilege('customer_removal')}
+										{button id="delete-button" icon="delete" label="Delete"
+											data_href="?m=customerdel&id={$customerinfo.id}"}
+									{/if}
 								{/if}
 							{/if}
 							{if $info_link}
@@ -1046,17 +1050,19 @@
 	{/if}
 
 	$(function() {
-		$('#delete-button').click(function() {
-			confirmDialog($t("Are you sure, you want to remove customer '$a' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!", "{$customerinfo.customername|escape}"), this).done(function() {
-				location.href = $(this).attr('data-href');
+		{if ConfigHelper::checkPrivilege('customer_management')}
+			$('#delete-button').click(function() {
+				confirmDialog($t("Are you sure, you want to remove customer '$a' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!", "{$customerinfo.customername|escape}"), this).done(function() {
+					location.href = $(this).attr('data-href');
+				});
 			});
-		});
 
-		$('#remove-button').click(function() {
-			confirmDialog($t("Do you want to permanently remove $a customer?", "{$customerinfo.customername|escape}"), this).done(function() {
-				location.href = $(this).attr('data-href');
+			$('#remove-button').click(function() {
+				confirmDialog($t("Do you want to permanently remove $a customer?", "{$customerinfo.customername|escape}"), this).done(function() {
+					location.href = $(this).attr('data-href');
+				});
 			});
-		});
+		{/if}
 
 		$('#add-instantpayment').click(function() {
 			var name = $(this).attr('data-name');

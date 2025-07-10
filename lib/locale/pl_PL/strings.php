@@ -915,6 +915,7 @@ $_LANG['Customers List:'] = 'Lista klientów:';
 $_LANG['Customers List $a$b'] = 'Lista klientów $a$b';
 $_LANG['Customers Management'] = 'Zarządzanie klientami';
 $_LANG['customers management'] = 'zarządzanie klientami';
+$_LANG['customer view'] = 'podgląd klientów';
 $_LANG['Customers Without Nodes List $a$b'] = 'Lista klientów bez komputerów $a$b';
 $_LANG['GIT Repository'] = 'Repozytorium GIT';
 $_LANG['Daemon'] = 'Demon';

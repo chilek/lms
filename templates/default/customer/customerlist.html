@@ -371,45 +371,51 @@
 					{button type="link" class="balanceok-customer" href="?m=customerbalanceok&id={$customer.id}" icon="settle" tip="Account"}
 				{/if}
 			{/if}
-			{if $customer.account}
-				{if $customer.status == $smarty.const.CSTATUS_CONNECTED}
-					{if $customer.nodeac == 1}
-						{button type="link" icon="connected" tip="Disconnect All" href="?m=nodeset&ownerid={$customer.id}"}
-					{else}
-						{if $customer.nodeac == 2}
-							{button type="link" icon="mixconnected" tip="Disconnect All" href="?m=nodeset&ownerid={$customer.id}"}
+			{if ConfigHelper::checkPrivileges('customer_management', 'node_connections')}
+				{if $customer.account}
+					{if $customer.status == $smarty.const.CSTATUS_CONNECTED}
+						{if $customer.nodeac == 1}
+							{button type="link" icon="connected" tip="Disconnect All" href="?m=nodeset&ownerid={$customer.id}"}
 						{else}
-							{button type="link" icon="disconnected" tip="Connect All" href="?m=nodeset&ownerid={$customer.id}&access=1"}
+							{if $customer.nodeac == 2}
+								{button type="link" icon="mixconnected" tip="Disconnect All" href="?m=nodeset&ownerid={$customer.id}"}
+							{else}
+								{button type="link" icon="disconnected" tip="Connect All" href="?m=nodeset&ownerid={$customer.id}&access=1"}
+							{/if}
 						{/if}
 					{/if}
 				{/if}
 			{/if}
-			{if $customer.warncount}
-				{if $customer.status == $smarty.const.CSTATUS_CONNECTED}
-					{if $customer.nodewarn == 1}
-						{if $customer.message}{$tip=htmlspecialchars($customer.message)}{else}{$tip="Disable notices for all"}{/if}
-						{button type="link" icon="warnon" tip=$tip href="?m=nodewarn&ownerid={$customer.id}"}
-					{else}
-						{if $customer.nodewarn == 2}
+			{if ConfigHelper::checkPrivileges('customer_management', 'node_management')}
+				{if $customer.warncount}
+					{if $customer.status == $smarty.const.CSTATUS_CONNECTED}
+						{if $customer.nodewarn == 1}
 							{if $customer.message}{$tip=htmlspecialchars($customer.message)}{else}{$tip="Disable notices for all"}{/if}
-							{button type="link" icon="warnmix" tip=$tip href="?m=nodewarn&ownerid={$customer.id}"}
+							{button type="link" icon="warnon" tip=$tip href="?m=nodewarn&ownerid={$customer.id}"}
 						{else}
-							{if $customer.message}{$tip=htmlspecialchars($customer.message)}{else}{$tip="Enable notices for all"}{/if}
-							{button type="link" icon="warnoff" tip=$tip href="?m=nodewarn&ownerid={$customer.id}&warning=1"}
+							{if $customer.nodewarn == 2}
+								{if $customer.message}{$tip=htmlspecialchars($customer.message)}{else}{$tip="Disable notices for all"}{/if}
+								{button type="link" icon="warnmix" tip=$tip href="?m=nodewarn&ownerid={$customer.id}"}
+							{else}
+								{if $customer.message}{$tip=htmlspecialchars($customer.message)}{else}{$tip="Enable notices for all"}{/if}
+								{button type="link" icon="warnoff" tip=$tip href="?m=nodewarn&ownerid={$customer.id}&warning=1"}
+							{/if}
 						{/if}
 					{/if}
 				{/if}
 			{/if}
-			{if $customer.deleted}
-				{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
-					{button type="link" class="remove-button" icon="clear" tip="Remove permanently" href="?m=customerdel&id={$customer.id}&type=permanent"}
+			{if ConfigHelper::checkPrivilege('customer_management')}
+				{if $customer.deleted}
+					{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
+						{button type="link" class="remove-button" icon="clear" tip="Remove permanently" href="?m=customerdel&id={$customer.id}&type=permanent"}
+					{/if}
+					{button type="link" icon="restore" tip="Recover" href="?m=customeredit&id={$customer.id}&action=recover"}
+				{else}
+					{if ConfigHelper::checkPrivilege('customer_removal')}
+						{button type="link" class="delete-customer" icon="delete" tip="Delete" href="?m=customerdel&id={$customer.id}"}
+					{/if}
+					{button type="link" icon="edit" tip="Edit" href="?m=customeredit&id={$customer.id}"}
 				{/if}
-				{button type="link" icon="restore" tip="Recover" href="?m=customeredit&id={$customer.id}&action=recover"}
-			{else}
-				{if ConfigHelper::checkPrivilege('customer_removal')}
-					{button type="link" class="delete-customer" icon="delete" tip="Delete" href="?m=customerdel&id={$customer.id}"}
-				{/if}
-				{button type="link" icon="edit" tip="Edit" href="?m=customeredit&id={$customer.id}"}
 			{/if}
 			{button type="link" icon="info" tip="Info" href="?m=customerinfo&id={$customer.id}"}
 		</TD>

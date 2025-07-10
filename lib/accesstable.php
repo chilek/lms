@@ -130,6 +130,14 @@ $access_table = array(
             'documents' => Permission::MENU_ALL,
         ),
     ),
+    'customer_view' => array(
+        'label' => trans('customer view'),
+        'allow_regexp' => '^((customer|document)(info|infoshort|list|print|search)|customeraddresses|customername|documentview|number|invoiceinfo|customerextidhelper)$',
+        'allow_menu_items' => array(
+            'customers' => array('customerlist', 'customersearch'),
+            'documents' => array('documentlist'),
+        ),
+    ),
     'customer_sensitive_data_view' => array(
         'label' => trans('customer sensitive data view'),
     ),
