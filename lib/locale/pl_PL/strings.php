@@ -5912,6 +5912,7 @@ $_LANG['Reward for'] = 'Nagroda za';
 $_LANG['Penalty for'] = 'Kara za';
 
 $_LANG['Select network device type'] = 'Wybierz typ urządzenia sieciowego';
+$_LANG['Network device type'] = 'Typ urządzenia sieciowego';
 $_LANG['<!netdevtype>— undefined —'] = '— nieokreślony —';
 
 $_LANG['Starting balance at $a'] = 'Saldo początkowe na dzień $a';

@@ -592,6 +592,20 @@
 			</select>
 		</td>
 	</tr>
+	<tr>
+		<td class="nobr">
+			{icon name="hardware"}
+			<strong>{trans("Network device type")}</strong>
+		</td>
+		<td>
+			<select size="1" name="search[netdevtype]">
+				<option value="">{trans("— any —")}</option>
+				{foreach Localisation::arraySort($netdevicetypes, 'name') as $type => $info}
+					<option value="{$type}">{$info.name}</option>
+				{/foreach}
+			</select>
+		</td>
+	</tr>
 	<TR>
 		<TD class="bold nobr">
 			{icon name="money"} {trans("Tariffs:")}

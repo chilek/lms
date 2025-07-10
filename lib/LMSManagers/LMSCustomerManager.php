@@ -1625,6 +1625,16 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                 }
                             }
                             break;
+                        case 'netdevtype':
+                            if (!empty($value)) {
+                                $searchargs[] = 'EXISTS (
+                                    SELECT 1 FROM netdevices
+                                    JOIN netdevicemodels ON netdevicemodels.id = netdevices.netdevicemodelid
+                                    WHERE netdevices.ownerid = c.id
+                                        AND netdevicemodels.type = ' . intval($value) . '
+                                )';
+                            }
+                            break;
                         case 'promotion-schema':
                             $searchargs[] = 'EXISTS (
                                     SELECT assignments.customerid
