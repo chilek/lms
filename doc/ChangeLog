@@ -1046,6 +1046,7 @@ version 28-git (????-??-??):
     allows to enable checking related customer sensitive data user permissions/rights even for users with 'full access'
     permission/right assigned [chilan]
   - enhancement: new user permission/right introduced: 'customer_view' [chilan]
+  - enhancement: added network device type filter in customer search form [chilan]
 
 version 27.0 (2021-08-20):
 
