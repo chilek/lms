@@ -787,8 +787,8 @@ if (isset($_POST['ticket'])) {
                     : (empty($ticketedit['requestor_mail']) ? $ticketedit['requestor_customer_mail'] : $ticketedit['requestor_mail']),
             'requestor_phone' => !empty($ticketedit['requestor_userid'])
                 || $ticketedit['requestor_userid'] == ''
-                || empty($ticketedit['requestor_phone']
-                && empty($ticketedit['requestor_customer_phone']))
+                || empty($ticketedit['requestor_phone'])
+                && empty($ticketedit['requestor_customer_phone'])
                     ? null
                     : (empty($ticketedit['requestor_phone']) ? $ticketedit['requestor_customer_phone'] : $ticketedit['requestor_phone']),
             'parentid' => empty($ticketedit['parentid']) ? null : $ticketedit['parentid'],
