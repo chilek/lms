@@ -31,7 +31,7 @@ if (isset($_GET['action'])) {
 
     $restrictive_sensitive_data_access = ConfigHelper::checkConfig('customers.restrictive_sensitive_data_access');
 
-    if (!ConfigHelper::checkPrivilege('customer_sensitive_data_view', !$restrictive_sensitive_data_access) && !ConfigHelper::checkPrivilege('hide_customer_sensitive_data', !$restrictive_sensitive_data_access)) {
+    if (ConfigHelper::checkPrivilege('customer_sensitive_data_view', !$restrictive_sensitive_data_access) && ConfigHelper::checkPrivilege('hide_customer_sensitive_data', !$restrictive_sensitive_data_access)) {
         die('[]');
     }
 
