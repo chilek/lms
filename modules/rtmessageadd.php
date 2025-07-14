@@ -240,12 +240,16 @@ if (isset($_POST['message'])) {
             $message['customerid'] = null;
 
             $mailfname = '';
-            if (!empty($notification_sender_name) && ($mailfname = $notification_sender_name)) {
+
+            if (!empty($notification_sender_name)) {
+                $mailfname = $notification_sender_name;
+
                 if ($mailfname == 'queue') {
                     $mailfname = $queue['name'];
                 } elseif ($mailfname == 'user') {
                     $mailfname = $user['name'];
                 }
+
                 $mailfname = '"' . $mailfname . '"';
             }
 

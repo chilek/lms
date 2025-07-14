@@ -276,6 +276,9 @@ if (isset($_POST['ticket'])) {
             $user = $LMS->GetUserInfo($userid);
 
             $helpdesk_sender_name = ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name'));
+
+            $mailfname = '';
+
             if (!empty($helpdesk_sender_name)) {
                 $mailfname = $helpdesk_sender_name;
 
@@ -284,9 +287,8 @@ if (isset($_POST['ticket'])) {
                 } elseif ($mailfname == 'user') {
                     $mailfname = $user['name'];
                 }
-                $mailfname = '"'.$mailfname.'"';
-            } else {
-                $mailfname = '';
+
+                $mailfname = '"' . $mailfname . '"';
             }
 
             $mailfrom = $LMS->DetermineSenderEmail($user['email'], $LMS->GetQueueEmail($ticket['queue']), $ticket['requestor_mail']);

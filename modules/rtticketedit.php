@@ -140,9 +140,11 @@ if ($id && !isset($_POST['ticket'])) {
                 $mailfname = '';
 
                 if (!empty($notification_sender_name)) {
-                    if ($notification_sender_name == 'queue') {
+                    $mailfname = $notification_sender_name;
+
+                    if ($mailfname == 'queue') {
                         $mailfname = $queue['name'];
-                    } elseif ($notification_sender_name == 'user') {
+                    } elseif ($mailfname == 'user') {
                         $mailfname = $user['name'];
                     }
 
@@ -382,10 +384,12 @@ if ($id && !isset($_POST['ticket'])) {
 
                     $mailfname = '';
 
-                    if (!empty($sender_name)) {
-                        if ($sender_name == 'queue') {
+                    if (!empty($notification_sender_name)) {
+                        $mailfname = $notification_sender_name;
+
+                        if ($mailfname == 'queue') {
                             $mailfname = $queue['name'];
-                        } elseif ($sender_name == 'user') {
+                        } elseif ($mailfname == 'user') {
                             $mailfname = $user['name'];
                         }
 
@@ -825,12 +829,12 @@ if (isset($_POST['ticket'])) {
             $mailfname = '';
 
             if (!empty($notification_sender_name)) {
-                if ($notification_sender_name == 'queue') {
+                $mailfname = $notification_sender_name;
+
+                if ($mailfname == 'queue') {
                     $mailfname = $queue['name'];
-                } elseif ($notification_sender_name == 'user') {
+                } elseif ($mailfname == 'user') {
                     $mailfname = $user['name'];
-                } else {
-                    $mailfname = $notification_sender_name;
                 }
 
                 $mailfname = '"' . $mailfname . '"';

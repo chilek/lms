@@ -226,7 +226,7 @@ if (isset($_GET['ticketid'])) {
                     $mailfname = $user['name'];
                 }
 
-                $mailfname = '"'.$mailfname.'"';
+                $mailfname = '"' . $mailfname . '"';
             }
 
             $mailfrom = $LMS->DetermineSenderEmail($user['email'], $queue['email'], $ticket['requestor_mail']);

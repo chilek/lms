@@ -835,10 +835,17 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
 
         if ($notify || $ticket['customerid'] && $reqcustid) {
             $helpdesk_sender_name = ConfigHelper::getConfig($config_section . '.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name'));
+
+            $mailfname = '';
+
             if (!empty($helpdesk_sender_name)) {
-                $mailfname = '"' . $LMS->GetQueueName($queue) . '"';
-            } else {
-                $mailfname = '';
+                $mailfname = $helpdesk_sender_name;
+
+                if ($mailfname == 'queue' || $mailfname == 'user') {
+                    $mailfname = '"' . $LMS->GetQueueName($queue) . '"';
+                }
+
+                $mailfname = '"' . $mailfname . '"';
             }
 
             if ($qemail = $LMS->GetQueueEmail($queue)) {
