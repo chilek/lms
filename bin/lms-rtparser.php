@@ -842,7 +842,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 $mailfname = $helpdesk_sender_name;
 
                 if ($mailfname == 'queue' || $mailfname == 'user') {
-                    $mailfname = '"' . $LMS->GetQueueName($queue) . '"';
+                    $mailfname = $LMS->GetQueueName($queue);
                 }
 
                 $mailfname = '"' . $mailfname . '"';
