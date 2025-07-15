@@ -543,7 +543,7 @@ if (isset($_POST['message'])) {
                         'categories' => $ticketdata['categorynames'],
                         'priority' => isset($ticketdata['priority']) && is_numeric($ticketdata['priority']) ? $RT_PRIORITIES[$ticketdata['priority']] : trans('undefined'),
                         'deadline' => $ticketdata['deadline'],
-                        'subject' => $message['subject'],
+                        'subject' => $LMS->cleanupTicketSubject($message['subject']),
                         'body' => $message['body'],
                         'attachments' => &$attachments,
                     );

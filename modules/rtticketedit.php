@@ -509,7 +509,7 @@ if ($id && !isset($_POST['ticket'])) {
                             'deadline' => $ticket['deadline'],
                             'service' => $ticket['service'],
                             'type' => $ticket['type'],
-                            'subject' => $ticket['subject'],
+                            'subject' => $LMS->cleanupTicketSubject($ticket['subject']),
                             'body' => $message['body'],
                         );
                         $headers['Subject'] = $LMS->ReplaceNotificationSymbols($notification_mail_subject, $params);
@@ -903,7 +903,7 @@ if (isset($_POST['ticket'])) {
                 'customerid' => $ticketedit['customerid'],
                 'status' => $ticketdata['status'],
                 'categories' => $ticketdata['categorynames'],
-                'subject' => $ticket['subject'],
+                'subject' => $LMS->cleanupTicketSubject($ticket['subject']),
                 'body' => $message['body'],
                 'priority' => isset($ticketdata['priority']) && is_numeric($ticketdata['priority']) ? $RT_PRIORITIES[$ticketdata['priority']] : trans('undefined'),
                 'deadline' => $ticketdata['deadline'],
