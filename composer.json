@@ -8,7 +8,7 @@
     "name": "lmsgit/lms",
     "description": "Lan Management System (LMS)",
     "homepage": "https://lms.org.pl/",
-    "license": "GPL-2.0",
+    "license": "GPL-2.0-only",
     "repositories": [
         {
             "type": "package",
