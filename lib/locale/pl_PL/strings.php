@@ -465,6 +465,8 @@ $_LANG['Cost limit:'] = 'Limit kosztów:';
 $_LANG['Cost limit must be positive!'] = 'Limit kosztów musi być liczbą dodatnią!';
 $_LANG['Callee:'] = 'Dokąd:';
 $_LANG['Unit size<!voip>'] = 'Rozmiar jednostki';
+$_LANG['<!voip>Price per single tariff unit'] = 'Cena jednostki taryfikacyjnej';
+$_LANG['<!voip>Size of single tariff unit'] = 'Rozmiar jednostki taryfikacyjnej';
 $_LANG['Start call:'] = 'Dokąd:';
 
 $_LANG['billing'] = 'billing';

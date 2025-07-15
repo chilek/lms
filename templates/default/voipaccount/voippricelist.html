@@ -116,8 +116,8 @@
                             <tr>
                                 <td>{trans("Id")}</td>
                                 <td style="width: 230px;">{trans("Group name")}</td>
-                                <td {tip text="Cena za jedną jednostkę taryfikacyjną"}>{trans("Price")}</td>
-                                <td {tip text="Ilość jednostek po cenie promocyjnej"}>{trans("Number of units")}</td>
+                                <td {tip text="<!voip>Price per single tariff unit"}>{trans("Price")}</td>
+                                <td {tip text="<!voip>Size of single tariff unit"}>{trans("Unit size<!voip>")}</td>
                             </tr>
                             {if isset($pricelist)}
                             {foreach from=$pricelist.group item=group}
