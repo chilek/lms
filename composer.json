@@ -137,7 +137,7 @@
         "pragmarx/google2fa": "^8",
         "galleriajs/galleria": "^1",
         "rzani/zbar-qrdecoder": "^2",
-        "dragonbe/vies": "*",
+        "dragonbe/vies": "^2",
         "ezyang/htmlpurifier": "^4",
         "phpoffice/phpspreadsheet": "*",
         "gasparesganga/php-shapefile": "^3",
