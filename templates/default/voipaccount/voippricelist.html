@@ -6,26 +6,39 @@
 <h1>{trans("Price lists")}</h1>
 
 <style>
-    #group_search {
-        width: 210px;
+
+    #prefix-group-list {
+        margin-top: 1em;
     }
 
-    #groups_table tr td:first-child {
+    #prefix-group-list caption {
+        text-align: left;
+        font-weight: bold;
+        padding-top: 0.3em;
+        padding-bottom: 0.3em;
+    }
+
+    #prefix-group-list  thead {
+        border-bottom: 1px dotted gray;
+    }
+
+    #prefix-group-list tr td:first-child {
         min-width: 30px;
     }
 
-    #groups_table tr td {
+    #prefix-group-list tr td {
         min-width: 75px;
         padding-right: 10px;
     }
 
-    #groups_table input {
+    #prefix-group-list thead {
+        font-weight: bold;
+    }
+
+    #prefix-group-add input {
         width: 70px;
     }
 
-    #groups_table #group_search {
-        width: 200px;
-    }
 </style>
 
 <form name="voippricelist" id="voippricelist" method="post" action="?m=voippricelist{if isset($pricelist.id)}&id={$pricelist.id}{/if}" enctype="multipart/form-data">
@@ -88,7 +101,7 @@
                 </td>
                 <td style="vertical-align: top;">
                     <fieldset style="display: block; min-width: 30%;">
-                        <legend><b>{trans("Prefix groups assigned to price list")}</b></legend>
+                        <legend><b>{trans("<!voip>Prefix group prices")}</b></legend>
 
                         {if !empty($pricelist.group) && count($pricelist.group) > 50}
                         <div style="text-align: right;">
@@ -101,7 +114,7 @@
                         </div>
                         {/if}
 
-                        <table id="groups_table" name="groups_table">
+                        <table id="prefix-group-add">
                             <tr>
                                 <td colspan="100%"><b>{trans("Add group")}</b></td>
                             </tr>
@@ -110,27 +123,40 @@
                                     <input name="file" type="file" style="width: 220px;" {tip text="" trigger="file"}>
                                 </td>
                             </tr>
-                            <tr class="space_row">
-                                <td colspan="100%"><b>{trans("Related groups:")}</b></td>
-                            </tr>
-                            <tr>
-                                <td>{trans("Id")}</td>
-                                <td style="width: 230px;">{trans("Group name")}</td>
-                                <td {tip text="<!voip>Price per single tariff unit"}>{trans("Price")}</td>
-                                <td {tip text="<!voip>Size of single tariff unit"}>{trans("Unit size<!voip>")}</td>
-                            </tr>
-                            {if isset($pricelist)}
-                            {foreach from=$pricelist.group item=group}
-                                {include file="voipaccount/voippricelisttablerow.html"}
-                            {/foreach}
-                            {/if}
                         </table>
 
-                        {if !$pricelist.group}
-                        <div id="groups_table_info" style="text-align: center; padding: 10px; font-weight: bold;">
+                        <table id="prefix-group-list" class="lmsbox-inner lms-ui-background-cycle">
+                            <caption>
+                                {trans("<!voip>Prefix groups")}
+                            </caption>
+                            <thead>
+                                <tr class="dark">
+                                    <td>
+                                        {trans("ID")}
+                                    </td>
+                                    <td style="width: 230px;">
+                                        {trans("Name")}
+                                    </td>
+                                    <td {tip text="<!voip>Price per single tariff unit"}>
+                                        {trans("Price")}
+                                    </td>
+                                    <td {tip text="<!voip>Size of single tariff unit"}>
+                                        {trans("Unit size<!voip>")}
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {if isset($pricelist)}
+                                    {foreach $pricelist.group as $group}
+                                        {include file="voipaccount/voippricelisttablerow.html"}
+                                    {/foreach}
+                                {/if}
+                            </tbody>
+                        </table>
+
+                        <div id="no-prefix-groups" class="lucid" style="text-align: center; padding: 10px; font-weight: bold;{if !$pricelist.group} display: none;{/if}">
                             {trans("No prefix groups assigned to tariff.")}
                         </div>
-                        {/if}
                     </fieldset>
                 </td>
             </tr>
@@ -150,7 +176,7 @@
 </form>
 
 <SCRIPT>
-    var table = document.getElementById("groups_table");
+    var table = $('#prefix-group-list');
     var pricelist_list = document.getElementById("tariff_select");
 
     // load tariffs
@@ -179,13 +205,7 @@
 
     // groups table is empty check
     function groupsTableInfoUpdate() {
-        var rows = table.rows.length;
-        var info = document.getElementById("groups_table_info");
-
-        if (rows == 4)
-            info.style.display = "block";
-        else
-            info.style.display = "none";
+        $('#no-prefix-groups').toggle(table.find('tbody tr').length);
     }
 
     groupsTableInfoUpdate();
