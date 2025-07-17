@@ -612,7 +612,7 @@ if (isset($options['fetch'])) {
                     $result = null;
                     exec('unzip -d ' . $teryt_dir . ' ' . $building_base_provider['filename'] . ' ' . $filename . ' 2>&1', $output,$result);
                     if (!empty($result)) {
-                        die('Fatal error: failed to run \'unzip\' comman! Maybe \'unzip\' utility is not installed in your system?' . PHP_EOL);
+                        die('Fatal error: failed to run \'unzip\' command! Maybe \'unzip\' utility is not installed in your system?' . PHP_EOL);
                     }
                 } else {
                     $zip->extractTo($teryt_dir, $filename);
