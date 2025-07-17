@@ -606,7 +606,17 @@ if (isset($options['fetch'])) {
         for ($i = 0; $i < $numFiles; ++$i) {
             $filename = $zip->getNameIndex($i);
             if (preg_match('/' . $building_base_provider['archived_filename_pattern'] . '/', $filename)) {
-                $zip->extractTo($teryt_dir, $filename);
+                $st = $zip->statIndex($i);
+                if ($st['comp_method'] === ZipArchive::CM_DEFLATE64) {
+                    $output = array();
+                    $result = null;
+                    exec('unzip -d ' . $teryt_dir . ' ' . $building_base_provider['filename'] . ' ' . $filename . ' 2>&1', $output,$result);
+                    if (!empty($result)) {
+                        die('Fatal error: failed to run \'unzip\' comman! Maybe \'unzip\' utility is not installed in your system?' . PHP_EOL);
+                    }
+                } else {
+                    $zip->extractTo($teryt_dir, $filename);
+                }
             }
         }
 
