@@ -212,9 +212,16 @@ if (isset($_POST['document'])) {
     if (!isset($_GET['ajax'])) {
         if (isset($document['reference']) && $document['reference']) {
             $document['reference'] = $DB->GetRow(
-                'SELECT id, type, fullnumber, cdate
-                FROM documents
-                WHERE id = ?',
+                'SELECT
+                    d.id,
+                    d.type,
+                    d.fullnumber,
+                    d.cdate,
+                    dc.fromdate,
+                    dc.todate
+                FROM documents d
+                JOIN documentcontents dc ON dc.docid = d.id
+                WHERE d.id = ?',
                 array($document['reference'])
             );
         }
