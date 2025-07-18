@@ -1047,6 +1047,10 @@ version 28-git (????-??-??):
     permission/right assigned [chilan]
   - enhancement: new user permission/right introduced: 'customer_view' [chilan]
   - enhancement: added network device type filter in customer search form [chilan]
+  - enhancement: 'rt.default_notified_email_sources' with undefined default value allows to specify which customer
+    e-mail addresses are checked by default depending of source/origin of these addresses; undefined default value
+    means that only addresses originated from customer e-mail contacts are checked during helpdesk ticket new message
+    form start [chilan]
 
 version 27.0 (2021-08-20):
 
