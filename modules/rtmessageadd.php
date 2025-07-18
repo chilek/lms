@@ -865,10 +865,10 @@ if (!is_array($message['ticketid'])) {
             $customercontacts = array();
         }
         foreach ($customercontacts as &$customercontact) {
-            if (($customercontact['type'] & (CONTACT_HELPDESK_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_HELPDESK_NOTIFICATIONS) {
+            if (!($customercontact['type'] & CONTACT_DISABLED)) {
                 $customercontact['checked'] = 0;
                 $customercontact['display'] = $customercontact['name'];
-                $customercontact['source'] = 'customer';
+                $customercontact['source'] = ($customercontact['type'] & CONTACT_HELPDESK_NOTIFICATIONS) ? 'customer' : 'customer-unflagged';
                 $contacts['mails'][$customercontact['contact']] = $customercontact;
             }
         }
@@ -986,6 +986,55 @@ if (!is_array($message['ticketid'])) {
             }
         }
         unset($customercontact);
+    }
+
+    if (!empty($contacts['mails'])) {
+        $default_notified_email_sources = ConfigHelper::getConfig('rt.default_notified_email_sources', '', true);
+        $default_notified_email_sources = preg_split('/([\s]+|[\s]*,[\s]*)/', mb_strtolower($default_notified_email_sources), -1, PREG_SPLIT_NO_EMPTY);
+        $default_notified_email_sources = array_flip($default_notified_email_sources);
+
+        foreach ($contacts['mails'] as $email => &$contact) {
+            switch ($contact['source']) {
+                case 'requestor_mail':
+                    if (isset($default_notified_email_sources['requestor'])) {
+                        $contact['checked'] = 1;
+                    }
+                    break;
+                case 'mailfrom':
+                    if (isset($default_notified_email_sources['from-header'])) {
+                        $contact['checked'] = 1;
+                    }
+                    break;
+                case 'carbon-copy':
+                    if (isset($default_notified_email_sources['cc-header'])) {
+                        $contact['checked'] = 1;
+                    }
+                    break;
+                case 'reply-to':
+                    if (isset($default_notified_email_sources['reply-to-header'])) {
+                        $contact['checked'] = 1;
+                    }
+                    break;
+                case 'customer':
+                    if (isset($default_notified_email_sources['contact'])) {
+                        $contact['checked'] = 1;
+                    }
+                    break;
+                case 'customer-unflagged':
+                    if (isset($default_notified_email_sources['unflagged-contact'])) {
+                        $contact['checked'] = 1;
+                    }
+                    break;
+            }
+        }
+        unset($contact);
+
+        $contacts['mails'] = array_filter(
+            $contacts['mails'],
+            function ($contact) use ($default_notified_email_sources) {
+                return $contact['source'] != 'customer-unflagged' || isset($default_notified_email_sources['unflagged-contact']);
+            }
+        );
     }
 
     if (isset($_POST['message'])) {
