@@ -28,12 +28,17 @@ if (!ConfigHelper::checkConfig('phpui.hide_fortunes')) {
     @include(LIB_DIR.'/locale/' . Localisation::getCurrentUiLanguage() . '/fortunes.php');
 }
 
+$welcome_visible_panels = ConfigHelper::getConfig('phpui.welcome_visible_panels', '', true);
+$welcome_visible_panels = preg_split('/([\s]+|[\s]*[,;][\s]*)/', strtolower($welcome_visible_panels), -1, PREG_SPLIT_NO_EMPTY);
+$welcome_visible_panels = array_flip($welcome_visible_panels);
+$SMARTY->assign('welcome_visible_panels', $welcome_visible_panels);
+
 $layout['pagetitle'] = 'LAN Management System';
 
 $layout['dbversion'] = $DB->GetDBVersion();
 $layout['dbtype'] = ConfigHelper::getConfig('database.type');
 
-if (ConfigHelper::checkConfig('privileges.superuser')) {
+if (ConfigHelper::checkConfig('privileges.superuser') && (empty($welcome_visible_panels) || isset($welcome_visible_panels['reginfo']))) {
     $content = $LMS->CheckUpdates();
 
     if (isset($content['newer_version'])) {
@@ -62,22 +67,33 @@ if (!preg_match('/^https?:\/\//', $software_documentation_url) && !is_dir($softw
 }
 
 $SMARTY->assign('_dochref', $software_documentation_url);
-$SMARTY->assign('rtstats', $LMS->RTStats());
+if (empty($welcome_visible_panels) || isset($welcome_visible_panels['helpdesk'])) {
+    $SMARTY->assign('rtstats', $LMS->RTStats());
+}
 
-if (ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_sysinfo')) {
+if ((ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_sysinfo'))
+    && (empty($welcome_visible_panels) || isset($welcome_visible_panels['sysinfo']))) {
     $SI = new Sysinfo;
     $SMARTY->assign('sysinfo', $SI->get_sysinfo());
 }
 
 if (ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')) {
-    $SMARTY->assign('customerstats', $LMS->CustomerStats());
-    $SMARTY->assign('nodestats', $LMS->NodeStats());
-    $documentsnotapproved=$DB->GetOne('SELECT COUNT(id) AS sum FROM documents WHERE type < 0 AND closed = 0');
-    $SMARTY->assign('documentsnotapproved', ( $documentsnotapproved ?: 0));
+    if (empty($welcome_visible_panels) || isset($welcome_visible_panels['customers'])) {
+        $SMARTY->assign('customerstats', $LMS->CustomerStats());
+    }
 
-    if (file_exists(ConfigHelper::getConfig('directories.userpanel_dir') . DIRECTORY_SEPARATOR . 'index.php')) {
-        $customerschanges=$DB->GetOne('SELECT COUNT(id) FROM up_info_changes');
-        $SMARTY->assign('customerschanges', ( $customerschanges ?: 0));
+    if (empty($welcome_visible_panels) || isset($welcome_visible_panels['nodes'])) {
+        $SMARTY->assign('nodestats', $LMS->NodeStats());
+    }
+
+    if (empty($welcome_visible_panels) || isset($welcome_visible_panels['customers'])) {
+        $documentsnotapproved = $DB->GetOne('SELECT COUNT(id) AS sum FROM documents WHERE type < 0 AND closed = 0');
+        $SMARTY->assign('documentsnotapproved', ($documentsnotapproved ?: 0));
+
+        if (file_exists(ConfigHelper::getConfig('directories.userpanel_dir') . DIRECTORY_SEPARATOR . 'index.php')) {
+            $customerschanges = $DB->GetOne('SELECT COUNT(id) FROM up_info_changes');
+            $SMARTY->assign('customerschanges', ($customerschanges ?: 0));
+        }
     }
 }
 
