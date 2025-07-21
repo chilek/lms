@@ -41,8 +41,21 @@ if (count($ilm)) {
 
 if (count($ids)) {
     foreach ($ids as $invoiceid) {
-        [$cid, $closed] = array_values($DB->GetRow('SELECT customerid, closed FROM documents
-			WHERE id = ?', array($invoiceid)));
+        $invoice = $DB->GetRow(
+            'SELECT
+                customerid,
+                closed
+            FROM documents
+            WHERE id = ?',
+            array($invoiceid)
+        );
+
+        if (empty($invoice)) {
+            continue;
+        }
+
+        [$cid, $closed] = $invoice;
+
         // add payment
         if (ConfigHelper::checkConfig('phpui.invoice_check_payment') && $cid && !$closed) {
             $value = $DB->GetOne('SELECT CASE WHEN reference IS NULL THEN SUM(a.value*a.count)
