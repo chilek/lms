@@ -228,6 +228,10 @@ $layout['lmsvr'] = LMS::getSoftwareRevision();
 $layout['smarty_version'] = SMARTY_VERSION;
 $layout['hostname'] = hostname();
 $layout['dberrors'] =& $DB->GetErrors();
+$layout['url'] = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
+    . $_SERVER['HTTP_HOST']
+    . $_SERVER['REQUEST_URI'];
+    //. substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1);
 
 $SMARTY->assignByRef('modules', $USERPANEL->MODULES);
 $SMARTY->assignByRef('layout', $layout);
@@ -277,11 +281,6 @@ if ($SESSION->islogged) {
         }
     }
 
-    // Userpanel popup for urgent notice
-    $res = $LMS->ExecHook('userpanel_module_call_before');
-
-    $LMS->executeHook('userpanel_' . $module . '_on_load');
-
     $module_dir = null;
     foreach ($modules_dirs as $suspected_module_dir) {
         if (file_exists($suspected_module_dir . $module . DIRECTORY_SEPARATOR . 'functions.php')
@@ -290,6 +289,11 @@ if ($SESSION->islogged) {
             break;
         }
     }
+
+    // Userpanel popup for urgent notice
+    $res = $LMS->ExecHook('userpanel_module_call_before');
+
+    $LMS->executeHook('userpanel_' . $module . '_on_load');
 
     if ($module_dir !== null) {
         $SMARTY->assign('customername', $LMS->GetCustomerName($SESSION->id));

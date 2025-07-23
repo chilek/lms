@@ -46,7 +46,6 @@ if (isset($balance['docid'])) {
     }
 }
 
-$SMARTY->assign('custom_content', '');
 $SMARTY->assign('userinfo', $userinfo);
 $SMARTY->assign('balancelist', $balance);
 $SMARTY->assign('aggregate_documents', $aggregate_documents);
