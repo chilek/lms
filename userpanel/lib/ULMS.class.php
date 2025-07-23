@@ -70,14 +70,14 @@ class ULMS extends LMS
                 }
 
                 $result['contacts'] = $this->DB->GetAllByKey(
-                    'SELECT id, contact AS phone, name
+                    'SELECT id, contact AS phone, name, type
 					FROM customercontacts WHERE customerid = ? AND (type & ?) > 0 AND (type & ?) = 0
 					ORDER BY id',
                     'id',
                     array($id, CONTACT_MOBILE | CONTACT_FAX | CONTACT_LANDLINE, CONTACT_DISABLED)
                 );
                 $result['emails'] = $this->DB->GetAllByKey(
-                    'SELECT id, contact AS email, name
+                    'SELECT id, contact AS email, name, type
 					FROM customercontacts WHERE customerid = ? AND (type & ?) > 0 AND (type & ?) = 0
 					ORDER BY id',
                     'id',
