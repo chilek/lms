@@ -5312,6 +5312,7 @@ class LMS
             );
 
             $subject = preg_replace('/%invoice/', $invoice_number, $subject);
+            $doc['customername'] = $doc['name'];
             $doc['name'] = '"' . $doc['name'] . '"';
 
             $body = $this->getLastNInTable($body, $doc['customerid'], $mail_format, $aggregate_documents, $financial_history_reverse_order, $financial_history_item_description_format);
@@ -5447,6 +5448,7 @@ class LMS
                 $data = array(
                     'body' => $body,
                     'doc' => $doc,
+                    'balance' => $balance,
                     'mail_format' => $mail_format,
                     'headers' => $headers
                 );
