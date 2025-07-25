@@ -33,6 +33,7 @@ class Auth
     public $login;
     private $targetLogin = null;
     public $logname;
+    public $rlogname;
     public $passwd;
     public $islogged = false;
     public $nousers = false;
@@ -74,7 +75,12 @@ class Auth
 
     public static function GetCurrentUserName()
     {
-        return (self::$auth ? self::$auth->logname : null);
+        return self::$auth ? self::$auth->logname : null;
+    }
+
+    public static function GetCurrentUserReversedName()
+    {
+        return self::$auth ? self::$auth->logrname : null;
     }
 
     public function __construct(&$DB, &$SESSION)
@@ -153,6 +159,7 @@ class Auth
             $this->switchUser();
 
             $this->logname = $this->logname ?: $this->SESSION->get('session_logname');
+            $this->logrname = $this->logrname ?: $this->SESSION->get('session_logrname');
             $this->id = $this->id ?: $this->SESSION->get('session_id');
 
             if (isset($loginform)) {
@@ -179,6 +186,7 @@ class Auth
             }
             $this->SESSION->restore_user_settings();
             $this->SESSION->save('session_logname', $this->logname);
+            $this->SESSION->save('session_logrname', $this->logrname);
             $this->SESSION->save('session_last', $this->last);
             $this->SESSION->save('session_lastip', $this->lastip);
         } else {
@@ -379,16 +387,17 @@ class Auth
 
     public function SwitchUser($userid = null)
     {
-        if (((isset($this->targetLogin) && ($user = $this->DB->GetRow('SELECT id, name, passwd, hosts, trustedhosts, lastlogindate, lastloginip,
+        if (((isset($this->targetLogin) && ($user = $this->DB->GetRow('SELECT id, name, rname, passwd, hosts, trustedhosts, lastlogindate, lastloginip,
                 passwdforcechange, passwdexpiration, passwdlastchange, access, accessfrom, accessto,
                 twofactorauth, twofactorauthsecretkey
             FROM vusers WHERE login = ? AND deleted = 0', array($this->targetLogin))) !== null)
-                || (isset($userid) && ($user = $this->DB->GetRow('SELECT id, name, passwd, hosts, trustedhosts, lastlogindate, lastloginip,
+                || (isset($userid) && ($user = $this->DB->GetRow('SELECT id, name, rname, passwd, hosts, trustedhosts, lastlogindate, lastloginip,
                 passwdforcechange, passwdexpiration, passwdlastchange, access, accessfrom, accessto,
                 twofactorauth, twofactorauthsecretkey
             FROM vusers WHERE id = ? AND deleted = 0', array($userid))) !== null))
             && $this->VerifyDivision($user['id'])) {
             $this->logname = $user['name'];
+            $this->logrname = $user['rname'];
             $this->id = $user['id'];
             $this->last = $user['lastlogindate'];
             $this->lastip = $user['lastloginip'];
@@ -404,6 +413,7 @@ class Auth
                 $this->SESSION->save('session_login', $this->login);
                 $this->SESSION->restore_user_settings();
                 $this->SESSION->save('session_logname', $this->logname);
+                $this->SESSION->save('session_logrname', $this->logrname);
             }
         }
     }
@@ -412,11 +422,12 @@ class Auth
     {
         $this->islogged = false;
 
-        if ($user = $this->DB->GetRow('SELECT id, name, passwd, hosts, trustedhosts, lastlogindate, lastloginip,
+        if ($user = $this->DB->GetRow('SELECT id, name, rname, passwd, hosts, trustedhosts, lastlogindate, lastloginip,
 				passwdforcechange, passwdexpiration, passwdlastchange, access, accessfrom, accessto,
 				twofactorauth, twofactorauthsecretkey
 			FROM vusers WHERE login=? AND deleted=0', array($this->login))) {
             $this->logname = $user['name'];
+            $this->logrname = $user['rname'];
             $this->id = $user['id'];
             $this->last = $user['lastlogindate'];
             $this->lastip = $user['lastloginip'];

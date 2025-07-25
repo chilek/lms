@@ -221,7 +221,8 @@ if (!$api) {
     $layout['smarty_version'] = SMARTY_VERSION;
 }
 
-$layout['logname'] = $AUTH->logname;
+$layout['logname'] = Auth::GetCurrentUserName();
+$layout['logrname'] = Auth::GetCurrentUserReversedName();
 $layout['logid'] = Auth::GetCurrentUser();
 $layout['lmsdbv'] = $DB->GetVersion();
 $layout['hostname'] = hostname();
