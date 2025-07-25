@@ -1023,6 +1023,9 @@
 		$('#submit-button').click(function() {
 			var that = this;
 			tinyMCE.triggerSave();
+
+			$(that).prop('disabled', true);
+
 			$.ajax(
 				'?m=messageadd&count_recipients=1',
 				{
@@ -1045,7 +1048,9 @@
 									data.recipients
 								),
 								that
-							);
+							).done(function() {
+								$(that).prop('disabled', false);
+							});
 							break;
 						case 'warning':
 							confirmDialog(
@@ -1056,6 +1061,8 @@
 								that
 							).done(function() {
 								$('#message').submit();
+							}).fail(function() {
+								$(that).prop('disabled', false);
 							});
 							break;
 						default:
