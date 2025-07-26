@@ -33,7 +33,7 @@ class Auth
     public $login;
     private $targetLogin = null;
     public $logname;
-    public $rlogname;
+    public $logrname;
     public $passwd;
     public $islogged = false;
     public $nousers = false;
