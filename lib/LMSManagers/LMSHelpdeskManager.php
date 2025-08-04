@@ -783,7 +783,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 . 'LEFT JOIN vaddresses va ON va.id = events.address_id '
                 . 'LEFT JOIN vnodes as vn ON (nodeid = vn.id) '
                 . 'LEFT JOIN customerview c ON (events.customerid = c.id) '
-                . 'WHERE ticketid = ? ORDER BY events.id ASC', array($id));
+                . 'WHERE ticketid = ? ORDER BY events.date ASC', array($id));
 
         if (is_array($events)) {
             foreach ($events as $idx => $row) {
