@@ -101,7 +101,7 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
                 break;
             case 'value':
                 foreach ($value as $vkey => $vvalue) {
-                    $vvalue = trim($vvalue);
+                    $vvalue = preg_replace('/\s+/u', '', trim($vvalue));
                     if (!strlen($vvalue)) {
                         $data[$vkey]['value'] = 'NULL';
                     } elseif (!preg_match('/^[-]?[0-9.,]+$/', $vvalue)) {
