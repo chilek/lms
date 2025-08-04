@@ -558,6 +558,12 @@ if ($ticket['state'] == RT_RESOLVED && !ConfigHelper::checkPrivilege('superuser'
 }
 
 if (isset($_POST['ticket'])) {
+    $smtp_options = $LMS->GetRTSmtpOptions();
+    $smtp_options_by_division_ids = array(
+        0 => $smtp_options,
+        $divisionid => $smtp_options,
+    );
+
     $notification_options_by_division_ids = array(
         0 => array(
             'block_ticket_close_with_open_events' => ConfigHelper::checkConfig('rt.block_ticket_close_with_open_events', ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events')),
@@ -583,6 +589,7 @@ if (isset($_POST['ticket'])) {
             'notification_sms_body' => ConfigHelper::getConfig('rt.notification_sms_body', ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body')),
         ),
     );
+    $notification_options_by_division_ids[$divisionid] = $notification_options_by_division_ids[0];
 
     $ticketedit = $_POST['ticket'];
     $ticketedit['ticketid'] = $ticket['ticketid'];
@@ -636,12 +643,6 @@ if (isset($_POST['ticket'])) {
         $error['subject'] = trans('Ticket subject can contain maximum $a characters!', ConfigHelper::getConfig('rt.subject_max_length', 50));
     }
 
-    if ($block_ticket_close_with_open_events) {
-        if ($ticketedit['state'] == RT_RESOLVED && !empty($ticket['openeventcount'])) {
-            $error['state'] = trans('Ticket have open assigned events!');
-        }
-    }
-
     if ($ticketedit['state'] != RT_NEW && !$ticketedit['owner']) {
         $error['owner'] = trans('Only \'new\' ticket can be owned by no one!');
     }
@@ -668,7 +669,7 @@ if (isset($_POST['ticket'])) {
 
     $ticket_divisionid = $LMS->getDivisionIdByTicketId($ticketedit['customerid']);
 
-    if (empty($ticket_divisionid)) {
+    if (empty($ticket_divisionid) || $ticket_divisionid == $divisionid) {
         $smtp_options = $smtp_options_by_division_ids[0];
 
         extract($notification_options_by_division_ids[0]);
@@ -704,6 +705,12 @@ if (isset($_POST['ticket'])) {
         $smtp_options = $smtp_options_by_division_ids[$ticket_divisionid];
 
         extract($notification_options_by_division_ids[$ticket_divisionid]);
+    }
+
+    if ($block_ticket_close_with_open_events) {
+        if ($ticketedit['state'] == RT_RESOLVED && !empty($ticket['openeventcount'])) {
+            $error['state'] = trans('Ticket have open assigned events!');
+        }
     }
 
     if ($ticketedit['requestor_userid'] == '0') {
