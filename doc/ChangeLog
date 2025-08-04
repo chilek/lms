@@ -1053,6 +1053,7 @@ version 28-git (????-??-??):
     form start [chilan]
   - enhancement: 'phpui.welcome_visible_panels' controls what welcome module panels/boxes are visible (it has
     undefined value by default what means to show all supported panels/boxes) [chilan]
+  - improvement/devel: userpanel modules with 'null' priority are not visible in userpanel tab/menu bar [chilan]
 
 version 27.0 (2021-08-20):
 
