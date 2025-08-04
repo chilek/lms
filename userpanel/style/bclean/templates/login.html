@@ -144,6 +144,7 @@
                     {if empty($authcode_required)}
                         {$auth_type=ConfigHelper::getConfig('userpanel.auth_type', $smarty.const.USERPANEL_AUTH_TYPE_ID_PIN)}
                         <form id="login" class="form-signin" method="post" action="{$target}">
+                            <input type="submit" hidden>
                             <fieldset class="form-group">
                                 <label for="inputLogin">{$_USERPANEL_AUTH_TYPES[$auth_type].label}</label>
                                 <input type="text"  name="loginform[login]" id="inputLogin" class="form-control" required>
