@@ -606,7 +606,7 @@
 		$(".period_form_value").on('change', function () {
 			let elemVal = $(this).val();
 			if (elemVal.length) {
-				let value = parseFloat(elemVal.replace(/[\,]+/, '.').replace(/\s+/g, '');
+				let value = parseFloat(elemVal.replace(/[\,]+/, '.').replace(/\s+/g, ''));
 				$(this).val(lms.utils.smartFormatNumber(value).replace(/[^\-0-9,\.]/g, ''));
 			}
 		});
