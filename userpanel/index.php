@@ -296,6 +296,7 @@ if ($SESSION->islogged) {
     $LMS->executeHook('userpanel_' . $module . '_on_load');
 
     if ($module_dir !== null) {
+        $SMARTY->assign('menuitems', $USERPANEL->getMenuItems());
         $SMARTY->assign('customername', $LMS->GetCustomerName($SESSION->id));
 
         include($module_dir . $module . DIRECTORY_SEPARATOR . 'functions.php');

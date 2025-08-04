@@ -66,23 +66,34 @@ class USERPANEL
 
     public function AddModule($name = '', $module = '', $tip = '', $prio = 99, $description = '', $submenu = null, $icon = null, $module_dir = null)
     {
-        if (isset($this->module_order[$module])) {
+        if (isset($prio, $this->module_order[$module])) {
             $prio = $this->module_order[$module];
         }
+
         if ($name != '') {
-            $this->MODULES[$module] = array('name' => $name, 'tip' => $tip, 'prio' => $prio, 'description' => $description,
-                'selected' => false, 'module' => $module, 'submenu' => $submenu, 'icon' => $icon,
-                'module_dir' => $module_dir ?? USERPANEL_MODULES_DIR
+            $this->MODULES[$module] = array(
+                'name' => $name,
+                'tip' => $tip,
+                'prio' => $prio,
+                'description' => $description,
+                'selected' => false,
+                'module' => $module,
+                'submenu' => $submenu,
+                'icon' => $icon,
+                'module_dir' => $module_dir ?? USERPANEL_MODULES_DIR,
             );
+
             if (!function_exists('cmp')) {
                 function cmp($a, $b)
                 {
-                    return $a['prio'] <=> $b['prio'];
+                    return isset($a['prio'], $b['prio']) ? $a['prio'] <=> $b['prio'] : (isset($a['prio']) ? -1 : (isset($b['prio']) ? 1 : 0));
                 }
             }
             uasort($this->MODULES, 'cmp');
+
             return true;
         }
+
         return false;
     }
 
@@ -141,5 +152,15 @@ class USERPANEL
         $_GET['m'] = $old_m;
 
         return $html;
+    }
+
+    public function getMenuItems()
+    {
+        return array_filter(
+            $this->MODULES,
+            function ($module) {
+                return isset($module['prio']);
+            }
+        );
     }
 }
