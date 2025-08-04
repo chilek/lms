@@ -1627,4 +1627,22 @@ class Utils
 
         return $phoneNumber;
     }
+
+    public static function trimUrl($url)
+    {
+        return trim(
+            str_replace(
+                array(
+                    'https://',
+                    'http://',
+                ),
+                array(
+                    '',
+                    '',
+                ),
+                $url
+            ),
+            '/'
+        );
+    }
 }
