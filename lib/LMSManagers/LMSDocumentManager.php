@@ -2914,117 +2914,6 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 break;
         }
 
-        $smtp_options = array(
-            'host' => ConfigHelper::getConfig('documents.smtp_host', ConfigHelper::getConfig('mail.smtp_host')),
-            'port' => ConfigHelper::getConfig('documents.smtp_port', ConfigHelper::getConfig('mail.smtp_port')),
-            'user' => ConfigHelper::getConfig('documents.smtp_user', ConfigHelper::getConfig('mail.smtp_username', ConfigHelper::getConfig('mail.smtp_user'))),
-            'pass' => ConfigHelper::getConfig('documents.smtp_pass', ConfigHelper::getConfig('mail.smtp_password', ConfigHelper::getConfig('mail.smtp_pass'))),
-            'auth' => ConfigHelper::getConfig('documents.smtp_auth', ConfigHelper::getConfig('mail.smtp_auth_type')),
-            'ssl_verify_peer' => ConfigHelper::checkConfig('documents.smtp_ssl_verify_peer', ConfigHelper::checkConfig('mail.smtp_ssl_verify_peer', true)),
-            'ssl_verify_peer_name' => ConfigHelper::checkConfig('documents.smtp_ssl_verify_peer_name', ConfigHelper::checkConfig('mail.smtp_ssl_verify_peer_name', true)),
-            'ssl_allow_self_signed' => ConfigHelper::checkConfig('documents.smtp_ssl_allow_self_signed', ConfigHelper::checkConfig('mail.smtp_ssl_allow_self_signed')),
-        );
-
-        $debug_email = ConfigHelper::getConfig('documents.debug_email', '', true);
-        $sender_name = ConfigHelper::getConfig('documents.sender_name', '', true);
-        $sender_email = ConfigHelper::getConfig('documents.sender_email', '', true);
-        $mail_subject = ConfigHelper::getConfig('documents.mail_subject', '%document');
-        $mail_body = ConfigHelper::getConfig('documents.mail_body', '%document');
-        $mail_format = ConfigHelper::getConfig('documents.mail_format', 'text');
-        $notify_email = ConfigHelper::getConfig('documents.notify_email', '', true);
-        $reply_email = ConfigHelper::getConfig('documents.reply_email', '', true);
-        $add_message = ConfigHelper::checkConfig('documents.add_message');
-        $message_attachments = ConfigHelper::checkConfig('documents.message_attachments');
-        $dsn_email = ConfigHelper::getConfig('documents.dsn_email', '', true);
-        $mdn_email = ConfigHelper::getConfig('documents.mdn_email', '', true);
-
-        $smtp_auth = empty($smtp_auth) ? ConfigHelper::getConfig('mail.smtp_auth_type') : $smtp_auth;
-
-        $attachment_filename = ConfigHelper::getConfig('documents.attachment_filename', '%filename');
-
-        $aggregate_reference_document_email = ConfigHelper::checkConfig('documents.aggregate_reference_document_email');
-
-        $send_zip_filename = ConfigHelper::getConfig('documents.send_zip_filename');
-        $send_zip_protection_password = ConfigHelper::getConfig('documents.send_zip_protection_password');
-        $send_zip_protection_method = ConfigHelper::getConfig('documents.send_zip_protection_method');
-
-        if (!empty($send_zip_protection_password)) {
-            if (!empty($send_zip_protection_method)) {
-                $em_constant_name = 'ZipArchive::EM_' . strtoupper($send_zip_protection_method);
-                if (!defined($em_constant_name)) {
-                    $em_constant_name = 'ZipArchive::EM_TRAD_PKWARE';
-                }
-            } else {
-                $em_constant_name = 'ZipArchive::EM_TRAD_PKWARE';
-            }
-        }
-
-        $document_protected_document_types = ConfigHelper::getConfig(
-            'documents.protected_document_types',
-            '',
-            true
-        );
-
-        $document_protection_password_authcode_sources = preg_split(
-            '/([\s]+|[\s]*,[\s]*)/',
-            strtolower(ConfigHelper::getConfig('documents.protection_password_authcode_source', 'random8')),
-            -1,
-            PREG_SPLIT_NO_EMPTY
-        );
-
-        $document_protection_password_authcode_message = ConfigHelper::getConfig(
-            'documents.protection_password_authcode_message',
-            '%authcode'
-        );
-
-        if (strlen($document_protected_document_types)) {
-            $protected_document_types = preg_split('/([\s]+|[\s]*,[\s]*)/', $document_protected_document_types, -1, PREG_SPLIT_NO_EMPTY);
-            $document_protected_document_types = array();
-            $doctype_aliases = array_flip($DOCTYPE_ALIASES);
-            foreach ($protected_document_types as $protected_document_type) {
-                if (isset($doctype_aliases[$protected_document_type])) {
-                    $document_protected_document_types[$doctype_aliases[$protected_document_type]] = $protected_document_type;
-                }
-            }
-        } else {
-            $document_protected_document_types = $DOCTYPE_ALIASES;
-        }
-
-        extract($params);
-
-        $errors = array();
-        $info = array();
-
-        if (empty($sender_email)) {
-            switch ($type) {
-                case 'frontend':
-                    die('<span class="red">' . trans("Fatal error: sender_email unset! Can't continue, exiting.") . '</span>' . $eol);
-                    break;
-                case 'backend':
-                    die(trans("Fatal error: sender_email unset! Can't continue, exiting.") . $eol);
-                    break;
-                default:
-                    $errors[] = trans("Fatal error: sender_email unset! Can't continue, exiting.");
-            }
-        }
-
-        if (!empty($smtp_auth) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $smtp_auth)) {
-            switch ($type) {
-                case 'frontend':
-                    die('<span class="red">' . trans("Fatal error: smtp_auth value not supported! Can't continue, exiting.") . '</span>' . $eol);
-                    break;
-                case 'backend':
-                    die(trans("Fatal error: smtp_auth value not supported! Can't continue, exiting.") . $eol);
-                    break;
-                default:
-                    $errors[] = trans("Fatal error: smtp_auth value not supported! Can't continue, exiting.");
-            }
-        }
-
-        if ($type == 'userpanel' && !empty($errors)) {
-            return compact('info', 'errors');
-        }
-
         if (!isset($currtime)) {
             $currtime = time();
         }
@@ -3033,20 +2922,205 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $day = date('d', $currtime);
         $year = date('Y', $currtime);
 
-        if (empty($dsn_email)) {
-            $from = $sender_email;
-        } else {
-            $from = $dsn_email;
+        if (!empty($docs)) {
+            $doc = reset($docs);
+
+            if (empty($doc['divisionid'])) {
+                $documentDivisions = $this->db->GetAll(
+                    'SELECT
+                        d.id,
+                        d.divisionid
+                    FROM documents d
+                    WHERE d.id IN ?',
+                    array(
+                        Utils::array_column($docs, 'id'),
+                    )
+                );
+                $documentDivisions = Utils::array_column($documentDivisions, 'divisionid', 'id');
+
+                foreach ($docs as &$doc) {
+                    $doc['divisionid'] = $documentDivisions[$doc['id']];
+                }
+                unset($doc);
+
+                uasort(
+                    $docs,
+                    function($doc1, $doc2) {
+                        return $doc1['divisionid'] <=> $doc2['divisionid'];
+                    }
+                );
+            }
         }
 
-        if (!empty($sender_name)) {
-            $from = "$sender_name <$from>";
-        }
+        $currentDivisionId = LMSDivisionManager::getCurrentDivision();
 
-        $mail_bodies = array();
-        $mail_subjects = array();
+        extract($params);
+
+        $errors = array();
+        $info = array();
+
+        $currentDocumentDivisionId = null;
 
         foreach ($docs as $doc) {
+            if ($currentDocumentDivisionId != $doc['divisionid']) {
+                $currentDocumentDivisionId = $doc['divisionid'];
+
+                if (!isset($smtp_options_by_division_ids[$currentDocumentDivisionId])) {
+                    if (isset($smtp_options_by_division_ids[0])) {
+                        ConfigHelper::setFilter($currentDocumentDivisionId, Auth::GetCurrentUser());
+                    }
+
+                    $smtp_options = array(
+                        'host' => ConfigHelper::getConfig('documents.smtp_host', ConfigHelper::getConfig('mail.smtp_host')),
+                        'port' => ConfigHelper::getConfig('documents.smtp_port', ConfigHelper::getConfig('mail.smtp_port')),
+                        'user' => ConfigHelper::getConfig('documents.smtp_user', ConfigHelper::getConfig('mail.smtp_username', ConfigHelper::getConfig('mail.smtp_user'))),
+                        'pass' => ConfigHelper::getConfig('documents.smtp_pass', ConfigHelper::getConfig('mail.smtp_password', ConfigHelper::getConfig('mail.smtp_pass'))),
+                        'auth' => ConfigHelper::getConfig('documents.smtp_auth', ConfigHelper::getConfig('mail.smtp_auth_type')),
+                        'ssl_verify_peer' => ConfigHelper::checkConfig('documents.smtp_ssl_verify_peer', ConfigHelper::checkConfig('mail.smtp_ssl_verify_peer', true)),
+                        'ssl_verify_peer_name' => ConfigHelper::checkConfig('documents.smtp_ssl_verify_peer_name', ConfigHelper::checkConfig('mail.smtp_ssl_verify_peer_name', true)),
+                        'ssl_allow_self_signed' => ConfigHelper::checkConfig('documents.smtp_ssl_allow_self_signed', ConfigHelper::checkConfig('mail.smtp_ssl_allow_self_signed')),
+                    );
+
+                    if (!isset($smtp_options_by_division_ids[0])) {
+                        $smtp_options_by_division_ids[0] = $smtp_options;
+                        if (!empty($currentDivisionId)) {
+                            $smtp_options_by_division_ids[$currentDivisionId] = $smtp_options;
+                        }
+                    }
+                    if (!isset($smtp_options_by_division_ids[$currentDocumentDivisionId])) {
+                        $smtp_options_by_division_ids[$currentDocumentDivisionId] = $smtp_options;
+                    }
+
+                    $options = array(
+                        'debug_email' => ConfigHelper::getConfig('documents.debug_email', '', true),
+                        'sender_name' => ConfigHelper::getConfig('documents.sender_name', '', true),
+                        'sender_email' => ConfigHelper::getConfig('documents.sender_email', '', true),
+                        'mail_subject' => ConfigHelper::getConfig('documents.mail_subject', '%document'),
+                        'mail_body' => ConfigHelper::getConfig('documents.mail_body', '%document'),
+                        'mail_format' => ConfigHelper::getConfig('documents.mail_format', 'text'),
+                        'notify_email' => ConfigHelper::getConfig('documents.notify_email', '', true),
+                        'reply_email' => ConfigHelper::getConfig('documents.reply_email', '', true),
+                        'add_message' => ConfigHelper::checkConfig('documents.add_message'),
+                        'message_attachments' => ConfigHelper::checkConfig('documents.message_attachments'),
+                        'dsn_email' => ConfigHelper::getConfig('documents.dsn_email', '', true),
+                        'mdn_email' => ConfigHelper::getConfig('documents.mdn_email', '', true),
+
+                        'smtp_auth' => empty($smtp_auth) ? ConfigHelper::getConfig('mail.smtp_auth_type') : $smtp_auth,
+
+                        'attachment_filename' => ConfigHelper::getConfig('documents.attachment_filename', '%filename'),
+
+                        'aggregate_reference_document_email' => ConfigHelper::checkConfig('documents.aggregate_reference_document_email'),
+
+                        'send_zip_filename' => ConfigHelper::getConfig('documents.send_zip_filename'),
+                        'send_zip_protection_password' => ConfigHelper::getConfig('documents.send_zip_protection_password'),
+                        'send_zip_protection_method' => ConfigHelper::getConfig('documents.send_zip_protection_method'),
+
+                        'document_protected_document_types' => ConfigHelper::getConfig(
+                            'documents.protected_document_types',
+                            '',
+                            true
+                        ),
+
+                        'document_protection_password_authcode_sources' => preg_split(
+                            '/([\s]+|[\s]*,[\s]*)/',
+                            strtolower(ConfigHelper::getConfig('documents.protection_password_authcode_source', 'random8')),
+                            -1,
+                            PREG_SPLIT_NO_EMPTY
+                        ),
+
+                        'document_protection_password_authcode_message' => ConfigHelper::getConfig(
+                            'documents.protection_password_authcode_message',
+                            '%authcode'
+                        ),
+                    );
+
+                    if (strlen($options['document_protected_document_types'])) {
+                        $protected_document_types = preg_split('/([\s]+|[\s]*,[\s]*)/', $options['document_protected_document_types'], -1, PREG_SPLIT_NO_EMPTY);
+                        $document_protected_document_types = array();
+                        $doctype_aliases = array_flip($DOCTYPE_ALIASES);
+                        foreach ($protected_document_types as $protected_document_type) {
+                            if (isset($doctype_aliases[$protected_document_type])) {
+                                $document_protected_document_types[$doctype_aliases[$protected_document_type]] = $protected_document_type;
+                            }
+                        }
+                    } else {
+                        $document_protected_document_types = $DOCTYPE_ALIASES;
+                    }
+
+                    $options['document_protected_document_types'] = $document_protected_document_types;
+
+                    $em_constant_name = null;
+                    if (!empty($options['send_zip_protection_password'])) {
+                        if (!empty($options['send_zip_protection_method'])) {
+                            $em_constant_name = 'ZipArchive::EM_' . strtoupper($options['send_zip_protection_method']);
+                            if (!defined($em_constant_name)) {
+                                $em_constant_name = 'ZipArchive::EM_TRAD_PKWARE';
+                            }
+                        } else {
+                            $em_constant_name = 'ZipArchive::EM_TRAD_PKWARE';
+                        }
+                    }
+
+                    $options['send_zip_protection_method'] = $em_constant_name;
+
+                    if (!isset($options_by_division_ids[0])) {
+                        $options_by_division_ids[0] = $options;
+                        if (!empty($currentDivisionId)) {
+                            $options_by_division_ids[$currentDivisionId] = $options;
+                        }
+                    }
+                    if (!isset($options_by_division_ids[$currentDocumentDivisionId])) {
+                        $options_by_division_ids[$currentDocumentDivisionId] = $options;
+                    }
+                }
+
+                extract($smtp_options_by_division_ids[$currentDocumentDivisionId]);
+                extract($options_by_division_ids[$currentDocumentDivisionId]);
+
+                if (empty($sender_email)) {
+                    switch ($type) {
+                        case 'frontend':
+                            die('<span class="red">' . trans("Fatal error: sender_email unset! Can't continue, exiting.") . '</span>' . $eol);
+                            break;
+                        case 'backend':
+                            die(trans("Fatal error: sender_email unset! Can't continue, exiting.") . $eol);
+                            break;
+                        default:
+                            $errors[] = trans("Fatal error: sender_email unset! Can't continue, exiting.");
+                    }
+                }
+
+                if (!empty($smtp_auth) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $smtp_auth)) {
+                    switch ($type) {
+                        case 'frontend':
+                            die('<span class="red">' . trans("Fatal error: smtp_auth value not supported! Can't continue, exiting.") . '</span>' . $eol);
+                            break;
+                        case 'backend':
+                            die(trans("Fatal error: smtp_auth value not supported! Can't continue, exiting.") . $eol);
+                            break;
+                        default:
+                            $errors[] = trans("Fatal error: smtp_auth value not supported! Can't continue, exiting.");
+                    }
+                }
+
+                if ($type == 'userpanel' && !empty($errors)) {
+                    return compact('info', 'errors');
+                }
+
+                if (empty($dsn_email)) {
+                    $from = $sender_email;
+                } else {
+                    $from = $dsn_email;
+                }
+
+                if (!empty($sender_name)) {
+                    $from = $sender_name . ' <' . $from . '>';
+                }
+
+                $mail_bodies = array();
+                $mail_subjects = array();
+            }
+
             $document = $this->GetDocumentFullContents($doc['id'], !empty($reference_document) && $aggregate_reference_document_email);
             if (empty($document)) {
                 continue;
@@ -3302,7 +3376,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
                         $zip->addFromString($zip_archived_filename, $attachment['contents']);
                         if (!empty($zip_password) && $attachment['type'] == 1) {
-                            $zip->setEncryptionName($zip_archived_filename, constant($em_constant_name));
+                            $zip->setEncryptionName($zip_archived_filename, constant($send_zip_protection_method));
                         }
                     }
                 }
