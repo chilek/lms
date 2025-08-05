@@ -2945,7 +2945,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
                 uasort(
                     $docs,
-                    function($doc1, $doc2) {
+                    function ($doc1, $doc2) {
                         return $doc1['divisionid'] <=> $doc2['divisionid'];
                     }
                 );
