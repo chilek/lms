@@ -4270,7 +4270,7 @@ if (!empty($intersect)) {
                                             c.lastname,
                                             c.name
                                         FROM nodes n
-                                        JOIN customers c ON c.id = n.onwerid
+                                        JOIN customers c ON c.id = n.ownerid
                                         WHERE NOT EXISTS (
                                                 SELECT 1 FROM nodegroupassignments nga
                                                 WHERE nga.nodeid = n.id
