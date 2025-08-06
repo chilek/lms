@@ -2966,7 +2966,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 $currentDocumentDivisionId = $doc['divisionid'];
 
                 if (!isset($smtp_options_by_division_ids[$currentDocumentDivisionId])) {
-                    if (isset($smtp_options_by_division_ids[0])) {
+                    if (isset($smtp_options_by_division_ids[0]) || empty($smtp_options_by_division_ids)) {
                         ConfigHelper::setFilter($currentDocumentDivisionId, Auth::GetCurrentUser());
                     }
 
