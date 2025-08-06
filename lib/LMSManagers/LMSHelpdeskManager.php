@@ -138,7 +138,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         $userid = Auth::GetCurrentUser();
         extract($params);
-        foreach (array('ids', 'state', 'priority', 'source', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
+        foreach (array('ids', 'state', 'priority', 'periodicity', 'source', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
             'serviceids', 'typeids', 'unread', 'parentids', 'verifierids', 'rights', 'projectids', 'cid', 'subject', 'fromdate', 'todate', 'short', 'watching') as $var) {
             if (!isset(${$var})) {
                 ${$var} = null;
@@ -185,6 +185,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             case 'priority':
                 $sqlord = ' ORDER BY t.priority';
                 break;
+            case 'periodicity':
+                $sqlord = ' ORDER BY t.periodicity';
+                break;
             case 'deadline':
                 $sqlord = ' ORDER BY t.deadline';
                 break;
@@ -221,6 +224,16 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             }
         } else {
             $priorityfilter = ' AND t.priority = '.$priority;
+        }
+
+        if (empty($periodicity)) {
+            $periodicityfilter = '';
+        } elseif (is_array($periodicity)) {
+            $periodicityfilter = ' AND t.periodicity IN (' . implode(',', $periodicity) . ')';
+        } elseif ($periodicity == -1) {
+            $periodicityfilter = ' AND t.periodicity IS NOT NULL';
+        } else {
+            $periodicityfilter = ' AND t.periodicity = ' . $periodicity;
         }
 
         if (empty($source) || intval($source) == -1) {
@@ -485,6 +498,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 . $parentfilter
                 . $statefilter
                 . $priorityfilter
+                . $periodicityfilter
                 . $sourcefilter
                 . $ownerfilter
                 . $removedfilter
@@ -504,7 +518,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         if ($result = $this->db->GetAll(
             'SELECT DISTINCT t.id, t.customerid, t.address_id, va.name AS vaname, va.city AS vacity, va.street, va.house, va.flat, c.address, c.city, vusers.name AS ownername,
-				t.subject, t.state, owner AS ownerid, t.requestor AS req, t.source, t.priority, rtqueues.name,'
+				t.subject, t.state, owner AS ownerid, t.requestor AS req, t.source, t.priority, t.periodicity, rtqueues.name,'
                 . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS customername,
 				t.requestor_phone, t.requestor_mail, t.deadline, t.requestor_userid, rq.name AS requestor_name,
 				t.createtime AS createtime, u.name AS creatorname, t.deleted, t.deltime, t.deluserid,
@@ -594,6 +608,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             . $parentfilter
             . $statefilter
             . $priorityfilter
+            . $periodicityfilter
             . $sourcefilter
             . $ownerfilter
             . $removedfilter
@@ -651,6 +666,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $result['owner'] = $owner;
             $result['removed'] = $removed;
             $result['priority'] = $priority;
+            $result['periodicity'] = $periodicity;
             $result['source'] = $source;
             $result['deadline'] = $deadline;
             $result['service'] = $serviceids;
@@ -1150,9 +1166,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $this->db->Execute(
             'INSERT INTO rttickets (queueid, customerid, requestor, requestor_mail, requestor_phone,
-            requestor_userid, subject, state, owner, createtime, modtime, cause, creatorid, source, priority, address_id, nodeid,
+            requestor_userid, subject, state, owner, createtime, modtime, cause, creatorid, source, priority, periodicity, address_id, nodeid,
             netnodeid, netdevid, verifierid, deadline, service, type, invprojectid, parentid, customcreatetime, customresolvetime)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array(
                 $ticket['queue'],
                 empty($ticket['customerid']) ? null : $ticket['customerid'],
@@ -1169,6 +1185,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 $ticket['userid'] ?? Auth::GetCurrentUser(),
                 $ticket['source'] ?? 0,
                 isset($ticket['priority']) && strlen($ticket['priority']) ? $ticket['priority'] : null,
+                empty($ticket['periodicity']) ? null : $ticket['periodicity'],
                 !empty($ticket['address_id']) ? $ticket['address_id'] : null,
                 !empty($ticket['nodeid']) ? $ticket['nodeid'] : null,
                 !empty($ticket['netnodeid']) ? $ticket['netnodeid'] : null,
@@ -1296,7 +1313,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $ticket = $this->db->GetRow('SELECT t.id AS ticketid, t.queueid, rtqueues.name AS queuename, t.requestor, t.requestor_phone, t.requestor_mail,
             t.requestor_userid, d.name AS requestor_username, t.state, t.owner, t.customerid, t.cause, t.creatorid, c.name AS creator,
-            t.source, t.priority, i.id AS invprojectid, i.name AS invproject_name, t.verifier_rtime, '
+            t.source, t.priority, t.periodicity, i.id AS invprojectid, i.name AS invproject_name, t.verifier_rtime, '
             . $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername,
             o.name AS ownername, t.createtime, t.resolvetime,
             t.customcreatetime,
@@ -1554,7 +1571,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function TicketChange($ticketid, array $props)
     {
-        global $LMS, $RT_STATES, $RT_CAUSE, $RT_SOURCES, $RT_PRIORITIES, $SERVICETYPES, $RT_TYPES;
+        global $LMS, $RT_STATES, $RT_CAUSE, $RT_SOURCES, $RT_PRIORITIES, $SERVICETYPES, $RT_TYPES, $EVENT_PERIODICITY;
 
         $allow_empty_categories = ConfigHelper::checkConfig('rt.allow_empty_categories', ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories'));
 
@@ -1610,6 +1627,15 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $type = $type | RTMESSAGE_PRIORITY_CHANGE;
         } else {
             $props['priority'] = $ticket['priority'];
+        }
+
+        if (array_key_exists('periodicity', $props) && $ticket['periodicity'] != $props['periodicity']) {
+            $a = isset($ticket['periodicity']) ? $EVENT_PERIODICITY[$ticket['periodicity']]['label'] : trans('none');
+            $b = isset($props['periodicity']) ? $EVENT_PERIODICITY[$props['periodicity']]['label'] : trans('none');
+            $notes[] = trans('Ticket\'s scheduling periodicity has been changed from $a to $b.', $a, $b);
+            $type = $type | RTMESSAGE_PERIODICITY_CHANGE;
+        } else {
+            $props['periodicity'] = $ticket['periodicity'];
         }
 
         if (isset($props['state']) && $ticket['state'] != $props['state']) {
@@ -1992,7 +2018,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 $userid : $props['owner'];
             $this->db->Execute(
                 'UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, modtime = ?, resolvetime=?, subject = ?,
-                customerid = ?, source = ?, priority = ?, address_id = ?, nodeid = ?, netnodeid = ?, netdevid = ?,
+                customerid = ?, source = ?, priority = ?, periodicity = ?, address_id = ?, nodeid = ?, netnodeid = ?, netdevid = ?,
                 verifierid = ?, verifier_rtime = ?, deadline = ?, service = ?, type = ?, invprojectid = ?,
                 requestor_userid = ?, requestor = ?, requestor_mail = ?, requestor_phone = ?, parentid = ?,
                 customcreatetime = ?, customresolvetime = ?
@@ -2008,6 +2034,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     $props['customerid'],
                     $props['source'],
                     $props['priority'],
+                    $props['periodicity'],
                     $props['address_id'],
                     $props['nodeid'],
                     $props['netnodeid'],
