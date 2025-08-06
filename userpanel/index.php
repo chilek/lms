@@ -274,6 +274,9 @@ if ($SESSION->islogged) {
     $rights = $USERPANEL->GetCustomerRights($SESSION->id);
     $SMARTY->assign('rights', $rights);
 
+    $divisionId = $LMS->GetCustomerDivision($SESSION->id);
+    ConfigHelper::setFilter($divisionId);
+
     if (ConfigHelper::checkConfig('userpanel.hide_nodes_modules')) {
         if (!$DB->GetOne('SELECT COUNT(*) FROM vnodes WHERE ownerid = ? LIMIT 1', array($SESSION->id))) {
             $USERPANEL->RemoveModule('notices');
@@ -296,6 +299,7 @@ if ($SESSION->islogged) {
     $LMS->executeHook('userpanel_' . $module . '_on_load');
 
     if ($module_dir !== null) {
+        $SMARTY->assign('menuitems', $USERPANEL->getMenuItems());
         $SMARTY->assign('customername', $LMS->GetCustomerName($SESSION->id));
 
         include($module_dir . $module . DIRECTORY_SEPARATOR . 'functions.php');

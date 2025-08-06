@@ -105,7 +105,7 @@ class Session
                         return;
                     }
                     $join = 'JOIN customercontacts cc ON cc.customerid = c.id';
-                    $where = ' AND contact = ? AND cc.type & ? = ?';
+                    $where = ' AND cc.contact = ? AND cc.type & ? = ?';
                     $params = array_merge(
                         $params,
                         array(
@@ -121,7 +121,7 @@ class Session
                         return;
                     }
                     $join = 'JOIN customercontacts cc ON cc.customerid = c.id';
-                    $where = ' AND REPLACE(REPLACE(contact, \'-\', \'\'), \' \', \'\') = ? AND cc.type & ? = ?';
+                    $where = ' AND REPLACE(REPLACE(cc.contact, \'-\', \'\'), \' \', \'\') = ? AND cc.type & ? = ?';
                     $params = array_merge(
                         $params,
                         array(
@@ -146,26 +146,53 @@ class Session
                 $service_provider_id = intval($auth_options['authentication_customer_extid_service_provider_id']);
             }
 
-            $customer = $this->db->GetRow(
+            $customers = $this->db->GetAll(
                 'SELECT
                     c.id,
                     c.pin,
                     c.pinlastchange,
-                    e.extid
+                    e.extid,
+                    d.userpanel_url
                 FROM customers c
+                LEFT JOIN divisions d ON d.id = c.divisionid
                 ' . $join . "
                 LEFT JOIN customerextids e ON e.customerid = c.id AND e.serviceproviderid "
                     . ($auth_type != USERPANEL_AUTH_TYPE_EXTID_PIN || empty($service_provider_id) ? ' IS NULL' : ' = ' . $service_provider_id) .
                 " WHERE c.deleted = 0
-                    AND ((ten <> '' AND REPLACE(REPLACE(ten, '-', ''), ' ', '') = ?)
-                        OR (ssn <> '' AND ssn = ?))
+                    AND ((c.ten <> '' AND REPLACE(REPLACE(c.ten, '-', ''), ' ', '') = ?)
+                        OR (c.ssn <> '' AND c.ssn = ?))
                     " . (isset($allowed_customer_status) ? ' AND c.status IN (' . implode(', ', $allowed_customer_status) . ')' : '')
-                    . $where,
+                    . $where
+                . ' ORDER BY (CASE WHEN d.userpanel_url IS NULL THEN 2 ELSE 1 END)',
                 $params
             );
-            if (!$customer) {
+
+            if (empty($customers)) {
                 $this->error = trans('Credential reminder couldn\'t be sent!');
                 return;
+            }
+
+            $userpanel_url = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
+                . $_SERVER['HTTP_HOST']
+                . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1);
+            $userpanel_url = Utils::trimUrl($userpanel_url);
+
+            $customer_matched = false;
+            foreach ($customers as $customer) {
+                if (empty($customer['userpanel_url'])) {
+                    $customer_matched = true;
+                    break;
+                } else {
+                    $customer_userpanel_url = Utils::trimUrl($customer['userpanel_url']);
+                    if ($customer_userpanel_url == $userpanel_url) {
+                        $customer_matched = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!$customer_matched) {
+                $customer = reset($customers);
             }
 
             if ($remindform['type'] == 1) {

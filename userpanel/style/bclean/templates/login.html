@@ -144,6 +144,7 @@
                     {if empty($authcode_required)}
                         {$auth_type=ConfigHelper::getConfig('userpanel.auth_type', $smarty.const.USERPANEL_AUTH_TYPE_ID_PIN)}
                         <form id="login" class="form-signin" method="post" action="{$target}">
+                            <input type="submit" hidden>
                             <fieldset class="form-group">
                                 <label for="inputLogin">{$_USERPANEL_AUTH_TYPES[$auth_type].label}</label>
                                 <input type="text"  name="loginform[login]" id="inputLogin" class="form-control" required>
@@ -163,6 +164,7 @@
                         </form>
                     {else}
                         <form id="login" class="form-signin" method="post" action="{$target}">
+                            <input type="submit" hidden>
                             <fieldset class="form-group phone-number-ui-control"{if empty($phone_numbers)} style="display: none;"{/if}>
                                 <label for="phone-number">
                                     {trans("Select phone number to which one-time password will be sent.")}

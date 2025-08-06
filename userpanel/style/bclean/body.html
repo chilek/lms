@@ -29,7 +29,7 @@
 		</button>
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
-				{foreach from=$modules item=menuitem}
+				{foreach $menuitems as $menuitem}
 					<li class="nav-item {if strpos($smarty.get.m, $menuitem.module) !== false && strlen($smarty.get.m)==strlen($menuitem.module) }active{/if}">
 						<a class="nav-link" href="?m={$menuitem.module}" id="lms-userpanel-menu-item-{$menuitem.module}" {userpaneltip text=$menuitem.tip}>
 							{if $menuitem.icon}<i class="{$menuitem.icon}"></i>{/if}
