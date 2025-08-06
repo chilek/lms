@@ -50,7 +50,7 @@ $LMS->setPluginManager($plugin_manager);
 
 $rt_schedule_planing_forward_events = ConfigHelper::getConfig('rt.schedule_planing_forward_events', 3);
 $tickets_to_plan = $LMS->GetQueueContents(
-        [
+    [
             'periodicity' => -1,
             'deleted' => 0,
             'closed' => 0,
@@ -58,7 +58,8 @@ $tickets_to_plan = $LMS->GetQueueContents(
         ]
 );
 
-function CalculateNextOccurrenceInFuture($start, $periodicity) {
+function CalculateNextOccurrenceInFuture($start, $periodicity)
+{
     global $EVENT_PERIODICITY;
     $timestamp = (new DateTime())->setTimestamp($start);
     $interval = $EVENT_PERIODICITY[$periodicity]['map'];
@@ -72,7 +73,6 @@ function CalculateNextOccurrenceInFuture($start, $periodicity) {
 }
 
 foreach ($tickets_to_plan as $idx => $t) {
-    global $LMS;
     $t = $LMS->GetTicketContents($t['id']);
 
     for ($a = $t['openeventcount'] ?? 0; $a < $rt_schedule_planing_forward_events; $a++) {

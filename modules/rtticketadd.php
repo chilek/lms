@@ -234,7 +234,7 @@ if (isset($_POST['ticket'])) {
             unset($ticket['priority']);
         }
 
-	if ($ticket['periodicity'] == '') {
+        if ($ticket['periodicity'] == '') {
             unset($ticket['periodicity']);
         }
 
