@@ -4471,6 +4471,7 @@ if (!empty($intersect)) {
                                         c.lastname,
                                         c.name
                                     FROM nodes n
+                                    JOIN customers c ON c.id = n.ownerid
                                     WHERE n.warning = ?
                                         AND n.id IN (" . implode(',', $all_nodes) . ")",
                                     array(1)
