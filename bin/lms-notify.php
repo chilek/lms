@@ -155,24 +155,31 @@ if ($omit_free_days) {
     if (!isset($holidays[$yesterday_year])) {
         $holidays[$yesterday_year] = getHolidays($yesterday_year);
     }
+
+    $free_days = 0;
+
     if (date('N', $yesterday) > 5 || isset($holidays[$yesterday_year][$yesterday])) {
+        $diff_days = round(($current_time - $currtime) / 86400);
+
         $prevday = $daystart;
-        do {
-            $nextday = $prevday;
+        $prevyear = date('Y', $prevday);
+
+        while (date('N', $prevday) > 5 || isset($holidays[$prevyear][$prevday])) {
+            $free_days++;
+
             $prevday = strtotime('yesterday', $prevday);
             $prevyear = date('Y', $prevday);
             if (!isset($holidays[$prevyear])) {
                 $holidays[$prevyear] = getHolidays($prevyear);
             }
-        } while (date('N', $prevday) > 5 || isset($holidays[$prevyear][$prevday]));
-        $days = round(($daystart - $nextday) / 86400);
-        $daystart = $nextday;
-
-        $diff_days = round(($current_time - $currtime) / 86400);
-        if ($days < $diff_days) {
-            $daystart = strtotime(($diff_days - $days) . ' days ago', $daystart);
         }
+
+        $daystart = strtotime(($diff_days + $free_days) . ' days ago', $dayend + 1);
     }
+}
+
+if ($debug) {
+    echo 'Analized period: ' . date('Y/m/d H:i:s', $daystart) . ' - ' . date('Y/m/d H:i:s', $dayend) . PHP_EOL;
 }
 
 // Initialize templates engine (must be before locale settings)
