@@ -234,6 +234,10 @@ if (isset($_POST['ticket'])) {
             unset($ticket['priority']);
         }
 
+        if ($ticket['periodicity'] == '') {
+            unset($ticket['periodicity']);
+        }
+
         $ticket['customcreatetime'] = $customcreatetime;
         $ticket['customresolvetime'] = $customresolvetime;
 
@@ -377,6 +381,7 @@ if (isset($_POST['ticket'])) {
                     'subject' => $ticket['subject'],
                     'body' => $ticket['body'],
                     'priority' => isset($ticketdata['priority']) && is_numeric($ticketdata['priority']) ? $RT_PRIORITIES[$ticketdata['priority']] : trans('undefined'),
+                    'periodicity' => $ticketdata['periodicity'],
                     'deadline' => $ticketdata['deadline'],
                     'service' => $ticketdata['service'],
                     'type' => $ticketdata['type'],
@@ -608,6 +613,7 @@ if (isset($_POST['ticket'])) {
         $ticket['cause'] = $oldticket['cause'];
         $ticket['source'] = $oldticket['source'];
         $ticket['priority'] = $oldticket['priority'];
+        $ticket['periodicity'] = $oldticket['periodicity'];
         $ticket['address_id'] = $oldticket['address_id'];
         $ticket['nodeid'] = $oldticket['nodeid'];
         $ticket['netnodeid'] = $oldticket['netnodeid'];

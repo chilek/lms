@@ -68,6 +68,15 @@
             </SELECT>
             </label>
             <label class="nobr">
+                {trans("Scheduling periodicity")}
+                <input type="hidden" name="periodicity" value="all">
+                <select name="periodicity[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect" data-default-value="{trans("No filter")}">
+                    {foreach $_EVENT_PERIODICITY as $idx => $periodicity}
+                    <option value="{$idx}"{if is_array($filter.periodicity) && in_array($idx, $filter.periodicity)} selected{/if}>{$periodicity.label}</option>
+                    {/foreach}
+                </select>
+            </label>
+            <label class="nobr">
                 {trans("Source")}
                 <SELECT size="1" name="source" OnChange="document.filter.submit();">
                     <option value="-1">{trans("— all —")}</option>
