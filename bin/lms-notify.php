@@ -3581,6 +3581,7 @@ if (empty($types) || in_array('messages', $types)) {
         }
         if (in_array('sms', $channels)) {
             $messagetypes[] = MSG_SMS;
+            $messagetypes[] = MSG_ANYSMS;
         }
         $messageitems = $DB->GetAll(
             'SELECT
@@ -3595,7 +3596,7 @@ if (empty($types) || in_array('messages', $types)) {
                 mi.attempts
             FROM messages m
             JOIN messageitems mi ON mi.messageid = m.id
-            JOIN customers c ON c.id = mi.customerid
+            LEFT JOIN customers c ON c.id = mi.customerid
             WHERE m.type IN ?
                 AND m.startdate > 0
                 AND m.startdate <= ?
@@ -3667,15 +3668,24 @@ if (empty($types) || in_array('messages', $types)) {
                                 $attributes['destination']
                             );
                         }
-                        if ($messageitem['type'] == MSG_SMS && in_array('sms', $channels)) {
-                            printf(
-                                "[sms/messages] %s (#%d) message #%d, message item #%d: %s, status: ",
-                                $messageitem['name'],
-                                $messageitem['customerid'],
-                                $messageitem['messageid'],
-                                $messageitem['messageitemid'],
-                                $attributes['destination']
-                            );
+                        if (($messageitem['type'] == MSG_SMS || $messageitem['type'] == MSG_ANYSMS) && in_array('sms', $channels)) {
+                            if (empty($message['customerid'])) {
+                                printf(
+                                    "[sms/messages] message #%d, message item #%d: %s, status: ",
+                                    $messageitem['messageid'],
+                                    $messageitem['messageitemid'],
+                                    $attributes['destination']
+                                );
+                            } else {
+                                printf(
+                                    "[sms/messages] %s (#%d) message #%d, message item #%d: %s, status: ",
+                                    $messageitem['name'],
+                                    $messageitem['customerid'],
+                                    $messageitem['messageid'],
+                                    $messageitem['messageitemid'],
+                                    $attributes['destination']
+                                );
+                            }
                         }
                     }
                 }
