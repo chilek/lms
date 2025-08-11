@@ -21,9 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE networks ADD COLUMN snat bigint");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018032300', 'dbversion'));
-
-$this->CommitTrans();

@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 CREATE VIEW vmacs AS
@@ -32,7 +31,3 @@ SELECT n.*, m.mac, m.id AS macid
 	FROM nodes n
 	JOIN macs m ON (n.id = m.nodeid)
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010061100', 'dbversion'));
-
-$this->CommitTrans();

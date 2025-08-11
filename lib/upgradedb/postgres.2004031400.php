@@ -24,7 +24,6 @@
  * $Id$
  */
 
-$this->Execute("BEGIN");
 $this->Execute("
 	ALTER TABLE admins ALTER lastloginip SET DEFAULT '';
 	ALTER TABLE admins ALTER failedloginip SET DEFAULT '';
@@ -196,6 +195,3 @@ $this->Execute("
 	ALTER TABLE users ALTER info SET NOT NULL;
 	ALTER TABLE users ALTER message SET NOT NULL;
 ");
-$this->Execute("UPDATE dbinfo SET keyvalue='2004031400' WHERE keytype='dbversion'");
-
-$this->Execute("COMMIT");

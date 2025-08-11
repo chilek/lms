@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("UPDATE customerassignments SET startdate = 0 WHERE startdate IS NULL");
 $this->Execute("ALTER TABLE customerassignments ALTER COLUMN startdate SET NOT NULL");
@@ -68,7 +67,3 @@ $this->Execute("
                 WHERE ud.userid = lms_current_user()))
             AND c.type < 2
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021051000', 'dbversion'));
-
-$this->CommitTrans();

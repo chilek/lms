@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $create_reg = $this->GetOne('SELECT docid FROM receiptcontents LIMIT 1');
 
@@ -56,7 +55,3 @@ $this->Execute("CREATE TABLE cashregs (
 if ($create_reg) {
     $this->Execute("INSERT INTO cashregs (name) VALUES ('default')");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005122800', 'dbversion'));
-
-$this->CommitTrans();
