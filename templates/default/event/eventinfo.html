@@ -301,12 +301,7 @@
 					<strong>{trans("Users")}</strong>
 				</td>
 				<td class="nobr">
-					{foreach $event.userlist as $userid => $user}
-						<a href="?m=userinfo&id={$userid}">{$user.rname|escape}</a>
-						{if !$user@last}
-							<br>
-						{/if}
-					{/foreach}
+					{user_compact_list limit=$user_row_limit userlist=$event.userlist}
 				</td>
 			</tr>
 		{/if}
