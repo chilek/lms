@@ -813,6 +813,40 @@ if (isset($_POST['document'])) {
         }
     }
 
+    if (isset($_GET['templ'])) {
+        $document['templ'] = $_GET['templ'];
+
+        foreach ($documents_dirs as $doc) {
+            if (is_readable($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'] . DIRECTORY_SEPARATOR . 'info.php')) {
+                $doc_dir = $doc;
+                $template_dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'];
+                break;
+            }
+        }
+
+        $result = '';
+        $script_result = '';
+
+        // read template information
+        include($template_dir . DIRECTORY_SEPARATOR . 'info.php');
+
+        // call plugin
+        if (!empty($engine['plugin'])) {
+            if (is_readable($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+                . $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.php')) {
+                include($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $engine['name']
+                    . DIRECTORY_SEPARATOR . $engine['plugin'] . '.php');
+            }
+            if (is_readable($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+                . $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.js')) {
+                $script_result = '<script src="' . $_SERVER['REQUEST_URI'] . '&template=' . $engine['name'] . '"></script>';
+            }
+        }
+        // get plugin content
+        $SMARTY->assign('plugin_result', $result);
+        $SMARTY->assign('script_result', $script_result);
+    }
+
     $default_document_type = ConfigHelper::getConfig(
         'assignments.default_document_type',
         ConfigHelper::getConfig('phpui.default_assignment_invoice')
@@ -914,7 +948,7 @@ $SMARTY->assign('planDocumentType', $document['type'] ?? null);
 
 $docengines = GetDocumentTemplates($rights, $document['type'] ?? null);
 
-if (isset($document['type']) && !empty($docengines)) {
+if (isset($document['type']) && !empty($docengines) && !isset($_POST['document'])) {
     $defaultDocEngine = array_filter(
         $docengines,
         function ($engine) use ($document) {
