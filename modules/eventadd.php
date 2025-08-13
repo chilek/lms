@@ -623,7 +623,8 @@ $SMARTY->assign(
         'event' => $event,
         'queuelist' => $queuelist,
         'categories' => $categories,
-        'invprojectlist' => $invprojectlist
+        'invprojectlist' => $invprojectlist,
+        'divisions' => $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())),
     )
 );
 

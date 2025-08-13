@@ -71,6 +71,7 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
     $filter['closed'] = $_POST['closed'] ?? null;
     $filter['netnodeid'] = (isset($_POST['netnodeid']) && $LMS->NetNodeExists(intval($_POST['netnodeid']))) ? intval($_POST['netnodeid']) : null;
     $filter['netdevid'] = (isset($_POST['netdevid']) && $LMS->NetDevExists(intval($_POST['netdevid']))) ? intval($_POST['netdevid']) : null;
+    $filter['divisionid'] = isset($_POST['divisionid']) ? Utils::filterIntegers($_POST['divisionid']) : array();
 
     if (isset($_POST['switchToSchedule'])) {
         $SESSION->save('timetableFiler', $filter, true);
@@ -261,20 +262,21 @@ if (!empty($usergroups)) {
 }
 
 $SMARTY->assign(array(
-        'today' => $today,
-        'period' => $LMS->GetTimetableRange(),
-        'eventlist' => $eventlist,
-        'overdue_events' => $overdue_events,
-        'days' => $days,
-        'daylist' => $daylist,
-        'date' => $date,
-        'error' => $error,
-        'netnodes' => $LMS->GetNetNodes(),
-        'netdevices' => $LMS->GetNetDevList('name,asc', array('short' => true)),
-        'visible_users' => $visible_users,
-        'usergroups' => $usergroups,
-        'overdue_events_only' => $overdue_events_only,
-        'getHolidays', getHolidays($year ?? null),
-        'customerlist' => $big_networks ? null : $LMS->GetCustomerNames(),
-    ));
+    'today' => $today,
+    'period' => $LMS->GetTimetableRange(),
+    'eventlist' => $eventlist,
+    'overdue_events' => $overdue_events,
+    'days' => $days,
+    'daylist' => $daylist,
+    'date' => $date,
+    'error' => $error,
+    'netnodes' => $LMS->GetNetNodes(),
+    'netdevices' => $LMS->GetNetDevList('name,asc', array('short' => true)),
+    'visible_users' => $visible_users,
+    'usergroups' => $usergroups,
+    'overdue_events_only' => $overdue_events_only,
+    'getHolidays', getHolidays($year ?? null),
+    'customerlist' => $big_networks ? null : $LMS->GetCustomerNames(),
+    'divisions' => $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())),
+));
 $SMARTY->display('event/eventlist.html');

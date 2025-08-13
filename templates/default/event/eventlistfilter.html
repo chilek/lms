@@ -52,6 +52,19 @@
 							<input type="checkbox" name="userand" value="1" onchange="document.filter.submit();"{if isset($filter.userand) && $filter.userand} checked{/if}{tip text="Use logical conjunction AND instead of OR in user selection"}>
 						</label>
 
+						<select name="divisionid[]" onchange="document.filter.submit();" multiple
+							class="lms-ui-multiselect"
+							data-default-value="{trans("— any —")}"
+							{tip text="Divisions"}>
+							{foreach $divisions as $division}
+								{if !$division.status}
+									<option value="{$division.id}"
+										{if !empty($filter.divisionid) && in_array($division.id, $filter.divisionid)} selected{/if}
+										>{$division.label|escape}</option>
+								{/if}
+							{/foreach}
+						</select>
+
 						<SELECT name="privacy" onchange="document.filter.submit();" {tip text="Select privacy flag"}>
 							<OPTION value="0"{if $filter.privacy == "0"} selected{/if}>{trans("— all —")}</OPTION>
 							<OPTION value="1"{if $filter.privacy == "1"} selected{/if}>{trans("public")}</OPTION>

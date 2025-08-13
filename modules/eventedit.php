@@ -285,7 +285,9 @@ $SMARTY->assign(array(
     'customerlist' => $big_networks ? null : $LMS->GetAllCustomerNames(),
     'userlist' => $userlist,
     'usergroups' => $usergroups,
+    'divisions' => $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())),
     'error' => $error,
-    'event' => $event));
+    'event' => $event,
+));
 
 $SMARTY->display('event/eventmodify.html');

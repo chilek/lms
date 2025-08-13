@@ -2586,12 +2586,15 @@ CREATE TABLE events (
 		CONSTRAINT events_netnodeid_fkey REFERENCES netnodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	netdevid integer DEFAULT NULL
 		CONSTRAINT events_netdevid_fkey REFERENCES netdevices (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	divisionid integer DEFAULT NULL
+		CONSTRAINT events_divisionid_fkey REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 );
 CREATE INDEX events_date_idx ON events(date);
 CREATE INDEX events_nodeid_idx ON events(nodeid);
 CREATE INDEX events_netnodeid_idx ON events (netnodeid);
 CREATE INDEX events_netdevid_idx ON events (netdevid);
+CREATE INDEX events_divisionid_idx ON events (divisionid);
 
 /* ---------------------------------------------------
  Structure of table "events" (Timetable)
@@ -4522,6 +4525,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025070300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025081300');
 
 COMMIT;

@@ -81,6 +81,18 @@
 						</select>
 					{/box_row}
 
+					{box_row icon="division" label="Division" icon_class="fa-fw"}
+						<select name="event[divisionid]" size="1">
+							<option value="">{trans("— none —")}</option>
+								{foreach $divisions as $division}
+									{if !$division.status || $division.id == $event.divisionid}
+										<option value="{$division.id}"{if !empty($event.divisionid) && $division.id == $event.divisionid} selected{/if}
+										>{$division.label|escape}</option>
+									{/if}
+								{/foreach}
+						</select>
+					{/box_row}
+
 					{box_row icon="customer" label="Customer:" icon_class="fa-fw"}
 						{if $layout.module == 'eventedit' || (empty($event.ticketid) && empty($event.customerid))}
 							{$customer_selector='[name=&quot;event[custid]&quot;]'}
@@ -347,6 +359,14 @@
 							item.name + '</a>';
 				}
 			});
+
+			$('[name="event[custid]"]').change(function() {
+				var disabled = $(this).val().length > 0;
+				$('[name="event[divisionid]"]')
+					.prop('disabled', disabled)
+					.closest('.lms-ui-box-row')
+					.toggleClass('lms-ui-disabled', disabled);
+			}).change();
 		});
 
 		function update_user_selection(users) {

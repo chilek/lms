@@ -2669,10 +2669,12 @@ CREATE TABLE events (
     netdevid int(11) DEFAULT NULL,
     ticketid int(11) DEFAULT NULL,
 	address_id int(11) DEFAULT NULL,
+    divisionid int(11) DEFAULT NULL,
     PRIMARY KEY (id),
     INDEX date (date),
     INDEX events_netnodeid_idx (netnodeid),
     INDEX events_netdevid_idx (netdevid),
+    INDEX events_divisionid_idx (divisionid),
     KEY nodeid (nodeid),
 	CONSTRAINT events_nodeid_fkey
 		FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -2691,7 +2693,9 @@ CREATE TABLE events (
 	CONSTRAINT events_closeduserid_fkey
 		FOREIGN KEY (closeduserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT events_moduserid_fkey
-		FOREIGN KEY (moduserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
+		FOREIGN KEY (moduserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT events_divisionid_fkey
+		FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -4482,4 +4486,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025070300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025081300');

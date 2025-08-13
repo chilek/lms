@@ -91,6 +91,7 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
     $filter['type'] = $_POST['type'] ?? null;
     $filter['privacy'] = isset($_POST['privacy']) ? intval($_POST['privacy']) : null;
     $filter['closed'] = $_POST['closed'] ?? null;
+    $filter['divisionid'] = isset($_POST['divisionid']) ? Utils::filterIntegers($_POST['divisionid']) : array();
 
     if (isset($_POST['switchToTimetable'])) {
         $SESSION->save('schedulerFiler', $filter, true);
@@ -416,6 +417,7 @@ $SMARTY->assign(array(
     'date' => $date,
     'error' => $error,
     'customerlist' => ($big_networks ? null : $LMS->GetCustomerNames()),
+    'divisions' => $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())),
     'getHolidays' => getHolidays($year ?? null)
 ));
 $SMARTY->display('event/eventschedule.html');
