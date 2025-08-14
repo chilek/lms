@@ -480,6 +480,7 @@ if (isset($_POST['event'])) {
         $event['overlapwarned'] = 0;
         $event['wholedays'] = false;
         $event['date'] = $event['date'] ?? $SESSION->get('edate');
+        $event['divisionid'] = $divisionid;
 
         if (isset($eventticketid)) {
             $event['helpdesk'] = 'assign';
