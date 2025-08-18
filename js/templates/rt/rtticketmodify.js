@@ -67,9 +67,6 @@ $(function() {
 			.closest('.lms-ui-box-row').toggleClass('blend', !data.list.length)
 			.removeAttr('data-tooltip').attr('title', data.list.length ? '' : $t("No parent ticket is selected!"));
 	});
-
-	$('#requestor_mail_combobox').scombobox('val', '');
-	$('#requestor_phone_combobox').scombobox('val', '');
 });
 
 function change_customer(customer_selector, address_selector) {
@@ -102,9 +99,10 @@ function update_contacts(data) {
 		});
 	});
 
+	var oldValue = $('#requestor_mail_combobox').scombobox('val');
 	$('#requestor_mail_combobox')
 		.scombobox('fill', values)
-		.scombobox('val', '');
+		.scombobox('val', oldValue);
 
 	values = [];
 	$(data.phones).each(function(idx, item) {
@@ -114,9 +112,10 @@ function update_contacts(data) {
 		});
 	});
 
+	var oldValue = $('#requestor_phone_combobox').scombobox('val');
 	$('#requestor_phone_combobox')
 		.scombobox('fill', values)
-		.scombobox('val', '');
+		.scombobox('val', oldValue);
 }
 
 function initCustomerSelection() {
