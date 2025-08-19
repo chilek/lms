@@ -830,6 +830,10 @@ if (isset($_POST['document'])) {
         // read template information
         include($template_dir . DIRECTORY_SEPARATOR . 'info.php');
 
+        if (!empty($engine['title'])) {
+            $document['title'] = $engine['title'];
+        }
+
         // call plugin
         if (!empty($engine['plugin'])) {
             if (is_readable($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
