@@ -991,7 +991,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $consent_condition = '';
         if (!empty($consents)) {
             foreach ($consents as $consentid => $consent) {
-                if ($consent >= 0) {
+                if (intval($consentid) && $consent >= 0) {
                     $consent_conditions[] = ($consent == 1 ? '' : 'NOT ')
                         . 'EXISTS (SELECT customerid FROM customerconsents cc
                         WHERE type = ' . intval($consentid) . ' AND customerid = c.id)';
