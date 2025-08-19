@@ -91,6 +91,7 @@ function update_nodes(data) {
 }
 
 function update_contacts(data) {
+	var oldValue;
 	var values = [];
 	$(data.emails).each(function(idx, item) {
 		values.push({
@@ -99,7 +100,7 @@ function update_contacts(data) {
 		});
 	});
 
-	var oldValue = $('#requestor_mail_combobox').scombobox('val');
+	oldValue = $('#requestor_mail_combobox').scombobox('val');
 	$('#requestor_mail_combobox')
 		.scombobox('fill', values)
 		.scombobox('val', oldValue);
@@ -112,7 +113,7 @@ function update_contacts(data) {
 		});
 	});
 
-	var oldValue = $('#requestor_phone_combobox').scombobox('val');
+	oldValue = $('#requestor_phone_combobox').scombobox('val');
 	$('#requestor_phone_combobox')
 		.scombobox('fill', values)
 		.scombobox('val', oldValue);
