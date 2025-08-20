@@ -1059,6 +1059,7 @@ version 28-git (????-??-??):
   - enhancement: added 'division' property to events [chilan]
   - enhancement: new customer search filter - modification date interval [chilan]
   - enhancement: new node search filter - modification date interval [chilan]
+  - enhancement: new timetable event types: 'technical problem' and 'service implementation' [chilan]
 
 version 27.0 (2021-08-20):
 
