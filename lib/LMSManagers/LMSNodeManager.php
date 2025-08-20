@@ -356,6 +356,8 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
      *                  -1 = project id is ignored,
      *              createdfrom - node created after this date (default: null = ignore),
      *              createdto - node created before this date (default: null = ignore),
+     *              modifiedfrom - node modified after this date (default: null = ignore),
+     *              modifiedto - node modified before this date (default: null = ignore),
      *              lastonlinebefore - last online earlier than (default: null = ignore), single integer value,
      *              lastonlineafter - last online later than (default: null = ignore), single integer value,
      *              address-origin - check node address origin (default: empty = ignore):
@@ -493,6 +495,12 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                             break;
                         case 'createdto':
                             $searchargs[] = 'n.creationdate <= ' . intval($value);
+                            break;
+                        case 'modifiedfrom':
+                            $searchargs[] = 'n.moddate >= ' . intval($value);
+                            break;
+                        case 'modifiedto':
+                            $searchargs[] = 'n.moddate <= ' . intval($value);
                             break;
                         case 'lastonlinebefore':
                             $searchargs[] = 'n.lastonline <= ' . intval($value);

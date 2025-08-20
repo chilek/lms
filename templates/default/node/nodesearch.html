@@ -178,10 +178,10 @@
 			<input type="text" name="search[netdev]" id="netdev" value="{$nodesearch.netdev}" {tip text="Enter network device name or ip address"}>
 		</td>
 	</TR>
-	<TR>
-		<td class="bold nobr">
-			<img src="img/calendar.gif">
-			{trans("Created:")}
+	<tr>
+		<td class="nobr">
+			{icon name="modified-date"}
+			<strong>{trans("Created")}</strong>
 		</td>
 		<td>
 			{date_period_preset from="#createdfrom" to="#createdto" time=true}
@@ -192,7 +192,22 @@
 			<input type="text" name="search[createdto]" id="createdto" value="{$nodesearch.createdto}"
 				{tip class="calendar-time" text="Enter date in YYYY/MM/DD hh:mm format (empty field means ignore) or click to choose it from calendar"}>
 		</td>
-	</TR>
+	</tr>
+	<tr>
+		<td class="nobr">
+			{icon name="modified-date"}
+			<strong>{trans("Modified")}</strong>
+		</td>
+		<td>
+			{date_period_preset from="#modifiedfrom" to="#modifiedto" time=true}
+			{trans("from")}
+			<input type="text" name="search[modifiedfrom]" id="modifiedfrom" value="{$nodesearch.modifiedfrom}"
+				{tip class="calendar-time" text="Enter date in YYYY/MM/DD hh:mm format (empty field means ignore) or click to choose it from calendar"}>
+			{trans("to")}
+			<input type="text" name="search[modifiedto]" id="modifiedto" value="{$nodesearch.modifiedto}"
+				{tip class="calendar-time" text="Enter date in YYYY/MM/DD hh:mm format (empty field means ignore) or click to choose it from calendar"}>
+		</td>
+	</tr>
 	<TR>
 		<td class="bold nobr">
 			<img src="img/calendar.gif"> {trans("Last online earlier than:")}
