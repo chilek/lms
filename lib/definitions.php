@@ -1834,7 +1834,7 @@ $EVENTTYPES = array(
     ),
     EVENT_SERVICE_IMPLEMENTATION => array(
         'label' => 'service implementation',
-        'style' => 'background-color: ##115770; color: white;',
+        'style' => 'background-color: #115770; color: white;',
         'alias' => 'service_implementation',
     ),
     EVENT_TECHNICAL_PROBLEM => array(
