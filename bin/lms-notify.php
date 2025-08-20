@@ -160,8 +160,7 @@ if ($omit_free_days) {
 
     if (date('N', $yesterday) > 5 || isset($holidays[$yesterday_year][$yesterday])) {
         $diff_days = round(($current_time - $currtime) / 86400);
-
-        $prevday = $daystart;
+        $prevday = $diff_days ? $daystart : $yesterday;
         $prevyear = date('Y', $prevday);
 
         while (date('N', $prevday) > 5 || isset($holidays[$prevyear][$prevday])) {
@@ -174,7 +173,11 @@ if ($omit_free_days) {
             }
         }
 
-        $daystart = strtotime(($diff_days + $free_days) . ' days ago', $dayend + 1);
+        if ($diff_days) {
+            $daystart = strtotime(($diff_days + $free_days) . ' days ago', $dayend + 1);
+        } else {
+            $daystart = strtotime(($diff_days + $free_days + 1) . ' days ago', $dayend + 1);
+        }
     }
 }
 
