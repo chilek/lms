@@ -1057,6 +1057,7 @@ version 28-git (????-??-??):
   - enhancement: userpanel credential reminder form can take customer division userpanel url while matching
     customer by phone number/e-mail/ten/ssn [chilan]
   - enhancement: added 'division' property to events [chilan]
+  - enhancement: new customer search filter - modification date interval [chilan]
 
 version 27.0 (2021-08-20):
 
