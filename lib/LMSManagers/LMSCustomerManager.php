@@ -1459,6 +1459,20 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                 $searchargs[] = 'creationdate <= ' . intval($value);
                             }
                             break;
+                        case 'modifiedfrom':
+                            if ($search['modifiedto']) {
+                                $searchargs['modifiedfrom'] = '(moddate >= ' . intval($value)
+                                    . ' AND moddate <= ' . intval($search['modifiedto']) . ')';
+                                unset($search['modifiedto']);
+                            } else {
+                                $searchargs[] = 'moddate >= ' . intval($value);
+                            }
+                            break;
+                        case 'modifiedto':
+                            if (!isset($searchargs['modifiedfrom'])) {
+                                $searchargs[] = 'moddate <= ' . intval($value);
+                            }
+                            break;
                         case 'deletedfrom':
                             if (empty($search['deletedto'])) {
                                 $searchargs[] = '(c.deleted = 1 AND moddate >= ' . intval($value) . ')';

@@ -732,11 +732,12 @@
 			</div>
 		</td>
 	</tr>
-	<TR>
-		<TD class="bold nobr">
-			{icon name="modified-date"} {trans("Created:")}
-		</TD>
-		<TD>
+	<tr>
+		<td class="nobr">
+			{icon name="modified-date"}
+			<strong>{trans("Created")}</strong>
+		</td>
+		<td>
 			<span class="lms-ui-date-period-container">
 				{date_period_preset from="#createdfrom" to="#createdto"}
 				<span>{trans("from")}</span>
@@ -748,13 +749,33 @@
 					id="createdto" name="search[createdto]" size="10"
 					placeholder="{trans("yyyy/mm/dd")}">
 			</span>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
-			{icon name="modified-date"} {trans("Deleted:")}
-		</TD>
-		<TD>
+		</td>
+	</tr>
+	<tr>
+		<td class="nobr">
+			{icon name="modified-date"}
+			<strong>{trans("Modified")}</strong>
+		</td>
+		<td>
+			<span class="lms-ui-date-period-container">
+				{date_period_preset from="#modifiedfrom" to="#modifiedto"}
+				<span>{trans("from")}</span>
+				<input type="text" class="lms-ui-date lms-ui-date-unix" value=""
+					id="modifiedfrom" name="search[modifiedfrom]" size="10"
+					placeholder="{trans("yyyy/mm/dd")}">
+				<span>{trans("to")}</span>
+				<input type="text" class="lms-ui-date lms-ui-date-unix" value=""
+					id="modifiedto" name="search[modifiedto]" size="10"
+					placeholder="{trans("yyyy/mm/dd")}">
+			</span>
+		</td>
+	</tr>
+	<tr>
+		<td class="nobr">
+			{icon name="modified-date"}
+			<strong>{trans("Deleted")}</strong>
+		</td>
+		<td>
 			<span class="lms-ui-date-period-container">
 				{date_period_preset from="#deletedfrom" to="#deletedto"}
 				<span>{trans("from")}</span>
@@ -766,8 +787,8 @@
 					id="deletedto" name="search[deletedto]" size="10"
 					placeholder="{trans("yyyy/mm/dd")}">
 			</span>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	<tr>
 		<td class="nobr">
 			{icon name="paytype"}
