@@ -1770,7 +1770,11 @@ const EVENT_OTHER = 1,
     EVENT_PHONE = 8,
     EVENT_TV = 9,
     EVENT_TECHNICAL_VERIFICATION = 10,
-    EVENT_REMINDER = 11;
+    EVENT_REMINDER = 11,
+    EVENT_SERVICE_IMPLEMENTATION = 12,
+    EVENT_TECHNICAL_PROBLEM = 13;
+
+
 
 $EVENTTYPES = array(
     EVENT_OTHER => array(
@@ -1827,6 +1831,16 @@ $EVENTTYPES = array(
         'label' => 'reminder',
         'style' => 'background-color: #FF66FF; color: black;',
         'alias' => 'reminder',
+    ),
+    EVENT_SERVICE_IMPLEMENTATION => array(
+        'label' => 'service implementation',
+        'style' => 'background-color: ##115770; color: white;',
+        'alias' => 'service_implementation',
+    ),
+    EVENT_TECHNICAL_PROBLEM => array(
+        'label' => 'technical problem',
+        'style' => 'background-color: #E7700C; color: white;',
+        'alias' => 'technical_problem',
     ),
 );
 
