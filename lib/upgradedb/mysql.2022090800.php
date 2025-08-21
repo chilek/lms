@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 if ($this->ResourceExists('voip_cdr_type_uniqueid_ukey', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
     $this->Execute("ALTER TABLE voip_cdr DROP CONSTRAINT voip_cdr_type_uniqueid_ukey");
@@ -37,7 +36,3 @@ if (!$this->ResourceExists('voip_cdr.direction', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("DROP INDEX voip_cdr_subtype_idx ON voip_cdr");
     $this->Execute("ALTER TABLE voip_cdr CHANGE COLUMN subtype incremental smallint NOT NULL DEFAULT 0");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022090800', 'dbversion'));
-
-$this->CommitTrans();

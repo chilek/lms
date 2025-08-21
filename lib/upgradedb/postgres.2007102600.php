@@ -24,13 +24,8 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 ALTER TABLE netdevices ADD purchasetime integer NOT NULL DEFAULT 0;
 ALTER TABLE netdevices ADD guaranteeperiod smallint DEFAULT 0;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007102600', 'dbversion'));
-
-$this->CommitTrans();

@@ -24,14 +24,9 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("DROP FUNCTION IF EXISTS int2txt");
 $this->Execute("
     CREATE FUNCTION int2txt(num bigint) RETURNS char(20) DETERMINISTIC
     RETURN CAST(num AS char(20));
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008020900', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("DROP VIEW IF EXISTS customersview");
 
@@ -32,7 +31,3 @@ $this->Execute("CREATE VIEW customersview AS
 			JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 			WHERE e.userid = lms_current_user() AND a.customerid = c.id)
 			AND c.type < ?", array(2));
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013110500', 'dbversion'));
-
-$this->CommitTrans();
