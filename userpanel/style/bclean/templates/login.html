@@ -201,6 +201,7 @@
                     {if empty($authcode_required) &&
                         (ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
                         || ConfigHelper::checkConfig('userpanel.mail_credential_reminders'))}
+                        {$reminder_type=ConfigHelper::getConfig('userpanel.reminder_type', $smarty.const.USERPANEL_REMINDER_TYPE_SSNTEN)}
                         <form id="remind" class="form-signin" method="post" action="{$target}" style="display:none;">
                             {if ConfigHelper::checkConfig('userpanel.sms_credential_reminders') && !ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
                                 <input type="hidden" name="remindform[type]" id="remindType" value="2">
@@ -231,7 +232,7 @@
                                 </fieldset>
                             {/if}
                             <fieldset class="form-group">
-                                <label>{trans('SSN or TEN')} <input type="text" name="remindform[ten]" id="inputSsnOrTen" class="form-control"></label>
+                                <label>{$_USERPANEL_REMINDER_TYPES[$reminder_type].label} <input type="text" name="remindform[{$_USERPANEL_REMINDER_TYPES[$reminder_type].input}]" id="inputReminderType" class="form-control"></label>
                             </fieldset>
                             {if $google_recaptcha_sitekey}
                                 <div id="remind-recaptcha" class="g-recaptcha"></div>

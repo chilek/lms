@@ -102,6 +102,7 @@ $_LANG['Reminder sms body:'] = 'Treść SMS-a z danymi do logowania:';
 $_LANG['Enter reminder sms body'] = 'Wprowadź treść SMS-a z danymi do logowania';
 $_LANG['Credential reminder couldn\'t be sent!'] = 'Przypomnienie danych do logowania nie mogło zostać wysłane!';
 
+$_LANG['Reminder type'] = 'Dodatkowe dane używane w przypomnieniu danych do logowania';
 $_LANG['Authentication type:'] = 'Rodzaj uwierzytelniania:';
 $_LANG['Authentication type'] = 'Rodzaj uwierzytelniania';
 $_LANG['Two factor authentication'] = 'Uwierzytelnianie dwuetapowe';

@@ -97,8 +97,25 @@ class Session
                 return;
             }
 
-            $ten = preg_replace('/[^a-z0-9]/i', '', $remindform['ten']);
-            $params = array($ten, $ten);
+            $reminder_type = intval(ConfigHelper::getConfig('userpanel.reminder_type', USERPANEL_REMINDER_TYPE_SSNTEN));
+            switch ($reminder_type) {
+                case USERPANEL_REMINDER_TYPE_ID:
+                    $customerid = intval($remindform['customerid']);
+                    if ($customerid <= 0) {
+                        return;
+                    }
+                    $base_where = ' AND c.id = ?';
+                    $params = array($customerid);
+                    break;
+
+                case USERPANEL_REMINDER_TYPE_SSNTEN:
+                default:
+                    $ten = preg_replace('/[^a-z0-9]/i', '', $remindform['ten']);
+                    $params = array($ten, $ten);
+                    $base_where = ' AND ((c.ten <> \'\' AND REPLACE(REPLACE(c.ten, \'-\', \'\'), \' \', \'\') = ?)
+                                    OR (c.ssn <> \'\' AND c.ssn = ?))';
+                    break;
+            }
             switch ($remindform['type']) {
                 case 1:
                     if (!check_email($remindform['email'])) {
@@ -159,9 +176,8 @@ class Session
                 LEFT JOIN customerextids e ON e.customerid = c.id AND e.serviceproviderid "
                     . ($auth_type != USERPANEL_AUTH_TYPE_EXTID_PIN || empty($service_provider_id) ? ' IS NULL' : ' = ' . $service_provider_id) .
                 " WHERE c.deleted = 0
-                    AND ((c.ten <> '' AND REPLACE(REPLACE(c.ten, '-', ''), ' ', '') = ?)
-                        OR (c.ssn <> '' AND c.ssn = ?))
-                    " . (isset($allowed_customer_status) ? ' AND c.status IN (' . implode(', ', $allowed_customer_status) . ')' : '')
+                  " . $base_where
+                    . (isset($allowed_customer_status) ? ' AND c.status IN (' . implode(', ', $allowed_customer_status) . ')' : '')
                     . $where
                 . ' ORDER BY (CASE WHEN d.userpanel_url IS NULL THEN 2 ELSE 1 END)',
                 $params

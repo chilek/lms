@@ -1760,6 +1760,22 @@ $USERPANEL_AUTH_TYPES = array(
     ),
 );
 
+const USERPANEL_REMINDER_TYPE_SSNTEN = 1,
+    USERPANEL_REMINDER_TYPE_ID = 2;
+
+$USERPANEL_REMINDER_TYPES = array(
+    USERPANEL_REMINDER_TYPE_SSNTEN => array(
+        'label' => trans('SSN/TEN'),
+        'selection' => trans('SSN/TEN'),
+        'input' => 'ten',
+    ),
+    USERPANEL_REMINDER_TYPE_ID => array(
+        'label' => trans('Customer ID'),
+        'selection' => trans('Customer ID'),
+        'input' => 'customerid',
+    ),
+);
+
 const EVENT_OTHER = 1,
     EVENT_NETWORK = 2,
     EVENT_SERVICE = 3,
@@ -2071,6 +2087,7 @@ if (isset($SMARTY)) {
             '_NETWORK_DUCT_TYPES' => $NETWORK_DUCT_TYPES,
             '_NETELEMENTOWNERSHIPS' => $NETELEMENTOWNERSHIPS,
             '_USERPANEL_AUTH_TYPES' => $USERPANEL_AUTH_TYPES,
+            '_USERPANEL_REMINDER_TYPES' => $USERPANEL_REMINDER_TYPES,
             '_SESSIONTYPES' => $SESSIONTYPES,
             '_EXISTINGASSIGNMENTS' => $EXISTINGASSIGNMENTS,
             '_CURRENCIES' => $CURRENCIES,

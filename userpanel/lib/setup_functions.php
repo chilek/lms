@@ -40,7 +40,7 @@ function userpanel_style_change()
 
 function module_setup()
 {
-    global $SMARTY, $DB, $USERPANEL, $USERPANEL_AUTH_TYPES, $layout, $LMS, $CSTATUSES;
+    global $SMARTY, $DB, $USERPANEL, $USERPANEL_AUTH_TYPES, $USERPANEL_REMINDER_TYPES, $layout, $LMS, $CSTATUSES;
 
     if (!ConfigHelper::checkPrivilege('userpanel_management')) {
         access_denied();
@@ -61,17 +61,28 @@ function module_setup()
     $SMARTY->assign('reminder_mail_body', ConfigHelper::getConfig('userpanel.reminder_mail_body', "ID: %id\nPIN: %pin"));
     $SMARTY->assign('reminder_sms_body', ConfigHelper::getConfig('userpanel.reminder_sms_body', "ID: %id, PIN: %pin"));
 
+    $SMARTY->assign('reminder_type', ConfigHelper::getConfig('userpanel.reminder_type', USERPANEL_REMINDER_TYPE_ID));
     $SMARTY->assign('auth_type', ConfigHelper::getConfig('userpanel.auth_type', USERPANEL_AUTH_TYPE_ID_PIN));
 
-    $options = array();
+    $auth_options = array();
     foreach ($USERPANEL_AUTH_TYPES as $auth_type) {
         if (!empty($auth_type['options'])) {
             foreach ($auth_type['options'] as $option) {
-                $options[$option['name']] = ConfigHelper::getConfig('userpanel.' . $option['name'], '');
+                $auth_options[$option['name']] = ConfigHelper::getConfig('userpanel.' . $option['name'], '');
             }
         }
     }
-    $SMARTY->assign('options', $options);
+    $SMARTY->assign('auth_options', $auth_options);
+
+    $reminder_options = array();
+    foreach ($USERPANEL_REMINDER_TYPES as $reminder_type) {
+        if (!empty($reminder_type['options'])) {
+            foreach ($reminder_type['options'] as $option) {
+                $reminder_options[$option['name']] = ConfigHelper::getConfig('userpanel.' . $option['name'], '');
+            }
+        }
+    }
+    $SMARTY->assign('reminder_options', $reminder_options);
 
     $SMARTY->assign('twofactor_auth_type', ConfigHelper::getConfig('userpanel.twofactor_auth_type', '', true));
 
@@ -111,7 +122,7 @@ function module_setup()
 
 function module_submit_setup()
 {
-    global $DB, $LMS, $CSTATUSES, $USERPANEL_AUTH_TYPES;
+    global $DB, $LMS, $CSTATUSES, $USERPANEL_AUTH_TYPES, $USERPANEL_REMINDER_TYPES;
 
     if (!ConfigHelper::checkPrivilege('userpanel_management')) {
         access_denied();
@@ -209,6 +220,12 @@ function module_submit_setup()
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'auth_type', ?)", array($_POST['auth_type']));
     }
 
+    if ($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'reminder_type'")) {
+        $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'reminder_type'", array($_POST['reminder_type']));
+    } else {
+        $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'reminder_type', ?)", array($_POST['reminder_type']));
+    }
+
     if ($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'twofactor_auth_type'")) {
         $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'twofactor_auth_type'", array($_POST['twofactor_auth_type']));
     } else {
@@ -243,6 +260,30 @@ function module_submit_setup()
                                 $option_name,
                                 $_POST[$option_name],
                             )
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    foreach ($USERPANEL_REMINDER_TYPES as $rem_type) {
+        if (!empty($rem_type['options'])) {
+            foreach ($rem_type['options'] as $option) {
+                $option_name = $option['name'];
+                if (isset($_POST[$option_name])) {
+                    if ($DB->GetOne(
+                        'SELECT 1 FROM uiconfig WHERE section = ? AND var = ?',
+                        array('userpanel', $option_name)
+                    )) {
+                        $DB->Execute(
+                            'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
+                            array($_POST[$option_name], 'userpanel', $option_name)
+                        );
+                    } else {
+                        $DB->Execute(
+                            'INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)',
+                            array('userpanel', $option_name, $_POST[$option_name])
                         );
                     }
                 }

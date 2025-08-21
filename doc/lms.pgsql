@@ -4089,6 +4089,7 @@ URL: %url
 ('userpanel', 'owner_stats', '1', '', 0),
 ('userpanel', 'default_categories', '1', '', 0),
 ('userpanel', 'auth_type', '1', '', 0),
+('userpanel', 'reminder_type', '1', '', 0),
 ('userpanel', 'show_confirmed_documents_only', 'false', '', 0),
 ('userpanel', 'module_order', '', '', 0),
 ('userpanel', 'visible_ticket_sources', '0;1;2;3;4;5;6;7', '', 0),
