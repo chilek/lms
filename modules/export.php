@@ -42,8 +42,9 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
     if ($_POST['to']) {
         [$year, $month, $day] = explode('/', $_POST['to']);
         $to = mktime(23, 59, 59, $month, $day, $year);
-    }
+    } else {
         $to = mktime(23, 59, 59, date('m'), date('d'), date('Y'));
+    }
 
     $registry = intval($_POST['registry']);
     $user = intval($_POST['user']);
