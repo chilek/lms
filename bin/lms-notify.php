@@ -1760,7 +1760,7 @@ if (empty($types) || in_array('debtors', $types)) {
             . $customer_status_condition
             . $customer_type_condition
             . " AND c.cutoffstop < $currtime
-            AND (b2.balance " . ($limit > 0 ? '>' : '<') . ' ? OR ' . ($document_limit ? 'b2.balance < 0 AND b2.documentcount' : '-1') . " >= ?)"
+            AND (b2.balance " . ($limit > 0 ? '>' : '<') . ' ? OR ' . ($document_limit ? 'b2.documentcount' : '-1') . " >= ?)"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
             . ($notifications['debtors']['deleted_customers'] ? '' : ' AND c.deleted = 0')
@@ -2050,7 +2050,7 @@ if (empty($types) || in_array('reminder', $types)) {
             . $customer_type_condition
             . " AND d.type IN ?
             AND d.closed = 0
-            AND (b2.balance " . ($limit > 0 ? '>' : '<') . ' ? OR ' . ($document_limit ? 'b2.balance < 0 AND b2.documentcount' : '-1') . " >= ?)"
+            AND (b2.balance " . ($limit > 0 ? '>' : '<') . ' ? OR ' . ($document_limit ? 'b2.documentcount' : '-1') . " >= ?)"
             . " AND (d.cdate + (d.paytime - ? + 1) * 86400) >= $daystart
             AND (d.cdate + (d.paytime - ? + 1) * 86400) < $dayend"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
