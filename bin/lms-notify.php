@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2024 LMS Developers
+ *  (C) Copyright 2001-2025 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -591,6 +591,7 @@ foreach (array(
          ) as $type) {
     $notifications[$type] = array();
     $notifications[$type]['limit'] = intval(ConfigHelper::getConfig($config_section . '.' . $type . '_limit', 0));
+    $notifications[$type]['document_limit'] = intval(ConfigHelper::getConfig($config_section . '.' . $type . '_document_limit', 0));
     $notifications[$type]['message'] = ConfigHelper::getConfig($config_section . '.' . $type . '_message', $type . ' notification');
     $notifications[$type]['subject'] = ConfigHelper::getConfig($config_section . '.' . $type . '_subject', $type . ' notification');
     $notifications[$type]['days'] = intval(ConfigHelper::getConfig($config_section . '.' . $type . '_days', 0));
@@ -1678,25 +1679,45 @@ if (empty($types) || in_array('contracts', $types)) {
 if (empty($types) || in_array('debtors', $types)) {
     $days = $notifications['debtors']['days'];
     $limit = $notifications['debtors']['limit'];
-    // @TODO: check 'messages' table and don't send notifies to often
+    $document_limit = $notifications['debtors']['document_limit'];
+
     $customers = $DB->GetAll(
-        "SELECT c.id, c.pin, c.lastname, c.name,
-            b2.balance AS balance, b.balance AS totalbalance, m.email, x.phone, divisions.account,
+        "SELECT
+            c.id,
+            c.pin,
+            c.lastname,
+            c.name,
+            b2.balance AS balance,
+            b.balance AS totalbalance,
+            m.email,
+            x.phone,
+            divisions.account,
             acc.alternative_accounts,
             divisions.shortname AS div_shortname,
             divisions.ten AS div_ten
         FROM customeraddressview c
         LEFT JOIN divisions ON divisions.id = c.divisionid
         LEFT JOIN (
-            SELECT customerid, SUM(value * currencyvalue) AS balance FROM cash GROUP BY customerid
+            SELECT
+                customerid,
+                SUM(value * currencyvalue) AS balance
+            FROM cash
+            GROUP BY customerid
         ) b ON b.customerid = c.id
         LEFT JOIN (
-            SELECT cash.customerid, SUM(value * cash.currencyvalue) AS balance FROM cash
+            SELECT
+                cash.customerid,
+                SUM(value * cash.currencyvalue) AS balance,
+                COUNT(DISTINCT d.id) AS documentcount
+            FROM cash
             LEFT JOIN customers ON customers.id = cash.customerid
             LEFT JOIN divisions ON divisions.id = customers.divisionid
             LEFT JOIN documents d ON d.id = cash.docid
             LEFT JOIN (
-                SELECT SUM(value * cash.currencyvalue) AS totalvalue, docid FROM cash
+                SELECT
+                    SUM(value * cash.currencyvalue) AS totalvalue,
+                    docid
+                FROM cash
                 JOIN documents ON documents.id = cash.docid
                 WHERE documents.type = ?
                 GROUP BY docid
@@ -1711,25 +1732,35 @@ if (empty($types) || in_array('debtors', $types)) {
                         OR d.type IN ?) AND d.cdate + (d.paytime + ?) * 86400 < $currtime)))
             GROUP BY cash.customerid
         ) b2 ON b2.customerid = c.id
-        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
-            FROM customercontacts
-            WHERE (type & ?) = ?
-            GROUP BY customerid
-        ) m ON (m.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.mailingnotice = 1') . "
-        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
-            FROM customercontacts
-            WHERE (type & ?) = ?
-            GROUP BY customerid
-        ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
         LEFT JOIN (
-            SELECT " . $DB->GroupConcat('contact') . " AS alternative_accounts, customerid
+            SELECT "
+                . $DB->GroupConcat('contact') . " AS email,
+                 customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) m ON m.customerid = c.id " . ($ignore_customer_consents ? '' : 'AND c.mailingnotice = 1') . "
+        LEFT JOIN (
+            SELECT "
+                . $DB->GroupConcat('contact') . " AS phone,
+                 customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) x ON x.customerid = c.id " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
+        LEFT JOIN (
+            SELECT "
+                . $DB->GroupConcat('contact') . " AS alternative_accounts,
+                 customerid
             FROM customercontacts
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) acc ON acc.customerid = c.id
-        WHERE 1 = 1" . $customer_status_condition
+        WHERE 1 = 1"
+            . $customer_status_condition
             . $customer_type_condition
-            . " AND c.cutoffstop < $currtime AND b2.balance " . ($limit > 0 ? '>' : '<') . " ?"
+            . " AND c.cutoffstop < $currtime
+            AND (b2.balance " . ($limit > 0 ? '>' : '<') . ' ? OR ' . ($document_limit ? 'b2.documentcount' : '-1') . " >= ?)"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
             . ($notifications['debtors']['deleted_customers'] ? '' : ' AND c.deleted = 0')
@@ -1753,7 +1784,8 @@ if (empty($types) || in_array('debtors', $types)) {
             $required_phone_contact_flags,
             CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
             CONTACT_BANKACCOUNT | CONTACT_INVOICES,
-            $limit
+            $limit,
+            $document_limit,
         )
     );
 
@@ -1920,24 +1952,53 @@ if (empty($types) || in_array('debtors', $types)) {
 if (empty($types) || in_array('reminder', $types)) {
     $days = $notifications['reminder']['days'];
     $limit = $notifications['reminder']['limit'];
+    $document_limit = $notifications['reminder']['document_limit'];
+
     $documents = $DB->GetAll(
-        "SELECT d.id AS docid, c.id, c.pin, d.name, d.type AS doctype, d.div_shortname, d.div_ten,
-            d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
-            b2.balance AS balance, b.balance AS totalbalance, v.value, v.currency,
+        "SELECT
+            d.id AS docid,
+            c.id,
+            c.pin,
+            d.name,
+            d.type AS doctype,
+            d.div_shortname,
+            d.div_ten,
+            d.number,
+            n.template,
+            d.cdate,
+            d.paytime,
+            m.email,
+            x.phone,
+            divisions.account,
+            b2.balance AS balance,
+            b.balance AS totalbalance,
+            v.value,
+            v.currency,
             acc.alternative_accounts
         FROM documents d
-        JOIN customeraddressview c ON (c.id = d.customerid)
+        JOIN customeraddressview c ON c.id = d.customerid
         LEFT JOIN divisions ON divisions.id = c.divisionid
         LEFT JOIN (
-            SELECT customerid, SUM(value * currencyvalue) AS balance FROM cash GROUP BY customerid
+            SELECT
+                customerid,
+                SUM(value * currencyvalue) AS balance
+            FROM cash
+            GROUP BY customerid
         ) b ON b.customerid = c.id
         LEFT JOIN (
-            SELECT cash.customerid, SUM(value * cash.currencyvalue) AS balance FROM cash
+            SELECT
+                cash.customerid,
+                SUM(value * cash.currencyvalue) AS balance,
+                COUNT(DISTINCT d.id) AS documentcount
+            FROM cash
             LEFT JOIN customers ON customers.id = cash.customerid
             LEFT JOIN divisions ON divisions.id = customers.divisionid
             LEFT JOIN documents d ON d.id = cash.docid
             LEFT JOIN (
-                SELECT SUM(value * cash.currencyvalue) AS totalvalue, docid FROM cash
+                SELECT
+                    SUM(value * cash.currencyvalue) AS totalvalue,
+                    docid
+                FROM cash
                 JOIN documents ON documents.id = cash.docid
                 WHERE documents.type = ?
                 GROUP BY docid
@@ -1952,32 +2013,45 @@ if (empty($types) || in_array('reminder', $types)) {
                         OR d.type IN ?) AND d.cdate + (d.paytime - ?) * 86400 < $currtime)))
             GROUP BY cash.customerid
         ) b2 ON b2.customerid = c.id
-        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
-            FROM customercontacts
-            WHERE (type & ?) = ?
-            GROUP BY customerid
-        ) m ON (m.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.mailingnotice = 1') . "
-        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
-            FROM customercontacts
-            WHERE (type & ?) = ?
-            GROUP BY customerid
-        ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
         LEFT JOIN (
-            SELECT " . $DB->GroupConcat('contact') . " AS alternative_accounts, customerid
+            SELECT "
+                . $DB->GroupConcat('contact') . " AS email,
+                 customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) m ON m.customerid = c.id " . ($ignore_customer_consents ? '' : 'AND c.mailingnotice = 1') . "
+        LEFT JOIN (SELECT "
+                . $DB->GroupConcat('contact') . " AS phone,
+                 customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) x ON x.customerid = c.id " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
+        LEFT JOIN (
+            SELECT "
+                . $DB->GroupConcat('contact') . " AS alternative_accounts,
+                 customerid
             FROM customercontacts
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) acc ON acc.customerid = c.id
         JOIN (
-            SELECT SUM(value) * -1 AS value, currency, docid
+            SELECT
+                SUM(value) * -1 AS value,
+                currency,
+                docid
             FROM cash
             GROUP BY docid, currency
-        ) v ON (v.docid = d.id)
-        LEFT JOIN numberplans n ON (d.numberplanid = n.id)
-        WHERE 1 = 1" . $customer_status_condition
+        ) v ON v.docid = d.id
+        LEFT JOIN numberplans n ON d.numberplanid = n.id
+        WHERE 1 = 1"
+            . $customer_status_condition
             . $customer_type_condition
-            . " AND d.type IN ? AND d.closed = 0 AND b2.balance < ?
-            AND (d.cdate + (d.paytime - ? + 1) * 86400) >= $daystart
+            . " AND d.type IN ?
+            AND d.closed = 0
+            AND (b2.balance " . ($limit > 0 ? '>' : '<') . ' ? OR ' . ($document_limit ? 'b2.documentcount' : '-1') . " >= ?)"
+            . " AND (d.cdate + (d.paytime - ? + 1) * 86400) >= $daystart
             AND (d.cdate + (d.paytime - ? + 1) * 86400) < $dayend"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
@@ -2008,10 +2082,12 @@ if (empty($types) || in_array('reminder', $types)) {
                 DOC_DNOTE,
             ),
             $limit,
+            $document_limit,
             $days,
             $days
         )
     );
+
     if (!empty($documents)) {
         $count = count($documents);
         if (!empty($part_size)) {
