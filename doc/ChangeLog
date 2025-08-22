@@ -1060,6 +1060,8 @@ version 28-git (????-??-??):
   - enhancement: new customer search filter - modification date interval [chilan]
   - enhancement: new node search filter - modification date interval [chilan]
   - enhancement: new timetable event types: 'technical problem' and 'service implementation' [chilan]
+  - enhancement: bin/lms-notify.php backend script supports *_document_limit configuration variable
+    for 'reminder' and 'debtors' notifications [chilan]
 
 version 27.0 (2021-08-20):
 
