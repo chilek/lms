@@ -1708,7 +1708,7 @@ if (empty($types) || in_array('debtors', $types)) {
             SELECT
                 cash.customerid,
                 SUM(value * cash.currencyvalue) AS balance,
-                COUNT(DISTINCT (CASE WHEN d.type IN ? THEN d.id ELSE NULL END)) AS documentcount
+                COUNT(DISTINCT d.id) AS documentcount
             FROM cash
             LEFT JOIN customers ON customers.id = cash.customerid
             LEFT JOIN divisions ON divisions.id = customers.divisionid
@@ -1767,11 +1767,6 @@ if (empty($types) || in_array('debtors', $types)) {
             . ($customergroups ?: '')
         . ' ORDER BY c.id',
         array(
-            array(
-                DOC_INVOICE,
-                DOC_INVOICE_PRO,
-                DOC_DNOTE,
-            ),
             DOC_CNOTE,
             $days,
             DOC_RECEIPT,
@@ -1994,7 +1989,7 @@ if (empty($types) || in_array('reminder', $types)) {
             SELECT
                 cash.customerid,
                 SUM(value * cash.currencyvalue) AS balance,
-                COUNT(DISTINCT (CASE WHEN d.type IN ? THEN d.id ELSE NULL END)) AS documentcount
+                COUNT(DISTINCT d.id) AS documentcount
             FROM cash
             LEFT JOIN customers ON customers.id = cash.customerid
             LEFT JOIN divisions ON divisions.id = customers.divisionid
@@ -2064,11 +2059,6 @@ if (empty($types) || in_array('reminder', $types)) {
             . ($customergroups ?: '')
             . ' ORDER BY d.id',
         array(
-            array(
-                DOC_INVOICE,
-                DOC_INVOICE_PRO,
-                DOC_DNOTE,
-            ),
             DOC_CNOTE,
             $days,
             DOC_RECEIPT,
