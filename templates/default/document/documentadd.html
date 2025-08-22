@@ -75,6 +75,11 @@
 		margin-left: 0.5em;
 	}
 
+	#dynamic-period-option {
+		display: flex;
+		align-items: center;
+	}
+
 </style>
 
 <script>
@@ -248,11 +253,17 @@
 			</td>
 			<td>
 				<div id="document-period">
-					<label>
-						<input type="checkbox" name="document[dynamicperiod]" value="1"
-							{if !empty($document.dynamicperiod)} checked{/if}>
-						{trans("<!document-period>dynamic")}
-					</label>
+					{capture assign="hint"}{strip}
+						The validity date range of the document is determined upon its approval.
+					{/strip}{/capture}
+					<div id="dynamic-period-option">
+						<label>
+							<input type="checkbox" name="document[dynamicperiod]" value="1"
+								{if !empty($document.dynamicperiod)} checked{/if}>
+							{trans("<!document-period>dynamic")}
+						</label>
+						{hint content=$hint}
+					</div>
 					{$allow_past_date = ConfigHelper::checkConfig('documents.allow_past_date', true)}
 					<div>
 						<div>

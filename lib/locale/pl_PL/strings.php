@@ -6232,3 +6232,5 @@ $_LANG['Queues'] = 'Kolejki';
 
 $_LANG['Existing attachments'] = 'Istniejące załączniki';
 $_LANG['Template attachments'] = 'Załączniki szablonu';
+
+$_LANG['The validity date range of the document is determined upon its approval.'] = 'Zakres dat obowiązywania dokumentu jest wyznaczany przy jego zatwierdzaniu.';
