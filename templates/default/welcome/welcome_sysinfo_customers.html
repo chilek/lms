@@ -15,7 +15,7 @@
 		{foreach $_CSTATUSES as $statusidx => $status}
         <tr>
             <td class="text-right bold">
-                <a href="?m=customerlist&amp;s={$statusidx}">{$status.summarylabel}</a>
+                <a href="?m=customerlist&s[]={$statusidx}&s[]=72">{$status.summarylabel}</a>
             </td>
             <td>
                 {$alias = $status.alias}
@@ -28,7 +28,7 @@
         {/foreach}
         <tr>
             <td class="text-right bold">
-                <a href="?m=customerlist&amp;s=0">{trans("Total:")}</a>
+                <a href="?m=customerlist&s=0">{trans("Total:")}</a>
             </td>
             <td class="nobr">
                 {$customerstats.total}
@@ -37,7 +37,7 @@
         {if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
         <tr>
             <td class="text-right bold">
-                <a href="?m=customerlist&amp;s=52">{trans("Total Dues:")}</a>
+                <a href="?m=customerlist&s[]=52&s[]=72">{trans("Total Dues:")}</a>
             </td>
             <td>
                 {$customerstats.debt} ({trans("amount")} {moneyf($customerstats.debtvalue)})

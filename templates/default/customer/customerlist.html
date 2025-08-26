@@ -121,64 +121,65 @@
 			<div class="lms-ui-filter-container">
 			<div class="lms-ui-filter-definition">
 			{icon name="filter"}
-			<label for="s">{trans("Customers")}
-			<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
-				<OPTION VALUE="0"{if $filter.state == 0} SELECTED{/if}>{trans("— all customers —")}</OPTION>
-				<optgroup label="Status">
-					{foreach $_CSTATUSES as $statusidx => $status}
-						<OPTION VALUE="{$statusidx}"{if $filter.state == $statusidx} selected{/if}>{$status.plurallabel}</OPTION>
-					{/foreach}
-				</optgroup>
-				<optgroup label="{trans("Customers")}">
-					<OPTION VALUE="50"{if $filter.state == 50} SELECTED{/if}>{trans("deleted<!plural>")}</OPTION>
-					<OPTION VALUE="72"{if $filter.state == 72} SELECTED{/if}>{trans("existing<!plural>")}</OPTION>
-					<OPTION VALUE="53"{if $filter.state == 53} SELECTED{/if}>{trans("online")}</OPTION>
-					<OPTION VALUE="56"{if $filter.state == 56} SELECTED{/if}>{trans("suspended<!plural>")}</OPTION>
-					<OPTION VALUE="54"{if $filter.state == 54} SELECTED{/if}>{trans("without group")}</OPTION>
-				</optgroup>
-				<optgroup label="{trans("Documents")}">
-					<OPTION value="73"{if $filter.state == 73} SELECTED{/if}>{trans("with unarchived documents")}</OPTION>
-				</optgroup>
-				<optgroup label="{trans("Nodes")}">
-					<OPTION VALUE="63"{if $filter.state == 63} SELECTED{/if}>{trans("with connected nodes")}</OPTION>
-					<OPTION VALUE="51"{if $filter.state == 51} SELECTED{/if}>{trans("with disconnected nodes")}</OPTION>
-					<OPTION VALUE="64"{if $filter.state == 64} SELECTED{/if}>{trans("with nodes")}</OPTION>
-					<OPTION VALUE="65"{if $filter.state == 65} SELECTED{/if}>{trans("without nodes")}</OPTION>
-					<OPTION VALUE="84"{if $filter.state == 84} SELECTED{/if}>{trans("with all nodes not connected to network device")}</OPTION>
-				</optgroup>
-				<optgroup label="{trans("Contracts")}">
-					<OPTION value="59"{if $filter.state == 59} SELECTED{/if}>{trans("without contracts")}</OPTION>
-					<OPTION value="76"{if $filter.state == 76} SELECTED{/if}>{trans("without active contracts")}</OPTION>
-					<OPTION value="60"{if $filter.state == 60} SELECTED{/if}>{trans("with expired contracts")}</OPTION>
-					<OPTION value="77"{if $filter.state == 77} SELECTED{/if}>{trans("with expired, active contracts")}</OPTION>
-					<OPTION value="61"{if $filter.state == 61} SELECTED{/if}>{trans("with expiring contracts")}</OPTION>
-					<OPTION value="78"{if $filter.state == 78} SELECTED{/if}>{trans("with expiring, active contracts")}</OPTION>
-				</optgroup>
-				<optgroup label="{trans("Finances")}">
-					{if !ConfigHelper::checkPrivilege('hide_finances')}
-						<OPTION VALUE="52"{if $filter.state == 52} SELECTED{/if}>{trans("in debt")}</OPTION>
-						<OPTION VALUE="57"{if $filter.state == 57} SELECTED{/if}>{trans("in debt above 100%")}</OPTION>
-						<OPTION VALUE="58"{if $filter.state == 58} SELECTED{/if}>{trans("in debt above 200%")}</OPTION>
-						<OPTION VALUE="82"{if $filter.state == 82} SELECTED{/if}>{trans("in debt above or equal 100%")}</OPTION>
-						<OPTION VALUE="83"{if $filter.state == 83} SELECTED{/if}>{trans("in debt above or equal 200%")}</OPTION>
-						<option value="71"{if $filter.state == 71} selected{/if}>{trans("overdue receivables")}</option>
-					{/if}
-					<OPTION VALUE="55"{if $filter.state == 55} SELECTED{/if}>{trans("without tariff")}</OPTION>
-					<OPTION VALUE="62"{if $filter.state == 62} SELECTED{/if}>{trans("with e-invoice")}</OPTION>
-					<OPTION VALUE="66"{if $filter.state == 66} SELECTED{/if}>{trans("without invoice flag")}</OPTION>
-					<OPTION VALUE="75"{if $filter.state == 75} SELECTED{/if}>{trans("with discount")}</OPTION>
-					<option value="79"{if $filter.state == 79} selected{/if}>{trans("with active tariffless liabilities")}</option>
-					<option value="80"{if $filter.state == 80} selected{/if}>{trans("with tariffless liabilities")}</option>
-				</optgroup>
-				<optgroup label="{trans("Addresses")}">
-					<OPTION VALUE="67"{if $filter.state == 67} SELECTED{/if}>{trans("without building number")}</OPTION>
-					<OPTION VALUE="69"{if $filter.state == 69} SELECTED{/if}>{trans("without city")}</OPTION>
-					<OPTION VALUE="70"{if $filter.state == 70} SELECTED{/if}>{trans("TERYT not specified")}</OPTION>
-					<OPTION VALUE="68"{if $filter.state == 68} SELECTED{/if}>{trans("without zip (main address)")}</OPTION>
-					<OPTION VALUE="74"{if $filter.state == 74} SELECTED{/if}>{trans("without zip (other addresses)")}</OPTION>
-					<option value="81"{if $filter.state == 81} selected{/if}>{trans("without location address")}</option>
-				</optgroup>
-			</SELECT>
+			<label for="s">
+				{trans("Customers")}
+				<input type="hidden" name="s[]" value="0">
+				<select size="1" name="s[]" onchange="document.choosefilter.submit();" class="lms-ui-multiselect" multiple data-default-value="{trans("— all customers —")}">
+					<optgroup label="Status">
+						{foreach $_CSTATUSES as $statusidx => $status}
+							<option value="{$statusidx}"{if in_array($statusidx, $filter.state)} selected{/if}>{$status.plurallabel}</option>
+						{/foreach}
+					</optgroup>
+					<optgroup label="{trans("Customers")}">
+						<option value="50"{if in_array(50, $filter.state)} selected{/if}>{trans("deleted<!plural>")}</option>
+						<option value="72"{if in_array(72, $filter.state)} selected{/if}>{trans("existing<!plural>")}</option>
+						<option value="53"{if in_array(53, $filter.state)} selected{/if}>{trans("online")}</option>
+						<option value="56"{if in_array(56, $filter.state)} selected{/if}>{trans("suspended<!plural>")}</option>
+						<option value="54"{if in_array(54, $filter.state)} selected{/if}>{trans("without group")}</option>
+					</optgroup>
+					<optgroup label="{trans("Documents")}">
+						<option value="73"{if in_array(73, $filter.state)} selected{/if}>{trans("with unarchived documents")}</option>
+					</optgroup>
+					<optgroup label="{trans("Nodes")}">
+						<option value="63"{if in_array(63, $filter.state)} selected{/if}>{trans("with connected nodes")}</option>
+						<option value="51"{if in_array(51, $filter.state)} selected{/if}>{trans("with disconnected nodes")}</option>
+						<option value="64"{if in_array(64, $filter.state)} selected{/if}>{trans("with nodes")}</option>
+						<option value="65"{if in_array(65, $filter.state)} selected{/if}>{trans("without nodes")}</option>
+						<option value="84"{if in_array(84, $filter.state)} selected{/if}>{trans("with all nodes not connected to network device")}</option>
+					</optgroup>
+					<optgroup label="{trans("Contracts")}">
+						<option value="59"{if in_array(59, $filter.state)} selected{/if}>{trans("without contracts")}</option>
+						<option value="76"{if in_array(76, $filter.state)} selected{/if}>{trans("without active contracts")}</option>
+						<option value="60"{if in_array(60, $filter.state)} selected{/if}>{trans("with expired contracts")}</option>
+						<option value="77"{if in_array(77, $filter.state)} selected{/if}>{trans("with expired, active contracts")}</option>
+						<option value="61"{if in_array(61, $filter.state)} selected{/if}>{trans("with expiring contracts")}</option>
+						<option value="78"{if in_array(78, $filter.state)} selected{/if}>{trans("with expiring, active contracts")}</option>
+					</optgroup>
+					<optgroup label="{trans("Finances")}">
+						{if !ConfigHelper::checkPrivilege('hide_finances')}
+							<option value="52"{if in_array(52, $filter.state)} selected{/if}>{trans("in debt")}</option>
+							<option value="57"{if in_array(57, $filter.state)} selected{/if}>{trans("in debt above 100%")}</option>
+							<option value="58"{if in_array(58, $filter.state)} selected{/if}>{trans("in debt above 200%")}</option>
+							<option value="82"{if in_array(82, $filter.state)} selected{/if}>{trans("in debt above or equal 100%")}</option>
+							<option value="83"{if in_array(83, $filter.state)} selected{/if}>{trans("in debt above or equal 200%")}</option>
+							<option value="71"{if in_array(71, $filter.state)} selected{/if}>{trans("overdue receivables")}</option>
+						{/if}
+						<option value="55"{if in_array(55, $filter.state)} selected{/if}>{trans("without tariff")}</option>
+						<option value="62"{if in_array(62, $filter.state)} selected{/if}>{trans("with e-invoice")}</option>
+						<option value="66"{if in_array(66, $filter.state)} selected{/if}>{trans("without invoice flag")}</option>
+						<option value="75"{if in_array(75, $filter.state)} selected{/if}>{trans("with discount")}</option>
+						<option value="79"{if in_array(79, $filter.state)} selected{/if}>{trans("with active tariffless liabilities")}</option>
+						<option value="80"{if in_array(80, $filter.state)} selected{/if}>{trans("with tariffless liabilities")}</option>
+					</optgroup>
+					<optgroup label="{trans("Addresses")}">
+						<option value="67"{if in_array(67, $filter.state)} selected{/if}>{trans("without building number")}</option>
+						<option value="69"{if in_array(69, $filter.state)} selected{/if}>{trans("without city")}</option>
+						<option value="70"{if in_array(70, $filter.state)} selected{/if}>{trans("TERYT not specified")}</option>
+						<option value="68"{if in_array(68, $filter.state)} selected{/if}>{trans("without zip (main address)")}</option>
+						<option value="74"{if in_array(74, $filter.state)} selected{/if}>{trans("without zip (other addresses)")}</option>
+						<option value="81"{if in_array(81, $filter.state)} selected{/if}>{trans("without location address")}</option>
+					</optgroup>
+				</select>
 			</label>
 
 			{division_selection name="d" selected=$filter.division onchange="document.choosefilter.submit();" label="Division" tip=""}
