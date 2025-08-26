@@ -80,34 +80,34 @@
 	<TR {tip text="Click on column name to change sorting order"}>
 		<td scope="col" class="nobr">
 			{icon name="customer"}
-			<a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=customername{if $filter.direction == "asc" && $filter.order == "customername"},desc{/if}">
+			<a href="?m={$layout.module}{if !empty($filter.state)}&s[]={implode('&s[]=', $filter.state)}{/if}&o=customername{if $filter.direction == "asc" && $filter.order == "customername"},desc{/if}">
 				{trans("First/last or Company name")}
 			</A>
 			{if $filter.order == "customername"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 			/
 			{icon name="karma"}
-			<a href="?m={$layout.module}&s={$filter.state}&o=karma{if $filter.direction == "asc" && $filter.order == "karma"},desc{/if}">
+			<a href="?m={$layout.module}{if !empty($filter.state)}&s[]={implode('&s[]=', $filter.state)}{/if}&o=karma{if $filter.direction == "asc" && $filter.order == "karma"},desc{/if}">
 				{trans("Karma")}
 			</A>
 			{if $filter.order == "karma"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 			<br>
 			{icon name="home"}
-			<a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=address{if $filter.direction == "asc" && $filter.order == "address"},desc{/if}">
+			<a href="?m={$layout.module}{if !empty($filter.state)}&s[]={implode('&s[]=', $filter.state)}{/if}&o=address{if $filter.direction == "asc" && $filter.order == "address"},desc{/if}">
 				{trans("Address")}
 			</A>
 			{if $filter.order == "address"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</td>
 		<td scope="col" class="text-right nobr">
-			<a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=extid{if $filter.direction == "asc" && $filter.order == "extid"},desc{/if}"><span class="bold">{trans("External ID")}</span></A> {if $filter.order == "extid"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<a href="?m={$layout.module}{if !empty($filter.state)}&s[]={implode('&s[]=', $filter.state)}{/if}&o=extid{if $filter.direction == "asc" && $filter.order == "extid"},desc{/if}"><span class="bold">{trans("External ID")}</span></A> {if $filter.order == "extid"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 			/
-			<a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=id{if $filter.direction == "asc" && $filter.order == "id"},desc{/if}"><span class="bold">{trans("ID")}</span></A> {if $filter.order == "id"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<a href="?m={$layout.module}{if !empty($filter.state)}&s[]={implode('&s[]=', $filter.state)}{/if}&o=id{if $filter.direction == "asc" && $filter.order == "id"},desc{/if}"><span class="bold">{trans("ID")}</span></A> {if $filter.order == "id"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 			<BR>
 			{trans("Services")}
 		</td>
 		<td scope="col" class="text-right">
 		{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-			<a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=balance{if $filter.direction == "asc" && $filter.order == "balance"},desc{/if}">{trans("Balance")}</A>&nbsp;{if $filter.order == "balance"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=tariff{if $filter.direction == "asc" && $filter.order == "tariff"},desc{/if}">{trans("Subscription")}</A>&nbsp;{if $filter.order == "tariff"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<a href="?m={$layout.module}{if !empty($filter.state)}&s[]={implode('&s[]=', $filter.state)}{/if}&o=balance{if $filter.direction == "asc" && $filter.order == "balance"},desc{/if}">{trans("Balance")}</A>&nbsp;{if $filter.order == "balance"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<a href="?m={$layout.module}{if !empty($filter.state)}&s[]={implode('&s[]=', $filter.state)}{/if}&o=tariff{if $filter.direction == "asc" && $filter.order == "tariff"},desc{/if}">{trans("Subscription")}</A>&nbsp;{if $filter.order == "tariff"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		{/if}
 		</td>
 		<td scope="col" class="text-right nobr">
