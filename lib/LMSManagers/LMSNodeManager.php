@@ -518,6 +518,17 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                                     break;
                             }
                             break;
+                        case 'authtype':
+                            if (!empty($value) && is_array($value)) {
+                                if (empty($search['authtypek']) || $search['authtypek'] == 'AND') {
+                                    $searchargs[] = 'n.authtype = ' . array_sum($value);
+                                } else {
+                                    $searchargs[] = '(n.authtype & ' . array_sum($value) . ') > 0';
+                                }
+                            }
+                            break;
+                        case 'authtypek':
+                            break;
                         default:
                             $searchargs[] = 'n.' . $key . ' ?LIKE? ' . $this->db->Escape("%$value%");
                     }

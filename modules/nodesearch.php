@@ -325,6 +325,14 @@ if (isset($_GET['search'])) {
         }
     }
 
+    if (empty($nodesearch['authtype'])) {
+        $nodesearch['authtype'] = array();
+    }
+
+    if (empty($nodesearch['authtypek'])) {
+        $nodesearch['authtypek'] = 'AND';
+    }
+
     if (!$error) {
         if (isset($createdfrom)) {
             $nodesearch['createdfrom'] = $createdfrom;
