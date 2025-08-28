@@ -1061,6 +1061,7 @@ version 28-git (????-??-??):
   - enhancement: new node search filter - modification date interval [chilan]
   - enhancement: new timetable event types: 'technical problem' and 'service implementation' [chilan]
   - improvement: 'customer' filter in customer list form changed to lms-ui-multiselect ui control [chilan]
+  - enhancement: search node form: auth type filter added [chilan]
 
 version 27.0 (2021-08-20):
 
