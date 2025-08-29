@@ -80,7 +80,8 @@ if (empty($providers)) {
 $addresses = $DB->GetAll(
     'SELECT
         a.id,
-        ca.customer_id,
+        (CASE WHEN ca.customer_id IS NOT NULL THEN ca.customer_id ELSE (CASE WHEN nd.id IS NOT NULL THEN nd.id ELSE nn.id END) END) AS resourceid,
+        (CASE WHEN ca.customer_id IS NOT NULL THEN 1 ELSE (CASE WHEN nd.id IS NOT NULL THEN 2 ELSE 3 END) END) AS type,
         a.state,
         a.state_id,
         a.city,
@@ -94,12 +95,22 @@ $addresses = $DB->GetAll(
         a.postoffice,
         a.location
     FROM vaddresses a
-    JOIN customer_addresses ca ON ca.address_id = a.id
+    LEFT JOIN customer_addresses ca ON ca.address_id = a.id
+    LEFT JOIN netdevices nd ON nd.address_id = a.id AND nd.ownerid IS NULL
+    LEFT JOIN netnodes nn ON nn.address_id = a.id AND nn.ownerid IS NULL
     LEFT JOIN countries c ON c.id = a.country_id
-    WHERE 1 = 1
+    WHERE (ca.address_id IS NOT NULL OR nd.address_id IS NOT NULL OR nn.address_id IS NOT NULL)
         ' . ($force ? '' : ' AND a.zip IS NULL')
-    . ' ORDER BY ca.customer_id, a.id'
+    . ' ORDER BY (CASE WHEN ca.customer_id IS NOT NULL THEN 1 ELSE (CASE WHEN nd.id IS NOT NULL THEN 2 ELSE 3 END) END),
+        (CASE WHEN ca.customer_id IS NOT NULL THEN ca.customer_id ELSE (CASE WHEN nd.id IS NOT NULL THEN nd.id ELSE nn.id END) END),
+        a.id'
 );
+
+$resourceTypeNames = [
+    1 => 'Customer',
+    2 => 'Network device',
+    3 => 'Network node',
+];
 
 foreach ($addresses as $address) {
     foreach ($providers as $provider) {
@@ -171,7 +182,10 @@ foreach ($addresses as $address) {
                 $result = curl_exec($curl);
                 if (curl_error($curl)) {
                     if (!$quiet) {
-                        echo $provider . ': Customer #' . $address['customer_id'] . ', Address #' . $address['id']
+                        echo $provider . ': '
+                            . $resourceTypeNames[$address['type']]
+                            . ' #' . $address['resourceid']
+                            . ', Address #' . $address['id']
                             . ' - ERROR - Building: ' . $address['location']
                             . ', cURL error: ' . curl_error($curl) . PHP_EOL;
                     }
@@ -186,7 +200,10 @@ foreach ($addresses as $address) {
 
                 if ($httpCode !== 200) {
                     if (!$quiet) {
-                        echo $provider . ': Customer #' . $address['customer_id'] . ', Address #' . $address['id']
+                        echo $provider . ': '
+                            . $resourceTypeNames[$address['type']]
+                            . ' #' . $address['resourceid']
+                             . ', Address #' . $address['id']
                             . ' - ERROR - Building: ' . $address['location']
                             . ', HTTP error: ' . $httpCode . PHP_EOL;
                     }
@@ -199,7 +216,10 @@ foreach ($addresses as $address) {
                 $result = json_decode($result, true);
                 if (empty($result)) {
                     if (!$quiet) {
-                        echo $provider . ': Customer #' . $address['customer_id'] . ', Address #' . $address['id']
+                        echo $provider . ': '
+                            . $resourceTypeNames[$address['type']]
+                            . ' #' . $address['resourceid']
+                            . ', Address #' . $address['id']
                             . ' - ERROR - Building: ' . $address['location'] . PHP_EOL;
                     }
 
@@ -210,7 +230,10 @@ foreach ($addresses as $address) {
 
                 if (count($result) > 1) {
                     if (!$quiet) {
-                        echo $provider . ': Customer #' . $address['customer_id'] . ', Address #' . $address['id']
+                        echo $provider . ': '
+                            . $resourceTypeNames[$address['type']]
+                            . ' #' . $address['resourceid']
+                            . ', Address #' . $address['id']
                             . ' - ERROR - Building: ' . $address['location'] . PHP_EOL;
                     }
 
@@ -235,7 +258,10 @@ foreach ($addresses as $address) {
                     }
 
                     if (!$quiet) {
-                        echo $provider . ': Customer #' . $address['customer_id'] . ', Address #' . $address['id']
+                        echo $provider . ': '
+                            . $resourceTypeNames[$address['type']]
+                            . ' #' . $address['resourceid']
+                            . ', Address #' . $address['id']
                             . ' - OK - Building: ' . $address['location'] . ' (ZIP: ' . $zipCode . ')' . PHP_EOL;
                     }
 
@@ -279,7 +305,10 @@ foreach ($addresses as $address) {
 
                 if (empty($zipCode)) {
                     if (!$quiet) {
-                        echo $provider . ': Customer #' . $address['customer_id'] . ', Address #' . $address['id']
+                        echo $provider . ': '
+                            . $resourceTypeNames[$address['type']]
+                            . ' #' . $address['resourceid']
+                            . ', Address #' . $address['id']
                             . ' - ERROR - Building: ' . $address['location'] . PHP_EOL;
                     }
                     break;
@@ -296,7 +325,10 @@ foreach ($addresses as $address) {
                 }
 
                 if (!$quiet) {
-                    echo $provider . ': Customer #' . $address['customer_id'] . ', Address #' . $address['id']
+                    echo $provider . ': '
+                        . $resourceTypeNames[$address['type']]
+                        . ' #' . $address['resourceid']
+                        . ', Address #' . $address['id']
                         . ' - OK - Building: ' . $address['location'] . ' (ZIP: ' . $zipCode . ')' . PHP_EOL;
                 }
 
