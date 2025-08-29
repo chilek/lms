@@ -1065,7 +1065,7 @@ version 28-git (????-??-??):
   - improvement: uke/pit: new form option 'report cable lines shorter than 1 meter' which is unchecked
     by default [chilan]
   - enhancement: 'lms-zipcodes.php' backend script allows to bulkly determine zip codes for customer
-    addresses [chilan]
+    addresses, network devices and network nodes [chilan]
 
 version 27.0 (2021-08-20):
 
