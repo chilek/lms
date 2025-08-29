@@ -1645,4 +1645,20 @@ class Utils
             '/'
         );
     }
+
+    public static function haversineDistanceMeters($lat1, $lon1, $lat2, $lon2, $earthRadius = 6371008.8)
+    {
+        $phi1 = deg2rad($lat1);
+        $phi2 = deg2rad($lat2);
+        $dphi = deg2rad($lat2 - $lat1);
+        $dlambda = deg2rad($lon2 - $lon1);
+
+        $sinDphi2 = sin($dphi / 2.0);
+        $sinDlam2 = sin($dlambda / 2.0);
+
+        $a = $sinDphi2 * $sinDphi2 + cos($phi1) * cos($phi2) * $sinDlam2 * $sinDlam2;
+        $c = 2.0 * atan2(sqrt($a), sqrt(1.0 - $a));
+
+        return $earthRadius * $c;
+    }
 }

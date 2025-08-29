@@ -87,6 +87,7 @@ $_LANG['<!uke-pit>Report other duct type as'] = 'Raportuj inny typ traktu jako';
 $_LANG['<!uke-pit>Complete breakdown points of network connections'] = 'Dopełniaj punkty załamania połączeń sieciowych';
 $_LANG['<!uke-pit>explicitly assigned address'] = 'jawnie przypisany adres';
 $_LANG['<!uke-pit>Report elements outside network infrastructure'] = 'Raportuj elementy spoza infrastruktury sieciowej';
+$_LANG['<!uke-pit>Report cable lines shorter than 1 meter'] = 'Raportuj linie kablowe krótsze niż 1 metr';
 $_LANG['<!uke-pit>Verify feeding network nodes if flexibility points'] = '<!uke-pit>Weryfikuj węzły zasilające punkty elastyczności';
 
 $_LANG['underground (placed directly in the ground)'] = 'podziemny (umieszczona bezpośrednio w ziemi)';

@@ -413,6 +413,7 @@ $validate_wireless_links = isset($_POST['validate-wireless-links']);
 $complete_breakdown_points = isset($_POST['complete-breakdown-points']);
 $detect_loops = isset($_POST['detectloops']);
 $report_elements_outside_network_infrastructure = isset($_POST['report-elements-outside-network-infrastructure']);
+$report_cable_lines_shorter_than_1m = isset($_POST['report-cable-lines-shorter-than-1m']);
 $verify_feeding_netnodes_of_flexibility_points = isset($POST['uke-pit-verify-feeding-netnodes-of-flexibility-points']);
 
 $pit_ethernet_technologies = array();
@@ -2880,6 +2881,13 @@ if ($report_type == 'full') {
                             'longitude' => $dstnetnode['longitude'],
                             'latitude' => $dstnetnode['latitude'],
                         );
+
+                        if (!$report_cable_lines_shorter_than_1m) {
+                            $distance = Utils::haversineDistanceMeters($points[0]['latitude'], $points[0]['longitude'], $points[PHP_INT_MAX]['latitude'], $points[PHP_INT_MAX]['longitude']);
+                            if ($distance < 1.0) {
+                                continue;
+                            }
+                        }
 
                         $data = array(
                             'lk01_id_lk' => 'LK-' . $netlink['id'],
