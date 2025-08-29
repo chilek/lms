@@ -1062,6 +1062,8 @@ version 28-git (????-??-??):
   - enhancement: new timetable event types: 'technical problem' and 'service implementation' [chilan]
   - improvement: 'customer' filter in customer list form changed to lms-ui-multiselect ui control [chilan]
   - enhancement: search node form: auth type filter added [chilan]
+  - improvement: uke/pit: new form option 'report cable lines shorter than 1 meter' which is unchecked
+    by default [chilan]
 
 version 27.0 (2021-08-20):
 
