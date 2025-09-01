@@ -2883,7 +2883,20 @@ if ($report_type == 'full') {
                         );
 
                         if (!$report_cable_lines_shorter_than_1m) {
-                            $distance = Utils::haversineDistanceMeters($points[0]['latitude'], $points[0]['longitude'], $points[PHP_INT_MAX]['latitude'], $points[PHP_INT_MAX]['longitude']);
+                            $distance = 0.0;
+                            $prevPoint = null;
+
+                            foreach ($points as $idx => $point) {
+                                if (!isset($prevPoint)) {
+                                    $prevPoint = $point;
+                                    continue;
+                                }
+
+                                $distance += Utils::haversineDistanceMeters($prevPoint['latitude'], $prevPoint['longitude'], $point['latitude'], $point['longitude']);
+
+                                $prevPoint = $point;
+                            }
+
                             if ($distance < 1.0) {
                                 continue;
                             }
