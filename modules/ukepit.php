@@ -2887,12 +2887,9 @@ if ($report_type == 'full') {
                             $prevPoint = null;
 
                             foreach ($points as $idx => $point) {
-                                if (!isset($prevPoint)) {
-                                    $prevPoint = $point;
-                                    continue;
+                                if (isset($prevPoint)) {
+                                    $distance += Utils::haversineDistanceMeters($prevPoint['latitude'], $prevPoint['longitude'], $point['latitude'], $point['longitude']);
                                 }
-
-                                $distance += Utils::haversineDistanceMeters($prevPoint['latitude'], $prevPoint['longitude'], $point['latitude'], $point['longitude']);
 
                                 $prevPoint = $point;
                             }
