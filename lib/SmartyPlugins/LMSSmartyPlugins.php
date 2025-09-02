@@ -1425,8 +1425,13 @@ class LMSSmartyPlugins
         $LMS = LMS::getInstance();
 
         static $netdevicelist = array();
-        if (empty($netdevicelist)) {
-            $netdevicelist = $LMS->GetNetDevList();
+
+        if (empty($params['list'])) {
+            if (empty($netdevicelist)) {
+                $netdevicelist = $LMS->GetNetDevList();
+            }
+        } else {
+            $netdevicelist = $params['list'];
         }
 
         unset($netdevicelist['total'], $netdevicelist['order'], $netdevicelist['direction']);
