@@ -383,6 +383,7 @@ function initAdvancedSelectsTest(selector) {
 				language: lmsSettings.language,
 				placeholder: $t('Select an Option'),
 				minimumResultsForSearch: 5,
+				width: 'auto',
 				selectionCssClass: ':all:',
 				dropdownAutoWidth: true,
 				dropdownParent: $(that).parent(),
