@@ -33,6 +33,11 @@
     font-size: @font-size-mobile;
   }
 
+  &--default .select2-selection--single {
+    position: relative;
+    padding-right: 20px;
+  }
+
   .select2-selection.select2-selection--multiple {
     padding-bottom: 3px;
     display: block;
@@ -77,7 +82,13 @@
 
     &.select2-selection--single .select2-selection__clear {
       height: inherit;
-      margin-right: inherit;
+      position: absolute;
+      right: 0;
+      left: auto;
+
+      margin-right: 20px;
+      font-size: 140%;
+      color: grey;
     }
 
     &.alert,
