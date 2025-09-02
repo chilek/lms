@@ -1483,13 +1483,15 @@ class LMSSmartyPlugins
 
         $class = 'class="netnode-list lms-ui-advanced-select-test ' . (!empty($params['class']) ? $params['class'] : null) . '"';
 
-        $options = '<option value=""' . (!$selected ? ' selected' : '') . '> ' . trans("— none —") . '</option>';
+        //$options = '<option value=""' . (!$selected ? ' selected' : '') . '> ' . trans("— none —") . '</option>';
+        $options = '';
         foreach ($netnodelist as $item) {
             $options .= '<option value="' . $item['id'] . '"' . ($selected == $item['id'] ? ' selected' : '') . '>'
                 . trans($item['name']) . ' (#' . $item['id'] . ')</option>';
         }
 
-        return '<select ' . $elemname . $onchange . $id . $class . $tip . '>' . $options . '</select>';
+        return '<select data-placeholder="' . trans("— none —") . '" data-allow-clear="true" '
+            . $elemname . $onchange . $id . $class . $tip . '>' . $options . '</select>';
     }
 
     public static function identityTypesFunction(array $params, $template)
