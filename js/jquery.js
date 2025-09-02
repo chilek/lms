@@ -457,6 +457,12 @@ function initAdvancedSelectsTest(selector) {
 			options
 		);
 
+		var emptyValueOption = $(this).find('option[value=""]');
+		if (emptyValueOption.length) {
+			options.placeholder = emptyValueOption.text();
+			options.allowClear = true;
+		}
+
 		$(this).select2(options);
 
 		if (typeof($(this).attr('required')) !== 'undefined' || $(this).is('[data-required]')) {
