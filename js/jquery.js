@@ -474,6 +474,12 @@ function initAdvancedSelectsTest(selector) {
 			if (typeof($(this).attr('required')) !== 'undefined' || $(this).is('[data-required]')) {
 				$(this).siblings('.select2').find('.select2-selection').toggleClass('lms-ui-error', RegExp("^0?$").test($(this).val()));
 			}
+		}).on("select2:clear", function(){
+			$(this).on("select2:opening.cancelOpen", function(e){
+				e.preventDefault();
+
+				$(this).off("select2:opening.cancelOpen");
+			});
 		});
 
 		$(document).on('select2:open', function() {
