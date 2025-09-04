@@ -1069,6 +1069,7 @@ version 28-git (????-??-??):
   - improvement: 'rt.from_header_email_is_customer_contact_check' configuration variable with default 'true'
     value allows to disable checking if 'from' header e-mail address is customer contact during ticket message
     reply form startup [chilan]
+  - enhancement: allow to set ticket as periodic and create new events by crontab script [interduo]
 
 version 27.0 (2021-08-20):
 

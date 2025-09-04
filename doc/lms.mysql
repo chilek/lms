@@ -2244,6 +2244,7 @@ CREATE TABLE rttickets (
   modtime int(16) NOT NULL DEFAULT 0,
   source tinyint(4) NOT NULL DEFAULT '0',
   priority tinyint(4) DEFAULT NULL,
+  periodicity smallint DEFAULT 0,
   deleted tinyint(1) NOT NULL DEFAULT '0',
   deltime int(16) NOT NULL DEFAULT 0,
   deluserid int(11) DEFAULT NULL,

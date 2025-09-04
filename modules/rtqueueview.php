@@ -368,7 +368,31 @@ $SESSION->add_history_entry();
 $filter['direction'] = $queue['direction'];
 $filter['order'] = $queue['order'];
 
-unset($queue['total'], $queue['state'], $queue['priority'], $queue['source'], $queue['order'], $queue['direction'], $queue['owner'], $queue['removed'], $queue['deadline'], $queue['service'], $queue['type'], $queue['unread'], $queue['parentids'], $queue['rights'], $queue['verifier'], $queue['netnode'], $queue['projectids'], $queue['cid'], $queue['subject'], $queue['fromdate'], $queue['todate'], $queue['watching']);
+unset(
+    $queue['total'],
+    $queue['state'],
+    $queue['priority'],
+    $queue['periodicity'],
+    $queue['source'],
+    $queue['order'],
+    $queue['direction'],
+    $queue['owner'],
+    $queue['removed'],
+    $queue['deadline'],
+    $queue['service'],
+    $queue['type'],
+    $queue['unread'],
+    $queue['parentids'],
+    $queue['rights'],
+    $queue['verifier'],
+    $queue['netnode'],
+    $queue['projectids'],
+    $queue['cid'],
+    $queue['subject'],
+    $queue['fromdate'],
+    $queue['todate'],
+    $queue['watching'],
+);
 
 $queues = $LMS->GetQueueList(array('stats' => false));
 $categories = $LMS->GetUserCategories($currentuser);
