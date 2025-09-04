@@ -1488,8 +1488,7 @@ class LMSSmartyPlugins
 
         $class = 'class="netnode-list lms-ui-advanced-select-test ' . (!empty($params['class']) ? $params['class'] : null) . '"';
 
-        //$options = '<option value=""' . (!$selected ? ' selected' : '') . '> ' . trans("— none —") . '</option>';
-        $options = '';
+        $options = '<option value=""' . (!$selected ? ' selected' : '') . '> ' . trans("— none —") . '</option>';
         foreach ($netnodelist as $item) {
             $options .= '<option value="' . $item['id'] . '"' . ($selected == $item['id'] ? ' selected' : '') . '>'
                 . trans($item['name']) . ' (#' . $item['id'] . ')</option>';
