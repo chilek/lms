@@ -749,7 +749,8 @@ if (isset($_POST['message'])) {
 
             $message['mailfrom'] = array();
 
-            if (!empty($reply['mailfrom']) && !empty($reply['customerid'])
+            if (!empty($reply['mailfrom'])
+                && (!empty($reply['customerid']) || !ConfigHelper::checkConfig('rt.from_header_email_is_customer_contact_check', true))
                 && preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $reply['mailfrom'], $m)) {
                 $message['mailfrom'] = array(
                     $m['mail'] => array(
