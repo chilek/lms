@@ -642,7 +642,8 @@ const RTMESSAGE_REGULAR = 0,
     RTMESSAGE_PARENT_CHANGE = 1048576,
     RTMESSAGE_ASSIGNED_EVENT_ADD = 2097152,
     RTMESSAGE_ASSIGNED_EVENT_CHANGE = 4194304,
-    RTMESSAGE_ASSIGNED_EVENT_DELETE = 8388608;
+    RTMESSAGE_ASSIGNED_EVENT_DELETE = 8388608,
+    RTMESSAGE_PERIODICITY_CHANGE = 16777216;
 
 const NETWORK_NODE_FLAG_BSA = 1,
     NETWORK_NODE_FLAG_INTERFACE_COUNT_INCREASE_POSSIBILITY = 2,
@@ -1069,7 +1070,10 @@ const DISPOSABLE = 0,
     QUARTERLY = 4,
     YEARLY = 5,
     CONTINUOUS = 6,
-    HALFYEARLY = 7;
+    HALFYEARLY = 7,
+    EVERY_OTHER_DAY = 8,
+    EVERY_OTHER_WEEK = 9,
+    EVERY_OTHER_MONTH = 10;
 
 // Accounting periods
 $PERIODS = array(
@@ -1090,6 +1094,59 @@ $BILLING_PERIODS = array(
     QUARTERLY => ConfigHelper::getConfig('assignments.billing_period_quarterly', trans('quarterly')),
     HALFYEARLY => ConfigHelper::getConfig('assignments.billing_period_half_yearly', trans('half-yearly')),
     YEARLY => ConfigHelper::getConfig('assignments.billing_period_yearly', trans('yearly')),
+);
+
+$EVENT_PERIODICITY = array(
+    DISPOSABLE => array(
+        'label' => trans('<!event>disposable'),
+        'map' => 0,
+        'name' => 'EVENT_PERIODICITY_DISPOSABLE',
+    ),
+    DAILY => array(
+        'label' => trans('<!event>daily'),
+        'map' => '+1 day',
+        'name' => 'EVENT_PERIODICITY_DAILY',
+    ),
+    EVERY_OTHER_DAY => array(
+        'label' => trans('<!event>every other day'),
+        'map' => '+2 days',
+        'name' => 'EVENT_PERIODICITY_EVERY_OTHER_DAY',
+    ),
+    WEEKLY => array(
+        'label' => trans('<!event>weekly'),
+        'map' => '+1 week',
+        'name' => 'EVENT_PERIODICITY_WEEKLY',
+    ),
+    EVERY_OTHER_WEEK => array(
+        'label' => trans('<!event>every other week'),
+        'map' => '+2 week',
+        'name' => 'EVENT_PERIODICITY_EVERY_OTHER_WEEK',
+    ),
+    MONTHLY => array(
+        'label' => trans('<!event>monthly'),
+        'map' => '+1 month',
+        'name' => 'EVENT_PERIODICITY_MONTHLY',
+    ),
+    EVERY_OTHER_MONTH => array(
+        'label' => trans('<!event>every other month'),
+        'map' => '+2 months',
+        'name' => 'EVENT_PERIODICITY_EVERY_OTHER_MONTH',
+    ),
+    QUARTERLY => array(
+        'label' => trans('<!event>quarterly'),
+        'map' => '+3 months',
+        'name' => 'EVENT_PERIODICITY_QUARTERLY',
+    ),
+    HALFYEARLY => array(
+        'label' => trans('<!event>halfyearly'),
+        'map' => '+6 months',
+        'name' => 'EVENT_PERIODICITY_HALFYEARLY',
+    ),
+    YEARLY => array(
+        'label' => trans('<!event>yearly'),
+        'map' => '+1 year',
+        'name' => 'EVENT_PERIODICITY_YEARLY',
+    ),
 );
 
 // Numbering periods
@@ -2069,6 +2126,7 @@ if (isset($SMARTY)) {
             '_RT_PRIORITIES' => $RT_PRIORITIES,
             '_RT_PRIORITY_STYLES' => $RT_PRIORITY_STYLES,
             '_RT_TYPES' => $RT_TYPES,
+            '_EVENT_PERIODICITY' => $EVENT_PERIODICITY,
             '_CONFIG_TYPES' => $CONFIG_TYPES,
             '_TARIFF_FLAGS' => $TARIFF_FLAGS,
             '_SERVICETYPES' => $SERVICETYPES,

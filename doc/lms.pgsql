@@ -2157,6 +2157,7 @@ CREATE TABLE rttickets (
   modtime bigint NOT NULL DEFAULT 0,
   source smallint	DEFAULT 0 NOT NULL,
   priority smallint	DEFAULT NULL,
+  periodicity smallint DEFAULT 0,
   deleted smallint	DEFAULT 0 NOT NULL,
   deltime bigint	DEFAULT 0 NOT NULL,
   deluserid integer	DEFAULT NULL
@@ -4525,6 +4526,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025081300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025073000');
 
 COMMIT;
