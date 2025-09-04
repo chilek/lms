@@ -1066,6 +1066,9 @@ version 28-git (????-??-??):
     by default [chilan]
   - enhancement: 'lms-zipcodes.php' backend script allows to bulkly determine zip codes for customer
     addresses, network devices and network nodes [chilan]
+  - improvement: 'rt.from_header_email_is_customer_contact_check' configuration variable with default 'true'
+    value allows to disable checking if 'from' header e-mail address is customer contact during ticket message
+    reply form startup [chilan]
 
 version 27.0 (2021-08-20):
 
