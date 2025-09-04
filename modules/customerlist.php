@@ -64,6 +64,8 @@ if ($api) {
         $filter['state'] = $_GET['s'];
     } elseif (!isset($filter['state'])) {
         $filter['state'] = array();
+    } elseif (!is_array($filter['state'])) {
+        $filter['state'] = array($filter['state']);
     }
 
     if (isset($_GET['n'])) {
