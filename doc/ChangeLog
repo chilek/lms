@@ -1071,6 +1071,8 @@ version 28-git (????-??-??):
     reply form startup [chilan]
   - improvement: use email addresses from 'To' headers to notify customers during new helpdesk ticket
     message creation [chilan]
+  - improvement: bin/lms-teryt.php: try to use address postoffice property as borough name for 'merge'
+    mode [chilan]
 
 version 27.0 (2021-08-20):
 
