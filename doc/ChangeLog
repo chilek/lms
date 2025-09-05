@@ -1069,6 +1069,8 @@ version 28-git (????-??-??):
   - improvement: 'rt.from_header_email_is_customer_contact_check' configuration variable with default 'true'
     value allows to disable checking if 'from' header e-mail address is customer contact during ticket message
     reply form startup [chilan]
+  - improvement: use email addresses from 'To' headers to notify customers during new helpdesk ticket
+    message creation [chilan]
 
 version 27.0 (2021-08-20):
 
