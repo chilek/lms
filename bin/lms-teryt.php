@@ -1852,7 +1852,7 @@ if (isset($options['merge'])) {
             echo implode(
                 ', ',
                 array_map(
-                    function($key, $value) {
+                    function ($key, $value) {
                         return $key . ': \'' . $value . '\'';
                     },
                     array_keys($location),
