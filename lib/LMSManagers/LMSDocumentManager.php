@@ -2299,12 +2299,16 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             return;
         }
 
+        $allowUnapprovedDocumentArchiving = ConfigHelper::checkConfig('documents.allow_unapproved_document_archiving');
+
         $docs = $this->db->GetCol(
-            'SELECT d.id
-				FROM documents d
-				' . ($userid ? ' JOIN docrights r ON r.doctype = d.type' : '') . '
-				WHERE d.closed > ' . DOC_OPEN . ' AND d.archived = 0 AND d.id IN (' . implode(',', $ids) . ')
-					' . ($userid ? ' AND r.userid = ' . $userid . ' AND (r.rights & ' . DOCRIGHT_ARCHIVE . ') > 0' : '')
+        'SELECT d.id
+            FROM documents d
+            ' . ($userid ? ' JOIN docrights r ON r.doctype = d.type' : '') . '
+            WHERE ' . $allowUnapprovedDocumentArchiving ? '1 = 1' : 'd.closed > ' . DOC_OPEN . '
+                AND d.archived = 0
+                AND d.id IN (' . implode(',', $ids) . ')
+                ' . ($userid ? ' AND r.userid = ' . $userid . ' AND (r.rights & ' . DOCRIGHT_ARCHIVE . ') > 0' : '')
         );
         if (empty($docs)) {
             return;
@@ -2313,8 +2317,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $this->db->BeginTrans();
 
         $this->db->Execute(
-            'UPDATE documents SET archived = 1, adate = ?NOW?, auserid = ?
-			WHERE id IN (' . implode(',', $docs) . ')',
+            'UPDATE documents
+            SET archived = 1, adate = ?NOW?, auserid = ?
+            WHERE id IN (' . implode(',', $docs) . ')',
             array($userid)
         );
 
