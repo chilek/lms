@@ -1073,6 +1073,8 @@ version 28-git (????-??-??):
     message creation [chilan]
   - improvement: bin/lms-teryt.php: try to use address postoffice property as borough name for 'merge'
     mode [chilan]
+  - enhancement: new configuration variable 'documents.allow_unapproved_document_archiving' with 'false'
+    as default value allows to enable document archiving event they are not approved [chilan]
 
 version 27.0 (2021-08-20):
 
