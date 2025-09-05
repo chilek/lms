@@ -761,6 +761,17 @@ if (isset($_POST['message'])) {
                 );
             }
 
+            if (!empty($reply['to'])) {
+                foreach ($reply['to'] as &$to) {
+                    if (preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $to['address'], $m)
+                        && $m['mail'] != $queue['email']) {
+                        $to['contact'] = $m['mail'];
+                        $to['display'] = isset($m['name']) ? $m['name'] : '';
+                        $to['source'] = 'to';
+                    }
+                }
+            }
+
             if (!empty($reply['cc'])) {
                 foreach ($reply['cc'] as &$cc) {
                     if (preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $cc['address'], $m)) {
@@ -913,9 +924,26 @@ if (!is_array($message['ticketid'])) {
         }
     }
 
-    $replyto_cc_mail_addresses = false;
+    $replyto_to_mail_addresses = $replyto_cc_mail_addresses = false;
+
     if (!empty($message['inreplyto'])) {
         $reply = $LMS->GetMessage($message['inreplyto']);
+
+        if (!empty($reply['to'])) {
+            foreach ($reply['to'] as $to) {
+                if (preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $to['address'], $m)
+                    && $m['mail'] != $queue['email']) {
+                    $contacts['mails'][$m['mail']] = array(
+                        'contact' => $m['mail'],
+                        'name' => trans('from message "To" header'),
+                        'display' => isset($m['name']) ? $m['name'] : '',
+                        'source' => 'to',
+                        'checked' => empty($reply['customerid']) ? 0 : 1,
+                    );
+                    $replyto_to_mail_addresses = true;
+                }
+            }
+        }
 
         if (!empty($reply['cc'])) {
             foreach ($reply['cc'] as $cc) {
@@ -1003,6 +1031,11 @@ if (!is_array($message['ticketid'])) {
                     break;
                 case 'mailfrom':
                     if (isset($default_notified_email_sources['from-header'])) {
+                        $contact['checked'] = 1;
+                    }
+                    break;
+                case 'to':
+                    if (isset($default_notified_email_sources['to-header'])) {
                         $contact['checked'] = 1;
                     }
                     break;

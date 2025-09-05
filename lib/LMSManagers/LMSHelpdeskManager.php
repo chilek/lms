@@ -1498,16 +1498,28 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             }
             $message['references'] = array_reverse($references);
 
-            $message['cc']  = array();
+            $message['cc'] = $message['to'] = array();
             if (function_exists('imap_rfc822_parse_headers')) {
                 $headers = imap_rfc822_parse_headers($message['headers']);
-                if (!empty($headers) && isset($headers->cc)) {
-                    foreach ($headers->cc as $cc) {
-                        $email = $cc->mailbox . '@' . $cc->host;
-                        $message['cc'][$email] = array(
-                            'display' => isset($cc->personal) ? iconv_mime_decode($cc->personal) : '',
-                            'address' => $email,
-                        );
+                if (!empty($headers)) {
+                    if (isset($headers->cc)) {
+                        foreach ($headers->cc as $cc) {
+                            $email = $cc->mailbox . '@' . $cc->host;
+                            $message['cc'][$email] = array(
+                                'display' => isset($cc->personal) ? iconv_mime_decode($cc->personal) : '',
+                                'address' => $email,
+                            );
+                        }
+                    }
+
+                    if (!empty($headers->to)) {
+                        foreach ($headers->to as $to) {
+                            $email = $to->mailbox . '@' . $to->host;
+                            $message['to'][$email] = array(
+                                'display' => isset($to->personal) ? iconv_mime_decode($to->personal) : '',
+                                'address' => $email,
+                            );
+                        }
                     }
                 }
             }

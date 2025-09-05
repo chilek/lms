@@ -5641,6 +5641,7 @@ $_LANG['Ticket access denied!'] = 'Odmowa dostępu do zgłoszenia!';
 
 $_LANG['from ticket'] = 'ze zgłoszenia';
 $_LANG['from message'] = 'z wiadomości';
+$_LANG['from message "To" header'] = 'z nagłówka "Do" wiadomości';
 $_LANG['from message "Copy" header'] = 'z nagłówka "Kopia" wiadomości';
 $_LANG['from message "From" header'] = 'z nagłówka "Od" wiadomości';
 $_LANG['from message "Reply" header'] = 'z nagłówka "Odpowiedz" wiadomości';
