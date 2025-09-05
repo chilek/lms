@@ -2302,7 +2302,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $allowUnapprovedDocumentArchiving = ConfigHelper::checkConfig('documents.allow_unapproved_document_archiving');
 
         $docs = $this->db->GetCol(
-        'SELECT d.id
+            'SELECT d.id
             FROM documents d
             ' . ($userid ? ' JOIN docrights r ON r.doctype = d.type' : '') . '
             WHERE ' . $allowUnapprovedDocumentArchiving ? '1 = 1' : 'd.closed > ' . DOC_OPEN . '
