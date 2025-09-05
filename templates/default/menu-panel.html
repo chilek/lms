@@ -133,7 +133,7 @@
 					<div {tip class="tip" text="Allows you to logout" bold=1} onClick="{if ConfigHelper::getConfig('phpui.logout_confirmation')}confirmDialog('{trans("Are you sure that you want to logout?")}', this).done(function() { return location.href='?m=logout&is_sure=1'; });{else}location.href='?m=logout&is_sure=1';{/if}">
 						<div class="box1" style="display: flex;">
 							<i class="lms-ui-menu-item-icon lms-ui-icon-logout"></i>
-							<span style="white-space: normal; align-self: center;">
+							<span style="white-space: normal; align-self: center; margin-left: 0.3em;">
 								{trans("Logout")} {$layout.logrname|trunescape:30}
 							</span>
 						</div>
