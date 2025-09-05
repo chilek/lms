@@ -187,7 +187,7 @@ function getIdentsWithSubcities($subcities, $street, $only_unique_city_matches)
  * \param  string $street street name
  * \return array  $ident  LMS location id's
  */
-function getIdents($city = null, $street = null, $only_unique_city_matches = false)
+function getIdents($city = null, $street = null, $only_unique_city_matches = false, $borough = null)
 {
     $street = trim(preg_replace('/^(ul\.|pl\.|al\.|bulw\.|os\.|wyb\.|plac|skwer|rondo|park|rynek|szosa|droga|ogród|wyspa)/i', '', $street));
 
@@ -221,7 +221,8 @@ function getIdents($city = null, $street = null, $only_unique_city_matches = fal
             FROM location_cities c
             JOIN location_boroughs lb ON lb.id = c.boroughid
             JOIN location_districts ld ON ld.id = lb.districtid
-            WHERE c.name ?LIKE? ?",
+            WHERE c.name ?LIKE? ?"
+                . (empty($borough) ? '' : ' AND lb.name ?LIKE? ' . $DB->Escape($borough)),
             array($city)
         );
         if (empty($cities)) {
@@ -1800,19 +1801,19 @@ if (isset($options['merge'])) {
 
     $addresses = $DB->GetAll("
         (
-            SELECT a.id, a.city, a.street, ca.customer_id
+            SELECT a.id, a.city, a.postoffice, a.street, a.house AS building_num, ca.customer_id
             FROM addresses a
             JOIN customer_addresses ca ON ca.address_id = a.id
             WHERE a.city IS NOT NULL
                 AND (a.city_id IS NULL OR (a.street IS NOT NULL AND a.street_id IS NULL))
         ) UNION (
-            SELECT a.id, a.city, a.street, 0 AS customer_id
+            SELECT a.id, a.city, a.postoffice, a.street, a.house AS building_num, 0 AS customer_id
             FROM addresses a
             JOIN netdevices nd ON nd.address_id = a.id
             WHERE a.city IS NOT NULL
                 AND (a.city_id IS NULL OR (a.street IS NOT NULL AND a.street_id IS NULL))
         ) UNION (
-            SELECT a.id, a.city, a.street, 0 AS customer_id
+            SELECT a.id, a.city, a.postoffice, a.street, a.house AS building_num, 0 AS customer_id
             FROM addresses a
             JOIN netnodes nn ON nn.address_id = a.id
             WHERE a.city IS NOT NULL
@@ -1829,11 +1830,36 @@ if (isset($options['merge'])) {
     $cities_with_sections = $LMS->GetCitiesWithSections();
 
     foreach ($addresses as $a) {
-        $city = empty($a['city']) ? '-' : $a['city'];
-        $street = empty($a['street']) ? '-' : $a['street'];
+        $city = empty($a['city']) ? null : $a['city'];
+        $street = empty($a['street']) ? null : $a['street'];
+        $postoffice = empty($a['postoffice']) ? null : $a['postoffice'];
+        $building = empty($a['building_num']) ? null: $a['building_num'];
 
         if (!$quiet) {
-            printf("City '%s', Street: '%s': ", $city, $street);
+            $location = array();
+            if (!empty($postoffice)) {
+                $location['Borough'] = $postoffice;
+            }
+            if (!empty($city)) {
+                $location['City'] = $city;
+            }
+            if (!empty($street)) {
+                $location['Street'] = $street;
+            }
+            if (!empty($building)) {
+                $location['Building'] = $building;
+            }
+            echo implode(
+                ', ',
+                array_map(
+                    function($key, $value) {
+                        return $key . ': \'' . $value . '\'';
+                    },
+                    array_keys($location),
+                    $location
+                )
+            );
+            echo ': ';
         }
 
         $city = mb_strtolower($city);
@@ -1843,10 +1869,10 @@ if (isset($options['merge'])) {
         if (isset($location_cache[$key])) {
             $idents = $location_cache[$key];
         } else {
-            if (isset($cities_with_sections[$city]) && $city != '-' && $street != '-') {
+            if (isset($cities_with_sections[$city]) && !empty($city) && !empty($street)) {
                 $idents = getIdentsWithSubcities($cities_with_sections[$city], $street, $only_unique_city_matches);
             } else {
-                $idents = getIdents($city == '-' ? null : $city, $street == '-' ? null : $street, $only_unique_city_matches);
+                $idents = getIdents($city, $street, $only_unique_city_matches, $postoffice);
             }
             $location_cache[$key] = $idents;
         }
