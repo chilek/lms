@@ -441,10 +441,12 @@
 			return;
 		}
 
-		if ($('tr[data-closed="0"] :checked').length) {
-			alertDialog($t('One or more of selected documents are not confirmed!'), this);
-			return;
-		}
+		{if !ConfigHelper::checkConfig('documents.allow_unapproved_document_archiving')}
+			if ($('tr[data-closed="0"] :checked').length) {
+				alertDialog($t('One or more of selected documents are not confirmed!'), this);
+				return;
+			}
+		{/if}
 
 		confirmDialog($t("Are you sure, you want to archive selected documents?"), this).done(function() {
 			document.page.action = "?m=documentedit&action=archive";
