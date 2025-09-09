@@ -1075,6 +1075,7 @@ version 28-git (????-??-??):
     mode [chilan]
   - enhancement: new configuration variable 'documents.allow_unapproved_document_archiving' with 'false'
     as default value allows to enable document archiving event they are not approved [chilan]
+  - enhancement: new node search status filter: 'no active and future assignments' [chilan]
 
 version 27.0 (2021-08-20):
 
