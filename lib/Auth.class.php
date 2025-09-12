@@ -193,7 +193,9 @@ class Auth
             if (isset($loginform)) {
                 if ($this->id) {
                     if ($this->authcoderequired) {
-                        writesyslog('Bad authentication code (' . ($this->authcode ?? '-') . ') for ' . $this->login, LOG_WARNING);
+                        if (isset($this->authcode)) {
+                            writesyslog('Bad authentication code (' . ($this->authcode ?? '-') . ') for ' . $this->login, LOG_WARNING);
+                        }
                     } else {
                         if (!$this->hostverified) {
                             writesyslog('Bad host (' . $this->ip . ') for ' . $this->login, LOG_WARNING);
