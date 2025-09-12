@@ -82,7 +82,7 @@ if (!$this->getOne("SELECT 1 FROM uiconfig WHERE section = ? AND var = ?", array
     $this->Execute(
         "UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?",
         array(
-            $debtInterestPercentageValue,
+            $configurationVariableValue,
             'finances',
             'debt_interest_percentages',
         )
