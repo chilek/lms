@@ -49,11 +49,14 @@ $current_registry['rights'] = $DB->GetAllByKey(
         (CASE WHEN u.access = 1 AND u.accessfrom <= ?NOW? AND (u.accessto >= ?NOW? OR u.accessto = 0) THEN 1 ELSE 0 END) AS access,
         r.rights
     FROM vusers u
-    LEFT JOIN cashrights r ON r.userid = u.id
-    WHERE r.regid IS NULL OR r.regid = ?
+    LEFT JOIN cashregs cr ON cr.id = ?
+    LEFT JOIN cashrights r ON r.userid = u.id AND r.regid = ?
     ORDER BY u.rname',
     'id',
-    array($id)
+    array(
+        $id,
+        $id,
+    )
 );
 
 if (isset($_POST['registry'])) {
