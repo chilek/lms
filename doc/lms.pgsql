@@ -4177,7 +4177,8 @@ URL: %url
 2023.09.07:11.50
 2023.10.05:11.25
 2025.05.08:10.75
-2025.07.03:10.5', '', 0);
+2025.07.03:10.5
+2025.09.04:10.25', '', 0);
 
 INSERT INTO invprojects (name, type) VALUES ('inherited', 1);
 
@@ -4525,6 +4526,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025081300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025091200');
 
 COMMIT;
