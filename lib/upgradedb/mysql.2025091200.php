@@ -84,7 +84,7 @@ if (!$this->getOne("SELECT 1 FROM uiconfig WHERE section = ? AND var = ?", array
         array(
             $debtInterestPercentageValue,
             'finances',
-            '$configurationVariableValue',
+            'debt_interest_percentages',
         )
     );
 }
