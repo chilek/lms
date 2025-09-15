@@ -173,11 +173,7 @@ if ($omit_free_days) {
             }
         }
 
-        if ($diff_days) {
-            $daystart = strtotime(($diff_days + $free_days) . ' days ago', $dayend + 1);
-        } else {
-            $daystart = strtotime(($diff_days + $free_days + 1) . ' days ago', $dayend + 1);
-        }
+        $daystart = strtotime(($free_days + 1) . ' days ago', $dayend + 1);
     }
 }
 
