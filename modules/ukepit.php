@@ -1017,7 +1017,7 @@ if ($report_type == 'full') {
                                 $error['simc'] = true;
                             }
                             if (!strlen($netnode['location_house'])) {
-                                $error['location_house'] = true;
+                                $error['location_building'] = true;
                             }
                             $errors['netnodes'][] = $error;
                         }
@@ -1029,7 +1029,7 @@ if ($report_type == 'full') {
                             'simc' => true,
                         );
                         if (!isset($netnode['location_house']) || !strlen($netnode['location_house'])) {
-                            $error['location_house'] = true;
+                            $error['location_building'] = true;
                         }
                         $errors['netnodes'][] = $error;
                     }
@@ -1084,7 +1084,7 @@ if ($report_type == 'full') {
                                 $error['simc'] = true;
                             }
                             if (!strlen($netdevice['location_house'])) {
-                                $error['location_house'] = true;
+                                $error['location_building'] = true;
                             }
                             $errors['netdevices'][] = $error;
                         }
@@ -1096,7 +1096,7 @@ if ($report_type == 'full') {
                             'simc' => true,
                         );
                         if (!isset($netdevice['location_house']) || !strlen($netdevice['location_house'])) {
-                            $error['location_house'] = true;
+                            $error['location_building'] = true;
                         }
                         $errors['netdevices'][] = $error;
                     }
@@ -1144,7 +1144,7 @@ if ($report_type == 'full') {
                                 $error['simc'] = true;
                             }
                             if (!strlen($netdevice['location_house'])) {
-                                $error['location_house'] = true;
+                                $error['location_building'] = true;
                             }
                             $errors['netdevices'][] = $error;
                         }
@@ -1156,7 +1156,7 @@ if ($report_type == 'full') {
                             'simc' => true,
                         );
                         if (!isset($netdevice['location_house']) || !strlen($netdevice['location_house'])) {
-                            $error['location_house'] = true;
+                            $error['location_building'] = true;
                         }
                         $errors['netdevices'][] = $error;
                     }
@@ -1652,7 +1652,7 @@ if ($report_type == 'full') {
                                     $error['simc'] = true;
                                 }
                                 if (!strlen($range['building'])) {
-                                    $error['location_house'] = true;
+                                    $error['location_building'] = true;
                                 }
                             }
                             $errors['nodes'][] = $error;
@@ -1672,7 +1672,7 @@ if ($report_type == 'full') {
                                     $error['simc'] = true;
                                 }
                                 if (!strlen($range['building'])) {
-                                    $error['location_house'] = true;
+                                    $error['location_building'] = true;
                                 }
                             }
                             $errors['netdevices'][] = $error;
@@ -1841,7 +1841,7 @@ if ($report_type == 'full') {
                     $error['simc'] = true;
                 }
                 if (!isset($node['location_house']) || !strlen($node['location_house'])) {
-                    $error['location_house'] = true;
+                    $error['location_building'] = true;
                 }
             }
             $errors['nodes'][] = $error;
