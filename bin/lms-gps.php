@@ -162,7 +162,7 @@ foreach ($types as $label => $type) {
                 if ($provider == 'google') {
                     $res = geocode((empty($row['state_name']) ? '' : $row['state_name'] . ', ' . $row['district_name'] . ', ' . $row['borough_name'])
                         . $row['location'] . " Poland");
-                    if (!empty($result) && $res['status'] == "OK" && $res['accuracy'] == "ROOFTOP") {
+                    if (!empty($res) && $res['status'] == "OK" && $res['accuracy'] == "ROOFTOP") {
                         if (!$debug) {
                             $DB->Execute(
                                 "UPDATE " . $type . " SET latitude = ?, longitude = ? WHERE id = ?",
