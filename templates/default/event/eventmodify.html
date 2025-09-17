@@ -213,8 +213,8 @@
 					{function event_ticket_item_content}
 						{capture name="item_content_result" assign="item_content_result"}
 							{hint icon="info" mode="toggle" url="?m=rtticketinfo&id={$item.id}"}
-							#{$item.id}
-							<a href="?m=rtticketview&id={$item.id}">{$item.name}</a>
+							(#{$item.id})
+							<a class="lms-ui-list-item-name" href="?m=rtticketview&id={$item.id}">{$item.name}</a>
 						{/capture}
 					{/function}
 

@@ -1091,9 +1091,9 @@ function initListQuickSearch(options) {
 		field_name_pattern: 'list',
 		item_content: function(item) {
 			if (item.hasOwnProperty('name')) {
-				return sprintf('#%06d', item.id) + ' <a href="?m=list&id=' + item.id + '">' + item.name + '</a>';
+				return sprintf('(#%06d)', item.id) + ' <a class="lms-ui-list-item-name" href="?m=list&id=' + item.id + '">' + item.name + '</a>';
 			} else {
-				return '<a href="?m=list&id=' + item.id + '">' + sprintf('#%06d', item.id) + '</a>';
+				return '<a class="lms-ui-list-item-name" href="?m=list&id=' + item.id + '">' + sprintf('#%06d', item.id) + '</a>';
 			}
 		},
 		excluded_elements: [],

@@ -37,9 +37,9 @@ function smarty_function_list(array $params, Smarty_Internal_Template $template)
     $item_content = !empty($params['item_content']) ? $params['item_content']
         : function ($item) {
             if (isset($item['name'])) {
-                return sprintf('#%06d', $item['id']) . ' <a href="?m=list&id=' . $item['id'] . '">' . $item['name'] . '</a>';
+                return sprintf('(#%06d)', $item['id']) . ' <a class="lms-ui-list-item-name" href="?m=list&id=' . $item['id'] . '">' . $item['name'] . '</a>';
             } else {
-                return '<a href="?m=list&id=' . $item['id'] . '">' . sprintf('#%06d', $item['id']) . '</a>';
+                return '<a class="lms-ui-list-item-name" href="?m=list&id=' . $item['id'] . '">' . sprintf('#%06d', $item['id']) . '</a>';
             }
         };
 
