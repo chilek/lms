@@ -209,11 +209,7 @@
 			</td>
 			<td colspan="2" class="fbt">
 				{$message.username|escape}<BR>
-				{if $message.contenttype == 'text/plain'}
-					{trim($message.body)|escape|regex_replace:"/\r?\n/":'<br>'|message_quote}
-				{else}
-					{$message.body|message_quote}
-                {/if}
+				{$message.body}
 			</td>
 		</tr>
 	{/if}
