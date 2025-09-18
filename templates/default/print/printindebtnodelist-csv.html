@@ -66,6 +66,10 @@ ULIC
 |
 {$node.zip}
 |
-{$node.info}
+{$node.info|regexp_replace:"/\r?\n/":";"}
+|
+{$node.longitude}
+|
+{$node.latitude}
 {/strip}
 {/foreach}

@@ -70,7 +70,7 @@ ULIC
 |
 {$node.zip}
 |
-{$node.info}
+{$node.info|regex_replace:"/\r?\n/":";"}
 |
 {$node.longitude}
 |
