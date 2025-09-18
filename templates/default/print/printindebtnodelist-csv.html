@@ -28,12 +28,16 @@ ULIC
 {trans("Apartment")}
 |
 {trans("Zip")}
-|
-{trans("Description")}
-|
-{trans("GPS longitude")}
-|
-{trans("GPS latitude")}
+{if !empty($options.description)}
+	|
+	{trans("Description")}
+{/if}
+{if !empty($options['gps-coordinates'])}
+	|
+	{trans("GPS longitude")}
+	|
+	{trans("GPS latitude")}
+{/if}
 {if !empty($options['assigned-bandwidth'])}
 	|
 	{trans("Min. download")}
@@ -80,12 +84,16 @@ ULIC
 {$node.location_flat}
 |
 {$node.zip}
-|
-{$node.info|regexp_replace:"/\r?\n/":";"}
-|
-{$node.longitude}
-|
-{$node.latitude}
+{if !empty($options.description)}
+	|
+	{$node.info|regexp_replace:"/\r?\n/":";"}
+{/if}
+{if !empty($options['gps-coordinates'])}
+	|
+	{$node.longitude}
+	|
+	{$node.latitude}
+{/if}
 {if !empty($options['assigned-bandwidth'])}
 	|
 	{$node.downrate}

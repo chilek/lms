@@ -19,6 +19,11 @@
 		align-items: center;
 	}
 
+	#additional-properties {
+		display: flex;
+		flex-direction: column;
+	}
+
 </style>
 
 <H1>{$layout.pagetitle}</H1>
@@ -1782,15 +1787,28 @@
 						</td>
 					</tr>
 					<tr>
-						<td class="nobr">
+						<td class="nobr valign-top">
 							{icon name="option"}
-							<strong>{trans("Additional properties")}</strong>
+							<label>{strip}
+								<input type="checkbox" id="all-properties">
+								<strong>{trans("Additional properties")}</strong>
+							{/strip}</label>
 						</td>
 						<td>
-							<label>
-								<input type="checkbox" name="options[assigned-bandwidth]" form="printnodelist">
-								{trans("assigned bandwidth")}
-							</label>
+							<div id="additional-properties">
+								<label>
+									<input type="checkbox" name="options[description]" form="printnodelist">
+									{trans("description")}
+								</label>
+								<label>
+									<input type="checkbox" name="options[gps-coordinates]" form="printnodelist">
+									{trans("GPS coordinates")}
+								</label>
+								<label>
+									<input type="checkbox" name="options[assigned-bandwidth]" form="printnodelist">
+									{trans("assigned bandwidth")}
+								</label>
+							</div>
 						</td>
 					</tr>
 					<tr>
@@ -1827,6 +1845,15 @@
 <script>
 
 	$(function() {
+		$('#all-properties').change(function() {
+			$('[form="printnodelist"][name^="options"]').prop('checked', $(this).prop('checked'));
+		});
+
+		$('[form="printnodelist"][name^="options"]').change(function() {
+			var options = $('[form="printnodelist"][name^="options"]');
+			$('#all-properties').prop('checked', options.length == options.filter(':checked').length);
+		});
+
 		$(".printnodelist-button").click(function() {
 			var type = $(this).attr("data-type");
 			$('#printnodelist [name="type"]').val(type);
