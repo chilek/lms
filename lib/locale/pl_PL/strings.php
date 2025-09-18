@@ -6238,3 +6238,10 @@ $_LANG['Existing attachments'] = 'Istniejące załączniki';
 $_LANG['Template attachments'] = 'Załączniki szablonu';
 
 $_LANG['The validity date range of the document is determined upon its approval.'] = 'Zakres dat obowiązywania dokumentu jest wyznaczany przy jego zatwierdzaniu.';
+
+$_LANG['Additional properties'] = 'Dodatkowe właściwości';
+$_LANG['assigned bandwidth'] = 'przydzielona przepustowość';
+$_LANG['Min. download'] = 'Min. pobieranie';
+$_LANG['Max. download'] = 'Maks. pobieranie';
+$_LANG['Min. upload'] = 'Min. wysyłanie';
+$_LANG['Max. upload'] = 'Maks. wysyłanie';

@@ -35,6 +35,42 @@ switch ($type) {
         /***********************************************/
         $type = isset($_POST['type']) ? $_POST['type'] : 'print';
 
+        if (!empty($_POST['options'])) {
+            $options = $_POST['options'];
+            if (!empty($options['assigned-bandwidth'])) {
+                $nodeBandwidths = $DB->GetAllByKey(
+                    'SELECT
+                        n.id,
+                        SUM(t.downrate) AS downrate,
+                        SUM(t.downceil) AS downceil,
+                        SUM(t.uprate) AS uprate,
+                        SUM(t.upceil) AS upceil
+                    FROM nodes n
+                    JOIN nodeassignments na ON na.nodeid = n.id
+                    JOIN assignments a ON a.id = na.assignmentid
+                    JOIN tariffs t ON t.id = a.tariffid
+                    WHERE a.commited = 1
+                        AND a.suspended = 0
+                        AND a.datefrom <= ?NOW?
+                        AND (a.dateto = 0 OR a.dateto >= ?NOW?)
+                        AND NOT EXISTS (
+                            SELECT 1
+                            FROM assignments a2
+                            JOIN nodeassignments na2 ON na2.assignmentid = a2.id
+                            WHERE na2.nodeid = n.id
+                                AND a2.tariffid IS NULL
+                                AND a2.liabilityid IS NULL
+                                AND a2.datefrom <= ?NOW?
+                                AND (a2.dateto = 0 OR a2.dateto >= ?NOW?)
+                        )
+                    GROUP BY n.id',
+                    'id'
+                );
+            }
+        } else {
+            $options = array();
+        }
+
         switch ($_POST['filter']) {
             case 0:
                 $layout['pagetitle'] = trans('Nodes List');
@@ -137,6 +173,16 @@ switch ($type) {
                     . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
                 );
 
+                if (!empty($nodeBandwidths)) {
+                    foreach ($nodelist as &$node) {
+                        if (!empty($nodeBandwidths[$node['id']])) {
+                            $node = array_merge($node, $nodeBandwidths[$node['id']]);
+                        }
+                    }
+                    unset($node);
+                }
+
+                $SMARTY->assign('options', $options);
                 $SMARTY->assign('nodelist', $nodelist);
 
                 if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf' && $type == 'print') {
@@ -160,7 +206,8 @@ switch ($type) {
                 $SESSION->close();
 
                 die;
-            break;
+
+                break;
         }
 
         unset($nodelist['total']);
@@ -169,7 +216,18 @@ switch ($type) {
         unset($nodelist['totalon']);
         unset($nodelist['totaloff']);
 
+        if (!empty($nodeBandwidths)) {
+            foreach ($nodelist as &$node) {
+                if (!empty($nodeBandwidths[$node['id']])) {
+                    $node = array_merge($node, $nodeBandwidths[$node['id']]);
+                }
+            }
+            unset($node);
+        }
+
+        $SMARTY->assign('options', $options);
         $SMARTY->assign('nodelist', $nodelist);
+
         if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf' && $type == 'print') {
             $output = $SMARTY->fetch('print/printnodelist.html');
             Utils::html2pdf(array(

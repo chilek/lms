@@ -30,7 +30,22 @@ ULIC
 {trans("Zip")}
 |
 {trans("Description")}
+|
+{trans("GPS longitude")}
+|
+{trans("GPS latitude")}
+{if !empty($options['assigned-bandwidth'])}
+	|
+	{trans("Min. download")}
+	|
+	{trans("Max. download")}
+	|
+	{trans("Min. upload")}
+	|
+	{trans("Max. upload")}
+{/if}
 {/strip}
+
 {foreach $nodelist as $node}{strip}
 {$node.id}
 |
@@ -71,5 +86,16 @@ ULIC
 {$node.longitude}
 |
 {$node.latitude}
+{if !empty($options['assigned-bandwidth'])}
+	|
+	{$node.downrate}
+	|
+	{$node.downceil}
+	|
+	{$node.uprate}
+	|
+	{$node.upceil}
+{/if}
 {/strip}
+
 {/foreach}
