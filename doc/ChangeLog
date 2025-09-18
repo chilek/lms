@@ -1077,6 +1077,7 @@ version 28-git (????-??-??):
     as default value allows to enable document archiving event they are not approved [chilan]
   - enhancement: new node search status filter: 'no active and future assignments' [chilan]
   - enhancement: added optional node assigned bandwidth properties to node list csv export [chilan]
+  - improvement: allow to customise which node properties are exported to CSV file in print node list form [chilan]
 
 version 27.0 (2021-08-20):
 
