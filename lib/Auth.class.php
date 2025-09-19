@@ -481,8 +481,13 @@ class Auth
                             } else {
                                 $this->DB->Execute(
                                     'INSERT INTO twofactorauthcodehistory (userid, authcode, uts, success, ipaddr)
-                                    VALUES (?, ?, ?NOW?, ?, INET_ATON(?))',
-                                    array($this->id, !empty($this->authcode) ?: '', 1, $this->lastip)
+                                    VALUES (?, ?, ?NOW?, ?, ?)',
+                                    array(
+                                        $this->id,
+                                        !empty($this->authcode) ?: '',
+                                        1,
+                                        empty($this->lastip) ? null : ip2long($this->lastip),
+                                    )
                                 );
 
                                 $this->authcoderequired = '';
@@ -494,8 +499,12 @@ class Auth
                         } else {
                             $this->DB->Execute(
                                 'INSERT INTO twofactorauthcodehistory (userid, authcode, uts, ipaddr)
-                                VALUES (?, ?, ?NOW?, INET_ATON(?))',
-                                array($this->id, !empty($this->authcode) ?: '', $this->lastip)
+                                VALUES (?, ?, ?NOW?, ?)',
+                                array(
+                                    $this->id,
+                                    !empty($this->authcode) ?: '',
+                                    empty($this->lastip) ? null : ip2long($this->lastip),
+                                )
                             );
 
                             $this->error = trans("Wrong authentication code.");
