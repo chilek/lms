@@ -3680,6 +3680,16 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
     public function getCustomerPinRequirements()
     {
+        $unsecure_pin_validity = intval(ConfigHelper::getConfig(
+            'customers.unsecure_pin_validity',
+            ConfigHelper::getConfig(
+                'phpui.unsecure_pin_validity',
+                0,
+                true
+            ),
+            true
+        ));
+
         $pin_min_size = intval(ConfigHelper::getConfig(
             'customers.pin_min_length',
             ConfigHelper::getConfig(
@@ -3687,9 +3697,17 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 4
             )
         ));
+
         if (!$pin_min_size) {
             $pin_min_size = 4;
         }
+
+        $unsecure_pin_min_size = intval(ConfigHelper::getConfig('customers.unsecure_pin_min_length', $pin_min_size));
+
+        if (!$unsecure_pin_min_size) {
+            $unsecure_pin_min_size = 4;
+        }
+
         $pin_max_size = intval(ConfigHelper::getConfig(
             'customers.pin_max_length',
             ConfigHelper::getConfig(
@@ -3697,12 +3715,25 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 6
             )
         ));
+
         if (!$pin_max_size) {
             $pin_max_size = 6;
         }
+
+        $unsecure_pin_max_size = intval(ConfigHelper::getConfig('customers.unsecure_pin_max_length', $pin_max_size));
+
+        if (!$unsecure_pin_max_size) {
+            $unsecure_pin_max_size = 6;
+        }
+
         if ($pin_min_size > $pin_max_size) {
             $pin_max_size = $pin_min_size;
         }
+
+        if ($unsecure_pin_max_size > $unsecure_pin_min_size) {
+            $unsecure_pin_max_size = $unsecure_pin_min_size;
+        }
+
         $pin_allowed_characters = ConfigHelper::getConfig(
             'customers.pin_allowed_characters',
             ConfigHelper::getConfig(
@@ -3711,15 +3742,25 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             )
         );
 
-        return compact('pin_min_size', 'pin_max_size', 'pin_allowed_characters');
+        $unsecure_pin_allowed_characters = ConfigHelper::getConfig('customers.unsecure_pin_allowed_characters', $pin_allowed_characters);
+
+        return compact(
+            'unsecure_pin_validity',
+            'pin_min_size',
+            'pin_max_size',
+            'pin_allowed_characters',
+            'unsecure_pin_min_size',
+            'unsecure_pin_max_size',
+            'unsecure_pin_allowed_characters'
+        );
     }
 
     public function checkCustomerPin($id, $pin)
     {
-        if (empty($id)) {
-            $oldpin = '';
-            $hashed_oldpin = false;
-        } else {
+        $validate_changed_pin = $hashed_oldpin = false;
+        $oldpin = '';
+
+        if (!empty($id)) {
             $validate_changed_pin = ConfigHelper::checkConfig(
                 'customers.validate_changed_pin',
                 ConfigHelper::getConfig(
@@ -3735,7 +3776,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         if ($hashed_oldpin) {
             if ($pin == ''
                 || $validate_changed_pin && password_verify($pin, $oldpin)
-                || validate_random_string($pin, $pin_min_size, $pin_max_size, $pin_allowed_characters)) {
+                || empty($unsecure_pin_validity) && validate_random_string($pin, $pin_min_size, $pin_max_size, $pin_allowed_characters)
+                || !empty($unsecure_pin_validity) && validate_random_string($pin, $unsecure_pin_min_size, $unsecure_pin_max_size, $unsecure_pin_allowed_characters)) {
                 return true;
             } else {
                 return trans('Incorrect PIN code!');
@@ -3745,22 +3787,31 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 return trans('PIN code is required!');
             }
             if (empty($id)) {
-                return (validate_random_string($pin, $pin_min_size, $pin_max_size, $pin_allowed_characters)
-                    ? true
-                    : trans('Incorrect PIN code!'));
+                return (
+                    empty($unsecure_pin_validity) && validate_random_string($pin, $pin_min_size, $pin_max_size, $pin_allowed_characters)
+                    || !empty($unsecure_pin_validity) && validate_random_string($pin, $unsecure_pin_min_size, $unsecure_pin_max_size, $unsecure_pin_allowed_characters)
+                        ? true
+                        : trans('Incorrect PIN code!')
+                );
             } else {
                 if ($validate_changed_pin) {
                     if ($pin == $oldpin) {
                         return true;
                     } else {
-                        return (validate_random_string($pin, $pin_min_size, $pin_max_size, $pin_allowed_characters)
-                            ? true
-                            : trans('Incorrect PIN code!'));
+                        return (
+                            empty($unsecure_pin_validity) && validate_random_string($pin, $pin_min_size, $pin_max_size, $pin_allowed_characters)
+                            || !empty($unsecure_pin_validity) && validate_random_string($pin, $unsecure_pin_min_size, $unsecure_pin_max_size, $unsecure_pin_allowed_characters)
+                                ? true
+                                : trans('Incorrect PIN code!')
+                        );
                     }
                 } else {
-                    return (validate_random_string($pin, $pin_min_size, $pin_max_size, $pin_allowed_characters)
-                        ? true
-                        : trans('Incorrect PIN code!'));
+                    return (
+                        empty($unsecure_pin_validity) && validate_random_string($pin, $pin_min_size, $pin_max_size, $pin_allowed_characters)
+                        || !empty($unsecure_pin_validity) && validate_random_string($pin, $unsecure_pin_min_size, $unsecure_pin_max_size, $unsecure_pin_allowed_characters)
+                           ? true
+                            : trans('Incorrect PIN code!')
+                    );
                 }
             }
         }

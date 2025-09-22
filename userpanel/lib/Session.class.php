@@ -33,6 +33,7 @@ class Session
     private $db;
     private $pin_allowed_characters;
     private $unsecure_pin_validity;
+    private $unsecure_pin_allowed_characters;
     public $islogged = false;
     public $isPasswdChangeRequired = false;
     public $error;
@@ -66,6 +67,7 @@ class Session
                 '0123456789'
             )
         );
+        $this->unsecure_pin_allowed_characters = ConfigHelper::getConfig('customers.unsecure_pin_allowed_characters', $this->pin_allowed_characters);
         $this->unsecure_pin_validity = intval(ConfigHelper::getConfig(
             'customers.unsecure_pin_validity',
             ConfigHelper::getConfig(
@@ -226,9 +228,15 @@ class Session
                         4
                     )
                 ));
+
+                if ($this->unsecure_pin_validity && time() - $customer['pinlastchange'] > $this->unsecure_pin_validity) {
+                    $pin_min_size = intval(ConfigHelper::getConfig('customers.unsecure_pin_min_length', $pin_min_size));
+                }
+
                 if (!$pin_min_size) {
                     $pin_min_size = 4;
                 }
+
                 $pin_max_size = intval(ConfigHelper::getConfig(
                     'customers.pin_max_length',
                     ConfigHelper::getConfig(
@@ -236,13 +244,25 @@ class Session
                         6
                     )
                 ));
+
+                if ($this->unsecure_pin_validity && time() - $customer['pinlastchange'] > $this->unsecure_pin_validity) {
+                    $pin_max_size = intval(ConfigHelper::getConfig('customers.unsecure_pin_max_length', $pin_max_size));
+                }
+
                 if (!$pin_max_size) {
                     $pin_max_size = 6;
                 }
+
                 if ($pin_min_size > $pin_max_size) {
                     $pin_max_size = $pin_min_size;
                 }
-                $customer['pin'] = generate_random_string(random_int($pin_min_size, $pin_max_size), $this->pin_allowed_characters);
+
+                $customer['pin'] = generate_random_string(
+                    random_int($pin_min_size, $pin_max_size),
+                    $this->unsecure_pin_validity && time() - $customer['pinlastchange'] > $this->unsecure_pin_validity
+                        ? $this->unsecure_pin_allowed_characters
+                        : $this->pin_allowed_characters
+                );
 
                 $this->db->Execute(
                     'UPDATE customers
@@ -789,7 +809,7 @@ class Session
         }
     }
 
-    private function validPIN()
+    private function validPIN($currentPin = null)
     {
         if (!ConfigHelper::checkConfig('userpanel.pin_validation')) {
             return true;
@@ -797,9 +817,24 @@ class Session
 
         $string = $this->passwd;
 
-        for ($i = 0; $i < strlen($this->pin_allowed_characters); $i++) {
-            $string = str_replace($this->pin_allowed_characters[$i], '', $string);
+        if ($this->unsecure_pin_allowed_characters != $this->pin_allowed_characters) {
+            if (empty($currentPin)) {
+                $pin_allowed_characters = $this->pin_allowed_characters;
+            } else {
+                if (preg_match('/^\$[0-9a-z]+\$/', $currentPin)) {
+                    $pin_allowed_characters = $this->pin_allowed_characters;
+                } else {
+                    $pin_allowed_characters = $this->unsecure_pin_allowed_characters;
+                }
+            }
+        } else {
+            $pin_allowed_characters = $this->pin_allowed_characters;
         }
+
+        for ($i = 0; $i < strlen($pin_allowed_characters); $i++) {
+            $string = str_replace($pin_allowed_characters[$i], '', $string);
+        }
+
         return !strlen($string);
     }
 
@@ -833,10 +868,6 @@ class Session
 
     private function GetCustomerIDByPhoneAndPIN()
     {
-        if (!$this->validPIN()) {
-            return null;
-        }
-
         $allowed_customer_status = $this->getAllowedCustomerStatus();
 
         $authinfo['id'] = $this->db->GetOne(
@@ -865,6 +896,10 @@ class Session
             )
         );
 
+        if (!$this->validPIN($customer['pin'])) {
+            return null;
+        }
+
         if ($this->checkPIN($customer['pin'], $customer['pinlastchange'])) {
             $authinfo['passwd'] = $customer['pin'];
         } else {
@@ -876,7 +911,7 @@ class Session
 
     private function GetCustomerIDByIDAndPIN()
     {
-        if (!$this->validPIN() || !preg_match('/^[0-9]+$/', $this->login)) {
+        if (!preg_match('/^[0-9]+$/', $this->login)) {
             return null;
         }
 
@@ -905,6 +940,10 @@ class Session
             )
         );
 
+        if (!$this->validPIN($customer['pin'])) {
+            return null;
+        }
+
         if ($this->checkPIN($customer['pin'], $customer['pinlastchange'])) {
             $authinfo['passwd'] = $customer['pin'];
         } else {
@@ -916,10 +955,6 @@ class Session
 
     private function GetCustomerIDByDocumentAndPIN()
     {
-        if (!$this->validPIN()) {
-            return null;
-        }
-
         $allowed_customer_status = $this->getAllowedCustomerStatus();
 
         $authinfo['id'] = $this->db->GetOne(
@@ -938,11 +973,15 @@ class Session
         $customer = $this->db->GetRow(
             'SELECT pin, pinlastchange
             FROM customers
-			WHERE id = ?',
+            WHERE id = ?',
             array(
                 $authinfo['id']
             )
         );
+
+        if (!$this->validPIN($customer['pin'])) {
+            return null;
+        }
 
         if ($this->checkPIN($customer['pin'], $customer['pinlastchange'])) {
             $authinfo['passwd'] = $customer['pin'];
@@ -955,10 +994,6 @@ class Session
 
     private function GetCustomerIDByEmailAndPIN()
     {
-        if (!$this->validPIN()) {
-            return null;
-        }
-
         $allowed_customer_status = $this->getAllowedCustomerStatus();
 
         $authinfo['id'] = $this->db->GetOne(
@@ -987,6 +1022,10 @@ class Session
                 $authinfo['id'],
             )
         );
+
+        if (!$this->validPIN($customer['pin'])) {
+            return null;
+        }
 
         if ($this->checkPIN($customer['pin'], $customer['pinlastchange'])) {
             $authinfo['passwd'] = $customer['pin'];
@@ -1040,10 +1079,6 @@ class Session
 
     private function GetCustomerIDBySsnTenAndPIN()
     {
-        if (!$this->validPIN()) {
-            return null;
-        }
-
         $ssnten = preg_replace('/[\-\s]/', '', $this->login);
 
         if (!strlen($ssnten)) {
@@ -1074,6 +1109,10 @@ class Session
             )
         );
 
+        if (!$this->validPIN($customer['pin'])) {
+            return null;
+        }
+
         if ($this->checkPIN($customer['pin'], $customer['pinlastchange'])) {
             $authinfo['passwd'] = $customer['pin'];
         } else {
@@ -1085,10 +1124,6 @@ class Session
 
     private function GetCustomerIDByExtIDAndPIN()
     {
-        if (!$this->validPIN()) {
-            return null;
-        }
-
         $allowed_customer_status = $this->getAllowedCustomerStatus();
 
         $customer_extid_service_provider_id = intval(ConfigHelper::getConfig('userpanel.authentication_customer_extid_service_provider_id', ''));
@@ -1119,6 +1154,10 @@ class Session
                 $authinfo['id'],
             )
         );
+
+        if (!$this->validPIN($customer['pin'])) {
+            return null;
+        }
 
         if ($this->checkPIN($customer['pin'], $customer['pinlastchange'])) {
             $authinfo['passwd'] = $customer['pin'];

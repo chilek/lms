@@ -2,11 +2,22 @@
 {$restrictive_sensitive_data_access = ConfigHelper::checkConfig('customers.restrictive_sensitive_data_access')}
 {$unsecure_pin_validity = intval(ConfigHelper::getConfig('customers.unsecure_pin_validity', ConfigHelper::getConfig('phpui.unsecure_pin_validity', 0, true), true))}
 {$pin_tip = ConfigHelper::getConfig('customers.pin_restriction_description', ConfigHelper::getConfig('phpui.pin_restriction_description'))}
+{if !empty($unsecure_pin_validity)}
+	{$pin_tip = ConfigHelper::getConfig('customers.unsecure_pin_restriction_description', $pin_tip)}
+{/if}
 {if !$pin_tip}
-	{if $pin_min_size == $pin_max_size}
-		{$pin_tip=trans("Enter \$a characters PIN code", $pin_min_size)}
+	{if empty($unsecure_pin_validity)}
+		{if $pin_min_size == $pin_max_size}
+			{$pin_tip = trans("Enter \$a characters PIN code", $pin_min_size)}
+		{else}
+			{$pin_tip = trans("Enter \$a to \$b characters PIN code", $pin_min_size, $pin_max_size)}
+		{/if}
 	{else}
-		{$pin_tip=trans("Enter \$a to \$b characters PIN code", $pin_min_size, $pin_max_size)}
+		{if $unsecure_pin_min_size == $unsecure_pin_max_size}
+			{$pin_tip = trans("Enter \$a characters PIN code", $unsecure_pin_min_size)}
+		{else}
+			{$pin_tip = trans("Enter \$a to \$b characters PIN code", $unsecure_pin_min_size, $unsecure_pin_max_size)}
+		{/if}
 	{/if}
 {/if}
 {if !empty($unsecure_pin_validity)}
@@ -739,11 +750,19 @@
 		$('form[name="customeredit"] [name="customerdata[lastname]"]').focus();
 
 		$('[name="customerdata[pin]"]').change(function() {
-			if (validate_random_string(this.value, {$pin_min_size}, {$pin_max_size}, '{str_replace("'", "\'", $pin_allowed_characters)}')) {
-				this.setCustomValidity('');
-			} else {
-				this.setCustomValidity('{$pin_tip}');
-			}
+			{if empty($unsecure_pin_validity)}
+				if (validate_random_string(this.value, {$pin_min_size}, {$pin_max_size}, '{str_replace("'", "\'", $pin_allowed_characters)}')) {
+					this.setCustomValidity('');
+				} else {
+					this.setCustomValidity('{$pin_tip}');
+				}
+			{else}
+				if (validate_random_string(this.value, {$unsecure_pin_min_size}, {$unsecure_pin_max_size}, '{str_replace("'", "\'", $unsecure_pin_allowed_characters)}')) {
+					this.setCustomValidity('');
+				} else {
+					this.setCustomValidity('{$pin_tip}');
+				}
+			{/if}
 		});
 
 		init_email_validators();
@@ -780,9 +799,15 @@
 		$('#randomize').click(function() {
 			if ($('[name="customerdata[pin]"]').val().length) {
 				confirmDialog($t("Are you sure, you want to generate new PIN?"), this).done(function () {
-					$('[name="customerdata[pin]"]').val(
-						generate_random_string({$pin_min_size} +Math.floor(Math.random() * {($pin_max_size-$pin_min_size)+1}), '{str_replace("'", "\'", $pin_allowed_characters)}')
-					);
+					{if empty($unsecure_pin_validity)}
+						$('[name="customerdata[pin]"]').val(
+							generate_random_string({$pin_min_size} +Math.floor(Math.random() * {($pin_max_size - $pin_min_size) + 1}), '{str_replace("'", "\'", $pin_allowed_characters)}')
+						);
+					{else}
+						$('[name="customerdata[pin]"]').val(
+							generate_random_string({$unsecure_pin_min_size} +Math.floor(Math.random() * {($unsecure_pin_max_size - $unsecure_pin_min_size) + 1}), '{str_replace("'", "\'", $unsecure_pin_allowed_characters)}')
+						);
+					{/if}
 				});
 			}
 		});
