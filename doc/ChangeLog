@@ -1078,6 +1078,9 @@ version 28-git (????-??-??):
   - enhancement: new node search status filter: 'no active and future assignments' [chilan]
   - enhancement: added optional node assigned bandwidth properties to node list csv export [chilan]
   - improvement: allow to customise which node properties are exported to CSV file in print node list form [chilan]
+  - improvement: 'customers.unsecure_pin_min_length', 'customers.unsecure_pin_max_length',
+    'customers.unsecure_pin_allowed_characters' and 'customers.unsecure_pin_restriction_description' configuration
+    variables control unsecure customer PIN validation and generation rules [chilan]
 
 version 27.0 (2021-08-20):
 
