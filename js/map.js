@@ -835,45 +835,47 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 		map.addLayer(rsdirectionlayer5);
 	}
 
-	devlinklayer.events.on({
-		"featuremodified": function(ev) {
-//		"afterfeaturemodified": function(ev) {
-			var feature = ev.feature;
-			var netlink = feature.data;
-			if (!netlink.hasOwnProperty('netlinkid')) {
-				return;
-			}
-			var map = this.map;
-			var lonLats = [];
-			var points = feature.geometry.components;
-			points.forEach(function(point, index) {
-				var lonLat = new OpenLayers.LonLat(point.x, point.y);
-				lonLat.transform(map.getProjectionObject(), lmsProjection);
-				lonLats.push(lonLat);
-			})
+	if (lms.permissions.networkMapEdit) {
+		devlinklayer.events.on({
+			"featuremodified": function (ev) {
+				//		"afterfeaturemodified": function(ev) {
+				var feature = ev.feature;
+				var netlink = feature.data;
+				if (!netlink.hasOwnProperty('netlinkid')) {
+					return;
+				}
+				var map = this.map;
+				var lonLats = [];
+				var points = feature.geometry.components;
+				points.forEach(function (point, index) {
+					var lonLat = new OpenLayers.LonLat(point.x, point.y);
+					lonLat.transform(map.getProjectionObject(), lmsProjection);
+					lonLats.push(lonLat);
+				})
 
-			OpenLayers.Request.issue({
-				url: "?m=netlinkpoints&api=1",
-				params: {
-					netlinkid: netlink.netlinkid,
-					srcdevid: netlink.src,
-					dstdevid: netlink.dst,
-					points: JSON.stringify(lonLats)
-				},
-				callback: function(response) {
-					if (response.status == 200) {
-						try {
-							data = JSON.parse(response.responseText);
-						} catch (e) {
+				OpenLayers.Request.issue({
+					url: "?m=netlinkpoints&api=1",
+					params: {
+						netlinkid: netlink.netlinkid,
+						srcdevid: netlink.src,
+						dstdevid: netlink.dst,
+						points: JSON.stringify(lonLats)
+					},
+					callback: function (response) {
+						if (response.status == 200) {
+							try {
+								data = JSON.parse(response.responseText);
+							} catch (e) {
+								alertDialog($t('Network link update failed!'));
+							}
+						} else {
 							alertDialog($t('Network link update failed!'));
 						}
-					} else {
-						alertDialog($t('Network link update failed!'));
 					}
-				}
-			});
-		}
-	});
+				});
+			}
+		});
+	}
 
 	var highlightlayers = [ devicelayer, devlinklayer, nodelayer, nodelinklayer, rangeLayer ];
 
@@ -1131,9 +1133,11 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 		map.addControl(selectlayer);
 		selectlayer.activate();
 
-		modifyfeature = new OpenLayers.Control.LmsModifyFeature(devlinklayer);
-		map.addControl(modifyfeature);
-		modifyfeature.activate();
+		if (lms.permissions.networkMapEdit) {
+			modifyfeature = new OpenLayers.Control.LmsModifyFeature(devlinklayer);
+			map.addControl(modifyfeature);
+			modifyfeature.activate();
+		}
 
 		var checkbutton = new OpenLayers.Control.Button({
 			displayClass: "lmsCheckButton",

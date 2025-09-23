@@ -80,7 +80,11 @@
 			},
 			smartFormatMoney: function (value, currency) {
 				return this.smartFormatNumber(value) + ' ' + currency;
-			},
+			}
+		},
+		permissions: {
+			fullAccess: {if ConfigHelper::checkPrivilege('superuser')}true{else}false{/if},
+			networkMapEdit: {if ConfigHelper::checkPrivilege('network_map_edit', false)}true{else}false{/if}
 		}
 	}
 

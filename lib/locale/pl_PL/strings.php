@@ -1015,6 +1015,7 @@ $_LANG['Discount type'] = 'Typ rabatu';
 $_LANG['Discounted price'] = 'Cena po rabacie';
 $_LANG['Display customers matching the following criteria:'] = 'Wyświetl klientów spełniających następujące kryteria:';
 $_LANG['Network map display'] = 'Wyświetla mapę sieci ';
+$_LANG['network map edit'] = 'edycja mapy sieci';
 $_LANG['Network ranges'] = 'Zasięgi sieciowe';
 $_LANG['Network Ranges'] = 'Zasięgi sieciowe';
 $_LANG['Display this form again, when this account is saved'] = 'Po utworzeniu konta wyświetl ten formularz ponownie';
