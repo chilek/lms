@@ -1081,6 +1081,8 @@ version 28-git (????-??-??):
   - improvement: 'customers.unsecure_pin_min_length', 'customers.unsecure_pin_max_length',
     'customers.unsecure_pin_allowed_characters' and 'customers.unsecure_pin_restriction_description' configuration
     variables control unsecure customer PIN validation and generation rules [chilan]
+  - enhancement: dedicated user permission 'network_map_edit' after assigning to user allows him to edit network
+    link points [chilan]
 
 version 27.0 (2021-08-20):
 
