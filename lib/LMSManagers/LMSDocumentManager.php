@@ -3233,6 +3233,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 $all_attachment_filenames = array();
                 $filename_duplicates = false;
 
+                $encryption = false;
+
                 foreach ($document['attachments'] as $attachment) {
                     $extension = '';
 
@@ -3382,6 +3384,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         $zip->addFromString($zip_archived_filename, $attachment['contents']);
                         if (!empty($zip_password) && $attachment['type'] == 1) {
                             $zip->setEncryptionName($zip_archived_filename, constant($send_zip_protection_method));
+
+                            $encryption = true;
                         }
                     }
                 }
@@ -3476,7 +3480,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     }
                 }
 
-                if (!empty($document['authcode']) && !empty($doc['phone'])) {
+                if (!empty($document['authcode']) && !empty($doc['phone']) && $encryption) {
                     $phones = explode(',', $doc['phone']);
                     foreach ($phones as $phone) {
                         $LMS->SendSMS(
