@@ -1083,6 +1083,7 @@ version 28-git (????-??-??):
     variables control unsecure customer PIN validation and generation rules [chilan]
   - enhancement: dedicated user permission 'network_map_edit' after assigning to user allows him to edit network
     link points [chilan]
+  - improvement: external message id support for sms messages received by bin/lms-sms2rt.php backend script [chilan]
 
 version 27.0 (2021-08-20):
 
