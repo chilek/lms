@@ -1331,7 +1331,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
                 if (!empty($diff_days)) {
                     $data['datefrom'] = strtotime(intval($diff_days) . ' days', $data['datefrom']);
-                    $data['dateto'] = strtotime(intval($diff_days) . ' days', $data['dateto']);
+                    if (!empty($data['dateto'])) {
+                        $data['dateto'] = strtotime(intval($diff_days) . ' days', $data['dateto']);
+                    }
                 }
             }
 
