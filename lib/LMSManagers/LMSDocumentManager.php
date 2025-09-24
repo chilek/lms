@@ -3019,6 +3019,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         'send_zip_filename' => ConfigHelper::getConfig('documents.send_zip_filename'),
                         'send_zip_protection_password' => ConfigHelper::getConfig('documents.send_zip_protection_password'),
                         'send_zip_protection_method' => ConfigHelper::getConfig('documents.send_zip_protection_method'),
+                        'send_zip_protect_all_attachments' => ConfigHelper::checkConfig('documents.send_zip_protect_all_attachments'),
 
                         'document_protected_document_types' => ConfigHelper::getConfig(
                             'documents.protected_document_types',
@@ -3382,7 +3383,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         $all_attachment_filenames[$zip_archived_filename] = true;
 
                         $zip->addFromString($zip_archived_filename, $attachment['contents']);
-                        if (!empty($zip_password) && $attachment['type'] == 1) {
+                        if (!empty($zip_password) && ($attachment['type'] == 1 || !empty($send_zip_protect_all_attachments))) {
                             $zip->setEncryptionName($zip_archived_filename, constant($send_zip_protection_method));
 
                             $encryption = true;
