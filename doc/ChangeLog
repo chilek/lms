@@ -1084,6 +1084,9 @@ version 28-git (????-??-??):
   - enhancement: dedicated user permission 'network_map_edit' after assigning to user allows him to edit network
     link points [chilan]
   - improvement: external message id support for sms messages received by bin/lms-sms2rt.php backend script [chilan]
+  - improvement: 'documents.send_zip_protect_all_attachments' configuration variable with 'false' as default allows
+    to enable password protection of all attachments included in ZIP archive containing document file
+    attachments [chilan]
 
 version 27.0 (2021-08-20):
 
