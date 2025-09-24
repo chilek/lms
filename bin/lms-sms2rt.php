@@ -181,25 +181,29 @@ foreach ($message_files as $message_file) {
         $date = null;
         $ucs = false;
         $binary = false;
+        $extid = null;
+
         reset($lines);
+
         while (($line = current($lines)) !== false) {
             if (preg_match('/^From: ([0-9]{3,15})$/', $line, $matches) && $phone == null) {
                 $phone = $matches[1];
-            }
-            if (preg_match('/^Received: (.*)$/', $line, $matches) && !isset($date)) {
+            } elseif (preg_match('/^Received: (.*)$/', $line, $matches) && !isset($date)) {
                 $date = strtotime($matches[1]);
                 if ($date === false) {
                     $date = null;
                 }
-            }
-            if (preg_match('/^Alphabet:.*UCS2?$/', $line)) {
+            } elseif (preg_match('/^Alphabet:.*UCS2?$/', $line)) {
                 $ucs = true;
             } elseif (preg_match('/^Alphabet:[\s]*binary$/', $line)) {
                 $binary = true;
+            } elseif (preg_match('/^Message_id:[\s]*(.*)$/', $line, $matches) && !isset($extid)) {
+                $extid = $matches[1];
             }
+
             if (empty($line) && !$body) {
                 $body = true;
-            } else if ($body) {
+            } elseif ($body) {
                 if ($ucs) {
                     $line = preg_replace('/\x0$/', "\x0\n", $line);
                 }
@@ -302,6 +306,7 @@ foreach ($message_files as $message_file) {
             'address_id' => $address_id,
             'body' => $message,
             'phonefrom' => empty($phone) ? '' : $phone,
+            'extid' => $extid ?? null,
             'categories' => $cats,
             'source' => RT_SOURCE_SMS,
         ));
