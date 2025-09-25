@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 if ($this->ResourceExists('uiconfig_configid_fkey', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
     $this->Execute("ALTER TABLE uiconfig DROP CONSTRAINT uiconfig_configid_fkey");
@@ -38,7 +37,3 @@ if ($this->ResourceExists('uiconfig_section_key', LMSDB::RESOURCE_TYPE_CONSTRAIN
     $this->Execute("ALTER TABLE uiconfig DROP CONSTRAINT uiconfig_section_key");
 }
 $this->Execute("ALTER TABLE uiconfig ADD CONSTRAINT uiconfig_section_var_userid_divisionid_ukey UNIQUE (section, var, userid, divisionid)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020090200', 'dbversion'));
-
-$this->CommitTrans();

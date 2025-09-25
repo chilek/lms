@@ -28,7 +28,6 @@ if (!defined('DOC_CNOTE')) {
     define('DOC_CNOTE', 3);
 }
 
-$this->BeginTrans();
 
 $invoicecontents = $this->GetAll(
     "SELECT
@@ -85,7 +84,3 @@ if (!empty($invoicecontents)) {
         }
     }
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021072300', 'dbversion'));
-
-$this->CommitTrans();

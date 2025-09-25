@@ -24,13 +24,8 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("UPDATE documents SET closed = 1 WHERE type = 2");
 
 $this->Execute("UPDATE cashrights SET rights = 63 WHERE rights = 2");
 $this->Execute("UPDATE cashrights SET rights = 319 WHERE rights = 3");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007021500', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,14 +21,9 @@
  *
  */
 
-$this->BeginTrans();
 
 if (!$this->ResourceExists('tariffs.taxcategory', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("ALTER TABLE tariffs ADD taxcategory smallint DEFAULT 0 NOT NULL");
     $this->Execute("ALTER TABLE liabilities ADD taxcategory smallint DEFAULT 0 NOT NULL");
     $this->Execute("ALTER TABLE invoicecontents ADD taxcategory smallint DEFAULT 0 NOT NULL");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020030500', 'dbversion'));
-
-$this->CommitTrans();

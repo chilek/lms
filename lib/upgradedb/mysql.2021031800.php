@@ -21,12 +21,7 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     UPDATE customers SET ict = ict + 1 WHERE icn <> ''
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021031800', 'dbversion'));
-
-$this->CommitTrans();

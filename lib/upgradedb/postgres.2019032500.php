@@ -21,13 +21,8 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("INSERT INTO uiconfig (section, var, value)
 	VALUES (?, ?, ?)", array('userpanel', 'speed_unit_type', '1000'));
 $this->Execute("INSERT INTO uiconfig (section, var, value)
 	VALUES (?, ?, ?)", array('userpanel', 'speed_unit_aggregation_threshold', '5'));
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019032500', 'dbversion'));
-
-$this->CommitTrans();

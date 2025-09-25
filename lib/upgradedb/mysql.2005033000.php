@@ -25,5 +25,3 @@
  */
 
 $this->Execute("ALTER TABLE assignments ADD discount decimal(4,2) NOT NULL DEFAULT '0'");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005033000', 'dbversion'));
