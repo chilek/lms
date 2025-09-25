@@ -5188,6 +5188,7 @@ $_LANG['<!event>Unassign'] = 'Cofnij przypisanie';
 $_LANG['Today\'s events assigned to You'] = 'Dzisiejsze zdarzenia przypisane do Ciebie';
 $_LANG['Critical tickets'] = 'Zgłoszenia krytyczne';
 $_LANG['Customer tickets'] = 'Zgłoszenia klienta';
+$_LANG['Node tickets'] = 'Zgłoszenia komputera';
 $_LANG['Urgent tickets'] = 'Zgłoszenia pilne';
 $_LANG['Unread tickets'] = 'Nieprzeczytane zgłoszenia';
 
