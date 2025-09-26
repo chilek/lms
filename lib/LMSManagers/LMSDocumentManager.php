@@ -3236,6 +3236,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
                 $encryption = false;
 
+                $authcode_required = !empty($send_zip_protection_password) && strpos($send_zip_protection_password, '%authcode') !== false;
+
                 foreach ($document['attachments'] as $attachment) {
                     $extension = '';
 
@@ -3481,17 +3483,81 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     }
                 }
 
-                if (!empty($document['authcode']) && !empty($doc['phone']) && $encryption) {
+                if ($authcode_required && empty($doc['phone'])) {
+                    $msg = trans('customer has not assigned any mobile phones with \'documents\' flag');
+
+                    if ($add_message) {
+                        foreach ($msgitems[$doc['customerid']] as $email => $msgitemid) {
+                            $this->db->Execute(
+                                'UPDATE messageitems
+                                SET status = ?, lastdate = ?NOW?, error = ?
+                                WHERE id = ?',
+                                array(
+                                    MSG_ERROR,
+                                    $msg,
+                                    $msgitemid,
+                                )
+                            );
+                        }
+                    }
+
+                    switch ($type) {
+                        case 'backend':
+                            fprintf(STDERR, $msg . $eol);
+                            break;
+                        case 'frontend':
+                            echo '<span class="red">' . htmlspecialchars($msg) . '</span>' . $eol;
+                            flush();
+                            break;
+                        case 'userpanel':
+                            $errors[] = htmlspecialchars($msg);
+                            break;
+                    }
+
+                    continue;
+                }
+
+                if (!empty($document['authcode']) && $encryption && !empty($doc['phone'])) {
                     $phones = explode(',', $doc['phone']);
                     foreach ($phones as $phone) {
-                        $LMS->SendSMS(
-                            $phone,
-                            str_replace(
-                                '%authcode',
-                                $document['authcode'],
-                                $document_protection_password_authcode_message
-                            )
+                        $sms_body = str_replace(
+                            '%authcode',
+                            $document['authcode'],
+                            $document_protection_password_authcode_message
                         );
+
+                        if ($add_message) {
+                            $this->db->Execute(
+                                'INSERT INTO messages (subject, body, cdate, type, userid)
+                                VALUES (?, ?, ?NOW?, ?, ?)',
+                                array(trans('document encryption password'), $sms_body, MSG_SMS, Auth::GetCurrentUser())
+                            );
+
+                            $smsmsgid = $this->db->GetLastInsertID('messages');
+
+                            $this->db->Execute(
+                                'INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)
+                                VALUES (?, ?, ?, ?NOW?, ?)',
+                                array($smsmsgid, $doc['customerid'], $phone, MSG_NEW)
+                            );
+
+                            $smsmsgitemid = $this->db->GetLastInsertID('messageitems');
+                        }
+
+                        $res = $LMS->SendSMS($phone, $sms_body, $smsmsgitemid);
+
+                        if ($add_message) {
+                            $this->db->Execute(
+                                'UPDATE messageitems
+                                SET status = ?, error = ?, lastdate = ?NOW?
+                                WHERE id = ?',
+                                array(
+                                    is_string($res) ? MSG_ERROR : MSG_SENT,
+                                    is_string($res) ? $res : null,
+                                    $smsmsgitemid,
+                                )
+                            );
+                        }
                     }
                 }
 
