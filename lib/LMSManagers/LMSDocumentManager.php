@@ -3528,7 +3528,12 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         $this->db->Execute(
                             'INSERT INTO messages (subject, body, cdate, type, userid)
                             VALUES (?, ?, ?NOW?, ?, ?)',
-                            array(trans('document encryption password'), $sms_body, MSG_SMS, Auth::GetCurrentUser())
+                            array(
+                                trans('document encryption password: $a $b', $DOCTYPES[$document['type']], $document['fullnumber']),
+                                $sms_body,
+                                MSG_SMS,
+                                Auth::GetCurrentUser(),
+                            )
                         );
 
                         $smsmsgid = $this->db->GetLastInsertID('messages');

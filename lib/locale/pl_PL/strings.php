@@ -6248,4 +6248,4 @@ $_LANG['Min. upload'] = 'Min. wysyłanie';
 $_LANG['Max. upload'] = 'Maks. wysyłanie';
 
 $_LANG['customer has not assigned any mobile phones with \'documents\' flag'] = 'klient nie ma przypisanych żadnych telefonów komórkowych z opcją \'dokumenty\'';
-$_LANG['document encryption password'] = 'hasło szyfrujące dokument';
+$_LANG['document encryption password: $a $b'] = 'hasło szyfrujące dokument: $a $b';
