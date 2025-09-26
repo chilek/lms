@@ -3518,23 +3518,25 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 }
 
                 if (!empty($document['authcode']) && $encryption && !empty($doc['phone'])) {
-                    $phones = explode(',', $doc['phone']);
-                    foreach ($phones as $phone) {
-                        $sms_body = str_replace(
-                            '%authcode',
-                            $document['authcode'],
-                            $document_protection_password_authcode_message
+                    $sms_body = str_replace(
+                        '%authcode',
+                        $document['authcode'],
+                        $document_protection_password_authcode_message
+                    );
+
+                    if ($add_message) {
+                        $this->db->Execute(
+                            'INSERT INTO messages (subject, body, cdate, type, userid)
+                            VALUES (?, ?, ?NOW?, ?, ?)',
+                            array(trans('document encryption password'), $sms_body, MSG_SMS, Auth::GetCurrentUser())
                         );
 
+                        $smsmsgid = $this->db->GetLastInsertID('messages');
+                    }
+
+                    $phones = explode(',', $doc['phone']);
+                    foreach ($phones as $phone) {
                         if ($add_message) {
-                            $this->db->Execute(
-                                'INSERT INTO messages (subject, body, cdate, type, userid)
-                                VALUES (?, ?, ?NOW?, ?, ?)',
-                                array(trans('document encryption password'), $sms_body, MSG_SMS, Auth::GetCurrentUser())
-                            );
-
-                            $smsmsgid = $this->db->GetLastInsertID('messages');
-
                             $this->db->Execute(
                                 'INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)
                                 VALUES (?, ?, ?, ?NOW?, ?)',
