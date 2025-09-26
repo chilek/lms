@@ -1087,6 +1087,10 @@ version 28-git (????-??-??):
   - improvement: 'documents.send_zip_protect_all_attachments' configuration variable with 'false' as default allows
     to enable password protection of all attachments included in ZIP archive containing document file
     attachments [chilan]
+  - improvement: emit error when trying to send document while encryption password should be sent to customer mobile
+    phones via sms, but customer has not any assigned mobile phones [chilan]
+  - improvement: create customer message which stores document encryption password sent via SMS message
+    to customer [chilan]
 
 version 27.0 (2021-08-20):
 
