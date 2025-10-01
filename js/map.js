@@ -835,7 +835,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 		map.addLayer(rsdirectionlayer5);
 	}
 
-	if (lms.permissions.networkMapEdit) {
+	if (lms.permissions.fullAccess || lms.permissions.networkMapEdit) {
 		devlinklayer.events.on({
 			"featuremodified": function (ev) {
 				//		"afterfeaturemodified": function(ev) {
@@ -1133,7 +1133,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 		map.addControl(selectlayer);
 		selectlayer.activate();
 
-		if (lms.permissions.networkMapEdit) {
+		if (lms.permissions.fullAccess || lms.permissions.networkMapEdit) {
 			modifyfeature = new OpenLayers.Control.LmsModifyFeature(devlinklayer);
 			map.addControl(modifyfeature);
 			modifyfeature.activate();
