@@ -335,7 +335,7 @@ class Utils
 
         $value = ConfigHelper::getConfig(
             'customers.default_consents',
-            ConfigHelper::getConfig('phpui.default_customer_consents', 'data_processing,transfer_form', true),
+            ConfigHelper::getConfig('phpui.default_customer_consents', 'data_processing,transfer_form,balance_on_documents', true),
             true
         );
         if (!empty($value)) {
