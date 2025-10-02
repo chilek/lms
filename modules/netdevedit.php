@@ -50,6 +50,26 @@ $action = !empty($_GET['action']) ? $_GET['action'] : '';
 $edit = '';
 $subtitle = '';
 
+$netdevipActions = array_flip([
+    'addip',
+    'formaddip',
+    'editip',
+    'formeditip',
+]);
+if (!empty($action) && isset($netdevipActions[$action])) {
+    $netdev_empty_mac = ConfigHelper::getConfig('netdevices.empty_mac', '', true);
+
+    if (strlen($netdev_empty_mac)) {
+        if (check_mac($netdev_empty_mac)) {
+            $netdev_empty_mac = Utils::normalizeMac($netdev_empty_mac);
+        } else {
+            $netdev_empty_mac = '';
+        }
+    }
+
+    $SMARTY->assign('netdev_empty_mac', $netdev_empty_mac);
+}
+
 switch ($action) {
     case 'updatenodefield':
         $LMS->updateNodeField($_POST['nodeid'], $_POST['field'], $_POST['val']);
@@ -373,9 +393,18 @@ switch ($action) {
     case 'addip':
         $subtitle = trans('New IP address');
         $nodeipdata['access'] = 1;
+
         $mac = $LMS->getNetDevMacs($id, 1);
         $macAddress = (!empty($mac) ? $mac[0]['mac'] : '');
-        $nodeipdata['macs'] = array(0 => $macAddress);
+        $macs = array(0 => $macAddress);
+
+        $nodeipdata['macs'] = array_filter(
+            $macs,
+            function ($mac) use ($netdev_empty_mac) {
+                return $mac != $netdev_empty_mac;
+            }
+        );
+
         $SMARTY->assign('nodeipdata', $nodeipdata);
         $edit = 'addip';
         break;
@@ -385,11 +414,19 @@ switch ($action) {
         $nodeipdata['ipaddr'] = $nodeipdata['ip'];
         $nodeipdata['ipaddr_pub'] = $nodeipdata['ip_pub'];
         $subtitle = trans('IP address edit');
-        $macs = array();
-        foreach ($nodeipdata['macs'] as $key => $value) {
-            $macs[] = $nodeipdata['macs'][$key]['mac'];
-        }
-        $nodeipdata['macs'] = $macs;
+
+        $nodeipdata['macs'] = array_filter(
+            array_map(
+                function ($mac) {
+                    return $mac['mac'];
+                },
+                $nodeipdata['macs']
+            ),
+            function ($mac) use ($netdev_empty_mac) {
+                return $mac != $netdev_empty_mac;
+            }
+        );
+
         $SMARTY->assign('nodeipdata', $nodeipdata);
         $edit = 'ip';
         break;
@@ -515,7 +552,13 @@ switch ($action) {
                 }
             }
         }
-        $nodeipdata['macs'] = $macs;
+
+        $nodeipdata['macs'] = array_filter(
+            $macs,
+            function ($mac) use ($netdev_empty_mac) {
+                return $mac != $netdev_empty_mac;
+            }
+        );
 
         if (strlen($nodeipdata['passwd']) > 32) {
             $error['passwd'] = trans('Password is too long (max. 32 characters)!');
@@ -638,7 +681,13 @@ switch ($action) {
                 $error['mac-input-' . $key] = trans('Incorrect MAC address!');
             }
         }
-        $nodeipdata['macs'] = $macs;
+
+        $nodeipdata['macs'] = array_filter(
+            $macs,
+            function ($mac) use ($netdev_empty_mac) {
+                return $mac != $netdev_empty_mac;
+            }
+        );
 
         if (strlen($nodeipdata['passwd']) > 32) {
             $error['passwd'] = trans('Password is too long (max. 32 characters)!');

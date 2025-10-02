@@ -157,7 +157,7 @@
 										{trans("MAC")}
 									</td>
 									<td class="lms-ui-mac-address-selection">
-										{mac_address_selection form="ipadd" macs=$nodeipdata.macs}
+										{mac_address_selection form="ipadd" macs=$nodeipdata.macs node_empty_mac=$netdev_empty_mac}
 									</td>
 								</tr>
 								<tr>
