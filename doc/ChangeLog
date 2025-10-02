@@ -1093,6 +1093,7 @@ version 28-git (????-??-??):
     to customer [chilan]
   - enhancement: 'netdevices.empty_mac' configuration variable with empty default value allows to enable possibility
     of adding ip address to network devices without specifing MAC addresses [chilan]
+  - enhancement: new customer consent 'balance_on_documents' added which is set for all customers by default [chilan]
 
 version 27.0 (2021-08-20):
 
