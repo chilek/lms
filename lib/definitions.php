@@ -121,6 +121,7 @@ const CCONSENT_DATE = 1,
     CCONSENT_USERPANEL_SMS = 5,
     CCONSENT_USERPANEL_SCAN = 6,
     CCONSENT_TRANSFERFORM = 7,
+    CCONSENT_BALANCE_ON_DOCUMENTS = 33,
     CCONSENT_SMS_SERVICE_INFO = 8,
     CCONSENT_SMS_NOTICE = CCONSENT_SMS_SERVICE_INFO,
     CCONSENT_SMSNOTICE = CCONSENT_SMS_SERVICE_INFO,
@@ -290,6 +291,11 @@ $CCONSENTS = array(
     CCONSENT_TRANSFERFORM => array(
         'label' => trans('invoice transfer form'),
         'name' => 'transfer_form',
+        'type' => 'boolean',
+    ),
+    CCONSENT_BALANCE_ON_DOCUMENTS => array(
+        'label' => trans('balance on documents'),
+        'name' => 'balance_on_documents',
         'type' => 'boolean',
     ),
     CCONSENT_PHONE_BILLING => array(

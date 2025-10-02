@@ -604,62 +604,64 @@
 
 		{$customerbalance = $invoice.customerbalance}
 
-		{if $show_balance_summary}
-			<tr>
-				<td colspan="2" style="padding-bottom: 1em;">
-					{if isset($invoice.invoice) && $invoice.doctype == $smarty.const.DOC_CNOTE}
-						{$total = $invoice.total - $invoice.invoice.total}
-					{else}
-						{$total = $invoice.total}
-					{/if}
-
-					{$previous_balance = $customerbalance + $total}
-
-					{if $previous_balance > 0}
-						{$comment = trans('(excess payment)')}
-					{elseif $previous_balance < 0}
-						{$comment = trans('(to pay)')}
-					{else}
-						{$comment = ""}
-					{/if}
-
-					{trans('Previous balance: $a $b', Utils::formatMoney(abs($previous_balance) / $invoice.currencyvalue, $invoice.currency), $comment)}
-					<br>
-
-					{if $icustomerbalance > 0}
-						<span style="font-size: 180%; font-weight: bold; display: inline-block; margin-top: 0.3em;{if $use_alert_color} color: red;{/if}">
-							{trans('Excess payment: $a', Utils::formatMoney($customerbalance / $invoice.currencyvalue, $invoice.currency))}
-						</span>
-					{else}
-						<span style="font-size: 180%; font-weight: bold; display: inline-block; margin-top: 0.3em;{if $use_alert_color} color: red;{/if}">
-							{trans('Total to pay: $a', Utils::formatMoney(-$customerbalance / $invoice.currencyvalue, $invoice.currency))}
-						</span>
-					{/if}
-				</td>
-			</tr>
-		{else}
-			{if $icustomerbalance > 0}
-				{$comment = trans('(excess payment)')}
-			{elseif $customerbalance < 0}
-				{$comment = trans('(to pay)')}
-			{else}
-				{$comment = ''}
-			{/if}
-			<tr>
-				<td colspan="2">
-					<span style="font-weight: bold">
-						{if $use_alert_color}
-							<span style="color: red;">
+		{if !empty($invoice.balance_on_documents)}
+			{if $show_balance_summary}
+				<tr>
+					<td colspan="2" style="padding-bottom: 1em;">
+						{if isset($invoice.invoice) && $invoice.doctype == $smarty.const.DOC_CNOTE}
+							{$total = $invoice.total - $invoice.invoice.total}
+						{else}
+							{$total = $invoice.total}
 						{/if}
-						{trans('Your balance on date of invoice issue: $a $b', Utils::formatMoney($customerbalance / $invoice.currencyvalue, $invoice.currency), $comment)}
-						{if $use_alert_color}
+
+						{$previous_balance = $customerbalance + $total}
+
+						{if $previous_balance > 0}
+							{$comment = trans('(excess payment)')}
+						{elseif $previous_balance < 0}
+							{$comment = trans('(to pay)')}
+						{else}
+							{$comment = ""}
+						{/if}
+
+						{trans('Previous balance: $a $b', Utils::formatMoney(abs($previous_balance) / $invoice.currencyvalue, $invoice.currency), $comment)}
+						<br>
+
+						{if $icustomerbalance > 0}
+							<span style="font-size: 180%; font-weight: bold; display: inline-block; margin-top: 0.3em;{if $use_alert_color} color: red;{/if}">
+								{trans('Excess payment: $a', Utils::formatMoney($customerbalance / $invoice.currencyvalue, $invoice.currency))}
+							</span>
+						{else}
+							<span style="font-size: 180%; font-weight: bold; display: inline-block; margin-top: 0.3em;{if $use_alert_color} color: red;{/if}">
+								{trans('Total to pay: $a', Utils::formatMoney(-$customerbalance / $invoice.currencyvalue, $invoice.currency))}
 							</span>
 						{/if}
-						<br>
-						{trans('Balance includes current invoice')}
-					</span>
-				</td>
-			</tr>
+					</td>
+				</tr>
+			{else}
+				{if $icustomerbalance > 0}
+					{$comment = trans('(excess payment)')}
+				{elseif $customerbalance < 0}
+					{$comment = trans('(to pay)')}
+				{else}
+					{$comment = ''}
+				{/if}
+				<tr>
+					<td colspan="2">
+						<span style="font-weight: bold">
+							{if $use_alert_color}
+								<span style="color: red;">
+							{/if}
+							{trans('Your balance on date of invoice issue: $a $b', Utils::formatMoney($customerbalance / $invoice.currencyvalue, $invoice.currency), $comment)}
+							{if $use_alert_color}
+								</span>
+							{/if}
+							<br>
+							{trans('Balance includes current invoice')}
+						</span>
+					</td>
+				</tr>
+			{/if}
 		{/if}
 		<tr>
 			<td colspan="2">

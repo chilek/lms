@@ -311,9 +311,11 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                     ELSE cn.ccode
                 END)
                 ELSE NULL
-            END) AS lang
+            END) AS lang,
+            (CASE WHEN cc.type IS NULL THEN 0 ELSE 1 END) AS balance_on_documents
         FROM documents d
         JOIN customeraddressview c ON (c.id = d.customerid)
+        LEFT JOIN customerconsents cc ON cc.customerid = c.id AND cc.type = ?
         LEFT JOIN countries cn ON (cn.id = d.countryid)
         LEFT JOIN countries cdv ON cdv.id = d.div_countryid
         LEFT JOIN numberplans n ON (d.numberplanid = n.id)
@@ -344,7 +346,13 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)'
         .' ORDER BY CEIL(cdate/86400), id',
         'id',
-        array($datefrom, $dateto, DOC_INVOICE, DOC_CNOTE)
+        array(
+            CCONSENT_BALANCE_ON_DOCUMENTS,
+            $datefrom,
+            $dateto,
+            DOC_INVOICE,
+            DOC_CNOTE,
+        )
     );
 
     if (empty($documents)) {

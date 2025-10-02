@@ -326,8 +326,9 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         } else {
             $this->invoice_expositor();
         }
-        if (ConfigHelper::checkConfig('notes.show_balance', ConfigHelper::checkConfig('invoices.show_balance', true))
-            || ConfigHelper::checkConfig('notes.show_expired_balance', ConfigHelper::checkConfig('invoices.show_expired_balance'))) {
+        if ((ConfigHelper::checkConfig('notes.show_balance', ConfigHelper::checkConfig('invoices.show_balance', true))
+            || ConfigHelper::checkConfig('notes.show_expired_balance', ConfigHelper::checkConfig('invoices.show_expired_balance')))
+            && !empty($this->data['balance_on_documents'])) {
             $this->invoice_balance();
         }
         if (ConfigHelper::checkConfig('notes.qr2pay', ConfigHelper::checkConfig('invoices.qr2pay'))) {

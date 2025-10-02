@@ -1533,8 +1533,9 @@ class LMSEzpdfInvoice extends LMSInvoice
         if (ConfigHelper::checkConfig('invoices.show_pricing_method', true)) {
             $top = $this->invoice_pricing_method(30, $top);
         }
-        if (ConfigHelper::checkConfig('invoices.show_balance', true)
-            || ConfigHelper::checkConfig('invoices.show_expired_balance')) {
+        if ((ConfigHelper::checkConfig('invoices.show_balance', true)
+            || ConfigHelper::checkConfig('invoices.show_expired_balance'))
+            && !empty($this->data['balance_on_documents'])) {
             $top = $this->invoice_balance(30, $top);
         }
 
@@ -1570,6 +1571,8 @@ class LMSEzpdfInvoice extends LMSInvoice
     public function invoice_body_ft0100()
     {
         global $PAYTYPES;
+
+        $lms = LMS::getInstance();
 
         if (!empty($this->data['div_ccode'])) {
             Localisation::setSystemLanguage($this->data['div_ccode']);
@@ -1617,8 +1620,9 @@ class LMSEzpdfInvoice extends LMSInvoice
         if (ConfigHelper::checkConfig('invoices.show_pricing_method', true)) {
             $top = $this->invoice_pricing_method(30, $top);
         }
-        if (ConfigHelper::checkConfig('invoices.show_balance', true)
-            || ConfigHelper::checkConfig('invoices.show_expired_balance')) {
+        if ((ConfigHelper::checkConfig('invoices.show_balance', true)
+            || ConfigHelper::checkConfig('invoices.show_expired_balance'))
+            && !empty($this->data['balance_on_documents'])) {
             $top = $this->invoice_balance(30, $top);
         }
 

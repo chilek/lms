@@ -2622,15 +2622,18 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.div_inv_author AS division_author, d.div_inv_cplace AS division_cplace,
 				d.recipient_address_id, d.post_address_id,
 				d.currency, d.currencyvalue, d.memo,
-				d.extid
+				d.extid,
+				(CASE WHEN cc.type IS NULL THEN 0 ELSE 1 END) AS balance_on_documents
 				FROM documents d'
                 . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
                 . ' LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				LEFT JOIN vusers u ON u.id = d.userid
+				LEFT JOIN customerconsents cc ON cc.customerid = d.customerid AND cc.type = ?
 				WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)',
                 array(
                     DOC_FLAG_SPLIT_PAYMENT,
                     DOC_FLAG_NET_ACCOUNT,
+                    CCONSENT_BALANCE_ON_DOCUMENTS,
                     $invoiceid,
                     DOC_INVOICE,
                     DOC_CNOTE,
@@ -2683,11 +2686,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				END) AS lang,
 				cdv.ccode AS div_ccode,
 				d.currency, d.currencyvalue, d.memo,
-				d.extid
+				d.extid,
+				(CASE WHEN cc.type IS NULL THEN 0 ELSE 1 END) AS balance_on_documents
 				FROM documents d'
                 . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
                 . ' LEFT JOIN customeraddressview c ON (c.id = d.customerid)
 				LEFT JOIN vusers u ON u.id = d.userid
+				LEFT JOIN customerconsents cc ON cc.customerid = d.customerid AND cc.type = ?
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN countries cdv ON cdv.id = d.div_countryid
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
@@ -2698,6 +2703,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 array(
                     DOC_FLAG_SPLIT_PAYMENT,
                     DOC_FLAG_NET_ACCOUNT,
+                    CCONSENT_BALANCE_ON_DOCUMENTS,
                     $invoiceid,
                     DOC_INVOICE,
                     DOC_CNOTE,
@@ -3131,17 +3137,25 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				    END)
 				    ELSE NULL
 				END) AS lang,
-				d.currency, d.currencyvalue
+				d.currency, d.currencyvalue,
+				(CASE WHEN cc.type IS NULL THEN 0 ELSE 1 END) AS balance_on_documents
 				FROM documents d'
                 . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
                 . ' JOIN customeraddressview c ON (c.id = d.customerid)
+                LEFT JOIN customerconsents cc ON cc.customerid = c.id AND cc.type = ?
 				LEFT JOIN vusers u ON u.id = d.userid 
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN countries cdv ON cdv.id = d.div_countryid
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				LEFT JOIN vaddresses a2 ON a2.id = d.post_address_id
 				LEFT JOIN countries cp ON (d.post_address_id IS NOT NULL AND cp.id = a2.country_id) OR (d.post_address_id IS NULL AND cp.id = c.post_countryid)
-				WHERE d.id = ? AND d.type = ?', array($id, DOC_DNOTE))) {
+				WHERE d.id = ? AND d.type = ?',
+            array(
+                CCONSENT_BALANCE_ON_DOCUMENTS,
+                $id,
+                DOC_DNOTE,
+            )
+        )) {
             $result['export'] = $result['division_countryid'] && $result['countryid'] && $result['division_countryid'] != $result['countryid'];
 
             $result['bankaccounts'] = $this->db->GetCol(

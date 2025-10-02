@@ -1111,8 +1111,9 @@ class LMSTcpdfInvoice extends LMSInvoice
         if (ConfigHelper::checkConfig('invoices.show_pricing_method', true)) {
             $this->invoice_pricing_method();
         }
-        if (ConfigHelper::checkConfig('invoices.show_balance', true)
-            || ConfigHelper::checkConfig('invoices.show_expired_balance')) {
+        if ((ConfigHelper::checkConfig('invoices.show_balance', true)
+            || ConfigHelper::checkConfig('invoices.show_expired_balance'))
+            && !empty($this->data['balance_on_documents'])) {
             $this->invoice_balance();
         }
         if (ConfigHelper::checkConfig('invoices.qr2pay') && !isset($this->data['rebate'])) {
@@ -1254,6 +1255,8 @@ class LMSTcpdfInvoice extends LMSInvoice
     {
         global $PAYTYPES;
 
+        $lms = LMS::getInstance();
+
         if (!empty($this->data['div_ccode'])) {
             Localisation::setSystemLanguage($this->data['div_ccode']);
         }
@@ -1277,8 +1280,9 @@ class LMSTcpdfInvoice extends LMSInvoice
         if (ConfigHelper::checkConfig('invoices.show_pricing_method', true)) {
             $this->invoice_pricing_method();
         }
-        if (ConfigHelper::checkConfig('invoices.show_balance', true)
-            || ConfigHelper::checkConfig('invoices.show_expired_balance')) {
+        if ((ConfigHelper::checkConfig('invoices.show_balance', true)
+            || ConfigHelper::checkConfig('invoices.show_expired_balance'))
+            && !empty($this->data['balance_on_documents'])) {
             $this->invoice_balance();
         }
         if (ConfigHelper::checkConfig('invoices.qr2pay') && !isset($this->data['rebate'])) {
@@ -1296,7 +1300,6 @@ class LMSTcpdfInvoice extends LMSInvoice
             && ($this->data['customerbalance'] < 0 || ConfigHelper::checkConfig('invoices.always_show_form', true))
             && !isset($this->data['rebate'])) {
             /* FT-0100 form */
-            $lms = LMS::getInstance();
             if ($lms->checkCustomerConsent($this->data['customerid'], CCONSENT_TRANSFERFORM) || !empty($this->data['transfer-forms'])) {
                 if ($this->backend->GetY() > 180 || $this->transfer_form_on_separate_page) {
                     $this->backend->AppendPage();

@@ -344,10 +344,23 @@ if (!$no_attachments) {
 }
 
 if ($backup || $archive) {
-    $args = array(DOC_INVOICE, DOC_INVOICE_PRO, DOC_CNOTE, DOC_DNOTE);
+    $args = array(
+        CCONSENT_BALANCE_ON_DOCUMENTS,
+        DOC_INVOICE,
+        DOC_INVOICE_PRO,
+        DOC_CNOTE,
+        DOC_DNOTE,
+    );
 } else {
-    $args = array(CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_DISABLED,
-        CONTACT_EMAIL | CONTACT_INVOICES, DOC_INVOICE, DOC_INVOICE_PRO, DOC_CNOTE, DOC_DNOTE);
+    $args = array(
+        CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_DISABLED,
+        CONTACT_EMAIL | CONTACT_INVOICES,
+        CCONSENT_BALANCE_ON_DOCUMENTS,
+        DOC_INVOICE,
+        DOC_INVOICE_PRO,
+        DOC_CNOTE,
+        DOC_DNOTE,
+    );
 
     if ($omit_free_days) {
         $yesterday = strtotime('yesterday', $current_time);
@@ -420,12 +433,14 @@ $ignore_send_date = isset($options['ignore-send-date']) || ConfigHelper::checkCo
 $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid,
             d.type AS doctype, d.archived,
             d.senddate, n.template" . ($backup || $archive ? '' : ', m.email') . ",
-            (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type < 0) THEN 1 ELSE 0 END) AS documentreferenced
+            (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type < 0) THEN 1 ELSE 0 END) AS documentreferenced,
+            (CASE WHEN cc.type IS NULL THEN 0 ELSE 1 END) AS balance_on_documents
     FROM documents d
     LEFT JOIN customeraddressview c ON c.id = d.customerid"
     . ($backup || $archive ? '' : " JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
         FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id")
     . " LEFT JOIN numberplans n ON n.id = d.numberplanid
+    LEFT JOIN customerconsents cc ON cc.customerid = c.id AND cc.type = ?
     WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
         . $customer_status_condition
         . ($divisionid ? ' AND d.divisionid = ' . $divisionid : '')

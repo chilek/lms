@@ -5716,6 +5716,7 @@ $_LANG['Start date can not be earlier than current date!'] = 'Data rozpoczęcia 
 $_LANG['approval in customer panel using SMS authorization'] = 'zatwierdzanie przez panel klienta po autoryzacji SMS-em';
 $_LANG['approval in customer panel using scans'] = 'zatwierdzanie przez panel klienta po przesłaniu w postaci skanów';
 $_LANG['invoice transfer form'] = 'druczek przelewu na fakturze';
+$_LANG['balance on documents'] = 'saldo na dokumentach';
 
 $_LANG['Copy from billing address'] = 'Kopiuj z adresu billingowego';
 $_LANG['Copy from post address'] = 'Kopiuj z adresu korespondencyjnego';
