@@ -1091,6 +1091,8 @@ version 28-git (????-??-??):
     phones via sms, but customer has not any assigned mobile phones [chilan]
   - improvement: create customer message which stores document encryption password sent via SMS message
     to customer [chilan]
+  - enhancement: 'netdevices.empty_mac' configuration variable with empty default value allows to enable possibility
+    of adding ip address to network devices without specifing MAC addresses [chilan]
 
 version 27.0 (2021-08-20):
 
