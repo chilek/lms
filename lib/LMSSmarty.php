@@ -53,6 +53,7 @@ class LMSSmarty extends Smarty
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'count', 'count');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'key', 'key');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'strtolower', 'strtolower');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'strposr', 'strpos');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'str_replace', 'str_replace');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'preg_split', 'preg_split');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'preg_match', 'preg_match');
