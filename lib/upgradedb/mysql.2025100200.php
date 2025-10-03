@@ -24,6 +24,7 @@
 $this->BeginTrans();
 
 const CCONSENT_BALANCE_ON_DOCUMENTS_2025100200 = 33;
+
 if (!$this->GetOne('SELECT COUNT(*) FROM customerconsents WHERE type = ?', array(CCONSENT_BALANCE_ON_DOCUMENTS_2025100200))) {
     $this->Execute(
         'INSERT INTO customerconsents
@@ -31,6 +32,24 @@ if (!$this->GetOne('SELECT COUNT(*) FROM customerconsents WHERE type = ?', array
         (SELECT id, 0, ? FROM customers)',
         array(
             CCONSENT_BALANCE_ON_DOCUMENTS_2025100200,
+        )
+    );
+
+    $this->Execute(
+        'UPDATE uiconfig
+        SET value = ' . $this->Concat('value', "'" . PHP_EOL . "balance_on_documents'") . '
+        WHERE (section = ? AND var = ?
+            OR section = ? AND var = ?
+            OR section = ? AND var = ?)
+            AND value NOT ?LIKE? ?',
+        array(
+            'customers',
+            'default_consents',
+            'customers',
+            'supported_consents',
+            'phpui',
+            'default_customer_consents',
+            '%balance_on_documents%',
         )
     );
 }
