@@ -3106,7 +3106,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $userid = Auth::GetCurrentUser();
 
-        if ($result = $this->db->GetRow('SELECT d.id, d.type AS doctype, d.number, d.name, d.customerid,
+        if ($result = $this->db->GetRow(
+            'SELECT d.id, d.type AS doctype, d.number, d.name, d.customerid,
                 d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
 				d.ten, d.ssn, d.cdate, d.numberplanid, d.closed, d.cancelled, d.published, d.archived, d.divisionid, d.paytime, d.paytype,
 				u.name AS user, u.issuer, n.template,
