@@ -344,7 +344,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             SELECT 1 FROM vcustomerassignments a
             JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
             WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)'
-        .' ORDER BY CEIL(cdate/86400), id',
+        .' ORDER BY CEIL(d.cdate/86400), id',
         'id',
         array(
             CCONSENT_BALANCE_ON_DOCUMENTS,
