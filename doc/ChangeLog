@@ -1094,7 +1094,10 @@ version 28-git (????-??-??):
   - enhancement: 'netdevices.empty_mac' configuration variable with empty default value allows to enable possibility
     of adding ip address to network devices without specifing MAC addresses [chilan]
   - enhancement: new customer consent 'balance_on_documents' added which is set for all customers by default [chilan]
-
+  - improvement: new configuration variable 'assignments.tariff_tag_filter_all_required' with 'false' as default
+    value controls if all selected tariff tags should be assigned to given tariff if this tariff should be visible
+    in tariff selection list of customer assignment forms [chilan]
+  
 version 27.0 (2021-08-20):
 
   - enhancement: require user selection in event(add/edit) forms,
