@@ -264,7 +264,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                         // then we matched customer by source account
                         if (!isset($unique_source_accounts)) {
                             $days = intval(ConfigHelper::getConfig($config_section . '.source_account_match_threshold_days'));
-                            $unique_source_accounts = $this->db->GetALl(
+                            $unique_source_accounts = $this->db->GetAll(
                                 'SELECT i.customerid, i.srcaccount
                                 FROM cashimport i
                                 JOIN (
