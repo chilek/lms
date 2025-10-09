@@ -543,6 +543,13 @@ class Session
                             }
                         } elseif (empty($this->error)) {
                             $this->error = trans('Access denied!');
+
+                            $authinfo['failedlogindate'] = time();
+                            $authinfo['failedloginip'] = $this->ip;
+
+                            $this->SetCustomerAuthInfo($authinfo);
+
+                            writesyslog('Customer with ID: ' . $authdata['id'] . ' access denied.', LOG_INFO);
                         }
                     }
                 } else {
@@ -569,6 +576,7 @@ class Session
                         $authinfo['id'] = $authdata['id'];
                         $authinfo['failedlogindate'] = time();
                         $authinfo['failedloginip'] = $this->ip;
+
                         $this->SetCustomerAuthInfo($authinfo);
                     }
 
