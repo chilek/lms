@@ -311,7 +311,7 @@ if (isset($_POST['document'])) {
 
         $DB->CommitTrans();
 
-        if ($closed > DOC_OPEN && !$document['closed']) {
+        if ($closing && !$document['closed']) {
             $LMS->CommitDocuments(array($documentedit['id']), false, false);
         }
 
