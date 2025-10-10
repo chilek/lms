@@ -269,14 +269,14 @@ if (!empty($docids)) {
             if (count($list) > 1) {
                 $zip->close();
 
-                header('Content-Disposition: attachment; filename=' . $zip_filename);
+                header('Content-Disposition: attachment; filename="' . $zip_filename . '"');
                 header('Pragma: public');
                 header('Content-Type: application/x-zip');
 
                 readfile($zip_temp_filename);
                 unlink($zip_temp_filename);
             } else {
-                header('Content-Disposition: attachment; filename=' . $output_filename);
+                header('Content-Disposition: attachment; filename="' . $output_filename . '"');
                 header('Pragma: public');
                 header('Content-Type: ' . $contenttype);
 
@@ -310,7 +310,7 @@ if (!empty($docids)) {
             if ($pdf || $others || count($docs) == 1) {
                 $docid = $list[0]['docid'];
                 $filename = $list[0]['filename'];
-                $i = strpos($filename, '.');
+                $i = mb_strpos($filename, '.', -5);
 
                 if ($i !== false) {
                     $extension = mb_substr($filename, $i + 1);
@@ -347,9 +347,9 @@ if (!empty($docids)) {
                 }
 
                 if ($pdf || $others) {
-                    header('Content-Disposition: ' . ($pdf && !isset($_GET['save']) ? 'inline' : 'attachment') . '; filename=' . $filename . '.' . $extension);
+                    header('Content-Disposition: ' . ($pdf && !isset($_GET['save']) ? 'inline' : 'attachment') . '; filename="' . $filename . '.' . $extension . '"');
                 } else {
-                    header('Content-Disposition: ' . (isset($_GET['save']) ? 'attachment' : 'inline') . '; filename=' . $filename . '.' . $extension);
+                    header('Content-Disposition: ' . (isset($_GET['save']) ? 'attachment' : 'inline') . '; filename="' . $filename . '.' . $extension . '"');
                 }
                 header('Pragma: public');
             }

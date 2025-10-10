@@ -122,7 +122,7 @@ if (!empty($configs)) {
 
     // wysyłamy ...
     header('Content-Type: text/plain');
-    header('Content-Disposition: attachment; filename='.$filename);
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
     header('Pragma: public');
 
     if ($fileType == 'ini') {

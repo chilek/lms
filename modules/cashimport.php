@@ -43,7 +43,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
     $filename = 'import-'.date('Y-m-d').($div ? '-'.intval($_GET['division']) : '').'.csv';
 
     header('Content-Type: text/csv');
-        header('Content-Disposition: attachment; filename='.$filename);
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
     header('Pragma: public');
 
     if ($importlist = $DB->GetAll('SELECT i.date, i.value, i.customer, i.description,
@@ -68,7 +68,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
     $filename = 'import-'.date('Y-m-d').'.txt';
 
     header('Content-Type: text/plain');
-        header('Content-Disposition: attachment; filename='.$filename);
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
     header('Pragma: public');
 
     if ($importlist = $DB->GetAll('SELECT i.date, i.value, i.customer, i.description,

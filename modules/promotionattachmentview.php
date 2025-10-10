@@ -53,7 +53,7 @@ if (file_exists($file)) {
         $imagick->scaleImage($width, 0);
         header('Content-Type: ' . $attachment['contenttype']);
         header('Cache-Control: private');
-        header('Content-Disposition: ' . ($attachment['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename=' . $attachment['filename']);
+        header('Content-Disposition: ' . ($attachment['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename="' . $attachment['filename'] . '"');
         echo $imagick->getImageBlob();
     } else {
         $office2pdf_command = ConfigHelper::getConfig('documents.office2pdf_command', '', true);
@@ -71,7 +71,7 @@ if (file_exists($file)) {
 
             header('Content-Type: application/pdf');
             header('Cache-Control: private');
-            header('Content-Disposition: inline; filename=' . $filename);
+            header('Content-Disposition: inline; filename="' . $filename . '"');
 
             echo Utils::office2pdf(array(
                 'content' => file_get_contents($file),
@@ -82,7 +82,7 @@ if (file_exists($file)) {
         } else {
             header('Content-Type: ' . $attachment['contenttype']);
             header('Cache-Control: private');
-            header('Content-Disposition: ' . ($attachment['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename=' . $attachment['filename']);
+            header('Content-Disposition: ' . ($attachment['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename="' . $attachment['filename'] . '"');
             echo @file_get_contents($file);
         }
     }

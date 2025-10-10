@@ -141,7 +141,7 @@ if (isset($_GET['action'])) {
 
             if (!empty($office2pdf_command) && !empty($_GET['preview-type']) && $_GET['preview-type'] == 'office') {
                 $filename = $attachment['filename'];
-                $i = strpos($filename, '.');
+                $i = mb_strpos($filename, '.', -5);
                 if ($i !== false) {
                     $extension = mb_substr($filename, $i + 1);
                     if (preg_match('/^(odt|ods|doc|docx|xls|xlsx|rtf)$/i', $extension)) {
@@ -152,7 +152,7 @@ if (isset($_GET['action'])) {
 
                 header('Content-Type: application/pdf');
                 header('Cache-Control: private');
-                header('Content-Disposition: inline; filename=' . $filename);
+                header('Content-Disposition: inline; filename="' . $filename . '"');
 
                 echo Utils::office2pdf(array(
                     'content' => file_get_contents($file),
@@ -163,7 +163,7 @@ if (isset($_GET['action'])) {
             } else {
                 header('Content-Type: ' . $attachment['contenttype']);
                 header('Cache-Control: private');
-                header('Content-Disposition: ' . ($attachment['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename=' . $attachment['filename']);
+                header('Content-Disposition: ' . ($attachment['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename="' . $attachment['filename'] . '"');
                 echo @file_get_contents($file);
             }
 
