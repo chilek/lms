@@ -544,8 +544,14 @@ class Session
                         } elseif (empty($this->error)) {
                             $this->error = trans('Access denied!');
 
+                            if (empty($authinfo) || !isset($authinfo['lastlogindate'])) {
+                                $authinfo['lastlogindate'] = 0;
+                                $authinfo['lastloginip'] = '';
+                            }
+
                             $authinfo['failedlogindate'] = time();
                             $authinfo['failedloginip'] = $this->ip;
+                            $authinfo['enabled'] = 2;
 
                             $this->SetCustomerAuthInfo($authinfo);
 
