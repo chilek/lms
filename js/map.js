@@ -367,9 +367,11 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			{
 				strokeColor: "${strokeColor}",
 				strokeWidth: "${strokeWidth}",
-				pointRadius: 9
+				pointRadius: 9,
+				fillColor: "#0000FF",
+				fillOpacity: 0.9
 			},
-			OpenLayers.Feature.Vector.style["default"]
+			OpenLayers.Feature.Vector.style.default
 		),
 		styleContext
 	);
@@ -379,7 +381,9 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			{
 				strokeColor: "${strokeColor}",
 				strokeWidth: "${strokeWidth}",
-				pointRadius: 9
+				pointRadius: 9,
+				fillColor: "#000080",
+				fillOpacity: 0.9
 			},
 			OpenLayers.Feature.Vector.style.select
 		),
@@ -750,6 +754,11 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 		styleMap: new OpenLayers.StyleMap({
 			"default": linkStyleDefault,
 			"select": linkStyleSelect,
+			"vertex": new OpenLayers.Style({
+				pointRadius: 9,
+				fillColor: "#0000FF",
+				fillOpacity: 0.9
+			})
 		})
 	});
 	devlinklayer.addFeatures(devlinks);
@@ -1134,7 +1143,24 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 		selectlayer.activate();
 
 		if (lms.permissions.fullAccess || lms.permissions.networkMapEdit) {
-			modifyfeature = new OpenLayers.Control.LmsModifyFeature(devlinklayer);
+			modifyfeature = new OpenLayers.Control.LmsModifyFeature(
+				devlinklayer,
+				{
+					vertexRenderIntent: "vertex"
+				}
+			);
+
+			modifyfeature.virtualStyle = OpenLayers.Util.applyDefaults(
+				{
+					strokeColor: "",
+					strokeWidth: "",
+					pointRadius: 9,
+					fillColor: "#0000FF",
+					fillOpacity: 0.5
+				},
+				OpenLayers.Feature.Vector.style.default
+			);
+
 			map.addControl(modifyfeature);
 			modifyfeature.activate();
 		}
