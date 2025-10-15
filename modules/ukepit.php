@@ -402,6 +402,8 @@ if ($report_type == 'full' && empty($root_netdevice_id)) {
     die(trans('Root network device ID is not defined! Use <strong>\'phpui.root_netdevice_id\'</strong> configuration setting to define it.'));
 }
 
+$empty_building_number_pattern = str_replace('/', '\\/', ConfigHelper::getConfig('uke.pit_empty_building_number_pattern', '', true));
+
 $division = isset($_POST['division']) ? intval($_POST['division']) : 0;
 $aggregate_customer_services = isset($_POST['aggregate-customer-services']);
 $customer_resources_as_operator_resources = isset($_POST['customer-resources-as-operator-resources']);
@@ -914,8 +916,15 @@ if ($report_type == 'full') {
             } else {
                 if (empty($netdevice['location_city'])) {
                     $netnodename = $netdevice['location'] ?? '(pusty)';
+                } elseif ((empty($netdevice['location_house'])
+                        || !empty($empty_building_number_pattern) && preg_match('/' . $empty_building_number_pattern . '/iu', $netdevice['location_house']))
+                    && !empty($netdevice['longitude']) && !empty($netdevice['latitude'])) {
+                    $netnodename = $netdevice['area_terc'] . '_' . $netdevice['area_simc'] . '_' . $netdevice['area_ulic']
+                        . '_' . sprintf('%.6f', $netdevice['longitude'])
+                        . '_' . sprintf('%.6f', $netdevice['latitude']);
                 } else {
-                    $netnodename = $netdevice['area_terc'] . '_' . $netdevice['area_simc'] . '_' . $netdevice['area_ulic'] . '_' . $netdevice['location_house'];
+                    $netnodename = $netdevice['area_terc'] . '_' . $netdevice['area_simc'] . '_' . $netdevice['area_ulic']
+                        . '_' . $netdevice['location_house'];
                 }
                 $netnodename = mb_strtoupper($netnodename);
 
