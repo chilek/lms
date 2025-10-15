@@ -1097,7 +1097,9 @@ version 28-git (????-??-??):
   - improvement: new configuration variable 'assignments.tariff_tag_filter_all_required' with 'false' as default
     value controls if all selected tariff tags should be assigned to given tariff if this tariff should be visible
     in tariff selection list of customer assignment forms [chilan]
-  
+  - improvement: configuration variable 'uke.pit_empty_building_number_pattern' with empty default value
+    allows to specify pattern to which matching builing numbers are treated as empty building numbers [chilan]
+
 version 27.0 (2021-08-20):
 
   - enhancement: require user selection in event(add/edit) forms,
