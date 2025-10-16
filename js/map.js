@@ -135,8 +135,7 @@ OpenLayers.Renderer.LmsSVG = OpenLayers.Class(OpenLayers.Renderer.SVG, {
 
 OpenLayers.Control.LmsModifyFeature = OpenLayers.Class(OpenLayers.Control.ModifyFeature, {
 	dragStart: function(feature) {
-		var isPoint = feature.geometry.CLASS_NAME ==
-			'OpenLayers.Geometry.Point';
+		var isPoint = feature.geometry.CLASS_NAME === 'OpenLayers.Geometry.Point';
 		if (!this.standalone &&
 			((!feature._sketch && isPoint) || !feature._sketch)) {
 			if (this.toggle && this.feature === feature) {
@@ -152,13 +151,13 @@ OpenLayers.Control.LmsModifyFeature = OpenLayers.Class(OpenLayers.Control.Modify
 			var points = feature.geometry.parent.components;
 			var selectedPointIndex = -1;
 			points.forEach(function(value, index) {
-				if (value.x == feature.geometry.x && value.y == feature.geometry.y) {
+				if (value.x === feature.geometry.x && value.y === feature.geometry.y) {
 					selectedPointIndex = index;
 				}
 				//var pointLonLat = new OpenLayers.LonLat(value.x, value.y);
 				//console.log(pointLonLat.transform(map.getProjectionObject(), lmsProjection), value);
 			});
-			if (feature.style == null && (!selectedPointIndex || selectedPointIndex == points.length -1)) {
+			if (feature.style == null && (!selectedPointIndex || selectedPointIndex === points.length -1)) {
 				return;
 			}
 			this.vertex = feature;
@@ -311,6 +310,99 @@ function findFeaturesIntersection(selectFeature, feature, featureLonLat) {
 	if (!features.length && (feature.style == null || feature.geometry.CLASS_NAME == 'OpenLayers.Geometry.LineString'))
 		features.push(feature);
 	return features;
+}
+
+function toleranceMapUnitsByScale(map, basePx, scaleRef, exponent) {
+	var scale = map.getScale();       // np. 1:5000 → 5000
+	var k = Math.pow(scale / scaleRef, exponent || 0.5); // 0.5 = √, łagodna zmiana
+	var px = basePx * k;
+	return px * map.getResolution();
+}
+
+function projectPointOnSegment(P, A, B) {
+	var vx = B.x - A.x, vy = B.y - A.y;
+	var wx = P.x - A.x, wy = P.y - A.y;
+	var segLen2 = vx*vx + vy*vy;
+
+	if (segLen2 === 0) {
+		// Zdegenerowany odcinek: A==B. Projekcja to A.
+		var projA = new OpenLayers.Geometry.Point(A.x, A.y);
+		return {
+			tRaw: 0,
+			t: 0,
+			point: projA,                            // nowy obiekt, nie referencja!
+			distance: projA.distanceTo(P)
+		};
+	}
+
+	// Surowe t na prostej AB
+	var tRaw = (wx*vx + wy*vy) / segLen2;
+
+	// t na odcinku (klamracja)
+	var t = (tRaw < 0) ? 0 : (tRaw > 1 ? 1 : tRaw);
+
+	// Punkt projekcji (dokładnie na odcinku AB)
+	var proj = new OpenLayers.Geometry.Point(
+		A.x + t * vx,
+		A.y + t * vy
+	);
+
+	return {
+		tRaw: tRaw,
+		t: t,
+		point: proj,
+		distance: proj.distanceTo(P)
+	};
+}
+
+/**
+ * Znajdź segment w geometrii, który "zawiera" kliknięty punkt w zadanej tolerancji.
+ *
+ * @param {OpenLayers.Geometry.LineString|OpenLayers.Geometry.MultiLineString} geometry
+ * @param {OpenLayers.Geometry.Point|{x:number,y:number}|OpenLayers.LonLat} clickCoord  // w tym samym układzie co geometry
+ * @param {Object} opts
+ *   - tolerancePx {number}        // opcjonalnie: tolerancja w pikselach (wymaga map)
+ *   - toleranceMapUnits {number}  // opcjonalnie: tolerancja w jednostkach mapy/geometrii
+ *   - map {OpenLayers.Map}        // opcjonalnie: potrzebna gdy używasz tolerancePx
+ *
+ * @returns {null|{lineIndex:number, segIndex:number, projection:OpenLayers.Geometry.Point, distance:number}}
+ */
+function findSegmentContainingPoint(map, geometry, clickPoint) {
+	// Rozbij MultiLineString na tablicę LineStringów
+	var lines = (geometry.CLASS_NAME === "OpenLayers.Geometry.MultiLineString") ?
+		geometry.components :
+		(geometry.CLASS_NAME === "OpenLayers.Geometry.LineString") ?
+			[geometry] :
+			[];
+
+	var best = null;
+
+	var tolerancePx = toleranceMapUnitsByScale(map, /*basePx*/ 50, /*scaleRef*/ 1692, /*exp*/ 0.5);
+
+	for (var li = 0; li < lines.length; li++) {
+		var line = lines[li];
+		var pts = line.components;
+		for (var si = 0; si < pts.length - 1; si++) {
+			var A = pts[si], B = pts[si + 1];
+			var pr = projectPointOnSegment(clickPoint, A, B);
+
+			// Warunek "zawiera": rzut NA ODCINKU (t w [0,1]) i odległość ≤ tolerancja.
+			if (pr.t >= 0 && pr.t <= 1 && pr.distance <= tolerancePx) {
+				if (!best || pr.distance < best.distance) {
+					best = {
+						lineIndex: li,
+						segIndex: si,
+						insertIndex: si + 1,          // wstaw zaraz po A (między A a B)
+						t: pr.t,
+						projection: pr.point,         // <<— poprawne współrzędne nowego punktu
+						distance: pr.distance
+					};
+				}
+			}
+		}
+	}
+
+	return best; // null, gdy brak trafienia
 }
 
 function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArray, selection, startLon, startLat) {
@@ -1038,15 +1130,40 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 					mappopup = null;
 				}
 				selectedFeature = feature;
+
 				var featureLonLat;
 				// position feature is not needed - we detect it by nullified style
 				if (feature.geometry.CLASS_NAME == "OpenLayers.Geometry.Point" && feature.style == null) {
 					featureLonLat = new OpenLayers.LonLat(feature.data.lon, feature.data.lat);
 					featureLonLat.transform(lmsProjection, map.getProjectionObject());
-				}
-				else
+				} else {
 					featureLonLat = map.getLonLatFromViewPortPx(this.handlers.feature.evt.xy);
+				}
+
 				var features = findFeaturesIntersection(this, feature, featureLonLat);
+
+				if (lmsSettings.mapCreateNewPointAfterLinkEditStart &&
+					features.length === 1 &&
+					features[0].data.hasOwnProperty('netlinkid')) {
+					var lineFeature = features[0];
+
+					if (lineFeature.geometry.CLASS_NAME === "OpenLayers.Geometry.LineString") {
+						var g = lineFeature.geometry;
+						var pt = new OpenLayers.Geometry.Point(featureLonLat.lon, featureLonLat.lat);
+
+						var hit = findSegmentContainingPoint(map, g, pt, 30.0);
+
+						if (hit && hit.t >= 0.15 && hit.t <= 0.85) {
+							var newPoint = new OpenLayers.Geometry.Point(hit.projection.x, hit.projection.y);
+
+							g.addComponent(newPoint, hit.segIndex + 1);
+							lineFeature.layer.drawFeature(feature);
+						}
+
+						modifyfeature.selectFeature(lineFeature);
+					}
+				}
+
 				if (features.length > 1 || (features.length == 1 && features[0].geometry.CLASS_NAME == "OpenLayers.Geometry.Point")) {
 					var featurepopup = new OpenLayers.Popup(null, featureLonLat, new OpenLayers.Size(10, 10));
 					featurepopup.setOpacity(0.9);
@@ -1146,6 +1263,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			modifyfeature = new OpenLayers.Control.LmsModifyFeature(
 				devlinklayer,
 				{
+					standalone: lmsSettings.mapCreateNewPointAfterLinkEditStart ? true : false,
 					vertexRenderIntent: "vertex"
 				}
 			);

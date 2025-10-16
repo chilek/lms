@@ -52,7 +52,8 @@
 		missedNodeWarning: {if ConfigHelper::checkConfig('assignments.missed_node_warning', ConfigHelper::checkConfig('phpui.node_assignment_warning'))}true{else}false{/if},
 		discountPercentage: {$smarty.const.DISCOUNT_PERCENTAGE},
 		discountAmount: {$smarty.const.DISCOUNT_AMOUNT},
-		office2pdfCommand: '{ConfigHelper::getConfig('documents.office2pdf_command', '', true)}'
+		office2pdfCommand: '{ConfigHelper::getConfig('documents.office2pdf_command', '', true)}',
+		mapCreateNewPointAfterLinkEditStart: {if ConfigHelper::checkConfig('phpui.map_create_new_point_after_link_edit_start')}true{else}false{/if}
 	};
 
 	var lms = {
