@@ -1100,7 +1100,7 @@ version 28-git (????-??-??):
   - improvement: configuration variable 'uke.pit_empty_building_number_pattern' with empty default value
     allows to specify pattern to which matching builing numbers are treated as empty building numbers [chilan]
   - improvement: openlayer network map: more readable vertices during network link edit [chilan]
-  - improvement: configuration variable 'phpui.map_create_new_point_after_link_edit_start' with 'false' as default
+  - improvement: configuration variable 'map.create_new_point_after_link_edit_start' with 'false' as default
     allows to enable OpenLayers map mechanism which insert new vertex/point after start of network link edit in
     position when mouse button had been clicked [chilan]
 
