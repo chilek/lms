@@ -1103,6 +1103,7 @@ version 28-git (????-??-??):
   - improvement: configuration variable 'map.create_new_point_after_link_edit_start' with 'false' as default
     allows to enable OpenLayers map mechanism which insert new vertex/point after start of network link edit in
     position when mouse button had been clicked [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.map_type' to 'map.type' [chilan]
 
 version 27.0 (2021-08-20):
 
