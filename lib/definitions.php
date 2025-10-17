@@ -91,7 +91,8 @@ $CSTATUSES = array(
 
 const CUSTOMER_FLAG_RELATED_ENTITY = 1,
     CUSTOMER_FLAG_VAT_PAYER = 2,
-    CUSTOMER_FLAG_SUPPLIER = 4;
+    CUSTOMER_FLAG_SUPPLIER = 4,
+    CUSTOMER_FLAG_CONSUMER = 8;
 
 $CUSTOMERFLAGS = array(
     CUSTOMER_FLAG_RELATED_ENTITY => array(
@@ -108,6 +109,11 @@ $CUSTOMERFLAGS = array(
         'label' => 'supplier',
         'tip' => trans('check it if customer is supplier for example for warehouse purpose'),
         'alias' => 'supplier',
+    ),
+    CUSTOMER_FLAG_CONSUMER => array(
+        'label' => 'consumer',
+        'tip' => trans('check it if customer is consumer'),
+        'alias' => 'consumer',
     ),
 );
 
