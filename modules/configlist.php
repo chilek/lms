@@ -84,7 +84,6 @@ function GetConfigList()
             'node_password_length' => 'Length of (auto-generated) node password. Max.32. Default: 16.',
             'custom_accesstable' => 'PHP file with user-defined access rules in "lib" directory. Default: empty.',
             'check_for_updates_period' => 'How often to check for LMS updates (in seconds). Default: 86400.',
-            'map_type' => 'Network map type. Use "flash" if you have Ming library or "gd" if your PHP supports gdlib. By default LMS will try to generate flash map, with fallback to GD if it fails.',
             'homedir_prefix' => 'Prefix for account home directory. Default: /home/',
             'default_taxrate' => 'Value of tax rate which will be selected by default on tax rates lists. Default: 22.0',
             'default_prodid' => 'Value of product ID. Default: empty',
@@ -190,6 +189,9 @@ function GetConfigList()
             'phpmailer_from_name' => 'E-mail address name from which we send mail.',
             'phpmailer_is_html' => 'Email message in HTML format.',
             'smtp_secure' => 'Security protocol. Available options: ssl or tls.',
+        ),
+        'map' => array(
+            'type' => 'Network map type. Use "flash" if you have Ming library or "gd" if your PHP supports gdlib. By default LMS will try to generate flash map, with fallback to GD if it fails.',
         ),
         'sms' => array(
             'service' => 'Default service type for sending text messages.',
