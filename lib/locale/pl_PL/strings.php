@@ -3191,6 +3191,7 @@ $_LANG['Global division context'] = 'Globalny kontekst firmy';
 $_LANG['Division long name is required!'] = 'Pełna nazwa firmy jest wymagana!';
 $_LANG['Division short name is required!'] = 'Skrócona nazwa firmy jest wymagana!';
 $_LANG['Division with specified name already exists!'] = 'Firma o podanej nazwie już istnieje!';
+$_LANG['Division with specified label already exists!'] = 'Firma o podanej etykiecie już istnieje!';
 $_LANG['Edit Division: $a'] = 'Edycja firmy: $a';
 $_LANG['Division is required!'] = 'Firma jest wymagana!';
 $_LANG['Enter bank account or mass payments account prefix (optional)'] = 'Wprowadź konto bankowe lub prefiks konta płatności masowych (opcjonalnie)';

@@ -115,9 +115,29 @@ if (!empty($_POST['division'])) {
 
     if ($division['shortname'] == '') {
         $error['shortname'] = trans('Division short name is required!');
-    } else if ($olddiv['shortname'] != $division['shortname']
-        && $DB->GetOne('SELECT 1 FROM divisions WHERE shortname = ?', array($division['shortname']))) {
-        $error['shortname'] = trans('Division with specified name already exists!');
+    } elseif ($olddiv['shortname'] != $division['shortname']) {
+        if (!empty($division['label'])) {
+            if ($DB->GetOne(
+                'SELECT 1 FROM divisions
+                WHERE id <> ? AND label = ?',
+                array(
+                    $division['id'],
+                    $division['label'],
+                )
+            )) {
+                $error['label'] = trans('Division with specified label already exists!');
+            }
+        } elseif ($DB->GetOne(
+            'SELECT 1 FROM divisions
+            WHERE id <> ?
+                AND shortname = ?',
+            array(
+                $division['id'],
+                $division['shortname']
+            )
+        )) {
+           $error['shortname'] = trans('Division with specified name already exists!');
+        }
     }
 
     if (!empty($division['naturalperson'])) {

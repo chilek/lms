@@ -289,6 +289,7 @@ CREATE TABLE divisions (
 	office_address_id integer DEFAULT NULL
 		CONSTRAINT divisions_office_address_id_fkey REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id),
+	CONSTRAINT divisions_shortname_label_ukey UNIQUE (shortname, label),
 	UNIQUE (shortname)
 );
 
@@ -4526,6 +4527,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025101700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025102200');
 
 COMMIT;
