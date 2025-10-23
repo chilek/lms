@@ -23,9 +23,9 @@
 
 $this->BeginTrans();
 
-if (!$this->ResourceExists('divisions_shortname_label_ukey', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
-    if ($this->ResourceExists('divisions_shortname_key', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
-        $this->Execute("ALTER TABLE divisions DROP CONSTRAINT divisions_shortname_key");
+if (!$this->ResourceExists('divisions.divisions_shortname_label_ukey', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
+    if ($this->ResourceExists('divisions.shortname', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
+        $this->Execute("ALTER TABLE divisions DROP CONSTRAINT shortname");
     }
 
     $this->Execute("ALTER TABLE divisions ADD CONSTRAINT divisions_shortname_label_ukey UNIQUE (shortname, label)");
