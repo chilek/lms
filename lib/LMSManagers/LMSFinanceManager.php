@@ -482,6 +482,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 ConfigHelper::checkConfig('phpui.promotion_use_discounts')
             );
 
+            $current_month = date('m', $data['cdate']);
+
             foreach ($data_tariff as $idx => $dt) {
                 [$value, $period] = explode(':', $dt);
 
@@ -531,14 +533,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             }
                             $at = $datefrom;
                         } elseif (($data['at'] === 0 && $start_day >= date('j', mktime(12, 0, 0, $start_month + 1, 0, $start_year)))
-                            || ($data['at'] > 0 && $start_day >= $data['at'])) {
+                            || ($data['at'] > 0 && $start_day >= $data['at'] && $start_month == $current_month)) {
                             $datefrom = mktime(0, 0, 0, $start_month + ($data['at'] === 0 ? 2 : 1), $data['at'], $start_year);
                             $at = $datefrom;
                         } elseif ($data['at'] === 0) {
                             $datefrom = mktime(0, 0, 0, $start_month + 1, 0, $start_year);
                             $at = $datefrom;
                         } else {
-                            $at = mktime(0, 0, 0, $start_month + ($start_day >= $data['at'] ? 1 : 0), $data['at'], $start_year);
+                            $at = mktime(0, 0, 0, $start_month + ($start_day >= $data['at'] && $start_month == $current_month ? 1 : 0), $data['at'], $start_year);
                         }
                         $_datefrom = $orig_datefrom;
 
