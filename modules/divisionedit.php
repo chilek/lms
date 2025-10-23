@@ -136,7 +136,7 @@ if (!empty($_POST['division'])) {
                 $division['shortname']
             )
         )) {
-           $error['shortname'] = trans('Division with specified name already exists!');
+            $error['shortname'] = trans('Division with specified name already exists!');
         }
     }
 
