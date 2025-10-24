@@ -27,26 +27,57 @@
 global $LMS, $SESSION;
 
 if (!empty($_GET['id'])) {
-    $doc = $LMS->DB->GetRow('SELECT d.id, d.number, d.cdate, d.type, d.customerid, n.template
-		FROM documents d
-		LEFT JOIN numberplans n ON (d.numberplanid = n.id)
-		LEFT JOIN divisions ds ON (ds.id = d.divisionid)
-		WHERE d.id = ?', array(intval($_GET['id'])));
+    $allowed_document_types = ConfigHelper::getConfig('userpanel.allowed_document_types');
+    if (!empty($allowed_document_types)) {
+        $allowed_document_types = Utils::filterIntegers(explode(',', $allowed_document_types));
+    }
+
+    $doc = $LMS->DB->GetRow(
+        'SELECT
+            d.id,
+            d.number,
+            d.cdate,
+            d.type,
+            d.customerid,
+            d.closed,
+            d.confirmdate,
+            n.template
+        FROM documents d
+        LEFT JOIN numberplans n ON d.numberplanid = n.id
+        LEFT JOIN divisions ds ON ds.id = d.divisionid
+        WHERE d.id = ?'
+            . (
+                ConfigHelper::checkConfig('userpanel.show_confirmed_documents_only')
+                    ? ' AND (d.closed > 0 OR d.confirmdate >= ?NOW? OR d.confirmdate = -1)'
+                    : ''
+            ) . (ConfigHelper::checkConfig('userpanel.hide_archived_documents') ? ' AND d.archived = 0': '')
+            . ($allowed_document_types ? ' AND d.type IN (' . implode(',', $allowed_document_types) . ')' : ''),
+        array(
+            intval($_GET['id']),
+        )
+    );
 
     if (empty($doc) || $doc['customerid'] != $SESSION->id) {
         die;
     }
 
-    $allowed_document_types = ConfigHelper::getConfig('userpanel.allowed_document_types');
-    if (!empty($allowed_document_types)) {
-        $allowed_document_types = array_flip(Utils::filterIntegers(explode(',', $allowed_document_types)));
-    }
-    if (!empty($allowed_document_types) && !isset($allowed_document_types[$doc['type']])) {
+    $show_unapproved_document_attachments = ConfigHelper::checkConfig('userpanel.show_unapproved_document_attachments');
+
+    if (empty($doc['closed']) && !$show_unapproved_document_attachments) {
         die;
     }
 
-    $docattachments = $LMS->DB->GetAllByKey('SELECT * FROM documentattachments WHERE docid = ?
-		ORDER BY type DESC, filename', 'id', array($_GET['id']));
+    $docattachments = $LMS->DB->GetAllByKey(
+        'SELECT *
+        FROM documentattachments
+        WHERE docid = ?
+        ORDER BY type DESC, filename',
+        'id',
+        array(
+            $_GET['id'],
+        )
+    );
+
     $attachmentid = intval($_GET['attachmentid']);
     if ($attachmentid) {
         $docattach = $docattachments[$attachmentid];

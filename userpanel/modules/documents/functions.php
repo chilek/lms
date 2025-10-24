@@ -386,22 +386,56 @@ function module_main()
         $allowed_document_types = Utils::filterIntegers(explode(',', $allowed_document_types));
     }
 
-    $documents = $DB->GetAll('SELECT d.id, d.number, d.type, c.title, c.fromdate, c.todate, 
-		    c.description, n.template, d.closed, d.cdate, d.sdate, d.confirmdate, d.customerid
-		FROM documentcontents c
-		JOIN documents d ON (c.docid = d.id)
-		LEFT JOIN numberplans n ON (d.numberplanid = n.id)
-		WHERE d.customerid = ?'
-            . (ConfigHelper::checkConfig('userpanel.show_confirmed_documents_only')
-                ? ' AND (d.closed > 0 OR d.confirmdate >= ?NOW? OR d.confirmdate = -1)': '')
-            . (ConfigHelper::checkConfig('userpanel.hide_archived_documents') ? ' AND d.archived = 0': '')
+    $documents = $DB->GetAll(
+        'SELECT
+            d.id,
+            d.number,
+            d.type,
+            c.title,
+            c.fromdate,
+            c.todate,
+            c.description,
+            n.template,
+            d.closed,
+            d.cdate,
+            d.sdate,
+            d.confirmdate,
+            d.customerid
+        FROM documentcontents c
+        JOIN documents d ON c.docid = d.id
+        LEFT JOIN numberplans n ON d.numberplanid = n.id
+        WHERE d.customerid = ?'
+            . (
+                ConfigHelper::checkConfig('userpanel.show_confirmed_documents_only')
+                    ? ' AND (d.closed > 0 OR d.confirmdate >= ?NOW? OR d.confirmdate = -1)'
+                    : ''
+            ) . (ConfigHelper::checkConfig('userpanel.hide_archived_documents') ? ' AND d.archived = 0': '')
             . ($allowed_document_types ? ' AND d.type IN (' . implode(',', $allowed_document_types) . ')' : '')
             . ' ORDER BY cdate', array($SESSION->id));
 
     if (!empty($documents)) {
+        $show_unapproved_document_attachments = ConfigHelper::checkConfig('userpanel.show_unapproved_document_attachments');
+
         foreach ($documents as &$doc) {
-            $doc['attachments'] = $DB->GetAllBykey('SELECT * FROM documentattachments WHERE docid = ?
-				ORDER BY type DESC, filename', 'id', array($doc['id']));
+            if (empty($doc['closed'])
+                && (
+                    !$show_unapproved_document_attachments
+                    && $doc['confirmdate'] < time()
+                    && $doc['confirmdate'] != -1
+                )
+            ) {
+                continue;
+            }
+
+            $doc['attachments'] = $DB->GetAllBykey(
+                'SELECT *
+                FROM documentattachments
+                WHERE docid = ?
+                ORDER BY type DESC, filename',
+                'id',
+                array($doc['id'])
+            );
+
             if (empty($doc['attachments'])) {
                 $doc['attachments'] = array();
             }
@@ -489,6 +523,7 @@ if (defined('USERPANEL_SETUPMODE')) {
             array(
                 'hide_documentbox' => ConfigHelper::getConfig('userpanel.hide_documentbox'),
                 'show_confirmed_documents_only' => ConfigHelper::checkConfig('userpanel.show_confirmed_documents_only'),
+                'show_unapproved_document_attachments' => ConfigHelper::checkConfig('userpanel.show_unapproved_document_attachments'),
                 'allowed_document_types' => $allowed_document_types,
                 'hide_archived_documents' => ConfigHelper::checkConfig('userpanel.hide_archived_documents'),
                 'document_notification_mail_dsn_address' =>
@@ -558,6 +593,7 @@ if (defined('USERPANEL_SETUPMODE')) {
         $variables = array(
             'hide_documentbox' => CONFIG_TYPE_BOOLEAN,
             'show_confirmed_documents_only' => CONFIG_TYPE_BOOLEAN,
+            'show_unapproved_document_attachments' => CONFIG_TYPE_BOOLEAN,
             'allowed_document_types' => CONFIG_TYPE_AUTO,
             'hide_archived_documents' => CONFIG_TYPE_BOOLEAN,
             'document_notification_mail_dsn_address' => CONFIG_TYPE_RICHTEXT,
