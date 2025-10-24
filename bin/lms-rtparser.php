@@ -557,9 +557,9 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         $toemails = array();
 
         if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $mh_to, $m)) {
-            $toemails[$m['address']] = $m['address'];
+            $toemails[strtolower($m['address'])] = strtolower($m['address']);
         } elseif (!empty($mh_to)) {
-            $toemails[$mh_to] = $mh_to;
+            $toemails[strtolower($mh_to)] = strtolower($mh_to);
         }
 
         $ccemails = array();
@@ -567,9 +567,9 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         if (!empty($_ccemails)) {
             foreach ($_ccemails as $ccemail) {
                 if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $ccemail, $m)) {
-                    $ccemails[$m['address']] = $m['display'] ?? '';
+                    $ccemails[strtolower($m['address'])] = $m['display'] ?? '';
                 } else {
-                    $ccemails[$ccemail] = '';
+                    $ccemails[strtolower($ccemail)] = '';
                 }
             }
         }
@@ -578,7 +578,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         if ((!$queue || $check_mail) && (!empty($toemails) || !empty($ccemails))) {
             $queueid = $queue;
             $queue = $DB->GetRow(
-                "SELECT id, email FROM rtqueues WHERE email IN ? LIMIT 1",
+                "SELECT id, LOWER(email) AS email FROM rtqueues WHERE LOWER(email) IN ? LIMIT 1",
                 array(array_merge(array_keys($toemails), array_keys($ccemails)))
             );
             if (!empty($queue) && (!$check_mail || $queue['id'] == $queueid)) {
@@ -676,7 +676,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         if ($prev_tid && ($prev_tid_contents['state'] != RT_RESOLVED || $prev_tid_contents['resolvetime'] + $modify_ticket_timeframe > time())) {
             // find userid
             $requserid = $DB->GetOne(
-                "SELECT id FROM vusers WHERE email = ?",
+                "SELECT id FROM vusers WHERE LOWER(email) = LOWER(?)",
                 array($fromemail)
             );
             if (empty($requserid)) {
