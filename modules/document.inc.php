@@ -135,6 +135,8 @@ function GetPlugin($template, $customerid, $update_title, $JSResponse)
 
     $JSResponse->script('$("#documentpromotions").toggle(' . (empty($engine['promotion-schema-selection']) ? 'false' : 'true') . ')');
     $JSResponse->script('$("#document-consents").toggle(' . (empty($engine['customer-consent-selection']) ? 'false' : 'true') . ')');
+
+    $JSResponse->script('$("#dont-create-assignments").prop(\'checked\', ' . (empty($engine['default-dont-create-assignments']) ? 'false' : 'true') . ')');
 }
 
 function GetDocumentTemplates($rights, $type = null)
