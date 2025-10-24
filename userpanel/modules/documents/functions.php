@@ -411,7 +411,11 @@ function module_main()
                     : ''
             ) . (ConfigHelper::checkConfig('userpanel.hide_archived_documents') ? ' AND d.archived = 0': '')
             . ($allowed_document_types ? ' AND d.type IN (' . implode(',', $allowed_document_types) . ')' : '')
-            . ' ORDER BY cdate', array($SESSION->id));
+            . ' ORDER BY cdate',
+        array(
+            $SESSION->id,
+        )
+    );
 
     if (!empty($documents)) {
         $show_unapproved_document_attachments = ConfigHelper::checkConfig('userpanel.show_unapproved_document_attachments');
