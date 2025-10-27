@@ -1323,6 +1323,9 @@ version 27.0 (2021-08-20):
   - enhancement: 'phpui.send_message_limit_violation_type' with 'warning' as default value specifies
     reaction on recipient limit overrun in send message form [chilan]
   - enhancement/improvement: division unique key changed from 'shortname' to 'shortname+label' [chilan]
+  - enhancement: 'payments.reward_penalty_last_deadline_check_only' configuration variable with 'false'
+    as default value allows to enable more user-friendly mechanism for activating rewards and penalties
+    for customers [chilan]
 
 version 26.0 (2020-12-15):
 
