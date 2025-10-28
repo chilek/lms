@@ -749,7 +749,7 @@ function parse_customer_data($data, $format, $row)
         array(
             $all_accounts,
             $commented_balance,
-            $row['name'],
+            trim($row['name']),
             $row['age'] ?? '',
             sprintf('%01.2f', $amount),
             sprintf('%01.2f', $totalamount),
