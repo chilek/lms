@@ -168,7 +168,16 @@
 										<strong>{trans("Ownership")}</strong>
 									</td>
 									<td>
-										{$_NETELEMENTOWNERSHIPS[$nodeinfo.ownership]} {if ($nodeinfo.ownership >= $smarty.const.NET_ELEMENT_OWNERSHIP_SHARED)} ({$nodeinfo.coowner}) {/if}
+										{$_NETELEMENTOWNERSHIPS[$nodeinfo.ownership]}
+										{if ($nodeinfo.ownership>= $smarty.const.NET_ELEMENT_OWNERSHIP_SHARED)}
+											({strip}
+											{if empty($foreign_entity)}
+												{$nodeninfo.coowner}
+											{else}
+												{$foreign_entity.name}{if !empty($foreign_entity.type)}, {if $foreign_entity.type == 1}{trans("TEN")}{else}{trans("JST")}{/if} {$foreign_entity.id}{/if}
+											{/if}
+											{/strip})
+										{/if}
 									</td>
 								</tr>
 								{if !empty($nodeinfo.ownerid)}
