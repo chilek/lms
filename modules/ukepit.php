@@ -404,6 +404,8 @@ if ($report_type == 'full' && empty($root_netdevice_id)) {
 
 $empty_building_number_pattern = str_replace('/', '\\/', ConfigHelper::getConfig('uke.pit_empty_building_number_pattern', '', true));
 
+$foreign_entities = Utils::getForeignEntities();
+
 $division = isset($_POST['division']) ? intval($_POST['division']) : 0;
 $aggregate_customer_services = isset($_POST['aggregate-customer-services']);
 $customer_resources_as_operator_resources = isset($_POST['customer-resources-as-operator-resources']);
@@ -2752,10 +2754,16 @@ if ($report_type == 'full') {
     $po_buffer = 'po01_id_podmiotu_obcego,po02_nip_pl,po03_nip_nie_pl' . EOL;
     foreach ($foreigners as $name => $foreigner) {
         if (isset($used_foreigners[$name])) {
+            if (!empty($foreign_entities[$name]['type'])) {
+                $foreignEntityId = $foreign_entities[$name]['name'];
+                $foreignEntityTen = $foreign_entities[$name]['id'];
+            } else {
+                $foreignEntityId = $foreigner;
+                $foreignEntityTen = '';
+            }
             $data = array(
-                // alternatively $foreingerid can be used
-                'po01_id_podmiotu_obcego' => 'PO-' . $foreigner,
-                'po02_nip_pil' => '',
+                'po01_id_podmiotu_obcego' => 'PO-' . $foreignEntityId,
+                'po02_nip_pl' => $foreignEntityTen,
                 'po03_nip_nie_pl' => '',
             );
             $po_buffer .= to_csv($data) . EOL;

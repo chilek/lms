@@ -174,7 +174,8 @@
 											{if empty($foreign_entity)}
 												{$nodeninfo.coowner}
 											{else}
-												{$foreign_entity.name}{if !empty($foreign_entity.type)}, {if $foreign_entity.type == 1}{trans("TEN")}{else}{trans("JST")}{/if} {$foreign_entity.id}{/if}
+												{$foreign_entity.name}
+												{if !empty($foreign_entity.type)}, {trans("TEN")} {$foreign_entity.id}{/if}
 											{/if}
 											{/strip})
 										{/if}

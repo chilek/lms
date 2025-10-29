@@ -1696,11 +1696,9 @@ class Utils
 
         if (preg_match_all('/(?<id>[[:alnum:]]+)(?:\((?<name>[^\)]+)\))?(?:\s|[\s]*[,;][\s]*|$)/', ConfigHelper::getConfig('uke.pit_foreign_entities', '', true), $m)) {
             foreach ($m['id'] as $idx => $id) {
-                $type = stripos($id, 'P') === 0 ? 1 : 2;
-                $id = preg_replace('/^[PS]/i', '', $id);
                 $entities[$id] = array(
                     'name' => empty($m['name'][$idx]) || !strlen($m['name'][$idx]) ? null : $m['name'][$idx],
-                    'type' => $type,
+                    'type' => 1,
                     'id' => $id,
                 );
             }

@@ -114,7 +114,7 @@
 					{foreach $foreign_entities as $foreign_entity}
 						<option value="{$foreign_entity.id|escape}"
 							{if $foreign_entity.name == $netnode.coowner} selected{/if}
-							>{$foreign_entity.name}{if !empty($foreign_entity.type)} ({if $foreign_entity.type == 1}{trans("TEN")}{else}{trans("JST")}{/if} {$foreign_entity.id}){/if}</option>
+							>{$foreign_entity.name}{if !empty($foreign_entity.type)} ({trans("TEN")} {$foreign_entity.id}){/if}</option>
 					{/foreach}
 				</select>
 			{/box_row}
