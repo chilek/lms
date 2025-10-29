@@ -1059,7 +1059,7 @@ if ($report_type == 'full') {
                     $netnodes[$netnodename]['location_zip'] = $netdevice['location_zip'];
                     $netnodes[$netnodename]['status'] = 0;
                     $netnodes[$netnodename]['type'] = 8;
-                    $netnodes[$netnodename]['ownership'] = 0;
+                    $netnodes[$netnodename]['ownership'] = NET_ELEMENT_OWNERSHIP_OWN;
                     $netnodes[$netnodename]['coowner'] = '';
 
                     if (isset($teryt_cities[$netdevice['location_city']])) {
@@ -1264,7 +1264,7 @@ if ($report_type == 'full') {
                 }
             }
 
-            if ($netnode['ownership'] >= NET_ELEMENT_OWNERSHIP_SHARED) {
+            if ($netnode['ownership'] == NET_ELEMENT_OWNERSHIP_FOREIGN) {
                 continue;
             }
 
@@ -2221,8 +2221,10 @@ if ($report_type == 'full') {
 
                                 $processed_netlinks[$netnodelinkid] = true;
 
-                                $foreign = $netnodes[$netdevnetnodename]['ownership'] >= NET_ELEMENT_OWNERSHIP_SHARED && $dstnetnode['ownership'] < NET_ELEMENT_OWNERSHIP_SHARED
-                                    || $netnodes[$netdevnetnodename]['ownership'] < NET_ELEMENT_OWNERSHIP_SHARED && $dstnetnode['ownership'] >= NET_ELEMENT_OWNERSHIP_SHARED;
+                                $foreign = $netnodes[$netdevnetnodename]['ownership'] == NET_ELEMENT_OWNERSHIP_FOREIGN && $dstnetnode['ownership'] != NET_ELEMENT_OWNERSHIP_FOREIGN
+                                    || $netnodes[$netdevnetnodename]['ownership'] != NET_ELEMENT_OWNERSHIP_FOREIGN && $dstnetnode['ownership'] == NET_ELEMENT_OWNERSHIP_FOREIGN;
+                                $shared = $netnodes[$netdevnetnodename]['ownership'] == NET_ELEMENT_OWNERSHIP_SHARED && $dstnetnode['ownership'] != NET_ELEMENT_OWNERSHIP_SHARED
+                                    || $netnodes[$netdevnetnodename]['ownership'] != NET_ELEMENT_OWNERSHIP_SHARED && $dstnetnode['ownership'] == NET_ELEMENT_OWNERSHIP_SHARED;
 
                                 $netlinks[] = array(
                                     'id' => $netlink['id'],
@@ -2240,6 +2242,7 @@ if ($report_type == 'full') {
                                     'invproject' => $invproject,
                                     'status' => $status,
                                     'foreign' => $foreign,
+                                    'shared' => $shared,
                                 );
 
                                 $othernetnode = $dstnetnode;
@@ -2262,8 +2265,10 @@ if ($report_type == 'full') {
 
                             $processed_netlinks[$netnodelinkid] = true;
 
-                            $foreign = $netnodes[$netdevnetnodename]['ownership'] >= NET_ELEMENT_OWNERSHIP_SHARED && $dstnetnode['ownership'] < NET_ELEMENT_OWNERSHIP_SHARED
-                                || $netnodes[$netdevnetnodename]['ownership'] < NET_ELEMENT_OWNERSHIP_SHARED && $dstnetnode['ownership'] >= NET_ELEMENT_OWNERSHIP_SHARED;
+                            $foreign = $netnodes[$netdevnetnodename]['ownership'] == NET_ELEMENT_OWNERSHIP_FOREIGN && $dstnetnode['ownership'] != NET_ELEMENT_OWNERSHIP_FOREIGN
+                                || $netnodes[$netdevnetnodename]['ownership'] != NET_ELEMENT_OWNERSHIP_FOREIGN && $dstnetnode['ownership'] == NET_ELEMENT_OWNERSHIP_FOREIGN;
+                            $shared = $netnodes[$netdevnetnodename]['ownership'] == NET_ELEMENT_OWNERSHIP_SHARED && $dstnetnode['ownership'] != NET_ELEMENT_OWNERSHIP_SHARED
+                                || $netnodes[$netdevnetnodename]['ownership'] != NET_ELEMENT_OWNERSHIP_SHARED && $dstnetnode['ownership'] == NET_ELEMENT_OWNERSHIP_SHARED;
 
                             $netlinks[] = array(
                                 'id' => $netlink['id'],
@@ -2281,6 +2286,7 @@ if ($report_type == 'full') {
                                 'invproject' => $invproject,
                                 'status' => $status,
                                 'foreign' => $foreign,
+                                'shared' => $shared,
                             );
 
                             $othernetnode = $srcnetnode;
@@ -2465,6 +2471,10 @@ if ($report_type == 'full') {
                 continue;
             }
 
+            if ($netnode['ownership'] == NET_ELEMENT_OWNERSHIP_FOREIGN) {
+                continue;
+            }
+
             $media = array();
             foreach ($netnode['technologies'] as $technology) {
                 $mediaCode = mediaCodeByTechnology($technology);
@@ -2475,14 +2485,14 @@ if ($report_type == 'full') {
             }
 
             if ($netnode['mode'] == ELEMENT_MODE_NETWORK_NODE) {
-                if (strlen($netnode['coowner']) && !empty($netnode['ownership'])) {
+                if (strlen($netnode['coowner']) && $netnode['ownership'] == NET_ELEMENT_OWNERSHIP_SHARED) {
                     $used_foreigners[$netnode['coowner']] = true;
                 }
 
                 $data = array(
                     'we01_id_wezla' => '',
-                    'we02_tytul_do_wezla' => strlen($netnode['coowner']) && !empty($netnode['ownership']) ? 'Węzeł współdzielony z innym podmiotem' : 'Węzeł własny',
-                    'we03_id_podmiotu_obcego' => strlen($netnode['coowner']) && !empty($netnode['ownership']) ? 'PO-' . $netnode['coowner'] : '',
+                    'we02_tytul_do_wezla' => strlen($netnode['coowner']) && $netnode['ownership'] == NET_ELEMENT_OWNERSHIP_SHARED ? 'Węzeł współdzielony z innym podmiotem' : 'Węzeł własny',
+                    'we03_id_podmiotu_obcego' => strlen($netnode['coowner']) && $netnode['ownership'] == NET_ELEMENT_OWNERSHIP_SHARED ? 'PO-' . $netnode['coowner'] : '',
                     'we04_terc' => $netnode['area_terc'] ?? '',
                     'we05_simc' => $netnode['area_simc'] ?? '',
                     'we06_ulic' => $netnode['address_symul'] ?? '',
@@ -2494,8 +2504,8 @@ if ($report_type == 'full') {
                     'we12_technologia_dostepowa' => '',
                     'we13_uslugi_transmisji_danych' => '',
                     'we14_mozliwosc_zwiekszenia_liczby_interfejsow' => isset($netnode['flags'][NETWORK_NODE_FLAG_INTERFACE_COUNT_INCREASE_POSSIBILITY]) ? 'Tak' : 'Nie',
-                    'we15_finansowanie_publ' => strlen($netnode['coowner']) && !empty($netnode['ownership']) ? '' : (empty($netnode['invproject']) ? 'Nie' : 'Tak'),
-                    'we16_numery_projektow_publ' => empty($netnode['invproject']) || strlen($netnode['coowner']) && !empty($netnode['ownership'])
+                    'we15_finansowanie_publ' => strlen($netnode['coowner']) && $netnode['ownership'] == NET_ELEMENT_OWNERSHIP_SHARED ? '' : (empty($netnode['invproject']) ? 'Nie' : 'Tak'),
+                    'we16_numery_projektow_publ' => empty($netnode['invproject']) || strlen($netnode['coowner']) && $netnode['ownership'] == NET_ELEMENT_OWNERSHIP_SHARED
                         ? ''
                         : implode(';', $netnode['invproject']),
                     'we17_infrastruktura_o_duzym_znaczeniu' => isset($netnode['flags'][NETWORK_NODE_FLAG_CRITICAL_INFRASTRUCTURE]) ? 'Tak' : 'Nie',
