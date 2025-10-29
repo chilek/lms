@@ -24,6 +24,10 @@
 		align-items: flex-start;
 	}
 
+	#coowner {
+		width: 25em;
+	}
+
 </style>
 
 <script src="js/location_box.js"></script>
@@ -105,8 +109,14 @@
 			{/box_row}
 
 			{box_row id="ownername" icon="division" icon_class="fa-fw" label="Owner identifier"}
-				<input type="text" name="netnode[coowner]" size="30" value="{$netnode.coowner|default:""|escape}"
-					{tip trigger="coowner" text="Enter co-owner name"}>
+				<select name="netnode[coowner]" class="lms-ui-combobox" id="coowner"
+					data-value="{$netnode.coowner}">
+					{foreach $foreign_entities as $foreign_entity}
+						<option value="{$foreign_entity.id|escape}"
+							{if $foreign_entity.name == $netnode.coowner} selected{/if}
+							>{$foreign_entity.name}{if !empty($foreign_entity.type)} ({if $foreign_entity.type == 1}{trans("TEN")}{else}{trans("JST")}{/if} {$foreign_entity.id}){/if}</option>
+					{/foreach}
+				</select>
 			{/box_row}
 
 			{box_row id="customer" icon="customer" icon_class="fa-fw" label="Owner"}

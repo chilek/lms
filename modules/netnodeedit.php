@@ -196,5 +196,6 @@ $SMARTY->assign('netnode', $netnodedata);
 $SMARTY->assign('objectid', $netnodedata['id']);
 $SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('NNprojects', $LMS->GetProjects());
+$SMARTY->assign('foreign_entities', Utils::getForeignEntities());
 
 $SMARTY->display('netnode/netnodemodify.html');

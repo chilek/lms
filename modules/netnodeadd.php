@@ -174,5 +174,6 @@ if (!empty($netnodedata['ownerid'])) {
 $SMARTY->assign('netnode', $netnodedata);
 $SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('NNprojects', $LMS->GetProjects());
+$SMARTY->assign('foreign_entities', Utils::getForeignEntities());
 
 $SMARTY->display('netnode/netnodemodify.html');
