@@ -5532,6 +5532,7 @@ $_LANG['splice tray'] = 'tacka spawów';
 $_LANG['Own node'] = 'Węzeł własny';
 $_LANG['Node shared with another entity'] = 'Węzeł współdzielony z innym podmiotem';
 $_LANG['Foreign node'] = 'Węzeł obcy';
+$_LANG['Foreign entity'] = 'Podmiot obcy';
 
 $_LANG['Your session is near to expiration! Click "OK" if you want to prevent logout.'] = 'Twoja sesja jest bliska przeterminowania! Kliknij "OK", jeśli chcesz zapobiec wylogowaniu.';
 
