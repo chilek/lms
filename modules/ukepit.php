@@ -1264,7 +1264,7 @@ if ($report_type == 'full') {
                 }
             }
 
-            if ($netnode['ownership'] == 2) {
+            if ($netnode['ownership'] >= NET_ELEMENT_OWNERSHIP_SHARED) {
                 continue;
             }
 
@@ -2221,8 +2221,8 @@ if ($report_type == 'full') {
 
                                 $processed_netlinks[$netnodelinkid] = true;
 
-                                $foreign = $netnodes[$netdevnetnodename]['ownership'] == 2 && $dstnetnode['ownership'] < 2
-                                    || $netnodes[$netdevnetnodename]['ownership'] < 2 && $dstnetnode['ownership'] == 2;
+                                $foreign = $netnodes[$netdevnetnodename]['ownership'] >= NET_ELEMENT_OWNERSHIP_SHARED && $dstnetnode['ownership'] < NET_ELEMENT_OWNERSHIP_SHARED
+                                    || $netnodes[$netdevnetnodename]['ownership'] < NET_ELEMENT_OWNERSHIP_SHARED && $dstnetnode['ownership'] >= NET_ELEMENT_OWNERSHIP_SHARED;
 
                                 $netlinks[] = array(
                                     'id' => $netlink['id'],
@@ -2262,8 +2262,8 @@ if ($report_type == 'full') {
 
                             $processed_netlinks[$netnodelinkid] = true;
 
-                            $foreign = $netnodes[$netdevnetnodename]['ownership'] == 2 && $dstnetnode['ownership'] < 2
-                                || $netnodes[$netdevnetnodename]['ownership'] < 2 && $dstnetnode['ownership'] == 2;
+                            $foreign = $netnodes[$netdevnetnodename]['ownership'] >= NET_ELEMENT_OWNERSHIP_SHARED && $dstnetnode['ownership'] < NET_ELEMENT_OWNERSHIP_SHARED
+                                || $netnodes[$netdevnetnodename]['ownership'] < NET_ELEMENT_OWNERSHIP_SHARED && $dstnetnode['ownership'] >= NET_ELEMENT_OWNERSHIP_SHARED;
 
                             $netlinks[] = array(
                                 'id' => $netlink['id'],

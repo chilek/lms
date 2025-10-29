@@ -546,8 +546,8 @@ if ($netdevices) {
 			LEFT JOIN netnodes nndst ON nndst.id = nddst.netnodeid
 			LEFT JOIN netradiosectors rsdst ON rsdst.id = nl.dstradiosector
 			WHERE (src = ? OR dst = ?)
-				AND ((ndsrc.netnodeid IS NOT NULL AND nnsrc.ownership = 2)
-					OR (nddst.netnodeid IS NOT NULL AND nndst.ownership = 2))
+				AND ((ndsrc.netnodeid IS NOT NULL AND nnsrc.ownership = " . NET_ELEMENT_OWNERSHIP_FOREIGN . ")
+					OR (nddst.netnodeid IS NOT NULL AND nndst.ownership = " . NET_ELEMENT_OWNERSHIP_FOREIGN . "))
 			GROUP BY nl.type, nl.technology, speed, freq",
             array($netdevice['id'], $netdevice['id'], $netdevice['id'])
         );
@@ -565,8 +565,8 @@ if ($netdevices) {
 			LEFT JOIN netnodes nndst ON nndst.id = nddst.netnodeid
 			LEFT JOIN netradiosectors rsdst ON rsdst.id = nl.dstradiosector
 			WHERE (src = ? OR dst = ?)
-				AND (ndsrc.netnodeid IS NULL OR nnsrc.ownership < 2)
-				AND (nddst.netnodeid IS NULL OR nndst.ownership < 2)
+				AND (ndsrc.netnodeid IS NULL OR nnsrc.ownership < " . NET_ELEMENT_OWNERSHIP_FOREIGN . ")
+				AND (nddst.netnodeid IS NULL OR nndst.ownership < " . NET_ELEMENT_OWNERSHIP_FOREIGN . ")
 			GROUP BY nl.type, nl.technology, speed, freq",
             array($netdevice['id'], $netdevice['id'], $netdevice['id'])
         );
@@ -762,7 +762,7 @@ if ($netdevices) {
                 $netnodes[$netnodename]['type'] = 8;
                 $netnodes[$netnodename]['uip'] = 0;
                 $netnodes[$netnodename]['miar'] = 0;
-                $netnodes[$netnodename]['ownership'] = 0;
+                $netnodes[$netnodename]['ownership'] = NET_ELEMENT_OWNERSHIP_OWN;
                 $netnodes[$netnodename]['coowner'] = '';
 
                 if (isset($teryt_cities[$netdevice['location_city']])) {
@@ -1062,7 +1062,7 @@ if ($netnodes) {
             count($netnode['invproject']) == 1 ? $netnode['invproject'][0] : '';
         }
 
-        if ($netnode['ownership'] < 2) {
+        if ($netnode['ownership'] < NET_ELEMENT_OWNERSHIP_FOREIGN) {
             $data = array(
                 'ww_id' => $netnode['id'],
                 'ww_ownership' => $NETELEMENTOWNERSHIPS[$netnode['ownership']],
@@ -1125,7 +1125,7 @@ if ($netnodes) {
             }
         }
 
-        if ($netnode['ownership'] == 2) {
+        if ($netnode['ownership'] == NET_ELEMENT_OWNERSHIP_FOREIGN) {
             continue;
         }
 
@@ -2059,7 +2059,7 @@ if ($netdevices) {
                             //$netnodes[$netdevnetnode]['distports']++;
                             $foreign = false;
 
-                            if ($netnodes[$netdevnetnode]['ownership'] == 2 && $netnodes[$dstnetnode]['ownership'] < 2) {
+                            if ($netnodes[$netdevnetnode]['ownership'] == NET_ELEMENT_OWNERSHIP_FOREIGN && $netnodes[$dstnetnode]['ownership'] < NET_ELEMENT_OWNERSHIP_FOREIGN) {
                                 $invproject = strlen($netnodes[$dstnetnode]['invproject']) ? $netnodes[$dstnetnode]['invproject'] : '';
                                 $netintid = $netnodes[$dstnetnode]['backbonenetintid'][$invproject][$netnodes[$dstnetnode]['status']][$netlink['type']][$netlink['technology']][$netlink['speed']];
                                 $data = array(
@@ -2082,7 +2082,7 @@ if ($netdevices) {
                                 $netconnectionid++;
                                 $foreign = true;
                             }
-                            if ($netnodes[$netdevnetnode]['ownership'] < 2 && $netnodes[$dstnetnode]['ownership'] == 2) {
+                            if ($netnodes[$netdevnetnode]['ownership'] < NET_ELEMENT_OWNERSHIP_FOREIGN && $netnodes[$dstnetnode]['ownership'] == NET_ELEMENT_OWNERSHIP_FOREIGN) {
                                 $invproject = strlen($netnodes[$netdevnetnode]['invproject']) ? $netnodes[$netdevnetnode]['invproject'] : '';
                                 $netintid = $netnodes[$netdevnetnode]['backbonenetintid'][$invproject][$netnodes[$netdevnetnode]['status']][$netlink['type']][$netlink['technology']][$netlink['speed']];
                                 $data = array(
@@ -2137,7 +2137,7 @@ if ($netdevices) {
                         //$netnodes[$netdevnetnode]['distports']++;
                         $foreign = false;
 
-                        if ($netnodes[$netdevnetnode]['ownership'] == 2 && $netnodes[$srcnetnode]['ownership'] < 2) {
+                        if ($netnodes[$netdevnetnode]['ownership'] == NET_ELEMENT_OWNERSHIP_FOREIGN && $netnodes[$srcnetnode]['ownership'] < NET_ELEMENT_OWNERSHIP_FOREIGN) {
                             $invproject = strlen($netnodes[$srcnetnode]['invproject']) ? $netnodes[$srcnetnode]['invproject'] : '';
                             $netintid = $netnodes[$srcnetnode]['backbonenetintid'][$invproject][$netnodes[$srcnetnode]['status']][$netlink['type']][$netlink['technology']][$netlink['speed']];
                             $data = array(
@@ -2159,7 +2159,7 @@ if ($netdevices) {
                             $netconnectionid++;
                             $foreign = true;
                         }
-                        if ($netnodes[$netdevnetnode]['ownership'] < 2 && $netnodes[$srcnetnode]['ownership'] == 2) {
+                        if ($netnodes[$netdevnetnode]['ownership'] < NET_ELEMENT_OWNERSHIP_FOREIGN && $netnodes[$srcnetnode]['ownership'] == NET_ELEMENT_OWNERSHIP_FOREIGN) {
                             $invproject = strlen($netnodes[$netdevnetnode]['invproject']) ? $netnodes[$netdevnetnode]['invproject'] : '';
                             $netintid = $netnodes[$netdevnetnode]['backbonenetintid'][$invproject][$netnodes[$netdevnetnode]['status']][$netlink['type']][$netlink['technology']][$netlink['speed']];
                             $data = array(

@@ -1692,10 +1692,14 @@ $NETWORK_DUCT_TYPES = array(
     5 => trans('overground on power, lighting or traction foundation'),
 );
 
+const NET_ELEMENT_OWNERSHIP_OWN = 0,
+    NET_ELEMENT_OWNERSHIP_SHARED = 1,
+    NET_ELEMENT_OWNERSHIP_FOREIGN = 2;
+
 $NETELEMENTOWNERSHIPS = array(
-    0   => trans('Own node'),
-    1   => trans('Node shared with another entity'),
-    2   => trans('Foreign node'),
+    NET_ELEMENT_OWNERSHIP_OWN => trans('Own node'),
+    NET_ELEMENT_OWNERSHIP_SHARED => trans('Node shared with another entity'),
+    NET_ELEMENT_OWNERSHIP_FOREIGN => trans('Foreign node'),
 );
 
 const USERPANEL_AUTH_TYPE_ID_PIN = 1,

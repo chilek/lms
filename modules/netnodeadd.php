@@ -78,7 +78,7 @@ if (isset($netnodedata)) {
     }
     Localisation::resetSystemLanguage();
 
-    if (in_array($netnodedata['ownership'], array('1', '2'))) { // węzeł współdzielony lub obcy
+    if (in_array($netnodedata['ownership'], array(NET_ELEMENT_OWNERSHIP_SHARED, NET_ELEMENT_OWNERSHIP_FOREIGN))) { // węzeł współdzielony lub obcy
         if (!strlen(trim($netnodedata['coowner']))) {
             $error['coowner'] = trans('Co-owner identifier is required');
         }
@@ -156,10 +156,10 @@ if (isset($netnodedata)) {
     $netnodedata['uip'] = 0;
     $netnodedata['miar'] = 0;
     $netnodedata['invprojectid'] = '-2'; // no investment project selected
-    $netnodedata['ownership'] = 0;
+    $netnodedata['ownership'] = NET_ELEMENT_OWNERSHIP_OWN;
     if (isset($_GET['customerid'])) {
         $netnodedata['ownerid'] = $_GET['customerid'];
-        $netnodedata['ownership'] = 2;
+        $netnodedata['ownership'] = NET_ELEMENT_OWNERSHIP_FOREIGN;
     }
 }
 

@@ -168,7 +168,7 @@
 										<strong>{trans("Ownership")}</strong>
 									</td>
 									<td>
-										{$_NETELEMENTOWNERSHIPS[$nodeinfo.ownership]} {if ($nodeinfo.ownership >= 1)} ({$nodeinfo.coowner}) {/if}
+										{$_NETELEMENTOWNERSHIPS[$nodeinfo.ownership]} {if ($nodeinfo.ownership >= $smarty.const.NET_ELEMENT_OWNERSHIP_SHARED)} ({$nodeinfo.coowner}) {/if}
 									</td>
 								</tr>
 								{if !empty($nodeinfo.ownerid)}

@@ -83,7 +83,7 @@ if (isset($netnodedata)) {
         }
     }
 
-    if (in_array($netnodedata['ownership'], array('1', '2'))) { // węzeł współdzielony lub obcy
+    if (in_array($netnodedata['ownership'], array(NET_ELEMENT_OWNERSHIP_SHARED, NET_ELEMENT_OWNERSHIP_FOREIGN))) { // węzeł współdzielony lub obcy
         if (!strlen(trim($netnodedata['coowner']))) {
             $error['coowner'] = trans('Co-owner identifier is required');
         }
