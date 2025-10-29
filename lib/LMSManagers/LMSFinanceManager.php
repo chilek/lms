@@ -3334,6 +3334,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'authtype' => $tariff['authtype'],
             'flags' => $flags,
             'netvalue' => $tariff['netvalue'],
+            'serviceproviderid' => empty($tariff['serviceproviderid']) ? null : intval($tariff['serviceproviderid']),
+            'extid' => empty($tariff['extid']) ? null : $tariff['extid'],
         );
         $args2 = array();
         foreach ($ACCOUNTTYPES as $typeidx => $type) {
@@ -3348,10 +3350,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				climit, plimit, uprate_n, downrate_n,
 				upceil_n, up_burst_time_n, up_burst_threshold_n, up_burst_limit_n,
 				downceil_n, down_burst_time_n, down_burst_threshold_n, down_burst_limit_n,
-				climit_n, plimit_n, dlimit, type, domain_limit, alias_limit, authtype, flags, netvalue, '
+				climit_n, plimit_n, dlimit, type, domain_limit, alias_limit, authtype, flags, netvalue,
+                serviceproviderid, extid, '
                 . implode(', ', array_keys($args2)) . ')
 				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
-					?,?,?,?,?,?,?,?,?,?,?,?, ?,' . implode(',', array_fill(0, count($args2), '?')) . ')',
+					?,?,?,?,?,?,?,?,?,?,?,?, ?, ?, ?, ' . implode(',', array_fill(0, count($args2), '?')) . ')',
             array_values(array_merge($args, $args2))
         );
         if ($result) {
@@ -3437,6 +3440,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'authtype' => $tariff['authtype'],
             'flags' => $flags,
             'netvalue' => $tariff['netvalue'],
+            'serviceproviderid' => empty($tariff['serviceproviderid']) ? null : intval($tariff['serviceproviderid']),
+            'extid' => empty($tariff['extid']) ? null : $tariff['extid'],
         );
         $args2 = array();
         foreach ($ACCOUNTTYPES as $typeidx => $type) {
@@ -3458,7 +3463,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             downceil_n = ?, down_burst_time_n = ?, down_burst_threshold_n = ?, down_burst_limit_n = ?,
             climit_n = ?, plimit_n = ?,
             dlimit = ?, domain_limit = ?, alias_limit = ?, type = ?, voip_tariff_id = ?, voip_tariff_rule_id = ?, 
-            authtype = ?, flags = ?, netvalue = ?, '
+            authtype = ?, flags = ?, netvalue = ?, serviceproviderid = ?, extid = ?, '
             . implode(' = ?, ', $fields) . ' = ? WHERE id=?', array_values($args));
         if ($res && $this->syslog) {
             $this->syslog->AddMessage(SYSLOG::RES_TARIFF, SYSLOG::OPER_UPDATE, $args);

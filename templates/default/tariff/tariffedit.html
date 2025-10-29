@@ -96,6 +96,45 @@
                                             <col style="width: 1%;">
                                             <col style="width: 98%;">
                                         </colgroup>
+										{if !empty($serviceproviders)}
+											<tr>
+												<td>
+													{icon name="service"}
+												</td>
+												<td class="nobr">
+													<strong>{trans("Service provider")}</strong>
+												</td>
+												<td>
+													<select name="tariff[serviceproviderid]">
+														<option value="">{trans("— select —")}</option>
+														{foreach $serviceproviders as $serviceprovider}
+															<option value="{$serviceprovider.id}"
+																	{if $serviceprovider.id == $tariff.serviceproviderid} selected{/if}
+															>{$serviceprovider.name|escape}</option>
+														{/foreach}
+													</select>
+												</td>
+											</tr>
+										{/if}
+										<tr>
+											<td>
+												<label for="extid">
+													{icon name="externalid"}
+												</label>
+											</td>
+											<td>
+												<label for="extid">
+													<strong>{trans("External system identifier")}</strong>
+												</label>
+											</td>
+											<td>
+												<div class="valign-middle">
+													<input type="text" id="extid" class="lms-ui-autogrow" name="tariff[extid]" value="{$tariff.extid|escape}"
+															{tip trigger="extid"}>
+													{hint content="Enter tariff identifier in external system (optional)"}
+												</div>
+											</td>
+										</tr>
                                         <tr>
                                             <td>
                                                 {icon name="money"}

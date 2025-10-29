@@ -4654,6 +4654,9 @@ $_LANG['Building number required!'] = 'Wymagany numer budynku!';
 $_LANG['External system identifier:'] = 'Identyfikator w systemie zewnętrznym:';
 $_LANG['External system identifier'] = 'Identyfikator w systemie zewnętrznym';
 $_LANG['Enter customer identifier in external system (optional)'] = 'Wprowadź identyfikator klienta w systemie zewnętrznym (opcjonalnie)';
+$_LANG['Enter tariff identifier in external system (optional)'] = 'Wprowadź identyfikator taryfy w systemie zewnętrznym (opcjonalnie)';
+$_LANG['Another tariff with specified External ID already exists!'] = 'Istnieje już Inna taryfa o podanym Zewnętrznym ID!';
+$_LANG['Another tariff with specified External ID assigned to selected service provider already exists!'] = 'Istnieje już inna taryfa o podanym Zewnętrznym ID powiązanym z wybranym dostawcą usług!';
 
 $_LANG['You already used this password!'] = 'Takie hasło było już używane!';
 

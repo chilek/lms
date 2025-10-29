@@ -108,6 +108,22 @@
                                         <col style="width: 1%;">
                                         <col style="width: 98%;">
                                     </colgroup>
+									{if !empty($tariff.extid)}
+										<tr>
+											<td>
+												{icon name="externalid"}
+											</td>
+											<td style="white-space: normal;">
+												<strong>{trans("External system identifier")}</strong>
+											</td>
+											<td>
+												<strong>{$tariff.extid|escape}</strong>
+												{if !empty($serviceproviders) && !empty($tariff.serviceproviderid)}
+													({$serviceproviders[$tariff.serviceproviderid].name|escape})
+												{/if}
+											</td>
+										</tr>
+									{/if}
                                     <tr>
                                         <td>
                                             {icon name="money"}

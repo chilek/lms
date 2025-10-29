@@ -1096,6 +1096,8 @@ CREATE TABLE tariffs (
     flags tinyint(1) DEFAULT 0 NOT NULL,
 	netvalue decimal(9,3) DEFAULT NULL,
     notes text DEFAULT NULL,
+    serviceproviderid int(11) DEFAULT NULL,
+    extid varchar(64) DEFAULT NULL,
     PRIMARY KEY  (id),
 	UNIQUE KEY tariffs_name_key (name, value, currency, period),
 	INDEX type (type),
@@ -1104,7 +1106,9 @@ CREATE TABLE tariffs (
 	CONSTRAINT tariffs_voip_tariff_rule_id_fkey
 		FOREIGN KEY (voip_tariff_rule_id) REFERENCES voip_rule_groups (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT tariffs_taxid_fkey
-		FOREIGN KEY (taxid) REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (taxid) REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT tariffs_serviceproviderid_fkey
+        FOREIGN KEY (serviceproviderid) REFERENCES serviceproviders (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -4488,4 +4492,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025102400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025102900');
