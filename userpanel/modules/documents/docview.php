@@ -63,7 +63,9 @@ if (!empty($_GET['id'])) {
 
     $show_unapproved_document_attachments = ConfigHelper::checkConfig('userpanel.show_unapproved_document_attachments');
 
-    if (empty($doc['closed']) && !$show_unapproved_document_attachments) {
+    if (empty($doc['closed'])
+        && !$show_unapproved_document_attachments
+        && (empty($doc['confirmdate']) || $doc['confirmdate'] < time())) {
         die;
     }
 
