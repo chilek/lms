@@ -75,6 +75,7 @@
 								{foreach $_SERVICETYPES as $type => $label}
 									<option value="{$type}"{if $assignment.servicetype == $type} selected{/if}>{$label}</option>
 								{/foreach}
+								{$label = null}
 							</select>
 						</div>
 					</div>
