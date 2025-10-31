@@ -303,7 +303,7 @@ function submit_location() {
 		location_box.find( "input[data-address='terc']" ).val(city_option.attr('data-terc'));
         location_box.find( "input[data-address='simc']" ).val(city_option.attr('data-simc'));
         // automatically preselect 'Poland' country when we submit territized location
-        location_box.find( "select[data-address='country']").val(2);
+        location_box.find('select[data-address="country"]').find('option[data-ccode="pl_PL"]').prop("selected", true);
     }
 
     // SET STREET

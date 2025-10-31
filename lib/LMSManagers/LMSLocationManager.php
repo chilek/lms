@@ -94,7 +94,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 
     public function GetCountries()
     {
-        return $this->db->GetAllByKey('SELECT id, name FROM countries ORDER BY name', 'id');
+        return $this->db->GetAllByKey('SELECT * FROM countries ORDER BY name', 'id');
     }
 
     public function GetCountryName($id)

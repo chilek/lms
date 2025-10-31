@@ -661,9 +661,9 @@ class LMSSmartyPlugins
 
             foreach ($countries as $v) {
                 if (isset($params['location_country_id']) && $v['id'] == $params['location_country_id']) {
-                    echo '<option value="'.$v['id'].'" selected>' . trans($v['name']) . '</option>' ;
+                    echo '<option value="'.$v['id'].'" data-ccode="' . $v['ccode'] . '" selected>' . trans($v['name']) . '</option>' ;
                 } else {
-                    echo '<option value="'.$v['id'].'">' . trans($v['name']) . '</option>' ;
+                    echo '<option value="'.$v['id'].'" data-ccode="' . $v['ccode'] . '">' . trans($v['name']) . '</option>' ;
                 }
             }
 
