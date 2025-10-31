@@ -398,33 +398,6 @@
                                         </colgroup>
                                         <tr>
                                             <td>
-                                                {icon name="upload"}
-                                            </td>
-                                            <td>{trans("Upload rate:")}</td>
-                                            <td>{bitrate_restrictions var=$tariff v="uprate" v_n="uprate_n" tip="Enter minimal warranted upload value (optional)"}</td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>{trans("Upload ceil:")}</td>
-                                            <td>{bitrate_restrictions var=$tariff v="upceil" v_n="upceil_n" tip="Enter maximum upload value (optional)"}</td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>{trans("Upload burst time:")}</td>
-                                            <td>{burst_restrictions var=$tariff v="up_burst_time" v_n="up_burst_time_n" tip="Enter upload burst time (optional)"}</td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>{trans("Upload burst threshold:")}</td>
-                                            <td>{bitrate_restrictions var=$tariff v="up_burst_threshold" v_n="up_burst_threshold_n" tip="Enter upload burst threshold (optional)"}</td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>{trans("Upload burst limit:")}</td>
-                                            <td>{bitrate_restrictions var=$tariff v="up_burst_limit" v_n="up_burst_limit_n" tip="Enter upload burst limit (optional)"}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
                                                 {icon name="download"}
                                             </td>
                                             <td>{trans("Download rate:")}</td>
@@ -449,6 +422,33 @@
                                             <td></td>
                                             <td>{trans("Download burst limit:")}</td>
                                             <td>{bitrate_restrictions var=$tariff v="down_burst_limit" v_n="down_burst_limit_n" tip="Enter download burst limit (optional)"}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                {icon name="upload"}
+                                            </td>
+                                            <td>{trans("Upload rate:")}</td>
+                                            <td>{bitrate_restrictions var=$tariff v="uprate" v_n="uprate_n" tip="Enter minimal warranted upload value (optional)"}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{trans("Upload ceil:")}</td>
+                                            <td>{bitrate_restrictions var=$tariff v="upceil" v_n="upceil_n" tip="Enter maximum upload value (optional)"}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{trans("Upload burst time:")}</td>
+                                            <td>{burst_restrictions var=$tariff v="up_burst_time" v_n="up_burst_time_n" tip="Enter upload burst time (optional)"}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{trans("Upload burst threshold:")}</td>
+                                            <td>{bitrate_restrictions var=$tariff v="up_burst_threshold" v_n="up_burst_threshold_n" tip="Enter upload burst threshold (optional)"}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{trans("Upload burst limit:")}</td>
+                                            <td>{bitrate_restrictions var=$tariff v="up_burst_limit" v_n="up_burst_limit_n" tip="Enter upload burst limit (optional)"}</td>
                                         </tr>
                                         <tr>
                                             <td>

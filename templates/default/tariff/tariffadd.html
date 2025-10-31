@@ -371,62 +371,6 @@
 										</colgroup>
 										<tr>
 											<td>
-												{icon name="upload"}
-											</td>
-											<td>
-												{trans("Upload rate:")}
-											</td>
-											<td>
-												<input type="text" name="tariff[uprate]" size="6" value="{if $tariff.uprate}{$tariff.uprate}{/if}" {tip text="Enter minimal warranted upload value (optional)" trigger="uprate"}>
-												{trans("night:")} <input type="text" name="tariff[uprate_n]" size="6" value="{if $tariff.uprate_n}{$tariff.uprate_n}{/if}" {tip text="Enter minimal warranted upload value (optional)" trigger="uprate_n"}> kbit/s
-											</td>
-										</tr>
-										<tr>
-											<td>
-											</td>
-											<td>
-												{trans("Upload ceil:")}
-											</td>
-											<td>
-												<input type="text" name="tariff[upceil]" size="6" value="{if $tariff.upceil}{$tariff.upceil}{/if}" {tip text="Enter maximum upload value (optional)" trigger="upceil"}>
-												{trans("night:")} <input type="text" name="tariff[upceil_n]" size="6" value="{if $tariff.upceil_n}{$tariff.upceil_n}{/if}" {tip text="Enter maximum upload value (optional)" trigger="upceil_n"}> kbit/s
-											</td>
-										</tr>
-										<tr>
-											<td>
-											</td>
-											<td>
-												{trans("Upload burst time:")}
-											</td>
-											<td>
-												<input type="text" name="tariff[up_burst_time]" size="6" value="{if $tariff.up_burst_time}{$tariff.up_burst_time}{/if}" {tip text="Enter upload burst time (optional)" trigger="up_burst_time"}>
-												{trans("night:")} <input type="text" name="tariff[up_burst_time_n]" size="6" value="{if $tariff.up_burst_time_n}{$tariff.up_burst_time_n}{/if}" {tip text="Enter upload burst time (optional)" trigger="up_burst_time_n"}> s
-											</td>
-										</tr>
-										<tr>
-											<td>
-											</td>
-											<td>
-												{trans("Upload burst threshold:")}
-											</td>
-											<td>
-												<input type="text" name="tariff[up_burst_threshold]" size="6" value="{if $tariff.up_burst_threshold}{$tariff.up_burst_threshold}{/if}" {tip text="Enter upload burst threshold (optional)" trigger="up_burst_threshold"}>
-												{trans("night:")} <input type="text" name="tariff[up_burst_threshold_n]" size="6" value="{if $tariff.up_burst_threshold_n}{$tariff.up_burst_threshold_n}{/if}" {tip text="Enter upload burst threshold (optional)" trigger="up_burst_threshold_n"}> kbit/s
-											</td>
-										</tr>
-										<tr>
-											<td>
-											</td>
-											<td>
-												{trans("Upload burst limit:")}
-											</td>
-											<td>
-												<input type="text" name="tariff[up_burst_limit]" size="6" value="{if $tariff.up_burst_limit}{$tariff.up_burst_limit}{/if}" {tip text="Enter upload burst limit (optional)" trigger="up_burst_limit"}>
-												{trans("night:")} <input type="text" name="tariff[up_burst_limit_n]" size="6" value="{if $tariff.up_burst_limit_n}{$tariff.up_burst_limit_n}{/if}" {tip text="Enter upload burst limit (optional)" trigger="up_burst_limit_n"}> kbit/s
-											</td>
-										</tr>
-										<tr>
-											<td>
 												{icon name="download"}
 											</td>
 											<td>
@@ -479,6 +423,62 @@
 											<td>
 												<input type="text" name="tariff[down_burst_limit]" size="6" value="{if $tariff.down_burst_limit}{$tariff.down_burst_limit}{/if}" {tip text="Enter download burst limit (optional)" trigger="down_burst_limit"}>
 												{trans("night:")} <input type="text" name="tariff[down_burst_limit_n]" size="6" value="{if $tariff.down_burst_limit_n}{$tariff.down_burst_limit_n}{/if}" {tip text="Enter download burst limit (optional)" trigger="down_burst_limit_n"}> kbit/s
+											</td>
+										</tr>
+										<tr>
+											<td>
+												{icon name="upload"}
+											</td>
+											<td>
+												{trans("Upload rate:")}
+											</td>
+											<td>
+												<input type="text" name="tariff[uprate]" size="6" value="{if $tariff.uprate}{$tariff.uprate}{/if}" {tip text="Enter minimal warranted upload value (optional)" trigger="uprate"}>
+												{trans("night:")} <input type="text" name="tariff[uprate_n]" size="6" value="{if $tariff.uprate_n}{$tariff.uprate_n}{/if}" {tip text="Enter minimal warranted upload value (optional)" trigger="uprate_n"}> kbit/s
+											</td>
+										</tr>
+										<tr>
+											<td>
+											</td>
+											<td>
+												{trans("Upload ceil:")}
+											</td>
+											<td>
+												<input type="text" name="tariff[upceil]" size="6" value="{if $tariff.upceil}{$tariff.upceil}{/if}" {tip text="Enter maximum upload value (optional)" trigger="upceil"}>
+												{trans("night:")} <input type="text" name="tariff[upceil_n]" size="6" value="{if $tariff.upceil_n}{$tariff.upceil_n}{/if}" {tip text="Enter maximum upload value (optional)" trigger="upceil_n"}> kbit/s
+											</td>
+										</tr>
+										<tr>
+											<td>
+											</td>
+											<td>
+												{trans("Upload burst time:")}
+											</td>
+											<td>
+												<input type="text" name="tariff[up_burst_time]" size="6" value="{if $tariff.up_burst_time}{$tariff.up_burst_time}{/if}" {tip text="Enter upload burst time (optional)" trigger="up_burst_time"}>
+												{trans("night:")} <input type="text" name="tariff[up_burst_time_n]" size="6" value="{if $tariff.up_burst_time_n}{$tariff.up_burst_time_n}{/if}" {tip text="Enter upload burst time (optional)" trigger="up_burst_time_n"}> s
+											</td>
+										</tr>
+										<tr>
+											<td>
+											</td>
+											<td>
+												{trans("Upload burst threshold:")}
+											</td>
+											<td>
+												<input type="text" name="tariff[up_burst_threshold]" size="6" value="{if $tariff.up_burst_threshold}{$tariff.up_burst_threshold}{/if}" {tip text="Enter upload burst threshold (optional)" trigger="up_burst_threshold"}>
+												{trans("night:")} <input type="text" name="tariff[up_burst_threshold_n]" size="6" value="{if $tariff.up_burst_threshold_n}{$tariff.up_burst_threshold_n}{/if}" {tip text="Enter upload burst threshold (optional)" trigger="up_burst_threshold_n"}> kbit/s
+											</td>
+										</tr>
+										<tr>
+											<td>
+											</td>
+											<td>
+												{trans("Upload burst limit:")}
+											</td>
+											<td>
+												<input type="text" name="tariff[up_burst_limit]" size="6" value="{if $tariff.up_burst_limit}{$tariff.up_burst_limit}{/if}" {tip text="Enter upload burst limit (optional)" trigger="up_burst_limit"}>
+												{trans("night:")} <input type="text" name="tariff[up_burst_limit_n]" size="6" value="{if $tariff.up_burst_limit_n}{$tariff.up_burst_limit_n}{/if}" {tip text="Enter upload burst limit (optional)" trigger="up_burst_limit_n"}> kbit/s
 											</td>
 										</tr>
 										<tr>

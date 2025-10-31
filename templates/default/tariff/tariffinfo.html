@@ -415,33 +415,6 @@
                                     <table class="tariff_tab bold-second">
                                         <tr>
                                             <td>
-                                                {icon name="upload"}
-                                            </td>
-                                            <td>{trans("Upload rate:")}</td>
-                                            <td>{bitrate_restrictions day=$tariff.uprate night=$tariff.uprate_n}</td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>{trans("Upload ceil:")}</td>
-                                            <td>{bitrate_restrictions day=$tariff.upceil night=$tariff.upceil_n}</td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>{trans("Upload burst time:")}</td>
-                                            <td>{burst_time_restrictions day=$tariff.up_burst_time night=$tariff.up_burst_time_n}</td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>{trans("Upload burst threshold:")}</td>
-                                            <td>{burst_restrictions day=$tariff.up_burst_threshold night=$tariff.up_burst_threshold_n}</td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>{trans("Upload burst limit:")}</td>
-                                            <td>{burst_restrictions day=$tariff.up_burst_limit night=$tariff.up_burst_limit_n}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
                                                 {icon name="download"}
                                             </td>
                                             <td>{trans("Download rate:")}</td>
@@ -466,6 +439,33 @@
                                             <td></td>
                                             <td>{trans("Download burst limit:")}</td>
                                             <td>{burst_restrictions day=$tariff.down_burst_limit night=$tariff.down_burst_limit_n}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                {icon name="upload"}
+                                            </td>
+                                            <td>{trans("Upload rate:")}</td>
+                                            <td>{bitrate_restrictions day=$tariff.uprate night=$tariff.uprate_n}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{trans("Upload ceil:")}</td>
+                                            <td>{bitrate_restrictions day=$tariff.upceil night=$tariff.upceil_n}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{trans("Upload burst time:")}</td>
+                                            <td>{burst_time_restrictions day=$tariff.up_burst_time night=$tariff.up_burst_time_n}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{trans("Upload burst threshold:")}</td>
+                                            <td>{burst_restrictions day=$tariff.up_burst_threshold night=$tariff.up_burst_threshold_n}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{trans("Upload burst limit:")}</td>
+                                            <td>{burst_restrictions day=$tariff.up_burst_limit night=$tariff.up_burst_limit_n}</td>
                                         </tr>
                                         <tr>
                                             <td>
