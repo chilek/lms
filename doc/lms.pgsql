@@ -2050,6 +2050,7 @@ CREATE TABLE netlinks (
 		REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	dstradiosector integer	DEFAULT NULL
 		REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	foreignentity varchar(255) DEFAULT NULL,
 	PRIMARY KEY  (id),
 	CONSTRAINT netlinks_src_key UNIQUE (src, dst)
 );
@@ -4531,6 +4532,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025102900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025103100');
 
 COMMIT;

@@ -1,170 +1,204 @@
-<!DOCTYPE html>
-<!--// $Id$ //-->
-<html>
-<head>
-    <meta name="GENERATOR" content="LMS {$layout.lmsv}">
-	{include file="language.html"}
-    <title>LMS – {if $layout.pagetitle != ""}{$layout.pagetitle}{/if}</title>
-    <link href="css/style.css" rel="stylesheet" type="text/css">
-	<script type="text/javascript" src="js/common.js"></script>
-	<script src="js/jquery/jquery.min.js"></script>
-	{$xajax}
-</head>
-<body class="light lms-ui-popup">
-<div id="overDiv" style="position: absolute; visibility: hidden; z-index: 100;"></div>
-<script type="text/javascript" src="js/overlib.js"></script>
-	<FORM name="netlinkproperties" method="GET">
-	<table id="propertiestable" class="lmsbox-inner" cellpadding="3">
-		<tr class="light">
-			<td class="nobr" style="width: 1%;">
-				{trans("Link type:")}
+{$xajax}
+
+<style>
+
+	#netlink-properties-table {
+		width: 30em;
+	}
+
+	#foreign-entity {
+		width: 25em;
+	}
+
+	.lms-ui-popup .ui-dialog-content {
+		overflow: visible;
+	}
+
+</style>
+
+<form name="netlinkproperties" id="netlinkproperties" method="GET">
+</form>
+
+<table id="netlink-properties-table" cellpadding="3">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
+	<tr>
+		<td class="nobr">
+			{trans("Link type:")}
+		</td>
+		<td>
+			<select name="linktype" id="linktype" {tip text="Select link type"} style="width: 100%;" onchange="change_linktype(this.options[this.selectedIndex].value)"
+				form="netlinkproperties">
+				<option value="0"{if $link.type == $smarty.const.LINKTYPE_WIRE} selected{/if}>{trans("wire")}</option>
+				<option value="1"{if $link.type == $smarty.const.LINKTYPE_WIRELESS} selected{/if}>{trans("wireless")}</option>
+				<option value="2"{if $link.type == $smarty.const.LINKTYPE_FIBER} selected{/if}>{trans("fiber")}</option>
+			</select>
+		</td>
+	</tr>
+	{if $link.isnetlink}
+		<tr>
+			<td class="nobr">
+				<label for="linecount" class="line-fiber-property{if $link.type != $smarty.const.LINKTYPE_FIBER} lms-ui-disabled{/if}">
+					{trans("Fiber/line count")}
+				</label>
 			</td>
-			<td style="width: 99%;">
-				<select name="linktype" id="linktype" {tip text="Select link type"} style="width: 100%;" onchange="change_linktype(this.options[this.selectedIndex].value)">
-					<option value="0"{if $link.type == $smarty.const.LINKTYPE_WIRE} selected{/if}>{trans("wire")}</option>
-					<option value="1"{if $link.type == $smarty.const.LINKTYPE_WIRELESS} selected{/if}>{trans("wireless")}</option>
-					<option value="2"{if $link.type == $smarty.const.LINKTYPE_FIBER} selected{/if}>{trans("fiber")}</option>
-				</select>
+			<td>
+				<input type="text" name="linecount" id="linecount" value="{if $link.linecount}{$link.linecount}{/if}" size="2"
+					form="netlinkproperties"
+					class="line-fiber-property"
+					{if $link.type != $smarty.const.LINKTYPE_FIBER} disabled{/if}>
 			</td>
 		</tr>
-		{if $link.isnetlink}
-			<tr class="light">
-				<td class="nobr">
-					<label for="linecount" class="line-fiber-property{if $link.type != $smarty.const.LINKTYPE_FIBER} lms-ui-disabled{/if}">
-						{trans("Fiber/line count")}
-					</label>
-				</td>
-				<td>
-					<input type="text" name="linecount" id="linecount" value="{if $link.linecount}{$link.linecount}{/if}" size="2"
-						class="line-fiber-property"
-						{if $link.type != $smarty.const.LINKTYPE_FIBER} disabled{/if}>
-				</td>
-			</tr>
-			<tr class="light">
-				<td class="nobr">
-					<label for="usedlines" class="line-fiber-property{if $link.type != $smarty.const.LINKTYPE_FIBER} lms-ui-disabled{/if}">
-						{trans("Used fibers/lines")}
-					</label>
-				</td>
-				<td>
-					<input type="text" name="usedlines" id="usedlines" value="{if strlen($link.usedlines)}{$link.usedlines}{/if}" size="2"
-						class="line-fiber-property"
-						{if $link.type != $smarty.const.LINKTYPE_FIBER} disabled{/if}>
-				</td>
-			</tr>
-			<tr class="light">
-				<td class="nobr">
-					<label for="availablelines" class="line-fiber-property{if $link.type != $smarty.const.LINKTYPE_FIBER} lms-ui-disabled{/if}">
-						{trans("Available fibers/lines")}
-					</label>
-				</td>
-				<td>
-					<input type="text" name="availablelines" id="availablelines" value="{if strlen($link.availablelines)}{$link.availablelines}{/if}" size="2"
-						class="line-fiber-property"
-						{if $link.type != $smarty.const.LINKTYPE_FIBER} disabled{/if}>
-				</td>
-			</tr>
-			<tr class="light">
-				<td class="nobr">
-					{trans("Port")}
-				</td>
-				<td>
-					<input type="text" name="srcport" value="{if $link.srcport}{$link.srcport}{/if}" size="2"
-						{tip text="Enter port number in device for connection (optional)" trigger="srcport"}>
-				</td>
-			</tr>
-			<tr class="light">
-				<td class="nobr">{trans("Dest. port")}</td>
-				<td>
-					<input type="text" name="dstport" value="{if $link.dstport}{$link.dstport}{/if}" size="2"
-							{tip text="Enter port number in device to which device will be connected (optional)" trigger="dstport"}>
-				</td>
-			</tr>
-			<tr class="light">
-				<td class="nobr">{trans("Radio sector:")}</td>
-				<td>
-					<SELECT NAME="srcradiosector" id="srcradiosector" {tip trigger="srcradiosector" text="Select radio sector"}{if $link.type != 1} disabled{/if}>
-						<OPTION value="0">{trans("— none —")}</OPTION>
-						{foreach $radiosectors.src as $radiosector}
-						<OPTION value="{$radiosector.id}"{if $link.type == 1 && $radiosectors.srcradiosector == $radiosector.id} selected{/if}>{$radiosector.name}</OPTION>
-						{/foreach}
-					</SELECT>
-				</td>
-			</tr>
-			<tr class="light">
-				<td class="nobr">{trans("Destination radio sector:")}</td>
-				<td>
-					<SELECT NAME="dstradiosector" id="dstradiosector" {tip trigger="dstradiosector" text="Select radio sector"}{if $link.type != 1} disabled{/if}>
-						<OPTION value="0">{trans("— none —")}</OPTION>
-						{foreach $radiosectors.dst as $radiosector}
-						<OPTION value="{$radiosector.id}"{if $link.type == 1 && $radiosectors.dstradiosector == $radiosector.id} selected{/if}>{$radiosector.name}</OPTION>
-						{/foreach}
-					</SELECT>
-				</td>
-			</tr>
-		{else}
-			<tr class="light">
-				<td class="nobr">{trans("Dest. port")}</td>
-				<td>
-					<input type="text" name="port" value="{if $link.port}{$link.port}{/if}" size="2"
-						{tip text="Enter port number in device (optional)" trigger="port"}>
-				</td>
-			</tr>
-			<tr class="light">
-				<td class="nobr">{trans("Radio sector:")}</td>
-				<td>
-					<SELECT NAME="radiosector" id="radiosector" {tip trigger="radiosector" text="Select radio sector"}{if $link.type != 1} disabled{/if}>
-						<OPTION value="0">{trans("— none —")}</OPTION>
-						{foreach $radiosectors as $radiosector}
-						<OPTION value="{$radiosector.id}"{if $link.type == 1 && $link.radiosector == $radiosector.id} selected{/if}>{$radiosector.name}</OPTION>
-						{/foreach}
-					</SELECT>
-				</td>
-			</tr>
-		{/if}
-		<tr class="light">
-			<td class="nobr">{trans("Link technology:")}</td>
+		<tr>
+			<td class="nobr">
+				<label for="usedlines" class="line-fiber-property{if $link.type != $smarty.const.LINKTYPE_FIBER} lms-ui-disabled{/if}">
+					{trans("Used fibers/lines")}
+				</label>
+			</td>
 			<td>
-				<SELECT NAME="linktechnology" id="linktechnology" {tip trigger="linktechnology" text="Select link technology"} onchange="change_linktechnology(this.options[this.selectedIndex].value)">
-					<OPTION value="0">{trans("— unknown —")}</OPTION>
-					{foreach $_LINKTECHNOLOGIES[$link.type] as $linktechnologyidx => $linktechnology}
-					<OPTION value="{$linktechnologyidx}"{if $link.technology == $linktechnologyidx} selected{/if}>{$linktechnology}</OPTION>
+				<input type="text" name="usedlines" id="usedlines" value="{if strlen($link.usedlines)}{$link.usedlines}{/if}" size="2"
+					form="netlinkproperties"
+					class="line-fiber-property"
+					{if $link.type != $smarty.const.LINKTYPE_FIBER} disabled{/if}>
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">
+				<label for="availablelines" class="line-fiber-property{if $link.type != $smarty.const.LINKTYPE_FIBER} lms-ui-disabled{/if}">
+					{trans("Available fibers/lines")}
+				</label>
+			</td>
+			<td>
+				<input type="text" name="availablelines" id="availablelines" value="{if strlen($link.availablelines)}{$link.availablelines}{/if}" size="2"
+					form="netlinkproperties"
+					class="line-fiber-property"
+					{if $link.type != $smarty.const.LINKTYPE_FIBER} disabled{/if}>
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">
+				{trans("Port")}
+			</td>
+			<td>
+				<input type="text" name="srcport" value="{if $link.srcport}{$link.srcport}{/if}" size="2"
+					form="netlinkproperties"
+					{tip text="Enter port number in device for connection (optional)" trigger="srcport"}>
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">{trans("Dest. port")}</td>
+			<td>
+				<input type="text" name="dstport" value="{if $link.dstport}{$link.dstport}{/if}" size="2"
+					form="netlinkproperties"
+					{tip text="Enter port number in device to which device will be connected (optional)" trigger="dstport"}>
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">{trans("Radio sector:")}</td>
+			<td>
+				<SELECT NAME="srcradiosector" id="srcradiosector" {tip trigger="srcradiosector" text="Select radio sector"}{if $link.type != 1} disabled{/if}
+					form="netlinkproperties">
+					<OPTION value="0">{trans("— none —")}</OPTION>
+					{foreach $radiosectors.src as $radiosector}
+					<OPTION value="{$radiosector.id}"{if $link.type == 1 && $radiosectors.srcradiosector == $radiosector.id} selected{/if}>{$radiosector.name}</OPTION>
 					{/foreach}
 				</SELECT>
 			</td>
 		</tr>
-		<tr class="light">
-			<td style="white-space: nowrap;">{trans("Link speed:")}</td>
+		<tr>
+			<td class="nobr">{trans("Destination radio sector:")}</td>
 			<td>
-				<select name="linkspeed" {tip text="Select link speed"} style="width: 100%;">
+				<SELECT NAME="dstradiosector" id="dstradiosector" {tip trigger="dstradiosector" text="Select radio sector"}{if $link.type != 1} disabled{/if}
+					form="netlinkproperties">
+					<OPTION value="0">{trans("— none —")}</OPTION>
+					{foreach $radiosectors.dst as $radiosector}
+					<OPTION value="{$radiosector.id}"{if $link.type == 1 && $radiosectors.dstradiosector == $radiosector.id} selected{/if}>{$radiosector.name}</OPTION>
+					{/foreach}
+				</SELECT>
+			</td>
+		</tr>
+	{else}
+		<tr>
+			<td class="nobr">{trans("Dest. port")}</td>
+			<td>
+				<input type="text" name="port" value="{if $link.port}{$link.port}{/if}" size="2"
+					form="netlinkproperties"
+					{tip text="Enter port number in device (optional)" trigger="port"}>
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">{trans("Radio sector:")}</td>
+			<td>
+				<SELECT NAME="radiosector" id="radiosector" {tip trigger="radiosector" text="Select radio sector"}{if $link.type != 1} disabled{/if}
+					form="netlinkproperties">
+					<OPTION value="0">{trans("— none —")}</OPTION>
+					{foreach $radiosectors as $radiosector}
+					<OPTION value="{$radiosector.id}"{if $link.type == 1 && $link.radiosector == $radiosector.id} selected{/if}>{$radiosector.name}</OPTION>
+					{/foreach}
+				</SELECT>
+			</td>
+		</tr>
+	{/if}
+	<tr>
+		<td class="nobr">{trans("Link technology:")}</td>
+		<td>
+			<SELECT NAME="linktechnology" id="linktechnology" {tip trigger="linktechnology" text="Select link technology"} onchange="change_linktechnology(this.options[this.selectedIndex].value)"
+				form="netlinkproperties">
+				<OPTION value="0">{trans("— unknown —")}</OPTION>
+				{foreach $_LINKTECHNOLOGIES[$link.type] as $linktechnologyidx => $linktechnology}
+				<OPTION value="{$linktechnologyidx}"{if $link.technology == $linktechnologyidx} selected{/if}>{$linktechnology}</OPTION>
+				{/foreach}
+			</SELECT>
+		</td>
+	</tr>
+	<tr>
+		<td style="white-space: nowrap;">{trans("Link speed:")}</td>
+		<td>
+			<select name="linkspeed" {tip text="Select link speed"} style="width: 100%;"
+				form="netlinkproperties">
 				{foreach from=$_LINKSPEEDS item=item key=key}
 					<option value="{$key}"{if $key==$link.speed} selected{/if}>{$item}</option>
 				{/foreach}
+			</select>
+		</td>
+	</tr>
+	{if $link.isnetlink}
+		<tr>
+			<td style="white-space: nowrap;">{trans("Duct type")}</td>
+			<td>
+				<select name="routetype" style="width: 100%;"
+					form="netlinkproperties"
+					{if $link.routetype == $smarty.const.LINKTYPE_WIRELESS} disabled{/if}>
+					<option value="">{trans("— other —")}</option>
+					{foreach Localisation::arraySort($_NETWORK_DUCT_TYPES) as $ducttypeid => $ductlabel}
+						<option value="{$ducttypeid}"{if $ducttypeid == $link.routetype} selected{/if}>{$ductlabel}</option>
+					{/foreach}
 				</select>
 			</td>
 		</tr>
-		{if $link.isnetlink}
-			<tr class="light">
-				<td style="white-space: nowrap;">{trans("Duct type")}</td>
-				<td>
-					<select name="routetype" style="width: 100%;"
-						{if $link.routetype == $smarty.const.LINKTYPE_WIRELESS} disabled{/if}>
-						<option value="">{trans("— other —")}</option>
-						{foreach Localisation::arraySort($_NETWORK_DUCT_TYPES) as $ducttypeid => $ductlabel}
-							<option value="{$ducttypeid}"{if $ducttypeid == $link.routetype} selected{/if}>{$ductlabel}</option>
-						{/foreach}
-					</select>
-				</td>
-			</tr>
-		{/if}
-		<tr class="light">
-			<td colspan="2" class="lms-ui-box-buttons">
-				{button icon="save" label="Submit" onclick="submit_netlink_properties();"}
+		<tr>
+			<td style="white-space: nowrap;">{trans("Foreign entity")}</td>
+			<td>
+				<select name="foreignentity" class="lms-ui-combobox" id="foreign-entity"
+					form="netlinkproperties"
+					data-value="{$link.foreignentity}">
+					{foreach $foreign_entities as $foreign_entity}
+						<option value="{$foreign_entity.id|escape}"
+							{if $foreign_entity.name == $link.foreignentity} selected{/if}
+							>{$foreign_entity.name}{if !empty($foreign_entity.type)} ({trans("TEN")} {$foreign_entity.id}){/if}</option>
+					{/foreach}
+				</select>
 			</td>
 		</tr>
-	</table>
-	<input type="hidden" name="linkspeedname" id="linkspeedname" value="">
-	</FORM>
+	{/if}
+	<tr>
+		<td colspan="2" class="lms-ui-box-buttons">
+			{button icon="save" label="Submit" onclick="submit_netlink_properties();"}
+		</td>
+	</tr>
+</table>
 
 <script>
 
@@ -226,20 +260,23 @@
 	}
 
 	function submit_netlink_properties() {
+		var table = $('#netlink-properties-table');
+
 		var params = {
-			type: $('[name="linktype"]').val(),
-			technology: $('[name="linktechnology"]').val(),
-			speed: $('[name="linkspeed"]').val()
+			type: table.find('[name="linktype"]').val(),
+			technology: table.find('[name="linktechnology"]').val(),
+			speed: table.find('[name="linkspeed"]').val()
 		}
 		{if $link.isnetlink}
-			params.srcradiosector = $('[name="srcradiosector"]').val();
-			params.dstradiosector = $('[name="dstradiosector"]').val();
-			params.srcport = $('[name="srcport"]').val();
-			params.dstport = $('[name="dstport"]').val();
-			params.routetype = $('[name="routetype"]').val();
-			params.linecount = $('[name="linecount"]').val();
-			params.usedlines = $('[name="usedlines"]').val();
-			params.availablelines = $('[name="availablelines"]').val();
+			params.srcradiosector = table.find('[name="srcradiosector"]').val();
+			params.dstradiosector = table.find('[name="dstradiosector"]').val();
+			params.srcport = table.find('[name="srcport"]').val();
+			params.dstport = table.find('[name="dstport"]').val();
+			params.routetype = table.find('[name="routetype"]').val();
+			params.linecount = table.find('[name="linecount"]').val();
+			params.usedlines = table.find('[name="usedlines"]').val();
+			params.availablelines = table.find('[name="availablelines"]').val();
+			params.foreignentity = table.find('[name="foreignentity"]').scombobox('val');
 			var linecount = parseInt(params.linecount);
 			var usedlines = parseInt(params.usedlines);
 			var availablelines = parseInt(params.availablelines);
@@ -251,12 +288,12 @@
 			var error = false;
 			if (!isNaN(usedlines)) {
 				if (isNaN(linecount)) {
-					$('[name="linecount"]')
+					table.find('[name="linecount"]')
 						.addClass('lms-ui-error')
 						.attr('title', '{trans("Fiber/line count cannot be empty when entered used fiber/line count!")}');
 					error = true;
 				} else if (linecount < usedlines) {
-					$('[name="usedlines"]')
+					table.find('[name="usedlines"]')
 						.addClass('lms-ui-error')
 						.attr('title', '{trans("Used fiber/line count cannot be greater than fiber/line count!")}');
 					error = true
@@ -264,12 +301,12 @@
 			}
 			if (!isNaN(availablelines)) {
 				if (isNaN(linecount)) {
-					$('[name="linecount"]')
+					table.find('[name="linecount"]')
 						.addClass('lms-ui-error')
 						.attr('title', '{trans("Fiber/line count cannot be empty when entered available fiber/line count!")}');
 					error = true;
 				} else if (linecount < availablelines) {
-					$('[name="availablelines"]')
+					table.find('[name="availablelines"]')
 						.addClass('lms-ui-error')
 						.attr('title', '{trans("Available fiber/line count cannot be greater than fiber/line count!")}');
 					error = true;
@@ -277,7 +314,7 @@
 			}
 			if (!isNaN(linecount) && !isNaN(usedlines) && !isNaN(availablelines)
 				&& linecount < usedlines + availablelines) {
-				$('[name="linecount"],[name="usedlines"],[name="availablelines"]')
+				table.find('[name="linecount"],[name="usedlines"],[name="availablelines"]')
 					.addClass('lms-ui-error')
 					.attr('title', '{trans("Sum of used and available fiber/line count cannot be greater than fiber/line count!")}');
 				error = true;
@@ -287,37 +324,29 @@
 				return;
 			}
 		{else}
-			params.port = $('[name="port"]').val();
-			params.radiosector = $('[name="radiosector"]').val();
+			params.port = table.find('[name="port"]').val();
+			params.radiosector = table.find('[name="radiosector"]').val();
 		{/if}
 
 		xajax_update_netlink_properties({$link.id}, {$link.devid}, params);
 	}
 
 	function update_netlink_info(tech_content, speed_content, port_content, srcport, dstport) {
-		var document = $(window.parent.document);
-
-		document.find('#{if $link.isnetlink}dev{else}node{/if}-link-tech-{$link.devid}').html(tech_content);
-		document.find('#{if $link.isnetlink}dev{else}node{/if}-link-speed-{$link.devid}').html(speed_content);
-		document.find('#{if $link.isnetlink}dev{else}node{/if}-link-port-{$link.devid}').html(port_content);
+		$('#{if $link.isnetlink}dev{else}node{/if}-link-tech-{$link.devid}').html(tech_content);
+		$('#{if $link.isnetlink}dev{else}node{/if}-link-speed-{$link.devid}').html(speed_content);
+		$('#{if $link.isnetlink}dev{else}node{/if}-link-port-{$link.devid}').html(port_content);
 
 		{if $link.isnetlink}
-			$(window.parent.document).find('#dev-link-srcport-{$link.devid}').html('[' + (srcport ? srcport : '-') + ']');
-			$(window.parent.document).find('#dev-link-dstport-{$link.devid}').html('[' + (dstport ? dstport : '-') + ']');
+			$('#dev-link-srcport-{$link.devid}').html('[' + (srcport ? srcport : '-') + ']');
+			$('#dev-link-dstport-{$link.devid}').html('[' + (dstport ? dstport : '-') + ']');
 		{else}
-			$(window.parent.document).find('#node-link-srcport-{$link.devid}').html('[' + (srcport ? srcport : '-') + ']');
+			$('#node-link-srcport-{$link.devid}').html('[' + (srcport ? srcport : '-') + ']');
 		{/if}
 
-		window.parent.popclick();
+		$('#netlink-properties-table').closest('.ui-dialog-content').dialog('destroy').remove();
 	}
 
-	function resize_frame() {
-		var pt = $('#propertiestable'),
-		h = pt[0].offsetHeight;
-		autoiframe_setsize('autoiframe', 350, Math.max(h, 10));
-	}
-
-	resize_frame();
+	init_comboboxes("#foreign-entity");
 
 </script>
 

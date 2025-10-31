@@ -128,8 +128,7 @@
 						</div>
 						<div class="lms-ui-tab-table-wrapper taken-ports-used-ports col-2">
 							<div class="lms-ui-tab-table-column taken-ports">
-								<span id="dev-link-port-{$netdevice.id}" class="dev-link-port"
-									onClick="javascript:netlinkpropertieschoosewin('{$netdev.id}', '{$netdevice.id}', true);">
+								<span id="dev-link-port-{$netdevice.id}" class="dev-link-port" data-src-netdev="{$netdev.id}" data-dst-netdev="{$netdevice.id}">
 									{capture assign="netlinkhint"}{strip}
 										<span>
 											{trans("Link type:")} {$_LINKTYPES[$netdevice.linktype]}

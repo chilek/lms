@@ -77,6 +77,18 @@ function update_netlink_properties($id, $devid, $link)
 
     $speed_content = $LINKSPEEDS[$link['speed']];
 
+    if (!empty($link['foreignentity'])) {
+        $foreign_entities = Utils::getForeignEntities();
+
+        if (empty($foreign_entities[$link['foreignentity']])) {
+            $foreign_entity = $link['foreignentity'];
+        } else {
+            $foreign_entity = $foreign_entities[$link['foreignentity']];
+            $foreign_entity = $foreign_entity['name']
+                . (empty($foreign_entity['type']) ? '' : ', ' . trans('TEN') . ' ' . $foreign_entity['id']);
+        }
+    }
+
     $port_content = '<i class="' . $icon . '" 
 			 title="<span class=&quot;nobr;&quot;>' . trans("Link type:") . ' ' . $LINKTYPES[$link['type']] . '<br>'
             . ($isnetlink && $link['type'] == LINKTYPE_FIBER ?
@@ -90,6 +102,7 @@ function update_netlink_properties($id, $devid, $link)
             . ($link['technology'] ? trans("Link technology:") . ' ' . $LINKTECHNOLOGIES[$link['type']][$link['technology']] . '<br>' : '')
             . trans("Link speed:") . ' ' . $LINKSPEEDS[$link['speed']]
             . (empty($link['routetype']) ? '' : '<br><p class=&quot;lms-ui-route-type&quot;>' . trans('Duct type:') . ' ' . $NETWORK_DUCT_TYPES[$link['routetype']] . '</p>')
+            . (empty($foreign_entity) ? '' : '<br><p class=&quot;lms-ui-foreign-entity&quot;>' . trans('Foreign entity:') . ' ' . $foreign_entity . '</p>')
             . '</span>"></i>';
 
     $result->call(
@@ -155,9 +168,19 @@ $link['id'] = $id;
 $link['devid'] = $devid;
 $link['isnetlink'] = $isnetlink;
 
+$foreign_entities = Utils::getForeignEntities();
+if (!empty($link['foreignentity'])) {
+    if (empty($foreign_entities[$link['foreignentity']])) {
+        $link['foreign_entity'] = $link['foreignentity'];
+    } else {
+        $link['foreign_entity'] = $foreign_entities[$link['foreignentity']];
+    }
+}
+$SMARTY->assign('foreign_entities', $foreign_entities);
+
 $SMARTY->assign('link', $link);
 
 $radiosectors = $link['radiosectors'] ?? array();
 
 $SMARTY->assign('radiosectors', $radiosectors);
-$SMARTY->display('netdev/netlinkproperties.html');
+$SMARTY->display('file:netdev/netlinkproperties.html');

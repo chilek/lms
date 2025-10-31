@@ -162,6 +162,10 @@ function openPopupWindow(options)
 		options.title = 'openPopupWindow';
 	}
 
+	if (!options.hasOwnProperty('position')) {
+		options.position = { my: "left top", at: "left bottom", of: options.selector };
+	}
+
 	$.ajax({
 		url: options.url,
 		async: true,
@@ -175,7 +179,7 @@ function openPopupWindow(options)
 				dialogClass: 'lms-ui-popup',
 				closeOnEscape: true,
 				modal: true,
-				position: { my: "left top", at: "left bottom", of: options.selector },
+				position: options.position,
 				resizable: true,
 				width: 'auto',
 				title: options.title,
@@ -235,6 +239,21 @@ if ( typeof $ !== 'undefined' ) {
 				onLoaded: function () {
 					$('#search [name="searchcity"]').focus();
 				}
+			});
+		});
+
+		$('body').on('click', '.dev-link-port,.node-link-port', function() {
+			var url;
+			if ($(this).is('.dev-link-port')) {
+				url = '?m=netlinkproperties&id=' + $(this).attr('data-src-netdev') + '&devid=' + $(this).attr('data-dst-netdev') + '&isnetlink=1'
+			} else {
+				url = '?m=netlinkproperties&id=' + $(this).attr('data-netdev') + '&devid=' + $(this).attr('data-node') + '&isnetlink=0'
+			}
+			openPopupWindow({
+				url: url,
+				selector: this,
+				position: { my: 'center', at: 'center', of: 'body' },
+				title: $(this).is('.dev-link-port') ? $t("Network link properties") : $t("Node link properties")
 			});
 		});
 

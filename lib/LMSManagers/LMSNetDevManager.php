@@ -194,6 +194,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             $linecount = null;
             $usedlines = null;
             $availablelines = null;
+            $foreignentity = null;
         } else {
             $type = isset($link['type']) && (is_int($link['type']) || ctype_digit($link['type']))
                 ? intval($link['type']) : null;
@@ -213,6 +214,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 ? intval($link['usedlines']) : null;
             $availablelines = isset($link['availablelines']) && (is_int($link['availablelines']) || ctype_digit($link['availablelines']))
                 ? intval($link['availablelines']) : null;
+            $foreignentity = empty($link['foreignentity']) ? null : $link['foreignentity'];
         }
 
         $query = 'UPDATE netlinks
@@ -224,7 +226,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 routetype = ?,
                 linecount = ?,
                 usedlines = ?,
-                availablelines = ?';
+                availablelines = ?,
+                foreignentity = ?';
         $args = array(
             'type' => $type,
             'src_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR) => $dstradiosector,
@@ -235,6 +238,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'linecount' => $linecount,
             'usedlines' => $usedlines,
             'availablelines' => $availablelines,
+            'foreignentity' => $foreignentity,
         );
         if (isset($link['srcport']) && isset($link['dstport'])) {
             $query .= ', srcport = ?, dstport = ?';
@@ -682,7 +686,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 routetype,
                 linecount,
                 usedlines,
-                availablelines
+                availablelines,
+                foreignentity
             FROM netlinks
             WHERE (src = ? AND dst = ?) OR (dst = ? AND src = ?)',
             array($dev1, $dev1, $dev1, $dev1, $dev1, $dev2, $dev1, $dev2)

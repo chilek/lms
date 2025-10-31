@@ -2166,6 +2166,7 @@ CREATE TABLE netlinks (
   availablelines smallint DEFAULT NULL,
   srcradiosector int(11) DEFAULT NULL,
   dstradiosector int(11) DEFAULT NULL,
+  foreignentity varchar(255) DEFAULT NULL,
   PRIMARY KEY  (id),
   UNIQUE KEY src (src,dst),
   INDEX srcradiosector (srcradiosector),
@@ -4492,4 +4493,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025102900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025103100');

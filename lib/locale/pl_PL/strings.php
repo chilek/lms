@@ -48,6 +48,8 @@ $_LANG['Selected service provider has assigned External ID already!'] = 'Wybrany
 
 $_LANG['Network device map refresh error!'] = 'Błąd odświeżenia mapy sieci!';
 $_LANG['Network link update failed!'] = 'Błąd uaktualnienia połączenia sieciowego!';
+$_LANG['Network link properties'] = 'Właściwości połączenia sieciowego';
+$_LANG['Node link properties'] = 'Właściwości połączenia komputera';
 
 $_LANG['Invalid longitude format!'] = 'Błędny format długości geograficznej!';
 $_LANG['Invalid latitude format!'] = 'Błędny format szerokości geograficznej!';
@@ -5533,6 +5535,7 @@ $_LANG['Own node'] = 'Węzeł własny';
 $_LANG['Node shared with another entity'] = 'Węzeł współdzielony z innym podmiotem';
 $_LANG['Foreign node'] = 'Węzeł obcy';
 $_LANG['Foreign entity'] = 'Podmiot obcy';
+$_LANG['Foreign entity:'] = 'Podmiot obcy:';
 
 $_LANG['Your session is near to expiration! Click "OK" if you want to prevent logout.'] = 'Twoja sesja jest bliska przeterminowania! Kliknij "OK", jeśli chcesz zapobiec wylogowaniu.';
 

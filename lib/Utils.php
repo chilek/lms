@@ -1667,10 +1667,16 @@ class Utils
         $DB = LMSDB::getInstance();
 
         $entities = $DB->GetCol(
-            'SELECT DISTINCT coowner
-            FROM netnodes
-            WHERE coowner IS NOT NULL
-                AND coowner <> ?',
+            '(
+                SELECT DISTINCT coowner
+                FROM netnodes
+                WHERE coowner IS NOT NULL
+                    AND coowner <> ?
+            ) UNION (
+                SELECT DISTINCT foreignentity
+                FROM netlinks
+                WHERE foreignentity IS NOT NULL
+            )',
             array(
                 '',
             )

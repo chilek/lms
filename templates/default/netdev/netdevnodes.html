@@ -120,7 +120,7 @@
 						<div class="lms-ui-tab-table-wrapper taken-ports-network col-2">
 							<div class="lms-ui-tab-table-column taken-ports">
 								<span id="node-link-port-{$node.id}" class="node-link-port"
-									onClick="javascript:netlinkpropertieschoosewin('{$netdev.id}', '{$node.id}', false);">
+									data-netdev="{$netdev.id}" data-node="{$node.id}">
 									<i class="{if $node.linktype == $smarty.const.LINKTYPE_WIRELESS}lms-ui-icon-wireless{elseif $node.linktype == $smarty.const.LINKTYPE_FIBER}lms-ui-icon-fiber{else}lms-ui-icon-wired{/if}"
 											{tip trigger="node-link-port-{$node.id}"
 												text="<span class=\"nobr\">{trans("Link type:")} {$_LINKTYPES[$node.linktype]}<br>{if $node.linktype == $smarty.const.LINKTYPE_WIRELESS && $node.radiosector}{trans("Radio sector:")} {$node.radiosector}<br>{/if}{if $node.linktechnology}{trans("Link technology:")} {$_LINKTECHNOLOGIES[$node.linktype][$node.linktechnology]}<br>{/if}{trans("Link speed:")} {$_LINKSPEEDS[$node.linkspeed]}</span>"}>
