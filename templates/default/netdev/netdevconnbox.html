@@ -160,10 +160,16 @@
 												<br>
 											{/if}
 											{trans("Link speed:")} {$_LINKSPEEDS[$netdevice.linkspeed]}
-											<br>
 											{if !empty($netdevice.routetype)}
+												<br>
 												<p class="lms-ui-route-type">
 													{trans("Duct type:")} {$_NETWORK_DUCT_TYPES[$netdevice.routetype]}
+												</p>
+											{/if}
+											{if !empty($netdevice.foreignentity)}
+												<br>
+												<p class="lms-ui-foreign-entity">
+													{trans("Foreign entity:")} {$netdevice.foreignentity}
 												</p>
 											{/if}
 									{/strip}{/capture}
@@ -329,6 +335,23 @@
 										value="{if $devlinkavailablelines}{$devlinkavailablelines}{/if}"{if $devlinktype != $smarty.const.LINKTYPE_FIBER} disabled{/if}>
 								</label>
 							</div>
+
+							<div>
+								<label>
+									<span class="lms-ui-label">
+										{trans("Foreign entity")}
+									</span>
+									<select name="foreignentity" id="devlink-foreignentity" class="lms-ui-combobox"
+										form="connect-form"
+										data-value="{if $devlinkforeignentity}{$devlinkforeignentity}{/if}">
+										{foreach $foreign_entities as $foreign_entity}
+											<option value="{$foreign_entity.id|escape}"
+												{if $foreign_entity.name == $devlinkforeignentity} selected{/if}
+												>{$foreign_entity.name}{if !empty($foreign_entity.type)} ({trans("TEN")} {$foreign_entity.id}){/if}</option>
+										{/foreach}
+									</select>
+								</label>
+							</div>
 						</div>
 						<div>
 							{button icon="save" onclick="javascript:document.connect.submit();" label="Connect"}
@@ -452,6 +475,10 @@
 			});
 			return false;
 		});
+
+		{if empty($devlinkforeignentity)}
+			$('[name="foreignentity"][form="connect-form"]').scombobox('val', '');
+		{/if}
 	});
 
 </script>

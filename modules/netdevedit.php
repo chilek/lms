@@ -261,6 +261,7 @@ switch ($action) {
         $linecount = !empty($_GET['linecount']) && ctype_digit($_GET['linecount']) ? intval($_GET['linecount']) : null;
         $usedlines = isset($_GET['usedlines']) && ctype_digit($_GET['usedlines']) ? intval($_GET['usedlines']) : null;
         $availablelines = isset($_GET['availablelines']) && ctype_digit($_GET['availablelines']) ? intval($_GET['availablelines']) : null;
+        $foreignentity = empty($_GET['foreignentity']) ? null : $_GET['foreignentity'];
 
         $ports1 = $DB->GetOne('SELECT ports FROM netdevices WHERE id = ?', array($_GET['id']));
         $takenports1 = $LMS->CountNetDevLinks($_GET['id']);
@@ -325,6 +326,7 @@ switch ($action) {
         $SESSION->save('devlinklinecount', $linecount);
         $SESSION->save('devlinkusedlines', $usedlines);
         $SESSION->save('devlinkavailablelines', $availablelines);
+        $SESSION->save('devlinkforeignentity', $foreignentity);
 
         if (!$error) {
             $LMS->NetDevLink($dev['id'], $_GET['id'], array(
@@ -339,6 +341,7 @@ switch ($action) {
                 'linecount' => $linecount,
                 'usedlines' => $usedlines,
                 'availablelines' => $availablelines,
+                'foreignentity' => $foreignentity,
             ));
             $SESSION->redirect('?m=netdevinfo&id=' . $_GET['id']);
         }
@@ -1014,6 +1017,20 @@ if ($subtitle) {
     $layout['pagetitle'] .= ' - ' . $subtitle;
 }
 
+$foreign_entities = Utils::getForeignEntities();
+if (!empty($netdevconnected) && !empty($foreign_entities)) {
+    foreach ($netdevconnected as &$netdevconn) {
+        if (!empty($netdevconn['foreignentity'])) {
+            if (!empty($foreign_entities[$netdevconn['foreignentity']])) {
+                $foreign_entity = $foreign_entities[$netdevconn['foreignentity']];
+                $netdevconn['foreignentity'] = $foreign_entity['name'] . (empty($foreign_entity['type']) ? '' : ', ' . trans('TEN') . ' ' . $foreign_entity['id']);
+            }
+        }
+    }
+    unset($netdevconn);
+}
+$SMARTY->assign('foreign_entities', $foreign_entities);
+
 $SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('NNprojects', $LMS->GetProjects());
 $SMARTY->assign('NNnodes', $LMS->GetNetNodes());
@@ -1041,6 +1058,7 @@ $SMARTY->assign('devlinkroutetype', $SESSION->get('devlinkroutetype'));
 $SMARTY->assign('devlinklinecount', $SESSION->get('devlinklinecount'));
 $SMARTY->assign('devlinkusedlines', $SESSION->get('devlinkusedlines'));
 $SMARTY->assign('devlinkavailablelines', $SESSION->get('devlinkavailablelines'));
+$SMARTY->assign('devlinkforeignentity', $SESSION->get('devlinkforeignentity'));
 
 if ($SESSION->is_set('nodelinktype')) {
     $nodelinktype = $SESSION->get('nodelinktype');

@@ -316,6 +316,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         $availablelines = isset($link['availablelines']) && (is_int($link['availablelines']) || ctype_digit($link['availablelines']))
             ? intval($link['availablelines'])
             : null;
+        $foreignentity = empty($link['foreignentity']) ? null : $link['foreignentity'];
 
         if ($dev1 != $dev2) {
             if (!$this->IsNetDevLink($dev1, $dev2)) {
@@ -333,11 +334,12 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                     'linecount' => $linecount,
                     'usedlines' => $usedlines,
                     'availablelines' => $availablelines,
+                    'foreignentity' => $foreignentity,
                 );
                 $res = $this->db->Execute(
                     'INSERT INTO netlinks
-                    (src, dst, type, srcradiosector, dstradiosector, technology, speed, srcport, dstport, routetype, linecount, usedlines, availablelines)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                    (src, dst, type, srcradiosector, dstradiosector, technology, speed, srcport, dstport, routetype, linecount, usedlines, availablelines, foreignentity)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                     array_values($args)
                 );
                 if ($this->syslog && $res) {
@@ -728,6 +730,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 l.linecount,
                 l.usedlines,
                 l.availablelines,
+                l.foreignentity,
                 srcrs.name AS srcradiosector, dstrs.name AS dstradiosector,
                 (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id)
                     + (SELECT COUNT(*) FROM vnodes WHERE netdev = d.id AND ownerid IS NOT NULL)
@@ -749,7 +752,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                     (CASE src WHEN ? THEN dstport ELSE srcport END) AS srcport,
                     (CASE src WHEN ? THEN srcport ELSE dstport END) AS dstport,
                     (CASE src WHEN ? THEN dstradiosector ELSE srcradiosector END) AS srcradiosector,
-                    (CASE src WHEN ? THEN srcradiosector ELSE dstradiosector END) AS dstradiosector
+                    (CASE src WHEN ? THEN srcradiosector ELSE dstradiosector END) AS dstradiosector,
+                    foreignentity
                 FROM netlinks
                 WHERE src = ?
                    OR dst = ?
