@@ -2164,6 +2164,7 @@ if ($report_type == 'full') {
                     nl.linecount,
                     nl.usedlines,
                     nl.availablelines,
+                    nl.foreignentity,
                     (CASE src WHEN ? THEN (CASE WHEN srcrs.license IS NULL THEN dstrs.license ELSE srcrs.license END)
                         ELSE (CASE WHEN dstrs.license IS NULL THEN srcrs.license ELSE dstrs.license END) END) AS license,
                     (CASE src WHEN ? THEN (CASE WHEN srcrs.frequency IS NULL THEN dstrs.frequency ELSE srcrs.frequency END)
@@ -2241,6 +2242,7 @@ if ($report_type == 'full') {
                                     'linecount' => $netlink['linecount'],
                                     'usedlines' => $netlink['usedlines'],
                                     'availablelines' => $netlink['availablelines'],
+                                    'foreignentity' => $netlink['foreignentity'],
                                     'invproject' => $invproject,
                                     'status' => $status,
                                     'foreign' => $foreign,
@@ -2285,6 +2287,7 @@ if ($report_type == 'full') {
                                 'linecount' => $netlink['linecount'],
                                 'usedlines' => $netlink['usedlines'],
                                 'availablelines' => $netlink['availablelines'],
+                                'foreignentity' => $netlink['foreignentity'],
                                 'invproject' => $invproject,
                                 'status' => $status,
                                 'foreign' => $foreign,
@@ -2836,6 +2839,10 @@ if ($report_type == 'full') {
         // save info about network lines
         if ($netlinks) {
             foreach ($netlinks as $netlink) {
+                if (!empty($netlink['foreignentity'])) {
+                    continue;
+                }
+
                 $technology = $netlink['technology'];
 
                 if ($netnodes[$netlink['src']]['id'] != $netnodes[$netlink['dst']]['id']) {
