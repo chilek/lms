@@ -101,8 +101,8 @@ function update_netlink_properties($id, $devid, $link)
                     . ($dstradiosectorname ? trans("Destination radio sector:") . ' ' . $dstradiosectorname . '<br>' : ''))
             . ($link['technology'] ? trans("Link technology:") . ' ' . $LINKTECHNOLOGIES[$link['type']][$link['technology']] . '<br>' : '')
             . trans("Link speed:") . ' ' . $LINKSPEEDS[$link['speed']]
-            . (empty($link['routetype']) ? '' : '<br><p class=&quot;lms-ui-route-type&quot;>' . trans('Duct type:') . ' ' . $NETWORK_DUCT_TYPES[$link['routetype']] . '</p>')
-            . (empty($foreign_entity) ? '' : '<br><p class=&quot;lms-ui-foreign-entity&quot;>' . trans('Foreign entity:') . ' ' . $foreign_entity . '</p>')
+            . (empty($link['routetype']) ? '' : '<p class=&quot;lms-ui-route-type&quot;>' . trans('Duct type:') . ' ' . $NETWORK_DUCT_TYPES[$link['routetype']] . '</p>')
+            . (empty($foreign_entity) ? '' : '<p class=&quot;lms-ui-foreign-entity&quot;>' . trans('Foreign entity:') . ' ' . $foreign_entity . '</p>')
             . '</span>"></i>';
 
     $result->call(
