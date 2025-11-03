@@ -161,13 +161,11 @@
 											{/if}
 											{trans("Link speed:")} {$_LINKSPEEDS[$netdevice.linkspeed]}
 											{if !empty($netdevice.routetype)}
-												<br>
 												<p class="lms-ui-route-type">
 													{trans("Duct type:")} {$_NETWORK_DUCT_TYPES[$netdevice.routetype]}
 												</p>
 											{/if}
 											{if !empty($netdevice.foreignentity)}
-												<br>
 												<p class="lms-ui-foreign-entity">
 													{trans("Foreign entity:")} {$netdevice.foreignentity}
 												</p>
