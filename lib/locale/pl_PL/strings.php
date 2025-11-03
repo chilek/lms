@@ -3947,11 +3947,11 @@ $_LANG['phone'] = 'telefon';
 $_LANG['tv'] = 'telewizja';
 $_LANG['Change connection properties'] = 'Zmień właściwości połączenia';
 
-$_LANG['Check a host ...'] = 'Sprawdź łączność z hostem …';
-$_LANG['Center map around network elements ...'] = 'Wyśrodkuj mapę wokół jej elementów …';
-$_LANG['Refresh network state ...'] = 'Odśwież stan sieci …';
-$_LANG['Toggle foreign entity network link visibility ...'] = 'Przełącz widoczność połączeń sieciowych z przypisanym podmiotem obcym …';
-$_LANG['Toggle customer owned infrastructure element visibility ...'] = 'Przełącz widoczność infrastuktury będącej własnością klientów';
+$_LANG['Check a host'] = 'Sprawdź łączność z hostem';
+$_LANG['Center map around network elements'] = 'Wyśrodkuj mapę wokół jej elementów';
+$_LANG['Refresh network state'] = 'Odśwież stan sieci';
+$_LANG['Toggle foreign entity network link visibility'] = 'Przełącz widoczność połączeń sieciowych z przypisanym podmiotem obcym';
+$_LANG['Toggle customer owned infrastructure element visibility'] = 'Przełącz widoczność infrastruktury będącej własnością klientów';
 
 $_LANG['municipal commune'] = 'gm. miejska';
 $_LANG['rural commune'] = 'gm. wiejska';

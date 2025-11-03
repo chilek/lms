@@ -1311,28 +1311,28 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 
 		var checkbutton = new OpenLayers.Control.Button({
 			displayClass: "lmsCheckButton",
-			title: $t("Check a host ..."),
+			title: $t("Check a host"),
 			command: 'check'});
 
 		var centerbutton = new OpenLayers.Control.Button({
 			displayClass: "lmsCenterButton",
-			title: $t("Center map around network elements ..."),
+			title: $t("Center map around network elements"),
 			command: 'center'});
 
 		var refreshbutton = new OpenLayers.Control.Button({
 			displayClass: "lmsRefreshButton",
-			title: $t("Refresh network state ..."),
+			title: $t("Refresh network state"),
 			command: 'refresh'});
 
 		devLinkForeignEntityToggleButton = new OpenLayers.Control.Button({
 			displayClass: "lmsDevLinkForeignEntityToggleButton",
-			title: $t("Toggle foreign entity network link visibility ..."),
+			title: $t("Toggle foreign entity network link visibility"),
 			command: 'devLinkForeignEntityToggle',
 		});
 
 		customerOwnedToggleButton = new OpenLayers.Control.Button({
 			displayClass: "lmsCustomerOwnedToggleButton",
-			title: $t("Toggle customer owned infrastructure element visibility ..."),
+			title: $t("Toggle customer owned infrastructure element visibility"),
 			command: 'customerOwnedToggle',
 		});
 
