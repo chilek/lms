@@ -71,7 +71,11 @@ if (isset($_GET['action'])) {
                 if (empty($p['content-type'])) {
                     $body_type = empty($p['wysiwyg']['html-body']) ? 'text' : 'html';
                 } else {
-                    $body_type = $p['content-type'];
+                    if (empty($p['html-body'])) {
+                        $body_type = $p['content-type'];
+                    } else {
+                        $body_type = 'html';
+                    }
                 }
             }
             if (!strlen($p[$body_type . '-body'])) {
