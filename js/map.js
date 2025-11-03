@@ -408,6 +408,9 @@ function findSegmentContainingPoint(map, geometry, clickPoint) {
 function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArray, selection, startLon, startLat) {
 	var i, j;
 
+	var devLinkForeignEntityToggleButton = null;
+	var devLinkForeignEntityFilter = false;
+
 	var linkstyles = [];
 	linkstyles[0] = { strokeColor: '#00ff00', strokeOpacity: 0.5 }; // wired link type
 	linkstyles[1] = { strokeColor: '#0000ff', strokeOpacity: 0.5 }; // wireless link type
@@ -450,6 +453,14 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 				if (data.hasOwnProperty('speed')) {
 					return data.speed.length ? linkweights[data.speed] : 1;
 				}
+			},
+			display: function(feature) {
+				if (feature.renderIntent === 'vertex' || !devLinkForeignEntityFilter) {
+					return '';
+				}
+
+				var data = feature.data;
+				return data.foreignentity.length ? 'none' : '';
 			}
 		}
 	}
@@ -461,7 +472,8 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 				strokeWidth: "${strokeWidth}",
 				pointRadius: 9,
 				fillColor: "#0000FF",
-				fillOpacity: 0.9
+				fillOpacity: 0.9,
+				display: "${display}"
 			},
 			OpenLayers.Feature.Vector.style.default
 		),
@@ -475,7 +487,8 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 				strokeWidth: "${strokeWidth}",
 				pointRadius: 9,
 				fillColor: "#000080",
-				fillOpacity: 0.9
+				fillOpacity: 0.9,
+				display: "${display}"
 			},
 			OpenLayers.Feature.Vector.style.select
 		),
@@ -1298,6 +1311,12 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			title: $t("Refresh network state ..."),
 			command: 'refresh'});
 
+		devLinkForeignEntityToggleButton = new OpenLayers.Control.Button({
+			displayClass: "lmsDevLinkForeignEntityToggleButton",
+			title: $t("Toggle foreign entity network link visibilty ..."),
+			command: 'devLinkForeignEntityToggle',
+		});
+
 		var panel = new OpenLayers.Control.Panel({
 			type: OpenLayers.Control.TYPE_BUTTON,
 			title: "Toolbar",
@@ -1354,10 +1373,22 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 							netdevmap_refresh(true);
 						}
 						break;
+					case 'devLinkForeignEntityToggle':
+						devLinkForeignEntityFilter = !devLinkForeignEntityFilter;
+						devlinklayer.redraw();
+						if (devLinkForeignEntityFilter) {
+							control.deactivate();
+						} else {
+							control.activate();
+						}
+
+						setStorageItem('mapDevLinkForeignEntityFilter', devLinkForeignEntityFilter ? '1' : '0', 'local');
+
+						break;
 				}
 			}
 		});
-		panel.addControls([checkbutton, centerbutton, refreshbutton]);
+		panel.addControls([checkbutton, centerbutton, refreshbutton, devLinkForeignEntityToggleButton]);
 		map.addControl(panel);
 	} else {
 		selectlayer = new OpenLayers.Control.SelectFeature(highlightlayers, {
@@ -1425,6 +1456,9 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 		}
 	}
 
+	var mapDevLinkForeignEntityFilter = getStorageItem('mapDevLinkForeignEntityFilter', 'local');
+	devLinkForeignEntityFilter = typeof(mapDevLinkForeignEntityFilter) === 'string' && mapDevLinkForeignEntityFilter === '1';
+
 	if (startLon != null && startLat != null)
 		if (zoom)
 			map.setCenter(new OpenLayers.LonLat(startLon, startLat)
@@ -1464,6 +1498,14 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 	map.events.register('moveend', map, function(e) {
 		setCookie('mapSettings',  map.getCenter().lon + ';' + map.getCenter().lat + ';' + map.getZoom(), true);
 	});
+
+	if (devLinkForeignEntityToggleButton) {
+		if (devLinkForeignEntityFilter) {
+			devLinkForeignEntityToggleButton.deactivate();
+		} else {
+			devLinkForeignEntityToggleButton.activate();
+		}
+	}
 
 	// closes popups after mouse double click on them
 	document.getElementById('map').addEventListener(

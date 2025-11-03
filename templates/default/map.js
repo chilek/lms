@@ -48,7 +48,8 @@
 				speed: "{$devlink.speed}",
 				typename: "{$devlink.typename}",
 				technologyname: "{$devlink.technologyname}",
-				speedname: "{$devlink.speedname}"
+				speedname: "{$devlink.speedname}",
+				foreignentity: "{if !empty($devlink.foreignentity)}{$devlink.foreignentity}{/if}"
 			});
 		{/foreach}
 	{/if}
