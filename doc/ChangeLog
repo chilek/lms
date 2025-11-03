@@ -1330,6 +1330,8 @@ version 27.0 (2021-08-20):
   - enhancement: uke/pit: 'uke.pit_foreign_entities' configuration variable allows to define list
     of foreign entities [chilan]
   - enhancement: added network link 'foreign entity' property [chilan]
+  - enhancement: added customer owned infrastructure toggle visible and foreign entity owned network link
+    toggle visibility toolbar buttons on openlayers-based network map [chilan]
 
 version 26.0 (2020-12-15):
 
