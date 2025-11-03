@@ -660,7 +660,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                         'SELECT zip FROM location_buildings
                         WHERE city_id = ?' . (isset($streetid) ? ' AND (street_id = ' . intval($streetid) . ' OR street_id IS NULL)' : '') . '
                             AND building_num = ' . mb_strtoupper($this->db->Escape($house)),
-                        array($cityid, $parity)
+                        array($cityid)
                     );
             }
         } elseif (isset($city)) {
@@ -724,8 +724,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                                         . ' END) = ' . $escaped_street . ')'
                                 : ''
                             )
-                            . ' AND building_num = ' . mb_strtoupper($this->db->Escape($house)),
-                        array($parity)
+                            . ' AND building_num = ' . mb_strtoupper($this->db->Escape($house))
                     );
             }
         }
