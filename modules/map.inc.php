@@ -104,6 +104,13 @@ if ($devices) {
     if ($devlinks) {
         foreach ($devlinks as &$devlink) {
             $devlink['netlinkid'] = $devlink['id'];
+            $devlink['customers'] = array();
+            if (!empty($devices[$devlink['src']]['ownerid'])) {
+                $devlink['customers'][] = $devices[$devlink['src']]['ownerid'];
+            }
+            if (!empty($devices[$devlink['dst']]['ownerid'])) {
+                $devlink['customers'][] = $devices[$devlink['dst']]['ownerid'];
+            }
             $devlink['srclat'] = $devices[$devlink['src']]['lat'];
             $devlink['srclon'] = $devices[$devlink['src']]['lon'];
             $devlink['dstlat'] = $devices[$devlink['dst']]['lat'];

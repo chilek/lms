@@ -409,7 +409,11 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 	var i, j;
 
 	var devLinkForeignEntityToggleButton = null;
-	var devLinkForeignEntityFilter = false;
+	var customerOwnedToggleButton = null;
+	var mapFilters = {
+		devLinkForeignEntity: false,
+		customerOwned: false
+	};
 
 	var linkstyles = [];
 	linkstyles[0] = { strokeColor: '#00ff00', strokeOpacity: 0.5 }; // wired link type
@@ -455,12 +459,12 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 				}
 			},
 			display: function(feature) {
-				if (feature.renderIntent === 'vertex' || !devLinkForeignEntityFilter) {
+				if (feature.renderIntent === 'vertex' || !mapFilters.devLinkForeignEntity && !mapFilters.customerOwned) {
 					return '';
 				}
 
 				var data = feature.data;
-				return data.foreignentity.length ? 'none' : '';
+				return mapFilters.devLinkForeignEntity && data.foreignentity.length || mapFilters.customerOwned && data.customers.length ? 'none' : '';
 			}
 		}
 	}
@@ -636,6 +640,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			fontWeight: 900,
 			fontStrokeColor: "${fontStrokeColor}",
 			fontStrokeWidth: "${fontStrokeWidth}",
+			display: "${display}"
 		}, {
 			context: {
 				label: function(feature) {
@@ -665,6 +670,14 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 						default:
 							return 0;
 					}
+				},
+				display: function(feature) {
+					if (!mapFilters.customerOwned) {
+						return '';
+					}
+
+					var data = feature.data;
+					return mapFilters.customerOwned && data.ownerid.length ? 'none' : '';
 				}
 			}
 		});
@@ -1313,8 +1326,14 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 
 		devLinkForeignEntityToggleButton = new OpenLayers.Control.Button({
 			displayClass: "lmsDevLinkForeignEntityToggleButton",
-			title: $t("Toggle foreign entity network link visibilty ..."),
+			title: $t("Toggle foreign entity network link visibility ..."),
 			command: 'devLinkForeignEntityToggle',
+		});
+
+		customerOwnedToggleButton = new OpenLayers.Control.Button({
+			displayClass: "lmsCustomerOwnedToggleButton",
+			title: $t("Toggle customer owned infrastructure element visibility ..."),
+			command: 'customerOwnedToggle',
 		});
 
 		var panel = new OpenLayers.Control.Panel({
@@ -1374,21 +1393,34 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 						}
 						break;
 					case 'devLinkForeignEntityToggle':
-						devLinkForeignEntityFilter = !devLinkForeignEntityFilter;
+						mapFilters.devLinkForeignEntity = !mapFilters.devLinkForeignEntity;
 						devlinklayer.redraw();
-						if (devLinkForeignEntityFilter) {
+						if (mapFilters.devLinkForeignEntity) {
 							control.deactivate();
 						} else {
 							control.activate();
 						}
 
-						setStorageItem('mapDevLinkForeignEntityFilter', devLinkForeignEntityFilter ? '1' : '0', 'local');
+						setStorageItem('mapFilters', JSON.stringify(mapFilters), 'local');
+
+						break;
+					case 'customerOwnedToggle':
+						mapFilters.customerOwned = !mapFilters.customerOwned;
+						devlinklayer.redraw();
+						devicelayer.redraw();
+						if (mapFilters.customerOwned) {
+							control.deactivate();
+						} else {
+							control.activate();
+						}
+
+						setStorageItem('mapFilters', JSON.stringify(mapFilters), 'local');
 
 						break;
 				}
 			}
 		});
-		panel.addControls([checkbutton, centerbutton, refreshbutton, devLinkForeignEntityToggleButton]);
+		panel.addControls([checkbutton, centerbutton, refreshbutton, devLinkForeignEntityToggleButton, customerOwnedToggleButton]);
 		map.addControl(panel);
 	} else {
 		selectlayer = new OpenLayers.Control.SelectFeature(highlightlayers, {
@@ -1456,8 +1488,15 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 		}
 	}
 
-	var mapDevLinkForeignEntityFilter = getStorageItem('mapDevLinkForeignEntityFilter', 'local');
-	devLinkForeignEntityFilter = typeof(mapDevLinkForeignEntityFilter) === 'string' && mapDevLinkForeignEntityFilter === '1';
+	var storageMapFilters = getStorageItem('mapFilters', 'local');
+	if (typeof(storageMapFilters) === 'string') {
+		try {
+			storageMapFilters = JSON.parse(storageMapFilters);
+		} catch (error) {
+			storageMapFilters = {};
+		}
+		$.extend(mapFilters, storageMapFilters);
+	}
 
 	if (startLon != null && startLat != null)
 		if (zoom)
@@ -1500,10 +1539,18 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 	});
 
 	if (devLinkForeignEntityToggleButton) {
-		if (devLinkForeignEntityFilter) {
+		if (mapFilters.devLinkForeignEntity) {
 			devLinkForeignEntityToggleButton.deactivate();
 		} else {
 			devLinkForeignEntityToggleButton.activate();
+		}
+	}
+
+	if (customerOwnedToggleButton) {
+		if (mapFilters.customerOwned) {
+			customerOwnedToggleButton.deactivate();
+		} else {
+			customerOwnedToggleButton.activate();
 		}
 	}
 

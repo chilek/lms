@@ -2,6 +2,7 @@
 	{if $devices}
 		{foreach $devices as $device}
 			devices.push({
+				ownerid: "{if !empty($device.ownerid)}{$device.ownerid}{/if}",
 				lon: "{$device.lon}",
 				lat: "{$device.lat}",
 				state: {$device.state},
@@ -42,6 +43,7 @@
 				srclat: {$devlink.srclat},
 				dstlon: {$devlink.dstlon},
 				dstlat: {$devlink.dstlat},
+				customers: JSON.parse('{json_encode($devlink.customers)}'),
 				points: JSON.parse('{json_encode($devlink.points)}'),
 				type: "{$devlink.type}",
 				technology: "{$devlink.technology}",
