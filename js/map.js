@@ -499,19 +499,49 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 		styleContext
 	);
 
-	var rsareastyle2 = {
-		fillOpacity: 0.2,
-		graphicOpacity: 1,
-		fillColor: '#0000aa',
-		strokeColor: '#0000bb'
-	}
+	var rsareastyle2 = new OpenLayers.Style(
+		{
+			fillOpacity: 0.2,
+			graphicOpacity: 1,
+			fillColor: '#0000aa',
+			strokeColor: '#0000bb',
+			display: "${display}"
+		},
+		{
+			context: {
+				display: function (feature) {
+					if (!mapFilters.customerOwned) {
+						return '';
+					}
 
-	var rsareastyle5 = {
-		fillOpacity: 0.2,
-		graphicOpacity: 1,
-		fillColor: '#0080aa',
-		strokeColor: '#0080bb'
-	}
+					var data = feature.data;
+					return mapFilters.customerOwned && data.ownerid.length ? 'none' : '';
+				}
+			}
+		}
+	);
+
+	var rsareastyle5 = new OpenLayers.Style(
+		{
+			fillOpacity: 0.2,
+			graphicOpacity: 1,
+			fillColor: '#0080aa',
+			strokeColor: '#0080bb',
+			display: "${display}"
+		},
+		{
+			context: {
+				display: function (feature) {
+					if (!mapFilters.customerOwned) {
+						return '';
+					}
+
+					var data = feature.data;
+					return mapFilters.customerOwned && data.ownerid.length ? 'none' : '';
+				}
+			}
+		}
+	);
 
 	var rsdirectionstyle2 = new OpenLayers.Style(
 		{
@@ -523,7 +553,8 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			fontColor: '#0000bb',
 			labelAlign: 'middle',
 			angle: "${angle}",
-			label: "${label}"
+			label: "${label}",
+			display: "${display}"
 		}, {
 			context: {
 				angle: function(feature) {
@@ -545,6 +576,14 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 								(attr.bandwidth != '' ?
 									' (' + attr.bandwidth + ')' : '')
 							: '');
+				},
+				display: function(feature) {
+					if (!mapFilters.customerOwned) {
+						return '';
+					}
+
+					var data = feature.data;
+					return mapFilters.customerOwned && data.ownerid.length ? 'none' : '';
 				}
 			}
 		}
@@ -560,7 +599,8 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			fontColor: '#0080bb',
 			labelAlign: 'middle',
 			angle: "${angle}",
-			label: "${label}"
+			label: "${label}",
+			display: "${display}"
 		}, {
 			context: {
 				angle: function(feature) {
@@ -582,17 +622,25 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 								(attr.bandwidth != '' ?
 									' (' + attr.bandwidth + ')' : '')
 							: '');
+				},
+				display: function(feature) {
+					if (!mapFilters.customerOwned) {
+						return '';
+					}
+
+					var data = feature.data;
+					return mapFilters.customerOwned && data.ownerid.length ? 'none' : '';
 				}
 			}
 		}
 	);
 
 	var rsarealayer2 = new OpenLayers.Layer.Vector(OpenLayers.Lang.translate("Radio sectors 2.4GHz - areas"), {
-		style: rsareastyle2,
+		styleMap: new OpenLayers.StyleMap(rsareastyle2)
 	});
 
 	var rsarealayer5 = new OpenLayers.Layer.Vector(OpenLayers.Lang.translate("Radio sectors 5GHz - areas"), {
-		style: rsareastyle5,
+		styleMap: new OpenLayers.StyleMap(rsareastyle5)
 	});
 
 	var rsdirectionlayer2 = new OpenLayers.Layer.Vector(OpenLayers.Lang.translate("Radio sectors 2.4GHz - directions"), {
@@ -780,6 +828,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 				continue;
 			for (j in deviceArray[i].radiosectors) {
 				var radiosector = deviceArray[i].radiosectors[j];
+				radiosector.ownerid = deviceArray[i].ownerid;
 				var rsPointList = [];
 				var rsPoint, rsLonLat;
 				//if (radiosector.width < 360) {
@@ -798,7 +847,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 
 				rsPointList.push(rsPointList[0]);
 				var rsRing = new OpenLayers.Geometry.LinearRing(rsPointList);
-				var rsFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Polygon([rsRing]));
+				var rsFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Polygon([rsRing]), radiosector);
 				if (radiosector.technology == 100) {
 					areas2.push(rsFeature);
 				} else {
@@ -1406,8 +1455,14 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 						break;
 					case 'customerOwnedToggle':
 						mapFilters.customerOwned = !mapFilters.customerOwned;
+
 						devlinklayer.redraw();
 						devicelayer.redraw();
+						rsarealayer2.redraw();
+						rsarealayer5.redraw();
+						rsdirectionlayer2.redraw();
+						rsdirectionlayer5.redraw();
+
 						if (mapFilters.customerOwned) {
 							control.deactivate();
 						} else {
