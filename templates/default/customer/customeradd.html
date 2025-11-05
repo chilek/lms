@@ -817,7 +817,6 @@
 			var required_properties = isPrivate ? natural_person_required_properties : legal_person_required_properties;
 			var required_property_validation_error = isPrivate ? natural_person_required_property_validation_error : legal_person_required_property_validation_error;
 			var required_property_validation_customer_statuses = status ? natural_person_required_property_validation_customer_statuses : legal_person_required_property_validation_customer_statuses;
-			console.log(required_properties, required_property_validation_error, required_property_validation_customer_statuses);
 			$.each(['ten', 'ssn', 'icn'], function(index, property) {
 				$('[name="customeradd[' + property + ']"]').prop(
 					'required',
