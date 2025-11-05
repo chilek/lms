@@ -87,10 +87,47 @@ $deadline = ConfigHelper::getConfig($config_section . '.deadline', 14);
 $sdate_next = ConfigHelper::checkConfig($config_section . '.saledate_next_month');
 $paytype = ConfigHelper::getConfig($config_section . '.paytype', PAYTYPE_TRANSFER);
 $comment = ConfigHelper::getConfig($config_section . '.comment', "Tariff %tariff - %attribute subscription for period %period");
+$comment_by_service_types = array(
+    SERVICE_OTHER => ConfigHelper::getConfig($config_section . '.comment_other', $comment),
+    SERVICE_INTERNET => ConfigHelper::getConfig($config_section . '.comment_internet', $comment),
+    SERVICE_HOSTING => ConfigHelper::getConfig($config_section . '.comment_hosting', $comment),
+    SERVICE_SERVICE => ConfigHelper::getConfig($config_section . '.comment_service', $comment),
+    SERVICE_PHONE => ConfigHelper::getConfig($config_section . '.comment_phone', $comment),
+    SERVICE_TV => ConfigHelper::getConfig($config_section . '.comment_tv', $comment),
+    SERVICE_TRANSMISSION => ConfigHelper::getConfig($config_section . '.comment_transmission', $comment),
+);
 $backward_comment = ConfigHelper::getConfig($config_section . '.backward_comment', $comment);
+$backward_comment_by_service_types = array(
+    SERVICE_OTHER => ConfigHelper::getConfig($config_section . '.backward_comment_other', $comment_by_service_types[SERVICE_OTHER]),
+    SERVICE_INTERNET => ConfigHelper::getConfig($config_section . '.backward_comment_internet', $comment_by_service_types[SERVICE_INTERNET]),
+    SERVICE_HOSTING => ConfigHelper::getConfig($config_section . '.backward_comment_hosting', $comment_by_service_types[SERVICE_HOSTING]),
+    SERVICE_SERVICE => ConfigHelper::getConfig($config_section . '.backward_comment_service', $comment_by_service_types[SERVICE_SERVICE]),
+    SERVICE_PHONE => ConfigHelper::getConfig($config_section . '.backward_comment_phone', $comment_by_service_types[SERVICE_PHONE]),
+    SERVICE_TV => ConfigHelper::getConfig($config_section . '.backward_comment_tv', $comment_by_service_types[SERVICE_TV]),
+    SERVICE_TRANSMISSION => ConfigHelper::getConfig($config_section . '.backward_comment_transmission', $comment_by_service_types[SERVICE_TRANSMISSION]),
+);
 $backward_on_the_last_day = ConfigHelper::checkConfig($config_section . '.backward_on_the_last_day');
 $s_comment = ConfigHelper::getConfig($config_section . '.settlement_comment', $comment);
+$s_comment_by_service_types = array(
+    SERVICE_OTHER => ConfigHelper::getConfig($config_section . '.settlement_comment_other', $comment_by_service_types[SERVICE_OTHER]),
+    SERVICE_INTERNET => ConfigHelper::getConfig($config_section . '.settlement_comment_internet', $comment_by_service_types[SERVICE_INTERNET]),
+    SERVICE_HOSTING => ConfigHelper::getConfig($config_section . '.settlement_comment_hosting', $comment_by_service_types[SERVICE_HOSTING]),
+    SERVICE_SERVICE => ConfigHelper::getConfig($config_section . '.settlement_comment_service', $comment_by_service_types[SERVICE_SERVICE]),
+    SERVICE_PHONE => ConfigHelper::getConfig($config_section . '.settlement_comment_phone', $comment_by_service_types[SERVICE_PHONE]),
+    SERVICE_TV => ConfigHelper::getConfig($config_section . '.settlement_comment_tv', $comment_by_service_types[SERVICE_TV]),
+    SERVICE_TRANSMISSION => ConfigHelper::getConfig($config_section . '.settlement_comment_transmission', $comment_by_service_types[SERVICE_TRANSMISSION]),
+);
 $s_backward_comment = ConfigHelper::getConfig($config_section . '.settlement_backward_comment', $s_comment);
+$s_backward_comment_by_service_types = array(
+    SERVICE_OTHER => ConfigHelper::getConfig($config_section . '.settlement_backward_comment_other', $s_comment_by_service_types[SERVICE_OTHER]),
+    SERVICE_INTERNET => ConfigHelper::getConfig($config_section . '.settlement_backward_comment_internet', $s_comment_by_service_types[SERVICE_INTERNET]),
+    SERVICE_HOSTING => ConfigHelper::getConfig($config_section . '.settlement_backward_comment_hosting', $s_comment_by_service_types[SERVICE_HOSTING]),
+    SERVICE_SERVICE => ConfigHelper::getConfig($config_section . '.settlement_backward_comment_service', $s_comment_by_service_types[SERVICE_SERVICE]),
+    SERVICE_PHONE => ConfigHelper::getConfig($config_section . '.settlement_backward_comment_phone', $s_comment_by_service_types[SERVICE_PHONE]),
+    SERVICE_TV => ConfigHelper::getConfig($config_section . '.settlement_backward_comment_tv', $s_comment_by_service_types[SERVICE_TV]),
+    SERVICE_TRANSMISSION => ConfigHelper::getConfig($config_section . '.settlement_backward_comment_transmission', $s_comment_by_service_types[SERVICE_TRANSMISSION]),
+);
+
 $suspension_description = ConfigHelper::getConfig($config_section . '.suspension_description', '');
 $suspension_percentage = ConfigHelper::getConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0));
 $unit_name = trans(ConfigHelper::getConfig($config_section . '.default_unit_name'));
@@ -1468,9 +1505,9 @@ foreach ($assigns as $assign) {
         $desc = $assign['name'];
     } else {
         if (empty($assign['backwardperiod'])) {
-            $desc = $comment;
+            $desc = isset($comment_by_service_types[$assign['tarifftype']]) ? $comment_by_service_types[$assign['tarifftype']] : $comment;
         } else {
-            $desc = $backward_comment;
+            $desc = isset($backward_comment_by_service_types[$assign['tarifftype']]) ? $backward_comment_by_service_types[$assign['tarifftype']] : $backward_comment;
         }
     }
 
@@ -1534,7 +1571,7 @@ foreach ($assigns as $assign) {
         $desc
     );
 
-    if (strpos($comment, '%aligned_partial_period') !== false) {
+    if (strpos($desc, '%aligned_partial_period') !== false) {
         if ($assign['datefrom']) {
             $datefrom = explode('/', date('Y/m/d', $assign['datefrom']));
         }
@@ -1608,7 +1645,7 @@ foreach ($assigns as $assign) {
 
     // for phone calls
     if (isset($assign['phones'])) {
-        $desc = str_replace('%phones', $assign['phones'], $desc);
+        $desc = str_replace('%phones', str_replace(',', ', ', $assign['phones']), $desc);
     }
 
     if ($suspension_percentage && ($assign['suspended'] || $assign['allsuspended'])) {
@@ -2314,9 +2351,9 @@ foreach ($assigns as $assign) {
                 //print "price: $price diffdays: $diffdays alldays: $alldays settl_price: $partial_price" . PHP_EOL;
 
                 if (empty($assign['backwardperiod'])) {
-                    $sdesc = $s_comment;
+                    $sdesc = isset($s_comment_by_service_types[$assign['tarifftype']]) ? $s_comment_by_service_types[$assign['tarifftype']] : $s_comment;
                 } else {
-                    $sdesc = $s_backward_comment;
+                    $sdesc = isset($s_backward_comment_by_service_types[$assign['tarifftype']]) ? $s_backward_comment_by_service_types[$assign['tarifftype']] : $s_backward_comment;
                 }
                 $sdesc = str_replace(
                     array(
