@@ -265,7 +265,7 @@ $divisions = $LMS->GetDivisions(array('order' => 'name'));
 
 $divisions[0] = array('id' => 0, 'name' => '');
 
-$division_name_duplicates = array();
+$division_names = array();
 
 if ($importlist = $DB->GetAll(
     'SELECT
@@ -282,12 +282,11 @@ if ($importlist = $DB->GetAll(
     $listdata['total'] = count($importlist);
 
     foreach ($importlist as $idx => $row) {
-        if (!empty($row['divisionid']) && isset($divisions[$row['divisionid']])) {
-            $division = $divisions[$row['divisionid']];
-            if (isset($division_name_duplicates[$division['name']])) {
-                $division_name_duplicates[$division['name']]++;
-            } else {
-                $division_name_duplicates[$division['name']] = 1;
+        $divisionid = $row['divisionid'];
+        if (!empty($row['divisionid']) && isset($divisions[$divisionid])) {
+            $division = $divisions[$divisionid];
+            if (!isset($division_names[$division['name']][$divisionid])) {
+                $division_names[$division['name']][$divisionid] = $divisionid;
             }
         } else {
             $division = null;
@@ -312,7 +311,7 @@ $sourcefiles = $DB->GetAll('SELECT s.*, u.name AS username,
     ORDER BY s.idate DESC');
 
 $SMARTY->assign('divisions', $divisions);
-$SMARTY->assign('division_name_duplicates', $division_name_duplicates);
+$SMARTY->assign('division_names', $division_names);
 $SMARTY->assign('listdata', $listdata ?? null);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('sourcefiles', $sourcefiles);

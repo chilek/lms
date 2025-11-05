@@ -77,7 +77,7 @@
 						{icon name="division"}
 						<strong>
 							{$division.name|escape}
-							{if $division_name_duplicates[$division.name] > 1 && !empty($division.label)}
+							{if !empty($division.label) && !empty($division_names[$division.name]) && count($division_names[$division.name]) > 1}
 								({$division.label|escape})
 							{/if}
 						</strong>
