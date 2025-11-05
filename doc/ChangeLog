@@ -1105,6 +1105,8 @@ version 28-git (????-??-??):
     position when mouse button had been clicked [chilan]
   - devel/cleanup: renamed configuration variable 'phpui.map_type' to 'map.type' [chilan]
   - enhancement: added new customer flag 'consumer' usefull for legal persons treated as a consumers [chilan]
+  - improvement: 'payments.*comment_<service-type>' configuration variable support added with values specific for
+    different service types [chilan]
 
 version 27.0 (2021-08-20):
 
