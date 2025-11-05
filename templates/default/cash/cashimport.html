@@ -75,7 +75,12 @@
 				<tr>
 					<td colspan="5" class="dark">
 						{icon name="division"}
-						<strong>{$division.name|escape}</strong>
+						<strong>
+							{$division.name|escape}
+							{if $division_name_duplicates[$division.name] > 1 && !empty($division.label)}
+								({$division.label|escape})
+							{/if}
+						</strong>
 					</td>
 					<td colspan="3" class="dark text-right">
 						{button icon="csv" label="Download (CSV)" href="?m=cashimport&action=csv&division={$division.id}"}
