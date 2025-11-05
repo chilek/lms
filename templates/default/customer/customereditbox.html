@@ -844,6 +844,17 @@
 			}
 		});
 
+		$('[name="customerdata[addresses][0][location_city_name]"]').on('invalid', function() {
+			if (!$(this).is(':visible')) {
+				$(this).closest('.location-box-expandable').find('[data-state="closed"]').click();
+				this.scrollIntoView({
+					behavior: 'smooth',
+					block: 'center',
+					inline: 'nearest'
+				});
+			}
+		});
+
 		$('#check-all-consents').change(function() {
 			$(this).closest('.lms-ui-multi-check').find(':radio').prop('checked', $(this).prop('checked'));
 		});
