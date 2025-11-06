@@ -117,14 +117,14 @@ function update_netlink_properties($id, $devid, $link)
     $link['speedname'] = $LINKSPEEDS[$link['speed']];
     $link['technologyname'] = $LINKTECHNOLOGIES[$link['type']][$link['technology']];
     $link['foreignentity'] = $foreign_entity_properties;
+    $link['srcport'] = $link['srcport'] ?? ($link['port'] ?? 0);
+    $link['dstport'] = $link['dstport'] ?? 0;
 
     $result->call(
         'update_netlink_info',
         $tech_content,
         $speed_content,
         $port_content,
-        $link['srcport'] ?? ($link['port'] ?? 0),
-        $link['dstport'] ?? 0,
         $link
     );
 

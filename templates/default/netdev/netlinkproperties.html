@@ -335,16 +335,16 @@
 		xajax_update_netlink_properties({$link.id}, {$link.devid}, params);
 	}
 
-	function update_netlink_info(tech_content, speed_content, port_content, srcport, dstport, link) {
+	function update_netlink_info(tech_content, speed_content, port_content, link) {
 		$('#{if $link.isnetlink}dev{else}node{/if}-link-tech-{$link.devid}').html(tech_content);
 		$('#{if $link.isnetlink}dev{else}node{/if}-link-speed-{$link.devid}').html(speed_content);
 		$('#{if $link.isnetlink}dev{else}node{/if}-link-port-{$link.devid}').html(port_content);
 
 		{if $link.isnetlink}
-			$('#dev-link-srcport-{$link.devid}').html('[' + (srcport ? srcport : '-') + ']');
-			$('#dev-link-dstport-{$link.devid}').html('[' + (dstport ? dstport : '-') + ']');
+			$('#dev-link-srcport-{$link.devid}').html('[' + (link.srcport ? link.srcport : '-') + ']');
+			$('#dev-link-dstport-{$link.devid}').html('[' + (link.dstport ? link.dstport : '-') + ']');
 		{else}
-			$('#node-link-srcport-{$link.devid}').html('[' + (srcport ? srcport : '-') + ']');
+			$('#node-link-srcport-{$link.devid}').html('[' + (link.srcport ? link.srcport : '-') + ']');
 		{/if}
 
 		$('#netlinkproperties').triggerHandler('submit', link);
