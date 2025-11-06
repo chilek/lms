@@ -2026,14 +2026,30 @@ if (isset($options['explicit-node-locations'])) {
             $address = $addresses[$address_id];
 
             if (!$quiet) {
-                printf(
-                    'Setting explicit TERYT location address for node: %d (city: %s, street: %s, house: %s, flat: %s)' . PHP_EOL,
-                    $node['id'],
-                    $address['location_city_name'],
-                    $address['location_street_name'],
-                    $address['location_house'],
-                    $address['location_flat']
+                $address_components = array(
+                    'city' => $address['location_city_name'],
                 );
+                if (!empty($address['location_street_name'])) {
+                    $address_components['street'] = $address['location_street_name'];
+                }
+                if (!empty($address['location_house'])) {
+                    $address_components['house'] = $address['location_house'];
+                }
+                if (!empty($address['location_flat'])) {
+                    $address_components['flat'] = $address['location_flat'];
+                }
+                echo 'Setting explicit TERYT location address for node: #' . $node['id']
+                    . ' ('
+                    . implode(
+                        ', ',
+                        array_map(
+                            function ($key, $value) {
+                                return $key . ': ' . $value;
+                            },
+                            array_keys($address_components),
+                            $address_components
+                        )
+                    ) . ')' . PHP_EOL;
             }
 
             $DB->Execute(
