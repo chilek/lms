@@ -3951,6 +3951,7 @@ $_LANG['Center map around network elements'] = 'Wyśrodkuj mapę wokół jej ele
 $_LANG['Refresh network state'] = 'Odśwież stan sieci';
 $_LANG['Show/hide foreign entity network links'] = 'Pokaż/ukryj połączenia sieciowe z przypisanym podmiotem obcym';
 $_LANG['Show/hide customer owned infrastructure elements'] = 'Pokaż/ukryj infrastrukturę będącą własnością klientów';
+$_LANG['Change network link edit mode'] = 'Zmień tryb edycji połączeń sieciowych';
 
 $_LANG['municipal commune'] = 'gm. miejska';
 $_LANG['rural commune'] = 'gm. wiejska';

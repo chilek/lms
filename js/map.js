@@ -410,9 +410,11 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 
 	var devLinkForeignEntityToggleButton = null;
 	var customerOwnedToggleButton = null;
+	var netLinkEditModeChangeButton = null;
 	var mapFilters = {
 		devLinkForeignEntity: false,
-		customerOwned: false
+		customerOwned: false,
+		netLinkEditMode: false
 	};
 
 	var linkstyles = [];
@@ -1222,25 +1224,48 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 
 				var features = findFeaturesIntersection(this, feature, featureLonLat);
 
-				if (lmsSettings.mapCreateNewPointAfterLinkEditStart &&
-					features.length === 1 &&
-					features[0].data.hasOwnProperty('netlinkid')) {
+				if (features.length === 1 && features[0].data.hasOwnProperty('netlinkid')) {
 					var lineFeature = features[0];
-
 					if (lineFeature.geometry.CLASS_NAME === "OpenLayers.Geometry.LineString") {
-						var g = lineFeature.geometry;
-						var pt = new OpenLayers.Geometry.Point(featureLonLat.lon, featureLonLat.lat);
+						if (mapFilters.netLinkEditMode) {
+							var netLink = lineFeature.data;
+							openPopupWindow({
+								url: '?m=netlinkproperties&id=' + netLink.src + '&devid=' + netLink.dst + '&isnetlink=1',
+								selector: '#map',
+								position: {my: 'center', at: 'center', of: '#map'},
+								title: $t("Network link properties"),
+								onSubmit: function (e, data) {
+									$.extend(
+										lineFeature.data,
+										{
+											type: data.type,
+											typename: data.typename,
+											technology: data.technology,
+											technologyname: data.technologyname,
+											speed: data.speed,
+											speedname: data.speedname,
+											foreignentity: data.foreignentity
+										}
+									);
+									devlinklayer.drawFeature(lineFeature);
+									selectlayer.unselect(lineFeature);
+								}
+							});
+						} else if (lmsSettings.mapCreateNewPointAfterLinkEditStart) {
+							var g = lineFeature.geometry;
+							var pt = new OpenLayers.Geometry.Point(featureLonLat.lon, featureLonLat.lat);
 
-						var hit = findSegmentContainingPoint(map, g, pt, 30.0);
+							var hit = findSegmentContainingPoint(map, g, pt, 30.0);
 
-						if (hit && hit.t >= 0.15 && hit.t <= 0.85) {
-							var newPoint = new OpenLayers.Geometry.Point(hit.projection.x, hit.projection.y);
+							if (hit && hit.t >= 0.15 && hit.t <= 0.85) {
+								var newPoint = new OpenLayers.Geometry.Point(hit.projection.x, hit.projection.y);
 
-							g.addComponent(newPoint, hit.segIndex + 1);
-							lineFeature.layer.drawFeature(feature);
+								g.addComponent(newPoint, hit.segIndex + 1);
+								lineFeature.layer.drawFeature(feature);
+							}
+
+							modifyfeature.selectFeature(lineFeature);
 						}
-
-						modifyfeature.selectFeature(lineFeature);
 					}
 				}
 
@@ -1360,7 +1385,6 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			);
 
 			map.addControl(modifyfeature);
-			modifyfeature.activate();
 		}
 
 		var checkbutton = new OpenLayers.Control.Button({
@@ -1389,6 +1413,14 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			title: $t("Show/hide customer owned infrastructure elements"),
 			command: 'customerOwnedToggle',
 		});
+
+		if (lms.permissions.fullAccess || lms.permissions.networkMapEdit) {
+			netLinkEditModeChangeButton = new OpenLayers.Control.Button({
+				displayClass: "lmsNetLinkEditModeChangeButton",
+				title: $t("Change network link edit mode"),
+				command: 'netLinkEditModeChange',
+			});
+		}
 
 		var panel = new OpenLayers.Control.Panel({
 			type: OpenLayers.Control.TYPE_BUTTON,
@@ -1477,10 +1509,27 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 						setStorageItem('mapFilters', JSON.stringify(mapFilters), 'local');
 
 						break;
+					case 'netLinkEditModeChange':
+						mapFilters.netLinkEditMode = !mapFilters.netLinkEditMode;
+
+						if (mapFilters.netLinkEditMode) {
+							control.deactivate();
+							modifyfeature.deactivate();
+						} else {
+							control.activate();
+							modifyfeature.activate();
+						}
+
+						setStorageItem('mapFilters', JSON.stringify(mapFilters), 'local');
+
+						break;
 				}
 			}
 		});
 		panel.addControls([checkbutton, centerbutton, refreshbutton, devLinkForeignEntityToggleButton, customerOwnedToggleButton]);
+		if (lms.permissions.fullAccess || lms.permissions.networkMapEdit) {
+			panel.addControls([netLinkEditModeChangeButton]);
+		}
 		map.addControl(panel);
 	} else {
 		selectlayer = new OpenLayers.Control.SelectFeature(highlightlayers, {
@@ -1611,6 +1660,16 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			customerOwnedToggleButton.deactivate();
 		} else {
 			customerOwnedToggleButton.activate();
+		}
+	}
+
+	if (netLinkEditModeChangeButton) {
+		if (mapFilters.netLinkEditMode) {
+			netLinkEditModeChangeButton.deactivate();
+			modifyfeature.deactivate();
+		} else {
+			netLinkEditModeChangeButton.activate();
+			modifyfeature.activate();
 		}
 	}
 

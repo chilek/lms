@@ -195,7 +195,7 @@
 	{/if}
 	<tr>
 		<td colspan="2" class="lms-ui-box-buttons">
-			{button icon="save" label="Submit" onclick="submit_netlink_properties();"}
+			{button icon="save" label="Submit" id="netlink-properties-submit"}
 		</td>
 	</tr>
 </table>
@@ -259,7 +259,9 @@
 		$('#radiosector,#srcradiosector,#dstradiosector').prop('disabled', false);
 	}
 
-	function submit_netlink_properties() {
+	function submit_netlink_properties(e) {
+		$('#netlink-properties-submit').prop('disabled', true);
+
 		var table = $('#netlink-properties-table');
 
 		var params = {
@@ -321,6 +323,8 @@
 			}
 
 			if (error) {
+				e.stopImmediatePropagation();
+				$('#netlink-properties-submit').prop('disabled', false);
 				return;
 			}
 		{else}
@@ -331,7 +335,7 @@
 		xajax_update_netlink_properties({$link.id}, {$link.devid}, params);
 	}
 
-	function update_netlink_info(tech_content, speed_content, port_content, srcport, dstport) {
+	function update_netlink_info(tech_content, speed_content, port_content, srcport, dstport, link) {
 		$('#{if $link.isnetlink}dev{else}node{/if}-link-tech-{$link.devid}').html(tech_content);
 		$('#{if $link.isnetlink}dev{else}node{/if}-link-speed-{$link.devid}').html(speed_content);
 		$('#{if $link.isnetlink}dev{else}node{/if}-link-port-{$link.devid}').html(port_content);
@@ -343,6 +347,8 @@
 			$('#node-link-srcport-{$link.devid}').html('[' + (srcport ? srcport : '-') + ']');
 		{/if}
 
+		$('#netlinkproperties').triggerHandler('submit', link);
+
 		$('#netlink-properties-table').closest('.ui-dialog-content').dialog('destroy').remove();
 	}
 
@@ -352,6 +358,10 @@
 		{if empty($link.foreignentity)}
 			$('[name="foreignentity"][form="netlinkproperties"]').scombobox('val', '');
 		{/if}
+
+		$('#netlink-properties-submit').click(function(e) {
+			submit_netlink_properties(e);
+		});
 	});
 
 </script>

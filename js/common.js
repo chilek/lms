@@ -197,6 +197,10 @@ function openPopupWindow(options)
 			if (options.onLoaded) {
 				options.onLoaded();
 			}
+
+			if (options.hasOwnProperty('onSubmit') && typeof(options.onSubmit) === 'function') {
+				dialog.find('form').submit(options.onSubmit);
+			}
 		}
 
 	});

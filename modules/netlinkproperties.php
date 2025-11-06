@@ -77,13 +77,21 @@ function update_netlink_properties($id, $devid, $link)
 
     $speed_content = $LINKSPEEDS[$link['speed']];
 
+    $foreign_entity_properties = array();
+
     if (!empty($link['foreignentity'])) {
         $foreign_entities = Utils::getForeignEntities();
 
         if (empty($foreign_entities[$link['foreignentity']])) {
             $foreign_entity = $link['foreignentity'];
+            $foreign_entity_properties = array(
+                'name' => $foreign_entity,
+                'type' => 0,
+                'id' => $foreign_entity,
+            );
         } else {
             $foreign_entity = $foreign_entities[$link['foreignentity']];
+            $foreign_entity_properties = $foreign_entity;
             $foreign_entity = $foreign_entity['name']
                 . (empty($foreign_entity['type']) ? '' : ', ' . trans('TEN') . ' ' . $foreign_entity['id']);
         }
@@ -105,13 +113,19 @@ function update_netlink_properties($id, $devid, $link)
             . (empty($foreign_entity) ? '' : '<p class=&quot;lms-ui-foreign-entity&quot;>' . trans('Foreign entity:') . ' ' . $foreign_entity . '</p>')
             . '</span>"></i>';
 
+    $link['typename'] = $LINKTYPES[$link['type']];
+    $link['speedname'] = $LINKSPEEDS[$link['speed']];
+    $link['technologyname'] = $LINKTECHNOLOGIES[$link['type']][$link['technology']];
+    $link['foreignentity'] = $foreign_entity_properties;
+
     $result->call(
         'update_netlink_info',
         $tech_content,
         $speed_content,
         $port_content,
         $link['srcport'] ?? ($link['port'] ?? 0),
-        $link['dstport'] ?? 0
+        $link['dstport'] ?? 0,
+        $link
     );
 
     return $result;
