@@ -213,111 +213,93 @@ div.olControlLayerSwitcher {
 	padding: 0;
 }
 
-div.olControlPanel {
-	position: absolute;
-	left: 60px;
-	top: 5px;
-}
-
-.olControlPanel div {
-	display: block;
-	float: left;
-	width: 22px;
-	height: 22px;
-	border: @frame;
-	margin: 1px;
-	background-position: center center;
-	background-repeat: no-repeat;
-}
-
-.lmsCheckButtonItemActive {
-  .lms-ui-icon-ipnetwork;
-  .fa-fw;
-  background-color: white;
-  color: black;
-}
-
-.lmsCheckButtonItemInactive {
-  .lms-ui-icon-ipnetwork;
-  .fa-fw;
-  background-color: white;
-  color: black;
-}
-
-.lmsCenterButtonItemActive {
-  .lms-ui-icon-align-center;
-  .fa-fw;
-  background-color: white;
-  color: black;
-}
-
-.lmsCenterButtonItemInactive {
-  .lms-ui-icon-align-center;
-  .fa-fw;
-  background-color: white;
-  color: black;
-}
-
-.lmsRefreshButtonItemActive {
-  .lms-ui-icon-reload;
-  .fa-fw;
-  background-color: red;
-  color: black;
-}
-
-.lmsRefreshButtonItemInactive {
-  .lms-ui-icon-reload;
-  .fa-fw;
-  background-color: white;
-  color: black;
-}
-
-.lmsDevLinkForeignEntityToggleButtonItemActive {
-  .lms-ui-icon-division;
-  .fa-fw;
-  background-color: white;
-  color: black;
-}
-
-.lmsDevLinkForeignEntityToggleButtonItemInactive {
-  .lms-ui-icon-division;
-  .fa-fw;
-  background-color: lightgrey;
-  color: black;
-}
-
-.lmsCustomerOwnedToggleButtonItemActive {
-  .lms-ui-icon-customer;
-  .fa-fw;
-  background-color: white;
-  color: black;
-}
-
-.lmsCustomerOwnedToggleButtonItemInactive {
-  .lms-ui-icon-customer;
-  .fa-fw;
-  background-color: lightgrey;
-  color: black;
-}
-
-.lmsNetLinkEditModeChangeButtonItemActive {
-  .lms-ui-icon-port;
-  .fa-fw;
-  background-color: white;
-  color: black;
-}
-
-.lmsNetLinkEditModeChangeButtonItemInactive {
-  .lms-ui-icon-port;
-  .fa-fw;
-  background-color: lightgrey;
-  color: black;
+.olControlPanel {
+  display: flex;
+  position: absolute;
+  left: 60px;
+  top: 5px;
 }
 
 .olControlPanel .olButton {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 22px;
+  height: 22px;
+  border: @frame;
+  margin: 1px;
+}
+
+.lmsCheckButtonItemActive {
+  .lms-ui-icon-ipnetwork;
+  background-color: white;
+  color: black;
+}
+
+.lmsCheckButtonItemInactive {
+  .lms-ui-icon-ipnetwork;
+  background-color: white;
+  color: black;
+}
+
+.lmsCenterButtonItemActive {
+  .lms-ui-icon-align-center;
+  background-color: white;
+  color: black;
+}
+
+.lmsCenterButtonItemInactive {
+  .lms-ui-icon-align-center;
+  background-color: white;
+  color: black;
+}
+
+.lmsRefreshButtonItemActive {
+  .lms-ui-icon-reload;
+  background-color: red;
+  color: black;
+}
+
+.lmsRefreshButtonItemInactive {
+  .lms-ui-icon-reload;
+  background-color: white;
+  color: black;
+}
+
+.lmsDevLinkForeignEntityToggleButtonItemActive {
+  .lms-ui-icon-division;
+  background-color: white;
+  color: black;
+}
+
+.lmsDevLinkForeignEntityToggleButtonItemInactive {
+  .lms-ui-icon-division;
+  background-color: lightgrey;
+  color: black;
+}
+
+.lmsCustomerOwnedToggleButtonItemActive {
+  .lms-ui-icon-customer;
+  background-color: white;
+  color: black;
+}
+
+.lmsCustomerOwnedToggleButtonItemInactive {
+  .lms-ui-icon-customer;
+  background-color: lightgrey;
+  color: black;
+}
+
+.lmsNetLinkEditModeChangeButtonItemActive {
+  .lms-ui-icon-port;
+  background-color: white;
+  color: black;
+}
+
+.lmsNetLinkEditModeChangeButtonItemInactive {
+  .lms-ui-icon-port;
+  background-color: lightgrey;
+  color: black;
 }
 
 .netrange-location {
