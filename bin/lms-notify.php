@@ -476,6 +476,9 @@ $ignore_customer_consents = ConfigHelper::checkConfig($config_section . '.ignore
 $ignore_contact_flags = ConfigHelper::checkConfig($config_section . '.ignore_contact_flags');
 $assignment_update = ConfigHelper::checkConfig($config_section . '.assignment_update', true);
 
+$financial_history_reverse_order = ConfigHelper::checkConfig($config_section . '.financial_history_reverse_order', true);
+$financial_history_item_description_format = ConfigHelper::getConfig($config_section . '.financial_history_item_description_format', '%comment');
+
 $required_phone_contact_flags = CONTACT_MOBILE | ($ignore_contact_flags ? 0 : CONTACT_NOTIFICATIONS);
 $checked_phone_contact_flags = $required_phone_contact_flags | CONTACT_DISABLED;
 $required_mail_contact_flags = CONTACT_EMAIL | ($ignore_contact_flags ? 0 : CONTACT_NOTIFICATIONS);
@@ -665,16 +668,41 @@ function parse_customer_data($data, $format, $row)
     static $use_only_alternative_accounts = null,
         $use_all_accounts = null,
         $config_section = null,
-        $barcode = null;
+        $barcode = null,
+        $financial_history_reverse_order = null,
+        $financial_history_item_description_format = null;
 
     global $LMS;
 
     $DB = LMSDB::getInstance();
 
-    if (!isset($use_only_alternative_accounts)) {
+    if (!isset($config_section)) {
         $config_section = $GLOBALS['config_section'];
+    }
+
+    if (!isset($use_only_alternative_accounts)) {
         $use_only_alternative_accounts = ConfigHelper::checkConfig($config_section . '.use_only_alternative_accounts');
         $use_all_accounts = ConfigHelper::checkConfig($config_section . '.use_all_accounts');
+    }
+
+    if (!isset($financial_history_reverse_order)) {
+        $financial_history_reverse_order = ConfigHelper::checkConfig(
+            $config_section . '.financial_history_reverse_order',
+            ConfigHelper::checkConfig(
+                'finances.history_reverse_order',
+                true
+            )
+        );
+    }
+
+    if (!isset($financial_history_item_description_format)) {
+        $financial_history_item_description_format = ConfigHelper::getConfig(
+            $config_section . '.financial_history_item_description_format',
+            ConfigHelper::checkConfig(
+                'finances.history_item_description_format',
+                '%comment'
+            )
+        );
     }
 
     if (!isset($row['totalbalance'])) {
@@ -806,7 +834,7 @@ function parse_customer_data($data, $format, $row)
         $data = preg_replace("/\%abonament/", empty($saldo) ? '0' : implode(', ', $saldo), $data);
     }
 
-    $data = $LMS->getLastNInTable($data, $row['id'], $format, $row['aggregate_documents']);
+    $data = $LMS->getLastNInTable($data, $row['id'], $format, $row['aggregate_documents'], $financial_history_reverse_order, $financial_history_item_description_format);
 
     // invoices, debit notes, documents
     $data = str_replace(

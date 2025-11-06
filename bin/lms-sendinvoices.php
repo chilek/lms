@@ -193,8 +193,20 @@ if ($backup || $archive) {
     $add_message = ConfigHelper::checkConfig('sendinvoices.add_message');
     $message_attachments = ConfigHelper::checkConfig('sendinvoices.message_attachments');
     $aggregate_documents = ConfigHelper::checkConfig('sendinvoices.aggregate_documents');
-    $financial_history_reverse_order = ConfigHelper::checkConfig('sendinvoices.financial_history_reverse_order', true);
-    $financial_history_item_description_format = ConfigHelper::getConfig('sendinvoices.financial_history_item_description_format', '%comment');
+    $financial_history_reverse_order = ConfigHelper::checkConfig(
+        'sendinvoices.financial_history_reverse_order',
+        ConfigHelper::checkConfig(
+            'finances.history_reverse_order',
+            true
+        )
+    );
+    $financial_history_item_description_format = ConfigHelper::getConfig(
+        'sendinvoices.financial_history_item_description_format',
+        ConfigHelper::getConfig(
+            'finances.history_item_description_format',
+            '%comment'
+        )
+    );
     $dsn_email = ConfigHelper::getConfig('sendinvoices.dsn_email', '', true);
     $mdn_email = ConfigHelper::getConfig('sendinvoices.mdn_email', '', true);
     $part_size = $options['part-size'] ?? ConfigHelper::getConfig('sendinvoices.limit', '0');
