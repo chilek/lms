@@ -466,7 +466,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 				}
 
 				var data = feature.data;
-				return mapFilters.devLinkForeignEntity && data.foreignentity.length || mapFilters.customerOwned && data.customers.length ? 'none' : '';
+				return mapFilters.devLinkForeignEntity && data.foreignentity !== null || mapFilters.customerOwned && data.customers.length ? 'none' : '';
 			}
 		}
 	}

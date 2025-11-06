@@ -23,6 +23,9 @@
  */
 
 @import "less/lms-variables";
+@import "less/generic";
+@import "less/fontawesome";
+@import "less/icons";
 
 div.map {
 	position: absolute;
@@ -228,51 +231,81 @@ div.olControlPanel {
 }
 
 .lmsCheckButtonItemActive {
-	background: white url('@{lms-img-path}/ip.gif');
+  .lms-ui-icon-ipnetwork;
+  background-color: white;
+  color: black;
 }
 
 .lmsCheckButtonItemInactive {
-	background: white url('@{lms-img-path}/ip.gif');
+  .lms-ui-icon-ipnetwork;
+  background-color: white;
+  color: black;
 }
 
 .lmsCenterButtonItemActive {
-	background: white url('@{lms-img-path}/network.gif');
+  .lms-ui-icon-align-center;
+  background-color: white;
+  color: black;
 }
 
 .lmsCenterButtonItemInactive {
-	background: white url('@{lms-img-path}/network.gif');
+  .lms-ui-icon-align-center;
+  background-color: white;
+  color: black;
 }
 
 .lmsRefreshButtonItemActive {
-	background: red url('@{lms-img-path}/reload.gif');
+  .lms-ui-icon-reload;
+  background-color: red;
+  color: black;
 }
 
 .lmsRefreshButtonItemInactive {
-	background: white url('@{lms-img-path}/reload.gif');
+  .lms-ui-icon-reload;
+  background-color: white;
+  color: black;
 }
 
 .lmsDevLinkForeignEntityToggleButtonItemActive {
-  background: white url('@{lms-img-path}/netdev_on.gif');
+  .lms-ui-icon-division;
+  background-color: white;
+  color: black;
 }
 
 .lmsDevLinkForeignEntityToggleButtonItemInactive {
-  background: lightgrey url('@{lms-img-path}/netdev_off.gif');
+  .lms-ui-icon-division;
+  background-color: lightgrey;
+  color: black;
 }
 
 .lmsCustomerOwnedToggleButtonItemActive {
-  background: white url('@{lms-img-path}/customer.gif');
+  .lms-ui-icon-customer;
+  background-color: white;
+  color: black;
 }
 
 .lmsCustomerOwnedToggleButtonItemInactive {
-  background: lightgrey url('@{lms-img-path}/customer.gif');
+  .lms-ui-icon-customer;
+  background-color: lightgrey;
+  color: black;
 }
 
 .lmsNetLinkEditModeChangeButtonItemActive {
-  background: white url('@{lms-img-path}/edit.gif');
+  .lms-ui-icon-port;
+  background-color: white;
+  color: black;
 }
 
 .lmsNetLinkEditModeChangeButtonItemInactive {
-  background: lightgrey url('@{lms-img-path}/edit.gif');
+  .lms-ui-icon-port;
+  background-color: lightgrey;
+  color: black;
+}
+
+.olControlPanel .olButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .netrange-location {
