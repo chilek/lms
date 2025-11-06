@@ -1128,9 +1128,14 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 									popupRequired = true;
 								}
 							} else {
-								content += '<span class="bold">' + features[i].data.typename + '<br>' +
-									(features[i].data.technologyname.length ? '<span class="bold">' + features[i].data.technologyname + '<br>' : '') +
-									features[i].data.speedname + '</span>';
+								var foreignEntity = null;
+								if (features[i].data.foreignentity) {
+									foreignEntity = features[i].data.foreignentity;
+								}
+								content += $t('Link type:') + ' <strong>' + features[i].data.typename + '</strong>' +
+									(features[i].data.technologyname.length ? '<br>' + $t('Link technology:') + ' <strong>' + features[i].data.technologyname + '</strong>' : '') +
+									'<br>' + $t('Link speed:') + ' <strong>' + features[i].data.speedname + '</strong>' +
+									(foreignEntity ? '<br>' + $t('Foreign entity:') + ' <strong>' + foreignEntity.name + (foreignEntity.type ? ', ' + $t('TEN') + ' ' + foreignEntity.id : '') + '</strong>' : '');
 								popupRequired = true;
 							}
 						}
@@ -1375,13 +1380,13 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 
 		devLinkForeignEntityToggleButton = new OpenLayers.Control.Button({
 			displayClass: "lmsDevLinkForeignEntityToggleButton",
-			title: $t("Toggle foreign entity network link visibility"),
+			title: $t("Show/hide foreign entity network links"),
 			command: 'devLinkForeignEntityToggle',
 		});
 
 		customerOwnedToggleButton = new OpenLayers.Control.Button({
 			displayClass: "lmsCustomerOwnedToggleButton",
-			title: $t("Toggle customer owned infrastructure element visibility"),
+			title: $t("Show/hide customer owned infrastructure elements"),
 			command: 'customerOwnedToggle',
 		});
 

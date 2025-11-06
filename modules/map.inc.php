@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$foreign_entities = Utils::getForeignEntities();
+
 $devices = $DB->GetAllByKey(
     'SELECT
         n.id,
@@ -115,9 +117,25 @@ if ($devices) {
             $devlink['srclon'] = $devices[$devlink['src']]['lon'];
             $devlink['dstlat'] = $devices[$devlink['dst']]['lat'];
             $devlink['dstlon'] = $devices[$devlink['dst']]['lon'];
-            $devlink['typename'] = trans("Link type:") . ' ' . $LINKTYPES[$devlink['type']];
-            $devlink['technologyname'] = ($devlink['technology'] ? trans("Link technology:") . ' ' . $LINKTECHNOLOGIES[$devlink['type']][$devlink['technology']] : '');
-            $devlink['speedname'] = trans("Link speed:") . ' ' . $LINKSPEEDS[$devlink['speed']];
+            $devlink['typename'] = $LINKTYPES[$devlink['type']];
+            $devlink['technologyname'] = ($devlink['technology'] ? $LINKTECHNOLOGIES[$devlink['type']][$devlink['technology']] : '');
+            $devlink['speedname'] = $LINKSPEEDS[$devlink['speed']];
+
+            $foreignentity = array();
+            if (!empty($devlink['foreignentity'])) {
+                $foreignentity_key = $devlink['foreignentity'];
+                if (empty($foreign_entities[$foreignentity_key])) {
+                    $foreignentity['name'] = $foreignentity_key;
+                    $foreignentity['type'] = 0;
+                    $foreignentity['id'] = $foreignentity_key;
+                } else {
+                    $foreignentity['name'] = $foreign_entities[$foreignentity_key]['name'];
+                    $foreignentity['type'] = 1;
+                    $foreignentity['id'] = $foreignentity_key;
+                }
+            }
+            $devlink['foreignentity'] = $foreignentity;
+
             $devlink['points'] = array(
                 0 => array(
                     'lon' => $devices[$devlink['src']]['lon'],

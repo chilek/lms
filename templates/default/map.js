@@ -51,7 +51,7 @@
 				typename: "{$devlink.typename}",
 				technologyname: "{$devlink.technologyname}",
 				speedname: "{$devlink.speedname}",
-				foreignentity: "{if !empty($devlink.foreignentity)}{$devlink.foreignentity}{/if}"
+				foreignentity: {if empty($devlink.foreignentity)}null{else}JSON.parse('{json_encode($devlink.foreignentity)}'){/if}
 			});
 		{/foreach}
 	{/if}
