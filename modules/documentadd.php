@@ -278,119 +278,124 @@ if (isset($_POST['document'])) {
                 $document['attachments'] ?? array()
             ));
 
-            // prepare some useful customer properties to use in document templates
-            if (!empty($document['assignment']['location_address_id'])) {
-                $location_address_id = intval($document['assignment']['location_address_id']);
-                $location_address = $LMS->GetAddress($location_address_id);
-            } else {
-                $location_address = null;
-            }
+            if (empty($error) && empty($warning)) {
+                // prepare some useful customer properties to use in document templates
+                if (!empty($document['assignment']['location_address_id'])) {
+                    $location_address_id = intval($document['assignment']['location_address_id']);
+                    $location_address = $LMS->GetAddress($location_address_id);
+                } else {
+                    $location_address = null;
+                }
 
-            if (!empty($document['assignment']['recipient_address_id'])) {
-                $recipient_address_id = intval($document['assignment']['recipient_address_id']);
-                $recipient_address = $LMS->GetAddress($recipient_address_id);
-            } else {
-                $recipient_address = null;
-            }
+                if (!empty($document['assignment']['recipient_address_id'])) {
+                    $recipient_address_id = intval($document['assignment']['recipient_address_id']);
+                    $recipient_address = $LMS->GetAddress($recipient_address_id);
+                } else {
+                    $recipient_address = null;
+                }
 
-            $hook_data = $LMS->executeHook(
-                'documentadd_prepare_data',
-                compact('customer', 'division', 'location_address', 'recipient_address', 'document', 'engine')
-            );
-            if (!empty($hook_data) && is_array($hook_data)) {
-                extract($hook_data);
-            }
-
-            $SMARTY->assign(array(
-                'customer' => $customer,
-                'customerinfo' => $customer,
-                'division' => $division,
-                'location_address' => $location_address,
-                'recipient_address' => $recipient_address,
-                'document' => $document,
-                'engine' => $engine,
-            ));
-
-            ConfigHelper::setFilter($customer['divisionid'], Auth::GetCurrentUser());
-
-            $company_logo = ConfigHelper::getConfig('documents.company_logo', '', true);
-            if (strlen($company_logo) && strpos($company_logo, DIRECTORY_SEPARATOR) !== 0) {
-                $company_logo = SYS_DIR . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . $company_logo;
-            }
-
-            $company_logo_width = intval(ConfigHelper::getConfig('documents.company_logo_width', '150'));
-
-            $project_logo = ConfigHelper::getConfig('documents.project_logo', '', true);
-            if (strlen($project_logo) && strpos($project_logo, DIRECTORY_SEPARATOR) !== 0) {
-                $project_logo = SYS_DIR . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . $project_logo;
-            }
-
-            $date_format = ConfigHelper::getConfig('documents.date_format', 'd.m.Y');
-
-            $default_header = ConfigHelper::getConfig('documents.default_header', '', true);
-            if (strlen($default_header) && is_readable($default_header)) {
-                $header = $SMARTY->fetch($default_header);
-            } else {
-                $header = '';
-            }
-
-            $default_footer = ConfigHelper::getConfig('documents.default_footer', '', true);
-            if (strlen($default_footer) && is_readable($default_footer)) {
-                $footer = $SMARTY->fetch($default_footer);
-            } else {
-                $footer = '';
-            }
-
-            $SMARTY->assign(compact('company_logo', 'company_logo_width', 'project_logo', 'date_format', 'header', 'footer'));
-
-            $outputs = array();
-
-            // run template engine
-            if (is_readable($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
-                . $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php')) {
-                $SMARTY->AddTemplateDir(
-                    array(
-                        'documentadd' => $doc_dir . DIRECTORY_SEPARATOR . 'templates'
-                            . DIRECTORY_SEPARATOR . $engine['name']
-                    )
+                $hook_data = $LMS->executeHook(
+                    'documentadd_prepare_data',
+                    compact('customer', 'division', 'location_address', 'recipient_address', 'document', 'engine')
                 );
-                require_once($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
-                    . $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php');
-            } else {
-                $SMARTY->AddTemplateDir(
-                    array(
-                        'documentadd' => DOC_DIR . DIRECTORY_SEPARATOR . 'templates'
-                            . DIRECTORY_SEPARATOR . 'default'
-                    )
-                );
-                require_once(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
-                    . 'default' . DIRECTORY_SEPARATOR . 'engine.php');
-            }
+                if (!empty($hook_data) && is_array($hook_data)) {
+                    extract($hook_data);
+                }
 
-            if (empty($outputs) && !empty($output)) {
-                $outputs[] = array(
-                    'filename' => $engine['output'],
-                    'content-type' => $engine['content_type'],
-                    'output' => $output
-                );
-            }
+                $SMARTY->assign(array(
+                    'customer' => $customer,
+                    'customerinfo' => $customer,
+                    'division' => $division,
+                    'location_address' => $location_address,
+                    'recipient_address' => $recipient_address,
+                    'document' => $document,
+                    'engine' => $engine,
+                ));
 
-            if (!empty($outputs)) {
-                foreach ($outputs as $output) {
-                    $file = tempnam(sys_get_temp_dir(), 'lms-document-attachment-');
-                    file_put_contents($file, $output['output']);
+                ConfigHelper::setFilter($customer['divisionid'], Auth::GetCurrentUser());
 
-                    $files[] = array(
-                        'tmpname' => $file,
-                        'filename' => $output['filename'],
-                        'name' => $output['filename'],
-                        'type' => $output['content-type'],
-                        'md5sum' => md5_file($file),
-                        'attachmenttype' => 1,
+                $company_logo = ConfigHelper::getConfig('documents.company_logo', '', true);
+                if (strlen($company_logo) && strpos($company_logo, DIRECTORY_SEPARATOR) !== 0) {
+                    $company_logo = SYS_DIR . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . $company_logo;
+                }
+
+                $company_logo_width = intval(ConfigHelper::getConfig('documents.company_logo_width', '150'));
+
+                $project_logo = ConfigHelper::getConfig('documents.project_logo', '', true);
+                if (strlen($project_logo) && strpos($project_logo, DIRECTORY_SEPARATOR) !== 0) {
+                    $project_logo = SYS_DIR . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . $project_logo;
+                }
+
+                $date_format = ConfigHelper::getConfig('documents.date_format', 'd.m.Y');
+
+                $default_header = ConfigHelper::getConfig('documents.default_header', '', true);
+                if (strlen($default_header) && is_readable($default_header)) {
+                    $header = $SMARTY->fetch($default_header);
+                } else {
+                    $header = '';
+                }
+
+                $default_footer = ConfigHelper::getConfig('documents.default_footer', '', true);
+                if (strlen($default_footer) && is_readable($default_footer)) {
+                    $footer = $SMARTY->fetch($default_footer);
+                } else {
+                    $footer = '';
+                }
+
+                $SMARTY->assign(compact('company_logo', 'company_logo_width', 'project_logo', 'date_format', 'header',
+                    'footer'));
+
+                $outputs = array();
+
+                // run template engine
+                if (is_readable($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+                    . $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php')) {
+                    $SMARTY->AddTemplateDir(
+                        array(
+                            'documentadd' => $doc_dir . DIRECTORY_SEPARATOR . 'templates'
+                                . DIRECTORY_SEPARATOR . $engine['name']
+                        )
+                    );
+                    require_once($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+                        . $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php');
+                } else {
+                    $SMARTY->AddTemplateDir(
+                        array(
+                            'documentadd' => DOC_DIR . DIRECTORY_SEPARATOR . 'templates'
+                                . DIRECTORY_SEPARATOR . 'default'
+                        )
+                    );
+                    require_once(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+                        . 'default' . DIRECTORY_SEPARATOR . 'engine.php');
+                }
+
+                if (empty($outputs) && !empty($output)) {
+                    $outputs[] = array(
+                        'filename' => $engine['output'],
+                        'content-type' => $engine['content_type'],
+                        'output' => $output
                     );
                 }
-            } else if (empty($error)) {
-                $error['templ'] = trans('Problem during file generation!');
+
+                if (!empty($outputs)) {
+                    foreach ($outputs as $output) {
+                        $file = tempnam(sys_get_temp_dir(), 'lms-document-attachment-');
+                        file_put_contents($file, $output['output']);
+
+                        $files[] = array(
+                            'tmpname' => $file,
+                            'filename' => $output['filename'],
+                            'name' => $output['filename'],
+                            'type' => $output['content-type'],
+                            'md5sum' => md5_file($file),
+                            'attachmenttype' => 1,
+                        );
+                    }
+                } else {
+                    if (empty($error)) {
+                        $error['templ'] = trans('Problem during file generation!');
+                    }
+                }
             }
         }
     }
