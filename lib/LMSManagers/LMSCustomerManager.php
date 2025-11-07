@@ -1166,6 +1166,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         JOIN netdevices ON nodes.netdev = netdevices.id
                         WHERE nodes.ownerid = c.id)';
                     break;
+                case 86:
+                    $state_conditions[] = 'EXISTS (SELECT 1 FROM assignments WHERE customerid = c.id AND recipient_address_id IS NOT NULL)';
+                    break;
                 default:
                     if ($state_item > 0 && $state_item < 50 && intval($state_item)) {
                         $customer_statuses[] = intval($state_item);
@@ -1295,6 +1298,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 break;
             case -16:
                 $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended <> 0 AND a.datefrom <= ?NOW? AND (a.dateto = 0 OR a.dateto >= ?NOW?)';
+                break;
+            case -17:
+                $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.customerid = c.id AND a.recipient_address_id IS NOT NULL';
                 break;
             default:
                 if ($as > 0) {
