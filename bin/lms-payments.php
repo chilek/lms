@@ -96,6 +96,7 @@ $comment_by_service_types = array(
     SERVICE_TV => ConfigHelper::getConfig($config_section . '.comment_tv', $comment),
     SERVICE_TRANSMISSION => ConfigHelper::getConfig($config_section . '.comment_transmission', $comment),
 );
+$comment_phone_no_numbers = ConfigHelper::getConfig($config_section . '.comment_phone_no_numbers', $comment);
 $backward_comment = ConfigHelper::getConfig($config_section . '.backward_comment', $comment);
 $backward_comment_by_service_types = array(
     SERVICE_OTHER => ConfigHelper::getConfig($config_section . '.backward_comment_other', $comment_by_service_types[SERVICE_OTHER]),
@@ -106,6 +107,7 @@ $backward_comment_by_service_types = array(
     SERVICE_TV => ConfigHelper::getConfig($config_section . '.backward_comment_tv', $comment_by_service_types[SERVICE_TV]),
     SERVICE_TRANSMISSION => ConfigHelper::getConfig($config_section . '.backward_comment_transmission', $comment_by_service_types[SERVICE_TRANSMISSION]),
 );
+$backward_comment_phone_no_numbers = ConfigHelper::getConfig($config_section . '.backward_comment_phone_no_numbers', $backward_comment);
 $backward_on_the_last_day = ConfigHelper::checkConfig($config_section . '.backward_on_the_last_day');
 $s_comment = ConfigHelper::getConfig($config_section . '.settlement_comment', $comment);
 $s_comment_by_service_types = array(
@@ -117,6 +119,7 @@ $s_comment_by_service_types = array(
     SERVICE_TV => ConfigHelper::getConfig($config_section . '.settlement_comment_tv', $comment_by_service_types[SERVICE_TV]),
     SERVICE_TRANSMISSION => ConfigHelper::getConfig($config_section . '.settlement_comment_transmission', $comment_by_service_types[SERVICE_TRANSMISSION]),
 );
+$s_comment_phone_no_numbers = ConfigHelper::getConfig($config_section . '.settlement_comment_phone_no_numbers', $s_comment);
 $s_backward_comment = ConfigHelper::getConfig($config_section . '.settlement_backward_comment', $s_comment);
 $s_backward_comment_by_service_types = array(
     SERVICE_OTHER => ConfigHelper::getConfig($config_section . '.settlement_backward_comment_other', $s_comment_by_service_types[SERVICE_OTHER]),
@@ -127,7 +130,7 @@ $s_backward_comment_by_service_types = array(
     SERVICE_TV => ConfigHelper::getConfig($config_section . '.settlement_backward_comment_tv', $s_comment_by_service_types[SERVICE_TV]),
     SERVICE_TRANSMISSION => ConfigHelper::getConfig($config_section . '.settlement_backward_comment_transmission', $s_comment_by_service_types[SERVICE_TRANSMISSION]),
 );
-
+$s_backward_comment_phone_no_numbers = ConfigHelper::getConfig($config_section . '.settlement_backward_comment_phone_no_numbers', $s_backward_comment);
 $suspension_description = ConfigHelper::getConfig($config_section . '.suspension_description', '');
 $suspension_percentage = ConfigHelper::getConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0));
 $unit_name = trans(ConfigHelper::getConfig($config_section . '.default_unit_name'));
@@ -1505,9 +1508,25 @@ foreach ($assigns as $assign) {
         $desc = $assign['name'];
     } else {
         if (empty($assign['backwardperiod'])) {
-            $desc = isset($comment_by_service_types[$assign['tarifftype']]) ? $comment_by_service_types[$assign['tarifftype']] : $comment;
+            if ($assign['tarifftype'] == SERVICE_PHONE) {
+                if (empty($assign['phones'])) {
+                    $desc = $comment_phone_no_numbers;
+                } else {
+                    $desc = isset($comment_by_service_types[$assign['tarifftype']]) ? $comment_by_service_types[$assign['tarifftype']] : $comment;
+                }
+            } else {
+                $desc = isset($comment_by_service_types[$assign['tarifftype']]) ? $comment_by_service_types[$assign['tarifftype']] : $comment;
+            }
         } else {
-            $desc = isset($backward_comment_by_service_types[$assign['tarifftype']]) ? $backward_comment_by_service_types[$assign['tarifftype']] : $backward_comment;
+            if ($assign['tarifftype'] == SERVICE_PHONE) {
+                if (empty($assign['phones'])) {
+                    $desc = $backward_comment_phone_no_numbers;
+                } else {
+                    $desc = isset($backward_comment_by_service_types[$assign['tarifftype']]) ? $backward_comment_by_service_types[$assign['tarifftype']] : $backward_comment;
+                }
+            } else {
+                $desc = isset($backward_comment_by_service_types[$assign['tarifftype']]) ? $backward_comment_by_service_types[$assign['tarifftype']] : $backward_comment;
+            }
         }
     }
 
@@ -2351,10 +2370,27 @@ foreach ($assigns as $assign) {
                 //print "price: $price diffdays: $diffdays alldays: $alldays settl_price: $partial_price" . PHP_EOL;
 
                 if (empty($assign['backwardperiod'])) {
-                    $sdesc = isset($s_comment_by_service_types[$assign['tarifftype']]) ? $s_comment_by_service_types[$assign['tarifftype']] : $s_comment;
+                    if ($assign['tarifftype'] == SERVICE_PHONE) {
+                        if (empty($assign['phones'])) {
+                            $sdesc = $s_comment_phone_no_numbers;
+                        } else {
+                            $sdesc = isset($s_comment_by_service_types[$assign['tarifftype']]) ? $s_comment_by_service_types[$assign['tarifftype']] : $s_comment;
+                        }
+                    } else {
+                        $sdesc = isset($s_comment_by_service_types[$assign['tarifftype']]) ? $s_comment_by_service_types[$assign['tarifftype']] : $s_comment;
+                    }
                 } else {
-                    $sdesc = isset($s_backward_comment_by_service_types[$assign['tarifftype']]) ? $s_backward_comment_by_service_types[$assign['tarifftype']] : $s_backward_comment;
+                    if ($assign['tarifftype'] == SERVICE_PHONE) {
+                        if (empty($assign['phones'])) {
+                            $sdesc = $s_backward_comment_phone_no_numbers;
+                        } else {
+                            $sdesc = isset($s_backward_comment_by_service_types[$assign['tarifftype']]) ? $s_backward_comment_by_service_types[$assign['tarifftype']] : $s_backward_comment;
+                        }
+                    } else {
+                        $sdesc = isset($s_backward_comment_by_service_types[$assign['tarifftype']]) ? $s_backward_comment_by_service_types[$assign['tarifftype']] : $s_backward_comment;
+                    }
                 }
+
                 $sdesc = str_replace(
                     array(
                         '%type',
