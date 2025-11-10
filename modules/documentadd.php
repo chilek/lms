@@ -342,8 +342,9 @@ if (isset($_POST['document'])) {
                     $footer = '';
                 }
 
-                $SMARTY->assign(compact('company_logo', 'company_logo_width', 'project_logo', 'date_format', 'header',
-                    'footer'));
+                $SMARTY->assign(
+                    compact('company_logo', 'company_logo_width', 'project_logo', 'date_format', 'header', 'footer')
+                );
 
                 $outputs = array();
 
