@@ -268,7 +268,10 @@ if (isset($_POST['document'])) {
                     . $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.js')) {
                     $script_result = '<script src="' . $_SERVER['REQUEST_URI'] . '&template=' . $engine['name'] . '"></script>';
                 }
+            } else {
+                $result = $script_result = '';
             }
+
             // get plugin content
             $SMARTY->assign('plugin_result', $result);
             $SMARTY->assign('script_result', $script_result);
