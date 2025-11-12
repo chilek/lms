@@ -503,6 +503,7 @@ if (isset($_POST['nodedata'])) {
         }
     }
 
+    $nodedata['info'] = ConfigHelper::getConfig('nodes.default_info', '', true);
     // check if customer address is selected or if default location address exists
     // if both are not fullfilled we generate user interface warning
 /*
