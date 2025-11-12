@@ -1343,6 +1343,8 @@ version 27.0 (2021-08-20):
     and 'finances.history_item_description_format' (default: '%comment') configuration variables support
     added as default values for invoice send and notification specific configuration variables [chilan]
   - enhancement: 'with recipient address' customer assignment filter added [chilan]
+  - improvement: 'nodes.default_info' with empty default value specifies info field value of node add
+    form during its start [chilan]
 
 version 26.0 (2020-12-15):
 
