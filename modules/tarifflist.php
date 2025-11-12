@@ -63,7 +63,7 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
             $sqlord = " ORDER BY t.upceil $direction, t.name";
             break;
         case 'count':
-            $sqlord = " ORDER BY customerscount $direction, t.name";
+            $sqlord = " ORDER BY (CASE WHEN customerscount IS NULL THEN 0 ELSE customerscount END) $direction, t.name";
             break;
         default:
             $sqlord = " ORDER BY t.name, t.value DESC";
