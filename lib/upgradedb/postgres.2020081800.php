@@ -24,7 +24,6 @@
 define('CCONSENT_MAILINGNOTICE_2020081800', 3);
 define('CCONSENT_SMSNOTICE', 8);
 
-$this->BeginTrans();
 
 $this->Execute(
     "UPDATE uiconfig SET value = REPLACE(value, ?, ?) WHERE section = ? AND var = ?",
@@ -145,7 +144,3 @@ $this->Execute("
             LEFT JOIN customerconsentview cc ON cc.customerid = c.id
         WHERE c.type < 2
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020081800', 'dbversion'));
-
-$this->CommitTrans();

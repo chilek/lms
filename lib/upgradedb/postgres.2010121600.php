@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     DROP VIEW customersview;
@@ -113,7 +112,3 @@ $this->Execute("
         FROM nodes n
         JOIN macs m ON (n.id = m.nodeid);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010121600', 'dbversion'));
-
-$this->CommitTrans();

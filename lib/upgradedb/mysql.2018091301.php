@@ -21,9 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE netradiosectors ADD COLUMN secret varchar(64) DEFAULT NULL");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018091301', 'dbversion'));
-
-$this->CommitTrans();
