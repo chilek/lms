@@ -325,7 +325,7 @@ form.lms-ui-quick-search {
 	.lms-ui-quick-search-icon,
 	img {
 		cursor: pointer;
-		.lms-ui-no-user-select;
+		.lms-ui-no-user-select();
 	}
 
 	@media screen and (max-width: @mobile-max-width) {
@@ -517,7 +517,7 @@ label {
 	cursor: pointer;
 	white-space: nowrap;
 
-	.lms-ui-no-user-select;
+	.lms-ui-no-user-select();
 
 	> input[type="checkbox"] {
 		margin-right: 0.6em;
@@ -894,7 +894,7 @@ IMG		{ vertical-align: middle; border: 0; }
 	padding: 0 0;
 	margin-top: 0;
 	margin-bottom: 0;
-	.lms-ui-no-user-select;
+	.lms-ui-no-user-select();
 	i {
 		text-align: center;
 		&.fas,
@@ -1152,121 +1152,121 @@ IMG		{ vertical-align: middle; border: 0; }
 				color: black;
 
 				&.blend {
-					.blend;
+					.blend();
 				}
 				&.red {
-					.red;
+					.red();
 				}
 				&.lms-ui-suggestion-customer-status-awaiting::before {
-					.lms-ui-suggestion-icon;
+					.lms-ui-suggestion-icon();
 					background-image: url('@{lms-img-path}/wait.gif');
 				}
 				&.lms-ui-suggestion-customer-status-interested::before {
-					.lms-ui-suggestion-icon;
+					.lms-ui-suggestion-icon();
 					background-image: url('@{lms-img-path}/unk.gif');
 				}
 				&.lms-ui-suggestion-customer-status-disconnected::before {
-					.lms-ui-suggestion-icon;
+					.lms-ui-suggestion-icon();
 					background-image: url('@{lms-img-path}/node_off.gif');
 				}
 				&.lms-ui-suggestion-customer-status-debtcollection::before {
-					.lms-ui-suggestion-icon;
+					.lms-ui-suggestion-icon();
 					background-image: url('@{lms-img-path}/money.gif');
 				}
 				&.lms-ui-suggestion-node-status-unknown::before {
-					.lms-ui-suggestion-icon;
+					.lms-ui-suggestion-icon();
 					background-image: url('@{lms-img-path}/node_unk.gif');
 				}
 				&.lms-ui-suggestion-node-status-online::before {
-					.lms-ui-suggestion-icon;
+					.lms-ui-suggestion-icon();
 					background-image: url('@{lms-img-path}/node_on.gif');
 				}
 				&.lms-ui-suggestion-node-status-offline::before {
-					.lms-ui-suggestion-icon;
+					.lms-ui-suggestion-icon();
 					background-image: url('@{lms-img-path}/node_off.gif');
 				}
 				&.lms-ui-suggestion-netdevice::before {
-					.lms-ui-suggestion-icon;
+					.lms-ui-suggestion-icon();
 					background-image: url('@{lms-img-path}/netdev.gif');
 				}
 				&.lms-ui-suggestion-wireless::before {
-					.lms-ui-suggestion-icon;
+					.lms-ui-suggestion-icon();
 					background-image: url('@{lms-img-path}/wireless.gif');
 				}
 
 				&.lms-ui-suggestion-wireless-uni {
 					&::before {
-						.lms-ui-suggestion-icon;
+						.lms-ui-suggestion-icon();
 						background-image: url('@{lms-img-path}/wireless.gif');
 					}
 					color: teal;
 				}
 				&.lms-ui-suggestion-wireless-nni {
 					&::before {
-						.lms-ui-suggestion-icon;
+						.lms-ui-suggestion-icon();
 						background-image: url('@{lms-img-path}/wireless.gif');
 					}
 					color: brown;
 				}
 				&.lms-ui-suggestion-network::before {
-					.lms-ui-suggestion-icon;
+					.lms-ui-suggestion-icon();
 					background-image: url('@{lms-img-path}/network.gif');
 				}
 				&.lms-ui-suggestion-netnode::before {
-					.lms-ui-suggestion-icon;
+					.lms-ui-suggestion-icon();
 					background-image: url('@{lms-img-path}/netnode.png');
 				}
 				&.lms-ui-suggestion-customer-status-connected::before {
-					.lms-ui-suggestion-icon;
+					.lms-ui-suggestion-icon();
 					background-image: url('@{lms-img-path}/customer.gif');
 				}
 				&.lms-ui-suggestion-ticket-state-new {
-					.red;
+					.red();
 					&::before {
-						.lms-ui-suggestion-icon;
+						.lms-ui-suggestion-icon();
 						background-image: url('@{lms-img-path}/new.gif');
 					}
 				}
 				&.lms-ui-suggestion-ticket-state-open {
 					&::before {
-						.lms-ui-suggestion-icon;
+						.lms-ui-suggestion-icon();
 						background-image: url('@{lms-img-path}/open.gif');
 					}
 				}
 				&.lms-ui-suggestion-ticket-state-resolved {
-					.blend;
+					.blend();
 					&::before {
-						.lms-ui-suggestion-icon;
+						.lms-ui-suggestion-icon();
 						background-image: url('@{lms-img-path}/resolved.gif');
 					}
 				}
 				&.lms-ui-suggestion-ticket-state-dead {
 					&::before {
-						.lms-ui-suggestion-icon;
+						.lms-ui-suggestion-icon();
 						background-image: url('@{lms-img-path}/dead.gif');
 					}
 				}
 				&.lms-ui-suggestion-ticket-state-scheduled {
 					&::before {
-						.lms-ui-suggestion-icon;
+						.lms-ui-suggestion-icon();
 						background-image: url('@{lms-img-path}/calendar.gif');
 					}
 				}
 				&.lms-ui-suggestion-ticket-state-waiting {
 					&::before {
-						.lms-ui-suggestion-icon;
+						.lms-ui-suggestion-icon();
 						background-image: url('@{lms-img-path}/calendar.gif');
 					}
 				}
 				&.lms-ui-suggestion-ticket-state-verified {
 					&::before {
-						.lms-ui-suggestion-icon;
+						.lms-ui-suggestion-icon();
 						background-image: url('@{lms-img-path}/verifier.png');
 					}
 				}
 				&.lms-ui-suggestion-phone {
 					&::before {
-						.lms-ui-suggestion-icon;
+						.lms-ui-suggestion-icon();
 						background-image: url('@{lms-img-path}/phone.gif');
 					}
 				}
@@ -1307,13 +1307,13 @@ IMG		{ vertical-align: middle; border: 0; }
 }
 
 .lms-ui-assignment-not-commited {
-	.lms-ui-crossed;
+	.lms-ui-crossed();
 }
 
 .lms-ui-document-closed {
 	& > td:not(:last-child),
 	& .lms-ui-tab-table-column:not(.buttons) {
-		.blend;
+		.blend();
 	}
 }
 
@@ -1434,7 +1434,7 @@ IMG		{ vertical-align: middle; border: 0; }
 }
 
 .lms-ui-multi-check-all {
-	.lms-ui-no-user-select;
+	.lms-ui-no-user-select();
 }
 
 table.lmsbox {
@@ -2121,7 +2121,7 @@ table.dataTable {
 }
 
 .lms-ui-menu-item-icon {
-	.lms-ui-icon-fixed-width;
+	.lms-ui-icon-fixed-width();
 	font-size: 1.6em;
 	vertical-align: middle;
 	cursor: grab;
@@ -2396,7 +2396,7 @@ div.lms-ui-tab-container {
 				align-items: center;
 			}
 			i {
-				.fa-fw;
+				.fa-fw();
 				&.lms-ui-sortable-handle {
 					margin-right: 0.2em;
 				}
@@ -2562,8 +2562,8 @@ div.lms-ui-tab-container {
 			padding-top: 1em;
 			padding-bottom: 1em;
 			> i {
-				.lms-ui-icon-reload;
-				.fa-spin;
+				.lms-ui-icon-reload();
+				.fa-spin();
 				-webkit-animation: fa-spin 0.75s infinite linear !important;
 				animation: fa-spin 0.75s infinite linear !important;
 				&:before {
@@ -2578,8 +2578,8 @@ div.lms-ui-tab-container {
 }
 
 i.lms-ui-hourglass {
-	.lms-ui-icon-reload;
-	.fa-spin;
+	.lms-ui-icon-reload();
+	.fa-spin();
 	-webkit-animation: fa-spin 0.75s infinite linear !important;
 	animation: fa-spin 0.75s infinite linear !important;
 	&:before {
@@ -2793,9 +2793,9 @@ span.division-context {
 }
 
 .lms-ui-multiline-box {
-	.line-break;
-	.lucid;
-	.fall;
+	.line-break();
+	.lucid();
+	.fall();
 	padding: 0.5em;
 	border: @dotted-line;
 	border-style: dashed;
