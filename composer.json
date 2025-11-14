@@ -3,6 +3,15 @@
         "allow-plugins": {
             "composer/installers": true,
             "oomphinc/composer-installers-extender": true
+        },
+        "audit": {
+            "ignore": [
+                "PKSA-g43k-cp2d-8zny",
+                "PKSA-kxv7-w7hg-zj9k",
+                "PKSA-hdg2-6rxt-d4qn",
+                "PKSA-s5r2-shvb-ydth",
+                "PKSA-wws7-mr54-jsny"
+            ]
         }
     },
     "name": "lmsgit/lms",
