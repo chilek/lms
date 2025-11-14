@@ -6,10 +6,6 @@
         },
         "audit": {
             "ignore": [
-                "PKSA-g43k-cp2d-8zny",
-                "PKSA-kxv7-w7hg-zj9k",
-                "PKSA-hdg2-6rxt-d4qn",
-                "PKSA-s5r2-shvb-ydth",
                 "PKSA-wws7-mr54-jsny"
             ]
         }
@@ -136,7 +132,7 @@
         "tecnickcom/tc-lib-barcode": "^1",
         "zenorocha/clipboardjs": "^2.0",
         "harvesthq/chosen": "^1.8",
-        "tinymce/tinymce": "^5",
+        "tinymce/tinymce": "^8",
         "ccampbell/mousetrap": "^1",
         "westonganger/input-autogrow": "^1",
         "ivkremer/jquery-simple-combobox": "^1",

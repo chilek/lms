@@ -2182,7 +2182,7 @@ $(function() {
 			selector: '#' + id,
 			deprecation_warnings: false,
 			init_instance_callback: function (ed) {
-				var textarea = $(ed.settings.selector);
+				var textarea = $(ed.getElement());
 				if (textarea.hasClass('lms-ui-error') || textarea.hasClass('alert')) {
 					textarea.siblings('.tox-tinymce').addClass('lms-ui-error');
 				} else if (textarea.hasClass('lms-ui-warning')) {
@@ -2205,7 +2205,8 @@ $(function() {
 			// TinyMCE 5
 			skin_url: 'css/tinymce5',
 //			content_css: 'css/tinymce5/content.min.css',
-			plugins: "preview,autoresize,fullscreen,searchreplace,table,image,imagetools,link,anchor,autosave,paste",
+			license_key: 'gpl',
+			plugins: "preview,autoresize,fullscreen,searchreplace,table,image,link,anchor,autosave",
 			//fullscreen_native: true,
 			// #########
 			toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link anchor image ' +
