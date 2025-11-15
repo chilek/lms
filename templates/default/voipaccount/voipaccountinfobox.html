@@ -60,7 +60,7 @@
                                         {trans("Password:")}
                                     </td>
                                     <td class="nobr">
-                                        {if ConfigHelper::checkPrivilege('hide_voip_passwords')}{'*'|str_repeat:8}{else}{$voipaccountinfo.passwd}{/if}
+                                        {if !ConfigHelper::checkConfig('privileges.hide_voip_passwords')}{$voipaccountinfo.passwd}{else}{'*'|str_repeat:8}{/if}
                                     </td>
                                 </tr>
                                 {/block}
