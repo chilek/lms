@@ -2108,6 +2108,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                         n.id, n.name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, n.netdev, nd.name as netdev_name,
                                         n.linktype, n.linktechnology, n.linkspeed,
                                         ipaddr_pub, n.authtype, inet_ntoa(ipaddr_pub) AS ip_pub,
+                                        n.login,
                                         passwd, access, warning, info, n.ownerid, lastonline, n.location, n.address_id,
                                         (CASE WHEN addr.city_id IS NOT NULL THEN 1 ELSE 0 END) AS teryt,
                                         (SELECT COUNT(*)
