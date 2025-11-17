@@ -1345,6 +1345,8 @@ version 27.0 (2021-08-20):
   - enhancement: 'with recipient address' customer assignment filter added [chilan]
   - improvement: 'nodes.default_info' with empty default value specifies info field value of node add
     form during its start [chilan]
+  - enhancement: 'nodes.session_state_helper' (empty default value) controls if session state info button
+    is visible near node last nas session info [chilan]
 
 version 26.0 (2020-12-15):
 
