@@ -6265,3 +6265,5 @@ $_LANG['customer has not assigned any mobile phones with \'documents\' flag'] = 
 $_LANG['document encryption password: $a $b'] = 'hasło szyfrujące dokument: $a $b';
 
 $_LANG['with recipient address'] = 'z adresem odbiorcy';
+
+$_LANG['Error during communication with NAS device!'] = 'Błąd podczas komunikacji z urządzeniem NAS!';

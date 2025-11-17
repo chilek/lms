@@ -142,6 +142,11 @@ if ($authtype != 0) {
     $nodeauthtype['eap'] = ($authtype & 4);
 }
 
+if (!isset($resource_tabs['nodesessions']) || $resource_tabs['nodesessions']) {
+    $nodesessions = $LMS->GetNodeSessions($nodeid);
+    $SMARTY->assign('nodesessions', $nodesessions);
+}
+
 $LMS->InitXajax();
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'nodexajax.inc.php');
 
@@ -164,9 +169,6 @@ $SMARTY->assign(array(
     'linkspeed' => intval(ConfigHelper::getConfig('phpui.default_linkspeed', 100000)),
 ));
 
-if (!isset($resource_tabs['nodesessions']) || $resource_tabs['nodesessions']) {
-    $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($nodeid));
-}
 $SMARTY->assign('netdevices', $netdevices);
 $SMARTY->assign('nodeauthtype', $nodeauthtype);
 if (!isset($resource_tabs['nodegroups']) || $resource_tabs['nodegroups']) {
