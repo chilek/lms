@@ -42,6 +42,10 @@
         width: 10em;
     }
 
+    .phone-table .phone-info {
+        margin-left: 0.5em;
+    }
+
 </style>
 
 <form name="editvoipaccount" id="editvoipaccount" method="post" action="?m=voipaccountedit&id={$voipaccountinfo.id}">
@@ -108,6 +112,7 @@
                                                 <table id="phone_numbers_table" class="phone-table">
                                                     <tr>
                                                         <td>
+                                                            {strip}
                                                             <input type="tel" name="voipaccountedit[numbers][0][phone]"
                                                                 value="{$voipaccountinfo.numbers[0].phone}"
                                                                 placeholder="{trans("<!phone>number")}"
@@ -117,6 +122,7 @@
                                                                 placeholder="{trans("description")}"
                                                                 autocomplete="off"
                                                                 {tip class="phone-info" trigger="phone-info-0"}>
+                                                            {/strip}
                                                         </td>
                                                         <td>
                                                             <div>
@@ -126,19 +132,21 @@
                                                         </td>
                                                     </tr>
 
-                                                    {if isset($voipaccountinfo['numbers'])}
+                                                    {if !empty($voipaccountinfo['numbers'])}
                                                         {foreach $voipaccountinfo['numbers'] as $k => $v}
-                                                            {if $v@first || $v.phone==''}{continue}{/if}
+                                                            {if $v@first || $v.phone == ''}{continue}{/if}
                                                             <tr class="row">
                                                                 <td>
+                                                                    {strip}
                                                                     <input type="tel" name="voipaccountedit[numbers][{$k}][phone]"
                                                                         value="{$v.phone}" placeholder="{trans("<!phone>number")}"
-                                                                        {tip trigger="phone-number-{$k}"}>
+                                                                        {tip class="phone-number" trigger="phone-number-{$k}"}>
                                                                     <input type="search" name="voipaccountedit[numbers][{$k}][info]"
                                                                         value="{$v.info|default:""|escape}"
-                                                                        class="phone-info" placeholder="{trans("description")}"
+                                                                        placeholder="{trans("description")}"
                                                                         autocomplete="off"
-                                                                        {tip trigger="phone-info-{$k}"}>
+                                                                        {tip class="phone-info" trigger="phone-info-{$k}"}>
+                                                                    {/strip}
                                                                 </td>
                                                                 <td><div>{$pool_number_select} {$remove_number}</div></td>
                                                             </tr>
@@ -378,8 +386,8 @@
         $('#add_number').on('click', function () {
             var table = $('#phone_numbers_table');
             var i = table.find('[type="tel"]').length;
-            var phone_number_input = '<input type="tel" name="voipaccountedit[numbers][' + i +'][phone]" class="phone-number" placeholder="{trans("<!phone>number")}" {tip trigger="phone-number"}>' +
-                '<input type="search" name="voipaccountedit[numbers][' + i + '][info]" class="phone-info" placeholder="{trans("description")}" autocomplete="off" {tip trigger="phone-info"}>';
+            var phone_number_input = '<input type="tel" name="voipaccountedit[numbers][' + i +'][phone]" placeholder="{trans("<!phone>number")}" {tip class="phone-number" trigger="phone-number"}>' +
+                '<input type="search" name="voipaccountedit[numbers][' + i + '][info]" placeholder="{trans("description")}" autocomplete="off" {tip class="phone-info" trigger="phone-info"}>';
             table.append('<tr class="row"><td>' + phone_number_input + '</td><td><div>' + pool_number_select + ' ' + remove_number + '</div></td></tr>');
             var numbers = table.find('.remove-number');
             numbers.toggleClass('lms-ui-visibility-hidden', numbers.length < 2);

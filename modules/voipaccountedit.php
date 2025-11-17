@@ -141,6 +141,7 @@ if (isset($_POST['voipaccountedit'])) {
         $voipaccountedit['cost_limit'] = $voipaccountinfo['cost_limit'];
     }
 
+    $voipaccountinfo['numbers'] = $voipaccountedit['numbers'];
     $voipaccountinfo['flags']   = $voipaccountedit['flags'] = $flags;
     $voipaccountinfo['login']   = $voipaccountedit['login'] ?? null;
     $voipaccountinfo['passwd']  = $voipaccountedit['passwd'];
