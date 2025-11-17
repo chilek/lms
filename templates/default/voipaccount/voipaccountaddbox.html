@@ -60,7 +60,7 @@
                     {trans("Login:")}
                 </td>
                 <td>
-                    <input type="text" id="voip-login" name="voipaccountdata[login]" value="{$voipaccountdata.login}" maxlength="32" size="20" {tip text="Enter VoIP account login" trigger="login" bold=1}>
+                    <input type="text" id="voip-login" name="voipaccountdata[login]" value="{$voipaccountdata.login}" maxlength="32" size="20" {tip text="Enter VoIP account login" trigger="login" bold=1} required>
                 </td>
             </tr>
             {/block}
@@ -84,7 +84,7 @@
                                                     {trans("Password:")}
                                                 </td>
                                                 <td>
-                                                    <input type="{if ConfigHelper::checkPrivilege('hide_voip_passwords')}password{else}text{/if}" name="voipaccountdata[passwd]" value="{$voipaccountdata.passwd}" {tip text="Enter password" trigger="passwd"}>
+                                                    <input type="{if ConfigHelper::checkPrivilege('hide_voip_passwords')}password{else}text{/if}" name="voipaccountdata[passwd]" value="{$voipaccountdata.passwd}" {tip text="Enter password" trigger="passwd"} required>
                                                     <a href="#" id="genpasswd"  {tip text="Click to generate random password"}>&raquo;&raquo;&raquo;</a>
                                                 </td>
                                             </tr>
@@ -102,7 +102,7 @@
                                                                 <input type="tel" name="voipaccountdata[numbers][0][phone]"
                                                                     value="{$voipaccountdata.numbers[0].phone}"
                                                                     placeholder="{trans("<!phone>number")}"
-                                                                    {tip class="phone-number" trigger="phone-number-0"}>
+                                                                    {tip class="phone-number" trigger="phone-number-0"} required>
                                                                 <input type="search" name="voipaccountdata[numbers][0][info]"
                                                                     value="{$voipaccountdata.numbers[0].info|default:""|escape}"
                                                                     placeholder="{trans("description")}"
@@ -124,7 +124,7 @@
                                                                     <td>
                                                                         <input type="tel" name="voipaccountdata[numbers][{$k}][phone]"
                                                                             value="{$v.phone}" placeholder="{trans("<!phone>number")}"
-                                                                            {tip trigger="phone-number-{$k}"}>
+                                                                            {tip trigger="phone-number-{$k}"} required>
                                                                         <input type="search" name="voipaccountdata[numbers][{$k}][info]"
                                                                             value="{$v.info|default:""|escape}"
                                                                             class="phone-info" placeholder="{trans("description")}"
@@ -340,7 +340,8 @@
         $('#add_number').on('click', function () {
             var table = $('#phone_numbers_table');
             var i = table.find('[type="tel"]').length;
-            var phone_number_input = '<input type="tel" name="voipaccountdata[numbers][' + i +'][phone]" class="phone-number" placeholder="{trans("<!phone>number")}" {tip trigger="phone-number"}>' +
+            var phone_number_input = '<input type="tel" name="voipaccountdata[numbers][' + i +'][phone]"' +
+                ' class="phone-number" placeholder="{trans("<!phone>number")}" {tip trigger="phone-number"} required>' +
                 '<input type="search" name="voipaccountdata[numbers][' + i + '][info]" class="phone-info" placeholder="{trans("description")}" autocomplete="off" {tip trigger="phone-info"}>';
             table.append('<tr class="row"><td>' + phone_number_input + '</td><td><div>' + pool_number_select + ' ' + remove_number + '</div></td></tr>');
             var numbers = table.find('.remove-number');
