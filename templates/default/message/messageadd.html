@@ -131,8 +131,10 @@
 		var type = $('[name="message[type]"]:checked').val();
 
 		$('#' + data.subjectElem).val(data.subject);
-		if (tinyMCE.editors.length) {
-			tinyMCE.editors[0].setContent(data.message);
+
+		var editor = tinyMCE.get(0);
+		if (editor) {
+			editor.setContent(data.message);
 		}
 
 		var messageElem = $('textarea[name="message[' + data.messageElem + ']"]');

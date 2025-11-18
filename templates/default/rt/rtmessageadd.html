@@ -379,8 +379,9 @@
 			$('[name="message[subject]"]').val(Base64.decode(selected.attr('data-subject')));
 
 			var message = Base64.decode(selected.attr('data-message'));
-			if (tinyMCE.editors.length) {
-				tinyMCE.editors[0].setContent(message);
+			var editor = tinyMCE.get(0);
+			if (editor) {
+				editor.setContent(message);
 			}
 			$('[name="message[body]"]').val(message);
 		});

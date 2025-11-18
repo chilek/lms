@@ -49,11 +49,13 @@
 	}
 
 	function messageTemplateReceived(message) {
-		if (tinyMCE.editors.length) {
-			tinyMCE.editors[0].setContent(message);
+		var editor = tinyMCE.get(0);
+		if (editor) {
+			editor.setContent(message);
 			xjx.$('message').value = message;
-		} else
+		} else {
 			xjx.$('message').value = message;
+		}
 		xjx.$('msgtmplid').disabled = false;
 	}
 //-->
