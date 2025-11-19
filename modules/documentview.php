@@ -352,6 +352,8 @@ if (!empty($docids)) {
                     header('Content-Disposition: ' . (isset($_GET['save']) ? 'attachment' : 'inline') . '; filename="' . $filename . '.' . $extension . '"');
                 }
                 header('Pragma: public');
+
+                $output_filename = $filename . (empty($extension) ? '' : '.' . $extension);
             }
 
             header('Content-Type: ' . ($pdf ? 'application/pdf' : $list[0]['contenttype']));
@@ -598,6 +600,7 @@ if (!empty($docids)) {
 
                 if ($document_type == 'pdf') {
                     Utils::html2pdf(array(
+                        'title' => $output_filename ?? null,
                         'content' => $htmlbuffer,
                         'subject' => trans('Document'),
                         'margins' => $margins,
