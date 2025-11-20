@@ -1883,12 +1883,14 @@ class LMSSmartyPlugins
         if (!isset($scale)) {
             $scale = 1;
         }
+        $width = isset($params['width']) ? filter_var($params['width'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE) : null;
+        $height = isset($params['height']) ? filter_var($params['height'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE) : null;
         $color = $params['color'] ?? 'black';
         $padding = isset($params['padding']) && is_array($params['padding']) && count($params['padding']) == 4
             ? $params['padding']
             : array(0, 0, 0, 0);
 
-        $bobj = $barcode->getBarcodeObj($type, $transliterate ? iconv('UTF-8', 'ASCII//TRANSLIT', $text) : $text, $scale * -1, $scale * -1 * 30, $color, $padding);
+        $bobj = $barcode->getBarcodeObj($type, $transliterate ? iconv('UTF-8', 'ASCII//TRANSLIT', $text) : $text, $width ?? $scale * -1, $height ?? $scale * -1 * 30, $color, $padding);
 
         $img_element = '<img src="data:image/png;base64,' . base64_encode($bobj->getPngData()) . '">';
         if ($show_text) {
@@ -1898,5 +1900,52 @@ class LMSSmartyPlugins
         } else {
             return $img_element;
         }
+    }
+
+    public static function contactFunction($params, $template)
+    {
+        $content = $params['content'] ?? null;
+        $text = $params['text'] ?? null;
+        $type = $params['type'] ?? null;
+        $clipboard_button = !empty($params['clipboard_button']) && ConfigHelper::checkValue($params['clipboard_button']);
+        $qrcode_button = !empty($params['qrcode_button']) && ConfigHelper::checkValue($params['qrcode_button']);
+
+        if (!isset($content, $type)) {
+            return '';
+        }
+
+        if ($type & (CONTACT_LANDLINE | CONTACT_MOBILE | CONTACT_EMAIL)) {
+            if ($clipboard_button) {
+                $content .= self::iconFunction(
+                    array(
+                        'name' => 'copy',
+                        'class' => 'lms-ui-button-clipboard',
+                        'data_clipboard_text' => $text,
+                    ),
+                    $template
+                );
+            }
+
+            if ($qrcode_button) {
+                $content .= self::hintFunction(
+                    array(
+                        'icon' => 'qrcode',
+                        'text' => self::barcodeFunction(
+                            array(
+                                'type' => 'QRCODE',
+                                'text' => ($type & CONTACT_EMAIL ? 'mailto:' : 'tel:') . $text,
+                                'show_text' => false,
+                                'width' => -5,
+                                'height' => -5,
+                            ),
+                            $template
+                        ),
+                    ),
+                    $template
+                );
+            }
+        }
+
+        return $content;
     }
 }

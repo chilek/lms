@@ -574,10 +574,12 @@
 															<tr{if ($contact.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED} class="blend"{/if}>
 																<td class="customer-contact">
 																	<div>
-																		{if isset($properties.formatter)}{call_user_func($properties['formatter'], $contact)}{else}{$contact.contact|escape}{/if}
-																		{if $type == 'email' || $type == 'phone'}
-																			{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_text=$contact.contact}
+																		{if isset($properties.formatter)}
+																			{$text = call_user_func($properties.formatter, $contact)}
+																		{else}
+																			{$text = $contact.contact|escape}
 																		{/if}
+																		{contact type=$contact.type content=$text text=$contact.contact clipboard_button=true qrcode_button=true}
 																		{if $contact.typestr}[{$contact.typestr}]{/if}
 																		{if $contact.name} ({$contact.name|trunescape:40}){/if}
 																	</div>
