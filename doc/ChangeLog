@@ -1347,6 +1347,8 @@ version 27.0 (2021-08-20):
     form during its start [chilan]
   - enhancement: 'nodes.session_state_helper' (empty default value) controls if session state info button
     is visible near node last nas session info [chilan]
+  - enhancement: qr-code icon buttons near phone numers and e-mail addresses to ease their uses
+    in mobile devices [chilan]
 
 version 26.0 (2020-12-15):
 
