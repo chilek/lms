@@ -1349,8 +1349,8 @@ version 27.0 (2021-08-20):
     is visible near node last nas session info [chilan]
   - enhancement: qr-code icon buttons near phone numers and e-mail addresses to ease their uses
     in mobile devices [chilan]
-  - enhancement: configuration variable 'messages.allowed_customer_status' with default 'connected'
-    and 'debt-collection' statuses limits customers to which messages are sent from messageadd form [chilan]
+  - enhancement: configuration variable 'messages.allowed_customer_status' with default all statuses
+    allowed limits customers to which messages are sent from messageadd form [chilan]
 
 version 26.0 (2020-12-15):
 
