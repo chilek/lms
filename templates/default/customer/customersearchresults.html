@@ -69,7 +69,7 @@
     </THEAD>
     <TBODY>
 	{foreach $customerlist as $customer}
-		<INPUT type="hidden" class="hiddenbtn customer-item" name="setwarnings[mcustomerid][]" value="{$customer.id}">
+		<INPUT type="hidden" class="hiddenbtn customer-item" name="setwarnings[mcustomerid][]" value="{$customer.id}" data-allowed-customer-status="{if empty($allowed_customer_status[$customer.status])}0{else}1{/if}">
 	{/foreach}
 	{section name=customerlist loop=$customerlist start=$start max=$pagelimit}
 	<TR class="highlight {if $customerlist[customerlist].deleted} lms-ui-resource-deleted{/if} {if $customerlist[customerlist].account && !$customerlist[customerlist].nodeac} blend{/if}" data-name="{$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}">
@@ -427,7 +427,7 @@
 
 			$('.customer-item').each(function() {
 				$(this).attr('name', $(this).attr('name').replace('setwarnings[mcustomerid]', 'customers'));
-			});
+			}).filter('[data-allowed-customer-status="0"]').prop('disabled', true);
 
 			$('#customersearchresults').attr('action', action).submit();
 		}

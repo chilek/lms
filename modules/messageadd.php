@@ -212,6 +212,18 @@ function GetRecipients($filter, $type = MSG_MAIL)
             break;
     }
 
+    $customer_status_condition = '';
+
+    if (empty($state) || $state >= 50) {
+        $allowed_customer_status = Utils::determineAllowedCustomerStatus(
+            ConfigHelper::getConfig('messages.allowed_customer_status', '')
+        );
+
+        if (!empty($allowed_customer_status)) {
+            $customer_status_condition = ' AND c.status IN (' . implode(', ', $allowed_customer_status) . ')';
+        }
+    }
+
     if ($state >= 50) {
         $state = 0;
     }
@@ -388,7 +400,8 @@ function GetRecipients($filter, $type = MSG_MAIL)
         .'WHERE deleted = ' . $deleted
         . ($consent ? ' AND ' . ($type == MSG_SMS || $type == MSG_ANYSMS ? 'c.smsnotice' : 'c.mailingnotice') . ' = 1' : '')
         . ($type == MSG_WWW ? ' AND c.id IN (SELECT DISTINCT ownerid FROM nodes)' : '')
-        . ($state != 0 ? ' AND c.status = ' . $state : '')
+        . (empty($state) ? '' : ' AND c.status = ' . $state)
+        . $customer_status_condition
         . (empty($division) ? '' : ' AND c.divisionid = ' . $division)
         . $document_condition
         . $network_condition

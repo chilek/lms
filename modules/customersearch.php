@@ -294,6 +294,22 @@ if (isset($_GET['search'])) {
         $SESSION->redirect('?m=customerinfo&id=' . $customerlist[0]['id']);
     } else {
         include(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
+
+        if (empty($state)) {
+            $state = array();
+        }
+
+        $allowed_customer_status = array_filter($state, function ($status) use ($CSTATUSES) {
+            return isset($CSTATUSES[$status]);
+        });
+        if (empty($allowed_customer_status)) {
+            $allowed_customer_status = Utils::determineAllowedCustomerStatus(
+                ConfigHelper::getConfig('messages.allowed_customer_status', '')
+            );
+        }
+        $allowed_customer_status = array_combine($allowed_customer_status, $allowed_customer_status);
+
+        $SMARTY->assign('allowed_customer_status', $allowed_customer_status);
         $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
         $SMARTY->display('customer/customersearchresults.html');
     }
