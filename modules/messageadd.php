@@ -216,7 +216,8 @@ function GetRecipients($filter, $type = MSG_MAIL)
 
     if (empty($state) || $state >= 50) {
         $allowed_customer_status = Utils::determineAllowedCustomerStatus(
-            ConfigHelper::getConfig('messages.allowed_customer_status', '')
+            ConfigHelper::getConfig('messages.allowed_customer_status', ''),
+            -1
         );
 
         if (!empty($allowed_customer_status)) {
