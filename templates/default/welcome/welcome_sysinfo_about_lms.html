@@ -40,14 +40,16 @@
                 {$layout.dbversion}
             </td>
         </tr>
-        <tr data-clipboard-text="{trans("PHP version:")} {$sysinfo.phpversion}">
-            <td class="text-right bold">
-                <a href="http://www.php.net/" rel="external">{trans("PHP version:")}</a>
-            </td>
-            <td>
-                {$sysinfo.phpversion}
-            </td>
-        </tr>
+        {if !empty($sysinfo)}
+            <tr data-clipboard-text="{trans("PHP version:")} {$sysinfo.phpversion}">
+                <td class="text-right bold">
+                    <a href="http://www.php.net/" rel="external">{trans("PHP version:")}</a>
+                </td>
+                <td>
+                    {$sysinfo.phpversion}
+                </td>
+            </tr>
+        {/if}
         <tr data-clipboard-text="{trans("Smarty version:")} {$layout.smarty_version}">
             <td class="text-right bold">
                 <a href="http://www.smarty.net" rel="external">{trans("Smarty version:")}</a>
