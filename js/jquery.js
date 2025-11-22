@@ -1289,6 +1289,8 @@ function initRolloverHints(selectors) {
 						'</div>';
 				}
 
+				var tooltipClass = elem.attr('data-tooltip-class');
+
 				elem.tooltip({
 					items: elem,
 					show: false,
@@ -1327,7 +1329,7 @@ function initRolloverHints(selectors) {
 					create: function() {
 						elem.tooltip('open');
 					},
-					tooltipClass: 'lms-ui-hint-rollover',
+					tooltipClass: 'lms-ui-hint-rollover' + (tooltipClass ? ' ' + tooltipClass : ''),
 					content: content
 				});
 			}
@@ -1382,6 +1384,8 @@ function initToggleHints(selectors) {
 								'</div>';
 						}
 
+						var tooltipClass = elem.attr('data-tooltip-class');
+
 						elem.tooltip({
 							items: elem,
 							show: false,
@@ -1408,7 +1412,7 @@ function initToggleHints(selectors) {
 									$(this).remove();
 								});
 							},
-							tooltipClass: 'lms-ui-hint-toggle',
+							tooltipClass: 'lms-ui-hint-toggle' + (tooltipClass ? ' ' + tooltipClass : ''),
 							content: content
 						});
 					}

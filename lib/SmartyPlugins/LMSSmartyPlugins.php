@@ -1528,6 +1528,7 @@ class LMSSmartyPlugins
 
         return '<a class="lms-ui-button lms-ui-hint-' . $mode
             . (isset($params['class']) ? ' ' . $params['class'] : '') . '"'
+            . (isset($params['tooltip_class']) ? ' data-tooltip-class="' . $params['tooltip_class'] . '"' : '')
             . (isset($params['content']) ? ' data-hint="' . htmlspecialchars(trans($params['content'])) . '"' : '')
             . (isset($params['text']) ? ' data-hint="' . htmlspecialchars($params['text']) . '"' : '')
             . (isset($params['url']) ? ' data-url="' . $params['url'] . '"' : '')
@@ -1930,6 +1931,7 @@ class LMSSmartyPlugins
                 $content .= self::hintFunction(
                     array(
                         'icon' => 'qrcode',
+                        'tooltip_class' => 'lms-ui-qrcode',
                         'text' => self::barcodeFunction(
                             array(
                                 'type' => 'QRCODE',
