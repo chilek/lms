@@ -159,6 +159,8 @@ if (!$api) {
 
     // uncomment this line if you're not gonna change template files no more
     //$SMARTY->compile_check = false;
+
+    $layout['phpversion'] = phpversion();
 }
 
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');

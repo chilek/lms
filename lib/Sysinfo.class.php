@@ -44,6 +44,7 @@ class Sysinfo
         $return['users'] = $this->users();
         $return['loadavg'] = $this->loadavg();
         $return['phpversion'] = phpversion();
+
         return $return;
     }
 
