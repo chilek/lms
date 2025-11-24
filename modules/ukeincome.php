@@ -223,8 +223,15 @@ if ($bandwidths) {
             AND t.downceil > 0 AND t.upceil > 0
             AND cash.time >= ? AND cash.time <= ? '
         . ($division ? ' AND ((cash.docid IS NOT NULL AND c.divisionid = ' . $division . ')
-            OR (cash.docid IS NULL AND c.divisionid = ' . $division . '))' : '') . '
-        GROUP BY ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : 'cash.servicetype') . ', t.downceil
+            OR (cash.docid IS NULL AND c.divisionid = ' . $division . '))' : '')
+        . ($customergroup ? ' AND EXISTS (
+                SELECT 1 FROM customerassignments
+                WHERE customergroupid = ' . $customergroup
+                    . ' AND customerid = c.id'
+                    . $customergroup_intersection_condition
+            . ')'
+            : '')
+        . ' GROUP BY ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : 'cash.servicetype') . ', t.downceil
         ORDER BY ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : 'cash.servicetype'),
         array($unixfrom, $unixto)
     );
