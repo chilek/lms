@@ -308,7 +308,9 @@ if (isset($_GET['search'])) {
                 -1
             );
         }
-        $allowed_customer_status = array_combine($allowed_customer_status, $allowed_customer_status);
+        if (!empty($allowed_customer_status)) {
+            $allowed_customer_status = array_combine($allowed_customer_status, $allowed_customer_status);
+        }
 
         $SMARTY->assign('allowed_customer_status', $allowed_customer_status);
         $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
