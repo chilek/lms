@@ -100,6 +100,26 @@ if (!empty($_GET['id'])) {
         $cache_pdf = ConfigHelper::checkConfig('documents.cache', ConfigHelper::checkConfig('phpui.cache_documents'));
 
         $filename_pdf = DOC_DIR . DIRECTORY_SEPARATOR . substr($doc['md5sum'], 0, 2) . DIRECTORY_SEPARATOR . $doc['md5sum'].'.pdf';
+
+        $attachment_filename = ConfigHelper::getConfig('documents.attachment_filename', '%filename');
+        $html2pdf_command = ConfigHelper::getConfig('documents.html2pdf_command', '', true);
+        $office2pdf_command = ConfigHelper::getConfig('documents.office2pdf_command', '', true);
+        $document_type = strtolower(ConfigHelper::getConfig('documents.type', ConfigHelper::getConfig('phpui.document_type', '', true)));
+
+        $htmls = $offices = $pdfs = $others = 0;
+
+        $ctype = $doc['contenttype'];
+
+        if (preg_match('/html$/i', $ctype)) {
+            $htmls++;
+        } elseif (preg_match('/pdf$/i', $ctype)) {
+            $pdfs++;
+        } elseif (preg_match('#^application/(rtf|.+(oasis|opendocument|openxml).+)$#i', $ctype)) {
+            $offices++;
+        } else {
+            $others++;
+        }
+
         if (file_exists($filename_pdf)) {
             if ($doc['type'] == DOC_CONTRACT) {
                 $title = trans('Contract No. $a', $docnumber);
@@ -108,13 +128,20 @@ if (!empty($_GET['id'])) {
             } else {
                 $title = $docnumber;
             }
+
+            $title = preg_replace(
+                '/[^[:alnum:]_\.\-]/iu',
+                '_',
+                $title
+            );
+
             header('Content-type: application/pdf');
             header('Content-Disposition: inline; filename="' . $title . '.pdf"');
             header('Content-Transfer-Encoding: binary');
             header('Content-Length: ' . filesize($filename_pdf));
             header('Accept-Ranges: bytes');
             readfile($filename_pdf);
-        } elseif (preg_match('/html/i', $doc['contenttype']) && strtolower(ConfigHelper::getConfig('documents.type', ConfigHelper::getConfig('phpui.document_type'))) == 'pdf') {
+        } elseif (($htmls || $offices) && $document_type == 'pdf') {
             if ($doc['type'] == DOC_CONTRACT) {
                 $subject = trans('Contract');
                 $title = trans('Contract No. $a', $docnumber);
@@ -129,22 +156,44 @@ if (!empty($_GET['id'])) {
                 $copy = false;
             }
 
-            ob_start();
-            readfile($filename);
-            $htmlbuffer = ob_get_contents();
-            ob_end_clean();
-            $margins = explode(",", ConfigHelper::getConfig('documents.margins', ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5')));
-            Utils::html2pdf(array(
-                'content' => $htmlbuffer,
-                'subject' => $subject,
-                'title' => $title,
-                'type' => $doc['type'],
-                'id' => $doc['id'],
-                'margins' => $margins,
-                'dest' => !empty($_GET['save']),
-                'copy' => $copy,
-                'md5sum' => $cache_pdf ? $doc['md5sum'] : null,
-            ));
+            $margins = explode(',', ConfigHelper::getConfig('documents.margins', ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5')));
+
+            $title = preg_replace(
+                '/[^[:alnum:]_\.\-]/iu',
+                '_',
+                $title
+            );
+
+            if ($offices) {
+                if (!empty($office2pdf_command)) {
+                    header('Content-type: application/pdf');
+                    header('Content-Disposition: inline; filename="' . $title . '.pdf"');
+                    header('Content-Transfer-Encoding: binary');
+
+                    $content = Utils::office2pdf(array(
+                        'content' => file_get_contents($filename),
+                        'subject' => $subject,
+                        'title' => $title,
+                        'doctype' => Utils::docTypeByMimeType($ctype),
+                        'dest' => 'S',
+                        'md5sum' => $cache_pdf ? $doc['md5sum'] : null,
+                    ));
+
+                    echo $content;
+                }
+            } else {
+                Utils::html2pdf(array(
+                    'content' => file_get_contents($filename),
+                    'subject' => $subject,
+                    'title' => $title,
+                    'type' => $doc['type'],
+                    'id' => $doc['id'],
+                    'margins' => $margins,
+                    'dest' => !empty($_GET['save']),
+                    'copy' => $copy,
+                    'md5sum' => $cache_pdf ? $doc['md5sum'] : null,
+                ));
+            }
         } else {
             header('Content-Type: '.$doc['contenttype']);
 
