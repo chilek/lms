@@ -380,8 +380,8 @@ if (isset($_POST['document'])) {
                 }
             }
 
-            if ($error) {
-                $genresult .= '<span class="alert">' . $error . '</span><br>';
+            if (!empty($error)) {
+                $genresult .= '<span class="alert">' . (is_array($error) ? (empty($error['templ']) ? trans('unknown error') : $error['templ']) : $error) . '</span><br>';
                 continue;
             }
 

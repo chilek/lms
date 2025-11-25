@@ -6267,3 +6267,5 @@ $_LANG['document encryption password: $a $b'] = 'hasło szyfrujące dokument: $a
 $_LANG['with recipient address'] = 'z adresem odbiorcy';
 
 $_LANG['Error during communication with NAS device!'] = 'Błąd podczas komunikacji z urządzeniem NAS!';
+
+$_LABG['unknown error'] = 'nieznany błąd';
