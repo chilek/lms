@@ -6268,4 +6268,4 @@ $_LANG['with recipient address'] = 'z adresem odbiorcy';
 
 $_LANG['Error during communication with NAS device!'] = 'Błąd podczas komunikacji z urządzeniem NAS!';
 
-$_LABG['unknown error'] = 'nieznany błąd';
+$_LANG['unknown error'] = 'nieznany błąd';
