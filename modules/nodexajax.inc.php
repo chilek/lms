@@ -301,24 +301,15 @@ function getRadioSectors($netdev, $technology = 0)
     return $result;
 }
 
-function getFirstFreeAddress($netid, $elemid)
+function getFirstFreeAddress($netid)
 {
     global $LMS;
 
     $result = new xajaxResponse();
 
     $ip = $LMS->GetFirstFreeAddress($netid);
-    if ($ip != false) {
-        $result->assign($elemid, 'value', $ip);
-        $result->script('
-            $("#ipaddr").removeClass("lms-ui-warning").removeAttr("data-tooltip").attr("title", null);
-        ');
-    } else {
-        $result->script('
-            $("#ipaddr").addClass("lms-ui-warning").removeAttr("data-tooltip").attr("title",
-                $t("No free addresses in selected network!"));
-        ');
-    }
+
+    $result->call('first_free_address_received', $ip);
 
     return $result;
 }

@@ -95,7 +95,7 @@
 										</td>
 										<td class="cell-flex">
 											<div>
-												<select size="1" name="nodeedit[netid]"
+												<select size="1" name="nodeedit[netid]" id="netid"
 													{tip class="lms-ui-advanced-select-test" trigger="netid"}>
 													<option value="0">{trans("— automatic selection —")}</option>
 													{foreach $networks as $net}
@@ -107,7 +107,7 @@
 												{if ConfigHelper::checkConfig('phpui.show_assigned_networks_only') && ConfigHelper::checkConfig('nodes.public_ip', ConfigHelper::checkConfig('phpui.public_ip', true))}
 													<script>
 
-														$('[name="nodeedit[netid]"]').change(function() {
+														$('#netid').change(function() {
 															var pubnetid = parseInt($('option:selected', this).attr('data-pubnetid'));
 															if (pubnetid) {
 																$('[name="nodeedit[pubnetid]"]').val(0);
@@ -136,6 +136,7 @@
 										<td class="cell-flex">
 											<div>
 												<input type="text" name="nodeedit[ipaddr]" id="ipaddr" value="{$nodeinfo.ipaddr}" required
+													data-manually-changed="0"
 													{tip trigger="ipaddr"}>
 												{button type="link" onClick="return ipchoosewin({
 														ipelem: document.editnode['nodeedit[ipaddr]'],
@@ -145,7 +146,7 @@
 													});" tip="Click to select IP from the list"
 													icon="next"}
 											</div>
-											{button type="link" id="selectfirstfreeaddress" icon="download"
+											{button type="link" id="get-first-free-address" icon="download"
 												label="Select first free address"}
 										</td>
 									</tr>
@@ -557,16 +558,46 @@
 
 <script>
 
+	function first_free_address_received(ip) {
+		var ipAddrElem = $('#ipaddr');
+		if (typeof(ip) === 'string') {
+			ipAddrElem.val(ip)
+				.removeClass('lms-ui-warning')
+				.removeAttr('data-tooltip')
+				.attr({
+					'data-manually-changed': '0',
+					'title': null
+				});
+		} else {
+			ipAddrElem.addClass('lms-ui-warning')
+				.removeAttr('data-tooltip')
+				.attr('title', $t("No free addresses in selected network!"));
+		}
+	}
+
 	$(function() {
 		$('[name="nodeedit[name]"]').focus();
 
-		$('#selectfirstfreeaddress').click(function() {
-			var netid = parseInt($('[name="nodeedit[netid]"]').val());
+		$('#get-first-free-address').click(function() {
+			var netid = parseInt($('#netid').val());
 			if (!netid) {
 				return;
 			}
-			xajax_getFirstFreeAddress(netid, $('[name="nodeedit[ipaddr]"]').uniqueId().attr('id'));
+			xajax_getFirstFreeAddress(netid);
 		});
+
+		{if ConfigHelper::checkConfig('nodes.auto_get_first_free_address')}
+			$('#ipaddr').on('change keyup', function() {
+				$(this).attr('data-manually-changed', '1');
+			});
+
+			$('#netid').change(function() {
+				var netid = parseInt($(this).val());
+				if ($('#ipaddr').attr('data-manually-changed') === '0') {
+					xajax_getFirstFreeAddress(netid);
+				}
+			});
+		{/if}
 
 		$('#project').change(function() {
 			$('#projectname').toggle(parseInt($(this).val()) == -1);

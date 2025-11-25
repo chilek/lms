@@ -46,7 +46,7 @@
 										<strong>{trans("Network")}</strong>
 									</td>
 									<td>
-										<select name="ipadd[netid]"
+										<select name="ipadd[netid]" id="netid"
 											{tip trigger="netid" class="lms-ui-advanced-select-test"}>
 											<option value="0">{trans("— automatic selection —")}</option>
 											{foreach $networks as $net}
@@ -66,7 +66,7 @@
 										<strong>{trans("IP address")}</strong>
 									</td>
 									<td>
-										<input type="text" name="ipadd[ipaddr]" value="{$nodeipdata.ipaddr}"
+										<input type="text" name="ipadd[ipaddr]" id="ipaddr" value="{$nodeipdata.ipaddr}"
 											required {tip trigger="ipaddr"}>
 										{button type="link" onClick="return ipchoosewin({
 												ipelem: document.editipaddr['ipadd[ipaddr]'],
@@ -77,7 +77,7 @@
 												});" tip="Click to select IP from the list"
 											icon="next"}
 										<br>
-										{button type="link" id="selectfirstfreeaddress" icon="download"
+										{button type="link" id="get-first-free-address" icon="download"
 											label="Select first free address"}
 									</td>
 								</tr>
@@ -241,11 +241,28 @@
 </form>
 <script>
 
+	function first_free_address_received(ip) {
+		var ipAddrElem = $('#ipaddr');
+		if (typeof(ip) === 'string') {
+			ipAddrElem.val(ip)
+				.removeClass('lms-ui-warning')
+				.removeAttr('data-tooltip')
+				.attr({
+					'data-manually-changed': '0',
+					'title': null
+				});
+		} else {
+			ipAddrElem.addClass('lms-ui-warning')
+				.removeAttr('data-tooltip')
+				.attr('title', $t("No free addresses in selected network!"));
+		}
+	}
+
 	$(function() {
 		$('[name="ipadd[name]"]').focus();
 
 		{if (ConfigHelper::checkConfig('phpui.show_assigned_networks_only')) && ConfigHelper::checkConfig('nodes.public_ip', ConfigHelper::checkConfig('phpui.public_ip'))}
-			$('[name="ipadd[netid]"]').change(function () {
+			$('#netid').change(function () {
 				var pubnetid = parseInt($('option:selected', this).attr('data-pubnetid'));
 				if (pubnetid) {
 					$('[name="ipadd[pubnetid]"]').val(0);
@@ -253,12 +270,12 @@
 			});
 		{/if}
 
-		$('#selectfirstfreeaddress').click(function() {
-			var netid = parseInt($('[name="ipadd[netid]"]').val());
+		$('#get-first-free-address').click(function() {
+			var netid = parseInt($('#netid').val());
 			if (!netid) {
 				return;
 			}
-			xajax_getFirstFreeAddress(netid, $('[name="ipadd[ipaddr]"]').uniqueId().attr('id'));
+			xajax_getFirstFreeAddress(netid);
 		});
 
 		$('#status').change(function() {
