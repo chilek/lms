@@ -1505,7 +1505,7 @@ function initDocumentViewers(selectors) {
 
 			if (!previewType.length) {
 				officeDocument = contentType.match(/^application\/(rtf|msword|ms-excel|.+(oasis|opendocument|openxml).+)$/i) ? true : false;
-				if (lmsSettings.office2pdfCommand.length && officeDocument) {
+				if (lmsSettings.office2pdfCommand.length && officeDocument && !$(this).is('[data-office2pdf="0"]')) {
 					previewType = 'office';
 				}
 			}

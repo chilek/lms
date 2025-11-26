@@ -1107,6 +1107,38 @@ version 28-git (????-??-??):
   - enhancement: added new customer flag 'consumer' usefull for legal persons treated as a consumers [chilan]
   - improvement: 'payments.*comment_<service-type>' configuration variable support added with values specific for
     different service types [chilan]
+  - enhancement/improvement: division unique key changed from 'shortname' to 'shortname+label' [chilan]
+  - enhancement: 'payments.reward_penalty_last_deadline_check_only' configuration variable with 'false'
+    as default value allows to enable more user-friendly mechanism for activating rewards and penalties
+    for customers [chilan]
+  - enhancement: added service provider and external id properties for tariffs [chilan]
+  - enhancement: uke/pit: 'uke.pit_foreign_entities' configuration variable allows to define list
+    of foreign entities [chilan]
+  - enhancement: added network link 'foreign entity' property [chilan]
+  - enhancement: added customer owned infrastructure toggle visible and foreign entity owned network link
+    toggle visibility toolbar buttons on openlayers-based network map [chilan]
+  - enhancement: openlayers-based network map: added network link edit mode toolbar button [chilan]
+  - improvement: openlayers-based network mapfont: awesome icon on toolbar buttons [chilan]
+  - improvement: 'financial_history_reverse_order' (default: 'true')
+    and 'financial_history_item_description_format' (default '%comment') configuration variables support
+    added in lms-notify.php backend script [chilan]
+  - improvement: 'finances.history_reverse_order' (default: 'true')
+    and 'finances.history_item_description_format' (default: '%comment') configuration variables support
+    added as default values for invoice send and notification specific configuration variables [chilan]
+  - enhancement: 'with recipient address' customer assignment filter added [chilan]
+  - improvement: 'nodes.default_info' with empty default value specifies info field value of node add
+    form during its start [chilan]
+  - enhancement: 'nodes.session_state_helper' (empty default value) controls if session state info button
+    is visible near node last nas session info [chilan]
+  - enhancement: qr-code icon buttons near phone numers and e-mail addresses to ease their uses
+    in mobile devices [chilan]
+  - enhancement: configuration variable 'messages.allowed_customer_status' with default all statuses
+    allowed limits customers to which messages are sent from messageadd form [chilan]
+  - enhancement: configuration variable 'nodes.auto_get_first_free_address' with 'false' as default allows
+    to enable auto first free addresse determination if ip address field had not been changed earlier [chilan]
+  - improvement: 'documents.office2pdf_document_types' with no default value (it means all document types supported
+    by system) allows to select which office suite document attachments are processed by office2pdf mechanism
+    (basing on document types to which file attachments are assigned) [chilan]
 
 version 27.0 (2021-08-20):
 
@@ -1324,35 +1356,6 @@ version 27.0 (2021-08-20):
     (variable: phpui.default_show_closed_tickets, default: false) [interduo]
   - enhancement: 'phpui.send_message_limit_violation_type' with 'warning' as default value specifies
     reaction on recipient limit overrun in send message form [chilan]
-  - enhancement/improvement: division unique key changed from 'shortname' to 'shortname+label' [chilan]
-  - enhancement: 'payments.reward_penalty_last_deadline_check_only' configuration variable with 'false'
-    as default value allows to enable more user-friendly mechanism for activating rewards and penalties
-    for customers [chilan]
-  - enhancement: added service provider and external id properties for tariffs [chilan]
-  - enhancement: uke/pit: 'uke.pit_foreign_entities' configuration variable allows to define list
-    of foreign entities [chilan]
-  - enhancement: added network link 'foreign entity' property [chilan]
-  - enhancement: added customer owned infrastructure toggle visible and foreign entity owned network link
-    toggle visibility toolbar buttons on openlayers-based network map [chilan]
-  - enhancement: openlayers-based network map: added network link edit mode toolbar button [chilan]
-  - improvement: openlayers-based network mapfont: awesome icon on toolbar buttons [chilan]
-  - improvement: 'financial_history_reverse_order' (default: 'true')
-    and 'financial_history_item_description_format' (default '%comment') configuration variables support
-    added in lms-notify.php backend script [chilan]
-  - improvement: 'finances.history_reverse_order' (default: 'true')
-    and 'finances.history_item_description_format' (default: '%comment') configuration variables support
-    added as default values for invoice send and notification specific configuration variables [chilan]
-  - enhancement: 'with recipient address' customer assignment filter added [chilan]
-  - improvement: 'nodes.default_info' with empty default value specifies info field value of node add
-    form during its start [chilan]
-  - enhancement: 'nodes.session_state_helper' (empty default value) controls if session state info button
-    is visible near node last nas session info [chilan]
-  - enhancement: qr-code icon buttons near phone numers and e-mail addresses to ease their uses
-    in mobile devices [chilan]
-  - enhancement: configuration variable 'messages.allowed_customer_status' with default all statuses
-    allowed limits customers to which messages are sent from messageadd form [chilan]
-  - enhancement: configuration variable 'nodes.auto_get_first_free_address' with 'false' as default allows
-    to enable auto first free addresse determination if ip address field had not been changed earlier [chilan]
 
 version 26.0 (2020-12-15):
 
