@@ -140,15 +140,10 @@ if (!$api) {
     // Initialize templates engine (must be before locale settings)
     $SMARTY = new LMSSmarty;
 
-    // test for proper version of Smarty
-
-    if (defined('Smarty::SMARTY_VERSION')) {
-        $ver_chunks = preg_split('/[- ]/', preg_replace('/^smarty-/i', '', Smarty::SMARTY_VERSION), -1, PREG_SPLIT_NO_EMPTY);
+    if (defined('\Smarty\Smarty::SMARTY_VERSION')) {
+        $ver_chunks = preg_split('/[- ]/', preg_replace('/^smarty-/i', '', \Smarty\Smarty::SMARTY_VERSION), -1, PREG_SPLIT_NO_EMPTY);
     } else {
-        $ver_chunks = null;
-    }
-    if (count($ver_chunks) < 1 || version_compare('3.1', $ver_chunks[0]) > 0) {
-        die('<B>Wrong version of Smarty engine! We support only Smarty-3.x greater than 3.1.</B>');
+        die('<B>Wrong version of Smarty engine! We support only Smarty-5.x.</B>');
     }
 
     define('SMARTY_VERSION', $ver_chunks[0]);
@@ -238,7 +233,7 @@ $layout['url'] = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on'
     . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1);
 
 if (!$api) {
-    $SMARTY->assignByRef('layout', $layout);
+    $SMARTY->assign('layout', $layout);
 }
 
 $error = null; // initialize error variable needed for (almost) all modules
@@ -251,7 +246,7 @@ if (!$layout['popup'] && !$api) {
 
     $menu = $plugin_manager->executeHook('menu_initialized', $menu);
 
-    $SMARTY->assignByRef('newmenu', $menu);
+    $SMARTY->assign('newmenu', $menu);
 }
 
 header('X-Powered-By: LMS/'.$layout['lmsv']);
@@ -457,7 +452,7 @@ if ($AUTH->islogged) {
                     }
                 }
                 $filter = $SESSION->getFilter($_GET['module-filter'] ?? null);
-                $SMARTY->assignByRef('filter', $filter);
+                $SMARTY->assign('filter', $filter);
 
                 // restore selected persistent filter info
                 if (isset($filter['persistent_filter'])) {
@@ -482,8 +477,8 @@ if ($AUTH->islogged) {
 
                 // preset error and warning smarty variable
                 // they can be easily filled later in modules
-                $SMARTY->assignByRef('error', $error);
-                $SMARTY->assignByRef('warning', $warning);
+                $SMARTY->assign('error', $error);
+                $SMARTY->assign('warning', $warning);
 
                 // preload warnings from submitted form to $warning variable
                 if (isset($_GET['warning'])) {

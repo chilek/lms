@@ -46,7 +46,7 @@ function _smarty_block_box($params, $content, $template, &$repeat)
         $template->assignGlobal('boxtitle', $title);
         $template->assignGlobal('boxcontent', $content);
 
-        return $template->smarty->fetch(USERPANEL_DIR . DIRECTORY_SEPARATOR . $file);
+        return $template->getSmarty()->fetch(USERPANEL_DIR . DIRECTORY_SEPARATOR . $file);
     }
 }
 
@@ -73,7 +73,7 @@ function _smarty_function_body($params, $template)
         $file = 'style/default/body.html';
     }
 
-    return $template->smarty->fetch(USERPANEL_DIR . DIRECTORY_SEPARATOR . $file);
+    return $template->getSmarty()->fetch(USERPANEL_DIR . DIRECTORY_SEPARATOR . $file);
 }
 
 function _smarty_function_userpaneltip($params, $template)
@@ -209,7 +209,7 @@ function _smarty_function_img($params, $template)
 }
 
 // register the resource name "module"
-$SMARTY->registerResource('module', new Smarty_Resource_Userpanel_Module());
+$SMARTY->registerResource('module', new \Lms\Smarty\UserpanelModuleResource());
 
 $SMARTY->registerPlugin('block', 'box', '_smarty_block_box');
 $SMARTY->registerPlugin('function', 'userpaneltip', '_smarty_function_userpaneltip');

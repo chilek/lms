@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2025 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,18 +24,112 @@
  *  $Id$
  */
 
-class LMSSmarty extends Smarty
+class LMSSmarty extends \Smarty\Smarty
 {
     private $plugin_manager;
-    private static $smarty = null;
+    private static $__smarty = null;
 
     public function __construct()
     {
         parent::__construct();
-        self::$smarty = $this;
+        self::$__smarty = $this;
 
         // add LMS's custom plugins directory
-        $this->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
+        $functions = [
+            'bankaccount' => [\Lms\Smarty\Plugins::class, 'bankaccountFunction'],
+            'barcode' => [\Lms\Smarty\Plugins::class, 'barCodeFunction'],
+            'button' => [\Lms\Smarty\Plugins::class, 'buttonFunction'],
+            'contact' => [\Lms\Smarty\Plugins::class, 'contactFunction'],
+            'css' => [\Lms\Smarty\Plugins::class, 'cssFunction'],
+            'currency_selection' => [\Lms\Smarty\Plugins::class, 'currencySelectionFunction'],
+            'customerlist' => [\Lms\Smarty\Plugins::class, 'customerListFunction'],
+            'day_selection' => [\Lms\Smarty\Plugins::class, 'daySelectionFunction'],
+            'date_period_preset' => [\Lms\Smarty\Plugins::class, 'datePeriodPresetFunction'],
+            'deadline_selection' => [\Lms\Smarty\Plugins::class, 'deadlineSelectionFunction'],
+            'division_selection' => [\Lms\Smarty\Plugins::class, 'divisionSelectionFunction'],
+            'document_address' => [\Lms\Smarty\Plugins::class, 'documentAddressFunction'],
+            'documentview' => [\Lms\Smarty\Plugins::class, 'documentViewFunction'],
+            'event_time_selection' => [\Lms\Smarty\Plugins::class, 'eventTimeSelectionFunction'],
+            'fileupload' => [\Lms\Smarty\Plugins::class, 'fileUploadFunction'],
+            'gentime' => [\Lms\Smarty\Plugins::class, 'genTimeFunction'],
+            'handle' => [\Lms\Smarty\Plugins::class, 'handleFunction'],
+            'hint' => [\Lms\Smarty\Plugins::class, 'hintFunction'],
+            'icon' => [\Lms\Smarty\Plugins::class, 'iconFunction'],
+            'identitytypes' => [\Lms\Smarty\Plugins::class, 'identityTypesFunction'],
+            'image_data' => [\Lms\Smarty\Plugins::class, 'imageDataFunction'],
+            'image' => [\Lms\Smarty\Plugins::class, 'imageFunction'],
+            'js' => [\Lms\Smarty\Plugins::class, 'jsFunction'],
+            'karma' => [\Lms\Smarty\Plugins::class, 'karmaFunction'],
+            'list' => [\Lms\Smarty\Plugins::class, 'listFunction'],
+            'location_box' => [\Lms\Smarty\Plugins::class, 'locationBoxFunction'],
+            'location_box_expandable' => [\Lms\Smarty\Plugins::class, 'locationBoxExpandableFunction'],
+            'mac_address_selection' => [\Lms\Smarty\Plugins::class, 'macAddressSelectionFunction'],
+            'memory' => [\Lms\Smarty\Plugins::class, 'memoryFunction'],
+            'multi_location_box' => [\Lms\Smarty\Plugins::class, 'multiLocationBoxFunction'],
+            'network_container' => [\Lms\Smarty\Plugins::class, 'networkContainerFunction'],
+            'network_device_selection' => [\Lms\Smarty\Plugins::class, 'networkDeviceSelectionFunction'],
+            'network_device_types' => [\Lms\Smarty\Plugins::class, 'networkDeviceTypesFunction'],
+            'network_node_selection' => [\Lms\Smarty\Plugins::class, 'networkNodeSelectionFunction'],
+            'number' => [\Lms\Smarty\Plugins::class, 'numberFunction'],
+            'numberplan_selection' => [\Lms\Smarty\Plugins::class, 'numberplanSelectionFunction'],
+            'paytypes' => [\Lms\Smarty\Plugins::class, 'paytypesFunction'],
+            'persistent_filter' => [\Lms\Smarty\Plugins::class, 'persistentFilterFunction'],
+            'reset_to_defaults' => [\Lms\Smarty\Plugins::class, 'resetToDefaultsFunction'],
+            'resource_tab_selector' => [\Lms\Smarty\Plugins::class, 'resourceTabSelectorFunction'],
+            'show_on_map_button' => [\Lms\Smarty\Plugins::class, 'showOnMapButtonFunction'],
+            'speech_recognition' => [\Lms\Smarty\Plugins::class, 'speechRecognitionFunction'],
+            'sum' => [\Lms\Smarty\Plugins::class, 'sumFunction'],
+            'tax_category_selection' => [\Lms\Smarty\Plugins::class, 'taxCategorySelectionFunction'],
+            'tax_rate_selection' => [\Lms\Smarty\Plugins::class, 'taxRateSelectionFunction'],
+            'tip' => [\Lms\Smarty\Plugins::class, 'tipFunction'],
+            'user_selection' => [\Lms\Smarty\Plugins::class, 'userSelectionFunction'],
+        ];
+
+        foreach ($functions as $name => $callback) {
+            $this->registerPlugin(self::PLUGIN_FUNCTION, $name, $callback);
+        }
+
+        $modifiers = [
+            'donthyphenate' => [\Lms\Smarty\Plugins::class, 'dontHyphenateModifier'],
+            'duration_format' => [\Lms\Smarty\Plugins::class, 'durationFormatModifier'],
+            'message_quote' => [\Lms\Smarty\Plugins::class, 'messageQuoteModifier'],
+            'money_format' => [\Lms\Smarty\Plugins::class, 'moneyFormatModifier'],
+            'size' => [\Lms\Smarty\Plugins::class, 'sizeModifier'],
+            'size_format' => [\Lms\Smarty\Plugins::class, 'sizeFormatModifier'],
+            'striphtml' => [\Lms\Smarty\Plugins::class, 'stripHtmlModifier'],
+            'to_words' => [\Lms\Smarty\Plugins::class, 'toWordsModifier'],
+            'trunescape' => [\Lms\Smarty\Plugins::class, 'trunEscapeModifier'],
+        ];
+
+        foreach ($modifiers as $name => $callback) {
+            $this->registerPlugin(self::PLUGIN_MODIFIER, $name, $callback);
+        }
+
+        $blocks = [
+            'box_buttons' => [\Lms\Smarty\Plugins::class, 'boxButtonsBlock'],
+            'box_container' => [\Lms\Smarty\Plugins::class, 'boxContainerBlock'],
+            'box_contents' => [\Lms\Smarty\Plugins::class, 'boxContentsBlock'],
+            'box_header' => [\Lms\Smarty\Plugins::class, 'boxHeaderBlock'],
+            'box_panel' => [\Lms\Smarty\Plugins::class, 'boxPanelBlock'],
+            'box_row' => [\Lms\Smarty\Plugins::class, 'boxRowBlock'],
+            'buttons' => [\Lms\Smarty\Plugins::class, 'buttonsBlock'],
+            'donthyphenate' => [\Lms\Smarty\Plugins::class, 'dontHyphenateBlock'],
+            't' => [\Lms\Smarty\Plugins::class, 'transBlock'],
+            'tab_button_panel' => [\Lms\Smarty\Plugins::class, 'tabButtonPanelBlock'],
+            'tab_buttons' => [\Lms\Smarty\Plugins::class, 'tabButtonsBlock'],
+            'tab_container' => [\Lms\Smarty\Plugins::class, 'tabContainerBlock'],
+            'tab_contents' => [\Lms\Smarty\Plugins::class, 'tabContentsBlock'],
+            'tab_header_cell' => [\Lms\Smarty\Plugins::class, 'tabHeaderCellBlock'],
+            'tab_header' => [\Lms\Smarty\Plugins::class, 'tabHeaderBlock'],
+            'tab_hourglass' => [\Lms\Smarty\Plugins::class, 'tabHourglassBlock'],
+            'tab_table' => [\Lms\Smarty\Plugins::class, 'tabTableBlock'],
+        ];
+
+        foreach ($blocks as $name => $callback) {
+            $this->registerPlugin(self::PLUGIN_BLOCK, $name, $callback);
+        }
+
+        $this->registerResource('extendsall', new \Lms\Smarty\ExtendsAllResource($this));
 
         $this->muteUndefinedOrNullWarnings();
 
@@ -82,13 +176,20 @@ class LMSSmarty extends Smarty
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'format_bankaccount', 'format_bankaccount');
 
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'bankaccount', 'bankaccount');
-        $this->registerPlugin(self::PLUGIN_MODIFIER, 'size', 'LMSSmartyPlugins::sizeModifier');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'convert_to_units', 'convert_to_units');
+
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'time', 'time');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'reset', 'reset');
+
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'is_null', 'is_null');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'strpos', 'strpos');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'array_values', 'array_values');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'is_numeric', 'is_numeric');
     }
 
     public static function getInstance()
     {
-        return self::$smarty;
+        return self::$__smarty;
     }
 
     public function setPluginManager(LMSPluginManager $plugin_manager)
@@ -98,7 +199,18 @@ class LMSSmarty extends Smarty
 
     public function display($template = null, $cache_id = null, $compile_id = null, $parent = null)
     {
+        foreach (array('layout', 'error', 'warning', 'newmenu', 'filter') as $name) {
+            if (!empty($GLOBALS[$name])) {
+                $this->assign($name, $GLOBALS[$name]);
+            }
+        }
+
+        if (!empty($GLOBALS['userpanel']->MODULES)) {
+            $this->assign('modules', $GLOBALS['userpanel']->MODULES);
+        }
+
         $layout = $this->getTemplateVars('layout');
+
         if (!empty($layout)) {
             if (array_key_exists('module', $layout)) {
                 $this->plugin_manager->ExecuteHook(

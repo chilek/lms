@@ -130,14 +130,10 @@ $SMARTY = new LMSSmarty;
 
 // test for proper version of Smarty
 
-if (constant('Smarty::SMARTY_VERSION')) {
-    $ver_chunks = preg_split('/[- ]/', preg_replace('/^smarty-/i', '', Smarty::SMARTY_VERSION), -1, PREG_SPLIT_NO_EMPTY);
+if (constant('\Smarty\Smarty::SMARTY_VERSION')) {
+    $ver_chunks = preg_split('/[- ]/', preg_replace('/^smarty-/i', '', \Smarty\Smarty::SMARTY_VERSION), -1, PREG_SPLIT_NO_EMPTY);
 } else {
-    $ver_chunks = null;
-}
-
-if (count($ver_chunks) < 1 || version_compare('3.1', $ver_chunks[0]) > 0) {
-    die('<B>Wrong version of Smarty engine! We support only Smarty-3.x greater than 3.0.</B>');
+    die('<B>Wrong version of Smarty engine! We support only Smarty-5.x.</B>');
 }
 
 define('SMARTY_VERSION', $ver_chunks[0]);
@@ -233,8 +229,8 @@ $layout['url'] = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on'
     . $_SERVER['REQUEST_URI'];
     //. substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1);
 
-$SMARTY->assignByRef('modules', $USERPANEL->MODULES);
-$SMARTY->assignByRef('layout', $layout);
+$SMARTY->assign('modules', $USERPANEL->MODULES);
+$SMARTY->assign('layout', $layout);
 $SMARTY->assign('page_header', ConfigHelper::getConfig('userpanel.page_header'));
 $SMARTY->assign('company_logo', ConfigHelper::getConfig('userpanel.company_logo'));
 $SMARTY->assign('timeout', $_TIMEOUT);

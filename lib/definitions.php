@@ -2109,9 +2109,9 @@ if (isset($SMARTY)) {
             '_CURRENCIES' => $CURRENCIES,
             '_TAX_CATEGORIES' => $TAX_CATEGORIES,
             '_IDENTITY_TYPES' => $IDENTITY_TYPES,
+            '_EVENTTYPES' => $EVENTTYPES,
         )
     );
-    $SMARTY->assignByRef('_EVENTTYPES', $EVENTTYPES);
 }
 
 const DEFAULT_NUMBER_TEMPLATE = '%N/LMS/%Y';

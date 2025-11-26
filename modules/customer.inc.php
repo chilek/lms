@@ -50,7 +50,7 @@ if ($layout['module'] != 'customeredit') {
         $SESSION->redirect('?m=customerlist');
     }
 
-    $SMARTY->assignByRef('customerinfo', $customerinfo);
+    $SMARTY->assign('customerinfo', $customerinfo);
 }
 
 if (!isset($resource_tabs['customerextids']) || $resource_tabs['customerextids']) {
@@ -282,24 +282,24 @@ if (ConfigHelper::checkConfig('phpui.remember_date_in_customerbalancebox')) {
 }
 
 $SMARTY->assign('sourcelist', $LMS->getCashSources());
-$SMARTY->assignByRef('customerextids', $customerextids);
-$SMARTY->assignByRef('customernotes', $customernotes);
-$SMARTY->assignByRef('customernodes', $customernodes);
-$SMARTY->assignByRef('customernetworks', $customernetworks);
-$SMARTY->assignByRef('customerdevices', $customerdevices);
-$SMARTY->assignByRef('customernetnodes', $customernetnodes);
-$SMARTY->assignByRef('customerstats', $customerstats);
-$SMARTY->assignByRef('assignments', $assignments);
-$SMARTY->assignByRef('nodeassignments', $nodeassignments);
-$SMARTY->assignByRef('customergroups', $customergroups);
-$SMARTY->assignByRef('othercustomergroups', $othercustomergroups);
-$SMARTY->assignByRef('balancelist', $balancelist);
-$SMARTY->assignByRef('customervoipaccounts', $customervoipaccounts);
-$SMARTY->assignByRef('documents', $documents);
-$SMARTY->assignByRef('taxeslist', $taxeslist);
-$SMARTY->assignByRef('allnodegroups', $allnodegroups);
-$SMARTY->assignByRef('messagelist', $messagelist);
-$SMARTY->assignByRef('eventlist', $eventlist);
-$SMARTY->assignByRef('customercalls', $customercalls);
-$SMARTY->assignByRef('ticketlist', $ticketlist);
-$SMARTY->assignByRef('aet', $aet);
+$SMARTY->assign('customerextids', $customerextids);
+$SMARTY->assign('customernotes', $customernotes);
+$SMARTY->assign('customernodes', $customernodes);
+$SMARTY->assign('customernetworks', $customernetworks);
+$SMARTY->assign('customerdevices', $customerdevices);
+$SMARTY->assign('customernetnodes', $customernetnodes);
+$SMARTY->assign('customerstats', $customerstats);
+$SMARTY->assign('assignments', $assignments);
+$SMARTY->assign('nodeassignments', $nodeassignments);
+$SMARTY->assign('customergroups', $customergroups);
+$SMARTY->assign('othercustomergroups', $othercustomergroups);
+$SMARTY->assign('balancelist', $balancelist);
+$SMARTY->assign('customervoipaccounts', $customervoipaccounts);
+$SMARTY->assign('documents', $documents);
+$SMARTY->assign('taxeslist', $taxeslist);
+$SMARTY->assign('allnodegroups', $allnodegroups);
+$SMARTY->assign('messagelist', $messagelist);
+$SMARTY->assign('eventlist', $eventlist);
+$SMARTY->assign('customercalls', $customercalls);
+$SMARTY->assign('ticketlist', $ticketlist);
+$SMARTY->assign('aet', $aet);

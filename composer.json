@@ -118,7 +118,7 @@
         "tecnickcom/tcpdf": "^6",
         "spipu/html2pdf": "^5",
         "components/normalize.css": "^3.0",
-        "smarty/smarty": "^4",
+        "smarty/smarty": "^5",
         "rospdf/pdf-php": "^0.12",
         "components/jqueryui": "^1",
         "xdan/datetimepicker": "^2",

@@ -24,6 +24,7 @@
  *  $Id$
  */
 
+use Smarty\Smarty;
 use Phine\Observer\ObserverInterface;
 use Phine\Observer\SubjectInterface;
 

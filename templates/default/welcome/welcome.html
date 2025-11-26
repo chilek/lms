@@ -1,6 +1,7 @@
 {extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
+{$welcome_panels = intval(ConfigHelper::getConfig('phpui.welcome_panels', 2))}
 	<!--// $Id$ //-->
 	<h1>{$layout.pagetitle}</h1>
 	<div id="lms-ui-welcome-boxes">
@@ -34,10 +35,10 @@
 					{/if}
 				{/block}
 			</div>
-			{for $panel=3 to intval(ConfigHelper::getConfig('phpui.welcome_panels', 2))}
-				<div id="lms-ui-welcome-panel-{$panel}" class="lms-ui-welcome-main-panel">
+			{section name=panel start=3 loop=$welcome_panels+1}
+				<div id="lms-ui-welcome-panel-{$smarty.section.panel.index}" class="lms-ui-welcome-main-panel">
 				</div>
-			{/for}
+			{/section}
 		</div>
 		<div id="lms-ui-welcome-extra-panel">
 			{block name="extra-panel"}

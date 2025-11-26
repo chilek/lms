@@ -27,7 +27,8 @@
 define('USERPANEL_SETUPMODE', 1);
 
 // register the resource name "module"
-$SMARTY->registerResource('module', new Smarty_Resource_Userpanel_Setup_Module());
+$SMARTY->registerResource('module', new \Lms\Smarty\UserpanelSetupModuleResource());
+$SMARTY->registerPlugin(\Smarty\Smarty::PLUGIN_MODIFIER, 'array_multisort', 'array_multisort');
 
 // Include locale file (main)
 Localisation::appendUiLanguage(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'locale');
@@ -52,7 +53,7 @@ foreach ($modules_dirs as $suspected_module_dir) {
     }
 }
 
-$SMARTY->assignByRef('menu', $USERPANEL->MODULES);
+$SMARTY->assign('menu', $USERPANEL->MODULES);
 
 $module = $_GET['module'] ?? 'userpanel';
 

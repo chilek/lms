@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2025 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,16 +24,18 @@
  *  $Id$
  */
 
-class Smarty_Resource_Userpanel_Module extends Smarty_Resource_Custom
+namespace Lms\Smarty;
+
+class UserpanelModuleResource extends \Smarty\Resource\CustomPlugin
 {
     /**
-      * Fetch a template and its modification time from database
-      *
-      * @param string $name template name
-      * @param string $source template source
-      * @param integer $mtime template modification timestamp (epoch)
-      * @return void
-      */
+     * Fetch a template and its modification time from filesystem
+     *
+     * @param string  $name   template name
+     * @param string  $source template source
+     * @param integer $mtime  template modification timestamp (epoch)
+     * @return void
+     */
     protected function fetch($name, &$source, &$mtime)
     {
         global $module_dir, $modules_dirs, $USERPANEL;
@@ -42,9 +44,9 @@ class Smarty_Resource_Userpanel_Module extends Smarty_Resource_Custom
 
         $i = strpos($name, ':');
         if ($i === false) {
-            $module = $_GET['m'];
+            $module = isset($_GET['m']) ? $_GET['m'] : null;
         } else {
-            [$module, $name] = explode(':', $name, 2);
+            list($module, $name) = explode(':', $name, 2);
 
             foreach ($modules_dirs as $suspected_module_dir) {
                 if (file_exists($suspected_module_dir . $module . DIRECTORY_SEPARATOR . 'functions.php')
@@ -55,31 +57,41 @@ class Smarty_Resource_Userpanel_Module extends Smarty_Resource_Custom
             }
         }
 
-        $style = ConfigHelper::getConfig('userpanel.style', 'default');
+        if (empty($module)) {
+            $mtime  = 0;
+            $source = null;
+            return;
+        }
+
+        $style = \ConfigHelper::getConfig('userpanel.style', 'default');
+
         $template_path = $dir . $module . DIRECTORY_SEPARATOR . 'style' . DIRECTORY_SEPARATOR
             . $style . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $name;
+
         if (file_exists($template_path)) {
-            $mtime = filectime($template_path);
+            $mtime  = filectime($template_path);
             $source = file_get_contents($template_path);
         } else {
             $template_path = $dir . $module . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $name;
             if (file_exists($template_path)) {
-                $mtime = filectime($template_path);
+                $mtime  = filectime($template_path);
                 $source = file_get_contents($template_path);
             } else {
-                $mtime = 0;
+                $mtime  = 0;
                 $source = null;
             }
         }
     }
 
     /**
-      * Fetch a template's modification time from database
-      *
-      * @note implementing this method is optional. Only implement it if modification times can be accessed faster than loading the comple template source.
-      * @param string $name template name
-      * @return integer timestamp (epoch) the template was modified
-      */
+     * Fetch a template's modification time from filesystem
+     *
+     * @note implementing this method is optional. Only implement it if modification times
+     *       can be accessed faster than loading the complete template source.
+     *
+     * @param string $name template name
+     * @return integer timestamp (epoch) the template was modified
+     */
     protected function fetchTimestamp($name)
     {
         global $module_dir, $modules_dirs, $USERPANEL;
@@ -88,9 +100,9 @@ class Smarty_Resource_Userpanel_Module extends Smarty_Resource_Custom
 
         $i = strpos($name, ':');
         if ($i === false) {
-            $module = $_GET['m'];
+            $module = isset($_GET['m']) ? $_GET['m'] : null;
         } else {
-            [$module, $name] = explode(':', $name, 2);
+            list($module, $name) = explode(':', $name, 2);
 
             foreach ($modules_dirs as $suspected_module_dir) {
                 if (file_exists($suspected_module_dir . $module . DIRECTORY_SEPARATOR . 'functions.php')
@@ -101,9 +113,15 @@ class Smarty_Resource_Userpanel_Module extends Smarty_Resource_Custom
             }
         }
 
-        $style = ConfigHelper::getConfig('userpanel.style', 'default');
+        if (empty($module)) {
+            return 0;
+        }
+
+        $style = \ConfigHelper::getConfig('userpanel.style', 'default');
+
         $template_path = $dir . $module . DIRECTORY_SEPARATOR . 'style' . DIRECTORY_SEPARATOR
-            .  $style . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $name;
+            . $style . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $name;
+
         if (file_exists($template_path)) {
             return filectime($template_path);
         } else {

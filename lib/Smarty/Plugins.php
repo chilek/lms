@@ -3,7 +3,7 @@
 /**
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2022 LMS Developers
+ *  (C) Copyright 2001-2025 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,7 +24,9 @@
  *  $Id$
  */
 
-class LMSSmartyPlugins
+namespace Lms\Smarty;
+
+class Plugins
 {
     public const HINT_TYPE_ROLLOVER = 'rollover';
     public const HINT_TYPE_TOGGLE = 'toggle';
@@ -1659,7 +1661,7 @@ class LMSSmartyPlugins
         return $result;
     }
 
-    public static function daySelectionFunction(array $params, Smarty_Internal_Template $template)
+    public static function daySelectionFunction(array $params, \Smarty\Template $template)
     {
         static $loaded = false;
 
@@ -1687,7 +1689,7 @@ class LMSSmartyPlugins
         return $script . '<div class="lms-ui-day-selection-wrapper">' . $result . '</div>';
     }
 
-    public static function taxrateSelectionFunction(array $params, Smarty_Internal_Template $template)
+    public static function taxRateSelectionFunction(array $params, \Smarty\Template $template)
     {
         $default_taxrate = ConfigHelper::getConfig('phpui.default_taxrate', 23.00);
         $default_taxlabel = ConfigHelper::getConfig('phpui.default_taxlabel');
@@ -1761,7 +1763,7 @@ class LMSSmartyPlugins
             . $data_attributes . $customonchange . '>' . $options . '</select>';
     }
 
-    public static function resetToDefaultsFunction(array $params, Smarty_Internal_Template $template)
+    public static function resetToDefaultsFunction(array $params, \Smarty\Template $template)
     {
         static $loaded = false;
 
@@ -1797,7 +1799,7 @@ class LMSSmartyPlugins
         }
     }
 
-    public static function imageDataFunction(array $params, Smarty_Internal_Template $template)
+    public static function imageDataFunction(array $params, \Smarty\Template $template)
     {
         if (!isset($params['file'])) {
             return '';
@@ -1822,7 +1824,7 @@ class LMSSmartyPlugins
         }
     }
 
-    public static function imageFunction(array $params, Smarty_Internal_Template $template)
+    public static function imageFunction(array $params, \Smarty\Template $template)
     {
         if (!isset($params['file'])) {
             return '';
@@ -1949,5 +1951,845 @@ class LMSSmartyPlugins
         }
 
         return $content;
+    }
+
+    public static function boxButtonsBlock($params, $content, $template, $repeat)
+    {
+        if (!$repeat) {
+            return '<div class="lms-ui-box-buttons">'
+                    . $content
+                . '</div>';
+        }
+    }
+
+    public static function boxContentsBlock($params, $content, $template, $repeat)
+    {
+        if (!$repeat) {
+            return '<div class="lms-ui-box-contents">
+                    ' . $content . '
+                </div>';
+        }
+    }
+
+    public static function boxHeaderBlock($params, $content, $template, $repeat)
+    {
+        if (!$repeat) {
+            $id = $params['id'] ?? null;
+            $multi_row = isset($params['multi_row']) && $params['multi_row'];
+            $icon = $params['icon'] ?? null;
+            $label = $params['label'] ?? null;
+            $icon_class = $params['icon_class'] ?? null;
+            $content_id = $params['content_id'] ?? null;
+
+            if ($multi_row) {
+                return '<div class="lms-ui-box-header-multi-row">'
+                        . $content . '
+                    </div>';
+            } else {
+                return '
+            <div' . ($id ? ' id="' . $id . '"' : '') . ' class="lms-ui-box-header">
+            ' . (isset($icon) ? (strpos($icon, '/') !== false ? '<IMG src="' . $icon . '" alt="">'
+                        : '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0 ? $icon : 'lms-ui-icon-' . $icon)
+                        . (!empty($icon_class) ? ' ' . $icon_class : '') . '"></i>') : '')
+                      . (isset($label) ? '<label' . (isset($content_id) ? ' for="' . $content_id . '"' : '') . '>' . trans($label) . '</label>' : '')
+                      . $content . '
+                    </div>';
+            }
+        }
+    }
+
+    public static function boxPanelBlock($params, $content, $template, $repeat)
+    {
+        if (!$repeat) {
+            return '<div class="lms-ui-box-panel">
+                    ' . $content . '
+                </div>';
+        }
+    }
+
+    public static function dontHyphenateBlock($params, $content, $template, $repeat)
+    {
+        if ($repeat) {
+            return '';
+        } else {
+            if (isset($params['class'])) {
+                $class = $params['class'];
+            } else {
+                $class = 'donthyphenate';
+            }
+
+            return '<span class="' . $class . '">' . $content . '</span>';
+        }
+    }
+
+    public static function tabButtonPanelBlock($params, $content, $template, $repeat)
+    {
+        if (!$repeat) {
+            $id = $params['id'] ?? null;
+
+            return '
+                <div class="lms-ui-tab-button-panel"' . ($id ? ' id="' . $id . '"' : '') . '>
+                    ' . $content . '
+                </div>';
+        }
+    }
+
+    public static function tabButtonsBlock($params, $content, $template, $repeat)
+    {
+        if (!$repeat) {
+            return '
+                <div class="lms-ui-tab-buttons">
+                    ' . $content . '
+                </div>';
+        }
+    }
+
+    public static function tabContentsBlock($params, $content, $template, $repeat)
+    {
+        if (!$repeat) {
+            $id = $params['id'] ?? null;
+            $class = $params['class'] ?? null;
+
+            return '
+                <div class="lms-ui-tab-contents lms-ui-multi-check' . ($class ? ' ' . $class : '')
+                    . '"' . ($id ? ' id="' . $id . '"' : '') . ' style="display: none;">'
+                    . $content . '
+                </div>
+                <script>
+                    (function() {
+                        var state = getStorageItem("' . $id . '", "local");
+                        if (state == "1") {
+                            $("#' . $id . '").show()
+                        } else {
+                            if (getCookie("' . $id . '") == "1") {
+                                $("#' . $id . '").show();
+                                setCookie("' . $id . '", "0", "0");
+                                setStorageItem("' . $id . '", "1", "local");
+                            }
+                        }
+                    })();
+                </script>';
+        }
+    }
+
+    public static function tabHeaderCellBlock($params, $content, $template, $repeat)
+    {
+        if (!$repeat) {
+            $icon = $params['icon'] ?? null;
+            return '
+                <div class="lms-ui-tab-header-cell">
+                    ' . ($icon ? (strpos($icon, '/') === false ? '<i class="' . $icon . ' lms-ui-sortable-handle"></i>'
+                        : '<img src="' . $icon . '">') : '') . '
+                    ' . $content . '
+                </div>';
+        }
+    }
+
+    public static function tabHeaderBlock($params, $content, $template, $repeat)
+    {
+        if (!$repeat) {
+            $content_id = $params['content_id'] ?? null;
+
+            return '
+                <div class="lms-ui-tab-header' . ($content_id ? ' lmsbox-titlebar' : '') . '"'
+                    . ($content_id ? ' data-lmsbox-content="'
+                        . $content_id . '"' : '') . '>
+                    ' . $content . '
+                </div>';
+        }
+    }
+
+    public static function tabHourglassBlock($params, $content, $template, $repeat)
+    {
+        if (!$repeat) {
+            $content = '<div class="lms-ui-tab-hourglass">
+                    <i></i>' . $content . '
+                </div>';
+
+            if (isset($params['template']) && $params['template']) {
+                return '<div class="lms-ui-tab-hourglass-template">
+                        ' . $content . '
+                    </div>';
+            } else {
+                return $content;
+            }
+        }
+    }
+
+    public static function tabTableBlock($params, $content, $template, $repeat)
+    {
+        if (!$repeat) {
+            $id = $params['id'] ?? null;
+            $hourglass = isset($params['hourglass']) && $params['hourglass'];
+
+            return '
+                <div class="lms-ui-tab-table"' . ($id ? ' id="' . $id . '"' : '') . '>
+                    ' . ($hourglass ? '<div class="lms-ui-tab-hourglass"><i></i>' . $content . '</div>' : $content) . '
+                </div>';
+        }
+    }
+
+    public static function transBlock($params, $content, $template, $repeat)
+    {
+        if (!empty($content)) {
+            return trans(array_merge((array)$content, $params));
+        }
+    }
+
+    public static function bankaccountFunction($params, $template)
+    {
+        return bankaccount($params['id'], $params['account']);
+    }
+
+    public static function cssFunction(array $params, \Smarty\Template $template)
+    {
+        $css_file = preg_replace(
+            array('/^[a-z]+:(\[[0-9]+\])?/i', '/\.[^\.]+$/'),
+            array('', ''),
+            $template->template_resource
+        ) . '.css';
+        return '<script>$("head").append($(\'<link rel="stylesheet" type="text/css" href="css/templates/'
+            . $css_file . '">\'));</script>';
+    }
+
+    public static function datePeriodPresetFunction(array $params, \Smarty\Template $template)
+    {
+        $from_selector = $params['from'] ?? null;
+        $to_selector = $params['to'] ?? null;
+        $periods = $params['periods'] ?? null;
+        $time = !empty($params['time']);
+
+        if (!isset($from_selector) || !isset($to_selector)) {
+            return;
+        }
+
+        if (!isset($periods)) {
+            $periods = array('previous-month', 'current-month', 'next-month');
+        } elseif (!is_array($periods)) {
+            $periods = preg_split('/\s*[ ,|]\s*/', $periods);
+        }
+
+        $result = '';
+
+        foreach ($periods as $period) {
+            switch ($period) {
+                case 'current-month':
+                    $label = trans('current month');
+                    $icon = 'lms-ui-icon-back';
+                    break;
+                case 'current-year':
+                    $label = trans('current year');
+                    $icon = 'lms-ui-icon-current-year';
+                    break;
+                case 'next-month':
+                    $label = trans('next month');
+                    $icon = 'lms-ui-icon-next';
+                    break;
+                case 'next-year':
+                    $label = trans('next year');
+                    $icon = 'lms-ui-icon-fast-next';
+                    break;
+                case 'previous-year':
+                    $label = trans('previous year');
+                    $icon = 'lms-ui-icon-fast-previous';
+                    break;
+                case 'previous-month':
+                default:
+                    $label = trans('previous month');
+                    $icon = 'lms-ui-icon-previous';
+                    break;
+            }
+            $result .= '<button type="button" class="lms-ui-button ' . $icon . ' lms-ui-button-date-period'
+                . ($time ? ' time' : '') . '" data-from="'
+                . htmlspecialchars($from_selector) . '" data-to="'
+                . htmlspecialchars($to_selector) . '" data-period="' . $period . '" title="' . $label . '">'
+                . '<i></i></button>';
+        }
+
+        return '<div class="lms-ui-date-period-wrapper">' . $result . '</div>';
+    }
+
+    public static function documentAddressFunction($params, $template)
+    {
+        $result = '';
+
+        $lines = document_address(array(
+            'name' => $params['name'],
+            'address' => $params['address'],
+            'street' => $params['street'],
+            'zip' => $params['zip'],
+            'postoffice' => $params['postoffice'],
+            'city' => $params['city'],
+        ));
+
+        $result .= implode('<br>', $lines);
+
+        return $result;
+    }
+
+    public static function documentviewFunction($params, $template)
+    {
+        static $vars = array('type', 'name', 'url', 'id');
+        static $preview_types = array(
+            'image/jpeg' => 'image',
+            'image/png' => 'image',
+            'image/gif' => 'image',
+            'audio/mp3' => 'audio',
+            'audio/ogg' => 'audio',
+            'audio/oga' => 'audio',
+            'audio/wav' => 'audio',
+            'video/mp4' => 'video',
+            'video/ogg' => 'video',
+            'video/webm' => 'video',
+            'application/pdf' => 'pdf',
+        );
+        static $office2pdf_command = null;
+
+        if (!isset($office2pdf_command)) {
+            $office2pdf_command = ConfigHelper::getConfig('documents.office2pdf_command', '', true);
+        }
+
+        $result = '';
+        foreach ($vars as $var) {
+            if (isset($params[$var])) {
+                ${$var} = $params[$var];
+            } else {
+                return $result;
+            }
+        }
+        $external = isset($params['external']) && $params['external'] == 'true';
+
+        $preview_type = $preview_types[$type] ?? '';
+
+        if (empty($params['text'])) {
+            $office_document = preg_match('#^application/(rtf|msword|ms-excel|.+(oasis|opendocument|openxml).+)$#i', $type);
+
+            if (!empty($office2pdf_command) && $office_document) {
+                $preview_type = 'office';
+            }
+        }
+
+        $result .= '<span class="documentview">';
+
+        $result .= '<div class="documentviewdialog" id="documentviewdialog-' . $id . '" title="' . $name . '" style="display: none;"'
+            . ' data-url="' . $url . '"></div>';
+
+        $result .= '<a href="' . $url . '" data-title="' . $name . '" data-name="' . $name . '" data-type="' . $type . '"';
+        if (empty($preview_type)) {
+            $result .=  ' class="lms-ui-button" ' . ($external ? ' rel="external"' : '');
+        } else {
+            $result .= ' id="documentview-' . $id . '" data-dialog-id="documentviewdialog-' . $id . '" '
+                . 'class="lms-ui-button" data-preview-type="' . $preview_type . '"';
+        }
+
+        if (empty($params['text'])) {
+            $icon_classes = array(
+                'lms-ui-icon-view',
+                'preview',
+            );
+
+            if (preg_match('/pdf/i', $type)) {
+                $icon_classes[] = 'pdf';
+            } elseif ($office_document) {
+                if (preg_match('/(text|rtf|msword|openxmlformats.+document)/i', $type)) {
+                    $icon_classes[] = 'doc';
+                } elseif (preg_match('/(spreadsheet|ms-excel|openxmlformats.+sheet)/i', $type)) {
+                    $icon_classes[] = 'xls';
+                }
+            }
+
+            $text = $name . ' <i class="' . implode(' ', $icon_classes) . '"></i>';
+        } else {
+            $text = $params['text'];
+        }
+
+        $result .= '>' . $text . '</a>';
+
+        if (empty($params['text']) && $preview_type == 'office') {
+            $result .= self::buttonFunction(
+                array(
+                    'type' => 'link',
+                    'icon' => 'download',
+                    'class' => 'download',
+                ),
+                $template
+            );
+        }
+
+        $result .= '</span>';
+
+        return $result;
+    }
+
+    public static function eventTimeSelectionFunction($params, $template)
+    {
+        $field_prefix = $params['field_prefix'] ?? 'event';
+        $begin = $params['begin'] ?? '';
+        $end = $params['end'] ?? '';
+        $whole_days = isset($params['wholedays']) && $params['wholedays'];
+        $allow_past_date = !isset($params['allow_past_date']) || !empty($params['allow_past_date']);
+
+        $legend_code = '<div class="lms-ui-event-time-legend">';
+        for ($i = 0; $i <= 22; $i += 2) {
+            $legend_code .= '<div class="lms-ui-event-time-legend-label">' . sprintf('%02d', $i) . ':00 &#8212;</div>
+                            <div class="lms-ui-event-time-legend-scale">-</div>';
+        }
+        $legend_code .= '</div>';
+
+        return '
+            <div class="lms-ui-event-time-container">
+                <div class="lms-ui-event-time-top-panel">
+                    <div class="lms-ui-event-time-period">
+                        <div class="lms-ui-event-time-date">
+                            ' . trans("Begin:") . ' <INPUT type="text" id="event-start" placeholder="' . trans("yyyy/mm/dd hh:mm")
+                                . '" name="' . $field_prefix . '[begin]" value="' . $begin . '" size="14" ' .
+                                self::tipFunction(array(
+                                    'class' => 'calendar-time',
+                                    'text' => 'Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar',
+                                    'trigger' => 'begin',
+                                ), $template)
+                                . ' required>
+                        </div>
+                        <div class="lms-ui-event-time-date">
+                            ' . trans("End:") . ' <INPUT type="text" id="event-end" placeholder="' . trans("yyyy/mm/dd hh:mm")
+                                . '" name="' . $field_prefix . '[end]" value="' . $end . '" size="14" ' .
+                                self::tipFunction(array(
+                                    'class' => 'calendar-time',
+                                    'text' => 'Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar',
+                                    'trigger' => 'end',
+                                ), $template)
+                                . '>
+                        </div>
+                    </div>
+                    <div class="lms-ui-event-whole-days">
+                        <label>
+                            <input type="checkbox" class="lms-ui-event-whole-days-checkbox" name="' . $field_prefix . '[wholedays]" value="1"
+                                ' . ($whole_days ? 'checked' : '') . '>
+                                ' . trans("whole days") . '
+                        </label>
+                    </div>
+                </div>
+                <div class="lms-ui-event-time-bottom-panel">'
+                    . $legend_code .
+                    '<div class="lms-ui-event-time-slider"></div>
+                </div>
+            </div>
+            <script>
+
+                $(function() {
+                    new eventTimeSlider({
+                        \'start-selector\': \'#event-start\',
+                        \'end-selector\': \'#event-end\',
+                        \'slider-selector\': \'.lms-ui-event-time-slider\',
+                        \'max\': 1410,
+                        \'step\': lmsSettings.eventTimeStep,
+                        \'allow-past-date\': ' . ($allow_past_date ? 'true' : 'false') . '
+                    });
+                });
+
+            </script>';
+    }
+
+    public static function gentimeFunction($params, $template)
+    {
+        return sprintf('%.4f', microtime(true) - START_TIME);
+    }
+
+    public static function handleFunction($params, $template)
+    {
+        global $PLUGINS;  // or maybe $SMARTY->_tpl_vars['PLUGINS'] assigned by ref.
+
+        $result = '';
+        if (isset($PLUGINS[$params['name']])) {
+            foreach ($PLUGINS[$params['name']] as $plugin) {
+                $result .= $SMARTY->fetch($plugin);
+            }
+        }
+
+        return $result;
+    }
+
+    public static function jsFunction(array $params, \Smarty\Template $template)
+    {
+        if (isset($params['plugin']) && isset($params['filename'])) {
+            $filename = PLUGIN_DIR . DIRECTORY_SEPARATOR . $params['plugin'] . DIRECTORY_SEPARATOR
+                . 'js' . DIRECTORY_SEPARATOR . $params['filename'];
+            if (file_exists($filename)) {
+                return file_get_contents($filename);
+            }
+        } else {
+            $js_file = preg_replace(
+                array('/^[a-z]+:(\[[0-9]+\])?/i', '/\.[^\.]+$/'),
+                array('', ''),
+                $template->template_resource
+            ) . '.js';
+            return '<script src="js/templates/' . $js_file . '"></script>';
+        }
+    }
+
+    public static function listFunction(array $params, \Smarty\Template $template)
+    {
+
+        $id = $params['id'] ?? 'list';
+        $visible = !isset($params['visible']) || ConfigHelper::checkValue($params['visible']);
+        $disabled = isset($params['disabled']) && ConfigHelper::checkValue($params['disabled']);
+        $tipid = $params['tipid'] ?? 'list-tip';
+        $tip = $params['tip'] ?? trans('Select elements using suggestions');
+        $items = !empty($params['items']) ? $params['items'] : null;
+        $field_name_pattern = $params['field_name_pattern'] ?? 'list[%id%]';
+        $item_content = !empty($params['item_content']) ? $params['item_content']
+            : function ($item) {
+                if (isset($item['name'])) {
+                    return sprintf('(#%06d)', $item['id']) . ' <a class="lms-ui-list-item-name" href="?m=list&id=' . $item['id'] . '">' . $item['name'] . '</a>';
+                } else {
+                    return '<a class="lms-ui-list-item-name" href="?m=list&id=' . $item['id'] . '">' . sprintf('#%06d', $item['id']) . '</a>';
+                }
+            };
+
+        if (isset($items)) {
+            $item_text = '';
+            if (isset($items['id'])) {
+                $items = array($items);
+            }
+            foreach ($items as $item) {
+                if (!empty($item)) {
+                    if (is_callable($item_content)) {
+                        $content = $item_content($item);
+                    } else {
+                        $template->smarty->ext->_tplFunction->callTemplateFunction($template, $item_content, array('item' => $item), true);
+                        $content = $template->smarty->ext->_capture->getBuffer($template, 'item_content_result');
+                    }
+                    $item_text .= '<li data-item-id="' . $item['id'] . '">
+                        <input type="hidden" name="' . str_replace('%id%', $item['id'], $field_name_pattern)
+                        . '" value="' . $item['id'] . '">
+                        <i class="lms-ui-icon-delete lms-ui-list-unlink"></i>' . $content . '</li>';
+                }
+            }
+        }
+        return '<div id = "' . $id . '" class="lms-ui-list-container' . ($disabled ? ' disabled' : '') . '"' . ($visible ? '' : ' style="display: none;"') . '>
+            <div class="lms-ui-list-suggestion-container">'
+                . self::buttonFunction(array(
+                    'type' => 'link',
+                    'class' => 'lms-ui-item-suggestion-button',
+                    'icon' => 'edit',
+                    'href' => '#',
+                ), $template)
+                . '<input type="text" class="lms-ui-list-suggestion"'
+                    . (isset($tip) && isset($tipid) ? self::tipFunction(array('text' => $tip, 'trigger' => $tipid), $template) : '') . '>
+            </div>
+            <ul class="lms-ui-list"' . (isset($items) ? '' : ' style="display: none;"') . '>
+                ' . (isset($items) ? $item_text : ''). '
+            </ul>
+        </div>';
+    }
+
+    public static function memoryFunction($params, $template)
+    {
+        if (function_exists('memory_get_peak_usage')) {
+            return sprintf('(%.2f MiB)', memory_get_peak_usage()/1024/1024);
+        } else {
+            return '';
+        }
+    }
+
+    public static function multiLocationBoxFunction($params, $template)
+    {
+        if (empty($params)) {
+            $params = array();
+        }
+
+        if (empty($params['prefix'])) {
+            $params['prefix'] = 'address';
+        }
+
+        // when use first time write script content
+        if (!defined('MULTI_LOCATION_BOX')) {
+            define('MULTI_LOCATION_BOX', 1);
+            echo '<script type="text/javascript" src="js/multi_location_box.js"></script>';
+        }
+
+        if (!empty($params['addresses'])) {
+            echo '<div class="multi-location-box">';
+            echo '<table class="multi-location-table">';
+            $i = 0;
+
+            foreach ($params['addresses'] as $v) {
+                $uid = uniqid();
+
+                echo '<tr>';
+                echo '<td class="valign-top"><span class="toggle-address" data-target="' . $uid . '" data-state="closed">&plus;</span></td>';
+                echo '<td class="valign-top">';
+                echo '<div style="padding-top: 2px;">' . $v['location'] . '</div>';
+
+                echo '<div id="' . $uid . '" style="display: none;">';
+
+                $v['prefix']      = $params['prefix'] . "[$i]";
+                $v['select_type'] = 'on';
+                ++$i;
+
+                self::locationBoxFunction($v, $template);
+
+                echo '</div>';
+                echo '</td>';
+                echo '</tr>';
+            }
+
+            echo '</table>';
+            echo '<span class="lms-ui-button locbox-addnew">' ,trans('Add address'), ' &raquo;&raquo;&raquo;</span>';
+            echo '</div>';
+        }
+    }
+
+    public static function networkContainerFunction($params, $template)
+    {
+        if (empty($params)) {
+            $params = array();
+        }
+
+        $template->assign('ip', !empty($params['ip'])    ? $params['ip']    : 0);
+        $template->assign('mask', !empty($params['mask'])  ? $params['mask']  : 0);
+        $template->assign('hosts', !empty($params['hosts']) ? $params['hosts'] : array());
+
+        return $template->fetch('net/network_container.html');
+    }
+
+    public static function numberFunction($params, $template)
+    {
+        $result = docnumber(array(
+            'number' => $params['number'],
+            'template' => $params['template'],
+            'cdate' => $params['time'],
+            'customerid' => $params['customerid'] ?? null,
+        ));
+        if (isset($params['assign'])) {
+            $template->assign($params['assign'], $result);
+        } else {
+            return $result;
+        }
+    }
+
+    public static function persistentFilterFunction($params, $template)
+    {
+        $layout = $template->getTemplateVars('layout');
+        $filter_id = $params['id'] ?? null;
+        $form = $params['form'] ?? null;
+
+        $persistent_filters = $template->getTemplateVars('persistent_filters');
+        $persistent_filter = $template->getTemplateVars('persistent_filter');
+        $filter = $template->getTemplateVars('filter');
+
+        if (isset($filter_id) && isset($persistent_filters[$filter_id])) {
+            $persistent_filters = $persistent_filters[$filter_id];
+            $persistent_filter = $filter[$filter_id]['persistent_filter'];
+        }
+
+        $filters = '';
+
+        if (!empty($persistent_filters) && is_array($persistent_filters)) {
+            foreach ($persistent_filters as $key => $row) {
+                $text[$key] = $row['text'];
+            }
+            array_multisort($text, SORT_ASC, $persistent_filters);
+
+            foreach ($persistent_filters as $filter) {
+                $filters .= '<option value="' . $filter['value'] . '"' . ($filter['value'] == $persistent_filter ? ' selected' : '')
+                    . '>' . $filter['text'] . '</option >';
+            }
+        }
+
+        return '
+            <div class="lms-ui-persistent-filter"' . (isset($filter_id) ? ' data-filter-id="' . $filter_id . '"' : '')
+                . (isset($form) ? ' form="' . $form . '"' : '') . '>
+                <select class="lms-ui-filter-selection lms-ui-combobox" title="' . trans("<!filter>Select filter") . '">
+                    <option value="-1">' . trans("<!filter>— none —") . '</option>
+                    ' . $filters . '
+                </select>
+                <button class="lms-ui-button lms-ui-filter-modify-button"'
+                    . ($persistent_filter == -1 || empty($persistent_filter) ? ' disabled' : '') . ' title="'
+                    . trans("<!filter>Update") . '"><i class="lms-ui-icon-add"></i>
+                </button>
+                <button class="lms-ui-button lms-ui-filter-delete-button" title="'
+                    . trans("<!filter>Delete") . '"><i class="lms-ui-icon-trash"></i>
+                </button>
+            </div>
+        </form>';
+    }
+
+    public static function sumFunction($params, $template)
+    {
+        $array = $params['array'];
+        $format = ($params['string_format'] ?? '%d');
+        $default = ($params['default'] ?? 0);
+        $result = 0;
+
+        $alreadyAssocArray = false;
+
+        if ($array) {
+            foreach ($array as $row) {
+                if (is_array($row)) {
+                    if (isset($params['column'], $row[$params['column']])) {
+                        $result += $row[$params['column']];
+                        $alreadyAssocArray = true;
+                    }
+                } elseif (!$alreadyAssocArray) {
+                    $result += floatval($row);
+                }
+            }
+        }
+
+        $result = $result ?? $default;
+
+        if (isset($params['assign'])) {
+            $template->assign($params['assign'], $result);
+        } else {
+            return sprintf($format, $result);
+        }
+    }
+
+    public static function taxCategorySelectionFunction($params, $template)
+    {
+        $elementname = $params['elementname'] ?? 'taxcategory';
+        $selected = $params['selected'] ?? null;
+        $data_attributes = '';
+        foreach ($params as $name => $value) {
+            if (strpos($name, 'data_') === 0) {
+                $data_attributes .= ' ' . str_replace('_', '-', $name) . '="' . $value . '"';
+            }
+        }
+        $result = '<select name="' . $elementname . '"' . (isset($params['id']) ? ' id="' . $params['id'] . '"' : '')
+            . (isset($params['class']) ? ' class="' . $params['class'] . '"' : '')
+            . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '')
+            . (isset($params['tip']) ? ' ' . self::tipFunction(array('text' => $params['tip'], 'trigger' => $params['id'] ?? $elementname), $template) : '')
+            . (isset($params['visible']) && !$params['visible'] ? ' style="display: none;"' : '')
+            . $data_attributes . '>';
+        $result .= '<option value="0">' . trans("— none —") . '</option>';
+        foreach ($GLOBALS['TAX_CATEGORIES'] as $categoryid => $category) {
+            $result .= '<option value="' . $categoryid . '"'
+                . ($categoryid == $selected ? ' selected' : '') . ' '
+                . self::tipFunction(array('text' => $category['description']), $template) . '>'
+                . '(' . sprintf('%02d', $categoryid) . ') ' . $category['label'] . '</option>';
+        }
+        $result .= '</select>';
+
+        return $result;
+    }
+
+    public static function dontHyphenateModifier($text, $class = null)
+    {
+        if (!isset($class)) {
+            $class = 'donthyphenate';
+        }
+
+        return '<span class="' . $class . '">' . $text . '</span>';
+    }
+
+    public static function durationFormatModifier($sec)
+    {
+        $d = floor($sec / 86400);
+        $h = floor(($sec - $d * 86400) / 3600);
+        $m = floor(($sec - $d * 86400 - $h * 3600) / 60);
+        $s = floor($sec - $d * 86400 - $h * 3600 - $m * 60);
+        if ($sec < 60) {
+            return sprintf("%02ds", $s);
+        } elseif (empty($d)) {
+            return sprintf("%02d:%02d:%02d", $h, $m, $s);
+        } else {
+            return sprintf("%dd %02d:%02d:%02d", $d, $h, $m, $s);
+        }
+    }
+
+    public static function messageQuoteModifier($text)
+    {
+        $result = '';
+        $lines = explode('<br>', $text);
+        $linecount = count($lines);
+        $quote = 0;
+        $lineidx = 0;
+        foreach ($lines as $line) {
+            $newquote = 0;
+            while (strpos($line, '&gt;') === 0) {
+                $line = substr($line, 5);
+                $newquote++;
+            }
+            if ($newquote > $quote) {
+                $result .= str_repeat('<blockquote class="lms-ui-message-quote">', $newquote - $quote);
+            } elseif ($newquote < $quote) {
+                $result .= str_repeat('</blockquote>', $quote - $newquote);
+            }
+            $result .= $line;
+            if ($lineidx < $linecount - 1) {
+                $result .= '<br>';
+            }
+            $quote = $newquote;
+        }
+
+        return $result;
+    }
+
+    public static function moneyFormatModifier($number)
+    {
+        return moneyf($number);
+    }
+
+    public static function sizeFormatModifier($size)
+    {
+        return convert_to_units($size, 5, 1000, 'B');
+    }
+
+    public static function stripHtmlModifier($args)
+    {
+        $search = array(
+            "'<script[^>]*?>.*?</script>'si",  // Strip out javascript
+            "'<[\/\!]*?[^<>]*?>'si",           // Strip out html tags
+            "'([\r\n])[\s]+'",                 // Strip out white space
+            "'&(quot|#34);'i",                 // Replace html entities
+            "'&(amp|#38);'i",
+            "'&(lt|#60);'i",
+            "'&(gt|#62);'i",
+            "'&(nbsp|#160);'i",
+            "'&(iexcl|#161);'i",
+            "'&(cent|#162);'i",
+            "'&(pound|#163);'i",
+            "'&(copy|#169);'i",
+        );
+
+        $replace = array(
+            "",
+            "\\1",
+            "\"",
+            "&",
+            "<",
+            ">",
+            " ",
+            chr(161),
+            chr(162),
+            chr(163),
+            chr(169),
+        );
+
+        $args = preg_replace($search, $replace, $args);
+        return preg_replace_callback(
+            "'&#(\d+);'",
+            function ($m) {
+                return chr($m[1]);
+            },
+            $args
+        );
+    }
+
+    public static function toWordsModifier($num, $power = 0, $powsuffix = '', $short_version = 0)
+    {
+        return to_words($num, $power, $powsuffix, $short_version);
+    }
+
+    public static function trunEscapeModifier($text, $length)
+    {
+        if (is_null($text)) {
+            return $text;
+        } elseif (mb_strlen($text) > $length) {
+            return htmlspecialchars(mb_substr($text, 0, $length), ENT_QUOTES) . '&hellip;';
+        } else {
+            return htmlspecialchars($text, ENT_QUOTES);
+        }
     }
 }
