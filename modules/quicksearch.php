@@ -291,6 +291,7 @@ switch ($mode) {
         $SESSION->remove('csln');
         $SESSION->remove('cslg');
         $SESSION->remove('csls');
+        $SESSION->remove('cslng');
 
         $target = '?m=customersearch&search=1';
         break;
