@@ -30,7 +30,6 @@ $CONTACT_FAX = 2;
 $CONTACT_LANDLINE = 4;
 $CONTACT_EMAIL = 8;
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE customercontacts CHANGE phone contact varchar(255) NOT NULL DEFAULT ''");
 $this->Execute(
@@ -66,7 +65,3 @@ $this->Execute("CREATE VIEW customersview AS
 $this->Execute("CREATE VIEW contractorview AS
 	SELECT c.* FROM customers c
 	WHERE c.type = ?", array(2));
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015080700', 'dbversion'));
-
-$this->CommitTrans();

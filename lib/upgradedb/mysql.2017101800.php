@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE rttickets ADD COLUMN requestor_mail varchar(255) DEFAULT NULL");
 $this->Execute("ALTER TABLE rttickets ADD COLUMN requestor_phone varchar(32) DEFAULT NULL");
@@ -38,7 +37,3 @@ if ($tickets = $this->GetAll("SELECT id, requestor FROM rttickets WHERE requesto
         }
     }
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017101800', 'dbversion'));
-
-$this->CommitTrans();

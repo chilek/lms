@@ -21,13 +21,8 @@
  *
  */
 
-$this->BeginTrans();
 
 if ($this->ResourceExists('voip_cdr.cdate', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("DROP TRIGGER voip_cdr_insert_trigger");
     $this->Execute("ALTER TABLE voip_cdr DROP COLUMN cdate");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022061301', 'dbversion'));
-
-$this->CommitTrans();
