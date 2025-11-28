@@ -91,12 +91,12 @@ $LMS = new LMS($DB, $AUTH, $SYSLOG);
 
 // set some template and layout variables
 
-$SMARTY->assignByRef('_LANG', $_LANG);
+$SMARTY->assign('_LANG', $_LANG);
 $SMARTY->template_dir = getcwd();
 $SMARTY->compile_dir = SMARTY_COMPILE_DIR;
 include('lang.php');
 
-$SMARTY->assignByRef('layout', $layout);
+$SMARTY->assign('layout', $layout);
 
 if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
     $forwarded_ip = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);

@@ -153,7 +153,7 @@ if (!$no_attachments) {
     );
     $SMARTY->setCompileDir(SMARTY_COMPILE_DIR);
 
-    $SMARTY->assignByRef('layout', $layout);
+    $SMARTY->assign('layout', $layout);
 }
 
 $invoice_filename = ConfigHelper::getConfig('sendinvoices.invoice_filename', 'invoice_%docid');

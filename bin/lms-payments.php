@@ -1450,7 +1450,7 @@ if (!empty($billing_document_template)) {
 
     $layout = array();
 
-    $SMARTY->assignByRef('layout', $layout);
+    $SMARTY->assign('layout', $layout);
 }
 
 $invoices_with_billings = array();

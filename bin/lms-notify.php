@@ -224,7 +224,7 @@ $SMARTY->AddTemplateDir(
 );
 $SMARTY->setCompileDir(SMARTY_COMPILE_DIR);
 
-$SMARTY->assignByRef('layout', $layout);
+$SMARTY->assign('layout', $layout);
 
 $plugin_manager->executeHook('smarty_initialized', $SMARTY);
 

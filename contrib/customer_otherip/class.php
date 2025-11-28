@@ -119,5 +119,5 @@ $plugin_manager->executeHook('smarty_initialized', $SMARTY);
 
 $layout['lmsv'] = '1.11-git';
 
-$SMARTY->assignByRef('layout', $layout);
-$SMARTY->assignByRef('_config', $CONFIG);
+$SMARTY->assign('layout', $layout);
+$SMARTY->assign('_config', $CONFIG);
