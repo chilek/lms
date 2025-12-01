@@ -461,6 +461,7 @@ if ($voip_cdr_only) {
             a.liabilityid,
             a.customerid,
             a.recipient_address_id,
+            ca3.ten AS recipient_ten,
             (CASE WHEN ca2.address_id IS NULL THEN ca1.address_id ELSE ca2.address_id END) AS post_address_id,
             a.period,
             a.backwardperiod,
@@ -526,6 +527,7 @@ if ($voip_cdr_only) {
         LEFT JOIN customerconsents cc3 ON cc3.customerid = c.id AND cc3.type = " . CCONSENT_SMS_MARKETING . "
         LEFT JOIN customer_addresses ca1 ON ca1.customer_id = c.id AND ca1.type = " . BILLING_ADDRESS . "
         LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c.id AND ca2.type = " . POSTAL_ADDRESS . "
+        LEFT JOIN customer_addresses ca3 ON ca3.customer_id = c.id AND ca3.address_id = a.recipient_address_id
         LEFT JOIN promotionschemas ps ON ps.id = a.promotionschemaid
         LEFT JOIN promotions p ON p.id = ps.promotionid
         LEFT JOIN (
@@ -590,7 +592,9 @@ $billing_invoice_separate_fractions = ConfigHelper::checkConfig($config_section 
 $empty_billings = ConfigHelper::checkConfig('voip.empty_billings');
 
 $query = "SELECT
-			a.id, a.tariffid, a.customerid, a.recipient_address_id,
+			a.id, a.tariffid, a.customerid,
+			a.recipient_address_id,
+			ca3.recipient_ten,
 			(CASE WHEN ca2.address_id IS NULL THEN ca1.address_id ELSE ca2.address_id END) AS post_address_id,
 			a.period, a.backwardperiod, a.at, a.suspended, a.settlement, a.datefrom,
 			0 AS pdiscount, 0 AS vdiscount, a.invoice,
@@ -642,6 +646,7 @@ $query = "SELECT
 			JOIN customers c ON (a.customerid = c.id)
             LEFT JOIN customer_addresses ca1 ON ca1.customer_id = c.id AND ca1.type = " . BILLING_ADDRESS . "
             LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c.id AND ca2.type = " . POSTAL_ADDRESS . "
+            LEFT JOIN customer_addresses ca3 ON ca3.customer_id = c.id AND ca3.address_id = a.recipient_address_id
 			" . ($empty_billings ? 'LEFT ' : '') . "JOIN (
 				SELECT ROUND(sum(price), 2) AS value,
 					SUM(vc.billedtime) AS totaltime,
@@ -1844,8 +1849,8 @@ foreach ($assigns as $assign) {
 					customerid, name, address, zip, city, ten, ssn, cdate, sdate, paytime, paytype,
 					div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 					div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
-					recipient_address_id, post_address_id, currency, currencyvalue, memo, flags)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+					recipient_address_id, recipient_ten, post_address_id, currency, currencyvalue, memo, flags)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     array(
                         $newnumber,
                         $plan ?: null,
@@ -1880,6 +1885,7 @@ foreach ($assigns as $assign) {
                         ($division['inv_cplace'] ?: ''),
                         $fullnumber,
                         $recipient_address_id,
+                        $assign['recipient_ten'],
                         empty($assign['post_address_id']) ? null : $LMS->CopyAddress($assign['post_address_id']),
                         $currency,
                         $currencyvalues[$currency],
