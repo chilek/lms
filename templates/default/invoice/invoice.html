@@ -196,6 +196,11 @@
 					{document_address name=$invoice.rec_name address=$invoice.rec_address
 							street=$invoice.rec_street zip=$invoice.rec_zip
 							postoffice=$invoice.rec_postoffice city=$invoice.rec_city}
+					{if (!empty($invoice.recipient_ten))}
+						<br>
+						{trans("TEN:")}
+						{$invoice.recipient_ten}
+					{/if}
 				{/if}
 			</td>
 			<td width="34%" valign="top" class="sdr">

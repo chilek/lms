@@ -401,6 +401,9 @@ class LMSEzpdfInvoice extends LMSInvoice
             'postoffice' => $this->data['rec_postoffice'],
             'city' => $this->data['rec_city'],
         ));
+        if (!empty($this->data['recipient_ten'])) {
+            $rec_lines[] = trans('TEN') . ': ' . $this->data['recipient_ten'];
+        }
 
         foreach ($rec_lines as $line) {
             $y -= $this->backend->text_align_left($x, $y, $font_size, $line);
