@@ -685,6 +685,7 @@ CREATE TABLE customer_addresses (
 	customer_id int(11),
 	address_id  int(11),
 	type        smallint NULL,
+	ten varchar(50) DEFAULT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT `customer_addresses_customer_id_fkey` FOREIGN KEY (customer_id) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT `customer_addresses_address_id_fk`  FOREIGN KEY (address_id)  REFERENCES addresses (id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -738,6 +739,7 @@ CREATE TABLE documents (
 	comment text DEFAULT NULL,
 	cuserid int(11) DEFAULT NULL,
 	recipient_address_id int(11),
+	recipient_ten varchar(50) DEFAULT NULL,
 	post_address_id int(11),
 	template varchar(255) DEFAULT NULL,
 	commitflags tinyint(1) NOT NULL DEFAULT 0,
@@ -4495,4 +4497,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025111300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025120100');

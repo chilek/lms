@@ -772,7 +772,15 @@ function truncate_str($string, $length, $etc = '...')
 
 function location_str($data)
 {
-    $location = $data['city_name'];
+    if (isset($data['zip'])) {
+        $location = $data['zip'];
+    } elseif (isset($data['location_zip'])) {
+        $location = $data['location_zip'];
+    } else {
+        $location = '';
+    }
+
+    $location .= empty($location) ? '' : ' ' . (isset($data['city_name']) ? $data['city_name'] : $data['location_city_name']);
 
     if ($data['location_flat']) {
         $h = ConfigHelper::getConfig('phpui.house_template', '%h/%f');
@@ -782,9 +790,13 @@ function location_str($data)
         $h = $data['location_house'];
     }
 
+    if (!isset($data['street_name'])) {
+        $data['street_name'] = $data['location_street_name'];
+    }
+
     if ($data['street_name']) {
         $street = (isset($data['street_type']) ? $data['street_type'] . ' ' : '') . $data['street_name'];
-        $location .= ($location ? ',' : '') . $street;
+        $location .= ($location ? ', ' : '') . $street;
     }
 
     if ($h) {

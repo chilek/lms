@@ -71,6 +71,7 @@ $(function() {
 	function updateLocationString(box) {
         var address_type = box.find('[data-address="address_type"]').val();
         var location_name = box.find('[data-address="location-name"]').val();
+        var ten = box.find('[data-address="ten"]').val();
         var teryt = box.find('[data-address="teryt-checkbox"]').prop('checked');
         var terc = box.find('[data-address="terc"]').val();
         var city   = box.find('[data-address="city"]').val();
@@ -94,7 +95,10 @@ $(function() {
             postoffice: postoffice,
             teryt: teryt
         });
-        location = (address_type == 1 || !location_name.length ? '' : location_name + ', ') + (location.length > 0 ? location : '...');
+
+        location = (address_type == 1 || !location_name.length ? '' : location_name + ', ') +
+            (ten.length ? $t('TEN') + ' ' + ten + ', ' : '') +
+            (location.length > 0 ? location : '...');
 
         var location2 = location_str({
             terc: terc,

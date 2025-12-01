@@ -185,10 +185,19 @@ if (isset($_POST['customeradd'])) {
         }
 
         Localisation::setSystemLanguage($countryCode);
+
         if ($v['location_zip']) {
             $zip_validation_result = check_zip($v['location_zip']);
             if (isset($zip_validation_result) && !$zip_validation_result) {
                 $error['customeradd[addresses][' . $k . '][location_zip]'] = trans('Incorrect ZIP code!');
+                $customeradd['addresses'][$k]['show'] = true;
+            }
+        }
+
+        if (!empty($v['location_ten']) && !isset($warnings['customeradd-addresses--' . $k . '--location_ten-'])) {
+            $ten_validation_result = check_ten($v['location_ten']);
+            if (isset($ten_validation_result) && !$ten_validation_result) {
+                $warning['customeradd[addresses][' . $k . '][location_ten]'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
                 $customeradd['addresses'][$k]['show'] = true;
             }
         }

@@ -514,6 +514,7 @@ CREATE TABLE customer_addresses (
     	CONSTRAINT customer_addresses_customer_id_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
     address_id  integer REFERENCES addresses (id) ON DELETE CASCADE ON UPDATE CASCADE,
     type        smallint NULL,
+    ten varchar(50) DEFAULT NULL,
     PRIMARY KEY (id),
     UNIQUE(customer_id, address_id)
 );
@@ -576,6 +577,7 @@ CREATE TABLE documents (
 		CONSTRAINT documents_cuserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	recipient_address_id integer DEFAULT NULL
 		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	recipient_ten ten varchar(50) DEFAULT NULL,
 	post_address_id integer DEFAULT NULL
 		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	template varchar(255) DEFAULT NULL,
@@ -4534,6 +4536,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025111300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025120100');
 
 COMMIT;

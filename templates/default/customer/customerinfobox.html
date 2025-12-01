@@ -482,6 +482,7 @@
 												<td>
 													<span title="{$title}">
 														{if $v.location_name}{$v.location_name|escape}, {/if}
+														{if !empty($v.location_ten)}{trans("TEN")} {$v.location_ten|escape}, {/if}
 														{if $v.teryt}
 															{if $show_numeric_identifiers}
 																{capture assign="teryt_comment"}{strip}

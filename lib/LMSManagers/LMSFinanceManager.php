@@ -2352,9 +2352,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
 
         if (!empty($invoice['invoice']['recipient_address_id']) && $invoice['invoice']['recipient_address_id'] > 0) {
+            $invoice['invoice']['recipient_ten'] = $location_manager->getRecipientTen($invoice['invoice']['recipient_address_id']);
             $invoice['invoice']['recipient_address_id'] = $location_manager->CopyAddress($invoice['invoice']['recipient_address_id']);
         } else {
             $invoice['invoice']['recipient_address_id'] = null;
+            $invoice['invoice']['recipient_ten'] = null;
         }
 
         $post_address_id = $location_manager->GetCustomerAddress($invoice['customer']['id'], POSTAL_ADDRESS);
@@ -2424,6 +2426,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'fullnumber' => $fullnumber,
             'comment' => $comment,
             'recipient_address_id' => empty($invoice['invoice']['recipient_address_id']) ? null : $invoice['invoice']['recipient_address_id'],
+            'recipient_ten' => empty($invoice['invoice']['recipient_ten']) ? null : $invoice['invoice']['recipient_ten'],
             'post_address_id' => empty($invoice['invoice']['post_address_id']) ? null : $invoice['invoice']['post_address_id'],
             'currency' => $invoice['invoice']['currency'] ?? Localisation::getCurrentCurrency(),
             'currencyvalue' => $invoice['invoice']['currencyvalue'] ?? 1.0,
@@ -2437,8 +2440,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			ten, ssn, zip, city, countryid, divisionid,
 			div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 			div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
-			comment, recipient_address_id, post_address_id, currency, currencyvalue, memo, reference)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			comment, recipient_address_id, recipient_ten, post_address_id, currency, currencyvalue, memo, reference)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
         $iid = $this->db->GetLastInsertID('documents');
         if ($this->syslog) {
             unset($args[SYSLOG::RES_USER]);
@@ -2622,7 +2625,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.div_bank AS division_bank, d.div_account AS division_account,
 				d.div_inv_header AS division_header, d.div_inv_footer AS division_footer,
 				d.div_inv_author AS division_author, d.div_inv_cplace AS division_cplace,
-				d.recipient_address_id, d.post_address_id,
+				d.recipient_address_id,
+				d.recipient_ten,
+				d.post_address_id,
 				d.currency, d.currencyvalue, d.memo,
 				d.extid,
 				(CASE WHEN cc.type IS NULL THEN 0 ELSE 1 END) AS balance_on_documents
@@ -2660,7 +2665,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.div_bank AS division_bank, d.div_account AS division_account,
 				d.div_inv_header AS division_header, d.div_inv_footer AS division_footer,
 				d.div_inv_author AS division_author, d.div_inv_cplace AS division_cplace,
-				d.recipient_address_id, d.post_address_id,
+				d.recipient_address_id,
+				d.recipient_ten,
+				d.post_address_id,
 				a.state AS rec_state, a.state_id AS rec_state_id,
 				a.city as rec_city, a.city_id AS rec_city_id,
 				a.street AS rec_street, a.street_id AS rec_street_id,
@@ -5416,6 +5423,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $args['recipient_address_id'] = empty($proforma['recipient_address_id']) ? null :
             $location_manager->CopyAddress($proforma['recipient_address_id']);
+        $args['recipient_ten'] = empty($proforma['recipient_ten']) ? null : $proforma['recipient_ten'];
 
         $this->db->Execute(
             'INSERT INTO documents (cdate, sdate, paytime, paytype, flags, customerid,
@@ -5423,13 +5431,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 div_name, div_shortname, div_address, div_city, div_zip, div_countryid,
                 div_ten, div_regon, div_bank, div_account, div_inv_header, div_inv_footer,
                 div_inv_author, div_inv_cplace, comment, currency, currencyvalue, memo,
-                type, number, fullnumber, numberplanid, recipient_address_id)
+                type, number, fullnumber, numberplanid, recipient_address_id, recipient_ten)
                 VALUES (?, ?, ?, ?, ?, ?,
                     ?, ?, ?, ?, ?, ?, ?, ?,
                     ?, ?, ?, ?, ?, ?,
                     ?, ?, ?, ?, ?, ?,
                     ?, ?, ?, ?, ?, ?,
-                    ?, ?, ?, ?, ?)',
+                    ?, ?, ?, ?, ?, ?)',
             array_values($args)
         );
         $invoiceid = $args[SYSLOG::RES_DOC] = $this->db->GetLastInsertID('documents');
