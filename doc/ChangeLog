@@ -1141,6 +1141,8 @@ version 28-git (????-??-??):
     (basing on document types to which file attachments are assigned) [chilan]
   - improvement: dedicated recipient TEN can be set for invoices and correction notes in customer location
     addresses [chilan]
+  - enhancement: added 'budgetary unit' customer flag [chilan]
+  - enhancement: added uke income report budgetary unit optional category [chilan]
 
 version 27.0 (2021-08-20):
 
