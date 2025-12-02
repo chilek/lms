@@ -61,6 +61,13 @@ if (isset($_POST['brutto'])) {
     $value_formula = '(cash.value * 100) / (100 + t.value)';
 }
 
+$budgetaryunits = !empty($_POST['budgetaryunits']);
+if ($budgetaryunits) {
+    $filter['uke-income']['budgetaryunits'] = 1;
+} else {
+    unset($filter['uke-income']['budgetaryunits']);
+}
+
 $bandwidths = isset($_POST['bandwidths']);
 if ($bandwidths) {
     $filter['uke-income']['bandwidths'] = 1;
@@ -108,10 +115,12 @@ switch ($customergroup_intersection) {
 $income = $DB->GetAll('
 	SELECT ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : 'cash.servicetype') . ' AS type,
 		COUNT(DISTINCT CASE WHEN c.type = ' . CTYPES_PRIVATE . ' THEN c.id ELSE null END) AS privatecount,
-		COUNT(DISTINCT CASE WHEN c.type = ' . CTYPES_COMPANY . ' THEN c.id ELSE null END) AS businesscount,
+		COUNT(DISTINCT CASE WHEN c.type = ' . CTYPES_COMPANY . ' AND (c.flags & ' . CUSTOMER_FLAG_BUDGETARY_UNIT . ') = 0 THEN c.id ELSE null END) AS businesscount,
+		COUNT(DISTINCT CASE WHEN c.type = ' . CTYPES_COMPANY . ' AND (c.flags & ' . CUSTOMER_FLAG_BUDGETARY_UNIT . ') > 0 THEN c.id ELSE null END) AS budgetaryunitcount,
 		COUNT(DISTINCT c.id) AS totalcount,
 		SUM(CASE WHEN c.type = ' . CTYPES_PRIVATE . ' THEN ' . $value_formula . ' ELSE 0 END) * -1 AS privateincome,
-		SUM(CASE WHEN c.type = ' . CTYPES_COMPANY . ' THEN ' . $value_formula . ' ELSE 0 END) * -1 AS businessincome,
+		SUM(CASE WHEN c.type = ' . CTYPES_COMPANY . ' AND (c.flags & ' . CUSTOMER_FLAG_BUDGETARY_UNIT . ') = 0 THEN ' . $value_formula . ' ELSE 0 END) * -1 AS businessincome,
+		SUM(CASE WHEN c.type = ' . CTYPES_COMPANY . ' AND (c.flags & ' . CUSTOMER_FLAG_BUDGETARY_UNIT . ') > 0 THEN ' . $value_formula . ' ELSE 0 END) * -1 AS budgetaryunitincome,
 		SUM(' . $value_formula . ') * -1 AS totalincome
 	FROM cash
     LEFT JOIN documents d ON d.id = cash.docid
@@ -140,6 +149,7 @@ if ($bandwidths) {
             'total' => 0,
             'private' => 0,
             'business' => 0,
+            'budgetaryunit' => 0,
         ),
         '>= 2 Mbit/s < 10 Mbit/s' => array(
             'min' => 2000,
@@ -147,6 +157,7 @@ if ($bandwidths) {
             'total' => 0,
             'private' => 0,
             'business' => 0,
+            'budgetaryunit' => 0,
         ),
         '>= 10 Mbit/s < 30 Mbit/s' => array(
             'min' => 10000,
@@ -154,6 +165,7 @@ if ($bandwidths) {
             'total' => 0,
             'private' => 0,
             'business' => 0,
+            'budgetaryunit' => 0,
         ),
         '>= 30 Mbit/s < 100 Mbit/s' => array(
             'min' => 30000,
@@ -161,6 +173,7 @@ if ($bandwidths) {
             'total' => 0,
             'private' => 0,
             'business' => 0,
+            'budgetaryunit' => 0,
         ),
         '>= 100 Mbit/s < 300 Mbit/s' => array(
             'min' => 100000,
@@ -168,6 +181,7 @@ if ($bandwidths) {
             'total' => 0,
             'private' => 0,
             'business' => 0,
+            'budgetaryunit' => 0,
         ),
         '>= 300 Mbit/s < 1 Gbit/s' => array(
             'min' => 300000,
@@ -175,12 +189,14 @@ if ($bandwidths) {
             'total' => 0,
             'private' => 0,
             'business' => 0,
+            'budgetaryunit' => 0,
         ),
         '>= 1 Gbit/s' => array(
             'min' => 1000000,
             'total' => 0,
             'private' => 0,
             'business' => 0,
+            'budgetaryunit' => 0,
         ),
     );
 
@@ -199,7 +215,7 @@ if ($bandwidths) {
                     WHEN ic.period = ' . YEARLY . ' THEN ' . str_replace(',', '.', 1 / $months / 12) . '
                     ELSE 0 END)
             )) AS private,
-            (SUM((CASE WHEN c.type = ' . CTYPES_COMPANY . ' THEN ROUND(ic.count) ELSE 0 END)
+            (SUM((CASE WHEN c.type = ' . CTYPES_COMPANY . ' AND (c.flags & ' . CUSTOMER_FLAG_BUDGETARY_UNIT . ') = 0 THEN ROUND(ic.count) ELSE 0 END)
                 * (CASE
                     WHEN ic.period IS NULL OR ic.period = ' . MONTHLY . ' THEN ' . str_replace(',', '.', 1 / $months) . '
                     WHEN ic.period = ' . QUARTERLY . ' THEN ' . str_replace(',', '.', 1 / $months / 3) . '
@@ -207,6 +223,14 @@ if ($bandwidths) {
                     WHEN ic.period = ' . YEARLY . ' THEN ' . str_replace(',', '.', 1 / $months / 12) . '
                     ELSE 0 END)
             )) AS business,
+            (SUM((CASE WHEN c.type = ' . CTYPES_COMPANY . ' AND (c.flags & ' . CUSTOMER_FLAG_BUDGETARY_UNIT . ') > 0 THEN ROUND(ic.count) ELSE 0 END)
+                * (CASE
+                    WHEN ic.period IS NULL OR ic.period = ' . MONTHLY . ' THEN ' . str_replace(',', '.', 1 / $months) . '
+                    WHEN ic.period = ' . QUARTERLY . ' THEN ' . str_replace(',', '.', 1 / $months / 3) . '
+                    WHEN ic.period = ' . HALFYEARLY . ' THEN ' . str_replace(',', '.', 1 / $months / 6) . '
+                    WHEN ic.period = ' . YEARLY . ' THEN ' . str_replace(',', '.', 1 / $months / 12) . '
+                    ELSE 0 END)
+            )) AS budgetaryunit,
             (SUM(ROUND(ic.count)
                 * (CASE
                     WHEN ic.period IS NULL OR ic.period = ' . MONTHLY . ' THEN ' . str_replace(',', '.', 1 / $months) . '
@@ -248,6 +272,7 @@ if ($bandwidths) {
                     $bandwidth_interval['total'] += $customer_link['total'];
                     $bandwidth_interval['private'] += $customer_link['private'];
                     $bandwidth_interval['business'] += $customer_link['business'];
+                    $bandwidth_interval['budgetaryunit'] += $customer_link['budgetaryunit'];
                     break;
                 }
             }
@@ -257,7 +282,8 @@ if ($bandwidths) {
             foreach ($bv as &$bi) {
                 $bi['private'] = round($bi['private']);
                 $bi['business'] = round($bi['business']);
-                $bi['total'] = $bi['private'] + $bi['business'];
+                $bi['budgetaryunit'] = round($bi['budgetaryunit']);
+                $bi['total'] = $bi['private'] + $bi['business'] + $bi['budgetaryunit'];
             }
             unset($bi);
         }
@@ -265,6 +291,8 @@ if ($bandwidths) {
     }
     $SMARTY->assign('bandwidth_variation', $bandwidth_variation);
 }
+
+$SMARTY->assign('budgetaryunits', empty($filter['uke-income']['budgetaryunits']) ? 0 : 1);
 
 if ($type == 'linktechnologies') {
     $linktechnologies = array();

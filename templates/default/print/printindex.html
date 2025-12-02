@@ -2674,6 +2674,21 @@
 			</td>
 		</tr>
 		<tr>
+			<td>
+				{icon name="legal-personality" class="fa-fw"}
+			</td>
+			<td class="nobr">
+				<label for="budgetaryunits">
+					<strong>{trans("Separate budgetary units")}</strong>
+				</label>
+			</td>
+			<td>
+				<input type="checkbox" name="budgetaryunits" id="budgetaryunits" value="1"
+					form="uke-income-form"
+					{if isset($filter['uke-income']['budgetaryunits'])} checked{/if}>
+			</td>
+		</tr>
+		<tr>
 			<td colspan="3" class="lms-ui-box-buttons">
 				<div class="print-menu">
 					{button type="submit" form="uke-income-form" icon="print" label="Print"}
