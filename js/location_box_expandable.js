@@ -97,7 +97,7 @@ $(function() {
         });
 
         location = (address_type == 1 || !location_name.length ? '' : location_name + ', ') +
-            (ten.length ? $t('TEN') + ' ' + ten + ', ' : '') +
+            (ten && ten.length ? $t('TEN') + ' ' + ten + ', ' : '') +
             (location.length > 0 ? location : '...');
 
         var location2 = location_str({
