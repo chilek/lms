@@ -87,6 +87,10 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
                     }
                     break;
                 case 'invprojectid':
+                    if (empty($val)) {
+                        break;
+                    }
+
                     if (is_array($val)) {
                         if (in_array(-2, $val)) {
                             $where[] = 'n.invprojectid IS NULL';
