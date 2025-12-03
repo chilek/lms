@@ -60,7 +60,7 @@ $(function() {
 
         $.ajax({
             url: "?m=customeraddresses&action=getlocationboxhtml&prefix=" + $(this).attr('data-prefix') +
-                "[addresses][" + counter + "]&default_type=1&delete_button=1&billing_address_button=1&post_address_button=1&show=1",
+                "[addresses][" + counter + "]&default_type=1&location_address_type=2&delete_button=1&billing_address_button=1&post_address_button=1&show=1",
         }).done( function(data) {
             insertRow( _buttonrow, data );
         });
