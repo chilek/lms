@@ -185,7 +185,7 @@ if (!empty($_GET['id'])) {
                 Utils::html2pdf(array(
                     'content' => file_get_contents($filename),
                     'subject' => $subject,
-                    'title' => $title,
+                    'title' => $title . '.pdf',
                     'type' => $doc['type'],
                     'id' => $doc['id'],
                     'margins' => $margins,
