@@ -594,7 +594,7 @@ $empty_billings = ConfigHelper::checkConfig('voip.empty_billings');
 $query = "SELECT
 			a.id, a.tariffid, a.customerid,
 			a.recipient_address_id,
-			ca3.recipient_ten,
+			ca3.ten AS recipient_ten,
 			(CASE WHEN ca2.address_id IS NULL THEN ca1.address_id ELSE ca2.address_id END) AS post_address_id,
 			a.period, a.backwardperiod, a.at, a.suspended, a.settlement, a.datefrom,
 			0 AS pdiscount, 0 AS vdiscount, a.invoice,
