@@ -73,6 +73,10 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             }
             switch ($key) {
                 case 'type':
+                    if (empty($val)) {
+                        break;
+                    }
+
                     if (is_array($val)) {
                         if (!in_array(-1, $val)) {
                             $where[] = 'n.type IN (' . implode(',', $val) . ')';
