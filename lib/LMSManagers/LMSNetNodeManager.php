@@ -166,10 +166,10 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
                     addr.house as location_house, addr.flat as location_flat') . '
                 FROM netnodes n
                 ' . ($short ? ''
-                : ' LEFT JOIN (
+                : 'LEFT JOIN (
                     SELECT
                         nn.id AS netnodeid,
-                        COUNT(*) AS netdevcount
+                        COUNT(nd.*) AS netdevcount
                     FROM netnodes nn
                     LEFT JOIN netdevices nd ON nd.netnodeid = nn.id
                     GROUP BY nn.id
