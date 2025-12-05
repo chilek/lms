@@ -6,6 +6,8 @@ const puppeteer = require('puppeteer-core');
 const commander = require('commander');
 const program = new commander.Command();
 const fs = require('fs');
+const http = require('http');
+const { randomUUID } = require('crypto');
 
 program
     .option("-i, --in-file <input-file>", "input file")
@@ -69,19 +71,47 @@ async function readStream(stream) {
 }
 
 (async (options) => {
+    let server = null;
+
     try {
         const browser = await puppeteer.connect({
             browserURL: "http://127.0.0.1:9222"
         });
 
         const page = await browser.newPage();
+
+/*
+        page.on('console', msg => console.log('PAGE LOG:', msg.type(), msg.text()));
+        page.on('pageerror', err => console.error('PAGE ERROR:', err));
+        page.on('requestfailed', req => console.error('REQ FAIL:', req.url(), req.failure()));
+*/
+
         await page.emulateMediaType(options.mediaType);
-        if (url) {
-            await page.goto(url, {waitUntil: options.waitUntil});
-        } else {
+
+        let finalUrl = url;
+
+        if (!finalUrl) {
+            // brak --in-file: czytamy HTML z stdin
             const content = await readStream(process.stdin);
-            await page.setContent(content, {waitUntil: options.waitUntil, timeout: 0});
+
+            // tworzymy jednorazowy serwer HTTP, który zwróci ten HTML
+            server = http.createServer((req, res) => {
+                res.writeHead(200, {
+                    "Content-Type": "text/html; charset=UTF-8",
+                    "Cache-Control": "no-store"
+                });
+                res.end(content);
+            });
+
+            await new Promise(resolve => server.listen(0, resolve));
+            const port = server.address().port;
+
+            // unikalna ścieżka, żeby uniknąć cachy
+            finalUrl = `http://127.0.0.1:${port}/doc-${randomUUID()}.html`;
         }
+
+        await page.goto(finalUrl, {waitUntil: options.waitUntil, timeout: 0});
+
         var opts = {
             format: options.format,
             landscape: landscape,
@@ -143,16 +173,30 @@ async function readStream(stream) {
             opts.margin = pdfMargin;
         }
 
+        await page.waitForFunction(
+            () => window.__hyphenReady === true,
+            { timeout: 5000 }
+        );
+
         const pdf = await page.pdf(opts);
         await page.close();
 
         await browser.disconnect();
 
+        if (server) {
+            server.close();
+        }
+
         if (!outFile) {
             process.stdout.write(pdf);
         }
+
+        process.exit(0);
     } catch (err) {
         console.error(err);
+        if (server) {
+            server.close();
+        }
         process.exit(1);
     }
 })(options);
