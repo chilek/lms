@@ -173,10 +173,16 @@ async function readStream(stream) {
             opts.margin = pdfMargin;
         }
 
-        await page.waitForFunction(
-            () => window.__hyphenReady === true,
-            { timeout: 5000 }
-        );
+        const hyphenReadyExists = await page.evaluate(() => {
+            return typeof window.MyVar !== 'undefined';
+        });
+
+        if (hyphenReadyExists) {
+            await page.waitForFunction(
+                () => window.__hyphenReady === true,
+                { timeout: 5000 }
+            );
+        }
 
         const pdf = await page.pdf(opts);
         await page.close();
@@ -184,14 +190,18 @@ async function readStream(stream) {
         await browser.disconnect();
 
         if (server) {
-            server.close();
+            await server.close();
         }
 
         if (!outFile) {
-            process.stdout.write(pdf);
+            process.stdout.write(pdf, (err) => {
+                if (err) {
+                    console.error(err);
+                    process.exit(1);
+                }
+                process.exit(0);
+            });
         }
-
-        process.exit(0);
     } catch (err) {
         console.error(err);
         if (server) {
