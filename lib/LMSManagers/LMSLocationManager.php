@@ -207,8 +207,15 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
         }
 
         $this->db->Execute(
-            'INSERT INTO customer_addresses (customer_id, address_id, type) VALUES (?,?,?)',
-            array($customer_id, $addr_id, $args['location_address_type'])
+            'INSERT INTO customer_addresses
+            (customer_id, address_id, type, ten)
+            VALUES (?, ?, ?, ?)',
+            array(
+                $customer_id,
+                $addr_id,
+                $args['location_address_type'],
+                empty($args['location_ten']) ? null : $args['location_ten'],
+            )
         );
 
         return true;
@@ -343,8 +350,16 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
         }
 
         $this->db->Execute(
-            'UPDATE customer_addresses SET type = ? WHERE customer_id = ? AND address_id = ?',
-            array($args['location_address_type'], $customer_id, $args['address_id'])
+            'UPDATE customer_addresses
+            SET type = ?, ten = ?
+            WHERE customer_id = ?
+                AND address_id = ?',
+            array(
+                $args['location_address_type'],
+                empty($args['location_ten']) ? null : $args['location_ten'],
+                $customer_id,
+                $args['address_id'],
+            )
         );
 
         return true;
@@ -443,6 +458,11 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
     {
         return $this->db->GetOne('SELECT address_id FROM customer_addresses
 			WHERE customer_id = ? AND type = ?', array($customer_id, $type));
+    }
+
+    public function getRecipientTen($address_id)
+    {
+        return $this->db->GetOne('SELECT ten FROM customer_addresses WHERE address_id = ?', array($address_id));
     }
 
     public function TerytToLocation($terc, $simc, $ulic)

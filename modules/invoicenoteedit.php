@@ -116,6 +116,7 @@ if (isset($_GET['id']) && $action == 'edit') {
         'paytype' => $cnote['paytype'],
         'deadline' => date("Y/m/d", intval($cnote['deadline'])),
         'recipient_address_id' => $cnote['recipient_address_id'],
+        'recipient_ten' => $cnote['recipient_ten'],
         'use_current_customer_data' => isset($cnote['use_current_customer_data']),
         'reason' => $cnote['reason'],
     );
@@ -618,10 +619,12 @@ switch ($action) {
             }
 
             if ($cnote['recipient_address_id'] > 0) {
+                $recipient_ten = $LMS->getRecipientTen($cnote['recipient_address_id']);
                 $DB->Execute(
-                    'UPDATE documents SET recipient_address_id = ? WHERE id = ?',
+                    'UPDATE documents SET recipient_address_id = ?, recipient_ten = ? WHERE id = ?',
                     array(
                         $LMS->CopyAddress($cnote['recipient_address_id']),
+                        $recipient_ten,
                         $iid,
                     )
                 );

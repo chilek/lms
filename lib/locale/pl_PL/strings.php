@@ -6269,3 +6269,10 @@ $_LANG['with recipient address'] = 'z adresem odbiorcy';
 $_LANG['Error during communication with NAS device!'] = 'Błąd podczas komunikacji z urządzeniem NAS!';
 
 $_LANG['unknown error'] = 'nieznany błąd';
+
+$_LANG['budgetary unit'] = 'jednostka budżetowa';
+$_LANG['Check it if customer is budgetary unit (public or state)'] = 'Zaznacz, jeśli klient jest jednostką budżetową (publiczną lub samorządową)';
+$_LANG['Separate budgetary units'] = 'Wydziel jednostki budżetowe';
+$_LANG['<!uke-income>Budgetary unit services'] = 'Usługi świadczone dla jednostek budżetowych';
+$_LANG['<!uke-income>Budgetary unit income'] = 'Przychód z jednostek budżetowych';
+$_LANG['<!link>Budgetary unit links'] = 'Łącza jednostek budżetowych';

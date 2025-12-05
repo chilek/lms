@@ -3933,6 +3933,12 @@ class LMS
         return $manager->GetCustomerAddress($customer_id, $type);
     }
 
+    public function getRecipientTen($address_id)
+    {
+        $manager = $this->getLocationManager();
+        return $manager->getRecipientTen($address_id);
+    }
+
     public function TerytToLocation($terc, $simc, $ulic)
     {
         $manager = $this->getLocationManager();

@@ -92,7 +92,8 @@ $CSTATUSES = array(
 const CUSTOMER_FLAG_RELATED_ENTITY = 1,
     CUSTOMER_FLAG_VAT_PAYER = 2,
     CUSTOMER_FLAG_SUPPLIER = 4,
-    CUSTOMER_FLAG_CONSUMER = 8;
+    CUSTOMER_FLAG_CONSUMER = 8,
+    CUSTOMER_FLAG_BUDGETARY_UNIT = 16;
 
 $CUSTOMERFLAGS = array(
     CUSTOMER_FLAG_RELATED_ENTITY => array(
@@ -115,6 +116,11 @@ $CUSTOMERFLAGS = array(
         'tip' => trans('check it if customer is consumer'),
         'alias' => 'consumer',
     ),
+    CUSTOMER_FLAG_BUDGETARY_UNIT => array(
+        'label' => 'budgetary unit',
+        'tip' => trans('Check it if customer is budgetary unit (public or state)'),
+        'alias' => 'budgetary-unit',
+    )
 );
 
 // customer consents

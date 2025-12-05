@@ -73,6 +73,10 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             }
             switch ($key) {
                 case 'type':
+                    if (empty($val)) {
+                        break;
+                    }
+
                     if (is_array($val)) {
                         if (!in_array(-1, $val)) {
                             $where[] = 'n.type IN (' . implode(',', $val) . ')';
@@ -87,6 +91,10 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
                     }
                     break;
                 case 'invprojectid':
+                    if (empty($val)) {
+                        break;
+                    }
+
                     if (is_array($val)) {
                         if (in_array(-2, $val)) {
                             $where[] = 'n.invprojectid IS NULL';
@@ -158,10 +166,10 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
                     addr.house as location_house, addr.flat as location_flat') . '
                 FROM netnodes n
                 ' . ($short ? ''
-                : ' LEFT JOIN (
+                : 'LEFT JOIN (
                     SELECT
                         nn.id AS netnodeid,
-                        COUNT(*) AS netdevcount
+                        COUNT(nd.*) AS netdevcount
                     FROM netnodes nn
                     LEFT JOIN netdevices nd ON nd.netnodeid = nn.id
                     GROUP BY nn.id

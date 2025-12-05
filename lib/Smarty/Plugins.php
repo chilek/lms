@@ -494,6 +494,7 @@ class Plugins
 
         // base name for localization inputs
         $input_name             = 'location';
+        $input_name_ten         = 'location_ten';
         $input_name_country_id  = 'location_country_id';
         $input_name_state       = 'location_state_name';
         $input_name_state_id    = 'location_state';
@@ -515,6 +516,7 @@ class Plugins
             $p = trim($params['prefix']);
 
             $input_name             = $p . '[' . $input_name             . ']';
+            $input_name_ten         = $p . '[' . $input_name_ten         . ']';
             $input_name_country_id  = $p . '[' . $input_name_country_id  . ']';
             $input_name_state       = $p . '[' . $input_name_state       . ']';
             $input_name_state_id    = $p . '[' . $input_name_state_id    . ']';
@@ -561,6 +563,16 @@ class Plugins
                   <input type="hidden" value="' . ($params['location'] ?? '') . '" name="' . $input_name . '" data-address="location">
               </td>
           </tr>';
+
+        if ($params['location_address_type'] == LOCATION_ADDRESS || $params['location_address_type'] == DEFAULT_LOCATION_ADDRESS) {
+            echo '<tr>
+                    <td>' . trans('TEN') . '</td>
+                    <td>
+                        <input type="text" value="' . (!empty($params['location_ten']) ? htmlspecialchars($params['location_ten']) : '')
+                            . '" name="' . $input_name_ten . '" size="' . self::LOCATION_BOX_INPUT_SIZE . '" data-address="ten"
+                    </td>
+                </tr>';
+        }
 
         echo '<tr>
               <td>' . trans('State') . '</td>
@@ -735,6 +747,12 @@ class Plugins
         $uid = uniqid();
         $location_str = isset($params['data']['location_address_type']) && $params['data']['location_address_type'] == BILLING_ADDRESS ? ''
             : (empty($params['data']['location_name']) ? '' : htmlspecialchars($params['data']['location_name']) . ', ');
+
+        $location_str .= isset($params['data']['location_address_type'])
+            && ($params['data']['location_address_type'] == LOCATION_ADDRESS || $params['data']['location_address_type'] == DEFAULT_LOCATION_ADDRESS)
+            && !empty($params['data']['location_ten'])
+                ? trans('TEN' ) . ' ' . htmlspecialchars($params['data']['location_ten']) . ', '
+                : '';
 
         $location_str .= isset($params['data']['location'])
             ? (

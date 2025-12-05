@@ -60,6 +60,8 @@ interface LMSLocationManagerInterface
 
     public function GetCustomerAddress($customer_id, $type = BILLING_ADDRESS);
 
+    public function getRecipientTen($address_id);
+
     public function TerytToLocation($terc, $simc, $ulic);
 
     public function getCoordinatesForAddress($params);
