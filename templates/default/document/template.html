@@ -80,6 +80,8 @@
 				referrerpolicy="no-referrer"></script>
 			<script>
 
+				var __hyphenReady = false;
+
 				Hyphenopoly.config({
 					require: {
 						"en-us": "Supercalifragilisticexpialidocious",
@@ -89,6 +91,14 @@
 						CORScredentials: "omit",
 						selectors: {
 							"body": {}
+						}
+					},
+					handleEvent: {
+						hyphenopolyEnd: function () {
+							window.__hyphenReady = true;
+						},
+						tearDown: function () {
+							window.__hyphenReady = true;
 						}
 					}
 				});
