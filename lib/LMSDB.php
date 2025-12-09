@@ -45,6 +45,9 @@ class LMSDB
     public const RESOURCE_TYPE_COLUMN_TYPE = 6;
     public const RESOURCE_TYPE_TRIGGER = 7;
 
+    const DEBUG_DETAILS = 1;
+    const DEBUG_TIME = 2;
+
     private static $db;
     
     /**
@@ -62,7 +65,17 @@ class LMSDB
             $_DBNAME = LMSConfig::getIniConfig()->getSection('database')->getVariable('database')->getValue();
             $_DBDEBUG = false;
             if (LMSConfig::getIniConfig()->getSection('database')->hasVariable('debug')) {
-                $_DBDEBUG = ConfigHelper::checkValue(LMSConfig::getIniConfig()->getSection('database')->getVariable('debug')->getValue());
+                $debug = LMSConfig::getIniConfig()->getSection('database')->getVariable('debug')->getValue();
+                switch ($debug) {
+                    case 'time':
+                        $_DBDEBUG = self::DEBUG_TIME;
+                        break;
+                    case 'details':
+                        $_DBDEBUG = self::DEBUG_DETAILS;
+                        break;
+                    default:
+                        $_DBDEBUG = ConfigHelper::checkValue($debug) ? self::DEBUG_DETAILS | self::DEBUG_TIME : false;
+                }
             }
             self::$db = self::getDB($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME, $_DBDEBUG);
         }

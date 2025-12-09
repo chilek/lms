@@ -4,7 +4,13 @@
 						{include file="dberrors.html"}
 					{/if}
 				{/block}
-				<p id="lms-ui-generation-time">{trans("Page generation time:")} {gentime} {trans("sec.")} {memory}</p>
+				<p id="lms-ui-generation-time">
+					{trans("Page generation time:")} {gentime} {trans("sec.")} {memory}
+					{if !empty($layout.dbdebug) && ($layout.dbdebug & LMSDB::DEBUG_TIME) > 0}
+						<br>
+						{trans("SQL query time:")} {sql_query_time} {trans("sec.")}
+					{/if}
+				</p>
 			</footer>
 		</div>
 	</section>

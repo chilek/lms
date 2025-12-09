@@ -2817,6 +2817,7 @@ $_LANG['MAC'] = 'MAC';
 $_LANG['Search:'] = 'Szukaj:';
 $_LANG['Support for big ISPs e.g. hidding long customers selection dropdowns. Default: false'] = 'Wsparcie dla dużych providerów, np. ukrywanie długich list wyboru klientów. Domyślnie: wyłączona.';
 $_LANG['Page generation time:'] = 'Czas generowania strony:';
+$_LANG['SQL query time:'] = 'Czas zapytań SQL:';
 $_LANG['sec.'] = 'sek.';
 $_LANG['Cause'] = 'Przyczyna';
 $_LANG['company\'s side'] = 'po stronie firmy';
