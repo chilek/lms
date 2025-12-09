@@ -1143,6 +1143,8 @@ version 28-git (????-??-??):
     addresses [chilan]
   - enhancement: added 'budgetary unit' customer flag [chilan]
   - enhancement: added uke income report budgetary unit optional category [chilan]
+  - improvement: 'database.debug' configuration variable can be set to 'time' and 'details' besides of
+    so far supported 'true' and 'false' values [chilan]
 
 version 27.0 (2021-08-20):
 
