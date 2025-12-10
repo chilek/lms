@@ -1702,6 +1702,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $error['discount'] = trans('Value less than discount are not allowed!');
                     }
 
+                    if (empty($a['taxid'])) {
+                        $error['taxid'] = trans('- no tax rates defined -');
+                    }
+
                     if (ConfigHelper::checkConfig('phpui.tax_category_required')
                         && empty($a['taxcategory'])) {
                         $error['taxcategory'] = trans('Tax category selection is required!');
