@@ -2181,6 +2181,90 @@ $(function() {
 		}
 	});
 
+	function lmsTextToHtml(text) {
+		if (!text) {
+			return '';
+		}
+
+		// normalizacja końców linii
+		text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+
+		// podwójne \n traktujemy jako nowy akapit
+		var paragraphs = text.split(/\n{2,}/);
+
+		// każdy akapit -> <p> ... </p>, pojedyncze \n -> <br />
+		return paragraphs.map(function (par) {
+			var htmlPar = par.replace(/\n/g, '<br />');
+			return '<p>' + htmlPar + '</p>';
+		}).join('');
+	}
+
+// sprawdza, czy HTML wygląda na "tekstowy": tylko <p> i <br>, bez innych tagów
+	function lmsIsPlainTextHtml(html) {
+		if (!html) {
+			return true;
+		}
+
+		var tagRegex = /<\/?([a-z0-9]+)[^>]*>/gi;
+		var m;
+		var tags = {};
+
+		while ((m = tagRegex.exec(html)) !== null) {
+			tags[m[1].toLowerCase()] = true;
+		}
+
+		var tagNames = Object.keys(tags);
+		if (!tagNames.length) {
+			// brak tagów -> traktujemy jak tekst
+			return true;
+		}
+
+		for (var i = 0; i < tagNames.length; i++) {
+			if (tagNames[i] !== 'p' && tagNames[i] !== 'br') {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+// HTML -> TEXT, ale TYLKO jeśli to "tekstowy HTML" (p/br); prawdziwy HTML zostawiamy
+	function lmsHtmlToText(html) {
+		if (!html) {
+			return '';
+		}
+
+		var text = html;
+
+		// Jeśli to nie jest prosty tekstowy HTML, nic nie zmieniamy
+		if (!lmsIsPlainTextHtml(text)) {
+			return text;
+		}
+
+		// <br> -> \n
+		text = text.replace(/<br\s*\/?>/gi, '\n');
+
+		// </p> -> \n\n (koniec akapitu)
+		text = text.replace(/<\/p[^>]*>/gi, '\n\n');
+
+		// otwierające <p ...> usuwamy
+		text = text.replace(/<p[^>]*>/gi, '');
+
+		// usuwamy resztę tagów (na wszelki wypadek)
+		text = text.replace(/<[^>]+>/g, '');
+
+		// &nbsp; -> spacja
+		text = text.replace(/&nbsp;/gi, ' ');
+
+		// redukcja nadmiarowych pustych linii (>2 -> 2)
+		text = text.replace(/\n{3,}/g, '\n\n');
+
+		text = text.trim();
+
+		// zamieniamy z powrotem na CRLF, jak w typowym textarea
+		return text.replace(/\n/g, '\r\n');
+	}
+
 	function init_visual_editor(id) {
 		tinymce.init({
 			selector: '#' + id,
@@ -2244,18 +2328,75 @@ $(function() {
 			},
 			setup: function (ed) {
 				ed.on('BeforeSetContent', function(e) {
-					if (e.format == 'html') {
-						e.content = e.content.replace(/\r?\n/g, '<br class="lms-ui-line-break" />');
+					if (typeof e.content !== 'string') {
+						return;
 					}
+
+					// 1) TEXT -> HTML: główna ścieżka dla zawartości tekstowej
+					if (e.format === 'text') {
+						e.content = lmsTextToHtml(e.content);
+						e.format  = 'html';
+						return;
+					}
+
+					// 2) HTML bez tagów (w praktyce "goły tekst" wciśnięty jako HTML)
+					//    np. setContent("ala\nkot", { format: 'html' })
+					if (e.format === 'html') {
+						// jeśli NIE ma żadnych tagów HTML, traktujemy to jak czysty tekst
+						if (!/<[a-z!\/][^>]*>/i.test(e.content)) {
+							e.content = lmsTextToHtml(e.content);
+						}
+					}
+
 				}).on('GetContent', function(e) {
-					if (e.format == 'html') {
-						e.content = e.content.replace(/<br class="lms-ui-line-break"[^>]*>/g, '\r\n');
+					if (typeof e.content !== 'string') {
+						return;
 					}
+
+					// Przy zwracaniu HTML:
+					// - jeśli to tekstowy HTML (p/br), konwertujemy go z powrotem do tekstu
+					// - jeśli to "prawdziwy" HTML (a, strong, table, ...), zostawiamy w spokoju
+					if (e.format === 'html') {
+						e.content = lmsHtmlToText(e.content);
+					}
+
 				}).on('FullscreenStateChanged', function(e) {
 					$('.lms-ui-main-document').css('overflow', e.state ? 'visible' : '');
 				});
 			}
 		});
+	}
+
+	function remove_visual_editor(id) {
+		var editor = tinymce.get(id);
+		if (editor != null) {
+			var $textarea = $('#' + id);
+
+			// zaznaczamy, że zmiana pochodzi z TinyMCE
+			$textarea.data('lmsInternalUpdate', true);
+
+			// to zapisze zawartość edytora do textarea
+			editor.remove();
+
+			// odznaczamy flagę
+			$textarea.data('lmsInternalUpdate', false);
+		}
+	}
+
+	function hide_visual_editor(id) {
+		var editor = tinymce.get(id);
+		if (editor != null) {
+			remove_visual_editor(id);
+		}
+	}
+
+	function toggle_visual_editor(id) {
+		var editor = tinymce.get(id);
+		if (editor == null) {
+			init_visual_editor(id);
+		} else {
+			remove_visual_editor(id);
+		}
 	}
 
 	function show_visual_editor(id) {
@@ -2266,22 +2407,6 @@ $(function() {
 			if (editor.isHidden()) {
 				editor.show();
 			}
-		}
-	}
-
-	function hide_visual_editor(id) {
-		var editor = tinymce.get(id);
-		if (editor != null) {
-			editor.remove();
-		}
-	}
-
-	function toggle_visual_editor(id) {
-		var editor = tinymce.get(id);
-		if (editor == null) {
-			init_visual_editor(id);
-		} else {
-			editor.remove();
 		}
 	}
 
@@ -2309,9 +2434,19 @@ $(function() {
 					'</label>');
 			// it is required as textarea changed value is not propagated automatically to editor instance content
 			$(this).change(function(e) {
+				var $textarea = $(this);
+
+				// jeśli zmiana pochodzi z remove_visual_editor (TinyMCE -> textarea),
+				// to nie aktualizujemy z powrotem edytora, żeby nie robić podwójnej konwersji
+				if ($textarea.data('lmsInternalUpdate')) {
+					return;
+				}
+
 				var editor = tinymce.get(textareaid);
 				if (editor) {
-					editor.setContent($(this).val());
+					// mówimy wprost, że ustawiamy TEXT,
+					// żeby BeforeSetContent użyło lmsTextToHtml
+					editor.setContent($textarea.val(), { format: 'text' });
 				}
 			});
 			$('[name="' + inputname + '"]:checkbox', parent).click(function() {
