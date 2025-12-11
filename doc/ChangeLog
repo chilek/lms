@@ -1145,6 +1145,8 @@ version 28-git (????-??-??):
   - enhancement: added uke income report budgetary unit optional category [chilan]
   - improvement: 'database.debug' configuration variable can be set to 'time' and 'details' besides of
     so far supported 'true' and 'false' values [chilan]
+  - improvement: '%username' and '%rusername' substitution symbol support added for 'documents.sender_name'
+    and 'documents.mail_body' configuration variables [chilan]
 
 version 27.0 (2021-08-20):
 
