@@ -158,6 +158,9 @@ if (!$autoreply_body) {
 }
 $autoreply_body = str_replace("\\n", "\n", $autoreply_body);
 
+$autoreply_subject_template = $autoreply_subject;
+$autoreply_body_template = $autoreply_body;
+
 if (!function_exists('mailparse_msg_create')) {
     fprintf($stderr, "Fatal error: PECL mailparse module is required!" . PHP_EOL);
     exit(2);
@@ -778,22 +781,22 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                     $fromemail,
                 )
             ))) {
-                $autoreply_subject = preg_replace_callback(
+                $current_autoreply_subject = preg_replace_callback(
                     '/%(\\d*)tid/',
                     function ($m) use ($ticket_id) {
                         return sprintf('%0' . $m[1] . 'd', $ticket_id);
                     },
-                    $autoreply_subject
+                    $autoreply_subject_template
                 );
-                $autoreply_subject = str_replace('%subject', $mail_mh_subject, $autoreply_subject);
-                $autoreply_body = preg_replace_callback(
+                $current_autoreply_subject = str_replace('%subject', $mail_mh_subject, $current_autoreply_subject);
+                $current_autoreply_body = preg_replace_callback(
                     '/%(\\d*)tid/',
                     function ($m) use ($ticket_id) {
                         return sprintf('%0' . $m[1] . 'd', $ticket_id);
                     },
-                    $autoreply_body
+                    $autoreply_body_template
                 );
-                $autoreply_body = str_replace('%subject', $mail_mh_subject, $autoreply_body);
+                $current_autoreply_body = str_replace('%subject', $mail_mh_subject, $current_autoreply_body);
 
                 if ($replytoemail) {
                     $mailto = $replytoemail;
@@ -806,7 +809,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 $headers = array(
                     'From' => (empty($autoreply_name) ? '' : qp_encode($autoreply_name) . ' ') . '<' . $autoreply_from . '>',
                     'To' => $mailto_qp_encoded,
-                    'Subject' => $autoreply_subject,
+                    'Subject' => $current_autoreply_subject,
                     'References' => $mh_references . ' ' . $mh_msgid,
                     'In-Reply-To' => $mh_msgid,
                     'Message-ID' => "<confirm.$ticket_id.$queue.$timestamp@rtsystem.$hostname>",
@@ -825,7 +828,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                     );
                 }
 
-                $LMS->SendMail($mailto, $headers, $autoreply_body, null, null, $smtp_options);
+                $LMS->SendMail($mailto, $headers, $current_autoreply_body, null, null, $smtp_options);
             }
 
             $new_ticket = true;
