@@ -287,7 +287,7 @@ if (isset($_POST['message'])) {
                     foreach ($message['contacts']['mails'] as $address => $contact) {
                         $display = empty($message['contacts']['maildisplays'][$address]) ? '' : qp_encode($message['contacts']['maildisplays'][$address]) . ' ';
                         $message_source = $message['contacts']['mailsources'][$address];
-                        if ($message_source == 'requestor_mail' || $message_source == 'mailfrom' || $message_source == 'customer' || $message_source = 'reply-to') {
+                        if ($message_source == 'requestor_mail' || $message_source == 'mailfrom' || $message_source == 'customer' || $message_source == 'reply-to') {
                             $toemails[] = array(
                                 'name' => $display,
                                 'email' => $contact,
