@@ -2966,13 +2966,27 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         $currentDocumentDivisionId = null;
 
+        $userid = Auth::GetCurrentUser();
+        if (empty($userid)) {
+            $username = $rusername = trans('System');
+        } else {
+            $user_manager = new LMSUserManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $user = $user_manager->GetUserInfo($userid, false);
+            if (empty($user)) {
+                $username = $rusername = trans('System');
+            } else {
+                $username = $user['name'];
+                $rusername = $user['rname'];
+            }
+        }
+
         foreach ($docs as $doc) {
             if ($currentDocumentDivisionId != $doc['divisionid']) {
                 $currentDocumentDivisionId = $doc['divisionid'];
 
                 if (!isset($smtp_options_by_division_ids[$currentDocumentDivisionId])) {
                     if (isset($smtp_options_by_division_ids[0]) || empty($smtp_options_by_division_ids)) {
-                        ConfigHelper::setFilter($currentDocumentDivisionId, Auth::GetCurrentUser());
+                        ConfigHelper::setFilter($currentDocumentDivisionId, $userid);
                     }
 
                     $smtp_options = array(
@@ -3120,6 +3134,17 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 }
 
                 if (!empty($sender_name)) {
+                    $sender_name = str_replace(
+                        array(
+                            '%username',
+                            '%rusername',
+                        ),
+                        array(
+                            $username,
+                            $rusername,
+                        ),
+                        $sender_name
+                    );
                     $from = $sender_name . ' <' . $from . '>';
                 }
 
@@ -3165,6 +3190,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     '%cid',
                     '%pin',
                     '%customer_name',
+                    '%username',
+                    '%rusername',
                     '\n',
                 ),
                 array(
@@ -3178,6 +3205,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     $document['customerid'],
                     $document['pin'],
                     $document['name'],
+                    $username,
+                    $rusername,
                     "\n",
                 ),
                 $body
@@ -3446,7 +3475,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     $this->db->Execute(
                         'INSERT INTO messages (subject, body, cdate, type, userid)
 						VALUES (?, ?, ?NOW?, ?, ?)',
-                        array($subject, $body, MSG_MAIL, Auth::GetCurrentUser())
+                        array($subject, $body, MSG_MAIL, $userid)
                     );
                     $msgid = $this->db->GetLastInsertID('messages');
 
@@ -3532,7 +3561,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                                 trans('document encryption password: $a $b', $DOCTYPES[$document['type']], $document['fullnumber']),
                                 $sms_body,
                                 MSG_SMS,
-                                Auth::GetCurrentUser(),
+                                $userid,
                             )
                         );
 
