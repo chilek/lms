@@ -2204,15 +2204,18 @@ $(function() {
 		for (let i = 0; i < lines.length; i++) {
 			let line = lines[i];
 
-			// pusta linia
 			if (/^\s*$/.test(line)) {
 				if (currentQuoteLevel > 0) {
-					// pusta linia W CYTACIE -> dodatkowy <br />
-					html += '<br />';
-				} else {
-					// pusta linia POZA cytatem -> przerwa (dwie linie)
-					html += '<br /><br />';
+					// pusta linia KOŃCZY cytat:
+					// zamykamy wszystkie otwarte blockquote
+					while (currentQuoteLevel > 0) {
+						html += '</blockquote>';
+						currentQuoteLevel--;
+					}
 				}
+
+				// pusta linia poza cytatem = odstęp między akapitami
+				html += '<br /><br />';
 				continue;
 			}
 
