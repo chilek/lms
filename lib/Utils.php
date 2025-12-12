@@ -1719,4 +1719,94 @@ class Utils
 
         return $entities;
     }
+
+    /**
+     * Zamienia HTML na czytelny tekst do użycia np. jako AltBody w PHPMailer.
+     *
+     * - usuwa <script>, <style>, <head>, <noscript>
+     * - zamienia <br> na nowe linie
+     * - zamienia akapity/bloki na podwójne nowe linie
+     * - formatuje listy jako wypunktowania
+     * - zamienia <a href="">tekst</a> na "tekst (URL)" lub samo "URL"
+     * - usuwa pozostałe tagi, dekoduje encje HTML, porządkuje białe znaki
+     *
+     * @param string $html
+     * @return string
+     */
+    public static function generateTextFromHtml($html)
+    {
+        // Normalizacja końców linii
+        $text = str_replace(["\r\n", "\r"], "\n", (string) $html);
+
+        // Usuwamy sekcje, których w tekście nie chcemy
+        $text = preg_replace(
+            '~<(head|style|script|noscript)[^>]*>.*?</\1>~is',
+            '',
+            $text
+        );
+
+        // Linki: <a href="url">tekst</a> -> "tekst (url)" lub samo "url"
+        $text = preg_replace_callback(
+            '~<\s*a\b[^>]*href=("|\')(.*?)\1[^>]*>(.*?)</a>~is',
+            function (array $m) {
+                $url   = trim($m[2]);
+                $label = trim(strip_tags($m[3]));
+
+                if ($label === '' || $label === $url) {
+                    return $url;
+                }
+
+                return $label . ' (' . $url . ')';
+            },
+            $text
+        );
+
+        // <br> -> nowa linia
+        $text = preg_replace('~<\s*br\s*/?\s*>~i', "\n", $text);
+
+        // Blokowe tagi -> podwójna nowa linia
+        $text = preg_replace(
+            '~<\s*/?(p|div|section|article|header|footer|aside|tr|table|h[1-6])\b[^>]*>~i',
+            "\n\n",
+            $text
+        );
+
+        // Listy: <li> -> punkt wypunktowania
+        $text = preg_replace('~<\s*li\b[^>]*>~i', "\n * ", $text);
+        $text = preg_replace('~<\s*/li\s*>~i', '', $text);
+        // Usuwamy same <ul>/<ol>, ale zamieniamy je na pustą linię dla czytelności
+        $text = preg_replace('~<\s*/?(ul|ol)\b[^>]*>~i', "\n\n", $text);
+
+        // <hr> jako "-----"
+        $text = preg_replace('~<\s*hr\s*/?\s*>~i', "\n------------------------------\n", $text);
+
+        // Usuwamy pozostałe tagi HTML
+        $text = strip_tags($text);
+
+        // Dekodujemy encje HTML
+        $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+        // Rozbijamy na linie, czyścimy spacje
+        $lines = explode("\n", $text);
+        foreach ($lines as &$line) {
+            // Trim z lewej i prawej
+            $line = trim($line);
+            // Redukcja wielokrotnych spacji/tabów do jednej spacji
+            $line = preg_replace('~[ \t]{2,}~', ' ', $line);
+        }
+        unset($line);
+
+        $text = implode("\n", $lines);
+
+        // Redukcja wielu pustych linii do maks. dwóch
+        $text = preg_replace("~\n{3,}~", "\n\n", $text);
+
+        // Ostateczny trim
+        $text = trim($text);
+
+        // Opcjonalnie: zawijanie linii do 78 znaków (dobry zwyczaj w mailach tekstowych)
+        $text = wordwrap($text, 78, "\n");
+
+        return $text;
+    }
 }

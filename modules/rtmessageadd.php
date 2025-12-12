@@ -821,7 +821,7 @@ if (isset($_POST['message'])) {
                 if ($message['contenttype'] == 'text/html') {
                     $message['body'] = '<br><blockquote>' . $reply['body'] . '</blockquote>';
                 } else {
-                    $body = explode("\n", textwrap(strip_tags($reply['body']), 74));
+                    $body = explode("\n", textwrap(Utils::generateTextFromHtml($reply['body']), 74));
                     foreach ($body as $line) {
                         $message['body'] .= '> ' . $line . "\n";
                     }
