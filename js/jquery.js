@@ -2182,25 +2182,83 @@ $(function() {
 	});
 
 	function lmsTextToHtml(text) {
-		if (!text) {
-			return '';
+		if (!text) return "";
+
+		// Normalizacja końców linii
+		text = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+
+		// Escapowanie znaków, które mogłyby wyglądać jak HTML
+		text = text
+			.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;"); // UWAGA: prawdziwy '>' w tekście zamieniamy, cytowanie obsłużymy poniżej
+
+		// Rozbijamy na linie
+		const lines = text.split("\n");
+
+		let htmlLines = [];
+		let inQuote = false;
+		let quoteBuffer = [];
+
+		function flushQuote() {
+			if (quoteBuffer.length) {
+				// łączymy cytowanie w blok
+				const inner = quoteBuffer.join("<br />");
+				htmlLines.push("<blockquote>" + inner + "</blockquote>");
+				quoteBuffer = [];
+			}
 		}
 
-		// normalizacja końców linii
-		text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+		for (let line of lines) {
 
-		// podwójne \n traktujemy jako nowy akapit
-		var paragraphs = text.split(/\n{2,}/);
+			// Czy linia zaczyna się od cytowania (Markdown-style)?
+			const m = line.match(/^(\s*)&gt;(.*)$/); // &gt; to escapowane ">"
 
-		// każdy akapit -> <p> ... </p>, pojedyncze \n -> <br />
-		return paragraphs.map(function (par) {
-			var htmlPar = par.replace(/\n/g, '<br />');
-			return '<p>' + htmlPar + '</p>';
-		}).join('');
+			if (m) {
+				const content = (m[1] + m[2]).trimStart(); // treść po >
+				quoteBuffer.push(content.replace(/\s+$/, ""));
+				inQuote = true;
+			} else {
+				if (inQuote) {
+					flushQuote();
+					inQuote = false;
+				}
+				htmlLines.push(line);
+			}
+		}
+
+		// końcowy flush cytowania
+		if (inQuote) {
+			flushQuote();
+		}
+
+		// Teraz konwertujemy zwykłe linie na paragrafy
+		let paragraphs = htmlLines.join("\n").split(/\n{2,}/);
+
+		return paragraphs
+			.map(par => {
+				return "<p>" + par.replace(/\n/g, "<br />") + "</p>";
+			})
+			.join("");
 	}
 
-// sprawdza, czy HTML wygląda na "tekstowy": tylko <p> i <br>, bez innych tagów
 	function lmsIsPlainTextHtml(html) {
+		if (!html) return true;
+
+		const tags = [...html.matchAll(/<\/?([a-z0-9]+)[^>]*>/gi)]
+			.map(m => m[1].toLowerCase());
+
+		if (!tags.length) return true;
+
+		// dla tekstowego HTML dopuszczamy <p>, <br>, <blockquote>
+		return tags.every(t =>
+			t === "p" ||
+			t === "br" ||
+			t === "blockquote"
+		);
+	}
+
+/*	function lmsIsPlainTextHtml(html) {
 		if (!html) {
 			return true;
 		}
@@ -2227,42 +2285,66 @@ $(function() {
 
 		return true;
 	}
+*/
 
-// HTML -> TEXT, ale TYLKO jeśli to "tekstowy HTML" (p/br); prawdziwy HTML zostawiamy
 	function lmsHtmlToText(html) {
-		if (!html) {
-			return '';
-		}
+		if (!html) return "";
 
-		var text = html;
+		let text = html;
 
-		// Jeśli to nie jest prosty tekstowy HTML, nic nie zmieniamy
+		// Jeśli to nie jest czysto tekstowy HTML — NIE konwertujemy struktury,
+		// jedynie odkodowujemy encje.
 		if (!lmsIsPlainTextHtml(text)) {
-			return text;
+			return text
+				.replace(/&lt;/gi, "<")
+				.replace(/&gt;/gi, ">")
+				.replace(/&amp;/gi, "&");
 		}
 
-		// <br> -> \n
-		text = text.replace(/<br\s*\/?>/gi, '\n');
+		// Bloki cytowań najpierw konwertujemy:
+		// <blockquote>Ala<br />kot</blockquote>
+		// =>
+		// > Ala
+		// > kot
+		text = text.replace(
+			/<blockquote[^>]*>([\s\S]*?)<\/blockquote>/gi,
+			function (_, inner) {
 
-		// </p> -> \n\n (koniec akapitu)
-		text = text.replace(/<\/p[^>]*>/gi, '\n\n');
+				// Zamiana <br> w środku cytatu na newline
+				inner = inner.replace(/<br\s*\/?>/gi, "\n");
 
-		// otwierające <p ...> usuwamy
-		text = text.replace(/<p[^>]*>/gi, '');
+				// Usuwamy ewentualne tagi w środku
+				inner = inner.replace(/<[^>]+>/g, "");
 
-		// usuwamy resztę tagów (na wszelki wypadek)
-		text = text.replace(/<[^>]+>/g, '');
+				// Dzielimy na linie i dodajemy "> "
+				let q = inner.split("\n").map(l => "> " + l);
 
-		// &nbsp; -> spacja
-		text = text.replace(/&nbsp;/gi, ' ');
+				// Po cytacie robimy dodatkowy \n\n (blok cytatowy)
+				return q.join("\n") + "\n\n";
+			}
+		);
 
-		// redukcja nadmiarowych pustych linii (>2 -> 2)
-		text = text.replace(/\n{3,}/g, '\n\n');
+		// Standardowe konwersje <br> → \n, </p> → \n\n
+		text = text.replace(/<br\s*\/?>/gi, "\n");
+		text = text.replace(/<\/p[^>]*>/gi, "\n\n");
+		text = text.replace(/<p[^>]*>/gi, "");
 
+		// usuwamy resztę tagów
+		text = text.replace(/<[^>]+>/g, "");
+
+		// odkodowanie encji
+		text = text
+			.replace(/&nbsp;/gi, " ")
+			.replace(/&lt;/gi, "<")
+			.replace(/&gt;/gi, ">")
+			.replace(/&amp;/gi, "&");
+
+		// porządki
+		text = text.replace(/\n{3,}/g, "\n\n");
 		text = text.trim();
 
-		// zamieniamy z powrotem na CRLF, jak w typowym textarea
-		return text.replace(/\n/g, '\r\n');
+		// wracamy do CRLF
+		return text.replace(/\n/g, "\r\n");
 	}
 
 	function init_visual_editor(id) {
