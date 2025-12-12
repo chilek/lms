@@ -2181,170 +2181,226 @@ $(function() {
 		}
 	});
 
+	// TEXT -> HTML (obsługa cytowań >, >>, > >, itp.)
 	function lmsTextToHtml(text) {
-		if (!text) return "";
-
-		// Normalizacja końców linii
-		text = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
-
-		// Escapowanie znaków, które mogłyby wyglądać jak HTML
-		text = text
-			.replace(/&/g, "&amp;")
-			.replace(/</g, "&lt;")
-			.replace(/>/g, "&gt;"); // UWAGA: prawdziwy '>' w tekście zamieniamy, cytowanie obsłużymy poniżej
-
-		// Rozbijamy na linie
-		const lines = text.split("\n");
-
-		let htmlLines = [];
-		let inQuote = false;
-		let quoteBuffer = [];
-
-		function flushQuote() {
-			if (quoteBuffer.length) {
-				// łączymy cytowanie w blok
-				const inner = quoteBuffer.join("<br />");
-				htmlLines.push("<blockquote>" + inner + "</blockquote>");
-				quoteBuffer = [];
-			}
+		if (!text) {
+			return '';
 		}
 
-		for (let line of lines) {
+		// normalizacja końców linii
+		text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
 
-			// Czy linia zaczyna się od cytowania (Markdown-style)?
-			const m = line.match(/^(\s*)&gt;(.*)$/); // &gt; to escapowane ">"
+		const lines = text.split('\n');
+		let html = '';
+		let currentQuoteLevel = 0;
+
+		function escapeHtml(str) {
+			return str
+				.replace(/&/g, '&amp;')
+				.replace(/</g, '&lt;')
+				.replace(/>/g, '&gt;');
+		}
+
+		for (let i = 0; i < lines.length; i++) {
+			let line = lines[i];
+
+			// pusta linia
+			if (/^\s*$/.test(line)) {
+				if (currentQuoteLevel > 0) {
+					// pusta linia W CYTACIE -> dodatkowy <br />
+					html += '<br />';
+				} else {
+					// pusta linia POZA cytatem -> przerwa (dwie linie)
+					html += '<br /><br />';
+				}
+				continue;
+			}
+
+			// wykrywanie cytowania: >, >>, > >, >   >, itp.
+			const m = line.match(/^(\s*)((?:>\s*)+)(.*)$/);
+
+			let level = 0;
+			let content;
 
 			if (m) {
-				const content = (m[1] + m[2]).trimStart(); // treść po >
-				quoteBuffer.push(content.replace(/\s+$/, ""));
-				inQuote = true;
+				// liczba znaków ">" (ignorujemy spacje między nimi)
+				level = (m[2].match(/>/g) || []).length;
+				content = m[3].trimStart();
 			} else {
-				if (inQuote) {
-					flushQuote();
-					inQuote = false;
-				}
-				htmlLines.push(line);
+				level = 0;
+				content = line;
 			}
+
+			// dopasowanie liczby otwartych <blockquote>
+			while (currentQuoteLevel < level) {
+				html += '<blockquote>';
+				currentQuoteLevel++;
+			}
+			while (currentQuoteLevel > level) {
+				html += '</blockquote>';
+				currentQuoteLevel--;
+			}
+
+			content = escapeHtml(content);
+
+			html += content + '<br />';
 		}
 
-		// końcowy flush cytowania
-		if (inQuote) {
-			flushQuote();
+		// domknięcie wszystkich otwartych cytatów
+		while (currentQuoteLevel > 0) {
+			html += '</blockquote>';
+			currentQuoteLevel--;
 		}
 
-		// Teraz konwertujemy zwykłe linie na paragrafy
-		let paragraphs = htmlLines.join("\n").split(/\n{2,}/);
-
-		return paragraphs
-			.map(par => {
-				return "<p>" + par.replace(/\n/g, "<br />") + "</p>";
-			})
-			.join("");
+		return html;
 	}
 
 	function lmsIsPlainTextHtml(html) {
-		if (!html) return true;
-
-		const tags = [...html.matchAll(/<\/?([a-z0-9]+)[^>]*>/gi)]
-			.map(m => m[1].toLowerCase());
-
-		if (!tags.length) return true;
-
-		// dla tekstowego HTML dopuszczamy <p>, <br>, <blockquote>
-		return tags.every(t =>
-			t === "p" ||
-			t === "br" ||
-			t === "blockquote"
-		);
-	}
-
-/*	function lmsIsPlainTextHtml(html) {
 		if (!html) {
 			return true;
 		}
 
-		var tagRegex = /<\/?([a-z0-9]+)[^>]*>/gi;
-		var m;
-		var tags = {};
+		const tags = [...html.matchAll(/<\/?([a-z0-9]+)[^>]*>/gi)]
+			.map(m => m[1].toLowerCase());
 
-		while ((m = tagRegex.exec(html)) !== null) {
-			tags[m[1].toLowerCase()] = true;
-		}
-
-		var tagNames = Object.keys(tags);
-		if (!tagNames.length) {
-			// brak tagów -> traktujemy jak tekst
+		if (!tags.length) {
+			// brak tagów -> traktujemy jako zwykły tekst
 			return true;
 		}
 
-		for (var i = 0; i < tagNames.length; i++) {
-			if (tagNames[i] !== 'p' && tagNames[i] !== 'br') {
-				return false;
-			}
-		}
+		// dopuszczamy "tekstowe" tagi, jakie pojawiają się przy prostym tekście:
+		// <br>, <blockquote>, <p>
+		const allowed = {
+			br: true,
+			blockquote: true,
+			p: true,
+		};
 
-		return true;
+		return tags.every(t => !!allowed[t]);
 	}
-*/
 
 	function lmsHtmlToText(html) {
-		if (!html) return "";
-
-		let text = html;
-
-		// Jeśli to nie jest czysto tekstowy HTML — NIE konwertujemy struktury,
-		// jedynie odkodowujemy encje.
-		if (!lmsIsPlainTextHtml(text)) {
-			return text
-				.replace(/&lt;/gi, "<")
-				.replace(/&gt;/gi, ">")
-				.replace(/&amp;/gi, "&");
+		if (!html) {
+			return '';
 		}
 
-		// Bloki cytowań najpierw konwertujemy:
-		// <blockquote>Ala<br />kot</blockquote>
-		// =>
-		// > Ala
-		// > kot
-		text = text.replace(
-			/<blockquote[^>]*>([\s\S]*?)<\/blockquote>/gi,
-			function (_, inner) {
+		// jeśli NIE jest to "tekstowy HTML", nie ruszamy struktury (tylko normalizacja CRLF)
+		if (!lmsIsPlainTextHtml(html)) {
+			return html
+				.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
+				.replace(/\n/g, '\r\n');
+		}
 
-				// Zamiana <br> w środku cytatu na newline
-				inner = inner.replace(/<br\s*\/?>/gi, "\n");
+		// tworzymy tymczasowy kontener DOM
+		var container = document.createElement('div');
+		container.innerHTML = html;
 
-				// Usuwamy ewentualne tagi w środku
-				inner = inner.replace(/<[^>]+>/g, "");
+		let result = '';
 
-				// Dzielimy na linie i dodajemy "> "
-				let q = inner.split("\n").map(l => "> " + l);
+		function appendText(str, quoteLevel) {
+			if (!str) return;
 
-				// Po cytacie robimy dodatkowy \n\n (blok cytatowy)
-				return q.join("\n") + "\n\n";
+			str = str.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+
+			let lines = str.split('\n');
+
+			for (let i = 0; i < lines.length; i++) {
+				let line = lines[i];
+
+				// pomijamy linie składające się tylko z whitespace'ów
+				if (line.trim() === '') {
+					result += '\n';
+					continue;
+				}
+
+				const atLineStart = (result.length === 0 || result.endsWith('\n'));
+
+				if (atLineStart && quoteLevel > 0) {
+					result += '>'.repeat(quoteLevel) + ' ';
+				}
+
+				result += line;
+
+				if (i < lines.length - 1) {
+					result += '\n';
+				}
 			}
-		);
+		}
 
-		// Standardowe konwersje <br> → \n, </p> → \n\n
-		text = text.replace(/<br\s*\/?>/gi, "\n");
-		text = text.replace(/<\/p[^>]*>/gi, "\n\n");
-		text = text.replace(/<p[^>]*>/gi, "");
+		function walk(node, quoteLevel) {
+			if (node.nodeType === Node.TEXT_NODE) {
+				// ignorujemy czysto-białe text-node'y (whitespace z formatowania HTML)
+				if (node.nodeValue.trim() === '') {
+					return;
+				}
+				appendText(node.nodeValue, quoteLevel);
 
-		// usuwamy resztę tagów
-		text = text.replace(/<[^>]+>/g, "");
+			} else if (node.nodeType === Node.ELEMENT_NODE) {
+				const tag = node.nodeName.toLowerCase();
 
-		// odkodowanie encji
-		text = text
-			.replace(/&nbsp;/gi, " ")
-			.replace(/&lt;/gi, "<")
-			.replace(/&gt;/gi, ">")
-			.replace(/&amp;/gi, "&");
+				if (tag === 'br') {
+					result += '\n';
+					return;
+				}
 
-		// porządki
-		text = text.replace(/\n{3,}/g, "\n\n");
-		text = text.trim();
+				if (tag === 'blockquote') {
+					// nowy poziom cytowania; dbamy tylko, żeby zaczynać od nowej linii
+					if (result.length && !result.endsWith('\n')) {
+						result += '\n';
+					}
 
-		// wracamy do CRLF
-		return text.replace(/\n/g, "\r\n");
+					walkChildren(node, quoteLevel + 1);
+
+					// po cytacie kończymy linię, ale nie dokładamy pustego wiersza
+					if (!result.endsWith('\n')) {
+						result += '\n';
+					}
+					return;
+				}
+
+				// inne tagi – traktujemy jako zwykły tekst (teoretycznie tu nie trafimy,
+				// bo lmsIsPlainTextHtml dopuszcza tylko br / blockquote)
+				walkChildren(node, quoteLevel);
+			}
+		}
+
+		function walkChildren(node, quoteLevel) {
+			for (let child = node.firstChild; child; child = child.nextSibling) {
+				walk(child, quoteLevel);
+			}
+		}
+
+		walkChildren(container, 0);
+
+		// rozbijamy na linie, czyścimy "puste wiersze" między poziomami cytowań
+		let lines = result.split('\n');
+		let cleaned = [];
+
+		for (let i = 0; i < lines.length; i++) {
+			const line = lines[i];
+
+			// pusta linia między dwoma liniami cytowanymi -> pomijamy
+			if (
+				line.trim() === '' &&
+				i > 0 && i < lines.length - 1 &&
+				/^>+ /.test(lines[i - 1]) &&
+				/^>+ /.test(lines[i + 1])
+			) {
+				continue;
+			}
+
+			cleaned.push(line);
+		}
+
+		result = cleaned.join('\n');
+
+		// redukcja nadmiarowych pustych wierszy (więcej niż 2 -> 2)
+		result = result.replace(/\n{3,}/g, '\n\n');
+
+		result = result.trimEnd();
+
+		// zamiana \n na \r\n dla textarea
+		return result.replace(/\n/g, '\r\n');
 	}
 
 	function init_visual_editor(id) {
@@ -2409,20 +2465,20 @@ $(function() {
 				}
 			},
 			setup: function (ed) {
-				ed.on('BeforeSetContent', function(e) {
+				ed.on('BeforeSetContent', function (e) {
 					if (typeof e.content !== 'string') {
 						return;
 					}
 
-					// 1) TEXT -> HTML: główna ścieżka dla zawartości tekstowej
+					// 1) TEXT -> HTML: główna ścieżka przy przełączaniu z textarea do edytora
 					if (e.format === 'text') {
 						e.content = lmsTextToHtml(e.content);
-						e.format  = 'html';
+						e.format = 'html';
 						return;
 					}
 
 					// 2) HTML bez tagów (w praktyce "goły tekst" wciśnięty jako HTML)
-					//    np. setContent("ala\nkot", { format: 'html' })
+					// np. setContent("ala\nkot", { format: 'html' })
 					if (e.format === 'html') {
 						// jeśli NIE ma żadnych tagów HTML, traktujemy to jak czysty tekst
 						if (!/<[a-z!\/][^>]*>/i.test(e.content)) {
@@ -2430,19 +2486,18 @@ $(function() {
 						}
 					}
 
-				}).on('GetContent', function(e) {
+				}).on('GetContent', function (e) {
 					if (typeof e.content !== 'string') {
 						return;
 					}
 
-					// Przy zwracaniu HTML:
-					// - jeśli to tekstowy HTML (p/br), konwertujemy go z powrotem do tekstu
-					// - jeśli to "prawdziwy" HTML (a, strong, table, ...), zostawiamy w spokoju
+					// Przy format: 'html' konwertujemy "tekstowy HTML" (br/blockquote) do TEXT;
+					// prawdziwy HTML zostawiamy (tylko normalizujemy \r\n wewnątrz lmsHtmlToText)
 					if (e.format === 'html') {
 						e.content = lmsHtmlToText(e.content);
 					}
 
-				}).on('FullscreenStateChanged', function(e) {
+				}).on('FullscreenStateChanged', function (e) {
 					$('.lms-ui-main-document').css('overflow', e.state ? 'visible' : '');
 				});
 			}
