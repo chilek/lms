@@ -2473,33 +2473,19 @@ $(function() {
 						return;
 					}
 
-					// 1) TEXT -> HTML: główna ścieżka przy przełączaniu z textarea do edytora
+					// TEXT -> HTML (przełączenie z textarea na edytor)
 					if (e.format === 'text') {
 						e.content = lmsTextToHtml(e.content);
 						e.format = 'html';
 						return;
 					}
 
-					// 2) HTML bez tagów (w praktyce "goły tekst" wciśnięty jako HTML)
-					// np. setContent("ala\nkot", { format: 'html' })
+					// "goły" tekst "udający" html (bez tagów) -> potraktuj jak TEXT
 					if (e.format === 'html') {
-						// jeśli NIE ma żadnych tagów HTML, traktujemy to jak czysty tekst
 						if (!/<[a-z!\/][^>]*>/i.test(e.content)) {
 							e.content = lmsTextToHtml(e.content);
 						}
 					}
-
-				}).on('GetContent', function (e) {
-					if (typeof e.content !== 'string') {
-						return;
-					}
-
-					// Przy format: 'html' konwertujemy "tekstowy HTML" (br/blockquote) do TEXT;
-					// prawdziwy HTML zostawiamy (tylko normalizujemy \r\n wewnątrz lmsHtmlToText)
-					if (e.format === 'html') {
-						e.content = lmsHtmlToText(e.content);
-					}
-
 				}).on('FullscreenStateChanged', function (e) {
 					$('.lms-ui-main-document').css('overflow', e.state ? 'visible' : '');
 				});
@@ -2512,13 +2498,22 @@ $(function() {
 		if (editor != null) {
 			var $textarea = $('#' + id);
 
-			// zaznaczamy, że zmiana pochodzi z TinyMCE
+			// 1) pobieramy HTML z edytora
+			var html = editor.getContent({ format: 'html' });
+
+			// 2) konwertujemy HTML -> TEXT
+			var text = lmsHtmlToText(html);
+
+			// 3) oznaczamy wewnętrzną aktualizację, żeby change handler nie odpalał setContent
 			$textarea.data('lmsInternalUpdate', true);
 
-			// to zapisze zawartość edytora do textarea
+			// 4) usuwamy edytor (TinyMCE nadpisze textarea HTML-em, ale zaraz go zastąpimy)
 			editor.remove();
 
-			// odznaczamy flagę
+			// 5) nadpisujemy textarea **tekstem**
+			$textarea.val(text);
+
+			// 6) zdejmujemy flagę
 			$textarea.data('lmsInternalUpdate', false);
 		}
 	}
