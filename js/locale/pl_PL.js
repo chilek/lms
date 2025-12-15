@@ -2816,6 +2816,7 @@ $_LANG['MAC'] = 'MAC';
 $_LANG['Search:'] = 'Szukaj:';
 $_LANG['Support for big ISPs e.g. hidding long customers selection dropdowns. Default: false'] = 'Wsparcie dla dużych providerów, np. ukrywanie długich list wyboru klientów. Domyślnie: wyłączona.';
 $_LANG['Page generation time:'] = 'Czas generowania strony:';
+$_LANG['SQL query time:'] = 'Czas zapytań SQL:';
 $_LANG['sec.'] = 'sek.';
 $_LANG['Cause'] = 'Przyczyna';
 $_LANG['company\'s side'] = 'po stronie firmy';
@@ -6262,3 +6263,19 @@ $_LANG['Max. upload'] = 'Maks. wysyłanie';
 
 $_LANG['customer has not assigned any mobile phones with \'documents\' flag'] = 'klient nie ma przypisanych żadnych telefonów komórkowych z opcją \'dokumenty\'';
 $_LANG['document encryption password: $a $b'] = 'hasło szyfrujące dokument: $a $b';
+
+$_LANG['with recipient address'] = 'z adresem odbiorcy';
+
+$_LANG['Error during communication with NAS device!'] = 'Błąd podczas komunikacji z urządzeniem NAS!';
+$_LANG['No session information on NAS device!'] = 'Brak informacji o sesji na urządzeniu NAS!';
+
+$_LANG['unknown error'] = 'nieznany błąd';
+
+$_LANG['budgetary unit'] = 'jednostka budżetowa';
+$_LANG['Check it if customer is budgetary unit (public or state)'] = 'Zaznacz, jeśli klient jest jednostką budżetową (publiczną lub samorządową)';
+$_LANG['Separate budgetary units'] = 'Wydziel jednostki budżetowe';
+$_LANG['<!uke-income>Budgetary unit services'] = 'Usługi świadczone dla jednostek budżetowych';
+$_LANG['<!uke-income>Budgetary unit income'] = 'Przychód z jednostek budżetowych';
+$_LANG['<!link>Budgetary unit links'] = 'Łącza jednostek budżetowych';
+
+$_LANG['Location address is not selected'] = 'Nie wybrano adresu lokalizacji';

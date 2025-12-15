@@ -6278,3 +6278,5 @@ $_LANG['Separate budgetary units'] = 'Wydziel jednostki budżetowe';
 $_LANG['<!uke-income>Budgetary unit services'] = 'Usługi świadczone dla jednostek budżetowych';
 $_LANG['<!uke-income>Budgetary unit income'] = 'Przychód z jednostek budżetowych';
 $_LANG['<!link>Budgetary unit links'] = 'Łącza jednostek budżetowych';
+
+$_LANG['Location address is not selected'] = 'Nie wybrano adresu lokalizacji';

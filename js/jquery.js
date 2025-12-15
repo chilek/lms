@@ -312,7 +312,7 @@ function initAdvancedSelects(selector) {
 		}
 		$(this).on('chosen:ready', function () {
 			if (typeof ($(this).attr('required')) !== 'undefined') {
-				$(this).next().toggleClass('lms-ui-error', RegExp("^0?$").test($(this).val()) || $(this).is('.lms-ui-error'));
+				$(this).next().toggleClass('lms-ui-error', RegExp("^0$").test($(this).val()) || $(this).is('.lms-ui-error'));
 			}
 		});
 
@@ -466,13 +466,15 @@ function initAdvancedSelectsTest(selector) {
 
 		$(this).select2(options);
 
-		if (typeof($(this).attr('required')) !== 'undefined' || $(this).is('[data-required]')) {
-			$(this).siblings('.select2').find('.select2-selection').toggleClass('lms-ui-error', RegExp("^0?$").test($(this).val()) || $(this).is('.lms-ui-error'));
+		if (typeof($(this).attr('required')) !== 'undefined' || $(this).prop('required') || $(this).is('[data-required]')) {
+			$(this).siblings('.select2').find('.select2-selection').toggleClass('lms-ui-error', RegExp("^(0|-1|)$").test($(this).val()) || $(this).is('.lms-ui-error'));
 		}
 
 		$(this).on('change', function() {
-			if (typeof($(this).attr('required')) !== 'undefined' || $(this).is('[data-required]')) {
-				$(this).siblings('.select2').find('.select2-selection').toggleClass('lms-ui-error', RegExp("^0?$").test($(this).val()));
+			if (typeof($(this).attr('required')) !== 'undefined' || $(this).prop('required') || $(this).is('[data-required]')) {
+				var invalidValue = ['', '0', '-1'].includes($(this).val());
+				$(this).siblings('.select2').find('.select2-selection').toggleClass('lms-ui-error', invalidValue);
+				this.setCustomValidity(invalidValue ? $t('Location address is not selected') : '');
 			}
 		}).on("select2:clear", function(){
 			$(this).on("select2:opening.cancelOpen", function(e){
@@ -480,6 +482,10 @@ function initAdvancedSelectsTest(selector) {
 
 				$(this).off("select2:opening.cancelOpen");
 			});
+		}).on('lms:advanced_select_update', function() {
+			var invalidValue = ['', '0', '-1'].includes($(this).val())
+			$(this).siblings('.select2').find('.select2-selection').toggleClass('lms-ui-error', $(this).prop('required') && invalidValue);
+			this.setCustomValidity($(this).prop('required') && invalidValue ? $t('Location address is not selected') : '');
 		});
 
 		$(document).on('select2:open', function() {

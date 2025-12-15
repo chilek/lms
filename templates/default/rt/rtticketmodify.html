@@ -472,4 +472,13 @@
 			conflict_lists: [ '#parent-ticket' ]
 		});
 
+		$(function() {
+			$('#customer_addresses').on('lms:address_list_updated', function() {
+				console.log($('[name="ticket[custid]"]').val());
+				{if ConfigHelper::checkConfig('rt.location_required')}
+					$(this).prop('required', $('[name="ticket[custid]"]').val().length > 0).trigger('lms:advanced_select_update');
+				{/if}
+			});
+		});
+
 </script>

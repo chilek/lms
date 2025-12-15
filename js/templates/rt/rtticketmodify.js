@@ -77,6 +77,7 @@ function change_customer(customer_selector, address_selector) {
 			updateAdvancedSelectsTest('#customer_addresses');
 		}
 		xajax_select_location($(customer_selector).val(), $(address_selector).val());
+		$('#customer_addresses').trigger('lms:address_list_updated');
 		xajax_update_contacts($(customer_selector).val());
 	});
 }
