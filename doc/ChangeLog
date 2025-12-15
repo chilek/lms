@@ -1147,6 +1147,9 @@ version 28-git (????-??-??):
     so far supported 'true' and 'false' values [chilan]
   - improvement: '%username' and '%rusername' substitution symbol support added for 'documents.sender_name'
     and 'documents.mail_body' configuration variables [chilan]
+  - enhancement: 'timetable.location_required' and 'rt.location_required' configuration variables (both
+    with 'false' as default value) control if location selection is required if customer is selected
+    in timetable events and helpdesk tickets [chilan]
 
 version 27.0 (2021-08-20):
 
