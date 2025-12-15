@@ -472,13 +472,20 @@
 			conflict_lists: [ '#parent-ticket' ]
 		});
 
-		$(function() {
-			$('#customer_addresses').on('lms:address_list_updated', function() {
-				console.log($('[name="ticket[custid]"]').val());
-				{if ConfigHelper::checkConfig('rt.location_required')}
+	$(function() {
+		$('#customer_addresses').on('lms:address_list_updated', function() {
+			{if ConfigHelper::checkConfig('rt.location_required')}
+				{if $layout.module == 'eventadd'}
+					$(this).prop('required', $('[name="event[custid]"]').val().length > 0).trigger('lms:advanced_select_update');
+				{else}
 					$(this).prop('required', $('[name="ticket[custid]"]').val().length > 0).trigger('lms:advanced_select_update');
 				{/if}
-			});
+			{/if}
 		});
+
+		{if $layout.module != 'eventadd'}
+			$('#customer_addresses').trigger('lms:address_list_updated');
+		{/if}
+	});
 
 </script>
