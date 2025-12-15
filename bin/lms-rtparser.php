@@ -60,6 +60,10 @@ $SYSLOG = SYSLOG::getInstance();
 $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 
+// Initialize plugin manager (required for hooks like send_sms_before)
+$plugin_manager = LMSPluginManager::getInstance();
+$LMS->setPluginManager($plugin_manager);
+
 $hostname = gethostname();
 if (empty($hostname)) {
     $hostname = 'example.com';
