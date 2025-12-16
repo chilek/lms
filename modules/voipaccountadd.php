@@ -158,7 +158,7 @@ if (isset($_POST['voipaccountdata'])) {
         }
         // check if selected address is teryt address
         if (!isset($error['address_id']) && !ConfigHelper::checkPrivilege('full_access')
-            && ConfigHelper::checkConfig('phpui.teryt_required') && ($voipaccountdata['address_id'] == -1
+            && ConfigHelper::checkConfig('phpui.teryt_required') && ($voipaccountdata['address_id'] <= 0
                 || !$LMS->isTerritAddress($voipaccountdata['address_id']))) {
             $error['address_id'] = trans('TERYT address is required!');
         }

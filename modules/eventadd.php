@@ -250,7 +250,7 @@ if (isset($_POST['event'])) {
     $error = $hook_data['error'];
 
     if (!$error && !$warning) {
-        $event['address_id'] = !isset($event['address_id']) || $event['address_id'] == -1 ? null : $event['address_id'];
+        $event['address_id'] = !isset($event['address_id']) || $event['address_id'] <= 0 ? null : $event['address_id'];
         $event['nodeid'] = empty($event['nodeid']) ? null : $event['nodeid'];
 
         switch ($event['helpdesk']) {

@@ -188,7 +188,7 @@ if (isset($_POST['ticket'])) {
             }
         }
 
-        if ($ticket['address_id'] == -1) {
+        if ($ticket['address_id'] <= 0) {
             $ticket['address_id'] = null;
         }
 
