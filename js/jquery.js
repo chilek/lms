@@ -467,12 +467,12 @@ function initAdvancedSelectsTest(selector) {
 		$(this).select2(options);
 
 		if (typeof($(this).attr('required')) !== 'undefined' || $(this).prop('required') || $(this).is('[data-required]')) {
-			$(this).siblings('.select2').find('.select2-selection').toggleClass('lms-ui-error', RegExp("^(0|-1|)$").test($(this).val()) || $(this).is('.lms-ui-error'));
+			$(this).siblings('.select2').find('.select2-selection').toggleClass('lms-ui-error', ['', '0'].includes($(this).val()) || $(this).is('.lms-ui-error'));
 		}
 
 		$(this).on('change', function() {
 			if (typeof($(this).attr('required')) !== 'undefined' || $(this).prop('required') || $(this).is('[data-required]')) {
-				var invalidValue = ['', '0', '-1'].includes($(this).val());
+				var invalidValue = ['', '0'].includes($(this).val());
 				$(this).siblings('.select2').find('.select2-selection').toggleClass('lms-ui-error', invalidValue);
 				this.setCustomValidity(invalidValue ? $t('Location address is not selected') : '');
 			}
@@ -483,7 +483,7 @@ function initAdvancedSelectsTest(selector) {
 				$(this).off("select2:opening.cancelOpen");
 			});
 		}).on('lms:advanced_select_update', function() {
-			var invalidValue = ['', '0', '-1'].includes($(this).val())
+			var invalidValue = ['', '0'].includes($(this).val())
 			$(this).siblings('.select2').find('.select2-selection').toggleClass('lms-ui-error', $(this).prop('required') && invalidValue);
 			this.setCustomValidity($(this).prop('required') && invalidValue ? $t('Location address is not selected') : '');
 		});
@@ -545,7 +545,7 @@ function setAddressList(selector, address_list, preselection) {
 		}
 		return 0;
 	});
-	var html = '<option value="-1">---</option>';
+	var html = '<option value="0">—</option>';
 	$.each(addresses, function () {
 		switch (this.location_address_type) {
 			case "0":

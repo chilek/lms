@@ -361,7 +361,7 @@
 			});
 
 			$('[name="event[custid]"]').change(function() {
-				var disabled = !$(this).val().match(/^(0|-1|)$/);
+				var disabled = !['', '0'].includes($(this).val());
 
 				$('[name="event[divisionid]"]')
 					.prop('disabled', disabled)
