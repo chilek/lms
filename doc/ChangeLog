@@ -1150,6 +1150,9 @@ version 28-git (????-??-??):
   - enhancement: 'timetable.location_required' and 'rt.location_required' configuration variables (both
     with 'false' as default value) control if location selection is required if customer is selected
     in timetable events and helpdesk tickets [chilan]
+  - improvement: configuration variable 'rt.queue_change_notify_all' with 'false' as default value allows
+    to enable all user notifications in target queue during ticket move between queues (after value change
+    to 'true') [chilan/naszasiec]
 
 version 27.0 (2021-08-20):
 
