@@ -397,6 +397,12 @@
 			{if ConfigHelper::checkConfig('timetable.location_required')}
 				$(this).prop('required', $('[name="event[custid]"]').val().length > 0).trigger('lms:advanced_select_update');
 			{/if}
+		}).on('lms:advanced_select_validate_required', function(e, data) {
+			{if ConfigHelper::checkConfig('timetable.location_required')}
+				var emptyCustomerId = !$('[name="event[custid]"]').val().length;
+				data.advancedSelectElement.toggleClass('lms-ui-error', !emptyCustomerId && data.invalidValue);
+				this.setCustomValidity(!emptyCustomerId && data.invalidValue ? $t('Location address is not selected') : '');
+			{/if}
 		});
 
 		{if $layout.module == 'eventedit'}

@@ -472,9 +472,13 @@ function initAdvancedSelectsTest(selector) {
 
 		$(this).on('change', function() {
 			if (typeof($(this).attr('required')) !== 'undefined' || $(this).prop('required') || $(this).is('[data-required]')) {
-				var invalidValue = ['', '0'].includes($(this).val());
-				$(this).siblings('.select2').find('.select2-selection').toggleClass('lms-ui-error', invalidValue);
-				this.setCustomValidity(invalidValue ? $t('Location address is not selected') : '');
+				$(this).trigger(
+					'lms:advanced_select_validate_required',
+					[{
+						invalidValue: ['', '0'].includes($(this).val()),
+						advancedSelectElement: $(this).siblings('.select2').find('.select2-selection')
+					}]
+				);
 			}
 		}).on("select2:clear", function(){
 			$(this).on("select2:opening.cancelOpen", function(e){
@@ -483,9 +487,13 @@ function initAdvancedSelectsTest(selector) {
 				$(this).off("select2:opening.cancelOpen");
 			});
 		}).on('lms:advanced_select_update', function() {
-			var invalidValue = ['', '0'].includes($(this).val())
-			$(this).siblings('.select2').find('.select2-selection').toggleClass('lms-ui-error', $(this).prop('required') && invalidValue);
-			this.setCustomValidity($(this).prop('required') && invalidValue ? $t('Location address is not selected') : '');
+			$(this).trigger(
+				'lms:advanced_select_validate_required',
+				[{
+					invalidValue: ['', '0'].includes($(this).val()),
+					advancedSelectElement: $(this).siblings('.select2').find('.select2-selection')
+				}]
+			);
 		});
 
 		$(document).on('select2:open', function() {

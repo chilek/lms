@@ -572,7 +572,7 @@ function CustomerAssignmentHelper(options) {
 					helper.locationSelectionHandler();
 				});
 
-				options = '<option value="-1">' + $t('none') + '</option>';
+				options = '<option value="0">' + $t('none') + '</option>';
 				if (data.addresses) {
 					$.each(data.addresses, function(key, value) {
 						options += '<option value="' + value.address_id + '"' +
