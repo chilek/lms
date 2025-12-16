@@ -405,6 +405,10 @@
 			{/if}
 		});
 
+		{if ConfigHelper::checkConfig('timetable.location_required')}
+			$('#customer_addresses').trigger('lms:address_list_updated');
+		{/if}
+
 		{if $layout.module == 'eventedit'}
 			function change_customer(customer_selector, address_selector) {
 				var customerId = $(customer_selector).val();
