@@ -1153,6 +1153,8 @@ version 28-git (????-??-??):
   - improvement: configuration variable 'rt.queue_change_notify_all' with 'false' as default value allows
     to enable all user notifications in target queue during ticket move between queues (after value change
     to 'true') [chilan/naszasiec]
+  - improvement: auto-check 'notify users' option when queue changes and 'rt.notify_auto_check_on_queue_change'
+    is set to 'true' (its default value is 'false') [chilan/naszasiec]
 
 version 27.0 (2021-08-20):
 
