@@ -487,7 +487,7 @@
 			$('#customer_addresses').trigger('lms:address_list_updated');
 		{/if}
 
-		{if ConfigHelper::checkConfig('rt.notify_on_queue_change')}
+		{if ConfigHelper::checkConfig('rt.notify_auto_check_on_queue_change')}
 			// Auto-check "Notify users" when queue changes
 			var queueElem = $('[name="ticket[queue]"]');
 			var originalQueue = queueElem.val();
