@@ -472,11 +472,14 @@ function initAdvancedSelectsTest(selector) {
 
 		$(this).on('change', function() {
 			if (typeof($(this).attr('required')) !== 'undefined' || $(this).prop('required') || $(this).is('[data-required]')) {
+				var invalidValue = ['', '0'].includes($(this).val());
+				var advancedSelectElement = $(this).siblings('.select2').find('.select2-selection');
+				advancedSelectElement.toggleClass('lms-ui-error', invalidValue);
 				$(this).trigger(
 					'lms:advanced_select_validate_required',
 					[{
-						invalidValue: ['', '0'].includes($(this).val()),
-						advancedSelectElement: $(this).siblings('.select2').find('.select2-selection')
+						invalidValue: invalidValue,
+						advancedSelectElement: advancedSelectElement
 					}]
 				);
 			}
@@ -487,11 +490,14 @@ function initAdvancedSelectsTest(selector) {
 				$(this).off("select2:opening.cancelOpen");
 			});
 		}).on('lms:advanced_select_update', function() {
+			var invalidValue = ['', '0'].includes($(this).val());
+			var advancedSelectElement = $(this).siblings('.select2').find('.select2-selection');
+			advancedSelectElement.toggleClass('lms-ui-error', invalidValue);
 			$(this).trigger(
 				'lms:advanced_select_validate_required',
 				[{
-					invalidValue: ['', '0'].includes($(this).val()),
-					advancedSelectElement: $(this).siblings('.select2').find('.select2-selection')
+					invalidValue: invalidValue,
+					advancedSelectElement: advancedSelectElement
 				}]
 			);
 		});
