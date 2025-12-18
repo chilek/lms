@@ -72,10 +72,16 @@ $(function() {
 function change_customer(customer_selector, address_selector) {
 	getCustomerAddresses($(customer_selector).val(), function (addresses) {
 		setAddressList('#customer_addresses', addresses);
-		if (Object.keys(addresses).length == 1) {
-			$('#customer_addresses').val($('#customer_addresses option:last-child').val());
-			updateAdvancedSelectsTest('#customer_addresses');
+
+		if (Object.keys(addresses).length) {
+			$.each(addresses, function(index, address) {
+				if (address.hasOwnProperty('default_address')) {
+					$('#customer_addresses').val(address.address_id);
+					updateAdvancedSelectsTest('#customer_addresses');
+				}
+			});
 		}
+
 		xajax_select_location($(customer_selector).val(), $(address_selector).val());
 		$('#customer_addresses').trigger('lms:address_list_updated');
 		xajax_update_contacts($(customer_selector).val());

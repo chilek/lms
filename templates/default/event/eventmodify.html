@@ -415,12 +415,19 @@
 				getCustomerAddresses(customerId, function (addresses) {
 					var addressId = $('#customer_addresses').val();
 					setAddressList('#customer_addresses', addresses);
-					if (Object.keys(addresses).length == 1) {
-						$('#customer_addresses').val($('#customer_addresses option:last-child').val());
+
+					if (Object.keys(addresses).length) {
+						$.each(addresses, function(index, address) {
+							if (address.hasOwnProperty('default_address')) {
+								$('#customer_addresses').val(address.address_id);
+								updateAdvancedSelectsTest('#customer_addresses');
+							}
+						});
 					} else {
 						$('#customer_addresses').val(addressId);
 					}
 					updateAdvancedSelectsTest('#customer_addresses');
+
 					xajax_select_location(customerId, $(address_selector).val());
 					$('#customer_addresses').trigger('lms:address_list_updated');
 				});
