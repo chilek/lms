@@ -577,7 +577,7 @@ CREATE TABLE documents (
 		CONSTRAINT documents_cuserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	recipient_address_id integer DEFAULT NULL
 		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	recipient_ten ten varchar(50) DEFAULT NULL,
+	recipient_ten varchar(50) DEFAULT NULL,
 	post_address_id integer DEFAULT NULL
 		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	template varchar(255) DEFAULT NULL,
