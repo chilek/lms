@@ -220,7 +220,7 @@ class Session
                 $body = ConfigHelper::getConfig('userpanel.reminder_sms_body');
             }
 
-//            if (preg_match('/^\$[0-9a-z]+\$/', $customer['pin']) || $this->unsecure_pin_validity && time() - $customer['pinlastchange'] > $this->unsecure_pin_validity) {
+            //if (preg_match('/^\$[0-9a-z]+\$/', $customer['pin']) || $this->unsecure_pin_validity && time() - $customer['pinlastchange'] > $this->unsecure_pin_validity) {
             $securePin = preg_match('/^\$[0-9a-z]+\$/', $customer['pin']);
             if ($securePin || $this->unsecure_pin_validity) {
                 $pin_min_size = intval(ConfigHelper::getConfig(
@@ -231,7 +231,7 @@ class Session
                     )
                 ));
 
-//                if ($this->unsecure_pin_validity && time() - $customer['pinlastchange'] > $this->unsecure_pin_validity) {
+                //if ($this->unsecure_pin_validity && time() - $customer['pinlastchange'] > $this->unsecure_pin_validity) {
                 if ($this->unsecure_pin_validity) {
                     $pin_min_size = intval(ConfigHelper::getConfig('customers.unsecure_pin_min_length', $pin_min_size));
                 }
@@ -248,7 +248,7 @@ class Session
                     )
                 ));
 
-//                if ($this->unsecure_pin_validity && time() - $customer['pinlastchange'] > $this->unsecure_pin_validity) {
+                //if ($this->unsecure_pin_validity && time() - $customer['pinlastchange'] > $this->unsecure_pin_validity) {
                 if ($this->unsecure_pin_validity) {
                     $pin_max_size = intval(ConfigHelper::getConfig('customers.unsecure_pin_max_length', $pin_max_size));
                 }
@@ -263,7 +263,7 @@ class Session
 
                 $customer['pin'] = generate_random_string(
                     random_int($pin_min_size, $pin_max_size),
-//                    $this->unsecure_pin_validity && time() - $customer['pinlastchange'] > $this->unsecure_pin_validity
+                    //$this->unsecure_pin_validity && time() - $customer['pinlastchange'] > $this->unsecure_pin_validity
                     $this->unsecure_pin_validity
                         ? $this->unsecure_pin_allowed_characters
                         : $this->pin_allowed_characters
