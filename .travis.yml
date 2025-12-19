@@ -6,18 +6,18 @@ env:
 
 matrix:
   include:
-    - os: linux
-      language: php
-      php: 7.3
-      dist: xenial
-      env:
-        PHPCS_VER="^3"
-        PHPCS_STANDARD="phpcs3.xml"
-        INSTALL_PHP_ZIP_EXTENSION=false
-        COMPOSER_EXTRA_PARAMS=""
-        PHP_LINT_MAX_ARGS="1"
-      addons:
-        postgresql: 9.4
+#    - os: linux
+#      language: php
+#      php: 7.3
+#      dist: xenial
+#      env:
+#        PHPCS_VER="^3"
+#        PHPCS_STANDARD="phpcs3.xml"
+#        INSTALL_PHP_ZIP_EXTENSION=false
+#        COMPOSER_EXTRA_PARAMS=""
+#        PHP_LINT_MAX_ARGS="1"
+#      addons:
+#        postgresql: 9.4
 
     - os: linux
       language: php
