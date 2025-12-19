@@ -34,6 +34,8 @@ if (!isset($_GET['ssn']) || !ctype_digit($_GET['ssn'])) {
     die('[]');
 }
 
+$api_request_reason = ConfigHelper::getConfig('pesel.api_request_reason', trans('telecommunication service contract'));
+
 try {
     $result = Utils::checkPeselReservationStatus($_GET['ssn']);
 } catch (Exception $e) {
@@ -44,6 +46,7 @@ try {
             array(
                 SYSLOG::RES_CUST => $_GET['id'],
                 'ssn' => $_GET['ssn'],
+                'reason' => $api_request_reason,
                 'error' => $e->getMessage(),
             )
         );
@@ -60,6 +63,7 @@ if ($SYSLOG) {
             array(
                 SYSLOG::RES_CUST => $_GET['id'],
                 'ssn' => $_GET['ssn'],
+                'reason' => $api_request_reason,
                 'reserved' => $result['reserved'] ? 1 : 0,
             )
         );
@@ -70,6 +74,7 @@ if ($SYSLOG) {
             array(
                 SYSLOG::RES_CUST => $_GET['id'],
                 'ssn' => $_GET['ssn'],
+                'reason' => $api_request_reason,
                 'error' => isset($result['error']) ? $result['error'] : implode(', ', $result['errors']),
             )
         );
