@@ -42,6 +42,8 @@ interface LMSDBInterface
 
     public function MultiExecute($query, array $inputarray = null);
 
+    public function getSqlQueryTime();
+
     public function GetAll($query = null, array $inputarray = null);
 
     public function GetAllByKey($query = null, $key = null, array $inputarray = null);
@@ -111,6 +113,8 @@ interface LMSDBInterface
     public function SetErrors(array $errors = array());
 
     public function SetDebug($debug = true);
+
+    public function GetDebug();
 
     public function UpgradeDb($dbver = DBVERSION, $pluginclass = null, $libdir = null, $docdir = null);
 

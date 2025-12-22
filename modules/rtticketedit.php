@@ -777,7 +777,7 @@ if (isset($_POST['ticket'])) {
             'categories' => isset($ticketedit['categories']) ? array_keys($ticketedit['categories']) : array(),
             'source' => $ticketedit['source'],
             'priority' => $ticketedit['priority'] ?? null,
-            'address_id' => $ticketedit['address_id'] == -1 ? null : $ticketedit['address_id'],
+            'address_id' => $ticketedit['address_id'] <= 0 ? null : $ticketedit['address_id'],
             'nodeid' => empty($ticketedit['nodeid']) ? null : $ticketedit['nodeid'],
             'netnodeid' => empty($ticketedit['netnodeid']) ? null : $ticketedit['netnodeid'],
             'netdevid' => empty($ticketedit['netdevid']) ? null : $ticketedit['netdevid'],

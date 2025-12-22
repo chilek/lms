@@ -56,7 +56,7 @@ $access_table = array(
     ),
     'node_connections' => array(
         'label' => trans('nodes connection/disconnection'),
-        'allow_regexp' => '^nodeset$',
+        'allow_regexp' => '^(nodeset|nodesession)$',
     ),
     'financial_operations' => array(
         'label' => trans('financial operations'),

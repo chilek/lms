@@ -361,7 +361,8 @@
 			});
 
 			$('[name="event[custid]"]').change(function() {
-				var disabled = $(this).val().length > 0;
+				var disabled = !['', '0'].includes($(this).val());
+
 				$('[name="event[divisionid]"]')
 					.prop('disabled', disabled)
 					.closest('.lms-ui-box-row')
@@ -392,20 +393,43 @@
 		initAdvancedSelectsTest('#customer_addresses');
 		$('#customer_addresses').change(function() {
 			xajax_select_location($('[name="event[custid]"]').val(), $(this).val());
+		}).on('lms:address_list_updated', function() {
+			{if ConfigHelper::checkConfig('timetable.location_required')}
+				$(this).prop('required', $('[name="event[custid]"]').val().length > 0).trigger('lms:advanced_select_update');
+			{/if}
+		}).on('lms:advanced_select_validate_required', function(e, data) {
+			{if ConfigHelper::checkConfig('timetable.location_required')}
+				var emptyCustomerId = !$('[name="event[custid]"]').val().length;
+				data.advancedSelectElement.toggleClass('lms-ui-error', !emptyCustomerId && data.invalidValue);
+				this.setCustomValidity(!emptyCustomerId && data.invalidValue ? $t('Location address is not selected') : '');
+			{/if}
 		});
+
+		{if ConfigHelper::checkConfig('timetable.location_required')}
+			$('#customer_addresses').trigger('lms:address_list_updated');
+		{/if}
 
 		{if $layout.module == 'eventedit'}
 			function change_customer(customer_selector, address_selector) {
-				getCustomerAddresses($(customer_selector).val(), function (addresses) {
+				var customerId = $(customer_selector).val();
+				getCustomerAddresses(customerId, function (addresses) {
 					var addressId = $('#customer_addresses').val();
 					setAddressList('#customer_addresses', addresses);
-					if (Object.keys(addresses).length == 1) {
-						$('#customer_addresses').val($('#customer_addresses option:last-child').val());
+
+					if (Object.keys(addresses).length) {
+						$.each(addresses, function(index, address) {
+							if (address.hasOwnProperty('default_address')) {
+								$('#customer_addresses').val(address.address_id);
+								updateAdvancedSelectsTest('#customer_addresses');
+							}
+						});
 					} else {
 						$('#customer_addresses').val(addressId);
 					}
 					updateAdvancedSelectsTest('#customer_addresses');
-					xajax_select_location($(customer_selector).val(), $(address_selector).val());
+
+					xajax_select_location(customerId, $(address_selector).val());
+					$('#customer_addresses').trigger('lms:address_list_updated');
 				});
 			}
 		{/if}

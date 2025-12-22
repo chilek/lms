@@ -36,7 +36,6 @@ define('DBVERSION', '2025120800');
  */
 abstract class LMSDB_common implements LMSDBInterface
 {
-
     /** @var string LMS version * */
     protected $_version = DBVERSION;
 
@@ -81,6 +80,8 @@ abstract class LMSDB_common implements LMSDBInterface
     protected $_warnings = true;
 
     private $_upgrade_errors = array();
+
+    protected $sqlQueryTime = 0;
 
     /**
      * Connects to database.
@@ -142,11 +143,17 @@ abstract class LMSDB_common implements LMSDBInterface
                 'error' => $this->_driver_geterror(),
             );
         } elseif ($this->debug) {
-            $this->errors[] = array(
-                'query' => $this->_query,
-                'error' => 'DEBUG: NOERROR',
-                'time' => microtime(true) - $start,
-            );
+            $sqlQueryTime =  microtime(true) - $start;
+
+            if ($this->debug & LMSDB::DEBUG_DETAILS) {
+                $this->errors[] = array(
+                    'query' => $this->_query,
+                    'error' => 'DEBUG: NOERROR',
+                    'time' => $sqlQueryTime,
+                );
+            }
+
+            $this->sqlQueryTime += $sqlQueryTime;
         }
 
         return $this->_driver_affected_rows();
@@ -171,14 +178,25 @@ abstract class LMSDB_common implements LMSDBInterface
                 'error' => $this->_driver_geterror(),
             );
         } elseif ($this->debug) {
-            $this->errors[] = array(
-                'query' => $this->_query,
-                'error' => 'DEBUG: NOERROR',
-                'time' => microtime(true) - $start,
-            );
+            $sqlQueryTime =  microtime(true) - $start;
+
+            if ($this->debug & LMSDB::DEBUG_DETAILS) {
+                $this->errors[] = array(
+                    'query' => $this->_query,
+                    'error' => 'DEBUG: NOERROR',
+                    'time' => microtime(true) - $start,
+                );
+            }
+
+            $this->sqlQueryTime += $sqlQueryTime;
         }
 
         return $this->_driver_affected_rows();
+    }
+
+    public function getSqlQueryTime()
+    {
+        return $this->sqlQueryTime;
     }
 
     /**
@@ -307,11 +325,17 @@ abstract class LMSDB_common implements LMSDBInterface
                 'error' => $this->_driver_geterror()
             );
         } elseif ($this->debug) {
-            $this->errors[] = array(
-                'query' => $this->_query,
-                'error' => 'DEBUG: NOERROR',
-                'time' => microtime(true) - $start,
-            );
+            $sqlQueryTime =  microtime(true) - $start;
+
+            if ($this->debug & LMSDB::DEBUG_DETAILS) {
+                $this->errors[] = array(
+                    'query' => $this->_query,
+                    'error' => 'DEBUG: NOERROR',
+                    'time' => $sqlQueryTime,
+                );
+            }
+
+            $this->sqlQueryTime += $sqlQueryTime;
         }
 
         if ($this->_driver_num_rows()) {
@@ -748,6 +772,12 @@ abstract class LMSDB_common implements LMSDBInterface
     {
 
         $this->debug = $debug;
+    }
+
+    public function GetDebug($debug = true)
+    {
+
+        return $this->debug;
     }
 
     public function UpgradeDb($dbver = DBVERSION, $pluginclass = null, $libdir = null, $docdir = null)

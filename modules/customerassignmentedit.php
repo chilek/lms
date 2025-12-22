@@ -435,7 +435,7 @@ if (isset($_POST['assignment'])) {
             SYSLOG::RES_NUMPLAN => !empty($a['numberplanid']) ? $a['numberplanid'] : null,
             'paytime' => $paytime ?? null,
             'paytype' => !empty($a['paytype']) ? $a['paytype'] : null,
-            'recipient_address_id' => ($a['recipient_address_id'] >= 0) ? $a['recipient_address_id'] : null,
+            'recipient_address_id' => ($a['recipient_address_id'] > 0) ? $a['recipient_address_id'] : null,
             SYSLOG::RES_ASSIGN => $a['id']
         );
 

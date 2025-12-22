@@ -187,6 +187,7 @@ self::addLanguageFunctions(
             $days[mktime(0, 0, 0, 8, 15, $year)] = 'Wniebowzięcie Najświętszej Maryi Panny';
             $days[mktime(0, 0, 0, 11, 1, $year)] = 'Wszystkich Świętych (Dzień Zmarłych)';
             $days[mktime(0, 0, 0, 11, 11, $year)] = 'Narodowe Święto Niepodległości (Dzień Niepodległości)';
+            $days[mktime(0, 0, 0, 12, 24, $year)] = 'Wigilia Bożego Narodzenia';
             $days[mktime(0, 0, 0, 12, 25, $year)] = 'Pierwszy dzień Bożego Narodzenia';
             $days[mktime(0, 0, 0, 12, 26, $year)] = 'Drugi dzień Bożego Narodzenia';
 

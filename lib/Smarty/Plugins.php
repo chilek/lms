@@ -751,7 +751,7 @@ class Plugins
         $location_str .= isset($params['data']['location_address_type'])
             && ($params['data']['location_address_type'] == LOCATION_ADDRESS || $params['data']['location_address_type'] == DEFAULT_LOCATION_ADDRESS)
             && !empty($params['data']['location_ten'])
-                ? trans('TEN' ) . ' ' . htmlspecialchars($params['data']['location_ten']) . ', '
+                ? trans('TEN') . ' ' . htmlspecialchars($params['data']['location_ten']) . ', '
                 : '';
 
         $location_str .= isset($params['data']['location'])
@@ -2835,5 +2835,10 @@ class Plugins
         } else {
             return htmlspecialchars($text, ENT_QUOTES);
         }
+    }
+
+    public static function sqlQueryTimeFunction($params, $template)
+    {
+        return sprintf('%.4f', $GLOBALS['DB']->getSqlQueryTime());
     }
 }

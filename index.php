@@ -226,7 +226,7 @@ $layout['hostname'] = hostname();
 $layout['lmsv'] = LMS::SOFTWARE_VERSION;
 $layout['lmsvr'] = LMS::getSoftwareRevision();
 $layout['dberrors'] = &$DB->GetErrors();
-$layout['dbdebug'] = $_DBDEBUG ?? false;
+$layout['dbdebug'] = $DB->GetDebug();
 $layout['popup'] = isset($_GET['popup']);
 $layout['url'] = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
     . $_SERVER['HTTP_HOST']

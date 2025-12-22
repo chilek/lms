@@ -186,7 +186,7 @@ if (isset($_POST['customeradd'])) {
 
         Localisation::setSystemLanguage($countryCode);
 
-        if ($v['location_zip']) {
+        if (!ConfigHelper::checkConfig('phpui.skip_zip_validation') && $v['location_zip']) {
             $zip_validation_result = check_zip($v['location_zip']);
             if (isset($zip_validation_result) && !$zip_validation_result) {
                 $error['customeradd[addresses][' . $k . '][location_zip]'] = trans('Incorrect ZIP code!');

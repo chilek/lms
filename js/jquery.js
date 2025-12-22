@@ -312,7 +312,7 @@ function initAdvancedSelects(selector) {
 		}
 		$(this).on('chosen:ready', function () {
 			if (typeof ($(this).attr('required')) !== 'undefined') {
-				$(this).next().toggleClass('lms-ui-error', RegExp("^0?$").test($(this).val()) || $(this).is('.lms-ui-error'));
+				$(this).next().toggleClass('lms-ui-error', RegExp("^0$").test($(this).val()) || $(this).is('.lms-ui-error'));
 			}
 		});
 
@@ -466,13 +466,22 @@ function initAdvancedSelectsTest(selector) {
 
 		$(this).select2(options);
 
-		if (typeof($(this).attr('required')) !== 'undefined' || $(this).is('[data-required]')) {
-			$(this).siblings('.select2').find('.select2-selection').toggleClass('lms-ui-error', RegExp("^0?$").test($(this).val()) || $(this).is('.lms-ui-error'));
+		if (typeof($(this).attr('required')) !== 'undefined' || $(this).prop('required') || $(this).is('[data-required]')) {
+			$(this).siblings('.select2').find('.select2-selection').toggleClass('lms-ui-error', ['', '0'].includes($(this).val()) || $(this).is('.lms-ui-error'));
 		}
 
 		$(this).on('change', function() {
-			if (typeof($(this).attr('required')) !== 'undefined' || $(this).is('[data-required]')) {
-				$(this).siblings('.select2').find('.select2-selection').toggleClass('lms-ui-error', RegExp("^0?$").test($(this).val()));
+			if (typeof($(this).attr('required')) !== 'undefined' || $(this).prop('required') || $(this).is('[data-required]')) {
+				var invalidValue = ['', '0'].includes($(this).val());
+				var advancedSelectElement = $(this).siblings('.select2').find('.select2-selection');
+				advancedSelectElement.toggleClass('lms-ui-error', invalidValue);
+				$(this).trigger(
+					'lms:advanced_select_validate_required',
+					[{
+						invalidValue: invalidValue,
+						advancedSelectElement: advancedSelectElement
+					}]
+				);
 			}
 		}).on("select2:clear", function(){
 			$(this).on("select2:opening.cancelOpen", function(e){
@@ -480,6 +489,17 @@ function initAdvancedSelectsTest(selector) {
 
 				$(this).off("select2:opening.cancelOpen");
 			});
+		}).on('lms:advanced_select_update', function() {
+			var invalidValue = ['', '0'].includes($(this).val());
+			var advancedSelectElement = $(this).siblings('.select2').find('.select2-selection');
+			advancedSelectElement.toggleClass('lms-ui-error', invalidValue);
+			$(this).trigger(
+				'lms:advanced_select_validate_required',
+				[{
+					invalidValue: invalidValue,
+					advancedSelectElement: advancedSelectElement
+				}]
+			);
 		});
 
 		$(document).on('select2:open', function() {
@@ -539,7 +559,7 @@ function setAddressList(selector, address_list, preselection) {
 		}
 		return 0;
 	});
-	var html = '<option value="-1">---</option>';
+	var html = '<option value="0">—</option>';
 	$.each(addresses, function () {
 		switch (this.location_address_type) {
 			case "0":
@@ -2181,6 +2201,231 @@ $(function() {
 		}
 	});
 
+	// TEXT -> HTML (obsługa cytowań >, >>, > >, itp.)
+	function lmsTextToHtml(text) {
+		if (!text) {
+			return '';
+		}
+
+		// normalizacja końców linii
+		text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+
+		const lines = text.split('\n');
+		let html = '';
+		let currentQuoteLevel = 0;
+
+		function escapeHtml(str) {
+			return str
+				.replace(/&/g, '&amp;')
+				.replace(/</g, '&lt;')
+				.replace(/>/g, '&gt;');
+		}
+
+		for (let i = 0; i < lines.length; i++) {
+			let line = lines[i];
+
+			if (/^\s*$/.test(line)) {
+				if (currentQuoteLevel > 0) {
+					// pusta linia KOŃCZY cytat:
+					// zamykamy wszystkie otwarte blockquote
+					while (currentQuoteLevel > 0) {
+						html += '</blockquote>';
+						currentQuoteLevel--;
+					}
+				}
+
+				// pusta linia poza cytatem = odstęp między akapitami
+				html += '<br /><br />';
+				continue;
+			}
+
+			// wykrywanie cytowania: >, >>, > >, >   >, itp.
+			const m = line.match(/^(\s*)((?:>\s*)+)(.*)$/);
+
+			let level = 0;
+			let content;
+
+			if (m) {
+				// liczba znaków ">" (ignorujemy spacje między nimi)
+				level = (m[2].match(/>/g) || []).length;
+				content = m[3].trimStart();
+			} else {
+				level = 0;
+				content = line;
+			}
+
+			// dopasowanie liczby otwartych <blockquote>
+			while (currentQuoteLevel < level) {
+				html += '<blockquote>';
+				currentQuoteLevel++;
+			}
+			while (currentQuoteLevel > level) {
+				html += '</blockquote>';
+				currentQuoteLevel--;
+			}
+
+			content = escapeHtml(content);
+
+			html += content + '<br />';
+		}
+
+		// domknięcie wszystkich otwartych cytatów
+		while (currentQuoteLevel > 0) {
+			html += '</blockquote>';
+			currentQuoteLevel--;
+		}
+
+		return html;
+	}
+
+	function lmsIsPlainTextHtml(html) {
+		if (!html) {
+			return true;
+		}
+
+		const tags = [...html.matchAll(/<\/?([a-z0-9]+)[^>]*>/gi)]
+			.map(m => m[1].toLowerCase());
+
+		if (!tags.length) {
+			// brak tagów -> traktujemy jako zwykły tekst
+			return true;
+		}
+
+		// dopuszczamy "tekstowe" tagi, jakie pojawiają się przy prostym tekście:
+		// <br>, <blockquote>, <p>
+		const allowed = {
+			br: true,
+			blockquote: true,
+			p: true,
+		};
+
+		return tags.every(t => !!allowed[t]);
+	}
+
+	function lmsHtmlToText(html) {
+		if (!html) {
+			return '';
+		}
+
+		// jeśli NIE jest to "tekstowy HTML", nie ruszamy struktury (tylko normalizacja CRLF)
+		if (!lmsIsPlainTextHtml(html)) {
+			return html
+				.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
+				.replace(/\n/g, '\r\n');
+		}
+
+		// tworzymy tymczasowy kontener DOM
+		var container = document.createElement('div');
+		container.innerHTML = html;
+
+		let result = '';
+
+		function appendText(str, quoteLevel) {
+			if (!str) return;
+
+			str = str.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+
+			let lines = str.split('\n');
+
+			for (let i = 0; i < lines.length; i++) {
+				let line = lines[i];
+
+				// pomijamy linie składające się tylko z whitespace'ów
+				if (line.trim() === '') {
+					result += '\n';
+					continue;
+				}
+
+				const atLineStart = (result.length === 0 || result.endsWith('\n'));
+
+				if (atLineStart && quoteLevel > 0) {
+					result += '>'.repeat(quoteLevel) + ' ';
+				}
+
+				result += line;
+
+				if (i < lines.length - 1) {
+					result += '\n';
+				}
+			}
+		}
+
+		function walk(node, quoteLevel) {
+			if (node.nodeType === Node.TEXT_NODE) {
+				// ignorujemy czysto-białe text-node'y (whitespace z formatowania HTML)
+				if (node.nodeValue.trim() === '') {
+					return;
+				}
+				appendText(node.nodeValue, quoteLevel);
+
+			} else if (node.nodeType === Node.ELEMENT_NODE) {
+				const tag = node.nodeName.toLowerCase();
+
+				if (tag === 'br') {
+					result += '\n';
+					return;
+				}
+
+				if (tag === 'blockquote') {
+					// nowy poziom cytowania; dbamy tylko, żeby zaczynać od nowej linii
+					if (result.length && !result.endsWith('\n')) {
+						result += '\n';
+					}
+
+					walkChildren(node, quoteLevel + 1);
+
+					// po cytacie kończymy linię, ale nie dokładamy pustego wiersza
+					if (!result.endsWith('\n')) {
+						result += '\n';
+					}
+					return;
+				}
+
+				// inne tagi – traktujemy jako zwykły tekst (teoretycznie tu nie trafimy,
+				// bo lmsIsPlainTextHtml dopuszcza tylko br / blockquote)
+				walkChildren(node, quoteLevel);
+			}
+		}
+
+		function walkChildren(node, quoteLevel) {
+			for (let child = node.firstChild; child; child = child.nextSibling) {
+				walk(child, quoteLevel);
+			}
+		}
+
+		walkChildren(container, 0);
+
+		// rozbijamy na linie, czyścimy "puste wiersze" między poziomami cytowań
+		let lines = result.split('\n');
+		let cleaned = [];
+
+		for (let i = 0; i < lines.length; i++) {
+			const line = lines[i];
+
+			// pusta linia między dwoma liniami cytowanymi -> pomijamy
+			if (
+				line.trim() === '' &&
+				i > 0 && i < lines.length - 1 &&
+				/^>+ /.test(lines[i - 1]) &&
+				/^>+ /.test(lines[i + 1])
+			) {
+				continue;
+			}
+
+			cleaned.push(line);
+		}
+
+		result = cleaned.join('\n');
+
+		// redukcja nadmiarowych pustych wierszy (więcej niż 2 -> 2)
+		result = result.replace(/\n{3,}/g, '\n\n');
+
+		result = result.trimEnd();
+
+		// zamiana \n na \r\n dla textarea
+		return result.replace(/\n/g, '\r\n');
+	}
+
 	function init_visual_editor(id) {
 		tinymce.init({
 			selector: '#' + id,
@@ -2243,19 +2488,70 @@ $(function() {
 				}
 			},
 			setup: function (ed) {
-				ed.on('BeforeSetContent', function(e) {
-					if (e.format == 'html') {
-						e.content = e.content.replace(/\r?\n/g, '<br class="lms-ui-line-break" />');
+				ed.on('BeforeSetContent', function (e) {
+					if (typeof e.content !== 'string') {
+						return;
 					}
-				}).on('GetContent', function(e) {
-					if (e.format == 'html') {
-						e.content = e.content.replace(/<br class="lms-ui-line-break"[^>]*>/g, '\r\n');
+
+					// TEXT -> HTML (przełączenie z textarea na edytor)
+					if (e.format === 'text') {
+						e.content = lmsTextToHtml(e.content);
+						e.format = 'html';
+						return;
 					}
-				}).on('FullscreenStateChanged', function(e) {
+
+					// "goły" tekst "udający" html (bez tagów) -> potraktuj jak TEXT
+					if (e.format === 'html') {
+						if (!/<[a-z!\/][^>]*>/i.test(e.content)) {
+							e.content = lmsTextToHtml(e.content);
+						}
+					}
+				}).on('FullscreenStateChanged', function (e) {
 					$('.lms-ui-main-document').css('overflow', e.state ? 'visible' : '');
 				});
 			}
 		});
+	}
+
+	function remove_visual_editor(id) {
+		var editor = tinymce.get(id);
+		if (editor != null) {
+			var $textarea = $('#' + id);
+
+			// 1) pobieramy HTML z edytora
+			var html = editor.getContent({ format: 'html' });
+
+			// 2) konwertujemy HTML -> TEXT
+			var text = lmsHtmlToText(html);
+
+			// 3) oznaczamy wewnętrzną aktualizację, żeby change handler nie odpalał setContent
+			$textarea.data('lmsInternalUpdate', true);
+
+			// 4) usuwamy edytor (TinyMCE nadpisze textarea HTML-em, ale zaraz go zastąpimy)
+			editor.remove();
+
+			// 5) nadpisujemy textarea **tekstem**
+			$textarea.val(text);
+
+			// 6) zdejmujemy flagę
+			$textarea.data('lmsInternalUpdate', false);
+		}
+	}
+
+	function hide_visual_editor(id) {
+		var editor = tinymce.get(id);
+		if (editor != null) {
+			remove_visual_editor(id);
+		}
+	}
+
+	function toggle_visual_editor(id) {
+		var editor = tinymce.get(id);
+		if (editor == null) {
+			init_visual_editor(id);
+		} else {
+			remove_visual_editor(id);
+		}
 	}
 
 	function show_visual_editor(id) {
@@ -2266,22 +2562,6 @@ $(function() {
 			if (editor.isHidden()) {
 				editor.show();
 			}
-		}
-	}
-
-	function hide_visual_editor(id) {
-		var editor = tinymce.get(id);
-		if (editor != null) {
-			editor.remove();
-		}
-	}
-
-	function toggle_visual_editor(id) {
-		var editor = tinymce.get(id);
-		if (editor == null) {
-			init_visual_editor(id);
-		} else {
-			editor.remove();
 		}
 	}
 
@@ -2309,9 +2589,19 @@ $(function() {
 					'</label>');
 			// it is required as textarea changed value is not propagated automatically to editor instance content
 			$(this).change(function(e) {
+				var $textarea = $(this);
+
+				// jeśli zmiana pochodzi z remove_visual_editor (TinyMCE -> textarea),
+				// to nie aktualizujemy z powrotem edytora, żeby nie robić podwójnej konwersji
+				if ($textarea.data('lmsInternalUpdate')) {
+					return;
+				}
+
 				var editor = tinymce.get(textareaid);
 				if (editor) {
-					editor.setContent($(this).val());
+					// mówimy wprost, że ustawiamy TEXT,
+					// żeby BeforeSetContent użyło lmsTextToHtml
+					editor.setContent($textarea.val(), { format: 'text' });
 				}
 			});
 			$('[name="' + inputname + '"]:checkbox', parent).click(function() {

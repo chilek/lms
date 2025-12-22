@@ -2281,7 +2281,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             }
 
             if (!empty($recipients)) {
-                if (isset($params['oldqueue'])) {
+                if (isset($params['oldqueue']) && !ConfigHelper::checkConfig('rt.queue_change_notify_all')) {
                     $oldrecipients = $this->db->GetCol(
                         'SELECT
                             DISTINCT u.email
@@ -2382,7 +2382,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 . ' AND (u.ntype & ?) > 0',
                 array_values($args)
             ))) {
-                if (isset($params['oldqueue'])) {
+                if (isset($params['oldqueue']) && !ConfigHelper::checkConfig('rt.queue_change_notify_all')) {
                     $oldrecipients = $this->db->GetCol(
                         'SELECT
                             DISTINCT u.phone

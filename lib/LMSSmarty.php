@@ -78,6 +78,7 @@ class LMSSmarty extends \Smarty\Smarty
             'resource_tab_selector' => [\Lms\Smarty\Plugins::class, 'resourceTabSelectorFunction'],
             'show_on_map_button' => [\Lms\Smarty\Plugins::class, 'showOnMapButtonFunction'],
             'speech_recognition' => [\Lms\Smarty\Plugins::class, 'speechRecognitionFunction'],
+            'sql_query_time' => [\Lms\Smarty\Plugins::class, 'sqlQueryTimeFunction'],
             'sum' => [\Lms\Smarty\Plugins::class, 'sumFunction'],
             'tax_category_selection' => [\Lms\Smarty\Plugins::class, 'taxCategorySelectionFunction'],
             'tax_rate_selection' => [\Lms\Smarty\Plugins::class, 'taxRateSelectionFunction'],

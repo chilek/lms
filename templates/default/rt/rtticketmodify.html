@@ -472,4 +472,39 @@
 			conflict_lists: [ '#parent-ticket' ]
 		});
 
+	$(function() {
+		$('#customer_addresses').on('lms:address_list_updated', function() {
+			{if ConfigHelper::checkConfig('rt.location_required')}
+				{if $layout.module == 'eventadd'}
+					$(this).prop('required', $('[name="event[custid]"]').val().length > 0).trigger('lms:advanced_select_update');
+				{else}
+					$(this).prop('required', $('[name="ticket[custid]"]').val().length > 0).trigger('lms:advanced_select_update');
+				{/if}
+			{/if}
+		}).on('lms:advanced_select_validate_required', function(e, data) {
+			{if ConfigHelper::checkConfig('rt.location_required')}
+				{if $layout.module == 'eventadd'}
+					var emptyCustomerId = !$('[name="event[custid]"]').val().length;
+				{else}
+					var emptyCustomerId = !$('[name="ticket[custid]"]').val().length;
+				{/if}
+				data.advancedSelectElement.toggleClass('lms-ui-error', !emptyCustomerId && data.invalidValue);
+				this.setCustomValidity(!emptyCustomerId && data.invalidValue ? $t('Location address is not selected') : '');
+			{/if}
+		});
+
+		{if $layout.module != 'eventadd'}
+			$('#customer_addresses').trigger('lms:address_list_updated');
+		{/if}
+
+		{if ConfigHelper::checkConfig('rt.notify_auto_check_on_queue_change')}
+			// Auto-check "Notify users" when queue changes
+			var queueElem = $('[name="ticket[queue]"]');
+			var originalQueue = queueElem.val();
+			queueElem.change(function() {
+				$('#notify').prop('checked', $(this).val() !== originalQueue);
+			});
+		{/if}
+	});
+
 </script>

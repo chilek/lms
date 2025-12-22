@@ -377,7 +377,11 @@ if (isset($_GET['action'])) {
                     ),
                     $result
                 );
-                $result = '<pre>' . $result . '</pre>';
+                if (empty($result)) {
+                    $result = '<span class="red bold">' . trans('No session information on NAS device!') . '</span>';
+                } else {
+                    $result = '<pre>' . $result . '</pre>';
+                }
             } else {
                 $result = '<span class="red bold">' . trans('Error during communication with NAS device!') . '</span>';
             }

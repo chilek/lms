@@ -38,9 +38,6 @@ if (isset($_POST['assignment'])) {
 
     $result = $LMS->ValidateAssignment($a);
     extract($result);
-    if (empty($a['taxid'])) {
-        $error['taxid'] = trans('— no tax rates defined —');
-    }
 
     if (isset($schemaid) && !$LMS->CheckSchemaModifiedValues($a)) {
         $error['promotion-select'] = trans('Illegal promotion schema period value modification!');

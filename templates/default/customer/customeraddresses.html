@@ -2,7 +2,7 @@
     {$class = ""}
 {/if}
 <select id="{$id}" name="{$name}" {tip trigger=$trigger class="lms-ui-customer-address-select {$class}"}>
-    <option value="-1">—</option>
+    <option value="0">—</option>
     {if isset($addresses) && !empty($addresses)}
         {foreach $addresses as $address_id => $address}
             {if $address.location_address_type == $smarty.const.POSTAL_ADDRESS}
