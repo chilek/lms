@@ -32,6 +32,7 @@ function smarty_function_documentview($params, $template)
         'image/png' => 'image',
         'image/gif' => 'image',
         'audio/mp3' => 'audio',
+        'audio/mpeg' => 'audio',
         'audio/ogg' => 'audio',
         'audio/oga' => 'audio',
         'audio/wav' => 'audio',
