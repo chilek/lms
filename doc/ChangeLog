@@ -1157,6 +1157,8 @@ version 28-git (????-??-??):
     is set to 'true' (its default value is 'false') [chilan/naszasiec]
   - improvement: bin/lms-sendinvoices.php script support --section|-s parameter which allows to specify
     configuration section which should be used to obtain configuration settings [chilan]
+  - improvement: bin/lms-sendinvoices.php: --type (invoice|cnote|dnote) parameter allows to send documents
+    of selected type [chilan]
 
 version 27.0 (2021-08-20):
 
