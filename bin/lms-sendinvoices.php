@@ -47,6 +47,7 @@ $script_parameters = array(
     'customergroups:' => null,
     'customer-status:' => null,
     'omit-free-days' => null,
+    'type:' => null,
 );
 
 $script_help = <<<EOF
@@ -78,6 +79,8 @@ $script_help = <<<EOF
     --customer-status=<status1,status2,...>
                                 send invoices of customers with specified status only
     --omit-free-days            dont send invoices on free days
+    --type=<invoice|cnote|dnote>
+                                send only documents with specified type
 EOF;
 
 require_once('script-options.php');
@@ -287,6 +290,19 @@ if (empty($fakedate)) {
 
 $omit_free_days = isset($options['omit-free-days']);
 
+$type = $options['type'] ?? null;
+$supported_types = array(
+    'invoice' => DOC_INVOICE,
+    'cnote' => DOC_CNOTE,
+    'dnote' => DOC_DNOTE,
+);
+if (!empty($type)) {
+    if (!isset($supported_types[$type])) {
+        die('Fatal error: unsupported document type \'' . $type . '\'!' . PHP_EOL);
+    }
+    $type = $supported_types[$type];
+}
+
 [$year, $month, $day] = explode('/', date('Y/n/j', $current_time));
 
 $weekday = date('N', $current_time);
@@ -462,6 +478,7 @@ $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid,
     LEFT JOIN customerconsents cc ON cc.customerid = c.id AND cc.type = ?
     WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
         . $customer_status_condition
+        . ($type ? ' AND d.type = ' . $type : '')
         . ($divisionid ? ' AND d.divisionid = ' . $divisionid : '')
         . " AND c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?)" . ($backup || $archive ? '' : " AND c.invoicenotice = 1")
         . ($archive ? " AND d.archived = 0" : '') . "
