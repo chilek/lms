@@ -460,7 +460,7 @@ version 28-git (????-??-??):
     'assignments.missed_node_warning' [chilan]
   - devel/cleanup: renamed 'phpui.default_liability_type' to
     'assignments.default_liability_type' [chilan]
-  - improvement: lms-payments.php script support --config-section parameter which allows to specify
+  - improvement: lms-payments.php script support --section|-s parameter which allows to specify
     configuration section which should be used to obtain configuration settings [chilan]
   - enhancement: added 'documents.operator_approval_notification_document_types'
     and 'documents.customer_approval_notification_document_types' with empty default
@@ -1155,6 +1155,8 @@ version 28-git (????-??-??):
     to 'true') [chilan/naszasiec]
   - improvement: auto-check 'notify users' option when queue changes and 'rt.notify_auto_check_on_queue_change'
     is set to 'true' (its default value is 'false') [chilan/naszasiec]
+  - improvement: bin/lms-sendinvoices.php script support --section|-s parameter which allows to specify
+    configuration section which should be used to obtain configuration settings [chilan]
 
 version 27.0 (2021-08-20):
 
