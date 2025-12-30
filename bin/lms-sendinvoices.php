@@ -27,6 +27,7 @@
 
 $script_parameters = array(
     'test' => 't',
+    'section:' => 's:',
     'fakedate:' => 'f:',
     'fake-date:' => null,
     'force-date:' => null,
@@ -50,6 +51,8 @@ $script_parameters = array(
 
 $script_help = <<<EOF
 -t, --test                      print only invoices to send;
+-s, --section=<section-name>    section name from lms configuration where settings
+                                are stored
 -f, --fakedate, --fake-date, --force-date=YYYY/MM/DD       override system date;
 -p, --part-number=NN            defines which part of invoices that should be sent;
 -g, --fakehour=HH               override system hour; if no fakehour is present - current hour will be used;
@@ -156,8 +159,12 @@ if (!$no_attachments) {
     $SMARTY->assignByRef('layout', $layout);
 }
 
-$invoice_filename = ConfigHelper::getConfig('sendinvoices.invoice_filename', 'invoice_%docid');
-$dnote_filename = ConfigHelper::getConfig('sendinvoices.debitnote_filename', 'dnote_%docid');
+$config_section = isset($options['section']) && preg_match('/^[a-z0-9-_]+$/i', $options['section'])
+    ? $options['section']
+    : 'sendinvoices';
+
+$invoice_filename = ConfigHelper::getConfig($config_section . '.invoice_filename', 'invoice_%docid');
+$dnote_filename = ConfigHelper::getConfig($config_section . '.debitnote_filename', 'dnote_%docid');
 
 $document_attachment_filename = ConfigHelper::getConfig('documents.attachment_filename', '%filename');
 
@@ -170,52 +177,52 @@ if ($backup || $archive) {
 } else {
     // now it's time for script settings
     $smtp_options = array(
-        'host' => ConfigHelper::getConfig('sendinvoices.smtp_host'),
-        'port' => ConfigHelper::getConfig('sendinvoices.smtp_port'),
-        'user' => ConfigHelper::getConfig('sendinvoices.smtp_username', ConfigHelper::getConfig('sendinvoices.smtp_user')),
-        'pass' => ConfigHelper::getConfig('sendinvoices.smtp_password', ConfigHelper::getConfig('sendinvoices.smtp_pass')),
-        'auth' => ConfigHelper::getConfig('sendinvoices.smtp_auth_type', ConfigHelper::getConfig('sendinvoices.smtp_auth')),
-        'ssl_verify_peer' => ConfigHelper::checkConfig('sendinvoices.smtp_ssl_verify_peer', true),
-        'ssl_verify_peer_name' => ConfigHelper::checkConfig('sendinvoices.smtp_ssl_verify_peer_name', true),
-        'ssl_allow_self_signed' => ConfigHelper::checkConfig('sendinvoices.smtp_ssl_allow_self_signed'),
+        'host' => ConfigHelper::getConfig($config_section . '.smtp_host'),
+        'port' => ConfigHelper::getConfig($config_section . '.smtp_port'),
+        'user' => ConfigHelper::getConfig($config_section . '.smtp_username', ConfigHelper::getConfig($config_section . '.smtp_user')),
+        'pass' => ConfigHelper::getConfig($config_section . '.smtp_password', ConfigHelper::getConfig($config_section . '.smtp_pass')),
+        'auth' => ConfigHelper::getConfig($config_section . '.smtp_auth_type', ConfigHelper::getConfig($config_section . '.smtp_auth')),
+        'ssl_verify_peer' => ConfigHelper::checkConfig($config_section . '.smtp_ssl_verify_peer', true),
+        'ssl_verify_peer_name' => ConfigHelper::checkConfig($config_section . '.smtp_ssl_verify_peer_name', true),
+        'ssl_allow_self_signed' => ConfigHelper::checkConfig($config_section . '.smtp_ssl_allow_self_signed'),
     );
 
-    $customergroups = ConfigHelper::getConfig('sendinvoices.customergroups', '', true);
-    $debug_email = ConfigHelper::getConfig('sendinvoices.debug_email', '', true);
-    $sender_name = ConfigHelper::getConfig('sendinvoices.sender_name', '', true);
-    $sender_email = ConfigHelper::getConfig('sendinvoices.sender_email', '', true);
-    $mail_subject = ConfigHelper::getConfig('sendinvoices.mail_subject', 'Invoice No. %invoice');
-    $mail_body = ConfigHelper::getConfig('sendinvoices.mail_body', ConfigHelper::getConfig('mail.sendinvoice_mail_body'));
-    $mail_format = ConfigHelper::getConfig('sendinvoices.mail_format', 'text');
-    $notify_email = ConfigHelper::getConfig('sendinvoices.notify_email', '', true);
-    $blind_notify_email = ConfigHelper::getConfig('sendinvoices.blind_notify_email', '', true);
-    $reply_email = ConfigHelper::getConfig('sendinvoices.reply_email', '', true);
-    $add_message = ConfigHelper::checkConfig('sendinvoices.add_message');
-    $message_attachments = ConfigHelper::checkConfig('sendinvoices.message_attachments');
-    $aggregate_documents = ConfigHelper::checkConfig('sendinvoices.aggregate_documents');
+    $customergroups = ConfigHelper::getConfig($config_section . '.customergroups', '', true);
+    $debug_email = ConfigHelper::getConfig($config_section . '.debug_email', '', true);
+    $sender_name = ConfigHelper::getConfig($config_section . '.sender_name', '', true);
+    $sender_email = ConfigHelper::getConfig($config_section . '.sender_email', '', true);
+    $mail_subject = ConfigHelper::getConfig($config_section . '.mail_subject', 'Invoice No. %invoice');
+    $mail_body = ConfigHelper::getConfig($config_section . '.mail_body', ConfigHelper::getConfig('mail.sendinvoice_mail_body'));
+    $mail_format = ConfigHelper::getConfig($config_section . '.mail_format', 'text');
+    $notify_email = ConfigHelper::getConfig($config_section . '.notify_email', '', true);
+    $blind_notify_email = ConfigHelper::getConfig($config_section . '.blind_notify_email', '', true);
+    $reply_email = ConfigHelper::getConfig($config_section . '.reply_email', '', true);
+    $add_message = ConfigHelper::checkConfig($config_section . '.add_message');
+    $message_attachments = ConfigHelper::checkConfig($config_section . '.message_attachments');
+    $aggregate_documents = ConfigHelper::checkConfig($config_section . '.aggregate_documents');
     $financial_history_reverse_order = ConfigHelper::checkConfig(
-        'sendinvoices.financial_history_reverse_order',
+        $config_section . '.financial_history_reverse_order',
         ConfigHelper::checkConfig(
             'finances.history_reverse_order',
             true
         )
     );
     $financial_history_item_description_format = ConfigHelper::getConfig(
-        'sendinvoices.financial_history_item_description_format',
+        $config_section . '.financial_history_item_description_format',
         ConfigHelper::getConfig(
             'finances.history_item_description_format',
             '%comment'
         )
     );
-    $dsn_email = ConfigHelper::getConfig('sendinvoices.dsn_email', '', true);
-    $mdn_email = ConfigHelper::getConfig('sendinvoices.mdn_email', '', true);
-    $part_size = $options['part-size'] ?? ConfigHelper::getConfig('sendinvoices.limit', '0');
+    $dsn_email = ConfigHelper::getConfig($config_section . '.dsn_email', '', true);
+    $mdn_email = ConfigHelper::getConfig($config_section . '.mdn_email', '', true);
+    $part_size = $options['part-size'] ?? ConfigHelper::getConfig($config_section . '.limit', '0');
 
-    $use_all_accounts = ConfigHelper::checkConfig('sendinvoices.use_all_accounts');
-    $use_only_alternative_accounts = ConfigHelper::checkConfig('sendinvoices.use_only_alternative_accounts');
+    $use_all_accounts = ConfigHelper::checkConfig($config_section . '.use_all_accounts');
+    $use_only_alternative_accounts = ConfigHelper::checkConfig($config_section . '.use_only_alternative_accounts');
 
     $allowed_customer_status = Utils::determineAllowedCustomerStatus(
-        $options['customer-status'] ?? ConfigHelper::getConfig('sendinvoices.allowed_customer_status', ''),
+        $options['customer-status'] ?? ConfigHelper::getConfig($config_section . '.allowed_customer_status', ''),
         -1
     );
 
@@ -225,7 +232,7 @@ if ($backup || $archive) {
         $customer_status_condition = ' AND c.status IN (' . implode(',', $allowed_customer_status) . ')';
     }
 
-    $interval = $options['interval'] ?? ConfigHelper::getConfig('sendinvoices.interval', 0);
+    $interval = $options['interval'] ?? ConfigHelper::getConfig($config_section . '.interval', 0);
     if ($interval == 'random') {
         $interval = -1;
     } else {
@@ -251,7 +258,7 @@ if ($backup || $archive) {
     if (isset($options['extra-file'])) {
         $extrafile = $options['extra-file'] ?? null;
     } else {
-        $extrafile = ConfigHelper::getConfig('sendinvoices.extra_file', null, true);
+        $extrafile = ConfigHelper::getConfig($config_section . '.extra_file', null, true);
     }
     if ($extrafile && !is_readable($extrafile)) {
         echo "Warning: unable to read additional file or directory contents [$extrafile]!" . PHP_EOL;
@@ -440,7 +447,7 @@ if ($backup || $archive) {
     }
 }
 
-$ignore_send_date = isset($options['ignore-send-date']) || ConfigHelper::checkConfig('sendinvoices.ignore_send_date');
+$ignore_send_date = isset($options['ignore-send-date']) || ConfigHelper::checkConfig($config_section . '.ignore_send_date');
 
 $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid,
             d.type AS doctype, d.archived,
