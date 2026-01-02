@@ -281,7 +281,7 @@ switch ($type) {
             . ($net ? ' AND EXISTS (SELECT 1 FROM vnodes WHERE c.customerid = ownerid AND ((ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ') OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')))' : '')
             . ($division ? ' AND customerview.divisionid = ' . $division : '')
             . (empty($types) ? '' : $typewhere)
-            . ' ORDER BY c.time ASC',
+            . ' ORDER BY c.time ASC, d.number',
             array(
                 $date['to'],
             )
