@@ -604,13 +604,38 @@ abstract class LMSDB_common implements LMSDBInterface
             $param_count = substr_count($query, '?');
             $array_count = $inputarray ? count($inputarray) : 0;
             if ($param_count != $array_count) {
+                $backtrace = Utils::getDebugBacktrace(15);
+
+                if (empty($backtrace)) {
+                    $backtraceText = '';
+                } else {
+                    $backtraceText = 'Stack trace:' . PHP_EOL
+                        . implode(
+                            PHP_EOL,
+                            array_map(
+                                function ($item) {
+                                    return '  ' . $item;
+                                },
+                                $backtrace
+                            )
+                        );
+                }
+
+                $logError = "SQL query parser error: parameter count differs from passed argument count ({$param_count} != {$array_count}): "
+                    . ($array_count ? var_export($inputarray, true) : '');
+
                 $error = array(
                     'query' => $query,
-                    'error' => "SQL query parser error: parameter count differs from passed argument count ({$param_count} != {$array_count}): "
-                        . ($array_count ? var_export($inputarray, true) : ''),
+                    'error' => $logError . PHP_EOL . $backtraceText,
                 );
                 $this->errors[] = $error;
-                writesyslog($error['error'] . ' (' . str_replace("\t", ' ', $error['query']) . ')', LOG_ERR);
+
+                writesyslog(
+                    $logError
+                        . ' (' . str_replace("\t", ' ', $error['query']) . ')' . PHP_EOL
+                        . (empty($backtraceText) ? '' : $backtraceText . PHP_EOL),
+                    LOG_ERR
+                );
             }
         }
 

@@ -207,6 +207,21 @@ class Utils
         return trigger_error($error_msg, $error_type);
     }
 
+    public static function getDebugBacktrace($context = 1)
+    {
+        $stack = debug_backtrace();
+        $backtrace = array();
+
+        for ($i = 0; $i < $context; $i++) {
+            if (false === ($frame = next($stack))) {
+                break;
+            }
+            $backtrace[] = $frame['function'] . ' (' . $frame['file'] . ' line ' . $frame['line'] . ')';
+        }
+
+        return $backtrace;
+    }
+
     public static function LoadMarkdownDocumentation($variable_name = null)
     {
         $markdown_documentation_file = ConfigHelper::getConfig(
