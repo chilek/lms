@@ -93,41 +93,9 @@ function parse_teryt_building_row($row)
 
 function dbf_to_utf8($src)
 {
-    return str_replace(
-        array(
-            "\xC2\xB9",
-            "\xC3\xA6",
-            "\xC3\xAA",
-            "\xC4\x99",
-            "\xC2\xB3",
-            "\xC3\xB1",
-            "\xC3\xB3",
-            "\xC2\x9C",
-            "\xC2\x9F",
-            "\xC2\xBF",
-            "\xC2\x8C",
-            "\xC2\xA3",
-            "\xC2\x8F",
-            "\xC2\xAF",
-        ),
-        array(
-            'ą',
-            'ć',
-            'ę',
-            'ę',
-            'ł',
-            'ń',
-            'ó',
-            'ś',
-            'ź',
-            'ż',
-            'Ś',
-            'Ł',
-            'Ź',
-            'Ż',
-        ),
-        $src
-    );
+    // Zamienia znaki 0x00–0xFF na bajty (latin1), a potem dekoduje jako UTF-8.
+    $bytes = mb_convert_encoding($src, 'ISO-8859-1', 'UTF-8');
+    return mb_convert_encoding($bytes, 'UTF-8', 'UTF-8');
 }
 
 /*!
