@@ -36,6 +36,7 @@ function smarty_function_documentview($params, $template)
         'audio/ogg' => 'audio',
         'audio/oga' => 'audio',
         'audio/wav' => 'audio',
+        'audio/x-wav' => 'audio',
         'video/mp4' => 'video',
         'video/ogg' => 'video',
         'video/webm' => 'video',

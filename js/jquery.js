@@ -1506,6 +1506,7 @@ function initDocumentViewers(selectors) {
 		'audio/ogg': 'audio',
 		'audio/oga': 'audio',
 		'audio/wav': 'audio',
+		'audio/x-wav': 'audio',
 		'video/mp4': 'video',
 		'video/ogg': 'video',
 		'video/webm': 'video',
