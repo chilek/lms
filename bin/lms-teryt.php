@@ -1388,7 +1388,7 @@ if (isset($options['buildings'])) {
 
             $v['NUMER'] = preg_replace('/\.$/', '', dbf_to_utf8($v['NUMER']));
             if (!preg_match('#^[0-9a-zA-Z-, /\pL]*$#u', $v['NUMER'])) {
-                if (strlen($simc)) {
+                if (strlen($ulic)) {
                     fwrite($stderr, 'Warning: house number contains incorrect characters (TERC: ' . $terc . 'x, SIMC: ' . $simc . ', CITY: ' . $address['SIMC_NAZWA'] . ', ULIC: ' . $ulic . ', STREET: ' . $address['ULIC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
                 } else {
                     fwrite($stderr, 'Warning: house number contains incorrect characters (TERC: ' . $terc . 'x, SIMC: ' . $simc . ', CITY: ' . $address['SIMC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
@@ -1399,12 +1399,16 @@ if (isset($options['buildings'])) {
             $city = $location_cache->getCityByIdent($terc, $simc);
 
             if (!$city) {
-                if (strlen($simc)) {
-                    fwrite($stderr, 'Warning: building was not found in TERYT database (TERC: ' . $terc . 'x, SIMC: ' . $simc . ', CITY: ' . $address['SIMC_NAZWA'] . ', ULIC: ' . $ulic . ', STREET: ' . $address['ULIC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
+                if (strlen($ulic)) {
+                    fwrite($stderr, 'Warning: building was not found in TERYT database using SIMC (TERC: ' . $terc . 'x, SIMC: ' . $simc . ', CITY: ' . $address['SIMC_NAZWA'] . ', ULIC: ' . $ulic . ', STREET: ' . $address['ULIC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
                 } else {
-                    fwrite($stderr, 'Warning: building was not found in TERYT database (TERC: ' . $terc . 'x, SIMC: ' . $simc . ', CITY: ' . $address['SIMC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
+                    fwrite($stderr, 'Warning: building was not found in TERYT database using SIMC (TERC: ' . $terc . 'x, SIMC: ' . $simc . ', CITY: ' . $address['SIMC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
                 }
                 continue;
+            }
+
+            if (!empty($city['cityid'])) {
+                $city['id'] = $city['cityid'];
             }
 
             if ($ulic == '' || $city == '99999') {
@@ -1412,7 +1416,7 @@ if (isset($options['buildings'])) {
             } else {
                 $street = $location_cache->getStreetByIdent($city['id'], $ulic);
                 if (empty($street)) {
-                    fwrite($stderr, 'Warning: building was not found in TERYT database (TERC: ' . $terc . 'x, SIMC: ' . $simc . ', CITY: ' . $address['SIMC_NAZWA'] . ', ULIC: ' . $ulic . ', STREET: ' . $address['ULIC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
+                    fwrite($stderr, 'Warning: building was not found in TERYT database using ULIC (TERC: ' . $terc . 'x, SIMC: ' . $simc . ', CITY: ' . $address['SIMC_NAZWA'] . ', ULIC: ' . $ulic . ', STREET: ' . $address['ULIC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
                     continue;
                 }
             }
