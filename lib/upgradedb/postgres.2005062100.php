@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE tariffs ADD prodid VARCHAR(255);
@@ -39,7 +38,3 @@ $this->Execute("
 	ALTER TABLE invoicecontents ALTER prodid SET DEFAULT '';
 	ALTER TABLE invoicecontents DROP pkwiu;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005062100', 'dbversion'));
-
-$this->CommitTrans();

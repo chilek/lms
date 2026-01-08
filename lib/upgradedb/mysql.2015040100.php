@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("DROP VIEW IF EXISTS vnodes");
 $this->Execute("DROP VIEW IF EXISTS vmacs");
@@ -42,7 +41,3 @@ $this->Execute("ALTER TABLE netdevices CHANGE location_house location_house varc
 $this->Execute("ALTER TABLE netdevices CHANGE location_flat location_flat varchar(32) DEFAULT NULL");
 $this->Execute("ALTER TABLE netnodes CHANGE location_house location_house varchar(32) DEFAULT NULL");
 $this->Execute("ALTER TABLE netnodes CHANGE location_flat location_flat varchar(32) DEFAULT NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015040100', 'dbversion'));
-
-$this->CommitTrans();

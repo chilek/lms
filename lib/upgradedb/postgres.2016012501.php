@@ -21,12 +21,7 @@
  *
  */
 
-$this->BeginTrans();
 
 define('CONFIG_TYPE_DATE_FORMAT_2016012501', 11);
 
 $this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('payments', 'date_format', '%Y/%m/%d', ?)", array(CONFIG_TYPE_DATE_FORMAT_2016012501));
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016012501', 'dbversion'));
-
-$this->CommitTrans();

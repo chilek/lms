@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE TABLE managementurls (
@@ -32,7 +31,3 @@ $this->Execute("
 		comment varchar(100)	DEFAULT NULL,
 		PRIMARY KEY (id)
 	) ENGINE=INNODB");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012041101', 'dbversion'));
-
-$this->CommitTrans();

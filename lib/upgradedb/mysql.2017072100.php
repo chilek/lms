@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)", array('phpui', 'helpdesk_notification_mail_subject', '[RT#%tid] %subject'));
 
@@ -40,7 +39,3 @@ E-mail: %email
 Telefon: %phone'));
 
 $this->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)", array('phpui', 'helpdesk_customerinfo_sms_body', 'Klient: %custname ID: %cid Adres: %address Telefon: %phone'));
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017072100', 'dbversion'));
-
-$this->CommitTrans();

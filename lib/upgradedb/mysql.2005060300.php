@@ -67,5 +67,3 @@ $this->Execute("CREATE TABLE receiptcontents (
 	description varchar(255) NOT NULL DEFAULT '',
 	INDEX docid (docid))
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005060300', 'dbversion'));
