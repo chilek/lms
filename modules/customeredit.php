@@ -198,7 +198,11 @@ if (!isset($_POST['xjxfun'])) {
                 }
 
                 if (!empty($v['location_ten']) && !isset($warnings['customerdata-addresses--' . $k . '--location_ten-'])) {
-                    $ten_validation_result = check_ten($v['location_ten']) || check_ksef_internal_id($v['location_ten']);
+                    $ten_validation_result = check_ten($v['location_ten']);
+                    if (!$ten_validation_result) {
+                        $ksef_internal_id_validation = check_ksef_internal_id($v['location_ten']);
+                        $ten_validation_result |= $ksef_internal_id_validation === true || !isset($ksef_internal_id_validation);
+                    }
                     if (isset($ten_validation_result) && !$ten_validation_result) {
                         $warning['customerdata[addresses][' . $k . '][location_ten]'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
                         $customerdata['addresses'][$k]['show'] = true;
