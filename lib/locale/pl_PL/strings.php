@@ -6280,3 +6280,5 @@ $_LANG['<!uke-income>Budgetary unit income'] = 'Przychód z jednostek budżetowy
 $_LANG['<!link>Budgetary unit links'] = 'Łącza jednostek budżetowych';
 
 $_LANG['Location address is not selected'] = 'Nie wybrano adresu lokalizacji';
+
+$_LANG['2.5 Gbit/s'] = '2,5 Gbit/s';

@@ -1599,15 +1599,18 @@ if (strlen($allowed_link_technologies)) {
 }
 
 $LINKSPEEDS = array(
-    10000       => trans('10Mbit/s'),
-    25000       => trans('25Mbit/s'),
-    54000       => trans('54Mbit/s'),
-    100000      => trans('100Mbit/s'),
-    200000      => trans('200Mbit/s'),
-    300000      => trans('300Mbit/s'),
-    1000000     => trans('1Gbit/s'),
-    10000000    => trans('10Gbit/s'),
-    40000000    => trans('40Gbit/s'),
+    10000       => trans('10 Mbit/s'),
+    25000       => trans('25 Mbit/s'),
+    54000       => trans('54 Mbit/s'),
+    100000      => trans('100 Mbit/s'),
+    200000      => trans('200 Mbit/s'),
+    300000      => trans('300 Mbit/s'),
+    1000000     => trans('1 Gbit/s'),
+    2500000     => trans('2.5 Gbit/s'),
+    5000000     => trans('5 Gbit/s'),
+    10000000    => trans('10 Gbit/s'),
+    20000000    => trans('20 Gbit/s'),
+    40000000    => trans('40 Gbit/s'),
 );
 
 $BOROUGHTYPES = array(
