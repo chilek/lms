@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2026 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -198,7 +198,7 @@ if (!isset($_POST['xjxfun'])) {
                 }
 
                 if (!empty($v['location_ten']) && !isset($warnings['customerdata-addresses--' . $k . '--location_ten-'])) {
-                    $ten_validation_result = check_ten($v['location_ten']);
+                    $ten_validation_result = check_ten($v['location_ten']) || check_ksef_internal_id($v['location_ten']);
                     if (isset($ten_validation_result) && !$ten_validation_result) {
                         $warning['customerdata[addresses][' . $k . '][location_ten]'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
                         $customerdata['addresses'][$k]['show'] = true;

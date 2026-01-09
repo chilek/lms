@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2026 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,6 +24,29 @@
  *  $Id$
  */
 
+function check_pl_ten($ten)
+{
+    $steps = array(6, 5, 7, 2, 3, 4, 5, 6, 7);
+    $sum_nb = 0;
+
+    $ten = str_replace('-', '', $ten);
+    $ten = str_replace(' ', '', $ten);
+
+    if (strlen($ten) != 10) {
+        return false;
+    }
+
+    for ($x = 0; $x < 9; $x++) {
+        $sum_nb += $steps[$x] * $ten[$x];
+    }
+
+    if ($sum_nb % 11 == $ten[9]) {
+        return true;
+    }
+
+    return false;
+}
+
 self::addLanguageFunctions(
     self::SYSTEM_FUNCTION,
     array(
@@ -31,25 +54,34 @@ self::addLanguageFunctions(
             return preg_match('/^[0-9]{2}-[0-9]{3}$/', $zip);
         },
         'check_ten' => function ($ten) {
-            $steps = array(6, 5, 7, 2, 3, 4, 5, 6, 7);
-            $sum_nb = 0;
+            return check_pl_ten($ten);
+        },
+        'check_ksef_internal_id' => function ($ksef_internal_id) {
+            $internal_id = str_replace(
+                array(
+                    '-',
+                    ' ',
+                ),
+                array(
+                    '',
+                    '',
+                ),
+                $ksef_internal_id
+            );
 
-            $ten = str_replace('-', '', $ten);
-            $ten = str_replace(' ', '', $ten);
-
-            if (strlen($ten) != 10) {
+            if (strlen($internal_id) != 15) {
                 return false;
             }
 
-            for ($x = 0; $x < 9; $x++) {
-                $sum_nb += $steps[$x] * $ten[$x];
+            if (!check_pl_ten(substr($internal_id, 0, 10))) {
+                return false;
             }
 
-            if ($sum_nb % 11 == $ten[9]) {
-                return true;
+            if (!preg_match('/-[0-9]{5}$/', $ksef_internal_id)) {
+                return false;
             }
 
-            return false;
+            return true;
         },
         'check_ssn' => function ($ssn) {
             // AFAIR This doesn't cover people born after Y2k, they have month+20

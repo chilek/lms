@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2026 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -44,6 +44,11 @@ function check_zip($zip)
 function check_ten($ten)
 {
     return Localisation::CallSystemFunction('check_ten', $ten);
+}
+
+function check_ksef_internal_id($ksef_internal_id)
+{
+    return Localisation::CallSystemFunction('check_ksef_internal_id', $ksef_internal_id);
 }
 
 function check_ssn($ssn)
