@@ -613,7 +613,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             'city' => $this->data['rec_city'],
         ));
         if (!empty($this->data['recipient_ten'])) {
-            $rec_lines[] = trans('TEN') . ' ' . $this->data['recipient_ten'];
+            $rec_lines[] = trans('TEN') . ' ' . preg_replace('/-[0-9]{5}$/', '', $this->data['recipient_ten']);
         }
 
         foreach ($rec_lines as $line) {

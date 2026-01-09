@@ -199,7 +199,7 @@
 					{if (!empty($invoice.recipient_ten))}
 						<br>
 						{trans("TEN")}
-						{$invoice.recipient_ten}
+						{preg_replace('/-[0-9]{5}$/', '', $invoice.recipient_ten)}
 					{/if}
 				{/if}
 			</td>
