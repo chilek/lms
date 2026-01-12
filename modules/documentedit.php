@@ -69,8 +69,14 @@ if (empty($document)) {
 
 $document['customer_name'] = $LMS->GetCustomerName($document['customerid']);
 
-$document['attachments'] = $DB->GetAllByKey('SELECT *, 0 AS deleted FROM documentattachments
-	WHERE docid = ? ORDER BY type DESC', 'id', array($_GET['id']));
+$document['attachments'] = $DB->GetAllByKey(
+    'SELECT *, 0 AS deleted
+    FROM documentattachments
+    WHERE docid = ?
+    ORDER BY type DESC, id ASC',
+    'id',
+    array($_GET['id'])
+);
 
 if (isset($_POST['document'])) {
     $documentedit = $_POST['document'];

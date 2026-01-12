@@ -318,7 +318,6 @@
 			{/if}
 			<div id="allattachments-{$doc.docid}" style="display: none;">
 				{foreach $doc.attachments as $docattach}
-					{if $docattach@first && $docattach.type == 1}{continue}{/if}
 					{documentview
 						id="local-{$doc.docid}-{$docattach.id}"
 						type=$docattach.contenttype

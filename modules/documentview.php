@@ -130,7 +130,7 @@ if (!empty($docids)) {
             WHERE dc.docid IN ?'
                 . ($attachments || !empty($attachmentid) || isset($_GET['save']) ? '' : ' AND dc.type = 1')
                 . (empty($attachmentid) ? '' : ' AND dc.id = ' . $attachmentid)
-            . ' ORDER BY dc.docid ASC, dc.type DESC',
+            . ' ORDER BY dc.docid ASC, dc.type DESC, dc.id ASC',
             array(
                 Utils::array_column($docs, 'id'),
             )
