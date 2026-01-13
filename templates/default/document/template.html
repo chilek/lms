@@ -99,7 +99,7 @@
 			}
 
 			.company-logo {
-				margin-bottom: 0.5em;
+				margin-bottom: 0.5em !important;
 			}
 
 			ul,ol {
@@ -223,8 +223,6 @@
 							<p style="text-align:center">
 								{if $company_logo}
 									{image file=$company_logo width=$company_logo_width class="company-logo logo-company"}
-								{elseif isset($company_logo)}
-									Brak zdefiniowanego logo firmy w szablonie umowy!
 								{/if}
 								{if $document.eu || !empty($document.project)}
 									{if $project_logo}
