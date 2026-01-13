@@ -8,55 +8,33 @@
 		{if isset($margin_top)}
 			{$margin_top = intval($margin_top)}
 		{else}
-			{$margin_top = 60}
+			{$margin_top = "2em"}
 		{/if}
 		{if isset($margin_bottom)}
 			{$margin_bottom = intval($margin_bottom)}
 		{else}
-			{$margin_bottom = 30}
+			{$margin_bottom = "2em"}
 		{/if}
 	{/if}
 	{if !empty($label)}
-		{$left_label = $label}
+		{$right_label = $label}
 	{/if}
-	<table class="signature-box" style="margin-top: {$margin_top}px; margin-bottom: {$margin_bottom}px;">
-		<colgroup>
-			{if !empty($left_label) && !empty($right_label)}
-				<col style="width: 50%;">
-				<col style="width: 50%;">
-			{else}
-				<col style="width: 100%;">
-			{/if}
-		</colgroup>
-		<tr>
+	<div class="signature-box" style="margin-top: {$margin_top}; margin-bottom: {$margin_bottom};">
+		<div class="signature-box-field{if empty($left_label)} signature-box-field-hidden{/if}">
 			{if !empty($left_label)}
-				<td>
-					<div class="signature-box-field">
-						<span class="signature-box-field-dots">{strip}
-							{$repeat = $left_label|strlen}
-							{"&hellip;"|str_repeat:$repeat}
-						{/strip}</span>
-						<span class="signature-box-field-label">{strip}
-							{$left_label}
-						{/strip}</span>
-					</div>
-				</td>
+				<span class="signature-box-field-label">{strip}
+					{$left_label}
+				{/strip}</span>
 			{/if}
+		</div>
+		<div class="signature-box-field{if empty($right_label)} signature-box-field-hidden{/if}">
 			{if !empty($right_label)}
-				<td>
-					<div class="signature-box-field">
-						<span class="signature-box-field-dots">{strip}
-							{$repeat = $right_label|strlen}
-							{"&hellip;"|str_repeat:$repeat}
-						{/strip}</span>
-						<span class="signature-box-field-label">{strip}
-							{$right_label}
-						{/strip}</span>
-					</div>
-				</td>
+				<span class="signature-box-field-label">{strip}
+					{$right_label}
+				{/strip}</span>
 			{/if}
-		</tr>
-	</table>
+		</div>
+	</div>
 {/function}
 {function date}{strip}
 	{if isset($date)}
@@ -212,29 +190,26 @@
 
 			.signature-box {
 				width: 100%;
-			}
-
-			.signature-box td {
-				width: 50%;
-				border: 0;
-				text-align: center;
-				vertical-align: top;
+				display: flex;
+				justify-content: space-around;
 			}
 
 			.signature-box-field {
 				display: flex;
-				flex-direction: column;
-				align-items: center;
+				min-width: 25em;
+				height: 7.5em;
+				justify-content: center;
+				align-items: flex-end;
+				border: 1px solid black;
+				padding-bottom: 0.7em;
 			}
 
-			.signature-box-field-dots {
-				max-width: 40vw;
-				overflow: hidden;
+			.signature-box-field.signature-box-field-hidden {
+				border: none;
 			}
 
 			.signature-box-field-label {
-				max-width: 40vw;
-				white-space: normal;
+				text-align: center;
 			}
 
 			{block name="style"}{/block}
