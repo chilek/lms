@@ -3512,7 +3512,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     }
                 }
 
-                if ($authcode_required && empty($doc['phone'])) {
+                if (isset($document_protected_document_types[$document['type']])
+                    && $authcode_required
+                    && empty($doc['phone'])) {
                     $msg = trans('customer has not assigned any mobile phones with \'documents\' flag');
 
                     if ($add_message) {
