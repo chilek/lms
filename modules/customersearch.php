@@ -304,8 +304,7 @@ if (isset($_GET['search'])) {
         });
         if (empty($allowed_customer_status)) {
             $allowed_customer_status = Utils::determineAllowedCustomerStatus(
-                ConfigHelper::getConfig('messages.allowed_customer_status', ''),
-                -1
+                ConfigHelper::getConfig('messages.allowed_customer_status', '')
             );
         }
         if (!empty($allowed_customer_status)) {
