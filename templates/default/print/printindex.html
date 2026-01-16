@@ -1113,8 +1113,18 @@
 	}
 
 	function export_to_jpk(type) {
-		if ($('select[form="printinvoices"][name="division"]').val() == '0') {
-			alertDialog($t("Division not selected!"), $(".export_to_jpk"));
+		var divisionElement = $('select[form="printinvoices"][name="division[]"]');
+		var tens = [];
+
+		divisionElement.find('option[selected]').each(function() {
+			var ten = $(this).attr('data-ten');
+			if (tens.indexOf(ten) === -1) {
+				tens.push(ten);
+			}
+		});
+
+		if (tens.length > 1) {
+			alertDialog($t("Selected divisions have different TEN identifiers!"), $(".export_to_jpk"));
 			return;
 		}
 
@@ -1163,11 +1173,11 @@
 										<strong>{trans("Division")}</strong>
 									</td>
 									<td>
-										<select size="1" name="division" form="printinvoices"
-											{tip text="Select division"}>
-											<option value="0">{trans("— all —")}</option>
+										<select size="1" name="division[]" form="printinvoices" multiple
+											{tip text="Select division" class="lms-ui-multiselect"}
+											data-default-value="{trans("— all —")}">
 											{foreach $divisions as $division}
-												<option value="{$division.id}">{$division.label|escape}</option>
+												<option value="{$division.id}" data-ten="{$division.ten|regex_replace:"/[^0-9A-Z]/":""}">{$division.label|escape}</option>
 											{/foreach}
 										</select>
 									</td>

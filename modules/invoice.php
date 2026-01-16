@@ -325,7 +325,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         WHERE d.cdate >= ? AND d.cdate <= ? AND (d.type = ? OR d.type = ?) AND d.cancelled = 0'
         .($einvoice ? ' AND d.customerid IN (SELECT id FROM customeraddressview WHERE ' . ($einvoice == 1 ? 'einvoice = 1' : 'einvoice = 0 OR einvoice IS NULL') . ')' : '')
         .($ctype !=  -1 ? ' AND d.customerid IN (SELECT id FROM customers WHERE type = ' . intval($ctype) .')' : '')
-        .(!empty($_GET['divisionid']) ? ' AND d.divisionid = ' . intval($_GET['divisionid']) : '')
+        .(empty($_GET['divisionid']) ? '' : ' AND d.divisionid ' . (is_array($_GET['divisionid']) ? ' IN (' . implode(',', $_GET['divisionid']) . ')' : ' = ' . intval($_GET['divisionid'])))
         .(!empty($_GET['customerid']) ? ' AND d.customerid = '.intval($_GET['customerid']) : '')
         .(!empty($_GET['numberplanid']) ? ' AND d.numberplanid' . (is_array($_GET['numberplanid'])
                 ? ' IN (' . implode(',', Utils::filterIntegers($_GET['numberplanid'])) . ')'
@@ -415,21 +415,43 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             }
         }
 
-        $divisionid = intval($_GET['divisionid']);
-        $division = $DB->GetRow("SELECT d.name, shortname, d.email,
-                d.firstname, d.lastname, d.birthdate, d.naturalperson,
-                va.address, va.city,
-				va.zip, va.countryid, ten, regon,
-				account, inv_header, inv_footer, inv_author, inv_cplace, va.location_city,
-				va.location_street, tax_office_code,
-				lb.name AS borough, ld.name AS district, ls.name AS state
-                FROM vdivisions d
-				JOIN vaddresses va ON va.id = d.address_id
-				LEFT JOIN location_cities lc ON lc.id = va.location_city
-				LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
-				LEFT JOIN location_districts ld ON ld.id = lb.districtid
-				LEFT JOIN location_states ls ON ls.id = ld.stateid
-				WHERE d.id = ?", array($divisionid));
+        $divisionid = is_array($_GET['divisionid']) ? reset($_GET['divisionid']) : intval($_GET['divisionid']);
+
+        $division = $DB->GetRow(
+            "SELECT
+                d.name,
+                shortname,
+                d.email,
+                d.firstname,
+                d.lastname,
+                d.birthdate,
+                d.naturalperson,
+                va.address,
+                va.city,
+                va.zip,
+                va.countryid,
+                ten,
+                regon,
+                account,
+                inv_header,
+                inv_footer,
+                inv_author,
+                inv_cplace,
+                va.location_city,
+                va.location_street,
+                tax_office_code,
+                lb.name AS borough,
+                ld.name AS district,
+                ls.name AS state
+            FROM vdivisions d
+            JOIN vaddresses va ON va.id = d.address_id
+            LEFT JOIN location_cities lc ON lc.id = va.location_city
+            LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
+            LEFT JOIN location_districts ld ON ld.id = lb.districtid
+            LEFT JOIN location_states ls ON ls.id = ld.stateid
+            WHERE d.id = ?",
+            array($divisionid)
+        );
 
         if ($jpk_type == 'vat' && $jpk_vat_version == 4) {
             if (empty($division['email'])) {
