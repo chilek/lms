@@ -572,15 +572,33 @@ function CustomerAssignmentHelper(options) {
 					helper.locationSelectionHandler();
 				});
 
-				options = '<option value="0">' + $t('none') + '</option>';
+				options = '<option value="0">—</option>';
 				if (data.addresses) {
 					$.each(data.addresses, function(key, value) {
+						var icon = "";
+						if (value.location_address_type == "0") {
+							icon = "lms-ui-icon-mail fa-fw";
+						} else if (value.location_address_type == "1") {
+							icon = "lms-ui-icon-home fa-fw";
+						} else if (value.location_address_type == "2") {
+							icon = "lms-ui-icon-customer-location fa-fw";
+						} else if (value.location_address_type == "3") {
+							icon = "lms-ui-icon-default-customer-location fa-fw";
+						} else if (value.location_address_type == "4") {
+							icon = "lms-ui-icon-document fa-fw";
+						}
+
 						options += '<option value="' + value.address_id + '"' +
+							(icon.length ? ' data-icon="' + icon + '"' : '') +
 							(("recipient_address_id" in selected) && selected.recipient_address_id == value.address_id ? ' selected' : '') + '>' +
-							(value.location_name ? escapeHtml(value.location_name) + ', ' : '') + (value.location ? escapeHtml(value.location) : '') + '</option>';
+							(value.location_name ? escapeHtml(value.location_name) + ', ' : '') +
+							(value.location_ten ? $t("NIP $a", value.location_ten) + ', ' : '') +
+							(value.location ? escapeHtml(value.location) : '') +
+							'</option>';
 					});
 				}
 				$('#recipient-select').html(options);
+				initAdvancedSelectsTest('#recipient-select');
 
 				$('#a_align_periods').show();
 
