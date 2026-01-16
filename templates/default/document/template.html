@@ -16,13 +16,20 @@
 			{$margin_bottom = "2em"}
 		{/if}
 	{/if}
+	{if empty($type) || $type != "dots"}
+		{$type = "borders"}
+	{/if}
 	{if !empty($label)}
 		{$right_label = $label}
 	{/if}
-	<div class="signature-box" style="margin-top: {$margin_top}; margin-bottom: {$margin_bottom};">
+	<div class="signature-box {$type}" style="margin-top: {$margin_top}; margin-bottom: {$margin_bottom};">
 		<div class="signature-box-field{if empty($left_label)} signature-box-field-hidden{/if}">
 			{if !empty($left_label)}
 				<span class="signature-box-field-label">{strip}
+					{if $type == "dots"}
+						{str_repeat("&hellip;", 15)}
+						<br>
+					{/if}
 					{$left_label}
 				{/strip}</span>
 			{/if}
@@ -30,6 +37,10 @@
 		<div class="signature-box-field{if empty($right_label)} signature-box-field-hidden{/if}">
 			{if !empty($right_label)}
 				<span class="signature-box-field-label">{strip}
+					{if $type == "dots"}
+						{str_repeat("&hellip;", 15)}
+						<br>
+					{/if}
 					{$right_label}
 				{/strip}</span>
 			{/if}
@@ -186,6 +197,49 @@
 				white-space: nowrap;
 			}
 
+			.list-paragraphs {
+				padding-inline-start: 0;
+				list-style: none;
+				counter-reset: item;
+				padding-left: 0;
+			}
+
+			.list-paragraphs > li {
+				list-style-type: none;
+				counter-increment: item;
+			}
+
+			.paragraph::before {
+				content: "\00A7 " counter(item);
+				min-width: 2ch;
+			}
+
+			.paragraph-container {
+				text-align: center;
+				font-weight: bold;
+				font-size: 130%;
+				margin-top: 1em;
+				margin-bottom: 1em;
+			}
+
+			.list-numbers {
+				padding-inline-start: 2em;
+			}
+
+			.list-letters {
+				padding-inline-start: 1.5em;
+				list-style: none;
+				counter-reset: alpha;
+			}
+
+			.list-letters > li {
+				counter-increment: alpha;
+			}
+
+			.list-letters > li::marker {
+				content: counter(alpha, lower-alpha) ") ";
+			}
+
 			.signature-box {
 				width: 100%;
 				display: flex;
@@ -198,8 +252,11 @@
 				height: 7.5em;
 				justify-content: center;
 				align-items: flex-end;
-				border: 1px solid black;
 				padding-bottom: 0.7em;
+			}
+
+			.signature-box.borders > .signature-box-field {
+				border: 1px solid black;
 			}
 
 			.signature-box-field.signature-box-field-hidden {
