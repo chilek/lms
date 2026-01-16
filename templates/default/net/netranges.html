@@ -305,7 +305,7 @@
                                 <span{if empty($foreign_entities)} class="lms-ui-disabled"{/if}>
                                     {trans("<!netrange>Foreign entity")}
                                 </span>
-                                <select name="filter[foreign-entity]" form="netranges"
+                                <select name="filter[foreign-entity]" form="netranges" class="filter-element"
                                     {if empty($foreign_entities)} disabled{/if}>
                                     <option value="">{trans("<!netrange-foreign-entity>— any —")}</option>
                                     <option value="-1"{if $filter['foreign-entity'] == '-1'} selected{/if}>{trans("<!netrange-foreign-entity>— none —")}</option>
