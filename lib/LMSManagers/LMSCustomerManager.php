@@ -495,7 +495,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     foreach ($cols as $col_name => $col) {
                         $lN .= '<th style="text-align: ' . $col['align'] . ';">' . $col['label'] . '</th>' . PHP_EOL;
                     }
-                    $lN .= '</thead><tbody>' . PHP_EOL;
+                    $lN .= '</tr></thead><tbody>' . PHP_EOL;
                 } else {
                     $chunks = array();
                     $titles = array();
