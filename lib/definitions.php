@@ -130,6 +130,7 @@ const CCONSENT_DATE = 1,
     CCONSENT_MAILING_NOTICE = CCONSENT_MAIL_SERVICE_INFO,
     CCONSENT_MAILINGNOTICE = CCONSENT_MAIL_SERVICE_INFO,
     CCONSENT_EINVOICE = 4,
+    CCONSENT_KSEF_INVOICE = 34,
     CCONSENT_USERPANEL_SMS = 5,
     CCONSENT_USERPANEL_SCAN = 6,
     CCONSENT_TRANSFERFORM = 7,
@@ -178,6 +179,11 @@ $CCONSENTS = array(
     CCONSENT_INVOICENOTICE => array(
         'label' => trans('<!consent>delivery via e-mail'),
         'name' => 'invoice_notice',
+        'type' => 'boolean',
+    ),
+    CCONSENT_KSEF_INVOICE => array(
+        'label' => trans('<!consent>submission to KSeF'),
+        'name' => 'ksef_invoice',
         'type' => 'boolean',
     ),
     CCONSENT_MAIL_SERVICE_INFO => array(
@@ -348,6 +354,7 @@ $CCONSENT_GROUPS = array(
         'consents' => array(
             CCONSENT_EINVOICE,
             CCONSENT_INVOICENOTICE,
+            CCONSENT_KSEF_INVOICE,
         ),
     ),
     CCONSENT_GROUP_SERVICE_INFO => array(

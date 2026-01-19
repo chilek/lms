@@ -3134,6 +3134,7 @@ $_LANG['Consent to electronic invoices'] = 'Zgoda na faktury elektroniczne';
 $_LANG['Consent to invoices delivery via e-mail:'] = 'Zgoda na dostarczanie faktur pocztą elektroniczną:';
 $_LANG['invoice delivery via e-mail'] = 'dostarczanie faktur pocztą elektroniczną';
 $_LANG['<!consent>delivery via e-mail'] = 'dostarczanie pocztą elektroniczną';
+$_LANG['<!consent>submission to KSeF'] = 'wysyłka do KSeF';
 $_LANG['Consent to messages delivery via e-mail:'] = 'Zgoda na dostarczanie informacji pocztą elektroniczną:';
 $_LANG['Consent to messages delivery via sms:'] = 'Zgoda na dostarczanie informacji SMS-em:';
 $_LANG['message delivery via e-mail'] = 'dostarczanie informacji pocztą elektroniczną';
