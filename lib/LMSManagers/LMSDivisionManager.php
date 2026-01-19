@@ -112,10 +112,8 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
         return $this->db->GetAll(
             'SELECT d.id, d.name, d.shortname, (CASE WHEN d.label IS NULL THEN d.shortname ELSE d.label END) AS label,
                 d.status, (SELECT COUNT(*) FROM customers WHERE divisionid = d.id) AS cnt,
-                d.firstname, d.lastname, d.birthdate, d.naturalperson,
-                kd.token AS kseftoken
+                d.firstname, d.lastname, d.birthdate, d.naturalperson
             FROM vdivisions d
-            LEFT JOIN ksefdivisions kd ON kd.divisionid = d.id
             WHERE 1 = 1'
             . ((isset($superuser) && empty($superuser)) || !isset($superuser) ? ' AND id IN (' . $user_divisions . ')' : '')
             . (!empty($exludedDivisions) ? ' AND id NOT IN (' . $exludedDivisions . ')' : '') .
@@ -182,18 +180,6 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
                         )
                     );
                 }
-            }
-
-            if (!empty($division['kseftoken'])) {
-                $this->db->Execute(
-                    'INSERT INTO ksefdivisions
-                    (token, divisionid)
-                    VALUES (?, ?)',
-                    array(
-                        strtoupper($division['kseftoken']),
-                        $divisionid,
-                    )
-                );
             }
         }
 
@@ -322,32 +308,6 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             foreach ($division['diff_users_add'] as $useraddid) {
                 $this->db->Execute('INSERT INTO userdivisions (userid, divisionid) VALUES(?, ?)', array($useraddid, $division['id']));
             }
-        }
-
-        if ($this->db->GetOne('SELECT 1 FROM ksefdivisions WHERE divisionid = ?', array($division['id']))) {
-            if (empty($division['kseftoken'])) {
-                $this->db->Execute('DELETE FROM ksefdivisions WHERE divisionid = ?', array($division['id']));
-            } else {
-                $this->db->Execute(
-                    'UPDATE ksefdivisions
-                SET token  = ?
-                WHERE divisionid = ?',
-                    array(
-                        strtoupper($division['kseftoken']),
-                        $division['id'],
-                    )
-                );
-            }
-        } elseif (!empty($division['kseftoken'])) {
-            $this->db->Execute(
-                'INSERT INTO ksefdivisions
-                (token, divisionid)
-                VALUES (?, ?)',
-                array(
-                    strtoupper($division['kseftoken']),
-                    $division['id'],
-                )
-            );
         }
 
         if ($this->syslog) {

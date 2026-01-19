@@ -6240,9 +6240,6 @@ $_LANG['exact match'] = 'dokładne dopasowanie';
 $_LANG['No authentication data?'] = 'Brak danych uwierzytelniających?';
 $_LANG['Session expired!'] = 'Sesja wygasła!';
 
-$_LANG['KSeF token'] = 'Token KSeF';
-$_LANG['Invalid format of KSeF token!'] = 'Niepoprawny format tokenu KSeF!';
-
 $_LANG['Office to PDF file conversion mechanism is not enabled!'] = 'Mechanizm konwersji plików biurowych do PDF nie jest aktywny!';
 $_LANG['Cannot create Office to PDF conversion process!'] = 'Niemożliwe utworzenie procesu konwersji plików biurowych do PDF!';
 

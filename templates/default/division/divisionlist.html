@@ -51,7 +51,6 @@
 				<td class="nobr" data-target-url="?m=divisionedit&id={$division.id}">
 					{icon name="division"}
 					<strong>{$division.shortname|escape}</strong>
-					{if !empty($division.kseftoken)}{icon name="url" tip="KSeF token"}{/if}
 				</td>
 				<td class="text-right nobr" data-target-url="?m=divisionedit&id={$division.id}">
 					({$division.id|string_format:"%04d"})
