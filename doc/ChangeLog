@@ -1162,6 +1162,7 @@ version 28-git (????-??-??):
   - enhancement: bin/lms-makedhcpconf: 'filename_pattern' configuration variable support which formats
     filename directive value in host block [chilan]
   - improvement: added more link speeds (2.5 Gbit/s, 5 Gbit/s, 20 Gbit/s) [chilan]
+  - enhancement: added 'submission to KSeF' customer consent support [chilan]
 
 version 27.0 (2021-08-20):
 
