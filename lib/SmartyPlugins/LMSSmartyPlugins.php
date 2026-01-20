@@ -647,7 +647,8 @@ class LMSSmartyPlugins
               <td class="nobr">' . trans('Postcode') . '</td>
               <td>
                 <input type="text" value="' . (!empty($params['location_zip']) ? $params['location_zip'] : '' ) . '" name="' . $input_name_zip
-                    . '" data-address="zip" size="7" maxlength="10"' . ($zipcode_required ? ' required' : '') . '>
+                    . '" data-address="zip" size="7" maxlength="10"' . (!empty($params['location_city_name']) && $zipcode_required ? ' required' : '')
+                    . ($zipcode_required ? ' data-required="1"' : '') . '>
                 <a class="zip-code-button" href="#" title="' . trans('Click here to autocomplete zip code') . '">&raquo;&raquo;&raquo;</a>
               </td>
           </tr>';

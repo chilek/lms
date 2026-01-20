@@ -296,6 +296,11 @@ $(function() {
 		return false;
 	});
 
+    $('body').on('keyup change', '[data-address="city"]', function() {
+        $(this).closest('.lms-ui-address-box').find('[data-address="zip"][data-required="1"]')
+            .prop('required', $(this).val().length);
+    });
+
     /*!
      * \brief Function insert row content into table.
      * Before insert will be generated new id for
