@@ -4356,6 +4356,7 @@ $_LANG['There are no device nodes in your database.'] = 'Brak węzłów sieciowy
 $_LANG['Are you sure, you want to remove net device node \'$a\' from database?'] = 'Jesteś pewien, że chcesz usunąć węzeł \'$a\' z bazy ?';
 $_LANG['existing'] = 'zakończone';
 $_LANG['under construction'] = 'w realizacji';
+$_LANG['out of use'] = 'wyłączony z użycia';
 $_LANG['planned'] = 'planowane';
 $_LANG['Project:'] = 'Projekt:';
 $_LANG['Project'] = 'Projekt';

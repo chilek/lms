@@ -1642,10 +1642,17 @@ $PASSWDEXPIRATIONS = array(
     365 => trans('year'),
 );
 
+//net element statuses
+define('NETELEMENTSTATUS_EXISTING', 0);
+define('NETELEMENTSTATUS_UNDERCONSTRUCTION', 1);
+define('NETELEMENTSTATUS_PLANNED', 2);
+define('NETELEMENTSTATUS_OUTOFUSE', 3);
+
 $NETELEMENTSTATUSES = array(
-    0   => trans('existing'),
-    1   => trans('under construction'),
-    2   => trans('planned'),
+    NETELEMENTSTATUS_EXISTING => trans('existing'),
+    NETELEMENTSTATUS_UNDERCONSTRUCTION => trans('under construction'),
+    NETELEMENTSTATUS_PLANNED => trans('planned'),
+    NETELEMENTSTATUS_OUTOFUSE => trans('out of use'),
 );
 
 $NETELEMENTTYPES = array(
