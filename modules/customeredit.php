@@ -493,6 +493,14 @@ if (!isset($_POST['xjxfun'])) {
                     }
                 }
                 $DB->CommitTrans();
+                
+                
+               $hook_data = $LMS->executeHook(
+                'customeredit_after_updatecontacts_submit',
+                    array(
+                        'customerdata' => $customerdata,
+                    )
+                );
 
                 $SESSION->remove_history_entry();
                 $SESSION->redirect($backurl);
