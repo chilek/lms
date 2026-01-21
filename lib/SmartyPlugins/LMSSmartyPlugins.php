@@ -562,7 +562,7 @@ class LMSSmartyPlugins
               </td>
           </tr>';
 
-        if ($params['location_address_type'] == LOCATION_ADDRESS || $params['location_address_type'] == DEFAULT_LOCATION_ADDRESS) {
+        if ($params['location_address_type'] == LOCATION_ADDRESS || $params['location_address_type'] == DEFAULT_LOCATION_ADDRESS || $params['location_address_type'] == POSTAL_ADDRESS) {
             echo '<tr>
                     <td>' . trans('TEN') . '</td>
                     <td>
@@ -748,7 +748,7 @@ class LMSSmartyPlugins
             : (empty($params['data']['location_name']) ? '' : htmlspecialchars($params['data']['location_name']) . ', ');
 
         $location_str .= isset($params['data']['location_address_type'])
-            && ($params['data']['location_address_type'] == LOCATION_ADDRESS || $params['data']['location_address_type'] == DEFAULT_LOCATION_ADDRESS)
+            && ($params['data']['location_address_type'] == LOCATION_ADDRESS || $params['data']['location_address_type'] == DEFAULT_LOCATION_ADDRESS || $params['data']['location_address_type'] == POSTAL_ADDRESS)
             && !empty($params['data']['location_ten'])
                 ? trans('TEN') . ' ' . htmlspecialchars($params['data']['location_ten']) . ', '
                 : '';
