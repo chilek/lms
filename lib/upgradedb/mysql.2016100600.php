@@ -21,10 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE voip_numbers CHANGE `index` number_index smallint;");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016100600', 'dbversion'));
-
-$this->CommitTrans();

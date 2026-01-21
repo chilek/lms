@@ -24,13 +24,8 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE assignments ADD paytype smallint DEFAULT NULL");
 $this->Execute("ALTER TABLE assignments ADD numberplanid int(11) DEFAULT NULL");
 $this->Execute("ALTER TABLE assignments ADD INDEX numberplanid (numberplanid)");
 $this->Execute("ALTER TABLE assignments ADD FOREIGN KEY (numberplanid) REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010062200', 'dbversion'));
-
-$this->CommitTrans();

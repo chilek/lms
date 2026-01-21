@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE SEQUENCE rtqueuecategories_id_seq;
@@ -32,7 +31,3 @@ $this->Execute("
 		PRIMARY KEY (id)
 	);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017061600', 'dbversion'));
-
-$this->CommitTrans();

@@ -34,5 +34,3 @@ $this->Execute("CREATE VIEW nas AS
         FROM nodes n 
         JOIN netdevices d ON (n.netdev = d.id) 
         WHERE n.nas = 1");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009091000', 'dbversion'));

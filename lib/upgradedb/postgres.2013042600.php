@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE SEQUENCE logtransactions_id_seq;
@@ -67,7 +66,3 @@ $this->Execute("
 	CREATE INDEX logmessagedata_logmessageid_idx ON logmessagedata (logmessageid);
 	CREATE INDEX logmessagedata_name_idx ON logmessagedata (name);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013042600', 'dbversion'));
-
-$this->CommitTrans();

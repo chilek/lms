@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE records ADD COLUMN disabled tinyint(1) DEFAULT '0'");
 $this->Execute("ALTER TABLE records ADD COLUMN auth tinyint(1) DEFAULT '1'");
@@ -35,7 +34,3 @@ $this->Execute("
 		INDEX domainmetadata (domain_id, kind),
 		FOREIGN KEY (domain_id) REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE
 	) Engine=InnoDB");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015111300', 'dbversion'));
-
-$this->CommitTrans();

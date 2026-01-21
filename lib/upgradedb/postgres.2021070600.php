@@ -21,13 +21,8 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     ALTER TABLE customercalls ADD COLUMN userid integer DEFAULT NULL
         CONSTRAINT customercalls_userid_fkey REFERENCES users (id) ON UPDATE CASCADE ON DELETE SET NULL
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021070600', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,13 +21,8 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE documents ADD COLUMN auserid int(11) DEFAULT NULL");
 $this->Execute("ALTER TABLE documents ADD CONSTRAINT documents_auserid_fkey
 	FOREIGN KEY (auserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE");
 $this->Execute("ALTER TABLE documents ADD COLUMN adate int(11) DEFAULT 0 NOT NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019040500', 'dbversion'));
-
-$this->CommitTrans();
