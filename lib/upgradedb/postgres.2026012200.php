@@ -31,7 +31,7 @@ if ($this->ResourceExists('ksefdocuments.refnumber', LMSDB::RESOURCE_TYPE_COLUMN
     $this->Execute('DROP TABLE ksefdocuments');
 }
 
-if (!this->ResourceExists('ksefbatchsessions', LMSDB::RESOURCE_TYPE_TABLE)) {
+if (!$this->ResourceExists('ksefbatchsessions', LMSDB::RESOURCE_TYPE_TABLE)) {
     $this->Execute("
         CREATE SEQUENCE ksefbatchsessions_id_seq;
         CREATE TABLE ksefbatchsessions (
