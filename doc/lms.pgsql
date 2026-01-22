@@ -3151,6 +3151,20 @@ CREATE TABLE ksefdocuments
 CREATE INDEX ksefdocuments_status_idx ON ksefdocuments (status);
 
 /* ---------------------------------------------------
+ Structure of table ksefdelays
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS ksefdelays_id_seq;
+CREATE SEQUENCE ksefdelays_id_seq;
+DROP TABLE IF EXISTS ksefdelays CASCADE;
+CREATE TABLE ksefdelays (
+    id integer DEFAULT nextval('ksefdelays_id_seq'::text) NOT NULL,
+    divisionid integer
+        CONSTRAINT ksefdelays_divisionid_fkey REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    delay integer NOT NULL,
+    PRIMARY KEY (id)
+);
+
+/* ---------------------------------------------------
  Structure of table "up_rights" (Userpanel)
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS up_rights_id_seq;
@@ -4550,6 +4564,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026012200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026012201');
 
 COMMIT;

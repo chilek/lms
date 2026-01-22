@@ -41,6 +41,7 @@ DROP TABLE IF EXISTS up_help;
 DROP TABLE IF EXISTS up_customers;
 DROP TABLE IF EXISTS up_rights_assignments;
 DROP TABLE IF EXISTS up_rights;
+DROP TABLE IF EXISTS ksefdelays;
 DROP TABLE IF EXISTS ksefdocuments;
 DROP TABLE IF EXISTS ksefbatchsessions;
 DROP TABLE IF EXISTS rtticketwatchers;
@@ -3220,6 +3221,19 @@ CREATE TABLE ksefbatchsessions (
 
 # ---------------------------------------------------
 #
+# Structure of table ksefdelays
+#
+CREATE TABLE ksefdelays (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    divisionid int(11),
+    delay int(11) NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT ksefdelays_divisionid_fkey
+        FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# ---------------------------------------------------
+#
 # Structure of table ksefdocuments
 #
 CREATE TABLE ksefdocuments (
@@ -4506,4 +4520,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026012200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026012201');

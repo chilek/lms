@@ -55,7 +55,7 @@ class KSeF
         $this->defaultCurrency = \Localisation::getCurrentCurrency();
         $this->taxes = $lms->GetTaxes();
 
-        $this->payTypes = array(
+        $this->payTypes = [
             PAYTYPE_CASH => 1,
             PAYTYPE_CARD => 2,
             PAYTYPE_BANK_LOAN => 5,
@@ -67,10 +67,77 @@ class KSeF
             PAYTYPE_INSTALMENTS => 'raty',
             PAYTYPE_PAID => 'zapłacono',
             PAYTYPE_TRANSFER_CASH => 'przelew/gotówka',
-        );
+        ];
 
         $this->showOnlyAlternativeAccounts = \ConfigHelper::checkConfig('invoices.show_only_alternative_accounts');
         $this->showAllAccounts = \ConfigHelper::checkConfig('invoices.show_all_accounts');
+    }
+
+    public function updateDelays()
+    {
+        $divisionDelays = $this->db->GetAllByKey(
+            'SELECT
+                d.id AS divisionid,
+                kd.id AS delayid,
+                kd.delay AS delay
+            FROM divisions d
+            LEFT JOIN ksefdelays kd ON kd.divisionid = d.id
+            ORDER BY d.id',
+            'divisionid'
+        );
+        if (empty($divisionDelays)) {
+            $divisionDelays = [];
+        }
+
+        $uiConfigVariables = $this->db->GetAllByKey(
+            'SELECT
+                c.value,
+                COALESCE(c.divisionid, 0) AS divisionid
+            FROM uiconfig c
+            WHERE section = ?
+                AND var = ?
+                AND disabled = ?
+            ORDER BY COALESCE(c.divisionid, 0)',
+            'divisionid',
+            [
+                'ksef',
+                'delay',
+                0,
+            ]
+        );
+        if (empty($uiConfigVariables)) {
+            $uiConfigVariables = [
+                0 => 3600,
+            ];
+        }
+
+        foreach ($divisionDelays as $divisionId => $divisionDelay) {
+            $delay = isset($uiConfigVariables[$divisionId]) ? $uiConfigVariables[$divisionId]['value'] : $uiConfigVariables[0]['value'];
+
+            if (empty($divisionDelay['delayid'])) {
+                $this->db->Execute(
+                    'INSERT INTO ksefdelays
+                    (divisionid, delay)
+                    VALUES (?, ?)',
+                    [
+                        $divisionId,
+                        $delay,
+                    ]
+                );
+            } else {
+                if ($divisionDelay['delay'] != $delay) {
+                    $this->db->Execute(
+                        'UPDATE ksefdelays
+                        SET delay = ?
+                        WHERE id = ?',
+                        [
+                            $delay,
+                            $divisionDelay['delayid'],
+                        ]
+                    );
+                }
+            }
+        }
     }
 
     public static function base64Url(string $base64Data): string
