@@ -24,8 +24,8 @@
 $this->BeginTrans();
 
 if (!$this->ResourceExists('tariffs.serviceproviderid', LMSDB::RESOURCE_TYPE_COLUMN)) {
+    $this->Execute("ALTER TABLE tariffs ADD COLUMN serviceproviderid int(11) DEFAULT NULL");
     $this->Execute("
-        ALTER TABLE tariffs ADD COLUMN serviceproviderid int(11) DEFAULT NULL;
         ALTER TABLE tariffs ADD CONSTRAINT tariffs_serviceproviderid_fkey
             FOREIGN KEY (serviceproviderid) REFERENCES serviceproviders (id) ON DELETE CASCADE ON UPDATE CASCADE
     ");
