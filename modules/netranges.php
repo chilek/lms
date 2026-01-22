@@ -451,10 +451,13 @@ function getBuildings(array $filter)
             ) : '')
         );
     }
+    $majortechs = isset($filter['majortechs']) && is_array($filter['majortechs']) ?
+        Utils::filterIntegers(array_values($filter['majortechs'])) : array();
+
     if (empty($buildings)) {
         $buildings = array();
     } else {
-        foreach ($buildings as &$building) {
+        foreach ($buildings as $key => &$building) {
             $city_id = intval($building['city_id']);
             $street_id = intval($building['street_id']);
             $street_ident = intval($building['street_ident']);
@@ -469,6 +472,14 @@ function getBuildings(array $filter)
                 $building['linktechnologies'] = array();
                 $building['customers'] = array();
                 $building['existing'] = 0;
+            }
+            if (!empty($majortechs)
+                && isset($nodes[$city_id][$street_ident][$building_num])
+                && !array_intersect(
+                    $majortechs,
+                    array_keys($nodes[$city_id][$street_ident][$building_num]['linktechnologies'])
+                )) {
+                unset($buildings[$key]);
             }
         }
         unset($building);
@@ -859,6 +870,7 @@ $SMARTY->assign('pagination', $pagination);
 $SMARTY->assign(array(
     'filter' => $filter,
     'linktechnologies' => $SIDUSIS_LINKTECHNOLOGIES,
+    'linktechnologiesall' => $LINKTECHNOLOGIES,
     'linkspeeds' => $linkspeeds,
     'range'=> $range,
     'unique_total' => $unique_total,
