@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+use \Lms\KSeF\KSeF;
+
 class LMSTcpdfInvoice extends LMSInvoice
 {
     // default font
@@ -1072,7 +1074,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $customerid = $this->data['customerid'];
 
         $this->backend->SetFont(null, '', 7);
-        $this->backend->writeHTMLCell(150, 0, '', '', trans("&nbsp; <BR> Scan and Pay <BR> You can make a transfer simply and quickly using your phone. <BR> To make a transfer, please scan QRcode on you smartphone in your bank's application."), 0, 1, 0, true, 'R');
+        $this->backend->writeHTMLCell(160, 0, '', '', trans("&nbsp; <BR> Scan and Pay <BR> You can make a transfer simply and quickly using your phone. <BR> To make a transfer, please scan QRcode on you smartphone in your bank's application."), 0, 1, 0, true, 'R');
         $tmp = preg_replace('/[^0-9]/', '', $this->data['division_ten'])
             . '|'
             . 'PL'
@@ -1100,8 +1102,32 @@ class LMSTcpdfInvoice extends LMSInvoice
             )
             . '|||';
         $style['position'] = 'R';
-        $this->backend->write2DBarcode($tmp, 'QRCODE,M', $x, $y, 30, 30, $style);
+        $this->backend->write2DBarcode($tmp, 'QRCODE,M', $x, $y, 20, 20, $style);
         unset($tmp);
+    }
+
+    public function invoice_ksef_qr_code()
+    {
+        if (empty($this->data['ksefenvironment'])) {
+            return;
+        }
+
+        $url = $this->data['ksefenvironment'] == KSeF::ENVIRONMENT_TEST
+            ? 'https://qr-test.ksef.mf.gov.pl/invoice'
+            : 'https://qr.ksef.mf.gov.pl/invoice';
+        $url .= '/' . preg_replace('/[^0-9]/', '', $this->data['division_ten'])
+            . '/' . date('d-m-Y', $this->data['cdate'])
+            . '/' . KSeF::base64Url($this->data['ksefhash']);
+
+        $x = $this->backend->GetX();
+        $y = $this->backend->GetY();
+
+        $style['position'] = 'C';
+
+        $this->backend->write2DBarcode($url, 'QRCODE,M', 0, 5, 20, 20, $style);
+
+        $this->backend->SetFont(null, '', 5);
+        $this->backend->writeHTMLCell('', '', '', 26, $this->data['ksefnumber'], 0, 1, 0, true, 'C');
     }
 
     public function invoice_body_standard()
@@ -1118,6 +1144,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->invoice_no_accountant();
         $this->invoice_header_image();
         $this->invoice_date();
+        $this->invoice_ksef_qr_code();
         $this->invoice_dates();
         $this->invoice_title();
         $this->invoice_seller();
@@ -1288,6 +1315,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->invoice_header_image();
         $this->invoice_date();
         $this->invoice_dates();
+        $this->invoice_ksef_qr_code();
         $this->invoice_title();
         $this->invoice_seller();
         $this->invoice_buyer();

@@ -41,8 +41,8 @@ DROP TABLE IF EXISTS up_help;
 DROP TABLE IF EXISTS up_customers;
 DROP TABLE IF EXISTS up_rights_assignments;
 DROP TABLE IF EXISTS up_rights;
-DROP TABLE IF EXISTS ksefdivisions;
 DROP TABLE IF EXISTS ksefdocuments;
+DROP TABLE IF EXISTS ksefbatchsessions;
 DROP TABLE IF EXISTS rtticketwatchers;
 DROP TABLE IF EXISTS files;
 DROP TABLE IF EXISTS filecontainers;
@@ -3203,34 +3203,42 @@ CREATE TABLE rtticketwatchers (
 
 # ---------------------------------------------------
 #
-# Structure of table ksefdocuments
+# Structure of table ksefbatchsessions
 #
-CREATE TABLE ksefdocuments (
-	docid int(11) NOT NULL,
-	refnumber varchar(40) NOT NULL,
-	elemrefnumber varchar(40) NOT NULL,
-	ksefnumber varchar(40) DEFAULT NULL,
-	status smallint NOT NULL DEFAULT 0,
-	statusdescription text DEFAULT NULL,
-	hash varchar(130) NOT NULL,
-	INDEX ksefdocuments_refnumber_idx (refnumber),
-	INDEX ksefdocuments_elemrefnumber_idx (elemrefnumber),
-	INDEX ksefdocuments_ksefnumber_idx (ksefnumber),
-	INDEX ksefdocuments_status_idx (status),
-	CONSTRAINT ksefdocuments_docid_fkey
-		FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE
+CREATE TABLE ksefbatchsessions (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    ksefnumber varchar(40) NOT NULL,
+    cdate int(16) NOT NULL,
+    lastupdate int(16) NOT NULL,
+    status smallint NOT NULL DEFAULT 0,
+    statusdescription text DEFAULT NULL,
+    environment smallint NOT NULL DEFAULT 0,
+    PRIMARY KEY (id),
+    INDEX ksefbatchsessions_ksefnumber_idx (ksefnumber),
+    INDEX ksefbatchsessions_status_idx (status)
 ) ENGINE=InnoDB;
 
 # ---------------------------------------------------
 #
-# Structure of table ksefdivisions
+# Structure of table ksefdocuments
 #
-CREATE TABLE ksefdivisions (
-	divisionid int(11) NOT NULL,
-	token varchar(70) NOT NULL,
-	CONSTRAINT ksefdivisions_divisionid_fkey
-		FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
+CREATE TABLE ksefdocuments (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    batchsessionid int(11) NOT NULL,
+    docid integer NOT NULL,
+    ordinalnumber int(11) NOT NULL,
+    ksefnumber varchar(40) DEFAULT NULL,
+    hash varchar(50) NOT NULL,
+    status smallint NOT NULL DEFAULT 0,
+    statusdescription text DEFAULT NULL,
+    statusdetails text DEFAULT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT ksefbatchsessions_batchsessionid_fkey
+        FOREIGN KEY (batchsessionid) REFERENCES ksefbatchsessions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT ksefdocuments_docid_fkey
+        FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    INDEX ksefdocuments_status_idx (status)
+) ENGINE=InnoDB
 
 # --------------------------------------------------------
 #
@@ -4498,4 +4506,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025120800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026012200');

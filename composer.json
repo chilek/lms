@@ -149,7 +149,9 @@
         "proj4php/proj4php": "^2.0.14",
         "ramsey/uuid": "^4",
         "select2/select2": "^4.1@dev",
-        "phpseclib/phpseclib": "^3.0"
+        "phpseclib/phpseclib": "^3.0",
+        "n1ebieski/ksef-php-client": "*",
+        "guzzlehttp/guzzle": "^7"
     },
     "require-dev": {
         "phpunit/phpunit": "*",

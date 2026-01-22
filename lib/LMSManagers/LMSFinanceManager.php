@@ -2700,7 +2700,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				cdv.ccode AS div_ccode,
 				d.currency, d.currencyvalue, d.memo,
 				d.extid,
-				(CASE WHEN cc.type IS NULL THEN 0 ELSE 1 END) AS balance_on_documents
+				(CASE WHEN cc.type IS NULL THEN 0 ELSE 1 END) AS balance_on_documents,
+                kd.ksefnumber,
+                kd.hash AS ksefhash,
+                kbs.environment AS ksefenvironment
 				FROM documents d'
                 . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
                 . ' LEFT JOIN customeraddressview c ON (c.id = d.customerid)
@@ -2712,11 +2715,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				LEFT JOIN vaddresses a ON d.recipient_address_id = a.id
 				LEFT JOIN vaddresses a2 ON d.post_address_id = a2.id
 				LEFT JOIN countries cp ON (d.post_address_id IS NOT NULL AND cp.id = a2.country_id) OR (d.post_address_id IS NULL AND cp.id = c.post_countryid)
+				LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status = ?
+				LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
 				WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)',
                 array(
                     DOC_FLAG_SPLIT_PAYMENT,
                     DOC_FLAG_NET_ACCOUNT,
                     CCONSENT_BALANCE_ON_DOCUMENTS,
+                    200,
                     $invoiceid,
                     DOC_INVOICE,
                     DOC_CNOTE,
@@ -3238,7 +3244,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
 
             $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
-            $result['customerbalance'] = $customer_manager->GetCustomerBalance($result['customerid'], $result['cdate'] + 1);
+            $result['customerbalance'] = $customer_manager->getCustomerBalance($result['customerid'], $result['cdate'] + 1);
 
             $default_author = ConfigHelper::getConfig('notes.default_author', 'user_issuer,user_name,division_author');
             $default_author = preg_split('/[\s]*,[\s]*/', trim($default_author), -1, PREG_SPLIT_NO_EMPTY);
