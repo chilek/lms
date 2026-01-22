@@ -35,6 +35,8 @@ class LMSTcpdfInvoice extends LMSInvoice
 
     private $transfer_form_on_separate_page = false;
 
+    private $jpk_flags;
+
     public function __construct($title, $pagesize = 'A4', $orientation = 'portrait')
     {
         parent::__construct('LMSTcpdfBackend', $title, $pagesize, $orientation);
@@ -55,6 +57,8 @@ class LMSTcpdfInvoice extends LMSInvoice
 
         $this->backend->SetMargins(trim($margin_left), trim($margin_top), trim($margin_right));
         $this->backend->SetAutoPageBreak(true, trim($margin_bottom));
+
+        $this->jpk_flags = ConfigHelper::checkConfig('invoices.jpk_flags');
     }
 
     protected function Table()
@@ -415,7 +419,9 @@ class LMSTcpdfInvoice extends LMSInvoice
             }
         }
 
-        if (!empty($flags)) {
+        if (empty($flags)) {
+            $this->jpk_flags = false;
+        } else {
             $this->backend->SetFont(null, '', 9);
             $this->backend->writeHTMLCell(0, 0, '', 3, trans('JPK:') . ' <b>' . implode(', ', $flags) . '</b>', 0, 1, 0, true, 'C');
         }
@@ -432,7 +438,12 @@ class LMSTcpdfInvoice extends LMSInvoice
 
     protected function invoice_title()
     {
-        $this->backend->SetY(29);
+        if (empty($this->data['ksefenvironment']) || !$this->jpk_flags) {
+            $this->backend->SetY(29);
+        } else {
+            $this->backend->SetY(32);
+        }
+
         $this->backend->SetFont(null, 'B', 16);
         $docnumber = docnumber(array(
             'number' => $this->data['number'],
@@ -1119,15 +1130,17 @@ class LMSTcpdfInvoice extends LMSInvoice
             . '/' . date('d-m-Y', $this->data['cdate'])
             . '/' . KSeF::base64Url($this->data['ksefhash']);
 
-        $x = $this->backend->GetX();
-        $y = $this->backend->GetY();
-
         $style['position'] = 'C';
 
-        $this->backend->write2DBarcode($url, 'QRCODE,M', 0, 5, 20, 20, $style);
+        $y = 5;
+        if ($this->jpk_flags) {
+            $y += 3;
+        }
+
+        $this->backend->write2DBarcode($url, 'QRCODE,M', 0, $y, 20, 20, $style);
 
         $this->backend->SetFont(null, '', 5);
-        $this->backend->writeHTMLCell('', '', '', 26, $this->data['ksefnumber'], 0, 1, 0, true, 'C');
+        $this->backend->writeHTMLCell('', '', '', $y + 21, $this->data['ksefnumber'], 0, 1, 0, true, 'C');
     }
 
     public function invoice_body_standard()
@@ -1136,7 +1149,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             Localisation::setSystemLanguage($this->data['div_ccode']);
         }
 
-        if (ConfigHelper::checkConfig('invoices.jpk_flags')) {
+        if ($this->jpk_flags) {
             $this->invoice_jpk_flags();
         }
 
@@ -1306,7 +1319,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             Localisation::setSystemLanguage($this->data['div_ccode']);
         }
 
-        if (ConfigHelper::checkConfig('invoices.jpk_flags')) {
+        if ($this->jpk_flags) {
             $this->invoice_jpk_flags();
         }
 
