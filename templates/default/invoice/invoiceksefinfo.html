@@ -36,13 +36,13 @@
 </style>
 <div class="invoice-ksef-info">
 	{if $invoice.status == 200}
-		<a href="{$url}">
+		<a href="{$url}" target="_blank">
 			{barcode type="QRCODE" text=$url show_text=false transliterate=false width=-3 height=-3 tooltip_class="lms-ui-ksef-qrcode"}
 		</a>
 		<span class="ksef-number">{$invoice.ksefnumber}</span>
 	{elseif empty($invoice.status)}
 		{if ConfigHelper::checkConfig('ksef.offline_support')}
-			<a href="{$url}">
+			<a href="{$url}" target="_blank">
 				{barcode type="QRCODE" text=$url show_text=false transliterate=false width=-3 height=-3 tooltip_class="lms-ui-ksef-qrcode"}
 			</a>
 			<span class="ksef-number">OFFLINE</span>
