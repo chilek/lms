@@ -1163,6 +1163,9 @@ version 28-git (????-??-??):
     filename directive value in host block [chilan]
   - improvement: added more link speeds (2.5 Gbit/s, 5 Gbit/s, 20 Gbit/s) [chilan]
   - enhancement: added 'submission to KSeF' customer consent support [chilan]
+  - enhancement: KSeF: configuration variable 'ksef.offline_suport' with 'false' as default value controls
+    if QR code is presented on invoices already sent to KSeF for which there is no KSeF number assigned
+    yet [chilan]
 
 version 27.0 (2021-08-20):
 
