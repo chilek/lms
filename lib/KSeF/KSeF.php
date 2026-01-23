@@ -124,6 +124,7 @@ class KSeF
                         $delay,
                     ]
                 );
+                $divisionDelays[$divisionId]['delay'] = $delay;
             } else {
                 if ($divisionDelay['delay'] != $delay) {
                     $this->db->Execute(
@@ -135,9 +136,12 @@ class KSeF
                             $divisionDelay['delayid'],
                         ]
                     );
+                    $divisionDelays[$divisionId]['delay'] = $delay;
                 }
             }
         }
+
+        return \Utils::array_column($divisionDelays, 'delay', 'divisionid');
     }
 
     public static function base64Url(string $base64Data): string
