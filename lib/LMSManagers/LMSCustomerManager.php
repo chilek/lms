@@ -309,15 +309,21 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 cash.value AS value, cash.currency, cash.currencyvalue,
                 taxes.label AS tax, cash.customerid AS customerid,
                 documents.comment AS documentcomment, documents.reference,
-                cash.comment, docid, vusers.name AS username,
+                cash.comment, cash.docid, vusers.name AS username,
                 documents.type AS doctype, documents.closed AS closed,
                 documents.published, documents.senddate, documents.archived, cash.importid,
                 (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = documents.id AND d2.type > 0) THEN 1 ELSE 0 END) AS referenced,
                 (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = documents.id AND d2.type < 0) THEN 1 ELSE 0 END) AS documentreferenced,
-                documents.cdate, documents.number, numberplans.template
+                documents.cdate, documents.number, numberplans.template,
+                kd.status AS ksefstatus,
+                kd.hash AS ksefhash,
+                kd.ksefnumber AS ksefnumber,
+                kdl.delay AS ksefdelay
             FROM cash
             LEFT JOIN vusers ON vusers.id = cash.userid
-            LEFT JOIN documents ON documents.id = docid
+            LEFT JOIN documents ON documents.id = cash.docid
+            LEFT JOIN ksefdocuments kd ON kd.docid = documents.id AND kd.status IN ?
+            LEFT JOIN ksefdelays kdl ON kdl.divisionid = documents.divisionid
             LEFT JOIN numberplans ON numberplans.id = documents.numberplanid
             LEFT JOIN taxes ON cash.taxid = taxes.id
             WHERE cash.customerid = ?'
@@ -332,7 +338,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     d.published, d.senddate, 0 AS archived, NULL AS importid,
                     (CASE WHEN d3.reference IS NULL THEN 0 ELSE 1 END) AS referenced,
                     0 AS documentreferenced,
-                    d.cdate, d.number, numberplans.template
+                    d.cdate, d.number, numberplans.template,
+                    null AS ksefstatus,
+                    null AS ksefhash,
+                    null AS ksefnumber,
+                    null AS ksefdelay
                 FROM documents d
                 JOIN ' . (ConfigHelper::getConfig('database.type') == 'postgres' ? 'get_invoice_contents(' . intval($id) . ')' : 'vinvoicecontents') . ' ic ON ic.docid = d.id
                 LEFT JOIN (
@@ -344,7 +354,15 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 . ' d.customerid = ? AND d.type = ?'
                 . ($totime ? ' AND d.cdate <= ' . intval($totime) : '') . ')
             ORDER BY time, docid, id',
-            array($id, $id, DOC_INVOICE_PRO)
+            [
+                [
+                    200,
+                    0,
+                ],
+                $id,
+                $id,
+                DOC_INVOICE_PRO,
+            ]
         );
 
         $result['customerid'] = $id;

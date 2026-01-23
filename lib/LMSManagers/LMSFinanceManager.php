@@ -2273,9 +2273,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			COUNT(a.docid) AS count,
 			i.sendinvoices,
 			(CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type > 0) THEN 1 ELSE 0 END) AS referenced,
-			(CASE WHEN EXISTS (SELECT 1 FROM documents d3 WHERE d3.reference = d.id AND d3.type < 0) THEN 1 ELSE 0 END) AS documentreferenced
-			FROM documents d
-			JOIN vinvoicecontents a ON (a.docid = d.id)'
+			(CASE WHEN EXISTS (SELECT 1 FROM documents d3 WHERE d3.reference = d.id AND d3.type < 0) THEN 1 ELSE 0 END) AS documentreferenced,
+                kd.status AS ksefstatus,
+                kd.hash AS ksefhash,
+                kd.ksefnumber AS ksefnumber,
+                kdl.delay AS ksefdelay
+            FROM documents d
+            LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN (' . implode(',', [0, 200]) . ')
+            LEFT JOIN ksefdelays kdl ON kdl.divisionid = d.divisionid
+            JOIN vinvoicecontents a ON (a.docid = d.id)'
             . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
             . ' LEFT JOIN cash ON cash.docid = d.id AND a.itemid = cash.itemid
 			LEFT JOIN documents d2 ON d2.reference = d.id
@@ -2311,7 +2317,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             . (!empty($division) ? ' AND d.divisionid = ' . intval($division) : '')
             . ' GROUP BY d.id, d2.id, d.number, d.cdate, d.customerid,
 			d.name, d.address, d.zip, d.city, numberplans.template, d.closed, d.type, d.reference, countries.name,
-			d.cancelled, d.published, sendinvoices, d.archived, d.senddate, d.currency, d.currencyvalue '
+			d.cancelled, d.published, sendinvoices, d.archived, d.senddate, d.currency, d.currencyvalue,
+                kd.status, kd.hash, kd.ksefnumber, kdl.delay '
             . ($having ?? '')
             . $sqlord.' '.$direction
             . (isset($limit) ? ' LIMIT ' . $limit : '')
@@ -3958,13 +3965,19 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         if ($balancelist = $this->db->GetAll('SELECT cash.id AS id, time, cash.userid AS userid, cash.value AS value,
                 cash.currency, cash.currencyvalue, 
-				cash.customerid AS customerid, cash.comment, docid, cash.type AS type,
+				cash.customerid AS customerid, cash.comment, cash.docid, cash.type AS type,
 				documents.type AS doctype, documents.closed AS closed,
 				documents.published, documents.archived, '
-             . $this->db->Concat('UPPER(c.lastname)', "' '", 'c.name').' AS customername
+            . $this->db->Concat('UPPER(c.lastname)', "' '", 'c.name').' AS customername,
+                kd.status AS ksefstatus,
+                kd.hash AS ksefhash,
+                kd.ksefnumber AS ksefnumber,
+                kdl.delay AS ksefdelay
 				FROM cash
 				LEFT JOIN customerview c ON (cash.customerid = c.id)
-				LEFT JOIN documents ON (documents.id = docid)
+				LEFT JOIN documents ON (documents.id = cash.docid)
+                LEFT JOIN ksefdocuments kd ON kd.docid = documents.id AND kd.status IN (' . implode(',', [0, 200]) . ')
+                LEFT JOIN ksefdelays kdl ON kdl.divisionid = documents.divisionid
 				WHERE 1=1 '
             .$where
             .(!empty($group) ?
@@ -5516,11 +5529,26 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     public function isInvoiceEditable($id)
     {
         return ($this->db->GetOne(
-            'SELECT d.id FROM documents d
+            'SELECT d.id
+            FROM documents d
             LEFT JOIN documents d2 ON d2.reference = d.id AND d2.type > 0
-            WHERE d.id = ? AND d.type IN ? AND d.cancelled = 0 AND d.closed = 0 AND d.archived = 0 AND d2.id IS NULL
+            LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
+            WHERE d.id = ?
+                AND d.type IN ?
+                AND d.cancelled = 0
+                AND d.closed = 0
+                AND d.archived = 0
+                AND d2.id IS NULL
+                AND kd.id IS NULL
                 ' . (ConfigHelper::checkPrivilege('published_document_modification') ? '' : ' AND d.published = 0'),
-            array($id, array(DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO))
+            [
+                [
+                    200,
+                    0,
+                ],
+                $id,
+                [DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO],
+            ]
         ) > 0);
     }
 

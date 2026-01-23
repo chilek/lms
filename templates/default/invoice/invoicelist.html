@@ -213,7 +213,8 @@
 	<TR class="highlight{if $invoice.closed} blend{elseif $invoice.cancelled} cancel{/if}" data-published="{$invoice.published}"
 			data-number="{$number}" data-customername="{$invoice.name|escape:"javascript"|escape:"html"}"
 			data-senddate="{if $invoice.senddate}{$invoice.senddate|date_format:"Y-m-d H:i"}{else}{$invoice.senddate}{/if}"
-			data-refdocs="{if empty($invoice.documentreferenced)}0{else}1{/if}">
+			data-refdocs="{if empty($invoice.documentreferenced)}0{else}1{/if}"
+			data-ksef="{if empty($invoice.ksefhash)}0{else}1{/if}">
 		<TD>
 			{$invoice.id|string_format:"%06d"}
 		</TD>
@@ -248,6 +249,9 @@
 			{foreach $invoice.customlinks as $link}
 				<A href="{$link.url}" rel="external"{if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="{$link.label}" {$link.tip}>{else}{$link.label}{/if}</A>
 			{/foreach}
+			{if !empty($invoice.ksefhash)}
+				{hint icon="lock" url="?m=invoiceksefinfo&id={$invoiceid}" tooltip_class="lms-ui-ksef-qr-code"}
+			{/if}
 			{if $invoice.type == $smarty.const.DOC_INVOICE_PRO && !$invoice.closed}
 				{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
 					{button type="link" icon="transform" href="?m=invoicenew&id={$invoice.id}&action=init"
@@ -275,14 +279,18 @@
 					{if ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO) && !$invoice.closed && !$invoice.referenced && !$invoice.archived}
 						{if !$invoice.published || ConfigHelper::checkPrivilege('published_document_modification')}
 							{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
-								{button type="link" icon="delete" class="delete-invoice" tip="Delete"
-									href="?m=invoicedel&id={$invoice.id}"}
+								{if empty($invoice.ksefhash)}
+									{button type="link" icon="delete" class="delete-invoice" tip="Delete"
+										href="?m=invoicedel&id={$invoice.id}"}
+								{/if}
 							{/if}
 						{/if}
 					{/if}
 				{else}
 					{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
-						{button type="link" icon="delete" tip="Delete" class="delete-proforma-invoice" href="?m=invoicedel&id={$invoice.id}"}
+						{if empty($invoice.ksefhash)}
+							{button type="link" icon="delete" tip="Delete" class="delete-proforma-invoice" href="?m=invoicedel&id={$invoice.id}"}
+						{/if}
 					{/if}
 				{/if}
 			{/if}
@@ -290,8 +298,10 @@
 				{if $invoice.type == $smarty.const.DOC_CNOTE}
 					{if !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 						{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
-							{button type="link" icon="delete" class="delete-invoice" tip="Delete"
-								href="?m=invoicedel&id={$invoice.id}"}
+							{if empty($invoice.ksefhash)}
+								{button type="link" icon="delete" class="delete-invoice" tip="Delete"
+									href="?m=invoicedel&id={$invoice.id}"}
+							{/if}
 						{/if}
 					{/if}
 				{/if}
@@ -300,21 +310,27 @@
 						{if $invoice.type == $smarty.const.DOC_INVOICE}
 							{if !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 								{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
-									{button type="link" icon="edit"
-										href="?m=invoiceedit&id={$invoice.id}&action=edit" class="edit-invoice" tip="Edit"}
+									{if empty($invoice.ksefhash)}
+										{button type="link" icon="edit"
+											href="?m=invoiceedit&id={$invoice.id}&action=edit" class="edit-invoice" tip="Edit"}
+									{/if}
 								{/if}
 							{/if}
 						{else}
 							{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
-								{button type="link" icon="edit" tip="Edit"
-									href="?m=invoiceedit&id={$invoice.id}&action=edit{if $invoice.type == $smarty.const.DOC_INVOICE_PRO}&proforma=1{/if}"}
+								{if empty($invoice.ksefhash)}
+									{button type="link" icon="edit" tip="Edit"
+										href="?m=invoiceedit&id={$invoice.id}&action=edit{if $invoice.type == $smarty.const.DOC_INVOICE_PRO}&proforma=1{/if}"}
+								{/if}
 							{/if}
 						{/if}
 					{elseif $invoice.type == $smarty.const.DOC_CNOTE}
 						{if !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 							{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
-								{button type="link" icon="edit" tip="Edit" class="edit-invoice"
-									href="?m=invoicenoteedit&id={$invoice.id}&action=edit"}
+								{if empty($invoice.ksefhash)}
+									{button type="link" icon="edit" tip="Edit" class="edit-invoice"
+										href="?m=invoicenoteedit&id={$invoice.id}&action=edit"}
+								{/if}
 							{/if}
 						{/if}
 					{/if}
@@ -323,8 +339,10 @@
 			{if !$invoice.cancelled}
 				{if $invoice.type != $smarty.const.DOC_INVOICE_PRO && !$invoice.archived && !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 					{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
-						{button type="link" icon="cancel" tip="Cancel" class="cancel-invoice"
-							href="?m=invoicecancel&id={$invoice.id}"}
+						{if empty($invoice.ksefhash)}
+							{button type="link" icon="cancel" tip="Cancel" class="cancel-invoice"
+								href="?m=invoicecancel&id={$invoice.id}"}
+						{/if}
 					{/if}
 				{/if}
 			{elseif $invoice.cancelled}

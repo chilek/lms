@@ -3839,6 +3839,18 @@ class LMS
         return $manager->getDocumentFullNumber($docid);
     }
 
+    public function isKsefDocument($docid)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->isKsefDocument($docid);
+    }
+
+    public function isKsefDocumentByCashId($cashid)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->isKsefDocumentByCashId($cashid);
+    }
+
     /*
      *  Location
      */

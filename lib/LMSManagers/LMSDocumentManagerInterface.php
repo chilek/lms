@@ -109,4 +109,8 @@ interface LMSDocumentManagerInterface
     public function getDocumentType($docid);
 
     public function getDocumentFullNumber($docid);
+
+    public function isKsefDocument($docid);
+
+    public function isKsefDocumentByCashId($cashid);
 }

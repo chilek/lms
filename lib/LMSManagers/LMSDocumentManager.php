@@ -3913,4 +3913,49 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
     {
         return $this->db->GetOne('SELECT fullnumber FROM documents WHERE id = ?', array($docid));
     }
+
+    public function isKsefDocument($docid)
+    {
+        return $this->db->GetOne(
+            'SELECT COUNT(*)
+            FROM documents d
+            LEFT JOIN ksefdocuments kd ON kd.docid = d.id
+            LEFT JOIN ksefdelays kds ON kds.divisionid = d.divisionid
+            WHERE d.id = ?
+                AND (
+                    kd.id IS NOT NULL AND kd.status IN ?
+                    OR kds.delay > -1 AND ?NOW? - d.cdate >= kds.delay
+                )',
+            [
+                $docid,
+                [
+                    200,
+                    0,
+                ]
+            ]
+        );
+    }
+
+    public function isKsefDocumentByCashId($cashid)
+    {
+        return $this->db->GetOne(
+            'SELECT COUNT(*)
+            FROM cash c
+            JOIN documents d ON d.id = c.docid
+            LEFT JOIN ksefdocuments kd ON kd.docid = d.id
+            LEFT JOIN ksefdelays kds ON kds.divisionid = d.divisionid
+            WHERE c.id = ?
+                AND (
+                    kd.id IS NOT NULL AND kd.status IN ?
+                    OR kds.delay > -1 AND ?NOW? - d.cdate >= kds.delay
+                )',
+            [
+                $cashid,
+                [
+                    200,
+                    0,
+                ]
+            ]
+        );
+    }
 }

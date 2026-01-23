@@ -149,6 +149,18 @@ class KSeF
         return rtrim(strtr($base64Data, '+/', '-_'), '=');
     }
 
+    public static function getQrCodeUrl(array $params): string
+    {
+        $url = isset($params['environment']) && $params['environment'] == self::ENVIRONMENT_TEST
+            ? 'https://qr-test.ksef.mf.gov.pl/invoice'
+            : 'https://qr.ksef.mf.gov.pl/invoice';
+        $url .= '/' . preg_replace('/[^0-9]/', '', $params['ten'])
+            . '/' . date('d-m-Y', $params['date'])
+            . '/' . self::base64Url($params['hash']);
+
+        return $url;
+    }
+
     public static function formatInternalId($internalId)
     {
         $internalId = preg_replace('/[^0-9]/', '', $internalId);

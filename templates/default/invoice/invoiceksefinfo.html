@@ -1,0 +1,54 @@
+<style>
+
+	.invoice-ksef-info {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.invoice-ksef-info > * {
+		padding-top: 3px;
+		padding-bottom: 3px;
+	}
+
+	.lms-ui-ksef-qr-code {
+		background-color: white;
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+
+	.ksef-number {
+		font-weight: bold;
+		font-size: 8pt;
+	}
+
+	.ksef-info {
+		max-width: 30vw;
+		padding-top: 0.5em;
+		padding-bottom: 0.5em;
+	}
+
+	.ksef-batch-session-number {
+		white-space: nowrap;
+		font-weight: bold;
+	}
+
+</style>
+<div class="invoice-ksef-info">
+	{if $invoice.status == 200}
+		{barcode type="QRCODE" text=$url show_text=false transliterate=false width=-3 height=-3 tooltip_class="lms-ui-ksef-qrcode"}
+		<span class="ksef-number">{$invoice.ksefnumber}</span>
+	{elseif empty($invoice.status)}
+		{if ConfigHelper::checkConfig('ksef.offline_support')}
+			{barcode type="QRCODE" text=$url show_text=false transliterate=false width=-3 height=-3 tooltip_class="lms-ui-ksef-qrcode"}
+			<span class="ksef-number">OFFLINE</span>
+		{else}
+			<span class="ksef-info">
+				{t
+					a="<span class=\"ksef-batch-session-number\">{$invoice.ksefbatchsessionnumber}</span>"
+					b="<strong>{$invoice.ksefbatchsessionlastupdate|date_format:"H:i:s"}</strong>"
+					c="<strong>{$invoice.ksefbatchsessionlastupdate|date_format:"Y/m/d"}</strong>"}Invoice sent to KSeF in batch session $a at $b on $c and waiting for handling...{/t}
+			</span>
+		{/if}
+	{/if}
+</div>

@@ -6282,3 +6282,5 @@ $_LANG['Location address is not selected'] = 'Nie wybrano adresu lokalizacji';
 $_LANG['2.5 Gbit/s'] = '2,5 Gbit/s';
 
 $_LANG['Selected divisions have different TEN identifiers!'] = 'Wybrane firmy mają różne identyfikatory NIP!';
+
+$_LANG['Invoice sent to KSeF in batch session $a at $b on $c and waiting for handling...'] = 'Faktura wysłana do KSeF sesją wsadową $a o godzinie $b w dniu $c i oczekuje na przetworzenie...';

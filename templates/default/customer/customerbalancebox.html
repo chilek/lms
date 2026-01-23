@@ -137,6 +137,7 @@
 				<TR{if $item.docid} data-published="{$item.published}" data-doctype="{$item.doctype}"
 					data-senddate="{if $item.senddate}{$item.senddate|date_format:"Y-m-d H:i"}{else}{$item.senddate}{/if}"
 					data-refdocs="{if empty($item.documentreferenced)}0{else}1{/if}"
+					data-ksef="{if empty($item.ksefhash)}0{else}1{/if}"
 					class="{if $item.doctype == $smarty.const.DOC_INVOICE_PRO} teal{if $item.referenced} transformed{/if}{/if}
 					{if $item.closed && ($item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_DNOTE)} blend{/if}"
 					{/if}
@@ -156,6 +157,9 @@
 							<A {if isset($link.url)} href="{$link.url}" {/if} rel="external" {if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="{$link.label}" {$link.tip}>{else}{$link.label}{/if}</A>
 							{if isset($link.extra)}{$link.extra}{/if}
 						{/foreach}
+						{if !empty($item.ksefhash)}
+							{hint icon="lock" url="?m=invoiceksefinfo&id={$item.docid}" tooltip_class="lms-ui-ksef-qr-code"}
+						{/if}
 						{if $item.docid}
 							{if $item.doctype == $smarty.const.DOC_INVOICE_PRO}
 								{if  ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management')}
@@ -195,11 +199,13 @@
 											{/if}
 											return false;
 										{/textformat}
-										{button type="link" icon="edit" class="lms-ui-hint-rollover"
-											href="?m=invoiceedit&id={$item.docid}&action=edit"
-											onclick=$onclick
-											data_url="?m=number&id={$item.docid}"
-											icon_tip="Invoice"}
+										{if empty($item.ksefhash)}
+											{button type="link" icon="edit" class="lms-ui-hint-rollover"
+												href="?m=invoiceedit&id={$item.docid}&action=edit"
+												onclick=$onclick
+												data_url="?m=number&id={$item.docid}"
+												icon_tip="Invoice"}
+										{/if}
 									{/if}
 								{/if}
 								{if !$item.cancelled}
@@ -236,11 +242,13 @@
 											{/if}
 											return false;
 										{/textformat}
-										{button type="link" icon="edit" class="lms-ui-hint-rollover"
-											href="?m=invoiceedit&id={$item.docid}&action=edit&proforma=1"
-											onclick=$onclick
-											data_url="?m=number&id={$item.docid}"
-											icon_tip="pro forma invoice"}
+										{if empty($item.ksefhash)}
+											{button type="link" icon="edit" class="lms-ui-hint-rollover"
+												href="?m=invoiceedit&id={$item.docid}&action=edit&proforma=1"
+												onclick=$onclick
+												data_url="?m=number&id={$item.docid}"
+												icon_tip="pro forma invoice"}
+										{/if}
 									{/if}
 								{/if}
 								{if !$item.cancelled}

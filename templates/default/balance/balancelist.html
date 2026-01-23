@@ -253,6 +253,9 @@
 		</TD>
 		<TD class="text-right nobr">
 			{if $balance.docid}
+				{if !empty($balance.ksefhash)}
+					{hint icon="lock" url="?m=invoiceksefinfo&id={$balance.docid}" tooltip_class="lms-ui-ksef-qr-code"}
+				{/if}
 				{if $balance.doctype==$smarty.const.DOC_INVOICE}
 					{if !$balance.published || ConfigHelper::checkPrivilege('published_document_modification')}
 						{button type="link" icon="view" class="print-invoice lms-ui-hint-rollover"
