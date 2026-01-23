@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2026 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+use \Lms\KSeF\KSeF;
+
 class LMSHtmlInvoice extends LMSHtmlDocument
 {
     public function __construct($smarty)
@@ -34,6 +36,23 @@ class LMSHtmlInvoice extends LMSHtmlDocument
     public function Draw($data)
     {
         parent::Draw($data);
+
+        $ksef_offline_support = ConfigHelper::checkConfig('ksef.offline_support');
+
+        if (!empty($this->data['ksefenvironment'])
+            && ($ksef_offline_support || !empty($this->data['ksefnumber']) && !empty($this->data['ksefstatus']))) {
+            $this->smarty->assign(
+                'ksefurl',
+                KSeF::getQrCodeUrl([
+                    'environment' => $this->data['ksefenvironment'],
+                    'ten' => $this->data['division_ten'],
+                    'date' => $this->data['cdate'],
+                    'hash' => $this->data['ksefhash'],
+                ])
+            );
+            $this->smarty->assign('ksefnumber', empty($this->data['ksefnumber']) || empty($this->data['ksefstatus']) ? 'OFFLINE' : $this->data['ksefnumber']);
+        }
+
         $template_file = ConfigHelper::getConfig('invoices.template_file');
         if (isset($this->data['invoice'])) {
             $template_file = ConfigHelper::getConfig('invoices.cnote_template_file', $template_file);
@@ -41,9 +60,11 @@ class LMSHtmlInvoice extends LMSHtmlDocument
         if (!$this->smarty->templateExists('file:' . $template_file)) {
             $template_file = 'invoice' . DIRECTORY_SEPARATOR . $template_file;
         }
+
         $this->smarty->assign('type', $this->data['type']);
         $this->smarty->assign('duplicate', $this->data['type'] == DOC_ENTITY_DUPLICATE);
         $this->smarty->assign('invoice', $this->data);
+
         $this->contents .= $this->smarty->fetch('file:' . $template_file);
     }
 }

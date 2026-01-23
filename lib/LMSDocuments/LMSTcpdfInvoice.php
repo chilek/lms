@@ -40,8 +40,6 @@ class LMSTcpdfInvoice extends LMSInvoice
 
     public function __construct($title, $pagesize = 'A4', $orientation = 'portrait')
     {
-        ConfigHelper::setFilter($this->data['divisionid']);
-
         parent::__construct('LMSTcpdfBackend', $title, $pagesize, $orientation);
 
         $this->backend->setPDFVersion(ConfigHelper::getConfig('invoices.pdf_version', '1.7'));
@@ -1129,7 +1127,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         }
 
         $url = KSeF::getQrCodeUrl([
-            'environment' => $this->data['environment'],
+            'environment' => $this->data['ksefenvironment'],
             'ten' => $this->data['division_ten'],
             'date' => $this->data['cdate'],
             'hash' => $this->data['ksefhash'],

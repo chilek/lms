@@ -26,8 +26,18 @@
 <!--// $Id$ //-->
 <div{if !$invoice.last} style="page-break-after: always"{/if}>
 	<table width="100%" cellspacing="3">
+		<colgroup>
+			{if empty($ksefurl)}
+				<col style="width: 1%;">
+			{else}
+				<col style="width: 1%;">
+				<col style="width: 97%;">
+			{/if}
+			<col style="width: 1%;">
+			<col style="width: 1%;">
+		</colgroup>
 		<tr>
-			<td width="98%" class="hdf" valign="top">
+			<td class="hdf{if !empty($ksefurl)} ksef-invoice{/if}" valign="top" nowrap>
 				{number number=$invoice.number template=$invoice.template time=$invoice.cdate customerid=$invoice.customerid assign=number}
 				{if $invoice.invoice && $invoice.doctype == $smarty.const.DOC_CNOTE}
 					{number number=$invoice.invoice.number template=$invoice.invoice.template time=$invoice.invoice.cdate customerid=$invoice.invoice.customerid assign=number_ref}
@@ -59,7 +69,16 @@
 					</span>
 				{/if}
 			</td>
-			<td width="1%" nowrap align="right" valign="top" class="sdr">
+			{if !empty($ksefurl)}
+				<td class="ksef-invoice-info">
+					<a href="{$ksefurl}" target="_blank">
+						{barcode type="QRCODE" text=$ksefurl show_text=false transliterate=false width=-2 height=-2}
+					</a>
+					<br>
+					<strong>{$ksefnumber}</strong>
+				</td>
+			{/if}
+			<td nowrap align="right" valign="top" class="sdr">
 				{trans("Draw-up date:")}
 				<br>
 				{if !ConfigHelper::checkConfig('invoices.hide_sale_date')}
@@ -82,7 +101,7 @@
 					{trans("Payment type:")}
 				{/if}
 			</td>
-			<td width="1%" nowrap align="left" valign="top" class="sdr">
+			<td nowrap align="left" valign="top" class="sdr">
 				{$invoice.cdate|date_format:"Y-m-d"}
 				{if $invoice.division_cplace != ""}
 					, {$invoice.division_cplace}
@@ -118,7 +137,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td colspan="3" align="center" width="100%">
+			<td colspan="{if empty($ksefurl)}3{else}4{/if}" align="center">
 				&nbsp;
 			</td>
 		</tr>
