@@ -36,9 +36,12 @@ class LMSTcpdfInvoice extends LMSInvoice
     private $transfer_form_on_separate_page = false;
 
     private $jpk_flags;
+    private $ksef_offline_support;
 
     public function __construct($title, $pagesize = 'A4', $orientation = 'portrait')
     {
+        ConfigHelper::setFilter($this->data['divisionid']);
+
         parent::__construct('LMSTcpdfBackend', $title, $pagesize, $orientation);
 
         $this->backend->setPDFVersion(ConfigHelper::getConfig('invoices.pdf_version', '1.7'));
@@ -59,6 +62,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->backend->SetAutoPageBreak(true, trim($margin_bottom));
 
         $this->jpk_flags = ConfigHelper::checkConfig('invoices.jpk_flags');
+        $this->ksef_offline_support = ConfigHelper::checkConfig('ksef.offline_support');
     }
 
     protected function Table()
@@ -1119,7 +1123,8 @@ class LMSTcpdfInvoice extends LMSInvoice
 
     public function invoice_ksef_qr_code()
     {
-        if (empty($this->data['ksefenvironment'])) {
+        if (empty($this->data['ksefenvironment'])
+            || !$this->ksef_offline_support && (empty($this->data['ksefnumber']) || empty($this->data['ksefstatus']))) {
             return;
         }
 
@@ -1140,7 +1145,18 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->backend->write2DBarcode($url, 'QRCODE,M', 0, $y, 20, 20, $style);
 
         $this->backend->SetFont(null, '', 5);
-        $this->backend->writeHTMLCell('', '', '', $y + 21, $this->data['ksefnumber'], 0, 1, 0, true, 'C');
+        $this->backend->writeHTMLCell(
+            '',
+            '',
+            '',
+            $y + 21,
+            empty($this->data['ksefnumber']) || empty($this->data['ksefstatus']) ? 'OFFLINE' : $this->data['ksefnumber'],
+            0,
+            1,
+            0,
+            true,
+            'C'
+        );
     }
 
     public function invoice_body_standard()

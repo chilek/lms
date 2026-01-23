@@ -2702,6 +2702,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.extid,
 				(CASE WHEN cc.type IS NULL THEN 0 ELSE 1 END) AS balance_on_documents,
                 kd.ksefnumber,
+                kd.status AS ksefstatus,
                 kd.hash AS ksefhash,
                 kbs.environment AS ksefenvironment
 				FROM documents d'
@@ -2715,14 +2716,17 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				LEFT JOIN vaddresses a ON d.recipient_address_id = a.id
 				LEFT JOIN vaddresses a2 ON d.post_address_id = a2.id
 				LEFT JOIN countries cp ON (d.post_address_id IS NOT NULL AND cp.id = a2.country_id) OR (d.post_address_id IS NULL AND cp.id = c.post_countryid)
-				LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status = ?
+				LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
 				LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
 				WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)',
                 array(
                     DOC_FLAG_SPLIT_PAYMENT,
                     DOC_FLAG_NET_ACCOUNT,
                     CCONSENT_BALANCE_ON_DOCUMENTS,
-                    200,
+                    [
+                        200,
+                        0,
+                    ],
                     $invoiceid,
                     DOC_INVOICE,
                     DOC_CNOTE,
