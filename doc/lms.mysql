@@ -3252,7 +3252,7 @@ CREATE TABLE ksefdocuments (
     CONSTRAINT ksefdocuments_docid_fkey
         FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE RESTRICT ON UPDATE CASCADE,
     INDEX ksefdocuments_status_idx (status)
-) ENGINE=InnoDB
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
