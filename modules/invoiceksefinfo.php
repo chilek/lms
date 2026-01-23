@@ -53,7 +53,7 @@ if ($doc = $DB->GetRow(
             'url',
             KSeF::getQrCodeUrl([
                 'environment' => $doc['environment'],
-                'ten' => preg_replace('/[^0-9]/', '', $doc['div_ten']),
+                'ten' => $doc['div_ten'],
                 'date' => $doc['cdate'],
                 'hash' => $doc['hash'],
             ])

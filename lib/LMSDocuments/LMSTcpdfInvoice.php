@@ -1128,12 +1128,12 @@ class LMSTcpdfInvoice extends LMSInvoice
             return;
         }
 
-        $url = $this->data['ksefenvironment'] == KSeF::ENVIRONMENT_TEST
-            ? 'https://qr-test.ksef.mf.gov.pl/invoice'
-            : 'https://qr.ksef.mf.gov.pl/invoice';
-        $url .= '/' . preg_replace('/[^0-9]/', '', $this->data['division_ten'])
-            . '/' . date('d-m-Y', $this->data['cdate'])
-            . '/' . KSeF::base64Url($this->data['ksefhash']);
+        $url = KSeF::getQrCodeUrl([
+            'environment' => $this->data['environment'],
+            'ten' => $this->data['division_ten'],
+            'date' => $this->data['cdate'],
+            'hash' => $this->data['ksefhash'],
+        ]);
 
         $style['position'] = 'C';
 
