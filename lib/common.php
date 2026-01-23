@@ -780,7 +780,11 @@ function location_str($data)
         $location = '';
     }
 
-    $location .= empty($location) ? '' : ' ' . (isset($data['city_name']) ? $data['city_name'] : $data['location_city_name']);
+    if (!isset($data['city_name'])) {
+        $data['city_name'] = $data['location_city_name'];
+    }
+
+    $location .= empty($location) ? '' : ' ' . $data['city_name'];
 
     if ($data['location_flat']) {
         $h = ConfigHelper::getConfig('phpui.house_template', '%h/%f');
@@ -797,6 +801,8 @@ function location_str($data)
     if ($data['street_name']) {
         $street = (isset($data['street_type']) ? $data['street_type'] . ' ' : '') . $data['street_name'];
         $location .= ($location ? ', ' : '') . $street;
+    } else {
+        $location .= ($location ? ', ' : '') . $data['city_name'] . ' ';
     }
 
     if ($h) {
