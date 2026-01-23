@@ -797,7 +797,6 @@ class KSeF
             $footerXml .= "\t\t<Rejestry>" . PHP_EOL;
             $footerXml .= $registryXml;
             $footerXml .= "\t\t</Rejestry>" . PHP_EOL;
-
         }
 
         if (!empty($footerXml)) {
@@ -811,7 +810,8 @@ class KSeF
         return $xml;
     }
 
-    private function zipEntryOverheadBytes(string $filename): int {
+    private function zipEntryOverheadBytes(string $filename): int
+    {
         // Przybliżony narzut ZIP per entry (local header + central dir + name).
         return 160 + strlen($filename);
     }
@@ -819,7 +819,8 @@ class KSeF
     /**
      * Buduje ZIP z listy plików XML. Zwraca [zipBinary, zipBytes].
      */
-    public function makeZipBinaryFromFiles(array $files, int $idx, ?string $debugZipDir = null): array {
+    public function makeZipBinaryFromFiles(array $files, int $idx, ?string $debugZipDir = null): array
+    {
         if (!class_exists(\ZipArchive::class)) {
             throw new \RuntimeException('Brak klasy ZipArchive (ext-zip). Zainstaluj/aktywuj ext-zip.');
         }
@@ -879,7 +880,7 @@ class KSeF
      *   ...
      * ]
      */
-    function buildZipPackagesFromXmlDocuments(array $xmlDocuments, int $maxZipBytes, ?string $debugZipDir = null): array
+    public function buildZipPackagesFromXmlDocuments(array $xmlDocuments, int $maxZipBytes, ?string $debugZipDir = null): array
     {
         if ($maxZipBytes < 1024 * 1024) {
             throw new \RuntimeException('maxZipBytes jest podejrzanie mały (ustaw co najmniej kilka MB).');
