@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+use \Lms\KSeF\KSeF;
+
 // LMS Class - contains internal LMS database functions used
 // to fetch data like customer names, searching for mac's by ID, etc..
 
@@ -5172,6 +5174,8 @@ class LMS
 
     public function SendInvoices($docs, $type, $params)
     {
+        static $barcode = null;
+
         extract($params);
 
         if ($type == 'frontend') {
@@ -5275,6 +5279,44 @@ class LMS
 
             $all_accounts = implode(isset($mail_format) && $mail_format == 'text' ? "\n" : '<br>', $accounts);
 
+            $ksefOfflineSupport = ConfigHelper::checkConfig('ksef.offline_support');
+
+            if (!empty($doc['ksefnumber']) || $ksefOfflineSupport && !empty($doc['ksefhash']) && empty($doc['ksefstatus'])) {
+                if (strpos($body, '%ksef_url') !== false || strpos($body, '%ksef_qr_code') !== false) {
+                    $ksefUrl = KSeF::getQrCodeUrl([
+                        'ten' => $doc['kseften'],
+                        'date' => $doc['cdate'],
+                        'hash' => $doc['ksefhash'],
+                        'environment' => $doc['ksefenvironment'],
+                    ]);
+                } else {
+                    $ksefUrl = '';
+                }
+
+                if (strpos($body, '%ksef_qr_code') !== false) {
+                    if (!isset($barcode)) {
+                        $barcode = new \Com\Tecnick\Barcode\Barcode();
+                    }
+                    $bobj = $barcode->getBarcodeObj('QRCODE', $ksefUrl, -3, -3, 'black', [0, 0, 0, 0]);
+
+                    $ksefQrCode = '<img src="data:image/png;base64,' . base64_encode($bobj->getPngData()) . '">';
+                } else {
+                    $ksefQrCode = '';
+                }
+            } else {
+                $ksefUrl = $ksefQrCode = '';
+            }
+
+            if (empty($doc['ksefnumber'])) {
+                if ($ksefOfflineSupport && !empty($doc['ksefhash']) && empty($doc['ksefstatus'])) {
+                    $ksefNumber = 'OFFLINE';
+                } else {
+                    $ksefNumber = '';
+                }
+            } else {
+                $ksefNumber = $doc['ksefnumber'];
+            }
+
             $body = str_replace(
                 array(
                     '%invoice',
@@ -5300,6 +5342,9 @@ class LMS
                     '%cdate-y',
                     '%cdate-m',
                     '%cdate-d',
+                    '%ksef_number',
+                    '%ksef_url',
+                    '%ksef_qr_code',
 
                 ),
                 array(
@@ -5325,6 +5370,9 @@ class LMS
                     date('Y', $document['document']['cdate']),
                     date('m', $document['document']['cdate']),
                     date('d', $document['document']['cdate']),
+                    $ksefNumber,
+                    $ksefUrl,
+                    $ksefQrCode,
                 ),
                 $body
             );

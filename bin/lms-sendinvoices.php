@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2024 LMS Developers
+ *  (C) Copyright 2001-2026 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -48,6 +48,9 @@ $script_parameters = array(
     'customer-status:' => null,
     'omit-free-days' => null,
     'type:' => null,
+    'ksef' => null,
+    'ksef-offline' => null,
+    'without-ksef' => null,
 );
 
 $script_help = <<<EOF
@@ -80,7 +83,16 @@ $script_help = <<<EOF
                                 send invoices of customers with specified status only
     --omit-free-days            dont send invoices on free days
     --type=<invoice|cnote|dnote>
-                                send only documents with specified type
+                                send only documents with specified type;
+    --ksef
+                                send only documents which have assigned KSeF number
+                                (ONLINE KSeF documents);
+    --ksef-offline
+                                send only documents which already sent to KSeF
+                                but dont have assigned KSeF number (OFFLINE KSeF documents);
+    --without-ksef
+                                send only documents which dont have assigned KSeF number
+                                nor awaiting for KSeF handling;
 EOF;
 
 require_once('script-options.php');
@@ -107,6 +119,10 @@ if ($archive && $backup) {
 }
 
 $no_attachments = isset($options['no-attachments']);
+
+$ksef = isset($options['ksef']);
+$withoutKsef = isset($options['without-ksef']);
+$ksefOffline = isset($options['ksef-offline']);
 
 if (!$no_attachments) {
     // Initialize templates engine (must be before locale settings)
@@ -379,23 +395,33 @@ if (!$no_attachments) {
 }
 
 if ($backup || $archive) {
-    $args = array(
+    $args = [
+        [
+            200,
+            0,
+        ],
         CCONSENT_BALANCE_ON_DOCUMENTS,
+        CCONSENT_KSEF_INVOICE,
         DOC_INVOICE,
         DOC_INVOICE_PRO,
         DOC_CNOTE,
         DOC_DNOTE,
-    );
+    ];
 } else {
-    $args = array(
+    $args = [
+        [
+            200,
+            0,
+        ],
         CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_DISABLED,
         CONTACT_EMAIL | CONTACT_INVOICES,
         CCONSENT_BALANCE_ON_DOCUMENTS,
+        CCONSENT_KSEF_INVOICE,
         DOC_INVOICE,
         DOC_INVOICE_PRO,
         DOC_CNOTE,
         DOC_DNOTE,
-    );
+    ];
 
     if ($omit_free_days) {
         $yesterday = strtotime('yesterday', $current_time);
@@ -469,13 +495,21 @@ $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid,
             d.type AS doctype, d.archived,
             d.senddate, n.template" . ($backup || $archive ? '' : ', m.email') . ",
             (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type < 0) THEN 1 ELSE 0 END) AS documentreferenced,
-            (CASE WHEN cc.type IS NULL THEN 0 ELSE 1 END) AS balance_on_documents
+            (CASE WHEN cc.type IS NULL THEN 0 ELSE 1 END) AS balance_on_documents,
+        kd.ksefnumber,
+        kd.status AS ksefstatus,
+        kd.hash AS ksefhash,
+        kbs.environment AS ksefenvironment,
+        d.div_ten AS kseften
     FROM documents d
+    LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
+    LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
     LEFT JOIN customeraddressview c ON c.id = d.customerid"
     . ($backup || $archive ? '' : " JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
         FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id")
     . " LEFT JOIN numberplans n ON n.id = d.numberplanid
     LEFT JOIN customerconsents cc ON cc.customerid = c.id AND cc.type = ?
+    LEFT JOIN customerconsents cc2 ON cc2.customerid = c.id AND cc2.type = ?
     WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
         . $customer_status_condition
         . ($type ? ' AND d.type = ' . $type : '')
@@ -484,6 +518,9 @@ $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid,
         . ($archive ? " AND d.archived = 0" : '') . "
         AND d.cdate >= $daystart AND d.cdate <= $dayend"
         . ($customergroups ?: '')
+        . ($ksef ? ' AND kd.status = ' . 200 : '')
+        . ($ksefOffline ? ' AND kd.status IS NOT NULL AND kd.status = ' . 0 : '')
+        . ($withoutKsef ? ' AND kd.status IS NULL AND (c.type = ' . CCTYPES_PRIVATE . ' AND cc2.id IS NULL)' : '')
     . " ORDER BY d.number" . (!empty($part_size) ? " LIMIT $part_size OFFSET $part_offset" : '');
 $docs = $DB->GetAll($query, $args);
 
