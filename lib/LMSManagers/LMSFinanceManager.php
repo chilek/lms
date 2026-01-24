@@ -2642,6 +2642,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.currency, d.currencyvalue, d.memo,
 				d.extid,
 				(CASE WHEN cc.type IS NULL THEN 0 ELSE 1 END) AS balance_on_documents,
+				(CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS ksefinvoice,
                 kd.ksefnumber,
                 kd.status AS ksefstatus,
                 kd.hash AS ksefhash,
@@ -2651,6 +2652,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 . ' LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				LEFT JOIN vusers u ON u.id = d.userid
 				LEFT JOIN customerconsents cc ON cc.customerid = d.customerid AND cc.type = ?
+				LEFT JOIN customerconsents cc2 ON cc2.customerid = d.customerid AND cc2.type = ?
 				LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
 				LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
 				WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)',
@@ -2658,6 +2660,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     DOC_FLAG_SPLIT_PAYMENT,
                     DOC_FLAG_NET_ACCOUNT,
                     CCONSENT_BALANCE_ON_DOCUMENTS,
+                    CCONSENT_KSEF_INVOICE,
                     [
                         200,
                         0,
@@ -2718,6 +2721,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.currency, d.currencyvalue, d.memo,
 				d.extid,
 				(CASE WHEN cc.type IS NULL THEN 0 ELSE 1 END) AS balance_on_documents,
+				(CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS ksefinvoice,
                 kd.ksefnumber,
                 kd.status AS ksefstatus,
                 kd.hash AS ksefhash,
@@ -2727,6 +2731,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 . ' LEFT JOIN customeraddressview c ON (c.id = d.customerid)
 				LEFT JOIN vusers u ON u.id = d.userid
 				LEFT JOIN customerconsents cc ON cc.customerid = d.customerid AND cc.type = ?
+				LEFT JOIN customerconsents cc2 ON cc2.customerid = d.customerid AND cc2.type = ?
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN countries cdv ON cdv.id = d.div_countryid
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
@@ -2740,6 +2745,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     DOC_FLAG_SPLIT_PAYMENT,
                     DOC_FLAG_NET_ACCOUNT,
                     CCONSENT_BALANCE_ON_DOCUMENTS,
+                    CCONSENT_KSEF_INVOICE,
                     [
                         200,
                         0,

@@ -295,6 +295,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             a.house AS rec_house, a.flat AS rec_flat, a.country_id AS rec_country_id,
             c.pin AS customerpin, c.divisionid AS current_divisionid,
             c.street, c.building, c.apartment,
+            c.type AS ctype,
             (CASE WHEN d.post_address_id IS NULL THEN c.post_street ELSE a2.street END) AS post_street,
             (CASE WHEN d.post_address_id IS NULL THEN c.post_building ELSE a2.house END) AS post_building,
             (CASE WHEN d.post_address_id IS NULL THEN c.post_apartment ELSE a2.flat END) AS post_apartment,
@@ -676,7 +677,9 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                     if ($jpk_vat_version >= 6) {
                         if (!empty($invoice['ksefnumber'])) {
                             $jpk_data .= "\t\t<NrKSeF>" . $invoice['ksefnumber'] . "</NrKSeF>\n";
-                        } elseif (!empty($invoice['ksefhash']) && empty($invoice['ksefstatus'])) {
+                        } elseif (!empty($invoice['ksefhash']) && empty($invoice['ksefstatus'])
+                            || $invoice['ctype'] == CTYPES_COMPANY
+                            || !empty($invoice['ksefinvoice'])) {
                             $jpk_data .= "\t\t<OFF>1</OFF>\n";
                         } else {
                             $jpk_data .= "\t\t<BFK>1</BFK>\n";
