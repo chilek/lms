@@ -585,7 +585,7 @@ class KSeF
         if ($invoice['type'] == DOC_CNOTE) {
             $xml .= "\t\t<RodzajFaktury>KOR</RodzajFaktury>" . PHP_EOL;
             if (!empty($invoice['reason'])) {
-                $xml .= "\t\t<PrzyczynaKorekty></PrzyczynaKorekty>" . PHP_EOL;
+                $xml .= "\t\t<PrzyczynaKorekty>" . htmlspecialchars($invoice['reason']) . "</PrzyczynaKorekty>" . PHP_EOL;
             }
             $xml .= "\t\t<TypKorekty>2</TypKorekty>" . PHP_EOL;
 
