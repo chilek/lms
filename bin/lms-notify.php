@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2024 LMS Developers
+ *  (C) Copyright 2001-2026 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,6 +24,8 @@
  *
  *  $Id$
  */
+
+use \Lms\KSeF\KSeF;
 
 $script_parameters = array(
     'debug' => 'd',
@@ -47,6 +49,9 @@ $script_parameters = array(
     'customerid:' => null,
     'division:' => null,
     'omit-free-days' => null,
+    'ksef' => null,
+    'ksef-offline' => null,
+    'without-ksef' => null,
 );
 
 $script_help = <<<EOF
@@ -86,7 +91,16 @@ $script_help = <<<EOF
     --division=<shortname>
                                 limit notifications to customers which belong to specified
                                 division
-    --omit-free-days            dont send notifications on free days
+    --omit-free-days            dont send notifications on free days;
+    --ksef
+                                send only documents which have assigned KSeF number
+                                (ONLINE KSeF documents)
+    --ksef-offline
+                                send only documents which already sent to KSeF
+                                but dont have assigned KSeF number (OFFLINE KSeF documents);
+    --without-ksef
+                                send only documents which dont have assigned KSeF number
+                                nor awaiting for KSeF handling;
 EOF;
 
 require_once('script-options.php');
@@ -132,6 +146,10 @@ if (empty($fakedate)) {
 }
 
 $omit_free_days = isset($options['omit-free-days']);
+
+$ksef = isset($options['ksef']);
+$withoutKsef = isset($options['without-ksef']);
+$ksefOffline = isset($options['ksef-offline']);
 
 [$year, $month, $day] = explode('/', date('Y/n/j', $current_time));
 
@@ -670,7 +688,8 @@ function parse_customer_data($data, $format, $row)
         $config_section = null,
         $barcode = null,
         $financial_history_reverse_order = null,
-        $financial_history_item_description_format = null;
+        $financial_history_item_description_format = null,
+        $ksefOfflineSupport = null;
 
     global $LMS;
 
@@ -703,6 +722,10 @@ function parse_customer_data($data, $format, $row)
                 '%comment'
             )
         );
+    }
+
+    if (!isset($ksefOfflineSupport)) {
+        $ksefOfflineSupport = ConfigHelper::checkConfig('ksef.offline_support');
     }
 
     if (!isset($row['totalbalance'])) {
@@ -751,6 +774,42 @@ function parse_customer_data($data, $format, $row)
 
     $all_accounts = implode($format == 'text' ? "\n" : '<br>', $accounts);
 
+    if (!empty($row['ksefnumber']) || $ksefOfflineSupport && !empty($row['ksefhash']) && empty($row['ksefstatus'])) {
+        if (strpos($data, '%ksef_url') !== false || strpos($data, '%ksef_qr_code') !== false) {
+            $ksefUrl = KSeF::getQrCodeUrl([
+                'ten' => $row['kseften'],
+                'date' => $row['cdate'],
+                'hash' => $row['ksefhash'],
+                'environment' => $row['ksefenvironment'],
+            ]);
+        } else {
+            $ksefUrl = '';
+        }
+
+        if (strpos($data, '%ksef_qr_code') !== false) {
+            if (!isset($barcode)) {
+                $barcode = new \Com\Tecnick\Barcode\Barcode();
+            }
+            $bobj = $barcode->getBarcodeObj('QRCODE', $ksefUrl, -3, -3, 'black', [0, 0, 0, 0]);
+
+            $ksefQrCode = '<img src="data:image/png;base64,' . base64_encode($bobj->getPngData()) . '">';
+        } else {
+            $ksefQrCode = '';
+        }
+    } else {
+        $ksefUrl = $ksefQrCode = '';
+    }
+
+    if (empty($row['ksefnumber'])) {
+        if ($ksefOfflineSupport && !empty($row['ksefhash']) && empty($row['ksefstatus'])) {
+            $ksefNumber = 'OFFLINE';
+        } else {
+            $ksefNumber = '';
+        }
+    } else {
+        $ksefNumber = $row['ksefnumber'];
+    }
+
     $data = str_replace(
         array(
             '%bankaccount',
@@ -772,7 +831,9 @@ function parse_customer_data($data, $format, $row)
             '%totalsaldo',
             '%pin',
             '%cid',
-
+            '%ksef_number',
+            '%ksef_url',
+            '%ksef_qr_code',
         ),
         array(
             $all_accounts,
@@ -794,6 +855,9 @@ function parse_customer_data($data, $format, $row)
             moneyf($row['totalbalance']),
             $row['pin'],
             $row['id'],
+            $ksefNumber,
+            $ksefUrl,
+            $ksefQrCode,
         ),
         $data
     );
@@ -2459,9 +2523,17 @@ if (empty($types) || in_array('invoices', $types)) {
             COALESCE(ca.balance, 0) AS balance,
             COALESCE(ca.balance, 0) AS totalbalance,
             v.value, v.currency,
-            c.invoicenotice
+            c.invoicenotice,
+            kd.ksefnumber,
+            kd.status AS ksefstatus,
+            kd.hash AS ksefhash,
+            kbs.environment AS ksefenvironment,
+            d.div_ten AS kseften
         FROM documents d
+        LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
+        LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
         JOIN customeraddressview c ON (c.id = d.customerid)
+        LEFT JOIN customerconsents cc2 ON cc2.customerid = c.id AND cc2.type = ?
         LEFT JOIN divisions ON divisions.id = c.divisionid
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
             FROM customercontacts
@@ -2497,8 +2569,16 @@ if (empty($types) || in_array('invoices', $types)) {
             . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
             . ($notifications['invoices']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: '')
+            . ($ksef ? ' AND kd.status = ' . 200 : '')
+            . ($ksefOffline ? ' AND kd.status IS NOT NULL AND kd.status = ' . 0 : '')
+            . ($withoutKsef ? ' AND kd.status IS NULL AND (c.type = ' . CCTYPES_PRIVATE . ' AND cc2.id IS NULL)' : '')
         . ' ORDER BY d.id',
-        array(
+        [
+            [
+                200,
+                0,
+            ],
+            CCONSENT_KSEF_INVOICE,
             CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS,
             $checked_phone_contact_flags,
@@ -2509,8 +2589,8 @@ if (empty($types) || in_array('invoices', $types)) {
             DOC_INVOICE_PRO,
             DOC_CNOTE,
             $daystart,
-            $dayend
-        )
+            $dayend,
+        ]
     );
 
     if (!empty($documents)) {
@@ -2574,7 +2654,7 @@ if (empty($types) || in_array('invoices', $types)) {
             }
 
             if (!$quiet) {
-                if (in_array('mail', $channels) && !empty($recipient_mails) && empty($row['invoicenotice'])) {
+                if (in_array('mail', $channels) && !empty($recipient_mails) && (empty($row['invoicenotice']) || $ignore_customer_consents)) {
                     if ($idx >= $start_idx && $idx <= $end_idx) {
                         foreach ($recipient_mails as $recipient_mail) {
                             printf(
@@ -2625,7 +2705,7 @@ if (empty($types) || in_array('invoices', $types)) {
             }
 
             if (!$debug) {
-                if (in_array('mail', $channels) && !empty($recipient_mails) && empty($row['invoicenotice'])) {
+                if (in_array('mail', $channels) && !empty($recipient_mails) && (empty($row['invoicenotice']) || $ignore_customer_consents)) {
                     if ($idx >= $start_idx && $idx <= $end_idx) {
                         $msgid = create_message(
                             MSG_MAIL,
