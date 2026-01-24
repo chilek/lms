@@ -2641,22 +2641,32 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.post_address_id,
 				d.currency, d.currencyvalue, d.memo,
 				d.extid,
-				(CASE WHEN cc.type IS NULL THEN 0 ELSE 1 END) AS balance_on_documents
+				(CASE WHEN cc.type IS NULL THEN 0 ELSE 1 END) AS balance_on_documents,
+                kd.ksefnumber,
+                kd.status AS ksefstatus,
+                kd.hash AS ksefhash,
+                kbs.environment AS ksefenvironment
 				FROM documents d'
                 . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
                 . ' LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				LEFT JOIN vusers u ON u.id = d.userid
 				LEFT JOIN customerconsents cc ON cc.customerid = d.customerid AND cc.type = ?
+				LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
+				LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
 				WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)',
-                array(
+                [
                     DOC_FLAG_SPLIT_PAYMENT,
                     DOC_FLAG_NET_ACCOUNT,
                     CCONSENT_BALANCE_ON_DOCUMENTS,
+                    [
+                        200,
+                        0,
+                    ],
                     $invoiceid,
                     DOC_INVOICE,
                     DOC_CNOTE,
-                    DOC_INVOICE_PRO
-                )
+                    DOC_INVOICE_PRO,
+                ]
             );
         } else {
             $result = $this->db->GetRow(
@@ -2726,7 +2736,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
 				LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
 				WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)',
-                array(
+                [
                     DOC_FLAG_SPLIT_PAYMENT,
                     DOC_FLAG_NET_ACCOUNT,
                     CCONSENT_BALANCE_ON_DOCUMENTS,
@@ -2737,8 +2747,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $invoiceid,
                     DOC_INVOICE,
                     DOC_CNOTE,
-                    DOC_INVOICE_PRO
-                )
+                    DOC_INVOICE_PRO,
+                ]
             );
         }
 

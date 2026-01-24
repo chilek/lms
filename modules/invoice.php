@@ -380,12 +380,14 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             //$jpk_vat_version = $datefrom < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
             // if current date is earlier than 1 I 2018
             //$jpk_vat_version = time() < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
-            if ($dateto < mktime(0, 0, 0, 10, 1, 2020)) {
+            if ($dateto < strtotime('2020/10/01')) {
                 $jpk_vat_version = 3;
-            } elseif ($dateto < mktime(0, 0, 0, 1, 1, 2022)) {
+            } elseif ($dateto < strtotime('2022/01/01')) {
                 $jpk_vat_version = 4;
-            } else {
+            } elseif ($dateto < strtotime('2026/02/01')) {
                 $jpk_vat_version = 5;
+            } else {
+                $jpk_vat_version = 6;
             }
         } else {
             // if date from for report is earlier than 2 XII 2019
@@ -411,6 +413,12 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 case 5:
                     $jpk_data .= "<JPK xmlns=\"http://crd.gov.pl/wzor/2021/12/27/11148/\""
                         . " xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2021/06/08/eD/DefinicjeTypy/\">\n";
+                    break;
+                case 6:
+                    $jpk_data .= "<JPK xmlns=\"http://crd.gov.pl/wzor/2025/12/19/14090/\""
+                        . " xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2022/09/13/eD/DefinicjeTypy/\""
+                        . " xmlns:kk=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2023/09/06/eD/KodyKrajow/\""
+                        . " xmlns:kus=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2022/01/05/eD/KodyUrzedowSkarbowych/\">\n";
                     break;
             }
         }
@@ -477,9 +485,12 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 if ($jpk_vat_version == 4) {
                     $jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_V7M (1)\" wersjaSchemy=\"1-2E\">JPK_VAT</KodFormularza>\n";
                     $jpk_data .= "\t\t<WariantFormularza>1</WariantFormularza>\n";
-                } else {
+                } elseif ($jpk_vat_version == 5) {
                     $jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_V7M (2)\" wersjaSchemy=\"1-0E\">JPK_VAT</KodFormularza>\n";
                     $jpk_data .= "\t\t<WariantFormularza>2</WariantFormularza>\n";
+                } else {
+                    $jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_V7M (3)\" wersjaSchemy=\"1-0E\">JPK_VAT</KodFormularza>\n";
+                    $jpk_data .= "\t\t<WariantFormularza>3</WariantFormularza>\n";
                 }
                 $jpk_data .= "\t\t<DataWytworzeniaJPK>" . date('Y-m-d') . 'T' . date('H:i:s') . "</DataWytworzeniaJPK>\n";
                 $jpk_data .= "\t\t<NazwaSystemu>LMS</NazwaSystemu>\n";
@@ -664,6 +675,16 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t\t<DataSprzedazy>" . date('Y-m-d', $invoice['sdate']) . "</DataSprzedazy>\n";
 
                 if ($jpk_vat_version >= 4) {
+                    if ($jpk_vat_version >= 6) {
+                        if (!empty($invoice['ksefnumber'])) {
+                            $jpk_data .= "\t\t<NrKSeF>" . $invoice['ksefnumber'] . "</NrKSeF>\n";
+                        } elseif (!empty($invoice['ksefhash']) && empty($invoice['ksefstatus'])) {
+                            $jpk_data .= "\t\t<OFF>1</OFF>\n";
+                        } else {
+                            $jpk_data .= "\t\t<BFK>1</BFK>\n";
+                        }
+                    }
+
                     if (!empty($invoice['flags'][DOC_FLAG_RECEIPT])) {
                         $jpk_data .= "\t\t<TypDokumentu>FP</TypDokumentu>\n";
                     }
@@ -1387,9 +1408,12 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 if ($jpk_vat_version == 4) {
                     $declaration .= "\t\t\t<KodFormularzaDekl kodSystemowy=\"VAT-7 (21)\" kodPodatku=\"VAT\" rodzajZobowiazania=\"Z\" wersjaSchemy=\"1-2E\">VAT-7</KodFormularzaDekl>\n";
                     $declaration .= "\t\t\t<WariantFormularzaDekl>21</WariantFormularzaDekl>\n";
-                } else {
+                } elseif ($jpk_vat_version == 5) {
                     $declaration .= "\t\t\t<KodFormularzaDekl kodSystemowy=\"VAT-7 (22)\" kodPodatku=\"VAT\" rodzajZobowiazania=\"Z\" wersjaSchemy=\"1-0E\">VAT-7</KodFormularzaDekl>\n";
                     $declaration .= "\t\t\t<WariantFormularzaDekl>22</WariantFormularzaDekl>\n";
+                } else {
+                    $declaration .= "\t\t\t<KodFormularzaDekl kodSystemowy=\"VAT-7 (23)\" kodPodatku=\"VAT\" rodzajZobowiazania=\"Z\" wersjaSchemy=\"1-0E\">VAT-7</KodFormularzaDekl>\n";
+                    $declaration .= "\t\t\t<WariantFormularzaDekl>23</WariantFormularzaDekl>\n";
                 }
                 $declaration .= "\t\t</Naglowek>\n";
                 $declaration .= "\t\t<PozycjeSzczegolowe>\n";
