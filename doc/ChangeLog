@@ -1166,6 +1166,10 @@ version 28-git (????-??-??):
   - enhancement: KSeF: configuration variable 'ksef.offline_suport' with 'false' as default value controls
     if QR code is presented on invoices already sent to KSeF for which there is no KSeF number assigned
     yet [chilan]
+  - enhancement: KSeF: bin/lms-sendinvoices.php: %ksef_number, %ksef_url and %ksef_qr_code symbols
+    support [chilan]
+  - enhancement: KSeF: bin/lms-sendinvoices.php: --ksef, --ksef-offline, --without-ksef launch
+    options/parameters support [chilan]
 
 version 27.0 (2021-08-20):
 
