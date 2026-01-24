@@ -1172,6 +1172,7 @@ version 28-git (????-??-??):
     options/parameters support [chilan]
   - enhancement: KSeF: invoice send from webui: %ksef_number, %ksef_url and %ksef_qr_code symbols
     support [chilan]
+  - enhancement: KSeF: JPK V7M (3) 1-0E support added [chilan]
 
 version 27.0 (2021-08-20):
 
