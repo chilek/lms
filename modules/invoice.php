@@ -416,9 +416,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                     break;
                 case 6:
                     $jpk_data .= "<JPK xmlns=\"http://crd.gov.pl/wzor/2025/12/19/14090/\""
-                        . " xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2022/09/13/eD/DefinicjeTypy/\""
-                        . " xmlns:kk=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2023/09/06/eD/KodyKrajow/\""
-                        . " xmlns:kus=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2022/01/05/eD/KodyUrzedowSkarbowych/\">\n";
+                        . " xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2022/09/13/eD/DefinicjeTypy/\">\n";
                     break;
             }
         }
