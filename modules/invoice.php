@@ -478,7 +478,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t\t<DataWytworzeniaJPK>" . date('Y-m-d') . 'T' . date('H:i:s') . "</DataWytworzeniaJPK>\n";
                 $jpk_data .= "\t\t<DataOd>" . date('Y-m-d', $datefrom) . "</DataOd>\n";
                 $jpk_data .= "\t\t<DataDo>" . date('Y-m-d', $dateto) . "</DataDo>\n";
-                $jpk_data .= "\t\t<NazwaSystemu>LMS</NazwaSystemu>\n";
+                $jpk_data .= "\t\t<NazwaSystemu>" . LMS::SOFTWARE_NAME . " " . LMS::SOFTWARE_VERSION . "</NazwaSystemu>\n";
             } else {
                 if ($jpk_vat_version == 4) {
                     $jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_V7M (1)\" wersjaSchemy=\"1-2E\">JPK_VAT</KodFormularza>\n";
@@ -491,7 +491,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                     $jpk_data .= "\t\t<WariantFormularza>3</WariantFormularza>\n";
                 }
                 $jpk_data .= "\t\t<DataWytworzeniaJPK>" . date('Y-m-d') . 'T' . date('H:i:s') . "</DataWytworzeniaJPK>\n";
-                $jpk_data .= "\t\t<NazwaSystemu>LMS</NazwaSystemu>\n";
+                $jpk_data .= "\t\t<NazwaSystemu>" . LMS::SOFTWARE_NAME . " " . LMS::SOFTWARE_VERSION . "</NazwaSystemu>\n";
                 $jpk_data .= "\t\t<CelZlozenia poz=\"P_7\">1</CelZlozenia>\n";
                 $jpk_data .= "\t\t<KodUrzedu>" . (!empty($division['tax_office_code']) ? $division['tax_office_code']
                         : ConfigHelper::getConfig('jpk.tax_office_code', '', true)) . "</KodUrzedu>\n";
