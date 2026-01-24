@@ -58,9 +58,16 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
         $docs = $DB->GetAll(
             "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctype, d.archived, n.template, m.email,
                 d.divisionid,
-                (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type < 0) THEN 1 ELSE 0 END) AS documentreferenced
-			FROM documents d
-			LEFT JOIN customers c ON c.id = d.customerid
+                (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type < 0) THEN 1 ELSE 0 END) AS documentreferenced,
+                kd.ksefnumber,
+                kd.status AS ksefstatus,
+                kd.hash AS ksefhash,
+                kbs.environment AS ksefenvironment,
+                d.div_ten AS kseften
+            FROM documents d
+            LEFT JOIN customers c ON c.id = d.customerid
+            LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
+            LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
 			JOIN (
 			    SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
 				FROM customercontacts
@@ -70,13 +77,17 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
 			LEFT JOIN numberplans n ON n.id = d.numberplanid
 			WHERE d.type IN (?, ?, ?, ?) AND d.id IN (" . implode(',', $ids) . ")
 			ORDER BY d.number",
-            array(
+            [
+                [
+                    200,
+                    0,
+                ],
                 CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_EMAIL | CONTACT_INVOICES,
                 DOC_INVOICE,
                 DOC_CNOTE,
                 DOC_DNOTE,
                 DOC_INVOICE_PRO
-            )
+            ]
         );
 
         if (!empty($docs)) {
