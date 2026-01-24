@@ -1170,6 +1170,8 @@ version 28-git (????-??-??):
     support [chilan]
   - enhancement: KSeF: bin/lms-sendinvoices.php: --ksef, --ksef-offline, --without-ksef launch
     options/parameters support [chilan]
+  - enhancement: KSeF: invoice send from webui: %ksef_number, %ksef_url and %ksef_qr_code symbols
+    support [chilan]
 
 version 27.0 (2021-08-20):
 
