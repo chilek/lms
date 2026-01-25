@@ -494,8 +494,11 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t\t<DataWytworzeniaJPK>" . date('Y-m-d') . 'T' . date('H:i:s') . "</DataWytworzeniaJPK>\n";
                 $jpk_data .= "\t\t<NazwaSystemu>" . LMS::SOFTWARE_NAME . " " . LMS::SOFTWARE_VERSION . "</NazwaSystemu>\n";
                 $jpk_data .= "\t\t<CelZlozenia poz=\"P_7\">1</CelZlozenia>\n";
-                $jpk_data .= "\t\t<KodUrzedu>" . (!empty($division['tax_office_code']) ? $division['tax_office_code']
-                        : ConfigHelper::getConfig('jpk.tax_office_code', '', true)) . "</KodUrzedu>\n";
+                $jpk_data .= "\t\t<KodUrzedu>"
+                    . (!empty($division['tax_office_code'])
+                        ? $division['tax_office_code']
+                        : ConfigHelper::getConfig('jpk.tax_office_code', '', true))
+                    . "</KodUrzedu>\n";
                 $jpk_data .= "\t\t<Rok>" . date('Y', $datefrom) . "</Rok>\n";
                 $jpk_data .= "\t\t<Miesiac>" . date('m', $datefrom) . "</Miesiac>\n";
             }
@@ -679,7 +682,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                             $jpk_data .= "\t\t<NrKSeF>" . $invoice['ksefnumber'] . "</NrKSeF>\n";
                         } elseif (!empty($invoice['ksefhash']) && empty($invoice['ksefstatus'])
                             || $invoice['ctype'] == CTYPES_COMPANY
-                            || !empty($invoice['ksefinvoice'])) {
+                            || !empty($invoice['ksef_invoice_consent'])) {
                             $jpk_data .= "\t\t<OFF>1</OFF>\n";
                         } else {
                             $jpk_data .= "\t\t<BFK>1</BFK>\n";

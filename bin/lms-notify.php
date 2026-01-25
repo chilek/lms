@@ -2523,16 +2523,18 @@ if (empty($types) || in_array('invoices', $types)) {
             COALESCE(ca.balance, 0) AS balance,
             COALESCE(ca.balance, 0) AS totalbalance,
             v.value, v.currency,
+            c.type AS ctype,
             c.invoicenotice,
+            (CASE WHEN cc2.id IS NULL THEN 0 ELSE 1 END) AS ksef_invoice_consent,
             kd.ksefnumber,
             kd.status AS ksefstatus,
             kd.hash AS ksefhash,
             kbs.environment AS ksefenvironment,
             d.div_ten AS kseften
         FROM documents d
+        JOIN customeraddressview c ON c.id = d.customerid
         LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
         LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
-        JOIN customeraddressview c ON (c.id = d.customerid)
         LEFT JOIN customerconsents cc2 ON cc2.customerid = c.id AND cc2.type = ?
         LEFT JOIN divisions ON divisions.id = c.divisionid
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
