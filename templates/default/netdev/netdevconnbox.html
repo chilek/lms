@@ -81,8 +81,23 @@
 								{icon name="netdev" class="fa-fw"}
 								<a name="{$netdevice.id}">
 									<strong>
-										{$netdevice.name} {if $netdevice.producer}/ {$netdevice.producer}{/if}
+										{$netdevice.name}
+										{if $netdevice.producer}
+											/ {$netdevice.producer}
+											{if !empty($netdevice.model)}
+												/ {$netdevice.model}
+											{/if}
+										{/if}
 									</strong>
+									<br>
+									{icon name="empty" class="fa-fw"}
+									{if !empty($netdevice.devtypename)}{strip}
+										(
+										{trans($netdevice.devtypename)}
+										&nbsp;-&nbsp;
+										{if empty($netdevice.devtypepassive)}{trans("<!netdevmodeltype>active")}{else}{trans("<!netdevmodeltype>passive")}{/if}
+										)
+									{/strip}{/if}
 								</a>
 							</div>
 							<div class="lms-ui-tab-table-column netnode" data-target-url="?m=netnodeinfo&id={$netdevice.netnodeid}">
@@ -223,13 +238,20 @@
 									<SELECT NAME="netdev" id="srcnetdev" {tip class="lms-ui-advanced-select-test" trigger="link" text="Select from list device for connection"}
 										onchange="get_radio_sectors_for_netdev()" form="connect-form">
 										{foreach $restnetdevlist as $dev}
-											{$netdevname = $dev.name}
-											{if $dev.producer}
-												{$netdevname = $netdevname|cat:" / "|cat:$dev.producer}
-											{/if}
-											{if $dev.location}
-												{$netdevname = $netdevname|cat:" ("|cat:$dev.location|cat:")"}
-											{/if}
+											{capture assign="netdevname"}{strip}
+												{$dev.name}
+												{if $dev.producer}
+													&nbsp;(
+													{$dev.producer}
+													{if $dev.model}
+														&nbsp;{$dev.model}
+													{/if}
+													)
+												{/if}
+												{if $dev.location}
+													/ {$dev.location}
+												{/if}
+											{/strip}{/capture}
 											<option value="{$dev.id}"{if $connect.id == $dev.id} selected{/if}>{strip}
 												{if !empty($dev.netnodeid)}
 													[{$dev.netnodename|escape}]

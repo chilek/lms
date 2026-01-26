@@ -154,10 +154,14 @@
 			<br>
 			{if $netdev.producer}
 				{icon name="type"}
-				{if $netdev.devtypename}
-					{trans($netdev.devtypename)}
-				{/if}
 				{$netdev.producer} {if $netdev.model}/ {$netdev.model}{/if}
+				{if !empty($netdev.devtype)}
+					({strip}
+						{trans($netdev.devtypename)}
+						&nbsp;-&nbsp;
+						{if empty($netdev.devtypepassive)}{trans("<!netdevmodeltype>active")}{else}{trans("<!netdevmodeltype>passive")}{/if}
+					{/strip})
+				{/if}
 			{else}
 				<br>
 			{/if}
