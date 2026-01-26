@@ -775,7 +775,7 @@ function parse_customer_data($data, $format, $row)
     $all_accounts = implode($format == 'text' ? "\n" : '<br>', $accounts);
 
     if (!empty($row['ksefnumber']) || $ksefOfflineSupport && !empty($row['ksefhash']) && empty($row['ksefstatus'])) {
-        if (strpos($data, '%ksef_url') !== false || strpos($data, '%ksef_qr_code') !== false) {
+        if (strpos($data, '%ksef-url') !== false || strpos($data, '%ksef-qr-code') !== false) {
             $ksefUrl = KSeF::getQrCodeUrl([
                 'ten' => $row['kseften'],
                 'date' => $row['cdate'],
@@ -786,7 +786,7 @@ function parse_customer_data($data, $format, $row)
             $ksefUrl = '';
         }
 
-        if (strpos($data, '%ksef_qr_code') !== false) {
+        if (strpos($data, '%ksef-qr-code') !== false) {
             if (!isset($barcode)) {
                 $barcode = new \Com\Tecnick\Barcode\Barcode();
             }
@@ -831,9 +831,9 @@ function parse_customer_data($data, $format, $row)
             '%totalsaldo',
             '%pin',
             '%cid',
-            '%ksef_number',
-            '%ksef_url',
-            '%ksef_qr_code',
+            '%ksef-number',
+            '%ksef-url',
+            '%ksef-qr-code',
         ),
         array(
             $all_accounts,

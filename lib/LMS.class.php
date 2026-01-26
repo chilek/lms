@@ -5282,7 +5282,7 @@ class LMS
             $ksefOfflineSupport = ConfigHelper::checkConfig('ksef.offline_support');
 
             if (!empty($doc['ksefnumber']) || $ksefOfflineSupport && !empty($doc['ksefhash']) && empty($doc['ksefstatus'])) {
-                if (strpos($body, '%ksef_url') !== false || strpos($body, '%ksef_qr_code') !== false) {
+                if (strpos($body, '%ksef-url') !== false || strpos($body, '%ksef-qr-code') !== false) {
                     $ksefUrl = KSeF::getQrCodeUrl([
                         'ten' => $doc['kseften'],
                         'date' => $doc['cdate'],
@@ -5293,7 +5293,7 @@ class LMS
                     $ksefUrl = '';
                 }
 
-                if (strpos($body, '%ksef_qr_code') !== false) {
+                if (strpos($body, '%ksef-qr-code') !== false) {
                     if (!isset($barcode)) {
                         $barcode = new \Com\Tecnick\Barcode\Barcode();
                     }
@@ -5342,9 +5342,9 @@ class LMS
                     '%cdate-y',
                     '%cdate-m',
                     '%cdate-d',
-                    '%ksef_number',
-                    '%ksef_url',
-                    '%ksef_qr_code',
+                    '%ksef-number',
+                    '%ksef-url',
+                    '%ksef-qr-code',
 
                 ),
                 array(
