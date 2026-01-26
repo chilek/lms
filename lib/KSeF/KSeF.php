@@ -1075,4 +1075,155 @@ class KSeF
 
         return self::CERTIFICATE_FORMAT_PKCS12;
     }
+
+    /** ECDSA sign (SHA-256) -> DER signature bytes (ASN.1 DER SEQUENCE of r,s) */
+    private static function ecdsaSignDerSha256(string $rawDataToSign, \OpenSSLAsymmetricKey $privateKey): string
+    {
+        $der = '';
+        if (!openssl_sign($rawDataToSign, $der, $privateKey, OPENSSL_ALGO_SHA256)) {
+            throw new \RuntimeException("openssl_sign() failed: " . (openssl_error_string() ?: 'unknown error'));
+        }
+        return $der;
+    }
+
+    /**
+     * Parse DER ECDSA signature (SEQUENCE { INTEGER r; INTEGER s })
+     * Returns [rBytes, sBytes] as unsigned big-endian (variable length, no leading sign byte).
+     */
+    private static function derEcdsaToRS(string $derSig): array
+    {
+        $i = 0;
+
+        $readByte = function () use (&$derSig, &$i): int {
+            if ($i >= strlen($derSig)) {
+                throw new \RuntimeException("DER parse: unexpected EOF");
+            }
+            return ord($derSig[$i++]);
+        };
+
+        $readLen = function () use ($readByte): int {
+            $len = $readByte();
+            if (($len & 0x80) === 0) {
+                return $len;
+            }
+            $num = $len & 0x7F;
+            if ($num === 0 || $num > 4) {
+                throw new \RuntimeException("DER parse: invalid length");
+            }
+            $val = 0;
+            for ($k = 0; $k < $num; $k++) {
+                $val = ($val << 8) | $readByte();
+            }
+            return $val;
+        };
+
+        $expectTag = function (int $tag) use ($readByte): void {
+            $t = $readByte();
+            if ($t !== $tag) {
+                throw new \RuntimeException(sprintf("DER parse: expected tag 0x%02X, got 0x%02X", $tag, $t));
+            }
+        };
+
+        // SEQUENCE
+        $expectTag(0x30);
+        $seqLen = $readLen();
+        if ($seqLen > (strlen($derSig) - $i)) {
+            throw new \RuntimeException("DER parse: sequence length out of range");
+        }
+
+        // INTEGER r
+        $expectTag(0x02);
+        $rLen = $readLen();
+        $r = substr($derSig, $i, $rLen);
+        $i += $rLen;
+
+        // INTEGER s
+        $expectTag(0x02);
+        $sLen = $readLen();
+        $s = substr($derSig, $i, $sLen);
+        $i += $sLen;
+
+        // Drop possible leading 0x00 that forces a positive INTEGER
+        $r = ltrim($r, "\x00");
+        $s = ltrim($s, "\x00");
+
+        if ($r === '' || $s === '') {
+            throw new \RuntimeException("DER parse: empty r or s");
+        }
+
+        return [$r, $s];
+    }
+
+    /** DER -> IEEE P1363 fixed field concat (R||S). For P-256 => 32+32 bytes. */
+    private static function derEcdsaToP1363(string $derSig, int $fieldBytes = 32): string
+    {
+        [$r, $s] = self::derEcdsaToRS($derSig);
+
+        if (strlen($r) > $fieldBytes || strlen($s) > $fieldBytes) {
+            throw new \RuntimeException("r or s longer than {$fieldBytes} bytes; wrong curve?");
+        }
+
+        $rFixed = str_pad($r, $fieldBytes, "\x00", STR_PAD_LEFT);
+        $sFixed = str_pad($s, $fieldBytes, "\x00", STR_PAD_LEFT);
+
+        return $rFixed . $sFixed; // 64 bytes for P-256
+    }
+
+    public static function getCertificateQrCodeUrl(array $params): string
+    {
+        static $certs = [];
+
+        $divisionId = $params['divisionid'];
+
+        if (!isset($certs[$divisionId])) {
+            $certFile = \ConfigHelper::getConfig('ksef.certificate');
+            $certFile = preg_replace('/\.[^.]+$/', '', $certFile);
+            $certFile .= '-offline.pem';
+
+            $cert = file_get_contents($certFile);
+
+            $privKey = openssl_pkey_get_private($cert);
+            if ($privKey === false) {
+                throw new \RuntimeException("openssl_pkey_get_private() failed: " . (openssl_error_string() ?: 'unknown error'));
+            }
+
+            $privKeyDetails = openssl_pkey_get_details($privKey);
+            if (!$privKeyDetails || ($privKeyDetails['type'] ?? null) !== OPENSSL_KEYTYPE_EC) {
+                throw new \RuntimeException("Private key is not EC (ECDSA).");
+            }
+
+            $pubKey = openssl_x509_read($cert);
+            if ($pubKey === false) {
+                throw new \RuntimeException("openssl_x509_read() failed: " . (openssl_error_string() ?: 'unknown error'));
+            }
+
+            $pubKeyDetails = openssl_x509_parse($pubKey);
+            if (!$pubKeyDetails) {
+                throw new \RuntimeException("openssl_x509_parse() failed: " . (openssl_error_string() ?: 'unknown error'));
+            }
+
+            $certs[$divisionId] = [
+                'serialNumber' => $pubKeyDetails['serialNumberHex'],
+                'privKey' => $privKey,
+            ];
+        }
+
+        extract($certs[$divisionId]);
+
+        $ten = preg_replace('/[^0-9]/', '', $params['ten']);
+
+        $url = isset($params['environment']) && $params['environment'] == self::ENVIRONMENT_TEST
+            ? 'qr-test.ksef.mf.gov.pl/certificate/Nip'
+            : 'qr.ksef.mf.gov.pl/certificate/Nip';
+        $url .= '/' . $ten . '/' . $ten
+            . '/' . $serialNumber
+            . '/' . self::base64Url($params['hash']);
+
+        $signature = self::ecdsaSignDerSha256($url, $privKey);
+
+        // IEEE P1363 (R||S) formatted signature
+        $p1363 = self::derEcdsaToP1363($signature, 32);
+
+        return 'https://' . $url . '/' . self::base64Url(base64_encode($p1363));
+    }
 }
