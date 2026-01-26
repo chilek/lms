@@ -277,15 +277,27 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 } elseif (isset($_GET['fetchallinvoices'])) {
     $layout['pagetitle'] = trans('Invoices');
 
+    $now = strtotime('now');
+    $ksefDeploymentDate = strtotime('2026/04/01');
+
     $datefrom = intval($_GET['from']);
     $dateto = intval($_GET['to']);
     $einvoice = isset($_GET['einvoice']) ? intval($_GET['einvoice']) : 0;
     $related_documents = isset($_GET['related-documents']);
     $transfer_forms = !empty($_GET['transfer-forms']);
 
+    if (empty($_GET['divisionid'])) {
+        $divisionIds = [];
+    } elseif (is_array($_GET['divisionid'])) {
+        $divisionIds = Utils::filterIntegers($_GET['divisionid']);
+    } elseif (intval($_GET['divisionid'])) {
+        $divisionIds = [intval($_GET['divisionid'])];
+    }
+
     $documents = $DB->GetAllByKey(
         'SELECT
             d.id, d.type,
+            d.divisionid,
             cn.name AS country, n.template,
             a.state AS rec_state, a.state_id AS rec_state_id,
             a.city as rec_city, a.city_id AS rec_city_id,
@@ -326,7 +338,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         WHERE d.cdate >= ? AND d.cdate <= ? AND (d.type = ? OR d.type = ?) AND d.cancelled = 0'
         .($einvoice ? ' AND d.customerid IN (SELECT id FROM customeraddressview WHERE ' . ($einvoice == 1 ? 'einvoice = 1' : 'einvoice = 0 OR einvoice IS NULL') . ')' : '')
         .($ctype !=  -1 ? ' AND d.customerid IN (SELECT id FROM customers WHERE type = ' . intval($ctype) .')' : '')
-        .(empty($_GET['divisionid']) ? '' : ' AND d.divisionid ' . (is_array($_GET['divisionid']) ? ' IN (' . implode(',', $_GET['divisionid']) . ')' : ' = ' . intval($_GET['divisionid'])))
+        . (empty($divisionIds) ? '' : ' AND d.divisionid IN (' . implode(',', $divisionIds) . ')')
         .(!empty($_GET['customerid']) ? ' AND d.customerid = '.intval($_GET['customerid']) : '')
         .(!empty($_GET['numberplanid']) ? ' AND d.numberplanid' . (is_array($_GET['numberplanid'])
                 ? ' IN (' . implode(',', Utils::filterIntegers($_GET['numberplanid'])) . ')'
@@ -365,6 +377,49 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
     }
     $ids = array_keys($documents);
 
+    if (empty($divisionIds)) {
+        $firstDocument = reset($documents);
+        $divisionId = $firstDocument['divisionid'];
+    } else {
+        $divisionId = reset($divisionIds);
+    }
+
+    $division = $DB->GetRow(
+        "SELECT
+                d.name,
+                shortname,
+                d.email,
+                d.firstname,
+                d.lastname,
+                d.birthdate,
+                d.naturalperson,
+                va.address,
+                va.city,
+                va.zip,
+                va.countryid,
+                ten,
+                regon,
+                account,
+                inv_header,
+                inv_footer,
+                inv_author,
+                inv_cplace,
+                va.location_city,
+                va.location_street,
+                tax_office_code,
+                lb.name AS borough,
+                ld.name AS district,
+                ls.name AS state
+            FROM vdivisions d
+            JOIN vaddresses va ON va.id = d.address_id
+            LEFT JOIN location_cities lc ON lc.id = va.location_city
+            LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
+            LEFT JOIN location_districts ld ON ld.id = lb.districtid
+            LEFT JOIN location_states ls ON ls.id = ld.stateid
+            WHERE d.id = ?",
+        array($divisionId)
+    );
+
     $which = isset($_GET['which']) ? intval($_GET['which']) : 0;
     if ($which & DOC_ENTITY_DUPLICATE) {
         $duplicate_date = isset($_GET['duplicate-date']) ? intval($_GET['duplicate-date']) : 0;
@@ -381,11 +436,15 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             //$jpk_vat_version = $datefrom < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
             // if current date is earlier than 1 I 2018
             //$jpk_vat_version = time() < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
-            if ($dateto < strtotime('2020/10/01')) {
+
+            //$boundaryDate = $dateto;
+            $boundaryDate = $now;
+
+            if ($boundaryDate < strtotime('2020/10/01')) {
                 $jpk_vat_version = 3;
-            } elseif ($dateto < strtotime('2022/01/01')) {
+            } elseif ($boundaryDate < strtotime('2022/01/01')) {
                 $jpk_vat_version = 4;
-            } elseif ($dateto < strtotime('2026/02/01')) {
+            } elseif ($boundaryDate < strtotime('2026/02/01')) {
                 $jpk_vat_version = 5;
             } else {
                 $jpk_vat_version = 6;
@@ -421,44 +480,6 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                     break;
             }
         }
-
-        $divisionid = is_array($_GET['divisionid']) ? reset($_GET['divisionid']) : intval($_GET['divisionid']);
-
-        $division = $DB->GetRow(
-            "SELECT
-                d.name,
-                shortname,
-                d.email,
-                d.firstname,
-                d.lastname,
-                d.birthdate,
-                d.naturalperson,
-                va.address,
-                va.city,
-                va.zip,
-                va.countryid,
-                ten,
-                regon,
-                account,
-                inv_header,
-                inv_footer,
-                inv_author,
-                inv_cplace,
-                va.location_city,
-                va.location_street,
-                tax_office_code,
-                lb.name AS borough,
-                ld.name AS district,
-                ls.name AS state
-            FROM vdivisions d
-            JOIN vaddresses va ON va.id = d.address_id
-            LEFT JOIN location_cities lc ON lc.id = va.location_city
-            LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
-            LEFT JOIN location_districts ld ON ld.id = lb.districtid
-            LEFT JOIN location_states ls ON ls.id = ld.stateid
-            WHERE d.id = ?",
-            array($divisionid)
-        );
 
         if ($jpk_type == 'vat' && $jpk_vat_version == 4) {
             if (empty($division['email'])) {
@@ -678,7 +699,9 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 
                 if ($jpk_vat_version >= 4) {
                     if ($jpk_vat_version >= 6) {
-                        if (!empty($invoice['ksefnumber'])) {
+                        if ($now < $ksefDeploymentDate) {
+                            $jpk_data .= "\t\t<BFK>1</BFK>\n";
+                        } elseif (!empty($invoice['ksefnumber'])) {
                             $jpk_data .= "\t\t<NrKSeF>" . $invoice['ksefnumber'] . "</NrKSeF>\n";
                         } elseif (!empty($invoice['ksefhash']) && empty($invoice['ksefstatus'])
                             || $invoice['ctype'] == CTYPES_COMPANY
