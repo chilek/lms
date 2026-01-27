@@ -71,11 +71,20 @@
 			</td>
 			{if !empty($ksefurl)}
 				<td class="ksef-invoice-info">
-					<a href="{$ksefurl}" target="_blank">
-						{barcode type="QRCODE" text=$ksefurl show_text=false transliterate=false width=-2 height=-2}
-					</a>
-					<br>
-					<strong>{$ksefnumber}</strong>
+					<div>
+						<a href="{$ksefurl}" target="_blank">
+							{barcode type="QRCODE" text=$ksefurl show_text=false transliterate=false width=-2 height=-2}
+						</a>
+						<strong>{$ksefnumber}</strong>
+					</div>
+					{if !empty($ksefcertificateurl)}
+						<div>
+							<a href="{$ksefcertificateurl}" target="_blank">
+								{barcode type="QRCODE" text=$ksefcertificateurl show_text=false transliterate=false width=-2 height=-2}
+							</a>
+							<strong>CERTYFIKAT</strong>
+						</div>
+					{/if}
 				</td>
 			{/if}
 			<td nowrap align="right" valign="top" class="sdr">

@@ -50,6 +50,19 @@ class LMSHtmlInvoice extends LMSHtmlDocument
                     'hash' => $this->data['ksefhash'],
                 ])
             );
+
+            if (empty($this->data['ksefnumber']) || empty($this->data['ksefstatus'])) {
+                $this->smarty->assign(
+                    'ksefcertificateurl',
+                    KSeF::getCertificateQrCodeUrl([
+                        'environment' => $this->data['ksefenvironment'],
+                        'ten' => $this->data['division_ten'],
+                        'divisionid' => $this->data['divisionid'],
+                        'hash' => $this->data['ksefhash'],
+                    ])
+                );
+            }
+
             $this->smarty->assign('ksefnumber', empty($this->data['ksefnumber']) || empty($this->data['ksefstatus']) ? 'OFFLINE' : $this->data['ksefnumber']);
         }
 

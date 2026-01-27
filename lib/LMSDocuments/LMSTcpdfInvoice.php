@@ -1140,21 +1140,60 @@ class LMSTcpdfInvoice extends LMSInvoice
             $y += 3;
         }
 
-        $this->backend->write2DBarcode($url, 'QRCODE,M', 0, $y, 20, 20, $style);
-
         $this->backend->SetFont(null, '', 5);
-        $this->backend->writeHTMLCell(
-            '',
-            '',
-            '',
-            $y + 21,
-            empty($this->data['ksefnumber']) || empty($this->data['ksefstatus']) ? 'OFFLINE' : $this->data['ksefnumber'],
-            0,
-            1,
-            0,
-            true,
-            'C'
-        );
+
+        if (empty($this->data['ksefnumber']) || empty($this->data['ksefstatus'])) {
+            $pageWidth = $this->backend->getPageWidth();
+
+            $certificateUrl = KSeF::getCertificateQrCodeUrl([
+                'environment' => $this->data['ksefenvironment'],
+                'ten' => $this->data['division_ten'],
+                'divisionid' => $this->data['divisionid'],
+                'hash' => $this->data['ksefhash'],
+            ]);
+
+            $this->backend->write2DBarcode($url, 'QRCODE,M', ($pageWidth / 2) - 21, $y, 20, 20);
+            $this->backend->writeHTMLCell(
+                20,
+                '',
+                ($pageWidth / 2) - 21,
+                $y + 21,
+                'OFFLINE',
+                0,
+                1,
+                0,
+                true,
+                'C'
+            );
+
+            $this->backend->write2DBarcode($certificateUrl, 'QRCODE,M', ($pageWidth / 2) + 1, $y, 20, 20);
+            $this->backend->writeHTMLCell(
+                20,
+                '',
+                ($pageWidth / 2) + 1,
+                $y + 21,
+                'CERTYFIKAT',
+                0,
+                1,
+                0,
+                true,
+                'C'
+            );
+        } else {
+            $this->backend->write2DBarcode($url, 'QRCODE,M', 0, $y, 20, 20, $style);
+            $this->backend->writeHTMLCell(
+                '',
+                '',
+                '',
+                $y + 21,
+                $this->data['ksefnumber'],
+                0,
+                1,
+                0,
+                true,
+                'C'
+            );
+        }
     }
 
     public function invoice_body_standard()
