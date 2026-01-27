@@ -200,17 +200,17 @@
 			.list-paragraphs {
 				padding-inline-start: 0;
 				list-style: none;
-				counter-reset: item;
+				counter-reset: paragraph;
 				padding-left: 0;
 			}
 
 			.list-paragraphs > li {
 				list-style-type: none;
-				counter-increment: item;
+				counter-increment: paragraph;
 			}
 
 			.paragraph::before {
-				content: "\00A7 " counter(item);
+				content: "\00A7 " counter(paragraph);
 				min-width: 2ch;
 			}
 
@@ -224,6 +224,21 @@
 
 			.list-numbers {
 				padding-inline-start: 2em;
+			}
+
+			.list-paragraph-dot-numbers {
+				padding-inline-start: 1.5em;
+				list-style: none;
+				counter-reset: paragraph-dot-numbers;
+			}
+
+			.list-paragraph-dot-numbers > li {
+				counter-increment: paragraph-dot-numbers;
+				padding-inline-start: 0.4em;
+			}
+
+			.list-paragraph-dot-numbers > li::marker {
+				content: counter(paragraph) "." counter(paragraph-dot-numbers) ".";
 			}
 
 			.list-letters {
