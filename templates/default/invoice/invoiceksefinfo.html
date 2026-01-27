@@ -2,13 +2,23 @@
 
 	.invoice-ksef-info {
 		display: flex;
+	}
+
+	.invoice-ksef-info > * {
+		display: flex;
 		flex-direction: column;
 		align-items: center;
 	}
 
-	.invoice-ksef-info > * {
-		padding-top: 3px;
-		padding-bottom: 3px;
+	.invoice-ksef-info > * > * {
+		padding-right: 0.5em;
+		padding-left: 0.5em;
+		padding-top: 0.25em;
+		padding-bottom: 0.25em;
+	}
+
+	.invoice-ksef-info img {
+		max-width: 100px;
 	}
 
 	.lms-ui-ksef-qr-code {
@@ -21,6 +31,7 @@
 		font-weight: bold;
 		font-size: 8pt;
 		white-space: nowrap;
+		padding-top: 0;
 	}
 
 	.ksef-info {
@@ -37,16 +48,28 @@
 </style>
 <div class="invoice-ksef-info">
 	{if $invoice.status == 200}
-		<a href="{$url}" target="_blank">
-			{barcode type="QRCODE" text=$url show_text=false transliterate=false width=-3 height=-3 tooltip_class="lms-ui-ksef-qrcode"}
-		</a>
-		<span class="ksef-number">{$invoice.ksefnumber}</span>
-	{elseif empty($invoice.status)}
-		{if ConfigHelper::checkConfig('ksef.offline_support')}
+		<div>
 			<a href="{$url}" target="_blank">
 				{barcode type="QRCODE" text=$url show_text=false transliterate=false width=-3 height=-3 tooltip_class="lms-ui-ksef-qrcode"}
 			</a>
-			<span class="ksef-number">OFFLINE</span>
+			<span class="ksef-number">{$invoice.ksefnumber}</span>
+		</div>
+	{elseif empty($invoice.status)}
+		{if ConfigHelper::checkConfig('ksef.offline_support')}
+			<div>
+				<a href="{$url}" target="_blank">
+					{barcode type="QRCODE" text=$url show_text=false transliterate=false width=-3 height=-3 tooltip_class="lms-ui-ksef-qrcode"}
+				</a>
+				<span class="ksef-number">OFFLINE</span>
+			</div>
+			{if !empty($certificateurl)}
+				<div>
+					<a href="{$url}" target="_blank">
+						{barcode type="QRCODE" text=$certificateurl show_text=false transliterate=false width=-3 height=-3 tooltip_class="lms-ui-ksef-qrcode"}
+					</a>
+					<span class="ksef-number">CERTYFIKAT</span>
+				</div>
+			{/if}
 		{else}
 			<span class="ksef-info">
 				{t

@@ -31,6 +31,7 @@ if ($doc = $DB->GetRow(
         d.fullnumber,
         d.cdate,
         d.div_ten,
+        d.divisionid,
         kbs.environment,
         kbs.ksefnumber AS ksefbatchsessionnumber,
         kbs.lastupdate AS ksefbatchsessionlastupdate,
@@ -58,6 +59,18 @@ if ($doc = $DB->GetRow(
                 'hash' => $doc['hash'],
             ])
         );
+        if (empty($doc['ksefnumber']) || empty($doc['ksefstatus'])) {
+            $SMARTY->assign(
+                'certificateurl',
+                KSeF::getCertificateQrCodeUrl([
+                    'environment' => $doc['environment'],
+                    'ten' => $doc['div_ten'],
+                    'divisionid' => $doc['divisionid'],
+                    'hash' => $doc['hash'],
+                ])
+            );
+        }
+
         $SMARTY->assign('invoice', $doc);
         $SMARTY->display('invoice/invoiceksefinfo.html');
 }
