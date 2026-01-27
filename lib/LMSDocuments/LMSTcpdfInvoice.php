@@ -1143,20 +1143,24 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->backend->SetFont(null, '', 5);
 
         if (empty($this->data['ksefnumber']) || empty($this->data['ksefstatus'])) {
-            $pageWidth = $this->backend->getPageWidth();
-
             $certificateUrl = KSeF::getCertificateQrCodeUrl([
                 'environment' => $this->data['ksefenvironment'],
                 'ten' => $this->data['division_ten'],
                 'divisionid' => $this->data['divisionid'],
                 'hash' => $this->data['ksefhash'],
             ]);
+        } else {
+            $certificateUrl = null;
+        }
 
-            $this->backend->write2DBarcode($url, 'QRCODE,M', ($pageWidth / 2) - 21, $y, 20, 20);
+        if (!empty($certificateUrl)) {
+            $pageWidth = $this->backend->getPageWidth();
+
+            $this->backend->write2DBarcode($url, 'QRCODE,M', ($pageWidth / 2) - 23, $y, 20, 20);
             $this->backend->writeHTMLCell(
                 20,
                 '',
-                ($pageWidth / 2) - 21,
+                ($pageWidth / 2) - 23,
                 $y + 21,
                 'OFFLINE',
                 0,
@@ -1166,11 +1170,11 @@ class LMSTcpdfInvoice extends LMSInvoice
                 'C'
             );
 
-            $this->backend->write2DBarcode($certificateUrl, 'QRCODE,M', ($pageWidth / 2) + 1, $y, 20, 20);
+            $this->backend->write2DBarcode($certificateUrl, 'QRCODE,M', ($pageWidth / 2) + 3, $y, 20, 20);
             $this->backend->writeHTMLCell(
                 20,
                 '',
-                ($pageWidth / 2) + 1,
+                ($pageWidth / 2) + 3,
                 $y + 21,
                 'CERTYFIKAT',
                 0,
@@ -1186,7 +1190,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                 '',
                 '',
                 $y + 21,
-                $this->data['ksefnumber'],
+                empty($this->data['ksefnumber']) || empty($this->data['ksefstatus']) ? 'OFFLINE' : $this->data['ksefnumber'],
                 0,
                 1,
                 0,

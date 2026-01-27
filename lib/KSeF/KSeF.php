@@ -1180,6 +1180,10 @@ class KSeF
             $certFile = preg_replace('/\.[^.]+$/', '', $certFile);
             $certFile .= '-offline.pem';
 
+            if (!is_readable($certFile)) {
+                return '';
+            }
+
             $cert = file_get_contents($certFile);
 
             $privKey = openssl_pkey_get_private($cert);
