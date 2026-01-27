@@ -241,6 +241,39 @@
 				content: counter(paragraph) "." counter(paragraph-dot-numbers) ".";
 			}
 
+			.list-roman-numbers {
+				list-style: none;
+				counter-reset: roman-numbers;
+			}
+
+			.list-roman-numbers > li {
+				counter-increment: roman-numbers;
+			}
+
+			.list-roman-numbers > li::marker {
+				content: counter(roman-numbers, upper-roman) ". ";
+			}
+
+			.list-roman-numbers.upper > li::marker {
+				content: counter(roman-numbers, upper-roman) ". ";
+			}
+
+			.list-roman-numbers.upper.brackets > li::marker {
+				content: counter(roman-numbers, upper-roman) ") ";
+			}
+
+			.list-roman-numbers.brackets > li::marker {
+				content: counter(roman-numbers, upper-roman) ") ";
+			}
+
+			.list-roman-numbers.lower > li::marker {
+				content: counter(roman-numbers, lower-roman) ". ";
+			}
+
+			.list-roman-numbers.lower.brackets > li::marker {
+				content: counter(roman-numbers, lower-roman) ") ";
+			}
+
 			.list-letters {
 				padding-inline-start: 1.5em;
 				list-style: none;
