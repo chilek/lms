@@ -43,6 +43,7 @@ $notification_options_by_division_ids = array(
         'notification_sms_body' => ConfigHelper::getConfig('rt.notification_sms_body', ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body')),
     ),
 );
+$notification_options_by_config_sections = array();
 
 $userid = Auth::GetCurrentUser();
 $block_ticket_close_with_open_events = ConfigHelper::checkConfig('rt.block_ticket_close_with_open_events', ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events'));
@@ -186,38 +187,54 @@ if (isset($_POST['message'])) {
             0 => $smtp_options,
             $divisionid => $smtp_options,
         );
+        $smtp_options_by_config_sections = array();
 
         $notification_options_by_division_ids[$divisionid] = $notification_options_by_division_ids[0];
         extract($notification_options_by_division_ids[0]);
 
         $ticket_divisionid = $divisionid;
 
+        $configSectionName = '';
+
         foreach ($tickets as $ticketid) {
+            $queue = $LMS->GetQueueByTicketId($ticketid);
+            if ($message['queueid'] != -100 && $message['queueid'] != $queue['id']) {
+                $queue = $LMS->GetQueue($message['queueid'], true);
+            }
+
+            if (empty($queue['uiconfigsection'])) {
+                $newConfigSectionName = '';
+            } else {
+                $newConfigSectionName = 'rt-' . $queue['uiconfigsection'];
+            }
+
             $new_ticket_divisionid = $LMS->getDivisionIdByTicketId($ticketid);
 
             if (empty($new_ticket_divisionid)) {
                 $smtp_options = $smtp_options_by_division_ids[0];
 
                 extract($notification_options_by_division_ids[0]);
-            } elseif ($new_ticket_divisionid != $ticket_divisionid) {
-                $ticket_divisionid = $new_ticket_divisionid;
+            } else {
+                if ($new_ticket_divisionid != $ticket_divisionid) {
+                    $ticket_divisionid = $new_ticket_divisionid;
 
-                if (!isset($smtp_options_by_division_ids[$ticket_divisionid])) {
-                    ConfigHelper::setFilter($ticket_divisionid, Auth::GetCurrentUser());
+                    if (!isset($smtp_options_by_division_ids[$ticket_divisionid])) {
+                        ConfigHelper::setFilter($ticket_divisionid, Auth::GetCurrentUser());
 
-                    $smtp_options_by_division_ids[$ticket_divisionid] = $LMS->GetRTSmtpOptions();
+                        $smtp_options_by_division_ids[$ticket_divisionid] = $LMS->GetRTSmtpOptions();
 
-                    $notification_options_by_division_ids[$ticket_divisionid] = array(
-                        'notification_sender_name' => ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name')),
-                        'customer_notification_mail_subject' => ConfigHelper::getConfig('rt.customer_notification_mail_subject', ConfigHelper::getConfig('phpui.helpdesk_customer_notification_mail_subject', '[RT#%tid] %subject')),
-                        'new_message_preserve_no_owner' => ConfigHelper::checkConfig('rt.new_message_preserve_no_owner'),
-                        'notification_customerinfo' => ConfigHelper::checkConfig('rt.notification_customerinfo', ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')),
-                        'notification_mail_body_customerinfo_format' => ConfigHelper::getConfig('rt.notification_mail_body_customerinfo_format', ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body')),
-                        'notification_sms_body_customerinfo_format' => ConfigHelper::getConfig('rt.notification_sms_body_customerinfo_format', ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body')),
-                        'notification_mail_subject' => ConfigHelper::getConfig('rt.notification_mail_subject', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject')),
-                        'notification_mail_body' => ConfigHelper::getConfig('rt.notification_mail_body', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body')),
-                        'notification_sms_body' => ConfigHelper::getConfig('rt.notification_sms_body', ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body')),
-                    );
+                        $notification_options_by_division_ids[$ticket_divisionid] = array(
+                            'notification_sender_name' => ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name')),
+                            'customer_notification_mail_subject' => ConfigHelper::getConfig('rt.customer_notification_mail_subject', ConfigHelper::getConfig('phpui.helpdesk_customer_notification_mail_subject', '[RT#%tid] %subject')),
+                            'new_message_preserve_no_owner' => ConfigHelper::checkConfig('rt.new_message_preserve_no_owner'),
+                            'notification_customerinfo' => ConfigHelper::checkConfig('rt.notification_customerinfo', ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')),
+                            'notification_mail_body_customerinfo_format' => ConfigHelper::getConfig('rt.notification_mail_body_customerinfo_format', ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body')),
+                            'notification_sms_body_customerinfo_format' => ConfigHelper::getConfig('rt.notification_sms_body_customerinfo_format', ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body')),
+                            'notification_mail_subject' => ConfigHelper::getConfig('rt.notification_mail_subject', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject')),
+                            'notification_mail_body' => ConfigHelper::getConfig('rt.notification_mail_body', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body')),
+                            'notification_sms_body' => ConfigHelper::getConfig('rt.notification_sms_body', ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body')),
+                        );
+                    }
                 }
 
                 $smtp_options = $smtp_options_by_division_ids[$ticket_divisionid];
@@ -225,9 +242,36 @@ if (isset($_POST['message'])) {
                 extract($notification_options_by_division_ids[$ticket_divisionid]);
             }
 
-            $queue = $LMS->GetQueueByTicketId($ticketid);
-            if ($message['queueid'] != -100 && $message['queueid'] != $queue['id']) {
-                $queue = $LMS->GetQueue($message['queueid'], true);
+            if ($configSectionName != $newConfigSectionName) {
+                $configSectionName = $newConfigSectionName;
+                if (!empty($newConfigSectionName)) {
+                    if (!isset($smtp_options_by_config_sections[$configSectionName])) {
+                        $smtp_options_by_config_sections[$configSectionName] = $LMS->GetRTSmtpOptions($configSectionName);
+                    }
+                    if (!isset($notification_options_by_config_sections[$configSectionName])) {
+                        $notification_options_by_config_sections[$configSectionName] = array(
+                            'notification_sender_name' => ConfigHelper::getConfig($configSectionName . '.sender_name'),
+                            'customer_notification_mail_subject' => ConfigHelper::getConfig($configSectionName . '.customer_notification_mail_subject'),
+                            'new_message_preserve_no_owner' => ConfigHelper::checkConfig($configSectionName . '.new_message_preserve_no_owner'),
+                            'notification_customerinfo' => ConfigHelper::checkConfig($configSectionName . '.notification_customerinfo'),
+                            'notification_mail_body_customerinfo_format' => ConfigHelper::getConfig($configSectionName . '.notification_mail_body_customerinfo_format'),
+                            'notification_sms_body_customerinfo_format' => ConfigHelper::getConfig($configSectionName . '.notification_sms_body_customerinfo_format'),
+                            'notification_mail_subject' => ConfigHelper::getConfig($configSectionName . '.notification_mail_subject'),
+                            'notification_mail_body' => ConfigHelper::getConfig($configSectionName . '.notification_mail_body'),
+                            'notification_sms_body' => ConfigHelper::getConfig($configSectionName . '.notification_sms_body'),
+                        );
+                        $notification_options_by_config_sections[$configSectionName] = array_filter(
+                            $notification_options_by_config_sections[$configSectionName],
+                            function($value) {
+                                return isset($value);
+                            }
+                        );
+                    }
+                }
+            }
+            if (!empty($configSectionName)) {
+                $smtp_options = array_merge($smtp_options, $smtp_options_by_config_sections[$configSectionName]);
+                extract($notification_options_by_config_sections[$configSectionName]);
             }
 
             $requestor_mail = $LMS->GetTicketRequestorMail($ticketid);

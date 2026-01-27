@@ -2778,8 +2778,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     continue;
                 }
                 $variable_name = $vname;
-            } else if (!ConfigHelper::variableExists($variable_name)) {
-                    continue;
+            } elseif (!ConfigHelper::variableExists($variable_name)) {
+                continue;
             }
 
             $variable = ConfigHelper::getConfig($variable_name);

@@ -6287,3 +6287,6 @@ $_LANG['Invoice sent to KSeF in batch session $a at $b on $c and waiting for han
 
 $_LANG['<!netdevmodeltype>passive'] = 'pasywne';
 $_LANG['<!netdevmodeltype>active'] = 'aktywne';
+
+$_LANG['<!rt>Configuration section'] = 'Sekcja konfiguracyjna';
+$_LANG['<!rt-configuration-section>— default —'] = '— domyślna —';

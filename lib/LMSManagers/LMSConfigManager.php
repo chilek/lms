@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2020 LMS Developers
+ *  Copyright (C) 2001-2026 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -1670,5 +1670,36 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                 }
             }
         }
+    }
+
+    public function getConfigSectionsByPattern($sectionNamePattern)
+    {
+        $configSections = $this->db->GetCol(
+            'SELECT DISTINCT section
+            FROM uiconfig
+            WHERE section ?LIKE? ?
+            ORDER BY section',
+            [
+                $sectionNamePattern,
+            ]
+        );
+        if (empty($configSections)) {
+            $configSections = array();
+        } else {
+            $sectionNameRegExp = $sectionNamePattern;
+            if (strpos($sectionNameRegExp, '%') !== 0) {
+                $sectionNameRegExp = '^' . $sectionNameRegExp;
+            }
+            $sectionNameRegExp = preg_replace('/%$/', '', $sectionNameRegExp);
+
+            $configSections = array_map(
+                function ($section)  use ($sectionNameRegExp) {
+                    return preg_replace('/' . $sectionNameRegExp . '/', '', $section);
+                },
+                $configSections
+            );
+        }
+
+        return $configSections;
     }
 }

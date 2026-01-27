@@ -2132,6 +2132,7 @@ CREATE TABLE rtqueues (
 	CONSTRAINT rtqueues_deluserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
   verifierid integer DEFAULT NULL
     CONSTRAINT rtqueues_verifierid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  uiconfigsection varchar(64) DEFAULT NULL,
   PRIMARY KEY (id),
   UNIQUE (name)
 );
@@ -4564,6 +4565,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026012201');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026012700');
 
 COMMIT;

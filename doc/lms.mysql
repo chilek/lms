@@ -2220,6 +2220,7 @@ CREATE TABLE rtqueues (
   deltime int(16) NOT NULL DEFAULT 0,
   deluserid int(11) DEFAULT NULL,
   verifierid int(11) DEFAULT NULL,
+  uiconfigsection varchar(64) DEFAULT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY name (name),
   CONSTRAINT rtqueues_deluserid_fkey
@@ -4520,4 +4521,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026012201');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026012700');

@@ -2774,6 +2774,12 @@ class LMS
         return $manager->toggleConfigOption($id);
     }
 
+    public function getConfigSectionsByPattern($sectionNamePattern)
+    {
+        $manager = $this->getConfigManager();
+        return $manager->getConfigSectionsByPattern($sectionNamePattern);
+    }
+
     /*
      *  Miscalenous
      */
