@@ -251,6 +251,7 @@ if (isset($_POST['message'])) {
                     if (!isset($notification_options_by_config_sections[$configSectionName])) {
                         $notification_options_by_config_sections[$configSectionName] = array(
                             'notification_sender_name' => ConfigHelper::getConfig($configSectionName . '.sender_name'),
+                            'notification_sender_email' => ConfigHelper::getConfig($configSectionName . '.sender_email'),
                             'customer_notification_mail_subject' => ConfigHelper::getConfig($configSectionName . '.customer_notification_mail_subject'),
                             'new_message_preserve_no_owner' => ConfigHelper::checkConfig($configSectionName . '.new_message_preserve_no_owner'),
                             'notification_customerinfo' => ConfigHelper::checkConfig($configSectionName . '.notification_customerinfo'),
@@ -307,7 +308,7 @@ if (isset($_POST['message'])) {
             $headers['Message-ID'] = $message['messageid'];
 
             if ($message['userid'] && ($user['email'] || $queue['email'] || $requestor_mail)) {
-                $mailfrom = $LMS->DetermineSenderEmail($user['email'], $queue['email'], $requestor_mail);
+                $mailfrom = $LMS->DetermineSenderEmail($user['email'], $queue['email'], $requestor_mail, $notification_sender_email ?? null);
 
                 $message['mailfrom'] = $mailfrom;
                 $headers['Date'] = date('r');
@@ -517,8 +518,7 @@ if (isset($_POST['message'])) {
                     $mailfname = '"' . $mailfname . '"';
                 }
 
-                $mailfrom = $LMS->DetermineSenderEmail($user['email'], $queue['email'], $requestor_mail);
-
+                $mailfrom = $LMS->DetermineSenderEmail($user['email'], $queue['email'], $requestor_mail, $notification_sender_email ?? null);
                 $ticketdata = $LMS->GetTicketContents($ticketid);
 
                 $headers['From'] = $mailfname . ' <' . $mailfrom . '>';
