@@ -770,6 +770,12 @@ class LMS
         return $manager->getCustomerSMSOptions();
     }
 
+    public function getCustomerAddressesWithOrWithoutEndPoints($customerid, $with = true)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->GetCustomerAddressesWithOrWithoutEndPoints($customerid, $with);
+    }
+
     public function GetCustomerAddressesWithEndPoints($customerid)
     {
         $manager = $this->getCustomerManager();

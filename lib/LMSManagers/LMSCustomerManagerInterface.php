@@ -110,6 +110,8 @@ interface LMSCustomerManagerInterface
 
     public function getCustomerSMSOptions();
 
+    public function getCustomerAddressesWithOrWithoutEndPoints($customerid, $with = true);
+
     public function GetCustomerAddressesWithEndPoints($customerid);
 
     public function GetCustomerAddressesWithoutEndPoints($customerid);
