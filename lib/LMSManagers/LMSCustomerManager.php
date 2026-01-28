@@ -3248,44 +3248,50 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         return $options;
     }
 
-    private function getCustomerAddressesWithOrWithoutEndPoints($customerid, $with = true)
+    public function getCustomerAddressesWithOrWithoutEndPoints($customerid, $with = true)
     {
         $customerid = intval($customerid);
 
-        return $this->db->GetAllByKey(
+        $addresses = $this->db->GetAllByKey(
             'SELECT
                 a.*,
                 ca.type AS location_type,
-                (CASE WHEN a.city_id IS NOT NULL THEN 1 ELSE 0 END) AS teryt
+                (CASE WHEN a.city_id IS NOT NULL THEN 1 ELSE 0 END) AS teryt,
+                ca.endpoints
             FROM vaddresses a
-            JOIN customer_addresses ca ON ca.address_id = a.id
-            WHERE ca.customer_id = ? AND a.id ' . ($with ? '' : 'NOT') . ' IN (
-                (
-                    SELECT DISTINCT (CASE WHEN nd.address_id IS NULL
-                            THEN (CASE WHEN ca.address_id IS NULL THEN ca2.address_id ELSE ca.address_id END)
-                            ELSE nd.address_id END
-                        ) AS address_id FROM netdevices nd
-                    LEFT JOIN customer_addresses ca ON ca.customer_id = nd.ownerid AND ca.type = ?
-                    LEFT JOIN customer_addresses ca2 ON ca2.customer_id = nd.ownerid AND ca.type = ?
-                    WHERE nd.ownerid = ?
-                ) UNION (
-                    SELECT DISTINCT (CASE WHEN n.address_id IS NULL
-                            THEN (CASE WHEN ca.address_id IS NULL THEN ca2.address_id ELSE ca.address_id END)
-                            ELSE n.address_id END
-                        ) AS address_id FROM nodes n
-                    LEFT JOIN customer_addresses ca ON ca.customer_id = n.ownerid AND ca.type = ?
-                    LEFT JOIN customer_addresses ca2 ON ca2.customer_id = n.ownerid AND ca.type = ?
-                    WHERE n.ownerid = ?
-                )
-            )',
+            JOIN (
+                SELECT
+                    ca.address_id,
+                    ca.type,
+                    COUNT(COALESCE(nd.id, n.id)) AS endpoints
+                FROM customer_addresses ca
+                LEFT JOIN nodes n ON n.address_id = ca.address_id
+                LEFT JOIN netdevices nd ON nd.address_id = ca.address_id
+                WHERE ca.customer_id = ?
+                GROUP BY ca.address_id, ca.type
+            ) ca ON ca.address_id = a.id',
             'id',
-            array($customerid, DEFAULT_LOCATION_ADDRESS, BILLING_ADDRESS, $customerid, DEFAULT_LOCATION_ADDRESS, BILLING_ADDRESS, $customerid)
+            array(
+                $customerid,
+            )
         );
+
+        if (isset($with)) {
+            return array_filter(
+                $addresses,
+                function ($address) use ($with) {
+                    return $with && !empty($address['endpoints'])
+                        || !$with && empty($address['endpoints']);
+                }
+            );
+        } else {
+            return $addresses;
+        }
     }
 
     public function GetCustomerAddressesWithEndPoints($customerid)
     {
-        return $this->getCustomerAddressesWithOrWithoutEndPoints($customerid);
+        return $this->getCustomerAddressesWithOrWithoutEndPoints($customerid, true);
     }
 
     public function GetCustomerAddressesWithoutEndPoints($customerid)
