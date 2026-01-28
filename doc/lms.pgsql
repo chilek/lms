@@ -3112,7 +3112,7 @@ CREATE INDEX files_md5sum_idx ON files (md5sum);
 /* ---------------------------------------------------
  Structure of table ksefbatchsessions
 ------------------------------------------------------*/
-DROP SEQUENCE IF EIXSTS ksefbatchsessions_id_seq;
+DROP SEQUENCE IF EXISTS ksefbatchsessions_id_seq;
 CREATE SEQUENCE ksefbatchsessions_id_seq;
 DROP TABLE IF EXISTS ksefbatchsessions CASCADE;
 CREATE TABLE ksefbatchsessions (
