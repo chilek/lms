@@ -3125,7 +3125,7 @@ CREATE TABLE ksefbatchsessions (
     environment smallint NOT NULL DEFAULT 0,
     PRIMARY KEY (id)
 );
-CREATE INDEX ksefbatchsessions_ksefid_idx ON ksefbatchsessions (ksefid);
+CREATE INDEX ksefbatchsessions_ksefnumber_idx ON ksefbatchsessions (ksefnumber);
 CREATE INDEX ksefbatchsessions_status_idx ON ksefbatchsessions (status);
 
 /* ---------------------------------------------------
