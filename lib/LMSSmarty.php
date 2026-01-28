@@ -43,6 +43,7 @@ class LMSSmarty extends Smarty
         $this->registerClass('Localisation', 'Localisation');
         $this->registerClass('Session', 'Session');
         $this->registerClass('LMS', 'LMS');
+        $this->registerClass('LMSDB', 'LMSDB');
         $this->registerClass('Auth', 'Auth');
         $this->registerClass('Utils', 'Utils');
         $this->registerClass('EtherCodes', 'EtherCodes');
@@ -84,6 +85,11 @@ class LMSSmarty extends Smarty
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'bankaccount', 'bankaccount');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'size', 'LMSSmartyPlugins::sizeModifier');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'convert_to_units', 'convert_to_units');
+
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'array_push', 'array_push');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'str_pad', 'str_pad');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'max', 'max');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'array_unique', 'array_unique');
     }
 
     public static function getInstance()
