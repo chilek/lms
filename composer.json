@@ -7,7 +7,8 @@
         "audit": {
             "ignore": [
                 "PKSA-wws7-mr54-jsny"
-            ]
+            ],
+            "block-insecure": false
         }
     },
     "name": "lmsgit/lms",
