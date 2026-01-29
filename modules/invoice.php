@@ -26,6 +26,7 @@
 
 use setasign\Fpdi\Tcpdf\Fpdi;
 use setasign\Fpdi\PdfParser\StreamReader;
+use \Lms\KSeF\KSeF;
 
 function invoice_body($document, $invoice)
 {
@@ -278,7 +279,42 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
     $layout['pagetitle'] = trans('Invoices');
 
     $now = strtotime('now');
-    $ksefDeploymentDate = strtotime('2026/04/01');
+
+    //$ksefDeploymentDate = strtotime('2026/04/01');
+    $ksefDeploymentDates = [];
+    $ksefEarliestDocuments = $DB->GetAll(
+        'SELECT
+            d.divisionid,
+            d.div_ten,
+            MIN(d.cdate) AS mincdate
+        FROM ksefdocuments kd
+        JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
+        JOIN documents d ON d.id = kd.docid
+        WHERE d.cdate >= ?
+            AND kbs.environment = ?
+            AND kd.status = ?
+        GROUP BY d.divisionid, d.div_ten',
+        [
+            strtotime('2026/02/01'),
+            //KSeF::ENVIRONMENT_TEST,
+            KSeF::ENVIRONMENT_PROD,
+            200,
+        ]
+    );
+    if (!empty($ksefEarliestDocuments)) {
+        foreach ($ksefEarliestDocuments as $ksefEarliestDocument) {
+            $divisionTen = preg_replace('/[^0-9]/', '', $ksefEarliestDocument['div_ten']);
+            if (isset($ksefDeploymentDates[$divisionTen])) {
+                $ksefDeploymentDates[$divisionTen] = min($ksefDeploymentDates[$divisionTen], $ksefEarliestDocument['mincdate']);
+            } else {
+                $ksefDeploymentDates[$divisionTen] = $ksefEarliestDocument['mincdate'];
+            }
+        }
+        foreach ($ksefDeploymentDates as &$ksefDeploymentDate) {
+            $ksefDeploymentDate = strtotime(date('Y/m/01', $ksefDeploymentDate));
+        }
+        unset($ksefDeploymentDate);
+    }
 
     $datefrom = intval($_GET['from']);
     $dateto = intval($_GET['to']);
@@ -385,40 +421,47 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
     }
 
     $division = $DB->GetRow(
-        "SELECT
-                d.name,
-                shortname,
-                d.email,
-                d.firstname,
-                d.lastname,
-                d.birthdate,
-                d.naturalperson,
-                va.address,
-                va.city,
-                va.zip,
-                va.countryid,
-                ten,
-                regon,
-                account,
-                inv_header,
-                inv_footer,
-                inv_author,
-                inv_cplace,
-                va.location_city,
-                va.location_street,
-                tax_office_code,
-                lb.name AS borough,
-                ld.name AS district,
-                ls.name AS state
-            FROM vdivisions d
-            JOIN vaddresses va ON va.id = d.address_id
-            LEFT JOIN location_cities lc ON lc.id = va.location_city
-            LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
-            LEFT JOIN location_districts ld ON ld.id = lb.districtid
-            LEFT JOIN location_states ls ON ls.id = ld.stateid
-            WHERE d.id = ?",
+        'SELECT
+            d.name,
+            shortname,
+            d.email,
+            d.firstname,
+            d.lastname,
+            d.birthdate,
+            d.naturalperson,
+            va.address,
+            va.city,
+            va.zip,
+            va.countryid,
+            ten,
+            regon,
+            account,
+            inv_header,
+            inv_footer,
+            inv_author,
+            inv_cplace,
+            va.location_city,
+            va.location_street,
+            tax_office_code,
+            lb.name AS borough,
+            ld.name AS district,
+            ls.name AS state
+        FROM vdivisions d
+        JOIN vaddresses va ON va.id = d.address_id
+        LEFT JOIN location_cities lc ON lc.id = va.location_city
+        LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
+        LEFT JOIN location_districts ld ON ld.id = lb.districtid
+        LEFT JOIN location_states ls ON ls.id = ld.stateid
+        WHERE d.id = ?',
         array($divisionId)
     );
+
+    $divisionTen = preg_replace('/[^0-9]/', '', $division['ten']);
+    if (isset($ksefDeploymentDates[$divisionTen])) {
+        $ksefDeploymentDate = $ksefDeploymentDates[$divisionTen];
+    } else {
+        $ksefDeploymentDate = strtotime('2026/04/01');
+    }
 
     $which = isset($_GET['which']) ? intval($_GET['which']) : 0;
     if ($which & DOC_ENTITY_DUPLICATE) {
