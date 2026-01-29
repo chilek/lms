@@ -378,9 +378,19 @@ if (isset($_POST['nodedata'])) {
         $error['netdev'] = trans('Network device selection is required!');
     }
 
-    if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')
+    if (!ConfigHelper::checkPrivilege('full_access')
         && !empty($nodedata['address_id']) && !$LMS->isTerritAddress($nodedata['address_id'])) {
-        $error['address_id'] = trans('TERYT address is required!');
+        $terytRequired = ConfigHelper::getConfig('phpui.teryt_required', 'false');
+        if ($terytRequired === 'error') {
+            $terytRequired = true;
+        } elseif ($terytRequired !== 'warning') {
+            $terytRequired = ConfigHelper::checkValue($terytRequired);
+        }
+        if (is_bool($terytRequired) && $terytRequired) {
+            $error['nodedata[address_id]'] = trans('TERYT address is required!');
+        } elseif ($terytRequired === 'warning' && !isset($warnings['nodedata-address_id-'])) {
+            $warning['nodedata[address_id]'] = trans('TERYT address recommended!');
+        }
     }
 
     if ($nodedata['invprojectid'] == '-1') { // nowy projekt

@@ -5689,6 +5689,7 @@ $_LANG['Select tax category'] = 'Wybierz GTU';
 $_LANG['Tax category selection is required!'] = 'Wymagany wybór GTU!';
 
 $_LANG['TERYT address is required!'] = 'Wymagany adres zgodny z TERYT!';
+$_LANG['TERYT address recommended!'] = 'Zalecany adres zgodny z TERYT!';
 
 $_LANG['investment project management'] = 'zarządzanie projektami inwestycyjnymi';
 

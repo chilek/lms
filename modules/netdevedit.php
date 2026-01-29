@@ -832,10 +832,19 @@ if (isset($netdev)) {
     }
 
     if (empty($netdev['ownerid']) && !ConfigHelper::checkPrivilege('full_access')
-        && ConfigHelper::checkConfig('phpui.teryt_required')
         && !empty($netdev['location_city_name']) && ($netdev['location_country_id'] == 2 || empty($netdev['location_country_id']))
         && (!isset($netdev['teryt']) || empty($netdev['location_city'])) && $LMS->isTerritState($netdev['location_state_name'])) {
-        $error['netdev[teryt]'] = trans('TERYT address is required!');
+        $terytRequired = ConfigHelper::getConfig('phpui.teryt_required', 'false');
+        if ($terytRequired === 'error') {
+            $terytRequired = true;
+        } elseif ($terytRequired !== 'warning') {
+            $terytRequired = ConfigHelper::checkValue($terytRequired);
+        }
+        if (is_bool($terytRequired) && $terytRequired) {
+            $error['netdev[teryt]'] = trans('TERYT address is required!');
+        } elseif ($terytRequired === 'warning' && !isset($warnings['netdev-teryt-'])) {
+            $warning['netdev[teryt]'] = trans('TERYT address recommended!');
+        }
     }
 
     $allow_empty_streets = ConfigHelper::checkConfig('teryt.allow_empty_streets', true);
@@ -870,7 +879,7 @@ if (isset($netdev)) {
     $netdev = $hook_data['netdevdata'];
     $error = $hook_data['error'];
 
-    if (!$error) {
+    if (!$error && !$warning) {
         if (!$api) {
             if ($netdev['guaranteeperiod'] == -1) {
                 $netdev['guaranteeperiod'] = null;

@@ -562,7 +562,8 @@ class LMSSmartyPlugins
               </td>
           </tr>';
 
-        if ($params['location_address_type'] == LOCATION_ADDRESS || $params['location_address_type'] == DEFAULT_LOCATION_ADDRESS || $params['location_address_type'] == POSTAL_ADDRESS) {
+        if (isset($params['location_address_type'])
+            && ($params['location_address_type'] == LOCATION_ADDRESS || $params['location_address_type'] == DEFAULT_LOCATION_ADDRESS || $params['location_address_type'] == POSTAL_ADDRESS)) {
             echo '<tr>
                     <td>' . trans('TEN') . '</td>
                     <td>

@@ -177,11 +177,22 @@ if (isset($_POST['customeradd'])) {
             }
         }
 
-        if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')
+        if (!ConfigHelper::checkPrivilege('full_access')
             && !empty($v['location_city_name']) && ($v['location_country_id'] == 2 || empty($v['location_country_id']))
             && (!isset($v['teryt']) || empty($v['location_city'])) && $LMS->isTerritState($v['location_state_name'])) {
-            $error['customeradd[addresses][' . $k . '][teryt]'] = trans('TERYT address is required!');
-            $customeradd['addresses'][ $k ]['show'] = true;
+            $terytRequired = ConfigHelper::getConfig('phpui.teryt_required', 'false');
+            if ($terytRequired === 'error') {
+                $terytRequired = true;
+            } elseif ($terytRequired !== 'warning') {
+                $terytRequired = ConfigHelper::checkValue($terytRequired);
+            }
+            if (is_bool($terytRequired) && $terytRequired) {
+                $error['customeradd[addresses][' . $k . '][teryt]'] = trans('TERYT address is required!');
+                $customeradd['addresses'][$k]['show'] = true;
+            } elseif ($terytRequired === 'warning' && !isset($warnings['customeradd-addresses--' . $k . '--teryt-'])) {
+                $warning['customeradd[addresses][' . $k . '][teryt]']= trans('TERYT address recommended!');
+                $customeradd['addresses'][$k]['show'] = true;
+            }
         }
 
         Localisation::setSystemLanguage($countryCode);

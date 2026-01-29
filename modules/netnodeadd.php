@@ -100,10 +100,19 @@ if (isset($netnodedata)) {
     }
 
     if (empty($netnodedata['ownerid']) && !ConfigHelper::checkPrivilege('full_access')
-        && ConfigHelper::checkConfig('phpui.teryt_required')
         && !empty($netnodedata['location_city_name']) && ($netnodedata['location_country_id'] == 2 || empty($netnodedata['location_country_id']))
         && (!isset($netnodedata['teryt']) || empty($netnodedata['location_city'])) && $LMS->isTerritState($netnodedata['location_state_name'])) {
-        $error['netnode[teryt]'] = trans('TERYT address is required!');
+        $terytRequired = ConfigHelper::getConfig('phpui.teryt_required', 'false');
+        if ($terytRequired === 'error') {
+            $terytRequired = true;
+        } elseif ($terytRequired !== 'warning') {
+            $terytRequired = ConfigHelper::checkValue($terytRequired);
+        }
+        if (is_bool($terytRequired) && $terytRequired) {
+            $error['netnode[teryt]'] = trans('TERYT address is required!');
+        } elseif ($terytRequired === 'warning' && !isset($warnings['netnode-teryt-'])) {
+            $warning['netnode[teryt]'] = trans('TERYT address recommended!');
+        }
     }
 
     $allow_empty_streets = ConfigHelper::checkConfig('teryt.allow_empty_streets', true);
@@ -120,7 +129,7 @@ if (isset($netnodedata)) {
         }
     }
 
-    if (!$error) {
+    if (!$error && $warning) {
         if ($netnodedata['projectid'] == -1) {
             $netnodedata['projectid'] = $LMS->AddProject($netnodedata);
         } elseif (empty($netnodedata['projectid'])) {

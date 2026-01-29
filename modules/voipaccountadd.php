@@ -158,9 +158,18 @@ if (isset($_POST['voipaccountdata'])) {
         }
         // check if selected address is teryt address
         if (!isset($error['address_id']) && !ConfigHelper::checkPrivilege('full_access')
-            && ConfigHelper::checkConfig('phpui.teryt_required') && ($voipaccountdata['address_id'] <= 0
-                || !$LMS->isTerritAddress($voipaccountdata['address_id']))) {
-            $error['address_id'] = trans('TERYT address is required!');
+            && ($voipaccountdata['address_id'] <= 0 || !$LMS->isTerritAddress($voipaccountdata['address_id']))) {
+            $terytRequired = ConfigHelper::getConfig('phpui.teryt_required', 'false');
+            if ($terytRequired === 'error') {
+                $terytRequired = true;
+            } elseif ($terytRequired !== 'warning') {
+                $terytRequired = ConfigHelper::checkValue($terytRequired);
+            }
+            if (is_bool($terytRequired) && $terytRequired) {
+                $error['voipaccountdata[address_id]'] = trans('TERYT address is required!');
+            } elseif ($terytRequired === 'warning' && !isset($warnings['voipaccountdata-address_id-'])) {
+                $warning['voipaccountdata[address_id]'] = trans('TERYT address recommended!');
+            }
         }
     }
 
@@ -172,7 +181,7 @@ if (isset($_POST['voipaccountdata'])) {
     $voipaccountdata = $hook_data['voipaccountdata'];
     $error = $hook_data['error'];
 
-    if (!$error) {
+    if (!$error && !$warning) {
         $voipaccountdata['flags'] = 0;
 
         if (isset($voipaccountdata[VOIP_ACCOUNT_FLAG_ADMIN_RECORDING])) {
