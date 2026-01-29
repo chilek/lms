@@ -294,12 +294,15 @@
                 </tbody>
               </table>
 
+              <xsl:comment>
               <hr/>
 
               <h2>Surowe dane (opcjonalnie)</h2>
               <div class="small">
                 Jeżeli chcesz, mogę dopisać w XSLT przełącznik (parametr), który pozwala dołączać/ukrywać pełny XML w &lt;pre&gt;.
               </div>
+
+              </xsl:comment>
             </div>
           </div>
         </div>
