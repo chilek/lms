@@ -1293,4 +1293,43 @@ class KSeF
 
         return true;
     }
+
+    private static function getUpoFilePath($ksefNumber)
+    {
+        if (!isset(self::$upoStorage)) {
+            self::$upoStorage = is_dir(self::KSEF_UPO_DIR) && is_readable(self::KSEF_UPO_DIR);
+        }
+
+        if (!self::$upoStorage) {
+            return false;
+        }
+
+        [$ten, $date] = explode('-', $ksefNumber);
+
+        return self::KSEF_UPO_DIR . DIRECTORY_SEPARATOR . $ten
+            . DIRECTORY_SEPARATOR . $date
+            . DIRECTORY_SEPARATOR . $ksefNumber . '.xml';
+    }
+
+    public static function upoFileExists($ksefNumber)
+    {
+        $upoFile = self::getUpoFilePath($ksefNumber);
+
+        if (empty($upoFile)) {
+            return false;
+        }
+
+        return is_file($upoFile) && is_readable($upoFile);
+    }
+
+    public static function getUpoFile($ksefNumber)
+    {
+        $upoFile = self::getUpoFilePath($ksefNumber);
+
+        if (empty($upoFile)) {
+            return false;
+        }
+
+        return file_get_contents($upoFile);
+    }
 }

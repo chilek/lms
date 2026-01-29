@@ -2,20 +2,24 @@
 
 	.invoice-ksef-info {
 		display: flex;
+		padding-bottom: 0.25em;
+		padding-top: 0.25em;
 	}
 
 	.invoice-ksef-info > * {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		padding-top: 0.25em;
 	}
 
 	.invoice-ksef-info > * > * {
+		padding-top: 0.2em;
+		padding-bottom: 0.2em;
+    }
+
+    .invoice-ksef-info > * > *:first-child {
 		padding-right: 0.5em;
 		padding-left: 0.5em;
-		padding-top: 0.25em;
-		padding-bottom: 0.25em;
 	}
 
 	.invoice-ksef-info img {
@@ -54,6 +58,11 @@
 				{barcode type="QRCODE" text=$url show_text=false transliterate=false width=-3 height=-3 tooltip_class="lms-ui-ksef-qrcode"}
 			</a>
 			<span class="ksef-number">{$invoice.ksefnumber}</span>
+			{if $upo_file_exists}
+				<div>
+					<a href="?m=invoiceksefinfo&id={$invoice.id}&upodownload=1">{trans("Download UPO")}</a>
+				</div>
+			{/if}
 		</div>
 	{elseif empty($invoice.status)}
 		{if ConfigHelper::checkConfig('ksef.offline_support')}

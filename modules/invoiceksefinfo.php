@@ -28,6 +28,7 @@ use \Lms\KSeF\KSeF;
 
 if ($doc = $DB->GetRow(
     'SELECT
+        d.id,
         d.fullnumber,
         d.cdate,
         d.div_ten,
@@ -39,6 +40,7 @@ if ($doc = $DB->GetRow(
         kd.hash,
         kd.ksefnumber
     FROM documents d
+    JOIN customerview c ON c.id = d.customerid
     JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
     JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
     WHERE d.id = ?',
@@ -50,27 +52,45 @@ if ($doc = $DB->GetRow(
         $_GET['id'],
     ]
 )) {
+    if (!empty($_GET['upodownload'])) {
+        $upoFileContent = KSeF::getUpoFile($doc['ksefnumber']);
+
+        if ($upoFileContent === false) {
+            die;
+        }
+
+        $upoFileName = $doc['ksefnumber'] . '.xml';
+
+        header('Content-Type: text/xml; charset=utf-8');
+        header('Content-Disposition: attachment; filename=' . $upoFileName);
+        header('Pragma: public');
+
+        echo $upoFileContent;
+        die;
+    }
+
+    $SMARTY->assign(
+        'url',
+        KSeF::getQrCodeUrl([
+            'environment' => $doc['environment'],
+            'ten' => $doc['div_ten'],
+            'date' => $doc['cdate'],
+            'hash' => $doc['hash'],
+        ])
+    );
+    if (empty($doc['ksefnumber']) || empty($doc['ksefstatus'])) {
         $SMARTY->assign(
-            'url',
-            KSeF::getQrCodeUrl([
+            'certificateurl',
+            KSeF::getCertificateQrCodeUrl([
                 'environment' => $doc['environment'],
                 'ten' => $doc['div_ten'],
-                'date' => $doc['cdate'],
+                'divisionid' => $doc['divisionid'],
                 'hash' => $doc['hash'],
             ])
         );
-        if (empty($doc['ksefnumber']) || empty($doc['ksefstatus'])) {
-            $SMARTY->assign(
-                'certificateurl',
-                KSeF::getCertificateQrCodeUrl([
-                    'environment' => $doc['environment'],
-                    'ten' => $doc['div_ten'],
-                    'divisionid' => $doc['divisionid'],
-                    'hash' => $doc['hash'],
-                ])
-            );
-        }
+    }
 
-        $SMARTY->assign('invoice', $doc);
-        $SMARTY->display('invoice/invoiceksefinfo.html');
+    $SMARTY->assign('invoice', $doc);
+    $SMARTY->assign('upo_file_exists', KSeF::upoFileExists($doc['ksefnumber']));
+    $SMARTY->display('invoice/invoiceksefinfo.html');
 }

@@ -6290,3 +6290,5 @@ $_LANG['<!netdevmodeltype>active'] = 'aktywne';
 
 $_LANG['<!rt>Configuration section'] = 'Sekcja konfiguracyjna';
 $_LANG['<!rt-configuration-section>— default —'] = '— domyślna —';
+
+$_LANG['Download UPO'] = 'Pobierz UPO';
