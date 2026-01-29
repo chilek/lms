@@ -1173,6 +1173,9 @@ version 28-git (????-??-??):
   - enhancement: KSeF: invoice send from webui: %ksef-number, %ksef-url and %ksef-qr-code symbols
     support [chilan]
   - enhancement: KSeF: JPK V7M (3) 1-0E support added [chilan]
+  - enhancement: KSeF: UPO download and view support added [chilan]
+  - improvement: 'error' or 'warning' values can be assign to configuration variable
+    'phpui.teryt_required' [chilan]
 
 version 27.0 (2021-08-20):
 
