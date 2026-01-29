@@ -35,6 +35,10 @@ class KSeF
     const ENVIRONMENT_TEST = 1;
     const ENVIRONMENT_PROD = 2;
 
+    const KSEF_UPO_DIR = STORAGE_DIR . DIRECTORY_SEPARATOR . 'ksef' . DIRECTORY_SEPARATOR . 'upo';
+
+    static private $upoStorage = null;
+
     private $db;
     private $lms;
     private $divisions = array();
@@ -1229,5 +1233,64 @@ class KSeF
         $p1363 = self::derEcdsaToP1363($signature, 32);
 
         return 'https://' . $url . '/' . self::base64Url(base64_encode($p1363));
+    }
+
+    public static function downloadUpoFile($invoiceStatus)
+    {
+        if (!isset(self::$upoStorage)) {
+            self::$upoStorage = is_dir(self::KSEF_UPO_DIR) && is_readable(self::KSEF_UPO_DIR);
+        }
+
+        if (!self::$upoStorage) {
+            return false;
+        }
+
+        $upoDownloadUrl = $invoiceStatus->upoDownloadUrl ?? null;
+        if (!is_string($upoDownloadUrl) || $upoDownloadUrl === '') {
+            return 'No UPO download URL for KSeF invoice \'' . $invoiceStatus->ksefNumber . '\'!';
+        }
+
+        $upoContent = @file_get_contents($upoDownloadUrl);
+        if ($upoContent === false || $upoContent === '') {
+            return 'Couldn\'t download UPO file for KSeF invoice  \'' . $invoiceStatus->ksefNumber . '\'!';
+        }
+
+        [$ten, $date] = explode('-', $invoiceStatus->ksefNumber);
+
+        $ksefUpoTenDir = self::KSEF_UPO_DIR . DIRECTORY_SEPARATOR . $ten;
+        if (!is_dir($ksefUpoTenDir)) {
+            mkdir($ksefUpoTenDir);
+            @chmod(
+                $ksefUpoTenDir,
+                fileperms(self::KSEF_UPO_DIR) & 0xfff
+            );
+            @chown($ksefUpoTenDir, fileowner(self::KSEF_UPO_DIR));
+            @chgrp($ksefUpoTenDir, filegroup(self::KSEF_UPO_DIR));
+        }
+
+        $ksefUpoTenDateDir = $ksefUpoTenDir . DIRECTORY_SEPARATOR . $date;
+        if (!is_dir($ksefUpoTenDateDir)) {
+            mkdir($ksefUpoTenDateDir);
+            @chmod(
+                $ksefUpoTenDateDir,
+                fileperms(self::KSEF_UPO_DIR) & 0xfff
+            );
+            @chown($ksefUpoTenDateDir, fileowner(self::KSEF_UPO_DIR));
+            @chgrp($ksefUpoTenDateDir, filegroup(self::KSEF_UPO_DIR));
+        }
+
+        $upoFile = $ksefUpoTenDateDir . DIRECTORY_SEPARATOR . $invoiceStatus->ksefNumber . '.xml';
+        if (file_put_contents($upoFile, $upoContent) !== false) {
+            @chmod(
+                $upoFile,
+                fileperms(self::KSEF_UPO_DIR) & ~02111
+            );
+            @chown($upoFile, fileowner(self::KSEF_UPO_DIR));
+            @chgrp($upoFile, filegroup(self::KSEF_UPO_DIR));
+        } else {
+            return 'Couldn\'t write UPO file for KSeF invoice \'' . $invoiceStatus->ksefNumber . '\'!';
+        }
+
+        return true;
     }
 }
