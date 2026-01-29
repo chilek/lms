@@ -50,6 +50,33 @@
 		font-weight: bold;
 	}
 
+	.ksef-upo-buttons {
+		display: flex;
+		justify-content: center;
+	}
+
+	.ksef-upo-buttons > * {
+		margin: 0.2em;
+		padding: 0.3em;
+		border: 1px solid darkgrey;
+		border-radius: 3px;
+		background-color: lightgrey;
+		font-weight: bold;
+	}
+
+	.ksef-upo-buttons > *:hover {
+		box-shadow: 0 0 3px 1px black;
+		padding: 0.35em;
+	}
+
+	.ksef-upo-buttons a:visited {
+		color: inherit;
+	}
+
+	.ksef-upo-buttons a:hover {
+		text-decoration: none;
+	}
+
 </style>
 <div class="invoice-ksef-info">
 	{if $invoice.status == 200}
@@ -59,8 +86,15 @@
 			</a>
 			<span class="ksef-number">{$invoice.ksefnumber}</span>
 			{if $upo_file_exists}
-				<div>
-					<a href="?m=invoiceksefinfo&id={$invoice.id}&upodownload=1">{trans("Download UPO")}</a>
+				<div class="ksef-upo-buttons">
+					<a href="?m=invoiceksefinfo&id={$invoice.id}&action=upo-download">
+						{icon name="download"}
+						{trans("Download UPO")}
+					</a>
+					<a href="?m=invoiceksefinfo&id={$invoice.id}&action=upo-view" target="_blank">
+						{icon name="view"}
+						{trans("View UPO")}
+					</a>
 				</div>
 			{/if}
 		</div>

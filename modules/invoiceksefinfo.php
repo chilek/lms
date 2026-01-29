@@ -52,20 +52,44 @@ if ($doc = $DB->GetRow(
         $_GET['id'],
     ]
 )) {
-    if (!empty($_GET['upodownload'])) {
-        $upoFileContent = KSeF::getUpoFile($doc['ksefnumber']);
-
-        if ($upoFileContent === false) {
-            die;
+    if (!empty($_GET['action'])) {
+        $action = $_GET['action'];
+        switch ($action) {
+            case 'upo-download':
+            case 'upo-view':
+                $upoFileContent = KSeF::getUpoFile($doc['ksefnumber']);
+                if ($upoFileContent === false) {
+                    die;
+                }
+                $upoFileName = $doc['ksefnumber'] . '.xml';
+                break;
         }
 
-        $upoFileName = $doc['ksefnumber'] . '.xml';
+        if ($action == 'upo-download') {
+            header('Content-Type: text/xml; charset=utf-8');
+            header('Content-Disposition: attachment; filename=' . $upoFileName);
+            header('Pragma: public');
 
-        header('Content-Type: text/xml; charset=utf-8');
-        header('Content-Disposition: attachment; filename=' . $upoFileName);
-        header('Pragma: public');
+            echo $upoFileContent;
+        } elseif ($action == 'upo-view') {
+            header('Content-Type: text/html; charset=utf-8');
+            header('Content-Disposition: inline; filename=' . $upoFileName);
+            header('Pragma: public');
 
-        echo $upoFileContent;
+            $xml = new \DOMDocument();
+            $xml->loadXML($upoFileContent);
+
+            $xsl = new \DOMDocument();
+            $xsl->load(LIB_DIR . DIRECTORY_SEPARATOR . 'KSeF' . DIRECTORY_SEPARATOR . 'upo-ksef-v4-3-to-html.xsl');
+
+            $proc = new \XSLTProcessor();
+            $proc->importStylesheet($xsl);
+
+            $html = $proc->transformToXML($xml);
+
+            echo $html;
+        }
+
         die;
     }
 

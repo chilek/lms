@@ -6292,3 +6292,4 @@ $_LANG['<!rt>Configuration section'] = 'Sekcja konfiguracyjna';
 $_LANG['<!rt-configuration-section>— default —'] = '— domyślna —';
 
 $_LANG['Download UPO'] = 'Pobierz UPO';
+$_LANG['View UPO'] = 'Pokaż UPO';
