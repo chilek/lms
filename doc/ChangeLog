@@ -1176,6 +1176,7 @@ version 28-git (????-??-??):
   - enhancement: KSeF: UPO download and view support added [chilan]
   - improvement: 'error' or 'warning' values can be assign to configuration variable
     'phpui.teryt_required' [chilan]
+  - improvement: GUS REGON API can be used for division forms [chilan]
 
 version 27.0 (2021-08-20):
 
