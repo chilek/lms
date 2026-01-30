@@ -933,27 +933,59 @@ function GusApiGetCompanyDetails(searchType, searchData, on_success) {
 }
 
 function GusApiFinished(fieldPrefix, details) {
-	$.each(details, function(key, value) {
-		if (key == 'addresses') {
-			$.each(value, function(idx, addresses) {
+	if (typeof(fieldPrefix) == 'object') {
+		var handledFields = {};
+		$.each(fieldPrefix, function(key, fieldSelector) {
+			if (key == 'addresses') {
+				var addresses = details.addresses;
 				if (!Array.isArray(addresses)) {
 					addresses = [ addresses ];
 				}
-				$.each(addresses, function(addressnr, address) {
-					$.each(address, function (addresskey, addressvalue) {
-						$('[name="' + fieldPrefix + '[addresses][' + addressnr + '][' + addresskey + ']"]').val(
-							typeof(addressvalue) == 'string' ? addressvalue : '');
+
+				$.each(addresses, function (addressNumber, address) {
+					$.each(address, function (addressPropertyName, addressPropertyValue) {
+						if (!(addressPropertyName in fieldSelector[addressNumber])) {
+							return;
+						}
+						$(fieldSelector[addressNumber][addressPropertyName]).val(addressPropertyValue);
 					});
-					if ((address.location_state > 0) != $('[name="' + fieldPrefix + '[addresses][' + addressnr + '][teryt]"]').prop('checked')) {
-						$('[name="' + fieldPrefix + '[addresses][' + addressnr + '][teryt]"]').click();
+					if ((address.location_state > 0) != $(fieldSelector[addressNumber].teryt).prop('checked')) {
+						$(fieldSelector[addressNumber].teryt).click();
 					}
-					$('[name="' + fieldPrefix + '[addresses][' + addressnr + '][location_city_name]"]').trigger('input');
 				});
-			});
-		} else {
-			$('[name="' + fieldPrefix + '[' + key + ']"]').val(typeof(value) == 'string' ? value : '');
-		}
-	});
+			} else if (handledFields.hasOwnProperty(fieldSelector)) {
+				if (details[key].length) {
+					var val = $(fieldSelector).val();
+					$(fieldSelector).val((val.length ? val + ' ' : '') + details[key]);
+				}
+			} else {
+				$(fieldSelector).val(details[key]);
+				handledFields[fieldSelector] = key;
+			}
+		});
+	} else {
+		$.each(details, function(key, value) {
+			if (key == 'addresses') {
+				$.each(value, function(idx, addresses) {
+					if (!Array.isArray(addresses)) {
+						addresses = [ addresses ];
+					}
+					$.each(addresses, function(addressnr, address) {
+						$.each(address, function (addresskey, addressvalue) {
+							$('[name="' + fieldPrefix + '[addresses][' + addressnr + '][' + addresskey + ']"]').val(
+								typeof(addressvalue) == 'string' ? addressvalue : '');
+						});
+						if ((address.location_state > 0) != $('[name="' + fieldPrefix + '[addresses][' + addressnr + '][teryt]"]').prop('checked')) {
+							$('[name="' + fieldPrefix + '[addresses][' + addressnr + '][teryt]"]').click();
+						}
+						$('[name="' + fieldPrefix + '[addresses][' + addressnr + '][location_city_name]"]').trigger('input');
+					});
+				});
+			} else {
+				$('[name="' + fieldPrefix + '[' + key + ']"]').val(typeof(value) == 'string' ? value : '');
+			}
+		});
+	}
 }
 
 function osm_get_zip_code(search, on_success) {

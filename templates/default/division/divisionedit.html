@@ -144,6 +144,9 @@
 				{if $division.tenwarning}
 					<input type="hidden" name="division[tenwarning]" value="1">
 				{/if}
+				{button type="link" icon="division" class="gusapi-button"
+					data_type=Utils::GUS_REGON_API_SEARCH_TYPE_TEN
+					tip="Click here to autocomplete company data from GUS REGON database"}
 			</td>
 		</tr>
 		<tr>
@@ -177,6 +180,9 @@
 			<td>
 				<input type="text" size="40" value="{$division.regon}" name="division[regon]"
 					{tip text="Enter Business Registration Number (optional)" trigger="regon"}>
+				{button type="link" icon="division" class="gusapi-button"
+					data_type=Utils::GUS_REGON_API_SEARCH_TYPE_REGON
+					tip="Click here to autocomplete company data from GUS REGON database"}
 			</td>
 		</tr>
 		<tr>
@@ -202,6 +208,9 @@
 			<td>
 				<input type="text" value="{$division.rbe}" name="division[rbe]" size="30"
 					{tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
+				{button type="link" icon="division" class="gusapi-button"
+					data_type=Utils::GUS_REGON_API_SEARCH_TYPE_RBE
+					tip="Click here to autocomplete company data from GUS REGON database"}
 			</td>
 		</tr>
 		<tr>
@@ -439,6 +448,71 @@
 		}).change();
 
 		//check_teryt(['location', 'location_city'], true);
+
+		$('.gusapi-button').click(function() {
+			var identifier = $(this).siblings('input[type="text"]').val().replace(/-/g, '');
+			if (!identifier.length) {
+				return;
+			}
+			var that = this;
+			GusApiGetCompanyDetails(
+				$(this).attr('data-type'),
+				identifier,
+				function(data) {
+					var propertyToSelectors = {
+						lastname: '[name="division[shortname]"]',
+						name: '[name="division[shortname]"]',
+						rbe: '[name="division[rbe]"]',
+						rbename: '[name="division[rbename]"]',
+						regon: '[name="division[regon]"]',
+						ten: '[name="division[ten]"]',
+						addresses: [
+							{
+								location_state: '[name="division[location_state]"]',
+								location_state_name: '[name="division[location_state_name]"]',
+								location_city: '[name="division[location_city]"]',
+								location_city_name: '[name="division[location_city_name]"]',
+								location_street: '[name="division[location_street]"]',
+								location_street_name: '[name="division[location_street_name]"]',
+								location_house: '[name="division[location_house]"]',
+								location_flat: '[name="division[location_flat]"]',
+								location_zip: '[name="division[location_zip]"]',
+								location_postoffice: '[name="division[location_postoffice]"]',
+								teryt: '[name="division[teryt]"]'
+							},
+							{
+								location_state: '[name="division[office_address][location_state]"]',
+								location_state_name: '[name="division[office_address][location_state_name]"]',
+								location_city: '[name="division[office_address][location_city]"]',
+								location_city_name: '[name="division[office_address][location_city_name]"]',
+								location_street: '[name="division[office_address][location_street]"]',
+								location_street_name: '[name="division[office_address][location_street_name]"]',
+								location_house: '[name="division[office_address][location_house]"]',
+								location_flat: '[name="division[office_address][location_flat]"]',
+								location_zip: '[name="division[office_address][location_zip]"]',
+								location_postoffice: '[name="division[office_address][location_postoffice]"]',
+								teryt: '[name="division[office_address][teryt]"]'
+							}
+						]
+					}
+
+					if (data.length > 1) {
+						customerCompanySelectionDialog(data, that).done(function(company) {
+							GusApiFinished(
+								propertyToSelectors,
+								company
+							);
+						});
+					} else {
+						GusApiFinished(
+							propertyToSelectors,
+							data[0]
+						);
+					}
+				}
+			);
+			return false;
+		});
 	});
 
 </script>
