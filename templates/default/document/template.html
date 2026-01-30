@@ -226,6 +226,15 @@
 				padding-inline-start: 2em;
 			}
 
+			.list-hyphens {
+				padding-inline-start: 1.1em;
+				list-style: none;
+			}
+
+			.list-hyphens > li::marker {
+				content: "– ";
+			}
+
 			.list-paragraph-dot-numbers {
 				padding-inline-start: 1.5em;
 				list-style: none;
@@ -308,7 +317,7 @@
 				border: 1px solid black;
 			}
 
-			.signature-box-field.signature-box-field-hidden {
+			.signature-box.borders > .signature-box-field.signature-box-field-hidden {
 				border: none;
 			}
 
