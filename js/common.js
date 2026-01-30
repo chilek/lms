@@ -953,6 +953,18 @@ function GusApiFinished(fieldPrefix, details) {
 						$(fieldSelector[addressNumber].teryt).click();
 					}
 				});
+			} else if (Array.isArray(fieldSelector)) {
+				$.each(fieldSelector, function(selectorIdx, selector) {
+					if (handledFields.hasOwnProperty(selector)) {
+						if (details[key].length) {
+							var val = $(selector).val();
+							$(selector).val((val.length ? val + ' ' : '') + details[key]);
+						}
+					} else {
+						$(selector).val(details[key]);
+						handledFields[selector] = key;
+					}
+				});
 			} else if (handledFields.hasOwnProperty(fieldSelector)) {
 				if (details[key].length) {
 					var val = $(fieldSelector).val();
