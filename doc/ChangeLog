@@ -1177,6 +1177,8 @@ version 28-git (????-??-??):
   - improvement: 'error' or 'warning' values can be assign to configuration variable
     'phpui.teryt_required' [chilan]
   - improvement: GUS REGON API can be used for division forms [chilan]
+  - enhancement: added '%doctype', '%docnumber' and '%docdate' substitution symbols for 'payments.*comment'
+    configuration variables [chilan]
 
 version 27.0 (2021-08-20):
 
