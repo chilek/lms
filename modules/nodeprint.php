@@ -168,7 +168,7 @@ switch ($type) {
                         . ($net ? ' AND ((n.ipaddr > ' . $net['address'] . ' AND n.ipaddr < ' . $net['broadcast'] . ') OR (n.ipaddr_pub > ' . $net['address'] . ' AND n.ipaddr_pub < ' . $net['broadcast'] . '))' : '')
                         . ($group ? ' AND EXISTS (SELECT 1 FROM vcustomerassignments WHERE customerid = ownerid)' : '')
                     . ' GROUP BY n.id, n.ipaddr, n.mac, n.name, n.info, c.lastname, c.name, c.type, lc.name,
-                        lc.ident, lb.name, lb.ident, lb.type, ld.name, ld.ident, ls.name, ls.ident, lst.ident, lst.name, n.location_house, n.location_flat, a.zip
+                        lc.ident, lb.name, lb.ident, lb.type, ld.name, ld.ident, ls.name, ls.ident, lst.ident, lst.name, n.location_house, n.location_flat, n.longitude, n.latitude, a.zip
                     HAVING SUM(value) < 0'
                     . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
                 );
