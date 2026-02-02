@@ -691,10 +691,77 @@ if (isset($_POST['message'])) {
                     $custsms_body = str_replace('%customername', $info['customername'], $custsms_body);
                     $custsms_body = str_replace('%title', $title, $custsms_body);
                     $custsms_body = str_replace('%body', $message['body'], $custsms_body);
-                    $custsms_body = str_replace('%service', $ticket['service'], $custsms_body);
+                    $custsms_body = str_replace('%service', $ticketdata['service'], $custsms_body);
 
                     foreach ($mobile_phones as $phone) {
                         $LMS->SendSMS($phone['contact'], $custsms_body);
+                    }
+                }
+
+                if ($message['state'] == RT_RESOLVED && $ticketdata['status'] != RT_RESOLVED) {
+                    if (!empty($queuedata['resolveticketsubject']) && !empty($queuedata['resolveticketbody']) && !empty($emails)) {
+                        $custmail_subject = $queuedata['resolveticketsubject'];
+                        $custmail_subject = preg_replace_callback(
+                            '/%(\\d*)tid/',
+                            function ($m) use ($ticketid) {
+                                return sprintf('%0' . $m[1] . 'd', $ticketid);
+                            },
+                            $custmail_subject
+                        );
+                        $custmail_subject = str_replace('%title', $title, $custmail_subject);
+                        $custmail_body = $queuedata['resolveticketbody'];
+                        $custmail_body = preg_replace_callback(
+                            '/%(\\d*)tid/',
+                            function ($m) use ($ticketid) {
+                                return sprintf('%0' . $m[1] . 'd', $ticketid);
+                            },
+                            $custmail_body
+                        );
+                        $custmail_body = str_replace('%cid', $ticketdata['customerid'], $custmail_body);
+                        $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
+                        $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
+                        $custmail_body = str_replace('%title', $title, $custmail_body);
+                        $custmail_body = str_replace('%body', $message['body'], $custmail_body);
+                        $custmail_headers = array(
+                            'From' => $headers['From'],
+                            'Reply-To' => $headers['From'],
+                            'Subject' => $custmail_subject,
+                        );
+
+                        $custmail_body = $LMS->applyMessageTemplates($custmail_body);
+
+                        foreach ($emails as $email) {
+                            $custmail_headers['To'] = '<' . $email . '>';
+                            $LMS->SendMail(
+                                $email,
+                                $custmail_headers,
+                                $custmail_body,
+                                null,
+                                null,
+                                $smtp_options
+                            );
+                        }
+                    }
+
+                    if (!empty($queuedata['resolveticketsmsbody']) && !empty($mobile_phones)) {
+                        $custsms_body = $queuedata['resolveticketsmsbody'];
+                        $custsms_body = preg_replace_callback(
+                            '/%(\\d*)tid/',
+                            function ($m) use ($ticketid) {
+                                return sprintf('%0' . $m[1] . 'd', $ticketid);
+                            },
+                            $custsms_body
+                        );
+                        $custsms_body = str_replace('%cid', $ticketdata['customerid'], $custsms_body);
+                        $custsms_body = str_replace('%pin', $info['pin'], $custsms_body);
+                        $custsms_body = str_replace('%customername', $info['customername'], $custsms_body);
+                        $custsms_body = str_replace('%title', $title, $custsms_body);
+                        $custsms_body = str_replace('%body', $message['body'], $custsms_body);
+                        $custsms_body = str_replace('%service', $ticketdata['service'], $custsms_body);
+
+                        foreach ($mobile_phones as $phone) {
+                            $LMS->SendSMS($phone['contact'], $custsms_body);
+                        }
                     }
                 }
             }

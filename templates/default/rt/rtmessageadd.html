@@ -235,6 +235,7 @@
 					{foreach $queuelist as $item}
 						<option value="{$item.id}"
 							{if $item.newmessagesubject && $item.newmessagebody || $item.newmessagesmsbody} data-newmessage-notify="1"{/if}
+							{if $item.resolveticketsubject && $item.resolveticketbody || $item.resolveticketsmsbody} data-resolveticket-notify="1"{/if}
 							{if $item.id == $message.queueid} selected{/if}>{$item.name}</option>
 					{/foreach}
 				</select>
@@ -337,7 +338,8 @@
 
 		$('[name="message[queueid]"]').change(function() {
 			var newmessage_notify = $(this).find(':selected').attr('data-newmessage-notify');
-			if (newmessage_notify === undefined) {
+			var resolveticket_notify = $(this).find(':selected').attr('data-resolveticket-notify');
+			if (newmessage_notify === undefined && resolveticket_notify === undefined) {
 				$('#customernotify-row').hide();
 				$('#customernotify').attr('checked', false);
 			} else {
@@ -348,7 +350,8 @@
 
 		{if !$group_action}
 		var newmessage_notify = $('[name="message[queueid]"]').find(':selected').attr('data-newmessage-notify');
-		if (newmessage_notify === undefined) {
+		var resolveticket_notify = $('[name="message[queueid]"]').find(':selected').attr('data-resolveticket-notify');
+		if (newmessage_notify === undefined && resolveticket_notify === undefined) {
 			$('#customernotify-row').hide();
 		} else {
 			$('#customernotify-row').show();
