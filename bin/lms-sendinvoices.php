@@ -458,6 +458,9 @@ if ($backup || $archive) {
                 "SELECT COUNT(*)
                 FROM documents d
                 LEFT JOIN customeraddressview c ON c.id = d.customerid
+                LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
+                LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
+                LEFT JOIN customerconsents cc2 ON cc2.customerid = c.id AND cc2.type = ?
                 JOIN (
                     SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
                     FROM customercontacts
@@ -473,8 +476,23 @@ if ($backup || $archive) {
                     AND c.invoicenotice = 1
                     AND d.cdate >= $daystart
                     AND d.cdate <= $dayend"
-                    . ($customergroups ?: ''),
-                $args
+                    . ($customergroups ?: '')
+                    . ($ksef ? ' AND kd.status = ' . 200 : '')
+                    . ($ksefOffline ? ' AND kd.status IS NOT NULL AND kd.status = ' . 0 : '')
+                    . ($withoutKsef ? ' AND kd.status IS NULL AND (c.type = ' . CCTYPES_PRIVATE . ' AND cc2.customerid IS NULL)' : ''),
+                [
+                    [
+                        200,
+                        0,
+                    ],
+                    CCONSENT_KSEF_INVOICE,
+                    CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_DISABLED,
+                    CONTACT_EMAIL | CONTACT_INVOICES,
+                    DOC_INVOICE,
+                    DOC_INVOICE_PRO,
+                    DOC_CNOTE,
+                    DOC_DNOTE,
+                ]
             ));
             if (empty($count)) {
                 die;
@@ -523,7 +541,7 @@ $query = "
         . ($customergroups ?: '')
         . ($ksef ? ' AND kd.status = ' . 200 : '')
         . ($ksefOffline ? ' AND kd.status IS NOT NULL AND kd.status = ' . 0 : '')
-        . ($withoutKsef ? ' AND kd.status IS NULL AND (c.type = ' . CCTYPES_PRIVATE . ' AND cc2.id IS NULL)' : '')
+        . ($withoutKsef ? ' AND kd.status IS NULL AND (c.type = ' . CCTYPES_PRIVATE . ' AND cc2.customerid IS NULL)' : '')
     . " ORDER BY d.number" . (!empty($part_size) ? " LIMIT $part_size OFFSET $part_offset" : '');
 $docs = $DB->GetAll($query, $args);
 
