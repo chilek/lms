@@ -1179,6 +1179,7 @@ version 28-git (????-??-??):
   - improvement: GUS REGON API can be used for division forms [chilan]
   - enhancement: added '%doctype', '%docnumber' and '%docdate' substitution symbols for 'payments.*comment'
     configuration variables [chilan]
+  - improvement: added smarty block plugin '{nobr}...{/nobr}' [chilan]
 
 version 27.0 (2021-08-20):
 
