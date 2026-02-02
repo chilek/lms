@@ -2525,7 +2525,7 @@ if (empty($types) || in_array('invoices', $types)) {
             v.value, v.currency,
             c.type AS ctype,
             c.invoicenotice,
-            (CASE WHEN cc2.id IS NULL THEN 0 ELSE 1 END) AS ksef_invoice_consent,
+            (CASE WHEN cc2.customerid IS NULL THEN 0 ELSE 1 END) AS ksef_invoice_consent,
             kd.ksefnumber,
             kd.status AS ksefstatus,
             kd.hash AS ksefhash,
@@ -2573,7 +2573,7 @@ if (empty($types) || in_array('invoices', $types)) {
             . ($customergroups ?: '')
             . ($ksef ? ' AND kd.status = ' . 200 : '')
             . ($ksefOffline ? ' AND kd.status IS NOT NULL AND kd.status = ' . 0 : '')
-            . ($withoutKsef ? ' AND kd.status IS NULL AND (c.type = ' . CCTYPES_PRIVATE . ' AND cc2.id IS NULL)' : '')
+            . ($withoutKsef ? ' AND kd.status IS NULL AND (c.type = ' . CCTYPES_PRIVATE . ' AND cc2.customerid IS NULL)' : '')
         . ' ORDER BY d.id',
         [
             [
