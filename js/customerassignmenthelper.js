@@ -556,14 +556,20 @@ function CustomerAssignmentHelper(options) {
 							text: ""
 						}
 					];
+					var separateDocumentValue = $('#separatedocument').scombobox('val');
+					var newSeparateDocumentValue = '';
 					$.each(data['document-separation-groups'], function (key, item) {
+						var value = escapeHtml(item);
 						values.push({
-							value: escapeHtml(item),
-							text: escapeHtml(item)
+							value: value,
+							text: value
 						});
+						if (separateDocumentValue == value) {
+							newSeparateDocumentValue = separateDocumentValue;
+						}
 					});
 					$('#separatedocument').scombobox('fill', values);
-					$('#separatedocument').scombobox('val', '');
+					$('#separatedocument').scombobox('val', newSeparateDocumentValue);
 				}
 
 				$('#location-select').toggleClass('lms-ui-error', location_count > 1).html(options);
