@@ -1970,4 +1970,13 @@ class LMSSmartyPlugins
 
         return $content;
     }
+
+    public static function nobrBlock($params, $content, $template, $repeat)
+    {
+        if ($repeat) {
+            return '';
+        } else {
+            return '<span class="nobr">' . $content . '</span>';
+        }
+    }
 }
