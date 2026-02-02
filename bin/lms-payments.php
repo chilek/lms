@@ -287,7 +287,7 @@ if ($sdate_next) {
 function get_period($period)
 {
     global $dom, $month, $year, $weekday;
- 
+
     if (empty($period)) {
         $period = YEARLY;
     }
@@ -519,7 +519,10 @@ if ($voip_cdr_only) {
             (SELECT COUNT(id) FROM assignments
                 WHERE customerid = c.id AND tariffid IS NULL AND liabilityid IS NULL
                 AND datefrom <= $currtime
-                AND (dateto > $currtime OR dateto = 0)) AS allsuspended
+                AND (dateto > $currtime OR dateto = 0)) AS allsuspended,
+            doc.type AS doctype,
+            doc.fullnumber AS docnumber,
+            doc.cdate AS docdate
         FROM assignments a
         JOIN customers c ON a.customerid = c.id
         LEFT JOIN customerconsents cc1 ON cc1.customerid = c.id AND cc1.type = " . CCONSENT_EINVOICE . "
@@ -530,6 +533,7 @@ if ($voip_cdr_only) {
         LEFT JOIN customer_addresses ca3 ON ca3.customer_id = c.id AND ca3.address_id = a.recipient_address_id
         LEFT JOIN promotionschemas ps ON ps.id = a.promotionschemaid
         LEFT JOIN promotions p ON p.id = ps.promotionid
+        LEFT JOIN documents doc ON doc.id = a.docid
         LEFT JOIN (
             SELECT
                 tariffs.*,
@@ -637,7 +641,10 @@ $query = "SELECT
 					liabilityid IS NULL   AND
 					datefrom <= $currtime AND
 					(dateto > $currtime OR dateto = 0)) AS allsuspended,
-			(CASE WHEN EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type IN ?) THEN 1 ELSE 0 END) AS billingconsent
+			(CASE WHEN EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type IN ?) THEN 1 ELSE 0 END) AS billingconsent,
+                doc.type AS doctype,
+                doc.fullnumber AS docnumber,
+                doc.cdate AS docdate
 			FROM assignments a
             JOIN tariffs t ON t.id = a.tariffid
             JOIN taxes ON taxes.id = t.taxid
@@ -647,6 +654,7 @@ $query = "SELECT
             LEFT JOIN customer_addresses ca1 ON ca1.customer_id = c.id AND ca1.type = " . BILLING_ADDRESS . "
             LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c.id AND ca2.type = " . POSTAL_ADDRESS . "
             LEFT JOIN customer_addresses ca3 ON ca3.customer_id = c.id AND ca3.address_id = a.recipient_address_id
+            LEFT JOIN documents doc ON doc.id = a.docid
 			" . ($empty_billings ? 'LEFT ' : '') . "JOIN (
 				SELECT ROUND(sum(price), 2) AS value,
 					SUM(vc.billedtime) AS totaltime,
@@ -1565,6 +1573,9 @@ foreach ($assigns as $assign) {
             '%forward_period_aligned',
             '%aligned_period',
             '%note',
+            '%doctype',
+            '%docnumber',
+            '%docdate',
         ),
         array(
             $assign['tarifftype'] != SERVICE_OTHER ? $SERVICETYPES[$assign['tarifftype']] : '',
@@ -1591,6 +1602,9 @@ foreach ($assigns as $assign) {
             $forward_aligned_periods[$p],
             $forward_aligned_periods[$p],
             empty($assign['note']) ? '' : $assign['note'],
+            empty($assign['doctype']) ? '' : $DOCTYPES[$assign['doctype']],
+            empty($assign['docnumber']) ? '' : $assign['docnumber'],
+            empty($assign['docdate']) ? '' : Utils::strftime($date_format, $assign['docdate']),
         ),
         $desc
     );
@@ -2411,6 +2425,10 @@ foreach ($assigns as $assign) {
                         '%current_period',
                         '%next_period',
                         '%prev_period',
+                        '%note',
+                        '%doctype',
+                        '%docnumber',
+                        '%docdate',
                     ),
                     array(
                         $assign['tarifftype'] != SERVICE_OTHER ? $SERVICETYPES[$assign['tarifftype']] : '',
@@ -2425,6 +2443,10 @@ foreach ($assigns as $assign) {
                         $current_period,
                         $next_period,
                         $prev_period,
+                        empty($assign['note']) ? '' : $assign['note'],
+                        empty($assign['doctype']) ? '' : $DOCTYPES[$assign['doctype']],
+                        empty($assign['docnumber']) ? '' : $assign['docnumber'],
+                        empty($assign['docdate']) ? '' : Utils::strftime($date_format, $assign['docdate']),
                     ),
                     $sdesc
                 );
