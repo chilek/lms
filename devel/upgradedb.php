@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2023 LMS Developers
+ *  (C) Copyright 2001-2026 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -53,7 +53,7 @@ foreach ($short_to_longs as $short => $long) {
 if (isset($options['version'])) {
     print <<<EOF
 upgradedb.php
-(C) 2001-2023 LMS Developers
+(C) 2001-2026 LMS Developers
 
 EOF;
     exit(0);
@@ -62,7 +62,7 @@ EOF;
 if (isset($options['help'])) {
     print <<<EOF
 upgradedb.php
-(C) 2001-2023 LMS Developers
+(C) 2001-2026 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -80,7 +80,7 @@ $quiet = isset($options['quiet']);
 if (!$quiet) {
     print <<<EOF
 upgradedb.php
-(C) 2001-2023 LMS Developers
+(C) 2001-2026 LMS Developers
 
 EOF;
 }
