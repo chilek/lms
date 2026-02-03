@@ -169,7 +169,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
                 : 'LEFT JOIN (
                     SELECT
                         nn.id AS netnodeid,
-                        COUNT(nd.*) AS netdevcount
+                        COUNT(nd.id) AS netdevcount
                     FROM netnodes nn
                     LEFT JOIN netdevices nd ON nd.netnodeid = nn.id
                     GROUP BY nn.id
