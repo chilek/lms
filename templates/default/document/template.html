@@ -235,6 +235,20 @@
 				content: "– ";
 			}
 
+			.list-disc {
+				padding-inline-start: 1.1rem;
+				list-style: none;
+				margin-block-start: 0.3rem;
+				margin-block-end: 0.3rem;
+			}
+
+			.list-disc > li {
+				padding-inline-start: 0.4rem;
+			}
+			.list-disc > li::marker {
+				content: "\25AA ";
+			}
+
 			.list-paragraph-dot-numbers {
 				padding-inline-start: 1.5em;
 				list-style: none;
@@ -294,8 +308,33 @@
 				counter-increment: alpha;
 			}
 
-			.list-letters > li::marker {
+			.list-letters:not(.explicit) > li::marker {
 				content: counter(alpha, lower-alpha) ") ";
+			}
+
+			.list-letters.explicit {
+				padding-inline-start: 0;
+			}
+
+			.list-letters.explicit > li {
+				margin-top: 0.2rem;
+				margin-bottom: 0.4rem;
+			}
+
+			.list-letters.explicit > li > .list-item-title {
+				font-weight: bold;
+				text-decoration: underline;
+				margin-top: 0.6rem;
+				margin-bottom: 0.6rem;
+			}
+
+			.list-letters.explicit > li > .list-item-content::before {
+				content: counter(alpha, lower-alpha) ") ";
+			}
+
+			.list-letters.explicit > li > .list-item-content > * {
+				margin-top: 0.5rem;
+				margin-bottom: 0.5rem;
 			}
 
 			.signature-box {
