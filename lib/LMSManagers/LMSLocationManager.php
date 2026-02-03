@@ -208,13 +208,14 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 
         $this->db->Execute(
             'INSERT INTO customer_addresses
-            (customer_id, address_id, type, ten)
+            (customer_id, address_id, type, ten, entity_type)
             VALUES (?, ?, ?, ?)',
             array(
                 $customer_id,
                 $addr_id,
                 $args['location_address_type'],
                 empty($args['location_ten']) ? null : $args['location_ten'],
+                empty($args['location_entity_type']) || empty($args['location_ten']) ? null : $args['location_entity_type'],
             )
         );
 
@@ -351,12 +352,13 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 
         $this->db->Execute(
             'UPDATE customer_addresses
-            SET type = ?, ten = ?
+            SET type = ?, ten = ?, entity_type = ?
             WHERE customer_id = ?
                 AND address_id = ?',
             array(
                 $args['location_address_type'],
                 empty($args['location_ten']) ? null : $args['location_ten'],
+                empty($args['location_entity_type']) || empty($args['location_ten']) ? null : $args['location_entity_type'],
                 $customer_id,
                 $args['address_id'],
             )
@@ -463,6 +465,11 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
     public function getRecipientTen($address_id)
     {
         return $this->db->GetOne('SELECT ten FROM customer_addresses WHERE address_id = ?', array($address_id));
+    }
+
+    public function getEntityType($address_id)
+    {
+        return $this->db->GetOne('SELECT entity_type FROM customer_addresses WHERE address_id = ?', array($address_id));
     }
 
     public function TerytToLocation($terc, $simc, $ulic)

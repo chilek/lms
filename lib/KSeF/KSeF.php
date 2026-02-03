@@ -263,8 +263,8 @@ class KSeF
 
         $xml .= "\t\t<NrKlienta>" . $invoice['customerid'] . "</NrKlienta>" . PHP_EOL;
 
-        $xml .= "\t\t<JST>" . (empty($invoice['recipient_address_id']) ? '2' : '1') . "</JST>" . PHP_EOL;
-        $xml .= "\t\t<GV>2</GV>" . PHP_EOL;
+        $xml .= "\t\t<JST>" . (empty($invoice['recipient_address_id']) || $invoice['recipient_type'] == 2 ? '2' : '1') . "</JST>" . PHP_EOL;
+        $xml .= "\t\t<GV>" . (empty($invoice['recipient_address_id']) || empty($invoice['recipient_type']) || $invoice['recipient_type'] == 1 ? '2' : '1') . "</GV>" . PHP_EOL;
 
         $xml .= "\t</Podmiot2>" . PHP_EOL;
 
@@ -316,7 +316,7 @@ class KSeF
             $xml .= "\t\t\t<AdresL2>" . htmlspecialchars((empty($invoice['rec_zip']) ? '' : $invoice['rec_zip'] . ' ') . $invoice['rec_city']) . "</AdresL2>" . PHP_EOL;
             $xml .= "\t\t</Adres>" . PHP_EOL;
 
-            $xml .= "\t\t<Rola>8</Rola>" . PHP_EOL;
+            $xml .= "\t\t<Rola>" . (empty($invoice['recipient_type']) || $invoice['recipient_type'] == 1 ? '8' : '10') . "</Rola>" . PHP_EOL;
 
             $xml .= "\t</Podmiot3>" . PHP_EOL;
         }

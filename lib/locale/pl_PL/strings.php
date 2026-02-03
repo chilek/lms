@@ -6294,3 +6294,6 @@ $_LANG['<!rt-configuration-section>— default —'] = '— domyślna —';
 
 $_LANG['Download UPO'] = 'Pobierz UPO';
 $_LANG['View UPO'] = 'Pokaż UPO';
+
+$_LANG['<!ksef>Local Government Unit'] = 'jednostka samorządu terytorialnego';
+$_LANG['<!ksef>VAT group'] = 'grupa VAT';

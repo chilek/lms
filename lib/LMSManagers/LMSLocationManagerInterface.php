@@ -62,6 +62,8 @@ interface LMSLocationManagerInterface
 
     public function getRecipientTen($address_id);
 
+    public function getEntityType($address_id);
+
     public function TerytToLocation($terc, $simc, $ulic);
 
     public function getCoordinatesForAddress($params);

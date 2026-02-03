@@ -3965,6 +3965,11 @@ class LMS
         return $manager->getRecipientTen($address_id);
     }
 
+    public function getEntityType($address_id)
+    {
+        $manager = $this->getLocationManager();
+        return $manager->getEntityType($address_id);
+    }
     public function TerytToLocation($terc, $simc, $ulic)
     {
         $manager = $this->getLocationManager();

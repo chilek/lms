@@ -515,6 +515,7 @@ CREATE TABLE customer_addresses (
     address_id  integer REFERENCES addresses (id) ON DELETE CASCADE ON UPDATE CASCADE,
     type        smallint NULL,
     ten varchar(50) DEFAULT NULL,
+    entity_type smallint DEFAULT NULL,
     PRIMARY KEY (id),
     UNIQUE(customer_id, address_id)
 );
@@ -578,6 +579,7 @@ CREATE TABLE documents (
 	recipient_address_id integer DEFAULT NULL
 		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	recipient_ten varchar(50) DEFAULT NULL,
+    recipient_type smallint DEFAULT NULL,
 	post_address_id integer DEFAULT NULL
 		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	template varchar(255) DEFAULT NULL,
@@ -4565,6 +4567,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026012700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026020300');
 
 COMMIT;

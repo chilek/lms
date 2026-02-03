@@ -317,7 +317,6 @@ switch ($action) {
         $city = $invoice['city'];
         $countryid = $invoice['countryid'];
         $recipient_address = $invoice['recipient_address'] ?? null;
-        $recipient_ten = $invoice['recipient_ten'] ?? null;
 
         unset($invoice);
         unset($error);
@@ -348,7 +347,6 @@ switch ($action) {
         $invoice['city'] = $city;
         $invoice['countryid'] = $countryid;
         $invoice['recipient_address'] = $recipient_address;
-        $invoice['recipient_ten'] = $recipient_ten;
 
         if (!empty($invoice['extid']) && !empty($oldflags[DOC_FLAG_RECEIPT])) {
             $invoice['flags'][DOC_FLAG_RECEIPT] = 1;
@@ -594,11 +592,13 @@ switch ($action) {
 
             if ($invoice['recipient_address_id'] > 0) {
                 $recipient_ten = $LMS->getRecipientTen($invoice['recipient_address_id']);
+                $recipient_type = $LMS->getEntityType($invoice['recipient_address_id']);
                 $DB->Execute(
-                    'UPDATE documents SET recipient_address_id = ?, recipient_ten = ? WHERE id = ?',
+                    'UPDATE documents SET recipient_address_id = ?, recipient_ten = ?, recipient_type = ? WHERE id = ?',
                     array(
                         $LMS->CopyAddress($invoice['recipient_address_id']),
                         $recipient_ten,
+                        $recipient_type,
                         $invoice['id']
                     )
                 );

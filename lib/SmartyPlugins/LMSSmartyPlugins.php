@@ -493,6 +493,7 @@ class LMSSmartyPlugins
         // base name for localization inputs
         $input_name             = 'location';
         $input_name_ten         = 'location_ten';
+        $input_name_entity_type = 'location_entity_type';
         $input_name_country_id  = 'location_country_id';
         $input_name_state       = 'location_state_name';
         $input_name_state_id    = 'location_state';
@@ -515,6 +516,7 @@ class LMSSmartyPlugins
 
             $input_name             = $p . '[' . $input_name             . ']';
             $input_name_ten         = $p . '[' . $input_name_ten         . ']';
+            $input_name_entity_type = $p . '[' . $input_name_entity_type . ']';
             $input_name_country_id  = $p . '[' . $input_name_country_id  . ']';
             $input_name_state       = $p . '[' . $input_name_state       . ']';
             $input_name_state_id    = $p . '[' . $input_name_state_id    . ']';
@@ -568,7 +570,21 @@ class LMSSmartyPlugins
                     <td>' . trans('TEN') . '</td>
                     <td>
                         <input type="text" value="' . (!empty($params['location_ten']) ? htmlspecialchars($params['location_ten']) : '')
-                            . '" name="' . $input_name_ten . '" size="' . self::LOCATION_BOX_INPUT_SIZE . '" data-address="ten"
+                            . '" name="' . $input_name_ten . '" size="' . self::LOCATION_BOX_INPUT_SIZE . '" data-address="ten">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <label>
+                            <input type="radio" name="' . $input_name_entity_type . '" value="1" data-address="entity-type"
+                            ' . (empty($params['location_entity_type']) || $params['location_entity_type'] == 1 ? ' checked' : '') . '>
+                            ' . trans('<!ksef>Local Government Unit') . '
+                        </label>
+                        <label>
+                            <input type="radio" name="' . $input_name_entity_type . '" value="2" data-address="entity-type"
+                            ' . (!empty($params['location_entity_type']) && $params['location_entity_type'] == 2 ? ' checked' : '') . '>
+                            ' . trans('<!ksef>VAT group') . '
+                        </label>
                     </td>
                 </tr>';
         }

@@ -2955,6 +2955,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 addr.city as location_city_name, addr.city_id as location_city,
                 addr.street as location_street_name, addr.street_id as location_street,
                 ca.ten AS location_ten,
+                ca.entity_type AS location_entity_type,
                 (CASE WHEN lst.name2 IS NOT NULL THEN ' . $this->db->Concat('lst.name', "' '", 'lst.name2') . ' ELSE lst.name END) AS location_full_street_name,
                 (CASE WHEN lst.name2 IS NOT NULL THEN ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' ELSE lst.name END) AS location_full_reversed_street_name,
                 COALESCE(lst.name, addr.street) AS location_short_street_name,
