@@ -2122,36 +2122,62 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $daysecond = time() - strtotime('today');
         $weekday = 1 << (date('N') - 1);
 
-        $result = $this->db->GetAll("SELECT
-                                        n.id, n.name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, n.netdev, nd.name as netdev_name,
-                                        n.linktype, n.linktechnology, n.linkspeed,
-                                        ipaddr_pub, n.authtype, inet_ntoa(ipaddr_pub) AS ip_pub,
-                                        n.login,
-                                        passwd, access, warning, info, n.ownerid, lastonline, n.location, n.address_id,
-                                        (CASE WHEN addr.city_id IS NOT NULL THEN 1 ELSE 0 END) AS teryt,
-                                        (SELECT COUNT(*)
-                                        FROM nodegroupassignments
-                                        WHERE nodeid = n.id) AS gcount,
-                                        n.netid,
-                                        net.name AS netname,
-                                        net.notes AS netnotes,
-                                        vlans.vlanid,
-                                        vlans.description AS vlandescription,
-                                        (CASE WHEN EXISTS (
-                                            SELECT 1 FROM nodelocks
-                                            WHERE disabled = 0 AND (days & " . $weekday . ") > 0 AND " . $daysecond . " >= fromsec
-                                                AND " . $daysecond . " <= tosec AND nodeid = n.id
-                                        ) THEN 1 ELSE 0 END) AS locked
-                                     FROM
-                                        vnodes n
-                                     LEFT JOIN addresses addr ON addr.id = n.address_id
-                                     JOIN networks net ON net.id = n.netid
-                                     LEFT JOIN vlans ON vlans.id = net.vlanid
-                                        " . ($type == 'netdev' ? '' : 'LEFT ') . "JOIN netdevices nd ON n.netdev = nd.id
-                                     WHERE
-                                        " . ($type == 'netdev' ? 'nd.ownerid = ? AND n.ownerid IS NULL' : 'n.ownerid = ?') . "
-                                     ORDER BY
-                                        n.name ASC " . ($count ? 'LIMIT ' . $count : ''), array($customer_id));
+        $result = $this->db->GetAll(
+            "SELECT
+                n.id,
+                n.name,
+                mac,
+                ipaddr,
+                INET_NTOA(ipaddr) AS ip,
+                n.netdev,
+                nd.name AS netdev_name,
+                n.linktype,
+                n.linktechnology,
+                n.linkspeed,
+                ipaddr_pub,
+                n.authtype,
+                INET_NTOA(ipaddr_pub) AS ip_pub,
+                n.login,
+                passwd,
+                access,
+                warning,
+                info,
+                n.ownerid,
+                lastonline,
+                n.location,
+                n.address_id,
+                (CASE WHEN addr.city_id IS NOT NULL THEN 1 ELSE 0 END) AS teryt,
+                (
+                    SELECT COUNT(*)
+                    FROM nodegroupassignments
+                    WHERE nodeid = n.id
+                ) AS gcount,
+                n.netid,
+                net.name AS netname,
+                net.mask AS netmask,
+                MASK2PREFIX(INET_ATON(net.mask)) AS netprefix,
+                net.gateway AS gateway,
+                net.dns,
+                net.dns2,
+                net.notes AS netnotes,
+                vlans.vlanid,
+                vlans.description AS vlandescription,
+                (
+                    CASE WHEN EXISTS (
+                        SELECT 1 FROM nodelocks
+                        WHERE disabled = 0 AND (days & " . $weekday . ") > 0 AND " . $daysecond . " >= fromsec
+                            AND " . $daysecond . " <= tosec AND nodeid = n.id
+                    ) THEN 1 ELSE 0 END
+                ) AS locked
+            FROM vnodes n
+            LEFT JOIN addresses addr ON addr.id = n.address_id
+            JOIN networks net ON net.id = n.netid
+            LEFT JOIN vlans ON vlans.id = net.vlanid
+            " . ($type == 'netdev' ? '' : 'LEFT ') . "JOIN netdevices nd ON n.netdev = nd.id
+            WHERE " . ($type == 'netdev' ? 'nd.ownerid = ? AND n.ownerid IS NULL' : 'n.ownerid = ?') . "
+            ORDER BY n.name ASC " . ($count ? 'LIMIT ' . $count : ''),
+            array($customer_id)
+        );
 
         if ($result) {
             // assign network(s) to node record
