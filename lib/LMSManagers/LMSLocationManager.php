@@ -209,7 +209,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
         $this->db->Execute(
             'INSERT INTO customer_addresses
             (customer_id, address_id, type, ten, entity_type)
-            VALUES (?, ?, ?, ?)',
+            VALUES (?, ?, ?, ?, ?)',
             array(
                 $customer_id,
                 $addr_id,
