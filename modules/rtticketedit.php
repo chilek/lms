@@ -986,8 +986,8 @@ if (isset($_POST['ticket'])) {
     $ticket['requestor_phone'] = $ticketedit['requestor_phone'] ?? null;
     $ticket['parentid'] = $ticketedit['parentid'] ?? null;
     $ticket['categorywarn'] = $ticketedit['categorywarn'] ?? 0;
-    $ticket['customcreatetime'] = $ticketedit['customcreatetime'];
-    $ticket['customresolvetime'] = $ticketedit['customresolvetime'];
+    $ticket['customcreatetime'] = $ticketedit['customcreatetime'] ?? null;
+    $ticket['customresolvetime'] = $ticketedit['customresolvetime'] ?? null;
 
     if (!empty($ticketedit['relatedtickets'])) {
         $ticket['relatedtickets'] = $LMS->getTickets($ticketedit['relatedtickets']);
