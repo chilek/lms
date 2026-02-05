@@ -794,11 +794,11 @@ function location_str($data)
         $h = $data['location_house'];
     }
 
-    if (!isset($data['street_name'])) {
+    if (empty($data['street_name']) && !empty($data['location_street_name'])) {
         $data['street_name'] = $data['location_street_name'];
     }
 
-    if ($data['street_name']) {
+    if (!empty($data['street_name'])) {
         $street = (isset($data['street_type']) ? $data['street_type'] . ' ' : '') . $data['street_name'];
         $location .= ($location ? ', ' : '') . $street;
     } else {
