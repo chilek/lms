@@ -1180,6 +1180,8 @@ version 28-git (????-??-??):
   - enhancement: added '%doctype', '%docnumber' and '%docdate' substitution symbols for 'payments.*comment'
     configuration variables [chilan]
   - improvement: added smarty block plugin '{nobr}...{/nobr}' [chilan]
+  - enhancement: added new customer consent 'traffic data use' with system name
+    'traffic_data_use_for_marketing' [chilan]
 
 version 27.0 (2021-08-20):
 
