@@ -5967,6 +5967,7 @@ $_LANG['<!marketing>sms'] = 'SMS-em';
 $_LANG['<!marketing>telephone'] = 'telefoniczny';
 $_LANG['<!marketing>direct'] = 'bezpośredni';
 $_LANG['<!marketing>via userpanel'] = 'poprzez panel klienta';
+$_LANG['<!marketing>traffic data use'] = 'wykorzystanie danych o transmisji';
 $_LANG['<!complaint>e-mail'] = 'pocztą elektroniczną';
 $_LANG['<!complaint>sms'] = 'SMS-em';
 $_LANG['<!complaint>telephone'] = 'telefonicznie';

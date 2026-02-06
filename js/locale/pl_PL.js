@@ -3133,6 +3133,7 @@ $_LANG['Consent to electronic invoices'] = 'Zgoda na faktury elektroniczne';
 $_LANG['Consent to invoices delivery via e-mail:'] = 'Zgoda na dostarczanie faktur pocztą elektroniczną:';
 $_LANG['invoice delivery via e-mail'] = 'dostarczanie faktur pocztą elektroniczną';
 $_LANG['<!consent>delivery via e-mail'] = 'dostarczanie pocztą elektroniczną';
+$_LANG['<!consent>submission to KSeF'] = 'wysyłka do KSeF';
 $_LANG['Consent to messages delivery via e-mail:'] = 'Zgoda na dostarczanie informacji pocztą elektroniczną:';
 $_LANG['Consent to messages delivery via sms:'] = 'Zgoda na dostarczanie informacji SMS-em:';
 $_LANG['message delivery via e-mail'] = 'dostarczanie informacji pocztą elektroniczną';
@@ -5687,6 +5688,7 @@ $_LANG['Select tax category'] = 'Wybierz GTU';
 $_LANG['Tax category selection is required!'] = 'Wymagany wybór GTU!';
 
 $_LANG['TERYT address is required!'] = 'Wymagany adres zgodny z TERYT!';
+$_LANG['TERYT address recommended!'] = 'Zalecany adres zgodny z TERYT!';
 
 $_LANG['investment project management'] = 'zarządzanie projektami inwestycyjnymi';
 
@@ -5964,6 +5966,7 @@ $_LANG['<!marketing>sms'] = 'SMS-em';
 $_LANG['<!marketing>telephone'] = 'telefoniczny';
 $_LANG['<!marketing>direct'] = 'bezpośredni';
 $_LANG['<!marketing>via userpanel'] = 'poprzez panel klienta';
+$_LANG['<!marketing>traffic data use'] = 'wykorzystanie danych o transmisji';
 $_LANG['<!complaint>e-mail'] = 'pocztą elektroniczną';
 $_LANG['<!complaint>sms'] = 'SMS-em';
 $_LANG['<!complaint>telephone'] = 'telefonicznie';
@@ -6238,9 +6241,6 @@ $_LANG['exact match'] = 'dokładne dopasowanie';
 $_LANG['No authentication data?'] = 'Brak danych uwierzytelniających?';
 $_LANG['Session expired!'] = 'Sesja wygasła!';
 
-$_LANG['KSeF token'] = 'Token KSeF';
-$_LANG['Invalid format of KSeF token!'] = 'Niepoprawny format tokenu KSeF!';
-
 $_LANG['Office to PDF file conversion mechanism is not enabled!'] = 'Mechanizm konwersji plików biurowych do PDF nie jest aktywny!';
 $_LANG['Cannot create Office to PDF conversion process!'] = 'Niemożliwe utworzenie procesu konwersji plików biurowych do PDF!';
 
@@ -6283,3 +6283,17 @@ $_LANG['Location address is not selected'] = 'Nie wybrano adresu lokalizacji';
 $_LANG['2.5 Gbit/s'] = '2,5 Gbit/s';
 
 $_LANG['Selected divisions have different TEN identifiers!'] = 'Wybrane firmy mają różne identyfikatory NIP!';
+
+$_LANG['Invoice sent to KSeF in batch session $a at $b on $c and waiting for handling...'] = 'Faktura wysłana do KSeF sesją wsadową $a o godzinie $b w dniu $c i oczekuje na przetworzenie...';
+
+$_LANG['<!netdevmodeltype>passive'] = 'pasywne';
+$_LANG['<!netdevmodeltype>active'] = 'aktywne';
+
+$_LANG['<!rt>Configuration section'] = 'Sekcja konfiguracyjna';
+$_LANG['<!rt-configuration-section>— default —'] = '— domyślna —';
+
+$_LANG['Download UPO'] = 'Pobierz UPO';
+$_LANG['View UPO'] = 'Pokaż UPO';
+
+$_LANG['<!ksef>Local Government Unit'] = 'jednostka samorządu terytorialnego';
+$_LANG['<!ksef>VAT group'] = 'grupa VAT';

@@ -1005,7 +1005,7 @@ class KSeF
             $bestDocuments = array_slice($group, 0, $bestCount);
             $packages[] = [
                 'zip'       => $bestBin,
-                'files'     => $bestDocuments,
+                'documents'     => $bestDocuments,
                 'zip_bytes' => (int)$bestBytes,
                 'index'     => $idx,
             ];

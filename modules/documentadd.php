@@ -293,6 +293,8 @@ if (isset($_POST['document'])) {
                 if (!empty($document['assignment']['recipient_address_id'])) {
                     $recipient_address_id = intval($document['assignment']['recipient_address_id']);
                     $recipient_address = $LMS->GetAddress($recipient_address_id);
+                    $recipient_address['ten'] = $LMS->getRecipientTen($recipient_address_id);
+                    $recipient_address['entity_type'] = $LMS->getEntityType($recipient_address_id);
                 } else {
                     $recipient_address = null;
                 }
@@ -931,7 +933,13 @@ if (isset($_POST['document'])) {
 
     $document['dynamicperiod'] = ConfigHelper::checkConfig('documents.default_dynamic_period');
 
-    $document['consents'] = $document['default-consents'] = isset($document['customerid']) && intval($document['customerid']) ? $LMS->getCustomerConsents($document['customerid']) : array();
+    $document['consents'] = $document['default-consents'] = isset($document['customerid']) && intval($document['customerid'])
+        ? (
+            isset($engine['default-customer-consents']) && is_array($engine['default-customer-consents'])
+                ? array_flip($engine['default-customer-consents'])
+                : $LMS->getCustomerConsents($document['customerid'])
+        )
+        : array();
 
     $document['cdate'] = time();
 
