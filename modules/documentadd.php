@@ -931,7 +931,13 @@ if (isset($_POST['document'])) {
 
     $document['dynamicperiod'] = ConfigHelper::checkConfig('documents.default_dynamic_period');
 
-    $document['consents'] = $document['default-consents'] = isset($document['customerid']) && intval($document['customerid']) ? $LMS->getCustomerConsents($document['customerid']) : array();
+    $document['consents'] = $document['default-consents'] = isset($document['customerid']) && intval($document['customerid'])
+        ? (
+            isset($engine['default-customer-consents']) && is_array($engine['default-customer-consents'])
+                ? array_flip($engine['default-customer-consents'])
+                : $LMS->getCustomerConsents($document['customerid'])
+        )
+        : array();
 
     $document['cdate'] = time();
 

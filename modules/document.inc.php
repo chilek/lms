@@ -351,7 +351,7 @@ function GetReferenceDocuments($doctemplate, $customerid, $JSResponse)
     $JSResponse->script('$(\'[name="document[reference]"]\').prop("required", $(\'[name="document[templ]"] option:selected\').is("[data-refdoc-required]"));');
 }
 
-function GetCustomerConsents($template, $customerid, $JSResponse, $consents = null)
+function GetCustomerConsents($template, $customerid, $JSResponse, $consents = null, $handleTemplateCustomerConsents = false)
 {
     global $documents_dirs, $LMS, $SMARTY, $CCONSENTS;
 
@@ -390,15 +390,21 @@ function GetCustomerConsents($template, $customerid, $JSResponse, $consents = nu
     }
     $SMARTY->assign('supported_customer_consents', $supported_customer_consents);
 
+    if ($handleTemplateCustomerConsents && isset($engine['default-customer-consents']) && is_array($engine['default-customer-consents'])) {
+        $defaultCustomerConsents = array_flip($engine['default-customer-consents']);
+    } else {
+        $handleTemplateCustomerConsents = false;
+    }
+
     $document['default-consents'] = array_filter(
-        $LMS->getCustomerConsents($customerid),
+        $defaultCustomerConsents ?? $LMS->getCustomerConsents($customerid),
         function ($consent) use ($supported_customer_consents) {
             return isset($supported_customer_consents[$consent]);
         },
         ARRAY_FILTER_USE_KEY
     );
 
-    if (!isset($consents)) {
+    if (!isset($consents) || $handleTemplateCustomerConsents) {
         $document['consents'] = $document['default-consents'];
     } else {
         $document['consents'] = array_filter(
@@ -449,7 +455,7 @@ function DocTemplateChanged($doctype, $doctemplate, $customerid, $consents)
 
     GetPlugin($doctemplate, $customerid, true, $JSResponse);
     GetReferenceDocuments($doctemplate, $customerid, $JSResponse);
-    GetCustomerConsents($doctemplate, $customerid, $JSResponse, $consents);
+    GetCustomerConsents($doctemplate, $customerid, $JSResponse, $consents, true);
 
     return $JSResponse;
 }
