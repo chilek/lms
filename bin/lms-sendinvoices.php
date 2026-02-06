@@ -396,12 +396,12 @@ if (!$no_attachments) {
 
 if ($backup || $archive) {
     $args = [
+        CCONSENT_BALANCE_ON_DOCUMENTS,
+        CCONSENT_KSEF_INVOICE,
         [
             200,
             0,
         ],
-        CCONSENT_BALANCE_ON_DOCUMENTS,
-        CCONSENT_KSEF_INVOICE,
         DOC_INVOICE,
         DOC_INVOICE_PRO,
         DOC_CNOTE,
@@ -409,14 +409,14 @@ if ($backup || $archive) {
     ];
 } else {
     $args = [
+        CCONSENT_BALANCE_ON_DOCUMENTS,
+        CCONSENT_KSEF_INVOICE,
         [
             200,
             0,
         ],
         CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_DISABLED,
         CONTACT_EMAIL | CONTACT_INVOICES,
-        CCONSENT_BALANCE_ON_DOCUMENTS,
-        CCONSENT_KSEF_INVOICE,
         DOC_INVOICE,
         DOC_INVOICE_PRO,
         DOC_CNOTE,
@@ -460,7 +460,6 @@ if ($backup || $archive) {
                 LEFT JOIN customeraddressview c ON c.id = d.customerid
                 LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
                 LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
-                LEFT JOIN customerconsents cc2 ON cc2.customerid = c.id AND cc2.type = ?
                 JOIN (
                     SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
                     FROM customercontacts
@@ -479,13 +478,12 @@ if ($backup || $archive) {
                     . ($customergroups ?: '')
                     . ($ksef ? ' AND kd.status = ' . 200 : '')
                     . ($ksefOffline ? ' AND kd.status IS NOT NULL AND kd.status = ' . 0 : '')
-                    . ($withoutKsef ? ' AND kd.status IS NULL AND (c.type = ' . CCTYPES_PRIVATE . ' AND cc2.customerid IS NULL)' : ''),
+                    . ($withoutKsef ? ' AND kd.status IS NULL AND (c.type = ' . CCTYPES_PRIVATE . ' AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . '))' : ''),
                 [
                     [
                         200,
                         0,
                     ],
-                    CCONSENT_KSEF_INVOICE,
                     CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_DISABLED,
                     CONTACT_EMAIL | CONTACT_INVOICES,
                     DOC_INVOICE,
@@ -514,8 +512,8 @@ $query = "
         d.type AS doctype, d.archived,
         d.senddate, n.template" . ($backup || $archive ? '' : ', m.email') . ",
         (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type < 0) THEN 1 ELSE 0 END) AS documentreferenced,
-        (CASE WHEN cc.type IS NULL THEN 0 ELSE 1 END) AS balance_on_documents,
-        (CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS ksef_invoice_consent,
+        (CASE WHEN EXISTS (SELECT 1 FROM customerconsents cc1 WHERE cc1.customerid = c.id AND cc1.type = ?) THEN 1 ELSE 0 END) AS balance_on_documents,
+        (CASE WHEN EXISTS (SELECT 1 FROM customerconsents cc2 WHERE cc2.customerid = c.id AND cc2.type = ?) THEN 1 ELSE 0 END) AS ksef_invoice_consent,
         c.type AS ctype,
         kd.ksefnumber,
         kd.status AS ksefstatus,
@@ -529,8 +527,6 @@ $query = "
     . ($backup || $archive ? '' : " JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
         FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id")
     . " LEFT JOIN numberplans n ON n.id = d.numberplanid
-    LEFT JOIN customerconsents cc ON cc.customerid = c.id AND cc.type = ?
-    LEFT JOIN customerconsents cc2 ON cc2.customerid = c.id AND cc2.type = ?
     WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
         . $customer_status_condition
         . ($type ? ' AND d.type = ' . $type : '')
@@ -541,7 +537,7 @@ $query = "
         . ($customergroups ?: '')
         . ($ksef ? ' AND kd.status = ' . 200 : '')
         . ($ksefOffline ? ' AND kd.status IS NOT NULL AND kd.status = ' . 0 : '')
-        . ($withoutKsef ? ' AND kd.status IS NULL AND (c.type = ' . CCTYPES_PRIVATE . ' AND cc2.customerid IS NULL)' : '')
+        . ($withoutKsef ? ' AND kd.status IS NULL AND (c.type = ' . CCTYPES_PRIVATE . ' AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . '))' : '')
     . " ORDER BY d.number" . (!empty($part_size) ? " LIMIT $part_size OFFSET $part_offset" : '');
 $docs = $DB->GetAll($query, $args);
 
