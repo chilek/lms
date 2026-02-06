@@ -38,20 +38,19 @@ if (isset($_GET['customerid'])) {
     $addressesWithOrWithoutEndPoints = $LMS->GetCustomerAddressesWithOrWithoutEndPoints($_GET['customerid'], null);
     if (empty($addressesWithOrWithoutEndPoints)) {
         $addressesWithOrWithoutEndPoints = array();
-    } else {
-        $addressesWithEndPoints = array_filter(
-            $addressesWithOrWithoutEndPoints,
-            function ($address) {
-                return !empty($address['endpoints']);
-            }
-        );
-        $addressesWithoutEndPoints = array_filter(
-            $addressesWithOrWithoutEndPoints,
-            function ($address) {
-                return empty($address['endpoints']);
-            }
-        );
     }
+    $addressesWithEndPoints = array_filter(
+        $addressesWithOrWithoutEndPoints,
+        function ($address) {
+            return !empty($address['endpoints']);
+        }
+    );
+    $addressesWithoutEndPoints = array_filter(
+        $addressesWithOrWithoutEndPoints,
+        function ($address) {
+            return empty($address['endpoints']);
+        }
+    );
 
     if ($locationAddressPreselection) {
         $allAddresses = array_merge($addressesWithEndPoints, $addressesWithoutEndPoints);

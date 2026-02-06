@@ -293,6 +293,8 @@ if (isset($_POST['document'])) {
                 if (!empty($document['assignment']['recipient_address_id'])) {
                     $recipient_address_id = intval($document['assignment']['recipient_address_id']);
                     $recipient_address = $LMS->GetAddress($recipient_address_id);
+                    $recipient_address['ten'] = $LMS->getRecipientTen($recipient_address_id);
+                    $recipient_address['entity_type'] = $LMS->getEntityType($recipient_address_id);
                 } else {
                     $recipient_address = null;
                 }

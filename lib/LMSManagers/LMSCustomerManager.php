@@ -3283,6 +3283,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'SELECT
                 a.*,
                 ca.type AS location_type,
+                ca.ten AS location_ten,
+                ca.entity_type AS location_entity_type,
                 (CASE WHEN a.city_id IS NOT NULL THEN 1 ELSE 0 END) AS teryt,
                 ca.endpoints
             FROM vaddresses a
@@ -3290,12 +3292,14 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 SELECT
                     ca.address_id,
                     ca.type,
+                    ca.ten,
+                    ca.entity_type,
                     COUNT(COALESCE(nd.id, n.id)) AS endpoints
                 FROM customer_addresses ca
                 LEFT JOIN nodes n ON n.address_id = ca.address_id
                 LEFT JOIN netdevices nd ON nd.address_id = ca.address_id
                 WHERE ca.customer_id = ?
-                GROUP BY ca.address_id, ca.type
+                GROUP BY ca.address_id, ca.type, ca.ten, ca.entity_type
             ) ca ON ca.address_id = a.id',
             'id',
             array(
