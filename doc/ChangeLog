@@ -1182,6 +1182,7 @@ version 28-git (????-??-??):
   - improvement: added smarty block plugin '{nobr}...{/nobr}' [chilan]
   - enhancement: added new customer consent 'traffic data use' with system name
     'traffic_data_use_for_marketing' [chilan]
+  - enhancement: document templates support 'default-customer-consents' properties [chilan]
 
 version 27.0 (2021-08-20):
 
