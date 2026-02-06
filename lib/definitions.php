@@ -146,6 +146,7 @@ const CCONSENT_DATE = 1,
     CCONSENT_SIMPLIFIED_PHONE_BILLING = 14,
     CCONSENT_PHONE_MARKETING = 15,
     CCONSENT_DIRECT_MARKETING = 16,
+    CCONSENT_TRAFFIC_DATA_USE_FOR_MARKETING = 35,
     CCONSENT_PHONE_SERVICE_INFO = 17,
     CCONSENT_PHONE_NOTICE = CCONSENT_PHONE_SERVICE_INFO,
     CCONSENT_PHONENOTICE = CCONSENT_PHONE_SERVICE_INFO,
@@ -229,6 +230,11 @@ $CCONSENTS = array(
     CCONSENT_USERPANEL_MARKETING => array(
         'label' => trans('<!marketing>via userpanel'),
         'name' => 'userpanel_marketing',
+        'type' => 'boolean',
+    ),
+    CCONSENT_TRAFFIC_DATA_USE_FOR_MARKETING => array(
+        'label' => trans('<!marketing>traffic data use'),
+        'name' => 'traffic_data_use_for_marketing',
         'type' => 'boolean',
     ),
     CCONSENT_MAIL_3RDPARTY_MARKETING => array(
@@ -374,6 +380,7 @@ $CCONSENT_GROUPS = array(
             CCONSENT_PHONE_MARKETING,
             CCONSENT_DIRECT_MARKETING,
             CCONSENT_USERPANEL_MARKETING,
+            CCONSENT_TRAFFIC_DATA_USE_FOR_MARKETING,
         ),
     ),
     CCONSENT_GROUP_3RDPARTY_MARKETING => array(
