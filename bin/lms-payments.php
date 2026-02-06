@@ -600,6 +600,7 @@ $query = "SELECT
 			a.id, a.tariffid, a.customerid,
 			a.recipient_address_id,
 			ca3.ten AS recipient_ten,
+			ca3.entity_type AS recipient_type,
 			(CASE WHEN ca2.address_id IS NULL THEN ca1.address_id ELSE ca2.address_id END) AS post_address_id,
 			a.period, a.backwardperiod, a.at, a.suspended, a.settlement, a.datefrom,
 			0 AS pdiscount, 0 AS vdiscount, a.invoice,
