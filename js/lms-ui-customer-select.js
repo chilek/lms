@@ -95,7 +95,7 @@ function initCustomerList(selector)
                     elem.attr('data-prev-value', elem.val());
 
                     if (elem.val().length) {
-                        sugestionInput.prop('required', false);
+                        suggestionInput.prop('required', false);
                     }
                 }
             });

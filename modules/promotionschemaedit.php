@@ -92,7 +92,7 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
                         $data[$pkey]['period'] = $pvalue;
                     } elseif (!isset($mons[$pvalue])) {
                         $error['form' . $assignment_part . '[period][' . $pkey . ']'] = trans('Incorrent value!');
-                    } elseif ($schema[$skey] && $schema[$skey] % $mons[$pvalue]) {
+                    } elseif (isset($schema[$skey] && $schema[$skey] % $mons[$pvalue]) {
                         $error['form' . $assignment_part . '[period][' . $pkey . ']'] = trans('Not possible to use this period here!');
                     } else {
                         $data[$pkey]['period'] = $pvalue;
