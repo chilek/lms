@@ -607,7 +607,10 @@ switch ($action) {
 
         if ($SYSLOG) {
             $tables = array_merge($tables, array('logmessages', 'logmessagekeys', 'logmessagedata', 'logtransactions'));
-        }
+	}
+
+	if (ConfigHelper::getConfig('phpui.stock'))//Added if/else (clean) for STCK by Sarenka MAXCON
+		$tables = array_merge($tables, array('stck_cashassignments','stck_invoicecontentsassignments','stck_gtuassignments','stck_stock'));//END STCK
 
         $hook_data = array(
             'tables' => array(),
@@ -683,7 +686,15 @@ switch ($action) {
             $LMS->setInvoiceExtID($invoice);
         }
 
-        // usuwamy wczesniejsze zobowiazania bez faktury
+	if (ConfigHelper::getConfig('phpui.stock')) {//Added for STCK by Sarenka MAXCON
+		foreach($contents as $ct) {
+			if ($ct['stckproductid']) {
+				$LMSST->StockSell($iid, $ct['stckproductid'], $ct['valuebrutto'], $invoice['cdate'], $ct['count']);
+			}
+		}
+	}//END STCK
+
+	// usuwamy wczesniejsze zobowiazania bez faktury
         foreach ($contents as $item) {
             if (!empty($item['cashid'])) {
                 $ids[] = intval($item['cashid']);
@@ -784,6 +795,9 @@ $SMARTY->assign('covenantlist', $covenantlist);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 
+if (ConfigHelper::getConfig('phpui.stock')) //Added for STCK by Sarenka MAXCON
+	$SMARTY->assign('gtucodes', $LMSST->GTUCodeList(array('active' => 1,'deleted' => 0)));
+
 $args = array(
     'doctype' => !empty($invoice['proforma']) ? DOC_INVOICE_PRO : DOC_INVOICE,
     'cdate' => $invoice['cdate'],
@@ -848,4 +862,7 @@ $SMARTY->assign('suggested_flags', array(
     'telecomservice' => true,
 ));
 
-$SMARTY->display('invoice/invoicenew.html');
+if (ConfigHelper::getConfig('phpui.stock')) //Added for STCK by Sarenka MAXCON
+	$SMARTY->display('stck/invoicenew.stck.html');
+else
+	$SMARTY->display('invoice/invoicenew.html');
