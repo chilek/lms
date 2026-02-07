@@ -1,0 +1,195 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+{if !$layout.popup}<h1>{$layout.pagetitle}</h1>
+{else}
+{include file="stck/modal.html"}
+{/if}
+<script type="text/javascript" src="/stock/js/jquery.simplemodal.js"></script>
+<link href="/stock/js/jquery.simplemodal.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="/stock/js/common.js"></script>
+<P><FORM METHOD="POST" ACTION="?m=stckproductadd{if $layout.popup}&popup=1{/if}" NAME="productadd">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE CLASS="lmsbox">
+	<thead>
+	<TR CLASS="DARK" COLSPAN="2">
+		<TD WIDTH="1%" CLASS="fleftu" NOWRAP>
+			<IMG SRC="img/producer.gif" ALT="">
+			<B>{t}Product name:{/t}</B>
+		</TD>
+		<TD CLASS="frightu">
+			<INPUT TYPE="TEXT" SIZE="23" NAME="productadd[name]" VALUE="{$productadd.name}" {tip trigger="name" bold=1}>
+		</TD>
+	</TR>
+	</thead>
+	<tbody>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/serialnumber.gif" ALT="">
+			<B>{t}Quantity in unit:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<INPUT TYPE="TEXT" SIZE="5" NAME="productadd[quantity]" VALUE="{if $productadd.quantity}{$productadd.quantity}{else}1{/if}" {tip trigger="quantity" bold=1}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/serialnumber.gif" ALT="">
+			<B>{t}EAN:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<INPUT TYPE="TEXT" SIZE="23" NAME="productadd[ean]" VALUE="{$productadd.ean}" {tip trigger="ean" bold=1}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/netdev_model.gif" ALT="">
+			<B>{t}Type:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<SELECT SIZE="1" NAME="productadd[typeid]" {tip text="Select warehouse" trigger="warehouseid"}>
+				{foreach item=type from=$typeslist}
+					<OPTION VALUE="{$type.id}"{if $type.id == $productadd.typeid || $type.def} selected{/if}>{$type.name}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/nodegroup.gif" ALT="">
+			<B>{t}Group:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<SELECT SIZE="1" NAME="productadd[groupid]" {tip text="Select product group" trigger="groupid"}>
+				{foreach item=group from=$groupslist}
+					<OPTION VALUE="{$group.gid}"{if $group.gid == $productadd.groupid} selected{/if}>{$group.gname}</OPTION>
+				{/foreach}
+			</SELECT>
+			&nbsp;&nbsp;<A HREF="javascript:modalwindow('stckgroupadd', 400, 200);"><IMG src="img/add.gif" alt="[ {t}Add{/t} ]" title="[ {t}Add{/t} ]"></A>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/producer.gif" ALT="">
+			<B>{t}Manufacturer:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<SELECT SIZE="1" NAME="productadd[manufacturerid]" {tip text="Select manufacturer" trigger="manufacturerid"}>
+				{foreach item=manufacturer from=$manufacturerslist}
+					<OPTION VALUE="{$manufacturer.id}"{if $manufacturer.id == $productadd.maunfacturerid} selected{/if}>{$manufacturer.name}</OPTION>
+				{/foreach}
+			</SELECT>
+			&nbsp;&nbsp;<A HREF="javascript:modalwindow('stckmanufactureradd', 400, 200);"><IMG src="img/add.gif" alt="[ {t}Add{/t} ]" title="[ {t}Add{/t} ]"></A>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/tax.gif" ALT="">
+			<B>{t}Tax:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<SELECT SIZE="1" NAME="productadd[taxid]" {tip text="Select Tax rate" trigger="taxid"}>
+			{foreach item=tax from=$taxeslist}
+				<OPTION VALUE="{$tax.id}"{if $tax.value == $_config.phpui.default_taxrate || $tax.id == $productadd.taxid} selected{/if}>{$tax.label}</OPTION>
+			{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/port.gif" ALT="">
+			<B>{t}Quantity name:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<SELECT SIZE="1" NAME="productadd[quantityid]" {tip text="Select quantity name" trigger="quantityid"}>
+				{foreach item=quantity from=$quantitieslist}
+					<OPTION VALUE="{$quantity.id}"{if $quantity.id == $productadd.quantityid || $quantity.def} selected{/if}>{$quantity.name}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/port.gif" ALT="">
+			<B>{t}Quantity check:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			 <INPUT TYPE="checkbox" value="1" name="productadd[quantitycheck]"{if $productadd.quantitycheck} checked{/if}>
+		</TD>
+	</TR>
+        <TR CLASS="LIGHT">
+                <TD WIDTH="1%" CLASS="fleft" NOWRAP>
+                        <IMG SRC="img/port.gif" ALT="">
+                        <B>{t}GTU code:{/t}</B>
+                </TD>
+                <TD CLASS="fright">
+                	 <SELECT size="1" name="productadd[gtu_code]" onChange="$('#gtu_help').attr('title', $('#gch' + this.value).text()).attr('data-tooltip', $('#gch' + this.value).text())" {tip text="Select GTU code" trigger="gtu_code"}>
+			 	<OPTION value="" selected>-- BRAK --</OPTION>
+                                {foreach item=q from=$gtucodes}
+					<OPTION value="{$q.id}">{$q.code} (id: {$q.id})</OPTION>
+				{/foreach}
+			</SELECT>
+			{foreach item=q from=$gtucodes}
+				<span id="gch{$q.id}" style="display: none;">{$q.description}</span>
+			{/foreach}
+			<img id="gtu_help" src="img/help.png" alt="{t}Help{/t}" {tip text="GTU code description"} onClick="return overlib($(this).attr('data-tooltip'), STICKY, CAPTION, 'Opis kodu GTU', FGCOLOR, '#999999', BGCOLOR, '#333333', CENTER)">
+		</TD>
+        </TR>
+        <TR CLASS="LIGHT">
+                <TD WIDTH="1%" CLASS="fleft" NOWRAP>
+                        <IMG SRC="img/money.gif" ALT="">
+                        <B>{t}Wholesale price:{/t}</B>
+                </TD>
+                <TD CLASS="fright">
+                	<INPUT TYPE="TEXT" SIZE="23" NAME="productadd[gprice]" VALUE="{$productadd.gprice}" {tip trigger="gprice" bold=1}>
+		</TD>
+        </TR>
+        <TR CLASS="LIGHT">
+                <TD WIDTH="1%" CLASS="fleft" NOWRAP>
+                        <IMG SRC="img/money.gif" ALT="">
+                        <B>{t}Suggested price:{/t}</B>
+                </TD>
+                <TD CLASS="fright">
+                	<INPUT TYPE="TEXT" SIZE="23" NAME="productadd[srp]" VALUE="{$productadd.srp}" {tip trigger="srp" bold=1}>
+		</TD>
+        </TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/info1.gif" ALT=""> <B>{t}Comment:{/t}</B></TD>
+		<TD CLASS="fright">
+		  <TEXTAREA NAME="productadd[comment]" COLS="60" ROWS="7" {tip text="Enter comment (optional)"}>{$productadd.comment}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD width="100%" CLASS="fbottomu" COLSPAN="2" align="right">
+			<A HREF="#" id="fs" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+			<A HREF="{if $layout.popup}javascript:parent.$.modal.close();{else}?m=stckproducts{/if}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A><BR>
+			<INPUT type="checkbox" name="productadd[reuse]" id="productadd[reuse]" value="ON" {if $productadd.reuse}checked{/if}><A HREF="javascript:checkElement('productadd[reuse]')"> {t}Display this form again, when this product is saved{/t}</A>
+		</TD>
+	</TR>
+	</tbody>
+</TABLE>
+</FORM></P>
+<SCRIPT type="text/javascript">
+{literal}
+<!--
+document.forms['productadd'].elements['productadd[name]'].focus();
+$(document).ready(function() {
+
+var submited = 0;
+
+$('#fs').click(function(e) {
+	e.preventDefault();
+	
+	if (!submited) {
+		$('form[name="productadd"]').submit();
+		submited =1;
+	} else {
+		alert('{/literal}{t}Form already sent!{/t}{literal}');
+	}
+});
+
+})
+//-->
+{/literal}
+</SCRIPT>
+{/block}

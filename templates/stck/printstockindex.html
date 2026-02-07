@@ -1,0 +1,452 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<H1>{$layout.pagetitle}</H1>
+<P><FORM method="POST" name="printinventory" id="printinventory" action="?m=printstock&type=inventory" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE class="lmsbox">
+	<thead>
+	<TR class="DARK">
+		<TD class="fleftu" width="1%">
+			<IMG src="img/stck.png" alt="">
+		</TD>
+		<TD class="frightu" width="99%">
+			<B>{t}Inventory{/t}</B>
+		</TD>
+	</TR>
+	</thead>
+	<tbody>
+	<TR class="LIGHT">
+		<TD class="flr" width="100%" colspan="2">
+			<TABLE width="100%">
+				<TR>
+					<TD width="30%" nowrap>
+					    <TABLE>
+						<TR>
+						    <TD width="1%"><IMG src="img/stck.png" alt=""></TD>
+						    <TD width="1%" nowrap><B>{t}Warehouse{/t}:</B></TD>
+						    <TD width="98%">
+						    	<select name="params[warehouse]">
+								<option value="">{t}- select warehouse -{/t}</option>
+								{foreach from=$warehouses item=wh}
+								<option value="{$wh.id}"{if $wh.def && !$stockfl.warehouse} SELECTED{/if}{if $stockfl.warehouse eq $wh.id} SELECTED{/if}>{$wh.name}</option>
+								{/foreach}
+							</select>
+						    </TD>
+						</TR>
+						<TR>
+							<TD width="1%" nowrap><IMG src="img/calendar.gif" alt=""></TD>
+							<TD width="1%" nowrap><B>{t}Balance date:{/t}</B></TD>
+							<TD width="98%" nowrap>
+								<INPUT TYPE="text" NAME="params[day]" SIZE="10" MAXSIZE="10" placeholder="{trans("yyyy/mm/dd")}"
+								 {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar" trigger="day"}
+								 >
+							</TD>
+						</TR>
+					    </TABLE>
+					</TD>
+					<TD width="1%"><IMG src="img/view.gif" alt=""></TD>
+					<TD width="1%"><B>{t}Sorting:{/t}</B></TD>
+					<TD>
+					    <TABLE width="1%" {tip text="Select sorting direction and criteria"}>
+						<TR>
+						    <TD width="100%" nowrap>
+							<SELECT SIZE="1" name="params[order]">
+							    <OPTION value="mname" SELECTED>{t}Manufacturer{/t}</OPTION>
+							    <OPTION value="id">{t}Id{/t}</OPTION> 
+							    <OPTION value="pname">{t}Name{/t}</OPTION> 
+							    <OPTION value="gname">{t}Group{/t}</OPTION> 
+							</SELECT>
+						    </TD>
+						</TR>
+						<TR>
+						    <TD width="100%" nowrap>
+							<SELECT SIZE="1" name="params[direction]">
+							    <OPTION value="asc" SELECTED>{t}ascending{/t}</OPTION>
+							    <OPTION value="desc">{t}descending{/t}</OPTION> 
+							</SELECT>
+						    </TD>
+						</TR>
+					    </TABLE>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fbottomu" width="100%" colspan="2" align="right">
+			<A href="javascript:document.printinventory.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+		</TD>
+	</TR>
+	</tbody>
+</TABLE>
+</FORM>
+</P>
+<P><FORM method="POST" name="printstocklistbrep" id="printstocklistbrep" action="?m=printstock&type=brep" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE class="lmsbox">
+<thead>
+<TR class="DARK">
+	<TD class="fleftu" width="1%">
+		<IMG src="img/money.gif" alt="">
+	</TD>
+	<TD class="frightu" width="99%">
+		<B>{t}Buy report{/t} ({t}item{/t})</B>
+	</TD>
+</TR>
+</thead>
+<tbody>
+<TR class="LIGHT">
+	<TD class="flr" width="100%" colspan="2">
+		<TABLE width="100%">
+			<TR>
+				<TD width="30%" nowrap>
+					<TABLE>
+						<TR>
+							<TD width="1%"><IMG src="img/producer.gif" alt=""></TD>
+							<TD width="1%" nowrap><B>{t}Manufacturer{/t}:</B></TD>
+							<TD width="98%">
+								<select name="params[manufacturer]">
+									<option value="">{t}- select manufacturer -{/t}</option>
+									{foreach from=$manufacturers item=mf}
+									<option value="{$mf.id}">{$mf.name}</option>
+									{/foreach}
+								</select>
+							</TD>
+						</TR>
+						<TR>
+							<TD width="1%"><IMG src="img/nodegroup.gif" alt=""></TD>
+							<TD width="1%" nowrap><B>{t}Group:{/t}</B></TD>
+							<TD width="98%">
+								<select name="params[group]">
+									<option value="">{t}- select group -{/t}</option>
+									{foreach from=$groups item=g}
+									<option value="{$g.id}">{$g.name}</option>
+									{/foreach}
+								</select>
+							</TD>
+						</TR>
+					</TABLE>
+				</TD>
+				<TD>
+					<TABLE width="30%">
+						<TR>
+							<TD width="1%" nowrap><IMG src="img/calendar.gif" alt=""></TD>
+							<TD width="1%" nowrap><B>{t}From:{/t}</B></TD>
+							<TD width="98%" nowrap>
+								<INPUT TYPE="text" NAME="params[sday]" SIZE="10" MAXSIZE="10" placeholder="{trans("yyyy/mm/dd")}"
+								 {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"} trigger="sday">
+							</TD>
+						</TR>
+						<TR>
+							<TD width="1%" nowrap><IMG src="img/calendar.gif" alt=""></TD>
+							<TD width="1%" nowrap><B>{t}To:{/t}</B></TD>
+							<TD width="98%" nowrap>
+								<INPUT TYPE="text" NAME="params[eday]" SIZE="10" MAXSIZE="10" placeholder="{trans("yyyy/mm/dd")}"
+								 {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"} trigger="eday">
+							</TD>
+						</TR>
+					</TABLE>
+				</TD>
+				<!--<TD width="1%"><IMG src="img/view.gif" alt=""></TD>
+				<TD width="1%"><B>{t}Sorting:{/t}</B></TD>
+				<TD>
+					<TABLE width="1%" {tip text="Select sorting direction and criteria"}>
+						<TR>
+							<TD width="100%" nowrap>
+								<SELECT SIZE="1" name="params[order]">
+									<OPTION value="mname" SELECTED>{t}Manufacturer{/t}</OPTION>
+									<OPTION value="id">{t}Id{/t}</OPTION>
+									<OPTION value="pname">{t}Name{/t}</OPTION>
+									<OPTION value="gname">{t}Group{/t}</OPTION>
+								</SELECT>
+							</TD>
+						</TR>
+						<TR>
+							<TD width="100%" nowrap>
+								<SELECT SIZE="1" name="params[direction]">
+									<OPTION value="asc" SELECTED>{t}ascending{/t}</OPTION>
+									<OPTION value="desc">{t}descending{/t}</OPTION>
+								</SELECT>
+							</TD>
+						</TR>
+					</TABLE>
+				</TD>-->
+			</TR>
+		</TABLE>
+	</TD>
+</TR>
+<TR class="LIGHT">
+	<TD class="fbottomu" width="100%" colspan="2" align="right">
+		<A href="javascript:document.printstocklistbrep.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+	</TD>
+</TR>
+</tbody>
+</TABLE>
+</FORM>
+</P>
+<P><FORM method="POST" name="printstocklistbdocrep" id="printstocklistbdocrep" action="?m=printstock&type=bdocrep" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE class="lmsbox">
+<thead>
+<TR class="DARK">
+        <TD class="fleftu" width="1%">
+                <IMG src="img/money.gif" alt="">
+        </TD>
+        <TD class="frightu" width="99%">
+                <B>{t}Buy report{/t} ({t}document{/t})</B>
+        </TD>
+</TR>
+</thead>
+<tbody>
+<TR class="LIGHT">
+        <TD class="flr" width="100%" colspan="2">
+                <TABLE width="100%">
+                        <TR>
+                                <TD width="30%" nowrap>
+                                        <TABLE>
+                                                <TR>
+                                                        <TD width="1%"><IMG src="img/producer.gif" alt=""></TD>
+                                                        <TD width="1%" nowrap><B>{t}Supplier{/t}:</B></TD>
+                                                        <TD width="98%">
+                                                        	{customerlist form="printstocklistbdocrep" customers=$customers selected=$customerid selectname="customer" inputname="customerid" select_id="ownerid_select" input_id="ownerid_input"}
+							</TD>
+                                                </TR>
+                                        </TABLE>
+                                </TD>
+                                <TD>
+                                        <TABLE width="30%">
+                                                <TR>
+                                                        <TD width="1%" nowrap><IMG src="img/calendar.gif" alt=""></TD>
+                                                        <TD width="1%" nowrap><B>{t}From:{/t}</B></TD>
+                                                        <TD width="98%" nowrap>
+                                                                <INPUT TYPE="text" NAME="params[sday]" SIZE="10" MAXSIZE="10" placeholder="{trans("yyyy/mm/dd")}"
+                                                                 {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"} trigger="sday">
+                                                        </TD>
+                                                </TR>
+                                                <TR>
+                                                        <TD width="1%" nowrap><IMG src="img/calendar.gif" alt=""></TD>
+                                                        <TD width="1%" nowrap><B>{t}To:{/t}</B></TD>
+                                                        <TD width="98%" nowrap>
+                                                                <INPUT TYPE="text" NAME="params[eday]" SIZE="10" MAXSIZE="10" placeholder="{trans("yyyy/mm/dd")}"
+								 {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"} trigger="eday">
+                                                        </TD>
+                                                </TR>
+                                        </TABLE>
+                                </TD>
+				<TD>
+					<TABLE width="30%">
+						<TR>
+							<TD width="1%" nowrap><IMG src="img/calendar.gif" alt=""></TD>
+							<TD width="1%" nowrap><B>{t}Columns{/t}</B></TD>
+							<TD width="98%" nowrap>
+								<SELECT name="params[cols][]" multiple>
+									<OPTION value="id">Id</OPTION>
+									<OPTION value="supplier" selected>{t}Supplier{/t}</OPTION>
+									<OPTION value="in" selected>{t}Number{/t}</OPTION>
+									<OPTION value="settlement" selected>{t}Settlement date{/t}</OPTION>
+									<OPTION value="sale">{t}Sale date{/t}</OPTION>
+									<OPTION value="deadline">{t}Deadline{/t}</OPTION>
+									<OPTION value="creation">{t}Creation date{/t}</OPTION>
+									<OPTION value="net" selected>{t}Net value{/t}</OPTION>
+									<OPTION value="gross" selected>{t}Gross value{/t}</OPTION>
+									<OPTION value="payment">{t}Payment type{/t}</OPTION>
+									<OPTION value="paid">{t}Paid{/t}</OPTION>
+								</SELECT>
+							</TD>
+						</TR>
+					</TABLE>
+				</TD>
+                                <!--<TD width="1%"><IMG src="img/view.gif" alt=""></TD>
+                                <TD width="1%"><B>{t}Sorting:{/t}</B></TD>
+                                <TD>
+                                        <TABLE width="1%" {tip text="Select sorting direction and criteria"}>
+                                                <TR>
+                                                        <TD width="100%" nowrap>
+                                                                <SELECT SIZE="1" name="params[order]">
+                                                                        <OPTION value="mname" SELECTED>{t}Supplier{/t}</OPTION>
+                                                                        <OPTION value="id">{t}Id{/t}</OPTION>
+                                                                        <OPTION value="pname">{t}Number{/t}</OPTION>
+                                                                </SELECT>
+                                                        </TD>
+                                                </TR>
+                                                <TR>
+                                                        <TD width="100%" nowrap>
+                                                                <SELECT SIZE="1" name="params[direction]">
+                                                                        <OPTION value="asc" SELECTED>{t}ascending{/t}</OPTION>
+                                                                        <OPTION value="desc">{t}descending{/t}</OPTION>
+                                                                </SELECT>
+                                                        </TD>
+                                                </TR>
+                                        </TABLE>
+                                </TD>-->
+                        </TR>
+                </TABLE>
+        </TD>
+</TR>
+<TR class="LIGHT">
+        <TD class="fbottomu" width="100%" colspan="2" align="right">
+                <A href="javascript:document.printstocklistbdocrep.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+        </TD>
+</TR>
+</tbody>
+</TABLE>
+</FORM>
+</P>
+<P><FORM method="POST" name="printproductlist" id="printproductlist" action="?m=printstock&type=productlist" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE class="lmsbox">
+<thead>
+<TR class="DARK">
+        <TD class="fleftu" width="1%">
+                <IMG src="img/money.gif" alt="">
+        </TD>
+        <TD class="frightu" width="99%">
+                <B>{t}Export product list{/t}</B>
+        </TD>
+</TR>
+</thead>
+<tbody>
+<TR class="LIGHT">
+        <TD class="flr" width="100%" colspan="2">
+                <TABLE width="100%">
+                        <TR>
+                                <!--<TD width="30%" nowrap>
+                                        <TABLE>
+                                                <TR>
+                                                        <TD width="1%"><IMG src="img/producer.gif" alt=""></TD>
+                                                        <TD width="1%" nowrap><B>{t}Supplier{/t}:</B></TD>
+                                                        <TD width="98%">
+                                                                {customerlist form="printstocklistbdocrep" customers=$customers selected=$customerid selectname="customer" inputname="customerid" select_id="ownerid_select" input_id="ownerid_input"}
+                                                        </TD>
+                                                </TR>
+                                        </TABLE>
+                                </TD>-->
+                                <TD>
+                                        <TABLE width="30%">
+                                                <TR>
+                                                        <TD width="1%" nowrap><IMG src="img/calendar.gif" alt=""></TD>
+                                                        <TD width="1%" nowrap><B>{t}From:{/t}</B></TD>
+                                                        <TD width="98%" nowrap>
+                                                                <INPUT TYPE="text" NAME="params[sday]" SIZE="10" MAXSIZE="10" OnClick="javascript:cal15.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+                                                        </TD>
+                                                </TR>
+                                                <TR>
+                                                        <TD width="1%" nowrap><IMG src="img/calendar.gif" alt=""></TD>
+                                                        <TD width="1%" nowrap><B>{t}To:{/t}</B></TD>
+                                                        <TD width="98%" nowrap>
+                                                                <INPUT TYPE="text" NAME="params[eday]" SIZE="10" MAXSIZE="10" OnClick="javascript:cal16.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+                                                        </TD>
+                                                </TR>
+                                        </TABLE>
+                                </TD>
+				<TD>
+					<TABLE width="30%">
+						<TR>
+							<TD width="1%" nowrap><IMG src="img/stck.png" alt=""></TD>
+							<TD width="1%" nowrap><B>{t}Format:{/t}</B></TD>
+							<TD width="98%" nowrap>
+								<SELECT NAME="params[format]">
+									<OPTION value="epp" SELECTED>EPP</OPTION>
+									<OPTION value="csv_optima_twr" SELECTED>CSV - Optima (TOWARY)</OPTION>
+								</SELECT>
+							</TD>
+						</TR>
+					</TABLE>
+				</TD>
+                                <!--<TD width="1%"><IMG src="img/view.gif" alt=""></TD>
+                                <TD width="1%"><B>{t}Sorting:{/t}</B></TD>
+                                <TD>
+                                        <TABLE width="1%" {tip text="Select sorting direction and criteria"}>
+                                                <TR>
+                                                        <TD width="100%" nowrap>
+                                                                <SELECT SIZE="1" name="params[order]">
+                                                                        <OPTION value="mname" SELECTED>{t}Supplier{/t}</OPTION>
+                                                                        <OPTION value="id">{t}Id{/t}</OPTION>
+                                                                        <OPTION value="pname">{t}Number{/t}</OPTION>
+                                                                </SELECT>
+                                                        </TD>
+                                                </TR>
+                                                <TR>
+                                                        <TD width="100%" nowrap>
+                                                                <SELECT SIZE="1" name="params[direction]">
+                                                                        <OPTION value="asc" SELECTED>{t}ascending{/t}</OPTION>
+                                                                        <OPTION value="desc">{t}descending{/t}</OPTION>
+                                                                </SELECT>
+                                                        </TD>
+                                                </TR>
+                                        </TABLE>
+                                </TD>-->
+                        </TR>
+                </TABLE>
+        </TD>
+</TR>
+<TR class="LIGHT">
+        <TD class="fbottomu" width="100%" colspan="2" align="right">
+                <A href="javascript:document.printproductlist.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+        </TD>
+</TR>
+</tbody>
+</TABLE>
+</FORM>
+</P>
+<P><FORM method="POST" name="printmanufacturerlist" id="printmanufacturerlist" action="?m=printstock&type=manufacturerlist" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE class="lmsbox">
+<thead>
+<TR class="DARK">
+        <TD class="fleftu" width="1%">
+                <IMG src="img/money.gif" alt="">
+        </TD>
+        <TD class="frightu" width="99%">
+                <B>{t}Export manufacturer list{/t}</B>
+        </TD>
+</TR>
+</thead>
+<tbody>
+<TR class="LIGHT">
+        <TD class="flr" width="100%" colspan="2">
+                <TABLE width="100%">
+                        <TR>
+				<TD>
+                                        <TABLE width="30%">
+                                                <TR>
+                                                        <TD width="1%" nowrap><IMG src="img/stck.png" alt=""></TD>
+                                                        <TD width="1%" nowrap><B>{t}Format:{/t}</B></TD>
+                                                        <TD width="98%" nowrap>
+                                                                <SELECT NAME="params[format]">
+                                                                        <OPTION value="csv_optima_manu" SELECTED>CSV - Optima (PRODUCENCI)</OPTION>
+                                                                </SELECT>
+                                                        </TD>
+                                                </TR>
+                                        </TABLE>
+                                </TD>
+			</TR>
+                </TABLE>
+        </TD>
+</TR>
+<TR class="LIGHT">
+        <TD class="fbottomu" width="100%" colspan="2" align="right">
+                <A href="javascript:document.printmanufacturerlist.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+        </TD>
+</TR>
+</tbody>
+</TABLE>
+</FORM>
+</P>
+<SCRIPT type="text/javascript">
+<!--
+var cal12 = new calendar(document.printinventory.elements['params[day]']);
+cal12.time_comp = false;
+var cal13 = new calendar(document.printstocklistbrep.elements['params[sday]']);
+cal13.time_comp = false;
+var cal14 = new calendar(document.printstocklistbrep.elements['params[eday]']);
+cal14.time_comp = false;
+var cal15 = new calendar(document.printstocklistbdocrep.elements['params[sday]']);
+cal15.time_comp = false;
+var cal16 = new calendar(document.printstocklistbdocrep.elements['params[eday]']);
+cal16.time_comp = false;
+
+//-->
+</SCRIPT>
+{/block}

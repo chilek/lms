@@ -1,0 +1,19 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<H1>{$layout.pagetitle}</H1>
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR>
+		<TD WIDTH="100%">
+			{include file="stck/stckmanufacturerinfobox.html"}
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR>
+		<TD WIDTH="100%">
+			{include file="stck/stckstocklistbox.html" module="stckmanufacturerinfo&id="|cat:$manufacturerinfo.id}
+		</TD>
+	</TR>
+</TABLE>
+{/block}

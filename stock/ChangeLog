@@ -1,0 +1,14 @@
+20160520
+- Added CSV import for stckreceiveproductlist with example file for download
+- Added filter for stckgrouplist and stckmanufacturerlist
+
+20160421
+- Added modal windows with add new group/product in stckproductadd
+- Added support for name based search in stckstocklistbox.html 
+- Locked creating product with duplicated EAN
+
+20160420
+- Added support for invoice cancel
+
+20160419 and prev.
+- Dark ages :)

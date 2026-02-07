@@ -1,0 +1,284 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<script type="text/javascript" src="/stock/js/jquery.simplemodal.js"></script>
+<link href="/stock/js/jquery.simplemodal.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="/stock/js/common.js"></script>
+<H1>{$layout.pagetitle}</H1>
+<FORM METHOD="POST" ACTION="?m=stckreceiveproductlist" NAME="receivenote" id="receivenote">
+<INPUT type="submit" class="hiddenbtn">
+{$receivenote|@print_r}
+<TABLE CLASS="lmsbox">
+	<thead>
+	<TR CLASS="DARK" COLSPAN="2">
+		<TD WIDTH="1%" CLASS="fleftu" NOWRAP>
+			<IMG SRC="img/stck.png" ALT="">
+			<B>{t}Supplier:{/t}</b>
+			{if $receivenote.doc.supplierid > 0}{$receivenote.doc.supplier}{else}{t}INTERNAL{/t}{/if}
+			<b>{t}Sale date:{/t}</b> {$receivenote.doc.date.sale|date_format:"%Y/%m/%d"}
+			<b>{t}Document number:{/t}</b> {$receivenote.doc.number}
+		</TD>
+		<TD CLASS="frightu">
+		</TD>
+	</TR>
+	</thead>
+	<tbody>
+	<TR CLASS="LIGHT">
+		<TD COLSPAN="2" WIDTH="100%" CLASS="flr">
+			<TABLE WIDTH="100%" CELLPADDING="2">
+				<tr class="dark" style="text-align: center;">
+					<td class="fleftu">{t}Warehouse{/t}</td>
+					<td class="fbt">{t}Product{/t}</td>
+					<td class="fbt">{t}Amount:{/t}</td>
+					<td class="fbt">{t}Unit:{/t}</td>
+					<!--<td class="fbt" colspan="3">{t}Packaging:{/t}</td>-->
+					<td class="fbt">{t}Net Value:{/t}</td>
+					<td class="fbt">{t}Tax:{/t}</td>
+					<td class="fbt">{t}Gross Value:{/t}</td>
+					<td class="fbt">{t}Warranty:{/t}</td>
+					<td class="fbt">{t}GTU code:{/t}</td>
+					<td class="frightu">{t}Serial number:{/t}</td>
+				</tr>
+				<TR CLASS="lucid">
+					<TD>
+						<select name="receivenote[product][warehouse]" {tip text="Select warehouse" trigger="warehouse"}>
+						{foreach item=wh from=$warehouses}
+							<option value="{$wh.id}"{if $wh.def} selected{/if}>{$wh.name}</option>
+						{/foreach}
+						</select>
+					</TD>
+					<TD>
+						<INPUT type="hidden" name="receivenote[product][pid]" id="pid" VALUE="{$itemdata.pid}">
+						<INPUT type="text" id="pinput" name="receivenote[product][product]" SIZE="40" VALUE="{$itemdata.product|escape}" {tip text="Choose product from list" trigger="product"}>
+						<A HREF="javascript:modalwindow('stckproductadd', 600, 430);"><IMG SRC="img/producer.gif" ALT="" {tip text="New product"}></A>
+					</TD>
+					<TD>
+						<INPUT type="text" SIZE="3" name="receivenote[product][count]" id="pcount" VALUE="{$itemdata.count}" {tip text="Product ammount" trigger="count"}>
+					</TD>
+					<TD>
+						 <SELECT size="1" name="receivenote[product][unit]" {tip text="Select unit"}>
+							{foreach item=q from=$quantities}
+								<OPTION value="{$q.id}"{if $q.def} selected{/if}>{$q.name}</OPTION>
+							{/foreach}
+						</SELECT>
+					</TD>
+					<!--<TD align="center">
+						<INPUT TYPE="checkbox" id="packaging_check" name="receivenote[product][packaging]" value="1">
+					</TD>
+					<TD>
+						<INPUT TYPE="text" id="packaging_count" name="receivenote[product][packaging][count]" SIZE="6" DISABLED {tip text="Eneter amount in one package" trigger="packaging_unit"}>
+					</TD>
+					<TD>
+						 <SELECT size="1" id="packaging_unit" name="receivenote[product][packaging][unit]" DISABLED {tip text="Select unit"}>
+						 	{foreach item=q from=$quantities}
+								<OPTION value="{$q.id}"{if $q.def} selected{/if}>{$q.name}</OPTION>
+							{/foreach}
+						</SELECT>
+					</TD>-->
+					<TD align="center">
+						<INPUT type="text" name="receivenote[product][price][net]" SIZE="6" style="text-align: right;" VALUE="{$itemdata.price.net}" {tip text="Enter value" trigger="price"}>
+					</TD>
+					<td align="right">
+						<SELECT size="1" name="receivenote[product][price][taxid]" {tip text="Select Tax rate"}>
+							{foreach item=tax from=$taxeslist}
+								<OPTION value="{$tax.id}"{if $tax.value == $_config.phpui.default_taxrate} selected{/if}>{$tax.label}</OPTION>
+							{/foreach}
+						</SELECT>
+					</td>
+					<td align="center">
+						<INPUT type="text" name="receivenote[product][price][gross]" SIZE="6" style="text-align: right;" VALUE="{$itemdata.price.gross}" {tip text="Enter value" trigger="price"}>
+					</td>
+					<td align="center">
+						<INPUT type="text" name="receivenote[product][warranty]" size="6" style="text-align: right;" VALUE="{$itemdata.warranty}" {tip text="Eneter warranty period in months" trigger="warranty"}>
+					</td>
+					<td align="center">
+						<SELECT size="1" id="gtucs" name="receivenote[product][gtu_code]" onChange="$('#gtu_help').attr('title', $('#gch' + this.value).text()).attr('data-tooltip', $('#gch' + this.value).text())" {tip text="Select GTU code" trigger="gtu_code"}>
+							<OPTION value=""{if !$itemdata.gtu_code} selected{/if}>-- BRAK --</OPTION>
+							{foreach item=q from=$gtucodes}
+                                                                <OPTION value="{$q.id}"{if $itemdata.gtu_code == $q.id} selected{/if}>{$q.code} (id: {$q.id})</OPTION>
+                                                        {/foreach}
+						</SELECT>
+						{foreach item=q from=$gtucodes}
+						<span id="gch{$q.id}" style="display: none;">{$q.description}</span>
+						{/foreach}
+						<img id="gtu_help" src="img/help.png" alt="{t}Help{/t}" {tip text="GTU code description"} onClick="return overlib($(this).attr('data-tooltip'), STICKY, CAPTION, 'Opis kodu GTU', FGCOLOR, '#999999', BGCOLOR, '#333333', CENTER)">
+					</td>
+					<TD align="right">
+						<div id="pserial">
+							{if $itemdata.serial}
+								{foreach $itemdata.serial as $s}
+									<INPUT TYPE="text" NAME="receivenote[product][serial][]" SIZE="40" VALUE="{$s}"><br />
+								{/foreach}
+							{else}<INPUT TYPE="text" SIZE="40" DISABLED>{/if}
+						</div>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>	
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD width="100%" CLASS="fbottomu" COLSPAN="2" align="right">
+			<A HREF="javascript:document.receivenote.submit();" accesskey="s">{t}Add{/t} <IMG SRC="img/save.gif" ALT=""></A>
+		</TD>
+	</TR>
+	</tbody>
+</TABLE>
+</FORM>
+<TABLE CELLPADDING="3" width="100%" style="margin-top: 10px;">
+	<tr class="dark" style="text-align: center;">
+		<td class="fleftu">{t}Id{/t}</td>
+		<td class="fbt">{t}Warehouse{/t}</td>
+		<td class="fbt">{t}Product{/t}</td>
+		<td class="fbt">{t}Warranty:{/t}</td>
+		<td class="fbt">{t}Serial number:{/t}</td>
+		<td class="fbt">{t}GTU code:{/t}</td>
+		<td class="fbt">{t}Amount:{/t}</td>
+		<!--<td class="fbt">{t}Packaging:{/t}</td>-->
+		<td class="fbt">{t}Net Value:{/t}</td>
+		<td class="fbt">{t}Tax:{/t}</td>
+		<td class="fbt">{t}Gross Value:{/t}</td>
+		<td class="frightu"></td>
+	</tr>
+{cycle values="light,lucid" print=false}
+{foreach $receivenote.product as $p name=p}
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD class="fleft" align="right">{$smarty.foreach.p.iteration}.</TD>
+		<TD align="center">{$p.warehousename}</TD>
+		<TD>{$p.product}</TD>
+		<TD align="right">{$p.warranty}</TD>
+		<TD align="right">
+			{foreach item=s from=$p.serial}
+				{$s}<br />
+			{/foreach}
+		</TD>
+		<TD align="right">{$p.gtu_code}</TD>
+		<TD align="right">{$p.count} {$p.unitname}</TD>
+		<!--<TD align="right">{$p.packaging.count} {$p.packaging.unitname}</TD>-->
+		<TD align="right">{$p.price.net|money_format}</TD>
+		<TD align="right">{$p.price.tax}</TD>
+		<TD align="right">{$p.price.gross|money_format}</TD>
+		<TD class="fright" align="right">
+			<a href="?m=stckreceiveproductlist&amp;action=edit&amp;id={$p@key}"><img src="img/edit.gif" alt="[ {t}Edit{/t} ]"></a>
+			<a href="?m=stckreceiveproductlist&amp;action=del&amp;id={$p@key}"><img src="img/delete.gif" alt="[ {t}Delete{/t} ]"></a>
+		</TD>
+	</TR>
+{/foreach}
+	<TR CLASS="light">
+		<TD COLSPAN="7" WIDTH="70%" CLASS="fleftu" ALIGN="right">
+			<B>{t}Total:{/t} {$p@total|default:"0"}</B>
+		</TD>
+		<TD CLASS="ftop" align="right">
+			<B>{$receivenote.doc.net|default:"0"|money_format}</B>
+		</TD>
+		<TD CLASS="ftop">&nbsp;</TD>
+		<TD CLASS="ftop" ALIGN="right">
+			<B>{$receivenote.doc.gross|default:"0"|money_format}</B>
+		</TD>
+		<TD CLASS="frightu">&nbsp;</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="99%" COLSPAN="11" CLASS="fleftu frightu" ALIGN="right">
+			<A href="?m=stckreceiveproductlist&amp;action=save" ACCESSKEY="S" onClick="if(confirm('{t}Are you sure that you want to save receive note?{/t}')) { return true; } else { return false; } ">{t}Submit{/t} <img src="img/save.gif" alt=""></A>
+			<A href="?m=stckreceiveproductlist&amp;action=cancel" ACCESSKEY="C" onClick="if(confirm('{t}Are you sure that you want to cancel receive note?{/t}')) { return true; } else { return false; } ">{t}Cancel{/t} <img src="img/cancel.gif" alt=""></A>
+		</TD>
+	</TR>
+</TABLE>
+<form enctype="multipart/form-data" name="receivenotefile" method="post" action="?m=stckreceiveproductlist" id="receivenotefile">
+<TABLE CELLPADDING="3" width="100%" style="margin-top: 10px;">
+<tr class="dark" style="text-align: center;">
+        <td class="fall" colspan="5"><b>{t}File upload{/t} - <a target="_blank" href="/stock/import.csv">{t}Example{/t}</a></b></td>
+</tr>
+<tr class="dark">
+        <td class="fleftu" style="width: 1%;">{t}Warehouse{/t}</td>
+        <td class="fbt" style="width: 5%;">{t}Tax:{/t}</td>
+        <td class="fbt">{t}File{/t}</td>
+	<td colspan="2" class="frightu"></td>
+</td>
+<tr>
+        <TD class="fleftu">
+                <select name="receivenote[product_tmp][warehouse]" {tip text="Select warehouse" trigger="warehouse_file"}>
+                {foreach item=wh from=$warehouses}
+                        <option value="{$wh.id}"{if $wh.def} selected{/if}>{$wh.name}</option>
+                {/foreach}
+                </select>
+        </TD>
+        <td align="center" class="fbt">
+                <SELECT size="1" name="receivenote[product_tmp][taxid]" {tip text="Select Tax rate"}>
+                        {foreach item=tax from=$taxeslist}
+                        <OPTION value="{$tax.id}"{if $tax.value == $_config.phpui.default_taxrate} selected{/if}>{$tax.label}</OPTION>
+                        {/foreach}
+                </SELECT>
+        </td>
+	<td align="left" class="fbt">
+		<input type="checkbox" name="receivenote[product_tmp][create_m]" id="create_m"> - <label for="create_m">{t}automatically create manufacturers{/t}</label>
+	</td>
+	<td align="left" class="fbt">
+		<input type="checkbox" name="receivenote[product_tmp][create_p]" id="create_p"> - <label for="create_p">{t}automatically create products{/t}</label>
+	</td>
+        <td class="frightu"><input type="file" name="receivenote[file]" {tip trigger="file"}></td>
+</tr>
+<TR CLASS="LIGHT">
+        <TD width="100%" CLASS="fbottomu" COLSPAN="5" align="right">
+                <A HREF="javascript:document.receivenotefile.submit();" accesskey="s">{t}Add{/t} <IMG SRC="img/save.gif" ALT=""></A>
+        </TD>
+</TR>
+</TABLE>
+</form>
+<TABLE CELLPADDING="3" width="100%" style="margin-top: 10px;">
+<tr class="dark" style="text-align: center;">
+<td class="fleftu"></td>
+<td class="fbt">{t}Warehouse{/t}</td>
+<td class="fbt">{t}Product{/t}</td>
+<td class="fbt">{t}Warranty:{/t}</td>
+<td class="fbt">{t}Serial number:{/t}</td>
+<!--<td class="fbt">{t}Packaging:{/t}</td>-->
+<td class="fbt">{t}Net Value:{/t}</td>
+<td class="fbt">{t}Tax:{/t}</td>
+<td class="fbt">{t}Gross Value:{/t}</td>
+</tr>
+{cycle values="light,lucid" print=false}
+{foreach $receivenote.product_tmp as $p2 name=p2}
+<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+        <TD class="fleft" align="right">{$smarty.foreach.p2.iteration}.</TD>
+        <TD align="center">{$p2.warehousename}</TD>
+	<TD{if $p2.newp} class="alert" {tip text="{t}New product{/t}"}{/if}>{$p2.product}</TD>
+        <TD align="right">{$p2.warranty}</TD>
+        <TD align="right">{$p2.serial}</TD>
+        <TD align="right">{$p2.price.net|money_format}</TD>
+        <TD align="right">{$p2.price.tax}</TD>
+        <TD align="right" class="fright">{$p2.price.gross|money_format}</TD>
+</TR>
+{/foreach}
+<TR CLASS="light">
+        <TD COLSPAN="5" WIDTH="70%" CLASS="fleftu" ALIGN="right">
+                <B>{t}Total:{/t} {$p2@total|default:"0"}</B>
+        </TD>
+        <TD CLASS="ftop" align="right">
+                <B>{$receivenote.doc_tmp.net|default:"0"|money_format}</B>
+        </TD>
+        <TD CLASS="ftop">&nbsp;</TD>
+        <TD CLASS="frightu" ALIGN="right">
+                <B>{$receivenote.doc_tmp.gross|default:"0"|money_format}</B>
+        </TD>
+</TR>
+<TR>
+        <TD WIDTH="99%" COLSPAN="9" CLASS="fleftu frightu" ALIGN="right">
+                <A href="?m=stckreceiveproductlist&amp;actiontmp=save" onClick="if(confirm('{t}Are you sure that you want to add these positions receive note?{/t}')) { return true; } else { return false; } ">{t}Submit{/t} <img src="img/save.gif" alt=""></A>
+                <A href="?m=stckreceiveproductlist&amp;actiontmp=cancel" onClick="if(confirm('{t}Are you sure that you want to cancel import?{/t}')) { return true; } else { return false; } ">{t}Cancel{/t} <img src="img/cancel.gif" alt=""></A>
+        </TD>
+</TR>
+</TABLE>
+<SCRIPT type="text/javascript">
+<!--
+new AutoSuggest(document.getElementById('receivenote'),document.getElementById('pinput'),'?m=quicksearch&ajax=1&mode=product&what=',1);
+document.forms['receivenote'].elements['pinput'].focus();
+//-->
+</SCRIPT>
+{if $itemdata.gtu_code}
+<SCRIPT type="text/javascript">
+<!--
+$('#gtu_help').attr('title', $('#gch' + {$itemdata.gtu_code}).text()).attr('data-tooltip', $('#gch' + {$itemdata.gtu_code}).text())
+//-->
+</SCRIPT>
+{/if}
+{/block}

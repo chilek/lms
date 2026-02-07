@@ -1,0 +1,132 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<H1>{$layout.pagetitle}</H1>
+<TABLE CLASS="lmsbox">
+	<thead>
+	<TR CLASS="dark">
+		<TD COLSPAN="7">
+		<FORM METHOD="POST" ACTION="?m=stckproductlist">
+		<TABLE WIDTH="100%">
+			<TR CLASS="bold">
+				<TD style="padding: 3px 3px 0 3px;">{t}Warehouse{/t}:</TD>
+				<TD style="padding: 3px 3px 0 3px;">{t}Manufacturer{/t}:</TD>
+				<TD style="padding: 3px 3px 0 3px;">{t}Group{/t}:</TD>
+			</TR>
+			<TR>
+				<TD style="width: 1%; padding: 3px;">
+					<select name="s_pl[warehouse]" onChange="this.form.submit()">
+						<option value="">{t}- select warehouse -{/t}</option>
+						{foreach from=$warehouses item=wh}
+						<option value="{$wh.id}"{if $s_pl.warehouse eq $wh.id} SELECTED{/if}>{$wh.name}</option>
+						{/foreach}
+					</select>
+				</TD>
+				<TD style="padding: 3px; width: 1%;">
+					<select name="s_pl[manufacturer]" onChange="this.form.submit()">
+						<option value="">{t}- select manufacturer -{/t}</option>
+						{foreach from=$manufacturers item=mf}
+						<option value="{$mf.id}"{if $s_pl.manufacturer eq $mf.id} SELECTED{/if}>{$mf.name}</option>
+						{/foreach}
+					</select>
+				</TD>
+				<TD style="padding: 3px; width: 1%;">
+					<select name="s_pl[group]" onChange="this.form.submit()">
+						<option value="">{t}- select group -{/t}</option>
+						{foreach from=$groups item=g}
+						<option value="{$g.gid}"{if $s_pl.group eq $g.gid} SELECTED{/if}>{$g.gname}</option>
+						{/foreach}
+					</select>
+				</TD>
+				<td align="right" style="padding: 3px;">
+					<A href="?m={$layout.module}&amp;sdp={!$sdp}"{if $sdp} CLASS="bold"{/if}>{t}Show deleted{/t} <IMG src="img/delete.gif" alt=""></A>
+					<A href="?m=stckproductadd">{t}Add product{/t} <IMG src="img/save.gif" alt=""></A>
+				</td>
+
+			</TR>
+		</TABLE>
+		</FORM>
+		</TD>
+	</TR>
+	<TR CLASS="dark" {tip text="Click on column name to change sorting order"}>
+		<TD CLASS="fleftu" width="97%">
+			<IMG src="img/producer.gif" ALT="">&nbsp;<A href="?m=stckproductlist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{t}Name:{/t}</B></A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+		</TD>
+		<TD CLASS="fbt" width="1%" align="right" valign="top" NOWRAP>
+			<A href="?m=stckproductlist&o=manufacturer{if $listdata.direction eq "asc" && $listdata.order eq "manufacturer"},desc{/if}">{t}Manufacturer:{/t}</A> {if $listdata.order eq "manufacturer"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+		</TD>
+		<TD CLASS="fbt" width="1%" align="right" valign="top" NOWRAP>
+			<A href="?m=stckproductlist&o=group{if $listdata.direction eq "asc" && $listdata.order eq "group"},desc{/if}">{t}Group:{/t}</A> {if $listdata.order eq "group"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+		</TD>
+		<TD CLASS="fbt" width="1%" align="right" valign="top" NOWRAP>
+			<A href="?m=stckproductlist&o=quant{if $listdata.direction eq "asc" && $listdata.order eq "quant"},desc{/if}">{t}Stock:{/t}</A> {if $listdata.order eq "quant"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+		</TD>
+		<TD CLASS="fbt" width="1%" align="right" valign="top">
+			<A href="?m=stckproductlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">ID:</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD width="1%" class="frightu" align="right" nowrap>
+		</TD>
+
+	</TR>
+	{if $listdata.total != 0}
+	<TR CLASS="dark">
+		<TD CLASS="fall" colspan="7" WIDTH="100%">
+			{include file="scroller.html" loop=$productlist scrollerno=1}
+		</TD>
+	</TR>
+	{/if}
+	</thead>
+	<tbody>
+	{cycle values="light,lucid" print=false}
+	{section name=productlist loop=$productlist start=$start max=$pagelimit}
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD width="97%" CLASS="fleft" onClick="return self.location.href='?m=stckproductinfo&id={$productlist[productlist].id}';" VALIGN="TOP">
+			<IMG src="img/producer.gif" ALT=""> <a name="{$productlist[productlist].id}"><B>{$productlist[productlist].pname}</B></A><BR>
+			{$productlist[productlist].comment}
+		</TD>
+		<TD WIDTH="1%" onClick="return self.location.href='?m=stckproductinfo&id={$productlist[productlist].mid}';" align="right" VALIGN="TOP">
+			<nobr><A href="?m=stckgroupinfo&amp;id={$productlist[productlist].mid}">{$productlist[productlist].mname}</a></nobr>
+		</TD>
+		<TD WIDTH="1%" onClick="return self.location.href='?m=stckproductinfo&id={$productlist[productlist].gid}';" align="right" VALIGN="TOP">
+			<nobr><A href="?m=stckgroupinfo&amp;id={$productlist[productlist].gid}">{$productlist[productlist].gname}</a></nobr>
+		</TD>
+		<TD WIDTH="1%" onClick="return self.location.href='?m=stckproductinfo&id={$productlist[productlist].id}';" align="right" VALIGN="TOP">
+			{if $productlist[productlist].scount}{$productlist[productlist].scount}{else}0{/if}
+		</TD>
+		<TD WIDTH="1%" onClick="return self.location.href='?m=stckproductinfo&id={$productlist[productlist].id}';" align="right" VALIGN="TOP">
+			({$productlist[productlist].id|string_format:"%04d"})
+		</TD>
+		<TD WIDTH="1%" CLASS="fright" align="right">
+		 	<nobr>
+				<a href="?m=stckproductdel&id={$productlist[productlist].id}" onClick="return confirmLink(this, '{t name=$productlist[productlist].name}Are you sure, you want to remove product \'$name\' from database? product with current stock cannot be removed!{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+				<a href="?m=stckproductedit&id={$productlist[productlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+				<a href="?m=stckproductinfo&id={$productlist[productlist].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
+			</nobr>
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD colspan="7" CLASS="fall" align="center">
+			<p>&nbsp;</p>
+			<p><B>{t}There are no products in your database.{/t}</b></p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/section}
+	{if $listdata.total != 0}
+	<TR CLASS="dark">
+		<TD CLASS="fall" colspan="7" WIDTH="100%">
+			{include file="scroller.html" loop=$productlist}
+		</TD>
+	</TR>
+	{/if}
+	<TR CLASS="light">
+		<TD WIDTH="99%" COLSPAN="7" CLASS="fleftu frightu" ALIGN="right">
+			<B>
+				{t}Total:{/t} {$listdata.total|default:"0"}
+			</B>
+		</TD>
+	</TR>	
+	</tbody>
+</TABLE>
+{/block}

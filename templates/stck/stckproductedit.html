@@ -1,0 +1,165 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<H1>{$layout.pagetitle}</H1>
+<P><FORM METHOD="POST" ACTION="?m=stckproductedit&id={$productedit.id}" NAME="productedit">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE CLASS="lmsbox">
+	<thead>
+	<TR CLASS="DARK" COLSPAN="2">
+		<TD WIDTH="1%" CLASS="fleftu" NOWRAP>
+			<IMG SRC="img/stck.png" ALT="">
+			<B>{t}Product name:{/t}</B>
+		</TD>
+		<TD CLASS="frightu">
+			<INPUT TYPE="TEXT" SIZE="23" NAME="productedit[name]" VALUE="{$productedit.name|escape}" {tip trigger="name" bold=1}>
+		</TD>
+	</TR>
+	</thead>
+	<tbody>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/serialnumber.gif" ALT="">
+			<B>{t}Quantity in unit:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<INPUT TYPE="TEXT" SIZE="5" NAME="productedit[quantity]" VALUE="{if $productedit.quantity}{$productedit.quantity}{else}1{/if}" {tip trigger="quantity" bold=1}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/serialnumber.gif" ALT="">
+			<B>{t}EAN:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<INPUT TYPE="TEXT" SIZE="23" NAME="productedit[ean]" VALUE="{$productedit.ean}" {tip trigger="ean" bold=1}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/netdev_model.gif" ALT=""><B>{t}Type:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<SELECT SIZE="1" NAME="productedit[typeid]" {tip text="Select type" trigger="typeid"}>
+			{foreach item=type from=$tlist}
+				<OPTION VALUE="{$type.id}"{if $type.id == $productedit.typeid} selected{/if}>{$type.name}</OPTION>
+			{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/nodegroup.gif" ALT=""><B>{t}Group:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<SELECT SIZE="1" NAME="productedit[groupid]" {tip text="Select group" trigger="groupid"}>
+			{foreach item=group from=$glist}
+				<OPTION VALUE="{$group.id}"{if $group.id == $productedit.groupid} selected{/if}>{$group.name}</OPTION>
+			{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/producer.gif" ALT=""><B>{t}Manufacturer:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<SELECT SIZE="1" NAME="productedit[manufacturerid]" {tip text="Select manufacturer" trigger="manufacturerid"}>
+			{foreach item=man from=$mlist}
+				<OPTION VALUE="{$man.id}"{if $man.id == $productedit.manufacturerid} selected{/if}>{$man.name}</OPTION>
+			{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/tax.gif" ALT="">
+			<B>{t}Tax:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<SELECT SIZE="1" NAME="productedit[taxid]" {tip text="Select Tax rate" trigger="taxid"}>
+			{foreach item=tax from=$txlist}
+				<OPTION VALUE="{$tax.id}"{if $tax.value == $_config.phpui.default_taxrate || $tax.id == $productedit.taxid} selected{/if}>{$tax.label}</OPTION>
+			{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/port.gif" ALT=""><B>{t}Quantity name:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<SELECT SIZE="1" NAME="productedit[quantityid]" {tip text="Select quantity" trigger="quantityid"}>
+			{foreach item=ql from=$qlist}
+				<OPTION VALUE="{$ql.id}"{if $ql.id == $productedit.quantityid} selected{/if}>{$ql.name}</OPTION>
+			{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/port.gif" ALT="">
+			<B>{t}Quantity check:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<INPUT TYPE="checkbox" value="1" name="productedit[quantitycheck]"{if $productedit.quantitycheck} checked{/if}>
+		</TD>
+	</TR>
+
+        <TR CLASS="LIGHT">
+                <TD WIDTH="1%" CLASS="fleft" NOWRAP>
+                        <IMG SRC="img/port.gif" ALT="">
+                        <B>{t}GTU code:{/t}</B>
+                </TD>
+                <TD CLASS="fright">
+                         <SELECT size="1" name="productedit[gtu_code]" onChange="$('#gtu_help').attr('title', $('#gch' + this.value).text()).attr('data-tooltip', $('#gch' + this.value).text())" {tip text="Select GTU code" trigger="gtu_code"}>
+                                <OPTION value="" selected>-- BRAK --</OPTION>
+                                {foreach item=q from=$gtucodes}
+                                        <OPTION value="{$q.id}"{if $q.id eq $productedit.gtu_id} selected{/if}>{$q.code} (id: {$q.id})</OPTION>
+                                {/foreach}
+                        </SELECT>
+                        {foreach item=q from=$gtucodes}
+                                <span id="gch{$q.id}" style="display: none;">{$q.description}</span>
+                        {/foreach}
+                        <img id="gtu_help" src="img/help.png" alt="{t}Help{/t}" {tip text="GTU code description"} onClick="return overlib($(this).attr('data-tooltip'), STICKY, CAPTION, 'Opis kodu GTU', FGCOLOR, '#999999', BGCOLOR, '#333333', CENTER)">
+                </TD>
+        </TR>
+        <TR CLASS="LIGHT">
+                <TD WIDTH="1%" CLASS="fleft" NOWRAP>
+                        <IMG SRC="img/money.gif" ALT="">
+                        <B>{t}Wholesale price:{/t}</B>
+                </TD>
+                <TD CLASS="fright">
+                        <INPUT TYPE="TEXT" SIZE="23" NAME="productedit[gprice]" VALUE="{$productedit.gprice}" {tip trigger="gprice" bold=1}>
+                </TD>
+        </TR>
+        <TR CLASS="LIGHT">
+                <TD WIDTH="1%" CLASS="fleft" NOWRAP>
+                        <IMG SRC="img/money.gif" ALT="">
+                        <B>{t}Suggested price:{/t}</B>
+                </TD>
+                <TD CLASS="fright">
+                        <INPUT TYPE="TEXT" SIZE="23" NAME="productedit[srp]" VALUE="{$productedit.srp}" {tip trigger="srp" bold=1}>
+                </TD>
+        </TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/info1.gif" ALT=""> <B>{t}Comment:{/t}</B></TD>
+		<TD CLASS="fright">
+		  <TEXTAREA NAME="productedit[comment]" COLS="60" ROWS="7" {tip text="Enter comment (optional)"}>{$productedit.comment}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD width="100%" CLASS="fbottomu" COLSPAN="2" align="right">
+			<A HREF="javascript:document.productedit.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+			<A HREF="?m=stckstock">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A><BR>
+		</TD>
+	</TR>
+	</tbody>
+</TABLE>
+</FORM></P>
+<SCRIPT type="text/javascript">
+<!--
+document.forms['productedit'].elements['productedit[name]'].focus();
+//-->
+</SCRIPT>
+{/block}

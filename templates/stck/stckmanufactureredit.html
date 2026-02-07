@@ -1,0 +1,40 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<H1>{$layout.pagetitle}</H1>
+<P><FORM METHOD="POST" ACTION="?m=stckmanufactureredit&id={$manufactureredit.id}" NAME="manufactureredit">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE CLASS="lmsbox">
+	<thead>
+	<TR CLASS="DARK" COLSPAN="2">
+		<TD WIDTH="1%" CLASS="fleftu" NOWRAP>
+			<IMG SRC="img/stck.png" ALT="">
+			<B>{t}Manufacturer name:{/t}</B>
+		</TD>
+		<TD CLASS="frightu">
+			<INPUT TYPE="TEXT" SIZE="23" NAME="manufactureredit[name]" VALUE="{$manufactureredit.name}" {tip trigger="name" bold=1}>
+		</TD>
+	</TR>
+	</thead>
+	<tbody>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/info1.gif" ALT=""> <B>{t}Comment:{/t}</B></TD>
+		<TD CLASS="fright">
+		  <TEXTAREA NAME="manufactureredit[comment]" COLS="60" ROWS="7" {tip text="Enter comment (optional)"}>{$manufactureredit.comment}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD width="100%" CLASS="fbottomu" COLSPAN="2" align="right">
+			<A HREF="javascript:document.manufactureredit.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+			<A HREF="?m=stckmanufacturers">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A><BR>
+		</TD>
+	</TR>
+	</tbody>
+</TABLE>
+</FORM></P>
+<SCRIPT type="text/javascript">
+<!--
+document.forms['manufactureredit'].elements['manufactureredit[name]'].focus();
+//-->
+</SCRIPT>
+{/block}

@@ -1,0 +1,179 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<SCRIPT TYPE="text/javascript">
+<!--
+function filter() {
+	document.stckfilterreceivenotes.action="?m=stckreceivenotelist&action=filter";
+	document.stckfilterreceivenotes.target="";
+	document.stckfilterreceivenotes.submit();
+}
+
+function pays() {
+	if (!confirm('{t}Are you sure, you want to check selected receive note as accounted?{/t}'))
+		return;
+		
+	document.srnl.action="?m={$layout.module}&action=srna";
+	document.srnl.target="";
+	document.srnl.submit();
+}
+
+-->
+</SCRIPT>
+<H1>{$layout.pagetitle}</H1>
+<TABLE CELLPADDING="3" width="100%">
+	<thead>
+	<TR CLASS="dark">
+		<TD CLASS="frightu fleftu" COLSPAN="10" ALIGN="right">
+			<FORM name="stckfilterreceivenotes" method="POST" action="?m=stckreceivenotelist&amp;action=filter">
+			<TABLE CELLPADDING="3" WIDTH="100%">
+				<tr>
+				<TD style="width: 1%;" class="nobr">
+					<b>{trans("Supplier:")}</b>&nbsp;
+					{customerlist selectname="cid" version="2" inputname="customerid" selected=$filter.cid}
+					<b>{t}Document number:{/t}</b>&nbsp;
+					<INPUT TYPE="text" name="stckrnn" {tip text="Document number"} VALUE="{$filter.stckrnn}">
+					&nbsp;&nbsp;&nbsp;
+					<b>{t}Time period{/t}:</b>&nbsp;
+					<select name="days">
+						<option value="-"{if $filter.days eq false} selected{/if}>-</option>
+						<option value="7"{if $filter.days eq 7} selected{/if}>7 {t}days{/t}</option>
+						<option value="14"{if $filter.days eq 14} selected{/if}>14 {t}days{/t}</option>
+						<option value="30"{if $filter.days eq 30} selected{/if}>30 {t}days{/t}</option>
+						<option value="90"{if $filter.days eq 90} selected{/if}>90 {t}days{/t}</option>
+						<option value="180"{if $filter.days eq 180} selected{/if}>180 {t}days{/t}</option>
+						<option value="365"{if $filter.days eq 365} selected{/if}>365 {t}days{/t}</option>
+					</select>
+				</TD>
+				<td><a href="javascript:filter()">&raquo;&raquo;&raquo;</a></td>
+				</TR>
+				<tr><td colspan="4" align="right"><A HREF="?m=stckreceivenotelist&amp;sprn={!$sprn}"{if $sprn} CLASS="bold"{/if}>{t}Show paid receive notes{/t}</A></td></tr>
+			</TABLE>
+			</FORM>
+		</TD>
+	</TR>
+	<TR CLASS="dark" {tip text="Click on column name to change sorting order"}>
+		<TD CLASS="fleftu" width="97%">
+			<IMG src="img/producer.gif" ALT="">&nbsp;<A href="?m=stckreceivenotelist&o=sname{if $listdata.direction eq "asc" && $listdata.order eq "sname"},desc{/if}"><B>{t}Supplier:{/t}</B></A> {if $listdata.order eq "sname"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+		</TD>
+		<TD CLASS="fbt nobr" ALIGN="left" valign="top">
+			{t}Document number:{/t}
+		</TD>
+		<TD CLASS="fbt" ALIGN="right" valign="top" NOWRAP>
+			<A href="?m=stckreceivenotelist&o=stdate{if $listdata.direction eq "asc" && $listdata.order eq "stdate"},desc{/if}">{t}Settlement date:{/t}</A> {if $listdata.order eq "stdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR/>
+		</TD>
+		<TD CLASS="fbt" ALIGN="right" valign="top" NOWRAP>
+			<A href="?m=stckreceivenotelist&o=sltdate{if $listdata.direction eq "asc" && $listdata.order eq "sldate"},desc{/if}">{t}Sale date:{/t}</a> {if $listdata.order eq "sldate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR/>
+		</TD>
+		<TD CLASS="fbt" ALIGN="right" valign="top" NOWRAP>
+			<A href="?m=stckreceivenotelist&o=dl{if $listdata.direction eq "asc" && $listdata.order eq "dl"},desc{/if}">{t}Deadline:{/t}</a> {if $listdata.order eq "dl"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR/>
+		</TD>
+		<TD CLASS="fbt" ALIGN="right" valign="top" NOWRAP>
+			<A href="?m=stckreceivenotelist&o=gv{if $listdata.direction eq "asc" && $listdata.order eq "gv"},desc{/if}">{t}Gross Value:{/t}</a>{if $listdata.order eq "gv"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR/>
+		</TD>
+		<TD class="fbt"></TD>
+		<TD CLASS="fbt" ALIGN="right" valign="top" NOWRAP>
+			 <A href="?m=stckreceivenotelist&o=gv{if $listdata.direction eq "asc" && $listdata.order eq "cd"},desc{/if}">{t}Creation date:{/t}</a> {if $listdata.order eq "cd"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR/>
+		<TD CLASS="fbt" width="1%" align="right" valign="top">
+			<A href="?m=stckreceivenotelist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">ID:</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD width="1%" class="frightu" align="right" nowrap>
+		</TD>
+
+	</TR>
+	{if $listdata.total != 0}
+	<TR CLASS="dark">
+		<TD CLASS="fall" COLSPAN="10" WIDTH="100%">
+			{include file="scroller.html" loop=$receivenotelist scrollerno=1}
+		</TD>
+	</TR>
+	{/if}
+	</thead>
+	<tbody>
+	<FORM METHOD="post" NAME="srnl" ACTION="?m=balanceadd">
+	{cycle values="light,lucid" print=false}
+	{section name=receivenotelist loop=$receivenotelist start=$start max=$pagelimit}
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD width="97%" CLASS="fleft" onClick="return self.location.href='?m=stckreceivenoteinfo&id={$receivenotelist[receivenotelist].id}';" VALIGN="TOP">
+			<IMG src="img/producer.gif" ALT=""> <a href="?m=customerinfo&&id={$receivenotelist[receivenotelist].sid}"><B>{$receivenotelist[receivenotelist].sname}</B></A> ({$receivenotelist[receivenotelist].sbalance|money_format})<BR>
+			{$receivenotelist[receivenotelist].comment}
+		</TD>
+		<TD ALIGN="left" onClick="return self.location.href='?m=stckreceivenoteinfo&id={$receivenotelist[receivenotelist].id}';" NOWRAP>
+			{$receivenotelist[receivenotelist].number}
+		</TD>
+		<TD ALIGN="right" onClick="return self.location.href='?m=stckreceivenoteinfo&id={$receivenotelist[receivenotelist].id}';" NOWRAP>
+			{$receivenotelist[receivenotelist].datesettlement|date_format:"%Y/%m/%d"}
+		</TD>
+		<TD ALIGN="right" onClick="return self.location.href='?m=stckreceivenoteinfo&id={$receivenotelist[receivenotelist].id}';" NOWRAP>
+			{$receivenotelist[receivenotelist].datesale|date_format:"%Y/%m/%d"}
+		</TD>
+		<TD ALIGN="right" onClick="return self.location.href='?m=stckreceivenoteinfo&id={$receivenotelist[receivenotelist].id}';" NOWRAP>
+			{$receivenotelist[receivenotelist].deadline|date_format:"%Y/%m/%d"}
+		</TD>
+		<TD ALIGN="right" onClick="return self.location.href='?m=stckreceivenoteinfo&id={$receivenotelist[receivenotelist].id}';" NOWRAP>
+			{$receivenotelist[receivenotelist].grossvalue|money_format}
+		</TD>
+		<TD ALIGN="right" onClick="return self.location.href='?m=stckreceivenoteinfo&id={$receivenotelist[receivenotelist].id}';" NOWRAP>
+			<IMG SRC="img/stck_{if $receivenotelist[receivenotelist].paid}true{else}false{/if}.png" alt="{t}Paid{/t}">
+		</TD>
+		<TD ALIGN="right" onClick="return self.location.href='?m=stckreceivenoteinfo&id={$receivenotelist[receivenotelist].id}';" NOWRAP>
+			{$receivenotelist[receivenotelist].creationdate|date_format:"%Y/%m/%d"}
+		</TD>
+		<TD WIDTH="1%" onClick="return self.location.href='?m=stckmanufacturerinfo&id={$receivenotelist[receivenotelist].id}';" align="right" VALIGN="TOP">
+			({$receivenotelist[receivenotelist].id|string_format:"%04d"})
+		</TD>
+		<TD WIDTH="1%" CLASS="fright" align="right">
+		 	<nobr>
+				<a href="?m=stckreceivenoteedit&id={$receivenotelist[receivenotelist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+				<a href="?m=stckreceivenoteinfo&id={$receivenotelist[receivenotelist].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
+				<INPUT TYPE="checkbox" NAME="marks[{$receivenotelist[receivenotelist].id}]">
+			</nobr>
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD COLSPAN="10" CLASS="fall" align="center">
+			<p>&nbsp;</p>
+			<p><B>{t}There are no receive notes in your database.{/t}</b></p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/section}
+	</tbody>
+	<tfoot>
+	{if $listdata.total != 0}
+	<TR CLASS="dark">
+		<TD CLASS="fall" COLSPAN="10" WIDTH="100%">
+			{include file="scroller.html" loop=$receivenotelist}
+		</TD>
+	</TR>
+	{/if}
+	<TR CLASS="dark">
+		<TD COLSPAN="2" ALIGN="left" CLASS="fleftu">
+			<TABLE>
+				<TR>
+					<TD ALIGN="left">
+						<NOBR><A HREF="javascript:pays();">{t}Account{/t} <IMG SRC="img/pay.gif" ALT=""></A></NOBR>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+		<TD COLSPAN="3" CLASS="fbt" ALIGN="right">
+			<b>{t}Total (unpaid):{/t}</b>
+		</TD>
+		<TD CLASS="fbt" ALIGN="right">
+			<b>{$listdata.totalvu|money_format}</b>
+		</TD>
+		<TD COLSPAN="4" CLASS="frightu">
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="99%" COLSPAN="10" CLASS="fleftu frightu" ALIGN="right">
+			<B>
+				{t}Total:{/t} {$listdata.total|default:"0"}
+			</B>
+		</TD>
+	</TR>
+	</tfoot>
+</TABLE>
+{/block}

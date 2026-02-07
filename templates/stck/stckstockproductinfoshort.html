@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!--// $Id$ //-->
+<html><head>
+<meta name="GENERATOR" content="LMS {$layout.lmsv}">
+<meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
+<meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
+<title>::: LMS :::</title>
+<link href="img/style.css" rel="stylesheet" type="text/css">
+<SCRIPT TYPE="text/javascript" SRC="img/autoiframe.js"></SCRIPT>
+<SCRIPT TYPE="text/javascript" SRC="img/common.js"></SCRIPT>
+</head>
+<body>
+<TABLE CLASS="lmsbox">
+<thead>
+<TR CLASS="DARK" COLSPAN="2">
+<TD WIDTH="1%" COLSPAN="2" CLASS="fleftu">
+<IMG SRC="img/stck.png" ALT="">
+<b>{$product.pname|escape|truncate:30:"...":false}</b>
+</TD>
+</TR>
+</thead>
+<tbody>
+<TR CLASS="LIGHT">
+<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+<IMG SRC="img/stck.png" ALT="">
+<B>{t}Warehouse{/t}:</B>
+<TD CLASS="fright">
+{$product.warehouse}
+</TD>
+</TR>
+<TR CLASS="LIGHT">
+<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+<IMG SRC="img/serialnumber.gif" ALT="">
+<B>{t}Serial number{/t}:</B>
+</TD>
+<TD CLASS="fright">
+{$product.serialnumber}
+</TD>
+</TR>
+<TR CLASS="LIGHT">
+<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+<IMG SRC="img/calendar.gif" ALT="">
+<B>{t}Warranty:{/t}</B>
+</TD>
+<TD CLASS="fright">
+{$product.warranty}
+</TD>
+</TR>
+<TR CLASS="LIGHT">
+<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+<IMG SRC="img/money.gif" ALT="">
+<B>{t}Net value{/t}:</B>
+</TD>
+<TD CLASS="fright">
+{$product.pricebuynet|money_format}
+</TD>
+</TR>
+<TR CLASS="LIGHT">
+<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+<IMG SRC="img/tax.gif" ALT="">
+<B>{t}Tax:{/t}</B>
+</TD>
+<TD CLASS="fright">
+{$product.txname}
+</TD>
+</TR>
+<TR CLASS="LIGHT">
+<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+<IMG SRC="img/money.gif" ALT="">
+<B>{t}Gross value{/t}:</B>
+</TD>
+<TD CLASS="fright">
+{$product.pricebuygross|money_format}
+</TD>
+</TR>
+{if $product.leavedate}
+<TR CLASS="LIGHT">
+<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+<IMG SRC="img/calendar.gif" ALT="">
+<B>{t}Sell date:{/t}</B>
+</TD>
+<TD CLASS="fright">
+{$product.leavedate|date_format:"%Y/%m/%d"}
+</TD>
+</TR>
+<TR CLASS="light">
+<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+<IMG SRC="img/money.gif" ALT="">
+<B>{t}Sell price:{/t}</B>
+</TD>
+<TD CLASS="fright">
+{$product.pricesell|money_format}
+</TD>
+</TR>
+{/if}
+<TR CLASS="LIGHT">
+<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+<IMG SRC="img/info1.gif" ALT="">
+<B>{t}Comment:{/t}</B>
+</TD>
+<TD CLASS="fright">
+<TABLE WIDTH="100%">
+	<TR>
+		<TD class="fall superlight">
+			{$product.comment|escape|replace:"\n":"<BR>"}
+		</TD>
+	</TR>
+</TABLE>
+</TD>
+</TR>
+</tbody>
+</TABLE>
+</body>
+</html>

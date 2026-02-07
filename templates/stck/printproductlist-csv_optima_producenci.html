@@ -1,0 +1,7 @@
+"Kod";"Nazwa"
+{section name=manulist loop=$manulist}
+{if $manulist[manulist].id}
+{assign var=cid value=$manulist[manulist].id}
+LP{$manulist[manulist].id};{$manulist[manulist].name}
+{/if}
+{/section}

@@ -1,0 +1,80 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<H1>{$layout.pagetitle}</H1>
+<TABLE CELLPADDING="3" width="100%">
+	<TR CLASS="dark" {tip text="Click on column name to change sorting order"}>
+		<TD CLASS="ftl" width="97%">
+			<IMG src="img/producer.gif" ALT="">&nbsp;<A href="?m=stckmanufacturerlist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{t}Name:{/t}</B></A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+		</TD>
+		<TD CLASS="ftop" width="1%" align="right" valign="top">
+			<A href="?m=stckmanufacturerlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">ID:</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD width="1%" class="ftr" align="right" nowrap>
+			<A href="?m=stckmanufactureradd">{t}New manufacturer{/t} <IMG src="img/save.gif" alt=""> </A>
+		</TD>
+
+	</TR>
+	<TR CLASS="dark">
+		<TD CLASS="flr" COLSPAN="3">
+			<TABLE width="100%">
+				<TR>
+					<TD style="padding: 3px;">
+						{foreach item=i from='A'|@range:'Z'}
+							<a href="?m=stckmanufacturerlist&amp;s={$i}" style="margin-right: 0.5%; padding: 2px 4px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; border: 1px solid #800000;" class="{if $listdata.state == $i}light{else}dark{/if}">{if $listdata.state == $i}<b>{/if}{$i}{if $listdata.state == $i}</b>{/if}</a> 
+						{/foreach}
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	{if $listdata.total != 0}
+	<TR CLASS="dark">
+		<TD CLASS="fall" colspan="3" WIDTH="100%">
+			{include file="scroller.html" loop=$manufacturerlist}
+		</TD>
+	</TR>
+	{/if}
+	{cycle values="light,lucid" print=false}
+	{section name=manufacturerlist loop=$manufacturerlist start=$start max=$pagelimit}
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD width="97%" CLASS="fleft" onClick="return self.location.href='?m=stckmanufacturerinfo&id={$manufacturerlist[manufacturerlist].id}';" VALIGN="TOP">
+			<IMG src="img/producer.gif" ALT=""> <a name="{$manufacturerlist[manufacturerlist].id}"><B>{$manufacturerlist[manufacturerlist].name}</B></A><BR>
+			{$manufacturerlist[manufacturerlist].comment}
+		</TD>
+		<TD WIDTH="1%" onClick="return self.location.href='?m=stckmanufacturerinfo&id={$manufacturerlist[manufacturerlist].id}';" align="right" VALIGN="TOP">
+			({$manufacturerlist[manufacturerlist].id|string_format:"%04d"})
+		</TD>
+		<TD WIDTH="1%" CLASS="fright" align="right">
+		 	<nobr>
+				<a href="?m=stckmanufacturerdel&id={$manufacturerlist[manufacturerlist].id}" onClick="return confirmLink(this, '{t manuf=$manufacturerlist[manufacturerlist].name}Are you sure, you want to remove manufacturer \'$manuf\' from database? Manufacturers with current stock cannot be removed!{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+				<a href="?m=stckmanufactureredit&id={$manufacturerlist[manufacturerlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+				<a href="?m=stckmanufacturerinfo&id={$manufacturerlist[manufacturerlist].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
+			</nobr>
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD colspan="3" CLASS="fall" align="center">
+			<p>&nbsp;</p>
+			<p><B>{t}There are no manufacturers in your database.{/t}</b></p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/section}
+	{if $listdata.total != 0}
+	<TR CLASS="dark">
+		<TD CLASS="fall" colspan="3" WIDTH="100%">
+			{include file="scroller.html" loop=$manufacturerlist}
+		</TD>
+	</TR>
+	{/if}
+	<TR CLASS="light">
+		<TD WIDTH="99%" COLSPAN="3" CLASS="fleftu frightu" ALIGN="right">
+			<B>
+				{t}Total:{/t} {$listdata.total|default:"0"}
+			</B>
+		</TD>
+	</TR>			
+</TABLE>
+{/block}

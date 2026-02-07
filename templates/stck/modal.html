@@ -1,0 +1,15 @@
+<script type="text/javascript" src="/stock/js/jquery.simplemodal.js"></script>
+<link href="/stock/js/jquery.simplemodal.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="/stock/js/common.js"></script>
+{if $success}
+{literal}
+<script type="text/javascript">
+$(document).ready(function() {
+{/literal}
+	{if $reload}parent.location.reload();{/if}
+	parent.$.modal.close();
+{literal}
+});
+</script>
+{/literal}
+{/if}

@@ -1,0 +1,44 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+{if !$layout.popup}<h1>{$layout.pagetitle}</h1>
+{else}
+{include file="stck/modal.html"}
+{/if}
+<P><FORM METHOD="POST" ACTION="?m=stckmanufactureradd{if $layout.popup}&popup=1{/if}" NAME="manufactureradd">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE CLASS="lmsbox">
+	<thead>
+	<TR CLASS="DARK" COLSPAN="2">
+		<TD WIDTH="1%" CLASS="fleftu" NOWRAP>
+			<IMG SRC="img/producer.gif" ALT="">
+			<B>{t}Manufacturer name{/t}:</B>
+		</TD>
+		<TD CLASS="frightu">
+			<INPUT TYPE="TEXT" SIZE="23" NAME="manufactureradd[name]" VALUE="{$manufactureradd.name}" {tip trigger="name" bold=1}>
+		</TD>
+	</TR>
+	</thead>
+	<tbody>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/info1.gif" ALT=""> <B>{t}Comment:{/t}</B></TD>
+		<TD CLASS="fright">
+		  <TEXTAREA NAME="manufactureradd[comment]" COLS="{if !$layout.popup}60{else}30{/if}" ROWS="7" {tip text="Enter comment (optional)"}>{$manufactureradd.comment}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD width="100%" CLASS="fbottomu" COLSPAN="2" align="right">
+			<A HREF="javascript:document.manufactureradd.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+			<A HREF="{if !$layout.popup}?m=stckmanufacturers{else}javascript:parent.$.modal.close();{/if}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A><BR>
+			{if !$layout.popup}<INPUT type="checkbox" name="manufactureradd[reuse]" id="manufactureradd[reuse]" value="ON" {if $manufactureradd.reuse}checked{/if}><A HREF="javascript:checkElement('manufactureradd[reuse]')"> {t}Display this form again, when this manufacturer is saved{/t}</A>{/if}
+		</TD>
+	</TR>
+	</tbody>
+</TABLE>
+</FORM></P>
+<SCRIPT type="text/javascript">
+<!--
+document.forms['manufactureradd'].elements['manufactureradd[name]'].focus();
+//-->
+</SCRIPT>
+{/block}
