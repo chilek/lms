@@ -1270,7 +1270,29 @@ switch ($mode) {
             die;
         }
 
-        break;
+	break;
+//Added for STCK by Sarenka - MAXCON
+        /*case 'supplier':
+                if (ConfigHelper::getConfig('phpui.stock'))
+                        require_once('stock/quicksearch-supplier.php');
+        break;*/
+        case 'product':
+                if (ConfigHelper::getConfig('phpui.stock'))
+                        require_once('stock/quicksearch-product.php');
+                break;
+        case 'productinv':
+                if (ConfigHelper::getConfig('phpui.stock'))
+                        require_once('stock/quicksearch-productinv.php');
+                break;
+        case 'productprice':
+                 if (ConfigHelper::getConfig('phpui.stock'))
+                        require_once('stock/quicksearch-productprice.php');
+                break;
+        case 'productwarranty':
+                if (ConfigHelper::getConfig('phpui.stock'))
+                        require_once('stock/quicksearch-productwarranty.php');
+                break;
+//END STCK
 }
 
 
