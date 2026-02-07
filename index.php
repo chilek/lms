@@ -244,6 +244,11 @@ if (!$api) {
 $error = null; // initialize error variable needed for (almost) all modules
 $warning = null; // initialize warning variable needed for (almost) all modules
 
+//Load stock module class and defs for lms-stck
+if (ConfigHelper::getConfig('phpui.stock')) {
+        require('stock/LMSStck.php');
+}
+
 // Load menu
 
 if (!$layout['popup'] && !$api) {
