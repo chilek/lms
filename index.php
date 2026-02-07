@@ -248,6 +248,7 @@ $warning = null; // initialize warning variable needed for (almost) all modules
 if (ConfigHelper::getConfig('phpui.stock')) {
         require('stock/LMSStck.php');
 }
+//and lms-st
 
 // Load menu
 

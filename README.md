@@ -6,3 +6,7 @@ Its main goal is to provide the best service to customers, as seen in large ISP 
 LMS is written in PHP, Perl and C and can use MySQL or PostgreSQL as its database backends. 
 The following features are provided at the time: customer database (names, addresses, phones, comments, etc),
 computers inventory (IP, MAC), simple financial system suited for network operations, financial balances and invoices, email warnings to users, automatic billing schedule, ability to generate (almost) any kind of config file ie. ipchains/iptables firewall scripts, DHCP daemon configuration, zones for bind, /etc/ethers entries, oident, htb and more, visualization of bandwidth consumption per host, request tracker system (Helpdesk), timetable (Organizer).
+
+# lms-stock
+Modifications for master`s LMS aimed to provide basic stock management.
+Current status: rebuild for KSeF, work-in-progress
