@@ -1,0 +1,89 @@
+{include file="clearheader.html"}
+<!--// $Id: printreceiptlist.html,v 1.5 2011/10/14 16:09:05 chilek Exp $ //-->
+<TABLE WIDTH="100%">
+	<TR>
+		<TD WIDTH="1%" VALIGN="TOP" ALIGN="LEFT" NOWRAP>
+			<H1>{t}Inventory for date{/t} {$params.rdate|date_format:"%Y/%m/%d"}</h1>
+		</TD>
+		<TD WIDTH="99%" VALIGN="TOP" NOWRAP>
+			<P class="hdf"><B>{$layout.pagetitle}</B>
+			{if $layout.username}<BR><font class="sdr"><B>{$layout.username}</B></font>{/if}
+			{if $layout.registry}<BR><font class="sdr"><B>{$layout.registry}</B></font>{/if}
+			{if $layout.group}<BR><font class="sdr"><B>{$layout.group}</B></font>{/if}
+			</P>
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
+			{$smarty.now|date_format:"%A, %x"}<BR>
+			{t a=$layout.logname}Prepared by: $a{/t}
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+	<TR>
+		<TD ALIGN="CENTER" CLASS="HEAD">
+			{t}No.{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Manufacturer{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Name{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Group{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}In stock:{/t}
+		</TD>
+		{if $type != 'brep'}<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Price buy net:{/t}
+		</TD>{/if}
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Net value{/t}:
+		</TD>
+	</TR>
+	{cycle values="white,grey" print=false}
+	{section name=p loop=$productlist}
+	<TR class="{cycle}">
+		<TD ALIGN="RIGHT">
+			{counter}
+		</TD>
+		<TD ALIGN="CENTER" NOWRAP>
+			{$productlist[p].mname}
+		</TD>
+		<TD ALIGN="LEFT" NOWRAP>
+			{$productlist[p].pname} ({$productlist[p].id})
+		</TD>
+		<TD ALIGN="LEFT">
+			{$productlist[p].gname}
+		</TD>
+		<TD ALIGN="CENTER">
+			{$productlist[p].count}
+		</TD>
+		{if $type != 'brep'}<TD ALIGN="RIGHT" NOWRAP>
+			{$productlist[p].pricebuynet|money_format}
+		</TD>{/if}
+		<TD ALIGN="RIGHT" NOWRAP>
+			{$productlist[p].valuenet|money_format}
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD ALIGN="center" COLSPAN="8">
+			<P>&nbsp;</P>
+			<P><B>{t}No such cash receipts in database.{/t}</B></P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	{/section}
+	<TR class="grey">
+		<TD COLSPAN="6" ALIGN="RIGHT" VALIGN="TOP">
+			<B>{t}Total:{/t}</B>
+		</TD>
+		<TD ALIGN="RIGHT" nowrap>
+			<B>{$params.totalvn|money_format}</B>
+		</TD>
+	</TR>
+</TABLE>
+{include file="clearfooter.html"}

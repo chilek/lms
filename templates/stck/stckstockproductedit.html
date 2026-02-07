@@ -1,0 +1,150 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+{if !$layout.popup}<h1>{$layout.pagetitle}</h1>
+{else}
+{include file="stck/modal.html"}
+{/if}
+<P><FORM ID="productedit" METHOD="POST" ACTION="?m=stckstockproductedit&id={$productedit.id}{if $layout.popup}&popup=1{/if}" NAME="productedit">
+<INPUT TYPE="hidden" NAME="productedit[pname]" VALUE="{$productedit.pname|escape}">
+<INPUT TYPE="hidden" NAME="productedit[id]" VALUE="{$productedit.id}">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE CLASS="lmsbox">
+	<thead>
+	<TR CLASS="DARK" COLSPAN="2">
+		<TD WIDTH="1%" CLASS="fleftu" NOWRAP>
+			<IMG SRC="img/stck.png" ALT="">
+			<B>{t}Product name:{/t}</B>
+		</TD>
+		<TD CLASS="frightu">
+			<b{tip eid="general"}>{$productedit.pname|escape}</b>
+		</TD>
+	</TR>
+	</thead>
+	<tbody>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/stck.png" ALT="">
+			<B>{t}Warehouse{/t}:</B>
+		</TD>
+		<TD CLASS="fright">
+			<select name="productedit[warehouseid]">
+				{foreach item=w from=$wlist}
+				<option value="{$w.id}"{if $w.id eq $productedit.warehouseid} SELECTED{/if}>{$w.name}</option>
+				{/foreach}
+			</select>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/serialnumber.gif" ALT="">
+			<B>{t}Serial number{/t}:</B>
+		</TD>
+		<TD CLASS="fright">
+			<INPUT TYPE="TEXT" SIZE="23" NAME="productedit[serialnumber]" VALUE="{$productedit.serialnumber}">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/money.gif" ALT="">
+			<B>{t}Net value{/t}:</B>
+		</TD>
+		<TD CLASS="fright">
+			<INPUT type="text" name="productedit[pricebuynet]" SIZE="6" style="text-align: right;" VALUE="{$productedit.pricebuynet}" {tip text="Enter value" trigger="pricenet"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/tax.gif" ALT="">
+			<B>{t}Tax:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<SELECT SIZE="1" NAME="productedit[taxid]" {tip text="Select Tax rate" trigger="taxid"}>
+			{foreach item=tax from=$txlist}
+				<OPTION VALUE="{$tax.id}"{if $tax.value == $_config.phpui.default_taxrate || $tax.id == $productadd.taxid} selected{/if}>{$tax.label}</OPTION>
+			{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/money.gif" ALT="">
+			<B>{t}Gross value{/t}:</B>
+		</TD>
+		<TD CLASS="fright">
+			<INPUT type="text" name="productedit[pricebuygross]" SIZE="6" style="text-align: right;" VALUE="{$productedit.pricebuygross}" {tip text="Enter value" trigger="pricegross"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/value.gif" ALT="">
+			<b>{t}Sold:{/t}</b>
+		</TD>
+		<TD CLASS="fright">
+			<INPUT ID="sold" TYPE="checkbox" name="productedit[sold]"{if $productedit.sold} checked{/if}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/calendar.gif" ALT="">
+			<B>{t}Sell date:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<INPUT type="TEXT" name="productedit[leavedate]" value="{$productedit.leavedate|date_format:"%Y/%m/%d"}"  placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Product`s sale date" trigger="leavedate"} trigger="leavedate" SIZE="10">
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/money.gif" ALT="">
+			<B>{t}Sell price:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<INPUT type="text" name="productedit[pricesell]" SIZE="6" style="text-align: right;" VALUE="{$productedit.pricesell}" {tip text="Enter value" trigger="pricesell"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/info1.gif" ALT="">
+			<B>{t}Comment:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<textarea name="productedit[comment]" cols="60" rows="7" onmouseover="popup('Enter comment (optional)')" onmouseout="pophide()">{$productedit.comment}</textarea>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/calendar.gif" ALT="">
+			<B>{t}Created:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			{$productedit.createdby} {$productedit.creationdate|date_format:"%Y/%m/%d %H:%M"}
+		</TD>
+	</TR>
+	<TR>
+                <TD WIDTH="1%" CLASS="fleft" NOWRAP>
+                        <IMG SRC="img/calendar.gif" ALT="">
+                        <B>{t}Modified:{/t}</B>
+                </TD>
+                <TD CLASS="fright">
+                        {$productedit.modifiedby} {$productedit.moddate|date_format:"%Y/%m/%d %H:%M"}
+                </TD>
+        </TR>
+	<TR CLASS="LIGHT">
+		<TD width="100%" CLASS="fbottomu" COLSPAN="2" align="right">
+			<A HREF="javascript:document.productedit.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+			<A HREF="{if $layout.popup}javascript:parent.$.modal.close();{else}?m=stckproducts{/if}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A><BR>
+		</TD>
+	</TR>
+	</tbody>
+</TABLE>
+</FORM></P>
+<SCRIPT type="text/javascript">
+<!--
+var cal3 = new calendar(document.forms['productedit'].elements['productedit[leavedate]']);
+cal3.time_comp = false;
+{if !$productedit.leavedate}
+document.forms['productedit'].elements['productedit[leavedate]'].value = '';
+{/if}
+//-->
+</SCRIPT>
+{/block}

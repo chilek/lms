@@ -1,0 +1,162 @@
+<script type="text/javascript" src="/stock/js/jquery.simplemodal.js"></script>
+<link href="/stock/js/jquery.simplemodal.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="/stock/js/common.js"></script>
+<FORM METHOD="POST" ACTION="?m={$layout.module}&id={$receivenoteedit.id}" NAME="rnepl" id="rnepl">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="LIGHT">
+		<TD COLSPAN="2" WIDTH="100%" CLASS="frightu fleftu">
+			<TABLE WIDTH="100%" CELLPADDING="2">
+				<tr class="dark" style="text-align: center;">
+					<td class="fleftu">{t}Warehouse{/t}</td>
+					<td class="fbt">{t}Product{/t}</td>
+					<td class="fbt">{t}Amount:{/t}</td>
+					<td class="fbt">{t}Unit:{/t}</td>
+					<!--<td class="fbt" colspan="3">{t}Packaging:{/t}</td>-->
+					<td class="fbt">{t}Net Value:{/t}</td>
+					<td class="fbt">{t}Tax:{/t}</td>
+					<td class="fbt">{t}Gross Value:{/t}</td>
+					<td class="fbt">{t}Warranty:{/t}</td>
+					<td class="fbt">{t}GTU code:{/t}</td>
+					<td class="frightu">{t}Serial number:{/t}</td>
+				</tr>
+				<TR CLASS="lucid">
+					<TD>
+						<select name="rnepl[product][warehouse]" {tip text="Select warehouse" trigger="warehouse"}>
+						{foreach item=wh from=$warehouses}
+							<option value="{$wh.id}"{if $wh.def} selected{/if}>{$wh.name}</option>
+						{/foreach}
+						</select>
+					</TD>
+					<TD>
+						<INPUT type="hidden" name="rnepl[product][pid]" id="pid" VALUE="{$itemdata.pid}">
+						<INPUT type="text" id="pinput" name="rnepl[product][product]" SIZE="40" VALUE="{$itemdata.product|escape}" {tip text="Choose product from list" trigger="product"}>
+						<A HREF="javascript:modalwindow('stckproductadd', 600, 430);"><IMG SRC="img/producer.gif" ALT="" {tip text="New product"}></A>
+					</TD>
+					<TD>
+						<INPUT type="text" SIZE="3" name="rnepl[product][count]" id="pcount" VALUE="{$itemdata.count}" {tip text="Product ammount" trigger="count"}>
+					</TD>
+					<TD>
+						 <SELECT size="1" name="rnepl[product][unit]" {tip text="Select unit"}>
+							{foreach item=q from=$quantities}
+								<OPTION value="{$q.id}"{if $q.def} selected{/if}>{$q.name}</OPTION>
+							{/foreach}
+						</SELECT>
+					</TD>
+					<!--<TD align="center">
+						<INPUT TYPE="checkbox" id="packaging_check" name="rnepl[product][packaging]" value="1">
+					</TD>
+					<TD>
+						<INPUT TYPE="text" id="packaging_count" name="rnepl[product][packaging][count]" SIZE="6" DISABLED {tip text="Eneter amount in one package" trigger="packaging_unit"}>
+					</TD>
+					<TD>
+						 <SELECT size="1" id="packaging_unit" name="rnepl[product][packaging][unit]" DISABLED {tip text="Select unit"}>
+						 	{foreach item=q from=$quantities}
+								<OPTION value="{$q.id}"{if $q.def} selected{/if}>{$q.name}</OPTION>
+							{/foreach}
+						</SELECT>
+					</TD>-->
+					<TD align="center">
+						<INPUT type="text" name="rnepl[product][price][net]" SIZE="6" style="text-align: right;" VALUE="{$itemdata.price.net}" {tip text="Enter value" trigger="price"}>
+					</TD>
+					<td align="right">
+						<SELECT size="1" name="rnepl[product][price][taxid]" {tip text="Select Tax rate"}>
+							{foreach item=tax from=$taxeslist}
+								<OPTION value="{$tax.id}"{if $tax.value == $_config.phpui.default_taxrate} selected{/if}>{$tax.label}</OPTION>
+							{/foreach}
+						</SELECT>
+					</td>
+					<td align="center">
+						<INPUT type="text" name="rnepl[product][price][gross]" SIZE="6" style="text-align: right;" VALUE="{$itemdata.price.gross}" {tip text="Enter value" trigger="price"}>
+					</td>
+					<td align="center">
+                                                <INPUT type="text" name="rnepl[product][warranty]" size="6" style="text-align: right;" VALUE="{$itemdata.warranty}" {tip text="Eneter warranty period in months" trigger="warranty"}>
+                                        </td>
+					<td align="center">
+						<SELECT size="1" name="rnepl[product][gtu_code]" onChange="$('#gtu_help').attr('title', $('#gch' + this.value).text()).attr('data-tooltip', $('#gch' + this.value).text())" {tip text="Select GTU code"}>
+							<OPTION value="" selected>-- BRAK --</OPTION>
+							{foreach item=q from=$gtucodes}
+							<OPTION value="{$q.id}"{if $itemdata.gtu_code == $q.id} selected{/if}{if $q.def && !$itemdata.gtu_code} selected{/if}>{$q.code}</OPTION>
+							{/foreach}
+						</SELECT>
+						{foreach item=q from=$gtucodes}
+                                                <span id="gch{$q.id}" style="display: none;">{$q.description}</span>
+                                                {/foreach}
+                                                <img id="gtu_help" src="img/help.png" alt="{t}Help{/t}" {tip text="GTU code description"} onClick="return overlib($(this).attr('data-tooltip'), STICKY, CAPTION, 'Opis kodu GTU', FGCOLOR, '#999999', BGCOLOR, '#333333', CENTER)">
+					</td>
+					<TD align="right">
+						<div id="pserial" data-finame="rnepl[product][serial][]">
+							{if $itemdata.serial}
+								{foreach $itemdata.serial as $s}
+									<INPUT TYPE="text" NAME="receivenote[product][serial][]" SIZE="40" VALUE="{$s}"><br />
+								{/foreach}
+							{else}<INPUT TYPE="text" SIZE="40" DISABLED>{/if}
+						</div>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>	
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD width="100%" CLASS="fbottomu" COLSPAN="2" align="right">
+			<A HREF="javascript:document.rnepl.submit();" accesskey="s">{t}Add{/t} <IMG SRC="img/save.gif" ALT=""></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+<TABLE CELLPADDING="3" width="100%" style="margin-top: 10px;">
+	<tr class="dark" style="text-align: center;">
+		<td class="fleftu">{t}Warehouse{/t}</td>
+		<td class="fbt">{t}Product{/t}</td>
+		<td class="fbt">{t}Amount:{/t}</td>
+		<td class="fbt">{t}Net Value:{/t}</td>
+		<td class="fbt">{t}Tax:{/t}</td>
+		<td class="fbt">{t}Gross Value:{/t}</td>
+		<td class="fbt">{t}Warranty:{/t}</td>
+		<td class="fbt">{t}GTU code:{/t}</td>
+		<td class="fbt">{t}Serial number:{/t}</td>
+		<!--<td class="fbt">{t}Packaging:{/t}</td>-->
+		<td class="frightu"></td>
+	</tr>
+{cycle values="light,lucid" print=false}
+{foreach $rnepl.product as $p}
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD class="fleft" align="center">{$p.warehousename}</TD>
+		<TD>{$p.product}</TD>
+		<TD align="right">{$p.count} {$p.unitname}</TD>
+		<TD align="right">{$p.price.net|money_format}</TD>
+		<TD align="right">{$p.price.tax}</TD>
+		<TD align="right">{$p.price.gross|money_format}</TD>
+		<TD align="center">{$p.warranty}</TD>
+		<TD align="center">{$p.gtu_data.code}</TD>
+		<TD>{$p.serial}	</TD>
+		<!--<TD align="right">{$p.packaging.count} {$p.packaging.unitname}</TD>-->
+		<TD class="fright" align="right">
+			<a href="?m={$layout.module}&id={$receivenoteedit.id}&amp;action=edit&amp;posid={$p@key}"><img src="img/edit.gif" alt="[ {t}Edit{/t} ]"></a>
+			<a href="?m={$layout.module}&id={$receivenoteedit.id}&amp;action=del&amp;posid={$p@key}"><img src="img/delete.gif" alt="[ {t}Delete{/t} ]"></a>
+		</TD>
+	</TR>
+{/foreach}
+	<TR CLASS="light">
+		<TD COLSPAN="3" WIDTH="70%" CLASS="fleftu" ALIGN="right">
+			<B>{t}Total:{/t} {$p@total|default:"0"}</B>
+		</TD>
+		<TD CLASS="ftop" align="right">
+			<B>{$rnepl.doc.net|default:"0"|money_format}</B>
+		</TD>
+		<TD CLASS="ftop">&nbsp;</TD>
+		<TD CLASS="ftop" ALIGN="right">
+			<B>{$rnepl.doc.gross|default:"0"|money_format}</B>
+		</TD>
+		<TD COLSPAN="4" CLASS="frightu">&nbsp;</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="99%" COLSPAN="10" CLASS="fleftu frightu" ALIGN="right">
+			<A href="?m={$layout.module}&id={$receivenoteedit.id}&amp;action=save" ACCESSKEY="S" onClick="if(confirm('{t}Are you sure that you want to save receive note?{/t}')) { return true; } else { return false; } ">{t}Submit{/t} <img src="img/save.gif" alt=""></A>
+			<A href="?m={$layout.module}&id={$receivenoteedit.id}&amp;action=cancel" ACCESSKEY="C" onClick="if(confirm('{t}Are you sure that you want to cancel receive note?{/t}')) { return true; } else { return false; } ">{t}Cancel{/t} <img src="img/cancel.gif" alt=""></A>
+		</TD>
+	</TR>
+</TABLE>
+<SCRIPT>
+new AutoSuggest(document.getElementById('rnepl'),document.getElementById('pinput'),'?m=quicksearch&ajax=1&mode=product&what=',1);
+</SCRIPT>

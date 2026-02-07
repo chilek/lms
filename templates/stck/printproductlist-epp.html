@@ -1,0 +1,13 @@
+[INFO]
+"1.11",3,1250,"LMS","MXC","MaxCon","MaxCon S.C.","Gdansk","80-419","Zbyszka z Bogdanca 1","9570949042","H","Handlowy","Magazyn handlowy",,0,,,"Michalski Krzysztof",{$smarty.now|date_format:"%Y%m%d%H%S"}00,"Polska","PL","PL9570949042",0
+
+[NAGLOWEK]
+"TOWARY"
+
+[ZAWARTOSC]
+{section name=productlist loop=$productlist}
+{if $productlist[productlist].id}
+{assign var=cid value=$productlist[productlist].id}
+1,LMS{$productlist[productlist].id},{$productlist[productlist].id},{$productlist[productlist].ean},"{$productlist[productlist].pname|dquote|cp1250}",,"{$productlist[productlist].pname|truncate:40|dquote|cp1250}",,,"szt.","23",23,"23",23,,,"szt.",,"PLN",,"szt.",0,,LMS{$productlist[productlist].manufacturerid},,,,,,,1,"{$productlist[productlist].comment}",1,,,,,,,,,
+{/if}
+{/section}

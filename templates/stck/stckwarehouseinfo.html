@@ -1,0 +1,20 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id: netdevinfo.html,v 1.13 2008/01/19 19:56:45 alec Exp $ //-->
+<H1>{$layout.pagetitle}</H1>
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR>
+		<TD WIDTH="100%">
+			{include file="stck/stckwarehouseinfobox.html"}
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR>
+		<TD WIDTH="100%">
+			{include file="stck/stckstocklistbox.html" module="stckwarehouseinfo&id="|cat:$warehouseinfo.id}
+		</TD>
+	</TR>
+</TABLE>
+{/block}

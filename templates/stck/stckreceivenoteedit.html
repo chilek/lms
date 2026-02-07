@@ -1,0 +1,95 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<H1>{$layout.pagetitle}</H1>
+<P><FORM METHOD="POST" ACTION="?m=stckreceivenoteedit&id={$receivenoteedit.id}" ID="receivenoteedit" NAME="receivenoteedit">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE CLASS="lmsbox">
+	<thead>
+	<TR CLASS="DARK" COLSPAN="2">
+		<TD WIDTH="1%" CLASS="fleftu" NOWRAP>
+			<IMG SRC="img/stck.png" ALT="">
+			<B>{t}Supplier:{/t}</B>
+		</TD>
+		<TD CLASS="frightu">
+			{customerlist selectname="cid" version="2" inputname="receivenoteedit[supplierid]" selected=$receivenoteedit.supplierid}
+			<!--<INPUT TYPE="TEXT" SIZE="23" NAME="receivenoteedit[sname]" VALUE="{$receivenoteedit.sname|escape}" ID="sinput" {tip trigger="supplier" bold=1}>
+			<INPUT TYPE="hidden" NAME="receivenoteedit[supplierid]" VALUE="{$receivenoteedit.supplierid}">
+			--></TD>
+	</TR>
+	</thead>
+	<tbody>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/serialnumber.gif" ALT="">
+			<B>{t}Document number:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<input type="TEXT" name="receivenoteedit[number]" value="{$receivenoteedit.number}" {tip trigger="number"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/calendar.gif" ALT="">
+			<B>{t}Settlement date:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<input type="TEXT" name="receivenoteedit[datesettlement]" value="{$receivenoteedit.datesettlement|date_format: "%Y/%m/%d"}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" trigger="datesettlement"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/calendar.gif" ALT="">
+			<B>{t}Sale date:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<input type="TEXT" name="receivenoteedit[datesale]" value="{$receivenoteedit.datesale|date_format: "%Y/%m/%d"}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" trigger="datesale"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/calendar.gif" ALT="">
+			<B>{t}Deadline:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<input type="TEXT" name="receivenoteedit[deadline]" value="{$receivenoteedit.deadline|date_format: "%Y/%m/%d"}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" trigger="deadline"}>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/money.gif" ALT="">
+			<B>{t}Payment type:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			{paytypes elemname="receivenoteedit[paytype]" selected=$receivenoteedit.paytype}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/info1.gif" ALT=""> <B>{t}Comment:{/t}</B></TD>
+		<TD CLASS="fright">
+		  <TEXTAREA NAME="receivenoteedit[comment]" COLS="60" ROWS="7" {tip text="Enter comment (optional)"}>{$receivenoteedit.comment}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD width="100%" CLASS="fbottomu" COLSPAN="2" align="right">
+			<A HREF="javascript:document.receivenoteedit.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+			<A HREF="?m=stckreceivenoteinfo&id={$receivenoteedit.id}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A><BR>
+		</TD>
+	</TR>
+	</tbody>
+</TABLE>
+</FORM></P>
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR>
+		<TD WIDTH="100%">
+			{include file="stck/stckstocklistbox.html" module="stckreceivenoteedit&id="|cat:$receivenoteedit.id edit="1"}
+		</TD>
+	</TR>
+</TABLE>
+{include file="stck/stckreceivenoteproductaddbox.html"}
+<SCRIPT type="text/javascript">
+<!--
+document.forms['receivenoteedit'].elements['sinput'].focus();
+//-->
+</SCRIPT>
+{/block}

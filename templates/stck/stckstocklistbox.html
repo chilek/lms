@@ -1,0 +1,167 @@
+<script type="text/javascript" src="/stock/js/jquery.simplemodal.js"></script>
+<link href="/stock/js/jquery.simplemodal.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="/stock/js/common.js"></script>
+<SCRIPT TYPE="text/javascript">
+<!--
+function filter() {
+	document.stckslb.action="?m={$module}&ssp={$ssp}";
+	document.stckslb.target="";
+	document.stckslb.submit();
+}
+-->
+</SCRIPT>
+<TABLE CELLPADDING="3" width="100%">
+	<FORM NAME="stckslb" METHOD="post" ACTION="?m={$module}&amp;ssp={$ssp}">
+	<TR CLASS="dark">
+		<TD CLASS="ftl nobr"><b>{t}Name:{/t}</b> <INPUT TYPE="text" style="width: 30%;" NAME="filter[name]" VALUE="{$filter.name}"></td>
+		<TD CLASS="ftop nobr"><b>S/N:</b> <INPUT TYPE="text" style="width: 60%;" NAME="filter[sn]" VALUE="{$filter.sn}"></td>
+		<td CLASS="ftop"><a href="javascript:filter()">&raquo;&raquo;&raquo;</a></td>
+		<TD COLSPAN="{if $ssp}10{else}8{/if}" CLASS="ftr"></TD>
+	</TR>
+	</FORM>
+	<TR CLASS="dark">
+		<TD COLSPAN="{if $ssp}13{else}11{/if}" ALIGN="right" CLASS="fleft fright">
+			<A HREF="?m={$module}&amp;ssp={!$ssp}"{if $ssp} CLASS="bold"{/if}>{t}Show sold positions{/t}</A>
+		</TD>
+	</TR>
+	<TR CLASS="dark" {tip text="Click on column name to change sorting order"}>
+		<TD CLASS="fleftu" width="30%">
+			<IMG src="img/producer.gif" ALT="">&nbsp;<A href="?m={$module}&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{t}Name:{/t}</B></A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+		</TD>
+		<TD CLASS="fbt" width="1%" align="center" valign="top" NOWRAP>
+			{t}Serial number:{/t}
+		</TD>
+		<TD CLASS="fbt" width="1%" align="center" valign="top" NOWRAP>
+			{t}Warr:{/t}
+		</TD>
+		<TD CLASS="fbt" width="1%" align="left" valign="top" NOWRAP>
+			<A href="?m={$module}&o=warehouse{if $listdata.direction eq "asc" && $listdata.order eq "warehouse"},desc{/if}">{t}Warehouse{/t}:</A> {if $listdata.order eq "warehouse"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD CLASS="fbt" width="1%" align="left" valign="top" NOWRAP>
+			<A href="?m={$module}&o=supplier{if $listdata.direction eq "asc" && $listdata.order eq "supplier"},desc{/if}">{t}Supplier:{/t}</A> {if $listdata.order eq "supplier"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD CLASS="fbt" width="1%" align="left" valign="top" NOWRAP>
+			{t}Document number:{/t}
+		</TD>
+		<TD CLASS="fbt" width="1%" align="left" valign="top" NOWRAP>
+			<A href="?m={$module}&o=creationdate{if $listdata.direction eq "asc" && $listdata.order eq "creationdate"},desc{/if}">{t}Creation date:{/t}</A> {if $listdata.order eq "creationdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD CLASS="fbt" width="1%" align="right" valign="top" NOWRAP>
+			{t}Net Value:{/t}
+		</TD>
+		<TD CLASS="fbt" width="1%" align="right" valign="top" NOWRAP>
+			{t}Gross Value:{/t}
+		</TD>
+		<TD CLASS="fbt" width="1%" align="right" valign="top" NOWRAP>
+			<A href="?m=stckproductlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">ID:</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		{if $ssp}
+		<TD CLASS="fbt" width="1%" align="right" valign="top" NOWRAP>
+			{t}Sale document:{/t}
+		</TD>
+		<TD CLASS="fbt" width="1%" align="right" valign="top" NOWRAP>
+			{t}Sold to:{/t}
+		</TD>
+		{/if}
+		<TD width="1%" class="frightu" align="right" nowrap>
+<!--			<A href="?m=stckproductadd">{t}Add product{/t} <IMG src="img/save.gif" alt=""> </A>	-->
+		</TD>
+	</TR>
+	{if $listdata.total != 0}
+	<TR CLASS="dark">
+		<TD CLASS="fall" colspan="{if $ssp}13{else}11{/if}" WIDTH="100%">
+			{include file="scroller.html" loop=$productlist}
+		</TD>
+	</TR>
+	{/if}
+	{cycle values="light,lucid" print=false}
+	{section name=pl loop=$productlist start=$start max=$pagelimit}
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight');" onmouseout="removeClass(this, 'highlight')">
+		<TD width="30%" CLASS="fleft" onClick="return self.location.href='?m=stckproductinfo&id={$productlist[pl].productid}';" VALIGN="TOP">
+			<IMG src="img/producer.gif" ALT=""> <a name="{$productlist[pl].id}" onmouseover="popup('?m=stckstockproductinfo&short=1&id={$productlist[pl].id}',1,0,30,15)" onmouseout="pophide();"><B>{$productlist[pl].pname}</B></A><BR>
+			{$productlist[pl].comment}
+		</TD>
+		<TD WIDTH="1%" onClick="return self.location.href='?m=stckproductinfo&id={$productlist[pl].productid}';" align="right" VALIGN="TOP" NOWRAP>
+			{$productlist[pl].serialnumber}
+		</TD>
+		<TD WIDTH="1%" onClick="return self.location.href='?m=stckproductinfo&id={$productlist[pl].productid}';" align="right" VALIGN="TOP" NOWRAP>
+			{$productlist[pl].warranty}
+		</TD>
+		<TD WIDTH="1%" onClick="return self.location.href='?m=stckwarehouseinfo&id={$productlist[pl].wid}';" align="left" VALIGN="TOP" NOWRAP>
+			<A HREF="?m=stckwarehouseinfo&id={$productlist[pl].wid}">{$productlist[pl].wname}</A>
+		</TD>
+		<TD WIDTH="1%" onClick="return self.location.href='?m=customerinfo&id={$productlist[pl].cid}';" align="left" VALIGN="TOP" NOWRAP>
+			<A HREF="?m=customerinfo&id={$productlist[pl].cid}">{$productlist[pl].sname}</A>
+		</TD>
+		<TD WIDTH="1%" onClick="return self.location.href='?m=customerinfo&id={$productlist[pl].cid}';" align="left" VALIGN="TOP" NOWRAP>
+			<A HREF="?m=stckreceivenoteinfo&id={$productlist[pl].enterdocumentid}">{$productlist[pl].rnnumber}</A>
+		</TD>
+		<TD WIDTH="1%" onClick="return self.location.href='?m=stckproductinfo&id={$productlist[pl].productid}';" align="left" VALIGN="TOP" NOWRAP>
+			{$productlist[pl].creationdate|date_format:"%Y/%m/%d"}
+		</TD>
+		<!--<TD WIDTH="1%" onClick="return self.location.href='?m=stckproductinfo&id={$productlist[pl].id}';" align="right" VALIGN="TOP">
+			{$productlist[pl].quantity}
+		</TD>
+		<TD WIDTH="1%" onClick="return self.location.href='?m=stckproductinfo&id={$productlist[pl].id}';" align="right" VALIGN="TOP">
+			{$productlist[pl].count}
+		</TD>-->
+		<TD WIDTH="1%" onClick="return self.location.href='?m=stckproductinfo&id={$productlist[pl].productid}';" align="right" VALIGN="TOP" NOWRAP>
+			{$productlist[pl].valuenet|money_format}
+		</TD>
+		<TD WIDTH="1%" onClick="return self.location.href='?m=stckproductinfo&id={$productlist[pl].productid}';" align="right" VALIGN="TOP" NOWRAP>
+			{$productlist[pl].valuegross|money_format}
+		</TD>
+		<TD WIDTH="1%" onClick="return self.location.href='?m=stckproductinfo&id={$productlist[pl].productid}';" align="right" VALIGN="TOP">
+			({$productlist[pl].id|string_format:"%04d"})
+		</TD>
+		{if $ssp}
+		<TD WIDTH="1%" onClick="document.getElementById('qd{$productlist[pl].quitdocumentid}').click();" align="center" VALIGN="TOP" NOWRAP>
+			<a href="?m=invoice&id={$productlist[pl].quitdocumentid}&dontpublish=1" target="_blank" id="qd{$productlist[pl].quitdocumentid}">{$productlist[pl].fullnumber}</a>
+		</TD>
+		<TD WIDTH="1%" onClick="return self.location.href='?m=customerinfo&id={$productlist[pl].customerid}';" align="right" VALIGN="TOP">
+			<a href="?m=customerinfo&id={$productlist[pl].customerid}">{$productlist[pl].cname}</a>
+		</TD>
+		{/if}
+		<TD WIDTH="1%" CLASS="fright" align="right">
+		 	<nobr>
+				<A HREF="javascript:modalwindow('stckstockproductedit&id={$productlist[pl].id}', 600, 385);"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+				<a href="?m=stckstockproductinfo&id={$productlist[pl].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
+			</nobr>
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD colspan="{if $ssp}13{else}11{/if}" CLASS="fall" align="center">
+			<p>&nbsp;</p>
+			<p><B>{t}There are no products in your database.{/t}</b></p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/section}
+	{if $listdata.total != 0}
+	<TR CLASS="dark">
+		<TD CLASS="fall" colspan="{if $ssp}13{else}11{/if}" WIDTH="100%">
+			{include file="scroller.html" loop=$productlist}
+		</TD>
+	</TR>
+	{/if}
+<!--	<TR CLASS="light">
+		<TD CLASS="fleftu" ALIGN="right">
+			<B>
+				{t}Total:{/t}
+			</B>
+		</TD>
+		<TD CLASS="fbt" ALIGN="right">
+			<B>{$listdata.total|default:"0"}</B>
+		</TD>
+		<TD CLASS="fbt" ALIGN="right">
+			<B>{$listdata.totalpcs|default:"0"}</B>
+		</TD>
+		<TD CLASS="fbt" ALIGN="right">
+			<B>{$listdata.totalvn|default:"0"|money_format}</B>
+		</TD>
+		<TD CLASS="frightu" ALIGN="right">
+			<B>{$listdata.totalvg|default:"0"|money_format}</B>
+		</TD>
+	</TR>-->
+</TABLE>

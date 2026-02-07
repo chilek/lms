@@ -1,0 +1,78 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+{if !$layout.popup}<h1>{$layout.pagetitle}</h1>
+{else}
+{include file="stck/modal.html"}
+{/if}
+<P><FORM METHOD="POST" ACTION="?m=stckgroupadd{if $layout.popup}&popup=1{/if}" NAME="groupadd">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE CLASS="lmsbox">
+	<thead>
+	<TR CLASS="DARK" COLSPAN="2">
+		<TD WIDTH="1%" CLASS="fleftu" NOWRAP>
+			<IMG SRC="img/producer.gif" ALT="">
+			<B>{t}Product group name:{/t}</B>
+		</TD>
+		<TD CLASS="frightu">
+			<INPUT TYPE="TEXT" SIZE="23" NAME="groupadd[name]" VALUE="{$groupadd.name}" {tip trigger="name" bold=1}>
+		</TD>
+	</TR>
+	</thead>
+	<tbody>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/tax.gif" ALT=""><B>{t}Tax:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<SELECT SIZE="1" NAME="groupadd[taxid]" {tip text="Select Tax rate" trigger="taxid"}>
+				{foreach item=tax from=$taxeslist}
+					<OPTION VALUE="{$tax.id}"{if $tax.value == $_config.phpui.default_taxrate || $tax.id == $groupadd.taxid} selected{/if}>{$tax.label}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/port.gif" ALT="">
+			<B>{t}Quantity name:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<SELECT SIZE="1" NAME="groupadd[quantityid]" {tip text="Select quantity name" trigger="quantityid"}>
+				{foreach item=quantity from=$quantitieslist}
+					<OPTION VALUE="{$quantity.id}"{if $quantity.id == $groupadd.quantityid || $quantity.def} selected{/if}>{$quantity.name}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/port.gif" ALT="">
+			<B>{t}Quantity check:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<INPUT TYPE="checkbox" value="1" name="groupadd[quantitycheck]"{if $groupadd.quantitycheck} checked{/if}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/info1.gif" ALT=""> <B>{t}Comment:{/t}</B></TD>
+		<TD CLASS="fright">
+		  <TEXTAREA NAME="groupadd[comment]" COLS="{if !$layout.popup}60{else}30{/if}" ROWS="{if !$layout.popup}7{else}2{/if}" {tip text="Enter comment (optional)"}>{$groupadd.comment}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD width="100%" CLASS="fbottomu" COLSPAN="2" align="right">
+			<A HREF="javascript:document.groupadd.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+			<A HREF="{if !$layout.popup}?m=stckgroups{else}javascript:parent.$.modal.close();{/if}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A><BR>
+			<INPUT type="checkbox" name="groupadd[reuse]" id="groupadd[reuse]" value="ON" {if $groupadd.reuse}checked{/if}><A HREF="javascript:checkElement('groupadd[reuse]')"> {t}Display this form again, when this group is saved{/t}</A>
+		</TD>
+	</TR>
+	</TBODY>
+</TABLE>
+</FORM></P>
+<SCRIPT type="text/javascript">
+<!--
+document.forms['groupadd'].elements['groupadd[name]'].focus();
+//-->
+</SCRIPT>
+{/block}

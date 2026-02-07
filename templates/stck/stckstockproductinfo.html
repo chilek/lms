@@ -1,0 +1,137 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+{if !$layout.popup}<h1>{$layout.pagetitle}</h1>
+{else}
+{include file="stck/modal.html"}
+{/if}
+<TABLE CLASS="lmsbox">
+	<thead>
+	<TR CLASS="DARK" COLSPAN="2">
+		<TD WIDTH="1%" COLSPAN="2" CLASS="fleftu">
+			<IMG SRC="img/stck.png" ALT="">
+			<b{tip eid="general"}>{$product.pname|escape} {if $product.sold}<span class="red">({trans("sold")})</span>{/if}</b>
+		</TD>
+	</TR>
+	</thead>
+	<tbody>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/stck.png" ALT="">
+			<B>{t}Warehouse{/t}:</B>
+		<TD CLASS="fright">
+			{$product.warehouse}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/serialnumber.gif" ALT="">
+			<B>{t}Serial number{/t}:</B>
+		</TD>
+		<TD CLASS="fright">
+			{$product.serialnumber}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/calendar.gif" ALT="">
+			<B>{t}Warranty:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			{$product.warranty}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/money.gif" ALT="">
+			<B>{t}Net value{/t}:</B>
+		</TD>
+		<TD CLASS="fright">
+			{$product.pricebuynet|money_format}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/tax.gif" ALT="">
+			<B>{t}Tax:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			{$product.txname}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/money.gif" ALT="">
+			<B>{t}Gross value{/t}:</B>
+		</TD>
+		<TD CLASS="fright">
+			{$product.pricebuygross|money_format}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/calendar.gif" ALT="">
+			<B>{t}Sell date:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			{if $product.leavedate > 0}{$product.leavedate|date_format:"%Y/%m/%d"}{else}-{/if}
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/money.gif" ALT="">
+			<B>{t}Sell price:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			{if $product.pricesell > 0}{$product.pricesell|money_format}{else}-{/if}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="98%" COLSPAN="2">
+			<TABLE WIDTH="100%" CELLPADDING="5">
+				<TR>
+					<TD WIDTH="1%">
+						<IMG SRC="img/users.gif" ALT="">
+					</TD>
+					<TD WIDTH="1%">
+						<B>{t}Created:{/t}<BR>
+						{t}Modified:{/t}</B>
+					</TD>
+					<TD WIDTH="99%">
+						{$product.createdby}, {$product.creationdate|date_format:"%Y/%m/%d %H:%M"}<BR>
+						{if $product.moddate}{$product.modifiedby}, {$productinfo.moddate|date_format:"%Y/%m/%d %H:%M"}{else}-{/if}
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/info1.gif" ALT="">
+			<B>{t}Comment:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<TABLE WIDTH="100%">
+				<TR>
+					<TD class="fall superlight">
+						{$product.comment|escape|replace:"\n":"<BR>"}
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD width="100%" CLASS="fbottomu" COLSPAN="2" align="right">
+		</TD>
+	</TR>
+	</tbody>
+</TABLE>
+</FORM>
+<SCRIPT type="text/javascript">
+<!--
+{if !$product.leavedate}
+document.forms['product'].elements['product[leavedate]'].value = '0';
+{/if}
+//-->
+</SCRIPT>
+{/block}

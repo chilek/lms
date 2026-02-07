@@ -1,0 +1,7 @@
+Kod;Nazwa;JM;JmZ;Przelicznik_JmZ;Typ;NumerKatalogowy;SWW;Grupa;StanMin;StanMax;VAT;VATZak;VATFlaga;VatZakFlaga;EAN;Opis;OpakowanieKaucja;OdwrotneObciazenie;CenaZCzteremaMiejscami;Granica ceny;Minimalna cena/marża;Dostawca;Kod u dostawcy;Kod producenta;Producent;Marka;Intrastat - kod CN;Intrastat - kraj pochodzenia;Intrastat - masa;Intrastat - JmPomPrzelicznikL;Intrastat - JmPomPrzelicznikM;Cena zakupu;Waluta Cena zakupu;Cena hurtowa 1;Waluta Cena hurtowa 1;Cena hurtowa 2;Waluta Cena hurtowa 2;Cena hurtowa 3;Waluta Cena hurtowa 3;Cena detaliczna;Waluta Cena detaliczna;Cena iSklep24;Waluta Cena iSklep24
+{section name=productlist loop=$productlist}
+{if $productlist[productlist].id}
+{assign var=cid value=$productlist[productlist].id}
+LT{$productlist[productlist].id};{$productlist[productlist].pname};szt.;;;TP;;;{$productlist[productlist].gname};;;23;;;;{$productlist[productlist].ean};{$productlist[productlist].comment};;2;0;0;;;;;LP{$productlist[productlist].mid};;;;;;;;;;;;;;;;;;;
+{/if}
+{/section}

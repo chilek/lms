@@ -1,0 +1,214 @@
+<TABLE class="lmsbox">
+	<thead>
+	<TR class="dark">
+		<TD WIDTH="1%">
+			<IMG SRC="img/stck.png" ALT="">
+		</TD>
+		<TD WIDTH="99%">
+			<B>{$productinfo.name} ({$productinfo.id|string_format:"%04d"})</B>
+		</TD>
+	</TR>
+	</thead>
+	<tbody>
+	<TR class="LIGHT">
+	        <TD WIDTH="100%" COLSPAN="2" CLASS="flr">
+			<TABLE WIDTH="100%" CELLPADDING="0">
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" style="vertical-align:top;">
+						<TABLE WIDTH="100%" CELLPADDING="3">
+							<TR CLASS="LIGHT">
+								<TD WIDTH="1%">
+									<IMG SRC="img/netdev_model.gif" ALT="">
+								</TD>
+								<TD WIDTH="1%" NOWRAP>
+									<B>{t}Type:{/t}</B>
+								</TD>
+								<TD WIDTH="98%">
+									{$productinfo.tname}
+								</TD>
+							</TR>
+							<TR CLASS="LIGHT">
+							<TD WIDTH="1%">
+							<IMG SRC="img/port.gif" ALT="">
+							</TD>
+							<TD WIDTH="1%" NOWRAP>
+							<B>{t}Quantity name:{/t}</B>
+							</TD>
+							<TD WIDTH="98%">
+							{$productinfo.qname}
+							</TD>
+							</TR>
+							<TR CLASS="LIGHT">
+							<TD WIDTH="1%">
+							<IMG SRC="img/port.gif" ALT="">
+							</TD>
+							<TD WIDTH="1%" NOWRAP>
+							<B>{t}Quantity check:{/t}</B>
+							</TD>
+							<TD WIDTH="98%">
+							{if $productinfo.quantitycheck}{t}yes{/t}{else}{t}no{/t}{/if}
+							</TD>
+							</TR>
+							{if $productinfo.quantitycheck}
+							<TR CLASS="LIGHT">
+							<TD WIDTH="1%">
+							<IMG SRC="img/money.gif" ALT="">
+							</TD>
+							<TD WIDTH="1%" NOWRAP>
+							<B>{t}Quantity in unit:{/t}</B>
+							</TD>
+							<TD WIDTH="98%">
+							{$productinfo.quantity}
+							</TD>
+							</TR>
+							<TR CLASS="LIGHT">
+								<TD WIDTH="1%">
+									<IMG SRC="img/stck_count.png" ALT="">
+								</TD>
+								<TD WIDTH="1%" NOWRAP>
+									<B>{t}Stock count:{/t}</B>
+								</TD>
+								<TD WIDTH="98%">
+									{$productinfo.count}
+								</TD>
+							</TR>
+							<TR CLASS="LIGHT">
+								<TD WIDTH="1%">
+									<IMG SRC="img/money.gif" ALT="">
+								</TD>
+								<TD WIDTH="1%" NOWRAP>
+								        <B>{t}Stock value:{/t}</B>
+								</TD>
+								<TD WIDTH="98%">
+								        {$productinfo.valuegross|money_format} ({$productinfo.valuenet|money_format} {t}net{/t})
+								</TD>
+							</TR>
+							{/if}
+							<TR CLASS="LIGHT">
+							<TD WIDTH="1%">
+							<IMG SRC="img/serialnumber.gif" ALT="">
+							</TD>
+							<TD WIDTH="1%" NOWRAP>
+							<B>{t}EAN:{/t}</B>
+							</TD>
+							<TD WIDTH="98%">
+							{$productinfo.ean}
+							</TD>
+							</TR>
+							<TR CLASS="LIGHT">
+								<TD WIDTH="1%">
+									<IMG SRC="img/tax.gif" ALT="">
+								</TD>
+								<TD WIDTH="1%" NOWRAP>
+									<B>{t}Tax:{/t}</B>
+								</TD>
+								<TD WIDTH="98%">
+									{$productinfo.txname}
+								</TD>
+							</TR>
+							<TR CLASS="LIGHT">
+                                                        <TD WIDTH="1%">
+                                                        <IMG SRC="img/port.gif" ALT="">
+                                                        </TD>
+                                                        <TD WIDTH="1%" NOWRAP>
+                                                        <B>{t}GTU code:{/t}</B>
+                                                        </TD>
+                                                        <TD WIDTH="98%">
+                                                        {$productinfo.gtu}
+                                                        </TD>
+                                                        </TR>
+	                        		</TABLE>
+					</TD>
+					<TD WIDTH="50%" style="vertical-align:top;">
+                				<TABLE WIDTH="100%" CELLPADDING="3">
+							<TR CLASS="LIGHT">
+								<TD WIDTH="1%">
+									<IMG SRC="img/producer.gif" ALT="">
+								</TD>
+								<TD WIDTH="1%" NOWRAP>
+									<B>{t}Manufacturer:{/t}</B>
+								</TD>
+								<TD WIDTH="98%">
+									<A HREF="?m=stckmanufacturerinfo&id={$productinfo.manufacturerid}">{$productinfo.mname}</A>
+								</TD>
+							</TR>
+							<TR CLASS="LIGHT">
+								<TD WIDTH="1%">
+									<IMG SRC="img/nodegroup.gif" ALT="">
+								</TD>
+								<TD WIDTH="1%" NOWRAP>
+									<B>{t}Group:{/t}</B>
+								</TD>
+								<TD WIDTH="98%">
+									<A HREF="?m=stckgroupinfo&id={$productinfo.groupid}">{$productinfo.gname}</A>
+								</TD>
+							</TR>
+                                                        <TR CLASS="LIGHT">
+                                                                <TD WIDTH="1%">
+                                                                        <IMG SRC="img/money.gif" ALT="">
+                                                                </TD>
+                                                                <TD WIDTH="1%" NOWRAP>
+                                                                        <B>{t}Wholesale price:{/t}</B>
+                                                                </TD>
+                                                                <TD WIDTH="98%">
+                                                                        {$productinfo.gprice|money_format}
+                                                                </TD>
+                                                        </TR>
+                                                        <TR CLASS="LIGHT">
+                                                                <TD WIDTH="1%">
+                                                                        <IMG SRC="img/money.gif" ALT="">
+                                                                </TD>
+                                                                <TD WIDTH="1%" NOWRAP>
+                                                                        <B>{t}Suggested price:{/t}</B>
+                                                                </TD>
+                                                                <TD WIDTH="98%">
+                                                                        {$productinfo.srp|money_format}
+                                                                </TD>
+                                                        </TR>
+							<TR CLASS="LIGHT">
+								<TD WIDTH="1%">
+									<IMG SRC="img/desc.gif" ALT="">
+								</TD>
+								<TD WIDTH="99%" COLSPAN="2">
+									<TABLE WIDTH="100%" CELLPADDING="5">
+										<TR>
+											<TD class="fall superlight">
+												{$productinfo.comment|escape|replace:"\n":"<BR>"}
+											</TD>
+										</TR>
+									</TABLE>
+								</TD>
+							</TR>
+							<TR>
+								<TD WIDTH="1%">
+									<IMG SRC="img/users.gif" ALT="">
+								</TD>
+								<TD WIDTH="98%" COLSPAN="2">
+									<TABLE WIDTH="100%" CELLPADDING="5">
+										<TR>
+											<TD WIDTH="1%">
+												<B>{t}Created:{/t}<BR>
+												{t}Modified:{/t}</B>
+											</TD>
+											<TD WIDTH="99%">
+												{$productinfo.createdby}, {$productinfo.creationdate|date_format:"%Y/%m/%d %H:%M"}<BR>
+												{if $productinfo.moddate}{$productinfo.modifiedby}, {$productinfo.moddate|date_format:"%Y/%m/%d %H:%M"}{else}-{/if}
+											</TD>
+										</TR>
+									</TABLE>
+								</TD>
+							</TR>
+						</TABLE>
+					</TD>
+        			</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="100%" COLSPAN="2" CLASS="FBOTTOMU" ALIGN="RIGHT">
+			<A href="?m=stckproductedit&id={$productinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG src="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
+                        <A href="?m=stckproductdel&id={$productinfo.id}" OnClick="return confirmLink(this, '{trans('Are you sure, you want to remove product $name?', $productinfo.name)}');">{t}Delete{/t} <img src="img/delete.gif" ALT=""></A>
+                </TD>
+        </TR>
+	</tbody>
+</TABLE>

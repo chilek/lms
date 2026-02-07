@@ -1,0 +1,58 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<H1>{$layout.pagetitle}</H1>
+<P><FORM METHOD="POST" ACTION="?m=stckgroupedit&id={$groupedit.id}{if $recover}&action=recover{/if}" NAME="groupedit">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK" COLSPAN="2">
+		<TD WIDTH="1%" CLASS="fleftu" NOWRAP>
+			<IMG SRC="img/stck.png" ALT="">
+			<B>{t}Product group name:{/t}</B>
+		</TD>
+		<TD CLASS="frightu">
+			<INPUT TYPE="TEXT" SIZE="23" NAME="groupedit[name]" VALUE="{$groupedit.name}" {tip trigger="name" bold=1}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/port.gif" ALT="">
+			<B>{t}Quantity name:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<SELECT SIZE="1" NAME="groupedit[quantityid]" {tip text="Select quantity name" trigger="quantityid"}>
+				{foreach item=quantity from=$quantitieslist}
+					<OPTION VALUE="{$quantity.id}"{if $quantity.id == $groupedit.quantityid} selected{/if}>{$quantity.name}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/port.gif" ALT="">
+			<B>{t}Quantity check:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<INPUT TYPE="checkbox" value="1" name="groupedit[quantitycheck]"{if $groupedit.quantitycheck} checked{/if}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/info1.gif" ALT=""> <B>{t}Comment:{/t}</B></TD>
+		<TD CLASS="fright">
+		  <TEXTAREA NAME="groupedit[comment]" COLS="60" ROWS="7" {tip text="Enter comment (optional)"}>{$groupedit.comment}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD width="100%" CLASS="fbottomu" COLSPAN="2" align="right">
+			<A HREF="javascript:document.groupedit.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+			<A HREF="?m=stckgroups">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A><BR>
+		</TD>
+	</TR>
+</TABLE>
+</FORM></P>
+<SCRIPT type="text/javascript">
+<!--
+document.forms['groupedit'].elements['groupedit[name]'].focus();
+//-->
+</SCRIPT>
+{/block}

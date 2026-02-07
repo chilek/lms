@@ -1,0 +1,7 @@
+;Grupa;,;EAN;,;Producent;,;Model;,;S/N;,;Konfig;,;Cena NETTO;,;Gwarancja (w miesi±cach);
+;group;,;ean;,;manufacturer;,;model;,;serial;,;config;,;price;,;warranty;
+;<group name>;,;ean;,;<manufacturer name>;,;<model>;,;<serial number>;,;<config>;,;<net price>;,;<warranty>;
+
+First row is ommited during import.
+Product name schema: $product = <model>.' '.$config
+

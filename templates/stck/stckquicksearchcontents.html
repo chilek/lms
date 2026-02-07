@@ -1,0 +1,19 @@
+{block name="quicksearchcontents"}
+{if ConfigHelper::getConfig('phpui.quicksearch_customer')}<img src="img/customer.gif" alt="" {tip text="Enter customer ID, first/lastname, email or address and press Enter"}>
+<input type="text" name="qs[customer]" data-mode="customer" value="" size="15" {tip text="Enter customer ID, first/lastname, email or address and press Enter" class="blend lms-ui-quick-search"}>
+&nbsp;{/if}{if ConfigHelper::getConfig('phpui.quicksearch_phone')}<img src="img/phone.gif" alt="" {tip text="Enter phone number and press Enter"}>
+<input type="text" name="qs[phone]" data-mode="phone" value="" size="15" {tip text="Enter phone number and press Enter" class="blend lms-ui-quick-search"}>
+&nbsp;{/if}{if ConfigHelper::getConfig('phpui.quicksearch_node')}<img src="img/node.gif" alt="" {tip text="Enter node ID, name, IP address or MAC address and press Enter"}>
+<input type="text" name="qs[node]" data-mode="node" value="" size="15" {tip text="Enter node ID, name, IP address or MAC address and press Enter" class="blend lms-ui-quick-search"}>
+&nbsp;{/if}{if ConfigHelper::getConfig('phpui.quicksearch_ticket')}<img src="img/ticket.gif" alt="" {tip text="Enter request tracker ID, subject or requestor name and press Enter"}>
+<input type="text" name="qs[ticket]" data-mode="ticket" value="" size="15" {tip text="Enter request tracker ID, subject or requestor name and press Enter" class="blend lms-ui-quick-search"}>
+&nbsp;{/if}{if ConfigHelper::getConfig('phpui.quicksearch_account')}<img src="img/account.gif" alt="" {tip text="Enter account or alias name and press Enter"}>
+<input type="text" name="qs[account]" data-mode="account" value="" size="15" {tip text="Enter account or alias name and press Enter" class="blend lms-ui-quick-search"}>
+&nbsp;{/if}{if ConfigHelper::getConfig('phpui.quicksearch_document')}<img src="img/docum.gif" alt="" {tip text="Enter document number and press Enter"}>
+<input type="text" name="qs[document]" data-mode="document" value="" size="15" {tip text="Enter document number and press Enter" class="blend lms-ui-quick-search"}>
+&nbsp;{/if}{if ConfigHelper::getConfig('phpui.quicksearch_stck_price')}<img src="img/money.gif" alt="">
+<input type="text" name="qs[stckprice]" data-mode="productprice" value="" size="15" {tip text="Enter EAN, serial number, product number or product name to check buy price" class="blend lms-ui-quick-search"}>
+&nbsp;{/if}{if ConfigHelper::getConfig('phpui.quicksearch_stck_warranty')}<img src="img/stck.png" alt="">
+<input type="text" name="qs[stckwarrantyinput]" data-mode="productwarranty"  value="" size="15" {tip text="Enter serial number to check warranty status" class="blend lms-ui-quick-search"}>
+{/if}
+{/block}

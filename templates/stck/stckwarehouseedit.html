@@ -1,0 +1,67 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<H1>{$layout.pagetitle}</H1>
+<P><FORM METHOD="POST" ACTION="?m=stckwarehouseedit&id={$warehouseedit.id}{if $recover}&action=recover{/if}" NAME="warehouseedit">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE CLASS="lmsbox">
+<thead>
+	<TR CLASS="DARK" COLSPAN="2">
+		<TD WIDTH="1%" CLASS="fleftu" NOWRAP>
+			<IMG SRC="img/stck.png" ALT="">
+			<B>{t}Warehouse name:{/t}</B>
+		</TD>
+		<TD CLASS="frightu">
+			<INPUT TYPE="TEXT" SIZE="23" NAME="warehouseedit[name]" VALUE="{$warehouseedit.name}" {tip trigger="name" bold=1}>
+		</TD>
+	</TR>
+</thead>
+<tbody>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/info1.gif" ALT=""> <B>{t}Comment:{/t}</B></TD>
+		<TD CLASS="fright">
+		  <TEXTAREA NAME="warehouseedit[comment]" COLS="60" ROWS="7" {tip text="Enter comment (optional)"}>{$warehouseedit.comment}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/stck_def.png" ALT="">
+			<B>{t}Default:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<INPUT TYPE="checkbox" value="1" name="warehouseedit[default]"{if $warehouseedit.def} checked{/if}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/money.gif" ALT="">
+			<B>{t}Commercial:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			<INPUT TYPE="checkbox" value="1" name="warehouseedit[commerce]"{if $warehouseedit.commerce} checked{/if}>
+		</TD>
+	</TR>
+        <TR CLASS="LIGHT">
+                <TD WIDTH="1%" CLASS="fleft" NOWRAP>
+                        <IMG SRC="img/production.png" ALT="">
+                        <B>{t}Production:{/t}</B>
+                </TD>
+                <TD CLASS="fright">
+                        <INPUT TYPE="checkbox" value="1" name="warehouseedit[production]"{if $warehouseedit.production} checked{/if}>
+                </TD>
+        </TR>
+	<TR CLASS="LIGHT">
+		<TD width="100%" CLASS="fbottomu" COLSPAN="2" align="right">
+			<A HREF="javascript:document.warehouseedit.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+			<A HREF="?m=stckwarehouselist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A><BR>
+		</TD>
+	</TR>
+</tbody>
+</TABLE>
+</FORM></P>
+<SCRIPT type="text/javascript">
+<!--
+document.forms['warehouseedit'].elements['warehouseedit[name]'].focus();
+//-->
+</SCRIPT>
+{/block}

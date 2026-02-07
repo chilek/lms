@@ -1,0 +1,122 @@
+{include file="clearheader.html"}
+<!--// $Id: printreceiptlist.html,v 1.5 2011/10/14 16:09:05 chilek Exp $ //-->
+<TABLE WIDTH="100%">
+	<TR>
+		<TD WIDTH="1%" VALIGN="TOP" ALIGN="LEFT" NOWRAP>
+			<H1>{t}Inventory for date{/t} {$params.rdate|date_format:"%Y/%m/%d"}</h1>
+		</TD>
+		<TD WIDTH="99%" VALIGN="TOP" NOWRAP>
+			<P class="hdf"><B>{$layout.pagetitle}</B>
+			{if $layout.username}<BR><font class="sdr"><B>{$layout.username}</B></font>{/if}
+			{if $layout.registry}<BR><font class="sdr"><B>{$layout.registry}</B></font>{/if}
+			{if $layout.group}<BR><font class="sdr"><B>{$layout.group}</B></font>{/if}
+			</P>
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
+			{$smarty.now|date_format:"%A, %x"}<BR>
+			{t a=$layout.logname}Prepared by: $a{/t}
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+	<TR>
+		<TD ALIGN="CENTER" CLASS="HEAD">
+			{t}No.{/t}
+		</TD>
+		{if $params.cols.id}<TD CLASS="HEAD" ALIGN="CENTER">
+			Id.
+		</TD>{/if}
+		{if $params.cols.supplier}<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Supplier{/t}
+		</TD>{/if}
+		{if $params.cols.in}<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Number{/t}
+		</TD>{/if}
+		{if $params.cols.settlement}<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Settlement date:{/t}
+		</TD>{/if}
+		{if $params.cols.sale}<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Sale date:{/t}
+		</TD>{/if}
+		{if $params.cols.deadline}<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Deadline:{/t}
+		</TD>{/if}
+		{if $params.cols.creation}<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Creation date:{/t}
+		</TD>{/if}
+		{if $params.cols.net}<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Net value{/t}:
+		</TD>{/if}
+		{if $params.cols.gross}<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Gross value{/t}:
+		</TD>{/if}
+		{if $params.cols.payment}<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Payment type:{/t}
+		</TD>{/if}
+		{if $params.cols.paid}<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Paid:{/t}
+		</TD>{/if}
+	</TR>
+	{cycle values="white,grey" print=false}
+	{section name=p loop=$productlist}
+	<TR class="{cycle}">
+		<TD ALIGN="RIGHT">
+			{counter}
+		</TD>
+		{if $params.cols.id}<TD ALIGN="CENTER" NOWRAP>
+			{$productlist[p].id}
+		</TD>{/if}
+		{if $params.cols.supplier}<TD ALIGN="LEFT" NOWRAP>
+			{$productlist[p].supplier} ({$productlist[p].supplierid})
+		</TD>{/if}
+		{if $params.cols.in}<TD ALIGN="CENTER">
+			{$productlist[p].number}
+		</TD>{/if}
+		{if $params.cols.settlement}<TD ALIGN="CENTER">
+			{$productlist[p].datesettlement|date_format:"%Y/%m/%d"}
+		</TD>{/if}
+		{if $params.cols.sale}<TD ALIGN="CENTER">
+		 	{$productlist[p].datesale|date_format:"%Y/%m/%d"}
+		</TD>{/if}
+		{if $params.cols.deadline}<TD ALIGN="CENTER">
+			{$productlist[p].deadline|date_format:"%Y/%m/%d"}
+		</TD>{/if}
+		{if $params.cols.creation}<TD ALIGN="CENTER">
+			{$productlist[p].creationdate|date_format:"%Y/%m/%d"}
+		</TD>{/if}
+		{if $params.cols.net}<TD ALIGN="RIGHT" NOWRAP>
+			{$productlist[p].netvalue|money_format}
+		</TD>{/if}
+		{if $params.cols.gross}<TD ALIGN="RIGHT" NOWRAP>
+			{$productlist[p].grossvalue|money_format}
+		</TD>{/if}
+		{if $params.cols.payment}<TD ALIGN="CENTER">
+			{$_PAYTYPES[$productlist[p].paytype]}
+		</TD>{/if}
+		{if $params.cols.paid}<TD ALIGN="CENTER">
+			{$productlist[p].paid}
+		</TD>{/if}
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD ALIGN="center" COLSPAN="9">
+			<P>&nbsp;</P>
+			<P><B>{t}No such cash receipts in database.{/t}</B></P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	{/section}
+	<TR class="grey">
+		{if $params.cols.net || $params.cols.gross}<TD COLSPAN="{$params.colscount}" ALIGN="RIGHT" VALIGN="TOP">
+			<B>{t}Total:{/t}</B>
+		</TD>{/if}
+		{if $params.cols.net}<TD ALIGN="RIGHT" nowrap>
+			<B>{$params.totalvn|money_format}</B>
+		</TD>{/if}
+		{if $params.cols.gross}<TD ALIGN="RIGHT" nowrap>
+			<B>{$params.totalvg|money_format}</B>
+		</TD>{/if}
+	</TR>
+</TABLE>
+{include file="clearfooter.html"}

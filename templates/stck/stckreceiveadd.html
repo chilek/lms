@@ -1,0 +1,102 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<H1>{$layout.pagetitle}</H1>
+<FORM METHOD="POST" ACTION="?m=stckreceiveadd" NAME="receivenote" id="receivenote">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE CLASS="lmsbox">
+	<thead>
+	<TR CLASS="DARK" COLSPAN="2">
+		<TD WIDTH="1%" CLASS="fleftu" NOWRAP>
+			<IMG SRC="img/stck.png" ALT="">
+			<B>{t}Supplier:{/t}</B>
+		</TD>
+		<TD CLASS="frightu">
+			{customerlist selectname="cid" version="2" inputname="receivenote[doc][supplierid]" selected=$receivenote.doc.supplierid}
+			<INPUT DISABLED type="checkbox" name="receivenote[doc][internal]" id="receivenote[internal]" value="1"{if $receivenote.doc.internal} CHECKED{/if}><A HREF="javascript:checkElement('receivenote[internal]')"> {t}internal{/t}</A>
+		</TD>
+	</TR>
+	</theaD>
+	<tbody>
+	<TR CLASS="LIGHT">
+		<TD COLSPAN="2" WIDTH="100%" CLASS="flr">
+			<TABLE WIDTH="100%" CELLPADDING="0">
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" style="vertical-align:top;">
+					<TABLE WIDTH="100%" CELLPADDING="3">
+						<TR>
+							<TD WIDTH="1%" NOWRAP>
+								<IMG SRC="img/calendar.gif" ALT="">
+								<B>{t}Settlement date:{/t}</B>
+							</TD>
+							<TD>
+								<INPUT type="TEXT" name="receivenote[doc][date][settlement]" value="{$receivenote.doc.date.settlement}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Document`s issue date" trigger="settlement"} SIZE="10">
+							</TD>
+						</TR>
+						<TR>
+							<TD WIDTH="1%" NOWRAP>
+								<IMG SRC="img/calendar.gif" ALT="">
+								<B>{t}Sale date:{/t}</B>
+							</TD>
+							<TD>
+								<INPUT type="TEXT" name="receivenote[doc][date][sale]" value="{$receivenote.doc.date.sale}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Document`s sale date" trigger="sale"} SIZE="10">
+							</TD>
+						</TR>
+						<TR>
+							<TD WIDTH="1%" NOWRAP>
+								<IMG SRC="img/calendar.gif" ALT="">
+								<B>{t}Deadline:{/t}</B>
+							</TD>
+							<TD>
+								<INPUT type="TEXT" name="receivenote[doc][date][deadline]" value="{$receivenote.doc.date.deadline}"  placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Document`s deadline" trigger="deadline"} SIZE="10">
+							</TD>
+						</TR>
+						<TR>
+							<TD WIDTH="1%" NOWRAP>
+								<IMG SRC="img/serialnumber.gif" ALT="">
+								<b>{t}Document number:{/t}</b>
+							</td>
+							<TD>
+								<INPUT type="TEXT" name="receivenote[doc][number]" value="{$receivenote.doc.number}" {tip text="Document`s number" trigger="number"}>
+							</TD>
+						</TR>
+						<TR>
+							<TD WIDTH="1%" NOWRAP>
+								<B>{t}Payment type:{/t}</B>
+							</TD>
+							<TD>
+								{paytypes elemname="receivenote[doc][paytype]" selected=$receivenote.doc.paytype}
+							</TD>
+						</TR>
+					</TABLE>
+					</TD>
+					<TD WIDTH="50%" style="vertical-align:top;">
+					<TABLE WIDTH="100%" CELLPADDING="3">
+						<TR CLASS="LIGHT">
+							<TD WIDTH="1%" NOWRAP><IMG SRC="img/info1.gif" ALT=""> <B>{t}Comment:{/t}</B></TD>
+							<TD>
+								<TEXTAREA NAME="receivenote[doc][comment]" COLS="60" ROWS="7" {tip text="Enter comment (optional)" trigger="comment" bold=1}>{$receivenote.doc.comment}</TEXTAREA>
+							</TD>
+						</TR>
+					</TABLE>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>	
+	</TR>
+	<TR CLASS="dark">
+		<TD width="100%" CLASS="FALL" COLSPAN="2" align="right">
+			<A HREF="javascript:document.receivenote.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+			<A href="?m=stckreceiveproductlist&amp;action=cancel" ACCESSKEY="C" onClick="if(confirm('{t}Are you sure that you want to cancel receive note?{/t}')) { return true; } else { return false; } ">{t}Cancel{/t} <img src="img/cancel.gif" alt=""></A>
+		</TD>
+	</TR>
+	</tbody>
+</TABLE>
+</FORM>
+<SCRIPT type="text/javascript">
+<!--
+new AutoSuggest(document.getElementById('receivenote'),document.getElementById('sinput'),'?m=quicksearch&ajax=1&mode=supplier&what=',1);
+document.forms['receivenote'].elements['sinput'].focus();
+//-->
+</SCRIPT>
+{/block}

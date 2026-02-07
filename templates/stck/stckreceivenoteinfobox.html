@@ -1,0 +1,147 @@
+<TABLE CLASS="lmsbox">
+	<thead>
+	<TR class="dark">
+		<TD WIDTH="1%" CLASS="FLEFTU">
+			<IMG SRC="img/stck.png" ALT="">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHTU">
+			<B>{$receivenoteinfo.number} - {$receivenoteinfo.sname} ({$receivenoteinfo.id|string_format:"%04d"})</B> <IMG SRC="img/stck_{if $receivenoteinfo.paid}true{else}false{/if}.png" alt="">
+		</TD>
+	</TR>
+	</thead>
+	<tbody>
+	<TR class="LIGHT">
+	        <TD WIDTH="100%" COLSPAN="2" CLASS="flr">
+			<TABLE WIDTH="100%" CELLPADDING="0">
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" style="vertical-align:top;">
+						<TABLE WIDTH="100%" CELLPADDING="3">
+							<TR CLASS="LIGHT">
+								<TD WIDTH="1%">
+									<IMG SRC="img/producer.gif" ALT="">
+								</TD>
+								<TD WIDTH="1%" NOWRAP>
+									<B>{t}Supplier:{/t}</B>
+								</TD>
+								<TD WIDTH="98%">
+									<A HREF="?m=customerinfo&id={$receivenoteinfo.supplierid}">{$receivenoteinfo.sname}</A>
+								</TD>
+							</TR>
+							<TR CLASS="LIGHT">
+								<TD WIDTH="1%">
+									<IMG SRC="img/money.gif" ALT="">
+								</TD>
+								<TD WIDTH="1%" NOWRAP>
+								        <B>{t}Net Value:{/t}</B>
+								</TD>
+								<TD WIDTH="98%">
+								        {$receivenoteinfo.netvalue|money_format}
+								</TD>
+							</TR>
+							<TR CLASS="LIGHT">
+								<TD WIDTH="1%">
+									<IMG SRC="img/money.gif" ALT="">
+								</TD>
+								<TD WIDTH="1%" NOWRAP>
+									<B>{t}Gross Value:{/t}</B>
+								</TD>
+								<TD WIDTH="98%">
+									{$receivenoteinfo.grossvalue|money_format}
+								</TD>
+							</TR>
+							<TR CLASS="LIGHT">
+								<TD WIDTH="1%">
+									<IMG SRC="img/calendar.gif" ALT="">
+								</TD>
+								<TD WIDTH="1%" NOWRAP>
+									<B>{t}Settlement date:{/t}</B>
+								</TD>
+								<TD WIDTH="98%">
+									{$receivenoteinfo.datesettlement|date_format: "%Y/%m/%d"}
+								</TD>
+							</TR>
+							<TR CLASS="LIGHT">
+								<TD WIDTH="1%">
+								<IMG SRC="img/calendar.gif" ALT="">
+								</TD>
+								<TD WIDTH="1%" NOWRAP>
+									<B>{t}Sale date:{/t}</B>
+								</TD>
+								<TD WIDTH="98%">
+									{$receivenoteinfo.datesale|date_format: "%Y/%m/%d"}
+								</TD>
+							</TR>
+							<TR CLASS="LIGHT">
+								<TD WIDTH="1%">
+									<IMG SRC="img/calendar.gif" ALT="">
+								</TD>
+								<TD WIDTH="1%" NOWRAP>
+									<B>{t}Deadline:{/t}</B>
+								</TD>
+								<TD WIDTH="98%">
+									{$receivenoteinfo.deadline|date_format: "%Y/%m/%d"}
+								</TD>
+							</TR>
+							<TR>
+								<TD WIDTH="1%">
+									<IMG SRC="img/money.gif" ALT="">
+
+								</TD>
+								<TD WIDTH="1%" NOWRAP>
+									<B>{t}Payment type:{/t}</B>
+								</TD>
+								<TD WIDTH="98%">
+									{$paytypes[$receivenoteinfo.paytype]}
+								</TD>
+							</TR>
+	                        		</TABLE>
+					</TD>
+					<TD WIDTH="50%" style="vertical-align:top;">
+                				<TABLE WIDTH="100%" CELLPADDING="3">
+						<TR CLASS="LIGHT">
+							<TD WIDTH="1%">
+								<IMG SRC="img/desc.gif" ALT="">
+							</TD>
+							<TD WIDTH="99%" COLSPAN="2">
+								<TABLE WIDTH="100%" CELLPADDING="5">
+									<TR>
+										<TD class="fall superlight">
+											{$receivenoteinfo.comment|escape|replace:"\n":"<BR>"}
+										</TD>
+									</TR>
+								</TABLE>
+							</TD>
+						</TR>
+						<TR>
+							<TD WIDTH="1%">
+								<IMG SRC="img/users.gif" ALT="">
+							</TD>
+							<TD WIDTH="98%">
+								<TABLE WIDTH="100%" CELLPADDING="5">
+									<TR>
+										<TD WIDTH="1%">
+											<B>{t}Created:{/t}<BR>
+											{t}Modified:{/t}</B>
+										</TD>
+										<TD WIDTH="99%">
+											{$receivenoteinfo.createdby}, {$receivenoteinfo.creationdate|date_format:"%Y/%m/%d %H:%M"}<BR>
+											{if $receivenoteinfo.moddate}{$receivenoteinfo.modifiedby}, {$receivenoteinfo.moddate|date_format:"%Y/%m/%d %H:%M"}{else}-{/if}
+										</TD>
+									</TR>
+								</TABLE>
+							</TD>
+						</TR>
+						</TABLE>
+					</TD>
+        			</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="100%" COLSPAN="2" CLASS="FBOTTOMU" ALIGN="RIGHT">
+			<A HREF="?m=stckreceivenoteinfo&id={$receivenoteinfo.id}&action=srna">{t}Account{/t} <IMG SRC="img/pay.gif" ALT=""></A>
+			<A href="?m=stckreceivenoteedit&id={$receivenoteinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG src="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
+                </TD>
+        </TR>
+	</tbody>
+</TABLE>
