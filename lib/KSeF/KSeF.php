@@ -599,11 +599,11 @@ class KSeF
             if (!empty($invoice['invoice']['ksefnumber'])) {
                 $xml .= "\t\t\t<NrKSeF>1</NrKSeF>" . PHP_EOL;
                 $xml .= "\t\t\t<NrKSeFFaKorygowanej>" . $invoice['invoice']['ksefnumber'] . "</NrKSeFFaKorygowanej>" . PHP_EOL;
-                $xml .= "\t\t\t<OkresFaKorygowanej>" . date('Y-m', $invoice['invoice']['sdate']) . "</OkresFaKorygowanej>" . PHP_EOL;
             } else {
                 $xml .= "\t\t\t<NrKSeFN>1</NrKSeFN>" . PHP_EOL;
             }
             $xml .= "\t\t</DaneFaKorygowanej>" . PHP_EOL;
+            $xml .= "\t\t<OkresFaKorygowanej>" . date('Y-m', $invoice['invoice']['sdate']) . "</OkresFaKorygowanej>" . PHP_EOL;
         } else {
             $xml .= "\t\t<RodzajFaktury>VAT</RodzajFaktury>" . PHP_EOL;
         }
