@@ -35,13 +35,65 @@ class KSeF
     const ENVIRONMENT_TEST = 1;
     const ENVIRONMENT_PROD = 2;
 
+    const IDENTIFIER_TEN = 1;
+    const IDENTIFIER_VAT_UE = 2;
+    const IDENTIFIER_OTHER = 3;
+    const IDENTIFIER_NONE = 4;
+    const IDENTIFIER_INTERNAL_ID = 5;
+
+    const INVOICING_MODE_ONLINE = 1;
+    const INVOICING_MODE_OFFLINE = 2;
+
+    const DOC_ZAL = 100;
+    const DOC_ROZ = 101;
+    const DOC_UPR = 102;
+    const DOC_KOR_ZAL = 103;
+    const DOC_KOR_ROZ = 104;
+    const DOC_VAT_PEF = 105;
+    const DOC_VAT_PEF_SP = 106;
+    const DOC_KOR_PEF = 107;
+    const DOC_VAT_RR = 108;
+    const DOC_KOR_VAT_RR = 109;
+
     const KSEF_UPO_DIR = STORAGE_DIR . DIRECTORY_SEPARATOR . 'ksef' . DIRECTORY_SEPARATOR . 'upo';
+    const KSEF_INVOICE_DIR = STORAGE_DIR . DIRECTORY_SEPARATOR . 'ksef' . DIRECTORY_SEPARATOR . 'invoice';
 
     static private $upoStorage = null;
+    static private $invoiceStorage = null;
+
+    static private $savedInvoices = [];
+
+    static private $identifierTypes = [
+        'Nip' => self::IDENTIFIER_TEN,
+        'VatUe' => self::IDENTIFIER_VAT_UE,
+        'Other' => self::IDENTIFIER_OTHER,
+        'None' => self::IDENTIFIER_NONE,
+        'InternalId' => self::IDENTIFIER_INTERNAL_ID,
+    ];
+
+    static private $invoicingModes = [
+        'Online' => self::INVOICING_MODE_ONLINE,
+        'Offline' => self::INVOICING_MODE_OFFLINE,
+    ];
+
+    static private $invoiceTypes = [
+        'Vat' => DOC_INVOICE,
+        'Zal' => self::DOC_ZAL,
+        'Kor' => DOC_CNOTE,
+        'Roz' => self::DOC_ROZ,
+        'Upr' => self::DOC_UPR,
+        'KorZal' => self::DOC_KOR_ZAL,
+        'KorRoz' => self::DOC_KOR_ROZ,
+        'VatPef' => self::DOC_VAT_PEF,
+        'VatPefSp' => self::DOC_VAT_PEF_SP,
+        'KorPef' => self::DOC_KOR_PEF,
+        'VatRr' =>  self::DOC_VAT_RR,
+        'KorVatRr' => self::DOC_KOR_VAT_RR,
+    ];
 
     private $db;
     private $lms;
-    private $divisions = array();
+    private $divisions = [];
     private $countries;
     private $defaultCurrency;
     private $taxes;
@@ -1331,5 +1383,76 @@ class KSeF
         }
 
         return file_get_contents($upoFile);
+    }
+
+    public static function saveInvoice($ten, $fileName, $content)
+    {
+        if (!isset(self::$invoiceStorage)) {
+            self::$invoiceStorage = is_dir(self::KSEF_INVOICE_DIR) && is_readable(self::KSEF_INVOICE_DIR);
+        }
+
+        if (!self::$invoiceStorage) {
+            return false;
+        }
+
+        [, $date] = explode('-', $fileName);
+
+        $ksefInvoiceTenDir = self::KSEF_INVOICE_DIR . DIRECTORY_SEPARATOR . $ten;
+        if (!is_dir($ksefInvoiceTenDir)) {
+            mkdir($ksefInvoiceTenDir);
+            @chmod(
+                $ksefInvoiceTenDir,
+                fileperms(self::KSEF_INVOICE_DIR) & 0xfff
+            );
+            @chown($ksefInvoiceTenDir, fileowner(self::KSEF_INVOICE_DIR));
+            @chgrp($ksefInvoiceTenDir, filegroup(self::KSEF_INVOICE_DIR));
+        }
+
+        $ksefInvoiceTenDateDir = $ksefInvoiceTenDir . DIRECTORY_SEPARATOR . $date;
+        if (!is_dir($ksefInvoiceTenDateDir)) {
+            mkdir($ksefInvoiceTenDateDir);
+            @chmod(
+                $ksefInvoiceTenDateDir,
+                fileperms(self::KSEF_UPO_DIR) & 0xfff
+            );
+            @chown($ksefInvoiceTenDateDir, fileowner(self::KSEF_INVOICE_DIR));
+            @chgrp($ksefInvoiceTenDateDir, filegroup(self::KSEF_INVOICE_DIR));
+        }
+
+        $filePath = $ksefInvoiceTenDateDir . DIRECTORY_SEPARATOR . $fileName;
+        $res = file_put_contents($filePath, $content);
+        if ($res === false) {
+            return false;
+        }
+        self::$savedInvoices[] = $filePath;
+        return $res;
+    }
+
+    public static function rollbackInvoiceSaves()
+    {
+        if (empty(self::$savedInvoices)) {
+            return;
+        }
+
+        foreach (self::$savedInvoices as $filePath) {
+            @unlink($filePath);
+        }
+
+        self::$savedInvoices = [];
+    }
+
+    public static function identifierType($identifierType)
+    {
+        return self::$identifierTypes[$identifierType] ?? null;
+    }
+
+    public static function invoicingMode($invoicingMode)
+    {
+        return self::$invoicingModes[$invoicingMode] ?? null;
+    }
+
+    public static function invoiceType($invoiceType)
+    {
+        return self::$invoiceTypes[$invoiceType] ?? null;
     }
 }
