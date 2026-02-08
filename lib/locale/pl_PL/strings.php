@@ -6318,3 +6318,7 @@ $_LANG['<!ksef>Don\'t post document'] = 'Nie księguj dokumentu';
 $_LANG['<!ksef>Post document'] = 'Księguj dokument';
 $_LANG['<!ksef>Settle document'] = 'Rozlicz dokument';
 $_LANG['<!ksef>Unsettle document'] = 'Cofnij rozliczenie dokumentu';
+
+$_LANG['KSeF Purchase Invoices'] = 'Faktury zakupu KSeF';
+$_LANG['KSeF purchase invoice management'] = 'Zarządzanie fakturami zakupu KSeF';
+$_LANG['<!ksef>KSeF purchase invoice management'] = 'zarządzanie fakturami zakupu KSeF';

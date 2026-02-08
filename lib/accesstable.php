@@ -79,6 +79,13 @@ $access_table = array(
             'finances' => array('balancelist', 'invoicelist', 'invoicelist-proforma', 'notelist'),
         ),
     ),
+    'ksef_invoice_purchages' => array(
+        'label' => trans('<!ksef>KSeF purchase invoice management'),
+        'allow_regexp' => '^ksefpurchaseinvoice[a-z]+$',
+        'allow_menu_items' => array(
+            'finances' => array('ksefpurchaseinvoices'),
+        )
+    ),
     'assignment_management' => array(
         'label' => trans('assignment management'),
         'allow_regexp' => '^customerassignment(add|info|edit|del|helper)$',

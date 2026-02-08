@@ -438,6 +438,12 @@ $menu = array(
                     'tip' => trans('Generate invoice'),
                     'prio' => 80,
                 ),
+                'ksefpurchaseinvoices' => array(
+                    'name' => trans('KSeF Purchase Invoices'),
+                    'link' => '?m=ksefpurchaseinvoices',
+                    'tip' => trans('KSEF purchase invoice management'),
+                    'prio' => 85,
+                ),
                 'invoicelist-proforma' => array(
                     'name' => trans('Pro Forma Invoice List'),
                     'link' => '?m=invoicelist&proforma=1',
