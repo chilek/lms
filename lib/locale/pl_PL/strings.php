@@ -6298,3 +6298,23 @@ $_LANG['View UPO'] = 'Pokaż UPO';
 
 $_LANG['<!ksef>Local Government Unit'] = 'jednostka samorządu terytorialnego';
 $_LANG['<!ksef>VAT group'] = 'grupa VAT';
+
+$_LANG['<!ksef>Document type/number'] = 'Typ/numer dokumentu';
+$_LANG['KSeF number'] = 'Numer KSeF';
+$_LANG['<!ksef>Seller name'] = 'Nazwa sprzedawcy';
+$_LANG['<!ksef>Seller TEN'] = 'NIP sprzedawcy';
+$_LANG['<!ksef>Buyer short name'] = 'Nazwa skrócona nabywcy';
+$_LANG['<!ksef>Buyer alias'] = 'Alias nabywcy';
+$_LANG['<!ksef>Net value'] = 'Wartość netto';
+$_LANG['<!ksef>VAT value'] = 'Wartość VAT';
+$_LANG['<!ksef>Gross value'] = 'Wartość brutto';
+$_LANG['<!ksef>Bank name'] = 'Nazwa banku';
+$_LANG['<!ksef>Bank account'] = 'Konto bankowe';
+$_LANG['<!ksef>No purchase invoices'] = 'Brak faktur zakupu';
+$_LANG['<!ksef>Payment type'] = 'Typ płatnoci';
+$_LANG['<!ksef>Payment date'] = 'Data płatnoci';
+$_LANG['<!ksef>Paid'] = 'Zapłacono';
+$_LANG['<!ksef>Don\'t post document'] = 'Nie księguj dokumentu';
+$_LANG['<!ksef>Post document'] = 'Księguj dokument';
+$_LANG['<!ksef>Settle document'] = 'Rozlicz dokument';
+$_LANG['<!ksef>Unsettle document'] = 'Cofnij rozliczenie dokumentu';
