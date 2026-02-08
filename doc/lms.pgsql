@@ -3197,6 +3197,11 @@ CREATE TABLE ksefinvoices (
     form_value varchar(15) NOT NULL,
     invoice_hash varchar(44) NOT NULL,
     corrected_invoice_hash varchar(44) DEFAULT NULL,
+    bank_account varchar(48) DEFAULT NULL,
+    bank_name varchar(100) DEFAULT NULL,
+    pay_date bigint DEFAULT NULL,
+    pay_type smallint DEFAULT 0,
+    buyer_id varchar(50) DEFAULT NULL,
     PRIMARY KEY (id),
     CONSTRAINT ksefinvoices_ksef_number_ukey UNIQUE (ksef_number)
 );
@@ -3226,6 +3231,28 @@ CREATE TABLE ksefinvoicethirdsubjects (
 CREATE INDEX ksefinvoicethirdsubjects_identifier_type_idx ON ksefinvoicethirdsubjects (identifier_type);
 CREATE INDEX ksefinvoicethirdsubjects_identifier_value_idx ON ksefinvoicethirdsubjects (identifier_value);
 CREATE INDEX ksefinvoicethirdsubjects_role_idx ON ksefinvoicethirdsubjects (role);
+
+/* ---------------------------------------------------
+ Structure of table ksefinvoiceitems
+------------------------------------------------------*/
+CREATE TABLE ksefinvoiceitems (
+    ksef_invoice_id integer NOT NULL
+        CONSTRAINT ksefinvoiceitems_ksef_invoice_id_fkey REFERENCES ksefinvoices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    item_id smallint NOT NULL,
+    name varchar(512) DEFAULT NULL,
+    prod_id varchar(50) DEFAULT NULL,
+    unit varchar(512) DEFAULT NULL,
+    count numeric(22,6) DEFAULT NULL,
+    net_flag smallint DEFAULT 1,
+    price numeric(24,8) NOT NULL,
+    value numeric(16,2) NOT NULL,
+    tax_rate numeric(4,2) NOT NULL,
+    taxed smallint DEFAULT 1,
+    reverse_charge smallint DEFAULT 0,
+    eu smallint DEFAULT 0,
+    export smallint DEFAULT 0,
+    product_service_group smallint DEFAULT 0
+);
 
 /* ---------------------------------------------------
  Structure of table "up_rights" (Userpanel)
@@ -4627,6 +4654,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026020700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026020800');
 
 COMMIT;

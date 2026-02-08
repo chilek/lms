@@ -99,6 +99,8 @@ class KSeF
     private $taxes;
 
     private $payTypes;
+    private static $ksefPayTypes;
+    private static $ksefTaxProperties;
 
     private $showOnlyAlternativeAccounts;
     private $showAllAccounts;
@@ -1425,7 +1427,13 @@ class KSeF
             return false;
         }
         self::$savedInvoices[] = $filePath;
-        return $res;
+
+        $xml = simplexml_load_string($content);
+        if ($xml === false) {
+            return false;
+        }
+
+        return $xml;
     }
 
     public static function rollbackInvoiceSaves()
@@ -1454,5 +1462,117 @@ class KSeF
     public static function invoiceType($invoiceType)
     {
         return self::$invoiceTypes[$invoiceType] ?? null;
+    }
+
+    public static function payTypeName($payType)
+    {
+        if (empty(self::$ksefPayTypes)) {
+            self::$ksefPayTypes = [
+                0 => 'Inna',
+                1 => 'Gotówka',
+                2 => 'Karta',
+                3 => 'Bon',
+                4 => 'Czek',
+                5 => 'Kredyt',
+                6 => 'Przelew',
+                7 => 'Mobilna',
+            ];
+        }
+
+        return self::$ksefPayTypes[$payType] ?? null;
+    }
+
+    public static function ksefTaxProperties(string $ksefTaxRateName): ?array
+    {
+        if (empty(self::$ksefTaxProperties)) {
+            self::$ksefTaxProperties = [
+                '23' => [
+                    'rate' => 23,
+                    'taxed' => true,
+                    'reverse_charge' => false,
+                    'eu' => false,
+                    'export' => false,
+                ],
+                '22' => [
+                    'rate' => 22,
+                    'taxed' => true,
+                    'reverse_charge' => false,
+                    'eu' => false,
+                    'export' => false,
+                ],
+                '8' => [
+                    'rate' => 8,
+                    'taxed' => true,
+                    'reverse_charge' => false,
+                    'eu' => false,
+                    'export' => false,
+                ],
+                '7' => [
+                    'rate' => 7,
+                    'taxed' => true,
+                    'reverse_charge' => false,
+                    'eu' => false,
+                    'export' => false,
+                ],
+                '5' => [
+                    'rate' => 5,
+                    'taxed' => true,
+                    'reverse_charge' => false,
+                    'eu' => false,
+                    'export' => false,
+                ],
+                '4' => [
+                    'rate' => 4,
+                    'taxed' => true,
+                    'reverse_charge' => false,
+                    'eu' => false,
+                    'export' => false,
+                ],
+                '3' => [
+                    'rate' => 3,
+                    'taxed' => true,
+                    'reverse_charge' => false,
+                    'eu' => false,
+                    'export' => false,
+                ],
+                '0 KR' => [
+                    'rate' => 0,
+                    'taxed' => true,
+                    'reverse_charge' => false,
+                    'eu' => false,
+                    'export' => false,
+                ],
+                '0 WDT' => [
+                    'rate' => 0,
+                    'taxed' => true,
+                    'reverse_charge' => false,
+                    'eu' => true,
+                    'export' => false,
+                ],
+                '0 EX' => [
+                    'rate' => 0,
+                    'taxed' => true,
+                    'reverse_charge' => false,
+                    'eu' => false,
+                    'export' => true,
+                ],
+                'zw' => [
+                    'rate' => 0,
+                    'taxed' => false,
+                    'reverse_charge' => false,
+                    'eu' => false,
+                    'export' => false,
+                ],
+                'oo' => [
+                    'rate' => 0,
+                    'taxed' => true,
+                    'reverse_charge' => true,
+                    'eu' => false,
+                    'export' => false,
+                ],
+            ];
+        }
+
+        return self::$ksefTaxProperties[$ksefTaxRateName] ?? null;
     }
 }
