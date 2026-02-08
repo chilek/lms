@@ -3181,6 +3181,9 @@ CREATE TABLE ksefinvoices (
     permanent_storage_date timestamptz NOT NULL,
     ksef_number varchar(40) NOT NULL,
     invoice_number varchar(256) NOT NULL,
+    corrected_ksef_number varchar(44) DEFAULT NULL,
+    corrected_invoice_number varchar(256) DEFAULT NULL,
+    corrected_invoice_issue_date bigint NULL,
     seller_ten varchar(10) NOT NULL,
     seller_name varchar(512) NOT NULL,
     buyer_identifier_type smallint NOT NULL,
@@ -3202,12 +3205,15 @@ CREATE TABLE ksefinvoices (
     pay_date bigint DEFAULT NULL,
     pay_type smallint DEFAULT 0,
     buyer_id varchar(50) DEFAULT NULL,
+    posting smallint DEFAULT 1,
+    notes text DEFAULT NULL,
     PRIMARY KEY (id),
     CONSTRAINT ksefinvoices_ksef_number_ukey UNIQUE (ksef_number)
 );
 CREATE INDEX ksefinvoices_issue_date_idx ON ksefinvoices (issue_date);
 CREATE INDEX ksefinvoices_permanent_storage_date_idx ON ksefinvoices (permanent_storage_date);
 CREATE INDEX ksefinvoices_ksef_number_idx ON ksefinvoices (ksef_number);
+CREATE INDEX ksefinvoices_corrected_ksef_number_idx ON ksefinvoices (corrected_ksef_number);
 CREATE INDEX ksefinvoices_seller_ten_idx ON ksefinvoices (seller_ten);
 CREATE INDEX ksefinvoices_buyer_identifier_value_idx ON ksefinvoices (buyer_identifier_value);
 CREATE INDEX ksefinvoices_invoice_type_idx ON ksefinvoices (invoice_type);
@@ -4654,6 +4660,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026020800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026020801');
 
 COMMIT;

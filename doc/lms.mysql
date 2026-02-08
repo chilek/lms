@@ -3270,6 +3270,9 @@ CREATE TABLE ksefinvoices (
     permanent_storage_date datetime(6) NOT NULL,
     ksef_number varchar(40) NOT NULL,
     invoice_number varchar(256) NOT NULL,
+    corrected_ksef_number varchar(44) DEFAULT NULL,
+    corrected_invoice_number varchar(256) DEFAULT NULL,
+    corrected_invoice_issue_date int(16) NULL,
     seller_ten varchar(10) NOT NULL,
     seller_name varchar(512) NOT NULL,
     buyer_identifier_type smallint NOT NULL,
@@ -3291,6 +3294,8 @@ CREATE TABLE ksefinvoices (
     pay_date int(11) DEFAULT NULL,
     pay_type smallint DEFAULT 0,
     buyer_id varchar(50) DEFAULT NULL,
+    posting smallint DEFAULT 1,
+    notes text DEFAULT NULL,
     PRIMARY KEY (id),
     CONSTRAINT ksefinvoices_division_id_fkey
         FOREIGN KEY (division_id) REFERENCES divisions (id) ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -3298,6 +3303,7 @@ CREATE TABLE ksefinvoices (
     KEY ksefinvoices_issue_date_idx (issue_date),
     KEY ksefinvoices_permanent_storage_date_idx (permanent_storage_date),
     KEY ksefinvoices_ksef_number_idx (ksef_number),
+    KEY ksefinvoices_corrected_ksef_number_idx (corrected_ksef_number),
     KEY ksefinvoices_seller_ten_idx (seller_ten),
     KEY ksefinvoices_buyer_identifier_value_idx (buyer_identifier_value),
     KEY ksefinvoices_invoice_type_idx (invoice_type)
@@ -4612,4 +4618,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026020800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026020801');
