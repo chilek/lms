@@ -59,7 +59,20 @@ switch ($_POST['action']) {
         break;
     case 'settle':
     case 'unsettle':
-        die('[]');
+        $res = $DB->Execute(
+            'UPDATE ksefinvoices
+                SET settled = ?
+                WHERE id = ?',
+            [
+                (int)($_POST['action'] == 'settle'),
+                $id,
+            ]
+        );
+        if (empty($res)) {
+            die(json_encode([
+                'error' => 'SQL error',
+            ]));
+        }
         break;
     default:
         die(json_encode([

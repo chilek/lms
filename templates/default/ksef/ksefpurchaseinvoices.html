@@ -43,6 +43,10 @@
 			border-top: none;
 		}
 
+		#ksef-invoices .division-panel-row > * {
+			white-space: nowrap;
+		}
+
 		[data-action].hidden {
 			display: none;
 		}
@@ -52,17 +56,23 @@
 			margin-right: 0.2em !important;
 		}
 
+		#temporary-table {
+			display: none;
+		}
+
 	</style>
 
 	<script>
 
 		$(function() {
 			function sortByProperty(property, order) {
-				const rows = $('#ksef-invoices > tbody > tr').get();
+				const rows = $('#ksef-invoices > tbody > tr[data-id]').get();
 
 				rows.sort(function (a, b) {
 					var valueA = $(a).attr('data-' + property);
 					var valueB = $(b).attr('data-' + property);
+					var idA = parseInt($(a).attr('data-id'));
+					var idB = parseInt($(b).attr('data-id'));
 
 					if (property === 'issue-date') {
 						valueA = parseInt(valueA);
@@ -72,9 +82,15 @@
 						valueB = parseFloat(valueB);
 					}
 
-					return order === 'asc'
-						? valueA - valueB
-						: valueB - valueA;
+					if (valueA === valueB) {
+						return order === 'asc'
+							? idA - idB
+							: idB - idA;
+					} else {
+						return order === 'asc'
+							? valueA - valueB
+							: valueB - valueA;
+					}
 				});
 
 				$.each(rows, function (_, row) {
@@ -98,17 +114,117 @@
 				sortByProperty(orderProperty, sortOrderIcon.is('.lms-ui-icon-asc-order') ? 'asc' : 'desc');
 			});
 
-			var sortOrder = getStorageItem('ksef-purchase-invoices-sort-order', 'session');
-			if (!sortOrder) {
-				sortOrder = 'issue-date asc';
+			function restoreSortOrder() {
+				var sortOrder = getStorageItem('ksef-purchase-invoices-sort-order', 'session');
+				if (!sortOrder) {
+					sortOrder = 'issue-date asc';
+				}
+				var sortParts = sortOrder.split(' ');
+				sortByProperty(sortParts[0], sortParts[1]);
+
+				return sortParts;
 			}
-			var sortParts = sortOrder.split(' ');
-			sortByProperty(sortParts[0], sortParts[1]);
+
+			function applyFilter(filter) {
+				if (typeof(filter) !== 'object') {
+					filter = {
+						divisionId: getStorageItem('ksef-purchase-invoices-division-id', 'session')
+					};
+					var posting = getStorageItem('ksef-purchase-invoices-posting', 'session');
+					filter.posting = posting && posting.length ? posting : '';
+					var settled = getStorageItem('ksef-purchase-invoices-settled', 'session');
+					filter.settled = settled && settled.length ? settled : '';
+				}
+
+				var ksefInvoices = $('#ksef-invoices > tbody');
+				var temporaryTable = $('#temporary-table > tbody');
+				var filterSelector = [];
+
+				if (filter.hasOwnProperty('divisionId')) {
+					var divisionId = parseInt(filter.divisionId);
+					if (divisionId) {
+						filterSelector.push('[data-division-id="' + divisionId + '"]');
+					} else {
+						filterSelector.push('[data-division-id]');
+					}
+				}
+
+				if (filter.hasOwnProperty('posting')) {
+					var posting = filter.posting;
+					if (posting.length) {
+						filterSelector.push('[data-posting="' + posting + '"]');
+					}
+				}
+
+				if (filter.hasOwnProperty('settled')) {
+					var settled = filter.settled;
+					if (settled.length) {
+						filterSelector.push('[data-settled="' + settled + '"]');
+					}
+				}
+
+				$(temporaryTable).find('tr' + filterSelector.join('')).appendTo(ksefInvoices);
+
+				$(temporaryTable).append(ksefInvoices.find('tr[data-id]').filter(':not(' + filterSelector.join('') + '):not(#empty-table-row)'));
+
+				var emptyTable = !ksefInvoices.find('[data-id]').length;
+				$('#empty-table-row').appendTo(emptyTable ? ksefInvoices : temporaryTable);
+
+				restoreSortOrder();
+
+				return filter;
+			}
+
+			$('#division-id').change(function() {
+				var filter = {
+					divisionId: $(this).val()
+				}
+				if ($('#posting').prop('checked')) {
+					filter.posting = '1';
+				}
+
+				applyFilter(filter);
+
+				setStorageItem('ksef-purchase-invoices-division-id', filter.divisionId, 'session');
+			});
+
+			$('#posting').change(function() {
+				var filter = {
+					posting: $(this).prop('checked') ? '1' : '',
+					divisionId: $('#division-id').val()
+				};
+				applyFilter(filter);
+
+				setStorageItem('ksef-purchase-invoices-posting', filter.posting, 'session');
+			});
+
+			$('#unsettled').change(function() {
+				var filter = {
+					posting: $('#posting').prop('checked') ? '1' : '',
+					divisionId: $('#division-id').val(),
+					settled: $('#unsettled').prop('checked') ? '0' : ''
+				};
+				applyFilter(filter);
+
+				setStorageItem('ksef-purchase-invoices-settled', filter.settled, 'session');
+			});
+
+			var sortParts = restoreSortOrder();
+
 			$('#ksef-invoices [data-order-property="' + sortParts[0] + '"]')
 				.find('.sort-order-icon')
 				.toggleClass('lms-ui-icon-asc-order', sortParts[1] === 'asc')
 				.toggleClass('lms-ui-icon-desc-order', sortParts[1] === 'desc')
 				.removeClass('hidden');
+
+			var filter = applyFilter();
+
+			if (filter.divisionId) {
+				$('#division-id').val(filter.divisionId);
+			}
+			if (filter.posting.length && filter.posting === '1') {
+				$('#posting').prop('checked', true);
+			}
 
 			$('[data-action]').click(function() {
 				var that = $(this);
@@ -136,19 +252,23 @@
 						switch (action) {
 							case 'ignore':
 								$(that).siblings('[data-action="restore"]').show();
-								$(that).closest('[data-id]').addClass('cancel');
+								$(that).closest('[data-id]').addClass('cancel').attr('data-posting', '0');
+								applyFilter();
 								break;
 							case 'restore':
 								$(that).siblings('[data-action="ignore"]').show();
-								$(that).closest('[data-id]').removeClass('cancel');
+								$(that).closest('[data-id]').removeClass('cancel').attr('data-posting', '1');
+								applyFilter();
 								break;
 							case 'settle':
 								$(that).siblings('[data-action="unsettle"]').show();
-								$(that).closest('[data-id]').addClass('blend');
+								$(that).closest('[data-id]').addClass('blend').attr('data-settled', '1');
+								applyFilter();
 								break;
 							case 'unsettle':
 								$(that).siblings('[data-action="settle"]').show();
-								$(that).closest('[data-id]').removeClass('blend');
+								$(that).closest('[data-id]').removeClass('blend').attr('data-settled', '0');
+								applyFilter();
 								break;
 						}
 					},
@@ -203,6 +323,25 @@
 								{date_period_preset from="#start-date" to="#end-date"}
 								{button type="submit" icon="apply" label="Apply" id="period-apply-button" form="ksef-invoices-form"}
 							</span>
+						</div>
+						<div class="filter-panel-row">
+							<label>
+								<strong>{trans("Division")}<strong>
+								<select name="division-id" id="division-id" form="ksef-invoices-form">
+									<option value="">{trans("— all —")}</option>
+									{foreach $divisions as $division}
+										<option value="{$division.id}">{$division.label|escape}</option>
+									{/foreach}
+								</select>
+							</label>
+							<label>
+								<input type="checkbox" name="posting" id="posting" form="ksef-invoices-form">
+								{trans("<!ksef>posted")}
+							</label>
+							<label>
+								<input type="checkbox" name="unsettled" id="unsettled" form="ksef-invoices-form">
+								{trans("<!ksef>unsettled")}
+							</label>
 						</div>
 					</div>
 				</td>
@@ -266,7 +405,10 @@
 				<tr data-issue-date="{$invoice.issue_date}"
 					data-gross-value="{$invoice.gross_amount}"
 					data-id="{$invoice.id}"
-					class="{if empty($invoice.posting)} cancel{/if}">
+					data-division-id="{$invoice.division_id}"
+					data-posting="{if empty($invoice.posting)}0{else}1{/if}"
+					data-settled="{if empty($invoice.settled)}0{else}1{/if}"
+					class="{if empty($invoice.posting)} cancel{/if}{if !empty($invoice.settled)} blend{/if}">
 					<td class="nobr">
 						<strong>{$invoice.issue_date|date_format:"Y/m/d"}</strong>
 						<br>
@@ -352,17 +494,28 @@
 						{/if}
 						{button type="button" icon="restore" tip="<!ksef>Post document" data-action="restore" class=$restore_button_class}
 						{button type="button" icon="ignore" tip="<!ksef>Don't post document" data-action="ignore" class=$ignore_button_class}
-						{button type="button" icon="settle" tip="<!ksef>Settle document" data-action="settle"}
-						{button type="button" icon="open" tip="<!ksef>Unsettle document" data-action="unsettle" class="hidden"}
-					</td>
-				</tr>
-			{foreachelse}
-				<tr>
-					<td colspan="7" class="empty-table">
-						{trans("<!ksef>No purchase invoices")}
+						{$settled = !empty($invoice.settled)}
+						{if $settled}
+							{$settle_button_class = "hidden"}
+							{$unsettle_button_class = ""}
+						{else}
+							{$settle_button_class = ""}
+							{$unsettle_button_class = "hidden"}
+						{/if}
+						{button type="button" icon="settle" tip="<!ksef>Settle document" data-action="settle" class=$settle_button_class}
+						{button type="button" icon="open" tip="<!ksef>Unsettle document" data-action="unsettle" class=$unsettle_button_class}
 					</td>
 				</tr>
 			{/foreach}
+			<tr id="empty-table-row">
+				<td colspan="7" class="empty-table">
+					{trans("<!ksef>No purchase invoices")}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<table id="temporary-table">
+		<tbody>
 		</tbody>
 	</table>
 {/block}

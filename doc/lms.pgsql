@@ -3206,6 +3206,7 @@ CREATE TABLE ksefinvoices (
     pay_type smallint DEFAULT 0,
     buyer_id varchar(50) DEFAULT NULL,
     posting smallint DEFAULT 1,
+    settled smallint DEFAULT 0,
     notes text DEFAULT NULL,
     PRIMARY KEY (id),
     CONSTRAINT ksefinvoices_ksef_number_ukey UNIQUE (ksef_number)
@@ -4660,6 +4661,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026020801');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026020900');
 
 COMMIT;
