@@ -38,29 +38,32 @@ CREATE TABLE IF NOT EXISTS `stck_manufacturers` (
 -- Struktura tabeli dla tabeli `stck_products`
 --
 
-CREATE TABLE IF NOT EXISTS `stck_products` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `manufacturerid` int(11) NOT NULL DEFAULT '0',
-  `groupid` int(11) NOT NULL DEFAULT '0',
-  `taxid` int(11) NOT NULL DEFAULT '0',
-  `typeid` int(11) NOT NULL DEFAULT '0',
-  `quantityid` int(11) NOT NULL,
-  `quantitycheck` tinyint(1) NOT NULL DEFAULT '1',
-  `ean` varchar(30) DEFAULT NULL,
-  `quantity` int(11) NOT NULL DEFAULT '0',
-  `name` text NOT NULL,
-  `creationdate` int(11) NOT NULL DEFAULT '0',
-  `creatorid` int(11) NOT NULL DEFAULT '0',
-  `moddate` int(11) NOT NULL DEFAULT '0',
-  `modid` int(11) NOT NULL DEFAULT '0',
-  `comment` text,
-  `deleted` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `manufacturerid` (`manufacturerid`),
-  KEY `groupid` (`groupid`),
-  KEY `taxid` (`taxid`),
-  KEY `typeid` (`typeid`),
-  KEY `quantityid` (`quantityid`)
+CREATE TABLE IF NOT EXISTS stck_products (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  manufacturerid int(11) NOT NULL DEFAULT '0',
+  groupid int(11) NOT NULL DEFAULT '0',
+  taxid int(11) NOT NULL DEFAULT '0',
+  typeid int(11) NOT NULL DEFAULT '0',
+  quantityid int(11) NOT NULL,
+  quantitycheck tinyint(1) NOT NULL DEFAULT '1',
+  ean varchar(30) DEFAULT NULL,
+  quantity int(11) NOT NULL DEFAULT '0',
+  name text NOT NULL,
+  gtu_id smallint default null,
+  gprice decimal(9,2) default null,
+  srp decimal(9,2) default null,
+  creationdate int(11) NOT NULL DEFAULT '0',
+  creatorid int(11) NOT NULL DEFAULT '0',
+  moddate int(11) NOT NULL DEFAULT '0',
+  modid int(11) NOT NULL DEFAULT '0',
+  comment text,
+  deleted tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (id),
+  KEY manufacturerid (manufacturerid),
+  KEY groupid (groupid),
+  KEY taxid (taxid),
+  KEY typeid (typeid),
+  KEY quantityid (quantityid)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
