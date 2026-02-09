@@ -222,9 +222,9 @@ CREATE TABLE users (
   passwdforcechange smallint NOT NULL DEFAULT 0,
   ntype smallint        DEFAULT NULL,
   lastlogindate int(16) NOT NULL DEFAULT 0,
-  lastloginip varchar(16) NOT NULL DEFAULT '',
+  lastloginip varchar(40) NOT NULL DEFAULT '',
   failedlogindate int(16) NOT NULL DEFAULT 0,
-  failedloginip varchar(16) NOT NULL DEFAULT '',
+  failedloginip varchar(40) NOT NULL DEFAULT '',
   deleted tinyint(1)    NOT NULL DEFAULT '0',
   passwdexpiration int(16) NOT NULL DEFAULT 0,
   passwdlastchange int(16) NOT NULL DEFAULT 0,
@@ -3388,9 +3388,9 @@ CREATE TABLE up_customers (
 	id int(11) NOT NULL auto_increment,
 	customerid int(11) DEFAULT NULL,
 	lastlogindate int(16) NOT NULL DEFAULT 0,
-	lastloginip varchar(16) NOT NULL DEFAULT '',
+	lastloginip varchar(40) NOT NULL DEFAULT '',
 	failedlogindate int(16) NOT NULL DEFAULT 0,
-	failedloginip varchar(16) NOT NULL DEFAULT '',
+	failedloginip varchar(40) NOT NULL DEFAULT '',
 	enabled int(10) NOT NULL DEFAULT '0',
 	PRIMARY KEY (id),
 	CONSTRAINT up_customers_customerid_fkey
@@ -4619,4 +4619,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026020900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026020901');

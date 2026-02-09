@@ -25,9 +25,9 @@ CREATE TABLE users (
 	passwdforcechange smallint NOT NULL DEFAULT 0,
 	ntype smallint      DEFAULT NULL,
 	lastlogindate bigint 	DEFAULT 0  NOT NULL,
-	lastloginip varchar(16) DEFAULT '' NOT NULL,
+	lastloginip varchar(40) DEFAULT '' NOT NULL,
 	failedlogindate bigint DEFAULT 0  NOT NULL,
-	failedloginip varchar(16) DEFAULT '' NOT NULL,
+	failedloginip varchar(40) DEFAULT '' NOT NULL,
 	deleted smallint	DEFAULT 0 NOT NULL,
 	passwdexpiration bigint DEFAULT 0 NOT NULL,
 	passwdlastchange bigint DEFAULT 0 NOT NULL,
@@ -3302,9 +3302,9 @@ CREATE TABLE up_customers (
     customerid integer 	    DEFAULT NULL
 		CONSTRAINT up_customers_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	lastlogindate bigint 	DEFAULT 0 NOT NULL,
-	lastloginip varchar(16) DEFAULT '' NOT NULL,
+	lastloginip varchar(40) DEFAULT '' NOT NULL,
 	failedlogindate bigint DEFAULT 0 NOT NULL,
-	failedloginip varchar(16) DEFAULT '' NOT NULL,
+	failedloginip varchar(40) DEFAULT '' NOT NULL,
 	enabled smallint 	    DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
@@ -4661,6 +4661,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026020900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026020901');
 
 COMMIT;
