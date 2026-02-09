@@ -67,7 +67,7 @@ $access_table = array(
     ),
     'finances_management' => array(
         'label' => trans('finances management'),
-        'allow_regexp' => '^((tariff|customerassignment)(add|info|list|move|edit|del)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list|transfer|)|(cashreg(list|info))|(invoice|invoice(list|new|edit|del|note(|edit)|report|paid|info|send))|(note|note(list|add|edit|del|paid))|number|export|print|cashimport|cashimportparser|cashpackagedel|customertransferform|customerselect|tariffpricevariant)$',
+        'allow_regexp' => '^((tariff|customerassignment)(add|info|list|move|edit|del)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list|transfer|)|(cashreg(list|info))|(invoice|invoice(list|new|edit|del|note(|edit)|report|paid|info|send))|(note|note(list|add|edit|del|paid))|number|export|print|cashimport|cashimportparser|cashpackagedel|voipaccountbilling|customertransferform|customerselect|tariffpricevariant)$',
         'allow_menu_items' => array(
             'finances' => Permission::MENU_ALL,
         ),
@@ -79,7 +79,7 @@ $access_table = array(
             'finances' => array('balancelist', 'invoicelist', 'invoicelist-proforma', 'notelist'),
         ),
     ),
-    'ksef_invoice_purchages' => array(
+    'ksef_invoice_purchases' => array(
         'label' => trans('<!ksef>KSeF purchase invoice management'),
         'allow_regexp' => '^ksefpurchaseinvoice[a-z]+$',
         'allow_menu_items' => array(
@@ -131,7 +131,7 @@ $access_table = array(
     ),
     'customer_management' => array(
         'label' => trans('customers management'),
-        'allow_regexp' => '^((customer|document)(add|edit|info|infoshort|list|print|search|warn|cutoffstop)|documentdel|documentscanadd|customertransferform|customeraddresses|customerselect|customernote|customername|customerassignmenthelper|documentsend|documentgen|documentview|nodewarn|choose(customer|node|location)|gusapi|number|invoiceinfo|customerextidhelper)$',
+        'allow_regexp' => '^((customer|document)(add|edit|info|infoshort|list|print|search|warn|cutoffstop)|documentdel|documentscanadd|customertransferform|customeraddresses|customerselect|customernote|customername|customerassignmenthelper|documentsend|documentgen|documentview|nodewarn|choose(customer|node|location)|gusapi|number|invoiceinfo|voipaccount(add|del|list|info|infoshort|edit|search)|customerextidhelper)$',
         'allow_menu_items' => array(
             'customers' => Permission::MENU_ALL,
             'documents' => Permission::MENU_ALL,
@@ -172,16 +172,16 @@ $access_table = array(
     ),
     'node_management' => array(
         'label' => trans('nodes management'),
-        'allow_regexp' => '^(node(add|info|infoshort|list|listshort|scan|search|del|edit|print|warn|sessionlist|session)|choose(mac|ip|location|gpscoords|netdevice)|ping)|customeraddresses|customerselect|routednetworks$',
+        'allow_regexp' => '^(node(add|info|infoshort|list|listshort|scan|search|del|edit|print|warn|sessionlist|session)|choose(mac|ip|location|gpscoords|netdevice)|ping|pinger)|customeraddresses|customerselect|routednetworks$',
         'allow_menu_items' => array(
             'nodes' => Permission::MENU_ALL,
         ),
     ),
     'traffic_stats' => array(
         'label' => trans('traffic stats'),
-        'allow_regexp' => '^(traffic|traffic(print|graph))$',
+        'allow_regexp' => '^(traffic|traffic(print|graph)|cheating)$',
         'allow_menu_items' => array(
-            'stats' => Permission::MENU_ALL,
+            'nodes' => Permission::MENU_ALL,
         ),
     ),
     'messaging' => array(
@@ -251,7 +251,7 @@ $access_table = array(
     'network_management' => array(
         'label' => trans('networks and devices management'),
         'allow_regexp' => '^((net|netdev|ewxch)(info|list|edit|add|del|print|cmp|mac|map(refresh|)|remap|search)|choose(mac|ip|gpscoords|netdevfrommap|netdevfornetnode|netdevmodel|netdevreplace)|ewxnodelist|ewxdevlist|chooselocation|ping'
-            . '|netnode(add|adddev|del|deldev|edit|info|list)|netdevmodels|netlinkproperties|netusage|attachments|routednetworks|vlanlist|netranges)$',
+            . '|netnode(add|adddev|del|deldev|edit|info|list)|netdevmodels|netlinkproperties|netusage|evio|routeros-config|attachments|routednetworks|vlanlist|netranges)$',
         'allow_menu_items' => array(
             'networks' => Permission::MENU_ALL,
             'netdevices' => Permission::MENU_ALL,

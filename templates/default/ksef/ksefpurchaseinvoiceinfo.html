@@ -1,0 +1,147 @@
+<style>
+
+	.ksef-purchase-invoice-info.lmsbox {
+		width: auto;
+	}
+
+	.ksef-purchase-invoice-info td {
+		padding: 0.5em;
+	}
+
+	.ksef-purchase-invoice-info > thead,
+	.ksef-purchase-invoice-info > tfoot {
+		font-weight: bold;
+	}
+
+	.ksef-purchase-invoice-info tr > td:not(:first-child) {
+		border-left: 1px dotted grey;
+	}
+
+	.ksef-purchase-invoice-info > tfoot {
+		border: none !important;
+	}
+
+	.ksef-purchase-invoice-info > tfoot > tr > td:last-child {
+		border-right-style: solid;
+		border-right-width: 1px;
+	}
+
+	.ksef-purchase-invoice-info > tfoot > tr > td:nth-child(2) {
+		border-left-style: solid;
+		border-left-width: 1px;
+	}
+
+	.ksef-purchase-invoice-info > tfoot > tr {
+		border-top: none !important;
+	}
+
+	.ksef-purchase-invoice-info > tfoot > tr > td:not(:first-child) {
+		border-top-style: dotted;
+		border-top-width: 1px;
+	}
+
+	.ksef-purchase-invoice-info > tfoot > tr:last-child > td:not(:first-child) {
+		border-bottom: 1px solid black;
+	}
+
+
+</style>
+<table class="ksef-purchase-invoice-info lmsbox lms-ui-background-cycle">
+	<thead>
+		<tr>
+			<td class="text-center">
+				{trans("<!ksef>No.")}
+			</td>
+			<td>
+				{trans("<!ksef>Description")}
+			</td>
+			<td class="text-center">
+				{trans("<!invoice>Product ID")}
+			</td>
+			<td class="text-center">
+				{trans("Unit")}
+			</td>
+			<td class="text-center">
+				{trans("Amount")}
+			</td>
+			<td class="text-center">
+				{trans("<!ksef>Price")}
+			</td>
+			<td class="text-center">
+				{trans("<!ksef>VAT rate")}
+			</td>
+			<td class="text-center">
+				{trans("<!ksef>Net value")}
+			</td>
+			<td class="text-center">
+				{trans("<!ksef>VAT")}
+			</td>
+			<td class="text-center">
+				{trans("<!ksef>Gross value")}
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		{foreach $invoice.items as $item}
+			<tr>
+				<td class="text-center">
+					{$item.item_id}
+				</td>
+				<td>
+					{$item.name|escape}
+				</td>
+				<td class="text-center">
+					{$item.prod_id}
+				</td>
+				<td class="text-center">
+					{$item.unit}
+				</td>
+				<td class="text-center">
+					{floatval($item.count)}
+				</td>
+				<td class="text-right nobr">
+					{if empty($item.net_flag)}
+						{Utils::formatMoney($item.gross_price, $invoice.currency)}
+					{else}
+						{Utils::formatMoney($item.net_price, $invoice.currency)}
+					{/if}
+				</td>
+				<td class="text-center">
+					{$item.tax_rate_label}
+				</td>
+				<td class="text-right nobr">
+					{Utils::formatMoney($item.net_value, $invoice.currency)}
+				</td>
+				<td class="text-right nobr">
+					{Utils::formatMoney($item.tax, $invoice.currency)}
+				</td>
+				<td class="text-right nobr">
+					{Utils::formatMoney($item.gross_value, $invoice.currency)}
+				</td>
+			</tr>
+		{/foreach}
+	</tbody>
+	<tfoot>
+		{foreach $invoice.summary as $taxRateLabel => $summary}
+			<tr>
+				<td colspan="6" class="text-right">
+					{if $summary@first}
+						{trans("<!ksef>Total")}
+					{/if}
+				</td>
+				<td class="text-center">
+					{$taxRateLabel}
+				</td>
+				<td class="text-right nobr">
+					{Utils::formatMoney($summary.net, $invoice.currency)}
+				</td>
+				<td class="text-right nobr">
+					{Utils::formatMoney($summary.tax, $invoice.currency)}
+				</td>
+				<td class="text-right nobr">
+					{Utils::formatMoney($summary.gross, $invoice.currency)}
+				</td>
+			</tr>
+		{/foreach}
+	</tfoot>
+</table>

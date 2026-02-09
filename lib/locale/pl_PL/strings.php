@@ -297,6 +297,10 @@ $_LANG['Phone contacts:'] = 'Telefony kontaktowe:';
 $_LANG['Sole traders'] = 'Jednoosobowe działalności gospodarcze';
 $_LANG['(undefined)'] = '(nieokreślone)';
 
+$_LANG['other<!singular>'] = 'pozostały';
+$_LANG['other<!plural>'] = 'pozostali';
+$_LANG['Other:<!summary>'] = 'Pozostali:';
+
 $_LANG['Networks don\'t have the same mask!'] = 'Sieci nie posiadają tej samej maski!';
 $_LANG['Source address $a ($b) collides with destination address $c ($d)!'] = 'Adres źródłowy $a ($b) koliduje z docelowym $c ($d)!';
 $_LANG['with compacting'] = 'z porządkowaniem';
@@ -6335,3 +6339,6 @@ $_LANG['<!ksef>Net value'] = 'Wartość netto';
 $_LANG['<!ksef>Gross value'] = 'Wartość brutto';
 $_LANG['<!ksef>VAT'] = 'VAT';
 $_LANG['<!ksef>Total'] = 'Razem';
+
+$_LANG['<!ksef>Download invoice'] = 'Pobierz fakturę';
+$_LANG['<!ksef>View invoice'] = 'Pokaż fakturę';

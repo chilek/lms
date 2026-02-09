@@ -1388,6 +1388,45 @@ class KSeF
         return file_get_contents($upoFile);
     }
 
+    private static function getInvoiceFilePath($ten, $ksefNumber)
+    {
+        if (!isset(self::$invoiceStorage)) {
+            self::$invoiceStorage = is_dir(self::KSEF_INVOICE_DIR) && is_readable(self::KSEF_INVOICE_DIR);
+        }
+
+        if (!self::$invoiceStorage) {
+            return false;
+        }
+
+        [, $date] = explode('-', $ksefNumber);
+
+        return self::KSEF_INVOICE_DIR . DIRECTORY_SEPARATOR . $ten
+            . DIRECTORY_SEPARATOR . $date
+            . DIRECTORY_SEPARATOR . $ksefNumber . '.xml';
+    }
+
+    public static function invoiceFileExists($ten, $ksefNumber)
+    {
+        $invoiceFile = self::getInvoiceFilePath($ten, $ksefNumber);
+
+        if (empty($invoiceFile)) {
+            return false;
+        }
+
+        return is_file($invoiceFile) && is_readable($invoiceFile);
+    }
+
+    public static function getInvoiceFile($ten, $ksefNumber)
+    {
+        $invoiceFile = self::getInvoiceFilePath($ten, $ksefNumber);
+
+        if (empty($invoiceFile)) {
+            return false;
+        }
+
+        return file_get_contents($invoiceFile);
+    }
+
     public static function saveInvoice($ten, $fileName, $content)
     {
         if (!isset(self::$invoiceStorage)) {

@@ -27,6 +27,10 @@
 			display: none;
 		}
 
+		#ksef-invoices .blend .lms-ui-hint-toggle i::before {
+			color: inherit !important;
+		}
+
 		#filter-panel {
 			display: flex;
 			flex-grow: 1;
@@ -424,7 +428,9 @@
 							{$invoice.invoice_number}
 						{/strip}{/capture}
 						{$document_type_number}
-						{icon name="copy" class="lms-ui-button-clipboard fa-fw" data_clipboard_text=$document_type_number}
+						{*icon name="copy" class="lms-ui-button-clipboard fa-fw" data_clipboard_text=$document_type_number*}
+						{icon name="copy" class="lms-ui-button-clipboard fa-fw" data_clipboard_text=$invoice.invoice_number}
+						{hint icon="qrcode" url="?m=invoiceksefinfo&id={$invoice.id}&purchase=1" tooltip_class="lms-ui-ksef-qr-code"}
 						<br>
 						<pre>{$invoice.ksef_number}</pre>
 					</td>

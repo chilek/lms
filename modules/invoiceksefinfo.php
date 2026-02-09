@@ -26,6 +26,92 @@
 
 use \Lms\KSeF\KSeF;
 
+if (!empty($_GET['purchase'])) {
+    $doc = $DB->GetRow(
+        'SELECT
+            d.id,
+            d.invoice_number AS fullnumber,
+            d.issue_date AS cdate,
+            d.seller_ten AS div_ten,
+            d.buyer_identifier_value AS div_buyer,
+            d.division_id AS divisionid,
+            ? AS environment,
+            ? AS ksefbatchsessionnumber,
+            ? AS ksefbatchsessionlastupdate,
+            ? AS status,
+            d.invoice_hash AS hash,
+            d.ksef_number AS ksefnumber
+        FROM ksefinvoices d
+        JOIN vdivisions vd ON vd.id = d.division_id
+        WHERE d.id = ?',
+        [
+            KSeF::ENVIRONMENT_PROD,
+            0,
+            0,
+            200,
+            $_GET['id'],
+        ]
+    );
+
+    if (!empty($_GET['action'])) {
+        $action = $_GET['action'];
+        switch ($action) {
+            case 'invoice-download':
+            case 'invoice-view':
+                $invoiceFileContent = KSeF::getInvoiceFile($doc['div_buyer'], $doc['ksefnumber']);
+                if ($invoiceFileContent === false) {
+                    die;
+                }
+                $invoiceFileName = $doc['ksefnumber'] . '.xml';
+                break;
+        }
+
+        if ($action == 'invoice-download') {
+            header('Content-Type: text/xml; charset=utf-8');
+            header('Content-Disposition: attachment; filename=' . $invoiceFileName);
+            header('Pragma: public');
+
+            echo $invoiceFileContent;
+        } elseif ($action == 'invoice-view') {
+            header('Content-Type: text/html; charset=utf-8');
+            header('Content-Disposition: inline; filename=' . $invoiceFileName);
+            header('Pragma: public');
+
+            $xml = new \DOMDocument();
+            $xml->loadXML($invoiceFileContent);
+
+            $xsl = new \DOMDocument();
+            $xsl->load(LIB_DIR . DIRECTORY_SEPARATOR . 'KSeF' . DIRECTORY_SEPARATOR . 'schemat_FA(3)_v1-0E.xsl');
+
+            $proc = new \XSLTProcessor();
+            $proc->importStylesheet($xsl);
+
+            $html = $proc->transformToXML($xml);
+
+            echo $html;
+        }
+
+        die;
+    }
+
+    $SMARTY->assign(
+        'url',
+        KSeF::getQrCodeUrl([
+            'environment' => $doc['environment'],
+            'ten' => $doc['div_ten'],
+            'date' => $doc['cdate'],
+            'hash' => $doc['hash'],
+        ])
+    );
+
+    $SMARTY->assign('invoice', $doc);
+    $SMARTY->assign('invoice_file_exists', KSeF::invoiceFileExists($doc['div_buyer'], $doc['ksefnumber']));
+    $SMARTY->display('invoice/invoiceksefinfo.html');
+
+    $SESSION->close();
+    die;
+}
+
 if ($doc = $DB->GetRow(
     'SELECT
         d.id,
