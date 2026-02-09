@@ -1,0 +1,533 @@
+{extends file="layout.html"}
+{block name="title"}LMS: {$layout.pagetitle|striphtml}{/block}
+{block name="module_content"}
+	<style>
+
+		#ksef-invoices > * > tr > td {
+			padding-left: 1em;
+			padding-right: 1em;
+		}
+
+		#ksef-invoices pre {
+			margin-block: 0;
+			font-style: italic;
+		}
+
+		#ksef-invoices .values {
+			font-style: italic;
+		}
+
+		#ksef-invoices .order-toggle:hover,
+		#ksef-invoices .order-toggle:active {
+			text-decoration: none;
+			color: inherit;
+		}
+
+		#ksef-invoices .order-toggle .sort-order-icon.hidden {
+			display: none;
+		}
+
+		#ksef-invoices .blend .lms-ui-hint-toggle i::before {
+			color: inherit !important;
+		}
+
+		#filter-panel {
+			display: flex;
+			flex-grow: 1;
+			width: 100%;
+			flex-direction: column;
+		}
+
+		#filter-panel .filter-panel-row {
+			display: flex;
+			justify-content: flex-start;
+		}
+
+		#ksef-invoices > thead > tr:not(:first-child) {
+			border-top: none;
+		}
+
+		#ksef-invoices .division-panel-row > * {
+			white-space: nowrap;
+		}
+
+		[data-action].hidden {
+			display: none;
+		}
+
+		td > [data-action] {
+			margin-left: 0.2em !important;
+			margin-right: 0.2em !important;
+		}
+
+		#temporary-table {
+			display: none;
+		}
+
+	</style>
+
+	<script>
+
+		$(function() {
+			function sortByProperty(property, order) {
+				const rows = $('#ksef-invoices > tbody > tr[data-id]').get();
+
+				rows.sort(function (a, b) {
+					var valueA = $(a).attr('data-' + property);
+					var valueB = $(b).attr('data-' + property);
+					var idA = parseInt($(a).attr('data-id'));
+					var idB = parseInt($(b).attr('data-id'));
+
+					if (property === 'issue-date') {
+						valueA = parseInt(valueA);
+						valueB = parseInt(valueB);
+					} else if (property === 'gross-value') {
+						valueA = parseFloat(valueA);
+						valueB = parseFloat(valueB);
+					}
+
+					if (valueA === valueB) {
+						return order === 'asc'
+							? idA - idB
+							: idB - idA;
+					} else {
+						return order === 'asc'
+							? valueA - valueB
+							: valueB - valueA;
+					}
+				});
+
+				$.each(rows, function (_, row) {
+					$('#ksef-invoices > tbody').append(row);
+				});
+			}
+
+			$('[data-order-property]').click(function() {
+				var orderProperty = $(this).attr('data-order-property');
+				var sortOrderIcon = $(this).find('.sort-order-icon');
+				if (!sortOrderIcon.is('.lms-ui-icon-asc-order,.lms-ui-icon-desc-order')) {
+					sortOrderIcon.addClass('lms-ui-icon-asc-order');
+				} else {
+					sortOrderIcon.toggleClass('lms-ui-icon-asc-order').toggleClass('lms-ui-icon-desc-order');
+				}
+				$('#ksef-invoices .order-toggle:not([data-order-property="' + orderProperty + '"])').find('.sort-order-icon').addClass('hidden');
+				sortOrderIcon.removeClass('hidden');
+
+				var sortOrder = orderProperty + ' ' + (sortOrderIcon.is('.lms-ui-icon-asc-order') ? 'asc' : 'desc');
+				setStorageItem('ksef-purchase-invoices-sort-order', sortOrder, 'session')
+				sortByProperty(orderProperty, sortOrderIcon.is('.lms-ui-icon-asc-order') ? 'asc' : 'desc');
+			});
+
+			function restoreSortOrder() {
+				var sortOrder = getStorageItem('ksef-purchase-invoices-sort-order', 'session');
+				if (!sortOrder) {
+					sortOrder = 'issue-date asc';
+				}
+				var sortParts = sortOrder.split(' ');
+				sortByProperty(sortParts[0], sortParts[1]);
+
+				return sortParts;
+			}
+
+			function applyFilter(filter) {
+				if (typeof(filter) !== 'object') {
+					filter = {
+						divisionId: getStorageItem('ksef-purchase-invoices-division-id', 'session')
+					};
+					var posting = getStorageItem('ksef-purchase-invoices-posting', 'session');
+					filter.posting = posting && posting.length ? posting : '';
+					var settled = getStorageItem('ksef-purchase-invoices-settled', 'session');
+					filter.settled = settled && settled.length ? settled : '';
+				}
+
+				var ksefInvoices = $('#ksef-invoices > tbody');
+				var temporaryTable = $('#temporary-table > tbody');
+				var filterSelector = [];
+
+				if (filter.hasOwnProperty('divisionId')) {
+					var divisionId = parseInt(filter.divisionId);
+					if (divisionId) {
+						filterSelector.push('[data-division-id="' + divisionId + '"]');
+					} else {
+						filterSelector.push('[data-division-id]');
+					}
+				}
+
+				if (filter.hasOwnProperty('posting')) {
+					var posting = filter.posting;
+					if (posting.length) {
+						filterSelector.push('[data-posting="' + posting + '"]');
+					}
+				}
+
+				if (filter.hasOwnProperty('settled')) {
+					var settled = filter.settled;
+					if (settled.length) {
+						filterSelector.push('[data-settled="' + settled + '"]');
+					}
+				}
+
+				$(temporaryTable).find('tr' + filterSelector.join('')).appendTo(ksefInvoices);
+
+				$(temporaryTable).append(ksefInvoices.find('tr[data-id]').filter(':not(' + filterSelector.join('') + '):not(#empty-table-row)'));
+
+				var emptyTable = !ksefInvoices.find('[data-id]').length;
+				$('#empty-table-row').appendTo(emptyTable ? ksefInvoices : temporaryTable);
+
+				restoreSortOrder();
+
+				return filter;
+			}
+
+			$('#division-id').change(function() {
+				var filter = {
+					divisionId: $(this).val()
+				}
+				if ($('#posting').prop('checked')) {
+					filter.posting = '1';
+				}
+
+				applyFilter(filter);
+
+				setStorageItem('ksef-purchase-invoices-division-id', filter.divisionId, 'session');
+			});
+
+			$('#posting').change(function() {
+				var filter = {
+					posting: $(this).prop('checked') ? '1' : '',
+					divisionId: $('#division-id').val(),
+					settled: $('#unsettled').prop('checked') ? '0' : ''
+				};
+				applyFilter(filter);
+
+				setStorageItem('ksef-purchase-invoices-posting', filter.posting, 'session');
+			});
+
+			$('#unsettled').change(function() {
+				var filter = {
+					posting: $('#posting').prop('checked') ? '1' : '',
+					divisionId: $('#division-id').val(),
+					settled: $('#unsettled').prop('checked') ? '0' : ''
+				};
+				applyFilter(filter);
+
+				setStorageItem('ksef-purchase-invoices-settled', filter.settled, 'session');
+			});
+
+			var sortParts = restoreSortOrder();
+
+			$('#ksef-invoices [data-order-property="' + sortParts[0] + '"]')
+				.find('.sort-order-icon')
+				.toggleClass('lms-ui-icon-asc-order', sortParts[1] === 'asc')
+				.toggleClass('lms-ui-icon-desc-order', sortParts[1] === 'desc')
+				.removeClass('hidden');
+
+			var filter = applyFilter();
+
+			if (filter.divisionId) {
+				$('#division-id').val(filter.divisionId);
+			}
+			if (filter.posting.length && filter.posting === '1') {
+				$('#posting').prop('checked', true);
+			}
+
+			if (filter.settled.length && filter.settled === '0') {
+				$('#unsettled').prop('checked', true);
+			}
+
+			$('[data-action]').click(function() {
+				var that = $(this);
+				var form = $('#ksef-purchase-invoice-edit-form');
+				var action = $(this).attr('data-action');
+				form.find('[name="action"]').val(action);
+				form.find('[name="id"]').val($(this).closest('[data-id]').attr('data-id'));
+
+				let formData = new FormData(form.get(0));
+
+				$.ajax({
+					url: '?m=ksefpurchaseinvoiceedit&api=1',
+					type: 'POST',
+					data: formData,
+					processData: false,
+					contentType: false,
+					dataType: "json",
+					success: function(data) {
+						if (data.hasOwnProperty('error')) {
+							console.error('Error:', data.error);
+							return;
+						}
+						$(that).hide();
+
+						switch (action) {
+							case 'ignore':
+								$(that).siblings('[data-action="restore"]').show();
+								$(that).closest('[data-id]').addClass('cancel').attr('data-posting', '0');
+								applyFilter();
+								break;
+							case 'restore':
+								$(that).siblings('[data-action="ignore"]').show();
+								$(that).closest('[data-id]').removeClass('cancel').attr('data-posting', '1');
+								applyFilter();
+								break;
+							case 'settle':
+								$(that).siblings('[data-action="unsettle"]').show();
+								$(that).closest('[data-id]').addClass('blend').attr('data-settled', '1');
+								applyFilter();
+								break;
+							case 'unsettle':
+								$(that).siblings('[data-action="settle"]').show();
+								$(that).closest('[data-id]').removeClass('blend').attr('data-settled', '0');
+								applyFilter();
+								break;
+						}
+					},
+					error: function(xhr) {
+						console.error('Error:', xhr.responseText);
+					}
+				});
+			});
+		});
+
+	</script>
+
+	<h1>{$layout.pagetitle}</h1>
+
+	<form name="ksef-invoices-form" id="ksef-invoices-form" method="POST">
+	</form>
+
+	<form name="ksef-purchase-invoice-edit-form" id="ksef-purchase-invoice-edit-form" method="POST">
+		<input type="hidden" name="id">
+		<input type="hidden" name="action">
+	</form>
+
+	<table class="lmsbox lms-ui-background-cycle" id="ksef-invoices">
+		<colgroup>
+			<col style="width: 1%;">
+			<col style="width: 1%;">
+			<col style="width: 1%;">
+			<col style="width: 1%;">
+			<col style="width: 1%;">
+			<col style="width: 1%;">
+			<col style="width: 97%;">
+		</colgroup>
+		<thead>
+			<tr>
+				<td colspan="7">
+					<div id="filter-panel">
+						<div class="filter-panel-row">
+							<span class="lms-ui-date-period-container">
+								<strong>{trans("Period")}</strong>
+								<span>{trans("from")}</span>
+								<input type="text" name="start-date" id="start-date" size="10" maxlength="10"
+									value="{$start_date|date_format:"Y/m/d"}"
+									form="ksef-invoices-form"
+									placeholder="{trans("yyyy/mm/dd")}"
+									{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+								<span>{trans("do")}</span>
+								<input type="text" name="end-date" id="end-date" size="10" maxlength="10"
+									value="{$end_date|date_format:"Y/m/d"}"
+									form="ksef-invoices-form"
+									placeholder="{trans("yyyy/mm/dd")}"
+									{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+								{date_period_preset from="#start-date" to="#end-date"}
+								{button type="submit" icon="apply" label="Apply" id="period-apply-button" form="ksef-invoices-form"}
+							</span>
+						</div>
+						<div class="filter-panel-row">
+							<label>
+								<strong>{trans("Division")}<strong>
+								<select name="division-id" id="division-id" form="ksef-invoices-form">
+									<option value="">{trans("— all —")}</option>
+									{foreach $divisions as $division}
+										<option value="{$division.id}">{$division.label|escape}</option>
+									{/foreach}
+								</select>
+							</label>
+							<label>
+								<input type="checkbox" name="posting" id="posting" form="ksef-invoices-form">
+								{trans("<!ksef>posted")}
+							</label>
+							<label>
+								<input type="checkbox" name="unsettled" id="unsettled" form="ksef-invoices-form">
+								{trans("<!ksef>unsettled")}
+							</label>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="bold nobr">
+					<a class="order-toggle" data-order-property="issue-date">
+						{trans("Date")}
+						{icon name="dunno" class="sort-order-icon hidden" fw=false}
+					</a>
+					<br>
+					{trans("<!ksef>Document type/number")}
+					<br>
+					{trans("KSeF number")}
+				</td>
+				<td class="bold nobr">
+					{trans("<!ksef>Seller name")}
+					<br>
+					{trans("<!ksef>Seller TEN")}
+				</td>
+				<td class="bold nobr">
+					{trans("<!ksef>Buyer short name")}
+					<br>
+					({trans("<!ksef>Buyer alias")})
+				</td>
+				<td class="bold nobr text-right">
+					{trans("<!ksef>Net value")}
+					<br>
+					{trans("<!ksef>VAT value")}
+					<br>
+					<a class="order-toggle" data-order-property="gross-value">
+						{$class = ""}
+						{if $order == "gross_value asc"}
+							{$icon_name = "asc-order"}
+						{elseif $order == "gross_value desc"}
+							{$icon_name = "desc-order"}
+						{else}
+							{$icon_name = "asc-order"}
+							{$class="hidden"}
+						{/if}
+						{icon name="dunno" class="sort-order-icon hidden" fw=false}
+						{trans("<!ksef>Gross value")}
+					</a>
+				</td>
+				<td class="bold nobr text-right">
+					{trans("<!ksef>Bank name")}
+					<br>
+					{trans("<!ksef>Bank account")}
+				</td>
+				<td class="bold nobr text-center">
+					{trans("<!ksef>Payment type")}
+					<br>
+					{trans("<!ksef>Payment date")}
+				</td>
+				<td>
+				</td>
+			</tr>
+		</thead>
+		<tbody>
+			{foreach $invoices as $invoice}
+				<tr data-issue-date="{$invoice.issue_date}"
+					data-gross-value="{$invoice.gross_amount}"
+					data-id="{$invoice.id}"
+					data-division-id="{$invoice.division_id}"
+					data-posting="{if empty($invoice.posting)}0{else}1{/if}"
+					data-settled="{if empty($invoice.settled)}0{else}1{/if}"
+					class="{if empty($invoice.posting)} cancel{/if}{if !empty($invoice.settled)} blend{/if}">
+					<td class="nobr">
+						<strong>{$invoice.issue_date|date_format:"Y/m/d"}</strong>
+						{hint url="?m=ksefpurchaseinvoiceinfo&id={$invoice.id}" icon="view"}
+						<br>
+						{capture assign="document_type_number"}{strip}
+							{$_DOCTYPES[$invoice.invoice_type]}
+							&nbsp;
+							{$invoice.invoice_number}
+						{/strip}{/capture}
+						{$document_type_number}
+						{*icon name="copy" class="lms-ui-button-clipboard fa-fw" data_clipboard_text=$document_type_number*}
+						{icon name="copy" class="lms-ui-button-clipboard fa-fw" data_clipboard_text=$invoice.invoice_number}
+						{hint icon="qrcode" url="?m=invoiceksefinfo&id={$invoice.id}&purchase=1" tooltip_class="lms-ui-ksef-qr-code"}
+						<br>
+						<pre>{$invoice.ksef_number}</pre>
+					</td>
+					<td class="nobr">
+						<strong>{$invoice.seller_name|escape}</strong>
+						<br>
+						{$invoice.seller_ten}
+					</td>
+					<td class="nobr">
+						<a href="?m=divisionedit&id={$invoice.division_id}">
+							{$invoice.division_shortname|escape}
+						</a>
+						<br>
+						{if $invoice.division_label}
+							({$invoice.division_label|escape})
+						{else}
+							(—)
+						{/if}
+					</td>
+					<td class="text-right nobr values">
+						{moneyf($invoice.net_amount, $invoice.currency)}
+						<br>
+						{moneyf($invoice.vat_amount, $invoice.currency)}
+						<br>
+						{icon name="copy" class="lms-ui-button-clipboard fa-fw" data_clipboard_text=$invoice.gross_amount|string_format:"%.02f"}
+						{moneyf($invoice.gross_amount, $invoice.currency)}
+					</td>
+					<td class="nobr text-right">
+						{if empty($invoice.bank_name)}
+							—
+						{else}
+							{$invoice.bank_name|escape}
+						{/if}
+						<br>
+						{if empty($invoice.bank_account)}
+							—
+						{else}
+							{$bank_account = preg_replace('/[^0-9]/', '', $invoice.bank_account)}
+							{icon name="copy" class="lms-ui-button-clipboard fa-fw" data_clipboard_text=$bank_account}
+							{format_bankaccount($bank_account)}
+						{/if}
+					</td>
+					<td class="nobr text-center">
+						{if empty($invoice.pay_type)}
+							{trans("<!ksef>Paid")}
+							<br>
+							{if empty($invoice.pay_date)}
+								—
+							{else}
+								<strong>
+									{$invoice.pay_date|date_format:"Y/m/d"}
+								</strong>
+							{/if}
+						{else}
+							{$invoice.pay_type_name}
+							<br>
+							{capture assign="pay_date"}{strip}
+								<span class="bold{if $invoice.expired} red{/if}">
+									{$invoice.pay_date|date_format:"Y/m/d"}
+								</span>
+							{/strip}{/capture}
+							{$pay_date}
+						{/if}
+					</td>
+					<td class="text-right nobr">
+						{$posting = !empty($invoice.posting)}
+						{if $posting}
+							{$restore_button_class = "hidden"}
+							{$ignore_button_class = ""}
+						{else}
+							{$restore_button_class = ""}
+							{$ignore_button_class = "hidden"}
+						{/if}
+						{button type="button" icon="restore" tip="<!ksef>Post document" data-action="restore" class=$restore_button_class}
+						{button type="button" icon="ignore" tip="<!ksef>Don't post document" data-action="ignore" class=$ignore_button_class}
+						{$settled = !empty($invoice.settled)}
+						{if $settled}
+							{$settle_button_class = "hidden"}
+							{$unsettle_button_class = ""}
+						{else}
+							{$settle_button_class = ""}
+							{$unsettle_button_class = "hidden"}
+						{/if}
+						{button type="button" icon="settle" tip="<!ksef>Settle document" data-action="settle" class=$settle_button_class}
+						{button type="button" icon="open" tip="<!ksef>Unsettle document" data-action="unsettle" class=$unsettle_button_class}
+					</td>
+				</tr>
+			{/foreach}
+			<tr id="empty-table-row">
+				<td colspan="7" class="empty-table">
+					{trans("<!ksef>No purchase invoices matching filter criteria.")}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<table id="temporary-table">
+		<tbody>
+		</tbody>
+	</table>
+{/block}

@@ -41,8 +41,10 @@ DROP TABLE IF EXISTS up_help;
 DROP TABLE IF EXISTS up_customers;
 DROP TABLE IF EXISTS up_rights_assignments;
 DROP TABLE IF EXISTS up_rights;
-DROP TABLE IF EXISTS ksefdelays;
+DROP TABLE IF EXISTS ksefinvoicethirdsubjects;
+DROP TABLE IF EXISTS ksefinvoices;
 DROP TABLE IF EXISTS ksefdocuments;
+DROP TABLE IF EXISTS ksefdelays;
 DROP TABLE IF EXISTS ksefbatchsessions;
 DROP TABLE IF EXISTS rtticketwatchers;
 DROP TABLE IF EXISTS files;
@@ -220,9 +222,9 @@ CREATE TABLE users (
   passwdforcechange smallint NOT NULL DEFAULT 0,
   ntype smallint        DEFAULT NULL,
   lastlogindate int(16) NOT NULL DEFAULT 0,
-  lastloginip varchar(16) NOT NULL DEFAULT '',
+  lastloginip varchar(40) NOT NULL DEFAULT '',
   failedlogindate int(16) NOT NULL DEFAULT 0,
-  failedloginip varchar(16) NOT NULL DEFAULT '',
+  failedloginip varchar(40) NOT NULL DEFAULT '',
   deleted tinyint(1)    NOT NULL DEFAULT '0',
   passwdexpiration int(16) NOT NULL DEFAULT 0,
   passwdlastchange int(16) NOT NULL DEFAULT 0,
@@ -3257,6 +3259,100 @@ CREATE TABLE ksefdocuments (
     INDEX ksefdocuments_status_idx (status)
 ) ENGINE=InnoDB;
 
+# ---------------------------------------------------
+#
+# Structure of table ksefinvoices
+#
+CREATE TABLE ksefinvoices (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    division_id int(11) NOT NULL,
+    issue_date int(16) NOT NULL,
+    permanent_storage_date datetime(6) NOT NULL,
+    ksef_number varchar(40) NOT NULL,
+    invoice_number varchar(256) NOT NULL,
+    corrected_ksef_number varchar(44) DEFAULT NULL,
+    corrected_invoice_number varchar(256) DEFAULT NULL,
+    corrected_invoice_issue_date int(16) NULL,
+    seller_ten varchar(10) NOT NULL,
+    seller_name varchar(512) NOT NULL,
+    buyer_identifier_type smallint NOT NULL,
+    buyer_identifier_value varchar(50) NOT NULL,
+    buyer_name varchar(512) NOT NULL,
+    net_amount decimal(12,5) NOT NULL,
+    gross_amount decimal(12,5) NOT NULL,
+    vat_amount decimal(12,5) NOT NULL,
+    currency varchar(3) NOT NULL,
+    invoicing_mode smallint NOT NULL,
+    invoice_type smallint NOT NULL,
+    form_system_code varchar(15) NOT NULL,
+    form_schema_version varchar(15) NOT NULL,
+    form_value varchar(15) NOT NULL,
+    invoice_hash varchar(44) NOT NULL,
+    corrected_invoice_hash varchar(44) DEFAULT NULL,
+    bank_account varchar(48) DEFAULT NULL,
+    bank_name varchar(48) DEFAULT NULL,
+    pay_date int(11) DEFAULT NULL,
+    pay_type smallint DEFAULT 0,
+    buyer_id varchar(50) DEFAULT NULL,
+    posting smallint DEFAULT 1,
+    settled smallint DEFAULT 0,
+    notes text DEFAULT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT ksefinvoices_division_id_fkey
+        FOREIGN KEY (division_id) REFERENCES divisions (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    UNIQUE KEY ksefinvoices_ksef_number_ukey (ksef_number),
+    KEY ksefinvoices_issue_date_idx (issue_date),
+    KEY ksefinvoices_permanent_storage_date_idx (permanent_storage_date),
+    KEY ksefinvoices_ksef_number_idx (ksef_number),
+    KEY ksefinvoices_corrected_ksef_number_idx (corrected_ksef_number),
+    KEY ksefinvoices_seller_ten_idx (seller_ten),
+    KEY ksefinvoices_buyer_identifier_value_idx (buyer_identifier_value),
+    KEY ksefinvoices_invoice_type_idx (invoice_type)
+) ENGINE=InnoDB;
+
+# ---------------------------------------------------
+#
+# Structure of table ksefinvoicethirdsubjects
+#
+CREATE TABLE ksefinvoicethirdsubjects (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    ksefinvoiceid int(11) NOT NULL,
+    identifier_type smallint NOT NULL,
+    identifier_value varchar(50) NOT NULL,
+    name varchar(512) NOT NULL,
+    role int(11) NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT ksefinvoicethirdsubjects_ksefinvoiceid_fkey
+        FOREIGN KEY (ksefinvoiceid) REFERENCES ksefinvoices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    KEY ksefinvoicethirdsubjects_identifier_type_idx (identifier_type),
+    KEY ksefinvoicethirdsubjects_identifier_value_idx (identifier_value),
+    KEY ksefinvoicethirdsubjects_role_idx (role)
+) ENGINE=InnoDB;
+
+# ---------------------------------------------------
+#
+# Structure of table ksefinvoiceitems
+#
+CREATE TABLE ksefinvoiceitems (
+    ksef_invoice_id int(11) NOT NULL,
+    item_id smallint NOT NULL,
+    name varchar(512) DEFAULT NULL,
+    prod_id varchar(50) DEFAULT NULL,
+    unit varchar(512) DEFAULT NULL,
+    count numeric(22,6) DEFAULT NULL,
+    net_flag smallint DEFAULT 1,
+    price numeric(24,8) NOT NULL,
+    value numeric(16,2) NOT NULL,
+    tax_rate numeric(4,2) NOT NULL,
+    taxed smallint DEFAULT 1,
+    reverse_charge smallint DEFAULT 0,
+    eu smallint DEFAULT 0,
+    export smallint DEFAULT 0,
+    product_service_group smallint DEFAULT 0,
+    CONSTRAINT ksefinvoiceitems_ksef_invoice_id_fkey
+        FOREIGN KEY (ksef_invoice_id) REFERENCES ksefinvoices (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 # --------------------------------------------------------
 #
 # Structure of table up_rights (Userpanel)
@@ -3292,9 +3388,9 @@ CREATE TABLE up_customers (
 	id int(11) NOT NULL auto_increment,
 	customerid int(11) DEFAULT NULL,
 	lastlogindate int(16) NOT NULL DEFAULT 0,
-	lastloginip varchar(16) NOT NULL DEFAULT '',
+	lastloginip varchar(40) NOT NULL DEFAULT '',
 	failedlogindate int(16) NOT NULL DEFAULT 0,
-	failedloginip varchar(16) NOT NULL DEFAULT '',
+	failedloginip varchar(40) NOT NULL DEFAULT '',
 	enabled int(10) NOT NULL DEFAULT '0',
 	PRIMARY KEY (id),
 	CONSTRAINT up_customers_customerid_fkey
@@ -4523,4 +4619,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026020300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026020901');

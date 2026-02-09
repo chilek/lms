@@ -114,6 +114,7 @@
         "ext-ctype": "*",
         "ext-posix": "*",
         "ext-calendar": "*",
+        "ext-simplexml": "*",
         "phine/observer": "^2",
         "phine/exception": "^1",
         "phpmailer/phpmailer": "^6",

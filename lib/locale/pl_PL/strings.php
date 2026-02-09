@@ -297,6 +297,10 @@ $_LANG['Phone contacts:'] = 'Telefony kontaktowe:';
 $_LANG['Sole traders'] = 'Jednoosobowe działalności gospodarcze';
 $_LANG['(undefined)'] = '(nieokreślone)';
 
+$_LANG['other<!singular>'] = 'pozostały';
+$_LANG['other<!plural>'] = 'pozostali';
+$_LANG['Other:<!summary>'] = 'Pozostali:';
+
 $_LANG['Networks don\'t have the same mask!'] = 'Sieci nie posiadają tej samej maski!';
 $_LANG['Source address $a ($b) collides with destination address $c ($d)!'] = 'Adres źródłowy $a ($b) koliduje z docelowym $c ($d)!';
 $_LANG['with compacting'] = 'z porządkowaniem';
@@ -3216,6 +3220,7 @@ $_LANG['New Division'] = 'Nowa firma';
 $_LANG['No such divisions in database.'] = 'Brak firm w bazie danych.';
 $_LANG['Select division'] = 'Wybierz firmę';
 $_LANG['Division:'] = 'Firma:';
+$_LANG['Division'] = 'Firma';
 $_LANG['Unlock'] = 'Odblokuj';
 $_LANG['Wrong account number!'] = 'Niepoprawny format konta!';
 $_LANG['Zip code is required!'] = 'Kod pocztowy jest wymagany!';
@@ -6298,3 +6303,42 @@ $_LANG['View UPO'] = 'Pokaż UPO';
 
 $_LANG['<!ksef>Local Government Unit'] = 'jednostka samorządu terytorialnego';
 $_LANG['<!ksef>VAT group'] = 'grupa VAT';
+
+$_LANG['<!ksef>Document type/number'] = 'Typ/numer dokumentu';
+$_LANG['KSeF number'] = 'Numer KSeF';
+$_LANG['<!ksef>Seller name'] = 'Nazwa sprzedawcy';
+$_LANG['<!ksef>Seller TEN'] = 'NIP sprzedawcy';
+$_LANG['<!ksef>Buyer short name'] = 'Nazwa skrócona nabywcy';
+$_LANG['<!ksef>Buyer alias'] = 'Alias nabywcy';
+$_LANG['<!ksef>Net value'] = 'Wartość netto';
+$_LANG['<!ksef>VAT value'] = 'Wartość VAT';
+$_LANG['<!ksef>Gross value'] = 'Wartość brutto';
+$_LANG['<!ksef>Bank name'] = 'Nazwa banku';
+$_LANG['<!ksef>Bank account'] = 'Konto bankowe';
+$_LANG['<!ksef>No purchase invoices matching filter criteria.'] = 'Brak faktur zakupu dopasowanych do kryteriów filtra.';
+$_LANG['<!ksef>Payment type'] = 'Typ płatnoci';
+$_LANG['<!ksef>Payment date'] = 'Data płatnoci';
+$_LANG['<!ksef>Paid'] = 'Zapłacono';
+$_LANG['<!ksef>Don\'t post document'] = 'Nie księguj dokumentu';
+$_LANG['<!ksef>Post document'] = 'Księguj dokument';
+$_LANG['<!ksef>Settle document'] = 'Rozlicz dokument';
+$_LANG['<!ksef>Unsettle document'] = 'Cofnij rozliczenie dokumentu';
+
+$_LANG['KSeF Purchase Invoices'] = 'Faktury zakupu KSeF';
+$_LANG['KSeF purchase invoice management'] = 'Zarządzanie fakturami zakupu KSeF';
+$_LANG['<!ksef>KSeF purchase invoice management'] = 'zarządzanie fakturami zakupu KSeF';
+$_LANG['<!ksef>posted'] = 'księgowane';
+$_LANG['<!ksef>unsettled'] = 'nierozliczone';
+
+$_LANG['<!ksef>No.'] = 'Lp.';
+$_LANG['<!ksef>Description'] = 'Opis';
+
+$_LANG['<!ksef>VAT rate'] = 'Stawka VAT';
+$_LANG['<!ksef>Price'] = 'Cena';
+$_LANG['<!ksef>Net value'] = 'Wartość netto';
+$_LANG['<!ksef>Gross value'] = 'Wartość brutto';
+$_LANG['<!ksef>VAT'] = 'VAT';
+$_LANG['<!ksef>Total'] = 'Razem';
+
+$_LANG['<!ksef>Download invoice'] = 'Pobierz fakturę';
+$_LANG['<!ksef>View invoice'] = 'Pokaż fakturę';
