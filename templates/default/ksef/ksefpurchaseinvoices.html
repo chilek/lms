@@ -416,6 +416,7 @@
 					class="{if empty($invoice.posting)} cancel{/if}{if !empty($invoice.settled)} blend{/if}">
 					<td class="nobr">
 						<strong>{$invoice.issue_date|date_format:"Y/m/d"}</strong>
+						{hint url="?m=ksefpurchaseinvoiceinfo&id={$invoice.id}" icon="view"}
 						<br>
 						{capture assign="document_type_number"}{strip}
 							{$_DOCTYPES[$invoice.invoice_type]}

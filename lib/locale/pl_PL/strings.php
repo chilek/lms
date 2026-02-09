@@ -6325,3 +6325,13 @@ $_LANG['KSeF purchase invoice management'] = 'Zarządzanie fakturami zakupu KSeF
 $_LANG['<!ksef>KSeF purchase invoice management'] = 'zarządzanie fakturami zakupu KSeF';
 $_LANG['<!ksef>posted'] = 'księgowane';
 $_LANG['<!ksef>unsettled'] = 'nierozliczone';
+
+$_LANG['<!ksef>No.'] = 'Lp.';
+$_LANG['<!ksef>Description'] = 'Opis';
+
+$_LANG['<!ksef>VAT rate'] = 'Stawka VAT';
+$_LANG['<!ksef>Price'] = 'Cena';
+$_LANG['<!ksef>Net value'] = 'Wartość netto';
+$_LANG['<!ksef>Gross value'] = 'Wartość brutto';
+$_LANG['<!ksef>VAT'] = 'VAT';
+$_LANG['<!ksef>Total'] = 'Razem';

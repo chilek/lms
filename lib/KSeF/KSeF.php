@@ -101,6 +101,7 @@ class KSeF
     private $payTypes;
     private static $ksefPayTypes;
     private static $ksefTaxProperties;
+    private static $taxProperties;
 
     private $showOnlyAlternativeAccounts;
     private $showAllAccounts;
@@ -1574,5 +1575,53 @@ class KSeF
         }
 
         return self::$ksefTaxProperties[$ksefTaxRateName] ?? null;
+    }
+
+    public static function ksefTaxLabel(array $item): string
+    {
+        if (empty(self::$taxProperties)) {
+            self::$taxProperties = [
+                '23.00' => '23%',
+                '22.00' => '22%',
+                '8.00' => '8%',
+                '7.00' => '7%',
+                '5.00' => '5%',
+                '4.00' => '4%',
+                '3.00' => '3%',
+                '0.00' => [
+                    '1' => [
+                        '0' => [
+                            '0' => [
+                                '0' => '0 KR',
+                                '1' => '0 EX',
+                            ],
+                            '1' => [
+                                '0' => '0 WDT',
+                            ],
+                        ],
+                        '1' => [
+                            '0' => [
+                                '0' => 'oo',
+                            ],
+                        ],
+                    ],
+                    '0' => [
+                        '0' => [
+                            '0' => [
+                                '0' => [
+                                    '0' => 'zw',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ];
+        }
+
+        if (is_array(self::$taxProperties[$item['tax_rate']])) {
+            return self::$taxProperties[$item['tax_rate']][$item['taxed']][$item['reverse_charge']][$item['eu']][$item['export']] ?? '';
+        } else {
+            return self::$taxProperties[$item['tax_rate']] ?? '';
+        }
     }
 }
