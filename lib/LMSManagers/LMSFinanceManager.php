@@ -2496,7 +2496,18 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $this->db->Execute('INSERT INTO invoicecontents (docid, itemid,
 				value, taxid, taxcategory, prodid, content, count, pdiscount, vdiscount, description, tariffid)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
-            if ($this->syslog) {
+	    //Added for lms-stck by Sarenka - MAXCON
+	    if (ConfigHelper::getConfig('phpui.stock') && $type != DOC_INVOICE_PRO) {
+		    if ($item['stckproductid'])
+			    	$this->db->Execute('INSERT INTO stck_invoicecontentsassignments(icdocid, icitemid, stockid)
+					VALUES(?, ?, ?)', array($iid, $itemid, $item['stckproductid']));
+		    
+		    if ($item['stckgtuid'])
+				$this->db->Execute('INSERT INTO stck_gtuassignments(icdocid, icitemid, gtuid)
+					VALUES(?, ?, ?)', array($iid, $itemid, $item['stckgtuid']));
+	    }
+
+	    if ($this->syslog) {
                 $args[SYSLOG::RES_CUST] = $invoice['customer']['id'];
                 $this->syslog->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_ADD, $args);
             }
@@ -2513,7 +2524,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     'docid' => $iid,
                     'itemid' => $itemid,
                     'servicetype' => $item['servicetype'] ?? null,
-                ));
+		));
+
+		//Added for lms-stck by Sarenka = MAXCON
+		if (ConfigHelper::getConfig('phpui.stock')) {
+			if ($item['stckproductid']) {
+				$icid = $this->db->GetLastInsertID('cash');
+				$this->db->Execute('INSERT INTO stck_cashassignments (cashid, stockid) VALUES(?, ?)', array($icid, $item['stckproductid']));
+			}
+		}
             }
         }
 
@@ -2573,7 +2592,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
         $document_manager->DeleteDocumentAddresses($invoiceid);
 
-        $this->db->Execute('DELETE FROM documents WHERE id = ?', array($invoiceid));
+	$this->db->Execute('DELETE FROM documents WHERE id = ?', array($invoiceid));
+	//Added from lms-stck Sarenka
+	if (ConfigHelper::getConfig('phpui.stock')) {
+                global $LMSST;
+                $stock = $this->db->GetAll('SELECT stockid FROM stck_invoicecontentsassignments WHERE icdocid = ?', array($invoiceid));
+                foreach ($stock as $v) {
+                        $LMSST->StockUnSell($v['stockid']);
+                }
+        }
     }
 
     public function InvoiceContentDelete($invoiceid, $itemid = 0)
@@ -2588,7 +2615,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     'itemid' => $itemid,
                 );
                 $this->syslog->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_DELETE, $args);
-            }
+	    }
+	    //Added for lms-stck Sarenka
+            if (ConfigHelper::getConfig('phpui.stock')) {
+                if ($sid = $this->db->GetOne('SELECT stockid FROM stck_invoicecontentsassignments WHERE icdocid=? AND icitemid=?', array($invoiceid, $itemid))) {
+                        global $LMSST;
+                        $LMSST->StockUnSell($sid);
+                }
+	    }
+
             $this->db->Execute('DELETE FROM invoicecontents WHERE docid=? AND itemid=?', array($invoiceid, $itemid));
 
             if (!$this->db->GetOne('SELECT COUNT(*) FROM invoicecontents WHERE docid=?', array($invoiceid))) {
@@ -2621,7 +2656,68 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $userid = Auth::GetCurrentUser();
 
-        if ($detail_level <= self::INVOICE_CONTENT_DETAIL_MORE) {
+	if ($detail_level <= self::INVOICE_CONTENT_DETAIL_MORE) {
+	    //Added for lms-stck Sarenka
+		if (ConfigHelper::getConfig('phpui.stock'))
+			$result = $this->db->GetRow(
+	                'SELECT d.id, d.type AS doctype, d.number, d.fullnumber, d.name, d.customerid,
+	                                d.userid, d.address, d.zip, d.city, d.countryid,
+	                                d.ten, d.ssn, d.cdate, d.sdate, d.paytime, d.paytype,
+	                                (CASE WHEN d.flags & ? > 0 THEN 1 ELSE 0 END) AS splitpayment,
+	                                (CASE WHEN d.flags & ? > 0 THEN 1 ELSE 0 END) AS netflag,
+	                                d.flags, d.numberplanid,
+	                                d.closed, d.cancelled, d.published, d.archived, d.comment AS comment, d.reference, d.reason, d.divisionid,
+	                                u.name AS user, u.issuer, n.template,
+       	                         d.div_name AS division_name, d.div_shortname AS division_shortname,
+       	                         d.div_address AS division_address, d.div_zip AS division_zip,
+       	                         d.div_city AS division_city, d.div_countryid AS division_countryid,
+       	                         d.div_ten AS division_ten, d.div_regon AS division_regon,
+       	                         d.div_bank AS div_bank, d.div_account AS account,
+       	                         d.div_bank AS division_bank, d.div_account AS division_account,
+       	                         d.div_inv_header AS division_header, d.div_inv_footer AS division_footer,
+       	                         d.div_inv_author AS division_author, d.div_inv_cplace AS division_cplace,
+       	                         d.recipient_address_id,
+       	                         d.recipient_ten,
+       	                         d.recipient_type,
+       	                         d.post_address_id,
+        	                        d.currency, d.currencyvalue, d.memo,
+				 d.extid,
+				(SELECT GROUP_CONCAT(DISTINCT(sg.code) SEPARATOR \', \')
+                                        FROM stck_gtu sg
+                                        LEFT JOIN stck_gtuassignments sga ON sga.gtuid = sg.id
+                                        WHERE icdocid = ?) as gtu,
+                	                (CASE WHEN cc.type IS NULL THEN 0 ELSE 1 END) AS balance_on_documents,
+                	                (CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS ksef_invoice_consent,
+                	kd.ksefnumber,
+                	kd.status AS ksefstatus,
+                	kd.hash AS ksefhash,
+                	kbs.environment AS ksefenvironment
+                	                FROM documents d'
+                	. (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
+               		. ' LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+                	                LEFT JOIN vusers u ON u.id = d.userid
+                	                LEFT JOIN customerconsents cc ON cc.customerid = d.customerid AND cc.type = ?
+                	                LEFT JOIN customerconsents cc2 ON cc2.customerid = d.customerid AND cc2.type = ?
+                	                LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
+                	                LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
+                	                WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)',
+                	[
+                	    DOC_FLAG_SPLIT_PAYMENT,
+			    DOC_FLAG_NET_ACCOUNT,
+			    $invoiceid,
+                	    CCONSENT_BALANCE_ON_DOCUMENTS,
+                	    CCONSENT_KSEF_INVOICE,
+                	    [
+                	        200,
+                	        0,
+                	    ],
+                	    $invoiceid,
+                	    DOC_INVOICE,
+               		    DOC_CNOTE,
+                	    DOC_INVOICE_PRO,
+                	]
+            		);
+		else 
             $result = $this->db->GetRow(
                 'SELECT d.id, d.type AS doctype, d.number, d.fullnumber, d.name, d.customerid,
 				d.userid, d.address, d.zip, d.city, d.countryid,
@@ -2675,7 +2771,95 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     DOC_INVOICE_PRO,
                 ]
             );
-        } else {
+	} else {
+		//Added for lms-stck Sarenka
+		if (ConfigHelper::getConfig('phpui.stock'))
+			$result = $this->db->GetRow(
+                'SELECT d.id, d.type AS doctype, d.number, d.fullnumber, d.name, d.customerid,
+                                d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
+                                d.ten, d.ssn, d.cdate, d.sdate, d.paytime, d.paytype,
+                                (CASE WHEN d.flags & ? > 0 THEN 1 ELSE 0 END) AS splitpayment,
+                                (CASE WHEN d.flags & ? > 0 THEN 1 ELSE 0 END) AS netflag,
+                                d.flags, d.numberplanid,
+                                d.closed, d.cancelled, d.published, d.archived, d.comment AS comment, d.reference, d.reason, d.divisionid,
+                                u.name AS user, u.issuer, n.template,
+                                d.div_name AS division_name, d.div_shortname AS division_shortname,
+                                d.div_address AS division_address, d.div_zip AS division_zip,
+                                d.div_city AS division_city, d.div_countryid AS division_countryid,
+                                d.div_ten AS division_ten, d.div_regon AS division_regon,
+                                d.div_bank AS div_bank, d.div_account AS account,
+                                d.div_bank AS division_bank, d.div_account AS division_account,
+                                d.div_inv_header AS division_header, d.div_inv_footer AS division_footer,
+                                d.div_inv_author AS division_author, d.div_inv_cplace AS division_cplace,
+                                d.recipient_address_id,
+                                d.recipient_ten,
+                                d.recipient_type,
+                                d.post_address_id,
+                                a.state AS rec_state, a.state_id AS rec_state_id,
+                                a.city as rec_city, a.city_id AS rec_city_id,
+                                a.street AS rec_street, a.street_id AS rec_street_id,
+                                a.zip as rec_zip, a.postoffice AS rec_postoffice,
+                                a.name as rec_name, a.address AS rec_address,
+                                a.house AS rec_house, a.flat AS rec_flat, a.country_id AS rec_country_id,
+                                c.pin AS customerpin, c.divisionid AS current_divisionid,
+                                c.street, c.building, c.apartment, c.type AS customertype,
+                                (CASE WHEN d.post_address_id IS NULL THEN c.post_street ELSE a2.street END) AS post_street,
+                                (CASE WHEN d.post_address_id IS NULL THEN c.post_building ELSE a2.house END) AS post_building,
+                                (CASE WHEN d.post_address_id IS NULL THEN c.post_apartment ELSE a2.flat END) AS post_apartment,
+                                (CASE WHEN d.post_address_id IS NULL THEN c.post_name ELSE a2.name END) AS post_name,
+                                (CASE WHEN d.post_address_id IS NULL THEN c.post_address ELSE a2.address END) AS post_address,
+                                (CASE WHEN d.post_address_id IS NULL THEN c.post_zip ELSE a2.zip END) AS post_zip,
+                                (CASE WHEN d.post_address_id IS NULL THEN c.post_city ELSE a2.city END) AS post_city,
+                                (CASE WHEN d.post_address_id IS NULL THEN c.post_postoffice ELSE a2.postoffice END) AS post_postoffice,
+                                (CASE WHEN d.post_address_id IS NULL THEN c.post_countryid ELSE a2.country_id END) AS post_countryid,
+                                cp.name AS post_country,
+                                (CASE WHEN d.div_countryid IS NOT NULL
+                                    THEN (CASE WHEN d.countryid IS NULL
+                                        THEN cdv.ccode
+                                        ELSE cn.ccode
+                                    END)
+                                    ELSE NULL
+                                END) AS lang,
+                                cdv.ccode AS div_ccode,
+                                d.currency, d.currencyvalue, d.memo,
+                                d.extid,
+                                (CASE WHEN cc.type IS NULL THEN 0 ELSE 1 END) AS balance_on_documents,
+                                (CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS ksef_invoice_consent,
+                kd.ksefnumber,
+                kd.status AS ksefstatus,
+                kd.hash AS ksefhash,
+                kbs.environment AS ksefenvironment
+                                FROM documents d'
+                . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
+                . ' LEFT JOIN customeraddressview c ON (c.id = d.customerid)
+                                LEFT JOIN vusers u ON u.id = d.userid
+                                LEFT JOIN customerconsents cc ON cc.customerid = d.customerid AND cc.type = ?
+                                LEFT JOIN customerconsents cc2 ON cc2.customerid = d.customerid AND cc2.type = ?
+                                LEFT JOIN countries cn ON (cn.id = d.countryid)
+                                LEFT JOIN countries cdv ON cdv.id = d.div_countryid
+                                LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+                                LEFT JOIN vaddresses a ON d.recipient_address_id = a.id
+                                LEFT JOIN vaddresses a2 ON d.post_address_id = a2.id
+                                LEFT JOIN countries cp ON (d.post_address_id IS NOT NULL AND cp.id = a2.country_id) OR (d.post_address_id IS NULL AND cp.id = c.post_countryid)
+                                LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
+                                LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
+                                WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)',
+		[
+                    DOC_FLAG_SPLIT_PAYMENT,
+                    DOC_FLAG_NET_ACCOUNT,
+                    CCONSENT_BALANCE_ON_DOCUMENTS,
+                    CCONSENT_KSEF_INVOICE,
+                    [
+                        200,
+                        0,
+                    ],
+                    $invoiceid,
+                    DOC_INVOICE,
+                    DOC_CNOTE,
+                    DOC_INVOICE_PRO,
+                ]
+		);
+		else
             $result = $this->db->GetRow(
                 'SELECT d.id, d.type AS doctype, d.number, d.fullnumber, d.name, d.customerid,
 				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
@@ -2848,7 +3032,22 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         . ($result['division_ten'] != '' ? "\n" . trans('TEN') . ' ' . '%ten%' : '');
             }
 
-            if ($result['content'] = $this->db->GetAllByKey('SELECT ic.value AS value,
+	    //Added for lms-stck Sarenka - sica and sca table reference
+		if ((ConfigHelper::getConfig('phpui.stock') && $result['content'] = $this->db->GetAllByKey('SELECT ic.value AS value,
+                        ic.netprice, ic.grossprice, ic.netvalue, ic.taxvalue AS totaltaxvalue, ic.grossvalue,
+                        ic.diff_count, ic.diff_netprice, ic.diff_grossprice, ic.diff_netvalue, ic.diff_taxvalue, ic.diff_grossvalue,
+                        ic.netflag,
+                                                ic.itemid, ic.taxid, ic.taxrate AS taxvalue, taxes.label AS taxlabel, taxcategory,
+                                                cash.servicetype,
+                                                prodid, content, ic.count, ic.description AS description,
+                                                tariffid, ic.itemid, pdiscount, vdiscount,sica.stockid
+                                                FROM vinvoicecontents ic
+						LEFT JOIN taxes ON taxid = taxes.id
+						LEFT JOIN stck_invoicecontentsassignments sica ON sica.icdocid = docid AND sica.icitemid = itemid
+			LEFT JOIN cash ON cash.docid = ic.docid AND cash.itemid = ic.itemid
+			LEFT JOIN stck_cashassignments sca ON sca.cashid = cash.itemid AND sca.stockid = sica.stockid
+                                                WHERE ic.docid = ?
+                                                ORDER BY ic.itemid', 'itemid', array($invoiceid))) || (!ConfigHelper::getConfig('phpui.stock') && $result['content'] = $this->db->GetAllByKey('SELECT ic.value AS value,
                         ic.netprice, ic.grossprice, ic.netvalue, ic.taxvalue AS totaltaxvalue, ic.grossvalue,
                         ic.diff_count, ic.diff_netprice, ic.diff_grossprice, ic.diff_netvalue, ic.diff_taxvalue, ic.diff_grossvalue,
                         ic.netflag,
@@ -2860,7 +3059,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 						LEFT JOIN taxes ON taxid = taxes.id
                         LEFT JOIN cash ON cash.docid = ic.docid AND cash.itemid = ic.itemid
 						WHERE ic.docid = ?
-						ORDER BY ic.itemid', 'itemid', array($invoiceid))
+						ORDER BY ic.itemid', 'itemid', array($invoiceid)))
             ) {
                 foreach ($result['content'] as $idx => $row) {
                     if ($row['taxvalue'] < 0) {
@@ -4141,7 +4340,18 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 }
             }
         } else {
-            $this->db->Execute('DELETE FROM cash WHERE id = ?', array($id));
+	    //Added for lms-stck Sarenka
+            if (ConfigHelper::getConfig('phpui.stock')) {
+                if ($sid = $this->db->GetRow('SELECT stockid, rnitem FROM stck_cashassignments WHERE cashid = ?', array($id))) {
+                        if ($sid['rnitem'])
+                                return false;
+
+                        global $LMSST;
+                        $LMSST->StockUnSell($sid['stockid']);
+                }
+            }	
+	 
+	    $this->db->Execute('DELETE FROM cash WHERE id = ?', array($id));
             if ($this->syslog) {
                 $args = array(
                     SYSLOG::RES_CASH => $id,

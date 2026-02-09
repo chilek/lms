@@ -58,8 +58,11 @@ class LMSStck {
 				$filename_prefix = ConfigHelper::getConfig('database.database') == LMSDB::POSTGRESQL ? 'postgres' : 'mysql';
 
 				$pendingupgrades = array();
-				$upgradelist = getdir($stckdir . DIRECTORY_SEPARATOR . 'upgradedb', '^' . $filename_prefix . '\.[0-9]{10}\.php$');
-			
+				$upgradelist = getdir(
+					$stckdir . DIRECTORY_SEPARATOR . 'upgradedb',
+					'^' . $filename_prefix . '\.[0-9]{10}\.php$'
+				);
+
 				if (!empty($upgradelist))
 					foreach ($upgradelist as $upgrade) {
 						$upgradeversion = preg_replace('/^' . $filename_prefix . '\.([0-9]{10})\.php$/', '\1', $upgrade);

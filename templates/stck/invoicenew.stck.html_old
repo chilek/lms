@@ -93,6 +93,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 	</TR>
 	</THEAD>
 	<TBODY>
+	<tr><td><table>
 	<TR>
 		<TD class="bold nobr">
 			{trans("Invoice number:")}
@@ -154,6 +155,24 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 		<td>
 			<select id="customer_addresses" name="invoice[recipient_address_id]"></select>
 		</td>
+	</tr>
+	</table></td>
+	<td>
+		<table>
+		 <colgroup>
+                <col style="width: 1%;">
+                <col style="width: 99%;">
+        </colgroup>
+<TR>
+                <TD class="bold nobr">
+                        {trans("Additional number:")}
+                </TD>
+                <TD class="nobr" id="invoicenumberplans">
+                	<input type="text" name="invoice[invcomment]" value="{$invoice.invcomment}" size="50" maxlength="50" class="" data-tooltip="Wprowadź dodatkowy numer na fakturze.">
+		</TD>
+        </TR>
+		</table>
+	</td>
 	</tr>
 	<TR>
 		<TD class="text-right" colspan="2">
