@@ -1183,6 +1183,7 @@ version 28-git (????-??-??):
   - enhancement: added new customer consent 'traffic data use' with system name
     'traffic_data_use_for_marketing' [chilan]
   - enhancement: document templates support 'default-customer-consents' properties [chilan]
+  - enhancement: KSeF: implemented purchase invoice import (export from KSeF perspective) [chilan]
 
 version 27.0 (2021-08-20):
 
