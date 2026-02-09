@@ -89,7 +89,18 @@
 				{barcode type="QRCODE" text=$url show_text=false transliterate=false width=-3 height=-3 tooltip_class="lms-ui-ksef-qrcode"}
 			</a>
 			<span class="ksef-number">{$invoice.ksefnumber}</span>
-			{if $upo_file_exists}
+			{if $invoice_file_exists}
+				<div class="ksef-upo-buttons">
+					<a href="?m=invoiceksefinfo&id={$invoice.id}&purchase=1&action=invoice-download">
+						{icon name="download"}
+						{trans("<!ksef>Download invoice")}
+					</a>
+					<a href="?m=invoiceksefinfo&id={$invoice.id}&purchase=1&action=invoice-view" target="_blank">
+						{icon name="view"}
+						{trans("<!ksef>View invoice")}
+					</a>
+				</div>
+			{elseif $upo_file_exists}
 				<div class="ksef-upo-buttons">
 					<a href="?m=invoiceksefinfo&id={$invoice.id}&action=upo-download">
 						{icon name="download"}
