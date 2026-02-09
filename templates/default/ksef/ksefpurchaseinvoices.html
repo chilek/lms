@@ -191,7 +191,8 @@
 			$('#posting').change(function() {
 				var filter = {
 					posting: $(this).prop('checked') ? '1' : '',
-					divisionId: $('#division-id').val()
+					divisionId: $('#division-id').val(),
+					settled: $('#unsettled').prop('checked') ? '0' : ''
 				};
 				applyFilter(filter);
 
@@ -224,6 +225,10 @@
 			}
 			if (filter.posting.length && filter.posting === '1') {
 				$('#posting').prop('checked', true);
+			}
+
+			if (filter.settled.length && filter.settled === '0') {
+				$('#unsettled').prop('checked', true);
 			}
 
 			$('[data-action]').click(function() {
