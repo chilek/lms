@@ -7,7 +7,7 @@ if (ConfigHelper::getConfig('database.database') == 'postgres') {
 	die('Fatal error: lms-stck doesn`t support PostgreSQL (yet)!');
 }
 
-define('STCK_DBVERSION', '2026020901');
+define('STCK_DBVERSION', '2026021000');
 define('STCK_DIR', $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'stock');
 
 require('LMSStck.class.php');
