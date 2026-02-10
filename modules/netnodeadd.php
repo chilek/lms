@@ -129,7 +129,7 @@ if (isset($netnodedata)) {
         }
     }
 
-    if (!$error && $warning) {
+    if (!$error && !$warning) {
         if ($netnodedata['projectid'] == -1) {
             $netnodedata['projectid'] = $LMS->AddProject($netnodedata);
         } elseif (empty($netnodedata['projectid'])) {
