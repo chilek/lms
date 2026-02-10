@@ -35,11 +35,26 @@ if (!isset($_POST['id'], $_POST['action'])) {
 $id = intval($_POST['id']);
 if (empty($id)) {
     die(json_encode([
-        'error' => 'id parameter validation error',
+        'error' => "'id' parameter validation error!",
     ]));
 }
 
-switch ($_POST['action']) {
+if (!$DB->GetOne(
+    'SELECT 1 FROM ksefinvoices i
+     JOIN divisions d ON d.id = i.division_id
+     WHERE i.id = ?',
+    [
+        $id,
+    ]
+)) {
+    die(json_encode([
+        'error' => 'Permission denied!',
+    ]));
+}
+
+$action = $_POST['action'];
+
+switch ($action) {
     case 'restore':
     case 'ignore':
         $res = $DB->Execute(
@@ -51,11 +66,6 @@ switch ($_POST['action']) {
                 $id,
             ]
         );
-        if (empty($res)) {
-            die(json_encode([
-                'error' => 'SQL error',
-            ]));
-        }
         break;
     case 'settle':
     case 'unsettle':
@@ -68,16 +78,29 @@ switch ($_POST['action']) {
                 $id,
             ]
         );
-        if (empty($res)) {
-            die(json_encode([
-                'error' => 'SQL error',
-            ]));
-        }
+        break;
+    case 'set-notes':
+    case 'clear-notes':
+        $res = $DB->Execute(
+            'UPDATE ksefinvoices
+                SET notes = ?
+                WHERE id = ?',
+            [
+                strlen($_POST['notes']) && $action == 'set-notes' ? $_POST['notes'] : null,
+                $id,
+            ]
+        );
         break;
     default:
         die(json_encode([
-            'error' => 'unsupported action',
+            'error' => 'Unsupported action!',
         ]));
+}
+
+if (empty($res)) {
+    die(json_encode([
+        'error' => 'SQL error!',
+    ]));
 }
 
 die('[]');

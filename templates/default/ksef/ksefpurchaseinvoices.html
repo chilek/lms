@@ -420,7 +420,6 @@
 					class="{if empty($invoice.posting)} cancel{/if}{if !empty($invoice.settled)} blend{/if}">
 					<td class="nobr">
 						<strong>{$invoice.issue_date|date_format:"Y/m/d"}</strong>
-						{hint url="?m=ksefpurchaseinvoiceinfo&id={$invoice.id}" icon="view"}
 						<br>
 						{capture assign="document_type_number"}{strip}
 							{$_DOCTYPES[$invoice.invoice_type]}
@@ -430,7 +429,7 @@
 						{$document_type_number}
 						{*icon name="copy" class="lms-ui-button-clipboard fa-fw" data_clipboard_text=$document_type_number*}
 						{icon name="copy" class="lms-ui-button-clipboard fa-fw" data_clipboard_text=$invoice.invoice_number}
-						{hint icon="qrcode" url="?m=invoiceksefinfo&id={$invoice.id}&purchase=1" tooltip_class="lms-ui-ksef-qr-code"}
+						{hint icon="qrcode" url="?m=invoiceksefinfo&id={$invoice.id}&purchase=1"}
 						<br>
 						<pre>{$invoice.ksef_number}</pre>
 					</td>
@@ -496,6 +495,8 @@
 						{/if}
 					</td>
 					<td class="text-right nobr">
+						{hint url="?m=ksefpurchaseinvoicenotes&id={$invoice.id}" icon="info" class="lms-ui-link-button notes-button"}
+						{hint url="?m=ksefpurchaseinvoiceinfo&id={$invoice.id}" icon="view" class="lms-ui-link-button"}
 						{$posting = !empty($invoice.posting)}
 						{if $posting}
 							{$restore_button_class = "hidden"}

@@ -2,8 +2,7 @@
 
 	.invoice-ksef-info {
 		display: flex;
-		padding-bottom: 0.25em;
-		padding-top: 0.25em;
+		flex-direction: column;
 	}
 
 	.invoice-ksef-info > * {
@@ -17,7 +16,7 @@
 		padding-bottom: 0.2em;
     }
 
-    .invoice-ksef-info > * > *:first-child {
+	.invoice-ksef-info > * > *:first-child {
 		padding-right: 0.5em;
 		padding-left: 0.5em;
 	}
@@ -26,17 +25,19 @@
 		max-width: 100px;
 	}
 
-	.lms-ui-ksef-qr-code {
+	.lms-ui-ksef-qr-code > * {
+		padding-top: 0.5em;
+		padding-bottom: 0.5em;
+	}
+
+	.lms-ui-ksef-qr-code > a {
 		background-color: white;
-		padding-top: 0;
-		padding-bottom: 0;
 	}
 
 	.ksef-number {
 		font-weight: bold;
 		font-size: 8pt;
 		white-space: nowrap;
-		padding-top: 0;
 	}
 
 	.ksef-info {
@@ -50,68 +51,63 @@
 		font-weight: bold;
 	}
 
-	.ksef-upo-buttons {
+	.ksef-properties {
 		display: flex;
 		justify-content: center;
+		margin-top: 0.35em;
+		margin-bottom: 0;
 	}
 
-	.ksef-upo-buttons > * {
-		margin: 0.2em;
-		padding: 0.3em;
-		border: 1px solid darkgrey;
-		border-radius: 3px;
-		background-color: lightgrey;
-		font-weight: bold;
-	}
-
-	.ksef-upo-buttons > *:hover {
-		box-shadow: 0 0 3px 1px black;
-		padding: 0.35em;
-	}
-
-	.ksef-upo-buttons a:visited {
-		color: inherit;
-	}
-
-	.ksef-upo-buttons a:link {
-		color: inherit;
-	}
-
-	.ksef-upo-buttons a:hover {
-		text-decoration: none;
+	.ksef-properties > * {
+		margin-left: 0.25em;
+		margin-right: 0.25em;
+		margin-top: 0 !important;
+		margin-bottom: 0 !important;
 	}
 
 </style>
+
+<script>
+
+	$(function() {
+		$('.invoice-ksef-info .view-button').click(function() {
+			window.open($(this).attr('data-href'));
+		})
+	});
+
+</script>
+
 <div class="invoice-ksef-info">
 	{if $invoice.status == 200}
-		<div>
+		<div class="lms-ui-ksef-qr-code">
 			<a href="{$url}" target="_blank">
 				{barcode type="QRCODE" text=$url show_text=false transliterate=false width=-3 height=-3 tooltip_class="lms-ui-ksef-qrcode"}
 			</a>
 			<span class="ksef-number">{$invoice.ksefnumber}</span>
-			{if $upo_file_exists}
-				<div class="ksef-upo-buttons">
-					<a href="?m=invoiceksefinfo&id={$invoice.id}&action=upo-download">
-						{icon name="download"}
-						{trans("Download UPO")}
-					</a>
-					<a href="?m=invoiceksefinfo&id={$invoice.id}&action=upo-view" target="_blank">
-						{icon name="view"}
-						{trans("View UPO")}
-					</a>
+		</div>
+		<div>
+			{if $invoice_file_exists}
+				<div class="ksef-properties">
+					{button icon="download" label="<!ksef>Download invoice" href="?m=invoiceksefinfo&id={$invoice.id}&purchase=1&action=invoice-download"}
+					{button icon="view" label="<!ksef>View invoice" class="view-button" data_href="?m=invoiceksefinfo&id={$invoice.id}&purchase=1&action=invoice-view"}
+				</div>
+			{elseif $upo_file_exists}
+				<div class="ksef-properties">
+					{button icon="download" label="Download UPO" href="?m=invoiceksefinfo&id={$invoice.id}&action=upo-download"}
+					{button icon="view" label="View UPO" class="view-button" data_href="?m=invoiceksefinfo&id={$invoice.id}&action=upo-view"}
 				</div>
 			{/if}
 		</div>
 	{elseif empty($invoice.status)}
 		{if ConfigHelper::checkConfig('ksef.offline_support')}
-			<div>
+			<div class="lms-ui-ksef-qr-code">
 				<a href="{$url}" target="_blank">
 					{barcode type="QRCODE" text=$url show_text=false transliterate=false width=-3 height=-3 tooltip_class="lms-ui-ksef-qrcode"}
 				</a>
 				<span class="ksef-number">OFFLINE</span>
 			</div>
 			{if !empty($certificateurl)}
-				<div>
+				<div class="lms-ui-ksef-qr-code">
 					<a href="{$url}" target="_blank">
 						{barcode type="QRCODE" text=$certificateurl show_text=false transliterate=false width=-3 height=-3 tooltip_class="lms-ui-ksef-qrcode"}
 					</a>
