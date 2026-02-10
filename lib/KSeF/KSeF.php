@@ -166,7 +166,9 @@ class KSeF
         );
         if (empty($uiConfigVariables)) {
             $uiConfigVariables = [
-                0 => 3600,
+                0 => [
+                    'value' => 3600,
+                ],
             ];
         }
 
