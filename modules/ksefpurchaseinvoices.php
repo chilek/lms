@@ -97,7 +97,11 @@ $now = time();
 foreach ($invoices as &$invoice) {
     $invoice['pay_type_name'] = KSeF::payTypeName($invoice['pay_type']);
     $invoice['expired'] = strtotime('+1 day', $invoice['pay_date']) < $now;
-    $tags = explode(',', $invoice['tags']);
+    if (empty($invoice['tags'])) {
+        $tags = [];
+    } else {
+        $tags = explode(',', $invoice['tags']);
+    }
     $invoice['tags'] = [];
     foreach ($tags as $tag) {
         $invoice['tags'][$tag] = $allTags[$tag]['name'];
