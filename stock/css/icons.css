@@ -1,0 +1,20 @@
+.lms-ui-icon-warehouse {
+    display: inline-block;
+    font-weight: 400;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    display: var(--fa-display,inline-block);
+    font-style: normal;
+    font-variant: normal;
+    line-height: 1;
+    text-rendering: auto;
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    line-height: unset;
+    vertical-align: unset;
+    font-size: 130%
+}
+
+.lms-ui-icon-warehouse:before {
+    content: "\f494"
+}

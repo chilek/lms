@@ -3,7 +3,7 @@ if (ConfigHelper::getConfig('phpui.stock')) {
 	$menu['stock'] = array(
 		'name' => trans('Warehouse'),
 		'link' => '?m=stck',
-		'img' => 'stck.png',
+		'css' => 'lms-ui-icon-warehouse',
 		'tip' => trans('Stock management'),
 		'prio' => 26,
 		'submenu' => array(

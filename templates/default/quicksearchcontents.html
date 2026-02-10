@@ -152,6 +152,20 @@
 	</select>
 </div>
 {/if}
+<!-- Added for lsm-stck STCK by Sarenka-->
+{if ConfigHelper::getConfig('phpui.stock')}
+<link href="/stock/css/icons.css" rel="stylesheet" type="text/css">
+<div id="qs-productprice" class="lms-ui-quick-search-field" data-mode="productprice" data-label="{trans("<!qs>stock price")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+[">
+        <i class="lms-ui-quick-search-icon lms-ui-icon-finances" {tip text="Enter EAN, serial number, product number or product name to check buy price"}></i>
+    <input type="text" name="qs[productprice]" value="" size="15" {tip text="Enter EAN, serial number, product number or product name to check buy price" class="blend lms-ui-quick-search-input"}>
+</div>
+
+<div id="qs-productwarranty" class="lms-ui-quick-search-field" data-mode="productwarranty" data-label="{trans("<!qs>product warranty")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+]">
+        <i class="lms-ui-quick-search-icon lms-ui-icon-warehouse" {tip text="Enter serial number to check warranty status"}></i>
+    <input type="text" name="qs[productprice]" value="" size="15" {tip text="Enter serial number to check warranty status" class="blend lms-ui-quick-search-input"}>
+</div>
+{/if}
+<!--END lms-stck STCK by Sarenka -->
 
 {/block}
 
