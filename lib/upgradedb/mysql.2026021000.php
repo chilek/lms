@@ -23,7 +23,7 @@
 
 $this->BeginTrans();
 
-if ($this->ResourceExists('ksefinvoicetags', LMSDB::RESOURCE_TYPE_TABLE)) {
+if (!$this->ResourceExists('ksefinvoicetags', LMSDB::RESOURCE_TYPE_TABLE)) {
     $this->Execute("
         CREATE TABLE ksefinvoicetags (
             id int(11) NOT NULL AUTO_INCREMENT,
@@ -33,7 +33,7 @@ if ($this->ResourceExists('ksefinvoicetags', LMSDB::RESOURCE_TYPE_TABLE)) {
     ");
 }
 
-if ($this->ResourceExists('ksefinvoicetagassignments', LMSDB::RESOURCE_TYPE_TABLE)) {
+if (!$this->ResourceExists('ksefinvoicetagassignments', LMSDB::RESOURCE_TYPE_TABLE)) {
     $this->Execute("
         CREATE TABLE ksefinvoicetagassignments (
             id int(11) NOT NULL AUTO_INCREMENT,
