@@ -2589,18 +2589,19 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
         }
 
-        $document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
-        $document_manager->DeleteDocumentAddresses($invoiceid);
-
-	$this->db->Execute('DELETE FROM documents WHERE id = ?', array($invoiceid));
 	//Added from lms-stck Sarenka
-	if (ConfigHelper::getConfig('phpui.stock')) {
+        if (ConfigHelper::getConfig('phpui.stock')) {
                 global $LMSST;
                 $stock = $this->db->GetAll('SELECT stockid FROM stck_invoicecontentsassignments WHERE icdocid = ?', array($invoiceid));
                 foreach ($stock as $v) {
                         $LMSST->StockUnSell($v['stockid']);
                 }
         }
+
+        $document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
+        $document_manager->DeleteDocumentAddresses($invoiceid);
+
+	$this->db->Execute('DELETE FROM documents WHERE id = ?', array($invoiceid));
     }
 
     public function InvoiceContentDelete($invoiceid, $itemid = 0)
