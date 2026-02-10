@@ -6342,3 +6342,5 @@ $_LANG['<!ksef>Total'] = 'Razem';
 
 $_LANG['<!ksef>Download invoice'] = 'Pobierz fakturę';
 $_LANG['<!ksef>View invoice'] = 'Pokaż fakturę';
+
+$_LANG['<!ksef>Invoice notes'] = 'Notatki do faktury';

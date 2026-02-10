@@ -1,0 +1,104 @@
+<style>
+
+       #ksef-purchase-invoice-notes {
+               display: flex;
+               flex-direction: column;
+       }
+
+       #ksef-purchase-invoice-notes > * {
+               display: flex;
+               flex-grow: 1;
+       }
+
+       #ksef-purchase-invoice-notes > * {
+               justify-content: center;
+               padding: 0.2em;
+       }
+
+       #ksef-purchase-invoice-notes > :first-child {
+               margin-top: 0.3em;
+               margin-bottom: 0.3em;
+       }
+
+       #ksef-purchase-invoice-notes > :nth-child(2) {
+               justify-content: stretch;
+       }
+
+       #ksef-purchase-invoice-notes > * > * {
+               margin-left: 0.3em;
+               margin-right: 0.3em;
+       }
+
+       #ksef-purchase-invoice-notes [name="notes"] {
+               width: 30vw;
+               max-height: 60vh;
+       }
+
+</style>
+
+<form name="ksef-purchase-invoice-notes" id="ksef-purchase-invoice-notes-form" method="post">
+       <input type="hidden" name="id" value="{$id}">
+       <input type="hidden" name="action" value="set-notes">
+</form>
+
+<script>
+
+       $(function() {
+               initAutoGrow($('#ksef-purchase-invoice-notes [name="notes"]'));
+
+               function sendAction(action) {
+                       let form = $('#ksef-purchase-invoice-notes-form');
+                       form.find('[name="action"]').val(action);
+                       let formData = new FormData(form.get(0));
+
+                       $.ajax({
+                               url: '?m=ksefpurchaseinvoiceedit&api=1',
+                               type: 'POST',
+                               data: formData,
+                               processData: false,
+                               contentType: false,
+                               dataType: "json",
+                               success: function(data) {
+                                       if (data.hasOwnProperty('error')) {
+                                               console.error('Error:', data.error);
+                                               return;
+                                       }
+                                       $('#ksef-purchase-invoice-notes .cancel-button').click();
+                               },
+                               error: function(xhr) {
+                                       console.error('Error:', xhr.responseText);
+                               }
+                       });
+               }
+
+               $('#ksef-purchase-invoice-notes-form').submit(function(e) {
+                       e.preventDefault();
+                       sendAction('set-notes');
+                       return false;
+               });
+
+               $('#ksef-purchase-invoice-notes .clear-button').click(function() {
+                       sendAction('clear-notes');
+               });
+
+               $('#ksef-purchase-invoice-notes .cancel-button').click(function() {
+                       $('[data-id="{$id}"]').find('.notes-button').click();
+               });
+       });
+
+</script>
+
+<div id="ksef-purchase-invoice-notes">
+       <div>
+               <strong>{trans("<!ksef>Invoice notes")}</strong>
+       </div>
+       <div>
+               <textarea name="notes" form="ksef-purchase-invoice-notes-form"
+                       rows="13">{$notes|escape}</textarea>
+       </div>
+       <div>
+               {button type="subbmit" icon="save" label="Save" form="ksef-purchase-invoice-notes-form"}
+               {button icon="clear" label="Clear" class="clear-button"}
+               {button icon="cancel" label="Cancel" class="cancel-button"}
+       </div>
+</div>
