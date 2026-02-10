@@ -56,6 +56,7 @@ $_LANG['Stock value:'] = 'Wartość magazynu:';
 $_LANG['Stock net value:'] = 'Wartość magazynu netto:';
 $_LANG['Stock gross value:'] = 'Wartość magazynu brutto:';
 $_LANG['In stock:'] = 'Na magazynie:';
+$_LANG['In stock'] = 'Na magazynie';
 $_LANG['Are you sure, you want to remove product $name?'] = 'Czy na pewno usunąć produkt $name?';
 $_LANG['Are you sure that you want to save receive note?'] = 'Czy na pewno zapisać dokument przyjęcia?';
 $_LANG['Are you sure that you want to cancel receive note?'] = 'Czy na pewno anulować dokument przyjęcia?';

@@ -17,7 +17,7 @@
 					ORDER BY s.creationdate ASC, name
 					LIMIT 15");
 				
-				$eglible=array(); $actions=array(); $descriptions=array();
+				$result=array();
 				if ($candidates)
 					foreach($candidates as $idx => $row) {
 						$name = $row['name'];

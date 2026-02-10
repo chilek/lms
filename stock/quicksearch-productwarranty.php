@@ -3,7 +3,7 @@
 			$sql_search = $DB->Escape("%$search%");
 			if(isset($_GET['ajax'])) {
 				$candidates = $DB->GetAll("SELECT s.id, s.productid, s.serialnumber, s.pricesell, s.leavedate, s.warranty,
-					".$DB->Concat('m.name',"' '",'p.name')." as name, p.ean
+					".$DB->Concat('m.name',"' '",'p.name')." as name, p.ean, s.sold
 					FROM stck_stock s
 					LEFT JOIN stck_products p ON p.id = s.productid
 					LEFT JOIN stck_manufacturers m ON m.id = p.manufacturerid
@@ -13,7 +13,7 @@
 					ORDER BY s.creationdate ASC, name
 					LIMIT 15");
 				
-				$eglible=array(); $actions=array(); $descriptions=array();
+				$result = array();
 				if ($candidates)
 					foreach($candidates as $idx => $row) {
 						$name = $row['name'];
@@ -32,12 +32,13 @@
 						else
 							$row['leavedate'] = date("d/m/Y", $row['leavedate']);
 
-						$description = '<b>'.trans("Gross:")." ".moneyf($row['pricesell'])."</b> ".trans("Sold:")." ".$row['leavedate']." ".trans("Warranty:")." ".$row['warranty'];
+						$description = ($row['sold'] ? trans("Sold:")." ".$row['leavedate']." ".trans("Gross:")." ".moneyf($row['pricesell'])." ".trans("Warranty:")." <b>".$row['warranty']."</b>" : trans("In stock")).'</b>';
 						$description_class = '';
 						
 						
 						$result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
 					}
+
 				$hook_data = array(
                                 	'search' => $search,
                                 	'sql_search' => $sql_search,
