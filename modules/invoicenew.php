@@ -100,7 +100,7 @@ switch ($action) {
             $invoice = $LMS->GetInvoiceContent($_GET['id']);
 
             $contents = array();
-            foreach ($invoice['content'] as $item) {
+            foreach ($invoice['content'] as $idx => $item) {//Added idx for lms-stock stck STCK Sarenk
                 $contents[] = array(
                     'tariffid' => $item['tariffid'],
                     'tariff' => !empty($item['tariffid']) ? $LMS->GetTariff($item['tariffid']) : array(),
@@ -119,8 +119,14 @@ switch ($action) {
                     'taxvalue' => isset($taxeslist[$item['taxid']]) ? $taxeslist[$item['taxid']]['value'] : 0,
                     'taxid' => $item['taxid'],
                     'taxcategory' => $item['taxcategory'],
-                );
-            }
+		);
+		if (ConfigHelper::getConfig('phpui.stock')) { //Added for lms-stock stck STCK Sarenka
+			$stck_ct = array_pop($contents);
+			$stck_ct['stckproductid'] = $invoicecontents[$item['itemid']]['stockid'] = $invoice['content'][$idx]['stckproductid'] = $item['stockid'];
+			$stck_ct['stckgtuid'] = $invoice['content'][$idx]['stckgtuid'] = $item['taxcategory'];
+			$contents[] = $stck_ct;
+	        }
+	    }
 
             $customer = $LMS->GetCustomer($invoice['customerid']);
             if (!isset($_GET['clone'])) {
@@ -515,8 +521,7 @@ switch ($action) {
         $error = array();
 
         $contents = changeContents($contents, $_POST['invoice-contents']);
-
-        if ($invoice['deadline']) {
+	if ($invoice['deadline']) {
             $deadline = intval($invoice['deadline']);
             $cdate = intval($invoice['cdate']);
             if ($deadline < $cdate) {
@@ -619,8 +624,8 @@ switch ($action) {
         if (is_array($hook_data['tables']) && !empty($hook_data['tables'])) {
             $tables = array_unique(array_merge($tables, $hook_data['tables']));
         }
-
-        $DB->LockTables($tables);
+	
+	$DB->LockTables($tables);
 
         if (!$invoice['number']) {
             $invoice['number'] = $LMS->GetNewDocumentNumber(array(
@@ -687,15 +692,19 @@ switch ($action) {
         }
 
 	if (ConfigHelper::getConfig('phpui.stock')) {//Added for STCK by Sarenka MAXCON
+		if (!empty($invoice['proformaid'])) {
+			foreach($contents as $ct) {
+				$LMSST->StockUnSell($ct['stckproductid'], trans('Originally sold on proforma invoice nr ').$invoice['proformanumber'], $invoice['proformaid']);
+			}
+		}
 		foreach($contents as $ct) {
 			if ($ct['stckproductid']) {
 				$LMSST->StockSell($iid, $ct['stckproductid'], $ct['valuebrutto'], $invoice['cdate'], $ct['count']);
 			}
 		}
 	}//END STCK
-
-	// usuwamy wczesniejsze zobowiazania bez faktury
-        foreach ($contents as $item) {
+	
+	foreach ($contents as $item) {
             if (!empty($item['cashid'])) {
                 $ids[] = intval($item['cashid']);
             }

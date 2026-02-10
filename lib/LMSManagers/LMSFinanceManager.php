@@ -2497,7 +2497,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				value, taxid, taxcategory, prodid, content, count, pdiscount, vdiscount, description, tariffid)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 	    //Added for lms-stck by Sarenka - MAXCON
-	    if (ConfigHelper::getConfig('phpui.stock') && $type != DOC_INVOICE_PRO) {
+	    if (ConfigHelper::getConfig('phpui.stock')) {
 		    if ($item['stckproductid'])
 			    	$this->db->Execute('INSERT INTO stck_invoicecontentsassignments(icdocid, icitemid, stockid)
 					VALUES(?, ?, ?)', array($iid, $itemid, $item['stckproductid']));
@@ -2588,15 +2588,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $this->syslog->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_DELETE, $args);
             }
         }
-
 	//Added from lms-stck Sarenka
         if (ConfigHelper::getConfig('phpui.stock')) {
                 global $LMSST;
                 $stock = $this->db->GetAll('SELECT stockid FROM stck_invoicecontentsassignments WHERE icdocid = ?', array($invoiceid));
-                foreach ($stock as $v) {
+		foreach ($stock as $v) {
                         $LMSST->StockUnSell($v['stockid']);
                 }
-        }
+	}
 
         $document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
         $document_manager->DeleteDocumentAddresses($invoiceid);
@@ -3036,31 +3035,29 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 	    //Added for lms-stck Sarenka - sica and sca table reference
 		if ((ConfigHelper::getConfig('phpui.stock') && $result['content'] = $this->db->GetAllByKey('SELECT ic.value AS value,
                         ic.netprice, ic.grossprice, ic.netvalue, ic.taxvalue AS totaltaxvalue, ic.grossvalue,
-                        ic.diff_count, ic.diff_netprice, ic.diff_grossprice, ic.diff_netvalue, ic.diff_taxvalue, ic.diff_grossvalue,
-                        ic.netflag,
-                                                ic.itemid, ic.taxid, ic.taxrate AS taxvalue, taxes.label AS taxlabel, taxcategory,
-                                                cash.servicetype,
-                                                prodid, content, ic.count, ic.description AS description,
-                                                tariffid, ic.itemid, pdiscount, vdiscount,sica.stockid
-                                                FROM vinvoicecontents ic
-						LEFT JOIN taxes ON taxid = taxes.id
-						LEFT JOIN stck_invoicecontentsassignments sica ON sica.icdocid = docid AND sica.icitemid = itemid
-			LEFT JOIN cash ON cash.docid = ic.docid AND cash.itemid = ic.itemid
-			LEFT JOIN stck_cashassignments sca ON sca.cashid = cash.itemid AND sca.stockid = sica.stockid
-                                                WHERE ic.docid = ?
-                                                ORDER BY ic.itemid', 'itemid', array($invoiceid))) || (!ConfigHelper::getConfig('phpui.stock') && $result['content'] = $this->db->GetAllByKey('SELECT ic.value AS value,
+                        ic.diff_count, ic.diff_netprice, ic.diff_grossprice, ic.diff_netvalue, ic.diff_taxvalue, ic.diff_grossvalue, ic.netflag,
+			ic.itemid, ic.taxid, ic.taxrate AS taxvalue, taxes.label AS taxlabel, taxcategory,
+			cash.servicetype, prodid, content, ic.count, ic.description AS description,
+			tariffid, ic.itemid, pdiscount, vdiscount, sica.stockid, sca.cashid
+				FROM vinvoicecontents ic
+				LEFT JOIN taxes ON taxid = taxes.id
+				LEFT JOIN stck_invoicecontentsassignments sica ON sica.icdocid = docid AND sica.icitemid = itemid
+				LEFT JOIN cash ON cash.docid = ic.docid AND cash.itemid = ic.itemid
+				LEFT JOIN stck_cashassignments sca ON sca.cashid = cash.itemid AND sca.stockid = sica.stockid
+				WHERE ic.docid = ?
+				ORDER BY ic.itemid', 'itemid', array($invoiceid))) || (!ConfigHelper::getConfig('phpui.stock') && $result['content'] = $this->db->GetAllByKey('SELECT ic.value AS value,
                         ic.netprice, ic.grossprice, ic.netvalue, ic.taxvalue AS totaltaxvalue, ic.grossvalue,
                         ic.diff_count, ic.diff_netprice, ic.diff_grossprice, ic.diff_netvalue, ic.diff_taxvalue, ic.diff_grossvalue,
                         ic.netflag,
-						ic.itemid, ic.taxid, ic.taxrate AS taxvalue, taxes.label AS taxlabel, taxcategory,
-						cash.servicetype,
-						prodid, content, ic.count, ic.description AS description,
-						tariffid, ic.itemid, pdiscount, vdiscount
-						FROM vinvoicecontents ic
-						LEFT JOIN taxes ON taxid = taxes.id
-                        LEFT JOIN cash ON cash.docid = ic.docid AND cash.itemid = ic.itemid
-						WHERE ic.docid = ?
-						ORDER BY ic.itemid', 'itemid', array($invoiceid)))
+			ic.itemid, ic.taxid, ic.taxrate AS taxvalue, taxes.label AS taxlabel, taxcategory,
+			cash.servicetype,
+			prodid, content, ic.count, ic.description AS description,
+			tariffid, ic.itemid, pdiscount, vdiscount
+				FROM vinvoicecontents ic
+				LEFT JOIN taxes ON taxid = taxes.id
+                        	LEFT JOIN cash ON cash.docid = ic.docid AND cash.itemid = ic.itemid
+				WHERE ic.docid = ?
+				ORDER BY ic.itemid', 'itemid', array($invoiceid)))
             ) {
                 foreach ($result['content'] as $idx => $row) {
                     if ($row['taxvalue'] < 0) {

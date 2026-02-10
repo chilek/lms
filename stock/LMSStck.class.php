@@ -770,10 +770,21 @@ class LMSStck {
 		return false;
 	}
 
-	function StockUnSell($id, $comment = NULL) {
-		if ($this->DB->Execute("UPDATE stck_stock SET pricesell = NULL, leavedate = 0, sold = 0, moddate = ?NOW?, modid = ?, comment = ? WHERE id = ?", array(Auth::GetCurrentUser(), $comment, $id)))
-			return true;
+	function StockUnSell($id, $comment = NULL, $invoice_pro = NULL) {
+		if ($this->DB->Execute("UPDATE stck_stock SET pricesell = NULL, leavedate = 0, sold = 0, moddate = ?NOW?, modid = ?, comment = ? WHERE id = ?", array(Auth::GetCurrentUser(), $comment, $id))) {
+			if ($invoice_pro)
+				return $this->StockRemoveInvoiceContentAssignment($id, $invoice_pro);
+			else
+				return true;
+		}
 		
+		return false;
+	}
+
+	private function StockRemoveInvoiceContentAssignment($stockid, $invoice_pro) {
+		echo 'JESTEM W FUNKCJI';
+		if ($this->DB->Execute('DELETE FROM stck_invoicecontentsassignments WHERE icdocid = ? AND stockid = ?', array($invoice_pro, $stockid)))
+			return true;
 		return false;
 	}
 
