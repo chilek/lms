@@ -52,16 +52,40 @@ if (!isset($endDate)) {
 }
 $SESSION->save('ksef-invoices-end-date', $endDate);
 
+$allTags = $DB->GetAllByKey(
+    'SELECT
+        t.id,
+        t.name
+    FROM ksefinvoicetags t
+    ORDER BY t.name',
+    'id'
+);
+if (empty($allTags)) {
+    $allTags = [];
+}
+
 $invoices = $DB->GetAll(
     'SELECT
         i.*,
         d.name AS division_name,
         d.shortname AS division_shortname,
-        d.label AS division_label
+        d.label AS division_label,
+        t.tags
     FROM ksefinvoices i
     JOIN divisions d ON d.id = i.division_id
+    LEFT JOIN (
+        SELECT
+            ta.ksef_invoice_id,
+            ' . $DB->GroupConcat('ta.ksef_invoice_tag_id') . ' AS tags
+        FROM ksefinvoicetagassignments ta
+        JOIN ksefinvoices i ON i.id = ta.ksef_invoice_id
+        WHERE i.permanent_storage_date BETWEEN ? AND ?
+        GROUP BY ta.ksef_invoice_id
+    ) t ON t.ksef_invoice_id = i.id
     WHERE i.permanent_storage_date BETWEEN ? AND ?',
     [
+        date('Y/m/d', $startDate),
+        date('Y/m/d 23:59:59', $endDate),
         date('Y/m/d', $startDate),
         date('Y/m/d 23:59:59', $endDate),
     ]
@@ -73,6 +97,12 @@ $now = time();
 foreach ($invoices as &$invoice) {
     $invoice['pay_type_name'] = KSeF::payTypeName($invoice['pay_type']);
     $invoice['expired'] = strtotime('+1 day', $invoice['pay_date']) < $now;
+    $tags = explode(',', $invoice['tags']);
+    $invoice['tags'] = [];
+    foreach ($tags as $tag) {
+        $invoice['tags'][$tag] = $allTags[$tag]['name'];
+    }
+
 }
 unset($invoice);
 

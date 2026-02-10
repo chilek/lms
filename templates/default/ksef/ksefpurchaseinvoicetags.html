@@ -68,15 +68,13 @@
 						console.error('Error:', data.error);
 						return;
 					}
-/*
-					var notesInfoHintButton = $('[data-id="{$id}"]').find('.tag-button').siblings('.notes-info');
-					var notes = $('[form="ksef-purchase-invoice-tags-form"][name="notes"]');
-					notesInfoHintButton.toggleClass(
-						'hidden',
-						action === 'clear-notes' || !notes.length
-					);
-					notesInfoHintButton.attr('data-hint', escapeHtml(action === 'clear-notes' ? '' : notes.val())).removeAttr('data-init');
-*/
+
+					var tagsHtml = '';
+					$('#ksef-purchase-invoice-tags [name="tags[]"] option:selected').each(function() {
+						tagsHtml += '<span class="ksef-invoice-tag-name">' + $(this).text() + '</span>';
+					});
+					$('#ksef-invoices [data-id="{$id}"]').find('.ksef-invoice-tags').html(tagsHtml)
+
 					$('#ksef-purchase-invoice-tags .cancel-button').click();
 				},
 				error: function (xhr) {

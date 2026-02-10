@@ -73,6 +73,31 @@
 			display: none;
 		}
 
+		#ksef-invoices .ksef-invoice-tags > * {
+			margin-left: 0.1em;
+			margin-right: 0.1em;
+			margin-top: 0.1em;
+			margin-bottom: 0.1em;
+			padding-left: 0.2em;
+			padding-right: 0.2em;
+			padding-top: 0.1em;
+			padding-bottom: 0.1em;
+
+			background-color: #dfd5bd;
+			background-image: none;
+			font-weight: bold;
+			border: 1px solid #615847;
+			border-radius: 4px;
+			box-sizing: border-box;
+			display: inline-block;
+			position: relative;
+			max-width: 100%;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			vertical-align: bottom;
+			white-space: nowrap;
+		}
+
 	</style>
 
 	<script>
@@ -374,6 +399,8 @@
 					{trans("<!ksef>Document type/number")}
 					<br>
 					{trans("KSeF number")}
+					<br>
+					{trans("<!ksef>Tags")}
 				</td>
 				<td class="bold nobr">
 					{trans("<!ksef>Seller name")}
@@ -427,20 +454,30 @@
 					data-posting="{if empty($invoice.posting)}0{else}1{/if}"
 					data-settled="{if empty($invoice.settled)}0{else}1{/if}"
 					class="{if empty($invoice.posting)} cancel{/if}{if !empty($invoice.settled)} blend{/if}">
-					<td class="nobr">
-						<strong>{$invoice.issue_date|date_format:"Y/m/d"}</strong>
+					<td>
+						<span class="nobr">
+							<strong>{$invoice.issue_date|date_format:"Y/m/d"}</strong>
+						</span>
 						<br>
-						{capture assign="document_type_number"}{strip}
-							{$_DOCTYPES[$invoice.invoice_type]}
-							&nbsp;
-							{$invoice.invoice_number}
-						{/strip}{/capture}
-						{$document_type_number}
-						{*icon name="copy" class="lms-ui-button-clipboard fa-fw" data_clipboard_text=$document_type_number*}
-						{icon name="copy" class="lms-ui-button-clipboard fa-fw" data_clipboard_text=$invoice.invoice_number}
-						{hint icon="qrcode" url="?m=invoiceksefinfo&id={$invoice.id}&purchase=1"}
-						<br>
-						<pre>{$invoice.ksef_number}</pre>
+						<span class="nobr">
+							{capture assign="document_type_number"}{strip}
+								{$_DOCTYPES[$invoice.invoice_type]}
+								&nbsp;
+								{$invoice.invoice_number}
+							{/strip}{/capture}
+							{$document_type_number}
+							{*icon name="copy" class="lms-ui-button-clipboard fa-fw" data_clipboard_text=$document_type_number*}
+							{icon name="copy" class="lms-ui-button-clipboard fa-fw" data_clipboard_text=$invoice.invoice_number}
+							{hint icon="qrcode" url="?m=invoiceksefinfo&id={$invoice.id}&purchase=1"}
+						</span>
+						<pre class="nobr">{$invoice.ksef_number}</pre>
+						<span class="ksef-invoice-tags">{strip}
+							{if !empty($invoice.tags)}
+								{foreach $invoice.tags as $tagId => $tagName}
+									<span class="ksef-invoice-tag-name">{$tagName|escape}</span>
+								{/foreach}
+							{/if}
+						{/strip}</span>
 					</td>
 					<td class="nobr">
 						<strong>{$invoice.seller_name|escape}</strong>
@@ -511,6 +548,7 @@
 						{/if}
 						{hint mode=LMSSmartyPlugins::HINT_TYPE_ROLLOVER icon="more-info" text=$invoice.notes|nl2br class=$class}
 						{hint url="?m=ksefpurchaseinvoicenotes&id={$invoice.id}" icon="info" class="lms-ui-link-button notes-button"}
+						{hint url="?m=ksefpurchaseinvoicetags&id={$invoice.id}" icon="tags" class="lms-ui-link-button tag-button"}
 						{hint url="?m=ksefpurchaseinvoiceinfo&id={$invoice.id}" icon="view" class="lms-ui-link-button"}
 						{$posting = !empty($invoice.posting)}
 						{if $posting}
