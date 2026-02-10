@@ -86,9 +86,13 @@ if (isset($_GET['id']) && ($action == 'edit' || $action == 'init')) {
             'taxvalue' => isset($taxeslist[$item['taxid']]) ? $taxeslist[$item['taxid']]['value'] : 0,
             'taxid' => $item['taxid'],
             'taxcategory' => $item['taxcategory'],
-        );
+	);
+	if (ConfigHelper::getConfig('phpui.stock')) { //Added for lms-stock stck STCK Sarenka
+		$invoicecontents[$item['itemid']]['stckproductid'] = $invoicecontents[$item['itemid']]['stockid'] = $item['stockid'];
+		$invoicecontents[$item['itemid']]['stckgtuid'] = $item['taxcategory'];
+	}
     }
-
+    
     $invoice['oldcdate'] = $invoice['cdate'];
     $invoice['oldsdate'] = $invoice['sdate'];
     $invoice['olddeadline'] = $invoice['deadline'] = $invoice['cdate'] + $invoice['paytime'] * 86400;
@@ -110,7 +114,7 @@ if (isset($_GET['id']) && ($action == 'edit' || $action == 'init')) {
     $hook_data = $LMS->ExecuteHook('invoiceedit_init', $hook_data);
     $invoicecontents = $hook_data['contents'];
     $invoice = $hook_data['invoice'];
-
+    
     $SESSION->save('invoicecontents', $invoicecontents, true);
     $SESSION->save('invoice', $invoice, true);
     $SESSION->save('invoicecustomer', $invoice['customerid'], true);
@@ -253,7 +257,10 @@ switch ($action) {
 
         if ($itemdata['tariffid'] > 0) {
             $itemdata['tariff'] = $LMS->GetTariff($itemdata['tariffid']);
-        }
+	}
+
+	if (ConfigHelper::getConfig('phpui.stock')) //Added for lms-stock stck STCK Sarenka
+		$itemdata['stockid'] = $itemdata['stckproductid'];
 
         $hook_data = array(
             'contents' => $contents,
@@ -626,7 +633,10 @@ switch ($action) {
             $tables = array_merge($tables, array('customers', 'customer_addresses'));
         } else {
             $tables = array_merge($tables, array('customers cv', 'customer_addresses ca'));
-        }
+	}
+	if (ConfigHelper::getConfig('phpui.stock')) //Added for lms-sstck by Sarenka = MAXCON
+		$tables = array_merge($tables, array('stck_invoicecontentsassignments','stck_stock','stck_cashassignments'));
+
         $DB->LockTables($tables);
 
         $division = $LMS->GetDivision($use_current_customer_data ? $customer['divisionid'] : $invoice['divisionid']);
@@ -769,7 +779,16 @@ switch ($action) {
                     );
                     $SYSLOG->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_DELETE, $args);
                 }
-            }
+	    }
+	    //Added for lms-stck Sarenka
+	    if (ConfigHelper::getConfig('phpui.stock')) {
+		if ($stock = $DB->GetAll('SELECT stockid FROM stck_invoicecontentsassignments WHERE icdocid = ?', array($iid))) {
+			foreach ($stock as $v) {
+				$LMSST->StockUnSell($v['stockid']);
+			}
+		}
+	    }
+
             $DB->Execute('DELETE FROM invoicecontents WHERE docid = ?', array($iid));
             $DB->Execute('DELETE FROM cash WHERE docid = ?', array($iid));
 
@@ -795,7 +814,17 @@ switch ($action) {
                 $DB->Execute('INSERT INTO invoicecontents (docid, itemid, value,
 					taxid, taxcategory, prodid, content, count, pdiscount, vdiscount, description, tariffid)
 					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
-                if ($SYSLOG) {
+		
+		if (ConfigHelper::getConfig('phpui.stock')) {//Added for lms-stck by Sarenka - MAXCON
+			if ($item['stockid']) {
+				$DB->Execute('INSERT INTO stck_invoicecontentsassignments(icdocid, icitemid, stockid)
+					VALUES(?, ?, ?)', array($iid, $itemid, $item['stockid']));
+				$LMSST->StockSell($iid, $item['stockid'], str_replace(',', '.', $item['valuebrutto']), $cdate);
+			}
+		}
+
+
+		if ($SYSLOG) {
                     $args[SYSLOG::RES_CUST] = $invoice['customerid'];
                     $SYSLOG->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_ADD, $args);
                 }
@@ -813,7 +842,14 @@ switch ($action) {
                         'itemid' => $itemid,
                         'servicetype' => $item['servicetype'],
                     ));
-                }
+		}
+
+		if (ConfigHelper::getConfig('phpui.stock')) {//Added for lms-sstck by Sarenka = MAXCON
+			if ($item['stockid']) {
+				$icid = $DB->GetLastInsertID('cash');
+				$DB->Execute('INSERT INTO stck_cashassignments (cashid, stockid) VALUES(?, ?)', array($icid, $item['stockid']));
+			}
+		}
             }
         } elseif ($invoice['doctype'] == DOC_INVOICE || ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment')) {
             if ($SYSLOG) {
@@ -944,4 +980,7 @@ $SMARTY->assign('suggested_flags', array(
     'telecomservice' => true,
 ));
 
-$SMARTY->display('invoice/invoiceedit.html');
+if (ConfigHelper::getConfig('phpui.stock')) //Added for lms-sstck by Sarenka = MAXCON
+        $SMARTY->display('stck/invoiceedit.stck.html');
+else
+        $SMARTY->display('invoice/invoiceedit.html');

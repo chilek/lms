@@ -204,6 +204,7 @@
                                {tip text="Enter description"}
                         >
                         *}
+			{$row|@print_r}<br />
                         <textarea class="invoice-contents-field-edit lms-ui-autogrow" name="invoice-contents[{$posuid}][name]"
                            cols="40" rows="1" style="width: 300px; display: none;"
                            data-old-value="{$item.name|escape}"

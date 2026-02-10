@@ -92,9 +92,16 @@
 {$default_taxrate   = ConfigHelper::getConfig('phpui.default_taxrate')}
 <FORM NAME="setcustomer" METHOD="POST" ACTION="?m=invoiceedit&action=setcustomer">
 <INPUT type="submit" class="hiddenbtn">
-<INPUT type="HIDDEN" name="invoice[number]" value="{$invoice.number}">
 <INPUT type="HIDDEN" name="invoice[template]" value="{$invoice.template}">
+<input type="hidden" name="invoice[doctype]" value="{$invoice.doctype}">
+{if $invoice.proforma}
+<input type="hidden" name="invoice[proforma]" value="{$invoice.proforma}">
+{/if}
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 99%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
 		<TD WIDTH="100%" COLSPAN="2">
@@ -103,6 +110,7 @@
 	</TR>
     </THEAD>
     <TBODY>
+    <tr><td><table>
 	<TR>
 		<TD class="bold nobr">
 			{trans("Invoice number:")}
@@ -123,26 +131,26 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Sale date:")}</B>
+		<TD class="bold nobr">
+			{trans("Sale date:")}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
+		<TD class="nobr">
 			<INPUT TYPE="TEXT" NAME="invoice[sdate]" VALUE="{$invoice.sdate|date_format:"%Y/%m/%d"}" SIZE="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Deadline:")}</B>
+		<TD class="bold nobr">
+			{trans("Deadline:")}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
+		<TD class="nobr">
 			<input type="text" name="invoice[deadline]" value="{$invoice.deadline|date_format:"%Y/%m/%d"}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter deadline date in YYYY/MM/DD format (empty field means default deadline) or click to select it from calendar" trigger="deadline"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Payment type (cash/transfer/etc):")}</B>
+		<TD class="bold nobr">
+			{trans("Payment type (cash/transfer/etc):")}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
+		<TD class="nobr">
 			<SELECT name="invoice[paytype]" {tip text="Select payment type" trigger="paytype"}>
 				{foreach from=$_PAYTYPES item=item key=key}
 				<OPTION value="{$key}"{if $invoice.paytype==$key} selected{/if}>{$item}</OPTION>
@@ -151,10 +159,10 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			{trans("Customer:")}
 		</TD>
-		<TD style="width: 99%;" class="nobr">
+		<TD class="nobr">
 			{if isset($customer.id)}
 			{customerlist form="setcustomer" customers=$customers selected=$customer.id selectname="customer" inputname="customerid" customOnChange="GetNumberPlans()" select_id="ownerid_select" input_id="ownerid_input"}
 			{else}
@@ -168,8 +176,26 @@
 			<select id="customer_addresses" name="invoice[recipient_address_id]"></select>
 		</td>
 	</tr>
+	</table></td>
+<td>
+                <table>
+                 <colgroup>
+                <col style="width: 1%;">
+                <col style="width: 99%;">
+        </colgroup>
+<TR>
+                <TD class="bold nobr">
+                        {trans("Additional number:")}
+                </TD>
+                <TD class="nobr" id="invoicenumberplans">
+                        <input type="text" name="invoice[invcomment]" value="{$invoice.invcomment}" size="50" maxlength="50" class="" data-tooltip="Wprowadź dodatkowy numer na fakturze.">
+                </TD>
+        </TR>
+                </table>
+        </td>	
+	</tr>
 	<TR>
-		<TD WIDTH="100%" ALIGN="right" COLSPAN="2">
+		<TD class="buttons" colspan="2">
 			<A HREF="javascript: saveheader();">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>
@@ -303,7 +329,7 @@
 			<B>{counter}.</B>
 		</TD>
 		<TD WIDTH="92%" NOWRAP>
-			<INPUT TYPE="text" NAME="name" SIZE="40" style="width:300px" id="name" {tip text="Enter description or select tariff from the list"}><BR>
+			<INPUT TYPE="text" ID="name" NAME="name" SIZE="40" style="width:300px" {tip text="Enter description or select tariff from the list"}><BR>
 			<INPUT TYPE="hidden" NAME="stckproductid" ID="pid"><!-- Added for STCK by Sarenka MAXCON -->
 			<SELECT SIZE="1" NAME="ttariffid" style="width: 300px" onchange="setItem(document.additem.ttariffid.value)" {tip text="Enter description or select tariff from the list"}>
 				<OPTION value="0">-</OPTION>
@@ -350,7 +376,7 @@
 			<INPUT type="checkbox" name="original"{if preg_match('/original/i', $default_printpage)} checked{/if}> <A HREF="javascript:setType('original');">{trans("original")}</A>
 	        <INPUT type="checkbox" name="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}> <A HREF="javascript:setType('copy');">{trans("copy")}</A>
 			<INPUT type="checkbox" name="duplicate"{if preg_match('/duplicate/i', $default_printpage)} checked{/if}> <A HREF="javascript:setType('duplicate');">{trans("duplicate")}</A>&nbsp;
-			<A HREF="?m=invoicelist">{trans("Cancel")} <IMG src="img/cancel.gif"></A> 
+			<A HREF="?m=invoicelist{if $invoice.proforma}&proforma=1{/if}">{trans("Cancel")} <IMG src="img/cancel.gif"></A> 
 			{if !$customer}
 			<A HREF="javascript:alert('{trans("Customer not selected!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
 			<A HREF="javascript:alert('{trans("Customer not selected!")}');">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
@@ -416,6 +442,7 @@
         });
         {/if}
 
+
         {if $invoice.customerid && $invoice.recipient_address_id }
             recipient_addr = getSingleAddress({intval($invoice.recipient_address_id)});
 
@@ -425,12 +452,14 @@
 
             customer_addresses.setAddressList( recipient_addr );
             $( '#customer_addresses' ).val( {$invoice.recipient_address_id} );
+        {else}
+            customer_addresses.setAddressList();
         {/if}
 
         customer_addresses.appendAddressList( getCustomerAddresses( {intval($invoice.customerid)} ) );
         customer_addresses.init();
     });
-    new AutoSuggest(document.getElementById('additemlist'),document.getElementById('name'),'?m=quicksearch&ajax=1&mode=productinv&what=',0);//Added for STCK by Sarenka MAXCON
+	new AutoSuggest(document.getElementById('additemlist'),document.getElementById('name'),'?m=quicksearch&ajax=1&mode=productinv&what=',0);//Added for STCK by Sarenka MAXCON
 //-->
 </SCRIPT>
 {/block}
