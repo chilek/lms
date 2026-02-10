@@ -1693,7 +1693,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
             $sectionNameRegExp = preg_replace('/%$/', '', $sectionNameRegExp);
 
             $configSections = array_map(
-                function ($section)  use ($sectionNameRegExp) {
+                function ($section) use ($sectionNameRegExp) {
                     return preg_replace('/' . $sectionNameRegExp . '/', '', $section);
                 },
                 $configSections

@@ -58,12 +58,12 @@ class KSeF
     const KSEF_UPO_DIR = STORAGE_DIR . DIRECTORY_SEPARATOR . 'ksef' . DIRECTORY_SEPARATOR . 'upo';
     const KSEF_INVOICE_DIR = STORAGE_DIR . DIRECTORY_SEPARATOR . 'ksef' . DIRECTORY_SEPARATOR . 'invoice';
 
-    static private $upoStorage = null;
-    static private $invoiceStorage = null;
+    private static $upoStorage = null;
+    private static $invoiceStorage = null;
 
-    static private $savedInvoices = [];
+    private static $savedInvoices = [];
 
-    static private $identifierTypes = [
+    private static $identifierTypes = [
         'Nip' => self::IDENTIFIER_TEN,
         'VatUe' => self::IDENTIFIER_VAT_UE,
         'Other' => self::IDENTIFIER_OTHER,
@@ -71,12 +71,12 @@ class KSeF
         'InternalId' => self::IDENTIFIER_INTERNAL_ID,
     ];
 
-    static private $invoicingModes = [
+    private static $invoicingModes = [
         'Online' => self::INVOICING_MODE_ONLINE,
         'Offline' => self::INVOICING_MODE_OFFLINE,
     ];
 
-    static private $invoiceTypes = [
+    private static $invoiceTypes = [
         'Vat' => DOC_INVOICE,
         'Zal' => self::DOC_ZAL,
         'Kor' => DOC_CNOTE,
