@@ -266,7 +266,6 @@ class LMSStck {
 			WHERE m.id = ?", array($id))) {
 			return $mi;
 		}
-		print_r($this->DB);exit;
 		return false;
 	}
 

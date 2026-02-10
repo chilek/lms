@@ -29,7 +29,8 @@ function gtuad(gtu) {
                 $('#gtucs option').attr('selected',false);
                 $('#gtucs option[value='+gtu+']').attr('selected','selected');
                 $('#gtu_help').attr('title', $('#gch' + gtu).text()).attr('data-tooltip', $('#gch' + gtu).text())
-        } else {
+        	$('#taxcategoryl option[value='+gtu+']').attr('selected','selected');
+	} else {
                 $('#gtucs option').attr('selected',false);
                 $('#gtucs option[value=""]').attr('selected','selected');
                 $('#gtu_help').attr('title', $('#gch' + gtu).text()).attr('data-tooltip', 'Choose wisely, you must, young padawan')

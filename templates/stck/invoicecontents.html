@@ -492,9 +492,11 @@
                                        placeholder="{trans('... or enter description')}"
                                 >
                                 *}
-                                <textarea name="name" cols="40" rows="1" class="lms-ui-autogrow lms-ui-autocomplete" style="width:300px"
+				<div style="width: 100%; height: 0px;">&nbsp;</div><textarea name="name" id="name" cols="60" rows="1" class="lms-ui-autogrow lms-ui-autocomplete" style="width:300px"
                                     placeholder="{trans('... or enter description')}"
                                 >{if isset($itemdata) && !isset($error.posuid)}{$itemdata.name|escape}{/if}</textarea>
+				<INPUT TYPE="hidden" NAME="stckproductid" ID="pid"><!-- Added for STCK by Sarenka MAXCON -->
+                        	<INPUT TYPE="hidden" NAME="stckgtuid" ID="gtuid"><!-- Added for STCK by Sarenka MAXCON -->
                                 <span id="tariff-price-variants"></span>
                             </div>
                         </td>
@@ -513,7 +515,7 @@
                                     {$taxcategory = 0}
                                 {/if}
 
-                                {tax_category_selection elementname="taxcategory" tip="Select tax category" selected=$taxcategory}
+                                {tax_category_selection elementname="taxcategory" id="taxcategoryl" tip="Select tax category" selected=$taxcategory}
                             </div>
                         </td>
                         <td class="text-right">
