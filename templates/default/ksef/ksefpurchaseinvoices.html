@@ -97,6 +97,21 @@
 			white-space: nowrap;
 		}
 
+		#ksef-invoices .ksef-invoice-tags > .ksef-invoice-tag-name-edit {
+			display: none;
+			padding-left: 0;
+			padding-right: 0;
+			padding-top: 0;
+			padding-bottom: 0;
+		}
+
+		#ksef-invoices .ksef-invoice-tags > .ksef-invoice-tag-name-edit > input {
+			padding-left: 0.2em;
+			padding-right: 0.2em;
+			padding-top: 0.3em;
+			padding-bottom: 0.3em;
+		}
+
 	</style>
 
 	<script>
@@ -319,6 +334,63 @@
 					}
 				});
 			});
+
+			$(document).click(function(e) {
+				if (!$(e.target).closest('[data-tag-id]').length) {
+					$('.ksef-invoice-tag-name-edit').trigger(
+						$.Event('keydown', {
+							key: 'Escape',
+							code: 'Escape',
+							keyCode: 27,
+							which: 27
+						})
+					);
+				}
+			});
+
+			$('.ksef-invoice-tag-name').click(function(e) {
+				var that = $(this);
+				var tagName = that.text();
+				e.preventDefault();
+				that.hide();
+				that.siblings('.ksef-invoice-tag-name-edit').show().find('input').val(tagName).focus();
+			});
+
+			$('.ksef-invoice-tag-name-edit').keydown(function(e) {
+				var that = $(this);
+				switch (e.key) {
+					case 'Enter':
+						var input = that.find('input');
+						var tagId = that.attr('data-tag-id')
+						var tagName = input.val();
+						$.ajax({
+							url: '?m=ksefpurchaseinvoiceedit&api=1',
+							type: 'POST',
+							data: {
+								action: 'rename-tag',
+								id: tagId,
+								name: tagName
+							},
+							dataType: "json",
+							success: function(data) {
+								if (data.hasOwnProperty('error')) {
+									console.error('Error:', data.error);
+									return;
+								}
+
+								$('#ksef-invoices .ksef-invoice-tag-name[data-tag-id="' + tagId + '"]').text(tagName);
+
+								that.hide().siblings('.ksef-invoice-tag-name').show();
+							}
+						});
+						break;
+					case 'Escape':
+						that.hide().siblings('.ksef-invoice-tag-name').show();
+						break;
+				}
+
+			});
+
 		});
 
 	</script>
@@ -473,7 +545,8 @@
 						<span class="ksef-invoice-tags">{strip}
 							{if !empty($invoice.tags)}
 								{foreach $invoice.tags as $tagId => $tagName}
-									<span class="ksef-invoice-tag-name">{$tagName|escape}</span>
+									<span class="ksef-invoice-tag-name" data-tag-id="{$tagId}">{$tagName|escape}</span>
+									<span class="ksef-invoice-tag-name-edit" data-tag-id="{$tagId}"><input type="text" size="35" value="{$tagName|escape}"></span>
 								{/foreach}
 							{/if}
 						{/strip}</span>
