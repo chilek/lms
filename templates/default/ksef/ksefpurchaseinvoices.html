@@ -336,7 +336,8 @@
 			});
 
 			$(document).click(function(e) {
-				if (!$(e.target).closest('[data-tag-id]').length) {
+				if (!$(e.target).closest('[data-tag-id]').length
+					&& !$(e.target).closest('.lms-ui-button').length) {
 					$('.ksef-invoice-tag-name-edit').trigger(
 						$.Event('keydown', {
 							key: 'Escape',
