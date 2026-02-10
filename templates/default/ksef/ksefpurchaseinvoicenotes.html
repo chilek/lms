@@ -43,48 +43,55 @@
 
 <script>
 
-       $(function() {
-               initAutoGrow($('#ksef-purchase-invoice-notes [name="notes"]'));
+	$(function () {
+		initAutoGrow($('#ksef-purchase-invoice-notes [name="notes"]'));
 
-               function sendAction(action) {
-                       let form = $('#ksef-purchase-invoice-notes-form');
-                       form.find('[name="action"]').val(action);
-                       let formData = new FormData(form.get(0));
+		function sendAction(action) {
+			let form = $('#ksef-purchase-invoice-notes-form');
+			form.find('[name="action"]').val(action);
+			let formData = new FormData(form.get(0));
 
-                       $.ajax({
-                               url: '?m=ksefpurchaseinvoiceedit&api=1',
-                               type: 'POST',
-                               data: formData,
-                               processData: false,
-                               contentType: false,
-                               dataType: "json",
-                               success: function(data) {
-                                       if (data.hasOwnProperty('error')) {
-                                               console.error('Error:', data.error);
-                                               return;
-                                       }
-                                       $('#ksef-purchase-invoice-notes .cancel-button').click();
-                               },
-                               error: function(xhr) {
-                                       console.error('Error:', xhr.responseText);
-                               }
-                       });
-               }
+			$.ajax({
+				url: '?m=ksefpurchaseinvoiceedit&api=1',
+				type: 'POST',
+				data: formData,
+				processData: false,
+				contentType: false,
+				dataType: "json",
+				success: function (data) {
+					if (data.hasOwnProperty('error')) {
+						console.error('Error:', data.error);
+						return;
+					}
+					var notesInfoHintButton = $('[data-id="{$id}"]').find('.notes-button').siblings('.notes-info');
+					var notes = $('[form="ksef-purchase-invoice-notes-form"][name="notes"]');
+					notesInfoHintButton.toggleClass(
+						'hidden',
+						action === 'clear-notes' || !notes.length
+					);
+					notesInfoHintButton.attr('data-hint', escapeHtml(action === 'clear-notes' ? '' : notes.val())).removeAttr('data-init');
+					$('#ksef-purchase-invoice-notes .cancel-button').click();
+				},
+				error: function (xhr) {
+					console.error('Error:', xhr.responseText);
+				}
+			});
+		}
 
-               $('#ksef-purchase-invoice-notes-form').submit(function(e) {
-                       e.preventDefault();
-                       sendAction('set-notes');
-                       return false;
-               });
+		$('#ksef-purchase-invoice-notes-form').submit(function (e) {
+			e.preventDefault();
+			sendAction('set-notes');
+			return false;
+		});
 
-               $('#ksef-purchase-invoice-notes .clear-button').click(function() {
-                       sendAction('clear-notes');
-               });
+		$('#ksef-purchase-invoice-notes .clear-button').click(function () {
+			sendAction('clear-notes');
+		});
 
-               $('#ksef-purchase-invoice-notes .cancel-button').click(function() {
-                       $('[data-id="{$id}"]').find('.notes-button').click();
-               });
-       });
+		$('#ksef-purchase-invoice-notes .cancel-button').click(function () {
+			$('[data-id="{$id}"]').find('.notes-button').click();
+		});
+	});
 
 </script>
 

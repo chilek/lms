@@ -69,6 +69,10 @@
 			display: none;
 		}
 
+		#ksef-invoices .notes-info.hidden {
+			display: none;
+		}
+
 	</style>
 
 	<script>
@@ -500,6 +504,12 @@
 						{/if}
 					</td>
 					<td class="text-right nobr">
+						{if empty($invoice.notes)}
+							{$class = "notes-info hidden"}
+						{else}
+							{$class = "notes-info"}
+						{/if}
+						{hint mode=LMSSmartyPlugins::HINT_TYPE_ROLLOVER icon="more-info" text=$invoice.notes|nl2br class=$class}
 						{hint url="?m=ksefpurchaseinvoicenotes&id={$invoice.id}" icon="info" class="lms-ui-link-button notes-button"}
 						{hint url="?m=ksefpurchaseinvoiceinfo&id={$invoice.id}" icon="view" class="lms-ui-link-button"}
 						{$posting = !empty($invoice.posting)}
