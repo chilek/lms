@@ -209,6 +209,8 @@
                            data-old-value="{$item.name|escape}"
                            {tip text="Enter description"}
                         >{$row.name|escape}</textarea>
+			<INPUT TYPE="hidden" NAME="invoice-contents[{$posuid}][stckproductid]" value="{$row.stckproductid}"><!-- Added for STCK by Sarenka MAXCON -->
+			<INPUT TYPE="hidden" NAME="invoice-contents[{$posuid}][stckgtuid]" value="{$row.stckgtuid}"><!-- Added for STCK by Sarenka MAXCON -->
                         <span class="invoice-contents-field-value">{$item.name|escape|nl2br}</span>
                         {if !empty($item.tariffid) && !empty($item.tariff.price_variants)}
                             {capture assign="price_variants_hint"}
@@ -492,7 +494,7 @@
                                        placeholder="{trans('... or enter description')}"
                                 >
                                 *}
-				<div style="width: 100%; height: 0px;">&nbsp;</div><textarea name="name" id="name" cols="60" rows="1" class="lms-ui-autogrow lms-ui-autocomplete" style="width:300px"
+				<div style="width: 100%; height: 0px;">&nbsp;</div><textarea name="name" id="name" cols="60" rows="1" class="lms-ui-autogrow" style="width:300px"
                                     placeholder="{trans('... or enter description')}"
                                 >{if isset($itemdata) && !isset($error.posuid)}{$itemdata.name|escape}{/if}</textarea>
 				<INPUT TYPE="hidden" NAME="stckproductid" ID="pid"><!-- Added for STCK by Sarenka MAXCON -->
