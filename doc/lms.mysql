@@ -41,6 +41,8 @@ DROP TABLE IF EXISTS up_help;
 DROP TABLE IF EXISTS up_customers;
 DROP TABLE IF EXISTS up_rights_assignments;
 DROP TABLE IF EXISTS up_rights;
+DROP TABLE IF EXISTS ksefinvoicetagassignments;
+DROP TABLE IF EXISTS ksefinvoicetags;
 DROP TABLE IF EXISTS ksefinvoicethirdsubjects;
 DROP TABLE IF EXISTS ksefinvoices;
 DROP TABLE IF EXISTS ksefdocuments;
@@ -3351,7 +3353,32 @@ CREATE TABLE ksefinvoiceitems (
     product_service_group smallint DEFAULT 0,
     CONSTRAINT ksefinvoiceitems_ksef_invoice_id_fkey
         FOREIGN KEY (ksef_invoice_id) REFERENCES ksefinvoices (id) ON DELETE CASCADE ON UPDATE CASCADE
-);
+) ENGINE=InnoDB;
+
+# ---------------------------------------------------
+#
+# Structure of table ksefinvoicetags
+#
+CREATE TABLE ksefinvoicetags (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    name text NOT NULL,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+# ---------------------------------------------------
+#
+# Structure of table ksefinvoicetagassignments
+#
+CREATE TABLE ksefinvoicetagassignments (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    ksef_invoice_id int(11) NOT NULL,
+    ksef_invoice_tag_id int(11) NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT ksefinvoicetagassignments_ksef_invoice_id_fkey
+        FOREIGN KEY (ksef_invoice_id) REFERENCES ksefinvoices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT ksefinvoicetagassignments_ksef_invoice_tag_id_fkey
+        FOREIGN KEY (ksef_invoice_tag_id) REFERENCES ksefinvoicetags (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -4619,4 +4646,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026020901');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026021000');

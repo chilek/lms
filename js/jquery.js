@@ -387,6 +387,7 @@ function initAdvancedSelectsTest(selector) {
 				selectionCssClass: ':all:',
 				dropdownAutoWidth: true,
 				dropdownParent: $(that).parent(),
+				tags: $(that).is('[data-tags]'),
 				templateResult: function(result) {
 					var select2 = $(that).data("select2");
 					var search = select2.dropdown.$search;
@@ -1390,7 +1391,7 @@ function initToggleHints(selectors) {
 											data +
 											'</div>'
 										);
-										elem.tooltip('open');
+										//elem.tooltip('open');
 									}
 								});
 							}
@@ -2013,6 +2014,11 @@ $(function() {
 	}
 
 	$(document).mouseup(function(e) {
+		if (e.originalEvent && $(e.originalEvent.target).closest('.select2-dropdown').length) {
+			e.stopPropagation();
+			return;
+		}
+
 		var hintPopups = $('.lms-ui-hint-toggle.ui-tooltip');
 		var hintTrigger = $(e.target).closest('.lms-ui-hint-toggle:not(.ui-tooltip)');
 		var hintTriggers = $('.lms-ui-hint-toggle:not(.ui-tooltip).open');

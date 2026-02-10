@@ -91,6 +91,137 @@ switch ($action) {
             ]
         );
         break;
+    case 'set-tags':
+        if (empty($_POST['tags'])) {
+            $selectedTags = [];
+        } else {
+            $selectedTags = $_POST['tags'];
+        }
+        $selectedTags = array_combine($selectedTags, $selectedTags);
+
+        $existingTags = $DB->GetAllByKey(
+            'SELECT
+                t.id,
+                UPPER(t.name) AS name
+            FROM ksefinvoicetags t',
+            'id'
+        );
+        if (empty($existingTags)) {
+            $existingTags = [];
+        }
+
+        $invoiceTags = $DB->GetAllByKey(
+            'SELECT
+                t.id,
+                UPPER(t.name) AS name
+            FROM ksefinvoicetags t
+            JOIN ksefinvoicetagassignments a ON a.ksef_invoice_tag_id = t.id
+            WHERE a.ksef_invoice_id = ?',
+            'id',
+            [
+                $id,
+            ]
+        );
+        if (empty($invoiceTags)) {
+            $invoiceTags = [];
+        }
+
+        $DB->BeginTrans();
+
+        foreach ($selectedTags as $selectedTag) {
+            if (!isset($existingTags[$selectedTag])) {
+                $res = $DB->Execute(
+                    'INSERT INTO ksefinvoicetags
+                    (name)
+                    VALUES (?)',
+                    [
+                        $selectedTag,
+                    ]
+                );
+
+                if (empty($res)) {
+                    break;
+                }
+
+                $tagId = $DB->GetLastInsertID('ksefinvoicetags');
+            } else {
+                $tagId = intval($selectedTag);
+
+                if (empty($tagId)) {
+                    $res = 0;
+                    break;
+                }
+            }
+
+            if (!isset($invoiceTags[$tagId])) {
+                $res = $DB->Execute(
+                    'INSERT INTO ksefinvoicetagassignments
+                    (ksef_invoice_id, ksef_invoice_tag_id)
+                    VALUES (?, ?)',
+                    [
+                        $id,
+                        $tagId,
+                    ]
+                );
+
+                if (empty($res)) {
+                    break;
+                }
+            }
+        }
+
+        if (!empty($res)) {
+            foreach ($invoiceTags as $invoiceTagId => $invoiceTag) {
+                if (!isset($selectedTags[$invoiceTagId])) {
+                    $res = $DB->Execute(
+                        'DELETE FROM ksefinvoicetagassignments
+                        WHERE ksef_invoice_id = ?
+                            AND ksef_invoice_tag_id = ?',
+                        [
+                            $id,
+                            $invoiceTagId,
+                        ]
+                    );
+
+                    if (empty($res)) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        $DB->CommitTrans();
+
+        if (!empty($res)) {
+            $DB->Execute(
+                'DELETE FROM ksefinvoicetags
+                WHERE NOT EXISTS (
+                        SELECT 1 FROM ksefinvoicetagassignments a
+                        WHERE a.ksef_invoice_tag_id = ksefinvoicetags.id
+                    )'
+            );
+
+            if (!empty($DB->GetErrors())) {
+                $res = false;
+            }
+        }
+
+        break;
+    case 'clear-tags':
+        $res = true;
+
+        $DB->Execute(
+            'DELETE FROM ksefinvoicetagassignments WHERE ksef_invoice_id = ?',
+            [
+                $id,
+            ]
+        );
+
+        if (!empty($DB->GetErrors())) {
+            $res = false;
+        }
+
+        break;
     default:
         die(json_encode([
             'error' => 'Unsupported action!',
