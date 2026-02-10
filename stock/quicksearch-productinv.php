@@ -51,7 +51,7 @@
 
 					}
 
-				$hook_data = array(
+			$hook_data = array(
                                 'search' => $search,
                                 'sql_search' => $sql_search,
                                 'properties' => $properties,

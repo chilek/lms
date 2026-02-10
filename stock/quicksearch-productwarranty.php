@@ -16,14 +16,13 @@
 				$eglible=array(); $actions=array(); $descriptions=array();
 				if ($candidates)
 					foreach($candidates as $idx => $row) {
-					$desc = $row['name'];
+						$name = $row['name'];
+						$name_class = '';
 
 						if ($row['serialnumber'])
-							$desc = $desc." (S/N: ".$row['serialnumber'].")";
+							$name .= " (S/N: ".$row['serialnumber'].")";
 
-						$actions[$row['id']] = '?m=stckproductinfo&id='.$row['productid'];
-						$eglible[$row['id']] = escape_js(($row['deleted'] ? '<font class="blend">' : '')
-						.truncate_str($desc, 100).($row['deleted'] ? '</font>' : ''));
+						$action = '?m=stckproductinfo&ssp=1&id='.$row['productid'];
 
 						if (is_null($row['warranty']))
 							$row['warranty'] = 'b/d';
@@ -33,18 +32,25 @@
 						else
 							$row['leavedate'] = date("d/m/Y", $row['leavedate']);
 
-						$descriptions[$row['id']] = '<b>'.trans("Gross:")." ".moneyf($row['pricesell'])."</b> ".trans("Sold:")." ".$row['leavedate']." ".trans("Warranty:")." ".$row['warranty'];
+						$description = '<b>'.trans("Gross:")." ".moneyf($row['pricesell'])."</b> ".trans("Sold:")." ".$row['leavedate']." ".trans("Warranty:")." ".$row['warranty'];
+						$description_class = '';
+						
+						
+						$result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
 					}
-
-				header('Content-type: text/plain');
-				if ($eglible) {
-					print "this.eligible = [\"".implode('","',$eglible)."\"];\n";
-					print "this.descriptions = [\"".implode('","',$descriptions)."\"];\n";
-					print "this.actions = [\"".implode('","',$actions)."\"];\n";
-				} else {
-					print "false;\n";
-				}
-
+				$hook_data = array(
+                                	'search' => $search,
+                                	'sql_search' => $sql_search,
+                               		'properties' => $properties,
+                        	        'session' => $SESSION,
+                        	        'result' => $result
+				);
+				$hook_data = $LMS->executeHook('quicksearch_ajax_document', $hook_data);
+				$result = $hook_data['result'];
+				header('Content-type: application/json');
+		 		echo json_encode(array_values($result));
+				$SESSION->close();
+				exit;
 
 			}
 			exit;			
