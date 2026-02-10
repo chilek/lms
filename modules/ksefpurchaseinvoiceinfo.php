@@ -52,6 +52,31 @@ if (empty($invoice)) {
     die;
 }
 
+if (!empty($_GET['qr2pay'])) {
+    $qr2pay = implode(
+        '|',
+        [
+            $invoice['seller_ten'],
+            'PL',
+            $invoice['bank_account'],
+            str_pad($invoice['gross_amount'] * 100, 6, 0, STR_PAD_LEFT),
+            mb_substr($invoice['division_shortname'], 0, 20),
+            $invoice['invoice_number'],
+            '',
+            '',
+            '',
+        ]
+    );
+
+    $SMARTY->assign('qr2pay', $qr2pay);
+
+    $SMARTY->display('ksef/ksefpurchaseinvoiceinfo.html');
+
+    $SESSION->close();
+
+    die;
+}
+
 $now = time();
 $invoice['pay_type_name'] = KSeF::payTypeName($invoice['pay_type']);
 $invoice['expired'] = strtotime('+1 day', $invoice['pay_date']) < $now;

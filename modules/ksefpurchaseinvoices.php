@@ -106,7 +106,6 @@ foreach ($invoices as &$invoice) {
     foreach ($tags as $tag) {
         $invoice['tags'][$tag] = $allTags[$tag]['name'];
     }
-
 }
 unset($invoice);
 

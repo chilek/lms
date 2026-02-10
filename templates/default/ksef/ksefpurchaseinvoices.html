@@ -615,6 +615,12 @@
 						{hint url="?m=ksefpurchaseinvoicenotes&id={$invoice.id}" icon="info" class="lms-ui-link-button notes-button"}
 						{hint url="?m=ksefpurchaseinvoicetags&id={$invoice.id}" icon="tags" class="lms-ui-link-button tag-button"}
 						{hint url="?m=ksefpurchaseinvoiceinfo&id={$invoice.id}" icon="view" class="lms-ui-link-button"}
+						{if empty($invoice.bank_account)}
+							{$disabled = true}
+						{else}
+							{$disabled = false}
+						{/if}
+						{hint url="?m=ksefpurchaseinvoiceinfo&id={$invoice.id}&qr2pay=1" icon="qrcode" class="lms-ui-link-button" disabled=$disabled}
 						{$posting = !empty($invoice.posting)}
 						{if $posting}
 							{$restore_button_class = "hidden"}

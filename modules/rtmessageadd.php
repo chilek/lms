@@ -263,7 +263,7 @@ if (isset($_POST['message'])) {
                         );
                         $notification_options_by_config_sections[$configSectionName] = array_filter(
                             $notification_options_by_config_sections[$configSectionName],
-                            function($value) {
+                            function ($value) {
                                 return isset($value);
                             }
                         );
