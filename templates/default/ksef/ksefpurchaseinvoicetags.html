@@ -1,0 +1,122 @@
+<style>
+
+	#ksef-purchase-invoice-tags {
+		display: flex;
+		flex-direction: column;
+	}
+
+	#ksef-purchase-invoice-tags > * {
+		display: flex;
+		flex-grow: 1;
+	}
+
+	#ksef-purchase-invoice-tags > * {
+		justify-content: center;
+		padding: 0.2em;
+	}
+
+	#ksef-purchase-invoice-tags > :first-child {
+		margin-top: 0.3em;
+		margin-bottom: 0.3em;
+	}
+
+	#ksef-purchase-invoice-tags > :nth-child(2) {
+		justify-content: stretch;
+	}
+
+	#ksef-purchase-invoice-tags > * > * {
+		margin-left: 0.3em;
+		margin-right: 0.3em;
+	}
+
+	#ksef-purchase-invoice-tags [name="notes"] {
+		width: 30vw;
+		max-height: 60vh;
+	}
+
+</style>
+
+<form name="ksef-purchase-invoice-tags" id="ksef-purchase-invoice-tags-form" method="post">
+	<input type="hidden" name="id" value="{$id}">
+	<input type="hidden" name="action" value="set-tags">
+</form>
+
+<script>
+
+	$(function() {
+		let form = $('#ksef-purchase-invoice-tags-form');
+		if (form.is('[data-init]')) {
+			return;
+		}
+		form.attr('data-init', 1);
+
+		initAdvancedSelectsTest($('#ksef-purchase-invoice-tags [name="tags[]"]'));
+
+		function sendAction(action) {
+			form.find('[name="action"]').val(action);
+			let formData = new FormData(form.get(0));
+
+			$.ajax({
+				url: '?m=ksefpurchaseinvoiceedit&api=1',
+				type: 'POST',
+				data: formData,
+				processData: false,
+				contentType: false,
+				dataType: "json",
+				success: function (data) {
+					if (data.hasOwnProperty('error')) {
+						console.error('Error:', data.error);
+						return;
+					}
+/*
+					var notesInfoHintButton = $('[data-id="{$id}"]').find('.tag-button').siblings('.notes-info');
+					var notes = $('[form="ksef-purchase-invoice-tags-form"][name="notes"]');
+					notesInfoHintButton.toggleClass(
+						'hidden',
+						action === 'clear-notes' || !notes.length
+					);
+					notesInfoHintButton.attr('data-hint', escapeHtml(action === 'clear-notes' ? '' : notes.val())).removeAttr('data-init');
+*/
+					$('#ksef-purchase-invoice-tags .cancel-button').click();
+				},
+				error: function (xhr) {
+					console.error('Error:', xhr.responseText);
+				}
+			});
+		}
+
+		$('#ksef-purchase-invoice-tags-form').submit(function (e) {
+			e.preventDefault();
+			sendAction('set-tags');
+			return false;
+		});
+
+		$('#ksef-purchase-invoice-tags .clear-button').click(function () {
+			sendAction('clear-tags');
+		});
+
+		$('#ksef-purchase-invoice-tags .cancel-button').click(function () {
+			$('[data-id="{$id}"]').find('.tag-button').click();
+		});
+	});
+
+</script>
+
+<div id="ksef-purchase-invoice-tags">
+	<div>
+		<strong>{trans("<!ksef>Invoice tags")}</strong>
+	</div>
+	<div>
+		<select name="tags[]" form="ksef-purchase-invoice-tags-form" multiple
+				data-tags="1" class="lms-ui-advanced-select-test">
+			{foreach $tags as $tag}
+				<option value="{$tag.id}"{if !empty($invoice_tags[$tag.id])} selected{/if}>{$tag.name|escape}</option>
+			{/foreach}
+		</select>
+	</div>
+	<div>
+		{button type="submit" icon="save" label="Save" form="ksef-purchase-invoice-tags-form"}
+		{button icon="clear" label="Clear" class="clear-button"}
+		{button icon="cancel" label="Cancel" class="cancel-button"}
+	</div>
+</div>

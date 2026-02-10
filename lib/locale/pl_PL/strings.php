@@ -6344,3 +6344,4 @@ $_LANG['<!ksef>Download invoice'] = 'Pobierz fakturę';
 $_LANG['<!ksef>View invoice'] = 'Pokaż fakturę';
 
 $_LANG['<!ksef>Invoice notes'] = 'Notatki do faktury';
+$_LANG['<!ksef>Invoice tags'] = 'Etykiety faktury';

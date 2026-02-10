@@ -3262,6 +3262,33 @@ CREATE TABLE ksefinvoiceitems (
 );
 
 /* ---------------------------------------------------
+ Structure of table ksefinvoicetags
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS ksefinvoicetags_id_seq;
+CREATE SEQUENCE ksefinvoicetags_id_seq;
+DROP TABLE IF EXISTS ksefinvoicetags CASCADE;
+CREATE TABLE ksefinvoicetags (
+    id integer DEFAULT nextval('ksefinvoicetags_id_seq'::text) NOT NULL,
+    name text NOT NULL,
+    PRIMARY KEY (id)
+);
+
+/* ---------------------------------------------------
+ Structure of table ksefinvoicetagassignments
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS ksefinvoicetagassignments_id_seq;
+CREATE SEQUENCE ksefinvoicetagassignments_id_seq;
+DROP TABLE IF EXISTS ksefinvoicetagassignments CASCADE;
+CREATE TABLE ksefinvoicetagassignments (
+    id integer DEFAULT nextval('ksefinvoicetagassignments_id_seq'::text) NOT NULL,
+    ksef_invoice_id integer NOT NULL
+        CONSTRAINT ksefinvoicetagassignments_ksef_invoice_id_fkey REFERENCES ksefinvoices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    ksef_invoice_tag_id integer NOT NULL
+        CONSTRAINT ksefinvoicetagassignments_ksef_invoice_tag_id_fkey REFERENCES ksefinvoicetags (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (id)
+);
+
+/* ---------------------------------------------------
  Structure of table "up_rights" (Userpanel)
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS up_rights_id_seq;
@@ -4661,6 +4688,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026020901');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026021000');
 
 COMMIT;
