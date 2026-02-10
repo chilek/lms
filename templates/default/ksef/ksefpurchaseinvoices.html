@@ -338,7 +338,7 @@
 			$(document).click(function(e) {
 				if (!$(e.target).closest('[data-tag-id]').length
 					&& !$(e.target).closest('.lms-ui-button').length) {
-					$('.ksef-invoice-tag-name-edit').trigger(
+					$('.ksef-invoice-tag-name-edit').triggerHandler(
 						$.Event('keydown', {
 							key: 'Escape',
 							code: 'Escape',
