@@ -39,20 +39,33 @@ if (empty($id)) {
     ]));
 }
 
-if (!$DB->GetOne(
-    'SELECT 1 FROM ksefinvoices i
-     JOIN divisions d ON d.id = i.division_id
-     WHERE i.id = ?',
-    [
-        $id,
-    ]
-)) {
-    die(json_encode([
-        'error' => 'Permission denied!',
-    ]));
-}
-
 $action = $_POST['action'];
+
+switch ($action) {
+    case 'rename-tag':
+        if (!$DB->GetOne(
+            'SELECT 1 FROM ksefinvoicetags t
+            WHERE t.id = ?',
+            [
+                $id,
+            ]
+        )) {
+            die(json_encode(['error' => 'Tag with given \'id\' does not exist!',]));
+        }
+        break;
+    default:
+        if (!$DB->GetOne(
+            'SELECT 1 FROM ksefinvoices i
+                 JOIN divisions d ON d.id = i.division_id
+                 WHERE i.id = ?',
+            [
+                $id,
+            ]
+        )) {
+            die(json_encode(['error' => 'Permission denied!',]));
+        }
+        break;
+}
 
 switch ($action) {
     case 'restore':
@@ -220,6 +233,18 @@ switch ($action) {
         if (!empty($DB->GetErrors())) {
             $res = false;
         }
+
+        break;
+    case 'rename-tag':
+        $res = $DB->Execute(
+            'UPDATE ksefinvoicetags
+            SET name = ?
+            WHERE id = ?',
+            [
+                $_POST['name'],
+                $id,
+            ]
+        );
 
         break;
     default:
