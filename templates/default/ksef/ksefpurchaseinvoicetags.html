@@ -71,7 +71,10 @@
 
 					var tagsHtml = '';
 					$('#ksef-purchase-invoice-tags [name="tags[]"] option:selected').each(function() {
-						tagsHtml += '<span class="ksef-invoice-tag-name">' + $(this).text() + '</span>';
+						var tagId = $(this).val();
+						var tagName = $(this).text();
+						tagsHtml += '<span class="ksef-invoice-tag-name" data-tag-id="' + tagId + '">' + tagName + '</span>';
+						tagsHtml += '<span class="ksef-invoice-tag-name-edit" data-tag-id="' + tagId + '"><input type="text" size="35" value="' + tagName + '"></span>';
 					});
 					$('#ksef-invoices [data-id="{$id}"]').find('.ksef-invoice-tags').html(tagsHtml)
 

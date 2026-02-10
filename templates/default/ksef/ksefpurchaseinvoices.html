@@ -338,27 +338,23 @@
 			$(document).click(function(e) {
 				if (!$(e.target).closest('[data-tag-id]').length
 					&& !$(e.target).closest('.lms-ui-button').length) {
-					$('.ksef-invoice-tag-name-edit').triggerHandler(
-						$.Event('keydown', {
-							key: 'Escape',
-							code: 'Escape',
-							keyCode: 27,
-							which: 27
-						})
-					);
+					$('#ksef-invoices .ksef-invoice-tag-name-edit').hide().siblings('.ksef-invoice-tag-name').show();
 				}
 			});
 
-			$('.ksef-invoice-tag-name').click(function(e) {
+			$('.ksef-invoice-tags').on('click', '.ksef-invoice-tag-name', function(e) {
+				console.log(e);
 				var that = $(this);
+				var tagId = that.attr('data-tag-id');
 				var tagName = that.text();
 				e.preventDefault();
+				$('#ksef-invoices .ksef-invoice-tag-name').show();
 				that.hide();
-				that.siblings('.ksef-invoice-tag-name-edit').show().find('input').val(tagName).focus();
-			});
-
-			$('.ksef-invoice-tag-name-edit').keydown(function(e) {
+				$('#ksef-invoices .ksef-invoice-tag-name-edit').hide();
+				that.siblings('.ksef-invoice-tag-name-edit[data-tag-id="' + tagId + '"]').show().find('input').val(tagName).focus();
+			}).on('keydown', '.ksef-invoice-tag-name-edit', function(e) {
 				var that = $(this);
+				console.log(that);
 				switch (e.key) {
 					case 'Enter':
 						var input = that.find('input');
@@ -389,9 +385,7 @@
 						that.hide().siblings('.ksef-invoice-tag-name').show();
 						break;
 				}
-
 			});
-
 		});
 
 	</script>
