@@ -1569,6 +1569,7 @@ class LMSSmartyPlugins
             . (isset($params['text']) ? ' data-hint="' . htmlspecialchars($params['text']) . '"' : '')
             . (isset($params['url']) ? ' data-url="' . $params['url'] . '"' : '')
             . (isset($params['style']) ? ' style="' . $params['style'] . '"' : '')
+            . (empty($params['disabled']) ? '' : ' disabled')
             . '><i class="lms-ui-icon-' . ($params['icon'] ?? 'hint') . ' fa-fw"></i></a>';
     }
 
