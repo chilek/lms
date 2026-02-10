@@ -343,7 +343,6 @@
 			});
 
 			$('.ksef-invoice-tags').on('click', '.ksef-invoice-tag-name', function(e) {
-				console.log(e);
 				var that = $(this);
 				var tagId = that.attr('data-tag-id');
 				var tagName = that.text();
@@ -354,7 +353,6 @@
 				that.siblings('.ksef-invoice-tag-name-edit[data-tag-id="' + tagId + '"]').show().find('input').val(tagName).focus();
 			}).on('keydown', '.ksef-invoice-tag-name-edit', function(e) {
 				var that = $(this);
-				console.log(that);
 				switch (e.key) {
 					case 'Enter':
 						var input = that.find('input');
