@@ -525,9 +525,7 @@
 						<br>
 						<span class="nobr">
 							{capture assign="document_type_number"}{strip}
-								{$_DOCTYPES[$invoice.invoice_type]}
-								&nbsp;
-								{$invoice.invoice_number}
+								{$invoice.invoice_type_name}&nbsp;{$invoice.invoice_number}
 							{/strip}{/capture}
 							{$document_type_number}
 							{*icon name="copy" class="lms-ui-button-clipboard fa-fw" data_clipboard_text=$document_type_number*}
@@ -614,7 +612,12 @@
 						{hint mode=LMSSmartyPlugins::HINT_TYPE_ROLLOVER icon="more-info" text=$invoice.notes|nl2br class=$class}
 						{hint url="?m=ksefpurchaseinvoicenotes&id={$invoice.id}" icon="info" class="lms-ui-link-button notes-button"}
 						{hint url="?m=ksefpurchaseinvoicetags&id={$invoice.id}" icon="tags" class="lms-ui-link-button tag-button"}
-						{hint url="?m=ksefpurchaseinvoiceinfo&id={$invoice.id}" icon="view" class="lms-ui-link-button"}
+						{if empty($invoice.itemcount)}
+							{$disabled = true}
+						{else}
+							{$disabled = false}
+						{/if}
+						{hint url="?m=ksefpurchaseinvoiceinfo&id={$invoice.id}" icon="view" class="lms-ui-link-button" disabled=$disabled}
 						{if empty($invoice.bank_account)}
 							{$disabled = true}
 						{else}

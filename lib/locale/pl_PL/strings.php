@@ -6345,3 +6345,14 @@ $_LANG['<!ksef>View invoice'] = 'Pokaż fakturę';
 $_LANG['<!ksef>Invoice notes'] = 'Notatki do faktury';
 $_LANG['<!ksef>Invoice tags'] = 'Etykiety faktury';
 $_LANG['<!ksef>Tags'] = 'Etykiety';
+
+$_LANG['<!ksef>advance invoice'] = 'faktura zaliczkowa';
+$_LANG['<!ksef>final invoice'] = 'faktura rozliczeniowa';
+$_LANG['<!ksef>simplified invoice'] = 'faktura uproszczona';
+$_LANG['<!ksef>corrective advance invoice'] = 'korekta faktury zaliczkowej';
+$_LANG['<!ksef>corrective final invoice'] = 'korekta faktury rozliczeniowej';
+$_LANG['<!ksef>standard PEF invoice'] = 'faktura podstawowa PEF';
+$_LANG['<!ksef>custom structured PEF invoice'] = 'faktura specjalizowana PEF';
+$_LANG['<!ksef>corrective PEF invoice'] = 'korekta faktury PEF';
+$_LANG['<!ksef>RR invoice'] = 'faktura RR';
+$_LANG['<!ksef>corrective RR invoice'] = 'korekta faktury RR';
