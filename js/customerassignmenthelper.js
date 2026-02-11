@@ -583,7 +583,7 @@ function CustomerAssignmentHelper(options) {
 					$.each(data.addresses, function(key, value) {
 						var icon = "";
 						if (value.location_address_type == "0") {
-							icon = "lms-ui-icon-mail fa-fw";
+							icon = "lms-ui-icon-message fa-fw";
 						} else if (value.location_address_type == "1") {
 							icon = "lms-ui-icon-home fa-fw";
 						} else if (value.location_address_type == "2") {
