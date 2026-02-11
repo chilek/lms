@@ -28,11 +28,29 @@ $id = intval($_GET['id']);
 
 if ($id) {
     if (isset($_GET['recover'])) {
-        $DB->Execute('UPDATE documents SET cancelled = 0 WHERE id = ?', array($id));
+	$DB->BeginTrans();//Added if for lms-stck
+	if (ConfigHelper::getConfig('phpui.stock')) {//Added if for lms-stck
+		$stck_ica = $DB->GetAll('SELECT icitemid, stockid FROM stck_invoicecontentsassignments WHERE icdocid = ?', array($id));
+		$sold = 0;
+		if ($stck_ica) {
+			foreach ($stck_ica as $pos) {
+				$sold = $sold || $LMSST->StockSoldById($pos['stockid']);
+			}
+		}
+
+		if ($sold) {
+			$body = '<P>'.trans('Unable to recover invoice - stock already sold!').'</P>';
+			$SMARTY->assign('body',$body);
+			$SMARTY->display('dialog.html');
+			exit;
+		}
+	}
+
+	$DB->Execute('UPDATE documents SET cancelled = 0 WHERE id = ?', array($id));
 
         $invoice = $LMS->GetInvoiceContent($id);
-
-        foreach ($invoice['content'] as $idx => $content) {
+	
+	foreach ($invoice['content'] as $idx => $content) {
             if ($invoice['doctype'] == DOC_CNOTE) {
                 $value = $content['total'] - $invoice['invoice']['content'][$idx]['total'];
             } else {
@@ -46,8 +64,14 @@ if ($id) {
                 'comment' => $content['description'],
                 'docid' => $id,
                 'itemid' => $content['itemid'],
-            ));
-        }
+	    ));
+	    if (ConfigHelper::getConfig('phpui.stock')) {//Added if for lms-stck
+		    $icid = $DB->GetLastInsertID('cash');
+		    $DB->Execute('INSERT INTO stck_cashassignments (cashid, stockid) VALUES(?, ?)', array($icid, $content['stockid']));
+		    $LMSST->StockSell($id, $content['stockid'], ($content['value'] * 1/*$invoice['count']*/), time());
+	    }
+	}
+	$DB->CommitTrans();//Added if for lms-stck
     } else {
         if ($LMS->isDocumentPublished($id) && !ConfigHelper::checkConfig('privileges.superuser')) {
             return;
@@ -68,7 +92,21 @@ if ($id) {
             return;
         }
 
-        $DB->Execute('UPDATE documents SET cancelled = 1 WHERE id = ?', array($id));
+	$DB->Execute('UPDATE documents SET cancelled = 1 WHERE id = ?', array($id));
+	
+	if (ConfigHelper::getConfig('phpui.stock')) {//Added if for lms-stck
+		$stck_ica = $DB->GetAll('SELECT icitemid, stockid FROM stck_invoicecontentsassignments WHERE icdocid = ?', array($id));
+		if ($stck_ica) {
+			$doc = $DB->GetRow('SELECT d.number, d.cdate, n.template, d.extnumber, d.paytime, d.paytype
+				FROM documents d
+				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+				WHERE d.id = ?', array($id));
+			foreach ($stck_ica as $pos) {
+				$LMSST->StockUnSell($pos['stockid'], trans('Canceled invoice (nr: $a)', docnumber($doc['number'], $doc['template'], $doc['cdate'], $doc['extnumber'])));
+			}
+		}
+	}
+
         $DB->Execute('DELETE FROM cash WHERE docid = ?', array($id));
         $document = $DB->GetRow('SELECT * FROM documents WHERE id = ?', array($id));
     }
