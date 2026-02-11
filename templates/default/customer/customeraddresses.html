@@ -6,7 +6,7 @@
     {if isset($addresses) && !empty($addresses)}
         {foreach $addresses as $address_id => $address}
             {if $address.location_address_type == $smarty.const.POSTAL_ADDRESS}
-                {$icon = "lms-ui-icon-mail fa-fw"}
+                {$icon = "lms-ui-icon-message fa-fw"}
             {elseif $address.location_address_type == $smarty.const.BILLING_ADDRESS}
                 {$icon = "lms-ui-icon-home fa-fw"}
             {elseif $address.location_address_type == $smarty.const.LOCATION_ADDRESS}

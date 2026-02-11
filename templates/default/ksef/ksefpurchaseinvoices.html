@@ -472,9 +472,9 @@
 					{trans("<!ksef>Seller TEN")}
 				</td>
 				<td class="bold nobr">
-					{trans("<!ksef>Buyer short name")}
+					{trans("Division")}
 					<br>
-					({trans("<!ksef>Buyer alias")})
+					{trans("<!ksef>Buyer name")}
 				</td>
 				<td class="bold nobr text-right">
 					{trans("<!ksef>Net value")}
@@ -551,14 +551,14 @@
 					</td>
 					<td class="nobr">
 						<a href="?m=divisionedit&id={$invoice.division_id}">
-							{$invoice.division_shortname|escape}
+							{if empty($invoice.division_label)}
+								{$invoice.division_shortname|escape}
+							{else}
+								{$invoice.division_label|escape}
+							{/if}
 						</a>
 						<br>
-						{if $invoice.division_label}
-							({$invoice.division_label|escape})
-						{else}
-							(—)
-						{/if}
+						{$invoice.buyer_name|escape}
 					</td>
 					<td class="text-right nobr values">
 						{moneyf($invoice.net_amount, $invoice.currency)}

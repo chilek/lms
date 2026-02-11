@@ -6,45 +6,6 @@ env:
 
 matrix:
   include:
-#    - os: linux
-#      language: php
-#      php: 7.3
-#      dist: xenial
-#      env:
-#        PHPCS_VER="^3"
-#        PHPCS_STANDARD="phpcs3.xml"
-#        INSTALL_PHP_ZIP_EXTENSION=false
-#        COMPOSER_EXTRA_PARAMS=""
-#        PHP_LINT_MAX_ARGS="1"
-#      addons:
-#        postgresql: 9.4
-
-#    - os: linux
-#      language: php
-#      php: 7.4
-#      dist: xenial
-#      env:
-#        PHPCS_VER="^3"
-#        PHPCS_STANDARD="phpcs3.xml"
-#        INSTALL_PHP_ZIP_EXTENSION=true
-#        COMPOSER_EXTRA_PARAMS=""
-#        PHP_LINT_MAX_ARGS="1"
-#      addons:
-#        postgresql: 9.4
-
-#    - os: linux
-#      language: php
-#      php: 8.0
-#      dist: xenial
-#      env:
-#        PHPCS_VER="^3"
-#        PHPCS_STANDARD="phpcs3.xml"
-#        INSTALL_PHP_ZIP_EXTENSION=true
-#        COMPOSER_EXTRA_PARAMS=""
-#        PHP_LINT_MAX_ARGS="1"
-#      addons:
-#        postgresql: 9.4
-
     - os: linux
       language: php
       php: 8.1
@@ -101,10 +62,17 @@ services:
   - postgresql
   - mysql
 
-#before_install:
-#   - if ${INSTALL_PHP_ZIP_EXTENSION}; then sudo apt-get install libzip-dev; pecl install zip; fi
-#   - echo "extension = libzip.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-#  - echo "extension = snmp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+before_install:
+  - |
+    if [[ "$TRAVIS_PHP_VERSION" == "8.4" ]]; then
+      echo "Installing libpq 17 for PHP 8.4 compatibility..."
+      sudo apt-get update -y
+      sudo apt-get install -y ca-certificates wget gnupg lsb-release
+      echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+      wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc >/dev/null
+      sudo apt-get update -y
+      sudo apt-get install -y postgresql-client-17
+    fi
 
 install:
   - composer install ${COMPOSER_EXTRA_PARAMS}
