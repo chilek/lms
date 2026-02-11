@@ -51,6 +51,19 @@
 			white-space: nowrap;
 		}
 
+		#ksef-invoices .seller {
+			min-width: 22em;
+		}
+
+		#ksef-invoices .buyer {
+			min-width: 20em;
+		}
+
+		#ksef-invoices .bank-account {
+			min-width: 20em;
+			text-align: right;
+		}
+
 		[data-action].hidden {
 			display: none;
 		}
@@ -542,12 +555,12 @@
 							{/if}
 						{/strip}</span>
 					</td>
-					<td class="nobr">
+					<td class="seller">
 						<strong>{$invoice.seller_name|escape}</strong>
 						<br>
 						{$invoice.seller_ten}
 					</td>
-					<td class="nobr">
+					<td class="buyer">
 						<a href="?m=divisionedit&id={$invoice.division_id}">
 							{if empty($invoice.division_label)}
 								{$invoice.division_shortname|escape}
@@ -566,7 +579,7 @@
 						{icon name="copy" class="lms-ui-button-clipboard fa-fw" data_clipboard_text=$invoice.gross_amount|string_format:"%.02f"}
 						{moneyf($invoice.gross_amount, $invoice.currency)}
 					</td>
-					<td class="nobr text-right">
+					<td class="bank-account">
 						{if empty($invoice.bank_name)}
 							—
 						{else}
