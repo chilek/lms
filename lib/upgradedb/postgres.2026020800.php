@@ -38,7 +38,7 @@ if (!$this->ResourceExists('ksefinvoices.pay_type', LMSDB::RESOURCE_TYPE_COLUMN)
 if (!$this->ResourceExists('ksefinvoices.buyer_id', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("ALTER TABLE ksefinvoices ADD COLUMN buyer_id varchar(50) DEFAULT NULL");
 }
-if ($this->ResourceExists('ksefinvoiceitems', LMSDB::RESOURCE_TYPE_TABLE)) {
+if (!$this->ResourceExists('ksefinvoiceitems', LMSDB::RESOURCE_TYPE_TABLE)) {
     $this->Execute("
         CREATE TABLE ksefinvoiceitems (
             ksef_invoice_id integer NOT NULL
