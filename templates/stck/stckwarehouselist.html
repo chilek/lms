@@ -52,9 +52,9 @@
 		</TD>
 		<TD WIDTH="1%" CLASS="fright" align="right">
 		 	<nobr>
-				<a href="?m=stckwarehousedel&id={$warehouselist[warehouselist].id}" onClick="return confirmLink(this, '{trans('Are you sure you want to remove warehouse $a?', $warehouselist[warehouselist].name)} {trans('Warehouses with current stock cannot be removed!')}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
-				<a href="?m=stckwarehouseedit&id={$warehouselist[warehouselist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
-				<a href="?m=stckwarehouseinfo&id={$warehouselist[warehouselist].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
+				{button type="link" icon="delete" class="delete" onclick="return confirmLink(this, '{trans('Are you sure you want to remove warehouse $a?', $warehouselist[warehouselist].name)} {trans('Warehouses with current stock cannot be removed!')}')" tip="Delete" href="?m=stckwarehousedel&id={$warehouselist[warehouselist].id}"}
+                                {button type="link" icon="edit" href="?m=stckwarehouseedit&id={$warehouselist[warehouselist].id}" class="edit" tip="Edit"}
+                                {button type="link" icon="info" tip="Info" href="?m=stckwarehouseinfo&id={$warehouselist[warehouselist].id}"}
 			</nobr>
 		</TD>
 	</TR>

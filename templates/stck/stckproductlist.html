@@ -98,9 +98,9 @@
 		</TD>
 		<TD WIDTH="1%" CLASS="fright" align="right">
 		 	<nobr>
-				<a href="?m=stckproductdel&id={$productlist[productlist].id}" onClick="return confirmLink(this, '{t name=$productlist[productlist].name}Are you sure, you want to remove product \'$name\' from database? product with current stock cannot be removed!{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
-				<a href="?m=stckproductedit&id={$productlist[productlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
-				<a href="?m=stckproductinfo&id={$productlist[productlist].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
+				{button type="link" icon="delete" class="delete" onclick="return confirmLink(this, '{t name=$productlist[productlist].name}Are you sure, you want to remove product \'$name\' from database? product with current stock cannot be removed!{/t}')" tip="Delete" href="?m=stckproductdel&id={$productlist[productlist].id}"}
+                                {button type="link" icon="edit" href="?m=stckproductedit&id={$productlist[productlist].id}" class="edit" tip="Edit"}
+                                {button type="link" icon="info" tip="Info" href="?m=stckproductinfo&id={$productlist[productlist].id}"}
 			</nobr>
 		</TD>
 	</TR>

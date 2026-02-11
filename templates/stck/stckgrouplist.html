@@ -65,9 +65,9 @@
 		</TD>
 		<TD WIDTH="1%" CLASS="fright" align="right">
 		 	<nobr>
-				<a href="?m=stckgroupdel&id={$grouplist[grouplist].gid}" onClick="return confirmLink(this, '{t name=$grouplist[grouplist].name}Are you sure, you want to remove group \'$name\' from database? Group with current stock cannot be removed!{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
-				<a href="?m=stckgroupedit&id={$grouplist[grouplist].gid}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
-				<a href="?m=stckgroupinfo&id={$grouplist[grouplist].gid}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
+				{button type="link" icon="delete" class="delete" onclick="return confirmLink(this, '{t name=$grouplist[grouplist].name}Are you sure, you want to remove group \'$name\' from database? Group with current stock cannot be removed!{/t}')" tip="Delete" href="?m=stckgroupdel&id={$grouplist[grouplist].gid}"}
+                                {button type="link" icon="edit" href="?m=stckgroupedit&id={$grouplist[grouplist].gid}" class="edit" tip="Edit"}
+                                {button type="link" icon="info" tip="Info" href="?m=stckgroupinfo&id={$grouplist[grouplist].gid}"}
 			</nobr>
 		</TD>
 	</TR>

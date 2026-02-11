@@ -124,8 +124,8 @@ function pays() {
 		</TD>
 		<TD WIDTH="1%" CLASS="fright" align="right">
 		 	<nobr>
-				<a href="?m=stckreceivenoteedit&id={$receivenotelist[receivenotelist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
-				<a href="?m=stckreceivenoteinfo&id={$receivenotelist[receivenotelist].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
+				{button type="link" icon="edit" href="?m=stckreceivenoteedit&id={$receivenotelist[receivenotelist].id}" class="edit-invoice" tip="Edit"}
+				{button type="link" icon="info" tip="Info" href="?m=stckreceivenoteinfo&id={$receivenotelist[receivenotelist].id}"}
 				<INPUT TYPE="checkbox" NAME="marks[{$receivenotelist[receivenotelist].id}]">
 			</nobr>
 		</TD>
