@@ -1482,10 +1482,9 @@ class KSeF
             if (empty($nameSpaces)) {
                 return false;
             }
+            $nameSpace = reset($nameSpaces);
+            $xml = $xml->children($nameSpace);
         }
-
-        $nameSpace = reset($nameSpaces);
-        $xml = $xml->children($nameSpace);
 
         return $xml;
     }
