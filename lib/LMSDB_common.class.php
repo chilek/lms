@@ -131,7 +131,7 @@ abstract class LMSDB_common implements LMSDBInterface
      * @param array $inputarray
      * @return int|false
      */
-    public function Execute($query, array $inputarray = null)
+    public function Execute($query, ?array $inputarray = null)
     {
         if ($this->debug) {
             $start = microtime(true);
@@ -166,7 +166,7 @@ abstract class LMSDB_common implements LMSDBInterface
      * @param array $inputarray
      * @return int|false
      */
-    public function MultiExecute($query, array $inputarray = null)
+    public function MultiExecute($query, ?array $inputarray = null)
     {
         if ($this->debug) {
             $start = microtime(true);
@@ -206,7 +206,7 @@ abstract class LMSDB_common implements LMSDBInterface
      * @param array $inputarray
      * @return array
      */
-    public function GetAll($query = null, array $inputarray = null)
+    public function GetAll($query = null, ?array $inputarray = null)
     {
         if ($query) {
             $this->Execute($query, $inputarray);
@@ -230,7 +230,7 @@ abstract class LMSDB_common implements LMSDBInterface
      * @param array $inputarray
      * @return array
      */
-    public function GetAllByKey($query = null, $key = null, array $inputarray = null)
+    public function GetAllByKey($query = null, $key = null, ?array $inputarray = null)
     {
         if ($query) {
             $this->Execute($query, $inputarray);
@@ -252,7 +252,7 @@ abstract class LMSDB_common implements LMSDBInterface
      * @param array $inputarray
      * @return array
      */
-    public function GetRow($query = null, array $inputarray = null)
+    public function GetRow($query = null, ?array $inputarray = null)
     {
         if ($query) {
             $this->Execute($query, $inputarray);
@@ -268,7 +268,7 @@ abstract class LMSDB_common implements LMSDBInterface
      * @param array $inputarray
      * @return array
      */
-    public function GetCol($query = null, array $inputarray = null)
+    public function GetCol($query = null, ?array $inputarray = null)
     {
         if ($query) {
             $this->Execute($query, $inputarray);
@@ -290,7 +290,7 @@ abstract class LMSDB_common implements LMSDBInterface
      * @param array $inputarray
      * @return string|int|null
      */
-    public function GetOne($query = null, array $inputarray = null)
+    public function GetOne($query = null, ?array $inputarray = null)
     {
         if ($query) {
             $this->Execute($query, $inputarray);
@@ -313,7 +313,7 @@ abstract class LMSDB_common implements LMSDBInterface
      * @param array $inputarray
      * @return null
      */
-    public function Exec($query, array $inputarray = null)
+    public function Exec($query, ?array $inputarray = null)
     {
         if ($this->debug) {
             $start = microtime(true);
@@ -594,7 +594,7 @@ abstract class LMSDB_common implements LMSDBInterface
      * @param array $inputarray
      * @return string
      */
-    protected function _query_parser($query, array $inputarray = null)
+    protected function _query_parser($query, ?array $inputarray = null)
     {
         // replace metadata
         $query = str_ireplace('?NOW?', $this->_driver_now(), $query);
