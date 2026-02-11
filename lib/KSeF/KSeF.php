@@ -1477,7 +1477,7 @@ class KSeF
             return false;
         }
 
-        if (empty($xml)) {
+        if (empty($xml) || empty($xml->Faktura)) {
             $nameSpaces = $xml->getNamespaces(true);
             if (empty($nameSpaces)) {
                 return false;
