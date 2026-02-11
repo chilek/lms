@@ -67,6 +67,7 @@ if (empty($allTags)) {
 $invoices = $DB->GetAll(
     'SELECT
         i.*,
+        (CASE WHEN EXISTS (SELECT 1 FROM ksefinvoiceitems ii WHERE ii.ksef_invoice_id = i.id) THEN 1 ELSE 0 END) AS itemcount,
         d.name AS division_name,
         d.shortname AS division_shortname,
         d.label AS division_label,
@@ -97,6 +98,8 @@ $now = time();
 foreach ($invoices as &$invoice) {
     $invoice['pay_type_name'] = KSeF::payTypeName($invoice['pay_type']);
     $invoice['expired'] = strtotime('+1 day', $invoice['pay_date']) < $now;
+    $invoice['invoice_type_name'] = $_DOCTYPES[$invoice['invoice_type']] ?? KSeF::docTypeName($invoice['invoice_type']) ?? trans('<!ksef>unknown document type');
+
     if (empty($invoice['tags'])) {
         $tags = [];
     } else {

@@ -63,6 +63,8 @@ class KSeF
 
     private static $savedInvoices = [];
 
+    private static $docTypes;
+
     private static $identifierTypes = [
         'Nip' => self::IDENTIFIER_TEN,
         'VatUe' => self::IDENTIFIER_VAT_UE,
@@ -1475,6 +1477,16 @@ class KSeF
             return false;
         }
 
+        if (empty($xml)) {
+            $nameSpaces = $xml->getNamespaces(true);
+            if (empty($nameSpaces)) {
+                return false;
+            }
+        }
+
+        $nameSpace = reset($nameSpaces);
+        $xml = $xml->children($nameSpace);
+
         return $xml;
     }
 
@@ -1664,5 +1676,25 @@ class KSeF
         } else {
             return self::$taxProperties[$item['tax_rate']] ?? '';
         }
+    }
+
+    public static function docTypeName(int $docType): ?string
+    {
+        if (!isset(self::$docTypes)) {
+            self::$docTypes = [
+                self::DOC_ZAL => trans('<!ksef>advance invoice'),
+                self::DOC_ROZ => trans('<!ksef>final invoice'),
+                self::DOC_UPR => trans('<!ksef>simplified invoice'),
+                self::DOC_KOR_ZAL => trans('<!ksef>corrective advance invoice'),
+                self::DOC_KOR_ROZ => trans('<!ksef>corrective final invoice'),
+                self::DOC_VAT_PEF => trans('<!ksef>standard PEF invoice'),
+                self::DOC_VAT_PEF_SP => trans('<!ksef>customer structured PEF invoice'),
+                self::DOC_KOR_PEF => trans('<!ksef>corrective PEF invoice'),
+                self::DOC_VAT_RR => trans('<!ksef>RR invoice'),
+                self::DOC_KOR_VAT_RR => trans('<!ksef>corrective RR invoice'),
+            ];
+        }
+
+        return self::$docTypes[$docType] ?? null;
     }
 }
