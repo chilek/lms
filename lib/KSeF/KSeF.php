@@ -55,6 +55,15 @@ class KSeF
     const DOC_VAT_RR = 108;
     const DOC_KOR_VAT_RR = 109;
 
+    const PAYTYPE_OTHER = 0;
+    const PAYTYPE_CASH = 1;
+    const PAYTYPE_CARD = 2;
+    const PAYTYPE_NOTE = 3;
+    const PAYTYPE_CHECK = 4;
+    const PAYTYPE_CREDIT = 5;
+    const PAYTYPE_TRANSFER = 6;
+    const PAYTYPE_MOBILE = 7;
+
     const KSEF_UPO_DIR = STORAGE_DIR . DIRECTORY_SEPARATOR . 'ksef' . DIRECTORY_SEPARATOR . 'upo';
     const KSEF_INVOICE_DIR = STORAGE_DIR . DIRECTORY_SEPARATOR . 'ksef' . DIRECTORY_SEPARATOR . 'invoice';
 
@@ -1477,15 +1486,14 @@ class KSeF
             return false;
         }
 
-        if (empty($xml)) {
+        if (empty($xml) || empty($xml->Faktura)) {
             $nameSpaces = $xml->getNamespaces(true);
             if (empty($nameSpaces)) {
                 return false;
             }
+            $nameSpace = reset($nameSpaces);
+            $xml = $xml->children($nameSpace);
         }
-
-        $nameSpace = reset($nameSpaces);
-        $xml = $xml->children($nameSpace);
 
         return $xml;
     }
@@ -1661,9 +1669,7 @@ class KSeF
                     '0' => [
                         '0' => [
                             '0' => [
-                                '0' => [
-                                    '0' => 'zw',
-                                ],
+                                '0' => 'zw',
                             ],
                         ],
                     ],

@@ -31,6 +31,11 @@
 			color: inherit !important;
 		}
 
+		#ksef-invoices .blend .red,
+		#ksef-invoices .blend .lms-ui-warning {
+			color: inherit !important;
+		}
+
 		#filter-panel {
 			display: flex;
 			flex-grow: 1;
@@ -49,6 +54,19 @@
 
 		#ksef-invoices .division-panel-row > * {
 			white-space: nowrap;
+		}
+
+		#ksef-invoices .seller {
+			min-width: 22em;
+		}
+
+		#ksef-invoices .buyer {
+			min-width: 20em;
+		}
+
+		#ksef-invoices .bank-account {
+			min-width: 20em;
+			text-align: right;
 		}
 
 		[data-action].hidden {
@@ -503,7 +521,10 @@
 				<td class="bold nobr text-center">
 					{trans("<!ksef>Payment type")}
 					<br>
-					{trans("<!ksef>Payment date")}
+					<a class="order-toggle" data-order-property="pay-date">
+						{trans("<!ksef>Payment date")}
+						{icon name="dunno" class="sort-order-icon hidden" fw=false}
+					</a>
 				</td>
 				<td>
 				</td>
@@ -513,6 +534,7 @@
 			{foreach $invoices as $invoice}
 				<tr data-issue-date="{$invoice.issue_date}"
 					data-gross-value="{$invoice.gross_amount}"
+					data-pay-date="{$invoice.pay_date}"
 					data-id="{$invoice.id}"
 					data-division-id="{$invoice.division_id}"
 					data-posting="{if empty($invoice.posting)}0{else}1{/if}"
@@ -542,12 +564,12 @@
 							{/if}
 						{/strip}</span>
 					</td>
-					<td class="nobr">
+					<td class="seller">
 						<strong>{$invoice.seller_name|escape}</strong>
 						<br>
 						{$invoice.seller_ten}
 					</td>
-					<td class="nobr">
+					<td class="buyer">
 						<a href="?m=divisionedit&id={$invoice.division_id}">
 							{if empty($invoice.division_label)}
 								{$invoice.division_shortname|escape}
@@ -561,12 +583,13 @@
 					<td class="text-right nobr values">
 						{moneyf($invoice.net_amount, $invoice.currency)}
 						<br>
+						{icon name="copy" class="lms-ui-button-clipboard fa-fw" data_clipboard_text=$invoice.vat_amount|string_format:"%.02f"}
 						{moneyf($invoice.vat_amount, $invoice.currency)}
 						<br>
 						{icon name="copy" class="lms-ui-button-clipboard fa-fw" data_clipboard_text=$invoice.gross_amount|string_format:"%.02f"}
 						{moneyf($invoice.gross_amount, $invoice.currency)}
 					</td>
-					<td class="nobr text-right">
+					<td class="bank-account">
 						{if empty($invoice.bank_name)}
 							—
 						{else}
@@ -596,8 +619,12 @@
 							{$invoice.pay_type_name}
 							<br>
 							{capture assign="pay_date"}{strip}
-								<span class="bold{if $invoice.expired} red{/if}">
+								<span class="bold{if $invoice.expired} red{elseif $invoice.about_to_expire} lms-ui-warning{/if}">
 									{$invoice.pay_date|date_format:"Y/m/d"}
+									{if !empty($invoice.days_to_expire)}
+										<br>
+										({t a=$invoice.days_to_expire}$a days{/t})
+									{/if}
 								</span>
 							{/strip}{/capture}
 							{$pay_date}

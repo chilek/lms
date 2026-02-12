@@ -1184,6 +1184,8 @@ version 28-git (????-??-??):
     'traffic_data_use_for_marketing' [chilan]
   - enhancement: document templates support 'default-customer-consents' properties [chilan]
   - enhancement: KSeF: implemented purchase invoice import (export from KSeF perspective) [chilan]
+  - enhancement: clicking 'resend' button in message info form opens popup window where we choose recipient
+    selection [chilan]
 
 version 27.0 (2021-08-20):
 
