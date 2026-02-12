@@ -5791,7 +5791,7 @@ $_LANG['Visible tabs:'] = 'Widoczne zakładki:';
 $_LANG['No primary ticket is selected!'] = 'Nie wybrano zgłoszenia nadrzędnego!';
 $_LANG['used tariff edit'] = 'edycja użytych taryf';
 
-$_LANG['Resend'] = 'Wyślij nową';
+$_LANG['Resend'] = 'Wyślij ponownie';
 
 $_LANG['more actions'] = 'więcej czynności';
 $_LANG['Ticket $a'] = 'Zgłoszenie $a';
@@ -6356,3 +6356,8 @@ $_LANG['<!ksef>custom structured PEF invoice'] = 'faktura specjalizowana PEF';
 $_LANG['<!ksef>corrective PEF invoice'] = 'korekta faktury PEF';
 $_LANG['<!ksef>RR invoice'] = 'faktura RR';
 $_LANG['<!ksef>corrective RR invoice'] = 'korekta faktury RR';
+
+$_LANG['selection from filter'] = 'wybór z filtra';
+$_LANG['all recipient of this message'] = 'wszyscy odbiorcy tej wiadomości';
+$_LANG['recipients who haven\'t received this message'] = 'odbiorcy, którzy nie otrzymali tej wiadomości';
+$_LANG['recipients with delivery errors'] = 'odbiorcy, do których wysyłka zakończyła się błędem';

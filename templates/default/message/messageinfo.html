@@ -37,7 +37,47 @@
 		border-top: 1px dotted grey;
 	}
 
+	#resend-popup .title {
+		font-weight: bold;
+		font-size: 120%;
+		margin-bottom: 0.5em;
+	}
+
+	#resend-popup ul {
+		list-style-type: none;
+		margin-block-start: 0;
+		margin-block-end: 0;
+		padding-inline-start: 0;
+	}
+
+	#resend-popup li {
+		/*font-weight: bold;*/
+		margin-top: 0.3em;
+		margin-bottom: 0.3em;
+	}
+
+	#resend-popup .action-buttons {
+		margin-top: 0.7em;
+		margin-bottom: 0;
+		display: flex;
+		justify-content: center;
+	}
+
 </style>
+
+<form id="resend-message-form" method="post" action="?m=messageadd&messageid={$message.id}">
+	{$customers = array()}
+	{foreach $itemlist as $item}
+		{if !empty($item.customerid) && !isset($customers[$item.customerid])}
+			{$customers[$item.customerid] = true}
+			<input type="hidden" name="customers[{$item.customerid}]" value="{$item.customerid}"
+				{if $item.status == $smarty.const.MSG_ERROR}data-message-errors="1"{/if}
+				{if $item.status == $smarty.const.MSG_NEW || $item.status == $smarty.const.MSG_ERROR || $item.status == $smarty.const.MSG_BOUNCED}data-message-unsent="1"{/if}
+			>
+		{/if}
+	{/foreach}
+</form>
+
 <table class="lmsbox">
 	<colgroup>
 		<col style="width: 1%;">
@@ -251,7 +291,46 @@
 					{button icon="reload" label="Increase attempts" href="?m={$layout.module}&id={$message.id}&action=increase-attempts"}
 				{/if}
 				{if ConfigHelper::checkPrivileges('messaging', 'messaging_creation')}
-					{button icon="resend" label="Resend" onclick="location.href = '?m=messageadd&messageid={$message.id}';"}
+					{capture assign="content"}
+						<div id="resend-popup">
+							<div class="title">
+								{icon name="customer"}
+								<strong>{trans("Recipients")}</strong>
+							</div>
+							<div>
+								<ul>
+									<li>
+										<label>
+											<input type="radio" name="recipients" value="all">
+											{trans("selection from filter")}
+										</label>
+									</li>
+									<li>
+										<label>
+											<input type="radio" name="recipients" value="message-all">
+											{trans("all recipient of this message")}
+										</label>
+									</li>
+									<li>
+										<label>
+											<input type="radio" name="recipients" value="message-unsent" checked>
+											{trans("recipients who haven't received this message")}
+										</label>
+									</li>
+									<li>
+										<label>
+											<input type="radio" name="recipients" value="message-error">
+											{trans("recipients with delivery errors")}
+										</label>
+									</li>
+								</ul>
+							</div>
+							<div class="action-buttons">
+								{button icon="submit" label="Send" id="resend-button"}
+							</div>
+						</div>
+					{/capture}
+					{hint icon="reload" label="Resend" class="lms-ui-link-button" id="resend-message-button" content=$content}
 				{/if}
 			</td>
 		</tr>
@@ -457,6 +536,41 @@
 				location.href =  '?m=messagedel&id={$message.id}';
 			});
 			return false;
+		});
+
+		var customers = $('#resend-message-form [name^="customers"]');
+
+		$(document).on('click', '#resend-button', function() {
+			var recipients = $('[name="recipients"]:checked').val();
+
+			switch (recipients) {
+				case 'all':
+					customers.prop('disabled', true);
+					break;
+				case 'message-all':
+					customers.prop('disabled', false);
+					break;
+				case 'message-unsent':
+					customers.each(function() {
+						$(this).prop('disabled', !$(this).is('[data-message-unsent]'));
+					});
+					break;
+				case 'message-error':
+					customers.each(function() {
+						$(this).prop('disabled', !$(this).is('[data-message-error]'));
+					});
+					break;
+			}
+
+			$('#resend-message-form').submit();
+		});
+
+		$('#resend-message-button').on('lms:hint:ready', function() {
+			$('[name="recipients"]').filter('[value="message-unsent"],[value="message-error"]').each(function() {
+				var itemStatus = $(this).val();
+				var disabled = !customers.filter('[data-' + itemStatus + ']').length;
+				$(this).prop('disabled', disabled).closest('label').toggleClass('lms-ui-disabled', disabled);
+			});
 		});
 	});
 

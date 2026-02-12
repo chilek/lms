@@ -1570,7 +1570,10 @@ class LMSSmartyPlugins
             . (isset($params['url']) ? ' data-url="' . $params['url'] . '"' : '')
             . (isset($params['style']) ? ' style="' . $params['style'] . '"' : '')
             . (empty($params['disabled']) ? '' : ' disabled')
-            . '><i class="lms-ui-icon-' . ($params['icon'] ?? 'hint') . ' fa-fw"></i></a>';
+            . (empty($params['id']) ? '' : ' id="' . $params['id'] . '"')
+            . '><i class="lms-ui-icon-' . ($params['icon'] ?? 'hint') . ' fa-fw"></i>'
+            . (empty($params['label']) ? '' : ' <span class="lms-ui-label">' . trans($params['label']) . '</label>')
+            . '</a>';
     }
 
     public static function speechRecognitionFunction(array $params, $template)
