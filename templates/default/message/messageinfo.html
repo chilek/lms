@@ -570,6 +570,9 @@
 				var itemStatus = $(this).val();
 				var disabled = !customers.filter('[data-' + itemStatus + ']').length;
 				$(this).prop('disabled', disabled).closest('label').toggleClass('lms-ui-disabled', disabled);
+				if (itemStatus === 'message-unsent' && disabled) {
+					$(this).closest('li').prev('li').find('input').prop('checked', true);
+				}
 			});
 		});
 	});
