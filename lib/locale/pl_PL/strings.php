@@ -6346,6 +6346,9 @@ $_LANG['<!ksef>Invoice notes'] = 'Notatki do faktury';
 $_LANG['<!ksef>Invoice tags'] = 'Etykiety faktury';
 $_LANG['<!ksef>Tags'] = 'Etykiety';
 
+$_LANG['<!ksef>Seller'] = 'Sprzedawca';
+$_LANG['<!ksef>$a (TEN $b)'] = '$a (NIP $b)';
+
 $_LANG['<!ksef>advance invoice'] = 'faktura zaliczkowa';
 $_LANG['<!ksef>final invoice'] = 'faktura rozliczeniowa';
 $_LANG['<!ksef>simplified invoice'] = 'faktura uproszczona';

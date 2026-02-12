@@ -117,9 +117,26 @@ foreach ($invoices as &$invoice) {
 }
 unset($invoice);
 
+$sellers = $DB->GetAll(
+    'SELECT
+        t.seller_ten AS ten,
+        t.seller_name AS name,
+        t.id
+    FROM ksefinvoices t
+    JOIN (
+        SELECT
+            seller_ten,
+            MAX(id) AS max_id
+        FROM ksefinvoices
+        GROUP BY seller_ten
+    ) m ON m.seller_ten = t.seller_ten AND m.max_id = t.id
+    ORDER BY t.seller_name'
+);
+
 $divisions = $LMS->GetDivisions();
 
 $SMARTY->assign('divisions', $divisions);
+$SMARTY->assign('sellers', $sellers);
 $SMARTY->assign('start_date', $startDate);
 $SMARTY->assign('end_date', $endDate);
 //$SMARTY->assign('sort_order', 'issue-date asc');

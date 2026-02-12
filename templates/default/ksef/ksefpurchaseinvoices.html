@@ -130,6 +130,10 @@
 			padding-bottom: 0.3em;
 		}
 
+		#ksef-invoices .filter-panel-row:nth-child(2) > *:not(:first-child) {
+			margin-left: 0.5em;
+		}
+
 	</style>
 
 	<script>
@@ -197,13 +201,15 @@
 
 			function applyFilter(filter) {
 				if (typeof(filter) !== 'object') {
-					filter = {
-						divisionId: getStorageItem('ksef-purchase-invoices-division-id', 'session')
-					};
+					var filter = {};
+					var divisionId = getStorageItem('ksef-purchase-invoices-division-id', 'session');
+					filter.divisionId = divisionId ? divisionId : '';
 					var posting = getStorageItem('ksef-purchase-invoices-posting', 'session');
 					filter.posting = posting && posting.length ? posting : '';
 					var settled = getStorageItem('ksef-purchase-invoices-settled', 'session');
 					filter.settled = settled && settled.length ? settled : '';
+					var sellerTen = getStorageItem('ksef-purchase-invoices-seller-ten', 'session');
+					filter.sellerTen = sellerTen ? sellerTen : '';
 				}
 
 				var ksefInvoices = $('#ksef-invoices > tbody');
@@ -211,26 +217,46 @@
 				var filterSelector = [];
 
 				if (filter.hasOwnProperty('divisionId')) {
-					var divisionId = parseInt(filter.divisionId);
-					if (divisionId) {
-						filterSelector.push('[data-division-id="' + divisionId + '"]');
+					if (filter.divisionId.length) {
+						filterSelector.push('[data-division-id="' + filter.divisionId + '"]');
 					} else {
 						filterSelector.push('[data-division-id]');
 					}
+				} else {
+					filterSelector.push('[data-division-id]');
 				}
 
 				if (filter.hasOwnProperty('posting')) {
 					var posting = filter.posting;
 					if (posting.length) {
 						filterSelector.push('[data-posting="' + posting + '"]');
+					} else {
+						filterSelector.push('[data-posting]');
 					}
+				} else {
+					filterSelector.push('[data-posting]');
 				}
 
 				if (filter.hasOwnProperty('settled')) {
 					var settled = filter.settled;
 					if (settled.length) {
 						filterSelector.push('[data-settled="' + settled + '"]');
+					} else {
+						filterSelector.push('[data-settled]');
 					}
+				} else {
+					filterSelector.push('[data-settled]');
+				}
+
+				if (filter.hasOwnProperty('sellerTen')) {
+					var sellerTen = filter.sellerTen;
+					if (sellerTen.length) {
+						filterSelector.push('[data-seller-ten="' + sellerTen + '"]');
+					} else {
+						filterSelector.push('[data-seller-ten]');
+					}
+				} else {
+					filterSelector.push('[data-seller-ten]');
 				}
 
 				$(temporaryTable).find('tr' + filterSelector.join('')).appendTo(ksefInvoices);
@@ -245,12 +271,37 @@
 				return filter;
 			}
 
+			$('#clear-filter').click(function() {
+				$.each(
+					[
+						'ksef-purchase-invoices-division-id',
+						'ksef-purchase-invoices-posting',
+						'ksef-purchase-invoices-settled',
+						'ksef-purchase-invoices-seller-ten'
+					],
+					function(_, itemName) {
+						removeStorageItem(itemName, 'session');
+					}
+				);
+
+				$('#division-id').val('');
+
+				$('#posting').prop('checked', false);
+
+				$('#unsettled').prop('checked', false);
+
+				$('#seller-ten').val('');
+				updateAdvancedSelectsTest('#seller-ten');
+
+				applyFilter();
+			});
+
 			$('#division-id').change(function() {
 				var filter = {
-					divisionId: $(this).val()
-				}
-				if ($('#posting').prop('checked')) {
-					filter.posting = '1';
+					divisionId: $(this).val(),
+					posting: $('#posting').prop('checked') ? '1' : '',
+					settled: $('#unsettled').prop('checked') ? '0' : '',
+					sellerTen: $('#seller-ten').val()
 				}
 
 				applyFilter(filter);
@@ -262,8 +313,10 @@
 				var filter = {
 					posting: $(this).prop('checked') ? '1' : '',
 					divisionId: $('#division-id').val(),
-					settled: $('#unsettled').prop('checked') ? '0' : ''
+					settled: $('#unsettled').prop('checked') ? '0' : '',
+					sellerTen: $('#seller-ten').val()
 				};
+
 				applyFilter(filter);
 
 				setStorageItem('ksef-purchase-invoices-posting', filter.posting, 'session');
@@ -273,11 +326,26 @@
 				var filter = {
 					posting: $('#posting').prop('checked') ? '1' : '',
 					divisionId: $('#division-id').val(),
-					settled: $('#unsettled').prop('checked') ? '0' : ''
+					settled: $('#unsettled').prop('checked') ? '0' : '',
+					sellerTen: $('#seller-ten').val()
 				};
 				applyFilter(filter);
 
+
 				setStorageItem('ksef-purchase-invoices-settled', filter.settled, 'session');
+			});
+
+			$('#seller-ten').change(function() {
+				var filter = {
+					divisionId: $('#division-id').val(),
+					posting: $('#posting').prop('checked') ? '1' : '',
+					settled: $('#unsettled').prop('checked') ? '0' : '',
+					sellerTen: $(this).val()
+				}
+
+				applyFilter(filter);
+
+				setStorageItem('ksef-purchase-invoices-seller-ten', filter.sellerTen, 'session');
 			});
 
 			var sortParts = restoreSortOrder();
@@ -293,12 +361,18 @@
 			if (filter.divisionId) {
 				$('#division-id').val(filter.divisionId);
 			}
+
 			if (filter.posting.length && filter.posting === '1') {
 				$('#posting').prop('checked', true);
 			}
 
 			if (filter.settled.length && filter.settled === '0') {
 				$('#unsettled').prop('checked', true);
+			}
+
+			if (filter.sellerTen) {
+				$('#seller-ten').val(filter.sellerTen);
+				updateAdvancedSelectsTest('#seller-ten');
 			}
 
 			$('[data-action]').click(function() {
@@ -450,6 +524,7 @@
 							</span>
 						</div>
 						<div class="filter-panel-row">
+							{button type="link" icon="delete" id="clear-filter"}
 							<label>
 								<strong>{trans("Division")}<strong>
 								<select name="division-id" id="division-id" form="ksef-invoices-form">
@@ -459,6 +534,17 @@
 									{/foreach}
 								</select>
 							</label>
+							{if !empty($sellers)}
+								<label>
+									<strong>{trans("<!ksef>Seller")}</strong>
+									<select name="seller-ten" id="seller-ten" form="ksef-invoices-form" class="lms-ui-advanced-select-test">
+										<option value="">{trans("— all —")}</option>
+										{foreach $sellers as $seller}
+											<option value="{$seller.ten}">{t a=$seller.name|escape b=$seller.ten}<!ksef>$a (TEN $b){/t}</option>
+										{/foreach}
+									</select>
+								</label>
+							{/if}
 							<label>
 								<input type="checkbox" name="posting" id="posting" form="ksef-invoices-form">
 								{trans("<!ksef>posted")}
@@ -539,6 +625,7 @@
 					data-division-id="{$invoice.division_id}"
 					data-posting="{if empty($invoice.posting)}0{else}1{/if}"
 					data-settled="{if empty($invoice.settled)}0{else}1{/if}"
+					data-seller-ten="{$invoice.seller_ten}"
 					class="{if empty($invoice.posting)} cancel{/if}{if !empty($invoice.settled)} blend{/if}">
 					<td>
 						<span class="nobr">
