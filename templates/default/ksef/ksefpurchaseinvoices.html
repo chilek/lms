@@ -31,11 +31,12 @@
 			color: inherit !important;
 		}
 
-		#ksef-invoices .blend .red {
+		#ksef-invoices .blend .red,
+		#ksef-invoices .blend .about-to-expire {
 			color: inherit !important;
 		}
 
-		#ksef-invoices .blend .lms-ui-warning {
+		#ksef-invoices .about-to-expire {
 			color: darkorange !important;
 		}
 
@@ -709,7 +710,7 @@
 							{$invoice.pay_type_name}
 							<br>
 							{capture assign="pay_date"}{strip}
-								<span class="bold{if $invoice.expired} red{elseif $invoice.about_to_expire} lms-ui-warning{/if}">
+								<span class="bold{if $invoice.expired} red{elseif $invoice.about_to_expire} about-to-expire{/if}">
 									{$invoice.pay_date|date_format:"Y/m/d"}
 									{if !empty($invoice.days_to_expire)}
 										<br>
