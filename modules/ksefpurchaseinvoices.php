@@ -98,6 +98,7 @@ $now = time();
 foreach ($invoices as &$invoice) {
     $invoice['pay_type_name'] = KSeF::payTypeName($invoice['pay_type']);
     $invoice['expired'] = strtotime('+1 day', $invoice['pay_date']) < $now;
+    $invoice['about_to_expire'] = !$invoice['expired'] && strtotime('-7 days', $invoice['pay_date']) < $now;
     $invoice['invoice_type_name'] = $DOCTYPES[$invoice['invoice_type']] ?? KSeF::docTypeName($invoice['invoice_type']) ?? trans('<!ksef>unknown document type');
 
     if (empty($invoice['tags'])) {

@@ -55,6 +55,15 @@ class KSeF
     const DOC_VAT_RR = 108;
     const DOC_KOR_VAT_RR = 109;
 
+    const PAYTYPE_OTHER = 0;
+    const PAYTYPE_CASH = 1;
+    const PAYTYPE_CARD = 2;
+    const PAYTYPE_NOTE = 3;
+    const PAYTYPE_CHECK = 4;
+    const PAYTYPE_CREDIT = 5;
+    const PAYTYPE_TRANSFER = 6;
+    const PAYTYPE_MOBILE = 7;
+
     const KSEF_UPO_DIR = STORAGE_DIR . DIRECTORY_SEPARATOR . 'ksef' . DIRECTORY_SEPARATOR . 'upo';
     const KSEF_INVOICE_DIR = STORAGE_DIR . DIRECTORY_SEPARATOR . 'ksef' . DIRECTORY_SEPARATOR . 'invoice';
 
