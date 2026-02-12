@@ -71,7 +71,7 @@
 		{if !empty($item.customerid) && !isset($customers[$item.customerid])}
 			{$customers[$item.customerid] = true}
 			<input type="hidden" name="customers[{$item.customerid}]" value="{$item.customerid}"
-				{if $item.status == $smarty.const.MSG_ERROR}data-message-errors="1"{/if}
+				{if $item.status == $smarty.const.MSG_ERROR}data-message-error="1"{/if}
 				{if $item.status == $smarty.const.MSG_NEW || $item.status == $smarty.const.MSG_ERROR || $item.status == $smarty.const.MSG_BOUNCED}data-message-unsent="1"{/if}
 			>
 		{/if}
