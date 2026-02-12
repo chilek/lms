@@ -106,6 +106,9 @@ foreach ($invoices as &$invoice) {
 
     if (!empty($invoice['about_to_expire'])) {
         $invoice['days_to_expire'] = round(($invoice['pay_date'] - $now) / 86400);
+        if ($invoice['days_to_expire'] < 0) {
+            $invoice['days_to_expire'] = 0;
+        }
     }
 
     if (empty($invoice['tags'])) {
