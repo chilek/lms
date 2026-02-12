@@ -621,10 +621,9 @@
 							{capture assign="pay_date"}{strip}
 								<span class="bold{if $invoice.expired} red{elseif $invoice.about_to_expire} lms-ui-warning{/if}">
 									{$invoice.pay_date|date_format:"Y/m/d"}
-									{$days_to_expire = round(($invoice.pay_date - $invoice.issue_date) / 86400)}
-									{if $days_to_expire > 0}
+									{if !empty($invoice.days_to_expire)}
 										<br>
-										({t a=$days_to_expire}$a days{/t})
+										({t a=$invoice.days_to_expire}$a days{/t})
 									{/if}
 								</span>
 							{/strip}{/capture}
