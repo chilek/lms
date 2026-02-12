@@ -64,6 +64,9 @@ if (empty($allTags)) {
     $allTags = [];
 }
 
+$dateFrom = date('Y/m/d', $startDate);
+$dateTo = date('Y/m/d 23:59:59', $endDate);
+
 $invoices = $DB->GetAll(
     'SELECT
         i.*,
@@ -85,10 +88,10 @@ $invoices = $DB->GetAll(
     ) t ON t.ksef_invoice_id = i.id
     WHERE i.permanent_storage_date BETWEEN ? AND ?',
     [
-        date('Y/m/d', $startDate),
-        date('Y/m/d 23:59:59', $endDate),
-        date('Y/m/d', $startDate),
-        date('Y/m/d 23:59:59', $endDate),
+        $dateFrom,
+        $dateTo,
+        $dateFrom,
+        $dateTo,
     ]
 );
 if (empty($invoices)) {
@@ -128,9 +131,17 @@ $sellers = $DB->GetAll(
             seller_ten,
             MAX(id) AS max_id
         FROM ksefinvoices
+        WHERE permanent_storage_date BETWEEN ? AND ?
         GROUP BY seller_ten
     ) m ON m.seller_ten = t.seller_ten AND m.max_id = t.id
-    ORDER BY t.seller_name'
+    WHERE t.permanent_storage_date BETWEEN ? AND ?
+    ORDER BY t.seller_name',
+    [
+        $dateFrom,
+        $dateTo,
+        $dateFrom,
+        $dateTo,
+    ]
 );
 
 $divisions = $LMS->GetDivisions();
