@@ -3806,12 +3806,13 @@ if (empty($types) || in_array('messages', $types)) {
 
                         $DB->Execute(
                             'UPDATE messageitems
-                            SET status = ?, lastdate = ?NOW?, error = ?
+                            SET status = ?, lastdate = ?NOW?, error = ?, attempts = ?
                             WHERE messageid = ?
                                 AND id = ?',
                             [
                                 MSG_ERROR,
                                 implode(', ', $errors),
+                                0,
                                 $messageitem['messageid'],
                                 $messageitem['messageitemid'],
                             ]
