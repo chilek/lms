@@ -2588,16 +2588,34 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $this->syslog->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_DELETE, $args);
             }
         }
-	//Added from lms-stck Sarenka
-        if (ConfigHelper::getConfig('phpui.stock')) {
-                global $LMSST;
-                $stock = $this->db->GetAll('SELECT stockid FROM stck_invoicecontentsassignments WHERE icdocid = ?', array($invoiceid));
-		foreach ($stock as $v) {
-                        $LMSST->StockUnSell($v['stockid']);
-                }
+	
+	$document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
+	
+	if (ConfigHelper::getConfig('phpui.stock')) {//Added from lms-stock stck Sarenka
+		global $LMSST;
+		if ($document_manager->getDocumentType($invoiceid) != DOC_CNOTE) {
+                        $stock = $this->db->GetAll('SELECT stockid FROM stck_invoicecontentsassignments WHERE icdocid = ?', array($invoiceid));
+                        foreach ($stock as $v) {
+                                $LMSST->StockUnSell($v['stockid']);
+                        }
+                } else {
+			$cnote = $this->GetInvoiceContent($invoiceid);
+			foreach($cnote['content'] as $idx => $item) {
+				if ($item['stockid']) {
+					if ($cnote['invoice']['content'][$item['itemid']]['stockid'] != $item['stockid']) {
+						print_r('UNKNOWN ERROR! cnote stockid != cnote[invoce] stockid!');
+						print_r($cnote['invoice']['content']);
+						print_r($item);
+						print_r($cnote);
+						$this->db->RollbackTrans();
+						exit;
+					}
+					$LMSST->StockSell($cnote['invoice']['id'], $cnote['invoice']['content'][$item['itemid']]['stockid'], $cnote['invoice']['content'][$item['itemid']]['grossprice'], $cnote['invoice']['sdate'], $cnote['invoice']['content'][$item['itemid']]['count']); 
+				}	
+			}
+		}
 	}
 
-        $document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
         $document_manager->DeleteDocumentAddresses($invoiceid);
 
 	$this->db->Execute('DELETE FROM documents WHERE id = ?', array($invoiceid));
@@ -3038,12 +3056,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         ic.diff_count, ic.diff_netprice, ic.diff_grossprice, ic.diff_netvalue, ic.diff_taxvalue, ic.diff_grossvalue, ic.netflag,
 			ic.itemid, ic.taxid, ic.taxrate AS taxvalue, taxes.label AS taxlabel, taxcategory,
 			cash.servicetype, prodid, content, ic.count, ic.description AS description,
-			tariffid, ic.itemid, pdiscount, vdiscount, sica.stockid, sca.cashid
+			tariffid, ic.itemid, pdiscount, vdiscount, sica.stockid, sca.id as stckcashassid, cash.id as cashid
 				FROM vinvoicecontents ic
 				LEFT JOIN taxes ON taxid = taxes.id
 				LEFT JOIN stck_invoicecontentsassignments sica ON sica.icdocid = docid AND sica.icitemid = itemid
 				LEFT JOIN cash ON cash.docid = ic.docid AND cash.itemid = ic.itemid
-				LEFT JOIN stck_cashassignments sca ON sca.cashid = cash.itemid AND sca.stockid = sica.stockid
+				LEFT JOIN stck_cashassignments sca ON sca.cashid = cash.id AND sca.stockid = sica.stockid
 				WHERE ic.docid = ?
 				ORDER BY ic.itemid', 'itemid', array($invoiceid))) || (!ConfigHelper::getConfig('phpui.stock') && $result['content'] = $this->db->GetAllByKey('SELECT ic.value AS value,
                         ic.netprice, ic.grossprice, ic.netvalue, ic.taxvalue AS totaltaxvalue, ic.grossvalue,

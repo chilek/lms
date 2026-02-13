@@ -69,7 +69,7 @@ if (isset($_GET['id']) && $action == 'init') {
     $SESSION->remove('cnoteerror', true);
 
     $taxeslist = $LMS->GetTaxes($invoice['cdate'], $invoice['cdate']);
-
+    
     foreach ($invoice['content'] as $item) {
         $nitem['tariffid']  = $item['tariffid'];
         $nitem['servicetype'] = $item['servicetype'];
@@ -91,10 +91,16 @@ if (isset($_GET['id']) && $action == 'init') {
         $nitem['taxcategory'] = $item['taxcategory'];
         $nitem['itemid']    = $item['itemid'];
         $nitem['deleted'] = empty($item['total']);
-        $invoicecontents[$nitem['itemid']] = $nitem;
+
+	if (ConfigHelper::getConfig('phpui.stock')) { //Added for lms-stock stck STCK Sarenka
+                $nitem['stckproductid'] = $nitem['stockid'] = $item['stockid'];
+                $nitem['stckgtuid'] = $item['taxcategory'];
+        }
+
+	$invoicecontents[$nitem['itemid']] = $nitem;
     }
     $invoice['content'] = $invoicecontents;
-
+    
     $currtime = time();
     $cnote['cdate'] = $currtime;
     //$cnote['sdate'] = $currtime;
@@ -470,8 +476,12 @@ switch ($action) {
             break;
         }
 
-        $invoicecontents = $invoice['content'];
-        $newcontents = r_trim($_POST);
+	$invoicecontents = $invoice['content'];
+	
+	$newcontents = r_trim($_POST);
+
+	if (ConfigHelper::getConfig('phpui.stock')) //Added for lms-stock stck STCK Sarenka
+		$stckUnSell = array();
 
         foreach ($contents as $item) {
             $idx = $item['itemid'];
@@ -524,7 +534,9 @@ switch ($action) {
                     $contents[$idx]['vdiscount'] = 0;
                     $contents[$idx]['valuenetto'] = f_round($invoicecontents[$idx]['valuenetto']);
                     $contents[$idx]['cash'] = f_round($invoicecontents[$idx]['s_valuebrutto']);
-                    $contents[$idx]['count'] = 0;
+		    $contents[$idx]['count'] = 0;
+		    if (ConfigHelper::getConfig('phpui.stock'))//Added for lms-stock stck SARENKA
+			    $stckUnSell[] = $invoicecontents[$idx]['stockid'];
                 } elseif (empty($contents[$idx]['valuenetto'])) {
                     $contents[$idx]['pdiscount'] = 0;
                     $contents[$idx]['vdiscount'] = 0;
@@ -578,7 +590,9 @@ switch ($action) {
                     $contents[$idx]['vdiscount'] = 0;
                     $contents[$idx]['valuebrutto'] = f_round($invoicecontents[$idx]['valuebrutto']);
                     $contents[$idx]['cash'] = f_round($invoicecontents[$idx]['s_valuebrutto']);
-                    $contents[$idx]['count'] = 0;
+		    $contents[$idx]['count'] = 0;
+		    if (ConfigHelper::getConfig('phpui.stock'))//Added for lms-stock stck SARENKA
+			    $stckUnSell[] = $invoicecontents[$idx]['stockid'];
                 } elseif (empty($contents[$idx]['valuebrutto'])) {
                     $contents[$idx]['pdiscount'] = 0;
                     $contents[$idx]['vdiscount'] = 0;
@@ -713,8 +727,8 @@ switch ($action) {
         if (isset($hook_data['error']) && is_array($hook_data['error'])) {
             $error = array_merge($error, $hook_data['error']);
         }
-
-        if (!empty($error)) {
+	
+	if (!empty($error)) {
             foreach ($contents as $item) {
                 $idx = $item['itemid'];
                 $contents[$idx]['taxid'] = $newcontents['taxid'][$idx];
@@ -742,7 +756,11 @@ switch ($action) {
 
         if ($SYSLOG) {
             $tables = array_merge($tables, array('logmessages', 'logmessagekeys', 'logmessagedata'));
-        }
+	}
+
+	if (ConfigHelper::getConfig('phpui.stock'))//Added for lms-stock stck SARENKA
+		$tables = array_merge($tables, array('stck_stock','stck_invoicecontentsassignments','stck_cashassignments'));
+
         $DB->LockTables($tables);
 
         if (!isset($cnote['number']) || !$cnote['number']) {
@@ -886,11 +904,15 @@ switch ($action) {
                 $args,
                 array('div_' . SYSLOG::getResourceKey(SYSLOG::RES_DIV))
             );
-        }
+	}
 
-        $DB->UnLockTables();
+	if (ConfigHelper::getConfig('phpui.stock') && count($stckUnSell))//Added for lms-stock stck SARENKA
+		foreach($stckUnSell as $sus)
+			$LMSST->StockUnSell($sus, 'Korekta: '.$fullnumber);
+	
+	$DB->UnLockTables();
 
-        foreach ($contents as $idx => $item) {
+	foreach ($contents as $idx => $item) {
             $item['valuebrutto'] = str_replace(',', '.', $item['valuebrutto']);
             $item['valuenetto'] = str_replace(',', '.', $item['valuenetto']);
             $item['count'] = str_replace(',', '.', $item['count']);
@@ -914,6 +936,12 @@ switch ($action) {
             $DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxid, taxcategory, prodid, content, count, pdiscount, vdiscount, description, tariffid)
 					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
+	    if (ConfigHelper::getConfig('phpui.stock')) {//Added for lms-stock stck SARENKA
+		    if (isset($item['stockid']))
+	    		    $DB->Execute('INSERT INTO stck_invoicecontentsassignments (icdocid, icitemid, stockid)
+	    			    VALUES(?, ?, ?)', array($id, $idx, $item['stockid']));
+	    }
+
             if ($SYSLOG) {
                 $args[SYSLOG::RES_CUST] = $invoice['customerid'];
                 $SYSLOG->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_ADD, $args);
@@ -935,7 +963,13 @@ switch ($action) {
                 );
                 $DB->Execute('INSERT INTO cash (time, userid, value, currency, currencyvalue, taxid, customerid, comment, docid, itemid, servicetype)
 					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
-                if ($SYSLOG) {
+
+		if (ConfigHelper::getConfig('phpui.stock') && count($stckUnSell)) {
+			$balance = $DB->GetLastInsertID();
+			$LMSST->BalanceAddStockID($item['stockid'], $balance, '0');
+		}
+
+		if ($SYSLOG) {
                     unset($args[SYSLOG::RES_USER]);
                     $args[SYSLOG::RES_CASH] = $DB->GetLastInsertID('cash');
                     $SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_ADD, $args);
@@ -1026,4 +1060,7 @@ $SMARTY->assign('suggested_flags', array(
     'telecomservice' => true,
 ));
 
-$SMARTY->display('invoice/invoicenotemodify.html');
+if (ConfigHelper::getConfig('phpui.stock')) //Added for STCK by Sarenka MAXCON
+	$SMARTY->display('stck/invoicenotemodify.stck.html');
+else
+	$SMARTY->display('invoice/invoicenotemodify.html');

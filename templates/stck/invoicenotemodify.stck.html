@@ -1,0 +1,874 @@
+{extends file="layout.html"}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+
+<style>
+
+	.servicetype-taxcategory {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+</style>
+
+<script src="js/lms-ui-deadline-selection.js"></script>
+<script>
+
+	$(function () {
+		checkChanges();
+	});
+
+	function checkChanges() {
+		let contentDiff = '{$cnote.content_diff}';
+		if (!parseInt(contentDiff)) {
+			alertDialog($t("Nothing has changed in positions of the document!"));
+			return;
+		}
+	}
+
+	function saveInvoice() {
+		$('.invoice-contents-field-grossprice').prop('disabled', false);
+		$('.invoice-contents-field-netprice').prop('disabled', false);
+		$('#additem-subform :input').prop('disabled', true);
+
+		var which = 0;
+		$('form[name="contents"] [name^="which"]:checked').each(function() {
+			which += parseInt($(this).val());
+		});
+
+		document.contents.action += "&action=save&which=" + which;
+		document.contents.submit();
+	}
+
+	function printInvoice() {
+		$('.invoice-contents-field-grossprice').prop('disabled', false);
+		$('.invoice-contents-field-netprice').prop('disabled', false);
+
+		var which = 0;
+		$('form[name="contents"] [name^="which"]:checked').each(function() {
+			which += parseInt($(this).val());
+		});
+
+		document.contents.action = "?m={$layout.module}&action=save&print=1&which=" + which;
+		document.contents.submit();
+	}
+
+	function updateDocumentFlags() {
+		$.ajax({
+			data: {
+				updatedocumentflags: 1,
+				customerid: {$refdoc.customerid},
+				cdate: $('[name="cnote[cdate]"]').val(),
+				value: $('#s-valuebrutto').val()
+			},
+			dataType: "json",
+			success: function(result) {
+				$('#splitpayment').toggle(result.splitpayment);
+				if (!result.splitpayment) {
+					$('#splitpayment :checkbox').prop('checked', false);
+				}
+				//$('#telecomservice').toggle(result.telecomservice);
+				if (!result.telecomservice) {
+					$('#telecomservice :checkbox').prop('checked', false);
+				}
+			}
+		});
+	}
+
+	$(function() {
+		$('form[name="setheader"] [name="cnote[number]"]').focus();
+
+		$('.note-alert').click(function() {
+			alertDialog($t("There are errors in credit note main information!"), this);
+			return;
+		});
+
+		$('[name="cnote[cdate]"]').change(function(e, init) {
+			if (typeof(init) === 'undefined' || !init) {
+				updateDocumentFlags();
+			}
+			if ($("#copy-cdate").prop('checked')) {
+				var date = $(this).datepicker("getDate");
+				$('input[type="text"][name="cnote[sdate]').datepicker("setDate", date);
+				$('[type="hidden"][name="cnote[sdate]"]').val(sprintf("%04d/%02d/%02d", date.getFullYear(), date.getMonth() + 1, date.getDate()));
+			}
+		});
+
+		$('#copy-cdate').change(function(e, init) {
+			var checked = $(this).prop('checked');
+			$('input[type="text"][name="cnote[sdate]"]').datepicker("option", "disabled", checked);
+			if (checked) {
+				$('[name="cnote[cdate]"]').trigger('change', typeof(init) !== 'undefined' && init);
+			}
+		}).trigger('change', true);
+	});
+
+	$('body').on('change', '.template-selector', function() {
+		var selected = $('option:selected', this);
+		if (parseInt(selected.val()) == 0) {
+			return;
+		}
+		$('[name="cnote[reason]"]').val(Base64.decode(selected.attr('data-message')));
+	});
+
+</script>
+
+{$default_taxrate = ConfigHelper::getConfig('phpui.default_taxrate')}
+{$default_taxlabel = ConfigHelper::getConfig('phpui.default_taxlabel')}
+
+<form name="setheader" method="POST" action="?m={$layout.module}&action=setheader">
+	<input type="submit" class="hiddenbtn">
+	<input type="hidden" name="cnote[netflag]" value="{$cnote.netflag}">
+
+	<table class="lmsbox">
+		<colgroup>
+			<col style="width: 1%;">
+			<col style="width: 99%;">
+		</colgroup>
+		<thead>
+			<tr>
+				<td class="bold" colspan="2">
+					{trans("Main Information:")}
+				</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="nobr">
+					<strong>{trans("Credit note number:")}</strong>
+				</td>
+				<td class="nobr">
+					{numberplan_selection
+						cdate_selector    = "[name='cnode[cdate]']"
+						numberplanlist    = $numberplanlist
+						input_name        = "cnote[number]"
+						input_value       = $cnote.number
+						select_name       = "cnote[numberplanid]"
+						selected          = $cnote.numberplanid
+						number_trigger    = "number"
+						plan_trigger      = "numberplanid"
+						time              = $cnote.cdate
+						customer_id       = $refdoc.customerid
+						planDocumentType  = $planDocumentType
+					}
+				</td>
+			</tr>
+			<tr>
+				<td class="bold nobr">
+					{trans("Settlement date:")}
+				</td>
+				<td class="nobr">
+					{if ConfigHelper::checkPrivilege("invoice_consent_date")}
+						<input type="text" name="cnote[cdate]" value="{$cnote.cdate|date_format:"Y/m/d"}" size="12"
+							placeholder="{trans("yyyy/mm/dd")}" data-cdate="{$cnote.cdate}"
+							{tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}
+						>
+						{if $cnote.cdatewarning}
+							<input type="hidden" name="cnote[cdatewarning]" value="1">
+						{/if}
+					{else}
+						<input type="hidden" name="cnote[cdate]" value="{$cnote.cdate|date_format:"Y/m/d"}">
+						{$cnote.cdate|date_format:"Y-m-d"}
+					{/if}
+				</td>
+			</tr>
+			<tr>
+				<td class="bold nobr">
+					{trans("Sale date:")}
+				</td>
+				<td class="nobr">
+					<input type="hidden" name="cnote[sdate]" value="{$cnote.sdate|date_format:"Y/m/d"}">
+					{if ConfigHelper::checkPrivilege("invoice_sale_date")}
+						<input type="text" name="cnote[sdate]" value="{$cnote.sdate|date_format:"Y/m/d"}" size="12"
+							placeholder="{trans("yyyy/mm/dd")}"
+							{tip class="lms-ui-date" text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}
+							{if !empty($cnote['copy-cdate'])} disabled{/if}>
+					{else}
+						{$cnote.sdate|date_format:"Y-m-d"}
+					{/if}
+					<label>
+						<input type="checkbox" name="cnote[copy-cdate]" id="copy-cdate" value="1"
+								{if !empty($cnote['copy-cdate'])} checked{/if}>
+						{trans("copy consent date")}
+					</label>
+				</td>
+			</tr>
+			<tr>
+				<td class="bold nobr">
+					{trans("Deadline:")}
+				</td>
+				<td class="nobr">
+					{deadline_selection name="cnote[deadline]" id="deadline" cdate_selector="[name='cnote[cdate]']" value=$cnote.deadline}
+				</td>
+			</tr>
+			<tr>
+				<td class="bold nobr">
+					{trans("Payment type (cash/transfer/etc):")}
+				</td>
+				<td class="nobr">
+					{paytypes elemname="cnote[paytype]" selected=$cnote.paytype}
+				</td>
+			</tr>
+			<tr>
+				<td class="bold nobr">
+					{trans("Document flags:")}
+				</td>
+				<td class="nobr">
+					<label id="splitpayment" {tip text="translates into JPK MPP flag"}
+						{if empty($suggested_flags.splitpayment)} style="display: none;"{/if}
+					>
+						<input type="checkbox" name="cnote[splitpayment]" value="1"
+							{if !empty($suggested_flags.splitpayment) && $cnote.splitpayment} checked{/if}
+						>
+						{trans("split payment")}
+					</label>
+					<label {tip text="translates into JPK FP flag"}>
+						<input type="checkbox" name="cnote[flags][{$smarty.const.DOC_FLAG_RECEIPT}]" value="1"
+							{if $cnote.flags[$smarty.const.DOC_FLAG_RECEIPT]} checked{/if}
+						>
+						{trans("<!invoice>receipt")}
+					</label>
+					<label id="telecomservice" {tip text="translates into JPK EE flag"}
+						{if empty($suggested_flags.telecomservice)} style="display: none;"{/if}
+					>
+						<input type="checkbox" name="cnote[flags][{$smarty.const.DOC_FLAG_TELECOM_SERVICE}]" value="1"
+							{if $cnote.flags[$smarty.const.DOC_FLAG_TELECOM_SERVICE]} checked{/if}
+						>
+						{trans("<!invoice>telecommunication service")}
+					</label>
+				</td>
+			</tr>
+			<tr>
+				<td class="bold nobr">
+					{trans("Accounting")}
+				</td>
+				<td class="nobr">
+					<label>
+						<input type="radio" id="ingross" name="cnote[netflag]" value="0"
+							{if !$cnote.netflag} checked{/if} disabled
+						>
+						{trans("gross")}
+					</label>
+					<label>
+						<input type="radio" id="innet" name="cnote[netflag]" value="1"
+							{if $cnote.netflag} checked{/if} disabled
+						>
+						{trans("net")}
+					</label>
+				</td>
+			</tr>
+			{if $refdoc.divisionid != $refdoc.current_divisionid}
+				<tr>
+					<td class="bold nobr">
+						{trans("Use current division data:")}
+					</td>
+					<td class="nobr">
+						<input type="checkbox" name="cnote[use_current_division]" value="1"
+							{if $cnote.use_current_division} checked{/if}
+							{tip text="Seller data change"}
+						>
+					</td>
+				</tr>
+			{/if}
+			<tr>
+				<td class="bold nobr">
+					<label for="use_current_customer_data">{trans("Use current customer data:")}</label>
+				</td>
+				<td class="nobr">
+					<input type="checkbox" id="use_current_customer_data" name="cnote[use_current_customer_data]" value="1"
+						{if $cnote.use_current_customer_data} checked{/if}
+						{tip text="Check it if you want to use current customer data"}
+					>
+				</td>
+			</tr>
+			<tr>
+				<td class="bold">{trans("Currency:")}</td>
+				<td>
+					{currency_selection selected=$cnote.currency elementname="cnote[currency]" locked=true}
+				</td>
+			</tr>
+			<tr>
+				<td class="bold">{trans("Recipient address:")}</td>
+				<td>
+					{if $cnote.customerid && $cnote.recipient_address_id}
+						{$selected_address_id = $cnote.recipient_address_id}
+					{else}
+						{$selected_address_id = null}
+					{/if}
+					{include file="customer/customeraddresses.html" id="customer_addresses" name="cnote[recipient_address_id]"
+						trigger="address_id" selected_address_id=$selected_address_id preselection=false}
+				</td>
+			</tr>
+			<tr{if empty($messagetemplates)} style="display: none;"{/if}>
+				<td class="bold nobr">
+					{trans("Reason template:")}
+				</td>
+				<td class="nobr">
+					{include file="invoice/invoicenotereasontemplates.html" templates=$messagetemplates}
+				</td>
+			</tr>
+			<tr>
+				<td class="bold nobr">
+					{trans("Reason:")}
+				</td>
+				<td class="nobr">
+					<textarea name="cnote[reason]" rows="4" cols="50" {tip text="Enter reason (optional)"}>{$cnote.reason}</textarea>
+				</td>
+			</tr>
+			<tr>
+				<td class="lms-ui-box-buttons" colspan="2">
+					{button type="submit" icon="save" label="Submit"}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</form>
+
+<br>
+
+<form name="contents" id="contents" method="POST" action="?m={$layout.module}">
+	<input type="submit" class="hiddenbtn">
+
+	<table class="lmsbox lms-ui-background-cycle">
+		<colgroup>
+			<col style="width: 1%;">
+			<col style="width: 91%;">
+			<col style="width: 1%;">
+			<col style="width: 1%;">
+			<col style="width: 1%;">
+			<col style="width: 1%;">
+			<col style="width: 1%;">
+			<col style="width: 1%;">
+			<col style="width: 1%;">
+			<col style="width: 1%;">
+		</colgroup>
+		<thead>
+			<tr>
+				<td class="bold">
+					{trans("No.")}
+				</td>
+				<td>
+					{trans("Name of product, commodity or service")}
+				</td>
+				<td>
+					{trans("Type")}
+					<br>
+					{trans("Tax category")}
+				</td>
+				<td class="nobr">
+					{trans("Product ID")}
+				</td>
+				<td class="text-right">
+					{trans("Amount")}<br>
+					{trans("Unit")}
+				</td>
+				<td class="text-right nobr">
+					{trans("Discount")}
+				</td>
+				<td class="text-right nobr">
+					{trans("Net Price")}
+				</td>
+				<td class="text-right">
+					{trans("Tax")}
+				</td>
+				<td class="text-right nobr">
+					{trans("Gross Price")}
+				</td>
+				<td>
+					&nbsp;
+				</td>
+			</tr>
+		</thead>
+		<tbody>
+		{foreach $contents as $itemid => $item}
+			<tr class="highlight{if $item.deleted} blend{/if}">
+				<td class="bold">
+					{$itemid}.
+				</td>
+				<td>
+					{if $item.deleted}
+						<input type="hidden" value="{$item.name|escape}" name="name[{$itemid}]">
+						{$item.name|escape|nl2br}
+					{else}
+						<textarea class="lms-ui-autogrow" name="name[{$itemid}]"
+							cols="40" rows="1" style="width: 300px;"
+						>{$item.name|escape}</textarea>
+					{/if}
+					{if isset($item.name_custom_contents)}
+						{$item.name_custom_contents}
+					{/if}
+					{if $item.stckproductid}
+						<INPUT TYPE="hidden" NAME="stockid[{$itemid}]" value="{$item.stckproductid}"><!-- Added for STCK by Sarenka MAXCON -->
+						<INPUT TYPE="hidden" NAME="stckgtuid[{$itemid}]" value="{$item.stckgtuid}"><!-- Added for STCK by Sarenka MAXCON -->
+					{/if}
+				</td>
+				<td>
+					<div class="servicetype-taxcategory">
+						{if $item.deleted}
+							<input type="hidden" value="{$item.servicetype}" name="servicetype[{$itemid}]">
+							{if isset($_SERVICETYPES[$item.servicetype])}
+								<span class="invoice-contents-field-value">{$_SERVICETYPES[$item.servicetype]}</span>
+							{else}
+								{trans("— none —")}
+							{/if}
+
+							<input type="hidden" value="{$item.taxcategory}" name="taxcategory[{$itemid}]">
+
+							{if $item.taxcategory}
+								<span {tip text=$_TAX_CATEGORIES[$item.taxcategory].description}>{strip}
+									({sprintf('%02d', $item.taxcategory)}) {$_TAX_CATEGORIES[$item.taxcategory].label}
+								{/strip}</span>
+							{else}
+								{trans("— none —")}
+							{/if}
+						{else}
+							<select name="servicetype[{$itemid}]">
+								<option value="">{trans("— none —")}</option>
+								{foreach $_SERVICETYPES as $servicetype => $label}
+									<option value="{$servicetype}"{if $item.servicetype == $servicetype} selected{/if}>{$label}</option>
+								{/foreach}
+							</select>
+							{tax_category_selection elementname="taxcategory["|cat:$itemid|cat:"]" selected=$item.taxcategory
+								tip="Select tax category"}
+						{/if}
+					</div>
+				</td>
+				<td class="nobr">
+					{if $item.deleted}
+						<input type="hidden" value="{$item.prodid}" name="prodid[{$itemid}]">
+						{$item.prodid}
+					{else}
+						<input type="text" value="{$item.prodid}" name="prodid[{$itemid}]" size="6">
+					{/if}
+				</td>
+				<td>
+					{if $item.deleted}
+						<input type="hidden" value="{$item.count}" name="count[{$itemid}]">
+						{$item.count|string_format:"%.3f"}
+						<input type="hidden" value="{$item.content}" name="content[{$itemid}]">
+						{$item.content}
+					{else}
+						<input type="text" value="{$item.count}" name="count[{$itemid}]" size="3">
+						<input type="text" value="{$item.content}" name="content[{$itemid}]" size="3">
+					{/if}
+				</td>
+				<td class="text-right nobr">
+					{if $item.deleted}
+						<input type="hidden" name="discount[{$itemid}]"
+							value="{strip}
+								{if $item.pdiscount != 0}
+									{$item.pdiscount|string_format:"%.2f"}
+								{else}
+									{if $item.vdiscount != 0}
+										{$item.vdiscount|string_format:"%.2f"}
+									{/if}
+								{/if}
+							{/strip}"
+						>
+						<input type="hidden" name="discount_type[{$itemid}]"
+							value="{strip}
+								{if $item.pdiscount != 0}
+									{$smarty.const.DISCOUNT_PERCENTAGE}
+								{else}
+									{if $item.vdiscount != 0}
+										{$smarty.const.DISCOUNT_AMOUNT}
+									{/if}
+								{/if}
+							{/strip}"
+						>
+						{if $item.pdiscount != 0}
+							{$item.pdiscount|string_format:"%.2f%%"}
+						{else}
+							{if $item.vdiscount != 0}
+								{$item.vdiscount|money_format}
+							{/if}
+						{/if}
+					{else}
+						<input type="text" name="discount[{$itemid}]"
+							value="{strip}
+								{if $item.pdiscount != 0}
+									{$item.pdiscount|string_format:"%.2f"}
+								{else}
+									{if $item.vdiscount != 0}
+										{$item.vdiscount|string_format:"%.2f"}
+									{/if}
+								{/if}
+							{/strip}"
+							size="6" {tip text="Enter discount percentage or value"}
+						>
+						<br>
+						<select name="discount_type[{$itemid}]">
+							{foreach from=$_DISCOUNTTYPES item=item2 key=key}
+								<option value="{$key}" {if ($item.pdiscount != 0 && $key == $smarty.const.DISCOUNT_PERCENTAGE) || ($item.vdiscount != 0 && $key == $smarty.const.DISCOUNT_AMOUNT)} selected{/if}>{$item2}</option>
+							{/foreach}
+						</select>
+					{/if}
+				</td>
+				<td class="text-right nobr">
+					{if $item.deleted}
+						<input type="hidden" value="{$item.valuenetto}" name="valuenetto[{$itemid}]">
+						{$item.valuenetto|money_format}
+					{else}
+						<input type="text" class="invoice-contents-field-netprice" name="valuenetto[{$itemid}]" size="6"
+							value="{$item.valuenetto|string_format:"%.2f"}"
+							onchange="calculatePositionPriceFromNet({$itemid}, this)"
+							{tip text="Enter unitary value without discount"}
+							{if !$cnote.netflag} disabled{/if}
+						>
+					{/if}
+
+					{if isset($item.valuenetto_custom_contents)}
+						{$item.valuenetto_custom_contents}
+					{/if}
+				</td>
+				<td class="text-right nobr">
+					{if $item.deleted}
+						<input type="hidden" value="{$item.taxid}" name="taxid[{$itemid}]">
+						{$item.tax}
+					{else}
+						<select size="1" name="taxid[{$itemid}]" id="invoice-contents-field-tax-{$itemid}" {tip text="Select Tax rate"}
+								onchange="calculatePositionPriceOnTaxChange({$itemid})"
+						>
+							{foreach $taxeslist as $tax}
+								<option value="{$tax.id}"{if $tax.id == $item.taxid} selected{/if}>{$tax.label}</option>
+							{/foreach}
+						</select>
+
+						{foreach $taxeslist as $tax}
+							<input type="hidden" id="contents-tax-{$itemid}-{$tax.id}" name="tax{$tax.id}" value="{$tax.value}" disabled>
+						{/foreach}
+					{/if}
+				</td>
+				<td class="text-right nobr">
+					{if $item.deleted}
+						<input type="hidden" value="{if !empty($item.valuebrutto)}{$item.valuebrutto}{/if}" name="valuebrutto[{$itemid}]">
+						{if !empty($item.valuebrutto)}
+							{$item.valuebrutto|money_format}
+						{/if}
+					{else}
+						<input type="text" class="invoice-contents-field-grossprice" name="valuebrutto[{$itemid}]" size="6"
+							value="{if !empty($item.valuebrutto)}{$item.valuebrutto|string_format:"%.2f"}{/if}"
+							onchange="calculatePositionPriceFromGross({$itemid}, this)"
+							{tip text="Enter unitary value without discount"}
+							{if $cnote.netflag} disabled{/if}
+						>
+						<br>
+					{/if}
+					{if isset($item.valuebrutto_custom_contents)}
+						{$item.valuebrutto_custom_contents}
+					{/if}
+				</td>
+				<td class="nobr">
+					{if $item.deleted}
+						{button type="link" icon="recover" tip="Recover this item" href="?m={$layout.module}&action=recoverpos&itemid={$itemid}"}
+					{else}
+						{button type="link" icon="delete" tip="Remove this item" href="?m={$layout.module}&action=deletepos&itemid={$itemid}"}
+					{/if}
+				</td>
+			</tr>
+		{/foreach}
+		{if $contents}
+			<tr>
+				<td colspan="6" class="bold text-right">
+					{trans("Total:")}
+				</td>
+				<td class="bold nobr text-right">
+					{sum array=$contents column=s_valuenetto string_format="%01.2f"}
+				</td>
+				<td>
+					&nbsp;
+				</td>
+				<td class="bold nobr text-right">
+					{sum assign="s_valuebrutto" array=$contents column=s_valuebrutto}
+					{$s_valuebrutto|string_format:"%01.2f"}
+					<input type="hidden" id="s-valuebrutto" value="{$s_valuebrutto}">
+				</td>
+				<td>
+					&nbsp;
+				</td>
+			</tr>
+		{else}
+			<input type="hidden" id="s-valuebrutto" value="0">
+		{/if}
+		</tbody>
+		<tfoot id="additem-subform">
+			{block name="`$layout.module`-additem"}
+				{if !$invoice.closed}
+					<tr>
+						<td class="bold nobr" rowspan="2">
+							{count($contents) + 1}.
+						</td>
+						<td class="nobr" id="other-selection" colspan="9">
+							{block name="`$layout.module`-other-selection"}
+							{/block}
+						</td>
+					</tr>
+					<tr style="border: none;">
+						<td>
+							<div id="tariff-selection">
+								{block name="`$layout.module`-tariff-selection"}
+									<select size="1" name="tariffid" id="tariff-select" style="width: 300px"
+											class="lms-ui-advanced-select-test" onchange="setItem(document.contents.tariffid.value)">
+										<option value="0">— {trans("Select tariff")} —</option>
+										{foreach $tariffs as $tariff}
+											{if $tariff.currency == $invoice.currency && $tariff.netflag == $invoice.netflag}
+												<option value="{$tariff.id}"
+													data-tariffvalue="{$tariff.value}"
+													data-tariffnetvalue="{$tariff.netvalue}"
+													data-tariffpricevariants='{json_encode($tariff.price_variants)}'
+												>{$tariff.name} ({moneyf($tariff.value, $tariff.currency, 3)})</option>
+											{/if}
+										{/foreach}
+									</select>
+								{/block}
+								{*
+								<input type="text" name="name" size="40" style="width:300px"
+									   value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.name}{/if}"
+									   placeholder="{trans('... or enter description')}"
+								>
+								*}
+								<textarea name="name" cols="40" rows="1" class="lms-ui-autogrow lms-ui-autocomplete" style="width:300px"
+										  placeholder="{trans('... or enter description')}"
+								>{if isset($itemdata) && !isset($error.posuid)}{$itemdata.name|escape}{/if}</textarea>
+								<span id="tariff-price-variants"></span>
+							</div>
+						</td>
+						<td class="nobr">
+							<div class="servicetype-taxcategory">
+								<select name="servicetype">
+									<option value="">{trans("— none —")}</option>
+									{foreach $_SERVICETYPES as $servicetype => $label}
+										<option value="{$servicetype}">{$label}</option>
+									{/foreach}
+								</select>
+
+								{if isset($itemdata) && !isset($error.posuid)}
+									{$taxcategory = $itemdata.taxcategory}
+								{else}
+									{$taxcategory = 0}
+								{/if}
+
+								{tax_category_selection elementname="taxcategory" tip="Select tax category" selected=$taxcategory}
+							</div>
+						</td>
+						<td class="text-right">
+							<input type="text" name="prodid" size="6">
+						</td>
+						<td class="text-right">
+							<input type="text" id="quantity" name="count" size="3" value="{if $itemdata.count}{$itemdata.count}{else}1{/if}">
+							<input type="text" name="jm" size="3" value="{trans(ConfigHelper::getConfig('payments.default_unit_name'))}">
+						</td>
+						<td class="text-right">
+							<input type="text" id="discount_value" name="discount" size="6" {tip text="Enter discount percentage or amount"}
+								   value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.discount}{/if}"
+							>
+							<select id="discount_type" name="discount_type">
+								{foreach from=$_DISCOUNTTYPES item=item key=key}
+									<option value="{$key}">{$item}</option>
+								{/foreach}
+							</select>
+						</td>
+						<td class="text-right nobr">
+							<input type="text" id="netprice" name="valuenetto" size="6" {tip text="Enter unitary value without discount"}
+								   value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.valuenetto}{/if}"
+									{if !$invoice.netflag} disabled{/if}
+							>
+						</td>
+						<td class="text-right nobr">
+							<select size="1" id="tax" name="taxid" {tip text="Select Tax rate"}>
+								{foreach $taxeslist as $tax}
+									<option value="{$tax.id}"
+											{if $itemdata.taxid && $itemdata.taxid == $tax.id
+											|| (!$itemdata.taxid && (isset($default_taxlabel) && $tax.label == $default_taxlabel
+											|| !isset($default_taxlabel) && $tax.value == $default_taxrate))} selected{/if}
+									>{$tax.label}</option>
+								{/foreach}
+							</select>
+
+							{foreach $taxeslist as $tax}
+								<input type="hidden" id="tax{$tax.id}" name="tax{$tax.id}" value="{$tax.value}" disabled>
+							{/foreach}
+							<br>
+						</td>
+						<td class="text-right nobr">
+							<input type="text" id="grossprice" name="valuebrutto" size="6" {tip text="Enter unitary value without discount"}
+								   value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.valuebrutto}{/if}"
+									{if $invoice.netflag} disabled{/if}
+							>
+						</td>
+						<td>
+							{button type="link" icon="save" tip="Add item" onclick="addItem();"}
+						</td>
+					</tr>
+				{/if}
+			{/block}
+			<tr class="lms-ui-button-panel">
+				<td colspan="10" class="text-right">
+					{$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
+					<label>
+						<input type="checkbox" name="which[{$smarty.const.DOC_ENTITY_ORIGINAL}]"
+							   value="{$smarty.const.DOC_ENTITY_ORIGINAL}"
+								{if preg_match('/original/i', $default_printpage)} checked{/if}
+						>
+						{$_DOCENTITIES[$smarty.const.DOC_ENTITY_ORIGINAL]}
+					</label>
+					<label>
+						<input type="checkbox" name="which[{$smarty.const.DOC_ENTITY_COPY}]"
+							   value="{$smarty.const.DOC_ENTITY_COPY}"
+								{if preg_match('/copy/i', $default_printpage)} checked{/if}
+						>
+						{$_DOCENTITIES[$smarty.const.DOC_ENTITY_COPY]}
+					</label>&nbsp;
+					{button icon="cancel" label="Cancel" href="?m=invoicelist"}
+					{button icon="save" label="Save" onclick="saveInvoice();"}
+					{button icon="print" label="Save & Print" onclick="printInvoice();"}
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+</form>
+
+<script>
+
+	const netFlagElem = $("#innet");
+	const netPriceElem = $("#netprice");
+	const grossPriceElem = $("#grossprice");
+	const taxElem = $("#tax");
+
+	initAdvancedSelectsTest('#customer_addresses');
+
+	function setItem(index) {
+		$('#tariff-price-variants').html('');
+		taxElem.prop('disabled', false);
+
+		if (netFlagElem.is(':checked')) {
+			netPriceElem.prop('disabled', false);
+		} else {
+			grossPriceElem.prop('disabled', false);
+		}
+
+		let e = document.contents;
+
+		if (index == 0) {
+			e.name.innerHTML = '';
+			e.valuebrutto.value = '';
+			e.valuenetto.value = '';
+			e.prodid.value = '';
+			e.tariffid.value = '';
+			$(e.taxcategory).val(0);
+			$(e.servicetype).val('');
+			e.count.value = 1;
+		} else {
+			{foreach $tariffs as $tariff}
+			if (index == {$tariff.id}) {
+				let grossPrice = '{$tariff.value}';
+				let netPrice = '{$tariff.netvalue}';
+				e.name.innerHTML = '{str_replace("'", "\\'", $tariff.name)}';
+				e.taxid.value = '{$tariff.taxid}';
+				e.prodid.value = '{$tariff.prodid}';
+				e.tariffid.value = '{$tariff.id}';
+				$(e.taxcategory).val({$tariff.taxcategory});
+				$(e.servicetype).val({$tariff.tarifftype});
+
+				let tariffPriceVariants = '{json_encode($tariff.price_variants)}';
+				const tariffPriceVariantsObj = JSON.parse(tariffPriceVariants);
+				if (Object.keys(tariffPriceVariantsObj).length > 0) {
+					// draw info with tariff price variants
+					drawPriceVariants(tariffPriceVariantsObj, $('#tariff-price-variants'));
+
+					// get tariff price variants according to quantity
+					let quantity = $("#quantity").val();
+					let priceVariant = getPriceVariant(parseInt(quantity), tariffPriceVariantsObj);
+					if (Object.keys(priceVariant).length > 0) {
+						grossPrice = priceVariant.gross_price;
+						netPrice = priceVariant.net_price;
+					}
+				}
+				e.valuebrutto.value = (grossPrice ? grossPrice.replace(/[.]+/, ',') : '');
+				e.valuenetto.value = (netPrice ? netPrice.replace(/[.]+/, ',') : '');
+				return;
+			}
+			{/foreach}
+		}
+	}
+
+	function addItem() {
+		netPriceElem.prop('disabled', false);
+		grossPriceElem.prop('disabled', false);
+		taxElem.prop('disabled', false);
+		document.contents.action += '&action=additem';
+		document.contents.requestSubmit();
+	}
+
+	function calculatePositionPriceFromGross(posuid, elem) {
+		let grossPriceElem = $(elem);
+		let grossPriceElemVal = grossPriceElem.val();
+		let netPriceElem = $('[name="valuenetto[' + posuid + ']"]');
+		grossPriceElemVal = parseFloat(grossPriceElemVal.replace(/[\,]+/, '.'));
+
+		if (!isNaN(grossPriceElemVal)) {
+			let selectedTaxId = $('#invoice-contents-field-tax-'+posuid).find('option:selected').val();
+			let tax = $('#contents-tax-' + posuid + '-' + selectedTaxId).val();
+
+			let grossPrice = financeDecimals.round(grossPriceElemVal);
+			let netPrice = financeDecimals.round(grossPrice / (tax / 100 + 1));
+
+			netPrice = netPrice.toFixed(2).replace(/[\.]+/, ',');
+			netPriceElem.val(netPrice);
+
+			grossPrice = grossPrice.toFixed(2).replace(/[\.]+/, ',');
+			grossPriceElem.val(grossPrice);
+		} else {
+			netPriceElem.val('');
+			grossPriceElem.val('');
+		}
+	}
+
+	function calculatePositionPriceFromNet(posuid, elem) {
+		let netPriceElem = $(elem);
+		let netPriceElemVal = netPriceElem.val();
+		let grossPriceElem = $('[name="valuebrutto[' + posuid + ']"]');
+		netPriceElemVal = parseFloat(netPriceElemVal.replace(/[\,]+/, '.'))
+
+		if (!isNaN(netPriceElemVal)) {
+			let selectedTaxId = $('#invoice-contents-field-tax-'+posuid).find('option:selected').val();
+			let tax = $('#contents-tax-' + posuid + '-' + selectedTaxId).val();
+
+			let netPrice = financeDecimals.round(netPriceElemVal);
+			let grossPrice = financeDecimals.round(netPrice * (tax / 100 + 1));
+
+			grossPrice = grossPrice.toFixed(2).replace(/[\.]+/, ',');
+			grossPriceElem.val(grossPrice);
+
+			netPrice = netPrice.toFixed(2).replace(/[\.]+/, ',');
+			netPriceElem.val(netPrice);
+		} else {
+			grossPriceElem.val('');
+			netPriceElem.val('');
+		}
+	}
+
+	function calculatePositionPriceOnTaxChange(posuid) {
+		let netPriceElem = $('[name="valuenetto[' + posuid + ']"]');
+		let grossPriceElem = $('[name="valuebrutto[' + posuid + ']"]');
+
+		if (netFlagElem.is(':checked')) {
+			calculatePositionPriceFromNet(posuid, netPriceElem);
+		} else {
+			calculatePositionPriceFromGross(posuid, grossPriceElem);
+		}
+	}
+
+	function addItem() {
+		netPriceElem.prop('disabled', false);
+		grossPriceElem.prop('disabled', false);
+		taxElem.prop('disabled', false);
+		document.contents.action += '&action=additem';
+		document.contents.submit();
+	}
+
+</script>
+{/block}
