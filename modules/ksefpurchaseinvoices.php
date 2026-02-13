@@ -64,6 +64,9 @@ if (empty($allTags)) {
     $allTags = [];
 }
 
+$dateFrom = date('Y/m/d', $startDate);
+$dateTo = date('Y/m/d 23:59:59', $endDate);
+
 $invoices = $DB->GetAll(
     'SELECT
         i.*,
@@ -85,10 +88,10 @@ $invoices = $DB->GetAll(
     ) t ON t.ksef_invoice_id = i.id
     WHERE i.permanent_storage_date BETWEEN ? AND ?',
     [
-        date('Y/m/d', $startDate),
-        date('Y/m/d 23:59:59', $endDate),
-        date('Y/m/d', $startDate),
-        date('Y/m/d 23:59:59', $endDate),
+        $dateFrom,
+        $dateTo,
+        $dateFrom,
+        $dateTo,
     ]
 );
 if (empty($invoices)) {
@@ -101,8 +104,12 @@ foreach ($invoices as &$invoice) {
     $invoice['about_to_expire'] = !$invoice['expired'] && strtotime('-7 days', $invoice['pay_date']) < $now;
     $invoice['invoice_type_name'] = $DOCTYPES[$invoice['invoice_type']] ?? KSeF::docTypeName($invoice['invoice_type']) ?? trans('<!ksef>unknown document type');
 
-    if (!empty($invoice['about_to_expire'])) {
-        $invoice['days_to_expire'] = round(($invoice['pay_date'] - $now) / 86400);
+    $pay_date_time = strtotime('tomorrow', $invoice['pay_date']) - 1;
+    if ($pay_date_time >= $now) {
+        $invoice['days_to_expire'] = round(($pay_date_time - $now) / 86400);
+        if ($invoice['days_to_expire'] < 0) {
+            $invoice['days_to_expire'] = 0;
+        }
     }
 
     if (empty($invoice['tags'])) {
@@ -117,9 +124,34 @@ foreach ($invoices as &$invoice) {
 }
 unset($invoice);
 
+$sellers = $DB->GetAll(
+    'SELECT
+        t.seller_ten AS ten,
+        t.seller_name AS name,
+        t.id
+    FROM ksefinvoices t
+    JOIN (
+        SELECT
+            seller_ten,
+            MAX(id) AS max_id
+        FROM ksefinvoices
+        WHERE permanent_storage_date BETWEEN ? AND ?
+        GROUP BY seller_ten
+    ) m ON m.seller_ten = t.seller_ten AND m.max_id = t.id
+    WHERE t.permanent_storage_date BETWEEN ? AND ?
+    ORDER BY t.seller_name',
+    [
+        $dateFrom,
+        $dateTo,
+        $dateFrom,
+        $dateTo,
+    ]
+);
+
 $divisions = $LMS->GetDivisions();
 
 $SMARTY->assign('divisions', $divisions);
+$SMARTY->assign('sellers', $sellers);
 $SMARTY->assign('start_date', $startDate);
 $SMARTY->assign('end_date', $endDate);
 //$SMARTY->assign('sort_order', 'issue-date asc');

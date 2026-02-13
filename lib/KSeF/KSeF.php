@@ -102,6 +102,10 @@ class KSeF
         'KorVatRr' => self::DOC_KOR_VAT_RR,
     ];
 
+    private static $deadlineUnits = [
+        'dni' => 'days',
+    ];
+
     private $db;
     private $lms;
     private $divisions = [];
@@ -1702,5 +1706,10 @@ class KSeF
         }
 
         return self::$docTypes[$docType] ?? null;
+    }
+
+    public static function deadlineUnit(?string $deadlineUnit): ?string
+    {
+        return self::$deadlineUnits[$deadlineUnit] ?? 'days';
     }
 }

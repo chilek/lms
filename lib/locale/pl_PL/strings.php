@@ -4104,6 +4104,7 @@ $_LANG['Resource Type'] = 'Typ zasobu';
 $_LANG['Enter resource ID (empty means any ID)'] = 'Podaj ID zasobu (puste pole oznacza dowolny ID)';
 $_LANG['Enter property value (empty means any value)'] = 'Podaj wartość właściwości (puste pole oznacza dowolną wartość)';
 $_LANG['Next'] = 'Następne';
+$_LANG['<!next-step>Next'] = 'Dalej';
 $_LANG['Previous'] = 'Poprzednie';
 $_LANG['Next<!pagin>'] = 'Następna';
 $_LANG['Previous<!pagin>'] = 'Poprzednia';
@@ -6345,6 +6346,9 @@ $_LANG['<!ksef>View invoice'] = 'Pokaż fakturę';
 $_LANG['<!ksef>Invoice notes'] = 'Notatki do faktury';
 $_LANG['<!ksef>Invoice tags'] = 'Etykiety faktury';
 $_LANG['<!ksef>Tags'] = 'Etykiety';
+
+$_LANG['<!ksef>Seller'] = 'Sprzedawca';
+$_LANG['<!ksef>$a (TEN $b)'] = '$a (NIP $b)';
 
 $_LANG['<!ksef>advance invoice'] = 'faktura zaliczkowa';
 $_LANG['<!ksef>final invoice'] = 'faktura rozliczeniowa';

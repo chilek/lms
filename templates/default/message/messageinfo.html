@@ -326,7 +326,7 @@
 								</ul>
 							</div>
 							<div class="action-buttons">
-								{button icon="submit" label="Send" id="resend-button"}
+								{button icon="submit" label="<!next-step>Next" id="resend-button"}
 							</div>
 						</div>
 					{/capture}
@@ -570,6 +570,9 @@
 				var itemStatus = $(this).val();
 				var disabled = !customers.filter('[data-' + itemStatus + ']').length;
 				$(this).prop('disabled', disabled).closest('label').toggleClass('lms-ui-disabled', disabled);
+				if (itemStatus === 'message-unsent' && disabled) {
+					$(this).closest('li').prev('li').find('input').prop('checked', true);
+				}
 			});
 		});
 	});
