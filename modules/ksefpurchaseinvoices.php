@@ -104,8 +104,9 @@ foreach ($invoices as &$invoice) {
     $invoice['about_to_expire'] = !$invoice['expired'] && strtotime('-7 days', $invoice['pay_date']) < $now;
     $invoice['invoice_type_name'] = $DOCTYPES[$invoice['invoice_type']] ?? KSeF::docTypeName($invoice['invoice_type']) ?? trans('<!ksef>unknown document type');
 
-    if ($invoice['pay_date'] >= $now) {
-        $invoice['days_to_expire'] = round(($invoice['pay_date'] - $now) / 86400);
+    $pay_date_time = strtotime('tomorrow', $invoice['pay_date']) - 1;
+    if ($pay_date_time >= $now) {
+        $invoice['days_to_expire'] = round(($pay_date_time - $now) / 86400);
         if ($invoice['days_to_expire'] < 0) {
             $invoice['days_to_expire'] = 0;
         }
