@@ -5477,6 +5477,7 @@ $_LANG['Check if representative should be disabled'] = 'Zaznacz, jeśli reprezen
 
 $_LANG['<!dialog>Confirmation'] = 'Potwierdzenie';
 $_LANG['<!dialog>Alert'] = 'Ostrzeżenie';
+$_LANG['<!dialog>Information'] = 'Informacja';
 
 $_LANG['Copy link'] = 'Kopiuj link';
 $_LANG['Copy as links'] = 'Kopiuj jako linki';
@@ -6365,3 +6366,8 @@ $_LANG['selection from filter'] = 'wybór z filtra';
 $_LANG['all recipient of this message'] = 'wszyscy odbiorcy tej wiadomości';
 $_LANG['recipients who haven\'t received this message'] = 'odbiorcy, którzy nie otrzymali tej wiadomości';
 $_LANG['recipients with delivery errors'] = 'odbiorcy, do których wysyłka zakończyła się błędem';
+
+$_LANG['Preparing recipient list. Please wait.'] = 'Przygotowywanie listy odbiorców. Proszę czekać.';
+$_LANG['Preparing messages...'] = 'Przygotowywanie wiadomości...';
+$_LANG['Sending messages'] = 'Wysyłanie wiadomości';
+$_LANG['Finished'] = 'Zakończone';

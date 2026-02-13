@@ -1023,12 +1023,14 @@
 		}).mouseout();
 
 		$('#submit-button').click(function() {
+			var progressDeferred = progressDialog($t("Preparing recipient list. Please wait."));
+
 			var that = this;
 			tinyMCE.triggerSave();
 
 			$(that).prop('disabled', true);
 
-			$.ajax(
+			var ajaxRequest = $.ajax(
 				'?m=messageadd&count_recipients=1',
 				{
 					method: "POST",
@@ -1036,9 +1038,113 @@
 					data: $('#message').serialize()
 				}
 			).done(function (data) {
+				function sendFormData() {
+					var modalDialog = $('#lms-ui-modal-dialog');
+					var status = modalDialog.find('.status');
+					var progressBar = modalDialog.find('.progress-bar');
+					var logMessages = modalDialog.find('.log-messages');
+					var messageId = null;
+					var lastLen = 0;
+
+					var form = $('#message').get(0);
+					var formData = new FormData(form);
+
+					var progressDeferred = progressDialog(
+						$t("Preparing messages..."),
+						null,
+						{
+							showProgressBar: true,
+							showLogMessages: true
+						}
+					);
+
+					var ajaxRequest = $.ajax({
+						url: this.action,
+						method: 'POST',
+						data: formData,
+						processData: false,
+						contentType: false,
+						xhr: function() {
+							var xhr = new window.XMLHttpRequest();
+							var total = 0;
+							var item = 0;
+							var unhandledLine = '';
+
+							xhr.onprogress = function() {
+								var responseText = xhr.responseText || '';
+								var chunk = responseText.substring(lastLen);
+								lastLen = responseText.length;
+
+								if (chunk) {
+									$.each(chunk.split(/\r?\n/), function(index, line) {
+										var icon, text, token;
+
+										try {
+											if (unhandledLine.length) {
+												line = unhandledLine + line;
+												unhandledLine = '';
+											}
+											token = JSON.parse(line);
+										} catch (e) {
+											unhandledLine = line;
+											return;
+										}
+
+										if (token.hasOwnProperty('message')) {
+											status.html(token.message);
+										} else if (token.hasOwnProperty('logmessage')) {
+											logMessages.append(token.logmessage + '<br>');
+										} else if (token.hasOwnProperty('item')) {
+											if (!total && token.hasOwnProperty('total')) {
+												status.html($t("Sending messages"));
+												total = parseInt(token.total);
+												progressBar.progressbar('option', 'max', total);
+											}
+											item = parseInt(token.item);
+											progressBar.progressbar('value', item);
+											icon = token.hasOwnProperty('icon') ? token.icon : '';
+											recipient = token.hasOwnProperty('recipient') ? token.recipient : '';
+											logMessages.append('<i class="' + icon + '"></i> (' + item + ' / ' + total + ') ' + recipient + ':');
+										} else if (token.hasOwnProperty('status')) {
+											logMessages.append(' ' + token.status + '<br>');
+										} else if (token.hasOwnProperty('messageid')) {
+											messageId = parseInt(token.messageid);
+										}
+
+								});
+									logMessages.scrollTop(logMessages[0].scrollHeight);
+								}
+							};
+
+							return xhr;
+						},
+						success: function(data) {
+							status.html($t("Finished"));
+
+							var buttons = modalDialog.dialog('option', 'buttons');
+
+							// zmień pierwszy przycisk
+							buttons[0].text = $t('Info');
+							buttons[0].icon = 'ui-icon-info';
+							buttons[0].click = function () {
+								location.href = '?m=messageinfo&id=' + messageId;
+							};
+
+							modalDialog.dialog('option', 'buttons', buttons);
+						}
+					});
+
+					progressDeferred.fail(function() {
+						ajaxRequest.abort();
+						$(that).prop('disabled', false);
+					});
+				}
+
+				progressDeferred.reject();
+
 				var confirmThreshold = {intval(ConfigHelper::getConfig('messages.send_confirm_threshold', ConfigHelper::getConfig('phpui.send_message_confirm_threshold', 50)))};
 				if (data.recipients <= confirmThreshold) {
-					$('#message').submit();
+					sendFormData();
 				} else {
 					var violationType = '{ConfigHelper::getConfig('messages.send_limit_violation_type', ConfigHelper::getConfig('phpui.send_message_limit_violation_type', 'warning'))}';
 					switch (violationType) {
@@ -1048,8 +1154,7 @@
 									"You violate recipient limit ($a) trying to send messages to $b customer(s)!",
 									confirmThreshold,
 									data.recipients
-								),
-								that
+								)
 							).done(function() {
 								$(that).prop('disabled', false);
 							});
@@ -1059,19 +1164,23 @@
 								$t(
 									"Are you sure you want to send messages to $a customer(s)?",
 									data.recipients
-								),
-								that
+								)
 							).done(function() {
-								$('#message').submit();
+								sendFormData();
 							}).fail(function() {
 								$(that).prop('disabled', false);
 							});
 							break;
 						default:
-							$('#message').submit();
+							sendFormData();
 							break;
 					}
 				}
+			});
+
+			progressDeferred.fail(function() {
+				ajaxRequest.abort();
+				$(that).prop('disabled', false);
 			});
 		});
 

@@ -965,6 +965,19 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
     }
 
     if (!$error) {
+        if (!isset($_GET['count_recipients'])) {
+            while (ob_get_level() > 0) {
+                ob_end_flush();
+            }
+            ob_implicit_flush(true);
+
+            $result = [
+                'message' => trans('Preparing messages...')
+            ];
+            echo json_encode($result) . PHP_EOL;
+            flush();
+        }
+
         $recipients = array();
         if (!isset($message['customermode'])) {
             if ($message['type'] != MSG_ANYSMS) {
@@ -1142,9 +1155,6 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         $DB->CommitTrans();
 
         $message['id'] = $msgid;
-        $SMARTY->assign('message', $message);
-        $SMARTY->assign('backto', '?' . $SESSION->get_history_entry());
-        $SMARTY->display('message/messagesend.html');
 
         if ($message['type'] == MSG_MAIL) {
             $attachments = null;
@@ -1165,7 +1175,11 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
             $debug_email = ConfigHelper::getConfig('mail.debug_email');
             if (!empty($debug_email)) {
-                echo '<B>'.trans('Warning! Debug mode (using address $a).', ConfigHelper::getConfig('mail.debug_email')).'</B><BR>';
+                $result = [
+                    'logmessage' => '<strong>' . trans('Warning! Debug mode (using address $a).', ConfigHelper::getConfig('mail.debug_email')) . '</strong>'
+                ];
+                echo json_encode($result) . PHP_EOL;
+                flush();
             }
 
             $headers['Subject'] = $message['subject'];
@@ -1181,7 +1195,11 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         } elseif ($message['type'] != MSG_WWW && $message['type'] != MSG_USERPANEL && $message['type'] != MSG_USERPANEL_URGENT) {
             $debug_phone = ConfigHelper::getConfig('sms.debug_phone');
             if (!empty($debug_phone)) {
-                echo '<B>'.trans('Warning! Debug mode (using phone $a).', $debug_phone).'</B><BR>';
+                $result = [
+                    'logmessage' => '<strong>' . trans('Warning! Debug mode (using phone $a).', $debug_phone) . '</strong>'
+                ];
+                echo json_encode($result) . PHP_EOL;
+                flush();
             }
         }
 
@@ -1293,25 +1311,26 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
             foreach ($row['destination'] as $destination) {
                 $orig_destination = $destination;
+
+                $result = [];
+
                 if ($message['type'] == MSG_MAIL) {
                     $headers['To'] = '<' . $destination . '>';
-                    echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> ';
+                    $result['icon'] = 'lms-ui-icon-mail';
                 } elseif ($message['type'] == MSG_WWW) {
-                    echo '<img src="img/network.gif" border="0" align="absmiddle" alt=""> ';
+                    $result['icon'] = 'lms-ui-icon-www';
                 } elseif ($message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT) {
-                    echo '<img src="img/cms.gif" border="0" align="absmiddle" alt=""> ';
+                    $result['icon'] = 'lms-ui-icon-userpanel';
                 } else {
                     $destination = preg_replace('/[^0-9]/', '', $destination);
-                    echo '<img src="img/sms.gif" border="0" align="absmiddle" alt=""> ';
+                    $result['icon'] = 'lms-ui-icon-sms';
                 }
 
-                echo trans(
-                    '$a of $b ($c) $d:',
-                    $key,
-                    count($recipients),
-                    sprintf('%02.1f%%', round((100 / count($recipients)) * $key, 1)),
-                    ($row['customername'] ?? '-') . ' &lt;' . $destination . '&gt;'
-                );
+                $result['item'] = $key;
+                $result['total'] = count($recipients);
+                $result['recipient'] = (isset($row['customername']) ?? '-') . ' &lt;' . $destination . '&gt;';
+
+                echo json_encode($result) . PHP_EOL;
                 flush();
 
                 $attributes = null;
@@ -1400,19 +1419,22 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                     $status = $result['status'];
                     $errors = $result['errors'] ?? array();
                 }
+
+                $result = [];
+
                 switch ($status) {
                     case MSG_ERROR:
-                        echo ' <span class="red">' . implode(', ', $errors) . '</span>';
+                        $result['status'] = '<span class="red">' . implode(', ', $errors) . '</span>';
                         break;
                     case MSG_SENT:
-                        echo ' [' . trans('sent') . ']';
+                        $result['status'] = '[' . trans('sent') . ']';
                         break;
                     default:
-                        echo ' [' . trans('added') . ']';
+                        $result['status'] = '[' . trans('added') . ']';
                         break;
                 }
 
-                echo "<BR>\n";
+                echo json_encode($result) . PHP_EOL;
 
                 if ($status == MSG_SENT || isset($result['id']) || !empty($errors)) {
                     $DB->Execute(
@@ -1446,11 +1468,11 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             $key++;
         }
 
-        echo '<script type="text/javascript">';
-        echo "history.replaceState({}, '', location.href.replace(/&sent=1/gi, '') + '&sent=1');";
-        echo '</script>';
+        echo json_encode([
+            'messageid' => $message['id'],
+        ]);
+        flush();
 
-        $SMARTY->display('footer.html');
         $SESSION->close();
         die;
     } else if (!empty($message['customermode'])) {
@@ -1496,7 +1518,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
         $emails = $DB->GetAll(
             'SELECT id, customerid, contact, name FROM customercontacts
-		    WHERE customerid IN ? AND (type & ?) = ?',
+            WHERE customerid IN ? AND (type & ?) = ?',
             array($customers, CONTACT_EMAIL | CONTACT_DISABLED, CONTACT_EMAIL)
         );
 
