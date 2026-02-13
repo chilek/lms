@@ -3758,10 +3758,6 @@ if (empty($types) || in_array('messages', $types)) {
             foreach ($messageitems as $messageitem) {
                 if ($idx >= $start_idx && $idx <= $end_idx) {
                     $attributes = unserialize($messageitem['attributes']);
-                    if ($attributes === false) {
-                        $idx++;
-                        continue;
-                    }
                 }
 
                 if (!$quiet) {
@@ -3773,7 +3769,7 @@ if (empty($types) || in_array('messages', $types)) {
                                 $messageitem['customerid'],
                                 $messageitem['messageid'],
                                 $messageitem['messageitemid'],
-                                $attributes['destination']
+                                $attributes['destination'] ?? '-'
                             );
                         }
                         if (($messageitem['type'] == MSG_SMS || $messageitem['type'] == MSG_ANYSMS) && in_array('sms', $channels)) {
@@ -3782,7 +3778,7 @@ if (empty($types) || in_array('messages', $types)) {
                                     "[sms/messages] message #%d, message item #%d: %s, status: ",
                                     $messageitem['messageid'],
                                     $messageitem['messageitemid'],
-                                    $attributes['destination']
+                                    $attributes['destination'] ?? '-'
                                 );
                             } else {
                                 printf(
@@ -3791,10 +3787,38 @@ if (empty($types) || in_array('messages', $types)) {
                                     $messageitem['customerid'],
                                     $messageitem['messageid'],
                                     $messageitem['messageitemid'],
-                                    $attributes['destination']
+                                    $attributes['destination'] ?? '-'
                                 );
                             }
                         }
+                    }
+                }
+
+                if ($idx >= $start_idx && $idx <= $end_idx) {
+                    if ($attributes === false) {
+                        $errors = [
+                            'message metadata is empty - permanent failure',
+                        ];
+
+                        if (!$quiet) {
+                            echo 'error: ' . implode(', ', $errors) . '.' . PHP_EOL;
+                        }
+
+                        $DB->Execute(
+                            'UPDATE messageitems
+                            SET status = ?, lastdate = ?NOW?, error = ?
+                            WHERE messageid = ?
+                                AND id = ?',
+                            [
+                                MSG_ERROR,
+                                implode(', ', $errors),
+                                $messageitem['messageid'],
+                                $messageitem['messageitemid'],
+                            ]
+                        );
+
+                        $idx++;
+                        continue;
                     }
                 }
 
