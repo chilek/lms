@@ -965,7 +965,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
     }
 
     if (!$error) {
-        if (!isset($_GET['count_recipients'])) {
+        if (!isset($_GET['count_recipients']) && !isset($_GET['fileupload'])) {
             while (ob_get_level() > 0) {
                 ob_end_flush();
             }
