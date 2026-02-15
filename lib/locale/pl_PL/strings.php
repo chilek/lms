@@ -6371,3 +6371,5 @@ $_LANG['Preparing recipient list. Please wait.'] = 'Przygotowywanie listy odbior
 $_LANG['Preparing messages...'] = 'Przygotowywanie wiadomości...';
 $_LANG['Sending messages'] = 'Wysyłanie wiadomości';
 $_LANG['Finished'] = 'Zakończone';
+
+$_LANG['from earlier sent message'] = 'z poprzednio wysłanej wiadomości';

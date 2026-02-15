@@ -72,6 +72,37 @@
 		padding-inline-start: 0;
 	}
 
+	#attachment > td:not(:last-child) {
+		padding-top: 0.8em;
+	}
+
+	#file-list {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	#container-file-list {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		border-top: 1px dotted grey;
+		margin-top: 0.5em;
+	}
+
+	#container-file-list ul {
+		margin-block-start: 0.5em;
+		margin-block-end: 0.5em;
+		padding-inline-start: 0;
+		list-style-type: none;
+	}
+
+	#container-file-list ul li.deleted .documentview .lms-ui-button {
+		text-decoration-line: line-through;
+		text-decoration-thickness: 1px;
+		text-decoration-color: rgba(0, 0, 0, 0.5);
+	}
+
 </style>
 
 {$xajax}
@@ -858,14 +889,42 @@
 			<td id="charscounttext">0</td>
 		</tr>
 		<tr id="attachment"{if $message.type > $smarty.const.MSG_MAIL} style="display: none"{/if}>
-			<td>
+			<td class="valign-top">
 				{icon name="attachment"}
 			</td>
-			<td class="nobr">
+			<td class="nobr valign-top">
 				<strong>{trans("Attachments")}</strong>
 			</td>
-			<td>
+			<td id="file-list">
 				{fileupload id="files" fileupload=$fileupload form="message"}
+				{if !empty($message['file-container'])}
+					<input type="hidden" name="message[file-container][id]" value="{$message['file-container'].id}">
+					<div id="container-file-list">
+						<span>
+							<strong>{trans("from earlier sent message")}</strong>
+						</span>
+						<ul>
+							{foreach $message['file-container'].files as $file}
+								<li{if !empty($file.deleted)} class="deleted"{/if}>
+									<input type="hidden" class="deleted-file" name="message[file-container][files][{$file.id}][deleted]" value="{if $file.deleted}1{else}0{/if}">
+									<input type="hidden" name="message[file-container][files][{$file.id}][id]" value="{$file.id}">
+									{$deleted = !empty($file.deleted)}
+									{button type="link" icon="trash" class="file-delete" style="{if $deleted} display: none;{/if}"}
+									{button type="link" icon="restore" class="file-restore" visible="false" style="{if !$deleted} display: none;{/if}"}
+									{capture assign="filename"}
+										{$file.filename|escape} ({$file.sizestr})
+									{/capture}
+									{documentview
+										id="file-{$file.id}"
+										type=$file.contenttype
+										name=$filename
+										url="?m=attachments&attachmentaction=viewfile&type=messageid&id={$message['file-container'].id}&fileid={$file.id}"
+									}
+								</li>
+							{/foreach}
+						</ul>
+					</div>
+				{/if}
 			</td>
 		</tr>
 		<tr id="template-attachments" style="display: none;">
@@ -1044,6 +1103,7 @@
 					var progressBar = modalDialog.find('.progress-bar');
 					var logMessages = modalDialog.find('.log-messages');
 					var messageId = null;
+					var prevLastLen = 0;
 					var lastLen = 0;
 
 					var form = $('#message').get(0);
@@ -1073,11 +1133,12 @@
 							xhr.onprogress = function() {
 								var responseText = xhr.responseText || '';
 								var chunk = responseText.substring(lastLen);
+								prevLastLen = lastLen;
 								lastLen = responseText.length;
 
 								if (chunk) {
 									$.each(chunk.split(/\r?\n/), function(index, line) {
-										var icon, text, token;
+										var icon, token;
 
 										try {
 											if (unhandledLine.length) {
@@ -1088,6 +1149,33 @@
 										} catch (e) {
 											unhandledLine = line;
 											return;
+										}
+
+										if (!prevLastLen) {
+											if (token.hasOwnProperty('error')) {
+												var error = token.error;
+
+												$.each(error, function (property, message) {
+													var elem = $('[name="message[' + property + ']"]');
+													if (!elem.length) {
+														elem = $('#' + property);
+													}
+													if (elem.length) {
+														if (!elem.is(':visible')) {
+															if (elem.is('.lms-ui-wysiwyg-editor')) {
+																elem = elem.siblings('.tox-tinymce')
+															}
+														}
+														elem.addClass('lms-ui-error').attr('title', message);
+													}
+												});
+
+												progressDeferred.reject();
+
+												return;
+											} else {
+												$('#message').find('.lms-ui-error').removeClass('lms-ui-error');
+											}
 										}
 
 										if (token.hasOwnProperty('message')) {
@@ -1110,8 +1198,8 @@
 										} else if (token.hasOwnProperty('messageid')) {
 											messageId = parseInt(token.messageid);
 										}
+									});
 
-								});
 									logMessages.scrollTop(logMessages[0].scrollHeight);
 								}
 							};
@@ -1201,6 +1289,14 @@
 				return !$(this).prop('disabled');
 			}).end().siblings('.lms-ui-button').toggleClass('blend')
 				.end().find('i').toggleClass(['lms-ui-icon-delete', 'lms-ui-icon-restore']);
+		});
+
+		$('#container-file-list li').find('.file-delete,.file-restore').click(function() {
+			var deleted = $(this).is('.file-delete');
+			$(this).toggle();
+			$(this).siblings('.lms-ui-button').show();
+			$(this).closest('li').toggleClass('deleted', deleted)
+				.find('.deleted-file').val(deleted ? 1 : 0);
 		});
 	});
 

@@ -1123,6 +1123,22 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                     $file['data'] = file_get_contents($file['name']);
                 }
                 unset($file);
+            } else {
+                $files = [];
+            }
+
+            if (!empty($message['file-container']['files'])) {
+                foreach ($message['file-container']['files'] as $file) {
+                    if (!empty($file['deleted'])) {
+                        continue;
+                    }
+                    $fileData = $LMS->GetFile($file['id']);
+                    unset($file['deleted'], $file['id']);
+                    $file['name'] = $fileData['filename'];
+                    $file['type'] = $fileData['contenttype'];
+                    $file['data'] = file_get_contents($fileData['filepath']);
+                    $files[] = $file;
+                }
             }
 
             if (!empty($msgtmplid) && !empty($message['template-attachments'])) {
@@ -1543,7 +1559,9 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
     }
 
-    $SMARTY->assign('error', $error);
+    die(json_encode([
+        'error' => $error,
+    ]));
 } else if (!empty($_GET['customerid']) || isset($_POST['customers'])) {
     if (!empty($_GET['customerid'])) {
         $customers = array($_GET['customerid']);
@@ -1621,6 +1639,19 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         if ($msg['contenttype'] == 'text/html') {
             $message['wysiwyg']['mailbody'] = 'true';
         }
+
+        $fileContainers = $LMS->GetFileContainers('messageid', $msg['id']);
+        if (empty($fileContainers)) {
+            $fileContainer = null;
+        } else {
+            $fileContainer = reset($fileContainers);
+            foreach ($fileContainer['files'] as &$file) {
+                [$size, $unit] = setunits($file['size']);
+                $file['sizestr'] = sprintf("%.02f", $size) . ' ' . $unit;
+            }
+            unset($file);
+        }
+        $message['file-container'] = $fileContainer;
     }
 
     $message['type'] = isset($_GET['type']) ? intval($_GET['type'])
@@ -1638,6 +1669,19 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         if ($msg['contenttype'] == 'text/html') {
             $message['wysiwyg']['mailbody'] = 'true';
         }
+
+        $fileContainers = $LMS->GetFileContainers('messageid', $msg['id']);
+        if (empty($fileContainers)) {
+            $fileContainer = null;
+        } else {
+            $fileContainer = reset($fileContainers);
+            foreach ($fileContainer['files'] as &$file) {
+                [$size, $unit] = setunits($file['size']);
+                $file['sizestr'] = sprintf("%.02f", $size) . ' ' . $unit;
+            }
+            unset($file);
+        }
+        $message['file-container'] = $fileContainer;
     }
     $message['usergroup'] = isset($_GET['usergroupid']) ? intval($_GET['usergroupid']) : 0;
     $message['tmplid'] = isset($_GET['templateid']) ? intval($_GET['templateid']) : 0;

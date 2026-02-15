@@ -117,7 +117,7 @@ function GetItemList($id, $order = 'id,desc', $search = null, $cat = null, $stat
         . $sqlord . ' ' . $direction
     );
     if (empty($result)) {
-        return $result;
+        $result = [];
     }
 
     $result['status'] = $status;
@@ -221,7 +221,8 @@ $SESSION->save('milst', $status);
 
 $itemlist = GetItemList($message['id'], $o, $s, $c, $status);
 if (empty($itemlist)) {
-    access_denied();
+    //access_denied();
+    $itemlist = [];
 }
 
 $listdata['status'] = $itemlist['status'];
