@@ -1090,7 +1090,7 @@
 			$(that).prop('disabled', true);
 
 			var ajaxRequest = $.ajax(
-				'?m=messageadd&count_recipients=1',
+				'?m=messageadd&validate=1',
 				{
 					method: "POST",
 					dataType: "json",
@@ -1103,7 +1103,6 @@
 					var progressBar = modalDialog.find('.progress-bar');
 					var logMessages = modalDialog.find('.log-messages');
 					var messageId = null;
-					var prevLastLen = 0;
 					var lastLen = 0;
 
 					var form = $('#message').get(0);
@@ -1133,7 +1132,6 @@
 							xhr.onprogress = function() {
 								var responseText = xhr.responseText || '';
 								var chunk = responseText.substring(lastLen);
-								prevLastLen = lastLen;
 								lastLen = responseText.length;
 
 								if (chunk) {
@@ -1149,33 +1147,6 @@
 										} catch (e) {
 											unhandledLine = line;
 											return;
-										}
-
-										if (!prevLastLen) {
-											if (token.hasOwnProperty('error')) {
-												var error = token.error;
-
-												$.each(error, function (property, message) {
-													var elem = $('[name="message[' + property + ']"]');
-													if (!elem.length) {
-														elem = $('#' + property);
-													}
-													if (elem.length) {
-														if (!elem.is(':visible')) {
-															if (elem.is('.lms-ui-wysiwyg-editor')) {
-																elem = elem.siblings('.tox-tinymce')
-															}
-														}
-														elem.addClass('lms-ui-error').attr('title', message);
-													}
-												});
-
-												progressDeferred.reject();
-
-												return;
-											} else {
-												$('#message').find('.lms-ui-error').removeClass('lms-ui-error');
-											}
 										}
 
 										if (token.hasOwnProperty('message')) {
@@ -1230,7 +1201,31 @@
 
 				progressDeferred.reject();
 
+				if (data.hasOwnProperty('error')) {
+					var error = data.error;
+
+					$.each(error, function (property, message) {
+						var elem = $('[name="message[' + property + ']"]');
+						if (!elem.length) {
+							elem = $('#' + property);
+						}
+						if (elem.length) {
+							if (!elem.is(':visible')) {
+								if (elem.is('.lms-ui-wysiwyg-editor')) {
+									elem = elem.siblings('.tox-tinymce')
+								}
+							}
+							elem.addClass('lms-ui-error').attr('title', message);
+						}
+					});
+
+					return;
+				} else {
+					$('#message').find('.lms-ui-error').removeClass('lms-ui-error');
+				}
+
 				var confirmThreshold = {intval(ConfigHelper::getConfig('messages.send_confirm_threshold', ConfigHelper::getConfig('phpui.send_message_confirm_threshold', 50)))};
+
 				if (data.recipients <= confirmThreshold) {
 					sendFormData();
 				} else {

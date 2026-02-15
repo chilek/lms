@@ -898,7 +898,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
     $msgtmplid = intval($message['tmplid']);
     $msgtmploper = intval($message['tmploper']);
     $msgtmplname = $message['tmplname'];
-    if (!isset($_GET['count_recipients']) && $msgtmploper > 1) {
+    if (!isset($_GET['validate']) && $msgtmploper > 1) {
         switch ($message['type']) {
             case MSG_MAIL:
                 $msgtmpltype = TMPL_MAIL;
@@ -965,7 +965,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
     }
 
     if (!$error) {
-        if (!isset($_GET['count_recipients']) && !isset($_GET['fileupload'])) {
+        if (!isset($_GET['validate']) && !isset($_GET['fileupload'])) {
             while (ob_get_level() > 0) {
                 ob_end_flush();
             }
@@ -1055,11 +1055,15 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         }
     }
 
-    if (isset($_GET['count_recipients'])) {
+    if (isset($_GET['validate'])) {
         header('Content-Type: application/json');
-        die(json_encode(array(
-            'recipients' => empty($error) ? count($recipients) : -1,
-        )));
+        $result = [];
+        if (empty($error)) {
+            $result['recipients'] = count($recipients);
+        } else {
+            $result['error'] = $error;
+        }
+        die(json_encode($result));
     }
 
     if ($message['type'] == MSG_MAIL || $message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT) {
