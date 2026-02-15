@@ -6373,3 +6373,4 @@ $_LANG['Sending messages'] = 'Wysyłanie wiadomości';
 $_LANG['Finished'] = 'Zakończone';
 
 $_LANG['from earlier sent message'] = 'z poprzednio wysłanej wiadomości';
+$_LANG['The are no recipients which match filter criteria!'] = 'Brak odbiorców pasujących do kryteriów filtra!';

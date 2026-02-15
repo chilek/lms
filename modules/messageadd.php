@@ -1051,7 +1051,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         }
 
         if (!$recipients) {
-            $error['subject'] = trans('Unable to send message. No recipients selected!');
+            $error['recipients'] = trans('The are no recipients which match filter criteria!');
         }
     }
 

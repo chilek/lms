@@ -1205,6 +1205,10 @@
 				if (data.hasOwnProperty('error')) {
 					var error = data.error;
 
+					if (error.hasOwnProperty('recipients')) {
+						alertDialog(error.recipients);
+					}
+
 					$.each(error, function (property, message) {
 						var elem = $('[name="message[' + property + ']"]');
 						if (!elem.length) {
