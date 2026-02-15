@@ -1190,6 +1190,7 @@ version 28-git (????-??-??):
   - enhancement: when creating new message basing on other existing message, file attachments assigned
     to this second one message are automatically assigned to new created messages with possibility with
     exluding them from web form [chilan]
+  - improvement: multi division selection in sale registry form/report [chilan]
 
 version 27.0 (2021-08-20):
 
