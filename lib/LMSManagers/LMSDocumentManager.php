@@ -132,6 +132,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $to = $params['to'] ?? 0;
         $status = $params['status'] ?? -1;
         $archived = $params['archived'] ?? -1;
+        $attachments = $params['attachments'] ?? -1;
         $limit = $params['limit'] ?? null;
         $offset = $params['offset'] ?? null;
         $count = isset($params['count']) && $params['count'];
@@ -317,13 +318,19 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         if (empty($list)) {
             $list = array();
         } else {
-            foreach ($list as &$document) {
-                $document['attachments'] = $this->db->GetAll('SELECT id, filename, md5sum, contenttype, type, type AS main, cdate
+            foreach ($list as $key => $document) {
+                $list[$key]['attachments'] = $this->db->GetAll('SELECT id, filename, md5sum, contenttype, type, type AS main, cdate
 				    FROM documentattachments WHERE docid = ? ORDER BY type DESC, filename', array($document['docid']));
                 if (!empty($document['reference'])) {
-                    $document['reference'] = $this->db->GetRow('SELECT id, type, fullnumber, cdate FROM documents
+                    $list[$key]['reference'] = $this->db->GetRow('SELECT id, type, fullnumber, cdate FROM documents
 					WHERE id = ?', array($document['reference']));
                 }
+		if ($attachments != -1) {
+			$attachments_count = sizeof($list[$key]['attachments']);
+			if (($attachments == 1 && $attachments_count < 2) || ($attachments == 0 && $attachments_count > 1)) {
+				unset($list[$key]);
+			}
+		}
             }
             unset($document);
         }

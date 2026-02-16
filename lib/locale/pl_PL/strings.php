@@ -4847,6 +4847,8 @@ $_LANG['Your browser does not support the audio element.'] = 'Twoja przeglądark
 $_LANG['Your browser does not support the video element.'] = 'Twoja przeglądarka nie obsługuje elementu video.';
 
 $_LANG['more document attachments'] = 'więcej załączników dokumentu';
+$_LANG['Document attachments'] = 'Załączniki dokumentów';
+$_LANG['Condition for the existence of document attachments'] = 'Warunek istnienia załączników dokumentu';
 $_LANG['New files:'] = 'Nowe pliki:';
 $_LANG['New files'] = 'Nowe pliki';
 $_LANG['Attached files:'] = 'Załączone pliki:';
