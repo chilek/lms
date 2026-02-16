@@ -770,24 +770,15 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function GetEventsByTicketId($id)
     {
-        $events = $this->db->GetAll('SELECT events.id as id, title, description, note, date, begintime, endtime, '
-                . 'userid, customerid, private, closed, closeddate, closeduserid, events.type, ticketid, va.location, '
-                . $this->db->Concat('customers.lastname', "' '", 'customers.name').' AS customername, '
-                . $this->db->Concat('users.firstname', "' '", 'users.lastname').' AS username, '
-                . $this->db->Concat('u.firstname', "' '", 'u.lastname').' AS closedusername, vn.name AS node_name, '
-                . $this->db->Concat('c.city', "', '", 'c.address') . ' AS customerlocation, vn.location AS node_location '
-                . 'FROM events '
-                . 'LEFT JOIN customers ON (customerid = customers.id) '
-                . 'LEFT JOIN users ON (userid = users.id) '
-                . 'LEFT JOIN users u ON (closeduserid = u.id) '
-                . 'LEFT JOIN vaddresses va ON va.id = events.address_id '
-                . 'LEFT JOIN vnodes as vn ON (nodeid = vn.id) '
-                . 'LEFT JOIN customerview c ON (events.customerid = c.id) '
-                . 'WHERE ticketid = ? ORDER BY events.id ASC', array($id));
+        $event_manager = new LMSEventManager($this->db, $this->auth, $this->cache);
+        $events = $this->db->GetAll(
+            'SELECT id FROM events WHERE ticketid = ? ORDER BY id ASC',
+            array($id)
+        );
 
-        if (is_array($events)) {
+        if (!empty($events)) {
             foreach ($events as $idx => $row) {
-                $events[$idx]['userlist'] = $this->db->GetAll("SELECT vu.name,userid AS ul FROM eventassignments AS e LEFT JOIN vusers vu ON vu.id = e.userid WHERE eventid = $row[id]");
+                $events[$idx] = $event_manager->GetEvent($row);
             }
         }
 
