@@ -95,7 +95,7 @@
         }
     ],
     "require": {
-        "php" : ">=7.2",
+        "php" : ">=8.1",
         "ext-mbstring": "*",
         "ext-xml": "*",
         "ext-sockets": "*",
