@@ -480,8 +480,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             // if current date is earlier than 1 I 2018
             //$jpk_vat_version = time() < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
 
-            //$boundaryDate = $dateto;
-            $boundaryDate = $now;
+            $boundaryDate = $dateto;
+            //$boundaryDate = $now;
 
             if ($boundaryDate < strtotime('2020/11/01')) {
                 // end date 2021/09/30
