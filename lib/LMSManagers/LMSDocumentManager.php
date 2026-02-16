@@ -233,17 +233,17 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 				FROM documentcontents
 				JOIN documents d ON (d.id = documentcontents.docid)
 				JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & ?) > 0)
-				LEFT JOIN vusers u ON u.id = d.userid
-				LEFT JOIN vusers u2 ON u2.id = d.cuserid
+				LEFT JOIN vusers u ON (u.id = d.userid)
+				LEFT JOIN vusers u2 ON (u2.id = d.cuserid)
 				LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
 				LEFT JOIN (
 					SELECT DISTINCT c.id AS customerid, 1 AS senddocuments FROM customers c
-					JOIN customercontacts cc ON cc.customerid = c.id
+					JOIN customercontacts cc ON (cc.customerid = c.id)
 					WHERE cc.type & ' . (CONTACT_EMAIL | CONTACT_DOCUMENTS | CONTACT_DISABLED) . ' = ' . (CONTACT_EMAIL | CONTACT_DOCUMENTS) . '
 				) i ON i.customerid = d.customerid
 				' . ($service ? 'JOIN (
 					SELECT DISTINCT a.docid FROM assignments a
-						JOIN tariffs t ON t.id = a.tariffid
+						JOIN tariffs t ON (t.id = a.tariffid)
 						WHERE t.type IN (' . implode(',', $service) . ')
 					) s ON s.docid = d.id' : '') . '
 				LEFT JOIN (
@@ -252,12 +252,12 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 					WHERE e.userid = lms_current_user()
 				) e ON (e.customerid = d.customerid)
 				WHERE e.customerid IS NULL '
-                    .($customer ? 'AND d.customerid = '.intval($customer) : '')
-                    .($type ? (is_array($type) ? ' AND d.type IN (' . implode(',', $type) . ')' : ' AND d.type = '.intval($type)) : '')
+                    . ($customer ? 'AND d.customerid = ' . intval($customer) : '')
+                    . ($type ? (is_array($type) ? ' AND d.type IN (' . implode(',', $type) . ')' : ' AND d.type = '.intval($type)) : '')
                     . ($userid ? ' AND ' . $userfield . (is_array($userid) ? ' IN (' . implode(',', $userid) . ')' : ' = ' . intval($userid)) : '')
                     . ($numberplan ? ' AND d.numberplanid = ' . intval($numberplan) : '')
-                    .($from ? ' AND ' . $datefield . ' >= '.intval($from) : '')
-                    .($to ? ' AND ' . $datefield . ' <= '.intval($to) : '')
+                    . ($from ? ' AND ' . $datefield . ' >= ' . intval($from) : '')
+                    . ($to ? ' AND ' . $datefield . ' <= ' . intval($to) : '')
                     . $status_sql
                     . ($archived == -1 ? '' : ' AND d.archived = ' . intval($archived)),
                 array(
@@ -277,35 +277,35 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 			FROM documentcontents
 			JOIN documents d ON (d.id = documentcontents.docid)
 			JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & ?) > 0)
-			LEFT JOIN vusers u ON u.id = d.userid
-			LEFT JOIN vusers u2 ON u2.id = d.cuserid
-			LEFT JOIN vusers u3 ON u3.id = d.auserid
+			LEFT JOIN vusers u ON (u.id = d.userid)
+			LEFT JOIN vusers u2 ON (u2.id = d.cuserid)
+			LEFT JOIN vusers u3 ON (u3.id = d.auserid)
 			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
 			LEFT JOIN (
 				SELECT DISTINCT c.id AS customerid, 1 AS senddocuments FROM customers c
-				JOIN customercontacts cc ON cc.customerid = c.id
+				JOIN customercontacts cc ON (cc.customerid = c.id)
 				WHERE cc.type & ' . (CONTACT_EMAIL | CONTACT_DOCUMENTS | CONTACT_DISABLED) . ' = ' . (CONTACT_EMAIL | CONTACT_DOCUMENTS) . '
-			) i ON i.customerid = d.customerid
+			) i ON (i.customerid = d.customerid)
 			' . ($service ? 'JOIN (
 				SELECT DISTINCT a.docid FROM assignments a
-					JOIN tariffs t ON t.id = a.tariffid
+					JOIN tariffs t ON (t.id = a.tariffid)
 					WHERE t.type IN (' . implode(',', $service) . ')
-				) s ON s.docid = d.id' : '') . '
+				) s ON (s.docid = d.id)' : '') . '
 			LEFT JOIN (
 				SELECT DISTINCT a.customerid FROM vcustomerassignments a
 				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 				WHERE e.userid = lms_current_user()
 			) e ON (e.customerid = d.customerid)
 			WHERE e.customerid IS NULL '
-            .($customer ? 'AND d.customerid = '.intval($customer) : '')
-            .($type ? (is_array($type) ? ' AND d.type IN (' . implode(',', $type) . ')' : ' AND d.type = '.intval($type)) : '')
+            . ($customer ? 'AND d.customerid = ' . intval($customer) : '')
+            . ($type ? (is_array($type) ? ' AND d.type IN (' . implode(',', $type) . ')' : ' AND d.type = '.intval($type)) : '')
             . ($userid ? ' AND ' . $userfield . (is_array($userid) ? ' IN (' . implode(',', $userid) . ')' : ' = ' . intval($userid)) : '')
             . ($numberplan ? ' AND d.numberplanid = ' . intval($numberplan) : '')
-            .($from ? ' AND ' . $datefield . ' >= '.intval($from) : '')
-            .($to ? ' AND ' . $datefield . ' <= '.intval($to) : '')
+            . ($from ? ' AND ' . $datefield . ' >= ' . intval($from) : '')
+            . ($to ? ' AND ' . $datefield . ' <= ' . intval($to) : '')
             . $status_sql
             . ($archived == -1 ? '' : ' AND d.archived = ' . intval($archived))
-            .$sqlord
+            . $sqlord
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : ''),
             array(
