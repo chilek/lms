@@ -296,6 +296,10 @@ $_LANG['Phone contacts:'] = 'Telefony kontaktowe:';
 $_LANG['Sole traders'] = 'Jednoosobowe działalności gospodarcze';
 $_LANG['(undefined)'] = '(nieokreślone)';
 
+$_LANG['other<!singular>'] = 'pozostały';
+$_LANG['other<!plural>'] = 'pozostali';
+$_LANG['Other:<!summary>'] = 'Pozostali:';
+
 $_LANG['Networks don\'t have the same mask!'] = 'Sieci nie posiadają tej samej maski!';
 $_LANG['Source address $a ($b) collides with destination address $c ($d)!'] = 'Adres źródłowy $a ($b) koliduje z docelowym $c ($d)!';
 $_LANG['with compacting'] = 'z porządkowaniem';
@@ -3215,6 +3219,7 @@ $_LANG['New Division'] = 'Nowa firma';
 $_LANG['No such divisions in database.'] = 'Brak firm w bazie danych.';
 $_LANG['Select division'] = 'Wybierz firmę';
 $_LANG['Division:'] = 'Firma:';
+$_LANG['Division'] = 'Firma';
 $_LANG['Unlock'] = 'Odblokuj';
 $_LANG['Wrong account number!'] = 'Niepoprawny format konta!';
 $_LANG['Zip code is required!'] = 'Kod pocztowy jest wymagany!';
@@ -4098,6 +4103,7 @@ $_LANG['Resource Type'] = 'Typ zasobu';
 $_LANG['Enter resource ID (empty means any ID)'] = 'Podaj ID zasobu (puste pole oznacza dowolny ID)';
 $_LANG['Enter property value (empty means any value)'] = 'Podaj wartość właściwości (puste pole oznacza dowolną wartość)';
 $_LANG['Next'] = 'Następne';
+$_LANG['<!next-step>Next'] = 'Dalej';
 $_LANG['Previous'] = 'Poprzednie';
 $_LANG['Next<!pagin>'] = 'Następna';
 $_LANG['Previous<!pagin>'] = 'Poprzednia';
@@ -5470,6 +5476,7 @@ $_LANG['Check if representative should be disabled'] = 'Zaznacz, jeśli reprezen
 
 $_LANG['<!dialog>Confirmation'] = 'Potwierdzenie';
 $_LANG['<!dialog>Alert'] = 'Ostrzeżenie';
+$_LANG['<!dialog>Information'] = 'Informacja';
 
 $_LANG['Copy link'] = 'Kopiuj link';
 $_LANG['Copy as links'] = 'Kopiuj jako linki';
@@ -5785,7 +5792,7 @@ $_LANG['Visible tabs:'] = 'Widoczne zakładki:';
 $_LANG['No primary ticket is selected!'] = 'Nie wybrano zgłoszenia nadrzędnego!';
 $_LANG['used tariff edit'] = 'edycja użytych taryf';
 
-$_LANG['Resend'] = 'Wyślij nową';
+$_LANG['Resend'] = 'Wyślij ponownie';
 
 $_LANG['more actions'] = 'więcej czynności';
 $_LANG['Ticket $a'] = 'Zgłoszenie $a';
@@ -6297,3 +6304,69 @@ $_LANG['View UPO'] = 'Pokaż UPO';
 
 $_LANG['<!ksef>Local Government Unit'] = 'jednostka samorządu terytorialnego';
 $_LANG['<!ksef>VAT group'] = 'grupa VAT';
+
+$_LANG['<!ksef>Document type/number'] = 'Typ/numer dokumentu';
+$_LANG['KSeF number'] = 'Numer KSeF';
+$_LANG['<!ksef>Seller name'] = 'Nazwa sprzedawcy';
+$_LANG['<!ksef>Seller TEN'] = 'NIP sprzedawcy';
+$_LANG['<!ksef>Buyer name'] = 'Nazwa nabywcy';
+$_LANG['<!ksef>Net value'] = 'Wartość netto';
+$_LANG['<!ksef>VAT value'] = 'Wartość VAT';
+$_LANG['<!ksef>Gross value'] = 'Wartość brutto';
+$_LANG['<!ksef>Bank name'] = 'Nazwa banku';
+$_LANG['<!ksef>Bank account'] = 'Konto bankowe';
+$_LANG['<!ksef>No purchase invoices matching filter criteria.'] = 'Brak faktur zakupu dopasowanych do kryteriów filtra.';
+$_LANG['<!ksef>Payment type'] = 'Typ płatnoci';
+$_LANG['<!ksef>Payment date'] = 'Data płatnoci';
+$_LANG['<!ksef>Paid'] = 'Zapłacono';
+$_LANG['<!ksef>Don\'t post document'] = 'Nie księguj dokumentu';
+$_LANG['<!ksef>Post document'] = 'Księguj dokument';
+$_LANG['<!ksef>Settle document'] = 'Rozlicz dokument';
+$_LANG['<!ksef>Unsettle document'] = 'Cofnij rozliczenie dokumentu';
+
+$_LANG['KSeF Purchase Invoices'] = 'Faktury zakupu KSeF';
+$_LANG['KSeF purchase invoice management'] = 'Zarządzanie fakturami zakupu KSeF';
+$_LANG['<!ksef>KSeF purchase invoice management'] = 'zarządzanie fakturami zakupu KSeF';
+$_LANG['<!ksef>posted'] = 'księgowane';
+$_LANG['<!ksef>unsettled'] = 'nierozliczone';
+
+$_LANG['<!ksef>No.'] = 'Lp.';
+$_LANG['<!ksef>Description'] = 'Opis';
+
+$_LANG['<!ksef>VAT rate'] = 'Stawka VAT';
+$_LANG['<!ksef>Price'] = 'Cena';
+$_LANG['<!ksef>Net value'] = 'Wartość netto';
+$_LANG['<!ksef>Gross value'] = 'Wartość brutto';
+$_LANG['<!ksef>VAT'] = 'VAT';
+$_LANG['<!ksef>Total'] = 'Razem';
+
+$_LANG['<!ksef>Download invoice'] = 'Pobierz fakturę';
+$_LANG['<!ksef>View invoice'] = 'Pokaż fakturę';
+
+$_LANG['<!ksef>Invoice notes'] = 'Notatki do faktury';
+$_LANG['<!ksef>Invoice tags'] = 'Etykiety faktury';
+$_LANG['<!ksef>Tags'] = 'Etykiety';
+
+$_LANG['<!ksef>Seller'] = 'Sprzedawca';
+$_LANG['<!ksef>$a (TEN $b)'] = '$a (NIP $b)';
+
+$_LANG['<!ksef>advance invoice'] = 'faktura zaliczkowa';
+$_LANG['<!ksef>final invoice'] = 'faktura rozliczeniowa';
+$_LANG['<!ksef>simplified invoice'] = 'faktura uproszczona';
+$_LANG['<!ksef>corrective advance invoice'] = 'korekta faktury zaliczkowej';
+$_LANG['<!ksef>corrective final invoice'] = 'korekta faktury rozliczeniowej';
+$_LANG['<!ksef>standard PEF invoice'] = 'faktura podstawowa PEF';
+$_LANG['<!ksef>custom structured PEF invoice'] = 'faktura specjalizowana PEF';
+$_LANG['<!ksef>corrective PEF invoice'] = 'korekta faktury PEF';
+$_LANG['<!ksef>RR invoice'] = 'faktura RR';
+$_LANG['<!ksef>corrective RR invoice'] = 'korekta faktury RR';
+
+$_LANG['selection from filter'] = 'wybór z filtra';
+$_LANG['all recipient of this message'] = 'wszyscy odbiorcy tej wiadomości';
+$_LANG['recipients who haven\'t received this message'] = 'odbiorcy, którzy nie otrzymali tej wiadomości';
+$_LANG['recipients with delivery errors'] = 'odbiorcy, do których wysyłka zakończyła się błędem';
+
+$_LANG['Preparing recipient list. Please wait.'] = 'Przygotowywanie listy odbiorców. Proszę czekać.';
+$_LANG['Preparing messages...'] = 'Przygotowywanie wiadomości...';
+$_LANG['Sending messages'] = 'Wysyłanie wiadomości';
+$_LANG['Finished'] = 'Zakończone';

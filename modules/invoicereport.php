@@ -121,14 +121,22 @@ if (!empty($_POST['servicetypes'])) {
 }
 
 if (!empty($_POST['division'])) {
-    $divwhere = ' AND d.divisionid '.(isset($_POST['divexclude']) ? '!=' : '=').' '.intval($_POST['division']);
+    if (!is_array($_POST['division'])) {
+        $divisions = array($_POST['division']);
+    }
+    $divisions = Utils::filterIntegers($_POST['division']);
+    if (!empty($divisions)) {
+        $divisionWhere = ' AND d.divisionid ' . (isset($_POST['divexclude']) ? 'NOT IN' : 'IN') . ' (' . implode(',', $divisions) . ')';
 
-    $divname = $DB->GetOne(
-        'SELECT name FROM divisions WHERE id = ?',
-        array(intval($_POST['division']))
-    );
+        $divisionNames = $DB->GetCol(
+            'SELECT name
+            FROM divisions
+            WHERE id IN ?',
+            array($divisions)
+        );
 
-    $layout['division'] = $divname;
+        $layout['division'] = $divisionNames;
+    }
 } else {
     unset($layout['division']);
 }
@@ -281,7 +289,7 @@ $documents = $DB->GetAll('SELECT d.id, d.type,
         . ' WHERE cancelled = 0 AND d.type IN ? AND (' . $wherecol . ' BETWEEN ? AND ?) '
         . (empty($jpk_flag) ? '' : ' AND (d.flags & ' . $jpk_flag . ') > 0')
         .(isset($numberplans) ? 'AND d.numberplanid IN (' . $numberplans . ')' : '')
-        .($divwhere ?? '')
+        . ($divisionWhere ?? '')
         . ($servicetypewhere ?? '')
         .($groupwhere ?? '')
         . $ctenwhere

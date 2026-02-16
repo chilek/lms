@@ -10,7 +10,7 @@
 	<TR>
 		<TD WIDTH="800" ALIGN="LEFT">
 			<P class="hdf"><B>{$layout.pagetitle}</B>
-			{if $layout.division}<BR><span class="sdr"><B>{$layout.division}</B></span>{/if}
+			{if $layout.division}<BR><span class="sdr"><B>{implode(', ', $layout.division)}</B></span>{/if}
 			{if $layout.group}<BR><span class="sdr"><B>{$layout.group}</B></span>{/if}
 			{if $layout.servicetypes}<BR><span class="sdr"><strong>{$layout.servicetypes}</strong></span>{/if}
 			</P>

@@ -5477,6 +5477,7 @@ $_LANG['Check if representative should be disabled'] = 'Zaznacz, jeśli reprezen
 
 $_LANG['<!dialog>Confirmation'] = 'Potwierdzenie';
 $_LANG['<!dialog>Alert'] = 'Ostrzeżenie';
+$_LANG['<!dialog>Information'] = 'Informacja';
 
 $_LANG['Copy link'] = 'Kopiuj link';
 $_LANG['Copy as links'] = 'Kopiuj jako linki';
@@ -6316,8 +6317,8 @@ $_LANG['<!ksef>Gross value'] = 'Wartość brutto';
 $_LANG['<!ksef>Bank name'] = 'Nazwa banku';
 $_LANG['<!ksef>Bank account'] = 'Konto bankowe';
 $_LANG['<!ksef>No purchase invoices matching filter criteria.'] = 'Brak faktur zakupu dopasowanych do kryteriów filtra.';
-$_LANG['<!ksef>Payment type'] = 'Typ płatnoci';
-$_LANG['<!ksef>Payment date'] = 'Data płatnoci';
+$_LANG['<!ksef>Payment type'] = 'Typ płatności';
+$_LANG['<!ksef>Payment date'] = 'Data płatności';
 $_LANG['<!ksef>Paid'] = 'Zapłacono';
 $_LANG['<!ksef>Don\'t post document'] = 'Nie księguj dokumentu';
 $_LANG['<!ksef>Post document'] = 'Księguj dokument';
@@ -6365,3 +6366,11 @@ $_LANG['selection from filter'] = 'wybór z filtra';
 $_LANG['all recipient of this message'] = 'wszyscy odbiorcy tej wiadomości';
 $_LANG['recipients who haven\'t received this message'] = 'odbiorcy, którzy nie otrzymali tej wiadomości';
 $_LANG['recipients with delivery errors'] = 'odbiorcy, do których wysyłka zakończyła się błędem';
+
+$_LANG['Preparing recipient list. Please wait.'] = 'Przygotowywanie listy odbiorców. Proszę czekać.';
+$_LANG['Preparing messages...'] = 'Przygotowywanie wiadomości...';
+$_LANG['Sending messages'] = 'Wysyłanie wiadomości';
+$_LANG['Finished'] = 'Zakończone';
+
+$_LANG['from earlier sent message'] = 'z poprzednio wysłanej wiadomości';
+$_LANG['The are no recipients which match filter criteria!'] = 'Brak odbiorców pasujących do kryteriów filtra!';

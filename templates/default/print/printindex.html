@@ -683,8 +683,9 @@
 										<strong>{trans("Division")}</strong>
 									</td>
 									<td colspan="2">
-										<select size="1" name="division" {tip text="Select division"} form="invoicereport">
-											<option value="0">{trans("— all —")}</option>
+										<select size="1" name="division[]" form="invoicereport" multiple
+											{tip text="Select division" class="lms-ui-multiselect"}
+											data-default-value="{trans("— all —")}">
 											{foreach $divisions as $item}
 												<option value="{$item.id}">{$item.label|escape}</option>
 											{/foreach}

@@ -22,19 +22,39 @@
  *  $Id$
  */
 
-function modalDialog(title, message, buttons, deferred, context) {
+function modalDialog(title, message, buttons, deferred, context, options) {
 	var position = { my: "center", at: "center", of: window };
 	var mobile = $('body').is('.lms-ui-mobile');
+	var modalDialog = $('#lms-ui-modal-dialog');
+	var status = modalDialog.find('.status');
+	var progressBar = modalDialog.find('.progress-bar');
+	var logMessages = modalDialog.find('.log-messages')
 
-	$('#lms-ui-modal-dialog .message').html(message.replace("\n", '<br>'));
+	var showProgressBar = options && options.hasOwnProperty('showProgressBar') && options.showProgressBar ? true : false;
+	var showLogMessages = options && options.hasOwnProperty('showLogMessages') && options.showLogMessages ? true : false;
+
+
+	if (showProgressBar) {
+		progressBar.progressbar({ value: false });
+	}
+
+	if (showLogMessages) {
+		logMessages.text('');
+	}
+
+	status.html(message.replace("\n", '<br>'))
+	progressBar.toggle(showProgressBar);
+	logMessages.toggle(showLogMessages);
 
 	if (context) {
 		position = { my: "left bottom", at: "left top", of: context };
 	}
 
-	$('#lms-ui-modal-dialog').dialog({
+	modalDialog.dialog({
 		autoOpen: true,
 		modal: true,
+		width: 'auto',
+		maxWidth: $(window).width() * 0.5,
 		resizable: false,
 		title: title.replace(/<![^>]*>/g, ''),
 		buttons: buttons,
@@ -71,7 +91,7 @@ function modalDialog(title, message, buttons, deferred, context) {
 	});
 
 	deferred.always(function() {
-		$('#lms-ui-modal-dialog').dialog('destroy');
+		modalDialog.dialog('destroy');
 	});
 
 	return deferred;
@@ -135,5 +155,29 @@ function confirmDialog(message, context) {
 				}
 			}
 		], deferred, context
+	);
+}
+
+function progressDialog(message, context, options) {
+	var deferred = $.Deferred();
+
+	context = typeof(context) === 'undefined' ? null : context;
+
+	return modalDialog($t("<!dialog>Information"), message,
+		[
+			{
+				text: $t("Cancel"),
+				icon: "ui-icon-cancel",
+				class: "lms-ui-button",
+				click: function() {
+					$( this ).dialog( "close" );
+					if (context) {
+						deferred.rejectWith(context);
+					} else {
+						deferred.reject();
+					}
+				}
+			}
+		], deferred, context, options
 	);
 }

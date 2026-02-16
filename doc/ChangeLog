@@ -1186,6 +1186,11 @@ version 28-git (????-??-??):
   - enhancement: KSeF: implemented purchase invoice import (export from KSeF perspective) [chilan]
   - enhancement: clicking 'resend' button in message info form opens popup window where we choose recipient
     selection [chilan]
+  - improvement: modernized message sending mechanism - it's more interactive from now [chilan]
+  - enhancement: when creating new message basing on other existing message, file attachments assigned
+    to this second one message are automatically assigned to new created messages with possibility with
+    exluding them from web form [chilan]
+  - improvement: multi division selection in sale registry form/report [chilan]
 
 version 27.0 (2021-08-20):
 
