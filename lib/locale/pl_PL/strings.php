@@ -6374,3 +6374,5 @@ $_LANG['Finished'] = 'Zakończone';
 
 $_LANG['from earlier sent message'] = 'z poprzednio wysłanej wiadomości';
 $_LANG['The are no recipients which match filter criteria!'] = 'Brak odbiorców pasujących do kryteriów filtra!';
+
+$_LANG['Select/enter value'] = 'Wybierz/wpisz wartość';
