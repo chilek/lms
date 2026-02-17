@@ -252,9 +252,11 @@
 
 		$("#perioddel").click(function() {
 			var comboboxes = $('#periodcont .scombobox');
-			var select = $(comboboxes[0]).find('select');
-			select.prepend('<option value="0">— ' + $t("unlimited") + ' —</option>');
-			updateComboBoxes(select);
+			if (comboboxes.length <= 2) {
+				var select = $(comboboxes[0]).find('select');
+				select.prepend('<option value="0">— ' + $t("unlimited") + ' —</option>');
+				updateComboBoxes(select);
+			}
 
 			$('#perioddel').prev().remove();
 			$('#perioddel').toggle(comboboxes.length > 2);
