@@ -641,6 +641,7 @@ function init_comboboxes(selector) {
 function updateComboBoxes(selector) {
 	$(selector).each(function() {
 		var value = $(this).scombobox('val');
+		$(this).scombobox('fill');
 		$(this).scombobox('val', value);
 	});
 }
