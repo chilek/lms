@@ -1252,7 +1252,7 @@ class KSeF
         $divisionId = $params['divisionid'];
 
         if (!isset($certs[$divisionId])) {
-            $certFile = \ConfigHelper::getConfig('ksef.certificate');
+            $certFile = self::getCertificatePath();
             $certFile = preg_replace('/\.[^.]+$/', '', $certFile);
             $certFile .= '-offline.pem';
 
@@ -1711,5 +1711,20 @@ class KSeF
     public static function deadlineUnit(?string $deadlineUnit): ?string
     {
         return self::$deadlineUnits[$deadlineUnit] ?? 'days';
+    }
+
+    public static function getCertificatePath(): string
+    {
+        $certificatePath = \ConfigHelper::getConfig('ksef.certificate');
+        if (empty($certificatePath)) {
+            return $certificatePath;
+        }
+
+        $certificatePath = trim($certificatePath);
+        if (strpos($certificatePath, DIRECTORY_SEPARATOR) === 0) {
+            return $certificatePath;
+        } else {
+            return SYS_DIR . DIRECTORY_SEPARATOR . $certificatePath;
+        }
     }
 }
