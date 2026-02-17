@@ -234,10 +234,12 @@
 		$("#periodadd").click(function() {
 			var comboboxes = $('#periodcont').children('.scombobox');
 
-			if (comboboxes.length == 1) {
+			if (comboboxes.length === 1) {
 				var firstSelect = $(comboboxes[0]).find('select');
+				var value = firstSelect.scombobox('val');
 				firstSelect.find('option:first-child').remove();
-				$(comboboxes[0]).scombobox('fill');
+				updateComboBoxes(firstSelect);
+				firstSelect.scombobox('val', value);
 			}
 
 			comboboxes = $('#periodcont').children('.scombobox');
@@ -253,8 +255,10 @@
 		$("#perioddel").click(function() {
 			var comboboxes = $('#periodcont .scombobox');
 			var select = $(comboboxes[0]).find('select');
-			select.prepend('<OPTION value="0">— ' + $t("unlimited") + ' —</OPTION>');
-			$(comboboxes[0]).scombobox('fill');
+			var value = select.scombobox('val');
+			select.prepend('<option value="0">— ' + $t("unlimited") + ' —</option>');
+			updateComboBoxes(select);
+			select.scombobox('val', value);
 
 			$('#perioddel').prev().remove();
 			$('#perioddel').toggle(comboboxes.length > 2);
