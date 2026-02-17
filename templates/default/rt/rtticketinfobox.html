@@ -394,7 +394,12 @@
 									{icon name="parentticket" label="Primary ticket"}
 								</TD>
 								<TD>
-									#{$ticket.parent.id|string_format:"%06d"} <a href="?m=rtticketview&id={$ticket.parent.id}">{$ticket.parent.name|escape}</a><br>
+									{button
+										type="link"
+										label="#{$ticket.parent.id|string_format:"%06d"} {$ticket.parent.name|escape}"
+										href="?m=rtticketview&id={$ticket.parent.id}"
+									}
+									{hint icon="info" mode="toggle" url="?m=rtticketinfo&id={$ticket.parent.id}"}
 								</TD>
 							</TR>
 							{/if}
@@ -405,9 +410,13 @@
 									</TD>
 									<TD>
 										{foreach $ticket.childtickets as $t}
-											#{$t.id|string_format:"%06d"}
-											<a href="?m=rtticketview&id={$t.id}">{$t.subject|escape}</a>
-											<br>
+											{button
+												type="link"
+												label="#{$t.id|string_format:"%06d"} {$t.subject|escape}"
+												href="?m=rtticketview&id={$t.id}"
+											}
+											{hint icon="info" mode="toggle" url="?m=rtticketinfo&id={$t.id}"}
+											{if !$t@last}<br>{/if}
 										{/foreach}
 									</TD>
 								</TR>
@@ -419,14 +428,13 @@
 								</TD>
 								<TD>
 									{foreach $ticket.relatedtickets as $i}
+										{button
+											type="link"
+											label="#{$i.id|string_format:"%06d"} {$i.name|escape}"
+											href="?m=rtticketview&id={$i.id}"
+										}
 										{hint icon="info" mode="toggle" url="?m=rtticketinfo&id={$i.id}"}
-										#{$i.id}
-										<a href="?m=rtticketview&id={$i.id}">
-											{$i.name|escape}
-										</a>
-										{if !$i@last}
-											<br>
-										{/if}
+										{if !$i@last}<br>{/if}
 									{/foreach}
 								</TD>
 							</TR>
