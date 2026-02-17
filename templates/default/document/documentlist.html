@@ -307,7 +307,7 @@
 				{if $docattach.type == 1 || $doc.attachments|size == 1}
 					{documentview id="global-{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
 						url=$url external=true
-						text="<i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"
+						text="<i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('#^application/(rtf|.+(oasis|opendocument|openxml).+)$#i',$docattach.contenttype)} xls{/if}\"></i>"
 						tip="Preview"}
 				{/if}
 			{/buttons}
