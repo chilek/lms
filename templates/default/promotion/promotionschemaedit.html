@@ -236,10 +236,8 @@
 
 			if (comboboxes.length === 1) {
 				var firstSelect = $(comboboxes[0]).find('select');
-				var value = firstSelect.scombobox('val');
 				firstSelect.find('option:first-child').remove();
 				updateComboBoxes(firstSelect);
-				firstSelect.scombobox('val', value);
 			}
 
 			comboboxes = $('#periodcont').children('.scombobox');
@@ -255,10 +253,8 @@
 		$("#perioddel").click(function() {
 			var comboboxes = $('#periodcont .scombobox');
 			var select = $(comboboxes[0]).find('select');
-			var value = select.scombobox('val');
 			select.prepend('<option value="0">— ' + $t("unlimited") + ' —</option>');
 			updateComboBoxes(select);
-			select.scombobox('val', value);
 
 			$('#perioddel').prev().remove();
 			$('#perioddel').toggle(comboboxes.length > 2);

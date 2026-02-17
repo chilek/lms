@@ -640,7 +640,8 @@ function init_comboboxes(selector) {
 
 function updateComboBoxes(selector) {
 	$(selector).each(function() {
-		$(this).scombobox('val', $(this).val());
+		var value = $(this).scombobox('val');
+		$(this).scombobox('val', value);
 	});
 }
 
