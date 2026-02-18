@@ -1046,7 +1046,7 @@ switch ($type) {
             $SMARTY->assign('pages', $pages);
             $SMARTY->assign('totals', $totals);
             $SMARTY->assign('pagescount', count($pages));
-            $SMARTY->assign('reccount', count($list));
+            $SMARTY->assign('reccount', empty($list) ? 0 : count($list));
             if (strtolower($report_type) == 'pdf') {
                 $output = $SMARTY->fetch('print/printreceiptlist-ext.html');
                 Utils::html2pdf(array(
