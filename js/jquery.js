@@ -603,11 +603,15 @@ function init_comboboxes(selector) {
 			$(this).attr('data-alt-field') ? { altField: $(this).attr('data-alt-field') } : {},
 			$(this).attr('data-alt-invalid-field') ? { altInvalidField: $(this).attr('data-alt-invalid-field') } : {}
 		));
+
 		var scombobox = $(this).parent('.scombobox');
-		$('.scombobox-display', scombobox).addClass(
+		var scomboboxDisplay = $('.scombobox-display', scombobox);
+		scomboboxDisplay.addClass(
 			$.grep($('select', scombobox).attr('class').split(' '), function(value) {
-				return value != 'lms-ui-combobox';
-			}));
+				return value !== 'lms-ui-combobox';
+			})
+		).attr('placeholder', $t("Select/enter value"));
+
 		if (typeof($(this).attr('data-value')) === 'string' &&
 			$(this).attr('data-value').length) {
 			scombobox.scombobox('val', $(this).attr('data-value'));
@@ -640,7 +644,9 @@ function init_comboboxes(selector) {
 
 function updateComboBoxes(selector) {
 	$(selector).each(function() {
-		$(this).scombobox('val', $(this).val());
+		var value = $(this).scombobox('val');
+		$(this).scombobox('fill');
+		$(this).scombobox('val', value);
 	});
 }
 

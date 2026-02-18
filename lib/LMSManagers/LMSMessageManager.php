@@ -560,6 +560,9 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
                 case MSG_BOUNCED:
                     $where[] = 'x.bounced = x.cnt';
                     break;
+                case MSG_READY_TO_SEND:
+                    $where[] = 'x.ready_to_send = x.cnt';
+                    break;
             }
         }
 
@@ -579,7 +582,8 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 						COUNT(CASE WHEN i.status = ' . MSG_DELIVERED . ' THEN 1 ELSE NULL END) AS delivered,
 						COUNT(CASE WHEN i.status = ' . MSG_ERROR . ' THEN 1 ELSE NULL END) AS error,
 						COUNT(CASE WHEN i.status = ' . MSG_CANCELLED . ' THEN 1 ELSE NULL END) AS cancelled,
-						COUNT(CASE WHEN i.status = ' . MSG_BOUNCED . ' THEN 1 ELSE NULL END) AS bounced
+						COUNT(CASE WHEN i.status = ' . MSG_BOUNCED . ' THEN 1 ELSE NULL END) AS bounced,
+						COUNT(CASE WHEN i.status = ' . MSG_READY_TO_SEND . ' THEN 1 ELSE NULL END) AS ready_to_send
 					FROM messageitems i'
                     . (empty($userid) ? '' : ' LEFT JOIN customers c ON c.id = i.customerid LEFT JOIN userdivisions ud ON ud.divisionid = c.divisionid AND ud.userid = ' . $userid)
                     . ' LEFT JOIN (
@@ -608,6 +612,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
                 x.error,
                 x.cancelled,
                 x.bounced,
+                x.ready_to_send,
                 fc.id AS filecontainerid
             FROM messages m
             JOIN (
@@ -617,7 +622,8 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
                     COUNT(CASE WHEN i.status = ' . MSG_DELIVERED . ' THEN 1 ELSE NULL END) AS delivered,
                     COUNT(CASE WHEN i.status = ' . MSG_ERROR . ' THEN 1 ELSE NULL END) AS error,
                     COUNT(CASE WHEN i.status = ' . MSG_CANCELLED . ' THEN 1 ELSE NULL END) AS cancelled,
-                    COUNT(CASE WHEN i.status = ' . MSG_BOUNCED . ' THEN 1 ELSE NULL END) AS bounced
+                    COUNT(CASE WHEN i.status = ' . MSG_BOUNCED . ' THEN 1 ELSE NULL END) AS bounced,
+                    COUNT(CASE WHEN i.status = ' . MSG_READY_TO_SEND . ' THEN 1 ELSE NULL END) AS ready_to_send
                 FROM messageitems i'
                 . (empty($userid) ? '' : ' LEFT JOIN customers c ON c.id = i.customerid LEFT JOIN userdivisions ud ON ud.divisionid = c.divisionid AND ud.userid = ' . $userid)
                 . ' LEFT JOIN (

@@ -243,7 +243,7 @@ foreach ($message_files as $message_file) {
         if (!empty($phone)) {
             $phone = preg_replace('/^(\+)?' . $prefix . '/', '', $phone);
 
-            $customer = $DB->GetRow(
+            $customers = $DB->GetAll(
                 "SELECT customerid AS cid, " . $DB->Concat('lastname', "' '", 'c.name') . " AS name
                 FROM customercontacts cc
                 LEFT JOIN customers c ON c.id = cc.customerid
@@ -274,6 +274,14 @@ foreach ($message_files as $message_file) {
                     sleep(1);
                 }
             }
+
+            if (empty($customers) || count($customers) > 1) {
+                $customer = null;
+            } else {
+                $customer = reset($customers);
+            }
+
+            unset($customers);
         } else {
             $customer = null;
         }

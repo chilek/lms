@@ -6305,6 +6305,7 @@ $_LANG['View UPO'] = 'Pokaż UPO';
 
 $_LANG['<!ksef>Local Government Unit'] = 'jednostka samorządu terytorialnego';
 $_LANG['<!ksef>VAT group'] = 'grupa VAT';
+$_LANG['<!ksef>other'] = 'inny';
 
 $_LANG['<!ksef>Document type/number'] = 'Typ/numer dokumentu';
 $_LANG['KSeF number'] = 'Numer KSeF';
@@ -6374,3 +6375,5 @@ $_LANG['Finished'] = 'Zakończone';
 
 $_LANG['from earlier sent message'] = 'z poprzednio wysłanej wiadomości';
 $_LANG['The are no recipients which match filter criteria!'] = 'Brak odbiorców pasujących do kryteriów filtra!';
+
+$_LANG['Select/enter value'] = 'Wybierz/wpisz wartość';

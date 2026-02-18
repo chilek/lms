@@ -327,15 +327,17 @@ class KSeF
             $countryCode = 'PL';
         }
 
-        $xml .= "\t\t<AdresKoresp>" . PHP_EOL;
-        $xml .= "\t\t\t<KodKraju>" . $countryCode . "</KodKraju>" . PHP_EOL;
-        $xml .= "\t\t\t<AdresL1>" . htmlspecialchars($invoice['post_address']) . "</AdresL1>" . PHP_EOL;
-        $xml .= "\t\t\t<AdresL2>" . htmlspecialchars((empty($invoice['post_zip']) ? '' : $invoice['post_zip'] . ' ') . $invoice['post_city']) . "</AdresL2>" . PHP_EOL;
-        $xml .= "\t\t</AdresKoresp>" . PHP_EOL;
+        if (!empty($invoice['post_address'])) {
+            $xml .= "\t\t<AdresKoresp>" . PHP_EOL;
+            $xml .= "\t\t\t<KodKraju>" . $countryCode . "</KodKraju>" . PHP_EOL;
+            $xml .= "\t\t\t<AdresL1>" . htmlspecialchars($invoice['post_address']) . "</AdresL1>" . PHP_EOL;
+            $xml .= "\t\t\t<AdresL2>" . htmlspecialchars((empty($invoice['post_zip']) ? '' : $invoice['post_zip'] . ' ') . $invoice['post_city']) . "</AdresL2>" . PHP_EOL;
+            $xml .= "\t\t</AdresKoresp>" . PHP_EOL;
+        }
 
         $xml .= "\t\t<NrKlienta>" . $invoice['customerid'] . "</NrKlienta>" . PHP_EOL;
 
-        $xml .= "\t\t<JST>" . (empty($invoice['recipient_address_id']) || $invoice['recipient_type'] == 2 ? '2' : '1') . "</JST>" . PHP_EOL;
+        $xml .= "\t\t<JST>" . (empty($invoice['recipient_address_id']) || empty($invoice['recipient_type']) || $invoice['recipient_type'] == 2 ? '2' : '1') . "</JST>" . PHP_EOL;
         $xml .= "\t\t<GV>" . (empty($invoice['recipient_address_id']) || empty($invoice['recipient_type']) || $invoice['recipient_type'] == 1 ? '2' : '1') . "</GV>" . PHP_EOL;
 
         $xml .= "\t</Podmiot2>" . PHP_EOL;
@@ -388,7 +390,7 @@ class KSeF
             $xml .= "\t\t\t<AdresL2>" . htmlspecialchars((empty($invoice['rec_zip']) ? '' : $invoice['rec_zip'] . ' ') . $invoice['rec_city']) . "</AdresL2>" . PHP_EOL;
             $xml .= "\t\t</Adres>" . PHP_EOL;
 
-            $xml .= "\t\t<Rola>" . (empty($invoice['recipient_type']) || $invoice['recipient_type'] == 1 ? '8' : '10') . "</Rola>" . PHP_EOL;
+            $xml .= "\t\t<Rola>" . (empty($invoice['recipient_type']) ? '2' : ($invoice['recipient_type'] == 1 ? '8' : '10')) . "</Rola>" . PHP_EOL;
 
             $xml .= "\t</Podmiot3>" . PHP_EOL;
         }
@@ -1252,7 +1254,7 @@ class KSeF
         $divisionId = $params['divisionid'];
 
         if (!isset($certs[$divisionId])) {
-            $certFile = \ConfigHelper::getConfig('ksef.certificate');
+            $certFile = self::getCertificatePath();
             $certFile = preg_replace('/\.[^.]+$/', '', $certFile);
             $certFile .= '-offline.pem';
 
@@ -1711,5 +1713,20 @@ class KSeF
     public static function deadlineUnit(?string $deadlineUnit): ?string
     {
         return self::$deadlineUnits[$deadlineUnit] ?? 'days';
+    }
+
+    public static function getCertificatePath(): string
+    {
+        $certificatePath = \ConfigHelper::getConfig('ksef.certificate');
+        if (empty($certificatePath)) {
+            return $certificatePath;
+        }
+
+        $certificatePath = trim($certificatePath);
+        if (strpos($certificatePath, DIRECTORY_SEPARATOR) === 0) {
+            return $certificatePath;
+        } else {
+            return SYS_DIR . DIRECTORY_SEPARATOR . $certificatePath;
+        }
     }
 }

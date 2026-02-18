@@ -574,12 +574,21 @@ class LMSSmartyPlugins
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2">
+                    <td>
+                    </td>
+                    <td>
+                        <label>
+                            <input type="radio" name="' . $input_name_entity_type . '" value="0" data-address="entity-type"
+                            ' . (empty($params['location_entity_type']) ? ' checked' : '') . '>
+                            ' . trans('<!ksef>other') . '
+                        </label>
+                        <br>
                         <label>
                             <input type="radio" name="' . $input_name_entity_type . '" value="1" data-address="entity-type"
-                            ' . (empty($params['location_entity_type']) || $params['location_entity_type'] == 1 ? ' checked' : '') . '>
+                            ' . (!empty($params['location_entity_type']) && $params['location_entity_type'] == 1 ? ' checked' : '') . '>
                             ' . trans('<!ksef>Local Government Unit') . '
                         </label>
+                        <br>
                         <label>
                             <input type="radio" name="' . $input_name_entity_type . '" value="2" data-address="entity-type"
                             ' . (!empty($params['location_entity_type']) && $params['location_entity_type'] == 2 ? ' checked' : '') . '>
