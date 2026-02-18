@@ -327,11 +327,13 @@ class KSeF
             $countryCode = 'PL';
         }
 
-        $xml .= "\t\t<AdresKoresp>" . PHP_EOL;
-        $xml .= "\t\t\t<KodKraju>" . $countryCode . "</KodKraju>" . PHP_EOL;
-        $xml .= "\t\t\t<AdresL1>" . htmlspecialchars($invoice['post_address']) . "</AdresL1>" . PHP_EOL;
-        $xml .= "\t\t\t<AdresL2>" . htmlspecialchars((empty($invoice['post_zip']) ? '' : $invoice['post_zip'] . ' ') . $invoice['post_city']) . "</AdresL2>" . PHP_EOL;
-        $xml .= "\t\t</AdresKoresp>" . PHP_EOL;
+        if (!empty($invoice['post_address'])) {
+            $xml .= "\t\t<AdresKoresp>" . PHP_EOL;
+            $xml .= "\t\t\t<KodKraju>" . $countryCode . "</KodKraju>" . PHP_EOL;
+            $xml .= "\t\t\t<AdresL1>" . htmlspecialchars($invoice['post_address']) . "</AdresL1>" . PHP_EOL;
+            $xml .= "\t\t\t<AdresL2>" . htmlspecialchars((empty($invoice['post_zip']) ? '' : $invoice['post_zip'] . ' ') . $invoice['post_city']) . "</AdresL2>" . PHP_EOL;
+            $xml .= "\t\t</AdresKoresp>" . PHP_EOL;
+        }
 
         $xml .= "\t\t<NrKlienta>" . $invoice['customerid'] . "</NrKlienta>" . PHP_EOL;
 
