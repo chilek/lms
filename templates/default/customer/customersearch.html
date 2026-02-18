@@ -611,11 +611,11 @@
 			{icon name="money"} {trans("Tariffs:")}
 		</TD>
 		<TD class="multiselect">
-			<SELECT SIZE="1" name="search[tariffs][]" class="lms-ui-multiselect" multiple data-default-value="{trans("— all —")}">
+			<select size="1" name="search[tariffs][]" class="lms-ui-multiselect" multiple data-default-value="{trans("— all —")}">
 				{foreach $tariffs as $item}
-				<OPTION VALUE="{$item.id}">{$item.name}</OPTION>
+					<option value="{$item.id}">{$item.name} ({Utils::formatMoney($item.value, $item.currency)})</option>
 				{/foreach}
-			</SELECT>
+			</select>
 			&nbsp;{trans("with end date:")}
 			<select name="search[withenddate]">
 				<option value="-1">{trans("<!enddate>— any —")}</option>
