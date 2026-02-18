@@ -259,6 +259,7 @@ if (!empty($usergroups)) {
         }
         $visible_users = array_unique($visible_users);
     }
+    unset($usergroups['total'], $usergroups['totalcount']);
 }
 
 $SMARTY->assign(array(
