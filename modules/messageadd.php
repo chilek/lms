@@ -1440,6 +1440,8 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                     $errors = $result['errors'] ?? array();
                 }
 
+                $sendResult = $result;
+
                 $result = [];
 
                 switch ($status) {
@@ -1456,7 +1458,9 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
                 echo json_encode($result) . PHP_EOL;
 
-                if ($status == MSG_SENT || isset($result['id']) || !empty($errors)) {
+                $externalMsgId = is_array($sendResult) && !empty($sendResult['id']) ? $sendResult['id'] : null;
+
+                if ($status == MSG_SENT || isset($externalMsgId) || !empty($errors)) {
                     $DB->Execute(
                         'UPDATE messageitems SET status = ?, lastdate = ?NOW?,
                             error = ?, externalmsgid = ?, attributes = ? WHERE messageid = ? AND '
@@ -1465,7 +1469,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                         array(
                             $status,
                             empty($errors) ? null : implode(', ', $errors),
-                            !is_array($result) || empty($result['id']) ? null : $result['id'],
+                            $externalMsgId,
                             empty($attributes) ? null : serialize(array_merge($permanent_attributes, $attributes)),
                             $msgid,
                             $orig_destination,
