@@ -3921,19 +3921,6 @@ if (empty($types) || in_array('messages', $types)) {
                                     } else {
                                         echo 'ready to send.';
                                     }
-
-                                    if (isset($result['id'])) {
-                                        $DB->Execute(
-                                            'UPDATE messageitems
-                                            SET lastdate = ?NOW?, externalmsgid = ?
-                                            WHERE id = ?',
-                                            array(
-                                                $result['id'],
-                                                $messageitem['messageitemid']
-                                            )
-                                        );
-                                    }
-
                                     break;
                                 case MSG_ERROR:
                                     if (empty($errors)) {
@@ -3954,9 +3941,14 @@ if (empty($types) || in_array('messages', $types)) {
                         }
 
                         if ($status == MSG_SENT || $status == MSG_READY_TO_SEND || $status == MSG_ERROR || !empty($errors)) {
+                            $externalMsgId = ($status == MSG_SENT || $status == MSG_READY_TO_SEND) && isset($result['id'])
+                                ? $result['id']
+                                : null;
+
                             $DB->Execute(
                                 'UPDATE messageitems
                                 SET status = ?, lastdate = ?NOW?, error = ?, attempts = ?
+                                    ' . (isset($externalMsdId) ? ', externalmsgid = ' . $DB->Escape($externalMsgId) : '') . '
                                 WHERE messageid = ?
                                     AND id = ?',
                                 array(
