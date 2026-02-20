@@ -1,14 +1,30 @@
 const isNumeric = (value) => !isNaN(value) && isFinite(value);
 
-function modalwindow(module, width, height, reload) {
+function modalwindow(module, width, height, reload, maxwidth, maxheight) {
 	if (isNumeric(width))
 		width = width + 'px';
 
 	if (isNumeric(height))
 		height = height + 'px';
 
+	if (maxwidth)
+		if (isNumeric(maxwidth))
+			maxwidth = 'max-width: ' + maxwidth + 'px;';
+		else
+			maxwidth = 'max-width: ' + maxwidth + ';';
+	else
+		maxwidth = '';
+
+	if (maxheight)
+		if (isNumeric(maxheight))
+			maxheight = 'max-height: ' + maxheight + 'px;';
+		else
+			maxheight = 'max-height: ' + maxheight + ';';
+	else
+		maxheight = '';
+
 	var src = location.protocol + '//' + document.domain + '/?m=' + module + '&popup=1';
-	$.modal('<iframe src="' + src + '" style="border:0; width: ' + width + '; height: ' + height + ';">', {
+	$.modal('<iframe src="' + src + '" style="border:0; width: ' + width + '; height: ' + height + ';' + maxwidth + maxheight + '">', {
 		opacity: 60,
 		containerCss:{
 			padding: 3

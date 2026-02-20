@@ -49,7 +49,7 @@
 					<TD>
 						<INPUT type="hidden" name="receivenote[product][pid]" id="pid" VALUE="{$itemdata.pid}">
 						<INPUT type="text" id="pinput" name="receivenote[product][product]" SIZE="40" VALUE="{$itemdata.product|escape}" {tip text="Choose product from list" trigger="product"}>
-						<A HREF="javascript:modalwindow('stckproductadd', '75vw', '75vh');"><IMG SRC="img/producer.gif" ALT="" {tip text="New product"}></A>
+						<A HREF="javascript:modalwindow('stckproductadd', '75vw', '75vh', 0, 600, 450);"><IMG SRC="img/producer.gif" ALT="" {tip text="New product"}></A>
 					</TD>
 					<TD>
 						<INPUT type="text" SIZE="3" name="receivenote[product][count]" id="pcount" VALUE="{$itemdata.count}" {tip text="Product ammount" trigger="count"}>
