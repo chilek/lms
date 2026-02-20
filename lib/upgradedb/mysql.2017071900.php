@@ -21,10 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017071900', 'dbversion'));
 
 $this->Execute("ALTER TABLE taxes ADD COLUMN reversecharge tinyint(1) DEFAULT 0 NOT NULL");
-
-$this->CommitTrans();

@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE networks
 				ADD COLUMN hostid int(11) NULL,
@@ -29,7 +28,3 @@ $this->Execute("ALTER TABLE networks
 
 $this->Execute("ALTER TABLE networks DROP INDEX address,
 				ADD UNIQUE address(address, hostid)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013032100', 'dbversion'));
-
-$this->CommitTrans();

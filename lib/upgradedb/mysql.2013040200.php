@@ -21,13 +21,8 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE users
 			ADD COLUMN swekey_id varchar(32) NULL DEFAULT NULL AFTER accessto,
 			DROP INDEX login,
 			ADD UNIQUE INDEX login (login, swekey_id)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013040200', 'dbversion'));
-
-$this->CommitTrans();

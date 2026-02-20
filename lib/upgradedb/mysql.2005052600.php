@@ -31,5 +31,3 @@ $this->Execute("ALTER TABLE customerassignments ADD UNIQUE (customergroupid, cus
 
 $this->Execute("RENAME TABLE usergroups TO customergroups");
 $this->Execute("RENAME TABLE users TO customers");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005052600', 'dbversion'));

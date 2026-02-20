@@ -20,9 +20,3 @@
  *  USA.
  *
  */
-
-$this->BeginTrans();
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019102400', 'dbversion'));
-
-$this->CommitTrans();

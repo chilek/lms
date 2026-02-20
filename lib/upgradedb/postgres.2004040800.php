@@ -26,10 +26,9 @@
 
 $this->Execute(
     "
-    BEGIN;
+    
     ALTER TABLE cash ADD taxvalue decimal(9,2);
     ALTER TABLE cash ALTER taxvalue SET DEFAULT 0;
-    UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?;
-    COMMIT",
+    ",
     array('2004040800', 'dbversion')
 );
