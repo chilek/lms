@@ -1,6 +1,14 @@
+const isNumeric = (value) => !isNaN(value) && isFinite(value);
+
 function modalwindow(module, width, height, reload) {
+	if (isNumeric(width))
+		width = width + 'px';
+
+	if (isNumeric(height))
+		height = height + 'px';
+
 	var src = location.protocol + '//' + document.domain + '/?m=' + module + '&popup=1';
-	$.modal('<iframe src="' + src + '" style="border:0; width: ' + width + 'px; height: ' + height + 'px;">', {
+	$.modal('<iframe src="' + src + '" style="border:0; width: ' + width + '; height: ' + height + ';">', {
 		opacity: 60,
 		containerCss:{
 			padding: 3

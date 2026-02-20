@@ -65,7 +65,7 @@
 					<OPTION VALUE="{$group.gid}"{if $group.gid == $productadd.groupid} selected{/if}>{$group.gname}</OPTION>
 				{/foreach}
 			</SELECT>
-			&nbsp;&nbsp;<A HREF="javascript:modalwindow('stckgroupadd', 400, 200);"><IMG src="img/add.gif" alt="[ {t}Add{/t} ]" title="[ {t}Add{/t} ]"></A>
+			&nbsp;&nbsp;<A HREF="javascript:modalwindow('stckgroupadd', '50vw', '25vh');"><IMG src="img/add.gif" alt="[ {t}Add{/t} ]" title="[ {t}Add{/t} ]"></A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -79,7 +79,7 @@
 					<OPTION VALUE="{$manufacturer.id}"{if $manufacturer.id == $productadd.maunfacturerid} selected{/if}>{$manufacturer.name}</OPTION>
 				{/foreach}
 			</SELECT>
-			&nbsp;&nbsp;<A HREF="javascript:modalwindow('stckmanufactureradd', 400, 200);"><IMG src="img/add.gif" alt="[ {t}Add{/t} ]" title="[ {t}Add{/t} ]"></A>
+			&nbsp;&nbsp;<A HREF="javascript:modalwindow('stckmanufactureradd', '50vw', '25vh');"><IMG src="img/add.gif" alt="[ {t}Add{/t} ]" title="[ {t}Add{/t} ]"></A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -163,7 +163,7 @@
 		<TD width="100%" CLASS="fbottomu" COLSPAN="2" align="right">
 			<A HREF="#" id="fs" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
 			<A HREF="{if $layout.popup}javascript:parent.$.modal.close();{else}?m=stckproducts{/if}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A><BR>
-			<INPUT type="checkbox" name="productadd[reuse]" id="productadd[reuse]" value="ON" {if $productadd.reuse}checked{/if}><A HREF="javascript:checkElement('productadd[reuse]')"> {t}Display this form again, when this product is saved{/t}</A>
+			{if !$layout.popup}<INPUT type="checkbox" name="productadd[reuse]" id="productadd[reuse]" value="ON" {if $productadd.reuse}checked{/if}><A HREF="javascript:checkElement('productadd[reuse]')"> {t}Display this form again, when this product is saved{/t}</A>{/if}
 		</TD>
 	</TR>
 	</tbody>
