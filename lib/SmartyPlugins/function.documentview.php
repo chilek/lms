@@ -101,7 +101,7 @@ function smarty_function_documentview($params, $template)
     $result .= '<a href="' . $url . '" data-title="' . $name . '" data-name="' . $name . '" data-type="' . $type . '"';
     if (empty($preview_type)) {
         $result .=  ' class="lms-ui-button"'
-            . (!empty($office2pdf_command) && $office_document ? ' data-office2pdf="0"' : ($external ? ' rel="external"' : ''));
+            . (!empty($office2pdf_command) && !empty($office_document) ? ' data-office2pdf="0"' : ($external ? ' rel="external"' : ''));
     } else {
         $result .= ' id="documentview-' . $id . '" data-dialog-id="documentviewdialog-' . $id . '" '
             . 'class="lms-ui-button" data-preview-type="' . $preview_type . '"';

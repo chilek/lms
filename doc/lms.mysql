@@ -3345,7 +3345,7 @@ CREATE TABLE ksefinvoiceitems (
     net_flag smallint DEFAULT 1,
     price numeric(24,8) NOT NULL,
     value numeric(16,2) NOT NULL,
-    tax_rate numeric(4,2) NOT NULL,
+    tax_rate numeric(4,2),
     taxed smallint DEFAULT 1,
     reverse_charge smallint DEFAULT 0,
     eu smallint DEFAULT 0,
@@ -4646,4 +4646,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026021000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026021800');
