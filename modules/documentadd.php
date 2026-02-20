@@ -941,7 +941,7 @@ if (isset($_POST['document'])) {
         )
         : array();
 
-    $document['cdate'] = time();
+    $document['cdate'] = isset($_GET['cdate']) ? strtotime($_GET['cdate']) : time();
 
     $document['reuse'] = ConfigHelper::checkConfig('documents.default_reuse');
 }
