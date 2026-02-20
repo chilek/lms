@@ -249,6 +249,7 @@ $today = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
 
 $visible_users = null;
 $usergroups = $LMS->UsergroupGetList();
+unset($usergroups['total'], $usergroups['totalcount']);
 if (!empty($usergroups)) {
     if (!empty($filter['usergroups'])) {
         $visible_users = array();
@@ -258,6 +259,7 @@ if (!empty($usergroups)) {
             }
         }
         $visible_users = array_unique($visible_users);
+        $visible_users = array_combine($visible_users, $visible_users);
     }
     unset($usergroups['total'], $usergroups['totalcount']);
 }
