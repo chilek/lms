@@ -94,7 +94,19 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
     public function IsIPGateway($ip)
     {
-        return (bool)$this->db->GetOne('SELECT gateway FROM networks WHERE gateway = ?', array($ip));
+        $network_all_addresses_assignable = ConfigHelper::checkConfig('phpui.network_all_addresses_assignable');
+
+        return (bool)$this->db->GetOne(
+            'SELECT gateway
+            FROM networks
+            WHERE gateway = ?
+                AND allassignable = ?'
+                . ($network_all_addresses_assignable ? ' AND 1 = 0' : ''),
+            array(
+                $ip,
+                0,
+            )
+        );
     }
 
     public function GetPrefixList()
@@ -940,7 +952,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                         $network['nodes']['name'][$i] = '<b>NETWORK</b>';
                     } elseif (!$prefix_31 && !$network_all_addresses_assignable && empty($network['allassignable']) && $network['nodes']['address'][$i] == $network['broadcast']) {
                         $network['nodes']['name'][$i] = '<b>BROADCAST</b>';
-                    } elseif ($network['nodes']['address'][$i] == $network['gateway']) {
+                    } elseif (!$network_all_addresses_assignable && empty($network['allassignable']) && $network['nodes']['address'][$i] == $network['gateway']) {
                         $network['nodes']['name'][$i] = '<b>GATEWAY</b>';
                     } elseif ($longip >= ip_long($network['dhcpstart']) && $longip <= ip_long($network['dhcpend'])) {
                         $network['nodes']['name'][$i] = '<b>DHCP</b>';

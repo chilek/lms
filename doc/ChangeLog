@@ -1191,6 +1191,8 @@ version 28-git (????-??-??):
     to this second one message are automatically assigned to new created messages with possibility with
     exluding them from web form [chilan]
   - improvement: multi division selection in sale registry form/report [chilan]
+  - improvement: 'phpui.network_all_addresses_assignable' configuration variable and 'all assignable' property
+    of network control if gateway addresses can be assigned to nodes or network devices [chilan]
 
 version 27.0 (2021-08-20):
 
