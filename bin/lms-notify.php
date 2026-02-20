@@ -340,7 +340,7 @@ if (isset($options['actions'])) {
             }
 
             if (!empty($actions[$action]) && isset($supported_actions[$action]['param_map'])) {
-                $action[$action] = $supported_actions[$action]['param_map']($actions[$action]);
+                $actions[$action] = $supported_actions[$action]['param_map']($actions[$action]);
             }
         }
     } else {
