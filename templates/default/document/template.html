@@ -200,8 +200,12 @@
 			}
 
 			.paragraph::before {
-				content: "\00A7 " counter(paragraph);
+				content: "\00A7 " counter(paragraph) " ";
 				min-width: 2ch;
+			}
+
+			.list-paragraphs.dots .paragraph::before{
+				content: "\00A7 " counter(paragraph) ". ";
 			}
 
 			.paragraph-container {
@@ -228,7 +232,12 @@
 			}
 
 			.section::before {
-				content: counter(section, upper-roman);
+				content: counter(section, upper-roman) " ";
+				min-width: 2ch;
+			}
+
+			.list-sections-with-paragraphs.dots .section::before {
+				content: counter(section, upper-roman) ". ";
 				min-width: 2ch;
 			}
 
