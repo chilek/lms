@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE TABLE customercontacts (
@@ -58,7 +57,3 @@ if ($list = $this->GetAll('SELECT phone1, phone2, phone3, id FROM customers')) {
 $this->Execute('ALTER TABLE customers DROP phone1');
 $this->Execute('ALTER TABLE customers DROP phone2');
 $this->Execute('ALTER TABLE customers DROP phone3');
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007071100', 'dbversion'));
-
-$this->CommitTrans();

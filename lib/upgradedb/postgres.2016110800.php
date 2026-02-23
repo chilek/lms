@@ -21,10 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE voip_pool_numbers ADD COLUMN type smallint NOT NULL DEFAULT 1");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016110800', 'dbversion'));
-
-$this->CommitTrans();

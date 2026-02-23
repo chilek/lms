@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 $this->Execute("
     CREATE SEQUENCE uiconfig_id_seq;
     CREATE TABLE uiconfig (
@@ -36,6 +35,4 @@ $this->Execute("
 	disabled smallint NOT NULL DEFAULT 0,
 	PRIMARY KEY (id)
     );
-    UPDATE dbinfo SET keyvalue = '2004112600' WHERE keytype = 'dbversion';
 ");
-$this->CommitTrans();

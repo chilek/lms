@@ -21,9 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE voipaccounts ADD COLUMN cost_limit decimal(12,2) NULL DEFAULT NULL");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016070100', 'dbversion'));
-
-$this->CommitTrans();

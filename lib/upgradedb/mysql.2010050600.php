@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE TABLE macs (
@@ -40,7 +39,3 @@ $this->Execute("
 $this->Execute("INSERT INTO macs (mac, nodeid) SELECT mac, id FROM nodes");
 
 $this->Execute("ALTER TABLE nodes DROP mac");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010050600', 'dbversion'));
-
-$this->CommitTrans();

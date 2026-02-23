@@ -37,7 +37,6 @@ function parseCssProperties($text)
     return $result;
 }
 
-$this->BeginTrans();
 
 $categories = $this->GetAll('SELECT id, style FROM rtcategories');
 if (!empty($categories)) {
@@ -57,7 +56,3 @@ if (!empty($categories)) {
         );
     }
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020052900', 'dbversion'));
-
-$this->CommitTrans();

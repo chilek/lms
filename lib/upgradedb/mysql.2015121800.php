@@ -24,7 +24,6 @@
  * @author Maciej_Wawryk
  */
 
-$this->BeginTrans();
 $this->Execute("CREATE TABLE usergroups (
 	id int(11) NOT NULL auto_increment,
 	name varchar(255) DEFAULT '' NOT NULL UNIQUE, 
@@ -40,5 +39,3 @@ $this->Execute("CREATE TABLE userassignments (
 	FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT userassignments_usergroupid_key UNIQUE (usergroupid, userid)
     );");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015121800', 'dbversion'));
-$this->CommitTrans();

@@ -23,7 +23,6 @@
 
 $lang = $this->GetOne("SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?", array('phpui', 'lang', 0));
 
-$this->BeginTrans();
 
 $this->Execute("DELETE FROM customercontacts WHERE customerid NOT IN (SELECT id FROM customers)");
 $this->Execute("ALTER TABLE customercontacts ADD FOREIGN KEY (customerid)
@@ -42,7 +41,3 @@ if ($lang == 'pl') {
     $this->Execute("UPDATE customercontacts SET type = COALESCE(type, 0) + 1
         WHERE REPLACE(REPLACE(phone, '-', ''), ' ', '') REGEXP '^(\\\\+?[0-9]{2}|0)?(88[0-9]|5[01][0-9]|6[069][0-9]|7[2789][0-9])[0-9]{6}$'");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010121400', 'dbversion'));
-
-$this->CommitTrans();

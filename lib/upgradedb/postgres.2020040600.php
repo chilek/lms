@@ -26,7 +26,6 @@ define('CCONSENT_INVOICENOTICE', 2);
 define('CCONSENT_MAILINGNOTICE', 3);
 define('CCONSENT_EINVOICE', 4);
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE TABLE customerconsents (
@@ -153,7 +152,3 @@ $this->Execute("
             LEFT JOIN customerconsents cc4 ON cc4.customerid = c.id AND cc4.type = 4
         WHERE c.type < 2;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020040600', 'dbversion'));
-
-$this->CommitTrans();

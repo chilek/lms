@@ -21,10 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE cashimport ADD COLUMN srcaccount varchar(60) DEFAULT NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021021600', 'dbversion'));
-
-$this->CommitTrans();

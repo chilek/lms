@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	DROP VIEW vnodealltariffs;
@@ -426,7 +425,3 @@ if (empty($ids)) {
     $this->Execute("UPDATE up_help SET reference = NULL
 		WHERE reference IS NOT NULL AND reference NOT IN (" . $sql_ids . ")");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017101204', 'dbversion'));
-
-$this->CommitTrans();

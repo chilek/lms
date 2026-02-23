@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("DROP VIEW IF EXISTS customerview;");
 $this->Execute("DROP VIEW IF EXISTS contractorview;");
@@ -86,7 +85,3 @@ $this->Execute("
 			LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
 		WHERE c.type < 2
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017051201', 'dbversion'));
-
-$this->CommitTrans();

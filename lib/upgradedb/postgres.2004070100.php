@@ -25,7 +25,7 @@
  */
 
 $this->Execute("
-    BEGIN;
+    
     CREATE SEQUENCE rtrights_id_seq;
     CREATE TABLE rtrights (
     id integer DEFAULT nextval('rtrights_id_seq'::text) NOT NULL, 
@@ -40,6 +40,5 @@ $this->Execute("
     UPDATE rtqueues SET description='';
     ALTER TABLE rtqueues ALTER description SET NOT NULL;
 
-    UPDATE dbinfo SET keyvalue = '2004070100' WHERE keytype = 'dbversion';
-    COMMIT;
+    
 ");

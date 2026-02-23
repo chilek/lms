@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE SEQUENCE assignmentlocks_id_seq;
@@ -35,7 +34,3 @@ $this->Execute("
 		PRIMARY KEY (id)
 	);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012021800', 'dbversion'));
-
-$this->CommitTrans();

@@ -26,4 +26,3 @@
 
 $this->Execute("ALTER TABLE tariffs CHANGE taxvalue taxvalue DECIMAL(9,2) NULL DEFAULT 0.00");
 $this->Execute("ALTER TABLE invoicecontents CHANGE taxvalue taxvalue DECIMAL(9,2) NULL DEFAULT 0.00");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2004040701', 'dbversion'));

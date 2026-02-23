@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $des_key = ConfigHelper::getConfig('phpui.des_key');
 if (!empty($des_key)) {
@@ -34,7 +33,3 @@ if (!empty($des_key)) {
         array('phpui', 'des_key')
     );
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019091700', 'dbversion'));
-
-$this->CommitTrans();

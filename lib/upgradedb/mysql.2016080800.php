@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("RENAME TABLE voip_rules TO voip_rule_groups");
 
@@ -38,7 +37,3 @@ $this->Execute("ALTER TABLE voip_rules
 	ADD CONSTRAINT voip_rules_ibfk_3 FOREIGN KEY (rule_group_id) REFERENCES voip_rule_groups(id)");
 
 $this->Execute("ALTER TABLE voip_rules CHANGE rule_settings settings text NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016080800', 'dbversion'));
-
-$this->CommitTrans();

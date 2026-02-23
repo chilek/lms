@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE VIEW vdivisions AS
@@ -30,7 +29,3 @@ $this->Execute("
             (CASE WHEN a.house IS NULL THEN a.street ELSE (CASE WHEN a.flat IS NULL THEN a.street || ' ' || a.house ELSE a.street || ' ' || a.house || '/' || a.flat END) END) as address
         FROM divisions d
             JOIN addresses a ON a.id = d.address_id;");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017020100', 'dbversion'));
-
-$this->CommitTrans();

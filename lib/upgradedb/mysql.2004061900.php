@@ -29,5 +29,3 @@ $this->Execute("ALTER TABLE tariffs ADD downceil int(11) DEFAULT '0' NOT NULL");
 $this->Execute("ALTER TABLE tariffs ADD climit int(11) DEFAULT '0' NOT NULL");
 $this->Execute("ALTER TABLE tariffs ADD plimit int(11) DEFAULT '0' NOT NULL");
 $this->Execute("UPDATE tariffs SET upceil=uprate, downceil=downrate");
-
-$this->Execute('UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?', array('2004061900', 'dbversion'));

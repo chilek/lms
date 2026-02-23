@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute(
     "UPDATE uiconfig SET section = ?, var = ? WHERE section = ? AND var = ?",
@@ -42,7 +41,3 @@ $this->Execute(
         'helpdesk_customerinfo_sms_body',
     )
 );
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022062706', 'dbversion'));
-
-$this->CommitTrans();

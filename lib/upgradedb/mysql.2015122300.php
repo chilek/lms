@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("DROP VIEW IF EXISTS customerview");
 $this->Execute("DROP VIEW IF EXISTS contractorview");
@@ -67,7 +66,3 @@ $this->Execute("CREATE VIEW customeraddressview AS
 			END) AS post_address
 		FROM customers c
 		WHERE c.type < 2");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015122300', 'dbversion'));
-
-$this->CommitTrans();

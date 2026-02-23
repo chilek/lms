@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 $this->Execute("
     
     ALTER TABLE passwd ADD type SMALLINT;
@@ -44,6 +43,4 @@ $this->Execute("
 
     ALTER TABLE passwd ADD UNIQUE (login);
     
-    UPDATE dbinfo SET keyvalue = '2004112100' WHERE keytype = 'dbversion';
 ");
-$this->CommitTrans();

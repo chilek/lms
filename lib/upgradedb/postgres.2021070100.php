@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     DROP VIEW vallusers;
@@ -39,7 +38,3 @@ $this->Execute("
         SELECT *, (firstname || ' ' || lastname) AS name, (lastname || ' ' || firstname) AS rname
         FROM users
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021070100', 'dbversion'));
-
-$this->CommitTrans();

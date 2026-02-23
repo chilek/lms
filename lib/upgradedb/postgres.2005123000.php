@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     ALTER TABLE cashregs ADD COLUMN disabled smallint;
@@ -32,7 +31,3 @@ $this->Execute("
     ALTER TABLE cashregs ALTER disabled SET NOT NULL;
     ALTER TABLE cashregs ALTER disabled SET DEFAULT 0;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005123000', 'dbversion'));
-
-$this->CommitTrans();

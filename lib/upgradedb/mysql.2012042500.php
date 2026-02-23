@@ -21,11 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE users ADD passwdexpiration int(11) NOT NULL DEFAULT '0'");
 $this->Execute("ALTER TABLE users ADD passwdlastchange int(11) NOT NULL DEFAULT '0'");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012042500', 'dbversion'));
-
-$this->CommitTrans();

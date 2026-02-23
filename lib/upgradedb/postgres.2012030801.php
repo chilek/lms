@@ -22,7 +22,6 @@
  *
  */
 
-$this->BeginTrans();
 
 // name2 support for teryt location_street
 $this->Execute("
@@ -55,7 +54,3 @@ $this->Execute("
 		FROM nodes n
 		JOIN macs m ON (n.id = m.nodeid);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012030801', 'dbversion'));
-
-$this->CommitTrans();

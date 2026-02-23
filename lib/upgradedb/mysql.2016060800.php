@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE voip_cdr CHANGE status status smallint NOT NULL");
 $this->Execute("ALTER TABLE voip_cdr CHANGE type type smallint NOT NULL");
@@ -69,7 +68,3 @@ $this->Execute("ALTER TABLE voip_cdr ENGINE = InnoDB;");
 
 define('CONFIG_TYPE_POSITIVE_INTEGER_2016060800', 2);
 $this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('phpui', 'billinglist_pagelimit', '100', ?)", array(CONFIG_TYPE_POSITIVE_INTEGER_2016060800));
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016060800', 'dbversion'));
-
-$this->CommitTrans();

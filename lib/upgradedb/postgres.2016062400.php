@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE TABLE voip_emergency_numbers (
@@ -33,7 +32,3 @@ $this->Execute("
 	);
 	CREATE INDEX voip_emergency_numbers_number_idx ON voip_emergency_numbers (number)
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016062400', 'dbversion'));
-
-$this->CommitTrans();

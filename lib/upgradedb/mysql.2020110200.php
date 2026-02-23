@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE promotionschemas ADD COLUMN deleted tinyint(1) DEFAULT 0 NOT NULL");
 
@@ -48,7 +47,3 @@ if (!empty($schemas)) {
         );
     }
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020110200', 'dbversion'));
-
-$this->CommitTrans();

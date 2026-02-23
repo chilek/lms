@@ -21,11 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE zipcodes ALTER COLUMN id SET DEFAULT nextval('zipcodes_id_seq'::text)");
 $this->Execute("SELECT setval('zipcodes_id_seq', MAX(id)) FROM zipcodes");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017040700', 'dbversion'));
-
-$this->CommitTrans();

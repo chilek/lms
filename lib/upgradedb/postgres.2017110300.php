@@ -21,10 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE promotionassignments RENAME COLUMN selectionid TO label");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017110300', 'dbversion'));
-
-$this->CommitTrans();

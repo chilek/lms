@@ -21,14 +21,9 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE rttickets ADD COLUMN address_id integer DEFAULT NULL;
 	ALTER TABLE rttickets ADD CONSTRAINT rttickets_address_id_fk
 		FOREIGN KEY (address_id) REFERENCES addresses (id) ON UPDATE CASCADE ON DELETE CASCADE
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017070700', 'dbversion'));
-
-$this->CommitTrans();

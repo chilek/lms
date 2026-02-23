@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute(
     "UPDATE uiconfig SET section = ? WHERE section = ? AND var = ?",
@@ -31,7 +30,3 @@ $this->Execute(
         'allow_modify_closed_events_newer_than',
     )
 );
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022062806', 'dbversion'));
-
-$this->CommitTrans();

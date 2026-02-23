@@ -38,5 +38,3 @@ $this->Execute("
 $this->Execute("ALTER TABLE netdevices ADD channelid int(11) DEFAULT NULL");
 $this->Execute("ALTER TABLE netdevices ADD INDEX channelid (channelid)");
 $this->Execute("ALTER TABLE netdevices ADD FOREIGN KEY (channelid) REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010020700', 'dbversion'));

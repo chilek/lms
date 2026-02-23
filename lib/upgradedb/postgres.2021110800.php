@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 if (!$this->ResourceExists('customers.pinlastchange', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("
@@ -116,7 +115,3 @@ if (!$this->ResourceExists('customers.pinlastchange', LMSDB::RESOURCE_TYPE_COLUM
             WHERE c.type < 2
     ");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021110800', 'dbversion'));
-
-$this->CommitTrans();

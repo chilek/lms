@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 if ($this->ResourceExists('promotionassignments.promotionschemaid', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
     $this->Execute("ALTER TABLE promotionassignments DROP FOREIGN KEY promotionassignments_ibfk_1");
@@ -29,7 +28,3 @@ if ($this->ResourceExists('promotionassignments.promotionschemaid', LMSDB::RESOU
     $this->Execute("ALTER TABLE promotionassignments ADD CONSTRAINT promotionassignments_ibfk_1
 		FOREIGN KEY (promotionschemaid) REFERENCES promotionschemas (id) ON DELETE CASCADE ON UPDATE CASCADE");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018093000', 'dbversion'));
-
-$this->CommitTrans();

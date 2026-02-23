@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE ewx_stm_nodes MODIFY channelid int(11) NULL");
 $this->Execute("ALTER TABLE ewx_stm_nodes ALTER COLUMN channelid SET DEFAULT NULL");
@@ -38,7 +37,3 @@ if (empty($ids)) {
 
 $this->Execute("ALTER TABLE ewx_stm_nodes ADD CONSTRAINT ewx_stm_nodes_channelid_fkey
 	FOREIGN KEY (channelid) REFERENCES ewx_stm_channels (id) ON DELETE SET NULL ON UPDATE CASCADE");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017101600', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE TABLE assignmentlocks (
@@ -33,7 +32,3 @@ $this->Execute("
 		tosec int(11)		DEFAULT 0 NOT NULL,
 		PRIMARY KEY (id)
 	) ENGINE=INNODB");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012021800', 'dbversion'));
-
-$this->CommitTrans();

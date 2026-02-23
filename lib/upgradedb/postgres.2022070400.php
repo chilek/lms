@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 if (!$this->ResourceExists('voip_cdr_caller_idx', LMSDB::RESOURCE_TYPE_INDEX)) {
     $this->Execute("CREATE INDEX voip_cdr_caller_idx ON voip_cdr (caller)");
@@ -29,7 +28,3 @@ if (!$this->ResourceExists('voip_cdr_caller_idx', LMSDB::RESOURCE_TYPE_INDEX)) {
 if (!$this->ResourceExists('voip_cdr_callee_idx', LMSDB::RESOURCE_TYPE_INDEX)) {
     $this->Execute("CREATE INDEX voip_cdr_callee_idx ON voip_cdr (callee)");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022070400', 'dbversion'));
-
-$this->CommitTrans();

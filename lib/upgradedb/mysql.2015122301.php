@@ -24,7 +24,6 @@
  * @author Maciej_Wawryk
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE TABLE passwdhistory (
@@ -37,7 +36,3 @@ $this->Execute("
 ");
 
 $this->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)", array('phpui', 'passwordhistory', 6));
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015122301', 'dbversion'));
-
-$this->CommitTrans();

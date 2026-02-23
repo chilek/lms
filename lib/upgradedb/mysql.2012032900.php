@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE TABLE pna (
@@ -37,7 +36,3 @@ $this->Execute("
 		PRIMARY KEY (id),
 		UNIQUE (zip, cityid, streetid, fromhouse, tohouse, parity)
 	) ENGINE=INNODB");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012032900', 'dbversion'));
-
-$this->CommitTrans();

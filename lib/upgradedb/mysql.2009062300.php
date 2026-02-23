@@ -35,5 +35,3 @@ $this->Execute("
 	UNIQUE KEY docid (docid, itemid)
     ) ENGINE=MyISAM;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009062300', 'dbversion'));

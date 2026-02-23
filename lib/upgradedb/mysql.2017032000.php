@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("DROP VIEW IF EXISTS vnetworks;");
 $this->Execute("DROP VIEW IF EXISTS vmacs;");
@@ -154,7 +153,3 @@ $this->Execute("
 	    FROM divisions d
 	        JOIN addresses a ON a.id = d.address_id;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017032000', 'dbversion'));
-
-$this->CommitTrans();

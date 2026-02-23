@@ -21,13 +21,8 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE users ADD COLUMN passwdexpiration integer DEFAULT 0 NOT NULL;
 	ALTER TABLE users ADD COLUMN passwdlastchange integer DEFAULT 0 NOT NULL;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012042500', 'dbversion'));
-
-$this->CommitTrans();

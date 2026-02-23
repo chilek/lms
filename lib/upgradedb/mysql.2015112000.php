@@ -21,9 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 $this->Execute("ALTER TABLE events ADD nodeid int(11) DEFAULT NULL");
 $this->Execute("ALTER TABLE events ADD INDEX nodeid (nodeid)");
 $this->Execute("ALTER TABLE events ADD FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015112000', 'dbversion'));
-$this->CommitTrans();

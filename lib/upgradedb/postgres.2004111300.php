@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 $this->Execute("
     CREATE SEQUENCE passwd_id_seq;
     CREATE TABLE passwd (
@@ -37,6 +36,4 @@ $this->Execute("
 	home varchar(25) DEFAULT '' NOT NULL,
 	PRIMARY KEY (id)
     );
-    UPDATE dbinfo SET keyvalue = '2004111300' WHERE keytype = 'dbversion';
 ");
-$this->CommitTrans();

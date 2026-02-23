@@ -25,5 +25,3 @@
  */
 
 $this->Execute("ALTER TABLE nodes ADD passwd VARCHAR(32) NOT NULL DEFAULT ''");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005030800', 'dbversion'));

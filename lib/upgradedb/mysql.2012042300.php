@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE TABLE nodesessions (
@@ -43,7 +42,3 @@ $this->Execute("
 ");
 $this->Execute("ALTER TABLE stats ADD nodesessionid int(11) NOT NULL DEFAULT '0'");
 $this->Execute("CREATE INDEX nodesessionid ON stats(nodesessionid)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012042300', 'dbversion'));
-
-$this->CommitTrans();

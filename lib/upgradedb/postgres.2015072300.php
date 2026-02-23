@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE voipaccounts ADD COLUMN location varchar(255) DEFAULT NULL;
@@ -39,7 +38,3 @@ $this->Execute("
 	ALTER TABLE voipaccounts ADD CONSTRAINT voipaccounts_location_street_fkey
 		FOREIGN KEY (location_street) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015072300', 'dbversion'));
-
-$this->CommitTrans();

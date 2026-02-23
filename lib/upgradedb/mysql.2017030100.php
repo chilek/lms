@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 if ($this->ResourceExists('assignments_ibfk_3', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
     $this->Execute("ALTER TABLE assignments DROP FOREIGN KEY assignments_ibfk_3");
@@ -42,7 +41,3 @@ $this->Execute("ALTER TABLE assignments ADD CONSTRAINT recipient_address_id_fk2 
 $this->Execute("ALTER TABLE documents ADD COLUMN recipient_address_id int(11)");
 $this->Execute("ALTER TABLE documents ADD CONSTRAINT recipient_address_id_fk FOREIGN KEY (recipient_address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE");
 $this->Execute("ALTER TABLE location_buildings DROP COLUMN flats");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017030100', 'dbversion'));
-
-$this->CommitTrans();

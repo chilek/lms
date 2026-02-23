@@ -21,13 +21,8 @@
  *
  */
 
-$this->BeginTrans();
 
 if (!$this->ResourceExists('voip_cdr.subtype', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("ALTER TABLE voip_cdr ADD COLUMN subtype smallint NOT NULL DEFAULT 0");
     $this->Execute("CREATE INDEX voip_cdr_subtype_idx ON voip_cdr (subtype)");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022082600', 'dbversion'));
-
-$this->CommitTrans();

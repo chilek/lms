@@ -21,13 +21,8 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     ALTER TABLE documentattachments RENAME COLUMN main TO type;
     ALTER TABLE documentattachments ADD COLUMN cdate integer NOT NULL DEFAULT 0
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020040900', 'dbversion'));
-
-$this->CommitTrans();

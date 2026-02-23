@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $s_arr = array();
 $schemas = $this->GetAll("SELECT * FROM promotionschemas");
@@ -65,7 +64,3 @@ $this->Execute("ALTER TABLE promotionschemas ADD ctariffid int(11) DEFAULT NULL
 $this->Execute("ALTER TABLE promotionschemas ADD INDEX ctariffid (ctariffid)");
 $this->Execute("ALTER TABLE promotionschemas ADD continuation tinyint(1) DEFAULT NULL");
 $this->Execute("UPDATE promotionschemas SET continuation = 1");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011030700', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE documents ADD COLUMN auserid integer DEFAULT NULL;
@@ -29,7 +28,3 @@ $this->Execute("
 		FOREIGN KEY (auserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
 	ALTER TABLE documents ADD COLUMN adate integer DEFAULT 0 NOT NULL;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019040500', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,12 +21,7 @@
  *
  */
 
-$this->BeginTrans();
 
 if (!$this->ResourceExists('documents.flags', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("ALTER TABLE documents ADD COLUMN flags smallint NOT NULL DEFAULT 0");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020091100', 'dbversion'));
-
-$this->CommitTrans();

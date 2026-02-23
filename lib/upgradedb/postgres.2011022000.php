@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 CREATE SEQUENCE promotions_id_seq;
@@ -63,8 +62,3 @@ CREATE INDEX promotionassignments_tariffid_idx ON promotionassignments (tariffid
 ALTER TABLE tariffs DROP CONSTRAINT tariffs_name_key;
 ALTER TABLE tariffs ADD CONSTRAINT tariffs_name_key UNIQUE(name, value, period);
 ");
-
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011022000', 'dbversion'));
-
-$this->CommitTrans();

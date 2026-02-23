@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE TABLE rtticketwatchers (
@@ -36,7 +35,3 @@ $this->Execute("
 		UNIQUE KEY rtticketwatchers_ticketid_ukey (ticketid, userid)
 	);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021082800', 'dbversion'));
-
-$this->CommitTrans();

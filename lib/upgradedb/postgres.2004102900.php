@@ -24,13 +24,10 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 $this->Execute("
     ALTER TABLE nodes ADD COLUMN info text;
     UPDATE nodes SET info='';
     ALTER TABLE nodes ALTER info SET DEFAULT '';
     ALTER TABLE nodes ALTER info SET NOT NULL;
 
-    UPDATE dbinfo SET keyvalue = '2004102900' WHERE keytype = 'dbversion';
 ");
-$this->CommitTrans();

@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE SEQUENCE routednetworks_id_seq;
@@ -36,7 +35,3 @@ $this->Execute("
         CONSTRAINT routednetworks_netid_key UNIQUE (netid)
     )
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020091600', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE rtmessages ADD COLUMN type smallint DEFAULT 0 NOT NULL");
 
@@ -38,7 +37,3 @@ if (!empty($rtnotes)) {
 
 $this->Execute("DROP TABLE rtnotes");
 $this->Execute("DROP SEQUENCE rtnotes_id_seq");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016082500', 'dbversion'));
-
-$this->CommitTrans();

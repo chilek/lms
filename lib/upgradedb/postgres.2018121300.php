@@ -21,10 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE rttickets ADD COLUMN parentid integer DEFAULT NULL");
 $this->Execute("ALTER TABLE rttickets ADD CONSTRAINT rttickets_parentid_fkey FOREIGN KEY (id) REFERENCES rttickets (id) ON DELETE SET NULL ON UPDATE CASCADE");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018121300', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("DROP VIEW teryt_simc");
 $this->Execute("
@@ -36,7 +35,3 @@ $this->Execute("
 		JOIN location_states s ON (d.stateid = s.id)
 		LEFT JOIN location_cities cc ON (c.cityid = cc.id)
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017112200', 'dbversion'));
-
-$this->CommitTrans();

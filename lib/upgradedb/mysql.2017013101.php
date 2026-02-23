@@ -154,7 +154,3 @@ $this->Execute("
             LEFT JOIN vnodes_mac m ON (n.id = m.nodeid)
             LEFT JOIN addresses a ON n.address_id = a.id
         WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017013101', 'dbversion'));
-
-$this->CommitTrans();

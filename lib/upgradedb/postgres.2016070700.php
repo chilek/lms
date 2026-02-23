@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("CREATE SEQUENCE tarifftags_id_seq;");
 
@@ -46,8 +45,3 @@ $this->Execute("CREATE TABLE tariffassignments (
 );");
 
 $this->Execute("CREATE INDEX tariffassignments_tarifftagid_idx ON tariffassignments (tarifftagid);");
-
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016070700', 'dbversion'));
-
-$this->CommitTrans();

@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 
 $this->Execute("ALTER TABLE customers ADD cutoffstop int(11) NOT NULL DEFAULT '0'");
@@ -35,7 +34,3 @@ $this->Execute("CREATE VIEW customersview AS
 	        SELECT 1 FROM customerassignments a
 	        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 	        WHERE e.userid = lms_current_user() AND a.customerid = c.id)");
-                                
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007120300', 'dbversion'));
-
-$this->CommitTrans();

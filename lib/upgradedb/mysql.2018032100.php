@@ -21,11 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE voip_number_assignments ADD CONSTRAINT voip_number_assignments_assignment_id_key
 	UNIQUE (assignment_id, number_id)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018032100', 'dbversion'));
-
-$this->CommitTrans();

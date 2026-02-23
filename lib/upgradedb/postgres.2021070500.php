@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE SEQUENCE customercalls_id_seq;
@@ -50,7 +49,3 @@ $this->Execute("
             UNIQUE (customercallid, customerid)
     )
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021070500', 'dbversion'));
-
-$this->CommitTrans();

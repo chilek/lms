@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE TABLE rtticketlastview (
@@ -42,7 +41,3 @@ $this->Execute("
 		SELECT t.id, u.id, ?NOW? FROM rttickets t, users u
 	);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018073100', 'dbversion'));
-
-$this->CommitTrans();

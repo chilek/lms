@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("CREATE TABLE tarifftags (
 	id int(11) NOT NULL AUTO_INCREMENT,
@@ -41,7 +40,3 @@ $this->Execute("CREATE TABLE tariffassignments (
         CONSTRAINT tariffassignments_tariffid_key FOREIGN KEY (tariffid) REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
         CONSTRAINT tariffassignments_tarifftagid_key FOREIGN KEY (tarifftagid) REFERENCES tarifftags (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016070700', 'dbversion'));
-
-$this->CommitTrans();

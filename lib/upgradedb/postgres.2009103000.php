@@ -22,7 +22,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE domains ADD master varchar(128) DEFAULT NULL");
 $this->Execute("ALTER TABLE domains ADD last_check integer DEFAULT NULL");
@@ -59,7 +58,3 @@ $this->Execute("
 		PRIMARY KEY (id)
 	)
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009103000', 'dbversion'));
-
-$this->CommitTrans();

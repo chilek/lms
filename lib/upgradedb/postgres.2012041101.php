@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE SEQUENCE managementurls_id_seq;
@@ -34,7 +33,3 @@ $this->Execute("
 		PRIMARY KEY (id)
 	);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012041101', 'dbversion'));
-
-$this->CommitTrans();

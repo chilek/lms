@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("DROP VIEW vusers");
 $this->Execute("ALTER TABLE users ADD COLUMN passwdforcechange smallint NOT NULL DEFAULT 0");
@@ -30,7 +29,3 @@ $this->Execute("
         SELECT *, CONCAT(firstname, ' ', lastname) AS name, CONCAT(lastname, ' ', firstname) AS rname
         FROM users;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019091701', 'dbversion'));
-
-$this->CommitTrans();

@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 CREATE TABLE netdeviceproducers (
@@ -382,7 +381,3 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 
 $this->Execute("ALTER TABLE netdevices ADD COLUMN netdevicemodelid integer DEFAULT NULL");
 $this->Execute("ALTER TABLE netdevices ADD FOREIGN KEY (netdevicemodelid) REFERENCES netdevicemodels (id) ON UPDATE CASCADE ON DELETE SET NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015020900', 'dbversion'));
-
-$this->CommitTrans();

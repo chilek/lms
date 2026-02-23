@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE rtmessages ADD INDEX ticketid (ticketid)");
 $this->Execute("
@@ -38,7 +37,3 @@ $this->Execute("
 	INDEX ticketid (ticketid)
     ) ENGINE=MyISAM;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007022200', 'dbversion'));
-
-$this->CommitTrans();

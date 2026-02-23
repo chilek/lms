@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE nodes ADD CONSTRAINT nodes_netdev_fkey
@@ -33,7 +32,3 @@ $this->Execute("
 	ALTER TABLE netlinks ADD CONSTRAINT netlinks_dst_fkey
 		FOREIGN KEY (dst) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017101103', 'dbversion'));
-
-$this->CommitTrans();

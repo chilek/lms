@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 if (!$this->ResourceExists('voip_cdr.cdate', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("ALTER TABLE voip_cdr ADD COLUMN cdate int(11) DEFAULT 0 NOT NULL");
@@ -38,7 +37,3 @@ if (!$this->ResourceExists('voip_cdr.cdate', LMSDB::RESOURCE_TYPE_COLUMN)) {
         END
     ");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022061300', 'dbversion'));
-
-$this->CommitTrans();

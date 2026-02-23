@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE promotionassignments ALTER COLUMN selectionid DROP NOT NULL;
@@ -29,7 +28,3 @@ $this->Execute("
 	UPDATE promotionassignments SET selectionid = NULL WHERE selectionid = 0;
 	ALTER TABLE promotionassignments ALTER COLUMN selectionid TYPE varchar(60);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017103000', 'dbversion'));
-
-$this->CommitTrans();

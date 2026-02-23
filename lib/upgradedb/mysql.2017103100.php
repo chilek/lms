@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE promotionassignments ADD COLUMN orderid int(11) NOT NULL DEFAULT 0");
 
@@ -43,7 +42,3 @@ if (!empty($assignments)) {
         );
     }
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017103100', 'dbversion'));
-
-$this->CommitTrans();

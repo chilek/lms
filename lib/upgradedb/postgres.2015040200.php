@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE SEQUENCE netradiosectors_id_seq;
@@ -57,7 +56,3 @@ $this->Execute("
 		JOIN macs m ON (n.id = m.nodeid);
 	CREATE INDEX nodes_linkradiosector_idx ON nodes (linkradiosector);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015040200', 'dbversion'));
-
-$this->CommitTrans();

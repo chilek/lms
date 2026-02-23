@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE nodegroups ADD prio int(11) NOT NULL DEFAULT '0'");
 
@@ -40,7 +39,3 @@ if ($list) {
         $prio++;
     }
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008010700', 'dbversion'));
-
-$this->CommitTrans();

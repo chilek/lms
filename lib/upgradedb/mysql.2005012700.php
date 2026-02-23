@@ -25,5 +25,3 @@
  */
 
 $this->Execute("ALTER TABLE users CHANGE zip zip VARCHAR(10) NOT NULL DEFAULT ''");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005012700', 'dbversion'));

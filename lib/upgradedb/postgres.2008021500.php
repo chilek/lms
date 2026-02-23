@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE SEQUENCE aliasassignments_id_seq;
@@ -46,7 +45,3 @@ $this->Execute("
 	ALTER TABLE aliases DROP accountid;
 	ALTER TABLE aliases ADD CONSTRAINT aliases_login_key UNIQUE (login, domainid);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008021500', 'dbversion'));
-
-$this->CommitTrans();

@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE TABLE plicbdlocalisation (
@@ -36,7 +35,3 @@ $this->Execute("
 	);
 	CREATE INDEX plicbdlocalisation_location_city_idx ON plicbdlocalisation (location_city);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015080500', 'dbversion'));
-
-$this->CommitTrans();

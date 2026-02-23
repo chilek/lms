@@ -21,11 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE voip_cdr RENAME COLUMN time_start_to_end TO totaltime");
 $this->Execute("ALTER TABLE voip_cdr RENAME COLUMN time_answer_to_end TO billedtime");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017030101', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("DELETE FROM assignments WHERE customerid NOT IN (SELECT id FROM customers)");
 $this->Execute("UPDATE assignments SET numberplanid = NULL WHERE numberplanid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM numberplans WHERE id = numberplanid)");
@@ -97,6 +96,3 @@ $this->Execute("DELETE FROM excludedgroups WHERE customergroupid NOT IN (SELECT 
 $this->Execute("ALTER TABLE excludedgroups ADD FOREIGN KEY (customergroupid) REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE");
 $this->Execute("DELETE FROM managementurls WHERE netdevid NOT IN (SELECT id FROM netdevices)");
 $this->Execute("ALTER TABLE managementurls ADD FOREIGN KEY (netdevid) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013031800', 'dbversion'));
-$this->CommitTrans();

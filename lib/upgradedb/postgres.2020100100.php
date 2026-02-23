@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 if (!$this->ResourceExists('customers.flags', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("
@@ -128,7 +127,3 @@ if (!$this->ResourceExists('customers.flags', LMSDB::RESOURCE_TYPE_COLUMN)) {
             WHERE c.type < 2
     ");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020100100', 'dbversion'));
-
-$this->CommitTrans();
