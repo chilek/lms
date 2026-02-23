@@ -476,9 +476,9 @@ class Localisation
             $number = 0;
         }
         if ($editable) {
-            return self::$editableNumberSmartFormatter->format($number);
+            return self::$editableNumberSmartFormatter->format($number ?? 0);
         } else {
-            return self::$numberSmartFormatter->format($number);
+            return self::$numberSmartFormatter->format($number ?? 0);
         }
     }
 

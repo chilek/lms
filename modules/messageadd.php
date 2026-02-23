@@ -1446,7 +1446,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
                 switch ($status) {
                     case MSG_ERROR:
-                        $result['status'] = '<span class="red">' . implode(', ', $errors) . '</span>';
+                        $result['status'] = '<span class="red">' . implode('<br>', $errors) . '</span>';
                         break;
                     case MSG_SENT:
                         $result['status'] = '[' . trans('sent') . ']';
