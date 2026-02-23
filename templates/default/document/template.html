@@ -108,7 +108,7 @@
 			}
 
 			p {
-				font-size: 8pt;
+				font-size: 10pt;
 				text-align: justify;
 				margin: 4px 0 0 0;
 			}
@@ -200,8 +200,12 @@
 			}
 
 			.paragraph::before {
-				content: "\00A7 " counter(paragraph);
+				content: "\00A7 " counter(paragraph) " ";
 				min-width: 2ch;
+			}
+
+			.list-paragraphs.dots .paragraph::before{
+				content: "\00A7 " counter(paragraph) ". ";
 			}
 
 			.paragraph-container {
@@ -210,6 +214,46 @@
 				font-size: 130%;
 				margin-top: 1em;
 				margin-bottom: 1em;
+			}
+
+			.list-sections-with-paragraphs {
+				padding-inline-start: 0;
+				list-style: none;
+				counter-reset: section;
+				padding-left: 0;
+			}
+
+			.list-sections-with-paragraphs > li:first-child {
+				counter-reset: paragraph;
+			}
+
+			.list-sections-with-paragraphs > li {
+				list-style-type: none;
+			}
+
+			.section::before {
+				content: counter(section, upper-roman) " ";
+				min-width: 2ch;
+			}
+
+			.list-sections-with-paragraphs.dots .section::before {
+				content: counter(section, upper-roman) ". ";
+				min-width: 2ch;
+			}
+
+			.section-container {
+				text-align: center;
+				font-weight: bold;
+				font-size: 130%;
+				margin-top: 1em;
+				margin-bottom: 0.2em;
+				counter-increment: section;
+			}
+
+			.list-sections-with-paragraphs .paragraph-container {
+				list-style-type: none;
+				counter-increment: paragraph;
+				margin-top: 0.2em;
 			}
 
 			.list-numbers {
