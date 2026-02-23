@@ -26,7 +26,10 @@ switch ($_GET['action']) {
 		break;
 }
 
-$filter['days'] = 90;//default numer of showed days
+if(!isset($_GET['page']))
+        $SESSION->restore('srnlp', $_GET['page']);
+
+$filter['days'] = (!ConfigHelper::getConfig('phpui.receivenotelist_dayslimit') ? 90 : ConfigHelper::getConfig('phpui.receivenotelist_dayslimit'));;//default numer of showed days
 
 if ($_GET['action'] == 'filter') {
 	if (!empty($_POST['customerid']) && $LMS->CustomerExists($_POST['customerid']))
@@ -50,17 +53,14 @@ if ($_GET['action'] == 'filter') {
 	$SESSION->restore('stckrnl', $filter);
 }
 
+$page = (! $_GET['page'] ? 1 : $_GET['page']);
+$pagelimit = (!ConfigHelper::getConfig('phpui.receivenotelist_pagelimit') ? 100 : ConfigHelper::getConfig('phpui.receivenotelist_pagelimit'));
+
 $receivenotelist = $LMSST->ReceiveNoteList($o, $pagelimit, $page, $sprn, $filter['cid'], $filter['stckrnn'], $filter['days']);
 $listdata['total'] = $receivenotelist['total'];
 $listdata['direction'] = $receivenotelist['direction'];
 $listdata['order'] = $receivenotelist['order'];
 $listdata['totalvu'] = $receivenotelist['totalvu'];
-
-if(!isset($_GET['page']))
-	$SESSION->restore('srnlp', $_GET['page']);
-
-$pagelimit = (!ConfigHelper::getConfig('phpui.receivenotelist_pagelimit') ? 100 : ConfigHelper::getConfig('phpui.receivenotelist_pagelimit'));
-$page = (! $_GET['page'] ? (floor($listdata['total']/$pagelimit)) : $_GET['page']);
 
 unset($receivenotelist['totalvu']);
 unset($receivenotelist['total']);
