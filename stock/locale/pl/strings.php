@@ -138,4 +138,6 @@ $_LANG['Payment type'] = 'Typ płatności';
 $_LANG['Paid'] = 'Zapłacono';
 $_LANG['Time period'] = 'Okres czasu';
 $_LANG['Do you confirm the withdrawal of the product sale operation?'] = 'Czy potwierdzasz wycofanie operacji psrzedaży produktu?';
+$_LANG['<!qs>product warranty'] = 'gwaranacja na produkt';
+$_LANG['<!qs>stock price'] = 'produckty na stanie (cena)';
 ?>
