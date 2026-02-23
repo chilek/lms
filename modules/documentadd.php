@@ -89,7 +89,7 @@ if (isset($_POST['document'])) {
     }
 
     if (ConfigHelper::checkPrivilege('document_consent_date') && $document['cdate'] && !isset($warnings['document-cdate-'])) {
-        if ($document['type']) {
+        if (!ConfigHelper::checkConfig('documents.disable_cdate_validation') && $document['type']) {
             if (empty($document['numberplanid'])) {
                 $maxdate = $DB->GetOne(
                     'SELECT MAX(cdate) FROM documents WHERE type = ? AND numberplanid IS NULL',
@@ -941,7 +941,7 @@ if (isset($_POST['document'])) {
         )
         : array();
 
-    $document['cdate'] = time();
+    $document['cdate'] = isset($_GET['cdate']) ? strtotime($_GET['cdate']) : time();
 
     $document['reuse'] = ConfigHelper::checkConfig('documents.default_reuse');
 }
