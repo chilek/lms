@@ -200,12 +200,12 @@
 			}
 
 			.paragraph::before {
-				content: "\00A7 " counter(paragraph) " ";
+				content: "\00A7\00A0" counter(paragraph) "\00A0";
 				min-width: 2ch;
 			}
 
 			.list-paragraphs.dots .paragraph::before{
-				content: "\00A7 " counter(paragraph) ". ";
+				content: "\00A7\00A0" counter(paragraph) ".\00A0";
 			}
 
 			.paragraph-container {
@@ -232,12 +232,12 @@
 			}
 
 			.section::before {
-				content: counter(section, upper-roman) " ";
+				content: counter(section, upper-roman) "\00A0";
 				min-width: 2ch;
 			}
 
 			.list-sections-with-paragraphs.dots .section::before {
-				content: counter(section, upper-roman) ". ";
+				content: counter(section, upper-roman) ".\00A0";
 				min-width: 2ch;
 			}
 
@@ -266,7 +266,7 @@
 			}
 
 			.list-hyphens > li::marker {
-				content: "– ";
+				content: "–\00A0";
 			}
 
 			.list-disc {
@@ -280,7 +280,7 @@
 				padding-inline-start: 0.4rem;
 			}
 			.list-disc > li::marker {
-				content: "\25AA ";
+				content: "\25AA\00A0";
 			}
 
 			.list-paragraph-dot-numbers {
@@ -309,27 +309,27 @@
 			}
 
 			.list-roman-numbers > li::marker {
-				content: counter(roman-numbers, upper-roman) ". ";
+				content: counter(roman-numbers, upper-roman) ".\00A0";
 			}
 
 			.list-roman-numbers.upper > li::marker {
-				content: counter(roman-numbers, upper-roman) ". ";
+				content: counter(roman-numbers, upper-roman) ".\00A0";
 			}
 
 			.list-roman-numbers.upper.brackets > li::marker {
-				content: counter(roman-numbers, upper-roman) ") ";
+				content: counter(roman-numbers, upper-roman) ")\00A0";
 			}
 
 			.list-roman-numbers.brackets > li::marker {
-				content: counter(roman-numbers, upper-roman) ") ";
+				content: counter(roman-numbers, upper-roman) ")\00A0";
 			}
 
 			.list-roman-numbers.lower > li::marker {
-				content: counter(roman-numbers, lower-roman) ". ";
+				content: counter(roman-numbers, lower-roman) ".\00A0";
 			}
 
 			.list-roman-numbers.lower.brackets > li::marker {
-				content: counter(roman-numbers, lower-roman) ") ";
+				content: counter(roman-numbers, lower-roman) ")\00A0";
 			}
 
 			.list-letters {
@@ -343,7 +343,7 @@
 			}
 
 			.list-letters:not(.explicit) > li::marker {
-				content: counter(alpha, lower-alpha) ") ";
+				content: counter(alpha, lower-alpha) ")\00A0";
 			}
 
 			.list-letters.explicit {
@@ -363,7 +363,7 @@
 			}
 
 			.list-letters.explicit > li > .list-item-content::before {
-				content: counter(alpha, lower-alpha) ") ";
+				content: counter(alpha, lower-alpha) ")\00A0";
 			}
 
 			.list-letters.explicit > li > .list-item-content > * {
