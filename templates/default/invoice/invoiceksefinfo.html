@@ -5,6 +5,11 @@
 		flex-direction: column;
 	}
 
+	.invoice-ksef-info.offline {
+		display: flex;
+		flex-direction: row;
+	}
+
 	.invoice-ksef-info > * {
 		display: flex;
 		flex-direction: column;
@@ -28,6 +33,11 @@
 	.lms-ui-ksef-qr-code > * {
 		padding-top: 0.5em;
 		padding-bottom: 0.5em;
+	}
+
+	.invoice-ksef-info.offline .lms-ui-ksef-qr-code {
+		padding-left: 0.5em;
+		padding-right: 0.5em;
 	}
 
 	.lms-ui-ksef-qr-code > a {
@@ -77,7 +87,7 @@
 
 </script>
 
-<div class="invoice-ksef-info">
+<div class="invoice-ksef-info{if empty($invoice.status) && ConfigHelper::checkConfig('ksef.offline_support')} offline{/if}">
 	{if $invoice.status == 200}
 		<div class="lms-ui-ksef-qr-code">
 			<a href="{$url}" target="_blank">
