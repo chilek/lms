@@ -84,7 +84,7 @@ if (isset($netnodedata)) {
         }
     }
 
-    if (isset($netnodedata['terc']) && isset($netnodedata['simc']) && isset($netnodedata['ulic'])) {
+    if (isset($netnodedata['terc'], $netnodedata['simc'], $netnodedata['ulic'])) {
         $teryt = $LMS->TerytToLocation($netnodedata['terc'], $netnodedata['simc'], $netnodedata['ulic']);
         $netnodedata['teryt'] = 1;
         $netnodedata['location_state'] = $teryt['location_state'];

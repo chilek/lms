@@ -1633,7 +1633,7 @@ foreach ($assigns as $assign) {
                 $desc = str_replace('%aligned_partial_period', $first_aligned_partial_period[$p], $desc);
                 unset($first_aligned_partial_period);
             } else {
-                if (isset($dateto) && isset($dateto_nextday) && intval($dateto_nextday[2]) != 1 && intval($dateto[1]) == intval($month) && intval($dateto[0]) == intval($year)) {
+                if (isset($dateto, $dateto_nextday) && intval($dateto_nextday[2]) != 1 && intval($dateto[1]) == intval($month) && intval($dateto[0]) == intval($year)) {
                     $last_aligned_partial_period = array(
                         DAILY => $forward_periods[DAILY],
                         WEEKLY => $forward_periods[WEEKLY],
@@ -1663,7 +1663,7 @@ foreach ($assigns as $assign) {
                 $desc = str_replace('%aligned_partial_period', $first_aligned_partial_period[$p], $desc);
                 unset($first_aligned_partial_period);
             } else {
-                if (isset($dateto) && isset($dateto_nextday) && intval($dateto_nextday[2]) != 1 && intval($dateto[1]) == intval($backward_month) && intval($dateto[0]) == intval($backward_year)) {
+                if (isset($dateto, $dateto_nextday) && intval($dateto_nextday[2]) != 1 && intval($dateto[1]) == intval($backward_month) && intval($dateto[0]) == intval($backward_year)) {
                     $last_aligned_partial_period = array(
                         DAILY => $forward_periods[DAILY],
                         WEEKLY => $forward_periods[WEEKLY],

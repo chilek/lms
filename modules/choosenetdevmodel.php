@@ -39,7 +39,7 @@ function select_producer($id)
     return $JSResponse;
 }
 
-if (isset($_GET['ajax']) && isset($_GET['what'])) {
+if (isset($_GET['ajax'], $_GET['what'])) {
     header('Content-type: text/plain');
     $search = urldecode(trim($_GET['what']));
     if (!strlen($search)) {

@@ -477,7 +477,7 @@ $producerlist = $hook_data['producerlist'];
 $producerinfo = $hook_data['producerinfo'];
 $modellist = $hook_data['modellist'];
 
-if (isset($_GET['restore']) && isset($_GET['resourceid'])) {
+if (isset($_GET['restore'], $_GET['resourceid'])) {
     $restore = $_GET['restore'];
     $resourceid = $_GET['resourceid'];
     $SMARTY->assign('restore', $restore);

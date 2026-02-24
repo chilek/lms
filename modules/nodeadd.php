@@ -322,7 +322,7 @@ if (isset($_POST['nodedata'])) {
 
     // check if customer address is selected or if default location address exists
     // if both are not fullfilled we generate user interface warning
-    if (!isset($warnings['nodedata-address_id-']) && isset($nodedata['address_id'])
+    if (!isset($warnings['nodedata-address_id-'], $nodedata['address_id'])
         && $nodedata['address_id'] <= 0 && !empty($nodedata['ownerid'])) {
         $addresses = $LMS->getCustomerAddresses($nodedata['ownerid'], true);
         if (count($addresses) > 1) {

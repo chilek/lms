@@ -498,7 +498,7 @@ while (!feof($fh)) {
     }
     $state = $all_states[$state_name];
     if (preg_match('/^[0-9]{2}-[0-9]{3}$/', $data[PNA])
-        && (!isset($state_list) || (isset($state_list) && isset($state_list[$state])))) {
+        && (!isset($state_list) || (isset($state_list, $state_list[$state])))) {
         convert_pna_to_teryt($data);
     }
 }

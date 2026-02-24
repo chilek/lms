@@ -2467,7 +2467,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
             $result['addresses'] = $this->getCustomerAddresses($result['id']);
 
-            $result['identity']['type'] = (isset($result['ict']) && isset($GLOBALS['IDENTITY_TYPES'][$result['ict']]) ? $GLOBALS['IDENTITY_TYPES'][$result['ict']] : 'ICN');
+            $result['identity']['type'] = (isset($result['ict'], $GLOBALS['IDENTITY_TYPES'][$result['ict']]) ? $GLOBALS['IDENTITY_TYPES'][$result['ict']] : 'ICN');
             $result['identity']['number'] = $result['icn'];
             $result['identity']['expires'] = $result['icexpires'];
 

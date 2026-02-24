@@ -28,7 +28,7 @@ $layout['pagetitle'] = trans('Invoice send');
 
 $SMARTY->display('header.html');
 
-if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=invoicesend/', $_SERVER['HTTP_REFERER'])) {
+if (!isset($_GET['sent'], $_SERVER['HTTP_REFERER']) && !preg_match('/m=invoicesend/', $_SERVER['HTTP_REFERER'])) {
     set_time_limit(0);
 
     echo '<H1>' . $layout['pagetitle'] . '</H1>';

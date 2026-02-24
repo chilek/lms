@@ -42,7 +42,7 @@ switch ($action) {
         break;
 }
 
-if (isset($_GET['s']) && isset($_GET['v'])) {
+if (isset($_GET['s'], $_GET['v'])) {
     $params = array(
         'section' => $_GET['s'],
         'variable' => $_GET['v'],
