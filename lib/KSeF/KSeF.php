@@ -1257,6 +1257,7 @@ class KSeF
             $certFile = self::getCertificatePath();
             $certFile = preg_replace('/\.[^.]+$/', '', $certFile);
             $certFile .= '-offline.pem';
+            $certPassword = self::getCertificatePassword();
 
             if (!is_readable($certFile)) {
                 return '';
@@ -1264,7 +1265,7 @@ class KSeF
 
             $cert = file_get_contents($certFile);
 
-            $privKey = openssl_pkey_get_private($cert);
+            $privKey = openssl_pkey_get_private($cert, empty($certPassword) ? null : $certPassword);
             if ($privKey === false) {
                 throw new \RuntimeException("openssl_pkey_get_private() failed: " . (openssl_error_string() ?: 'unknown error'));
             }
@@ -1728,5 +1729,10 @@ class KSeF
         } else {
             return SYS_DIR . DIRECTORY_SEPARATOR . $certificatePath;
         }
+    }
+
+    public static function getCertificatePassword(): string
+    {
+        return \ConfigHelper::getConfig('ksef.password');
     }
 }

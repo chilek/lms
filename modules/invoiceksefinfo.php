@@ -188,7 +188,7 @@ if ($doc = $DB->GetRow(
             'hash' => $doc['hash'],
         ])
     );
-    if (empty($doc['ksefnumber']) || empty($doc['ksefstatus'])) {
+    if (empty($doc['ksefnumber']) || empty($doc['status'])) {
         $SMARTY->assign(
             'certificateurl',
             KSeF::getCertificateQrCodeUrl([
