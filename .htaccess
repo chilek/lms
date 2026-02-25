@@ -10,6 +10,10 @@
     Require all denied
 </FilesMatch>
 
+<FilesMatch "^\.ksef.*">
+    Require all denied
+</FilesMatch>
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteCond %{REQUEST_URI} ^/.git/(.*)$

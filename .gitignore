@@ -31,6 +31,9 @@ rtattachments/*
 *.swp
 *.swo
 
+#KSeF files
+.ksef.*
+
 # nodejs files
 **/node_modules
 **/package-lock.json
