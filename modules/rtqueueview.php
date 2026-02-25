@@ -295,6 +295,18 @@ if (isset($_GET['source'])) {
     $filter['source'] = -1;
 }
 
+// cause
+if (isset($_GET['cause'])) {
+    $cause = $_GET['cause'];
+    if ($cause === '') {
+        $filter['cause'] = null;
+    } else {
+        $filter['cause'] = intval($cause);
+    }
+} elseif (!isset($filter['cause'])) {
+    $filter['cause'] = null;
+}
+
 // netnodeid's
 if (isset($_GET['nnids'])) {
     if (is_array($_GET['nnids'])) {
