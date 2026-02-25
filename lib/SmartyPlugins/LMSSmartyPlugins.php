@@ -2008,4 +2008,15 @@ class LMSSmartyPlugins
             return '<span class="nobr">' . $content . '</span>';
         }
     }
+
+    public static function dateFunction($params, $template)
+    {
+        static $dateFormat = null;
+
+        if (!isset($dateFormat)) {
+            $dateFormat = ConfigHelper::getConfig('documents.date_format', 'd.m.Y');
+        }
+
+        return date($dateFormat, $params['date'] ?? $params['value'] ?? time());
+    }
 }
