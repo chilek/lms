@@ -6384,3 +6384,5 @@ $_LANG['Show QR2Pay code'] = 'Pokaż kod QR2Pay';
 $_LANG['Show invoice items'] = 'Pokaż pozycje faktury';
 $_LANG['Invoice tag management'] = 'Zarządzanie etykietami faktury';
 $_LANG['Invoice textual description'] = 'Tekstowy opis faktury';
+
+$_LANG['Submit to KSeF'] = 'Wysyłka do KSeF';

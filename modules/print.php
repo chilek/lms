@@ -511,6 +511,12 @@ switch ($type) {
             $type = '&oryginal=1';
         }
 
+        if (isset($_POST['ksef-submit']) && strlen($_POST['ksef-submit'])) {
+            $ksefSubmit = $_POST['ksef-submit'] == 'yes' ? 1 : 0;
+        } else {
+            $ksefSubmit = null;
+        }
+
         $layout['pagetitle'] = trans('Invoices');
 
         header(
@@ -532,6 +538,7 @@ switch ($type) {
                 .(!empty($_POST['manualissued']) ? '&manualissued=1' : '')
                 . (isset($_POST['related-documents']) ? '&related-documents=1' : '')
                 . (!isset($_POST['transfer-forms']) || !empty($_POST['transfer-forms']) ? '&transfer-forms=1' : '')
+                . (isset($ksefSubmit) ? '&ksef-submit=' . $ksefSubmit : '')
         );
         break;
 

@@ -321,6 +321,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
     $einvoice = isset($_GET['einvoice']) ? intval($_GET['einvoice']) : 0;
     $related_documents = isset($_GET['related-documents']);
     $transfer_forms = !empty($_GET['transfer-forms']);
+    $ksefSubmit = isset($_GET['ksef-submit']) ? intval($_GET['ksef-submit']) : null;
 
     if (empty($_GET['divisionid'])) {
         $divisionIds = [];
@@ -364,6 +365,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             (CASE WHEN cc.type IS NULL THEN 0 ELSE 1 END) AS balance_on_documents
         FROM documents d
         JOIN customeraddressview c ON (c.id = d.customerid)
+        LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
+        LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
         LEFT JOIN customerconsents cc ON cc.customerid = c.id AND cc.type = ?
         LEFT JOIN countries cn ON (cn.id = d.countryid)
         LEFT JOIN countries cdv ON cdv.id = d.div_countryid
@@ -389,19 +392,32 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 ? ' IN (' . implode(',', Utils::filterIntegers($_GET['groupid'])) . ')'
                 : ' = ' . intval($_GET['groupid'])) . ')'
             : '')
+        . (
+            isset($ksefSubmit)
+                ? (
+                    empty($ksefSubmit)
+                        ? ' AND kd.status IS NULL AND (c.type = ' . CTYPES_PRIVATE . ' AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . '))'
+                        : ' AND (kd.status = 200 OR kd.status = 0 OR c.type = ' . CTYPES_COMPANY . ' OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . '))'
+                )
+                : ''
+        )
         .' AND NOT EXISTS (
             SELECT 1 FROM vcustomerassignments a
             JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
             WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)'
         .' ORDER BY CEIL(d.cdate/86400), id',
         'id',
-        array(
+        [
+            [
+                0,
+                200,
+            ],
             CCONSENT_BALANCE_ON_DOCUMENTS,
             $datefrom,
             $dateto,
             DOC_INVOICE,
             DOC_CNOTE,
-        )
+        ]
     );
 
     if (empty($documents)) {
