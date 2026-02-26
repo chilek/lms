@@ -4524,6 +4524,8 @@ $_LANG['Enable/disable VoIP Gateway access'] = 'Włącza/wyłącza komputer jako
 $_LANG['Enable/disable DOCSIS access'] = 'Włącza/wyłącza dostęp DOCSIS';
 $_LANG['VPN access'] = 'Dostęp VPN';
 $_LANG['Mark as VPN access'] = 'Oznacz jako dostęp VPN';
+$_LANG['IPoE access'] = 'Dostęp IPoE';
+$_LANG['Mark as IPoE access'] = 'Oznacz jako dostęp IPoE';
 
 $_LANG['WiFi'] = 'WiFi';
 $_LANG['Potential range'] = 'Potencjalne zasięgi';
