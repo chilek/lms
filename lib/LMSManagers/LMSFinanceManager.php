@@ -2277,13 +2277,22 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 kd.status AS ksefstatus,
                 kd.hash AS ksefhash,
                 kd.ksefnumber AS ksefnumber,
-                kdl.delay AS ksefdelay
+                kdl.delay AS ksefdelay,
+                (CASE
+                    WHEN kdl.delay > -1
+                        AND ?NOW? - d.cdate >= kdl.delay
+                        AND d.type IN (' . implode(',', [DOC_INVOICE, DOC_CNOTE]) . ')
+                        AND (c.type = ' . CTYPES_COMPANY . ' OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ' . CCONSENT_KSEF_INVOICE . '))
+                    THEN 1
+                    ELSE 0
+                END) AS ksefsubmit
             FROM documents d
             LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN (' . implode(',', [0, 200]) . ')
             LEFT JOIN ksefdelays kdl ON kdl.divisionid = d.divisionid
             JOIN vinvoicecontents a ON (a.docid = d.id)'
             . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
             . ' LEFT JOIN cash ON cash.docid = d.id AND a.itemid = cash.itemid
+            JOIN customers c ON c.id = d.customerid
 			LEFT JOIN documents d2 ON d2.reference = d.id
 			LEFT JOIN invoicecontents b ON (d.reference = b.docid AND a.itemid = b.itemid)
 			LEFT JOIN countries ON (countries.id = d.countryid)
@@ -2316,9 +2325,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             . (!empty($numberplan) ? ' AND d.numberplanid IN (' . implode(',', $numberplan) . ')' : '')
             . (!empty($division) ? ' AND d.divisionid = ' . intval($division) : '')
             . ' GROUP BY d.id, d2.id, d.number, d.cdate, d.customerid,
-			d.name, d.address, d.zip, d.city, numberplans.template, d.closed, d.type, d.reference, countries.name,
-			d.cancelled, d.published, sendinvoices, d.archived, d.senddate, d.currency, d.currencyvalue,
-                kd.status, kd.hash, kd.ksefnumber, kdl.delay '
+                    d.name, d.address, d.zip, d.city, numberplans.template, d.closed, d.type, d.reference, countries.name,
+                    d.cancelled, d.published, sendinvoices, d.archived, d.senddate, d.currency, d.currencyvalue,
+                    kd.status, kd.hash, kd.ksefnumber, kdl.delay, c.type '
             . ($having ?? '')
             . $sqlord.' '.$direction
             . (isset($limit) ? ' LIMIT ' . $limit : '')
@@ -2333,8 +2342,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     }
                     $invoice['refdocs'] = $document_manager->getDocumentReferences($invoice['id']);
                 }
-                $invoice['kseflocked'] = ($invoice['type'] == DOC_INVOICE || $invoice['type'] == DOC_CNOTE)
-                    && $invoice['ksefdelay'] > -1 && $now - $invoice['cdate'] >= $invoice['ksefdelay'];
             }
         }
 

@@ -215,7 +215,7 @@
 			data-senddate="{if $invoice.senddate}{$invoice.senddate|date_format:"Y-m-d H:i"}{else}{$invoice.senddate}{/if}"
 			data-refdocs="{if empty($invoice.documentreferenced)}0{else}1{/if}"
 			data-ksef="{if empty($invoice.ksefhash)}0{else}1{/if}"
-			data-ksef-locked="{if empty($invoice.kseflocked)}1{else}0{/if}">
+			data-ksef-submit="{if empty($invoice.ksefsubmit)}0{else}1{/if}">
 		<TD>
 			{$invoice.id|string_format:"%06d"}
 		</TD>
@@ -280,7 +280,7 @@
 					{if ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO) && !$invoice.closed && !$invoice.referenced && !$invoice.archived}
 						{if !$invoice.published || ConfigHelper::checkPrivilege('published_document_modification')}
 							{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
-								{if empty($invoice.ksefhash) && empty($invoice.kseflocked)}
+								{if empty($invoice.ksefhash) && empty($invoice.ksefsubmit)}
 									{button type="link" icon="delete" class="delete-invoice" tip="Delete"
 										href="?m=invoicedel&id={$invoice.id}"}
 								{/if}
@@ -289,7 +289,7 @@
 					{/if}
 				{else}
 					{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
-						{if empty($invoice.ksefhash) && empty($invoice.kseflocked)}
+						{if empty($invoice.ksefhash) && empty($invoice.ksefsubmit)}
 							{button type="link" icon="delete" tip="Delete" class="delete-proforma-invoice" href="?m=invoicedel&id={$invoice.id}"}
 						{/if}
 					{/if}
@@ -299,7 +299,7 @@
 				{if $invoice.type == $smarty.const.DOC_CNOTE}
 					{if !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 						{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
-							{if empty($invoice.ksefhash) && empty($invoice.kseflocked)}
+							{if empty($invoice.ksefhash) && empty($invoice.ksefsubmit)}
 								{button type="link" icon="delete" class="delete-invoice" tip="Delete"
 									href="?m=invoicedel&id={$invoice.id}"}
 							{/if}
@@ -311,7 +311,7 @@
 						{if $invoice.type == $smarty.const.DOC_INVOICE}
 							{if !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 								{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
-									{if empty($invoice.ksefhash) && empty($invoice.kseflocked)}
+									{if empty($invoice.ksefhash) && empty($invoice.ksefsubmit)}
 										{button type="link" icon="edit"
 											href="?m=invoiceedit&id={$invoice.id}&action=edit" class="edit-invoice" tip="Edit"}
 									{/if}
@@ -319,7 +319,7 @@
 							{/if}
 						{else}
 							{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
-								{if empty($invoice.ksefhash) && empty($invoice.kseflocked)}
+								{if empty($invoice.ksefhash) && empty($invoice.ksefsubmit)}
 									{button type="link" icon="edit" tip="Edit"
 										href="?m=invoiceedit&id={$invoice.id}&action=edit{if $invoice.type == $smarty.const.DOC_INVOICE_PRO}&proforma=1{/if}"}
 								{/if}
@@ -328,7 +328,7 @@
 					{elseif $invoice.type == $smarty.const.DOC_CNOTE}
 						{if !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 							{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
-								{if empty($invoice.ksefhash) && empty($invoice.kseflocked)}
+								{if empty($invoice.ksefhash) && empty($invoice.ksefsubmit)}
 									{button type="link" icon="edit" tip="Edit" class="edit-invoice"
 										href="?m=invoicenoteedit&id={$invoice.id}&action=edit"}
 								{/if}
@@ -340,7 +340,7 @@
 			{if !$invoice.cancelled}
 				{if $invoice.type != $smarty.const.DOC_INVOICE_PRO && !$invoice.archived && !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 					{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
-						{if empty($invoice.ksefhash) && empty($invoice.kseflocked)}
+						{if empty($invoice.ksefhash) && empty($invoice.ksefsubmit)}
 							{button type="link" icon="cancel" tip="Cancel" class="cancel-invoice"
 								href="?m=invoicecancel&id={$invoice.id}"}
 						{/if}
