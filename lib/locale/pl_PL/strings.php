@@ -6377,3 +6377,8 @@ $_LANG['from earlier sent message'] = 'z poprzednio wysłanej wiadomości';
 $_LANG['The are no recipients which match filter criteria!'] = 'Brak odbiorców pasujących do kryteriów filtra!';
 
 $_LANG['Select/enter value'] = 'Wybierz/wpisz wartość';
+
+$_LANG['Show QR2Pay code'] = 'Pokaż kod QR2Pay';
+$_LANG['Show invoice items'] = 'Pokaż pozycje faktury';
+$_LANG['Invoice tag management'] = 'Zarządzanie etykietami faktury';
+$_LANG['Invoice textual description'] = 'Tekstowy opis faktury';
