@@ -1194,6 +1194,7 @@ version 28-git (????-??-??):
   - improvement: 'phpui.network_all_addresses_assignable' configuration variable and 'all assignable' property
     of network control if gateway addresses can be assigned to nodes or network devices [chilan]
   - enhancement: added 'cause' filter in rtqueueview form [chilan]
+  - improvement: added new session/auth type - IPoE [chilan]
 
 version 27.0 (2021-08-20):
 
