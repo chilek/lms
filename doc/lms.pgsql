@@ -3178,6 +3178,8 @@ CREATE TABLE ksefinvoices (
     division_id integer NOT NULL
         CONSTRAINT ksefinvoices_division_id_fkey REFERENCES divisions (id) ON DELETE RESTRICT ON UPDATE CASCADE,
     issue_date bigint NOT NULL,
+    from_date bigint NOT NULL,
+    to_date bigint DEFAULT NULL,
     permanent_storage_date timestamptz NOT NULL,
     ksef_number varchar(40) NOT NULL,
     invoice_number varchar(256) NOT NULL,
@@ -3193,6 +3195,7 @@ CREATE TABLE ksefinvoices (
     gross_amount numeric(12,5) NOT NULL,
     vat_amount numeric(12,5) NOT NULL,
     currency varchar(3) NOT NULL,
+    currency_value numeric(22,6) NOT NULL DEFAULT 1.0,
     invoicing_mode smallint NOT NULL,
     invoice_type smallint NOT NULL,
     form_system_code varchar(15) NOT NULL,
@@ -4688,6 +4691,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026021800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026022600');
 
 COMMIT;
