@@ -2279,7 +2279,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 kd.ksefnumber AS ksefnumber,
                 kdl.delay AS ksefdelay,
                 (CASE
-                    WHEN kdl.delay > -1
+                    WHEN d.cdate >= ' . strtotime('2026/02/01') . '
+                        AND kdl.delay > -1
                         AND ?NOW? - d.cdate >= kdl.delay
                         AND d.type IN (' . implode(',', [DOC_INVOICE, DOC_CNOTE]) . ')
                         AND (c.type = ' . CTYPES_COMPANY . ' OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ' . CCONSENT_KSEF_INVOICE . '))
