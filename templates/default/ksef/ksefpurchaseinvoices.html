@@ -230,9 +230,10 @@
 				var totalGrossValue = 0.0;
 				var invoices = $('#ksef-invoices > tbody > tr[data-net-value]');
 				invoices.each(function() {
-					totalNetValue += parseFloat($(this).attr('data-net-value'));
-					totalVatValue += parseFloat($(this).attr('data-vat-value'));
-					totalGrossValue += parseFloat($(this).attr('data-gross-value'));
+					var currencyValue = parseFloat($(this).attr('data-currency-value'));
+					totalNetValue += parseFloat($(this).attr('data-net-value')) * currencyValue;
+					totalVatValue += parseFloat($(this).attr('data-vat-value')) * currencyValue;
+					totalGrossValue += parseFloat($(this).attr('data-gross-value')) * currencyValue;
 				});
 
 				var summary = $('#ksef-invoices > tfoot');
