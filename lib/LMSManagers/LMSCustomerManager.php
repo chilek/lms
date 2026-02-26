@@ -318,8 +318,17 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 kd.status AS ksefstatus,
                 kd.hash AS ksefhash,
                 kd.ksefnumber AS ksefnumber,
-                kdl.delay AS ksefdelay
+                kdl.delay AS ksefdelay,
+                (CASE
+                    WHEN kdl.delay > -1
+                        AND ?NOW? - documents.cdate >= kdl.delay
+                        AND documents.type IN (' . implode(',', [DOC_INVOICE, DOC_CNOTE]) . ')
+                        AND (c.type = ' . CTYPES_COMPANY . ' OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = documents.customerid AND cc.type = ' . CCONSENT_KSEF_INVOICE . '))
+                    THEN 1
+                    ELSE 0
+                END) AS ksefsubmit
             FROM cash
+            LEFT JOIN customers c ON c.id = cash.customerid
             LEFT JOIN vusers ON vusers.id = cash.userid
             LEFT JOIN documents ON documents.id = cash.docid
             LEFT JOIN ksefdocuments kd ON kd.docid = documents.id AND kd.status IN ?
@@ -342,7 +351,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     null AS ksefstatus,
                     null AS ksefhash,
                     null AS ksefnumber,
-                    null AS ksefdelay
+                    null AS ksefdelay,
+                    0 AS ksefsubmit
                 FROM documents d
                 JOIN ' . (ConfigHelper::getConfig('database.type') == 'postgres' ? 'get_invoice_contents(' . intval($id) . ')' : 'vinvoicecontents') . ' ic ON ic.docid = d.id
                 LEFT JOIN (
@@ -375,6 +385,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $finance_manager = new LMSFinanceManager($this->db, $this->auth, $this->cache, $this->syslog);
                 $result = $finance_manager->AggregateDocuments($result);
             }
+
+            $now = time();
 
             foreach ($result['list'] as &$row) {
                 $row['customlinks'] = array();

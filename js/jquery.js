@@ -2603,6 +2603,8 @@ $(function() {
 			var wysiwyg = $(this).attr('data-wysiwyg');
 			var inputname;
 			var helpdesk = $(this).is('.lms-ui-helpdesk');
+			var form = $(this).attr('form');
+
 			wysiwyg = (wysiwyg !== undefined && wysiwyg == 'true') || (wysiwyg === undefined &&
 				((helpdesk && lmsSettings.helpdeskWysiwygEditor) || (!helpdesk && lmsSettings.wysiwygEditor)));
 			$(this).data('wysiwyg', wysiwyg);
@@ -2613,9 +2615,11 @@ $(function() {
 			}
 			$(this).wrap('<div class="lms-ui-wysiwyg-editor"/>')
 				.parent().prepend('<label>' +
-					'<input type="hidden" name="' + inputname + '" value="false">' +
+					'<input type="hidden" name="' + inputname + '"' +
+					(form ? ' form="' + form + '"' : '') + ' value="false">' +
 					'<input type="checkbox" name="' + inputname +
-					'" value="true"' + (wysiwyg ? ' checked' : '') + '>' + $t('visual editor') +
+					'"' + (form ? ' form="' + form + '"' : '') +
+					' value="true"' + (wysiwyg ? ' checked' : '') + '>' + $t('visual editor') +
 					'</label>');
 			// it is required as textarea changed value is not propagated automatically to editor instance content
 			$(this).change(function(e) {

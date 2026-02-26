@@ -144,6 +144,11 @@ if (!empty($config)) {
         $configid = $LMS->addConfigOption($args);
         $DB->CommitTrans();
 
+        if ($args['section'] == 'ksef' && $args['var'] == 'delay') {
+            $ksef = new \Lms\KSeF\KSeF($DB, $LMS);
+            $ksef->updateDelays();
+        }
+
         if (isset($config['reuse'])) {
             $SESSION->redirect_to_history_entry($_SERVER['HTTP_REFERER']);
         } else if (!empty($config['reftype'])) {

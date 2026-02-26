@@ -1908,7 +1908,8 @@ const SESSIONTYPE_PPPOE = 1,
     SESSIONTYPE_DOCSIS = 64,
     SESSIONTYPE_LLU = 128,
     SESSIONTYPE_BSA = 256,
-    SESSIONTYPE_VPN = 512;
+    SESSIONTYPE_VPN = 512,
+    SESSIONTYPE_IPOE = 1024;
 
 $SESSIONTYPES = array(
     SESSIONTYPE_PPPOE => array(
@@ -1960,6 +1961,11 @@ $SESSIONTYPES = array(
         'label' => trans('VPN access'),
         'tip' => 'Mark as VPN access',
         'alias' => 'vpn',
+    ),
+    SESSIONTYPE_IPOE => array(
+        'label' => trans('IPoE access'),
+        'tip' => 'Mark as IPoE access',
+        'alias' => 'ipoe',
     ),
 );
 

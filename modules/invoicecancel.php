@@ -85,6 +85,10 @@ if ($id) {
             return;
         }
 
+        if ($LMS->isKsefDocument($id)) {
+            return;
+        }
+
         $hook_data = $LMS->executeHook('invoicecancel_before_cancel', array(
             'id' => $id,
         ));

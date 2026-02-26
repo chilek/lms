@@ -30,6 +30,12 @@ if (isset($_GET['id'])) {
         $DB->BeginTrans();
         $LMS->DeleteConfigOption($id);
         $DB->CommitTrans();
+
+        $configVariable = $LMS->GetConfigVariable($id);
+        if ($configVariable['section'] == 'ksef' && $configVariable['var'] == 'delay') {
+            $ksef = new \Lms\KSeF\KSeF($DB, $LMS);
+            $ksef->updateDelays();
+        }
     }
 } elseif (isset($_POST['marks'])) {
     $options = Utils::filterIntegers($_POST['marks']);
@@ -39,6 +45,19 @@ if (isset($_GET['id'])) {
             $LMS->DeleteConfigOption($option);
         }
         $DB->CommitTrans();
+
+        $updateDelaysRequired = false;
+        foreach ($options as $option) {
+            $configVariable = $LMS->GetConfigVariable($option);
+            if ($configVariable['section'] == 'ksef' && $configVariable['var'] == 'delay') {
+                $updateDelaysRequired = true;
+                break;
+            }
+        }
+        if ($updateDelaysRequired) {
+            $ksef = new \Lms\KSeF\KSeF($DB, $LMS);
+            $ksef->updateDelays();
+        }
     }
 }
 

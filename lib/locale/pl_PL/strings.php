@@ -4524,6 +4524,8 @@ $_LANG['Enable/disable VoIP Gateway access'] = 'Włącza/wyłącza komputer jako
 $_LANG['Enable/disable DOCSIS access'] = 'Włącza/wyłącza dostęp DOCSIS';
 $_LANG['VPN access'] = 'Dostęp VPN';
 $_LANG['Mark as VPN access'] = 'Oznacz jako dostęp VPN';
+$_LANG['IPoE access'] = 'Dostęp IPoE';
+$_LANG['Mark as IPoE access'] = 'Oznacz jako dostęp IPoE';
 
 $_LANG['WiFi'] = 'WiFi';
 $_LANG['Potential range'] = 'Potencjalne zasięgi';
@@ -6377,3 +6379,10 @@ $_LANG['from earlier sent message'] = 'z poprzednio wysłanej wiadomości';
 $_LANG['The are no recipients which match filter criteria!'] = 'Brak odbiorców pasujących do kryteriów filtra!';
 
 $_LANG['Select/enter value'] = 'Wybierz/wpisz wartość';
+
+$_LANG['Show QR2Pay code'] = 'Pokaż kod QR2Pay';
+$_LANG['Show invoice items'] = 'Pokaż pozycje faktury';
+$_LANG['Invoice tag management'] = 'Zarządzanie etykietami faktury';
+$_LANG['Invoice textual description'] = 'Tekstowy opis faktury';
+
+$_LANG['Submit to KSeF'] = 'Wysyłka do KSeF';

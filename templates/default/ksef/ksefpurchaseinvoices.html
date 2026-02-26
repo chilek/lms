@@ -1,11 +1,28 @@
 {extends file="layout.html"}
 {block name="title"}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name="module_content"}
+	{$default_currency = Localisation::getDefaultCurrency()}
 	<style>
 
 		#ksef-invoices > * > tr > td {
 			padding-left: 1em;
 			padding-right: 1em;
+		}
+
+		#ksef-invoices tbody {
+			border-bottom-style: none;
+		}
+
+		#ksef-invoices tfoot {
+			border-top-style: none;
+		}
+
+		#ksef-invoices tfoot > tr {
+			border-top-style: none;
+		}
+
+		#ksef-invoices tfoot td:first-child {
+			padding-right: 0;
 		}
 
 		#ksef-invoices pre {
@@ -71,6 +88,10 @@
 		#ksef-invoices .bank-account {
 			min-width: 20em;
 			text-align: right;
+		}
+
+		#empty-table-row {
+			border-bottom-style: solid;
 		}
 
 		[data-action].hidden {
@@ -203,6 +224,25 @@
 				return sortParts;
 			}
 
+			function recalculateSummary() {
+				var totalNetValue = 0.0;
+				var totalVatValue = 0.0;
+				var totalGrossValue = 0.0;
+				var invoices = $('#ksef-invoices > tbody > tr[data-net-value]');
+				invoices.each(function() {
+					var currencyValue = parseFloat($(this).attr('data-currency-value'));
+					totalNetValue += parseFloat($(this).attr('data-net-value')) * currencyValue;
+					totalVatValue += parseFloat($(this).attr('data-vat-value')) * currencyValue;
+					totalGrossValue += parseFloat($(this).attr('data-gross-value')) * currencyValue;
+				});
+
+				var summary = $('#ksef-invoices > tfoot');
+				summary.toggle(invoices.length > 0);
+				summary.find('#total-net-value').text(sprintf("%.2f %s", totalNetValue, '{$default_currency}').replace('.', ','));
+				summary.find('#total-vat-value').text(sprintf("%.2f %s", totalVatValue, '{$default_currency}').replace('.', ','));
+				summary.find('#total-gross-value').text(sprintf("%.2f %s", totalGrossValue, '{$default_currency}').replace('.', ','));
+			}
+
 			function applyFilter(filter) {
 				if (typeof(filter) !== 'object') {
 					var filter = {};
@@ -271,6 +311,7 @@
 				$('#empty-table-row').appendTo(emptyTable ? ksefInvoices : temporaryTable);
 
 				restoreSortOrder();
+				recalculateSummary();
 
 				return filter;
 			}
@@ -623,6 +664,9 @@
 		<tbody>
 			{foreach $invoices as $invoice}
 				<tr data-issue-date="{$invoice.issue_date}"
+					data-currency-value="{$invoice.currency_value}"
+					data-net-value="{$invoice.net_amount}"
+					data-vat-value="{$invoice.vat_amount}"
 					data-gross-value="{$invoice.gross_amount}"
 					data-pay-date="{$invoice.pay_date}"
 					data-id="{$invoice.id}"
@@ -728,20 +772,20 @@
 							{$class = "notes-info"}
 						{/if}
 						{hint mode=LMSSmartyPlugins::HINT_TYPE_ROLLOVER icon="more-info" text=$invoice.notes|nl2br class=$class}
-						{hint url="?m=ksefpurchaseinvoicenotes&id={$invoice.id}" icon="info" class="lms-ui-link-button notes-button"}
-						{hint url="?m=ksefpurchaseinvoicetags&id={$invoice.id}" icon="tags" class="lms-ui-link-button tag-button"}
+						{hint url="?m=ksefpurchaseinvoicenotes&id={$invoice.id}" icon="info" class="lms-ui-link-button notes-button" tip="Invoice textual description"}
+						{hint url="?m=ksefpurchaseinvoicetags&id={$invoice.id}" icon="tags" class="lms-ui-link-button tag-button" tip="Invoice tag management"}
 						{if empty($invoice.itemcount)}
 							{$disabled = true}
 						{else}
 							{$disabled = false}
 						{/if}
-						{hint url="?m=ksefpurchaseinvoiceinfo&id={$invoice.id}" icon="view" class="lms-ui-link-button" disabled=$disabled}
+						{hint url="?m=ksefpurchaseinvoiceinfo&id={$invoice.id}" icon="view" class="lms-ui-link-button" disabled=$disabled tip="Show invoice items"}
 						{if empty($invoice.bank_account)}
 							{$disabled = true}
 						{else}
 							{$disabled = false}
 						{/if}
-						{hint url="?m=ksefpurchaseinvoiceinfo&id={$invoice.id}&qr2pay=1" icon="qrcode" class="lms-ui-link-button" disabled=$disabled}
+						{hint url="?m=ksefpurchaseinvoiceinfo&id={$invoice.id}&qr2pay=1" icon="qrcode" class="lms-ui-link-button" disabled=$disabled tip="Show QR2Pay code"}
 						{$posting = !empty($invoice.posting)}
 						{if $posting}
 							{$restore_button_class = "hidden"}
@@ -771,6 +815,21 @@
 				</td>
 			</tr>
 		</tbody>
+		<tfoot>
+			<tr class="dark">
+				<td colspan="3" class="text-right">
+					<strong>{trans("Total")}</strong>
+				</td>
+				<td class="text-right nobr values">
+					<span id="total-net-value"></span>
+					<br>
+					<span id="total-vat-value"></span>
+					<br>
+					<span id="total-gross-value"></span>
+				</td>
+				<td colspan="3"></td>
+			</tr>
+		</tfoot>
 	</table>
 	<table id="temporary-table">
 		<tbody>

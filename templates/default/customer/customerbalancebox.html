@@ -138,6 +138,7 @@
 					data-senddate="{if $item.senddate}{$item.senddate|date_format:"Y-m-d H:i"}{else}{$item.senddate}{/if}"
 					data-refdocs="{if empty($item.documentreferenced)}0{else}1{/if}"
 					data-ksef="{if empty($item.ksefhash)}0{else}1{/if}"
+					data-ksef-submit="{if empty($item.ksefsubmit)}0{else}1{/if}"
 					class="{if $item.doctype == $smarty.const.DOC_INVOICE_PRO} teal{if $item.referenced} transformed{/if}{/if}
 					{if $item.closed && ($item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_DNOTE)} blend{/if}"
 					{/if}
@@ -199,7 +200,7 @@
 											{/if}
 											return false;
 										{/textformat}
-										{if empty($item.ksefhash)}
+										{if empty($item.ksefhash) && empty($item.ksefsubmit)}
 											{button type="link" icon="edit" class="lms-ui-hint-rollover"
 												href="?m=invoiceedit&id={$item.docid}&action=edit"
 												onclick=$onclick
@@ -242,7 +243,7 @@
 											{/if}
 											return false;
 										{/textformat}
-										{if empty($item.ksefhash)}
+										{if empty($item.ksefhash) && empty($item.ksefsubmit)}
 											{button type="link" icon="edit" class="lms-ui-hint-rollover"
 												href="?m=invoiceedit&id={$item.docid}&action=edit&proforma=1"
 												onclick=$onclick

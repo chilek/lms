@@ -2572,7 +2572,7 @@ if (empty($types) || in_array('invoices', $types)) {
             . ($customergroups ?: '')
             . ($ksef ? ' AND kd.status = ' . 200 : '')
             . ($ksefOffline ? ' AND kd.status IS NOT NULL AND kd.status = ' . 0 : '')
-            . ($withoutKsef ? ' AND kd.status IS NULL AND (c.type = ' . CCTYPES_PRIVATE . ' AND NOT EXISTS (SELECT 1 FROM customersconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . '))' : '')
+            . ($withoutKsef ? ' AND kd.status IS NULL AND (c.type = ' . CTYPES_PRIVATE . ' AND NOT EXISTS (SELECT 1 FROM customersconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . '))' : '')
         . ' ORDER BY d.id',
         [
             CCONSENT_KSEF_INVOICE,

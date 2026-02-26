@@ -73,6 +73,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
      *      source - ticket source (default: 0 = all),
      *          -1 = unknown/other
      *           0 = all
+     *      cause - ticket cause (default: null = any),
+     *          0 - unknown/other
+     *          1 - customer's side
+     *          2 - company's side
      *      owner - ticket owner (default: null = any),
      *          array() or single integer value
      *          -1 = without owner,
@@ -138,7 +142,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         $userid = Auth::GetCurrentUser();
         extract($params);
-        foreach (array('ids', 'state', 'priority', 'source', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
+        foreach (array('ids', 'state', 'priority', 'source', 'cause', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
             'serviceids', 'typeids', 'unread', 'parentids', 'verifierids', 'rights', 'projectids', 'cid', 'subject', 'fromdate', 'todate', 'short', 'watching') as $var) {
             if (!isset(${$var})) {
                 ${$var} = null;
@@ -227,6 +231,12 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $sourcefilter = '';
         } else {
             $sourcefilter = ' AND t.source = ' . $source;
+        }
+
+        if (isset($cause)) {
+            $causeFilter = ' AND t.cause = ' . intval($cause);
+        } else {
+            $causeFilter = '';
         }
 
         if (empty($netdevids)) {
@@ -486,6 +496,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 . $statefilter
                 . $priorityfilter
                 . $sourcefilter
+                . $causeFilter
                 . $ownerfilter
                 . $removedfilter
                 . $netdevidsfilter
@@ -595,6 +606,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             . $statefilter
             . $priorityfilter
             . $sourcefilter
+            . $causeFilter
             . $ownerfilter
             . $removedfilter
             . $netdevidsfilter

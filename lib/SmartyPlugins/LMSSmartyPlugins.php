@@ -1580,6 +1580,7 @@ class LMSSmartyPlugins
             . (isset($params['style']) ? ' style="' . $params['style'] . '"' : '')
             . (empty($params['disabled']) ? '' : ' disabled')
             . (empty($params['id']) ? '' : ' id="' . $params['id'] . '"')
+            . ($mode == self::HINT_TYPE_TOGGLE && !empty($params['tip']) ? ' title="' . trans($params['tip']) . '"' : '')
             . '><i class="lms-ui-icon-' . ($params['icon'] ?? 'hint') . ' fa-fw"></i>'
             . (empty($params['label']) ? '' : ' <span class="lms-ui-label">' . trans($params['label']) . '</label>')
             . '</a>';
