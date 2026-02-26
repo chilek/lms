@@ -405,14 +405,6 @@ class KSeF
         $currency = $invoice['currency'];
         $currencyValue = $invoice['currencyvalue'];
 
-        if ($currency != $this->defaultCurrency) {
-            $xml .= "\t\t<KursWalutyZ>" . sprintf('%.6f', $currencyValue) . "</KursWalutyZ>" . PHP_EOL;
-        }
-
-        if ($invoice['type'] == DOC_CNOTE) {
-            //var_dump($invoice);
-        }
-
         $taxFree = false;
         $diffTotal = 0;
 
@@ -630,6 +622,10 @@ class KSeF
             $xml .= "\t\t<P_15>" . sprintf('%.2f', $diffTotal) . "</P_15>" . PHP_EOL;
         } else {
             $xml .= "\t\t<P_15>" . sprintf('%.2f', $invoice['total']) . "</P_15>" . PHP_EOL;
+        }
+
+        if ($currency != $this->defaultCurrency) {
+            $xml .= "\t\t<KursWalutyZ>" . sprintf('%.6f', $currencyValue) . "</KursWalutyZ>" . PHP_EOL;
         }
 
         $xml .= "\t\t<Adnotacje>" . PHP_EOL;
