@@ -212,6 +212,11 @@ if (isset($_POST['config'])) {
             $DB->BeginTrans();
             $configid = $LMS->editConfigOption($args);
             $DB->CommitTrans();
+
+            if ($args['section'] == 'ksef' && $args['var'] == 'delay') {
+                $ksef = new \Lms\KSeF\KSeF($DB, $LMS);
+                $ksef->updateDelays();
+            }
         }
         $SESSION->redirect_to_history_entry();
     }
