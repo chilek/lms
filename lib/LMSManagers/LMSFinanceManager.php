@@ -2325,6 +2325,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             . (isset($offset) ? ' OFFSET ' . $offset : ''));
 
         if (!empty($invoicelist)) {
+            $now = time();
             foreach ($invoicelist as &$invoice) {
                 if (!empty($invoice['documentreferenced'])) {
                     if (!isset($document_manager)) {
@@ -2332,6 +2333,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     }
                     $invoice['refdocs'] = $document_manager->getDocumentReferences($invoice['id']);
                 }
+                $invoice['kseflocked'] = ($invoice['type'] == DOC_INVOICE || $invoice['type'] == DOC_CNOTE)
+                    && $invoice['ksefdelay'] > -1 && $now - $invoice['cdate'] >= $invoice['ksefdelay'];
             }
         }
 

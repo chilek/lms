@@ -376,6 +376,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $result = $finance_manager->AggregateDocuments($result);
             }
 
+            $now = time();
+
             foreach ($result['list'] as &$row) {
                 $row['customlinks'] = array();
                 if ($row['doctype'] == DOC_INVOICE_PRO && !ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment')) {
@@ -391,6 +393,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         $document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
                     }
                     $row['refdocs'] = $document_manager->getDocumentReferences($row['docid']);
+                }
+
+                if (!empty($row['doctype']) && ($row['doctype'] == DOC_INVOICE || $row['doctype'] == DOC_CNOTE)) {
+                    $row['kseflocked'] = $row['ksefdelay'] > -1 && $now - $row['cdate'] >= $row['ksefdelay'];
                 }
             }
             unset($row);
