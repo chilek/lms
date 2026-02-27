@@ -2515,7 +2515,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             if ($type != DOC_INVOICE_PRO || ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment')) {
                 $this->AddBalance(array(
                     'time' => $cdate,
-                    'value' => str_replace(',', '.', $item['s_valuebrutto']) * -1,
+                    'value' => floatval(str_replace(',', '.', $item['s_valuebrutto'])) * -1,
                     'currency' => $invoice['invoice']['currency'],
                     'currencyvalue' => $invoice['invoice']['currencyvalue'],
                     'taxid' => $item['taxid'],
