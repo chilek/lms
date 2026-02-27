@@ -32,6 +32,9 @@ class KSeF
     const CERTIFICATE_FORMAT_PEM = 1;
     const CERTIFICATE_FORMAT_PKCS12 = 2;
 
+    const CERTIFICATE_TYPE_ONLINE = 1;
+    const CERTIFICATE_TYPE_OFFLINE = 2;
+
     const ENVIRONMENT_TEST = 1;
     const ENVIRONMENT_PROD = 2;
 
@@ -1250,10 +1253,14 @@ class KSeF
         $divisionId = $params['divisionid'];
 
         if (!isset($certs[$divisionId])) {
-            $certFile = self::getCertificatePath();
-            $certFile = preg_replace('/\.[^.]+$/', '', $certFile);
-            $certFile .= '-offline.pem';
-            $certPassword = self::getCertificatePassword();
+            $certFile = self::getCertificatePath(self::CERTIFICATE_TYPE_OFFLINE);
+            if (empty($certFile)) {
+                $certFile = self::getCertificatePath();
+                $certFile = preg_replace('/\.[^.]+$/', '', $certFile);
+                $certFile .= '-offline.pem';
+            }
+
+            $certPassword = self::getCertificatePassword(self::CERTIFICATE_TYPE_OFFLINE);
 
             if (!is_readable($certFile)) {
                 return '';
@@ -1712,9 +1719,12 @@ class KSeF
         return self::$deadlineUnits[$deadlineUnit] ?? 'days';
     }
 
-    public static function getCertificatePath(): string
+    public static function getCertificatePath(int $type = self::CERTIFICATE_TYPE_ONLINE): string
     {
-        $certificatePath = \ConfigHelper::getConfig('ksef.certificate');
+        $certificatePath = $type == self::CERTIFICATE_TYPE_OFFLINE
+            ? \ConfigHelper::getConfig('ksef.offline_certificate')
+            : \ConfigHelper::getConfig('ksef.certificate');
+
         if (empty($certificatePath)) {
             return $certificatePath;
         }
@@ -1727,8 +1737,10 @@ class KSeF
         }
     }
 
-    public static function getCertificatePassword(): string
+    public static function getCertificatePassword(int $type = self::CERTIFICATE_TYPE_ONLINE): string
     {
-        return \ConfigHelper::getConfig('ksef.password');
+        return $type == self::CERTIFICATE_TYPE_OFFLINE
+            ? \ConfigHelper::getConfig('ksef.offline_password')
+            : \ConfigHelper::getConfig('ksef.password');
     }
 }
