@@ -497,7 +497,10 @@
 		});
 
 		{if empty($devlinkforeignentity)}
-			$('[name="foreignentity"][form="connect-form"]').scombobox('val', '');
+			var foreignEntitySelection = $('[name="foreignentity"][form="connect-form"]');
+			if (foreignEntitySelection.length) {
+				foreignEntitySelection.scombobox('val', '');
+			}
 		{/if}
 	});
 
