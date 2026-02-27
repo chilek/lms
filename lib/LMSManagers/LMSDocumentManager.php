@@ -3919,19 +3919,23 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         return $this->db->GetOne(
             'SELECT COUNT(*)
             FROM documents d
+            JOIN customers c ON c.id = d.customerid
             LEFT JOIN ksefdocuments kd ON kd.docid = d.id
             LEFT JOIN ksefdelays kds ON kds.divisionid = d.divisionid
             WHERE d.id = ?
                 AND (
                     kd.id IS NOT NULL AND kd.status IN ?
                     OR kds.delay > -1 AND ?NOW? - d.cdate >= kds.delay
+                    AND (c.type = ? OR EXISTS (SELECT 1 FROM customerconsents cc ON cc.customerid = d.customerid AND cc.type = ?))
                 )',
             [
                 $docid,
                 [
                     200,
                     0,
-                ]
+                ],
+                CTYPES_COMPANY,
+                CCONSENT_KSEF_INVOICE,
             ]
         );
     }
@@ -3942,19 +3946,23 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             'SELECT COUNT(*)
             FROM cash c
             JOIN documents d ON d.id = c.docid
+            JOIN customers ON customers.id = c.customerid
             LEFT JOIN ksefdocuments kd ON kd.docid = d.id
             LEFT JOIN ksefdelays kds ON kds.divisionid = d.divisionid
             WHERE c.id = ?
                 AND (
                     kd.id IS NOT NULL AND kd.status IN ?
                     OR kds.delay > -1 AND ?NOW? - d.cdate >= kds.delay
+                    AND (customers.type = ? OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.customerid AND cc.type = ?))
                 )',
             [
                 $cashid,
                 [
                     200,
                     0,
-                ]
+                ],
+                CTYPES_COMPANY,
+                CCONSENT_KSEF_INVOICE,
             ]
         );
     }

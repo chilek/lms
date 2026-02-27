@@ -331,6 +331,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         $divisionIds = [intval($_GET['divisionid'])];
     }
 
+    $ksefDeploymentDate = strtotime('2026/02/01');
+
     $documents = $DB->GetAllByKey(
         'SELECT
             d.id, d.type,
@@ -396,8 +398,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             isset($ksefSubmit)
                 ? (
                     empty($ksefSubmit)
-                        ? ' AND kd.status IS NULL AND (c.type = ' . CTYPES_PRIVATE . ' AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . '))'
-                        : ' AND (kd.status = 200 OR kd.status = 0 OR c.type = ' . CTYPES_COMPANY . ' OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . '))'
+                        ? ' AND (d.cdate < ' . $ksefDeploymentDate . ' OR kd.status IS NULL AND (c.type = ' . CTYPES_PRIVATE . ' AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')))'
+                        : ' AND d.cdate >= ' . $ksefDeploymentDate . ' OR (kd.status = 200 OR kd.status = 0 OR c.type = ' . CTYPES_COMPANY . ' OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . '))'
                 )
                 : ''
         )

@@ -221,7 +221,7 @@
 						{foreach $customergroups as $customergroup}
 							<option value="{$customergroup.id}"
 								{if (is_array($filter.customergroup) && in_array($customergroup.id, $filter.customergroup))
-									|| (!is_array($filter.customergroup) && $filter.customergroup == $customergroup.id)} selected{/if}>{$customergroup.name|truncate:30:"&hellip;":true}</option>
+									|| (!is_array($filter.customergroup) && $filter.customergroup == $customergroup.id)} selected{/if}>{$customergroup.name|trunescape:50}</option>
 						{/foreach}
 					</select>
 				</label>

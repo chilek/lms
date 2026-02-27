@@ -353,12 +353,23 @@ if (isset($_POST['message'])) {
                         );
                     }
                     if (!empty($ccemails)) {
-                        $headers['Cc'] = implode(
-                            ',',
-                            array_map(function ($ccemail) {
-                                return $ccemail['name'] . ' <' . $ccemail['email']  . '>';
-                            }, $ccemails)
-                        );
+                        if (empty($toemails)) {
+                            $headers['To'] = implode(
+                                ',',
+                                array_map(function ($ccemail) {
+                                    return $ccemail['name'] . ' <' . $ccemail['email']  . '>';
+                                }, $ccemails)
+                            );
+                            $toemails = $ccemails;
+                            $ccemails = [];
+                        } else {
+                            $headers['Cc'] = implode(
+                                ',',
+                                array_map(function ($ccemail) {
+                                    return $ccemail['name'] . ' <' . $ccemail['email']  . '>';
+                                }, $ccemails)
+                            );
+                        }
                     }
                 }
             } else {
