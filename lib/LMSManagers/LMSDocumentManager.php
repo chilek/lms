@@ -3946,14 +3946,14 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             'SELECT COUNT(*)
             FROM cash c
             JOIN documents d ON d.id = c.docid
-            JOIN customers ON customers.id = cash.customerid
+            JOIN customers ON customers.id = c.customerid
             LEFT JOIN ksefdocuments kd ON kd.docid = d.id
             LEFT JOIN ksefdelays kds ON kds.divisionid = d.divisionid
             WHERE c.id = ?
                 AND (
                     kd.id IS NOT NULL AND kd.status IN ?
                     OR kds.delay > -1 AND ?NOW? - d.cdate >= kds.delay
-                    AND (customers.type = ? OR EXISTS (SELECT 1 FROM customerconsents cc ON cc.customerid = cash.customerid AND cc.type = ?))
+                    AND (customers.type = ? OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.customerid AND cc.type = ?))
                 )',
             [
                 $cashid,
