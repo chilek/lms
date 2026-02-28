@@ -3926,7 +3926,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 AND (
                     kd.id IS NOT NULL AND kd.status IN ?
                     OR kds.delay > -1 AND ?NOW? - d.cdate >= kds.delay
-                    AND (c.type = ? OR EXISTS (SELECT 1 FROM customerconsents cc ON cc.customerid = d.customerid AND cc.type = ?))
+                    AND (c.type = ? OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ?))
                 )',
             [
                 $docid,
