@@ -126,7 +126,7 @@ class LMSSmartyPlugins
     {
         $elemid = isset($params['elemid']) ? 'id="' . $params['elemid'] . '"' : null;
         $elementname = $params['elementname'] ?? 'currency';
-        $selected = isset($params['selected']) && isset($GLOBALS['CURRENCIES'][$params['selected']])
+        $selected = isset($params['selected'], $GLOBALS['CURRENCIES'][$params['selected']])
             ? $params['selected'] : null;
         $defaultSelected = Localisation::getCurrentCurrency();
         $locked = isset($params['locked']) && $params['locked'];
@@ -943,7 +943,7 @@ class LMSSmartyPlugins
                 $class = '';
             }
             $errors = $template->getTemplateVars('error');
-            if (isset($params['trigger']) && isset($errors[$params['trigger']])) {
+            if (isset($params['trigger'], $errors[$params['trigger']])) {
                 $error = str_replace("'", '\\\'', $errors[$params['trigger']]);
                 $error = str_replace('"', '&quot;', $error);
                 $error = str_replace("\r", '', $error);
@@ -953,7 +953,7 @@ class LMSSmartyPlugins
                 $result .= ' class="' . (empty($class) ? '' : $class) . (isset($params['bold']) && $params['bold'] ? ' lms-ui-error bold" ' : ' lms-ui-error" ');
             } else {
                 $warnings = $template->getTemplateVars('warning');
-                if (isset($params['trigger']) && isset($warnings[$params['trigger']])) {
+                if (isset($params['trigger'], $warnings[$params['trigger']])) {
                     $error = str_replace("'", '\\\'', $warnings[$params['trigger']]);
                     $error = str_replace('"', '&quot;', $error);
                     $error = str_replace("\r", '', $error);
@@ -1928,7 +1928,7 @@ class LMSSmartyPlugins
 
         $transliterate = !isset($params['transliterate']) || ConfigHelper::checkValue($params['transliterate']);
         $text = $params['text'] ?? 'text not set';
-        $type = isset($params['type']) && isset($types[$params['type']]) ? $params['type'] : 'C128';
+        $type = isset($params['type'], $types[$params['type']]) ? $params['type'] : 'C128';
         $show_text = isset($params['show_text']) ? ConfigHelper::checkValue($params['show_text']) : true;
         $scale = isset($params['scale']) ? filter_var($params['scale'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE) : null;
         if (!isset($scale)) {

@@ -62,7 +62,7 @@ if (isset($_GET['search'])) {
         || ($_GET['oper'] == 'changetype' && ($_GET['type'] == CTYPES_PRIVATE || $_GET['type'] == CTYPES_COMPANY))
         || (isset($_GET['type']) && !empty($_POST['contactflags'][$_GET['type']])
             && isset($CUSTOMERCONTACTTYPES[$_GET['type']]))
-        || ($_GET['oper'] == 'changestatus' && isset($_GET['status']) && isset($CSTATUSES[$_GET['status']]))
+        || ($_GET['oper'] == 'changestatus' && isset($_GET['status'], $CSTATUSES[$_GET['status']]))
         || ($_GET['oper'] == 'restore')
     )) {
         foreach ($customerlist as $row) {
