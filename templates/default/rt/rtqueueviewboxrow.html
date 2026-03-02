@@ -131,7 +131,7 @@
 					{button type="link" icon="verifier" tip="Transfer to verifier" href="?m=rtticketedit&id={$ticket.id}&action=verify"}
 				{elseif ConfigHelper::checkConfig('rt.block_ticket_close_with_open_events', ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events'))
 					&& !empty($ticket.eventcountopened)}
-					{button type="link" icon="close" tip="Resolve" href="?m=rtticketedit&id={$ticket.id}&action=resolve" disabled=true tip="Ticket have open assigned events!"}
+					{button type="link" icon="close" tip="Resolve" href="?m=rtticketedit&id={$ticket.id}&action=resolve" disabled=true tip="Ticket has open assigned events!"}
 				{else}
 					{button type="link" icon="close" tip="Resolve" href="?m=rtticketedit&id={$ticket.id}&action=resolve"}
 				{/if}

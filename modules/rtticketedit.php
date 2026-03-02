@@ -333,7 +333,7 @@ if ($id && !isset($_POST['ticket'])) {
                     $ticket = $LMS->GetTicketContents($ticketid);
 
                     if ($block_ticket_close_with_open_events && !empty($ticket['openeventcount'])) {
-                        die(trans("Ticket have open assigned events!"));
+                        die(trans("Ticket has open assigned events!"));
                     } else {
                         if ($ticket['state'] != RT_RESOLVED) {
                             $LMS->TicketChange($ticketid, array('state' => RT_RESOLVED));
@@ -709,7 +709,7 @@ if (isset($_POST['ticket'])) {
 
     if ($block_ticket_close_with_open_events) {
         if ($ticketedit['state'] == RT_RESOLVED && !empty($ticket['openeventcount'])) {
-            $error['state'] = trans('Ticket have open assigned events!');
+            $error['state'] = trans('Ticket has open assigned events!');
         }
     }
 
