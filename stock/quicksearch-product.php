@@ -25,15 +25,13 @@
 				$name_classes = array();
 
                                 $name_class = '';
-
+				
 				if (preg_match("~^$search\$~i",$row['id'])) {
 					$description = trans('Id:').' '.$row['id'];
-					continue;
 				} elseif (preg_match("~$search~i",$row['name'])) {
 					$description = '';
 				} elseif (preg_match("~$search~i",$row['ean'])) {
 					$description = escape_js(trans('EAN:').' '.$row['ean']);
-					continue;
 				} else
 					$description = '';
 
