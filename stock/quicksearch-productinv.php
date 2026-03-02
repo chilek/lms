@@ -34,12 +34,10 @@
 						$action = 'javascript:pinv(\''.$row['id'].'\',\''.$price['pricebuynet'].'\',\''.$price['pricebuygross'].'\', \''.$row['ql'].'\',\''.$row['gtu_id'].'\')';
 						if (preg_match("~^$search\$~i",$row['id'])) {
 							$description = trans('Id:').' '.$row['id'];
-							continue;
 						} elseif (preg_match("~$search~i",$row['name'])) {
 							$description = '';
 						} elseif (preg_match("~$search~i",$row['ean'])) {
 							$description = escape_js(trans('EAN:').' '.$row['ean']);
-							continue;
 						} else
 							$description = '';
 						
