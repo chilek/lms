@@ -1199,6 +1199,7 @@ version 28-git (????-??-??):
   - enhancement: 'recipient TEN' property can be used in customer quick search input field [chilan]
   - improvement: 'ksef.purchase_invoice_default_order' with default value 'issue-date asc' determines default
     order of purchase invoice list [chilan]
+  - enhancement: added 'customer ID' option in additional properties of node list print form [chilan]
 
 version 27.0 (2021-08-20):
 
