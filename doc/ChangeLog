@@ -1196,6 +1196,7 @@ version 28-git (????-??-??):
   - enhancement: added 'cause' filter in rtqueueview form [chilan]
   - improvement: added new session/auth type - IPoE [chilan]
   - enhancement: new customer consent 'postal delivery' for service info added [chilan]
+  - enhancement: 'recipient TEN' property can be used in customer quick search input field [chilan]
 
 version 27.0 (2021-08-20):
 
