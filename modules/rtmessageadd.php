@@ -453,7 +453,7 @@ if (isset($_POST['message'])) {
 
             $LMS->TicketChange($ticketid, $props);
 
-            $LMS->prepareMessageTemplates('rt');
+            $LMS->prepareMessageTemplates($newConfigSectionName ?? 'rt');
 
             // customer notification via e-mail when we reply to ticket message created from customer post
             if (isset($message['mailnotify'])) {
