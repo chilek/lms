@@ -215,9 +215,16 @@
 
 			function restoreSortOrder() {
 				var sortOrder = getStorageItem('ksef-purchase-invoices-sort-order', 'session');
+
 				if (!sortOrder) {
-					sortOrder = 'issue-date asc';
+					sortOrder ='{ConfigHelper::getConfig('ksef.purchase_invoice_default_order', 'issue-date asc')}';
+					if (sortOrder.match(/^(issue-date|gross-value|pay-date)(,|\s+)(asc|desc)$/)) {
+						sortOrder.replace(',', ' ');
+					} else {
+						sortOrder = 'issue-date asc';
+					}
 				}
+
 				var sortParts = sortOrder.split(' ');
 				sortByProperty(sortParts[0], sortParts[1]);
 
