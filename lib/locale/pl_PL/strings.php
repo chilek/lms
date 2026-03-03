@@ -5985,6 +5985,7 @@ $_LANG['<!service-info>e-mail'] = 'pocztą elektroniczną';
 $_LANG['<!service-info>sms'] = 'SMS-em';
 $_LANG['<!service-info>telephone'] = 'telefonicznie';
 $_LANG['<!service-info>via userpanel'] = 'poprzez panel klienta';
+$_LANG['<!service-info>postal delivery'] = 'pocztą tradycyjną';
 $_LANG['phone billing'] = 'billing telefoniczny';
 
 $_LANG['Issuer'] = 'Wystawca';
