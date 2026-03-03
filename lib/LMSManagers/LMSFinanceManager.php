@@ -2844,6 +2844,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $result['invoice'] = $this->GetInvoiceContent($result['reference'], $detail_level);
                 if (isset($result['invoice']['invoice'])) {
                     // replace pointed correction note number to previous one in invoice chain
+                    $result['invoice']['fullnumber'] = $result['invoice']['invoice']['fullnumber'];
                     $result['invoice']['number'] = $result['invoice']['invoice']['number'];
                     $result['invoice']['numberplanid'] = $result['invoice']['invoice']['numberplanid'];
                     $result['invoice']['template'] = $result['invoice']['invoice']['template'];
