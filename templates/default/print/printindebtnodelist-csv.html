@@ -12,6 +12,10 @@
 {trans("Customer type")}
 |
 {trans("Owner")}
+{if !empty($options['customer-id'])}
+	|
+	{trans("Customer ID")}
+{/if}
 |
 TERC
 |
@@ -68,6 +72,10 @@ ULIC
 {/if}
 |
 {$node.owner}
+{if !empty($options['customer-id'])}
+	|
+	{$node.ownerid}
+{/if}
 |
 {$node.state_ident}{$node.district_ident}{$node.borough_ident}{$node.borough_type}
 |
