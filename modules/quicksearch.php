@@ -123,6 +123,7 @@ switch ($mode) {
                     . (empty($properties) || isset($properties['email']) ? " OR LOWER(cc.contact) ?LIKE? LOWER($sql_search)" : '')
                     . (empty($properties) || isset($properties['bankaccount']) ? " OR LOWER(REPLACE(cc2.contact, ' ', '')) ?LIKE? LOWER(REPLACE($sql_search, ' ', ''))" : '')
                     . (empty($properties) || isset($properties['ten']) ? " OR REPLACE(REPLACE(c.ten, '-', ''), ' ', '') ?LIKE? REPLACE(REPLACE($sql_search, '-', ''), ' ', '')" : '')
+                    . (empty($properties) || isset($properties['recipient-ten']) ? " OR EXISTS (SELECT 1 FROM customer_addresses ca WHERE ca.customer_id = c.id AND REPLACE(REPLACE(ca.ten, '-', ''), ' ', '') ?LIKE? REPLACE(REPLACE($sql_search, '-', ''), ' ', ''))" : '')
                     . (empty($properties) || isset($properties['ssn']) ? " OR REPLACE(REPLACE(c.ssn, '-', ''), ' ', '') ?LIKE? REPLACE(REPLACE($sql_search, '-', ''), ' ', '')" : '')
                     . (empty($properties) || isset($properties['additional-info']) ? " OR LOWER(c.info) ?LIKE? LOWER($sql_search)" : '')
                     . (empty($properties) || isset($properties['notes'])
