@@ -129,7 +129,7 @@ if (isset($_POST['receivenoteedit'])) {
 	if (isset($receivenoteedit['ksef_number'])) {
 		$receivenoteedit['ksef_number'] = strtoupper(trim($receivenoteedit['ksef_number']));
                 if (!preg_match($ksef_number_pattern, $receivenoteedit['ksef_number']))
-                        $error['ksef_number'] = trans('Incorrect KSeF number! $a', $receivenoteedit['ksef_number']);
+                        $error['ksef_number'] = trans('Incorrect KSeF number!', $receivenoteedit['ksef_number']);
 		else {
 			$qe = $LMSST->ReceiveNoteExistsByInfo($receivenoteedit, array('ksef_number'));
 			if (ctype_digit($qe) && $qe <> $receivenoteedit['id']) {

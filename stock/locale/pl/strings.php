@@ -141,4 +141,5 @@ $_LANG['Do you confirm the withdrawal of the product sale operation?'] = 'Czy po
 $_LANG['<!qs>product warranty'] = 'gwaranacja na produkt';
 $_LANG['<!qs>stock price'] = 'produkty na stanie (cena)';
 $_LANG['KSeF document already exists!'] = 'Dokument KSeF już istnieje!';
+$_LANG['Incorrect KSeF number!'] = 'Błędny numer KSeF!';
 ?>
