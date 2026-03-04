@@ -692,7 +692,7 @@ class KSeF
 
         foreach ($invoice['content'] as $position) {
             $itemId = $position['itemid'];
-            if ($invoice['type'] == DOC_CNOTE) {
+            if ($invoice['type'] == DOC_CNOTE && !empty($refInvoiceContent[$itemId])) {
                 $xml .= "\t\t<FaWiersz>" . PHP_EOL;
                 $xml .= "\t\t\t<NrWierszaFa>" . $itemId . "</NrWierszaFa>" . PHP_EOL;
                 $xml .= "\t\t\t<P_7>" . htmlspecialchars($refInvoiceContent[$itemId]['description']) . "</P_7>" . PHP_EOL;
