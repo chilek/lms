@@ -986,9 +986,10 @@ class LMSStck {
 	/* RECEIVE NOTES */
 
 	function ReceiveNoteDocumentAdd($doc) {
-		if ($this->DB->Execute("INSERT INTO stck_receivenotes(supplierid, number, creatorid, creationdate, netvalue, grossvalue, paytype, datesettlement, datesale, deadline, comment) VALUES(?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?)", array(
+		if ($this->DB->Execute("INSERT INTO stck_receivenotes(supplierid, number, ksef_number, creatorid, creationdate, netvalue, grossvalue, paytype, datesettlement, datesale, deadline, comment) VALUES(?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?)", array(
 			$doc['supplierid'],
 			$doc['number'],
+			$doc['ksef_number'],
 			Auth::GetCurrentUser(),
 			(string) str_replace(',','.', $doc['net']),
 			(string) str_replace(',','.',$doc['gross']),
@@ -1133,8 +1134,28 @@ class LMSStck {
 	}
 	
 	function ReceiveNoteExistsByInfo($info, $fields) {
-		if ($rnid = $this->DB->GetOne('SELECT id FROM stck_receivenotes WHERE supplierid = ? AND number = ?', array(trim($info['supplierid']), trim($info['number']))))
-			return $rnid;
+		$q = '';
+		$args = array();
+		if (is_array($fields)) {
+			foreach ($fields as $f) {
+				if ($f == 'supplierid') {
+					$q .= ' AND supplierid = ?';
+					$args[] = $info['supplierid'];
+				}
+				if ($f == 'number') {
+                                        $q .= ' AND number = ?';
+                                        $args[] = $info['number'];
+				}
+				if ($f == 'ksef_number') {
+                                        $q .= ' AND ksef_number = ?';
+                                        $args[] = $info['ksef_number'];
+                                }
+			}
+		}
+		
+		if ($q != '')
+			if ($rnid = $this->DB->GetOne('SELECT id FROM stck_receivenotes WHERE 1=1 '.$q, $args))
+				return $rnid;
 		return false;
 	}
 
@@ -1163,8 +1184,9 @@ class LMSStck {
 	}
 
 	function ReceiveNoteEdit($rn, $productlist, $rnepl = NULL) {
-		if ($this->DB->Execute('UPDATE stck_receivenotes SET number = ?, datesettlement = ?, datesale = ?, deadline = ?, paytype = ?, comment = ?, moddate = ?NOW?, modid = ? WHERE id = ?', array(
+		if ($this->DB->Execute('UPDATE stck_receivenotes SET number = ?, ksef_number = ?, datesettlement = ?, datesale = ?, deadline = ?, paytype = ?, comment = ?, moddate = ?NOW?, modid = ? WHERE id = ?', array(
 			$rn['number'],
+			$rn['ksef_number'],
 			$rn['datesettlement'],
 			$rn['datesale'],
 			$rn['deadline'],

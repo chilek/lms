@@ -44,9 +44,18 @@ if (isset($_POST['receivenote']) && (!isset($_GET['sid']) || !ctype_digit($_GET[
 		$error['number'] = trans('Document number can`t be empty!');
 	else
 		$receivenote['doc']['number'] = strtoupper($receivenote['doc']['number']);
-	
+
+	if (isset($receivenote['doc']['ksef_number'])) {
+		$receivenote['doc']['ksef_number'] = strtoupper(trim($receivenote['doc']['ksef_number']));
+		if (!preg_match($ksef_number_pattern, $receivenote['doc']['ksef_number']))
+			$error['ksef_number'] = trans('Incorrect KSeF number!');
+		else
+			if ($LMSST->ReceiveNoteExistsByInfo($receivenote['doc'], array('ksef_number')))
+				$error['ksef_number'] = trans('KSeF document already exists!');
+	}
+
 	if ($LMSST->ReceiveNoteExistsByInfo($receivenote['doc'], array('number', 'supplierid')))
-		$error['comment'] = trans('Document already exists!');
+		$error['number'] = trans('Document already exists!');
 	
 	foreach ($receivenote['doc']['date'] as $k=>$v) {
 		if ($v == '')

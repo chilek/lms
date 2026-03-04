@@ -7,8 +7,10 @@ if (ConfigHelper::getConfig('database.database') == 'postgres') {
 	die('Fatal error: lms-stck doesn`t support PostgreSQL (yet)!');
 }
 
-define('STCK_DBVERSION', '2026022300');
+define('STCK_DBVERSION', '2026030400');
 define('STCK_DIR', $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'stock');
+
+$ksef_number_pattern = '/^\d{10}-20\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])-[A-Z0-9]{12}-[A-Z0-9]{2}$/';
 
 require('LMSStck.class.php');
 #include('locale/'.$CONFIG['phpui']['lang'].'/strings.php');

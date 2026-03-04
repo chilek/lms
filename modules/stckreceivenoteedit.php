@@ -62,6 +62,7 @@ if (isset($_POST['receivenoteedit'])) {
 	$receivenoteedit = $_POST['receivenoteedit'];
 	$receivenoteedit['osid'] = $osid;
 	$receivenoteedit['id'] = $_GET['id'];
+	$qe = NULL;
 	
 	if ($receivenoteedit['supplierid'] == '' || !ctype_digit($receivenoteedit['supplierid']))
 		$error['supplier'] = trans('Incorrect supplier!');
@@ -120,6 +121,23 @@ if (isset($_POST['receivenoteedit'])) {
 		$error['number'] = trans('Document number can`t be empty!');
 	else
 		$receivenoteedit['number'] = strtoupper($receivenoteedit['number']);
+
+	$qe = $LMSST->ReceiveNoteExistsByInfo($receivenoteedit, array('number', 'supplierid'));
+	if (ctype_digit($qe) && $qe <> $receivenoteedit['id'])
+		$error['number'] = trans('Document already exists!');
+
+	if (isset($receivenoteedit['ksef_number'])) {
+		$receivenoteedit['ksef_number'] = strtoupper(trim($receivenoteedit['ksef_number']));
+                if (!preg_match($ksef_number_pattern, $receivenoteedit['ksef_number']))
+                        $error['ksef_number'] = trans('Incorrect KSeF number! $a', $receivenoteedit['ksef_number']);
+		else {
+			$qe = $LMSST->ReceiveNoteExistsByInfo($receivenoteedit, array('ksef_number'));
+			if (ctype_digit($qe) && $qe <> $receivenoteedit['id']) {
+				$error['ksef_number'] = trans('KSeF document already exists!');
+			}
+		}
+	}
+
 
 	if (!$error) {
 		if ($id = $LMSST->ReceiveNoteEdit($receivenoteedit, $productlist, $rnepl)) {
