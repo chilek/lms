@@ -639,11 +639,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                 ),
                 $this->data['recipient_ten']
             );
-            if (preg_match('/^[0-9]{15}$/', $recipient_ten)) {
-                $rec_lines[] = trans('TEN') . ' ' . preg_replace('/-[0-9]{5}$/', '', $this->data['recipient_ten']);
-            } else {
-                $rec_lines[] = trans('TEN') . ' ' . $this->data['recipient_ten'];
-            }
+            $rec_lines[] = trans('TEN') . ' ' . $this->data['recipient_ten'];
         }
 
         foreach ($rec_lines as $line) {
