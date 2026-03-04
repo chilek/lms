@@ -460,7 +460,7 @@
 			{if $ticket.state != $smarty.const.RT_RESOLVED}
 				{if ConfigHelper::checkConfig('rt.block_ticket_close_with_open_events', ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events'))
 					&& !empty($ticket['openeventcount'])}
-					{button icon="status-resolved" label="Ticket have open assigned events!" tip="Ticket have open assigned events!" class="blend disabled"}
+					{button icon="status-resolved" label="Ticket has open assigned events!" tip="Ticket has open assigned events!" class="blend disabled"}
 				{else}
 					{if empty($ticket['verifier_rtime']) && $ticket['verifierid'] != Auth::GetCurrentUser() && $ticket['verifierid']}
 						{button icon="verifier" label="Transfer to verifier" tip="Transfer to verifier" onclick="location.href='?m=rtticketedit&id={$ticket.ticketid}&action=verify';"}

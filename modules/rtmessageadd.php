@@ -102,7 +102,7 @@ if (isset($_POST['message'])) {
         if ($block_ticket_close_with_open_events) {
             $oec = $ticket['openeventcount'];
             if ($message['state'] == RT_RESOLVED && !empty($oec)) {
-                $error['state'] = trans('Ticket have open assigned events!');
+                $error['state'] = trans('Ticket has open assigned events!');
             }
         }
     }
@@ -453,7 +453,7 @@ if (isset($_POST['message'])) {
 
             $LMS->TicketChange($ticketid, $props);
 
-            $LMS->prepareMessageTemplates('rt');
+            $LMS->prepareMessageTemplates($newConfigSectionName ?? 'rt');
 
             // customer notification via e-mail when we reply to ticket message created from customer post
             if (isset($message['mailnotify'])) {

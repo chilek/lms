@@ -130,6 +130,7 @@ switch ($type) {
                 $nodelist = $DB->GetAll(
                     'SELECT
                         n.id AS id,
+                        n.ownerid,
                         INET_NTOA(n.ipaddr) AS ip,
                         mac,
                         n.name AS name,

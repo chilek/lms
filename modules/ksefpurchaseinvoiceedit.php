@@ -139,6 +139,8 @@ switch ($action) {
             $invoiceTags = [];
         }
 
+        $res = 1;
+
         $DB->BeginTrans();
 
         foreach ($selectedTags as $selectedTag) {
@@ -203,8 +205,6 @@ switch ($action) {
             }
         }
 
-        $DB->CommitTrans();
-
         if (!empty($res)) {
             $DB->Execute(
                 'DELETE FROM ksefinvoicetags
@@ -215,9 +215,11 @@ switch ($action) {
             );
 
             if (!empty($DB->GetErrors())) {
-                $res = false;
+                $res = 0;
             }
         }
+
+        $DB->CommitTrans();
 
         break;
     case 'clear-tags':

@@ -3046,6 +3046,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $result['invoice'] = $this->GetInvoiceContent($result['reference'], $detail_level);
                 if (isset($result['invoice']['invoice'])) {
                     // replace pointed correction note number to previous one in invoice chain
+                    $result['invoice']['fullnumber'] = $result['invoice']['invoice']['fullnumber'];
                     $result['invoice']['number'] = $result['invoice']['invoice']['number'];
                     $result['invoice']['numberplanid'] = $result['invoice']['invoice']['numberplanid'];
                     $result['invoice']['template'] = $result['invoice']['invoice']['template'];
@@ -3162,7 +3163,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     }
                     $result['customerbalancelistlimit'] = ConfigHelper::getConfig('invoices.print_balance_history_limit');
                 }
+            }
 
+            if ($detail_level >= self::INVOICE_CONTENT_DETAIL_MORE) {
                 $default_author = ConfigHelper::getConfig('invoices.default_author', 'user_issuer,user_name,division_author');
                 $default_author = preg_split('/[\s]*,[\s]*/', trim($default_author), -1, PREG_SPLIT_NO_EMPTY);
                 $expositor = trans('system');

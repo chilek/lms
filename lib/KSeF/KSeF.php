@@ -306,7 +306,7 @@ class KSeF
         $xml .= "\t\t<DaneIdentyfikacyjne>" . PHP_EOL;
         if ($ue) {
             $xml .= "\t\t\t<KodUE>" . $m['country'] . "</KodUE>\n";
-            $xml .= "\t\t<KodVatUE>" . $m['ten'] . "</KodVatUE>\n";
+            $xml .= "\t\t<NrVatUE>" . $m['ten'] . "</NrVatUE>\n";
         } elseif ($foreign) {
             $xml .= "\t\t\t<KodKraju>" . $m['country'] . "</KodKraju>\n";
             $xml .= "\t\t<NrID>" . $m['ten'] . "</NrID>\n";
