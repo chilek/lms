@@ -426,7 +426,7 @@ class KSeF
                     $tax = round(($invoice['taxest'][$taxRate]['tax'] - $invoice['invoice']['taxest'][$taxRate]['tax']), 2);
                     $xml .= "\t\t<P_14_1>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_1>" . PHP_EOL;
                     if ($currency != $this->defaultCurrency) {
-                        $xml .= "\t\t<P_14_1W>" . sprintf('%.2f', round($tax * $currencyValue, 2)) . "</P_14_1W>" . PHP_EOL;
+                        $xml .= "\t\t<P_14_1W>" . sprintf('%.2f', $currencyValue) . "</P_14_1W>" . PHP_EOL;
                     }
                     $diffTotal += $base + $tax;
                 } elseif (isset($invoice['invoice']['taxest'][$taxRate])) {
@@ -435,7 +435,7 @@ class KSeF
                     $tax = round(-$invoice['invoice']['taxest'][$taxRate]['tax'], 2);
                     $xml .= "\t\t<P_14_1>" . sprintf('%.2f', $tax) . "</P_14_1>" . PHP_EOL;
                     if ($currency != $this->defaultCurrency) {
-                        $xml .= "\t\t<P_14_1W>" . sprintf('%.2f', round($tax * $currencyValue, 2)) . "</P_14_1W>" . PHP_EOL;
+                        $xml .= "\t\t<P_14_1W>" . sprintf('%.2f', $currencyValue) . "</P_14_1W>" . PHP_EOL;
                     }
                     $diffTotal += $base + $tax;
                 }
@@ -452,7 +452,7 @@ class KSeF
                 $xml .= "\t\t<P_13_1>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['base']) . "</P_13_1>" . PHP_EOL;
                 $xml .= "\t\t<P_14_1>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['tax']) . "</P_14_1>" . PHP_EOL;
                 if ($currency != $this->defaultCurrency) {
-                    $xml .= "\t\t<P_14_1W>" . sprintf('%.2f', round($invoice['taxest'][$taxRate]['tax'] * $currencyValue, 2)) . "</P_14_1W>" . PHP_EOL;
+                    $xml .= "\t\t<P_14_1W>" . sprintf('%.2f', $currencyValue) . "</P_14_1W>" . PHP_EOL;
                 }
             }
         }
@@ -472,7 +472,7 @@ class KSeF
                     $tax = round(($invoice['taxest'][$taxRate]['tax'] - $invoice['invoice']['taxest'][$taxRate]['tax']), 2);
                     $xml .= "\t\t<P_14_2>" . sprintf('%.2f', $tax) . "</P_14_2>" . PHP_EOL;
                     if ($currency != $this->defaultCurrency) {
-                        $xml .= "\t\t<P_14_2W>" . sprintf('%.2f', round($tax * $currencyValue, 2)) . "</P_14_2W>" . PHP_EOL;
+                        $xml .= "\t\t<P_14_2W>" . sprintf('%.2f', $currencyValue) . "</P_14_2W>" . PHP_EOL;
                     }
                     $diffTotal += $base + $tax;
                 } elseif (isset($invoice['invoice']['taxest'][$taxRate])) {
@@ -481,7 +481,7 @@ class KSeF
                     $tax = round(-$invoice['invoice']['taxest'][$taxRate]['tax'], 2);
                     $xml .= "\t\t<P_14_2>" . sprintf('%.2f', $tax) . "</P_14_2>" . PHP_EOL;
                     if ($currency != $this->defaultCurrency) {
-                        $xml .= "\t\t<P_14_2W>" . sprintf('%.2f', round($tax * $currencyValue, 2)) . "</P_14_2W>" . PHP_EOL;
+                        $xml .= "\t\t<P_14_2W>" . sprintf('%.2f', $currencyValue) . "</P_14_2W>" . PHP_EOL;
                     }
                     $diffTotal += $base + $tax;
                 }
@@ -498,7 +498,7 @@ class KSeF
                 $xml .= "\t\t<P_13_2>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['base']) . "</P_13_2>" . PHP_EOL;
                 $xml .= "\t\t<P_14_2>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['tax']) . "</P_14_2>" . PHP_EOL;
                 if ($currency != $this->defaultCurrency) {
-                    $xml .= "\t\t<P_14_2W>" . sprintf('%.2f', round($invoice['taxest'][$taxRate]['tax'] * $currencyValue, 2)) . "</P_14_2W>" . PHP_EOL;
+                    $xml .= "\t\t<P_14_2W>" . sprintf('%.2f', $currencyValue) . "</P_14_2W>" . PHP_EOL;
                 }
             }
         }
@@ -516,7 +516,7 @@ class KSeF
                     $tax = round(($invoice['taxest'][$taxRate]['tax'] - $invoice['invoice']['taxest'][$taxRate]['tax']), 2);
                     $xml .= "\t\t<P_14_3>" . sprintf('%.2f', $tax) . "</P_14_3>" . PHP_EOL;
                     if ($currency != $this->defaultCurrency) {
-                        $xml .= "\t\t<P_14_3W>" . sprintf('%.2f', round($tax * $currencyValue, 2)) . "</P_14_3W>" . PHP_EOL;
+                        $xml .= "\t\t<P_14_3W>" . sprintf('%.2f', $currencyValue) . "</P_14_3W>" . PHP_EOL;
                     }
                     $diffTotal += $base + $tax;
                 } elseif (isset($invoice['invoice']['taxest'][$taxRate])) {
@@ -525,7 +525,7 @@ class KSeF
                     $tax = round(-$invoice['invoice']['taxest'][$taxRate]['tax'], 2);
                     $xml .= "\t\t<P_14_3>" . sprintf('%.2f', $tax) . "</P_14_3>" . PHP_EOL;
                     if ($currency != $this->defaultCurrency) {
-                        $xml .= "\t\t<P_14_3W>" . sprintf('%.2f', round($tax * $currencyValue, 2)) . "</P_14_3W>" . PHP_EOL;
+                        $xml .= "\t\t<P_14_3W>" . sprintf('%.2f', $currencyValue) . "</P_14_3W>" . PHP_EOL;
                     }
                     $diffTotal += $base + $tax;
                 }
@@ -540,7 +540,7 @@ class KSeF
                 $xml .= "\t\t<P_13_3>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['base']) . "</P_13_3>" . PHP_EOL;
                 $xml .= "\t\t<P_14_3>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['tax']) . "</P_14_3>" . PHP_EOL;
                 if ($currency != $this->defaultCurrency) {
-                    $xml .= "\t\t<P_14_3W>" . sprintf('%.2f', round($invoice['taxest'][$taxRate]['tax'] * $currencyValue, 2)) . "</P_14_3W>" . PHP_EOL;
+                    $xml .= "\t\t<P_14_3W>" . sprintf('%.2f', $currencyValue) . "</P_14_3W>" . PHP_EOL;
                 }
             }
         }
