@@ -696,7 +696,7 @@ class LMSStck {
 		break;
 		}
 
-		$pgl = $this->DB->GetAll("SELECT p.*,
+		if ($pgl = $this->DB->GetAll("SELECT p.*,
 			m.id as mid, m.name as mname, CONCAT(m.name, ' ', p.name) as pname,
 			g.id as gid, g.name as gname,"
 			.($warehouseid ? ' vsc.scount' : 'SUM(vsc.scount) as scount')
@@ -709,12 +709,13 @@ class LMSStck {
 			.($manufacturerid ? ' AND m.id = '.$manufacturerid : '')
 			.($groupid ? ' AND p.groupid = '.$groupid : '')
 			.($warehouseid ? ' AND vsc.warehouseid = '.$warehouseid : ' GROUP BY p.id')
-			.($sqlord != '' ? $sqlord.' '.$direction : ''), array());
-
-		$pgl['total'] = sizeof($pgl);
-		$pgl['order'] = $order;
-		$pgl['direction'] = $direction;
-		return $pgl;
+			.($sqlord != '' ? $sqlord.' '.$direction : ''), array())) {
+				$pgl['total'] = sizeof($pgl);
+				$pgl['order'] = $order;
+				$pgl['direction'] = $direction;
+				return $pgl;
+		}
+		return null;
 
 	}
 
