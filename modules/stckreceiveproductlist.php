@@ -122,13 +122,13 @@ if (isset($_POST['receivenote']['product']) && !isset($_GET['action'])) {
 		$product_tmp['tax'] = isset($product_tmp['taxid']) ? $taxeslist[$product_tmp['taxid']]['label'] : '';
 		$taxvalue = isset($product_tmp['taxid']) ? $taxeslist[$product_tmp['taxid']]['value'] : 0;
 
-		while(($product = fgetcsv($file, 2048, ',', ';')) !== FALSE) {
+		while(($product = fgetcsv($file, 2048, ";", "\"",'\\')) !== FALSE) {
 			$receivenote['product_tmp'][] = $product;
 		}
 
 		array_shift($receivenote['product_tmp']);
 		$keys = array_shift($receivenote['product_tmp']);
-
+		
 		foreach($receivenote['product_tmp'] as $k => $v) {
 			foreach ($v as $k2 => $v2) {
 				$receivenote['product_tmp'][$k][$keys[$k2]] = $v2;
@@ -143,10 +143,15 @@ if (isset($_POST['receivenote']['product']) && !isset($_GET['action'])) {
                         $receivenote['product_tmp'][$k]['group'] = trim($receivenote['product_tmp'][$k]['group']);
 			$receivenote['product_tmp'][$k]['name'] = $receivenote['product_tmp'][$k]['model'].' '.$receivenote['product_tmp'][$k]['config'];
 			$receivenote['product_tmp'][$k]['product'] = $receivenote['product_tmp'][$k]['manufacturer'].' '.$receivenote['product_tmp'][$k]['name'];
-			$price = $receivenote['product_tmp'][$k]['price'];
-			unset($receivenote['product_tmp'][$k]['price']);
-			$receivenote['product_tmp'][$k]['price']['net'] = f_round($price);
-			$receivenote['product_tmp'][$k]['price']['gross'] = f_round($receivenote['product_tmp'][$k]['price']['net'] * ($taxvalue / 100 + 1),2);
+			//$price = $receivenote['product_tmp'][$k]['price'];
+			//unset($receivenote['product_tmp'][$k]['price']);
+			//$receivenote['product_tmp'][$k]['price']['net'] = f_round($price);
+			if ($receivenote['product_tmp'][$k]['pricenet'])
+				$receivenote['product_tmp'][$k]['price']['gross'] = f_round($receivenote['product_tmp'][$k]['pricenet'] * ($taxvalue / 100 + 1),2);
+			elseif($receivenote['product_tmp'][$k]['pricegross'])
+				$receivenote['product_tmp'][$k]['price']['gross'] = f_round($receivenote['product_tmp'][$k]['pricegross']);
+			else
+				$error['file'] = trans('Incorrect price for position: $a', $k);
 			$receivenote['product_tmp'][$k]['price']['net'] = f_round($receivenote['product_tmp'][$k]['price']['gross'] / ($taxvalue / 100 + 1),2);
 			$receivenote['product_tmp'][$k]['price']['tax'] = $product_tmp['tax'];
 			$receivenote['product_tmp'][$k]['price']['taxid'] = $product_tmp['taxid'];

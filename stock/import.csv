@@ -1,7 +1,6 @@
-;Grupa;,;EAN;,;Producent;,;Model;,;S/N;,;Konfig;,;Cena NETTO;,;Gwarancja (w miesi�cach);
-;group;,;ean;,;manufacturer;,;model;,;serial;,;config;,;price;,;warranty;
-;<group name>;,;ean;,;<manufacturer name>;,;<model>;,;<serial number>;,;<config>;,;<net price>;,;<warranty>;
-
-First row is ommited during import.
-Product name schema: $product = <model>.' '.$config
-
+"Grupa";"Magazyn (nazwa)";"EAN";"Producent";"Model";"S/N";"Konfiguracja";"Cena NETTO";"Cena BRUTTO";"Gwarancja (w miesiącach)";
+"group";"warehouse";"ean";"manufacturer";"model";"serial";"config";"pricenet";"pricegross";"warranty"
+"ZABAWKI";"Handlowy";"5702017816142";"LEGO";"77247 Speed Champions Bolid F1 KICK Sauber Team C44";"";"";"";"99,90";
+Ucieczka: \\
+Brak pustych linii na końcu pliku!
+Nazwa towaru - <Model Konfiguracja>
