@@ -688,7 +688,69 @@ class KSeF
             $xml .= "\t\t<TP>1</TP>" . PHP_EOL;
         }
 
+        $refInvoiceContent = $invoice['invoice']['content'];
+
         foreach ($invoice['content'] as $position) {
+            $itemId = $position['itemid'];
+            if ($invoice['type'] == DOC_CNOTE && !empty($refInvoiceContent[$itemId])) {
+                $xml .= "\t\t<FaWiersz>" . PHP_EOL;
+                $xml .= "\t\t\t<NrWierszaFa>" . $itemId . "</NrWierszaFa>" . PHP_EOL;
+                $xml .= "\t\t\t<P_7>" . htmlspecialchars($refInvoiceContent[$itemId]['description']) . "</P_7>" . PHP_EOL;
+                if (!empty($refInvoiceContent[$itemId]['tariffid'])) {
+                    $xml .= "\t\t\t<Indeks>" . $refInvoiceContent[$itemId]['tariffid'] . "</Indeks>" . PHP_EOL;
+                }
+                if (!empty($refInvoiceContent[$itemId]['prodid'])) {
+                    $xml .= "\t\t\t<PKWiU>" . $refInvoiceContent[$itemId]['prodid'] . "</PKWiU>" . PHP_EOL;
+                }
+                if (!empty($position['content'])) {
+                    $xml .= "\t\t\t<P_8A>" . $refInvoiceContent[$itemId]['content'] . "</P_8A>" . PHP_EOL;
+                }
+
+                $xml .= "\t\t\t<P_8B>" . sprintf('%.6f', $refInvoiceContent[$itemId]['count']) . "</P_8B>" . PHP_EOL;
+                if (empty($invoice['netflag'])) {
+                    $xml .= "\t\t\t<P_9B>" . sprintf('%.6f', $refInvoiceContent[$itemId]['grossprice']) . "</P_9B>" . PHP_EOL;
+                } else {
+                    $xml .= "\t\t\t<P_9A>" . sprintf('%.6f', $refInvoiceContent[$itemId]['netprice']) . "</P_9A>" . PHP_EOL;
+                }
+                if (empty($invoice['netflag'])) {
+                    $xml .= "\t\t\t<P_11A>" . sprintf('%.2f', $refInvoiceContent[$itemId]['total']) . "</P_11A>" . PHP_EOL;
+                } else {
+                    $xml .= "\t\t\t<P_11>" . sprintf('%.2f', $refInvoiceContent[$itemId]['totalbase']) . "</P_11>" . PHP_EOL;
+                }
+                $xml .= "\t\t\t<P_11Vat>" . sprintf('%.2f', $refInvoiceContent[$itemId]['totaltax']) . "</P_11Vat>" . PHP_EOL;
+
+                $refInvoiceTax = $this->taxes[$refInvoiceContent[$itemId]['taxid']];
+                if (empty($refInvoiceTax['reversecharge'])) {
+                    if ($refInvoiceTax['value'] > 0) {
+                        $refInvoiceTaxRate = round($refInvoiceTax['value']);
+                    } elseif (empty($tax['taxed'])) {
+                        if ($ue) {
+                            $refInvoiceTaxRate = '0 WDT';
+                        } elseif ($foreign) {
+                            $refInvoiceTaxRate = '0 EX';
+                        } else {
+                            $refInvoiceTaxRate = 'zw';
+                        }
+                    } else {
+                        $refInvoiceTaxRate = '0 KR';
+                    }
+                } else {
+                    $refInvoiceTaxRate = 'oo';
+                }
+                $xml .= "\t\t\t<P_12>" . $refInvoiceTaxRate . "</P_12>" . PHP_EOL;
+
+                if (!empty($refInvoiceContent[$itemId]['taxcategory'])) {
+                    $xml .= "\t\t\t<GTU>GTU_" . sprintf('%02d', $refInvoiceContent[$itemId]['taxcategory']) . "</GTU>" . PHP_EOL;
+                }
+
+                if ($currency != $this->defaultCurrency) {
+                    $xml .= "\t\t\t<KursWaluty>" . sprintf('%.6f', $currencyValue) . "</KursWaluty>" . PHP_EOL;
+                }
+
+                $xml .= "\t\t\t<StanPrzed>1</StanPrzed>" . PHP_EOL;
+                $xml .= "\t\t</FaWiersz>" . PHP_EOL;
+            }
+
             $xml .= "\t\t<FaWiersz>" . PHP_EOL;
             $xml .= "\t\t\t<NrWierszaFa>" . $position['itemid'] . "</NrWierszaFa>" . PHP_EOL;
             $xml .= "\t\t\t<P_7>" . htmlspecialchars($position['description']) . "</P_7>" . PHP_EOL;
@@ -701,33 +763,19 @@ class KSeF
             if (!empty($position['content'])) {
                 $xml .= "\t\t\t<P_8A>" . $position['content'] . "</P_8A>" . PHP_EOL;
             }
-            if ($invoice['type'] == DOC_CNOTE) {
-                $xml .= "\t\t\t<P_8B>" . sprintf('%.6f', $position['diff_count']) . "</P_8B>" . PHP_EOL;
-                if (empty($invoice['netflag'])) {
-                    $xml .= "\t\t\t<P_9B>" . sprintf('%.6f', $position['diff_grossprice']) . "</P_9B>" . PHP_EOL;
-                } else {
-                    $xml .= "\t\t\t<P_9A>" . sprintf('%.6f', $position['diff_netprice']) . "</P_9A>" . PHP_EOL;
-                }
-                if (empty($invoice['netflag'])) {
-                    $xml .= "\t\t\t<P_11A>" . sprintf('%.2f', $position['diff_netvalue']) . "</P_11A>" . PHP_EOL;
-                } else {
-                    $xml .= "\t\t\t<P_11>" . sprintf('%.2f', $position['diff_grossvalue']) . "</P_11>" . PHP_EOL;
-                }
-                $xml .= "\t\t\t<P_11Vat>" . sprintf('%.2f', $position['diff_taxvalue']) . "</P_11Vat>" . PHP_EOL;
+
+            $xml .= "\t\t\t<P_8B>" . sprintf('%.6f', $position['count']) . "</P_8B>" . PHP_EOL;
+            if (empty($invoice['netflag'])) {
+                $xml .= "\t\t\t<P_9B>" . sprintf('%.6f', $position['grossprice']) . "</P_9B>" . PHP_EOL;
             } else {
-                $xml .= "\t\t\t<P_8B>" . sprintf('%.6f', $position['count']) . "</P_8B>" . PHP_EOL;
-                if (empty($invoice['netflag'])) {
-                    $xml .= "\t\t\t<P_9B>" . sprintf('%.6f', $position['grossprice']) . "</P_9B>" . PHP_EOL;
-                } else {
-                    $xml .= "\t\t\t<P_9A>" . sprintf('%.6f', $position['netprice']) . "</P_9A>" . PHP_EOL;
-                }
-                if (empty($invoice['netflag'])) {
-                    $xml .= "\t\t\t<P_11A>" . sprintf('%.2f', $position['total']) . "</P_11A>" . PHP_EOL;
-                } else {
-                    $xml .= "\t\t\t<P_11>" . sprintf('%.2f', $position['totalbase']) . "</P_11>" . PHP_EOL;
-                }
-                $xml .= "\t\t\t<P_11Vat>" . sprintf('%.2f', $position['totaltax']) . "</P_11Vat>" . PHP_EOL;
+                $xml .= "\t\t\t<P_9A>" . sprintf('%.6f', $position['netprice']) . "</P_9A>" . PHP_EOL;
             }
+            if (empty($invoice['netflag'])) {
+                $xml .= "\t\t\t<P_11A>" . sprintf('%.2f', $position['total']) . "</P_11A>" . PHP_EOL;
+            } else {
+                $xml .= "\t\t\t<P_11>" . sprintf('%.2f', $position['totalbase']) . "</P_11>" . PHP_EOL;
+            }
+            $xml .= "\t\t\t<P_11Vat>" . sprintf('%.2f', $position['totaltax']) . "</P_11Vat>" . PHP_EOL;
 
             $tax = $this->taxes[$position['taxid']];
             if (empty($tax['reversecharge'])) {
@@ -756,7 +804,6 @@ class KSeF
             if ($currency != $this->defaultCurrency) {
                 $xml .= "\t\t\t<KursWaluty>" . sprintf('%.6f', $currencyValue) . "</KursWaluty>" . PHP_EOL;
             }
-
             $xml .= "\t\t</FaWiersz>" . PHP_EOL;
         }
 
