@@ -225,7 +225,7 @@ if (!empty($posts)) {
         } elseif ($post->subtype != 'REPORT') {
             continue;
         }
-        if ((count($post->parts) < 2 || count($post->parts) > 3) && preg_match('/In-Reply-To:[[:blank:]]+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $headers) === 0) {
+        if ((count($post->parts) < 2 || count($post->parts) > 3) && preg_match('/In-Reply-To:[[:blank:]]+<messageitem-(?<msgitemid>[0-9]+)@.+>/i', $headers) === 0) {
             continue;
         }
         $parts = $post->parts;
