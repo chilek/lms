@@ -676,7 +676,7 @@ class KSeF
                 $xml .= "\t\t\t<NrKSeFN>1</NrKSeFN>" . PHP_EOL;
             }
             $xml .= "\t\t</DaneFaKorygowanej>" . PHP_EOL;
-            $xml .= "\t\t<OkresFaKorygowanej>" . date('Y-m', $invoice['invoice']['sdate']) . "</OkresFaKorygowanej>" . PHP_EOL;
+            //$xml .= "\t\t<OkresFaKorygowanej>" . date('Y-m', $invoice['invoice']['sdate']) . "</OkresFaKorygowanej>" . PHP_EOL;
         } else {
             $xml .= "\t\t<RodzajFaktury>VAT</RodzajFaktury>" . PHP_EOL;
         }
