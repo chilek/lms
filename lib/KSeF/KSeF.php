@@ -1799,7 +1799,8 @@ class KSeF
             : \ConfigHelper::getConfig('ksef.password');
     }
 
-    public function getDeploymentDates(): array{
+    public function getDeploymentDates(): array
+    {
         $ksefDeploymentDates = [];
 
         $ksefEarliestDocuments = $this->db->GetAll(
