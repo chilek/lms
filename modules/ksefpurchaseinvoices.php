@@ -41,8 +41,10 @@ $SESSION->save('ksef-invoices-start-date', $startDate);
 
 if (isset($_POST['end-date'])) {
     $endDate = strtotime($_POST['end-date']);
-    if ($endDate === false || $endDate >= $startDate) {
+    if ($endDate === false || $endDate <= $startDate) {
         $endDate = null;
+    } else {
+        $endDate = strtotime('+1 day', $endDate) - 1;
     }
 } else {
     $endDate = $SESSION->get('ksef-invoices-end-date');
