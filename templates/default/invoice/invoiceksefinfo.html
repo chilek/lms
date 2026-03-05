@@ -80,8 +80,9 @@
 <script>
 
 	$(function() {
-		$('.invoice-ksef-info .view-button').click(function() {
+		$('.invoice-ksef-info .view-button').click(function(e) {
 			window.open($(this).attr('data-href'));
+			e.stopImmediatePropagation();
 		})
 	});
 
