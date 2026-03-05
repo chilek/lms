@@ -896,7 +896,8 @@ class KSeF
         }
         foreach ($accounts as $account) {
             $xml .= "\t\t\t<RachunekBankowy>" . PHP_EOL;
-            $xml .= "\t\t\t\t<NrRB>". format_bankaccount($account, $invoice['export']) . "</NrRB>" . PHP_EOL;
+            //$xml .= "\t\t\t\t<NrRB>". format_bankaccount($account, $invoice['export']) . "</NrRB>" . PHP_EOL;
+            $xml .= "\t\t\t\t<NrRB>". $account . "</NrRB>" . PHP_EOL;
             $xml .= "\t\t\t</RachunekBankowy>" . PHP_EOL;
         }
         unset($account);
