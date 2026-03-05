@@ -676,7 +676,7 @@ class KSeF
                 $xml .= "\t\t\t<NrKSeFN>1</NrKSeFN>" . PHP_EOL;
             }
             $xml .= "\t\t</DaneFaKorygowanej>" . PHP_EOL;
-            $xml .= "\t\t<OkresFaKorygowanej>" . date('Y-m', $invoice['invoice']['sdate']) . "</OkresFaKorygowanej>" . PHP_EOL;
+            //$xml .= "\t\t<OkresFaKorygowanej>" . date('Y-m', $invoice['invoice']['sdate']) . "</OkresFaKorygowanej>" . PHP_EOL;
         } else {
             $xml .= "\t\t<RodzajFaktury>VAT</RodzajFaktury>" . PHP_EOL;
         }
@@ -896,7 +896,8 @@ class KSeF
         }
         foreach ($accounts as $account) {
             $xml .= "\t\t\t<RachunekBankowy>" . PHP_EOL;
-            $xml .= "\t\t\t\t<NrRB>". format_bankaccount($account, $invoice['export']) . "</NrRB>" . PHP_EOL;
+            //$xml .= "\t\t\t\t<NrRB>". format_bankaccount($account, $invoice['export']) . "</NrRB>" . PHP_EOL;
+            $xml .= "\t\t\t\t<NrRB>". $account . "</NrRB>" . PHP_EOL;
             $xml .= "\t\t\t</RachunekBankowy>" . PHP_EOL;
         }
         unset($account);
@@ -1797,5 +1798,47 @@ class KSeF
         return $type == self::CERTIFICATE_TYPE_OFFLINE
             ? \ConfigHelper::getConfig('ksef.offline_password')
             : \ConfigHelper::getConfig('ksef.password');
+    }
+
+    public function getDeploymentDates(): array
+    {
+        $ksefDeploymentDates = [];
+
+        $ksefEarliestDocuments = $this->db->GetAll(
+            'SELECT
+                d.divisionid,
+                d.div_ten,
+                MIN(d.cdate) AS mincdate
+            FROM ksefdocuments kd
+            JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
+            JOIN documents d ON d.id = kd.docid
+            WHERE d.cdate >= ?
+                AND kbs.environment = ?
+                AND kd.status = ?
+            GROUP BY d.divisionid, d.div_ten',
+            [
+                strtotime('2026/02/01'),
+                //KSeF::ENVIRONMENT_TEST,
+                KSeF::ENVIRONMENT_PROD,
+                200,
+            ]
+        );
+
+        if (!empty($ksefEarliestDocuments)) {
+            foreach ($ksefEarliestDocuments as $ksefEarliestDocument) {
+                $divisionTen = preg_replace('/[^0-9]/', '', $ksefEarliestDocument['div_ten']);
+                if (isset($ksefDeploymentDates[$divisionTen])) {
+                    $ksefDeploymentDates[$divisionTen] = min($ksefDeploymentDates[$divisionTen], $ksefEarliestDocument['mincdate']);
+                } else {
+                    $ksefDeploymentDates[$divisionTen] = $ksefEarliestDocument['mincdate'];
+                }
+            }
+            foreach ($ksefDeploymentDates as &$ksefDeploymentDate) {
+                $ksefDeploymentDate = strtotime(date('Y/m/01', $ksefDeploymentDate));
+            }
+            unset($ksefDeploymentDate);
+        }
+
+        return $ksefDeploymentDates;
     }
 }
