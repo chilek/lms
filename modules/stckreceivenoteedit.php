@@ -126,6 +126,9 @@ if (isset($_POST['receivenoteedit'])) {
 	if (ctype_digit($qe) && $qe <> $receivenoteedit['id'])
 		$error['number'] = trans('Document already exists!');
 
+	if ($receivenoteedit['ksef_number'] == '')
+		unset($receivenoteedit['ksef_number']);
+
 	if (isset($receivenoteedit['ksef_number'])) {
 		$receivenoteedit['ksef_number'] = strtoupper(trim($receivenoteedit['ksef_number']));
                 if (!preg_match($ksef_number_pattern, $receivenoteedit['ksef_number']))

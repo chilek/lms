@@ -45,6 +45,10 @@ if (isset($_POST['receivenote']) && (!isset($_GET['sid']) || !ctype_digit($_GET[
 	else
 		$receivenote['doc']['number'] = strtoupper($receivenote['doc']['number']);
 
+	if ($receivenote['doc']['ksef_number'] == '') {
+		unset($receivenote['doc']['ksef_number']);
+	}
+	
 	if (isset($receivenote['doc']['ksef_number'])) {
 		$receivenote['doc']['ksef_number'] = strtoupper(trim($receivenote['doc']['ksef_number']));
 		if (!preg_match($ksef_number_pattern, $receivenote['doc']['ksef_number']))

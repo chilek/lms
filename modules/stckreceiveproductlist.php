@@ -275,8 +275,11 @@ if (isset($_POST['receivenote']['product']) && !isset($_GET['action'])) {
 			break;
 		case 'save':
 			//print_r($receivenote);
-			if ($LMSST->ReceiveNoteExistsByInfo($receivenote['doc'], array('number', 'supplierid', 'ksef_number')))
-                		$error['comment'] = trans('Document already exists!');
+			if ($LMSST->ReceiveNoteExistsByInfo($receivenote['doc'], array('number', 'supplierid')))
+				$error['comment'] = trans('Document already exists!');
+			if ($receivenote['doc']['ksef_number'])
+				if ($LMSST->ReceiveNoteExistsByInfo($receivenote['doc'], array('ksef_number')))
+					$error['comment'] = trans('KSeF document already exists!');
 			if (!$error) {
 				$LMSST->ReceiveNoteAdd($receivenote);
 				$SESSION->remove('receivenote');
