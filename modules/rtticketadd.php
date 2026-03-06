@@ -174,7 +174,7 @@ if (isset($_POST['ticket'])) {
     }
 
     if (!$error) {
-        $ticket['contenttype'] = isset($ticket['wysiwyg']) && isset($ticket['wysiwyg']['body']) && ConfigHelper::checkValue($ticket['wysiwyg']['body'])
+        $ticket['contenttype'] = isset($ticket['wysiwyg'], $ticket['wysiwyg']['body']) && ConfigHelper::checkValue($ticket['wysiwyg']['body'])
             ? 'text/html' : 'text/plain';
 
         if (!$ticket['customerid']) {

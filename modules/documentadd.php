@@ -253,7 +253,7 @@ if (isset($_POST['document'])) {
             // read template information
             include($template_dir . DIRECTORY_SEPARATOR . 'info.php');
 
-            if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
+            if (isset($engine['vhosts'], $engine['vhosts'][$_SERVER['HTTP_HOST']])) {
                 $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
             }
 
