@@ -1201,6 +1201,8 @@ version 28-git (????-??-??):
     order of purchase invoice list [chilan]
   - enhancement: added 'customer ID' option in additional properties of node list print form [chilan]
   - enhancement: KSeF: added new recipient role: employee (8) [chilan]
+  - enhancement: KSeF: 'ksef.all_consumers' configration variable with 'false' as default value allows
+    to enable ksef consent globally for all consumer-type customers [chilan]
 
 version 27.0 (2021-08-20):
 
