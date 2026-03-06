@@ -30,8 +30,8 @@ if (!$this->ResourceExists('ksefallconsumers', LMSDB::RESOURCE_TYPE_TABLE)) {
             id integer DEFAULT nextval('ksefallconsumers_id_seq'::text) NOT NULL,
             divisionid integer
                 CONSTRAINT ksefallconsumers_divisionid_fkey REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
-            allconsumers smallint NOT NULL,            
-            PRIMARY KEY (id) 
+            allconsumers smallint NOT NULL,
+            PRIMARY KEY (id)
         )"
     );
 }
