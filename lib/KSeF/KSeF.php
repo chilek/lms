@@ -779,7 +779,7 @@ class KSeF
             $xml .= "\t\t<TP>1</TP>" . PHP_EOL;
         }
 
-        $refInvoiceContent = $invoice['invoice']['content'];
+        $refInvoiceContent = empty($invoice['invoice']) ? null : $invoice['invoice']['content'];
 
         foreach ($invoice['content'] as $position) {
             $itemId = $position['itemid'];
