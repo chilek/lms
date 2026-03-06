@@ -460,6 +460,7 @@ if ($backup || $archive) {
                 LEFT JOIN customeraddressview c ON c.id = d.customerid
                 LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
                 LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
+                LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
                 JOIN (
                     SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
                     FROM customercontacts
@@ -478,7 +479,13 @@ if ($backup || $archive) {
                     . ($customergroups ?: '')
                     . ($ksef ? ' AND kd.status = ' . 200 : '')
                     . ($ksefOffline ? ' AND kd.status IS NOT NULL AND kd.status = ' . 0 : '')
-                    . ($withoutKsef ? ' AND kd.status IS NULL AND (c.type = ' . CTYPES_PRIVATE . ' AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . '))' : ''),
+                    . ($withoutKsef
+                        ? ' AND kd.status IS NULL
+                            AND c.type = ' . CTYPES_PRIVATE . '
+                            AND COALESCE(kac.allconsumers, 0) = 0
+                            AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')'
+                        : ''
+                    ),
                 [
                     [
                         200,
@@ -513,7 +520,7 @@ $query = "
         d.senddate, n.template" . ($backup || $archive ? '' : ', m.email') . ",
         (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type < 0) THEN 1 ELSE 0 END) AS documentreferenced,
         (CASE WHEN EXISTS (SELECT 1 FROM customerconsents cc1 WHERE cc1.customerid = c.id AND cc1.type = ?) THEN 1 ELSE 0 END) AS balance_on_documents,
-        (CASE WHEN EXISTS (SELECT 1 FROM customerconsents cc2 WHERE cc2.customerid = c.id AND cc2.type = ?) THEN 1 ELSE 0 END) AS ksef_invoice_consent,
+        (CASE WHEN kac.allconsumers = 1 OR EXISTS (SELECT 1 FROM customerconsents cc2 WHERE cc2.customerid = c.id AND cc2.type = ?) THEN 1 ELSE 0 END) AS ksef_invoice_consent,
         c.type AS ctype,
         kd.ksefnumber,
         kd.status AS ksefstatus,
@@ -523,7 +530,8 @@ $query = "
     FROM documents d
     LEFT JOIN customeraddressview c ON c.id = d.customerid
     LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
-    LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid"
+    LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
+    LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid"
     . ($backup || $archive ? '' : " JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
         FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id")
     . " LEFT JOIN numberplans n ON n.id = d.numberplanid
@@ -537,7 +545,13 @@ $query = "
         . ($customergroups ?: '')
         . ($ksef ? ' AND kd.status = ' . 200 : '')
         . ($ksefOffline ? ' AND kd.status IS NOT NULL AND kd.status = ' . 0 : '')
-        . ($withoutKsef ? ' AND kd.status IS NULL AND (c.type = ' . CTYPES_PRIVATE . ' AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . '))' : '')
+        . ($withoutKsef
+            ? ' AND kd.status IS NULL
+                AND c.type = ' . CTYPES_PRIVATE . '
+                AND COALESCE(kac.allconsumers, 0) = 0
+                AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')'
+            : ''
+        )
     . " ORDER BY d.number" . (!empty($part_size) ? " LIMIT $part_size OFFSET $part_offset" : '');
 $docs = $DB->GetAll($query, $args);
 

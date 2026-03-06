@@ -67,9 +67,17 @@ if (isset($_GET['statuschange'])) {
     $LMS->toggleConfigOption($id);
 
     $configVariable = $LMS->GetConfigVariable($id);
-    if ($configVariable['section'] == 'ksef' && $configVariable['var'] == 'delay') {
+    if ($configVariable['section'] == 'ksef') {
         $ksef = new \Lms\KSeF\KSeF($DB, $LMS);
-        $ksef->updateDelays();
+
+        switch ($configVariable['var']) {
+            case 'delay':
+                $ksef->updateDelays();
+                break;
+            case 'all_consumers':
+                $ksef->updateAllConsumers();
+                break;
+        }
     }
 
     $SESSION->redirect_to_history_entry();
@@ -220,9 +228,17 @@ if (isset($_POST['config'])) {
             $configid = $LMS->editConfigOption($args);
             $DB->CommitTrans();
 
-            if ($args['section'] == 'ksef' && $args['var'] == 'delay') {
+            if ($args['section'] == 'ksef') {
                 $ksef = new \Lms\KSeF\KSeF($DB, $LMS);
-                $ksef->updateDelays();
+
+                switch ($args['var']) {
+                    case 'delay':
+                        $ksef->updateDelays();
+                        break;
+                    case 'all_consumers':
+                        $ksef->updateAllConsumers();
+                        break;
+                }
             }
         }
         $SESSION->redirect_to_history_entry();

@@ -150,7 +150,7 @@ class KSeF
         $this->showAllAccounts = \ConfigHelper::checkConfig('invoices.show_all_accounts');
     }
 
-    public function updateDelays()
+    public function updateDelays(): array
     {
         $divisionDelays = $this->db->GetAllByKey(
             'SELECT
@@ -221,6 +221,83 @@ class KSeF
         }
 
         return \Utils::array_column($divisionDelays, 'delay', 'divisionid');
+    }
+
+    public function updateAllConsumers(): array
+    {
+        $divisionAllConsumers = $this->db->GetAllByKey(
+            'SELECT
+                d.id AS divisionid,
+                kac.id AS allconsumerid,
+                kac.allconsumers AS allconsumers
+            FROM divisions d
+            LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.id
+            ORDER BY d.id',
+            'divisionid'
+        );
+        if (empty($divisionAllConsumers)) {
+            $divisionAllConsumers = [];
+        }
+
+        $uiConfigVariables = $this->db->GetAllByKey(
+            'SELECT
+                c.value,
+                COALESCE(c.divisionid, 0) AS divisionid
+            FROM uiconfig c
+            WHERE section = ?
+                AND var = ?
+                AND disabled = ?
+            ORDER BY COALESCE(c.divisionid, 0)',
+            'divisionid',
+            [
+                'ksef',
+                'all_consumers',
+                0,
+            ]
+        );
+        if (empty($uiConfigVariables)) {
+            $uiConfigVariables = [
+                0 => [
+                    'value' => 'false',
+                ],
+            ];
+        }
+
+        $globalAllConsumers = isset($uiConfigVariables[0]['value']) && \ConfigHelper::checkValue($uiConfigVariables[0]['value']) ? 1 : 0;
+
+        foreach ($divisionAllConsumers as $divisionId => $divisionAllConsumer) {
+            $allConsumers = isset($uiConfigVariables[$divisionId])
+                ? (\ConfigHelper::checkValue($uiConfigVariables[$divisionId]['value']) ? 1 : 0)
+                : $globalAllConsumers;
+
+            if (empty($divisionAllConsumer['allconsumerid'])) {
+                $this->db->Execute(
+                    'INSERT INTO ksefallconsumers
+                    (divisionid, allconsumers)
+                    VALUES (?, ?)',
+                    [
+                        empty($divisionId) ? null : $divisionId,
+                        $allConsumers,
+                    ]
+                );
+                $divisionAllConsumers[$divisionId]['allconsumers'] = $allConsumers;
+            } else {
+                if ($divisionAllConsumer['allconsumers'] != $allConsumers) {
+                    $this->db->Execute(
+                        'UPDATE ksefallconsumers
+                        SET allconsumers = ?
+                        WHERE id = ?',
+                        [
+                            $allConsumers,
+                            $divisionAllConsumer['allconsumerid'],
+                        ]
+                    );
+                    $divisionAllConsumers[$divisionId]['allconsumers'] = $allConsumers;
+                }
+            }
+        }
+
+        return \Utils::array_column($divisionAllConsumers, 'allconsumers', 'divisionid');
     }
 
     public static function base64Url(string $base64Data): string

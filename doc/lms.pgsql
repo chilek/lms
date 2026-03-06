@@ -3168,6 +3168,20 @@ CREATE TABLE ksefdelays (
 );
 
 /* ---------------------------------------------------
+ Structure of table ksefallconsumers
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS ksefallconsumers_id_seq;
+CREATE SEQUENCE ksefallconsumers_id_seq;
+DROP TABLE IF EXISTS ksefallconsumers CASCADE;
+CREATE TABLE ksefallconsumers (
+    id integer DEFAULT nextval('ksefallconsumers_id_seq'::text) NOT NULL,
+    divisionid integer
+        CONSTRAINT ksefallconsumers_divisionid_fkey REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    allconsumers smallint NOT NULL,
+    PRIMARY KEY (id)
+);
+
+/* ---------------------------------------------------
  Structure of table ksefinvoices
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS ksefinvoices_id_seq;
@@ -4691,6 +4705,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026022600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026030600');
 
 COMMIT;

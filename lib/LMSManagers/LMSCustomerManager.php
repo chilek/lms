@@ -324,7 +324,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         AND kdl.delay > -1
                         AND ?NOW? - documents.cdate >= kdl.delay
                         AND documents.type IN (' . implode(',', [DOC_INVOICE, DOC_CNOTE]) . ')
-                        AND (c.type = ' . CTYPES_COMPANY . ' OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = documents.customerid AND cc.type = ' . CCONSENT_KSEF_INVOICE . '))
+                        AND (
+                            c.type = ' . CTYPES_COMPANY . '
+                            OR kac.allconsumers = 1
+                            OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = documents.customerid AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')
+                        )
                     THEN 1
                     ELSE 0
                 END) AS ksefsubmit
@@ -334,6 +338,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             LEFT JOIN documents ON documents.id = cash.docid
             LEFT JOIN ksefdocuments kd ON kd.docid = documents.id AND kd.status IN ?
             LEFT JOIN ksefdelays kdl ON kdl.divisionid = documents.divisionid
+            LEFT JOIN ksefallconsumers kac ON kac.divisionid = documents.divisionid
             LEFT JOIN numberplans ON numberplans.id = documents.numberplanid
             LEFT JOIN taxes ON cash.taxid = taxes.id
             WHERE cash.customerid = ?'

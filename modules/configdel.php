@@ -32,9 +32,17 @@ if (isset($_GET['id'])) {
         $DB->CommitTrans();
 
         $configVariable = $LMS->GetConfigVariable($id);
-        if ($configVariable['section'] == 'ksef' && $configVariable['var'] == 'delay') {
+        if ($configVariable['section'] == 'ksef') {
             $ksef = new \Lms\KSeF\KSeF($DB, $LMS);
-            $ksef->updateDelays();
+
+            switch ($configVariable['var']) {
+                case 'delay':
+                    $ksef->updateDelays();
+                    break;
+                case 'all_consumers':
+                    $ksef->updateAllConsumers();
+                    break;
+            }
         }
     }
 } elseif (isset($_POST['marks'])) {
@@ -46,17 +54,28 @@ if (isset($_GET['id'])) {
         }
         $DB->CommitTrans();
 
-        $updateDelaysRequired = false;
+        $updateDelaysRequired = $updateAllConsumersRequired = false;
         foreach ($options as $option) {
             $configVariable = $LMS->GetConfigVariable($option);
-            if ($configVariable['section'] == 'ksef' && $configVariable['var'] == 'delay') {
-                $updateDelaysRequired = true;
-                break;
+            if ($configVariable['section'] == 'ksef') {
+                switch ($configVariable['var']) {
+                    case 'delay':
+                        $updateDelaysRequired = true;
+                        break;
+                    case 'all_consumers':
+                        $updateAllConsumersRequired = true;
+                        break;
+                }
             }
         }
-        if ($updateDelaysRequired) {
+        if ($updateDelaysRequired || $updateAllConsumersRequired) {
             $ksef = new \Lms\KSeF\KSeF($DB, $LMS);
-            $ksef->updateDelays();
+            if ($updateDelaysRequired) {
+                $ksef->updateDelays();
+            }
+            if ($updateAllConsumersRequired) {
+                $ksef->updateAllConsumers();
+            }
         }
     }
 }

@@ -2283,13 +2283,18 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         AND kdl.delay > -1
                         AND ?NOW? - d.cdate >= kdl.delay
                         AND d.type IN (' . implode(',', [DOC_INVOICE, DOC_CNOTE]) . ')
-                        AND (c.type = ' . CTYPES_COMPANY . ' OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ' . CCONSENT_KSEF_INVOICE . '))
+                        AND (
+                            c.type = ' . CTYPES_COMPANY . '
+                            OR kac.allconsumers = 1
+                            OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')
+                        )
                     THEN 1
                     ELSE 0
                 END) AS ksefsubmit
             FROM documents d
             LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN (' . implode(',', [0, 200]) . ')
             LEFT JOIN ksefdelays kdl ON kdl.divisionid = d.divisionid
+            LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
             JOIN vinvoicecontents a ON (a.docid = d.id)'
             . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
             . ' LEFT JOIN cash ON cash.docid = d.id AND a.itemid = cash.itemid
@@ -2657,7 +2662,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.currency, d.currencyvalue, d.memo,
 				d.extid,
 				(CASE WHEN cc.type IS NULL THEN 0 ELSE 1 END) AS balance_on_documents,
-				(CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS ksef_invoice_consent,
+				(CASE WHEN kac.allconsumers = 1 OR cc2.type IS NOT NULL THEN 1 ELSE 0 END) AS ksef_invoice_consent,
                 kd.ksefnumber,
                 kd.status AS ksefstatus,
                 kd.hash AS ksefhash,
@@ -2668,6 +2673,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				LEFT JOIN vusers u ON u.id = d.userid
 				LEFT JOIN customerconsents cc ON cc.customerid = d.customerid AND cc.type = ?
 				LEFT JOIN customerconsents cc2 ON cc2.customerid = d.customerid AND cc2.type = ?
+				LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
 				LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
 				LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
 				WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)',
@@ -2737,7 +2743,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.currency, d.currencyvalue, d.memo,
 				d.extid,
 				(CASE WHEN cc.type IS NULL THEN 0 ELSE 1 END) AS balance_on_documents,
-				(CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS ksef_invoice_consent,
+				(CASE WHEN kac.allconsumers = 1 OR cc2.type IS NOT NULL THEN 1 ELSE 0 END) AS ksef_invoice_consent,
                 kd.ksefnumber,
                 kd.status AS ksefstatus,
                 kd.hash AS ksefhash,
@@ -2754,6 +2760,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				LEFT JOIN vaddresses a ON d.recipient_address_id = a.id
 				LEFT JOIN vaddresses a2 ON d.post_address_id = a2.id
 				LEFT JOIN countries cp ON (d.post_address_id IS NOT NULL AND cp.id = a2.country_id) OR (d.post_address_id IS NULL AND cp.id = c.post_countryid)
+				LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
 				LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
 				LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
 				WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)',
