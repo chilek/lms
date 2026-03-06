@@ -594,6 +594,12 @@ class LMSSmartyPlugins
                             ' . (!empty($params['location_entity_type']) && $params['location_entity_type'] == 2 ? ' checked' : '') . '>
                             ' . trans('<!ksef>VAT group') . '
                         </label>
+                        <br>
+                        <label>
+                            <input type="radio" name="' . $input_name_entity_type . '" value="3" data-address="entity-type"
+                            ' . (!empty($params['location_entity_type']) && $params['location_entity_type'] == 3 ? ' checked' : '') . '>
+                            ' . trans('<!ksef>employee') . '
+                        </label>
                     </td>
                 </tr>';
         }

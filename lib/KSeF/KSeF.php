@@ -393,7 +393,21 @@ class KSeF
             $xml .= "\t\t\t<AdresL2>" . htmlspecialchars((empty($invoice['rec_zip']) ? '' : $invoice['rec_zip'] . ' ') . $invoice['rec_city']) . "</AdresL2>" . PHP_EOL;
             $xml .= "\t\t</Adres>" . PHP_EOL;
 
-            $xml .= "\t\t<Rola>" . (empty($invoice['recipient_type']) ? '2' : ($invoice['recipient_type'] == 1 ? '8' : '10')) . "</Rola>" . PHP_EOL;
+            switch ($invoice['recipient_type']) {
+                case 1:
+                    $role = '8';
+                    break;
+                case 2:
+                    $role = '10';
+                    break;
+                case 3:
+                    $role = '11';
+                    break;
+                default:
+                    $role = '2';
+                    break;
+            }
+            $xml .= "\t\t<Rola>" . $role . "</Rola>" . PHP_EOL;
 
             $xml .= "\t</Podmiot3>" . PHP_EOL;
         }
