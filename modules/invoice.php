@@ -511,7 +511,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 // end date 2021/12/31
                 // effective end date 2022/01/31
                 $jpk_vat_version = 4;
-            } elseif ($boundaryDate < strtotime('2026/03/01')) {
+            } elseif ($boundaryDate < strtotime('2026/02/01')) {
                 // start date 2022/01/01
                 // effective start date 2022/02/01
                 // end date 2026/01/31

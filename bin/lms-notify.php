@@ -2525,7 +2525,7 @@ if (empty($types) || in_array('invoices', $types)) {
             v.value, v.currency,
             c.type AS ctype,
             c.invoicenotice,
-            (CASE WHEN EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ?) THEN 1 ELSE 0 END) AS ksef_invoice_consent,
+            (CASE WHEN kac.allconsumers = 1 OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ?) THEN 1 ELSE 0 END) AS ksef_invoice_consent,
             kd.ksefnumber,
             kd.status AS ksefstatus,
             kd.hash AS ksefhash,
@@ -2535,6 +2535,7 @@ if (empty($types) || in_array('invoices', $types)) {
         JOIN customeraddressview c ON c.id = d.customerid
         LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
         LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
+        LEFT JOIN ksefallconsumers kac ON kac.divisionid = c.divisionid
         LEFT JOIN divisions ON divisions.id = c.divisionid
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
             FROM customercontacts
@@ -2572,7 +2573,13 @@ if (empty($types) || in_array('invoices', $types)) {
             . ($customergroups ?: '')
             . ($ksef ? ' AND kd.status = ' . 200 : '')
             . ($ksefOffline ? ' AND kd.status IS NOT NULL AND kd.status = ' . 0 : '')
-            . ($withoutKsef ? ' AND kd.status IS NULL AND (c.type = ' . CTYPES_PRIVATE . ' AND NOT EXISTS (SELECT 1 FROM customersconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . '))' : '')
+            . ($withoutKsef
+                ? ' AND kd.status IS NULL
+                    AND c.type = ' . CTYPES_PRIVATE . '
+                    AND COALESCE(kac.allconsumers, 0) = 0
+                    AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')'
+                : ''
+            )
         . ' ORDER BY d.id',
         [
             CCONSENT_KSEF_INVOICE,

@@ -6309,6 +6309,7 @@ $_LANG['View UPO'] = 'Pokaż UPO';
 $_LANG['<!ksef>Local Government Unit'] = 'jednostka samorządu terytorialnego';
 $_LANG['<!ksef>VAT group'] = 'grupa VAT';
 $_LANG['<!ksef>other'] = 'inny';
+$_LANG['<!ksef>employee'] = 'pracownik';
 
 $_LANG['<!ksef>Document type/number'] = 'Typ/numer dokumentu';
 $_LANG['KSeF number'] = 'Numer KSeF';

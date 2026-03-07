@@ -144,9 +144,17 @@ if (!empty($config)) {
         $configid = $LMS->addConfigOption($args);
         $DB->CommitTrans();
 
-        if ($args['section'] == 'ksef' && $args['var'] == 'delay') {
+        if ($args['section'] == 'ksef') {
             $ksef = new \Lms\KSeF\KSeF($DB, $LMS);
-            $ksef->updateDelays();
+
+            switch ($args['var']) {
+                case 'delay':
+                    $ksef->updateDelays();
+                    break;
+                case 'all_consumers':
+                    $ksef->updateAllConsumers();
+                    break;
+            }
         }
 
         if (isset($config['reuse'])) {

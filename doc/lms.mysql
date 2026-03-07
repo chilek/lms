@@ -46,6 +46,7 @@ DROP TABLE IF EXISTS ksefinvoicetags;
 DROP TABLE IF EXISTS ksefinvoicethirdsubjects;
 DROP TABLE IF EXISTS ksefinvoices;
 DROP TABLE IF EXISTS ksefdocuments;
+DROP TABLE IF EXISTS ksefallconsumers;
 DROP TABLE IF EXISTS ksefdelays;
 DROP TABLE IF EXISTS ksefbatchsessions;
 DROP TABLE IF EXISTS rtticketwatchers;
@@ -3241,6 +3242,19 @@ CREATE TABLE ksefdelays (
 
 # ---------------------------------------------------
 #
+# Structure of table ksefallconsumers
+#
+CREATE TABLE ksefallconsumers (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    divisionid int(11),
+    allconsumers smallint NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT ksefallconsumers_divisionid_fkey
+        FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# ---------------------------------------------------
+#
 # Structure of table ksefdocuments
 #
 CREATE TABLE ksefdocuments (
@@ -4649,4 +4663,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026022600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026030600');
