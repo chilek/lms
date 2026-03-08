@@ -487,7 +487,7 @@ class Localisation
         if (is_string($number)) {
             $number = floatval($number);
         }
-        if ($number ** -1 === -INF) {
+        if ($number == 0.0) {
             $number = 0;
         }
         if ($editable) {
