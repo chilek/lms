@@ -539,7 +539,7 @@ class KSeF
             } else {
                 $taxRate = null;
             }
-            if (isset($taxRate) && isset($invoice['taxest'][$taxRate])) {
+            if (isset($taxRate, $invoice['taxest'][$taxRate])) {
                 $xml .= "\t\t<P_13_1>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['base']) . "</P_13_1>" . PHP_EOL;
                 $xml .= "\t\t<P_14_1>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['tax']) . "</P_14_1>" . PHP_EOL;
                 if ($currency != $this->defaultCurrency) {
@@ -585,7 +585,7 @@ class KSeF
             } else {
                 $taxRate = null;
             }
-            if (isset($taxRate) && isset($invoice['taxest'][$taxRate])) {
+            if (isset($taxRate, $invoice['taxest'][$taxRate])) {
                 $xml .= "\t\t<P_13_2>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['base']) . "</P_13_2>" . PHP_EOL;
                 $xml .= "\t\t<P_14_2>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['tax']) . "</P_14_2>" . PHP_EOL;
                 if ($currency != $this->defaultCurrency) {
@@ -627,7 +627,7 @@ class KSeF
             } else {
                 $taxRate = null;
             }
-            if (isset($taxRate) && isset($invoice['taxest'][$taxRate])) {
+            if (isset($taxRate, $invoice['taxest'][$taxRate])) {
                 $xml .= "\t\t<P_13_3>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['base']) . "</P_13_3>" . PHP_EOL;
                 $xml .= "\t\t<P_14_3>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['tax']) . "</P_14_3>" . PHP_EOL;
                 if ($currency != $this->defaultCurrency) {

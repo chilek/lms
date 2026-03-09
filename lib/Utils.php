@@ -359,7 +359,7 @@ class Utils
                 if (is_array($consent)) {
                     if ($consent['type'] == 'selection') {
                         foreach ($consent['values'] as $sub_consent_id => $subconsent) {
-                            if (isset($subconsent['name']) && isset($values[$subconsent['name']])) {
+                            if (isset($subconsent['name'], $values[$subconsent['name']])) {
                                 $result[$consent_id] = $sub_consent_id;
                             }
                         }

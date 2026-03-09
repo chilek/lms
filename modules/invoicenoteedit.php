@@ -518,7 +518,7 @@ switch ($action) {
         }
 
         $headerDiff = array();
-        if (isset($cnote['oldheader']) && isset($cnote['newheader'])) {
+        if (isset($cnote['oldheader'], $cnote['newheader'])) {
             $headerDiff = array_diff_assoc($cnote['oldheader'], $cnote['newheader']);
         }
         if (!isset($cnote['newheader']) || empty($headerDiff)) {
