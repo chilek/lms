@@ -422,7 +422,64 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         ]
     );
 
-    if (empty($documents)) {
+    if ($jpk && $jpk_type == 'vat') {
+        $boundaryDate = $dateto;
+        //$boundaryDate = $now;
+    }
+
+    if ($jpk && $boundaryDate >= strtotime('2026/02/01')) {
+        $purchaseDocuments = $DB->GetAllByKey(
+            'SELECT
+                i.*
+            FROM ksefinvoices i
+            WHERE i.issue_date BETWEEN ? AND ?
+                AND i.posting = ?
+                ' . (empty($divisionIds) ? '' : ' AND i.division_id IN (' . implode(',', $divisionIds) . ')')
+            . ' ORDER BY i.issue_date, i.permanent_storage_date',
+            'id',
+            [
+                $datefrom,
+                $dateto,
+                1,
+            ]
+        );
+
+        if (empty($purchaseDocuments)) {
+            $purchaseDocuments = [];
+        } else {
+            $purchaseDocumentItems = $DB->GetAll(
+                'SELECT
+                    ii.*
+                FROM ksefinvoiceitems ii
+                JOIN ksefinvoices i ON i.id = ii.ksef_invoice_id
+                WHERE i.issue_date BETWEEN ? AND ?
+                    AND i.posting = ?
+                    ' . (empty($divisionIds) ? '' : ' AND i.division_id IN (' . implode(',', $divisionIds) . ')')
+                . ' ORDER BY i.issue_date, i.permanent_storage_date, ii.before_state DESC, ii.item_id',
+                [
+                    $datefrom,
+                    $dateto,
+                    1,
+                ]
+            );
+            foreach ($purchaseDocumentItems as $purchaseDocumentItem) {
+                $ksefInvoiceId = $purchaseDocumentItem['ksef_invoice_id'];
+                $purchaseDocument = $purchaseDocuments[$ksefInvoiceId];
+                $itemId = $purchaseDocumentItem['item_id'];
+                if (!isset($purchaseDocuments[$ksefInvoiceId]['items'])) {
+                    $purchaseDocuments[$ksefInvoiceId]['before-items'] = [];
+                    $purchaseDocuments[$ksefInvoiceId]['items'] = [];
+                }
+                if (empty($purchaseDocumentItem['before_state'])) {
+                    $purchaseDocuments[$ksefInvoiceId]['items'][$itemId] = $purchaseDocumentItem;
+                } else{
+                    $purchaseDocuments[$ksefInvoiceId]['before-items'][$itemId] = $purchaseDocumentItem;
+                }
+            }
+        }
+    }
+
+    if (empty($documents) && empty($purchaseDocuments)) {
         if ($jpk) {
             echo trans('No documents to JPK export!');
         }
@@ -497,9 +554,6 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             //$jpk_vat_version = $datefrom < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
             // if current date is earlier than 1 I 2018
             //$jpk_vat_version = time() < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
-
-            $boundaryDate = $dateto;
-            //$boundaryDate = $now;
 
             if ($boundaryDate < strtotime('2020/11/01')) {
                 // end date 2021/09/30
@@ -1537,9 +1591,44 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             $jpk_data .= "\t\t<PodatekNalezny>" . str_replace(',', '.', sprintf('%.2f', $totaltax)) . "</PodatekNalezny>\n";
             $jpk_data .= "\t</SprzedazCtrl>\n";
             if ($jpk_vat_version >= 4) {
+                $accountedVat = 0.0;
+
+                if ($jpk_vat_version == 6 && !empty($purchaseDocuments)) {
+                    $purchaseDocumentIndex = 1;
+                    foreach ($purchaseDocuments as $purchaseDocument) {
+                        $jpk_data .= "\t<ZakupWiersz>\n";
+
+                        $jpk_data .= "\t\t<LpZakupu>" . $purchaseDocumentIndex . "</LpZakupu>\n";
+                        $jpk_data .= "\t\t<NrDostawcy>" . $purchaseDocument['seller_ten'] . "</NrDostawcy>\n";
+                        $jpk_data .= "\t\t<NazwaDostawcy>" . escapeJpkText($purchaseDocument['seller_name']) . "</NazwaDostawcy>\n";
+                        $jpk_data .= "\t\t<DowoduZakupu>" . $purchaseDocument['invoice_number'] . "</DowoduZakupu>\n";
+                        if (empty($purchaseDocument['from_date'])) {
+                            $jpk_data .= "\t\t<DataZakupu>" . date('Y-m-d', $purchaseDocument['issue_date']) . "</DataZakupu>\n";
+                        } else {
+                            $jpk_data .= "\t\t<DataZakupu>" . date('Y-m-d', $purchaseDocument['from_date']) . "</DataZakupu>\n";
+                        }
+                        $jpk_data .= "\t\t<NrKSeF>" . $purchaseDocument['ksef_number'] . "</NrKSeF>\n";
+
+                        $jpk_data .= "\t\t<K_42>" . str_replace(',', '.', sprintf('%.2f', $purchaseDocument['net_amount'])) . "</K_42>\n";
+                        $jpk_data .= "\t\t<K_43>" . str_replace(',', '.', sprintf('%.2f', $purchaseDocument['vat_amount'])) . "</K_43>\n";
+
+                        $jpk_data .= "\t</ZakupWiersz>\n";
+
+                        $purchaseDocumentIndex++;
+                        $accountedVat += $purchaseDocument['vat_amount'];
+                    }
+                }
+
                 $jpk_data .= "\t<ZakupCtrl>\n";
-                $jpk_data .= "\t\t<LiczbaWierszyZakupow>0</LiczbaWierszyZakupow>\n";
-                $jpk_data .= "\t\t<PodatekNaliczony>0</PodatekNaliczony>\n";
+
+                if ($jpk_vat_version < 6 || empty($purchaseDocuments)) {
+                    $jpk_data .= "\t\t<LiczbaWierszyZakupow>0</LiczbaWierszyZakupow>\n";
+                    $jpk_data .= "\t\t<PodatekNaliczony>0</PodatekNaliczony>\n";
+                } else {
+                    $jpk_data .= "\t\t<LiczbaWierszyZakupow>" . count($purchaseDocuments) . "</LiczbaWierszyZakupow>\n";
+                    $jpk_data .= "\t\t<PodatekNaliczony>" . str_replace(',', '.', sprintf('%.2f', $accountedVat)) . "</PodatekNaliczony>\n";
+                }
+
                 $jpk_data .= "\t</ZakupCtrl>\n";
                 $jpk_data .= "\t</Ewidencja>\n";
 
