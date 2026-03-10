@@ -2596,7 +2596,7 @@ foreach ($assigns as $assign) {
 
                 if (!$quiet) {
                     if ($assign['invoice']) {
-                        echo 'CID:' . $cid . "\tDOCNUMBER:" . $fullnumber . "\tVAL:" . $partial_grossvalue . ' ' . $currency . "\tDESC:" . $sdesc . PHP_EOL;
+                        echo 'CID:' . $cid . "\tDOCNUMBER:" . $fullnumber . "\tDOCID:" . $invoices[$cid] . "\tVAL:" . $partial_grossvalue . ' ' . $currency . "\tDESC:" . $sdesc . PHP_EOL;
                     } else {
                         echo 'CID:' . $cid . "\tVAL:" . $partial_grossvalue . ' ' . $currency . "\tDESC:" . $sdesc . PHP_EOL;
                     }
