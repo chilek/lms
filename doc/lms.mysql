@@ -3368,6 +3368,7 @@ CREATE TABLE ksefinvoiceitems (
     eu smallint DEFAULT 0,
     export smallint DEFAULT 0,
     product_service_group smallint DEFAULT 0,
+    before_state smallint DEFAULT 0,
     CONSTRAINT ksefinvoiceitems_ksef_invoice_id_fkey
         FOREIGN KEY (ksef_invoice_id) REFERENCES ksefinvoices (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -4663,4 +4664,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026030600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026031000');

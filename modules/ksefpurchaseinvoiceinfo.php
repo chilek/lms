@@ -85,12 +85,14 @@ $invoice['items'] = $DB->GetAll(
     'SELECT
         ii.*
     FROM ksefinvoiceitems ii
-    WHERE ii.ksef_invoice_id = ?',
+    WHERE ii.ksef_invoice_id = ?
+    ORDER BY ii.before_state DESC, ii.item_id',
     [
         $id,
     ]
 );
 
+$summaryBeforeState = [];
 $summary = [];
 foreach ($invoice['items'] as &$item) {
     $taxRateLabel = KSeF::ksefTaxLabel([
@@ -114,17 +116,33 @@ foreach ($invoice['items'] as &$item) {
     $item['tax'] = round($item['gross_value'] - $item['net_value'], 2);
 
     if (!isset($summary[$taxRateLabel])) {
-        $summary[$taxRateLabel] = [
-            'tax_rate' => $item['tax_rate'],
-            'net' => 0,
-            'gross' => 0,
-        ];
+        if (empty($item['before_state'])) {
+            $summary[$taxRateLabel] = [
+                'tax_rate' => $item['tax_rate'],
+                'net' => 0,
+                'gross' => 0,
+            ];
+        } else {
+            $summaryBeforeState[$taxRateLabel] = [
+                'tax_rate' => $item['tax_rate'],
+                'net' => 0,
+                'gross' => 0,
+            ];
+        }
     }
 
-    if (empty($item['net_flag'])) {
-        $summary[$taxRateLabel]['gross'] += $item['gross_value'];
+    if (empty($item['before_state'])) {
+        if (empty($item['net_flag'])) {
+            $summary[$taxRateLabel]['gross'] += $item['gross_value'];
+        } else {
+            $summary[$taxRateLabel]['net'] += $item['net_value'];
+        }
     } else {
-        $summary[$taxRateLabel]['net'] += $item['net_value'];
+        if (empty($item['net_flag'])) {
+            $summaryBeforeState[$taxRateLabel]['gross'] += $item['gross_value'];
+        } else {
+            $summaryBeforeState[$taxRateLabel]['net'] += $item['net_value'];
+        }
     }
 }
 unset($item);
@@ -140,6 +158,7 @@ foreach ($summary as &$item) {
 unset($item);
 
 $invoice['summary'] = $summary;
+$invoice['summary-before-state'] = $summaryBeforeState;
 
 $SMARTY->assign('invoice', $invoice);
 

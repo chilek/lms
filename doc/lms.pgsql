@@ -3275,7 +3275,8 @@ CREATE TABLE ksefinvoiceitems (
     reverse_charge smallint DEFAULT 0,
     eu smallint DEFAULT 0,
     export smallint DEFAULT 0,
-    product_service_group smallint DEFAULT 0
+    product_service_group smallint DEFAULT 0,
+    before_state smallint DEFAULT 0
 );
 
 /* ---------------------------------------------------
@@ -4705,6 +4706,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026030600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026031000');
 
 COMMIT;

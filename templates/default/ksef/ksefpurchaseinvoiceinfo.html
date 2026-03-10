@@ -52,6 +52,12 @@
 		background-color: white;
 	}
 
+	.ksef-purchase-invoice-legend {
+		font-weight: bold;
+		margin-block-start: 0.5em;
+		margin-block-end: 0.5em;
+	}
+
 </style>
 
 {if !empty($qr2pay)}
@@ -59,6 +65,116 @@
 		{barcode type="QRCODE" text=$qr2pay show_text=false transliterate=false width=-3 height=-3}
 	</div>
 {else}
+	{if !empty($invoice['summary-before-state'])}
+		<p class="ksef-purchase-invoice-legend">
+			{trans("Was:")}
+		</p>
+		<table class="ksef-purchase-invoice-info lmsbox lms-ui-background-cycle">
+			<thead>
+			<tr>
+				<td class="text-center">
+					{trans("<!ksef>No.")}
+				</td>
+				<td>
+					{trans("<!ksef>Description")}
+				</td>
+				<td class="text-center">
+					{trans("<!invoice>Product ID")}
+				</td>
+				<td class="text-center">
+					{trans("Unit")}
+				</td>
+				<td class="text-center">
+					{trans("Amount")}
+				</td>
+				<td class="text-center">
+					{trans("<!ksef>Price")}
+				</td>
+				<td class="text-center">
+					{trans("<!ksef>VAT rate")}
+				</td>
+				<td class="text-center">
+					{trans("<!ksef>Net value")}
+				</td>
+				<td class="text-center">
+					{trans("<!ksef>VAT")}
+				</td>
+				<td class="text-center">
+					{trans("<!ksef>Gross value")}
+				</td>
+			</tr>
+			</thead>
+			<tbody>
+			{foreach $invoice.items as $item}
+				{if empty($item.before_state)}
+					{continue}
+				{/if}
+				<tr>
+					<td class="text-center">
+						{$item.item_id}
+					</td>
+					<td>
+						{$item.name|escape}
+					</td>
+					<td class="text-center">
+						{$item.prod_id}
+					</td>
+					<td class="text-center">
+						{$item.unit}
+					</td>
+					<td class="text-center">
+						{floatval($item.count)}
+					</td>
+					<td class="text-right nobr">
+						{if empty($item.net_flag)}
+							{Utils::formatMoney($item.gross_price, $invoice.currency)}
+						{else}
+							{Utils::formatMoney($item.net_price, $invoice.currency)}
+						{/if}
+					</td>
+					<td class="text-center">
+						{$item.tax_rate_label}
+					</td>
+					<td class="text-right nobr">
+						{Utils::formatMoney($item.net_value, $invoice.currency)}
+					</td>
+					<td class="text-right nobr">
+						{Utils::formatMoney($item.tax, $invoice.currency)}
+					</td>
+					<td class="text-right nobr">
+						{Utils::formatMoney($item.gross_value, $invoice.currency)}
+					</td>
+				</tr>
+			{/foreach}
+			</tbody>
+			<tfoot>
+			{foreach $invoice['summary-before-state'] as $taxRateLabel => $summary}
+				<tr>
+					<td colspan="6" class="text-right">
+						{if $summary@first}
+							{trans("<!ksef>Total")}
+						{/if}
+					</td>
+					<td class="text-center">
+						{$taxRateLabel}
+					</td>
+					<td class="text-right nobr">
+						{Utils::formatMoney($summary.net, $invoice.currency)}
+					</td>
+					<td class="text-right nobr">
+						{Utils::formatMoney($summary.tax, $invoice.currency)}
+					</td>
+					<td class="text-right nobr">
+						{Utils::formatMoney($summary.gross, $invoice.currency)}
+					</td>
+				</tr>
+			{/foreach}
+			</tfoot>
+		</table>
+		<p class="ksef-purchase-invoice-legend">
+			{trans("Corrected to:")}
+		</p>
+	{/if}
 	<table class="ksef-purchase-invoice-info lmsbox lms-ui-background-cycle">
 		<thead>
 			<tr>
@@ -96,6 +212,9 @@
 		</thead>
 		<tbody>
 			{foreach $invoice.items as $item}
+				{if !empty($item.before_state)}
+					{continue}
+				{/if}
 				<tr>
 					<td class="text-center">
 						{$item.item_id}
