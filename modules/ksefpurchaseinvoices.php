@@ -85,15 +85,15 @@ $invoices = $DB->GetAll(
             ' . $DB->GroupConcat('ta.ksef_invoice_tag_id') . ' AS tags
         FROM ksefinvoicetagassignments ta
         JOIN ksefinvoices i ON i.id = ta.ksef_invoice_id
-        WHERE i.permanent_storage_date BETWEEN ? AND ?
+        WHERE i.issue_date BETWEEN ? AND ?
         GROUP BY ta.ksef_invoice_id
     ) t ON t.ksef_invoice_id = i.id
-    WHERE i.permanent_storage_date BETWEEN ? AND ?',
+    WHERE i.issue_date BETWEEN ? AND ?',
     [
-        $dateFrom,
-        $dateTo,
-        $dateFrom,
-        $dateTo,
+        $startDate,
+        $endDate,
+        $startDate,
+        $endDate,
     ]
 );
 if (empty($invoices)) {
@@ -137,16 +137,16 @@ $sellers = $DB->GetAll(
             seller_ten,
             MAX(id) AS max_id
         FROM ksefinvoices
-        WHERE permanent_storage_date BETWEEN ? AND ?
+        WHERE issue_date BETWEEN ? AND ?
         GROUP BY seller_ten
     ) m ON m.seller_ten = t.seller_ten AND m.max_id = t.id
-    WHERE t.permanent_storage_date BETWEEN ? AND ?
+    WHERE t.issue_date BETWEEN ? AND ?
     ORDER BY t.seller_name',
     [
-        $dateFrom,
-        $dateTo,
-        $dateFrom,
-        $dateTo,
+        $startDate,
+        $endDate,
+        $startDate,
+        $endDate,
     ]
 );
 
