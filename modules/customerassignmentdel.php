@@ -53,6 +53,9 @@ if (isset($ids) || isset($cid)) {
         $SESSION->redirect_to_history_entry();
     }
 
+	$LMS->executeHook('assignment_del_before', ['assignmentid' => $ids,
+                                                'ownerid'      => $customer]);
+
     if (!empty($ids)) {
         $DB->BeginTrans();
         foreach ($ids as $id) {
