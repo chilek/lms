@@ -1601,7 +1601,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                         $jpk_data .= "\t\t<LpZakupu>" . $purchaseDocumentIndex . "</LpZakupu>\n";
                         $jpk_data .= "\t\t<NrDostawcy>" . $purchaseDocument['seller_ten'] . "</NrDostawcy>\n";
                         $jpk_data .= "\t\t<NazwaDostawcy>" . escapeJpkText($purchaseDocument['seller_name']) . "</NazwaDostawcy>\n";
-                        $jpk_data .= "\t\t<DowoduZakupu>" . $purchaseDocument['invoice_number'] . "</DowoduZakupu>\n";
+                        $jpk_data .= "\t\t<DowodZakupu>" . $purchaseDocument['invoice_number'] . "</DowodZakupu>\n";
                         if (empty($purchaseDocument['from_date'])) {
                             $jpk_data .= "\t\t<DataZakupu>" . date('Y-m-d', $purchaseDocument['issue_date']) . "</DataZakupu>\n";
                         } else {
