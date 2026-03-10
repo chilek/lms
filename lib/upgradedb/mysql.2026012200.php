@@ -49,25 +49,27 @@ if (!$this->ResourceExists('ksefbatchsessions', LMSDB::RESOURCE_TYPE_TABLE)) {
     ");
 }
 
-$this->Execute("
-    CREATE TABLE ksefdocuments (
-        id int(11) NOT NULL AUTO_INCREMENT,
-        batchsessionid int(11) NOT NULL,
-        docid integer NOT NULL,
-        ordinalnumber int(11) NOT NULL,
-        ksefnumber varchar(40) DEFAULT NULL,
-        hash varchar(50) NOT NULL,
-        status smallint NOT NULL DEFAULT 0,
-        statusdescription text DEFAULT NULL,
-        statusdetails text DEFAULT NULL,
-        PRIMARY KEY (id),
-        CONSTRAINT ksefbatchsessions_batchsessionid_fkey
-            FOREIGN KEY (batchsessionid) REFERENCES ksefbatchsessions (id) ON DELETE CASCADE ON UPDATE CASCADE,
-        CONSTRAINT ksefdocuments_docid_fkey
-            FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE RESTRICT ON UPDATE CASCADE,
-        INDEX ksefdocuments_status_idx (status)
-    ) ENGINE=InnoDB
-");
+if (!$this->ResourceExists('ksefdocuments', LMSDB::RESOURCE_TYPE_TABLE)) {
+    $this->Execute("
+        CREATE TABLE ksefdocuments (
+            id int(11) NOT NULL AUTO_INCREMENT,
+            batchsessionid int(11) NOT NULL,
+            docid integer NOT NULL,
+            ordinalnumber int(11) NOT NULL,
+            ksefnumber varchar(40) DEFAULT NULL,
+            hash varchar(50) NOT NULL,
+            status smallint NOT NULL DEFAULT 0,
+            statusdescription text DEFAULT NULL,
+            statusdetails text DEFAULT NULL,
+            PRIMARY KEY (id),
+            CONSTRAINT ksefbatchsessions_batchsessionid_fkey
+                FOREIGN KEY (batchsessionid) REFERENCES ksefbatchsessions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+            CONSTRAINT ksefdocuments_docid_fkey
+                FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+            INDEX ksefdocuments_status_idx (status)
+        ) ENGINE=InnoDB
+    ");
+}
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2026012200', 'dbversion'));
 

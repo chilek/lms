@@ -49,24 +49,26 @@ if (!$this->ResourceExists('ksefbatchsessions', LMSDB::RESOURCE_TYPE_TABLE)) {
     ");
 }
 
-$this->Execute("
-    CREATE SEQUENCE ksefdocuments_id_seq;
-    CREATE TABLE ksefdocuments (
-        id integer DEFAULT nextval('ksefdocuments_id_seq'::text) NOT NULL,
-        batchsessionid integer NOT NULL
-            CONSTRAINT ksefbatchsessions_batchsessionid_fkey REFERENCES ksefbatchsessions (id) ON DELETE CASCADE ON UPDATE CASCADE,
-        docid integer NOT NULL
-            CONSTRAINT ksefdocuments_docid_fkey REFERENCES documents (id) ON DELETE RESTRICT ON UPDATE CASCADE,
-        ordinalnumber integer NOT NULL,
-        ksefnumber varchar(40) DEFAULT NULL,
-        hash varchar(50) NOT NULL,
-        status smallint NOT NULL DEFAULT 0,
-        statusdescription text DEFAULT NULL,
-        statusdetails text DEFAULT NULL,
-        PRIMARY KEY (id)
-    );
-    CREATE INDEX ksefdocuments_status_idx ON ksefdocuments (status)
-");
+if (!$this->ResourceExists('ksefdocuments', LMSDB::RESOURCE_TYPE_TABLE)) {
+    $this->Execute("
+        CREATE SEQUENCE ksefdocuments_id_seq;
+        CREATE TABLE ksefdocuments (
+            id integer DEFAULT nextval('ksefdocuments_id_seq'::text) NOT NULL,
+            batchsessionid integer NOT NULL
+                CONSTRAINT ksefbatchsessions_batchsessionid_fkey REFERENCES ksefbatchsessions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+            docid integer NOT NULL
+                CONSTRAINT ksefdocuments_docid_fkey REFERENCES documents (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+            ordinalnumber integer NOT NULL,
+            ksefnumber varchar(40) DEFAULT NULL,
+            hash varchar(50) NOT NULL,
+            status smallint NOT NULL DEFAULT 0,
+            statusdescription text DEFAULT NULL,
+            statusdetails text DEFAULT NULL,
+            PRIMARY KEY (id)
+        );
+        CREATE INDEX ksefdocuments_status_idx ON ksefdocuments (status)
+    ");
+}
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2026012200', 'dbversion'));
 
