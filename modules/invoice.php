@@ -472,7 +472,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 }
                 if (empty($purchaseDocumentItem['before_state'])) {
                     $purchaseDocuments[$ksefInvoiceId]['items'][$itemId] = $purchaseDocumentItem;
-                } else{
+                } else {
                     $purchaseDocuments[$ksefInvoiceId]['before-items'][$itemId] = $purchaseDocumentItem;
                 }
             }
