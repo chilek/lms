@@ -3149,6 +3149,7 @@ CREATE TABLE ksefdocuments
     status            smallint    NOT NULL DEFAULT 0,
     statusdescription text        DEFAULT NULL,
     statusdetails     text        DEFAULT NULL,
+    permanent_storage_date timestamptz DEFAULT NULL,
     PRIMARY KEY (id)
 );
 CREATE INDEX ksefdocuments_status_idx ON ksefdocuments (status);
@@ -4706,6 +4707,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026031000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026031200');
 
 COMMIT;
