@@ -550,11 +550,12 @@
 			<col style="width: 1%;">
 			<col style="width: 1%;">
 			<col style="width: 1%;">
+			<col style="width: 1%;">
 			<col style="width: 97%;">
 		</colgroup>
 		<thead>
 			<tr>
-				<td colspan="7">
+				<td colspan="8">
 					<div id="filter-panel">
 						<div class="filter-panel-row">
 							<span class="lms-ui-date-period-container">
@@ -664,7 +665,7 @@
 						{icon name="dunno" class="sort-order-icon hidden" fw=false}
 					</a>
 				</td>
-				<td>
+				<td colspan="2">
 				</td>
 			</tr>
 		</thead>
@@ -771,13 +772,15 @@
 							{$pay_date}
 						{/if}
 					</td>
-					<td class="text-left nobr">
+					<td>
 						{if empty($invoice.notes)}
 							{$class = "notes-info hidden"}
 						{else}
 							{$class = "notes-info"}
 						{/if}
 						{hint mode=LMSSmartyPlugins::HINT_TYPE_ROLLOVER icon="more-info" text=$invoice.notes|nl2br class=$class}
+					</td>
+					<td class="text-left nobr">
 						{hint url="?m=ksefpurchaseinvoicenotes&id={$invoice.id}" icon="info" class="lms-ui-link-button notes-button" tip="Invoice textual description"}
 						{hint url="?m=ksefpurchaseinvoicetags&id={$invoice.id}" icon="tags" class="lms-ui-link-button tag-button" tip="Invoice tag management"}
 						{if empty($invoice.itemcount)}
@@ -817,7 +820,7 @@
 				</tr>
 			{/foreach}
 			<tr id="empty-table-row">
-				<td colspan="7" class="empty-table">
+				<td colspan="8" class="empty-table">
 					{trans("<!ksef>No purchase invoices matching filter criteria.")}
 				</td>
 			</tr>
@@ -834,7 +837,7 @@
 					<br>
 					<span id="total-gross-value"></span>
 				</td>
-				<td colspan="3"></td>
+				<td colspan="4"></td>
 			</tr>
 		</tfoot>
 	</table>
