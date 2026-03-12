@@ -694,7 +694,6 @@
 							{$document_type_number}
 							{*icon name="copy" class="lms-ui-button-clipboard fa-fw" data_clipboard_text=$document_type_number*}
 							{icon name="copy" class="lms-ui-button-clipboard fa-fw" data_clipboard_text=$invoice.invoice_number}
-							{hint icon="qrcode" url="?m=invoiceksefinfo&id={$invoice.id}&purchase=1"}
 						</span>
 						<pre class="nobr">{$invoice.ksef_number}</pre>
 						<span class="ksef-invoice-tags">{strip}
@@ -792,6 +791,7 @@
 						{else}
 							{$disabled = false}
 						{/if}
+						{hint url="?m=invoiceksefinfo&id={$invoice.id}&purchase=1" icon="print" class="lms-ui-link-button" tip="<!ksef>Document details"}
 						{hint url="?m=ksefpurchaseinvoiceinfo&id={$invoice.id}&qr2pay=1" icon="qrcode" class="lms-ui-link-button" disabled=$disabled tip="Show QR2Pay code"}
 						{$posting = !empty($invoice.posting)}
 						{if $posting}
