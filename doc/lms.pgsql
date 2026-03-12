@@ -3277,8 +3277,10 @@ CREATE TABLE ksefinvoiceitems (
     eu smallint DEFAULT 0,
     export smallint DEFAULT 0,
     product_service_group smallint DEFAULT 0,
-    before_state smallint DEFAULT 0
+    before_state smallint DEFAULT 0,
+    order_id text DEFAULT NULL
 );
+CREATE INDEX ksefinvoiceitems_order_id_idx ON ksefinvoiceitems (order_id);
 
 /* ---------------------------------------------------
  Structure of table ksefinvoicetags
@@ -4707,6 +4709,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026031200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026031201');
 
 COMMIT;

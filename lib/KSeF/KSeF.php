@@ -1597,6 +1597,30 @@ class KSeF
         return file_get_contents($invoiceFile);
     }
 
+    public static function loadInvoiceFile($ten, $ksefNumber)
+    {
+        $invoiceContent = self::getInvoiceFile($ten, $ksefNumber);
+
+        if (empty($invoiceContent)) {
+            return false;
+        }
+
+        $xml = simplexml_load_string($invoiceContent);
+        if ($xml === false) {
+            return false;
+        } else {
+            if (empty($xml) || empty($xml->Faktura)) {
+                $nameSpaces = $xml->getNamespaces(true);
+                if (!empty($nameSpaces)) {
+                    $nameSpace = reset($nameSpaces);
+                    $xml = $xml->children($nameSpace);
+                }
+            }
+        }
+
+        return $xml;
+    }
+
     public static function saveInvoice($ten, $fileName, $content)
     {
         if (!isset(self::$invoiceStorage)) {
