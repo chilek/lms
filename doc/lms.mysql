@@ -3373,7 +3373,7 @@ CREATE TABLE ksefinvoiceitems (
     order_id text DEFAULT NULL,
     CONSTRAINT ksefinvoiceitems_ksef_invoice_id_fkey
         FOREIGN KEY (ksef_invoice_id) REFERENCES ksefinvoices (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    KEY ksefinvoiceitems_order_id_idx (order_id)
+    KEY ksefinvoiceitems_order_id_idx (order_id(255))
 ) ENGINE=InnoDB;
 
 # ---------------------------------------------------

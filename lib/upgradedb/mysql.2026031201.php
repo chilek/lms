@@ -25,7 +25,7 @@ $this->BeginTrans();
 
 if (!$this->ResourceExists('ksefinvoiceitems.order_id', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("ALTER TABLE ksefinvoiceitems ADD COLUMN order_id text DEFAULT NULL");
-    $this->Execute("CREATE INDEX ksefinvoiceitems_order_id_idx ON ksefinvoiceitems (order_id)");
+    $this->Execute("CREATE INDEX ksefinvoiceitems_order_id_idx ON ksefinvoiceitems (order_id(255))");
 }
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2026031201', 'dbversion'));
