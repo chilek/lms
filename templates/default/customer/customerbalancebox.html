@@ -275,29 +275,31 @@
 									icon_tip="pro forma invoice"}
 							{elseif $item.doctype == $smarty.const.DOC_CNOTE}
 								{if !$item.cancelled && !$item.referenced}
-									{if  ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management')}
+									{if ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management')}
 										{button type="link" icon="correction" href="?m=invoicenote&id={$item.docid}&action=init"
 											tip="Revise"}
 									{/if}
 								{/if}
 								{if !$item.archived && !$item.referenced && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 									{if  ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management')}
-										{textformat assign="onclick" wrap=5000}
-											{if $item.published}
-												confirmDialog($t('Document has been published already! Are you sure you want to edit it despite this?'), this)
-												.done(function() {
-												window.open($(this).attr('href'));
-												});
-											{else}
-												window.open($(this).attr('href'));
-											{/if}
-											return false;
-										{/textformat}
-										{button type="link" icon="edit" class="lms-ui-hint-rollover"
-											href="?m=invoicenoteedit&id={$item.docid}&action=edit"
-											onclick=$onclick
-											data_url="?m=number&id={$item.docid}"
-											icon_tip="Invoice"}
+										{if empty($item.ksefhash) && empty($item.ksefsubmit)}
+											{textformat assign="onclick" wrap=5000}
+												{if $item.published}
+													confirmDialog($t('Document has been published already! Are you sure you want to edit it despite this?'), this)
+													.done(function() {
+													window.open($(this).attr('href'));
+													});
+												{else}
+													window.open($(this).attr('href'));
+												{/if}
+												return false;
+											{/textformat}
+											{button type="link" icon="edit" class="lms-ui-hint-rollover"
+												href="?m=invoicenoteedit&id={$item.docid}&action=edit"
+												onclick=$onclick
+												data_url="?m=number&id={$item.docid}"
+												icon_tip="Invoice"}
+										{/if}
 									{/if}
 								{/if}
 								{if !$item.cancelled}

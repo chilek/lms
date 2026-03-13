@@ -42,6 +42,10 @@ if (isset($_GET['id']) && $action == 'edit') {
         return;
     }
 
+    if ($LMS->isKsefDocument($_GET['id'])) {
+        return;
+    }
+
     $cnote = $LMS->GetInvoiceContent($_GET['id']);
 
     if (!empty($cnote['cancelled'])) {

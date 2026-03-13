@@ -51,6 +51,10 @@ if (isset($_GET['id']) && ($action == 'edit' || $action == 'init')) {
         return;
     }
 
+    if ($LMS->isKsefDocument($_GET['id'])) {
+        return;
+    }
+
     $invoice = $LMS->GetInvoiceContent($_GET['id']);
 
     if (!empty($invoice['cancelled'])) {
