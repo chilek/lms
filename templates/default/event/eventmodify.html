@@ -360,14 +360,17 @@
 				}
 			});
 
-			$('[name="event[custid]"]').change(function() {
-				var disabled = !['', '0'].includes($(this).val());
+			function customerChanged(selector) {
+				var disabled = !['', '0'].includes(typeof(selector) == 'string' ? $(selector).val() : $(this).val());
 
 				$('[name="event[divisionid]"]')
 					.prop('disabled', disabled)
 					.closest('.lms-ui-box-row')
 					.toggleClass('lms-ui-disabled', disabled);
-			}).change();
+			}
+
+			$('[name="event[custid]"]').change(customerChanged);
+			customerChanged('[name="event[custid]"]');
 		});
 
 		function update_user_selection(users) {
@@ -379,7 +382,6 @@
 				$("#userlist").val( users2 );
 			{/if}
 			updateAdvancedSelectsTest(userlist);
-
 		}
 
 		{if intval($event.customerid)}
