@@ -3258,6 +3258,23 @@ CREATE INDEX ksefinvoicethirdsubjects_identifier_value_idx ON ksefinvoicethirdsu
 CREATE INDEX ksefinvoicethirdsubjects_role_idx ON ksefinvoicethirdsubjects (role);
 
 /* ---------------------------------------------------
+ Structure of table ksefinvoicesummaries
+------------------------------------------------------*/
+DROP TABLE IF EXISTS ksefinvoicesummaries CASCADE;
+CREATE TABLE ksefinvoicesummaries (
+    ksef_invoice_id integer NOT NULL
+        CONSTRAINT ksefinvoicesummaries_ksef_invoice_id_fkey REFERENCES ksefinvoices (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    net_amount numeric(12,5) NOT NULL,
+    gross_amount numeric(12,5) NOT NULL,
+    vat_amount numeric(12,5) NOT NULL,
+    tax_rate numeric(4,2),
+    taxed smallint DEFAULT 1,
+    reverse_charge smallint DEFAULT 0,
+    eu smallint DEFAULT 0,
+    export smallint DEFAULT 0
+);
+
+/* ---------------------------------------------------
  Structure of table ksefinvoiceitems
 ------------------------------------------------------*/
 CREATE TABLE ksefinvoiceitems (
@@ -4709,6 +4726,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026031201');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026031600');
 
 COMMIT;

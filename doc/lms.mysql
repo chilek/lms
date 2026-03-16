@@ -43,6 +43,7 @@ DROP TABLE IF EXISTS up_rights_assignments;
 DROP TABLE IF EXISTS up_rights;
 DROP TABLE IF EXISTS ksefinvoicetagassignments;
 DROP TABLE IF EXISTS ksefinvoicetags;
+DROP TABLE IF EXISTS ksefinvoicesummaries;
 DROP TABLE IF EXISTS ksefinvoicethirdsubjects;
 DROP TABLE IF EXISTS ksefinvoices;
 DROP TABLE IF EXISTS ksefdocuments;
@@ -3351,6 +3352,24 @@ CREATE TABLE ksefinvoicethirdsubjects (
 
 # ---------------------------------------------------
 #
+# Structure of table ksefinvoicesummaries
+#
+CREATE TABLE ksefinvoicesummaries (
+    ksef_invoice_id int(11) NOT NULL,
+    net_amount numeric(12,5) NOT NULL,
+    gross_amount numeric(12,5) NOT NULL,
+    vat_amount numeric(12,5) NOT NULL,
+    tax_rate numeric(4,2),
+    taxed smallint DEFAULT 1,
+    reverse_charge smallint DEFAULT 0,
+    eu smallint DEFAULT 0,
+    export smallint DEFAULT 0,
+    CONSTRAINT ksefinvoicesummaries_ksef_invoice_id_fkey
+        FOREIGN KEY (ksef_invoice_id) REFERENCES ksefinvoices (id) ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+# ---------------------------------------------------
+#
 # Structure of table ksefinvoiceitems
 #
 CREATE TABLE ksefinvoiceitems (
@@ -4667,4 +4686,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026031201');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026031600');
