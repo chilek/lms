@@ -53,7 +53,7 @@ function format_customer_im($contact)
 {
     switch ($contact['type'] & CONTACT_IM) {
         case CONTACT_IM_GG:
-            return trans('Gadu-Gadu') . ': ' . '<IMG src="http://status.gadu-gadu.pl/users/status.asp?id=' . $contact['contact'] . '&styl=1" alt=""> '
+            return trans('Gadu-Gadu') . ': ' . '<img src="https://status.gadu-gadu.pl/users/status.asp?id=' . $contact['contact'] . '&styl=1"> '
                 . '<a href="gg:' . htmlspecialchars($contact['contact']) . '">' . htmlspecialchars($contact['contact']) . '</a>';
             break;
         case CONTACT_IM_YAHOO:
