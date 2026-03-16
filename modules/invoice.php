@@ -399,7 +399,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 ? (
                     empty($ksefSubmit)
                         ? ' AND (d.cdate < ' . $ksefDeploymentDate . ' OR kd.status IS NULL AND (c.type = ' . CTYPES_PRIVATE . ' AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')))'
-                        : ' AND d.cdate >= ' . $ksefDeploymentDate . ' OR (kd.status = 200 OR kd.status = 0 OR c.type = ' . CTYPES_COMPANY . ' OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . '))'
+                        : ' AND (d.cdate >= ' . $ksefDeploymentDate . ' OR (kd.status = 200 OR kd.status = 0 OR c.type = ' . CTYPES_COMPANY . ' OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')))'
                 )
                 : ''
         )
