@@ -421,6 +421,9 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             DOC_CNOTE,
         ]
     );
+    if (empty($documents)) {
+        $documents = [];
+    }
 
     if ($jpk && $jpk_type == 'vat') {
         $boundaryDate = $dateto;
@@ -477,6 +480,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 }
             }
         }
+    } else {
+        $purchaseDocuments = [];
     }
 
     if (empty($documents) && empty($purchaseDocuments)) {
