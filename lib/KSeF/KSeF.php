@@ -37,6 +37,7 @@ class KSeF
 
     const ENVIRONMENT_TEST = 1;
     const ENVIRONMENT_PROD = 2;
+    const ENVIRONMENT_DEMO = 3;
 
     const IDENTIFIER_TEN = 1;
     const IDENTIFIER_VAT_UE = 2;
@@ -307,9 +308,22 @@ class KSeF
 
     public static function getQrCodeUrl(array $params): string
     {
-        $url = isset($params['environment']) && $params['environment'] == self::ENVIRONMENT_TEST
-            ? 'https://qr-test.ksef.mf.gov.pl/invoice'
-            : 'https://qr.ksef.mf.gov.pl/invoice';
+        if (isset($params['environment'])) {
+            switch ($params['environment']) {
+                case self::ENVIRONMENT_PROD:
+                    $url = 'https://qr.ksef.mf.gov.pl/invoice';
+                    break;
+                case self::ENVIRONMENT_DEMO:
+                    $url = 'https://qr-demo.ksef.mf.gov.pl/invoice';
+                    break;
+                default:
+                    $url = 'https://qr-test.ksef.mf.gov.pl/invoice';
+                    break;
+            }
+        } else {
+            $url = 'https://qr-test.ksef.mf.gov.pl/invoice';
+        }
+
         $url .= '/' . preg_replace('/[^0-9]/', '', $params['ten'])
             . '/' . date('d-m-Y', $params['date'])
             . '/' . self::base64Url($params['hash']);
@@ -1445,9 +1459,22 @@ class KSeF
 
         $ten = preg_replace('/[^0-9]/', '', $params['ten']);
 
-        $url = isset($params['environment']) && $params['environment'] == self::ENVIRONMENT_TEST
-            ? 'qr-test.ksef.mf.gov.pl/certificate/Nip'
-            : 'qr.ksef.mf.gov.pl/certificate/Nip';
+        if (isset($params['environment'])) {
+            switch ($params['environment']) {
+                case self::ENVIRONMENT_PROD:
+                    $url = 'qr.ksef.mf.gov.pl/certificate/Nip';
+                    break;
+                case self::ENVIRONMENT_DEMO:
+                    $url = 'qr-demo.ksef.mf.gov.pl/certificate/Nip';
+                    break;
+                default:
+                    $url = 'qr-test.ksef.mf.gov.pl/certificate/Nip';
+                    break;
+            }
+        } else {
+            $url = 'qr-test.ksef.mf.gov.pl/certificate/Nip';
+        }
+
         $url .= '/' . $ten . '/' . $ten
             . '/' . $serialNumber
             . '/' . self::base64Url($params['hash']);
