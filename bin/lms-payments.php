@@ -32,6 +32,7 @@ $script_parameters = array(
     'fake-date:' => null,
     'force-date:' => null,
     'issue-date:' => null,
+    'sale-date:' => null,
     'customerid:' => null,
     'division:' => null,
     'customergroups:' => 'g:',
@@ -41,25 +42,31 @@ $script_parameters = array(
 );
 
 $script_help = <<<EOF
--t, --test                      no changes are made to database;
--s, --section=<section-name>    section name from lms configuration where settings
-                                are stored
--f, --fakedate, --fake-date, --force-date=YYYY/MM/DD       override system date;
-    --issue-date=YYYY/MM/DD     override system date for generated cash record issue date;
-    --customerid=<id>           limit assignments to specifed customer
+-t, --test
+                                no changes are made to database;
+-s, --section=<section-name>
+                                configuration section name where settings are stored;
+-f, --fakedate, --fake-date, --force-date=YYYY/MM/DD
+                                override system date;
+    --issue-date=YYYY/MM/DD
+                                override system date for generated cash record issue date;
+    --sale-date=YYYY/MM/DD|fake-date
+                                override system date for generated cash record sale date;
+    --customerid=<id>
+                                limit assignments to specified customer;
     --division=<shortname>
                                 limit assignments to customers which belong to specified
-                                division
+                                division;
 -g, --customergroups=<group1,group2,...>
                                 allow to specify customer groups to which customers
-                                should be assigned
+                                should be assigned;
     --customer-status=<status1,status2,...>
-                                take assignment of customers with specified status only
+                                take assignment of customers with specified status only;
     --tariff-tags=<tariff-tag1,tariff-tag-2,...>
                                 create financial charges using only tariffs which have
-                                assigned specified tariff tags
+                                assigned specified tariff tags;
     --voip-cdr-only
-                                issue only voip billing record settlements
+                                take only VoIP billing record settlements into account;
 EOF;
 
 require_once('script-options.php');
@@ -227,60 +234,67 @@ $date_format = ConfigHelper::getConfig($config_section . '.date_format', '%Y/%m/
 
 $forward_periods = array(
     DAILY      => Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)),
-    WEEKLY     => Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom+6, $year)),
-    MONTHLY    => Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month+1, $dom-1, $year)),
-    QUARTERLY  => Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month+3, $dom-1, $year)),
-    HALFYEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month+6, $dom-1, $year)),
-    YEARLY     => Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year+1)),
+    WEEKLY     => Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom + 6, $year)),
+    MONTHLY    => Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month + 1, $dom - 1, $year)),
+    QUARTERLY  => Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month + 3, $dom - 1, $year)),
+    HALFYEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month + 6, $dom - 1, $year)),
+    YEARLY     => Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom - 1, $year + 1)),
     DISPOSABLE => Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)),
 );
 
 $forward_aligned_periods = array(
     DAILY      => $forward_periods[DAILY],
     WEEKLY     => $forward_periods[WEEKLY],
-    MONTHLY    => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month+1, 0, $year)),
-    QUARTERLY  => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month+3, 0, $year)),
-    HALFYEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month+6, 0, $year)),
-    YEARLY     => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, 0, $year+1)),
+    MONTHLY    => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month + 1, 0, $year)),
+    QUARTERLY  => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month + 3, 0, $year)),
+    HALFYEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month + 6, 0, $year)),
+    YEARLY     => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month, 0, $year + 1)),
     DISPOSABLE => $forward_periods[DISPOSABLE],
 );
 
 $d = $dom + ($backward_on_the_last_day ? 1 : 0);
 $backward_periods = array(
-    DAILY      => Utils::strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
-    WEEKLY     => Utils::strftime($date_format, mktime(12, 0, 0, $month, $d-7, $year))  .' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
-    MONTHLY    => Utils::strftime($date_format, mktime(12, 0, 0, $month-1, $d, $year))  .' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
-    QUARTERLY  => Utils::strftime($date_format, mktime(12, 0, 0, $month-3, $d, $year))  .' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
-    HALFYEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $month-6, $d, $year))  .' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
-    YEARLY     => Utils::strftime($date_format, mktime(12, 0, 0, $month, $d, $year-1)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
-    DISPOSABLE => Utils::strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year))
+    DAILY      => Utils::strftime($date_format, mktime(12, 0, 0, $month, $d - 1, $year)),
+    WEEKLY     => Utils::strftime($date_format, mktime(12, 0, 0, $month, $d - 7, $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month, $d - 1, $year)),
+    MONTHLY    => Utils::strftime($date_format, mktime(12, 0, 0, $month - 1, $d, $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month, $d - 1, $year)),
+    QUARTERLY  => Utils::strftime($date_format, mktime(12, 0, 0, $month - 3, $d, $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month, $d - 1, $year)),
+    HALFYEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $month - 6, $d, $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month, $d - 1, $year)),
+    YEARLY     => Utils::strftime($date_format, mktime(12, 0, 0, $month, $d, $year - 1)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month, $d - 1, $year)),
+    DISPOSABLE => Utils::strftime($date_format, mktime(12, 0, 0, $month, $d - 1, $year))
 );
 
 $last_sunday = strtotime('last Sunday '.date("Y-m-d"));
 
 $backward_aligned_periods = array(
     DAILY      => $backward_periods[DAILY],
-    WEEKLY     => Utils::strftime($date_format, $last_sunday-518400)                        .' - '.Utils::strftime($date_format, $last_sunday),
-    MONTHLY    => Utils::strftime($date_format, mktime(12, 0, 0, $month-1, 1, $year))  .' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
-    QUARTERLY  => Utils::strftime($date_format, mktime(12, 0, 0, $month-3, 1, $year))  .' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
-    HALFYEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $month-6, 1, $year))  .' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
-    YEARLY     => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year-1)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
+    WEEKLY     => Utils::strftime($date_format, $last_sunday - 518400) . ' - ' . Utils::strftime($date_format, $last_sunday),
+    MONTHLY    => Utils::strftime($date_format, mktime(12, 0, 0, $month - 1, 1, $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
+    QUARTERLY  => Utils::strftime($date_format, mktime(12, 0, 0, $month - 3, 1, $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
+    HALFYEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $month - 6, 1, $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
+    YEARLY     => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year - 1)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
     DISPOSABLE => $backward_periods[DISPOSABLE]
 );
 
 // Special case, ie. you have 01.01.2005-01.31.2005 on invoice, but invoice/
 // assignment is made not January, the 1st:
 
-$current_month = Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year))." - ".Utils::strftime($date_format, mktime(12, 0, 0, $month + 1, 0, $year));
-$previous_month = Utils::strftime($date_format, mktime(12, 0, 0, $month - 1, 1, $year))." - ".Utils::strftime($date_format, mktime(12, 0, 0, $month, 0, $year));
+$current_month = Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month + 1, 0, $year));
+$previous_month = Utils::strftime($date_format, mktime(12, 0, 0, $month - 1, 1, $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month, 0, $year));
 $current_period = date('m/Y', mktime(12, 0, 0, $month, 1, $year));
 $next_period = date('m/Y', mktime(12, 0, 0, $month + 1, 1, $year));
 $prev_period = date('m/Y', mktime(12, 0, 0, $month - 1, 1, $year));
 
 // sale date setting
-$saledate = $issuetime;
 if ($sdate_next) {
     $saledate = mktime(12, 0, 0, $month + 1, 1, $year);
+} elseif (isset($options['sale-date'])) {
+    if ($options['sale-date'] == 'fake-date') {
+        $saledate = $currtime;
+    } else {
+        $saledate = strtotime($options['sale-date']);
+    }
+} else {
+    $saledate = $issuetime;
 }
 
 // calculate start and end of numbering period
