@@ -1956,4 +1956,229 @@ class KSeF
 
         return $ksefDeploymentDates;
     }
+
+    public function getPurchaseDocuments(array $filter): array
+    {
+        $from = $filter['from'] ?? strtotime('today');
+        $to = $filter['to'] ?? strtotime('tomorrow') - 1;
+        $posting = $filter['posting'] ?? 1;
+
+        $purchaseDocuments = $this->db->GetAllByKey(
+            'SELECT
+                i.*
+            FROM ksefinvoices i
+            WHERE i.issue_date BETWEEN ? AND ?
+                AND i.posting = ?
+                ' . (empty($filter['divisions']) ? '' : ' AND i.division_id IN (' . implode(',', $filter['divisions']) . ')')
+            . ' ORDER BY i.issue_date, i.permanent_storage_date',
+            'id',
+            [
+                $from,
+                $to,
+                $posting,
+            ]
+        );
+
+        if (empty($purchaseDocuments)) {
+            return [];
+        } else {
+            $purchaseDocumentItems = $this->db->GetAll(
+                'SELECT
+                    ii.*
+                FROM ksefinvoiceitems ii
+                JOIN ksefinvoices i ON i.id = ii.ksef_invoice_id
+                WHERE i.issue_date BETWEEN ? AND ?
+                    AND i.posting = ?
+                    ' . (empty($filter['divisions']) ? '' : ' AND i.division_id IN (' . implode(',', $filter['divisions']) . ')')
+                . ' ORDER BY i.issue_date, i.permanent_storage_date, ii.before_state DESC, ii.item_id',
+                [
+                    $from,
+                    $to,
+                    $posting,
+                ]
+            );
+
+            if (empty($purchaseDocumentItems)) {
+                $purchaseDocumentItems = [];
+            }
+
+            foreach ($purchaseDocumentItems as $purchaseDocumentItem) {
+                $ksefInvoiceId = $purchaseDocumentItem['ksef_invoice_id'];
+                $itemId = $purchaseDocumentItem['item_id'];
+
+                $purchaseDocumentItem['tax_rate_label'] = self::ksefTaxLabel([
+                    'tax_rate' => $purchaseDocumentItem['tax_rate'],
+                    'taxed' => $purchaseDocumentItem['taxed'],
+                    'reverse_charge' => $purchaseDocumentItem['reverse_charge'],
+                    'eu' => $purchaseDocumentItem['eu'],
+                    'export' => $purchaseDocumentItem['export'],
+                ]);
+
+                if (!isset($purchaseDocuments[$ksefInvoiceId]['items'])) {
+                    $purchaseDocuments[$ksefInvoiceId]['before-items'] = [];
+                    $purchaseDocuments[$ksefInvoiceId]['items'] = [];
+                }
+                if (empty($purchaseDocumentItem['before_state'])) {
+                    $purchaseDocuments[$ksefInvoiceId]['items'][$itemId] = $purchaseDocumentItem;
+                } else {
+                    $purchaseDocuments[$ksefInvoiceId]['before-items'][$itemId] = $purchaseDocumentItem;
+                }
+            }
+
+            $purchaseDocumentSummaries = $this->db->GetAll(
+                'SELECT
+                    kis.*
+                FROM ksefinvoicesummaries kis
+                JOIN ksefinvoices i ON i.id = kis.ksef_invoice_id
+                WHERE i.issue_date BETWEEN ? AND ?
+                    AND i.posting = ?
+                    ' . (empty($filter['divisions']) ? '' : ' AND i.division_id IN (' . implode(',', $filter['divisions']) . ')'),
+                [
+                    $from,
+                    $to,
+                    $posting,
+                ]
+            );
+
+            if (empty($purchaseDocumentSummaries)) {
+                $purchaseDocumentSummaries = [];
+            }
+
+            foreach ($purchaseDocumentSummaries as $purchaseDocumentSummary) {
+                $ksefInvoiceId = $purchaseDocumentSummary['ksef_invoice_id'];
+
+                $taxRateLabel = self::ksefTaxLabel([
+                    'tax_rate' => $purchaseDocumentSummary['tax_rate'],
+                    'taxed' => $purchaseDocumentSummary['taxed'],
+                    'reverse_charge' => $purchaseDocumentSummary['reverse_charge'],
+                    'eu' => $purchaseDocumentSummary['eu'],
+                    'export' => $purchaseDocumentSummary['export'],
+                ]);
+
+                if (!isset($purchaseDocuments[$ksefInvoiceId]['summaries'])) {
+                    $purchaseDocuments[$ksefInvoiceId]['summaries'] = [];
+                }
+
+                $purchaseDocuments[$ksefInvoiceId]['summaries'][$taxRateLabel] = $purchaseDocumentSummary;
+            }
+
+            foreach ($purchaseDocuments as &$purchaseDocument) {
+                if ((int)$purchaseDocument['invoice_type'] !== self::DOC_ROZ || empty($purchaseDocument['items'])) {
+                    continue;
+                }
+
+                $orderIds = \Utils::array_column($purchaseDocument['items'], 'order_id');
+
+                if (!empty($orderIds)) {
+                    $orderIds = array_unique($orderIds);
+
+                    $advancePurchaseDocuments = $this->db->GetAllByKey(
+                        'SELECT
+                            i.*
+                        FROM ksefinvoices i
+                        WHERE i.invoice_type IN ?
+                            AND EXISTS (
+                                SELECT 1
+                                FROM ksefinvoiceitems ii
+                                WHERE ii.ksef_invoice_id = i.id
+                                    AND ii.order_id IN ?
+                            )',
+                        'id',
+                        [
+                            [
+                                self::DOC_ZAL,
+                                self::DOC_KOR_ZAL,
+                            ],
+                            $orderIds,
+                        ]
+                    );
+
+                    if (!empty($advancePurchaseDocuments)) {
+                        $advancePurchaseDocumentSummaries = $this->db->GetAll(
+                            'SELECT
+                                kis.*
+                            FROM ksefinvoicesummaries kis
+                            JOIN ksefinvoices i ON i.id = kis.ksef_invoice_id
+                            WHERE i.invoice_type IN ?
+                                AND EXISTS (
+                                    SELECT 1
+                                    FROM ksefinvoiceitems ii
+                                    WHERE ii.ksef_invoice_id = i.id
+                                        AND ii.order_id IN ?
+                                )
+                            ORDER BY kis.ksef_invoice_id',
+                            [
+                                [
+                                    self::DOC_ZAL,
+                                    self::DOC_KOR_ZAL,
+                                ],
+                                $orderIds,
+                            ]
+                        );
+
+                        foreach ($advancePurchaseDocumentSummaries as $advancePurchaseDocumentSummary) {
+                            $ksefInvoiceId = $advancePurchaseDocumentSummary['ksef_invoice_id'];
+
+                            if (!isset($advancePurchaseDocuments[$ksefInvoiceId]['summaries'])) {
+                                $advancePurchaseDocuments[$ksefInvoiceId]['summaries'] = [];
+                            }
+
+                            $taxRateLabel = self::ksefTaxLabel([
+                                'tax_rate' => $advancePurchaseDocumentSummary['tax_rate'],
+                                'taxed' => $advancePurchaseDocumentSummary['taxed'],
+                                'reverse_charge' => $advancePurchaseDocumentSummary['reverse_charge'],
+                                'eu' => $advancePurchaseDocumentSummary['eu'],
+                                'export' => $advancePurchaseDocumentSummary['export'],
+                            ]);
+
+                            $advancePurchaseDocuments[$ksefInvoiceId]['summaries'][$taxRateLabel] = $advancePurchaseDocumentSummary;
+                        }
+                    }
+
+                    $purchaseDocument['advance-invoices'] = $advancePurchaseDocuments;
+                } else {
+                    $purchaseDocument['advance-invoices'] = [];
+                }
+            }
+
+            $purchaseDocumentTags = $this->db->GetAllByKey(
+                'SELECT
+                    kit.id,
+                    kit.name
+                FROM ksefinvoicetags kit',
+                'id'
+            );
+
+            $purchaseDocumentTagAssignments = $this->db->GetAllByKey(
+                'SELECT
+                    i.id,
+                    ' . $this->db->GroupConcat('kita.ksef_invoice_tag_id') . ' AS tags
+                FROM ksefinvoices i
+                JOIN ksefinvoicetagassignments kita ON kita.ksef_invoice_id = i.id
+                WHERE i.issue_date BETWEEN ? AND ?
+                    AND i.posting = ?
+                    ' . (empty($filter['divisions']) ? '' : ' AND i.division_id IN (' . implode(',', $filter['divisions']) . ')')
+                . ' GROUP BY i.id',
+                'id',
+                [
+                    $from,
+                    $to,
+                    $posting,
+                ]
+            );
+
+            if (!empty($purchaseDocumentTagAssignments)) {
+                foreach ($purchaseDocumentTagAssignments as $purchaseDocumentId => $purchaseDocumentTagAssignment) {
+                    $purchaseDocuments[$purchaseDocumentId]['tags'] = array_map(
+                        function ($tagId) use ($purchaseDocumentTags) {
+                            return $purchaseDocumentTags[$tagId]['name'];
+                        },
+                        explode(',', $purchaseDocumentTagAssignment['tags'])
+                    );
+                }
+            }
+
+            return $purchaseDocuments;
+        }
+    }
 }
