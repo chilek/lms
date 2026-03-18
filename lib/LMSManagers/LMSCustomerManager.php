@@ -870,11 +870,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             if (isset($customeradd['group'])
                 && is_array($customeradd['group'])
                 || ConfigHelper::checkConfig(
-                'customers.groups_required_on_add',
-                ConfigHelper::checkConfig(
-                    'phpui.add_customer_group_required'
+                    'customers.groups_required_on_add',
+                    ConfigHelper::checkConfig(
+                        'phpui.add_customer_group_required'
+                    )
                 )
-            )) {
+            ) {
                 $args = array(
                     'customerid' => $id,
                 );
