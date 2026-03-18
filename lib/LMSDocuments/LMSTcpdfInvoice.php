@@ -37,6 +37,7 @@ class LMSTcpdfInvoice extends LMSInvoice
 
     private $jpk_flags;
     private $ksef_offline_support;
+    private $ksef_invoice_header;
 
     public function __construct($title, $pagesize = 'A4', $orientation = 'portrait')
     {
@@ -61,6 +62,7 @@ class LMSTcpdfInvoice extends LMSInvoice
 
         $this->jpk_flags = ConfigHelper::checkConfig('invoices.jpk_flags');
         $this->ksef_offline_support = ConfigHelper::checkConfig('ksef.offline_support');
+        $this->ksef_invoice_header = ConfigHelper::getConfig('ksef.invoice_header');
     }
 
     protected function Table()
@@ -440,11 +442,17 @@ class LMSTcpdfInvoice extends LMSInvoice
 
     protected function invoice_title()
     {
-        if (empty($this->data['ksefenvironment']) || !$this->jpk_flags) {
-            $this->backend->SetY(29);
-        } else {
-            $this->backend->SetY(32);
+        $y = 29;
+
+        if (!empty($this->jpk_flags) && !empty($this->data['ksefenvironment'])) {
+            $y += 3;
         }
+
+        if (!empty($this->ksef_invoice_header)) {
+            $y += 5;
+        }
+
+        $this->backend->SetY($y);
 
         $this->backend->SetFont(null, 'B', 16);
         $docnumber = docnumber(array(
@@ -1136,8 +1144,6 @@ class LMSTcpdfInvoice extends LMSInvoice
             $y += 3;
         }
 
-        $this->backend->SetFont(null, '', 5);
-
         if (empty($this->data['ksefnumber']) || empty($this->data['ksefstatus'])) {
             $certificateUrl = KSeF::getCertificateQrCodeUrl([
                 'environment' => $this->data['ksefenvironment'],
@@ -1150,6 +1156,25 @@ class LMSTcpdfInvoice extends LMSInvoice
         }
 
         if (!empty($certificateUrl)) {
+            if (!empty($this->ksef_invoice_header)) {
+                $this->backend->SetFont(null, 'B', 10);
+
+                $this->backend->writeHTMLCell(
+                    '',
+                    '',
+                    '',
+                    $y,
+                    $this->ksef_invoice_header,
+                    0,
+                    1,
+                    0,
+                    true,
+                    'C'
+                );
+
+                $y += 5;
+            }
+
             $pageWidth = $this->backend->getPageWidth();
 
             $this->backend->write2DBarcode($url, 'QRCODE,M', ($pageWidth / 2) - 23, $y, 20, 20);
@@ -1158,7 +1183,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                 '',
                 ($pageWidth / 2) - 23,
                 $y + 21,
-                'OFFLINE',
+                '<a href="' . $url . '">OFFLINE</a>',
                 0,
                 1,
                 0,
@@ -1172,7 +1197,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                 '',
                 ($pageWidth / 2) + 3,
                 $y + 21,
-                'CERTYFIKAT',
+                '<a href="' . $certificateUrl . '">CERTYFIKAT</a>',
                 0,
                 1,
                 0,
@@ -1180,13 +1205,35 @@ class LMSTcpdfInvoice extends LMSInvoice
                 'C'
             );
         } else {
+            if (!empty($this->ksef_invoice_header)) {
+                $this->backend->SetFont(null, 'B', 10);
+
+                $this->backend->writeHTMLCell(
+                    '',
+                    '',
+                    '',
+                    $y,
+                    $this->ksef_invoice_header,
+                    0,
+                    1,
+                    0,
+                    true,
+                    'C'
+                );
+
+                $y += 5;
+            }
+
             $this->backend->write2DBarcode($url, 'QRCODE,M', 0, $y, 20, 20, $style);
+
+            $this->backend->SetFont(null, '', 5);
+
             $this->backend->writeHTMLCell(
                 '',
                 '',
                 '',
                 $y + 21,
-                empty($this->data['ksefnumber']) || empty($this->data['ksefstatus']) ? 'OFFLINE' : $this->data['ksefnumber'],
+                '<a href="' . $url . '">' . (empty($this->data['ksefnumber']) || empty($this->data['ksefstatus']) ? 'OFFLINE' : $this->data['ksefnumber']) . '</a>',
                 0,
                 1,
                 0,
