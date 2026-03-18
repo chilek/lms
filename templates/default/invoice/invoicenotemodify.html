@@ -29,7 +29,7 @@
 		}
 	}
 
-	function saveInvoice() {
+	function saveInvoice(printFlag) {
 		$('.invoice-contents-field-grossprice').prop('disabled', false);
 		$('.invoice-contents-field-netprice').prop('disabled', false);
 		$('#additem-subform :input').prop('disabled', true);
@@ -39,20 +39,12 @@
 			which += parseInt($(this).val());
 		});
 
-		document.contents.action += "&action=save&which=" + which;
-		document.contents.submit();
-	}
+		if (typeof(printFlag) === 'boolean' && printFlag) {
+			document.contents.action = "?m={$layout.module}&action=save&print=1&which=" + which;
+		} else {
+			document.contents.action += "&action=save&which=" + which;
+		}
 
-	function printInvoice() {
-		$('.invoice-contents-field-grossprice').prop('disabled', false);
-		$('.invoice-contents-field-netprice').prop('disabled', false);
-
-		var which = 0;
-		$('form[name="contents"] [name^="which"]:checked').each(function() {
-			which += parseInt($(this).val());
-		});
-
-		document.contents.action = "?m={$layout.module}&action=save&print=1&which=" + which;
 		document.contents.submit();
 	}
 
@@ -720,7 +712,7 @@
 					</label>&nbsp;
 					{button icon="cancel" label="Cancel" href="?m=invoicelist"}
 					{button icon="save" label="Save" onclick="saveInvoice();"}
-					{button icon="print" label="Save & Print" onclick="printInvoice();"}
+					{button icon="print" label="Save & Print" onclick="saveInvoice(true);"}
 				</td>
 			</tr>
 		</tfoot>
