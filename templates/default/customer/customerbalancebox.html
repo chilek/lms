@@ -6,6 +6,7 @@
 {$default_taxrate = ConfigHelper::getConfig('phpui.default_taxrate')}
 {$default_taxlabel = ConfigHelper::getConfig('phpui.default_taxlabel')}
 {$notification = ConfigHelper::checkConfig('finances.customer_notify', true)}
+{$offline_support = ConfigHelper::checkConfig('ksef.offline_support')}
 
 <FORM name="addbalance" method="POST" id="addbalance-form" action="?m=balanceadd&id={$balancelist.customerid}">
 </FORM>
@@ -172,11 +173,13 @@
 							{if ($customerinfo.sendinvoices || $balancelist.sendinvoices) && ($item.doctype == $smarty.const.DOC_INVOICE
 								|| $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_INVOICE_PRO
 								|| $item.doctype == $smarty.const.DOC_DNOTE)}
-								{textformat assign="tip" wrap=5000}
-									{if $item.senddate}{trans("Send invoice again")}<br><strong>{t a=$item.senddate|date_format:"Y-m-d H:i"}(already sent on $a){/t}</strong>{else}{trans("Send invoice")}{/if}
-								{/textformat}
-								{button type="link" icon="{if $item.senddate}mailsent{else}mail{/if}" class="send-invoice"
-									href="?m=invoicesend&id={$item.docid}" tip=$tip}
+								{if empty($item.ksefsubmission) || $item.ksefstatus == 200 || $offline_support && isset($item.ksefstatus) && $item.ksefstatus == 0}
+									{textformat assign="tip" wrap=5000}
+										{if $item.senddate}{trans("Send invoice again")}<br><strong>{t a=$item.senddate|date_format:"Y-m-d H:i"}(already sent on $a){/t}</strong>{else}{trans("Send invoice")}{/if}
+									{/textformat}
+									{button type="link" icon="{if $item.senddate}mailsent{else}mail{/if}" class="send-invoice"
+										href="?m=invoicesend&id={$item.docid}" tip=$tip}
+								{/if}
 							{/if}
 							{if $item.doctype == $smarty.const.DOC_INVOICE}
 								{if !$item.cancelled}

@@ -333,7 +333,18 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         )
                     THEN 1
                     ELSE 0
-                END) AS ksefsubmit
+                END) AS ksefsubmit,
+                (CASE
+                    WHEN documents.cdate >= ' . strtotime('2026/02/01') . '
+                        AND documents.type IN (' . implode(',', [DOC_INVOICE, DOC_CNOTE]) . ')
+                        AND (
+                            c.type = ' . CTYPES_COMPANY . '
+                            OR kac.allconsumers = 1
+                            OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = documents.customerid AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')
+                        )
+                    THEN 1
+                    ELSE 0
+                END) AS ksefsubmission
             FROM cash
             LEFT JOIN customers c ON c.id = cash.customerid
             LEFT JOIN vusers ON vusers.id = cash.userid
@@ -370,7 +381,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     null AS ksefhash,
                     null AS ksefnumber,
                     null AS ksefdelay,
-                    0 AS ksefsubmit
+                    0 AS ksefsubmit,
+                    0 AS ksefsubmission
                 FROM documents d
                 JOIN ' . (ConfigHelper::getConfig('database.type') == 'postgres' ? 'get_invoice_contents(' . intval($id) . ')' : 'vinvoicecontents') . ' ic ON ic.docid = d.id
                 LEFT JOIN (

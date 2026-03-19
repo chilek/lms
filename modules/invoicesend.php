@@ -56,7 +56,16 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
         echo '<span class="red">' . trans("Fatal error: No invoices nor debit notes were selected!") . '</span><br>';
     } else {
         $docs = $DB->GetAll(
-            "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctype, d.archived, n.template, m.email,
+            "SELECT
+                d.id,
+                d.number,
+                d.cdate,
+                d.name,
+                d.customerid,
+                d.type AS doctype,
+                d.archived,
+                n.template,
+                m.email,
                 d.divisionid,
                 (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type < 0) THEN 1 ELSE 0 END) AS documentreferenced,
                 kd.ksefnumber,
@@ -68,25 +77,47 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
             LEFT JOIN customers c ON c.id = d.customerid
             LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
             LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
-			JOIN (
-			    SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
-				FROM customercontacts
-				WHERE (type & ?) = ?
-				GROUP BY customerid
-			) m ON m.customerid = c.id
-			LEFT JOIN numberplans n ON n.id = d.numberplanid
-			WHERE d.type IN (?, ?, ?, ?) AND d.id IN (" . implode(',', $ids) . ")
-			ORDER BY d.number",
+            LEFT JOIN ksefdelays kdl ON kdl.divisionid = d.divisionid
+            LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
+            JOIN (
+                SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
+                FROM customercontacts
+                WHERE (type & ?) = ?
+                GROUP BY customerid
+            ) m ON m.customerid = c.id
+            LEFT JOIN numberplans n ON n.id = d.numberplanid
+            WHERE (
+                    d.type IN ?
+                    AND (
+                        d.cdate < ?
+                        OR c.type = ? AND kac.allconsumers = ? AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ?)
+                        OR c.type = ? AND kd.status IN ?
+                    ) OR d.type IN ?
+                ) AND d.id IN (" . implode(',', $ids) . ")
+            ORDER BY d.number",
             [
                 [
                     200,
                     0,
                 ],
                 CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_EMAIL | CONTACT_INVOICES,
-                DOC_INVOICE,
-                DOC_CNOTE,
-                DOC_DNOTE,
-                DOC_INVOICE_PRO
+                [
+                    DOC_INVOICE,
+                    DOC_CNOTE,
+                ],
+                strtotime('2026/02/01'),
+                CTYPES_PRIVATE,
+                0,
+                CCONSENT_KSEF_INVOICE,
+                CTYPES_COMPANY,
+                [
+                    0,
+                    200,
+                ],
+                [
+                    DOC_DNOTE,
+                    DOC_INVOICE_PRO,
+                ],
             ]
         );
 
@@ -114,6 +145,14 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
 
             foreach ($divisiondocs as $divisionid => $docs) {
                 ConfigHelper::setFilter($divisionid);
+
+                $ksefOfflineSupport = ConfigHelper::checkConfig('ksef.offline_support');
+                $docs = array_filter(
+                    $docs,
+                    function ($doc) use ($ksefOfflineSupport) {
+                        return empty($doc['ksefhash']) || $doc['ksefstatus'] == 200 || $ksefOfflineSupport && empty($doc['ksefstatus']);
+                    }
+                );
 
                 $smtp_options = array(
                     'host' => ConfigHelper::getConfig('sendinvoices.smtp_host'),

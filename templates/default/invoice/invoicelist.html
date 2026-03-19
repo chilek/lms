@@ -70,6 +70,8 @@
 </script>
 
 {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
+{$offline_support = ConfigHelper::checkConfig('ksef.offline_support')}
+
 <FORM METHOD="POST" NAME="page">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox lms-ui-background-cycle">
@@ -260,11 +262,13 @@
 				{/if}
 			{/if}
 			{if $invoice.sendinvoices && !$invoice.cancelled && ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE || $invoice.type == $smarty.const.DOC_INVOICE_PRO)}
-				{textformat assign="tip" wrap=5000}
-					{if $invoice.senddate}{trans("Send invoice again")}<br><strong>{t a=$invoice.senddate|date_format:"Y-m-d H:i"}(already sent on $a){/t}</strong>{else}{trans("Send invoice")}{/if}
-				{/textformat}
-				{button type="link" icon="{if $invoice.senddate}mailsent{else}mail{/if}" class="send-invoice" href="?m=invoicesend&id={$invoice.id}"
-					tip=$tip}
+				{if empty($invoice.ksefsubmission) || $invoice.ksefstatus == 200 || $offline_support && isset($invoice.ksefstatus) && $invoice.ksefstatus == 0}
+					{textformat assign="tip" wrap=5000}
+						{if $invoice.senddate}{trans("Send invoice again")}<br><strong>{t a=$invoice.senddate|date_format:"Y-m-d H:i"}(already sent on $a){/t}</strong>{else}{trans("Send invoice")}{/if}
+					{/textformat}
+					{button type="link" icon="{if $invoice.senddate}mailsent{else}mail{/if}" class="send-invoice" href="?m=invoicesend&id={$invoice.id}"
+						tip=$tip}
+				{/if}
 			{/if}
 			{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO || $invoice.type == $smarty.const.DOC_CNOTE}
 				{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE}

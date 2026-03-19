@@ -2292,7 +2292,18 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         )
                     THEN 1
                     ELSE 0
-                END) AS ksefsubmit
+                END) AS ksefsubmit,
+                (CASE
+                    WHEN d.cdate >= ' . strtotime('2026/02/01') . '
+                        AND d.type IN (' . implode(',', [DOC_INVOICE, DOC_CNOTE]) . ')
+                        AND (
+                            c.type = ' . CTYPES_COMPANY . '
+                            OR kac.allconsumers = 1
+                            OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')
+                        )
+                    THEN 1
+                    ELSE 0
+                END) AS ksefsubmission
             FROM documents d
             LEFT JOIN (
                 SELECT
