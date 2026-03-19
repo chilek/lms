@@ -2275,6 +2275,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			(CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type > 0) THEN 1 ELSE 0 END) AS referenced,
 			(CASE WHEN EXISTS (SELECT 1 FROM documents d3 WHERE d3.reference = d.id AND d3.type < 0) THEN 1 ELSE 0 END) AS documentreferenced,
                 kd.status AS ksefstatus,
+                kd.statusdescription AS ksefstatusdescription,
+                kd.statusdetails AS ksefstatusdetails,
                 kd.hash AS ksefhash,
                 kd.ksefnumber AS ksefnumber,
                 kdl.delay AS ksefdelay,
@@ -2292,7 +2294,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     ELSE 0
                 END) AS ksefsubmit
             FROM documents d
-            LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN (' . implode(',', [0, 200]) . ')
+            LEFT JOIN (
+                SELECT
+                    kd.docid,
+                    MAX(kd.id) AS maxid
+                FROM ksefdocuments kd
+                WHERE kd.status > 0 AND (kd.status < ' . 200 . ' OR kd.status >= ' . 300 . ')
+                GROUP BY kd.docid
+            ) kd2 ON kd2.docid = d.id
+            LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND (kd.status IN (' . implode(',', [0, 200]) . ') OR kd.id = kd2.maxid)
             LEFT JOIN ksefdelays kdl ON kdl.divisionid = d.divisionid
             LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
             JOIN vinvoicecontents a ON (a.docid = d.id)'
@@ -2333,7 +2343,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             . ' GROUP BY d.id, d2.id, d.number, d.cdate, d.customerid,
                     d.name, d.address, d.zip, d.city, numberplans.template, d.closed, d.type, d.reference, countries.name,
                     d.cancelled, d.published, sendinvoices, d.archived, d.senddate, d.currency, d.currencyvalue,
-                    kd.status, kd.hash, kd.ksefnumber, kdl.delay, kac.allconsumers, c.type '
+                    kd.status, kd.statusdescription, kd.statusdetails, kd.hash, kd.ksefnumber, kdl.delay, kac.allconsumers, c.type '
             . ($having ?? '')
             . $sqlord.' '.$direction
             . (isset($limit) ? ' LIMIT ' . $limit : '')

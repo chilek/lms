@@ -340,7 +340,7 @@
 			{if !$invoice.cancelled}
 				{if $invoice.type != $smarty.const.DOC_INVOICE_PRO && !$invoice.archived && !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 					{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
-						{if empty($invoice.ksefhash) && empty($invoice.ksefsubmit)}
+						{if empty($invoice.ksefhash) && empty($invoice.ksefsubmit) || !empty($invoice.ksefstatus) && $invoice.ksefstatus >= 400 && $invoice.ksefstatus < 500}
 							{button type="link" icon="cancel" tip="Cancel" class="cancel-invoice"
 								href="?m=invoicecancel&id={$invoice.id}"}
 						{/if}

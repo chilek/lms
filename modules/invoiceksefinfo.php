@@ -123,11 +123,20 @@ if ($doc = $DB->GetRow(
         kbs.ksefnumber AS ksefbatchsessionnumber,
         kbs.lastupdate AS ksefbatchsessionlastupdate,
         kd.status,
+        kd.statusdescription AS ksefstatusdescription,
+        kd.statusdetails AS ksefstatusdetails,
         kd.hash,
         kd.ksefnumber
     FROM documents d
     JOIN customerview c ON c.id = d.customerid
-    JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
+    LEFT JOIN (
+        SELECT
+            kd.docid,
+            MAX(kd.id) AS maxid
+        FROM ksefdocuments kd
+        GROUP BY kd.docid
+    ) kd2 ON kd2.docid = d.id
+    JOIN ksefdocuments kd ON kd.docid = d.id AND (kd.status IN ? OR kd.id = kd2.maxid)
     JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
     WHERE d.id = ?',
     [
@@ -179,25 +188,27 @@ if ($doc = $DB->GetRow(
         die;
     }
 
-    $SMARTY->assign(
-        'url',
-        KSeF::getQrCodeUrl([
-            'environment' => $doc['environment'],
-            'ten' => $doc['div_ten'],
-            'date' => $doc['cdate'],
-            'hash' => $doc['hash'],
-        ])
-    );
-    if (empty($doc['ksefnumber']) || empty($doc['status'])) {
+    if (empty($doc['status']) || $doc['status'] == 200) {
         $SMARTY->assign(
-            'certificateurl',
-            KSeF::getCertificateQrCodeUrl([
+            'url',
+            KSeF::getQrCodeUrl([
                 'environment' => $doc['environment'],
                 'ten' => $doc['div_ten'],
-                'divisionid' => $doc['divisionid'],
+                'date' => $doc['cdate'],
                 'hash' => $doc['hash'],
             ])
         );
+        if (empty($doc['ksefnumber']) || empty($doc['status'])) {
+            $SMARTY->assign(
+                'certificateurl',
+                KSeF::getCertificateQrCodeUrl([
+                    'environment' => $doc['environment'],
+                    'ten' => $doc['div_ten'],
+                    'divisionid' => $doc['divisionid'],
+                    'hash' => $doc['hash'],
+                ])
+            );
+        }
     }
 
     $SMARTY->assign('invoice', $doc);

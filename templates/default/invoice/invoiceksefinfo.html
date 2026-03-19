@@ -16,14 +16,34 @@
 		align-items: center;
 	}
 
+	.invoice-ksef-info > .ksef-error-info {
+		display: inline;
+	}
+
+	.invoice-ksef-info > .ksef-error-info > * {
+		display: inline;
+	}
+
 	.invoice-ksef-info > * > * {
 		padding-top: 0.2em;
 		padding-bottom: 0.2em;
-    }
+	}
+
+	.invoice-ksef-info > .ksef-error-info > * {
+		padding: 0;
+	}
+
+	.invoice-ksef-info > .ksef-error-info > * > *:first-child {
+		padding: 0;
+	}
 
 	.invoice-ksef-info > * > *:first-child {
 		padding-right: 0.5em;
 		padding-left: 0.5em;
+	}
+
+	.invoice-ksef-info > .ksef-error-info > *:first-child {
+		padding: 0;
 	}
 
 	.invoice-ksef-info img {
@@ -133,5 +153,24 @@
 					c="<strong>{$invoice.ksefbatchsessionlastupdate|date_format:"Y/m/d"}</strong>"}Invoice sent to KSeF in batch session $a at $b on $c and waiting for handling...{/t}
 			</span>
 		{/if}
+	{else}
+		<span class="ksef-error-info">
+			{t
+				a="<span class=\"ksef-batch-session-number\">{$invoice.ksefbatchsessionnumber}</span>"
+				b="<strong>{$invoice.ksefbatchsessionlastupdate|date_format:"H:i:s"}</strong>"
+				c="<strong>{$invoice.ksefbatchsessionlastupdate|date_format:"Y/m/d"}</strong>"
+			}<!ksef>Invoice sent to KSeF in batch session $a{/t}
+			<br>
+			{t
+				a="<strong>{$invoice.ksefbatchsessionlastupdate|date_format:"H:i:s"}</strong>"
+				b="<strong>{$invoice.ksefbatchsessionlastupdate|date_format:"Y/m/d"}</strong>"
+			}<!ksef>at $a on $b and its handling has finished with error:{/t}
+			<br>
+			<span class="red">
+				{$invoice.ksefstatusdescription}
+				<br>
+				({$invoice.ksefstatusdetails})
+			</span>
+		</span>
 	{/if}
 </div>
