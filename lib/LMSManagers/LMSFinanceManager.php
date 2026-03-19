@@ -2599,6 +2599,18 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
         $document_manager->DeleteDocumentAddresses($invoiceid);
 
+        $this->db->Execute(
+            'DELETE FROM ksefdocuments
+            WHERE docid = ?
+                AND status >= ?
+                AND status < ?',
+            [
+                $invoiceid,
+                400,
+                500,
+            ]
+        );
+
         $this->db->Execute('DELETE FROM documents WHERE id = ?', array($invoiceid));
     }
 
