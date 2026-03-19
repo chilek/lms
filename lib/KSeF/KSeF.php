@@ -793,6 +793,20 @@ class KSeF
             $xml .= "\t\t<TP>1</TP>" . PHP_EOL;
         }
 
+        if (!empty($invoice['comment'])) {
+            $xml .= "\t\t<DodatkowyOpis>" . PHP_EOL
+                . "\t\t\t<Klucz>Komentarz</Klucz>" . PHP_EOL
+                . "\t\t\t<Wartosc>". htmlspecialchars($invoice['comment']) . "</Wartosc>" . PHP_EOL
+                . "\t\t</DodatkowyOpis>" . PHP_EOL;
+        }
+
+        if (!empty($invoice['memo'])) {
+            $xml .= "\t\t<DodatkowyOpis>" . PHP_EOL
+                . "\t\t\t<Klucz>Memo</Klucz>" . PHP_EOL
+                . "\t\t\t<Wartosc>". htmlspecialchars($invoice['memo']) . "</Wartosc>" . PHP_EOL
+                . "\t\t</DodatkowyOpis>" . PHP_EOL;
+        }
+
         $refInvoiceContent = empty($invoice['invoice']) ? null : $invoice['invoice']['content'];
 
         foreach ($invoice['content'] as $position) {
