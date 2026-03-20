@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+use \Lms\KSeF\KSeF;
+
 $layout['pagetitle'] = trans('Invoice send');
 
 $SMARTY->display('header.html');
@@ -105,7 +107,7 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                     DOC_INVOICE,
                     DOC_CNOTE,
                 ],
-                strtotime('2026/02/01'),
+                KSeF::getBoundaryDate(),
                 CTYPES_PRIVATE,
                 0,
                 CCONSENT_KSEF_INVOICE,

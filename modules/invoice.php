@@ -295,7 +295,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             AND kd.status = ?
         GROUP BY d.divisionid, d.div_ten',
         [
-            strtotime('2026/02/01'),
+            KSeF::getBoundaryDate(),
             //KSeF::ENVIRONMENT_TEST,
             KSeF::ENVIRONMENT_PROD,
             200,
@@ -331,7 +331,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         $divisionIds = [intval($_GET['divisionid'])];
     }
 
-    $ksefDeploymentDate = strtotime('2026/02/01');
+    $ksefDeploymentDate = KSeF::getBoundaryDate();
 
     $documents = $DB->GetAllByKey(
         'SELECT
@@ -430,7 +430,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         //$boundaryDate = $now;
     }
 
-    if ($jpk && $boundaryDate >= strtotime('2026/02/01')) {
+    if ($jpk && $boundaryDate >= KSeF::getBoundaryDate()) {
         $purchaseDocuments = $DB->GetAllByKey(
             'SELECT
                 i.*
@@ -570,7 +570,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 // end date 2021/12/31
                 // effective end date 2022/01/31
                 $jpk_vat_version = 4;
-            } elseif ($boundaryDate < strtotime('2026/02/01')) {
+            } elseif ($boundaryDate < KSeF::getBoundaryDate()) {
                 // start date 2022/01/01
                 // effective start date 2022/02/01
                 // end date 2026/01/31

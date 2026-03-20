@@ -78,6 +78,8 @@ class KSeF
 
     private static $docTypes;
 
+    private static $boundaryDate;
+
     private static $identifierTypes = [
         'Nip' => self::IDENTIFIER_TEN,
         'VatUe' => self::IDENTIFIER_VAT_UE,
@@ -149,6 +151,19 @@ class KSeF
 
         $this->showOnlyAlternativeAccounts = \ConfigHelper::checkConfig('invoices.show_only_alternative_accounts');
         $this->showAllAccounts = \ConfigHelper::checkConfig('invoices.show_all_accounts');
+    }
+
+    public static function getBoundaryDate()
+    {
+        if (empty(self::$boundaryDate)) {
+            self::$boundaryDate = \ConfigHelper::getConfig('ksef.boundary_date', '2026/02/01');
+            self::$boundaryDate = strtotime(self::$boundaryDate);
+            if (self::$boundaryDate === false) {
+                self::$boundaryDate = strtotime('2026/02/01');
+            }
+        }
+
+        return self::$boundaryDate;
     }
 
     public function updateDelays(): array
@@ -1973,7 +1988,7 @@ class KSeF
                 AND kd.status = ?
             GROUP BY d.divisionid, d.div_ten',
             [
-                strtotime('2026/02/01'),
+                self::getBoundaryDate(),
                 //KSeF::ENVIRONMENT_TEST,
                 KSeF::ENVIRONMENT_PROD,
                 200,

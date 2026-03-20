@@ -30,6 +30,8 @@ use setasign\Fpdi\PdfParser\StreamReader;
 use setasign\FpdiProtection\FpdiProtection;
 */
 
+use \Lms\KSeF\KSeF;
+
 /**
  * LMSDocumentManager
  *
@@ -3932,6 +3934,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             LEFT JOIN ksefdelays kds ON kds.divisionid = d.divisionid
             LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
             WHERE d.id = ?
+                AND d.cdate >= ?
                 AND (
                     kd.id IS NOT NULL AND kd.status IN ?
                     OR kds.delay > -1 AND ?NOW? - d.cdate >= kds.delay
@@ -3946,6 +3949,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 400,
                 500,
                 $docid,
+                KSeF::getBoundaryDate(),
                 [
                     200,
                     0,
@@ -3976,6 +3980,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             LEFT JOIN ksefdelays kds ON kds.divisionid = d.divisionid
             LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
             WHERE c.id = ?
+                AND d.cdate >= ?
                 AND (
                     kd.id IS NOT NULL AND kd.status IN ?
                     OR kds.delay > -1 AND ?NOW? - d.cdate >= kds.delay
@@ -3990,6 +3995,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 400,
                 500,
                 $cashid,
+                KSeF::getBoundaryDate(),
                 [
                     200,
                     0,

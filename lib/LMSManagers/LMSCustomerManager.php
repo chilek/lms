@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+use \Lms\KSeF\KSeF;
+
 /**
  * LMSCustomerManager
  *
@@ -322,7 +324,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 kd.ksefnumber AS ksefnumber,
                 kdl.delay AS ksefdelay,
                 (CASE
-                    WHEN documents.cdate >= ' . strtotime('2026/02/01') . '
+                    WHEN documents.cdate >= ' . KSeF::getBoundaryDate() . '
                         AND kdl.delay > -1
                         AND ?NOW? - documents.cdate >= kdl.delay
                         AND documents.type IN (' . implode(',', [DOC_INVOICE, DOC_CNOTE]) . ')
@@ -335,7 +337,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     ELSE 0
                 END) AS ksefsubmit,
                 (CASE
-                    WHEN documents.cdate >= ' . strtotime('2026/02/01') . '
+                    WHEN documents.cdate >= ' . KSeF::getBoundaryDate() . '
                         AND documents.type IN (' . implode(',', [DOC_INVOICE, DOC_CNOTE]) . ')
                         AND (
                             c.type = ' . CTYPES_COMPANY . '

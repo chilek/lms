@@ -25,6 +25,8 @@
  *  $Id$
  */
 
+use \Lms\KSeF\KSeF;
+
 $script_parameters = array(
     'test' => 't',
     'section:' => 's:',
@@ -481,8 +483,10 @@ if ($backup || $archive) {
                     . ($ksefOffline ? ' AND kd.status IS NOT NULL AND kd.status = ' . 0 : '')
                     . ($withoutKsef
                         ? ' AND kd.status IS NULL
-                            AND c.type = ' . CTYPES_PRIVATE . '
-                            AND COALESCE(kac.allconsumers, 0) = 0
+                            AND (
+                                c.type = ' . CTYPES_PRIVATE . '
+                                OR c.type = ' . CTYPES_COMPANY . ' AND d.cdate < ' . KSeF::getBoundaryDate() . '
+                            ) AND COALESCE(kac.allconsumers, 0) = 0
                             AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')'
                         : ''
                     ),
@@ -547,8 +551,10 @@ $query = "
         . ($ksefOffline ? ' AND kd.status IS NOT NULL AND kd.status = ' . 0 : '')
         . ($withoutKsef
             ? ' AND kd.status IS NULL
-                AND c.type = ' . CTYPES_PRIVATE . '
-                AND COALESCE(kac.allconsumers, 0) = 0
+                AND (
+                    c.type = ' . CTYPES_PRIVATE . '
+                    OR c.type = ' . CTYPES_COMPANY . ' AND d.cdate < ' . KSeF::getBoundaryDate() . '
+                ) AND COALESCE(kac.allconsumers, 0) = 0
                 AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')'
             : ''
         )
