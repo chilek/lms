@@ -156,10 +156,10 @@ class KSeF
     public static function getBoundaryDate()
     {
         if (empty(self::$boundaryDate)) {
-            self::$boundaryDate = \ConfigHelper::getConfig('ksef.boundary_date', '2026/02/01');
+            self::$boundaryDate = \ConfigHelper::getConfig('ksef.boundary_date', '2026/04/01');
             self::$boundaryDate = strtotime(self::$boundaryDate);
             if (self::$boundaryDate === false) {
-                self::$boundaryDate = strtotime('2026/02/01');
+                self::$boundaryDate = strtotime('2026/04/01');
             }
         }
 
