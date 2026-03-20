@@ -171,8 +171,16 @@ if (!empty($_POST['inv'])) {
     $count = count($_POST['inv']);
     $i = 0;
     foreach (array_keys($_POST['inv']) as $key) {
-        $invoice = $LMS->GetInvoiceContent(intval($key));
+        $docId = intval($key);
+
         $i++;
+
+        if (!$LMS->isKsefDocument($docId)) {
+            continue;
+        }
+
+        $invoice = $LMS->GetInvoiceContent($docId);
+
         if ($invoice['customerid'] != $SESSION->id) {
             continue;
         }
@@ -204,6 +212,10 @@ if (!empty($_POST['inv'])) {
     }
     Localisation::resetUiLanguage();
 } elseif (isset($_GET['id'])) {
+    if (!$LMS->isKsefDocument($_GET['id'])) {
+        die;
+    }
+
     $invoice = $LMS->GetInvoiceContent($_GET['id']);
 
     if ($invoice['customerid'] != $SESSION->id) {

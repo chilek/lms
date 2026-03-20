@@ -25,6 +25,8 @@
  *
 */
 
+use \Lms\KSeF\KSeF;
+
 // Extending LMS class for Userpanel-specific functions
 class ULMS extends LMS
 {
@@ -271,5 +273,40 @@ class ULMS extends LMS
         unset($node);
 
         return $nodes;
+    }
+
+    public function isKsefDocument($docid)
+    {
+        return $this->DB->GetOne(
+            'SELECT
+                d.id
+            FROM documents d
+            JOIN customers c ON c.id = d.customerid
+            LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
+            LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
+            WHERE d.id = ?
+                AND EXISTS (SELECT 1 FROM uiconfig WHERE section = ? AND disabled = ? LIMIT 1)
+                AND (
+                    d.cdate < ?
+                    OR (
+                        kd.status IS NOT NULL
+                        AND (
+                            c.type = ?
+                            OR kac.allconsumers = ?
+                            OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ?)
+                        )
+                    )
+                )',
+            [
+                ConfigHelper::checkConfig('ksef.offline_support') ? [0, 200] : [200],
+                $docid,
+                'ksef',
+                0,
+                KSeF::getBoundaryDate(),
+                CTYPES_COMPANY,
+                1,
+                CCONSENT_KSEF_INVOICE,
+            ]
+        );
     }
 }

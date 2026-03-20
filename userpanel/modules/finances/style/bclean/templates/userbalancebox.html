@@ -1,5 +1,6 @@
 {box title="Your balance"}
 {$disable_invoices = ConfigHelper::checkConfig('userpanel.disable_invoices')}
+{$offline_support = ConfigHelper::checkConfig('ksef.offline_support')}
 
 <script>
 
@@ -38,6 +39,10 @@
 		margin-bottom: 0.4em;
 	}
 
+	.text-muted .text-danger {
+		color: #ff8888 !important;
+	}
+
 </style>
 <div class="row">
     <div class="col">
@@ -65,7 +70,25 @@
 					{section name=balancelist loop=$balancelist.list step=-1}
 						{$item=$balancelist.list[balancelist]}
 						{if $item.time > $ldate}
-						<tr class="table-click"{if $item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE} data-href="?m=finances&f=invoice&id={$item.docid}"{/if}>
+						<tr class="{strip}
+							table-click
+							{if ($item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE)
+								&& !empty($ksef_enabled)
+								&& !empty($item.ksefsubmission)
+								&& $item.ksefstatus != 200
+								&& (!$offline_support || !isset($item.ksefstatus) || !empty($item.ksefstatus))}
+								{/strip} text-muted{strip}
+							{/if}
+							{/strip}"
+							{if $item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE}
+								{if empty($ksef_enabled)
+									|| empty($item.ksefsubmission)
+									|| $item.ksefstatus == 200
+									|| $offline_support && isset($item.ksefstatus) && $item.ksefstatus == 0}
+									data-href="?m=finances&f=invoice&id={$item.docid}"
+								{/if}
+							{/if}
+							>
 							<td class="text-center text-nowrap">{$item.date|date_format:"Y-m-d"}</td>
 							{if $item.value > 0 && !empty($item.type)}
 								<td></td>
@@ -99,17 +122,27 @@
 									{if isset($link.extra)}{$link.extra}{/if}
 								{/foreach}
 								{if $item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE}
-									{button class="btn btn-primary btn-sm" onclick="reset_login_timeout(); location.href='?m=finances&f=invoice&id={$item.docid}'" external=true icon="print" label="Print"}
+									{if empty($ksef_enabled)
+										|| empty($item.ksefsubmission)
+										|| $item.ksefstatus == 200
+										|| $offline_support && isset($item.ksefstatus) && $item.ksefstatus == 0}
+										{button class="btn btn-primary btn-sm" onclick="reset_login_timeout(); location.href='?m=finances&f=invoice&id={$item.docid}'" external=true icon="print" label="Print"}
+									{/if}
 								{else}
 									&nbsp;
 								{/if}
 							</td>
 							<td class="text-center buttons">
 								{if $item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE}
-									<div class="custom-control custom-checkbox custom-control-inline check-invoice">
-										<input class="custom-control-input" type="checkbox" id="inv-{$item.docid}" name="inv[{$item.docid}]" value="1" />
-										<label class="custom-control-label valign-fix" for="inv-{$item.docid}"></label>
-									</div>
+									{if empty($ksef_enabled)
+										|| empty($item.ksefsubmission)
+										|| $item.ksefstatus == 200
+										|| $offline_support && isset($item.ksefstatus) && $item.ksefstatus == 0}
+										<div class="custom-control custom-checkbox custom-control-inline check-invoice">
+											<input class="custom-control-input" type="checkbox" id="inv-{$item.docid}" name="inv[{$item.docid}]" value="1" />
+											<label class="custom-control-label valign-fix" for="inv-{$item.docid}"></label>
+										</div>
+									{/if}
 								{/if}
 							</td>
 							{/if}
