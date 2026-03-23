@@ -419,28 +419,37 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
     public function GetMessageTemplatesByQueueAndType($queueid, $type)
     {
         return $this->db->GetAll(
-            'SELECT DISTINCT t.id, t.name, t.subject, t.message
-			FROM templates t
-			LEFT JOIN rttemplatequeues tq ON tq.templateid = t.id AND tq.queueid ' . (is_array($queueid) ? 'IN' : '=') . ' ?
-			LEFT JOIN rttemplatetypes tt ON tt.templateid = t.id AND tt.messagetype = ?
-			LEFT JOIN (
-				SELECT t2.id AS templateid
-				FROM templates t2
-				LEFT JOIN rttemplatequeues tq2 ON tq2.templateid = t2.id
-				GROUP BY t2.id
-				HAVING COUNT(tq2.templateid) = 0
-			) t3 ON t3.templateid = t.id
-			LEFT JOIN (
-				SELECT t4.id AS templateid
-				FROM templates t4
-				LEFT JOIN rttemplatequeues tt2 ON tt2.templateid = t4.id
-				GROUP BY t4.id
-				HAVING COUNT(tt2.templateid) = 0
-			) t5 ON t5.templateid = t.id
-			WHERE t.type = ? AND (tq.templateid IS NOT NULL OR t.id = t3.templateid)
-				AND (tt.templateid IS NOT NULL OR t.id = t5.templateid)  
-			GROUP BY t.id, t.name, t.subject, t.message',
-            array(is_array($queueid) ? $queueid : intval($queueid), $type, TMPL_HELPDESK)
+            'SELECT
+                DISTINCT t.id,
+                t.name,
+                t.subject,
+                t.message
+            FROM templates t
+            LEFT JOIN rttemplatequeues tq ON tq.templateid = t.id AND tq.queueid ' . (is_array($queueid) ? 'IN' : '=') . ' ?
+            LEFT JOIN rttemplatetypes tt ON tt.templateid = t.id AND tt.messagetype = ?
+            LEFT JOIN (
+                SELECT t2.id AS templateid
+                FROM templates t2
+                LEFT JOIN rttemplatequeues tq2 ON tq2.templateid = t2.id
+                GROUP BY t2.id
+                HAVING COUNT(tq2.templateid) = 0
+            ) t3 ON t3.templateid = t.id
+            LEFT JOIN (
+                SELECT t4.id AS templateid
+                FROM templates t4
+                LEFT JOIN rttemplatequeues tt2 ON tt2.templateid = t4.id
+                GROUP BY t4.id
+                HAVING COUNT(tt2.templateid) = 0
+            ) t5 ON t5.templateid = t.id
+            WHERE t.type = ? AND (tq.templateid IS NOT NULL OR t.id = t3.templateid)
+                AND (tt.templateid IS NOT NULL OR t.id = t5.templateid)
+            GROUP BY t.id, t.name, t.subject, t.message
+            ORDER BY t.name',
+            array(
+                is_array($queueid) ? $queueid : intval($queueid),
+                $type,
+                TMPL_HELPDESK,
+            )
         );
     }
 
