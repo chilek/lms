@@ -83,7 +83,17 @@ function format_bankaccount($account, $country_code = false)
 
 function format_ten($ten, $country_code = false)
 {
-    return Localisation::CallSystemFunction('format_ten', $ten, $country_code);
+    if (empty($ten)) {
+        return $ten;
+    } else {
+        $formattedTen = Localisation::CallSystemFunction('format_ten', $ten, $country_code);
+
+        if (empty($formattedTen)) {
+            $formattedTen = $ten;
+        }
+
+        return $formattedTen;
+    }
 }
 
 function getHolidays($year = null)
