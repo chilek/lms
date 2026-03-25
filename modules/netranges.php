@@ -262,8 +262,8 @@ function getBuildings(array $filter)
                 (CASE WHEN a2.id IS NULL THEN lst.ident ELSE lst2.ident END) AS street_id,
                 UPPER(CASE WHEN a2.id IS NULL THEN a.house ELSE a2.house END) AS house,
                 COUNT(*) AS nodecount, '
-                . $DB->GroupConcat('CASE WHEN n.ownerid IS NOT NULL AND nd.id IS NOT NULL AND nd.ownerid IS NULL THEN n.linktechnology ELSE nl.technology END', ',') . ' AS linktechnologies, '
-                . $DB->GroupConcat('CASE WHEN n.ownerid IS NOT NULL AND nd.id IS NOT NULL AND nd.ownerid IS NULL THEN n.ownerid ELSE nd2.ownerid END', ',') . ' AS customerids, '
+                . $DB->GroupConcat('CASE WHEN n.ownerid IS NOT NULL AND (nd.id IS NULL OR nd.id IS NOT NULL AND nd.ownerid IS NULL) THEN n.linktechnology ELSE nl.technology END', ',') . ' AS linktechnologies, '
+                . $DB->GroupConcat('CASE WHEN n.ownerid IS NOT NULL AND (nd.id IS NULL OR nd.id IS NOT NULL AND nd.ownerid IS NULL) THEN n.ownerid ELSE nd2.ownerid END', ',') . ' AS customerids, '
                 . $DB->GroupConcat($DB->Concat('c.lastname', "' '", 'c.name'), '|') . ' AS customernames
             FROM customers c
             LEFT JOIN nodes n ON n.ownerid = c.id
@@ -271,7 +271,7 @@ function getBuildings(array $filter)
             LEFT JOIN netdevices nd2 ON nd2.ownerid = c.id
             LEFT JOIN netlinks nl ON nl.src = nd2.id OR nl.dst = nd2.id
             LEFT JOIN netdevices nd3 ON nd3.ownerid IS NULL AND (nl.src = nd2.id AND nd3.id = nl.dst OR nl.dst = nd2.id AND nd3.id = nl.src)
-            LEFT JOIN vaddresses a ON (n.ownerid IS NOT NULL AND nd.id IS NOT NULL AND nd.ownerid IS NULL AND a.id = n.address_id)
+            LEFT JOIN vaddresses a ON (n.ownerid IS NOT NULL AND (nd.id IS NULL OR nd.id IS NOT NULL AND nd.ownerid IS NULL) AND a.id = n.address_id)
                 OR (nd2.ownerid IS NOT NULL AND nd3.id IS NOT NULL AND nd3.ownerid IS NULL AND a.id = nd2.address_id)
             LEFT JOIN location_streets lst ON lst.id = a.street_id
             LEFT JOIN (
@@ -301,7 +301,7 @@ function getBuildings(array $filter)
                 AND ((a2.id IS NULL AND a.city_id IS NOT NULL ' . (isset($cityid) ? ' AND a.city_id = ' . $cityid : '') . ')
                 OR (a2.id IS NOT NULL AND a2.city_id IS NOT NULL ' . (isset($cityid) ? ' AND a2.city_id = ' . $cityid : '') . '))
                 AND (
-                    (n.ownerid IS NOT NULL AND nd.id IS NOT NULL AND nd.ownerid IS NULL)
+                    (n.ownerid IS NOT NULL AND (nd.id IS NULL OR nd.id IS NOT NULL AND nd.ownerid IS NULL))
                     OR (nd2.ownerid IS NOT NULL AND nd3.id IS NOT NULL AND nd3.ownerid IS NULL)
                 )
             GROUP BY
