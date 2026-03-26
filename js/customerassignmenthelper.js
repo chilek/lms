@@ -706,7 +706,7 @@ function tariffSelectionHandler() {
 			$('#tax').val(tariffDefaultTaxId).prop('disabled', false);
 		}
 
-		$('#a_attribute').hide();
+		$('#a_attribute').show();
 	} else {
 		let tariffGrossPrice = ((assignmentTariffId && assignmentTariffId == val && assignmentGrossvalue) ? assignmentGrossvalue : selected.attr('data-tariffvalue'));
 		let tariffNetPrice = ((assignmentTariffId && assignmentTariffId == val && assignmentNetvalue) ? assignmentNetvalue : selected.attr('data-tariffnetvalue'));
