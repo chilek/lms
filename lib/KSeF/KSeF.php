@@ -809,17 +809,25 @@ class KSeF
         }
 
         if (!empty($invoice['comment'])) {
-            $xml .= "\t\t<DodatkowyOpis>" . PHP_EOL
-                . "\t\t\t<Klucz>Komentarz</Klucz>" . PHP_EOL
-                . "\t\t\t<Wartosc>". htmlspecialchars($invoice['comment']) . "</Wartosc>" . PHP_EOL
-                . "\t\t</DodatkowyOpis>" . PHP_EOL;
+            $comment = htmlspecialchars($invoice['comment']);
+            $commentLines = \Utils::wordWrapToArray($comment, 256);
+            foreach ($commentLines as $commentLine) {
+                $xml .= "\t\t<DodatkowyOpis>" . PHP_EOL
+                    . "\t\t\t<Klucz>Komentarz</Klucz>" . PHP_EOL
+                    . "\t\t\t<Wartosc>" . $commentLine . "</Wartosc>" . PHP_EOL
+                    . "\t\t</DodatkowyOpis>" . PHP_EOL;
+            }
         }
 
         if (!empty($invoice['memo'])) {
-            $xml .= "\t\t<DodatkowyOpis>" . PHP_EOL
-                . "\t\t\t<Klucz>Memo</Klucz>" . PHP_EOL
-                . "\t\t\t<Wartosc>". htmlspecialchars($invoice['memo']) . "</Wartosc>" . PHP_EOL
-                . "\t\t</DodatkowyOpis>" . PHP_EOL;
+            $memo = htmlspecialchars($invoice['memo']);
+            $memoLines = \Utils::wordWrapToArray($memo, 256);
+            foreach ($memoLines as $memoLine) {
+                $xml .= "\t\t<DodatkowyOpis>" . PHP_EOL
+                    . "\t\t\t<Klucz>Memo</Klucz>" . PHP_EOL
+                    . "\t\t\t<Wartosc>" . $memoLine . "</Wartosc>" . PHP_EOL
+                    . "\t\t</DodatkowyOpis>" . PHP_EOL;
+            }
         }
 
         $refInvoiceContent = empty($invoice['invoice']) ? null : $invoice['invoice']['content'];

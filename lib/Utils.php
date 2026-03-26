@@ -1824,4 +1824,61 @@ class Utils
 
         return $text;
     }
+
+    public static function wordWrapToArray(string $text, int $maxLen = 256): array
+    {
+        if ($maxLen < 1) {
+            throw new InvalidArgumentException('Maximum row length must have value greater than 0!');
+        }
+
+        // Normalizacja końców linii
+        $text = str_replace(["\r\n", "\r"], "\n", $text);
+
+        // Zachowujemy istniejące akapity / linie wejściowe
+        $paragraphs = explode("\n", $text);
+
+        $result = [];
+
+        foreach ($paragraphs as $paragraph) {
+            // Zachowaj pusty wiersz
+            if ($paragraph === '') {
+                $result[] = '';
+                continue;
+            }
+
+            // Podział na "słowa", z uwzględnieniem UTF-8
+            $words = preg_split('/\s+/u', trim($paragraph), -1, PREG_SPLIT_NO_EMPTY);
+
+            if (!$words) {
+                $result[] = '';
+                continue;
+            }
+
+            $currentLine = '';
+
+            foreach ($words as $word) {
+                if ($currentLine === '') {
+                    // Jeśli pojedynczy wyraz jest dłuższy niż limit,
+                    // zostawiamy go w całości w osobnym wierszu
+                    $currentLine = $word;
+                    continue;
+                }
+
+                $candidate = $currentLine . ' ' . $word;
+
+                if (mb_strlen($candidate, 'UTF-8') <= $maxLen) {
+                    $currentLine = $candidate;
+                } else {
+                    $result[] = $currentLine;
+                    $currentLine = $word;
+                }
+            }
+
+            if ($currentLine !== '') {
+                $result[] = $currentLine;
+            }
+        }
+
+        return $result;
+    }
 }
