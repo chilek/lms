@@ -253,7 +253,12 @@
 				<A href="{$link.url}" rel="external"{if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="{$link.label}" {$link.tip}>{else}{$link.label}{/if}</A>
 			{/foreach}
 			{if !empty($invoice.ksefhash)}
-				{hint icon="lock" url="?m=invoiceksefinfo&id={$invoiceid}" tooltip_class="lms-ui-ksef-qr-code"}
+				{if !empty($invoice.ksefstatus) && ($invoice.ksefstatus < 200 || $invoice.ksefstatus >= 300)}
+					{$class = "lms-ui-error"}
+				{else}
+					{$class = ""}
+				{/if}
+				{hint icon="lock" url="?m=invoiceksefinfo&id={$invoiceid}" tooltip_class="lms-ui-ksef-qr-code" class=$class}
 			{/if}
 			{if $invoice.type == $smarty.const.DOC_INVOICE_PRO && !$invoice.closed}
 				{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}

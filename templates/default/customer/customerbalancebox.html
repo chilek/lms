@@ -160,7 +160,12 @@
 							{if isset($link.extra)}{$link.extra}{/if}
 						{/foreach}
 						{if !empty($item.ksefhash)}
-							{hint icon="lock" url="?m=invoiceksefinfo&id={$item.docid}" tooltip_class="lms-ui-ksef-qr-code"}
+							{if !empty($item.ksefstatus) && ($item.ksefstatus < 200 || $item.ksefstatus >= 300)}
+								{$class = "lms-ui-error"}
+							{else}
+								{$class = ""}
+							{/if}
+							{hint icon="lock" url="?m=invoiceksefinfo&id={$item.docid}" tooltip_class="lms-ui-ksef-qr-code" class=$class}
 						{/if}
 						{if $item.docid}
 							{if $item.doctype == $smarty.const.DOC_INVOICE_PRO}

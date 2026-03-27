@@ -167,7 +167,7 @@
 			}<!ksef>at $a on $b and its handling has finished with error:{/t}
 			<br>
 			<span class="red">
-				{$invoice.ksefstatusdescription}
+				{t a=$invoice.ksefstatusdescription b=$invoice.status}<!ksef>$a (error code: $b){/t}
 				<br>
 				({$invoice.ksefstatusdetails})
 			</span>
