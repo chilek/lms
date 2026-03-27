@@ -2819,7 +2819,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         }
 
         if ($result) {
-            $result['ksef_warning'] =  empty($result['ksefnumber'])
+            $result['ksef_warning'] = $result['doctype'] != DOC_INVOICE_PRO
+                && empty($result['ksefnumber'])
                 && $result['cdate'] >= KSeF::getBoundaryDate()
                 && (!empty($result['ksef_invoice_consent']) || $result['customertype'] == CTYPES_COMPANY);
 
