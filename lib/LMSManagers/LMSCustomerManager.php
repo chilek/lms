@@ -317,11 +317,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = documents.id AND d2.type > 0) THEN 1 ELSE 0 END) AS referenced,
                 (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = documents.id AND d2.type < 0) THEN 1 ELSE 0 END) AS documentreferenced,
                 documents.cdate, documents.number, numberplans.template,
-                kd.status AS ksefstatus,
-                kd.statusdescription AS ksefstatusdescription,
-                kd.statusdetails AS ksefstatusdetails,
-                kd.hash AS ksefhash,
-                kd.ksefnumber AS ksefnumber,
+                kd2.status AS ksefstatus,
+                kd2.statusdescription AS ksefstatusdescription,
+                kd2.statusdetails AS ksefstatusdetails,
+                kd2.hash AS ksefhash,
+                kd2.ksefnumber AS ksefnumber,
                 kdl.delay AS ksefdelay,
                 (CASE
                     WHEN documents.cdate >= ' . KSeF::getBoundaryDate() . '
@@ -353,13 +353,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             LEFT JOIN documents ON documents.id = cash.docid
             LEFT JOIN (
                 SELECT
-                    kd.docid,
-                    MAX(kd.id) AS maxid
-                FROM ksefdocuments kd
-                WHERE kd.status > 0 AND (kd.status < ? OR kd.status >= ?)
-                GROUP BY kd.docid
-            ) kd2 ON kd2.docid = documents.id
-            LEFT JOIN ksefdocuments kd ON kd.docid = documents.id AND (kd.status IN ? OR kd.id = kd2.maxid)
+                    kd11.docid,
+                    MAX(kd11.id) AS maxid
+                FROM ksefdocuments kd11
+                GROUP BY kd11.docid
+            ) kd1 ON kd1.docid = documents.id
+            LEFT JOIN ksefdocuments kd2 ON kd2.docid = documents.id AND kd2.id = kd1.maxid
             LEFT JOIN ksefdelays kdl ON kdl.divisionid = documents.divisionid
             LEFT JOIN ksefallconsumers kac ON kac.divisionid = documents.divisionid
             LEFT JOIN numberplans ON numberplans.id = documents.numberplanid
@@ -397,12 +396,6 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 . ($totime ? ' AND d.cdate <= ' . intval($totime) : '') . ')
             ORDER BY time, docid, id',
             [
-                200,
-                300,
-                [
-                    200,
-                    0,
-                ],
                 $id,
                 $id,
                 DOC_INVOICE_PRO,

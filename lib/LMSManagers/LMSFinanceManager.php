@@ -2312,10 +2312,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     kd.docid,
                     MAX(kd.id) AS maxid
                 FROM ksefdocuments kd
-                WHERE kd.status > 0 AND (kd.status < ' . 200 . ' OR kd.status >= ' . 300 . ')
                 GROUP BY kd.docid
             ) kd2 ON kd2.docid = d.id
-            LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND (kd.status IN (' . implode(',', [0, 200]) . ') OR kd.id = kd2.maxid)
+            LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.id = kd2.maxid
             LEFT JOIN ksefdelays kdl ON kdl.divisionid = d.divisionid
             LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
             JOIN vinvoicecontents a ON (a.docid = d.id)'
