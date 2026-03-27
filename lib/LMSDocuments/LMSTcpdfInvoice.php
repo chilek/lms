@@ -1044,6 +1044,26 @@ class LMSTcpdfInvoice extends LMSInvoice
         }
     }
 
+    public function invoice_ksef_warning()
+    {
+        if (!empty($this->data['ksef_warning'])) {
+            $x = $this->backend->GetX();
+            $y = $this->backend->GetY();
+
+            $this->backend->setTextColorArray(array(128, 128, 128));
+            $this->backend->StartTransform();
+            $this->backend->SetFont(null, '', 40);
+            $this->backend->Rotate(45, 10, 210);
+            $this->backend->Translate(30, 0);
+            $this->backend->SetXY(10, 210);
+            $this->backend->Write(0, trans('NO KSeF NUMBER'), '', 0, 'C', true, 0, false, false, 0);
+            $this->backend->StopTransform();
+            $this->backend->setTextColorArray(array(0, 0, 0));
+
+            $this->backend->SetXY($x, $y);
+        }
+    }
+
     public function invoice_qr2pay_code()
     {
         $x = $this->backend->GetX();
@@ -1254,7 +1274,11 @@ class LMSTcpdfInvoice extends LMSInvoice
         }
 
         $this->invoice_cancelled();
-        $this->invoice_no_accountant();
+        if (!empty($this->data['ksef_warning'])) {
+            $this->invoice_ksef_warning();
+        } else {
+            $this->invoice_no_accountant();
+        }
         $this->invoice_header_image();
         $this->invoice_date();
         $this->invoice_ksef_qr_code();
@@ -1424,7 +1448,11 @@ class LMSTcpdfInvoice extends LMSInvoice
         }
 
         $this->invoice_cancelled();
-        $this->invoice_no_accountant();
+        if (!empty($this->data['ksef_warning'])) {
+            $this->invoice_ksef_warning();
+        } else {
+            $this->invoice_no_accountant();
+        }
         $this->invoice_header_image();
         $this->invoice_date();
         $this->invoice_dates();

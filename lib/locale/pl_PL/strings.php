@@ -6393,3 +6393,5 @@ $_LANG['Submit to KSeF'] = 'Wysyłka do KSeF';
 $_LANG['<!ksef>Invoice sent to KSeF in batch session $a'] = 'Faktura wysłana do KSeF sesją wsadową $a';
 $_LANG['<!ksef>at $a on $b and its handling has finished with error:'] = 'w dniu $a o godzinie $b i jej przetwarzanie zakończyło się błędem:';
 $_LANG['<!ksef>$a (error code: $b)'] = '$a (kod błędu: $b)';
+
+$_LANG['NO KSeF NUMBER'] = 'BRAK NUMERU KSeF';

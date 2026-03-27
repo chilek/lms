@@ -2695,6 +2695,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.post_address_id,
 				d.currency, d.currencyvalue, d.memo,
 				d.extid,
+                c.type AS customertype,
 				(CASE WHEN cc.type IS NULL THEN 0 ELSE 1 END) AS balance_on_documents,
 				(CASE WHEN kac.allconsumers = 1 OR cc2.type IS NOT NULL THEN 1 ELSE 0 END) AS ksef_invoice_consent,
                 kd.ksefnumber,
@@ -2703,7 +2704,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 kbs.environment AS ksefenvironment
 				FROM documents d'
                 . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
-                . ' LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+                . '
+                JOIN customers c ON c.id = d.customerid
+                LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				LEFT JOIN vusers u ON u.id = d.userid
 				LEFT JOIN customerconsents cc ON cc.customerid = d.customerid AND cc.type = ?
 				LEFT JOIN customerconsents cc2 ON cc2.customerid = d.customerid AND cc2.type = ?
@@ -2816,6 +2819,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         }
 
         if ($result) {
+            $result['ksef_warning'] =  empty($result['ksefnumber'])
+                && $result['cdate'] >= KSeF::getBoundaryDate()
+                && (!empty($result['ksef_invoice_consent']) || $result['customertype'] == CTYPES_COMPANY);
+
             $result['export'] = $result['division_countryid'] && $result['countryid'] && $result['division_countryid'] != $result['countryid'];
 
             $result['name'] = trim($result['name']);
