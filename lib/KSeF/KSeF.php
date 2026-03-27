@@ -1713,7 +1713,7 @@ class KSeF
             mkdir($ksefInvoiceTenDateDir);
             @chmod(
                 $ksefInvoiceTenDateDir,
-                fileperms(self::KSEF_UPO_DIR) & 0xfff
+                fileperms(self::KSEF_INVOICE_DIR) & 0xfff
             );
             @chown($ksefInvoiceTenDateDir, fileowner(self::KSEF_INVOICE_DIR));
             @chgrp($ksefInvoiceTenDateDir, filegroup(self::KSEF_INVOICE_DIR));
