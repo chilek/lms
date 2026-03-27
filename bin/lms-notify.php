@@ -3957,7 +3957,7 @@ if (empty($types) || in_array('messages', $types)) {
                             $DB->Execute(
                                 'UPDATE messageitems
                                 SET status = ?, lastdate = ?NOW?, error = ?, attempts = ?
-                                    ' . (isset($externalMsdId) ? ', externalmsgid = ' . $DB->Escape($externalMsgId) : '') . '
+                                    ' . (isset($externalMsgId) ? ', externalmsgid = ' . $DB->Escape($externalMsgId) : '') . '
                                 WHERE messageid = ?
                                     AND id = ?',
                                 array(
