@@ -1348,6 +1348,8 @@ CREATE TABLE invoicecontents (
 	taxcategory smallint DEFAULT 0 NOT NULL,
 	period smallint DEFAULT 3,
 	INDEX docid (docid),
+	INDEX invoicecontents_tariffid_idx (tariffid),
+	INDEX invoicecontents_docid_itemid_idx (docid, itemid),
 	CONSTRAINT invoicecontents_docid_fkey
 		FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT invoicecontents_taxid_fkey
@@ -1476,6 +1478,7 @@ CREATE TABLE cash (
   INDEX sourceid (sourceid),
   INDEX cash_linktechnology_idx (linktechnology),
   INDEX cash_notification_idx (notification),
+  INDEX cash_docid_itemid_idx (docid, itemid),
   UNIQUE KEY cash_importid_ukey (importid),
   CONSTRAINT cash_customerid_fkey
   	FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -4686,4 +4689,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026031600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026032800');
