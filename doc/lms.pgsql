@@ -1184,6 +1184,8 @@ CREATE TABLE invoicecontents (
 	period smallint DEFAULT 3
 );
 CREATE INDEX invoicecontents_docid_idx ON invoicecontents (docid);
+CREATE INDEX invoicecontents_tariffid_idx ON invoicecontents (tariffid);
+CREATE INDEX invoicecontents_docid_itemid_idx ON invoicecontents(docid, itemid);
 
 /* --------------------------------------------------------
   Structure of table "debitnotecontents"
@@ -1320,6 +1322,7 @@ CREATE INDEX cash_sourceid_idx ON cash (sourceid);
 CREATE INDEX cash_time_idx ON cash (time);
 CREATE INDEX cash_linktechnology_idx ON cash (linktechnology);
 CREATE INDEX cash_notification_idx ON cash (notification);
+CREATE INDEX cash_docid_itemid_idx ON cash (docid, itemid);
 
 /* --------------------------------------------------------
   Structure of table "pna"
@@ -4726,6 +4729,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026031600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026032800');
 
 COMMIT;
