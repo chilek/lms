@@ -119,9 +119,12 @@ $customers = $DB->GetAll(
     FROM customeraddressview c
     JOIN customer_addresses ca ON ca.customer_id = c.id AND ca.type = ?
     JOIN vdivisions d ON d.id = c.divisionid
-    WHERE c.type = ? AND c." . $type . " <> ? AND c.status IN ?"
-    . ($customerid ? ' AND c.id = ' . $customerid : '')
-    . ($customergroups ?: $customergroups)
+    WHERE c.type = ?
+        AND c.deleted = 0
+        AND c." . $type . " <> ?
+        AND c.status IN ?"
+        . ($customerid ? ' AND c.id = ' . $customerid : '')
+        . ($customergroups ?: $customergroups)
     . " ORDER BY c.id",
     array(
         BILLING_ADDRESS,
