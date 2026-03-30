@@ -403,7 +403,10 @@ class KSeF
                     $foreign = true;
                 }
             } elseif (!empty($invoice['countryid']) && !empty($invoice['division_countryid']) && $invoice['countryid'] != $invoice['division_countryid']) {
-                $foreign = true;
+                //$foreign = true;
+                return [
+                    'error' => 'Invalid Tax Exempt No. format: \'' . $invoice['ten'] . '\'',
+                ];
             }
         }
 
