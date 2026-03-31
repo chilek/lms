@@ -152,7 +152,7 @@
         "ramsey/uuid": "^4",
         "select2/select2": "dev-develop@dev",
         "phpseclib/phpseclib": "^3.0",
-        "n1ebieski/ksef-php-client": "*",
+        "n1ebieski/ksef-php-client": "^1.0",
         "guzzlehttp/guzzle": "^7"
     },
     "require-dev": {
