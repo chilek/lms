@@ -208,7 +208,8 @@
 											{/if}
 											return false;
 										{/textformat}
-										{if empty($item.ksefhash) && empty($item.ksefsubmit)}
+										{if empty($item.ksefhash) && empty($item.ksefsubmit)
+											|| !empty($item.ksefstatus) && ($item.ksefstatus < 200 || $item.ksefstatus >= 300)}
 											{button type="link" icon="edit" class="lms-ui-hint-rollover"
 												href="?m=invoiceedit&id={$item.docid}&action=edit"
 												onclick=$onclick

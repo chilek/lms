@@ -331,7 +331,8 @@
 						{if $invoice.type == $smarty.const.DOC_INVOICE}
 							{if !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 								{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
-									{if empty($invoice.ksefhash) && empty($invoice.ksefsubmit)}
+									{if empty($invoice.ksefhash) && empty($invoice.ksefsubmit)
+										|| !empty($invoice.ksefstatus) && ($invoice.ksefstatus < 200 || $invoice.ksefstatus >= 300)}
 										{button type="link" icon="edit"
 											href="?m=invoiceedit&id={$invoice.id}&action=edit" class="edit-invoice" tip="Edit"}
 									{/if}
