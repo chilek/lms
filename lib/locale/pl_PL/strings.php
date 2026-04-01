@@ -5257,6 +5257,7 @@ $_LANG['<!qs>location address'] = 'adres lokalizacyjny';
 $_LANG['<!qs>email'] = 'e-mail';
 $_LANG['<!qs>alternative bank account'] = 'alternatywny rachunek bankowy';
 $_LANG['<!qs>TEN'] = 'NIP';
+$_LANG['<!qs>Recipient TEN'] = 'NIP odbiorcy';
 $_LANG['<!qs>SSN'] = 'PESEL';
 $_LANG['<!qs>additional information'] = 'informacje dodatkowe';
 $_LANG['<!qs>notes'] = 'notatki';
