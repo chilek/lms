@@ -815,10 +815,13 @@ class KSeF
             $comment = htmlspecialchars($invoice['comment']);
             $commentLines = \Utils::wordWrapToArray($comment, 256);
             foreach ($commentLines as $commentLine) {
-                $xml .= "\t\t<DodatkowyOpis>" . PHP_EOL
-                    . "\t\t\t<Klucz>Komentarz</Klucz>" . PHP_EOL
-                    . "\t\t\t<Wartosc>" . $commentLine . "</Wartosc>" . PHP_EOL
-                    . "\t\t</DodatkowyOpis>" . PHP_EOL;
+                $commentLineChunks = preg_split('/\n\r?/', $commentLine, -1, PREG_SPLIT_NO_EMPTY);
+                foreach ($commentLineChunks as $commentLineChunk) {
+                    $xml .= "\t\t<DodatkowyOpis>" . PHP_EOL
+                        . "\t\t\t<Klucz>Komentarz</Klucz>" . PHP_EOL
+                        . "\t\t\t<Wartosc>" . $commentLineChunk . "</Wartosc>" . PHP_EOL
+                        . "\t\t</DodatkowyOpis>" . PHP_EOL;
+                }
             }
         }
 
@@ -826,10 +829,13 @@ class KSeF
             $memo = htmlspecialchars($invoice['memo']);
             $memoLines = \Utils::wordWrapToArray($memo, 256);
             foreach ($memoLines as $memoLine) {
-                $xml .= "\t\t<DodatkowyOpis>" . PHP_EOL
-                    . "\t\t\t<Klucz>Memo</Klucz>" . PHP_EOL
-                    . "\t\t\t<Wartosc>" . $memoLine . "</Wartosc>" . PHP_EOL
-                    . "\t\t</DodatkowyOpis>" . PHP_EOL;
+                $memoLineChunks = preg_split('/\n\r?/', $memoLine, -1, PREG_SPLIT_NO_EMPTY);
+                foreach ($memoLineChunks as $memoLineChunk) {
+                    $xml .= "\t\t<DodatkowyOpis>" . PHP_EOL
+                        . "\t\t\t<Klucz>Memo</Klucz>" . PHP_EOL
+                        . "\t\t\t<Wartosc>" . $memoLineChunk . "</Wartosc>" . PHP_EOL
+                        . "\t\t</DodatkowyOpis>" . PHP_EOL;
+                }
             }
         }
 
