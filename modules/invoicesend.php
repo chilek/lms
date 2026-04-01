@@ -92,7 +92,7 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                     d.type IN ?
                     AND (
                         d.cdate < ?
-                        OR c.type = ? AND kac.allconsumers = ? AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ?)
+                        OR c.type = ? AND COALESCE(kac.allconsumers, 0) = ? AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ?)
                         OR c.type = ? AND kd.status IN ?
                     ) OR d.type IN ?
                 ) AND d.id IN (" . implode(',', $ids) . ")
