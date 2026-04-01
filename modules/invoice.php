@@ -369,6 +369,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         JOIN customeraddressview c ON (c.id = d.customerid)
         LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
         LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
+        LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
         LEFT JOIN customerconsents cc ON cc.customerid = c.id AND cc.type = ?
         LEFT JOIN countries cn ON (cn.id = d.countryid)
         LEFT JOIN countries cdv ON cdv.id = d.div_countryid
@@ -398,8 +399,31 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             isset($ksefSubmit)
                 ? (
                     empty($ksefSubmit)
-                        ? ' AND (d.cdate < ' . $ksefDeploymentDate . ' OR kd.status IS NULL AND (c.type = ' . CTYPES_PRIVATE . ' AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')))'
-                        : ' AND (d.cdate >= ' . $ksefDeploymentDate . ' OR (kd.status = 200 OR kd.status = 0 OR c.type = ' . CTYPES_COMPANY . ' OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')))'
+                        ? ' AND (
+                            d.cdate < ' . $ksefDeploymentDate . '
+                            OR kd.status IS NULL
+                                AND c.type = ' . CTYPES_PRIVATE . '
+                                AND COALESCE(kac.allconsumers, 0) = 0
+                                AND NOT EXISTS (
+                                    SELECT 1 FROM customerconsents cc
+                                    WHERE cc.customerid = c.id
+                                        AND cc.type = ' . CCONSENT_KSEF_INVOICE . '
+                                )
+                        )'
+                        : ' AND (
+                            d.cdate >= ' . $ksefDeploymentDate . '
+                            AND (
+                                kd.status = 200
+                                OR kd.status = 0
+                                OR c.type = ' . CTYPES_COMPANY . '
+                                OR kac.allconsumers = 1
+                                OR EXISTS (
+                                    SELECT 1 FROM customerconsents cc
+                                    WHERE cc.customerid = c.id
+                                       AND cc.type = ' . CCONSENT_KSEF_INVOICE . '
+                                )
+                            )
+                        )'
                 )
                 : ''
         )
