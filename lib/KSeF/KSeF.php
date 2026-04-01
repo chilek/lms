@@ -820,6 +820,10 @@ class KSeF
             foreach ($commentLines as $commentLine) {
                 $commentLineChunks = preg_split('/\n\r?/', $commentLine, -1, PREG_SPLIT_NO_EMPTY);
                 foreach ($commentLineChunks as $commentLineChunk) {
+                    if (empty($commentLineChunk)) {
+                        continue;
+                    }
+
                     $xml .= "\t\t<DodatkowyOpis>" . PHP_EOL
                         . "\t\t\t<Klucz>Komentarz</Klucz>" . PHP_EOL
                         . "\t\t\t<Wartosc>" . $commentLineChunk . "</Wartosc>" . PHP_EOL
@@ -834,6 +838,10 @@ class KSeF
             foreach ($memoLines as $memoLine) {
                 $memoLineChunks = preg_split('/\n\r?/', $memoLine, -1, PREG_SPLIT_NO_EMPTY);
                 foreach ($memoLineChunks as $memoLineChunk) {
+                    if (empty($memoLineChunk)) {
+                        continue;
+                    }
+
                     $xml .= "\t\t<DodatkowyOpis>" . PHP_EOL
                         . "\t\t\t<Klucz>Memo</Klucz>" . PHP_EOL
                         . "\t\t\t<Wartosc>" . $memoLineChunk . "</Wartosc>" . PHP_EOL
