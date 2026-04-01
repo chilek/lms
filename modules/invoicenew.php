@@ -79,7 +79,7 @@ function changeContents($contents, $newcontents)
 
     foreach ($newcontents as $posuid => &$newposition) {
         if (isset($contents[$posuid])) {
-            $result[] = $contents[$posuid];
+            $result[$posuid] = $contents[$posuid];
         }
     }
     unset($newposition);
