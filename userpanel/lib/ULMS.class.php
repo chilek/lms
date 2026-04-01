@@ -277,6 +277,8 @@ class ULMS extends LMS
 
     public function isKsefDocument($docid)
     {
+        $expectedKSeFStatuses = ConfigHelper::checkConfig('ksef.offline_support') ? [0, 200] : [200];
+
         return $this->DB->GetOne(
             'SELECT
                 d.id
@@ -289,23 +291,22 @@ class ULMS extends LMS
                 AND (
                     d.cdate < ?
                     OR (
-                        kd.status IS NOT NULL
-                        AND (
-                            c.type = ?
-                            OR kac.allconsumers = ?
-                            OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ?)
-                        )
+                        c.type = ?
+                        AND COALESCE(kac.allconsumers, 0) = ?
+                        AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ?)
                     )
+                    OR kd.status IN ?
                 )',
             [
-                ConfigHelper::checkConfig('ksef.offline_support') ? [0, 200] : [200],
+                $expectedKSeFStatuses,
                 $docid,
                 'ksef',
                 0,
                 KSeF::getBoundaryDate(),
-                CTYPES_COMPANY,
-                1,
+                CTYPES_PRIVATE,
+                0,
                 CCONSENT_KSEF_INVOICE,
+                $expectedKSeFStatuses,
             ]
         );
     }
