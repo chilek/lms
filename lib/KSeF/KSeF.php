@@ -847,9 +847,14 @@ class KSeF
         foreach ($invoice['content'] as $position) {
             $itemId = $position['itemid'];
             if ($invoice['type'] == DOC_CNOTE && !empty($refInvoiceContent[$itemId])) {
+                $description = htmlspecialchars($refInvoiceContent[$itemId]['description']);
+                if (mb_strlen($description) > 512) {
+                    $description = mb_substr($description, 0, 512 - strlen(' [...]')) . ' [...]';
+                }
+
                 $xml .= "\t\t<FaWiersz>" . PHP_EOL;
                 $xml .= "\t\t\t<NrWierszaFa>" . $itemId . "</NrWierszaFa>" . PHP_EOL;
-                $xml .= "\t\t\t<P_7>" . htmlspecialchars($refInvoiceContent[$itemId]['description']) . "</P_7>" . PHP_EOL;
+                $xml .= "\t\t\t<P_7>" . $description . "</P_7>" . PHP_EOL;
                 if (!empty($refInvoiceContent[$itemId]['tariffid'])) {
                     $xml .= "\t\t\t<Indeks>" . $refInvoiceContent[$itemId]['tariffid'] . "</Indeks>" . PHP_EOL;
                 }
