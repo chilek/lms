@@ -1109,7 +1109,7 @@ class KSeF
     /**
      * Buduje ZIP z listy plików XML. Zwraca [zipBinary, zipBytes].
      */
-    public function makeZipBinaryFromFiles(array $files, int $idx, ?string $debugZipDir = null): array
+    public function makeZipBinaryFromFiles(string $ten, array $files, int $idx, ?string $debugZipDir = null): array
     {
         if (!class_exists(\ZipArchive::class)) {
             throw new \RuntimeException('Brak klasy ZipArchive (ext-zip). Zainstaluj/aktywuj ext-zip.');
@@ -1148,7 +1148,7 @@ class KSeF
 
         if ($debugZipDir) {
             @mkdir($debugZipDir, 0775, true);
-            $dst = rtrim($debugZipDir, '/') . "/batch-{$idx}.zip";
+            $dst = rtrim($debugZipDir, '/') . "/batch-{$ten}-{$idx}.zip";
             file_put_contents($dst, $bin);
         }
 
@@ -1170,7 +1170,7 @@ class KSeF
      *   ...
      * ]
      */
-    public function buildZipPackagesFromXmlDocuments(array $xmlDocuments, int $maxZipBytes, ?string $debugZipDir = null): array
+    public function buildZipPackagesFromXmlDocuments(string $ten, array $xmlDocuments, int $maxZipBytes, ?string $debugZipDir = null): array
     {
         if ($maxZipBytes < 1024 * 1024) {
             throw new \RuntimeException('maxZipBytes jest podejrzanie mały (ustaw co najmniej kilka MB).');
@@ -1230,7 +1230,7 @@ class KSeF
         for ($g = 0; $g < count($preGroups); $g++) {
             $group = $preGroups[$g];
 
-            [$zipBin, $zipBytes] = $this->makeZipBinaryFromFiles($group, $idx, $debugZipDir);
+            [$zipBin, $zipBytes] = $this->makeZipBinaryFromFiles($ten, $group, $idx, $debugZipDir);
 
             if ($zipBytes <= $maxZipBytes) {
                 $packages[] = [
@@ -1260,7 +1260,7 @@ class KSeF
 
             while ($lo <= $hi) {
                 $mid = intdiv($lo + $hi, 2);
-                [$tryBin, $tryBytes] = $this->makeZipBinaryFromFiles(array_slice($group, 0, $mid), $idx, $debugZipDir);
+                [$tryBin, $tryBytes] = $this->makeZipBinaryFromFiles($ten, array_slice($group, 0, $mid), $idx, $debugZipDir);
 
                 if ($tryBytes <= $maxZipBytes) {
                     $bestBin = $tryBin;
