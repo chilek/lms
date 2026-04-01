@@ -2124,7 +2124,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     public function GetInvoiceList(array $params)
     {
         extract($params);
-        foreach (array('search', 'cat', 'group', 'numberplan', 'division', 'exclude', 'hideclosed', 'sendtoemail', 'page', 'customer') as $var) {
+        foreach (array('search', 'cat', 'group', 'numberplan', 'division', 'exclude', 'hideclosed', 'sendtoemail', 'ksefstatus', 'page', 'customer') as $var) {
             if (!isset(${$var})) {
                 ${$var} = null;
             }
@@ -2220,11 +2220,57 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $numberplan = Utils::filterIntegers($numberplan);
         }
 
+        if (!empty($ksefstatus)) {
+            switch ($ksefstatus) {
+                case 1:
+                    $where .= '
+                        AND (
+                            d.cdate < ' . KSeF::getBoundaryDate() . '
+                            OR d.type NOT IN (' . implode(',', [DOC_INVOICE, DOC_CNOTE]) . ')
+                            OR (
+                                c.type <> ' . CTYPES_COMPANY . '
+                                AND COALESCE(kac.allconsumers, 0) = 0
+                                AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')
+                            )
+                        )';
+                    break;
+                case 2:
+                    $where .= ' AND d.cdate >= ' . KSeF::getBoundaryDate() . '
+                        AND d.type IN (' . implode(',', [DOC_INVOICE, DOC_CNOTE]) . ')
+                        AND (
+                            c.type = ' . CTYPES_COMPANY . '
+                            OR kac.allconsumers = 1
+                            OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')
+                        )';
+                    break;
+                case 3:
+                    $where .= ' AND kd.status = 0';
+                    break;
+                case 4:
+                    $where .= ' AND kd.status IS NOT NULL AND (kd.status < 200 OR kd.status >= 300)';
+                    break;
+                case 5:
+                    $where .= ' AND kd.status = 200';
+                    break;
+            }
+        }
+
         $userid = Auth::GetCurrentUser();
 
         if ($count) {
             return $this->db->GetOne('SELECT COUNT(DISTINCT id) FROM (SELECT d.id
-                FROM documents d'
+                FROM documents d
+                LEFT JOIN (
+                    SELECT
+                        kd.docid,
+                        MAX(kd.id) AS maxid
+                    FROM ksefdocuments kd
+                    GROUP BY kd.docid
+                ) kd2 ON kd2.docid = d.id
+                JOIN customers c ON c.id = d.customerid
+                LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.id = kd2.maxid
+                LEFT JOIN ksefdelays kdl ON kdl.divisionid = d.divisionid
+                LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid'
                 . ($join_cash ?
                     ' JOIN invoicecontents a ON (a.docid = d.id)
                     LEFT JOIN cash ON cash.docid = d.id AND cash.itemid = a.itemid'

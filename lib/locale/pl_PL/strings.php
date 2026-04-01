@@ -6396,3 +6396,11 @@ $_LANG['<!ksef>at $a on $b and its handling has finished with error:'] = 'w dniu
 $_LANG['<!ksef>$a (error code: $b)'] = '$a (kod błędu: $b)';
 
 $_LANG['NO KSeF NUMBER'] = 'BRAK NUMERU KSeF';
+
+$_LANG['<!ksef>KSeF status'] = 'Status KSeF';
+$_LANG['<!ksef-status>- any -'] = '- dowolny -';
+$_LANG['<!ksef-status>excluded'] = 'wykluczona';
+$_LANG['<!ksef-status>not sent yet'] = 'jeszcze niewysłana';
+$_LANG['<!ksef-status>sent'] = 'wysłana';
+$_LANG['<!ksef-status>error'] = 'błąd';
+$_LANG['<!ksef-status>assigned number'] = 'nadany numer';
