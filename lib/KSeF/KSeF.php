@@ -527,6 +527,9 @@ class KSeF
         $xml .= "\t\t<P_1>" . date('Y-m-d', $invoice['cdate']) . "</P_1>" . PHP_EOL;
         //$xml .= "\t\t<P_1M></P_1M>" . PHP_EOL;
         $xml .= "\t\t<P_2>" . $invoice['fullnumber'] . "</P_2>" . PHP_EOL;
+        if ($invoice['cdate'] != $invoice['sdate']) {
+            $xml .= "\t\t<P_6>" . date('Y-m-d', $invoice['sdate']) . "</P_6>" . PHP_EOL;
+        }
 
         $currency = $invoice['currency'];
         $currencyValue = $invoice['currencyvalue'];
