@@ -999,7 +999,7 @@ class KSeF
         //$balance = $invoice['customerbalance'];
         $balance = $this->lms->getCustomerBalance($invoice['customerid'], $invoice['cdate']);
 
-        if (!empty($diffTotal)) {
+        if ($invoice['type'] == DOC_CNOTE) {
             $total = $diffTotal;
         } else {
             $total = $invoice['total'];
