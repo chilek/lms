@@ -442,8 +442,16 @@ class KSeF
         if (!empty($invoice['post_address'])) {
             $xml .= "\t\t<AdresKoresp>" . PHP_EOL;
             $xml .= "\t\t\t<KodKraju>" . $countryCode . "</KodKraju>" . PHP_EOL;
-            $xml .= "\t\t\t<AdresL1>" . htmlspecialchars($invoice['post_address']) . "</AdresL1>" . PHP_EOL;
-            $xml .= "\t\t\t<AdresL2>" . htmlspecialchars((empty($invoice['post_zip']) ? '' : $invoice['post_zip'] . ' ') . $invoice['post_city']) . "</AdresL2>" . PHP_EOL;
+            $xml .= "\t\t\t<AdresL1>"
+                . (empty($invoice['post_address'])
+                    ? '-'
+                    : htmlspecialchars($invoice['post_address'])
+                ) . "</AdresL1>" . PHP_EOL;
+            $xml .= "\t\t\t<AdresL2>"
+                . (empty($invoice['post_zip']) && empty($invoice['post_city'])
+                    ? '-'
+                    : htmlspecialchars((empty($invoice['post_zip']) ? '' : $invoice['post_zip'] . ' ') . $invoice['post_city'])
+                ) . "</AdresL2>" . PHP_EOL;
             $xml .= "\t\t</AdresKoresp>" . PHP_EOL;
         }
 
@@ -498,8 +506,16 @@ class KSeF
 
             $xml .= "\t\t<Adres>" . PHP_EOL;
             $xml .= "\t\t\t<KodKraju>" . $recCountryCode . "</KodKraju>" . PHP_EOL;
-            $xml .= "\t\t\t<AdresL1>" . htmlspecialchars($invoice['rec_address']) . "</AdresL1>" . PHP_EOL;
-            $xml .= "\t\t\t<AdresL2>" . htmlspecialchars((empty($invoice['rec_zip']) ? '' : $invoice['rec_zip'] . ' ') . $invoice['rec_city']) . "</AdresL2>" . PHP_EOL;
+            $xml .= "\t\t\t<AdresL1>"
+                . (empty($invoice['rec_address'])
+                    ? '-'
+                    : htmlspecialchars($invoice['rec_address'])
+                ) . "</AdresL1>" . PHP_EOL;
+            $xml .= "\t\t\t<AdresL2>"
+                . (empty($invoice['rec_zip']) && empty($invoice['rec_city'])
+                    ? '-'
+                    : htmlspecialchars((empty($invoice['rec_zip']) ? '' : $invoice['rec_zip'] . ' ') . $invoice['rec_city'])
+                ) . "</AdresL2>" . PHP_EOL;
             $xml .= "\t\t</Adres>" . PHP_EOL;
 
             switch ($invoice['recipient_type']) {
