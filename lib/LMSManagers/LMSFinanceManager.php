@@ -2224,9 +2224,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             switch ($ksefstatus) {
                 case 1:
                     $where .= '
+                        AND d.type IN (' . implode(',', [DOC_INVOICE, DOC_CNOTE]) . ')
                         AND (
                             d.cdate < ' . KSeF::getBoundaryDate() . '
-                            OR d.type NOT IN (' . implode(',', [DOC_INVOICE, DOC_CNOTE]) . ')
                             OR (
                                 c.type <> ' . CTYPES_COMPANY . '
                                 AND COALESCE(kac.allconsumers, 0) = 0
@@ -2237,6 +2237,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 case 2:
                     $where .= ' AND d.cdate >= ' . KSeF::getBoundaryDate() . '
                         AND d.type IN (' . implode(',', [DOC_INVOICE, DOC_CNOTE]) . ')
+                        AND kd.status IS NULL
                         AND (
                             c.type = ' . CTYPES_COMPANY . '
                             OR kac.allconsumers = 1
