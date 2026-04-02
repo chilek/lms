@@ -60,21 +60,21 @@ $access_table = array(
     ),
     'financial_operations' => array(
         'label' => trans('financial operations'),
-        'allow_regexp' => '^((customerassignment)(add|info|list|move|edit|del)|(balance|customerbalance)(new|add|ok|del|transfer|)|(cashreg(info))|(invoice|invoice(new|edit|del|note(|edit)|paid|info|send))|(note|note(add|edit|del|paid))|number|customertransferform)$',
+        'allow_regexp' => '^((customerassignment)(add|info|list|move|edit|del)|(balance|customerbalance)(new|add|ok|del|transfer|)|(cashreg(info))|(invoice|invoice(new|edit|del|note(|edit)|paid|info|send))|(note|note(add|edit|del|paid))|number|customertransferform|ksefpurchaseinvoiceinfo)$',
         'allow_menu_items' => array(
             'finances' => array('balancenew', 'invoicenew', 'invoicenew-proforma', 'noteadd', 'receiptadd'),
         ),
     ),
     'finances_management' => array(
         'label' => trans('finances management'),
-        'allow_regexp' => '^((tariff|customerassignment)(add|info|list|move|edit|del)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list|transfer|)|(cashreg(list|info))|(invoice|invoice(list|new|edit|del|note(|edit)|report|paid|info|send))|(note|note(list|add|edit|del|paid))|number|export|print|cashimport|cashimportparser|cashpackagedel|voipaccountbilling|customertransferform|customerselect|tariffpricevariant)$',
+        'allow_regexp' => '^((tariff|customerassignment)(add|info|list|move|edit|del)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list|transfer|)|(cashreg(list|info))|(invoice|invoice(list|new|edit|del|note(|edit)|report|paid|info|send))|(note|note(list|add|edit|del|paid))|number|export|print|cashimport|cashimportparser|cashpackagedel|voipaccountbilling|customertransferform|customerselect|tariffpricevariant|ksefpurchaseinvoiceinfo)$',
         'allow_menu_items' => array(
             'finances' => Permission::MENU_ALL,
         ),
     ),
     'finances_view' => array(
         'label' => trans('finances view'),
-        'allow_regexp' => '^((balance|customerbalance|invoice|note)list|cashreginfo|invoice(|info|send)|note|number)$',
+        'allow_regexp' => '^((balance|customerbalance|invoice|note)list|cashreginfo|invoice(|info|send)|note|number|ksefpurchaseinvoiceinfo)$',
         'allow_menu_items' => array(
             'finances' => array('balancelist', 'invoicelist', 'invoicelist-proforma', 'notelist'),
         ),
