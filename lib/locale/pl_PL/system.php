@@ -26,6 +26,10 @@
 
 function check_pl_ten($ten)
 {
+    if (!preg_match('/^(PL|[0-9]{2})/i', $ten)) {
+        return false;
+    }
+
     $steps = array(6, 5, 7, 2, 3, 4, 5, 6, 7);
     $sum_nb = 0;
 
