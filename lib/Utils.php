@@ -556,6 +556,23 @@ class Utils
         return $hm_purifier->purify($html);
     }
 
+    public static function removeHtml($html)
+    {
+        static $hm_purifier;
+        if (!isset($hm_purifier)) {
+            $hm_config = HTMLPurifier_Config::createDefault();
+
+            $hm_config->set('HTML.Allowed', '');
+            $hm_config->set('CSS.AllowedProperties', []);
+
+            $hm_config->set('AutoFormat.AutoParagraph', false);
+
+            $hm_purifier = new HTMLPurifier($hm_config);
+        }
+
+        return $hm_purifier->purify($html);
+    }
+
     public static function getGusRegonData($type, $id)
     {
         global $LMS;

@@ -831,7 +831,7 @@ class KSeF
         }
 
         if (!empty($invoice['comment'])) {
-            $comment = htmlspecialchars($invoice['comment']);
+            $comment = htmlspecialchars(\Utils::removeHtml($invoice['comment']));
             $commentLines = \Utils::wordWrapToArray($comment, 256);
             foreach ($commentLines as $commentLine) {
                 $commentLineChunks = preg_split('/\n\r?/', $commentLine, -1, PREG_SPLIT_NO_EMPTY);
@@ -849,7 +849,7 @@ class KSeF
         }
 
         if (!empty($invoice['memo'])) {
-            $memo = htmlspecialchars($invoice['memo']);
+            $memo = htmlspecialchars(\Utils::removeHtml($invoice['memo']));
             $memoLines = \Utils::wordWrapToArray($memo, 256);
             foreach ($memoLines as $memoLine) {
                 $memoLineChunks = preg_split('/\n\r?/', $memoLine, -1, PREG_SPLIT_NO_EMPTY);
