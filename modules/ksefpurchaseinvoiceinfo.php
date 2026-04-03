@@ -58,7 +58,17 @@ if (!empty($_GET['qr2pay'])) {
         [
             $invoice['seller_ten'],
             'PL',
-            preg_replace('/[\s]/', '', $invoice['bank_account']),
+            preg_replace(
+                [
+                    '/[\s]/',
+                    '/^PL/i',
+                ],
+                [
+                    '',
+                    '',
+                ],
+                $invoice['bank_account']
+            ),
             str_pad($invoice['gross_amount'] * 100, 6, 0, STR_PAD_LEFT),
             $invoice['seller_name'],
             //mb_substr($invoice['seller_name'], 0, 20),
