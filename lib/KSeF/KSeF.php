@@ -68,8 +68,8 @@ class KSeF
     const PAYTYPE_TRANSFER = 6;
     const PAYTYPE_MOBILE = 7;
 
-    const KSEF_UPO_DIR = STORAGE_DIR . DIRECTORY_SEPARATOR . 'ksef' . DIRECTORY_SEPARATOR . 'upo';
-    const KSEF_INVOICE_DIR = STORAGE_DIR . DIRECTORY_SEPARATOR . 'ksef' . DIRECTORY_SEPARATOR . 'invoice';
+    const KSEF_UPO_DIR = \STORAGE_DIR . DIRECTORY_SEPARATOR . 'ksef' . DIRECTORY_SEPARATOR . 'upo';
+    const KSEF_INVOICE_DIR = \STORAGE_DIR . DIRECTORY_SEPARATOR . 'ksef' . DIRECTORY_SEPARATOR . 'invoice';
 
     private static $upoStorage = null;
     private static $invoiceStorage = null;
