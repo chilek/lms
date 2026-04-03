@@ -454,7 +454,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         //$boundaryDate = $now;
     }
 
-    if ($jpk && $boundaryDate >= KSeF::getBoundaryDate()) {
+    if ($jpk && $boundaryDate >= strtotime('2026/02/01')) {
         $purchaseDocuments = $DB->GetAllByKey(
             'SELECT
                 i.*
