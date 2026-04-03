@@ -270,8 +270,9 @@ function getFirstFreeAddress($netid, $elemid)
 function getThroughput($ip)
 {
     $result = new xajaxResponse();
+
     $cmd = ConfigHelper::getConfig('phpui.live_traffic_helper');
-    if (empty($cmd)) {
+    if (empty($cmd) || !check_ip($ip)) {
         return $result;
     }
 

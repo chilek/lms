@@ -217,7 +217,7 @@ function updateNodeLock($params)
 function getThroughput($ip)
 {
     $cmd = ConfigHelper::getConfig('phpui.live_traffic_helper');
-    if (empty($cmd)) {
+    if (empty($cmd) || !check_ip($ip)) {
         return '';
     }
 
