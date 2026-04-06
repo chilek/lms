@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE TABLE rtqueuecategories (
@@ -33,7 +32,3 @@ $this->Execute("
 		FOREIGN KEY (categoryid) REFERENCES rtcategories (id) ON DELETE CASCADE ON UPDATE CASCADE
 	);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017061600', 'dbversion'));
-
-$this->CommitTrans();

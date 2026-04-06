@@ -21,11 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE nodesessions ADD COLUMN nasipaddr bigint DEFAULT NULL");
 $this->Execute("ALTER TABLE nodesessions ADD COLUMN nasport text DEFAULT NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018092600', 'dbversion'));
-
-$this->CommitTrans();

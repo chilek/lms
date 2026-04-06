@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE divisions ADD COLUMN location_city integer DEFAULT NULL
@@ -32,7 +31,3 @@ $this->Execute("
 	ALTER TABLE divisions ADD COLUMN location_flat varchar(32) DEFAULT NULL;
 	ALTER TABLE divisions ADD COLUMN tax_office_code varchar(8) DEFAULT NULL;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016120600', 'dbversion'));
-
-$this->CommitTrans();

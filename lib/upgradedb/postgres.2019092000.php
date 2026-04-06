@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 if ($this->ResourceExists('voip_tariff_rules', LMSDB::RESOURCE_TYPE_TABLE)) {
     $this->Execute("
@@ -29,7 +28,3 @@ if ($this->ResourceExists('voip_tariff_rules', LMSDB::RESOURCE_TYPE_TABLE)) {
         DROP SEQUENCE voip_tariff_rules_id_seq;
     ");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019092000', 'dbversion'));
-
-$this->CommitTrans();

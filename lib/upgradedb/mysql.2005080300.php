@@ -41,7 +41,6 @@ $receipt_monthly_numbering = $this->GetOne(
     array('receipts', 'monthly_numbering', 0)
 );
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE TABLE numberplans (
@@ -67,7 +66,3 @@ $this->Execute("UPDATE documents SET numberplanid = 0");
 $this->Execute("UPDATE documents SET numberplanid = 1 WHERE type = 1");
 $this->Execute("UPDATE documents SET numberplanid = 2 WHERE type = 2");
 $this->Execute("ALTER TABLE documents ADD INDEX numberplanid (numberplanid)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005080300', 'dbversion'));
-
-$this->CommitTrans();

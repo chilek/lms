@@ -21,14 +21,9 @@
  *
  */
 
-$this->BeginTrans();
 
 if (!$this->ResourceExists('documents.sdate', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("ALTER TABLE documents ADD sdate int(11) DEFAULT '0' NOT NULL");
 }
 
 $this->Execute("UPDATE documents SET sdate = cdate WHERE type IN (1, 3)"); // DOC_INVOICE/DOC_CNOTE
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011032500', 'dbversion'));
-
-$this->CommitTrans();
