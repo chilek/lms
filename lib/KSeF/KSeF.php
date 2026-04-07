@@ -434,7 +434,7 @@ class KSeF
                 ? (\ConfigHelper::checkValue($uiConfigVariables[$divisionId]['value']) ? 1 : 0)
                 : $globalShowBalanceSummary;
 
-            if (empty($divisionShowBalanceSummaries['showbalancesummaryid'])) {
+            if (empty($divisionShowBalanceSummary['showbalancesummaryid'])) {
                 $this->db->Execute(
                     'INSERT INTO ksefshowbalancesummaries
                     (divisionid, show)
