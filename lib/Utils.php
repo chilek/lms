@@ -50,7 +50,7 @@ class Utils
 
     public static function filterIntegers(?array $params)
     {
-		if ($params === null) {
+        if ($params === null) {
             return [];
         }
         return array_filter($params, function ($value) {
