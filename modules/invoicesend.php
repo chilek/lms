@@ -94,15 +94,15 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                     AND (
                         d.cdate < kbd.dt
                         OR kbd.dt IS NULL
-                        OR c.type = ? AND COALESCE(kac.allconsumers, 0) = ? AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ?)
-                        OR c.type = ? AND kd.status IN ?
+                        OR c.type = ? AND (COALESCE(kac.allconsumers, 0) = ? AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ?) OR kd.status IS NOT NULL)
+                        OR c.type = ? AND kd.status IS NOT NULL
                     ) OR d.type IN ?
                 ) AND d.id IN (" . implode(',', $ids) . ")
             ORDER BY d.number",
             [
                 [
-                    200,
                     0,
+                    200,
                 ],
                 CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_EMAIL | CONTACT_INVOICES,
                 [
@@ -113,10 +113,6 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                 0,
                 CCONSENT_KSEF_INVOICE,
                 CTYPES_COMPANY,
-                [
-                    0,
-                    200,
-                ],
                 [
                     DOC_DNOTE,
                     DOC_INVOICE_PRO,
