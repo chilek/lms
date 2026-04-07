@@ -2762,7 +2762,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				LEFT JOIN customerconsents cc2 ON cc2.customerid = d.customerid AND cc2.type = ?
 				LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
 				LEFT JOIN ksefboundarydates kbd ON kbd.divisionid = d.divisionid
-				LEFT JOIN ksefshowbalancesumaries ksbs ON ksbs.divisionid = d.divisionid
+				LEFT JOIN ksefshowbalancesummaries ksbs ON ksbs.divisionid = d.divisionid
 				LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
 				LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
 				WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)',
@@ -2853,7 +2853,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				LEFT JOIN countries cp ON (d.post_address_id IS NOT NULL AND cp.id = a2.country_id) OR (d.post_address_id IS NULL AND cp.id = c.post_countryid)
 				LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
 				LEFT JOIN ksefboundarydates kbd ON kbd.divisionid = d.divisionid
-				LEFT JOIN ksefshowbalancesumaries ksbs ON ksbs.divisionid = d.divisionid
+				LEFT JOIN ksefshowbalancesummaries ksbs ON ksbs.divisionid = d.divisionid
 				LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
 				LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
 				WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)',
