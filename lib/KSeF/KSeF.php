@@ -357,7 +357,7 @@ class KSeF
                 $boundaryDate = $globalBoundaryDate;
             }
 
-            if (empty($divisionBoundaryDates['boundarydateid'])) {
+            if (empty($divisionBoundaryDate['boundarydateid'])) {
                 $this->db->Execute(
                     'INSERT INTO ksefboundarydates
                     (divisionid, dt)
