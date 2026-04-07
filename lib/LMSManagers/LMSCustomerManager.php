@@ -361,7 +361,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             LEFT JOIN ksefdocuments kd2 ON kd2.docid = documents.id AND kd2.id = kd1.maxid
             LEFT JOIN ksefdelays kdl ON kdl.divisionid = documents.divisionid
             LEFT JOIN ksefallconsumers kac ON kac.divisionid = documents.divisionid
-            LEFT JOIN ksefboundarydates kdb ON kbd.divisionid = documents.divisionid
+            LEFT JOIN ksefboundarydates kbd ON kbd.divisionid = documents.divisionid
             LEFT JOIN numberplans ON numberplans.id = documents.numberplanid
             LEFT JOIN taxes ON cash.taxid = taxes.id
             WHERE cash.customerid = ?'
