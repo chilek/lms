@@ -2271,7 +2271,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 JOIN customers c ON c.id = d.customerid
                 LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.id = kd2.maxid
                 LEFT JOIN ksefdelays kdl ON kdl.divisionid = d.divisionid
-                LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid'
+                LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
+                LEFT JOIN ksefboundarydates kbd ON kbd.divisionid = d.divisionid'
                 . ($join_cash ?
                     ' JOIN invoicecontents a ON (a.docid = d.id)
                     LEFT JOIN cash ON cash.docid = d.id AND cash.itemid = a.itemid'
