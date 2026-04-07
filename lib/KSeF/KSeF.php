@@ -393,7 +393,7 @@ class KSeF
             'SELECT
                 d.id AS divisionid,
                 ksbs.id AS showbalancesummaryid,
-                ksbs.show AS show
+                ksbs.showsummary AS showsummary
             FROM divisions d
             LEFT JOIN ksefshowbalancesummaries ksbs ON ksbs.divisionid = d.id
             ORDER BY d.id',
@@ -437,31 +437,31 @@ class KSeF
             if (empty($divisionShowBalanceSummary['showbalancesummaryid'])) {
                 $this->db->Execute(
                     'INSERT INTO ksefshowbalancesummaries
-                    (divisionid, show)
+                    (divisionid, showsummary)
                     VALUES (?, ?)',
                     [
                         empty($divisionId) ? null : $divisionId,
                         $showBalanceSummary,
                     ]
                 );
-                $divisionShowBalanceSummaries[$divisionId]['show'] = $showBalanceSummary;
+                $divisionShowBalanceSummaries[$divisionId]['showsummary'] = $showBalanceSummary;
             } else {
-                if ($divisionShowBalanceSummary['show'] != $showBalanceSummary) {
+                if ($divisionShowBalanceSummary['showsummary'] != $showBalanceSummary) {
                     $this->db->Execute(
                         'UPDATE ksefshowbalancesummaries
-                        SET show = ?
+                        SET showsummary = ?
                         WHERE id = ?',
                         [
                             $showBalanceSummary,
                             $divisionShowBalanceSummary['showbalancesummaryid'],
                         ]
                     );
-                    $divisionShowBalanceSummaries[$divisionId]['show'] = $showBalanceSummary;
+                    $divisionShowBalanceSummaries[$divisionId]['showsummary'] = $showBalanceSummary;
                 }
             }
         }
 
-        return \Utils::array_column($divisionShowBalanceSummaries, 'show', 'divisionid');
+        return \Utils::array_column($divisionShowBalanceSummaries, 'showsummary', 'divisionid');
     }
 
     public static function base64Url(string $base64Data): string

@@ -2751,7 +2751,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     kd.hash AS ksefhash,
                     kbs.environment AS ksefenvironment,
                     kbd.dt AS ksefboundarydate,
-                    ksbs.show AS ksefshowbalancesummary
+                    ksbs.showsummary AS ksefshowbalancesummary
 				FROM documents d'
                 . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
                 . '
@@ -2838,7 +2838,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     kd.hash AS ksefhash,
                     kbs.environment AS ksefenvironment
                     kbd.dt AS ksefboundarydate,
-                    ksbs.show AS ksefshowbalancesummary
+                    ksbs.showsummary AS ksefshowbalancesummary
 				FROM documents d'
                 . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
                 . ' LEFT JOIN customeraddressview c ON (c.id = d.customerid)

@@ -41,7 +41,7 @@ if (!$this->ResourceExists('ksefshowbalancesummaries', LMSDB::RESOURCE_TYPE_TABL
         CREATE TABLE ksefshowbalancesummaries (
             id int(11) NOT NULL AUTO_INCREMENT,
             divisionid int(11) NOT NULL,
-            show smallint NOT NULL,
+            showsummary smallint NOT NULL,
             PRIMARY KEY (id),
             CONSTRAINT ksefshowbalancesummaries_divisionid_fkey
                 FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,

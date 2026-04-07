@@ -3279,7 +3279,7 @@ CREATE TABLE ksefboundarydates (
 CREATE TABLE ksefshowbalancesummaries (
     id int(11) NOT NULL AUTO_INCREMENT,
     divisionid int(11) NOT NULL,
-    show smallint NOT NULL,
+    showsummary smallint NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT ksefshowbalancesummaries_divisionid_fkey
         FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -4717,4 +4717,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026040700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026040701');
