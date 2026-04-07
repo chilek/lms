@@ -2836,7 +2836,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     kd.ksefnumber,
                     kd.status AS ksefstatus,
                     kd.hash AS ksefhash,
-                    kbs.environment AS ksefenvironment
+                    kbs.environment AS ksefenvironment,
                     kbd.dt AS ksefboundarydate,
                     ksbs.showsummary AS ksefshowbalancesummary
 				FROM documents d'
