@@ -48,8 +48,11 @@ class Utils
     public const PESEL_STATUS_RESERVED = 'ZASTRZEZONY';
     public const PESEL_STATUS_NOT_RESERVED = 'NIEZASTRZEZONY';
 
-    public static function filterIntegers(array $params)
+    public static function filterIntegers(?array $params)
     {
+		if ($params === null) {
+            return [];
+        }
         return array_filter($params, function ($value) {
             if (!isset($value)) {
                 return false;
