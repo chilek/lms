@@ -286,9 +286,11 @@ class ULMS extends LMS
             JOIN customers c ON c.id = d.customerid
             LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
             LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
+            LEFT JOIN ksefboundarydates kbd ON kbd.divisionid = d.divisionid
             WHERE d.id = ?
                 AND (
-                    d.cdate < ?
+                    kbd.dt IS NULL
+                    OR d.cdate < kbd.dt
                     OR (
                         EXISTS (SELECT 1 FROM uiconfig WHERE section = ? AND disabled = ? LIMIT 1)
                         AND (
@@ -304,7 +306,6 @@ class ULMS extends LMS
             [
                 $expectedKSeFStatuses,
                 $docid,
-                KSeF::getBoundaryDate(),
                 'ksef',
                 0,
                 CTYPES_COMPANY,

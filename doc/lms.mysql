@@ -47,6 +47,8 @@ DROP TABLE IF EXISTS ksefinvoicesummaries;
 DROP TABLE IF EXISTS ksefinvoicethirdsubjects;
 DROP TABLE IF EXISTS ksefinvoices;
 DROP TABLE IF EXISTS ksefdocuments;
+DROP TABLE IF EXISTS ksefshowbalancesummaries;
+DROP TABLE IF EXISTS ksefboundarydates;
 DROP TABLE IF EXISTS ksefallconsumers;
 DROP TABLE IF EXISTS ksefdelays;
 DROP TABLE IF EXISTS ksefbatchsessions;
@@ -3259,6 +3261,30 @@ CREATE TABLE ksefallconsumers (
 
 # ---------------------------------------------------
 #
+# Structure of table ksefboundarydates
+#
+CREATE TABLE ksefboundarydates (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    divisionid int(11) NOT NULL
+        CONSTRAINT ksefboundarydates_divisionid_fkey REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    dt int(16) NOT NULL,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+# ---------------------------------------------------
+#
+# Structure of table ksefshowbalancesummaries
+#
+CREATE TABLE ksefshowbalancesummaries (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    divisionid int(11) NOT NULL
+        CONSTRAINT ksefshowbalancesummaries_divisionid_fkey REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    show smallint NOT NULL,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+# ---------------------------------------------------
+#
 # Structure of table ksefdocuments
 #
 CREATE TABLE ksefdocuments (
@@ -4689,4 +4715,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026033100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026040700');

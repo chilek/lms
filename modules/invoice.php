@@ -290,12 +290,12 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         FROM ksefdocuments kd
         JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
         JOIN documents d ON d.id = kd.docid
-        WHERE d.cdate >= ?
+        LEFT JOIN ksefboundarydates kbd ON kbd.divisionid = d.divisionid
+        WHERE d.cdate >= kbd.dt
             AND kbs.environment = ?
             AND kd.status = ?
         GROUP BY d.divisionid, d.div_ten',
         [
-            KSeF::getBoundaryDate(),
             //KSeF::ENVIRONMENT_TEST,
             KSeF::ENVIRONMENT_PROD,
             200,
@@ -330,8 +330,6 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
     } elseif (intval($_GET['divisionid'])) {
         $divisionIds = [intval($_GET['divisionid'])];
     }
-
-    $ksefDeploymentDate = KSeF::getBoundaryDate();
 
     $documents = $DB->GetAllByKey(
         'SELECT
@@ -370,6 +368,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
         LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
         LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
+        LEFT JOIN ksefboundarydates kbd ON kbd.divisionid = d.divisionid
         LEFT JOIN customerconsents cc ON cc.customerid = c.id AND cc.type = ?
         LEFT JOIN countries cn ON (cn.id = d.countryid)
         LEFT JOIN countries cdv ON cdv.id = d.div_countryid
@@ -400,7 +399,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 ? (
                     empty($ksefSubmit)
                         ? ' AND (
-                            d.cdate < ' . $ksefDeploymentDate . '
+                            d.cdate < kbd.dt
                             OR kd.status IS NULL
                                 AND c.type = ' . CTYPES_PRIVATE . '
                                 AND COALESCE(kac.allconsumers, 0) = 0
@@ -411,7 +410,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                                 )
                         )'
                         : ' AND (
-                            d.cdate >= ' . $ksefDeploymentDate . '
+                            d.cdate >= kbd.dt
                             AND (
                                 kd.status = 200
                                 OR kd.status = 0

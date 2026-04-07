@@ -3165,7 +3165,7 @@ CREATE SEQUENCE ksefdelays_id_seq;
 DROP TABLE IF EXISTS ksefdelays CASCADE;
 CREATE TABLE ksefdelays (
     id integer DEFAULT nextval('ksefdelays_id_seq'::text) NOT NULL,
-    divisionid integer
+    divisionid integer NOT NULL
         CONSTRAINT ksefdelays_divisionid_fkey REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
     delay integer NOT NULL,
     PRIMARY KEY (id)
@@ -3179,9 +3179,37 @@ CREATE SEQUENCE ksefallconsumers_id_seq;
 DROP TABLE IF EXISTS ksefallconsumers CASCADE;
 CREATE TABLE ksefallconsumers (
     id integer DEFAULT nextval('ksefallconsumers_id_seq'::text) NOT NULL,
-    divisionid integer
+    divisionid integer NOT NULL
         CONSTRAINT ksefallconsumers_divisionid_fkey REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
     allconsumers smallint NOT NULL,
+    PRIMARY KEY (id)
+);
+
+
+/* ---------------------------------------------------
+ Structure of table ksefboundarydates
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS ksefboundarydates_id_seq;
+CREATE SEQUENCE ksefboundarydates_id_seq;
+CREATE TABLE ksefboundarydates (
+    id integer DEFAULT nextval('ksefboundarydates_id_seq'::text) NOT NULL,
+    divisionid integer
+       CONSTRAINT ksefboundarydates_divisionid_fkey REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    dt bigint NOT NULL,
+    PRIMARY KEY (id)
+);
+
+/* ---------------------------------------------------
+ Structure of table ksefshowbalancesummaries
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS ksefshowbalancesummaries_id_seq;
+CREATE SEQUENCE ksefshowbalancesummaries_id_seq;
+DROP TABLE IF EXISTS ksefshowbalancesummaries CASCADE;
+CREATE TABLE ksefshowbalancesummaries (
+    id integer DEFAULT nextval('ksefshowbalancesummaries_id_seq'::text) NOT NULL,
+    divisionid integer
+        CONSTRAINT ksefshowbalancesummaries_divisionid_fkey REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    show smallint NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -4729,6 +4757,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026033100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026040700');
 
 COMMIT;

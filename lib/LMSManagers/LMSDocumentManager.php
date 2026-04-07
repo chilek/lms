@@ -3933,8 +3933,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             ) kd2 ON kd2.docid = d.id
             LEFT JOIN ksefdelays kds ON kds.divisionid = d.divisionid
             LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
+            LEFT JOIN ksefboundarydates kbd ON kbd.divisionid = d.divisionid
             WHERE d.id = ?
-                AND d.cdate >= ?
+                AND (d.cdate >= kbd.dt OR kbd.dt IS NULL)
                 AND (
                     kd.id IS NOT NULL AND kd.status IN ?
                     OR kds.delay > -1 AND ?NOW? - d.cdate >= kds.delay
@@ -3949,7 +3950,6 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 400,
                 500,
                 $docid,
-                KSeF::getBoundaryDate(),
                 [
                     200,
                     0,
@@ -3979,8 +3979,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             ) kd2 ON kd2.docid = d.id
             LEFT JOIN ksefdelays kds ON kds.divisionid = d.divisionid
             LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
+            LEFT JOIN ksefboundarydates kbd ON kbd.divisionid = d.divisionid
             WHERE c.id = ?
-                AND d.cdate >= ?
+                AND (d.cdate >= kbd.dt OR kbd.dt IS NULL)
                 AND (
                     kd.id IS NOT NULL AND kd.status IN ?
                     OR kds.delay > -1 AND ?NOW? - d.cdate >= kds.delay
@@ -3995,7 +3996,6 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 400,
                 500,
                 $cashid,
-                KSeF::getBoundaryDate(),
                 [
                     200,
                     0,

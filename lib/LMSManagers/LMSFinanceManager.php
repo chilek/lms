@@ -2226,7 +2226,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $where .= '
                         AND d.type IN (' . implode(',', [DOC_INVOICE, DOC_CNOTE]) . ')
                         AND (
-                            d.cdate < ' . KSeF::getBoundaryDate() . '
+                            (d.cdate < kbd.dt OR kbd.dt IS NULL)
                             OR (
                                 c.type <> ' . CTYPES_COMPANY . '
                                 AND COALESCE(kac.allconsumers, 0) = 0
@@ -2235,7 +2235,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         )';
                     break;
                 case 2:
-                    $where .= ' AND d.cdate >= ' . KSeF::getBoundaryDate() . '
+                    $where .= ' AND (d.cdate >= kbd.dt OR kbd.dt IS NULL)
                         AND d.type IN (' . implode(',', [DOC_INVOICE, DOC_CNOTE]) . ')
                         AND kd.status IS NULL
                         AND (
@@ -2271,7 +2271,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 JOIN customers c ON c.id = d.customerid
                 LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.id = kd2.maxid
                 LEFT JOIN ksefdelays kdl ON kdl.divisionid = d.divisionid
-                LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid'
+                LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
+                LEFT JOIN ksefboundarydates Kbd ON kbd.divisionid = d.divisionid'
                 . ($join_cash ?
                     ' JOIN invoicecontents a ON (a.docid = d.id)
                     LEFT JOIN cash ON cash.docid = d.id AND cash.itemid = a.itemid'
@@ -2330,7 +2331,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 kd.ksefnumber AS ksefnumber,
                 kdl.delay AS ksefdelay,
                 (CASE
-                    WHEN d.cdate >= ' . KSeF::getBoundaryDate() . '
+                    WHEN d.cdate >= kbd.dt
                         AND kdl.delay > -1
                         AND ?NOW? - d.cdate >= kdl.delay
                         AND d.type IN (' . implode(',', [DOC_INVOICE, DOC_CNOTE]) . ')
@@ -2343,7 +2344,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     ELSE 0
                 END) AS ksefsubmit,
                 (CASE
-                    WHEN d.cdate >= ' . KSeF::getBoundaryDate() . '
+                    WHEN d.cdate >= kbd.dt
                         AND d.type IN (' . implode(',', [DOC_INVOICE, DOC_CNOTE]) . ')
                         AND (
                             c.type = ' . CTYPES_COMPANY . '
@@ -2364,6 +2365,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.id = kd2.maxid
             LEFT JOIN ksefdelays kdl ON kdl.divisionid = d.divisionid
             LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
+            LEFT JOIN ksefboundarydates kbd ON kbd.divisionid = d.divisionid
             JOIN vinvoicecontents a ON (a.docid = d.id)'
             . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
             . ' LEFT JOIN cash ON cash.docid = d.id AND a.itemid = cash.itemid
@@ -2748,7 +2750,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 kd.ksefnumber,
                 kd.status AS ksefstatus,
                 kd.hash AS ksefhash,
-                kbs.environment AS ksefenvironment
+                kbs.environment AS ksefenvironment,
+                kbd.dt AS ksefboundarydate
 				FROM documents d'
                 . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
                 . '
@@ -2758,6 +2761,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				LEFT JOIN customerconsents cc ON cc.customerid = d.customerid AND cc.type = ?
 				LEFT JOIN customerconsents cc2 ON cc2.customerid = d.customerid AND cc2.type = ?
 				LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
+				LEFT JOIN ksefboundarydates kbd ON kbd.divisionid = d.divisionid
 				LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
 				LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
 				WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)',
@@ -2832,6 +2836,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 kd.status AS ksefstatus,
                 kd.hash AS ksefhash,
                 kbs.environment AS ksefenvironment
+                kbd.dt AS ksefboundarydate
 				FROM documents d'
                 . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
                 . ' LEFT JOIN customeraddressview c ON (c.id = d.customerid)
@@ -2845,6 +2850,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				LEFT JOIN vaddresses a2 ON d.post_address_id = a2.id
 				LEFT JOIN countries cp ON (d.post_address_id IS NOT NULL AND cp.id = a2.country_id) OR (d.post_address_id IS NULL AND cp.id = c.post_countryid)
 				LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
+				LEFT JOIN ksefboundarydates kbd ON kbd.divisionid = d.divisionid
 				LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
 				LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
 				WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)',
@@ -2868,7 +2874,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         if ($result) {
             $result['ksef_warning'] = $result['doctype'] != DOC_INVOICE_PRO
                 && empty($result['ksefnumber'])
-                && $result['cdate'] >= KSeF::getBoundaryDate()
+                && $result['cdate'] >= $result['ksefboundarydate']
                 && (!empty($result['ksef_invoice_consent']) || $result['customertype'] == CTYPES_COMPANY);
 
             $result['export'] = $result['division_countryid'] && $result['countryid'] && $result['division_countryid'] != $result['countryid'];

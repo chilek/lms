@@ -81,6 +81,7 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
             LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
             LEFT JOIN ksefdelays kdl ON kdl.divisionid = d.divisionid
             LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
+            LEFT JOIN ksefboundarydates kbd ON kbd.divisionid = d.divisionid
             JOIN (
                 SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
                 FROM customercontacts
@@ -91,7 +92,8 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
             WHERE (
                     d.type IN ?
                     AND (
-                        d.cdate < ?
+                        d.cdate < kbd.dt
+                        OR kbd.dt IS NULL
                         OR c.type = ? AND COALESCE(kac.allconsumers, 0) = ? AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ?)
                         OR c.type = ? AND kd.status IN ?
                     ) OR d.type IN ?
@@ -107,7 +109,6 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                     DOC_INVOICE,
                     DOC_CNOTE,
                 ],
-                KSeF::getBoundaryDate(),
                 CTYPES_PRIVATE,
                 0,
                 CCONSENT_KSEF_INVOICE,

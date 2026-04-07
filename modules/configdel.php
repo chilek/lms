@@ -42,6 +42,12 @@ if (isset($_GET['id'])) {
                 case 'all_consumers':
                     $ksef->updateAllConsumers();
                     break;
+                case 'boundary_date':
+                    $ksef->updateBoundaryDates();
+                    break;
+                case 'show_balance_summary':
+                    $ksef->updateShowBalanceSummaries();
+                    break;
             }
         }
     }
@@ -54,7 +60,7 @@ if (isset($_GET['id'])) {
         }
         $DB->CommitTrans();
 
-        $updateDelaysRequired = $updateAllConsumersRequired = false;
+        $updateDelaysRequired = $updateAllConsumersRequired = $updateBoundaryDatesRequired = $updateShowBalanceSummariesRequired = false;
         foreach ($options as $option) {
             $configVariable = $LMS->GetConfigVariable($option);
             if ($configVariable['section'] == 'ksef') {
@@ -65,16 +71,28 @@ if (isset($_GET['id'])) {
                     case 'all_consumers':
                         $updateAllConsumersRequired = true;
                         break;
+                    case 'boundary_date':
+                        $updateBoundaryDatesRequired = true;
+                        break;
+                    case 'show_balance_summary':
+                        $updateShowBalanceSummariesRequired = true;
+                        break;
                 }
             }
         }
-        if ($updateDelaysRequired || $updateAllConsumersRequired) {
+        if ($updateDelaysRequired || $updateAllConsumersRequired || $updateBoundaryDatesRequired || $updateShowBalanceSummariesRequired) {
             $ksef = new \Lms\KSeF\KSeF($DB, $LMS);
             if ($updateDelaysRequired) {
                 $ksef->updateDelays();
             }
             if ($updateAllConsumersRequired) {
                 $ksef->updateAllConsumers();
+            }
+            if ($updateBoundaryDatesRequired) {
+                $ksef->updateBoundaryDates();
+            }
+            if ($updateShowBalanceSummariesRequired) {
+                $ksef->updateShowBalanceSummaries();
             }
         }
     }

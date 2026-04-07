@@ -324,7 +324,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 kd2.ksefnumber AS ksefnumber,
                 kdl.delay AS ksefdelay,
                 (CASE
-                    WHEN documents.cdate >= ' . KSeF::getBoundaryDate() . '
+                    WHEN documents.cdate >= kbd.dt
                         AND kdl.delay > -1
                         AND ?NOW? - documents.cdate >= kdl.delay
                         AND documents.type IN (' . implode(',', [DOC_INVOICE, DOC_CNOTE]) . ')
@@ -337,7 +337,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     ELSE 0
                 END) AS ksefsubmit,
                 (CASE
-                    WHEN documents.cdate >= ' . KSeF::getBoundaryDate() . '
+                    WHEN documents.cdate >= kbd.dt
                         AND documents.type IN (' . implode(',', [DOC_INVOICE, DOC_CNOTE]) . ')
                         AND (
                             c.type = ' . CTYPES_COMPANY . '
@@ -361,6 +361,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             LEFT JOIN ksefdocuments kd2 ON kd2.docid = documents.id AND kd2.id = kd1.maxid
             LEFT JOIN ksefdelays kdl ON kdl.divisionid = documents.divisionid
             LEFT JOIN ksefallconsumers kac ON kac.divisionid = documents.divisionid
+            LEFT JOIN ksefboundarydates kdb ON kbd.divisionid = documents.divisionid
             LEFT JOIN numberplans ON numberplans.id = documents.numberplanid
             LEFT JOIN taxes ON cash.taxid = taxes.id
             WHERE cash.customerid = ?'

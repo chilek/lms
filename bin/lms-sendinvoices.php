@@ -463,6 +463,7 @@ if ($backup || $archive) {
                 LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
                 LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
                 LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
+                LEFT JOIN ksefboundarydates kbd ON kbd.divisionid = d.divisionid
                 JOIN (
                     SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
                     FROM customercontacts
@@ -485,7 +486,7 @@ if ($backup || $archive) {
                         ? ' AND kd.status IS NULL
                             AND (
                                 c.type = ' . CTYPES_PRIVATE . '
-                                OR c.type = ' . CTYPES_COMPANY . ' AND d.cdate < ' . KSeF::getBoundaryDate() . '
+                                OR c.type = ' . CTYPES_COMPANY . ' AND (d.cdate < kbd.dt OR kbd.dt IS NULL)
                             ) AND COALESCE(kac.allconsumers, 0) = 0
                             AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')'
                         : ''
@@ -535,7 +536,8 @@ $query = "
     LEFT JOIN customeraddressview c ON c.id = d.customerid
     LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
     LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
-    LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid"
+    LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
+    LEFT JOIN ksefboundarydates kbd ON kbd.divisionid"
     . ($backup || $archive ? '' : " JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
         FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id")
     . " LEFT JOIN numberplans n ON n.id = d.numberplanid
@@ -553,7 +555,7 @@ $query = "
             ? ' AND kd.status IS NULL
                 AND (
                     c.type = ' . CTYPES_PRIVATE . '
-                    OR c.type = ' . CTYPES_COMPANY . ' AND d.cdate < ' . KSeF::getBoundaryDate() . '
+                    OR c.type = ' . CTYPES_COMPANY . ' AND (d.cdate < kbd.dt OR kbd.dt IS NULL)
                 ) AND COALESCE(kac.allconsumers, 0) = 0
                 AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')'
             : ''

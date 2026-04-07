@@ -77,6 +77,12 @@ if (isset($_GET['statuschange'])) {
             case 'all_consumers':
                 $ksef->updateAllConsumers();
                 break;
+            case 'boundary_date':
+                $ksef->updateBoundaryDates();
+                break;
+            case 'show_balance_summary':
+                $ksef->updateShowBalanceSummaries();
+                break;
         }
     }
 
@@ -237,6 +243,12 @@ if (isset($_POST['config'])) {
                         break;
                     case 'all_consumers':
                         $ksef->updateAllConsumers();
+                        break;
+                    case 'boundary_date':
+                        $ksef->updateBoundaryDates();
+                        break;
+                    case 'show_balance_summary':
+                        $ksef->updateShowBalanceSummaries();
                         break;
                 }
             }

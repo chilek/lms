@@ -2536,6 +2536,7 @@ if (empty($types) || in_array('invoices', $types)) {
         LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
         LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
         LEFT JOIN ksefallconsumers kac ON kac.divisionid = c.divisionid
+        LEFT JOIN ksefboundarydates kbd ON kbd.divisionid = c.divisionid
         LEFT JOIN divisions ON divisions.id = c.divisionid
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
             FROM customercontacts
@@ -2577,7 +2578,7 @@ if (empty($types) || in_array('invoices', $types)) {
                 ? ' AND kd.status IS NULL
                     AND (
                         c.type = ' . CTYPES_PRIVATE . '
-                        OR c.type = ' . CTYPES_COMPANY . ' AND d.cdate < ' . KSeF::getBoundaryDate() . '
+                        OR c.type = ' . CTYPES_COMPANY . ' AND d.cdate < kbd.dt
                     ) AND COALESCE(kac.allconsumers, 0) = 0
                     AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')'
                 : ''
