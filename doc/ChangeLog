@@ -1204,6 +1204,8 @@ version 28-git (????-??-??):
   - enhancement: KSeF: 'ksef.all_consumers' configration variable with 'false' as default value allows
     to enable ksef consent globally for all consumer-type customers [chilan]
   - enhancement: KSeF: add purchase invoices to JPK-V7M(3) xml files [chilan]
+  - improvement: KSeF: 'ksef.show_balance_summary' with 'false' as default value disables <Rozliczenia>
+    inclusion in xml output file [chilan]
 
 version 27.0 (2021-08-20):
 
