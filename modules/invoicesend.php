@@ -79,9 +79,7 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
             LEFT JOIN customers c ON c.id = d.customerid
             LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
             LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
-            LEFT JOIN ksefdelays kdl ON kdl.divisionid = d.divisionid
-            LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
-            LEFT JOIN ksefboundarydates kbd ON kbd.divisionid = d.divisionid
+            LEFT JOIN ksefconfig kc ON kc.divisionid = d.divisionid
             JOIN (
                 SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
                 FROM customercontacts
@@ -92,9 +90,9 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
             WHERE (
                     d.type IN ?
                     AND (
-                        d.cdate < kbd.dt
-                        OR kbd.dt IS NULL
-                        OR c.type = ? AND (COALESCE(kac.allconsumers, 0) = ? AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ?) OR kd.status IS NOT NULL)
+                        d.cdate < kc.boundarydate
+                        OR kc.boundarydate IS NULL
+                        OR c.type = ? AND (COALESCE(kc.allconsumers, 0) = ? AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ?) OR kd.status IS NOT NULL)
                         OR c.type = ? AND kd.status IS NOT NULL
                     ) OR d.type IN ?
                 ) AND d.id IN (" . implode(',', $ids) . ")

@@ -151,317 +151,167 @@ class KSeF
         $this->showAllAccounts = \ConfigHelper::checkConfig('invoices.show_all_accounts');
     }
 
-    public function updateDelays(): array
+    public function updateConfig(): array
     {
-        $divisionDelays = $this->db->GetAllByKey(
+        $divisionConfigs = $this->db->GetAllByKey(
             'SELECT
                 d.id AS divisionid,
-                kd.id AS delayid,
-                kd.delay AS delay
+                kc.id AS configid,
+                kc.delay,
+                kc.allconsumers,
+                kc.boundarydate,
+                kc.showbalancesummary
             FROM divisions d
-            LEFT JOIN ksefdelays kd ON kd.divisionid = d.id
+            LEFT JOIN ksefconfig kc ON kc.divisionid = d.id
             ORDER BY d.id',
             'divisionid'
         );
-        if (empty($divisionDelays)) {
-            $divisionDelays = [];
+        if (empty($divisionConfigs)) {
+            $divisionConfigs = [];
         }
 
-        $uiConfigVariables = $this->db->GetAllByKey(
+        $uiConfigVariables = $this->db->GetAll(
             'SELECT
+                c.var,
                 c.value,
                 COALESCE(c.divisionid, 0) AS divisionid
             FROM uiconfig c
             WHERE section = ?
-                AND var = ?
+                AND var in ?
                 AND disabled = ?
             ORDER BY COALESCE(c.divisionid, 0)',
-            'divisionid',
             [
                 'ksef',
-                'delay',
+                [
+                    'delay',
+                    'all_consumers',
+                    'boundary_date',
+                    'show_balance_summary',
+                ],
                 0,
             ]
         );
         if (empty($uiConfigVariables)) {
-            $uiConfigVariables = [
-                0 => [
-                    'value' => 3600,
-                ],
-            ];
+            $uiConfigVariables = [];
         }
 
-        foreach ($divisionDelays as $divisionId => $divisionDelay) {
-            $delay = isset($uiConfigVariables[$divisionId]) ? $uiConfigVariables[$divisionId]['value'] : $uiConfigVariables[0]['value'];
+        $existingDivisionConfigs = [];
 
-            if (empty($divisionDelay['delayid'])) {
-                $this->db->Execute(
-                    'INSERT INTO ksefdelays
-                    (divisionid, delay)
-                    VALUES (?, ?)',
-                    [
-                        $divisionId,
-                        $delay,
-                    ]
-                );
-                $divisionDelays[$divisionId]['delay'] = $delay;
-            } else {
-                if ($divisionDelay['delay'] != $delay) {
-                    $this->db->Execute(
-                        'UPDATE ksefdelays
-                        SET delay = ?
-                        WHERE id = ?',
-                        [
-                            $delay,
-                            $divisionDelay['delayid'],
-                        ]
-                    );
-                    $divisionDelays[$divisionId]['delay'] = $delay;
-                }
+        foreach ($uiConfigVariables as $uiConfigVariable) {
+            $divisionId = $uiConfigVariable['divisionid'];
+            $var = $uiConfigVariable['var'];
+            $value = $uiConfigVariable['value'];
+
+            if (!isset($existingDivisionConfigs[$divisionId])) {
+                $existingDivisionConfigs[$divisionId] = [];
             }
-        }
 
-        return \Utils::array_column($divisionDelays, 'delay', 'divisionid');
-    }
-
-    public function updateAllConsumers(): array
-    {
-        $divisionAllConsumers = $this->db->GetAllByKey(
-            'SELECT
-                d.id AS divisionid,
-                kac.id AS allconsumerid,
-                kac.allconsumers AS allconsumers
-            FROM divisions d
-            LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.id
-            ORDER BY d.id',
-            'divisionid'
-        );
-        if (empty($divisionAllConsumers)) {
-            $divisionAllConsumers = [];
-        }
-
-        $uiConfigVariables = $this->db->GetAllByKey(
-            'SELECT
-                c.value,
-                COALESCE(c.divisionid, 0) AS divisionid
-            FROM uiconfig c
-            WHERE section = ?
-                AND var = ?
-                AND disabled = ?
-            ORDER BY COALESCE(c.divisionid, 0)',
-            'divisionid',
-            [
-                'ksef',
-                'all_consumers',
-                0,
-            ]
-        );
-        if (empty($uiConfigVariables)) {
-            $uiConfigVariables = [
-                0 => [
-                    'value' => 'false',
-                ],
-            ];
-        }
-
-        $globalAllConsumers = isset($uiConfigVariables[0]['value']) && \ConfigHelper::checkValue($uiConfigVariables[0]['value']) ? 1 : 0;
-
-        foreach ($divisionAllConsumers as $divisionId => $divisionAllConsumer) {
-            $allConsumers = isset($uiConfigVariables[$divisionId])
-                ? (\ConfigHelper::checkValue($uiConfigVariables[$divisionId]['value']) ? 1 : 0)
-                : $globalAllConsumers;
-
-            if (empty($divisionAllConsumer['allconsumerid'])) {
-                $this->db->Execute(
-                    'INSERT INTO ksefallconsumers
-                    (divisionid, allconsumers)
-                    VALUES (?, ?)',
-                    [
-                        empty($divisionId) ? null : $divisionId,
-                        $allConsumers,
-                    ]
-                );
-                $divisionAllConsumers[$divisionId]['allconsumers'] = $allConsumers;
-            } else {
-                if ($divisionAllConsumer['allconsumers'] != $allConsumers) {
-                    $this->db->Execute(
-                        'UPDATE ksefallconsumers
-                        SET allconsumers = ?
-                        WHERE id = ?',
-                        [
-                            $allConsumers,
-                            $divisionAllConsumer['allconsumerid'],
-                        ]
-                    );
-                    $divisionAllConsumers[$divisionId]['allconsumers'] = $allConsumers;
-                }
+            switch ($var) {
+                case 'delay':
+                    $value = intval($value);
+                    break;
+                case 'all_consumers':
+                    $value = \ConfigHelper::checkValue($value) ? 1 : 0;
+                    $var = 'allconsumers';
+                    break;
+                case 'show_balance_summary':
+                    $value = \ConfigHelper::checkValue($value) ? 1 : 0;
+                    $var = 'showbalancesummary';
+                    break;
+                case 'boundary_date':
+                    $value = strtotime($value);
+                    $var = 'boundarydate';
+                    break;
             }
+            $existingDivisionConfigs[$divisionId][$var] = $value;
         }
 
-        return \Utils::array_column($divisionAllConsumers, 'allconsumers', 'divisionid');
-    }
-
-    public function updateBoundaryDates(): array
-    {
-        $divisionBoundaryDates = $this->db->GetAllByKey(
-            'SELECT
-                d.id AS divisionid,
-                kbd.id AS boundarydateid,
-                kbd.dt AS dt
-            FROM divisions d
-            LEFT JOIN ksefboundarydates kbd ON kbd.divisionid = d.id
-            ORDER BY d.id',
-            'divisionid'
-        );
-        if (empty($divisionBoundaryDates)) {
-            $divisionBoundaryDates = [];
-        }
-
-        $uiConfigVariables = $this->db->GetAllByKey(
-            'SELECT
-                c.value,
-                COALESCE(c.divisionid, 0) AS divisionid
-            FROM uiconfig c
-            WHERE section = ?
-                AND var = ?
-                AND disabled = ?
-            ORDER BY COALESCE(c.divisionid, 0)',
-            'divisionid',
-            [
-                'ksef',
-                'boundary_date',
-                0,
-            ]
-        );
-        if (empty($uiConfigVariables)) {
-            $uiConfigVariables = [
-                0 => [
-                    'value' => '2026/04/01',
-                ],
+        if (isset($existingDivisionConfigs[0])) {
+            $existingDivisionConfigs[0]['delay'] = isset($existingDivisionConfigs[0]['delay']) ? intval($existingDivisionConfigs[0]['delay']) : 3600;
+            $existingDivisionConfigs[0]['allconsumers'] = isset($existingDivisionConfigs[0]['allconsumers']) && \ConfigHelper::checkValue($existingDivisionConfigs[0]['allconsumers']) ? 1 : 0;
+            $existingDivisionConfigs[0]['boundarydate'] = strtotime(isset($existingDivisionConfigs[0]['boundarydate']) ? $existingDivisionConfigs[0]['boundarydate'] : '2026/04/01');
+            if ($existingDivisionConfigs[0]['boundarydate'] === false) {
+                $existingDivisionConfigs[0]['boundarydate'] = strtotime('2026/04/01');
+            }
+            $existingDivisionConfigs[0]['showbalancesummary'] = isset($existingDivisionConfigs[0]['showbalancesummary']) && \ConfigHelper::checkValue($existingDivisionConfigs[0]['showbalancesummary']) ? 1 : 0;
+        } else {
+            $existingDivisionConfigs[0] = [
+                'delay' => 3600,
+                'allconsumers' => 0,
+                'boundarydate' => strtotime('2026/04/01'),
+                'showbalancesummary' => 0,
             ];
         }
 
-        $globalBoundaryDate = isset($uiConfigVariables[0]['value']) ? $uiConfigVariables[0]['value'] : '2026/04/01';
-        $globalBoundaryDate = strtotime($globalBoundaryDate);
-        if ($globalBoundaryDate === false) {
-            $globalBoundaryDate = strtotime('2026/04/01');
-        }
-
-        foreach ($divisionBoundaryDates as $divisionId => $divisionBoundaryDate) {
-            if (isset($uiConfigVariables[$divisionId])) {
-                $boundaryDate = strtotime($uiConfigVariables[$divisionId]['value']);
+        foreach ($divisionConfigs as $divisionId => $divisionConfig) {
+            $delay = isset($existingDivisionConfigs[$divisionId]['delay']) ? intval($existingDivisionConfigs[$divisionId]['delay']) : $existingDivisionConfigs[0]['delay'];
+            $allConsumers = isset($existingDivisionConfigs[$divisionId]['allconsumers'])
+                ? (\ConfigHelper::checkValue($existingDivisionConfigs[$divisionId]['allconsumers']) ? 1 : 0)
+                : $existingDivisionConfigs[0]['allconsumers'];
+            if (isset($existingDivisionConfig[$divisionId]['boundarydate'])) {
+                $boundaryDate = strtotime($existingDivisionConfigs[$divisionId]['boundarydate']);
                 if ($boundaryDate === false) {
                     $boundaryDate = strtotime('2026/04/01');
                 }
             } else {
-                $boundaryDate = $globalBoundaryDate;
+                $boundaryDate = $existingDivisionConfigs[0]['boundarydate'];
             }
+            $showBalanceSummary = isset($existingDivisionConfigs[$divisionId]['showbalancesummary'])
+                ? (\ConfigHelper::checkValue($existingDivisionConfigs[$divisionId]['showbalancesummary']) ? 1 : 0)
+                : $existingDivisionConfigs[0]['showbalancesummary'];
 
-            if (empty($divisionBoundaryDate['boundarydateid'])) {
+            if (empty($divisionConfig['configid'])) {
                 $this->db->Execute(
-                    'INSERT INTO ksefboundarydates
-                    (divisionid, dt)
-                    VALUES (?, ?)',
+                    'INSERT INTO ksefconfig
+                    (divisionid, delay, allconsumers, boundarydate, showbalancesummary)
+                    VALUES (?, ?, ?, ?, ?)',
                     [
-                        empty($divisionId) ? null : $divisionId,
+                        $divisionId,
+                        $delay,
+                        $allConsumers,
                         $boundaryDate,
-                    ]
-                );
-                $divisionBoundaryDates[$divisionId]['dt'] = $boundaryDate;
-            } else {
-                if ($divisionBoundaryDate['dt'] != $boundaryDate) {
-                    $this->db->Execute(
-                        'UPDATE ksefboundarydates
-                        SET dt = ?
-                        WHERE id = ?',
-                        [
-                            $boundaryDate,
-                            $divisionBoundaryDate['boundarydateid'],
-                        ]
-                    );
-                    $divisionBoundaryDates[$divisionId]['dt'] = $boundaryDate;
-                }
-            }
-        }
-
-        return \Utils::array_column($divisionBoundaryDates, 'dt', 'divisionid');
-    }
-
-    public function updateShowBalanceSummaries(): array
-    {
-        $divisionShowBalanceSummaries = $this->db->GetAllByKey(
-            'SELECT
-                d.id AS divisionid,
-                ksbs.id AS showbalancesummaryid,
-                ksbs.showsummary AS showsummary
-            FROM divisions d
-            LEFT JOIN ksefshowbalancesummaries ksbs ON ksbs.divisionid = d.id
-            ORDER BY d.id',
-            'divisionid'
-        );
-        if (empty($divisionShowBalanceSummaries)) {
-            $divisionShowBalanceSummaries = [];
-        }
-
-        $uiConfigVariables = $this->db->GetAllByKey(
-            'SELECT
-                c.value,
-                COALESCE(c.divisionid, 0) AS divisionid
-            FROM uiconfig c
-            WHERE section = ?
-                AND var = ?
-                AND disabled = ?
-            ORDER BY COALESCE(c.divisionid, 0)',
-            'divisionid',
-            [
-                'ksef',
-                'show_balance_summary',
-                0,
-            ]
-        );
-        if (empty($uiConfigVariables)) {
-            $uiConfigVariables = [
-                0 => [
-                    'value' => 'false',
-                ],
-            ];
-        }
-
-        $globalShowBalanceSummary = isset($uiConfigVariables[0]['value']) && \ConfigHelper::checkValue($uiConfigVariables[0]['value']) ? 1 : 0;
-
-        foreach ($divisionShowBalanceSummaries as $divisionId => $divisionShowBalanceSummary) {
-            $showBalanceSummary = isset($uiConfigVariables[$divisionId])
-                ? (\ConfigHelper::checkValue($uiConfigVariables[$divisionId]['value']) ? 1 : 0)
-                : $globalShowBalanceSummary;
-
-            if (empty($divisionShowBalanceSummary['showbalancesummaryid'])) {
-                $this->db->Execute(
-                    'INSERT INTO ksefshowbalancesummaries
-                    (divisionid, showsummary)
-                    VALUES (?, ?)',
-                    [
-                        empty($divisionId) ? null : $divisionId,
                         $showBalanceSummary,
                     ]
                 );
-                $divisionShowBalanceSummaries[$divisionId]['showsummary'] = $showBalanceSummary;
+                $divisionConfigs[$divisionId] = [
+                    'delay' => $delay,
+                    'allconsumers' => $allConsumers,
+                    'boundarydate' => $boundaryDate,
+                    'showbalancesummary' => $showBalanceSummary,
+                ];
             } else {
-                if ($divisionShowBalanceSummary['showsummary'] != $showBalanceSummary) {
+                $args = [];
+
+                if ($divisionConfig['delay'] != $delay) {
+                    $args['delay'] = $delay;
+                }
+                if ($divisionConfig['allconsumers'] != $allConsumers) {
+                    $args['allconsumers'] = $allConsumers;
+                }
+                if ($divisionConfig['boundarydate'] != $boundaryDate) {
+                    $args['boundarydate'] = $boundaryDate;
+                }
+                if ($divisionConfig['showbalancesummary'] != $showBalanceSummary) {
+                    $args['showbalancesummary'] = $showBalanceSummary;
+                }
+
+                if (!empty($args)) {
+                    $fields = array_keys($args);
+                    $args['configid'] = $divisionConfig['configid'];
+
                     $this->db->Execute(
-                        'UPDATE ksefshowbalancesummaries
-                        SET showsummary = ?
+                        'UPDATE ksefconfig
+                        SET ' . implode(' = ?, ', $fields) . ' = ?
                         WHERE id = ?',
-                        [
-                            $showBalanceSummary,
-                            $divisionShowBalanceSummary['showbalancesummaryid'],
-                        ]
+                        $args
                     );
-                    $divisionShowBalanceSummaries[$divisionId]['showsummary'] = $showBalanceSummary;
+
+                    $divisionConfigs[$divisionId] = array_merge($divisionConfigs[$divisionId], $args);
                 }
             }
         }
 
-        return \Utils::array_column($divisionShowBalanceSummaries, 'showsummary', 'divisionid');
+        return $divisionConfigs;
     }
 
     public static function base64Url(string $base64Data): string
@@ -2188,8 +2038,8 @@ class KSeF
             FROM ksefdocuments kd
             JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
             JOIN documents d ON d.id = kd.docid
-            JOIN ksefboundarydates kbd ON kbd.divisionid = d.divisionid
-            WHERE d.cdate >= kbd.dt
+            JOIN ksefconfig kc ON kc.divisionid = d.divisionid
+            WHERE d.cdate >= kc.boundarydate
                 AND kbs.environment = ?
                 AND kd.status = ?
             GROUP BY d.divisionid, d.div_ten',

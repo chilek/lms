@@ -37,16 +37,10 @@ if (isset($_GET['id'])) {
 
             switch ($configVariable['var']) {
                 case 'delay':
-                    $ksef->updateDelays();
-                    break;
                 case 'all_consumers':
-                    $ksef->updateAllConsumers();
-                    break;
                 case 'boundary_date':
-                    $ksef->updateBoundaryDates();
-                    break;
                 case 'show_balance_summary':
-                    $ksef->updateShowBalanceSummaries();
+                    $ksef->updateConfig();
                     break;
             }
         }

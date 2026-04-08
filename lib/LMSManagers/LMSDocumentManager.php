@@ -3931,17 +3931,15 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 WHERE kd.status >= ? AND kd.status < ?
                 GROUP BY kd.docid
             ) kd2 ON kd2.docid = d.id
-            LEFT JOIN ksefdelays kds ON kds.divisionid = d.divisionid
-            LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
-            LEFT JOIN ksefboundarydates kbd ON kbd.divisionid = d.divisionid
+            LEFT JOIN ksefconfig kc ON kc.divisionid = d.divisionid
             WHERE d.id = ?
-                AND (d.cdate >= kbd.dt OR kbd.dt IS NULL)
+                AND (d.cdate >= kc.boundarydate OR kc.boundarydate IS NULL)
                 AND (
                     kd.id IS NOT NULL AND kd.status IN ?
-                    OR kds.delay > -1 AND ?NOW? - d.cdate >= kds.delay
+                    OR kc.delay > -1 AND ?NOW? - d.cdate >= kc.delay
                     AND (
                         c.type = ?
-                        OR kac.allconsumers = ?
+                        OR kc.allconsumers = ?
                         OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ?)
                     )
                     AND kd.id <> kd2.maxid
@@ -3977,14 +3975,12 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 WHERE kd.status >= ? AND kd.status < ?
                 GROUP BY kd.docid
             ) kd2 ON kd2.docid = d.id
-            LEFT JOIN ksefdelays kds ON kds.divisionid = d.divisionid
-            LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
-            LEFT JOIN ksefboundarydates kbd ON kbd.divisionid = d.divisionid
+            LEFT JOIN ksefconfig kc ON kc.divisionid = d.divisionid
             WHERE c.id = ?
-                AND (d.cdate >= kbd.dt OR kbd.dt IS NULL)
+                AND (d.cdate >= kc.boundarydate OR kc.boundarydate IS NULL)
                 AND (
                     kd.id IS NOT NULL AND kd.status IN ?
-                    OR kds.delay > -1 AND ?NOW? - d.cdate >= kds.delay
+                    OR kc.delay > -1 AND ?NOW? - d.cdate >= kc.delay
                     AND (
                         customers.type = ?
                         OR kac.allconsumers = ?

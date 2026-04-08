@@ -290,8 +290,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         FROM ksefdocuments kd
         JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
         JOIN documents d ON d.id = kd.docid
-        LEFT JOIN ksefboundarydates kbd ON kbd.divisionid = d.divisionid
-        WHERE d.cdate >= kbd.dt
+        LEFT JOIN ksefconfig kc ON kc.divisionid = d.divisionid
+        WHERE d.cdate >= kc.boundarydate
             AND kbs.environment = ?
             AND kd.status = ?
         GROUP BY d.divisionid, d.div_ten',
@@ -367,8 +367,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         JOIN customeraddressview c ON (c.id = d.customerid)
         LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
         LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
-        LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
-        LEFT JOIN ksefboundarydates kbd ON kbd.divisionid = d.divisionid
+        LEFT JOIN ksefconfig kc ON kc.divisionid = d.divisionid
         LEFT JOIN customerconsents cc ON cc.customerid = c.id AND cc.type = ?
         LEFT JOIN countries cn ON (cn.id = d.countryid)
         LEFT JOIN countries cdv ON cdv.id = d.div_countryid
@@ -399,10 +398,10 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 ? (
                     empty($ksefSubmit)
                         ? ' AND (
-                            d.cdate < kbd.dt
+                            d.cdate < kc.boundarydate
                             OR kd.status IS NULL
                                 AND c.type = ' . CTYPES_PRIVATE . '
-                                AND COALESCE(kac.allconsumers, 0) = 0
+                                AND COALESCE(kc.allconsumers, 0) = 0
                                 AND NOT EXISTS (
                                     SELECT 1 FROM customerconsents cc
                                     WHERE cc.customerid = c.id
@@ -410,12 +409,12 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                                 )
                         )'
                         : ' AND (
-                            d.cdate >= kbd.dt
+                            d.cdate >= kc.boundarydate
                             AND (
                                 kd.status = 200
                                 OR kd.status = 0
                                 OR c.type = ' . CTYPES_COMPANY . '
-                                OR kac.allconsumers = 1
+                                OR kc.allconsumers = 1
                                 OR EXISTS (
                                     SELECT 1 FROM customerconsents cc
                                     WHERE cc.customerid = c.id

@@ -47,10 +47,7 @@ DROP TABLE IF EXISTS ksefinvoicesummaries;
 DROP TABLE IF EXISTS ksefinvoicethirdsubjects;
 DROP TABLE IF EXISTS ksefinvoices;
 DROP TABLE IF EXISTS ksefdocuments;
-DROP TABLE IF EXISTS ksefshowbalancesummaries;
-DROP TABLE IF EXISTS ksefboundarydates;
-DROP TABLE IF EXISTS ksefallconsumers;
-DROP TABLE IF EXISTS ksefdelays;
+DROP TABLE IF EXISTS ksefconfig;
 DROP TABLE IF EXISTS ksefbatchsessions;
 DROP TABLE IF EXISTS rtticketwatchers;
 DROP TABLE IF EXISTS files;
@@ -3235,53 +3232,17 @@ CREATE TABLE ksefbatchsessions (
 
 # ---------------------------------------------------
 #
-# Structure of table ksefdelays
+# Structure of table ksefconfig
 #
-CREATE TABLE ksefdelays (
+CREATE TABLE ksefconfig (
     id int(11) NOT NULL AUTO_INCREMENT,
-    divisionid int(11),
+    divisionid int(11) NOT NULL,
     delay int(11) NOT NULL,
-    PRIMARY KEY (id),
-    CONSTRAINT ksefdelays_divisionid_fkey
-        FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-# ---------------------------------------------------
-#
-# Structure of table ksefallconsumers
-#
-CREATE TABLE ksefallconsumers (
-    id int(11) NOT NULL AUTO_INCREMENT,
-    divisionid int(11),
     allconsumers smallint NOT NULL,
+    boundarydate int(16) NOT NULL,
+    showbalancesummary smallint NOT NULL,
     PRIMARY KEY (id),
-    CONSTRAINT ksefallconsumers_divisionid_fkey
-        FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-# ---------------------------------------------------
-#
-# Structure of table ksefboundarydates
-#
-CREATE TABLE ksefboundarydates (
-    id int(11) NOT NULL AUTO_INCREMENT,
-    divisionid int(11) NOT NULL,
-    dt int(16) NOT NULL,
-    PRIMARY KEY (id),
-    CONSTRAINT ksefboundarydates_divisionid_fkey
-        FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-# ---------------------------------------------------
-#
-# Structure of table ksefshowbalancesummaries
-#
-CREATE TABLE ksefshowbalancesummaries (
-    id int(11) NOT NULL AUTO_INCREMENT,
-    divisionid int(11) NOT NULL,
-    showsummary smallint NOT NULL,
-    PRIMARY KEY (id),
-    CONSTRAINT ksefshowbalancesummaries_divisionid_fkey
+    CONSTRAINT ksefconfig_divisionid_fkey
         FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
@@ -4717,4 +4678,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026040701');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026040800');

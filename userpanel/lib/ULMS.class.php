@@ -285,19 +285,18 @@ class ULMS extends LMS
             FROM documents d
             JOIN customers c ON c.id = d.customerid
             LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
-            LEFT JOIN ksefallconsumers kac ON kac.divisionid = d.divisionid
-            LEFT JOIN ksefboundarydates kbd ON kbd.divisionid = d.divisionid
+            LEFT JOIN ksefconfig kc ON kc.divisionid = d.divisionid
             WHERE d.id = ?
                 AND (
-                    kbd.dt IS NULL
-                    OR d.cdate < kbd.dt
+                    kc.boundarydate IS NULL
+                    OR d.cdate < kc.boundarydate
                     OR (
                         EXISTS (SELECT 1 FROM uiconfig WHERE section = ? AND disabled = ? LIMIT 1)
                         AND (
                             c.type = ?
                             OR (
                                 c.type = ?
-                                AND COALESCE(kac.allconsumers, 0) = ?
+                                AND COALESCE(kc.allconsumers, 0) = ?
                                 AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ?)
                             )
                         )

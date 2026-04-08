@@ -322,26 +322,26 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 kd2.statusdetails AS ksefstatusdetails,
                 kd2.hash AS ksefhash,
                 kd2.ksefnumber AS ksefnumber,
-                kdl.delay AS ksefdelay,
+                kc.delay AS ksefdelay,
                 (CASE
-                    WHEN documents.cdate >= kbd.dt
-                        AND kdl.delay > -1
-                        AND ?NOW? - documents.cdate >= kdl.delay
+                    WHEN documents.cdate >= kc.boundarydate
+                        AND kc.delay > -1
+                        AND ?NOW? - documents.cdate >= kc.delay
                         AND documents.type IN (' . implode(',', [DOC_INVOICE, DOC_CNOTE]) . ')
                         AND (
                             c.type = ' . CTYPES_COMPANY . '
-                            OR kac.allconsumers = 1
+                            OR kc.allconsumers = 1
                             OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = documents.customerid AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')
                         )
                     THEN 1
                     ELSE 0
                 END) AS ksefsubmit,
                 (CASE
-                    WHEN documents.cdate >= kbd.dt
+                    WHEN documents.cdate >= kc.boundarydate
                         AND documents.type IN (' . implode(',', [DOC_INVOICE, DOC_CNOTE]) . ')
                         AND (
                             c.type = ' . CTYPES_COMPANY . '
-                            OR kac.allconsumers = 1
+                            OR kc.allconsumers = 1
                             OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = documents.customerid AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')
                         )
                     THEN 1
@@ -359,9 +359,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 GROUP BY kd11.docid
             ) kd1 ON kd1.docid = documents.id
             LEFT JOIN ksefdocuments kd2 ON kd2.docid = documents.id AND kd2.id = kd1.maxid
-            LEFT JOIN ksefdelays kdl ON kdl.divisionid = documents.divisionid
-            LEFT JOIN ksefallconsumers kac ON kac.divisionid = documents.divisionid
-            LEFT JOIN ksefboundarydates kbd ON kbd.divisionid = documents.divisionid
+            LEFT JOIN ksefconfig kc ON kc.divisionid = documents.divisionid
             LEFT JOIN numberplans ON numberplans.id = documents.numberplanid
             LEFT JOIN taxes ON cash.taxid = taxes.id
             WHERE cash.customerid = ?'
