@@ -220,6 +220,9 @@ class KSeF
                     break;
                 case 'boundary_date':
                     $value = strtotime($value);
+                    if ($value === false) {
+                        $value = strtotime('2026/04/01');
+                    }
                     $var = 'boundarydate';
                     break;
             }
@@ -227,13 +230,13 @@ class KSeF
         }
 
         if (isset($existingDivisionConfigs[0])) {
-            $existingDivisionConfigs[0]['delay'] = isset($existingDivisionConfigs[0]['delay']) ? intval($existingDivisionConfigs[0]['delay']) : 3600;
-            $existingDivisionConfigs[0]['allconsumers'] = isset($existingDivisionConfigs[0]['allconsumers']) && \ConfigHelper::checkValue($existingDivisionConfigs[0]['allconsumers']) ? 1 : 0;
-            $existingDivisionConfigs[0]['boundarydate'] = strtotime(isset($existingDivisionConfigs[0]['boundarydate']) ? $existingDivisionConfigs[0]['boundarydate'] : '2026/04/01');
+            $existingDivisionConfigs[0]['delay'] = isset($existingDivisionConfigs[0]['delay']) ? $existingDivisionConfigs[0]['delay'] : 3600;
+            $existingDivisionConfigs[0]['allconsumers'] = isset($existingDivisionConfigs[0]['allconsumers']) && $existingDivisionConfigs[0]['allconsumers'] ? 1 : 0;
+            $existingDivisionConfigs[0]['boundarydate'] = isset($existingDivisionConfigs[0]['boundarydate']) ? $existingDivisionConfigs[0]['boundarydate'] : strtotime('2026/04/01');
             if ($existingDivisionConfigs[0]['boundarydate'] === false) {
                 $existingDivisionConfigs[0]['boundarydate'] = strtotime('2026/04/01');
             }
-            $existingDivisionConfigs[0]['showbalancesummary'] = isset($existingDivisionConfigs[0]['showbalancesummary']) && \ConfigHelper::checkValue($existingDivisionConfigs[0]['showbalancesummary']) ? 1 : 0;
+            $existingDivisionConfigs[0]['showbalancesummary'] = isset($existingDivisionConfigs[0]['showbalancesummary']) && $existingDivisionConfigs[0]['showbalancesummary'] ? 1 : 0;
         } else {
             $existingDivisionConfigs[0] = [
                 'delay' => 3600,
@@ -244,20 +247,17 @@ class KSeF
         }
 
         foreach ($divisionConfigs as $divisionId => $divisionConfig) {
-            $delay = isset($existingDivisionConfigs[$divisionId]['delay']) ? intval($existingDivisionConfigs[$divisionId]['delay']) : $existingDivisionConfigs[0]['delay'];
+            $delay = isset($existingDivisionConfigs[$divisionId]['delay'])
+                ? $existingDivisionConfigs[$divisionId]['delay']
+                : $existingDivisionConfigs[0]['delay'];
             $allConsumers = isset($existingDivisionConfigs[$divisionId]['allconsumers'])
-                ? (\ConfigHelper::checkValue($existingDivisionConfigs[$divisionId]['allconsumers']) ? 1 : 0)
+                ? $existingDivisionConfigs[$divisionId]['allconsumers']
                 : $existingDivisionConfigs[0]['allconsumers'];
-            if (isset($existingDivisionConfig[$divisionId]['boundarydate'])) {
-                $boundaryDate = strtotime($existingDivisionConfigs[$divisionId]['boundarydate']);
-                if ($boundaryDate === false) {
-                    $boundaryDate = strtotime('2026/04/01');
-                }
-            } else {
-                $boundaryDate = $existingDivisionConfigs[0]['boundarydate'];
-            }
+            $boundaryDate = isset($existingDivisionConfigs[$divisionId]['boundarydate'])
+                ? $existingDivisionConfigs[$divisionId]['boundarydate']
+                : $existingDivisionConfigs[0]['boundarydate'];
             $showBalanceSummary = isset($existingDivisionConfigs[$divisionId]['showbalancesummary'])
-                ? (\ConfigHelper::checkValue($existingDivisionConfigs[$divisionId]['showbalancesummary']) ? 1 : 0)
+                ? $existingDivisionConfigs[$divisionId]['showbalancesummary']
                 : $existingDivisionConfigs[0]['showbalancesummary'];
 
             if (empty($divisionConfig['configid'])) {
