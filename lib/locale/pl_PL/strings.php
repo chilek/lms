@@ -4881,6 +4881,7 @@ $_LANG['AJAX: Error during persistent setting save on server:'] = 'AJAX: Błąd 
 
 $_LANG['Enter street'] = 'Podaj ulicę';
 $_LANG['— any —'] = '— dowolne —';
+$_LANG['- any -'] = '- dowolne -';
 $_LANG['<!operation-type>— any —'] = '— dowolny —';
 $_LANG['<!cash-source>— any —'] = '— dowolne —';
 $_LANG['<!document-type>— any —'] = '— dowolne —';
