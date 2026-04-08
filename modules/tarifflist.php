@@ -70,7 +70,9 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
             break;
     }
 
-    $tags = Utils::filterIntegers($tags);
+    if (!empty($tags)) {
+        $tags = Utils::filterIntegers($tags);
+    }
 
     $totalincome = array();
     $totalcustomers = 0;
