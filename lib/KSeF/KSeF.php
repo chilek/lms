@@ -1119,7 +1119,7 @@ class KSeF
             );
 
             $footerXml .= "\t\t<Informacje>" . PHP_EOL;
-            $footerXml .= "\t\t\t<StopkaFaktury>" . htmlspecialchars($tmp) . "</StopkaFaktury>" . PHP_EOL;
+            $footerXml .= "\t\t\t<StopkaFaktury>" . htmlspecialchars(\Utils::removeHtml($tmp)) . "</StopkaFaktury>" . PHP_EOL;
             $footerXml .= "\t\t</Informacje>" . PHP_EOL;
         }
 
