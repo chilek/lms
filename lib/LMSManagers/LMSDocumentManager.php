@@ -3983,7 +3983,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     OR kc.delay > -1 AND ?NOW? - d.cdate >= kc.delay
                     AND (
                         customers.type = ?
-                        OR kac.allconsumers = ?
+                        OR kc.allconsumers = ?
                         OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.customerid AND cc.type = ?)
                     )
                     AND kd.id <> kd2.maxid
