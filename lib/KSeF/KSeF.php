@@ -422,7 +422,10 @@ class KSeF
         } else {
             $xml .= "\t\t\t<NIP>" . preg_replace('/[^0-9]/', '', $ten) . "</NIP>" . PHP_EOL;
         }
-        $xml .= "\t\t\t<Nazwa>" . htmlspecialchars($invoice['name']) . "</Nazwa>" . PHP_EOL;
+        $buyerName = trim($invoice['name']);
+        if (!empty($buyerName)) {
+            $xml .= "\t\t\t<Nazwa>" . htmlspecialchars($buyerName) . "</Nazwa>" . PHP_EOL;
+        }
         $xml .= "\t\t</DaneIdentyfikacyjne>" . PHP_EOL;
 
         $xml .= "\t\t<Adres>" . PHP_EOL;
@@ -491,8 +494,9 @@ class KSeF
             } else {
                 $xml .= "\t\t\t<NIP>" . preg_replace('/[^0-9]/', '', $rec_ten) . "</NIP>" . PHP_EOL;
             }
-            if (!empty($invoice['rec_name'])) {
-                $xml .= "\t\t\t<Nazwa>" . htmlspecialchars($invoice['rec_name']) . "</Nazwa>" . PHP_EOL;
+            $recipientName = trim($invoice['rec_name']);
+            if (!empty($recipientName)) {
+                $xml .= "\t\t\t<Nazwa>" . htmlspecialchars($recipientName) . "</Nazwa>" . PHP_EOL;
             }
             $xml .= "\t\t</DaneIdentyfikacyjne>" . PHP_EOL;
 
