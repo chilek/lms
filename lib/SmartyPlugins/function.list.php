@@ -72,7 +72,7 @@ function smarty_function_list(array $params, Smarty_Internal_Template $template)
                 'href' => '#',
             ), $template)
             . '<input type="text" class="lms-ui-list-suggestion"'
-                . (isset($tip) && isset($tipid) ? smarty_function_tip(array('text' => $tip, 'trigger' => $tipid), $template) : '') . '>
+                . (isset($tip, $tipid) ? smarty_function_tip(array('text' => $tip, 'trigger' => $tipid), $template) : '') . '>
         </div>
 		<ul class="lms-ui-list"' . (isset($items) ? '' : ' style="display: none;"') . '>
 		    ' . (isset($items) ? $item_text : ''). '

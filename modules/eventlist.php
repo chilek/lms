@@ -85,7 +85,7 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
         $filter = array_merge($filter, $SESSION->get('eld'));
     }
 
-    if (isset($_GET['day']) && isset($_GET['month']) && isset($_GET['year'])) {
+    if (isset($_GET['day'], $_GET['month'], $_GET['year'])) {
         if (isset($_GET['day'])) {
             $filter['day'] = $_GET['day'];
         } elseif ($filter['edate']) {
@@ -139,7 +139,7 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
     }
 }
 
-if (isset($filter['year']) && isset($filter['month']) && isset($filter['day'])) {
+if (isset($filter['year'], $filter['month'], $filter['day'])) {
     $filter['edate'] = sprintf('%04d/%02d/%02d', $filter['year'], $filter['month'], $filter['day']);
 }
 
