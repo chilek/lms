@@ -2023,7 +2023,7 @@ class KSeF
         }
     }
 
-    public static function getCertificatePassword(int $type = self::CERTIFICATE_TYPE_ONLINE): string
+    public static function getCertificatePassword(int $type = self::CERTIFICATE_TYPE_ONLINE): ?string
     {
         return $type == self::CERTIFICATE_TYPE_OFFLINE
             ? \ConfigHelper::getConfig('ksef.offline_password')
