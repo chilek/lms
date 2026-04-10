@@ -2279,8 +2279,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     AND u.access = 1
                     AND u.email <> ?
                     AND (
-                        (r.rights & ' . RT_RIGHT_EMAIL_NOTICE . ') > 0
-                        OR (r.rights & ' . RT_RIGHT_EMAIL_WATCHING_NOTICE . ') > 0 AND w.id IS NOT NULL
+                        (r.rights & ' . RT_RIGHT_EMAIL_NOTICE . ') > 0'
+                        . (!empty($params['ticketid']) && intval($params['ticketid'])
+                            ? ' OR (r.rights & ' . RT_RIGHT_EMAIL_WATCHING_NOTICE . ') > 0 AND w.id IS NOT NULL'
+                            : '') . '
                     )'
                 . (!isset($args['user']) || $notify_author ? '' : ' AND u.id <> ?')
                 . (!empty($params['verifierid']) ? ' AND u.id <> ' . intval($params['verifierid']) : '')
@@ -2308,8 +2310,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                             AND u.access = 1
                             AND u.email <> ?
                             AND (
-                                (r.rights & ' . RT_RIGHT_EMAIL_NOTICE . ') > 0
-                                OR (r.rights & ' . RT_RIGHT_EMAIL_WATCHING_NOTICE . ') > 0 AND w.id IS NOT NULL
+                                (r.rights & ' . RT_RIGHT_EMAIL_NOTICE . ') > 0'
+                                . (!empty($params['ticketid']) && intval($params['ticketid'])
+                                    ? ' OR (r.rights & ' . RT_RIGHT_EMAIL_WATCHING_NOTICE . ') > 0 AND w.id IS NOT NULL'
+                                    : '') . '
                             )
                             AND (u.ntype & ?) > 0',
                         array(
@@ -2386,8 +2390,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     AND u.access = 1
                     AND u.phone <> ?
                     AND (
-                        (r.rights & ' . RT_RIGHT_SMS_NOTICE . ') > 0
-                        OR (r.rights & ' . RT_RIGHT_SMS_WATCHING_NOTICE . ') > 0 AND w.id IS NOT NULL
+                        (r.rights & ' . RT_RIGHT_SMS_NOTICE . ') > 0'
+                        . (!empty($params['ticketid']) && intval($params['ticketid'])
+                            ? ' OR (r.rights & ' . RT_RIGHT_SMS_WATCHING_NOTICE . ') > 0 AND w.id IS NOT NULL'
+                            : '') . '
                     )'
                 . (!isset($args['user']) || $notify_author ? '' : ' AND u.id <> ?')
                 . (!empty($params['verifierid']) ? ' AND u.id <> ' . intval($params['verifierid']) : '')
@@ -2409,8 +2415,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                             AND u.access = 1
                             AND u.phone <> ?
                         AND (
-                            (r.rights & ' . RT_RIGHT_SMS_NOTICE . ') > 0
-                            OR (r.rights & ' . RT_RIGHT_SMS_WATCHING_NOTICE . ') > 0 AND w.id IS NOT NULL
+                            (r.rights & ' . RT_RIGHT_SMS_NOTICE . ') > 0'
+                            . (!empty($params['ticketid']) && intval($params['ticketid'])
+                                ? ' OR (r.rights & ' . RT_RIGHT_SMS_WATCHING_NOTICE . ') > 0 AND w.id IS NOT NULL'
+                                : '') . '
                         )
                         AND (u.ntype & ?) > 0',
                         array(
