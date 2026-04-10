@@ -945,9 +945,11 @@ class KSeF
             $xml .= "\t\t<FaWiersz>" . PHP_EOL;
             $xml .= "\t\t\t<NrWierszaFa>" . $position['itemid'] . "</NrWierszaFa>" . PHP_EOL;
             $xml .= "\t\t\t<P_7>" . $description . "</P_7>" . PHP_EOL;
+/*
             if (!empty($position['tariffid'])) {
                 $xml .= "\t\t\t<Indeks>" . $position['tariffid'] . "</Indeks>" . PHP_EOL;
             }
+*/
             if (!empty($position['prodid'])) {
                 $xml .= "\t\t\t<PKWiU>" . $position['prodid'] . "</PKWiU>" . PHP_EOL;
             }
