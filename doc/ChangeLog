@@ -1206,6 +1206,7 @@ version 28-git (????-??-??):
   - enhancement: KSeF: add purchase invoices to JPK-V7M(3) xml files [chilan]
   - improvement: KSeF: 'ksef.show_balance_summary' with 'false' as default value disables <Rozliczenia>
     inclusion in xml output file [chilan]
+  - improvement: customer consent list toggle button added [chilan]
 
 version 27.0 (2021-08-20):
 
