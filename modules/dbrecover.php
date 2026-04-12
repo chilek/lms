@@ -31,11 +31,13 @@ function DBLoad($filename = null)
     if (!$filename) {
         return false;
     }
-    $finfo = pathinfo($filename);
-    $ext = $finfo['extension'];
 
+    $finfo = pathinfo($filename);
+    $ext = isset($finfo['extension']) ? $finfo['extension'] : '';
+
+    // Otwieramy plik (obsługa GZIP lub zwykły tekst)
     if ($ext == 'gz' && extension_loaded('zlib')) {
-        $file = gzopen($filename, 'r'); //jezeli chcemy gz to plik najpierw trzeba rozpakowac
+        $file = gzopen($filename, 'r');
     } else {
         $file = fopen($filename, 'r');
     }
@@ -44,49 +46,92 @@ function DBLoad($filename = null)
         return false;
     }
 
-    $DB->BeginTrans(); // przyspieszmy działanie jeżeli baza danych obsługuje transakcje
-    while (!feof($file)) {
-        $line = fgets($file);
-        if ($line!='') {
-            $line = str_replace(";\n", '', $line);
-            $DB->Execute($line);
+    // Pobieramy konfigurację bazy danych z LMS
+    $dbType = ConfigHelper::getConfig('database.type');
+    $dbHost = ConfigHelper::getConfig('database.host');
+    $dbUser = ConfigHelper::getConfig('database.user');
+    $dbPass = ConfigHelper::getConfig('database.password');
+    $dbName = ConfigHelper::getConfig('database.database');
+
+    // Jeśli używamy mysqli, tworzymy surowe połączenie, by ominąć parser LMS (problem znaków "?")
+    $rawConnection = null;
+    if ($dbType == 'mysqli') {
+        try {
+            // Parsowanie hosta (na wypadek portu, np. localhost:3307)
+            $hostParts = explode(':', $dbHost);
+            $host = $hostParts[0];
+            $port = isset($hostParts[1]) ? (int)$hostParts[1] : 3306;
+
+            $rawConnection = new mysqli($host, $dbUser, $dbPass, $dbName, $port);
+            if ($rawConnection->connect_error) {
+                // W razie błędu fallback do null - użyjemy standardowego $DB
+                $rawConnection = null;
+            } else {
+                // Ustawiamy kodowanie zgodne z LMS
+                $rawConnection->set_charset("utf8");
+                // Wyłączamy autocommit dla szybkości importu
+                $rawConnection->query("SET AUTOCOMMIT=0");
+                $rawConnection->query("START TRANSACTION");
+            }
+        } catch (Exception $e) {
+            $rawConnection = null;
         }
     }
-    $DB->CommitTrans();
 
-    if ((extension_loaded('zlib'))&&($ext=='gz')) {
+    // Bufor 1MB (1048576 bajtów) - kluczowe dla długich linii (np. rozbudowane INSERT lub CONSTRAINT)
+    $bufferSize = 1048576;
+
+    while (!feof($file)) {
+        if ($ext == 'gz') {
+            $line = gzgets($file, $bufferSize);
+        } else {
+            $line = fgets($file, $bufferSize);
+        }
+
+        $line = trim($line);
+
+        // Pomijamy puste linie i komentarze SQL
+        if (empty($line) || strpos($line, '--') === 0 || strpos($line, '/*') === 0) {
+            continue;
+        }
+
+        if ($rawConnection) {
+            // ŚCIEŻKA SZYBKA I BEZPIECZNA (Omija parser LMS)
+            // Metoda query() w mysqli nie analizuje treści pod kątem "?"
+            $result = $rawConnection->query($line);
+
+            if (!$result) {
+                // Opcjonalnie: Logowanie błędów importu
+                // error_log("DBRecover Error: " . $rawConnection->error . " in line: " . substr($line, 0, 100));
+            }
+        } else {
+            // ŚCIEŻKA STANDARDOWA (Dla Postgresa lub gdy surowe połączenie zawiodło)
+            // Używamy array() by zminimalizować ryzyko błędów parsera, ale to wciąż przechodzi przez LMSDB
+            $DB->Execute($line, array());
+        }
+    }
+
+    // Zamykanie transakcji i sprzątanie
+    if ($rawConnection) {
+        $rawConnection->query("COMMIT");
+        $rawConnection->query("SET AUTOCOMMIT=1");
+        $rawConnection->close();
+    }
+
+    if ($ext == 'gz') {
         gzclose($file);
     } else {
         fclose($file);
     }
 
-    // Okej, zróbmy parę bzdurek db depend :S
-    // Postgres sux ! (warden)
-    // Tak, a łyżka na to 'niemożliwe' i poleciała za wanną potrącając bannanem musztardę (lukasz)
-
-    switch (ConfigHelper::getConfig('database.type')) {
-        case 'postgres':
-            // actualize postgres sequences ...
-            foreach ($DB->ListTables() as $tablename) {
-                // ... where we have *_id_seq
-                if (!in_array($tablename, array(
-                            'rtattachments',
-                            'dbinfo',
-                            'invoicecontents',
-                            'receiptcontents',
-                            'documentcontents',
-                            'stats',
-                            'eventassignments',
-                            'sessions',
-                            'logmessagekeys',
-                            'logmessagedata',
-                            'voip_emergency_numbers',
-                            'rtticketlastview',
-                            ))) {
-                    $DB->Execute("SELECT setval('".$tablename."_id_seq',max(id)) FROM ".$tablename);
-                }
+    // Dodatkowe operacje specyficzne dla LMS (sekwencje w Postgres)
+    if ($dbType == 'postgres') {
+        $tables = $DB->GetCol('SELECT tablename FROM pg_tables WHERE schemaname=\'public\'');
+        foreach ($tables as $tablename) {
+            if ($DB->GetOne("SELECT count(*) FROM pg_class WHERE relname = '".$tablename."_id_seq'")) {
+                 $DB->Execute("SELECT setval('".$tablename."_id_seq',max(id)) FROM ".$tablename);
             }
-            break;
+        }
     }
 
     if ($SYSLOG) {
