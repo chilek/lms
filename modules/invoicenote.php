@@ -129,6 +129,7 @@ if (isset($_GET['id']) && $action == 'init') {
 
     $cnote['recipient_address_id'] = $invoice['recipient_address_id'];
     $cnote['recipient_ten'] = $invoice['recipient_ten'];
+    $cnote['recipient_type'] = $invoice['recipient_type'];
 
     //old header values
     $cnote['oldheader'] = array(
@@ -139,6 +140,7 @@ if (isset($_GET['id']) && $action == 'init') {
         'deadline' => date("Y/m/d", intval($cnote['deadline'])),
         'recipient_address_id' => $cnote['recipient_address_id'],
         'recipient_ten' => $cnote['recipient_ten'],
+        'recipient_type' => $cnote['recipient_type'],
         'use_current_customer_data' => isset($cnote['use_current_customer_data']),
         'reason' => $cnote['reason'],
     );
@@ -305,6 +307,7 @@ switch ($action) {
             'deadline' => date("Y/m/d", $cnote['deadline']),
             'recipient_address_id' => $cnote['recipient_address_id'],
             'recipient_ten' => $cnote['recipient_ten'],
+            'recipient_type' => $cnote['recipient_type'],
             'use_current_customer_data' => isset($cnote['use_current_customer_data']),
             'reason' => $cnote['reason'],
         );
@@ -787,13 +790,18 @@ switch ($action) {
         ));
 
         if (!empty($cnote['recipient_address_id']) && $cnote['recipient_address_id'] != -1) {
-            $cnote['recipient_ten'] = $invoice['recipient_address_id'] == $cnote['recipient_address_id']
-                ? $invoice['recipient_ten']
-                : $LMS->getRecipientTen($cnote['recipient_address_id']);
+            if ($invoice['recipient_address_id'] == $cnote['recipient_address_id']) {
+                $cnote['recipient_ten'] = $invoice['recipient_ten'];
+                $cnote['recipient_type'] = $invoice['recipient_type'];
+            } else {
+                $cnote['recipient_ten'] = $LMS->getRecipientTen($cnote['recipient_address_id']);
+                $cnote['recipient_type'] = $LMS->getEntityType($cnote['recipient_address_id']);
+            }
             $cnote['recipient_address_id'] = $LMS->CopyAddress($cnote['recipient_address_id']);
         } else {
             $cnote['recipient_address_id'] = null;
             $cnote['recipient_ten'] = null;
+            $cnote['recipient_type'] = null;
         }
 
         if ($use_current_customer_data) {
@@ -859,6 +867,7 @@ switch ($action) {
             'fullnumber' => $fullnumber,
             'recipient_address_id' => $cnote['recipient_address_id'],
             'recipient_ten' => $cnote['recipient_ten'],
+            'recipient_type' => $cnote['recipient_type'],
             'post_address_id' => $invoice['post_address_id'],
             'currency' => $cnote['currency'],
             'currencyvalue' => $cnote['currencyvalue'],
@@ -868,9 +877,9 @@ switch ($action) {
 				userid, customerid, name, address, ten, ssn, zip, city, countryid, reference, reason, divisionid,
 				div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 				div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
-				recipient_address_id, recipient_ten, post_address_id, currency, currencyvalue, memo)
+				recipient_address_id, recipient_ten, recipient_type, post_address_id, currency, currencyvalue, memo)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-					?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+					?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
         $id = $DB->GetOne(
             'SELECT id FROM documents WHERE number = ? AND cdate = ? AND type = ?',
