@@ -96,7 +96,7 @@ $invoices = $DB->GetAll(
         $endDate,
         $startDate,
         $endDate,
-        Auth:GetCurrentUser(),
+        Auth::GetCurrentUser(),
     ]
 );
 if (empty($invoices)) {
@@ -152,7 +152,7 @@ $sellers = $DB->GetAll(
         $endDate,
         $startDate,
         $endDate,
-        Auth:GetCurrentUser(),
+        Auth::GetCurrentUser(),
     ]
 );
 
