@@ -26,29 +26,24 @@
 
 function check_pl_ten($ten)
 {
-    if (!preg_match('/^(PL|[0-9]{2})/i', $ten)) {
+    $ten = strtoupper(trim($ten));
+
+    $ten = preg_replace('/^PL/', '', $ten);
+
+    $ten = str_replace(['-', ' '], '', $ten);
+
+    if (!preg_match('/^\d{10}$/', $ten)) {
         return false;
     }
 
-    $steps = array(6, 5, 7, 2, 3, 4, 5, 6, 7);
-    $sum_nb = 0;
-
-    $ten = str_replace('-', '', $ten);
-    $ten = str_replace(' ', '', $ten);
-
-    if (strlen($ten) != 10) {
-        return false;
-    }
+    $weights = array(6, 5, 7, 2, 3, 4, 5, 6, 7);
+    $checksum = 0;
 
     for ($x = 0; $x < 9; $x++) {
-        $sum_nb += $steps[$x] * $ten[$x];
+        $checksum += $weights[$x] * (int)$ten[$x];
     }
 
-    if ($sum_nb % 11 == $ten[9]) {
-        return true;
-    }
-
-    return false;
+    return $checksum % 11 == (int)$ten[9];
 }
 
 self::addLanguageFunctions(
