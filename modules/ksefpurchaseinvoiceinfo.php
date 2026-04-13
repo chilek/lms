@@ -43,9 +43,12 @@ $invoice = $DB->GetRow(
         d.label AS division_label
     FROM ksefinvoices i
     JOIN divisions d ON d.id = i.division_id
-    WHERE i.id = ?',
+    JOIN userdivisions ud ON ud.divisionid = d.id
+    WHERE i.id = ?
+        AND ud.userid = ?',
     [
         $id,
+        Auth::GetCurrentUser(),
     ]
 );
 if (empty($invoice)) {

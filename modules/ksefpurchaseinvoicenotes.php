@@ -40,9 +40,12 @@ $notes = $DB->GetOne(
         i.notes
     FROM ksefinvoices i
     JOIN vdivisions d ON d.id = i.division_id
-    WHERE i.id = ?',
+    JOIN userdivisions ud ON ud.divisionid = i.division_id
+    WHERE i.id = ?
+        AND ud.userid = ?',
     [
         $id,
+        Auth::GetCurrentUser(),
     ]
 );
 

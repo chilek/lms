@@ -79,6 +79,7 @@ $invoices = $DB->GetAll(
         t.tags
     FROM ksefinvoices i
     JOIN divisions d ON d.id = i.division_id
+    JOIN userdivisions ud ON ud.divisionid = d.id
     LEFT JOIN (
         SELECT
             ta.ksef_invoice_id,
@@ -88,12 +89,14 @@ $invoices = $DB->GetAll(
         WHERE i.issue_date BETWEEN ? AND ?
         GROUP BY ta.ksef_invoice_id
     ) t ON t.ksef_invoice_id = i.id
-    WHERE i.issue_date BETWEEN ? AND ?',
+    WHERE i.issue_date BETWEEN ? AND ?
+        AND ud.userid = ?',
     [
         $startDate,
         $endDate,
         $startDate,
         $endDate,
+        Auth:GetCurrentUser(),
     ]
 );
 if (empty($invoices)) {
@@ -140,13 +143,16 @@ $sellers = $DB->GetAll(
         WHERE issue_date BETWEEN ? AND ?
         GROUP BY seller_ten
     ) m ON m.seller_ten = t.seller_ten AND m.max_id = t.id
+    JOIN userdivisions ud ON ud.divisionid = t.division_id
     WHERE t.issue_date BETWEEN ? AND ?
+        AND ud.userid = ?
     ORDER BY t.seller_name',
     [
         $startDate,
         $endDate,
         $startDate,
         $endDate,
+        Auth:GetCurrentUser(),
     ]
 );
 

@@ -41,12 +41,15 @@ $tags = $DB->GetAllByKey(
         t.name
     FROM ksefinvoices i
     JOIN vdivisions d ON d.id = i.division_id
+    JOIN userdivisions ud ON ud.divisionid = d.id
     JOIN ksefinvoicetagassignments a ON a.ksef_invoice_id = i.id
     JOIN ksefinvoicetags t ON t.id = a.ksef_invoice_tag_id
-    WHERE i.id = ?',
+    WHERE i.id = ?
+        AND ud.userid = ?',
     'id',
     [
         $id,
+        Auth::GetCurrentUser(),
     ]
 );
 if (empty($tags)) {

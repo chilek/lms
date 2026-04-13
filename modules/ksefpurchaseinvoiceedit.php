@@ -56,10 +56,13 @@ switch ($action) {
     default:
         if (!$DB->GetOne(
             'SELECT 1 FROM ksefinvoices i
-                 JOIN divisions d ON d.id = i.division_id
-                 WHERE i.id = ?',
+            JOIN divisions d ON d.id = i.division_id
+            JOIN userdivisions ud ON ud.divisionid = d.id
+            WHERE i.id = ?
+                AND ud.userid = ?',
             [
                 $id,
+                Auth::GetCurrentUser(),
             ]
         )) {
             die(json_encode(['error' => 'Permission denied!',]));
@@ -84,8 +87,8 @@ switch ($action) {
     case 'unsettle':
         $res = $DB->Execute(
             'UPDATE ksefinvoices
-                SET settled = ?
-                WHERE id = ?',
+            SET settled = ?
+            WHERE id = ?',
             [
                 (int)($_POST['action'] == 'settle'),
                 $id,
@@ -209,9 +212,9 @@ switch ($action) {
             $DB->Execute(
                 'DELETE FROM ksefinvoicetags
                 WHERE NOT EXISTS (
-                        SELECT 1 FROM ksefinvoicetagassignments a
-                        WHERE a.ksef_invoice_tag_id = ksefinvoicetags.id
-                    )'
+                    SELECT 1 FROM ksefinvoicetagassignments a
+                    WHERE a.ksef_invoice_tag_id = ksefinvoicetags.id
+                )'
             );
 
             if (!empty($DB->GetErrors())) {
