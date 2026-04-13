@@ -2974,19 +2974,21 @@ class LMS
     {
         static $username = null;
         static $rusername = null;
+        static $userposition = null;
 
         if (!isset($username)) {
             $userid = Auth::GetCurrentUser();
             if (empty($userid)) {
-                $username = $rusername = trans('System');
+                $username = $rusername = $userposition = trans('System');
             } else {
                 $user_manager = $this->getUserManager();
                 $user = $user_manager->GetUserInfo($userid, false);
                 if (empty($user)) {
-                    $username = $rusername = trans('System');
+                    $username = $rusername = $userposition = trans('System');
                 } else {
                     $username = $user['name'];
                     $rusername = $user['rname'];
+                    $userposition = $user['position'];
                 }
             }
         }
@@ -2998,11 +3000,13 @@ class LMS
                 '%body',
                 '%username',
                 '%rusername',
+                '%userposition',
             ),
             array(
                 $body,
                 $username,
                 $rusername,
+                $userposition,
             ),
             $message_template
         );
