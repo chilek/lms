@@ -2525,7 +2525,7 @@ if (empty($types) || in_array('invoices', $types)) {
             v.value, v.currency,
             c.type AS ctype,
             c.invoicenotice,
-            (CASE WHEN kac.allconsumers = 1 OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ?) THEN 1 ELSE 0 END) AS ksef_invoice_consent,
+            (CASE WHEN kc.allconsumers = 1 OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ?) THEN 1 ELSE 0 END) AS ksef_invoice_consent,
             kd.ksefnumber,
             kd.status AS ksefstatus,
             kd.hash AS ksefhash,
