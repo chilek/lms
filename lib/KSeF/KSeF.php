@@ -275,7 +275,7 @@ class KSeF
                 $this->db->Execute(
                     'INSERT INTO ksefconfig
                     (divisionid, delay, allconsumers, boundarydate, showbalancesummary, xmladdallvalues)
-                    VALUES (?, ?, ?, ?, ?)',
+                    VALUES (?, ?, ?, ?, ?, ?)',
                     [
                         $divisionId,
                         $delay,
