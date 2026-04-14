@@ -31,7 +31,7 @@ if (!$this->ResourceExists('ksefshowbalancesummaries', LMSDB::RESOURCE_TYPE_TABL
             showsummary smallint NOT NULL,
             PRIMARY KEY (id),
             CONSTRAINT ksefshowbalancesummaries_divisionid_fkey
-                FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+                FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE
         ) ENGINE=InnoDB
     ");
 }
