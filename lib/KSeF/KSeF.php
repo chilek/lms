@@ -160,7 +160,8 @@ class KSeF
                 kc.delay,
                 kc.allconsumers,
                 kc.boundarydate,
-                kc.showbalancesummary
+                kc.showbalancesummary,
+                kc.xmladdallvalues
             FROM divisions d
             LEFT JOIN ksefconfig kc ON kc.divisionid = d.id
             ORDER BY d.id',
@@ -187,6 +188,7 @@ class KSeF
                     'all_consumers',
                     'boundary_date',
                     'show_balance_summary',
+                    'xml_add_all_values',
                 ],
                 0,
             ]
@@ -218,6 +220,10 @@ class KSeF
                     $value = \ConfigHelper::checkValue($value) ? 1 : 0;
                     $var = 'showbalancesummary';
                     break;
+                case 'xml_add_all_values':
+                    $value = \ConfigHelper::checkValue($value) ? 1 : 0;
+                    $var = 'xmladdallvalues';
+                    break;
                 case 'boundary_date':
                     $value = strtotime($value);
                     if ($value === false) {
@@ -237,12 +243,14 @@ class KSeF
                 $existingDivisionConfigs[0]['boundarydate'] = strtotime('2026/04/01');
             }
             $existingDivisionConfigs[0]['showbalancesummary'] = isset($existingDivisionConfigs[0]['showbalancesummary']) && $existingDivisionConfigs[0]['showbalancesummary'] ? 1 : 0;
+            $existingDivisionConfigs[0]['xmladdallvalues'] = isset($existingDivisionConfigs[0]['xmladdallvalues']) && $existingDivisionConfigs[0]['xmladdallvalues'] ? 1 : 0;
         } else {
             $existingDivisionConfigs[0] = [
                 'delay' => 3600,
                 'allconsumers' => 0,
                 'boundarydate' => strtotime('2026/04/01'),
                 'showbalancesummary' => 0,
+                'xmladdallvalues' => 0,
             ];
         }
 
@@ -259,11 +267,14 @@ class KSeF
             $showBalanceSummary = isset($existingDivisionConfigs[$divisionId]['showbalancesummary'])
                 ? $existingDivisionConfigs[$divisionId]['showbalancesummary']
                 : $existingDivisionConfigs[0]['showbalancesummary'];
+            $xmlAddAllValues = isset($existingDivisionConfigs[$divisionId]['xmladdallvalues'])
+                ? $existingDivisionConfigs[$divisionId]['xmladdallvalues']
+                : $existingDivisionConfigs[0]['xmladdallvalues'];
 
             if (empty($divisionConfig['configid'])) {
                 $this->db->Execute(
                     'INSERT INTO ksefconfig
-                    (divisionid, delay, allconsumers, boundarydate, showbalancesummary)
+                    (divisionid, delay, allconsumers, boundarydate, showbalancesummary, xmladdallvalues)
                     VALUES (?, ?, ?, ?, ?)',
                     [
                         $divisionId,
@@ -271,6 +282,7 @@ class KSeF
                         $allConsumers,
                         $boundaryDate,
                         $showBalanceSummary,
+                        $xmlAddAllValues,
                     ]
                 );
                 $divisionConfigs[$divisionId] = [
@@ -278,6 +290,7 @@ class KSeF
                     'allconsumers' => $allConsumers,
                     'boundarydate' => $boundaryDate,
                     'showbalancesummary' => $showBalanceSummary,
+                    'xmladdallvalues' => $xmlAddAllValues,
                 ];
             } else {
                 $args = [];
@@ -293,6 +306,9 @@ class KSeF
                 }
                 if ($divisionConfig['showbalancesummary'] != $showBalanceSummary) {
                     $args['showbalancesummary'] = $showBalanceSummary;
+                }
+                if ($divisionConfig['xmladdallvalues'] != $xmlAddAllValues) {
+                    $args['xmladdallvalues'] = $xmlAddAllValues;
                 }
 
                 if (!empty($args)) {
@@ -964,9 +980,15 @@ class KSeF
                 $xml .= "\t\t\t<P_9A>" . sprintf('%.6f', $position['netprice']) . "</P_9A>" . PHP_EOL;
             }
             if (empty($invoice['netflag'])) {
+                if (!empty($invoice['ksefxmladdallvalues'])) {
+                    $xml .= "\t\t\t<P_11>" . sprintf('%.2f', $position['totalbase']) . "</P_11>" . PHP_EOL;
+                }
                 $xml .= "\t\t\t<P_11A>" . sprintf('%.2f', $position['total']) . "</P_11A>" . PHP_EOL;
             } else {
                 $xml .= "\t\t\t<P_11>" . sprintf('%.2f', $position['totalbase']) . "</P_11>" . PHP_EOL;
+                if (!empty($invoice['ksefxmladdallvalues'])) {
+                    $xml .= "\t\t\t<P_11A>" . sprintf('%.2f', $position['total']) . "</P_11A>" . PHP_EOL;
+                }
             }
             $xml .= "\t\t\t<P_11Vat>" . sprintf('%.2f', $position['totaltax']) . "</P_11Vat>" . PHP_EOL;
 
@@ -1009,7 +1031,7 @@ class KSeF
             $total = $invoice['total'];
         }
 
-        if (!empty($invoice['showbalancesummary'])) {
+        if (!empty($invoice['ksefshowbalancesummary'])) {
             $xml .= "\t\t<Rozliczenie>" . PHP_EOL;
             if (!empty($balance)) {
                 if ($balance < 0) {

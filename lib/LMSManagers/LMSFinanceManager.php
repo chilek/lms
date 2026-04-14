@@ -2749,7 +2749,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     kd.permanent_storage_date AS ksefdate,
                     kbs.environment AS ksefenvironment,
                     kc.boundarydate AS ksefboundarydate,
-                    kc.showbalancesummary AS ksefshowbalancesummary
+                    kc.showbalancesummary AS ksefshowbalancesummary,
+                    kc.xmladdallvalues AS ksefxmladdallvalues
 				FROM documents d'
                 . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
                 . '
@@ -2835,7 +2836,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     kd.permanent_storage_date AS ksefdate,
                     kbs.environment AS ksefenvironment,
                     kc.boundarydate AS ksefboundarydate,
-                    kc.showbalancesummary AS ksefshowbalancesummary
+                    kc.showbalancesummary AS ksefshowbalancesummary,
+                    kc.xmladdallvalues AS ksefxmladdallvalues
 				FROM documents d'
                 . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
                 . ' LEFT JOIN customeraddressview c ON (c.id = d.customerid)

@@ -3171,6 +3171,7 @@ CREATE TABLE ksefconfig (
     allconsumers smallint NOT NULL,
     boundarydate bigint NOT NULL,
     showbalancesummary smallint NOT NULL,
+    xmladdallvalues smallint NOT NULL DEFAULT 0,
     PRIMARY KEY (id)
 );
 
@@ -4718,6 +4719,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026040800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026041400');
 
 COMMIT;
