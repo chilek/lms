@@ -446,8 +446,16 @@ class KSeF
 
         $xml .= "\t\t<Adres>" . PHP_EOL;
         $xml .= "\t\t\t<KodKraju>" . (empty($m['country']) ? 'PL' : $m['country']) . "</KodKraju>" . PHP_EOL;
-        $xml .= "\t\t\t<AdresL1>" . htmlspecialchars($invoice['address']) . "</AdresL1>" . PHP_EOL;
-        $xml .= "\t\t\t<AdresL2>" . htmlspecialchars((empty($invoice['zip']) ? '' : $invoice['zip'] . ' ') . $invoice['city']) . "</AdresL2>" . PHP_EOL;
+        $xml .= "\t\t\t<AdresL1>"
+            . (empty($invoice['address'])
+                ? '-'
+                : htmlspecialchars($invoice['address'])
+            ) . "</AdresL1>" . PHP_EOL;
+        $xml .= "\t\t\t<AdresL2>"
+            . (empty($invoice['city']) && empty($invoice['zip'])
+                ? '-'
+                : htmlspecialchars((empty($invoice['zip']) ? '' : $invoice['zip'] . ' ') . $invoice['city'])
+            ) . "</AdresL2>" . PHP_EOL;
         $xml .= "\t\t</Adres>" . PHP_EOL;
 
         if (!empty($invoice['post_countryid']) && isset($this->countries[$invoice['post_countryid']])) {
