@@ -496,7 +496,8 @@ class LMSTcpdfInvoice extends LMSInvoice
     {
         $this->backend->SetFont(null, '', 8);
         $seller = '<b>' . trans('Seller:') . '</b><br>';
-        $tmp = str_replace('%ten%', format_ten($this->data['division_ten'], $this->data['export']), $this->data['division_header']);
+        //$tmp = str_replace('%ten%', format_ten($this->data['division_ten'], $this->data['export']), $this->data['division_header']);
+        $tmp = str_replace('%ten%', format_ten($this->data['division_ten'], false), $this->data['division_header']);
 
         if (!ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')
             || empty($this->data['bankaccounts'])) {
@@ -557,7 +558,8 @@ class LMSTcpdfInvoice extends LMSInvoice
         if ($this->data['ten']) {
             $currentSystemLanguage = Localisation::getCurrentSystemLanguage();
             Localisation::setSystemLanguage($this->data['lang']);
-            $buyer .= trans('TEN') . ': ' . format_ten($this->data['ten'], $this->data['export']) . '<br>';
+            //$buyer .= trans('TEN') . ': ' . format_ten($this->data['ten'], $this->data['export']) . '<br>';
+            $buyer .= trans('TEN') . ': ' . format_ten($this->data['ten'], false) . '<br>';
             Localisation::setSystemLanguage($currentSystemLanguage);
         } elseif (!ConfigHelper::checkConfig('invoices.hide_ssn', true) && $this->data['ssn']) {
             $buyer .= trans('SSN') . ': ' . $this->data['ssn'] . '<br>';

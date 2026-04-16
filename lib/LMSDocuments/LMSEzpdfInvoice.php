@@ -280,7 +280,8 @@ class LMSEzpdfInvoice extends LMSInvoice
         if ($this->data['ten']) {
             $currentSystemLanguage = Localisation::getCurrentSystemLanguage();
             Localisation::setSystemLanguage($this->data['lang']);
-            $y = $y - $this->backend->text_align_left($x, $y, $font_size, trans('TEN') . ' ' . format_ten($this->data['ten'], $this->data['export']));
+            //$y = $y - $this->backend->text_align_left($x, $y, $font_size, trans('TEN') . ' ' . format_ten($this->data['ten'], $this->data['export']));
+            $y = $y - $this->backend->text_align_left($x, $y, $font_size, trans('TEN') . ' ' . format_ten($this->data['ten'], false));
             Localisation::setSystemLanguage($currentSystemLanguage);
         } else if (!ConfigHelper::checkConfig('invoices.hide_ssn', true) && $this->data['ssn']) {
             $y=$y-$this->backend->text_align_left($x, $y, $font_size, trans('SSN').' '.$this->data['ssn']);
@@ -293,7 +294,8 @@ class LMSEzpdfInvoice extends LMSInvoice
     {
         $font_size = 10;
         $y = $y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . trans('Seller:') . '</b>');
-        $tmp = str_replace('%ten%', format_ten($this->data['division_ten'], $this->data['export']), $this->data['division_header']);
+        //$tmp = str_replace('%ten%', format_ten($this->data['division_ten'], $this->data['export']), $this->data['division_header']);
+        $tmp = str_replace('%ten%', format_ten($this->data['division_ten'], false), $this->data['division_header']);
 
         if (!ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')
             || empty($this->data['bankccounts'])) {

@@ -178,7 +178,10 @@
 						</span>
 					{/if}
 				{/textformat}
+{*
 				{$tmp = str_replace('%ten%', format_ten($invoice.division_ten, $invoice.export), $invoice.division_header)}
+*}
+				{$tmp = str_replace('%ten%', format_ten($invoice.division_ten, false), $invoice.division_header)}
 				{$tmp = str_replace("\n", '<br>', $tmp)}
 				{$tmp = str_replace('%bankaccount', $account_text, $tmp)}
 				{$tmp = str_replace('%bankname', $invoice.div_bank, $tmp)}
@@ -209,7 +212,10 @@
 					{trans("TEN:")}
 					{$currentSystemLanguage = Localisation::getCurrentSystemLanguage()}
 					{Localisation::setSystemLanguage($invoice.lang)}
+{*
 					{format_ten($invoice.ten, $invoice.export)}
+*}
+					{format_ten($invoice.ten, false)}
 					<br>
 					{Localisation::setSystemLanguage($currentSystemLanguage)}
 				{elseif !ConfigHelper::checkConfig('invoices.hide_ssn', true) && $invoice.ssn != ""}
