@@ -1030,32 +1030,38 @@ class KSeF
             $xml .= "\t\t</FaWiersz>" . PHP_EOL;
         }
 
-        //$balance = $invoice['customerbalance'];
-        $balance = $this->lms->getCustomerBalance($invoice['customerid'], $invoice['cdate']);
-
-        if ($invoice['type'] == DOC_CNOTE) {
-            $total = $diffTotal;
-        } else {
-            $total = $invoice['total'];
-        }
-
         if (!empty($invoice['ksefshowbalancesummary'])) {
+            if ($invoice['type'] == DOC_CNOTE) {
+                $total = $diffTotal;
+            } else {
+                $total = $invoice['total'];
+            }
+
+            //$balance = $invoice['customerbalance'];
+            $balance = $this->lms->getCustomerBalance(
+                $invoice['customerid'],
+                [
+                    'totime' => $invoice['cdate'] + 1,
+                    'docid' => $invoice['id'],
+                ]
+            );
+            $beforeBalance = $balance + $total;
+
             $xml .= "\t\t<Rozliczenie>" . PHP_EOL;
             if (!empty($balance)) {
-                if ($balance < 0) {
+                if ($beforeBalance < 0) {
                     $xml .= "\t\t\t<Obciazenia>" . PHP_EOL;
-                    $xml .= "\t\t\t\t<Kwota>" . sprintf('%.2f', abs($balance)) . "</Kwota>" . PHP_EOL;
+                    $xml .= "\t\t\t\t<Kwota>" . sprintf('%.2f', abs($beforeBalance)) . "</Kwota>" . PHP_EOL;
                     $xml .= "\t\t\t\t<Powod>dotychczasowa niedopłata</Powod>" . PHP_EOL;
                     $xml .= "\t\t\t</Obciazenia>" . PHP_EOL;
-                    $xml .= "\t\t\t<SumaObciazen>" . sprintf('%.2f', abs($balance)) . "</SumaObciazen>" . PHP_EOL;
+                    $xml .= "\t\t\t<SumaObciazen>" . sprintf('%.2f', abs($beforeBalance)) . "</SumaObciazen>" . PHP_EOL;
                 } else {
                     $xml .= "\t\t\t<Odliczenia>" . PHP_EOL;
-                    $xml .= "\t\t\t\t<Kwota>" . sprintf('%.2f', $balance) . "</Kwota>" . PHP_EOL;
+                    $xml .= "\t\t\t\t<Kwota>" . sprintf('%.2f', $beforeBalance) . "</Kwota>" . PHP_EOL;
                     $xml .= "\t\t\t\t<Powod>dotychczasowa nadpłata</Powod>" . PHP_EOL;
                     $xml .= "\t\t\t</Odliczenia>" . PHP_EOL;
-                    $xml .= "\t\t\t<SumaOdliczen>" . sprintf('%.2f', abs($balance)) . "</SumaOdliczen>" . PHP_EOL;
+                    $xml .= "\t\t\t<SumaOdliczen>" . sprintf('%.2f', abs($beforeBalance)) . "</SumaOdliczen>" . PHP_EOL;
                 }
-                $balance -= $total;
                 if ($balance >= 0) {
                     $xml .= "\t\t\t<DoRozliczenia>" . sprintf('%.2f', $balance) . "</DoRozliczenia>" . PHP_EOL;
                 } else {
