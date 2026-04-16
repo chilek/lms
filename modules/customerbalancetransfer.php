@@ -116,8 +116,8 @@ if (!empty($cashes)) {
                 $customerid,
                 1,
                 isset($cash['comment'])
-                    ? trans('transferred from customer $a (#$b): $c', $customername, $customerid, $cash['comment'])
-                    : trans('transferred from customer $a (#$b)', $customername, $customerid),
+                    ? trans('transferred from customer $a (#$b): $c', $old_customername, $old_customerid, $cash['comment'])
+                    : trans('transferred from customer $a (#$b)', $old_customername, $old_customerid),
                 $cash['value'],
                 $cash['currency'],
                 $cash['currencyvalue'],
