@@ -416,12 +416,15 @@ class KSeF
                 } else {
                     $foreign = true;
                 }
-            } elseif (!empty($invoice['countryid']) && !empty($invoice['division_countryid']) && $invoice['countryid'] != $invoice['division_countryid']) {
+            }
+/*
+             elseif (!empty($invoice['countryid']) && !empty($invoice['division_countryid']) && $invoice['countryid'] != $invoice['division_countryid']) {
                 //$foreign = true;
                 return [
                     'error' => 'Invalid Tax Exempt No. format: \'' . $invoice['ten'] . '\'',
                 ];
             }
+*/
         }
 
         $xml .= "\t<Podmiot2>" . PHP_EOL;
