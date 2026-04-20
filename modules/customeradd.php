@@ -28,6 +28,8 @@ if (isset($_GET['ajax'])) {
     header('Content-type: text/plain');
     $search = urldecode(trim($_GET['what']));
 
+    $mode = null;
+
     switch ($_GET['mode']) {
         case 'street':
             $mode = 'street';
