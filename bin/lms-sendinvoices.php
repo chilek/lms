@@ -271,7 +271,11 @@ if ($backup || $archive) {
 
     $part_number = $options['part-number'] ?? ($options['fakehour'] ?? null);
     if (isset($part_number)) {
-        $part_number = intval($part_number);
+        if ($part_number == 'auto') {
+            $part_number = -1;
+        } else {
+            $part_number = intval($part_number);
+        }
     } else {
         $part_number = intval(date('G'));
     }
@@ -383,7 +387,11 @@ if ($archive) {
         }
 
         if (!empty($part_size) && preg_match('/^[0-9]+$/', $part_size)) {
-            $part_offset = $part_number * $part_size;
+            if ($part_number == -1) {
+                $part_offset = -1;
+            } else {
+                $part_offset = $part_number * $part_size;
+            }
         }
     }
 }
@@ -508,9 +516,13 @@ if ($backup || $archive) {
             }
 
             $part_size = ceil(($percent * $count) / 100);
-            $part_offset = $part_number * $part_size;
-            if ((!$part_offset && $part_number) || $part_offset >= $count) {
-                die;
+            if ($part_number == -1) {
+                $part_offset = -1;
+            } else {
+                $part_offset = $part_number * $part_size;
+                if ((!$part_offset && $part_number) || $part_offset >= $count) {
+                    die;
+                }
             }
         }
     }
@@ -558,7 +570,8 @@ $query = "
                 AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')'
             : ''
         )
-    . " ORDER BY d.number" . (!empty($part_size) ? " LIMIT $part_size OFFSET $part_offset" : '');
+    . " ORDER BY d.number"
+    . (empty($part_size) || $part_offset == -1 ? '' : ' LIMIT ' . $part_size . ' OFFSET ' . $part_offset);
 $docs = $DB->GetAll($query, $args);
 
 if (!empty($docs)) {
@@ -675,9 +688,14 @@ if (!empty($docs)) {
         }
     } else {
         $docs_to_send = array();
+        $docs_to_send_count = 0;
         foreach ($docs as $doc) {
             if ($ignore_send_date || empty($doc['senddate'])) {
                 $docs_to_send[] = $doc;
+                $docs_to_send_count++;
+                if ($part_offset == -1 && !empty($part_size) && $docs_to_send_count >= $part_size) {
+                    break;
+                }
             }
         }
         if (empty($docs_to_send)) {
