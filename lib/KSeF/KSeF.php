@@ -461,7 +461,14 @@ class KSeF
         $xml .= "\t\t</DaneIdentyfikacyjne>" . PHP_EOL;
 
         $xml .= "\t\t<Adres>" . PHP_EOL;
-        $xml .= "\t\t\t<KodKraju>" . (empty($m['country']) ? 'PL' : $m['country']) . "</KodKraju>" . PHP_EOL;
+
+        if (!empty($invoice['countryid']) && isset($this->countries[$invoice['countryid']])) {
+            $countryCode = substr($this->countries[$invoice['countryid']]['ccode'], 3);
+        } else {
+            $countryCode = 'PL';
+        }
+        $xml .= "\t\t\t<KodKraju>" . $countryCode . "</KodKraju>" . PHP_EOL;
+
         $xml .= "\t\t\t<AdresL1>"
             . (empty($invoice['address'])
                 ? '-'
