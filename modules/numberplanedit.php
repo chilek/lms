@@ -62,7 +62,7 @@ if (empty($_GET['id'])) {
     access_denied();
 }
 
-$numberPlanId = intval($numberPlanId);
+$numberPlanId = intval($_GET['id']);
 if (empty($numberPlanId)) {
     access_denied();
 }
