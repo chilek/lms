@@ -273,7 +273,7 @@ if ($backup || $archive) {
     if (isset($part_number)) {
         $part_number = intval($part_number);
     } else {
-        $part_number = intval(date('H', time()));
+        $part_number = intval(date('G'));
     }
 
     if (isset($options['extra-file'])) {
