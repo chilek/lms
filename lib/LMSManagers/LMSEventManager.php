@@ -295,7 +295,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             LEFT JOIN vaddresses vd ON vd.id = nn.address_id
             LEFT JOIN divisions ON divisions.id = e.divisionid
             WHERE e.id = ?',
-            array($id)
+            array(intval($id))
         );
 
         if (empty($event)) {
@@ -333,7 +333,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             JOIN eventassignments a ON a.userid = u.id
             WHERE a.eventid = ?',
             'id',
-            array($id)
+            array(intval($id))
         );
         if (empty($event['userlist'])) {
             $event['userlist'] = array();
