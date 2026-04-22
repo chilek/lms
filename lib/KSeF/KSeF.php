@@ -375,6 +375,7 @@ class KSeF
             $this->smartNumberFormatter = new \NumberFormatter('en_US', \NumberFormatter::DECIMAL);
             $this->smartNumberFormatter->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, 2);
             $this->smartNumberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 8);
+            $this->smartNumberFormatter->setAttribute(\NumberFormatter::GROUPING_USED, false);
         }
 
         return $this->smartNumberFormatter->format($number ?? 0);
