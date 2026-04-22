@@ -768,7 +768,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         if (!empty($events)) {
             foreach ($events as $idx => $row) {
-                $events[$idx] = $event_manager->GetEvent($row);
+                $events[$idx] = $event_manager->GetEvent($row['id']);
             }
         }
 
