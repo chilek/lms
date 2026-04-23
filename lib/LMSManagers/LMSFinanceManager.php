@@ -2936,11 +2936,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $result['totaltax'] = 0;
             $result['total'] = 0;
 
-            $result['flags'] = array(
+            $flags = array(
                 DOC_FLAG_RECEIPT => ($result['flags'] & DOC_FLAG_RECEIPT) ? 1 : 0,
                 DOC_FLAG_TELECOM_SERVICE => ($result['flags'] & DOC_FLAG_TELECOM_SERVICE) ? 1 : 0,
                 DOC_FLAG_RELATED_ENTITY => ($result['flags'] & DOC_FLAG_RELATED_ENTITY) ? 1 : 0,
+                DOC_FLAG_SPLIT_PAYMENT => ($result['flags'] & DOC_FLAG_SPLIT_PAYMENT) ? 1 : 0,
+                DOC_FLAG_NET_ACCOUNT => ($result['flags'] & DOC_FLAG_NET_ACCOUNT) ? 1 : 0,
             );
+            $result['flags'] = $flags;
 
             if ($result['reference'] && $result['doctype'] != DOC_INVOICE_PRO && !$nested_flag) {
                 $result['invoice'] = $this->GetInvoiceContent($result['reference'], $detail_level);
