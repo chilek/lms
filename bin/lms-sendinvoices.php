@@ -571,7 +571,7 @@ $query = "
             : ''
         )
     . " ORDER BY d.number"
-    . (empty($part_size) || $part_offset == -1 ? '' : ' LIMIT ' . $part_size . ' OFFSET ' . $part_offset);
+    . (empty($part_size) || isset($part_offset) && $part_offset == -1 ? '' : ' LIMIT ' . $part_size . ' OFFSET ' . $part_offset);
 $docs = $DB->GetAll($query, $args);
 
 if (!empty($docs)) {
@@ -693,7 +693,7 @@ if (!empty($docs)) {
             if ($ignore_send_date || empty($doc['senddate'])) {
                 $docs_to_send[] = $doc;
                 $docs_to_send_count++;
-                if ($part_offset == -1 && !empty($part_size) && $docs_to_send_count >= $part_size) {
+                if (isset($part_offset) && $part_offset == -1 && !empty($part_size) && $docs_to_send_count >= $part_size) {
                     break;
                 }
             }
