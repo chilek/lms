@@ -3897,12 +3897,19 @@ CREATE VIEW customermailsview AS
 			GROUP BY customerid;
 
 CREATE VIEW vusers AS
-    SELECT u.*, (u.firstname || ' ' || u.lastname) AS name, (u.lastname || ' ' || u.firstname) AS rname
+    SELECT
+        u.*,
+        (u.firstname || ' ' || u.lastname) AS name,
+        (u.lastname || ' ' || u.firstname) AS rname
     FROM users u
     LEFT JOIN userdivisions ud ON u.id = ud.userid
-    WHERE lms_current_user() = 0 OR ud.divisionid IN (SELECT ud2.divisionid
-                             FROM userdivisions ud2
-                             WHERE ud2.userid = lms_current_user())
+    WHERE lms_current_user() = 0
+        OR ud.divisionid IN (
+            SELECT ud2.divisionid
+            FROM userdivisions ud2
+            WHERE ud2.userid = lms_current_user()
+        )
+        OR ud.divisionid IS NULL
     GROUP BY u.id;
 
 CREATE VIEW vallusers AS
@@ -4719,6 +4726,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026041400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026042300');
 
 COMMIT;
