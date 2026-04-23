@@ -571,7 +571,7 @@ $query = "
             : ''
         )
     . " ORDER BY d.number"
-    . (empty($part_size) || isset($part_offset) && $part_offset == -1 ? '' : ' LIMIT ' . $part_size . ' OFFSET ' . $part_offset);
+    . (empty($part_size) || !isset($part_offset) || $part_offset == -1 ? '' : ' LIMIT ' . $part_size . ' OFFSET ' . $part_offset);
 $docs = $DB->GetAll($query, $args);
 
 if (!empty($docs)) {
