@@ -827,7 +827,7 @@ class KSeF
         $xml .= "\t\t\t<P_16>2</P_16>" . PHP_EOL;
         $xml .= "\t\t\t<P_17>2</P_17>" . PHP_EOL;
         $xml .= "\t\t\t<P_18>" . (isset($invoice['taxest']['-2']) ? '1' : '2') . "</P_18>" . PHP_EOL;
-        $xml .= "\t\t\t<P_18A>" . (empty($invoice['flags'][DOC_FLAG_RECEIPT]) ? '2' : '1') . "</P_18A>" . PHP_EOL;
+        $xml .= "\t\t\t<P_18A>" . (empty($invoice['flags'][DOC_FLAG_SPLIT_PAYMENT]) ? '2' : '1') . "</P_18A>" . PHP_EOL;
         $xml .= "\t\t\t<Zwolnienie>" . PHP_EOL;
         if ($taxFree) {
             $xml .= "\t\t\t\t<P_19>1</P_19>" . PHP_EOL;
