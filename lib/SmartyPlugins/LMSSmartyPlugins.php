@@ -580,25 +580,25 @@ class LMSSmartyPlugins
                         <label>
                             <input type="radio" name="' . $input_name_entity_type . '" value="0" data-address="entity-type"
                             ' . (empty($params['location_entity_type']) ? ' checked' : '') . '>
-                            ' . trans('<!ksef>other') . '
+                            ' . trans('<!ksef>other (role 2)') . '
                         </label>
                         <br>
                         <label>
                             <input type="radio" name="' . $input_name_entity_type . '" value="1" data-address="entity-type"
                             ' . (!empty($params['location_entity_type']) && $params['location_entity_type'] == 1 ? ' checked' : '') . '>
-                            ' . trans('<!ksef>Local Government Unit') . '
+                            ' . trans('<!ksef>Local Government Unit (role 8)') . '
                         </label>
                         <br>
                         <label>
                             <input type="radio" name="' . $input_name_entity_type . '" value="2" data-address="entity-type"
                             ' . (!empty($params['location_entity_type']) && $params['location_entity_type'] == 2 ? ' checked' : '') . '>
-                            ' . trans('<!ksef>VAT group') . '
+                            ' . trans('<!ksef>VAT group (role 10)') . '
                         </label>
                         <br>
                         <label>
                             <input type="radio" name="' . $input_name_entity_type . '" value="3" data-address="entity-type"
                             ' . (!empty($params['location_entity_type']) && $params['location_entity_type'] == 3 ? ' checked' : '') . '>
-                            ' . trans('<!ksef>employee') . '
+                            ' . trans('<!ksef>employee (role 11)') . '
                         </label>
                     </td>
                 </tr>';

@@ -6308,10 +6308,10 @@ $_LANG['<!rt-configuration-section>— default —'] = '— domyślna —';
 $_LANG['Download UPO'] = 'Pobierz UPO';
 $_LANG['View UPO'] = 'Pokaż UPO';
 
-$_LANG['<!ksef>Local Government Unit'] = 'jednostka samorządu terytorialnego';
-$_LANG['<!ksef>VAT group'] = 'grupa VAT';
-$_LANG['<!ksef>other'] = 'inny';
-$_LANG['<!ksef>employee'] = 'pracownik';
+$_LANG['<!ksef>Local Government Unit (role 8)'] = 'jednostka samorządu terytorialnego (rola 8)';
+$_LANG['<!ksef>VAT group (role 10)'] = 'grupa VAT (rola 10)';
+$_LANG['<!ksef>other (role 2)'] = 'inny (rola 2)';
+$_LANG['<!ksef>employee (role 11)'] = 'pracownik (rola 11)';
 
 $_LANG['<!ksef>Document type/number'] = 'Typ/numer dokumentu';
 $_LANG['KSeF number'] = 'Numer KSeF';
