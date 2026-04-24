@@ -1208,6 +1208,7 @@ version 28-git (????-??-??):
     inclusion in xml output file [chilan]
   - improvement: customer consent list toggle button added [chilan]
   - improvement: bin/lms-sendinvoices.php: '--part-number auto' support added [chilan]
+  - improvement: 'unknown' status filter added to node search form [chilan]
 
 version 27.0 (2021-08-20):
 
