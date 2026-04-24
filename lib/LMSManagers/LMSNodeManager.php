@@ -640,6 +640,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 . ($status == 2 ? ' AND n.access = 0' : '') //disconnected
                 . ($status == 3 ? ' AND n.lastonline > ?NOW? - ' . intval(ConfigHelper::getConfig('phpui.lastonline_limit')) : '') //online
                 . ($status == 12 ? ' AND n.lastonline < ?NOW? - ' . intval(ConfigHelper::getConfig('phpui.lastonline_limit')) : '') //offline
+                . ($status == 14 ? ' AND n.lastonline = 0' : '') // unknown
                 . ($status == 4
                     ? ' AND NOT EXISTS (
                         SELECT 1

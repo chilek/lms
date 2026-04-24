@@ -1833,6 +1833,7 @@ $_LANG['Off'] = 'Wyłączony';
 $_LANG['online'] = 'on-line';
 $_LANG['<!node>online'] = 'aktywne';
 $_LANG['<!node>offline'] = 'nieaktywne';
+$_LANG['<!node>unknown'] = 'nieznany';
 $_LANG['Online:'] = 'Włączone:';
 $_LANG['Online Documentation'] = 'Dokumentacja online';
 $_LANG['Only \'new\' ticket can be owned by no one!'] = 'Tylko nowe zgłoszenia mogą być pozbawione właściciela!';
