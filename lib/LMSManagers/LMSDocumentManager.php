@@ -3916,6 +3916,23 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         return $this->db->GetOne('SELECT fullnumber FROM documents WHERE id = ?', array($docid));
     }
 
+    public function checkDocumentPermission($docType, $permission)
+    {
+        $permission = $this->db->GetOne(
+            'SELECT 1 FROM docrights r
+            WHERE r.doctype = ?
+                AND r.userid = ?
+                AND (r.rights & ?) > 0',
+            [
+                $docType,
+                Auth::GetCurrentUser(),
+                $permission,
+            ]
+        );
+
+        return !empty($permission);
+    }
+
     public function isKsefDocument($docid)
     {
         return $this->db->GetOne(

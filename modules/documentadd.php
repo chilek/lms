@@ -527,6 +527,17 @@ if (isset($_POST['document'])) {
             }
         }
 
+        if (empty($document['closed'])) {
+            $closed = 0;
+        } else {
+            $confirmPermission = $LMS->checkDocumentPermission($document['type'], DOCRIGHT_CONFIRM);
+            if (empty($confirmPermission)) {
+                $closed = 0;
+            } else {
+                $closed = 1;
+            }
+        }
+
         $DB->Execute(
             'INSERT INTO documents (type, number, numberplanid, cdate, sdate, cuserid, confirmdate,
 			customerid, userid, name, address, zip, city, ten, ssn, divisionid, 
@@ -538,9 +549,9 @@ if (isset($_POST['document'])) {
                 $document['number'],
                 empty($document['numberplanid']) ? null : $document['numberplanid'],
                 $document['cdate'],
-                isset($document['closed']) ? $time : 0,
-                isset($document['closed']) ? Auth::GetCurrentUser() : null,
-                isset($document['closed']) || empty($document['confirmdate']) ? 0 : strtotime('+ 1 day', $document['confirmdate']) - 1,
+                empty($closed) ? 0 : $time,
+                empty($closed) ? null : Auth::GetCurrentUser(),
+                empty($closed) && !empty($document['confirmdate']) ? strtotime('+ 1 day', $document['confirmdate']) - 1 : 0,
                 $document['customerid'],
                 Auth::GetCurrentUser(),
                 $customer['customername'],
@@ -563,7 +574,7 @@ if (isset($_POST['document'])) {
                 ($division['inv_footer'] ?: ''),
                 ($division['inv_author'] ?: ''),
                 ($division['inv_cplace'] ?: ''),
-                isset($document['closed']) ? DOC_CLOSED : DOC_OPEN,
+                empty($closed) ? DOC_OPEN : DOC_CLOSED,
                 $fullnumber,
                 empty($document['reference']) ? null : $document['reference']['id'],
                 empty($document['templ']) ? null : $document['templ'],
@@ -615,7 +626,7 @@ if (isset($_POST['document'])) {
                 // create assignments basing on selected promotion schema
                 $selected_assignment['period'] = $period;
                 $selected_assignment['at'] = $at;
-                $selected_assignment['commited'] = empty($document['closed']) ? 0 : 1;
+                $selected_assignment['commited'] = empty($closed) ? 0 : 1;
                 $selected_assignment['align-periods'] = isset($document['assignment']['align-periods']);
                 $selected_assignment['dynamicperiod'] = empty($document['dynamicperiod']) ? 0 : 1;
                 if (!empty($engine['customer-consent-selection'])) {
@@ -651,7 +662,7 @@ if (isset($_POST['document'])) {
                 }
             }
 
-            if (!empty($engine['customer-consent-selection']) && isset($document['closed'])) {
+            if (!empty($engine['customer-consent-selection']) && !empty($closed)) {
                 $LMS->updateCustomerConsents(
                     $document['customerid'],
                     array_keys($document['default-consents']),
@@ -981,6 +992,13 @@ if (isset($document['type']) && !empty($docengines) && !isset($_POST['document']
         $SMARTY->assign('defaultDocEngine', $defaultDocEngine);
     }
 }
+
+if (empty($document['type'])) {
+    $confirmPermission = false;
+} else {
+    $confirmPermission = $LMS->checkDocumentPermission($document['type'], DOCRIGHT_CONFIRM);
+}
+$SMARTY->assign('confirm_permission', $confirmPermission ? 1 : 0);
 
 $references = empty($document['customerid']) ? null : $LMS->GetDocuments($document['customerid']);
 $SMARTY->assign('references', $references);

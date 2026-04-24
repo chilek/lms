@@ -3857,6 +3857,12 @@ class LMS
         return $manager->getDocumentFullNumber($docid);
     }
 
+    public function checkDocumentPermission($docType, $permission)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->checkDocumentPermission($docType, $permission);
+    }
+
     public function isKsefDocument($docid)
     {
         $manager = $this->getDocumentManager();

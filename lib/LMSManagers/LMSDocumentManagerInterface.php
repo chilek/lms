@@ -110,6 +110,8 @@ interface LMSDocumentManagerInterface
 
     public function getDocumentFullNumber($docid);
 
+    public function checkDocumentPermission($docType, $permission);
+
     public function isKsefDocument($docid);
 
     public function isKsefDocumentByCashId($cashid);

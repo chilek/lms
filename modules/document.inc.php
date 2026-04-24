@@ -448,6 +448,10 @@ function DocTypeChanged($doctype, $customerid)
 
     $JSResponse->script('$("#documentpromotions,#document-consents").toggle(false)');
 
+    $lms = LMS::getInstance();
+    $confirmPermission = $lms->checkDocumentPermission($doctype, DOCRIGHT_CONFIRM);
+    $JSResponse->script('$("#confirm-row").toggle(' . (empty($confirmPermission) ? 'false' : 'true') . ')');
+
     return $JSResponse;
 }
 
