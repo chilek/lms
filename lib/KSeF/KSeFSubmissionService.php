@@ -34,8 +34,7 @@ class KSeFSubmissionService
         ?int $divisionId = null,
         ?int $customerId = null,
         ?array $docIds = null
-    ): array
-    {
+    ): array {
         $result = [
             'submitted' => 0,
             'skipped' => 0,
@@ -210,8 +209,7 @@ class KSeFSubmissionService
         ?int $divisionId = null,
         ?int $customerId = null,
         ?array $docIds = null
-    ): array
-    {
+    ): array {
         $result = [
             'updated' => 0,
             'errors' => [],
@@ -341,8 +339,7 @@ class KSeFSubmissionService
         string $sellerTen,
         array $document,
         array &$invoiceReferenceCache
-    ): string
-    {
+    ): string {
         $cacheKey = $sellerTen . ':' . $document['session_reference_number'];
         if (!array_key_exists($cacheKey, $invoiceReferenceCache)) {
             $invoiceReferenceCache[$cacheKey] = $this->waitForInvoiceReferences(

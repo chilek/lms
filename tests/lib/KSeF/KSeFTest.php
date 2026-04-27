@@ -59,45 +59,11 @@ namespace {
     if (!class_exists('PHPUnit\Framework\TestCase') && class_exists('PHPUnit_Framework_TestCase')) {
         class_alias('PHPUnit_Framework_TestCase', 'PHPUnit\Framework\TestCase');
     }
-    if (!class_exists('Localisation')) {
-        class Localisation
-        {
-            public static function getCurrentCurrency()
-            {
-                return 'PLN';
-            }
-        }
-    }
-    if (!class_exists('ConfigHelper')) {
-        class ConfigHelper
-        {
-            public static function checkConfig()
-            {
-                return false;
-            }
-        }
-    }
-    if (!class_exists('Utils')) {
-        class Utils
-        {
-            public static function removeHtml($value)
-            {
-                return strip_tags($value);
-            }
-
-            public static function wordWrapToArray($value)
-            {
-                return [$value];
-            }
-        }
-    }
-    if (!class_exists('LMS')) {
-        class LMS
-        {
-            const SOFTWARE_NAME = 'LMS';
-            const SOFTWARE_VERSION = 'test';
-        }
-    }
+    require_once __DIR__ . '/ConfigHelper.php';
+    require_once __DIR__ . '/Localisation.php';
+    require_once __DIR__ . '/LMS.php';
+    require_once __DIR__ . '/Utils.php';
+    require_once __DIR__ . '/FakeKSeFLms.php';
     if (!function_exists('bankaccount')) {
         function bankaccount($customerId, $account)
         {
@@ -308,32 +274,4 @@ namespace LMS\Tests\KSeF {
         }
     }
 
-    class FakeKSeFLms
-    {
-        public function GetDivision()
-        {
-            return [
-                'email' => '',
-                'phone' => '',
-                'rbe' => '',
-                'regon' => '',
-            ];
-        }
-
-        public function GetTaxes()
-        {
-            return [
-                1 => [
-                    'value' => 23,
-                    'reversecharge' => 0,
-                    'taxed' => 1,
-                ],
-            ];
-        }
-
-        public function getCustomerBalance()
-        {
-            return 0;
-        }
-    }
 }
