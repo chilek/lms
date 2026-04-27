@@ -139,10 +139,21 @@ class KSeF
         }
 
         if (is_array($decoded)) {
-            return implode(', ', array_map('strval', $decoded));
+            return implode(', ', array_map([self::class, 'formatStatusDetailValue'], $decoded));
         }
 
         return is_scalar($decoded) ? strval($decoded) : $statusDetails;
+    }
+
+    private static function formatStatusDetailValue($value)
+    {
+        if (is_scalar($value) || $value === null) {
+            return strval($value);
+        }
+
+        $encoded = json_encode($value, JSON_UNESCAPED_UNICODE);
+
+        return $encoded === false ? '' : $encoded;
     }
 
     public function __construct($db, $lms)
