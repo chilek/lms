@@ -694,6 +694,7 @@
 			var form = $('<form method="post"></form>');
 			form.attr('action', $(this).attr('data-href'));
 			form.append($('<input type="hidden" name="backurl">').val(location.search + location.hash));
+			progressDialog($t("Sending invoices to KSeF. Please wait."));
 			form.appendTo('body').submit().remove();
 		});
 		return false;
@@ -749,6 +750,7 @@
 			$(document.page).append($('<input type="hidden" name="backurl">').val(location.search + location.hash));
 			document.page.action = "?m=invoiceksefinfo&action=send";
 			document.page.target = "";
+			progressDialog($t("Sending invoices to KSeF. Please wait."));
 			document.page.submit();
 		});
 	});
