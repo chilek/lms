@@ -151,6 +151,7 @@ class KSeF
 
         $this->showOnlyAlternativeAccounts = \ConfigHelper::checkConfig('invoices.show_only_alternative_accounts');
         $this->showAllAccounts = \ConfigHelper::checkConfig('invoices.show_all_accounts');
+        $this->showMemo = \ConfigHelper::checkConfig('invoices.show_memo', true);
     }
 
     public function updateConfig(): array
@@ -898,7 +899,7 @@ class KSeF
             }
         }
 
-        if (!empty($invoice['memo'])) {
+        if ($this->showMemo && !empty($invoice['memo'])) {
             $memo = htmlspecialchars(\Utils::removeHtml($invoice['memo']));
             $memoLines = \Utils::wordWrapToArray($memo, 256);
             foreach ($memoLines as $memoLine) {
