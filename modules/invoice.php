@@ -452,7 +452,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         //$boundaryDate = $now;
     }
 
-    if ($jpk && $boundaryDate >= strtotime('2026/02/01')) {
+    if ($jpk && $boundaryDate >= strtotime('2026/02/01') && !empty($_GET['purchase-invoices'])) {
         $purchaseDocuments = $DB->GetAllByKey(
             'SELECT
                 i.*

@@ -6325,6 +6325,7 @@ $_LANG['<!ksef>Gross value'] = 'Wartość brutto';
 $_LANG['<!ksef>Bank name'] = 'Nazwa banku';
 $_LANG['<!ksef>Bank account'] = 'Konto bankowe';
 $_LANG['<!ksef>No purchase invoices matching filter criteria.'] = 'Brak faktur zakupu dopasowanych do kryteriów filtra.';
+$_LANG['<!ksef>purchase invoices'] = 'faktury zakupu';
 $_LANG['<!ksef>Payment type'] = 'Typ płatności';
 $_LANG['<!ksef>Payment date'] = 'Data płatności';
 $_LANG['<!ksef>Paid'] = 'Zapłacono';

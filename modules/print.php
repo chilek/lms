@@ -538,6 +538,7 @@ switch ($type) {
                 .(!empty($_POST['manualissued']) ? '&manualissued=1' : '')
                 . (isset($_POST['related-documents']) ? '&related-documents=1' : '')
                 . (!isset($_POST['transfer-forms']) || !empty($_POST['transfer-forms']) ? '&transfer-forms=1' : '')
+                . (!empty($_POST['purchase-invoices']) ? '&purchase-invoices=1' : '')
                 . (isset($ksefSubmit) ? '&ksef-submit=' . $ksefSubmit : '')
         );
         break;
