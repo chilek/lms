@@ -6363,6 +6363,7 @@ $_LANG['<!ksef>corrective RR invoice'] = 'korekta faktury RR';
 
 $_LANG['Send invoice $a to KSeF?'] = 'Wysłać fakturę $a do KSeF?';
 $_LANG['Send selected invoices to KSeF?'] = 'Wysłać zaznaczone faktury do KSeF?';
+$_LANG['Sending invoices to KSeF. Please wait.'] = 'Wysyłanie faktur do KSeF. Proszę czekać.';
 
 $_LANG['selection from filter'] = 'wybór z filtra';
 $_LANG['all recipient of this message'] = 'wszyscy odbiorcy tej wiadomości';

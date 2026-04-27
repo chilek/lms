@@ -6405,6 +6405,7 @@ $_LANG['<!ksef>Send to KSeF'] = 'Wyślij KSeF';
 $_LANG['Send invoice to KSeF'] = 'Wyślij fakturę do KSeF';
 $_LANG['Send invoice $a to KSeF?'] = 'Wysłać fakturę $a do KSeF?';
 $_LANG['Send selected invoices to KSeF?'] = 'Wysłać zaznaczone faktury do KSeF?';
+$_LANG['Sending invoices to KSeF. Please wait.'] = 'Wysyłanie faktur do KSeF. Proszę czekać.';
 $_LANG['KSeF invoice handling'] = 'Obsługa faktur KSeF';
 $_LANG['KSeF submitted:'] = 'Wysłano do KSeF:';
 $_LANG['KSeF synchronized:'] = 'Zaktualizowano z KSeF:';
