@@ -24,11 +24,15 @@
  *  $Id$
  */
 
+if (isset($_POST['value'])) {
+    $value = str_replace(',', '.', $_POST['value']);
+}
+
 if (!isset($_POST['customerid']) || !ctype_digit($_POST['customerid'])
     || !isset($_POST['old-customerid']) || !ctype_digit($_POST['old-customerid'])
     || (
         (!isset($_POST['marks']) || !is_array($_POST['marks']))
-        && (!isset($_POST['value']) || !is_numeric($_POST['value']) || !isset($_POST['currency']) || empty($_POST['currency']))
+        && (!isset($value) || !is_numeric($value) || !isset($_POST['currency']) || empty($_POST['currency']))
     )) {
     $SESSION->redirect_to_history_entry();
 }
@@ -38,7 +42,7 @@ $old_customerid = intval($_POST['old-customerid']);
 if (isset($_POST['marks'])) {
     $marks = Utils::filterIntegers($_POST['marks']);
 } else {
-    $value = floatval($_POST['value']);
+    $value = floatval($value);
     $currency = $_POST['currency'];
 }
 
