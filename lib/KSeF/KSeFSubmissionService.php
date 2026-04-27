@@ -348,11 +348,66 @@ class KSeFSubmissionService
             $invoiceReferenceCache[$cacheKey] = $this->waitForInvoiceReferences(
                 $config,
                 $sellerTen,
-                $document['session_reference_number']
+                $document['session_reference_number'],
+                $document
             );
         }
         $invoiceReferences = $invoiceReferenceCache[$cacheKey];
+        if (!empty($invoiceReferences) && $this->findInvoiceReferenceNumber($invoiceReferences, $document) === null) {
+            $invoiceReferences = $this->waitForInvoiceReferences(
+                $config,
+                $sellerTen,
+                $document['session_reference_number'],
+                $document
+            );
+            $invoiceReferenceCache[$cacheKey] = $invoiceReferences;
+        }
 
+        $invoiceReferenceNumber = $this->findInvoiceReferenceNumber($invoiceReferences, $document);
+        if ($invoiceReferenceNumber !== null) {
+            return $invoiceReferenceNumber;
+        }
+
+        throw new \RuntimeException(
+            'Couldn\'t find KSeF invoice reference for session ' . $document['session_reference_number']
+                . ' and ordinal number ' . $document['ordinalnumber'] . '.'
+        );
+    }
+
+    private function waitForInvoiceReferences(
+        KSeFConfig $config,
+        string $sellerTen,
+        string $sessionReferenceNumber,
+        array $document
+    ): array {
+        $waitedSeconds = 0;
+        $lastInvoiceReferences = [];
+        for ($attempt = 0; $attempt === 0 || $waitedSeconds < self::INVOICE_REFERENCE_WAIT_SECONDS; $attempt++) {
+            if ($attempt > 0) {
+                $sleepSeconds = self::INVOICE_REFERENCE_RETRY_SECONDS[
+                    min($attempt - 1, count(self::INVOICE_REFERENCE_RETRY_SECONDS) - 1)
+                ];
+                $sleepSeconds = min($sleepSeconds, self::INVOICE_REFERENCE_WAIT_SECONDS - $waitedSeconds);
+                call_user_func($this->sleeper, $sleepSeconds);
+                $waitedSeconds += $sleepSeconds;
+            }
+
+            $invoiceReferences = $this->gateway->listInvoiceReferences(
+                $config,
+                $sellerTen,
+                $sessionReferenceNumber
+            );
+            $lastInvoiceReferences = $invoiceReferences;
+            if ($this->findInvoiceReferenceNumber($invoiceReferences, $document) !== null) {
+                return $invoiceReferences;
+            }
+        }
+
+        return $lastInvoiceReferences;
+    }
+
+    private function findInvoiceReferenceNumber(array $invoiceReferences, array $document): ?string
+    {
         foreach ($invoiceReferences as $invoiceReference) {
             if (isset($invoiceReference['ordinal_number'])
                 && (int) $invoiceReference['ordinal_number'] === (int) $document['ordinalnumber']
@@ -369,39 +424,7 @@ class KSeFSubmissionService
             return $invoiceReferences[0]['reference_number'];
         }
 
-        throw new \RuntimeException(
-            'Couldn\'t find KSeF invoice reference for session ' . $document['session_reference_number']
-                . ' and ordinal number ' . $document['ordinalnumber'] . '.'
-        );
-    }
-
-    private function waitForInvoiceReferences(
-        KSeFConfig $config,
-        string $sellerTen,
-        string $sessionReferenceNumber
-    ): array {
-        $waitedSeconds = 0;
-        for ($attempt = 0; $attempt === 0 || $waitedSeconds < self::INVOICE_REFERENCE_WAIT_SECONDS; $attempt++) {
-            if ($attempt > 0) {
-                $sleepSeconds = self::INVOICE_REFERENCE_RETRY_SECONDS[
-                    min($attempt - 1, count(self::INVOICE_REFERENCE_RETRY_SECONDS) - 1)
-                ];
-                $sleepSeconds = min($sleepSeconds, self::INVOICE_REFERENCE_WAIT_SECONDS - $waitedSeconds);
-                call_user_func($this->sleeper, $sleepSeconds);
-                $waitedSeconds += $sleepSeconds;
-            }
-
-            $invoiceReferences = $this->gateway->listInvoiceReferences(
-                $config,
-                $sellerTen,
-                $sessionReferenceNumber
-            );
-            if (!empty($invoiceReferences)) {
-                return $invoiceReferences;
-            }
-        }
-
-        return [];
+        return null;
     }
 
     private function normalizeStorageDate(?string $date): ?string
