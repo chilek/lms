@@ -1,105 +1,5 @@
 <?php
 
-namespace N1ebieski\KSEFClient\ValueObjects\Requests {
-    if (!class_exists(ReferenceNumber::class)) {
-        final class ReferenceNumber
-        {
-            public $value;
-
-            public function __construct(string $value)
-            {
-                $this->value = $value;
-            }
-
-            public static function from(string $value): self
-            {
-                return new self($value);
-            }
-        }
-    }
-}
-
-namespace N1ebieski\KSEFClient\ValueObjects\Requests\Sessions {
-    if (!enum_exists(FormCode::class)) {
-        enum FormCode: string
-        {
-            case Fa3 = 'FA (3)';
-        }
-    }
-}
-
-namespace N1ebieski\KSEFClient\Requests\Sessions\Batch\OpenAndSend {
-    use N1ebieski\KSEFClient\ValueObjects\Requests\Sessions\FormCode;
-
-    if (!class_exists(OpenAndSendXmlRequest::class)) {
-        final class OpenAndSendXmlRequest
-        {
-            public $formCode;
-            public $faktury;
-
-            public function __construct(FormCode $formCode, array $faktury)
-            {
-                $this->formCode = $formCode;
-                $this->faktury = $faktury;
-            }
-        }
-    }
-}
-
-namespace N1ebieski\KSEFClient\Requests\Sessions\Batch\Close {
-    use N1ebieski\KSEFClient\ValueObjects\Requests\ReferenceNumber;
-
-    if (!class_exists(CloseRequest::class)) {
-        final class CloseRequest
-        {
-            public $referenceNumber;
-
-            public function __construct(ReferenceNumber $referenceNumber)
-            {
-                $this->referenceNumber = $referenceNumber;
-            }
-        }
-    }
-}
-
-namespace N1ebieski\KSEFClient\ValueObjects\Requests {
-    if (!class_exists(KsefNumber::class)) {
-        final class KsefNumber
-        {
-            public $value;
-
-            public function __construct(string $value)
-            {
-                $this->value = $value;
-            }
-
-            public static function from(string $value): self
-            {
-                return new self($value);
-            }
-        }
-    }
-}
-
-namespace N1ebieski\KSEFClient\Requests\Sessions\Invoices\KsefUpo {
-    use N1ebieski\KSEFClient\ValueObjects\Requests\KsefNumber;
-    use N1ebieski\KSEFClient\ValueObjects\Requests\ReferenceNumber;
-
-    if (!class_exists(KsefUpoRequest::class)) {
-        final class KsefUpoRequest
-        {
-            public $referenceNumber;
-            public $ksefNumber;
-
-            public function __construct(ReferenceNumber $referenceNumber, KsefNumber $ksefNumber)
-            {
-                $this->referenceNumber = $referenceNumber;
-                $this->ksefNumber = $ksefNumber;
-            }
-        }
-    }
-}
-
 namespace LMS\Tests\KSeF {
     if (!defined('STORAGE_DIR')) {
         define('STORAGE_DIR', sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'lms-ksef-test-storage');
@@ -108,6 +8,9 @@ namespace LMS\Tests\KSeF {
     if (!class_exists('PHPUnit\Framework\TestCase') && class_exists('PHPUnit_Framework_TestCase')) {
         class_alias('PHPUnit_Framework_TestCase', 'PHPUnit\Framework\TestCase');
     }
+
+    require_once __DIR__ . '/FakeKsefUpoClient.php';
+    require_once __DIR__ . '/FakeXmlValidationException.php';
 
     use Lms\KSeF\N1ebieskiKSeFGateway;
     use N1ebieski\KSEFClient\Requests\Sessions\Batch\Close\CloseRequest;
@@ -268,54 +171,4 @@ namespace LMS\Tests\KSeF {
         }
     }
 
-    class FakeXmlValidationException extends \Exception
-    {
-        public $context;
-
-        public function __construct(string $message, array $context)
-        {
-            parent::__construct($message);
-            $this->context = $context;
-        }
-    }
-
-    class FakeKsefUpoClient
-    {
-        public $request;
-
-        private $body;
-        private $fail;
-
-        public function __construct(?string $body, bool $fail = false)
-        {
-            $this->body = $body;
-            $this->fail = $fail;
-        }
-
-        public function sessions()
-        {
-            return $this;
-        }
-
-        public function invoices()
-        {
-            return $this;
-        }
-
-        public function ksefUpo(KsefUpoRequest $request)
-        {
-            if ($this->fail) {
-                throw new \RuntimeException('UPO API failed');
-            }
-
-            $this->request = $request;
-
-            return $this;
-        }
-
-        public function body()
-        {
-            return $this->body;
-        }
-    }
 }
