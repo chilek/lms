@@ -494,6 +494,63 @@ class KSeFSubmissionServiceTest extends TestCase
         ], $sleeps);
     }
 
+    public function testSyncWaitsForExpectedOrdinalWhenInvoiceReferencesArePartial()
+    {
+        $repository = new FakeKSeFRepository([], [
+            $this->pendingDocument([
+                'ordinalnumber' => 2,
+                'session_document_count' => 2,
+            ]),
+        ]);
+        $gateway = new FakeKSeFGateway();
+        $gateway->invoiceReferenceResponseSequences['SESSION-1'] = [
+            [
+                [
+                    'ordinal_number' => 1,
+                    'reference_number' => 'INVOICE-1',
+                ],
+            ],
+            [
+                [
+                    'ordinal_number' => 1,
+                    'reference_number' => 'INVOICE-1',
+                ],
+                [
+                    'ordinal_number' => 2,
+                    'reference_number' => 'INVOICE-2',
+                ],
+            ],
+        ];
+        $gateway->invoiceStatuses['SESSION-1:INVOICE-2'] = [
+            'status' => 0,
+            'status_description' => 'Processing',
+            'status_details' => '',
+        ];
+        $sleeps = [];
+        $service = $this->service(
+            $repository,
+            $gateway,
+            null,
+            null,
+            function (int $seconds) use (&$sleeps) {
+                $sleeps[] = $seconds;
+            }
+        );
+
+        $result = $service->sync($this->ksefConfig());
+
+        $this->assertSame(1, $result['updated']);
+        $this->assertSame([], $result['errors']);
+        $this->assertSame([
+            'SESSION-1',
+            'SESSION-1',
+        ], $gateway->listedSessions);
+        $this->assertSame([
+            1,
+        ], $sleeps);
+        $this->assertSame(0, $repository->statusUpdates[0]['status']);
+    }
+
     public function testSyncWaitsForMissingInvoiceReferencesOnlyOncePerSession()
     {
         $repository = new FakeKSeFRepository([], [
@@ -954,6 +1011,7 @@ class FakeKSeFGateway implements KSeFGatewayInterface
     public $failClose = false;
     public $invalidXmlDocuments = [];
     public $emptyInvoiceReferenceResponses = [];
+    public $invoiceReferenceResponseSequences = [];
 
     public function validateXml(string $xml): void
     {
@@ -993,6 +1051,9 @@ class FakeKSeFGateway implements KSeFGatewayInterface
             $this->emptyInvoiceReferenceResponses[$sessionReferenceNumber]--;
 
             return [];
+        }
+        if (!empty($this->invoiceReferenceResponseSequences[$sessionReferenceNumber])) {
+            return array_shift($this->invoiceReferenceResponseSequences[$sessionReferenceNumber]);
         }
 
         return $this->sessionInvoiceReferences[$sessionReferenceNumber] ?? [];
