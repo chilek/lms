@@ -163,6 +163,14 @@ namespace LMS\Tests\KSeF {
             );
         }
 
+        public function testFormatStatusDetailsFormatsNestedJsonWithoutArrayWarning()
+        {
+            $this->assertSame(
+                '{"field":"NIP","message":"Nieprawidłowy NIP"}',
+                KSeF::formatStatusDetails('[{"field":"NIP","message":"Nieprawid\\u0142owy NIP"}]')
+            );
+        }
+
         private function resetKSeFUpoStorageCache()
         {
             $property = new \ReflectionProperty(KSeF::class, 'upoStorage');
