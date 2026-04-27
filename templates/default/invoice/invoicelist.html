@@ -688,13 +688,21 @@
 		return false;
 	});
 
+	function showKSeFSendProgressDialog() {
+		var progressDeferred = progressDialog($t("Sending invoices to KSeF. Please wait."));
+
+		$(window).one('pagehide', function() {
+			progressDeferred.reject();
+		});
+	}
+
 	$('.send-ksef-invoice').click(function () {
 		var number = $(this).closest('tr').attr('data-number');
 		confirmDialog($t("Send invoice $a to KSeF?", number), this).done(function () {
 			var form = $('<form method="post"></form>');
 			form.attr('action', $(this).attr('data-href'));
 			form.append($('<input type="hidden" name="backurl">').val(location.search + location.hash));
-			progressDialog($t("Sending invoices to KSeF. Please wait."));
+			showKSeFSendProgressDialog();
 			form.appendTo('body').submit().remove();
 		});
 		return false;
@@ -750,7 +758,7 @@
 			$(document.page).append($('<input type="hidden" name="backurl">').val(location.search + location.hash));
 			document.page.action = "?m=invoiceksefinfo&action=send";
 			document.page.target = "";
-			progressDialog($t("Sending invoices to KSeF. Please wait."));
+			showKSeFSendProgressDialog();
 			document.page.submit();
 		});
 	});
