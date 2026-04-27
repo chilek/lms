@@ -45,6 +45,10 @@ function invoiceKSeFRenderSendResult(array $result)
     $backUrl = $result['backurl'] ?? '?m=invoicelist';
 
     echo '<H1>' . $layout['pagetitle'] . '</H1>';
+    echo '<style>'
+        . '.ksef-submit-result-document,.ksef-submit-result-ksef-number,.ksef-submit-result-upo{white-space:nowrap;}'
+        . '.ksef-submit-result-status{overflow-wrap:anywhere;word-break:break-word;}'
+        . '</style>';
 
     if (!empty($result['error'])) {
         echo '<p class="red">'
@@ -81,12 +85,12 @@ function invoiceKSeFRenderSendResult(array $result)
     $skippedMap = array_fill_keys($skippedDocIds, true);
 
     if (!empty($resultDocuments)) {
-        echo '<table class="lmsbox" cellpadding="3">';
+        echo '<table class="lmsbox ksef-submit-result-table" cellpadding="3">';
         echo '<thead><tr>'
-            . '<th>' . trans('Document') . '</th>'
-            . '<th>' . trans('Status') . '</th>'
-            . '<th>' . trans('KSeF number') . '</th>'
-            . '<th>' . trans('UPO') . '</th>'
+            . '<th class="ksef-submit-result-document">' . trans('Document') . '</th>'
+            . '<th class="ksef-submit-result-status">' . trans('Status') . '</th>'
+            . '<th class="ksef-submit-result-ksef-number">' . trans('KSeF number') . '</th>'
+            . '<th class="ksef-submit-result-upo">' . trans('UPO') . '</th>'
             . '</tr></thead><tbody>';
         foreach ($resultDocuments as $document) {
             $docId = (int) $document['id'];
@@ -135,12 +139,16 @@ function invoiceKSeFRenderSendResult(array $result)
             }
 
             echo '<tr>'
-                . '<td>' . htmlspecialchars($document['fullnumber'], ENT_QUOTES, 'UTF-8') . '</td>'
-                . '<td' . ($statusClass ? ' class="' . $statusClass . '"' : '') . '>'
+                . '<td class="ksef-submit-result-document">'
+                . htmlspecialchars($document['fullnumber'], ENT_QUOTES, 'UTF-8')
+                . '</td>'
+                . '<td class="ksef-submit-result-status' . ($statusClass ? ' ' . $statusClass : '') . '">'
                 . htmlspecialchars(implode(' ', $statusMessages), ENT_QUOTES, 'UTF-8')
                 . '</td>'
-                . '<td>' . htmlspecialchars($document['ksefnumber'] ?: '-', ENT_QUOTES, 'UTF-8') . '</td>'
-                . '<td>' . $upo . '</td>'
+                . '<td class="ksef-submit-result-ksef-number">'
+                . htmlspecialchars($document['ksefnumber'] ?: '-', ENT_QUOTES, 'UTF-8')
+                . '</td>'
+                . '<td class="ksef-submit-result-upo">' . $upo . '</td>'
                 . '</tr>';
         }
         echo '</tbody></table>';
