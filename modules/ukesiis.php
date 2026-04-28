@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-ini_set('memory_limit', '512M');
+//ini_set('memory_limit', '512M');
 ini_set('max_execution_time', '0');
 
 define('SERVICE_TYPE_INTERNET', defined('SERVICE_INTERNET') ? SERVICE_INTERNET : TARIFF_INTERNET);

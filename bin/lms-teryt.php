@@ -253,7 +253,7 @@ function getNames($city_id, $street_id)
     }
 }
 
-ini_set('memory_limit', '512M');
+//ini_set('memory_limit', '512M');
 $stderr = fopen('php://stderr', 'w');
 
 define('PROGRESS_ROW_COUNT', 1000);

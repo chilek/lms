@@ -27,7 +27,7 @@
 define('ELEMENT_MODE_FLEXIBILITY_POINT', 1);
 define('ELEMENT_MODE_NETWORK_NODE', 2);
 
-ini_set('memory_limit', '512M');
+//ini_set('memory_limit', '512M');
 ini_set('max_execution_time', '0');
 
 if (!class_exists('ZipArchive')) {
