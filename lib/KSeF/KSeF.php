@@ -948,9 +948,15 @@ class KSeF
                     $xml .= "\t\t\t<P_9A>" . $this->smartFormatNumber($refInvoiceContent[$itemId]['netprice']) . "</P_9A>" . PHP_EOL;
                 }
                 if (empty($invoice['netflag'])) {
+                    if (!empty($invoice['ksefxmladdallvalues'])) {
+                        $xml .= "\t\t\t<P_11>" . sprintf('%.2f', $refInvoiceContent[$itemId]['totalbase']) . "</P_11>" . PHP_EOL;
+                    }
                     $xml .= "\t\t\t<P_11A>" . sprintf('%.2f', $refInvoiceContent[$itemId]['total']) . "</P_11A>" . PHP_EOL;
                 } else {
                     $xml .= "\t\t\t<P_11>" . sprintf('%.2f', $refInvoiceContent[$itemId]['totalbase']) . "</P_11>" . PHP_EOL;
+                    if (!empty($invoice['ksefxmladdallvalues'])) {
+                        $xml .= "\t\t\t<P_11A>" . sprintf('%.2f', $refInvoiceContent[$itemId]['total']) . "</P_11A>" . PHP_EOL;
+                    }
                 }
                 $xml .= "\t\t\t<P_11Vat>" . sprintf('%.2f', $refInvoiceContent[$itemId]['totaltax']) . "</P_11Vat>" . PHP_EOL;
 
