@@ -271,6 +271,15 @@
 				{/if}
 				{hint icon="lock" url="?m=invoiceksefinfo&id={$invoiceid}" tooltip_class="lms-ui-ksef-qr-code" class=$class}
 			{/if}
+			{if !$invoice.cancelled && !empty($invoice.ksefsubmit)
+				&& (empty($invoice.ksefhash) || !empty($invoice.ksefstatus) && $invoice.ksefstatus != 0 && $invoice.ksefstatus != 200)}
+				{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
+					{button type="link" icon="upload" class="send-ksef-invoice"
+						href="#"
+						data_href="?m=invoiceksefinfo&id={$invoice.id}&action=send"
+						tip="Send invoice to KSeF"}
+				{/if}
+			{/if}
 			{if $invoice.type == $smarty.const.DOC_INVOICE_PRO && !$invoice.closed}
 				{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
 					{button type="link" icon="transform" href="?m=invoicenew&id={$invoice.id}&action=init"
@@ -479,6 +488,9 @@
 						{else}
 							{button icon="add" label="New Pro Forma" href="?m=invoicenew{if $listdata.cat == 'customerid'}&customerid={$listdata.search}{/if}&action=init&proforma=1"}
 						{/if}
+						{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
+							{button icon="upload" id="send-ksef-invoices" label="<!ksef>Send to KSeF"}
+						{/if}
 						{button icon="mail" id="send-invoices" label="Send invoices"}
 						{button icon="delete" id="delete-invoices" label="Delete"}
 						{if ConfigHelper::checkPrivilege('trade_document_archiving')}
@@ -676,6 +688,26 @@
 		return false;
 	});
 
+	function showKSeFSendProgressDialog() {
+		var progressDeferred = progressDialog($t("Sending invoices to KSeF. Please wait."));
+
+		$(window).one('pagehide', function() {
+			progressDeferred.reject();
+		});
+	}
+
+	$('.send-ksef-invoice').click(function () {
+		var number = $(this).closest('tr').attr('data-number');
+		confirmDialog($t("Send invoice $a to KSeF?", number), this).done(function () {
+			var form = $('<form method="post"></form>');
+			form.attr('action', $(this).attr('data-href'));
+			form.append($('<input type="hidden" name="backurl">').val(location.search + location.hash));
+			showKSeFSendProgressDialog();
+			form.appendTo('body').submit().remove();
+		});
+		return false;
+	});
+
 	$('#account-invoices').click(function () {
 		if (!$(this).closest('tfoot').prev('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
 			alertDialog($t('No document of given type has been selected!'), this);
@@ -711,6 +743,22 @@
 
 			document.page.action = "?m=invoicesend&marks=invoice" + add;
 			document.page.target = "_blank";
+			document.page.submit();
+		});
+	});
+
+	$('#send-ksef-invoices').click(function () {
+		if (!$(this).closest('tfoot').prev('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			alertDialog($t('No document of given type has been selected!'), this);
+			return;
+		}
+
+		confirmDialog($t("Send selected invoices to KSeF?"), this).done(function () {
+			$(document.page).find('input[name="backurl"]').remove();
+			$(document.page).append($('<input type="hidden" name="backurl">').val(location.search + location.hash));
+			document.page.action = "?m=invoiceksefinfo&action=send";
+			document.page.target = "";
+			showKSeFSendProgressDialog();
 			document.page.submit();
 		});
 	});
