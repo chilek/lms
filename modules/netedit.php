@@ -28,7 +28,7 @@ if (!$LMS->NetworkExists($_GET['id'])) {
     $SESSION->redirect('?m=netlist');
 }
 
-if (isset($_GET['id']) && isset($_GET['networkset'])) {
+if (isset($_GET['id'], $_GET['networkset'])) {
     $LMS->NetworkSet($_GET['id']);
     $SESSION->redirect_to_history_entry();
 }
