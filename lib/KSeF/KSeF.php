@@ -1105,6 +1105,20 @@ class KSeF
         $xml .= "\t\t<Platnosc>" . PHP_EOL;
         $xml .= "\t\t\t<TerminPlatnosci>" . PHP_EOL;
         $xml .= "\t\t\t\t<Termin>" . date('Y-m-d', $invoice['pdate']) . "</Termin>" . PHP_EOL;
+        if ($currency != $this->defaultCurrency) {
+            $total = $invoice['type'] == DOC_CNOTE ? $diffTotal : $invoice['total'];
+            if ($total >= 0) {
+                $xml .= "\t\t\t\t<TerminOpis>Do zapłaty " . moneyf($total * $currencyValue) . ';'
+                    . ' cena umowna ' . moneyf($total, $currency)
+                    . ' po kursie ' . $this->smartFormatNumber($currencyValue)
+                    . "</TerminOpis>" . PHP_EOL;
+            } else {
+                $xml .= "\t\t\t\t<TerminOpis>Do zwrotu " . moneyf(abs($total) * $currencyValue) . ';'
+                    . ' cena umowna ' . moneyf(abs($total), $currency)
+                    . ' po kursie ' . $this->smartFormatNumber($currencyValue)
+                    . "</TerminOpis>" . PHP_EOL;
+            }
+        }
         $xml .= "\t\t\t</TerminPlatnosci>" . PHP_EOL;
         if (!isset($this->payTypes[$invoice['paytype']]) || !is_int($this->payTypes[$invoice['paytype']])) {
             $xml .= "\t\t\t<PlatnoscInna>1</PlatnoscInna>" . PHP_EOL;
@@ -2052,7 +2066,7 @@ class KSeF
         return self::$deadlineUnits[$deadlineUnit] ?? 'days';
     }
 
-    public static function getCertificatePath(int $type = self::CERTIFICATE_TYPE_ONLINE): string
+    public static function getCertificatePath(int $type = self::CERTIFICATE_TYPE_ONLINE): ?string
     {
         $certificatePath = $type == self::CERTIFICATE_TYPE_OFFLINE
             ? \ConfigHelper::getConfig('ksef.offline_certificate')
