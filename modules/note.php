@@ -285,7 +285,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
     if ($note['archived']) {
         $note = $LMS->GetArchiveDocument($_GET['id']);
         if ($note) {
-            header('Content-Type: ' . $invoice['content-type']);
+            header('Content-Type: ' . $note['content-type']);
             header('Content-Disposition: inline; filename=' . $note['filename']);
             echo $note['data'];
         }
