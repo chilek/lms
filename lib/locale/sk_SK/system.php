@@ -148,10 +148,13 @@ self::addLanguageFunctions(
             if ($country_code) {
                 $ten = preg_replace('/[ \-]/', '', $ten);
             }
+/*
             if (strpos($ten, 'SK') === 0) {
                 $ten = substr($ten, 2);
             }
             return ($country_code ? 'SK' : '') . $ten;
+*/
+            return $ten;
         },
         'getHolidays' => function ($year = null) {
             return array();
