@@ -530,7 +530,7 @@ switch ($action) {
             if (!check_ip($nodeipdata['ipaddr_pub'])) {
                 $error['ipaddr_pub'] = trans('Incorrect IP address!');
             } elseif (!$LMS->IsIPValid($nodeipdata['ipaddr_pub'])) {
-                $error['ipaddr_pub'] = trans('Specified address does not belongs to any network!');
+                $error['ipaddr_pub'] = trans('Specified address does not belong to any network!');
             } elseif (!$LMS->IsIPFree($nodeipdata['ipaddr_pub'])) {
                 $error['ipaddr_pub'] = trans('Specified IP address is in use!');
             }
