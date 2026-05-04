@@ -2428,7 +2428,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
 
         $finance_manager = new LMSFinanceManager($this->db, $this->auth, $this->cache, $this->syslog);
-        if ($document['doctype'] == DOC_CNOTE) {
+        if ($document['doctype'] == DOC_DNOTE) {
             $data = $finance_manager->GetNoteContent($docid);
         } else {
             $data = $finance_manager->GetInvoiceContent($docid);
