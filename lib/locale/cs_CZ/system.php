@@ -62,12 +62,12 @@ self::addLanguageFunctions(
             if ($country_code) {
                 $ten = preg_replace('/[ \-]/', '', $ten);
             }
-/*
+            /*
             if (strpos($ten, 'CZ') === 0) {
                 $ten = substr($ten, 2);
             }
             return ($country_code ? 'CZ' : '') . $ten;
-*/
+            */
             return $ten;
         },
         'getHolidays' => function ($year = null) {

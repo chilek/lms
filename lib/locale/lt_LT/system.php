@@ -152,12 +152,12 @@ self::addLanguageFunctions(
             if ($country_code) {
                 $ten = preg_replace('/[ \-]/', '', $ten);
             }
-/*
+            /*
             if (strpos($ten, 'LT') === 0) {
                 $ten = substr($ten, 2);
             }
             return ($country_code ? 'LT' : '') . $ten;
-*/
+            */
             return $ten;
         },
         'getHolidays' => function ($year = null) {
