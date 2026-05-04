@@ -1105,6 +1105,7 @@ class KSeF
         $xml .= "\t\t<Platnosc>" . PHP_EOL;
         $xml .= "\t\t\t<TerminPlatnosci>" . PHP_EOL;
         $xml .= "\t\t\t\t<Termin>" . date('Y-m-d', $invoice['pdate']) . "</Termin>" . PHP_EOL;
+/*
         if ($currency != $this->defaultCurrency) {
             $total = $invoice['type'] == DOC_CNOTE ? $diffTotal : $invoice['total'];
             if ($total >= 0) {
@@ -1119,6 +1120,7 @@ class KSeF
                     . "</TerminOpis>" . PHP_EOL;
             }
         }
+*/
         $xml .= "\t\t\t</TerminPlatnosci>" . PHP_EOL;
         if (!isset($this->payTypes[$invoice['paytype']]) || !is_int($this->payTypes[$invoice['paytype']])) {
             $xml .= "\t\t\t<PlatnoscInna>1</PlatnoscInna>" . PHP_EOL;
