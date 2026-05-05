@@ -1014,7 +1014,7 @@
 		//$('#move-balances').prop('disabled', !$('#customerbalancebox .lms-ui-multi-check:checked').closest('[data-moveable]').length)
 		$('#move-balances').click(function() {
 			var valueRequired = !$('#customerbalancebox .lms-ui-multi-check:checked').closest('[data-moveable]').length;
-			$("#transfer-balance-dialog-value-field").toggle(valueRequired).find('input,select').prop('required', valueRequired);
+			$("#transfer-balance-dialog-value-field").toggle(valueRequired).find('input,select').prop('required', valueRequired).prop('disabled', !valueRequired);
 			transfer_balance_dialog.open();
 		});
 	});
