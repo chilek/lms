@@ -99,8 +99,7 @@ class Session
 
     public function makeSID()
     {
-        [$usec, $sec] = explode(' ', microtime());
-        return md5(uniqid(random_int(0, mt_getrandmax()), true)).sprintf('%09x', $sec).sprintf('%07x', ($usec * 10000000));
+        return bin2hex(random_bytes(32));
     }
 
     public function restore_user_settings($force_settings_restore = false)

@@ -2626,7 +2626,7 @@ CREATE TABLE eventassignments (
 ------------------------------------------------------*/
 DROP TABLE IF EXISTS sessions CASCADE;
 CREATE TABLE sessions (
-    id 		varchar(50) 	NOT NULL DEFAULT '',
+    id 		varchar(100) 	NOT NULL DEFAULT '',
     ctime 	bigint 	NOT NULL DEFAULT 0,
     mtime 	bigint 	NOT NULL DEFAULT 0,
     atime 	bigint 	NOT NULL DEFAULT 0,
@@ -3403,7 +3403,7 @@ CREATE TABLE up_info_changes (
 ------------------------------------------------------*/
 DROP TABLE IF EXISTS up_sessions CASCADE;
 CREATE TABLE up_sessions (
-	id		varchar(50) 	NOT NULL DEFAULT '',
+	id		varchar(100) 	NOT NULL DEFAULT '',
 	customerid  integer NOT NULL
 		CONSTRAINT up_sessions_customerid_fkey REFERENCES customers (id) ON UPDATE CASCADE ON DELETE CASCADE,
 	ctime	bigint 	NOT NULL DEFAULT 0,
@@ -4726,6 +4726,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026042800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026050500');
 
 COMMIT;

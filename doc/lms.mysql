@@ -2736,7 +2736,7 @@ CREATE TABLE eventassignments (
 # Structure of table sessions
 #
 CREATE TABLE sessions (
-    id varchar(50) NOT NULL DEFAULT '',
+    id varchar(100) NOT NULL DEFAULT '',
     ctime int(16) NOT NULL DEFAULT 0,
     mtime int(16) NOT NULL DEFAULT 0,
     atime int(16) NOT NULL DEFAULT 0,
@@ -3491,7 +3491,7 @@ CREATE TABLE up_info_changes (
 # Structure of table up_sessions
 #
 CREATE TABLE up_sessions (
-	id varchar(50) NOT NULL DEFAULT '',
+	id varchar(100) NOT NULL DEFAULT '',
 	customerid int(11) NOT NULL,
 	ctime int(16) NOT NULL DEFAULT 0,
 	mtime int(16) NOT NULL DEFAULT 0,
@@ -4686,4 +4686,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026042800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026050500');
