@@ -411,6 +411,7 @@ if (isset($_POST['ticket'])) {
                 $body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_mail_body', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body')), $params);
 
                 if ($ticket['contenttype'] == 'text/html') {
+                    $body = str_replace("\n", '<br>', $body);
                     $params['body'] = trans('(HTML content has been omitted)');
                     $headers['X-LMS-Format'] = 'html';
                 }
