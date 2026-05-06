@@ -998,6 +998,7 @@ CREATE TABLE voip_cdr (
 	caller              varchar(20)   NOT NULL,
 	callee              varchar(20)   NOT NULL,
 	call_start_time     int(16)       NOT NULL,
+	creationdate        int(16)       DEFAULT NULL,
 	totaltime           bigint        NOT NULL,
 	billedtime          bigint        NOT NULL,
 	price               decimal(12,5) NOT NULL,
@@ -1020,6 +1021,7 @@ CREATE TABLE voip_cdr (
 	KEY voip_cdr_caller_idx (caller),
 	KEY voip_cdr_callee_idx (callee),
 	KEY voip_cdr_call_start_time_idx (call_start_time),
+	KEY voip_cdr_creationdate_idx (creationdate),
 	KEY voip_cdr_direction_idx (direction),
 	KEY voip_cdr_type_idx (type),
 	KEY voip_cdr_incremental_idx (incremental),
@@ -4686,4 +4688,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026050500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026050600');

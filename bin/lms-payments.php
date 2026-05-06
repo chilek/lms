@@ -700,7 +700,7 @@ $query = "SELECT
 				JOIN tariffs t ON t.id = a2.tariffid AND t.type = ?
 				WHERE (
 					(
-						vc.call_start_time >= (CASE a2.period
+						COALESCE(vc.creationdate, vc.call_start_time) >= (CASE a2.period
 							WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month, 1, $year-1) . '
 							WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month-6, 1, $year)   . '
 							WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month-3, 1, $year)   . '
@@ -708,7 +708,7 @@ $query = "SELECT
 							WHEN ' . DISPOSABLE . ' THEN ' . strtotime('today', $currtime) . "
 						END)
 						AND
-						vc.call_start_time < (CASE a2.period
+						COALESCE(vc.creationdate, vc.call_start_time) < (CASE a2.period
 							WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
 							WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
 							WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
@@ -716,7 +716,7 @@ $query = "SELECT
 							WHEN ' . DISPOSABLE . ' THEN ' . strtotime('tomorrow', $currtime) . "
 						END)
 					) OR ((vc.type = " . BILLING_RECORD_TYPE_VOICE_CALL . " OR vc.type = " . BILLING_RECORD_TYPE_VIDEO_CALL . ")
-						AND vc.call_start_time + totaltime >= (CASE a2.period
+						AND COALESCE(vc.creationdate, vc.call_start_time) + totaltime >= (CASE a2.period
 							WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month, 1, $year-1) . '
 							WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month-6, 1, $year)   . '
 							WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month-3, 1, $year)   . '
@@ -724,7 +724,7 @@ $query = "SELECT
 							WHEN ' . DISPOSABLE . ' THEN ' . strtotime('today', $currtime) . "
 						END)
 						AND
-						vc.call_start_time + totaltime < (CASE a2.period
+						COALESCE(vc.creationdate, vc.call_start_time) + totaltime < (CASE a2.period
 							WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
 							WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
 							WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
