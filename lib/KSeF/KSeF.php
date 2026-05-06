@@ -1285,7 +1285,7 @@ class KSeF
         }
 
         $bank = null;
-        if (!$this->showOnlyAlternativeAccounts || empty($invoice['bankaccounts'])) {
+        if ((!$this->showOnlyAlternativeAccounts || empty($invoice['bankaccounts'])) && !empty($invoice['account'])) {
             $accounts = array(bankaccount($invoice['customerid'], $invoice['account'], $invoice['export']));
             if (!empty($invoice['division_bank'])) {
                 $bank = $invoice['division_bank'];
