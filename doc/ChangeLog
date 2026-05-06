@@ -1209,6 +1209,9 @@ version 28-git (????-??-??):
   - improvement: customer consent list toggle button added [chilan]
   - improvement: bin/lms-sendinvoices.php: '--part-number auto' support added [chilan]
   - improvement: 'unknown' status filter added to node search form [chilan]
+  - improvement/bugfix: voip cdr records can be loaded to database with long delay,
+    so we have to be able to store their creation dates and then issue them in invoices basing on there
+    creation dates [chilan]
 
 version 27.0 (2021-08-20):
 
