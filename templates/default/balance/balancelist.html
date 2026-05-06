@@ -245,8 +245,8 @@
 		<TD class="text-right nobr">
 			{if $balance.covenant}-{else}{moneyf($balance.after)}{/if}
 		</TD>
-		<TD class="text-right nobr">
-			{if $balance.customerid}<A HREF="?m=customerinfo&id={$balance.customerid}">{$balance.customername|trunescape:20}</A>{else} - {/if}
+		<TD class="text-right">
+			{if $balance.customerid}<A HREF="?m=customerinfo&id={$balance.customerid}">{$balance.customername|trunescape:70}</A>{else} - {/if}
 		</TD>
 		<TD>
 			{$balance.comment|escape}
