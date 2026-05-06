@@ -2116,7 +2116,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function ReplaceNotificationSymbols($text, array $params)
     {
-        if (isset($params['contentype']) && $params['contenttype'] == 'text/html') {
+        if (isset($params['contenttype']) && $params['contenttype'] == 'text/html') {
             $text = str_replace("\n", "<br>\n", $text);
         }
 
