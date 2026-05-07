@@ -994,6 +994,9 @@ class KSeF
                     } elseif (check_ksef_internal_id($invoice['invoice']['recipient_ten'])) {
                         $correctedRecipientTen = substr(preg_replace('/[^0-9]/', '', $correctedRecipientTen), 0, 10);
                         $xml .= "\t\t\t<NIP>" . $correctedRecipientTen . "</NIP>" . PHP_EOL;
+                    } else {
+                        $correctedRecipientTen = preg_replace('/[^0-9]/', '', $correctedRecipientTen);
+                        $xml .= "\t\t\t<NIP>" . $correctedRecipientTen . "</NIP>" . PHP_EOL;
                     }
                     if (!empty($correcredRecipientName)) {
                         $xml .= "\t\t\t<Nazwa>" . htmlspecialchars($correctedRecipientName) . "</Nazwa>" . PHP_EOL;
