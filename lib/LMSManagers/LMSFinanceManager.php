@@ -2738,6 +2738,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.recipient_ten,
 				d.recipient_type,
 				d.post_address_id,
+				a.state AS rec_state, a.state_id AS rec_state_id,
+				a.city as rec_city, a.city_id AS rec_city_id,
+				a.street AS rec_street, a.street_id AS rec_street_id,
+				a.zip as rec_zip, a.postoffice AS rec_postoffice,
+				a.name as rec_name, a.address AS rec_address,
+				a.house AS rec_house, a.flat AS rec_flat, a.country_id AS rec_country_id,
 				d.currency, d.currencyvalue, d.memo,
 				d.extid,
                 c.type AS customertype,
@@ -2759,6 +2765,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				LEFT JOIN vusers u ON u.id = d.userid
 				LEFT JOIN customerconsents cc ON cc.customerid = d.customerid AND cc.type = ?
 				LEFT JOIN customerconsents cc2 ON cc2.customerid = d.customerid AND cc2.type = ?
+				LEFT JOIN vaddresses a ON d.recipient_address_id = a.id
 				LEFT JOIN ksefconfig kc ON kc.divisionid = d.divisionid
 				LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
 				LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
