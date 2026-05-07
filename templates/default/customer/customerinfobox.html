@@ -327,6 +327,8 @@
 															{$v.location|default:""|escape}
 														{/if}
 													</span>
+													{button type="link" class="lms-ui-button-clipboard" icon="clipboard"
+														clipboard="{$v.location|default:""|escape}" tip="Copy to clipboard"}
 													{$gps_location_url_replaced = str_replace(
 														array(
 															'%location',
@@ -415,6 +417,8 @@
 															{$v.location|escape}
 														{/if}
 													</span>
+													{button type="link" class="lms-ui-button-clipboard" icon="clipboard"
+														clipboard="{$v.location|default:""|escape}" tip="Copy to clipboard"}
 													{$gps_location_url_replaced = str_replace(
 														array(
 															'%location',
@@ -464,12 +468,12 @@
 														streetid=$v.location_street
 														building_num=$v.location_house
 													}
-                                                                                                        {show_on_map_button
-                                                                                                                type='sidusis'
-                                                                                                                cityid=$v.location_city
-                                                                                                                streetid=$v.location_street
-                                                                                                                building_num=$v.location_house
-                                                                                                        }
+													{show_on_map_button
+														type='sidusis'
+														cityid=$v.location_city
+														streetid=$v.location_street
+														building_num=$v.location_house
+													}
 												</td>
 											</tr>
 											{break}
@@ -511,6 +515,8 @@
 															{$v.location|default:""|escape}
 														{/if}
 													</span>
+													{button type="link" class="lms-ui-button-clipboard" icon="clipboard"
+														clipboard="{$v.location|default:""|escape}" tip="Copy to clipboard"}
 													{$gps_location_url_replaced = str_replace(
 														array(
 															'%location',
