@@ -282,6 +282,7 @@ $documents = $DB->GetAll(
         d.extid
     FROM documents d
     JOIN customeraddressview c ON (c.id = d.customerid)
+    LEFT JOIN ksefdocuments kd ON kd.docid = d.id
     LEFT JOIN countries cn ON (cn.id = d.countryid)
     LEFT JOIN countries cdv ON cdv.id = d.div_countryid
     LEFT JOIN numberplans n ON (d.numberplanid = n.id)
