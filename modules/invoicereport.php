@@ -193,6 +193,8 @@ if (!empty($_POST['jpk-flag']) && isset($DOC_FLAGS[$_POST['jpk-flag']])) {
     $jpk_flag = 0;
 }
 
+$ksefSubmit = empty($_POST['ksef-submit']) ? null : ($_POST['ksef-submit'] == 'yes' ? 1 : 0);
+
 if (!empty($_POST['numberplanid'])) {
     if (is_array($_POST['numberplanid'])) {
         $numberplans = Utils::filterIntegers($_POST['numberplanid']);
@@ -247,58 +249,66 @@ if (!empty($_POST['promotion-schema'])) {
 //    die;
 }
 
-$documents = $DB->GetAll('SELECT d.id, d.type,
-            cn.name AS country, n.template,
-            a.state AS rec_state, a.state_id AS rec_state_id,
-            a.city as rec_city, a.city_id AS rec_city_id,
-            a.street AS rec_street, a.street_id AS rec_street_id,
-            a.zip as rec_zip, a.postoffice AS rec_postoffice,
-            a.name as rec_name, a.address AS rec_address,
-            a.house AS rec_house, a.flat AS rec_flat, a.country_id AS rec_country_id,
-            c.pin AS customerpin, c.divisionid AS current_divisionid,
-            c.street, c.building, c.apartment,
-            c.type AS ctype,
-            (CASE WHEN d.post_address_id IS NULL THEN c.post_street ELSE a2.street END) AS post_street,
-            (CASE WHEN d.post_address_id IS NULL THEN c.post_building ELSE a2.house END) AS post_building,
-            (CASE WHEN d.post_address_id IS NULL THEN c.post_apartment ELSE a2.flat END) AS post_apartment,
-            (CASE WHEN d.post_address_id IS NULL THEN c.post_name ELSE a2.name END) AS post_name,
-            (CASE WHEN d.post_address_id IS NULL THEN c.post_address ELSE a2.address END) AS post_address,
-            (CASE WHEN d.post_address_id IS NULL THEN c.post_zip ELSE a2.zip END) AS post_zip,
-            (CASE WHEN d.post_address_id IS NULL THEN c.post_city ELSE a2.city END) AS post_city,
-            (CASE WHEN d.post_address_id IS NULL THEN c.post_postoffice ELSE a2.postoffice END) AS post_postoffice,
-            (CASE WHEN d.post_address_id IS NULL THEN c.post_countryid ELSE a2.country_id END) AS post_countryid,
-            cp.name AS post_country,
-            (CASE WHEN d.div_countryid IS NOT NULL
-                THEN (CASE WHEN d.countryid IS NULL
-                    THEN cdv.ccode
-                    ELSE cn.ccode
-                END)
-                ELSE NULL
-            END) AS lang,
-            d.extid
-	    FROM documents d
-        JOIN customeraddressview c ON (c.id = d.customerid)
-        LEFT JOIN countries cn ON (cn.id = d.countryid)
-        LEFT JOIN countries cdv ON cdv.id = d.div_countryid
-        LEFT JOIN numberplans n ON (d.numberplanid = n.id)
-        LEFT JOIN vaddresses a ON d.recipient_address_id = a.id
-        LEFT JOIN vaddresses a2 ON d.post_address_id = a2.id
-        LEFT JOIN countries cp ON (d.post_address_id IS NOT NULL AND cp.id = a2.country_id) OR (d.post_address_id IS NULL AND cp.id = c.post_countryid)
-	    ' .
-        ( $ctype != -1 ? ' LEFT JOIN customers cu ON d.customerid = cu.id ' : '' )
-        . ' WHERE cancelled = 0 AND d.type IN ? AND (' . $wherecol . ' BETWEEN ? AND ?) '
-        . (empty($jpk_flag) ? '' : ' AND (d.flags & ' . $jpk_flag . ') > 0')
-        .(isset($numberplans) ? 'AND d.numberplanid IN (' . $numberplans . ')' : '')
-        . ($divisionWhere ?? '')
-        . ($servicetypewhere ?? '')
-        .($groupwhere ?? '')
-        . $ctenwhere
-        .( $ctype != -1 ? ' AND cu.type = ' . $ctype : '')
-        .' AND NOT EXISTS (
-                	    SELECT 1 FROM vcustomerassignments a
-			    JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-			    WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)
-	    ORDER BY ' . $sortcol . ', d.id', $args);
+$documents = $DB->GetAll(
+    'SELECT
+        d.id, d.type,
+        cn.name AS country, n.template,
+        a.state AS rec_state, a.state_id AS rec_state_id,
+        a.city as rec_city, a.city_id AS rec_city_id,
+        a.street AS rec_street, a.street_id AS rec_street_id,
+        a.zip as rec_zip, a.postoffice AS rec_postoffice,
+        a.name as rec_name, a.address AS rec_address,
+        a.house AS rec_house, a.flat AS rec_flat, a.country_id AS rec_country_id,
+        c.pin AS customerpin, c.divisionid AS current_divisionid,
+        c.street, c.building, c.apartment,
+        c.type AS ctype,
+        (CASE WHEN d.post_address_id IS NULL THEN c.post_street ELSE a2.street END) AS post_street,
+        (CASE WHEN d.post_address_id IS NULL THEN c.post_building ELSE a2.house END) AS post_building,
+        (CASE WHEN d.post_address_id IS NULL THEN c.post_apartment ELSE a2.flat END) AS post_apartment,
+        (CASE WHEN d.post_address_id IS NULL THEN c.post_name ELSE a2.name END) AS post_name,
+        (CASE WHEN d.post_address_id IS NULL THEN c.post_address ELSE a2.address END) AS post_address,
+        (CASE WHEN d.post_address_id IS NULL THEN c.post_zip ELSE a2.zip END) AS post_zip,
+        (CASE WHEN d.post_address_id IS NULL THEN c.post_city ELSE a2.city END) AS post_city,
+        (CASE WHEN d.post_address_id IS NULL THEN c.post_postoffice ELSE a2.postoffice END) AS post_postoffice,
+        (CASE WHEN d.post_address_id IS NULL THEN c.post_countryid ELSE a2.country_id END) AS post_countryid,
+        cp.name AS post_country,
+        (CASE WHEN d.div_countryid IS NOT NULL
+            THEN (CASE WHEN d.countryid IS NULL
+                THEN cdv.ccode
+                ELSE cn.ccode
+            END)
+            ELSE NULL
+        END) AS lang,
+        d.extid
+    FROM documents d
+    JOIN customeraddressview c ON (c.id = d.customerid)
+    LEFT JOIN countries cn ON (cn.id = d.countryid)
+    LEFT JOIN countries cdv ON cdv.id = d.div_countryid
+    LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+    LEFT JOIN vaddresses a ON d.recipient_address_id = a.id
+    LEFT JOIN vaddresses a2 ON d.post_address_id = a2.id
+    LEFT JOIN countries cp ON (d.post_address_id IS NOT NULL AND cp.id = a2.country_id) OR (d.post_address_id IS NULL AND cp.id = c.post_countryid)'
+    . ($ctype != -1 ? ' LEFT JOIN customers cu ON d.customerid = cu.id ' : '')
+    . ' WHERE cancelled = 0 AND d.type IN ? AND (' . $wherecol . ' BETWEEN ? AND ?)'
+    . (empty($jpk_flag) ? '' : ' AND (d.flags & ' . $jpk_flag . ') > 0')
+    . (isset($numberplans) ? ' AND d.numberplanid IN (' . $numberplans . ')' : '')
+    . ($divisionWhere ?? '')
+    . ($servicetypewhere ?? '')
+    . ($groupwhere ?? '')
+    . $ctenwhere
+    . (isset($ksefSubmit)
+        ? (empty($ksefSubmit) ? ' AND kd.ksefnumber IS NULL' : ' AND kd.ksefnumber IS NOT NULL')
+        : ''
+    )
+    . ($ctype != -1 ? ' AND cu.type = ' . $ctype : '')
+    . ' AND NOT EXISTS (
+        SELECT 1 FROM vcustomerassignments a
+        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+        WHERE e.userid = lms_current_user() AND a.customerid = d.customerid
+    )
+    ORDER BY ' . $sortcol . ', d.id',
+    $args
+);
 
 if ($documents) {
     foreach ($documents as $document) {
