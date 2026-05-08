@@ -2778,7 +2778,8 @@ if (empty($types) || in_array('notes', $types)) {
         "SELECT d.id AS docid, c.id, c.pin, d.name,
             d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
             acc.alternative_accounts,
-        COALESCE(ca.balance, 0) AS balance, v.value, v.currency
+            COALESCE(ca.balance, 0) AS balance, v.value, v.currency,
+            c.invoicenotice
         FROM documents d
         JOIN customeraddressview c ON (c.id = d.customerid)
         LEFT JOIN divisions ON divisions.id = c.divisionid
@@ -2809,7 +2810,7 @@ if (empty($types) || in_array('notes', $types)) {
         ) ca ON (ca.customerid = d.customerid)
         WHERE 1 = 1" . $customer_status_condition
             . $customer_type_condition
-            . " AND (c.invoicenotice IS NULL OR c.invoicenotice = 0) AND d.type = ?
+            . " AND d.type = ?
             AND d.cdate >= ? AND d.cdate <= ?"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
@@ -2889,7 +2890,7 @@ if (empty($types) || in_array('notes', $types)) {
             }
 
             if (!$quiet) {
-                if (in_array('mail', $channels) && !empty($recipient_mails)) {
+                if (in_array('mail', $channels) && !empty($recipient_mails) && (empty($row['invoicenotice']) || $ignore_customer_consents)) {
                     if ($idx >= $start_idx && $idx <= $end_idx) {
                         foreach ($recipient_mails as $recipient_mail) {
                             printf(
