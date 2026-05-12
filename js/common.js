@@ -922,10 +922,17 @@ function GusApiGetCompanyDetails(searchType, searchData, on_success) {
 		}
 	}).done(function(data) {
 		if (data.hasOwnProperty('error')) {
-			alert(data.error);
+			alertDialog({
+				title: $t("<!dialog>Error"),
+				message: data.error
+			});
 			return;
 		}
 		if (data.hasOwnProperty('warning')) {
+			alertDialog({
+				title: $t("<!dialog>Alert"),
+				message: data.error
+			});
 			return;
 		}
 		on_success(data);

@@ -781,6 +781,21 @@
 				$(this).attr('data-type'),
 				identifier,
 				function(data) {
+					if (data.hasOwnProperty('warning')) {
+						alertDialog({
+							title: "<!dialog>Alert",
+							message: data.warning,
+							context: that
+						});
+						return;
+					} else if (data.hasOwnProperty('error')) {
+						alertDialog({
+							title: "<!dialog>Error",
+							message: data.error,
+							context: that
+						});
+						return;
+					}
 					if (data.length > 1) {
 						customerCompanySelectionDialog(data, that).done(function(company) {
 							GusApiFinished('customerdata', company);

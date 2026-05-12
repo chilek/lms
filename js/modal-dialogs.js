@@ -99,10 +99,23 @@ function modalDialog(title, message, buttons, deferred, context, options) {
 
 function alertDialog(message, context) {
 	var deferred = $.Deferred();
+	var title = "<!dialog>Alert";
+
+	if (typeof(message) === 'object') {
+		if (message.hasOwnProperty('context')) {
+			context = message.context;
+		}
+		if (message.hasOwnProperty('title')) {
+			title = message.title;
+		}
+		if (message.hasOwnProperty('message')) {
+			message = message.message;
+		}
+	}
 
 	context = typeof(context) === 'undefined' ? null : context;
 
-	return modalDialog($t("<!dialog>Alert"), message,
+	return modalDialog($t(title), message,
 		[
 			{
 				text: $t("OK"),

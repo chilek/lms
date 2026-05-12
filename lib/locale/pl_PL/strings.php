@@ -5137,6 +5137,8 @@ $_LANG['&nbsp; <BR> Scan and Pay <BR> You can make a transfer simply and quickly
 $_LANG['QR Payment for Internet Invoice no. %number'] = 'QR Zapłata za Internet FV nr %number';
 
 $_LANG['Click here to autocomplete company data from GUS REGON database'] = 'Kliknij tutaj, aby uzupełnić automatycznie dane firmy z bazy danych GUS REGON';
+$_LANG['No data found in REGON database!'] = 'Brak danych w bazie REGON!';
+$_LANG['Bad REGON API key!'] = 'Błędny klucz API REGON!';
 $_LANG['Click here to autocomplete zip code'] = 'Kliknij tutaj, aby automatycznie uzupełnić kod pocztowy';
 
 $_LANG['settlement type of first deficient period:'] = 'sposób wyrównania początkowego okresu niepełnego:';
@@ -5483,6 +5485,7 @@ $_LANG['Check if representative should be disabled'] = 'Zaznacz, jeśli reprezen
 $_LANG['<!dialog>Confirmation'] = 'Potwierdzenie';
 $_LANG['<!dialog>Alert'] = 'Ostrzeżenie';
 $_LANG['<!dialog>Information'] = 'Informacja';
+$_LANG['<!dialog>Error'] = 'Błąd';
 
 $_LANG['Copy link'] = 'Kopiuj link';
 $_LANG['Copy as links'] = 'Kopiuj jako linki';
