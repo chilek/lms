@@ -628,9 +628,9 @@ class KSeF
             }
             if (isset($taxRate)) {
                 if (isset($invoice['taxest'][$taxRate])) {
-                    $base = round(($invoice['taxest'][$taxRate]['base'] - $invoice['invoice']['taxest'][$taxRate]['base']), 2);
+                    $base = round(($invoice['taxest'][$taxRate]['base'] - (isset($invoice['invoice']['taxest'][$taxRate]) ? $invoice['invoice']['taxest'][$taxRate]['base'] : 0)), 2);
                     $xml .= "\t\t<P_13_1>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</P_13_1>" . PHP_EOL;
-                    $tax = round(($invoice['taxest'][$taxRate]['tax'] - $invoice['invoice']['taxest'][$taxRate]['tax']), 2);
+                    $tax = round(($invoice['taxest'][$taxRate]['tax'] - (isset($invoice['invoice']['taxest'][$taxRate]) ? $invoice['invoice']['taxest'][$taxRate]['tax'] : 0)), 2);
                     $xml .= "\t\t<P_14_1>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_1>" . PHP_EOL;
                     if ($currency != $this->defaultCurrency) {
                         $xml .= "\t\t<P_14_1W>" . sprintf('%.2f', round($tax * $currencyValue, 2)) . "</P_14_1W>" . PHP_EOL;
@@ -674,9 +674,9 @@ class KSeF
             }
             if (isset($taxRate)) {
                 if (isset($invoice['taxest'][$taxRate])) {
-                    $base = round(($invoice['taxest'][$taxRate]['base'] - $invoice['invoice']['taxest'][$taxRate]['base']), 2);
+                    $base = round(($invoice['taxest'][$taxRate]['base'] - (isset($invoice['invoice']['taxest'][$taxRate]) ? $invoice['invoice']['taxest'][$taxRate]['base'] : 0)), 2);
                     $xml .= "\t\t<P_13_2>" . sprintf('%.2f', $base) . "</P_13_2>" . PHP_EOL;
-                    $tax = round(($invoice['taxest'][$taxRate]['tax'] - $invoice['invoice']['taxest'][$taxRate]['tax']), 2);
+                    $tax = round(($invoice['taxest'][$taxRate]['tax'] - (isset($invoice['invoice']['taxest'][$taxRate]) ? $invoice['invoice']['taxest'][$taxRate]['tax'] : 0)), 2);
                     $xml .= "\t\t<P_14_2>" . sprintf('%.2f', $tax) . "</P_14_2>" . PHP_EOL;
                     if ($currency != $this->defaultCurrency) {
                         $xml .= "\t\t<P_14_2W>" . sprintf('%.2f', round($tax * $currencyValue, 2)) . "</P_14_2W>" . PHP_EOL;
@@ -718,9 +718,9 @@ class KSeF
             }
             if (isset($taxRate)) {
                 if (isset($invoice['taxest'][$taxRate])) {
-                    $base = round(($invoice['taxest'][$taxRate]['base'] - $invoice['invoice']['taxest'][$taxRate]['base']), 2);
+                    $base = round(($invoice['taxest'][$taxRate]['base'] - (isset($invoice['invoice']['taxest'][$taxRate]) ? $invoice['invoice']['taxest'][$taxRate]['base'] : 0)), 2);
                     $xml .= "\t\t<P_13_3>" . sprintf('%.2f', $base) . "</P_13_3>" . PHP_EOL;
-                    $tax = round(($invoice['taxest'][$taxRate]['tax'] - $invoice['invoice']['taxest'][$taxRate]['tax']), 2);
+                    $tax = round(($invoice['taxest'][$taxRate]['tax'] - (isset($invoice['invoice']['taxest'][$taxRate]) ? $invoice['invoice']['taxest'][$taxRate]['tax'] : 0)), 2);
                     $xml .= "\t\t<P_14_3>" . sprintf('%.2f', $tax) . "</P_14_3>" . PHP_EOL;
                     if ($currency != $this->defaultCurrency) {
                         $xml .= "\t\t<P_14_3W>" . sprintf('%.2f', round($tax * $currencyValue, 2)) . "</P_14_3W>" . PHP_EOL;
@@ -752,12 +752,12 @@ class KSeF
             }
         }
 
+        $taxRate = '0.00';
         if (!$foreign) {
             if ($invoice['type'] == DOC_CNOTE) {
-                if (isset($invoice['taxest']['0.00']) || isset($invoice['invoice']['taxest']['0.00'])) {
-                    $taxRate = '0.00';
+                if (isset($invoice['taxest'][$taxRate]) || isset($invoice['invoice']['taxest'][$taxRate])) {
                     if (isset($invoice['taxest'][$taxRate])) {
-                        $base = round(($invoice['taxest'][$taxRate]['base'] - $invoice['invoice']['taxest'][$taxRate]['base']), 2);
+                        $base = round(($invoice['taxest'][$taxRate]['base'] - (isset($invoice['invoice']['taxest'][$taxRate]) ? $invoice['invoice']['taxest'][$taxRate]['base'] : 0)), 2);
                         $xml .= "\t\t<P_13_6_1>" . sprintf('%.2f', $base) . "</P_13_6_1>" . PHP_EOL;
                         $diffTotal += $base;
                     } elseif (isset($invoice['invoice']['taxest'][$taxRate])) {
@@ -767,17 +767,17 @@ class KSeF
                     }
                 }
             } else {
-                if (isset($invoice['taxest']['0.00'])) {
-                    $xml .= "\t\t<P_13_6_1>" . sprintf('%.2f', $invoice['taxest']['0.00']['base']) . "</P_13_6_1>" . PHP_EOL;
+                if (isset($invoice['taxest'][$taxRate])) {
+                    $xml .= "\t\t<P_13_6_1>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['base']) . "</P_13_6_1>" . PHP_EOL;
                 }
             }
         }
 
+        $taxRate = '-1';
         if ($invoice['type'] == DOC_CNOTE) {
-            if (isset($invoice['taxest']['-1']) || isset($invoice['invoice']['taxest']['-1'])) {
-                $taxRate = '-1';
+            if (isset($invoice['taxest'][$taxRate]) || isset($invoice['invoice']['taxest'][$taxRate])) {
                 if (isset($invoice['taxest'][$taxRate])) {
-                    $base = round(($invoice['taxest'][$taxRate]['base'] - $invoice['invoice']['taxest'][$taxRate]['base']), 2);
+                    $base = round(($invoice['taxest'][$taxRate]['base'] - (isset($invoice['invoice']['taxest'][$taxRate]) ? $invoice['invoice']['taxest'][$taxRate]['base'] : 0)), 2);
                 } elseif (isset($invoice['invoice']['taxest'][$taxRate])) {
                     $base = round(-$invoice['invoice']['taxest'][$taxRate]['base'], 2);
                 } else {
@@ -795,21 +795,21 @@ class KSeF
                 }
             }
         } else {
-            if (isset($invoice['taxest']['-1'])) {
+            if (isset($invoice['taxest'][$taxRate])) {
                 if ($ue) {
-                    $xml .= "\t\t<P_13_6_2>" . sprintf('%.2f', $invoice['taxest']['-1']['base']) . "</P_13_6_2>" . PHP_EOL;
+                    $xml .= "\t\t<P_13_6_2>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['base']) . "</P_13_6_2>" . PHP_EOL;
                 } elseif ($foreign) {
-                    $xml .= "\t\t<P_13_6_3>" . sprintf('%.2f', $invoice['taxest']['-1']['base']) . "</P_13_6_3>" . PHP_EOL;
+                    $xml .= "\t\t<P_13_6_3>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['base']) . "</P_13_6_3>" . PHP_EOL;
                 } else {
-                    $xml .= "\t\t<P_13_7>" . sprintf('%.2f', $invoice['taxest']['-1']['base']) . "</P_13_7>" . PHP_EOL;
+                    $xml .= "\t\t<P_13_7>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['base']) . "</P_13_7>" . PHP_EOL;
                 }
                 $taxFree = true;
             }
         }
 
+        $taxRate = '-2';
         if ($invoice['type'] == DOC_CNOTE) {
-            if (isset($invoice['taxest']['-2']) || isset($invoice['invoice']['taxest']['-2'])) {
-                $taxRate = '-2';
+            if (isset($invoice['taxest'][$taxRate]) || isset($invoice['invoice']['taxest'][$taxRate])) {
                 if (isset($invoice['taxest'][$taxRate])) {
                     $base = round(($invoice['taxest'][$taxRate]['base'] - $invoice['invoice']['taxest'][$taxRate]['base']), 2);
                 } elseif (isset($invoice['invoice']['taxest'][$taxRate])) {
@@ -823,8 +823,8 @@ class KSeF
                 }
             }
         } else {
-            if (isset($invoice['taxest']['-2'])) {
-                $xml .= "\t\t<P_13_10>" . sprintf('%.2f', $invoice['taxest']['-2']['base']) . "</P_13_10>" . PHP_EOL;
+            if (isset($invoice['taxest'][$taxRate])) {
+                $xml .= "\t\t<P_13_10>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['base']) . "</P_13_10>" . PHP_EOL;
             }
         }
 
@@ -1089,9 +1089,11 @@ class KSeF
                 $xml .= "\t\t<FaWiersz>" . PHP_EOL;
                 $xml .= "\t\t\t<NrWierszaFa>" . $itemId . "</NrWierszaFa>" . PHP_EOL;
                 $xml .= "\t\t\t<P_7>" . $description . "</P_7>" . PHP_EOL;
+/*
                 if (!empty($refInvoiceContent[$itemId]['tariffid'])) {
                     $xml .= "\t\t\t<Indeks>" . $refInvoiceContent[$itemId]['tariffid'] . "</Indeks>" . PHP_EOL;
                 }
+*/
                 if (!empty($refInvoiceContent[$itemId]['prodid'])) {
                     $xml .= "\t\t\t<PKWiU>" . $refInvoiceContent[$itemId]['prodid'] . "</PKWiU>" . PHP_EOL;
                 }
@@ -1122,7 +1124,7 @@ class KSeF
                 if (empty($refInvoiceTax['reversecharge'])) {
                     if ($refInvoiceTax['value'] > 0) {
                         $refInvoiceTaxRate = round($refInvoiceTax['value']);
-                    } elseif (empty($tax['taxed'])) {
+                    } elseif (empty($refInvoiceTax['taxed'])) {
                         if ($ue) {
                             $refInvoiceTaxRate = '0 WDT';
                         } elseif ($foreign) {
