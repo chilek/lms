@@ -123,6 +123,7 @@
         "components/normalize.css": "^3.0",
         "smarty/smarty": "^4",
         "rospdf/pdf-php": "^0.12",
+        "components/jquery": "^3",
         "components/jqueryui": "^1",
         "xdan/datetimepicker": "^2",
         "alexei/sprintf.js": "^1",
