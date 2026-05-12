@@ -249,10 +249,11 @@ function init_datepickers(selector) {
 
 	if (!lmsSettings.openCalendarOnInputClick) {
 		options.showOn = 'button';
-		options.buttonText = '<i class="lms-ui-icon-calendar" title="' + $t('Click here to open calendar') + '"></i>';
+		//options.buttonText = '<i class="lms-ui-icon-calendar" title="' + $t('Click here to open calendar') + '"></i>';
 	}
 
 	$(selector).each(function() {
+		var that = this;
 		var unix = $(this).hasClass('unix') || $(this).hasClass('lms-ui-date-unix');
 		var yearRange = $(this).attr('data-year-range');
 		var minDate = $(this).attr('data-min-date');
@@ -293,6 +294,13 @@ function init_datepickers(selector) {
 				$(this).datepicker('setDate', dt);
 			}
 		}
+		if (!lmsSettings.openCalendarOnInputClick) {
+			$(this).parent().append('<a class="lms-ui-button"><i class="lms-ui-icon-calendar" title="' + $t('Click here to open calendar') + '"></i></a>');
+			$(this).siblings('.lms-ui-button').click(function() {
+				$(that).datepicker($('#ui-datepicker-div').is(':visible') ? 'hide' : 'show');
+			});
+		}
+
 		options.altField = '';
 		options.altFormat = '';
 	});

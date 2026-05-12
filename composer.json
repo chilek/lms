@@ -93,6 +93,17 @@
                     "type": "zip"
                 }
             }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "components/jqueryui",
+                "version": "1.14.2",
+                "dist": {
+                    "url": "https://github.com/jquery/jquery-ui/archive/refs/tags/1.14.2.zip",
+                    "type": "zip"
+                }
+            }
         }
     ],
     "require": {
