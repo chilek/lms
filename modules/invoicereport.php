@@ -282,7 +282,14 @@ $documents = $DB->GetAll(
         d.extid
     FROM documents d
     JOIN customeraddressview c ON (c.id = d.customerid)
-    LEFT JOIN ksefdocuments kd ON kd.docid = d.id
+    LEFT JOIN (
+        SELECT
+            kd.docid,
+            MAX(kd.id) AS maxid
+        FROM ksefdocuments kd
+        GROUP BY kd.docid
+    ) kd2 ON kd2.docid = d.id
+    LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.id = kd2.maxid
     LEFT JOIN countries cn ON (cn.id = d.countryid)
     LEFT JOIN countries cdv ON cdv.id = d.div_countryid
     LEFT JOIN numberplans n ON (d.numberplanid = n.id)
@@ -298,7 +305,7 @@ $documents = $DB->GetAll(
     . ($groupwhere ?? '')
     . $ctenwhere
     . (isset($ksefSubmit)
-        ? (empty($ksefSubmit) ? ' AND kd.ksefnumber IS NULL' : ' AND kd.ksefnumber IS NOT NULL')
+        ? (empty($ksefSubmit) ? ' AND kd.id IS NULL' : ' AND kd.ksefnumber IS NOT NULL AND kd.status = 200')
         : ''
     )
     . ($ctype != -1 ? ' AND cu.type = ' . $ctype : '')
