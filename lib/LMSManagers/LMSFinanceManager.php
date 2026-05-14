@@ -1396,7 +1396,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             // Use multi-value INSERT query
             $values = array();
             foreach ($args['nodes'] as $nodeid) {
-                $values[] = sprintf('(%d, %d)', $nodeid, $args['assignmentid']);
+                $nodeExists = $this->db->GetOne('SELECT id FROM nodes WHERE id = ?', array($nodeid));
+                if (!empty($nodeExists)) {
+                    $values[] = sprintf('(%d, %d)', $nodeid, $args['assignmentid']);
+                }
+            }
+
+            if (empty($values)) {
+                return;
             }
 
             $this->db->Execute('INSERT INTO nodeassignments (nodeid, assignmentid)
