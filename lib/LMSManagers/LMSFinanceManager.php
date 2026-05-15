@@ -4545,7 +4545,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $default_taxlabel = ConfigHelper::getConfig('phpui.default_taxlabel');
 
         return $this->db->GetAllByKey(
-            'SELECT id, value, label, taxed FROM taxes
+            'SELECT
+                id,
+                value,
+                label,
+                taxed,
+                reversecharge
+            FROM taxes
             WHERE validfrom <= ?
                 AND (validto = 0 OR validto >= ?)'
                 . ($default ? (
