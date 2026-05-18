@@ -3900,7 +3900,9 @@ if (empty($types) || in_array('messages', $types)) {
                                 $attributes['destination'],
                                 $headers,
                                 $attributes['body'],
-                                $files
+                                $files,
+                                null,
+                                $smtp_options
                             );
                         } else {
                             $result = $LMS->SendSMS(
