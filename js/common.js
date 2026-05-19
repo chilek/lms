@@ -931,7 +931,7 @@ function GusApiGetCompanyDetails(searchType, searchData, on_success) {
 		if (data.hasOwnProperty('warning')) {
 			alertDialog({
 				title: $t("<!dialog>Alert"),
-				message: data.error
+				message: data.warning
 			});
 			return;
 		}
