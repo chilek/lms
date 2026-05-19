@@ -162,6 +162,14 @@ html .ui-button.ui-state-disabled:active {
   background-color: @dark;
   .ui-dialog-content {
     background-color: @dark;
+    &.ui-widget-content {
+      display: flex;
+
+      object[type="application/pdf"] {
+        width: 100%;
+        height: 100%;
+      }
+    }
   }
   .ui-dialog-buttonpane {
     background-color: @dark;
