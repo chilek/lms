@@ -58,7 +58,7 @@
 			},
 			dataType: "json",
 			success: function(result) {
-				$('#splitpayment').toggle(result.splitpayment);
+				//$('#splitpayment').toggle(result.splitpayment);
 				if (!result.splitpayment) {
 					$('#splitpayment :checkbox').prop('checked', false);
 				}
@@ -209,11 +209,9 @@
 					{trans("Document flags:")}
 				</td>
 				<td class="nobr">
-					<label id="splitpayment" {tip text="translates into JPK MPP flag"}
-						{if empty($suggested_flags.splitpayment)} style="display: none;"{/if}
-					>
+					<label id="splitpayment" {tip text="translates into JPK MPP flag"}>
 						<input type="checkbox" name="cnote[splitpayment]" value="1"
-							{if !empty($suggested_flags.splitpayment) && $cnote.splitpayment} checked{/if}
+							{if $cnote.splitpayment} checked{/if}
 						>
 						{trans("split payment")}
 					</label>
