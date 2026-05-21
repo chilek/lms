@@ -402,13 +402,13 @@
      */
     function change_customer() {
         getCustomerAddresses($('[name="voipaccountdata[ownerid]"]').val(), function(addresses) {
-            setAddressList("#customer_addresses", addresses);
+            setAddressList("#customer_addresses", addresses, true);
             checkIfTerritLocation();
         });
     }
 
     getCustomerAddresses( {intval($voipaccountdata.ownerid)}, function(addresses) {
-        setAddressList("#customer_addresses", addresses);
+        setAddressList("#customer_addresses", addresses, true);
 
         {if $voipaccountdata.address_id}
             $('#customer_addresses').val({$voipaccountdata.address_id});

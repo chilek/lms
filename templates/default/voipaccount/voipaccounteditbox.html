@@ -440,13 +440,13 @@
      */
     function customer_change() {
         getCustomerAddresses($('[name="voipaccountedit[ownerid]"]').val(), function(addresses) {
-            setAddressList("#customer_addresses", addresses);
+            setAddressList("#customer_addresses", addresses, true);
             checkIfTerritLocation();
         });
     }
 
     getCustomerAddresses($('[name="voipaccountedit[ownerid]"]').val(), function(addresses) {
-        setAddressList("#customer_addresses", addresses);
+        setAddressList("#customer_addresses", addresses, true);
 
         {if $voipaccountinfo.address_id}
             $('#customer_addresses').val({$voipaccountinfo.address_id});
