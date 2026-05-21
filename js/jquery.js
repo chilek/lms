@@ -1373,7 +1373,9 @@ function initRolloverHints(selectors) {
 					create: function() {
 						elem.tooltip('open');
 					},
-					tooltipClass: 'lms-ui-hint-rollover' + (tooltipClass ? ' ' + tooltipClass : ''),
+					classes: {
+						'ui-tooltip': 'lms-ui-hint-rollover' + (tooltipClass ? ' ' + tooltipClass : '')
+					},
 					content: content
 				});
 			}
@@ -1463,7 +1465,9 @@ function initToggleHints(selectors) {
 									$(this).remove();
 								});
 							},
-							tooltipClass: 'lms-ui-hint-toggle' + (tooltipClass ? ' ' + tooltipClass : ''),
+							classes: {
+								'ui-tooltip': 'lms-ui-hint-toggle' + (tooltipClass ? ' ' + tooltipClass : '')
+							},
 							content: content
 						});
 					}
@@ -1587,7 +1591,9 @@ function initDocumentViewers(selectors) {
 			items: '[data-preview-type="image"]',
 			show: false,
 			//hide: false,
-			tooltipClass: 'documentview',
+			classes: {
+				'ui-tooltip': 'documentview'
+			},
 			content: function () {
 				var href = $(this).attr('href') + '&api=1&thumbnail=300';
 				return '<img src="' + href + '" style="max-width: 300px;">';
