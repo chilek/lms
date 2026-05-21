@@ -1297,7 +1297,7 @@ class LMSEzpdfInvoice extends LMSInvoice
             } else {
                 $total = $this->data['total'];
             }
-            $previous_balance = $balance + $total;
+            $previous_balance = $balance + ($total * $this->data['currencyvalue']);
 
             if ($previous_balance > 0) {
                 $comment = trans('(excess payment)');
@@ -1306,7 +1306,6 @@ class LMSEzpdfInvoice extends LMSInvoice
             } else {
                 $comment = '';
             }
-
 
             $y = $y - $this->backend->text_align_left(
                 $x,

@@ -653,7 +653,7 @@
 							{$total = $invoice.total}
 						{/if}
 
-						{$previous_balance = $customerbalance + $total}
+						{$previous_balance = $customerbalance + ($total * $invoice.currencyvalue)}
 
 						{if $previous_balance > 0}
 							{$comment = trans('(excess payment)')}

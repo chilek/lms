@@ -750,7 +750,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             } else {
                 $total = $this->data['total'];
             }
-            $previous_balance = $balance + $total;
+            $previous_balance = $balance + ($total * $this->data['currencyvalue']);
 
             if ($previous_balance > 0) {
                 $comment = trans('(excess payment)');
