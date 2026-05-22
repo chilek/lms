@@ -253,6 +253,9 @@ function init_datepickers(selector) {
 	}
 
 	$(selector).each(function() {
+		if ($(this).is('.hasDatepicker')) {
+			return;
+		}
 		var that = this;
 		var unix = $(this).hasClass('unix') || $(this).hasClass('lms-ui-date-unix');
 		var yearRange = $(this).attr('data-year-range');
