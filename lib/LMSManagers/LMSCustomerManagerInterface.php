@@ -156,7 +156,7 @@ interface LMSCustomerManagerInterface
 
     public function getCustomerSsn($id);
 
-    public function changeCustomerType($id, $tyoe);
+    public function changeCustomerType($id, $type);
 
     public function changeCustomerStatus($id, $status);
 
