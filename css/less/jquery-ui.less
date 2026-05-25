@@ -162,8 +162,11 @@ html .ui-button.ui-state-disabled:active {
   background-color: @dark;
   .ui-dialog-content {
     background-color: @dark;
+    overflow: unset;
+
     &.ui-widget-content {
       display: flex;
+      flex-direction: column;
 
       object[type="application/pdf"] {
         width: 100%;
