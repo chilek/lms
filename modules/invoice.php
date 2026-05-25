@@ -318,6 +318,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 
     $datefrom = intval($_GET['from']);
     $dateto = intval($_GET['to']);
+    $dateType = isset($_GET['datetype']) && $_GET['datetype'] == 'sdate' ? 'sdate' : 'cdate';
     $einvoice = isset($_GET['einvoice']) ? intval($_GET['einvoice']) : 0;
     $related_documents = isset($_GET['related-documents']);
     $transfer_forms = !empty($_GET['transfer-forms']);
@@ -375,7 +376,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         LEFT JOIN vaddresses a ON d.recipient_address_id = a.id
         LEFT JOIN vaddresses a2 ON d.post_address_id = a2.id
         LEFT JOIN countries cp ON (d.post_address_id IS NOT NULL AND cp.id = a2.country_id) OR (d.post_address_id IS NULL AND cp.id = c.post_countryid)
-        WHERE d.cdate >= ? AND d.cdate <= ? AND (d.type = ? OR d.type = ?) AND d.cancelled = 0'
+        WHERE d.' . $dateType . ' >= ? AND d.' . $dateType . ' <= ? AND (d.type = ? OR d.type = ?) AND d.cancelled = 0'
         .($einvoice ? ' AND d.customerid IN (SELECT id FROM customeraddressview WHERE ' . ($einvoice == 1 ? 'einvoice = 1' : 'einvoice = 0 OR einvoice IS NULL') . ')' : '')
         .($ctype !=  -1 ? ' AND d.customerid IN (SELECT id FROM customers WHERE type = ' . intval($ctype) .')' : '')
         . (empty($divisionIds) ? '' : ' AND d.divisionid IN (' . implode(',', $divisionIds) . ')')
@@ -429,7 +430,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             SELECT 1 FROM vcustomerassignments a
             JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
             WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)'
-        .' ORDER BY CEIL(d.cdate/86400), id',
+        .' ORDER BY CEIL(d.' . $dateType . ' / 86400), id',
         'id',
         [
             [

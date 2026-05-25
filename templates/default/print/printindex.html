@@ -1176,7 +1176,7 @@
 						<col style="width: 99%;">
 					</colgroup>
 					<tr>
-						<td>
+						<td class="valign-top">
 							<table style="width: 100%;">
 								<colgroup>
 									<col style="width: 1%;">
@@ -1318,6 +1318,18 @@
 											{trans("duplicate")}
 										</label>
 									</td>
+								</tr>
+								<tr>
+									<td>
+									</td>
+									<td>
+										<strong>{trans("Base date")}</strong>
+										<select name="datetype" form="printinvoices">
+											<option value="cdate" selected>{trans("Draw-up date")}</option>
+											<option value="sdate">{trans("Sale date")}</option>
+										</select>
+									</td>
+									<td colspan="2"></td>
 								</tr>
 								<tr>
 									<td>

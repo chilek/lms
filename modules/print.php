@@ -525,6 +525,7 @@ switch ($type) {
                 .$type
                 .'&from='.$date['from']
                 .'&to='.$date['to']
+                . (isset($_POST['datetype']) && $_POST['datetype'] == 'sdate' ? '&datetype=sdate' : '')
                 .(!empty($_POST['einvoice']) ? '&einvoice=' . intval($_POST['einvoice']) : '')
                 .(!empty($_POST['division']) ? (is_array($_POST['division']) ? '&divisionid[]=' . implode('&divisionid[]=', Utils::filterIntegers($_POST['division'])) : '&divisionid=' . intval($_POST['division'])) : '')
                 .(!empty($_POST['customer']) ? '&customerid='.intval($_POST['customer']) : '')
