@@ -28,44 +28,130 @@ class LMSFileManager extends LMSManager implements LMSFileManagerInterface
 {
     public function GetFileContainers($type, $id)
     {
-        if (!preg_match('/^[a-z0-9_]+$/', $type)
-            || !preg_match('/^[0-9]+$/', $id)) {
+        if (!preg_match('/^[a-z0-9_]+$/', $type)) {
             return null;
         }
 
-        $result = $this->db->GetAll('SELECT c.*, u.name AS creatorname
-			FROM filecontainers c
-			LEFT JOIN vusers u ON u.id = c.creatorid
-			WHERE c.' . $type . ' = ?', array($id));
-        if (empty($result)) {
-            return null;
-        }
+        if (is_array($id)) {
+            $id = Utils::filterIntegers($id);
+            if (empty($id)) {
+                return null;
+            }
 
-        foreach ($result as &$container) {
-            $container['description'] = wordwrap($container['description'], 120, '<br>', true);
-            $container['files'] = $this->db->GetAll('SELECT * FROM files
-				WHERE containerid = ?', array($container['id']));
+            $containerFiles = $this->db->GetAll(
+                'SELECT
+                    c.*,
+                    u.name AS creatorname,
+                    f.*,
+                    f.id AS fileid
+                FROM filecontainers c
+                JOIN files f ON f.containerid = c.id
+                LEFT JOIN vusers u ON u.id = c.creatorid
+                WHERE c.' . $type . ' IN ?',
+                [
+                    $id,
+                ]
+            );
 
-            $container['images'] = array();
-            foreach ($container['files'] as &$file) {
-                $filepath = DOC_DIR . DIRECTORY_SEPARATOR . substr($file['md5sum'], 0, 2) . DIRECTORY_SEPARATOR . $file['md5sum'];
-                $file['size'] = filesize($filepath);
+            if (empty($containerFiles)) {
+                return null;
+            }
 
-                if (strpos($file['contenttype'], 'image') === 0) {
+            $result = [];
+
+            foreach ($containerFiles as $containerFile) {
+                if (!isset($result[$containerFile[$type]])) {
+                    $result[$containerFile[$type]] = [];
+                }
+
+                if (!isset($result[$containerFile[$type]][$containerFile['containerid']])) {
+                    $result[$containerFile[$type]][$containerFile['containerid']] = [
+                        'creationdate' => $containerFile['creationdate'],
+                        'creatorid' => $containerFile['creatorid'],
+                        'netdevid' => $containerFile['netdevid'],
+                        'netnodeid' => $containerFile['netnodeid'],
+                        'messageid' => $containerFile['messageid'],
+                        'netdevmodelid' => $containerFile['netdevmodelid'],
+                        'description' => wordwrap($containerFile['description'], 120, '<br>', true),
+                        'files' => [],
+                        'images' => [],
+                    ];
+                }
+
+                $filepath = DOC_DIR . DIRECTORY_SEPARATOR
+                    . substr($containerFile['md5sum'], 0, 2)
+                    . DIRECTORY_SEPARATOR . $containerFile['md5sum'];
+
+                $result[$containerFile[$type]][$containerFile['containerid']]['files'][] = [
+                    'id' => $containerFile['fileid'],
+                    'containerid' => $containerFile['containerid'],
+                    'filename' => $containerFile['filename'],
+                    'contenttype' => $containerFile['contenttype'],
+                    'md5sum' => $containerFile['md5sum'],
+                    'size' => filesize($filepath),
+                ];
+
+                if (strpos($containerFile['contenttype'], 'image') === 0) {
                     $url = '?m=attachments&type=' . $type . '&attachmentaction=viewfile&fileid='
-                        . $file['id'] . '&api=1';
-                    $container['images'][] = array(
+                        . $containerFile['fileid'] . '&api=1';
+                    $result[$containerFile[$type]][$containerFile['containerid']]['images'][] = [
                         'image' => $url,
                         'thumb' => $url . '&thumbnail=200',
-                        'title' => $file['filename'],
-                    );
+                        'title' => $containerFile['filename'],
+                    ];
                 }
             }
-            unset($file);
-        }
-        unset($container);
 
-        return $result;
+            return $result;
+        } else {
+            if (!preg_match('/^[0-9]+$/', $id)) {
+                return null;
+            }
+
+            $result = $this->db->GetAll(
+                'SELECT
+                    c.*,
+                    u.name AS creatorname
+                FROM filecontainers c
+                LEFT JOIN vusers u ON u.id = c.creatorid
+                WHERE c.' . $type . ' = ?',
+                array($id)
+            );
+            if (empty($result)) {
+                return null;
+            }
+
+            foreach ($result as &$container) {
+                $container['description'] = wordwrap($container['description'], 120, '<br>', true);
+                $container['files'] = $this->db->GetAll(
+                    'SELECT *
+                    FROM files
+                    WHERE containerid = ?',
+                    array($container['id'])
+                );
+
+                $container['images'] = array();
+                foreach ($container['files'] as &$file) {
+                    $filepath = DOC_DIR . DIRECTORY_SEPARATOR . substr($file['md5sum'], 0,
+                            2) . DIRECTORY_SEPARATOR . $file['md5sum'];
+                    $file['size'] = filesize($filepath);
+
+                    if (strpos($file['contenttype'], 'image') === 0) {
+                        $url = '?m=attachments&type=' . $type . '&attachmentaction=viewfile&fileid='
+                            . $file['id'] . '&api=1';
+                        $container['images'][] = array(
+                            'image' => $url,
+                            'thumb' => $url . '&thumbnail=200',
+                            'title' => $file['filename'],
+                        );
+                    }
+                }
+                unset($file);
+            }
+            unset($container);
+
+            return $result;
+        }
     }
 
     public function GetFile($id)

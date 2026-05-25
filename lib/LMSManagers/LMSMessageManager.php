@@ -67,16 +67,26 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
         );
 
         if (!empty($result)) {
-            foreach ($result as &$message) {
+            $messageIds = [];
+            foreach ($result as $message) {
                 if (!empty($message['filecontainerid'])) {
-                    if (!isset($file_manager)) {
-                        $file_manager = new LMSFileManager($this->db, $this->auth, $this->cache, $this->syslog);
-                    }
-                    $file_containers = $file_manager->GetFileContainers('messageid', $message['id']);
-                    $message['files'] = $file_containers[0]['files'];
+                    $messageIds[] = $message['id'];
                 }
             }
-            unset($message);
+
+            if (!empty($messageIds)) {
+                if (!isset($file_manager)) {
+                    $file_manager = new LMSFileManager($this->db, $this->auth, $this->cache, $this->syslog);
+                }
+                $file_containers = $file_manager->GetFileContainers('messageid', $messageIds);
+                foreach ($result as &$message) {
+                    if (isset($file_containers[$message['id']])) {
+                        $firstFileContainer = reset($file_containers[$message['id']]);
+                        $message['files'] = $firstFileContainer['files'];
+                    }
+                }
+                unset($message);
+            }
         }
 
         return $result;
