@@ -1212,6 +1212,7 @@ version 28-git (????-??-??):
   - improvement/bugfix: voip cdr records can be loaded to database with long delay,
     so we have to be able to store their creation dates and then issue them in invoices basing on there
     creation dates [chilan]
+  - improvement: base date selection (between draw-up date and sale date) in invoice/JPK report form [chilan]
 
 version 27.0 (2021-08-20):
 
