@@ -579,7 +579,11 @@ CREATE TABLE documents (
 	recipient_address_id integer DEFAULT NULL
 		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	recipient_ten varchar(50) DEFAULT NULL,
-    recipient_type smallint DEFAULT NULL,
+	recipient_type smallint DEFAULT NULL,
+	recipient_address_id2 integer DEFAULT NULL
+		CONSTRAINT documents_recipient_address_id2_fkey REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	recipient_ten2 varchar(50) DEFAULT NULL,
+	recipient_type2 smallint DEFAULT NULL,
 	post_address_id integer DEFAULT NULL
 		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	template varchar(255) DEFAULT NULL,
@@ -1134,6 +1138,8 @@ CREATE TABLE assignments (
 	attribute varchar(255) DEFAULT NULL,
 	recipient_address_id integer DEFAULT NULL
 		CONSTRAINT assignments_recipient_address_id_fkey REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	recipient_address_id2 integer DEFAULT NULL
+		CONSTRAINT assignments_recipient_address_id2_fkey REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	docid integer DEFAULT NULL
 		CONSTRAINT assignments_docid_fkey REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	commited smallint DEFAULT 1 NOT NULL,
@@ -4729,6 +4735,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026050700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026052500');
 
 COMMIT;

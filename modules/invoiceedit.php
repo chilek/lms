@@ -321,6 +321,7 @@ switch ($action) {
         $city = $invoice['city'];
         $countryid = $invoice['countryid'];
         $recipient_address = $invoice['recipient_address'] ?? null;
+        $recipient_address2 = $invoice['recipient_address2'] ?? null;
 
         unset($invoice);
         unset($error);
@@ -351,6 +352,7 @@ switch ($action) {
         $invoice['city'] = $city;
         $invoice['countryid'] = $countryid;
         $invoice['recipient_address'] = $recipient_address;
+        $invoice['recipient_address2'] = $recipient_address2;
 
         if (!empty($invoice['extid']) && !empty($oldflags[DOC_FLAG_RECEIPT])) {
             $invoice['flags'][DOC_FLAG_RECEIPT] = 1;
@@ -603,6 +605,31 @@ switch ($action) {
                         $LMS->CopyAddress($invoice['recipient_address_id']),
                         $recipient_ten,
                         $recipient_type,
+                        $invoice['id']
+                    )
+                );
+            }
+        }
+
+        $prev_rec_addr2 = $DB->GetOne('SELECT recipient_address_id2 FROM documents WHERE id = ?', array($invoice['id']));
+        if (empty($prev_rec_addr2)) {
+            $prev_rec_addr2 = -1;
+        }
+
+        if ($prev_rec_addr2 != $invoice['recipient_address_id2']) {
+            if ($prev_rec_addr2 > 0) {
+                $DB->Execute('DELETE FROM addresses WHERE id = ?', array($prev_rec_addr2));
+            }
+
+            if ($invoice['recipient_address_id2'] > 0) {
+                $recipient_ten2 = $LMS->getRecipientTen($invoice['recipient_address_id2']);
+                $recipient_type2 = $LMS->getEntityType($invoice['recipient_address_id2']);
+                $DB->Execute(
+                    'UPDATE documents SET recipient_address_id2 = ?, recipient_ten2 = ?, recipient_type2 = ? WHERE id = ?',
+                    array(
+                        $LMS->CopyAddress($invoice['recipient_address_id2']),
+                        $recipient_ten2,
+                        $recipient_type2,
                         $invoice['id']
                     )
                 );
@@ -917,6 +944,8 @@ $invoice = $hook_data['invoice'];
 
 if (isset($customer)) {
     $addresses = $LMS->getCustomerAddresses($customer['id']);
+    $addresses2 = $addresses;
+
     if (isset($invoice['recipient_address'])) {
         $addresses = array_replace(
             array($invoice['recipient_address']['address_id'] => $invoice['recipient_address']),
@@ -924,7 +953,17 @@ if (isset($customer)) {
         );
         $invoice['recipient_address'] = base64_encode(json_encode($invoice['recipient_address']));
     }
+
+    if (isset($invoice['recipient_address2'])) {
+        $addresses2 = array_replace(
+            array($invoice['recipient_address2']['address_id'] => $invoice['recipient_address2']),
+            $addresses2
+        );
+        $invoice['recipient_address2'] = base64_encode(json_encode($invoice['recipient_address2']));
+    }
+
     $SMARTY->assign('addresses', $addresses);
+    $SMARTY->assign('addresses2', $addresses2);
 }
 
 $SMARTY->assign('customer', $customer);

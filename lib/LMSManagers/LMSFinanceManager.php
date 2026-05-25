@@ -129,7 +129,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $assignments = $this->db->GetAll(
             'SELECT a.id AS id, a.tariffid, a.customerid, a.period AS periodvalue, a.backwardperiod, a.note,
-            a.at, a.suspended, a.invoice, a.settlement, a.recipient_address_id,
+            a.at, a.suspended, a.invoice, a.settlement,
+            a.recipient_address_id,
+            a.recipient_address_id2,
             a.datefrom, a.dateto, a.pdiscount,
             a.vdiscount AS unitary_vdiscount,
             (a.vdiscount * a.count) AS vdiscount,
@@ -235,7 +237,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $row['name'] = $this->getAssignmentPresentation($row);
                 $lms = LMS::getInstance();
                 $recipient_address = !empty($row['recipient_address_id']) ? $lms->GetAddress($row['recipient_address_id']) : null;
+                $recipient_address2 = !empty($row['recipient_address_id2']) ? $lms->GetAddress($row['recipient_address_id2']) : null;
                 $row['recipient_location'] = $recipient_address ? $recipient_address['location'] : null;
+                $row['recipient_location2'] = $recipient_address2 ? $recipient_address2['location'] : null;
 
                 $row['docnumber'] = docnumber(array(
                     'number' => $row['docnumber'],
@@ -858,6 +862,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                     'suspended' => empty($data['suspended']) ? 0 : 1,
                                     SYSLOG::RES_LIAB => null,
                                     'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
+                                    'recipient_address_id2' => $data['recipient_address_id2'] > 0 ? $data['recipient_address_id2'] : null,
                                     'docid' => empty($data['docid']) ? null : $data['docid'],
                                     'promotionschemaid' => $data['schemaid'],
                                     'commited' => $commited,
@@ -970,6 +975,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                 'suspended' => empty($data['suspended']) ? 0 : 1,
                                 SYSLOG::RES_LIAB => null,
                                 'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
+                                'recipient_address_id2' => $data['recipient_address_id2'] > 0 ? $data['recipient_address_id2'] : null,
                                 'docid' => empty($data['docid']) ? null : $data['docid'],
                                 'promotionschemaid' => $data['schemaid'],
                                 'commited' => $commited,
@@ -1025,6 +1031,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         'suspended' => empty($data['suspended']) ? 0 : 1,
                         SYSLOG::RES_LIAB => empty($lid) ? null : $lid,
                         'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
+                        'recipient_address_id2' => $data['recipient_address_id2'] > 0 ? $data['recipient_address_id2'] : null,
                         'docid' => empty($data['docid']) ? null : $data['docid'],
                         'promotionschemaid' => $data['schemaid'],
                         'commited' => $commited,
@@ -1156,6 +1163,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         'suspended' => empty($data['suspended']) ? 0 : 1,
                         SYSLOG::RES_LIAB    => empty($lid) ? null : $lid,
                         'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
+                        'recipient_address_id2' => $data['recipient_address_id2'] > 0 ? $data['recipient_address_id2'] : null,
                         'docid'             => empty($data['docid']) ? null : $data['docid'],
                         'promotionschemaid' => null,
                         'commited'          => $commited,
@@ -1238,6 +1246,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         'suspended'         => empty($data['suspended']) ? 0 : 1,
                         SYSLOG::RES_LIAB    => empty($lid) ? null : $lid,
                         'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
+                        'recipient_address_id2' => $data['recipient_address_id2'] > 0 ? $data['recipient_address_id2'] : null,
                         'docid'             => empty($data['docid']) ? null : $data['docid'],
                         'promotionschemaid' => null,
                         'commited'          => $commited,
@@ -1304,6 +1313,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     'suspended' => empty($data['suspended']) ? 0 : 1,
                     SYSLOG::RES_LIAB => empty($lid) ? null : $lid,
                     'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
+                    'recipient_address_id2' => $data['recipient_address_id2'] > 0 ? $data['recipient_address_id2'] : null,
                     'docid' => empty($data['docid']) ? null : $data['docid'],
                     'promotionschemaid' => null,
                     'commited' => $commited,
@@ -1374,9 +1384,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 separatedocument, separateitem,
                 settlement, numberplanid,
                 paytime, paytype, datefrom, dateto, pdiscount, vdiscount, attribute, note,
-                suspended, liabilityid, recipient_address_id,
+                suspended, liabilityid,
+                recipient_address_id,
+                recipient_address_id2,
                 docid, promotionschemaid, commited)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array_values($args)
         );
 
@@ -2462,6 +2474,16 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $invoice['invoice']['recipient_address_id'] = null;
         }
 
+        if (!empty($invoice['invoice']['recipient_address_id2']) && $invoice['invoice']['recipient_address_id2'] > 0) {
+            $invoice['invoice']['recipient_ten2'] = $location_manager->getRecipientTen($invoice['invoice']['recipient_address_id2']);
+            $invoice['invoice']['recipient_type2'] = $location_manager->getEntityType($invoice['invoice']['recipient_address_id2']);
+            $invoice['invoice']['recipient_address_id2'] = $location_manager->CopyAddress($invoice['invoice']['recipient_address_id2']);
+        } else {
+            $invoice['invoice']['recipient_ten2'] = null;
+            $invoice['invoice']['recipient_type2'] = null;
+            $invoice['invoice']['recipient_address_id2'] = null;
+        }
+
         $post_address_id = $location_manager->GetCustomerAddress($invoice['customer']['id'], POSTAL_ADDRESS);
 
         if (empty($post_address_id)) {
@@ -2531,6 +2553,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'recipient_address_id' => empty($invoice['invoice']['recipient_address_id']) ? null : $invoice['invoice']['recipient_address_id'],
             'recipient_ten' => empty($invoice['invoice']['recipient_ten']) ? null : $invoice['invoice']['recipient_ten'],
             'recipient_type' => empty($invoice['invoice']['recipient_ten']) ? null : $invoice['invoice']['recipient_type'],
+            'recipient_address_id2' => empty($invoice['invoice']['recipient_address_id2']) ? null : $invoice['invoice']['recipient_address_id2'],
+            'recipient_ten2' => empty($invoice['invoice']['recipient_ten2']) ? null : $invoice['invoice']['recipient_ten2'],
+            'recipient_type2' => empty($invoice['invoice']['recipient_ten2']) ? null : $invoice['invoice']['recipient_type2'],
             'post_address_id' => empty($invoice['invoice']['post_address_id']) ? null : $invoice['invoice']['post_address_id'],
             'currency' => $invoice['invoice']['currency'] ?? Localisation::getCurrentCurrency(),
             'currencyvalue' => $invoice['invoice']['currencyvalue'] ?? 1.0,
@@ -2544,8 +2569,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			ten, ssn, zip, city, countryid, divisionid,
 			div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 			div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
-			comment, recipient_address_id, recipient_ten, recipient_type, post_address_id, currency, currencyvalue, memo, reference)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			comment,
+            recipient_address_id, recipient_ten, recipient_type,
+            recipient_address_id2, recipient_ten2, recipient_type2,
+            post_address_id, currency, currencyvalue, memo, reference)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
         $iid = $this->db->GetLastInsertID('documents');
         if ($this->syslog) {
             unset($args[SYSLOG::RES_USER]);
@@ -2744,6 +2772,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.recipient_address_id,
 				d.recipient_ten,
 				d.recipient_type,
+				d.recipient_address_id2,
+				d.recipient_ten2,
+				d.recipient_type2,
 				d.post_address_id,
 				a.state AS rec_state, a.state_id AS rec_state_id,
 				a.city as rec_city, a.city_id AS rec_city_id,
@@ -2751,6 +2782,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				a.zip as rec_zip, a.postoffice AS rec_postoffice,
 				a.name as rec_name, a.address AS rec_address,
 				a.house AS rec_house, a.flat AS rec_flat, a.country_id AS rec_country_id,
+				a2.state AS rec_state2, a2.state_id AS rec_state_id2,
+				a2.city as rec_city2, a2.city_id AS rec_city_id2,
+				a2.street AS rec_street2, a2.street_id AS rec_street_id2,
+				a2.zip as rec_zip2, a2.postoffice AS rec_postoffice2,
+				a2.name as rec_name2, a2.address AS rec_address2,
+				a2.house AS rec_house2, a2.flat AS rec_flat2, a2.country_id AS rec_country_id2,
 				d.currency, d.currencyvalue, d.memo,
 				d.extid,
                 c.type AS customertype,
@@ -2773,6 +2810,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				LEFT JOIN customerconsents cc ON cc.customerid = d.customerid AND cc.type = ?
 				LEFT JOIN customerconsents cc2 ON cc2.customerid = d.customerid AND cc2.type = ?
 				LEFT JOIN vaddresses a ON d.recipient_address_id = a.id
+				LEFT JOIN vaddresses a2 ON d.recipient_address_id2 = a2.id
 				LEFT JOIN ksefconfig kc ON kc.divisionid = d.divisionid
 				LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
 				LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
@@ -2813,24 +2851,33 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.recipient_address_id,
 				d.recipient_ten,
 				d.recipient_type,
-				d.post_address_id,
 				a.state AS rec_state, a.state_id AS rec_state_id,
 				a.city as rec_city, a.city_id AS rec_city_id,
 				a.street AS rec_street, a.street_id AS rec_street_id,
 				a.zip as rec_zip, a.postoffice AS rec_postoffice,
 				a.name as rec_name, a.address AS rec_address,
 				a.house AS rec_house, a.flat AS rec_flat, a.country_id AS rec_country_id,
+				d.recipient_address_id2,
+				d.recipient_ten2,
+				d.recipient_type2,
+				a2.state AS rec_state2, a2.state_id AS rec_state_id2,
+				a2.city as rec_city2, a2.city_id AS rec_city_id2,
+				a2.street AS rec_street2, a2.street_id AS rec_street_id2,
+				a2.zip as rec_zip2, a2.postoffice AS rec_postoffice2,
+				a2.name as rec_name2, a2.address AS rec_address2,
+				a2.house AS rec_house2, a2.flat AS rec_flat2, a2.country_id AS rec_country_id2,
+				d.post_address_id,
 				c.pin AS customerpin, c.divisionid AS current_divisionid,
 				c.street, c.building, c.apartment, c.type AS customertype,
-				(CASE WHEN d.post_address_id IS NULL THEN c.post_street ELSE a2.street END) AS post_street,
-				(CASE WHEN d.post_address_id IS NULL THEN c.post_building ELSE a2.house END) AS post_building,
-				(CASE WHEN d.post_address_id IS NULL THEN c.post_apartment ELSE a2.flat END) AS post_apartment,
-				(CASE WHEN d.post_address_id IS NULL THEN c.post_name ELSE a2.name END) AS post_name,
-				(CASE WHEN d.post_address_id IS NULL THEN c.post_address ELSE a2.address END) AS post_address,
-				(CASE WHEN d.post_address_id IS NULL THEN c.post_zip ELSE a2.zip END) AS post_zip,
-				(CASE WHEN d.post_address_id IS NULL THEN c.post_city ELSE a2.city END) AS post_city,
-				(CASE WHEN d.post_address_id IS NULL THEN c.post_postoffice ELSE a2.postoffice END) AS post_postoffice,
-				(CASE WHEN d.post_address_id IS NULL THEN c.post_countryid ELSE a2.country_id END) AS post_countryid,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_street ELSE a3.street END) AS post_street,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_building ELSE a3.house END) AS post_building,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_apartment ELSE a3.flat END) AS post_apartment,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_name ELSE a3.name END) AS post_name,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_address ELSE a3.address END) AS post_address,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_zip ELSE a3.zip END) AS post_zip,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_city ELSE a3.city END) AS post_city,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_postoffice ELSE a3.postoffice END) AS post_postoffice,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_countryid ELSE a3.country_id END) AS post_countryid,
 				cp.name AS post_country,
 				(CASE WHEN d.div_countryid IS NOT NULL
 				    THEN (CASE WHEN d.countryid IS NULL
@@ -2862,8 +2909,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				LEFT JOIN countries cdv ON cdv.id = d.div_countryid
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				LEFT JOIN vaddresses a ON d.recipient_address_id = a.id
-				LEFT JOIN vaddresses a2 ON d.post_address_id = a2.id
-				LEFT JOIN countries cp ON (d.post_address_id IS NOT NULL AND cp.id = a2.country_id) OR (d.post_address_id IS NULL AND cp.id = c.post_countryid)
+				LEFT JOIN vaddresses a2 ON d.recipient_address_id2 = a2.id
+				LEFT JOIN vaddresses a3 ON d.post_address_id = a3.id
+				LEFT JOIN countries cp ON (d.post_address_id IS NOT NULL AND cp.id = a3.country_id) OR (d.post_address_id IS NULL AND cp.id = c.post_countryid)
 				LEFT JOIN ksefconfig kc ON kc.divisionid = d.divisionid
 				LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
 				LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
@@ -2895,39 +2943,77 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
             $result['name'] = trim($result['name']);
 
-            if ($detail_level == self::INVOICE_CONTENT_DETAIL_ALL && !empty($result['recipient_address_id'])) {
-                $result['recipient_address'] = array(
-                    'address_id' => $result['recipient_address_id'],
-                    'location_name' => $result['rec_name'],
-                    'location_state_name' => $result['rec_state'],
-                    'location_state' => $result['rec_state_id'],
-                    'location_city_name' => $result['rec_city'],
-                    'location_city' => $result['rec_city_id'],
-                    'location_street_name' => $result['rec_street'],
-                    'location_street' => $result['rec_street_id'],
-                    'location_house' => $result['rec_house'],
-                    'location_zip' => $result['rec_zip'],
-                    'location_postoffice' => $result['rec_postoffice'],
-                    'location_country_id' => $result['rec_country_id'],
-                    'location_flat' => $result['rec_flat'],
-                    'location_ten' => $result['recipient_ten'],
-                    'location_entity_type' => $result['recipient_type'],
-                    'location_address_type' => RECIPIENT_ADDRESS,
-                );
-                // generate address as single string
-                $recipient_location = location_str(array(
-                    'city_name'      => $result['recipient_address']['location_city_name'],
-                    'postoffice'     => $result['recipient_address']['location_postoffice'],
-                    'street_name'    => $result['recipient_address']['location_street_name'],
-                    'location_house' => $result['recipient_address']['location_house'],
-                    'location_flat'  => $result['recipient_address']['location_flat']
-                ));
+            if ($detail_level == self::INVOICE_CONTENT_DETAIL_ALL) {
+                if (!empty($result['recipient_address_id'])) {
+                    $result['recipient_address'] = array(
+                        'address_id' => $result['recipient_address_id'],
+                        'location_name' => $result['rec_name'],
+                        'location_state_name' => $result['rec_state'],
+                        'location_state' => $result['rec_state_id'],
+                        'location_city_name' => $result['rec_city'],
+                        'location_city' => $result['rec_city_id'],
+                        'location_street_name' => $result['rec_street'],
+                        'location_street' => $result['rec_street_id'],
+                        'location_house' => $result['rec_house'],
+                        'location_zip' => $result['rec_zip'],
+                        'location_postoffice' => $result['rec_postoffice'],
+                        'location_country_id' => $result['rec_country_id'],
+                        'location_flat' => $result['rec_flat'],
+                        'location_ten' => $result['recipient_ten'],
+                        'location_entity_type' => $result['recipient_type'],
+                        'location_address_type' => RECIPIENT_ADDRESS,
+                    );
+                    // generate address as single string
+                    $recipient_location = location_str(array(
+                        'city_name' => $result['recipient_address']['location_city_name'],
+                        'postoffice' => $result['recipient_address']['location_postoffice'],
+                        'street_name' => $result['recipient_address']['location_street_name'],
+                        'location_house' => $result['recipient_address']['location_house'],
+                        'location_flat' => $result['recipient_address']['location_flat']
+                    ));
 
-                if (strlen($recipient_location)) {
-                    $result['recipient_address']['location'] = (empty($result['recipient_address']['location_name']) ? '' : $result['recipient_address']['location_name'] . ', ')
-                        . (empty($result['recipient_address']['location_zip']) ? '' : $result['recipient_address']['location_zip'] . ' ') . $recipient_location;
-                } else {
-                    $result['recipient_address']['location'] = trans('undefined');
+                    if (strlen($recipient_location)) {
+                        $result['recipient_address']['location'] = (empty($result['recipient_address']['location_name']) ? '' : $result['recipient_address']['location_name'] . ', ')
+                            . (empty($result['recipient_address']['location_zip']) ? '' : $result['recipient_address']['location_zip'] . ' ') . $recipient_location;
+                    } else {
+                        $result['recipient_address']['location'] = trans('undefined');
+                    }
+                }
+
+                if (!empty($result['recipient_address_id2'])) {
+                    $result['recipient_address2'] = array(
+                        'address_id' => $result['recipient_address_id2'],
+                        'location_name' => $result['rec_name2'],
+                        'location_state_name' => $result['rec_state2'],
+                        'location_state' => $result['rec_state_id2'],
+                        'location_city_name' => $result['rec_city2'],
+                        'location_city' => $result['rec_city_id2'],
+                        'location_street_name' => $result['rec_street2'],
+                        'location_street' => $result['rec_street_id2'],
+                        'location_house' => $result['rec_house2'],
+                        'location_zip' => $result['rec_zip2'],
+                        'location_postoffice' => $result['rec_postoffice2'],
+                        'location_country_id' => $result['rec_country_id2'],
+                        'location_flat' => $result['rec_flat2'],
+                        'location_ten' => $result['recipient_ten2'],
+                        'location_entity_type' => $result['recipient_type2'],
+                        'location_address_type' => RECIPIENT_ADDRESS,
+                    );
+                    // generate address as single string
+                    $recipient_location2 = location_str(array(
+                        'city_name' => $result['recipient_address2']['location_city_name'],
+                        'postoffice' => $result['recipient_address2']['location_postoffice'],
+                        'street_name' => $result['recipient_address2']['location_street_name'],
+                        'location_house' => $result['recipient_address2']['location_house'],
+                        'location_flat' => $result['recipient_address2']['location_flat']
+                    ));
+
+                    if (strlen($recipient_location2)) {
+                        $result['recipient_address2']['location'] = (empty($result['recipient_address2']['location_name']) ? '' : $result['recipient_address2']['location_name'] . ', ')
+                            . (empty($result['recipient_address2']['location_zip']) ? '' : $result['recipient_address2']['location_zip'] . ' ') . $recipient_location2;
+                    } else {
+                        $result['recipient_address2']['location'] = trans('undefined');
+                    }
                 }
             }
 
@@ -5612,8 +5698,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $args['recipient_address_id'] = empty($proforma['recipient_address_id']) ? null :
             $location_manager->CopyAddress($proforma['recipient_address_id']);
-        $args['recipient_ten'] = $proforma['recipient_address_id'];
-        $args['recipient_type'] = $proforma['recipient_address_id'];
+        $args['recipient_ten'] = $proforma['recipient_address_ten'];
+        $args['recipient_type'] = $proforma['recipient_address_type'];
+
+        $args['recipient_address_id2'] = empty($proforma['recipient_address_id2']) ? null :
+            $location_manager->CopyAddress($proforma['recipient_address_id2']);
+        $args['recipient_ten2'] = $proforma['recipient_address_ten2'];
+        $args['recipient_type2'] = $proforma['recipient_address_type2'];
 
         $this->db->Execute(
             'INSERT INTO documents (cdate, sdate, paytime, paytype, flags, customerid,
@@ -5621,13 +5712,17 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 div_name, div_shortname, div_address, div_city, div_zip, div_countryid,
                 div_ten, div_regon, div_bank, div_account, div_inv_header, div_inv_footer,
                 div_inv_author, div_inv_cplace, comment, currency, currencyvalue, memo,
-                type, number, fullnumber, numberplanid, recipient_address_id, recipient_ten, recipient_type)
+                type, number, fullnumber, numberplanid,
+                recipient_address_id, recipient_ten, recipient_type,
+                recipient_address_id2, recipient_ten2, recipient_type2)
                 VALUES (?, ?, ?, ?, ?, ?,
                     ?, ?, ?, ?, ?, ?, ?, ?,
                     ?, ?, ?, ?, ?, ?,
                     ?, ?, ?, ?, ?, ?,
                     ?, ?, ?, ?, ?, ?,
-                    ?, ?, ?, ?, ?, ?, ?)',
+                    ?, ?, ?, ?,
+                    ?, ?, ?,
+                    ?, ?, ?)',
             array_values($args)
         );
         $invoiceid = $args[SYSLOG::RES_DOC] = $this->db->GetLastInsertID('documents');

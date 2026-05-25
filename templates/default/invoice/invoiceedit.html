@@ -214,17 +214,32 @@
 				</td>
 			</tr>
 			<tr>
-				<td class="bold">
-					{trans("Recipient address:")}
+				<td>
+					<strong>{trans("Recipient address")}</strong>
 				</td>
 				<td>
-					{if $invoice.customerid && $invoice.recipient_address_id }
+					{if $invoice.customerid && $invoice.recipient_address_id}
 						{$selected_address_id = $invoice.recipient_address_id}
 					{else}
 						{$selected_address_id = null}
 					{/if}
 					{include file="customer/customeraddresses.html" id="customer_addresses" name="invoice[recipient_address_id]"
 						trigger="address_id" selected_address_id=$selected_address_id preselection=false}
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<strong>{trans("Recipient address (additional)")}</strong>
+				</td>
+				<td>
+					{if $invoice.customerid && $invoice.recipient_address_id2}
+						{$selected_address_id2 = $invoice.recipient_address_id2}
+					{else}
+						{$selected_address_id2 = null}
+					{/if}
+					{include file="customer/customeraddresses.html" id="customer_addresses2" name="invoice[recipient_address_id2]"
+						addresses=$addresses2
+						trigger="address_id2" selected_address_id=$selected_address_id2 preselection=false}
 				</td>
 			</tr>
 			<tr>
@@ -255,6 +270,12 @@
 		recipient_addr = JSON.parse(Base64.decode('{$invoice.recipient_address}'));
 	{/if}
 
+	var recipient_addr2;
+
+	{if $invoice.customerid && isset($invoice.recipient_address2)}
+		recipient_addr2 = JSON.parse(Base64.decode('{$invoice.recipient_address2}'));
+	{/if}
+
 	function updateDocumentFlags() {
 		$.ajax({
 			data: {
@@ -282,6 +303,8 @@
 	 */
 	function customer_change() {
 		getCustomerAddresses($("#ownerid_input").val(), function(addresses) {
+			var addresses2 = addresses;
+
 			{if $invoice.customerid && isset($invoice.recipient_address)}
 				var addr = {};
 				addr[recipient_addr.address_id] = $.extend(recipient_addr, {
@@ -297,11 +320,28 @@
 			{/if}
 
 			setAddressList('#customer_addresses', addresses);
+
+			{if $invoice.customerid && isset($invoice.recipient_address2)}
+				var addr2 = {};
+				addr2[recipient_addr2.address_id] = $.extend(recipient_addr2, {
+					default_address: true,
+					location_address_type: "4"
+				});
+				$.each(addresses2, function() {
+					if (this.hasOwnProperty("default_address")) {
+						delete this.default_address;
+					}
+				});
+				addresses2 = $.extend(addr2, addresses2);
+			{/if}
+
+			setAddressList('#customer_addresses2', addresses2);
 		});
 		updateDocumentFlags();
 	}
 
 	initAdvancedSelectsTest('#customer_addresses');
+	initAdvancedSelectsTest('#customer_addresses2');
 
 	$(function() {
 		$('form[name="setcustomer"] [name="invoice[number]"]').focus();

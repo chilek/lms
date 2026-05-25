@@ -106,7 +106,7 @@
 						<div class="lms-ui-tab-table-wrapper col-2">
 							<div class="lms-ui-tab-table-column liability">
 								{trans("Liability")} ({trans("Note")})<br>
-								{trans("Recipient")}
+								{trans("Recipient/Recipients")}
 							</div>
 							{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 							<div class="lms-ui-tab-table-column base_value">
@@ -256,6 +256,10 @@
 								{/if}
 								<br>
 								{$a.recipient_location|default:"-"}
+								{if !empty($a.recipient_location2)}
+									<br>
+									{$a.recipient_location2}
+								{/if}
 							</div>
 							{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 							<div class="lms-ui-tab-table-column base_value">

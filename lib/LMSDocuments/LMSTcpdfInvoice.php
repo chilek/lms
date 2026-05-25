@@ -621,39 +621,79 @@ class LMSTcpdfInvoice extends LMSInvoice
 
     protected function invoice_recipient()
     {
-        if (empty($this->data['recipient_address_id'])) {
-            return 0;
+        $y = $this->backend->getY();
+        $x = $this->backend->getX();
+
+        if (!empty($this->data['recipient_address_id'])) {
+            //$x = $this->backend->getPageWidth() / 2;
+            //$x = 125;
+            $x = 83;
+
+            $this->backend->SetFont(null, '', 8);
+
+            $this->backend->writeHTMLCell(80, '', '', '', '<b>' . trans('Recipient:') . '</b>', 0, 1, 0, true, 'L');
+
+            $rec_lines = document_address(array(
+                'name' => $this->data['rec_name'],
+                'address' => $this->data['rec_address'],
+                'street' => $this->data['rec_street'],
+                'zip' => $this->data['rec_zip'],
+                'postoffice' => $this->data['rec_postoffice'],
+                'city' => $this->data['rec_city'],
+            ));
+            if (!empty($this->data['recipient_ten'])) {
+                $recipient_ten = str_replace(
+                    array(
+                        '-',
+                        ' ',
+                    ),
+                    array(
+                        '',
+                        '',
+                    ),
+                    $this->data['recipient_ten']
+                );
+                $rec_lines[] = trans('TEN') . ' ' . $this->data['recipient_ten'];
+            }
+
+            foreach ($rec_lines as $line) {
+                $this->backend->writeHTMLCell(80, '', '', '', $line, 0, 1, 0, true, 'L');
+            }
         }
 
-        $this->backend->SetFont(null, '', 8);
+        if (!empty($this->data['recipient_address_id2'])) {
+            $this->backend->setY($y);
 
-        $this->backend->writeHTMLCell(80, '', '', '', '<b>' . trans('Recipient:') . '</b>', 0, 1, 0, true, 'L');
+            $this->backend->SetFont(null, '', 8);
 
-        $rec_lines = document_address(array(
-            'name' => $this->data['rec_name'],
-            'address' => $this->data['rec_address'],
-            'street' => $this->data['rec_street'],
-            'zip' => $this->data['rec_zip'],
-            'postoffice' => $this->data['rec_postoffice'],
-            'city' => $this->data['rec_city'],
-        ));
-        if (!empty($this->data['recipient_ten'])) {
-            $recipient_ten = str_replace(
-                array(
-                    '-',
-                    ' ',
-                ),
-                array(
-                    '',
-                    '',
-                ),
-                $this->data['recipient_ten']
-            );
-            $rec_lines[] = trans('TEN') . ' ' . $this->data['recipient_ten'];
-        }
+            $this->backend->writeHTMLCell(80, '', $x, '', '<b>' . trans('Recipient (additional):') . '</b>', 0, 1, 0, true, 'L');
 
-        foreach ($rec_lines as $line) {
-            $this->backend->writeHTMLCell(80, '', '', '', $line, 0, 1, 0, true, 'L');
+            $rec_lines = document_address(array(
+                'name' => $this->data['rec_name2'],
+                'address' => $this->data['rec_address2'],
+                'street' => $this->data['rec_street2'],
+                'zip' => $this->data['rec_zip2'],
+                'postoffice' => $this->data['rec_postoffice2'],
+                'city' => $this->data['rec_city2'],
+            ));
+            if (!empty($this->data['recipient_ten2'])) {
+                $recipient_ten = str_replace(
+                    array(
+                        '-',
+                        ' ',
+                    ),
+                    array(
+                        '',
+                        '',
+                    ),
+                    $this->data['recipient_ten2']
+                );
+                $rec_lines[] = trans('TEN') . ' ' . $this->data['recipient_ten2'];
+            }
+
+            foreach ($rec_lines as $line) {
+                $this->backend->writeHTMLCell(80, '', $x, '', $line, 0, 1, 0, true, 'L');
+            }
         }
     }
 

@@ -188,6 +188,7 @@
 	{/if}
 	selected["location"] = "{if isset($assignment.location)}{$assignment.location}{/if}";
 	selected["recipient_address_id"] = "{if isset($assignment.recipient_address_id)}{$assignment.recipient_address_id}{else}0{/if}";
+	selected["recipient_address_id2"] = "{if isset($assignment.recipient_address_id2)}{$assignment.recipient_address_id2}{else}0{/if}";
 
 	var assignment_settings = {
 		customerid: {$customerinfo.id},

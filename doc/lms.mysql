@@ -748,6 +748,9 @@ CREATE TABLE documents (
 	recipient_address_id int(11),
 	recipient_ten varchar(50) DEFAULT NULL,
 	recipient_type smallint DEFAULT NULL,
+	recipient_address_id2 int(11) DEFAULT NULL,
+	recipient_ten2 varchar(50) DEFAULT NULL,
+	recipient_type2 smallint DEFAULT NULL,
 	post_address_id int(11),
 	template varchar(255) DEFAULT NULL,
 	commitflags tinyint(1) NOT NULL DEFAULT 0,
@@ -770,6 +773,8 @@ CREATE TABLE documents (
 	INDEX reference (reference),
 	CONSTRAINT documents_recipient_address_id_fkey
 	FOREIGN KEY (recipient_address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT documents_recipient_address_id2_fkey
+		FOREIGN KEY (recipient_address_id2) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT documents_post_address_id_fkey
 		FOREIGN KEY (post_address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT documents_customerid_fkey
@@ -1289,6 +1294,7 @@ CREATE TABLE assignments (
 	numberplanid int(11) DEFAULT NULL,
 	attribute varchar(255) DEFAULT NULL,
 	recipient_address_id int(11),
+	recipient_address_id2 int(11) DEFAULT NULL,
 	docid int(11) DEFAULT NULL,
 	commited tinyint(1) NOT NULL DEFAULT '1',
 	separatedocument varchar(100) DEFAULT NULL,
@@ -1305,6 +1311,8 @@ CREATE TABLE assignments (
 		FOREIGN KEY (numberplanid) REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT assignments_recipient_address_id_fkey
 		FOREIGN KEY (recipient_address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT assignments_recipient_address_id2_fkey
+		FOREIGN KEY (recipient_address_id2) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT assignments_docid_fkey
 		FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT assignments_tariffid_fkey
@@ -4689,4 +4697,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026050700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026052500');

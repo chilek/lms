@@ -425,7 +425,7 @@ function CustomerAssignmentHelper(options) {
 					var label = $(this).attr('data-label');
 					var td = $('<td/>');
 					var html = '';
-					var options;
+					var options, options2;
 
 					if (data.nodes) {
 						html += '<div class="nodes"><img src="img/node.gif"> ' +
@@ -579,6 +579,8 @@ function CustomerAssignmentHelper(options) {
 				});
 
 				options = '<option value="0">—</option>';
+				options2 = options;
+
 				if (data.addresses) {
 					$.each(data.addresses, function(key, value) {
 						var icon = "";
@@ -601,10 +603,21 @@ function CustomerAssignmentHelper(options) {
 							(value.location_ten ? $t("NIP $a", value.location_ten) + ', ' : '') +
 							(value.location ? escapeHtml(value.location) : '') +
 							'</option>';
+
+						options2 += '<option value="' + value.address_id + '"' +
+							(icon.length ? ' data-icon="' + icon + '"' : '') +
+							(("recipient_address_id2" in selected) && selected.recipient_address_id2 == value.address_id ? ' selected' : '') + '>' +
+							(value.location_name ? escapeHtml(value.location_name) + ', ' : '') +
+							(value.location_ten ? $t("NIP $a", value.location_ten) + ', ' : '') +
+							(value.location ? escapeHtml(value.location) : '') +
+							'</option>';
 					});
 				}
 				$('#recipient-select').html(options);
 				initAdvancedSelectsTest('#recipient-select');
+
+				$('#recipient-select2').html(options2);
+				initAdvancedSelectsTest('#recipient-select2');
 
 				$('#a_align_periods').show();
 
@@ -774,10 +787,10 @@ function tariffSelectionHandler() {
 	}
 
 	if (val == -1) {
-		$('#a_numberplan,#a_paytime,#a_paytype,#a_address,#a_day,#a_options,#a_existingassignments').hide();
+		$('#a_numberplan,#a_paytime,#a_paytype,#a_address,#a_address2,#a_day,#a_options,#a_existingassignments').hide();
 		$('#a_properties').show();
 	} else {
-		$('#a_numberplan,#a_paytime,#a_paytype,#a_address,#a_day').show();
+		$('#a_numberplan,#a_paytime,#a_paytype,#a_address,#a_address2,#a_day').show();
 		$('#backward-period').toggle(val != -2 || !promotion_select);
 		if ((val == -2 && promotion_select) || (val != -2)) {
 			$('#a_options,#a_properties,#a_existingassignments').show();

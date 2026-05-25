@@ -477,6 +477,9 @@ if ($voip_cdr_only) {
             a.recipient_address_id,
             ca3.ten AS recipient_ten,
             ca3.entity_type AS recipient_type,
+            a.recipient_address_id2,
+            ca4.ten AS recipient_ten2,
+            ca4.entity_type AS recipient_type2,
             (CASE WHEN ca2.address_id IS NULL THEN ca1.address_id ELSE ca2.address_id END) AS post_address_id,
             a.period,
             a.backwardperiod,
@@ -546,6 +549,7 @@ if ($voip_cdr_only) {
         LEFT JOIN customer_addresses ca1 ON ca1.customer_id = c.id AND ca1.type = " . BILLING_ADDRESS . "
         LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c.id AND ca2.type = " . POSTAL_ADDRESS . "
         LEFT JOIN customer_addresses ca3 ON ca3.customer_id = c.id AND ca3.address_id = a.recipient_address_id
+        LEFT JOIN customer_addresses ca4 ON ca4.customer_id = c.id AND ca4.address_id = a.recipient_address_id2
         LEFT JOIN promotionschemas ps ON ps.id = a.promotionschemaid
         LEFT JOIN promotions p ON p.id = ps.promotionid
         LEFT JOIN documents doc ON doc.id = a.docid
@@ -587,7 +591,7 @@ if ($voip_cdr_only) {
                 AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)))"
             . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
             . ($tariff_tags ?: '')
-        . " ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytime, c.paytime, d.inv_paytime,
+        . " ORDER BY a.customerid, a.recipient_address_id, a.recipient_address_id2, a.invoice, a.paytime, c.paytime, d.inv_paytime,
             a.paytype, c.paytype, d.inv_paytype, a.numberplanid, t.numberplanid, a.separatedocument, a.separateitem, currency, netflag, price DESC, a.id";
 
     $services = $DB->GetAll(
@@ -615,6 +619,9 @@ $query = "SELECT
 			a.recipient_address_id,
 			ca3.ten AS recipient_ten,
 			ca3.entity_type AS recipient_type,
+			a.recipient_address_id2,
+			ca4.ten AS recipient_ten2,
+			ca4.entity_type AS recipient_type2,
 			(CASE WHEN ca2.address_id IS NULL THEN ca1.address_id ELSE ca2.address_id END) AS post_address_id,
 			a.period, a.backwardperiod, a.at, a.suspended, a.settlement, a.datefrom,
 			0 AS pdiscount, 0 AS vdiscount, a.invoice,
@@ -670,6 +677,7 @@ $query = "SELECT
             LEFT JOIN customer_addresses ca1 ON ca1.customer_id = c.id AND ca1.type = " . BILLING_ADDRESS . "
             LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c.id AND ca2.type = " . POSTAL_ADDRESS . "
             LEFT JOIN customer_addresses ca3 ON ca3.customer_id = c.id AND ca3.address_id = a.recipient_address_id
+            LEFT JOIN customer_addresses ca4 ON ca4.customer_id = c.id AND ca4.address_id = a.recipient_address_id2
             LEFT JOIN documents doc ON doc.id = a.docid
 			" . ($empty_billings ? 'LEFT ' : '') . "JOIN (
 				SELECT ROUND(sum(price), 2) AS value,
@@ -763,7 +771,7 @@ $query = "SELECT
         . " END))))"
         . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
         . ($tariff_tags ?: '')
-    ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytime, c.paytime, d.inv_paytime,
+    ." ORDER BY a.customerid, a.recipient_address_id, a.recipient_address_id2, a.invoice, a.paytime, c.paytime, d.inv_paytime,
         a.paytype, c.paytype, d.inv_paytype, a.numberplanid, a.separatedocument, a.separateitem, currency, netflag, voipcost.value DESC, a.id";
 
 $billings = $DB->GetAll(
@@ -1025,6 +1033,7 @@ $doctypes = array();
 $paytimes = array();
 $paytypes = array();
 $addresses = array();
+$addresses2 = array();
 $numberplans = array();
 $separatedocuments = array();
 $divisions = array();
@@ -1804,7 +1813,9 @@ foreach ($assigns as $assign) {
             if ($invoices[$cid] == 0 || $doctypes[$cid] != $assign['invoice']
                 || !isset($paytimes[$cid]) || $paytimes[$cid] != $inv_paytime
                 || $paytypes[$cid] != $inv_paytype
-                || $numberplans[$cid] != $plan || $assign['recipient_address_id'] != $addresses[$cid]
+                || $numberplans[$cid] != $plan
+                || $assign['recipient_address_id'] != $addresses[$cid]
+                || $assign['recipient_address_id2'] != $addresses2[$cid]
                 || $separatedocuments[$cid] != $assign['separatedocument']
                 || !isset($currencies[$cid]) || $currencies[$cid] != $currency || $netflags[$cid] != $netflag) {
                 if (!array_key_exists($plan, $numbertemplates)) {
@@ -1869,6 +1880,18 @@ foreach ($assigns as $assign) {
                     $recipient_address_id = null;
                 }
 
+                if ($assign['recipient_address_id2']) {
+                    $addr = $DB->GetRow('SELECT * FROM addresses WHERE id = ?', array($assign['recipient_address_id2']));
+                    unset($addr['id']);
+
+                    $copy_address_query = "INSERT INTO addresses (" . implode(",", array_keys($addr)) . ") VALUES (" . implode(",", array_fill(0, count($addr), '?'))  . ")";
+                    $DB->Execute($copy_address_query, $addr);
+
+                    $recipient_address_id2 = $DB->GetLastInsertID('addresses');
+                } else {
+                    $recipient_address_id2 = null;
+                }
+
                 $exported_telecom_service = !empty($customer['countryid']) && !empty($division['countryid']) && $customer['countryid'] != $division['countryid'];
                 $telecom_service = $force_telecom_service_flag && $assign['tarifftype'] != SERVICE_OTHER
                     && $assign['customertype'] == CTYPES_PRIVATE && $issuetime < mktime(0, 0, 0, 7, 1, 2021)
@@ -1879,8 +1902,10 @@ foreach ($assigns as $assign) {
 					customerid, name, address, zip, city, ten, ssn, cdate, sdate, paytime, paytype,
 					div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 					div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
-					recipient_address_id, recipient_ten, recipient_type, post_address_id, currency, currencyvalue, memo, flags)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    recipient_address_id, recipient_ten, recipient_type,
+                    recipient_address_id2, recipient_ten2, recipient_type2,
+                    post_address_id, currency, currencyvalue, memo, flags)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     array(
                         $newnumber,
                         $plan ?: null,
@@ -1917,6 +1942,9 @@ foreach ($assigns as $assign) {
                         $recipient_address_id,
                         $assign['recipient_ten'],
                         $assign['recipient_type'],
+                        $recipient_address_id2,
+                        $assign['recipient_ten2'],
+                        $assign['recipient_type2'],
                         empty($assign['post_address_id']) ? null : $LMS->CopyAddress($assign['post_address_id']),
                         $currency,
                         $currencyvalues[$currency],
@@ -1938,6 +1966,7 @@ foreach ($assigns as $assign) {
                 $paytimes[$cid] = $inv_paytime;
                 $paytypes[$cid] = $inv_paytype;
                 $addresses[$cid] = $assign['recipient_address_id'];
+                $addresses2[$cid] = $assign['recipient_address_id2'];
                 $numberplans[$cid] = $plan;
                 $separatedocuments[$cid] = $assign['separatedocument'];
             }
