@@ -659,6 +659,8 @@ class LMSTcpdfInvoice extends LMSInvoice
             foreach ($rec_lines as $line) {
                 $this->backend->writeHTMLCell(80, '', '', '', $line, 0, 1, 0, true, 'L');
             }
+
+            $newY = $this->backend->getY();
         }
 
         if (!empty($this->data['recipient_address_id2'])) {
@@ -693,6 +695,10 @@ class LMSTcpdfInvoice extends LMSInvoice
 
             foreach ($rec_lines as $line) {
                 $this->backend->writeHTMLCell(80, '', $x, '', $line, 0, 1, 0, true, 'L');
+            }
+
+            if (isset($newY) && $newY > $this->backend->getY()) {
+                $this->backend->setY($newY);
             }
         }
     }
