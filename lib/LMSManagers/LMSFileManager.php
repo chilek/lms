@@ -132,8 +132,9 @@ class LMSFileManager extends LMSManager implements LMSFileManagerInterface
 
                 $container['images'] = array();
                 foreach ($container['files'] as &$file) {
-                    $filepath = DOC_DIR . DIRECTORY_SEPARATOR . substr($file['md5sum'], 0,
-                            2) . DIRECTORY_SEPARATOR . $file['md5sum'];
+                    $filepath = DOC_DIR . DIRECTORY_SEPARATOR
+                        . substr($file['md5sum'], 0, 2)
+                        . DIRECTORY_SEPARATOR . $file['md5sum'];
                     $file['size'] = filesize($filepath);
 
                     if (strpos($file['contenttype'], 'image') === 0) {
