@@ -478,23 +478,33 @@ function initAdvancedSelectsTest(selector) {
 
 		$(this).select2(options);
 
-		if (typeof($(this).attr('required')) !== 'undefined' || $(this).prop('required') || $(this).is('[data-required]')) {
-			$(this).siblings('.select2').find('.select2-selection').toggleClass('lms-ui-error', ['', '0'].includes($(this).val()) || $(this).is('.lms-ui-error'));
-		}
-
-		$(this).on('change', function() {
+		this.updateRequiredState = function(triggerEvent) {
 			if (typeof($(this).attr('required')) !== 'undefined' || $(this).prop('required') || $(this).is('[data-required]')) {
-				var invalidValue = ['', '0'].includes($(this).val());
+				if (typeof(triggerEvent) === 'undefined') {
+					triggerEvent = true;
+				}
 				var advancedSelectElement = $(this).siblings('.select2').find('.select2-selection');
-				advancedSelectElement.toggleClass('lms-ui-error', invalidValue);
-				$(this).trigger(
-					'lms:advanced_select_validate_required',
-					[{
+				var invalidValue = ['', '0'].includes($(this).val()) || advancedSelectElement.is('.select2-selection--multiple') && !$(this).val().length;
+				if (triggerEvent) {
+					var eventData = {
 						invalidValue: invalidValue,
 						advancedSelectElement: advancedSelectElement
-					}]
-				);
+					};
+					const e = $.Event('lms:advanced_select_validate_required');
+					$(this).trigger(e, eventData);
+					if (typeof(e.result) === 'undefined' || e.result) {
+						advancedSelectElement.toggleClass('lms-ui-error', invalidValue);
+					}
+				} else {
+					advancedSelectElement.toggleClass('lms-ui-error', invalidValue);
+				}
 			}
+		}
+
+		this.updateRequiredState(false);
+
+		$(this).on('change', function() {
+			this.updateRequiredState();
 		}).on("select2:clear", function(){
 			$(this).on("select2:opening.cancelOpen", function(e){
 				e.preventDefault();

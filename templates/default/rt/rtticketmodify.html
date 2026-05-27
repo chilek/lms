@@ -491,6 +491,7 @@
 				data.advancedSelectElement.toggleClass('lms-ui-error', !emptyCustomerId && data.invalidValue);
 				this.setCustomValidity(!emptyCustomerId && data.invalidValue ? $t('Location address is not selected') : '');
 			{/if}
+			return false;
 		});
 
 		{if $layout.module != 'eventadd'}
