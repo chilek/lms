@@ -837,7 +837,37 @@ class KSeF
         }
 
         $taxRate = '0.00';
-        if (!$foreign) {
+        if ($ue || $foreign) {
+            if ($invoice['type'] == DOC_CNOTE) {
+                if (isset($invoice['taxest'][$taxRate]) || isset($invoice['invoice']['taxest'][$taxRate])) {
+                    if (isset($invoice['taxest'][$taxRate])) {
+                        $base = round(($invoice['taxest'][$taxRate]['base'] - (isset($invoice['invoice']['taxest'][$taxRate]) ? $invoice['invoice']['taxest'][$taxRate]['base'] : 0)), 2);
+                        if ($ue) {
+                            $xml .= "\t\t<P_13_6_2>" . sprintf('%.2f', $base) . "</P_13_6_2>" . PHP_EOL;
+                        } else {
+                            $xml .= "\t\t<P_13_6_3>" . sprintf('%.2f', $base) . "</P_13_6_3>" . PHP_EOL;
+                        }
+                        $diffTotal += $base;
+                    } elseif (isset($invoice['invoice']['taxest'][$taxRate])) {
+                        $base = round(-$invoice['invoice']['taxest'][$taxRate]['base'], 2);
+                        if ($ue) {
+                            $xml .= "\t\t<P_13_6_2>" . sprintf('%.2f', $base) . "</P_13_6_2>" . PHP_EOL;
+                        } else {
+                            $xml .= "\t\t<P_13_6_3>" . sprintf('%.2f', $base) . "</P_13_6_3>" . PHP_EOL;
+                        }
+                        $diffTotal += $base;
+                    }
+                }
+            } else {
+                if (isset($invoice['taxest'][$taxRate])) {
+                    if ($ue) {
+                        $xml .= "\t\t<P_13_6_2>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['base']) . "</P_13_6_2>" . PHP_EOL;
+                    } else {
+                        $xml .= "\t\t<P_13_6_3>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['base']) . "</P_13_6_3>" . PHP_EOL;
+                    }
+                }
+            }
+        } else {
             if ($invoice['type'] == DOC_CNOTE) {
                 if (isset($invoice['taxest'][$taxRate]) || isset($invoice['invoice']['taxest'][$taxRate])) {
                     if (isset($invoice['taxest'][$taxRate])) {
@@ -868,10 +898,10 @@ class KSeF
                     $base = null;
                 }
                 if (isset($base)) {
-                    if ($ue) {
-                        $xml .= "\t\t<P_13_6_2>" . sprintf('%.2f', $base) . "</P_13_6_2>" . PHP_EOL;
-                    } elseif ($foreign) {
-                        $xml .= "\t\t<P_13_6_3>" . sprintf('%.2f', $base) . "</P_13_6_3>" . PHP_EOL;
+                    if ($foreign || $ue && $invoice['customertype'] == CTYPES_PRIVATE) {
+                        $xml .= "\t\t<P_13_8>" . sprintf('%.2f', $base) . "</P_13_8>" . PHP_EOL;
+                    } elseif ($ue) {
+                        $xml .= "\t\t<P_13_9>" . sprintf('%.2f', $base) . "</P_13_9>" . PHP_EOL;
                     } else {
                         $xml .= "\t\t<P_13_7>" . sprintf('%.2f', $base) . "</P_13_7>" . PHP_EOL;
                     }
@@ -880,10 +910,10 @@ class KSeF
             }
         } else {
             if (isset($invoice['taxest'][$taxRate])) {
-                if ($ue) {
-                    $xml .= "\t\t<P_13_6_2>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['base']) . "</P_13_6_2>" . PHP_EOL;
-                } elseif ($foreign) {
-                    $xml .= "\t\t<P_13_6_3>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['base']) . "</P_13_6_3>" . PHP_EOL;
+                if ($foreign || $ue && $invoice['customertype'] == CTYPES_PRIVATE) {
+                    $xml .= "\t\t<P_13_8>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['base']) . "</P_13_8>" . PHP_EOL;
+                } elseif ($ue) {
+                    $xml .= "\t\t<P_13_9>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['base']) . "</P_13_9>" . PHP_EOL;
                 } else {
                     $xml .= "\t\t<P_13_7>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['base']) . "</P_13_7>" . PHP_EOL;
                 }
@@ -1287,15 +1317,21 @@ class KSeF
                     if ($refInvoiceTax['value'] > 0) {
                         $refInvoiceTaxRate = round($refInvoiceTax['value']);
                     } elseif (empty($refInvoiceTax['taxed'])) {
+                        if ($foreign || $ue && $invoice['customertype'] == CTYPES_PRIVATE) {
+                            $refInvoiceTaxRate = 'np I';
+                        } elseif ($ue) {
+                            $refInvoiceTaxRate = 'np II';
+                        } else {
+                            $refInvoiceTaxRate = 'zw';
+                        }
+                    } else {
                         if ($ue) {
                             $refInvoiceTaxRate = '0 WDT';
                         } elseif ($foreign) {
                             $refInvoiceTaxRate = '0 EX';
                         } else {
-                            $refInvoiceTaxRate = 'zw';
+                            $refInvoiceTaxRate = '0 KR';
                         }
-                    } else {
-                        $refInvoiceTaxRate = '0 KR';
                     }
                 } else {
                     $refInvoiceTaxRate = 'oo';
@@ -1358,15 +1394,21 @@ class KSeF
                 if ($tax['value'] > 0) {
                     $taxRate = round($tax['value']);
                 } elseif (empty($tax['taxed'])) {
+                    if ($foreign || $ue && $invoice['customertype'] == CTYPES_PRIVATE) {
+                        $taxRate = 'np I';
+                    } elseif ($ue) {
+                        $taxRate = 'np II';
+                    } else {
+                        $taxRate = 'zw';
+                    }
+                } else {
                     if ($ue) {
                         $taxRate = '0 WDT';
                     } elseif ($foreign) {
                         $taxRate = '0 EX';
                     } else {
-                        $taxRate = 'zw';
+                        $taxRate = '0 KR';
                     }
-                } else {
-                    $taxRate = '0 KR';
                 }
             } else {
                 $taxRate = 'oo';
@@ -2313,6 +2355,20 @@ class KSeF
                     'eu' => false,
                     'export' => false,
                 ],
+                'np I' => [
+                    'rate' => 0,
+                    'taxes' => false,
+                    'reverse_charge' => false,
+                    'eu' => false,
+                    'export' => true,
+                ],
+                'np II' => [
+                    'rate' => 0,
+                    'taxes' => false,
+                    'reverse_charge' => false,
+                    'eu' => true,
+                    'export' => false,
+                ],
             ];
         }
 
@@ -2351,6 +2407,10 @@ class KSeF
                         '0' => [
                             '0' => [
                                 '0' => 'zw',
+                                '1' => 'np I',
+                            ],
+                            '1' => [
+                                '0' => 'np II',
                             ],
                         ],
                     ],
