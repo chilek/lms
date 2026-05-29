@@ -932,13 +932,25 @@ class KSeF
                     $base = null;
                 }
                 if (isset($base)) {
-                    $xml .= "\t\t<P_13_10>" . sprintf('%.2f', $base) . "</P_13_10>" . PHP_EOL;
+                    if ($foreign || $ue && $invoice['customertype'] == CTYPES_PRIVATE) {
+                        $xml .= "\t\t<P_13_8>" . sprintf('%.2f', $base) . "</P_13_8>" . PHP_EOL;
+                    } elseif ($ue) {
+                        $xml .= "\t\t<P_13_9>" . sprintf('%.2f', $base) . "</P_13_9>" . PHP_EOL;
+                    } else {
+                        $xml .= "\t\t<P_13_10>" . sprintf('%.2f', $base) . "</P_13_10>" . PHP_EOL;
+                    }
                     $diffTotal += $base;
                 }
             }
         } else {
             if (isset($invoice['taxest'][$taxRate])) {
-                $xml .= "\t\t<P_13_10>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['base']) . "</P_13_10>" . PHP_EOL;
+                if ($foreign || $ue && $invoice['customertype'] == CTYPES_PRIVATE) {
+                    $xml .= "\t\t<P_13_8>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['base']) . "</P_13_8>" . PHP_EOL;
+                } elseif ($ue) {
+                    $xml .= "\t\t<P_13_9>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['base']) . "</P_13_9>" . PHP_EOL;
+                } else {
+                    $xml .= "\t\t<P_13_10>" . sprintf('%.2f', $invoice['taxest'][$taxRate]['base']) . "</P_13_10>" . PHP_EOL;
+                }
             }
         }
 
@@ -1334,7 +1346,23 @@ class KSeF
                         }
                     }
                 } else {
-                    $refInvoiceTaxRate = 'oo';
+                    if (empty($refInvoiceTax['taxed'])) {
+                        if ($foreign || $ue && $invoice['customertype'] == CTYPES_PRIVATE) {
+                            $refInvoiceTaxRate = 'np I';
+                        } elseif ($ue) {
+                            $refInvoiceTaxRate = 'np II';
+                        } else {
+                            $refInvoiceTaxRate = 'oo';
+                        }
+                    } else {
+                        if ($ue) {
+                            $refInvoiceTaxRate = '0 WDT';
+                        } elseif ($foreign) {
+                            $refInvoiceTaxRate = '0 EX';
+                        } else {
+                            $refInvoiceTaxRate = 'oo';
+                        }
+                    }
                 }
                 $xml .= "\t\t\t<P_12>" . $refInvoiceTaxRate . "</P_12>" . PHP_EOL;
 
@@ -1411,7 +1439,23 @@ class KSeF
                     }
                 }
             } else {
-                $taxRate = 'oo';
+                if (empty($tax['taxed'])) {
+                    if ($foreign || $ue && $invoice['customertype'] == CTYPES_PRIVATE) {
+                        $taxRate = 'np I';
+                    } elseif ($ue) {
+                        $taxRate = 'np II';
+                    } else {
+                        $taxRate = 'oo';
+                    }
+                } else {
+                    if ($ue) {
+                        $taxRate = '0 WDT';
+                    } elseif ($foreign) {
+                        $taxRate = '0 EX';
+                    } else {
+                        $taxRate = 'oo';
+                    }
+                }
             }
             $xml .= "\t\t\t<P_12>" . $taxRate . "</P_12>" . PHP_EOL;
 
