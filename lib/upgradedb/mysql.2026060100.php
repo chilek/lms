@@ -288,6 +288,9 @@ if ($purchaseInvoiceUpdateRequired_2026060100) {
                                         $netPrice = round($netValue / $count, 8);
                                     }
                                 } else {
+                                    if (!isset($netPrice)) {
+                                        $netPrice = 0;
+                                    }
                                     $netValue = round($netPrice * $count, 2);
                                 }
 
@@ -303,6 +306,9 @@ if ($purchaseInvoiceUpdateRequired_2026060100) {
                                         $price = round($value / $count, 8);
                                     }
                                 } else {
+                                    if (!isset($price)) {
+                                        $price = 0;
+                                    }
                                     $value = round($price * $count, 2);
                                 }
 
