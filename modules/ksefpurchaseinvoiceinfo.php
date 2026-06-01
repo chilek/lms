@@ -106,6 +106,19 @@ $invoice['items'] = $DB->GetAll(
     ]
 );
 
+$invoice['summary'] = $DB->GetAll(
+    'SELECT
+        kis.*
+    FROM ksefinvoicesummaries kis
+    JOIN ksefinvoices i ON i.id = kis.ksef_invoice_id
+    WHERE kis.ksef_invoice_id = ?
+        AND i.invoice_type = ?',
+    [
+        $id,
+        DOC_INVOICE,
+    ]
+);
+
 $summaryBeforeState = [];
 $summary = [];
 foreach ($invoice['items'] as &$item) {
@@ -118,25 +131,22 @@ foreach ($invoice['items'] as &$item) {
     ]);
     $item['tax_rate_label'] = $taxRateLabel;
 
-    if (empty($item['net_flag'])) {
-        $item['gross_price'] = $item['price'];
-        $item['gross_value'] = $item['value'];
-        $item['net_value'] = round((100 * $item['gross_value']) / (100 + $item['tax_rate']), 2);
-    } else {
-        $item['net_price'] = $item['price'];
-        $item['net_value'] = $item['value'];
-        $item['gross_value'] = round(($item['net_value'] * (100 + $item['tax_rate'])) / 100, 2);
-    }
+    $item['net_price'] = $item['net_price'];
+    $item['gross_price'] = $item['price'];
+    $item['net_value'] = $item['net_value'];
+    $item['gross_value'] = $item['value'];
     $item['tax'] = round($item['gross_value'] - $item['net_value'], 2);
 
-    if (!isset($summary[$taxRateLabel])) {
-        if (empty($item['before_state'])) {
+    if (empty($item['before_state'])) {
+        if (!isset($summary[$taxRateLabel])) {
             $summary[$taxRateLabel] = [
                 'tax_rate' => $item['tax_rate'],
                 'net' => 0,
                 'gross' => 0,
             ];
-        } else {
+        }
+    } else {
+        if (!isset($summaryBeforeState[$taxRateLabel])) {
             $summaryBeforeState[$taxRateLabel] = [
                 'tax_rate' => $item['tax_rate'],
                 'net' => 0,
@@ -146,27 +156,45 @@ foreach ($invoice['items'] as &$item) {
     }
 
     if (empty($item['before_state'])) {
-        if (empty($item['net_flag'])) {
-            $summary[$taxRateLabel]['gross'] += $item['gross_value'];
-        } else {
-            $summary[$taxRateLabel]['net'] += $item['net_value'];
-        }
+        $summary[$taxRateLabel]['gross'] += $item['gross_value'];
+        $summary[$taxRateLabel]['net'] += $item['net_value'];
     } else {
-        if (empty($item['net_flag'])) {
-            $summaryBeforeState[$taxRateLabel]['gross'] += $item['gross_value'];
-        } else {
-            $summaryBeforeState[$taxRateLabel]['net'] += $item['net_value'];
-        }
+        $summaryBeforeState[$taxRateLabel]['gross'] += $item['gross_value'];
+        $summaryBeforeState[$taxRateLabel]['net'] += $item['net_value'];
     }
 }
 unset($item);
 
-foreach ($summary as &$item) {
-    if (empty($item['net'])) {
-        $item['net'] = round((100 * $item['gross']) / (100 + $item['tax_rate']), 2);
-    } else {
-        $item['gross'] = round(($item['net'] * (100 + $item['tax_rate'])) / 100, 2);
+if (empty($invoice['summary'])) {
+    foreach ($summary as &$item) {
+        $item['tax'] = round($item['gross'] - $item['net'], 2);
     }
+    unset($item);
+} else {
+    $summary = [];
+    foreach ($invoice['summary'] as $item) {
+        $taxRateLabel = KSeF::ksefTaxLabel([
+            'tax_rate' => $item['tax_rate'],
+            'taxed' => $item['taxed'],
+            'reverse_charge' => $item['reverse_charge'],
+            'eu' => $item['eu'],
+            'export' => $item['export'],
+        ]);
+        if (!isset($summary[$taxRateLabel])) {
+            $summary[$taxRateLabel] = [
+                'tax_rate' => $item['tax_rate'],
+                'net' => 0,
+                'tax' => 0,
+                'gross' => 0,
+            ];
+        }
+        $summary[$taxRateLabel]['net'] += $item['net_amount'];
+        $summary[$taxRateLabel]['tax'] += $item['vat_amount'];
+        $summary[$taxRateLabel]['gross'] += $item['gross_amount'];
+    }
+}
+
+foreach ($summaryBeforeState as &$item) {
     $item['tax'] = round($item['gross'] - $item['net'], 2);
 }
 unset($item);
