@@ -391,9 +391,7 @@ if ($purchaseInvoiceUpdateRequired_2026060100) {
     }
 }
 
-$this->Execute("ALTER TABLE ksefinvoiceitems ALTER COLUMN net_price SET NOT NULL");
 $this->Execute("ALTER TABLE ksefinvoiceitems ALTER COLUMN net_price DROP DEFAULT");
-$this->Execute("ALTER TABLE ksefinvoiceitems ALTER COLUMN net_value SET NOT NULL");
 $this->Execute("ALTER TABLE ksefinvoiceitems ALTER COLUMN net_value DROP DEFAULT");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2026060100', 'dbversion'));
