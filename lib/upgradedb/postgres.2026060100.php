@@ -238,14 +238,17 @@ if ($purchaseInvoiceUpdateRequired_2026060100) {
                                     $ksefItemId = $itemId;
                                 }
                                 $count = empty($item->P_8BZ) ? 1 : (float)$item->P_8BZ;
+
                                 $netPrice = (float)($item->P_9AZ ?? 0);
                                 $netValue = (float)($item->P_11NettoZ ?? 0);
+
                                 if (isset($item->P_12Z)) {
                                     $taxProperties = ksefTaxProperties_2026060100((string)trim($item->P_12Z));
                                     $taxRate = $taxProperties['rate'];
                                 } else {
                                     $taxRate = 0.0;
                                 }
+
                                 $xmlPurchaseInvoiceItems[$ksefBeforeState][$ksefItemId] = [
                                     'netprice' => $netPrice,
                                     'price' => round(($netPrice * (100 + $taxRate)) / 100, 8),
@@ -257,24 +260,66 @@ if ($purchaseInvoiceUpdateRequired_2026060100) {
                         }
                     } else {
                         foreach ($xml->Fa->FaWiersz as $item) {
+                            $netFlag = isset($item->P_9A) && !empty((float)$item->P_9A) || isset($item->P_11) && !empty((float)$item->P_11);
+
                             $ksefBeforeState = empty($item->StanPrzed) ? 0 : 1;
                             $ksefItemId = (int)$item->NrWierszaFa;
                             if ($ksefItemId > 1000) {
                                 $ksefItemId = $itemId;
                             }
                             $count = empty($item->P_8B) || empty((float)$item->P_8B) ? 1 : (float)$item->P_8B;
+
                             if (isset($item->P_12)) {
                                 $taxProperties = ksefTaxProperties_2026060100((string)trim($item->P_12));
                                 $taxRate = $taxProperties['rate'];
                             } else {
                                 $taxRate = 0.0;
                             }
+
+                            $netPrice = isset($item->P_9A) && !empty($item->P_9A) ? (float)$item->P_9A : null;
+                            $price = isset($item->P_9B) && !empty($item->P_9B) ? (float)$item->P_9B : null;
+                            $netValue = isset($item->P_11) && !empty($item->P_11) ? (float)$item->P_11 : null;
+                            $value = isset($item->P_11A) && !empty($item->P_11A) ? (float)$item->P_11A : null;
+
+                            if ($netFlag) {
+                                if (isset($netValue)) {
+                                    if (!isset($netPrice)) {
+                                        $netPrice = round($netValue / $count, 8);
+                                    }
+                                } else {
+                                    $netValue = round($netPrice * $count, 2);
+                                }
+
+                                if (!isset($price)) {
+                                    $price = round(($netPrice * (100 + $taxRate)) / 100, 8);
+                                }
+                                if (!isset($value)) {
+                                    $value = round(($netValue * (100 + $taxRate)) / 100, 2);
+                                }
+                            } else {
+                                if (isset($value)) {
+                                    if (!isset($price)) {
+                                        $price = round($value / $count, 8);
+                                    }
+                                } else {
+                                    $value = round($price * $count, 2);
+                                }
+
+                                if (!isset($netPrice)) {
+                                    $netPrice = round((100 * $price) / (100 + $taxRate), 8);
+                                }
+                                if (!isset($netValue)) {
+                                    $netValue = round((100 * $value) / (100 + $taxRate), 2);
+                                }
+                            }
+
                             $xmlPurchaseInvoiceItems[$ksefBeforeState][$ksefItemId] = [
-                                'netprice' => isset($item->P_9A) ? (float)$item->P_9A : round(((float)$item->P_11) / $count, 8),
-                                'price' => isset($item->P_9B) ? (float)$item->P_9B : round(isset($item->P_11A) ? ((float)$item->P_11A) / $count : ((float)$item->P_9A * (100 + $taxRate)) / 100, 8),
-                                'netvalue' => isset($item->P_11) ? (float)$item->P_11 : round(((float)$item->P_9A) * $count, 2),
-                                'value' => isset($item->P_11A) ? (float)$item->P_11A : round(isset($item->P_9B) ? ((float)$item->P_9B) * $count : ((float)$item->P_11 * (100 + $taxRate)) / 100, 2),
+                                'netprice' => $netPrice,
+                                'price' => $price,
+                                'netvalue' => $netValue,
+                                'value' => $value,
                             ];
+
                             $itemId++;
                         }
                     }
