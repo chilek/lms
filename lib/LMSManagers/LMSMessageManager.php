@@ -592,7 +592,10 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
         $userid = Auth::GetCurrentUser();
 
         if ($count) {
-            return $this->db->GetOne('SELECT COUNT(m.id)
+            return $this->db->GetRow(
+                'SELECT
+                    COUNT(m.id) AS total,
+                    SUM(x.cnt) AS recipients
 				FROM messages m
 				JOIN (
 					SELECT i.messageid,

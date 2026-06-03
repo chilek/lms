@@ -2284,6 +2284,7 @@ $_LANG['To (day/month/year hh:mm):'] = 'Do (dzień/miesiąc/rok gg:mm):';
 $_LANG['To pay: $a'] = 'Do zapłaty: $a';
 $_LANG['Total:'] = 'Razem:';
 $_LANG['Total: $a'] = 'Razem: $a';
+$_LANG['Total: $a (Recipients: $b)'] = 'Razem: $a (Odbiorców: $b)';
 $_LANG['Total Dues:'] = 'W tym zadłużonych:';
 $_LANG['Total Invoiceless Income'] = 'Łączny przychód bezrachunkowy';
 $_LANG['Total Invoiceless Income ($a to $b)'] = 'Łączny przychód bezrachunkowy ($a do $b)';
