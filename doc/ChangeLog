@@ -1214,6 +1214,7 @@ version 28-git (????-??-??):
     creation dates [chilan]
   - improvement: base date selection (between draw-up date and sale date) in invoice/JPK report form [chilan]
   - enhancement: added additional recipient address support for assignments and invoices [chilan]
+  - improvement: show recipient count in message list form [chilan]
 
 version 27.0 (2021-08-20):
 
