@@ -191,6 +191,7 @@
 				data-period="{$a.period}"
 				data-commited="{$a.commited}"
 				data-document="{if $a.doctype}{t a=$_DOCTYPES[$a.doctype] b=$a.fullnumber c=$a.cdate|date_format:"Y-m-d"}$a no. $b issued on $c{/t}{/if}"
+				data-document-cdate="{$a.cdate}"
 				{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 					data-net-value="{$a.real_netvalue|default:"0"|replace:",":"."}"
 					data-gross-value="{$a.real_value|default:"0"|replace:",":"."}"
@@ -578,18 +579,36 @@
 		tab_elem.find('.lms-ui-tab-table-row[data-tariff-type]').each(function () {
 			var tariff_type = $(this).attr('data-tariff-type');
 			var document = $(this).attr('data-document');
+			var cdate = $(this).attr('data-document-cdate')
 			var period = $(this).attr('data-period');
 			if (tariff_type.length && assignment_types.indexOf(tariff_type) == -1) {
 				assignment_types.push(tariff_type);
 			}
 			if (document.length && documents.indexOf(document) == -1) {
-				documents.push(document);
+				documents.push({
+					document: document,
+					cdate: cdate
+				});
 			}
 			if (period.length && periods.indexOf(period) == -1) {
 				periods.push(period);
 			}
 		});
-		documents.sort();
+		documents.sort(function(a, b) {
+			var aDay = Math.round(a.cdate);
+			var bDay = Math.round(b.cdate);
+			if (aDay < bDay) {
+				return 1;
+			} else if (aDay > bDay) {
+				return -1;
+			} else {
+				return a.document.localeCompare(b.document);
+			}
+		});
+		documents = documents.map(function(a) {
+			return a.document;
+		});
+		documents = [...new Set(documents)];
 
 		var selected_type = getStorageItem('{$tab_id}_tariff_type_{$customerinfo.id}');
 		var selected_document = getStorageItem('{$tab_id}_document_{$customerinfo.id}');
