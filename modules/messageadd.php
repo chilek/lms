@@ -1660,10 +1660,11 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             unset($file);
         }
         $message['file-container'] = $fileContainer;
+    } else {
+        $message['type'] = isset($_GET['type']) ? intval($_GET['type'])
+            : (empty($message['emailcount']) ? (empty($message['phonecount']) ? MSG_WWW : MSG_SMS) : MSG_MAIL);
     }
 
-    $message['type'] = isset($_GET['type']) ? intval($_GET['type'])
-        : (empty($message['emailcount']) ? (empty($message['phonecount']) ? MSG_WWW : MSG_SMS) : MSG_MAIL);
     $message['usergroup'] = isset($_GET['usergroupid']) ? intval($_GET['usergroupid']) : 0;
     $message['tmplid'] = isset($_GET['templateid']) ? intval($_GET['templateid']) : 0;
     $SMARTY->assign('autoload_template', true);
