@@ -1215,6 +1215,8 @@ version 28-git (????-??-??):
   - improvement: base date selection (between draw-up date and sale date) in invoice/JPK report form [chilan]
   - enhancement: added additional recipient address support for assignments and invoices [chilan]
   - improvement: show recipient count in message list form [chilan]
+  - devel/enhancement: added new plugin hook 'password_verification' which is usefull for
+    external authentication plugins [chilan/Przemyslaw S. Knycz]
 
 version 27.0 (2021-08-20):
 
