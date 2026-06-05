@@ -521,7 +521,7 @@ class Auth
                             'result' => false,
                         ]
                     );
-                    $this->passverified = $hook_data['result'] ?? $this->VerifyPassword($user['passwd']);
+                    $this->passverified = $hook_data['result'] ?: $this->VerifyPassword($user['passwd']);
                     $this->hostverified = $this->VerifyHost($user['hosts']);
                     $this->trustedhost = $this->verifyTrustedHost($user['trustedhosts']);
                     $this->access = $this->VerifyAccess($user['access']);
