@@ -192,13 +192,13 @@ if (isset($_GET['old_tab_id'], $_GET['tab_id'], $_POST['old_history_entry'], $_P
     header('Content-Type: application/json');
     die('[]');
 }
+$plugin_manager = LMSPluginManager::getInstance();
+
 $AUTH = new Auth($DB, $SESSION);
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
+$LMS->setPluginManager($plugin_manager);
 
 Localisation::initDefaultCurrency();
-
-$plugin_manager = LMSPluginManager::getInstance();
-$LMS->setPluginManager($plugin_manager);
 
 if (!$api) {
     $SMARTY->setPluginManager($plugin_manager);

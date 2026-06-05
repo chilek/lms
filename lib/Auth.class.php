@@ -513,7 +513,15 @@ class Auth
                         $this->error = trans("Too many failed login attempts in short time period.<br>Try again in a few minutes.");
                     }
                 } else {
-                    $this->passverified = $this->VerifyPassword($user['passwd']);
+                    $hook_data = LMSPluginManager::getInstance()->executeHook(
+                        'password_verification',
+                        [
+                            'login' => $this->login,
+                            'passwd' => $this->passwd,
+                            'result' => false,
+                        ]
+                    );
+                    $this->passverified = $hook_data['result'] ?? $this->VerifyPassword($user['passwd']);
                     $this->hostverified = $this->VerifyHost($user['hosts']);
                     $this->trustedhost = $this->verifyTrustedHost($user['trustedhosts']);
                     $this->access = $this->VerifyAccess($user['access']);
