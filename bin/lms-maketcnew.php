@@ -218,7 +218,14 @@ if (empty($networks)) {
 }
 
 $networks = $DB->GetAllByKey(
-    "SELECT id, name, address, mask, interface FROM networks"
+    "SELECT
+        id,
+        name,
+        address,
+        mask,
+        interface,
+        snat
+    FROM networks"
     . (empty($networks) ? '' : " WHERE UPPER(name) IN ('" . implode("','", array_map('mb_strtoupper', $networks)) . "')"),
     'id'
 );
@@ -241,83 +248,112 @@ if ($all_assignments) {
     $query = '';
 }
 
-$query .= "SELECT ROUND(t.downrate * a.count) AS downrate,
-    ROUND(t.downceil * a.count) AS downceil,
-    ROUND(t.uprate * a.count) AS uprate,
-    ROUND(t.upceil * a.count) AS upceil,
-	ROUND((CASE WHEN t.downrate_n IS NOT NULL THEN t.downrate_n ELSE t.downrate END) * a.count) AS downrate_n,
-	ROUND((CASE WHEN t.downceil_n IS NOT NULL THEN t.downceil_n ELSE t.downceil END) * a.count) AS downceil_n,
-	ROUND((CASE WHEN t.uprate_n IS NOT NULL THEN t.uprate_n ELSE t.uprate END) * a.count) AS uprate_n,
-	ROUND((CASE WHEN t.upceil_n IS NOT NULL THEN t.upceil_n ELSE t.upceil END) * a.count) AS upceil_n,
-	ROUND(t.climit * a.count) AS climit,
-	ROUND(t.plimit * a.count) AS plimit,
-	n.id, n.ownerid, n.name, n.netid, INET_NTOA(n.ipaddr) AS ip, n.mac,
-	na.assignmentid, a.customerid,
-	TRIM(" . $DB->Concat('c.lastname', "' '", 'c.name') . ") AS customer
-	FROM nodeassignments na
-	JOIN assignments a ON (na.assignmentid = a.id)
-	" . ($ignore_assignment_suspensions
+$query .= "
+    SELECT
+        ROUND(t.downrate * a.count) AS downrate,
+        ROUND(t.downceil * a.count) AS downceil,
+        ROUND(t.uprate * a.count) AS uprate,
+        ROUND(t.upceil * a.count) AS upceil,
+        ROUND((CASE WHEN t.downrate_n IS NOT NULL THEN t.downrate_n ELSE t.downrate END) * a.count) AS downrate_n,
+        ROUND((CASE WHEN t.downceil_n IS NOT NULL THEN t.downceil_n ELSE t.downceil END) * a.count) AS downceil_n,
+        ROUND((CASE WHEN t.uprate_n IS NOT NULL THEN t.uprate_n ELSE t.uprate END) * a.count) AS uprate_n,
+        ROUND((CASE WHEN t.upceil_n IS NOT NULL THEN t.upceil_n ELSE t.upceil END) * a.count) AS upceil_n,
+        ROUND(t.climit * a.count) AS climit,
+        ROUND(t.plimit * a.count) AS plimit,
+        n.id,
+        n.ownerid,
+        n.name,
+        n.netid,
+        INET_NTOA(n.ipaddr) AS ip,
+        n.mac,
+        na.assignmentid,
+        a.customerid,
+        TRIM(" . $DB->Concat('c.lastname', "' '", 'c.name') . ") AS customer
+    FROM nodeassignments na
+    JOIN assignments a ON na.assignmentid = a.id
+    " . ($ignore_assignment_suspensions
         ? ''
         : "LEFT JOIN (
-		SELECT customerid, COUNT(id) AS allsuspended FROM assignments
-		WHERE tariffid IS NULL AND liabilityid IS NULL
-			AND datefrom <= ?NOW? AND (dateto = 0 OR dateto > ?NOW?)
-		GROUP BY customerid
-	) s ON s.customerid = a.customerid") . "
-	JOIN tariffs t ON (a.tariffid = t.id)
-	JOIN vnodes n ON (na.nodeid = n.id)
-	JOIN customers c ON (a.customerid = c.id)
-	WHERE " . ($ignore_assignment_suspensions ? '' : "s.allsuspended IS NULL AND a.suspended = 0 AND ") . "a.commited = 1
-		AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
-		AND n.access = 1
-		AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
-		AND n.netid IN (" . implode(',', array_keys($networks)) . ")"
+        SELECT
+            customerid,
+            COUNT(id) AS allsuspended
+        FROM assignments
+        WHERE tariffid IS NULL
+            AND liabilityid IS NULL
+            AND datefrom <= ?NOW?
+            AND (dateto = 0 OR dateto > ?NOW?)
+        GROUP BY customerid
+    ) s ON s.customerid = a.customerid") . "
+    JOIN tariffs t ON a.tariffid = t.id
+    JOIN vnodes n ON na.nodeid = n.id
+    JOIN customers c ON a.customerid = c.id
+    WHERE " . ($ignore_assignment_suspensions ? '1 = 1' : "s.allsuspended IS NULL AND a.suspended = 0")
+        . " AND a.commited = 1
+        AND a.datefrom <= ?NOW?
+        AND (a.dateto >= ?NOW? OR a.dateto = 0)
+        AND n.access = 1
+        AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
+        AND n.netid IN (" . implode(',', array_keys($networks)) . ")"
         . (empty($customerids) ? '' : " AND c.id IN (" . implode(',', $customerids) . ")");
 
 if ($all_assignments) {
     $query .= ") UNION (
-	SELECT ROUND(t.downrate * a.count) AS downrate,
-	    ROUND(t.downceil * a.count) AS downceil,
-	    ROUND(t.uprate * a.count) AS uprate,
-	    ROUND(t.upceil * a.count) AS upceil,
-		ROUND((CASE WHEN t.downrate_n IS NOT NULL THEN t.downrate_n ELSE t.downrate END) * a.count) AS downrate_n,
-		ROUND((CASE WHEN t.downceil_n IS NOT NULL THEN t.downceil_n ELSE t.downceil END) * a.count) AS downceil_n,
-		ROUND((CASE WHEN t.uprate_n IS NOT NULL THEN t.uprate_n ELSE t.uprate END) * a.count) AS uprate_n,
-		ROUND((CASE WHEN t.upceil_n IS NOT NULL THEN t.upceil_n ELSE t.upceil END) * a.count) AS upceil_n,
-		ROUND(t.climit * a.count) AS climit,
-		ROUND(t.plimit * a.count) AS plimit,
-		n.id, n.ownerid, n.name, n.netid, INET_NTOA(n.ipaddr) AS ip, n.mac,
-		a.id AS assignmentid, a.customerid,
-		TRIM(" . $DB->Concat('lastname', "' '", 'c.name') . ") AS customer
-	FROM assignments a
-	" . ($ignore_assignment_suspensions
+    SELECT
+        ROUND(t.downrate * a.count) AS downrate,
+        ROUND(t.downceil * a.count) AS downceil,
+        ROUND(t.uprate * a.count) AS uprate,
+        ROUND(t.upceil * a.count) AS upceil,
+        ROUND((CASE WHEN t.downrate_n IS NOT NULL THEN t.downrate_n ELSE t.downrate END) * a.count) AS downrate_n,
+        ROUND((CASE WHEN t.downceil_n IS NOT NULL THEN t.downceil_n ELSE t.downceil END) * a.count) AS downceil_n,
+        ROUND((CASE WHEN t.uprate_n IS NOT NULL THEN t.uprate_n ELSE t.uprate END) * a.count) AS uprate_n,
+        ROUND((CASE WHEN t.upceil_n IS NOT NULL THEN t.upceil_n ELSE t.upceil END) * a.count) AS upceil_n,
+        ROUND(t.climit * a.count) AS climit,
+        ROUND(t.plimit * a.count) AS plimit,
+        n.id,
+        n.ownerid,
+        n.name,
+        n.netid,
+        INET_NTOA(n.ipaddr) AS ip,
+        n.mac,
+        a.id AS assignmentid,
+        a.customerid,
+        TRIM(" . $DB->Concat('lastname', "' '", 'c.name') . ") AS customer
+    FROM assignments a
+    " . ($ignore_assignment_suspensions
         ? ''
         : "LEFT JOIN (
-		SELECT customerid, COUNT(id) AS allsuspended FROM assignments
-		WHERE tariffid IS NULL AND liabilityid IS NULL
-			AND datefrom <= ?NOW? AND (dateto = 0 OR dateto > ?NOW?)
-		GROUP BY customerid
-	) s ON s.customerid = a.customerid") . "
-	JOIN tariffs t ON t.id = a.tariffid
-	JOIN customers c ON c.id = a.customerid
-	JOIN (
-		SELECT vn.id, vn.name, vn.netid, vn.ipaddr, vn.mac, vn.access,
-			(CASE WHEN nd.id IS NULL THEN vn.ownerid ELSE nd.ownerid END) AS ownerid
-		FROM vnodes vn
-			LEFT JOIN netdevices nd ON nd.id = vn.netdev AND vn.ownerid IS NULL AND nd.ownerid IS NOT NULL
-		WHERE (vn.ownerid > 0 AND nd.id IS NULL)
-			OR (vn.ownerid IS NULL AND nd.id IS NOT NULL)
-	) n ON n.ownerid = c.id
-	WHERE " . ($ignore_assignment_suspensions ? '' : "s.allsuspended IS NULL AND a.suspended = 0 AND ") . "a.commited = 1
-		AND n.id NOT IN (SELECT DISTINCT nodeid FROM nodeassignments)
-		AND a.id NOT IN (SELECT DISTINCT assignmentid FROM nodeassignments)
-		AND a.datefrom <= ?NOW?
-		AND (a.dateto >= ?NOW? OR a.dateto = 0)
-		AND n.access = 1
-		AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
-		AND n.netid IN (" . implode(',', array_keys($networks)) . ")"
+        SELECT customerid, COUNT(id) AS allsuspended FROM assignments
+        WHERE tariffid IS NULL AND liabilityid IS NULL
+            AND datefrom <= ?NOW? AND (dateto = 0 OR dateto > ?NOW?)
+        GROUP BY customerid
+    ) s ON s.customerid = a.customerid") . "
+    JOIN tariffs t ON t.id = a.tariffid
+    JOIN customers c ON c.id = a.customerid
+    JOIN (
+        SELECT
+            vn.id,
+            vn.name,
+            vn.netid,
+            vn.ipaddr,
+            vn.mac,
+            vn.access,
+            (CASE WHEN nd.id IS NULL THEN vn.ownerid ELSE nd.ownerid END) AS ownerid
+        FROM vnodes vn
+        LEFT JOIN netdevices nd ON nd.id = vn.netdev AND vn.ownerid IS NULL AND nd.ownerid IS NOT NULL
+        WHERE (vn.ownerid > 0 AND nd.id IS NULL)
+            OR (vn.ownerid IS NULL AND nd.id IS NOT NULL)
+    ) n ON n.ownerid = c.id
+    WHERE " . ($ignore_assignment_suspensions ? '1 = 1' : "s.allsuspended IS NULL AND a.suspended = 0")
+        . " AND a.commited = 1
+        AND n.id NOT IN (SELECT DISTINCT nodeid FROM nodeassignments)
+        AND a.id NOT IN (SELECT DISTINCT assignmentid FROM nodeassignments)
+        AND a.datefrom <= ?NOW?
+        AND (a.dateto >= ?NOW? OR a.dateto = 0)
+        AND n.access = 1
+        AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
+        AND n.netid IN (" . implode(',', array_keys($networks)) . ")"
         . (empty($customerids) ? '' : " AND c.id IN (" . implode(',', $customerids) . ")") . "
-	) ORDER BY customerid, assignmentid";
+    ) ORDER BY customerid, assignmentid";
 } else {
     $query .= " ORDER BY a.customerid, na.assignmentid";
 }
@@ -525,25 +561,80 @@ foreach ($channels as $channel) {
     $downrate_n = $channel['downrate_n'];
     $downceil_n = (!$channel['downceil_n'] ? $downrate_n : $channel['downceil_n']);
 
-    $from = array('\\n', '%cid', '%cname', '%h', '%class',
-        '%uprate', '%upceil', '%downrate', '%downceil', '%date', '%uts');
+    $from = array(
+        '\\n',
+        '%cid',
+        '%cname',
+        '%h',
+        '%class',
+        '%uprate',
+        '%upceil',
+        '%downrate',
+        '%downceil',
+        '%date',
+        '%uts',
+    );
 
-    $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
-        $uprate, $upceil, $downrate, $downceil, $date, $uts);
+    $to = array(
+        "\n",
+        $channel['cid'],
+        $channel['customer'],
+        sprintf("%x", $x),
+        sprintf("%d", $x),
+        $uprate,
+        $upceil,
+        $downrate,
+        $downceil,
+        $date,
+        $uts,
+    );
     $c_up = str_replace($from, $to, $c_up);
     $c_up_day = str_replace($from, $to, $c_up_day);
 
-    $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
-        $uprate_n, $upceil_n, $downrate_n, $downceil_n, $date, $uts);
+    $to = array(
+        "\n",
+        $channel['cid'],
+        $channel['customer'],
+        sprintf("%x", $x),
+        sprintf("%d", $x),
+        $uprate_n,
+        $upceil_n,
+        $downrate_n,
+        $downceil_n,
+        $date,
+        $uts,
+    );
     $c_up_night = str_replace($from, $to, $c_up_night);
 
-    $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
-        $uprate, $upceil, $downrate, $downceil, $date, $uts);
+    $to = array(
+        "\n",
+        $channel['cid'],
+        $channel['customer'],
+        sprintf("%x", $x),
+        sprintf("%d", $x),
+        $uprate,
+        $upceil,
+        $downrate,
+        $downceil,
+        $date,
+        $uts,
+    );
     $c_down = str_replace($from, $to, $c_down);
     $c_down_day = str_replace($from, $to, $c_down_day);
 
-    $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
-        $uprate_n, $upceil_n, $downrate_n, $downceil_n, $date, $uts);
+    $to = array(
+        "\n",
+        $channel['cid'],
+        $channel['customer'],
+        sprintf("%x", $x),
+        sprintf("%d", $x),
+        $uprate_n,
+        $upceil_n,
+        $downrate_n,
+        $downceil_n,
+        $date,
+        $uts,
+    );
     $c_down_night = str_replace($from, $to, $c_down_night);
 
     // ... and write to file
@@ -582,21 +673,78 @@ foreach ($channels as $channel) {
             $mac = array_shift($mac);
         }
 
-        $from = array('\\n', '%n', '%if', '%i16', '%i', '%ms',
-            '%m', '%x', '%o1', '%o2', '%o3', '%o4',
-            '%h1', '%h2', '%h3', '%h4', '%h', '%class', '%nodeid');
+        $from = array(
+            '\\n',
+            '%nodeid',
+            '%n',
+            '%if',
+            '%i16',
+            '%i',
+            '%ms',
+            '%m',
+            '%x',
+            '%o1',
+            '%o2',
+            '%o3',
+            '%o4',
+            '%h1',
+            '%h2',
+            '%h3',
+            '%h4',
+            '%h',
+            '%class',
+            '%snat',
+        );
 
-        $to = array("\n", $host['name'], $networks[$host['network']]['interface'], $h,
-            $host['ip'], $host['mac'], $mac, sprintf("%x", $mark), $o1, $o2, $o3, $o4,
-            $h1, $h2, $h3, $h4, sprintf("%x", $x), sprintf("%d", $x), $host['id']);
+        $to = array(
+            "\n",
+            $host['id'],
+            $host['name'],
+            $networks[$host['network']]['interface'],
+            $h,
+            $host['ip'],
+            $host['mac'],
+            $mac,
+            sprintf("%x", $mark),
+            $o1,
+            $o2,
+            $o3,
+            $o4,
+            $h1,
+            $h2,
+            $h3,
+            $h4,
+            sprintf("%x", $x),
+            sprintf("%d", $x),
+            $host['snat'],
+        );
 
         $h_up = str_replace($from, $to, $h_up);
         $h_up_day = str_replace($from, $to, $h_up_day);
         $h_up_night = str_replace($from, $to, $h_up_night);
 
-        $to = array("\n", $host['name'], $networks[$host['network']]['interface'], $h,
-            $host['ip'], $host['mac'], $mac, sprintf("%x", $mark), $o1, $o2, $o3, $o4,
-            $h1, $h2, $h3, $h4, sprintf("%x", $x), sprintf("%d", $x), $host['id']);
+        $to = array(
+            "\n",
+            $host['id'],
+            $host['name'],
+            $networks[$host['network']]['interface'],
+            $h,
+            $host['ip'],
+            $host['mac'],
+            $mac,
+            sprintf("%x", $mark),
+            $o1,
+            $o2,
+            $o3,
+            $o4,
+            $h1,
+            $h2,
+            $h3,
+            $h4,
+            sprintf("%x", $x),
+            sprintf("%d", $x),
+            $host['snat'],
+        );
 
         $h_down = str_replace($from, $to, $h_down);
         $h_down_day = str_replace($from, $to, $h_down_day);
@@ -613,12 +761,46 @@ foreach ($channels as $channel) {
         if ($channel['climit']) {
             $cl = $script_climit;
 
-            $from = array('\\n', '%climit', '%n', '%if', '%i16', '%i',
-                '%ms', '%m', '%o1', '%o2', '%o3', '%o4',
-                '%h1', '%h2', '%h3', '%h4', '%nodeid');
-            $to = array("\n", $channel['climit'], $host['name'],
-                $networks[$host['network']]['interface'], $h, $host['ip'], $host['mac'],
-                $mac, $o1, $o2, $o3, $o4, $h1, $h2, $h3, $h4, $host['id']);
+            $from = array(
+                '\\n',
+                '%climit',
+                '%nodeid',
+                '%n',
+                '%if',
+                '%i16',
+                '%i',
+                '%ms',
+                '%m',
+                '%o1',
+                '%o2',
+                '%o3',
+                '%o4',
+                '%h1',
+                '%h2',
+                '%h3',
+                '%h4',
+                '%snat',
+            );
+            $to = array(
+                "\n",
+                $channel['climit'],
+                $host['id'],
+                $host['name'],
+                $networks[$host['network']]['interface'],
+                $h,
+                $host['ip'],
+                $host['mac'],
+                $mac,
+                $o1,
+                $o2,
+                $o3,
+                $o4,
+                $h1,
+                $h2,
+                $h3,
+                $h4,
+                $networks[$host['network']]['snat'],
+            );
             $cl = str_replace($from, $to, $cl);
 
             fwrite($fh, $cl);
@@ -627,12 +809,46 @@ foreach ($channels as $channel) {
         if ($channel['plimit']) {
             $pl = $script_plimit;
 
-            $from = array('\\n', '%plimit', '%n', '%if', '%i16', '%i',
-                '%ms', '%m', '%o1', '%o2', '%o3', '%o4',
-                '%h1', '%h2', '%h3', '%h4', '%nodeid');
-            $to = array("\n", $channel['plimit'], $host['name'],
-                $networks[$host['network']]['interface'], $h, $host['ip'], $host['mac'],
-                $mac, $o1, $o2, $o3, $o4, $h1, $h2, $h3, $h4, $host['id']);
+            $from = array(
+                '\\n',
+                '%plimit',
+                '%nodeid',
+                '%n',
+                '%if',
+                '%i16',
+                '%i',
+                '%ms',
+                '%m',
+                '%o1',
+                '%o2',
+                '%o3',
+                '%o4',
+                '%h1',
+                '%h2',
+                '%h3',
+                '%h4',
+                '%snat',
+            );
+            $to = array(
+                "\n",
+                $channel['plimit'],
+                $host['id'],
+                $host['name'],
+                $networks[$host['network']]['interface'],
+                $h,
+                $host['ip'],
+                $host['mac'],
+                $mac,
+                $o1,
+                $o2,
+                $o3,
+                $o4,
+                $h1,
+                $h2,
+                $h3,
+                $h4,
+                $networks[$host['network']]['snat'],
+            );
             $pl = str_replace($from, $to, $pl);
 
             fwrite($fh, $pl);
@@ -656,5 +872,3 @@ if ($script_permission != -1) {
     chmod($script_file_day, intval($script_permission, 8));
     chmod($script_file_night, intval($script_permission, 8));
 }
-
-?>
