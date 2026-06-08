@@ -716,7 +716,7 @@ foreach ($channels as $channel) {
             $h4,
             sprintf("%x", $x),
             sprintf("%d", $x),
-            $host['snat'],
+            $networks[$host['network']]['snat'],
         );
 
         $h_up = str_replace($from, $to, $h_up);
@@ -743,7 +743,7 @@ foreach ($channels as $channel) {
             $h4,
             sprintf("%x", $x),
             sprintf("%d", $x),
-            $host['snat'],
+            $networks[$host['network']]['snat'],
         );
 
         $h_down = str_replace($from, $to, $h_down);
