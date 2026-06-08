@@ -617,8 +617,9 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
                     . (empty($userid) ? '' : ' AND (c.id IS NULL OR ud.userid IS NOT NULL)')
                     . ' GROUP BY i.messageid
 				) x ON (x.messageid = m.id) '
-                .(!empty($userjoin) ? 'JOIN vusers u ON (u.id = m.userid) ' : '')
-                .(!empty($where) ? $where : ''));
+                . (!empty($userjoin) ? 'JOIN vusers u ON (u.id = m.userid) ' : '')
+                . (!empty($where) ? $where : '')
+            );
         }
 
         $result = $this->db->GetAll(
