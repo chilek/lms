@@ -101,7 +101,7 @@
 								</a>
 							</div>
 							<div class="lms-ui-tab-table-column netnode" data-target-url="?m=netnodeinfo&id={$netdevice.netnodeid}">
-								{if strlen($netdevice.netnodename)}
+								{if $netdevice.netnodename|size > 0}
 									{icon name="netnode" class="fa-fw"}
 									<a name="{$netdevice.netnodeid}">
 										<strong>
