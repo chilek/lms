@@ -6418,3 +6418,5 @@ $_LANG['<!ksef-status>error'] = 'błąd';
 $_LANG['<!ksef-status>assigned number'] = 'nadany numer';
 
 $_LANG['Base date'] = 'Data bazowa';
+
+$_LANG['Incorrect snat IP address!'] = 'Niepoprawny adres IP snat!';
