@@ -265,6 +265,11 @@
 							<i class="lms-ui-icon-legal-personality"></i>
 						</TD>
 						<TD>
+							{capture assign="customer_flag_tip"}{strip}
+								{foreach Localisation::arraySort($_CUSTOMERFLAGS, 'label') as $cflag => $flag}
+									<strong>{$flag.label}</strong> - {$flag.tip}<br>
+								{/foreach}
+							{/strip}{/capture}
 							<select name="customerdata[flags][]" {tip text="Select customer flags (optional)" class="lms-ui-multiselect"}
 								multiple>
 								{foreach Localisation::arraySort($_CUSTOMERFLAGS, 'label') as $cflag => $flag}
@@ -274,6 +279,7 @@
 									>{$flag.label}</option>
 								{/foreach}
 							</select>
+							{hint text=$customer_flag_tip}
 						</TD>
 					</TR>
 

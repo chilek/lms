@@ -207,6 +207,11 @@
 						{icon name="tag"}
 					</td>
 					<td>
+						{capture assign="customer_flag_tip"}{strip}
+							{foreach Localisation::arraySort($_CUSTOMERFLAGS, 'label') as $cflag => $flag}
+								<strong>{$flag.label}</strong> - {$flag.tip}<br>
+							{/foreach}
+						{/strip}{/capture}
 						<select name="customeradd[flags][]" {tip text="Select customer flags (optional)" class="lms-ui-multiselect"}
 							multiple>
 							{foreach Localisation::arraySort($_CUSTOMERFLAGS, 'label') as $cflag => $flag}
@@ -216,6 +221,7 @@
 							</option>
 							{/foreach}
 						</select>
+						{hint text=$customer_flag_tip}
 					</td>
 				</tr>
 				{if $divisions}
