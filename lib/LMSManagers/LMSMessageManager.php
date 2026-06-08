@@ -518,17 +518,23 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
                 break;
         }
 
+        $where = [];
+        $countWhere = [];
+
         if ($search!='' && $cat) {
             switch ($cat) {
                 case 'userid':
-                    $where[] = 'm.userid = '.intval($search);
+                    $where[] = 'm.userid = ' . intval($search);
+                    $countWhere[] = 'm2.userid = ' . intval($search);
                     break;
                 case 'username':
                     $where[] = 'UPPER(u.name) ?LIKE? UPPER(' . $this->db->Escape('%' . $search . '%') . ')';
+                    $countWhere[] = 'UPPER(u.name) ?LIKE? UPPER(' . $this->db->Escape('%' . $search . '%') . ')';
                     $userjoin = true;
                     break;
                 case 'subject':
                     $where[] = 'UPPER(m.subject) ?LIKE? UPPER(' . $this->db->Escape('%' . $search . '%') . ')';
+                    $countWhere[] = 'UPPER(m2.subject) ?LIKE? UPPER(' . $this->db->Escape('%' . $search . '%') . ')';
                     break;
                 case 'destination':
                     $where[] = 'EXISTS (SELECT 1 FROM messageitems i
@@ -536,7 +542,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
                     break;
                 case 'customerid':
                     $where[] = 'EXISTS (SELECT 1 FROM messageitems i
-					WHERE i.customerid = '.intval($search).' AND i.messageid = m.id)';
+					WHERE i.customerid = ' . intval($search) . ' AND i.messageid = m.id)';
                     break;
                 case 'name':
                     $where[] = 'EXISTS (SELECT 1 FROM messageitems i
@@ -548,15 +554,18 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 
         if ($type) {
             $type = intval($type);
-            $where[] = 'm.type = '.$type;
+            $where[] = 'm.type = ' . $type;
+            $countWhere[] = 'm2.type = ' . $type;
         }
 
         if ($datefrom) {
             $where[] = 'm.cdate >= ' . $datefrom;
+            $countWhere[] = 'm2.cdate >= ' . $datefrom;
         }
 
         if ($dateto) {
             $where[] = 'm.cdate <= ' . $dateto;
+            $countWhere[] = 'm2.cdate <= ' . $dateto;
         }
 
         if ($status) {
@@ -586,7 +595,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
         }
 
         if (!empty($where)) {
-            $where = 'WHERE '.implode(' AND ', $where);
+            $where = 'WHERE ' . implode(' AND ', $where);
         }
 
         $userid = Auth::GetCurrentUser();
@@ -606,7 +615,8 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 						COUNT(CASE WHEN i.status = ' . MSG_CANCELLED . ' THEN 1 ELSE NULL END) AS cancelled,
 						COUNT(CASE WHEN i.status = ' . MSG_BOUNCED . ' THEN 1 ELSE NULL END) AS bounced,
 						COUNT(CASE WHEN i.status = ' . MSG_READY_TO_SEND . ' THEN 1 ELSE NULL END) AS ready_to_send
-					FROM messageitems i'
+					FROM messageitems i
+					JOIN messages m2 ON m2.id = i.messageid'
                     . (empty($userid) ? '' : ' LEFT JOIN customers c ON c.id = i.customerid LEFT JOIN userdivisions ud ON ud.divisionid = c.divisionid AND ud.userid = ' . $userid)
                     . ' LEFT JOIN (
 						SELECT DISTINCT a.customerid FROM vcustomerassignments a
@@ -615,6 +625,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 					) e ON (e.customerid = i.customerid)
 					WHERE e.customerid IS NULL'
                     . (empty($userid) ? '' : ' AND (c.id IS NULL OR ud.userid IS NOT NULL)')
+                    . (empty($countWhere) ? '' : ' AND ' . implode(' AND ', $countWhere))
                     . ' GROUP BY i.messageid
 				) x ON (x.messageid = m.id) '
                 . (!empty($userjoin) ? 'JOIN vusers u ON (u.id = m.userid) ' : '')
@@ -647,7 +658,8 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
                     COUNT(CASE WHEN i.status = ' . MSG_CANCELLED . ' THEN 1 ELSE NULL END) AS cancelled,
                     COUNT(CASE WHEN i.status = ' . MSG_BOUNCED . ' THEN 1 ELSE NULL END) AS bounced,
                     COUNT(CASE WHEN i.status = ' . MSG_READY_TO_SEND . ' THEN 1 ELSE NULL END) AS ready_to_send
-                FROM messageitems i'
+                FROM messageitems i
+                JOIN messages m2 ON m2.id = i.messageid'
                 . (empty($userid) ? '' : ' LEFT JOIN customers c ON c.id = i.customerid LEFT JOIN userdivisions ud ON ud.divisionid = c.divisionid AND ud.userid = ' . $userid)
                 . ' LEFT JOIN (
                     SELECT DISTINCT a.customerid
@@ -657,6 +669,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
                 ) e ON e.customerid = i.customerid
                 WHERE e.customerid IS NULL'
                 . (empty($userid) ? '' : ' AND (c.id IS NULL OR ud.userid IS NOT NULL)')
+                . (empty($countWhere) ? '' : ' AND ' . implode(' AND ', $countWhere))
                 . ' GROUP BY i.messageid
             ) x ON x.messageid = m.id
             LEFT JOIN filecontainers fc ON fc.messageid = m.id '
