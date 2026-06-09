@@ -127,6 +127,65 @@ class KSeF
 
     private $smartNumberFormatter;
 
+    private static $euCountryCodes = [
+        // Austria
+        'AT' => 'AT',
+        // Belgia
+        'BE' => 'BE',
+        // Bułgaria
+        'BG' => 'BG',
+        // Cypr
+        'CY' => 'CY',
+        // Czechy
+        'CZ' => 'CZ',
+        // Dania
+        'DK' => 'DK',
+        // Estonia
+        'EE' => 'EE',
+        // Finlandia
+        'FI' => 'FI',
+        // Francja
+        'FR' => 'FR',
+        // Niemcy
+        'DE' => 'DE',
+        // Grecja
+        'EL' => 'EL',
+        // Chorwacja
+        'HR' => 'HR',
+        // Węgry
+        'HU' => 'HU',
+        // Irlandia
+        'IE' => 'IE',
+        // Włochy
+        'IT' => 'IT',
+        // Łotwa
+        'LV' => 'LV',
+        // Litwa
+        'LT' => 'LT',
+        // Luksemburg
+        'LU' => 'LU',
+        // Malta
+        'MT' => 'MT',
+        // Holandia
+        'NL' => 'NL',
+        // Polska
+        //'PL' => 'PL',
+        // Portugalia
+        'PT' => 'PT',
+        // Rumunia
+        'RO' => 'RO',
+        // Słowacja
+        'SK' => 'SK',
+        // Słowenia
+        'SI' => 'SI',
+        // Hiszpania
+        'ES' => 'ES',
+        // Szwecja
+        'SE' => 'SE',
+        // Irlandia Północna
+        'XI' => 'XI',
+    ];
+
     public function __construct($db, $lms)
     {
         $this->db = $db;
@@ -426,7 +485,7 @@ class KSeF
         $ten = preg_replace('/[\s\-]/', '', $invoice['ten']);
         if (!empty($ten)) {
             if (preg_match('/^(?<country>[A-Z]{2})(?<ten>[A-Z0-9]+)$/', $ten, $m)) {
-                if (strpos($ten, 'GB') === false) {
+                if (isset(self::$euCountryCodes[$m['country']])) {
                     $ue = true;
                 } else {
                     $foreign = true;
