@@ -251,9 +251,10 @@ switch ($action) {
                 if (checkdate($smonth, $sday, $syear)) {
                     $sdate = mktime(23, 59, 59, $smonth, $sday, $syear);
                     $cnote['sdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $smonth, $sday, $syear);
-                    if ($sdate < $invoice['sdate']) {
-                        $error['sdate'] = trans('Credit note sale date cannot be earlier than invoice sale date!');
-                    }
+                    // sale date in correction invoice can be earlier than one in corrected invoice!
+                    //if ($sdate < $invoice['sdate']) {
+                    //    $error['sdate'] = trans('Credit note sale date cannot be earlier than invoice sale date!');
+                    //}
                 } else {
                     $error['sdate'] = trans('Incorrect date format! Using current date.');
                     $cnote['sdate'] = $currtime;
