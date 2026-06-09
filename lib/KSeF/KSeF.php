@@ -2401,14 +2401,14 @@ class KSeF
                 ],
                 'np I' => [
                     'rate' => 0,
-                    'taxes' => false,
+                    'taxed' => false,
                     'reverse_charge' => false,
                     'eu' => false,
                     'export' => true,
                 ],
                 'np II' => [
                     'rate' => 0,
-                    'taxes' => false,
+                    'taxed' => false,
                     'reverse_charge' => false,
                     'eu' => true,
                     'export' => false,
