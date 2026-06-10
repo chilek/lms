@@ -2191,7 +2191,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $join_cash = false;
 
-        $where = '';
+        $where = $where2 = '';
 
         if ($search!='' && $cat) {
             switch ($cat) {
@@ -2200,12 +2200,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     break;
                 case 'cdate':
                     $where = ' AND d.cdate >= ' . intval($search) . ' AND d.cdate < ' . strtotime('tomorrow', intval($search));
+                    $where2 = ' AND d.cdate >= ' . intval($search) . ' AND d.cdate < ' . strtotime('tomorrow', intval($search));
                     break;
                 case 'month':
                     $where = ' AND d.cdate >= ' . intval($search) . ' AND d.cdate < ' . strtotime('+1 month', $search);
+                    $where2 = ' AND d.cdate >= ' . intval($search) . ' AND d.cdate < ' . strtotime('+1 month', $search);
                     break;
                 case 'year':
                     $where = ' AND d.cdate >= ' . intval($search) . ' AND d.cdate < ' . strtotime('+1 year', $search);
+                    $where2 = ' AND d.cdate >= ' . intval($search) . ' AND d.cdate < ' . strtotime('+1 year', $search);
                     break;
                 case 'ten':
                     $where = ' AND d.ten = ' . $this->db->Escape($search);
@@ -2337,7 +2340,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                    -SUM(cash.value)
 			END) AS value,
 			d.currency, d.currencyvalue,
-			COUNT(a.docid) AS count,
+			COUNT(ic.docid) AS count,
 			i.sendinvoices,
 			(CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type > 0) THEN 1 ELSE 0 END) AS referenced,
 			(CASE WHEN EXISTS (SELECT 1 FROM documents d3 WHERE d3.reference = d.id AND d3.type < 0) THEN 1 ELSE 0 END) AS documentreferenced,
@@ -2372,6 +2375,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     ELSE 0
                 END) AS ksefsubmission
             FROM documents d
+            JOIN customers c ON c.id = d.customerid
             LEFT JOIN (
                 SELECT
                     kd.docid,
@@ -2381,19 +2385,32 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             ) kd2 ON kd2.docid = d.id
             LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.id = kd2.maxid
             LEFT JOIN ksefconfig kc ON kc.divisionid = d.divisionid
-            JOIN vinvoicecontents a ON (a.docid = d.id)'
+            LEFT JOIN invoicecontents ic ON ic.docid = d.id
+            LEFT JOIN (
+                SELECT
+                    ic.grossvalue,
+                    ic.docid,
+                    ic.itemid,
+                    ic.taxid
+                FROM vinvoicecontents ic
+                JOIN documents d ON d.id = ic.docid
+                WHERE d.type = ' . DOC_INVOICE_PRO
+                    . (empty($where2) ? '' : $where2) . '
+            ) a ON a.docid = d.id'
             . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
             . ' LEFT JOIN cash ON cash.docid = d.id AND a.itemid = cash.itemid
-            JOIN customers c ON c.id = d.customerid
 			LEFT JOIN documents d2 ON d2.reference = d.id
-			LEFT JOIN invoicecontents b ON (d.reference = b.docid AND a.itemid = b.itemid)
 			LEFT JOIN countries ON (countries.id = d.countryid)
 			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
             LEFT JOIN taxes ON a.taxid = taxes.id
 			LEFT JOIN (
-				SELECT DISTINCT c.id AS customerid, 1 AS sendinvoices FROM customeraddressview c
-				JOIN customercontacts cc ON cc.customerid = c.id
-				WHERE invoicenotice = 1 AND cc.type & ' . (CONTACT_INVOICES | CONTACT_DISABLED) . ' = ' . CONTACT_INVOICES . '
+				SELECT
+					ccs.customerid,
+					1 AS sendinvoices
+				FROM customerconsents ccs
+				JOIN customercontacts cc ON cc.customerid = ccs.customerid
+				WHERE ccs.type = ' . CCONSENT_INVOICENOTICE . '
+					AND (cc.type & ' . (CONTACT_INVOICES | CONTACT_DISABLED) . ') = ' . CONTACT_INVOICES . '
 			) i ON i.customerid = d.customerid
 			LEFT JOIN (
 			SELECT DISTINCT a.customerid FROM vcustomerassignments a
