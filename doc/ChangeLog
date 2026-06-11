@@ -1217,6 +1217,8 @@ version 28-git (????-??-??):
   - improvement: show recipient count in message list form [chilan]
   - devel/enhancement: added new plugin hook 'password_verification' which is usefull for
     external authentication plugins [chilan/Przemyslaw S. Knycz]
+  - enhancement: '%value' substitution symbol support for 'contracts' notifications; it is replaced by total
+    subscription value after loyalty period [chilan]
 
 version 27.0 (2021-08-20):
 
