@@ -1901,4 +1901,68 @@ class Utils
 
         return $result;
     }
+
+    public static function isEuCountryCode(string $countryCode): bool
+    {
+        static $euCountryCodes = [
+            // Austria
+            'AT' => 'AT',
+            // Belgia
+            'BE' => 'BE',
+            // Bułgaria
+            'BG' => 'BG',
+            // Cypr
+            'CY' => 'CY',
+            // Czechy
+            'CZ' => 'CZ',
+            // Dania
+            'DK' => 'DK',
+            // Estonia
+            'EE' => 'EE',
+            // Finlandia
+            'FI' => 'FI',
+            // Francja
+            'FR' => 'FR',
+            // Niemcy
+            'DE' => 'DE',
+            // Grecja
+            'EL' => 'EL',
+            // Chorwacja
+            'HR' => 'HR',
+            // Węgry
+            'HU' => 'HU',
+            // Irlandia
+            'IE' => 'IE',
+            // Włochy
+            'IT' => 'IT',
+            // Łotwa
+            'LV' => 'LV',
+            // Litwa
+            'LT' => 'LT',
+            // Luksemburg
+            'LU' => 'LU',
+            // Malta
+            'MT' => 'MT',
+            // Holandia
+            'NL' => 'NL',
+            // Polska
+            //'PL' => 'PL',
+            // Portugalia
+            'PT' => 'PT',
+            // Rumunia
+            'RO' => 'RO',
+            // Słowacja
+            'SK' => 'SK',
+            // Słowenia
+            'SI' => 'SI',
+            // Hiszpania
+            'ES' => 'ES',
+            // Szwecja
+            'SE' => 'SE',
+            // Irlandia Północna
+            'XI' => 'XI',
+        ];
+
+        return isset($euCountryCodes[$countryCode]);
+    }
 }
