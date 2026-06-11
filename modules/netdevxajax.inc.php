@@ -253,16 +253,15 @@ function getRadioSectorsForNetdev($callback_name, $devid, $technology = 0)
     return $result;
 }
 
-function getFirstFreeAddress($netid, $elemid)
+function getFirstFreeAddress($netid)
 {
     global $LMS;
 
     $result = new xajaxResponse();
 
     $ip = $LMS->GetFirstFreeAddress($netid);
-    if ($ip != false) {
-        $result->assign($elemid, 'value', $ip);
-    }
+
+    $result->call('first_free_address_received', $ip);
 
     return $result;
 }
