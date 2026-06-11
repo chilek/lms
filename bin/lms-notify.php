@@ -1575,34 +1575,149 @@ if (empty($types) || in_array('contracts', $types)) {
     $end = strtotime('+ ' . $days . ' days', $dayend);
 
     $customers = $DB->GetAll(
-        "SELECT c.id, c.pin, c.lastname, c.name,
-            SUM(value * currencyvalue) AS balance, d.number, d.template, d.cdate, d.dateto AS deadline,
-            m.email, x.phone
+        "SELECT
+            c.id,
+            c.pin,
+            c.lastname,
+            c.name,
+            SUM(cash.value * cash.currencyvalue) AS balance,
+            d.number,
+            d.template,
+            d.cdate,
+            d.dateto AS deadline,
+            m.email,
+            x.phone,
+            a3.value AS value
         FROM customeraddressview c
-        JOIN cash ON (c.id = cash.customerid) "
+        JOIN cash ON c.id = cash.customerid "
         . ($expiration_type == 'assignments' ?
             "JOIN (
-                SELECT 0 AS cdate, MAX(a.dateto) AS dateto, a.customerid, 0 AS number, 0 AS template
+                SELECT
+                    0 AS cdate,
+                    MAX(a.dateto) AS dateto,
+                    a.customerid,
+                    0 AS number,
+                    0 AS template
                 FROM assignments a
                 WHERE a.dateto > 0
                 GROUP BY a.customerid
-                HAVING MAX(a.dateto) >= ? AND MAX(a.dateto) <= ?
+                HAVING MAX(a.dateto) >= ?
+                    AND MAX(a.dateto) <= ?
             ) d ON d.customerid = c.id" :
             "JOIN (
-                SELECT DISTINCT customerid, documents.id, documents.cdate, documents.number, numberplans.template, dc.todate AS dateto
+                SELECT
+                    DISTINCT customerid,
+                    documents.id,
+                    documents.cdate,
+                    documents.number,
+                    numberplans.template,
+                    dc.todate AS dateto
                 FROM documents
                 LEFT JOIN numberplans ON numberplans.id = documents.numberplanid
                 JOIN documentcontents dc ON dc.docid = documents.id
-                WHERE dc.todate >= ? AND dc.todate <= ?
+                WHERE dc.todate >= ?
+                    AND dc.todate <= ?
                     AND documents.archived = 0
                     AND documents.type IN (" . DOC_CONTRACT . ',' . DOC_ANNEX . ")
             ) d ON d.customerid = c.id") . "
-        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
+        LEFT JOIN (
+            SELECT
+                a.customerid,
+                SUM(ROUND(
+                    (
+                        (
+                            (100 - a.pdiscount)
+                            * (CASE WHEN ca.netflag = 1
+                                THEN ca.netvalue
+                                ELSE ca.value
+                            END)
+                            / 100
+                        ) - a.vdiscount
+                    )
+                    * a.count
+                    * (CASE WHEN ca.netflag = 1
+                        THEN (100 + ca.taxrate) / 100
+                        ELSE 1
+                    END)
+                    * (CASE WHEN a.suspended = 0
+                        THEN 1
+                        ELSE " . $suspension_percentage . " / 100
+                    END)
+                    * (
+                        CASE WHEN a.period = " . DISPOSABLE . " THEN 0
+                        ELSE (
+                            CASE WHEN a.period <> " . DISPOSABLE . " AND ca.period > 0 AND ca.period <> a.period
+                                THEN (
+                                    CASE ca.period
+                                        WHEN " . YEARLY . " THEN 1/12.0
+                                        WHEN " . HALFYEARLY . " THEN 1/6.0
+                                        WHEN " . QUARTERLY . " THEN 1/3.0
+                                        ELSE 1
+                                    END
+                                ) ELSE (
+                                    CASE a.period
+                                        WHEN " . YEARLY . " THEN 1/12.0
+                                        WHEN " . HALFYEARLY . " THEN 1/6.0
+                                        WHEN " . QUARTERLY . " THEN 1/3.0
+                                        WHEN " . WEEKLY . " THEN 4.0
+                                        WHEN " . DAILY . " THEN 30.0
+                                        ELSE 1
+                                    END
+                                )
+                            END
+                        )
+                        END
+                    )
+                , 2)) AS value
+            FROM assignments a
+            JOIN (
+                SELECT
+                    a2.id,
+                    COALESCE(t.period, 0) AS period,
+                    COALESCE(t.netvalue, l.netvalue) AS netvalue,
+                    COALESCE(t.value, l.value) AS value,
+                    COALESCE(tt.value, lt.value) AS taxrate,
+                    COALESCE(
+                        CASE WHEN t.value IS NULL
+                            THEN (
+                                CASE WHEN l.flags & " . TARIFF_FLAG_NET_ACCOUNT . " > 0
+                                    THEN 1
+                                    ELSE 0
+                                END
+                            ) ELSE (
+                                CASE WHEN t.flags & " . TARIFF_FLAG_NET_ACCOUNT . " > 0
+                                    THEN 1
+                                    ELSE 0
+                                END
+                            )
+                        END
+                    ) AS netflag
+                FROM assignments a2
+                LEFT JOIN tariffs t ON t.id = a2.tariffid
+                LEFT JOIN taxes tt ON tt.id = t.taxid
+                LEFT JOIN liabilities l ON l.id = a2.liabilityid
+                LEFT JOIN taxes lt ON lt.id = l.taxid
+                WHERE a2.commited = 1
+                    AND a2.datefrom >= ?
+                    AND a2.dateto = 0
+            ) ca ON ca.id = a.id
+            WHERE a.commited = 1
+                AND a.datefrom >= ?
+                AND a.dateto = 0
+            GROUP BY a.customerid
+        ) a3 ON a3.customerid = c.id
+        LEFT JOIN (
+            SELECT
+                " . $DB->GroupConcat('contact') . " AS email,
+                customerid
             FROM customercontacts
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) m ON (m.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.mailingnotice = 1') . "
-        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
+        LEFT JOIN (
+            SELECT
+                " . $DB->GroupConcat('contact') . " AS phone,
+                customerid
             FROM customercontacts
             WHERE (type & ?) = ?
             GROUP BY customerid
@@ -1616,10 +1731,12 @@ if (empty($types) || in_array('contracts', $types)) {
             . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
             . ($notifications['contracts']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: '')
-        . " GROUP BY c.id, c.pin, c.lastname, c.name, d.number, d.template, d.cdate, d.dateto, m.email, x.phone",
+        . " GROUP BY c.id, c.pin, c.lastname, c.name, d.number, d.template, d.cdate, d.dateto, m.email, x.phone, a3.value",
         array(
             $start,
             $end,
+            $start,
+            $start,
             $checked_mail_contact_flags,
             $required_mail_contact_flags,
             $checked_phone_contact_flags,
