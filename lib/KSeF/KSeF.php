@@ -513,8 +513,24 @@ class KSeF
             $xml .= "\t\t<IDNabywcy>" . $buyerUuid . "</IDNabywcy>" . PHP_EOL;
         }
 
-        $xml .= "\t\t<JST>" . (empty($invoice['recipient_address_id']) || empty($invoice['recipient_type']) || $invoice['recipient_type'] == 2 ? '2' : '1') . "</JST>" . PHP_EOL;
-        $xml .= "\t\t<GV>" . (empty($invoice['recipient_address_id']) || empty($invoice['recipient_type']) || $invoice['recipient_type'] == 1 ? '2' : '1') . "</GV>" . PHP_EOL;
+        $jst = $gv = false;
+
+        if (!empty($invoice['recipient_address_id'])) {
+            if ($invoice['recipient_type'] == 1) {
+                $jst = true;
+            } elseif ($invoice['recipient_type'] == 2) {
+                $gv = true;
+            }
+        }
+        if (!empty($invoice['recipient_address_id2'])) {
+            if ($invoice['recipient_type2'] == 1) {
+                $jst = true;
+            } elseif ($invoice['recipient_type2'] == 2) {
+                $gv = true;
+            }
+        }
+        $xml .= "\t\t<JST>" . ($jst ? '1' : '2') . "</JST>" . PHP_EOL;
+        $xml .= "\t\t<GV>" . ($gv ? '1' : '2') . "</GV>" . PHP_EOL;
 
         $xml .= "\t</Podmiot2>" . PHP_EOL;
 
