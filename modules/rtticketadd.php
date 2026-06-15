@@ -82,7 +82,7 @@ if (isset($_POST['ticket'])) {
     if (empty($ticket['categories']) && (!$allow_empty_categories || (empty($ticket['categorywarn']) && $empty_category_warning))) {
         if ($allow_empty_categories) {
             $ticket['categorywarn'] = 1;
-            $error['categories'] = trans('Category selection is recommended but not required!');
+            $warning['categories'] = trans('Category selection is recommended but not required!');
         } else {
             $error['categories'] = trans('You have to select category!');
         }

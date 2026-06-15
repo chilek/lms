@@ -627,7 +627,7 @@ if (isset($_POST['ticket'])) {
     if (empty($ticketedit['categories']) && (!$allow_empty_categories || (empty($ticketedit['categorywarn']) && $empty_category_warning))) {
         if ($allow_empty_categories) {
             $ticketedit['categorywarn'] = 1;
-            $error['categories'] = trans('Category selection is recommended but not required!');
+            $warning['categories'] = trans('Category selection is recommended but not required!');
         } else {
             $error['categories'] = trans('You have to select category!');
         }
@@ -765,7 +765,7 @@ if (isset($_POST['ticket'])) {
         $ticketedit['categories'] = array_flip($ticketedit['categories']);
     }
 
-    if (!$error) {
+    if (!$error && !$warning) {
         // setting status and the ticket owner
         $props = array(
             'queueid' => $ticketedit['queue'],
