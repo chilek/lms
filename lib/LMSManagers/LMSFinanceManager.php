@@ -2398,7 +2398,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     . (empty($where2) ? '' : $where2) . '
             ) a ON a.docid = d.id'
             . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
-            . ' LEFT JOIN cash ON cash.docid = d.id AND a.itemid = cash.itemid
+            . ' LEFT JOIN cash ON cash.docid = d.id AND cash.itemid = ic.itemid
 			LEFT JOIN documents d2 ON d2.reference = d.id
 			LEFT JOIN countries ON (countries.id = d.countryid)
 			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
