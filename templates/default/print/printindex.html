@@ -748,7 +748,7 @@
 												{trans("exclude group")}
 											</label>
 										</td>
-									</TR>
+									</tr>
 									<tr>
 										<td>
 											{icon name="queue"}
@@ -868,13 +868,25 @@
 									<tr>
 										<td colspan="2"></td>
 										<td colspan="2" class="nobr">
-											{trans("Sorting")}
+											<strong>{trans("Sorting")}</strong>
 											<select name="sorttype" {tip text="Select sorting criterion"}
 												form="invoicereport">
 												<option value="cdate">{trans("Draw-up date")}</option>
 												<option value="sdate">{trans("Sale date")}</option>
 												<option value="pdate">{trans("Deadline")}</option>
 												<option value="number">{trans("Document number")}</option>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="2">
+										</td>
+										<td colspan="2" class="nobr">
+											<strong>{trans("Base date")}</strong>
+											<select name="datetype" form="invoicereport">
+												<option value="cdate" selected>{trans("Draw-up date")}</option>
+												<option value="sdate">{trans("Sale date")}</option>
+												<option value="pdate">{trans("Deadline")}</option>
 											</select>
 										</td>
 									</tr>

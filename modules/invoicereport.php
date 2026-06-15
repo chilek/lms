@@ -145,20 +145,28 @@ if (!empty($_POST['division'])) {
 switch ($_POST['sorttype']) {
     case 'sdate':
         $sortcol = 'CEIL(COALESCE(d.sdate, d.cdate) / 86400)';
-        $wherecol = 'COALESCE(d.sdate, d.cdate)';
         break;
     case 'pdate':
         $sortcol = 'CEIL((d.cdate + (d.paytime * 86400)) / 86400)';
-        $wherecol = '(d.cdate + (d.paytime * 86400))';
         break;
     case 'number':
         $sortcol = 'd.number';
-        $wherecol = 'd.cdate';
         break;
     case 'cdate':
     default:
         $sortcol = 'CEIL(d.cdate / 86400)';
+}
+
+switch ($_POST['datetype']) {
+    case 'sdate':
+        $wherecol = 'COALESCE(d.sdate, d.cdate)';
+        break;
+    case 'pdate':
+        $wherecol = '(d.cdate + (d.paytime * 86400))';
+        break;
+    case 'cdate':
         $wherecol = 'd.cdate';
+        break;
 }
 
 $doctypes = array();
