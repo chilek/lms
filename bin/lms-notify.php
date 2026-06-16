@@ -1886,8 +1886,11 @@ if (empty($types) || in_array('debtors', $types)) {
     // @TODO: check 'messages' table and don't send notifies to often
     $customers = $DB->GetAll(
         "SELECT c.id, c.pin, c.lastname, c.name,
-            b2.balance AS balance, b.balance AS totalbalance, m.email, x.phone, divisions.account,
+            b2.balance AS balance, b.balance AS totalbalance, m.email, x.phone,
             acc.alternative_accounts,
+            divisions.account,
+            divisions.account AS div_account,
+            divisions.name AS div_name,
             divisions.shortname AS div_shortname,
             divisions.ten AS div_ten
         FROM customeraddressview c
@@ -2127,7 +2130,11 @@ if (empty($types) || in_array('reminder', $types)) {
     $limit = $notifications['reminder']['limit'];
     $documents = $DB->GetAll(
         "SELECT d.id AS docid, c.id, c.pin, d.name, d.type AS doctype, d.div_shortname, d.div_ten,
-            d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
+            d.number, n.template, d.cdate, d.paytime, m.email, x.phone,
+            d.div_account AS account,
+            d.div_account,
+            d.div_name,
+            d.div_shortname,
             b2.balance AS balance, b.balance AS totalbalance, v.value, v.currency,
             acc.alternative_accounts
         FROM documents d
@@ -2404,6 +2411,9 @@ if (empty($types) || in_array('income', $types)) {
             m.email,
             x.phone,
             divisions.account,
+            divisions.account AS div_account,
+            divisions.name AS div_name,
+            divisions.shortname AS div_shortname,
             acc.alternative_accounts,
             " . $DB->Concat('c.lastname', "' '", 'c.name') . " AS name,
             b2.balance AS balance,
@@ -2458,7 +2468,7 @@ if (empty($types) || in_array('income', $types)) {
             . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
             . ($notifications['income']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: '')
-        . " GROUP BY c.id, c.pin, cash.currency, cash.time, m.email, x.phone, divisions.account,
+        . " GROUP BY c.id, c.pin, cash.currency, cash.time, m.email, x.phone, divisions.account, divisions.name, divisions.shortname,
             acc.alternative_accounts, c.lastname, c.name, b2.balance, b.balance",
         array(
             DOC_CNOTE,
@@ -2635,7 +2645,11 @@ if (empty($types) || in_array('income', $types)) {
 if (empty($types) || in_array('invoices', $types)) {
     $documents = $DB->GetAll(
         "SELECT d.id AS docid, c.id, c.pin, d.name,
-            d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
+            d.number, n.template, d.cdate, d.paytime, m.email, x.phone,
+            d.div_account AS account,
+            d.div_account,
+            d.div_name,
+            d.div_shortname,
             acc.alternative_accounts,
             COALESCE(ca.balance, 0) AS balance,
             COALESCE(ca.balance, 0) AS totalbalance,
@@ -2893,7 +2907,11 @@ if (empty($types) || in_array('invoices', $types)) {
 if (empty($types) || in_array('notes', $types)) {
     $documents = $DB->GetAll(
         "SELECT d.id AS docid, c.id, c.pin, d.name,
-            d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
+            d.number, n.template, d.cdate, d.paytime, m.email, x.phone,
+            d.div_account AS account,
+            d.div_account,
+            d.div_name,
+            d.div_shortname,
             acc.alternative_accounts,
             COALESCE(ca.balance, 0) AS balance,
             COALESCE(ca.balance, 0) AS totalbalance,
@@ -3317,7 +3335,12 @@ if (empty($types) || in_array('birthday', $types)) {
 if (empty($types) || in_array('warnings', $types)) {
     $customers = $DB->GetAll(
         "SELECT c.id, (" . $DB->Concat('c.lastname', "' '", 'c.name') . ") AS name,
-            c.pin, c.message, m.email, x.phone, divisions.account, acc.alternative_accounts,
+            c.pin, c.message, m.email, x.phone,
+            divisions.account,
+            divisions.account AS div_account,
+            divisions.name AS div_name,
+            divisions.shortname AS div_shortname,
+            acc.alternative_accounts,
             COALESCE(ca.balance, 0) AS balance
         FROM customeraddressview c
         LEFT JOIN divisions ON divisions.id = c.divisionid
