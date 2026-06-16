@@ -1222,6 +1222,9 @@ version 28-git (????-??-??):
   - improvement: invoice report: selection records by dedicated form field 'base date' added [chilan]
   - devel/cleanup: renamed configuration variable 'phpui.document_confirm_date_required'
     to 'documents.confirm_date_required' [chilan]
+  - improvement: 'documents.confirm_date_default_days' configuration variable with empty default value
+    (what means don't set confirm date during document add form startup) controls default value of confirm date
+    field [chilan]
 
 version 27.0 (2021-08-20):
 
