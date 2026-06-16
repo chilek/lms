@@ -558,7 +558,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
             case LMSDB::RESOURCE_TYPE_TRIGGER:
                 return $this->GetOne(
                     'SELECT COUNT(*) FROM information_schema.triggers
-                    WHERE trigger_calalog = ?
+                    WHERE trigger_catalog = ?
                         AND trigger_name = ?',
                     array($this->_dbname, $name)
                 ) > 0;
