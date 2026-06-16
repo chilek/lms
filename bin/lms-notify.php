@@ -2129,12 +2129,13 @@ if (empty($types) || in_array('reminder', $types)) {
     $days = $notifications['reminder']['days'];
     $limit = $notifications['reminder']['limit'];
     $documents = $DB->GetAll(
-        "SELECT d.id AS docid, c.id, c.pin, d.name, d.type AS doctype, d.div_shortname, d.div_ten,
+        "SELECT d.id AS docid, c.id, c.pin, d.name, d.type AS doctype,
             d.number, n.template, d.cdate, d.paytime, m.email, x.phone,
             d.div_account AS account,
             d.div_account,
             d.div_name,
             d.div_shortname,
+            d.div_ten,
             b2.balance AS balance, b.balance AS totalbalance, v.value, v.currency,
             acc.alternative_accounts
         FROM documents d
@@ -2650,6 +2651,7 @@ if (empty($types) || in_array('invoices', $types)) {
             d.div_account,
             d.div_name,
             d.div_shortname,
+            d.div_ten,
             acc.alternative_accounts,
             COALESCE(ca.balance, 0) AS balance,
             COALESCE(ca.balance, 0) AS totalbalance,
