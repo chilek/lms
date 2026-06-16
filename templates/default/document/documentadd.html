@@ -1,7 +1,7 @@
 {extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
-{$document_confirm_date_required = intval(ConfigHelper::getConfig('phpui.document_confirm_date_required'))}
+{$document_confirm_date_required = intval(ConfigHelper::getConfig('documents.confirm_date_required', ConfigHelper::getConfig('phpui.document_confirm_date_required')))}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {$xajax}
