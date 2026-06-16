@@ -954,6 +954,12 @@ if (isset($_POST['document'])) {
 
     $document['cdate'] = isset($_GET['cdate']) ? strtotime($_GET['cdate']) : time();
 
+    $confirmDateDefaultDays = ConfigHelper::getConfig('documents.confirm_date_default_days', null, true);
+    if (isset($confirmDateDefaultDays)) {
+        $confirmDateDefaultDays = intval($confirmDateDefaultDays);
+        $document['confirmdate'] = strtotime('+ ' . $confirmDateDefaultDays . ' days');
+    }
+
     $document['reuse'] = ConfigHelper::checkConfig('documents.default_reuse');
 }
 
