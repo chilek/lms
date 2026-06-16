@@ -123,6 +123,6 @@ if (isset($_GET['is_sure'])) {
     echo '<H1>'.trans('Database Backup Recovery').'</H1>';
     $timestamp = explode('-', $_GET['db'])[0];
     echo '<P>'.trans('Are you sure, you want to recover database created at $a?', date('Y/m/d H:i.s', $timestamp)).'</P>';
-    echo '<A href="?m=dbrecover&db='.$_GET['db'].'&is_sure=1">'.trans('Yes, I am sure.').'</A>';
+    echo '<a href="?m=dbrecover&db=' . htmlspecialchars($_GET['db']) . ' &is_sure=1">' . trans('Yes, I am sure.') . '</a>';
     $SMARTY->display('footer.html');
 }
