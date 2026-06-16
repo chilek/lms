@@ -109,10 +109,14 @@ if (isset($_GET['is_sure'])) {
 
     $db = $_GET['db'];
 
-    if (file_exists(ConfigHelper::getConfig('directories.backup_dir').'/lms-'.$db.'.sql')) {
-        DBLoad(ConfigHelper::getConfig('directories.backup_dir').'/lms-'.$db.'.sql');
-    } elseif (extension_loaded('zlib') && file_exists(ConfigHelper::getConfig('directories.backup_dir').'/lms-'.$db.'.sql.gz')) {
-        DBLoad(ConfigHelper::getConfig('directories.backup_dir').'/lms-'.$db.'.sql.gz');
+    if (!preg_match('/^[0-9]+-[0-9]+$/', $db)) {
+        die;
+    }
+
+    if (file_exists(ConfigHelper::getConfig('directories.backup_dir') . '/lms-' . $db . '.sql')) {
+        DBLoad(ConfigHelper::getConfig('directories.backup_dir').'/lms-' . $db . '.sql');
+    } elseif (extension_loaded('zlib') && file_exists(ConfigHelper::getConfig('directories.backup_dir') . '/lms-' . $db . '.sql.gz')) {
+        DBLoad(ConfigHelper::getConfig('directories.backup_dir').'/lms-' . $db . '.sql.gz');
     }
 
     include(MODULES_DIR . '/dblist.php');
