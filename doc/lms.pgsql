@@ -3221,6 +3221,7 @@ CREATE TABLE ksefinvoices (
     corrected_invoice_hash varchar(44) DEFAULT NULL,
     bank_account varchar(48) DEFAULT NULL,
     bank_name varchar(256) DEFAULT NULL,
+    paid smallint NOT NULL DEFAULT 0,
     pay_date bigint DEFAULT NULL,
     pay_type smallint DEFAULT 0,
     buyer_id varchar(50) DEFAULT NULL,
@@ -4738,6 +4739,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026061600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026061700');
 
 COMMIT;

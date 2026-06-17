@@ -658,6 +658,8 @@
 					{trans("<!ksef>Bank account")}
 				</td>
 				<td class="bold nobr text-center">
+					{trans("<!ksef>Paid")}
+					<br>
 					{trans("<!ksef>Payment type")}
 					<br>
 					<a class="order-toggle" data-order-property="pay-date">
@@ -748,29 +750,37 @@
 						{/if}
 					</td>
 					<td class="nobr text-center">
+						{if empty($invoice.paid)}
+							{trans("no")}
+						{else}
+							{trans("yes")}
+						{/if}
+						<br>
 						{if empty($invoice.pay_type)}
-							{trans("<!ksef>Paid")}
-							<br>
-							{if empty($invoice.pay_date)}
-								—
+							—
+						{else}
+						{$invoice.pay_type_name}
+						{/if}
+						<br>
+						{if empty($invoice.pay_date)}
+							—
+						{else}
+							{if empty($invoice.paid)}
+								{capture assign="pay_date"}{strip}
+								<span class="bold{if $invoice.expired} red{elseif $invoice.about_to_expire} about-to-expire{/if}">
+											{$invoice.pay_date|date_format:"Y/m/d"}
+									{if !empty($invoice.days_to_expire)}
+										<br>
+										({t a=$invoice.days_to_expire}$a days{/t})
+									{/if}
+										</span>
+								{/strip}{/capture}
+								{$pay_date}
 							{else}
 								<strong>
 									{$invoice.pay_date|date_format:"Y/m/d"}
 								</strong>
 							{/if}
-						{else}
-							{$invoice.pay_type_name}
-							<br>
-							{capture assign="pay_date"}{strip}
-								<span class="bold{if $invoice.expired} red{elseif $invoice.about_to_expire} about-to-expire{/if}">
-									{$invoice.pay_date|date_format:"Y/m/d"}
-									{if !empty($invoice.days_to_expire)}
-										<br>
-										({t a=$invoice.days_to_expire}$a days{/t})
-									{/if}
-								</span>
-							{/strip}{/capture}
-							{$pay_date}
 						{/if}
 					</td>
 					<td>
