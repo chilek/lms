@@ -48,7 +48,7 @@ $access_table = array(
             'documents' => array('documentlist'),
             'hosting' => array('accountlist', 'aliaslist', 'domainlist', 'accountsearch'),
             'messages' => array('messagelist', 'messagetemplatelist'),
-            'helpdesk' => array('rtqueuelist', 'rtcategorylist', 'rtsearch'),
+            'helpdesk' => array('rtqueuelist', 'rtcategorylist', 'rtsearch', 'rtperiodiclist'),
             'timetable' => array('eventlist', 'eventschedule', 'eventlist-overdue', 'eventsearch'),
             'auth' => array('chpasswd', 'twofactorauthinfo'),
             'config' => array('settings', 'taxratelist', 'numberplanlist', 'statelist', 'divisionlist', 'hostlist', 'daemoninstancelist', 'cashsourcelist', 'promotionlist', 'pluginlist', 'invprojectlist'),
@@ -222,9 +222,9 @@ $access_table = array(
     ),
     'helpdesk_operation' => array(
         'label' => trans('Helpdesk (RT) operation'),
-        'allow_regexp' => '^(rtsearch|rtqueue(list|info|view)|(rtticket|rtmessage|rtnote)(add|edit|info|view|del|print))$',
+        'allow_regexp' => '^(rtsearch|rtperiodiclist|rtqueue(list|info|view)|(rtticket|rtmessage|rtnote)(add|edit|info|view|del|print))$',
         'allow_menu_items' => array(
-            'helpdesk' => array('rtqueuelist', 'rtsearch', 'rtticketadd'),
+            'helpdesk' => array('rtqueuelist', 'rtsearch', 'rtticketadd', 'rtperiodiclist')
         ),
     ),
     'helpdesk_advanced_operation' => array(

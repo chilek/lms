@@ -325,6 +325,16 @@
 				</SELECT>
 			{/box_row}
 
+			{box_row icon="reload" label="Scheduling periodicity"}
+			<select id="periodicity" name="ticket[periodicity]">
+				{foreach $_EVENT_PERIODICITY as $idx => $per}
+				<option value="{$idx}" {if $ticket.periodicity == $idx} selected{/if}>{trans($per.label)}</option>
+				{/foreach}
+			</select>
+			{hint text="Określ cykliczność planowania, aby automatycznie utworzyć przypisane zdarzenia.<br>
+				Czas utworzenia liczymy od ostatniego przypisanego zdarzenia lub od momentu utworzenia zgłoszenia, jeśli brak zdarzeń."}
+			{/box_row}
+
 {if $layout.module != 'eventadd'}
 			{box_row icon="location" label="Location" icon_class="fa-fw"}
 				{if $ticket.address_id > 0 && $customerid}

@@ -96,6 +96,7 @@ class SYSLOG
     public const RES_TARIFF_PRICE_VARIANT = 68;
     public const RES_TICKET_MESSAGE = 69;
     public const RES_QUEUE = 70;
+    public const RES_PERIODICITY = 71;
 
     public const OPER_ADD = 1;
     public const OPER_DELETE = 2;
@@ -167,6 +168,7 @@ class SYSLOG
         self::RES_TARIFFASSIGN => 'tariff assignment<!syslog>',
         self::RES_EVENT => 'event<!syslog>',
         self::RES_EVENTASSIGN => 'event assignment<!syslog>',
+        self::RES_PERIODICITY => 'scheduling periodicity<!syslog>',
         self::RES_ADDRESS => 'address<!syslog>',
         self::RES_TICKET => 'ticket<!syslog>',
         self::RES_DOCATTACH => 'document attachment<!syslog>',
@@ -239,6 +241,7 @@ class SYSLOG
         self::RES_TARIFFASSIGN => 'tariffassignmentid',
         self::RES_EVENT => 'eventid',
         self::RES_EVENTASSIGN => 'eventassignmentid',
+        self::RES_PERIODICITY => 'periodid',
         self::RES_ADDRESS => 'address_id',
         self::RES_TICKET => 'ticketid',
         self::RES_DOCATTACH => 'documentattachmentid',
