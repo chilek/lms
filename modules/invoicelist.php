@@ -25,7 +25,7 @@
  */
 
 if (isset($_GET['proforma'])) {
-    $proforma = 1;
+    $proforma = intval($_GET['proforma']);
 } elseif (isset($_GET['page']) || !empty($_POST)) {
     $SESSION->restore('ilproforma', $proforma);
 } else {

@@ -743,13 +743,13 @@
 	{
 		var type = document.getElementById('showlistselect').value;
 
-		if (type == 'invoice')
-			document.addbalance.action = '?m=invoicelist&customer={$balancelist.customerid}';
-		else if (type == 'invoicepro')
+		if (type == 'invoice') {
+			document.addbalance.action = '?m=invoicelist&proforma=0&customer={$balancelist.customerid}';
+		} else if (type == 'invoicepro') {
 			document.addbalance.action = '?m=invoicelist&proforma=1&customer={$balancelist.customerid}';
-		else if (type == 'note')
+		} else if (type == 'note') {
 			document.addbalance.action = '?m=notelist';
-		else {
+		} else {
 			window.location.assign('?m=customerbalance&id={$balancelist.customerid}');
 			return;
 		}
