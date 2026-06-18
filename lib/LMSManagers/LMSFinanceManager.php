@@ -2405,7 +2405,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             LEFT JOIN taxes ON a.taxid = taxes.id
 			LEFT JOIN (
 				SELECT
-					ccs.customerid,
+					DISTINCT ccs.customerid,
 					1 AS sendinvoices
 				FROM customerconsents ccs
 				JOIN customercontacts cc ON cc.customerid = ccs.customerid
