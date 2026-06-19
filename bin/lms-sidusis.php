@@ -65,7 +65,7 @@ $sidusisZoomFactor = ConfigHelper::getConfig('sidusis.zoom_factor', 20);
 
 $apiEndPoints = array(
     'export-ranges' => '/api/import_network_ranges/',
-    'import-demands' => '/api/demand_notifications/?page_size=all&status=new/',
+    'import-demands' => '/api/demand_notifications/?page_size=all&status=new',
     'mark-demand-as-read' => '/api/demand_notifications/%id/read/',
 );
 
