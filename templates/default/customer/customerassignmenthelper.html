@@ -468,7 +468,9 @@
 																<table>
 																	<tr class="schema-tariff-container-row">
 																		<td>
-																			<select class="schema-tariff-selection" name="{$variable_prefix}[sassignmentid][{$schemaid}][{$label}]" data-label="{$label}">
+																			<select class="schema-tariff-selection" name="{$variable_prefix}[sassignmentid][{$schemaid}][{$label}]"
+																			    data-label="{$label}" {if $item.selection.required}required{/if}>
+																				<option value="" hidden>{trans("— Select tariff —")}</option>
 																				{if !$item.selection.required}
 																				<option value="0" data-tariffaccess="-1" data-tarifftype="0">{trans("— none —")}</option>
 																				{/if}
