@@ -162,7 +162,7 @@
 									text="<i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"
 								}
 							{/if}
-							{if count($doc.attachments) > 1 || !$docattach.type < 1}
+							{if $doc.attachments|size > 1 || $docattach.type < 1}
 								<a href="#" id="allattachments-toggle-{$doc.docid}" onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
 									<img src="img/asc_order.gif">
 								</a>
