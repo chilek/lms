@@ -226,7 +226,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     {
         $docid = null;
         if (empty($totime)) {
-            $totime = time();
+            if ($expired || $expired !== false) {
+                $totime = time();
+            }
         } elseif (is_array($totime)) {
             $docid = intval($totime['docid']);
             $totime = intval($totime['totime']);
