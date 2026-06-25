@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE SEQUENCE netdevicetypes_id_seq;
@@ -43,7 +42,3 @@ $this->Execute(
         VALUES (?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?)",
     array('router', 'switch', 'antenna', 'access-point', 'PON OLT', 'PON ONT', 'PON splitter', 'GSM modem', 'DSL modem', 'power line adapter', 'IPTV decoder')
 );
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020112601', 'dbversion'));
-
-$this->CommitTrans();

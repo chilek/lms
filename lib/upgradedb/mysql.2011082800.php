@@ -23,7 +23,6 @@
 
 // TERYT
 
-$this->BeginTrans();
 
 $this->Execute("DROP VIEW vnodes");
 
@@ -179,7 +178,3 @@ $this->Execute("
     FROM nodes n
     LEFT JOIN vnodes_mac m ON (n.id = m.nodeid);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011082800', 'dbversion'));
-
-$this->CommitTrans();

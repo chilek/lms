@@ -21,12 +21,7 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE rttickets ADD COLUMN invprojectid int(11) DEFAULT NULL");
 $this->Execute("ALTER TABLE rttickets ADD CONSTRAINT rttickets_invprojectid_fkey
 	FOREIGN KEY (invprojectid) REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018091801', 'dbversion'));
-
-$this->CommitTrans();

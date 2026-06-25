@@ -21,13 +21,8 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     ALTER TABLE aliasassignments ALTER COLUMN accountid DROP NOT NULL;
     ALTER TABLE aliasassignments ALTER COLUMN accountid SET DEFAULT NULL
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019102400', 'dbversion'));
-
-$this->CommitTrans();

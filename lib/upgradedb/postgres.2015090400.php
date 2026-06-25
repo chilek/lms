@@ -24,13 +24,8 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 ALTER TABLE plicbdoperators ADD CONSTRAINT plicbdoperators_pkey PRIMARY KEY (id);
 DROP INDEX plicbdoperators_id_idx;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015090400', 'dbversion'));
-
-$this->CommitTrans();

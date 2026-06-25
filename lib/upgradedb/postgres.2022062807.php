@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute(
     "UPDATE uiconfig SET section = ? WHERE section = ? AND var = ?",
@@ -31,7 +30,3 @@ $this->Execute(
         'default_show_closed_events',
     )
 );
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022062807', 'dbversion'));
-
-$this->CommitTrans();

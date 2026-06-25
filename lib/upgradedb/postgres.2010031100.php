@@ -22,13 +22,8 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE ewx_stm_channels RENAME customerid TO cid;
 	ALTER INDEX ewx_stm_channels_customerid_key RENAME TO ewx_stm_channels_cid_key;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010031100', 'dbversion'));
-
-$this->CommitTrans();

@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 $this->Execute("
     
     ALTER TABLE passwd ADD ll integer;
@@ -35,6 +34,4 @@ $this->Execute("
     ALTER TABLE passwd ALTER lastlogin SET DEFAULT 0;
     ALTER TABLE passwd ALTER lastlogin SET NOT NULL;
 
-    UPDATE dbinfo SET keyvalue = '2004111700' WHERE keytype = 'dbversion';
 ");
-$this->CommitTrans();

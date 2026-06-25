@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("DROP VIEW IF EXISTS vnetworks;");
 $this->Execute("DROP VIEW IF EXISTS vmacs;");
@@ -145,7 +144,3 @@ $this->Execute("
 	        LEFT JOIN vaddresses a ON n.address_id = a.id
 	    WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017031600', 'dbversion'));
-
-$this->CommitTrans();

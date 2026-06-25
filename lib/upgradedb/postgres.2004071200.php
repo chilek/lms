@@ -25,7 +25,7 @@
  */
 
 $this->Execute("
-    BEGIN;
+    
     ALTER TABLE rtmessages ADD userid integer;
     ALTER TABLE rtmessages ALTER userid SET DEFAULT 0;
     UPDATE rtmessages SET userid=0;
@@ -39,6 +39,5 @@ $this->Execute("
 
     ALTER TABLE rtqueues DROP CONSTRAINT rtqueues_email_key;
 
-    UPDATE dbinfo SET keyvalue = '2004071200' WHERE keytype = 'dbversion';
-    COMMIT;
+    
 ");

@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 //Helpdesk ticket source
 define('RT_SOURCE_UNKNOWN', 0);
@@ -48,7 +47,3 @@ $this->Execute(
     "INSERT INTO uiconfig (section, var, value) VALUES (?, ?, ?)",
     array('userpanel', 'visible_ticket_sources', implode(';', array_keys($RT_SOURCES)))
 );
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017070300', 'dbversion'));
-
-$this->CommitTrans();

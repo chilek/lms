@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 if (!$this->ResourceExists('netdevicemacs', LMSDB::RESOURCE_TYPE_TABLE)) {
     $this->Execute("
@@ -41,7 +40,3 @@ if (!$this->ResourceExists('netdevicemacs', LMSDB::RESOURCE_TYPE_TABLE)) {
         CREATE INDEX netdevicemacs_label_idx ON netdevicemacs (label)
     ");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021022500', 'dbversion'));
-
-$this->CommitTrans();

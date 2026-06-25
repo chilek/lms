@@ -21,10 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE netdevices ADD COLUMN login varchar(60) DEFAULT '' NOT NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019112000', 'dbversion'));
-
-$this->CommitTrans();

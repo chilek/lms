@@ -24,11 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("DROP TABLE plicbdlocalisation");
 $this->Execute("DROP TABLE plicbdoperators");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015091300', 'dbversion'));
-
-$this->CommitTrans();

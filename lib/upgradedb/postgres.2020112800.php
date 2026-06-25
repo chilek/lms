@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE userdivisions DROP CONSTRAINT users_userid_fkey");
 $this->Execute("ALTER TABLE userdivisions ADD CONSTRAINT userdivisions_userid_fkey
@@ -30,7 +29,3 @@ $this->Execute("ALTER TABLE userdivisions ADD CONSTRAINT userdivisions_userid_fk
 $this->Execute("ALTER TABLE userdivisions DROP CONSTRAINT divisions_divisionid_fkey");
 $this->Execute("ALTER TABLE userdivisions ADD CONSTRAINT userdivisions_divisionid_fkey
             FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE RESTRICT ON UPDATE CASCADE");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020112800', 'dbversion'));
-
-$this->CommitTrans();

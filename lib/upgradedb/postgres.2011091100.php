@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     ALTER TABLE voipaccounts ADD COLUMN access smallint;
@@ -32,7 +31,3 @@ $this->Execute("
     ALTER TABLE voipaccounts ALTER access SET NOT NULL;
     ALTER TABLE voipaccounts ALTER access SET DEFAULT 1;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011091100', 'dbversion'));
-
-$this->CommitTrans();

@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $tables = array(
     'documents' => 'paytype',
@@ -83,7 +82,3 @@ if ($cfg) {
         }
     }
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010061800', 'dbversion'));
-
-$this->CommitTrans();

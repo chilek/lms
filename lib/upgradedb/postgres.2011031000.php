@@ -21,12 +21,7 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE users ADD phone varchar(32) DEFAULT NULL");
 $this->Execute("ALTER TABLE users ADD ntype smallint DEFAULT NULL");
 $this->Execute("UPDATE users SET ntype = 1"); // MSG_MAIL
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011031000', 'dbversion'));
-
-$this->CommitTrans();

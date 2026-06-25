@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
@@ -37,7 +36,3 @@ $this->Execute("
         ('userpanel', 'document_approval_customer_notification_mail_subject', '', '', 0),
         ('userpanel', 'document_approval_customer_notification_mail_body', '', '', 0)
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020040901', 'dbversion'));
-
-$this->CommitTrans();

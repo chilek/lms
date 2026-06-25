@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE pna ADD COLUMN streetname varchar(100) DEFAULT NULL;
@@ -29,7 +28,3 @@ $this->Execute("
 	ALTER TABLE pna ADD CONSTRAINT pna_zip_cityid_streetid_fromnumber_tonumber_parity_key
 		UNIQUE (zip, cityid, streetid, streetname, fromnumber, fromletter, tonumber, toletter, parity)
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018022400', 'dbversion'));
-
-$this->CommitTrans();

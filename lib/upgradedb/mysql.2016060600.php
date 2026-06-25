@@ -21,10 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE voipaccounts ADD COLUMN balance decimal(12,5) NOT NULL DEFAULT 0");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016060600', 'dbversion'));
-
-$this->CommitTrans();

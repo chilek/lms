@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("SET CONSTRAINTS ALL IMMEDIATE");
 
@@ -60,7 +59,3 @@ $this->Execute("
 		FROM nodes n
 		JOIN macs m ON (n.id = m.nodeid);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013050700', 'dbversion'));
-
-$this->CommitTrans();

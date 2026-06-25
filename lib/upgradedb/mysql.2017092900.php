@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE assignments ADD COLUMN docid int(11) DEFAULT NULL");
 $this->Execute("ALTER TABLE assignments ADD CONSTRAINT assignments_docid_fkey
@@ -41,7 +40,3 @@ $this->Execute("ALTER TABLE debitnotecontents ALTER COLUMN docid DROP DEFAULT");
 $this->Execute("DELETE FROM debitnotecontents WHERE NOT EXISTS (SELECT null FROM documents d WHERE debitnotecontents.docid = d.id)");
 $this->Execute("ALTER TABLE debitnotecontents ADD CONSTRAINT debitnotecontents_docid_fkey
 	FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017092900', 'dbversion'));
-
-$this->CommitTrans();

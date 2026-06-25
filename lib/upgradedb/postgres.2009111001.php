@@ -21,5 +21,3 @@
  *  USA.
  *
  */
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009111001', 'dbversion'));

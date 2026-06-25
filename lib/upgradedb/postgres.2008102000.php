@@ -65,7 +65,6 @@ $account = $this->GetOne(
     array('finances', 'account', 0)
 );
 
-$this->BeginTrans();
 
 $this->Execute("
 
@@ -120,7 +119,3 @@ $this->Execute(
         !empty($account) ? $account : '',
     )
 );
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008102000', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,10 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("UPDATE netdevicemacs SET mac = UPPER(mac)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021100500', 'dbversion'));
-
-$this->CommitTrans();

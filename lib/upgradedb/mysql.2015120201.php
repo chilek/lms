@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("DROP VIEW IF EXISTS vnodes");
 $this->Execute("DROP VIEW IF EXISTS vmacs");
@@ -41,7 +40,3 @@ $this->Execute("
 		JOIN macs m ON (n.id = m.nodeid)
 		WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015120201', 'dbversion'));
-
-$this->CommitTrans();

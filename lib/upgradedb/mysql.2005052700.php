@@ -37,5 +37,3 @@ $this->Execute("ALTER TABLE eventassignments CHANGE adminid userid INT(11) DEFAU
 $this->Execute("ALTER TABLE eventassignments ADD UNIQUE (eventid, userid)");
 
 $this->Execute("RENAME TABLE admins TO users");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005052700', 'dbversion'));

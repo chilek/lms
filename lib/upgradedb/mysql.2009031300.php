@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("CREATE TABLE messages (
         id 	int(11) 	NOT NULL auto_increment,
@@ -51,7 +50,3 @@ $this->Execute("CREATE TABLE messageitems (
 	INDEX messageid (messageid),
 	INDEX customerid (customerid)
 ) ENGINE=MyISAM");
-
-$this->Execute('UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?', array('2009031300', 'dbversion'));
-
-$this->CommitTrans();

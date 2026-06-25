@@ -21,11 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE voip_cdr CHANGE caller_prefix_group caller_prefix_group VARCHAR(100) NULL");
 $this->Execute("ALTER TABLE voip_cdr CHANGE callee_prefix_group callee_prefix_group VARCHAR(100) NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016062300', 'dbversion'));
-
-$this->CommitTrans();

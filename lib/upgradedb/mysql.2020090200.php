@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 if ($this->ResourceExists('uiconfig_configid_fkey', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
     $this->Execute("ALTER TABLE uiconfig DROP CONSTRAINT uiconfig_configid_fkey");
 }
@@ -32,7 +31,3 @@ $this->Execute("ALTER TABLE uiconfig ADD COLUMN divisionid int(11) DEFAULT NULL"
 $this->Execute("ALTER TABLE uiconfig ADD CONSTRAINT uiconfig_divisionid_fkey FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE");
 $this->Execute("ALTER TABLE uiconfig DROP INDEX var");
 $this->Execute("ALTER TABLE uiconfig ADD UNIQUE uiconfig_section_var_userid_divisionid_ukey (section, var, userid, divisionid)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020090200', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("DROP VIEW IF EXISTS vnodes");
 $this->Execute("DROP VIEW IF EXISTS vmacs");
@@ -53,7 +52,3 @@ $this->Execute("CREATE VIEW vmacs AS
 	SELECT n.*, m.mac, m.id AS macid
 	FROM nodes n
 	JOIN macs m ON (n.id = m.nodeid)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013050700', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,14 +21,9 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE documents ALTER COLUMN zip DROP NOT NULL;");
 $this->Execute("ALTER TABLE documents ALTER COLUMN zip SET DEFAULT NULL;");
 
 $this->Execute("ALTER TABLE documents ALTER COLUMN city DROP NOT NULL;");
 $this->Execute("ALTER TABLE documents ALTER COLUMN city SET DEFAULT NULL;");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017021400', 'dbversion'));
-
-$this->CommitTrans();

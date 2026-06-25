@@ -21,13 +21,8 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE users DROP COLUMN swekey_id;
 	ALTER TABLE users ADD CONSTRAINT users_login_key UNIQUE (login);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016092600', 'dbversion'));
-
-$this->CommitTrans();

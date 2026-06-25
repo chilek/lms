@@ -21,10 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("INSERT INTO countries (name, ccode) VALUES (?, ?)", array('Guyana', 'en_GY'));
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020011400', 'dbversion'));
-
-$this->CommitTrans();

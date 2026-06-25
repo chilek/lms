@@ -24,13 +24,8 @@
 define('RT_RIGHT_NOTICE', 8);
 define('RT_RIGHT_INDICATOR', 16);
 
-$this->BeginTrans();
 
 $this->Execute(
     "UPDATE rtrights SET rights = rights | ? WHERE rights & ? > 0",
     array(RT_RIGHT_INDICATOR, RT_RIGHT_NOTICE)
 );
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018081401', 'dbversion'));
-
-$this->CommitTrans();

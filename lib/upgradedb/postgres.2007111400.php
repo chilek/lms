@@ -24,14 +24,9 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 ALTER TABLE tariffs ADD type smallint NOT NULL DEFAULT 1;
 UPDATE tariffs SET type = 1;
 CREATE INDEX tariffs_type_idx ON tariffs (type);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007111400', 'dbversion'));
-
-$this->CommitTrans();

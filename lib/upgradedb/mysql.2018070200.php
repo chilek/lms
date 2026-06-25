@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $all_streets = $this->GetAllByKey("SELECT lst.id, lst.name, lst.name2, lstt.name AS typestr
 	FROM location_streets lst
@@ -68,7 +67,3 @@ if (!empty($all_streets)) {
         }
     }
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018070200', 'dbversion'));
-
-$this->CommitTrans();

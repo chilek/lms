@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $tariffs = $this->GetAllByKey("SELECT id, value FROM tariffs", 'id');
 $schemas = $this->GetAllByKey("SELECT id, data, continuation, ctariffid
@@ -76,7 +75,3 @@ $this->Execute("ALTER TABLE promotionschemas ADD CONSTRAINT promotionschemas_pro
 	FOREIGN KEY (promotionid) REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE");
 
 $this->Execute("ALTER TABLE promotionschemas DROP COLUMN ctariffid");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019013100', 'dbversion'));
-
-$this->CommitTrans();

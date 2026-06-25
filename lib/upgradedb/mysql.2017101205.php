@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE customers ADD CONSTRAINT customers_divisionid_fkey
 	FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE");
@@ -161,7 +160,3 @@ CREATE VIEW vnodealltariffs_tariffs AS
 		AND a.id NOT IN (SELECT assignmentid FROM nodeassignments)
 	GROUP BY n.id
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017101205', 'dbversion'));
-
-$this->CommitTrans();

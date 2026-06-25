@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE documents ADD div_shortname TEXT NOT NULL DEFAULT ''");
 
@@ -35,6 +34,3 @@ if (!empty($dl)) {
             $division['id']));
     }
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014040100', 'dbversion'));
-$this->CommitTrans();

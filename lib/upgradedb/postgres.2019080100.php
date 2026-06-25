@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE uiconfig ADD COLUMN userid integer DEFAULT NULL
@@ -32,7 +31,3 @@ $this->Execute("
     ALTER TABLE uiconfig DROP CONSTRAINT IF EXISTS uiconfig_section_var_key;
 	ALTER TABLE uiconfig ADD CONSTRAINT uiconfig_section_key UNIQUE (section, var, userid);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019080100', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     DROP TRIGGER cash_customerbalances_truncate_trigger ON cash; 
@@ -88,7 +87,3 @@ $this->Execute("
     CREATE TRIGGER cash_customerbalances_truncate_trigger AFTER TRUNCATE ON cash
         EXECUTE PROCEDURE customerbalances_update() 
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020011000', 'dbversion'));
-
-$this->CommitTrans();

@@ -44,7 +44,6 @@ function parse_address_2015122200($address)
     return $res;
 }
 
-$this->BeginTrans();
 
 $this->Execute("
 	DROP VIEW customersview;
@@ -126,7 +125,3 @@ $this->Execute("
 		FROM customers c
 		WHERE c.type < 2;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015122200', 'dbversion'));
-
-$this->CommitTrans();

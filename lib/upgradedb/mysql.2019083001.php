@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("DROP VIEW vnodealltariffs");
 $this->Execute("DROP VIEW vnodealltariffs_tariffs");
@@ -158,7 +157,3 @@ $this->Execute("
                    OR (t1.nodeid IS NULL AND t2.nodeid IS NOT NULL)
                    OR (t1.nodeid IS NULL AND t2.nodeid IS NULL))
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019083001', 'dbversion'));
-
-$this->CommitTrans();

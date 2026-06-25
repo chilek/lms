@@ -24,11 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE nodes ADD INDEX ownerid (ownerid)");
 $this->Execute("ALTER TABLE nodes ADD INDEX ipaddr_pub (ipaddr_pub)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007011200', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,12 +21,7 @@
  *
  */
 
-$this->BeginTrans();
 
 if (!$this->ResourceExists('voip_numbers.info', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("ALTER TABLE voip_numbers ADD COLUMN info varchar(255) DEFAULT NULL");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022070700', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,10 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)", array('invoices', 'customer_bankaccount', '0'));
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015120900', 'dbversion'));
-
-$this->CommitTrans();

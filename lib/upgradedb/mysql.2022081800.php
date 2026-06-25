@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("DROP VIEW customerview");
 $this->Execute("DROP VIEW contractorview");
@@ -117,7 +116,3 @@ $this->Execute("
             LEFT JOIN customerconsentview cc ON cc.customerid = c.id
         WHERE c.type < 2;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022081800', 'dbversion'));
-
-$this->CommitTrans();

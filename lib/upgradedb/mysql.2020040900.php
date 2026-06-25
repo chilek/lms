@@ -21,11 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE documentattachments CHANGE main type smallint DEFAULT 1 NOT NULL");
 $this->Execute("ALTER TABLE documentattachments ADD COLUMN cdate int(11) NOT NULL DEFAULT 0");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020040900', 'dbversion'));
-
-$this->CommitTrans();

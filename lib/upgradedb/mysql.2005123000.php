@@ -24,9 +24,5 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE cashregs ADD COLUMN disabled tinyint(1) NOT NULL DEFAULT '0'");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005123000', 'dbversion'));
-
-$this->CommitTrans();

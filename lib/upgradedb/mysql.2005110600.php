@@ -36,5 +36,3 @@ $this->Execute("CREATE TABLE liabilities (
 	PRIMARY KEY (id)
 	) ENGINE=MyISAM
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005110600', 'dbversion'));

@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE TABLE nodegroups (
@@ -44,7 +43,3 @@ $this->Execute("
 	UNIQUE KEY nodeid (nodeid, nodegroupid)
     );
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008010400', 'dbversion'));
-
-$this->CommitTrans();

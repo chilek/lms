@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE TABLE sourcefiles (
@@ -51,7 +50,3 @@ $this->Execute("UPDATE cashimport SET sourceid = NULL WHERE sourceid NOT IN (SEL
 $this->Execute("ALTER TABLE cashimport ADD INDEX sourceid (sourceid)");
 $this->Execute("ALTER TABLE cashimport ADD FOREIGN KEY (sourceid)
 	REFERENCES cashsources (id) ON DELETE SET NULL ON UPDATE CASCADE");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010122000', 'dbversion'));
-
-$this->CommitTrans();

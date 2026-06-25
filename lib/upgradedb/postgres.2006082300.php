@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE assignments ADD COLUMN nodeid integer");
 $this->Execute("UPDATE assignments SET nodeid = 0");
@@ -33,7 +32,3 @@ $this->Execute("ALTER TABLE assignments ALTER COLUMN nodeid SET DEFAULT 0");
 
 $this->Execute("CREATE INDEX assignments_nodeid_idx ON assignments (nodeid)");
 $this->Execute("CREATE INDEX assignments_customerid_idx ON assignments (customerid)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006082300', 'dbversion'));
-
-$this->CommitTrans();

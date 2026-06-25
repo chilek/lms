@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute(
     "UPDATE uiconfig SET section = ?, var = ? WHERE section = ? AND var = ?",
@@ -32,7 +31,3 @@ $this->Execute(
         'helpdesk_backend_mode',
     )
 );
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022062701', 'dbversion'));
-
-$this->CommitTrans();

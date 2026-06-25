@@ -25,13 +25,8 @@ if (!defined('MONTHLY')) {
     define('MONTHLY', 3);
 }
 
-$this->BeginTrans();
 
 if (!$this->ResourceExists('invoicecontents.period', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("ALTER TABLE invoicecontents ADD COLUMN period smallint DEFAULT NULL");
     $this->Execute("ALTER TABLE invoicecontents ALTER COLUMN period SET DEFAULT ?", array(MONTHLY));
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021031000', 'dbversion'));
-
-$this->CommitTrans();

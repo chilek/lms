@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("DROP VIEW vusers");
 $this->Execute("ALTER TABLE users ADD COLUMN twofactorauth smallint NOT NULL DEFAULT 0");
@@ -29,7 +28,3 @@ $this->Execute("ALTER TABLE users ADD COLUMN twofactorauthsecretkey varchar(255)
 $this->Execute("CREATE VIEW vusers AS
     SELECT *, CONCAT(firstname, ' ', lastname) AS name, CONCAT(lastname, ' ', firstname) AS rname
     FROM users");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019091200', 'dbversion'));
-
-$this->CommitTrans();

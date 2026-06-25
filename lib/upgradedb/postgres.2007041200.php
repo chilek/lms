@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE cashreglog ADD snapshot numeric(9,2)");
 
@@ -48,7 +47,3 @@ if ($list) {
 
 $this->Execute("ALTER TABLE cashreglog ALTER snapshot SET NOT NULL");
 $this->Execute("ALTER TABLE cashreglog ALTER snapshot SET DEFAULT 0");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007041200', 'dbversion'));
-
-$this->CommitTrans();

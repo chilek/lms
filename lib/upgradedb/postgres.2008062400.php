@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE customers ADD COLUMN consentdate integer NOT NULL DEFAULT 0;
@@ -38,7 +37,3 @@ $this->Execute("
 	                WHERE e.userid = lms_current_user() AND a.customerid = c.id);						
 
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008062400', 'dbversion'));
-
-$this->CommitTrans();

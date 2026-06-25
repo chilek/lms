@@ -27,5 +27,3 @@
 $this->Execute("ALTER TABLE aliasassignments ADD mail_forward varchar(255) DEFAULT '' NOT NULL");
 $this->Execute("ALTER TABLE aliasassignments DROP KEY aliasid");
 $this->Execute("ALTER TABLE aliasassignments ADD UNIQUE KEY aliasid (aliasid, accountid, mail_forward)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009091600', 'dbversion'));

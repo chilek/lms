@@ -21,13 +21,8 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute(
     "INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)",
     array('userpanel', 'timeout', intval(ConfigHelper::getConfig('phpui.timeout')))
 );
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019082900', 'dbversion'));
-
-$this->CommitTrans();

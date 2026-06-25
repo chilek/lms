@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	DROP VIEW customerview;
@@ -77,7 +76,3 @@ $this->Execute("
 	ALTER TABLE divisions ADD COLUMN rbe varchar(255) NOT NULL DEFAULT '';
 	ALTER TABLE divisions ADD COLUMN rbename varchar(255) NOT NULL DEFAULT '';
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017012400', 'dbversion'));
-
-$this->CommitTrans();

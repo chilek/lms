@@ -69,5 +69,3 @@ if ($lang == 'pl') {
     $this->Execute("INSERT INTO states (name) VALUES ('wielkopolskie')");
     $this->Execute("INSERT INTO states (name) VALUES ('zachodniopomorskie')");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008080800', 'dbversion'));

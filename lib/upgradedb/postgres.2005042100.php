@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE admins ADD hosts varchar(255);
@@ -32,7 +31,3 @@ $this->Execute("
 	ALTER TABLE admins ALTER hosts SET NOT NULL;
 	ALTER TABLE admins ALTER hosts SET DEFAULT '';
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005042100', 'dbversion'));
-
-$this->CommitTrans();

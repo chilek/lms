@@ -23,5 +23,3 @@
  */
 
 $this->Execute("ALTER TABLE domains ADD mxbackup tinyint(1) DEFAULT '0' NOT NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012021400', 'dbversion'));

@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE customers ALTER COLUMN creatorid DROP NOT NULL;
@@ -54,7 +53,3 @@ if (!empty($userids)) {
     $this->Execute("UPDATE voipaccounts SET modid = NULL WHERE modid = 0 OR modid NOT IN (" . $sql_userids . ")");
     $this->Execute("UPDATE rttickets SET creatorid = NULL WHERE creatorid = 0 OR creatorid NOT IN (" . $sql_userids . ")");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017101202', 'dbversion'));
-
-$this->CommitTrans();

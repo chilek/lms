@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE SEQUENCE \"customercontacts_id_seq\";
@@ -62,7 +61,3 @@ $this->Execute("
     ALTER TABLE customers DROP phone2;
     ALTER TABLE customers DROP phone3;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007071100', 'dbversion'));
-
-$this->CommitTrans();

@@ -27,13 +27,11 @@
 // upgrade nie potrzebny dla bazy powy¿ej 1.2.0rc5 dla ga³êzi 1.2, za³atwmy to transakcj±
 
 $this->Execute("
-    BEGIN;
+    
     ALTER TABLE invoicecontents ALTER taxvalue DROP NOT NULL;
-    COMMIT");
+    ");
 
 $this->Execute("
-    BEGIN;
+    
     ALTER TABLE tariffs ALTER taxvalue DROP NOT NULL;
-    COMMIT");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2004040701', 'dbversion'));
+    ");

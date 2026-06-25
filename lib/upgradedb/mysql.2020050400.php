@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE VIEW customerconsentview AS
@@ -114,7 +113,3 @@ $this->Execute("
             LEFT JOIN customerconsentview cc ON cc.customerid = c.id
         WHERE c.type < 2
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020050400', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,10 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE invoicecontents MODIFY COLUMN count numeric(9,3)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018070300', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE TABLE customercontactproperties (
@@ -34,7 +33,3 @@ $this->Execute("
     CREATE INDEX customercontactproperties_name_idx ON customercontactproperties (name);
     CREATE INDEX customercontactproperties_value_idx ON customercontactproperties (value);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021020301', 'dbversion'));
-
-$this->CommitTrans();

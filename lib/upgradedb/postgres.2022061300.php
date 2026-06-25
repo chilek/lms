@@ -21,14 +21,9 @@
  *
  */
 
-$this->BeginTrans();
 
 if (!$this->ResourceExists('voip_cdr.cdate', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("ALTER TABLE voip_cdr ADD COLUMN cdate integer DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer NOT NULL");
     $this->Execute("CREATE INDEX voip_cdr_cdate_idx ON voip_cdr (cdate)");
     $this->Execute("UPDATE voip_cdr SET cdate = call_start_time + totaltime");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022061300', 'dbversion'));
-
-$this->CommitTrans();

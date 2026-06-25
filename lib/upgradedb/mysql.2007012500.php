@@ -24,11 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE nodes ADD halfduplex tinyint(1) NOT NULL DEFAULT '0'");
 $this->Execute("ALTER TABLE tariffs ADD dlimit int(11) NOT NULL DEFAULT '0'");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007012500', 'dbversion'));
-
-$this->CommitTrans();

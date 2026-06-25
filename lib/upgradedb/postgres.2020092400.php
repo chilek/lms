@@ -21,12 +21,7 @@
  *
  */
 
-$this->BeginTrans();
 
 if (!$this->ResourceExists('liabilities.type', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("ALTER TABLE liabilities ADD COLUMN type smallint DEFAULT -1 NOT NULL");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020092400', 'dbversion'));
-
-$this->CommitTrans();

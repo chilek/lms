@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute(
     "UPDATE uiconfig SET section = ?, var = ? WHERE section = ? AND var = ?",
@@ -52,7 +51,3 @@ $this->Execute(
         'ticketlist_pagelimit',
     )
 );
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022062804', 'dbversion'));
-
-$this->CommitTrans();

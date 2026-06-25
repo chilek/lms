@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $tariffs = $this->GetAllByKey("SELECT id, value FROM tariffs", 'id');
 $schemas = $this->GetAllByKey("SELECT id, data, continuation, ctariffid
@@ -65,7 +64,3 @@ if (!empty($schemas)) {
 
 $this->Execute("ALTER TABLE promotionschemas DROP COLUMN continuation");
 $this->Execute("ALTER TABLE promotionschemas DROP COLUMN ctariffid");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019013100', 'dbversion'));
-
-$this->CommitTrans();

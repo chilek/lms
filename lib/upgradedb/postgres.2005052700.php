@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE cash ADD userid integer;
@@ -69,7 +68,3 @@ $this->Execute("
 	ALTER TABLE users ADD UNIQUE (login);
 	DROP TABLE admins;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005052700', 'dbversion'));
-
-$this->CommitTrans();

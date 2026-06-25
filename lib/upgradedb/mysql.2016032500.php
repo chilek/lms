@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 define('CONFIG_TYPE_NONE_2016032500', 7);
 define('CONFIG_TYPE_POSITIVE_INTEGER_2016032500', 2);
@@ -29,7 +28,3 @@ define('CONFIG_TYPE_POSITIVE_INTEGER_2016032500', 2);
 $this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('phpui', 'default_autosuggest_placement', 'bottom', ?)", array(CONFIG_TYPE_NONE_2016032500));
 
 $this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('phpui', 'autosuggest_max_length', '40', ?)", array(CONFIG_TYPE_POSITIVE_INTEGER_2016032500));
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016032500', 'dbversion'));
-
-$this->CommitTrans();

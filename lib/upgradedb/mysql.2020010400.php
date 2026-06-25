@@ -21,13 +21,8 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute(
     "INSERT INTO uiconfig (section, var, value) VALUES (?, ?, ?)",
     array('userpanel', 'hide_archived_documents', 'false')
 );
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020010400', 'dbversion'));
-
-$this->CommitTrans();

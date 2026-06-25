@@ -21,14 +21,9 @@
  *
  */
 
-$this->BeginTrans();
 
 if (!$this->ResourceExists('voip_cdr.fraction', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("ALTER TABLE voip_cdr ADD COLUMN fraction varchar(256) DEFAULT NULL");
     $this->Execute("ALTER TABLE voip_cdr ADD COLUMN prefix varchar(256) DEFAULT NULL");
     $this->Execute("ALTER TABLE voip_cdr ADD COLUMN prefixname varchar(256) DEFAULT NULL");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022060900', 'dbversion'));
-
-$this->CommitTrans();

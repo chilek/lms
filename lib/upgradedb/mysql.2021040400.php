@@ -24,14 +24,9 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("INSERT INTO uiconfig (section, var, value, description)
 	VALUES (?, ?, ?, ?)", array('userpanel', 'show_discount', '1', ''));
 
 $this->Execute("INSERT INTO uiconfig (section, var, value, description)
 	VALUES (?, ?, ?, ?)", array('userpanel', 'show_invoice_flag', '1', ''));
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021040400', 'dbversion'));
-
-$this->CommitTrans();

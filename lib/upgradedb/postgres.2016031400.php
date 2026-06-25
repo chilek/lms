@@ -21,11 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE tariffs ADD COLUMN numberplanid integer DEFAULT NULL
 	REFERENCES numberplans (id) ON DELETE CASCADE ON UPDATE CASCADE");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016031400', 'dbversion'));
-
-$this->CommitTrans();

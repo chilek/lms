@@ -21,12 +21,7 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE promotionassignments MODIFY selectionid varchar(60) NULL");
 $this->Execute("ALTER TABLE promotionassignments ALTER COLUMN selectionid SET DEFAULT NULL");
 $this->Execute("UPDATE promotionassignments SET selectionid = NULL WHERE selectionid = '0'");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017103000', 'dbversion'));
-
-$this->CommitTrans();

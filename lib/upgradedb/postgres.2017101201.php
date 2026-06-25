@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE documents ADD CONSTRAINT documents_userid_fkey
@@ -62,7 +61,3 @@ $this->Execute("
 	ALTER TABLE logtransactions ADD CONSTRAINT logtransactions_userid_fkey
 		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017101201', 'dbversion'));
-
-$this->CommitTrans();

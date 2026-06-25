@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 if ($this->ResourceExists('events_address_id_fk', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
     $this->Execute("
@@ -30,7 +29,3 @@ if ($this->ResourceExists('events_address_id_fk', LMSDB::RESOURCE_TYPE_CONSTRAIN
             FOREIGN KEY (address_id) REFERENCES addresses(id) ON UPDATE CASCADE ON DELETE SET NULL
     ");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019072500', 'dbversion'));
-
-$this->CommitTrans();

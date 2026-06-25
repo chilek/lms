@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE ewx_stm_nodes ALTER COLUMN nodeid DROP NOT NULL;
@@ -40,7 +39,3 @@ if (empty($ids)) {
 
 $this->Execute("ALTER TABLE ewx_stm_nodes ADD CONSTRAINT ewx_stm_nodes_nodeid_fkey
 	FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017101602', 'dbversion'));
-
-$this->CommitTrans();

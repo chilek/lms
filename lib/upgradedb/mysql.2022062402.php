@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute(
     "UPDATE uiconfig SET section = ? WHERE section = ? AND var = ?",
@@ -31,7 +30,3 @@ $this->Execute(
         'event_usergroup_selection_type',
     )
 );
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022062402', 'dbversion'));
-
-$this->CommitTrans();

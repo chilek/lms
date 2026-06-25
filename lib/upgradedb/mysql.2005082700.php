@@ -26,5 +26,3 @@
 
 $this->Execute("ALTER TABLE documents ADD closed tinyint(1) DEFAULT '0' NOT NULL");
 $this->Execute("ALTER TABLE cash DROP reference");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005082700', 'dbversion'));
