@@ -23,7 +23,7 @@
 
 $this->BeginTrans();
 
-if ($this->ResourceExists("dbinfo_keytype_ukey", LMSDB::RESOURCE_CONSTRAINT)) {
+if ($this->ResourceExists("dbinfo_keytype_ukey", LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
     $this->Execute("ALTER TABLE dbinfo DROP CONSTRAINT dbinfo_keytype_ukey");
 }
 
