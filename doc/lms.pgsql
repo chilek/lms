@@ -394,7 +394,7 @@ CREATE TABLE customernotes (
     message text NOT NULL,
     moddate bigint DEFAULT NULL,
     moduserid integer DEFAULT NULL
-        CONSTRAINT customernotes_moduserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE SET NULL,
+        CONSTRAINT customernotes_moduserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
     PRIMARY KEY (id)
 );
 
@@ -4740,6 +4740,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026061700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026062900');
 
 COMMIT;
