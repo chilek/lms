@@ -296,6 +296,7 @@ CREATE TABLE divisions (
 /* --------------------------------------------------------
   Structure of table "serviceproviders" (serviceproviders)
 -------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS serviceproviders_id_seq;
 CREATE SEQUENCE serviceproviders_id_seq;
 DROP TABLE IF EXISTS serviceproviders;
 CREATE TABLE serviceproviders (
