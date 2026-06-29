@@ -2759,8 +2759,7 @@ DROP TABLE IF EXISTS dbinfo CASCADE;
 CREATE TABLE dbinfo (
     keytype 	varchar(255) 	DEFAULT '' NOT NULL,
     keyvalue 	varchar(255) 	DEFAULT '' NOT NULL,
-    PRIMARY KEY (keytype),
-    CONSTRAINT dbinfo_keytype_ukey UNIQUE (keytype)
+    PRIMARY KEY (keytype)
 );
 
 /* ---------------------------------------------------
@@ -4740,6 +4739,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026062902');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026062903');
 
 COMMIT;
