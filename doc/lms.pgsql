@@ -793,9 +793,9 @@ CREATE SEQUENCE voip_rule_states_id_seq;
 DROP TABLE IF EXISTS voip_rule_states CASCADE;
 CREATE TABLE voip_rule_states (
 	id              integer DEFAULT nextval('voip_rule_states_id_seq'::text) NOT NULL,
-	voip_account_id integer NOT NULL DEFAULT NULL
+	voip_account_id integer NOT NULL
 		REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	rule_id         integer NOT NULL DEFAULT NULL
+	rule_id         integer NOT NULL
 		REFERENCES voip_rules (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	units_left      integer NULL DEFAULT NULL,
 	PRIMARY KEY(id),
