@@ -211,9 +211,9 @@ DROP TABLE IF EXISTS location_buildings CASCADE;
 CREATE TABLE location_buildings (
 	id           integer DEFAULT nextval('location_buildings_id_seq'::text) NOT NULL,
 	city_id      integer NOT NULL
-		CONSTRAINT location_cities_city_id_fkey REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT location_buildings_city_id_fkey REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	street_id    integer NULL
-		CONSTRAINT location_cities_street_id_fkey REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT location_buildings_street_id_fkey REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	building_num varchar(20) NULL,
 	zip          varchar(10) DEFAULT NULL,
 	latitude     numeric(10,6) NULL,
@@ -4740,6 +4740,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026062900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026062901');
 
 COMMIT;
