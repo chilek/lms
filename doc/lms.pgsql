@@ -2187,7 +2187,8 @@ CREATE TABLE rttickets (
     CONSTRAINT rttickets_address_id_fkey REFERENCES addresses (id) ON UPDATE CASCADE ON DELETE SET NULL,
   nodeid integer	DEFAULT NULL
     CONSTRAINT rttickets_nodeid_fkey REFERENCES nodes (id) ON UPDATE CASCADE ON DELETE SET NULL,
-  netnodeid integer	DEFAULT NULL,
+  netnodeid integer	DEFAULT NULL
+    CONSTRAINT rttickets_netnodeid_fkey REFERENCES netnodes (id) ON UPDATE CASCADE ON DELETE SET NULL,
   netdevid integer	DEFAULT NULL
     CONSTRAINT rttickets_netdevid_fkey REFERENCES netdevices (id) ON UPDATE CASCADE ON DELETE SET NULL,
   verifierid integer DEFAULT NULL
@@ -4739,6 +4740,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026062903');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026062904');
 
 COMMIT;
