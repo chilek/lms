@@ -66,7 +66,7 @@ DROP SEQUENCE IF EXISTS twofactorauthtrusteddevices_id_seq;
 CREATE SEQUENCE twofactorauthtrusteddevices_id_seq;
 DROP TABLE IF EXISTS twofactorauthtrusteddevices CASCADE;
 CREATE TABLE twofactorauthtrusteddevices (
-    id integer DEFAULT nextval('twofactorauthtrusteddevices_id_seq'::text),
+    id integer DEFAULT nextval('twofactorauthtrusteddevices_id_seq'::text) NOT NULL,
     userid integer NOT NULL
         CONSTRAINT twofactorauthtrusteddevices_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
     cookiename varchar(64) NOT NULL,
@@ -4740,6 +4740,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026062901');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026062902');
 
 COMMIT;
