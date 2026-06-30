@@ -171,7 +171,9 @@ switch ($action) {
             $invoice['deadline'] = $currtime + $paytime * 86400;
         }
 
-        if (!isset($_GET['clone'])) {
+        if (isset($_GET['clone'])) {
+            $invoice['closed'] = 0;
+        } else {
             $invoice['numberplanid'] = $LMS->getDefaultNumberPlanID(
                 $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
                 empty($customer) ? null : $customer['divisionid']
