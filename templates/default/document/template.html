@@ -198,7 +198,7 @@
 				min-width: 2ch;
 			}
 
-			.list-paragraphs.dots .paragraph::before{
+			.list-paragraphs.dots .paragraph::before {
 				content: "\00A7\00A0" counter(paragraph) ".\00A0";
 			}
 
@@ -252,6 +252,31 @@
 
 			.list-numbers {
 				padding-inline-start: 2em;
+				counter-reset: number;
+			}
+
+			.list-numbers > li {
+				counter-increment: number;
+				padding-inline-start: 0.4em;
+			}
+
+			.list-numbers > li::marker {
+				content: counter(number, decimal) ".";
+			}
+
+			.list-numbers .list-numbers {
+				list-style: none;
+				padding-inline-start: 2em;
+				counter-reset: number-number;
+			}
+
+			.list-numbers .list-numbers > li {
+				counter-increment: number-number;
+				padding-inline-start: 0.4em;
+			}
+
+			.list-numbers .list-numbers > li::marker {
+				content: counter(number, decimal) "." counter(number-number, decimal) ".";
 			}
 
 			.list-hyphens {
