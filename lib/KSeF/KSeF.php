@@ -124,6 +124,7 @@ class KSeF
 
     private $showOnlyAlternativeAccounts;
     private $showAllAccounts;
+    private $showMemo;
 
     private $smartNumberFormatter;
 
