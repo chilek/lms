@@ -413,6 +413,9 @@ class KSeF
 
     public function getInvoiceXml(array $invoice)
     {
+        $numericLocale = setlocale(LC_NUMERIC, '0');
+        setlocale(LC_NUMERIC, 'C');
+
         $invoiceType = $invoice['type'] ?? $invoice['doctype'] ?? null;
 
         if (!isset($this->divisions[$invoice['divisionid']])) {
@@ -1662,6 +1665,10 @@ class KSeF
         }
 
         $xml .= "</Faktura>" . PHP_EOL;
+
+        if ($numericLocale !== false) {
+            setlocale(LC_NUMERIC, $numericLocale);
+        }
 
         return $xml;
     }
