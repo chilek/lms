@@ -6,7 +6,8 @@
 
 cd "$(dirname $(readlink -f $0))"
 
-wget http://standards.ieee.org/develop/regauth/oui/oui.txt
+#wget http://standards.ieee.org/develop/regauth/oui/oui.txt
+wget https://standards-oui.ieee.org/oui/oui.txt
 
 if [ ! -e oui.txt ]; then
 	echo Brak pliku oui.txt
