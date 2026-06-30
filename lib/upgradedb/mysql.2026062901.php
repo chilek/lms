@@ -25,6 +25,9 @@ $this->BeginTrans();
 
 if ($this->ResourceExists("location_cities_city_id_fkey", LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
     $this->Execute("ALTER TABLE location_buildings DROP CONSTRAINT location_cities_city_id_fkey");
+}
+
+if (!$this->ResourceExists("location_buildings_city_id_fkey", LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
     $this->Execute(
         "ALTER TABLE location_buildings
             ADD CONSTRAINT location_buildings_city_id_fkey FOREIGN KEY (city_id) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE"
@@ -33,6 +36,9 @@ if ($this->ResourceExists("location_cities_city_id_fkey", LMSDB::RESOURCE_TYPE_C
 
 if ($this->ResourceExists("location_cities_street_id_fkey", LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
     $this->Execute("ALTER TABLE location_buildings DROP CONSTRAINT location_cities_street_id_fkey");
+}
+
+if (!$this->ResourceExists("location_buildings_street_id_fkey", LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
     $this->Execute(
         "ALTER TABLE location_buildings
             ADD CONSTRAINT location_buildings_street_id_fkey FOREIGN KEY (street_id) REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE"
