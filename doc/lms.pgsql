@@ -608,6 +608,7 @@ CREATE INDEX documents_numberplanid_idx ON documents(numberplanid);
 CREATE INDEX documents_customerid_idx ON documents(customerid);
 CREATE INDEX documents_closed_idx ON documents(closed);
 CREATE INDEX documents_reference_idx ON documents(reference);
+CREATE INDEX documents_type_idx ON documents (type);
 
 /* --------------------------------------------------------
   Structure of table "documentcontents"
@@ -4740,6 +4741,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026062904');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026063000');
 
 COMMIT;

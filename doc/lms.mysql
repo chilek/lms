@@ -771,6 +771,7 @@ CREATE TABLE documents (
 	INDEX customerid (customerid),
 	INDEX closed (closed),
 	INDEX reference (reference),
+	KEY documents_type_idx (type),
 	CONSTRAINT documents_recipient_address_id_fkey
 	FOREIGN KEY (recipient_address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT documents_recipient_address_id2_fkey
@@ -4701,4 +4702,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026062904');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026063000');
