@@ -611,7 +611,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                     $row['enddate'] = $row['date'] + 86400;
                     //$row['endtime'] = 0;
                     $list2[] = $row;
-                    if (!$singleday) {
+                    if (!$singleday && $forward != -1) {
                         $dst = date('I', $row['date']);
                         while ($days) {
                             //if ($days == 1) {
