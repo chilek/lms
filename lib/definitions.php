@@ -197,7 +197,7 @@ $CCONSENTS = array(
     ),
     CCONSENT_POSTAL_DELIVERY_SERVICE_PROVIDER_CHANGE => array(
         'label' => trans('<!service-provider-change>postal delivery'),
-        'name' => 'mail_service_provider_change',
+        'name' => 'postal_delivery_service_provider_change',
         'type' => 'boolean',
     ),
     CCONSENT_MAIL_SERVICE_INFO => array(
