@@ -5998,6 +5998,8 @@ $_LANG['<!service-info>sms'] = 'SMS-em';
 $_LANG['<!service-info>telephone'] = 'telefonicznie';
 $_LANG['<!service-info>via userpanel'] = 'poprzez panel klienta';
 $_LANG['<!service-info>postal delivery'] = 'pocztą tradycyjną';
+$_LANG['<!service-provider-change>e-mail'] = 'pocztą elektroniczną';
+$_LANG['<!service-provider-change>postal delivery'] = 'pocztą tradycyjną';
 $_LANG['phone billing'] = 'billing telefoniczny';
 
 $_LANG['Issuer'] = 'Wystawca';
@@ -6189,6 +6191,7 @@ $_LANG['Last change'] = 'Ostatnia zmiana';
 $_LANG['<!consent-group>marketing'] = 'marketing';
 $_LANG['<!consent-group>third party marketing'] = 'marketing podmiotów trzecich';
 $_LANG['<!consent-group>service information'] = 'informacje związane z usługą';
+$_LANG['<!consent-group>service provider change'] = 'zmiana u dostawcy usług';
 $_LANG['<!consent-group>invoices'] = 'faktury';
 $_LANG['<!consent-group>complaint information'] = 'informacje związane z reklamacją';
 $_LANG['<!consent-group>technical'] = 'techniczne';
