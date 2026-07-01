@@ -1225,6 +1225,8 @@ version 28-git (????-??-??):
   - improvement: 'documents.confirm_date_default_days' configuration variable with empty default value
     (what means don't set confirm date during document add form startup) controls default value of confirm date
     field [chilan]
+  - enhancement: new customer consents: 'mail_service_provider_change'
+    and 'postal_delivery_service_provider_change' [chilan]
 
 version 27.0 (2021-08-20):
 
