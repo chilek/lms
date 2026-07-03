@@ -344,6 +344,15 @@ function GetReferenceDocuments($doctemplate, $customerid, $JSResponse)
 
     $SMARTY->assign('references', $references);
 
+    if (isset($engine['archive-reference-document'])) {
+        $SMARTY->assign(
+            'document',
+            [
+                'archive-reference' => !empty($engine['archive-reference-document']),
+            ]
+        );
+    }
+
     $template = $SMARTY->fetch('document/documentreference.html');
 
     $JSResponse->assign('referencedocument', 'innerHTML', $template);

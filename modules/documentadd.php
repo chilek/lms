@@ -257,6 +257,10 @@ if (isset($_POST['document'])) {
                 $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
             }
 
+            if (!isset($document['archive-reference']) && isset($engine['archive-reference-document'])) {
+                $document['archive-reference'] = false;
+            }
+
             // call plugin
             if (!empty($engine['plugin'])) {
                 if (is_readable($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
@@ -675,6 +679,10 @@ if (isset($_POST['document'])) {
         $DB->CommitTrans();
 
         if ($LMS->DocumentExists($docid)) {
+            if (!empty($document['archive-reference']) && !empty($document['reference'])) {
+                $LMS->ArchiveDocuments([$document['reference']['id']]);
+            }
+
             $hook_data = $LMS->executeHook(
                 'documentadd_after_submit',
                 array(
