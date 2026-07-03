@@ -1227,6 +1227,8 @@ version 28-git (????-??-??):
     field [chilan]
   - enhancement: new customer consents: 'mail_service_provider_change'
     and 'postal_delivery_service_provider_change' [chilan]
+  - enhancement: 'archive-reference-document' document template property controls reference document archiving
+    behaviour in new document form [chilan]
 
 version 27.0 (2021-08-20):
 
