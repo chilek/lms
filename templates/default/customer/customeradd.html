@@ -351,6 +351,9 @@
 												{$ssn = preg_replace('/[^\s]/', '*', $customeradd.ssn)}
 												{$disabled = true}
 											{/if}
+											{if !$disabled}
+												<input type="hidden" name="customeradd[oldssn]" value="{$ssn}">
+											{/if}
 											<input type="text" name="customeradd[ssn]" value="{$ssn}" size="30"
 												data-type="ssn"
 												{tip trigger="ssn" class="customer-sensitive-data"}

@@ -291,6 +291,9 @@ if (!isset($_POST['xjxfun'])) {
 
             if (isset($customerdata['ssn'])) {
                 if ($customerdata['ssn'] != '' && $customerdata['ssn'] != $LMS->getCustomerSsn($_GET['id'])) {
+                    if (isset($customerdata['ssnwarning']) && isset($customerdata['oldssn']) && $customerdata['oldssn'] != $customerdata['ssn']) {
+                        unset($customerdata['ssnwarning']);
+                    }
                     if (!isset($customerdata['ssnwarning'])) {
                         $ssn_validation_result = check_ssn($customerdata['ssn']);
                         if (isset($ssn_validation_result) && !$ssn_validation_result) {
