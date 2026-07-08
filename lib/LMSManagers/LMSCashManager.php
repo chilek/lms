@@ -531,11 +531,29 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 }
             }
 
+            $hook_data = compact('id', 'pattern', 'comment', 'theline', 'ln', 'patterns_cnt', 'error', 'line', 'time');
+            $hook_data['db'] = $this->db;
+
             $hook_data = $LMS->executeHook(
                 'cashimport_extra_filter_before_submit',
-                compact("id", "pattern", "comment", "theline", "ln", "patterns_cnt", "error", "line", "time")
+                $hook_data
             );
+
             extract($hook_data);
+
+            if (!empty($hook_data['ignore'])) {
+                $error['lines'][$ln] = array(
+                    'customer' => $customer,
+                    'customerid' => $id,
+                    'date' => $time,
+                    'operdate' => $operdate,
+                    'value' => $value,
+                    'comment' => $comment,
+                    'extid' => $extid,
+                );
+
+                continue;
+            }
 
             if (!$found_by_name && $id && (!$name || !$lastname)) {
                 if ($tmp = $this->db->GetRow('SELECT id, lastname, name FROM customers WHERE '
