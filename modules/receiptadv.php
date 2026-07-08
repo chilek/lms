@@ -171,7 +171,9 @@ if (isset($_POST['receipt'])) {
         }
 
         $DB->BeginTrans();
-        $DB->LockTables(array('documents', 'numberplans'));
+
+//        $DB->LockTables(array('documents', 'numberplans'));
+        $DB->LockByHandle(LOCK_RECEIPT_NUMBER);
 
         if ($receipt['type'] == 'return') {
             if (!$receipt['number']) {
@@ -259,7 +261,8 @@ if (isset($_POST['receipt'])) {
             $rid2 = $DB->GetLastInsertId('documents');
         }
 
-        $DB->UnLockTables();
+        //$DB->UnLockTables();
+        $DB->UnLockByHandle(LOCK_RECEIPT_NUMBER);
 
         $DB->Execute(
             'INSERT INTO receiptcontents (docid, itemid, value, description, regid)

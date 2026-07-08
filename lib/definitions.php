@@ -2114,6 +2114,11 @@ $IDENTITY_TYPES = array(
     5   => 'permanent residence card',
 );
 
+const LOCK_INVOICE_NUMBER = 1,
+    LOCK_INVOICE_NOTE_NUMBER = 2,
+    LOCK_DEBIT_NOTE_NUMBER = 3,
+    LOCK_RECEIPT_NUMBER = 4;
+
 if (isset($SMARTY)) {
     $SMARTY->assign(
         array(

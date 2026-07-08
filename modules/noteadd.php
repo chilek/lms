@@ -184,12 +184,17 @@ switch ($action) {
             }
 
             $DB->BeginTrans();
+
+/*
             $tables = array('documents', 'cash', 'debitnotecontents', 'numberplans', 'divisions', 'vdivisions',
                 'addresses', 'customers', 'customer_addresses', 'logtransactions');
             if (ConfigHelper::getConfig('database.type') != 'postgres') {
                 $tables = array_merge($tables, array('addresses a', 'customers c', 'customer_addresses ca'));
             }
             $DB->LockTables($tables);
+*/
+
+            $DB->LockByHandle(LOCK_DEBIT_NOTE_NUMBER);
 
             if (empty($note['number'])) {
                 $note['number'] = $LMS->GetNewDocumentNumber(array(
@@ -364,7 +369,9 @@ switch ($action) {
                 ));
             }
 
-            $DB->UnLockTables();
+//            $DB->UnLockTables();
+            $DB->UnLockByHandle(LOCK_DEBIT_NOTE_NUMBER);
+
             $DB->CommitTrans();
 
             $SESSION->remove('notecontents');

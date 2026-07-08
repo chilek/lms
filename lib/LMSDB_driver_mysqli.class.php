@@ -343,6 +343,16 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
         }
     }
 
+    public function _driver_lockbyhandle($handle): mixed
+    {
+        return $this->GetOne('SELECT GET_LOCK(\'' . $handle . '\', ' . ((1 << 32) - 1) . ')');
+    }
+
+    public function _driver_unlockbyhandle($handle): mixed
+    {
+        return $this->GetOne('SELECT RELEASE_LOCK(\'' . $handle . '\')');
+    }
+
     /**
      * Unlocks tables.
      */

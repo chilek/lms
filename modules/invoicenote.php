@@ -747,6 +747,8 @@ switch ($action) {
         }
 
         $DB->BeginTrans();
+
+/*
         $tables = array('documents', 'numberplans', 'divisions', 'vdivisions',
             'addresses', 'customers', 'customer_addresses', 'logtransactions');
         if (ConfigHelper::getConfig('database.type') != 'postgres') {
@@ -756,7 +758,11 @@ switch ($action) {
         if ($SYSLOG) {
             $tables = array_merge($tables, array('logmessages', 'logmessagekeys', 'logmessagedata'));
         }
+
         $DB->LockTables($tables);
+*/
+
+        $DB->LockByHandle(LOCK_INVOICE_NOTE_NUMBER);
 
         if (!isset($cnote['number']) || !$cnote['number']) {
             $cnote['number'] = $LMS->GetNewDocumentNumber(array(
@@ -927,7 +933,9 @@ switch ($action) {
             );
         }
 
-        $DB->UnLockTables();
+//        $DB->UnLockTables();
+
+        $DB->UnLockByHandle(LOCK_INVOICE_NOTE_NUMBER);
 
         foreach ($contents as $idx => $item) {
             $item['valuebrutto'] = str_replace(',', '.', $item['valuebrutto']);

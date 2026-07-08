@@ -443,6 +443,17 @@ abstract class LMSDB_common implements LMSDBInterface
      *
      * @return string
      */
+
+    public function LockByHandle($handle): mixed
+    {
+        return $this->_driver_lockbyhandle($handle);
+    }
+
+    public function UnLockByHandle($handle): mixed
+    {
+        return $this->_driver_unlockbyhandle($handle);
+    }
+
     public function GetDBVersion()
     {
         return $this->_driver_dbversion();

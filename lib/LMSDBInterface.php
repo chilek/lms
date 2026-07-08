@@ -84,6 +84,10 @@ interface LMSDBInterface
 
     public function UnLockTables();
 
+    public function LockByHandle($handle): mixed;
+
+    public function UnLockByHandle($handle): mixed;
+
     public function GetDBVersion();
 
     public function SetEncoding($name);

@@ -367,6 +367,16 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
         return true;
     }
 
+    public function _driver_lockbyhandle($handle): mixed
+    {
+        return $this->Execute('SELECT pg_advisory_xact_lock(' . $handle . ')');
+    }
+
+    public function _driver_unlockbyhandle($handle): mixed
+    {
+        return true;
+    }
+
     /**
      * Returns last inserted element id.
      *

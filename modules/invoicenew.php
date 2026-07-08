@@ -601,6 +601,8 @@ switch ($action) {
         }
 
         $DB->BeginTrans();
+
+/*
         $tables = array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions', 'vdivisions',
             'addresses', 'customers', 'customer_addresses');
         if (ConfigHelper::getConfig('database.type') != 'postgres') {
@@ -610,7 +612,6 @@ switch ($action) {
         if ($SYSLOG) {
             $tables = array_merge($tables, array('logmessages', 'logmessagekeys', 'logmessagedata', 'logtransactions'));
         }
-
         $hook_data = array(
             'tables' => array(),
         );
@@ -620,6 +621,9 @@ switch ($action) {
         }
 
         $DB->LockTables($tables);
+*/
+
+        $DB->LockByHandle(LOCK_INVOICE_NUMBER);
 
         if (!$invoice['number']) {
             $invoice['number'] = $LMS->GetNewDocumentNumber(array(
@@ -714,7 +718,10 @@ switch ($action) {
             }
         }
 
-        $DB->UnLockTables();
+//        $DB->UnLockTables();
+
+        $DB->UnLockByHandle(LOCK_INVOICE_NUMBER);
+
         $DB->CommitTrans();
 
         $SESSION->remove('invoicecontents', true);
