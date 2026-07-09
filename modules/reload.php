@@ -50,7 +50,7 @@ switch ($_RELOAD_TYPE) {
             die;
         }
 
-        if ((isset($_GET['setreloads']) && isset($_POST['hosts'])) || count($hosts) == 1) {
+        if ((isset($_GET['setreloads'], $_POST['hosts'])) || count($hosts) == 1) {
             $SMARTY->display('header.html');
 
             echo '<script> show_pagecontent(); </script>';
@@ -105,7 +105,7 @@ switch ($_RELOAD_TYPE) {
 
         $reload_sqlquery = ConfigHelper::getConfig('phpui.reload_sqlquery');
         if (!empty($reload_sqlquery) && $hosts) {
-            if ((isset($_GET['setreloads']) && isset($_POST['hosts'])) || count($hosts) == 1) {
+            if ((isset($_GET['setreloads'], $_POST['hosts'])) || count($hosts) == 1) {
                 $SMARTY->display('header.html');
 
                 $sqlqueries = explode(';', $reload_sqlquery);
@@ -132,7 +132,7 @@ switch ($_RELOAD_TYPE) {
                 $SMARTY->display('reload.html');
             }
         } else {
-            if (isset($_GET['setreloads']) && isset($_POST['hosts']) && $hosts) {
+            if (isset($_GET['setreloads'], $_POST['hosts']) && $hosts) {
                 foreach ($hosts as $host) {
                     if (in_array($host['id'], $_POST['hosts'])) {
                         $DB->Execute('UPDATE hosts SET reload=1 WHERE id=?', array($host['id']));

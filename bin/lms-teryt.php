@@ -1644,7 +1644,7 @@ if (isset($options['buildings'])) {
                     if ($building) {
                         $fields_to_update = array();
 
-                        if (isset($record['gml_id']) && $record['gml_id'] != $building['extid'] || !isset($record['gml_id']) && isset($record['extid']) && strlen($record['extid'])) {
+                        if (isset($record['gml_id']) && $record['gml_id'] != $building['extid'] || !isset($record['gml_id'], $record['extid']) && strlen($record['extid'])) {
                             $fields_to_update[] = 'extid = ' . (isset($record['gml_id']) ? $DB->Escape($record['gml_id']) : 'null');
                         }
 
