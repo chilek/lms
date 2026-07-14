@@ -548,7 +548,7 @@ class LMSTcpdfInvoice extends LMSInvoice
 
         $buyer = '<b>' . trans('Purchaser:') . '</b><br>';
 
-        $buyer .= $this->data['name'] . '<br>';
+        $buyer .= htmlspecialchars($this->data['name']) . '<br>';
         $buyer .= $this->data['address'] . '<br>';
         $buyer .= $this->data['zip'] . ' ' . $this->data['city'];
         if ($this->data['export']) {
