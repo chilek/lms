@@ -817,7 +817,7 @@ function document_address($data)
     $lines = array();
 
     if ($data['name']) {
-        $lines[] = $data['name'];
+        $lines[] = htmlspecialchars($data['name']);
     }
 
     if ($data['postoffice'] && $data['postoffice'] != $data['city']) {
