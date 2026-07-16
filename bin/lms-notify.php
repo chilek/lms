@@ -900,6 +900,18 @@ function parse_customer_data($data, $format, $row)
 
     $data = $LMS->getLastNInTable($data, $row['id'], $format, $row['aggregate_documents'], $financial_history_reverse_order, $financial_history_item_description_format);
 
+    if (isset($row['value'], $row['currency'])) {
+        $values = explode(',', $row['value']);
+        $currencies = explode(',', $row['currency']);
+        if (!empty($values)) {
+            $valueWithCurrencies = [];
+            foreach ($values as $idx => $value) {
+                $valueWithCurrencies[] = moneyf($value, $currencies[$idx]);
+            }
+            $value = implode(', ', $valueWithCurrencies);
+        }
+    }
+
     // invoices, debit notes, documents
     $data = str_replace(
         array(
@@ -914,7 +926,7 @@ function parse_customer_data($data, $format, $row)
         array(
             $row['doc_number'] ?? '',
             $row['doc_number'] ?? '',
-            isset($row['value'], $row['currency']) ? moneyf($row['value'], $row['currency']) : '',
+            isset($value) ? $value : '',
             isset($row['cdate']) ? date('Y', $row['cdate']) : '',
             isset($row['cdate']) ? date('m', $row['cdate']) : '',
             isset($row['cdate']) ? date('d', $row['cdate']) : '',
@@ -1587,7 +1599,8 @@ if (empty($types) || in_array('contracts', $types)) {
             d.dateto AS deadline,
             m.email,
             x.phone,
-            a3.value AS value
+            a3.value AS value,
+            a3.currency AS currency
         FROM customeraddressview c
         JOIN cash ON c.id = cash.customerid "
         . ($expiration_type == 'assignments' ?
@@ -1622,89 +1635,101 @@ if (empty($types) || in_array('contracts', $types)) {
             ) d ON d.customerid = c.id") . "
         LEFT JOIN (
             SELECT
-                a.customerid,
-                SUM(ROUND(
-                    (
+                c2.id AS customerid,
+                " . $DB->GroupConcat('a4.value') . " AS value,
+                " . $DB->GroupConcat('a4.currency') . " AS currency
+            FROM customers c2
+            JOIN (
+                SELECT
+                    a.customerid,
+                    SUM(ROUND(
                         (
-                            (100 - a.pdiscount)
-                            * (CASE WHEN ca.netflag = 1
-                                THEN ca.netvalue
-                                ELSE ca.value
-                            END)
-                            / 100
-                        ) - a.vdiscount
-                    )
-                    * a.count
-                    * (CASE WHEN ca.netflag = 1
-                        THEN (100 + ca.taxrate) / 100
-                        ELSE 1
-                    END)
-                    * (CASE WHEN a.suspended = 0
-                        THEN 1
-                        ELSE " . $suspension_percentage . " / 100
-                    END)
-                    * (
-                        CASE WHEN a.period = " . DISPOSABLE . " THEN 0
-                        ELSE (
-                            CASE WHEN a.period <> " . DISPOSABLE . " AND ca.period > 0 AND ca.period <> a.period
+                            (
+                                (100 - a.pdiscount)
+                                * (CASE WHEN ca.netflag = 1
+                                    THEN ca.netvalue
+                                    ELSE ca.value
+                                END)
+                                / 100
+                            ) - a.vdiscount
+                        )
+                        * a.count
+                        * (CASE WHEN ca.netflag = 1
+                            THEN (100 + ca.taxrate) / 100
+                            ELSE 1
+                        END)
+                        * (CASE WHEN a.suspended = 0
+                            THEN 1
+                            ELSE " . $suspension_percentage . " / 100
+                        END)
+                        * (
+                            CASE WHEN a.period = " . DISPOSABLE . " THEN 0
+                            ELSE (
+                                CASE WHEN a.period <> " . DISPOSABLE . " AND ca.period > 0 AND ca.period <> a.period
+                                    THEN (
+                                        CASE ca.period
+                                            WHEN " . YEARLY . " THEN 1/12.0
+                                            WHEN " . HALFYEARLY . " THEN 1/6.0
+                                            WHEN " . QUARTERLY . " THEN 1/3.0
+                                            ELSE 1
+                                        END
+                                    ) ELSE (
+                                        CASE a.period
+                                            WHEN " . YEARLY . " THEN 1/12.0
+                                            WHEN " . HALFYEARLY . " THEN 1/6.0
+                                            WHEN " . QUARTERLY . " THEN 1/3.0
+                                            WHEN " . WEEKLY . " THEN 4.0
+                                            WHEN " . DAILY . " THEN 30.0
+                                            ELSE 1
+                                        END
+                                    )
+                                END
+                            )
+                            END
+                        )
+                    , 2)) AS value,
+                    ca.currency AS currency
+                FROM assignments a
+                JOIN (
+                    SELECT
+                        a2.id,
+                        COALESCE(t.period, 0) AS period,
+                        COALESCE(t.netvalue, l.netvalue) AS netvalue,
+                        COALESCE(t.value, l.value) AS value,
+                        COALESCE(t.currency, l.currency) AS currency,
+                        COALESCE(tt.value, lt.value) AS taxrate,
+                        COALESCE(
+                            CASE WHEN t.value IS NULL
                                 THEN (
-                                    CASE ca.period
-                                        WHEN " . YEARLY . " THEN 1/12.0
-                                        WHEN " . HALFYEARLY . " THEN 1/6.0
-                                        WHEN " . QUARTERLY . " THEN 1/3.0
-                                        ELSE 1
+                                    CASE WHEN l.flags & " . TARIFF_FLAG_NET_ACCOUNT . " > 0
+                                        THEN 1
+                                        ELSE 0
                                     END
                                 ) ELSE (
-                                    CASE a.period
-                                        WHEN " . YEARLY . " THEN 1/12.0
-                                        WHEN " . HALFYEARLY . " THEN 1/6.0
-                                        WHEN " . QUARTERLY . " THEN 1/3.0
-                                        WHEN " . WEEKLY . " THEN 4.0
-                                        WHEN " . DAILY . " THEN 30.0
-                                        ELSE 1
+                                    CASE WHEN t.flags & " . TARIFF_FLAG_NET_ACCOUNT . " > 0
+                                        THEN 1
+                                        ELSE 0
                                     END
                                 )
                             END
-                        )
-                        END
-                    )
-                , 2)) AS value
-            FROM assignments a
-            JOIN (
-                SELECT
-                    a2.id,
-                    COALESCE(t.period, 0) AS period,
-                    COALESCE(t.netvalue, l.netvalue) AS netvalue,
-                    COALESCE(t.value, l.value) AS value,
-                    COALESCE(tt.value, lt.value) AS taxrate,
-                    COALESCE(
-                        CASE WHEN t.value IS NULL
-                            THEN (
-                                CASE WHEN l.flags & " . TARIFF_FLAG_NET_ACCOUNT . " > 0
-                                    THEN 1
-                                    ELSE 0
-                                END
-                            ) ELSE (
-                                CASE WHEN t.flags & " . TARIFF_FLAG_NET_ACCOUNT . " > 0
-                                    THEN 1
-                                    ELSE 0
-                                END
-                            )
-                        END
-                    ) AS netflag
-                FROM assignments a2
-                LEFT JOIN tariffs t ON t.id = a2.tariffid
-                LEFT JOIN taxes tt ON tt.id = t.taxid
-                LEFT JOIN liabilities l ON l.id = a2.liabilityid
-                LEFT JOIN taxes lt ON lt.id = l.taxid
-                WHERE a2.commited = 1
-                    AND a2.datefrom >= ?
-                    AND a2.dateto = 0
-            ) ca ON ca.id = a.id
-            WHERE a.commited = 1
-                AND a.datefrom >= ?
-                AND a.dateto = 0
-            GROUP BY a.customerid
+                        ) AS netflag
+                    FROM assignments a2
+                    LEFT JOIN tariffs t ON t.id = a2.tariffid
+                    LEFT JOIN taxes tt ON tt.id = t.taxid
+                    LEFT JOIN liabilities l ON l.id = a2.liabilityid
+                    LEFT JOIN taxes lt ON lt.id = l.taxid
+                    WHERE a2.commited = 1
+                        AND a2.datefrom >= ?
+                        AND a2.dateto = 0
+                ) ca ON ca.id = a.id
+                WHERE a.commited = 1
+                    AND a.datefrom >= ?
+                    AND a.dateto = 0
+                GROUP BY
+                    a.customerid,
+                    ca.currency
+            ) a4 ON a4.customerid = c2.id
+            GROUP BY c2.id
         ) a3 ON a3.customerid = c.id
         LEFT JOIN (
             SELECT
@@ -1731,7 +1756,7 @@ if (empty($types) || in_array('contracts', $types)) {
             . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
             . ($notifications['contracts']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: '')
-        . " GROUP BY c.id, c.pin, c.lastname, c.name, d.number, d.template, d.cdate, d.dateto, m.email, x.phone, a3.value",
+        . " GROUP BY c.id, c.pin, c.lastname, c.name, d.number, d.template, d.cdate, d.dateto, m.email, x.phone, a3.value, a3.currency",
         array(
             $start,
             $end,
