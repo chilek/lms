@@ -130,10 +130,18 @@ class Auth
                 $components = explode('#', $loginform['login']);
                 $this->login = $login = $components[0];
                 $targetLogin = count($components) == 2 ? $components[1] : null;
+                // 'login#targetlogin' lets an admin instantly switch into another
+                // user's session (ChangeLog: "allow to instantly switch user or
+                // login as different user"). The gate below used to check whether
+                // ANY full_access user existed anywhere in the system, not whether
+                // the authenticating login ($login) itself had full_access — so any
+                // operator who knew an admin's login could switch INTO that admin
+                // account using their own password. Scope the check to $login.
                 if (!empty($targetLogin)
                     && $this->DB->GetOne(
-                        'SELECT 1 FROM users WHERE deleted = 0 AND access = 1 AND '
-                        . $this->DB->RegExp('rights', 'full_access')
+                        'SELECT 1 FROM users WHERE login = ? AND deleted = 0 AND access = 1 AND '
+                        . $this->DB->RegExp('rights', 'full_access'),
+                        array($login)
                     )
                 ) {
                     $this->targetLogin = $targetLogin;
