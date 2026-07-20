@@ -1567,9 +1567,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         $notes = array();
         if ($parentid) {
-            $note = trans('Ticket parent ID has been set to $a.', $parentid);
+            $note = trans('Primary ticket ID has been set to $a.', $parentid);
         } else {
-            $note = trans('Ticket parent ID has been removed.');
+            $note = trans('Primary ticket ID has been removed.');
         }
         $this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
             VALUES(?, ?, ?, ?, ?NOW?)', array(Auth::GetCurrentUser(), $ticketid, RTMESSAGE_PARENT_CHANGE, $note));
@@ -1767,10 +1767,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         if (array_key_exists('parentid', $props)) {
             if (isset($props['parentid']) && $ticket['parentid'] != $props['parentid']) {
-                $notes[] = trans('Ticket parent ID has been set to $a.', $props['parentid']);
+                $notes[] = trans('Primary ticket ID has been set to $a.', $props['parentid']);
                 $type = $type | RTMESSAGE_PARENT_CHANGE;
             } elseif (!isset($props['parentid']) && !empty($ticket['parentid'])) {
-                $notes[] = trans('Ticket parent ID has been removed.');
+                $notes[] = trans('Primary ticket ID has been removed.');
                 $type = $type | RTMESSAGE_PARENT_CHANGE;
             } else {
                 $props['parentid'] = $ticket['parentid'];
