@@ -12,4 +12,4 @@ currently being supported with security updates.
 
 ## Reporting a Vulnerability
 
-[security@lms.plus](mailto:security@lms.plus)
+[security@lms.org.pl](mailto:security@lms.org.pl) or [security@lms.plus](mailto:security@lms.plus)
