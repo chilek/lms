@@ -2510,6 +2510,11 @@ class KSeF
         return self::$deadlineUnits[$deadlineUnit] ?? 'days';
     }
 
+    public static function isApiToken(string $certificateOrToken): bool
+    {
+        return preg_match('/^[0-9]{8}-[0-9A-F]{2}-[0-9A-F]{10}-[0-9A-F]{2}\|(nip-[0-9]{10}|internalid-[0-9]{11}-[0-9]{5})|[a-z0-9]{64}$/', $certificateOrToken);
+    }
+
     public static function getCertificatePath(int $type = self::CERTIFICATE_TYPE_ONLINE): ?string
     {
         $certificatePath = $type == self::CERTIFICATE_TYPE_OFFLINE
@@ -2521,6 +2526,11 @@ class KSeF
         }
 
         $certificatePath = trim($certificatePath);
+
+        if (self::isApiToken($certificatePath)) {
+            return $certificatePath;
+        }
+
         if (strpos($certificatePath, DIRECTORY_SEPARATOR) === 0) {
             return $certificatePath;
         } else {
