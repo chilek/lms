@@ -1030,6 +1030,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $customergroupnegation = false;
         }
 
+        if (isset($network) && $network) {
+            $network = is_array($network) ? array_map('intval', $network) : intval($network);
+        }
+
         if (!isset($nodegroupnegation)) {
             $nodegroupnegation = false;
         }

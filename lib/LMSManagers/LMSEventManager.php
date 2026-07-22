@@ -474,6 +474,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             $userfilter = '';
         } else {
             if (is_array($userid)) {
+                $userid = array_map('intval', $userid);
                 if (!empty($userand)) {
                     $userfilter = ' AND (EXISTS (SELECT COUNT(userid), eventid FROM eventassignments WHERE eventid = events.id AND userid IN ('
                         . implode(',', $userid) . ') GROUP BY eventid HAVING(COUNT(eventid) = ' . count($userid) . '))
