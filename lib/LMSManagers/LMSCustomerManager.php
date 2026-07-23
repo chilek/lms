@@ -1743,7 +1743,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                 )';
                             break;
                         default:
-                            $searchargs[] = "$key ?LIKE? " . $this->db->Escape("%$value%");
+                            if (preg_match('/^[a-z0-9_]+$/', $key)) {
+                                $searchargs[] = "$key ?LIKE? " . $this->db->Escape("%$value%");
+                            }
                     }
                 }
             }
