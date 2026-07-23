@@ -257,7 +257,7 @@ if (isset($_GET['s'])) {
 } elseif (!isset($filter['state'])) {
     $filter['state'] = $ticketlist_status;
     if (isset($filter['state']) && strlen($filter['state'])) {
-        $filter['state'] = explode(',', $filter['state']);
+        $filter['state'] = Utils::filterIntegers(explode(',', $filter['state']));
     }
 }
 if (is_array($filter['state'])) {
@@ -284,7 +284,7 @@ if (isset($_GET['priority'])) {
 } elseif (!isset($filter['priority'])) {
     $filter['priority'] = $ticketlist_priority;
     if (isset($filter['priority']) && strlen($filter['priority'])) {
-        $filter['priority'] = explode(',', $filter['priority']);
+        $filter['priority'] = Utils::filterIntegers(explode(',', $filter['priority']));
     }
 }
 

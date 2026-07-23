@@ -530,7 +530,9 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                         case 'authtypek':
                             break;
                         default:
-                            $searchargs[] = 'n.' . $key . ' ?LIKE? ' . $this->db->Escape("%$value%");
+                            if (preg_match('/^[a-z0-9_]+$/', $key)) {
+                                $searchargs[] = 'n.' . $key . ' ?LIKE? ' . $this->db->Escape("%$value%");
+                            }
                     }
                 }
             }
