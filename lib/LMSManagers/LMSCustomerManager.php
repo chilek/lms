@@ -237,7 +237,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
 
         if ($expired || $expired !== false) {
-            $deadline = ConfigHelper::getConfig('payments.deadline', ConfigHelper::getConfig('invoices.paytime', 0));
+            $deadline = intval(ConfigHelper::getConfig('payments.deadline', ConfigHelper::getConfig('invoices.paytime', 0)));
+
             return $this->db->GetOne(
                 'SELECT SUM(value * cash.currencyvalue)
                 FROM cash
@@ -734,7 +735,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $records = array();
             $now = time();
             foreach ($consents_to_add as $consent) {
-                $records[] = '(' . $customerid . ',' . $consent . ',' . $now . ')';
+                $records[] = '(' . $customerid . ',' . intval($consent) . ',' . $now . ')';
                 if ($this->syslog) {
                     $args = array(
                         SYSLOG::RES_USER => $userid,
@@ -1646,13 +1647,21 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 								WHERE z.zip = c.zip AND z.stateid = ' . intval($value) . ')';
                             break;
                         case 'tariffs':
+                            $value = Utils::filterIntegers($value);
+                            if (empty($value)) {
+                                break;
+                            }
+
                             $searchargs[] = 'EXISTS (SELECT 1 FROM assignments a
-							WHERE a.customerid = c.id
-							AND a.datefrom <= ?NOW?
-							' . ($withenddate == 1 ? 'AND a.dateto > ?NOW?' :
-                            ($withenddate == 0 ? 'AND a.dateto = 0' :
-                                'AND (a.dateto > ?NOW? OR a.dateto = 0)')) . '
-							AND (tariffid IN (' . $value . ')))';
+                                WHERE a.customerid = c.id
+                                    AND a.datefrom <= ?NOW?
+                                    ' . ($withenddate == 1
+                                        ? 'AND a.dateto > ?NOW?'
+                                        : ($withenddate == 0
+                                            ? 'AND a.dateto = 0'
+                                            : 'AND (a.dateto > ?NOW? OR a.dateto = 0)'
+                                        )
+                                    ) . ' AND tariffid IN (' . implode(', ', $value) . '))';
                             break;
                         case 'balance_date':
                         case 'balance_days':
@@ -1685,7 +1694,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             }
                             break;
                         case 'karma':
-                            if (intval($value)) {
+                            $value = intval($value);
+                            if ($value) {
                                 $searchargs[] = 'c.karma ' . ($value > 0 ? '>' : '<') . '= ' . $value;
                             }
                             break;
@@ -1828,7 +1838,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     OR (cash.type = 0 AND cash.value > 0 AND cash.time < ' . ($time ?: time()) . ')
                     OR (cash.type = 0 AND cash.time + ((CASE customers.paytime WHEN -1 THEN
                         (CASE WHEN divisions.inv_paytime IS NULL THEN '
-                            . ConfigHelper::getConfig('payments.deadline', ConfigHelper::getConfig('invoices.paytime', 0))
+                            . intval(ConfigHelper::getConfig('payments.deadline', ConfigHelper::getConfig('invoices.paytime', 0)))
                         . ' ELSE divisions.inv_paytime END) ELSE customers.paytime END)' . ($days > 0 ? ' + ' . $days : '') . ') * 86400 < ' . ($time ?: time()) . ')))
                     OR (cash.docid IS NOT NULL AND ((d.type = ' . DOC_RECEIPT . ' AND cash.time < ' . ($time ?: time()) . ')
                         OR (d.type = ' . DOC_CNOTE . ' AND cash.time < ' . ($time ?: time()) . ' AND tv.totalvalue >= 0)

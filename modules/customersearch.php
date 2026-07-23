@@ -29,10 +29,6 @@ $SESSION->add_history_entry();
 if (isset($_POST['search'])) {
     $search = $_POST['search'];
 
-    if (!empty($search['tariffs'])) {
-        $search['tariffs'] = implode(",", $search['tariffs']);
-    }
-
     if ($search['balance_date']) {
         [$year, $month, $day] = explode('/', $search['balance_date']);
         $search['balance_date'] = mktime(23, 59, 59, $month, $day, $year);
