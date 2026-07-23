@@ -150,6 +150,14 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $userid = Utils::filterIntegers($userid);
         }
 
+        if (isset($limit)) {
+            $limit = intval($limit);
+        }
+
+        if (isset($offset)) {
+            $offset = intval($offset);
+        }
+
         if ($order=='') {
             $order='cdate,asc';
         }
