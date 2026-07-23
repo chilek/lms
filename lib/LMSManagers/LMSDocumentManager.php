@@ -138,6 +138,22 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $offset = $params['offset'] ?? null;
         $count = isset($params['count']) && $params['count'];
 
+        if (is_array($type)) {
+            $type = Utils::filterIntegers($type);
+        }
+        if (is_array($service)) {
+            $service = Utils::filterIntegers($service);
+        }
+        if (is_array($userid)) {
+            $userid = Utils::filterIntegers($userid);
+        }
+        if (isset($limit)) {
+            $limit = intval($limit);
+        }
+        if (isset($offset)) {
+            $offset = intval($offset);
+        }
+
         if ($order=='') {
             $order='cdate,asc';
         }
