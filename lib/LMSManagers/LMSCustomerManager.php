@@ -4090,7 +4090,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             array($callid)
         ) > 1) {
             return $this->db->Execute(
-                'DELETE FROM customerassignmentcalls WHERE customercallid = ? AND customerid = ?',
+                'DELETE FROM customercallassignments WHERE customercallid = ? AND customerid = ?',
                 array($callid, $customerid)
             );
         } else {
