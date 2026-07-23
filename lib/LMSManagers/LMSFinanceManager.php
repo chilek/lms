@@ -4663,7 +4663,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 . ($default ? (
                     isset($default_taxlabel)
                         ? ' AND label = ' . $this->db->Escape($default_taxlabel)
-                        : (isset($default_taxrate) ? ' AND value = ' . $default_taxrate : '')
+                        : (isset($default_taxrate) ? ' AND value = ' . floatval(str_replace(',', '.', $default_taxrate)) : '')
                 ) : '')
             . ' ORDER BY value',
             'id',
@@ -5483,6 +5483,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function CheckNodeTariffRestrictions($aid, $nodes, $datefrom, $dateto)
     {
+        $nodes = Utils::filterIntegers($nodes);
+        if (empty($nodes)) {
+            return [];
+        }
+
         $nodeassigns = $this->db->GetCol(
             'SELECT DISTINCT na.nodeid FROM nodeassignments na
             JOIN nodes n ON n.id = na.nodeid
