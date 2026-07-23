@@ -373,7 +373,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
 
         if (is_array($doctype)) {
-            $where[] = 'n.doctype IN (' . implode(',', $doctype) . ')';
+            $doctype = Utils::filterIntegers($doctype);
+            if (!empty($doctype)) {
+                $where[] = 'n.doctype IN (' . implode(',', $doctype) . ')';
+            }
         } else if ($doctype) {
             $where[] = 'n.doctype = ' . intval($doctype);
         }
@@ -384,7 +387,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
 
         if ($cdate) {
-            $where[] = '(n.datefrom <= ' . $cdate . ' AND (n.dateto = 0 OR n.dateto >= ' . $cdate .  '))';
+            $where[] = '(n.datefrom <= ' . intval($cdate) . ' AND (n.dateto = 0 OR n.dateto >= ' . intval($cdate) .  '))';
         }
 
         if (isset($customertype)) {
