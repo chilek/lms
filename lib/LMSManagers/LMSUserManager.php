@@ -158,9 +158,27 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
 
         if (isset($order)) {
             [$column, $asc] = explode(',', $order);
-            $sqlord = $column . ' ' . ($asc == 'desc' ? 'DESC' : 'ASC');
+            if (preg_match('/^[a-z0-9_]+$/i', $column)) {
+                $sqlord = $column . ' ' . ($asc == 'desc' ? 'DESC' : 'ASC');
+            } else {
+                $sqlord = 'login ASC';
+            }
         } else {
             $sqlord = 'login ASC';
+        }
+
+        if (!empty($divisions)) {
+            if (!is_array($divisions)) {
+                $divisions = array($divisions);
+            }
+            $divisions = Utils::filterIntegers($divisions);
+        }
+
+        if (!empty($excludedUsers)) {
+            if (!is_array($excludedUsers)) {
+                $excludedUsers = array($excludedUsers);
+            }
+            $excludedUsers = Utils::filterIntegers($excludedUsers);
         }
 
         if (isset($superuser)) {
@@ -171,9 +189,9 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             WHERE deleted = 0'
                 . (!empty($divisions) ? ' AND id IN (SELECT userid
                     FROM userdivisions
-                    WHERE divisionid IN (' . $divisions . ')
+                    WHERE divisionid IN (' . implode(', ', $divisions) . ')
                     )' : '')
-                . (!empty($excludedUsers) ? ' AND id NOT IN (' . $excludedUsers . ')' : '') .
+                . (!empty($excludedUsers) ? ' AND id NOT IN (' . implode(', ', $excludedUsers) . ')' : '') .
                 ' ORDER BY ' . $sqlord,
                 'id'
             );
@@ -185,9 +203,9 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                 WHERE deleted = 0'
                 . (!empty($divisions) ? ' AND id IN (SELECT userid
                         FROM userdivisions
-                        WHERE divisionid IN (' . $divisions . ')
+                        WHERE divisionid IN (' . implode(', ', $divisions) . ')
                         )' : '')
-                . (!empty($excludedUsers) ? ' AND id NOT IN (' . $excludedUsers . ')' : '') .
+                . (!empty($excludedUsers) ? ' AND id NOT IN (' . implode(', ', $excludedUsers) . ')' : '') .
                 ' ORDER BY ' . $sqlord,
                 'id'
             );
@@ -213,6 +231,13 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             $order = str_replace(',', ' ', $order);
         }
 
+        if (!empty($divisions)) {
+            if (!is_array($divisions)) {
+                $divisions = array($divisions);
+            }
+            $divisions = Utils::filterIntegers($divisions);
+        }
+
         $userlist = $this->db->GetAllByKey(
             'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access, deleted,
             (CASE WHEN access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0) THEN 1 ELSE 0 END) AS accessinfo,
@@ -224,7 +249,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             . (!empty($divisions) ? ' AND id IN 
                 (SELECT userid
                 FROM userdivisions
-                WHERE divisionid IN (' . $divisions . ')
+                WHERE divisionid IN (' . implode(', ', $divisions) . ')
                 )' : '')
             . ' ORDER BY ' . $order,
             'id'

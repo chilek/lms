@@ -109,6 +109,13 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
 
         $user_divisions = implode(',', array_keys($this->GetDivisions(array('userid' => Auth::GetCurrentUser()))));
 
+        if (!empty($excludedDivisions)) {
+            if (!is_array($excludedDivisions)) {
+                $excludedDivisions = array($excludedDivisions);
+            }
+            $excludedDivisions = Utils::filterIntegers($excludedDivisions);
+        }
+
         return $this->db->GetAll(
             'SELECT d.id, d.name, d.shortname, (CASE WHEN d.label IS NULL THEN d.shortname ELSE d.label END) AS label,
                 d.status, (SELECT COUNT(*) FROM customers WHERE divisionid = d.id) AS cnt,
@@ -116,7 +123,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             FROM vdivisions d
             WHERE 1 = 1'
             . ((isset($superuser) && empty($superuser)) || !isset($superuser) ? ' AND id IN (' . $user_divisions . ')' : '')
-            . (!empty($exludedDivisions) ? ' AND id NOT IN (' . $exludedDivisions . ')' : '') .
+            . (!empty($excludedDivisions) ? ' AND id NOT IN (' . implode(', ', $excludedDivisions) . ')' : '') .
             ' ORDER BY (CASE WHEN d.label IS NULL THEN d.shortname ELSE d.label END)'
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : '')
