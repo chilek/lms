@@ -675,7 +675,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
             LEFT JOIN filecontainers fc ON fc.messageid = m.id '
             .(!empty($userjoin) ? 'JOIN vusers u ON u.id = m.userid ' : '')
             .(!empty($where) ? $where : '')
-            .$sqlord . ' ' . $direction
+            . (empty($sqlord) ? '' : $sqlord . ' ' . $direction)
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : '')
         );
