@@ -891,7 +891,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                         }
                         break;
                     case 'ownerid':
-                        $where[] = 'd.ownerid = ' . $value;
+                        $where[] = 'd.ownerid = ' . intval($value);
                         break;
                     case 'linktechnology':
                         if ($value == -3) {
@@ -972,7 +972,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				LEFT JOIN location_states ls    ON ls.id = ld.stateid
 				LEFT JOIN customers cu ON cu.id = d.ownerid '
                 . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
-                . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
+                . (empty($sqlord) ? '' : $sqlord . ' ' . $direction)
                 . (isset($limit) ? ' LIMIT ' . $limit : '')
                 . (isset($offset) ? ' OFFSET ' . $offset : ''));
 
