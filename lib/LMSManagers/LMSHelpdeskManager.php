@@ -426,8 +426,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         if (!empty($parentids)) {
             if (in_array(-1, $parentids)) {
                 $parentfilter = ' AND t.parentid IS NULL';
-            } else {
+            } elseif (!empty($parentids)) {
                 $parentfilter = ' AND t.parentid IN (' . implode(',', $parentids) . ')';
+            } else {
+                $parentfilter = '';
             }
         } else {
             $parentfilter = '';
