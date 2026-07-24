@@ -183,7 +183,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
                 LEFT JOIN location_districts ld ON ld.id = lb.districtid
                 LEFT JOIN location_states ls    ON ls.id = ld.stateid '
                 . (empty($where) ? '' : ' WHERE ' . implode(' AND ', $where))
-                . ' ' . $ostr . ' ' . $dir
+                . (empty($ostr) ? '' : ' ' . $ostr . ' ' . $dir)
                 . (isset($limit) ? ' LIMIT ' . $limit : '')
                 . (isset($offset) ? ' OFFSET ' . $offset : ''),
                 'id'
