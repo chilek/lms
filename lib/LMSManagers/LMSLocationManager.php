@@ -665,9 +665,9 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
             $parity = (intval($number) & 1) ? 1 : 2;
 
             $from = '(fromnumber IS NULL OR (fromnumber < ' . $number . ')
-                        OR (fromnumber = ' . $number . ' AND (fromletter IS NULL' . (empty($letter) ? '' : ' OR fromletter <= \'' . $letter . '\'') . ')))';
+                        OR (fromnumber = ' . $number . ' AND (fromletter IS NULL' . (empty($letter) ? '' : ' OR fromletter <= ' . $this->db->Escape($letter)) . ')))';
             $to = '(tonumber IS NULL OR (tonumber > ' . $number . ')
-                        OR (tonumber = ' . $number . ' AND (toletter IS NULL' . (empty($letter) ? '' : ' OR toletter >= \'' . $letter . '\'') . ')))';
+                        OR (tonumber = ' . $number . ' AND (toletter IS NULL' . (empty($letter) ? '' : ' OR toletter >= ' . $this->db->Escape($letter)) . ')))';
         }
 
         if (isset($cityid)) {
