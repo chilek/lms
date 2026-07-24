@@ -87,7 +87,9 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                             break;
 
                         default:
-                            $searchargs[] = $idx . ' ?LIKE? ' . $this->db->Escape("%$value%");
+                            if (preg_match('/^[0-9a-z_]+$/i', $idx)) {
+                                $searchargs[] = $idx . ' ?LIKE? ' . $this->db->Escape("%$value%");
+                            }
                     }
                 }
             }
@@ -120,7 +122,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 				LEFT JOIN location_districts ld    ON ld.id   = lb.districtid
 				LEFT JOIN location_states lst      ON lst.id  = ld.stateid '
                 . ($searchargs ?? '')
-                . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
+                . (empty($sqlord) ? '' : $sqlord . ' ' . $direction)
         );
 
         if ($voipaccountlist) {
@@ -794,35 +796,47 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         // FILTERS
         $where = array();
 
-        // VOIP ACCOUNT ID
         if (!empty($params['id'])) {
             if (is_array($params['id'])) {
-                $tmp = implode(',', $params['id']);
-                if (empty($params['fvownerid'])) {
+                $id = Utils::filterIntegers($params['id']);
+            } else {
+                $id = intval($params['id']);
+            }
+        }
+
+        if (!empty($params['fvownerid'])) {
+            $ownerid = intval($params['fvownerid']);
+        }
+
+        // VOIP ACCOUNT ID
+        if (!$id) {
+            if (is_array($id)) {
+                $tmp = implode(', ', $id);
+                if (empty($ownerid)) {
                     $where[] = '(cdr.callervoipaccountid IN (' . $tmp . ') OR cdr.calleevoipaccountid IN (' . $tmp . '))';
                 } else {
-                    $where[] = '(cdr.callervoipaccountid IN (' . $tmp . ') AND vacc.ownerid = ' . $params['fvownerid']
-                        . ' OR cdr.calleevoipaccountid IN (' . $tmp . ') AND vacc2.ownerid = ' . $params['fvownerid'] . ')';
+                    $where[] = '(cdr.callervoipaccountid IN (' . $tmp . ') AND vacc.ownerid = ' . $ownerid
+                        . ' OR cdr.calleevoipaccountid IN (' . $tmp . ') AND vacc2.ownerid = ' . $ownerid . ')';
                 }
                 unset($tmp);
             } else {
-                if (empty($params['fvownerid'])) {
-                    $where[] = '(cdr.callervoipaccountid = ' . $params['id'] . ' OR cdr.calleevoipaccountid = ' . $params['id'] . ')';
+                if (empty($ownerid)) {
+                    $where[] = '(cdr.callervoipaccountid = ' . $id . ' OR cdr.calleevoipaccountid = ' . $id . ')';
                 } else {
-                    $where[] = '(cdr.callervoipaccountid = ' . $params['id'] . ' AND vacc.ownerid = ' . $params['fvownerid']
-                        . ' OR cdr.calleevoipaccountid = ' . $params['id'] . ' AND vacc2.ownerid = ' . $params['fvownerid'] . ')';
+                    $where[] = '(cdr.callervoipaccountid = ' . $id . ' AND vacc.ownerid = ' . $ownerid
+                        . ' OR cdr.calleevoipaccountid = ' . $id . ' AND vacc2.ownerid = ' . $ownerid . ')';
                 }
             }
         }
 
         // PHONE
         if (!empty($params['phone'])) {
-            $where[] = "(cdr.caller like '" . $params['phone'] . "' OR cdr.callee like '" . $params['phone'] . "')";
+            $where[] = '(cdr.caller ?LIKE? ' . $this->db->Escape($params['phone']) . ' OR cdr.callee ?LIKE? ' . $this->db->Escape($params['phone']) . ')';
         }
 
         // OWNERID
-        if (!empty($params['fvownerid']) && empty($params['id'])) {
-            $where[] = "vacc.ownerid = " . $params['fvownerid'];
+        if (!empty($ownerid) && empty($id)) {
+            $where[] = "vacc.ownerid = " . $ownerid;
         }
 
         // CALL BILLING RANGE
@@ -861,7 +875,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 
         // billing record directions
         if (isset($params['ftype']) && is_numeric($params['ftype'])) {
-            $where[] = 'cdr.type = ' . $params['ftype'];
+            $where[] = 'cdr.type = ' . intval($params['ftype']);
         }
 
         // custom SQL conditions
