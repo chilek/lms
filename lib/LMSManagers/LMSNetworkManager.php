@@ -348,58 +348,63 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
         if (empty($search['operatorType']) || !preg_match('/^(AND|OR)$/i', $search['operatorType'])) {
             $search['operatorType'] = 'AND';
+        } else {
+            $search['operatorType'] = strtoupper($search['operatorType']);
         }
+
+        $size_compare_char = (isset($search['size_compare_char']) && in_array($search['size_compare_char'], array('<', '>', '<=', '>=', '='), true))
+            ? $search['size_compare_char']
+            : '=';
 
         foreach ($search as $k => $v) {
             if ($v != '') {
                 switch ($k) {
                     case 'network_name':
-                        $sqlwhere .= ' lower(n.name) ?LIKE? lower(' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType'];
+                        $sqlwhere .= " lower(n.name) ?LIKE? lower(" . $this->db->Escape($p.$v.$p) . ") " . $search['operatorType'];
                         break;
 
                     case 'network_address':
-                        $sqlwhere .= ' inet_ntoa(address) ' . $search['compareType'] . ' lower(' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType'];
+                        $sqlwhere .= " inet_ntoa(address) " . $search['compareType'] . " lower(" . $this->db->Escape($p.$v.$p) . ") " . $search['operatorType'];
                         break;
 
                     case 'dhcp':
-                        $sqlwhere .= ' ' . $this->db->Escape($v) . ' BETWEEN n.dhcpstart AND n.dhcpend ' . $search['operatorType'];
+                        $sqlwhere .= " " . $this->db->Escape($v) . " BETWEEN n.dhcpstart AND n.dhcpend " . $search['operatorType'];
                         break;
 
                     case 'size':
-                        $sqlwhere .= ' ' . $this->db->Escape($v) . ' ' . $search['size_compare_char'] . ' pow(2, 32 - mask2prefix(inet_aton(n.mask))) ' . $search['operatorType'];
+                        $sqlwhere .= " " . intval($v) . " " . $size_compare_char . " pow(2, 32 - mask2prefix(inet_aton(n.mask))) " . $search['operatorType'];
                         break;
 
                     case 'interface':
-                        $sqlwhere .= ' lower(n.interface) ?LIKE? lower(' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType']
-                        ;
+                        $sqlwhere .= " lower(n.interface) ?LIKE? lower(" . $this->db->Escape($p.$v.$p) . ") " . $search['operatorType'];
                         break;
 
                     case 'vlanid':
-                        $sqlwhere .= ' vl.vlanid = ' . $this->db->Escape($v) . ' ' . $search['operatorType'];
+                        $sqlwhere .= " vl.vlanid = " . intval($v) . " " . $search['operatorType'];
                         break;
 
                     case 'gateway':
-                        $sqlwhere .= ' n.gateway ' . $search['compareType'] . ' ' . $this->db->Escape($p . $v . $p) . ' ' . $search['operatorType'];
+                        $sqlwhere .= " n.gateway " . $search['compareType'] . " " . $this->db->Escape($p.$v.$p) . " " . $search['operatorType'];
                         break;
 
                     case 'dns':
-                        $sqlwhere .= ' (n.dns ' . $search['compareType'] . ' ' . $this->db->Escape($p . $v . $p) . ' OR n.dns2 ' . $search['compareType'] . ' ' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType'];
+                        $sqlwhere .= " (n.dns " . $search['compareType'] . " " . $this->db->Escape($p.$v.$p) . " OR n.dns2 " . $search['compareType'] . " " . $this->db->Escape($p.$v.$p) . ") " . $search['operatorType'];
                         break;
 
                     case 'wins':
-                        $sqlwhere .= ' n.wins ' . $search['compareType'] . ' ' . $this->db->Escape($p . $v . $p) . ' ' . $search['operatorType'];
+                        $sqlwhere .= " n.wins " . $search['compareType'] . " " . $this->db->Escape($p.$v.$p) . " " . $search['operatorType'];
                         break;
 
                     case 'domain':
-                        $sqlwhere .= ' lower(n.domain) ' . $search['compareType'] . ' lower(' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType'];
+                        $sqlwhere .= " lower(n.domain) " . $search['compareType'] . " lower(" . $this->db->Escape($p.$v.$p) . ") " . $search['operatorType'];
                         break;
 
                     case 'host':
-                        $sqlwhere .= ' 1 IN (SELECT 1 FROM hosts WHERE name ?LIKE? ' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType'];
+                        $sqlwhere .= " 1 IN (SELECT 1 FROM hosts WHERE name ?LIKE? " . $this->db->Escape($p.$v.$p) . ") " . $search['operatorType'];
                         break;
 
                     case 'description':
-                        $sqlwhere .= ' lower(n.notes) ?LIKE? lower(' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType'];
+                        $sqlwhere .= " lower(n.notes) ?LIKE? lower(" . $this->db->Escape($p.$v.$p) . ") " . $search['operatorType'];
                         break;
                 }
             }

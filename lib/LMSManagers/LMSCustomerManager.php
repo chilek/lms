@@ -960,7 +960,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $order = 'customername,asc';
         }
 
-        if (empty($sqlskey)) {
+        if (empty($sqlskey) || !in_array($sqlskey, array('AND', 'OR'), true)) {
             $sqlskey = 'AND';
         }
 
@@ -1004,7 +1004,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 break;
         }
 
-        if (!isset($statesqlskey)) {
+        if (!isset($statesqlskey) || !in_array($statesqlskey, array('AND', 'OR'), true)) {
             $statesqlskey = 'AND';
         }
 
@@ -1016,6 +1016,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $customergroupnegation = false;
         }
 
+        if (isset($network) && $network) {
+            $network = is_array($network) ? array_map('intval', $network) : intval($network);
+        }
+
         if (!isset($nodegroupnegation)) {
             $nodegroupnegation = false;
         }
@@ -1024,7 +1028,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $state = array($state);
         }
 
-        if (!isset($flagsqlskey)) {
+        if (!isset($flagsqlskey) || !in_array($flagsqlskey, array('AND', 'OR'), true)) {
             $flagsqlskey = 'AND';
         }
 
@@ -1739,7 +1743,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                 )';
                             break;
                         default:
-                            $searchargs[] = "$key ?LIKE? " . $this->db->Escape("%$value%");
+                            if (preg_match('/^[a-z0-9_]+$/', $key)) {
+                                $searchargs[] = "$key ?LIKE? " . $this->db->Escape("%$value%");
+                            }
                     }
                 }
             }

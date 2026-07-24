@@ -5485,7 +5485,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         $nodes = Utils::filterIntegers($nodes);
         if (empty($nodes)) {
-            return [];
+            return array();
         }
 
         $nodeassigns = $this->db->GetCol(

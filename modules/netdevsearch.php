@@ -105,8 +105,10 @@ function NetDevSearch($order = 'name,asc', $search = null, $sqlskey = 'AND')
                         }
                         break;
                     default:
-                        // UPPER here is a postgresql ILIKE bug workaround
-                        $searchargs[] = "UPPER(d.$idx) ?LIKE? UPPER(".$DB->Escape("%$value%").')';
+                        if (preg_match('/^[a-z0-9_]+$/', $idx)) {
+                            // UPPER here is a postgresql ILIKE bug workaround
+                            $searchargs[] = "UPPER(d.$idx) ?LIKE? UPPER(".$DB->Escape("%$value%").')';
+                        }
                         break;
                 }
             }

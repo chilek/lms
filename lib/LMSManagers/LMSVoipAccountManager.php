@@ -40,6 +40,12 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
      */
     public function getVoipAccountList($order = 'login,asc', $search = null, $sqlskey = 'AND')
     {
+        if (empty($sqlskey) || !in_array(strtoupper($sqlskey), array('AND', 'OR'), true)) {
+            $sqlskey = 'AND';
+        } else {
+            $sqlskey = strtoupper($sqlskey);
+        }
+
         if ($order == '') {
             $order = 'login,asc';
         }
@@ -953,8 +959,8 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                                      LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c2.id AND ca2.type = ' . BILLING_ADDRESS . '
                                      LEFT JOIN        addresses addr2 ON ca2.address_id = addr2.id
                                      ' . $where_string . $order_string
-            . (isset($limit) ? ' LIMIT ' . $limit : '')
-            . (isset($offset) ? ' OFFSET ' . $offset : ''));
+            . (isset($limit) ? ' LIMIT ' . intval($limit) : '')
+            . (isset($offset) ? ' OFFSET ' . intval($offset) : ''));
 
         return $bill_list;
     }

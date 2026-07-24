@@ -419,6 +419,16 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 break;
         }
 
+        if (empty($sqlskey) || !in_array(strtoupper($sqlskey), array('AND', 'OR'), true)) {
+            $sqlskey = 'AND';
+        } else {
+            $sqlskey = strtoupper($sqlskey);
+        }
+
+        if (isset($network) && $network) {
+            $network = intval($network);
+        }
+
         $searchargs = array();
         if (!empty($search)) {
             foreach ($search as $key => $value) {

@@ -63,7 +63,9 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
     }
 
     $filter['userand'] = isset($_POST['userand']) ? intval($_POST['userand']) : 0;
-    $filter['userid'] = $_POST['a'] ?? null;
+    $filter['userid'] = isset($_POST['a'])
+        ? (is_array($_POST['a']) ? Utils::filterIntegers($_POST['a']) : intval($_POST['a']))
+        : null;
     $filter['usergroups'] = $_POST['g'] ?? null;
     $filter['customerid'] = $_POST['u'] ?? null;
     $filter['type'] = $_POST['type'] ?? null;
@@ -108,7 +110,7 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
     $filter['userand'] = isset($_GET['userand']) ? intval($_GET['userand']) : 0;
 
     if (isset($_GET['a'])) {
-        $filter['userid'] = $_GET['a'];
+        $filter['userid'] = is_array($_GET['a']) ? Utils::filterIntegers($_GET['a']) : intval($_GET['a']);
     }
 
     if (isset($_GET['g'])) {
