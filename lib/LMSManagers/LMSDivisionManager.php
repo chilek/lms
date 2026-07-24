@@ -91,7 +91,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             . (isset($status) ? ' AND vd.status = ' . intval($status) : '')
             . (isset($userid) ? ' AND ud.userid = ' . intval($userid) : '')
             . (isset($divisionid) ? ' AND vd.id = ' . intval($divisionid) : '')
-            . ($sqlord != '' ? $sqlord . ' ' . $direction : ''),
+            . (empty($sqlord) ? '' : $sqlord . ' ' . $direction),
             'id'
         );
     }
