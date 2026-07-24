@@ -453,6 +453,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
     public function GetCustomerShortBalanceList($customerid, $limit = 10, $order = 'DESC', $aggregate_documents = false)
     {
+        if (strtoupper($order) != 'DESC') {
+            $order = 'ASC';
+        }
+
         $result = $this->db->GetAll(
             'SELECT
                 cash.comment,
@@ -902,13 +906,15 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $args = array(
                     'customerid' => $id,
                 );
-                if (!isset($customeradd['group'])) {
+                if (empty($customeradd['group'])) {
                     $customeradd['group'] = array();
+                } else {
+                    if (!is_array($customeradd['group'])) {
+                        $customeradd['group'] = array($customeradd['group']);
+                    }
+                    $customeradd['group'] = Utils::filterIntegers($customeradd['group']);
                 }
-                if (!is_array($customeradd['group'])) {
-                    $customeradd['group'] = array($customeradd['group']);
-                }
-                $customeradd['group'] = Utils::filterIntegers($customeradd['group']);
+
                 if (!empty($customeradd['group'])) {
                     foreach ($customeradd['group'] as $groupid) {
                         $args[SYSLOG::RES_CUSTGROUP] = $groupid;
@@ -960,7 +966,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $order = 'customername,asc';
         }
 
-        if (empty($sqlskey)) {
+        if (empty($sqlskey) || !preg_match('/^(AND|OR)$/i', $sqlskey)) {
             $sqlskey = 'AND';
         }
 
@@ -970,10 +976,14 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         if (!isset($time)) {
             $time = null;
+        } else {
+            $time = intval($time);
         }
 
         if (!isset($days)) {
             $days = 0;
+        } else {
+            $days = intval($days);
         }
 
         [$order, $direction] = sscanf($order, '%[^,],%s');
@@ -1004,11 +1014,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 break;
         }
 
-        if (!isset($statesqlskey)) {
+        if (!isset($statesqlskey) || !preg_match('/^(AND|OR)$/i', $statesqlskey)) {
             $statesqlskey = 'AND';
         }
 
-        if (!isset($customergroupsqlskey)) {
+        if (!isset($customergroupsqlskey) || !preg_match('/^(AND|OR)$/i', $customergroupsqlskey)) {
             $customergroupsqlskey = 'AND';
         }
 
@@ -1020,11 +1030,14 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $nodegroupnegation = false;
         }
 
-        if (isset($state) && !is_array($state) && !empty($state)) {
-            $state = array($state);
+        if (!empty($state)) {
+            if (!is_array($state)) {
+                $state = array($state);
+            }
+            $state = Utils::filterIntegers($state);
         }
 
-        if (!isset($flagsqlskey)) {
+        if (!isset($flagsqlskey) || !preg_match('/^(AND|OR)$/i', $flagsqlskey)) {
             $flagsqlskey = 'AND';
         }
 
@@ -1367,7 +1380,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             default:
                 if ($as > 0) {
                     $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE
-                        a.suspended = 0 AND a.commited = 1 AND a.dateto > ' . time() . ' AND a.dateto <= ' . (time() + ($as * 86400))
+                        a.suspended = 0 AND a.commited = 1 AND a.dateto > ' . time() . ' AND a.dateto <= ' . (time() + (intval($as) * 86400))
                         . ' AND NOT EXISTS (SELECT 1 FROM assignments aa WHERE aa.customerid = a.customerid AND aa.datefrom > a.dateto LIMIT 1)';
                 } else {
                     $assignment = null;
@@ -1821,6 +1834,14 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 . ' AND (customerassignments.enddate >= ' . $customergroupdate . ' OR customerassignments.enddate = 0)';
         }
 
+        if (!empty($network)) {
+            if (is_array($network)) {
+                $network = Utils::filterIntegers($network);
+            } else {
+                $network = intval($network);
+            }
+        }
+
         $sql .= 'FROM customerview c
             ' . ($overduereceivables ? '
             LEFT JOIN (
@@ -2048,14 +2069,14 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 . ($flag_condition ? ' AND ' . $flag_condition : '')
                 . (isset($division) && $division ? ' AND c.divisionid = ' . intval($division) : '')
                 . ($assignment ? ' AND c.id IN ('.$assignment.')' : '')
-                . (isset($network) && $network ? ' AND (EXISTS (SELECT 1 FROM vnodes WHERE ownerid = c.id
-                		AND (netid' . (is_array($network) ? ' IN (' . implode(',', $network) . ')' : ' = ' . $network) . '
-                		OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')))
-                	OR EXISTS (SELECT 1 FROM netdevices
-                		JOIN vnodes ON vnodes.netdev = netdevices.id AND vnodes.ownerid IS NULL
-                		WHERE netdevices.ownerid = c.id AND (netid'
-                            . (is_array($network) ? ' IN (' . implode(',', $network) . ')' : ' = ' . $network) . '
-                		OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . '))))' : '')
+                . (!empty($network) ? ' AND (EXISTS (SELECT 1 FROM vnodes WHERE ownerid = c.id
+                    AND (netid' . (is_array($network) ? ' IN (' . implode(', ', $network) . ')' : ' = ' . $network) . '
+                        OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')))
+                    OR EXISTS (SELECT 1 FROM netdevices
+                        JOIN vnodes ON vnodes.netdev = netdevices.id AND vnodes.ownerid IS NULL
+                        WHERE netdevices.ownerid = c.id AND (netid'
+                            . (is_array($network) ? ' IN (' . implode(', ', $network) . ')' : ' = ' . $network) . '
+                        OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . '))))' : '')
                 . (!empty($customergroup) && $customergroup != -1
                     ? ' AND ca.gcount ' . (
                         $customergroupnegation
@@ -2074,8 +2095,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 . (isset($customergroup) && $customergroup == -1 ? ' AND ca.gcount IS NULL ' : '')
                 . (!empty($nodegroup) ? ($nodegroupnegation ? ' AND na.gcount IS NULL' : ' AND na.gcount = ' . (is_array($nodegroup) ? count($nodegroup) : 1)) : '')
                 . (!empty($consent_condition) ? ' AND ' . $consent_condition : '')
-                . (isset($sqlsarg) ? ' AND (' . $sqlsarg . ')' : '')
-                . ($sqlord != ''  && !$count ? $sqlord . ' ' . $direction . ', c.id ASC' : '')
+                . (empty($sqlsarg) ? '' : ' AND (' . $sqlsarg . ')')
+                . (empty($sqlord) || $count ? '' : $sqlord . ' ' . $direction . ', c.id ASC')
                 . (isset($limit) && !$count ? ' LIMIT ' . $limit : '')
                 . (isset($offset) && !$count ? ' OFFSET ' . $offset : '');
 
