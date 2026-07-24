@@ -196,7 +196,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
     {
         if ($this->db->GetOne('SELECT COUNT(*) FROM divisions', array($id)) != 1) {
             if ($this->syslog) {
-                $countryid = $this->db->GetOne('SELECT country_id FROM vdivisions
+                $countryid = $this->db->GetOne('SELECT countryid FROM vdivisions
 				WHERE id = ?', array($id));
                 $args = array(
                     SYSLOG::RES_DIV => $id,
