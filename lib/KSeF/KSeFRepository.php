@@ -91,8 +91,8 @@ class KSeFRepository implements KSeFRepositoryInterface
                         AND (status = ? OR status = ?)',
                     [
                         $docId,
-                        KSeFSubmissionService::STATUS_PENDING,
-                        KSeFSubmissionService::STATUS_ACCEPTED,
+                        KSeF::STATUS_PENDING,
+                        KSeF::STATUS_ACCEPTED,
                     ]
                 );
                 if (!empty($alreadyPendingOrAccepted)) {
@@ -121,7 +121,7 @@ class KSeFRepository implements KSeFRepositoryInterface
                     $sessionReferenceNumber,
                     $createdAt,
                     $createdAt,
-                    KSeFSubmissionService::STATUS_PENDING,
+                    KSeF::STATUS_PENDING,
                     'Reserved for KSeF submission.',
                     $environment,
                 ]
@@ -140,7 +140,7 @@ class KSeFRepository implements KSeFRepositoryInterface
                         $document['docid'],
                         $ordinalNumber,
                         $document['hash'],
-                        KSeFSubmissionService::STATUS_PENDING,
+                        KSeF::STATUS_PENDING,
                         'Reserved for KSeF submission.',
                         null,
                     ]
@@ -190,7 +190,7 @@ class KSeFRepository implements KSeFRepositoryInterface
                 statusdescription = ?
             WHERE id = ?',
             [
-                KSeFSubmissionService::STATUS_ACCEPTED,
+                KSeF::STATUS_ACCEPTED,
                 'KSeF session closed.',
                 $id,
             ]
@@ -233,7 +233,7 @@ class KSeFRepository implements KSeFRepositoryInterface
             'kbs.ksefnumber NOT LIKE ?',
         ];
         $params = [
-            KSeFSubmissionService::STATUS_PENDING,
+            KSeF::STATUS_PENDING,
             'LOCAL-S-%',
         ];
 

@@ -16,6 +16,8 @@ namespace LMS\Tests\KSeF {
     use N1ebieski\KSEFClient\Requests\Sessions\Batch\Close\CloseRequest;
     use N1ebieski\KSEFClient\Requests\Sessions\Batch\OpenAndSend\OpenAndSendXmlRequest;
     use N1ebieski\KSEFClient\Requests\Sessions\Invoices\KsefUpo\KsefUpoRequest;
+    use N1ebieski\KSEFClient\Requests\Sessions\Invoices\List\ListRequest;
+    use N1ebieski\KSEFClient\ValueObjects\Requests\ContinuationToken;
     use N1ebieski\KSEFClient\ValueObjects\Requests\Sessions\FormCode;
     use PHPUnit\Framework\TestCase;
 
@@ -110,13 +112,14 @@ namespace LMS\Tests\KSeF {
             $method = new \ReflectionMethod($gateway, 'createInvoiceListRequest');
             $method->setAccessible(true);
 
-            $request = $method->invoke($gateway, 'SESSION-1', 500, 'NEXT-PAGE');
+            $sessionReferenceNumber = '20260424-SO-ABCDEFGHIJ-1234567890-AB';
+            $request = $method->invoke($gateway, $sessionReferenceNumber, 'NEXT-PAGE');
 
-            $this->assertSame([
-                'referenceNumber' => 'SESSION-1',
-                'pageSize' => 500,
-                'continuationToken' => 'NEXT-PAGE',
-            ], $request);
+            $this->assertInstanceOf(ListRequest::class, $request);
+            $this->assertSame($sessionReferenceNumber, $request->referenceNumber->value);
+            $this->assertSame(1000, $request->pageSize->value);
+            $this->assertInstanceOf(ContinuationToken::class, $request->continuationToken);
+            $this->assertSame('NEXT-PAGE', $request->continuationToken->value);
         }
 
         public function testFormatsXmlValidationErrorsWithLineAndColumn()

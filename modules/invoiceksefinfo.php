@@ -111,7 +111,7 @@ function invoiceKSeFRenderSendResult(array $result)
                 $statusClass = 'red';
             }
             if (empty($statusMessages)) {
-                if ((int) $document['status'] === KSeFSubmissionService::STATUS_ACCEPTED) {
+                if ((int) $document['status'] === KSeF::STATUS_ACCEPTED) {
                     $statusMessages[] = $document['statusdescription'] ?: trans('KSeF accepted');
                 } elseif (isset($document['status'])) {
                     $statusMessages[] = ($document['statusdescription'] ?: trans('waiting for KSeF handling'))
@@ -134,7 +134,7 @@ function invoiceKSeFRenderSendResult(array $result)
                     . '<a href="?m=invoiceksefinfo&id=' . $docId . '&action=upo-view" target="_blank">'
                     . trans('View UPO')
                     . '</a>';
-            } elseif ((int) $document['status'] === KSeFSubmissionService::STATUS_ACCEPTED) {
+            } elseif ((int) $document['status'] === KSeF::STATUS_ACCEPTED) {
                 $upo = trans('UPO not available');
             }
 
@@ -221,16 +221,15 @@ if (!empty($_GET['action']) && $_GET['action'] == 'send') {
         'backurl' => $backUrl,
     ];
     try {
-        $section = 'ksef';
         $repository = new KSeFRepository($DB);
-        $configProvider = function (?int $divisionId = null) use ($section) {
+        $configProvider = function (?int $divisionId = null) {
             if ($divisionId !== null) {
                 ConfigHelper::setFilter($divisionId);
             }
 
-            return KSeFConfig::fromConfigHelper($section, true);
+            return KSeFConfig::fromConfigHelper(true);
         };
-        $config = KSeFConfig::fromConfigHelper($section, false);
+        $config = KSeFConfig::fromConfigHelper(false);
         $ksef = new KSeF($DB, $LMS);
         $service = new KSeFSubmissionService(
             $repository,

@@ -4,92 +4,63 @@ namespace Lms\KSeF;
 
 class KSeFConfig
 {
-    const AUTH_METHOD_TOKEN = 'token';
-    const AUTH_METHOD_CERTIFICATE = 'certificate';
-
     private $environment;
-    private $environmentName;
-    private $authMethod;
     private $token;
     private $certificatePath;
     private $certificatePassword;
     private $maxDocuments;
-    private $invoiceReferencePageSize;
 
     private function __construct(
         int $environment,
-        string $environmentName,
-        string $authMethod,
         ?string $token,
         ?string $certificatePath,
         ?string $certificatePassword,
-        int $maxDocuments,
-        int $invoiceReferencePageSize
+        int $maxDocuments
     ) {
         $this->environment = $environment;
-        $this->environmentName = $environmentName;
-        $this->authMethod = $authMethod;
         $this->token = $token;
         $this->certificatePath = $certificatePath;
         $this->certificatePassword = $certificatePassword;
         $this->maxDocuments = $maxDocuments;
-        $this->invoiceReferencePageSize = $invoiceReferencePageSize;
     }
 
     public static function fromArray(array $config, bool $validateCredentials = true): self
     {
-        [$environment, $environmentName] = self::parseEnvironment($config['environment'] ?? 'test');
+        $environment = self::parseEnvironment($config['environment'] ?? 'test');
         $token = self::nullableString($config['token'] ?? null);
-        $certificatePath = self::nullableString($config['certificate_path'] ?? null);
+        $certificatePath = self::nullableString($config['certificate_path'] ?? $config['certificate'] ?? null);
         $certificatePassword = self::nullableString($config['certificate_password'] ?? null);
-        $authMethod = strtolower(trim(
-            $config['auth_method'] ?? ($token === null ? self::AUTH_METHOD_CERTIFICATE : self::AUTH_METHOD_TOKEN)
-        ));
         $maxDocuments = min(10000, max(1, (int) ($config['max_documents'] ?? 10000)));
-        $invoiceReferencePageSize = min(
-            1000,
-            max(10, (int) ($config['invoice_reference_page_size'] ?? 1000))
-        );
 
-        if (!in_array($authMethod, [self::AUTH_METHOD_TOKEN, self::AUTH_METHOD_CERTIFICATE], true)) {
-            throw new \InvalidArgumentException('Unsupported KSeF auth method: ' . $authMethod);
+        if ($token === null && $certificatePath !== null && KSeF::isApiToken($certificatePath)) {
+            $token = $certificatePath;
+            $certificatePath = null;
         }
 
-        if ($validateCredentials && $authMethod === self::AUTH_METHOD_TOKEN && $token === null) {
-            throw new \InvalidArgumentException('KSeF token is required for token authentication.');
-        }
-
-        if ($validateCredentials && $authMethod === self::AUTH_METHOD_CERTIFICATE && $certificatePath === null) {
-            throw new \InvalidArgumentException('KSeF certificate path is required for certificate authentication.');
+        if ($validateCredentials && $token === null && $certificatePath === null) {
+            throw new \InvalidArgumentException('KSeF certificate or API token is required.');
         }
 
         return new self(
             $environment,
-            $environmentName,
-            $authMethod,
             $token,
             $certificatePath,
             $certificatePassword,
-            $maxDocuments,
-            $invoiceReferencePageSize
+            $maxDocuments
         );
     }
 
-    public static function fromConfigHelper(string $section = 'ksef', bool $validateCredentials = true): self
+    public static function fromConfigHelper(bool $validateCredentials = true): self
     {
-        $token = \ConfigHelper::getConfig($section . '.token');
+        $certificateOrToken = KSeF::getCertificatePath();
+        $legacyToken = \ConfigHelper::getConfig('ksef.token');
 
         return self::fromArray([
-            'environment' => \ConfigHelper::getConfig($section . '.environment', 'test'),
-            'auth_method' => \ConfigHelper::getConfig(
-                $section . '.auth_method',
-                self::nullableString($token) === null ? self::AUTH_METHOD_CERTIFICATE : self::AUTH_METHOD_TOKEN
-            ),
-            'token' => $token,
-            'certificate_path' => self::resolveCertificatePath(\ConfigHelper::getConfig($section . '.certificate')),
-            'certificate_password' => \ConfigHelper::getConfig($section . '.password'),
-            'max_documents' => \ConfigHelper::getConfig($section . '.max_documents', 10000),
-            'invoice_reference_page_size' => \ConfigHelper::getConfig($section . '.invoice_reference_page_size', 1000),
+            'environment' => \ConfigHelper::getConfig('ksef.environment', 'test'),
+            'token' => empty($certificateOrToken) ? $legacyToken : null,
+            'certificate_path' => $certificateOrToken,
+            'certificate_password' => KSeF::getCertificatePassword(),
+            'max_documents' => \ConfigHelper::getConfig('ksef.max_documents', 10000),
         ], $validateCredentials);
     }
 
@@ -98,14 +69,9 @@ class KSeFConfig
         return $this->environment;
     }
 
-    public function getEnvironmentName(): string
+    public function usesApiToken(): bool
     {
-        return $this->environmentName;
-    }
-
-    public function getAuthMethod(): string
-    {
-        return $this->authMethod;
+        return $this->token !== null;
     }
 
     public function getToken(): ?string
@@ -128,26 +94,21 @@ class KSeFConfig
         return $this->maxDocuments;
     }
 
-    public function getInvoiceReferencePageSize(): int
-    {
-        return $this->invoiceReferencePageSize;
-    }
-
-    private static function parseEnvironment($environment): array
+    private static function parseEnvironment($environment): int
     {
         $environment = strtolower(trim((string) $environment));
 
         switch ($environment) {
             case 'test':
             case '1':
-                return [KSeF::ENVIRONMENT_TEST, 'test'];
+                return KSeF::ENVIRONMENT_TEST;
             case 'prod':
             case 'production':
             case '2':
-                return [KSeF::ENVIRONMENT_PROD, 'production'];
+                return KSeF::ENVIRONMENT_PROD;
             case 'demo':
             case '3':
-                return [KSeF::ENVIRONMENT_DEMO, 'demo'];
+                return KSeF::ENVIRONMENT_DEMO;
             default:
                 throw new \InvalidArgumentException('Unsupported KSeF environment: ' . $environment);
         }
@@ -164,15 +125,4 @@ class KSeFConfig
         return $value === '' ? null : $value;
     }
 
-    private static function resolveCertificatePath($certificatePath): ?string
-    {
-        $certificatePath = self::nullableString($certificatePath);
-        if ($certificatePath === null) {
-            return null;
-        }
-
-        return strpos($certificatePath, DIRECTORY_SEPARATOR) === 0
-            ? $certificatePath
-            : SYS_DIR . DIRECTORY_SEPARATOR . $certificatePath;
-    }
 }

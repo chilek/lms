@@ -21,6 +21,8 @@ class FakeKSeFRepository implements KSeFRepositoryInterface
     public $pendingDivisionId = null;
     public $pendingCustomerId = null;
     public $pendingDocIds = null;
+    public $eligibleQueryCount = 0;
+    public $pendingQueryCount = 0;
 
     private $eligibleInvoices;
     private $pendingDocuments;
@@ -37,6 +39,7 @@ class FakeKSeFRepository implements KSeFRepositoryInterface
         ?int $customerId = null,
         ?array $docIds = null
     ): array {
+        $this->eligibleQueryCount++;
         $this->eligibleDocIds = $docIds;
         $eligibleInvoices = $this->eligibleInvoices;
         if ($docIds !== null) {
@@ -129,6 +132,7 @@ class FakeKSeFRepository implements KSeFRepositoryInterface
         ?int $customerId = null,
         ?array $docIds = null
     ): array {
+        $this->pendingQueryCount++;
         $this->pendingDivisionId = $divisionId;
         $this->pendingCustomerId = $customerId;
         $this->pendingDocIds = $docIds;
