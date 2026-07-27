@@ -28,7 +28,7 @@ class KSeFConfig
     {
         $environment = self::parseEnvironment($config['environment'] ?? 'test');
         $token = self::nullableString($config['token'] ?? null);
-        $certificatePath = self::nullableString($config['certificate_path'] ?? $config['certificate'] ?? null);
+        $certificatePath = self::nullableString($config['certificate_path'] ?? null);
         $certificatePassword = self::nullableString($config['certificate_password'] ?? null);
         $maxDocuments = min(10000, max(1, (int) ($config['max_documents'] ?? 10000)));
 

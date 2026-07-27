@@ -62,12 +62,12 @@ if (!empty($options['division'])) {
     ConfigHelper::setFilter($divisionId);
 }
 $customerId = isset($options['customerid']) ? intval($options['customerid']) : null;
-$configProvider = function (?int $selectedDivisionId = null) use ($options) {
+$configProvider = function (?int $selectedDivisionId = null) {
     if ($selectedDivisionId !== null) {
         ConfigHelper::setFilter($selectedDivisionId);
     }
 
-    return KSeFConfig::fromConfigHelper(!isset($options['test']));
+    return KSeFConfig::fromConfigHelper();
 };
 $config = KSeFConfig::fromConfigHelper(false);
 

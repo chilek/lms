@@ -1,129 +1,121 @@
 <?php
 
-namespace LMS\Tests\KSeF {
-    if (!defined('STORAGE_DIR')) {
-        define('STORAGE_DIR', sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'lms-ksef-test-storage');
-    }
+namespace LMS\Tests\KSeF;
 
-    if (!class_exists('PHPUnit\Framework\TestCase') && class_exists('PHPUnit_Framework_TestCase')) {
-        class_alias('PHPUnit_Framework_TestCase', 'PHPUnit\Framework\TestCase');
-    }
+if (!class_exists('PHPUnit\Framework\TestCase') && class_exists('PHPUnit_Framework_TestCase')) {
+    class_alias('PHPUnit_Framework_TestCase', 'PHPUnit\Framework\TestCase');
+}
 
-    require_once __DIR__ . '/FakeKsefUpoClient.php';
+use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Response;
+use Lms\KSeF\KSeFConfig;
+use Lms\KSeF\N1ebieskiKSeFGateway;
+use N1ebieski\KSEFClient\ClientBuilder;
+use N1ebieski\KSEFClient\Testing\Fixtures\Requests\Sessions\Invoices\KsefUpo\KsefUpoResponseFixture;
+use N1ebieski\KSEFClient\Testing\Fixtures\Requests\Sessions\Invoices\List\ListRequestFixture;
+use N1ebieski\KSEFClient\Testing\Fixtures\Requests\Sessions\Invoices\List\ListResponseFixture;
+use N1ebieski\KSEFClient\Testing\Fixtures\Requests\Sessions\Invoices\Upo\UpoResponseFixture;
+use N1ebieski\KSEFClient\ValueObjects\Mode;
+use PHPUnit\Framework\TestCase;
 
-    use Lms\KSeF\N1ebieskiKSeFGateway;
-    use N1ebieski\KSEFClient\Exceptions\XmlValidationException;
-    use N1ebieski\KSEFClient\Requests\Sessions\Invoices\KsefUpo\KsefUpoRequest;
-    use N1ebieski\KSEFClient\Requests\Sessions\Invoices\List\ListRequest;
-    use N1ebieski\KSEFClient\ValueObjects\Requests\ContinuationToken;
-    use PHPUnit\Framework\TestCase;
-
-    class N1ebieskiKSeFGatewayTest extends TestCase
+class N1ebieskiKSeFGatewayTest extends TestCase
+{
+    public function testMapsInvoiceListAndDownloadsAcceptedAndDuplicateUpos()
     {
-        public function testFetchesOriginalUpoForDuplicateInvoice()
-        {
-            $gateway = new N1ebieskiKSeFGateway();
-            $method = new \ReflectionMethod($gateway, 'fetchOriginalUpo');
-            $method->setAccessible(true);
-            $client = new FakeKsefUpoClient('<OriginalUPO />');
+        $listResponse = new ListResponseFixture();
+        unset($listResponse->data['continuationToken']);
+        $upoResponse = new UpoResponseFixture();
+        $duplicateUpoResponse = new KsefUpoResponseFixture();
+        $history = [];
+        $config = $this->ksefConfig();
+        $gateway = $this->gatewayWithResponses($config, [
+            new Response($listResponse->statusCode, [], $listResponse->toContents()),
+            new Response($upoResponse->statusCode, [], $upoResponse->toContents()),
+            new Response($duplicateUpoResponse->statusCode, [], $duplicateUpoResponse->toContents()),
+        ], $history);
+        $sessionReference = (new ListRequestFixture())->data['referenceNumber'];
 
-            $result = $method->invoke(
-                $gateway,
-                $client,
-                '20260424-SO-ABCDEFGHIJ-1234567890-AB',
-                '5130271243-20260424-ABCDEF-123456-AB'
-            );
+        $invoices = $gateway->listInvoices($config, '5265877635', $sessionReference);
 
-            $this->assertSame('<OriginalUPO />', $result);
-            $this->assertInstanceOf(KsefUpoRequest::class, $client->request);
-        }
+        $this->assertCount(2, $invoices);
+        $this->assertSame(1, $invoices[0]['ordinal_number']);
+        $this->assertSame(200, $invoices[0]['status']);
+        $this->assertSame('5265877635-20250626-010080DD2B5E-26', $invoices[0]['ksef_number']);
+        $this->assertSame('2025-09-18T12:24:01.0154302+00:00', $invoices[0]['permanent_storage_date']);
+        $this->assertSame('upo', $invoices[0]['upo']);
+        $this->assertSame(2, $invoices[1]['ordinal_number']);
+        $this->assertSame(440, $invoices[1]['status']);
+        $this->assertSame('5265877635-20250626-010080DD2B5E-26', $invoices[1]['original_ksef_number']);
+        $this->assertNull($invoices[1]['permanent_storage_date']);
+        $this->assertSame('upo', $invoices[1]['upo']);
 
-        public function testOriginalUpoFetchFailureDoesNotBlockDuplicateRecovery()
-        {
-            $gateway = new N1ebieskiKSeFGateway();
-            $method = new \ReflectionMethod($gateway, 'fetchOriginalUpo');
-            $method->setAccessible(true);
-            $client = new FakeKsefUpoClient(null, true);
-
-            $result = $method->invoke(
-                $gateway,
-                $client,
-                '20260424-SO-ABCDEFGHIJ-1234567890-AB',
-                '5130271243-20260424-ABCDEF-123456-AB'
-            );
-
-            $this->assertSame(null, $result);
-        }
-
-        public function testCreatesPaginatedInvoiceListRequest()
-        {
-            $gateway = new N1ebieskiKSeFGateway();
-            $method = new \ReflectionMethod($gateway, 'createInvoiceListRequest');
-            $method->setAccessible(true);
-
-            $sessionReferenceNumber = '20260424-SO-ABCDEFGHIJ-1234567890-AB';
-            $request = $method->invoke($gateway, $sessionReferenceNumber, 'NEXT-PAGE');
-
-            $this->assertInstanceOf(ListRequest::class, $request);
-            $this->assertSame($sessionReferenceNumber, $request->referenceNumber->value);
-            $this->assertSame(1000, $request->pageSize->value);
-            $this->assertInstanceOf(ContinuationToken::class, $request->continuationToken);
-            $this->assertSame('NEXT-PAGE', $request->continuationToken->value);
-        }
-
-        public function testFormatsXmlValidationErrorsWithLineAndColumn()
-        {
-            $gateway = new N1ebieskiKSeFGateway();
-            $method = new \ReflectionMethod($gateway, 'formatXmlValidationException');
-            $method->setAccessible(true);
-            $error = new \LibXMLError();
-            $error->message = 'Element NIP is not accepted by the pattern.';
-            $error->line = 26;
-            $error->column = 0;
-
-            $result = $method->invoke(
-                $gateway,
-                new XmlValidationException(
-                    'The value is not valid with xsd.',
-                    0,
-                    null,
-                    ['errors' => [$error]]
-                )
-            );
-
-            $this->assertSame(
-                'The value is not valid with xsd. Element NIP is not accepted by the pattern. (line 26, column 0)',
-                $result
-            );
-        }
-
-        public function testExtractsOriginalKsefNumberFromDuplicateStatusDetails()
-        {
-            $gateway = new N1ebieskiKSeFGateway();
-            $method = new \ReflectionMethod($gateway, 'extractOriginalKsefNumberFromDetails');
-            $method->setAccessible(true);
-
-            $result = $method->invoke(
-                $gateway,
-                'Duplikat faktury. Faktura o numerze KSeF: 5265877635-20250626-010080DD2B5E-26 została już prawidłowo przesłana do systemu w sesji: 20250626-SO-2F14610000-242991F8C9-B4'
-            );
-
-            $this->assertSame('5265877635-20250626-010080DD2B5E-26', $result);
-        }
-
-        public function testExtractsOriginalSessionReferenceFromDuplicateStatusDetails()
-        {
-            $gateway = new N1ebieskiKSeFGateway();
-            $method = new \ReflectionMethod($gateway, 'extractOriginalSessionReferenceFromDetails');
-            $method->setAccessible(true);
-
-            $result = $method->invoke(
-                $gateway,
-                'Duplikat faktury. Faktura o numerze KSeF: 5265877635-20250626-010080DD2B5E-26 została już prawidłowo przesłana do systemu w sesji: 20250626-SO-2F14610000-242991F8C9-B4'
-            );
-
-            $this->assertSame('20250626-SO-2F14610000-242991F8C9-B4', $result);
-        }
+        $this->assertCount(3, $history);
+        $this->assertStringEndsWith('/sessions/' . $sessionReference . '/invoices', $history[0]['request']->getUri()->getPath());
+        parse_str($history[0]['request']->getUri()->getQuery(), $query);
+        $this->assertSame('1000', $query['pageSize']);
+        $this->assertStringEndsWith('/invoices/' . $listResponse->data['invoices'][0]['referenceNumber'] . '/upo', $history[1]['request']->getUri()->getPath());
+        $this->assertStringEndsWith(
+            '/sessions/20250626-SO-2F14610000-242991F8C9-B4/invoices/ksef/'
+                . '5265877635-20250626-010080DD2B5E-26/upo',
+            $history[2]['request']->getUri()->getPath()
+        );
     }
 
+    public function testDuplicateUpoFailureDoesNotBlockStatusMapping()
+    {
+        $listResponse = new ListResponseFixture();
+        unset($listResponse->data['continuationToken']);
+        $listResponse->data['invoices'] = [$listResponse->data['invoices'][1]];
+        $history = [];
+        $config = $this->ksefConfig();
+        $gateway = $this->gatewayWithResponses($config, [
+            new Response($listResponse->statusCode, [], $listResponse->toContents()),
+            new Response(500),
+        ], $history);
+        $sessionReference = (new ListRequestFixture())->data['referenceNumber'];
+
+        $invoices = $gateway->listInvoices($config, '5265877635', $sessionReference);
+
+        $this->assertSame(440, $invoices[0]['status']);
+        $this->assertSame('5265877635-20250626-010080DD2B5E-26', $invoices[0]['original_ksef_number']);
+        $this->assertNull($invoices[0]['upo']);
+    }
+
+    public function testFormatsRealXmlValidationErrorsWithLineAndColumn()
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('line 1, column 28');
+
+        (new N1ebieskiKSeFGateway())->validateXml('<Faktura><broken></Faktura>');
+    }
+
+    private function ksefConfig(): KSeFConfig
+    {
+        return KSeFConfig::fromArray([
+            'environment' => 'test',
+            'token' => 'secret-token',
+        ]);
+    }
+
+    private function gatewayWithResponses(KSeFConfig $ksefConfig, array $responses, array &$history): N1ebieskiKSeFGateway
+    {
+        $handler = HandlerStack::create(new MockHandler($responses));
+        $handler->push(Middleware::history($history));
+        $client = (new ClientBuilder())
+            ->withMode(Mode::Test)
+            ->withHttpClient(new GuzzleClient(['handler' => $handler]))
+            ->withValidateXml(false)
+            ->build();
+        $gateway = new N1ebieskiKSeFGateway();
+        $clients = new \ReflectionProperty($gateway, 'clients');
+        $clients->setAccessible(true);
+        $clients->setValue($gateway, [
+            spl_object_hash($ksefConfig) . ':5265877635' => $client,
+        ]);
+
+        return $gateway;
+    }
 }
