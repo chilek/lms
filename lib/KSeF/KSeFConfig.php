@@ -124,5 +124,4 @@ class KSeFConfig
 
         return $value === '' ? null : $value;
     }
-
 }

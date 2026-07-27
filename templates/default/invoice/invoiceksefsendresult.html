@@ -1,0 +1,60 @@
+<H1>{trans("KSeF invoice handling")}</H1>
+
+<style>
+	.ksef-submit-result-document,
+	.ksef-submit-result-ksef-number,
+	.ksef-submit-result-upo {
+		white-space: nowrap;
+	}
+	.ksef-submit-result-status {
+		overflow-wrap: anywhere;
+		word-break: break-word;
+	}
+</style>
+
+{if !empty($result.error)}
+	<p class="red">{$result.error|escape}</p>
+{else}
+	<p>
+		{trans("KSeF submitted:")} {$result.submitted},
+		{trans("KSeF synchronized:")} {$result.updated},
+		{trans("skipped:")} {$result.skipped}
+	</p>
+
+	{if !empty($result.result_documents)}
+		<table class="lmsbox ksef-submit-result-table" cellpadding="3">
+			<thead>
+				<tr>
+					<th class="ksef-submit-result-document">{trans("Document")}</th>
+					<th class="ksef-submit-result-status">{trans("Status")}</th>
+					<th class="ksef-submit-result-ksef-number">{trans("KSeF number")}</th>
+					<th class="ksef-submit-result-upo">{trans("UPO")}</th>
+				</tr>
+			</thead>
+			<tbody>
+				{foreach $result.result_documents as $document}
+					<tr>
+						<td class="ksef-submit-result-document">{$document.fullnumber|escape}</td>
+						<td class="ksef-submit-result-status{if $document.has_errors} red{/if}">{$document.status_message|escape}</td>
+						<td class="ksef-submit-result-ksef-number">{if !empty($document.ksefnumber)}{$document.ksefnumber|escape}{else}-{/if}</td>
+						<td class="ksef-submit-result-upo">
+							{if $document.has_upo}
+								<a href="?m=invoiceksefinfo&id={$document.id|escape}&action=upo-download">{trans("Download UPO")}</a>
+								|
+								<a href="?m=invoiceksefinfo&id={$document.id|escape}&action=upo-view" target="_blank" rel="noopener">{trans("View UPO")}</a>
+							{elseif $document.accepted}
+								{trans("UPO not available")}
+							{else}
+								-
+							{/if}
+						</td>
+					</tr>
+				{/foreach}
+			</tbody>
+		</table>
+	{/if}
+{/if}
+
+<p>
+	<a href="{$result.backurl|escape}">{trans("Return to invoice list")}</a>
+</p>

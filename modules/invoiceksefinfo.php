@@ -30,36 +30,12 @@ use \Lms\KSeF\KSeFRepository;
 use \Lms\KSeF\KSeFSubmissionService;
 use \Lms\KSeF\N1ebieskiKSeFGateway;
 
-function invoiceKSeFResultKey()
+function prepareInvoiceKSeFSendResult(array $result)
 {
-    try {
-        return bin2hex(random_bytes(8));
-    } catch (\Throwable $e) {
-        return sha1(uniqid('', true));
-    }
-}
-
-function invoiceKSeFRenderSendResult(array $result)
-{
-    $layout['pagetitle'] = trans('KSeF invoice handling');
-    $backUrl = $result['backurl'] ?? '?m=invoicelist';
-
-    echo '<H1>' . $layout['pagetitle'] . '</H1>';
-    echo '<style>'
-        . '.ksef-submit-result-document,.ksef-submit-result-ksef-number,.ksef-submit-result-upo{white-space:nowrap;}'
-        . '.ksef-submit-result-status{overflow-wrap:anywhere;word-break:break-word;}'
-        . '</style>';
+    $result['backurl'] = $result['backurl'] ?? '?m=invoicelist';
 
     if (!empty($result['error'])) {
-        echo '<p class="red">'
-            . htmlspecialchars($result['error'], ENT_QUOTES, 'UTF-8')
-            . '</p>';
-        echo '<p>'
-            . '<a href="' . htmlspecialchars($backUrl, ENT_QUOTES, 'UTF-8') . '">'
-            . trans('Return to invoice list')
-            . '</a>'
-            . '</p>';
-        return;
+        return $result;
     }
 
     $sendResult = $result['send_result'];
@@ -67,12 +43,9 @@ function invoiceKSeFRenderSendResult(array $result)
     $skippedDocIds = $result['skipped_doc_ids'];
     $resultDocuments = $result['result_documents'];
 
-    $skipped = intval($sendResult['skipped']) + count($skippedDocIds);
-    echo '<p>'
-        . trans('KSeF submitted:') . ' ' . intval($sendResult['submitted'])
-        . ', ' . trans('KSeF synchronized:') . ' ' . intval($syncResult['updated'])
-        . ', ' . trans('skipped:') . ' ' . $skipped
-        . '</p>';
+    $result['submitted'] = intval($sendResult['submitted']);
+    $result['updated'] = intval($syncResult['updated']);
+    $result['skipped'] = intval($sendResult['skipped']) + count($skippedDocIds);
 
     $sendErrors = [];
     foreach ($sendResult['errors'] as $error) {
@@ -84,81 +57,47 @@ function invoiceKSeFRenderSendResult(array $result)
     }
     $skippedMap = array_fill_keys($skippedDocIds, true);
 
-    if (!empty($resultDocuments)) {
-        echo '<table class="lmsbox ksef-submit-result-table" cellpadding="3">';
-        echo '<thead><tr>'
-            . '<th class="ksef-submit-result-document">' . trans('Document') . '</th>'
-            . '<th class="ksef-submit-result-status">' . trans('Status') . '</th>'
-            . '<th class="ksef-submit-result-ksef-number">' . trans('KSeF number') . '</th>'
-            . '<th class="ksef-submit-result-upo">' . trans('UPO') . '</th>'
-            . '</tr></thead><tbody>';
-        foreach ($resultDocuments as $document) {
-            $docId = (int) $document['id'];
-            $ksefDocumentId = (int) $document['ksefdocumentid'];
-            $statusMessages = [];
-            $statusClass = '';
+    foreach ($resultDocuments as &$document) {
+        $docId = (int) $document['id'];
+        $ksefDocumentId = (int) $document['ksefdocumentid'];
+        $statusMessages = [];
 
-            if (isset($skippedMap[$docId])) {
-                $statusMessages[] = trans('Document is not eligible for KSeF submission or has been submitted already.');
-                $statusClass = 'red';
-            }
-            if (!empty($sendErrors[$docId])) {
-                $statusMessages = array_merge($statusMessages, $sendErrors[$docId]);
-                $statusClass = 'red';
-            }
-            if ($ksefDocumentId && !empty($syncErrors[$ksefDocumentId])) {
-                $statusMessages = array_merge($statusMessages, $syncErrors[$ksefDocumentId]);
-                $statusClass = 'red';
-            }
-            if (empty($statusMessages)) {
-                if ((int) $document['status'] === KSeF::STATUS_ACCEPTED) {
-                    $statusMessages[] = $document['statusdescription'] ?: trans('KSeF accepted');
-                } elseif (isset($document['status'])) {
-                    $statusMessages[] = ($document['statusdescription'] ?: trans('waiting for KSeF handling'))
-                        . ' (' . intval($document['status']) . ')';
-                    $statusDetails = KSeF::formatStatusDetails($document['statusdetails']);
-                    if (!empty($statusDetails)) {
-                        $statusMessages[] = $statusDetails;
-                    }
-                } else {
-                    $statusMessages[] = trans('not submitted to KSeF');
-                }
-            }
-
-            $upo = '-';
-            if (!empty($document['ksefnumber']) && KSeF::upoFileExists($document['ksefnumber'])) {
-                $upo = '<a href="?m=invoiceksefinfo&id=' . $docId . '&action=upo-download">'
-                    . trans('Download UPO')
-                    . '</a>'
-                    . ' | '
-                    . '<a href="?m=invoiceksefinfo&id=' . $docId . '&action=upo-view" target="_blank">'
-                    . trans('View UPO')
-                    . '</a>';
-            } elseif ((int) $document['status'] === KSeF::STATUS_ACCEPTED) {
-                $upo = trans('UPO not available');
-            }
-
-            echo '<tr>'
-                . '<td class="ksef-submit-result-document">'
-                . htmlspecialchars($document['fullnumber'], ENT_QUOTES, 'UTF-8')
-                . '</td>'
-                . '<td class="ksef-submit-result-status' . ($statusClass ? ' ' . $statusClass : '') . '">'
-                . htmlspecialchars(implode(' ', $statusMessages), ENT_QUOTES, 'UTF-8')
-                . '</td>'
-                . '<td class="ksef-submit-result-ksef-number">'
-                . htmlspecialchars($document['ksefnumber'] ?: '-', ENT_QUOTES, 'UTF-8')
-                . '</td>'
-                . '<td class="ksef-submit-result-upo">' . $upo . '</td>'
-                . '</tr>';
+        if (isset($skippedMap[$docId])) {
+            $statusMessages[] = trans('Document is not eligible for KSeF submission or has been submitted already.');
         }
-        echo '</tbody></table>';
-    }
+        if (!empty($sendErrors[$docId])) {
+            $statusMessages = array_merge($statusMessages, $sendErrors[$docId]);
+        }
+        if ($ksefDocumentId && !empty($syncErrors[$ksefDocumentId])) {
+            $statusMessages = array_merge($statusMessages, $syncErrors[$ksefDocumentId]);
+        }
+        $document['has_errors'] = !empty($statusMessages);
 
-    echo '<p>'
-        . '<a href="' . htmlspecialchars($backUrl, ENT_QUOTES, 'UTF-8') . '">'
-        . trans('Return to invoice list')
-        . '</a>'
-        . '</p>';
+        if (empty($statusMessages)) {
+            if ((int) $document['status'] === KSeF::STATUS_ACCEPTED) {
+                $statusMessages[] = $document['statusdescription'] ?: trans('KSeF accepted');
+            } elseif (isset($document['status'])) {
+                $statusMessages[] = ($document['statusdescription'] ?: trans('waiting for KSeF handling'))
+                    . ' (' . intval($document['status']) . ')';
+                $statusDetails = KSeF::formatStatusDetails($document['statusdetails']);
+                if (!empty($statusDetails)) {
+                    $statusMessages[] = $statusDetails;
+                }
+            } else {
+                $statusMessages[] = trans('not submitted to KSeF');
+            }
+        }
+
+        $document['status_message'] = implode(' ', $statusMessages);
+        $document['accepted'] = (int) $document['status'] === KSeF::STATUS_ACCEPTED;
+        $document['has_upo'] = !empty($document['ksefnumber'])
+            && KSeF::upoFileExists($document['ksefnumber']);
+    }
+    unset($document);
+
+    $result['result_documents'] = $resultDocuments;
+
+    return $result;
 }
 
 if (!empty($_GET['action']) && $_GET['action'] == 'send-result') {
@@ -167,23 +106,24 @@ if (!empty($_GET['action']) && $_GET['action'] == 'send-result') {
     }
 
     $resultKey = preg_replace('/[^a-f0-9]/', '', $_GET['key'] ?? '');
-    $result = null;
+    $result = [];
     if ($resultKey !== '') {
         $resultSessionKey = 'invoiceksefresult.' . $resultKey;
         $SESSION->restore($resultSessionKey, $result);
         $SESSION->remove($resultSessionKey);
     }
 
-    $layout['pagetitle'] = trans('KSeF invoice handling');
-    $SMARTY->display('header.html');
     if (empty($result) || !is_array($result)) {
-        invoiceKSeFRenderSendResult([
+        $result = [
             'backurl' => '?m=invoicelist',
             'error' => trans('KSeF submission result is not available.'),
-        ]);
-    } else {
-        invoiceKSeFRenderSendResult($result);
+        ];
     }
+
+    $layout['pagetitle'] = trans('KSeF invoice handling');
+    $SMARTY->assign('result', prepareInvoiceKSeFSendResult($result));
+    $SMARTY->display('header.html');
+    $SMARTY->display('invoice/invoiceksefsendresult.html');
     $SMARTY->display('footer.html');
     die;
 }
@@ -291,7 +231,7 @@ if (!empty($_GET['action']) && $_GET['action'] == 'send') {
         $result['error'] = $e->getMessage();
     }
 
-    $resultKey = invoiceKSeFResultKey();
+    $resultKey = bin2hex(random_bytes(8));
     $SESSION->save('invoiceksefresult.' . $resultKey, $result);
     $SESSION->redirect('?m=invoiceksefinfo&action=send-result&key=' . $resultKey);
 }
