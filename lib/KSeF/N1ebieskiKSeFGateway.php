@@ -6,7 +6,6 @@ use N1ebieski\KSEFClient\Requests\Sessions\Batch\Close\CloseRequest;
 use N1ebieski\KSEFClient\Requests\Sessions\Batch\OpenAndSend\OpenAndSendXmlRequest;
 use N1ebieski\KSEFClient\Requests\Sessions\Invoices\KsefUpo\KsefUpoRequest;
 use N1ebieski\KSEFClient\Requests\Sessions\Invoices\List\ListRequest;
-use N1ebieski\KSEFClient\Requests\Sessions\Invoices\Status\StatusRequest;
 use N1ebieski\KSEFClient\Requests\Sessions\Invoices\Upo\UpoRequest;
 use N1ebieski\KSEFClient\Support\Optional;
 use N1ebieski\KSEFClient\ValueObjects\Requests\ContinuationToken;
@@ -17,7 +16,7 @@ use N1ebieski\KSEFClient\ValueObjects\Requests\Sessions\PageSize;
 
 class N1ebieskiKSeFGateway implements KSeFGatewayInterface
 {
-    const INVOICE_REFERENCE_PAGE_SIZE = 1000;
+    const INVOICE_LIST_PAGE_SIZE = 1000;
 
     private $clients = [];
 
@@ -54,7 +53,7 @@ class N1ebieskiKSeFGateway implements KSeFGatewayInterface
             ->status();
     }
 
-    public function listInvoiceReferences(KSeFConfig $config, string $sellerTen, string $sessionReferenceNumber): array
+    public function listInvoices(KSeFConfig $config, string $sellerTen, string $sessionReferenceNumber): array
     {
         $client = $this->buildClient($config, $sellerTen);
         $invoices = [];
@@ -77,9 +76,45 @@ class N1ebieskiKSeFGateway implements KSeFGatewayInterface
                         continue;
                     }
 
+                    $status = $invoice->status ?? null;
+                    $statusCode = (int) ($status->code ?? 0);
+                    $statusDetails = $this->extractStatusDetails($invoice);
+                    $ksefNumber = $invoice->ksefNumber ?? null;
+                    $originalKsefNumber = $status->extensions->originalKsefNumber
+                        ?? $this->extractOriginalKsefNumberFromDetails($statusDetails);
+                    $originalSessionReferenceNumber = $status->extensions->originalSessionReferenceNumber
+                        ?? $this->extractOriginalSessionReferenceFromDetails($statusDetails);
+                    $upo = null;
+
+                    if ($statusCode === KSeF::STATUS_ACCEPTED && !empty($ksefNumber)) {
+                        $upo = $client
+                            ->sessions()
+                            ->invoices()
+                            ->upo(new UpoRequest(
+                                ReferenceNumber::from($sessionReferenceNumber),
+                                ReferenceNumber::from($invoice->referenceNumber)
+                            ))
+                            ->body();
+                    } elseif ($statusCode === 440
+                        && !empty($originalKsefNumber)
+                        && !empty($originalSessionReferenceNumber)
+                    ) {
+                        $upo = $this->fetchOriginalUpo(
+                            $client,
+                            $originalSessionReferenceNumber,
+                            $originalKsefNumber
+                        );
+                    }
+
                     $invoices[] = [
-                        'reference_number' => $invoice->referenceNumber,
                         'ordinal_number' => isset($invoice->ordinalNumber) ? (int) $invoice->ordinalNumber : null,
+                        'status' => $statusCode,
+                        'status_description' => $status->description ?? null,
+                        'status_details' => $statusDetails,
+                        'ksef_number' => $ksefNumber,
+                        'permanent_storage_date' => $this->extractPermanentStorageDate($invoice),
+                        'original_ksef_number' => $originalKsefNumber,
+                        'upo' => $upo,
                     ];
                 }
             }
@@ -96,57 +131,6 @@ class N1ebieskiKSeFGateway implements KSeFGatewayInterface
         } while ($continuationToken !== null);
 
         return $invoices;
-    }
-
-    public function getInvoiceStatus(
-        KSeFConfig $config,
-        string $sellerTen,
-        string $sessionReferenceNumber,
-        string $invoiceReferenceNumber
-    ): array {
-        $client = $this->buildClient($config, $sellerTen);
-        $response = $client
-            ->sessions()
-            ->invoices()
-            ->status(new StatusRequest(
-                ReferenceNumber::from($sessionReferenceNumber),
-                ReferenceNumber::from($invoiceReferenceNumber)
-            ))
-            ->object();
-
-        $status = $response->status ?? null;
-        $statusCode = (int) ($status->code ?? 0);
-        $ksefNumber = $response->ksefNumber ?? null;
-        $statusDetails = $this->extractStatusDetails($response);
-        $originalKsefNumber = $response->status->extensions->originalKsefNumber
-            ?? $this->extractOriginalKsefNumberFromDetails($statusDetails);
-        $originalSessionReferenceNumber = $response->status->extensions->originalSessionReferenceNumber
-            ?? $this->extractOriginalSessionReferenceFromDetails($statusDetails);
-        $upo = null;
-
-        if ($statusCode === KSeF::STATUS_ACCEPTED && !empty($ksefNumber)) {
-            $upo = $client
-                ->sessions()
-                ->invoices()
-                ->upo(new UpoRequest(
-                    ReferenceNumber::from($sessionReferenceNumber),
-                    ReferenceNumber::from($invoiceReferenceNumber)
-                ))
-                ->body();
-        }
-        if ($statusCode === 440 && !empty($originalKsefNumber) && !empty($originalSessionReferenceNumber)) {
-            $upo = $this->fetchOriginalUpo($client, $originalSessionReferenceNumber, $originalKsefNumber);
-        }
-
-        return [
-            'status' => $statusCode,
-            'status_description' => $status->description ?? null,
-            'status_details' => $statusDetails,
-            'ksef_number' => $ksefNumber,
-            'permanent_storage_date' => $this->extractPermanentStorageDate($response),
-            'original_ksef_number' => $originalKsefNumber,
-            'upo' => $upo,
-        ];
     }
 
     private function buildClient(KSeFConfig $config, ?string $sellerTen = null)
@@ -244,7 +228,7 @@ class N1ebieskiKSeFGateway implements KSeFGatewayInterface
     ): ListRequest {
         return new ListRequest(
             ReferenceNumber::from($sessionReferenceNumber),
-            PageSize::from(self::INVOICE_REFERENCE_PAGE_SIZE),
+            PageSize::from(self::INVOICE_LIST_PAGE_SIZE),
             $continuationToken === null
                 ? new Optional()
                 : ContinuationToken::from($continuationToken)

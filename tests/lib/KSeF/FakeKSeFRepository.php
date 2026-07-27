@@ -13,7 +13,6 @@ class FakeKSeFRepository implements KSeFRepositoryInterface
     public $discardedSessions = [];
     public $statusUpdates = [];
     public $savedUpos = [];
-    public $reservationFails = false;
     public $reservedSkipped = [];
     public $failUpoSave = false;
     public $failSessionReferenceUpdate = false;
@@ -56,12 +55,6 @@ class FakeKSeFRepository implements KSeFRepositoryInterface
 
     public function reserveInvoices(array $documents, int $environment, int $createdAt): array
     {
-        if ($this->reservationFails) {
-            return [
-                'skipped' => [],
-                'documents' => [],
-            ];
-        }
         if (!empty($this->reservedSkipped)) {
             return [
                 'skipped' => $this->reservedSkipped,
@@ -69,11 +62,8 @@ class FakeKSeFRepository implements KSeFRepositoryInterface
             ];
         }
 
-        $sessionReferenceNumber = 'LOCAL-' . $documents[0]['docid'];
         $this->sessions[] = [
-            'reference_number' => $sessionReferenceNumber,
             'environment' => $environment,
-            'created_at' => $createdAt,
         ];
         $sessionId = count($this->sessions);
         $reservedDocuments = [];
@@ -84,19 +74,14 @@ class FakeKSeFRepository implements KSeFRepositoryInterface
                 'ordinalnumber' => $index + 1,
                 'hash' => $document['hash'],
                 'status' => 0,
-                'statusdescription' => 'Reserved for KSeF submission.',
-                'statusdetails' => null,
             ];
             $reservedDocuments[] = [
                 'docid' => (int) $document['docid'],
-                'document_id' => count($this->documents),
-                'ordinalnumber' => $index + 1,
             ];
         }
 
         return [
             'session_id' => $sessionId,
-            'session_reference_number' => $sessionReferenceNumber,
             'documents' => $reservedDocuments,
             'skipped' => [],
         ];

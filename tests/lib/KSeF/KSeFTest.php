@@ -59,11 +59,8 @@ namespace {
     if (!class_exists('PHPUnit\Framework\TestCase') && class_exists('PHPUnit_Framework_TestCase')) {
         class_alias('PHPUnit_Framework_TestCase', 'PHPUnit\Framework\TestCase');
     }
-    require_once __DIR__ . '/ConfigHelper.php';
-    require_once __DIR__ . '/Localisation.php';
-    require_once __DIR__ . '/LMS.php';
-    require_once __DIR__ . '/Utils.php';
-    require_once __DIR__ . '/FakeKSeFLms.php';
+    require_once __DIR__ . '/../../../lib/LMS.class.php';
+    require_once __DIR__ . '/../../../lib/Utils.php';
     if (!function_exists('bankaccount')) {
         function bankaccount($customerId, $account)
         {
@@ -260,7 +257,8 @@ namespace LMS\Tests\KSeF {
         {
             $reflection = new \ReflectionClass(KSeF::class);
             $ksef = $reflection->newInstanceWithoutConstructor();
-            $this->setKSeFProperty($ksef, 'lms', new FakeKSeFLms());
+            $lmsClass = new \ReflectionClass(\LMS::class);
+            $this->setKSeFProperty($ksef, 'lms', $lmsClass->newInstanceWithoutConstructor());
             $this->setKSeFProperty($ksef, 'divisions', [
                 1 => [
                     'email' => '',

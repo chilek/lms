@@ -10,9 +10,9 @@ namespace LMS\Tests\KSeF {
     }
 
     require_once __DIR__ . '/FakeKsefUpoClient.php';
-    require_once __DIR__ . '/FakeXmlValidationException.php';
 
     use Lms\KSeF\N1ebieskiKSeFGateway;
+    use N1ebieski\KSEFClient\Exceptions\XmlValidationException;
     use N1ebieski\KSEFClient\Requests\Sessions\Invoices\KsefUpo\KsefUpoRequest;
     use N1ebieski\KSEFClient\Requests\Sessions\Invoices\List\ListRequest;
     use N1ebieski\KSEFClient\ValueObjects\Requests\ContinuationToken;
@@ -83,9 +83,12 @@ namespace LMS\Tests\KSeF {
 
             $result = $method->invoke(
                 $gateway,
-                new FakeXmlValidationException('The value is not valid with xsd.', [
-                    'errors' => [$error],
-                ])
+                new XmlValidationException(
+                    'The value is not valid with xsd.',
+                    0,
+                    null,
+                    ['errors' => [$error]]
+                )
             );
 
             $this->assertSame(
