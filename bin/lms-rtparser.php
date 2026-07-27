@@ -957,6 +957,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 'sms_body' => $sms_body,
                 'contenttype' => $contenttype,
                 'attachments' => &$attachments,
+                'smtp_options' => $smtp_options,
             ));
         }
 
