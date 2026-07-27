@@ -12,13 +12,10 @@ class FakeKSeFGateway implements KSeFGatewayInterface
     public $sentConfigs = [];
     public $listedSessions = [];
     public $listedConfigs = [];
-    public $statusConfigs = [];
-    public $sessionInvoiceReferences = [];
-    public $invoiceStatuses = [];
+    public $sessionInvoices = [];
     public $failClose = false;
     public $invalidXmlDocuments = [];
-    public $emptyInvoiceReferenceResponses = [];
-    public $invoiceReferenceResponseSequences = [];
+    public $invoiceResponseSequences = [];
 
     public function validateXml(string $xml): void
     {
@@ -47,36 +44,17 @@ class FakeKSeFGateway implements KSeFGatewayInterface
         $this->closedBatchSessions[] = $sessionReferenceNumber;
     }
 
-    public function listInvoiceReferences(KSeFConfig $config, string $sellerTen, string $sessionReferenceNumber): array
+    public function listInvoices(KSeFConfig $config, string $sellerTen, string $sessionReferenceNumber): array
     {
         $this->listedSessions[] = $sessionReferenceNumber;
         $this->listedConfigs[] = [
             'environment' => $config->getEnvironment(),
             'token' => $config->getToken(),
         ];
-        if (!empty($this->emptyInvoiceReferenceResponses[$sessionReferenceNumber])) {
-            $this->emptyInvoiceReferenceResponses[$sessionReferenceNumber]--;
-
-            return [];
-        }
-        if (!empty($this->invoiceReferenceResponseSequences[$sessionReferenceNumber])) {
-            return array_shift($this->invoiceReferenceResponseSequences[$sessionReferenceNumber]);
+        if (!empty($this->invoiceResponseSequences[$sessionReferenceNumber])) {
+            return array_shift($this->invoiceResponseSequences[$sessionReferenceNumber]);
         }
 
-        return $this->sessionInvoiceReferences[$sessionReferenceNumber] ?? [];
-    }
-
-    public function getInvoiceStatus(
-        KSeFConfig $config,
-        string $sellerTen,
-        string $sessionReferenceNumber,
-        string $invoiceReferenceNumber
-    ): array {
-        $this->statusConfigs[] = [
-            'environment' => $config->getEnvironment(),
-            'token' => $config->getToken(),
-        ];
-
-        return $this->invoiceStatuses[$sessionReferenceNumber . ':' . $invoiceReferenceNumber];
+        return $this->sessionInvoices[$sessionReferenceNumber] ?? [];
     }
 }

@@ -147,15 +147,12 @@ class KSeFRepository implements KSeFRepositoryInterface
                 );
                 $reservedDocuments[] = [
                     'docid' => $document['docid'],
-                    'document_id' => (int) $this->db->GetLastInsertID('ksefdocuments'),
-                    'ordinalnumber' => $ordinalNumber,
                 ];
             }
             $this->db->CommitTrans();
 
             return [
                 'session_id' => $sessionId,
-                'session_reference_number' => $sessionReferenceNumber,
                 'documents' => $reservedDocuments,
                 'skipped' => $skippedDocuments,
             ];
@@ -254,21 +251,13 @@ class KSeFRepository implements KSeFRepositoryInterface
             'SELECT
                 kd.id,
                 d.id AS docid,
-                kd.batchsessionid,
                 kd.ordinalnumber,
-                session_documents.document_count AS session_document_count,
                 kbs.ksefnumber AS session_reference_number,
-                kbs.status AS session_status,
                 d.divisionid,
                 d.div_ten AS seller_ten
             FROM ksefdocuments kd
             JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
             JOIN documents d ON d.id = kd.docid
-            JOIN (
-                SELECT batchsessionid, COUNT(*) AS document_count
-                FROM ksefdocuments
-                GROUP BY batchsessionid
-            ) session_documents ON session_documents.batchsessionid = kd.batchsessionid
             WHERE ' . implode(' AND ', $conditions) . '
             ORDER BY kbs.lastupdate, kd.id
             LIMIT ' . intval($limit),

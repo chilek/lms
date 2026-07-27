@@ -10,12 +10,5 @@ interface KSeFGatewayInterface
 
     public function closeBatchSession(KSeFConfig $config, string $sellerTen, string $sessionReferenceNumber): void;
 
-    public function listInvoiceReferences(KSeFConfig $config, string $sellerTen, string $sessionReferenceNumber): array;
-
-    public function getInvoiceStatus(
-        KSeFConfig $config,
-        string $sellerTen,
-        string $sessionReferenceNumber,
-        string $invoiceReferenceNumber
-    ): array;
+    public function listInvoices(KSeFConfig $config, string $sellerTen, string $sessionReferenceNumber): array;
 }

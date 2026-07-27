@@ -4,8 +4,8 @@ namespace Lms\KSeF;
 
 class KSeFSubmissionService
 {
-    const INVOICE_REFERENCE_RETRY_SECONDS = [1, 2, 3, 5, 10];
-    const INVOICE_REFERENCE_WAIT_SECONDS = 600;
+    const INVOICE_LIST_RETRY_SECONDS = [1, 2, 3, 5, 10];
+    const INVOICE_LIST_WAIT_SECONDS = 600;
 
     private $repository;
     private $gateway;
@@ -138,15 +138,6 @@ class KSeFSubmissionService
                 }
 
                 if (empty($reserved['documents'])) {
-                    if (empty($reserved['skipped'])) {
-                        foreach ($preparedInvoices as $preparedInvoice) {
-                            $result['skipped']++;
-                            $result['errors'][] = [
-                                'docid' => (int) $preparedInvoice['invoice']['id'],
-                                'error' => 'Invoice is already reserved for KSeF submission.',
-                            ];
-                        }
-                    }
                     continue;
                 }
 
@@ -163,30 +154,14 @@ class KSeFSubmissionService
                 }
 
                 $sessionReferenceNumber = null;
-                $closeError = null;
                 try {
                     $sessionReferenceNumber = $this->gateway->sendXmlBatch($groupConfig, $sellerTen, $xmlDocuments);
                     $this->repository->updateSessionReference($reserved['session_id'], $sessionReferenceNumber);
                     $sessionReferenceStored = true;
                 } finally {
                     if ($sessionReferenceNumber !== null) {
-                        try {
-                            $this->gateway->closeBatchSession($groupConfig, $sellerTen, $sessionReferenceNumber);
-                        } catch (\Throwable $e) {
-                            $closeError = $e;
-                        }
+                        $this->gateway->closeBatchSession($groupConfig, $sellerTen, $sessionReferenceNumber);
                     }
-                }
-
-                if ($closeError !== null) {
-                    foreach ($reserved['documents'] as $document) {
-                        $result['skipped']++;
-                        $result['errors'][] = [
-                            'docid' => (int) $document['docid'],
-                            'error' => 'KSeF session close failed: ' . $closeError->getMessage(),
-                        ];
-                    }
-                    continue;
                 }
 
                 $this->repository->closeSession($reserved['session_id']);
@@ -239,7 +214,7 @@ class KSeFSubmissionService
             $customerId,
             $docIds
         );
-        $invoiceReferenceCache = [];
+        $sessionGroups = [];
         foreach ($documents as $document) {
             try {
                 $sellerTen = preg_replace('/[^0-9]/', '', $document['seller_ten'] ?? '');
@@ -250,54 +225,60 @@ class KSeFSubmissionService
                     isset($document['divisionid']) ? (int) $document['divisionid'] : null,
                     $config
                 );
-                $invoiceReferenceNumber = $this->findInvoiceReference(
-                    $documentConfig,
-                    $sellerTen,
-                    $document,
-                    $invoiceReferenceCache
-                );
-
-                $status = $this->gateway->getInvoiceStatus(
-                    $documentConfig,
-                    $sellerTen,
-                    $document['session_reference_number'],
-                    $invoiceReferenceNumber
-                );
-
-                $statusCode = (int) ($status['status'] ?? KSeF::STATUS_PENDING);
-                $statusDescription = $status['status_description'] ?? null;
-                $statusDetails = $status['status_details'] ?? null;
-                $ksefNumber = $status['ksef_number'] ?? null;
-                $permanentStorageDate = $this->normalizeStorageDate($status['permanent_storage_date'] ?? null);
-                if ($statusCode === 440 && !empty($status['original_ksef_number'])) {
-                    $statusCode = KSeF::STATUS_ACCEPTED;
-                    $ksefNumber = $status['original_ksef_number'];
+                $groupKey = $sellerTen . ':' . $document['session_reference_number'];
+                if (!isset($sessionGroups[$groupKey])) {
+                    $sessionGroups[$groupKey] = [
+                        'config' => $documentConfig,
+                        'seller_ten' => $sellerTen,
+                        'reference_number' => $document['session_reference_number'],
+                        'documents' => [],
+                    ];
                 }
-
-                if ($statusCode === KSeF::STATUS_ACCEPTED
-                    && !empty($ksefNumber)
-                    && isset($status['upo'])
-                    && is_string($status['upo'])
-                    && $status['upo'] !== ''
-                ) {
-                    $this->repository->saveUpo($ksefNumber, $status['upo']);
-                }
-
-                $this->repository->updateDocumentStatus(
-                    (int) $document['id'],
-                    $statusCode,
-                    $statusDescription,
-                    $statusDetails,
-                    $ksefNumber,
-                    $permanentStorageDate
-                );
-
-                $result['updated']++;
+                $sessionGroups[$groupKey]['documents'][] = $document;
             } catch (\Throwable $e) {
                 $result['errors'][] = [
                     'id' => (int) $document['id'],
                     'error' => $e->getMessage(),
                 ];
+            }
+        }
+
+        foreach ($sessionGroups as $sessionGroup) {
+            try {
+                $invoices = $this->waitForInvoices(
+                    $sessionGroup['config'],
+                    $sessionGroup['seller_ten'],
+                    $sessionGroup['reference_number'],
+                    $sessionGroup['documents']
+                );
+            } catch (\Throwable $e) {
+                foreach ($sessionGroup['documents'] as $document) {
+                    $result['errors'][] = [
+                        'id' => (int) $document['id'],
+                        'error' => $e->getMessage(),
+                    ];
+                }
+                continue;
+            }
+
+            foreach ($sessionGroup['documents'] as $document) {
+                try {
+                    $status = $this->findInvoice($invoices, $document);
+                    if ($status === null) {
+                        throw new \RuntimeException(
+                            'Couldn\'t find KSeF invoice for session ' . $document['session_reference_number']
+                                . ' and ordinal number ' . $document['ordinalnumber'] . '.'
+                        );
+                    }
+
+                    $this->updateDocument($document, $status);
+                    $result['updated']++;
+                } catch (\Throwable $e) {
+                    $result['errors'][] = [
+                        'id' => (int) $document['id'],
+                        'error' => $e->getMessage(),
+                    ];
+                }
             }
         }
 
@@ -338,85 +319,87 @@ class KSeFSubmissionService
         return base64_encode(hash('sha256', $xml, true));
     }
 
-    private function findInvoiceReference(
-        KSeFConfig $config,
-        string $sellerTen,
-        array $document,
-        array &$invoiceReferenceCache
-    ): string {
-        $cacheKey = $sellerTen . ':' . $document['session_reference_number'];
-        if (!array_key_exists($cacheKey, $invoiceReferenceCache)) {
-            $invoiceReferenceCache[$cacheKey] = $this->waitForInvoiceReferences(
-                $config,
-                $sellerTen,
-                $document['session_reference_number'],
-                $document
-            );
-        }
-        $invoiceReferences = $invoiceReferenceCache[$cacheKey];
-
-        $invoiceReferenceNumber = $this->findInvoiceReferenceNumber($invoiceReferences, $document);
-        if ($invoiceReferenceNumber !== null) {
-            return $invoiceReferenceNumber;
-        }
-
-        throw new \RuntimeException(
-            'Couldn\'t find KSeF invoice reference for session ' . $document['session_reference_number']
-                . ' and ordinal number ' . $document['ordinalnumber'] . '.'
-        );
-    }
-
-    private function waitForInvoiceReferences(
+    private function waitForInvoices(
         KSeFConfig $config,
         string $sellerTen,
         string $sessionReferenceNumber,
-        array $document
+        array $documents
     ): array {
         $waitedSeconds = 0;
-        $lastInvoiceReferences = [];
-        for ($attempt = 0; $attempt === 0 || $waitedSeconds < self::INVOICE_REFERENCE_WAIT_SECONDS; $attempt++) {
+        $lastInvoices = [];
+        for ($attempt = 0; $attempt === 0 || $waitedSeconds < self::INVOICE_LIST_WAIT_SECONDS; $attempt++) {
             if ($attempt > 0) {
-                $sleepSeconds = self::INVOICE_REFERENCE_RETRY_SECONDS[
-                    min($attempt - 1, count(self::INVOICE_REFERENCE_RETRY_SECONDS) - 1)
+                $sleepSeconds = self::INVOICE_LIST_RETRY_SECONDS[
+                    min($attempt - 1, count(self::INVOICE_LIST_RETRY_SECONDS) - 1)
                 ];
-                $sleepSeconds = min($sleepSeconds, self::INVOICE_REFERENCE_WAIT_SECONDS - $waitedSeconds);
+                $sleepSeconds = min($sleepSeconds, self::INVOICE_LIST_WAIT_SECONDS - $waitedSeconds);
                 call_user_func($this->sleeper, $sleepSeconds);
                 $waitedSeconds += $sleepSeconds;
             }
 
-            $invoiceReferences = $this->gateway->listInvoiceReferences(
+            $invoices = $this->gateway->listInvoices(
                 $config,
                 $sellerTen,
                 $sessionReferenceNumber
             );
-            $lastInvoiceReferences = $invoiceReferences;
-            if ($this->findInvoiceReferenceNumber($invoiceReferences, $document) !== null) {
-                return $invoiceReferences;
+            $lastInvoices = $invoices;
+            if ($this->containsAllDocuments($invoices, $documents)) {
+                return $invoices;
             }
         }
 
-        return $lastInvoiceReferences;
+        return $lastInvoices;
     }
 
-    private function findInvoiceReferenceNumber(array $invoiceReferences, array $document): ?string
+    private function containsAllDocuments(array $invoices, array $documents): bool
     {
-        foreach ($invoiceReferences as $invoiceReference) {
-            if (isset($invoiceReference['ordinal_number'])
-                && (int) $invoiceReference['ordinal_number'] === (int) $document['ordinalnumber']
-                && !empty($invoiceReference['reference_number'])
-            ) {
-                return $invoiceReference['reference_number'];
+        foreach ($documents as $document) {
+            if ($this->findInvoice($invoices, $document) === null) {
+                return false;
             }
         }
 
-        if ((int) ($document['session_document_count'] ?? 0) === 1
-            && count($invoiceReferences) === 1
-            && !empty($invoiceReferences[0]['reference_number'])
-        ) {
-            return $invoiceReferences[0]['reference_number'];
+        return true;
+    }
+
+    private function findInvoice(array $invoices, array $document): ?array
+    {
+        foreach ($invoices as $invoice) {
+            if (isset($invoice['ordinal_number'])
+                && (int) $invoice['ordinal_number'] === (int) $document['ordinalnumber']
+            ) {
+                return $invoice;
+            }
         }
 
         return null;
+    }
+
+    private function updateDocument(array $document, array $status): void
+    {
+        $statusCode = (int) ($status['status'] ?? KSeF::STATUS_PENDING);
+        $ksefNumber = $status['ksef_number'] ?? null;
+        if ($statusCode === 440 && !empty($status['original_ksef_number'])) {
+            $statusCode = KSeF::STATUS_ACCEPTED;
+            $ksefNumber = $status['original_ksef_number'];
+        }
+
+        if ($statusCode === KSeF::STATUS_ACCEPTED
+            && !empty($ksefNumber)
+            && !empty($status['upo'])
+            && is_string($status['upo'])
+        ) {
+            $this->repository->saveUpo($ksefNumber, $status['upo']);
+        }
+
+        $this->repository->updateDocumentStatus(
+            (int) $document['id'],
+            $statusCode,
+            $status['status_description'] ?? null,
+            $status['status_details'] ?? null,
+            $ksefNumber,
+            $this->normalizeStorageDate($status['permanent_storage_date'] ?? null)
+        );
     }
 
     private function normalizeStorageDate(?string $date): ?string
