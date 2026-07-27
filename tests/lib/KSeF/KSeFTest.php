@@ -26,9 +26,6 @@ namespace {
         define('PAYTYPE_TRANSFER', 2);
     }
 
-    if (!class_exists('PHPUnit\Framework\TestCase') && class_exists('PHPUnit_Framework_TestCase')) {
-        class_alias('PHPUnit_Framework_TestCase', 'PHPUnit\Framework\TestCase');
-    }
     require_once __DIR__ . '/../../../lib/LMS.class.php';
     require_once __DIR__ . '/../../../lib/Utils.php';
 }
@@ -88,7 +85,7 @@ namespace LMS\Tests\KSeF {
             $this->resetKSeFUpoStorageCache();
 
             try {
-                $ksefNumber = '1234567890-20260425-ABCDEF';
+                $ksefNumber = '1234567890-20260425-ABCDEF123456-AB';
                 $this->assertFalse(KSeF::upoFileExists($ksefNumber));
 
                 $result = KSeF::saveUpoContent($ksefNumber, '<UPO>test</UPO>');
@@ -101,6 +98,24 @@ namespace LMS\Tests\KSeF {
                         . DIRECTORY_SEPARATOR . '20260425'
                         . DIRECTORY_SEPARATOR . $ksefNumber . '.xml'
                 );
+            } finally {
+                $this->removeDirectory($storageDir);
+                $this->resetKSeFUpoStorageCache();
+            }
+        }
+
+        public function testSaveUpoContentRejectsInvalidKSeFNumber()
+        {
+            $storageDir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'ksef';
+            $this->removeDirectory($storageDir);
+            $this->resetKSeFUpoStorageCache();
+
+            try {
+                $this->assertSame(
+                    'Invalid KSeF invoice number.',
+                    KSeF::saveUpoContent('../outside', '<UPO>test</UPO>')
+                );
+                $this->assertDirectoryDoesNotExist($storageDir);
             } finally {
                 $this->removeDirectory($storageDir);
                 $this->resetKSeFUpoStorageCache();

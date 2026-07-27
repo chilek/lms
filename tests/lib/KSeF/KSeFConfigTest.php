@@ -6,10 +6,6 @@ if (!defined('STORAGE_DIR')) {
     define('STORAGE_DIR', sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'lms-ksef-test-storage');
 }
 
-if (!class_exists('PHPUnit\Framework\TestCase') && class_exists('PHPUnit_Framework_TestCase')) {
-    class_alias('PHPUnit_Framework_TestCase', 'PHPUnit\Framework\TestCase');
-}
-
 use Lms\KSeF\KSeF;
 use Lms\KSeF\KSeFConfig;
 use PHPUnit\Framework\TestCase;

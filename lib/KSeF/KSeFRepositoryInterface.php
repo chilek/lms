@@ -11,7 +11,7 @@ interface KSeFRepositoryInterface
         ?array $docIds = null
     ): array;
 
-    public function reserveInvoices(array $documents, int $environment, int $createdAt): array;
+    public function reserveInvoices(array $documents, int $environment): array;
 
     public function updateSessionReference(int $id, string $referenceNumber): void;
 

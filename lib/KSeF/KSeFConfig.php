@@ -98,28 +98,16 @@ class KSeFConfig
     {
         $environment = strtolower(trim((string) $environment));
 
-        switch ($environment) {
-            case 'test':
-            case '1':
-                return KSeF::ENVIRONMENT_TEST;
-            case 'prod':
-            case 'production':
-            case '2':
-                return KSeF::ENVIRONMENT_PROD;
-            case 'demo':
-            case '3':
-                return KSeF::ENVIRONMENT_DEMO;
-            default:
-                throw new \InvalidArgumentException('Unsupported KSeF environment: ' . $environment);
-        }
+        return match ($environment) {
+            'test', '1' => KSeF::ENVIRONMENT_TEST,
+            'prod', 'production', '2' => KSeF::ENVIRONMENT_PROD,
+            'demo', '3' => KSeF::ENVIRONMENT_DEMO,
+            default => throw new \InvalidArgumentException('Unsupported KSeF environment: ' . $environment),
+        };
     }
 
     private static function nullableString($value): ?string
     {
-        if ($value === null) {
-            return null;
-        }
-
         $value = trim((string) $value);
 
         return $value === '' ? null : $value;

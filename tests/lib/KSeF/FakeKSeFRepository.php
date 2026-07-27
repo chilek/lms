@@ -43,7 +43,7 @@ class FakeKSeFRepository implements KSeFRepositoryInterface
         return $this->eligibleInvoices;
     }
 
-    public function reserveInvoices(array $documents, int $environment, int $createdAt): array
+    public function reserveInvoices(array $documents, int $environment): array
     {
         if (!empty($this->reservedSkipped)) {
             return [

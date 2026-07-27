@@ -46,7 +46,7 @@ class KSeFSubmissionService
         }
 
         $invoices = $this->repository->getEligibleInvoices(
-            $this->getDocumentLimit($config, $docIds),
+            $docIds === null ? $config->getMaxDocuments() : count($docIds),
             $divisionId,
             $customerId,
             $docIds
@@ -102,7 +102,7 @@ class KSeFSubmissionService
             }
 
             $invoiceGroups[$groupKey]['invoices'][] = [
-                'invoice' => $invoice,
+                'docid' => (int) $invoice['id'],
                 'xml' => $xml,
                 'hash' => $this->invoiceHash($xml),
             ];
@@ -117,7 +117,7 @@ class KSeFSubmissionService
             $documents = [];
             foreach ($preparedInvoices as $preparedInvoice) {
                 $documents[] = [
-                    'docid' => (int) $preparedInvoice['invoice']['id'],
+                    'docid' => $preparedInvoice['docid'],
                     'hash' => $preparedInvoice['hash'],
                 ];
             }
@@ -125,8 +125,7 @@ class KSeFSubmissionService
             try {
                 $reserved = $this->repository->reserveInvoices(
                     $documents,
-                    $groupConfig->getEnvironment(),
-                    time()
+                    $groupConfig->getEnvironment()
                 );
 
                 foreach ($reserved['skipped'] as $docId => $error) {
@@ -148,7 +147,7 @@ class KSeFSubmissionService
 
                 $xmlDocuments = [];
                 foreach ($preparedInvoices as $preparedInvoice) {
-                    if (isset($reservedDocIds[(int) $preparedInvoice['invoice']['id']])) {
+                    if (isset($reservedDocIds[$preparedInvoice['docid']])) {
                         $xmlDocuments[] = $preparedInvoice['xml'];
                     }
                 }
@@ -171,14 +170,7 @@ class KSeFSubmissionService
                     $this->repository->discardSession((int) $reserved['session_id']);
                 }
 
-                $failedInvoices = !empty($reserved['documents']) ? $reserved['documents'] : array_map(
-                    function (array $preparedInvoice): array {
-                        return [
-                            'docid' => (int) $preparedInvoice['invoice']['id'],
-                        ];
-                    },
-                    $preparedInvoices
-                );
+                $failedInvoices = !empty($reserved['documents']) ? $reserved['documents'] : $documents;
                 foreach ($failedInvoices as $failedInvoice) {
                     $result['skipped']++;
                     $result['errors'][] = [
@@ -209,7 +201,7 @@ class KSeFSubmissionService
         }
 
         $documents = $this->repository->getPendingDocuments(
-            $this->getDocumentLimit($config, $docIds),
+            $docIds === null ? $config->getMaxDocuments() : count($docIds),
             $divisionId,
             $customerId,
             $docIds
@@ -245,7 +237,7 @@ class KSeFSubmissionService
 
         foreach ($sessionGroups as $sessionGroup) {
             try {
-                $invoices = $this->waitForInvoices(
+                $invoicesByOrdinalNumber = $this->waitForInvoices(
                     $sessionGroup['config'],
                     $sessionGroup['seller_ten'],
                     $sessionGroup['reference_number'],
@@ -263,15 +255,15 @@ class KSeFSubmissionService
 
             foreach ($sessionGroup['documents'] as $document) {
                 try {
-                    $status = $this->findInvoice($invoices, $document);
-                    if ($status === null) {
+                    $ordinalNumber = (int) $document['ordinalnumber'];
+                    if (!isset($invoicesByOrdinalNumber[$ordinalNumber])) {
                         throw new \RuntimeException(
                             'Couldn\'t find KSeF invoice for session ' . $document['session_reference_number']
                                 . ' and ordinal number ' . $document['ordinalnumber'] . '.'
                         );
                     }
 
-                    $this->updateDocument($document, $status);
+                    $this->updateDocument($document, $invoicesByOrdinalNumber[$ordinalNumber]);
                     $result['updated']++;
                 } catch (\Throwable $e) {
                     $result['errors'][] = [
@@ -305,15 +297,6 @@ class KSeFSubmissionService
         return $config;
     }
 
-    private function getDocumentLimit(KSeFConfig $config, ?array $docIds): int
-    {
-        if ($docIds === null) {
-            return $config->getMaxDocuments();
-        }
-
-        return count($docIds);
-    }
-
     private function invoiceHash(string $xml): string
     {
         return base64_encode(hash('sha256', $xml, true));
@@ -326,7 +309,6 @@ class KSeFSubmissionService
         array $documents
     ): array {
         $waitedSeconds = 0;
-        $lastInvoices = [];
         for ($attempt = 0; $attempt === 0 || $waitedSeconds < self::INVOICE_LIST_WAIT_SECONDS; $attempt++) {
             if ($attempt > 0) {
                 $sleepSeconds = self::INVOICE_LIST_RETRY_SECONDS[
@@ -337,24 +319,24 @@ class KSeFSubmissionService
                 $waitedSeconds += $sleepSeconds;
             }
 
-            $invoices = $this->gateway->listInvoices(
-                $config,
-                $sellerTen,
-                $sessionReferenceNumber
-            );
-            $lastInvoices = $invoices;
-            if ($this->containsAllDocuments($invoices, $documents)) {
-                return $invoices;
+            $invoicesByOrdinalNumber = [];
+            foreach ($this->gateway->listInvoices($config, $sellerTen, $sessionReferenceNumber) as $invoice) {
+                if (isset($invoice['ordinal_number'])) {
+                    $invoicesByOrdinalNumber[(int) $invoice['ordinal_number']] = $invoice;
+                }
+            }
+            if ($this->containsAllDocuments($invoicesByOrdinalNumber, $documents)) {
+                return $invoicesByOrdinalNumber;
             }
         }
 
-        return $lastInvoices;
+        return $invoicesByOrdinalNumber;
     }
 
-    private function containsAllDocuments(array $invoices, array $documents): bool
+    private function containsAllDocuments(array $invoicesByOrdinalNumber, array $documents): bool
     {
         foreach ($documents as $document) {
-            if ($this->findInvoice($invoices, $document) === null) {
+            if (!isset($invoicesByOrdinalNumber[(int) $document['ordinalnumber']])) {
                 return false;
             }
         }
@@ -362,24 +344,11 @@ class KSeFSubmissionService
         return true;
     }
 
-    private function findInvoice(array $invoices, array $document): ?array
-    {
-        foreach ($invoices as $invoice) {
-            if (isset($invoice['ordinal_number'])
-                && (int) $invoice['ordinal_number'] === (int) $document['ordinalnumber']
-            ) {
-                return $invoice;
-            }
-        }
-
-        return null;
-    }
-
     private function updateDocument(array $document, array $status): void
     {
         $statusCode = (int) ($status['status'] ?? KSeF::STATUS_PENDING);
         $ksefNumber = $status['ksef_number'] ?? null;
-        if ($statusCode === 440 && !empty($status['original_ksef_number'])) {
+        if ($statusCode === KSeF::STATUS_DUPLICATE && !empty($status['original_ksef_number'])) {
             $statusCode = KSeF::STATUS_ACCEPTED;
             $ksefNumber = $status['original_ksef_number'];
         }
@@ -417,10 +386,8 @@ class KSeFSubmissionService
 
     private function normalizeDocumentIds(?array $docIds): ?array
     {
-        if ($docIds === null) {
-            return null;
-        }
-
-        return array_values(array_unique(array_filter(array_map('intval', $docIds))));
+        return $docIds === null
+            ? null
+            : array_values(array_unique(array_filter(array_map('intval', \Utils::filterIntegers($docIds)))));
     }
 }
