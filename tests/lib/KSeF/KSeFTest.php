@@ -14,46 +14,16 @@ namespace {
         define('DOC_CNOTE', 3);
     }
     if (!defined('DOC_FLAG_SPLIT_PAYMENT')) {
-        define('DOC_FLAG_SPLIT_PAYMENT', 1);
+        define('DOC_FLAG_SPLIT_PAYMENT', 8);
     }
     if (!defined('DOC_FLAG_RECEIPT')) {
-        define('DOC_FLAG_RECEIPT', 2);
+        define('DOC_FLAG_RECEIPT', 1);
     }
     if (!defined('DOC_FLAG_RELATED_ENTITY')) {
         define('DOC_FLAG_RELATED_ENTITY', 4);
     }
-    if (!defined('PAYTYPE_CASH')) {
-        define('PAYTYPE_CASH', 1);
-    }
-    if (!defined('PAYTYPE_CARD')) {
-        define('PAYTYPE_CARD', 2);
-    }
-    if (!defined('PAYTYPE_BANK_LOAN')) {
-        define('PAYTYPE_BANK_LOAN', 3);
-    }
     if (!defined('PAYTYPE_TRANSFER')) {
-        define('PAYTYPE_TRANSFER', 4);
-    }
-    if (!defined('PAYTYPE_BARTER')) {
-        define('PAYTYPE_BARTER', 5);
-    }
-    if (!defined('PAYTYPE_CASH_ON_DELIVERY')) {
-        define('PAYTYPE_CASH_ON_DELIVERY', 6);
-    }
-    if (!defined('PAYTYPE_COMPENSATION')) {
-        define('PAYTYPE_COMPENSATION', 7);
-    }
-    if (!defined('PAYTYPE_CONTRACT')) {
-        define('PAYTYPE_CONTRACT', 8);
-    }
-    if (!defined('PAYTYPE_INSTALMENTS')) {
-        define('PAYTYPE_INSTALMENTS', 9);
-    }
-    if (!defined('PAYTYPE_PAID')) {
-        define('PAYTYPE_PAID', 10);
-    }
-    if (!defined('PAYTYPE_TRANSFER_CASH')) {
-        define('PAYTYPE_TRANSFER_CASH', 11);
+        define('PAYTYPE_TRANSFER', 2);
     }
 
     if (!class_exists('PHPUnit\Framework\TestCase') && class_exists('PHPUnit_Framework_TestCase')) {
@@ -61,12 +31,6 @@ namespace {
     }
     require_once __DIR__ . '/../../../lib/LMS.class.php';
     require_once __DIR__ . '/../../../lib/Utils.php';
-    if (!function_exists('bankaccount')) {
-        function bankaccount($customerId, $account)
-        {
-            return $account;
-        }
-    }
 }
 
 namespace LMS\Tests\KSeF {
@@ -245,10 +209,8 @@ namespace LMS\Tests\KSeF {
                 'ksefshowbalancesummary' => 0,
                 'ksefxmladdallvalues' => 0,
                 'paytype' => PAYTYPE_TRANSFER,
-                'account' => '11111111111111111111111111',
                 'export' => false,
                 'division_bank' => '',
-                'bankaccounts' => [],
                 'extid' => '',
             ];
         }

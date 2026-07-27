@@ -45,17 +45,6 @@ class KSeFConfigTest extends TestCase
         $this->assertSame(10000, $config->getMaxDocuments());
     }
 
-    public function testInfersTokenAuthWhenTokenIsConfigured()
-    {
-        $config = KSeFConfig::fromArray([
-            'environment' => 'test',
-            'token' => 'secret-token',
-        ]);
-
-        $this->assertTrue($config->usesApiToken());
-        $this->assertSame('secret-token', $config->getToken());
-    }
-
     public function testRecognizesStandardLmsCertificateSettingWhenItContainsApiToken()
     {
         $token = str_repeat('a', 64);

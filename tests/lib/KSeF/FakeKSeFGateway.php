@@ -9,9 +9,9 @@ class FakeKSeFGateway implements KSeFGatewayInterface
 {
     public $closedBatchSessions = [];
     public $sentXmlBatches = [];
-    public $sentConfigs = [];
+    public $sentTokens = [];
     public $listedSessions = [];
-    public $listedConfigs = [];
+    public $listedTokens = [];
     public $sessionInvoices = [];
     public $failClose = false;
     public $invalidXmlDocuments = [];
@@ -27,10 +27,7 @@ class FakeKSeFGateway implements KSeFGatewayInterface
     public function sendXmlBatch(KSeFConfig $config, string $sellerTen, array $xmlDocuments): string
     {
         $this->sentXmlBatches[] = $xmlDocuments;
-        $this->sentConfigs[] = [
-            'environment' => $config->getEnvironment(),
-            'token' => $config->getToken(),
-        ];
+        $this->sentTokens[] = $config->getToken();
 
         return 'SESSION-' . count($this->sentXmlBatches);
     }
@@ -47,10 +44,7 @@ class FakeKSeFGateway implements KSeFGatewayInterface
     public function listInvoices(KSeFConfig $config, string $sellerTen, string $sessionReferenceNumber): array
     {
         $this->listedSessions[] = $sessionReferenceNumber;
-        $this->listedConfigs[] = [
-            'environment' => $config->getEnvironment(),
-            'token' => $config->getToken(),
-        ];
+        $this->listedTokens[] = $config->getToken();
         if (!empty($this->invoiceResponseSequences[$sessionReferenceNumber])) {
             return array_shift($this->invoiceResponseSequences[$sessionReferenceNumber]);
         }

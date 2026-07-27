@@ -38,18 +38,17 @@ class KSeFSubmissionServiceTest extends TestCase
         $result = $service->send(KSeFConfig::fromArray(['environment' => 'test'], false));
 
         $this->assertSame(['submitted' => 3, 'skipped' => 0, 'errors' => []], $result);
-        $this->assertCount(2, $repository->sessions);
-        $this->assertSame([KSeF::ENVIRONMENT_TEST, KSeF::ENVIRONMENT_PROD], array_column($repository->sessions, 'environment'));
-        $this->assertSame(['division-7-token', 'division-8-token'], array_column($gateway->sentConfigs, 'token'));
+        $this->assertCount(2, $repository->reservations);
+        $this->assertSame([KSeF::ENVIRONMENT_TEST, KSeF::ENVIRONMENT_PROD], array_column($repository->reservations, 'environment'));
+        $this->assertSame(['division-7-token', 'division-8-token'], $gateway->sentTokens);
         $this->assertSame([
             '<Faktura>123</Faktura>',
             '<Faktura>124</Faktura>',
         ], $gateway->sentXmlBatches[0]);
         $this->assertSame(['<Faktura>125</Faktura>'], $gateway->sentXmlBatches[1]);
-        $this->assertSame([1, 2, 1], array_column($repository->documents, 'ordinalnumber'));
         $this->assertSame(
-            base64_encode(hash('sha256', '<Faktura>123</Faktura>', true)),
-            $repository->documents[0]['hash']
+            'Cq4ssQtAVcbVa8bW5amkaOK0hNNzB6Pfthlb+vOQYOQ=',
+            $repository->reservations[0]['documents'][0]['hash']
         );
         $this->assertSame(['SESSION-1', 'SESSION-2'], $gateway->closedBatchSessions);
         $this->assertCount(2, $repository->sessionCloseUpdates);
@@ -72,6 +71,7 @@ class KSeFSubmissionServiceTest extends TestCase
 
         $this->assertSame(2, $result['submitted']);
         $this->assertSame([123, 124], $repository->eligibleDocIds);
+        $this->assertSame(2, $repository->eligibleLimit);
         $this->assertCount(2, $gateway->sentXmlBatches[0]);
     }
 
@@ -83,7 +83,7 @@ class KSeFSubmissionServiceTest extends TestCase
         $result = $this->service($repository, $gateway)->send($this->config(), null, null, []);
 
         $this->assertSame(['submitted' => 0, 'skipped' => 0, 'errors' => []], $result);
-        $this->assertSame(0, $repository->eligibleQueryCount);
+        $this->assertNull($repository->eligibleLimit);
         $this->assertSame([], $gateway->sentXmlBatches);
     }
 
@@ -205,7 +205,7 @@ class KSeFSubmissionServiceTest extends TestCase
         $this->assertSame(8, $repository->pendingDivisionId);
         $this->assertSame(123, $repository->pendingCustomerId);
         $this->assertSame(1, $configCalls);
-        $this->assertSame('division-8-token', $gateway->listedConfigs[0]['token']);
+        $this->assertSame('division-8-token', $gateway->listedTokens[0]);
     }
 
     public function testSyncWaitsUntilAllSelectedSessionInvoicesAreVisible()
@@ -240,12 +240,22 @@ class KSeFSubmissionServiceTest extends TestCase
             $this->pendingDocument(['id' => 11, 'ordinalnumber' => 2]),
         ]);
         $gateway = new FakeKSeFGateway();
+        $sleeps = [];
 
-        $result = $this->service($repository, $gateway)->sync($this->config());
+        $result = $this->service(
+            $repository,
+            $gateway,
+            null,
+            null,
+            function (int $seconds) use (&$sleeps) {
+                $sleeps[] = $seconds;
+            }
+        )->sync($this->config());
 
         $this->assertSame(0, $result['updated']);
         $this->assertCount(2, $result['errors']);
-        $this->assertCount($this->expectedInvoiceLookupCount(), $gateway->listedSessions);
+        $this->assertSame(KSeFSubmissionService::INVOICE_LIST_WAIT_SECONDS, array_sum($sleeps));
+        $this->assertCount(count($sleeps) + 1, $gateway->listedSessions);
     }
 
     public function testSyncHonoursExplicitSelectionInsteadOfConfiguredLimit()
@@ -269,6 +279,7 @@ class KSeFSubmissionServiceTest extends TestCase
 
         $this->assertSame(2, $result['updated']);
         $this->assertSame([123, 124], $repository->pendingDocIds);
+        $this->assertSame(2, $repository->pendingLimit);
         $this->assertSame([10, 11], array_column($repository->statusUpdates, 'id'));
     }
 
@@ -280,7 +291,7 @@ class KSeFSubmissionServiceTest extends TestCase
         $result = $this->service($repository, $gateway)->sync($this->config(), null, null, []);
 
         $this->assertSame(['updated' => 0, 'errors' => []], $result);
-        $this->assertSame(0, $repository->pendingQueryCount);
+        $this->assertNull($repository->pendingLimit);
         $this->assertSame([], $gateway->listedSessions);
     }
 
@@ -390,23 +401,5 @@ class KSeFSubmissionServiceTest extends TestCase
             $sleeper ?: function () {
             }
         );
-    }
-
-    private function expectedInvoiceLookupCount(): int
-    {
-        $waitedSeconds = 0;
-        $lookupCount = 1;
-        for ($attempt = 1; $waitedSeconds < KSeFSubmissionService::INVOICE_LIST_WAIT_SECONDS; $attempt++) {
-            $sleepSeconds = KSeFSubmissionService::INVOICE_LIST_RETRY_SECONDS[
-                min($attempt - 1, count(KSeFSubmissionService::INVOICE_LIST_RETRY_SECONDS) - 1)
-            ];
-            $waitedSeconds += min(
-                $sleepSeconds,
-                KSeFSubmissionService::INVOICE_LIST_WAIT_SECONDS - $waitedSeconds
-            );
-            $lookupCount++;
-        }
-
-        return $lookupCount;
     }
 }

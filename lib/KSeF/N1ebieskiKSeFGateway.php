@@ -41,7 +41,12 @@ class N1ebieskiKSeFGateway implements KSeFGatewayInterface
             ->openAndSend(new OpenAndSendXmlRequest(FormCode::Fa3, $xmlDocuments))
             ->object();
 
-        return $this->readStringProperty($response, 'referenceNumber');
+        $referenceNumber = $response->referenceNumber ?? null;
+        if (!is_string($referenceNumber) || $referenceNumber === '') {
+            throw new \RuntimeException('KSeF response does not contain referenceNumber.');
+        }
+
+        return $referenceNumber;
     }
 
     public function closeBatchSession(KSeFConfig $config, string $sellerTen, string $sessionReferenceNumber): void
@@ -80,10 +85,11 @@ class N1ebieskiKSeFGateway implements KSeFGatewayInterface
                     $statusCode = (int) ($status->code ?? 0);
                     $statusDetails = $this->extractStatusDetails($invoice);
                     $ksefNumber = $invoice->ksefNumber ?? null;
-                    $originalKsefNumber = $status->extensions->originalKsefNumber
-                        ?? $this->extractOriginalKsefNumberFromDetails($statusDetails);
-                    $originalSessionReferenceNumber = $status->extensions->originalSessionReferenceNumber
-                        ?? $this->extractOriginalSessionReferenceFromDetails($statusDetails);
+                    [$originalKsefNumber, $originalSessionReferenceNumber] =
+                        $this->extractDuplicateReferences($statusDetails);
+                    $originalKsefNumber = $status?->extensions?->originalKsefNumber ?? $originalKsefNumber;
+                    $originalSessionReferenceNumber = $status?->extensions?->originalSessionReferenceNumber
+                        ?? $originalSessionReferenceNumber;
                     $upo = null;
 
                     if ($statusCode === KSeF::STATUS_ACCEPTED && !empty($ksefNumber)) {
@@ -95,7 +101,8 @@ class N1ebieskiKSeFGateway implements KSeFGatewayInterface
                                 ReferenceNumber::from($invoice->referenceNumber)
                             ))
                             ->body();
-                    } elseif ($statusCode === 440
+                    } elseif (
+                        $statusCode === 440
                         && !empty($originalKsefNumber)
                         && !empty($originalSessionReferenceNumber)
                     ) {
@@ -112,7 +119,7 @@ class N1ebieskiKSeFGateway implements KSeFGatewayInterface
                         'status_description' => $status->description ?? null,
                         'status_details' => $statusDetails,
                         'ksef_number' => $ksefNumber,
-                        'permanent_storage_date' => $this->extractPermanentStorageDate($invoice),
+                        'permanent_storage_date' => $invoice->permanentStorageDate ?? null,
                         'original_ksef_number' => $originalKsefNumber,
                         'upo' => $upo,
                     ];
@@ -133,7 +140,7 @@ class N1ebieskiKSeFGateway implements KSeFGatewayInterface
         return $invoices;
     }
 
-    private function buildClient(KSeFConfig $config, ?string $sellerTen = null)
+    private function buildClient(KSeFConfig $config, string $sellerTen)
     {
         if (!class_exists('\N1ebieski\KSEFClient\ClientBuilder')) {
             throw new \RuntimeException('Missing n1ebieski/ksef-php-client dependency. Run composer install.');
@@ -149,9 +156,7 @@ class N1ebieskiKSeFGateway implements KSeFGatewayInterface
             ->withEncryptionKey(\N1ebieski\KSEFClient\Factories\EncryptionKeyFactory::makeRandom())
             ->withValidateXml(false);
 
-        if ($sellerTen !== null && $sellerTen !== '') {
-            $builder = $builder->withIdentifier($sellerTen);
-        }
+        $builder = $builder->withIdentifier($sellerTen);
 
         if ($config->usesApiToken()) {
             $builder = $builder->withKsefToken($config->getToken());
@@ -235,15 +240,6 @@ class N1ebieskiKSeFGateway implements KSeFGatewayInterface
         );
     }
 
-    private function readStringProperty($object, string $property): string
-    {
-        if (!isset($object->{$property}) || !is_string($object->{$property}) || $object->{$property} === '') {
-            throw new \RuntimeException('KSeF response does not contain ' . $property . '.');
-        }
-
-        return $object->{$property};
-    }
-
     private function extractStatusDetails($response): ?string
     {
         if (!empty($response->status->details)) {
@@ -255,40 +251,19 @@ class N1ebieskiKSeFGateway implements KSeFGatewayInterface
         return null;
     }
 
-    private function extractOriginalKsefNumberFromDetails(?string $statusDetails): ?string
+    private function extractDuplicateReferences(?string $statusDetails): array
     {
-        if ($statusDetails === null) {
-            return null;
-        }
-
-        if (preg_match('/\b[0-9]{10}-[0-9]{8}-[A-Z0-9]{12}-[A-Z0-9]{2}\b/i', $statusDetails, $matches)) {
-            return strtoupper($matches[0]);
-        }
-
-        return null;
-    }
-
-    private function extractOriginalSessionReferenceFromDetails(?string $statusDetails): ?string
-    {
-        if ($statusDetails === null) {
-            return null;
-        }
-
-        if (preg_match('/\b[0-9]{8}-[A-Z]{2}-[A-Z0-9]{10}-[A-Z0-9]{10}-[A-Z0-9]{2}\b/i', $statusDetails, $matches)) {
-            return strtoupper($matches[0]);
-        }
-
-        return null;
-    }
-
-    private function extractPermanentStorageDate($response): ?string
-    {
-        foreach (['permanentStorageDate', 'invoicingDate', 'acquisitionTimestamp'] as $field) {
-            if (!empty($response->{$field})) {
-                return (string) $response->{$field};
+        $ksefNumber = null;
+        $sessionReferenceNumber = null;
+        if ($statusDetails !== null) {
+            if (preg_match('/\b[0-9]{10}-[0-9]{8}-[A-Z0-9]{12}-[A-Z0-9]{2}\b/i', $statusDetails, $matches)) {
+                $ksefNumber = strtoupper($matches[0]);
+            }
+            if (preg_match('/\b[0-9]{8}-[A-Z]{2}-[A-Z0-9]{10}-[A-Z0-9]{10}-[A-Z0-9]{2}\b/i', $statusDetails, $matches)) {
+                $sessionReferenceNumber = strtoupper($matches[0]);
             }
         }
 
-        return null;
+        return [$ksefNumber, $sessionReferenceNumber];
     }
 }

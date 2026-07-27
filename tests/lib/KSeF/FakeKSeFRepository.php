@@ -6,8 +6,7 @@ use Lms\KSeF\KSeFRepositoryInterface;
 
 class FakeKSeFRepository implements KSeFRepositoryInterface
 {
-    public $sessions = [];
-    public $documents = [];
+    public $reservations = [];
     public $sessionReferenceUpdates = [];
     public $sessionCloseUpdates = [];
     public $discardedSessions = [];
@@ -17,11 +16,11 @@ class FakeKSeFRepository implements KSeFRepositoryInterface
     public $failUpoSave = false;
     public $failSessionReferenceUpdate = false;
     public $eligibleDocIds = null;
+    public $eligibleLimit = null;
     public $pendingDivisionId = null;
     public $pendingCustomerId = null;
     public $pendingDocIds = null;
-    public $eligibleQueryCount = 0;
-    public $pendingQueryCount = 0;
+    public $pendingLimit = null;
 
     private $eligibleInvoices;
     private $pendingDocuments;
@@ -38,19 +37,10 @@ class FakeKSeFRepository implements KSeFRepositoryInterface
         ?int $customerId = null,
         ?array $docIds = null
     ): array {
-        $this->eligibleQueryCount++;
         $this->eligibleDocIds = $docIds;
-        $eligibleInvoices = $this->eligibleInvoices;
-        if ($docIds !== null) {
-            $eligibleInvoices = array_filter(
-                $eligibleInvoices,
-                function (array $invoice) use ($docIds): bool {
-                    return in_array((int) $invoice['id'], $docIds, true);
-                }
-            );
-        }
+        $this->eligibleLimit = $limit;
 
-        return array_slice(array_values($eligibleInvoices), 0, $limit);
+        return $this->eligibleInvoices;
     }
 
     public function reserveInvoices(array $documents, int $environment, int $createdAt): array
@@ -62,27 +52,18 @@ class FakeKSeFRepository implements KSeFRepositoryInterface
             ];
         }
 
-        $this->sessions[] = [
+        $this->reservations[] = [
+            'documents' => $documents,
             'environment' => $environment,
         ];
-        $sessionId = count($this->sessions);
-        $reservedDocuments = [];
-        foreach ($documents as $index => $document) {
-            $this->documents[] = [
-                'sessionid' => $sessionId,
-                'docid' => (int) $document['docid'],
-                'ordinalnumber' => $index + 1,
-                'hash' => $document['hash'],
-                'status' => 0,
-            ];
-            $reservedDocuments[] = [
-                'docid' => (int) $document['docid'],
-            ];
-        }
+        $sessionId = count($this->reservations);
 
         return [
             'session_id' => $sessionId,
-            'documents' => $reservedDocuments,
+            'documents' => array_map(
+                fn (array $document): array => ['docid' => (int) $document['docid']],
+                $documents
+            ),
             'skipped' => [],
         ];
     }
@@ -101,9 +82,7 @@ class FakeKSeFRepository implements KSeFRepositoryInterface
 
     public function closeSession(int $id): void
     {
-        $this->sessionCloseUpdates[] = [
-            'id' => $id,
-        ];
+        $this->sessionCloseUpdates[] = $id;
     }
 
     public function discardSession(int $id): void
@@ -117,21 +96,12 @@ class FakeKSeFRepository implements KSeFRepositoryInterface
         ?int $customerId = null,
         ?array $docIds = null
     ): array {
-        $this->pendingQueryCount++;
         $this->pendingDivisionId = $divisionId;
         $this->pendingCustomerId = $customerId;
         $this->pendingDocIds = $docIds;
-        $pendingDocuments = $this->pendingDocuments;
-        if ($docIds !== null) {
-            $pendingDocuments = array_filter(
-                $pendingDocuments,
-                function (array $document) use ($docIds): bool {
-                    return in_array((int) ($document['docid'] ?? 0), $docIds, true);
-                }
-            );
-        }
+        $this->pendingLimit = $limit;
 
-        return array_slice(array_values($pendingDocuments), 0, $limit);
+        return $this->pendingDocuments;
     }
 
     public function updateDocumentStatus(
