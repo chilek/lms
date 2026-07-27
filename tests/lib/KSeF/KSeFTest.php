@@ -95,6 +95,31 @@ namespace LMS\Tests\KSeF {
             $this->assertStringContainsString('<Nazwa>KSeF Test Company</Nazwa>', $xml);
         }
 
+        public function testGetInvoiceXmlRestoresNumericLocaleWhenGenerationFails()
+        {
+            $originalLocale = setlocale(LC_NUMERIC, '0');
+            $testLocale = setlocale(LC_NUMERIC, 'C.utf8');
+            if ($testLocale === false || $testLocale === 'C') {
+                $this->markTestSkipped('A distinct C UTF-8 locale is not available.');
+            }
+
+            $ksef = $this->ksefXmlGenerator();
+            set_error_handler(function ($severity, $message) {
+                throw new \ErrorException($message, 0, $severity);
+            });
+            try {
+                try {
+                    $ksef->getInvoiceXml([]);
+                    $this->fail('Invoice generation should fail for an empty invoice.');
+                } catch (\Throwable $e) {
+                    $this->assertSame($testLocale, setlocale(LC_NUMERIC, '0'));
+                }
+            } finally {
+                restore_error_handler();
+                setlocale(LC_NUMERIC, $originalLocale);
+            }
+        }
+
         public function testSaveUpoContentCreatesMissingStorageDirectory()
         {
             $storageDir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'ksef';

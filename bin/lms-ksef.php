@@ -23,7 +23,6 @@ $script_parameters = [
     'send' => null,
     'sync' => null,
     'test' => 't',
-    'section:' => 's:',
     'division:' => null,
     'customerid:' => null,
 ];
@@ -32,7 +31,6 @@ $script_help = <<<EOF
     --send                      send eligible sales invoices to KSeF;
     --sync                      synchronize pending KSeF invoice statuses and UPO files;
 -t, --test                      dry run; print candidate counts only;
--s, --section=<section-name>    configuration section name, default: ksef;
     --division=<shortname>      limit sending candidates to selected division;
     --customerid=<id>           limit sending candidates to selected customer;
 EOF;
@@ -53,9 +51,6 @@ $LMS = new LMS($DB, $AUTH, $SYSLOG);
 $plugin_manager = LMSPluginManager::getInstance();
 $LMS->setPluginManager($plugin_manager);
 
-$section = isset($options['section']) && preg_match('/^[a-z0-9-_]+$/i', $options['section'])
-    ? $options['section']
-    : 'ksef';
 $repository = new KSeFRepository($DB);
 
 $divisionId = null;
@@ -67,14 +62,14 @@ if (!empty($options['division'])) {
     ConfigHelper::setFilter($divisionId);
 }
 $customerId = isset($options['customerid']) ? intval($options['customerid']) : null;
-$configProvider = function (?int $selectedDivisionId = null) use ($section, $options) {
+$configProvider = function (?int $selectedDivisionId = null) use ($options) {
     if ($selectedDivisionId !== null) {
         ConfigHelper::setFilter($selectedDivisionId);
     }
 
-    return KSeFConfig::fromConfigHelper($section, !isset($options['test']));
+    return KSeFConfig::fromConfigHelper(!isset($options['test']));
 };
-$config = KSeFConfig::fromConfigHelper($section, false);
+$config = KSeFConfig::fromConfigHelper(false);
 
 if (isset($options['test'])) {
     if ($send) {

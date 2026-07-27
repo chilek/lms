@@ -99,7 +99,6 @@ class KSeFSubmissionServiceTest extends TestCase
         );
         $selectionConfig = KSeFConfig::fromArray([
             'environment' => 'test',
-            'auth_method' => 'certificate',
         ], false);
 
         $result = $service->send($selectionConfig);
@@ -142,6 +141,22 @@ class KSeFSubmissionServiceTest extends TestCase
             '<Faktura>123</Faktura>',
             '<Faktura>124</Faktura>',
         ], $gateway->sentXmlBatches[0]);
+    }
+
+    public function testSendDoesNothingWhenSelectedInvoiceListIsEmpty()
+    {
+        $repository = new FakeKSeFRepository([
+            $this->invoice(123),
+        ]);
+        $gateway = new FakeKSeFGateway();
+        $service = $this->service($repository, $gateway);
+
+        $result = $service->send($this->ksefConfig(), null, null, []);
+
+        $this->assertSame(0, $result['submitted']);
+        $this->assertSame(0, $result['skipped']);
+        $this->assertSame(0, $repository->eligibleQueryCount);
+        $this->assertSame([], $gateway->sentXmlBatches);
     }
 
     public function testSendSkipsInvoiceWhenXmlBuilderReturnsError()
@@ -224,7 +239,7 @@ class KSeFSubmissionServiceTest extends TestCase
         $this->assertSame([], $gateway->sentXmlBatches);
     }
 
-    public function testSendRemovesLocalReservationWhenCloseFailsAfterXmlWasSent()
+    public function testSendKeepsRemoteSessionReferenceWhenCloseFailsAfterXmlWasSent()
     {
         $repository = new FakeKSeFRepository([
             $this->invoice(123),
@@ -239,7 +254,8 @@ class KSeFSubmissionServiceTest extends TestCase
         $this->assertSame(1, $result['skipped']);
         $this->assertSame(1, count($result['errors']));
         $this->assertSame(123, $repository->documents[0]['docid']);
-        $this->assertSame([1], $repository->discardedSessions);
+        $this->assertSame('SESSION-1', $repository->sessionReferenceUpdates[0]['reference_number']);
+        $this->assertSame([], $repository->discardedSessions);
         $this->assertSame([], $repository->statusUpdates);
     }
 
@@ -552,6 +568,30 @@ class KSeFSubmissionServiceTest extends TestCase
         $this->assertSame(0, $repository->statusUpdates[0]['status']);
     }
 
+    public function testSyncUsesOnlyOneWaitWindowWhenExpectedOrdinalNeverAppears()
+    {
+        $repository = new FakeKSeFRepository([], [
+            $this->pendingDocument([
+                'ordinalnumber' => 2,
+                'session_document_count' => 2,
+            ]),
+        ]);
+        $gateway = new FakeKSeFGateway();
+        $gateway->sessionInvoiceReferences['SESSION-1'] = [
+            [
+                'ordinal_number' => 1,
+                'reference_number' => 'INVOICE-1',
+            ],
+        ];
+        $service = $this->service($repository, $gateway);
+
+        $result = $service->sync($this->ksefConfig());
+
+        $this->assertSame(0, $result['updated']);
+        $this->assertSame(1, count($result['errors']));
+        $this->assertSame($this->expectedInvoiceReferenceLookupCount(), count($gateway->listedSessions));
+    }
+
     public function testSyncWaitsForMissingInvoiceReferencesOnlyOncePerSession()
     {
         $repository = new FakeKSeFRepository([], [
@@ -666,6 +706,78 @@ class KSeFSubmissionServiceTest extends TestCase
         $this->assertSame(11, $repository->statusUpdates[1]['id']);
     }
 
+    public function testSyncDoesNothingWhenSelectedInvoiceListIsEmpty()
+    {
+        $repository = new FakeKSeFRepository([], [
+            $this->pendingDocument(),
+        ]);
+        $gateway = new FakeKSeFGateway();
+        $service = $this->service($repository, $gateway);
+
+        $result = $service->sync($this->ksefConfig(), null, null, []);
+
+        $this->assertSame(0, $result['updated']);
+        $this->assertSame([], $result['errors']);
+        $this->assertSame(0, $repository->pendingQueryCount);
+        $this->assertSame([], $gateway->listedSessions);
+    }
+
+    public function testSyncLoadsDivisionConfigOnlyOncePerRun()
+    {
+        $repository = new FakeKSeFRepository([], [
+            $this->pendingDocument([
+                'id' => 10,
+                'docid' => 123,
+                'ordinalnumber' => 1,
+                'session_document_count' => 2,
+            ]),
+            $this->pendingDocument([
+                'id' => 11,
+                'docid' => 124,
+                'ordinalnumber' => 2,
+                'session_document_count' => 2,
+            ]),
+        ]);
+        $gateway = new FakeKSeFGateway();
+        $gateway->sessionInvoiceReferences['SESSION-1'] = [
+            ['ordinal_number' => 1, 'reference_number' => 'INVOICE-1'],
+            ['ordinal_number' => 2, 'reference_number' => 'INVOICE-2'],
+        ];
+        $gateway->invoiceStatuses['SESSION-1:INVOICE-1'] = ['status' => 0];
+        $gateway->invoiceStatuses['SESSION-1:INVOICE-2'] = ['status' => 0];
+        $configCalls = 0;
+        $service = $this->service(
+            $repository,
+            $gateway,
+            null,
+            function () use (&$configCalls) {
+                $configCalls++;
+
+                return $this->ksefConfig();
+            }
+        );
+
+        $result = $service->sync($this->ksefConfig());
+
+        $this->assertSame(2, $result['updated']);
+        $this->assertSame(1, $configCalls);
+    }
+
+    public function testSyncRejectsDocumentWithoutSellerTenBeforeCallingKSeF()
+    {
+        $repository = new FakeKSeFRepository([], [
+            $this->pendingDocument(['seller_ten' => '']),
+        ]);
+        $gateway = new FakeKSeFGateway();
+        $service = $this->service($repository, $gateway);
+
+        $result = $service->sync($this->ksefConfig());
+
+        $this->assertSame(0, $result['updated']);
+        $this->assertSame('Missing seller TEN.', $result['errors'][0]['error']);
+        $this->assertSame([], $gateway->listedSessions);
+    }
+
     public function testSyncKeepsDocumentPendingWhenUpoCannotBeSaved()
     {
         $repository = new FakeKSeFRepository([], [
@@ -711,7 +823,6 @@ class KSeFSubmissionServiceTest extends TestCase
             'status_description' => 'Duplikat faktury',
             'status_details' => 'Duplikat faktury.',
             'original_ksef_number' => '1234567890-20260424-ABCDEF',
-            'original_session_reference_number' => '20260424-SO-ORIGINAL',
         ];
         $service = $this->service($repository, $gateway);
 
@@ -741,7 +852,6 @@ class KSeFSubmissionServiceTest extends TestCase
             'status_description' => 'Duplikat faktury',
             'status_details' => 'Duplikat faktury.',
             'original_ksef_number' => '1234567890-20260424-ABCDEF',
-            'original_session_reference_number' => '20260424-SO-ORIGINAL',
             'upo' => '<OriginalUPO />',
         ];
         $service = $this->service($repository, $gateway);
@@ -759,7 +869,6 @@ class KSeFSubmissionServiceTest extends TestCase
     {
         return KSeFConfig::fromArray([
             'environment' => $environment,
-            'auth_method' => 'token',
             'token' => $token,
             'max_documents' => $maxDocuments,
         ]);

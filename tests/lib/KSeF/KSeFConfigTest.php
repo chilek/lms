@@ -20,14 +20,12 @@ class KSeFConfigTest extends TestCase
     {
         $config = KSeFConfig::fromArray([
             'environment' => 'test',
-            'auth_method' => 'token',
             'token' => 'secret-token',
             'max_documents' => '25',
         ]);
 
         $this->assertSame(KSeF::ENVIRONMENT_TEST, $config->getEnvironment());
-        $this->assertSame('test', $config->getEnvironmentName());
-        $this->assertSame('token', $config->getAuthMethod());
+        $this->assertTrue($config->usesApiToken());
         $this->assertSame('secret-token', $config->getToken());
         $this->assertSame(25, $config->getMaxDocuments());
     }
@@ -36,14 +34,12 @@ class KSeFConfigTest extends TestCase
     {
         $config = KSeFConfig::fromArray([
             'environment' => 'production',
-            'auth_method' => 'certificate',
             'certificate_path' => '/secure/ksef.p12',
             'certificate_password' => 'cert-password',
         ]);
 
         $this->assertSame(KSeF::ENVIRONMENT_PROD, $config->getEnvironment());
-        $this->assertSame('production', $config->getEnvironmentName());
-        $this->assertSame('certificate', $config->getAuthMethod());
+        $this->assertFalse($config->usesApiToken());
         $this->assertSame('/secure/ksef.p12', $config->getCertificatePath());
         $this->assertSame('cert-password', $config->getCertificatePassword());
         $this->assertSame(10000, $config->getMaxDocuments());
@@ -56,8 +52,22 @@ class KSeFConfigTest extends TestCase
             'token' => 'secret-token',
         ]);
 
-        $this->assertSame('token', $config->getAuthMethod());
+        $this->assertTrue($config->usesApiToken());
         $this->assertSame('secret-token', $config->getToken());
+    }
+
+    public function testRecognizesStandardLmsCertificateSettingWhenItContainsApiToken()
+    {
+        $token = str_repeat('a', 64);
+
+        $config = KSeFConfig::fromArray([
+            'environment' => 'test',
+            'certificate_path' => $token,
+        ]);
+
+        $this->assertTrue($config->usesApiToken());
+        $this->assertSame($token, $config->getToken());
+        $this->assertSame(null, $config->getCertificatePath());
     }
 
     public function testRejectsUnknownEnvironment()
@@ -67,19 +77,17 @@ class KSeFConfigTest extends TestCase
 
         KSeFConfig::fromArray([
             'environment' => 'sandbox',
-            'auth_method' => 'token',
             'token' => 'secret-token',
         ]);
     }
 
-    public function testRejectsTokenAuthWithoutToken()
+    public function testRejectsMissingCredentials()
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('KSeF token is required');
+        $this->expectExceptionMessage('KSeF certificate or API token is required');
 
         KSeFConfig::fromArray([
             'environment' => 'test',
-            'auth_method' => 'token',
         ]);
     }
 
@@ -87,39 +95,23 @@ class KSeFConfigTest extends TestCase
     {
         $config = KSeFConfig::fromArray([
             'environment' => 'test',
-            'auth_method' => 'certificate',
             'max_documents' => 10,
         ], false);
 
         $this->assertSame(KSeF::ENVIRONMENT_TEST, $config->getEnvironment());
-        $this->assertSame('certificate', $config->getAuthMethod());
+        $this->assertFalse($config->usesApiToken());
         $this->assertSame(null, $config->getCertificatePath());
         $this->assertSame(10, $config->getMaxDocuments());
     }
 
-    public function testBuildsInvoiceReferencePageSizeWithApiLimit()
+    public function testBoundsBatchLimitToKSeFApiLimit()
     {
         $config = KSeFConfig::fromArray([
             'environment' => 'test',
-            'auth_method' => 'token',
-            'token' => 'secret-token',
-            'invoice_reference_page_size' => 2000,
-        ]);
-
-        $this->assertSame(1000, $config->getInvoiceReferencePageSize());
-    }
-
-    public function testBuildsApiBoundedBatchAndPageLimits()
-    {
-        $config = KSeFConfig::fromArray([
-            'environment' => 'test',
-            'auth_method' => 'token',
             'token' => 'secret-token',
             'max_documents' => 20000,
-            'invoice_reference_page_size' => 1,
         ]);
 
         $this->assertSame(10000, $config->getMaxDocuments());
-        $this->assertSame(10, $config->getInvoiceReferencePageSize());
     }
 }

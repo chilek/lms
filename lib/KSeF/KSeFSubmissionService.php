@@ -4,8 +4,6 @@ namespace Lms\KSeF;
 
 class KSeFSubmissionService
 {
-    const STATUS_PENDING = 0;
-    const STATUS_ACCEPTED = 200;
     const INVOICE_REFERENCE_RETRY_SECONDS = [1, 2, 3, 5, 10];
     const INVOICE_REFERENCE_WAIT_SECONDS = 600;
 
@@ -14,6 +12,7 @@ class KSeFSubmissionService
     private $xmlBuilder;
     private $configProvider;
     private $sleeper;
+    private $divisionConfigs = [];
 
     public function __construct(
         KSeFRepositoryInterface $repository,
@@ -40,6 +39,11 @@ class KSeFSubmissionService
             'skipped' => 0,
             'errors' => [],
         ];
+
+        $docIds = $this->normalizeDocumentIds($docIds);
+        if ($docIds === []) {
+            return $result;
+        }
 
         $invoices = $this->repository->getEligibleInvoices(
             $this->getDocumentLimit($config, $docIds),
@@ -109,6 +113,7 @@ class KSeFSubmissionService
             $preparedInvoices = $invoiceGroup['invoices'];
             $groupConfig = $this->configForDivision($invoiceGroup['division_id'], $config);
             $reserved = null;
+            $sessionReferenceStored = false;
             $documents = [];
             foreach ($preparedInvoices as $preparedInvoice) {
                 $documents[] = [
@@ -154,6 +159,7 @@ class KSeFSubmissionService
                 try {
                     $sessionReferenceNumber = $this->gateway->sendXmlBatch($groupConfig, $sellerTen, $xmlDocuments);
                     $this->repository->updateSessionReference($reserved['session_id'], $sessionReferenceNumber);
+                    $sessionReferenceStored = true;
                 } finally {
                     if ($sessionReferenceNumber !== null) {
                         try {
@@ -172,14 +178,13 @@ class KSeFSubmissionService
                             'error' => 'KSeF session close failed: ' . $closeError->getMessage(),
                         ];
                     }
-                    $this->repository->discardSession((int) $reserved['session_id']);
                     continue;
                 }
 
                 $this->repository->closeSession($reserved['session_id']);
                 $result['submitted'] += count($reserved['documents']);
             } catch (\Throwable $e) {
-                if (!empty($reserved['session_id'])) {
+                if (!empty($reserved['session_id']) && !$sessionReferenceStored) {
                     $this->repository->discardSession((int) $reserved['session_id']);
                 }
 
@@ -215,6 +220,11 @@ class KSeFSubmissionService
             'errors' => [],
         ];
 
+        $docIds = $this->normalizeDocumentIds($docIds);
+        if ($docIds === []) {
+            return $result;
+        }
+
         $documents = $this->repository->getPendingDocuments(
             $this->getDocumentLimit($config, $docIds),
             $divisionId,
@@ -225,6 +235,9 @@ class KSeFSubmissionService
         foreach ($documents as $document) {
             try {
                 $sellerTen = preg_replace('/[^0-9]/', '', $document['seller_ten'] ?? '');
+                if ($sellerTen === '') {
+                    throw new \RuntimeException('Missing seller TEN.');
+                }
                 $documentConfig = $this->configForDivision(
                     isset($document['divisionid']) ? (int) $document['divisionid'] : null,
                     $config
@@ -243,17 +256,17 @@ class KSeFSubmissionService
                     $invoiceReferenceNumber
                 );
 
-                $statusCode = (int) ($status['status'] ?? self::STATUS_PENDING);
+                $statusCode = (int) ($status['status'] ?? KSeF::STATUS_PENDING);
                 $statusDescription = $status['status_description'] ?? null;
                 $statusDetails = $status['status_details'] ?? null;
                 $ksefNumber = $status['ksef_number'] ?? null;
                 $permanentStorageDate = $this->normalizeStorageDate($status['permanent_storage_date'] ?? null);
                 if ($statusCode === 440 && !empty($status['original_ksef_number'])) {
-                    $statusCode = self::STATUS_ACCEPTED;
+                    $statusCode = KSeF::STATUS_ACCEPTED;
                     $ksefNumber = $status['original_ksef_number'];
                 }
 
-                if ($statusCode === self::STATUS_ACCEPTED
+                if ($statusCode === KSeF::STATUS_ACCEPTED
                     && !empty($ksefNumber)
                     && isset($status['upo'])
                     && is_string($status['upo'])
@@ -289,10 +302,16 @@ class KSeFSubmissionService
             return $defaultConfig;
         }
 
+        if (isset($this->divisionConfigs[$divisionId])) {
+            return $this->divisionConfigs[$divisionId];
+        }
+
         $config = call_user_func($this->configProvider, $divisionId);
         if (!$config instanceof KSeFConfig) {
             throw new \RuntimeException('KSeF config provider must return KSeFConfig.');
         }
+
+        $this->divisionConfigs[$divisionId] = $config;
 
         return $config;
     }
@@ -303,7 +322,7 @@ class KSeFSubmissionService
             return $config->getMaxDocuments();
         }
 
-        return max(1, count(array_unique(array_map('intval', $docIds))));
+        return count($docIds);
     }
 
     private function addReservationSkippedErrors(array &$result, array $reserved, array $preparedInvoices): void
@@ -350,15 +369,6 @@ class KSeFSubmissionService
             );
         }
         $invoiceReferences = $invoiceReferenceCache[$cacheKey];
-        if (!empty($invoiceReferences) && $this->findInvoiceReferenceNumber($invoiceReferences, $document) === null) {
-            $invoiceReferences = $this->waitForInvoiceReferences(
-                $config,
-                $sellerTen,
-                $document['session_reference_number'],
-                $document
-            );
-            $invoiceReferenceCache[$cacheKey] = $invoiceReferences;
-        }
 
         $invoiceReferenceNumber = $this->findInvoiceReferenceNumber($invoiceReferences, $document);
         if ($invoiceReferenceNumber !== null) {
@@ -435,5 +445,14 @@ class KSeFSubmissionService
         } catch (\Exception $e) {
             return null;
         }
+    }
+
+    private function normalizeDocumentIds(?array $docIds): ?array
+    {
+        if ($docIds === null) {
+            return null;
+        }
+
+        return array_values(array_unique(array_filter(array_map('intval', $docIds))));
     }
 }

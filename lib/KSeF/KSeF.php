@@ -38,6 +38,8 @@ class KSeF
     const ENVIRONMENT_TEST = 1;
     const ENVIRONMENT_PROD = 2;
     const ENVIRONMENT_DEMO = 3;
+    const STATUS_PENDING = 0;
+    const STATUS_ACCEPTED = 200;
 
     const IDENTIFIER_TEN = 1;
     const IDENTIFIER_VAT_UE = 2;
@@ -417,6 +419,17 @@ class KSeF
         $numericLocale = setlocale(LC_NUMERIC, '0');
         setlocale(LC_NUMERIC, 'C');
 
+        try {
+            return $this->buildInvoiceXml($invoice);
+        } finally {
+            if ($numericLocale !== false) {
+                setlocale(LC_NUMERIC, $numericLocale);
+            }
+        }
+    }
+
+    private function buildInvoiceXml(array $invoice)
+    {
         $invoiceType = $invoice['type'] ?? $invoice['doctype'] ?? null;
 
         if (!isset($this->divisions[$invoice['divisionid']])) {
@@ -1666,10 +1679,6 @@ class KSeF
         }
 
         $xml .= "</Faktura>" . PHP_EOL;
-
-        if ($numericLocale !== false) {
-            setlocale(LC_NUMERIC, $numericLocale);
-        }
 
         return $xml;
     }
