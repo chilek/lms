@@ -55,39 +55,23 @@ class KSeFSubmissionService
         foreach ($invoices as $invoice) {
             $xml = call_user_func($this->xmlBuilder, $invoice);
             if (is_array($xml) && isset($xml['error'])) {
-                $result['skipped']++;
-                $result['errors'][] = [
-                    'docid' => (int) $invoice['id'],
-                    'error' => $xml['error'],
-                ];
+                $this->skipInvoice($result, (int) $invoice['id'], $xml['error']);
                 continue;
             }
             if (!is_string($xml) || trim($xml) === '') {
-                $result['skipped']++;
-                $result['errors'][] = [
-                    'docid' => (int) $invoice['id'],
-                    'error' => 'Empty KSeF XML document.',
-                ];
+                $this->skipInvoice($result, (int) $invoice['id'], 'Empty KSeF XML document.');
                 continue;
             }
             try {
                 $this->gateway->validateXml($xml);
             } catch (\Throwable $e) {
-                $result['skipped']++;
-                $result['errors'][] = [
-                    'docid' => (int) $invoice['id'],
-                    'error' => $e->getMessage(),
-                ];
+                $this->skipInvoice($result, (int) $invoice['id'], $e->getMessage());
                 continue;
             }
 
             $sellerTen = preg_replace('/[^0-9]/', '', $invoice['division_ten'] ?? $invoice['div_ten'] ?? '');
             if ($sellerTen === '') {
-                $result['skipped']++;
-                $result['errors'][] = [
-                    'docid' => (int) $invoice['id'],
-                    'error' => 'Missing seller TEN.',
-                ];
+                $this->skipInvoice($result, (int) $invoice['id'], 'Missing seller TEN.');
                 continue;
             }
 
@@ -129,11 +113,7 @@ class KSeFSubmissionService
                 );
 
                 foreach ($reserved['skipped'] as $docId => $error) {
-                    $result['skipped']++;
-                    $result['errors'][] = [
-                        'docid' => (int) $docId,
-                        'error' => $error,
-                    ];
+                    $this->skipInvoice($result, (int) $docId, $error);
                 }
 
                 if (empty($reserved['documents'])) {
@@ -172,11 +152,7 @@ class KSeFSubmissionService
 
                 $failedInvoices = !empty($reserved['documents']) ? $reserved['documents'] : $documents;
                 foreach ($failedInvoices as $failedInvoice) {
-                    $result['skipped']++;
-                    $result['errors'][] = [
-                        'docid' => (int) $failedInvoice['docid'],
-                        'error' => $e->getMessage(),
-                    ];
+                    $this->skipInvoice($result, (int) $failedInvoice['docid'], $e->getMessage());
                 }
             }
         }
@@ -228,10 +204,7 @@ class KSeFSubmissionService
                 }
                 $sessionGroups[$groupKey]['documents'][] = $document;
             } catch (\Throwable $e) {
-                $result['errors'][] = [
-                    'id' => (int) $document['id'],
-                    'error' => $e->getMessage(),
-                ];
+                $this->addSyncError($result, (int) $document['id'], $e->getMessage());
             }
         }
 
@@ -245,10 +218,7 @@ class KSeFSubmissionService
                 );
             } catch (\Throwable $e) {
                 foreach ($sessionGroup['documents'] as $document) {
-                    $result['errors'][] = [
-                        'id' => (int) $document['id'],
-                        'error' => $e->getMessage(),
-                    ];
+                    $this->addSyncError($result, (int) $document['id'], $e->getMessage());
                 }
                 continue;
             }
@@ -266,15 +236,29 @@ class KSeFSubmissionService
                     $this->updateDocument($document, $invoicesByOrdinalNumber[$ordinalNumber]);
                     $result['updated']++;
                 } catch (\Throwable $e) {
-                    $result['errors'][] = [
-                        'id' => (int) $document['id'],
-                        'error' => $e->getMessage(),
-                    ];
+                    $this->addSyncError($result, (int) $document['id'], $e->getMessage());
                 }
             }
         }
 
         return $result;
+    }
+
+    private function skipInvoice(array &$result, int $docId, $error): void
+    {
+        $result['skipped']++;
+        $result['errors'][] = [
+            'docid' => $docId,
+            'error' => $error,
+        ];
+    }
+
+    private function addSyncError(array &$result, int $documentId, $error): void
+    {
+        $result['errors'][] = [
+            'id' => $documentId,
+            'error' => $error,
+        ];
     }
 
     private function configForDivision(?int $divisionId, KSeFConfig $defaultConfig): KSeFConfig
