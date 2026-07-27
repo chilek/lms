@@ -6,10 +6,6 @@ if (!defined('STORAGE_DIR')) {
     define('STORAGE_DIR', sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'lms-ksef-test-storage');
 }
 
-if (!class_exists('PHPUnit\Framework\TestCase') && class_exists('PHPUnit_Framework_TestCase')) {
-    class_alias('PHPUnit_Framework_TestCase', 'PHPUnit\Framework\TestCase');
-}
-
 require_once __DIR__ . '/FakeKSeFGateway.php';
 require_once __DIR__ . '/FakeKSeFRepository.php';
 
@@ -330,7 +326,7 @@ class KSeFSubmissionServiceTest extends TestCase
         $repository = new FakeKSeFRepository([], [$this->pendingDocument()]);
         $gateway = new FakeKSeFGateway();
         $gateway->sessionInvoices['SESSION-1'] = [$this->remoteInvoice(1, [
-            'status' => 440,
+            'status' => KSeF::STATUS_DUPLICATE,
             'status_description' => 'Duplikat faktury',
             'status_details' => 'Duplikat faktury.',
             'original_ksef_number' => '1234567890-20260424-ABCDEF',

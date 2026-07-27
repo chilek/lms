@@ -59,13 +59,13 @@ class KSeFRepository implements KSeFRepositoryInterface
         return $this->db->GetAll($query) ?: [];
     }
 
-    public function reserveInvoices(array $documents, int $environment, int $createdAt): array
+    public function reserveInvoices(array $documents, int $environment): array
     {
         if (empty($documents)) {
             throw new \InvalidArgumentException('KSeF invoice reservation requires at least one document.');
         }
 
-        $sessionReferenceNumber = $this->localReference('LOCAL-S', (int) $documents[0]['docid']);
+        $sessionReferenceNumber = 'LOCAL-S-' . (int) $documents[0]['docid'] . '-' . \Utils::randomBytes(12);
 
         $this->db->BeginTrans();
         try {
@@ -116,11 +116,9 @@ class KSeFRepository implements KSeFRepositoryInterface
 
             $this->db->Execute(
                 'INSERT INTO ksefbatchsessions (ksefnumber, cdate, lastupdate, status, statusdescription, environment)
-                VALUES (?, ?, ?, ?, ?, ?)',
+                VALUES (?, ?NOW?, ?NOW?, ?, ?, ?)',
                 [
                     $sessionReferenceNumber,
-                    $createdAt,
-                    $createdAt,
                     KSeF::STATUS_PENDING,
                     'Reserved for KSeF submission.',
                     $environment,
@@ -300,17 +298,8 @@ class KSeFRepository implements KSeFRepositoryInterface
         }
     }
 
-    private function localReference(string $prefix, int $docId): string
-    {
-        return $prefix . '-' . $docId . '-' . substr(hash('sha1', uniqid('', true)), 0, 12);
-    }
-
     private function normalizeIds(?array $ids): array
     {
-        if (empty($ids)) {
-            return [];
-        }
-
-        return array_values(array_unique(array_filter(array_map('intval', $ids))));
+        return array_values(array_unique(array_filter(array_map('intval', \Utils::filterIntegers($ids)))));
     }
 }

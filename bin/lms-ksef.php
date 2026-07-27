@@ -83,11 +83,10 @@ if (isset($options['test'])) {
     exit(0);
 }
 
-$gateway = new N1ebieskiKSeFGateway();
 $ksef = new KSeF($DB, $LMS);
 $service = new KSeFSubmissionService(
     $repository,
-    $gateway,
+    new N1ebieskiKSeFGateway(),
     function (array $invoice) use ($LMS, $ksef) {
         $invoiceContent = $LMS->GetInvoiceContent((int) $invoice['id']);
         if (empty($invoiceContent)) {

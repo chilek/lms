@@ -2,31 +2,36 @@
 
 namespace Lms\KSeF;
 
+use N1ebieski\KSEFClient\ClientBuilder;
+use N1ebieski\KSEFClient\Contracts\Resources\ClientResourceInterface;
+use N1ebieski\KSEFClient\Factories\EncryptionKeyFactory;
 use N1ebieski\KSEFClient\Requests\Sessions\Batch\Close\CloseRequest;
 use N1ebieski\KSEFClient\Requests\Sessions\Batch\OpenAndSend\OpenAndSendXmlRequest;
 use N1ebieski\KSEFClient\Requests\Sessions\Invoices\KsefUpo\KsefUpoRequest;
 use N1ebieski\KSEFClient\Requests\Sessions\Invoices\List\ListRequest;
 use N1ebieski\KSEFClient\Requests\Sessions\Invoices\Upo\UpoRequest;
 use N1ebieski\KSEFClient\Support\Optional;
+use N1ebieski\KSEFClient\Validator\Rules\Xml\SchemaRule;
+use N1ebieski\KSEFClient\Validator\Validator;
+use N1ebieski\KSEFClient\ValueObjects\Mode;
 use N1ebieski\KSEFClient\ValueObjects\Requests\ContinuationToken;
 use N1ebieski\KSEFClient\ValueObjects\Requests\KsefNumber;
 use N1ebieski\KSEFClient\ValueObjects\Requests\ReferenceNumber;
 use N1ebieski\KSEFClient\ValueObjects\Requests\Sessions\FormCode;
 use N1ebieski\KSEFClient\ValueObjects\Requests\Sessions\PageSize;
+use N1ebieski\KSEFClient\ValueObjects\SchemaPath;
 
 class N1ebieskiKSeFGateway implements KSeFGatewayInterface
 {
-    const INVOICE_LIST_PAGE_SIZE = 1000;
+    private const INVOICE_LIST_PAGE_SIZE = 1000;
 
     private $clients = [];
 
     public function validateXml(string $xml): void
     {
         try {
-            \N1ebieski\KSEFClient\Validator\Validator::validate($xml, [
-                new \N1ebieski\KSEFClient\Validator\Rules\Xml\SchemaRule(
-                    \N1ebieski\KSEFClient\ValueObjects\SchemaPath::from(FormCode::Fa3->getSchemaPath())
-                ),
+            Validator::validate($xml, [
+                new SchemaRule(SchemaPath::from(FormCode::Fa3->getSchemaPath())),
             ]);
         } catch (\Throwable $e) {
             throw new \RuntimeException($this->formatXmlValidationException($e), 0, $e);
@@ -101,8 +106,7 @@ class N1ebieskiKSeFGateway implements KSeFGatewayInterface
                                 ReferenceNumber::from($invoice->referenceNumber)
                             ))
                             ->body();
-                    } elseif (
-                        $statusCode === 440
+                    } elseif ($statusCode === KSeF::STATUS_DUPLICATE
                         && !empty($originalKsefNumber)
                         && !empty($originalSessionReferenceNumber)
                     ) {
@@ -140,28 +144,24 @@ class N1ebieskiKSeFGateway implements KSeFGatewayInterface
         return $invoices;
     }
 
-    private function buildClient(KSeFConfig $config, string $sellerTen)
+    private function buildClient(KSeFConfig $config, string $sellerTen): ClientResourceInterface
     {
-        if (!class_exists('\N1ebieski\KSEFClient\ClientBuilder')) {
-            throw new \RuntimeException('Missing n1ebieski/ksef-php-client dependency. Run composer install.');
-        }
-
         $clientKey = spl_object_hash($config) . ':' . $sellerTen;
         if (isset($this->clients[$clientKey])) {
             return $this->clients[$clientKey];
         }
 
-        $builder = (new \N1ebieski\KSEFClient\ClientBuilder())
+        $builder = (new ClientBuilder())
             ->withMode($this->mode($config))
-            ->withEncryptionKey(\N1ebieski\KSEFClient\Factories\EncryptionKeyFactory::makeRandom())
+            ->withEncryptionKey(EncryptionKeyFactory::makeRandom())
             ->withValidateXml(false);
 
-        $builder = $builder->withIdentifier($sellerTen);
+        $builder->withIdentifier($sellerTen);
 
         if ($config->usesApiToken()) {
-            $builder = $builder->withKsefToken($config->getToken());
+            $builder->withKsefToken($config->getToken());
         } else {
-            $builder = $builder->withCertificatePath(
+            $builder->withCertificatePath(
                 $config->getCertificatePath(),
                 $config->getCertificatePassword()
             );
@@ -172,20 +172,20 @@ class N1ebieskiKSeFGateway implements KSeFGatewayInterface
         return $this->clients[$clientKey];
     }
 
-    private function mode(KSeFConfig $config)
+    private function mode(KSeFConfig $config): Mode
     {
-        switch ($config->getEnvironment()) {
-            case KSeF::ENVIRONMENT_PROD:
-                return \N1ebieski\KSEFClient\ValueObjects\Mode::Production;
-            case KSeF::ENVIRONMENT_DEMO:
-                return \N1ebieski\KSEFClient\ValueObjects\Mode::Demo;
-            default:
-                return \N1ebieski\KSEFClient\ValueObjects\Mode::Test;
-        }
+        return match ($config->getEnvironment()) {
+            KSeF::ENVIRONMENT_PROD => Mode::Production,
+            KSeF::ENVIRONMENT_DEMO => Mode::Demo,
+            default => Mode::Test,
+        };
     }
 
-    private function fetchOriginalUpo($client, string $sessionReferenceNumber, string $ksefNumber): ?string
-    {
+    private function fetchOriginalUpo(
+        ClientResourceInterface $client,
+        string $sessionReferenceNumber,
+        string $ksefNumber
+    ): ?string {
         try {
             return $client
                 ->sessions()
@@ -240,12 +240,12 @@ class N1ebieskiKSeFGateway implements KSeFGatewayInterface
         );
     }
 
-    private function extractStatusDetails($response): ?string
+    private function extractStatusDetails(object $invoice): ?string
     {
-        if (!empty($response->status->details)) {
-            return is_string($response->status->details)
-                ? $response->status->details
-                : json_encode($response->status->details);
+        if (!empty($invoice->status->details)) {
+            return is_string($invoice->status->details)
+                ? $invoice->status->details
+                : json_encode($invoice->status->details);
         }
 
         return null;

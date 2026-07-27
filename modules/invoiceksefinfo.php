@@ -24,11 +24,11 @@
  *  $Id$
  */
 
-use \Lms\KSeF\KSeF;
-use \Lms\KSeF\KSeFConfig;
-use \Lms\KSeF\KSeFRepository;
-use \Lms\KSeF\KSeFSubmissionService;
-use \Lms\KSeF\N1ebieskiKSeFGateway;
+use Lms\KSeF\KSeF;
+use Lms\KSeF\KSeFConfig;
+use Lms\KSeF\KSeFRepository;
+use Lms\KSeF\KSeFSubmissionService;
+use Lms\KSeF\N1ebieskiKSeFGateway;
 
 if (!empty($_GET['action']) && $_GET['action'] == 'send-result') {
     if (!ConfigHelper::checkPrivileges('finances_management', 'financial_operations')) {
@@ -70,20 +70,22 @@ if (!empty($_GET['action']) && $_GET['action'] == 'send') {
 
     if (!empty($_GET['id'])) {
         $docIds = [
-            intval($_GET['id']),
+            $_GET['id'],
         ];
     } elseif (isset($_POST['marks']) && is_array($_POST['marks'])) {
-        $docIds = Utils::filterIntegers($_POST['marks']);
+        $docIds = $_POST['marks'];
     } else {
         $docIds = [];
     }
-    $docIds = array_values(array_unique(array_filter(array_map('intval', $docIds))));
+    $docIds = array_values(array_unique(array_filter(array_map('intval', Utils::filterIntegers($docIds)))));
     if (empty($docIds)) {
         die('No invoices selected.');
     }
     $backUrl = '?m=invoicelist';
-    if (!empty($_POST['backurl']) && is_string($_POST['backurl'])
-        && preg_match('/^\?m=invoicelist(?:[&#]|$)/', $_POST['backurl'])) {
+    if (!empty($_POST['backurl'])
+        && is_string($_POST['backurl'])
+        && preg_match('/^\?m=invoicelist(?:[&#]|$)/', $_POST['backurl'])
+    ) {
         $backUrl = $_POST['backurl'];
     }
 
@@ -97,7 +99,7 @@ if (!empty($_GET['action']) && $_GET['action'] == 'send') {
                 ConfigHelper::setFilter($divisionId);
             }
 
-            return KSeFConfig::fromConfigHelper(true);
+            return KSeFConfig::fromConfigHelper();
         };
         $config = KSeFConfig::fromConfigHelper(false);
         $ksef = new KSeF($DB, $LMS);

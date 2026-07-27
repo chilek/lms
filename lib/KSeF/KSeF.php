@@ -26,6 +26,8 @@
 
 namespace Lms\KSeF;
 
+use N1ebieski\KSEFClient\ValueObjects\Requests\KsefNumber;
+
 class KSeF
 {
     const CERTIFICATE_FORMAT_UNKNOWN = 0;
@@ -40,6 +42,7 @@ class KSeF
     const ENVIRONMENT_DEMO = 3;
     const STATUS_PENDING = 0;
     const STATUS_ACCEPTED = 200;
+    const STATUS_DUPLICATE = 440;
 
     const IDENTIFIER_TEN = 1;
     const IDENTIFIER_VAT_UE = 2;
@@ -430,7 +433,9 @@ class KSeF
 
     private function buildInvoiceXml(array $invoice)
     {
-        $invoiceType = $invoice['type'] ?? $invoice['doctype'] ?? null;
+        if (!isset($invoice['type']) && isset($invoice['doctype'])) {
+            $invoice['type'] = $invoice['doctype'];
+        }
 
         if (!isset($this->divisions[$invoice['divisionid']])) {
             $this->divisions[$invoice['divisionid']] = $this->lms->GetDivision($invoice['divisionid']);
@@ -555,7 +560,7 @@ class KSeF
 
         $xml .= "\t\t<NrKlienta>" . $invoice['customerid'] . "</NrKlienta>" . PHP_EOL;
 
-        if ($invoiceType == DOC_CNOTE) {
+        if ($invoice['type'] == DOC_CNOTE) {
             $buyerUuid = \Ramsey\Uuid\Uuid::uuid4();
             $buyerUuid = $buyerUuid->getHex();
             $xml .= "\t\t<IDNabywcy>" . $buyerUuid . "</IDNabywcy>" . PHP_EOL;
@@ -601,7 +606,7 @@ class KSeF
 
             $xml .= "\t<Podmiot3>" . PHP_EOL;
 
-            if ($invoiceType == DOC_CNOTE) {
+            if ($invoice['type'] == DOC_CNOTE) {
                 $recipientUuid = \Ramsey\Uuid\Uuid::uuid4();
                 $recipientUuid = $recipientUuid->getHex();
                 $xml .= "\t\t<IDNabywcy>" . $recipientUuid . "</IDNabywcy>" . PHP_EOL;
@@ -685,7 +690,7 @@ class KSeF
 
             $xml .= "\t<Podmiot3>" . PHP_EOL;
 
-            if ($invoiceType == DOC_CNOTE) {
+            if ($invoice['type'] == DOC_CNOTE) {
                 $recipientUuid2 = \Ramsey\Uuid\Uuid::uuid4();
                 $recipientUuid2 = $recipientUuid2->getHex();
                 $xml .= "\t\t<IDNabywcy>" . $recipientUuid2 . "</IDNabywcy>" . PHP_EOL;
@@ -766,7 +771,7 @@ class KSeF
         $taxFree = false;
         $diffTotal = 0;
 
-        if ($invoiceType == DOC_CNOTE) {
+        if ($invoice['type'] == DOC_CNOTE) {
             if (isset($invoice['taxest']['23.00']) || isset($invoice['invoice']['taxest']['23.00'])) {
                 $taxRate = '23.00';
             } elseif (isset($invoice['taxest']['22.00']) || isset($invoice['invoice']['taxest']['22.00'])) {
@@ -812,7 +817,7 @@ class KSeF
             }
         }
 
-        if ($invoiceType == DOC_CNOTE) {
+        if ($invoice['type'] == DOC_CNOTE) {
             if (isset($invoice['taxest']['8.00']) || isset($invoice['invoice']['taxest']['8.00'])) {
                 $taxRate = '8.00';
             } elseif (isset($invoice['taxest']['7.00']) || isset($invoice['invoice']['taxest']['7.00'])) {
@@ -858,7 +863,7 @@ class KSeF
             }
         }
 
-        if ($invoiceType == DOC_CNOTE) {
+        if ($invoice['type'] == DOC_CNOTE) {
             if (isset($invoice['taxest']['5.00']) || isset($invoice['invoice']['taxest']['5.00'])) {
                 $taxRate = '5.00';
             } else {
@@ -902,7 +907,7 @@ class KSeF
 
         $taxRate = '0.00';
         if ($ue || $foreign) {
-            if ($invoiceType == DOC_CNOTE) {
+            if ($invoice['type'] == DOC_CNOTE) {
                 if (isset($invoice['taxest'][$taxRate]) || isset($invoice['invoice']['taxest'][$taxRate])) {
                     if (isset($invoice['taxest'][$taxRate])) {
                         $base = round(($invoice['taxest'][$taxRate]['base'] - (isset($invoice['invoice']['taxest'][$taxRate]) ? $invoice['invoice']['taxest'][$taxRate]['base'] : 0)), 2);
@@ -932,7 +937,7 @@ class KSeF
                 }
             }
         } else {
-            if ($invoiceType == DOC_CNOTE) {
+            if ($invoice['type'] == DOC_CNOTE) {
                 if (isset($invoice['taxest'][$taxRate]) || isset($invoice['invoice']['taxest'][$taxRate])) {
                     if (isset($invoice['taxest'][$taxRate])) {
                         $base = round(($invoice['taxest'][$taxRate]['base'] - (isset($invoice['invoice']['taxest'][$taxRate]) ? $invoice['invoice']['taxest'][$taxRate]['base'] : 0)), 2);
@@ -952,7 +957,7 @@ class KSeF
         }
 
         $taxRate = '-1';
-        if ($invoiceType == DOC_CNOTE) {
+        if ($invoice['type'] == DOC_CNOTE) {
             if (isset($invoice['taxest'][$taxRate]) || isset($invoice['invoice']['taxest'][$taxRate])) {
                 if (isset($invoice['taxest'][$taxRate])) {
                     $base = round(($invoice['taxest'][$taxRate]['base'] - (isset($invoice['invoice']['taxest'][$taxRate]) ? $invoice['invoice']['taxest'][$taxRate]['base'] : 0)), 2);
@@ -986,7 +991,7 @@ class KSeF
         }
 
         $taxRate = '-2';
-        if ($invoiceType == DOC_CNOTE) {
+        if ($invoice['type'] == DOC_CNOTE) {
             if (isset($invoice['taxest'][$taxRate]) || isset($invoice['invoice']['taxest'][$taxRate])) {
                 if (isset($invoice['taxest'][$taxRate])) {
                     $base = round(($invoice['taxest'][$taxRate]['base'] - $invoice['invoice']['taxest'][$taxRate]['base']), 2);
@@ -1018,7 +1023,7 @@ class KSeF
             }
         }
 
-        if ($invoiceType == DOC_CNOTE) {
+        if ($invoice['type'] == DOC_CNOTE) {
             $xml .= "\t\t<P_15>" . sprintf('%.2f', $diffTotal) . "</P_15>" . PHP_EOL;
         } else {
             $xml .= "\t\t<P_15>" . sprintf('%.2f', $invoice['total']) . "</P_15>" . PHP_EOL;
@@ -1056,7 +1061,7 @@ class KSeF
         $xml .= "\t\t\t</PMarzy>" . PHP_EOL;
         $xml .= "\t\t</Adnotacje>" . PHP_EOL;
 
-        if ($invoiceType == DOC_CNOTE) {
+        if ($invoice['type'] == DOC_CNOTE) {
             $xml .= "\t\t<RodzajFaktury>KOR</RodzajFaktury>" . PHP_EOL;
             if (!empty($invoice['reason'])) {
                 $xml .= "\t\t<PrzyczynaKorekty>" . htmlspecialchars($invoice['reason']) . "</PrzyczynaKorekty>" . PHP_EOL;
@@ -1348,7 +1353,7 @@ class KSeF
         foreach ($invoice['content'] as $position) {
             $itemId = $position['itemid'];
 
-            if ($invoiceType == DOC_CNOTE && !empty($refInvoiceContent[$itemId])) {
+            if ($invoice['type'] == DOC_CNOTE && !empty($refInvoiceContent[$itemId])) {
                 $description = htmlspecialchars($refInvoiceContent[$itemId]['description']);
                 if (mb_strlen($description) > 512) {
                     $description = mb_substr($description, 0, 512 - strlen(' [...]')) . ' [...]';
@@ -1534,7 +1539,7 @@ class KSeF
         }
 
         if (!empty($invoice['ksefshowbalancesummary'])) {
-            if ($invoiceType == DOC_CNOTE) {
+            if ($invoice['type'] == DOC_CNOTE) {
                 $total = $diffTotal;
             } else {
                 $total = $invoice['total'];
@@ -1579,7 +1584,7 @@ class KSeF
         $xml .= "\t\t\t\t<Termin>" . date('Y-m-d', $invoice['pdate']) . "</Termin>" . PHP_EOL;
 /*
         if ($currency != $this->defaultCurrency) {
-            $total = $invoiceType == DOC_CNOTE ? $diffTotal : $invoice['total'];
+            $total = $invoice['type'] == DOC_CNOTE ? $diffTotal : $invoice['total'];
             if ($total >= 0) {
                 $xml .= "\t\t\t\t<TerminOpis>Do zapłaty " . moneyf($total * $currencyValue) . ';'
                     . ' cena umowna ' . moneyf($total, $currency)
@@ -2131,39 +2136,34 @@ class KSeF
 
     public static function saveUpoContent($ksefNumber, $upoContent)
     {
-        if (!self::ensureUpoStorageDirectory()) {
-            return false;
+        try {
+            KsefNumber::from($ksefNumber);
+        } catch (\Throwable $e) {
+            return 'Invalid KSeF invoice number.';
         }
 
         if (!is_string($upoContent) || $upoContent === '') {
             return 'Empty UPO file content for KSeF invoice \'' . $ksefNumber . '\'!';
         }
 
+        if (!self::ensureUpoStorageDirectory()) {
+            return false;
+        }
+
         [$ten, $date] = explode('-', $ksefNumber);
 
-        $ksefUpoTenDir = self::KSEF_UPO_DIR . DIRECTORY_SEPARATOR . $ten;
-        if (!is_dir($ksefUpoTenDir)) {
-            mkdir($ksefUpoTenDir);
-            @chmod(
-                $ksefUpoTenDir,
-                fileperms(self::KSEF_UPO_DIR) & 0xfff
-            );
-            @chown($ksefUpoTenDir, fileowner(self::KSEF_UPO_DIR));
-            @chgrp($ksefUpoTenDir, filegroup(self::KSEF_UPO_DIR));
+        $upoDirectory = self::KSEF_UPO_DIR;
+        foreach ([$ten, $date] as $directoryName) {
+            $upoDirectory .= DIRECTORY_SEPARATOR . $directoryName;
+            if (!is_dir($upoDirectory)) {
+                mkdir($upoDirectory);
+                @chmod($upoDirectory, fileperms(self::KSEF_UPO_DIR) & 0xfff);
+                @chown($upoDirectory, fileowner(self::KSEF_UPO_DIR));
+                @chgrp($upoDirectory, filegroup(self::KSEF_UPO_DIR));
+            }
         }
 
-        $ksefUpoTenDateDir = $ksefUpoTenDir . DIRECTORY_SEPARATOR . $date;
-        if (!is_dir($ksefUpoTenDateDir)) {
-            mkdir($ksefUpoTenDateDir);
-            @chmod(
-                $ksefUpoTenDateDir,
-                fileperms(self::KSEF_UPO_DIR) & 0xfff
-            );
-            @chown($ksefUpoTenDateDir, fileowner(self::KSEF_UPO_DIR));
-            @chgrp($ksefUpoTenDateDir, filegroup(self::KSEF_UPO_DIR));
-        }
-
-        $upoFile = $ksefUpoTenDateDir . DIRECTORY_SEPARATOR . $ksefNumber . '.xml';
+        $upoFile = $upoDirectory . DIRECTORY_SEPARATOR . $ksefNumber . '.xml';
         if (file_put_contents($upoFile, $upoContent) !== false) {
             @chmod(
                 $upoFile,
