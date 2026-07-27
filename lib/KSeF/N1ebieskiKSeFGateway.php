@@ -39,7 +39,7 @@ class N1ebieskiKSeFGateway implements KSeFGatewayInterface
         $response = $this->buildClient($config, $sellerTen)
             ->sessions()
             ->batch()
-            ->openAndSend($this->createOpenAndSendXmlRequest($xmlDocuments))
+            ->openAndSend(new OpenAndSendXmlRequest(FormCode::Fa3, $xmlDocuments))
             ->object();
 
         return $this->readStringProperty($response, 'referenceNumber');
@@ -50,7 +50,7 @@ class N1ebieskiKSeFGateway implements KSeFGatewayInterface
         $this->buildClient($config, $sellerTen)
             ->sessions()
             ->batch()
-            ->close($this->createCloseRequest($sessionReferenceNumber))
+            ->close(new CloseRequest(ReferenceNumber::from($sessionReferenceNumber)))
             ->status();
     }
 
@@ -195,31 +195,16 @@ class N1ebieskiKSeFGateway implements KSeFGatewayInterface
         }
     }
 
-    private function createOpenAndSendXmlRequest(array $xmlDocuments): OpenAndSendXmlRequest
-    {
-        return new OpenAndSendXmlRequest(FormCode::Fa3, $xmlDocuments);
-    }
-
-    private function createCloseRequest(string $sessionReferenceNumber): CloseRequest
-    {
-        return new CloseRequest(ReferenceNumber::from($sessionReferenceNumber));
-    }
-
-    private function createKsefUpoRequest(string $sessionReferenceNumber, string $ksefNumber): KsefUpoRequest
-    {
-        return new KsefUpoRequest(
-            ReferenceNumber::from($sessionReferenceNumber),
-            KsefNumber::from($ksefNumber)
-        );
-    }
-
     private function fetchOriginalUpo($client, string $sessionReferenceNumber, string $ksefNumber): ?string
     {
         try {
             return $client
                 ->sessions()
                 ->invoices()
-                ->ksefUpo($this->createKsefUpoRequest($sessionReferenceNumber, $ksefNumber))
+                ->ksefUpo(new KsefUpoRequest(
+                    ReferenceNumber::from($sessionReferenceNumber),
+                    KsefNumber::from($ksefNumber)
+                ))
                 ->body();
         } catch (\Throwable $e) {
             return null;

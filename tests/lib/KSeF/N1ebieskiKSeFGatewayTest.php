@@ -13,64 +13,13 @@ namespace LMS\Tests\KSeF {
     require_once __DIR__ . '/FakeXmlValidationException.php';
 
     use Lms\KSeF\N1ebieskiKSeFGateway;
-    use N1ebieski\KSEFClient\Requests\Sessions\Batch\Close\CloseRequest;
-    use N1ebieski\KSEFClient\Requests\Sessions\Batch\OpenAndSend\OpenAndSendXmlRequest;
     use N1ebieski\KSEFClient\Requests\Sessions\Invoices\KsefUpo\KsefUpoRequest;
     use N1ebieski\KSEFClient\Requests\Sessions\Invoices\List\ListRequest;
     use N1ebieski\KSEFClient\ValueObjects\Requests\ContinuationToken;
-    use N1ebieski\KSEFClient\ValueObjects\Requests\Sessions\FormCode;
     use PHPUnit\Framework\TestCase;
 
     class N1ebieskiKSeFGatewayTest extends TestCase
     {
-        public function testCreatesBatchXmlRequestForFa3Documents()
-        {
-            $gateway = new N1ebieskiKSeFGateway();
-            $method = new \ReflectionMethod($gateway, 'createOpenAndSendXmlRequest');
-            $method->setAccessible(true);
-
-            $request = $method->invoke($gateway, [
-                '<Faktura>1</Faktura>',
-                '<Faktura>2</Faktura>',
-            ]);
-
-            $this->assertInstanceOf(OpenAndSendXmlRequest::class, $request);
-            $this->assertSame(FormCode::Fa3, $request->formCode);
-            $this->assertSame([
-                '<Faktura>1</Faktura>',
-                '<Faktura>2</Faktura>',
-            ], $request->faktury);
-        }
-
-        public function testCreatesBatchCloseRequest()
-        {
-            $gateway = new N1ebieskiKSeFGateway();
-            $method = new \ReflectionMethod($gateway, 'createCloseRequest');
-            $method->setAccessible(true);
-
-            $request = $method->invoke($gateway, '20260424-SO-ABCDEFGHIJ-1234567890-AB');
-
-            $this->assertInstanceOf(CloseRequest::class, $request);
-            $this->assertSame('20260424-SO-ABCDEFGHIJ-1234567890-AB', $request->referenceNumber->value);
-        }
-
-        public function testCreatesKsefUpoRequest()
-        {
-            $gateway = new N1ebieskiKSeFGateway();
-            $method = new \ReflectionMethod($gateway, 'createKsefUpoRequest');
-            $method->setAccessible(true);
-
-            $request = $method->invoke(
-                $gateway,
-                '20260424-SO-ABCDEFGHIJ-1234567890-AB',
-                '5130271243-20260424-ABCDEF-123456-AB'
-            );
-
-            $this->assertInstanceOf(KsefUpoRequest::class, $request);
-            $this->assertSame('20260424-SO-ABCDEFGHIJ-1234567890-AB', $request->referenceNumber->value);
-            $this->assertSame('5130271243-20260424-ABCDEF-123456-AB', $request->ksefNumber->value);
-        }
-
         public function testFetchesOriginalUpoForDuplicateInvoice()
         {
             $gateway = new N1ebieskiKSeFGateway();
