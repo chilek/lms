@@ -66,7 +66,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             'INSERT INTO events (title, description, date, begintime, enddate,
                 endtime, userid, creationdate, private, note, closed, customerid, type, address_id, nodeid,
                 ticketid, netnodeid, netdevid, divisionid)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array_values($args)
         );
 
