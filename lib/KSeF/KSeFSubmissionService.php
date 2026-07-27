@@ -129,17 +129,25 @@ class KSeFSubmissionService
                     time()
                 );
 
-                if (empty($reserved['documents'])) {
-                    $this->addReservationSkippedErrors($result, $reserved, $preparedInvoices);
-                    continue;
-                }
-
                 foreach ($reserved['skipped'] as $docId => $error) {
                     $result['skipped']++;
                     $result['errors'][] = [
                         'docid' => (int) $docId,
                         'error' => $error,
                     ];
+                }
+
+                if (empty($reserved['documents'])) {
+                    if (empty($reserved['skipped'])) {
+                        foreach ($preparedInvoices as $preparedInvoice) {
+                            $result['skipped']++;
+                            $result['errors'][] = [
+                                'docid' => (int) $preparedInvoice['invoice']['id'],
+                                'error' => 'Invoice is already reserved for KSeF submission.',
+                            ];
+                        }
+                    }
+                    continue;
                 }
 
                 $reservedDocIds = [];
@@ -323,29 +331,6 @@ class KSeFSubmissionService
         }
 
         return count($docIds);
-    }
-
-    private function addReservationSkippedErrors(array &$result, array $reserved, array $preparedInvoices): void
-    {
-        if (!empty($reserved['skipped'])) {
-            foreach ($reserved['skipped'] as $docId => $error) {
-                $result['skipped']++;
-                $result['errors'][] = [
-                    'docid' => (int) $docId,
-                    'error' => $error,
-                ];
-            }
-
-            return;
-        }
-
-        foreach ($preparedInvoices as $preparedInvoice) {
-            $result['skipped']++;
-            $result['errors'][] = [
-                'docid' => (int) $preparedInvoice['invoice']['id'],
-                'error' => 'Invoice is already reserved for KSeF submission.',
-            ];
-        }
     }
 
     private function invoiceHash(string $xml): string

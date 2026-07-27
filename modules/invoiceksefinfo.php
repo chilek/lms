@@ -30,76 +30,6 @@ use \Lms\KSeF\KSeFRepository;
 use \Lms\KSeF\KSeFSubmissionService;
 use \Lms\KSeF\N1ebieskiKSeFGateway;
 
-function prepareInvoiceKSeFSendResult(array $result)
-{
-    $result['backurl'] = $result['backurl'] ?? '?m=invoicelist';
-
-    if (!empty($result['error'])) {
-        return $result;
-    }
-
-    $sendResult = $result['send_result'];
-    $syncResult = $result['sync_result'];
-    $skippedDocIds = $result['skipped_doc_ids'];
-    $resultDocuments = $result['result_documents'];
-
-    $result['submitted'] = intval($sendResult['submitted']);
-    $result['updated'] = intval($syncResult['updated']);
-    $result['skipped'] = intval($sendResult['skipped']) + count($skippedDocIds);
-
-    $sendErrors = [];
-    foreach ($sendResult['errors'] as $error) {
-        $sendErrors[(int) $error['docid']][] = $error['error'];
-    }
-    $syncErrors = [];
-    foreach ($syncResult['errors'] as $error) {
-        $syncErrors[(int) $error['id']][] = $error['error'];
-    }
-    $skippedMap = array_fill_keys($skippedDocIds, true);
-
-    foreach ($resultDocuments as &$document) {
-        $docId = (int) $document['id'];
-        $ksefDocumentId = (int) $document['ksefdocumentid'];
-        $statusMessages = [];
-
-        if (isset($skippedMap[$docId])) {
-            $statusMessages[] = trans('Document is not eligible for KSeF submission or has been submitted already.');
-        }
-        if (!empty($sendErrors[$docId])) {
-            $statusMessages = array_merge($statusMessages, $sendErrors[$docId]);
-        }
-        if ($ksefDocumentId && !empty($syncErrors[$ksefDocumentId])) {
-            $statusMessages = array_merge($statusMessages, $syncErrors[$ksefDocumentId]);
-        }
-        $document['has_errors'] = !empty($statusMessages);
-
-        if (empty($statusMessages)) {
-            if ((int) $document['status'] === KSeF::STATUS_ACCEPTED) {
-                $statusMessages[] = $document['statusdescription'] ?: trans('KSeF accepted');
-            } elseif (isset($document['status'])) {
-                $statusMessages[] = ($document['statusdescription'] ?: trans('waiting for KSeF handling'))
-                    . ' (' . intval($document['status']) . ')';
-                $statusDetails = KSeF::formatStatusDetails($document['statusdetails']);
-                if (!empty($statusDetails)) {
-                    $statusMessages[] = $statusDetails;
-                }
-            } else {
-                $statusMessages[] = trans('not submitted to KSeF');
-            }
-        }
-
-        $document['status_message'] = implode(' ', $statusMessages);
-        $document['accepted'] = (int) $document['status'] === KSeF::STATUS_ACCEPTED;
-        $document['has_upo'] = !empty($document['ksefnumber'])
-            && KSeF::upoFileExists($document['ksefnumber']);
-    }
-    unset($document);
-
-    $result['result_documents'] = $resultDocuments;
-
-    return $result;
-}
-
 if (!empty($_GET['action']) && $_GET['action'] == 'send-result') {
     if (!ConfigHelper::checkPrivileges('finances_management', 'financial_operations')) {
         die('Access denied.');
@@ -115,13 +45,13 @@ if (!empty($_GET['action']) && $_GET['action'] == 'send-result') {
 
     if (empty($result) || !is_array($result)) {
         $result = [
-            'backurl' => '?m=invoicelist',
             'error' => trans('KSeF submission result is not available.'),
         ];
     }
+    $result['backurl'] = $result['backurl'] ?? '?m=invoicelist';
 
     $layout['pagetitle'] = trans('KSeF invoice handling');
-    $SMARTY->assign('result', prepareInvoiceKSeFSendResult($result));
+    $SMARTY->assign('result', $result);
     $SMARTY->display('header.html');
     $SMARTY->display('invoice/invoiceksefsendresult.html');
     $SMARTY->display('footer.html');
@@ -185,48 +115,8 @@ if (!empty($_GET['action']) && $_GET['action'] == 'send') {
             $configProvider
         );
 
-        $selectedDocumentLimit = count($docIds);
-        $eligibleInvoices = $repository->getEligibleInvoices($selectedDocumentLimit, null, null, $docIds);
-        $pendingDocuments = $repository->getPendingDocuments($selectedDocumentLimit, null, null, $docIds);
-        $actionableDocIds = [];
-        foreach ($eligibleInvoices as $invoice) {
-            $actionableDocIds[(int) $invoice['id']] = true;
-        }
-        foreach ($pendingDocuments as $document) {
-            $actionableDocIds[(int) $document['docid']] = true;
-        }
-
-        $sendResult = $service->send($config, null, null, $docIds);
-        $syncResult = [
-            'updated' => 0,
-            'errors' => [],
-        ];
-        if ($sendResult['submitted'] > 0 || !empty($pendingDocuments)) {
-            $syncResult = $service->sync($config, null, null, $docIds);
-        }
-        $skippedDocIds = array_values(array_diff($docIds, array_keys($actionableDocIds)));
-        $result['send_result'] = $sendResult;
-        $result['sync_result'] = $syncResult;
-        $result['skipped_doc_ids'] = $skippedDocIds;
-        $result['result_documents'] = $DB->GetAll(
-            'SELECT
-                d.id,
-                d.fullnumber,
-                kd.id AS ksefdocumentid,
-                kd.status,
-                kd.statusdescription,
-                kd.statusdetails,
-                kd.ksefnumber
-            FROM documents d
-            LEFT JOIN (
-                SELECT docid, MAX(id) AS maxid
-                FROM ksefdocuments
-                GROUP BY docid
-            ) latestkd ON latestkd.docid = d.id
-            LEFT JOIN ksefdocuments kd ON kd.id = latestkd.maxid
-            WHERE d.id IN (' . implode(',', $docIds) . ')
-            ORDER BY d.id'
-        ) ?: [];
+        $result['send_result'] = $service->send($config, null, null, $docIds);
+        $result['sync_result'] = $service->sync($config, null, null, $docIds);
     } catch (\Throwable $e) {
         $result['error'] = $e->getMessage();
     }
