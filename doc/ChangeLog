@@ -1231,6 +1231,7 @@ version 28-git (????-??-??):
     behaviour in new document form [chilan]
   - devel/improvement: 'cashimport_extra_filter_before_submit' hook handlers can inform core to ignore current
     cash import row (by 'ignore' boolean property included in hook result array) [chilan]
+  - improvement: 'note' property can be initilised during timetable event creation process [chilan]
 
 version 27.0 (2021-08-20):
 
