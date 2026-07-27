@@ -46,6 +46,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             'endtime' => $event['endtime'],
             SYSLOG::RES_USER => Auth::GetCurrentUser(),
             'private' => $event['private'],
+            'note' => $event['note'],
             'closed' => isset($event['close']) ? 1 : 0,
             SYSLOG::RES_CUST => empty($event['custid']) ? null : $event['custid'],
             'type' => $event['type'],
@@ -63,9 +64,9 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
         $this->db->Execute(
             'INSERT INTO events (title, description, date, begintime, enddate,
-                endtime, userid, creationdate, private, closed, customerid, type, address_id, nodeid,
+                endtime, userid, creationdate, private, note, closed, customerid, type, address_id, nodeid,
                 ticketid, netnodeid, netdevid, divisionid)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array_values($args)
         );
 
