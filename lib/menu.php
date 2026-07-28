@@ -441,7 +441,7 @@ $menu = array(
                 'ksefpurchaseinvoices' => array(
                     'name' => trans('KSeF Purchase Invoices'),
                     'link' => '?m=ksefpurchaseinvoices',
-                    'tip' => trans('KSEF purchase invoice management'),
+                    'tip' => trans('KSeF purchase invoice management'),
                     'prio' => 85,
                 ),
                 'invoicelist-proforma' => array(
