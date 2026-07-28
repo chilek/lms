@@ -165,4 +165,6 @@ $SMARTY->assign('end_date', $endDate);
 //$SMARTY->assign('sort_order', 'issue-date asc');
 $SMARTY->assign('invoices', $invoices);
 
+$layout['pagetitle'] = trans('KSeF Purchase Invoices');
+
 $SMARTY->display('ksef/ksefpurchaseinvoices.html');
