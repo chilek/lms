@@ -36,11 +36,14 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
     echo '<H1>' . $layout['pagetitle'] . '</H1>';
 
     if (isset($_POST['marks'])) {
-        if ($_GET['marks'] == 'invoice' || !isset($_POST['marks']['invoice'])) {
+        if ($_GET['marks'] == 'invoice' || !isset($_POST['marks']['invoice'], $_POST['marks']['note'])) {
             $marks = $_POST['marks'];
         }
-        if (isset($_POST['marks']['invoice']) && $_POST['marks']['invoice']) {
+        if (!empty($_POST['marks']['invoice'])) {
             $marks = $_POST['marks']['invoice'];
+        }
+        if (!empty($_POST['marks']['note'])) {
+            $marks = $_POST['marks']['note'];
         }
 
         $ids = Utils::filterIntegers($marks);
