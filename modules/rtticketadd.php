@@ -467,6 +467,7 @@ if (isset($_POST['ticket'])) {
                     'sms_body' => $sms_body,
                     'contenttype' => $ticket['contenttype'],
                     'attachments' => &$attachments,
+                    'smtp_options' => $smtp_options,
                 ));
             }
         }
