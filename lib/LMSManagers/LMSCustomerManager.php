@@ -1444,7 +1444,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                     SELECT 1 FROM customercontacts
                                     WHERE customerid = c.id
                                         AND (customercontacts.type & ' . (CONTACT_MOBILE | CONTACT_LANDLINE) . ') > 0
-                                        AND REPLACE(contact, \'-\', \'\') ?LIKE? ' . $this->db->Escape("%$value%")
+                                        AND REPLACE(REPLACE(contact, \'-\', \'\'), \' \', \'\') ?LIKE? ' . $this->db->Escape("%$value%")
                                     . ')';
                             }
                             break;
