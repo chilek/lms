@@ -1209,6 +1209,7 @@ function initMultiChecks(selector) {
 		if (tbody.is('table')) {
 			tbody = tbody.find('tbody');
 		}
+		var checkHidden = tbody.is('.lms-ui-multi-check-hidden');
 		var checkboxes = tbody.parent().find('[type="checkbox"]');
 		var allcheckboxes = checkboxes.filter('.lms-ui-multi-check');
 
@@ -1223,7 +1224,7 @@ function initMultiChecks(selector) {
 				checkall.not(this).each(function() {
 					$(this).prop('checked', checked);
 				});
-				allcheckboxes.filter(':visible').each(function() {
+				allcheckboxes.filter(checkHidden ? '*' : ':visible').each(function() {
 					this.checked = checked;
 				});
 			});
@@ -1232,7 +1233,7 @@ function initMultiChecks(selector) {
 		}
 
 		elem.updateCheckAll = function() {
-			allcheckboxes.filter(':not(:visible)').prop('checked', false);
+			allcheckboxes.filter(checkHidden ? '*' : ':not(:visible)').prop('checked', false);
 			updateCheckAll();
 		}
 
@@ -1246,7 +1247,7 @@ function initMultiChecks(selector) {
 			var i = allcheckboxes.index(allcheckboxes.filter('[data-prev-checked]:visible')),
 				j = allcheckboxes.index(checkbox);
 			if (i > -1) {
-				var checked = $(allcheckboxes[i]).attr('data-prev-checked') == 'true' ? true : false;
+				var checked = $(allcheckboxes[i]).attr('data-prev-checked') === 'true';
 				var start = Math.min(i, j);
 				var stop = Math.max(i, j);
 				for (i = start; i <= stop; i++) {
@@ -1258,7 +1259,7 @@ function initMultiChecks(selector) {
 
 		function updateCheckAll() {
 			if (checkall) {
-				checkall.prop('checked', allcheckboxes.filter(':visible:checked').length == allcheckboxes.filter(':visible').length);
+				checkall.prop('checked', allcheckboxes.filter(checkHidden ? ':checked' : ':visible:checked').length === allcheckboxes.filter(checkHidden ? '*' : ':visible').length);
 			}
 		}
 
@@ -1293,6 +1294,10 @@ function initMultiChecks(selector) {
 			row.find('a:not(.lms-ui-button-clipboard)').click(function(e) {
 				e.stopPropagation();
 			});
+		});
+
+		tbody.on('lms:update_check_all', function() {
+			updateCheckAll();
 		});
 	});
 }

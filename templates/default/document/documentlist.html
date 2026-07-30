@@ -227,7 +227,7 @@
 	</TR>
 	{/if}
     </THEAD>
-    <TBODY class="lms-ui-multi-check">
+    <TBODY class="lms-ui-multi-check lms-ui-multi-check-hidden">
 	<FORM METHOD="POST" NAME="page" id="page-form" ACTION="?m=documentedit&action=confirm">
 	{foreach $documentlist as $doc}
 	{assign var=docid value=$doc.docid}
@@ -311,10 +311,11 @@
 						tip="Preview"}
 				{/if}
 			{/buttons}
+			<input type="checkbox" name="marks[{$docid}]" value="{$docid}" class="document-checkbox lms-ui-multi-check"{if $marks.$docid} checked{/if}>
 			{if $doc.attachments|size > 1 || $docattach.type < 1}
-			<a href="#" id="allattachments-toggle-{$doc.docid}" onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
-				<img src="img/asc_order.gif">
-			</a>
+				<a href="#" id="allattachments-toggle-{$doc.docid}" onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
+					<img src="img/asc_order.gif">
+				</a>
 			{/if}
 			<div id="allattachments-{$doc.docid}" style="display: none;">
 				{foreach $doc.attachments as $docattach}
@@ -327,10 +328,11 @@
 						external=true
 					}
 					{if $docattach.type == -1}<i class="lms-ui-icon-user" title="<strong>{t a=date("Y/m/d H:i", $docattach.cdate)}Sent by customer at $a{/t}</strong>"></i>{/if}
+					<input type="checkbox" name="attachment-marks[{$docid}][{$docattach.id}]" class="document-attachment-checkbox lms-ui-multi-check" value="{$docattach.id}"
+						{if $marks.$docid} checked{/if}>
 					<br>
 				{/foreach}
 			</div>
-			<INPUT TYPE="checkbox" NAME="marks[{$docid}]" VALUE="{$docid}" class="lms-ui-multi-check"{if $marks.$docid} checked{/if}>
 		</TD>
 	</TR>
 	{foreachelse}
@@ -494,6 +496,27 @@
             });
         }
 		return false;
+	});
+
+	$(function() {
+		$('.document-checkbox').change(function() {
+			var documentAttachmentCheckboxes = $(this).closest('td').find('.document-attachment-checkbox');
+			var checked = $(this).prop('checked');
+			documentAttachmentCheckboxes.prop('checked', checked);
+			$(this).closest('tbody').trigger('lms:update_check_all');
+		});
+
+		$('.document-attachment-checkbox').change(function() {
+			var documentAttachmentCheckboxes = $(this).closest('td').find('.document-attachment-checkbox');
+			var documentCheckbox = $(this).closest('td').find('.document-checkbox');
+			var checked = $(this).prop('checked');
+			if (checked) {
+				documentCheckbox.prop('checked', documentAttachmentCheckboxes.filter(':checked').length);
+			} else {
+				documentCheckbox.prop('checked', documentAttachmentCheckboxes.filter(':not(:checked)').length !== documentAttachmentCheckboxes.length);
+			}
+			$(this).closest('tbody').trigger('lms:update_check_all');
+		});
 	});
 
 </script>

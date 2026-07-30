@@ -123,13 +123,23 @@ if (!empty($docids)) {
                 }
             }
         }
+
+        $selectedAttachments = [];
+        if (!empty($_POST['attachment-marks'])) {
+            foreach ($_POST['attachment-marks'] as $documentId => $documentAttachments) {
+                $selectedAttachments = array_merge($selectedAttachments, array_keys($documentAttachments));
+            }
+            $selectedAttachments = Utils::filterIntegers($selectedAttachments);
+        }
+
         $list = $DB->GetAll(
             'SELECT dc.docid, dc.filename, dc.contenttype, dc.md5sum, dc.type
             FROM documentattachments dc
             JOIN documents d ON d.id = dc.docid
             WHERE dc.docid IN ?'
-                . ($attachments || !empty($attachmentid) || isset($_GET['save']) ? '' : ' AND dc.type = 1')
+                . ($attachments || !empty($attachmentid) || isset($_GET['save']) || !empty($selectedAttachments) ? '' : ' AND dc.type = 1')
                 . (empty($attachmentid) ? '' : ' AND dc.id = ' . $attachmentid)
+                . (empty($selectedAttachments) ? '' : ' AND dc.id IN (' . implode(', ', $selectedAttachments) . ')')
             . ' ORDER BY dc.docid ASC, dc.type DESC, dc.id ASC',
             array(
                 Utils::array_column($docs, 'id'),
