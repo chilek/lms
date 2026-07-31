@@ -26,7 +26,7 @@
 		{/tab_header_cell}
 	{/tab_header}
 
-	{tab_contents id="docpanel"}
+	{tab_contents id="docpanel" class="lms-ui-multi-check-hidden"}
 
 		{tab_table}
 
@@ -162,13 +162,16 @@
 									text="<i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"
 								}
 							{/if}
+						{/if}
+						<input type="checkbox" name="marks[{$doc.docid}]" form="customerdocuments-form" class="document-checkbox lms-ui-multi-check" value="{$doc.docid}">
+						{if is_array($doc.attachments)}
 							{if count($doc.attachments) > 1 || !$docattach.type < 1}
-								<a href="#" id="allattachments-toggle-{$doc.docid}" onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
+								<a href="#" id="allattachments-toggle-{$doc.docid}" class="allattachments-toggle"
+									onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
 									<img src="img/asc_order.gif">
 								</a>
 							{/if}
 						{/if}
-						<INPUT TYPE="checkbox" NAME="marks[{$doc.docid}]" form="customerdocuments-form" class="lms-ui-multi-check" VALUE="{$doc.docid}">
 					</div>
 					<div id="allattachments-{$doc.docid}" class="document-attachment-container" style="display: none;">
 						{foreach $doc.attachments as $docattach}
@@ -180,6 +183,8 @@
 								external=true
 							}
 							{if $docattach.type == -1}<i class="lms-ui-icon-user" title="<strong>{t a=date("Y/m/d H:i", $docattach.cdate)}Sent by customer at $a{/t}</strong>"></i>{/if}
+							<input type="checkbox" name="attachment-marks[{$doc.docid}][{$docattach.id}]" form="customerdocuments-form"
+								class="document-attachment-checkbox lms-ui-multi-check" value="{$docattach.id}">
 							<br>
 						{/foreach}
 					</div>
