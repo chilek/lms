@@ -90,9 +90,11 @@ function CustomerAssignmentHelper(options) {
 				return $(this).is(':visible');
 			});
 
+/*
 			if ($(this)[0].form.checkValidity()) {
 				$('.schema-tariff-checkbox[data-mandatory]:checkbox').prop('disabled', false);
 			}
+*/
 		});
 
 		$('#promotion-select').change(this.promotionSelectionHandler);
@@ -143,7 +145,7 @@ function CustomerAssignmentHelper(options) {
 		});
 		if (cancelled) {
 			e.stopImmediatePropagation();
-			$('.schema-tariff-checkbox[data-mandatory]:checkbox').prop('disabled', true);
+//			$('.schema-tariff-checkbox[data-mandatory]:checkbox').prop('disabled', true);
 			return false;
 		}
         return true;

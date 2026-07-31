@@ -395,6 +395,10 @@
 																	<tr class="schema-tariff-container-row">
 																		<td>
 																			<label>
+																				{if !$item.single.optional}
+																					<input type="hidden" name="{$variable_prefix}[sassignmentid][{$schemaid}][{$label}]"
+																						value="{$item.single.assignmentid}">
+																				{/if}
 																				<input class="schema-tariff-checkbox" type="checkbox" name="{$variable_prefix}[sassignmentid][{$schemaid}][{$label}]"
 																					value="{$item.single.assignmentid}" data-label="{$label}"
 																					data-tarifftype="{$item.single.type}"
