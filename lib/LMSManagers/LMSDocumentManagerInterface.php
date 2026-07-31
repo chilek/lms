@@ -72,7 +72,7 @@ interface LMSDocumentManagerInterface
 
     public function DocumentAttachmentExists($md5sum);
 
-    public function GetDocumentFullContents($id, $with_reference_document = false);
+    public function GetDocumentFullContents($id, $with_reference_document = false, $attachments = null);
 
     public function SendDocuments($docs, $type, $params);
 

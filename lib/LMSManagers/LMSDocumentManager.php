@@ -2580,7 +2580,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         return $authcode;
     }
 
-    public function GetDocumentFullContents($id, $with_reference_document = false)
+    public function GetDocumentFullContents($id, $with_reference_document = false, $attachments = null)
     {
         global $DOCTYPES, $DOCTYPE_ALIASES;
 
@@ -2614,7 +2614,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 JOIN docrights r ON (r.doctype = d.type)
                 LEFT JOIN documents d2 ON d2.id = d.reference
                 LEFT JOIN numberplans n2 ON n2.id = d2.numberplanid
-                WHERE d.id = ? AND r.userid = ? AND (r.rights & ?) > 0',
+                WHERE d.id = ?
+                    AND r.userid = ?
+                    AND (r.rights & ?) > 0',
                 array(
                     CONTACT_MOBILE | CONTACT_DOCUMENTS | CONTACT_DISABLED,
                     CONTACT_MOBILE | CONTACT_DOCUMENTS,
@@ -2699,8 +2701,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     FROM documentattachments a
                     JOIN documents d ON d.id = a.docid
                     JOIN customers c ON c.id = d.customerid
-                    WHERE a.docid = ?
-                    ORDER BY a.type DESC
+                    WHERE a.docid = ?'
+                    . (empty($attachments) ? '' : ' AND a.id IN (' . implode(', ', $attachments) . ')')
+                    . ' ORDER BY a.type DESC
                 )'
                 . (count($args) > 1
                     ? ' UNION (
@@ -2924,6 +2927,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 break;
         }
 
+        extract($params);
+
         if (!isset($currtime)) {
             $currtime = time();
         }
@@ -2963,8 +2968,6 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
 
         $currentDivisionId = LMSDivisionManager::getCurrentDivision();
-
-        extract($params);
 
         $errors = array();
         $info = array();
@@ -3157,7 +3160,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 $mail_subjects = array();
             }
 
-            $document = $this->GetDocumentFullContents($doc['id'], !empty($reference_document) && $aggregate_reference_document_email);
+            $document = $this->GetDocumentFullContents($doc['id'], !empty($reference_document) && $aggregate_reference_document_email, $attachments);
             if (empty($document)) {
                 continue;
             }

@@ -90,13 +90,23 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
             if (!isset($test)) {
                 $test = false;
             }
+
+            $attachments = [];
+            if (!empty($_POST['attachment-marks'])) {
+                foreach ($_POST['attachment-marks'] as $documentId => $documentAttachments) {
+                    $attachments = array_merge($attachments, array_keys($documentAttachments));
+                }
+                $attachments = Utils::filterIntegers($attachments);
+            }
+
             $LMS->SendDocuments(
                 $docs,
                 'frontend',
                 compact(
                     'currtime',
                     'quiet',
-                    'test'
+                    'test',
+                    'attachments'
                 )
             );
         }

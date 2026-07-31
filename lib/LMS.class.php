@@ -3779,10 +3779,10 @@ class LMS
         return $manager->DocumentAttachmentExists($md5sum);
     }
 
-    public function GetDocumentFullContents($id, $with_reference_document = false)
+    public function GetDocumentFullContents($id, $with_reference_document = false, $attachments = null)
     {
         $manager = $this->getDocumentManager();
-        return $manager->GetDocumentFullContents($id, $with_reference_document);
+        return $manager->GetDocumentFullContents($id, $with_reference_document, $attachments);
     }
 
     public function SendDocuments($docs, $type, $params)
