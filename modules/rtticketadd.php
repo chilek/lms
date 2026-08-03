@@ -307,7 +307,7 @@ if (isset($_POST['ticket'])) {
                         array(
                             'notification_sender_name' => ConfigHelper::getConfig($queueConfigSectionName . '.sender_name'),
                             'notification_sender_email' => ConfigHelper::getConfig($queueConfigSectionName . '.sender_email'),
-                            'notification_customerinfo' => ConfigHelper::checkConfig($queueConfigSectionName . '.notification_customerinfo'),
+                            'notification_customerinfo' => ConfigHelper::variableExists($queueConfigSectionName . '.notification_customerinfo') ? ConfigHelper::checkConfig($queueConfigSectionName . '.notification_customerinfo') : null,
                             'notification_mail_body_customerinfo_format' => ConfigHelper::getConfig($queueConfigSectionName . '.notification_mail_body_customerinfo_format'),
                             'notification_sms_body_customerinfo_format' => ConfigHelper::getConfig($queueConfigSectionName . '.notification_sms_body_customerinfo_format'),
                             'notification_mail_subject' => ConfigHelper::getConfig($queueConfigSectionName . '.notification_mail_subject'),
