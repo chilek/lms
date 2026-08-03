@@ -306,6 +306,17 @@ function init_datepickers(selector) {
 
 		options.altField = '';
 		options.altFormat = '';
+
+		$(this).on('change blur', function () {
+			try {
+				$.datepicker.parseDate('yy/mm/dd', this.value);
+				$(this).removeClass('lms-ui-error')
+					.get(0).setCustomValidity('');
+			} catch (e) {
+				$(this).addClass('lms-ui-error')
+					.get(0).setCustomValidity($t('Incorrect date format!'));
+			}
+		});
 	});
 }
 
