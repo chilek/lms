@@ -3791,16 +3791,16 @@ class LMS
         return $manager->SendDocuments($docs, $type, $params);
     }
 
-    public function deleteDocumentAttachments($docid)
+    public function deleteDocumentAttachments($docid, array $attachmentIds = [])
     {
         $manager = $this->getDocumentManager();
-        return $manager->deleteDocumentAttachments($docid);
+        return $manager->deleteDocumentAttachments($docid, $attachmentIds);
     }
 
-    public function DeleteDocument($docid)
+    public function DeleteDocument($docid, array $attachmentIds = [])
     {
         $manager = $this->getDocumentManager();
-        return $manager->DeleteDocument($docid);
+        return $manager->DeleteDocument($docid, $attachmentIds);
     }
 
     public function CopyDocumentPermissions($src_userid, $dst_userid)

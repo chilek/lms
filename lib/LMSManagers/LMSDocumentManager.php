@@ -3674,7 +3674,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
     }
 
-    public function deleteDocumentAttachments($docid)
+    public function deleteDocumentAttachments($docid, array $attachmentIds = [])
     {
         $attachments = $this->db->GetAll(
             'SELECT
@@ -3685,7 +3685,17 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             array($docid)
         );
 
+        $deletedAttachments = 0;
+
+        $attachmentIds = array_flip($attachmentIds);
+
         foreach ($attachments as $attachment) {
+            if (!empty($attachmentIds) && !isset($attachmentIds[$attachment['id']])) {
+                continue;
+            }
+
+            $deletedAttachments++;
+
             $md5sum = $attachment['md5sum'];
             if ($this->db->GetOne('SELECT COUNT(*) FROM documentattachments WHERE md5sum = ?', array((string)$md5sum)) == 1) {
                 $filename_pdf = DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2) . DIRECTORY_SEPARATOR . $md5sum . '.pdf';
@@ -3710,9 +3720,11 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 $this->syslog->AddMessage(SYSLOG::RES_DOCATTACH, SYSLOG::OPER_DELETE, $args);
             }
         }
+
+        return count($attachments) === $deletedAttachments;
     }
 
-    public function DeleteDocument($docid)
+    public function DeleteDocument($docid, array $attachmentIds = [])
     {
         $document = $this->db->GetRow(
             'SELECT d.id, d.type, d.customerid FROM documents d
@@ -3724,16 +3736,28 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             return false;
         }
 
-        $this->deleteDocumentAttachments($docid);
+        $documentDelete = $this->deleteDocumentAttachments($docid, $attachmentIds);
 
-        $this->db->Execute('DELETE FROM documents WHERE id = ?', array($docid));
-        if ($this->syslog) {
-            $args = array(
-                SYSLOG::RES_DOC => $docid,
-                SYSLOG::RES_CUST => $document['customerid'],
-                'type' => $document['type'],
+        if ($documentDelete) {
+            $this->db->Execute('DELETE FROM documents WHERE id = ?', array($docid));
+            if ($this->syslog) {
+                $args = array(
+                    SYSLOG::RES_DOC => $docid,
+                    SYSLOG::RES_CUST => $document['customerid'],
+                    'type' => $document['type'],
+                );
+                $this->syslog->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
+            }
+        } elseif (!empty($attachmentIds)) {
+            $this->db->Execute(
+                'DELETE FROM documentattachments
+                    WHERE docid = ?
+                        AND id IN ?',
+                array(
+                    $docid,
+                    $attachmentIds,
+                )
             );
-            $this->syslog->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
         }
 
         return true;
