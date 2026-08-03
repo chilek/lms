@@ -321,7 +321,7 @@ if (isset($_POST['ticket'])) {
                 );
             }
 
-            $user = $LMS->GetUserInfo($userid);
+            $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
 
             extract($notification_options);
 
