@@ -164,7 +164,7 @@ try {
                 'title' => $ticket['messages'][0]['subject'] ?? null,
                 'description' => $last_opened_ticket_event['description'] ?? ($ticket['messages'][0]['body'] ?? null),
 				'note' => $last_opened_ticket_event['note'] ?? null,
-                'userlist' => isset($t['owner']) ? [$t['owner']] : null,
+                'userlist' => isset($ticket['owner']) ? [$ticket['owner']] : null,
                 'custid' => $ticket['customerid'] ?? null,
                 'address_id' => $ticket['address_id'] ?? null,
                 'ticketid' => $ticket['ticketid'],
@@ -185,41 +185,3 @@ try {
 } finally {
     $DB->Execute('SELECT pg_advisory_unlock(?)', [RT_SCHEDULER_LOCK_ID]);
 }
-
-exit;
-
-$looped_events = '
--- A: enddate < date X KLASYCZNA PĘTLA
-SELECT "A" AS reason, id
-FROM events
-WHERE enddate <> 0
-  AND enddate < date
-
-UNION ALL
-
--- B: endtime < begintime przy tym samym dniu
-SELECT "B", id
-FROM events
-WHERE endtime < begintime
-  AND NOT (begintime = 0 AND endtime = 0)
-
-UNION ALL
-
--- C: całodniowe, tylko jeśli faktycznie cofają się w czasie
-SELECT "C", id
-FROM events
-WHERE begintime = 0
-  AND endtime = 86400
-  AND enddate <> 0
-  AND enddate < date
-
-UNION ALL
-
--- D: 00:00–00:00, tylko jeśli enddate < date
-SELECT "D", id
-FROM events
-WHERE begintime = 0
-  AND endtime = 0
-  AND enddate <> 0
-  AND enddate < date
-ORDER BY reason, id';
