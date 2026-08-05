@@ -163,6 +163,7 @@ try {
                 'enddate' => $new_event_details['enddate'] ?? 0,
                 'title' => $ticket['messages'][0]['subject'] ?? null,
                 'description' => $last_opened_ticket_event['description'] ?? ($ticket['messages'][0]['body'] ?? null),
+				'note' => $last_opened_ticket_event['note'] ?? null,
                 'userlist' => isset($t['owner']) ? [$t['owner']] : null,
                 'custid' => $ticket['customerid'] ?? null,
                 'address_id' => $ticket['address_id'] ?? null,
