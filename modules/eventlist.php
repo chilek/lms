@@ -63,7 +63,6 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
     }
 
     $filter['userand'] = isset($_POST['userand']) ? intval($_POST['userand']) : 0;
-    $filter['userid'] = $_POST['a'] ?? null;
     $filter['userid'] = isset($_POST['a'])
         ? Utils::filterIntegers(is_array($_POST['a']) ? $_POST['a'] : [$_POST['a']])
         : null;
