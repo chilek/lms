@@ -1233,6 +1233,7 @@ version 28-git (????-??-??):
     cash import row (by 'ignore' boolean property included in hook result array) [chilan]
   - improvement: 'note' property can be initilised during timetable event creation process [chilan]
   - enhancement: selection of document attachments is possible for document view/send/delete [chilan]
+  - security: harden path traversal, session fixation, cookie  flags, brute-force, MD5 magic-hash [djrzulf]
 
 version 27.0 (2021-08-20):
 
