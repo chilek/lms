@@ -1367,12 +1367,32 @@ if (isset($options['buildings'])) {
 
             $address = $Geometry->getDataArray();
 
+            if (isset($address['TERYT_GMI'])) {
+                $address['TERYT'] = substr($address['TERYT_GMI'], 0, -1);
+            }
+
             if (isset($state_list) && !isset($state_list[intval(substr($address['TERYT'], 0, 2))])) {
                 continue;
             }
 
-            $address['SIMC_NAZWA'] = dbf_to_utf8($address['SIMC_NAZWA']);
-            $address['ULIC_NAZWA'] = dbf_to_utf8($address['ULIC_NAZWA']);
+            if (isset($address['ID_ULIC'])) {
+                $address['ULIC_ID'] = $address['ID_ULIC'];
+            }
+            if (isset($address['ID_SIMC'])) {
+                $address['SIMC_ID'] = $address['ID_SIMC'];
+            }
+            if (isset($address['NAZWA_MSC'])) {
+                $address['SIMC_NAZWA'] = $address['NAZWA_MSC'];
+            }
+            if (isset($address['NAZWA_ULC'])) {
+                $address['ULIC_NAZWA'] = $address['NAZWA_ULC'];
+            }
+            if (isset($address['NUMER_PORZ'])) {
+                $address['NUMER'] = $address['NUMER_PORZ'];
+            }
+            if (isset($address['KOD_POCZT'])) {
+                $address['PNA'] = $address['KOD_POCZT'];
+            }
 
             $coords = $Geometry->getArray();
             $pointSrc = new \proj4php\Point($coords['x'], $coords['y'], $projEPSG2180);
@@ -1386,7 +1406,7 @@ if (isset($options['buildings'])) {
             $simc = $v['SIMC_ID'];
             $ulic = $v['ULIC_ID'];
 
-            $v['NUMER'] = preg_replace('/\.$/', '', dbf_to_utf8($v['NUMER']));
+            $v['NUMER'] = preg_replace('/\.$/', '', $v['NUMER']);
             if (!preg_match('#^[0-9a-zA-Z-, /\pL]*$#u', $v['NUMER'])) {
                 if (strlen($ulic)) {
                     fwrite($stderr, 'Warning: house number contains incorrect characters (TERC: ' . $terc . 'x, SIMC: ' . (empty($simc) ? '(-)' : $simc) . ', CITY: ' . $address['SIMC_NAZWA'] . ', ULIC: ' . $ulic . ', STREET: ' . $address['ULIC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
