@@ -278,7 +278,15 @@ class Auth
             return true;
         }
 
-        if (md5($this->passwd) == $dbpasswd) {
+        // legacy accounts not yet migrated to password_hash(); hash_equals()
+        // avoids the PHP loose-comparison ("magic hash") type-juggling bypass
+        if (hash_equals((string) $dbpasswd, md5($this->passwd))) {
+            if ($this->id) {
+                $this->DB->Execute(
+                    'UPDATE users SET passwd = ? WHERE id = ?',
+                    array(password_hash($this->passwd, PASSWORD_DEFAULT), $this->id)
+                );
+            }
             return true;
         }
 
