@@ -279,8 +279,8 @@ if (!isset($event['usergroup'])) {
 
 $SMARTY->assign(array(
     'xajax' => $LMS->RunXajax(),
-    'netdevices' => $netdevices,
-    'netnodes' => $LMS->GetNetNodes(),
+    'netdevlist' => $netdevices,
+    'netnodelist' => $LMS->GetNetNodes(),
     'max_userlist_size' => $max_userlist_size,
     'customerlist' => $big_networks ? null : $LMS->GetAllCustomerNames(),
     'userlist' => $userlist,
