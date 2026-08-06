@@ -315,7 +315,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         if (empty($subject)) {
             $subjectfilter = '';
         } else {
-            $subjectfilter = " AND t.subject ?LIKE? '%" . $subject . "%'";
+            $subjectfilter = " AND t.subject ?LIKE? " . $this->db->Escape('%' . $subject . '%');
         }
 
         if (empty($fromdate)) {
@@ -417,10 +417,13 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }
 
         if (!empty($parentids)) {
-            if (!is_array($parentids)) {
+            if (!is_array($parrentids)) {
                 $parentids = array($parentids);
             }
+            $parentids = Utils::filterIntegers($parentids);
+        }
 
+        if (!empty($parentids)) {
             if (in_array(-1, $parentids)) {
                 $parentfilter = ' AND t.parentid IS NULL';
             } else {

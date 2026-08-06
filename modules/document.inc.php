@@ -25,7 +25,7 @@
  */
 
 // support for dynamic loading of plugin javascript code
-if (isset($_GET['template'])) {
+if (isset($_GET['template']) && preg_match('/^[a-zA-Z0-9_-]+$/', $_GET['template'])) {
     foreach ($documents_dirs as $doc) {
         if (is_readable($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $_GET['template'] . DIRECTORY_SEPARATOR . 'info.php')) {
             $doc_dir = $doc;

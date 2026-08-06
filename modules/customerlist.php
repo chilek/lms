@@ -69,7 +69,7 @@ if ($api) {
     }
 
     if (isset($_GET['n'])) {
-        $filter['network'] = $_GET['n'];
+        $filter['network'] = intval($_GET['n']);
     }
 
     if (isset($_GET['gop'])) {

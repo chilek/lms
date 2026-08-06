@@ -348,6 +348,8 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
         if (empty($search['operatorType']) || !preg_match('/^(AND|OR)$/i', $search['operatorType'])) {
             $search['operatorType'] = 'AND';
+        } else {
+            $search['operatorType'] = strtoupper($search['operatorType']);
         }
 
         foreach ($search as $k => $v) {

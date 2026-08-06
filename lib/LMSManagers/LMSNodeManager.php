@@ -419,6 +419,16 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 break;
         }
 
+        if (empty($sqlskey) || strtoupper($sqlskey) != 'OR') {
+            $sqlskey = 'AND';
+        } else {
+            $sqlskey = 'OR';
+        }
+
+        if (isset($network) && $network) {
+            $network = intval($network);
+        }
+
         $searchargs = array();
         if (!empty($search)) {
             foreach ($search as $key => $value) {
@@ -852,9 +862,20 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
     public function NodeSetWarnU($id, $warning = false)
     {
+        $id = Utils::filterIntegers(is_array($id) ? $id : array($id));
+        if (empty($id)) {
+            return false;
+        }
+
         if ($this->syslog) {
-            $nodes = $this->db->GetAll('SELECT id, ownerid FROM vnodes WHERE ownerid IN ('
-                    . (is_array($id) ? implode(',', $id) : $id) . ')');
+            $nodes = $this->db->GetAll(
+                'SELECT id, ownerid
+                FROM vnodes
+                WHERE ownerid IN ?',
+                [
+                    $id,
+                ]
+            );
             if (!empty($nodes)) {
                 foreach ($nodes as $node) {
                     $args = array(
@@ -866,8 +887,15 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 }
             }
         }
-        return $this->db->Execute('UPDATE nodes SET warning = ? WHERE ownerid IN ('
-                        . (is_array($id) ? implode(',', $id) : $id) . ')', array($warning ? 1 : 0));
+        return $this->db->Execute(
+            'UPDATE nodes
+            SET warning = ?
+            WHERE ownerid IN ?',
+            [
+                $warning ? 1 : 0,
+                $id,
+            ]
+        );
     }
 
     public function IPSetU($netdev, $access = false)

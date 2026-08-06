@@ -138,6 +138,18 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $offset = $params['offset'] ?? null;
         $count = isset($params['count']) && $params['count'];
 
+        if (is_array($type)) {
+            $type = Utils::filterIntegers($type);
+        }
+
+        if (is_array($service)) {
+            $service = Utils::filterIntegers($service);
+        }
+
+        if (is_array($userid)) {
+            $userid = Utils::filterIntegers($userid);
+        }
+
         if ($order=='') {
             $order='cdate,asc';
         }
@@ -308,8 +320,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             . $status_sql
             . ($archived == -1 ? '' : ' AND d.archived = ' . intval($archived))
             .$sqlord
-            . (isset($limit) ? ' LIMIT ' . $limit : '')
-            . (isset($offset) ? ' OFFSET ' . $offset : ''),
+            . (isset($limit) ? ' LIMIT ' . intval($limit) : '')
+            . (isset($offset) ? ' OFFSET ' . intval($offset) : ''),
             array(
                 Auth::GetCurrentUser(),
                 DOCRIGHT_VIEW,
