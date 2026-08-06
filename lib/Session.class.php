@@ -346,7 +346,29 @@ class Session
             'INSERT INTO sessions (id, ctime, mtime, atime, vdata, content) VALUES (?, ?NOW?, ?NOW?, ?NOW?, ?, ?)',
             array($this->SID, serialize($this->makeVData()), serialize($this->_content))
         );
-        setcookie('SID', $this->SID);
+        $this->_setSIDCookie();
+    }
+
+    private function _setSIDCookie()
+    {
+        setcookie('SID', $this->SID, array(
+            'httponly' => true,
+            'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+            'samesite' => 'Lax',
+        ));
+    }
+
+    // regenerate the session identifier while keeping session content,
+    // to prevent session fixation across a privilege change (e.g. login)
+    public function regenerateSID()
+    {
+        $oldSID = $this->SID;
+        $this->SID = $this->makeSID();
+        $this->DB->Execute(
+            'UPDATE sessions SET id = ? WHERE id = ?',
+            array($this->SID, $oldSID)
+        );
+        $this->_setSIDCookie();
     }
 
     public function _restoreSession()
