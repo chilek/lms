@@ -197,6 +197,7 @@
 								<TD style="width: 99%;">
 									{if $ticket.deadline}
 										{$ticket.deadline|date_format:"Y-m-d H:i:s"}
+										{if $ticket.deadline > $smarty.const.now} {icon name="warning"}{/if}
 									{else}
 										{trans("none")}
 									{/if}
