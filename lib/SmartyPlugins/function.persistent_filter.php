@@ -34,7 +34,7 @@ function smarty_function_persistent_filter($params, $template)
     $persistent_filter = $template->getTemplateVars('persistent_filter');
     $filter = $template->getTemplateVars('filter');
 
-    if (isset($filter_id) && isset($persistent_filters[$filter_id])) {
+    if (isset($filter_id, $persistent_filters[$filter_id])) {
         $persistent_filters = $persistent_filters[$filter_id];
         $persistent_filter = $filter[$filter_id]['persistent_filter'];
     }

@@ -1629,7 +1629,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
         }
 
-        if (isset($from) && isset($to)) {
+        if (isset($from, $to)) {
             if ($to < $from && $to != 0 && $from != 0) {
                 $error['dateto'] = trans('Start date can\'t be greater than end date!');
             }
@@ -1835,7 +1835,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function UpdateExistingAssignments($data)
     {
-        $refid = isset($data['reference']) && isset($data['existing_assignments']['reference_document_limit'])
+        $refid = isset($data['reference'], $data['existing_assignments']['reference_document_limit'])
             ? $data['reference'] : null;
         $assignment_type = $data['existing_assignments']['assignment_type_limit'] ?? null;
 
