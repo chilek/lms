@@ -282,6 +282,19 @@
                                     <option value="2"{if $filter.type == 2} selected{/if}>{trans("<!netrange>theoretical")}</option>
                                 </select>
                             </label>
+                            <label class="filter-item">
+                                {trans("<!netrange>Major technology")}
+                                <select name="filter[majortechs][]" form="netranges" class="filter-element lms-ui-multiselect"
+                                        multiple data-default-value='{trans("— ignore —")}'>
+                                    {foreach $linktechnologiesall as $key => $type}
+                                        <option disabled>{$_LINKTYPES[$key]}</option>
+                                        {foreach $type as $key => $link}
+                                            <option value="{$key}" {if is_array($filter.majortechs)
+                                                && in_array($key, $filter.majortechs)} selected{/if}>{$link}</option>
+                                        {/foreach}
+                                    {/foreach}
+                                </select>
+                            </label>
                             <span class="filter-item">
                                 <span>
                                     {trans("<!netrange>Services")}
