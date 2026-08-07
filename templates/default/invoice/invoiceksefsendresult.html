@@ -1,0 +1,29 @@
+<H1>{trans("KSeF invoice handling")}</H1>
+
+{if !empty($result.error)}
+	<p class="red">{$result.error|escape}</p>
+{else}
+	<p>
+		{trans("KSeF submitted:")} {$result.send_result.submitted},
+		{trans("KSeF synchronized:")} {$result.sync_result.updated}
+	</p>
+
+	{if !empty($result.send_result.errors)}
+		<ul class="red">
+			{foreach $result.send_result.errors as $error}
+				<li>{trans("Document")} {$error.docid|escape}: {$error.error|escape}</li>
+			{/foreach}
+		</ul>
+	{/if}
+	{if !empty($result.sync_result.errors)}
+		<ul class="red">
+			{foreach $result.sync_result.errors as $error}
+				<li>KSeF {$error.id|escape}: {$error.error|escape}</li>
+			{/foreach}
+		</ul>
+	{/if}
+{/if}
+
+<p>
+	<a href="{$result.backurl|escape}">{trans("Return to invoice list")}</a>
+</p>

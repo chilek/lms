@@ -6415,6 +6415,13 @@ $_LANG['<!ksef>$a (error code: $b)'] = '$a (kod błędu: $b)';
 $_LANG['NO KSeF NUMBER'] = 'BRAK NUMERU KSeF';
 
 $_LANG['<!ksef>KSeF status'] = 'Status KSeF';
+$_LANG['<!ksef>Send to KSeF'] = 'Wyślij KSeF';
+$_LANG['Send invoice to KSeF'] = 'Wyślij fakturę do KSeF';
+$_LANG['KSeF invoice handling'] = 'Obsługa faktur KSeF';
+$_LANG['KSeF submitted:'] = 'Wysłano do KSeF:';
+$_LANG['KSeF synchronized:'] = 'Zaktualizowano z KSeF:';
+$_LANG['Return to invoice list'] = 'Powrót do listy faktur';
+$_LANG['KSeF submission result is not available.'] = 'Wynik wysyłki do KSeF jest niedostępny.';
 $_LANG['<!ksef-status>- any -'] = '- dowolny -';
 $_LANG['<!ksef-status>excluded'] = 'wykluczona';
 $_LANG['<!ksef-status>not sent yet'] = 'jeszcze niewysłana';
