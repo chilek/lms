@@ -202,6 +202,8 @@ function getSidusisRangesReport($divisionid)
                 $building['type'] == '1' ? 'rzeczywisty' : 'teoretyczny',
                 ($building['services'] & 1) ? 'TAK' : 'NIE',
                 ($building['services'] & 2) ? 'TAK' : 'NIE',
+                'TAK',
+                '',
                 OPERATOR_REPRESENTATIVE_ID,
             )
         );
