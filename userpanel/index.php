@@ -257,8 +257,9 @@ $plugin_manager->executeHook('userpanel_smarty_initialized', $SMARTY);
 
 if ($SESSION->islogged) {
     $module = isset($_GET['m']) ? preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['m']) : '';
+    $function = preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['f'] ?? '');
     if ($SESSION->isPasswdChangeRequired) {
-        if ($module != 'info' && $_GET['f'] != 'updatepinform') {
+        if ($module != 'info' && $function != 'updatepinform') {
             $SESSION->close();
             header('Location: ?m=info&f=updatepinform');
             die;
@@ -304,7 +305,7 @@ if ($SESSION->islogged) {
 
         include($module_dir . $module . DIRECTORY_SEPARATOR . 'functions.php');
 
-        $function = isset($_GET['f']) && $_GET['f']!='' ? $_GET['f'] : 'main';
+        $function = $function ?: 'main';
         if (function_exists('module_'.$function)) {
             $to_execute = 'module_'.$function;
             $layout['userpanel_module'] = $module;
