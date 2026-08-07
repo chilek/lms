@@ -417,7 +417,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }
 
         if (!empty($parentids)) {
-            if (!is_array($parrentids)) {
+            if (!is_array($parentids)) {
                 $parentids = array($parentids);
             }
             $parentids = Utils::filterIntegers($parentids);
