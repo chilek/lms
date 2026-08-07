@@ -125,10 +125,18 @@ if (!isset($_GET['init'])) {
     } elseif (!isset($filter['archived'])) {
         $filter['archived'] = -1;
     }
+
+    if (isset($_GET['attachments'])) {
+        $filter['attachments'] = $_GET['attachments'];
+    } elseif (!isset($filter['attachments'])) {
+        $filter['attachments'] = -1;
+    }
+
 } else {
     $filter = array(
         'status' => -1,
         'archived' => -1,
+        'attachments' => -1,
     );
     $SMARTY->clearAssign('persistent_filter');
     $SESSION->saveFilter($filter);
