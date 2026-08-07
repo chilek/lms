@@ -21,11 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE promotionschemas ADD COLUMN datefrom int(11) DEFAULT 0 NOT NULL");
 $this->Execute("ALTER TABLE promotionschemas ADD COLUMN dateto int(11) DEFAULT 0 NOT NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021101900', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 if (!$this->GetOne("SELECT id FROM uiconfig WHERE section = ? AND var = ?", array('userpanel', 'show_last_years'))) {
     $this->Execute(
@@ -29,7 +28,3 @@ if (!$this->GetOne("SELECT id FROM uiconfig WHERE section = ? AND var = ?", arra
         array('userpanel', 'show_last_years', '5')
     );
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018091800', 'dbversion'));
-
-$this->CommitTrans();

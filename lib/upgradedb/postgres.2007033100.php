@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 CREATE SEQUENCE imessengers_id_seq;
@@ -43,7 +42,3 @@ $this->Execute("INSERT INTO imessengers (customerid, uid)
 $this->Execute("CREATE INDEX imessengers_customerid_idx ON imessengers (customerid)");
 
 $this->Execute("ALTER TABLE customers DROP COLUMN im");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007033100', 'dbversion'));
-
-$this->CommitTrans();

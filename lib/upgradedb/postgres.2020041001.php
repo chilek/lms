@@ -21,13 +21,8 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute(
     "INSERT INTO uiconfig (section, var, value, description, type) VALUES (?, ?, ?, ?, ?)",
     array('userpanel', 'document_approval_customer_onetime_password_sms_body', '', '', 0)
 );
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020041001', 'dbversion'));
-
-$this->CommitTrans();

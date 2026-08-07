@@ -49,5 +49,3 @@ $this->Execute("CREATE TABLE supermasters (
   account 	VARCHAR(40) DEFAULT NULL,
   PRIMARY KEY (id)
 )");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009103000', 'dbversion'));

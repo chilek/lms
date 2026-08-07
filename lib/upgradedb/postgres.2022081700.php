@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute(
     "UPDATE uiconfig SET section = ?, var = ? WHERE section = ? AND var = ?",
@@ -52,7 +51,3 @@ $this->Execute(
         'cache_documents',
     )
 );
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022081700', 'dbversion'));
-
-$this->CommitTrans();

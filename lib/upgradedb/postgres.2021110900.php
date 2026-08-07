@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 if (!$this->ResourceExists('up_sessions', LMSDB::RESOURCE_TYPE_TABLE)) {
     $this->Execute("
@@ -38,7 +37,3 @@ if (!$this->ResourceExists('up_sessions', LMSDB::RESOURCE_TYPE_TABLE)) {
         )
     ");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021110900', 'dbversion'));
-
-$this->CommitTrans();

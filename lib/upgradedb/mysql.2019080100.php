@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE uiconfig ADD COLUMN userid int(11) DEFAULT NULL,
 		ADD FOREIGN KEY (userid) REFERENCES users (id) ON UPDATE CASCADE ON DELETE CASCADE");
@@ -29,7 +28,3 @@ $this->Execute("ALTER TABLE uiconfig ADD COLUMN configid int(11) DEFAULT NULL,
 		ADD FOREIGN KEY (configid) REFERENCES uiconfig (id) ON UPDATE CASCADE ON DELETE RESTRICT");
 $this->Execute("ALTER TABLE uiconfig DROP INDEX var");
 $this->Execute("ALTER TABLE uiconfig ADD UNIQUE var (section, var, userid)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019080100', 'dbversion'));
-
-$this->CommitTrans();

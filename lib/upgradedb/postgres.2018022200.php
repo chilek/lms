@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("DELETE FROM pna WHERE fromhouse ~ '[a-z]' OR tohouse ~ '[a-z]'");
 
@@ -50,7 +49,3 @@ $this->Execute("
 	CREATE INDEX pna_fromnumber_idx ON pna (fromnumber);
 	CREATE INDEX pna_tonumber_idx ON pna (tonumber)
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018022200', 'dbversion'));
-
-$this->CommitTrans();

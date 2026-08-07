@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 
@@ -39,7 +38,3 @@ $this->Execute("
 	UNIQUE KEY regid (regid, time)
     );
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007032600', 'dbversion'));
-
-$this->CommitTrans();

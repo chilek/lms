@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 DROP VIEW nas;
@@ -38,7 +37,3 @@ SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
 	JOIN netdevices d ON (n.netdev = d.id) 
 	WHERE n.nas = 1;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009091000', 'dbversion'));
-
-$this->CommitTrans();

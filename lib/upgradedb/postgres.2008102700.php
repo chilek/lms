@@ -24,14 +24,9 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE divisions
 		ADD COLUMN ten varchar(16) NOT NULL DEFAULT '',
 		ADD COLUMN regon varchar(255) NOT NULL DEFAULT '';
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008102700', 'dbversion'));
-
-$this->CommitTrans();

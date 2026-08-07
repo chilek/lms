@@ -24,7 +24,7 @@
  *  $Id$
  */
 $this->Execute("
-    BEGIN;
+    
     CREATE SEQUENCE usergroups_id_seq;
     CREATE TABLE usergroups (
 	id integer DEFAULT nextval('usergroups_id_seq'::text) NOT NULL, 
@@ -41,6 +41,5 @@ $this->Execute("
 	PRIMARY KEY (id),
 	UNIQUE (usergroupid, userid)
     );
-    UPDATE dbinfo SET keyvalue = '2004041600' WHERE keytype = 'dbversion';
-    COMMIT;
+    
 ");

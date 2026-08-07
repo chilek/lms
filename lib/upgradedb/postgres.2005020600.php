@@ -24,9 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 $this->Execute("
 	CREATE INDEX cash_invoiceid_idx ON cash (invoiceid);
-	UPDATE dbinfo SET keyvalue = '2005020600' WHERE keytype = 'dbversion'
 ");
-$this->CommitTrans();

@@ -21,11 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE promotionassignments ADD optional tinyint NOT NULL DEFAULT 0");
 $this->Execute("ALTER TABLE promotionassignments ADD selectionid tinyint NOT NULL DEFAULT 0");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014040700', 'dbversion'));
-
-$this->CommitTrans();

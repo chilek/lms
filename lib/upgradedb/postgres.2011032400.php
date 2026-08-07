@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 if (!$this->ResourceExists('customers.post_name', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("ALTER TABLE customers ADD post_name varchar(255) DEFAULT NULL");
@@ -36,7 +35,3 @@ $this->Execute("
             JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
             WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011032400', 'dbversion'));
-
-$this->CommitTrans();

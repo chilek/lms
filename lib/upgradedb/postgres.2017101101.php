@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $sql_tables = array(
     'documents' => array(
@@ -191,7 +190,3 @@ $this->Execute("
 				OR (t1.nodeid IS NULL AND t2.nodeid IS NOT NULL)
 				OR (t1.nodeid IS NULL AND t2.nodeid IS NULL))
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017101101', 'dbversion'));
-
-$this->CommitTrans();

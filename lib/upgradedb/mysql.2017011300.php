@@ -21,10 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?", array('tls', 'mail', 'smtp_secure'));
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017011300', 'dbversion'));
-
-$this->CommitTrans();

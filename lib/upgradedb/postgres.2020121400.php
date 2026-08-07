@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 if (!$this->GetOne(
     "SELECT id FROM uiconfig WHERE section = ? AND var = ?",
@@ -35,7 +34,3 @@ if (!$this->GetOne(
             ('userpanel', 'new_document_customer_notification_sms_body', '', '', 0)
     ");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020121400', 'dbversion'));
-
-$this->CommitTrans();

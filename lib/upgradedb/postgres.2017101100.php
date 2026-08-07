@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $sql_tables = array(
     'documents' => array(
@@ -111,7 +110,3 @@ if (!empty($cids)) {
 			OR " . $props['column'] . " NOT IN (" . $cid_string . ")");
     }
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017101100', 'dbversion'));
-
-$this->CommitTrans();

@@ -26,7 +26,6 @@
 
 $lang = $this->GetOne("SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?", array('phpui', 'lang', 0));
 
-$this->BeginTrans();
 
 $this->Execute("
 CREATE SEQUENCE states_id_seq;
@@ -74,7 +73,3 @@ if ($lang == 'pl') {
 	INSERT INTO states (name) VALUES ('zachodniopomorskie');
 	");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008080800', 'dbversion'));
-
-$this->CommitTrans();

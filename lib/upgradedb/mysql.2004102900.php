@@ -25,5 +25,3 @@
  */
 
 $this->Execute("ALTER TABLE nodes ADD COLUMN info text NOT NULL DEFAULT ''");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2004102900', 'dbversion'));

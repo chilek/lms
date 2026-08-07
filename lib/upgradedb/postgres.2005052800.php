@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 
@@ -110,7 +109,3 @@ $this->Execute("
 	DROP TABLE a_t; 
 	
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005052800', 'dbversion'));
-
-$this->CommitTrans();

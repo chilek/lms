@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE SEQUENCE taxes_id_seq;
@@ -81,7 +80,3 @@ $this->Execute("
 	ALTER TABLE tariffs DROP taxvalue;
 	ALTER TABLE invoicecontents DROP taxvalue;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005061200', 'dbversion'));
-
-$this->CommitTrans();

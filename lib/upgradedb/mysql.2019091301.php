@@ -21,11 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE twofactorauthcodehistory ADD COLUMN ipaddr int(16) DEFAULT NULL");
 $this->Execute("ALTER TABLE twofactorauthcodehistory ADD COLUMN success smallint NOT NULL DEFAULT 0");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019091301', 'dbversion'));
-
-$this->CommitTrans();

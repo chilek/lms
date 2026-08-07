@@ -28,5 +28,3 @@ $this->Execute("ALTER TABLE passwd ADD ll INT(11)");
 $this->Execute("UPDATE passwd SET ll=UNIX_TIMESTAMP(lastlogin)");
 $this->Execute("ALTER TABLE passwd DROP lastlogin");
 $this->Execute("ALTER TABLE passwd CHANGE ll lastlogin INT(11) NOT NULL DEFAULT '0'");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2004111700', 'dbversion'));

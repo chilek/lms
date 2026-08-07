@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("DROP VIEW IF EXISTS vallusers");
 
@@ -30,7 +29,3 @@ $this->Execute("
         SELECT *, (firstname || ' ' || lastname) AS name, (lastname || ' ' || firstname) AS rname
         FROM users
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020081900', 'dbversion'));
-
-$this->CommitTrans();

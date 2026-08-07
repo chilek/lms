@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE TABLE templates (
@@ -33,7 +32,3 @@ $this->Execute("
 		UNIQUE KEY name (type, name)
 	) ENGINE=InnoDB;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013051700', 'dbversion'));
-
-$this->CommitTrans();

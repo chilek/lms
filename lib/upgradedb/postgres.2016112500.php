@@ -21,12 +21,7 @@
  *
  */
 
-$this->BeginTrans();
 
 if (!$this->ResourceExists('voip_numbers_pkey', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
     $this->Execute("ALTER TABLE voip_numbers ADD PRIMARY KEY (id)");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016112500', 'dbversion'));
-
-$this->CommitTrans();

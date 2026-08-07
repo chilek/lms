@@ -21,12 +21,7 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE netnodes ADD COLUMN createtime int(11)");
 $this->Execute("ALTER TABLE netnodes ADD COLUMN lastinspectiontime int(11) DEFAULT NULL");
 $this->Execute("ALTER TABLE netnodes ADD COLUMN admcontact int(11) DEFAULT NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017091400', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 // name2 support for teryt location_street
 $this->Execute("DROP VIEW teryt_ulic");
@@ -55,8 +54,3 @@ $this->Execute("CREATE VIEW vmacs AS
 		SELECT n.*, m.mac, m.id AS macid
 		FROM nodes n
 		JOIN macs m ON (n.id = m.nodeid)");
-
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012030801', 'dbversion'));
-
-$this->CommitTrans();

@@ -29,7 +29,6 @@ define('TARIFF_FLAG_SPLIT_PAYMENT', 32);
 define('LIABILITY_FLAG_NET_ACCOUT', 16);
 define('LIABILITY_FLAG_SPLIT_PAYMENT', 32);
 
-$this->BeginTrans();
 
 $this->Execute(
     "UPDATE documents SET flags = (flags | ?) WHERE splitpayment = 1;
@@ -61,7 +60,3 @@ $this->Execute(
         LIABILITY_FLAG_SPLIT_PAYMENT,
     )
 );
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021072100', 'dbversion'));
-
-$this->CommitTrans();

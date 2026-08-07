@@ -21,12 +21,7 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE filecontainers ADD COLUMN netdevmodelid int(11) DEFAULT NULL");
 $this->Execute("ALTER TABLE filecontainers ADD CONSTRAINT filecontainers_netdevmodelid_fkey
 	FOREIGN KEY (netdevmodelid) REFERENCES netdevicemodels (id) ON DELETE CASCADE ON UPDATE CASCADE");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020020500', 'dbversion'));
-
-$this->CommitTrans();

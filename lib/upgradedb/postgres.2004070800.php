@@ -25,12 +25,11 @@
  */
 
 $this->Execute("
-    BEGIN;
+    
     ALTER TABLE rttickets ADD userid integer;
     ALTER TABLE rttickets ALTER userid SET DEFAULT 0;
     UPDATE rttickets SET userid=0;
     ALTER TABLE rttickets ALTER userid SET NOT NULL;
 
-    UPDATE dbinfo SET keyvalue = '2004070800' WHERE keytype = 'dbversion';
-    COMMIT;
+    
 ");

@@ -51,7 +51,6 @@ if (!defined('RECIPIENT_ADDRESS')) {
     define('RECIPIENT_ADDRESS', 4);
 }
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE documents ADD COLUMN post_address_id integer");
 $this->Execute("ALTER TABLE documents ADD CONSTRAINT documents_post_address_id_fkey
@@ -76,7 +75,3 @@ if (!empty($post_addresses) && !empty($documents)) {
         }
     }
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017103101', 'dbversion'));
-
-$this->CommitTrans();

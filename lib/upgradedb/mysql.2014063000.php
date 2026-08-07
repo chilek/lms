@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $DEFAULTS = array(
 /*
@@ -153,7 +152,3 @@ foreach ($DEFAULTS as $section => $values) {
         );
     }
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014063000', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("CREATE TABLE voip_prefixes (
 						id int(11) AUTO_INCREMENT,
@@ -80,7 +79,3 @@ $this->Execute("CREATE TABLE voip_cdr (
 						type smallint NOT NULL,
 						voipaccountid int(11) NOT NULL,
 						PRIMARY KEY (id));");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016053000', 'dbversion'));
-
-$this->CommitTrans();

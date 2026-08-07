@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("DROP SEQUENCE IF EXISTS voip_rules_id_seq;
 					CREATE SEQUENCE voip_rules_id_seq;
@@ -57,7 +56,3 @@ $this->Execute("DROP SEQUENCE IF EXISTS voip_rules_id_seq;
 							REFERENCES voip_rules (id) ON DELETE CASCADE ON UPDATE CASCADE,
 						PRIMARY KEY (id)
 					);");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016062401', 'dbversion'));
-
-$this->CommitTrans();

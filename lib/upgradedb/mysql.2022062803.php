@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute(
     "UPDATE uiconfig SET section = ?, var = ? WHERE section = ? AND var = ?",
@@ -32,7 +31,3 @@ $this->Execute(
         'ticket_template_file',
     )
 );
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022062803', 'dbversion'));
-
-$this->CommitTrans();

@@ -25,5 +25,3 @@
  */
 
 $this->Execute("ALTER TABLE rttickets ADD userid INT(11) DEFAULT 0 NOT NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2004070800', 'dbversion'));

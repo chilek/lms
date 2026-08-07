@@ -27,7 +27,6 @@
 $tables = $this->ListTables();
 $versions = $this->GetAllByKey("SELECT keytype, keyvalue FROM dbinfo WHERE keytype ?LIKE? 'up_%'", 'keytype');
 
-$this->BeginTrans();
 
 if (!in_array('up_rights', $tables)) {
     $this->Execute("
@@ -154,6 +153,3 @@ if (empty($versions['up_module_stats']) || $versions['up_module_stats']['keyvalu
 }
 
 $this->Execute("DELETE FROM dbinfo WHERE keytype ?LIKE? 'up_%'");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008061300', 'dbversion'));
-
-$this->CommitTrans();

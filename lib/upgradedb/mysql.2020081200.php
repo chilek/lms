@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE TABLE userdivisions (
@@ -95,7 +94,3 @@ $this->Execute("
                                  WHERE ud2.userid = lms_current_user())
         GROUP BY u.id
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020081200', 'dbversion'));
-
-$this->CommitTrans();

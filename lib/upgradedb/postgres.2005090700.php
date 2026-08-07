@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE documents ADD reference integer;
@@ -32,7 +31,3 @@ $this->Execute("
 	ALTER TABLE documents ALTER reference SET NOT NULL;
 	ALTER TABLE documents ALTER reference SET DEFAULT 0;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005090700', 'dbversion'));
-
-$this->CommitTrans();

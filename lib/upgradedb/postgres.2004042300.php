@@ -24,11 +24,10 @@
  *  $Id$
  */
 $this->Execute("
-    BEGIN;
+    
     ALTER TABLE admins ADD deleted smallint;
     ALTER TABLE admins ALTER deleted SET DEFAULT 0;
     UPDATE admins SET deleted=0;
     ALTER TABLE admins ALTER deleted SET NOT NULL;
-    UPDATE dbinfo SET keyvalue = '2004042300' WHERE keytype = 'dbversion';
-    COMMIT;
+    
 ");

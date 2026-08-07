@@ -21,14 +21,9 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE managementurls ALTER COLUMN netdevid DROP NOT NULL");
 $this->Execute("ALTER TABLE managementurls ADD nodeid integer DEFAULT NULL");
 $this->Execute("ALTER TABLE managementurls
 	ADD CONSTRAINT managementurls_nodeid_fkey FOREIGN KEY (nodeid)
 	REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014090600', 'dbversion'));
-
-$this->CommitTrans();

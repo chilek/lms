@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("DELETE FROM pna WHERE fromhouse REGEXP '[a-z]' OR tohouse REGEXP '[a-z]'");
 
@@ -35,7 +34,3 @@ $this->Execute("ALTER TABLE pna DROP INDEX zip,
 
 $this->Execute("CREATE INDEX pna_fromnumber_idx ON pna (fromnumber)");
 $this->Execute("CREATE INDEX pna_tonumber_idx ON pna (tonumber)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018022200', 'dbversion'));
-
-$this->CommitTrans();
