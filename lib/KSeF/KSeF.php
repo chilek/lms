@@ -428,7 +428,7 @@ class KSeF
             if (preg_match('/^(?<country>[A-Z]{2})(?<ten>[A-Z0-9]+)$/', $ten, $m)) {
                 if (\Utils::isEuCountryCode($m['country'])) {
                     $ue = true;
-                } else {
+                } elseif (strtoupper($m['country']) !== 'PL') {
                     $foreign = true;
                 }
             }
