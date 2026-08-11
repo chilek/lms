@@ -250,11 +250,23 @@
 				{icon name="mail"}
 			</td>
 			<td class="nobr">
-				<strong>{trans("Email:")}</strong>
+				<strong>{trans("Email")}</strong>
 			</td>
 			<td>
 				<input type="text" value="{$division.email}" name="division[email]" size="40"
 					{tip text="Enter e-mail address (optional)" trigger="email"}>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="mail"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Service Email")}</strong>
+			</td>
+			<td>
+				<input type="text" value="{$division.serviceemail}" name="division[serviceemail]" size="40"
+					{tip text="Enter e-mail address (optional)" trigger="serviceemail"}>
 			</td>
 		</tr>
 		<tr>

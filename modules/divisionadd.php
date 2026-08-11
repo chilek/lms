@@ -116,6 +116,10 @@ if (!empty($_POST['division'])) {
         $error['email'] = trans('E-mail isn\'t correct!');
     }
 
+    if ($division['serviceemail'] != '' && !check_email($division['serviceemail'])) {
+        $error['serviceemail'] = trans('E-mail isn\'t correct!');
+    }
+
     if ($division['phone'] != '' && !preg_match('/^\+?[0-9\s\-]+$/', $division['phone'])) {
         $error['phone'] = trans('Incorrect phone number!');
     }

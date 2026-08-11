@@ -3333,6 +3333,7 @@ $_LANG['destination number/email'] = 'numer/adres odbiorcy';
 $_LANG['drafts'] = 'szkice';
 $_LANG['email'] = 'e-mail';
 $_LANG['Email'] = 'E-mail';
+$_LANG['Service Email'] = 'E-mail serwisowy';
 $_LANG['Enter notice content'] = 'Wprowadź treść powiadomienia';
 $_LANG['errornous'] = 'błąd';
 $_LANG['errornous<!plural>'] = 'błędne';
