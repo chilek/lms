@@ -195,7 +195,7 @@ function module_main()
                 'customerid' => $SESSION->id,
                 'createtime' => time(),
                 'body' => $ticket['body'],
-                'categories' => array_flip(explode(',', $ticket['categories'])),
+                'categories' => (!empty($ticket['categories']) ? array_flip(explode(',', $ticket['categories'])) : null),
                 'mailfrom' => $ticket['mailfrom'],
                 'source' => RT_SOURCE_USERPANEL), $files);
 
