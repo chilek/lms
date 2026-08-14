@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2023 LMS Developers
+ *  (C) Copyright 2001-2026 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -53,7 +53,7 @@ foreach ($short_to_longs as $short => $long) {
 if (isset($options['version'])) {
     print <<<EOF
 upgradedb.php
-(C) 2001-2023 LMS Developers
+(C) 2001-2026 LMS Developers
 
 EOF;
     exit(0);
@@ -62,7 +62,7 @@ EOF;
 if (isset($options['help'])) {
     print <<<EOF
 upgradedb.php
-(C) 2001-2023 LMS Developers
+(C) 2001-2026 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -80,16 +80,12 @@ $quiet = isset($options['quiet']);
 if (!$quiet) {
     print <<<EOF
 upgradedb.php
-(C) 2001-2023 LMS Developers
+(C) 2001-2026 LMS Developers
 
 EOF;
 }
 
-if (isset($options['config-file'])) {
-    $CONFIG_FILE = $options['config-file'];
-} else {
-    $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
-}
+$CONFIG_FILE = $options['config-file'] ?? DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
 
 if (!$quiet) {
     echo "Using file " . $CONFIG_FILE . " as config." . PHP_EOL;
@@ -113,12 +109,14 @@ $CONFIG = (array) parse_ini_file(CONFIG_FILE, true);
 // Check for configuration vars and set default values
 $CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
 $CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib' : $CONFIG['directories']['lib_dir']);
+$CONFIG['directories']['storage_dir'] = (!isset($CONFIG['directories']['storage_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'storage' : $CONFIG['directories']['storage_dir']);
 $CONFIG['directories']['plugin_dir'] = (!isset($CONFIG['directories']['plugin_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'plugins' : $CONFIG['directories']['plugin_dir']);
 $CONFIG['directories']['plugins_dir'] = $CONFIG['directories']['plugin_dir'];
 $CONFIG['directories']['vendor_dir'] = (!isset($CONFIG['directories']['vendor_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'vendor' : $CONFIG['directories']['vendor_dir']);
 
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
+define('STORAGE_DIR', $CONFIG['directories']['storage_dir']);
 define('PLUGIN_DIR', $CONFIG['directories']['plugin_dir']);
 define('PLUGINS_DIR', $CONFIG['directories']['plugin_dir']);
 define('VENDOR_DIR', $CONFIG['directories']['vendor_dir']);
@@ -167,7 +165,7 @@ foreach ($facilities as $facility) {
             echo 'DB schema version bumped to ' . $schema_version . PHP_EOL;
             break;
         case 'plugins':
-            $plugin_manager = new LMSPluginManager();
+            $plugin_manager = LMSPluginManager::getInstance();
             $plugin_info = $plugin_manager->getAllPluginInfo();
             if (!empty($plugin_info)) {
                 foreach ($plugin_info as $plugin) {

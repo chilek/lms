@@ -71,30 +71,61 @@ function update_netlink_properties($id, $devid, $link)
     $tech_content = ($link['technology'] ? $LINKTECHNOLOGIES[$link['type']][$link['technology']]
             . (!$isnetlink ? ($radiosectorname ? " ($radiosectorname)" : '')
                 : ($srcradiosectorname || $dstradiosectorname ? ' ('
-                    . ($srcradiosectorname ? $srcradiosectorname : '-')
-                    . '/' . ($dstradiosectorname ? $dstradiosectorname : '-') . ')' : ''))
+                    . ($srcradiosectorname ?: '-')
+                    . '/' . ($dstradiosectorname ?: '-') . ')' : ''))
             : '-');
 
     $speed_content = $LINKSPEEDS[$link['speed']];
 
+    $foreign_entity_properties = array();
+
+    if (!empty($link['foreignentity'])) {
+        $foreign_entities = Utils::getForeignEntities();
+
+        if (empty($foreign_entities[$link['foreignentity']])) {
+            $foreign_entity = $link['foreignentity'];
+            $foreign_entity_properties = array(
+                'name' => $foreign_entity,
+                'type' => 0,
+                'id' => $foreign_entity,
+            );
+        } else {
+            $foreign_entity = $foreign_entities[$link['foreignentity']];
+            $foreign_entity_properties = $foreign_entity;
+            $foreign_entity = $foreign_entity['name']
+                . (empty($foreign_entity['type']) ? '' : ', ' . trans('TEN') . ' ' . $foreign_entity['id']);
+        }
+    }
+
     $port_content = '<i class="' . $icon . '" 
 			 title="<span class=&quot;nobr;&quot;>' . trans("Link type:") . ' ' . $LINKTYPES[$link['type']] . '<br>'
-            . ($isnetlink && $link['type'] == LINKTYPE_FIBER ? trans('Fiber/Line count:') . ' ' . $link['linecount'] . '<br>': '')
-            . (!$isnetlink ? ($radiosectorname ? trans("Radio sector:") . ' ' . $radiosectorname . '<br>' : '')
+            . ($isnetlink && $link['type'] == LINKTYPE_FIBER ?
+                (strlen($link['linecount']) ? trans('Fiber/line count:') . ' ' . $link['linecount'] . '<br>' : '')
+                . (strlen($link['usedlines']) ? trans('Used fibers/lines:') . ' ' . $link['usedlines'] . '<br>' : '')
+                . (strlen($link['availablelines']) ? trans('Available fibers/lines:') . ' ' . $link['availablelines'] . '<br>' : '')
+                : ''
+            ) . (!$isnetlink ? ($radiosectorname ? trans("Radio sector:") . ' ' . $radiosectorname . '<br>' : '')
                 : ($srcradiosectorname ? trans("Radio sector:") . ' ' . $srcradiosectorname . '<br>' : '')
                     . ($dstradiosectorname ? trans("Destination radio sector:") . ' ' . $dstradiosectorname . '<br>' : ''))
             . ($link['technology'] ? trans("Link technology:") . ' ' . $LINKTECHNOLOGIES[$link['type']][$link['technology']] . '<br>' : '')
             . trans("Link speed:") . ' ' . $LINKSPEEDS[$link['speed']]
-            . (empty($link['routetype']) ? '' : '<br><p class=&quot;lms-ui-route-type&quot;>' . trans('Duct type:') . ' ' . $NETWORK_DUCT_TYPES[$link['routetype']] . '</p>')
+            . (empty($link['routetype']) ? '' : '<p class=&quot;lms-ui-route-type&quot;>' . trans('Duct type:') . ' ' . $NETWORK_DUCT_TYPES[$link['routetype']] . '</p>')
+            . (empty($foreign_entity) ? '' : '<p class=&quot;lms-ui-foreign-entity&quot;>' . trans('Foreign entity:') . ' ' . $foreign_entity . '</p>')
             . '</span>"></i>';
+
+    $link['typename'] = $LINKTYPES[$link['type']];
+    $link['speedname'] = $LINKSPEEDS[$link['speed']];
+    $link['technologyname'] = $LINKTECHNOLOGIES[$link['type']][$link['technology']];
+    $link['foreignentity'] = $foreign_entity_properties;
+    $link['srcport'] = $link['srcport'] ?? ($link['port'] ?? 0);
+    $link['dstport'] = $link['dstport'] ?? 0;
 
     $result->call(
         'update_netlink_info',
         $tech_content,
         $speed_content,
         $port_content,
-        isset($link['srcport']) ? $link['srcport'] : (isset($link['port']) ? $link['port'] : 0),
-        isset($link['dstport']) ? $link['dstport'] : 0
+        $link
     );
 
     return $result;
@@ -151,9 +182,19 @@ $link['id'] = $id;
 $link['devid'] = $devid;
 $link['isnetlink'] = $isnetlink;
 
+$foreign_entities = Utils::getForeignEntities();
+if (!empty($link['foreignentity'])) {
+    if (empty($foreign_entities[$link['foreignentity']])) {
+        $link['foreign_entity'] = $link['foreignentity'];
+    } else {
+        $link['foreign_entity'] = $foreign_entities[$link['foreignentity']];
+    }
+}
+$SMARTY->assign('foreign_entities', $foreign_entities);
+
 $SMARTY->assign('link', $link);
 
-$radiosectors = isset($link['radiosectors']) ? $link['radiosectors'] : array();
+$radiosectors = $link['radiosectors'] ?? array();
 
 $SMARTY->assign('radiosectors', $radiosectors);
-$SMARTY->display('netdev/netlinkproperties.html');
+$SMARTY->display('file:netdev/netlinkproperties.html');

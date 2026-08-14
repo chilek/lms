@@ -44,7 +44,7 @@ function insertGroups(array $groups)
                         (rule_group_id, prefix_group_id, settings)
                        VALUES ' . implode(',', $groups));
 
-    return $r ? true : false;
+    return (bool)$r;
 }
 
 /*!
@@ -181,7 +181,7 @@ if (isset($_GET['ajax'])) {
     exit;
 }
 
-$rule    = (isset($_POST['rule'])) ? $_POST['rule'] : null;
+$rule    = $_POST['rule'] ?? null;
 $rule_id = (isset($_GET['id'])) ? (int) $_GET['id'] : 0;
 $error   = array();
 

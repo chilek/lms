@@ -71,7 +71,7 @@ $SESSION->restore('invoicenewerror', $error, true);
 
 $itemdata = r_trim($_POST);
 
-$action = isset($_GET['action']) ? $_GET['action'] : null;
+$action = $_GET['action'] ?? null;
 
 function changeContents($contents, $newcontents)
 {
@@ -79,7 +79,7 @@ function changeContents($contents, $newcontents)
 
     foreach ($newcontents as $posuid => &$newposition) {
         if (isset($contents[$posuid])) {
-            $result[] = $contents[$posuid];
+            $result[$posuid] = $contents[$posuid];
         }
     }
     unset($newposition);
@@ -116,6 +116,7 @@ switch ($action) {
                     's_valuenetto' => str_replace(',', '.', $item['netvalue']),
                     's_valuebrutto' => str_replace(',', '.', $item['grossvalue']),
                     'tax' => isset($taxeslist[$item['taxid']]) ? $taxeslist[$item['taxid']]['label'] : '',
+                    'taxvalue' => isset($taxeslist[$item['taxid']]) ? $taxeslist[$item['taxid']]['value'] : 0,
                     'taxid' => $item['taxid'],
                     'taxcategory' => $item['taxcategory'],
                 );
@@ -150,6 +151,7 @@ switch ($action) {
         $currtime = time();
         $invoice['cdate'] = $currtime;
         $invoice['sdate'] = $currtime;
+        $invoice['copy-cdate'] = 1;
 
         $invoice['proforma'] = isset($_GET['proforma']) ? 1 : 0;
 
@@ -169,7 +171,9 @@ switch ($action) {
             $invoice['deadline'] = $currtime + $paytime * 86400;
         }
 
-        if (!isset($_GET['clone'])) {
+        if (isset($_GET['clone'])) {
+            $invoice['closed'] = 0;
+        } else {
             $invoice['numberplanid'] = $LMS->getDefaultNumberPlanID(
                 $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
                 empty($customer) ? null : $customer['divisionid']
@@ -275,6 +279,7 @@ switch ($action) {
             }
 
             $itemdata['tax'] = isset($itemdata['taxid']) ? $taxeslist[$itemdata['taxid']]['label'] : '';
+            $itemdata['taxvalue'] = isset($itemdata['taxid']) ? $taxeslist[$itemdata['taxid']]['value'] : 0;
         }
 
         if ($itemdata['tariffid'] > 0) {
@@ -316,12 +321,15 @@ switch ($action) {
             foreach ($marks as $id) {
                 $cash = $DB->GetRow('SELECT value, comment, taxid FROM cash WHERE id = ?', array($id));
 
+                $taxvalue = isset($itemdata['taxid']) ? $taxeslist[$itemdata['taxid']]['value'] : 0;
+
                 $itemdata['cashid'] = $id;
                 $itemdata['name'] = $cash['comment'];
                 $itemdata['taxid'] = $cash['taxid'];
                 $itemdata['servicetype'] = empty($_POST['l_servicetype'][$id]) ? null : $_POST['l_servicetype'][$id];
                 $itemdata['taxcategory'] = $_POST['l_taxcategory'][$id];
                 $itemdata['tax'] = isset($taxeslist[$itemdata['taxid']]) ? $taxeslist[$itemdata['taxid']]['label'] : '';
+                $itemdata['taxvalue'] = isset($taxeslist[$itemdata['taxid']]) ? $taxeslist[$itemdata['taxid']]['value'] : 0;
                 $itemdata['discount'] = 0;
                 $itemdata['pdiscount'] = 0;
                 $itemdata['vdiscount'] = 0;
@@ -366,7 +374,7 @@ switch ($action) {
 
         if (ConfigHelper::checkPrivilege('invoice_consent_date')) {
             if ($invoice['cdate']) {
-                list ($year, $month, $day) = explode('/', $invoice['cdate']);
+                [$year, $month, $day] = explode('/', $invoice['cdate']);
                 if (checkdate($month, $day, $year)) {
                     $invoice['cdate'] = mktime(
                         date('G', $currtime),
@@ -387,7 +395,7 @@ switch ($action) {
             $invoice['cdate'] = $currtime;
         }
 
-        if (ConfigHelper::checkPrivilege('invoice_consent_date') && $invoice['cdate'] && !isset($invoice['cdatewarning'])) {
+        if (ConfigHelper::checkPrivilege('invoice_consent_date') && $invoice['cdate'] && !isset($warnings['invoice-cdate-'])) {
             if (empty($invoice['numberplanid'])) {
                 $maxdate = $DB->GetOne(
                     'SELECT MAX(cdate) FROM documents WHERE type = ? AND numberplanid IS NULL',
@@ -401,12 +409,11 @@ switch ($action) {
             }
 
             if ($invoice['cdate'] < $maxdate) {
-                $error['cdate'] = trans(
+                $warning['invoice[cdate]'] = trans(
                     'Last date of invoice settlement is $a. If sure, you want to write invoice with date of $b, then click "Submit" again.',
                     date('Y/m/d H:i', $maxdate),
                     date('Y/m/d H:i', $invoice['cdate'])
                 );
-                $invoice['cdatewarning'] = 1;
             }
         } elseif (!$invoice['cdate']) {
             $invoice['cdate'] = $currtime;
@@ -414,7 +421,7 @@ switch ($action) {
 
         if (ConfigHelper::checkPrivilege('invoice_sale_date')) {
             if ($invoice['sdate']) {
-                list($syear, $smonth, $sday) = explode('/', $invoice['sdate']);
+                [$syear, $smonth, $sday] = explode('/', $invoice['sdate']);
                 if (checkdate($smonth, $sday, $syear)) {
                     $invoice['sdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $smonth, $sday, $syear);
                     $scurrmonth = $smonth;
@@ -437,7 +444,7 @@ switch ($action) {
         }
 
         if ($invoice['deadline']) {
-            list ($dyear, $dmonth, $dday) = explode('/', $invoice['deadline']);
+            [$dyear, $dmonth, $dday] = explode('/', $invoice['deadline']);
             if (checkdate($dmonth, $dday, $dyear)) {
                 $invoice['deadline'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $dmonth, $dday, $dyear);
                 $dcurrmonth = $dmonth;
@@ -594,6 +601,8 @@ switch ($action) {
         }
 
         $DB->BeginTrans();
+
+/*
         $tables = array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions', 'vdivisions',
             'addresses', 'customers', 'customer_addresses');
         if (ConfigHelper::getConfig('database.type') != 'postgres') {
@@ -603,7 +612,6 @@ switch ($action) {
         if ($SYSLOG) {
             $tables = array_merge($tables, array('logmessages', 'logmessagekeys', 'logmessagedata', 'logtransactions'));
         }
-
         $hook_data = array(
             'tables' => array(),
         );
@@ -613,6 +621,9 @@ switch ($action) {
         }
 
         $DB->LockTables($tables);
+*/
+
+        $DB->LockByHandle(LOCK_INVOICE_NUMBER);
 
         if (!$invoice['number']) {
             $invoice['number'] = $LMS->GetNewDocumentNumber(array(
@@ -646,6 +657,17 @@ switch ($action) {
         }
 
         $invoice['type'] = $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE;
+        $invoice['fullnumber'] = docnumber(array(
+            'number' => $invoice['number'],
+            'cdate' => $invoice['cdate'],
+            'template' => empty($invoice['numberplanid'])
+                ? null
+                : $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($invoice['numberplanid'])),
+            'customerid' => $customer['id'],
+        ));
+        $invoice['userid'] = Auth::GetCurrentUser();
+        $invoice['user'] = $layout['logname'];
+        $invoice['customerid'] = $customer['id'];
 
         $hook_data = array(
             'customer' => $customer,
@@ -656,12 +678,16 @@ switch ($action) {
 
         $iid = $LMS->AddInvoice($hook_data);
 
-        $hook_data['invoice']['id'] = $iid;
+        $hook_data['invoice']['id'] = $invoice['id'] = $iid;
         $hook_data['contents'] = $contents;
         $hook_data = $LMS->ExecuteHook('invoicenew_save_after_submit', $hook_data);
 
         $contents = $hook_data['contents'];
         $invoice = $hook_data['invoice'];
+        if (isset($hook_data['extid'])) {
+            $invoice['extid'] = $hook_data['extid'];
+            $LMS->setInvoiceExtID($invoice);
+        }
 
         // usuwamy wczesniejsze zobowiazania bez faktury
         foreach ($contents as $item) {
@@ -683,8 +709,8 @@ switch ($action) {
             $DB->Execute('DELETE FROM cash WHERE id IN (' . implode(',', $ids) . ')');
         }
 
-        if (isset($invoice['proformaid']) && !empty($invoice['proformaid'])) {
-            if (isset($invoice['preserve-proforma']) && !empty($invoice['preserve-proforma'])) {
+        if (!empty($invoice['proformaid'])) {
+            if (!empty($invoice['preserve-proforma'])) {
                 $LMS->PreserveProforma($invoice['proformaid']);
             } else {
                 $LMS->DeleteArchiveTradeDocument($invoice['proformaid']);
@@ -692,7 +718,10 @@ switch ($action) {
             }
         }
 
-        $DB->UnLockTables();
+//        $DB->UnLockTables();
+
+        $DB->UnLockByHandle(LOCK_INVOICE_NUMBER);
+
         $DB->CommitTrans();
 
         $SESSION->remove('invoicecontents', true);
@@ -703,7 +732,7 @@ switch ($action) {
         $contents = $customer = $error = $invoice = null;
 
         if (isset($_GET['print'])) {
-            $which = isset($_GET['which']) ? $_GET['which'] : 0;
+            $which = $_GET['which'] ?? 0;
 
             $SESSION->save('invoiceprint', array('invoice' => $iid, 'which' => $which), true);
         }
@@ -718,11 +747,11 @@ switch ($action) {
 }
 
 $SESSION->save('invoice', $invoice, true);
-$SESSION->save('invoicecontents', isset($contents) ? $contents : null, true);
-$SESSION->save('invoicecustomer', isset($customer) ? $customer : null, true);
-$SESSION->save('invoicenewerror', isset($error) ? $error : null, true);
+$SESSION->save('invoicecontents', $contents ?? null, true);
+$SESSION->save('invoicecustomer', $customer ?? null, true);
+$SESSION->save('invoicenewerror', $error ?? null, true);
 
-if ($action && (!isset($error) || !$error)) {
+if ($action && empty($error) && empty($warning)) {
     // redirect needed because we don't want to destroy contents of invoice in order of page refresh
     $SESSION->redirect('?m=invoicenew');
 }
@@ -784,7 +813,7 @@ $SMARTY->assign('numberplanlist', $numberplanlist);
 
 $SMARTY->assign('taxeslist', $taxeslist);
 
-if (isset($invoice['proformaid']) && !empty($invoice['proformaid'])) {
+if (!empty($invoice['proformaid'])) {
     $layout['pagetitle'] = trans('Conversion Pro Forma Invoice $a To Invoice', $invoice['proformanumber']);
 } elseif (!empty($invoice['proforma'])) {
     $layout['pagetitle'] = trans('New Pro Forma Invoice');

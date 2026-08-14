@@ -34,11 +34,13 @@ interface LMSMessageManagerInterface
 
     public function MessageTemplateExists($type, $name);
 
-    public function AddMessageTemplate($type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message);
+    public function AddMessageTemplate($type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype = 'text', array $attachments = array());
 
-    public function UpdateMessageTemplate($id, $type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message);
+    public function UpdateMessageTemplate($id, $type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype = 'text', array $attachments = array(), array $attachments_to_delete = array());
 
     public function DeleteMessageTemplates(array $ids);
+
+    public function GetMessageTemplateAttachments($templateid);
 
     public function GetMessageTemplates($type = 0);
 

@@ -27,7 +27,7 @@
 if (! $LMS->TicketExists($_GET['id'])) {
     $SESSION->redirect('?m=rtqueuelist');
 } else {
-    $id = $_GET['id'];
+    $id = intval($_GET['id']);
 }
 
 if (!$LMS->CheckTicketAccess($id)) {
@@ -124,8 +124,8 @@ if (!empty($iteration['total'])) {
             break;
         }
     }
-    $ticket['next_ticketid'] = isset($next_ticketid) ? $next_ticketid : null;
-    $ticket['prev_ticketid'] = isset($prev_ticketid) ? $prev_ticketid : null;
+    $ticket['next_ticketid'] = $next_ticketid ?? null;
+    $ticket['prev_ticketid'] = $prev_ticketid ?? null;
 }
 
 foreach ($categories as $category) {
@@ -181,12 +181,13 @@ $SMARTY->assign(
         'xajax' => $LMS->RunXajax(),
         'aet' => $aet,
         'ticket' => $ticket,
-        'relatedticketscontent' => isset($relatedticketscontent) ? $relatedticketscontent : null,
-        'childticketscontent' => isset($childticketscontent) ? $childticketscontent : null,
-        'parentticketcontent' => isset($parentticketcontent) ? $parentticketcontent : null,
+        'relatedticketscontent' => $relatedticketscontent ?? null,
+        'childticketscontent' => $childticketscontent ?? null,
+        'parentticketcontent' => $parentticketcontent ?? null,
         'categories' => $categories,
         'assignedevents' => $assignedevents,
         'rtticketview_sortable_order' => $SESSION->get_persistent_setting('rtticketview-sortable-order'),
+        'favorite_queues' => $LMS->GetFavoriteQueues(),
     )
 );
 

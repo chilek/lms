@@ -25,7 +25,7 @@
  */
 
 // get customer name and check privileges using customerview
-$aids = isset($_POST['customerassignments']) ? $_POST['customerassignments'] : array($_GET['id']);
+$aids = $_POST['customerassignments'] ?? array($_GET['id']);
 $aids = Utils::filterIntegers($aids);
 if (empty($aids)) {
     $SESSION->redirect_to_history_entry();
@@ -74,7 +74,7 @@ if (isset($_POST['assignment'])) {
 
     $a['id'] = $_GET['id'];
     $a['customerid'] = $customer['id'];
-    $a['liabilityid'] = isset($_GET['lid']) ? $_GET['lid'] : null;
+    $a['liabilityid'] = $_GET['lid'] ?? null;
 
     $period = sprintf('%d', $a['period']);
 
@@ -125,7 +125,7 @@ if (isset($_POST['assignment'])) {
             } elseif (!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at'])) {
                 $error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
             } else {
-                list($d,$m) = explode('/', $a['at']);
+                [$d, $m] = explode('/', $a['at']);
             }
 
             if (!$error) {
@@ -148,7 +148,7 @@ if (isset($_POST['assignment'])) {
                 $m = date('n', time());
                 $a['at'] = $d.'/'.$m;
             } else {
-                list($d,$m) = explode('/', $a['at']);
+                [$d, $m] = explode('/', $a['at']);
             }
 
             if (!$error) {
@@ -171,7 +171,7 @@ if (isset($_POST['assignment'])) {
             } elseif (!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at'])) {
                 $error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
             } else {
-                list($d,$m) = explode('/', $a['at']);
+                [$d, $m] = explode('/', $a['at']);
             }
 
             if (!$error) {
@@ -191,7 +191,7 @@ if (isset($_POST['assignment'])) {
             $period = DISPOSABLE;
 
             if (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['at'])) {
-                list($y, $m, $d) = explode('/', $a['at']);
+                [$y, $m, $d] = explode('/', $a['at']);
                 if (checkdate($m, $d, $y)) {
                     $at = mktime(0, 0, 0, $m, $d, $y);
                     if (empty($a['atwarning']) && $at < mktime(0, 0, 0)) {
@@ -293,12 +293,15 @@ if (isset($_POST['assignment'])) {
     }
 
     // try to restrict node assignment sharing
-    if ($a['tariffid'] > 0 && isset($a['nodes']) && !empty($a['nodes'])) {
+    if ($a['tariffid'] > 0 && !empty($a['nodes'])) {
         $restricted_nodes = $LMS->CheckNodeTariffRestrictions($a['id'], $a['nodes'], $from, $to);
         $node_multi_tariff_restriction = ConfigHelper::getConfig(
-            'phpui.node_multi_tariff_restriction',
-            '',
-            true
+            'nodes.multi_tariff_restriction',
+            ConfigHelper::getConfig(
+                'phpui.node_multi_tariff_restriction',
+                '',
+                true
+            )
         );
         if (preg_match('/^(error|warning)$/', $node_multi_tariff_restriction) && !empty($restricted_nodes)) {
             foreach ($restricted_nodes as $nodeid) {
@@ -414,30 +417,33 @@ if (isset($_POST['assignment'])) {
             SYSLOG::RES_TARIFF => empty($a['tariffid']) ? null : intval($a['tariffid']),
             SYSLOG::RES_CUST => $customer['id'],
             'attribute' => !empty($a['attribute']) ? $a['attribute'] : null,
+            'note' => !empty($a['note']) ? $a['note'] : null,
+            'suspended' => empty($a['suspended']) ? 0 : 1,
             'period' => $period,
             'backwardperiod' => isset($a['backwardperiod']) ? 1 : 0,
             'at' => $at,
             'count' => $count,
-            'note' => htmlspecialchars($a['note']),
             'invoice' => isset($a['invoice']) ? intval($a['invoice']) : 0,
-            'separatedocument' => isset($a['separatedocument']) ? 1 : 0,
-            'settlement' => !isset($a['settlement']) || empty($a['settlement']) ? 0 : 1,
+            'separatedocument'  => strlen($a['separatedocumentvalue']) ? $a['separatedocumentvalue'] : (strlen($a['separatedocument']) ? $a['separatedocument'] : null),
+            'separateitem' => empty($a['separateitem']) ? 0 : 1,
+            'settlement' => empty($a['settlement']) ? 0 : 1,
             'datefrom' => $from,
             'dateto' => $to,
             'pdiscount' => str_replace(',', '.', $a['pdiscount']),
             'vdiscount' => str_replace(',', '.', $a['vdiscount']),
             SYSLOG::RES_LIAB => $a['liabilityid'],
             SYSLOG::RES_NUMPLAN => !empty($a['numberplanid']) ? $a['numberplanid'] : null,
-            'paytime' => isset($paytime) ? $paytime : null,
+            'paytime' => $paytime ?? null,
             'paytype' => !empty($a['paytype']) ? $a['paytype'] : null,
-            'recipient_address_id' => ($a['recipient_address_id'] >= 0) ? $a['recipient_address_id'] : null,
+            'recipient_address_id' => ($a['recipient_address_id'] > 0) ? $a['recipient_address_id'] : null,
+            'recipient_address_id2' => ($a['recipient_address_id2'] > 0) ? $a['recipient_address_id2'] : null,
             SYSLOG::RES_ASSIGN => $a['id']
         );
 
-        $DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, attribute=?, period=?,
-            backwardperiod=?, at=?, count=?, note=?,
-			invoice=?, separatedocument=?, settlement=?, datefrom=?, dateto=?, pdiscount=?, vdiscount=?,
-			liabilityid=?, numberplanid=?, paytime = ?, paytype=?, recipient_address_id=?
+        $DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, attribute=?, note = ?, suspended = ?, period=?,
+            backwardperiod=?, at=?, count=?,
+			invoice=?, separatedocument=?, separateitem = ?, settlement=?, datefrom=?, dateto=?, pdiscount=?, vdiscount=?,
+			liabilityid=?, numberplanid=?, paytime = ?, paytype=?, recipient_address_id = ?, recipient_address_id2 = ?
 			WHERE id=?', array_values($args));
         if ($SYSLOG) {
             $SYSLOG->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_UPDATE, $args);
@@ -506,7 +512,9 @@ if (isset($_POST['assignment'])) {
     $a = $DB->GetRow(
         'SELECT a.id AS id, a.customerid, a.tariffid, a.period, a.backwardperiod,
         a.at, a.count, a.datefrom, a.dateto, a.numberplanid, a.paytime, a.paytype,
-        a.invoice, a.separatedocument, a.note,
+        a.invoice,
+        a.separatedocument, a.separateitem,
+        a.note,
         liabilities.type,
         (CASE WHEN liabilityid IS NULL
             THEN (CASE WHEN tariffs.flags & ? > 0 THEN 1 ELSE 0 END)
@@ -517,12 +525,13 @@ if (isset($_POST['assignment'])) {
             ELSE (CASE WHEN liabilities.flags & ? > 0 THEN 1 ELSE 0 END)
         END) AS netflag,
         (CASE WHEN liabilityid IS NULL THEN tariffs.taxcategory ELSE liabilities.taxcategory END) AS taxcategory,
-        a.settlement, a.pdiscount, a.vdiscount, a.attribute, a.liabilityid,
+        a.settlement, a.pdiscount, a.vdiscount, a.attribute, a.suspended, a.liabilityid,
         (CASE WHEN liabilityid IS NULL THEN tariffs.name ELSE liabilities.name END) AS name,
         liabilities.value AS value, liabilities.currency AS currency,
         liabilities.netvalue AS netvalue,
         liabilities.prodid AS prodid, liabilities.taxid AS taxid,
-        recipient_address_id
+        recipient_address_id,
+        recipient_address_id2
         FROM assignments a
         LEFT JOIN tariffs ON (tariffs.id = a.tariffid)
         LEFT JOIN liabilities ON (liabilities.id = a.liabilityid)
@@ -589,6 +598,10 @@ if (isset($_POST['assignment'])) {
         );
         $a['discount_type'] = $default_assignment_discount_type == 'percentage' ? DISCOUNT_PERCENTAGE : DISCOUNT_AMOUNT;
     }
+
+    if (!empty($a['tariffid'])) {
+        $a['netflag'] = ConfigHelper::checkConfig('assignments.default_net_account');
+    }
 }
 
 $layout['pagetitle'] = trans('Liability Edit: $a', '<A href="?m=customerinfo&id='.$customer['id'].'">'.$customer['name'].'</A>');
@@ -632,6 +645,17 @@ if (!empty($a['nodes']) && is_array($a['nodes'])) {
     $a['nodes'] = array_flip($a['nodes']);
 }
 $SMARTY->assign('assignment', $a);
-$SMARTY->assign('assignments', $LMS->GetCustomerAssignments($customer['id'], true, false));
+$assignments = $LMS->GetCustomerAssignments($customer['id'], true, false);
+$SMARTY->assign('assignments', $assignments);
 $SMARTY->assign('customerinfo', $customer);
+
+$document_separation_groups = array();
+foreach ($assignments as $assignment) {
+    if (isset($assignment['separatedocument'])) {
+        $document_separation_groups[$assignment['separatedocument']] = $assignment['separatedocument'];
+    }
+}
+sort($document_separation_groups, SORT_STRING);
+$SMARTY->assign('document_separation_groups', $document_separation_groups);
+
 $SMARTY->display('customer/customerassignmentsedit.html');

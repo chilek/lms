@@ -45,8 +45,8 @@ if (isset($_POST['customerassignments'])) {
     }
 }
 
-$membersnetid = isset($_GET['membersnetid']) ? $_GET['membersnetid'] : 0;
-$othersnetid =  isset($_GET['othersnetid']) ? $_GET['othersnetid'] : 0;
+$membersnetid = $_GET['membersnetid'] ?? 0;
+$othersnetid = $_GET['othersnetid'] ?? 0;
 
 $customergroup = $LMS->CustomergroupGet($_GET['id'], $membersnetid);
 $customers = $LMS->GetCustomerWithoutGroupNames($_GET['id'], $othersnetid);
@@ -90,6 +90,6 @@ $SMARTY->assign('customers', $customers);
 $SMARTY->assign('customerscount', count($customers));
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
-$SMARTY->assign('membersnetid', isset($membersnetid) ? $membersnetid : 0);
-$SMARTY->assign('othersnetid', isset($othersnetid) ? $othersnetid : 0);
+$SMARTY->assign('membersnetid', $membersnetid ?? 0);
+$SMARTY->assign('othersnetid', $othersnetid ?? 0);
 $SMARTY->display('customer/customergroupedit.html');

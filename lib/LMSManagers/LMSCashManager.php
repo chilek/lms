@@ -55,7 +55,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 
         static $unique_source_accounts;
 
-        $file = preg_split('/\r?\n/', $contents);
+        $lines = preg_split('/\r?\n/', $contents);
         $patterns_cnt = isset($patterns) ? count($patterns) : 0;
         $ln = 0;
         $sum = array();
@@ -65,28 +65,48 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 
         $sourcefileid = null;
 
-        foreach ($file as $line) {
+        foreach ($lines as $line) {
+            $line = trim($line);
+
             $id = null;
             $count = 0;
             $ln++;
             $is_sum = false;
 
+            $auto_decoded_line = null;
+
             if ($patterns_cnt) {
                 foreach ($patterns as $idx => $pattern) {
-                    $theline = $line;
+                    $decoded_line = null;
 
-                    if (strtoupper($pattern['encoding']) != 'UTF-8') {
-                        if (strtoupper($pattern['encoding']) == 'MAZOVIA') {
-                            $theline = mazovia_to_utf8($theline);
-                        } else {
-                            $theline = @iconv($pattern['encoding'], 'UTF-8//TRANSLIT', $theline);
+                    if (isset($pattern['encoding'])) {
+                        $encoding = strtoupper($pattern['encoding']);
+                        if ($encoding != 'UTF-8') {
+                            if ($encoding == 'MAZOVIA') {
+                                $decoded_line = Utils::mazovia_to_utf8($line);
+                            } else {
+                                $decoded_line = @iconv($encoding, 'UTF-8//TRANSLIT', $line);
+                            }
+                        }
+                    } else {
+                        if (!isset($auto_decoded_line)) {
+                            $auto_decoded_line = Utils::str_utf8($line);
+                        }
+
+                        if ($auto_decoded_line !== false) {
+                            $decoded_line = $auto_decoded_line;
                         }
                     }
 
-                    if (preg_match($pattern['pattern'], $theline, $matches)) {
+                    if (!isset($decoded_line)) {
+                        $decoded_line = $line;
+                    }
+
+                    if (preg_match($pattern['pattern'], $decoded_line, $matches)) {
                         break;
                     }
-                    if (isset($pattern['pattern_sum']) && preg_match($pattern['pattern_sum'], $theline, $matches)) {
+
+                    if (isset($pattern['pattern_sum']) && preg_match($pattern['pattern_sum'], $decoded_line, $matches)) {
                         $is_sum = true;
                         break;
                     }
@@ -94,16 +114,26 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 }
             }
 
+            if (!isset($decoded_line)) {
+                $decoded_line = $line;
+            }
+
+            $theline = $decoded_line;
+
             $hook_data = $LMS->executeHook(
                 'cashimport_error_before_submit',
-                compact("pattern", "count", "patterns_cnt", "error", "line", "theline", "ln")
+                compact("pattern", "count", "patterns_cnt", "error", "line", "theline", "decoded_line", "ln")
             );
             extract($hook_data);
 
             // line isn't matching to any pattern
             if ($count == $patterns_cnt) {
-                if (trim($line) != '') {
-                    $error['lines'][$ln] = $patterns_cnt == 1 ? $theline : $line;
+                if ($line != '') {
+                    if ($patterns_cnt > 1 && !isset($auto_decoded_line)) {
+                        $auto_decoded_line = Utils::str_utf8($line);
+                    }
+
+                    $error['lines'][$ln] = $patterns_cnt == 1 ? $decoded_line : (isset($auto_decoded_line) ? $auto_decoded_line : $line);
                 }
                 continue; // go to next line
             }
@@ -200,7 +230,68 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 $optional_string = '';
             }
 
-            if (empty($matches['id']) && empty($pattern['pid'])) {
+            if (isset($matches['id'])) {
+                $id = intval(preg_replace('/\s+/', '', $matches['id']));
+            } elseif (!empty($pattern['pid']) && isset($matches[$pattern['pid']])) {
+                $id = intval(preg_replace('/\s+/', '', $matches[$pattern['pid']]));
+            }
+
+            // seek by explicitly given source or destination customer account numbers
+            if (!$id) {
+                if (strlen($dstaccount)) {
+                    $id = $this->db->GetOne(
+                        'SELECT customerid FROM customercontacts
+                        WHERE contact = ? AND (type & ?) = ?',
+                        array(
+                            $dstaccount,
+                            CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+                            CONTACT_BANKACCOUNT | CONTACT_INVOICES,
+                        )
+                    );
+                } elseif (strlen($srcaccount)) {
+                    $id = $this->db->GetOne(
+                        'SELECT customerid FROM customercontacts
+                        WHERE contact = ? AND (type & ?) = ?',
+                        array(
+                            $srcaccount,
+                            CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+                            CONTACT_BANKACCOUNT,
+                        )
+                    );
+                    if (empty($id)) {
+                        // find customer by source accounts stored in cash import record;
+                        // if customer has unique source account assigned to all his cash import records
+                        // then we matched customer by source account
+                        if (!isset($unique_source_accounts)) {
+                            $days = intval(ConfigHelper::getConfig($config_section . '.source_account_match_threshold_days'));
+                            $unique_source_accounts = $this->db->GetAll(
+                                'SELECT i.customerid, i.srcaccount
+                                FROM cashimport i
+                                JOIN (
+                                    SELECT i2.srcaccount
+                                    FROM cashimport i2
+                                    WHERE i2.customerid IS NOT NULL AND i2.srcaccount IS NOT NULL
+                                        ' . ($days ? ' AND i2.date >= ?NOW? - ' . $days . ' * 86400' : '') . '
+                                    GROUP BY i2.srcaccount
+                                    HAVING COUNT(DISTINCT i2.customerid) = 1
+                                ) i3 ON i3.srcaccount = i.srcaccount
+                                WHERE i.customerid IS NOT NULL AND i.srcaccount IS NOT NULL
+                                    ' . ($days ? ' AND i.date >= ?NOW? - ' . $days . ' * 86400' : '')
+                            );
+                            if (empty($unique_source_accounts)) {
+                                $unique_source_accounts = array();
+                            } else {
+                                $unique_source_accounts = Utils::array_column($unique_source_accounts, 'customerid', 'srcaccount');
+                            }
+                        }
+                        if (!empty($unique_source_accounts) && isset($unique_source_accounts[$srcaccount])) {
+                            $id = $unique_source_accounts[$srcaccount];
+                        }
+                    }
+                }
+            }
+
+            if (!$id && empty($matches['id']) && empty($pattern['pid'])) {
                 if (isset($pattern['pid_regexp'])) {
                     if (is_array($pattern['pid_regexp'])) {
                         $regexps = array_filter($pattern['pid_regexp'], function ($regexp) {
@@ -214,17 +305,11 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 }
 
                 foreach ($regexps as $regexp) {
-                    if (preg_match($regexp, $theline, $matches)) {
+                    if (preg_match($regexp, $decoded_line, $matches)) {
                         $id = $matches[1];
                         break;
                     }
                 }
-            } elseif (isset($matches['id'])) {
-                $id = intval(preg_replace('/\s+/', '', $matches['id']));
-            } elseif (isset($pattern['pid'], $matches[$pattern['pid']])) {
-                $id = intval(preg_replace('/\s+/', '', $matches[$pattern['pid']]));
-            } else {
-                $id = null;
             }
 
             if (isset($matches['extid'])) {
@@ -243,7 +328,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 
             // seek invoice number
             if (!$id && !empty($pattern['invoice_regexp'])) {
-                if (preg_match($pattern['invoice_regexp'], $theline, $matches)) {
+                if (preg_match($pattern['invoice_regexp'], $decoded_line, $matches)) {
                     if (!isset($pattern['pinvoice_year'], $pattern['pinvoice_month'], $pattern['pinvoice_number'])
                         && !isset($matches['invoice_year'], $matches['invoice_month'], $matches['invoice_number'])) {
                         $id = $this->db->GetOne(
@@ -306,61 +391,6 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                                     array(DOC_INVOICE, DOC_CNOTE)
                                 )
                             );
-                        }
-                    }
-                }
-            }
-
-            // seek by explicitly given source or destination customer account numbers
-            if (!$id) {
-                if (strlen($dstaccount)) {
-                    $id = $this->db->GetOne(
-                        'SELECT customerid FROM customercontacts
-                        WHERE contact = ? AND (type & ?) = ?',
-                        array(
-                            $dstaccount,
-                            CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
-                            CONTACT_BANKACCOUNT | CONTACT_INVOICES,
-                        )
-                    );
-                } elseif (strlen($srcaccount)) {
-                    $id = $this->db->GetOne(
-                        'SELECT customerid FROM customercontacts
-                        WHERE contact = ? AND (type & ?) = ?',
-                        array(
-                            $srcaccount,
-                            CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
-                            CONTACT_BANKACCOUNT,
-                        )
-                    );
-                    if (empty($id)) {
-                        // find customer by source accounts stored in cash import record;
-                        // if customer has unique source account assigned to all his cash import records
-                        // then we matched customer by source account
-                        if (!isset($unique_source_accounts)) {
-                            $days = intval(ConfigHelper::getConfig($config_section . '.source_account_match_threshold_days'));
-                            $unique_source_accounts = $this->db->GetALl(
-                                'SELECT i.customerid, i.srcaccount
-                                FROM cashimport i
-                                JOIN (
-                                    SELECT i2.srcaccount
-                                    FROM cashimport i2
-                                    WHERE i2.customerid IS NOT NULL AND i2.srcaccount IS NOT NULL
-                                        ' . ($days ? ' AND i2.date >= ?NOW? - ' . $days . ' * 86400' : '') . '
-                                    GROUP BY i2.srcaccount
-                                    HAVING COUNT(DISTINCT i2.customerid) = 1
-                                ) i3 ON i3.srcaccount = i.srcaccount
-                                WHERE i.customerid IS NOT NULL AND i.srcaccount IS NOT NULL
-                                    ' . ($days ? ' AND i.date >= ?NOW? - ' . $days . ' * 86400' : '')
-                            );
-                            if (empty($unique_source_accounts)) {
-                                $unique_source_accounts = array();
-                            } else {
-                                $unique_source_accounts = Utils::array_column($unique_source_accounts, 'customerid', 'srcaccount');
-                            }
-                        }
-                        if (!empty($unique_source_accounts) && isset($unique_source_accounts[$srcaccount])) {
-                            $id = $unique_source_accounts[$srcaccount];
                         }
                     }
                 }
@@ -501,11 +531,29 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 }
             }
 
+            $hook_data = compact('id', 'pattern', 'comment', 'theline', 'ln', 'patterns_cnt', 'error', 'line', 'time');
+            $hook_data['db'] = $this->db;
+
             $hook_data = $LMS->executeHook(
                 'cashimport_extra_filter_before_submit',
-                compact("id", "pattern", "comment", "theline", "ln", "patterns_cnt", "error", "line", "time")
+                $hook_data
             );
+
             extract($hook_data);
+
+            if (!empty($hook_data['ignore'])) {
+                $error['lines'][$ln] = array(
+                    'customer' => $customer,
+                    'customerid' => $id,
+                    'date' => $time,
+                    'operdate' => $operdate,
+                    'value' => $value,
+                    'comment' => $comment,
+                    'extid' => $extid,
+                );
+
+                continue;
+            }
 
             if (!$found_by_name && $id && (!$name || !$lastname)) {
                 if ($tmp = $this->db->GetRow('SELECT id, lastname, name FROM customers WHERE '
@@ -520,7 +568,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 }
             }
 
-            if ($id && !$this->db->GetOne('SELECT id FROM customers WHERE id = ?', array($id))) {
+            if ($id && !$this->db->GetOne('SELECT id FROM customers WHERE id = ?' . (empty($pattern['ignore_deleted_customers']) ? '' : ' AND deleted = 0'), array($id))) {
                 $id = null;
             }
 
@@ -539,8 +587,8 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 $cid = '-';
             }
             foreach (array('srcaccount', 'dstaccount', 'customername', 'cid', 'extid') as $replace_symbol) {
-                $variable = $$replace_symbol;
-                $variable = strlen($variable) ? $variable : trans('none');
+                $variable = ${$replace_symbol};
+                $variable = isset($variable) && strlen($variable) ? $variable : trans('none');
                 $comment = str_replace('%'. $replace_symbol . '%', $variable, $comment);
             }
 
@@ -550,7 +598,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
             $comment = trim($comment);
 
             $hash = md5(
-                (empty($pattern['use_line_hash']) ? $time . $value . $customer . $comment : $theline)
+                (empty($pattern['use_line_hash']) ? $time . $value . $customer . $comment : $decoded_line)
                     . (!empty($pattern['line_idx_hash']) ? $ln : '')
                     . (!empty($pattern['filename_hash']) ? $filename : '')
             );
@@ -565,7 +613,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                     if (!isset($sourcefileid)) {
                         $args = array(
                             'name' => $filename,
-                            'idate' => isset($filemtime) ? $filemtime : time(),
+                            'idate' => $filemtime ?? time(),
                             SYSLOG::RES_USER => Auth::GetCurrentUser(),
                         );
                         $this->db->Execute(
@@ -681,6 +729,13 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
         if (!empty($imports)) {
             $idate  = ConfigHelper::checkConfig('finances.cashimport_use_idate');
             $icheck = ConfigHelper::checkConfig('finances.cashimport_checkinvoices');
+            $notification = ConfigHelper::checkConfig('cashimport.customer_notify', true);
+
+            $balance = array(
+                'type' => 1,
+                'userid' => null,
+                'notification' => $notification ? 1 : 0,
+            );
 
             $finance_manager = new LMSFinanceManager($this->db, $this->auth, $this->cache, $this->syslog);
             $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
@@ -690,13 +745,11 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 $this->db->BeginTrans();
 
                 $balance['time'] = $idate ? $import['idate'] : $import['date'];
-                $balance['type'] = 1;
                 $balance['value'] = $import['value'];
                 $balance['customerid'] = $import['customerid'];
                 $balance['comment'] = $import['description'];
                 $balance['importid'] = $import['id'];
                 $balance['sourceid'] = $import['sourceid'];
-                $balance['userid'] = null;
 
                 if ($import['value'] > 0 && $icheck) {
                     if ($invoices = $this->db->GetAll(

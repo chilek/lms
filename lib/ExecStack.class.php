@@ -97,7 +97,7 @@ class ExecStack
         }
 
         foreach ($this->_MODINFO as $module_name => $modinfo) {
-            $priority_table['priority'][] = (isset($modinfo['priority']) ? $modinfo['priority'] : 255);
+            $priority_table['priority'][] = ($modinfo['priority'] ?? 255);
             $priority_table['module'][] = $module_name;
         }
 
@@ -217,7 +217,10 @@ class ExecStack
 
     public function actionExists($module, $action)
     {
-        return is_array($this->_MODINFO[$module]['actions'][$action]) && ($this->needExec($module, $action) ? is_readable($this->modules_dir.'/'.$module.'/actions/'.$action.'.php') : true);
+        return is_array($this->_MODINFO[$module]['actions'][$action]) && (!$this->needExec(
+            $module,
+            $action
+        ) || is_readable($this->modules_dir . '/' . $module . '/actions/' . $action . '.php'));
     }
 
     public function actionIsPublic($module, $action)
@@ -268,7 +271,7 @@ class ExecStack
 
         if ($depth == 0 && $this->_BINDTABLE['pre/*:*']) {
             foreach ($this->_BINDTABLE['pre/*:*'] as $bind) {
-                list($tmodule, $taction) = explode(':', $bind);
+                [$tmodule, $taction] = explode(':', $bind);
                 foreach ($this->buildExecStack($tmodule, $taction, $depth + 1) as $tbind) {
                     array_push($stack, $tbind);
                 }
@@ -277,7 +280,7 @@ class ExecStack
 
         if (isset($this->_BINDTABLE['pre/'.$module.':'.$action])) {
             foreach ($this->_BINDTABLE['pre/'.$module.':'.$action] as $bind) {
-                list($tmodule, $taction) = explode(':', $bind);
+                [$tmodule, $taction] = explode(':', $bind);
                 foreach ($this->buildExecStack($tmodule, $taction, $depth + 1) as $tbind) {
                     array_push($stack, $tbind);
                 }
@@ -288,7 +291,7 @@ class ExecStack
 
         if (isset($this->_BINDTABLE['post/'.$module.':'.$action])) {
             foreach ($this->_BINDTABLE['post/'.$module.':'.$action] as $bind) {
-                list($tmodule, $taction) = explode(':', $bind);
+                [$tmodule, $taction] = explode(':', $bind);
                 foreach ($this->buildExecStack($tmodule, $taction, $depth + 1) as $tbind) {
                     array_push($stack, $tbind);
                 }
@@ -297,7 +300,7 @@ class ExecStack
 
         if ($depth == 0 && $this->_BINDTABLE['post/*:*']) {
             foreach ($this->_BINDTABLE['post/*:*'] as $bind) {
-                list($tmodule, $taction) = explode(':', $bind);
+                [$tmodule, $taction] = explode(':', $bind);
                 foreach ($this->buildExecStack($tmodule, $taction, $depth + 1) as $tbind) {
                     array_push($stack, $tbind);
                 }
@@ -307,7 +310,7 @@ class ExecStack
         if ($stack && $depth == 0) {
             $this->_EXECSTACK = array();
             foreach ($stack as $stackitem) {
-                list($module, $action) = explode(':', $stackitem);
+                [$module, $action] = explode(':', $stackitem);
                 $this->_EXECSTACK['actions'][] = array( 'module' => $module, 'action' => $action, );
                 if ($this->needTemplate($module, $action)) {
                     $this->_EXECSTACK['templates'][] = array( 'module' => $module, 'template' => $this->getTemplate($module, $action), );

@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2023 LMS Developers
+ *  (C) Copyright 2001-2024 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,169 +25,27 @@
  *  $Id$
  */
 
-// REPLACE THIS WITH PATH TO YOUR CONFIG FILE
+$script_parameters = array(
+    'section:' => 's:',
+    'message-file:' => 'm:',
+    'force-http-mode' => 'f',
+    'fetch-only' => 'o',
+    'output-directory:' => null,
+);
 
-// PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
-// *EXACTLY* WHAT ARE YOU DOING!!!
-// *******************************************************************
-
-ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
-
-$http_mode = isset($_SERVER['HTTP_HOST']);
-
-if ($http_mode) {
-    ob_clean();
-    $options = array();
-} else {
-    $parameters = array(
-        'config-file:' => 'C:',
-        'quiet' => 'q',
-        'help' => 'h',
-        'version' => 'v',
-        'section:' => 's:',
-        'message-file:' => 'm:',
-        'force-http-mode' => 'f',
-    );
-
-    $long_to_shorts = array();
-    foreach ($parameters as $long => $short) {
-        $long = str_replace(':', '', $long);
-        if (isset($short)) {
-            $short = str_replace(':', '', $short);
-        }
-        $long_to_shorts[$long] = $short;
-    }
-
-    $options = getopt(
-        implode(
-            '',
-            array_filter(
-                array_values($parameters),
-                function ($value) {
-                    return isset($value);
-                }
-            )
-        ),
-        array_keys($parameters)
-    );
-
-    foreach (array_flip(array_filter($long_to_shorts, function ($value) {
-        return isset($value);
-    })) as $short => $long) {
-        if (array_key_exists($short, $options)) {
-            $options[$long] = $options[$short];
-            unset($options[$short]);
-        }
-    }
-}
-
-if (isset($options['version'])) {
-    print <<<EOF
-lms-sms2rt.php
-(C) 2001-2023 LMS Developers
-
-EOF;
-    exit(0);
-}
-
-if (isset($options['help'])) {
-    print <<<EOF
-lms-sms2rt.php
-(C) 2001-2023 LMS Developers
-
--C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
--m, --message-file=<message-file>       name of message file;
--h, --help                      print this help and exit;
--v, --version                   print version info and exit;
--q, --quiet                     suppress any output, except errors;
+$script_help = <<<EOF
 -s, --section=<section-name>    section name from lms configuration where settings
                                 are stored
+-m, --message-file=<message-file>       name of message file;
 -f, --force-http-mode           force callback url mode even if script is not launched under
-                                http server control
-
+                                http server control;
+-o, --fetch-only                only fetch incoming SMS messages and write them to files;
+    --output-directory=<directory>
+                                output directory is directory where fetched messages
+                                are stored;
 EOF;
-    exit(0);
-}
 
-$quiet = isset($options['quiet']);
-if (!$quiet && !$http_mode) {
-    print <<<EOF
-lms-sms2rt.php
-(C) 2001-2023 LMS Developers
-
-EOF;
-}
-
-$config_section = isset($options['section']) && preg_match('/^[a-z0-9-_]+$/i', $options['section']) ? $options['section'] : 'sms';
-
-if (isset($options['config-file'])) {
-    $CONFIG_FILE = $options['config-file'];
-} elseif ($http_mode && is_readable('lms.ini')) {
-    $CONFIG_FILE = 'lms.ini';
-} elseif ($http_mode && is_readable(DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini')) {
-    $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini';
-} else {
-    $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
-}
-
-if (isset($options['force-http-mode'])) {
-    $http_mode = true;
-}
-
-
-if (!$quiet && (!$http_mode || isset($options['force-http-mode']))) {
-    echo 'Using file ' . $CONFIG_FILE . ' as config.' . PHP_EOL;
-}
-
-if (!is_readable($CONFIG_FILE)) {
-    die('Unable to read configuration file [' . $CONFIG_FILE . ']!' . PHP_EOL);
-}
-
-define('CONFIG_FILE', $CONFIG_FILE);
-
-$CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
-
-// Check for configuration vars and set default values
-$CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
-$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib' : $CONFIG['directories']['lib_dir']);
-$CONFIG['directories']['storage_dir'] = (!isset($CONFIG['directories']['storage_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'storage' : $CONFIG['directories']['storage_dir']);
-$CONFIG['directories']['plugin_dir'] = (!isset($CONFIG['directories']['plugin_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'plugins' : $CONFIG['directories']['plugin_dir']);
-$CONFIG['directories']['plugins_dir'] = $CONFIG['directories']['plugin_dir'];
-
-define('SYS_DIR', $CONFIG['directories']['sys_dir']);
-define('LIB_DIR', $CONFIG['directories']['lib_dir']);
-define('STORAGE_DIR', $CONFIG['directories']['storage_dir']);
-define('PLUGIN_DIR', $CONFIG['directories']['plugin_dir']);
-define('PLUGINS_DIR', $CONFIG['directories']['plugin_dir']);
-
-// Load autoloader
-$composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-if (file_exists($composer_autoload_path)) {
-    require_once $composer_autoload_path;
-} else {
-    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More information at https://getcomposer.org/" . PHP_EOL);
-}
-
-// Do some checks and load config defaults
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'config.php');
-
-// Init database
-
-$DB = null;
-
-try {
-    $DB = LMSDB::getInstance();
-} catch (Exception $ex) {
-    trigger_error($ex->getMessage(), E_USER_WARNING);
-    // can't work without database
-    die("Fatal error: cannot connect to database!" . PHP_EOL);
-}
-
-// Include required files (including sequence is important)
-
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
-include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
+require_once('script-options.php');
 
 $SYSLOG = SYSLOG::getInstance();
 
@@ -195,6 +53,8 @@ $SYSLOG = SYSLOG::getInstance();
 
 $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
+
+$config_section = isset($options['section']) && preg_match('/^[a-z0-9-_]+$/i', $options['section']) ? $options['section'] : 'sms';
 
 $incoming_queue = ConfigHelper::getConfig($config_section . '.incoming_queue', 'SMS');
 $default_mail_from = ConfigHelper::getConfig($config_section . '.default_mail_from', 'root@localhost');
@@ -219,13 +79,28 @@ $customer_auto_reply_body = ConfigHelper::getConfig('sms.customer_auto_reply_bod
 
 $detect_customer_location_address = ConfigHelper::checkConfig($config_section . '.detect_customer_location_address');
 
+$mms_detect_regexp = ConfigHelper::getConfig($config_section . '.mms_detect_regexp', null, true);
+$customer_mms_auto_reply_body = ConfigHelper::getConfig($config_section . '.customer_mms_auto_reply_body', '', true);
+
+$voicecall_detect_regexp = ConfigHelper::getConfig($config_section . '.voicecall_detect_regexp', null, true);
+$customer_voicecall_auto_reply_body = ConfigHelper::getConfig($config_section . '.customer_voicecall_auto_reply_body', '', true);
+
 // Load plugin files and register hook callbacks
-$plugin_manager = new LMSPluginManager();
+$plugin_manager = LMSPluginManager::getInstance();
 $LMS->setPluginManager($plugin_manager);
 
 $message_files = array();
 
 if ($http_mode) {
+    if (isset($options['output-directory'])) {
+        $output_directory = $options['output-directory'];
+        if (!is_dir($output_directory)) {
+            die('Output directory \'' . $output_directory . '\' does not exist!' . PHP_EOL);
+        }
+    } else {
+        $output_directory = sys_get_temp_dir();
+    }
+
     // call external incoming SMS handler(s)
     $errors = array();
     $content = null;
@@ -256,14 +131,18 @@ if ($http_mode) {
 
     if (is_array($content)) {
         foreach ($content as $sms) {
-            $message_file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'LMS_INCOMING_MESSAGE-' . uniqid('', true);
+            $message_file = $output_directory . DIRECTORY_SEPARATOR . 'LMS_INCOMING_MESSAGE-' . uniqid('', true);
             file_put_contents($message_file, $sms);
             $message_files[] = $message_file;
         }
     } else {
-        $message_file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'LMS_INCOMING_MESSAGE-' . uniqid('', true);
+        $message_file = $output_directory . DIRECTORY_SEPARATOR . 'LMS_INCOMING_MESSAGE-' . uniqid('', true);
         file_put_contents($message_file, $content);
         $message_files[] = $message_file;
+    }
+
+    if (isset($options['fetch-only'])) {
+        die;
     }
 } else {
     if (isset($options['message-file'])) {
@@ -301,23 +180,30 @@ foreach ($message_files as $message_file) {
         $phone = null;
         $date = null;
         $ucs = false;
+        $binary = false;
+        $extid = null;
+
         reset($lines);
+
         while (($line = current($lines)) !== false) {
             if (preg_match('/^From: ([0-9]{3,15})$/', $line, $matches) && $phone == null) {
                 $phone = $matches[1];
-            }
-            if (preg_match('/^Received: (.*)$/', $line, $matches) && !isset($date)) {
+            } elseif (preg_match('/^Received: (.*)$/', $line, $matches) && !isset($date)) {
                 $date = strtotime($matches[1]);
                 if ($date === false) {
                     $date = null;
                 }
-            }
-            if (preg_match('/^Alphabet:.*UCS2?$/', $line)) {
+            } elseif (preg_match('/^Alphabet:.*UCS2?$/', $line)) {
                 $ucs = true;
+            } elseif (preg_match('/^Alphabet:[\s]*binary$/', $line)) {
+                $binary = true;
+            } elseif (preg_match('/^Message_id:[\s]*(.*)$/', $line, $matches) && !isset($extid)) {
+                $extid = $matches[1];
             }
+
             if (empty($line) && !$body) {
                 $body = true;
-            } else if ($body) {
+            } elseif ($body) {
                 if ($ucs) {
                     $line = preg_replace('/\x0$/', "\x0\n", $line);
                 }
@@ -329,10 +215,35 @@ foreach ($message_files as $message_file) {
             $message = iconv('UNICODEBIG', 'UTF-8', $message);
         }
 
-        if (!empty($phone)) {
-            $phone = preg_replace('/^' . $prefix . '/', '', $phone);
+        $mms_detected = false;
+        $voicecall_detected = false;
 
-            $customer = $DB->GetRow(
+        if (isset($mms_detect_regexp)) {
+            if ($binary) {
+                $message = preg_replace('/[\x00-\x1F\x7F-\xFF]/', '', $message);
+            }
+            if (preg_match('#' . $mms_detect_regexp . '#i', $message, $m)
+                && isset($m['phone'])) {
+                $phone = $m['phone'];
+                $mms_detected = true;
+            }
+        }
+
+        if (!$mms_detected && isset($voicecall_detect_regexp)) {
+            if ($binary) {
+                $message = preg_replace('/[\x00-\x1F\x7F-\xFF]/', '', $message);
+            }
+            if (preg_match('#' . $voicecall_detect_regexp . '#i', $message, $m)
+                && isset($m['phone'])) {
+                $phone = $m['phone'];
+                $voicecall_detected = true;
+            }
+        }
+
+        if (!empty($phone)) {
+            $phone = preg_replace('/^(\+)?' . $prefix . '/', '', $phone);
+
+            $customers = $DB->GetAll(
                 "SELECT customerid AS cid, " . $DB->Concat('lastname', "' '", 'c.name') . " AS name
                 FROM customercontacts cc
                 LEFT JOIN customers c ON c.id = cc.customerid
@@ -346,10 +257,31 @@ foreach ($message_files as $message_file) {
             );
 
             $formatted_phone = preg_replace('/^([0-9]{3})([0-9]{3})([0-9]{3})$/', '$1 $2 $3', $phone);
-            if (!empty($customer_auto_reply_body)) {
-                $LMS->SendSMS($phone, $customer_auto_reply_body, null, $LMS->getCustomerSMSOptions());
-                sleep(1);
+
+            if ($mms_detected) {
+                if (!empty($customer_mms_auto_reply_body)) {
+                    $LMS->SendSMS($phone, $customer_mms_auto_reply_body, null, $LMS->getCustomerSMSOptions());
+                    sleep(1);
+                }
+            } elseif ($voicecall_detected) {
+                if (!empty($customer_voicecall_auto_reply_body)) {
+                    $LMS->SendSMS($phone, $customer_voicecall_auto_reply_body, null, $LMS->getCustomerSMSOptions());
+                    sleep(1);
+                }
+            } else {
+                if (!empty($customer_auto_reply_body)) {
+                    $LMS->SendSMS($phone, $customer_auto_reply_body, null, $LMS->getCustomerSMSOptions());
+                    sleep(1);
+                }
             }
+
+            if (empty($customers) || count($customers) > 1) {
+                $customer = null;
+            } else {
+                $customer = reset($customers);
+            }
+
+            unset($customers);
         } else {
             $customer = null;
         }
@@ -374,7 +306,7 @@ foreach ($message_files as $message_file) {
 
         $tid = $LMS->TicketAdd(array(
             'queue' => $queueid,
-            'createtime' => isset($date) ? $date : null,
+            'createtime' => $date ?? null,
             'requestor' => $requestor,
             'requestor_phone' => empty($phone) ? null : $phone,
             'subject' => trans('SMS from $a', (empty($phone) ? trans('unknown') : $formatted_phone)),
@@ -382,6 +314,7 @@ foreach ($message_files as $message_file) {
             'address_id' => $address_id,
             'body' => $message,
             'phonefrom' => empty($phone) ? '' : $phone,
+            'extid' => $extid ?? null,
             'categories' => $cats,
             'source' => RT_SOURCE_SMS,
         ));
@@ -460,68 +393,71 @@ foreach ($message_files as $message_file) {
                     );
                 }
 
-                if (!empty($queuedata['newticketsubject']) && !empty($queuedata['newticketbody']) && !empty($emails)) {
-                    $custmail_subject = $queuedata['newticketsubject'];
-                    $custmail_subject = preg_replace_callback(
-                        '/%(\\d*)tid/',
-                        function ($m) use ($tid) {
-                            return sprintf('%0' . $m[1] . 'd', $tid);
-                        },
-                        $custmail_subject
-                    );
-                    $custmail_subject = str_replace(
-                        '%title',
-                        trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
-                        $custmail_subject
-                    );
-                    $custmail_body = $queuedata['newticketbody'];
-                    $custmail_body = preg_replace_callback(
-                        '/%(\\d*)tid/',
-                        function ($m) use ($tid) {
-                            return sprintf('%0' . $m[1] . 'd', $tid);
-                        },
-                        $custmail_body
-                    );
-                    $custmail_body = str_replace('%cid', $customer['cid'], $custmail_body);
-                    $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
-                    $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
-                    $custmail_body = str_replace(
-                        '%title',
-                        trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
-                        $custmail_body
-                    );
-                    $custmail_body = str_replace('%body', $message, $custmail_body);
-                    $custmail_headers = array(
-                        'From' => $headers['From'],
-                        'Reply-To' => $headers['From'],
-                        'Subject' => $custmail_subject,
-                    );
-                    foreach ($emails as $email) {
-                        $custmail_headers['To'] = '<' . $email . '>';
-                        $LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $LMS->GetRTSmtpOptions());
+                if (!$mms_detected && !$voicecall_detected) {
+                    if (!empty($queuedata['newticketsubject']) && !empty($queuedata['newticketbody']) && !empty($emails)) {
+                        $custmail_subject = $queuedata['newticketsubject'];
+                        $custmail_subject = preg_replace_callback(
+                            '/%(\\d*)tid/',
+                            function ($m) use ($tid) {
+                                return sprintf('%0' . $m[1] . 'd', $tid);
+                            },
+                            $custmail_subject
+                        );
+                        $custmail_subject = str_replace(
+                            '%title',
+                            trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
+                            $custmail_subject
+                        );
+                        $custmail_body = $queuedata['newticketbody'];
+                        $custmail_body = preg_replace_callback(
+                            '/%(\\d*)tid/',
+                            function ($m) use ($tid) {
+                                return sprintf('%0' . $m[1] . 'd', $tid);
+                            },
+                            $custmail_body
+                        );
+                        $custmail_body = str_replace('%cid', $customer['cid'], $custmail_body);
+                        $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
+                        $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
+                        $custmail_body = str_replace(
+                            '%title',
+                            trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
+                            $custmail_body
+                        );
+                        $custmail_body = str_replace('%body', $message, $custmail_body);
+                        $custmail_headers = array(
+                            'From' => $headers['From'],
+                            'Reply-To' => $headers['From'],
+                            'Subject' => $custmail_subject,
+                        );
+                        foreach ($emails as $email) {
+                            $custmail_headers['To'] = '<' . $email . '>';
+                            $LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $LMS->GetRTSmtpOptions());
+                        }
                     }
-                }
-                if (!empty($queuedata['newticketsmsbody']) && !empty($mobile_phones)) {
-                    $custsms_body = $queuedata['newticketsmsbody'];
-                    $custsms_body = preg_replace_callback(
-                        '/%(\\d*)tid/',
-                        function ($m) use ($tid) {
-                            return sprintf('%0' . $m[1] . 'd', $tid);
-                        },
-                        $custsms_body
-                    );
-                    $custsms_body = str_replace('%cid', $customer['cid'], $custsms_body);
-                    $custsms_body = str_replace('%pin', $info['pin'], $custsms_body);
-                    $custsms_body = str_replace('%customername', $info['customername'], $custsms_body);
-                    $custsms_body = str_replace(
-                        '%title',
-                        trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
-                        $custsms_body
-                    );
-                    $custsms_body = str_replace('%body', $message, $custsms_body);
 
-                    foreach ($mobile_phones as $phone) {
-                        $LMS->SendSMS($phone['contact'], $custsms_body);
+                    if (!empty($queuedata['newticketsmsbody']) && !empty($mobile_phones)) {
+                        $custsms_body = $queuedata['newticketsmsbody'];
+                        $custsms_body = preg_replace_callback(
+                            '/%(\\d*)tid/',
+                            function ($m) use ($tid) {
+                                return sprintf('%0' . $m[1] . 'd', $tid);
+                            },
+                            $custsms_body
+                        );
+                        $custsms_body = str_replace('%cid', $customer['cid'], $custsms_body);
+                        $custsms_body = str_replace('%pin', $info['pin'], $custsms_body);
+                        $custsms_body = str_replace('%customername', $info['customername'], $custsms_body);
+                        $custsms_body = str_replace(
+                            '%title',
+                            trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
+                            $custsms_body
+                        );
+                        $custsms_body = str_replace('%body', $message, $custsms_body);
+
+                        foreach ($mobile_phones as $phone) {
+                            $LMS->SendSMS($phone['contact'], $custsms_body);
+                        }
                     }
                 }
             } elseif ($helpdesk_customerinfo) {
@@ -532,7 +468,7 @@ foreach ($message_files as $message_file) {
             $params = array(
                 'id' => $tid,
                 'queue' => $queuedata['name'],
-                'messageid' => isset($msgid) ? $msgid : null,
+                'messageid' => $msgid ?? null,
                 'customerid' => empty($customer) ? null : $customer['cid'],
                 'status' => $RT_STATES[RT_NEW],
                 'categories' => $cats,
@@ -541,13 +477,14 @@ foreach ($message_files as $message_file) {
                 'url' => $lms_url . '?m=rtticketview&id=',
             );
             $headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_mail_subject', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject')), $params);
-            $params['customerinfo'] = isset($mail_customerinfo) ? $mail_customerinfo : null;
+            $params['customerinfo'] = $mail_customerinfo ?? null;
             $message = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_mail_body', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body')), $params);
-            $params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
+            $params['customerinfo'] = $sms_customerinfo ?? null;
             $sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_sms_body', ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body')), $params);
 
             $LMS->NotifyUsers(array(
                 'queue' => $queueid,
+                'ticketid' => $tid,
                 'mail_headers' => $headers,
                 'mail_body' => $message,
                 'sms_body' => $sms_body,

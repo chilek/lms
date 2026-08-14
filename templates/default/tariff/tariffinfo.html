@@ -43,6 +43,7 @@
             margin-block-end: 0.5em;
             padding-inline-start: 1.5em;
         }
+
     </style>
 
     {function bitrate_restrictions}
@@ -107,6 +108,22 @@
                                         <col style="width: 1%;">
                                         <col style="width: 98%;">
                                     </colgroup>
+									{if !empty($tariff.extid)}
+										<tr>
+											<td>
+												{icon name="externalid"}
+											</td>
+											<td style="white-space: normal;">
+												<strong>{trans("External system identifier")}</strong>
+											</td>
+											<td>
+												<strong>{$tariff.extid|escape}</strong>
+												{if !empty($serviceproviders) && !empty($tariff.serviceproviderid)}
+													({$serviceproviders[$tariff.serviceproviderid].name|escape})
+												{/if}
+											</td>
+										</tr>
+									{/if}
                                     <tr>
                                         <td>
                                             {icon name="money"}
@@ -352,10 +369,27 @@
                                                 {icon name="description"}
                                             </td>
                                             <td>
-                                                {trans("Description:")}
+                                                {trans("Description")}
                                             </td>
-                                            <td class="fall superlight line-break">
-                                                {$tariff.description|replace:"\n":"<BR>"}
+                                            <td>
+                                                <div class="lms-ui-multiline-box">
+                                                    {$tariff.description|replace:"\n":"<BR>"}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {/if}
+                                    {if isset($tariff.notes) && strlen($tariff.notes)}
+                                        <tr>
+                                            <td>
+                                                {icon name="notes"}
+                                            </td>
+                                            <td>
+                                                {trans("Notes")}
+                                            </td>
+                                            <td>
+                                                <div class="lms-ui-multiline-box">
+                                                    {$tariff.notes|replace:"\n":"<BR>"}
+                                                </div>
                                             </td>
                                         </tr>
                                     {/if}
@@ -376,36 +410,9 @@
                                     {/if}
                                 </table>
                             </td>
-                            {if $tariff.type != $smarty.const.SERVICE_PHONE}
+                            {*if $tariff.type != $smarty.const.SERVICE_PHONE*}
                                 <td width="50%" class="valign-top">
                                     <table class="tariff_tab bold-second">
-                                        <tr>
-                                            <td>
-                                                {icon name="upload"}
-                                            </td>
-                                            <td>{trans("Upload rate:")}</td>
-                                            <td>{bitrate_restrictions day=$tariff.uprate night=$tariff.uprate_n}</td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>{trans("Upload ceil:")}</td>
-                                            <td>{bitrate_restrictions day=$tariff.upceil night=$tariff.upceil_n}</td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>{trans("Upload burst time:")}</td>
-                                            <td>{burst_time_restrictions day=$tariff.up_burst_time night=$tariff.up_burst_time_n}</td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>{trans("Upload burst threshold:")}</td>
-                                            <td>{burst_restrictions day=$tariff.up_burst_threshold night=$tariff.up_burst_threshold_n}</td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>{trans("Upload burst limit:")}</td>
-                                            <td>{burst_restrictions day=$tariff.up_burst_limit night=$tariff.up_burst_limit_n}</td>
-                                        </tr>
                                         <tr>
                                             <td>
                                                 {icon name="download"}
@@ -435,6 +442,33 @@
                                         </tr>
                                         <tr>
                                             <td>
+                                                {icon name="upload"}
+                                            </td>
+                                            <td>{trans("Upload rate:")}</td>
+                                            <td>{bitrate_restrictions day=$tariff.uprate night=$tariff.uprate_n}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{trans("Upload ceil:")}</td>
+                                            <td>{bitrate_restrictions day=$tariff.upceil night=$tariff.upceil_n}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{trans("Upload burst time:")}</td>
+                                            <td>{burst_time_restrictions day=$tariff.up_burst_time night=$tariff.up_burst_time_n}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{trans("Upload burst threshold:")}</td>
+                                            <td>{burst_restrictions day=$tariff.up_burst_threshold night=$tariff.up_burst_threshold_n}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{trans("Upload burst limit:")}</td>
+                                            <td>{burst_restrictions day=$tariff.up_burst_limit night=$tariff.up_burst_limit_n}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
                                                 {icon name="tariff-limit"}
                                             </td>
                                             <td>{trans("Connection limit:")}</td>
@@ -452,7 +486,7 @@
                                         </tr>
                                     </table>
                                 </td>
-                            {/if}
+                            {*/if*}
                         </tr>
                     </table>
                 </td>

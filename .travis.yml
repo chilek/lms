@@ -8,61 +8,81 @@ matrix:
   include:
     - os: linux
       language: php
-      php: 7.2
-      dist: xenial
-      env:
-        PHPCS_VER="^3"
-        PHPCS_STANDARD="phpcs3.xml"
-        INSTALL_PHP_ZIP_EXTENSION=false
-
-    - os: linux
-      language: php
-      php: 7.3
-      dist: xenial
-      env:
-        PHPCS_VER="^3"
-        PHPCS_STANDARD="phpcs3.xml"
-        INSTALL_PHP_ZIP_EXTENSION=false
-
-    - os: linux
-      language: php
-      php: 7.4
+      php: 8.1
       dist: xenial
       env:
         PHPCS_VER="^3"
         PHPCS_STANDARD="phpcs3.xml"
         INSTALL_PHP_ZIP_EXTENSION=true
+        COMPOSER_EXTRA_PARAMS=""
+        PHP_LINT_MAX_ARGS="1"
+      addons:
+        postgresql: 9.4
 
     - os: linux
       language: php
-      php: 8.0
-      dist: xenial
+      php: 8.2
+      dist: jammy
       env:
         PHPCS_VER="^3"
         PHPCS_STANDARD="phpcs3.xml"
         INSTALL_PHP_ZIP_EXTENSION=true
+        COMPOSER_EXTRA_PARAMS=""
+        PHP_LINT_MAX_ARGS="1"
+      addons:
+        postgresql: 14
 
-addons:
-  postgresql: 9.4
+    - os: linux
+      language: php
+      php: 8.3
+      dist: jammy
+      env:
+        PHPCS_VER="^3"
+        PHPCS_STANDARD="phpcs3.xml"
+        INSTALL_PHP_ZIP_EXTENSION=true
+        COMPOSER_EXTRA_PARAMS=""
+        PHP_LINT_MAX_ARGS="100"
+      addons:
+        postgresql: 14
+
+    - os: linux
+      language: php
+      php: 8.4
+      dist: jammy
+      env:
+        PHPCS_VER="^3"
+        PHPCS_STANDARD="phpcs3.xml"
+        INSTALL_PHP_ZIP_EXTENSION=true
+        COMPOSER_EXTRA_PARAMS=""
+        PHP_LINT_MAX_ARGS="100"
+      addons:
+        postgresql: 14
 
 services:
   - postgresql
   - mysql
 
-#before_install:
-#   - if ${INSTALL_PHP_ZIP_EXTENSION}; then sudo apt-get install libzip-dev; pecl install zip; fi
-#   - echo "extension = libzip.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-#  - echo "extension = snmp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+before_install:
+  - |
+    if [[ "$TRAVIS_PHP_VERSION" == "8.4" ]]; then
+      echo "Installing libpq 17 for PHP 8.4 compatibility..."
+      sudo apt-get update -y
+      sudo apt-get install -y ca-certificates wget gnupg lsb-release
+      echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+      wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc >/dev/null
+      sudo apt-get update -y
+      sudo apt-get install -y postgresql-client-17
+    fi
 
 install:
-  - composer install
+  - composer install ${COMPOSER_EXTRA_PARAMS}
 
 before_script:
   - psql -c 'create database lms;' -U postgres
   - psql -U postgres -f doc/lms.pgsql
   - mysql -e 'CREATE DATABASE lms;'
   - mysql lms < doc/lms.mysql
-  - if find . -name "*.php" ! -path "./vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors detected"; then exit 1; fi
+  - if find . -name "*.php" ! -path "./vendor/*" -print0 | xargs -0 -n ${PHP_LINT_MAX_ARGS} -P 8 php -l | grep -v "No syntax errors detected"; then exit 1; fi
   - if find templates -type f -iname '*.html' | xargs devel/smartylint.php |grep -i "syntax error"; then exit 1; fi
   - ./vendor/bin/phpcs --standard=$PHPCS_STANDARD .
   - npm install -g jshint

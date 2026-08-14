@@ -40,12 +40,12 @@ $show_delayed_events = ConfigHelper::checkConfig('timetable.show_delayed_events'
 $big_networks = ConfigHelper::checkConfig('phpui.big_networks');
 $params['userid'] = Auth::GetCurrentUser();
 
-if (isset($filter['edate']) && !empty($filter['edate'])) {
-    list ($filter['year'], $filter['month'], $filter['day']) = explode('/', $filter['edate']);
+if (!empty($filter['edate'])) {
+    [$filter['year'], $filter['month'], $filter['day']] = explode('/', $filter['edate']);
 }
 
 if (!isset($_POST['loginform']) && !empty($_POST)) {
-    list ($filter['year'], $filter['month'], $filter['day']) = explode('/', isset($_POST['date']) && !empty($_POST['date']) ? $_POST['date'] : date('Y/m/d'));
+    [$filter['year'], $filter['month'], $filter['day']] = explode('/', !empty($_POST['date']) ? $_POST['date'] : date('Y/m/d'));
 
     if (isset($filter['edate']) && $filter['edate']) {
         if (empty($filter['month'])) {
@@ -63,13 +63,17 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
     }
 
     $filter['userand'] = isset($_POST['userand']) ? intval($_POST['userand']) : 0;
-    $filter['userid'] = isset($_POST['a']) ? $_POST['a'] : null;
-    $filter['customerid'] = isset($_POST['u']) ? $_POST['u'] : null;
-    $filter['type'] = isset($_POST['type']) ? $_POST['type'] : null;
+    $filter['userid'] = isset($_POST['a'])
+        ? Utils::filterIntegers(is_array($_POST['a']) ? $_POST['a'] : [$_POST['a']])
+        : null;
+    $filter['usergroups'] = $_POST['g'] ?? null;
+    $filter['customerid'] = $_POST['u'] ?? null;
+    $filter['type'] = $_POST['type'] ?? null;
     $filter['privacy'] = isset($_POST['privacy']) ? intval($_POST['privacy']) : null;
-    $filter['closed'] = isset($_POST['closed']) ? $_POST['closed'] : null;
+    $filter['closed'] = $_POST['closed'] ?? null;
     $filter['netnodeid'] = (isset($_POST['netnodeid']) && $LMS->NetNodeExists(intval($_POST['netnodeid']))) ? intval($_POST['netnodeid']) : null;
     $filter['netdevid'] = (isset($_POST['netdevid']) && $LMS->NetDevExists(intval($_POST['netdevid']))) ? intval($_POST['netdevid']) : null;
+    $filter['divisionid'] = isset($_POST['divisionid']) ? Utils::filterIntegers($_POST['divisionid']) : array();
 
     if (isset($_POST['switchToSchedule'])) {
         $SESSION->save('timetableFiler', $filter, true);
@@ -106,7 +110,11 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
     $filter['userand'] = isset($_GET['userand']) ? intval($_GET['userand']) : 0;
 
     if (isset($_GET['a'])) {
-        $filter['userid'] = $_GET['a'];
+        $filter['userid'] = Utils::filterIntegers(is_array($_GET['a']) ? $_GET['a'] : [$_GET['a']]);
+    }
+
+    if (isset($_GET['g'])) {
+        $filter['usergroups'] = $_GET['g'];
     }
 
     if (isset($_GET['u'])) {
@@ -123,6 +131,13 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
 
     if (isset($_GET['closed'])) {
         $filter['closed'] = $_GET['closed'] = 'all' ? '' : $_GET['closed'];
+    } elseif (!isset($filter['closed'])) {
+        $allevents = ConfigHelper::checkConfig(
+            'timetable.default_show_closed_events',
+            ConfigHelper::checkConfig('phpui.default_show_closed_events')
+        );
+
+        $filter['closed'] = $allevents ? '' : 0;
     }
 }
 
@@ -131,10 +146,10 @@ if (isset($filter['year']) && isset($filter['month']) && isset($filter['day'])) 
 }
 
 $SESSION->save('eld', array(
-    'year' => isset($filter['year']) ? $filter['year'] : null,
-    'month' => isset($filter['month']) ? $filter['month'] : null,
-    'day' => isset($filter['day']) ? $filter['day'] : null,
-    'edate' => isset($filter['edate']) ? $filter['edate'] : null,
+    'year' => $filter['year'] ?? null,
+    'month' => $filter['month'] ?? null,
+    'day' => $filter['day'] ?? null,
+    'edate' => $filter['edate'] ?? null,
 ));
 
 $SESSION->saveFilter($filter, null, array('year', 'month', 'day', 'edate'), true);
@@ -234,19 +249,39 @@ $SESSION->remove('backid');
 
 $today = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
 
+$visible_users = null;
+$usergroups = $LMS->UsergroupGetList();
+unset($usergroups['total'], $usergroups['totalcount']);
+if (!empty($usergroups)) {
+    if (!empty($filter['usergroups'])) {
+        $visible_users = array();
+        foreach ($usergroups as $usergroup) {
+            if (!empty($usergroup['users']) && in_array($usergroup['id'], $filter['usergroups'])) {
+                $visible_users = array_merge($visible_users, explode(',', $usergroup['users']));
+            }
+        }
+        $visible_users = array_unique($visible_users);
+        $visible_users = array_combine($visible_users, $visible_users);
+    }
+    unset($usergroups['total'], $usergroups['totalcount']);
+}
+
 $SMARTY->assign(array(
-        'today' => $today,
-        'period' => $LMS->GetTimetableRange(),
-        'eventlist' => $eventlist,
-        'overdue_events' => $overdue_events,
-        'days' => $days,
-        'daylist' => $daylist,
-        'date' => $date,
-        'error' => $error,
-        'netnodes' => $LMS->GetNetNodes(),
-        'netdevices' => $LMS->GetNetDevList('name,asc', array('short' => true)),
-        'overdue_events_only' => $overdue_events_only,
-        'getHolidays', getHolidays(isset($year) ? $year : null),
-        'customerlist' => $big_networks ? null : $LMS->GetCustomerNames(),
-    ));
+    'today' => $today,
+    'period' => $LMS->GetTimetableRange(),
+    'eventlist' => $eventlist,
+    'overdue_events' => $overdue_events,
+    'days' => $days,
+    'daylist' => $daylist,
+    'date' => $date,
+    'error' => $error,
+    'netnodes' => $LMS->GetNetNodes(),
+    'netdevices' => $LMS->GetNetDevList('name,asc', array('short' => true)),
+    'visible_users' => $visible_users,
+    'usergroups' => $usergroups,
+    'overdue_events_only' => $overdue_events_only,
+    'getHolidays', getHolidays($year ?? null),
+    'customerlist' => $big_networks ? null : $LMS->GetCustomerNames(),
+    'divisions' => $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())),
+));
 $SMARTY->display('event/eventlist.html');

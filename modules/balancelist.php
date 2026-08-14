@@ -35,7 +35,7 @@ if (isset($_POST['search'])) {
     $SESSION->restore('bls', $s);
 }
 if (!isset($s) && $default_current_period) {
-    list ($year, $month, $day) = explode('/', date('Y/m/d'));
+    [$year, $month, $day] = explode('/', date('Y/m/d'));
     if ($default_current_period == 'day') {
         $s = date('Y/m/d', mktime(0, 0, 0, $month, $day, $year));
     } else {
@@ -56,6 +56,20 @@ if (!isset($c) && $default_current_period) {
     }
 }
 $SESSION->save('blc', $c);
+
+if (isset($_POST['type'])) {
+    $type = $_POST['type'];
+} else {
+    $SESSION->restore('bltype', $type);
+}
+$SESSION->save('bltype', $type);
+
+if (isset($_POST['source'])) {
+    $source = $_POST['source'];
+} else {
+    $SESSION->restore('blsource', $source);
+}
+$SESSION->save('blsource', $source);
 
 if (isset($_POST['group'])) {
         $g = $_POST['group'];
@@ -82,7 +96,7 @@ if (($c == 'cdate' || $c == 'month' || $c == 'year') && $s) {
         }
     }
     if (!isset($date)) {
-        list ($year, $month, $day) = explode('/', date('Y/m/d'));
+        [$year, $month, $day] = explode('/', date('Y/m/d'));
         $s = mktime(0, 0, 0, $month, $c == 'cdate' ? $day : 1, $year);
     }
 }
@@ -128,7 +142,7 @@ $page = (empty($_GET['page']) ? 0 : intval($_GET['page']));
 if (isset($_GET['sourcefileid']) || $c == 'cashimport') {
     if (isset($_GET['sourcefileid'])) {
         $sourcefileid = intval($_GET['sourcefileid']);
-    } elseif (isset($_POST['sourcefileid']) && !empty($_POST['sourcefileid'])) {
+    } elseif (!empty($_POST['sourcefileid'])) {
         $sourcefileid = intval($_POST['sourcefileid']);
     } else {
         $SESSION->restore('blsfid', $sourcefileid);
@@ -156,8 +170,18 @@ if (isset($_GET['sourcefileid']) || $c == 'cashimport') {
     $SESSION->remove('blsfid');
 }
 
-$summary = $LMS->GetBalanceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
-    'from' => $from, 'to' => $to, 'count' => true));
+$args = array(
+    'search' => $s,
+    'cat' => $c,
+    'type' => $type,
+    'source' => $source,
+    'group' => $g,
+    'exclude'=> $ge,
+    'from' => $from,
+    'to' => $to,
+    'count' => true
+);
+$summary = $LMS->GetBalanceList($args);
 $total = intval($summary['total']);
 
 $limit = intval(ConfigHelper::getConfig('phpui.balancelist_pagelimit', 100));
@@ -168,8 +192,10 @@ if (empty($page)) {
 $page = intval($page);
 $offset = ($page - 1) * $limit;
 
-$balancelist = $LMS->GetBalanceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
-    'limit' => $limit, 'offset' => $offset, 'from' => $from, 'to' => $to, 'count' =>  false));
+$args['limit'] = $limit;
+$args['offset'] = $offset;
+$args['count'] = false;
+$balancelist = $LMS->GetBalanceList($args);
 
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
@@ -180,6 +206,8 @@ $listdata['totalval'] = $summary['income'] - $summary['expense'];
 $listdata['total'] = $total;
 
 $SESSION->restore('blc', $listdata['cat']);
+$SESSION->restore('bltype', $listdata['type']);
+$SESSION->restore('blsource', $listdata['source']);
 $SESSION->restore('bls', $listdata['search']);
 $SESSION->restore('blg', $listdata['group']);
 $SESSION->restore('blge', $listdata['groupexclude']);
@@ -194,4 +222,5 @@ $SMARTY->assign('balancelist', $balancelist);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('pagination', $pagination);
 $SMARTY->assign('grouplist', $LMS->CustomergroupGetAll());
+$SMARTY->assign('sourcelist', $LMS->getCashSources());
 $SMARTY->display('balance/balancelist.html');

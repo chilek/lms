@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$id = (isset($_GET['id'])) ? $_GET['id'] : Auth::GetCurrentUser();
+$id = $_GET['id'] ?? Auth::GetCurrentUser();
 
 if ($LMS->UserExists($id)) {
     $net = isset($_GET['net']) ? 1 : 0;

@@ -39,4 +39,14 @@ $(function() {
 			});
 		}
 	});
+
+	$('#replace-groups').click(function() {
+		if ($(this).closest('div.lms-ui-multi-check').find('input:checked').length) {
+			confirmDialog($t("Are you sure, you want to replace selected customer group assignments?"), this).done(function() {
+				var form = $('form#customergroupassignment');
+				form.attr('action', '?m=customergroup&action=replace&id=' + form.find('.customerid')
+					.val()).submit();
+			});
+		}
+	})
 });

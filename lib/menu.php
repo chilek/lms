@@ -267,6 +267,12 @@ $menu = array(
                     'tip' => trans('Allows you to search VoIP account'),
                     'prio' => 80,
                 ),
+                'voipprint' => array(
+                    'name' => trans('Reports'),
+                    'link' =>'?m=voipprint',
+                    'tip' => trans('Lists and reports printing'),
+                    'prio' => 90,
+                ),
             ),
         ),
 
@@ -431,6 +437,12 @@ $menu = array(
                     'link' => '?m=invoicenew&action=init',
                     'tip' => trans('Generate invoice'),
                     'prio' => 80,
+                ),
+                'ksefpurchaseinvoices' => array(
+                    'name' => trans('KSeF Purchase Invoices'),
+                    'link' => '?m=ksefpurchaseinvoices',
+                    'tip' => trans('KSeF purchase invoice management'),
+                    'prio' => 85,
                 ),
                 'invoicelist-proforma' => array(
                     'name' => trans('Pro Forma Invoice List'),
@@ -989,17 +1001,13 @@ if (!function_exists('menu_cmp')) {
         if (!isset($b['prio'])) {
             $b['prio'] = 9999;
         }
-
-        if ($a['prio'] == $b['prio']) {
-            return 0;
-        }
-        return ($a['prio'] < $b['prio']) ? -1 : 1;
+        return $a['prio'] <=> $b['prio'];
     }
 }
 
 foreach ($menu as $idx => $item) {
     if (isset($item['submenu'])) {
-        uasort($menu[$idx]['submenu'], 'menu_cmp');
+        uasort($item['submenu'], 'menu_cmp');
     }
 }
 

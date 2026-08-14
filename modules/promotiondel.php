@@ -99,7 +99,7 @@ if ($id) {
         if (!empty($attachments)) {
             $promo_dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'promotions' . DIRECTORY_SEPARATOR . $id;
             $schema_dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'promotionschemas';
-            $chemaids = array();
+            $schemaids = array();
             foreach ($attachments as $attachment) {
                 if (empty($attachment['promotionid'])) {
                     $schemaid = $attachment['promotionschemaid'];

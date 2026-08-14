@@ -60,7 +60,7 @@ if (isset($_GET['fromuser'])) {
 // end of ajax request handlers
 
 if (isset($_GET['removetrusteddevices'])) {
-    $AUTH->removeTrustedDevices($id, isset($_GET['deviceid']) ? $_GET['deviceid'] : null);
+    $AUTH->removeTrustedDevices($id, $_GET['deviceid'] ?? null);
     $SESSION->redirect($_SERVER['HTTP_REFERER']);
 }
 
@@ -70,11 +70,15 @@ if (isset($_GET['forcepasswdchange'])) {
 }
 
 $divisions = $LMS->GetDivisions();
-$user_divisions = array_keys($LMS->GetDivisions(array('userid' => $id)));
+$userDivisions = $LMS->GetDivisions(array('userid' => $id));
+if (empty($userDivisions)) {
+    $userDivisions = [];
+}
+$userDivisions = array_keys($userDivisions);
 
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'usercopypermissions.inc.php');
 
-$userinfo = isset($_POST['userinfo']) ? $_POST['userinfo'] : array();
+$userinfo = $_POST['userinfo'] ?? array();
 
 if ($userinfo) {
     $acl = $_POST['acl'];
@@ -173,7 +177,7 @@ if ($userinfo) {
         $diffDivisionAdd = array();
         $diffDivisionDel = array();
         // check if user divisions were changed
-        foreach ($user_divisions as $user_division) {
+        foreach ($userDivisions as $user_division) {
             if (in_array(intval($user_division), $userinfo['divisions'])) {
                 continue;
             } else {
@@ -181,7 +185,7 @@ if ($userinfo) {
             }
         }
         foreach ($userinfo['divisions'] as $userinfo_division) {
-            if (in_array(intval($userinfo_division), $user_divisions)) {
+            if (in_array(intval($userinfo_division), $userDivisions)) {
                 continue;
             } else {
                 $diffDivisionAdd[] = intval($userinfo_division);
@@ -211,7 +215,7 @@ if ($userinfo) {
         $SMARTY->assign('selectedusergroups', !empty($userinfo['usergroups']) ? array_flip($userinfo['usergroups']) : array());
 
         $customergroups = $LMS->getAllCustomerGroups();
-        $SMARTY->assign('selectedgroups', array_flip(isset($userinfo['customergroups']) ? $userinfo['customergroups'] : array()));
+        $SMARTY->assign('selectedgroups', array_flip($userinfo['customergroups'] ?? array()));
 
         $access = AccessRights::getInstance();
         $accesslist = $access->getArray(array_keys($acl));
@@ -252,7 +256,7 @@ $SMARTY->assign('usergroups', $LMS->getAlluserGroups());
 $SMARTY->assign('userinfo', $userinfo);
 $SMARTY->assign('customercalls', $customercalls);
 $SMARTY->assign('divisions', $divisions);
-$SMARTY->assign('user_divisions', $user_divisions);
+$SMARTY->assign('user_divisions', $userDivisions);
 $SMARTY->assign('error', $error);
 
 $SMARTY->display('user/useredit.html');

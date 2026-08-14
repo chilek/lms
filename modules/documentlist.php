@@ -67,7 +67,7 @@ if (!isset($_GET['init'])) {
     if (isset($_GET['usertype'])) {
         $filter['usertype'] = $_GET['usertype'];
     }
-    if (!isset($filter['usertype']) || empty($filter['usertype'])) {
+    if (empty($filter['usertype'])) {
         $filter['usertype'] = 'creator';
     }
 
@@ -88,13 +88,13 @@ if (!isset($_GET['init'])) {
     if (isset($_GET['periodtype'])) {
         $filter['periodtype'] = $_GET['periodtype'];
     }
-    if (!isset($filter['periodtype']) || empty($filter['periodtype'])) {
+    if (empty($filter['periodtype'])) {
         $filter['periodtype'] = 'creationdate';
     }
 
     if (isset($_GET['from'])) {
         if ($_GET['from'] != '') {
-            list ($year, $month, $day) = explode('/', $_GET['from']);
+            [$year, $month, $day] = explode('/', $_GET['from']);
             $filter['from'] = mktime(0, 0, 0, $month, $day, $year);
         } else {
             $filter['from'] = 0;
@@ -105,7 +105,7 @@ if (!isset($_GET['init'])) {
 
     if (isset($_GET['to'])) {
         if ($_GET['to'] != '') {
-            list ($year, $month, $day) = explode('/', $_GET['to']);
+            [$year, $month, $day] = explode('/', $_GET['to']);
             $filter['to'] = mktime(23, 59, 59, $month, $day, $year);
         } else {
             $filter['to'] = 0;
@@ -137,7 +137,7 @@ if (!isset($_GET['init'])) {
 if (isset($_GET['init'])) {
     $default_current_period = ConfigHelper::getConfig('phpui.documentlist_default_current_period', '', true);
     if (preg_match('/^(day|month)$/', $default_current_period)) {
-        list ($year, $month, $day) = explode('/', date('Y/m/d'));
+        [$year, $month, $day] = explode('/', date('Y/m/d'));
         if ($default_current_period == 'day') {
             $filter['from'] = mktime(0, 0, 0, $month, $day, $year);
         } else {
@@ -150,7 +150,7 @@ $filter['count'] = true;
 $filter['total'] = intval($LMS->GetDocumentList($filter));
 
 $filter['limit'] = intval(ConfigHelper::getConfig('phpui.documentlist_pagelimit', 100));
-$filter['page'] = intval(isset($_GET['page']) ? $_GET['page'] : ceil($filter['total'] / $filter['limit']));
+$filter['page'] = intval($_GET['page'] ?? ceil($filter['total'] / $filter['limit']));
 if (empty($filter['page'])) {
     $filter['page'] = 1;
 }
@@ -202,7 +202,7 @@ if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }
 
-$SMARTY->assign('users', $LMS->GetUserNames());
+$SMARTY->assign('users', $LMS->GetUserNames(array('withDeleted' => true)));
 $SMARTY->assign('numberplans', $LMS->GetNumberPlans(array(
     'doctype' => array(DOC_CONTRACT, DOC_ANNEX, DOC_PROTOCOL, DOC_ORDER, DOC_SHEET, -6, -7, -8, -9, -99, DOC_PRICE_LIST, DOC_PROMOTION, DOC_WARRANTY, DOC_REGULATIONS, DOC_OTHER),
 )));

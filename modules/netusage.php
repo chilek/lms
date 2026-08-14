@@ -146,7 +146,7 @@ function getNetworks($ip, $br, $host = null)
     );
 
     foreach ($networks as $k => $v) {
-        $networks[$k]['ip']      = long_ip($networks[$k]['ip_long']);
+        $networks[$k]['ip']      = long_ip($v['ip_long']);
         $networks[$k]['br_long'] = ip_long(getbraddr(long_ip($v['ip_long']), $v['mask_ip']));
 
         if ($v['ip_long'] < $ip_long) {
@@ -178,7 +178,7 @@ if (isset($_GET['ajax'])) {
     if ($mask < 24) {
         $SMARTY->assign('mask', 24);
 
-        $counter = 2 * pow(2, 24-$mask-1) - 1;
+        $counter = 2 * 2 ** (24-$mask-1) - 1;
         for ($i=0; $i<=$counter; ++$i) {
             $SMARTY->assign('ip', long_ip(ip_long($ip) + $i * 256));
             $SMARTY->assign('hosts', array(array('host'=>$host, 'net_name'=>$_POST['netname'])));
@@ -187,7 +187,7 @@ if (isset($_GET['ajax'])) {
         }
     } else {
         $ip_start = ip_long($ip);
-        $ip_end   = $ip_start + pow(2, 32-$mask) - 1;
+        $ip_end   = $ip_start + 2 ** (32-$mask) - 1;
         $data     = array($ip_start , $ip_end);
 
         // if host is set then get only networks for specified host
@@ -248,8 +248,8 @@ if (isset($_POST['ip']) && isset($_POST['mask'])) {
 $layout['pagetitle'] = trans('IP Network Search');
 
 $SMARTY->assign('host_list', $DB->GetAll('SELECT name FROM hosts'));
-$SMARTY->assign('selected_host', isset($_POST['host']) ? $_POST['host'] : null);
+$SMARTY->assign('selected_host', $_POST['host'] ?? null);
 $SMARTY->assign('mask', isset($_POST['mask']) ? mask2prefix($_POST['mask']) : 24);
-$SMARTY->assign('ip', !empty($ip) ? $ip : (isset($_POST['ip']) ? $_POST['ip'] : null));
+$SMARTY->assign('ip', !empty($ip) ? $ip : ($_POST['ip'] ?? null));
 
 $SMARTY->display('net/netusage.html');

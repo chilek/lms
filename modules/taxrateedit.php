@@ -43,7 +43,7 @@ if (!$taxrate['validto']) {
     $taxrate['validto'] = date('Y/m/d', $taxrate['validto']);
 }
 
-$taxrateedit = isset($_POST['taxrateedit']) ? $_POST['taxrateedit'] : null;
+$taxrateedit = $_POST['taxrateedit'] ?? null;
 
 if (is_array($taxrateedit) && count($taxrateedit)) {
     foreach ($taxrateedit as $idx => $key) {

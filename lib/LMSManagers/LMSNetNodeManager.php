@@ -27,29 +27,20 @@
 class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 {
 
-    public function GetNetNodeList($search, $order)
+    public function GetNetNodeList($search = array(), $order = 'name,asc')
     {
-        $order = isset($order) ? $order : 'name,asc';
+        global $NETWORK_NODE_FLAGS, $NETWORK_NODE_SERVICES;
 
-        list ($order, $dir) = sscanf($order, '%[^,],%s');
+        $search = $search ?? array();
+        $order = $order ?? 'name,asc';
+
+        [$order, $dir] = sscanf($order, '%[^,],%s');
         ($dir == 'desc') ? $dir = 'desc' : $dir = 'asc';
-        $short = isset($search['short']) && !empty($search['short']);
+        $short = !empty($search['short']);
 
-        if (isset($search['count'])) {
-            $count = $search['count'];
-        } else {
-            $count = false;
-        }
-        if (isset($search['offset'])) {
-            $offset = $search['offset'];
-        } else {
-            $offset = null;
-        }
-        if (isset($search['limit'])) {
-            $limit = $search['limit'];
-        } else {
-            $limit = null;
-        }
+        $count = $search['count'] ?? false;
+        $offset = $search['offset'] ?? null;
+        $limit = $search['limit'] ?? null;
 
         switch ($order) {
             case 'id':
@@ -82,6 +73,10 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             }
             switch ($key) {
                 case 'type':
+                    if (empty($val)) {
+                        break;
+                    }
+
                     if (is_array($val)) {
                         if (!in_array(-1, $val)) {
                             $where[] = 'n.type IN (' . implode(',', $val) . ')';
@@ -96,6 +91,10 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
                     }
                     break;
                 case 'invprojectid':
+                    if (empty($val)) {
+                        break;
+                    }
+
                     if (is_array($val)) {
                         if (in_array(-2, $val)) {
                             $where[] = 'n.invprojectid IS NULL';
@@ -117,6 +116,17 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
                     if ($val != -1 && !empty($val)) {
                         $where[] = 'n.divisionid = ' . $val;
                     }
+                    break;
+                case 'flags':
+                    if (!empty($val)) {
+                        $where[] = '(n.flags & ' . $val . ') > 0';
+                    }
+                    break;
+                case 'services':
+                    if (!empty($val)) {
+                        $where[] = '(n.services ?LIKE? \'%,' . $val . ',%\' OR n.services ?LIKE? \'' . $val . ',%\' OR n.services ?LIKE? \'%,' . $val . '\' OR n.services = \'' . $val . '\')';
+                    }
+                    break;
             }
         }
 
@@ -139,6 +149,8 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
                 'SELECT n.id, n.name' . ($short ? ''
                     : ', n.type, n.status, n.invprojectid, n.info, n.lastinspectiontime, p.name AS project,
                     n.divisionid, d.shortname AS division, longitude, latitude, ownership, coowner, uip, miar,
+                    n.flags,
+                    n.services,
                     netdevcount.netdevcount,
                     lc.ident AS location_city_ident,
                     (CASE WHEN lst.ident IS NULL
@@ -154,10 +166,10 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
                     addr.house as location_house, addr.flat as location_flat') . '
                 FROM netnodes n
                 ' . ($short ? ''
-                : ' LEFT JOIN (
+                : 'LEFT JOIN (
                     SELECT
                         nn.id AS netnodeid,
-                        COUNT(*) AS netdevcount
+                        COUNT(nd.id) AS netdevcount
                     FROM netnodes nn
                     LEFT JOIN netdevices nd ON nd.netnodeid = nn.id
                     GROUP BY nn.id
@@ -171,11 +183,32 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
                 LEFT JOIN location_districts ld ON ld.id = lb.districtid
                 LEFT JOIN location_states ls    ON ls.id = ld.stateid '
                 . (empty($where) ? '' : ' WHERE ' . implode(' AND ', $where))
-                . ' ' . $ostr . ' ' . $dir
+                . (empty($ostr) ? '' : ' ' . $ostr . ' ' . $dir)
                 . (isset($limit) ? ' LIMIT ' . $limit : '')
                 . (isset($offset) ? ' OFFSET ' . $offset : ''),
                 'id'
             );
+        }
+
+        if (!empty($nlist) && !$short) {
+            foreach ($nlist as &$netnode) {
+                $flags = $netnode['flags'];
+                $netnode['flags'] = array();
+                foreach ($NETWORK_NODE_FLAGS as $flag => $label) {
+                    if ($flags & $flag) {
+                        $netnode['flags'][$flag] = $flag;
+                    }
+                }
+
+                $netnode['services'] = array();
+                if (!empty($node['services'])) {
+                    $services = explode(',', $netnode['services']);
+                    foreach ($services as $service) {
+                        $netnodes['services'][$service] = $service;
+                    }
+                }
+            }
+            unset($netnode);
         }
 
         if (!$short && $nlist) {
@@ -202,7 +235,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
                     . $netnode['location_borough_ident'] . $netnode['location_borough_type'];
                 $netnode['simc'] = empty($netnode['location_city_ident']) ? null : $netnode['location_city_ident'];
                 $netnode['ulic'] = empty($netnode['location_street_ident']) ? null : $netnode['location_street_ident'];
-                $netnode['filecontainers'] = isset($filecontainers[$netnode['id']]) ? $filecontainers[$netnode['id']] : array();
+                $netnode['filecontainers'] = $filecontainers[$netnode['id']] ?? array();
             }
             unset($netnode);
         }
@@ -244,6 +277,19 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             'address_id'       => $address_id,
             'ownerid'          => !empty($netnodedata['ownerid']) && !empty($netnodedata['ownership']) ? $netnodedata['ownerid'] : null
         );
+
+        $args['flags'] = 0;
+        if (array_key_exists('flags', $netnodedata)) {
+            foreach ($netnodedata['flags'] as $flag) {
+                $args['flags'] += $flag;
+            }
+        }
+
+        if (array_key_exists('services', $netnodedata)) {
+            $args['services'] = implode(',', $netnodedata['services']);
+        } else {
+            $args['services'] = '';
+        }
 
         $this->db->Execute("INSERT INTO netnodes (" . implode(', ', array_keys($args))
             . ") VALUES (" . implode(', ', array_fill(0, count($args), '?')) . ")", array_values($args));
@@ -321,6 +367,19 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             $args['ownerid'] = empty($netnodedata['ownerid']) || empty($netnodedata['ownership']) ? null : $netnodedata['ownerid'];
         }
 
+        $args['flags'] = 0;
+        if (array_key_exists('flags', $netnodedata)) {
+            foreach ($netnodedata['flags'] as $flag) {
+                $args['flags'] += $flag;
+            }
+        }
+
+        if (array_key_exists('services', $netnodedata)) {
+            $args['services'] = implode(',', $netnodedata['services']);
+        } else {
+            $args['services'] = '';
+        }
+
         if (empty($args)) {
             return null;
         }
@@ -344,7 +403,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             $this->db->Execute(
                 'UPDATE netnodes SET address_id = ? WHERE id = ?',
                 array(
-                    ($netnodedata['customer_address_id'] >= 0 ? $netnodedata['customer_address_id'] : null),
+                    ($netnodedata['customer_address_id'] > 0 ? $netnodedata['customer_address_id'] : null),
                     $netnodedata['id']
                 )
             );
@@ -356,7 +415,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
                 $this->db->Execute(
                     'UPDATE netnodes SET address_id = ? WHERE id = ?',
                     array(
-                        ($address_id >= 0 ? $address_id : null),
+                        ($address_id > 0 ? $address_id : null),
                         $netnodedata['id']
                     )
                 );
@@ -370,6 +429,8 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 
     public function GetNetNode($id)
     {
+        global $NETWORK_NODE_FLAGS;
+
         $result = $this->db->GetRow("SELECT n.*, p.name AS projectname,
 				addr.location, addr.name as location_name, addr.id as address_id,
 				addr.state as location_state_name, addr.state_id as location_state,
@@ -390,6 +451,20 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
 				LEFT JOIN location_states ls ON ls.id = ld.stateid
 			WHERE n.id=?", array($id));
+
+        $flags = $result['flags'];
+        $result['flags'] = array();
+        foreach ($NETWORK_NODE_FLAGS as $flag => $label) {
+            if ($flags & $flag) {
+                $result['flags'][$flag] = $flag;
+            }
+        }
+
+        $services = explode(',', $result['services']);
+        $result['services'] = array();
+        foreach ($services as $service) {
+            $result['services'][$service] = $service;
+        }
 
         if (!empty($result['location_city'])) {
             $result['teryt'] = 1;

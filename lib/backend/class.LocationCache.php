@@ -24,8 +24,8 @@ class LocationCache
     private $streets_loaded       = false;
 
     // load policy types
-    const LOAD_FULL = 'full';
-    const LOAD_ONE  = 'one';
+    public const LOAD_FULL = 'full';
+    public const LOAD_ONE  = 'one';
 
     // choosen load policy
     private $load_policy = self::LOAD_ONE;
@@ -93,11 +93,7 @@ class LocationCache
                     $this->initCityByIdCache();
                 }
 
-                if (isset($this->city_by_id[ $id ])) {
-                    return $this->city_by_id[ $id ];
-                } else {
-                    return null;
-                }
+                return $this->city_by_id[$id] ?? null;
                 break;
 
             case self::LOAD_ONE:
@@ -116,11 +112,7 @@ class LocationCache
                         array( $id )
                     );
 
-                    if (isset($this->city_by_id[ $id ])) {
-                        return $this->city_by_id[ $id ];
-                    }
-
-                    return null;
+                    return $this->city_by_id[ $id ] ?? null;
                 }
                 break;
         }
@@ -144,11 +136,7 @@ class LocationCache
                     $this->initCityByIdentCache();
                 }
 
-                if (isset($this->city_by_ident[ $terc . '|' . $simc ])) {
-                    return $this->city_by_ident[ $terc . '|' . $simc ];
-                } else {
-                    return null;
-                }
+                return $this->city_by_ident[$terc . '|' . $simc] ?? null;
                 break;
 
             case self::LOAD_ONE:
@@ -167,11 +155,7 @@ class LocationCache
                         array( (string) $simc )
                     );
 
-                    if (isset($this->city_by_ident[ $terc . '|' . $simc ])) {
-                        return $this->city_by_ident[ $terc . '|' . $simc ];
-                    } else {
-                        return null;
-                    }
+                    return $this->city_by_ident[$terc . '|' . $simc] ?? null;
                 }
                 break;
         }
@@ -195,11 +179,7 @@ class LocationCache
                     $this->initCityByIdentCache2();
                 }
 
-                if (isset($this->city_by_ident[ $terc . '|' . $simc ])) {
-                    return $this->city_by_ident[ $terc . '|' . $simc ];
-                } else {
-                    return null;
-                }
+                return $this->city_by_ident[$terc . '|' . $simc] ?? null;
                 break;
 
             case self::LOAD_ONE:
@@ -217,11 +197,7 @@ class LocationCache
                         array( (string) $simc )
                     );
 
-                    if (isset($this->city_by_ident[ $terc . '|' . $simc ])) {
-                        return $this->city_by_ident[ $terc . '|' . $simc ];
-                    } else {
-                        return null;
-                    }
+                    return $this->city_by_ident[$terc . '|' . $simc] ?? null;
                 }
                 break;
         }
@@ -258,11 +234,7 @@ class LocationCache
                 }
 
                 if (isset($this->city_with_sections_by_id[$cityid])) {
-                    if (isset($this->city_with_sections_by_id[$cityid]['streets'][$ulic])) {
-                        return $this->city_with_sections_by_id[$cityid]['streets'][$ulic];
-                    } else {
-                        return null;
-                    }
+                    return $this->city_with_sections_by_id[$cityid]['streets'][$ulic] ?? null;
                 } elseif (isset($this->streets[$cityid . '|' . $ulic])) {
                     return $this->streets[$cityid . '|' . $ulic];
                 } else {
@@ -284,11 +256,7 @@ class LocationCache
                 }
 
                 if (isset($this->city_with_sections_by_id[$cityid])) {
-                    if (isset($this->city_with_sections_by_id[$cityid]['streets'][$ulic])) {
-                        return $this->city_with_sections_by_id[$cityid]['streets'][$ulic];
-                    } else {
-                        return null;
-                    }
+                    return $this->city_with_sections_by_id[$cityid]['streets'][$ulic] ?? null;
                 } elseif (isset($this->streets[$cityid . '|' . $ulic])) {
                     return $this->streets[$cityid . '|' . $ulic];
                 } else {
@@ -323,11 +291,7 @@ class LocationCache
 
         $key = $cityid . '|' . $streetid . '|' . mb_strtoupper($building_num);
 
-        if (isset($this->buildings[ $cityid ][ $key ])) {
-            return $this->buildings[ $cityid ][ $key ];
-        } else {
-            return false;
-        }
+        return $this->buildings[$cityid][$key] ?? false;
     }
 
     private function initCityWithSections()

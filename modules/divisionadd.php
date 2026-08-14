@@ -47,6 +47,28 @@ if (!empty($_POST['division'])) {
         $error['shortname'] = trans('Division with specified name already exists!');
     }
 
+    if ($division['shortname'] == '') {
+        $error['shortname'] = trans('Division short name is required!');
+    } elseif (!empty($division['label'])) {
+        if ($DB->GetOne(
+            'SELECT 1 FROM divisions
+            WHERE label = ?',
+            array(
+                $division['label'],
+            )
+        )) {
+            $error['label'] = trans('Division with specified label already exists!');
+        }
+    } elseif ($DB->GetOne(
+        'SELECT 1 FROM divisions
+        WHERE shortname = ?',
+        array(
+            $division['shortname']
+        )
+    )) {
+        $error['shortname'] = trans('Division with specified name already exists!');
+    }
+
     if (!empty($division['naturalperson'])) {
         if (empty($division['firstname'])) {
             $error['firstname'] = trans('First name cannot be empty for natural person!');
@@ -94,8 +116,24 @@ if (!empty($_POST['division'])) {
         $error['email'] = trans('E-mail isn\'t correct!');
     }
 
+    if ($division['serviceemail'] != '' && !check_email($division['serviceemail'])) {
+        $error['serviceemail'] = trans('E-mail isn\'t correct!');
+    }
+
     if ($division['phone'] != '' && !preg_match('/^\+?[0-9\s\-]+$/', $division['phone'])) {
         $error['phone'] = trans('Incorrect phone number!');
+    }
+
+    if ($division['servicephone'] != '' && !preg_match('/^\+?[0-9\s\-]+$/', $division['servicephone'])) {
+        $error['servicephone'] = trans('Incorrect phone number!');
+    }
+
+    if (strlen($division['url']) && !filter_var($division['url'], FILTER_VALIDATE_URL)) {
+        $error['url'] = trans('Invalid URL address format!');
+    }
+
+    if (strlen($division['userpanel_url']) && !filter_var($division['userpanel_url'], FILTER_VALIDATE_URL)) {
+        $error['userpanel_url'] = trans('Invalid URL address format!');
     }
 
     if ($division['inv_paytime'] == '') {
@@ -132,6 +170,8 @@ if (!isset($division['location_zip']) && $default_zip) {
 if (!isset($division['location_city']) && $default_city) {
     $division['location_city'] = $default_city;
 }
+
+$division['office_address']['prefix'] = 'division[office_address]';
 
 $layout['pagetitle'] = trans('New Division');
 

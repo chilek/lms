@@ -26,9 +26,9 @@
 
 function smarty_function_event_time_selection($params, $template)
 {
-    $field_prefix = isset($params['field_prefix']) ? $params['field_prefix'] : 'event';
-    $begin = isset($params['begin']) ? $params['begin'] : '';
-    $end = isset($params['end']) ? $params['end'] : '';
+    $field_prefix = $params['field_prefix'] ?? 'event';
+    $begin = $params['begin'] ?? '';
+    $end = $params['end'] ?? '';
     $whole_days = isset($params['wholedays']) && $params['wholedays'];
     $allow_past_date = !isset($params['allow_past_date']) || !empty($params['allow_past_date']);
 

@@ -33,6 +33,63 @@ class LMSSmarty extends Smarty
     {
         parent::__construct();
         self::$smarty = $this;
+
+        // add LMS's custom plugins directory
+        $this->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
+
+        $this->muteUndefinedOrNullWarnings();
+
+        $this->registerClass('ConfigHelper', 'ConfigHelper');
+        $this->registerClass('Localisation', 'Localisation');
+        $this->registerClass('Session', 'Session');
+        $this->registerClass('LMS', 'LMS');
+        $this->registerClass('LMSDB', 'LMSDB');
+        $this->registerClass('Auth', 'Auth');
+        $this->registerClass('Utils', 'Utils');
+        $this->registerClass('EtherCodes', 'EtherCodes');
+        $this->registerClass('LMSTcpdfTransferForm', 'LMSTcpdfTransferForm');
+
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'trans', 'trans');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'date', 'date');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'count', 'count');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'key', 'key');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'strtolower', 'strtolower');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'strposr', 'strpos');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'str_replace', 'str_replace');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'preg_split', 'preg_split');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'preg_match', 'preg_match');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'preg_replace', 'preg_replace');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'moneyf', 'moneyf');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'moneyf_in_words', 'moneyf_in_words');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'intval', 'intval');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'sprintf', 'sprintf');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'array_keys', 'array_keys');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'array_merge', 'array_merge');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'floor', 'floor');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'pow', 'pow');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'implode', 'implode');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'htmlspecialchars', 'htmlspecialchars');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'call_user_func', 'call_user_func');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'trim', 'trim');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'rtrim', 'rtrim');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'strtotime', 'strtotime');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'mb_strlen', 'mb_strlen');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'base64_encode', 'base64_encode');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'urlencode', 'urlencode');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'addslashes', 'addslashes');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'json_decode', 'json_decode');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'iconv', 'iconv');
+
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'format_bankaccount', 'format_bankaccount');
+
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'bankaccount', 'bankaccount');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'size', 'LMSSmartyPlugins::sizeModifier');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'convert_to_units', 'convert_to_units');
+
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'array_push', 'array_push');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'str_pad', 'str_pad');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'max', 'max');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'array_unique', 'array_unique');
     }
 
     public static function getInstance()

@@ -36,7 +36,7 @@ if (is_null($plugins_config)) {
 
 if (isset($_POST['plugins']) && ConfigHelper::checkPrivilege('full_access')) {
     $postdata = $_POST['plugins'];
-    $plugin_manager->enablePlugin($postdata['name'], $postdata['toggle'] ? true : false);
+    $plugin_manager->enablePlugin($postdata['name'], (bool)$postdata['toggle']);
     $SESSION->redirect('?m=pluginlist');
 }
 

@@ -37,6 +37,7 @@ class Session
     public $DB = null;              // database library object
     public $timeout = 600;          // timeout since session will
                         // be destroyed
+    private $expired = false;
     private $settings_timeout = 28800;          // timeout since user settings will
                         // be cleared
     public $autoupdate = false;     // do automatic update on each
@@ -46,7 +47,7 @@ class Session
 
     private $tabId = null;
 
-    const HISTORY_SIZE = 10;
+    public const HISTORY_SIZE = 10;
 
     private static $oldHistoryEntry = '';
     private static $historyEntry = '';
@@ -69,13 +70,18 @@ class Session
             $this->_restoreSession();
         }
 
-        if (rand(1, 100) <= $this->GCprob) {
+        if (random_int(1, 100) <= $this->GCprob) {
             $this->_garbageCollector();
         }
 
         if (isset($_COOKIE['tabId'])) {
             $this->tabId = $_COOKIE['tabId'];
         }
+    }
+
+    public function isExpired()
+    {
+        return $this->expired;
     }
 
     public function close()
@@ -93,8 +99,7 @@ class Session
 
     public function makeSID()
     {
-        list($usec, $sec) = explode(' ', microtime());
-        return md5(uniqid(rand(), true)).sprintf('%09x', $sec).sprintf('%07x', ($usec * 10000000));
+        return bin2hex(random_bytes(32));
     }
 
     public function restore_user_settings($force_settings_restore = false)
@@ -215,17 +220,9 @@ class Session
     public function restore($variable, &$content, $tab = false)
     {
         if ($tab) {
-            if (isset($this->_tab_content[$this->tabId][$variable])) {
-                $content = $this->_tab_content[$this->tabId][$variable];
-            } else {
-                $content = null;
-            }
+            $content = $this->_tab_content[$this->tabId][$variable] ?? null;
         } else {
-            if (isset($this->_content[$variable])) {
-                $content = $this->_content[$variable];
-            } else {
-                $content = null;
-            }
+            $content = $this->_content[$variable] ?? null;
         }
     }
 
@@ -235,17 +232,9 @@ class Session
             return $this->get_history_entry();
         }
         if ($tab) {
-            if (isset($this->_tab_content[$this->tabId][$variable])) {
-                return $this->_tab_content[$this->tabId][$variable];
-            } else {
-                return null;
-            }
+            return $this->_tab_content[$this->tabId][$variable] ?? null;
         } else {
-            if (isset($this->_content[$variable])) {
-                return $this->_content[$variable];
-            } else {
-                return null;
-            }
+            return $this->_content[$variable] ?? null;
         }
     }
 
@@ -357,7 +346,29 @@ class Session
             'INSERT INTO sessions (id, ctime, mtime, atime, vdata, content) VALUES (?, ?NOW?, ?NOW?, ?NOW?, ?, ?)',
             array($this->SID, serialize($this->makeVData()), serialize($this->_content))
         );
-        setcookie('SID', $this->SID);
+        $this->_setSIDCookie();
+    }
+
+    private function _setSIDCookie()
+    {
+        setcookie('SID', $this->SID, array(
+            'httponly' => true,
+            'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+            'samesite' => 'Lax',
+        ));
+    }
+
+    // regenerate the session identifier while keeping session content,
+    // to prevent session fixation across a privilege change (e.g. login)
+    public function regenerateSID()
+    {
+        $oldSID = $this->SID;
+        $this->SID = $this->makeSID();
+        $this->DB->Execute(
+            'UPDATE sessions SET id = ? WHERE id = ?',
+            array($this->SID, $oldSID)
+        );
+        $this->_setSIDCookie();
     }
 
     public function _restoreSession()
@@ -367,13 +378,29 @@ class Session
         $row = $this->DB->GetRow('SELECT *, ?NOW? AS tt FROM sessions WHERE id = ?', array($this->SID));
 
         if ($row && serialize($this->makeVData()) == $row['vdata']) {
+            $content = unserialize($row['content']);
+
+            // login timeout specific for current user (hacky code but should work)
+            $user_timeout = $this->DB->GetOne(
+                'SELECT value FROM uiconfig WHERE section = ? AND var = ? AND userid = ?',
+                array(
+                    'phpui',
+                    'timeout',
+                    $content['session_id'],
+                )
+            );
+            if (!empty($user_timeout)) {
+                $this->timeout = $user_timeout;
+            }
+
             if (($row['mtime'] < $row['tt'] - $this->timeout) && ($row['atime'] < $row['tt'] - $this->timeout)) {
+                $this->expired = true;
                 $this->_destroySession();
             } else {
                 if (!isset($_POST['xjxfun']) && !isset($_GET['ajax'])) {
                     $this->DB->Execute('UPDATE sessions SET atime = ?NOW? WHERE id = ?', array($this->SID));
                 }
-                $this->_content = unserialize($row['content']);
+                $this->_content = $content;
                 $this->restore_user_settings(true);
                 return;
             }
@@ -448,11 +475,7 @@ class Session
 
     public function get_persistent_setting($variable)
     {
-        if (isset($this->_persistent_settings[$variable])) {
-            return $this->_persistent_settings[$variable];
-        } else {
-            return null;
-        }
+        return $this->_persistent_settings[$variable] ?? null;
     }
 
     public function save_persistent_setting($variable, $content)
@@ -602,10 +625,7 @@ class Session
         }
 
         if (isset($id)) {
-            if (isset($this->_persistent_settings['filters'][$module]['subfilters'][$id][$name])) {
-                return $this->_persistent_settings['filters'][$module]['subfilters'][$id][$name];
-            }
-            return array();
+            return $this->_persistent_settings['filters'][$module]['subfilters'][$id][$name] ?? array();
         } elseif (!isset($this->_persistent_settings['filters'][$module][$name])) {
             return array();
         }
@@ -693,11 +713,7 @@ class Session
                 $vdata[$vkey] = $_SERVER[$vkey];
             }
         }
-        if (isset($vdata)) {
-            return $vdata;
-        } else {
-            return null;
-        }
+        return $vdata ?? null;
     }
 
     public function redirect($location)
@@ -705,5 +721,10 @@ class Session
         $this->close();
         header('Location: '.$location);
         die;
+    }
+
+    public function clearLoginTimeout()
+    {
+        $this->DB->Execute('UPDATE sessions SET atime = ?NOW? WHERE id = ?', array($this->SID));
     }
 }

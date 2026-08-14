@@ -32,7 +32,7 @@
  */
 class UserRightsConfigParser implements ConfigParserInterface
 {
-    const NAME = 'USER_RIGHTS_CONFIG_PARSER';
+    public const NAME = 'USER_RIGHTS_CONFIG_PARSER';
     
     /**
      * Converts user rights array into it's object representation

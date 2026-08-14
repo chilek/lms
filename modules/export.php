@@ -33,17 +33,18 @@ function form_num($num)
 
 if (isset($_GET['type']) && $_GET['type'] == 'cash') {
     if ($_POST['from']) {
-        list($year, $month, $day) = explode('/', $_POST['from']);
+        [$year, $month, $day] = explode('/', $_POST['from']);
         $from = mktime(0, 0, 0, $month, $day, $year);
     } else {
         $from = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
     }
 
     if ($_POST['to']) {
-        list($year, $month, $day) = explode('/', $_POST['to']);
+        [$year, $month, $day] = explode('/', $_POST['to']);
         $to = mktime(23, 59, 59, $month, $day, $year);
-    }
+    } else {
         $to = mktime(23, 59, 59, date('m'), date('d'), date('Y'));
+    }
 
     $registry = intval($_POST['registry']);
     $user = intval($_POST['user']);
@@ -72,7 +73,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
 		numberplans.template, extnumber, receiptcontents.description,
 		cashregs.name AS cashreg, b.balance
 		FROM documents d
-        JOIN customerbalances b ON b.customerid = d.customerid
+        LEFT JOIN customerbalances b ON b.customerid = d.customerid
 		LEFT JOIN receiptcontents ON (d.id = docid)
 		LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 		LEFT JOIN cashregs ON (cashregs.id = regid)
@@ -95,7 +96,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
         }
 
         foreach ($list as $idx => $row) {
-            $line = $record ? $record : $cash_record;
+            $line = $record ?: $cash_record;
             $i++;
 
             $clariondate = intval($row['cdate']/86400)+61731;
@@ -115,7 +116,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
             $line = str_replace('%CID', $row['customerid'], $line);
             $line = str_replace('%UID4', sprintf('%04d', $row['userid']), $line);
             $line = str_replace('%UID', $row['userid'], $line);
-            $line = str_replace('%CUSTOMER', $row['customer'] ? $row['customer'] : $default_customer, $line);
+            $line = str_replace('%CUSTOMER', $row['customer'] ?: $default_customer, $line);
             $line = str_replace('%ADDRESS', $row['address'], $line);
             $line = str_replace('%ZIP', $row['zip'], $line);
             $line = str_replace('%CITY', $row['city'], $line);
@@ -193,14 +194,14 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
 
     // date format 'yyyy/mm/dd'
     if ($from) {
-        list($year, $month, $day) = explode('/', $from);
+        [$year, $month, $day] = explode('/', $from);
         $unixfrom = mktime(0, 0, 0, $month, $day, $year);
     } else {
         $from = date('Y/m/d', time());
         $unixfrom = mktime(0, 0, 0); //today
     }
     if ($to) {
-        list($year, $month, $day) = explode('/', $to);
+        [$year, $month, $day] = explode('/', $to);
         $unixto = mktime(23, 59, 59, $month, $day, $year);
     } else {
         $to = date('Y/m/d', time());
@@ -301,7 +302,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
             $rec['brutto'] += $sum;
 
             if (!isset($items[$idx + 1]['docid']) || $row['docid'] != $items[$idx + 1]['docid']) {
-                $line = $record ? $record : $inv_record;
+                $line = $record ?: $inv_record;
                 $i++;
 
                 $clariondate = intval($doc['cdate'] / 86400) + 61731;

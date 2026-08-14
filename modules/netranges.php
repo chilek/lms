@@ -56,6 +56,13 @@ $linkspeeds = array(
     10000 => '10000 Mb/s',
 );
 
+$foreign_entities = array();
+if (preg_match_all('/(?<id>[[:alnum:]]+)(?:\((?<name>[^\)]+)\))?(?:\s|[\s]*[,;][\s]*|$)/', ConfigHelper::getConfig('uke.sidusis_foreign_entities', '', true), $m)) {
+    foreach ($m['id'] as $idx => $id) {
+        $foreign_entities[$id] = strlen($m['name'][$idx]) ? $m['name'][$idx] : null;
+    }
+}
+
 function getTerritoryUnits()
 {
     global $BOROUGHTYPES;
@@ -178,7 +185,7 @@ function getBuildings(array $filter)
 
     $DB = LMSDB::getInstance();
 
-    $count = isset($filter['count']) && !empty($filter['count']);
+    $count = !empty($filter['count']);
 
     $where = $where2 = array();
 
@@ -240,8 +247,12 @@ function getBuildings(array $filter)
     if (isset($filter['type']) && is_numeric($filter['type'])) {
         $where[] = 'r.type = ' . intval($filter['type']);
     }
-    if (isset($filter['services']) && is_numeric($filter['services']) && !empty($filter['services'])) {
+    if (is_numeric($filter['services']) && !empty($filter['services'])) {
         $where[] = 'r.services = ' . intval($filter['services']);
+    }
+
+    if (($filter['services'] & 2) && strlen($filter['foreign-entity'])) {
+        $where[] = $filter['foreign-entity'] == '-1' ? 'r.foreignentity = \'\'' : 'r.foreignentity = ' . $DB->Escape($filter['foreign-entity']);
     }
 
     if (!isset($nodes)) {
@@ -251,12 +262,17 @@ function getBuildings(array $filter)
                 (CASE WHEN a2.id IS NULL THEN lst.ident ELSE lst2.ident END) AS street_id,
                 UPPER(CASE WHEN a2.id IS NULL THEN a.house ELSE a2.house END) AS house,
                 COUNT(*) AS nodecount, '
-                . $DB->GroupConcat('n.linktechnology', ',') . ' AS linktechnologies, '
-                . $DB->GroupConcat('n.ownerid', ',') . ' AS customerids, '
+                . $DB->GroupConcat('CASE WHEN n.ownerid IS NOT NULL AND (nd.id IS NULL OR nd.id IS NOT NULL AND nd.ownerid IS NULL) THEN n.linktechnology ELSE nl.technology END', ',') . ' AS linktechnologies, '
+                . $DB->GroupConcat('CASE WHEN n.ownerid IS NOT NULL AND (nd.id IS NULL OR nd.id IS NOT NULL AND nd.ownerid IS NULL) THEN n.ownerid ELSE nd2.ownerid END', ',') . ' AS customerids, '
                 . $DB->GroupConcat($DB->Concat('c.lastname', "' '", 'c.name'), '|') . ' AS customernames
-            FROM nodes n
-            JOIN customers c ON c.id = n.ownerid
-            LEFT JOIN vaddresses a ON a.id = n.address_id
+            FROM customers c
+            LEFT JOIN nodes n ON n.ownerid = c.id
+            LEFT JOIN netdevices nd ON nd.id = n.netdev AND nd.ownerid IS NULL
+            LEFT JOIN netdevices nd2 ON nd2.ownerid = c.id
+            LEFT JOIN netlinks nl ON nl.src = nd2.id OR nl.dst = nd2.id
+            LEFT JOIN netdevices nd3 ON nd3.ownerid IS NULL AND (nl.src = nd2.id AND nd3.id = nl.dst OR nl.dst = nd2.id AND nd3.id = nl.src)
+            LEFT JOIN vaddresses a ON (n.ownerid IS NOT NULL AND (nd.id IS NULL OR nd.id IS NOT NULL AND nd.ownerid IS NULL) AND a.id = n.address_id)
+                OR (nd2.ownerid IS NOT NULL AND nd3.id IS NOT NULL AND nd3.ownerid IS NULL AND a.id = nd2.address_id)
             LEFT JOIN location_streets lst ON lst.id = a.street_id
             LEFT JOIN (
                 SELECT
@@ -276,13 +292,18 @@ function getBuildings(array $filter)
                 WHERE va3.city_id IS NOT NULL
                     AND va3.house <> \'\'
                 GROUP BY ca2.customer_id
-            ) ca4 ON ca4.customer_id = n.ownerid
+            ) ca4 ON (n.ownerid IS NOT NULL AND nd.id IS NOT NULL AND nd.ownerid IS NULL AND ca4.customer_id = n.ownerid)
+                OR (nd2.ownerid IS NOT NULL AND nd3.id IS NOT NULL AND nd3.ownerid IS NULL AND ca4.customer_id = nd2.ownerid)
             LEFT JOIN customer_addresses ca ON n.address_id IS NULL AND ca.customer_id = ca4.customer_id
             LEFT JOIN vaddresses a2 ON a2.id = ca.address_id
             LEFT JOIN location_streets lst2 ON lst2.id = a2.street_id
             WHERE n.ipaddr <> 0
                 AND ((a2.id IS NULL AND a.city_id IS NOT NULL ' . (isset($cityid) ? ' AND a.city_id = ' . $cityid : '') . ')
                 OR (a2.id IS NOT NULL AND a2.city_id IS NOT NULL ' . (isset($cityid) ? ' AND a2.city_id = ' . $cityid : '') . '))
+                AND (
+                    (n.ownerid IS NOT NULL AND (nd.id IS NULL OR nd.id IS NOT NULL AND nd.ownerid IS NULL))
+                    OR (nd2.ownerid IS NOT NULL AND nd3.id IS NOT NULL AND nd3.ownerid IS NULL)
+                )
             GROUP BY
                 (CASE WHEN a2.id IS NULL THEN a.city_id ELSE a2.city_id END),
                 (CASE WHEN a2.id IS NULL THEN lst.ident ELSE lst2.ident END),
@@ -421,6 +442,7 @@ function getBuildings(array $filter)
                 r.uplink,
                 r.type,
                 r.services,
+                r.foreignentity,
                 r.invprojectid
             FROM location_buildings b
             LEFT JOIN location_streets lst ON lst.id = b.street_id
@@ -431,7 +453,8 @@ function getBuildings(array $filter)
             JOIN location_states ls ON ls.id = ld.stateid
             LEFT JOIN netranges r ON r.buildingid = b.id'
             . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
-            . ' ORDER BY ls.name, ld.name, lb.name, lc.name, lst.name, b.building_num'
+            . ' ORDER BY ls.name, ld.name, lb.name, lc.name, lst.name, '
+                . $DB->Cast($DB->SubstringByRegExp('b.building_num', '^[0-9]+'), 'integer') . ', b.building_num'
             . (empty($existing) ? (
                 (isset($limit) ? ' LIMIT ' . $limit : '')
                 . (isset($offset) ? ' OFFSET ' . $offset : '')
@@ -466,8 +489,8 @@ function getBuildings(array $filter)
             if (isset($limit) || isset($offset)) {
                 $buildings = array_slice(
                     $buildings,
-                    isset($offset) ? $offset : 0,
-                    isset($limit) ? $limit : null
+                    $offset ?? 0,
+                    $limit ?? null
                 );
             }
         }
@@ -492,43 +515,43 @@ if (isset($_GET['boroughid'])) {
 }
 
 $oldrange = $SESSION->get('netranges_update_range');
-$oldrange = isset($oldrange) ? $oldrange : array();
-$range = isset($_POST['range']) ? $_POST['range'] : array();
+$oldrange = $oldrange ?? array();
+$range = $_POST['range'] ?? array();
 
 if (isset($range['project'])) {
     $range['project'] = strlen($range['project']) ? intval($range['project']) : null;
 } else {
-    $range['project'] = isset($oldrange['project']) ? $oldrange['project'] : null;
+    $range['project'] = $oldrange['project'] ?? null;
 }
 
 if (isset($range['linktype'])) {
     $range['linktype'] = strlen($range['linktype']) ? intval($range['linktype']) : '';
 } else {
-    $range['linktype'] = isset($oldrange['linktype']) ? $oldrange['linktype'] : '';
+    $range['linktype'] = $oldrange['linktype'] ?? '';
 }
 
 if (isset($range['linktechnology'])) {
     $range['linktechnology'] = strlen($range['linktechnology']) ? intval($range['linktechnology']) : '';
 } else {
-    $range['linktechnology'] = isset($oldrange['linktechnology']) ? $oldrange['linktechnology'] : '';
+    $range['linktechnology'] = $oldrange['linktechnology'] ?? '';
 }
 
 if (isset($range['downlink'])) {
     $range['downlink'] = strlen($range['downlink']) ? intval($range['downlink']) : '';
 } else {
-    $range['downlink'] = isset($oldrange['downlink']) ? $oldrange['downlink'] : '';
+    $range['downlink'] = $oldrange['downlink'] ?? '';
 }
 
 if (isset($range['uplink'])) {
     $range['uplink'] = strlen($range['uplink']) ? intval($range['uplink']) : '';
 } else {
-    $range['uplink'] = isset($oldrange['uplink']) ? $oldrange['uplink'] : '';
+    $range['uplink'] = $oldrange['uplink'] ?? '';
 }
 
 if (isset($range['type'])) {
     $range['type'] = strlen($range['type']) ? intval($range['type']) : '';
 } else {
-    $range['type'] = isset($oldrange['type']) ? $oldrange['type'] : '';
+    $range['type'] = $oldrange['type'] ?? '';
 }
 
 $services = 0;
@@ -547,6 +570,12 @@ if (isset($range['services']['2'])) {
     $services |= isset($oldrange['services']) && ($oldrange['services'] & 2) ? 2 : 0;
 }
 $range['services'] = $services;
+
+if (isset($range['foreign-entity'])) {
+    $range['foreign-entity'] = strlen($range['foreign-entity']) ? $range['foreign-entity'] : '';
+} else {
+    $range['foreign-entity'] = $oldrange['foreign-entity'] ?? '';
+}
 
 $SESSION->save('netranges_update_range', $range);
 
@@ -567,14 +596,15 @@ if (isset($_POST['range'])) {
             } elseif (isset($_GET['update'])) {
                 $args = $range;
                 unset($args['buildings'], $args['ranges']);
+                $args['foreign-entity'] = ($range['services'] & 2) ? $range['foreign-entity'] : '';
                 if (!empty($buildings)) {
                     foreach ($buildings as $buildingid) {
                         $args['buildingid'] = $buildingid;
                         if (!$DB->GetOne('SELECT 1 FROM netranges WHERE buildingid = ? LIMIT 1', array($buildingid))) {
                             $DB->Execute(
                                 'INSERT INTO netranges
-                                (invprojectid, linktype, linktechnology, downlink, uplink, type, services, buildingid)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                                (invprojectid, linktype, linktechnology, downlink, uplink, type, services, foreignentity, buildingid)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
                                 array_values($args)
                             );
                         }
@@ -597,7 +627,8 @@ if (isset($_POST['range'])) {
                                     downlink = ?,
                                     uplink = ?,
                                     type = ?,
-                                    services = ?
+                                    services = ?,
+                                    foreignentity = ?
                                 WHERE id = ?',
                                 array_values($args)
                             );
@@ -606,8 +637,8 @@ if (isset($_POST['range'])) {
                             $args['buildingid'] = $buildingid;
                             $DB->Execute(
                                 'INSERT INTO netranges
-                                (invprojectid, linktype, linktechnology, downlink, uplink, type, services, buildingid)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                                (invprojectid, linktype, linktechnology, downlink, uplink, type, services, foreignentity, buildingid)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
                                 array_values($args)
                             );
                             unset($args['buildingid']);
@@ -620,27 +651,29 @@ if (isset($_POST['range'])) {
                 }
                 $args = $range;
                 unset($args['buildings'], $args['ranges']);
+                $args['foreign-entity'] = ($range['services'] & 2) ? $range['foreign-entity'] : '';
                 if (!empty($buildings)) {
                     foreach ($buildings as $buildingid) {
                         $args['buildingid'] = $buildingid;
                         if (!$DB->GetOne(
                             'SELECT 1
                             FROM netranges
-                            WHERE invprojectid = ?
+                            WHERE (invprojectid = ?' . (isset($args['project']) ? '' : ' OR invprojectid IS NULL') . ')
                                 AND linktype = ?
                                 AND linktechnology = ?
                                 AND downlink = ?
                                 AND uplink = ?
                                 AND type = ?
                                 AND services = ?
+                                AND foreignentity = ?
                                 AND buildingid = ?
                             LIMIT 1',
                             array_values($args)
                         )) {
                             $DB->Execute(
                                 'INSERT INTO netranges
-                                (invprojectid, linktype, linktechnology, downlink, uplink, type, services, buildingid)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                                (invprojectid, linktype, linktechnology, downlink, uplink, type, services, foreignentity, buildingid)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
                                 array_values($args)
                             );
                         }
@@ -656,37 +689,37 @@ if (isset($_POST['range'])) {
 $layout['pagetitle'] = trans('Network Ranges');
 
 $oldfilter = $SESSION->get('netranges_filter');
-$oldfilter = isset($oldfilter) ? $oldfilter : array();
-$filter = isset($_POST['filter']) ? $_POST['filter'] : array();
+$oldfilter = $oldfilter ?? array();
+$filter = $_POST['filter'] ?? array();
 
 if (isset($filter['project'])) {
     $filter['project'] = strlen($filter['project']) ? intval($filter['project']) : '';
 } else {
-    $filter['project'] = isset($oldfilter['project']) ? $oldfilter['project'] : '';
+    $filter['project'] = $oldfilter['project'] ?? '';
 }
 
 if (isset($filter['without-ranges'])) {
     $filter['without-ranges'] = strlen($filter['without-ranges']) ? intval($filter['without-ranges']) : '';
 } else {
-    $filter['without-ranges'] = isset($oldfilter['without-ranges']) ? $oldfilter['without-ranges'] : '';
+    $filter['without-ranges'] = $oldfilter['without-ranges'] ?? '';
 }
 
 if (isset($filter['existing'])) {
     $filter['existing'] = strlen($filter['existing']) ? intval($filter['existing']) : '';
 } else {
-    $filter['existing'] = isset($oldfilter['existing']) ? $oldfilter['existing'] : '';
+    $filter['existing'] = $oldfilter['existing'] ?? '';
 }
 
 if (isset($filter['stateid'])) {
     $filter['stateid'] = strlen($filter['stateid']) ? intval($filter['stateid']) : '';
 } else {
-    $filter['stateid'] = isset($oldfilter['stateid']) ? $oldfilter['stateid'] : '';
+    $filter['stateid'] = $oldfilter['stateid'] ?? '';
 }
 
 if (isset($filter['districtid'])) {
     $filter['districtid'] = strlen($filter['districtid']) ? intval($filter['districtid']) : '';
 } else {
-    $filter['districtid'] = isset($oldfilter['districtid']) ? $oldfilter['districtid'] : '';
+    $filter['districtid'] = $oldfilter['districtid'] ?? '';
 }
 if (empty($filter['stateid'])) {
     $filter['districtid'] = '';
@@ -695,7 +728,7 @@ if (empty($filter['stateid'])) {
 if (isset($filter['boroughid'])) {
     $filter['boroughid'] = strlen($filter['boroughid']) ? intval($filter['boroughid']) : '';
 } else {
-    $filter['boroughid'] = isset($oldfilter['boroughid']) ? $oldfilter['boroughid'] : '';
+    $filter['boroughid'] = $oldfilter['boroughid'] ?? '';
 }
 if (empty($filter['districtid'])) {
     $filter['boroughid'] = '';
@@ -704,7 +737,7 @@ if (empty($filter['districtid'])) {
 if (isset($filter['cityid'])) {
     $filter['cityid'] = strlen($filter['cityid']) ? intval($filter['cityid']) : '';
 } else {
-    $filter['cityid'] = isset($oldfilter['cityid']) ? $oldfilter['cityid'] : '';
+    $filter['cityid'] = $oldfilter['cityid'] ?? '';
 }
 if (empty($filter['boroughid'])) {
     $filter['cityid'] = '';
@@ -713,7 +746,7 @@ if (empty($filter['boroughid'])) {
 if (isset($filter['streetid'])) {
     $filter['streetid'] = strlen($filter['streetid']) ? intval($filter['streetid']) : '';
 } else {
-    $filter['streetid'] = isset($oldfilter['streetid']) ? $oldfilter['streetid'] : '';
+    $filter['streetid'] = $oldfilter['streetid'] ?? '';
 }
 if (empty($filter['cityid'])) {
     $filter['streetid'] = '';
@@ -723,7 +756,7 @@ $streets = empty($filter['cityid']) ? array() : getStreets($filter['cityid']);
 if (isset($filter['numberparity'])) {
     $filter['numberparity'] = $filter['numberparity'];
 } else {
-    $filter['numberparity'] = isset($oldfilter['numberparity']) ? $oldfilter['numberparity'] : '';
+    $filter['numberparity'] = $oldfilter['numberparity'] ?? '';
 }
 if (empty($filter['cityid']) || !empty($streets) && empty($filter['streetid'])) {
     $filter['numberparity'] = '';
@@ -732,31 +765,31 @@ if (empty($filter['cityid']) || !empty($streets) && empty($filter['streetid'])) 
 if (isset($filter['linktype'])) {
     $filter['linktype'] = strlen($filter['linktype']) ? intval($filter['linktype']) : '';
 } else {
-    $filter['linktype'] = isset($oldfilter['linktype']) ? $oldfilter['linktype'] : '';
+    $filter['linktype'] = $oldfilter['linktype'] ?? '';
 }
 
 if (isset($filter['linktechnology'])) {
     $filter['linktechnology'] = strlen($filter['linktechnology']) ? intval($filter['linktechnology']) : '';
 } else {
-    $filter['linktechnology'] = isset($oldfilter['linktechnology']) ? $oldfilter['linktechnology'] : '';
+    $filter['linktechnology'] = $oldfilter['linktechnology'] ?? '';
 }
 
 if (isset($filter['downlink'])) {
     $filter['downlink'] = strlen($filter['downlink']) ? intval($filter['downlink']) : '';
 } else {
-    $filter['downlink'] = isset($oldfilter['downlink']) ? $oldfilter['downlink'] : '';
+    $filter['downlink'] = $oldfilter['downlink'] ?? '';
 }
 
 if (isset($filter['uplink'])) {
     $filter['uplink'] = strlen($filter['uplink']) ? intval($filter['uplink']) : '';
 } else {
-    $filter['uplink'] = isset($oldfilter['uplink']) ? $oldfilter['uplink'] : '';
+    $filter['uplink'] = $oldfilter['uplink'] ?? '';
 }
 
 if (isset($filter['type'])) {
     $filter['type'] = strlen($filter['type']) ? intval($filter['type']) : '';
 } else {
-    $filter['type'] = isset($oldfilter['type']) ? $oldfilter['type'] : '';
+    $filter['type'] = $oldfilter['type'] ?? '';
 }
 
 $services = 0;
@@ -775,6 +808,12 @@ if (isset($filter['services']['2'])) {
     $services |= isset($oldfilter['services']) && ($oldfilter['services'] & 2) ? 2 : 0;
 }
 $filter['services'] = $services;
+
+if (isset($filter['foreign-entity'])) {
+    $filter['foreign-entity'] = strlen($filter['foreign-entity']) ? $filter['foreign-entity'] : '';
+} else {
+    $filter['foreign-entity'] = $oldfilter['foreign-entity'] ?? '';
+}
 
 $SESSION->save('netranges_filter', $filter);
 
@@ -819,6 +858,8 @@ if (!empty($total)) {
 }
 
 $SMARTY->assign('buildings', $buildings);
+//$foreign_entities = array();
+$SMARTY->assign('foreign_entities', $foreign_entities);
 
 $SMARTY->assign('boroughs', getTerritoryUnits());
 $SMARTY->assign('cities', empty($filter['boroughid']) ? array() : getCities($filter['boroughid']));

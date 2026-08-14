@@ -93,7 +93,7 @@ if (isset($_POST['registry'])) {
 $users = $LMS->GetUserNames();
 
 foreach ($users as $user) {
-    $user['rights'] = isset($registry['users'][$user['id']]) ? $registry['users'][$user['id']] : 0;
+    $user['rights'] = $registry['users'][$user['id']] ?? 0;
     $registry['nrights'][] = $user;
 }
 $registry['rights'] = $registry['nrights'];

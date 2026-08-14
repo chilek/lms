@@ -148,10 +148,13 @@ self::addLanguageFunctions(
             if ($country_code) {
                 $ten = preg_replace('/[ \-]/', '', $ten);
             }
+            /*
             if (strpos($ten, 'SK') === 0) {
                 $ten = substr($ten, 2);
             }
             return ($country_code ? 'SK' : '') . $ten;
+            */
+            return $ten;
         },
         'getHolidays' => function ($year = null) {
             return array();
@@ -162,7 +165,7 @@ self::addLanguageFunctions(
          * \return string
          */
         'generateRandomPostcode' => function () {
-            return sprintf("%03d", rand(0, 999)) . ' ' . sprintf("%02d", rand(0, 99));
+            return sprintf("%03d", random_int(0, 999)) . ' ' . sprintf("%02d", random_int(0, 99));
         },
         'get_currency_value' => function ($currency, $date = null) {
             return exchangeratesapi_get_currency_value($currency, $date);

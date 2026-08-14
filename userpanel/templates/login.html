@@ -4,8 +4,9 @@
 <head>
 	<meta content="text/html; charset={Localisation::getCurrentHtmlCharset()}" http-equiv="content-type" />
 	<title>{trans("Virtual Customer Service")}</title>
-<link type="text/css" rel="stylesheet" href="{stylefile}" />
-<link href="{ConfigHelper::getConfig('userpanel.shortcut_icon', 'img/lms-net.gif')}" rel="shortcut icon">
+	<link type="text/css" rel="stylesheet" href="{stylefile}" />
+	{$extra_css}
+	<link href="{ConfigHelper::getConfig('userpanel.shortcut_icon', 'img/lms-net.gif')}" rel="shortcut icon">
 {include file="jquery.html" language=Localisation::getCurrentHtmlLanguage() lms_language=Localisation::getCurrentUiLanguage()}
 {$google_recaptcha_sitekey = ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey')}
 {if !empty($google_recaptcha_sitekey)}
@@ -35,29 +36,6 @@
 {/if}
 </head>
 <body>
-<script type="text/javascript">
-<!--
-	function switch_form(type) {
-		if (type == 'login') {
-			document.getElementById('logindata').style.display = '';
-			document.getElementById('reminddata').style.display = 'none';
-		} else {
-			document.getElementById('logindata').style.display = 'none';
-			document.getElementById('reminddata').style.display = '';
-		}
-	}
-
-	function show_email_phone(type) {
-		if (type == 'email') {
-			document.getElementById('email').style.display = '';
-			document.getElementById('phone').style.display = 'none';
-		} else {
-			document.getElementById('email').style.display = 'none';
-			document.getElementById('phone').style.display = '';
-		}
-	}
-//-->
-</script>
 <div class="login">
 <table style="vertical-align: middle; width:100%; height: 100%; margin:auto">
     <tr>
@@ -77,51 +55,111 @@
 			{box title="VCS"}
 			<div class="text-center bold nobr">{if $page_header}{$page_header}{else}{trans("Virtual Customer Service")}{/if}</div>
 			<br />
-			{if $error}<div style="color: red;" class="text-center bold">{$error}</div>{else}&nbsp;{/if}
-			<br />
+			{if $error}
+				<div style="color: red;" class="text-center bold">{$error}</div>
+				<br />
+			{/if}
+			{if $info}
+				<div style="color: blue;" class="text-center bold">{$info}</div>
+				<br />
+			{/if}
+			{if !empty($authcode_required) && !$error && !$info}
+				<div style="color: blue; display: none;" class="text-center bold toast toast-body"></div>
+				<br />
+			{/if}
 			<form id="login" method="post" action="{$target}">
-			{$auth_type=ConfigHelper::getConfig('userpanel.auth_type', 1)}
+			{$auth_type=ConfigHelper::getConfig('userpanel.auth_type', $smarty.const.USERPANEL_AUTH_TYPE_ID_PIN)}
 			<table id="logindata" style="height: 100%; width: 100%;">
-				<tr>
-					<td class="text-right bold nobr">
-						{$_USERPANEL_AUTH_TYPES[$auth_type].label}
-					</td>
-					<td class="text-left">
-						<input type="text" name="loginform[login]" style="width: 100pt;" />
-					</td>
-				</tr>
-				<tr>
-					<td class="text-right bold nobr">
-						{$_USERPANEL_AUTH_TYPES[$auth_type].label_secret}
-					</td>
-					<td class="text-left">
-						<input type="password" name="loginform[pwd]" style="width: 100pt;" />
-					</td>
-				</tr>
-				{if !empty($google_recaptcha_sitekey)}
-				<tr>
-					<td colspan="2">
-						<div id="login-recaptcha" class="g-recaptcha"></div>
-					</td>
-				</tr>
-				{/if}
-				<tr>
-					<td colspan="2" class="text-center">
-						<br /><input type="submit" name="loginform[submit]" class="bold" value="{trans("Login")}"{if $google_recaptcha_sitekey} disabled{/if} />
-					</td>
-				</tr>
-				{if ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
-					|| ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
+				{if empty($authcode_required)}
+					<tr>
+						<td class="text-right bold nobr">
+							{$_USERPANEL_AUTH_TYPES[$auth_type].label}
+						</td>
+						<td class="text-left">
+							<input type="text" id="inputlogin" name="loginform[login]" style="width: 100pt;" />
+						</td>
+					</tr>
+					<tr>
+						<td class="text-right bold nobr">
+							{$_USERPANEL_AUTH_TYPES[$auth_type].label_secret}
+						</td>
+						<td class="text-left">
+							<input type="password" name="loginform[pwd]" style="width: 100pt;" />
+						</td>
+					</tr>
+					{if !empty($google_recaptcha_sitekey)}
+					<tr>
+						<td colspan="2">
+							<div id="login-recaptcha" class="g-recaptcha"></div>
+						</td>
+					</tr>
+					{/if}
+					<tr>
+						<td colspan="2" class="text-center">
+							<br /><input type="submit" name="loginform[submit]" class="bold" value="{trans("Login")}"{if $google_recaptcha_sitekey} disabled{/if} />
+						</td>
+					</tr>
+					{if ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
+						|| ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
+						<tr>
+							<td colspan="2" class="text-center bold nobr">
+								<br /><a href="javascript:switch_form('remind');">{trans("Remind credentials")}</a>
+							</td>
+						</tr>
+					{/if}
+				{else}
+					<tr class="phone-number-ui-control"{if empty($phone_numbers)} style="display: none;"{/if}>
+						<td colspan="2" class="text-center bold">
+							{trans("Select phone number to which one-time password will be sent.")}
+						</td>
+					</tr>
+					<tr class="phone-number-ui-control"{if empty($phone_numbers)} style="display: none;"{/if}>
+						<td colspan="2" class="text-center">
+							<select name="loginform[phone-number]" id="phone-number" class="form-control"
+								required
+								{if empty($phone_numbers)} disabled{/if}>
+								<option value="">-</option>
+								{foreach $phone_numbers as $phone_number}
+									{$masked_phone_number = Utils::maskPhoneNumber($phone_number)}
+									<option value="{$masked_phone_number}">{$masked_phone_number}</option>
+								{/foreach}
+							</select>
+						</td>
+					</tr>
+					<tr class="phone-number-ui-control"{if empty($phone_numbers)} style="display: none;"{/if}>
+						<td colspan="2" class="text-center">
+							<br /><input id="phone-number-submit" class="bold" value="{trans("Send one-time password")}"/>
+						</td>
+					</tr>
+					<tr class="auth-code-ui-control"{if !empty($phone_numbers)} style="display: none;"{/if}>
+						<td class="text-right bold nobr">
+							{trans("One-time password")}
+						</td>
+						<td class="text-left">
+							<input type="text"  name="loginform[authcode]" id="authcode" style="width: 100pt;"
+								pattern="{literal}[0-9]{6}{/literal}"
+								required
+								class="form-control">
+						</td>
+					</tr>
+					<tr class="auth-code-ui-control"{if !empty($phone_numbers)} style="display: none;"{/if}>
+						<td colspan="2" class="text-center">
+							<br /><input type="submit" name="loginform[submit]" class="bold" value="{trans("Continue")}"/>
+						</td>
+					</tr>
 					<tr>
 						<td colspan="2" class="text-center bold nobr">
-							<br /><a href="javascript:switch_form('remind');">{trans("Remind credentials")}</a>
+							<br />
+							<input type="hidden" name="loginform[backtologinform]" value="1" disabled>
+							<a href="#" id="authcode-to-login-form-button">{trans("Login form")}</a>
 						</td>
 					</tr>
 				{/if}
 			</table>
 			</form>
-			{if ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
-				|| ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
+			{if empty($authcode_required)
+				&& (ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
+				|| ConfigHelper::checkConfig('userpanel.mail_credential_reminders'))}
 				<form id="remind" method="post" action="{$target}">
 				<table id="reminddata" style="height: 100%; width: 100%; display: none;">
 					<tr>
@@ -131,7 +169,7 @@
 								{if !empty($sms_service) && ConfigHelper::checkConfig('userpanel.sms_credential_reminders')}
 									<label>
 										<input type="radio" id="emailradio" name="remindform[type]" value="1"
-											   onclick="javascript:show_email_phone('email');" checked />
+											onclick="javascript:show_email_phone('email');" checked />
 										{trans("E-mail")}
 									</label>
 								{else}
@@ -154,26 +192,26 @@
 					</tr>
 					<tr id="email">
 						<td class="text-right bold nobr">
-							{trans("E-Mail:")}
+							{trans("E-Mail")}
 						</td>
 						<td class="text-left">
-							<input type="text" name="remindform[email]" style="width: 120pt;" />
+							<input type="text" name="remindform[email]" class="form-control" style="width: 120pt;" />
 						</td>
 					</tr>
 					<tr id="phone" style="display: none;">
 						<td class="text-right bold nobr">
-							{trans("Phone:")}
+							{trans("Phone")}
 						</td>
 						<td class="text-left">
-							<input type="text" name="remindform[phone]" style="width: 120pt;" />
+							<input type="text" name="remindform[phone]" class="form-control" style="width: 120pt;" />
 						</td>
 					</tr>
 					<tr>
 						<td class="text-right bold nobr">
-							{trans("SSN or TEN:")}
+							{trans("SSN or TEN")}
 						</td>
 						<td class="text-left">
-							<input type="text" name="remindform[ten]" style="width: 120pt;" />
+							<input type="text" name="remindform[ten]" class="form-control" style="width: 120pt;" />
 						</td>
 					</tr>
 					{if !empty($google_recaptcha_sitekey)}
@@ -207,10 +245,76 @@
 	</td>
     </tr>
 </table>
-<script type="text/javascript">
-<!--
-document.forms['login'].elements['loginform[login]'].focus();
-//-->
+<script>
+
+	function switch_form(type) {
+		if (type == 'login') {
+			document.getElementById('logindata').style.display = '';
+			document.getElementById('reminddata').style.display = 'none';
+		} else {
+			document.getElementById('logindata').style.display = 'none';
+			document.getElementById('reminddata').style.display = '';
+		}
+	}
+
+	function show_email_phone(type) {
+		if (type == 'email') {
+			document.getElementById('email').style.display = '';
+			document.getElementById('phone').style.display = 'none';
+			$("#emailradio").prop('checked', true);
+		} else {
+			document.getElementById('email').style.display = 'none';
+			document.getElementById('phone').style.display = '';
+			$("#smsradio").prop('checked', true);
+		}
+		$("#reminddata").find(".form-control:visible").first().focus();
+	}
+
+	$(function() {
+		$("#authcode-to-login-form-button").click(function() {
+			$('[name="loginform[backtologinform]"]').prop('disabled', false);
+			$("#login").submit();
+		});
+
+		$("#phone-number-submit").click(function() {
+			$(".auth-code-ui-control").show().find('.form-control').prop('disabled', false);
+			$(".phone-number-ui-control").hide().find('.form-control').prop('disabled', true);
+			$.ajax({
+				url: "{$target}",
+				method: "POST",
+				dataType: 'json',
+				data: {
+					loginform: {
+						"phone-number": $("#phone-number").val()
+					}
+				},
+				success: function(data) {
+					if (data.hasOwnProperty("info")) {
+						$(".toast-body").text(data.info);
+						$(".toast").show();
+					}
+				}
+			});
+		});
+
+	});
+
+	(function() {
+		var href = window.location.href;
+		if (href.match(/#remind.*$/)) {
+			switch_form('remind');
+			show_email_phone(href.match(/#remind-(sms|phone)$/) ? 'phone' : 'email');
+		}
+
+		$(function() {
+			if (href.match(/#remind.*$/)) {
+				$("#reminddata").find(".form-control:visible").first().focus();
+			} else {
+				$("#inputlogin").focus();
+			}
+		});
+	})();
+
 </script>
 </div>
 </body>

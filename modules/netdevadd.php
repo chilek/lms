@@ -131,10 +131,33 @@ if (isset($netdev)) {
     }
 
     if (empty($netdev['ownerid']) && !ConfigHelper::checkPrivilege('full_access')
-        && ConfigHelper::checkConfig('phpui.teryt_required')
         && !empty($netdev['location_city_name']) && ($netdev['location_country_id'] == 2 || empty($netdev['location_country_id']))
         && (!isset($netdev['teryt']) || empty($netdev['location_city'])) && $LMS->isTerritState($netdev['location_state_name'])) {
-        $error['netdev[teryt]'] = trans('TERYT address is required!');
+        $terytRequired = ConfigHelper::getConfig('phpui.teryt_required', 'false');
+        if ($terytRequired === 'error') {
+            $terytRequired = true;
+        } elseif ($terytRequired !== 'warning') {
+            $terytRequired = ConfigHelper::checkValue($terytRequired);
+        }
+        if (is_bool($terytRequired) && $terytRequired) {
+            $error['netdev[teryt]'] = trans('TERYT address is required!');
+        } elseif ($terytRequired === 'warning' && !isset($warnings['netdev-teryt-'])) {
+            $warning['netdev[teryt]'] = trans('TERYT address recommended!');
+        }
+    }
+
+    $allow_empty_streets = ConfigHelper::checkConfig('teryt.allow_empty_streets', true);
+    $allow_empty_building_numbers = ConfigHelper::checkConfig('teryt.allow_empty_building_numbers', true);
+    if (empty($netdev['ownerid']) && !empty($netdev['teryt'])) {
+        if ($allow_empty_streets && empty($netdev['location_street'])
+            || $allow_empty_building_numbers && !strlen($netdev['location_house'])) {
+            if (!strlen($netdev['longitude'])) {
+                $error['netdev[longitude]'] = trans('Longitude and latitude cannot be empty!');
+            }
+            if (!strlen($netdev['latitude'])) {
+                $error['netdev[latitude]'] = trans('Longitude and latitude cannot be empty!');
+            }
+        }
     }
 
     if (!empty($netdev['location_country_id'])) {
@@ -209,7 +232,7 @@ if (isset($netdev)) {
                 if (empty($netdev['address_id']) && empty($netdev['location_city']) && empty($netdev['location_street'])) {
                     $netdev['address_id'] = $dev['address_id'];
                 }
-                if (!strlen($netdev['longitude']) || !strlen($netdev['longitude'])) {
+                if (!strlen($netdev['longitude'])) {
                     $netdev['longitude'] = $dev['longitude'];
                     $netdev['latitude']  = $dev['latitude'];
                 }
@@ -231,6 +254,7 @@ if (isset($netdev)) {
                 header('Content-Type: application/json');
                 echo json_encode(array('id' => $netdevid));
             }
+            $SESSION->close();
             die;
         }
 
@@ -238,6 +262,7 @@ if (isset($netdev)) {
     } elseif ($api) {
         header('Content-Type: application/json');
         echo json_encode($error);
+        $SESSION->close();
         die;
     }
 
@@ -257,7 +282,7 @@ if (isset($netdev)) {
     }
 
     $netdev['name'] = trans('$a (clone)', trim($netdev['name']));
-    $netdev['clone'] = isset($_GET['clone']) ? $_GET['clone'] : null;
+    $netdev['clone'] = $_GET['clone'] ?? null;
     $netdev['teryt'] = !empty($netdev['location_city']) && !empty($netdev['location_street']);
     $SMARTY->assign('netdev', $netdev);
 } else {

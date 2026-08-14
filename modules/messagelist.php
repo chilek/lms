@@ -100,13 +100,15 @@ if ($c == 'date') {
     $args['dateto'] = strtotime('tomorrow', $args['datefrom']) - 1;
 }
 
-$total = intval($LMS->GetMessageList($args));
+$summary = $LMS->GetMessageList($args);
+$total = intval($summary['total']);
+$recipients = intval($summary['recipients']);
 
 $limit = intval(ConfigHelper::getConfig('phpui.messagelist_pagelimit', $total));
 if ($SESSION->is_set('mlp') && !isset($_GET['page']) && !isset($_POST['page'])) {
     $SESSION->restore('mlp', $_GET['page']);
 }
-$page = intval(isset($_GET['page']) ? $_GET['page'] : (isset($_POST['page']) ? $_POST['page'] : 1));
+$page = intval($_GET['page'] ?? ($_POST['page'] ?? 1));
 $offset = ($page - 1) * $limit;
 
 $args['count'] = false;
@@ -131,6 +133,7 @@ unset($messagelist['order']);
 unset($messagelist['direction']);
 
 $listdata['total'] = $total;
+$listdata['recipients'] = $recipients;
 
 $SESSION->save('mlp', $page);
 

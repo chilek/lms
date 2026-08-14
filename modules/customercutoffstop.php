@@ -32,11 +32,11 @@ if (!$LMS->CustomerExists($customerid)) {
 
 if (isset($_GET['cutoffstop'])) {
     if (isset($_GET['cutoffstopindefinitely'])) {
-        $cutoffstop = intval(pow(2, 31) - 1);
+        $cutoffstop = intval(2 ** 31 - 1);
     } elseif ($_GET['cutoffstop'] == '') {
         $cutoffstop = 0;
     } elseif (check_date($_GET['cutoffstop'])) {
-        list ($y, $m, $d) = explode('/', $_GET['cutoffstop']);
+        [$y, $m, $d] = explode('/', $_GET['cutoffstop']);
         if (checkdate($m, $d, $y)) {
             $cutoffstop = mktime(23, 59, 59, $m, $d, $y);
         }

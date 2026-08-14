@@ -31,7 +31,7 @@ if (isset($_GET['bar']) && isset($_POST['order'])) {
     $SESSION->save('trafficorder', $_POST['order']);
 }
 
-$bar = isset($_GET['bar']) ? $_GET['bar'] : '';
+$bar = $_GET['bar'] ?? '';
 
 switch ($bar) {
     case 'user':
@@ -54,8 +54,8 @@ if (isset($traffic)) {
 
 $starttime = $DB->GetOne('SELECT MIN(dt) FROM stats');
 $endtime = $DB->GetOne('SELECT MAX(dt) FROM stats');
-$starttime = $starttime ? $starttime : time();
-$endtime = $endtime ? $endtime : time();
+$starttime = $starttime ?: time();
+$endtime = $endtime ?: time();
 $startyear = date('Y', $starttime);
 $endyear = date('Y', $endtime);
 
@@ -63,6 +63,6 @@ $SMARTY->assign('starttime', $starttime);
 $SMARTY->assign('startyear', $startyear);
 $SMARTY->assign('endtime', $endtime);
 $SMARTY->assign('endyear', $endyear);
-$SMARTY->assign('showips', isset($_POST['showips']) ? true : false);
+$SMARTY->assign('showips', isset($_POST['showips']));
 $SMARTY->assign('bars', $bars);
 $SMARTY->assign('trafficorder', $SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download');

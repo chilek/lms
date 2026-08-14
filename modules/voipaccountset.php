@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$ownerid = isset($_GET['ownerid']) ? $_GET['ownerid'] : 0;
+$ownerid = $_GET['ownerid'] ?? 0;
 $access  = isset($_GET['access']) ? 1 : 0;
-$id      = isset($_GET['id']) ? $_GET['id'] : 0;
+$id      = $_GET['id'] ?? 0;
 
 // All customer's voipaccounts
 if ($ownerid && $LMS->CustomerExists($ownerid)) {

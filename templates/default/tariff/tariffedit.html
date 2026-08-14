@@ -96,6 +96,45 @@
                                             <col style="width: 1%;">
                                             <col style="width: 98%;">
                                         </colgroup>
+										{if !empty($serviceproviders)}
+											<tr>
+												<td>
+													{icon name="service"}
+												</td>
+												<td class="nobr">
+													<strong>{trans("Service provider")}</strong>
+												</td>
+												<td>
+													<select name="tariff[serviceproviderid]">
+														<option value="">{trans("— select —")}</option>
+														{foreach $serviceproviders as $serviceprovider}
+															<option value="{$serviceprovider.id}"
+																	{if $serviceprovider.id == $tariff.serviceproviderid} selected{/if}
+															>{$serviceprovider.name|escape}</option>
+														{/foreach}
+													</select>
+												</td>
+											</tr>
+										{/if}
+										<tr>
+											<td>
+												<label for="extid">
+													{icon name="externalid"}
+												</label>
+											</td>
+											<td>
+												<label for="extid" style="white-space: normal;">
+													<strong>{trans("External system identifier")}</strong>
+												</label>
+											</td>
+											<td>
+												<div class="valign-middle">
+													<input type="text" id="extid" class="lms-ui-autogrow" name="tariff[extid]" value="{$tariff.extid|escape}"
+															{tip trigger="extid"}>
+													{hint content="Enter tariff identifier in external system (optional)"}
+												</div>
+											</td>
+										</tr>
                                         <tr>
                                             <td>
                                                 {icon name="money"}
@@ -309,8 +348,8 @@
                                             </td>
                                             <td>
                                                 {foreach $_SESSIONTYPES as $idx => $sessiontype}
-                                                <label>
-                                                    <input type="checkbox" name="tariff[authtype][{$idx}]" value="{$idx}" id="authtype{$idx}" {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"}{if ($tariff.authtype & $idx) == $idx} checked{/if}>
+                                                <label {tip text="`$sessiontype.tip`"}>
+                                                    <input type="checkbox" name="tariff[authtype][{$idx}]" value="{$idx}" id="authtype{$idx}" {tip trigger="authtype`$idx`"}{if ($tariff.authtype & $idx) == $idx} checked{/if}>
                                                     {$sessiontype.label}
                                                 </label><br>
                                                 {/foreach}
@@ -321,13 +360,31 @@
                                                 {icon name="description"}
                                             </td>
                                             <td>
-                                                {trans("Description:")}
+                                                {trans("Description")}
                                             </td>
                                             <td>
-                                                <textarea name="tariff[description]"
-                                                       ROWS="4"
-                                                       COLS="45"
-                                                       {tip text="Enter additional information (optional)"}>{$tariff.description}</textarea>
+                                                <div class="valign-middle">
+                                                    <textarea name="tariff[description]" class="lms-ui-autogrow"
+                                                        rows="4"
+                                                        cols="45">{$tariff.description|escape}</textarea>
+                                                    {hint content="Enter additional information (optional)<br>Text entered here can be visible on customer documents such as contracts, annexes, etc."}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                {icon name="notes"}
+                                            </td>
+                                            <td>
+                                                {trans("Notes")}
+                                            </td>
+                                            <td>
+                                                <div class="valign-middle">
+                                                    <textarea name="tariff[notes]" class="lms-ui-autogrow"
+                                                        rows="4"
+                                                        cols="45">{$tariff.notes|escape}</textarea>
+                                                    {hint content="Enter notes (optional)<br>Text entered here will not be visible on customer documents such as contracts, annexes, etc."}
+                                                </div>
                                             </td>
                                         </tr>
                                     </table>
@@ -339,33 +396,6 @@
                                             <col style="width: 1%;">
                                             <col style="width: 98%;">
                                         </colgroup>
-                                        <tr>
-                                            <td>
-                                                {icon name="upload"}
-                                            </td>
-                                            <td>{trans("Upload rate:")}</td>
-                                            <td>{bitrate_restrictions var=$tariff v="uprate" v_n="uprate_n" tip="Enter minimal warranted upload value (optional)"}</td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>{trans("Upload ceil:")}</td>
-                                            <td>{bitrate_restrictions var=$tariff v="upceil" v_n="upceil_n" tip="Enter maximum upload value (optional)"}</td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>{trans("Upload burst time:")}</td>
-                                            <td>{burst_restrictions var=$tariff v="up_burst_time" v_n="up_burst_time_n" tip="Enter upload burst time (optional)"}</td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>{trans("Upload burst threshold:")}</td>
-                                            <td>{bitrate_restrictions var=$tariff v="up_burst_threshold" v_n="up_burst_threshold_n" tip="Enter upload burst threshold (optional)"}</td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>{trans("Upload burst limit:")}</td>
-                                            <td>{bitrate_restrictions var=$tariff v="up_burst_limit" v_n="up_burst_limit_n" tip="Enter upload burst limit (optional)"}</td>
-                                        </tr>
                                         <tr>
                                             <td>
                                                 {icon name="download"}
@@ -392,6 +422,33 @@
                                             <td></td>
                                             <td>{trans("Download burst limit:")}</td>
                                             <td>{bitrate_restrictions var=$tariff v="down_burst_limit" v_n="down_burst_limit_n" tip="Enter download burst limit (optional)"}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                {icon name="upload"}
+                                            </td>
+                                            <td>{trans("Upload rate:")}</td>
+                                            <td>{bitrate_restrictions var=$tariff v="uprate" v_n="uprate_n" tip="Enter minimal warranted upload value (optional)"}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{trans("Upload ceil:")}</td>
+                                            <td>{bitrate_restrictions var=$tariff v="upceil" v_n="upceil_n" tip="Enter maximum upload value (optional)"}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{trans("Upload burst time:")}</td>
+                                            <td>{burst_restrictions var=$tariff v="up_burst_time" v_n="up_burst_time_n" tip="Enter upload burst time (optional)"}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{trans("Upload burst threshold:")}</td>
+                                            <td>{bitrate_restrictions var=$tariff v="up_burst_threshold" v_n="up_burst_threshold_n" tip="Enter upload burst threshold (optional)"}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{trans("Upload burst limit:")}</td>
+                                            <td>{bitrate_restrictions var=$tariff v="up_burst_limit" v_n="up_burst_limit_n" tip="Enter upload burst limit (optional)"}</td>
                                         </tr>
                                         <tr>
                                             <td>
@@ -557,7 +614,7 @@
                 switch (selected_item) {
                     case "{$smarty.const.SERVICE_PHONE}":
                         $( '#tariff-account-settings' ).hide();
-                        $( '#tariff-capacity-settings' ).hide();
+                        $( '#tariff-capacity-settings' ).show();
                         $( '#tariff-phone-settings' ).show();
                     break;
 

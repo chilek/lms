@@ -90,9 +90,11 @@ function CustomerAssignmentHelper(options) {
 				return $(this).is(':visible');
 			});
 
+/*
 			if ($(this)[0].form.checkValidity()) {
 				$('.schema-tariff-checkbox[data-mandatory]:checkbox').prop('disabled', false);
 			}
+*/
 		});
 
 		$('#promotion-select').change(this.promotionSelectionHandler);
@@ -143,7 +145,7 @@ function CustomerAssignmentHelper(options) {
 		});
 		if (cancelled) {
 			e.stopImmediatePropagation();
-			$('.schema-tariff-checkbox[data-mandatory]:checkbox').prop('disabled', true);
+//			$('.schema-tariff-checkbox[data-mandatory]:checkbox').prop('disabled', true);
 			return false;
 		}
         return true;
@@ -191,7 +193,7 @@ function CustomerAssignmentHelper(options) {
 				var checked = helper.assignmentPromotionAttachments.hasOwnProperty(attachment.id) &&
 					helper.assignmentPromotionAttachments[attachment.id] == attachment.id ||
 					!helper.assignmentPromotionAttachments.hasOwnProperty(attachment.id) &&
-					attachment.checked;
+					parseInt(attachment.checked);
 				if (checked) {
 					allCheckedAttachments++;
 				}
@@ -223,7 +225,7 @@ function CustomerAssignmentHelper(options) {
 				var checked = helper.assignmentPromotionSchemaAttachments.hasOwnProperty(attachment.id) &&
 					helper.assignmentPromotionSchemaAttachments[attachment.id] == attachment.id ||
 					!helper.assignmentPromotionSchemaAttachments.hasOwnProperty(attachment.id) &&
-					attachment.checked;
+					parseInt(attachment.checked);
 				if (checked) {
 					allCheckedAttachments++;
 				}
@@ -290,16 +292,17 @@ function CustomerAssignmentHelper(options) {
 		}));
 
 		selects.each(function() {
-			$(this).find('option').each(function() {
+			var select = $(this);
+			select.find('option').each(function() {
 				var authtype = parseInt($(this).attr('data-tariffaccess'));
 				var location = $(this).attr('data-location');
 				$(this).toggle(
-					((authtype && (authtype & tariffAccess)) || !tariffAccess) &&
+					((authtype && (authtype & tariffAccess)) || !tariffAccess || select.attr('name').indexOf('sphones') != -1) &&
 					(location == location_select || !location_select.length)
 				);
 			});
-			$(this).trigger('lms:multiselect:updated');
-			$(this).trigger('lms:multiselect:toggle_check_all', { checked: $('#check_all_terminals').prop('checked') });
+			select.trigger('lms:multiselect:updated');
+			select.trigger('lms:multiselect:toggle_check_all', { checked: $('#check_all_terminals').prop('checked') });
 		});
 	}
 
@@ -332,12 +335,13 @@ function CustomerAssignmentHelper(options) {
 		}));
 
 		selects.each(function() {
+			var select = $(this);
 			$(this).find('option').each(function() {
 				if (checked) {
 					var authtype = parseInt($(this).attr('data-tariffaccess'));
 					var location = $(this).attr('data-location');
 					$(this).toggle(
-						((authtype && (authtype & tariffAccess)) || !tariffAccess) &&
+						((authtype && (authtype & tariffAccess)) || !tariffAccess || select.attr('name').indexOf('sphones') != -1) &&
 						(location == location_select || !location_select.length)
 					);
 				} else {
@@ -354,6 +358,13 @@ function CustomerAssignmentHelper(options) {
 		$('.schema-tariff-checkbox').trigger('change');
 
 		var location_select = $('#location-select');
+		var location_address_id = $('#location-address-id');
+		var data_address_id = $(location_select.get(0).options[location_select.get(0).selectedIndex]).attr('data-address-id');
+		if (typeof(data_address_id) != 'undefined') {
+			location_address_id.val(data_address_id);
+		} else {
+			location_address_id.val('');
+		}
 		var validationError = !location_select.val().length && $('option:not([value=""])', location_select).length > 1;
 		var errorMessage = location_select.attr('title');
 		location_select.toggleClass('lms-ui-error', validationError)
@@ -416,7 +427,7 @@ function CustomerAssignmentHelper(options) {
 					var label = $(this).attr('data-label');
 					var td = $('<td/>');
 					var html = '';
-					var options;
+					var options, options2;
 
 					if (data.nodes) {
 						html += '<div class="nodes"><img src="img/node.gif"> ' +
@@ -518,7 +529,8 @@ function CustomerAssignmentHelper(options) {
 					$.each(data['with-end-points'], function(key, value) {
 						var location = value.teryt == '1' ? $t('$a (TERYT)', value.location) : value.location;
 						options += '<option value="' + location + '"' +
-							(("location" in selected) && selected.location == location ? ' selected' : '') +
+							' data-address-id="' + value.id + '"' +
+							(("location" in selected) && selected.location == location || ("default_address" in value) ? ' selected' : '') +
 							' data-icon="' + location_type_icons[value.location_type] + '">' +
 							location + '</option>';
 						location_count++;
@@ -530,7 +542,8 @@ function CustomerAssignmentHelper(options) {
 					$.each(data['without-end-points'], function(key, value) {
 						var location = value.teryt == '1' ? $t('$a (TERYT)', value.location) : value.location;
 						options += '<option value="' + location + '"' +
-							(("location" in selected) && selected.location == location ? ' selected' : '') +
+							' data-address-id="' + value.id + '"' +
+							(("location" in selected) && selected.location == location || ("default_address" in value) ? ' selected' : '') +
 							' data-icon="' + location_type_icons[value.location_type] + '">' +
 							location + '</option>';
 						location_count++;
@@ -538,21 +551,75 @@ function CustomerAssignmentHelper(options) {
 					options += '</optgroup>';
 				}
 
+				if (data.hasOwnProperty('document-separation-groups')) {
+					var values = [
+						{
+							value: "",
+							text: ""
+						}
+					];
+					var separateDocumentValue = $('#separatedocument').scombobox('val');
+					var newSeparateDocumentValue = '';
+					$.each(data['document-separation-groups'], function (key, item) {
+						var value = escapeHtml(item);
+						values.push({
+							value: value,
+							text: value
+						});
+						if (separateDocumentValue == value) {
+							newSeparateDocumentValue = separateDocumentValue;
+						}
+					});
+					$('#separatedocument').scombobox('fill', values);
+					$('#separatedocument').scombobox('val', newSeparateDocumentValue);
+				}
+
 				$('#location-select').toggleClass('lms-ui-error', location_count > 1).html(options);
-				initAdvancedSelects('#location-select');
-				$('#location-select').chosen().change(function() {
+				initAdvancedSelectsTest('#location-select');
+				$('#location-select').change(function() {
 					helper.locationSelectionHandler();
 				});
 
-				options = '<option value="-1">' + $t('none') + '</option>';
+				options = '<option value="0">—</option>';
+				options2 = options;
+
 				if (data.addresses) {
 					$.each(data.addresses, function(key, value) {
+						var icon = "";
+						if (value.location_address_type == "0") {
+							icon = "lms-ui-icon-message fa-fw";
+						} else if (value.location_address_type == "1") {
+							icon = "lms-ui-icon-home fa-fw";
+						} else if (value.location_address_type == "2") {
+							icon = "lms-ui-icon-customer-location fa-fw";
+						} else if (value.location_address_type == "3") {
+							icon = "lms-ui-icon-default-customer-location fa-fw";
+						} else if (value.location_address_type == "4") {
+							icon = "lms-ui-icon-document fa-fw";
+						}
+
 						options += '<option value="' + value.address_id + '"' +
+							(icon.length ? ' data-icon="' + icon + '"' : '') +
 							(("recipient_address_id" in selected) && selected.recipient_address_id == value.address_id ? ' selected' : '') + '>' +
-							(value.location_name ? escapeHtml(value.location_name) + ', ' : '') + (value.location ? escapeHtml(value.location) : '') + '</option>';
+							(value.location_name ? escapeHtml(value.location_name) + ', ' : '') +
+							(value.location_ten ? $t("NIP $a", value.location_ten) + ', ' : '') +
+							(value.location ? escapeHtml(value.location) : '') +
+							'</option>';
+
+						options2 += '<option value="' + value.address_id + '"' +
+							(icon.length ? ' data-icon="' + icon + '"' : '') +
+							(("recipient_address_id2" in selected) && selected.recipient_address_id2 == value.address_id ? ' selected' : '') + '>' +
+							(value.location_name ? escapeHtml(value.location_name) + ', ' : '') +
+							(value.location_ten ? $t("NIP $a", value.location_ten) + ', ' : '') +
+							(value.location ? escapeHtml(value.location) : '') +
+							'</option>';
 					});
 				}
 				$('#recipient-select').html(options);
+				initAdvancedSelectsTest('#recipient-select');
+
+				$('#recipient-select2').html(options2);
+				initAdvancedSelectsTest('#recipient-select2');
 
 				$('#a_align_periods').show();
 
@@ -654,7 +721,7 @@ function tariffSelectionHandler() {
 			$('#tax').val(tariffDefaultTaxId).prop('disabled', false);
 		}
 
-		$('#a_attribute').hide();
+		$('#a_attribute').show();
 	} else {
 		let tariffGrossPrice = ((assignmentTariffId && assignmentTariffId == val && assignmentGrossvalue) ? assignmentGrossvalue : selected.attr('data-tariffvalue'));
 		let tariffNetPrice = ((assignmentTariffId && assignmentTariffId == val && assignmentNetvalue) ? assignmentNetvalue : selected.attr('data-tariffnetvalue'));
@@ -715,15 +782,17 @@ function tariffSelectionHandler() {
 			$('#a_tax,#a_type,#a_price,#a_currency,#a_splitpayment,#a_taxcategory,#a_productid,#a_name').hide();
 			$('#a_attribute').show();
 		} else {
+			$('#target_price').change();
+			$("#discount_value").change();
 			$('#a_attribute').show();
 		}
 	}
 
 	if (val == -1) {
-		$('#a_numberplan,#a_paytime,#a_paytype,#a_address,#a_day,#a_options,#a_existingassignments').hide();
+		$('#a_numberplan,#a_paytime,#a_paytype,#a_address,#a_address2,#a_day,#a_options,#a_existingassignments').hide();
 		$('#a_properties').show();
 	} else {
-		$('#a_numberplan,#a_paytime,#a_paytype,#a_address,#a_day').show();
+		$('#a_numberplan,#a_paytime,#a_paytype,#a_address,#a_address2,#a_day').show();
 		$('#backward-period').toggle(val != -2 || !promotion_select);
 		if ((val == -2 && promotion_select) || (val != -2)) {
 			$('#a_options,#a_properties,#a_existingassignments').show();
@@ -746,9 +815,9 @@ function tariffSelectionHandler() {
 
 	if (!assignment_settings.hideFinances) {
 		if (val <= -1) {
-			$('#a_discount').hide();
+			$('.a_discount').hide();
 		} else {
-			$('#a_discount').show();
+			$('.a_discount').show();
 		}
 	}
 
@@ -840,12 +909,14 @@ $("#tax").on('change', function () {
 	}
 });
 
-$("#grossprice").on('change', function () {
+$("#grossprice").change(function () {
 	claculatePriceFromGross();
+	$("#target_price").change();
 });
 
-$("#netprice").on('change', function () {
+$("#netprice").change(function () {
 	claculatePriceFromNet();
+	$("#target_price").change();
 });
 
 $(".format-3f").on('change', function () {
@@ -855,29 +926,107 @@ $(".format-3f").on('change', function () {
 	}
 });
 
-$("#discount_value").on('change', function () {
-	if ($("#discount_type").val() == 2) {
-		let roundedValue = financeRound($(this).val().replaceAll(' ', ''), 3);
-		$(this).val(roundedValue);
+$("#discount_value").change(function () {
+	let discountType = parseInt($("#discount_type").val());
+	let discountValue = parseFloat($(this).val().replaceAll(' ', '').replace(',', '.'));
+	let netFlag = $('#netflag').prop('checked');
+	let targetPriceElem = $("#target_price");
+	let targetPrice;
+
+	if (isNaN(discountValue)) {
+		return;
 	}
 
-	if ($("#discount_type").val() == 1) {
-		let roundedValue = financeRound($(this).val().replaceAll(' ', ''), 2);
-		$(this).val(roundedValue);
+	let price;
+	if (netFlag) {
+		price = $('#netprice').val();
+	} else {
+		price = $('#grossprice').val();
+	}
+	price = parseFloat(price);
+
+	switch (discountType) {
+		case lmsSettings.discountPercentage:
+			discountValue = parseFloat(financeRound(discountValue.toFixed(3), 3).replace(',', '.'));
+			targetPrice = financeRound((price * (100 - discountValue) / 100).toFixed(3), 3);
+			break;
+		case lmsSettings.discountAmount:
+			discountValue = parseFloat(financeRound(discountValue.toFixed(3), 3).replace(',', '.'));
+			targetPrice = financeRound((price - discountValue).toFixed(3), 3);
+			break;
+	}
+	$(this).val(discountValue);
+	targetPriceElem.val(targetPrice);
+});
+
+$("#discount_type").change(function () {
+	let discountType = parseInt($(this).val());
+	let discountValueElem = $("#discount_value");
+	let discountValue = parseFloat(discountValueElem.val().replaceAll(' ', '').replace(',', '.'));
+	let netFlag = $('#netflag').prop('checked');
+	let targetPriceElem = $("#target_price");
+	let targetPrice;
+
+	let price;
+	if (netFlag) {
+		price = $('#netprice').val();
+	} else {
+		price = $('#grossprice').val();
+	}
+	price = parseFloat(price);
+
+	if (!isNaN(discountValue)) {
+		switch (discountType) {
+			case lmsSettings.discountPercentage:
+				discountValue = parseFloat(financeRound(discountValue.toFixed(3), 3).replace(',', '.'));
+				targetPrice = financeRound((price * (100 - discountValue) / 100).toFixed(3), 3);
+				break;
+			case lmsSettings.discountAmount:
+				discountValue = parseFloat(financeRound(discountValue.toFixed(3), 3).replace(',', '.'));
+				targetPrice = financeRound((price - discountValue).toFixed(3), 3);
+				break;
+		}
+		discountValueElem.val(discountValue);
+		targetPriceElem.val(targetPrice);
 	}
 });
 
-$("#discount_type").on('change', function () {
-	let discountValueElem = $("#discount_value");
-	let discountValueElemVal = discountValueElem.val();
-	if (discountValueElemVal) {
-		if ($(this).val() == 2) {
-			let roundedValue = financeRound(discountValueElemVal, 3);
-			discountValueElem.val(roundedValue);
+$('#target_price_trigger').change(function() {
+	var checked = $(this).prop('checked');
+	$('#discount_value,#discount_label').toggle(!checked);
+	$('#target_price,#target_price_label').toggle(checked);
+});
+
+$('#target_price').change(function() {
+	let targetPrice = parseFloat($(this).val().replace(',', '.'));
+	if (isNaN(targetPrice)) {
+		$(this).val('');
+	} else {
+		let netFlag = $('#netflag').prop('checked');
+		let discountValueElem = $('#discount_value');
+		let discountValue = discountValueElem.val();
+		let discountType = parseInt($("#discount_type").val());
+		let price;
+		if (netFlag) {
+			price = $('#netprice').val();
+		} else {
+			price = $('#grossprice').val();
 		}
-		if ($(this).val() == 1) {
-			let roundedValue = financeRound(discountValueElemVal, 2);
-			discountValueElem.val(roundedValue);
+		price = parseFloat(price);
+		if (!isNaN(price)) {
+			let targetDiscount;
+			switch (discountType) {
+				case lmsSettings.discountPercentage:
+					targetDiscount = financeRound((((price - targetPrice) / price) * 100).toFixed(3), 3);
+					break;
+				case lmsSettings.discountAmount:
+					targetDiscount = financeRound((price - targetPrice).toFixed(3), 3);
+					break;
+				default:
+					targetDiscount = discountValue;
+					break;
+			}
+			discountValueElem.val(targetDiscount);
 		}
 	}
 });

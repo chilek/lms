@@ -30,7 +30,7 @@ function smarty_function_number($params, $template)
         'number' => $params['number'],
         'template' => $params['template'],
         'cdate' => $params['time'],
-        'customerid' => isset($params['customerid']) ? $params['customerid'] : null,
+        'customerid' => $params['customerid'] ?? null,
     ));
     if (isset($params['assign'])) {
         $template->assign($params['assign'], $result);

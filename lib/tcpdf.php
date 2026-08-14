@@ -31,13 +31,15 @@
  */
 
 if (!defined('LIB_DIR')) {
-    define('LIB_DIR', dirname(__FILE__));
+    define('LIB_DIR', __DIR__);
 }
 
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . 'pol.php');
 
 class LMSTCPDF extends TCPDF
 {
+    private $producer = '';
+
     /* set own Header function */
     public function Header()
     {

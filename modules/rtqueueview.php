@@ -27,7 +27,6 @@
 $currentuser = Auth::GetCurrentUser();
 $ticketlist_status = ConfigHelper::getConfig('rt.ticketlist_status', ConfigHelper::getConfig('phpui.ticketlist_status'));
 $ticketlist_priority = ConfigHelper::getConfig('rt.ticketlist_priority', ConfigHelper::getConfig('phpui.ticketlist_priority'));
-$ticketlist_pagelimit = ConfigHelper::getConfig('rt.ticketlist_pagelimit', ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $filter['total']));
 $short_pagescroller = ConfigHelper::checkConfig('phpui.short_pagescroller');
 $aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 86400);
 
@@ -59,12 +58,7 @@ if (isset($_GET['action'])) {
 $LMS->CleanupTicketLastView();
 
 if (!empty($_GET['ticketid']) && isset($_GET['ticketwatching'])) {
-    if ($_GET['ticketwatching']) {
-        $LMS->changeTicketWatching($_GET['ticketid'], 1);
-    } else {
-        $LMS->changeTicketWatching($_GET['ticketid'], 0);
-    }
-
+    $LMS->changeTicketWatching($_GET['ticketid'], intval($_GET['ticketwatching']));
     $SESSION->redirect_to_history_entry('m=rtticketinfo&id=' . $_GET['ticketid']);
 }
 
@@ -73,12 +67,8 @@ if (isset($_GET['id'])) {
     if ($_GET['id'] == 'all') {
         $filter['ids'] = null;
     } else {
-        if (is_array($_GET['id'])) {
-            $filter['ids'] = Utils::filterIntegers($_GET['id']);
-        } elseif (intval($_GET['id'])) {
-            $filter['ids'] = Utils::filterIntegers(array($_GET['id']));
-        }
-        if (!isset($filter['ids']) || empty($filter['ids'])) {
+        $filter['ids'] = Utils::filterIntegers(is_array($_GET['id']) ? $_GET['id'] : array($_GET['id']));
+        if (empty($filter['ids'])) {
             $SESSION->redirect('?m=rtqueuelist');
         }
         if (isset($filter['ids'])) {
@@ -267,7 +257,7 @@ if (isset($_GET['s'])) {
 } elseif (!isset($filter['state'])) {
     $filter['state'] = $ticketlist_status;
     if (isset($filter['state']) && strlen($filter['state'])) {
-        $filter['state'] = explode(',', $filter['state']);
+        $filter['state'] = Utils::filterIntegers(explode(',', $filter['state']));
     }
 }
 if (is_array($filter['state'])) {
@@ -294,7 +284,7 @@ if (isset($_GET['priority'])) {
 } elseif (!isset($filter['priority'])) {
     $filter['priority'] = $ticketlist_priority;
     if (isset($filter['priority']) && strlen($filter['priority'])) {
-        $filter['priority'] = explode(',', $filter['priority']);
+        $filter['priority'] = Utils::filterIntegers(explode(',', $filter['priority']));
     }
 }
 
@@ -303,6 +293,18 @@ if (isset($_GET['source'])) {
     $filter['source'] = intval($_GET['source']);
 } elseif (!isset($filter['source'])) {
     $filter['source'] = -1;
+}
+
+// cause
+if (isset($_GET['cause'])) {
+    $cause = $_GET['cause'];
+    if ($cause === '') {
+        $filter['cause'] = null;
+    } else {
+        $filter['cause'] = intval($cause);
+    }
+} elseif (!isset($filter['cause'])) {
+    $filter['cause'] = null;
 }
 
 // netnodeid's
@@ -341,7 +343,7 @@ if (isset($_GET['rights'])) {
 
 if (isset($_GET['page'])) {
     $filter['page'] = intval($_GET['page']);
-} elseif (!isset($filter['page']) || empty($filter['page'])) {
+} elseif (empty($filter['page'])) {
     $filter['page'] = 1;
 }
 
@@ -353,6 +355,8 @@ $filter['netdevids'] = null;
 $filter['count'] = true;
 
 $filter['total'] = intval($LMS->GetQueueContents($filter));
+
+$ticketlist_pagelimit = ConfigHelper::getConfig('rt.ticketlist_pagelimit', ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $filter['total']));
 
 $filter['limit'] = intval($ticketlist_pagelimit);
 $filter['offset'] = ($filter['page'] - 1) * $filter['limit'];
@@ -381,10 +385,10 @@ unset($queue['total'], $queue['state'], $queue['priority'], $queue['source'], $q
 $queues = $LMS->GetQueueList(array('stats' => false));
 $categories = $LMS->GetUserCategories($currentuser);
 
-$projects = $LMS->GetProjects('name', array());
+$projects = $LMS->GetProjects();
 unset($projects['total'], $projects['order'], $projects['direction']);
 
-$netnodelist = $LMS->GetNetNodeList(array(), 'name');
+$netnodelist = $LMS->GetNetNodeList();
 unset($netnodelist['total'], $netnodelist['order'], $netnodelist['direction']);
 
 $SESSION->remove('backid');

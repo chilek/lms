@@ -26,87 +26,91 @@
 
 class SYSLOG
 {
-    const RES_USER = 1;
-    const RES_ASSIGN = 2;
-    const RES_LIAB = 3;
-    const RES_NODEASSIGN = 4;
-    const RES_NODE = 5;
-    const RES_MAC = 6;
-    const RES_CUST = 7;
-    const RES_CUSTCONTACT = 8;
-    const RES_IMCONTACT = 9;
-    const RES_CUSTGROUP = 10;
-    const RES_CUSTASSIGN = 11;
-    const RES_TARIFF = 12;
-    const RES_NODEGROUP = 13;
-    const RES_NODEGROUPASSIGN = 14;
-    const RES_TAX = 15;
-    const RES_NUMPLAN = 16;
-    const RES_NUMPLANASSIGN = 17;
-    const RES_DIV = 18;
-    const RES_COUNTRY = 19;
-    const RES_STATE = 20;
-    const RES_ZIP = 21;
-    const RES_HOST = 22;
-    const RES_DAEMONINST = 23;
-    const RES_DAEMONCONF = 24;
-    const RES_CASHSOURCE = 25;
-    const RES_UICONF = 26;
-    const RES_PROMO = 27;
-    const RES_PROMOSCHEMA = 28;
-    const RES_PROMOASSIGN = 29;
-    const RES_EXCLGROUP = 30;
-    const RES_DBBACKUP = 31;
-    const RES_PAYMENT = 32;
-    const RES_CASHIMPORT = 33;
-    const RES_SOURCEFILE = 34;
-    const RES_CASH = 35;
-    const RES_DOC = 36;
-    const RES_INVOICECONT = 37;
-    const RES_RECEIPTCONT = 38;
-    const RES_DNOTECONT = 39;
-    const RES_CASHREG = 40;
-    const RES_CASHRIGHT = 41;
-    const RES_CASHREGHIST = 42;
-    const RES_NETWORK = 43;
-    const RES_NETDEV = 44;
-    const RES_NETLINK = 45;
-    const RES_MGMTURL = 46;
-    const RES_TMPL = 47;
-    const RES_RADIOSECTOR = 48;
-    const RES_USERGROUP = 49;
-    const RES_USERASSIGN = 50;
-    const RES_TARIFFTAG = 51;
-    const RES_TARIFFASSIGN = 52;
-    const RES_EVENT = 53;
-    const RES_EVENTASSIGN = 54;
-    const RES_ADDRESS = 55;
-    const RES_TICKET = 56;
-    const RES_DOCATTACH = 57;
-    const RES_DOCCONTENT = 58;
-    const RES_CUSTCONSENT = 59;
-    const RES_CUSTNOTE = 60;
-    const RES_ROUTEDNET = 61;
-    const RES_VLAN = 62;
-    const RES_NUMPLANUSER = 63;
-    const RES_NETDEV_MAC = 64;
-    const RES_VOIP_ACCOUNT = 65;
-    const RES_VOIP_ACCOUNT_NUMBER = 66;
-    const RES_NETNODE = 67;
-    const RES_TARIFF_PRICE_VARIANT = 68;
+    public const RES_USER = 1;
+    public const RES_ASSIGN = 2;
+    public const RES_LIAB = 3;
+    public const RES_NODEASSIGN = 4;
+    public const RES_NODE = 5;
+    public const RES_MAC = 6;
+    public const RES_CUST = 7;
+    public const RES_CUSTCONTACT = 8;
+    public const RES_IMCONTACT = 9;
+    public const RES_CUSTGROUP = 10;
+    public const RES_CUSTASSIGN = 11;
+    public const RES_TARIFF = 12;
+    public const RES_NODEGROUP = 13;
+    public const RES_NODEGROUPASSIGN = 14;
+    public const RES_TAX = 15;
+    public const RES_NUMPLAN = 16;
+    public const RES_NUMPLANASSIGN = 17;
+    public const RES_DIV = 18;
+    public const RES_COUNTRY = 19;
+    public const RES_STATE = 20;
+    public const RES_ZIP = 21;
+    public const RES_HOST = 22;
+    public const RES_DAEMONINST = 23;
+    public const RES_DAEMONCONF = 24;
+    public const RES_CASHSOURCE = 25;
+    public const RES_UICONF = 26;
+    public const RES_PROMO = 27;
+    public const RES_PROMOSCHEMA = 28;
+    public const RES_PROMOASSIGN = 29;
+    public const RES_EXCLGROUP = 30;
+    public const RES_DBBACKUP = 31;
+    public const RES_PAYMENT = 32;
+    public const RES_CASHIMPORT = 33;
+    public const RES_SOURCEFILE = 34;
+    public const RES_CASH = 35;
+    public const RES_DOC = 36;
+    public const RES_INVOICECONT = 37;
+    public const RES_RECEIPTCONT = 38;
+    public const RES_DNOTECONT = 39;
+    public const RES_CASHREG = 40;
+    public const RES_CASHRIGHT = 41;
+    public const RES_CASHREGHIST = 42;
+    public const RES_NETWORK = 43;
+    public const RES_NETDEV = 44;
+    public const RES_NETLINK = 45;
+    public const RES_MGMTURL = 46;
+    public const RES_TMPL = 47;
+    public const RES_RADIOSECTOR = 48;
+    public const RES_USERGROUP = 49;
+    public const RES_USERASSIGN = 50;
+    public const RES_TARIFFTAG = 51;
+    public const RES_TARIFFASSIGN = 52;
+    public const RES_EVENT = 53;
+    public const RES_EVENTASSIGN = 54;
+    public const RES_ADDRESS = 55;
+    public const RES_TICKET = 56;
+    public const RES_DOCATTACH = 57;
+    public const RES_DOCCONTENT = 58;
+    public const RES_CUSTCONSENT = 59;
+    public const RES_CUSTNOTE = 60;
+    public const RES_ROUTEDNET = 61;
+    public const RES_VLAN = 62;
+    public const RES_NUMPLANUSER = 63;
+    public const RES_NETDEV_MAC = 64;
+    public const RES_VOIP_ACCOUNT = 65;
+    public const RES_VOIP_ACCOUNT_NUMBER = 66;
+    public const RES_NETNODE = 67;
+    public const RES_TARIFF_PRICE_VARIANT = 68;
+    public const RES_TICKET_MESSAGE = 69;
+    public const RES_QUEUE = 70;
 
-    const OPER_ADD = 1;
-    const OPER_DELETE = 2;
-    const OPER_UPDATE = 3;
+    public const OPER_ADD = 1;
+    public const OPER_DELETE = 2;
+    public const OPER_UPDATE = 3;
 
-    const OPER_GET = 4;
-    const OPER_DBBACKUPRECOVER = 240;
-    const OPER_USERPASSWDCHANGE = 251;
-    const OPER_USERNOACCESS = 252;
-    const OPER_USERLOGFAIL = 253;
-    const OPER_USERLOGIN = 254;
-    const OPER_USERLOGOUT = 255;
-    const OPER_USERAUTCHANGE = 256;
+    public const OPER_GET = 4;
+    public const OPER_SSN_RESERVATION_CHECK_ERROR = 238;
+    public const OPER_SSN_RESERVATION_CHECK = 239;
+    public const OPER_DBBACKUPRECOVER = 240;
+    public const OPER_USERPASSWDCHANGE = 251;
+    public const OPER_USERNOACCESS = 252;
+    public const OPER_USERLOGFAIL = 253;
+    public const OPER_USERLOGIN = 254;
+    public const OPER_USERLOGOUT = 255;
+    public const OPER_USERAUTCHANGE = 256;
 
     private static $resources = array(
         self::RES_USER => 'user<!syslog>',
@@ -177,6 +181,8 @@ class SYSLOG
         self::RES_VOIP_ACCOUNT_NUMBER => 'VoIP account number<!syslog>',
         self::RES_NETNODE => 'network node<!syslog>',
         self::RES_TARIFF_PRICE_VARIANT => 'tariff price variant<!syslog>',
+        self::RES_TICKET_MESSAGE => 'ticket message<!syslog>',
+        self::RES_QUEUE => 'queue<!syslog>',
     );
     private static $resource_keys = array(
         self::RES_USER => 'userid',
@@ -247,12 +253,16 @@ class SYSLOG
         self::RES_VOIP_ACCOUNT_NUMBER => 'voipnumberid',
         self::RES_NETNODE => 'netnodeid',
         self::RES_TARIFF_PRICE_VARIANT => 'tariffpricevariantid',
+        self::RES_TICKET_MESSAGE => 'ticketid',
+        self::RES_QUEUE => 'queueid',
     );
     private static $operations = array(
         self::OPER_ADD => 'addition<!syslog>',
         self::OPER_DELETE => 'deletion<!syslog>',
         self::OPER_UPDATE => 'update<!syslog>',
         self::OPER_GET => 'get<!syslog>',
+        self::OPER_SSN_RESERVATION_CHECK_ERROR => 'SSN reservation check error<!syslog>',
+        self::OPER_SSN_RESERVATION_CHECK => 'SSN reservation check<!syslog>',
         self::OPER_DBBACKUPRECOVER => 'recover<!syslog>',
         self::OPER_USERPASSWDCHANGE => 'password change<!syslog>',
         self::OPER_USERNOACCESS => 'access denied<!syslog>',
@@ -265,6 +275,8 @@ class SYSLOG
         self::OPER_DELETE => 'color: red',
         self::OPER_UPDATE => 'color: blue',
         self::OPER_GET => 'color: black',
+        self::OPER_SSN_RESERVATION_CHECK_ERROR => 'color: red',
+        self::OPER_SSN_RESERVATION_CHECK => 'color: red',
         self::OPER_DBBACKUPRECOVER => 'color: aqua',
         self::OPER_USERPASSWDCHANGE => 'color: navy',
         self::OPER_USERNOACCESS => 'color: purple',
@@ -386,19 +398,19 @@ class SYSLOG
 
     public function GetTransactions($params)
     {
-        $key = (isset($params['key']) && !empty($params['key']) ? $params['key'] : '');
+        $key = (!empty($params['key']) ? $params['key'] : '');
         $value = (isset($params['value']) && preg_match('/^[0-9]+$/', $params['value']) ? $params['value'] : '');
-        $propname = (isset($params['propname']) && !empty($params['propname']) ? $params['propname'] : '');
-        $propvalue = (isset($params['propvalue']) ? $params['propvalue'] : '');
-        $userid = (isset($params['userid']) && !empty($params['userid']) ? intval($params['userid']) : null);
+        $propname = (!empty($params['propname']) ? $params['propname'] : '');
+        $propvalue = ($params['propvalue'] ?? '');
+        $userid = (!empty($params['userid']) ? intval($params['userid']) : null);
         $module = isset($params['module']) && strlen($params['module']) ? $params['module'] : null;
-        $offset = (isset($params['offset']) && !empty($params['offset']) ? intval($params['offset']) : 0);
-        $limit = (isset($params['limit']) && !empty($params['limit']) ? intval($params['limit']) : 20);
+        $offset = (!empty($params['offset']) ? intval($params['offset']) : 0);
+        $limit = (!empty($params['limit']) ? intval($params['limit']) : 20);
         $order = (isset($params['order']) && preg_match('/ASC/i', $params['order']) ? 'ASC' : 'DESC');
-        $datefrom = (isset($params['datefrom']) && !empty($params['datefrom']) ? intval($params['datefrom']) : 0);
-        $dateto = (isset($params['dateto']) && !empty($params['dateto']) ? intval($params['dateto']) : 0);
-        $resource = (isset($params['resource']) && !empty($params['resource']) ? $params['resource'] : 0);
-        $details = (isset($params['details'])) && !empty($params['details']);
+        $datefrom = (!empty($params['datefrom']) ? intval($params['datefrom']) : 0);
+        $dateto = (!empty($params['dateto']) ? intval($params['dateto']) : 0);
+        $resource = (!empty($params['resource']) ? $params['resource'] : 0);
+        $details = !empty($params['details']);
 
         $args = array();
         $where = array();
@@ -505,9 +517,9 @@ class SYSLOG
             foreach ($trans as &$tran) {
                 $this->_decodeTransaction(
                     $tran,
-                    isset($transaction_messages[$tran['id']]) ? $transaction_messages[$tran['id']] : null,
-                    isset($transaction_keys[$tran['id']]) ? $transaction_keys[$tran['id']] : null,
-                    isset($transaction_data[$tran['id']]) ? $transaction_data[$tran['id']] : null
+                    $transaction_messages[$tran['id']] ?? null,
+                    $transaction_keys[$tran['id']] ?? null,
+                    $transaction_data[$tran['id']] ?? null
                 );
             }
             unset($tran);
@@ -647,7 +659,7 @@ class SYSLOG
                     foreach ($msg['keys'] as $keyname => &$key) {
                         $msg['text'] .= ', ' . $keyname . ': ' . $key['value'];
                         $key_name = preg_replace('/^[a-z]+_/i', '', $keyname);
-                        $key['type'] = isset(self::$resourceKeyByName[$key_name]) ? self::$resourceKeyByName[$key_name] : 0;
+                        $key['type'] = self::$resourceKeyByName[$key_name] ?? 0;
                     }
                     unset($key);
                 }
@@ -716,7 +728,7 @@ class SYSLOG
     {
         $type = $resource['type'];
         $id = $resource['id'];
-        $date = !isset($resource['date']) || empty($resource['date']) ? time() : intval($resource['date']);
+        $date = empty($resource['date']) ? time() : intval($resource['date']);
         // get all possible resource properties
         $names = $this->GetResourcePropertyNames($type);
         if (empty($names)) {

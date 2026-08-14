@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-ini_set('memory_limit', '512M');
+//ini_set('memory_limit', '512M');
 ini_set('max_execution_time', '0');
 
 define('SERVICE_TYPE_INTERNET', defined('SERVICE_INTERNET') ? SERVICE_INTERNET : TARIFF_INTERNET);
@@ -175,7 +175,7 @@ function getLongitudeDistDiff($m, $lat)
 function getGPSdistance($p1_lon, $p1_lat, $p2_lon, $p2_lat)
 {
     // get distance between two points in kilometers
-    $distance = sqrt(pow($p2_lat - $p1_lat, 2) + pow(cos($p1_lat * M_PI / 180) * ($p2_lon - $p1_lon), 2)) * 40075.704 / 360;
+    $distance = sqrt(($p2_lat - $p1_lat) ** 2 + (cos($p1_lat * M_PI / 180) * ($p2_lon - $p1_lon)) ** 2) * 40075.704 / 360;
 
     // change kilometers to meters
     $distance *= 1000;
@@ -546,8 +546,8 @@ if ($netdevices) {
 			LEFT JOIN netnodes nndst ON nndst.id = nddst.netnodeid
 			LEFT JOIN netradiosectors rsdst ON rsdst.id = nl.dstradiosector
 			WHERE (src = ? OR dst = ?)
-				AND ((ndsrc.netnodeid IS NOT NULL AND nnsrc.ownership = 2)
-					OR (nddst.netnodeid IS NOT NULL AND nndst.ownership = 2))
+				AND ((ndsrc.netnodeid IS NOT NULL AND nnsrc.ownership = " . NET_ELEMENT_OWNERSHIP_FOREIGN . ")
+					OR (nddst.netnodeid IS NOT NULL AND nndst.ownership = " . NET_ELEMENT_OWNERSHIP_FOREIGN . "))
 			GROUP BY nl.type, nl.technology, speed, freq",
             array($netdevice['id'], $netdevice['id'], $netdevice['id'])
         );
@@ -565,8 +565,8 @@ if ($netdevices) {
 			LEFT JOIN netnodes nndst ON nndst.id = nddst.netnodeid
 			LEFT JOIN netradiosectors rsdst ON rsdst.id = nl.dstradiosector
 			WHERE (src = ? OR dst = ?)
-				AND (ndsrc.netnodeid IS NULL OR nnsrc.ownership < 2)
-				AND (nddst.netnodeid IS NULL OR nndst.ownership < 2)
+				AND (ndsrc.netnodeid IS NULL OR nnsrc.ownership < " . NET_ELEMENT_OWNERSHIP_FOREIGN . ")
+				AND (nddst.netnodeid IS NULL OR nndst.ownership < " . NET_ELEMENT_OWNERSHIP_FOREIGN . ")
 			GROUP BY nl.type, nl.technology, speed, freq",
             array($netdevice['id'], $netdevice['id'], $netdevice['id'])
         );
@@ -762,7 +762,7 @@ if ($netdevices) {
                 $netnodes[$netnodename]['type'] = 8;
                 $netnodes[$netnodename]['uip'] = 0;
                 $netnodes[$netnodename]['miar'] = 0;
-                $netnodes[$netnodename]['ownership'] = 0;
+                $netnodes[$netnodename]['ownership'] = NET_ELEMENT_OWNERSHIP_OWN;
                 $netnodes[$netnodename]['coowner'] = '';
 
                 if (isset($teryt_cities[$netdevice['location_city']])) {
@@ -1062,26 +1062,28 @@ if ($netnodes) {
             count($netnode['invproject']) == 1 ? $netnode['invproject'][0] : '';
         }
 
-        if ($netnode['ownership'] < 2) {
+        if ($netnode['ownership'] < NET_ELEMENT_OWNERSHIP_FOREIGN) {
             $data = array(
                 'ww_id' => $netnode['id'],
                 'ww_ownership' => $NETELEMENTOWNERSHIPS[$netnode['ownership']],
                 'ww_coowner' => $netnode['coowner'],
                 'ww_coloc' => '',
-                'ww_state' => isset($netnode['area_woj']) ? $netnode['area_woj']
-                    : "LMS netdevinfo ID's:" . implode(' ', $netnode['netdevices']) . "," . implode(',', array_fill(0, 9, '')),
-                'ww_district' => isset($netnode['area_pow']) ? $netnode['area_pow'] : '',
-                'ww_borough' => isset($netnode['area_gmi']) ? $netnode['area_gmi'] : '',
-                'ww_terc' => isset($netnode['area_terc']) ? $netnode['area_terc'] : '',
-                'ww_city' => isset($netnode['area_city']) ? $netnode['area_city'] : $netnode['location_city_name'],
-                'ww_simc' => isset($netnode['area_simc']) ? $netnode['area_simc'] : '',
+                'ww_state' => $netnode['area_woj'] ?? "LMS netdevinfo ID's:" . implode(
+                    ' ',
+                    $netnode['netdevices']
+                ) . "," . implode(',', array_fill(0, 9, '')),
+                'ww_district' => $netnode['area_pow'] ?? '',
+                'ww_borough' => $netnode['area_gmi'] ?? '',
+                'ww_terc' => $netnode['area_terc'] ?? '',
+                'ww_city' => $netnode['area_city'] ?? $netnode['location_city_name'],
+                'ww_simc' => $netnode['area_simc'] ?? '',
                 'ww_street' => isset($netnode['address_ulica']) ? ((!empty($netnode['address_cecha']) && $netnode['address_cecha'] != 'inne'
                     ? $netnode['address_cecha'] . ' ' : '') . $netnode['address_ulica']) : $netnode['location_street_name'],
-                'ww_ulic' => isset($netnode['address_symul']) ? $netnode['address_symul'] : '',
+                'ww_ulic' => $netnode['address_symul'] ?? '',
                 'ww_house' => str_replace(' ', '', $netnode['address_budynek']),
                 'ww_zip' => $netnode['location_zip'],
-                'ww_latitude' =>  isset($netnode['latitude']) ? $netnode['latitude'] : '',
-                'ww_longitude' => isset($netnode['longitude']) ? $netnode['longitude'] : '',
+                'ww_latitude' => $netnode['latitude'] ?? '',
+                'ww_longitude' => $netnode['longitude'] ?? '',
                 'ww_objtype' => $NETELEMENTTYPES[$netnode['type']],
                 'ww_uip' => $netnode['uip'] ? 'Tak' : 'Nie',
                 'ww_miar' => $netnode['miar'] ? 'Tak' : 'Nie',
@@ -1098,20 +1100,22 @@ if ($netnodes) {
                 'wo_id' => $netnode['id'],
                 'wo_agreement' => 'Umowa o dostęp do sieci telekomunikacyjnej',
                 'wo_coowner' => $netnode['coowner'],
-                'wo_state' => isset($netnode['area_woj']) ? $netnode['area_woj']
-                    : "LMS netdevinfo ID's:" . implode(' ', $netnode['netdevices']) . "," . implode(',', array_fill(0, 9, '')),
-                'wo_district' => isset($netnode['area_pow']) ? $netnode['area_pow'] : '',
-                'wo_borough' => isset($netnode['area_gmi']) ? $netnode['area_gmi'] : '',
-                'wo_terc' => isset($netnode['area_terc']) ? $netnode['area_terc'] : '',
-                'wo_city' => isset($netnode['area_city']) ? $netnode['area_city'] : $netnode['location_city_name'],
-                'wo_simc' => isset($netnode['area_simc']) ? $netnode['area_simc'] : '',
+                'wo_state' => $netnode['area_woj'] ?? "LMS netdevinfo ID's:" . implode(
+                    ' ',
+                    $netnode['netdevices']
+                ) . "," . implode(',', array_fill(0, 9, '')),
+                'wo_district' => $netnode['area_pow'] ?? '',
+                'wo_borough' => $netnode['area_gmi'] ?? '',
+                'wo_terc' => $netnode['area_terc'] ?? '',
+                'wo_city' => $netnode['area_city'] ?? $netnode['location_city_name'],
+                'wo_simc' => $netnode['area_simc'] ?? '',
                 'wo_street' => isset($netnode['address_ulica']) ? ((!empty($netnode['address_cecha']) && $netnode['address_cecha'] != 'inne'
                     ? $netnode['address_cecha'] . ' ' : '') . $netnode['address_ulica']) : $netnode['location_street_name'],
-                'wo_ulic' => isset($netnode['address_symul']) ? $netnode['address_symul'] : '',
+                'wo_ulic' => $netnode['address_symul'] ?? '',
                 'wo_house' => str_replace(' ', '', $netnode['address_budynek']),
                 'wo_zip' => $netnode['location_zip'],
-                'wo_latitude' =>  isset($netnode['latitude']) ? $netnode['latitude'] : '',
-                'wo_longitude' => isset($netnode['longitude']) ? $netnode['longitude'] : '',
+                'wo_latitude' => $netnode['latitude'] ?? '',
+                'wo_longitude' => $netnode['longitude'] ?? '',
                 'wo_objtype' => $NETELEMENTTYPES[$netnode['type']],
                 'wo_invproject' => $netnode['invproject'],
             );
@@ -1121,7 +1125,7 @@ if ($netnodes) {
             }
         }
 
-        if ($netnode['ownership'] == 2) {
+        if ($netnode['ownership'] == NET_ELEMENT_OWNERSHIP_FOREIGN) {
             continue;
         }
 
@@ -1344,7 +1348,7 @@ if ($netnodes) {
         if ($customer_netdevices) {
             // collect ranges from customer uni links
             $uni_ranges = array();
-            if (isset($netnode['uni_links']) && !empty($netnode['uni_links'])) {
+            if (!empty($netnode['uni_links'])) {
                 foreach ($netnode['uni_links'] as $uni_link_id) {
                     $uni_link = &$uni_links[$uni_link_id];
                     // $uni_link['nodes']
@@ -1596,14 +1600,14 @@ if ($netnodes) {
                     foreach ($personalnodes as $servicetype => $servicenodes) {
                         $services = array();
                         foreach (array_fill(0, 11, '0') as $key => $value) {
-                            $services[] = isset($servicenodes[$key]) ? $servicenodes[$key] : $value;
+                            $services[] = $servicenodes[$key] ?? $value;
                         }
                         $personalnodes[$servicetype] = $services;
                     }
                     foreach ($commercialnodes as $servicetype => $servicenodes) {
                         $services = array();
                         foreach (array_fill(0, 11, '0') as $key => $value) {
-                            $services[] = isset($servicenodes[$key]) ? $servicenodes[$key] : $value;
+                            $services[] = $servicenodes[$key] ?? $value;
                         }
                         $commercialnodes[$servicetype] = $services;
                     }
@@ -1623,12 +1627,12 @@ if ($netnodes) {
                         'zas_leasetype' => '',
                         'zas_foreignerid' => '',
                         'zas_nodeid' => $netnode['id'],
-                        'zas_state' => isset($teryt['area_woj']) ? $teryt['area_woj'] : '',
-                        'zas_district' => isset($teryt['area_pow']) ? $teryt['area_pow'] : '',
-                        'zas_borough' => isset($teryt['area_gmi']) ? $teryt['area_gmi'] : '',
-                        'zas_terc' => isset($teryt['area_terc']) ? $teryt['area_terc'] : '',
-                        'zas_city' => isset($teryt['area_city']) ? $teryt['area_city'] : $range['location_city_name'],
-                        'zas_simc' => isset($teryt['area_simc']) ? $teryt['area_simc'] : '',
+                        'zas_state' => $teryt['area_woj'] ?? '',
+                        'zas_district' => $teryt['area_pow'] ?? '',
+                        'zas_borough' => $teryt['area_gmi'] ?? '',
+                        'zas_terc' => $teryt['area_terc'] ?? '',
+                        'zas_city' => $teryt['area_city'] ?? $range['location_city_name'],
+                        'zas_simc' => $teryt['area_simc'] ?? '',
                         'zas_street' => isset($teryt['address_ulica']) ? ((!empty($teryt['address_cecha']) && $teryt['address_cecha'] != 'inne'
                             ? $teryt['address_cecha'] . ' ' : '') . $teryt['address_ulica']) : $range['location_street_name'],
                         'zas_ulic' => $teryt['address_symul'],
@@ -1776,19 +1780,19 @@ if ($netnodes) {
                 'zas_leasetype' => '',
                 'zas_foreignerid' => '',
                 'zas_nodeid' => $netnode['id'],
-                'zas_state' => isset($netnode['area_woj']) ? $netnode['area_woj'] : '',
-                'zas_district' => isset($netnode['area_pow']) ? $netnode['area_pow'] : '',
-                'zas_borough' => isset($netnode['area_gmi']) ? $netnode['area_gmi'] : '',
-                'zas_terc' => isset($netnode['area_terc']) ? $netnode['area_terc'] : '',
-                'zas_city' => isset($netnode['area_city']) ? $netnode['area_city'] : $range['location_city_name'],
-                'zas_simc' => isset($netnode['area_simc']) ? $netnode['area_simc'] : '',
+                'zas_state' => $netnode['area_woj'] ?? '',
+                'zas_district' => $netnode['area_pow'] ?? '',
+                'zas_borough' => $netnode['area_gmi'] ?? '',
+                'zas_terc' => $netnode['area_terc'] ?? '',
+                'zas_city' => $netnode['area_city'] ?? $range['location_city_name'],
+                'zas_simc' => $netnode['area_simc'] ?? '',
                 'zas_street' => isset($netnode['address_ulica']) ? ((!empty($netnode['address_cecha']) && $netnode['address_cecha'] != 'inne'
                     ? $netnode['address_cecha'] . ' ' : '') . $netnode['address_ulica']) : $range['location_street_name'],
-                'zas_ulic' => isset($netnode['address_symul']) ? $netnode['address_symul'] : '',
+                'zas_ulic' => $netnode['address_symul'] ?? '',
                 'zas_house' => str_replace(' ', '', $netnode['address_budynek']),
-                'zas_zip' => isset($netnode['location_zip']) ? $netnode['location_zip'] : '',
-                'zas_latitude' => isset($netnode['latitude']) ? $netnode['latitude'] : '',
-                'zas_longitude' => isset($netnode['longitude']) ? $netnode['longitude'] : '',
+                'zas_zip' => $netnode['location_zip'] ?? '',
+                'zas_latitude' => $netnode['latitude'] ?? '',
+                'zas_longitude' => $netnode['longitude'] ?? '',
                 'zas_tech' => $range_technology,
                 'zas_ltech' => $range_linktechnology,
                 'zas_phonepots' => 'Nie',
@@ -2055,7 +2059,7 @@ if ($netdevices) {
                             //$netnodes[$netdevnetnode]['distports']++;
                             $foreign = false;
 
-                            if ($netnodes[$netdevnetnode]['ownership'] == 2 && $netnodes[$dstnetnode]['ownership'] < 2) {
+                            if ($netnodes[$netdevnetnode]['ownership'] == NET_ELEMENT_OWNERSHIP_FOREIGN && $netnodes[$dstnetnode]['ownership'] < NET_ELEMENT_OWNERSHIP_FOREIGN) {
                                 $invproject = strlen($netnodes[$dstnetnode]['invproject']) ? $netnodes[$dstnetnode]['invproject'] : '';
                                 $netintid = $netnodes[$dstnetnode]['backbonenetintid'][$invproject][$netnodes[$dstnetnode]['status']][$netlink['type']][$netlink['technology']][$netlink['speed']];
                                 $data = array(
@@ -2078,7 +2082,7 @@ if ($netdevices) {
                                 $netconnectionid++;
                                 $foreign = true;
                             }
-                            if ($netnodes[$netdevnetnode]['ownership'] < 2 && $netnodes[$dstnetnode]['ownership'] == 2) {
+                            if ($netnodes[$netdevnetnode]['ownership'] < NET_ELEMENT_OWNERSHIP_FOREIGN && $netnodes[$dstnetnode]['ownership'] == NET_ELEMENT_OWNERSHIP_FOREIGN) {
                                 $invproject = strlen($netnodes[$netdevnetnode]['invproject']) ? $netnodes[$netdevnetnode]['invproject'] : '';
                                 $netintid = $netnodes[$netdevnetnode]['backbonenetintid'][$invproject][$netnodes[$netdevnetnode]['status']][$netlink['type']][$netlink['technology']][$netlink['speed']];
                                 $data = array(
@@ -2133,7 +2137,7 @@ if ($netdevices) {
                         //$netnodes[$netdevnetnode]['distports']++;
                         $foreign = false;
 
-                        if ($netnodes[$netdevnetnode]['ownership'] == 2 && $netnodes[$srcnetnode]['ownership'] < 2) {
+                        if ($netnodes[$netdevnetnode]['ownership'] == NET_ELEMENT_OWNERSHIP_FOREIGN && $netnodes[$srcnetnode]['ownership'] < NET_ELEMENT_OWNERSHIP_FOREIGN) {
                             $invproject = strlen($netnodes[$srcnetnode]['invproject']) ? $netnodes[$srcnetnode]['invproject'] : '';
                             $netintid = $netnodes[$srcnetnode]['backbonenetintid'][$invproject][$netnodes[$srcnetnode]['status']][$netlink['type']][$netlink['technology']][$netlink['speed']];
                             $data = array(
@@ -2155,7 +2159,7 @@ if ($netdevices) {
                             $netconnectionid++;
                             $foreign = true;
                         }
-                        if ($netnodes[$netdevnetnode]['ownership'] < 2 && $netnodes[$srcnetnode]['ownership'] == 2) {
+                        if ($netnodes[$netdevnetnode]['ownership'] < NET_ELEMENT_OWNERSHIP_FOREIGN && $netnodes[$srcnetnode]['ownership'] == NET_ELEMENT_OWNERSHIP_FOREIGN) {
                             $invproject = strlen($netnodes[$netdevnetnode]['invproject']) ? $netnodes[$netdevnetnode]['invproject'] : '';
                             $netintid = $netnodes[$netdevnetnode]['backbonenetintid'][$invproject][$netnodes[$netdevnetnode]['status']][$netlink['type']][$netlink['technology']][$netlink['speed']];
                             $data = array(

@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$addbalance = isset($_POST['addbalance']) ? $_POST['addbalance'] : (isset($_POST['instantpayment']) ? $_POST['instantpayment'] : null);
+$addbalance = $_POST['addbalance'] ?? ($_POST['instantpayment'] ?? null);
 if (empty($addbalance)) {
     $SESSION->redirect_to_history_entry();
 }
@@ -50,15 +50,18 @@ if (isset($_POST['addbalance']) && !empty($addbalance['time'])) {
 
 if (isset($_POST['addbalance'])) {
     $SESSION->save('addbc', $addbalance['comment']);
+    $SESSION->save('addbnotification', $addbalance['notification']);
 }
 
-if ($currenttime) {
-    $SESSION->remove('addbt');
-} else {
-    $SESSION->save('addbt', $addbalance['time']);
+if (ConfigHelper::checkConfig('phpui.remember_date_in_customerbalancebox')) {
+    if ($currenttime) {
+        $SESSION->remove('addbt');
+    } else {
+        $SESSION->save('addbt', $addbalance['time']);
+    }
 }
 
-$SESSION->save('addbtax', isset($addbalance['taxid']) ? $addbalance['taxid'] : 0);
+$SESSION->save('addbtax', $addbalance['taxid'] ?? 0);
 
 if (!isset($addbalance['type'])) {
     $addbalance['type'] = 1;
@@ -140,6 +143,7 @@ if (isset($addbalance['mcustomerid'])) {
                         'type' => 'in',
                         'customer' => $LMS->GetCustomer($addbalance['customerid'], true),
                         'contents' => $payments,
+                        'notification' => isset($addbalance['notification']) ? (empty($addbalance['notification']) ? 0 : 1) : 1,
                     );
                     $rid = $LMS->AddReceipt($receipt);
                     if (!empty($rid) && isset($addbalance['print'])) {

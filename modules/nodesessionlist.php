@@ -38,7 +38,7 @@ if (isset($_POST['type'])) {
 
 $SESSION->save('nsltype', $type);
 
-if (isset($_POST['datefrom']) && !empty($_POST['datefrom'])) {
+if (!empty($_POST['datefrom'])) {
     if (preg_match('/^(?<year>[0-9]{4})\/(?<month>[0-9]{2})\/(?<day>[0-9]{2}) (?<hour>[0-9]{2}):(?<minute>[0-9]{2})$/', $_POST['datefrom'], $m)) {
         $datefrom = mktime($m['hour'], $m['minute'], 0, $m['month'], $m['day'], $m['year']);
     } else {
@@ -51,7 +51,7 @@ if (isset($_POST['datefrom']) && !empty($_POST['datefrom'])) {
     }
 }
 
-if (isset($_POST['dateto']) && !empty($_POST['dateto'])) {
+if (!empty($_POST['dateto'])) {
     if (preg_match('/^(?<year>[0-9]{4})\/(?<month>[0-9]{2})\/(?<day>[0-9]{2}) (?<hour>[0-9]{2}):(?<minute>[0-9]{2})$/', $_POST['dateto'], $m)) {
         $dateto = mktime($m['hour'], $m['minute'], 0, $m['month'], $m['day'], $m['year']);
     } else {
@@ -68,7 +68,7 @@ $SESSION->save('nsldatefrom', $datefrom);
 $SESSION->save('nsldateto', $dateto);
 
 if (isset($_POST['filtertype'])) {
-    if (in_array($_POST['filtertype'], array('ip', 'mac', 'customer', 'nodeid'))) {
+    if (in_array($_POST['filtertype'], array('ip', 'mac', 'customer', 'nodeid', 'location'))) {
         $filtertype = $_POST['filtertype'];
     } else {
         $filtertype = '';
@@ -138,20 +138,29 @@ if (!empty($filtertype)) {
                 $filtervalue = '';
             }
             break;
+        case 'location':
+            $where[] = '(s.location ?LIKE? ' . $DB->Escape("%$filtervalue%") . ')';
+            break;
     }
 }
 
-$nodesessions = $DB->GetAll('SELECT s.*, c.name, c.lastname FROM nodesessions s
-	LEFT JOIN nodes n ON n.id = s.nodeid
-	LEFT JOIN customers c ON c.id = s.customerid
-	WHERE ' . implode(' AND ', $where) . '
-	ORDER BY s.start DESC LIMIT 5000');
+$nodesessions = $DB->GetAll(
+    'SELECT
+        s.*,
+        c.name,
+        c.lastname
+    FROM nodesessions s
+    LEFT JOIN nodes n ON n.id = s.nodeid
+    LEFT JOIN customers c ON c.id = s.customerid
+    WHERE ' . implode(' AND ', $where) . '
+    ORDER BY s.start DESC LIMIT 5000'
+);
 
 if (!empty($nodesessions)) {
     foreach ($nodesessions as &$session) {
-        list ($number, $unit) = setunits($session['download']);
+        [$number, $unit] = setunits($session['download']);
         $session['download'] = round($number, 2) . ' ' . $unit;
-        list ($number, $unit) = setunits($session['upload']);
+        [$number, $unit] = setunits($session['upload']);
         $session['upload'] = round($number, 2) . ' ' . $unit;
         $session['duration'] = $session['stop']
         ? ($session['stop'] - $session['start'] < 60 ? trans('shorter than minute') : uptimef($session['stop'] - $session['start']))

@@ -460,7 +460,7 @@ version 28-git (????-??-??):
     'assignments.missed_node_warning' [chilan]
   - devel/cleanup: renamed 'phpui.default_liability_type' to
     'assignments.default_liability_type' [chilan]
-  - improvement: lms-payments.php script support --config-section parameter which allows to specify
+  - improvement: lms-payments.php script support --section|-s parameter which allows to specify
     configuration section which should be used to obtain configuration settings [chilan]
   - enhancement: added 'documents.operator_approval_notification_document_types'
     and 'documents.customer_approval_notification_document_types' with empty default
@@ -600,6 +600,641 @@ version 28-git (????-??-??):
   - enhancement: added support of number plan to customer type relations [chilan]
   - improvement: introduced smarty {user_selection} component [interduo]
   - enhancement: add assignment note field, user assignment description [interduo]
+  - enhancement: added division filter in new message form [chilan]
+  - enhancement: added office address, url and userpanel url properties to divisions [chilan]
+  - enhancement: move tickets to favorite queues with single click ('rt.favorite_queues' configuration variable
+    with empty default value) [interduo]
+  - enhancement: added recipient selection by customer contact flags/options in new message form [chilan]
+  - enhancement: quick search customers by alternative bank accounts [chilan]
+  - improvement: added 'active, without document' assignment filter in customer search form [chilan]
+  - improvement: some new substitution symbols support added  in mail body (%customer_name,
+    %division_name, %division_address, %division_zip, %division_city) of message with attached invoice
+    sent to customer [chilan]
+  - improvement: 'phpui.login_form_logo' with default value of 'img/logo.png' controls which image file
+    is presented in login, one-time password forms [chilan]
+  - devel/cleanup: move configuration variable 'suspension_percentage' from 'finances' to 'payments' section [ravvar]
+  - enhancement: 'sms.customer_message_template' configuration variable with default value '%body' allows
+    to format sms message sent to customer containing helpdesk ticket message entered in new ticket message
+    form [chilan]
+  - improvement: single 'replace' button in customer group panel/box allows to replace selected group assignments
+    by newly selected groups [chilan]
+  - improvement: added sort criterion selection in cash report form [chilan]
+  - improvement: 'phpui.default_customer_type' with 'private' as default value allows to preselect customer type during
+    add customer form initialisation [chilan]
+  - improvement: 'phpui.default_customer_flags' with empty default value allows to preselect customer flags during
+    add customer form initialisation [chilan]
+  - enhancement: added offline status selection in node search form [chilan]
+  - improvement: new configuraton variable 'phpui.shortcut_icon' with default value of 'img/lms-net.gif'
+    changes 'favicon' in web browser [chilan]
+  - improvement: 'carbon-copy' e-mail address presentation in reply/quote ticket message add form, but checked
+    by default only if original message was recognised as one from registered customer e-mail contact [chilan]
+  - improvement: added '- without technology -' selection in link technology filter
+    of customer search form [chilan]
+  - improvement: separated help queue rights for sms and e-mail notices [chilan]
+  - improvement: uke/pit: new form option 'verify feeding network nodes of flexibility points' checked
+    by default [chilan]
+  - enhancement: assignment option 'separate document position' allows to force disabling items aggregation
+    to single document position [chilan]
+  - improvement: 'assignments.default_net_account' with default value of 'false' controls default state
+    of net account flag option in customer assignment forms [chilan]
+  - improvement: allow to select many customer groups in customer add form [chilan]
+  - enhancement: allow to manipulate of voip account service providerid property from web interface [chilan]
+  - enhancement: search customers by finish date property of documents using type and date interval
+    form filters [chilan]
+  - enhancement: added service provider selection in voip account search and list forms [chilan]
+  - enhancement: allow to set assignment discount entering target value [chilan]
+  - enhancement: teryt backend script: --allowed-building-operations allows to limit allowed operations
+    on building base during load it from external provider [chilan]
+  - enhancement: lms-sendinvoices.php --extra-file option allows to send all regular files from specified
+    directory [chilan]
+  - enhancement: 'sendinvoices.extra_file' configuration variable can be used as alternative to --extra-file
+    script option [chilan]
+  - enhancement: allow to resolve many helpdesk tickets quickly with dedicated button [chilan]
+  - improvement: 'payments.reward_penalty_period_start_check' configuration variable with default value of 'true'
+    controls if expired balance is checked during financial analysis of previous period start [chilan]
+  - improvement: new status filter selection in document list form: waiting for customer
+    action (expired) [chilan]
+  - improvement: implemented session timeout clearing after any mouse pointer move, any key press or scroll
+    in window [chilan]
+  - login timeout specific for current user (hacky code but should work) [chilan]
+  - enhancement: new helpdesk queue rights: ticket watcher SMS and e-mail notifications [chilan]
+  - improvement: 'phpui.network_all_addresses_assignable' with 'false' as default value allows to assign network
+    and broadcast addresses to nodes and network devices; similar new property for networks
+    controls it more specific [chilan]
+  - enhancement: 'sendinvoices.blind_notify_email' allow to set 'Bcc' mail headers in posts with attached
+    invoices [chilan]
+  - improvement: new tariff/network/node flags - LLU service and BSA service [chilan]
+  - improvement: 'expired' assignments filter selection in customer search form [chilan]
+  - enhancement: uke/sidusis: implement foreign entity property for network ranges - new configuration
+    variable 'uke.sidusis_foreign_entities' allows to define foreign entity dictionary [chilan]
+  - enhancement: uke/pit: implemented network node flags and services support (used among others
+    for BSA and LLU flaging) [chilan]
+  - enhancement: expired identity card filter in customer search form [chilan]
+  - enhancement: quick search customer by his document memo property [chilan]
+  - enhancement: document separation group for assignments [chilan]
+  - improvement: 'default_info', 'default_notes', 'default_message' and 'default_documentmemo' configuration variable
+    in 'customers' section allow to initialise corresponding customer properties with specific value on add customer
+    form start [chilan]
+  - improvement: netnode and netdevices addresses can have empty street and building components if longitude and latitude
+    were specified (this behavior is active when corresponding configuration variables 'teryt.allow_empty_streets'
+    and 'teryt.allow_empty_building_numbers' are set to 'true' - their default values) [chilan]
+  - enhancement: customer external ID and PIN authentication to userpanel support added with option of service
+    provider selection [chilan]
+  - enhancement: 'origin' property of customers and documents [chilan]
+  - enhancement: 'customers.origin_check' configuration variable with 'none' as default value control if origin
+    selection is required or recommended in new customer form [chilan]
+  - enhancement: support of reference related document numbering [chilan]
+  - enhancement: added new privilege/permission 'assignment managament' which is dedicated to assignments [chilan]
+  - improvement: copy customer email and phone contacts to clipboard with single button click [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.add_customer_group_required'
+    to 'customers.groups_required_on_add' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.capitalize_customer_names'
+    to 'customers.capitalize_names' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.customer_event_limit' to 'customers.event_limit' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.customer_identity_card_expiration_check'
+    to 'customers.identity_card_expiration_check' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.customer_invoice_notice_consent_check'
+    to 'customers.invoice_notice_consent_check' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.customer_karma_change_interval'
+    to 'customers.karma_change_interval' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.customer_ssn_existence_check'
+    to 'customers.ssn_existence_check' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.customer_ssn_existence_scope'
+    to 'customers.ssn_existence_scope' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.customer_ten_existence_check'
+    to 'customers.ten_existence_check' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.customer_ten_existence_scope'
+    to 'customers.ten_existence_scope' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.default_customer_consents'
+    to 'customers.default_consents' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.default_customer_document_memo'
+    to 'customers.default_document_memo' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.default_customer_email_flags'
+    to 'customers.default_email_flags' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.default_customer_flags'
+    to 'customers.default_flags' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.default_customer_phone_flags'
+    to 'customers.default_phone_flags' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.default_customer_type' to 'customers.default_type' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.delete_related_customer_resources'
+    to 'customers.delete_related_resources' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.disable_contacts_during_customer_delete'
+    to 'customers.disable_contacts_on_delete' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.node_access_change_allowed_customer_statuses'
+    to 'customers.node_access_change_allowed_on_statuses' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.reuse_customer_id' to 'customers.reuse_id' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.show_customer_due_balance'
+    to 'customers.show_due_balance' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.show_customer_expired_balance'
+    to 'customers.show_expired_balance' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.supported_customer_contact_types'
+    to 'customers.supported_contact_types' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.default_divisionid' to 'customers.default_divisionid' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.call_phone_url'
+    to 'customers.call_phone_url' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.default_billing_address_state'
+    to 'customers.default_billing_address_state' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.default_location_address_state'
+    to 'customers.default_location_address_state' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.default_postal_address_state'
+    to 'customers.default_postal_address_state' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.default_status'
+    to 'customers.default_status' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.ignore_deleted_customers'
+    to 'customers.ignore_deleted' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.legal_person_required_properties'
+    to 'customers.legal_person_required_properties' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.natural_person_required_properties'
+    to 'customers.natural_person_required_properties' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.pin_allowed_characters'
+    to 'customers.pin_allowed_characters' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.pin_max_size'
+    to 'customers.pin_min_length' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.pin_max_size'
+    to 'customers.pin_max_length' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.pin_restriction_description'
+    to 'customers.pin_restriction_description' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.unsecure_pin_validity'
+    to 'customers.unsecure_pin_validity' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.validate_changed_pin'
+    to 'customers.validate_changed_pin' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.customerlist_pagelimit'
+    to 'customers.list_page_limit' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.customerlist_default_order'
+    to 'customers.list_default_order' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.nodelist_pagelimit'
+    to 'nodes.list_page_limit' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.capitalize_node_names'
+    to 'nodes.capitalize_names' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.default_node_auth_types'
+    to 'nodes.default_auth_types' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.default_node_check_mac'
+    to 'nodes.default_check_mac' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.disable_active_links_in_nodeinfo'
+    to 'nodes.disable_active_links_in_info' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.node_empty_mac'
+    to 'nodes.empty_mac' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.node_gps_coordinates_required'
+    to 'nodes.gps_coordinates_required' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.node_link_technology_required'
+    to 'nodes.link_technology_required' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.node_login_required'
+    to 'nodes.login_required' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.node_login_regexp'
+    to 'nodes.login_regexp' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.node_to_network_device_connection_required'
+    to 'nodes.network_device_connection_required' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.node_name_regexp'
+    to 'nodes.name_regexp' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.node_password_allowed_characters'
+    to 'nodes.password_allowed_characters' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.node_password_length'
+    to 'nodes.password_length' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.node_password_required'
+    to 'nodes.password_required' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.node_password_required_for_auth_types'
+    to 'nodes.password_required_for_auth_types' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.node_multi_tariff_restriction'
+    to 'nodes.multi_tariff_restriction' [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.public_ip'
+    to 'nodes.public_ip' [chilan]
+  - enhancement: new 'show sensitive data' userpanel info module option [chilan]
+  - improvement: allow to change 'suspended' flag during assignment create/edit [chilan]
+  - improvement: 'assignments.default_suspended' configuration variable with 'false' as default
+    value allow to set default state of 'suspended' check option in new assignment form [chilan]
+  - improvement: allow to manually set document consent/create date (users with 'full_access'
+    or 'document_consent_date' privilleges are allowed to do that) [chilan]
+  - enhancement: userpanel: '%extid' substitution symbol support in credential reminders [chilan]
+  - enhacement: 'customers.show_timetable_event_notes' with 'false' as default value allows to enable
+    event note presentation in customer events box (when set to 'true' value) [chilan]
+  - enhancement: show node MAC address from last session [chilan]
+  - enhancement: 'all without end date' selection in 'assignments' filter of customer search form [chilan]
+  - improvement/devel: core prepares some document template variables in add document
+    and document generator forms [chilan]
+  - enhancement: '%qr2pay' symbol support in 'debtors' and 'reminder' notifications [chilan]
+  - enhancement: node passwords can have 256 characters maximum length; 'nodes.password_max_length' with
+    default value '32' controls how long passwords are accepted by user interface [chilan]
+  - enhancement: 'documents.default_header' and 'documents.default_footer' configuration variables
+    (with empty defaults) allowed to define default header and footer for all document templates
+    where can be used as (respectively) 'header' and 'footer' smarty variables in template [chilan]
+  - improvement: show total time in event search result form [chilan]
+  - improvement: store creation date of data changes proposed via userpanel by customer [chilan]
+  - enhancement: support of tax net accounted tariffs in promotion schemas [chilan]
+  - enhancement: allow to attach files to messages sent to userpanel [chilan]
+  - enhancement: allow to send mail messages from www message add form in scheduled date/time [chilan]
+  - enhancement: 'messages.default_send_attempts' with default value of '3' allows to control how many
+    send retries are made in case of send errors [chilan]
+  - enhancement: allow to search for customers without email and phone contacts assigned [chilan]
+  - enhancement: added 'notes' field to tariffs - text entered in this field will not be visible
+    on customer documents such as contracts, annexes, etc. [chilan]
+  - improvement: show status summary in message info form [chilan]
+  - improvement: allow to delete found customers permanently [chilan]
+  - enhancement: new customer consents: telephone marketing with 'phone_marketing' and direct marketing
+    with 'direct_marketing' as system/logical names [chilan]
+  - improvement: customer consent groups support [chilan]
+  - improvement/devel: new plugin hooks 'customersearch_before_display' and 'get_customer_list_prepare_conditions'
+    added [chilan]
+  - improvement: added 'suspended, current' selection in 'assignments' filter of customer search form [chilan]
+  - improvement: new customer consent: telephone service info with 'phone_service_info' as system/logical
+    name [chilan]
+  - improvement: allow to select multiple event types in search form [chilan]
+  - improvement: show total calendar time summary in event search results [chilan]
+  - enhancement: added 'reminder' type event to timetable [chilan]
+  - enhancement: dynamic period document support - create assignments/liabilities during document commit;
+  - enhancement: 'documents.default_dynamic_period' configuration variable with default value of 'false'
+    controls if dynamic period option is checked when new document form starts [chilan]
+  - improvement: added 'donthypenate' smarty modifier and block support [chilan]
+  - enhancement: document external ID storage added [chilan]
+  - enhancement: %extid symbol in invoice header and footer is replaced by invoice external id [chilan]
+  - improvement: non-empty 'customers.groups_required_on_add'/'phpui.add_customer_group_required' configuration
+    variable with value different than 'false' means if customer group selection is required and if value
+    is different than 'true' then it is handled as pre-selected customer groups [chilan]
+  - enhancement: 'customer-consent-selection' property in document template 'info.php' file controls
+    if customer consent panel/tab/box is supported for given document template [chilan]
+  - enhancement: new third party marketing and complaint information customer consents added [chilan]
+  - improvement: supported customer consents can be limited to those specified by
+    'customers.supported_consents' configuration variable (by default all consents
+    are supported) [chilan]
+  - enhancement: 'document external ID' option in sale report form [chilan]
+  - enhancement: added new customer consent 'suspension of a fiber optic line over
+    the customer plot' [chilan]
+  - improvement: allow to transfer cash with any value between two customers [chilan]
+  - enhancement: new customer consents 'service provision before withdrawal period expires',
+    'userpanel marketing', 'userpanel 3rd party marketing', 'userpanel service information'
+    and 'userpanel complaints' [chilan]
+  - enhancement: added 'service phone' property to divisions [chilan]
+  - enhancement: 'dont create assignments' option in promotion schema selection panel of new document form
+    allows to create document without related assignments [chilan]
+  - enhancement: new customer consent 'contract_signed_outside_company_premises' [chilan]
+  - improvement: 'phpui.remember_date_in_customerbalancebox' with 'false' as default controls
+    if operation date is remembered between form submits [chilan]
+  - improvement: bin/lms-sms2rt.php is able to detect if received message is MMS (if 'mms_detect_regexp'
+    configuration variable is not empty) and then properly send auto reply message (if 'customer_mms_auto_reply_body'
+    configuration variable is not empty) [chilan]
+  - improvement: bin/lms-sms2rt.php is able to detect if received message is unanswered voice call
+    (if 'voicecall_detect_regexp' configuration variable is not empty) and then properly send auto
+    reply message (if 'customer_voicecall_auto_reply_body' configuration variable is not empty) [chilan]
+  - improvement: userpanel: #remind, #remind-phone, #remind-sms, #remind-email local anchors in URL login
+    form allow to auto-activate corresponding credential reminder subforms [chilan]
+  - enhancement: node report allows to export data to CSV file [chilan]
+  - improvement/enhancement: grouped userpanel customer consents and added new customer consent
+    with system name 'digital_content_use_results_in_loss_of_contract_withdrawal_possibility' [chilan]
+  - enhancement: added customer legal personality filter in document generator form [chilan]
+  - enhancement: 'customers' resource type support for 'bin/lms-cleanup.php' backend script [chilan]
+  - enhancement: 'documentadd_prepare_data' hook allows plugin to prepare data required
+    for document content generation [chilan]
+  - improvement: templates/default/document/template.html is generic document template which can be used
+    in all specific document templates [chilan]
+  - enhancement: 'documents.company_logo', 'documents.company_logo_width' and 'documents.project_logo'
+    allow to specify image files which should be used as all document logos [chilan]
+  - improvement: 'documents.default_reuse' configuration variable with 'false' as default value
+    allows to check corresponding documentadd form option with first start of this form [chilan]
+  - enhancement: 'send to customer email' option added in new document form [chilan]
+  - improvement: 'documents.location_address_preselection' configuration variable with 'false' as default value
+    provides ability to enable automatic schema location address selection according to default customer address
+    determination procedure [chilan]
+  - enhancement: userpanel: optional two factor authentication mechanism using SMS-es sent to customer
+    phone numbers [chilan]
+  - enhancement: finances/report/invoices: option which toggles transfer forms on invoices [chilan]
+  - improvement: configuration variable 'invoices.transfer_form_on_separate_page' with default
+    value of 'false' allows to force transfer form presentation of invoices generated using TCPDF PHP library
+    on separate page [chilan]
+  - enhancement: new dedicated user permission to userpanel customer data change affirmation [chilan]
+  - enhancement: allow to send SMS messages from www message add form in scheduled date/time [chilan]
+  - enhancement: allow to cancel message awaiting for send [chilan]
+  - improvement: node lock edit support added [chilan]
+  - enhancement: userpanel: node lock management support [chilan]
+  - enhancement: optgroup support for lms-ui-multiselect [chilan]
+  - improvement: capacity settings for phone tariffs are enabled [chilan]
+  - enhancement: userpanel can use extra style sheet specified in its global configuration [chilan]
+  - enhancement: when customer is not selected in receipt add form then allow to select division in dedicated
+    form field to avoid empty seller data presentation on generated receipt [chilan]
+  - improvement: 'timetable.default_show_closed_events' or 'phpui.default_show_closed_events' configuration
+    variables apply to eventlist and eventschedule forms [chilan]
+  - enhancement: added location column to node session lists [chilan]
+  - improvement: 'invoices.receipt_option_warning' configuration variable with 'false' as its default value
+    enables warning popup presentation after 'receipt' option check click [chilan]
+  - enhancement: added helpdesk ticket custom create and resolve time properties [chilan]
+  - improvement: '%node_login' substitution symbol support in message add form [chilan]
+  - improvement: 'rt.hide_disabled_users/phpui.helpdesk_hide_disabled_users' configuration variable applies
+    to user list permissions in helpdesk queue/category forms [chilan]
+  - improvement: 'documents.hide_disabled_users' (default value: false) and 'documents.hide_deleted_users'
+    (default value: false) configuration variables control if users are visible on lists in document forms
+    depending on user access and deleted properties [chilan]
+  - improvement: 'finances.hide_disabled_users' (default value: false) and 'finances.hide_deleted_users'
+    (default value: false) configuration variables control if users are visible on lists in cash registry forms
+    depending on user access and deleted properties [chilan]
+  - enhancement: added operation type and cash source filters in balance list form [chilan]
+  - enhancement: allow to use substitution symbols in subject field of message add form [chilan]
+  - improvement: 'ignore_deleted_customers' pattern property allows to disable matching of imported
+    bank payments to deleted customers [chilan]
+  - improvement: symbol '%note' support in 'payments.comment' configuration variable [chilan]
+  - enhancement: allow to search customers with specified network device relation [chilan]
+  - enhancement: all document file attachments can be sent to customer as single zip archive - new configuration
+    variables 'documents.send_zip_filename' (empty default value means feature is diabled)
+    and 'documents.send_zip_protection_password' (empty default value means no password protection) specify zip
+    archive file name format and password which protects main file document attachment [chilan]
+  - improvement: 'documents.send_zip_protection_algorithm' controls what encrypt method is used during
+    zip-archived document creation (empty default value means EM_TRAD_PKWARE) [chilan]
+  - improvement: show last error, success and delivery dates in messages info form [chilan]
+  - improvement: 'documents-<document-type-alias-name>' sections can override configuration setting variables
+    from 'documents' sections for specific document types (for now only 'mail_body' and 'mail_subject'
+    are handled only) [chilan]
+  - enhancement: new message item state 'ready to send' to mark items as handled by backend scripts
+    and as sent to physical device [chilan]
+  - improvement: more fine granular user permissions/rights to messaging actions [chilan]
+  - improvement: allow to define countries in database for which customer property validation is disabled
+    by default [chilan]
+  - enhancement: added promotion schema filter in invoice / sale registry report [chilan]
+  - enhancement: promotion schema filter in customer search form [chilan]
+  - improvement: show group labels in lms-ui-multiselect and lms-ui-advanced-select ui controls - corresponding
+    data-show-group-labels attribute and show-group-labels class control if group labels are visible [chilan]
+  - improvement: %customer_name symbol support in 'documents*.mail_body' configuration variables [chilan]
+  - enhancement: allow to optionally send reference document via email to customer [chilan]
+  - improvement: optional document and reference document attachment aggregation attempts are possible
+    depending of 'documents.aggregate_reference_document_email' configuration variable stable with 'false'
+    as its default value [chilan]
+  - improvement: bin/lms-teryt.php: --building-base-archived-filename-pattern allows to specify alternative
+    regular expression to which file names in teryt directory are matched to use them as PRG database
+    files [chilan]
+  - enhancement: random user password generator in user/password forms; 'users.default_password_length'
+    configuration variable with default value of '14' controls default length of generated random password [chilan]
+  - enhancement: bulk grant/revoke users permissions to modify prices of promotion schema tariffs/assignments
+    in promotion schema data subform [chilan]
+  - improvement: 'assignments.default_dont_create_assignments' configuration variable with 'false' as default value
+    controls starting state of 'dont create assignment' option of promotion schema selection panel
+    in new document form [chilan]
+  - enhancement: new document customer consent list conent depends on 'supported-customer-consents' property
+    of document template definition in info.php file [chilan]
+  - improvement: --margins parameter of bin/lms-html2pdf.js allows to set generated pdf document margins [chilan]
+  - improvement: invoice item description/name field converted from text input to textarea [chilan]
+  - enhancement: new positions can be added on issued correction invoices [chilan]
+  - bugfix/improvement: use jquery-ui 'autocomplete' widget for lms-ui-autocomplete classed html elements
+    (useful for textarea's) [chilan]
+  - enhancement: new configuration variables which control validation type and customer statuses during required
+    customer property validation: 'customers.natural_person_required_property_validation_error',
+    'customers.legal_person_required_property_validation_error' (with 'true' as default value for both)
+    and 'customers.natural_person_required_property_validation_customer_statuses',
+    'customers.legal_person_required_property_validation_customer_statuses' (with 'connected,debt-collection'
+    as default value for both) [chilan]
+  - enhancement: added voip summary reports (especially usefull for UKE reports) [chilan]
+  - enhancement: added subsection support which names are formatted as pattern
+    '<section-name>-<subsection-type>:<subsection-name>' [chilan]
+  - enhancement: new configuration variable 'netdevices.ip_name_regexp' with default value of '^[_a-z0-9\-\.]+$' controls
+    what characters are allowed in network device ip host name [chilan]
+  - improvement: use 'mail' section 'smtp_*' configuration settings/variables as fallback [chilan]
+  - enhancement: new node session search criterion: location [chilan]
+  - improvement: customer quick search 'notes' property takes dedicated customer notes tab/panel
+    into consideration [chilan]
+  - improvement: configuration variable 'sendinvoices.financial_history_reverse_order' ('true' as default value)
+    and 'sendinvoices.financial_history_item_description_format' ('%comment' as default value) controls the way
+    in which last N financial history table is generated during invoice send [chilan]
+  - improvement: '%cid' and '%pin' substitution symbols are supported in 'documents.mail_body'
+    configuration variable [chilan]
+  - enhancement: CC, BCC and Reply-To e-mail addresses can be specified in message add form [chilan]
+  - enhancement: added legal personality filter item in customer list form [chilan]
+  - enhancement: 'exact match' of customer group filter in customer search form added [chilan]
+  - improvement: use 'mail' section 'smtp_*' configuration settings/variables as fallback (document send) [chilan]
+  - improvement: 'notify customer' option in add receipt form, new balance form and customer balance box/panel;
+    'receipts.customer_notify', 'finances.customer_notify', 'cashimport.customer_notify' configuration variables
+    with 'true' as default values control default state of related option of these forms [chilan]
+  - enhancement: customer group assignment date can be specified in dedicated form field in customer
+    search form [chilan]
+  - enhancement: search customers by non-empty icn or ssn [chilan]
+  - enhancement: 'default' property of template info.php configuration file support allows to pre-select given
+    template in document forms [chilan]
+  - improvement: 'assignments.default_target_discounted_price' configuration variable with 'false' as default
+    value allows to check target discounted price option during new customer assignment form start [chilan]
+  - enhancement: search customers by empty ten, icn or ssn [chilan]
+  - improvement: new 'invoices.proforma_conversion_paytype' configuration variable with undefined value controls
+    which payment type is set to invoice created from pro forma invoices (undefined value means presevation of payment
+    type from pro forma invoice) [chilan]
+  - enhancement: more flexible way of protecting document sent to customers - new configuration variables
+    'documents.protection_password_authcode_source' (default: 'random8')
+    and 'documents.protection_password_authcode_message' (default: '%authcode') [chilan]
+  - enhancement: allow to search/filter network devices by network link technologies which they have assigned [chilan]
+  - enhancement: added used and available fibers/lines properties to netlinks [chilan]
+  - improvement: 'rt.body_date_regexp_match' configuration variable allows to specify regular expression by which
+    received mail body is being searched for incoming message date [chilan]
+  - enhancement: 'rt.subject_template' and 'rt.body_template' configuration variable (both with empty default value)
+    control format of subject and body of created helpdesk ticket depending on selected properties of incoming
+    e-mail message [chilan]
+  - improvement: 'rt.ignore_sender_email' configuration variable with 'false' as default value allows to avoid
+    setting requestor e-mail address in created helpdesk ticket (useful when incoming posts are originated
+    from PBX) [chilan]
+  - enhancement: added export cash registry operations to csv file [chilan]
+  - enhancement: 'documents.office2pdf_command' configuration variable with empty default value allows to enable
+    mechanism of office to PDF file conversion [chilan]
+  - enhancement: office document attachments can be merge with other documents attachments if office2pdf mechanism
+    is configured/enabled [chilan]
+  - enhancement: support many filled-in files for document templates [chilan]
+  - improvement: ticket add and edit forms: requestor phone and mail fields are selection list updated accordingly
+    to current customer to ticket assignment while entering value outside list are still possible [chilan]
+  - improvement: 'customers.financial_operation_list_default_limit' with default value of '10' controls how many
+    financial operations in customer balance box are presented on single page by default [chilan]
+  - enhancement: many promotion schema tariff assignments can be deleted in single action [chilan]
+  - enhancement: bin/lms-proforma-transform.php backend script supports --customer parameter/option [chilan]
+  - enhancement: user group filter allows to narrow user selection filter items in event list and schedule
+    forms [chilan]
+  - enhancement: message templates can have specified their content types explicitly [chilan]
+  - enhancement: message template file attachment support [chilan]
+  - improvement: bin/lms-rtparser.php can send html formatted auto-replies after setting 'rt.autoreply_format'
+    to 'html' value ('text' is default value of this newly added configuration variable) [chilan]
+  - improvement: '%rusername' support added in message template configuration variables [chilan]
+  - improvement: added longitude and latitude properties of nodes to csv list export file [chilan]
+  - enhancement: 'customers.restrictive_sensitive_data_access' configuration variable with 'false' as default value
+    allows to enable checking related customer sensitive data user permissions/rights even for users with 'full access'
+    permission/right assigned [chilan]
+  - enhancement: new user permission/right introduced: 'customer_view' [chilan]
+  - enhancement: added network device type filter in customer search form [chilan]
+  - enhancement: 'rt.default_notified_email_sources' with undefined default value allows to specify which customer
+    e-mail addresses are checked by default depending of source/origin of these addresses; undefined default value
+    means that only addresses originated from customer e-mail contacts are checked during helpdesk ticket new message
+    form start [chilan]
+  - enhancement: 'phpui.welcome_visible_panels' controls what welcome module panels/boxes are visible (it has
+    undefined value by default what means to show all supported panels/boxes) [chilan]
+  - improvement/devel: userpanel modules with 'null' priority are not visible in userpanel tab/menu bar [chilan]
+  - enhancement: userpanel credential reminder form can take customer division userpanel url while matching
+    customer by phone number/e-mail/ten/ssn [chilan]
+  - enhancement: added 'division' property to events [chilan]
+  - enhancement: new customer search filter - modification date interval [chilan]
+  - enhancement: new node search filter - modification date interval [chilan]
+  - enhancement: new timetable event types: 'technical problem' and 'service implementation' [chilan]
+  - improvement: 'customer' filter in customer list form changed to lms-ui-multiselect ui control [chilan]
+  - enhancement: search node form: auth type filter added [chilan]
+  - improvement: uke/pit: new form option 'report cable lines shorter than 1 meter' which is unchecked
+    by default [chilan]
+  - enhancement: 'lms-zipcodes.php' backend script allows to bulkly determine zip codes for customer
+    addresses, network devices and network nodes [chilan]
+  - improvement: 'rt.from_header_email_is_customer_contact_check' configuration variable with default 'true'
+    value allows to disable checking if 'from' header e-mail address is customer contact during ticket message
+    reply form startup [chilan]
+  - improvement: use email addresses from 'To' headers to notify customers during new helpdesk ticket
+    message creation [chilan]
+  - improvement: bin/lms-teryt.php: try to use address postoffice property as borough name for 'merge'
+    mode [chilan]
+  - enhancement: new configuration variable 'documents.allow_unapproved_document_archiving' with 'false'
+    as default value allows to enable document archiving event they are not approved [chilan]
+  - enhancement: new node search status filter: 'no active and future assignments' [chilan]
+  - enhancement: added optional node assigned bandwidth properties to node list csv export [chilan]
+  - improvement: allow to customise which node properties are exported to CSV file in print node list form [chilan]
+  - improvement: 'customers.unsecure_pin_min_length', 'customers.unsecure_pin_max_length',
+    'customers.unsecure_pin_allowed_characters' and 'customers.unsecure_pin_restriction_description' configuration
+    variables control unsecure customer PIN validation and generation rules [chilan]
+  - enhancement: dedicated user permission 'network_map_edit' after assigning to user allows him to edit network
+    link points [chilan]
+  - improvement: external message id support for sms messages received by bin/lms-sms2rt.php backend script [chilan]
+  - improvement: 'documents.send_zip_protect_all_attachments' configuration variable with 'false' as default allows
+    to enable password protection of all attachments included in ZIP archive containing document file
+    attachments [chilan]
+  - improvement: emit error when trying to send document while encryption password should be sent to customer mobile
+    phones via sms, but customer has not any assigned mobile phones [chilan]
+  - improvement: create customer message which stores document encryption password sent via SMS message
+    to customer [chilan]
+  - enhancement: 'netdevices.empty_mac' configuration variable with empty default value allows to enable possibility
+    of adding ip address to network devices without specifing MAC addresses [chilan]
+  - enhancement: new customer consent 'balance_on_documents' added which is set for all customers by default [chilan]
+  - improvement: new configuration variable 'assignments.tariff_tag_filter_all_required' with 'false' as default
+    value controls if all selected tariff tags should be assigned to given tariff if this tariff should be visible
+    in tariff selection list of customer assignment forms [chilan]
+  - improvement: configuration variable 'uke.pit_empty_building_number_pattern' with empty default value
+    allows to specify pattern to which matching builing numbers are treated as empty building numbers [chilan]
+  - improvement: openlayer network map: more readable vertices during network link edit [chilan]
+  - improvement: configuration variable 'map.create_new_point_after_link_edit_start' with 'false' as default
+    allows to enable OpenLayers map mechanism which insert new vertex/point after start of network link edit in
+    position when mouse button had been clicked [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.map_type' to 'map.type' [chilan]
+  - enhancement: added new customer flag 'consumer' usefull for legal persons treated as a consumers [chilan]
+  - improvement: 'payments.*comment_<service-type>' configuration variable support added with values specific for
+    different service types [chilan]
+  - enhancement/improvement: division unique key changed from 'shortname' to 'shortname+label' [chilan]
+  - enhancement: 'payments.reward_penalty_last_deadline_check_only' configuration variable with 'false'
+    as default value allows to enable more user-friendly mechanism for activating rewards and penalties
+    for customers [chilan]
+  - enhancement: added service provider and external id properties for tariffs [chilan]
+  - enhancement: uke/pit: 'uke.pit_foreign_entities' configuration variable allows to define list
+    of foreign entities [chilan]
+  - enhancement: added network link 'foreign entity' property [chilan]
+  - enhancement: added customer owned infrastructure toggle visible and foreign entity owned network link
+    toggle visibility toolbar buttons on openlayers-based network map [chilan]
+  - enhancement: openlayers-based network map: added network link edit mode toolbar button [chilan]
+  - improvement: openlayers-based network mapfont: awesome icon on toolbar buttons [chilan]
+  - improvement: 'financial_history_reverse_order' (default: 'true')
+    and 'financial_history_item_description_format' (default '%comment') configuration variables support
+    added in lms-notify.php backend script [chilan]
+  - improvement: 'finances.history_reverse_order' (default: 'true')
+    and 'finances.history_item_description_format' (default: '%comment') configuration variables support
+    added as default values for invoice send and notification specific configuration variables [chilan]
+  - enhancement: 'with recipient address' customer assignment filter added [chilan]
+  - improvement: 'nodes.default_info' with empty default value specifies info field value of node add
+    form during its start [chilan]
+  - enhancement: 'nodes.session_state_helper' (empty default value) controls if session state info button
+    is visible near node last nas session info [chilan]
+  - enhancement: qr-code icon buttons near phone numers and e-mail addresses to ease their uses
+    in mobile devices [chilan]
+  - enhancement: configuration variable 'messages.allowed_customer_status' with default all statuses
+    allowed limits customers to which messages are sent from messageadd form [chilan]
+  - enhancement: configuration variable 'nodes.auto_get_first_free_address' with 'false' as default allows
+    to enable auto first free addresse determination if ip address field had not been changed earlier [chilan]
+  - improvement: 'documents.office2pdf_document_types' with no default value (it means all document types supported
+    by system) allows to select which office suite document attachments are processed by office2pdf mechanism
+    (basing on document types to which file attachments are assigned) [chilan]
+  - improvement: dedicated recipient TEN can be set for invoices and correction notes in customer location
+    addresses [chilan]
+  - enhancement: added 'budgetary unit' customer flag [chilan]
+  - enhancement: added uke income report budgetary unit optional category [chilan]
+  - improvement: 'database.debug' configuration variable can be set to 'time' and 'details' besides of
+    so far supported 'true' and 'false' values [chilan]
+  - improvement: '%username' and '%rusername' substitution symbol support added for 'documents.sender_name'
+    and 'documents.mail_body' configuration variables [chilan]
+  - enhancement: 'timetable.location_required' and 'rt.location_required' configuration variables (both
+    with 'false' as default value) control if location selection is required if customer is selected
+    in timetable events and helpdesk tickets [chilan]
+  - improvement: configuration variable 'rt.queue_change_notify_all' with 'false' as default value allows
+    to enable all user notifications in target queue during ticket move between queues (after value change
+    to 'true') [chilan/naszasiec]
+  - improvement: auto-check 'notify users' option when queue changes and 'rt.notify_auto_check_on_queue_change'
+    is set to 'true' (its default value is 'false') [chilan/naszasiec]
+  - improvement: bin/lms-sendinvoices.php script support --section|-s parameter which allows to specify
+    configuration section which should be used to obtain configuration settings [chilan]
+  - improvement: bin/lms-sendinvoices.php: --type (invoice|cnote|dnote) parameter allows to send documents
+    of selected type [chilan]
+  - enhancement: bin/lms-makedhcpconf: 'filename_pattern' configuration variable support which formats
+    filename directive value in host block [chilan]
+  - improvement: added more link speeds (2.5 Gbit/s, 5 Gbit/s, 20 Gbit/s) [chilan]
+  - enhancement: added 'submission to KSeF' customer consent support [chilan]
+  - enhancement: KSeF: configuration variable 'ksef.offline_suport' with 'false' as default value controls
+    if QR code is presented on invoices already sent to KSeF for which there is no KSeF number assigned
+    yet [chilan]
+  - enhancement: KSeF: bin/lms-sendinvoices.php/lms-notify.php: %ksef-number, %ksef-url and %ksef-qr-code
+    symbols support [chilan]
+  - enhancement: KSeF: bin/lms-sendinvoices.php/lms-notify.php: --ksef, --ksef-offline, --without-ksef launch
+    options/parameters support [chilan]
+  - enhancement: KSeF: invoice send from webui: %ksef-number, %ksef-url and %ksef-qr-code symbols
+    support [chilan]
+  - enhancement: KSeF: JPK V7M (3) 1-0E support added [chilan]
+  - enhancement: KSeF: UPO download and view support added [chilan]
+  - improvement: 'error' or 'warning' values can be assign to configuration variable
+    'phpui.teryt_required' [chilan]
+  - improvement: GUS REGON API can be used for division forms [chilan]
+  - enhancement: added '%doctype', '%docnumber' and '%docdate' substitution symbols for 'payments.*comment'
+    configuration variables [chilan]
+  - improvement: added smarty block plugin '{nobr}...{/nobr}' [chilan]
+  - enhancement: added new customer consent 'traffic data use' with system name
+    'traffic_data_use_for_marketing' [chilan]
+  - enhancement: document templates support 'default-customer-consents' properties [chilan]
+  - enhancement: KSeF: implemented purchase invoice import (export from KSeF perspective) [chilan]
+  - enhancement: clicking 'resend' button in message info form opens popup window where we choose recipient
+    selection [chilan]
+  - improvement: modernized message sending mechanism - it's more interactive from now [chilan]
+  - enhancement: when creating new message basing on other existing message, file attachments assigned
+    to this second one message are automatically assigned to new created messages with possibility with
+    exluding them from web form [chilan]
+  - improvement: multi division selection in sale registry form/report [chilan]
+  - improvement: 'phpui.network_all_addresses_assignable' configuration variable and 'all assignable' property
+    of network control if gateway addresses can be assigned to nodes or network devices [chilan]
+  - enhancement: added 'cause' filter in rtqueueview form [chilan]
+  - improvement: added new session/auth type - IPoE [chilan]
+  - enhancement: new customer consent 'postal delivery' for service info added [chilan]
+  - enhancement: 'recipient TEN' property can be used in customer quick search input field [chilan]
+  - improvement: 'ksef.purchase_invoice_default_order' with default value 'issue-date asc' determines default
+    order of purchase invoice list [chilan]
+  - enhancement: added 'customer ID' option in additional properties of node list print form [chilan]
+  - enhancement: KSeF: added new recipient role: employee (8) [chilan]
+  - enhancement: KSeF: 'ksef.all_consumers' configration variable with 'false' as default value allows
+    to enable ksef consent globally for all consumer-type customers [chilan]
+  - enhancement: KSeF: add purchase invoices to JPK-V7M(3) xml files [chilan]
+  - improvement: KSeF: 'ksef.show_balance_summary' with 'false' as default value disables <Rozliczenia>
+    inclusion in xml output file [chilan]
+  - improvement: customer consent list toggle button added [chilan]
+  - improvement: bin/lms-sendinvoices.php: '--part-number auto' support added [chilan]
+  - improvement: 'unknown' status filter added to node search form [chilan]
+  - improvement/bugfix: voip cdr records can be loaded to database with long delay,
+    so we have to be able to store their creation dates and then issue them in invoices basing on there
+    creation dates [chilan]
+  - improvement: base date selection (between draw-up date and sale date) in invoice/JPK report form [chilan]
+  - enhancement: added additional recipient address support for assignments and invoices [chilan]
+  - improvement: show recipient count in message list form [chilan]
+  - devel/enhancement: added new plugin hook 'password_verification' which is usefull for
+    external authentication plugins [chilan/Przemyslaw S. Knycz]
+  - enhancement: '%value' substitution symbol support for 'contracts' notifications; it is replaced by total
+    subscription value after loyalty period [chilan]
+  - improvement: invoice report: selection records by dedicated form field 'base date' added [chilan]
+  - devel/cleanup: renamed configuration variable 'phpui.document_confirm_date_required'
+    to 'documents.confirm_date_required' [chilan]
+  - improvement: 'documents.confirm_date_default_days' configuration variable with empty default value
+    (what means don't set confirm date during document add form startup) controls default value of confirm date
+    field [chilan]
+  - enhancement: new customer consents: 'mail_service_provider_change'
+    and 'postal_delivery_service_provider_change' [chilan]
+  - enhancement: 'archive-reference-document' document template property controls reference document archiving
+    behaviour in new document form [chilan]
+  - devel/improvement: 'cashimport_extra_filter_before_submit' hook handlers can inform core to ignore current
+    cash import row (by 'ignore' boolean property included in hook result array) [chilan]
+  - improvement: 'note' property can be initilised during timetable event creation process [chilan]
+  - enhancement: selection of document attachments is possible for document view/send/delete [chilan]
+  - security: harden path traversal, session fixation, cookie  flags, brute-force, MD5 magic-hash [djrzulf]
+  - enhancement: added service e-mail property to divisions [chilan]
 
 version 27.0 (2021-08-20):
 

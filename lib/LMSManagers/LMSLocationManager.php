@@ -94,7 +94,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 
     public function GetCountries()
     {
-        return $this->db->GetAllByKey('SELECT id, name FROM countries ORDER BY name', 'id');
+        return $this->db->GetAllByKey('SELECT * FROM countries ORDER BY name', 'id');
     }
 
     public function GetCountryName($id)
@@ -147,18 +147,18 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                                   street_id,house,flat,zip,postoffice,country_id)
                                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',
                 array(
-                    $args['location_name']        ? $args['location_name']        : null,
+                    $args['location_name']        ?: null,
                     isset($args['location_state_name']) && $args['location_state_name']  ? $args['location_state_name']  : null,
-                    $args['location_state']       ? $args['location_state']       : null,
-                    $args['location_city_name']   ? $args['location_city_name']   : null,
-                    $args['location_city']        ? $args['location_city']        : null,
-                    $args['location_street_name'] ? $args['location_street_name'] : null,
-                    $args['location_street']      ? $args['location_street']      : null,
-                    $args['location_house']       ? $args['location_house']       : null,
-                    $args['location_flat']        ? $args['location_flat']        : null,
-                    $args['location_zip']         ? $args['location_zip']         : null,
-                    $args['location_postoffice']  ? $args['location_postoffice']  : null,
-                    $args['location_country_id']  ? $args['location_country_id']  : null,
+                    $args['location_state']       ?: null,
+                    $args['location_city_name']   ?: null,
+                    $args['location_city']        ?: null,
+                    $args['location_street_name'] ?: null,
+                    $args['location_street']      ?: null,
+                    $args['location_house']       ?: null,
+                    $args['location_flat']        ?: null,
+                    $args['location_zip']         ?: null,
+                    $args['location_postoffice']  ?: null,
+                    $args['location_country_id']  ?: null,
                 )
             );
 
@@ -207,8 +207,16 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
         }
 
         $this->db->Execute(
-            'INSERT INTO customer_addresses (customer_id, address_id, type) VALUES (?,?,?)',
-            array($customer_id, $addr_id, $args['location_address_type'])
+            'INSERT INTO customer_addresses
+            (customer_id, address_id, type, ten, entity_type)
+            VALUES (?, ?, ?, ?, ?)',
+            array(
+                $customer_id,
+                $addr_id,
+                $args['location_address_type'],
+                empty($args['location_ten']) ? null : $args['location_ten'],
+                empty($args['location_entity_type']) || empty($args['location_ten']) ? null : $args['location_entity_type'],
+            )
         );
 
         return true;
@@ -257,18 +265,18 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                                    flat = ?, zip = ?, postoffice = ?, country_id = ?
                                 WHERE id = ?',
                 array(
-                    $args['location_name'] ? $args['location_name'] : null,
+                    $args['location_name'] ?: null,
                     isset($args['location_state_name']) && $args['location_state_name'] ? $args['location_state_name'] : null,
-                    $args['location_state'] ? $args['location_state'] : null,
-                    $args['location_city_name'] ? $args['location_city_name'] : null,
-                    $args['location_city'] ? $args['location_city'] : null,
-                    $args['location_street_name'] ? $args['location_street_name'] : null,
-                    $args['location_street'] ? $args['location_street'] : null,
-                    $args['location_house'] ? $args['location_house'] : null,
-                    $args['location_flat'] ? $args['location_flat'] : null,
-                    $args['location_zip'] ? $args['location_zip'] : null,
-                    $args['location_postoffice'] ? $args['location_postoffice'] : null,
-                    $args['location_country_id'] ? $args['location_country_id'] : null,
+                    $args['location_state'] ?: null,
+                    $args['location_city_name'] ?: null,
+                    $args['location_city'] ?: null,
+                    $args['location_street_name'] ?: null,
+                    $args['location_street'] ?: null,
+                    $args['location_house'] ?: null,
+                    $args['location_flat'] ?: null,
+                    $args['location_zip'] ?: null,
+                    $args['location_postoffice'] ?: null,
+                    $args['location_country_id'] ?: null,
                     $args['address_id'],
                 )
             );
@@ -343,8 +351,17 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
         }
 
         $this->db->Execute(
-            'UPDATE customer_addresses SET type = ? WHERE customer_id = ? AND address_id = ?',
-            array($args['location_address_type'], $customer_id, $args['address_id'])
+            'UPDATE customer_addresses
+            SET type = ?, ten = ?, entity_type = ?
+            WHERE customer_id = ?
+                AND address_id = ?',
+            array(
+                $args['location_address_type'],
+                empty($args['location_ten']) ? null : $args['location_ten'],
+                empty($args['location_entity_type']) || empty($args['location_ten']) ? null : $args['location_entity_type'],
+                $customer_id,
+                $args['address_id'],
+            )
         );
 
         return true;
@@ -364,7 +381,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 
         $tmp = array(
             $args['location_name'],
-            isset($args['location_state_name']) ? $args['location_state_name'] : '',
+            $args['location_state_name'] ?? '',
             $args['location_state'],
             $args['location_city_name'],
             $args['location_city'],
@@ -445,6 +462,16 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 			WHERE customer_id = ? AND type = ?', array($customer_id, $type));
     }
 
+    public function getRecipientTen($address_id)
+    {
+        return $this->db->GetOne('SELECT ten FROM customer_addresses WHERE address_id = ?', array($address_id));
+    }
+
+    public function getEntityType($address_id)
+    {
+        return $this->db->GetOne('SELECT entity_type FROM customer_addresses WHERE address_id = ?', array($address_id));
+    }
+
     public function TerytToLocation($terc, $simc, $ulic)
     {
         $woj = substr($terc, 0, 2);
@@ -498,7 +525,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 
     public function getCoordinatesForAddress($params)
     {
-        if (isset($params['city_id']) && !empty($params['city_id']) && $this->db->GetOne('SELECT id FROM location_buildings LIMIT 1')) {
+        if (!empty($params['city_id']) && $this->db->GetOne('SELECT id FROM location_buildings LIMIT 1')) {
             $args = array(
                 'city_id' => $params['city_id'],
             );
@@ -506,12 +533,20 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                 $args['street_id'] = $params['street_id'];
             }
             if (!empty($params['building_num'])) {
-                $args['building_num'] = $params['building_num'];
+                $args['building_num'] = mb_strtoupper($params['building_num']);
             }
             $buildings = $this->db->GetAll(
                 'SELECT longitude, latitude
                 FROM location_buildings
-                WHERE ' . implode(' = ? AND ', array_keys($args)) . ' = ?',
+                WHERE ' . implode(
+                    ' = ? AND ',
+                    array_map(
+                        function ($key) {
+                            return $key == 'building_num' ? 'UPPER(' . $key . ')' : $key;
+                        },
+                        array_keys($args)
+                    )
+                ) . ' = ?',
                 array_values($args)
             );
             if (empty($buildings) || count($buildings) > 1 || empty($buildings[0]['longitude'])) {
@@ -621,14 +656,18 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 
         if ($params['provider'] == 'pna') {
             preg_match('/^(?<number>[0-9]+)(?<letter>[a-z]*)$/', strtolower($house), $m);
+            if (!isset($m['number'])) {
+                return null;
+            }
+
             $number = intval($m['number']);
-            $letter = $m['letter'];
+            $letter = $m['letter'] ?? null;
             $parity = (intval($number) & 1) ? 1 : 2;
 
             $from = '(fromnumber IS NULL OR (fromnumber < ' . $number . ')
-                        OR (fromnumber = ' . $number . ' AND (fromletter IS NULL' . (empty($letter) ? '' : ' OR fromletter <= \'' . $letter . '\'') . ')))';
+                        OR (fromnumber = ' . $number . ' AND (fromletter IS NULL' . (empty($letter) ? '' : ' OR fromletter <= ' . $this->db->Escape($letter)) . ')))';
             $to = '(tonumber IS NULL OR (tonumber > ' . $number . ')
-                        OR (tonumber = ' . $number . ' AND (toletter IS NULL' . (empty($letter) ? '' : ' OR toletter >= \'' . $letter . '\'') . ')))';
+                        OR (tonumber = ' . $number . ' AND (toletter IS NULL' . (empty($letter) ? '' : ' OR toletter >= ' . $this->db->Escape($letter)) . ')))';
         }
 
         if (isset($cityid)) {
@@ -648,7 +687,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                         'SELECT zip FROM location_buildings
                         WHERE city_id = ?' . (isset($streetid) ? ' AND (street_id = ' . intval($streetid) . ' OR street_id IS NULL)' : '') . '
                             AND building_num = ' . mb_strtoupper($this->db->Escape($house)),
-                        array($cityid, $parity)
+                        array($cityid)
                     );
             }
         } elseif (isset($city)) {
@@ -712,8 +751,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                                         . ' END) = ' . $escaped_street . ')'
                                 : ''
                             )
-                            . ' AND building_num = ' . mb_strtoupper($this->db->Escape($house)),
-                        array($parity)
+                            . ' AND building_num = ' . mb_strtoupper($this->db->Escape($house))
                     );
             }
         }
@@ -755,5 +793,40 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
             'SELECT id FROM location_states WHERE LOWER(name) = LOWER(?)',
             array($state)
         ) > 0;
+    }
+
+    public function isCityWithStreets($cityid)
+    {
+        // exceptional query for cities with subcities
+        $street_count = $this->db->GetOne(
+            'SELECT
+                COUNT(lst.id) AS street_count
+            FROM location_cities lc
+            JOIN location_boroughs lb ON lb.id = lc.boroughid
+            JOIN location_districts ld ON ld.id = lb.districtid
+            JOIN location_boroughs lb2 ON lb2.districtid = lb.districtid AND lb2.type IN (8, 9)
+            JOIN location_cities lc2 ON lc2.boroughid = lb2.id
+            JOIN location_streets lst ON lst.cityid = lc2.id
+            WHERE lc.id = ?
+                AND lb.type = 1',
+            array(
+                $cityid,
+            )
+        );
+        if (!empty($street_count)) {
+            return true;
+        }
+
+        $street_count = $this->db->GetOne(
+            'SELECT
+                COUNT(lst.id) AS street_count
+            FROM location_cities lc
+            LEFT JOIN location_streets lst ON lst.cityid = lc.id
+            WHERE lc.id = ?',
+            array(
+                $cityid,
+            )
+        );
+        return !empty($street_count);
     }
 }

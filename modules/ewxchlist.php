@@ -32,7 +32,7 @@ function GetChannelsList($order = 'name,asc')
         $order='name,asc';
     }
 
-    list($order,$direction) = sscanf($order, '%[^,],%s');
+    [$order, $direction] = sscanf($order, '%[^,],%s');
 
     ($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
 

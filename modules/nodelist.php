@@ -70,7 +70,7 @@ if ($api) {
 
     if (isset($_GET['page'])) {
         $filter['page'] = intval($_GET['page']);
-    } elseif (!isset($filter['page']) || empty($filter['page'])) {
+    } elseif (empty($filter['page'])) {
         $filter['page'] = 1;
     }
 
@@ -83,7 +83,7 @@ if ($api) {
     $filter['total'] = intval($LMS->GetNodeList($filter));
 
     $filter['count'] = false;
-    $filter['limit'] = intval(ConfigHelper::getConfig('phpui.nodelist_pagelimit', $filter['total']));
+    $filter['limit'] = intval(ConfigHelper::getConfig('nodes.list_page_limit', ConfigHelper::getConfig('phpui.nodelist_pagelimit', $filter['total'])));
     $filter['offset'] = ($filter['page'] - 1) * $filter['limit'];
 }
 
@@ -112,6 +112,7 @@ unset($nodelist['totaloff']);
 if ($api) {
     header('Content-Type: application/json');
     echo json_encode(array_values($nodelist));
+    $SESSION->close();
     die;
 }
 

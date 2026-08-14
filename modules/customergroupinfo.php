@@ -42,8 +42,8 @@ if (isset($_GET['othersnetid']) && $othersnetid = $_GET['othersnetid']) {
     }
 }
 
-$customergroup = $LMS->CustomergroupGet($id, isset($membersnetid) ? $membersnetid : 0);
-$customers = $LMS->GetCustomerWithoutGroupNames($id, isset($othersnetid) ? $othersnetid : 0);
+$customergroup = $LMS->CustomergroupGet($id, $membersnetid ?? 0);
+$customers = $LMS->GetCustomerWithoutGroupNames($id, $othersnetid ?? 0);
 $customerscount = empty($customers) ? 0 : count($customers);
 
 $layout['pagetitle'] = trans('Group Info: $a', $customergroup['name']);
@@ -54,6 +54,6 @@ $SMARTY->assign('customergroup', $customergroup);
 $SMARTY->assign('customers', $customers);
 $SMARTY->assign('customerscount', $customerscount);
 $SMARTY->assign('networks', $LMS->GetNetworks());
-$SMARTY->assign('membersnetid', isset($membersnetid) ? $membersnetid : 0);
-$SMARTY->assign('othersnetid', isset($othersnetid) ? $othersnetid : 0);
+$SMARTY->assign('membersnetid', $membersnetid ?? 0);
+$SMARTY->assign('othersnetid', $othersnetid ?? 0);
 $SMARTY->display('customer/customergroupinfo.html');

@@ -28,6 +28,7 @@ $id = intval($_GET['id']);
 
 if ($api) {
     if (!$LMS->NetDevExists($id)) {
+        $SESSION->close();
         die;
     }
 } elseif (!$LMS->NetDevExists($id)) {
@@ -61,7 +62,7 @@ if ($LMS->CountNetDevLinks($id) > 0) {
             'body' => $body,
         )
     );
-    if (!isset($hook_data['abort']) || empty($hook_data['abort'])) {
+    if (empty($hook_data['abort'])) {
         $result = $LMS->DeleteNetDev($id);
 
         $hook_data = $LMS->executeHook(
@@ -77,6 +78,7 @@ if ($LMS->CountNetDevLinks($id) > 0) {
                 header('Content-Type: application/json');
                 echo json_encode(array('id' => $id));
             }
+            $SESSION->close();
             die;
         }
     } else {
@@ -89,6 +91,7 @@ if ($api) {
         header('Content-Type: application/json');
         echo json_encode($error);
     }
+    $SESSION->close();
     die;
 }
 

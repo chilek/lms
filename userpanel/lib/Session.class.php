@@ -33,9 +33,11 @@ class Session
     private $db;
     private $pin_allowed_characters;
     private $unsecure_pin_validity;
+    private $unsecure_pin_allowed_characters;
     public $islogged = false;
     public $isPasswdChangeRequired = false;
     public $error;
+    public $info;
 
     private $SID = null;            // session unique ID
     private $_vdata = array();
@@ -49,13 +51,32 @@ class Session
     private $atime = 0;
     private $timeout;
 
+    private $authcoderequired = '';
+    private $authcode = null;
+    private $phoneNumbers = array();
+
     public function __construct(&$DB, $timeout = 600)
     {
-        global $LMS;
+        global $LMS, $USERPANEL_AUTH_TYPES;
 
         $this->db = &$DB;
-        $this->pin_allowed_characters = ConfigHelper::getConfig('phpui.pin_allowed_characters', '0123456789');
-        $this->unsecure_pin_validity = intval(ConfigHelper::getConfig('phpui.unsecure_pin_validity', 0, true));
+        $this->pin_allowed_characters = ConfigHelper::getConfig(
+            'customers.pin_allowed_characters',
+            ConfigHelper::getConfig(
+                'phpui.pin_allowed_characters',
+                '0123456789'
+            )
+        );
+        $this->unsecure_pin_allowed_characters = ConfigHelper::getConfig('customers.unsecure_pin_allowed_characters', $this->pin_allowed_characters);
+        $this->unsecure_pin_validity = intval(ConfigHelper::getConfig(
+            'customers.unsecure_pin_validity',
+            ConfigHelper::getConfig(
+                'phpui.unsecure_pin_validity',
+                0,
+                true
+            ),
+            true
+        ));
         $this->ip = str_replace('::ffff:', '', $_SERVER['REMOTE_ADDR']);
         $this->timeout = $timeout;
 
@@ -78,15 +99,32 @@ class Session
                 return;
             }
 
-            $ten = preg_replace('/[^a-z0-9]/i', '', $remindform['ten']);
-            $params = array($ten, $ten);
+            $reminder_type = intval(ConfigHelper::getConfig('userpanel.reminder_type', USERPANEL_REMINDER_TYPE_SSNTEN));
+            switch ($reminder_type) {
+                case USERPANEL_REMINDER_TYPE_ID:
+                    $customerid = intval($remindform['customerid']);
+                    if ($customerid <= 0) {
+                        return;
+                    }
+                    $base_where = ' AND c.id = ?';
+                    $params = array($customerid);
+                    break;
+
+                case USERPANEL_REMINDER_TYPE_SSNTEN:
+                default:
+                    $ten = preg_replace('/[^a-z0-9]/i', '', $remindform['ten']);
+                    $params = array($ten, $ten);
+                    $base_where = ' AND ((c.ten <> \'\' AND REPLACE(REPLACE(c.ten, \'-\', \'\'), \' \', \'\') = ?)
+                                    OR (c.ssn <> \'\' AND c.ssn = ?))';
+                    break;
+            }
             switch ($remindform['type']) {
                 case 1:
                     if (!check_email($remindform['email'])) {
                         return;
                     }
                     $join = 'JOIN customercontacts cc ON cc.customerid = c.id';
-                    $where = ' AND contact = ? AND cc.type & ? = ?';
+                    $where = ' AND cc.contact = ? AND cc.type & ? = ?';
                     $params = array_merge(
                         $params,
                         array(
@@ -102,7 +140,7 @@ class Session
                         return;
                     }
                     $join = 'JOIN customercontacts cc ON cc.customerid = c.id';
-                    $where = ' AND REPLACE(REPLACE(contact, \'-\', \'\'), \' \', \'\') = ? AND cc.type & ? = ?';
+                    $where = ' AND REPLACE(REPLACE(cc.contact, \'-\', \'\'), \' \', \'\') = ? AND cc.type & ? = ?';
                     $params = array_merge(
                         $params,
                         array(
@@ -118,20 +156,61 @@ class Session
 
             $allowed_customer_status = $this->getAllowedCustomerStatus();
 
-            $customer = $this->db->GetRow(
-                'SELECT c.id, pin, pinlastchange
+            $auth_type = intval(ConfigHelper::getConfig('userpanel.auth_type', USERPANEL_AUTH_TYPE_ID_PIN));
+            if ($auth_type == USERPANEL_AUTH_TYPE_EXTID_PIN) {
+                $auth_options = array();
+                foreach ($USERPANEL_AUTH_TYPES[USERPANEL_AUTH_TYPE_EXTID_PIN]['options'] as $option) {
+                    $auth_options[$option['name']] = ConfigHelper::getConfig('userpanel.' . $option['name'], '');
+                }
+                $service_provider_id = intval($auth_options['authentication_customer_extid_service_provider_id']);
+            }
+
+            $customers = $this->db->GetAll(
+                'SELECT
+                    c.id,
+                    c.pin,
+                    c.pinlastchange,
+                    e.extid,
+                    d.userpanel_url
                 FROM customers c
+                LEFT JOIN divisions d ON d.id = c.divisionid
                 ' . $join . "
-                WHERE c.deleted = 0
-                    AND ((ten <> '' AND REPLACE(REPLACE(ten, '-', ''), ' ', '') = ?)
-                        OR (ssn <> '' AND ssn = ?))
-                    " . (isset($allowed_customer_status) ? ' AND c.status IN (' . implode(', ', $allowed_customer_status) . ')' : '')
-                    . $where,
+                LEFT JOIN customerextids e ON e.customerid = c.id AND e.serviceproviderid "
+                    . ($auth_type != USERPANEL_AUTH_TYPE_EXTID_PIN || empty($service_provider_id) ? ' IS NULL' : ' = ' . $service_provider_id) .
+                " WHERE c.deleted = 0
+                  " . $base_where
+                    . (isset($allowed_customer_status) ? ' AND c.status IN (' . implode(', ', $allowed_customer_status) . ')' : '')
+                    . $where
+                . ' ORDER BY (CASE WHEN d.userpanel_url IS NULL THEN 2 ELSE 1 END)',
                 $params
             );
-            if (!$customer) {
+
+            if (empty($customers)) {
                 $this->error = trans('Credential reminder couldn\'t be sent!');
                 return;
+            }
+
+            $userpanel_url = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
+                . $_SERVER['HTTP_HOST']
+                . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1);
+            $userpanel_url = Utils::trimUrl($userpanel_url);
+
+            $customer_matched = false;
+            foreach ($customers as $customer) {
+                if (empty($customer['userpanel_url'])) {
+                    $customer_matched = true;
+                    break;
+                } else {
+                    $customer_userpanel_url = Utils::trimUrl($customer['userpanel_url']);
+                    if ($customer_userpanel_url == $userpanel_url) {
+                        $customer_matched = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!$customer_matched) {
+                $customer = reset($customers);
             }
 
             if ($remindform['type'] == 1) {
@@ -141,19 +220,54 @@ class Session
                 $body = ConfigHelper::getConfig('userpanel.reminder_sms_body');
             }
 
-            if (preg_match('/^\$[0-9a-z]+\$/', $customer['pin']) || $this->unsecure_pin_validity && time() - $customer['pinlastchange'] > $this->unsecure_pin_validity) {
-                $pin_min_size = intval(ConfigHelper::getConfig('phpui.pin_min_size', 4));
+            //if (preg_match('/^\$[0-9a-z]+\$/', $customer['pin']) || $this->unsecure_pin_validity && time() - $customer['pinlastchange'] > $this->unsecure_pin_validity) {
+            $securePin = preg_match('/^\$[0-9a-z]+\$/', $customer['pin']);
+            if ($securePin || $this->unsecure_pin_validity) {
+                $pin_min_size = intval(ConfigHelper::getConfig(
+                    'customers.pin_min_length',
+                    ConfigHelper::getConfig(
+                        'phpui.pin_min_size',
+                        4
+                    )
+                ));
+
+                //if ($this->unsecure_pin_validity && time() - $customer['pinlastchange'] > $this->unsecure_pin_validity) {
+                if ($this->unsecure_pin_validity) {
+                    $pin_min_size = intval(ConfigHelper::getConfig('customers.unsecure_pin_min_length', $pin_min_size));
+                }
+
                 if (!$pin_min_size) {
                     $pin_min_size = 4;
                 }
-                $pin_max_size = intval(ConfigHelper::getConfig('phpui.pin_max_size', 6));
+
+                $pin_max_size = intval(ConfigHelper::getConfig(
+                    'customers.pin_max_length',
+                    ConfigHelper::getConfig(
+                        'phpui.pin_max_size',
+                        6
+                    )
+                ));
+
+                //if ($this->unsecure_pin_validity && time() - $customer['pinlastchange'] > $this->unsecure_pin_validity) {
+                if ($this->unsecure_pin_validity) {
+                    $pin_max_size = intval(ConfigHelper::getConfig('customers.unsecure_pin_max_length', $pin_max_size));
+                }
+
                 if (!$pin_max_size) {
                     $pin_max_size = 6;
                 }
+
                 if ($pin_min_size > $pin_max_size) {
                     $pin_max_size = $pin_min_size;
                 }
-                $customer['pin'] = generate_random_string(random_int($pin_min_size, $pin_max_size), $this->pin_allowed_characters);
+
+                $customer['pin'] = generate_random_string(
+                    random_int($pin_min_size, $pin_max_size),
+                    //$this->unsecure_pin_validity && time() - $customer['pinlastchange'] > $this->unsecure_pin_validity
+                    $this->unsecure_pin_validity
+                        ? $this->unsecure_pin_allowed_characters
+                        : $this->pin_allowed_characters
+                );
 
                 $this->db->Execute(
                     'UPDATE customers
@@ -166,8 +280,21 @@ class Session
                 );
             }
 
-            $body = str_replace('%id', $customer['id'], $body);
-            $body = str_replace('%pin', $customer['pin'], $body);
+            $body = str_replace(
+                array(
+                    '%id',
+                    '%pin',
+                    '%extid',
+                    '%login',
+                ),
+                array(
+                    $customer['id'],
+                    $customer['pin'],
+                    $customer['extid'],
+                    $customer['id'],
+                ),
+                $body
+            );
             if ($remindform['type'] == 1) {
                 $LMS->SendMail(
                     $remindform['email'],
@@ -177,117 +304,317 @@ class Session
                     $body
                 );
             } else {
-                $LMS->SendSMS($phone, $body);
+                $sms_options = $LMS->getCustomerSMSOptions();
+
+                $LMS->SendSMS($phone, $body, null, $sms_options ?? null);
             }
             $this->error = trans('Credential reminder has been sent!');
             return;
         }
 
-        if (isset($loginform)) {
-            $this->login = trim($loginform['login']);
-            $this->passwd = trim($loginform['pwd']);
-            $this->atime = time();
+        if (isset($_COOKIE['USID'])) {
+            $this->_restoreSession();
+            $this->restore('session_login', $this->login);
+            $this->restore('session_authcoderequired', $this->authcoderequired);
+            $this->restore('session_id', $this->id);
+            $this->restore('session_authcode', $session_authcode);
+        }
 
-            $authdata = null;
-            if (isset($loginform) && ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey')) {
-                if ($this->passwd && $this->ValidateRecaptchaResponse()) {
+        if (!empty($loginform['backtologinform'])) {
+            $this->authcoderequired = '';
+            $this->login = null;
+            $this->id = null;
+            $this->remove('session_login');
+            $this->remove('session_authcoderequired');
+            $this->remove('session_id');
+        }
+
+        if ($this->login) {
+            $this->islogged = true;
+        } elseif (isset($loginform)) {
+            if ($this->authcoderequired && $this->id) {
+                if (!empty($loginform['phone-number'])) {
+                    $authinfo = $this->GetCustomerAuthInfo($this->id);
+
+                    $this->islogged = false;
+
+                    $this->restore('session_authcode_dt', $session_authcode_dt);
+
+                    $authinfo = $this->GetCustomerAuthInfo($this->id);
+
+                    switch ($this->authcoderequired) {
+                        case 'sms':
+                            if (time() - $session_authcode_dt < 180) {
+                                $this->error = trans('Your one-time password has already been sent via SMS to your phone number within the last 3 minutes.');
+                            } else {
+                                $phones = explode(',', $authinfo['phones']);
+
+                                $maskedPhoneNumber = $loginform['phone-number'];
+
+                                $phone = null;
+                                foreach ($phones as $phoneNumber) {
+                                    if ($maskedPhoneNumber == Utils::maskPhoneNumber($phoneNumber)) {
+                                        $phone = $phoneNumber;
+                                        break;
+                                    }
+                                }
+
+                                if (isset($phone)) {
+                                    $authcode = mt_rand(100000, 999999);
+                                    $this->save('session_authcode', $authcode);
+                                    $this->save('session_authcode_dt', time());
+
+                                    $sms_options = $LMS->getCustomerSMSOptions();
+
+                                    $LMS->SendSMS(
+                                        $phone,
+                                        trans('Your one-time password is: $a', $authcode),
+                                        null,
+                                        $sms_options ?? null
+                                    );
+
+                                    $this->close();
+
+                                    header('Content-Type: application/json');
+                                    die(json_encode(array(
+                                        'info' => trans('Your one-time password has been sent via SMS to your phone number $a.', $maskedPhoneNumber),
+                                    )));
+                                }
+                            }
+                            break;
+                        case 'email':
+                            break;
+                    }
+                } elseif (empty($loginform['authcode'])) {
+                    $this->authcoderequired = '';
+                    $this->login = null;
+                    $this->id = null;
+                    $this->remove('session_login');
+                    $this->remove('session_authcoderequired');
+                    $this->remove('session_id');
+                } else {
+                    writesyslog('Login attempt (using authentication code) by customer ID: ' . $this->id, LOG_INFO);
+
+                    $authinfo = $this->GetCustomerAuthInfo($this->id);
+                    $authcode = $loginform['authcode'];
+
+                    if ($authcode == $session_authcode) {
+                        $this->islogged = true;
+                        $this->isPasswdChangeRequired = $this->unsecure_pin_validity && !preg_match('/^\$[0-9a-z]+\$/', $authinfo['passwd']);
+                        $this->authcoderequired = '';
+
+                        $this->save('session_login', $this->login);
+
+                        $this->save('passwd_change_required', $this->isPasswdChangeRequired);
+
+                        if ($authinfo == null || $authinfo['failedlogindate'] == null) {
+                            $authinfo['failedlogindate'] = 0;
+                            $authinfo['failedloginip'] = '';
+                        }
+                        $authinfo['id'] = $this->id;
+                        $authinfo['lastlogindate'] = time();
+                        $authinfo['lastloginip'] = $this->ip;
+                        $authinfo['enabled'] = 3;
+                        $this->SetCustomerAuthInfo($authinfo);
+
+                        writesyslog('Customer with ID: ' . $this->id . ' (using authentication code) logged in.', LOG_INFO);
+
+                        $this->remove('session_authcode');
+                        $this->remove('session_authcode_dt');
+                    } else {
+                        $this->error = trans('Incorrect one-time password!');
+
+                        writesyslog('Bad authentication code (' . $authcode . ') for customer with ID: ' . $this->id, LOG_WARNING);
+                    }
+                }
+            } elseif (isset($loginform['login'])) {
+                $this->login = trim($loginform['login']);
+                $this->passwd = trim($loginform['pwd']);
+                $this->atime = time();
+
+                $authdata = null;
+                if (isset($loginform) && ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey')) {
+                    if ($this->passwd && $this->ValidateRecaptchaResponse()) {
+                        $authdata = $this->VerifyPassword();
+                    }
+                } elseif ($this->passwd) {
                     $authdata = $this->VerifyPassword();
                 }
-            } elseif ($this->passwd) {
-                $authdata = $this->VerifyPassword();
-            }
 
-            if ($authdata != null) {
-                $authinfo = $this->GetCustomerAuthInfo($authdata['id']);
-                if ($authinfo != null && isset($authinfo['enabled'])
-                    && $authinfo['enabled'] == 0
-                    && time() - $authinfo['failedlogindate'] < 600) {
-                    $authdata['passwd'] = null;
-                    $this->error = trans('Access is temporarily blocked. Please try again in 10 minutes.');
-                } else {
-                    if ($authdata['passwd'] != null) {
-                        $this->islogged = true;
-                        $this->isPasswdChangeRequired = $this->unsecure_pin_validity && !preg_match('/^\$[0-9a-z]+\$/', $authdata['passwd']);
-                        $this->id = $authdata['id'];
+                if ($authdata != null) {
+                    $authinfo = $this->GetCustomerAuthInfo($authdata['id']);
+                    if ($authinfo != null && isset($authinfo['enabled'])
+                        && $authinfo['enabled'] == 0
+                        && time() - $authinfo['failedlogindate'] < 600) {
+                        $authdata['passwd'] = null;
+                        $this->error = trans('Access is temporarily blocked. Please try again in 10 minutes.');
+                    } else {
+                        if ($authdata['passwd'] != null) {
+                            $this->islogged = true;
+                            $this->isPasswdChangeRequired = $this->unsecure_pin_validity && !preg_match('/^\$[0-9a-z]+\$/', $authdata['passwd']);
+                            $this->id = $authdata['id'];
+                            $this->authcoderequired = ConfigHelper::getConfig('userpanel.twofactor_auth_type', '', true);
 
-                        if ($this->id) {
-                            if (isset($_COOKIE['USID'])) {
-                                $this->_restoreSession();
+                            if ($this->id) {
+                                if (isset($_COOKIE['USID'])) {
+                                    $this->_restoreSession();
+                                    if ($this->id != $authdata['id']) {
+                                        $this->_destroySession();
+                                        if (empty($this->error)) {
+                                            $this->error = trans('Access denied!');
+                                        }
+                                        return;
+                                    }
+                                }
+                                if (empty($this->_vdata)) {
+                                    $this->_createSession();
+                                }
+
+                                if (random_int(1, 100) <= $this->GCprob) {
+                                    $this->_garbageCollector();
+                                }
+
+                                $authinfo = $this->GetCustomerAuthInfo($this->id);
+
+                                $this->save('session_id', $this->id);
+
+                                if ($this->authcoderequired) {
+                                    $this->islogged = false;
+
+                                    $this->restore('session_authcode_dt', $session_authcode_dt);
+
+                                    $authinfo = $this->GetCustomerAuthInfo($this->id);
+
+                                    switch ($this->authcoderequired) {
+                                        case 'sms':
+                                            $sms_service = ConfigHelper::getConfig('sms.service', '', true);
+                                            if (empty($sms_service)) {
+                                                $this->error = trans('SMS sending service is not configured!');
+                                            } else {
+                                                if (empty($authinfo['phones'])) {
+                                                    $this->error = trans('You dont\'t have any phone numbers assigned to your account!');
+                                                } else {
+                                                    if (time() - $session_authcode_dt < 180) {
+                                                        $this->error = trans('Your one-time password has already been sent via SMS to your phone number within the last 3 minutes.');
+                                                    } else {
+                                                        $phones = explode(',', $authinfo['phones']);
+                                                        if (count($phones) == 1) {
+                                                            $authcode = mt_rand(100000, 999999);
+                                                            $this->save('session_authcode', $authcode);
+                                                            $this->save('session_authcode_dt', time());
+
+                                                            $sms_options = $LMS->getCustomerSMSOptions();
+
+                                                            $phone = reset($phones);
+                                                            $LMS->SendSMS(
+                                                                $phone,
+                                                                trans('Your one-time password is: $a', $authcode),
+                                                                null,
+                                                                $sms_options ?? null
+                                                            );
+
+                                                            $this->info = trans('Your one-time password has been sent via SMS to your phone number $a.', Utils::maskPhoneNumber($phone));
+                                                        } else {
+                                                            foreach ($phones as &$phone) {
+                                                                $phone = Utils::maskPhoneNumber($phone);
+                                                            }
+                                                            unset($phone);
+                                                            $this->phoneNumbers = $phones;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                        case 'email':
+                                            break;
+                                    }
+                                } else {
+                                    $this->save('session_login', $this->login);
+
+                                    $this->save('passwd_change_required', $this->isPasswdChangeRequired);
+
+                                    if ($authinfo == null || $authinfo['failedlogindate'] == null) {
+                                        $authinfo['failedlogindate'] = 0;
+                                        $authinfo['failedloginip'] = '';
+                                    }
+                                    $authinfo['id'] = $this->id;
+                                    $authinfo['lastlogindate'] = time();
+                                    $authinfo['lastloginip'] = $this->ip;
+                                    $authinfo['enabled'] = 3;
+                                    $this->SetCustomerAuthInfo($authinfo);
+
+                                    writesyslog('Customer with ID: ' . $this->id . ' logged in.', LOG_INFO);
+                                }
                             }
-                            if (empty($this->_vdata)) {
-                                $this->_createSession();
+                        } elseif (empty($this->error)) {
+                            $this->error = trans('Access denied!');
+
+                            if (empty($authinfo) || !isset($authinfo['lastlogindate'])) {
+                                $authinfo['lastlogindate'] = 0;
+                                $authinfo['lastloginip'] = '';
                             }
 
-                            if (rand(1, 100) <= $this->GCprob) {
-                                $this->_garbageCollector();
-                            }
+                            $authinfo['failedlogindate'] = time();
+                            $authinfo['failedloginip'] = $this->ip;
+                            $authinfo['enabled'] = 2;
 
-                            $this->save('passwd_change_required', $this->isPasswdChangeRequired);
-
-                            $authinfo = $this->GetCustomerAuthInfo($this->id);
-                            if ($authinfo == null || $authinfo['failedlogindate'] == null) {
-                                $authinfo['failedlogindate'] = 0;
-                                $authinfo['failedloginip'] = '';
-                            }
-                            $authinfo['id'] = $this->id;
-                            $authinfo['lastlogindate'] = time();
-                            $authinfo['lastloginip'] = $this->ip;
-                            $authinfo['enabled'] = 3;
                             $this->SetCustomerAuthInfo($authinfo);
+
+                            writesyslog('Customer with ID: ' . $authdata['id'] . ' access denied.', LOG_INFO);
                         }
-                    } elseif (empty($this->error)) {
+                    }
+                } else {
+                    $this->islogged = false;
+
+                    writesyslog("Bad password for customer ID: " . $this->login, LOG_WARNING);
+
+                    if ($authdata != null && $authdata['passwd'] == null) {
+                        $authinfo = $this->GetCustomerAuthInfo($authdata['id']);
+                        if ($authinfo == null) {
+                            $authinfo['lastlogindate'] = 0;
+                            $authinfo['lastloginip'] = '';
+                            $authinfo['failedlogindate'] = 0;
+                        }
+
+                        if (time() - $authinfo['failedlogindate'] < 600) {
+                            if (isset($authinfo['enabled']) && $authinfo['enabled'] > 0) {
+                                $authinfo['enabled'] -= 1;
+                            }
+                        } else {
+                            $authinfo['enabled'] = 2;
+                        }
+
+                        $authinfo['id'] = $authdata['id'];
+                        $authinfo['failedlogindate'] = time();
+                        $authinfo['failedloginip'] = $this->ip;
+
+                        $this->SetCustomerAuthInfo($authinfo);
+                    }
+
+                    if (empty($this->error)) {
                         $this->error = trans('Access denied!');
                     }
                 }
-            } else {
-                $this->islogged = false;
-
-                writesyslog("Bad password for customer ID:".$this->login, LOG_WARNING);
-
-                if ($authdata != null && $authdata['passwd'] == null) {
-                    $authinfo = $this->GetCustomerAuthInfo($authdata['id']);
-                    if ($authinfo == null) {
-                        $authinfo['lastlogindate'] = 0;
-                        $authinfo['lastloginip'] = '';
-                        $authinfo['failedlogindate'] = 0;
-                    }
-
-                    if (time() - $authinfo['failedlogindate'] < 600) {
-                        if (isset($authinfo['enabled']) && $authinfo['enabled'] > 0) {
-                            $authinfo['enabled'] -= 1;
-                        }
-                    } else {
-                        $authinfo['enabled'] = 2;
-                    }
-
-                    $authinfo['id'] = $authdata['id'];
-                    $authinfo['failedlogindate'] = time();
-                    $authinfo['failedloginip'] = $this->ip;
-                    $this->SetCustomerAuthInfo($authinfo);
-                }
-
-                if (empty($this->error)) {
-                    $this->error = trans('Access denied!');
-                }
-            }
-        } else {
-            if (isset($_COOKIE['USID'])) {
-                $this->_restoreSession();
-                if (!isset($this->_vdata['REMOTE_ADDR']) || $this->_vdata['REMOTE_ADDR'] != $this->ip) {
-                    $this->islogged = false;
-                    writesyslog(
-                        "Session ip address does not match to web browser ip address. Customer ID: " . $this->login,
-                        LOG_WARNING
-                    );
-                    $this->LogOut();
-
-                    return;
-                } else {
-                    $this->islogged = true;
-                    $this->isPasswdChangeRequired = $this->get('passwd_change_required');
-                }
             }
         }
+
+        if (($this->login || !isset($loginform)) && empty($this->authcoderequired) && isset($_COOKIE['USID'])) {
+            if (!isset($this->_vdata['REMOTE_ADDR']) || $this->_vdata['REMOTE_ADDR'] != $this->ip) {
+                $this->islogged = false;
+                writesyslog(
+                    "Session ip address does not match to web browser ip address. Customer ID: " . $this->login,
+                    LOG_WARNING
+                );
+                $this->LogOut();
+
+                return;
+            } elseif (!empty($this->id)) {
+                $this->islogged = true;
+                $this->isPasswdChangeRequired = $this->get('passwd_change_required');
+            }
+        }
+
+        $this->save('session_authcoderequired', $this->authcoderequired);
     }
 
     public function save($variable, $content)
@@ -314,20 +641,12 @@ class Session
 
     public function restore($variable, &$content)
     {
-        if (isset($this->_content[$variable])) {
-            $content = $this->_content[$variable];
-        } else {
-            $content = null;
-        }
+        $content = $this->_content[$variable] ?? null;
     }
 
     public function get($variable)
     {
-        if (isset($this->_content[$variable])) {
-            return $this->_content[$variable];
-        } else {
-            return null;
-        }
+        return $this->_content[$variable] ?? null;
     }
 
     public function remove($variable)
@@ -365,11 +684,7 @@ class Session
                 $vdata[$vkey] = $_SERVER[$vkey];
             }
         }
-        if (isset($vdata)) {
-            return $vdata;
-        } else {
-            return null;
-        }
+        return $vdata ?? null;
     }
 
     public function close()
@@ -386,8 +701,7 @@ class Session
 
     private function makeSID()
     {
-        list($usec, $sec) = explode(' ', microtime());
-        return md5(uniqid(rand(), true)) . sprintf('%09x', $sec) . sprintf('%07x', ($usec * 10000000));
+        return bin2hex(random_bytes(32));
     }
 
     private function _createSession()
@@ -482,12 +796,10 @@ class Session
         ));
 
         $res = curl_exec($ch);
+        curl_close($ch);
         if ($res !== false && ($res = json_decode($res, true)) !== null && $res['success']) {
-            curl_close($ch);
             return true;
         }
-
-        curl_close($ch);
 
         return false;
     }
@@ -515,7 +827,7 @@ class Session
         }
     }
 
-    private function validPIN()
+    private function validPIN($currentPin = null)
     {
         if (!ConfigHelper::checkConfig('userpanel.pin_validation')) {
             return true;
@@ -523,9 +835,24 @@ class Session
 
         $string = $this->passwd;
 
-        for ($i = 0; $i < strlen($this->pin_allowed_characters); $i++) {
-            $string = str_replace($this->pin_allowed_characters[$i], '', $string);
+        if ($this->unsecure_pin_allowed_characters != $this->pin_allowed_characters) {
+            if (empty($currentPin)) {
+                $pin_allowed_characters = $this->pin_allowed_characters;
+            } else {
+                if (preg_match('/^\$[0-9a-z]+\$/', $currentPin)) {
+                    $pin_allowed_characters = $this->pin_allowed_characters;
+                } else {
+                    $pin_allowed_characters = $this->unsecure_pin_allowed_characters;
+                }
+            }
+        } else {
+            $pin_allowed_characters = $this->pin_allowed_characters;
         }
+
+        for ($i = 0; $i < strlen($pin_allowed_characters); $i++) {
+            $string = str_replace($pin_allowed_characters[$i], '', $string);
+        }
+
         return !strlen($string);
     }
 
@@ -559,10 +886,6 @@ class Session
 
     private function GetCustomerIDByPhoneAndPIN()
     {
-        if (!$this->validPIN()) {
-            return null;
-        }
-
         $allowed_customer_status = $this->getAllowedCustomerStatus();
 
         $authinfo['id'] = $this->db->GetOne(
@@ -591,6 +914,10 @@ class Session
             )
         );
 
+        if (!$this->validPIN($customer['pin'])) {
+            return null;
+        }
+
         if ($this->checkPIN($customer['pin'], $customer['pinlastchange'])) {
             $authinfo['passwd'] = $customer['pin'];
         } else {
@@ -602,7 +929,7 @@ class Session
 
     private function GetCustomerIDByIDAndPIN()
     {
-        if (!$this->validPIN() || !preg_match('/^[0-9]+$/', $this->login)) {
+        if (!preg_match('/^[0-9]+$/', $this->login)) {
             return null;
         }
 
@@ -631,6 +958,10 @@ class Session
             )
         );
 
+        if (!$this->validPIN($customer['pin'])) {
+            return null;
+        }
+
         if ($this->checkPIN($customer['pin'], $customer['pinlastchange'])) {
             $authinfo['passwd'] = $customer['pin'];
         } else {
@@ -642,10 +973,6 @@ class Session
 
     private function GetCustomerIDByDocumentAndPIN()
     {
-        if (!$this->validPIN()) {
-            return null;
-        }
-
         $allowed_customer_status = $this->getAllowedCustomerStatus();
 
         $authinfo['id'] = $this->db->GetOne(
@@ -664,11 +991,15 @@ class Session
         $customer = $this->db->GetRow(
             'SELECT pin, pinlastchange
             FROM customers
-			WHERE id = ?',
+            WHERE id = ?',
             array(
                 $authinfo['id']
             )
         );
+
+        if (!$this->validPIN($customer['pin'])) {
+            return null;
+        }
 
         if ($this->checkPIN($customer['pin'], $customer['pinlastchange'])) {
             $authinfo['passwd'] = $customer['pin'];
@@ -681,10 +1012,6 @@ class Session
 
     private function GetCustomerIDByEmailAndPIN()
     {
-        if (!$this->validPIN()) {
-            return null;
-        }
-
         $allowed_customer_status = $this->getAllowedCustomerStatus();
 
         $authinfo['id'] = $this->db->GetOne(
@@ -713,6 +1040,10 @@ class Session
                 $authinfo['id'],
             )
         );
+
+        if (!$this->validPIN($customer['pin'])) {
+            return null;
+        }
 
         if ($this->checkPIN($customer['pin'], $customer['pinlastchange'])) {
             $authinfo['passwd'] = $customer['pin'];
@@ -766,10 +1097,6 @@ class Session
 
     private function GetCustomerIDBySsnTenAndPIN()
     {
-        if (!$this->validPIN()) {
-            return null;
-        }
-
         $ssnten = preg_replace('/[\-\s]/', '', $this->login);
 
         if (!strlen($ssnten)) {
@@ -800,6 +1127,56 @@ class Session
             )
         );
 
+        if (!$this->validPIN($customer['pin'])) {
+            return null;
+        }
+
+        if ($this->checkPIN($customer['pin'], $customer['pinlastchange'])) {
+            $authinfo['passwd'] = $customer['pin'];
+        } else {
+            $authinfo['passwd'] = null;
+        }
+
+        return $authinfo;
+    }
+
+    private function GetCustomerIDByExtIDAndPIN()
+    {
+        $allowed_customer_status = $this->getAllowedCustomerStatus();
+
+        $customer_extid_service_provider_id = intval(ConfigHelper::getConfig('userpanel.authentication_customer_extid_service_provider_id', ''));
+        $authinfo['id'] = $this->db->GetOne(
+            'SELECT
+                c.id
+            FROM customers c
+            JOIN customerextids e ON e.customerid = c.id
+            WHERE c.deleted = 0
+                AND e.extid = ?
+                AND e.serviceproviderid ' . (empty($customer_extid_service_provider_id) ? ' IS NULL' : ' = ' . $customer_extid_service_provider_id) . '
+                ' . (isset($allowed_customer_status) ? ' AND c.status IN (' . implode(', ', $allowed_customer_status) . ')' : '') . '
+                LIMIT 1',
+            array(
+                $this->login,
+            )
+        );
+
+        if (empty($authinfo['id'])) {
+            return null;
+        }
+
+        $customer = $this->db->GetRow(
+            'SELECT pin, pinlastchange
+            FROM customers
+            WHERE id = ?',
+            array(
+                $authinfo['id'],
+            )
+        );
+
+        if (!$this->validPIN($customer['pin'])) {
+            return null;
+        }
+
         if ($this->checkPIN($customer['pin'], $customer['pinlastchange'])) {
             $authinfo['passwd'] = $customer['pin'];
         } else {
@@ -812,11 +1189,42 @@ class Session
     private function GetCustomerAuthInfo($customerid)
     {
         return $this->db->GetRow(
-            'SELECT customerid AS id, c.pinlastchange, lastlogindate, lastloginip, failedlogindate, failedloginip, enabled
-            FROM up_customers
-            JOIN customers c ON c.id = customerid
-            WHERE customerid = ?',
+            'SELECT
+                c.id AS id,
+                c.pin AS passwd,
+                c.pinlastchange,
+                lastlogindate,
+                lastloginip,
+                failedlogindate,
+                failedloginip,
+                enabled,
+                m.emails,
+                p.phones,
+                up_customers.id AS lastlogininfo
+            FROM customers c
+            LEFT JOIN up_customers ON up_customers.customerid = c.id
+            LEFT JOIN (
+                SELECT
+                    customercontacts.customerid,
+                    ' . $this->db->GroupConcat('customercontacts.contact') . ' AS emails
+                FROM customercontacts
+                WHERE (customercontacts.type & ?) = ?
+                GROUP BY customercontacts.customerid
+            ) m ON m.customerid = c.id
+            LEFT JOIN (
+                SELECT
+                    customercontacts.customerid,
+                    ' . $this->db->GroupConcat('customercontacts.contact') . ' AS phones
+                FROM customercontacts
+                WHERE (customercontacts.type & ?) = ?
+                GROUP BY customercontacts.customerid
+            ) p ON p.customerid = c.id
+            WHERE c.id = ?',
             array(
+                CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
+                CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
+                CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
+                CONTACT_MOBILE | CONTACT_NOTIFICATIONS,
                 $customerid,
             )
         );
@@ -825,7 +1233,7 @@ class Session
     private function SetCustomerAuthInfo($authinfo)
     {
         $actauthinfo = $this->GetCustomerAuthInfo($authinfo['id']);
-        if ($actauthinfo != null) {
+        if (!empty($actauthinfo['lastlogininfo'])) {
             $this->db->Execute(
                 'UPDATE up_customers
                     SET lastlogindate = ?, lastloginip = ?, failedlogindate = ?, failedloginip = ?, enabled = ? WHERE customerid = ?',
@@ -870,24 +1278,27 @@ class Session
             return null;
         }
 
-        switch (ConfigHelper::getConfig('userpanel.auth_type', 1)) {
-            case 1:
+        switch (ConfigHelper::getConfig('userpanel.auth_type', USERPANEL_AUTH_TYPE_ID_PIN)) {
+            case USERPANEL_AUTH_TYPE_ID_PIN:
                 $authinfo = $this->GetCustomerIDByIDAndPIN();
                 break;
-            case 2:
+            case USERPANEL_AUTH_TYPE_PHONE_PIN:
                 $authinfo = $this->GetCustomerIDByPhoneAndPIN();
                 break;
-            case 3:
+            case USERPANEL_AUTH_TYPE_DOCUMENT_PIN:
                 $authinfo = $this->GetCustomerIDByDocumentAndPIN();
                 break;
-            case 4:
+            case USERPANEL_AUTH_TYPE_EMAIL_PIN:
                 $authinfo = $this->GetCustomerIDByEmailAndPIN();
                 break;
-            case 5:
+            case USERPANEL_AUTH_TYPE_PPPOE_LOGIN_PASSWORD:
                 $authinfo = $this->GetCustomerIDByNodeNameAndPassword();
                 break;
-            case 6:
+            case USERPANEL_AUTH_TYPE_TEN_SSN_PIN:
                 $authinfo = $this->GetCustomerIDBySsnTenAndPIN();
+                break;
+            case USERPANEL_AUTH_TYPE_EXTID_PIN:
+                $authinfo = $this->GetCustomerIDByExtIDAndPIN();
                 break;
         }
 
@@ -896,5 +1307,15 @@ class Session
         } else {
             return null;
         }
+    }
+
+    public function authCodeRequired()
+    {
+        return $this->authcoderequired != '';
+    }
+
+    public function getCustomerPhoneNumbers()
+    {
+        return $this->phoneNumbers;
     }
 }

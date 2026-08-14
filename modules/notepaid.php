@@ -41,7 +41,7 @@ if (count($ilm)) {
 
 if (count($ids)) {
     foreach ($ids as $noteid) {
-        list ($cid, $value, $closed) = array_values($DB->GetRow('SELECT customerid, 
+        [$cid, $value, $closed] = array_values($DB->GetRow('SELECT customerid, 
 			(SELECT SUM(value) FROM debitnotecontents
 				WHERE docid = d.id) AS value, closed
 			FROM documents d

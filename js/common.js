@@ -162,6 +162,10 @@ function openPopupWindow(options)
 		options.title = 'openPopupWindow';
 	}
 
+	if (!options.hasOwnProperty('position')) {
+		options.position = { my: "left top", at: "left bottom", of: options.selector };
+	}
+
 	$.ajax({
 		url: options.url,
 		async: true,
@@ -175,7 +179,7 @@ function openPopupWindow(options)
 				dialogClass: 'lms-ui-popup',
 				closeOnEscape: true,
 				modal: true,
-				position: { my: "left top", at: "left bottom", of: options.selector },
+				position: options.position,
 				resizable: true,
 				width: 'auto',
 				title: options.title,
@@ -193,6 +197,10 @@ function openPopupWindow(options)
 			if (options.onLoaded) {
 				options.onLoaded();
 			}
+
+			if (options.hasOwnProperty('onSubmit') && typeof(options.onSubmit) === 'function') {
+				dialog.find('form').submit(options.onSubmit);
+			}
 		}
 
 	});
@@ -205,36 +213,53 @@ if ( typeof $ !== 'undefined' ) {
 		});
 
         // open location dialog window if teryt is checked
-        $('body').on('click', '.teryt-address-button', function() {
+		$('body').on('click', '.teryt-address-button', function () {
 
-            var box = $( this ).closest( ".lms-ui-address-box" );
-
+			var box = $(this).closest(".lms-ui-address-box");
+			var locationBox = box.closest(".location-box");
 			var addressType = parseInt(box.closest('.location-box-expandable').find('[data-address="address_type"]').val());
 
-            // if teryt checkbox is not checked during teryt button click then
-            // we check it automatically for user convenience
-            if ( ! box.find("input[data-address='teryt-checkbox']").is(':checked') ) {
-                box.find("input[data-address='teryt-checkbox']").prop('checked', true);
-                // simulate click for update input state
-                $( '.lms-ui-address-teryt-checkbox' ).trigger( 'change' );
-            }
+			// if teryt checkbox is not checked during teryt button click then
+			// we check it automatically for user convenience
+			if (!box.find("input[data-address='teryt-checkbox']").is(':checked')) {
+				box.find("input[data-address='teryt-checkbox']").prop('checked', true);
+				// simulate click for update input state
+				$('.lms-ui-address-teryt-checkbox').trigger('change');
+			}
 
-            var city   = box.find("input[data-address='city-hidden']").val();
-            if (city == '' && lmsSettings.defaultTerytCity) {
-                city = lmsSettings.defaultTerytCity;
-            }
-            var street = box.find("input[data-address='street-hidden']").val();
+			var city = box.find("input[data-address='city-hidden']").val();
+			if (city == '' && lmsSettings.defaultTerytCity) {
+				city = lmsSettings.defaultTerytCity;
+			}
+			var street = box.find("input[data-address='street-hidden']").val();
 
 			openPopupWindow({
 				url: '?m=chooselocation' + (addressType ? '&addresstype=' + addressType : '') +
-					'&city=' + city + '&street=' + street + "&boxid=" + box.attr('id'),
+					'&city=' + city + '&street=' + street + "&boxid=" + box.attr('id') +
+					(locationBox.is('[data-allow-empty-streets]') ? '&allow_empty_streets=1' : '') +
+					(locationBox.is('[data-allow-empty-building-numbers]') ? '&allow_empty_building_numbers=1' : ''),
 				selector: this,
 				title: $t("Choose TERYT location"),
-				onLoaded: function() {
+				onLoaded: function () {
 					$('#search [name="searchcity"]').focus();
 				}
 			});
-        });
+		});
+
+		$('body').on('click', '.dev-link-port,.node-link-port', function() {
+			var url;
+			if ($(this).is('.dev-link-port')) {
+				url = '?m=netlinkproperties&id=' + $(this).attr('data-src-netdev') + '&devid=' + $(this).attr('data-dst-netdev') + '&isnetlink=1'
+			} else {
+				url = '?m=netlinkproperties&id=' + $(this).attr('data-netdev') + '&devid=' + $(this).attr('data-node') + '&isnetlink=0'
+			}
+			openPopupWindow({
+				url: url,
+				selector: this,
+				position: { my: 'center', at: 'center', of: 'body' },
+				title: $(this).is('.dev-link-port') ? $t("Network link properties") : $t("Node link properties")
+			});
+		});
 
         // disable and enable inputs after click
         $('body').on('change', '.lms-ui-address-teryt-checkbox', function() {
@@ -243,6 +268,7 @@ if ( typeof $ !== 'undefined' ) {
             if ( $( this ).is(':checked') ) {
                 $("#" + boxid + " input[type=text]").prop("readonly", true);
                 $("#" + boxid).find("input[data-address='zip']").attr('readonly', false);
+                $("#" + boxid).find("input[data-address='ten']").attr('readonly', false);
                 $("#" + boxid).find("input[data-address='postoffice']").attr('readonly', false);
                 $("#" + boxid).find("input[data-address='location-name']").attr('readonly', false);
                 $("#" + boxid).find("select[data-address='state-select']").css('display', 'none').attr('disabled', true);
@@ -301,6 +327,9 @@ function sendvalue(targetfield, value)
 	window.parent.parent.popclick();
 	if (targetfield.className.indexOf('lms-ui-advanced-select') !== -1) {
 		targetfield.dispatchEvent(new Event('chosen:updated'))
+	}
+	if (targetfield.className.indexOf('lms-ui-advanced-select-test') !== -1) {
+		targetfield.dispatchEvent(new Event('change.select2'))
 	}
 	targetfield.dispatchEvent(new Event('change'))
 	targetfield.focus();
@@ -458,36 +487,52 @@ function CheckAll(form, elem, excl)
 }
 
 var lms_login_timeout_value,
-    lms_login_timeout,
+    lms_login_timeout = 0,
     lms_login_timeout_update = 0,
 	lms_login_timeout_ts,
     lms_sticky_popup,
 	lms_session_expire_elem;
 
-function start_login_timeout(sec)
-{
-    if (!sec) sec = 600;
-    lms_login_timeout_value = sec;
-    lms_login_timeout_ts = Date.now() + sec * 1000;
-    lms_login_timeout = setTimeout(function() {
-            window.location.assign(window.location.href);
-        }, (sec + 1) * 1000);
+function start_login_timeout(sec) {
+	if (!sec) {
+		sec = 600;
+	}
+	lms_login_timeout_value = sec;
+	lms_login_timeout_ts = Date.now() + sec * 1000;
+	if (lms_login_timeout) {
+		clearTimeout(lms_login_timeout);
+	}
+	if (lms_login_timeout_update) {
+		clearInterval(lms_login_timeout_update);
+	}
+	lms_login_timeout = setTimeout(function () {
+		window.location.assign(window.location.href);
+	}, (sec + 1) * 1000);
 	lms_session_expire_elem = $('#lms-ui-session-expire');
-    if (lms_session_expire_elem.length) {
-	    lms_login_timeout_update = setInterval(function() {
-				var time_to_expire = lms_login_timeout_ts - Date.now();
-				if (time_to_expire < 0) {
-					time_to_expire = 0;
-				}
-				time_to_expire = Math.round(time_to_expire / 1000);
-	    		lms_session_expire_elem.text(sprintf("%02d:%02d",
-					Math.floor(time_to_expire / 60),
-					time_to_expire % 60
-				));
-	    		if (typeof(session_expiration_warning_handler) == 'function') {
-	    			session_expiration_warning_handler(time_to_expire);
-				}
-	    }, 1000);
+	if (lms_session_expire_elem.length) {
+		var time_to_expire = lms_login_timeout_ts - Date.now();
+		if (time_to_expire < 0) {
+			time_to_expire = 0;
+		}
+		time_to_expire = Math.round(time_to_expire / 1000);
+		lms_session_expire_elem.text(sprintf("%02d:%02d",
+			Math.floor(time_to_expire / 60),
+			time_to_expire % 60
+		));
+		lms_login_timeout_update = setInterval(function () {
+			var time_to_expire = lms_login_timeout_ts - Date.now();
+			if (time_to_expire < 0) {
+				time_to_expire = 0;
+			}
+			time_to_expire = Math.round(time_to_expire / 1000);
+			lms_session_expire_elem.text(sprintf("%02d:%02d",
+				Math.floor(time_to_expire / 60),
+				time_to_expire % 60
+			));
+			if (typeof (session_expiration_warning_handler) == 'function') {
+				session_expiration_warning_handler(time_to_expire);
+			}
+		}, 1000);
 	}
 }
 
@@ -877,10 +922,17 @@ function GusApiGetCompanyDetails(searchType, searchData, on_success) {
 		}
 	}).done(function(data) {
 		if (data.hasOwnProperty('error')) {
-			alert(data.error);
+			alertDialog({
+				title: $t("<!dialog>Error"),
+				message: data.error
+			});
 			return;
 		}
 		if (data.hasOwnProperty('warning')) {
+			alertDialog({
+				title: $t("<!dialog>Alert"),
+				message: data.warning
+			});
 			return;
 		}
 		on_success(data);
@@ -888,27 +940,71 @@ function GusApiGetCompanyDetails(searchType, searchData, on_success) {
 }
 
 function GusApiFinished(fieldPrefix, details) {
-	$.each(details, function(key, value) {
-		if (key == 'addresses') {
-			$.each(value, function(idx, addresses) {
+	if (typeof(fieldPrefix) == 'object') {
+		var handledFields = {};
+		$.each(fieldPrefix, function(key, fieldSelector) {
+			if (key == 'addresses') {
+				var addresses = details.addresses;
 				if (!Array.isArray(addresses)) {
 					addresses = [ addresses ];
 				}
-				$.each(addresses, function(addressnr, address) {
-					$.each(address, function (addresskey, addressvalue) {
-						$('[name="' + fieldPrefix + '[addresses][' + addressnr + '][' + addresskey + ']"]').val(
-							typeof(addressvalue) == 'string' ? addressvalue : '');
+
+				$.each(addresses, function (addressNumber, address) {
+					$.each(address, function (addressPropertyName, addressPropertyValue) {
+						if (!(addressPropertyName in fieldSelector[addressNumber])) {
+							return;
+						}
+						$(fieldSelector[addressNumber][addressPropertyName]).val(addressPropertyValue);
 					});
-					if ((address.location_state > 0) != $('[name="' + fieldPrefix + '[addresses][' + addressnr + '][teryt]"]').prop('checked')) {
-						$('[name="' + fieldPrefix + '[addresses][' + addressnr + '][teryt]"]').click();
+					if ((address.location_state > 0) != $(fieldSelector[addressNumber].teryt).prop('checked')) {
+						$(fieldSelector[addressNumber].teryt).click();
 					}
-					$('[name="' + fieldPrefix + '[addresses][' + addressnr + '][location_city_name]"]').trigger('input');
 				});
-			});
-		} else {
-			$('[name="' + fieldPrefix + '[' + key + ']"]').val(typeof(value) == 'string' ? value : '');
-		}
-	});
+			} else if (Array.isArray(fieldSelector)) {
+				$.each(fieldSelector, function(selectorIdx, selector) {
+					if (handledFields.hasOwnProperty(selector)) {
+						if (details[key].length) {
+							var val = $(selector).val();
+							$(selector).val((val.length ? val + ' ' : '') + details[key]);
+						}
+					} else {
+						$(selector).val(details[key]);
+						handledFields[selector] = key;
+					}
+				});
+			} else if (handledFields.hasOwnProperty(fieldSelector)) {
+				if (details[key].length) {
+					var val = $(fieldSelector).val();
+					$(fieldSelector).val((val.length ? val + ' ' : '') + details[key]);
+				}
+			} else {
+				$(fieldSelector).val(details[key]);
+				handledFields[fieldSelector] = key;
+			}
+		});
+	} else {
+		$.each(details, function(key, value) {
+			if (key == 'addresses') {
+				$.each(value, function(idx, addresses) {
+					if (!Array.isArray(addresses)) {
+						addresses = [ addresses ];
+					}
+					$.each(addresses, function(addressnr, address) {
+						$.each(address, function (addresskey, addressvalue) {
+							$('[name="' + fieldPrefix + '[addresses][' + addressnr + '][' + addresskey + ']"]').val(
+								typeof(addressvalue) == 'string' ? addressvalue : '');
+						});
+						if ((address.location_state > 0) != $('[name="' + fieldPrefix + '[addresses][' + addressnr + '][teryt]"]').prop('checked')) {
+							$('[name="' + fieldPrefix + '[addresses][' + addressnr + '][teryt]"]').click();
+						}
+						$('[name="' + fieldPrefix + '[addresses][' + addressnr + '][location_city_name]"]').trigger('input');
+					});
+				});
+			} else {
+				$('[name="' + fieldPrefix + '[' + key + ']"]').val(typeof(value) == 'string' ? value : '');
+			}
+		});
+	}
 }
 
 function osm_get_zip_code(search, on_success) {

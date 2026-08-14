@@ -27,7 +27,7 @@
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'invoiceajax.inc.php');
 
 $taxeslist = $LMS->GetTaxes();
-$action = isset($_GET['action']) ? $_GET['action'] : '';
+$action = $_GET['action'] ?? '';
 
 if (isset($_GET['id']) && $action == 'edit') {
     if ($LMS->isDocumentPublished($_GET['id']) && !ConfigHelper::checkPrivilege('published_document_modification')) {
@@ -39,6 +39,10 @@ if (isset($_GET['id']) && $action == 'edit') {
     }
 
     if ($LMS->isArchiveDocument($_GET['id'])) {
+        return;
+    }
+
+    if ($LMS->isKsefDocument($_GET['id'])) {
         return;
     }
 
@@ -116,10 +120,19 @@ if (isset($_GET['id']) && $action == 'edit') {
         'paytype' => $cnote['paytype'],
         'deadline' => date("Y/m/d", intval($cnote['deadline'])),
         'recipient_address_id' => $cnote['recipient_address_id'],
+        'recipient_ten' => $cnote['recipient_ten'],
+        'recipient_type' => $cnote['recipient_type'],
+        'recipient_address_id2' => $cnote['recipient_address_id2'],
+        'recipient_ten2' => $cnote['recipient_ten2'],
+        'recipient_type2' => $cnote['recipient_type2'],
         'use_current_customer_data' => isset($cnote['use_current_customer_data']),
         'reason' => $cnote['reason'],
     );
     $cnote['content_diff'] = 1;
+
+    if (date('Y/m/d', $cnote['cdate']) == date('Y/m/d', $cnote['sdate'])) {
+        $cnote['copy-cdate'] = 1;
+    }
 
     $hook_data = array(
         'contents' => $cnotecontents,
@@ -211,7 +224,7 @@ switch ($action) {
 
         if (ConfigHelper::checkPrivilege('invoice_consent_date')) {
             if ($cnote['cdate']) {
-                list ($year, $month, $day) = explode('/', $cnote['cdate']);
+                [$year, $month, $day] = explode('/', $cnote['cdate']);
                 if (checkdate($month, $day, $year)) {
                     $cnote['cdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $month, $day, $year);
                     if ($cnote['cdate'] < $invoice['cdate']) {
@@ -230,13 +243,14 @@ switch ($action) {
 
         if (ConfigHelper::checkPrivilege('invoice_sale_date')) {
             if ($cnote['sdate']) {
-                list ($syear, $smonth, $sday) = explode('/', $cnote['sdate']);
+                [$syear, $smonth, $sday] = explode('/', $cnote['sdate']);
                 if (checkdate($smonth, $sday, $syear)) {
                     $sdate = mktime(23, 59, 59, $smonth, $sday, $syear);
                     $cnote['sdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $smonth, $sday, $syear);
-                    if ($sdate < $invoice['sdate']) {
-                        $error['sdate'] = trans('Credit note sale date cannot be earlier than invoice sale date!');
-                    }
+                    // sale date in correction invoice can be earlier than one in corrected invoice!
+                    //if ($sdate < $invoice['sdate']) {
+                    //    $error['sdate'] = trans('Credit note sale date cannot be earlier than invoice sale date!');
+                    //}
                 } else {
                     $error['sdate'] = trans('Incorrect date format! Using current date.');
                     $cnote['sdate'] = $currtime;
@@ -288,6 +302,7 @@ switch ($action) {
             'paytype' => $cnote['paytype'],
             'deadline' => date("Y/m/d", $cnote['deadline']),
             'recipient_address_id' => $_POST['cnote[recipient_address_id]'],
+            'recipient_address_id2' => $_POST['cnote[recipient_address_id2]'],
             'use_current_customer_data' => isset($cnote['use_current_customer_data']),
             'reason' => $cnote['reason'],
         );
@@ -350,13 +365,13 @@ switch ($action) {
         $currtime = time();
 
         if (ConfigHelper::checkPrivilege('invoice_consent_date')) {
-            $cdate = $cnote['cdate'] ? $cnote['cdate'] : $currtime;
+            $cdate = $cnote['cdate'] ?: $currtime;
         } else {
             $cdate = $cnote['oldcdate'];
         }
 
         if (ConfigHelper::checkPrivilege('invoice_sale_date')) {
-            $sdate = $cnote['sdate'] ? $cnote['sdate'] : $currtime;
+            $sdate = $cnote['sdate'] ?: $currtime;
         } else {
             $sdate = $cnote['oldsdate'];
         }
@@ -364,7 +379,7 @@ switch ($action) {
         $cnote['currency'] = $cnote['oldcurrency'];
         $cnote['currencyvalue'] = $cnote['oldcurrencyvalue'];
 
-        $deadline = $cnote['deadline'] ? $cnote['deadline'] : $currtime;
+        $deadline = $cnote['deadline'] ?: $currtime;
         $paytime = $cnote['paytime'] = round(($cnote['deadline'] - $cnote['cdate']) / 86400);
         $iid   = $cnote['id'];
 
@@ -379,21 +394,21 @@ switch ($action) {
 
         foreach ($contents as $idx => $item) {
             if (ConfigHelper::checkConfig('phpui.tax_category_required')
-                && (!isset($newcontents['taxcategory'][$idx]) || empty($newcontents['taxcategory'][$idx]))) {
+                && (empty($newcontents['taxcategory'][$idx]))) {
                 $error['taxcategory[' . $idx . ']'] = trans('Tax category selection is required!');
             }
 
-            $contents[$idx]['taxid'] = isset($newcontents['taxid'][$idx]) ? $newcontents['taxid'][$idx] : $item['taxid'];
-            $contents[$idx]['taxcategory'] = isset($newcontents['taxcategory'][$idx]) ? $newcontents['taxcategory'][$idx] : $item['taxcategory'];
-            $contents[$idx]['servicetype'] = isset($newcontents['servicetype'][$idx]) ? $newcontents['servicetype'][$idx] : $item['servicetype'];
-            $contents[$idx]['prodid'] = isset($newcontents['prodid'][$idx]) ? $newcontents['prodid'][$idx] : $item['prodid'];
-            $contents[$idx]['content'] = isset($newcontents['content'][$idx]) ? $newcontents['content'][$idx] : $item['content'];
-            $contents[$idx]['count'] = isset($newcontents['count'][$idx]) ? $newcontents['count'][$idx] : $item['count'];
+            $contents[$idx]['taxid'] = $newcontents['taxid'][$idx] ?? $item['taxid'];
+            $contents[$idx]['taxcategory'] = $newcontents['taxcategory'][$idx] ?? $item['taxcategory'];
+            $contents[$idx]['servicetype'] = $newcontents['servicetype'][$idx] ?? $item['servicetype'];
+            $contents[$idx]['prodid'] = $newcontents['prodid'][$idx] ?? $item['prodid'];
+            $contents[$idx]['content'] = $newcontents['content'][$idx] ?? $item['content'];
+            $contents[$idx]['count'] = $newcontents['count'][$idx] ?? $item['count'];
 
-            $contents[$idx]['discount'] = str_replace(',', '.', isset($newcontents['discount'][$idx]) ? $newcontents['discount'][$idx] : $item['discount']);
+            $contents[$idx]['discount'] = str_replace(',', '.', $newcontents['discount'][$idx] ?? $item['discount']);
             $contents[$idx]['pdiscount'] = 0;
             $contents[$idx]['vdiscount'] = 0;
-            $contents[$idx]['discount_type'] = isset($newcontents['discount_type'][$idx]) ? $newcontents['discount_type'][$idx] : $item['discount_type'];
+            $contents[$idx]['discount_type'] = $newcontents['discount_type'][$idx] ?? $item['discount_type'];
             if (preg_match('/^[0-9]+(\.[0-9]+)*$/', $contents[$idx]['discount'])) {
                 $contents[$idx]['pdiscount'] = (!empty($contents[$idx]['discount_type']) && $contents[$idx]['discount_type'] == DISCOUNT_PERCENTAGE ? floatval($contents[$idx]['discount']) : 0);
                 $contents[$idx]['vdiscount'] = (!empty($contents[$idx]['discount_type']) && $contents[$idx]['discount_type'] == DISCOUNT_AMOUNT ? floatval($contents[$idx]['discount']) : 0);
@@ -402,13 +417,13 @@ switch ($action) {
                 $error['discount[' . $idx . ']'] = trans('Wrong discount value!');
             }
 
-            $contents[$idx]['name'] = isset($newcontents['name'][$idx]) ? $newcontents['name'][$idx] : $item['name'];
+            $contents[$idx]['name'] = $newcontents['name'][$idx] ?? $item['name'];
 
             if (!strlen($contents[$idx]['name'])) {
                 $error['name[' . $idx . ']'] = trans('Field cannot be empty!');
             }
 
-            $contents[$idx]['tariffid'] = isset($newcontents['tariffid'][$idx]) ? $newcontents['tariffid'][$idx] : $item['tariffid'];
+            $contents[$idx]['tariffid'] = $newcontents['tariffid'][$idx] ?? $item['tariffid'];
             if ($cnote['netflag']) {
                 if ($newcontents['valuenetto'][$idx] == '') {
                     $error['valuenetto[' . $idx . ']'] = trans('Wrong value!');
@@ -460,11 +475,11 @@ switch ($action) {
                     $contents[$idx]['s_valuebrutto'] = $contents[$idx]['s_valuenetto'] + $contents[$idx]['s_taxvalue'];
                     $contents[$idx]['cash'] = -1 * f_round($contents[$idx]['s_valuebrutto'] - $invoicecontents[$idx]['total']);
                 } else {
-                    $contents[$idx]['cash'] = 0;
-                    $contents[$idx]['valuenetto'] = f_round($invoicecontents[$idx]['basevalue']);
-                    $contents[$idx]['pdiscount'] = f_round($invoicecontents[$idx]['pdiscount']);
-                    $contents[$idx]['vdiscount'] = f_round($invoicecontents[$idx]['vdiscount']);
-                    $contents[$idx]['count'] = f_round($invoicecontents[$idx]['count'], 3);
+                    $contents[$idx]['cash'] = -1 * f_round($contents[$idx]['s_valuebrutto'] - $invoicecontents[$idx]['total']);
+                    $contents[$idx]['valuenetto'] = f_round($cnotecontents[$idx]['basevalue']);
+                    $contents[$idx]['pdiscount'] = f_round($cnotecontents[$idx]['pdiscount']);
+                    $contents[$idx]['vdiscount'] = f_round($cnotecontents[$idx]['vdiscount']);
+                    $contents[$idx]['count'] = f_round($cnotecontents[$idx]['count'], 3);
                 }
             } else {
                 if ((isset($item['deleted']) && $item['deleted']) || empty($contents[$idx]['count']) || empty($contents[$idx]['valuebrutto'])) {
@@ -498,11 +513,11 @@ switch ($action) {
                     $contents[$idx]['s_valuenetto'] = $contents[$idx]['s_valuebrutto'] - $contents[$idx]['s_taxvalue'];
                     $contents[$idx]['cash'] = -1 * f_round($contents[$idx]['s_valuebrutto'] - $invoicecontents[$idx]['total']);
                 } else {
-                    $contents[$idx]['cash'] = 0;
-                    $contents[$idx]['valuebrutto'] = f_round($invoicecontents[$idx]['value']);
-                    $contents[$idx]['pdiscount'] = f_round($invoicecontents[$idx]['pdiscount']);
-                    $contents[$idx]['vdiscount'] = f_round($invoicecontents[$idx]['vdiscount']);
-                    $contents[$idx]['count'] = f_round($invoicecontents[$idx]['count'], 3);
+                    $contents[$idx]['cash'] = -1 * f_round($contents[$idx]['s_valuebrutto'] - $invoicecontents[$idx]['total']);
+                    $contents[$idx]['valuebrutto'] = f_round($cnotecontents[$idx]['value']);
+                    $contents[$idx]['pdiscount'] = f_round($cnotecontents[$idx]['pdiscount']);
+                    $contents[$idx]['vdiscount'] = f_round($cnotecontents[$idx]['vdiscount']);
+                    $contents[$idx]['count'] = f_round($cnotecontents[$idx]['count'], 3);
                 }
             }
 
@@ -614,10 +629,40 @@ switch ($action) {
             }
 
             if ($cnote['recipient_address_id'] > 0) {
+                $recipient_ten = $LMS->getRecipientTen($cnote['recipient_address_id']);
+                $recipient_type = $LMS->getEntityType($cnote['recipient_address_id']);
                 $DB->Execute(
-                    'UPDATE documents SET recipient_address_id = ? WHERE id = ?',
+                    'UPDATE documents SET recipient_address_id = ?, recipient_ten = ?, recipient_type = ? WHERE id = ?',
                     array(
                         $LMS->CopyAddress($cnote['recipient_address_id']),
+                        $recipient_ten,
+                        $recipient_type,
+                        $iid,
+                    )
+                );
+            }
+        }
+
+        // updates customer recipient address stored in document
+        $prev_rec_addr2 = $DB->GetOne('SELECT recipient_address_id2 FROM documents WHERE id = ?', array($iid));
+        if (empty($prev_rec_addr2)) {
+            $prev_rec_addr2 = -1;
+        }
+
+        if ($prev_rec_addr2 != $cnote['recipient_address_id2']) {
+            if ($prev_rec_addr2 > 0) {
+                $DB->Execute('DELETE FROM addresses WHERE id = ?', array($prev_rec_addr2));
+            }
+
+            if ($cnote['recipient_address_id2'] > 0) {
+                $recipient_ten2 = $LMS->getRecipientTen($cnote['recipient_address_id2']);
+                $recipient_type2 = $LMS->getEntityType($cnote['recipient_address_id2']);
+                $DB->Execute(
+                    'UPDATE documents SET recipient_address_id2 = ?, recipient_ten2 = ?, recipient_type2 = ? WHERE id = ?',
+                    array(
+                        $LMS->CopyAddress($cnote['recipient_address_id2']),
+                        $recipient_ten2,
+                        $recipient_type2,
                         $iid,
                     )
                 );
@@ -683,26 +728,26 @@ switch ($action) {
             'ten' => $use_current_customer_data ? $customer['ten'] : $cnote['ten'],
             'ssn' => $use_current_customer_data ? $customer['ssn'] : $cnote['ssn'],
             'zip' => $use_current_customer_data ? $customer['zip'] : $cnote['zip'],
-            'city' => $use_current_customer_data ? ($customer['postoffice'] ? $customer['postoffice'] : $customer['city'])
+            'city' => $use_current_customer_data ? ($customer['postoffice'] ?: $customer['city'])
                 : $cnote['city'],
             SYSLOG::RES_COUNTRY => $use_current_customer_data ? (empty($customer['countryid']) ? null : $customer['countryid'])
                 : (empty($cnote['countryid']) ? null : $cnote['countryid']),
             'reason' => $cnote['reason'],
             SYSLOG::RES_DIV => $use_current_customer_data ? $customer['divisionid'] : $cnote['divisionid'],
-            'div_name' => ($division['name'] ? $division['name'] : ''),
-            'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
-            'div_address' => ($division['address'] ? $division['address'] : ''),
-            'div_city' => ($division['city'] ? $division['city'] : ''),
-            'div_zip' => ($division['zip'] ? $division['zip'] : ''),
-            'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => ($division['countryid'] ? $division['countryid'] : null),
-            'div_ten'=> ($division['ten'] ? $division['ten'] : ''),
-            'div_regon' => ($division['regon'] ? $division['regon'] : ''),
+            'div_name' => ($division['name'] ?: ''),
+            'div_shortname' => ($division['shortname'] ?: ''),
+            'div_address' => ($division['address'] ?: ''),
+            'div_city' => ($division['city'] ?: ''),
+            'div_zip' => ($division['zip'] ?: ''),
+            'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => ($division['countryid'] ?: null),
+            'div_ten'=> ($division['ten'] ?: ''),
+            'div_regon' => ($division['regon'] ?: ''),
             'div_bank' => $division['bank'] ?: null,
-            'div_account' => ($division['account'] ? $division['account'] : ''),
-            'div_inv_header' => ($division['inv_header'] ? $division['inv_header'] : ''),
-            'div_inv_footer' => ($division['inv_footer'] ? $division['inv_footer'] : ''),
-            'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
-            'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
+            'div_account' => ($division['account'] ?: ''),
+            'div_inv_header' => ($division['inv_header'] ?: ''),
+            'div_inv_footer' => ($division['inv_footer'] ?: ''),
+            'div_inv_author' => ($division['inv_author'] ?: ''),
+            'div_inv_cplace' => ($division['inv_cplace'] ?: ''),
             'currency' => $cnote['currency'],
             'currencyvalue' => $cnote['currencyvalue'],
             'memo' => $use_current_customer_data ? (empty($customer['documentmemo']) ? null : $customer['documentmemo']) : $cnote['memo'],
@@ -820,7 +865,7 @@ switch ($action) {
         $DB->CommitTrans();
 
         if (isset($_GET['print'])) {
-            $which = isset($_GET['which']) ? $_GET['which'] : 0;
+            $which = $_GET['which'] ?? 0;
 
             $SESSION->save('invoiceprint', array('invoice' => $iid, 'which' => $which), true);
         }
@@ -847,6 +892,8 @@ $contents = $hook_data['contents'];
 $cnote = $hook_data['cnote'];
 
 $addresses = $LMS->getCustomerAddresses($cnote['customerid']);
+$addresses2 = $addresses;
+
 if (isset($cnote['recipient_address'])) {
     $addresses = array_replace(
         array($cnote['recipient_address']['address_id'] => $cnote['recipient_address']),
@@ -854,6 +901,14 @@ if (isset($cnote['recipient_address'])) {
     );
 }
 $SMARTY->assign('addresses', $addresses);
+
+if (isset($cnote['recipient_address2'])) {
+    $addresses2 = array_replace(
+        array($cnote['recipient_address2']['address_id'] => $cnote['recipient_address2']),
+        $addresses2
+    );
+}
+$SMARTY->assign('addresses2', $addresses2);
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);

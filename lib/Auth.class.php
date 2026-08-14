@@ -28,11 +28,15 @@ use PragmaRX\Google2FA\Google2FA;
 
 class Auth
 {
+    // minimum delay enforced between two failed password attempts for the
+    // same account, to slow down brute-force/dictionary attacks
+    const LOGIN_THROTTLE_SECONDS = 2;
 
     private $id = null;
     public $login;
     private $targetLogin = null;
     public $logname;
+    public $logrname;
     public $passwd;
     public $islogged = false;
     public $nousers = false;
@@ -46,10 +50,15 @@ class Auth
     public $last;
     public $ip;
     public $lastip;
+    private $passwdforcechange = false;
+    private $passwdexpiration = null;
+    private $passwdlastchange = null;
     private $passwdrequiredchange = false;
     private $twofactorauthrequiredchange = false;
     private $twofactorauth = null;
     private $twofactorauthsecretkey = null;
+    private $authcode = null;
+    private $trusteddevice = false;
     public $error;
     public $_version = '1.11-git';
     public $_revision = '$Revision$';
@@ -69,7 +78,12 @@ class Auth
 
     public static function GetCurrentUserName()
     {
-        return (self::$auth ? self::$auth->logname : null);
+        return self::$auth ? self::$auth->logname : null;
+    }
+
+    public static function GetCurrentUserReversedName()
+    {
+        return self::$auth ? self::$auth->logrname : null;
     }
 
     public function __construct(&$DB, &$SESSION)
@@ -103,7 +117,7 @@ class Auth
         $this->SESSION->restore('session_target_login', $this->targetLogin);
         $this->SESSION->restore('session_authcoderequired', $this->authcoderequired);
 
-        if (isset($loginform['backtologinform']) && !empty($loginform['backtologinform'])) {
+        if (!empty($loginform['backtologinform'])) {
             $this->authcoderequired = false;
         }
 
@@ -119,10 +133,18 @@ class Auth
                 $components = explode('#', $loginform['login']);
                 $this->login = $login = $components[0];
                 $targetLogin = count($components) == 2 ? $components[1] : null;
+                // 'login#targetlogin' lets an admin instantly switch into another
+                // user's session (ChangeLog: "allow to instantly switch user or
+                // login as different user"). The gate below used to check whether
+                // ANY full_access user existed anywhere in the system, not whether
+                // the authenticating login ($login) itself had full_access — so any
+                // operator who knew an admin's login could switch INTO that admin
+                // account using their own password. Scope the check to $login.
                 if (!empty($targetLogin)
                     && $this->DB->GetOne(
-                        'SELECT 1 FROM users WHERE deleted = 0 AND access = 1 AND '
-                        . $this->DB->RegExp('rights', 'full_access')
+                        'SELECT 1 FROM users WHERE login = ? AND deleted = 0 AND access = 1 AND '
+                        . $this->DB->RegExp('rights', 'full_access'),
+                        array($login)
                     )
                 ) {
                     $this->targetLogin = $targetLogin;
@@ -147,10 +169,12 @@ class Auth
 
             $this->switchUser();
 
-            $this->logname = $this->logname ? $this->logname : $this->SESSION->get('session_logname');
-            $this->id = $this->id ? $this->id : $this->SESSION->get('session_id');
+            $this->logname = $this->logname ?: $this->SESSION->get('session_logname');
+            $this->logrname = $this->logrname ?: $this->SESSION->get('session_logrname');
+            $this->id = $this->id ?: $this->SESSION->get('session_id');
 
             if (isset($loginform)) {
+                $this->SESSION->regenerateSID();
                 $this->DB->Execute('UPDATE users SET lastlogindate=?, lastloginip=? WHERE id=?', array(time(), $this->ip ,$this->id));
                 writesyslog('User '.$this->login . (empty($this->authcode) ? '' : ' (authentication code)') . ' logged in.', LOG_INFO);
                 if ($this->SYSLOG) {
@@ -161,7 +185,7 @@ class Auth
                         array(
                             SYSLOG::RES_USER => $this->id,
                             'ip' => $this->ip,
-                            'useragent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
+                            'useragent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
                         )
                     );
                 }
@@ -174,13 +198,16 @@ class Auth
             }
             $this->SESSION->restore_user_settings();
             $this->SESSION->save('session_logname', $this->logname);
+            $this->SESSION->save('session_logrname', $this->logrname);
             $this->SESSION->save('session_last', $this->last);
             $this->SESSION->save('session_lastip', $this->lastip);
         } else {
             if (isset($loginform)) {
                 if ($this->id) {
                     if ($this->authcoderequired) {
-                        writesyslog('Bad authentication code (' . (isset($this->authcode) ? $this->authcode : '-') . ') for ' . $this->login, LOG_WARNING);
+                        if (isset($this->authcode)) {
+                            writesyslog('Bad authentication code (' . ($this->authcode ?? '-') . ') for ' . $this->login, LOG_WARNING);
+                        }
                     } else {
                         if (!$this->hostverified) {
                             writesyslog('Bad host (' . $this->ip . ') for ' . $this->login, LOG_WARNING);
@@ -251,7 +278,15 @@ class Auth
             return true;
         }
 
-        if (md5($this->passwd) == $dbpasswd) {
+        // legacy accounts not yet migrated to password_hash(); hash_equals()
+        // avoids the PHP loose-comparison ("magic hash") type-juggling bypass
+        if (hash_equals((string) $dbpasswd, md5($this->passwd))) {
+            if ($this->id) {
+                $this->DB->Execute(
+                    'UPDATE users SET passwd = ? WHERE id = ?',
+                    array(password_hash($this->passwd, PASSWORD_DEFAULT), $this->id)
+                );
+            }
             return true;
         }
 
@@ -315,7 +350,7 @@ class Auth
             if (strpos($value, '/') === false) {
                 $net = $value;
             } else {
-                list($net, $mask) = explode('/', $value);
+                [$net, $mask] = explode('/', $value);
             }
 
             $net = trim($net);
@@ -374,16 +409,17 @@ class Auth
 
     public function SwitchUser($userid = null)
     {
-        if (((isset($this->targetLogin) && ($user = $this->DB->GetRow('SELECT id, name, passwd, hosts, trustedhosts, lastlogindate, lastloginip,
+        if (((isset($this->targetLogin) && ($user = $this->DB->GetRow('SELECT id, name, rname, passwd, hosts, trustedhosts, lastlogindate, lastloginip,
                 passwdforcechange, passwdexpiration, passwdlastchange, access, accessfrom, accessto,
                 twofactorauth, twofactorauthsecretkey
             FROM vusers WHERE login = ? AND deleted = 0', array($this->targetLogin))) !== null)
-                || (isset($userid) && ($user = $this->DB->GetRow('SELECT id, name, passwd, hosts, trustedhosts, lastlogindate, lastloginip,
+                || (isset($userid) && ($user = $this->DB->GetRow('SELECT id, name, rname, passwd, hosts, trustedhosts, lastlogindate, lastloginip,
                 passwdforcechange, passwdexpiration, passwdlastchange, access, accessfrom, accessto,
                 twofactorauth, twofactorauthsecretkey
             FROM vusers WHERE id = ? AND deleted = 0', array($userid))) !== null))
             && $this->VerifyDivision($user['id'])) {
             $this->logname = $user['name'];
+            $this->logrname = $user['rname'];
             $this->id = $user['id'];
             $this->last = $user['lastlogindate'];
             $this->lastip = $user['lastloginip'];
@@ -399,6 +435,7 @@ class Auth
                 $this->SESSION->save('session_login', $this->login);
                 $this->SESSION->restore_user_settings();
                 $this->SESSION->save('session_logname', $this->logname);
+                $this->SESSION->save('session_logrname', $this->logrname);
             }
         }
     }
@@ -407,11 +444,12 @@ class Auth
     {
         $this->islogged = false;
 
-        if ($user = $this->DB->GetRow('SELECT id, name, passwd, hosts, trustedhosts, lastlogindate, lastloginip,
+        if ($user = $this->DB->GetRow('SELECT id, name, rname, passwd, hosts, trustedhosts, lastlogindate, lastloginip,
 				passwdforcechange, passwdexpiration, passwdlastchange, access, accessfrom, accessto,
-				twofactorauth, twofactorauthsecretkey
+				twofactorauth, twofactorauthsecretkey, failedlogindate
 			FROM vusers WHERE login=? AND deleted=0', array($this->login))) {
             $this->logname = $user['name'];
+            $this->logrname = $user['rname'];
             $this->id = $user['id'];
             $this->last = $user['lastlogindate'];
             $this->lastip = $user['lastloginip'];
@@ -463,8 +501,13 @@ class Auth
                             } else {
                                 $this->DB->Execute(
                                     'INSERT INTO twofactorauthcodehistory (userid, authcode, uts, success, ipaddr)
-                                    VALUES (?, ?, ?NOW?, ?, INET_ATON(?))',
-                                    array($this->id, !empty($this->authcode) ?: '', 1, $this->lastip)
+                                    VALUES (?, ?, ?NOW?, ?, ?)',
+                                    array(
+                                        $this->id,
+                                        !empty($this->authcode) ?: '',
+                                        1,
+                                        empty($this->lastip) ? null : ip2long($this->lastip),
+                                    )
                                 );
 
                                 $this->authcoderequired = '';
@@ -476,8 +519,12 @@ class Auth
                         } else {
                             $this->DB->Execute(
                                 'INSERT INTO twofactorauthcodehistory (userid, authcode, uts, ipaddr)
-                                VALUES (?, ?, ?NOW?, INET_ATON(?))',
-                                array($this->id, !empty($this->authcode) ?: '', $this->lastip)
+                                VALUES (?, ?, ?NOW?, ?)',
+                                array(
+                                    $this->id,
+                                    !empty($this->authcode) ?: '',
+                                    empty($this->lastip) ? null : ip2long($this->lastip),
+                                )
                             );
 
                             $this->error = trans("Wrong authentication code.");
@@ -485,8 +532,18 @@ class Auth
                     } else {
                         $this->error = trans("Too many failed login attempts in short time period.<br>Try again in a few minutes.");
                     }
+                } elseif (!empty($user['failedlogindate']) && time() - $user['failedlogindate'] < self::LOGIN_THROTTLE_SECONDS) {
+                    $this->error = trans("Too many failed login attempts in short time period.<br>Try again in a few minutes.");
                 } else {
-                    $this->passverified = $this->VerifyPassword($user['passwd']);
+                    $hook_data = LMSPluginManager::getInstance()->executeHook(
+                        'password_verification',
+                        [
+                            'login' => $this->login,
+                            'passwd' => $this->passwd,
+                            'result' => false,
+                        ]
+                    );
+                    $this->passverified = $hook_data['result'] ?: $this->VerifyPassword($user['passwd']);
                     $this->hostverified = $this->VerifyHost($user['hosts']);
                     $this->trustedhost = $this->verifyTrustedHost($user['trustedhosts']);
                     $this->access = $this->VerifyAccess($user['access']);
@@ -636,7 +693,7 @@ class Auth
                 $plain_content = openssl_decrypt($encrypted_content, 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv);
                 if ($plain_content !== false) {
                     $now = time();
-                    list ($expires, $rand, $signature) = explode(':', $plain_content, 3);
+                    [$expires, $rand, $signature] = explode(':', $plain_content, 3);
                     if ($this->DB->GetOne(
                         'SELECT COUNT(*) FROM twofactorauthtrusteddevices
                         WHERE userid = ? AND cookiename = ? AND expires = ?',

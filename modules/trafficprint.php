@@ -28,7 +28,7 @@ if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkCo
     access_denied();
 }
 
-$type = isset($_GET['type']) ? $_GET['type'] : '';
+$type = $_GET['type'] ?? '';
 
 switch ($type) {
     case 'customertraffic':
@@ -37,8 +37,8 @@ switch ($type) {
         $stat_freq = ConfigHelper::getConfig('phpui.stat_freq', 12);
         $speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000);
 
-        $month = isset($_POST['month']) ? $_POST['month'] : date('n');
-        $year = isset($_POST['year']) ? $_POST['year'] : date('Y');
+        $month = $_POST['month'] ?? date('n');
+        $year = $_POST['year'] ?? date('Y');
         $customer = isset($_POST['customer']) ? intval($_POST['customer']) : intval($_GET['customer']);
 
         $layout['pagetitle'] = trans('Stats of Customer $a in month $b', $LMS->GetCustomerName($customer), date('F Y', mktime(0, 0, 0, $month, 1, $year)));
@@ -99,8 +99,8 @@ switch ($type) {
                 $listdata[0]['upavg'] += $stats[0][$i]['upavg'];
                 $listdata[0]['downavg'] += $stats[0][$i]['downavg'];
 
-                list($stats[0][$i]['upload'], $stats[0][$i]['uploadunit']) = setunits($stats[0][$i]['upload']);
-                list($stats[0][$i]['download'], $stats[0][$i]['downloadunit']) = setunits($stats[0][$i]['download']);
+                [$stats[0][$i]['upload'], $stats[0][$i]['uploadunit']] = setunits($stats[0][$i]['upload']);
+                [$stats[0][$i]['download'], $stats[0][$i]['downloadunit']] = setunits($stats[0][$i]['download']);
 
                 if ($stats[0][$i]['upmax'] > $listdata[0]['upmax']) {
                     $listdata[0]['upmax'] = $stats[0][$i]['upmax'];
@@ -112,8 +112,8 @@ switch ($type) {
 
             $listdata[0]['upavg'] = $listdata[0]['upavg'] / date('t', $from);
             $listdata[0]['downavg'] = $listdata[0]['downavg'] / date('t', $from);
-            list($listdata[0]['upload'], $listdata[0]['uploadunit']) = setunits($listdata[0]['upload']);
-            list($listdata[0]['download'], $listdata[0]['downloadunit']) = setunits($listdata[0]['download']);
+            [$listdata[0]['upload'], $listdata[0]['uploadunit']] = setunits($listdata[0]['upload']);
+            [$listdata[0]['download'], $listdata[0]['downloadunit']] = setunits($listdata[0]['download']);
 
             $SMARTY->assign('stats', $stats);
             $SMARTY->assign('listdata', $listdata);
@@ -121,7 +121,11 @@ switch ($type) {
 
         if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
             $output = $SMARTY->fetch('print/printcustomertraffic.html');
-            html2pdf($output, trans('Reports'), $layout['pagetitle']);
+            Utils::html2pdf(array(
+                'content' => $output,
+                'subject' => trans('Reports'),
+                'title' => $layout['pagetitle'],
+            ));
         } else {
             $SMARTY->display('print/printcustomertraffic.html');
         }

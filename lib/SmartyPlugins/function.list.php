@@ -27,19 +27,19 @@
 function smarty_function_list(array $params, Smarty_Internal_Template $template)
 {
 
-    $id = isset($params['id']) ? $params['id'] : 'list';
+    $id = $params['id'] ?? 'list';
     $visible = !isset($params['visible']) || ConfigHelper::checkValue($params['visible']);
     $disabled = isset($params['disabled']) && ConfigHelper::checkValue($params['disabled']);
-    $tipid = isset($params['tipid']) ? $params['tipid'] : 'list-tip';
-    $tip = isset($params['tip']) ? $params['tip'] : trans('Select elements using suggestions');
-    $items = isset($params['items']) && !empty($params['items']) ? $params['items'] : null;
-    $field_name_pattern = isset($params['field_name_pattern']) ? $params['field_name_pattern'] : 'list[%id%]';
-    $item_content = isset($params['item_content']) && !empty($params['item_content']) ? $params['item_content']
+    $tipid = $params['tipid'] ?? 'list-tip';
+    $tip = $params['tip'] ?? trans('Select elements using suggestions');
+    $items = !empty($params['items']) ? $params['items'] : null;
+    $field_name_pattern = $params['field_name_pattern'] ?? 'list[%id%]';
+    $item_content = !empty($params['item_content']) ? $params['item_content']
         : function ($item) {
             if (isset($item['name'])) {
-                return sprintf('#%06d', $item['id']) . ' <a href="?m=list&id=' . $item['id'] . '">' . $item['name'] . '</a>';
+                return sprintf('(#%06d)', $item['id']) . ' <a class="lms-ui-list-item-name" href="?m=list&id=' . $item['id'] . '">' . $item['name'] . '</a>';
             } else {
-                return '<a href="?m=list&id=' . $item['id'] . '">' . sprintf('#%06d', $item['id']) . '</a>';
+                return '<a class="lms-ui-list-item-name" href="?m=list&id=' . $item['id'] . '">' . sprintf('#%06d', $item['id']) . '</a>';
             }
         };
 

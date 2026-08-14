@@ -1,11 +1,23 @@
 <!--// $Id$ //-->
-{$unsecure_pin_validity = intval(ConfigHelper::getConfig('phpui.unsecure_pin_validity', 0, true))}
-{$pin_tip = ConfigHelper::getConfig('phpui.pin_restriction_description')}
+{$restrictive_sensitive_data_access = ConfigHelper::checkConfig('customers.restrictive_sensitive_data_access')}
+{$unsecure_pin_validity = intval(ConfigHelper::getConfig('customers.unsecure_pin_validity', ConfigHelper::getConfig('phpui.unsecure_pin_validity', 0, true), true))}
+{$pin_tip = ConfigHelper::getConfig('customers.pin_restriction_description', ConfigHelper::getConfig('phpui.pin_restriction_description'))}
+{if !empty($unsecure_pin_validity)}
+	{$pin_tip = ConfigHelper::getConfig('customers.unsecure_pin_restriction_description', $pin_tip)}
+{/if}
 {if !$pin_tip}
-	{if $pin_min_size == $pin_max_size}
-		{$pin_tip=trans("Enter \$a characters PIN code", $pin_min_size)}
+	{if empty($unsecure_pin_validity)}
+		{if $pin_min_size == $pin_max_size}
+			{$pin_tip = trans("Enter \$a characters PIN code", $pin_min_size)}
+		{else}
+			{$pin_tip = trans("Enter \$a to \$b characters PIN code", $pin_min_size, $pin_max_size)}
+		{/if}
 	{else}
-		{$pin_tip=trans("Enter \$a to \$b characters PIN code", $pin_min_size, $pin_max_size)}
+		{if $unsecure_pin_min_size == $unsecure_pin_max_size}
+			{$pin_tip = trans("Enter \$a characters PIN code", $unsecure_pin_min_size)}
+		{else}
+			{$pin_tip = trans("Enter \$a to \$b characters PIN code", $unsecure_pin_min_size, $unsecure_pin_max_size)}
+		{/if}
 	{/if}
 {/if}
 {if !empty($unsecure_pin_validity)}
@@ -46,32 +58,32 @@
 		cursor: pointer;
 	}
 
-	#identity-document-box {
-		padding-left: 0;
+	.identity-document-box {
+		padding-left: 0 !important;
 	}
 
-	#identity-document-box .identity-document-properties {
+	.identity-document-properties {
 		display: flex;
 		flex-direction: column;
 		flex-wrap: wrap;
 	}
 
-	#identity-document-box .identity-document-property {
+	.identity-document-property {
 		display: flex;
 		flex-direction: column;
 		flex-wrap: wrap;
 	}
 
-	#identity-document-box .identity-document-property > * {
+	.identity-document-property > * {
 		margin-top: 0.25em;
 		margin-bottom: 0.25em;
 	}
 
-	#identity-document-box .identity-document-property > input[type] {
+	.identity-document-property > input[type] {
 		margin-left: 0;
 	}
 
-	#identity-document-box .identity-document-property > select {
+	.identity-document-property > select {
 		margin-left: 0;
 	}
 
@@ -196,6 +208,19 @@
 							</select>
 						</TD>
 					</TR>
+					<tr>
+						<td>
+							{icon name="origin" class="fa-fw"}
+						</td>
+						<td>
+							<select size="1" name="customerdata[origin]" {tip trigger="origin"}>
+								<option value="">{trans("<!origin>— unspecified —")}</option>
+								{foreach Localisation::arraySort($_ORIGINS) as $originidx => $origin}
+									<option value="{$originidx}"{if $customerinfo.origin == $originidx} selected{/if}>{$origin}</option>
+								{/foreach}
+							</select>
+						</td>
+					</tr>
 					{if $divisions}
 					<TR>
 						<TD>
@@ -240,6 +265,11 @@
 							<i class="lms-ui-icon-legal-personality"></i>
 						</TD>
 						<TD>
+							{capture assign="customer_flag_tip"}{strip}
+								{foreach Localisation::arraySort($_CUSTOMERFLAGS, 'label') as $cflag => $flag}
+									<strong>{$flag.label}</strong> - {$flag.tip}<br>
+								{/foreach}
+							{/strip}{/capture}
 							<select name="customerdata[flags][]" {tip text="Select customer flags (optional)" class="lms-ui-multiselect"}
 								multiple>
 								{foreach Localisation::arraySort($_CUSTOMERFLAGS, 'label') as $cflag => $flag}
@@ -249,6 +279,7 @@
 									>{$flag.label}</option>
 								{/foreach}
 							</select>
+							{hint text=$customer_flag_tip}
 						</TD>
 					</TR>
 
@@ -368,145 +399,162 @@
 							</div>
 						</TD>
 					</TR>
-					<TR>
-						<TD class="valign-top">
-							<i class="lms-ui-icon-user-id-number"></i>
-						</TD>
-						<TD class="cell-flex">
+					<tr>
+						<td class="valign-top">
+							{icon name="user-id-number"}
+						</td>
+						<td class="cell-flex">
 							<div>
-							<TABLE width="100%">
-								<COLGROUP>
-									<COL style="width: 1%;">
-									<COL style="width: 99%;">
-								</COLGROUP>
-								{if !ConfigHelper::checkPrivilege('hide_customer_sensitive_data')}
+								<table class="user-id-number">
+									<colgroup>
+										<col style="width: 1%;">
+										<col style="width: 99%;">
+									</colgroup>
+									{if !ConfigHelper::checkPrivilege('hide_customer_sensitive_data', !$restrictive_sensitive_data_access)}
+										<tr>
+											<td colspan="2" class="identity-document-box">
+												<fieldset>
+													<legend class="bold">
+														{trans("Identity document")}
+													</legend>
+													<div class="identity-document-properties">
+														<label class="identity-document-property">
+															<span>{trans("Type")}</span>
+															{identitytypes elemname="customerdata[ict]" selected=$customerinfo.ict
+																tip="" trigger="ict"}
+														</label>
+														<label class="identity-document-property">
+															<span>{trans("Number")}</span>
+															{if $customerinfo.icnwarning}
+																<input type="hidden" name="customerdata[icnwarning]" value="1">
+															{/if}
+															{if ConfigHelper::checkPrivilege('customer_sensitive_data_view', !$restrictive_sensitive_data_access)}
+																{$icn = $customerinfo.icn}
+																{$disabled = false}
+															{else}
+																{$icn = preg_replace('/[^\s]/', '*', $customerinfo.icn)}
+																{$disabled = true}
+															{/if}
+															<input type="text" value="{$icn}" name="customerdata[icn]" size="30"
+																class="customer-sensitive-data" data-type="icn"
+																{tip trigger="icn"}
+																{if $disabled} disabled{/if}>
+														</label>
+														<label class="identity-document-property">
+															<span>{trans("Expires")}</span>
+															<input type="text" value="{if $customerinfo.icexpires > 0}{$customerinfo.icexpires}{/if}"
+																name="customerdata[icexpires]" size="10" id="icexpires"
+																class="lms-ui-date lms-ui-date-unix"
+																{tip trigger="icexpires"}
+																{if $customerinfo.icexpires == -1}disabled{/if}>
+														</label>
+														<label>
+															<input type="checkbox" name="customerdata[icexpires]"
+																id="icexpires-indefinitely"
+																value="-1"{if $customerinfo.icexpires == -1} checked{/if}
+																{tip trigger="icexpires-indefinitely"}>
+															{trans("indefinitely")}
+														</label>
+													</div>
+												</fieldset>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												{trans("SSN")}
+											</td>
+											<td>
+												{if ConfigHelper::checkPrivilege('customer_sensitive_data_view', !$restrictive_sensitive_data_access)}
+													{$ssn = $customerinfo.ssn}
+													{$disabled = false}
+												{else}
+													{$ssn = preg_replace('/[^\s]/', '*', $customerinfo.ssn)}
+													{$disabled = true}
+												{/if}
+												{if !$disabled}
+													<input type="hidden" name="customerdata[oldssn]" value="{$ssn}">
+												{/if}
+												<input type="text" name="customerdata[ssn]" value="{$ssn}" size="30"
+													data-type="ssn"
+													{tip trigger="ssn" class="customer-sensitive-data"}
+													{if $disabled} disabled{/if}>
+												{if $customerinfo.ssnwarning}
+													<input type="hidden" name="customerdata[ssnwarning]" value="1">
+												{/if}
+												{if $customerinfo.ssnexistencewarning}
+													<input type="hidden" name="customerdata[ssnexistencewarning]" value="1">
+												{/if}
+											</td>
+										</tr>
+									{/if}
 									<tr>
-										<td class="nobr" colspan="2" id="identity-document-box">
-											<fieldset>
-												<legend class="bold">
-													{trans("Identity document")}
-												</legend>
-												<div class="identity-document-properties">
-													<label class="identity-document-property">
-														<span>{trans("Type")}</span>
-														{identitytypes elemname="customerdata[ict]" selected=$customerinfo.ict
-															tip="" trigger="ict"}
-													</label>
-													<label class="identity-document-property">
-														<span>{trans("Number")}</span>
-														{if $customerinfo.icnwarning}
-															<input type="hidden" name="customerdata[icnwarning]" value="1">
-														{/if}
-														{if ConfigHelper::checkPrivilege('customer_sensitive_data_view')}
-															{$icn = $customerinfo.icn}
-															{$disabled = false}
-														{else}
-															{$icn = preg_replace('/[^\s]/', '*', $customerinfo.icn)}
-															{$disabled = true}
-														{/if}
-														<input type="text" value="{$icn}" name="customerdata[icn]" size="30"
-															class="customer-sensible-data" data-type="icn"
-															{tip trigger="icn"}
-															{if $disabled} disabled{/if}>
-													</label>
-													<label class="identity-document-property">
-														<span>{trans("Expires")}</span>
-														<input type="text" value="{if $customerinfo.icexpires > 0}{$customerinfo.icexpires}{/if}"
-															name="customerdata[icexpires]" size="10" id="icexpires"
-															class="lms-ui-date lms-ui-date-unix"
-															{tip trigger="icexpires"}
-															{if $customerinfo.icexpires == -1}disabled{/if}>
-													</label>
-													<label>
-														<input type="checkbox" name="customerdata[icexpires]"
-															id="icexpires-indefinitely"
-															value="-1"{if $customerinfo.icexpires == -1} checked{/if}
-															{tip trigger="icexpires-indefinitely"}>
-														{trans("indefinitely")}
-													</label>
-												</div>
-											</fieldset>
+										<td>{trans("TEN")}</td>
+										<td>
+											<input type="text" name="customerdata[ten]" value="{$customerinfo.ten}" size="30"
+												{tip trigger="ten"}>
+											{if $customerinfo.tenwarning}
+												<input type="hidden" name="customerdata[tenwarning]" value="1">
+											{/if}
+											{if $customerinfo.tenexistencewarning}
+												<input type="hidden" name="customerdata[tenexistencewarning]" value="1">
+											{/if}
+											{button type="link" icon="division" class="gusapi-button"
+												data_type=Utils::GUS_REGON_API_SEARCH_TYPE_TEN
+												tip="Click here to autocomplete company data from GUS REGON database"}
 										</td>
 									</tr>
 									<tr>
+										<td>{trans("REGON")}</td>
 										<td>
-											{trans("SSN")}
-										</td>
-										<td>
-											{if ConfigHelper::checkPrivilege('customer_sensitive_data_view')}
-												{$ssn = $customerinfo.ssn}
-												{$disabled = false}
-											{else}
-												{$ssn = preg_replace('/[^\s]/', '*', $customerinfo.ssn)}
-												{$disabled = true}
-											{/if}
-											<input type="text" name="customerdata[ssn]" value="{$ssn}" size="30"
-												class="customer-sensible-data" data-type="ssn"
-												{tip trigger="ssn"}
-												{if $disabled} disabled{/if}>
-											{if $customerinfo.ssnwarning}
-												<input type="hidden" name="customerdata[ssnwarning]" value="1">
-											{/if}
-											{if $customerinfo.ssnexistencewarning}
-												<input type="hidden" name="customerdata[ssnexistencewarning]" value="1">
-											{/if}
+											<input type="text" value="{$customerinfo.regon}" name="customerdata[regon]" size="30"
+												{tip trigger="regon"}>
+											{button type="link" icon="division" class="gusapi-button"
+												data_type=Utils::GUS_REGON_API_SEARCH_TYPE_REGON
+												tip="Click here to autocomplete company data from GUS REGON database"}
 										</td>
 									</tr>
-								{/if}
-								<TR>
-									<TD>{trans("TEN")}</TD>
-									<TD>
-										<input type="text" name="customerdata[ten]" value="{$customerinfo.ten}" size="30"
-											{tip trigger="ten"}>
-										{if $customerinfo.tenwarning}
-											<input type="hidden" name="customerdata[tenwarning]" value="1">
-										{/if}
-										{if $customerinfo.tenexistencewarning}
-											<input type="hidden" name="customerdata[tenexistencewarning]" value="1">
-										{/if}
-										{button type="link" icon="division" class="gusapi-button"
-											data_type=Utils::GUS_REGON_API_SEARCH_TYPE_TEN
-											tip="Click here to autocomplete company data from GUS REGON database"}
-									</TD>
-								</TR>
-								<TR>
-									<TD>{trans("REGON")}</TD>
-									<TD>
-										<input type="text" value="{$customerinfo.regon}" name="customerdata[regon]" size="30"
-											{tip trigger="regon"}>
-										{button type="link" icon="division" class="gusapi-button"
-											data_type=Utils::GUS_REGON_API_SEARCH_TYPE_REGON
-											tip="Click here to autocomplete company data from GUS REGON database"}
-									</TD>
-								</TR>
-								<TR>
-									<TD>{trans("RBE Name")}</TD>
-									<TD>
-										<div class="valign-middle">
+								</table>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="valign-top">
+							{icon name="user-id-number"}
+						</td>
+						<td class="cell-flex identity-document-box">
+							<div>
+								<fieldset>
+									<legend class="bold">
+										{trans("Business register")}
+									</legend>
+									<div class="identity-document-properties">
+										<label class="identity-document-property">
+											<span>
+												{trans("Name")}
+												{hint content="Enter National Court Register / Register of Business Entities Name (optional)"}
+											</span>
 											<textarea name="customerdata[rbename]" cols="45" rows="4"
 												{tip trigger="rbename"}
 												>{$customerinfo.rbename|escape}</textarea>
-											{hint content="Enter National Court Register / Register of Business Entities Name (optional)"}
-										</div>
-									</TD>
-								</TR>
-								<TR>
-									<TD>{trans("RBE")}</TD>
-									<TD>
-										<div class="valign-middle">
-											<input type="text" value="{$customerinfo.rbe}" name="customerdata[rbe]" size="30"
-												{tip trigger="rbe"}>
-											{button type="link" icon="division" class="gusapi-button"
-												data_type=Utils::GUS_REGON_API_SEARCH_TYPE_RBE
-												tip="Click here to autocomplete company data from GUS REGON database"}
-											{hint content="Enter National Court Register / Register of Business Entities Number (optional)"}
-										</div>
-									</TD>
-								</TR>
-							</TABLE>
+										</label>
+										<label class="identity-document-property">
+											<span>
+												{trans("Number")}
+												{hint content="Enter National Court Register / Register of Business Entities Number (optional)"}
+											</span>
+											<span>
+												<input type="text" value="{$customerinfo.rbe}" name="customerdata[rbe]" size="30"
+													{tip trigger="rbe"}>
+												{button type="link" icon="division" class="gusapi-button"
+													data_type=Utils::GUS_REGON_API_SEARCH_TYPE_RBE
+													tip="Click here to autocomplete company data from GUS REGON database"}
+											</span>
+										</label>
+									</div>
+								</fieldset>
 							</div>
-						</TD>
-					</TR>
+						</td>
+					</tr>
 					<TR>
 						<TD class="valign-top">
 							<i class="lms-ui-icon-paytype"></i>
@@ -574,60 +622,12 @@
 							</TABLE>
 						</TD>
 					</TR>
-					<TR>
+					<tr>
 						<TD class="valign-top">
 							<i class="lms-ui-icon-consent"></i>
 						</TD>
 						<TD>
-							<TABLE cellpadding="0" class="lms-ui-separated-rows">
-								<tbody class="lms-ui-multi-check">
-									<tr>
-										<td>
-											<label for="check-all-consents">
-												<strong>{trans("Consents")}</strong>
-											</label>
-										</td>
-										<td>
-											<input type="checkbox" class="lms-ui-multi-check-all"
-												id="check-all-consents" value="1">
-										</td>
-									</tr>
-									{block name="customereditbox-options"}
-										{foreach $_CCONSENTS as $type => $consent}
-											{if !is_array($consent)}
-												{continue}
-											{/if}
-											{if $consent.type == 'selection'}
-												{foreach $consent.values as $subtype => $subconsent}
-													<tr>
-														<td>
-															<label class="consent-label" for="chkconsent{$subtype}">
-																{t a=$consent.label b=$subconsent.label}<!subconsent-label>$a ($b){/t}
-															</label>
-														</td>
-														<td>
-															<input type="radio" name="customerdata[consents][{$type}]" id="chkconsent{$subtype}"
-																value="{$subtype}"
-																{if isset($customerinfo.consents[$type]) && $customerinfo.consents[$type] == $subtype} checked{/if}>
-														</td>
-													</tr>
-												{/foreach}
-											{else}
-												<tr>
-													<td>
-														<span class="consent-label">{$consent.label}</span>
-													</td>
-													<td>
-														<input type="checkbox" name="customerdata[consents][{$type}]" id="chkconsent{$type}"
-															value="{$smarty.now}"{if isset($customerinfo.consents[$type])} checked{/if}
-															{tip trigger="chkconsent"|cat:$type class="lms-ui-multi-check"}>
-													</td>
-												</tr>
-											{/if}
-										{/foreach}
-									{/block}
-								</tbody>
-							</TABLE>
+							{include file="customer/customerconsents.html" variable_prefix="customerdata" variables=$customerinfo}
 						</TD>
 					</TR>
 					{/block}
@@ -729,9 +729,9 @@
 					{button type="submit" id="save-button" icon="save" label="Submit"}
 					{button id="cancel-button" icon="cancel" label="Cancel" onclick="location.href = '{$backurl}';"}
 				</div>
-				{if !ConfigHelper::checkPrivilege('customer_sensitive_data_view') && !ConfigHelper::checkPrivilege('hide_customer_sensitive_data')}
+				{if !ConfigHelper::checkPrivilege('customer_sensitive_data_view', !$restrictive_sensitive_data_access) && !ConfigHelper::checkPrivilege('hide_customer_sensitive_data', !$restrictive_sensitive_data_access)}
 					<div class="customeredit-buttons">
-						{button icon="sensible-data" label="Show sensible data" id="customer-sensible-data-button"}
+						{button icon="sensitive-data" label="Show sensitive data" id="customer-sensitive-data-button"}
 					</div>
 				{/if}
 			</div>
@@ -759,11 +759,19 @@
 		$('form[name="customeredit"] [name="customerdata[lastname]"]').focus();
 
 		$('[name="customerdata[pin]"]').change(function() {
-			if (validate_random_string(this.value, {$pin_min_size}, {$pin_max_size}, '{str_replace("'", "\'", $pin_allowed_characters)}')) {
-				this.setCustomValidity('');
-			} else {
-				this.setCustomValidity('{$pin_tip}');
-			}
+			{if empty($unsecure_pin_validity)}
+				if (validate_random_string(this.value, {$pin_min_size}, {$pin_max_size}, '{str_replace("'", "\'", $pin_allowed_characters)}')) {
+					this.setCustomValidity('');
+				} else {
+					this.setCustomValidity('{$pin_tip}');
+				}
+			{else}
+				if (validate_random_string(this.value, {$unsecure_pin_min_size}, {$unsecure_pin_max_size}, '{str_replace("'", "\'", $unsecure_pin_allowed_characters)}')) {
+					this.setCustomValidity('');
+				} else {
+					this.setCustomValidity('{$pin_tip}');
+				}
+			{/if}
 		});
 
 		init_email_validators();
@@ -782,6 +790,21 @@
 				$(this).attr('data-type'),
 				identifier,
 				function(data) {
+					if (data.hasOwnProperty('warning')) {
+						alertDialog({
+							title: "<!dialog>Alert",
+							message: data.warning,
+							context: that
+						});
+						return;
+					} else if (data.hasOwnProperty('error')) {
+						alertDialog({
+							title: "<!dialog>Error",
+							message: data.error,
+							context: that
+						});
+						return;
+					}
 					if (data.length > 1) {
 						customerCompanySelectionDialog(data, that).done(function(company) {
 							GusApiFinished('customerdata', company);
@@ -800,9 +823,15 @@
 		$('#randomize').click(function() {
 			if ($('[name="customerdata[pin]"]').val().length) {
 				confirmDialog($t("Are you sure, you want to generate new PIN?"), this).done(function () {
-					$('[name="customerdata[pin]"]').val(
-						generate_random_string({$pin_min_size} +Math.floor(Math.random() * {($pin_max_size-$pin_min_size)+1}), '{str_replace("'", "\'", $pin_allowed_characters)}')
-					);
+					{if empty($unsecure_pin_validity)}
+						$('[name="customerdata[pin]"]').val(
+							generate_random_string({$pin_min_size} +Math.floor(Math.random() * {($pin_max_size - $pin_min_size) + 1}), '{str_replace("'", "\'", $pin_allowed_characters)}')
+						);
+					{else}
+						$('[name="customerdata[pin]"]').val(
+							generate_random_string({$unsecure_pin_min_size} +Math.floor(Math.random() * {($unsecure_pin_max_size - $unsecure_pin_min_size) + 1}), '{str_replace("'", "\'", $unsecure_pin_allowed_characters)}')
+						);
+					{/if}
 				});
 			}
 		});
@@ -839,6 +868,17 @@
 			}
 		});
 
+		$('[name="customerdata[addresses][0][location_city_name]"]').on('invalid', function() {
+			if (!$(this).is(':visible')) {
+				$(this).closest('.location-box-expandable').find('[data-state="closed"]').click();
+				this.scrollIntoView({
+					behavior: 'smooth',
+					block: 'center',
+					inline: 'nearest'
+				});
+			}
+		});
+
 		$('#check-all-consents').change(function() {
 			$(this).closest('.lms-ui-multi-check').find(':radio').prop('checked', $(this).prop('checked'));
 		});
@@ -847,14 +887,14 @@
 			$('.cutoffstop').toggle(!this.checked);
 		});
 
-		$('#customer-sensible-data-button').click(function() {
+		$('#customer-sensitive-data-button').click(function() {
 			var btn = $(this);
 
 			$.ajax({
-				url: "?m=customerinfo&api=1&id={$customerinfo.id}&action=get_sensible_data",
+				url: "?m=customerinfo&api=1&id={$customerinfo.id}&action=get_sensitive_data",
 				dataType: "json",
 				success: function(data) {
-					$('.customer-sensible-data[data-type]').each(function() {
+					$('.customer-sensitive-data[data-type]').each(function() {
 						var type = $(this).attr('data-type');
 						if (data.hasOwnProperty(type)) {
 							$(this).val(data[type]).prop('disabled', false);
@@ -865,6 +905,15 @@
 			});
 		});
 
+		$("#reset-consents").click(function() {
+			$("#customer-consent-table").find("[data-default-checked]").each(function() {
+				if ($(this).is(":checkbox")) {
+					$(this).prop("checked", $(this).attr("data-default-checked") == "1");
+				} else {
+					$(this).prop("checked", $(this).attr("data-default-checked") == $(this).val());
+				}
+			});
+		});
 	});
 
 </script>

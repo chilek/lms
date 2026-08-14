@@ -102,6 +102,17 @@ if ($api) {
         $SESSION->redirect('?' . preg_replace('/&producer=[^&]+/', '', $_SERVER['QUERY_STRING']));
     }
 
+    if (!isset($_GET['linktechnology'])) {
+        $SESSION->restore('ndflinktechnology', $linktechnology);
+    } else {
+        $linktechnology = $_GET['linktechnology'];
+    }
+    $SESSION->save('ndflinktechnology', $linktechnology);
+
+    if (empty($linktechnology)) {
+        $linktechnology = -1;
+    }
+
     $search = array(
         'status' => $s,
         'project' => $p,
@@ -109,16 +120,19 @@ if ($api) {
         'type' => $type,
         'producer' => $producer,
         'model' => $model,
+        'linktechnology' => $linktechnology,
         'count' => true,
     );
 
     $total = intval($LMS->GetNetDevList($o, $search));
 
-    $limit = intval(ConfigHelper::getConfig('phpui.nodelist_pagelimit', $total));
-    if ($SESSION->is_set('ndlp') && !isset($_GET['page'])) {
-        $SESSION->restore('ndlp', $_GET['page']);
+    $limit = intval(ConfigHelper::getConfig('nodes.list_page_limit', ConfigHelper::getConfig('phpui.nodelist_pagelimit', $total)));
+    if ($SESSION->is_set('ndlp')) {
+        $SESSION->restore('ndlp', $oldpage);
+    } else {
+        $oldpage = 1;
     }
-    $page = !isset($_GET['page']) ? 1 : intval($_GET['page']);
+    $page = intval(isset($_GET['page']) && !empty($_GET['page']) ? $_GET['page'] : $oldpage);
     $offset = ($page - 1) * $limit;
 
     $search['count'] = false;
@@ -140,6 +154,7 @@ if (!$api) {
     $listdata['type'] = $type;
     $listdata['producer'] = $producer;
     $listdata['model'] = $model;
+    $listdata['linktechnology'] = $linktechnology;
 }
 
 unset($netdevlist['total']);
@@ -149,6 +164,7 @@ unset($netdevlist['direction']);
 if ($api) {
     header('Content-Type: application/json');
     echo json_encode(array_values($netdevlist));
+    $SESSION->close();
     die;
 }
 
@@ -156,7 +172,7 @@ $SESSION->save('ndlp', $page);
 
 $SESSION->add_history_entry();
 
-$netnodes = $LMS->GetNetNodeList(array(), 'name,ASC');
+$netnodes = $LMS->GetNetNodeList();
 unset($netnodes['total'], $netnodes['order'], $netnodes['direction']);
 $SMARTY->assign('netnodes', $netnodes);
 

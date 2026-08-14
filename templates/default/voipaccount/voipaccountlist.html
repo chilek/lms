@@ -3,6 +3,11 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <h1>{$layout.pagetitle}</h1>
+
+<form method="POST" action="?m={$layout.module}&page={$page}" id="choosefilter" name="choosefilter">
+    <input type="submit" class="hiddenbtn">
+</form>
+
 <table class="lmsbox lms-ui-background-cycle">
     <colgroup>
         {block name="voipaccountlist-list-columns"}
@@ -20,7 +25,7 @@
                 {if $listdata.order == "login"}
                 <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
                 {/if}
-		/ {trans("Location:")}
+                / {trans("Location:")}
                 <br>
                 <img src="img/customer.gif" alt="">
                 <a href="?m=voipaccountlist&amp;o=owner{if $listdata.direction == "asc" && $listdata.order == "owner"},desc{/if}">{trans("Customer:")}</a>
@@ -41,32 +46,26 @@
                 {trans("Password:")}
             </th>
             <th align="right" class="nobr">
-		{button icon="add" label="New Account" href="?m=voipaccountadd"}
+                {button icon="add" label="New Account" href="?m=voipaccountadd"}
             </th>
         </tr>
         {/block}
         {block name="voipaccountlist-list-filters"}
-        {*
-        <tr>
-            <th colspan="{$number_of_table_columns}">
-                <form method="get" action="?m={$layout.module}" name="choosefilter">
-                    <input type="submit" class="hiddenbtn">
-                    <input type="hidden" name="m" value="voipaccountlist">
-                    <input type="hidden" name="page" value="1">
-                    {trans("Filter:")}
-                    {trans("Customers Group:")}
-                        <select size="1" name="g" onchange="document.choosefilter.submit();">
-                            <option value="" {if !$listdata.customergroup} selected {/if}>{trans("— all groups —")}</option>
-                            {section name=customergroups loop=$customergroups}
-                            <option value="{$customergroups[customergroups].id}" {if $listdata.customergroup == $customergroups[customergroups].id} selected {/if}>
-                                {$customergroups[customergroups].name|truncate:30:"&hellip;":true}
-                            </option>
-                            {/section}
+            <tr>
+                <th colspan="{$number_of_table_columns}">
+                    {icon name="filter"}
+                    <label>
+                        {trans("Service provider")}
+                        <select name="search[serviceproviderid]" form="choosefilter">
+                            <option value=""{if empty($listdata.search.serviceproviderid)} selected{/if}>{trans("— all —")}</option>
+                            {foreach $serviceproviders as $serviceprovider}
+                                <option value="{$serviceprovider.id}"
+                                    {if $listdata.search.serviceproviderid == $serviceprovider.id} selected{/if}>{$serviceprovider.name|escape}</option>
+                            {/foreach}
                         </select>
-                </form>
-            </th>
-        </tr>
-        *}
+                    </label>
+                </th>
+            </tr>
         {/block}
         {block name="voipaccountlist-list-header-pagination"}
         {if $listdata.total != 0}
@@ -149,14 +148,22 @@
         </tr>
     </tfoot>
 </table>
-    <script>
-        $('.delete-voipaccount').click(function() {
+<script>
+
+    $(function() {
+        $('[form="choosefilter"]').change(function() {
+            $("#choosefilter").submit();
+        });
+
+        $('.delete-voipaccount').click(function () {
             var name = $(this).closest('tr').attr('data-name');
-            confirmDialog($t("Are you sure, you want to remove voip account '$a' from database?", name), this).done(function() {
+            confirmDialog($t("Are you sure, you want to remove voip account '$a' from database?", name), this).done(function () {
                 location.href = $(this).attr('href');
             });
             return false;
         });
-    </script>
+    });
+
+</script>
 {/block}
 {block name=extra_content}{/block}

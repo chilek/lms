@@ -65,7 +65,7 @@ if (isset($_GET['premac'])) {
     );
 }
 
-if (isset($_GET['prename']) && preg_match('/' . ConfigHelper::getConfig('phpui.node_name_regexp', '^[_a-z0-9\-\.]+$') . '/i', $_GET['prename'])) {
+if (isset($_GET['prename']) && preg_match('/' . ConfigHelper::getConfig('nodes.name_regexp', ConfigHelper::getConfig('phpui.node_name_regexp', '^[_a-z0-9\-\.]+$')) . '/i', $_GET['prename'])) {
     $nodedata['name'] = $_GET['prename'];
 }
 
@@ -73,7 +73,7 @@ if (isset($_GET['pre_address_id'])) {
     $nodedata['address_id'] = intval($_GET['pre_address_id']);
 }
 
-$node_empty_mac = ConfigHelper::getConfig('phpui.node_empty_mac', '', true);
+$node_empty_mac = ConfigHelper::getConfig('nodes.empty_mac', ConfigHelper::getConfig('phpui.node_empty_mac', '', true));
 if (strlen($node_empty_mac) && !check_mac($node_empty_mac)) {
     $node_empty_mac = '';
 }
@@ -125,7 +125,7 @@ if (isset($_POST['nodedata'])) {
         $error['name'] = trans('Node name is required!');
     } else if (strlen($nodedata['name']) > 32) {
         $error['name'] = trans('Node name is too long (max. 32 characters)!');
-    } else if (!preg_match('/' . ConfigHelper::getConfig('phpui.node_name_regexp', '^[_a-z0-9\-\.]+$') . '/i', $nodedata['name'])) {
+    } else if (!preg_match('/' . ConfigHelper::getConfig('nodes.name_regexp', ConfigHelper::getConfig('phpui.node_name_regexp', '^[_a-z0-9\-\.]+$')) . '/i', $nodedata['name'])) {
         $error['name'] = trans('Specified name contains forbidden characters!');
     } else if ($LMS->GetNodeIDByName($nodedata['name']) || $LMS->GetNodeIDByNetName($nodedata['name'])) {
         $error['name'] = trans('Specified name is in use!');
@@ -202,12 +202,12 @@ if (isset($_POST['nodedata'])) {
     }
     $nodedata['macs'] = $macs;
 
-    $login_required = ConfigHelper::getConfig('phpui.node_login_required', 'none');
+    $login_required = ConfigHelper::getConfig('nodes.login_required', ConfigHelper::getConfig('phpui.node_login_required', 'none'));
 
     if ($login_length = strlen($nodedata['login'])) {
         if ($login_length > 32) {
             $error['login'] = trans('Login is too long (max. 32 characters)!');
-        } elseif (!preg_match('/' . ConfigHelper::getConfig('phpui.node_login_regexp', '^[_a-z0-9\-\.]+$') . '/i', $nodedata['login'])) {
+        } elseif (!preg_match('/' . ConfigHelper::getConfig('nodes.login_regexp', ConfigHelper::getConfig('phpui.node_login_regexp', '^[_a-z0-9\-\.]+$')) . '/i', $nodedata['login'])) {
             $error['login'] = trans('Specified login contains forbidden characters!');
         } elseif ($LMS->GetNodeIDByLogin($nodedata['login'])) {
             $error['login'] = trans('Specified login is in use!');
@@ -220,12 +220,13 @@ if (isset($_POST['nodedata'])) {
         }
     }
 
-    $password_required = ConfigHelper::getConfig('phpui.node_password_required', ConfigHelper::getConfig('phpui.nodepassword_required', 'none'));
+    $password_required = ConfigHelper::getConfig('nodes.password_required', ConfigHelper::getConfig('phpui.node_password_required', ConfigHelper::getConfig('phpui.nodepassword_required', 'none')));
+    $password_max_length = intval(ConfigHelper::getConfig('nodes.password_max_length', 32));
 
-    if (strlen($nodedata['passwd']) > 32) {
-        $error['passwd'] = trans('Password is too long (max. 32 characters)!');
+    if (strlen($nodedata['passwd']) > $password_max_length) {
+        $error['passwd'] = trans('Password is too long (max. $a characters)!', $password_max_length);
     } elseif (!strlen($nodedata['passwd']) && $password_required != 'none') {
-        $auth_types = ConfigHelper::getConfig('phpui.node_password_required_for_auth_types', 'all');
+        $auth_types = ConfigHelper::getConfig('nodes.password_required_for_auth_types', ConfigHelper::getConfig('phpui.node_password_required_for_auth_types', 'all'));
         if ($auth_types == 'all') {
             $auth_types = null;
         } else {
@@ -260,7 +261,7 @@ if (isset($_POST['nodedata'])) {
         }
     }
 
-    $gps_coordinates_required = ConfigHelper::getConfig('phpui.node_gps_coordinates_required', 'none');
+    $gps_coordinates_required = ConfigHelper::getConfig('nodes.gps_coordinates_required', ConfigHelper::getConfig('phpui.node_gps_coordinates_required', 'none'));
 
     $longitude = filter_var($nodedata['longitude'], FILTER_VALIDATE_FLOAT);
     $latitude = filter_var($nodedata['latitude'], FILTER_VALIDATE_FLOAT);
@@ -322,7 +323,7 @@ if (isset($_POST['nodedata'])) {
     // check if customer address is selected or if default location address exists
     // if both are not fullfilled we generate user interface warning
     if (!isset($warnings['nodedata-address_id-']) && isset($nodedata['address_id'])
-        && $nodedata['address_id'] == -1 && !empty($nodedata['ownerid'])) {
+        && $nodedata['address_id'] <= 0 && !empty($nodedata['ownerid'])) {
         $addresses = $LMS->getCustomerAddresses($nodedata['ownerid'], true);
         if (count($addresses) > 1) {
             $i = 0;
@@ -372,14 +373,24 @@ if (isset($_POST['nodedata'])) {
         $nodedata['halfduplex'] = 0;
     }
 
-    if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.node_to_network_device_connection_required')
+    if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('nodes.network_device_connection_required', ConfigHelper::checkConfig('phpui.node_to_network_device_connection_required'))
         && empty($nodedata['netdev'])) {
         $error['netdev'] = trans('Network device selection is required!');
     }
 
-    if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')
+    if (!ConfigHelper::checkPrivilege('full_access')
         && !empty($nodedata['address_id']) && !$LMS->isTerritAddress($nodedata['address_id'])) {
-        $error['address_id'] = trans('TERYT address is required!');
+        $terytRequired = ConfigHelper::getConfig('phpui.teryt_required', 'false');
+        if ($terytRequired === 'error') {
+            $terytRequired = true;
+        } elseif ($terytRequired !== 'warning') {
+            $terytRequired = ConfigHelper::checkValue($terytRequired);
+        }
+        if (is_bool($terytRequired) && $terytRequired) {
+            $error['nodedata[address_id]'] = trans('TERYT address is required!');
+        } elseif ($terytRequired === 'warning' && !isset($warnings['nodedata-address_id-'])) {
+            $warning['nodedata[address_id]'] = trans('TERYT address recommended!');
+        }
     }
 
     if ($nodedata['invprojectid'] == '-1') { // nowy projekt
@@ -400,7 +411,7 @@ if (isset($_POST['nodedata'])) {
     $nodedata['authtype'] = $authtype;
 
     if (!empty($netdevices)) {
-        $technology_required = ConfigHelper::getConfig('phpui.node_link_technology_required', 'error');
+        $technology_required = ConfigHelper::getConfig('nodes.link_technology_required', ConfigHelper::getConfig('phpui.node_link_technology_required', 'error'));
         $technology = intval($nodedata['linktechnology']);
 
         if ($technology_required != 'none' && empty($technology)) {
@@ -482,12 +493,12 @@ if (isset($_POST['nodedata'])) {
     $nodedata['linktechnology'] = intval(ConfigHelper::getConfig('phpui.default_linktechnology', 0));
     $nodedata['linkspeed'] = intval(ConfigHelper::getConfig('phpui.default_linkspeed', 100000));
 
-    if (ConfigHelper::checkConfig('phpui.default_node_check_mac')) {
+    if (ConfigHelper::checkConfig('nodes.default_check_mac', ConfigHelper::checkConfig('phpui.default_node_check_mac'))) {
         $nodedata['chkmac'] = 1;
     }
 
     $nodedata['authtype'] = 0;
-    $auth_types = ConfigHelper::getConfig('phpui.default_node_auth_types');
+    $auth_types = ConfigHelper::getConfig('nodes.default_auth_types', ConfigHelper::getConfig('phpui.default_node_auth_types'));
     if (!empty($auth_types)) {
         $auth_types = preg_split('/([\s]+|[\s]*,[\s]*)/', strtolower($auth_types), -1, PREG_SPLIT_NO_EMPTY);
         if (!empty($auth_types)) {
@@ -502,6 +513,7 @@ if (isset($_POST['nodedata'])) {
         }
     }
 
+    $nodedata['info'] = ConfigHelper::getConfig('nodes.default_info', '', true);
     // check if customer address is selected or if default location address exists
     // if both are not fullfilled we generate user interface warning
 /*
@@ -530,7 +542,9 @@ if (!strlen($node_empty_mac) && empty($nodedata['macs'])) {
 $layout['pagetitle'] = trans('New Node');
 
 if (!empty($nodedata['ownerid']) && $LMS->CustomerExists($nodedata['ownerid']) && ($customerid = $nodedata['ownerid'])) {
-    include(MODULES_DIR.'/customer.inc.php');
+    include(MODULES_DIR . DIRECTORY_SEPARATOR . 'customer.inc.php');
+    require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customerconsents.php');
+    require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 } else {
     $SMARTY->assign('allnodegroups', $LMS->GetNodeGroupNames());
 }

@@ -40,7 +40,7 @@ function getUsers($alldivisions, $selecteddivisions)
     }
 
     $users = $LMS->GetUsers(array(
-        'divisions' => implode(',', array_keys($divisions)),
+        'divisions' => array_keys($divisions),
         'order' => 'rname,asc',
     ));
     if (empty($users)) {
@@ -55,7 +55,7 @@ if (isset($_GET['op']) && $_GET['op'] == 'updateusers') {
     die(json_encode(getUsers($LMS->GetDivisions(), array_flip($_POST['divisions']))));
 }
 
-$numberplanadd = isset($_POST['numberplanadd']) ? $_POST['numberplanadd'] : null;
+$numberplanadd = $_POST['numberplanadd'] ?? null;
 
 if (!empty($numberplanadd) && count($numberplanadd)) {
     $numberplanadd['template'] = trim($numberplanadd['template']);
@@ -101,7 +101,7 @@ $layout['pagetitle'] = trans('New Numbering Plan');
 $SESSION->add_history_entry();
 
 $divisions = $LMS->GetDivisions(array('status' => 0));
-$users = getUsers($divisions, isset($numberplanadd['divisions']) ? $numberplanadd['divisions'] : array());
+$users = getUsers($divisions, $numberplanadd['divisions'] ?? array());
 
 $SMARTY->assign('numberplanadd', $numberplanadd);
 $SMARTY->assign('divisions', $divisions);

@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$instance = isset($_POST['instance']) ? $_POST['instance'] : null;
+$instance = $_POST['instance'] ?? null;
 
 if ($instance) {
     foreach ($instance as $idx => $key) {
@@ -118,7 +118,7 @@ if ($instance) {
 			WHERE id = ?', array(intval($_GET['id'])));
 }
 
-$instance['hostid'] = isset($instance['hostid']) ? $instance['hostid'] : $_GET['hostid'];
+$instance['hostid'] = $instance['hostid'] ?? $_GET['hostid'];
 
 $layout['pagetitle'] = trans('New Instance');
 

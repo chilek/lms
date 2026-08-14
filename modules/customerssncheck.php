@@ -26,14 +26,59 @@
 
 header('Content-type: application/json');
 
-if (!isset($_GET['ssn'])) {
+if (!isset($_GET['id']) || !ctype_digit($_GET['id'])) {
     die('[]');
 }
+
+if (!isset($_GET['ssn']) || !ctype_digit($_GET['ssn'])) {
+    die('[]');
+}
+
+$api_request_reason = ConfigHelper::getConfig('pesel.api_request_reason', trans('telecommunication service contract'));
 
 try {
     $result = Utils::checkPeselReservationStatus($_GET['ssn']);
 } catch (Exception $e) {
+    if ($SYSLOG) {
+        $SYSLOG->AddMessage(
+            SYSLOG::RES_CUST,
+            SYSLOG::OPER_SSN_RESERVATION_CHECK_ERROR,
+            array(
+                SYSLOG::RES_CUST => $_GET['id'],
+                'ssn' => $_GET['ssn'],
+                'reason' => $api_request_reason,
+                'error' => $e->getMessage(),
+            )
+        );
+    }
+
     die(json_encode(array('error' => $e->getMessage())));
+}
+
+if ($SYSLOG) {
+    if (!isset($result['error'], $result['errors'])) {
+        $SYSLOG->AddMessage(
+            SYSLOG::RES_CUST,
+            SYSLOG::OPER_SSN_RESERVATION_CHECK,
+            array(
+                SYSLOG::RES_CUST => $_GET['id'],
+                'ssn' => $_GET['ssn'],
+                'reason' => $api_request_reason,
+                'reserved' => $result['reserved'] ? 1 : 0,
+            )
+        );
+    } else {
+        $SYSLOG->AddMessage(
+            SYSLOG::RES_CUST,
+            SYSLOG::OPER_SSN_RESERVATION_CHECK_ERROR,
+            array(
+                SYSLOG::RES_CUST => $_GET['id'],
+                'ssn' => $_GET['ssn'],
+                'reason' => $api_request_reason,
+                'error' => isset($result['error']) ? $result['error'] : implode(', ', $result['errors']),
+            )
+        );
+    }
 }
 
 die(json_encode($result));

@@ -166,7 +166,7 @@ class Kd_tree
         switch ($this->k) {
             // compare 2D points
             case 2:
-                return sqrt(pow($P2[0]-$P1[0], 2) + pow($P2[1]-$P1[1], 2));
+                return sqrt(($P2[0]-$P1[0]) ** 2 + ($P2[1]-$P1[1]) ** 2);
             break;
 
             default:

@@ -29,7 +29,7 @@
  */
 class UiConfigProvider implements ConfigProviderInterface
 {
-    const NAME = 'UI_CONFIG_PROVIDER';
+    public const NAME = 'UI_CONFIG_PROVIDER';
 
     /**
      * Return uiconfig database table
@@ -42,11 +42,11 @@ class UiConfigProvider implements ConfigProviderInterface
         static $ui_config_cache = array();
 
         $db = LMSDB::getInstance();
-        $userid = strval(isset($options['user_id']) ? $options['user_id'] : 0);
-        $divisionid = strval(isset($options['division_id']) ? $options['division_id'] : 0);
+        $userid = strval($options['user_id'] ?? 0);
+        $divisionid = strval($options['division_id'] ?? 0);
 
         $configs = array();
-        if (empty($ui_config_cache) || (isset($options['invalidate_cache']) && !empty($options['invalidate_cache']))) {
+        if (empty($ui_config_cache) || (!empty($options['invalidate_cache']))) {
             $results = $db->GetAll('SELECT * FROM uiconfig WHERE disabled = 0');
 
             if (!empty($results)) {

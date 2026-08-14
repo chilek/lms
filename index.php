@@ -120,7 +120,23 @@ if (!$api) {
                 . " or add 'database.auto_update' configuration variable with value 'true' to lms.ini file (not recommended)<br>"
         );
     }
+}
 
+// Redirect to SSL
+
+$_FORCE_SSL = ConfigHelper::checkConfig('phpui.force_ssl');
+if ($_FORCE_SSL && (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on')) {
+    header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+    exit(0);
+}
+
+// Include required files (including sequence is important)
+
+$_SERVER['REMOTE_ADDR'] = str_replace("::ffff:", "", $_SERVER['REMOTE_ADDR']);
+
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
+
+if (!$api) {
     // Initialize templates engine (must be before locale settings)
     $SMARTY = new LMSSmarty;
 
@@ -137,32 +153,16 @@ if (!$api) {
 
     define('SMARTY_VERSION', $ver_chunks[0]);
 
-    // add LMS's custom plugins directory
-    $SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
-
     $SMARTY->setMergeCompiledIncludes(true);
 
     $SMARTY->setDefaultResourceType('extendsall');
 
-    $SMARTY->muteUndefinedOrNullWarnings();
-
     // uncomment this line if you're not gonna change template files no more
     //$SMARTY->compile_check = false;
+
+    $layout['phpversion'] = phpversion();
 }
 
-// Redirect to SSL
-
-$_FORCE_SSL = ConfigHelper::checkConfig('phpui.force_ssl');
-if ($_FORCE_SSL && (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on')) {
-    header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
-    exit(0);
-}
-
-// Include required files (including sequence is important)
-
-$_SERVER['REMOTE_ADDR'] = str_replace("::ffff:", "", $_SERVER['REMOTE_ADDR']);
-
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'checkip.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'accesstable.php');
@@ -184,21 +184,21 @@ if (isset($_GET['old_tab_id'], $_GET['tab_id'], $_POST['old_history_entry'], $_P
     && preg_match('/^[0-9]+$/', $_GET['tab_id'])) {
     $SESSION->historyQuirks(array(
         'old_tab_id' => $_GET['old_tab_id'],
-        'old_history_entry' => isset($_POST['old_history_entry']) ? $_POST['old_history_entry'] : null,
+        'old_history_entry' => $_POST['old_history_entry'] ?? null,
         'tab_id' => $_GET['tab_id'],
-        'history_entry' => isset($_POST['history_entry']) ? $_POST['history_entry'] : null,
+        'history_entry' => $_POST['history_entry'] ?? null,
     ));
     //$SESSION->close();
     header('Content-Type: application/json');
     die('[]');
 }
+$plugin_manager = LMSPluginManager::getInstance();
+
 $AUTH = new Auth($DB, $SESSION);
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
+$LMS->setPluginManager($plugin_manager);
 
 Localisation::initDefaultCurrency();
-
-$plugin_manager = new LMSPluginManager();
-$LMS->setPluginManager($plugin_manager);
 
 if (!$api) {
     $SMARTY->setPluginManager($plugin_manager);
@@ -223,15 +223,16 @@ if (!$api) {
     $layout['smarty_version'] = SMARTY_VERSION;
 }
 
-$layout['logname'] = $AUTH->logname;
+$layout['logname'] = Auth::GetCurrentUserName();
+$layout['logrname'] = Auth::GetCurrentUserReversedName();
 $layout['logid'] = Auth::GetCurrentUser();
 $layout['lmsdbv'] = $DB->GetVersion();
 $layout['hostname'] = hostname();
 $layout['lmsv'] = LMS::SOFTWARE_VERSION;
 $layout['lmsvr'] = LMS::getSoftwareRevision();
 $layout['dberrors'] = &$DB->GetErrors();
-$layout['dbdebug'] = isset($_DBDEBUG) ? $_DBDEBUG : false;
-$layout['popup'] = isset($_GET['popup']) ? true : false;
+$layout['dbdebug'] = $DB->GetDebug();
+$layout['popup'] = isset($_GET['popup']);
 $layout['url'] = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
     . $_SERVER['HTTP_HOST']
     . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1);
@@ -267,8 +268,23 @@ if (!$api) {
 $documents_dirs = array(DOC_DIR);
 $documents_dirs = $plugin_manager->executeHook('documents_dir_initialized', $documents_dirs);
 
+if ($api && $SESSION->isExpired()) {
+    header('HTTP/1.1 401 Unauthorized');
+    header('Content-Type: application/json');
+
+    die(json_encode(array(
+        'error' => trans('Session expired!'),
+    )));
+}
+
 // Check privileges and execute modules
 if ($AUTH->islogged) {
+    if (isset($_GET['clear_login_timeout'])) {
+        $SESSION->clearLoginTimeout();
+        header('Content-Type: application/json');
+        die('[]');
+    }
+
     $qs_properties = $SESSION->get_persistent_setting('qs-properties');
     if (empty($qs_properties)) {
         $qs_properties = array();
@@ -427,7 +443,7 @@ if ($AUTH->islogged) {
 
                 // persister filter apply
                 if (isset($_GET['persistent-filter'])) {
-                    $filterId = isset($_GET['filter-id']) ? $_GET['filter-id'] : null;
+                    $filterId = $_GET['filter-id'] ?? null;
                     $filter = $SESSION->getPersistentFilter(
                         $_GET['persistent-filter'],
                         null,
@@ -440,7 +456,7 @@ if ($AUTH->islogged) {
                         $SESSION->saveFilter($filter);
                     }
                 }
-                $filter = $SESSION->getFilter(isset($_GET['module-filter']) ? $_GET['module-filter'] : null);
+                $filter = $SESSION->getFilter($_GET['module-filter'] ?? null);
                 $SMARTY->assignByRef('filter', $filter);
 
                 // restore selected persistent filter info
@@ -455,7 +471,7 @@ if ($AUTH->islogged) {
                     $resource_tabs = explode(';', $resource_tabs);
                     $all_tabs = array();
                     foreach ($resource_tabs as $resource_tab) {
-                        list ($resource_tab_id, $resource_tab_state) = explode(':', $resource_tab);
+                        [$resource_tab_id, $resource_tab_state] = explode(':', $resource_tab);
                         $all_tabs[$resource_tab_id] = intval($resource_tab_state) != 0;
                     }
                     $resource_tabs = $all_tabs;
@@ -478,7 +494,7 @@ if ($AUTH->islogged) {
             } else {
                 // persistent filter ajax management
                 if (isset($_GET['persistent-filter']) && isset($_GET['action'])) {
-                    $filterId = isset($_POST['filter-id']) ? $_POST['filter-id'] : null;
+                    $filterId = $_POST['filter-id'] ?? null;
                     switch ($_GET['action']) {
                         case 'update':
                             $oldFilter = $SESSION->getFilter(null, $filterId);
@@ -518,6 +534,8 @@ if ($AUTH->islogged) {
             }
 
             try {
+                session_write_close();
+
                 include($module_dir . DIRECTORY_SEPARATOR . $module . '.php');
             } catch (Exception $e) {
                 if (!$api) {
@@ -556,7 +574,14 @@ if ($AUTH->islogged) {
         $SESSION->save('lastmodule', $module);
     }
 } else {
-    if (!$api) {
+    if ($api) {
+        header('HTTP/1.1 401 Unauthorized');
+        header('Content-Type: application/json');
+
+        die(json_encode(array(
+            'error' => empty($AUTH->error) ? trans('No authentication data?') : $AUTH->error,
+        )));
+    } else {
         $SMARTY->assign('error', $AUTH->error);
         $SMARTY->assign('target', '?'.$_SERVER['QUERY_STRING']);
         if ($AUTH->authCodeRequired()) {

@@ -1,9 +1,23 @@
 <!--// $Id$ //-->
-{$unsecure_pin_validity = intval(ConfigHelper::getConfig('phpui.unsecure_pin_validity', 0, true))}
+{$unsecure_pin_validity = intval(ConfigHelper::getConfig('customers.unsecure_pin_validity', ConfigHelper::getConfig('phpui.unsecure_pin_validity', 0, true), true))}
 {$gps_location_url = ConfigHelper::getConfig('phpui.gps_location_url', 'https://www.google.com/maps/place/%location')}
 {$show_numeric_identifiers = ConfigHelper::checkConfig('teryt.show_numeric_identifiers')}
+{$restrictive_sensitive_data_access = ConfigHelper::checkConfig('customers.restrictive_sensitive_data_access')}
 
 <style>
+
+	.rbe-details td {
+		padding-left: 0 !important;
+	}
+
+	.rbe-name {
+		display: flex;
+		align-items: center;
+	}
+
+	.rbe-name > *:not(:first-child) {
+		margin-left: 0.3em;
+	}
 
 	.customer-header {
 		width: 100%;
@@ -48,7 +62,7 @@
 		display: none;
 	}
 
-	.lms-ui-button-clipboard[data-type] > #check-ssn-button {
+	.lms-ui-button-clipboard[data-type] + #check-ssn-button {
 		display: none;
 	}
 
@@ -70,6 +84,33 @@
 		margin-left: 0.3em;
 	}
 
+	.consent-group {
+		display: flex;
+		padding-inline-end: 0.5em;
+	}
+
+	.lms-ui-separated-rows .lms-ui-separated-rows {
+		width: 100%;
+	}
+
+	.consent-group-row {
+		border-top: none !important;
+	}
+
+	.consent-group-row + tr {
+		border-top: none !important;
+	}
+
+	#consent-caption td {
+		display: flex;
+		align-items: flex-start;
+	}
+
+	#consent-caption td > * {
+		margin-left: 0.5em;
+		largin-right: 0.5em;
+	}
+
 </style>
 
 <table class="lmsbox{if $customerpanel} lms-ui-tab-container lms-ui-sortable{/if}" id="customerinfobox"{if $customerpanel} data-label="{trans("Customer Info")}"{/if}>
@@ -86,12 +127,17 @@
 						{if $customerpanel}{trans("Owner:")}{/if}
 						{$customerinfo.customername|escape}
 						{if $customerinfo.altname}[{$customerinfo.altname|escape}]{/if}
-						({$customerinfo.id|string_format:"%04d"}{if $customerinfo.extid} / {$customerinfo.extid|escape}{/if})
+						(#{$customerinfo.id}{if $customerinfo.extid} / {$customerinfo.extid|escape}{/if})
 						{if $customerinfo.deleted} <span class="lms-ui-alert">({trans("deleted customer")})</span>{/if}
 					</div>
 					<div>
 						{karma title="Karma" value=$customerinfo.karma handler="?m=customeredit&id={$customerinfo.id}&op=changekarma"}
-						{if $customerpanel}<a href="?m=customerinfo&amp;id={$customerinfo.id}">{trans('Navigate to the customer')} &raquo;</a>{/if}&nbsp;
+						{if $customerpanel}{strip}
+							<a href="?m=customerinfo&id={$customerinfo.id}">
+								{trans('Navigate to the customer')}
+								{icon name="next" class="fa-fw"}
+							</a>
+						{/strip}{/if}
 					</div>
 				</div>
 			</td>
@@ -118,6 +164,16 @@
 											<strong>{$_CSTATUSES[$customerinfo.status].singularlabel}</strong>
 										</td>
 									</tr>
+									{if !empty($customerinfo.origin)}
+										<tr>
+											<td>
+												{icon name="origin" class="fa-fw"}
+											</td>
+											<td>
+												{trans($_ORIGINS[$customerinfo.origin])}
+											</td>
+										</tr>
+									{/if}
 									{if !empty($customerinfo.flags)}
 									<tr>
 										<td>
@@ -153,7 +209,7 @@
 											{/if}
 										</td>
 									</tr>
-									{if !ConfigHelper::checkPrivilege('hide_customer_sensitive_data')}
+									{if !ConfigHelper::checkPrivilege('hide_customer_sensitive_data', !$restrictive_sensitive_data_access)}
 										{if $customerinfo.icn != ""}
 											<tr>
 												<td class="valign-top">
@@ -165,15 +221,15 @@
 													{if isset($_IDENTITY_TYPES[$customerinfo.ict])}
 														{trans($_IDENTITY_TYPES[$customerinfo.ict])}
 													{/if}
-													{if ConfigHelper::checkPrivilege('customer_sensitive_data_view')}
+													{if ConfigHelper::checkPrivilege('customer_sensitive_data_view', !$restrictive_sensitive_data_access)}
 														{$icn = $customerinfo.icn|escape}
 													{else}
 														{$icn = preg_replace('/[^\s]/', '*', $customerinfo.icn)}
 													{/if}
-													<span class="customer-sensible-data" data-type="icn">
+													<span class="customer-sensitive-data" data-type="icn">
 														{$icn}
 													</span>
-													{if ConfigHelper::checkPrivilege('customer_sensitive_data_view')}
+													{if ConfigHelper::checkPrivilege('customer_sensitive_data_view', !$restrictive_sensitive_data_access)}
 														{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_text=$icn}
 													{else}
 														{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_handler=true
@@ -203,19 +259,21 @@
 												</td>
 												<td>
 													{trans("SSN")}
-													{if ConfigHelper::checkPrivilege('customer_sensitive_data_view')}
+													{if ConfigHelper::checkPrivilege('customer_sensitive_data_view', !$restrictive_sensitive_data_access)}
 														<span data-type="ssn">
 															{$customerinfo.ssn|escape}
 														</span>
 														{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.ssn}
 													{else}
-														<span class="customer-sensible-data" data-type="ssn">
+														<span class="customer-sensitive-data" data-type="ssn">
 															{preg_replace('/[^\s]/', '*', $customerinfo.ssn)}
 														</span>
 														{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_handler=true
 															data_type="ssn"}
 													{/if}
-													{button type="link" icon="check" id="check-ssn-button" tip="Check in PESEL Reservation Registry"}
+													{if ConfigHelper::getConfig('pesel.api_key', '', true)}
+														{button type="link" icon="check" id="check-ssn-button" tip="Check in PESEL Reservation Registry"}
+													{/if}
 												</td>
 											</tr>
 										{/if}
@@ -269,11 +327,38 @@
 															{$v.location|default:""|escape}
 														{/if}
 													</span>
+													{button type="link" class="lms-ui-button-clipboard" icon="clipboard"
+														clipboard="{$v.location|default:""|escape}" tip="Copy to clipboard"}
+													{$gps_location_url_replaced = str_replace(
+														array(
+															'%location',
+															'%state',
+															'%city',
+															'%zip',
+															'%street',
+															'%full_street',
+															'%full_reversed_street',
+															'%short_street',
+															'%house'
+														),
+														array(
+															$v.location,
+															$v.location_state_name,
+															$v.location_city_name,
+															$v.location_zip,
+															$v.location_street_name,
+															$v.location_full_street_name,
+															$v.location_full_reversed_street_name,
+															$v.location_short_street_name,
+															$v.location_house
+														),
+														$gps_location_url
+													)}
 													{button
 														type="link"
 														tip="Show on map"
 														icon="location"
-														href="{$gps_location_url|replace:"%location":$v.location|replace:"%state":$v.location_state_name|replace:"%city":$v.location_city_name|replace:"%zip":$v.location_zip|replace:"%street":$v.location_street_name|replace:"%full_street":$v.location_full_street_name|replace:"%full_reversed_street":$v.location_full_reversed_street_name|replace:"%short_street":$v.location_short_street_name|replace:"%house":$v.location_house|escape}"
+														href=$gps_location_url_replaced|escape
 													}
 													{show_on_map_button
 														type="default"
@@ -314,6 +399,7 @@
 												<td>
 													<span title="{trans('postal address')}">
 														{if $v.location_name}{$v.location_name|escape}, {/if}
+														{if !empty($v.location_ten)}{trans("TEN")} {$v.location_ten|escape}, {/if}
 														{if $v.teryt}
 															{if $show_numeric_identifiers}
 																{capture assign="teryt_comment"}{strip}
@@ -331,11 +417,38 @@
 															{$v.location|escape}
 														{/if}
 													</span>
+													{button type="link" class="lms-ui-button-clipboard" icon="clipboard"
+														clipboard="{$v.location|default:""|escape}" tip="Copy to clipboard"}
+													{$gps_location_url_replaced = str_replace(
+														array(
+															'%location',
+															'%state',
+															'%city',
+															'%zip',
+															'%street',
+															'%full_street',
+															'%full_reversed_street',
+															'%short_street',
+															'%house'
+														),
+														array(
+															$v.location,
+															$v.location_state_name,
+															$v.location_city_name,
+															$v.location_zip,
+															$v.location_street_name,
+															$v.location_full_street_name,
+															$v.location_full_reversed_street_name,
+															$v.location_short_street_name,
+															$v.location_house
+														),
+														$gps_location_url
+													)}
 													{button
 														type="link"
 														tip="Show on map"
 														icon="location"
-														href="{$gps_location_url|replace:"%location":$v.location|replace:"%state":$v.location_state_name|replace:"%city":$v.location_city_name|replace:"%zip":$v.location_zip|replace:"%street":$v.location_street_name|replace:"%full_street":$v.location_full_street_name|replace:"%full_reversed_street":$v.location_full_reversed_street_name|replace:"%short_street":$v.location_short_street_name|replace:"%house":$v.location_house|escape}"
+														href=$gps_location_url_replaced|escape
 													}
 													{show_on_map_button
 														type="default"
@@ -355,12 +468,12 @@
 														streetid=$v.location_street
 														building_num=$v.location_house
 													}
-                                                                                                        {show_on_map_button
-                                                                                                                type='sidusis'
-                                                                                                                cityid=$v.location_city
-                                                                                                                streetid=$v.location_street
-                                                                                                                building_num=$v.location_house
-                                                                                                        }
+													{show_on_map_button
+														type='sidusis'
+														cityid=$v.location_city
+														streetid=$v.location_street
+														building_num=$v.location_house
+													}
 												</td>
 											</tr>
 											{break}
@@ -384,6 +497,7 @@
 												<td>
 													<span title="{$title}">
 														{if $v.location_name}{$v.location_name|escape}, {/if}
+														{if !empty($v.location_ten)}{trans("TEN")} {$v.location_ten|escape}, {/if}
 														{if $v.teryt}
 															{if $show_numeric_identifiers}
 																{capture assign="teryt_comment"}{strip}
@@ -401,11 +515,38 @@
 															{$v.location|default:""|escape}
 														{/if}
 													</span>
+													{button type="link" class="lms-ui-button-clipboard" icon="clipboard"
+														clipboard="{$v.location|default:""|escape}" tip="Copy to clipboard"}
+													{$gps_location_url_replaced = str_replace(
+														array(
+															'%location',
+															'%state',
+															'%city',
+															'%zip',
+															'%street',
+															'%full_street',
+															'%full_reversed_street',
+															'%short_street',
+															'%house'
+														),
+														array(
+															$v.location,
+															$v.location_state_name,
+															$v.location_city_name,
+															$v.location_zip,
+															$v.location_street_name,
+															$v.location_full_street_name,
+															$v.location_full_reversed_street_name,
+															$v.location_short_street_name,
+															$v.location_house
+														),
+														$gps_location_url
+													)}
 													{button
 														type="link"
 														tip="Show on map"
 														icon="location"
-														href="{$gps_location_url|replace:"%location":$v.location|replace:"%state":$v.location_state_name|replace:"%city":$v.location_city_name|replace:"%zip":$v.location_zip|replace:"%street":$v.location_street_name|replace:"%full_street":$v.location_full_street_name|replace:"%full_reversed_street":$v.location_full_reversed_street_name|replace:"%short_street":$v.location_short_street_name|replace:"%house":$v.location_house|escape}"
+														href=$gps_location_url_replaced|escape
 													}
 													{show_on_map_button
 														type="default"
@@ -451,7 +592,12 @@
 															<tr{if ($contact.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED} class="blend"{/if}>
 																<td class="customer-contact">
 																	<div>
-																		{if isset($properties.formatter)}{call_user_func($properties['formatter'], $contact)}{else}{$contact.contact|escape}{/if}
+																		{if isset($properties.formatter)}
+																			{$text = call_user_func($properties.formatter, $contact)}
+																		{else}
+																			{$text = $contact.contact|escape}
+																		{/if}
+																		{contact type=$contact.type content=$text text=$contact.contact clipboard_button=true qrcode_button=true}
 																		{if $contact.typestr}[{$contact.typestr}]{/if}
 																		{if $contact.name} ({$contact.name|trunescape:40}){/if}
 																	</div>
@@ -505,34 +651,51 @@
 										</tr>
 									{/if}
 
-									{if $customerinfo.rbename != ""}
+									{if $customerinfo.rbename != "" || $customerinfo.rbe}
 										<tr>
 											<td class="valign-top">
-												{icon name="user-id-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.rbename}
+												{icon name="user-id-number"}
 											</td>
 											<td>
-												{trans("RBE Name")}
-												<table cellpadding="5">
-													<tr>
-														<td class="fall superlight">
-															{$customerinfo.rbename|escape|replace:"\n":"<BR>"}
-														</td>
-													</tr>
-												</table>
+												<fieldset>
+													<legend class="bold">
+														{trans("Business register")}
+													</legend>
+													<table class="rbe-details">
+														<tr>
+															<td>
+																{trans("Name")}
+															</td>
+															<td class="rbe-name">
+																{if $customerinfo.rbename != ""}
+																	<div class="lms-ui-multiline-box">
+																		{$customerinfo.rbename|escape|replace:"\n":"<BR>"}
+																	</div>
+																	{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.rbename}
+																{else}
+																	—
+																{/if}
+															</td>
+														</tr>
+														<tr>
+															<td>
+																{trans("Number")}
+															</td>
+															<td>
+																{if $customerinfo.rbe != ""}
+																	{$customerinfo.rbe|escape}
+																	{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.rbe}
+																{else}
+																	—
+																{/if}
+															</td>
+														</tr>
+													</table>
+												</fieldset>
 											</td>
 										</tr>
 									{/if}
-									{if $customerinfo.rbe != ""}
-										<tr>
-											<td>
-												{icon name="user-id-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.rbe}
-											</td>
-											<td>
-												{trans("RBE")}
-												{$customerinfo.rbe|escape}
-											</td>
-										</tr>
-									{/if}
+
 									{if $customerinfo.bankaccount}
 										<tr>
 											<td>
@@ -596,19 +759,35 @@
 										</td>
 										<td>
 											<table cellpadding="2" class="lms-ui-separated-rows">
-												<tr>
-													<td>
+												<tr id="consent-caption">
+													<td colspan="2">
 														<strong>{trans("Consents")}</strong>
-													</td>
-													<td>
+														{button type="link" icon="less" icon_class="consent-view-toggle-icon" id="consent-view-toggle-button"}
 													</td>
 												</tr>
 												{block name="customerinfobox-options"}
+													{$current_customer_consent_group_id = 0}
 													{foreach $_CCONSENTS as $type => $consent}
 														{if !is_array($consent)}
 															{continue}
 														{/if}
-														<tr>
+														{$customer_consent_group_id = Utils::findCustomerConsentGroupByCustomerConsent($type, $_CCONSENT_GROUPS)}
+														{if $current_customer_consent_group_id && $current_customer_consent_group_id != $customer_consent_group_id || $current_customer_consent_group_id && $consent@last}
+																		</table>
+																	</fieldset>
+																</td>
+															</tr>
+														{/if}
+														{if $customer_consent_group_id && $customer_consent_group_id != $current_customer_consent_group_id}
+															<tr class="consent-group-row consent-row">
+																<td colspan="2">
+																	<fieldset class="consent-group">
+																		<legend>
+																			<strong>{$_CCONSENT_GROUPS[$customer_consent_group_id].label}</strong>
+																		</legend>
+																		<table class="lms-ui-separated-rows">
+														{/if}
+														<tr class="consent-row">
 															<td>
 																{if $consent.type == 'selection' && isset($customerinfo.consents[$type]) && isset($consent.values[$customerinfo.consents[$type]].name)}
 																	{t a=$consent.label b=$consent.values[$customerinfo.consents[$type]].label}<!billing-type>$a ($b){/t}
@@ -622,16 +801,17 @@
 																		{$customerinfo.consents[$type]['cdate']|date_format:"Y-m-d"}
 																	{else}
 																		{if $consent.type != 'selection' || isset($consent.values[$customerinfo.consents[$type]].name)}
-																			{trans("yes")}
+																			{icon name="checked"}
 																		{else}
-																			{trans("no")}
+																			{icon name="empty"}
 																		{/if}
 																	{/if}
 																{else}
-																	{trans("no")}
+																	{icon name="empty"}
 																{/if}
 															</td>
 														</tr>
+														{$current_customer_consent_group_id = $customer_consent_group_id}
 													{/foreach}
 												{/block}
 											</table>
@@ -657,8 +837,10 @@
 											<td colspan="2">
 												<table width="100%" cellpadding="5">
 													<tr>
-														<td class="fall superlight lms-ui-autolinker limit-width">
-															{$customerinfo.info|replace:"\n":"<BR>"}
+														<td class="limit-width">
+															<div class="lms-ui-multiline-box lms-ui-autolinker">
+																{$customerinfo.info|replace:"\n":"<br>"}
+															</div>
 														</td>
 													</tr>
 												</table>
@@ -673,8 +855,10 @@
 											<td colspan="2">
 												<table width="100%" cellpadding="5">
 													<tr>
-														<td class="fall superlight lms-ui-autolinker limit-width">
-															{$customerinfo.message|replace:"\n":"<BR>"}
+														<td class="limit-width">
+															<div class="lms-ui-multiline-box lms-ui-autolinker">
+																{$customerinfo.message|replace:"\n":"<br>"}
+															</div>
 														</td>
 													</tr>
 												</table>
@@ -689,8 +873,10 @@
 											<td colspan="2">
 												<table width="100%" cellpadding="5">
 													<tr>
-														<td class="fall superlight lms-ui-autolinker limit-width">
-															{$customerinfo.notes|replace:"\n":"<BR>"}
+														<td class="limit-width">
+															<div class="lms-ui-multiline-box lms-ui-autolinker">
+																{$customerinfo.notes|replace:"\n":"<br>"}
+															</div>
 														</td>
 													</tr>
 												</table>
@@ -705,8 +891,10 @@
 											<td colspan="2">
 												<table width="100%" cellpadding="5">
 													<tr>
-														<td class="fall superlight lms-ui-autolinker limit-width">
-															{$customerinfo.documentmemo|replace:"\n":"<BR>"}
+														<td class="limit-width">
+															<div class="lms-ui-multiline-box lms-ui-autolinker">
+																{$customerinfo.documentmemo|replace:"\n":"<br>"}
+															</div>
 														</td>
 													</tr>
 												</table>
@@ -749,13 +937,13 @@
 												{/if}
 											</td>
 										</tr>
-										{if ConfigHelper::checkConfig('phpui.show_customer_due_balance', ConfigHelper::checkConfig('phpui.show_customer_expired_balance'))}
+										{if ConfigHelper::checkConfig('customers.show_due_balance', ConfigHelper::checkConfig('phpui.show_customer_due_balance', ConfigHelper::checkConfig('customers.show_expired_balance', ConfigHelper::checkConfig('phpui.show_customer_expired_balance'))))}
 											<tr>
 												<td>
 													{icon name="money"}
 												</td>
 												<td>
-													<strong>{trans("Due balance")}</strong>
+													<strong>{trans("Balance excluding current receivables")}</strong>
 												</td>
 												<td>
 													{if $customerinfo.expiredbalance < 0}
@@ -825,12 +1013,14 @@
 					<div class="customerinfo-buttons">
 						{block name="customerinfobox-buttons"}
 							{if $customerinfo.deleted}
-								{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
-									{button id="remove-button" icon="remove" label="Remove permanently"
-										data_href="?m=customerdel&id={$customerinfo.id}&type=permanent"}
+								{if ConfigHelper::checkPrivilege('customer_management')}
+									{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
+										{button id="remove-button" icon="remove" label="Remove permanently"
+											data_href="?m=customerdel&id={$customerinfo.id}&type=permanent"}
+									{/if}
+									{button id="restore-button" icon="restore" label="Restore"
+										href="?m=customeredit&id={$customerinfo.id}&action=recover"}
 								{/if}
-								{button id="restore-button" icon="restore" label="Restore"
-									href="?m=customeredit&id={$customerinfo.id}&action=recover"}
 							{else}
 								{button type="link-button" id="rtsearch-button"
 									class="{if $customerstats['tickets']['notresolved']}bold{/if}"
@@ -845,11 +1035,13 @@
 									href="?m=domainlist&c={$customerinfo.id}"}
 								{button type="link-button" id="stats-button" icon="stats" label="Stats"
 									href="?m=trafficprint&type=customertraffic&customer={$customerinfo.id}"}
-								{button type="link-button" id="edit-button" icon="edit" label="Edit"
-									href="?m=customeredit&id={$customerinfo.id}"}
-								{if ConfigHelper::checkPrivilege('customer_removal')}
-									{button id="delete-button" icon="delete" label="Delete"
-										data_href="?m=customerdel&id={$customerinfo.id}"}
+								{if ConfigHelper::checkPrivilege('customer_management')}
+									{button type="link-button" id="edit-button" icon="edit" label="Edit"
+										href="?m=customeredit&id={$customerinfo.id}"}
+									{if ConfigHelper::checkPrivilege('customer_removal')}
+										{button id="delete-button" icon="delete" label="Delete"
+											data_href="?m=customerdel&id={$customerinfo.id}"}
+									{/if}
 								{/if}
 							{/if}
 							{if $info_link}
@@ -858,9 +1050,9 @@
 							{/if}
 						{/block}
 					</div>
-					{if !ConfigHelper::checkPrivilege('customer_sensitive_data_view') && !ConfigHelper::checkPrivilege('hide_customer_sensitive_data')}
+					{if !ConfigHelper::checkPrivilege('customer_sensitive_data_view', !$restrictive_sensitive_data_access) && !ConfigHelper::checkPrivilege('hide_customer_sensitive_data', !$restrictive_sensitive_data_access)}
 						<div class="customerinfo-buttons">
-							{button icon="sensible-data" label="Show sensible data" id="customer-sensible-data-button"}
+							{button icon="sensitive-data" label="Show sensitive data" id="customer-sensitive-data-button"}
 						</div>
 					{/if}
 				</div>
@@ -876,18 +1068,28 @@
 		}
 	{/if}
 
-	$(function() {
-		$('#delete-button').click(function() {
-			confirmDialog($t("Are you sure, you want to remove customer '$a' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!", "{$customerinfo.customername|escape}"), this).done(function() {
-				location.href = $(this).attr('data-href');
-			});
-		});
+	function consentViewToggle() {
+		var iconElem = $('.consent-view-toggle-icon');
+		iconElem.toggleClass('lms-ui-icon-less lms-ui-icon-more');
+		var consentViewVisible = !iconElem.is('.lms-ui-icon-more');
+		setStorageItem('consent-view-visible', consentViewVisible ? 1 : 0, 'local');
+		iconElem.closest('.customer-options').find('.consent-row').toggle(consentViewVisible);
+	}
 
-		$('#remove-button').click(function() {
-			confirmDialog($t("Do you want to permanently remove $a customer?", "{$customerinfo.customername|escape}"), this).done(function() {
-				location.href = $(this).attr('data-href');
+	$(function() {
+		{if ConfigHelper::checkPrivilege('customer_management')}
+			$('#delete-button').click(function() {
+				confirmDialog($t("Are you sure, you want to remove customer '$a' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!", "{$customerinfo.customername|escape}"), this).done(function() {
+					location.href = $(this).attr('data-href');
+				});
 			});
-		});
+
+			$('#remove-button').click(function() {
+				confirmDialog($t("Do you want to permanently remove $a customer?", "{$customerinfo.customername|escape}"), this).done(function() {
+					location.href = $(this).attr('data-href');
+				});
+			});
+		{/if}
 
 		$('#add-instantpayment').click(function() {
 			var name = $(this).attr('data-name');
@@ -896,14 +1098,14 @@
 			});
 		});
 
-		$('#customer-sensible-data-button').click(function() {
+		$('#customer-sensitive-data-button').click(function() {
 			var btn = $(this);
 
 			$.ajax({
-				url: "?m={$layout.module}&api=1&id={$customerinfo.id}&action=get_sensible_data",
+				url: "?m={$layout.module}&api=1&id={$customerinfo.id}&action=get_sensitive_data",
 				dataType: "json",
 				success: function(data) {
-					$('.customer-sensible-data[data-type]').each(function() {
+					$('.customer-sensitive-data[data-type]').each(function() {
 						var type = $(this).attr('data-type');
 						if (data.hasOwnProperty(type)) {
 							$(this).html(data[type]);
@@ -916,12 +1118,12 @@
 		});
 
 		$('.lms-ui-button-clipboard[data-type]').on('lms:clipboard:click', function() {
-			return $('.customer-sensible-data[data-type="' + $(this).attr('data-type') + '"]').text().trim();
+			return $('.customer-sensitive-data[data-type="' + $(this).attr('data-type') + '"]').text().trim();
 		});
 
 		$('#check-ssn-button').click(function() {
 			var btn = $(this);
-			var ssnElem = $('[data-type="ssn"]');
+			var ssnElem = $(':not(.lms-ui-button-clipboard)[data-type="ssn"]');
 
 			ssnElem.attr({
 				"data-tooltip": null,
@@ -933,7 +1135,7 @@
 			btn.prop('disabled', true);
 
 			$.ajax({
-				url: '?m=customerssncheck&api=1&ssn=' + ssnElem.text().trim(),
+				url: '?m=customerssncheck&api=1&id={$customerinfo.id}&ssn=' + ssnElem.text().trim(),
 				//url: '?m=customerssncheck&api=1&ssn=80103193344', // not reserved
 				//url: '?m=customerssncheck&api=1&ssn=70030158839', // reserved
 				dataType: "json",
@@ -961,6 +1163,16 @@
 
 			});
 		});
+
+		$('#consent-view-toggle-button').click(consentViewToggle);
 	});
+
+	var consentViewVisible = getStorageItem('consent-view-visible', 'local');
+	if (consentViewVisible) {
+		consentViewVisible = parseInt(consentViewVisible);
+		if (!consentViewVisible) {
+			consentViewToggle();
+		}
+	}
 
 </script>

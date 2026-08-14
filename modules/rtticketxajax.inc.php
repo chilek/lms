@@ -90,7 +90,7 @@ function netnode_changed(
         'innerHTML',
         $content
     );
-    $JSResponse->script('initAdvancedSelects("#' . $target_selectid . '");');
+    $JSResponse->script('initAdvancedSelectsTest("#' . $target_selectid . '");');
 
     return $JSResponse;
 }
@@ -140,9 +140,50 @@ function queue_changed($queue)
 
     $JSResponse->assign('rtverifiers', 'innerHTML', $content);
 
-    $JSResponse->script('initAdvancedSelects("#rtverifiers select")');
+    $JSResponse->script('initAdvancedSelectsTest("#rtverifiers select")');
 
     return $JSResponse;
 }
 
-$LMS->RegisterXajaxFunction(array('GetCategories', 'select_location', 'netnode_changed', 'queue_changed'));
+function update_contacts($customerid)
+{
+    global $LMS;
+
+    $JSResponse = new xajaxResponse();
+
+    if (!empty($customerid)) {
+        $emails = array_filter(
+            $LMS->getCustomerContacts($customerid, CONTACT_EMAIL),
+            function ($contact) {
+                return !($contact['type'] & CONTACT_DISABLED);
+            }
+        );
+        usort(
+            $emails,
+            function ($a, $b) {
+                return ($a['contact'] < $b['contact']) ? -1 : 1;
+            }
+        );
+
+        $phones = array_filter(
+            $LMS->getCustomerContacts($customerid, CONTACT_LANDLINE | CONTACT_MOBILE),
+            function ($contact) {
+                return !($contact['type'] & CONTACT_DISABLED);
+            }
+        );
+        usort(
+            $phones,
+            function ($a, $b) {
+                return ($a['contact'] < $b['contact']) ? -1 : 1;
+            }
+        );
+    } else {
+        $emails = $phones = array();
+    }
+
+    $JSResponse->call('update_contacts', compact('emails', 'phones'));
+
+    return $JSResponse;
+}
+
+$LMS->RegisterXajaxFunction(array('GetCategories', 'select_location', 'netnode_changed', 'queue_changed', 'update_contacts'));

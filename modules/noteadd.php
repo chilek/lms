@@ -31,7 +31,7 @@ $SESSION->restore('notecustomer', $customer);
 $SESSION->restore('note', $note);
 $SESSION->restore('notenewerror', $error);
 
-$action = isset($_GET['action']) ? $_GET['action'] : null;
+$action = $_GET['action'] ?? null;
 
 switch ($action) {
     case 'init':
@@ -95,7 +95,7 @@ switch ($action) {
 
         if (ConfigHelper::checkPrivilege('invoice_consent_date')) {
             if ($note['cdate']) {
-                list ($year, $month, $day) = explode('/', $note['cdate']);
+                [$year, $month, $day] = explode('/', $note['cdate']);
                 if (checkdate($month, $day, $year)) {
                     $note['cdate'] = mktime(
                         date('G', $currtime),
@@ -184,12 +184,17 @@ switch ($action) {
             }
 
             $DB->BeginTrans();
+
+/*
             $tables = array('documents', 'cash', 'debitnotecontents', 'numberplans', 'divisions', 'vdivisions',
-                'addresses', 'customers', 'customer_addresses');
+                'addresses', 'customers', 'customer_addresses', 'logtransactions');
             if (ConfigHelper::getConfig('database.type') != 'postgres') {
                 $tables = array_merge($tables, array('addresses a', 'customers c', 'customer_addresses ca'));
             }
             $DB->LockTables($tables);
+*/
+
+            $DB->LockByHandle(LOCK_DEBIT_NOTE_NUMBER);
 
             if (empty($note['number'])) {
                 $note['number'] = $LMS->GetNewDocumentNumber(array(
@@ -279,23 +284,23 @@ switch ($action) {
                 'ten' => $customer['ten'],
                 'ssn' => $customer['ssn'],
                 'zip' => $customer['zip'],
-                'city' => $customer['postoffice'] ? $customer['postoffice'] : $customer['city'],
+                'city' => $customer['postoffice'] ?: $customer['city'],
                 SYSLOG::RES_COUNTRY => !empty($customer['countryid']) ? $customer['countryid'] : null,
                 SYSLOG::RES_DIV => !empty($customer['divisionid']) ? $customer['divisionid'] : null,
-                'div_name' => ($division['name'] ? $division['name'] : ''),
-                'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
-                'div_address' => ($division['address'] ? $division['address'] : ''),
-                'div_city' => ($division['city'] ? $division['city'] : ''),
-                'div_zip' => ($division['zip'] ? $division['zip'] : ''),
+                'div_name' => ($division['name'] ?: ''),
+                'div_shortname' => ($division['shortname'] ?: ''),
+                'div_address' => ($division['address'] ?: ''),
+                'div_city' => ($division['city'] ?: ''),
+                'div_zip' => ($division['zip'] ?: ''),
                 'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => !empty($division['countryid']) ? $division['countryid'] : null,
-                'div_ten'=> ($division['ten'] ? $division['ten'] : ''),
-                'div_regon' => ($division['regon'] ? $division['regon'] : ''),
+                'div_ten'=> ($division['ten'] ?: ''),
+                'div_regon' => ($division['regon'] ?: ''),
                 'div_bank' => $division['bank'] ?: null,
-                'div_account' => ($division['account'] ? $division['account'] : ''),
-                'div_inv_header' => ($division['inv_header'] ? $division['inv_header'] : ''),
-                'div_inv_footer' => ($division['inv_footer'] ? $division['inv_footer'] : ''),
-                'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
-                'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
+                'div_account' => ($division['account'] ?: ''),
+                'div_inv_header' => ($division['inv_header'] ?: ''),
+                'div_inv_footer' => ($division['inv_footer'] ?: ''),
+                'div_inv_author' => ($division['inv_author'] ?: ''),
+                'div_inv_cplace' => ($division['inv_cplace'] ?: ''),
                 'fullnumber' => $fullnumber,
                 'currency' => $note['currency'],
                 'currencyvalue' => $note['currencyvalue'],
@@ -364,7 +369,9 @@ switch ($action) {
                 ));
             }
 
-            $DB->UnLockTables();
+//            $DB->UnLockTables();
+            $DB->UnLockByHandle(LOCK_DEBIT_NOTE_NUMBER);
+
             $DB->CommitTrans();
 
             $SESSION->remove('notecontents');
@@ -382,9 +389,9 @@ switch ($action) {
 }
 
 $SESSION->save('note', $note);
-$SESSION->save('notecontents', isset($contents) ? $contents : null);
-$SESSION->save('notecustomer', isset($customer) ? $customer : null);
-$SESSION->save('notenewerror', isset($error) ? $error : null);
+$SESSION->save('notecontents', $contents ?? null);
+$SESSION->save('notecustomer', $customer ?? null);
+$SESSION->save('notenewerror', $error ?? null);
 
 if ($action) {
     // redirect needed because we don't want to destroy contents of note in order of page refresh

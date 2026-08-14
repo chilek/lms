@@ -26,7 +26,7 @@
 
 if (isset($_POST['tariff'])) {
     $tariff = $_POST['tariff'];
-    $limit = isset($_POST['limit']) ? $_POST['limit'] : array();
+    $limit = $_POST['limit'] ?? array();
 
     foreach ($tariff as $key => $value) {
         if ($key != 'authtype' && $key != 'tags' && $key != 'flags') {
@@ -256,6 +256,24 @@ if (isset($_POST['tariff'])) {
     if (ConfigHelper::checkConfig('phpui.tax_category_required')
         && empty($tariff['taxcategory'])) {
         $error['taxcategory'] = trans('Tax category selection is required!');
+    }
+
+    if (!empty($tariff['extid'])) {
+        if ($DB->GetOne(
+            'SELECT 1
+            FROM tariffs
+            WHERE extid = ?'
+            . (empty($tariff['serviceproviderid']) ? '' : ' AND serviceproviderid = ' . intval($tariff['serviceproviderid'])),
+            array(
+                $tariff['extid'],
+            )
+        )) {
+            if (empty($tariff['serviceproviderid'])) {
+                $error['extid'] = trans('Another tariff with specified External ID already exists!');
+            } else {
+                $error['extid'] = trans('Another tariff with specified External ID assigned to selected service provider already exists!');
+            }
+        }
     }
 
     if (!$error) {

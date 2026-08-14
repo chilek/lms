@@ -32,7 +32,7 @@ function GetTaxRateList($order = 'name,asc')
         $order = 'name,asc';
     }
 
-    list($order,$direction) = sscanf($order, '%[^,],%s');
+    [$order, $direction] = sscanf($order, '%[^,],%s');
 
     ($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
 

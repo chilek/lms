@@ -57,11 +57,11 @@
 			</select>
 		{/box_row}
 
-		{box_row icon="info" icon_class="fa-fw" label="Create the missing parent bindings" class="import-withparentbindings" visible=false}
+		{box_row icon="info" icon_class="fa-fw" label="create the missing ancestor bindings" class="import-withparentbindings" visible=false}
 			<input name="config[withparentbindings]" type="checkbox" id="import-withparentbindings" value="1" {if isset($config['withparentbindings'])}checked{/if}>
 		{/box_row}
 
-		{box_row icon="info" icon_class="fa-fw" label="Override existing" labelid="import-override" class="import-override"}
+		{box_row icon="info" icon_class="fa-fw" label="override existing" labelid="import-override" class="import-override"}
 			<input name="config[override]" type="checkbox" id="import-override" value="1" {if isset($config['override'])}checked{/if}>
 		{/box_row}
 

@@ -32,7 +32,7 @@ function GetAliasList($order = 'login,asc', $customer = null, $domain = '')
         $order = 'login,asc';
     }
 
-    list($order,$direction) = sscanf($order, '%[^,],%s');
+    [$order, $direction] = sscanf($order, '%[^,],%s');
 
     ($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
 

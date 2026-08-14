@@ -28,7 +28,7 @@ if (!defined('XAJAX_CALLABLE_OBJECT')) {
 }
 
 //SkipAIO
-require dirname(__FILE__) . '/support/xajaxCallableObject.inc.php';
+require __DIR__ . '/support/xajaxCallableObject.inc.php';
 //EndSkipAIO
 
 /*

@@ -27,8 +27,8 @@
 function smarty_function_persistent_filter($params, $template)
 {
     $layout = $template->getTemplateVars('layout');
-    $filter_id = isset($params['id']) ? $params['id'] : null;
-    $form = isset($params['form']) ? $params['form'] : null;
+    $filter_id = $params['id'] ?? null;
+    $form = $params['form'] ?? null;
 
     $persistent_filters = $template->getTemplateVars('persistent_filters');
     $persistent_filter = $template->getTemplateVars('persistent_filter');

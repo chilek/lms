@@ -33,7 +33,7 @@ function NetDevSearch($order = 'name,asc', $search = null, $sqlskey = 'AND')
     if (!isset($order)) {
         $order = 'name,asc';
     }
-    list ($order, $direction) = sscanf($order, '%[^,],%s');
+    [$order, $direction] = sscanf($order, '%[^,],%s');
 
     ($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
 
@@ -95,9 +95,20 @@ function NetDevSearch($order = 'name,asc', $search = null, $sqlskey = 'AND')
                     case 'location':
                         $searchargs[] = "UPPER(a.$idx) ?LIKE? UPPER(".$DB->Escape("%$value%").')';
                         break;
+                    case 'linktechnology':
+                        if ($value == -3) {
+                            $searchargs[] = 'NOT EXISTS (SELECT 1 FROM netlinks WHERE (netlinks.src = d.id OR netlinks.dst = d.id))';
+                        } elseif ($value == -2) {
+                            $searchargs[] = 'EXISTS (SELECT 1 FROM netlinks WHERE (netlinks.src = d.id OR netlinks.dst = d.id) AND (technology = 0 OR technology IS NULL))';
+                        } elseif ($value > 0) {
+                            $searchargs[] = 'EXISTS (SELECT 1 FROM netlinks WHERE (netlinks.src = d.id OR netlinks.dst = d.id) AND technology = ' . intval($value) . ')';
+                        }
+                        break;
                     default:
-                        // UPPER here is a postgresql ILIKE bug workaround
-                        $searchargs[] = "UPPER(d.$idx) ?LIKE? UPPER(".$DB->Escape("%$value%").')';
+                        if (preg_match('/^[a-z0-9_]+$/', $idx)) {
+                            // UPPER here is a postgresql ILIKE bug workaround
+                            $searchargs[] = "UPPER(d.$idx) ?LIKE? UPPER(" . $DB->Escape("%$value%") . ')';
+                        }
                         break;
                 }
             }
@@ -143,7 +154,7 @@ function NetDevSearch($order = 'name,asc', $search = null, $sqlskey = 'AND')
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
 				LEFT JOIN location_states ls    ON ls.id = ld.stateid'
                 .(isset($nodes) ? ' LEFT JOIN vnodes n ON (netdev = d.id AND n.ownerid IS NULL)' : '')
-                .(isset($searchargs) ? $searchargs : '')
+                .($searchargs ?? '')
                 .($sqlord != '' ? $sqlord.' '.$direction : ''));
 
     if ($netdevlist) {
@@ -226,7 +237,7 @@ if (isset($_GET['search'])) {
         }
 
         $page = (! $_GET['page'] ? 1 : $_GET['page']);
-        $pagelimit = ConfigHelper::getConfig('phpui.nodelist_pagelimit', $listdata['total']);
+        $pagelimit = ConfigHelper::getConfig('nodes.list_page_limit', ConfigHelper::getConfig('phpui.nodelist_pagelimit', $listdata['total']));
         $start = ($page - 1) * $pagelimit;
 
         $SESSION->save('ndlsp', $page);

@@ -51,7 +51,7 @@ foreach ($ExecStack->_MODINFO as $modulename => $modinfo) {
                     $actioninfo['menu'] = $modulename;
                 }
 
-                $args = isset($actioninfo['args']) ? $actioninfo['args'] : '';
+                $args = $actioninfo['args'] ?? '';
 
                 $menu[$actioninfo['menu']]['submenu'][] = array(
                 'name' => $actioninfo['menuname'][$lang],

@@ -197,12 +197,19 @@
                                value="{if $item.tariffid}{$item.tariffid}{else}0{/if}"
                         >
 
+                        {*
                         <input type="text" class="invoice-contents-field-edit" name="invoice-contents[{$posuid}][name]"
                                size="40" style="width: 300px; display: none;"
                                value="{$row.name|escape}" data-old-value="{$item.name|escape}"
                                {tip text="Enter description"}
                         >
-                        <span class="invoice-contents-field-value">{$item.name|escape}</span>
+                        *}
+                        <textarea class="invoice-contents-field-edit lms-ui-autogrow" name="invoice-contents[{$posuid}][name]"
+                           cols="40" rows="1" style="width: 300px; display: none;"
+                           data-old-value="{$item.name|escape}"
+                           {tip text="Enter description"}
+                        >{$row.name|escape}</textarea>
+                        <span class="invoice-contents-field-value">{$item.name|escape|nl2br}</span>
                         {if !empty($item.tariffid) && !empty($item.tariff.price_variants)}
                             {capture assign="price_variants_hint"}
                                 <fieldset class="price-variants">
@@ -352,7 +359,7 @@
                     <td class="text-right">
                         <input type="text" class="invoice-contents-field-edit invoice-contents-field-netprice" name="invoice-contents[{$posuid}][valuenetto]"
                             value="{$valuenetto|string_format:"%01.3f"}" data-old-value="{$valuenetto|string_format:"%01.3f"}" size="6"
-                            onchange="claculatePositionPriceFromNet({$posuid}, this)"
+                            onchange="calculatePositionPriceFromNet({$posuid}, this)"
                             {tip text="Enter unitary value without discount"} style="display: none;"
                             {if !$invoice.netflag} disabled{/if}
                         >
@@ -372,7 +379,7 @@
                     <td class="text-right nobr">
                         <select size="1" class="invoice-contents-field-edit" name="invoice-contents[{$posuid}][taxid]" id="invoice-contents-field-tax-{$posuid}"
                             data-old-value="{$item.taxid}" {tip text="Select Tax rate"} style="display: none;"
-                            onchange="claculatePositionPriceOnTaxChange({$posuid})"
+                            onchange="calculatePositionPriceOnTaxChange({$posuid})"
                         >
                             {foreach $taxeslist as $tax}
                                 <option value="{$tax.id}"{if $tax.id == $row.taxid} selected{/if}>{$tax.label}</option>
@@ -388,7 +395,7 @@
                     <td class="text-right">
                         <input type="text" class="invoice-contents-field-edit invoice-contents-field-grossprice" name="invoice-contents[{$posuid}][valuebrutto]"
                             value="{$valuebrutto|string_format:"%01.3f"}" data-old-value="{$valuebrutto|string_format:"%01.3f"}" size="6"
-                            onchange="claculatePositionPriceFromGross({$posuid}, this)"
+                            onchange="calculatePositionPriceFromGross({$posuid}, this)"
                             {tip text="Enter unitary value without discount"} style="display: none;"
                             {if $invoice.netflag} disabled{/if}
                         >
@@ -466,7 +473,7 @@
                             <div id="tariff-selection">
                                 {block name="`$layout.module`-tariff-selection"}
                                     <select size="1" name="tariffid" id="tariff-select" style="width: 300px"
-                                        class="lms-ui-advanced-select" onchange="setItem(document.contents.tariffid.value)">
+                                        class="lms-ui-advanced-select-test" onchange="setItem(document.contents.tariffid.value)">
                                         <option value="0">— {trans("Select tariff")} —</option>
                                         {foreach $tariffs as $tariff}
                                             {if $tariff.currency == $invoice.currency && $tariff.netflag == $invoice.netflag}
@@ -479,10 +486,15 @@
                                         {/foreach}
                                     </select>
                                 {/block}
+                                {*
                                 <input type="text" name="name" size="40" style="width:300px"
                                        value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.name}{/if}"
                                        placeholder="{trans('... or enter description')}"
                                 >
+                                *}
+                                <textarea name="name" cols="40" rows="1" class="lms-ui-autogrow lms-ui-autocomplete" style="width:300px"
+                                    placeholder="{trans('... or enter description')}"
+                                >{if isset($itemdata) && !isset($error.posuid)}{$itemdata.name|escape}{/if}</textarea>
                                 <span id="tariff-price-variants"></span>
                             </div>
                         </td>
@@ -635,7 +647,7 @@
         let e = document.contents;
 
         if (index == 0) {
-            e.name.value = '';
+            e.name.innerHTML = '';
             e.valuebrutto.value = '';
             e.valuenetto.value = '';
             e.prodid.value = '';
@@ -648,7 +660,7 @@
                 if (index == {$tariff.id}) {
                     let grossPrice = '{$tariff.value}';
                     let netPrice = '{$tariff.netvalue}';
-                    e.name.value = '{str_replace("'", "\\'", $tariff.name)}';
+                    e.name.innerHTML = '{str_replace("'", "\\'", $tariff.name)}';
                     e.taxid.value = '{$tariff.taxid}';
                     e.prodid.value = '{$tariff.prodid}';
                     e.tariffid.value = '{$tariff.id}';
@@ -675,7 +687,6 @@
                 }
             {/foreach}
         }
-
     }
 
     function drawPriceVariants(tariffPriceVariants, elem) {
@@ -736,7 +747,7 @@
         grossPriceElem.prop('disabled', false);
         taxElem.prop('disabled', false);
         document.contents.action += '&action=additem';
-        document.contents.submit();
+        document.contents.requestSubmit();
     }
 
     function delItem(posuid) {
@@ -750,7 +761,9 @@
             // if (!$(this).is(':visible')) {
             // 	$(this).attr('data-old-value', $(this).val());
             // }
-        }).toggle();
+        }).toggle().filter('textarea.lms-ui-autogrow:visible').each(function() {
+            initAutoGrow(this);
+        });
         if (elem) {
             elem.focus();
         } else {
@@ -839,8 +852,10 @@
                     e.preventDefault();
                     break;
                 case 'Enter':
-                    saveItem(posuid);
-                    e.preventDefault();
+                    if (!$(e.target).is('textarea')) {
+                        saveItem(posuid);
+                        e.preventDefault();
+                    }
                     break;
             }
         });
@@ -859,9 +874,9 @@
         return;
     });
 
-    function claculatePriceFromGross() {
+    function calculatePriceFromGross() {
         let grossPriceElemVal = grossPriceElem.val();
-        grossPriceElemVal = parseFloat(grossPriceElemVal.replace(/[\,]+/, '.'));
+        grossPriceElemVal = parseFloat(grossPriceElemVal.replace(/[\,]+/, '.').replaceAll(' ', ''));
 
         if (!isNaN(grossPriceElemVal)) {
             let selectedTaxId = taxElem.find('option:selected').val();
@@ -881,9 +896,9 @@
         }
     }
 
-    function claculatePriceFromNet() {
+    function calculatePriceFromNet() {
         let netPriceElemVal = netPriceElem.val();
-        netPriceElemVal = parseFloat(netPriceElemVal.replace(/[\,]+/, '.'))
+        netPriceElemVal = parseFloat(netPriceElemVal.replace(/[\,]+/, '.').replaceAll(' ', ''));
 
         if (!isNaN(netPriceElemVal)) {
             let selectedTaxId = taxElem.find('option:selected').val();
@@ -905,25 +920,25 @@
 
     taxElem.on('change', function () {
         if (netFlagElem.is(':checked')) {
-            claculatePriceFromNet();
+            calculatePriceFromNet();
         } else {
-            claculatePriceFromGross();
+            calculatePriceFromGross();
         }
     });
 
     grossPriceElem.on('change', function () {
-        claculatePriceFromGross();
+        calculatePriceFromGross();
     });
 
     netPriceElem.on('change', function () {
-        claculatePriceFromNet();
+        calculatePriceFromNet();
     });
 
-    function claculatePositionPriceFromGross(posuid, elem) {
+    function calculatePositionPriceFromGross(posuid, elem) {
         let grossPriceElem = $(elem);
         let grossPriceElemVal = grossPriceElem.val();
         let netPriceElem = $('[name="invoice-contents[' + posuid + '][valuenetto]"]');
-        grossPriceElemVal = parseFloat(grossPriceElemVal.replace(/[\,]+/, '.'));
+        grossPriceElemVal = parseFloat(grossPriceElemVal.replace(/[\,]+/, '.').replaceAll(' ', ''));
 
         if (!isNaN(grossPriceElemVal)) {
             let selectedTaxId = $('#invoice-contents-field-tax-'+posuid).find('option:selected').val();
@@ -943,11 +958,11 @@
         }
     }
 
-    function claculatePositionPriceFromNet(posuid, elem) {
+    function calculatePositionPriceFromNet(posuid, elem) {
         let netPriceElem = $(elem);
         let netPriceElemVal = netPriceElem.val();
         let grossPriceElem = $('[name="invoice-contents[' + posuid + '][valuebrutto]"]');
-        netPriceElemVal = parseFloat(netPriceElemVal.replace(/[\,]+/, '.'))
+        netPriceElemVal = parseFloat(netPriceElemVal.replace(/[\,]+/, '.').replaceAll(' ', ''));
 
         if (!isNaN(netPriceElemVal)) {
             let selectedTaxId = $('#invoice-contents-field-tax-'+posuid).find('option:selected').val();
@@ -967,14 +982,14 @@
         }
     }
 
-    function claculatePositionPriceOnTaxChange(posuid) {
+    function calculatePositionPriceOnTaxChange(posuid) {
         let netPriceElem = $('[name="invoice-contents[' + posuid + '][valuenetto]"]');
         let grossPriceElem = $('[name="invoice-contents[' + posuid + '][valuebrutto]"]');
 
         if (netFlagElem.is(':checked')) {
-            claculatePositionPriceFromNet(posuid, netPriceElem);
+            calculatePositionPriceFromNet(posuid, netPriceElem);
         } else {
-            claculatePositionPriceFromGross(posuid, grossPriceElem);
+            calculatePositionPriceFromGross(posuid, grossPriceElem);
         }
     }
 

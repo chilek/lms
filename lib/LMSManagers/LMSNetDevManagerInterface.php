@@ -78,7 +78,7 @@ interface LMSNetDevManagerInterface
 
     public function getNetDevOwner($id);
 
-    public function GetNetDevList($order = 'name,asc');
+    public function GetNetDevList($order = 'name,asc', $search = array());
 
     public function GetNetDevConnectedNames($id);
 

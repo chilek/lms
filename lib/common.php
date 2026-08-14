@@ -45,7 +45,6 @@ function find_program($program)
         }
         next($path);
     }
-    return;
 }
 
 function execute_program($program, $args = '')
@@ -100,7 +99,7 @@ function hostname()
     }
 
     if (!$hostname) {
-        $hostname = $_ENV['HOSTNAME'] ? $_ENV['HOSTNAME'] : $_SERVER['SERVER_NAME'];
+        $hostname = $_ENV['HOSTNAME'] ?: $_SERVER['SERVER_NAME'];
     }
     if (!$hostname) {
         $hostname='N.A.';
@@ -344,7 +343,7 @@ function getmicrotime()
 {
     // This function has been taken from PHP manual
 
-    list($usec, $sec) = explode(' ', microtime());
+    [$usec, $sec] = explode(' ', microtime());
     return ((float)$usec + (float)$sec);
 }
 
@@ -388,7 +387,7 @@ function rmkdir($dir)
             $cdir .= DIRECTORY_SEPARATOR . $directories[$j];
         }
         if (!is_dir($cdir)) {
-            $result = mkdir($cdir, 0777);
+            $result = mkdir($cdir);
             $makedirs ++;
         }
     }
@@ -572,9 +571,9 @@ function docnumber($number = null, $template = null, $cdate = null, $ext_num = '
         }
     }
 
-    $number = $number ? $number : 1;
-    $template = $template ? $template : DEFAULT_NUMBER_TEMPLATE;
-    $cdate = $cdate ? $cdate : time();
+    $number = $number ?: 1;
+    $template = $template ?: DEFAULT_NUMBER_TEMPLATE;
+    $cdate = $cdate ?: time();
 
     // customer id support
     if (empty($customerid)) {
@@ -618,7 +617,7 @@ function fetch_url($url)
     $url_parsed = parse_url($url);
     $host = $url_parsed['host'];
     $path = $url_parsed['path'];
-    $port = isset($url_parsed['port']) ? $url_parsed['port'] : 0; //sometimes port is undefined
+    $port = $url_parsed['port'] ?? 0; //sometimes port is undefined
 
     if ($port==0) {
         $port = 80;
@@ -722,33 +721,7 @@ function clear_utf($str)
 
 function mazovia_to_utf8($text)
 {
-    static $mazovia_regexp = array(
-        '/\x86/', // ą
-        '/\x92/', // ł
-        '/\x9e/', // ś
-        '/\x8d/', // ć
-        '/\xa4/', // ń
-        '/\xa6/', // ź
-        '/\x91/', // ę
-        '/\xa2/', // ó
-        '/\xa7/', // ż
-        '/\x8f/', // Ą
-        '/\x9c/', // Ł
-        '/\x98/', // Ś
-        '/\x95/', // Ć
-        '/\xa5/', // Ń
-        '/\xa0/', // Ź
-        '/\x90/', // Ę
-        '/\xa3/', // Ó
-        '/\xa1/', // Ż
-    );
-
-    static $utf8_codes = array(
-        'ą', 'ł', 'ś', 'ć', 'ń', 'ź', 'ę', 'ó', 'ż',
-        'Ą', 'Ł', 'Ś', 'Ć', 'Ń', 'Ź', 'Ę', 'Ó', 'Ż',
-    );
-
-    return preg_replace($mazovia_regexp, $utf8_codes, $text);
+    return Utils::mazovia_to_utf8($text);
 }
 
 function lastonline_date($timestamp)
@@ -799,7 +772,19 @@ function truncate_str($string, $length, $etc = '...')
 
 function location_str($data)
 {
-    $location = $data['city_name'];
+    if (isset($data['zip'])) {
+        $location = $data['zip'];
+    } elseif (isset($data['location_zip'])) {
+        $location = $data['location_zip'];
+    } else {
+        $location = '';
+    }
+
+    if (!isset($data['city_name'])) {
+        $data['city_name'] = $data['location_city_name'];
+    }
+
+    $location .= empty($location) ? '' : ' ' . $data['city_name'];
 
     if ($data['location_flat']) {
         $h = ConfigHelper::getConfig('phpui.house_template', '%h/%f');
@@ -809,9 +794,15 @@ function location_str($data)
         $h = $data['location_house'];
     }
 
-    if ($data['street_name']) {
+    if (empty($data['street_name']) && !empty($data['location_street_name'])) {
+        $data['street_name'] = $data['location_street_name'];
+    }
+
+    if (!empty($data['street_name'])) {
         $street = (isset($data['street_type']) ? $data['street_type'] . ' ' : '') . $data['street_name'];
-        $location .= ($location ? ',' : '') . $street;
+        $location .= ($location ? ', ' : '') . $street;
+    } else {
+        $location .= ($location ? ', ' : '') . $data['city_name'] . ' ';
     }
 
     if ($h) {
@@ -826,7 +817,7 @@ function document_address($data)
     $lines = array();
 
     if ($data['name']) {
-        $lines[] = $data['name'];
+        $lines[] = htmlspecialchars($data['name']);
     }
 
     if ($data['postoffice'] && $data['postoffice'] != $data['city']) {
@@ -886,213 +877,18 @@ function register_plugin($handle, $plugin)
 
 function html2pdf($content, $subject = null, $title = null, $type = null, $id = null, $orientation = 'P', $margins = array(5, 10, 5, 10), $dest = 'I', $copy = false, $md5sum = '')
 {
-    global $layout;
-
-    $DB = LMSDB::getInstance();
-
-    if ($dest === true) {
-        $dest = 'D';
-    } elseif ($dest === false) {
-        $dest = 'I';
-    }
-
-    $html2pdf_command = ConfigHelper::getConfig('documents.html2pdf_command', '', true);
-    if (empty($html2pdf_command)) {
-        if (isset($margins)) {
-            if (!is_array($margins)) {
-                $margins = array(5, 10, 5, 10); /* default */
-            }
-        }
-        $html2pdf = new LMSHTML2PDF($orientation, 'A4', 'en', true, 'UTF-8', $margins);
-        /* disable font subsetting to improve performance */
-        $html2pdf->pdf->setFontSubsetting(false);
-
-        if ($id) {
-            $info = $DB->GetRow('SELECT di.name, di.description, d.ssn FROM divisions di
-				LEFT JOIN documents d ON (d.divisionid = di.id)
-				WHERE d.id = ?', array($id));
-        }
-
-        $html2pdf->pdf->SetAuthor('LMS Developers');
-        $html2pdf->pdf->SetCreator('LMS ' . $layout['lmsv']);
-        if (!empty($info)) {
-            $html2pdf->pdf->SetAuthor($info['name']);
-        }
-        if ($subject) {
-            $html2pdf->pdf->SetSubject($subject);
-        }
-        if ($title) {
-            $html2pdf->pdf->SetTitle($title);
-        }
-
-        $html2pdf->pdf->SetDisplayMode('fullpage', 'SinglePage', 'UseNone');
-
-        /* if tidy extension is loaded we repair html content */
-        if (extension_loaded('tidy')) {
-            $config = array(
-                'indent' => true,
-                'output-html' => true,
-                'indent-spaces' => 4,
-                'join-styles' => true,
-                'join-classes' => true,
-                'fix-bad-comments' => true,
-                'fix-backslash' => true,
-                'repeated-attributes' => 'keep-last',
-                'drop-proprietary-attribute' => true,
-                'sort-attributes' => 'alpha',
-                'hide-comments' => true,
-                'new-blocklevel-tags' => 'page, page_header, page_footer, barcode',
-                'wrap' => 200
-            );
-
-            $tidy = new tidy;
-            $content = $tidy->repairString($content, $config, 'utf8');
-        }
-
-        $html2pdf->WriteHTML($content);
-
-        if ($copy) {
-            /* add watermark only for contract & annex */
-            if (($type == DOC_CONTRACT) || ($type == DOC_ANNEX)) {
-                $html2pdf->AddFont('courier', '', 'courier.php');
-                $html2pdf->AddFont('courier', 'B', 'courierb.php');
-                $html2pdf->pdf->SetTextColor(255, 0, 0);
-
-                $PageWidth = $html2pdf->pdf->getPageWidth();
-                $PageHeight = $html2pdf->pdf->getPageHeight();
-                $PageCount = $html2pdf->pdf->getNumPages();
-                $txt = trim(preg_replace("/(.)/i", "\${1} ", trans('COPY')));
-                $w = $html2pdf->pdf->getStringWidth($txt, 'courier', 'B', 120);
-                $x = ($PageWidth / 2) - (($w / 2) * sin(45));
-                $y = ($PageHeight / 2) + 50;
-
-                for ($i = 1; $i <= $PageCount; $i++) {
-                    $html2pdf->pdf->setPage($i);
-                    $html2pdf->pdf->SetAlpha(0.2);
-                    $html2pdf->pdf->SetFont('courier', 'B', 120);
-                    $html2pdf->pdf->StartTransform();
-                    $html2pdf->pdf->Rotate(45, $x, $y);
-                    $html2pdf->pdf->Text($x, $y, $txt);
-                    $html2pdf->pdf->StopTransform();
-                }
-                $html2pdf->pdf->SetAlpha(1);
-            }
-        }
-
-        if (($type == DOC_CONTRACT) || ($type == DOC_ANNEX)) {
-            /* set signature additional information */
-            $info = array(
-                'Name' => $info['name'],
-                'Location' => $subject,
-                'Reason' => $title,
-                'ContactInfo' => $info['description'],
-            );
-
-            /* setup your cert & key file */
-            $cert = 'file://' . LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'lms.cert';
-            $key = 'file://' . LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'lms.key';
-
-            /* set document digital signature & protection */
-            if (file_exists($cert) && file_exists($key)) {
-                $html2pdf->pdf->setSignature($cert, $key, 'lms-documents', '', 1, $info);
-            }
-        }
-
-        // cache pdf file
-        if ($md5sum) {
-            $html2pdf->Output(DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2) . DIRECTORY_SEPARATOR . $md5sum . '.pdf', 'F');
-        }
-
-        switch ($dest) {
-            case 'D':
-                if (function_exists('mb_convert_encoding')) {
-                    $filename = mb_convert_encoding($title, "ISO-8859-2", "UTF-8");
-                } else {
-                    $filename = iconv("UTF-8", "ISO-8859-2//TRANSLIT", $title);
-                }
-                $html2pdf->Output($filename . '.pdf', 'D');
-                break;
-            case 'S':
-                return $html2pdf->Output('', 'S');
-                break;
-            default:
-                $html2pdf->Output();
-                break;
-        }
-    } else {
-        $pipes = null;
-        $process = proc_open(
-            $html2pdf_command,
-            array(
-                0 => array('pipe', 'r'),
-                1 => array('pipe', 'w'),
-                2 => array('pipe', 'w'),
-            ),
-            $pipes
-        );
-        if (is_resource($process)) {
-            fwrite($pipes[0], $content);
-            fclose($pipes[0]);
-
-            $content = stream_get_contents($pipes[1]);
-            fclose($pipes[1]);
-
-            $error = stream_get_contents($pipes[2]);
-            fclose($pipes[2]);
-
-            $result = proc_close($process);
-
-            if (!$result) {
-                // cache pdf file
-                if ($md5sum) {
-                    file_put_contents(
-                        DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2) . DIRECTORY_SEPARATOR . $md5sum . '.pdf',
-                        $content
-                    );
-                }
-
-                if (function_exists('mb_convert_encoding')) {
-                    $filename = mb_convert_encoding($title, "ISO-8859-2", "UTF-8");
-                } else {
-                    $filename = iconv("UTF-8", "ISO-8859-2//TRANSLIT", $title);
-                }
-
-                switch ($dest) {
-                    case 'D':
-                        header('Cache-Control: private, must-revalidate, post-check=0, pre-check=0, max-age=1');
-                        //header('Cache-Control: public, must-revalidate, max-age=0'); // HTTP/1.1
-                        header('Pragma: public');
-                        header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-                        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-                        // force download dialog
-                        header('Content-Type: application/pdf');
-                        // use the Content-Disposition header to supply a recommended filename
-                        header('Content-Disposition: attachment; filename="' . basename($filename) . '"');
-                        header('Content-Transfer-Encoding: binary');
-
-                        echo $content;
-
-                        break;
-
-                    case 'S':
-                        return $content;
-
-                    default:
-                        header('Content-Type: application/pdf');
-                        header('Cache-Control: private, must-revalidate, post-check=0, pre-check=0, max-age=1');
-                        //header('Cache-Control: public, must-revalidate, max-age=0'); // HTTP/1.1
-                        header('Pragma: public');
-                        header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-                        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-                        header('Content-Disposition: inline; filename="' . basename($filename) . '"');
-
-                        echo $content;
-
-                        break;
-                }
-            }
-        }
-    }
+    return Utils::html2pdf(compact(
+        'content',
+        'subject',
+        'title',
+        'type',
+        'id',
+        'orientation',
+        'margins',
+        'dest',
+        'copy',
+        'md5sum'
+    ));
 }
 
 function is_natural($var)
@@ -1373,16 +1169,16 @@ function handle_file_uploads($elemid, &$error)
             die;
         } elseif (isset($fileupload[$elemid])) {
             foreach ($fileupload[$elemid] as &$file) {
-                list ($size, $unit) = setunits($file['size']);
+                [$size, $unit] = setunits($file['size']);
                 $file['sizestr'] = sprintf("%.02f", $size) . ' ' . $unit;
             }
             unset($file);
-            $$elemid = $fileupload[$elemid];
+            ${$elemid} = $fileupload[$elemid];
         } else {
-            $$elemid = array();
+            ${$elemid} = array();
         }
     } else {
-        $$elemid = array();
+        ${$elemid} = array();
     }
     return compact('fileupload', 'tmppath', $elemid);
 }
@@ -1417,10 +1213,10 @@ function trim_rec($data)
 
     if (is_array($data)) {
         foreach ($data as $k => $v) {
-            if (is_array($data[$k])) {
-                $data[$k] = trim_rec($data[$k]);
+            if (is_array($v)) {
+                $data[$k] = trim_rec($v);
             } else {
-                $data[$k] = trim($data[$k]);
+                $data[$k] = trim($v);
             }
         }
 
@@ -1459,7 +1255,7 @@ function geocode($location)
     $status = $page["status"];
     return array(
         'status' => $status,
-        'error' => isset($page['error_message']) ? $page['error_message'] : '',
+        'error' => $page['error_message'] ?? '',
         'accuracy' => $accuracy,
         'latitude' => $latitude,
         'longitude' => $longitude,

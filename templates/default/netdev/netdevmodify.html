@@ -13,6 +13,7 @@
 
 <form name="netdev" id="netdev" method="post" action="?m={$layout.module}{if $layout.module == 'netdevedit'}&id={$netdev.id}{/if}">
 	<input type="submit" class="hiddenbtn">
+	<input type="hidden" name="netdev[pagetitle]" value="{$netdev.pagetitle|escape}">
 
 	{box_container id="netdev"}
 		{box_header icon="netdev" icon_class="fa-fw" label="Name"}
@@ -115,7 +116,10 @@
 						location_flat="{$netdev.location_flat}"
 						location_zip="{$netdev.location_zip}"
 						location_country_id="{$netdev.location_country_id}"
-						teryt="{$netdev.teryt}"}
+						teryt="{$netdev.teryt}"
+						allow_empty_streets = ConfigHelper::checkConfig('teryt.allow_empty_streets', true)
+						allow_empty_building_numbers = ConfigHelper::checkConfig('teryt.allow_empty_building_numbers', true)
+					}
 				{/box_row}
 
 				{box_row}
@@ -226,7 +230,7 @@
 				{/box_row}
 
 				{box_row icon="netnode" icon_class="fa-fw" label="Network Node"}
-					<select name="netdev[netnodeid]" {tip class="lms-ui-advanced-select"}>
+					<select name="netdev[netnodeid]" {tip class="lms-ui-advanced-select-test"}>
 						<option value="-1">{trans("None")}</option>
 						{foreach $NNnodes as $node}
 							<option value="{$node.id}"
@@ -342,7 +346,7 @@
 		}
 	}
 
-	initAdvancedSelects('#customer_addresses');
+	initAdvancedSelectsTest('#customer_addresses');
 
 	/*!
      * \brief Update customer addresses list on input change.

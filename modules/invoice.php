@@ -26,6 +26,7 @@
 
 use setasign\Fpdi\Tcpdf\Fpdi;
 use setasign\Fpdi\PdfParser\StreamReader;
+use \Lms\KSeF\KSeF;
 
 function invoice_body($document, $invoice)
 {
@@ -216,11 +217,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
     $SESSION->remove('ilm');
 
     if (isset($_POST['marks'])) {
-        if (isset($_POST['marks']['invoice'])) {
-            $marks = $_POST['marks']['invoice'];
-        } else {
-            $marks = $_POST['marks'];
-        }
+        $marks = $_POST['marks']['invoice'] ?? $_POST['marks'];
     } else {
         $marks = array();
     }
@@ -281,14 +278,64 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 } elseif (isset($_GET['fetchallinvoices'])) {
     $layout['pagetitle'] = trans('Invoices');
 
+    $now = strtotime('now');
+
+    //$ksefDeploymentDate = strtotime('2026/04/01');
+    $ksefDeploymentDates = [];
+    $ksefEarliestDocuments = $DB->GetAll(
+        'SELECT
+            d.divisionid,
+            d.div_ten,
+            MIN(d.cdate) AS mincdate
+        FROM ksefdocuments kd
+        JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
+        JOIN documents d ON d.id = kd.docid
+        LEFT JOIN ksefconfig kc ON kc.divisionid = d.divisionid
+        WHERE d.cdate >= kc.boundarydate
+            AND kbs.environment = ?
+            AND kd.status = ?
+        GROUP BY d.divisionid, d.div_ten',
+        [
+            //KSeF::ENVIRONMENT_TEST,
+            KSeF::ENVIRONMENT_PROD,
+            200,
+        ]
+    );
+    if (!empty($ksefEarliestDocuments)) {
+        foreach ($ksefEarliestDocuments as $ksefEarliestDocument) {
+            $divisionTen = preg_replace('/[^0-9]/', '', $ksefEarliestDocument['div_ten']);
+            if (isset($ksefDeploymentDates[$divisionTen])) {
+                $ksefDeploymentDates[$divisionTen] = min($ksefDeploymentDates[$divisionTen], $ksefEarliestDocument['mincdate']);
+            } else {
+                $ksefDeploymentDates[$divisionTen] = $ksefEarliestDocument['mincdate'];
+            }
+        }
+        foreach ($ksefDeploymentDates as &$ksefDeploymentDate) {
+            $ksefDeploymentDate = strtotime(date('Y/m/01', $ksefDeploymentDate));
+        }
+        unset($ksefDeploymentDate);
+    }
+
     $datefrom = intval($_GET['from']);
     $dateto = intval($_GET['to']);
+    $dateType = isset($_GET['datetype']) && $_GET['datetype'] == 'sdate' ? 'sdate' : 'cdate';
     $einvoice = isset($_GET['einvoice']) ? intval($_GET['einvoice']) : 0;
     $related_documents = isset($_GET['related-documents']);
+    $transfer_forms = !empty($_GET['transfer-forms']);
+    $ksefSubmit = isset($_GET['ksef-submit']) ? intval($_GET['ksef-submit']) : null;
+
+    if (empty($_GET['divisionid'])) {
+        $divisionIds = [];
+    } elseif (is_array($_GET['divisionid'])) {
+        $divisionIds = Utils::filterIntegers($_GET['divisionid']);
+    } elseif (intval($_GET['divisionid'])) {
+        $divisionIds = [intval($_GET['divisionid'])];
+    }
 
     $documents = $DB->GetAllByKey(
         'SELECT
             d.id, d.type,
+            d.divisionid,
             cn.name AS country, n.template,
             a.state AS rec_state, a.state_id AS rec_state_id,
             a.city as rec_city, a.city_id AS rec_city_id,
@@ -298,6 +345,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             a.house AS rec_house, a.flat AS rec_flat, a.country_id AS rec_country_id,
             c.pin AS customerpin, c.divisionid AS current_divisionid,
             c.street, c.building, c.apartment,
+            c.type AS ctype,
             (CASE WHEN d.post_address_id IS NULL THEN c.post_street ELSE a2.street END) AS post_street,
             (CASE WHEN d.post_address_id IS NULL THEN c.post_building ELSE a2.house END) AS post_building,
             (CASE WHEN d.post_address_id IS NULL THEN c.post_apartment ELSE a2.flat END) AS post_apartment,
@@ -314,19 +362,24 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                     ELSE cn.ccode
                 END)
                 ELSE NULL
-            END) AS lang
+            END) AS lang,
+            (CASE WHEN cc.type IS NULL THEN 0 ELSE 1 END) AS balance_on_documents
         FROM documents d
         JOIN customeraddressview c ON (c.id = d.customerid)
+        LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
+        LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
+        LEFT JOIN ksefconfig kc ON kc.divisionid = d.divisionid
+        LEFT JOIN customerconsents cc ON cc.customerid = c.id AND cc.type = ?
         LEFT JOIN countries cn ON (cn.id = d.countryid)
         LEFT JOIN countries cdv ON cdv.id = d.div_countryid
         LEFT JOIN numberplans n ON (d.numberplanid = n.id)
         LEFT JOIN vaddresses a ON d.recipient_address_id = a.id
         LEFT JOIN vaddresses a2 ON d.post_address_id = a2.id
         LEFT JOIN countries cp ON (d.post_address_id IS NOT NULL AND cp.id = a2.country_id) OR (d.post_address_id IS NULL AND cp.id = c.post_countryid)
-        WHERE d.cdate >= ? AND d.cdate <= ? AND (d.type = ? OR d.type = ?) AND d.cancelled = 0'
+        WHERE d.' . $dateType . ' >= ? AND d.' . $dateType . ' <= ? AND (d.type = ? OR d.type = ?) AND d.cancelled = 0'
         .($einvoice ? ' AND d.customerid IN (SELECT id FROM customeraddressview WHERE ' . ($einvoice == 1 ? 'einvoice = 1' : 'einvoice = 0 OR einvoice IS NULL') . ')' : '')
         .($ctype !=  -1 ? ' AND d.customerid IN (SELECT id FROM customers WHERE type = ' . intval($ctype) .')' : '')
-        .(!empty($_GET['divisionid']) ? ' AND d.divisionid = ' . intval($_GET['divisionid']) : '')
+        . (empty($divisionIds) ? '' : ' AND d.divisionid IN (' . implode(',', $divisionIds) . ')')
         .(!empty($_GET['customerid']) ? ' AND d.customerid = '.intval($_GET['customerid']) : '')
         .(!empty($_GET['numberplanid']) ? ' AND d.numberplanid' . (is_array($_GET['numberplanid'])
                 ? ' IN (' . implode(',', Utils::filterIntegers($_GET['numberplanid'])) . ')'
@@ -341,16 +394,120 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 ? ' IN (' . implode(',', Utils::filterIntegers($_GET['groupid'])) . ')'
                 : ' = ' . intval($_GET['groupid'])) . ')'
             : '')
+        . (
+            isset($ksefSubmit)
+                ? (
+                    empty($ksefSubmit)
+                        ? ' AND (
+                            d.cdate < kc.boundarydate
+                            OR kd.status IS NULL
+                                AND c.type = ' . CTYPES_PRIVATE . '
+                                AND COALESCE(kc.allconsumers, 0) = 0
+                                AND NOT EXISTS (
+                                    SELECT 1 FROM customerconsents cc
+                                    WHERE cc.customerid = c.id
+                                        AND cc.type = ' . CCONSENT_KSEF_INVOICE . '
+                                )
+                        )'
+                        : ' AND (
+                            d.cdate >= kc.boundarydate
+                            AND (
+                                kd.status = 200
+                                OR kd.status = 0
+                                OR c.type = ' . CTYPES_COMPANY . '
+                                OR kc.allconsumers = 1
+                                OR EXISTS (
+                                    SELECT 1 FROM customerconsents cc
+                                    WHERE cc.customerid = c.id
+                                       AND cc.type = ' . CCONSENT_KSEF_INVOICE . '
+                                )
+                            )
+                        )'
+                )
+                : ''
+        )
         .' AND NOT EXISTS (
             SELECT 1 FROM vcustomerassignments a
             JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
             WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)'
-        .' ORDER BY CEIL(cdate/86400), id',
+        .' ORDER BY CEIL(d.' . $dateType . ' / 86400), id',
         'id',
-        array($datefrom, $dateto, DOC_INVOICE, DOC_CNOTE)
+        [
+            [
+                0,
+                200,
+            ],
+            CCONSENT_BALANCE_ON_DOCUMENTS,
+            $datefrom,
+            $dateto,
+            DOC_INVOICE,
+            DOC_CNOTE,
+        ]
     );
-
     if (empty($documents)) {
+        $documents = [];
+    }
+
+    if ($jpk && $jpk_type == 'vat') {
+        $boundaryDate = $dateto;
+        //$boundaryDate = $now;
+    }
+
+    if ($jpk && $boundaryDate >= strtotime('2026/02/01') && !empty($_GET['purchase-invoices'])) {
+        $purchaseDocuments = $DB->GetAllByKey(
+            'SELECT
+                i.*
+            FROM ksefinvoices i
+            WHERE i.issue_date BETWEEN ? AND ?
+                AND i.posting = ?
+                ' . (empty($divisionIds) ? '' : ' AND i.division_id IN (' . implode(',', $divisionIds) . ')')
+            . ' ORDER BY i.issue_date, i.permanent_storage_date',
+            'id',
+            [
+                $datefrom,
+                $dateto,
+                1,
+            ]
+        );
+
+        if (empty($purchaseDocuments)) {
+            $purchaseDocuments = [];
+        } else {
+            $purchaseDocumentItems = $DB->GetAll(
+                'SELECT
+                    ii.*
+                FROM ksefinvoiceitems ii
+                JOIN ksefinvoices i ON i.id = ii.ksef_invoice_id
+                WHERE i.issue_date BETWEEN ? AND ?
+                    AND i.posting = ?
+                    ' . (empty($divisionIds) ? '' : ' AND i.division_id IN (' . implode(',', $divisionIds) . ')')
+                . ' ORDER BY i.issue_date, i.permanent_storage_date, ii.before_state DESC, ii.item_id',
+                [
+                    $datefrom,
+                    $dateto,
+                    1,
+                ]
+            );
+            foreach ($purchaseDocumentItems as $purchaseDocumentItem) {
+                $ksefInvoiceId = $purchaseDocumentItem['ksef_invoice_id'];
+                $purchaseDocument = $purchaseDocuments[$ksefInvoiceId];
+                $itemId = $purchaseDocumentItem['item_id'];
+                if (!isset($purchaseDocuments[$ksefInvoiceId]['items'])) {
+                    $purchaseDocuments[$ksefInvoiceId]['before-items'] = [];
+                    $purchaseDocuments[$ksefInvoiceId]['items'] = [];
+                }
+                if (empty($purchaseDocumentItem['before_state'])) {
+                    $purchaseDocuments[$ksefInvoiceId]['items'][$itemId] = $purchaseDocumentItem;
+                } else {
+                    $purchaseDocuments[$ksefInvoiceId]['before-items'][$itemId] = $purchaseDocumentItem;
+                }
+            }
+        }
+    } else {
+        $purchaseDocuments = [];
+    }
+
+    if (empty($documents) && empty($purchaseDocuments)) {
         if ($jpk) {
             echo trans('No documents to JPK export!');
         }
@@ -358,6 +515,56 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         die;
     }
     $ids = array_keys($documents);
+
+    if (empty($divisionIds)) {
+        $firstDocument = reset($documents);
+        $divisionId = $firstDocument['divisionid'];
+    } else {
+        $divisionId = reset($divisionIds);
+    }
+
+    $division = $DB->GetRow(
+        'SELECT
+            d.name,
+            shortname,
+            d.email,
+            d.firstname,
+            d.lastname,
+            d.birthdate,
+            d.naturalperson,
+            va.address,
+            va.city,
+            va.zip,
+            va.countryid,
+            ten,
+            regon,
+            account,
+            inv_header,
+            inv_footer,
+            inv_author,
+            inv_cplace,
+            va.location_city,
+            va.location_street,
+            tax_office_code,
+            lb.name AS borough,
+            ld.name AS district,
+            ls.name AS state
+        FROM vdivisions d
+        JOIN vaddresses va ON va.id = d.address_id
+        LEFT JOIN location_cities lc ON lc.id = va.location_city
+        LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
+        LEFT JOIN location_districts ld ON ld.id = lb.districtid
+        LEFT JOIN location_states ls ON ls.id = ld.stateid
+        WHERE d.id = ?',
+        array($divisionId)
+    );
+
+    $divisionTen = preg_replace('/[^0-9]/', '', $division['ten']);
+    if (isset($ksefDeploymentDates[$divisionTen])) {
+        $ksefDeploymentDate = $ksefDeploymentDates[$divisionTen];
+    } else {
+        $ksefDeploymentDate = strtotime('2026/04/01');
+    }
 
     $which = isset($_GET['which']) ? intval($_GET['which']) : 0;
     if ($which & DOC_ENTITY_DUPLICATE) {
@@ -375,12 +582,27 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             //$jpk_vat_version = $datefrom < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
             // if current date is earlier than 1 I 2018
             //$jpk_vat_version = time() < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
-            if ($dateto < mktime(0, 0, 0, 10, 1, 2020)) {
+
+            if ($boundaryDate < strtotime('2020/11/01')) {
+                // end date 2021/09/30
+                // effective end date 2021/10/31
                 $jpk_vat_version = 3;
-            } elseif ($dateto < mktime(0, 0, 0, 1, 1, 2022)) {
+            } elseif ($boundaryDate < strtotime('2022/02/01')) {
+                // start date 2020/10/01
+                // effective start date 2020/11/01
+                // end date 2021/12/31
+                // effective end date 2022/01/31
                 $jpk_vat_version = 4;
-            } else {
+            } elseif ($boundaryDate < strtotime('2026/02/01')) {
+                // start date 2022/01/01
+                // effective start date 2022/02/01
+                // end date 2026/01/31
+                // effective end date 2026/02/28
                 $jpk_vat_version = 5;
+            } else {
+                // start date 2026/02/01
+                // effective start date 2026/03/01
+                $jpk_vat_version = 6;
             }
         } else {
             // if date from for report is earlier than 2 XII 2019
@@ -407,24 +629,12 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                     $jpk_data .= "<JPK xmlns=\"http://crd.gov.pl/wzor/2021/12/27/11148/\""
                         . " xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2021/06/08/eD/DefinicjeTypy/\">\n";
                     break;
+                case 6:
+                    $jpk_data .= "<JPK xmlns=\"http://crd.gov.pl/wzor/2025/12/19/14090/\""
+                        . " xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2022/09/13/eD/DefinicjeTypy/\">\n";
+                    break;
             }
         }
-
-        $divisionid = intval($_GET['divisionid']);
-        $division = $DB->GetRow("SELECT d.name, shortname, d.email,
-                d.firstname, d.lastname, d.birthdate, d.naturalperson,
-                va.address, va.city,
-				va.zip, va.countryid, ten, regon,
-				account, inv_header, inv_footer, inv_author, inv_cplace, va.location_city,
-				va.location_street, tax_office_code,
-				lb.name AS borough, ld.name AS district, ls.name AS state
-                FROM vdivisions d
-				JOIN vaddresses va ON va.id = d.address_id
-				LEFT JOIN location_cities lc ON lc.id = va.location_city
-				LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
-				LEFT JOIN location_districts ld ON ld.id = lb.districtid
-				LEFT JOIN location_states ls ON ls.id = ld.stateid
-				WHERE d.id = ?", array($divisionid));
 
         if ($jpk_type == 'vat' && $jpk_vat_version == 4) {
             if (empty($division['email'])) {
@@ -445,20 +655,26 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t\t<DataWytworzeniaJPK>" . date('Y-m-d') . 'T' . date('H:i:s') . "</DataWytworzeniaJPK>\n";
                 $jpk_data .= "\t\t<DataOd>" . date('Y-m-d', $datefrom) . "</DataOd>\n";
                 $jpk_data .= "\t\t<DataDo>" . date('Y-m-d', $dateto) . "</DataDo>\n";
-                $jpk_data .= "\t\t<NazwaSystemu>LMS</NazwaSystemu>\n";
+                $jpk_data .= "\t\t<NazwaSystemu>" . LMS::SOFTWARE_NAME . " " . LMS::SOFTWARE_VERSION . "</NazwaSystemu>\n";
             } else {
                 if ($jpk_vat_version == 4) {
                     $jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_V7M (1)\" wersjaSchemy=\"1-2E\">JPK_VAT</KodFormularza>\n";
                     $jpk_data .= "\t\t<WariantFormularza>1</WariantFormularza>\n";
-                } else {
+                } elseif ($jpk_vat_version == 5) {
                     $jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_V7M (2)\" wersjaSchemy=\"1-0E\">JPK_VAT</KodFormularza>\n";
                     $jpk_data .= "\t\t<WariantFormularza>2</WariantFormularza>\n";
+                } else {
+                    $jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_V7M (3)\" wersjaSchemy=\"1-0E\">JPK_VAT</KodFormularza>\n";
+                    $jpk_data .= "\t\t<WariantFormularza>3</WariantFormularza>\n";
                 }
                 $jpk_data .= "\t\t<DataWytworzeniaJPK>" . date('Y-m-d') . 'T' . date('H:i:s') . "</DataWytworzeniaJPK>\n";
-                $jpk_data .= "\t\t<NazwaSystemu>LMS</NazwaSystemu>\n";
+                $jpk_data .= "\t\t<NazwaSystemu>" . LMS::SOFTWARE_NAME . " " . LMS::SOFTWARE_VERSION . "</NazwaSystemu>\n";
                 $jpk_data .= "\t\t<CelZlozenia poz=\"P_7\">1</CelZlozenia>\n";
-                $jpk_data .= "\t\t<KodUrzedu>" . (!empty($division['tax_office_code']) ? $division['tax_office_code']
-                        : ConfigHelper::getConfig('jpk.tax_office_code', '', true)) . "</KodUrzedu>\n";
+                $jpk_data .= "\t\t<KodUrzedu>"
+                    . (!empty($division['tax_office_code'])
+                        ? $division['tax_office_code']
+                        : ConfigHelper::getConfig('jpk.tax_office_code', '', true))
+                    . "</KodUrzedu>\n";
                 $jpk_data .= "\t\t<Rok>" . date('Y', $datefrom) . "</Rok>\n";
                 $jpk_data .= "\t\t<Miesiac>" . date('m', $datefrom) . "</Miesiac>\n";
             }
@@ -496,26 +712,26 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             }
             $jpk_data .= "\t\t</IdentyfikatorPodmiotu>\n";
             $jpk_data .= "\t\t<AdresPodmiotu>\n";
-            $jpk_data .= "\t\t\t<${tns}KodKraju>PL</${tns}KodKraju>\n";
-            $jpk_data .= "\t\t\t<${tns}Wojewodztwo>" . (!empty($division['state']) ? $division['state']
-                    : ConfigHelper::getConfig('jpk.division_state', '', true)) . "</${tns}Wojewodztwo>\n";
-            $jpk_data .= "\t\t\t<${tns}Powiat>" . (!empty($division['district']) ? $division['district']
-                    : ConfigHelper::getConfig('jpk.division_district', '', true)) . "</${tns}Powiat>\n";
-            $jpk_data .= "\t\t\t<${tns}Gmina>" . (!empty($division['borough']) ? $division['borough']
-                    : ConfigHelper::getConfig('jpk.division_borough', '', true)) . "</${tns}Gmina>\n";
+            $jpk_data .= "\t\t\t<{$tns}KodKraju>PL</{$tns}KodKraju>\n";
+            $jpk_data .= "\t\t\t<{$tns}Wojewodztwo>" . (!empty($division['state']) ? $division['state']
+                    : ConfigHelper::getConfig('jpk.division_state', '', true)) . "</{$tns}Wojewodztwo>\n";
+            $jpk_data .= "\t\t\t<{$tns}Powiat>" . (!empty($division['district']) ? $division['district']
+                    : ConfigHelper::getConfig('jpk.division_district', '', true)) . "</{$tns}Powiat>\n";
+            $jpk_data .= "\t\t\t<{$tns}Gmina>" . (!empty($division['borough']) ? $division['borough']
+                    : ConfigHelper::getConfig('jpk.division_borough', '', true)) . "</{$tns}Gmina>\n";
             $address = parse_address($division['address']);
-            $jpk_data .= "\t\t\t<${tns}Ulica>" . $address['street'] . "</${tns}Ulica>\n";
-            $jpk_data .= "\t\t\t<${tns}NrDomu>" . $address['house'] . "</${tns}NrDomu>\n";
+            $jpk_data .= "\t\t\t<{$tns}Ulica>" . $address['street'] . "</{$tns}Ulica>\n";
+            $jpk_data .= "\t\t\t<{$tns}NrDomu>" . $address['house'] . "</{$tns}NrDomu>\n";
             if (isset($address['flat'])) {
-                $jpk_data .= "\t\t\t<${tns}NrLokalu>" . $address['flat'] . "</${tns}NrLokalu>\n";
+                $jpk_data .= "\t\t\t<{$tns}NrLokalu>" . $address['flat'] . "</{$tns}NrLokalu>\n";
             }
-            $jpk_data .= "\t\t\t<${tns}Miejscowosc>" . $division['city'] . "</${tns}Miejscowosc>\n";
-            $jpk_data .= "\t\t\t<${tns}KodPocztowy>" . $division['zip'] . "</${tns}KodPocztowy>\n";
+            $jpk_data .= "\t\t\t<{$tns}Miejscowosc>" . $division['city'] . "</{$tns}Miejscowosc>\n";
+            $jpk_data .= "\t\t\t<{$tns}KodPocztowy>" . $division['zip'] . "</{$tns}KodPocztowy>\n";
             if ($jpk_type == 'vat') {
-                $jpk_data .= "\t\t\t<${tns}Poczta>" . ConfigHelper::getConfig(
+                $jpk_data .= "\t\t\t<{$tns}Poczta>" . ConfigHelper::getConfig(
                     'jpk.division_postal_city',
                     $division['city']
-                ) . "</${tns}Poczta>\n";
+                ) . "</{$tns}Poczta>\n";
             }
             $jpk_data .= "\t\t</AdresPodmiotu>\n";
 
@@ -629,7 +845,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t\t<NazwaKontrahenta>" . escapeJpkText($invoice['name']) . "</NazwaKontrahenta>\n";
                 if ($jpk_vat_version == 3) {
                     $jpk_data .= "\t\t<AdresKontrahenta>" . ($invoice['postoffice'] && $invoice['postoffice'] != $invoice['city'] && $invoice['street'] ? $invoice['city'] . ', ' : '')
-                        . $invoice['address'] . ', ' . (empty($invoice['zip']) ? '' : $invoice['zip'] . ' ') . ($invoice['postoffice'] ? $invoice['postoffice'] : $invoice['city']) . "</AdresKontrahenta>\n";
+                        . $invoice['address'] . ', ' . (empty($invoice['zip']) ? '' : $invoice['zip'] . ' ') . ($invoice['postoffice'] ?: $invoice['city']) . "</AdresKontrahenta>\n";
                 }
                 $jpk_data .= "\t\t<DowodSprzedazy>" . $invoice['fullnumber'] . "</DowodSprzedazy>\n";
                 $jpk_data .= "\t\t<DataWystawienia>" . date('Y-m-d', $invoice['cdate']) . "</DataWystawienia>\n";
@@ -637,6 +853,20 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t\t<DataSprzedazy>" . date('Y-m-d', $invoice['sdate']) . "</DataSprzedazy>\n";
 
                 if ($jpk_vat_version >= 4) {
+                    if ($jpk_vat_version >= 6) {
+                        if ($now < $ksefDeploymentDate) {
+                            $jpk_data .= "\t\t<BFK>1</BFK>\n";
+                        } elseif (!empty($invoice['ksefnumber'])) {
+                            $jpk_data .= "\t\t<NrKSeF>" . $invoice['ksefnumber'] . "</NrKSeF>\n";
+                        } elseif (!empty($invoice['ksefhash']) && empty($invoice['ksefstatus'])
+                            || $invoice['ctype'] == CTYPES_COMPANY
+                            || !empty($invoice['ksef_invoice_consent'])) {
+                            $jpk_data .= "\t\t<OFF>1</OFF>\n";
+                        } else {
+                            $jpk_data .= "\t\t<BFK>1</BFK>\n";
+                        }
+                    }
+
                     if (!empty($invoice['flags'][DOC_FLAG_RECEIPT])) {
                         $jpk_data .= "\t\t<TypDokumentu>FP</TypDokumentu>\n";
                     }
@@ -669,7 +899,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                     }
 
                     if ($jpk_vat_version == 4) {
-                        $splitpayment = isset($invoice['splitpayment']) && !empty($invoice['splitpayment']);
+                        $splitpayment = !empty($invoice['splitpayment']);
                         if ($splitpayment) {
                             $jpk_data .= "\t\t<MPP>1</MPP>\n";
                         }
@@ -678,12 +908,19 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 
                 $ue = $foreign = false;
                 if (!empty($invoice['ten'])) {
-                    $ten = str_replace('-', '', $invoice['ten']);
-                    if (preg_match('/^[A-Z]{2}[A-Z0-9]+$/', $ten)) {
-                        $ue = true;
-                    } elseif (!empty($invoice['countryid']) && !empty($invoice['division_countryid']) && $invoice['countryid'] != $invoice['division_countryid']) {
+                    $ten = preg_replace('/[\s\-]/', '', $invoice['ten']);
+                    if (preg_match('/^(?<country>[A-Z]{2})(?<ten>[A-Z0-9]+)$/', $ten, $m)) {
+                        if (Utils::isEuCountryCode($m['country'])) {
+                            $ue = true;
+                        } else {
+                            $foreign = true;
+                        }
+                    }
+/*
+                    elseif (!empty($invoice['countryid']) && !empty($invoice['division_countryid']) && $invoice['countryid'] != $invoice['division_countryid']) {
                         $foreign = true;
                     }
+*/
                 }
 
                 if (isset($invoice['invoice'])) {
@@ -730,6 +967,42 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                                 $totals[10] = 0;
                             }
                             $totals[10] += $base;
+                        }
+                    }
+
+                    if ($ue || $foreign) {
+                        if (isset($invoice['taxest']['-2'])) {
+                            $base = round(($invoice['taxest']['-2']['base'] - $invoice['invoice']['taxest']['-2']['base']) * $currencyvalue, 2);
+
+                            $jpk_data .= "\t\t<K_11>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</K_11>\n";
+                            if (!isset($totals[11])) {
+                                $totals[11] = 0;
+                            }
+                            $totals[11] += $base;
+
+                            if ($ue && $invoice['ctype'] == CTYPES_COMPANY) {
+                                $jpk_data .= "\t\t<K_12>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</K_12>\n";
+                                if (!isset($totals[11])) {
+                                    $totals[12] = 0;
+                                }
+                                $totals[12] += $base;
+                            }
+                        } elseif ($invoice['invoice']['taxest']['-2']) {
+                            $base = round(-$invoice['invoice']['taxest']['-2']['base'] * $currencyvalue, 2);
+
+                            $jpk_data .= "\t\t<K_11>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</K_11>\n";
+                            if (!isset($totals[11])) {
+                                $totals[11] = 0;
+                            }
+                            $totals[11] += $base;
+
+                            if ($ue && $invoice['ctype'] == CTYPES_COMPANY) {
+                                $jpk_data .= "\t\t<K_12>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</K_12>\n";
+                                if (!isset($totals[11])) {
+                                    $totals[12] = 0;
+                                }
+                                $totals[12] += $base;
+                            }
                         }
                     }
 
@@ -899,20 +1172,56 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                         $totaltax += $tax;
                     }
 
-                    if (isset($invoice['taxest']['-2'])) {
-                        $base = round(($invoice['taxest']['-2']['base'] - $invoice['invoice']['taxest']['-2']['base']) * $currencyvalue, 2);
-                        $jpk_data .= "\t\t<K_31>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</K_31>\n";
-                        if (!isset($totals[31])) {
-                            $totals[31] = 0;
+                    if ($foreign || $ue) {
+                        if (isset($invoice['taxest']['0.00'])) {
+                            $base = round(($invoice['taxest']['0.00']['base'] - $invoice['invoice']['taxest']['0.00']['base']) * $currencyvalue, 2);
+                            if ($ue) {
+                                $jpk_data .= "\t\t<K_21>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</K_21>\n";
+                                if (!isset($totals[21])) {
+                                    $totals[21] = 0;
+                                }
+                                $totals[21] += $base;
+                            } else {
+                                $jpk_data .= "\t\t<K_22>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</K_22>\n";
+                                if (!isset($totals[22])) {
+                                    $totals[22] = 0;
+                                }
+                                $totals[22] += $base;
+                            }
+                        } elseif (isset($invoice['invoice']['taxest']['0.00'])) {
+                            $base = round(-$invoice['invoice']['taxest']['0.00']['base'] * $currencyvalue, 2);
+                            if ($ue) {
+                                $jpk_data .= "\t\t<K_21>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</K_21>\n";
+                                if (!isset($totals[21])) {
+                                    $totals[21] = 0;
+                                }
+                                $totals[21] += $base;
+                            } else {
+                                $jpk_data .= "\t\t<K_22>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</K_22>\n";
+                                if (!isset($totals[22])) {
+                                    $totals[22] = 0;
+                                }
+                                $totals[22] += $base;
+                            }
                         }
-                        $totals[31] += $base;
-                    } elseif (isset($invoice['invoice']['taxest']['-2'])) {
-                        $base = round(-$invoice['invoice']['taxest']['-2']['base'] * $currencyvalue, 2);
-                        $jpk_data .= "\t\t<K_31>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</K_31>\n";
-                        if (!isset($totals[31])) {
-                            $totals[31] = 0;
+                    }
+
+                    if (!$ue && !$foreign) {
+                        if (isset($invoice['taxest']['-2'])) {
+                            $base = round(($invoice['taxest']['-2']['base'] - $invoice['invoice']['taxest']['-2']['base']) * $currencyvalue, 2);
+                            $jpk_data .= "\t\t<K_31>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</K_31>\n";
+                            if (!isset($totals[31])) {
+                                $totals[31] = 0;
+                            }
+                            $totals[31] += $base;
+                        } elseif (isset($invoice['invoice']['taxest']['-2'])) {
+                            $base = round(-$invoice['invoice']['taxest']['-2']['base'] * $currencyvalue, 2);
+                            $jpk_data .= "\t\t<K_31>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</K_31>\n";
+                            if (!isset($totals[31])) {
+                                $totals[31] = 0;
+                            }
+                            $totals[31] += $base;
                         }
-                        $totals[31] += $base;
                     }
                 } else {
                     if (isset($invoice['taxest']['-1'])) {
@@ -939,7 +1248,25 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                         }
                     }
 
-                    if (!$foreign && isset($invoice['taxest']['0.00'])) {
+                    if (isset($invoice['taxest']['-2']) && ($ue || $foreign)) {
+                        $base = round($invoice['taxest']['-2']['base'] * $currencyvalue, 2);
+
+                        $jpk_data .= "\t\t<K_11>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</K_11>\n";
+                        if (!isset($totals[11])) {
+                            $totals[11] = 0;
+                        }
+                        $totals[11] += $base;
+
+                        if ($ue && $invoice['ctype'] == CTYPES_COMPANY) {
+                            $jpk_data .= "\t\t<K_12>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</K_12>\n";
+                            if (!isset($totals[11])) {
+                                $totals[12] = 0;
+                            }
+                            $totals[12] += $base;
+                        }
+                    }
+
+                    if (!$foreign && !$ue && isset($invoice['taxest']['0.00'])) {
                         $base = round($invoice['taxest']['0.00']['base'] * $currencyvalue, 2);
                         $jpk_data .= "\t\t<K_13>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</K_13>\n";
                         if (!isset($totals[13])) {
@@ -1023,7 +1350,24 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                         $totals[20] += $tax;
                     }
 
-                    if (isset($invoice['taxest']['-2'])) {
+                    if (($foreign || $ue) && isset($invoice['taxest']['0.00'])) {
+                        $base = round($invoice['taxest']['0.00']['base'] * $currencyvalue, 2);
+                        if ($ue) {
+                            $jpk_data .= "\t\t<K_21>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</K_21>\n";
+                            if (!isset($totals[21])) {
+                                $totals[21] = 0;
+                            }
+                            $totals[21] += $base;
+                        } else {
+                            $jpk_data .= "\t\t<K_22>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</K_22>\n";
+                            if (!isset($totals[22])) {
+                                $totals[22] = 0;
+                            }
+                            $totals[22] += $base;
+                        }
+                    }
+
+                    if (isset($invoice['taxest']['-2']) && !$ue && !$foreign) {
                         $base = round($invoice['taxest']['-2']['base'] * $currencyvalue, 2);
                         $jpk_data .= "\t\t<K_31>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</K_31>\n";
                         if (!isset($totals[31])) {
@@ -1035,20 +1379,11 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                     $totaltax += round($invoice['totaltax'] * $currencyvalue, 2);
                 }
 
-                /*
-                // sale of goods to eu or other countries
-                if (isset($invoice['taxest']['-1'])) {
-                    if ($ue)
-                        $jpk_data .= "\t\t<K_21>" . str_replace(',', '.', sprintf('%.2f', $invoice['taxest']['-1']['base'])) . "</K_21>\n";
-                    elseif ($foreign)
-                        $jpk_data .= "\t\t<K_22>" . str_replace(',', '.', sprintf('%.2f', $invoice['taxest']['-1']['base'])) . "</K_22>\n";
-                */
-
                 $jpk_data .= "\t</SprzedazWiersz>\n";
             } else {
                 // JPK body positions (invoices)
                 $jpk_data .= "\t<Faktura>\n";
-                $jpk_data .= "\t\t<KodWaluty>" . (isset($invoice['currency']) ? $invoice['currency'] : 'PLN') . "</KodWaluty>\n";
+                $jpk_data .= "\t\t<KodWaluty>" . ($invoice['currency'] ?? 'PLN') . "</KodWaluty>\n";
                 $jpk_data .= "\t\t<P_1>" . date('Y-m-d', $invoice['cdate']) . "</P_1>\n";
                 $invoices[$invoiceid] = $invoice;
                 $jpk_data .= "\t\t<P_2A>" . $invoice['fullnumber'] . "</P_2A>\n";
@@ -1273,7 +1608,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t\t<P_16>false</P_16>\n";
                 $jpk_data .= "\t\t<P_17>false</P_17>\n";
                 $jpk_data .= "\t\t<P_18>" . (isset($invoice['taxest']['-2']['base']) ? 'true' : 'false') . "</P_18>\n";
-                $splitpayment = isset($invoice['splitpayment']) && !empty($invoice['splitpayment']);
+                $splitpayment = !empty($invoice['splitpayment']);
                 $jpk_data .= "\t\t<P_18A>" . ($splitpayment ? 'true' : 'false') . "</P_18A>\n";
                 $jpk_data .= "\t\t<P_19>false</P_19>\n";
                 $jpk_data .= "\t\t<P_20>false</P_20>\n";
@@ -1297,6 +1632,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t</Faktura>\n";
             }
         } else {
+            $invoice['transfer-forms'] = $transfer_forms;
             foreach (array_keys($DOCENTITIES) as $type) {
                 if ($which & $type) {
                     $i++;
@@ -1359,9 +1695,12 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 if ($jpk_vat_version == 4) {
                     $declaration .= "\t\t\t<KodFormularzaDekl kodSystemowy=\"VAT-7 (21)\" kodPodatku=\"VAT\" rodzajZobowiazania=\"Z\" wersjaSchemy=\"1-2E\">VAT-7</KodFormularzaDekl>\n";
                     $declaration .= "\t\t\t<WariantFormularzaDekl>21</WariantFormularzaDekl>\n";
-                } else {
+                } elseif ($jpk_vat_version == 5) {
                     $declaration .= "\t\t\t<KodFormularzaDekl kodSystemowy=\"VAT-7 (22)\" kodPodatku=\"VAT\" rodzajZobowiazania=\"Z\" wersjaSchemy=\"1-0E\">VAT-7</KodFormularzaDekl>\n";
                     $declaration .= "\t\t\t<WariantFormularzaDekl>22</WariantFormularzaDekl>\n";
+                } else {
+                    $declaration .= "\t\t\t<KodFormularzaDekl kodSystemowy=\"VAT-7 (23)\" kodPodatku=\"VAT\" rodzajZobowiazania=\"Z\" wersjaSchemy=\"1-0E\">VAT-7</KodFormularzaDekl>\n";
+                    $declaration .= "\t\t\t<WariantFormularzaDekl>23</WariantFormularzaDekl>\n";
                 }
                 $declaration .= "\t\t</Naglowek>\n";
                 $declaration .= "\t\t<PozycjeSzczegolowe>\n";
@@ -1385,9 +1724,44 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             $jpk_data .= "\t\t<PodatekNalezny>" . str_replace(',', '.', sprintf('%.2f', $totaltax)) . "</PodatekNalezny>\n";
             $jpk_data .= "\t</SprzedazCtrl>\n";
             if ($jpk_vat_version >= 4) {
+                $accountedVat = 0.0;
+
+                if ($jpk_vat_version == 6 && !empty($purchaseDocuments)) {
+                    $purchaseDocumentIndex = 1;
+                    foreach ($purchaseDocuments as $purchaseDocument) {
+                        $jpk_data .= "\t<ZakupWiersz>\n";
+
+                        $jpk_data .= "\t\t<LpZakupu>" . $purchaseDocumentIndex . "</LpZakupu>\n";
+                        $jpk_data .= "\t\t<NrDostawcy>" . $purchaseDocument['seller_ten'] . "</NrDostawcy>\n";
+                        $jpk_data .= "\t\t<NazwaDostawcy>" . escapeJpkText($purchaseDocument['seller_name']) . "</NazwaDostawcy>\n";
+                        $jpk_data .= "\t\t<DowodZakupu>" . $purchaseDocument['invoice_number'] . "</DowodZakupu>\n";
+                        if (empty($purchaseDocument['from_date'])) {
+                            $jpk_data .= "\t\t<DataZakupu>" . date('Y-m-d', $purchaseDocument['issue_date']) . "</DataZakupu>\n";
+                        } else {
+                            $jpk_data .= "\t\t<DataZakupu>" . date('Y-m-d', $purchaseDocument['from_date']) . "</DataZakupu>\n";
+                        }
+                        $jpk_data .= "\t\t<NrKSeF>" . $purchaseDocument['ksef_number'] . "</NrKSeF>\n";
+
+                        $jpk_data .= "\t\t<K_42>" . str_replace(',', '.', sprintf('%.2f', $purchaseDocument['net_amount'])) . "</K_42>\n";
+                        $jpk_data .= "\t\t<K_43>" . str_replace(',', '.', sprintf('%.2f', $purchaseDocument['vat_amount'])) . "</K_43>\n";
+
+                        $jpk_data .= "\t</ZakupWiersz>\n";
+
+                        $purchaseDocumentIndex++;
+                        $accountedVat += $purchaseDocument['vat_amount'];
+                    }
+                }
+
                 $jpk_data .= "\t<ZakupCtrl>\n";
-                $jpk_data .= "\t\t<LiczbaWierszyZakupow>0</LiczbaWierszyZakupow>\n";
-                $jpk_data .= "\t\t<PodatekNaliczony>0</PodatekNaliczony>\n";
+
+                if ($jpk_vat_version < 6 || empty($purchaseDocuments)) {
+                    $jpk_data .= "\t\t<LiczbaWierszyZakupow>0</LiczbaWierszyZakupow>\n";
+                    $jpk_data .= "\t\t<PodatekNaliczony>0</PodatekNaliczony>\n";
+                } else {
+                    $jpk_data .= "\t\t<LiczbaWierszyZakupow>" . count($purchaseDocuments) . "</LiczbaWierszyZakupow>\n";
+                    $jpk_data .= "\t\t<PodatekNaliczony>" . str_replace(',', '.', sprintf('%.2f', $accountedVat)) . "</PodatekNaliczony>\n";
+                }
+
                 $jpk_data .= "\t</ZakupCtrl>\n";
                 $jpk_data .= "\t</Ewidencja>\n";
 
@@ -1534,11 +1908,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
     $SESSION->redirect('?m=invoicelist');
 }
 
-if (!is_null($attachment_name) && isset($docnumber)) {
-    $attachment_name = str_replace('%number', $docnumber, $attachment_name);
-    $attachment_name = preg_replace('/[^[:alnum:]_\.]/i', '_', $attachment_name);
-    $attachment_name .= '.' . ($invoice_type == 'pdf' ? 'pdf' : 'html');
-} elseif ($jpk) {
+if ($jpk) {
     if ($jpk_type == 'fa') {
         $attachment_name = 'JPK_FA_' . date('Y-m-d', $datefrom) . '_' . date('Y-m-d', $dateto)
             . '_' . date('Y-m-d-H-i-s') . '.xml';
@@ -1546,6 +1916,10 @@ if (!is_null($attachment_name) && isset($docnumber)) {
         $attachment_name = 'JPK_VAT_' . date('Y-m-d', $datefrom) . '_' . date('Y-m-d', $dateto)
             . '_' . date('Y-m-d-H-i-s') . '.' . ($jpk_format == 'xml' ? 'xml' : 'csv');
     }
+} elseif (!is_null($attachment_name) && isset($docnumber)) {
+    $attachment_name = str_replace('%number', $docnumber, $attachment_name);
+    $attachment_name = preg_replace('/[^[:alnum:]_\.]/i', '_', $attachment_name);
+    $attachment_name .= '.' . ($invoice_type == 'pdf' ? 'pdf' : 'html');
 } else {
     $attachment_name = 'invoices.' . ($invoice_type == 'pdf' ? 'pdf' : 'html');
 }
@@ -1585,6 +1959,6 @@ if ($jpk) {
     }
 }
 
-if (!$dontpublish && isset($ids) && !empty($ids)) {
+if (!$dontpublish && !empty($ids)) {
     $LMS->PublishDocuments($ids);
 }

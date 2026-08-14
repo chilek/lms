@@ -93,7 +93,7 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
-> 
+>
          oraz wszystkich skryptów wykonywalnych z wyjątkiem <SPAN
 CLASS="emphasis"
 ><I
@@ -121,7 +121,7 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Pamiętaj o usunięciu średników na początku linii z ustawianym 
+>Pamiętaj o usunięciu średników na początku linii z ustawianym
          parametrem konfiguracyjnym.</P
 ></TD
 ></TR
@@ -154,8 +154,8 @@ CLASS="PROMPT"
 ><P
 >host</P
 ><P
->Host gdzie zainstalowana jest baza danych. Najczęściej, localhost, ale można tutaj 
-        wstawić cokolwiek (ip, domena, ścieżka do gniazda w formacie '/path/to/socket'). 
+>Host gdzie zainstalowana jest baza danych. Najczęściej, localhost, ale można tutaj
+        wstawić cokolwiek (ip, domena, ścieżka do gniazda w formacie '/path/to/socket').
         Domyślnie: localhost</P
 ><P
 >Przykład:     <SAMP
@@ -167,9 +167,9 @@ CLASS="PROMPT"
 ><P
 >user</P
 ><P
->Użytkownik do bazy danych. W wielu wypadkach (jeżeli postępowałeś zgodnie ze 
-        wskazówkami w dokumentacji) będzie to 'lms'. Jeżeli chcesz używać konta uprzywilejowanego, 
-        prawdopodobnie wpiszesz 'root' (MySQL na większości *nixów), 'mysql' (na PLD) bądź 
+>Użytkownik do bazy danych. W wielu wypadkach (jeżeli postępowałeś zgodnie ze
+        wskazówkami w dokumentacji) będzie to 'lms'. Jeżeli chcesz używać konta uprzywilejowanego,
+        prawdopodobnie wpiszesz 'root' (MySQL na większości *nixów), 'mysql' (na PLD) bądź
         'postgres' (PostgreSQL). Domyślnie: mysql</P
 ><P
 >Przykład:     <SAMP
@@ -212,14 +212,14 @@ NAME="INSTALL-CONFIG-DIR"
 >2.6.2. Sekcja [directories] - ustawienia katalogów</A
 ></H2
 ><P
->        
+>
      <UL
 ><LI
 ><P
 >sys_dir</P
 ><P
->Katalog systemowy. Jest to miejsce gdzie jest cała zawartość UI LMS'a, czyli index.php, grafiki, 
-        szablony i reszta. Domyślnie, index.php stara się sam odnaleźć w filesystemie używając getcwd(), ale 
+>Katalog systemowy. Jest to miejsce gdzie jest cała zawartość UI LMS'a, czyli index.php, grafiki,
+        szablony i reszta. Domyślnie, index.php stara się sam odnaleźć w filesystemie używając getcwd(), ale
         lepiej by było gdyby mu powiedzieć gdzie jest:</P
 ><P
 >Przykład:     <SAMP
@@ -231,7 +231,7 @@ CLASS="PROMPT"
 ><P
 >modules_dir</P
 ><P
->Katalog z "modułami" LMS'a. Czyli zawartość katalogu modules. Domyślnie jest to podkatalog 
+>Katalog z "modułami" LMS'a. Czyli zawartość katalogu modules. Domyślnie jest to podkatalog
         modules w sys_dir.</P
 ><P
 >Przykład:     <SAMP
@@ -254,7 +254,7 @@ CLASS="PROMPT"
 ><P
 >backup_dir</P
 ><P
->Katalog z kopiami zapasowymi bazy danych - miejsce gdzie LMS zapisuje zrzuty z bazy. 
+>Katalog z kopiami zapasowymi bazy danych - miejsce gdzie LMS zapisuje zrzuty z bazy.
         Domyślnie jest to podkatalog 'backups'.</P
 ><P
 >Przykład:     <SAMP
@@ -281,7 +281,7 @@ ALT="Ostrze&#380;enie"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Jeśli katalog z kopiami zapasowymi będzie osiągalny z poziomu WWW, to każdy 
+>Jeśli katalog z kopiami zapasowymi będzie osiągalny z poziomu WWW, to każdy
         bez autoryzacji będzie miał do nich dostęp.</P
 ></TD
 ></TR
@@ -320,7 +320,7 @@ ALT="Ostrze&#380;enie"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Jeśli ten katalog będzie osiągalny z poziomu WWW, to każdy 
+>Jeśli ten katalog będzie osiągalny z poziomu WWW, to każdy
         bez autoryzacji będzie miał do nich dostęp.</P
 ></TD
 ></TR
@@ -332,7 +332,7 @@ VALIGN="TOP"
 ><P
 >smarty_compile_dir</P
 ><P
->Katalog kompilacji Smarty-ego. Miejsce gdzie Smarty kompiluje szablony. Domyślnie to 
+>Katalog kompilacji Smarty-ego. Miejsce gdzie Smarty kompiluje szablony. Domyślnie to
         <TT
 CLASS="FILENAME"
 >templates_c</TT
@@ -369,6 +369,19 @@ NAME="INSTALL-CONFIG-FINANCES"
 ><P
 >Sekcja ta zawiera opcje dotyczące naliczania opłat, a także
      dane do druków przelewu, których opis znajdziesz w rozdziale o fakturach.
+       </P
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INSTALL-CONFIG-PAYMENTS"
+>2.6.4. Sekcja [payments] - konfiguracja płatności</A
+></H2
+><P
+>
          <UL
 ><LI
 ><P

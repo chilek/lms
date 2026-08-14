@@ -79,7 +79,9 @@ class xajaxResponse
     
     // sorry but this config is static atm
     private $sContentType = 'application/json'; //'text/xml';
-    
+
+    private $sResponseType;
+
     /*
         Constructor: __construct
 
@@ -1479,7 +1481,7 @@ class xajaxResponse
             $this->_printResponse_JSON();
         } else {
             //todo: trigger Error
-        };
+        }
         return ob_get_clean();
     }
     
@@ -1627,8 +1629,8 @@ class xajaxResponse
     {
         if ('text/xml' == $this->getContentType()) {
             $mData = $this->_encodeArray($mData);
-        };
-        
+        }
+
         /* merge commands if possible */
         if (in_array($aAttributes['cmd'], array('js','ap'))) {
             if ($aLastCommand = array_pop($this->aCommands)) {
@@ -1872,7 +1874,7 @@ class xajaxResponse
     */
     private function _printEscapedString_XML($sData)
     {
-        if (is_null($sData) || false == isset($sData)) {
+        if (false == isset($sData)) {
             echo '*';
             return;
         }
@@ -1882,8 +1884,7 @@ class xajaxResponse
             if (false === function_exists('mb_convert_encoding')) {
                 $objLanguageManager = xajaxLanguageManager::getInstance();
                 trigger_error(
-                    $objLanguageManager->getText('XJXRSP:MBEERR:01'),
-                    E_USER_NOTICE
+                    $objLanguageManager->getText('XJXRSP:MBEERR:01')
                 );
             }
             //EndSkipDebug

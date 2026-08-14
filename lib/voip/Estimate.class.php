@@ -46,7 +46,7 @@ class Estimate
                 continue;
             }
 
-            $units = (isset($customer['rules'][$id]['units'])) ? $customer['rules'][$id]['units'] : $rule['units'];
+            $units = $customer['rules'][$id]['units'] ?? $rule['units'];
             $price = ($units * $rule['price'] * $rule['unit_size']) / 60;
 
             if ($price >= $customer['balance']) {
@@ -93,7 +93,7 @@ class Estimate
                 continue;
             }
 
-            $units     = (isset($customer['rules'][$id]['units'])) ? $customer['rules'][$id]['units'] : $rule['units'];
+            $units     = $customer['rules'][$id]['units'] ?? $rule['units'];
             $rule_time = $units * $rule['unit_size'];
             $t         = ($rule_time >= $time) ? $time : $rule_time;
 

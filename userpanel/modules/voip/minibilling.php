@@ -72,8 +72,8 @@ $cdr = $DB->GetAll(
     'SELECT cdr.*
     FROM voip_cdr cdr
     WHERE 1 = 1'
-    . (isset($params['frangefrom']) && !empty($params['frangefrom']) ? ' AND call_start_time >= ' . strtotime($params['frangefrom']) : '')
-    . (isset($params['frangeto']) && !empty($params['frangeto']) ? ' AND call_start_time < ' . (strtotime($params['frangeto']) + 86400) : '')
+    . (!empty($params['frangefrom']) ? ' AND call_start_time >= ' . strtotime($params['frangefrom']) : '')
+    . (!empty($params['frangeto']) ? ' AND call_start_time < ' . (strtotime($params['frangeto']) + 86400) : '')
     . (isset($params['fstatus']) ? ' AND status = ' . $params['fstatus'] : '')
     . (isset($params['fdirection']) ? ' AND direction = ' . $params['fdirection'] : '')
     . (isset($params['id']) ? ' AND callervoipaccountid IN (' . implode(',', $params['id']) . ')' : '')
@@ -86,27 +86,26 @@ $minibilling = array();
 if (!empty($cdr)) {
     foreach ($cdr as $rec) {
         $phone = $rec['caller'];
+        $type = $rec['type'];
         $group = $rec['callee_prefix_group'];
-        if (!isset($minibilling[$phone])) {
-            $minibilling[$phone] = array();
+        if (!isset($minibilling[$phone][$type])) {
+            $minibilling[$phone][$type] = array();
         }
         if (!empty($minibilling_groups)) {
-            if (isset($minibilling_groups[$group])) {
-                $group = $minibilling_groups[$group];
-            } else {
-                $group = '(nieznane: ' . $group . ')';
-            }
+            $group = $minibilling_groups[$group] ?? '(nieznane: ' . $group . ')';
         }
-        if (!isset($minibilling[$phone][$group])) {
-            $minibilling[$phone][$group] = array(
+        if (!isset($minibilling[$phone][$type][$group])) {
+            $minibilling[$phone][$type][$group] = array(
                 'count' => 0,
-                'time' => 0,
+                'total' => 0,
+                'billed' => 0,
                 'brutto' => 0,
             );
         }
-        $minibilling[$phone][$group]['count']++;
-        $minibilling[$phone][$group]['time'] += $rec['billedtime'];
-        $minibilling[$phone][$group]['brutto'] += $rec['price'];
+        $minibilling[$phone][$type][$group]['count']++;
+        $minibilling[$phone][$type][$group]['total'] += $rec['totaltime'];
+        $minibilling[$phone][$type][$group]['billed'] += $rec['billedtime'];
+        $minibilling[$phone][$type][$group]['brutto'] += $rec['price'];
     }
 }
 

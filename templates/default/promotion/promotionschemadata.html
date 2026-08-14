@@ -48,12 +48,31 @@
 		padding-inline-start: 1.5em;
 	}
 
+	#schematariffs tfoot {
+		border-top-style: none;
+	}
+
+	#schematariffs tfoot > tr {
+		border-top: 1px dashed black;
+	}
+
+	#schematariffs tfoot > tr > td {
+		border-top-style: none;
+	}
+
 </style>
 
 {$speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000)}
 {$speed_unit_aggregation_threshold = ConfigHelper::getConfig('phpui.speed_unit_aggregation_threshold', 5)}
 
-<TABLE class="lmsbox">
+<form method="post" name="tariffs" id="tariffs" action="?m=promotionschemaedit&id={$schema.id}&action=tariff">
+</form>
+
+<form method="post" name="action-form" id="action-form" action="?m=promotionschemaedit&id={$schema.id}&action=change-assignments">
+	<input type="hidden" name="action" id="change-assignment-action">
+</form>
+
+<TABLE class="lmsbox lms-ui-multi-check" id="promotion-schema-data">
 	<THEAD>
 	{if empty($schema.tariffs)}
 		{$tariffcnt = 0}
@@ -71,7 +90,6 @@
 	{$periodcnt = count($schema.periods)}
 	<TR id="promotionschemadata" style="display: none;">
 		<TD style="width: 100%;">
-			<FORM method="post" name="tariffs" action="?m=promotionschemaedit&id={$schema.id}&action=tariff">
 			<TABLE class="lmsbox-inner lms-ui-background-cycle" id="schematariffs">
 				<colgroup>
 					<col style="width: {math equation="94-x" x=$periodcnt}%;">
@@ -88,19 +106,22 @@
 				<TR>
 					<TD class="bold nobr">
 						<INPUT type="submit" class="hiddenbtn">
-						{trans("Name:")}
+						{trans("Name")}
+						{trans("(taxation)")}
 					</TD>
 					<TD class="nobr">
 						{trans("Type")}
 					</TD>
-					<TD class="text-right bold nobr">{trans("Value")}:</TD>
-					<TD class="text-right nobr">{trans("<!assignment>Backward:")}</TD>
-					<TD class="text-right nobr">{trans("Optional")}:</TD>
-					<TD class="text-right nobr">{trans("<!promotionassignment>Label")}:</TD>
+					<TD class="text-right bold nobr">{trans("Value")}</TD>
+					<TD class="text-right nobr">{trans("<!assignment>Backward")}</TD>
+					<TD class="text-right nobr">{trans("Optional")}</TD>
+					<TD class="text-right nobr">{trans("<!promotionassignment>Label")}</TD>
 					{foreach $schema.periods as $period}
-						<TD class="text-right nobr">{$period}:</TD>
+						<TD class="text-right nobr">{$period}</TD>
 					{/foreach}
-					<TD>&nbsp;</TD>
+					<TD class="text-right">
+						<input type="checkbox" class="lms-ui-multi-check-all">
+					</TD>
 				</TR>
 				</THEAD>
 				<TBODY>
@@ -108,7 +129,7 @@
 				<TR class="highlight schematariff" data-assignment="{$tariff.id}">
 					<TD class="valign-top">
 						{icon name="money" class="drag-icon"}
-						<input type="hidden" name="form[{$tariff.id}][tariffid]" value="{$tariff.tariffid}">
+						<input type="hidden" name="form[{$tariff.id}][tariffid]" value="{$tariff.tariffid}" form="tariffs">
 						<A href="?m=tariffinfo&id={$tariff.tariffid}" class="bold">{$tariff.name}</A>
 						{if ($tariff.flags & $smarty.const.TARIFF_FLAG_ALL_REWARD_PENALTY_FLAGS) > 0}
 							{capture assign="reward_flags"}
@@ -133,12 +154,21 @@
 								{icon name="penalty" tip=$reward_flags}
 							{/if}
 						{/if}
+						{if ($tariff.flags & $smarty.const.TARIFF_FLAG_NET_ACCOUNT) > 0}
+							{trans("(net)")}
+						{else}
+							{trans("(gross)")}
+						{/if}
 					</TD>
 					<TD class="nobr valign-top">
 						{$_SERVICETYPES[$tariff.type]}
 					</TD>
 					<TD class="text-right valign-top bold nobr">
-						{Localisation::smartFormatNumber($tariff.value)}
+						{if ($tariff.flags & $smarty.const.TARIFF_FLAG_NET_ACCOUNT) > 0}
+							{Localisation::smartFormatNumber($tariff.netvalue)}
+						{else}
+							{Localisation::smartFormatNumber($tariff.value)}
+						{/if}
 					</TD>
 					<td class="text-right valign-top nobr">
 						<span class="tariff-view"{if $error && $formdata.aid == $tariff.id} style="display: none;"{/if}
@@ -147,7 +177,7 @@
 						</span>
 						<input class="tariff-edit" type="checkbox" name="form[{$tariff.id}][backwardperiod]" value="1"
 							   {tip text="Check if tariff should be accounted backward"}
-								{if $formdata[$tariff.id].backwardperiod} checked{/if}
+								{if isset($formdata[$tariff.id].backwardperiod) && $formdata[$tariff.id].backwardperiod} checked{/if}
 								{if !$error || $formdata.aid != $tariff.id} style="display: none;"{/if}>
 					</td>
 					<TD class="text-right valign-top nobr">
@@ -155,10 +185,11 @@
 								data-optional="{$tariff.optional}">
 							{if $tariff.optional}{icon name="checked" tip="yes"}{/if}
 						</SPAN>
-						<INPUT type="checkbox" class="tariff-edit optional-edit" name="form[{$tariff.id}][optional]" value="1"
-								{tip text="Check if tariff should be optional"}
-								{if $formdata[$tariff.id].optional} checked{/if}
-								{if !$error || $formdata.aid != $tariff.id} style="display: none;"{/if}>
+						<input type="checkbox" class="tariff-edit optional-edit" name="form[{$tariff.id}][optional]" value="1"
+							form="tariffs"
+							{tip text="Check if tariff should be optional"}
+							{if isset($formdata[$tariff.id].optional) && $formdata[$tariff.id].optional} checked{/if}
+							{if !$error || $formdata.aid != $tariff.id} style="display: none;"{/if}>
 					</TD>
 					<TD class="text-right valign-top nobr">
 						<SPAN class="tariff-view"{if $error && $formdata.aid == $tariff.id} style="display: none;"{/if}
@@ -166,17 +197,18 @@
 							{if $tariff.label}{$tariff.label}{/if}
 						</SPAN>
 						<span class="tariff-edit"{if !$error || $formdata.aid != $tariff.id} style="display: none;"{/if}>
-							<SELECT name="form[{$tariff.id}][selectable]" class="selectable selectable-edit" {tip text="Choose tag from list"}>
-								<OPTION value="0"{if !$formdata[$tariff.id].selectable} selected{/if}>{trans("<!promotionassignment>— none —")}</OPTION>
-								<OPTION value="-1"{if $formdata[$tariff.id].selectable == -1} selected{/if}>{trans("<!promotionassignment>— new —")}</OPTION>
+							<select name="form[{$tariff.id}][selectable]" class="selectable selectable-edit" {tip text="Choose tag from list"}
+								form="tariffs">
+								<OPTION value="0"{if !isset($formdata[$tariff.id].selectable) || !$formdata[$tariff.id].selectable} selected{/if}>{trans("<!promotionassignment>— none —")}</OPTION>
+								<OPTION value="-1"{if isset($formdata[$tariff.id].selectable) && $formdata[$tariff.id].selectable == -1} selected{/if}>{trans("<!promotionassignment>— new —")}</OPTION>
 								{foreach $schema.selections as $selid}
-								<OPTION value="{$selid}"{if $selid == $formdata[$tariff.id].selectable} selected{/if}>{$selid}</OPTION>
+									<OPTION value="{$selid}"{if isset($formdata[$tariff.id].selectable) && $selid == $formdata[$tariff.id].selectable} selected{/if}>{$selid}</OPTION>
 								{/foreach}
-							</SELECT>
+							</select>
 							<br>
-							<input type="text" size="15" name="form[{$tariff.id}][label]" class="label-edit"
-									value="{$formdata[$tariff.id].label}"
-									{if $formdata[$tariff.id].selectable != -1} style="display: none;"{/if}
+							<input type="text" size="15" name="form[{$tariff.id}][label]" class="label-edit" form="tariffs"
+									value="{if isset($formdata[$tariff.id].label)}{$formdata[$tariff.id].label}{/if}"
+									{if !isset($formdata[$tariff.id].selectable) || $formdata[$tariff.id].selectable != -1} style="display: none;"{/if}
 									{tip text="<!promotionassignment>Enter new label"}>
 						</span>
 					</TD>
@@ -193,34 +225,37 @@
 						</SPAN>
 						<span class="tariff-edit"{if !$error || $formdata.aid != $tariff.id} style="display: none;"{/if}>
 							<div style="display: inline-block; vertical-align: middle;">
-								<SELECT name="form[{$tariff.id}][users][{$key}][]" class="lms-ui-multiselect-deferred lms-ui-multiselect-selection-group user-edit text-left"
-										data-type="tiny"
-										data-button='<i class="lms-ui-icon-user"></i>'
-										data-tooltip-message="Modifiable by selected users:<br><strong>$a</strong>" data-separator="<br>"
-										multiple>
+								<select name="form[{$tariff.id}][users][{$key}][]" class="lms-ui-multiselect-deferred lms-ui-multiselect-selection-group user-edit text-left"
+									form="tariffs"
+									data-type="tiny"
+									data-button='<i class="lms-ui-icon-user"></i>'
+									data-tooltip-message="Modifiable by selected users:<br><strong>$a</strong>" data-separator="<br>"
+									multiple>
 									{foreach $users as $user}
-									<option value="{$user.id}"{if isset($formdata[$tariff.id].users[$key]) && in_array($user.id, $formdata[$tariff.id].users[$key])} selected{/if}>{$user.rname|escape}</option>
+										<option value="{$user.id}"{if isset($formdata[$tariff.id].users[$key]) && in_array($user.id, $formdata[$tariff.id].users[$key])} selected{/if}>{$user.rname|escape}</option>
 									{/foreach}
-								</SELECT>
+								</select>
 							</div>
-							<INPUT type="text" size="8" name="form[{$tariff.id}][value][{$key}]" class="value-edit period_form_value"
-									value="{if isset($formdata[$tariff.id].value[$key])}{Localisation::smartFormatNumber($formdata[$tariff.id].value[$key])}{/if}"
-									{if $key}
-										{tip text="Enter subscription value for specified period"}
-									{else}
-										{tip text="Enter activation value"}
-									{/if}>
+							<input type="text" size="8" name="form[{$tariff.id}][value][{$key}]" class="value-edit period_form_value"
+								form="tariffs"
+								value="{if isset($formdata[$tariff.id].value[$key])}{Localisation::smartFormatNumber($formdata[$tariff.id].value[$key])}{/if}"
+								{if $key}
+									{tip text="Enter subscription value for specified period"}
+								{else}
+									{tip text="Enter activation value"}
+								{/if}>
 							{if $key}
 							<BR>
-							<SELECT name="form[{$tariff.id}][period][{$key}]" class="period-edit"
-									{tip text="Select accounting period (optional) - overwrites customer liability's period"}>
-								<OPTION value="0" {if !$formdata[$tariff.id].period[$key]} selected{/if}>-</OPTION>
+							<select name="form[{$tariff.id}][period][{$key}]" class="period-edit"
+								form="tariffs"
+								{tip text="Select accounting period (optional) - overwrites customer liability's period"}>
+								<OPTION value="0" {if !isset($formdata[$tariff.id].period[$key]) || !$formdata[$tariff.id].period[$key]} selected{/if}>-</OPTION>
 								{foreach $_PERIODS as $pkey => $item}
 									{if $pkey}
-									<OPTION value="{$pkey}"{if $pkey == $formdata[$tariff.id].period[$key]} selected{/if}>{$item}</OPTION>
+									<OPTION value="{$pkey}"{if isset($formdata[$tariff.id].period[$key]) && $pkey == $formdata[$tariff.id].period[$key]} selected{/if}>{$item}</OPTION>
 									{/if}
 								{/foreach}
-							</SELECT>
+							</select>
 							{/if}
 						</span>
 					</TD>
@@ -237,6 +272,7 @@
 						{button type="link" class="tariff-edit button-cancel" icon="cancel" tip="Cancel" visible=$edit_mode}
 						{button type="link" class="tariff-edit button-save" icon="save" tip="Save" visible=$edit_mode
 							onclick="save_tariff({$tariff.id})"}
+						<input type="checkbox" name="assignments[{$tariff.id}]" class="assignment-checkbox lms-ui-multi-check" form="action-form" value="{$tariff.id}">
 					</TD>
 				</TR>
 				{foreachelse}
@@ -247,135 +283,166 @@
 				</tr>
 				{/foreach}
 				</TBODY>
-				{if $tariffs}
-				<TFOOT>
-				<TR>
-					<TD colspan="3" class="ftop valign-top">
-						<div class="promoschema-tariff-selection-header">
-							<div class="promoschema-tariff-selection-header-row">
-								<div class="promoschema-tariff-selection-header-cell">
-									<label for="service-type"><strong>{trans("Type")}:</strong></label>
+				<tfoot>
+					<tr>
+						<td colspan="3" rowspan="2" class="ftop valign-top">
+							{if $tariffs}
+								<div class="promoschema-tariff-selection-header">
+									<div class="promoschema-tariff-selection-header-row">
+										<div class="promoschema-tariff-selection-header-cell">
+											<label for="service-type"><strong>{trans("Type")}:</strong></label>
+										</div>
+										<div class="promoschema-tariff-selection-header-cell">
+											<select id="service-type" name="form[servicetype]" form="tariffs">
+												<option value="0">{trans("— all —")}</option>
+												{foreach $_SERVICETYPES as $type => $label}
+													<option value="{$type}"{if $formdata.servicetype == $type} selected{/if}>{$label}</option>
+												{/foreach}
+											</select>
+										</div>
+									</div>
+									{if !empty($tags)}
+									<div class="promoschema-tariff-selection-header-row">
+										<div class="promoschema-tariff-selection-header-cell">
+											<label for="tariff-tags"><strong>{trans("Tags:")}</strong></label>
+										</div>
+										<div class="promoschema-tariff-selection-header-cell">
+											<select id="tariff-tags" name="form[tags][]" class="lms-ui-multiselect" form="tariffs"
+												{tip text="Select tariff tags"} multiple onchange="javascript:updateTariffs();"{if empty($tags)} style="display: none;"{/if}
+												>
+												{foreach $tags as $tag}
+													<OPTION value="{$tag.id}"{if isset($formdata.tags) && in_array($tag.id, $formdata.tags)} selected{/if}>{$tag.name}</OPTION>
+												{/foreach}
+											</SELECT>
+										</div>
+									</div>
+									{/if}
+									<div class="promoschema-tariff-selection-header-row">
+										<div class="promoschema-tariff-selection-header-cell">
+											<label for="tariff-select"><strong>{trans("Tariff")}:</strong></label>
+										</div>
+										<div class="promoschema-tariff-selection-header-cell">
+											<select name="form[tariffid]" id="tariff-select" form="tariffs"
+												{tip class="lms-ui-advanced-select-test" text="Select subscription" trigger="tariffid"}>
+												{foreach $tariffs as $tariff}
+													<OPTION value="{$tariff.id}" {if $tariff.id == $formdata.tariffid}selected{/if}
+															data-tarifftype="{$tariff.tarifftype}"
+															data-tarifftags="{$tariff.tags}" data-valid="{$tariff.valid}"
+															{if !$tariff.valid} class="blend"{if !$formdata.alltariffs} style="display: none;"{/if}{/if}
+													>
+														{$tariff.name|truncate:40:"&hellip;":true} ({Utils::smartFormatMoney($tariff.value, $tariff.currency)}{if $tariff.upceil || $tariff.downceil}, {convert_to_units($tariff.downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/{convert_to_units($tariff.upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}{/if})
+													</OPTION>
+												{/foreach}
+											</select>
+										</div>
+									</div>
+									<div class="promoschema-tariff-selection-header-row">
+										<div class="promoschema-tariff-selection-header-cell">
+											<label>
+												<input type="checkbox" id="alltariffs" name="form[alltariffs]" value="1"
+													form="tariffs"
+													{tip text="Check if all tariffs should be displayed" trigger="alltariffs"}
+													{if !empty($formdata.alltariffs)} checked{/if}>
+												{trans("show all tariffs")}
+											</label>
+										</div>
+									</div>
 								</div>
-								<div class="promoschema-tariff-selection-header-cell">
-									<select id="service-type" name="form[servicetype]">
-										<option value="0">{trans("— all —")}</option>
-										{foreach $_SERVICETYPES as $type => $label}
-											<option value="{$type}"{if $formdata.servicetype == $type} selected{/if}>{$label}</option>
+							{/if}
+						</td>
+						{if $tariffs}
+							<TD class="ftop text-right valign-top nobr">
+								<input type="checkbox" name="form[backwardperiod]" value="1" {tip text="Check if tariff should be accounted backward"}
+									form="tariffs"
+									{if $formdata.backwardperiod} checked{/if}>
+							</TD>
+							<TD class="ftop text-right valign-top nobr">
+								<input type="checkbox" name="form[optional]" value="1" {tip text="Check if tariff should be optional"}
+									form="tariffs"
+									{if $formdata.optional} checked{/if}>
+							</TD>
+							<TD class="ftop text-right valign-top nobr">
+								<select name="form[selectable]" class="selectable" {tip text="Choose tag from list"} form="tariffs">
+									<OPTION value="0" {if !$formdata.selectable}selected{/if}>{trans("<!promotionassignment>— none —")}</OPTION>
+									<OPTION value="-1" {if $formdata.selectable == -1}selected{/if}>{trans("<!promotionassignment>— new —")}</OPTION>
+									{foreach $schema.selections as $selid}
+									<OPTION value="{$selid}"{if $selid == $formdata.selectable} selected{/if}>{$selid}</OPTION>
+									{/foreach}
+								</select>
+								<br>
+								<input type="text" size="15" name="form[label]"{if $formdata.selectable != -1} style="display: none;"{/if}
+									form="tariffs"
+									value="{$formdata.label}" {tip text="<!promotionassignment>Enter new label"}>
+							</TD>
+							{foreach $schema.periods as $key => $period}
+							<TD class="ftop text-right valign-top nobr">
+								<div style="display: inline-block; vertical-align: middle;">
+									<select name="form[users][{$key}][]" class="lms-ui-multiselect-deferred" data-type="tiny" form="tariffs"
+											data-button='<i class="lms-ui-icon-user"></i>'
+											data-tooltip-message="Modifiable by selected users:<br><strong>$a</strong>" data-separator="<br>"
+											multiple>
+										{foreach $users as $user}
+										<option value="{$user.id}"{if isset($formdata.users[$key]) && in_array($user.id, $formdata.users[$key])} selected{/if}>{$user.rname|escape}</option>
 										{/foreach}
 									</select>
 								</div>
-							</div>
-							{if !empty($tags)}
-							<div class="promoschema-tariff-selection-header-row">
-								<div class="promoschema-tariff-selection-header-cell">
-									<label for="tariff-tags"><strong>{trans("Tags:")}</strong></label>
-								</div>
-								<div class="promoschema-tariff-selection-header-cell">
-									<SELECT id="tariff-tags" name="form[tags][]" class="lms-ui-multiselect"
-											{tip text="Select tariff tags"} multiple onchange="javascript:updateTariffs();"{if empty($tags)} style="display: none;"{/if}
-											>
-										{foreach $tags as $tag}
-											<OPTION value="{$tag.id}"{if isset($formdata.tags) && in_array($tag.id, $formdata.tags)} selected{/if}>{$tag.name}</OPTION>
-										{/foreach}
-									</SELECT>
-								</div>
-							</div>
-							{/if}
-							<div class="promoschema-tariff-selection-header-row">
-								<div class="promoschema-tariff-selection-header-cell">
-									<label for="tariff-select"><strong>{trans("Tariff")}:</strong></label>
-								</div>
-								<div class="promoschema-tariff-selection-header-cell">
-									<SELECT name="form[tariffid]" id="tariff-select"
-											{tip class="lms-ui-advanced-select" text="Select subscription" trigger="tariffid"}>
-										{foreach $tariffs as $tariff}
-											<OPTION value="{$tariff.id}" {if $tariff.id == $formdata.tariffid}selected{/if}
-													data-tarifftype="{$tariff.tarifftype}"
-													data-tarifftags="{$tariff.tags}" data-valid="{$tariff.valid}"
-													{if !$tariff.valid} class="blend"{if !$formdata.alltariffs} style="display: none;"{/if}{/if}
-											>
-												{$tariff.name|truncate:40:"&hellip;":true} ({Utils::smartFormatMoney($tariff.value, $tariff.currency)}{if $tariff.upceil || $tariff.downceil}, {convert_to_units($tariff.downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/{convert_to_units($tariff.upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}{/if})
-											</OPTION>
-										{/foreach}
-									</SELECT>
-								</div>
-							</div>
-							<div class="promoschema-tariff-selection-header-row">
-								<div class="promoschema-tariff-selection-header-cell">
-									<label>
-										<input type="checkbox" id="alltariffs" name="form[alltariffs]" value="1"
-												{tip text="Check if all tariffs should be displayed" trigger="alltariffs"}
-												{if !empty($formdata.alltariffs)} checked{/if}>
-										{trans("show all tariffs")}
-									</label>
-								</div>
-							</div>
-						</div>
-					</TD>
-					<TD class="ftop text-right valign-top nobr">
-						<INPUT type="checkbox" name="form[backwardperiod]" value="1" {tip text="Check if tariff should be accounted backward"}
-								{if $formdata.backwardperiod} checked{/if}>
-					</TD>
-					<TD class="ftop text-right valign-top nobr">
-						<INPUT type="checkbox" name="form[optional]" value="1" {tip text="Check if tariff should be optional"}
-								{if $formdata.optional} checked{/if}>
-					</TD>
-					<TD class="ftop text-right valign-top nobr">
-						<SELECT name="form[selectable]" class="selectable" {tip text="Choose tag from list"}>
-							<OPTION value="0" {if !$formdata.selectable}selected{/if}>{trans("<!promotionassignment>— none —")}</OPTION>
-							<OPTION value="-1" {if $formdata.selectable == -1}selected{/if}>{trans("<!promotionassignment>— new —")}</OPTION>
-							{foreach $schema.selections as $selid}
-							<OPTION value="{$selid}"{if $selid == $formdata.selectable} selected{/if}>{$selid}</OPTION>
-							{/foreach}
-						</SELECT>
-						<br>
-						<input type="text" size="15" name="form[label]"{if $formdata.selectable != -1} style="display: none;"{/if}
-							value="{$formdata.label}" {tip text="<!promotionassignment>Enter new label"}
-					</TD>
-					{foreach $schema.periods as $key => $period}
-					<TD class="ftop text-right valign-top nobr">
-						<div style="display: inline-block; vertical-align: middle;">
-							<SELECT name="form[users][{$key}][]" class="lms-ui-multiselect-deferred" data-type="tiny"
-									data-button='<i class="lms-ui-icon-user"></i>'
-									data-tooltip-message="Modifiable by selected users:<br><strong>$a</strong>" data-separator="<br>"
-									multiple>
-								{foreach $users as $user}
-								<option value="{$user.id}"{if isset($formdata.users[$key]) && in_array($user.id, $formdata.users[$key])} selected{/if}>{$user.rname|escape}</option>
-								{/foreach}
-							</SELECT>
-						</div>
-						<INPUT type="text" size="8" class="period_form_value" id="period_form_value_{$key}" name="form[value][{$key}]" value="{$formdata.value[$key]}"
+								<input type="text" size="8" class="period_form_value" id="period_form_value_{$key}" name="form[value][{$key}]" value="{$formdata.value[$key]}"
+									form="tariffs"
+									{if $key}
+										{tip text="Enter subscription value for specified period"}
+									{else}
+										{tip text="Enter activation value"}
+									{/if}>
 								{if $key}
-									{tip text="Enter subscription value for specified period"}
-								{else}
-									{tip text="Enter activation value"}
-								{/if}>
-						{if $key}
-						<BR>
-						<SELECT name="form[period][{$key}]" {tip text="Select accounting period (optional) - overwrites customer liability's period"}>
-							<OPTION value="0" {if !$formdata.period[$key]}selected{/if}>-</OPTION>
-							{foreach $_PERIODS as $pkey => $p}
-								{if $pkey}
-								<OPTION value="{$pkey}"{if $pkey == $formdata.period[$key]} selected{/if}>{$p}</OPTION>
+								<BR>
+								<select name="form[period][{$key}]" {tip text="Select accounting period (optional) - overwrites customer liability's period"}
+									form="tariffs">
+									<OPTION value="0" {if !$formdata.period[$key]}selected{/if}>-</OPTION>
+									{foreach $_PERIODS as $pkey => $p}
+										{if $pkey}
+										<OPTION value="{$pkey}"{if $pkey == $formdata.period[$key]} selected{/if}>{$p}</OPTION>
+										{/if}
+									{/foreach}
+								</select>
 								{/if}
+							</TD>
 							{/foreach}
-						</SELECT>
+							<TD class="ftop text-right valign-top">
+								{button type="link" icon="save" tip="Add assignment" onclick="document.tariffs.submit()"}
+							</TD>
+						{else}
+							<td colspan="{$periodcnt + 4}"></td>
 						{/if}
-					</TD>
-					{/foreach}
-					<TD class="ftop text-right valign-top">
-						{button type="link" icon="save" tip="Add assignment" onclick="document.tariffs.submit()"}
-					</TD>
-				</TR>
-				{/if}
-				</TFOOT>
+					</tr>
+					<tr style="border: none;">
+						<td colspan="{$periodcnt + 4}" class="text-right">
+							{if !empty($schema.tariffs)}
+								{button icon="delete" label="Delete" id="delete-assignment-button" data-action="delete"}
+							{/if}
+						</td>
+					</tr>
+					<tr>
+						<td colspan="{$periodcnt+7}" class="text-right">
+							<select name="users[]" class="lms-ui-multiselect text-left"
+								form="action-form" multiple data-placeholder="{trans("— select users —")}">
+								{foreach $users as $user}
+									<option value="{$user.id}">{$user.rname|escape}</option>
+								{/foreach}
+							</select>
+							{button icon="add" label="<!promotion-assignment>Grant" class="permission-button" data-action="grant"}
+							{button icon="delete" label="<!promotion-assignment>Revoke" class="permission-button" data-action="revoke"}
+							<span>
+								{trans("<!promotion-assignment>permissions")}
+							</span>
+						</td>
+					</tr>
+				</tfoot>
 			</TABLE>
-			</FORM>
 		</TD>
 	</TR>
 	</TBODY>
 </TABLE>
-<SCRIPT>
+<script>
 
 	function save_tariff(id) {
 		document.tariffs.action += '&aid=' + id;
@@ -429,13 +496,13 @@
 			$('option', tariff_select).each(function() {
 				if ($(this).css('display') != 'none') {
 					tariff_select.val($(this).val());
-					updateAdvancedSelects(tariff_select);
+					updateAdvancedSelectsTest(tariff_select);
 					return false;
 				}
 			});
 		}
 
-		updateAdvancedSelects(tariff_select);
+		updateAdvancedSelectsTest(tariff_select);
 	}
 
 	$(function() {
@@ -528,6 +595,43 @@
 			row.find('.tariff-view').show();
 		});
 
+		$('.button-del').click(function() {
+			confirmDialog($t("Are you sure, you want to delete this assignment?"), this).done(function() {
+				$('form[name="tariffs"]').attr('action', $(this).attr('data-href'));
+				document.tariffs.submit();
+			});
+			return false;
+		});
+
+		$(".period_form_value").on('change', function () {
+			let elemVal = $(this).val();
+			if (elemVal.length) {
+				let value = parseFloat(elemVal.replace(/[\,]+/, '.').replace(/\s+/g, ''));
+				$(this).val(lms.utils.smartFormatNumber(value).replace(/[^\-0-9,\.]/g, ''));
+			}
+		});
+
+		$(".permission-button").click(function() {
+			if (!$('[name="users[]"] option:selected').length) {
+				alertDialog("{trans("<!promotion-assignment>No users selected!")}", this);
+			} else if (!$(".assignment-checkbox:checked").length) {
+				alertDialog("{trans("<!promotion-assignment>No tariffs selected!")}", this);
+			} else {
+				$("#change-assignment-action").val($(this).attr("data-action"));
+				$("#action-form").submit();
+			}
+		});
+
+		$('#delete-assignment-button').click(function() {
+			if (!$(".assignment-checkbox:checked").length) {
+				alertDialog("{trans("<!promotion-assignment>No tariffs selected!")}", this);
+			} else {
+				$("#change-assignment-action").val($(this).attr("data-action"));
+				$('[name="form[servicetype]"],[name="form[tags][]"],[name="form[alltariffs]"]').attr('form', 'action-form');
+				$("#action-form").submit();
+			}
+		});
+
 		init_multiselects('select.lms-ui-multiselect-deferred:visible');
 
 		updateTariffs();
@@ -537,20 +641,4 @@
 		$('#promotionschemadata').show();
 	}
 
-	$('.button-del').click(function() {
-		confirmDialog($t("Are you sure, you want to delete this assignment?"), this).done(function() {
-			$('form[name="tariffs"]').attr('action', $(this).attr('data-href'));
-			document.tariffs.submit();
-		});
-		return false;
-	});
-
-	$(".period_form_value").on('change', function () {
-		let elemVal = $(this).val();
-		if (elemVal.length) {
-			let value = parseFloat(elemVal.replace(/[\,]+/, '.'));
-			$(this).val(lms.utils.smartFormatNumber(value).replace(/[^0-9,\.]/g, ''));
-		}
-	});
-
-</SCRIPT>
+</script>

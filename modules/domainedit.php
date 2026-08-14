@@ -33,7 +33,7 @@ function GetDomainIdByName($name)
 function DomainExists($id)
 {
     global $DB;
-    return ($DB->GetOne('SELECT id FROM domains WHERE id = ?', array($id)) ? true : false);
+    return (bool)$DB->GetOne('SELECT id FROM domains WHERE id = ?', array($id));
 }
 
 $id = $_GET['id'];

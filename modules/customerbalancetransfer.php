@@ -24,17 +24,30 @@
  *  $Id$
  */
 
+if (isset($_POST['value'])) {
+    $value = str_replace(',', '.', $_POST['value']);
+}
+
 if (!isset($_POST['customerid']) || !ctype_digit($_POST['customerid'])
     || !isset($_POST['old-customerid']) || !ctype_digit($_POST['old-customerid'])
-    || !isset($_POST['marks']) || !is_array($_POST['marks'])) {
+    || (
+        (!isset($_POST['marks']) || !is_array($_POST['marks']))
+        && (!isset($value) || !is_numeric($value) || !isset($_POST['currency']) || empty($_POST['currency']))
+    )) {
     $SESSION->redirect_to_history_entry();
 }
 
 $customerid = intval($_POST['customerid']);
 $old_customerid = intval($_POST['old-customerid']);
-$marks = Utils::filterIntegers($_POST['marks']);
+if (isset($_POST['marks'])) {
+    $marks = Utils::filterIntegers($_POST['marks']);
+} else {
+    $value = floatval($value);
+    $currency = $_POST['currency'];
+}
 
-if (empty($customerid) || empty($old_customerid) || $customerid == $old_customerid || empty($marks)) {
+if (empty($customerid) || empty($old_customerid) || $customerid == $old_customerid
+    || !isset($value) && empty($marks)) {
     $SESSION->redirect_to_history_entry();
 }
 
@@ -42,18 +55,35 @@ if (!$LMS->CustomerExists($customerid) || !$LMS->CustomerExists($old_customerid)
     $SESSION->redirect_to_history_entry();
 }
 
-$cashes = $DB->GetAll(
-    'SELECT id, comment, value, currency, currencyvalue 
-    FROM cash
-    WHERE customerid = ?
-        AND value > 0
-        AND type = 1
-        AND id IN ?',
-    array(
-        $old_customerid,
-        $marks,
-    )
-);
+if (isset($value)) {
+    $currencyvalue = $LMS->getCurrencyValue($currency);
+    if (!isset($currencyvalue)) {
+        die('Fatal error: couldn\'t get quote for ' . $currency . ' currency!<br>');
+    }
+
+    $cashes = array(
+        0 => array(
+            'id' => null,
+            'comment' => null,
+            'value' => $value,
+            'currency' => $currency,
+            'currencyvalue' => $currencyvalue,
+        ),
+    );
+} else {
+    $cashes = $DB->GetAll(
+        'SELECT id, comment, value, currency, currencyvalue
+        FROM cash
+        WHERE customerid = ?
+            AND value > 0
+            AND type = 1
+            AND id IN ?',
+        array(
+            $old_customerid,
+            $marks,
+        )
+    );
+}
 
 if (!empty($cashes)) {
     $old_customername = $LMS->GetCustomerName($old_customerid);
@@ -72,7 +102,9 @@ if (!empty($cashes)) {
                 $userid,
                 $old_customerid,
                 1,
-                trans('transferred to customer $a (#$b): $c', $customername, $customerid, $cash['comment']),
+                isset($cash['comment'])
+                    ? trans('transferred to customer $a (#$b): $c', $customername, $customerid, $cash['comment'])
+                    : trans('transferred to customer $a (#$b)', $customername, $customerid),
                 str_replace(',', '.', $cash['value'] * -1),
                 $cash['currency'],
                 $cash['currencyvalue'],
@@ -87,7 +119,9 @@ if (!empty($cashes)) {
                 $userid,
                 $customerid,
                 1,
-                trans('transferred from customer $a (#$b): $c', $old_customername, $old_customerid, $cash['comment']),
+                isset($cash['comment'])
+                    ? trans('transferred from customer $a (#$b): $c', $old_customername, $old_customerid, $cash['comment'])
+                    : trans('transferred from customer $a (#$b)', $old_customername, $old_customerid),
                 $cash['value'],
                 $cash['currency'],
                 $cash['currencyvalue'],
@@ -97,6 +131,5 @@ if (!empty($cashes)) {
 
     $DB->CommitTrans();
 }
-
 
 $SESSION->redirect_to_history_entry();

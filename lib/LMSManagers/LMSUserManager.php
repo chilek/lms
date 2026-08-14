@@ -131,7 +131,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         extract($params);
 
         return $this->db->GetAll(
-            'SELECT id, login, name, rname, login, deleted,
+            'SELECT id, login, name, rname, deleted,
             (CASE WHEN access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0) THEN 1 ELSE 0 END) AS access
             FROM vusers
             WHERE deleted = 0'
@@ -157,10 +157,28 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         extract($params);
 
         if (isset($order)) {
-            list ($column, $asc) = explode(',', $order);
-            $sqlord = $column . ' ' . ($asc == 'desc' ? 'DESC' : 'ASC');
+            [$column, $asc] = explode(',', $order);
+            if (preg_match('/^[a-z0-9_]+$/i', $column)) {
+                $sqlord = $column . ' ' . ($asc == 'desc' ? 'DESC' : 'ASC');
+            } else {
+                $sqlord = 'login ASC';
+            }
         } else {
             $sqlord = 'login ASC';
+        }
+
+        if (!empty($divisions)) {
+            if (!is_array($divisions)) {
+                $divisions = array($divisions);
+            }
+            $divisions = Utils::filterIntegers($divisions);
+        }
+
+        if (!empty($excludedUsers)) {
+            if (!is_array($excludedUsers)) {
+                $excludedUsers = array($excludedUsers);
+            }
+            $excludedUsers = Utils::filterIntegers($excludedUsers);
         }
 
         if (isset($superuser)) {
@@ -169,11 +187,11 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                 accessfrom, accessto, rname, twofactorauth
             FROM vallusers
             WHERE deleted = 0'
-                . (isset($divisions) && !empty($divisions) ? ' AND id IN (SELECT userid
+                . (!empty($divisions) ? ' AND id IN (SELECT userid
                     FROM userdivisions
-                    WHERE divisionid IN (' . $divisions . ')
+                    WHERE divisionid IN (' . implode(', ', $divisions) . ')
                     )' : '')
-                . (isset($excludedUsers) && !empty($excludedUsers) ? ' AND id NOT IN (' . $excludedUsers . ')' : '') .
+                . (!empty($excludedUsers) ? ' AND id NOT IN (' . implode(', ', $excludedUsers) . ')' : '') .
                 ' ORDER BY ' . $sqlord,
                 'id'
             );
@@ -183,11 +201,11 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                     accessfrom, accessto, rname, twofactorauth
                 FROM vusers
                 WHERE deleted = 0'
-                . (isset($divisions) && !empty($divisions) ? ' AND id IN (SELECT userid
+                . (!empty($divisions) ? ' AND id IN (SELECT userid
                         FROM userdivisions
-                        WHERE divisionid IN (' . $divisions . ')
+                        WHERE divisionid IN (' . implode(', ', $divisions) . ')
                         )' : '')
-                . (isset($excludedUsers) && !empty($excludedUsers) ? ' AND id NOT IN (' . $excludedUsers . ')' : '') .
+                . (!empty($excludedUsers) ? ' AND id NOT IN (' . implode(', ', $excludedUsers) . ')' : '') .
                 ' ORDER BY ' . $sqlord,
                 'id'
             );
@@ -207,6 +225,18 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         $userid = Auth::GetCurrentUser();
         $deletedFilter = !empty($hideDeleted) || !isset($hideDeleted) ? ' AND deleted = 0' : '';
         $disabledFilter = empty($userAccess) ? '' : ' AND (CASE WHEN access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0) THEN 1 ELSE 0 END) = 1';
+        if (empty($order) || !preg_match('/^[[:alnum:]_]+(,(asc|desc))?$/i', $order)) {
+            $order = 'login ASC';
+        } else {
+            $order = str_replace(',', ' ', $order);
+        }
+
+        if (!empty($divisions)) {
+            if (!is_array($divisions)) {
+                $divisions = array($divisions);
+            }
+            $divisions = Utils::filterIntegers($divisions);
+        }
 
         $userlist = $this->db->GetAllByKey(
             'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access, deleted,
@@ -216,12 +246,12 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             . ' WHERE 1=1'
             . $deletedFilter
             . $disabledFilter
-            . (isset($divisions) && !empty($divisions) ? ' AND id IN 
+            . (!empty($divisions) ? ' AND id IN 
                 (SELECT userid
                 FROM userdivisions
-                WHERE divisionid IN (' . $divisions . ')
+                WHERE divisionid IN (' . implode(', ', $divisions) . ')
                 )' : '')
-            . ' ORDER BY login ASC',
+            . ' ORDER BY ' . $order,
             'id'
         );
 
@@ -423,10 +453,10 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
      * @param int $id User id
      * @return array
      */
-    public function getUserInfo($id)
+    public function getUserInfo($id, $details = true)
     {
         $userinfo = $this->db->GetRow('SELECT * FROM vusers WHERE id = ?', array($id));
-        if ($userinfo) {
+        if ($userinfo && $details) {
             $userinfo['trusteddevices'] = $this->db->GetAll(
                 'SELECT id, useragent, useragent, INET_NTOA(ipaddr) AS ip, expires
                     FROM twofactorauthtrusteddevices

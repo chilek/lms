@@ -75,6 +75,7 @@
 								{foreach $_SERVICETYPES as $type => $label}
 									<option value="{$type}"{if $assignment.servicetype == $type} selected{/if}>{$label}</option>
 								{/foreach}
+								{$label = null}
 							</select>
 						</div>
 					</div>
@@ -98,7 +99,7 @@
 						</div>
 						<div class="customerassignment-header-cell">
 							<input type="hidden" value="" name="assignment[tarifftype]" id="tarifftype">
-							<select id="tariff-select" name="assignment[tariffid]" {tip class="lms-ui-advanced-select" text="Select liability type" trigger="tariffid"}>
+							<select id="tariff-select" name="assignment[tariffid]" {tip class="lms-ui-advanced-select-test" text="Select liability type" trigger="tariffid"}>
 								{block name="customerassignmentsedit-special-tariffs"}
 								<option value=""   data-tarifftype="0" {if !$assignment.tariffid} selected{/if}>— {trans("tariffless liability")} —</option>
 								<option value="-1" data-tarifftype="0" {if $assignment.tariffid == -1} selected{/if}>{trans("— all liabilities suspended —")}</option>
@@ -163,7 +164,8 @@
 
 {include file="customer/customerassignments.html"}
 
-<SCRIPT>
+<script>
+
 	var tariffDefaultTaxId = {$defaultTaxId};
 	var assignmentGrossvalue = '{$assignment.value}';
 	var assignmentNetvalue = '{$assignment.netvalue}';
@@ -186,6 +188,7 @@
 	{/if}
 	selected["location"] = "{if isset($assignment.location)}{$assignment.location}{/if}";
 	selected["recipient_address_id"] = "{if isset($assignment.recipient_address_id)}{$assignment.recipient_address_id}{else}0{/if}";
+	selected["recipient_address_id2"] = "{if isset($assignment.recipient_address_id2)}{$assignment.recipient_address_id2}{else}0{/if}";
 
 	var assignment_settings = {
 		customerid: {$customerinfo.id},
@@ -196,7 +199,8 @@
 		DOC_DNOTE:{$smarty.const.DOC_DNOTE},
 		tariffTypes: tariffTypes,
 		variablePrefix: 'assignment',
-        hideFinances: {if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')}true{else}false{/if}
+		hideFinances: {if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')}true{else}false{/if},
+		tariffTagFilterAllRequired: {if ConfigHelper::checkConfig('assignments.tariff_tag_filter_all_required')}true{else}false{/if}
 	}
 
 	var customer_assignment_helper = new CustomerAssignmentHelper(assignment_settings);
@@ -263,6 +267,8 @@
 		updateCheckAllNodes();
 
 		updateTariffs();
+
+		$('#separatedocument').scombobox('val', '{$assignment.separatedocument}');
 	});
 
 	function updateTariffs() {
@@ -284,29 +290,39 @@
 
 			var tariffType = parseInt(option.attr('data-tarifftype'));
 			var tariffValid = parseInt(option.attr('data-valid'));
-			var visible = false;
+			var visible = 0;
 
 			if (tags.length) {
-				var tarifftags = option.attr('data-tarifftags');
-				if (typeof(tarifftags) !== 'undefined' && tarifftags.length) {
-					tarifftags = JSON.parse('[' + tarifftags + ']');
+				var tariffTags = option.attr('data-tarifftags');
+				if (typeof(tariffTags) !== 'undefined' && tariffTags.length) {
+					tariffTags = JSON.parse('[' + tariffTags + ']');
 
-					$.each(tarifftags, function (key, value) {
-						if (tags.indexOf(value) > -1) {
-							visible = visible || tariffValid !== 0 || allTariffChecked;
+					$.each(tariffTags, function (key, value) {
+						if (tags.indexOf(value) > -1 && (tariffValid !== 0 || allTariffChecked)) {
+							visible++;
 						}
 					});
 				}
+			} else if (tariffValid !== 0 || allTariffChecked) {
+				visible = 1;
+			}
+
+			if (serviceType && tariffType && serviceType !== tariffType) {
+				visible = 0;
+			}
+
+			if (option.val() === tariff_select.val()) {
+				visible = tags.length ? tags.length : 1;
+			}
+
+			if (tags.length) {
+				if (assignment_settings.tariffTagFilterAllRequired) {
+					visible = tags.length === visible;
+				} else {
+					visible = visible > 0;
+				}
 			} else {
-				visible = tariffValid !== 0 || allTariffChecked;
-			}
-
-			if (serviceType) {
-				visible = visible && (!tariffType || serviceType === tariffType);
-			}
-
-			if (option.val() == tariff_select.val()) {
-				visible = true;
+				visible = visible > 0;
 			}
 
 			option.toggle(visible);
@@ -316,8 +332,8 @@
 			tariff_select.val($('option:nth-child(0)').val());
 		}
 
-		updateAdvancedSelects(tariff_select);
+		updateAdvancedSelectsTest(tariff_select);
 	}
 
-</SCRIPT>
+</script>
 {/block}

@@ -85,9 +85,13 @@
                     </a>
                     <div id="files-{$container.id}" style="display: none;" class="files">
                         {foreach $container.files as $file}
-                            {documentview id="{$container.id}-{$file.id}" type=$file.contenttype name=$file.filename
-                            url="?m=attachments&attachmentaction=viewfile&type={$attachmenttype}&id={$container.id}&fileid={$file.id}" external=true
-                            text="{$file.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$file.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$file.contenttype)} xls{/if}\"></i>"}
+                            {documentview
+                                id="{$container.id}-{$file.id}"
+                                type=$file.contenttype
+                                name=$file.filename
+                                url="?m=attachments&attachmentaction=viewfile&type={$attachmenttype}&id={$container.id}&fileid={$file.id}"
+                                external=true
+                            }
                             <br>
                         {/foreach}
                     </div>

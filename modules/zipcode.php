@@ -26,7 +26,7 @@
 
 header('Content-Type: text/plain');
 
-if (isset($_GET['countryid']) && !empty($_GET['countryid']) && $LMS->GetCountryName($_GET['countryid']) != 'Poland') {
+if (!empty($_GET['countryid']) && $LMS->GetCountryName($_GET['countryid']) != 'Poland') {
     die;
 }
 
@@ -34,14 +34,14 @@ if (!isset($_GET['house']) || (!isset($_GET['city']) && !isset($_GET['cityid']))
     die;
 }
 
-if (isset($_GET['cityid']) && !empty($_GET['cityid'])) {
+if (!empty($_GET['cityid'])) {
     $params['cityid'] = $_GET['cityid'];
-    if (isset($_GET['streetid']) && !empty($_GET['streetid'])) {
+    if (!empty($_GET['streetid'])) {
         $params['streetid'] = $_GET['streetid'];
     }
-} elseif (isset($_GET['city']) && !empty($_GET['city'])) {
+} elseif (!empty($_GET['city'])) {
     $params['city'] = $_GET['city'];
-    if (isset($_GET['street']) && !empty($_GET['street'])) {
+    if (!empty($_GET['street'])) {
         $params['street'] = $_GET['street'];
     } else {
         die;

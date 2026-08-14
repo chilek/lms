@@ -135,8 +135,7 @@ OpenLayers.Renderer.LmsSVG = OpenLayers.Class(OpenLayers.Renderer.SVG, {
 
 OpenLayers.Control.LmsModifyFeature = OpenLayers.Class(OpenLayers.Control.ModifyFeature, {
 	dragStart: function(feature) {
-		var isPoint = feature.geometry.CLASS_NAME ==
-			'OpenLayers.Geometry.Point';
+		var isPoint = feature.geometry.CLASS_NAME === 'OpenLayers.Geometry.Point';
 		if (!this.standalone &&
 			((!feature._sketch && isPoint) || !feature._sketch)) {
 			if (this.toggle && this.feature === feature) {
@@ -152,13 +151,13 @@ OpenLayers.Control.LmsModifyFeature = OpenLayers.Class(OpenLayers.Control.Modify
 			var points = feature.geometry.parent.components;
 			var selectedPointIndex = -1;
 			points.forEach(function(value, index) {
-				if (value.x == feature.geometry.x && value.y == feature.geometry.y) {
+				if (value.x === feature.geometry.x && value.y === feature.geometry.y) {
 					selectedPointIndex = index;
 				}
 				//var pointLonLat = new OpenLayers.LonLat(value.x, value.y);
 				//console.log(pointLonLat.transform(map.getProjectionObject(), lmsProjection), value);
 			});
-			if (feature.style == null && (!selectedPointIndex || selectedPointIndex == points.length -1)) {
+			if (feature.style == null && (!selectedPointIndex || selectedPointIndex === points.length -1)) {
 				return;
 			}
 			this.vertex = feature;
@@ -313,8 +312,110 @@ function findFeaturesIntersection(selectFeature, feature, featureLonLat) {
 	return features;
 }
 
+function toleranceMapUnitsByScale(map, basePx, scaleRef, exponent) {
+	var scale = map.getScale();       // np. 1:5000 → 5000
+	var k = Math.pow(scale / scaleRef, exponent || 0.5); // 0.5 = √, łagodna zmiana
+	var px = basePx * k;
+	return px * map.getResolution();
+}
+
+function projectPointOnSegment(P, A, B) {
+	var vx = B.x - A.x, vy = B.y - A.y;
+	var wx = P.x - A.x, wy = P.y - A.y;
+	var segLen2 = vx*vx + vy*vy;
+
+	if (segLen2 === 0) {
+		// Zdegenerowany odcinek: A==B. Projekcja to A.
+		var projA = new OpenLayers.Geometry.Point(A.x, A.y);
+		return {
+			tRaw: 0,
+			t: 0,
+			point: projA,                            // nowy obiekt, nie referencja!
+			distance: projA.distanceTo(P)
+		};
+	}
+
+	// Surowe t na prostej AB
+	var tRaw = (wx*vx + wy*vy) / segLen2;
+
+	// t na odcinku (klamracja)
+	var t = (tRaw < 0) ? 0 : (tRaw > 1 ? 1 : tRaw);
+
+	// Punkt projekcji (dokładnie na odcinku AB)
+	var proj = new OpenLayers.Geometry.Point(
+		A.x + t * vx,
+		A.y + t * vy
+	);
+
+	return {
+		tRaw: tRaw,
+		t: t,
+		point: proj,
+		distance: proj.distanceTo(P)
+	};
+}
+
+/**
+ * Znajdź segment w geometrii, który "zawiera" kliknięty punkt w zadanej tolerancji.
+ *
+ * @param {OpenLayers.Geometry.LineString|OpenLayers.Geometry.MultiLineString} geometry
+ * @param {OpenLayers.Geometry.Point|{x:number,y:number}|OpenLayers.LonLat} clickCoord  // w tym samym układzie co geometry
+ * @param {Object} opts
+ *   - tolerancePx {number}        // opcjonalnie: tolerancja w pikselach (wymaga map)
+ *   - toleranceMapUnits {number}  // opcjonalnie: tolerancja w jednostkach mapy/geometrii
+ *   - map {OpenLayers.Map}        // opcjonalnie: potrzebna gdy używasz tolerancePx
+ *
+ * @returns {null|{lineIndex:number, segIndex:number, projection:OpenLayers.Geometry.Point, distance:number}}
+ */
+function findSegmentContainingPoint(map, geometry, clickPoint) {
+	// Rozbij MultiLineString na tablicę LineStringów
+	var lines = (geometry.CLASS_NAME === "OpenLayers.Geometry.MultiLineString") ?
+		geometry.components :
+		(geometry.CLASS_NAME === "OpenLayers.Geometry.LineString") ?
+			[geometry] :
+			[];
+
+	var best = null;
+
+	var tolerancePx = toleranceMapUnitsByScale(map, /*basePx*/ 50, /*scaleRef*/ 1692, /*exp*/ 0.5);
+
+	for (var li = 0; li < lines.length; li++) {
+		var line = lines[li];
+		var pts = line.components;
+		for (var si = 0; si < pts.length - 1; si++) {
+			var A = pts[si], B = pts[si + 1];
+			var pr = projectPointOnSegment(clickPoint, A, B);
+
+			// Warunek "zawiera": rzut NA ODCINKU (t w [0,1]) i odległość ≤ tolerancja.
+			if (pr.t >= 0 && pr.t <= 1 && pr.distance <= tolerancePx) {
+				if (!best || pr.distance < best.distance) {
+					best = {
+						lineIndex: li,
+						segIndex: si,
+						insertIndex: si + 1,          // wstaw zaraz po A (między A a B)
+						t: pr.t,
+						projection: pr.point,         // <<— poprawne współrzędne nowego punktu
+						distance: pr.distance
+					};
+				}
+			}
+		}
+	}
+
+	return best; // null, gdy brak trafienia
+}
+
 function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArray, selection, startLon, startLat) {
 	var i, j;
+
+	var devLinkForeignEntityToggleButton = null;
+	var customerOwnedToggleButton = null;
+	var netLinkEditModeChangeButton = null;
+	var mapFilters = {
+		devLinkForeignEntity: false,
+		customerOwned: false,
+		netLinkEditMode: false
+	};
 
 	var linkstyles = [];
 	linkstyles[0] = { strokeColor: '#00ff00', strokeOpacity: 0.5 }; // wired link type
@@ -358,6 +459,14 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 				if (data.hasOwnProperty('speed')) {
 					return data.speed.length ? linkweights[data.speed] : 1;
 				}
+			},
+			display: function(feature) {
+				if (feature.renderIntent === 'vertex' || !mapFilters.devLinkForeignEntity && !mapFilters.customerOwned) {
+					return '';
+				}
+
+				var data = feature.data;
+				return mapFilters.devLinkForeignEntity && data.foreignentity !== null || mapFilters.customerOwned && data.customers.length ? 'none' : '';
 			}
 		}
 	}
@@ -367,9 +476,12 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			{
 				strokeColor: "${strokeColor}",
 				strokeWidth: "${strokeWidth}",
-				pointRadius: 9
+				pointRadius: 9,
+				fillColor: "#0000FF",
+				fillOpacity: 0.9,
+				display: "${display}"
 			},
-			OpenLayers.Feature.Vector.style["default"]
+			OpenLayers.Feature.Vector.style.default
 		),
 		styleContext
 	);
@@ -379,26 +491,59 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			{
 				strokeColor: "${strokeColor}",
 				strokeWidth: "${strokeWidth}",
-				pointRadius: 9
+				pointRadius: 9,
+				fillColor: "#000080",
+				fillOpacity: 0.9,
+				display: "${display}"
 			},
 			OpenLayers.Feature.Vector.style.select
 		),
 		styleContext
 	);
 
-	var rsareastyle2 = {
-		fillOpacity: 0.2,
-		graphicOpacity: 1,
-		fillColor: '#0000aa',
-		strokeColor: '#0000bb'
-	}
+	var rsareastyle2 = new OpenLayers.Style(
+		{
+			fillOpacity: 0.2,
+			graphicOpacity: 1,
+			fillColor: '#0000aa',
+			strokeColor: '#0000bb',
+			display: "${display}"
+		},
+		{
+			context: {
+				display: function (feature) {
+					if (!mapFilters.customerOwned) {
+						return '';
+					}
 
-	var rsareastyle5 = {
-		fillOpacity: 0.2,
-		graphicOpacity: 1,
-		fillColor: '#0080aa',
-		strokeColor: '#0080bb'
-	}
+					var data = feature.data;
+					return mapFilters.customerOwned && data.ownerid.length ? 'none' : '';
+				}
+			}
+		}
+	);
+
+	var rsareastyle5 = new OpenLayers.Style(
+		{
+			fillOpacity: 0.2,
+			graphicOpacity: 1,
+			fillColor: '#0080aa',
+			strokeColor: '#0080bb',
+			display: "${display}"
+		},
+		{
+			context: {
+				display: function (feature) {
+					if (!mapFilters.customerOwned) {
+						return '';
+					}
+
+					var data = feature.data;
+					return mapFilters.customerOwned && data.ownerid.length ? 'none' : '';
+				}
+			}
+		}
+	);
 
 	var rsdirectionstyle2 = new OpenLayers.Style(
 		{
@@ -410,7 +555,8 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			fontColor: '#0000bb',
 			labelAlign: 'middle',
 			angle: "${angle}",
-			label: "${label}"
+			label: "${label}",
+			display: "${display}"
 		}, {
 			context: {
 				angle: function(feature) {
@@ -432,6 +578,14 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 								(attr.bandwidth != '' ?
 									' (' + attr.bandwidth + ')' : '')
 							: '');
+				},
+				display: function(feature) {
+					if (!mapFilters.customerOwned) {
+						return '';
+					}
+
+					var data = feature.data;
+					return mapFilters.customerOwned && data.ownerid.length ? 'none' : '';
 				}
 			}
 		}
@@ -447,7 +601,8 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			fontColor: '#0080bb',
 			labelAlign: 'middle',
 			angle: "${angle}",
-			label: "${label}"
+			label: "${label}",
+			display: "${display}"
 		}, {
 			context: {
 				angle: function(feature) {
@@ -469,17 +624,25 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 								(attr.bandwidth != '' ?
 									' (' + attr.bandwidth + ')' : '')
 							: '');
+				},
+				display: function(feature) {
+					if (!mapFilters.customerOwned) {
+						return '';
+					}
+
+					var data = feature.data;
+					return mapFilters.customerOwned && data.ownerid.length ? 'none' : '';
 				}
 			}
 		}
 	);
 
 	var rsarealayer2 = new OpenLayers.Layer.Vector(OpenLayers.Lang.translate("Radio sectors 2.4GHz - areas"), {
-		style: rsareastyle2,
+		styleMap: new OpenLayers.StyleMap(rsareastyle2)
 	});
 
 	var rsarealayer5 = new OpenLayers.Layer.Vector(OpenLayers.Lang.translate("Radio sectors 5GHz - areas"), {
-		style: rsareastyle5,
+		styleMap: new OpenLayers.StyleMap(rsareastyle5)
 	});
 
 	var rsdirectionlayer2 = new OpenLayers.Layer.Vector(OpenLayers.Lang.translate("Radio sectors 2.4GHz - directions"), {
@@ -523,10 +686,11 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			labelOutlineWidth: 0,
 			fontSize: "1.3em",
 			fontOpacity: 1,
-			fontFamily: '"Font Awesome 5 Free"',
+			fontFamily: '"' + lmsSettings.fontAwesomeName + '"',
 			fontWeight: 900,
 			fontStrokeColor: "${fontStrokeColor}",
 			fontStrokeWidth: "${fontStrokeWidth}",
+			display: "${display}"
 		}, {
 			context: {
 				label: function(feature) {
@@ -556,6 +720,14 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 						default:
 							return 0;
 					}
+				},
+				display: function(feature) {
+					if (!mapFilters.customerOwned) {
+						return '';
+					}
+
+					var data = feature.data;
+					return mapFilters.customerOwned && data.ownerid.length ? 'none' : '';
 				}
 			}
 		});
@@ -571,7 +743,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			labelOutlineWidth: 0,
 			fontSize: "1.2em",
 			fontOpacity: 1,
-			fontFamily: '"Font Awesome 5 Free"',
+			fontFamily: '"' + lmsSettings.fontAwesomeName + '"',
 			fontWeight: 900,
 			fontStrokeColor: "${fontStrokeColor}",
 			fontStrokeWidth: "${fontStrokeWidth}"
@@ -619,7 +791,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			labelOutlineWidth: 0,
 			fontSize: "1.2em",
 			fontOpacity: 1,
-			fontFamily: '"Font Awesome 5 Free"',
+			fontFamily: '"' + lmsSettings.fontAwesomeName + '"',
 			fontWeight: 900,
 		}, {
 			context: {
@@ -658,6 +830,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 				continue;
 			for (j in deviceArray[i].radiosectors) {
 				var radiosector = deviceArray[i].radiosectors[j];
+				radiosector.ownerid = deviceArray[i].ownerid;
 				var rsPointList = [];
 				var rsPoint, rsLonLat;
 				//if (radiosector.width < 360) {
@@ -676,7 +849,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 
 				rsPointList.push(rsPointList[0]);
 				var rsRing = new OpenLayers.Geometry.LinearRing(rsPointList);
-				var rsFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Polygon([rsRing]));
+				var rsFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Polygon([rsRing]), radiosector);
 				if (radiosector.technology == 100) {
 					areas2.push(rsFeature);
 				} else {
@@ -750,6 +923,11 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 		styleMap: new OpenLayers.StyleMap({
 			"default": linkStyleDefault,
 			"select": linkStyleSelect,
+			"vertex": new OpenLayers.Style({
+				pointRadius: 9,
+				fillColor: "#0000FF",
+				fillOpacity: 0.9
+			})
 		})
 	});
 	devlinklayer.addFeatures(devlinks);
@@ -835,45 +1013,47 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 		map.addLayer(rsdirectionlayer5);
 	}
 
-	devlinklayer.events.on({
-		"featuremodified": function(ev) {
-//		"afterfeaturemodified": function(ev) {
-			var feature = ev.feature;
-			var netlink = feature.data;
-			if (!netlink.hasOwnProperty('netlinkid')) {
-				return;
-			}
-			var map = this.map;
-			var lonLats = [];
-			var points = feature.geometry.components;
-			points.forEach(function(point, index) {
-				var lonLat = new OpenLayers.LonLat(point.x, point.y);
-				lonLat.transform(map.getProjectionObject(), lmsProjection);
-				lonLats.push(lonLat);
-			})
+	if (lms.permissions.fullAccess || lms.permissions.networkMapEdit) {
+		devlinklayer.events.on({
+			"featuremodified": function (ev) {
+				//		"afterfeaturemodified": function(ev) {
+				var feature = ev.feature;
+				var netlink = feature.data;
+				if (!netlink.hasOwnProperty('netlinkid')) {
+					return;
+				}
+				var map = this.map;
+				var lonLats = [];
+				var points = feature.geometry.components;
+				points.forEach(function (point, index) {
+					var lonLat = new OpenLayers.LonLat(point.x, point.y);
+					lonLat.transform(map.getProjectionObject(), lmsProjection);
+					lonLats.push(lonLat);
+				})
 
-			OpenLayers.Request.issue({
-				url: "?m=netlinkpoints&api=1",
-				params: {
-					netlinkid: netlink.netlinkid,
-					srcdevid: netlink.src,
-					dstdevid: netlink.dst,
-					points: JSON.stringify(lonLats)
-				},
-				callback: function(response) {
-					if (response.status == 200) {
-						try {
-							data = JSON.parse(response.responseText);
-						} catch (e) {
+				OpenLayers.Request.issue({
+					url: "?m=netlinkpoints&api=1",
+					params: {
+						netlinkid: netlink.netlinkid,
+						srcdevid: netlink.src,
+						dstdevid: netlink.dst,
+						points: JSON.stringify(lonLats)
+					},
+					callback: function (response) {
+						if (response.status == 200) {
+							try {
+								data = JSON.parse(response.responseText);
+							} catch (e) {
+								alertDialog($t('Network link update failed!'));
+							}
+						} else {
 							alertDialog($t('Network link update failed!'));
 						}
-					} else {
-						alertDialog($t('Network link update failed!'));
 					}
-				}
-			});
-		}
-	});
+				});
+			}
+		});
+	}
 
 	var highlightlayers = [ devicelayer, devlinklayer, nodelayer, nodelinklayer, rangeLayer ];
 
@@ -950,9 +1130,14 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 									popupRequired = true;
 								}
 							} else {
-								content += '<span class="bold">' + features[i].data.typename + '<br>' +
-									(features[i].data.technologyname.length ? '<span class="bold">' + features[i].data.technologyname + '<br>' : '') +
-									features[i].data.speedname + '</span>';
+								var foreignEntity = null;
+								if (features[i].data.foreignentity) {
+									foreignEntity = features[i].data.foreignentity;
+								}
+								content += $t('Link type:') + ' <strong>' + features[i].data.typename + '</strong>' +
+									(features[i].data.technologyname.length ? '<br>' + $t('Link technology:') + ' <strong>' + features[i].data.technologyname + '</strong>' : '') +
+									'<br>' + $t('Link speed:') + ' <strong>' + features[i].data.speedname + '</strong>' +
+									(foreignEntity ? '<br>' + $t('Foreign entity:') + ' <strong>' + foreignEntity.name + (foreignEntity.type ? ', ' + $t('TEN') + ' ' + foreignEntity.id : '') + '</strong>' : '');
 								popupRequired = true;
 							}
 						}
@@ -1027,15 +1212,63 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 					mappopup = null;
 				}
 				selectedFeature = feature;
+
 				var featureLonLat;
 				// position feature is not needed - we detect it by nullified style
 				if (feature.geometry.CLASS_NAME == "OpenLayers.Geometry.Point" && feature.style == null) {
 					featureLonLat = new OpenLayers.LonLat(feature.data.lon, feature.data.lat);
 					featureLonLat.transform(lmsProjection, map.getProjectionObject());
-				}
-				else
+				} else {
 					featureLonLat = map.getLonLatFromViewPortPx(this.handlers.feature.evt.xy);
+				}
+
 				var features = findFeaturesIntersection(this, feature, featureLonLat);
+
+				if (features.length === 1 && features[0].data.hasOwnProperty('netlinkid')) {
+					var lineFeature = features[0];
+					if (lineFeature.geometry.CLASS_NAME === "OpenLayers.Geometry.LineString") {
+						if (mapFilters.netLinkEditMode) {
+							var netLink = lineFeature.data;
+							openPopupWindow({
+								url: '?m=netlinkproperties&id=' + netLink.src + '&devid=' + netLink.dst + '&isnetlink=1',
+								selector: '#map',
+								position: {my: 'center', at: 'center', of: '#map'},
+								title: $t("Network link properties"),
+								onSubmit: function (e, data) {
+									$.extend(
+										lineFeature.data,
+										{
+											type: data.type,
+											typename: data.typename,
+											technology: data.technology,
+											technologyname: data.technologyname,
+											speed: data.speed,
+											speedname: data.speedname,
+											foreignentity: data.foreignentity
+										}
+									);
+									devlinklayer.drawFeature(lineFeature);
+									selectlayer.unselect(lineFeature);
+								}
+							});
+						} else if (lmsSettings.mapCreateNewPointAfterLinkEditStart) {
+							var g = lineFeature.geometry;
+							var pt = new OpenLayers.Geometry.Point(featureLonLat.lon, featureLonLat.lat);
+
+							var hit = findSegmentContainingPoint(map, g, pt, 30.0);
+
+							if (hit && hit.t >= 0.15 && hit.t <= 0.85) {
+								var newPoint = new OpenLayers.Geometry.Point(hit.projection.x, hit.projection.y);
+
+								g.addComponent(newPoint, hit.segIndex + 1);
+								lineFeature.layer.drawFeature(feature);
+							}
+
+							modifyfeature.selectFeature(lineFeature);
+						}
+					}
+				}
+
 				if (features.length > 1 || (features.length == 1 && features[0].geometry.CLASS_NAME == "OpenLayers.Geometry.Point")) {
 					var featurepopup = new OpenLayers.Popup(null, featureLonLat, new OpenLayers.Size(10, 10));
 					featurepopup.setOpacity(0.9);
@@ -1131,24 +1364,63 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 		map.addControl(selectlayer);
 		selectlayer.activate();
 
-		modifyfeature = new OpenLayers.Control.LmsModifyFeature(devlinklayer);
-		map.addControl(modifyfeature);
-		modifyfeature.activate();
+		if (lms.permissions.fullAccess || lms.permissions.networkMapEdit) {
+			modifyfeature = new OpenLayers.Control.LmsModifyFeature(
+				devlinklayer,
+				{
+					standalone: lmsSettings.mapCreateNewPointAfterLinkEditStart ? true : false,
+					vertexRenderIntent: "vertex"
+				}
+			);
+
+			modifyfeature.virtualStyle = OpenLayers.Util.applyDefaults(
+				{
+					strokeColor: "",
+					strokeWidth: "",
+					pointRadius: 9,
+					fillColor: "#0000FF",
+					fillOpacity: 0.5
+				},
+				OpenLayers.Feature.Vector.style.default
+			);
+
+			map.addControl(modifyfeature);
+		}
 
 		var checkbutton = new OpenLayers.Control.Button({
 			displayClass: "lmsCheckButton",
-			title: $t("Check a host ..."),
+			title: $t("Check a host"),
 			command: 'check'});
 
 		var centerbutton = new OpenLayers.Control.Button({
 			displayClass: "lmsCenterButton",
-			title: $t("Center map around network elements ..."),
+			title: $t("Center map around network elements"),
 			command: 'center'});
 
 		var refreshbutton = new OpenLayers.Control.Button({
 			displayClass: "lmsRefreshButton",
-			title: $t("Refresh network state ..."),
+			title: $t("Refresh network state"),
 			command: 'refresh'});
+
+		devLinkForeignEntityToggleButton = new OpenLayers.Control.Button({
+			displayClass: "lmsDevLinkForeignEntityToggleButton",
+			title: $t("Show/hide foreign entity network links"),
+			command: 'devLinkForeignEntityToggle',
+		});
+
+		customerOwnedToggleButton = new OpenLayers.Control.Button({
+			displayClass: "lmsCustomerOwnedToggleButton",
+			title: $t("Show/hide customer owned infrastructure elements"),
+			command: 'customerOwnedToggle',
+		});
+
+		if (lms.permissions.fullAccess || lms.permissions.networkMapEdit) {
+			netLinkEditModeChangeButton = new OpenLayers.Control.Button({
+				displayClass: "lmsNetLinkEditModeChangeButton",
+				title: $t("Change network link edit mode"),
+				command: 'netLinkEditModeChange',
+			});
+		}
 
 		var panel = new OpenLayers.Control.Panel({
 			type: OpenLayers.Control.TYPE_BUTTON,
@@ -1206,10 +1478,58 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 							netdevmap_refresh(true);
 						}
 						break;
+					case 'devLinkForeignEntityToggle':
+						mapFilters.devLinkForeignEntity = !mapFilters.devLinkForeignEntity;
+						devlinklayer.redraw();
+						if (mapFilters.devLinkForeignEntity) {
+							control.deactivate();
+						} else {
+							control.activate();
+						}
+
+						setStorageItem('mapFilters', JSON.stringify(mapFilters), 'local');
+
+						break;
+					case 'customerOwnedToggle':
+						mapFilters.customerOwned = !mapFilters.customerOwned;
+
+						devlinklayer.redraw();
+						devicelayer.redraw();
+						rsarealayer2.redraw();
+						rsarealayer5.redraw();
+						rsdirectionlayer2.redraw();
+						rsdirectionlayer5.redraw();
+
+						if (mapFilters.customerOwned) {
+							control.deactivate();
+						} else {
+							control.activate();
+						}
+
+						setStorageItem('mapFilters', JSON.stringify(mapFilters), 'local');
+
+						break;
+					case 'netLinkEditModeChange':
+						mapFilters.netLinkEditMode = !mapFilters.netLinkEditMode;
+
+						if (mapFilters.netLinkEditMode) {
+							control.deactivate();
+							modifyfeature.deactivate();
+						} else {
+							control.activate();
+							modifyfeature.activate();
+						}
+
+						setStorageItem('mapFilters', JSON.stringify(mapFilters), 'local');
+
+						break;
 				}
 			}
 		});
-		panel.addControls([checkbutton, centerbutton, refreshbutton]);
+		panel.addControls([checkbutton, centerbutton, refreshbutton, devLinkForeignEntityToggleButton, customerOwnedToggleButton]);
+		if (lms.permissions.fullAccess || lms.permissions.networkMapEdit) {
+			panel.addControls([netLinkEditModeChangeButton]);
+		}
 		map.addControl(panel);
 	} else {
 		selectlayer = new OpenLayers.Control.SelectFeature(highlightlayers, {
@@ -1253,7 +1573,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 	if (mapBaseLayer != null)
 		map.setBaseLayer(map.layers[mapBaseLayer]);
 	else
-		map.setBaseLayer(gmap);
+		map.setBaseLayer(osm);
 
 	var mapLayers = getCookie('mapLayers');
 	if (mapLayers != null) {
@@ -1275,6 +1595,16 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			zoom = parseInt(mapData[2]);
 			loadedSettings = true;
 		}
+	}
+
+	var storageMapFilters = getStorageItem('mapFilters', 'local');
+	if (typeof(storageMapFilters) === 'string') {
+		try {
+			storageMapFilters = JSON.parse(storageMapFilters);
+		} catch (error) {
+			storageMapFilters = {};
+		}
+		$.extend(mapFilters, storageMapFilters);
 	}
 
 	if (startLon != null && startLat != null)
@@ -1316,6 +1646,32 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 	map.events.register('moveend', map, function(e) {
 		setCookie('mapSettings',  map.getCenter().lon + ';' + map.getCenter().lat + ';' + map.getZoom(), true);
 	});
+
+	if (devLinkForeignEntityToggleButton) {
+		if (mapFilters.devLinkForeignEntity) {
+			devLinkForeignEntityToggleButton.deactivate();
+		} else {
+			devLinkForeignEntityToggleButton.activate();
+		}
+	}
+
+	if (customerOwnedToggleButton) {
+		if (mapFilters.customerOwned) {
+			customerOwnedToggleButton.deactivate();
+		} else {
+			customerOwnedToggleButton.activate();
+		}
+	}
+
+	if (netLinkEditModeChangeButton) {
+		if (mapFilters.netLinkEditMode) {
+			netLinkEditModeChangeButton.deactivate();
+			modifyfeature.deactivate();
+		} else {
+			netLinkEditModeChangeButton.activate();
+			modifyfeature.activate();
+		}
+	}
 
 	// closes popups after mouse double click on them
 	document.getElementById('map').addEventListener(

@@ -86,6 +86,7 @@ if (!isset($resource_tabs['customergroups']) || $resource_tabs['customergroups']
     $othercustomergroups = $LMS->GetGroupNamesWithoutCustomer($customerid);
 }
 if ((ConfigHelper::checkPrivilege('read_only') || ConfigHelper::checkPrivilege('finances_view') || ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management'))
+    && !ConfigHelper::checkPrivilege('hide_finances')
     && (!isset($resource_tabs['customerbalancebox']) || $resource_tabs['customerbalancebox'])) {
     if (isset($_GET['aggregate_documents'])) {
         $aggregate_documents = !empty($_GET['aggregate_documents']);
@@ -265,19 +266,22 @@ if ($receipt = $SESSION->get('receiptprint', true)) {
 $SMARTY->assign(array(
     'id' => $customerinfo['id'],
     'objectid' => $customerinfo['id'],
-    'aggregate_documents' => isset($aggregate_documents) ? $aggregate_documents : false,
-    'commited' => isset($commited) ? $commited : true,
-    'expired' => isset($expired) ? $expired : false,
-    'period' => isset($period) ? $period : null,
-    'allevents' => isset($allevents) ? $allevents : 0,
-    'alltickets' => isset($alltickets) ? $alltickets : 0,
-    'time' => $SESSION->get('addbt'),
+    'aggregate_documents' => $aggregate_documents ?? false,
+    'commited' => $commited ?? true,
+    'expired' => $expired ?? false,
+    'period' => $period ?? null,
+    'allevents' => $allevents ?? 0,
+    'alltickets' => $alltickets ?? 0,
     'taxid' => $SESSION->get('addbtax'),
     'comment' => $SESSION->get('addbc'),
     'sourceid' => $SESSION->get('addsource'),
 ));
 
-$SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources WHERE deleted = 0 ORDER BY name'));
+if (ConfigHelper::checkConfig('phpui.remember_date_in_customerbalancebox')) {
+    $SMARTY->assign('time', $SESSION->get('addbt'));
+}
+
+$SMARTY->assign('sourcelist', $LMS->getCashSources());
 $SMARTY->assignByRef('customerextids', $customerextids);
 $SMARTY->assignByRef('customernotes', $customernotes);
 $SMARTY->assignByRef('customernodes', $customernodes);

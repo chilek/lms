@@ -41,7 +41,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         static $node_empty_mac = null;
 
         $args = array(
-            'name' => ConfigHelper::checkConfig('phpui.capitalize_node_names', true)
+            'name' => ConfigHelper::checkConfig('nodes.capitalize_names', ConfigHelper::checkConfig('phpui.capitalize_node_names', true))
                 ? strtoupper($nodedata['name']) : $nodedata['name'],
             'ipaddr_pub'        => $nodedata['ipaddr_pub'],
             'ipaddr'            => $nodedata['ipaddr'],
@@ -66,13 +66,13 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'linkspeed'         => !empty($nodedata['linkspeed']) && (is_int($nodedata['linkspeed']) || ctype_digit($nodedata['linkspeed']))
                 ? intval($nodedata['linkspeed']) : null,
             'port'              => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
-            'nas'               => isset($nodedata['nas']) ? $nodedata['nas'] : 0,
+            'nas'               => $nodedata['nas'] ?? 0,
             'longitude'         => !empty($nodedata['longitude']) ? str_replace(',', '.', $nodedata['longitude']) : null,
             'latitude'          => !empty($nodedata['latitude'])  ? str_replace(',', '.', $nodedata['latitude'])  : null,
             SYSLOG::RES_NETWORK => $nodedata['netid'],
             'invprojectid'      => empty($nodedata['invprojectid']) ? null : $nodedata['invprojectid'],
-            'authtype'          => $nodedata['authtype']   ? $nodedata['authtype']   : 0,
-            'address_id'        => isset($nodedata['address_id']) && $nodedata['address_id'] >= 0 ? $nodedata['address_id'] : null,
+            'authtype'          => $nodedata['authtype']   ?: 0,
+            'address_id'        => isset($nodedata['address_id']) && $nodedata['address_id'] > 0 ? $nodedata['address_id'] : null,
             SYSLOG::RES_NODE    => $nodedata['id']
         );
 
@@ -110,7 +110,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         $this->db->Execute('DELETE FROM macs WHERE nodeid=?', array($nodedata['id']));
 
         if (!isset($node_empty_mac)) {
-            $node_empty_mac = ConfigHelper::getConfig('phpui.node_empty_mac', '', true);
+            $node_empty_mac = ConfigHelper::getConfig('nodes.empty_mac', ConfigHelper::getConfig('phpui.node_empty_mac', '', true));
             if (strlen($node_empty_mac) && check_mac($node_empty_mac)) {
                 $node_empty_mac = Utils::normalizeMac($node_empty_mac);
             } else {
@@ -338,6 +338,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
      *          9 = without radio sector (if wireless link),
      *          10 = with locks,
      *          11 = without TERYT,
+     *          12 = offline,
      *      network - network id (default: null = any), single integer value
      *      customergroup - customer group id (default: null = any), single integer value
      *      nodegroup - node group id (default: null = any), single integer value, -1 means nodes without any group
@@ -355,6 +356,8 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
      *                  -1 = project id is ignored,
      *              createdfrom - node created after this date (default: null = ignore),
      *              createdto - node created before this date (default: null = ignore),
+     *              modifiedfrom - node modified after this date (default: null = ignore),
+     *              modifiedto - node modified before this date (default: null = ignore),
      *              lastonlinebefore - last online earlier than (default: null = ignore), single integer value,
      *              lastonlineafter - last online later than (default: null = ignore), single integer value,
      *              address-origin - check node address origin (default: empty = ignore):
@@ -381,11 +384,11 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
     {
         extract($params);
 
-        if (!isset($order) || empty($order)) {
+        if (empty($order)) {
             $order = 'name,asc';
         }
 
-        list($order, $direction) = sscanf($order, '%[^,],%s');
+        [$order, $direction] = sscanf($order, '%[^,],%s');
 
         ($direction == 'desc') ? $direction = 'desc' : $direction = 'asc';
 
@@ -416,8 +419,18 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 break;
         }
 
+        if (empty($sqlskey) || strtoupper($sqlskey) != 'OR') {
+            $sqlskey = 'AND';
+        } else {
+            $sqlskey = 'OR';
+        }
+
+        if (isset($network) && $network) {
+            $network = intval($network);
+        }
+
         $searchargs = array();
-        if (isset($search) && !empty($search)) {
+        if (!empty($search)) {
             foreach ($search as $key => $value) {
                 if ($value != '') {
                     switch ($key) {
@@ -493,6 +506,12 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                         case 'createdto':
                             $searchargs[] = 'n.creationdate <= ' . intval($value);
                             break;
+                        case 'modifiedfrom':
+                            $searchargs[] = 'n.moddate >= ' . intval($value);
+                            break;
+                        case 'modifiedto':
+                            $searchargs[] = 'n.moddate <= ' . intval($value);
+                            break;
                         case 'lastonlinebefore':
                             $searchargs[] = 'n.lastonline <= ' . intval($value);
                             break;
@@ -509,8 +528,21 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                                     break;
                             }
                             break;
+                        case 'authtype':
+                            if (!empty($value) && is_array($value)) {
+                                if (empty($search['authtypek']) || $search['authtypek'] == 'AND') {
+                                    $searchargs[] = 'n.authtype = ' . array_sum($value);
+                                } else {
+                                    $searchargs[] = '(n.authtype & ' . array_sum($value) . ') > 0';
+                                }
+                            }
+                            break;
+                        case 'authtypek':
+                            break;
                         default:
-                            $searchargs[] = 'n.' . $key . ' ?LIKE? ' . $this->db->Escape("%$value%");
+                            if (preg_match('/^[a-z0-9_]+$/', $key)) {
+                                $searchargs[] = 'n.' . $key . ' ?LIKE? ' . $this->db->Escape("%$value%");
+                            }
                     }
                 }
             }
@@ -553,15 +585,23 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 					ELSE p.name END) AS project,
 				nd.netnodeid AS netnodeid, '
                 . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS owner, net.name AS netname, n.location,
+				lc.name AS city_name,
 				lc.ident AS city_ident,
-				lb.name AS borough_name, lb.ident AS borough_ident,
+				lb.name AS borough_name,
+				lb.ident AS borough_ident,
 				lb.type AS borough_type,
-				ld.name AS district_name, ld.ident AS district_ident,
-				ls.name AS state_name, ls.ident AS state_ident,
+				ld.name AS district_name,
+				ld.ident AS district_ident,
+				ls.name AS state_name,
+				ls.ident AS state_ident,
+				lst.name AS street_name,
 				(CASE WHEN lst.ident IS NULL
 					THEN (CASE WHEN c.street = \'\' THEN \'99999\' ELSE \'99998\' END)
 					ELSE lst.ident END) AS street_ident,
-				n.location_house, n.location_flat,
+				n.location_house,
+				n.location_flat,
+				a.zip,
+				c.type AS ctype,
 				(CASE WHEN EXISTS (
                     SELECT 1 FROM nodelocks
                     WHERE disabled = 0 AND (days & ' . $weekday . ') > 0 AND ' . $daysecond . ' >= fromsec
@@ -570,6 +610,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         }
 
         $sql .= 'FROM vnodes n
+                LEFT JOIN addresses a ON a.id = n.address_id
 				JOIN customerview c ON (n.ownerid = c.id)
 				JOIN networks net ON net.id = n.netid
                 ' . ($status == 11
@@ -610,12 +651,35 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 . ($status == 1 ? ' AND n.access = 1' : '') //connected
                 . ($status == 2 ? ' AND n.access = 0' : '') //disconnected
                 . ($status == 3 ? ' AND n.lastonline > ?NOW? - ' . intval(ConfigHelper::getConfig('phpui.lastonline_limit')) : '') //online
-                . ($status == 4 ? ' AND n.id NOT IN (
-					SELECT DISTINCT nodeid FROM nodeassignments na
-					JOIN assignments a ON a.id = na.assignmentid
-					WHERE a.suspended = 0 AND a.commited = 1 AND a.period IN (' . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ')
-						AND a.datefrom <= ?NOW? AND (a.dateto = 0 OR a.dateto >= ?NOW?)
-					)' : '')
+                . ($status == 12 ? ' AND n.lastonline < ?NOW? - ' . intval(ConfigHelper::getConfig('phpui.lastonline_limit')) : '') //offline
+                . ($status == 14 ? ' AND n.lastonline = 0' : '') // unknown
+                . ($status == 4
+                    ? ' AND NOT EXISTS (
+                        SELECT 1
+                        FROM nodeassignments na
+                        JOIN assignments a ON a.id = na.assignmentid
+                        WHERE na.nodeid = n.id
+                            AND a.commited = 1
+                            AND a.suspended = 0
+                            AND a.period IN (' . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ')
+                            AND a.datefrom <= ?NOW?
+                            AND (a.dateto = 0 OR a.dateto >= ?NOW?)
+                    )'
+                    : ''
+                )
+                . ($status == 13
+                    ? ' AND NOT EXISTS (
+                        SELECT 1
+                        FROM nodeassignments na
+                        JOIN assignments a ON a.id = na.assignmentid
+                        WHERE na.nodeid = n.id
+                            AND a.commited = 1
+                            AND a.suspended = 0
+                            AND a.period IN (' . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ')
+                            AND (a.dateto = 0 OR a.dateto >= ?NOW?)
+                    )'
+                    : ''
+                )
                 . ($status == 5 ? ' AND n.location_city IS NULL' : '')
                 . ($status == 11 ? ' AND (n.location_city IS NULL AND (a4.id IS NULL OR a4.city_id IS NULL))' : '')
                 . ($status == 6 ? ' AND n.netdev IS NULL' : '')
@@ -798,9 +862,20 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
     public function NodeSetWarnU($id, $warning = false)
     {
+        $id = Utils::filterIntegers(is_array($id) ? $id : array($id));
+        if (empty($id)) {
+            return false;
+        }
+
         if ($this->syslog) {
-            $nodes = $this->db->GetAll('SELECT id, ownerid FROM vnodes WHERE ownerid IN ('
-                    . (is_array($id) ? implode(',', $id) : $id) . ')');
+            $nodes = $this->db->GetAll(
+                'SELECT id, ownerid
+                FROM vnodes
+                WHERE ownerid IN ?',
+                [
+                    $id,
+                ]
+            );
             if (!empty($nodes)) {
                 foreach ($nodes as $node) {
                     $args = array(
@@ -812,8 +887,15 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 }
             }
         }
-        return $this->db->Execute('UPDATE nodes SET warning = ? WHERE ownerid IN ('
-                        . (is_array($id) ? implode(',', $id) : $id) . ')', array($warning ? 1 : 0));
+        return $this->db->Execute(
+            'UPDATE nodes
+            SET warning = ?
+            WHERE ownerid IN ?',
+            [
+                $warning ? 1 : 0,
+                $id,
+            ]
+        );
     }
 
     public function IPSetU($netdev, $access = false)
@@ -842,7 +924,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         static $node_empty_mac = null;
 
         $args = array(
-            'name'              => ConfigHelper::checkConfig('phpui.capitalize_node_names', true)
+            'name'              => ConfigHelper::checkConfig('nodes.capitalize_names', ConfigHelper::checkConfig('phpui.capitalize_node_names', true))
                 ? strtoupper($nodedata['name']) : $nodedata['name'],
             'ipaddr'            => $nodedata['ipaddr'],
             'ipaddr_pub'        => $nodedata['ipaddr_pub'],
@@ -867,7 +949,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'port'              => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
             'chkmac'            => $nodedata['chkmac'],
             'halfduplex'        => $nodedata['halfduplex'],
-            'nas'               => isset($nodedata['nas']) ? $nodedata['nas'] : 0,
+            'nas'               => $nodedata['nas'] ?? 0,
             'longitude'         => !empty($nodedata['longitude']) ? str_replace(',', '.', $nodedata['longitude']) : null,
             'latitude'          => !empty($nodedata['latitude'])  ? str_replace(',', '.', $nodedata['latitude'])  : null,
             SYSLOG::RES_NETWORK => $nodedata['netid'],
@@ -928,7 +1010,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 }
             } else {
                 if (!isset($node_empty_mac)) {
-                    $node_empty_mac = ConfigHelper::getConfig('phpui.node_empty_mac', '', true);
+                    $node_empty_mac = ConfigHelper::getConfig('nodes.empty_mac', ConfigHelper::getConfig('phpui.node_empty_mac', '', true));
                     if (strlen($node_empty_mac) && check_mac($node_empty_mac)) {
                         $node_empty_mac = Utils::normalizeMac($node_empty_mac);
                     }
@@ -953,14 +1035,14 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
     public function NodeExists($id)
     {
-        return ($this->db->GetOne(
+        return (bool)$this->db->GetOne(
             'SELECT n.id FROM vnodes n
 			WHERE n.id = ? AND n.ownerid IS NOT NULL AND NOT EXISTS (
 		        	SELECT 1 FROM vcustomerassignments a
 			        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 				WHERE e.userid = lms_current_user() AND a.customerid = n.ownerid)',
             array($id)
-        ) ? true : false);
+        );
     }
 
     public function NodeStats()
@@ -1359,10 +1441,20 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
     public function GetNodeSessions($nodeid)
     {
         $nodesessions = $this->db->GetAll(
-            'SELECT id, INET_NTOA(ipaddr) AS ipaddr, mac, start, stop,
-                    download, upload, terminatecause, type,
-                    nasipaddr, INET_NTOA(nasipaddr) AS nasip,
-                    nasid
+            'SELECT
+                    id,
+                    INET_NTOA(ipaddr) AS ipaddr,
+                    mac,
+                    start,
+                    stop,
+                    download,
+                    upload,
+                    terminatecause,
+                    type,
+                    nasipaddr,
+                    INET_NTOA(nasipaddr) AS nasip,
+                    nasid,
+                    location
                 FROM nodesessions
                 WHERE nodeid = ?
                 ORDER BY stop DESC
@@ -1371,9 +1463,9 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         );
         if (!empty($nodesessions)) {
             foreach ($nodesessions as &$session) {
-                list ($number, $unit) = setunits($session['download']);
+                [$number, $unit] = setunits($session['download']);
                 $session['download'] = round($number, 2) . ' ' . $unit;
-                list ($number, $unit) = setunits($session['upload']);
+                [$number, $unit] = setunits($session['upload']);
                 $session['upload'] = round($number, 2) . ' ' . $unit;
                 $session['duration'] = $session['stop']
                     ? ($session['stop'] - $session['start'] < 60 ? trans('shorter than minute') : uptimef($session['stop'] - $session['start']))

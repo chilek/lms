@@ -103,7 +103,7 @@ class LMSUserGroupManager extends LMSManager implements LMSUserGroupManagerInter
 
     public function UsergroupExists($id)
     {
-        return ($this->db->GetOne('SELECT id FROM usergroups WHERE id=?', array($id)) ? true : false);
+        return (bool)$this->db->GetOne('SELECT id FROM usergroups WHERE id=?', array($id));
     }
 
     public function GetUserWithoutGroupNames($groupid)

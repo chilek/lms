@@ -19,6 +19,7 @@
 							<col style="width: 1%;">
 							<col style="width: 99%;">
 						</colgroup>
+{*
 						<tr>
 							<td class="nobr">
 								<label for="hide_documentbox">
@@ -30,6 +31,7 @@
 									{if $moduleconfig.hide_documentbox} checked{/if} {tip text="Don't show customer document box"}>
 							</td>
 						</tr>
+*}
 						<tr>
 							<td class="nobr">
 								<label for="show_confirmed_documents_only">
@@ -39,6 +41,17 @@
 							<td class="nobr">
 								<input type="checkbox" name="moduleconfig[show_confirmed_documents_only]" id="show_confirmed_documents_only"
 									value="1"{if $moduleconfig.show_confirmed_documents_only} checked{/if} {tip text="Show only documents which are confirmed"}>
+							</td>
+						</tr>
+						<tr>
+							<td class="nobr">
+								<label for="show_unapproved_document_attachments">
+									{trans("Show unapproved document attachments")}
+								</label>
+							</td>
+							<td class="nobr">
+								<input type="checkbox" name="moduleconfig[show_unapproved_document_attachments]" id="show_unapproved_document_attachments"
+									value="1"{if $moduleconfig.show_unapproved_document_attachments} checked{/if} {tip text="Show unapproved document attachments"}>
 							</td>
 						</tr>
 						<tr>

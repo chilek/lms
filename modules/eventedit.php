@@ -67,6 +67,7 @@ $backto = $SESSION->get_history_entry('m=eventlist');
 $backid = $SESSION->get('backid');
 $backurl = '?' . $backto . (empty($backid) ? '' : '#' . $backid);
 
+$action = $_GET['action'] ?? null;
 switch ($action) {
     case 'open':
         if (empty($event['closeddate']) || ($event['closed'] == 1 && $aee && ($now - $event['closeddate'] < $aee)) || $superuser) {
@@ -183,7 +184,7 @@ if (isset($_POST['event'])) {
             'begintime' => $begintime,
             'enddate' => $enddate,
             'endtime' => $endtime,
-            'users' => isset($event['userlist']) ? $event['userlist'] : array(),
+            'users' => $event['userlist'] ?? array(),
             'ignoredevent' => $event['id'],
         )))) {
         $users_by_id = Utils::array_column($userlist, 'rname', 'id');
@@ -226,8 +227,8 @@ if (isset($_POST['event'])) {
     if (!$error) {
         $event['private'] = isset($event['private']) ? 1 : 0;
 
-        $event['address_id'] = !isset($event['address_id']) || $event['address_id'] == -1 ? null : $event['address_id'];
-        $event['nodeid'] = !isset($event['nodeid']) || empty($event['nodeid']) ? null : $event['nodeid'];
+        $event['address_id'] = !isset($event['address_id']) || $event['address_id'] <= 0 ? null : $event['address_id'];
+        $event['nodeid'] = empty($event['nodeid']) ? null : $event['nodeid'];
 
         $event['date'] = $date;
         $event['begintime'] = $begintime;
@@ -283,13 +284,15 @@ if (!isset($event['usergroup'])) {
 
 $SMARTY->assign(array(
     'xajax' => $LMS->RunXajax(),
-    'netdevices' => $netdevices,
-    'netnodes' => $LMS->GetNetNodes(),
+    'netdevlist' => $netdevices,
+    'netnodelist' => $LMS->GetNetNodes(),
     'max_userlist_size' => $max_userlist_size,
     'customerlist' => $big_networks ? null : $LMS->GetAllCustomerNames(),
     'userlist' => $userlist,
     'usergroups' => $usergroups,
+    'divisions' => $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())),
     'error' => $error,
-    'event' => $event));
+    'event' => $event,
+));
 
 $SMARTY->display('event/eventmodify.html');

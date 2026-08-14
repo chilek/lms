@@ -31,7 +31,7 @@
  */
 class UiConfigParser implements ConfigParserInterface
 {
-    const NAME = 'UI_CONFIG_PARSER';
+    public const NAME = 'UI_CONFIG_PARSER';
 
     /**
      * Converts raw ui config into it's object representation

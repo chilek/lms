@@ -7,17 +7,31 @@
 		<div id="lms-ui-welcome-main-panels">
 			<div id="lms-ui-welcome-panel-1" class="lms-ui-welcome-main-panel">
 				{block name="welcome-left-panel"}
-					{include file="welcome/welcome_sysinfo_about_lms.html"}
-					{include file="welcome/welcome_sysinfo_customers.html"}
-					{include file="welcome/welcome_sysinfo_rtstats.html"}
+					{if empty($welcome_visible_panels) || isset($welcome_visible_panels.appinfo)}
+						{include file="welcome/welcome_sysinfo_about_lms.html"}
+					{/if}
+					{if empty($welcome_visible_panels) || isset($welcome_visible_panels.customers)}
+						{include file="welcome/welcome_sysinfo_customers.html"}
+					{/if}
+					{if empty($welcome_visible_panels) || isset($welcome_visible_panels.helpdesk)}
+						{include file="welcome/welcome_sysinfo_rtstats.html"}
+					{/if}
 				{/block}
 			</div>
 			<div id="lms-ui-welcome-panel-2" class="lms-ui-welcome-main-panel">
 				{block name="welcome-right-panel"}
-					{include file="welcome/welcome_sysinfo_about_system.html"}
-					{include file="welcome/welcome_summaries.html"}
-					{include file="welcome/welcome_links.html"}
-					{include file="welcome/welcome_registration.html"}
+					{if empty($welcome_visible_panels) || isset($welcome_visible_panels.sysinfo)}
+						{include file="welcome/welcome_sysinfo_about_system.html"}
+					{/if}
+					{if empty($welcome_visible_panels) || isset($welcome_visible_panels.nodes)}
+						{include file="welcome/welcome_summaries.html"}
+					{/if}
+					{if empty($welcome_visible_panels) || isset($welcome_visible_panels.links)}
+						{include file="welcome/welcome_links.html"}
+					{/if}
+					{if empty($welcome_visible_panels) || isset($welcome_visible_panels.reginfo)}
+						{include file="welcome/welcome_registration.html"}
+					{/if}
 				{/block}
 			</div>
 			{for $panel=3 to intval(ConfigHelper::getConfig('phpui.welcome_panels', 2))}

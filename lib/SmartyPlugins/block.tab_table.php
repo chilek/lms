@@ -27,7 +27,7 @@
 function smarty_block_tab_table($params, $content, $template, $repeat)
 {
     if (!$repeat) {
-        $id = isset($params['id']) ? $params['id'] : null;
+        $id = $params['id'] ?? null;
         $hourglass = isset($params['hourglass']) && $params['hourglass'];
 
         return '

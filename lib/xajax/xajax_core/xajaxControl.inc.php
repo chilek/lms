@@ -350,46 +350,42 @@ class xajaxControl
 //EndSkipDebug
 
         $sClass = $this->getClass();
-        
+
         if ('%inline' != $sClass) {
             // this odd syntax is necessary to detect request for no formatting
             if (false === (false === $sIndent)) {
                 echo $sIndent;
             }
         }
-            
+
         echo '<';
         echo $this->sTag;
         echo ' ';
         $this->_printAttributes();
         $this->_printEvents();
-        
+
         if ('forbidden' == $this->sEndTag) {
             if ('HTML' == XAJAX_HTML_CONTROL_DOCTYPE_FORMAT) {
                 echo '>';
             } else if ('XHTML' == XAJAX_HTML_CONTROL_DOCTYPE_FORMAT) {
                 echo '/>';
             }
-            
+
             if ('%inline' != $sClass) {
                 // this odd syntax is necessary to detect request for no formatting
                 if (false === (false === $sIndent)) {
                     echo "\n";
                 }
             }
-                
-            return;
         } else if ('optional' == $this->sEndTag) {
             echo '/>';
-            
+
             if ('%inline' == $sClass) {
                 // this odd syntax is necessary to detect request for no formatting
                 if (false === (false === $sIndent)) {
                     echo "\n";
                 }
             }
-                
-            return;
         }
 //SkipDebug
         else {
@@ -730,14 +726,14 @@ class xajaxControlContainer extends xajaxControl
         if (0 == count($this->aChildren)) {
             if ('optional' == $this->sEndTag) {
                 echo '/>';
-                
+
                 if ('%inline' != $sClass) {
                     // this odd syntax is necessary to detect request for no formatting
                     if (false === (false === $sIndent)) {
                         echo "\n";
                     }
                 }
-                    
+
                 return;
             }
 //SkipDebug

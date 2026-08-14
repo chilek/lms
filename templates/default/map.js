@@ -2,16 +2,17 @@
 	{if $devices}
 		{foreach $devices as $device}
 			devices.push({
+				ownerid: "{if !empty($device.ownerid)}{$device.ownerid}{/if}",
 				lon: "{$device.lon}",
 				lat: "{$device.lat}",
 				state: {$device.state},
-				name: "{$device.name}",
+				name: escapeHtml("{$device.name|replace:'"':'\\"'}"),
 				location: "{$device.location|default:""|escape}",
 				ipaddr: "{$device.ipaddr}",
 				nodeid: "{$device.nodeid}",
 				id: {$device.id},
 				type: "netdevinfo",
-				url: "{$device.url}",
+				url: escapeHtml("{$device.url|replace:'"':'\\"'}"),
 				comment: "{$device.comment}",
 				radiosectors: [
 				{foreach $device.radiosectors as $radiosector}
@@ -42,13 +43,15 @@
 				srclat: {$devlink.srclat},
 				dstlon: {$devlink.dstlon},
 				dstlat: {$devlink.dstlat},
+				customers: JSON.parse('{json_encode($devlink.customers)}'),
 				points: JSON.parse('{json_encode($devlink.points)}'),
 				type: "{$devlink.type}",
 				technology: "{$devlink.technology}",
 				speed: "{$devlink.speed}",
 				typename: "{$devlink.typename}",
 				technologyname: "{$devlink.technologyname}",
-				speedname: "{$devlink.speedname}"
+				speedname: "{$devlink.speedname}",
+				foreignentity: {if empty($devlink.foreignentity)}null{else}JSON.parse('{json_encode($devlink.foreignentity)}'){/if}
 			});
 		{/foreach}
 	{/if}
@@ -60,12 +63,12 @@
 				lon: "{$node.lon}",
 				lat: "{$node.lat}",
 				state: {$node.state},
-				name: "{$node.name}",
+				name: escapeHtml("{$node.name|replace:'"':'\\"'}"),
 				location: "{$node.location|default:""|escape}",
 				ipaddr: "{$node.ipaddr}",
 				id: {$node.id},
 				type: "nodeinfo",
-				url: "{$node.url}",
+				url: escapeHtml("{$node.url|replace:'"':'\\"'}"),
 				comment: "{$node.comment}",
 				linktype: "{$node.linktype}",
 				linktypeicon: "{$node.linktypeicon}",

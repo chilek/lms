@@ -110,7 +110,7 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
     $start = 0;
     $pagelimit = ConfigHelper::getConfig(
         'rt.ticketlist_pagelimit',
-        ConfigHelper::getConfig('phpui.ticketlist_pagelimit', isset($queue['total']) ? $queue['total'] : null)
+        ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $queue['total'] ?? null)
     );
 
     $SMARTY->assign('netdev', $netdev);
@@ -162,6 +162,20 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
             . ' ORDER BY name'
         )
     );
+
+    $foreign_entities = Utils::getForeignEntities();
+    if (!empty($netdevconnected) && !empty($foreign_entities)) {
+        foreach ($netdevconnected as &$netdevconn) {
+            if (!empty($netdevconn['foreignentity'])) {
+                if (!empty($foreign_entities[$netdevconn['foreignentity']])) {
+                    $foreign_entity = $foreign_entities[$netdevconn['foreignentity']];
+                    $netdevconn['foreignentity'] = $foreign_entity['name'] . (empty($foreign_entity['type']) ? '' : ', ' . trans('TEN') . ' ' . $foreign_entity['id']);
+                }
+            }
+        }
+        unset($netdevconn);
+    }
+    $SMARTY->assign('foreign_entities', $foreign_entities);
 
     $hook_data = $LMS->executeHook(
         'netdevinfo_before_display',

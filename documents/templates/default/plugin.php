@@ -33,11 +33,10 @@ if (isset($_POST['document'])) {
     $result = 'Error';
     return;
 */
-} else // AJAX request
-{
+} else { // AJAX request
     // Variables accessible in AJAX request
-    // $customer    - selected customer ID
+    // $customerid    - selected customer ID
     // $JSResponse  - xajaxResponse object
 }
 
-$result = $SMARTY->fetch(DOC_DIR.'/templates/'.$engine['name'].'/plugin.html');
+$result = $SMARTY->fetch(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $engine['name'] . DIRECTORY_SEPARATOR . 'plugin.html');

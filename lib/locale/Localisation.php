@@ -26,8 +26,12 @@
 
 class Localisation
 {
-    const UI_FUNCTION = 'ui_functions';
-    const SYSTEM_FUNCTION = 'system_functions';
+    public const UI_FUNCTION = 'ui_functions';
+    public const SYSTEM_FUNCTION = 'system_functions';
+
+    const DATE_FORMAT_FULL = 1;
+    const DATE_FORMAT_DATE = 2;
+    const DATE_FORMAT_TIME = 3;
 
     private static $langDefs = array();
     private static $defaultUiLanguage = null;
@@ -38,7 +42,9 @@ class Localisation
     private static $uiStrings = array();
 
     private static $numberFormatter = null;
+    private static $editableNumberFormatter = null;
     private static $numberSmartFormatter = null;
+    private static $editableNumberSmartFormatter = null;
 
     public static function init()
     {
@@ -228,29 +234,55 @@ class Localisation
 
     private static function setLocales()
     {
-        $locale = self::$langDefs[self::$systemLanguage]['locale'];
+        if (isset(self::$langDefs[self::$systemLanguage])) {
+            $locale = self::$langDefs[self::$systemLanguage]['locale'];
+        } else {
+            $locale = 'en_US.UTF-8';
+        }
 
         setlocale(LC_COLLATE, $locale);
         setlocale(LC_CTYPE, $locale);
         setlocale(LC_TIME, $locale);
         setlocale(LC_NUMERIC, $locale);
 
-        if (!isset(self::$langDefs[self::$systemLanguage]['number_formatter'])) {
+        if (isset(self::$langDefs[self::$systemLanguage])) {
+            $locale = self::$systemLanguage;
+        } else {
+            $locale = 'en_US';
+        }
+
+        if (!isset(self::$langDefs[$locale]['number_formatter'])) {
             $fmt = new NumberFormatter($locale, NumberFormatter::DECIMAL);
             $fmt->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 2);
             $fmt->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 3);
 
-            self::$langDefs[self::$systemLanguage]['number_smart_formatter'] = $fmt;
+            self::$langDefs[$locale]['number_smart_formatter'] = $fmt;
+
+            $fmt = new NumberFormatter($locale, NumberFormatter::DECIMAL);
+            $fmt->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 2);
+            $fmt->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 3);
+            $fmt->setSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL, '');
+
+            self::$langDefs[$locale]['editable_number_smart_formatter'] = $fmt;
 
             $fmt = new NumberFormatter($locale, NumberFormatter::DECIMAL);
             $fmt->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 2);
             $fmt->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 2);
 
-            self::$langDefs[self::$systemLanguage]['number_formatter'] = $fmt;
+            self::$langDefs[$locale]['number_formatter'] = $fmt;
+
+            $fmt = new NumberFormatter($locale, NumberFormatter::DECIMAL);
+            $fmt->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 2);
+            $fmt->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 2);
+            $fmt->setSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL, '');
+
+            self::$langDefs[$locale]['editable_number_formatter'] = $fmt;
         }
 
-        self::$numberSmartFormatter = self::$langDefs[self::$systemLanguage]['number_smart_formatter'];
-        self::$numberFormatter = self::$langDefs[self::$systemLanguage]['number_formatter'];
+        self::$numberSmartFormatter = self::$langDefs[$locale]['number_smart_formatter'];
+        self::$editableNumberSmartFormatter = self::$langDefs[$locale]['editable_number_smart_formatter'];
+        self::$numberFormatter = self::$langDefs[$locale]['number_formatter'];
+        self::$editableNumberFormatter = self::$langDefs[$locale]['editable_number_formatter'];
     }
 
     public static function getCurrentCurrency()
@@ -275,13 +307,13 @@ class Localisation
 
     public static function getCurrentViesCode()
     {
-        return isset(self::$langDefs[self::$systemLanguage]['vies_code']) ? self::$langDefs[self::$systemLanguage]['vies_code'] : null;
+        return self::$langDefs[self::$systemLanguage]['vies_code'] ?? null;
     }
 
     public static function getViesCodeByCountryCode($countryCode)
     {
         $lang = self::checkLanguage($countryCode);
-        return isset(self::$langDefs[$lang]['vies_code']) ? self::$langDefs[$lang]['vies_code'] : null;
+        return self::$langDefs[$lang]['vies_code'] ?? null;
     }
 
     public static function getCurrentHtmlCharset()
@@ -364,6 +396,33 @@ class Localisation
         self::$uiLanguage = self::$defaultUiLanguage;
     }
 
+    public static function dateFormat($date, $format = self::DATE_FORMAT_DATE)
+    {
+        static $intlDateFormatter = null;
+
+        if (!isset($intlDateFormatter)) {
+            $intlDateFormatter = array(
+                self::DATE_FORMAT_FULL => IntlDateFormatter::create(
+                    self::$uiLanguage,
+                    IntlDateFormatter::LONG,
+                    IntlDateFormatter::LONG
+                ),
+                self::DATE_FORMAT_DATE => IntlDateFormatter::create(
+                    self::$uiLanguage,
+                    IntlDateFormatter::LONG,
+                    IntlDateFormatter::NONE
+                ),
+                self::DATE_FORMAT_TIME => IntlDateFormatter::create(
+                    self::$uiLanguage,
+                    IntlDateFormatter::NONE,
+                    IntlDateFormatter::LONG
+                ),
+            );
+        }
+
+        return datefmt_format($intlDateFormatter[$format], $date);
+    }
+
     public static function getCurrentSystemLanguage()
     {
         return self::$systemLanguage;
@@ -389,7 +448,8 @@ class Localisation
 
     public static function setSystemLanguage($lang)
     {
-        if ($lang == self::$systemLanguage || empty($lang) || !isset(self::$langDefs[$lang])) {
+        //if ($lang == self::$systemLanguage || empty($lang) || !isset(self::$langDefs[$lang])) {
+        if ($lang == self::$systemLanguage || empty($lang)) {
             return;
         }
 
@@ -401,23 +461,40 @@ class Localisation
                 self::loadSystemLanguage();
             }
             self::setLocales();
+        } else {
+            self::$systemLanguage = $lang;
+            self::setLocales();
         }
     }
 
-    public static function smartFormatNumber($number)
+    public static function smartFormatNumber($number, $editable = false)
     {
         if (is_string($number)) {
             $number = floatval($number);
         }
-        return self::$numberSmartFormatter->format($number);
+        if (!is_finite($number)) {
+            $number = 0.0;
+        }
+        if ($editable) {
+            return self::$editableNumberSmartFormatter->format($number ?? 0);
+        } else {
+            return self::$numberSmartFormatter->format($number ?? 0);
+        }
     }
 
-    public static function formatNumber($number)
+    public static function formatNumber($number, $editable = false)
     {
         if (is_string($number)) {
             $number = floatval($number);
         }
-        return self::$numberFormatter->format($number);
+        if (!is_finite($number)) {
+            $number = 0.0;
+        }
+        if ($editable) {
+            return self::$editableNumberFormatter->format($number);
+        } else {
+            return self::$numberFormatter->format($number);
+        }
     }
 
     public static function trans()
@@ -435,7 +512,7 @@ class Localisation
         }
 
         for ($i = 1, $len = count($args); $i <= $len; $i++) {
-            $content = str_replace('$' . chr(97 + $i - 1), isset($args[$i - 1]) ? $args[$i - 1] : '-', $content);
+            $content = str_replace('$' . chr(97 + $i - 1), $args[$i - 1] ?? '-', $content);
         }
 
         $content = preg_replace('/<![^>]+>/', '', $content);

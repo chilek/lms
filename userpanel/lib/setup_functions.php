@@ -26,6 +26,10 @@
 
 function userpanel_style_change()
 {
+    if (!ConfigHelper::checkPrivilege('userpanel_management')) {
+        access_denied();
+    }
+
     $files = getdir(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'templates_c', '^.*\.html\.php$');
     if (!empty($files)) {
         foreach ($files as $file) {
@@ -36,13 +40,18 @@ function userpanel_style_change()
 
 function module_setup()
 {
-    global $SMARTY, $DB, $USERPANEL, $layout, $LMS, $CSTATUSES;
+    global $SMARTY, $DB, $USERPANEL, $USERPANEL_AUTH_TYPES, $USERPANEL_REMINDER_TYPES, $layout, $LMS, $CSTATUSES;
+
+    if (!ConfigHelper::checkPrivilege('userpanel_management')) {
+        access_denied();
+    }
 
     $layout['pagetitle'] = trans('Userpanel Configuration');
     $SMARTY->assign('page_header', ConfigHelper::getConfig('userpanel.page_header', ''));
     $SMARTY->assign('company_logo', ConfigHelper::getConfig('userpanel.company_logo', ''));
     $SMARTY->assign('shortcut_icon', ConfigHelper::getConfig('userpanel.shortcut_icon', ''));
     $SMARTY->assign('stylelist', getdir(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'style', '^[a-z0-9]*$'));
+    $SMARTY->assign('extra_style', ConfigHelper::getConfig('userpanel.extra_style', ''));
     $SMARTY->assign('style', ConfigHelper::getConfig('userpanel.style', 'default'));
     $SMARTY->assign('startupmodule', ConfigHelper::getConfig('userpanel.startup_module', 'info'));
     $SMARTY->assign('hint', ConfigHelper::getConfig('userpanel.hint', 'modern'));
@@ -51,7 +60,31 @@ function module_setup()
     $SMARTY->assign('reminder_mail_subject', ConfigHelper::getConfig('userpanel.reminder_mail_subject', trans('credential reminder')));
     $SMARTY->assign('reminder_mail_body', ConfigHelper::getConfig('userpanel.reminder_mail_body', "ID: %id\nPIN: %pin"));
     $SMARTY->assign('reminder_sms_body', ConfigHelper::getConfig('userpanel.reminder_sms_body', "ID: %id, PIN: %pin"));
-    $SMARTY->assign('auth_type', ConfigHelper::getConfig('userpanel.auth_type', 1));
+
+    $SMARTY->assign('reminder_type', ConfigHelper::getConfig('userpanel.reminder_type', USERPANEL_REMINDER_TYPE_ID));
+    $SMARTY->assign('auth_type', ConfigHelper::getConfig('userpanel.auth_type', USERPANEL_AUTH_TYPE_ID_PIN));
+
+    $auth_options = array();
+    foreach ($USERPANEL_AUTH_TYPES as $auth_type) {
+        if (!empty($auth_type['options'])) {
+            foreach ($auth_type['options'] as $option) {
+                $auth_options[$option['name']] = ConfigHelper::getConfig('userpanel.' . $option['name'], '');
+            }
+        }
+    }
+    $SMARTY->assign('auth_options', $auth_options);
+
+    $reminder_options = array();
+    foreach ($USERPANEL_REMINDER_TYPES as $reminder_type) {
+        if (!empty($reminder_type['options'])) {
+            foreach ($reminder_type['options'] as $option) {
+                $reminder_options[$option['name']] = ConfigHelper::getConfig('userpanel.' . $option['name'], '');
+            }
+        }
+    }
+    $SMARTY->assign('reminder_options', $reminder_options);
+
+    $SMARTY->assign('twofactor_auth_type', ConfigHelper::getConfig('userpanel.twofactor_auth_type', '', true));
 
     $allowed_customer_status =
         Utils::determineAllowedCustomerStatus(ConfigHelper::getConfig('userpanel.allowed_customer_status', ''), -1);
@@ -89,7 +122,11 @@ function module_setup()
 
 function module_submit_setup()
 {
-    global $DB, $LMS, $CSTATUSES;
+    global $DB, $LMS, $CSTATUSES, $USERPANEL_AUTH_TYPES, $USERPANEL_REMINDER_TYPES;
+
+    if (!ConfigHelper::checkPrivilege('userpanel_management')) {
+        access_denied();
+    }
 
     if (!isset($_POST['hint'])) {
         module_setup();
@@ -111,6 +148,16 @@ function module_submit_setup()
         }
     } else {
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'style', ?)", array($_POST['style']));
+    }
+
+    $old_extra_style = $DB->GetOne("SELECT value FROM uiconfig WHERE section = 'userpanel' AND var = 'extra_style'");
+    if (is_string($old_extra_style)) {
+        $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'extra_style'", array($_POST['extra_style']));
+        if ($old_extra_style != $_POST['extra_style']) {
+            userpanel_style_change();
+        }
+    } else {
+        $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'extra_style', ?)", array($_POST['extra_style']));
     }
 
     if ($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'startup_module'")) {
@@ -171,6 +218,77 @@ function module_submit_setup()
         $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'auth_type'", array($_POST['auth_type']));
     } else {
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'auth_type', ?)", array($_POST['auth_type']));
+    }
+
+    if ($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'reminder_type'")) {
+        $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'reminder_type'", array($_POST['reminder_type']));
+    } else {
+        $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'reminder_type', ?)", array($_POST['reminder_type']));
+    }
+
+    if ($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'twofactor_auth_type'")) {
+        $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'twofactor_auth_type'", array($_POST['twofactor_auth_type']));
+    } else {
+        $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'twofactor_auth_type', ?)", array($_POST['twofactor_auth_type']));
+    }
+
+    foreach ($USERPANEL_AUTH_TYPES as $auth_type) {
+        if (!empty($auth_type['options'])) {
+            foreach ($auth_type['options'] as $option) {
+                $option_name = $option['name'];
+                if (isset($_POST[$option_name])) {
+                    if ($DB->GetOne(
+                        'SELECT 1 FROM uiconfig WHERE section = ? AND var = ?',
+                        array(
+                            'userpanel',
+                            $option_name,
+                        )
+                    )) {
+                        $DB->Execute(
+                            'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
+                            array(
+                                $_POST[$option_name],
+                                'userpanel',
+                                $option_name,
+                            )
+                        );
+                    } else {
+                        $DB->Execute(
+                            'INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)',
+                            array(
+                                'userpanel',
+                                $option_name,
+                                $_POST[$option_name],
+                            )
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    foreach ($USERPANEL_REMINDER_TYPES as $rem_type) {
+        if (!empty($rem_type['options'])) {
+            foreach ($rem_type['options'] as $option) {
+                $option_name = $option['name'];
+                if (isset($_POST[$option_name])) {
+                    if ($DB->GetOne(
+                        'SELECT 1 FROM uiconfig WHERE section = ? AND var = ?',
+                        array('userpanel', $option_name)
+                    )) {
+                        $DB->Execute(
+                            'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
+                            array($_POST[$option_name], 'userpanel', $option_name)
+                        );
+                    } else {
+                        $DB->Execute(
+                            'INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)',
+                            array('userpanel', $option_name, $_POST[$option_name])
+                        );
+                    }
+                }
+            }
+        }
     }
 
     $allowed_customer_status = array();
@@ -275,6 +393,10 @@ function module_rights()
 {
     global $SMARTY, $DB, $LMS, $layout;
 
+    if (!ConfigHelper::checkPrivilege('userpanel_management')) {
+        access_denied();
+    }
+
     $layout['pagetitle'] = trans('Customers\' rights');
 
     $customerlist = $LMS->GetCustomerNames();
@@ -288,6 +410,10 @@ function module_rights()
 function module_submit_rights()
 {
     global $DB;
+
+    if (!ConfigHelper::checkPrivilege('userpanel_management')) {
+        access_denied();
+    }
 
     $setrights=$_POST['setrights'];
     if (isset($setrights) && isset($setrights['mcustomerid'])) {
@@ -326,8 +452,12 @@ function module_submit_rights_default()
 {
     global $DB;
 
+    if (!ConfigHelper::checkPrivilege('userpanel_management')) {
+        access_denied();
+    }
+
     if (!isset($_POST['loginform'])) {
-        $rights = isset($_POST['setdefaultrights']) ? $_POST['setdefaultrights'] : array();
+        $rights = $_POST['setdefaultrights'] ?? array();
         foreach ($DB->GetCol('SELECT id FROM up_rights') as $right) {
             $DB->Execute(
                 'UPDATE up_rights SET setdefault = ? WHERE id = ?',
@@ -340,6 +470,10 @@ function module_submit_rights_default()
 
 function module_save_module_order()
 {
+    if (!ConfigHelper::checkPrivilege('userpanel_management')) {
+        access_denied();
+    }
+
     $DB = LMSDB::getInstance();
     $DB->Execute(
         'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',

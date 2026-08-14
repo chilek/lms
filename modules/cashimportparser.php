@@ -107,6 +107,6 @@ $SMARTY->assign('error', $error);
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 }
-$SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources WHERE deleted = 0 ORDER BY name'));
+$SMARTY->assign('sourcelist', $LMS->getCashSources());
 $SMARTY->assign('sourcefiles', $sourcefiles);
 $SMARTY->display('cash/cashimport.html');

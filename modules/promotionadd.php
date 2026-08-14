@@ -26,7 +26,7 @@
 
 check_file_uploads();
 
-$promotion = isset($_POST['promotion']) ? $_POST['promotion'] : null;
+$promotion = $_POST['promotion'] ?? null;
 
 if ($promotion) {
     foreach ($promotion as $key => $value) {

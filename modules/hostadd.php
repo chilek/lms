@@ -30,7 +30,7 @@ function GetHostIdByName($name)
     return $DB->GetOne('SELECT id FROM hosts WHERE name = ?', array($name));
 }
 
-$hostadd = isset($_POST['hostadd']) ? $_POST['hostadd'] : null;
+$hostadd = $_POST['hostadd'] ?? null;
 
 if ($hostadd) {
     $hostadd['name'] = trim($hostadd['name']);

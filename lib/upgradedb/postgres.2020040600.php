@@ -53,7 +53,7 @@ if (!empty($consents)) {
     foreach ($consents as $consent) {
         foreach ($consent_name_to_type_map as $consent_name => $consent_type) {
             if (!empty($consent[$consent_name])) {
-                $records[] = '(' . $consent['customerid'] . ',' . ($consent_name == 'consentdate' ? $consent['consentdate'] : 0) . ',' . $consent_name_to_type_map[$consent_name] . ')';
+                $records[] = '(' . $consent['customerid'] . ',' . ($consent_name == 'consentdate' ? $consent['consentdate'] : 0) . ',' . $consent_type . ')';
             }
         }
     }

@@ -23,6 +23,12 @@
 				margin-bottom: 0.5em;
 			}
 
+			.caption {
+				font-weight: bold;
+				margin-bottom: 0.5em;
+				text-align: center;
+			}
+
 			table > thead {
 				font-weight: bold;
 				background-color: lightgrey;
@@ -60,166 +66,274 @@
 	{$show_netto_column = false}
 
 	<body>
-		{foreach $minibilling as $phone => $mb}
-			<table>
-				<caption>
-					{t a=$phone b=$datefrom c=$dateto}Minibilling for number $a (period{if $datefrom} from $b{/if}{if $dateto} to $c{/if}){/t}
-				</caption>
-				<thead>
-					<tr>
-						<td>
-							{trans("<!minibilling>Call type")}
-						</td>
-						<td>
-							{trans("<!minibilling>Call time")}
-						</td>
-						<td>
-							{trans("<!minibilling>Call count")}
-						</td>
-						{if $show_netto_column}
-							<td>
-								{trans("<!minibilling>Net value")}
-							</td>
-						{/if}
-						<td>
-							{trans("<!minibilling>Gross value")}
-						</td>
-					</tr>
-				</thead>
-				<tbody>
-					{$total.time = 0}
-					{$total.count = 0}
-					{$total.brutto = 0}
-					{foreach $mb as $group => $row}
+		{foreach $minibilling as $phone => $types}
+			<p class="caption">
+				{t a=$phone b=$datefrom c=$dateto}Minibilling for number $a (period{if $datefrom} from $b{/if}{if $dateto} to $c{/if}){/t}
+			</p>
+			{foreach $types as $type => $mb}
+				<table>
+					<thead>
 						<tr>
 							<td>
-								{$group}
+								{if $type == $smarty.const.BILLING_RECORD_TYPE_VOICE_CALL}
+									{trans("<!minibilling>Call type")}
+								{elseif $type == $smarty.const.BILLING_RECORD_TYPE_SMS}
+									{trans("<!minibilling>SMS type")}
+								{elseif $type == $smarty.const.BILLING_RECORD_TYPE_MMS}
+									{trans("<!minibilling>MMS type")}
+								{elseif $type == $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}
+									{trans("<!minibilling>Data transfer type")}
+								{elseif $type == $smarty.const.BILLING_RECORD_TYPE_VIDEO_CALL}
+									{trans("<!minibilling>Video call type")}
+								{/if}
 							</td>
-							<td>
-								{$row.time|duration_format}
-							</td>
-							<td>
-								{t a=$row.count}<!minibilling>$a pcs.{/t}
-							</td>
-							{if $show_netto_column}
+							{if $type != $smarty.const.BILLING_RECORD_TYPE_SMS
+								&& $type != $smarty.const.BILLING_RECORD_TYPE_MMS}
 								<td>
-									{moneyf($row.brutto / 1.23)}
+									{if $type == $smarty.const.BILLING_RECORD_TYPE_VOICE_CALL}
+										{trans("<!minibilling>Call time")}
+									{elseif $type == $smarty.const.BILLING_RECORD_TYPE_SMS}
+										{trans("<!minibilling>Count")}
+									{elseif $type == $smarty.const.BILLING_RECORD_TYPE_MMS}
+										{trans("<!minibilling>Count")}
+									{elseif $type == $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}
+										{trans("<!minibilling>Volume")}
+									{elseif $type == $smarty.const.BILLING_RECORD_TYPE_VIDEO_CALL}
+										{trans("<!minibilling>Video call time")}
+									{/if}
 								</td>
 							{/if}
 							<td>
-								{moneyf($row.brutto)}
+								{trans("<!minibilling>Count")}
+							</td>
+							{if $show_netto_column}
+								<td>
+									{trans("<!minibilling>Net value")}
+								</td>
+							{/if}
+							<td>
+								{trans("<!minibilling>Gross value")}
 							</td>
 						</tr>
-						{$total.time = $total.time + $row.time}
-						{$total.count = $total.count + $row.count}
-						{$total.brutto = $total.brutto + $row.brutto}
-						{if !isset($totals[$group])}
-							{$totals[$group].time = 0}
-							{$totals[$group].count = 0}
-							{$totals[$group].brutto = 0}
-						{/if}
-						{$totals[$group].time = $totals[$group].time + $row.time}
-						{$totals[$group].count = $totals[$group].count + $row.count}
-						{$totals[$group].brutto = $totals[$group].brutto + $row.brutto}
-					{/foreach}
-					<tr class="summary">
-						<td>
-							{trans("<!minibilling>Total")}
-						</td>
-						<td>
-							{$total.time|duration_format}
-						</td>
-						<td>
-							{t a=$total.count}<!minibilling>$a pcs.{/t}
-						</td>
-						{if $show_netto_column}
+					</thead>
+					<tbody>
+						{$summary.total = 0}
+						{$summary.billed = 0}
+						{$summary.count = 0}
+						{$summary.brutto = 0}
+						{foreach $mb as $group => $row}
+							<tr>
+								<td>
+									{$group}
+								</td>
+								{if $type != $smarty.const.BILLING_RECORD_TYPE_SMS
+									&& $type != $smarty.const.BILLING_RECORD_TYPE_MMS}
+									<td>
+										{if $type == $smarty.const.BILLING_RECORD_TYPE_VOICE_CALL}
+											{$row.billed|duration_format}
+										{elseif $type == $smarty.const.BILLING_RECORD_TYPE_SMS}
+											{$row.billed}
+										{elseif $type == $smarty.const.BILLING_RECORD_TYPE_MMS}
+											{$row.billed}
+										{elseif $type == $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}
+											{$row.billed|size_format}
+										{elseif $type == $smarty.const.BILLING_RECORD_TYPE_VIDEO_CALL}
+											{$row.billed|duration_format}
+										{/if}
+									</td>
+								{/if}
+								<td>
+									{t a=$row.count}<!minibilling>$a pcs.{/t}
+								</td>
+								{if $show_netto_column}
+									<td>
+										{moneyf($row.brutto / 1.23)}
+									</td>
+								{/if}
+								<td>
+									{moneyf($row.brutto)}
+								</td>
+							</tr>
+							{$summary.billed = $summary.billed + $row.billed}
+							{$summary.total = $summary.total + $row.time}
+							{$summary.count = $summary.count + $row.count}
+							{$summary.brutto = $summary.brutto + $row.brutto}
+							{if !isset($summaries[$type][$group])}
+								{$summaries[$type][$group].billed = 0}
+								{$summaries[$type][$group].total = 0}
+								{$summaries[$type][$group].count = 0}
+								{$summaries[$type][$group].brutto = 0}
+							{/if}
+							{$summaries[$type][$group].billed = $summaries[$type][$group].billed + $row.billed}
+							{$summaries[$type][$group].total = $summaries[$type][$group].total + $row.time}
+							{$summaries[$type][$group].count = $summaries[$type][$group].count + $row.count}
+							{$summaries[$type][$group].brutto = $summaries[$type][$group].brutto + $row.brutto}
+						{/foreach}
+						<tr class="summary">
 							<td>
-								{moneyf($total.brutto / 1.23)}
+								{trans("<!minibilling>Total")}
 							</td>
-						{/if}
-						<td>
-							{moneyf($total.brutto)}
-						</td>
-					</tr>
-				</tbody>
-			</table>
+							{if $type != $smarty.const.BILLING_RECORD_TYPE_SMS
+								&& $type != $smarty.const.BILLING_RECORD_TYPE_MMS}
+								<td>
+									{if $type == $smarty.const.BILLING_RECORD_TYPE_VOICE_CALL}
+										{$summary.billed|duration_format}
+									{elseif $type == $smarty.const.BILLING_RECORD_TYPE_SMS}
+										{$summary.billed}
+									{elseif $type == $smarty.const.BILLING_RECORD_TYPE_MMS}
+										{$summary.billed}
+									{elseif $type == $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}
+										{$summary.billed|size_format}
+									{elseif $type == $smarty.const.BILLING_RECORD_TYPE_VIDEO_CALL}
+										{$summary.billed|duration_format}
+									{/if}
+								</td>
+							{/if}
+							<td>
+								{t a=$summary.count}<!minibilling>$a pcs.{/t}
+							</td>
+							{if $show_netto_column}
+								<td>
+									{moneyf($summary.brutto / 1.23)}
+								</td>
+							{/if}
+							<td>
+								{moneyf($summary.brutto)}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			{/foreach}
 		{/foreach}
 
-		{if isset($totals) && count($minibilling) > 1}
-			<table>
-				<caption>
-					{t a=$datefrom b=$dateto}Minibilling summary (period{if $datefrom} from $a{/if}{if $dateto} to $b{/if}){/t}
-				</caption>
-				<thead>
-					<tr>
-						<td>
-							{trans("<!minibilling>Call type")}
-						</td>
-						<td>
-							{trans("<!minibilling>Call time")}
-						</td>
-						<td>
-							{trans("<!minibilling>Call count")}
-						</td>
-						{if $show_netto_column}
-							<td>
-								{trans("<!minibilling>Net value")}
-							</td>
-						{/if}
-						<td>
-							{trans("<!minibilling>Gross value")}
-						</td>
-					</tr>
-				</thead>
-				<tbody>
-					{$total.time = 0}
-					{$total.count = 0}
-					{$total.brutto = 0}
-					{foreach $totals as $group => $row}
+		{if isset($summaries) && count($minibilling) > 1}
+			<p class="caption">
+				{t a=$datefrom b=$dateto}Minibilling summary (period{if $datefrom} from $a{/if}{if $dateto} to $b{/if}){/t}
+			</p>
+			{foreach $summaries as $type => $summarygroups}
+				<table>
+					<thead>
 						<tr>
 							<td>
-								{$group}
+								{if $type == $smarty.const.BILLING_RECORD_TYPE_VOICE_CALL}
+									{trans("<!minibilling>Call type")}
+								{elseif $type == $smarty.const.BILLING_RECORD_TYPE_SMS}
+									{trans("<!minibilling>SMS type")}
+								{elseif $type == $smarty.const.BILLING_RECORD_TYPE_MMS}
+									{trans("<!minibilling>MMS type")}
+								{elseif $type == $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}
+									{trans("<!minibilling>Data transfer type")}
+								{elseif $type == $smarty.const.BILLING_RECORD_TYPE_VIDEO_CALL}
+									{trans("<!minibilling>Video call type")}
+								{/if}
 							</td>
-							<td>
-								{$row.time|duration_format}
-							</td>
-							<td>
-								{t a=$row.count}<!minibilling>$a pcs.{/t}
-							</td>
-							{if $show_netto_column}
+							{if $type != $smarty.const.BILLING_RECORD_TYPE_SMS
+								&& $type != $smarty.const.BILLING_RECORD_TYPE_MMS}
 								<td>
-									{moneyf($row.brutto / 1.23)}
+									{if $type == $smarty.const.BILLING_RECORD_TYPE_VOICE_CALL}
+										{trans("<!minibilling>Call time")}
+									{elseif $type == $smarty.const.BILLING_RECORD_TYPE_SMS}
+										{trans("<!minibilling>Count")}
+									{elseif $type == $smarty.const.BILLING_RECORD_TYPE_MMS}
+										{trans("<!minibilling>Count")}
+									{elseif $type == $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}
+										{trans("<!minibilling>Volume")}
+									{elseif $type == $smarty.const.BILLING_RECORD_TYPE_VIDEO_CALL}
+										{trans("<!minibilling>Video call time")}
+									{/if}
 								</td>
 							{/if}
 							<td>
-								{moneyf($row.brutto)}
+								{trans("<!minibilling>Count")}
+							</td>
+							{if $show_netto_column}
+								<td>
+									{trans("<!minibilling>Net value")}
+								</td>
+							{/if}
+							<td>
+								{trans("<!minibilling>Gross value")}
 							</td>
 						</tr>
-						{$total.time = $total.time + $row.time}
-						{$total.count = $total.count + $row.count}
-						{$total.brutto = $total.brutto + $row.brutto}
-					{/foreach}
-					<tr class="summary">
-						<td>
-							{trans("<!minibilling>Total")}
-						</td>
-						<td>
-							{$total.time|duration_format}
-						</td>
-						<td>
-							{t a=$total.count}<!minibilling>$a pcs.{/t}
-						</td>
-						{if $show_netto_column}
+					</thead>
+					<tbody>
+						{$summary.billed = 0}
+						{$summary.total = 0}
+						{$summary.count = 0}
+						{$summary.brutto = 0}
+						{foreach $summarygroups as $group => $row}
+							<tr>
+								<td>
+									{$group}
+								</td>
+								{if $type != $smarty.const.BILLING_RECORD_TYPE_SMS
+									&& $type != $smarty.const.BILLING_RECORD_TYPE_MMS}
+									<td>
+										{if $type == $smarty.const.BILLING_RECORD_TYPE_VOICE_CALL}
+											{$row.billed|duration_format}
+										{elseif $type == $smarty.const.BILLING_RECORD_TYPE_SMS}
+											{$row.billed}
+										{elseif $type == $smarty.const.BILLING_RECORD_TYPE_MMS}
+											{$row.billed}
+										{elseif $type == $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}
+											{$row.billed|size_format}
+										{elseif $type == $smarty.const.BILLING_RECORD_TYPE_VIDEO_CALL}
+											{$row.billed|duration_format}
+										{/if}
+									</td>
+								{/if}
+								<td>
+									{t a=$row.count}<!minibilling>$a pcs.{/t}
+								</td>
+								{if $show_netto_column}
+									<td>
+										{moneyf($row.brutto / 1.23)}
+									</td>
+								{/if}
+								<td>
+									{moneyf($row.brutto)}
+								</td>
+							</tr>
+							{$summary.billed = $summary.billed + $row.billed}
+							{$summary.total = $summary.total + $row.total}
+							{$summary.count = $summary.count + $row.count}
+							{$summary.brutto = $summary.brutto + $row.brutto}
+						{/foreach}
+						<tr class="summary">
 							<td>
-								{moneyf($total.brutto / 1.23)}
+								{trans("<!minibilling>Total")}
 							</td>
-						{/if}
-						<td>
-							{moneyf($total.brutto)}
-						</td>
-					</tr>
-				</tbody>
-			</table>
+							{if $type != $smarty.const.BILLING_RECORD_TYPE_SMS
+								&& $type != $smarty.const.BILLING_RECORD_TYPE_MMS}
+								<td>
+									{if $type == $smarty.const.BILLING_RECORD_TYPE_VOICE_CALL}
+										{$summary.billed|duration_format}
+									{elseif $type == $smarty.const.BILLING_RECORD_TYPE_SMS}
+										{$summary.billed}
+									{elseif $type == $smarty.const.BILLING_RECORD_TYPE_MMS}
+										{$summary.billed}
+									{elseif $type == $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}
+										{$summary.billed|size_format}
+									{elseif $type == $smarty.const.BILLING_RECORD_TYPE_VIDEO_CALL}
+										{$summary.billed|duration_format}
+									{/if}
+								</td>
+							{/if}
+							<td>
+								{t a=$summary.count}<!minibilling>$a pcs.{/t}
+							</td>
+							{if $show_netto_column}
+								<td>
+									{moneyf($summary.brutto / 1.23)}
+								</td>
+							{/if}
+							<td>
+								{moneyf($summary.brutto)}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			{/foreach}
 		{/if}
 	</body>
 

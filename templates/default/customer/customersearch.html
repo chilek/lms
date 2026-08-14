@@ -18,6 +18,10 @@
 		border: 0;
 	}
 
+	#consent-table > .lmsbox-inner .in-consent-group > td:first-child {
+		padding-left: 2em;
+	}
+
 	#balance-days-container {
 		margin-top: 0.5em;
 	}
@@ -50,6 +54,21 @@
 		margin-right: 0.5em;
 	}
 
+	.document-filters {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.document-filter {
+		display: flex;
+		align-items: center;
+		margin: 0.3em 0 0.3em 0;
+	}
+
+	.document-filter > :not(:first-child) {
+		margin-left: 0.3em;
+	}
+
 </style>
 
 <script>
@@ -76,7 +95,8 @@
 		var options = document.getElementById('linktechnology').options;
 		while (options.length)
 			options.remove(0);
-		options.add(new Option('{trans("— none —")}', 0));
+		options.add(new Option('{trans("— none —")}', ''));
+		options.add(new Option("{trans("— without technology —")}", 0));
 		switch (linktype) {
 			case '':
 				{foreach array({$smarty.const.LINKTYPE_WIRE}, {$smarty.const.LINKTYPE_WIRELESS}, {$smarty.const.LINKTYPE_FIBER}) as $linktype}
@@ -119,6 +139,22 @@
 	</TR>
 	</THEAD>
 	<TBODY>
+	<tr>
+		<td class="nobr">
+			{icon name="spacer"}
+			<strong>{trans("Qualification operator")}</strong>
+		</td>
+		<td>
+			<label>
+				<input type="radio" value="AND" name="k"{if $k != 'OR'} checked{/if}>
+				{trans("and")}
+			</label>
+			<label>
+				<input type="radio" value="OR" name="k"{if $k == 'OR'} checked{/if}>
+				{trans("or")}
+			</label>
+		</td>
+	</tr>
 	<tr>
 		<td class="bold nobr">
 			<label for="hidessn">
@@ -172,19 +208,33 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="bold nobr">
-			{icon name="phone"} {trans("Phone:")}
+		<TD class="nobr">
+			<label for="phone">
+				{icon name="phone"}
+				<strong>{trans("Phone")}</strong>
+			</label>
 		</TD>
 		<TD class="nobr">
-			<INPUT type="tel" name="search[phone]" VALUE="{$search.phone}">
+			<INPUT type="tel" name="search[phone]" id="phone" VALUE="{$search.phone}">
+			<label>
+				<input type="checkbox" name="search[without-phone]" value="1" class="without-contact">
+				{trans("without phone contact")}
+			</label>
 		</TD>
 	</TR>
 	<TR>
-		<TD class="bold nobr">
-			{icon name="mail"} {trans("E-mail:")}
+		<TD class="nobr">
+			<label for="email">
+				{icon name="mail"}
+				<strong>{trans("E-mail")}</strong>
+			</label>
 		</TD>
 		<TD>
-			<INPUT type="email" name="search[email]" VALUE="{$search.email}">
+			<INPUT type="text" name="search[email]" id="email" VALUE="{$search.email}">
+			<label>
+				<input type="checkbox" name="search[without-email]" value="1" class="without-contact">
+				{trans("without e-mail contact")}
+			</label>
 		</TD>
 	</TR>
 	{*
@@ -206,37 +256,111 @@
 			{identitytypes elemname="search[ict]" selected=$search.ict}
 		</TD>
 	</TR>
-	<TR>
-		<TD class="nobr bold">
-			{icon name="user-id-number"} {trans("Identity number:")}
-		</TD>
-		<TD>
-			<INPUT type="text" name="search[icn]" VALUE="{$search.icn}">
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
-			{icon name="user-id-number"} {trans("SSN:")}
-		</TD>
-		<TD>
-			<INPUT type="text" name="search[ssn]" VALUE="{$search.ssn}">
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
-			{icon name="user-id-number"} {trans("TEN:")}
-		</TD>
-		<TD>
-			<input type="text" name="search[ten]" id="search-ten"
-				{if $search.ten != '*'} value="{$search.ten}"{else} disabled{/if}>
+	<tr>
+		<td class="nobr">
+			<span class="customer-property-label">
+				<strong>
+					{icon name="user-id-number"}
+					{trans("Identity number")}
+				</strong>
+			</span>
+		</td>
+		<td>
+			<input type="text" name="search[icn]" value="{$search.icn}" data-customer-property="icn">
+			<span style="display: none;"></span>
 			<label>
-				<input type="checkbox" id="non-empty-ten">
+				<input type="radio" name="icn-match-selector" data-controlled-customer-property="icn" value="=" checked>
+				<span>{trans("given value")}</span>
+			</label>
+			<label>
+				<input type="radio" name="icn-match-selector" data-controlled-customer-property="icn" value="*">
 				<span>{trans("non-empty")}</span>
 			</label>
-			<input type="hidden" name="search[ten]" id="search-non-empty-ten"
+			<label>
+				<input type="radio" name="icn-match-selector" data-controlled-customer-property="icn" value="-">
+				<span>{trans("empty")}</span>
+			</label>
+			<input type="hidden" name="search[icn]" data-customer-property="icn"
+				value="*"{if $search.icn != '*'} disabled{/if}>
+			<input type="hidden" name="search[icn]" data-customer-property="icn"
+				value="-"{if $search.icn != '-'} disabled{/if}>
+		</td>
+	</tr>
+
+	<tr>
+		<td class="nobr">
+			<label for="ic-expired">
+				{icon name="calendar"}
+				<strong>{trans("Expired identity card")}</strong>
+			</label>
+		</td>
+		<td>
+			<input type="checkbox" name="search[ic-expired]" id="ic-expired"
+				value="1" {if !empty($search['ic-expired'])} checked{/if}
+		</td>
+	</tr>
+
+	<tr>
+		<td class="nobr">
+			<span class="customer-property-label">
+				<strong>
+					{icon name="user-id-number"}
+					{trans("SSN")}
+				</strong>
+			</span>
+		</td>
+		<td>
+			<input type="text" name="search[ssn]" value="{$search.ssn}" data-customer-property="ssn">
+			<span style="display: none;"></span>
+			<label>
+				<input type="radio" name="ssn-match-selector" data-controlled-customer-property="ssn" value="=" checked>
+				<span>{trans("given value")}</span>
+			</label>
+			<label>
+				<input type="radio" name="ssn-match-selector" data-controlled-customer-property="ssn" value="*">
+				<span>{trans("non-empty")}</span>
+			</label>
+			<label>
+				<input type="radio" name="ssn-match-selector" data-controlled-customer-property="ssn" value="-">
+				<span>{trans("empty")}</span>
+			</label>
+			<input type="hidden" name="search[ssn]" data-customer-property="ssn"
+				value="*"{if $search.ssn != '*'} disabled{/if}>
+			<input type="hidden" name="search[ssn]" data-customer-property="ssn"
+				value="-"{if $search.ssn != '-'} disabled{/if}>
+		</td>
+	</tr>
+	<tr>
+		<td class="bold nobr">
+			<span class="customer-property-label">
+				<strong>
+					{icon name="user-id-number"}
+					{trans("TEN")}
+				</strong>
+			</span>
+		</td>
+		<td>
+			<input type="text" name="search[ten]" data-customer-property="ten"
+				{if $search.ten != '*'} value="{$search.ten}"{else} disabled{/if}>
+			<span style="display: none;"></span>
+			<label>
+				<input type="radio" name="ten-match-selector" data-controlled-customer-property="ten" value="=" checked>
+				<span>{trans("given value")}</span>
+			</label>
+			<label>
+				<input type="radio" name="ten-match-selector" data-controlled-customer-property="ten" value="*">
+				<span>{trans("non-empty")}</span>
+			</label>
+			<label>
+				<input type="radio" name="ten-match-selector" data-controlled-customer-property="ten" value="-">
+				<span>{trans("empty")}</span>
+			</label>
+			<input type="hidden" name="search[ten]" data-customer-property="ten"
 				value="*"{if $search.ten != '*'} disabled{/if}>
-		</TD>
-	</TR>
+			<input type="hidden" name="search[ten]" data-customer-property="ten"
+				value="-"{if $search.ten != '-'} disabled{/if}>
+		</td>
+	</tr>
 	<TR>
 		<TD class="bold nobr">
 			{icon name="user-id-number"} {trans("REGON:")}
@@ -315,16 +439,31 @@
 					<col style="width: 30%;">
 				</colgroup>
 				<tbody>
+					{$in_consent_group = false}
 					{foreach $_CCONSENTS as $consentid => $consent}
 						{if !is_array($consent)}
 							{continue}
 						{/if}
+
+						{$customer_consent_group_id = Utils::findCustomerConsentGroupByCustomerConsent($consentid, $_CCONSENT_GROUPS)}
+						{if $current_customer_consent_group_id && $current_customer_consent_group_id != $customer_consent_group_id || $current_customer_consent_group_id && $consent@last}
+							{$in_consent_group = false}
+						{/if}
+						{if $customer_consent_group_id && $customer_consent_group_id != $current_customer_consent_group_id}
+							<tr class="superdark">
+								<td colspan="2" class="superdark">
+									<strong>{$_CCONSENT_GROUPS[$customer_consent_group_id].label}</strong>
+								</td>
+							</tr>
+							{$in_consent_group = true}
+						{/if}
+
 						{if $consent.type == 'selection'}
 							{foreach $consent.values as $subconsentid => $subconsent}
 								{if !isset($subconsent.name)}
 									{continue}
 								{/if}
-								<tr class="highlight">
+								<tr class="highlight{if $in_consent_group} in-consent-group{/if}">
 									<td>
 										{t a=$consent.label b=$subconsent.label}$a ($b){/t}
 									</td>
@@ -348,7 +487,7 @@
 								</tr>
 							{/foreach}
 						{else}
-							<tr class="highlight">
+							<tr class="highlight{if $in_consent_group} in-consent-group{/if}">
 								<td>
 									{$consent.label}
 								</td>
@@ -371,6 +510,7 @@
 								</td>
 							</tr>
 						{/if}
+						{$current_customer_consent_group_id = $customer_consent_group_id}
 					{/foreach}
 				</tbody>
 				<tfoot>
@@ -417,6 +557,7 @@
 		<TD>
 			<SELECT SIZE="1" name="search[linktechnology]" id="linktechnology">
 				<OPTION VALUE="">{trans("— all —")}</OPTION>
+				<option value="0">{trans("— without technology —")}</option>
 				{foreach array(0, 1, 2) as $linktype}
 					{foreach $_LINKTECHNOLOGIES[$linktype] as $linktechnologyidx => $linktechnology}
 					<OPTION VALUE="{$linktechnologyidx}">{$linktechnology}</OPTION>
@@ -438,16 +579,43 @@
 			</SELECT>
 		</TD>
 	</TR>
+	<tr>
+		<td class="nobr">
+			{icon name="netdevice"}
+			<strong>{trans("Network devices")}</strong>
+		</td>
+		<td>
+			<select size="1" name="search[netdevices]">
+				<option value="">{trans("— any —")}</option>
+				<option value="1">{trans("yes")}</option>
+				<option value="0">{trans("no")}</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td class="nobr">
+			{icon name="hardware"}
+			<strong>{trans("Network device type")}</strong>
+		</td>
+		<td>
+			<select size="1" name="search[netdevtype]">
+				<option value="">{trans("— any —")}</option>
+				{foreach Localisation::arraySort($netdevicetypes, 'name') as $type => $info}
+					<option value="{$type}">{$info.name}</option>
+				{/foreach}
+			</select>
+		</td>
+	</tr>
 	<TR>
 		<TD class="bold nobr">
 			{icon name="money"} {trans("Tariffs:")}
 		</TD>
 		<TD class="multiselect">
-			<SELECT SIZE="1" name="search[tariffs][]" class="lms-ui-multiselect" multiple data-default-value="{trans("— all —")}">
+			<select size="1" name="search[tariffs][]" class="lms-ui-multiselect" multiple data-default-value="{trans("— all —")}">
 				{foreach $tariffs as $item}
-				<OPTION VALUE="{$item.id}">{$item.name}</OPTION>
+					<option value="{$item.id}">{$item.name} ({Utils::formatMoney($item.value, $item.currency)})</option>
 				{/foreach}
-			</SELECT>
+			</select>
 			&nbsp;{trans("with end date:")}
 			<select name="search[withenddate]">
 				<option value="-1">{trans("<!enddate>— any —")}</option>
@@ -469,9 +637,35 @@
 			</SELECT>
 		</TD>
 	</TR>
+	{if !empty($promotions)}
+		<tr>
+			<td class="nobr">
+				{icon name="money"}
+				<strong>{trans("Promotion schemas")}</strong>
+			</td>
+			<td class="nobr">
+				<select size="1" name="search[promotion-schema][]" multiple class="lms-ui-multiselect"
+					data-placeholder="{trans("— any —")}"
+					data-show-group-labels="true">
+					{foreach $promotions as $promotion}
+						<optgroup title="{$promotion.description|trunescape:512}"
+							label="{$promotion.name}" data-valid="{$promotion.valid}"
+							{if !$promotion.valid} class="blend"{/if}>
+							{foreach $promotion.schemas as $schemaid => $schema}
+								<option title="{$schema.description|trunescape:512}"
+									value="{$schemaid}"{if $variables.schemaid == $schemaid} SELECTED{/if}
+									data-valid="{$promotion.valid}"{if !$promotion.valid} class="blend"{/if}
+								>{$schema.name|trunescape:40}</option>
+							{/foreach}
+					</optgroup>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+	{/if}
 	<TR>
 		<TD class="bold nobr">
-			{icon name="money"} {trans("Assignments:")}
+			{icon name="money"} {trans("Assignments")}
 		</TD>
 		<TD>
 			<select size="1" id="assignment-selector" name="search[assignments]">
@@ -482,18 +676,23 @@
 				<option value="60">{trans('expire in $a days', 60)}</option>
 				<option value="90">{trans('expire in $a days', 90)}</option>
 				<option value="-100">{trans('expire in indicated number of days')}</option>
+				<option value="-14">{trans('<!assignments>expired')}</option>
 				<option value="-1">{trans('without end date')}</option>
+				<option value="-15">{trans("all without end date")}</option>
 				<option value="-10">{trans('without start date')}</option>
 				<option value="-2">{trans('active')}</option>
 				<option value="-7">{trans('active, without nodes')}</option>
 				<option value="-3">{trans('active, with invoice')}</option>
 				<option value="-5">{trans('active, with pro forma')}</option>
+				<option value="-13">{trans('active, without document')}</option>
 				<option value="-4">{trans('suspended')}</option>
+				<option value="-16">{trans('suspended, current')}</option>
 				<option value="-9">{trans('all suspended')}</option>
 				<option value="-6">{trans('waiting')}</option>
 				<option value="-8">{trans('waiting, without nodes')}</option>
 				<option value="-11">{trans("<!assignment>commited")}</option>
 				<option value="-12">{trans("<!assignment>not commited")}</option>
+				<option value="-17">{trans("with recipient address")}</option>
 			</select>
 			<input type="text" id="assignment-days" name="search[assignments]" value="" disabled required
 				size="5" placeholder="{trans("days")}" style="display: none;" pattern="[0-9]+">
@@ -534,11 +733,12 @@
 			</div>
 		</td>
 	</tr>
-	<TR>
-		<TD class="bold nobr">
-			{icon name="modified-date"} {trans("Created:")}
-		</TD>
-		<TD>
+	<tr>
+		<td class="nobr">
+			{icon name="modified-date"}
+			<strong>{trans("Created")}</strong>
+		</td>
+		<td>
 			<span class="lms-ui-date-period-container">
 				{date_period_preset from="#createdfrom" to="#createdto"}
 				<span>{trans("from")}</span>
@@ -550,13 +750,33 @@
 					id="createdto" name="search[createdto]" size="10"
 					placeholder="{trans("yyyy/mm/dd")}">
 			</span>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
-			{icon name="modified-date"} {trans("Deleted:")}
-		</TD>
-		<TD>
+		</td>
+	</tr>
+	<tr>
+		<td class="nobr">
+			{icon name="modified-date"}
+			<strong>{trans("Modified")}</strong>
+		</td>
+		<td>
+			<span class="lms-ui-date-period-container">
+				{date_period_preset from="#modifiedfrom" to="#modifiedto"}
+				<span>{trans("from")}</span>
+				<input type="text" class="lms-ui-date lms-ui-date-unix" value=""
+					id="modifiedfrom" name="search[modifiedfrom]" size="10"
+					placeholder="{trans("yyyy/mm/dd")}">
+				<span>{trans("to")}</span>
+				<input type="text" class="lms-ui-date lms-ui-date-unix" value=""
+					id="modifiedto" name="search[modifiedto]" size="10"
+					placeholder="{trans("yyyy/mm/dd")}">
+			</span>
+		</td>
+	</tr>
+	<tr>
+		<td class="nobr">
+			{icon name="modified-date"}
+			<strong>{trans("Deleted")}</strong>
+		</td>
+		<td>
 			<span class="lms-ui-date-period-container">
 				{date_period_preset from="#deletedfrom" to="#deletedto"}
 				<span>{trans("from")}</span>
@@ -568,8 +788,8 @@
 					id="deletedto" name="search[deletedto]" size="10"
 					placeholder="{trans("yyyy/mm/dd")}">
 			</span>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	<tr>
 		<td class="nobr">
 			{icon name="paytype"}
@@ -589,15 +809,6 @@
 			</span>
 		</td>
 	</tr>
-	<TR>
-		<TD class="bold nobr">
-			{icon name="spacer"} {trans("Qualification operator:")}
-		</TD>
-		<TD>
-			<INPUT class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}><label for="operator0">{trans("and")}</label>
-			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}><label for="operator1">{trans("or")}</label>
-		</TD>
-	</TR>
 	<tr>
 		<td colspan="2">&nbsp;</td>
 	</tr>
@@ -673,6 +884,68 @@
 			</div>
 		</TD>
 	</TR>
+
+	<tr>
+		<td class="nobr valign-top">
+			{icon name="origin" class="fa-fw"}
+			<strong>{trans("<!origin>Origin")}</strong>
+		</td>
+		<td>
+			<select size="1" name="search[origin]" {tip trigger="origin"}>
+				<option value="-1">{trans("<!origin>— any —")}</option>
+				<option value="0">{trans("<!origin>— unspecified —")}</option>
+				{foreach Localisation::arraySort($_ORIGINS) as $originidx => $origin}
+					<option value="{$originidx}">{$origin}</option>
+				{/foreach}
+			</select>
+		</td>
+	</tr>
+
+	<tr>
+		<td class="nobr valign-top">
+			{icon name="document"}
+			<strong>{trans("Documents")}</strong>
+		</td>
+		<td>
+			<div class="document-filters">
+				<div class="document-filter">
+					<span>
+						{trans("<!document>Type")}
+					</span>
+					<select name="document[type][]" class="lms-ui-multiselect" multiple
+						data-default-value="{trans("<!document-type>— any —")}">
+						{foreach Localisation::arraySort($_DOCTYPES) as $doctypeidx => $doctype}
+							{if $doctypeidx >= 0}
+								{continue}
+							{/if}
+							<option value="{$doctypeidx}">{$doctype}</option>
+						{/foreach}
+					</select>
+				</div>
+				<div class="document-filter">
+					<span>
+						{trans("Date selection")}
+					</span>
+					<select name="document[dateselection]">
+						<option value="creationdate">{trans("creation date")}</option>
+						<option value="confirmationdate">{trans("confirmation date")}</option>
+						<option value="archivizationdate">{trans("archivization date")}</option>
+						<option value="fromdate">{trans("'from' date")}</option>
+						<option value="todate" selected>{trans("'to' date")}</option>
+					</select>
+				</div>
+				<div class="document-filter">
+					{date_period_preset from="[name=\"document[datefrom]\"]" to="[name=\"document[dateto]\"]"}
+					<span>{trans("from")}</span>
+					<input type="text" name="document[datefrom]" size="10" maxlength="10"
+						{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+					<span>{trans("to")}</span>
+					<input type="text" name="document[dateto]" size="10" maxlength="10"
+						{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+				</div>
+			</div>
+		</td>
+	</tr>
 	<TR>
 		<TD class="bold nobr">
 			{icon name="money"} {trans("Balance:")}
@@ -705,7 +978,7 @@
 		</TD>
 	</TR>
 	<tr>
-		<td class="nobr">
+		<td class="nobr valign-top" rowspan="2">
 			{icon name="customergroup"}
 			<strong>{trans("Group")}</strong>
 		</td>
@@ -736,6 +1009,17 @@
 				<input type="radio" value="OR" name="cgk"{if $cgk=='OR'} checked{/if}>
 				{trans("or")}
 			</label>
+			<label>
+				<input type="radio" value="exact-match" name="cgk"{if $cgk == 'exact-match'} checked{/if}>
+				{trans("exact match")}
+			</label>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			{trans("on day")}
+			<input type="text" name="group-date"{if !empty($customergroupdate)} value="{$customergroupdate|date_format:"Y/m/d"}"{/if}
+				{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar"}>
 		</td>
 	</tr>
 	<TR>
@@ -774,9 +1058,15 @@
 	$(function() {
 		$('form[name="customersearch"] [name="search[customername]"]').focus();
 
-		$('#non-empty-ten').change(function() {
-			$('#search-ten').prop('disabled', $(this).prop('checked'));
-			$('#search-non-empty-ten').prop('disabled', !$(this).prop('checked'));
+		$("[data-controlled-customer-property]").change(function() {
+			var customerProperty = $(this).attr("data-controlled-customer-property");
+			var value = $(this).val();
+			var checked = $(this).prop('checked');
+			$('input[type="text"][data-customer-property="' + customerProperty + '"]').prop('disabled', checked && (value == '*' || value == '-'));
+			$('input[type="hidden"][data-customer-property="' + customerProperty + '"]').each(function() {
+				$(this).prop('disabled', $(this).val() != value);
+			});
+			$(this).closest('tr').find('.customer-property-label').toggleClass('lms-ui-disabled', checked);
 		});
 
 		$('#reset-consents').click(function() {
@@ -804,6 +1094,12 @@
 						break;
 				}
 			}
+		});
+
+		$('.without-contact').change(function() {
+			var checkboxElement = $(this).parent().prev();
+			checkboxElement.prop('disabled', $(this).prop('checked'));
+			$('label[for="' + checkboxElement.attr('id') + '"]').toggleClass('lms-ui-disabled', $(this).prop('checked'));
 		});
 
 		$('[name="s[]"]').change(function() {

@@ -51,6 +51,8 @@ final class xajaxResponseManager
     */
     private $aDebugMessages;
     
+    private $aSettings;
+
     /*
         Function: xajaxResponseManager
 
@@ -60,6 +62,7 @@ final class xajaxResponseManager
     {
         $this->objResponse = null;
         $this->aDebugMessages = array();
+        $this->aSettings = array();
     }
     
     /*
@@ -131,10 +134,7 @@ final class xajaxResponseManager
     
     public function getConfiguration($sName)
     {
-        if (isset($this->aSettings[$sName])) {
-            return $this->aSettings[$sName];
-        }
-        return null;
+        return $this->aSettings[$sName] ?? null;
     }
     
     /*

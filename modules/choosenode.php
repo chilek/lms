@@ -26,7 +26,7 @@
 
 $layout['pagetitle'] = trans('Select node');
 
-$p = isset($_GET['p']) ? $_GET['p'] : '';
+$p = $_GET['p'] ?? '';
 $js = '';
 $customerid = intval($_GET['id']);
 

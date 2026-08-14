@@ -32,7 +32,7 @@ function GetAccountList($order = 'login,asc', $customer = null, $type = null, $k
         $order = 'login,asc';
     }
 
-    list($order,$direction) = sscanf($order, '%[^,],%s');
+    [$order, $direction] = sscanf($order, '%[^,],%s');
 
     ($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
 

@@ -70,6 +70,45 @@
 											<col style="width: 1%;">
 											<col style="width: 98%;">
 										</colgroup>
+										{if !empty($serviceproviders)}
+											<tr>
+												<td>
+													{icon name="service"}
+												</td>
+												<td class="nobr">
+													<strong>{trans("Service provider")}</strong>
+												</td>
+												<td>
+													<select name="tariff[serviceproviderid]">
+														<option value="">{trans("— select —")}</option>
+														{foreach $serviceproviders as $serviceprovider}
+															<option value="{$serviceprovider.id}"
+																	{if $serviceprovider.id == $tariff.serviceproviderid} selected{/if}
+															>{$serviceprovider.name|escape}</option>
+														{/foreach}
+													</select>
+												</td>
+											</tr>
+										{/if}
+										<tr>
+											<td>
+												<label for="extid">
+													{icon name="externalid"}
+												</label>
+											</td>
+											<td>
+												<label for="extid" style="white-space: normal;">
+													<strong>{trans("External system identifier")}</strong>
+												</label>
+											</td>
+											<td>
+												<div class="valign-middle">
+													<input type="text" id="extid" class="lms-ui-autogrow" name="tariff[extid]" value="{$tariff.extid|escape}"
+															{tip trigger="extid"}>
+													{hint content="Enter tariff identifier in external system (optional)"}
+												</div>
+											</td>
+										</tr>
 										<tr>
 											<td>
 												{icon name="money"}
@@ -282,8 +321,9 @@
 											</td>
 											<td>
 												{foreach $_SESSIONTYPES as $idx => $sessiontype}
-													<label>
-														<input type="checkbox" name="tariff[authtype][{$idx}]" value="{$idx}" id="authtype{$idx}" {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"}{if ($tariff.authtype & $idx) == $idx} checked{/if}>
+													<label {tip text="`$sessiontype.tip`"}>
+														<input type="checkbox" name="tariff[authtype][{$idx}]" value="{$idx}" id="authtype{$idx}"
+															{tip trigger="authtype`$idx`"}{if ($tariff.authtype & $idx) == $idx} checked{/if}>
 														{$sessiontype.label}
 													</label><br>
 												{/foreach}
@@ -294,10 +334,30 @@
 												{icon name="description"}
 											</td>
 											<td>
-												{trans("Description:")}
+												{trans("Description")}
 											</td>
 											<td>
-												<textarea name="tariff[description]" COLS="45" ROWS="4" {tip text="Enter additional information (optional)"}>{$tariff.description}</textarea>
+												<div class="valign-middle">
+													<textarea name="tariff[description]" class="lms-ui-autogrow"
+														rows="4"
+														cols="45">{$tariff.description|escape}</textarea>
+													{hint content="Enter additional information (optional)<br>Text entered here can be visible on customer documents such as contracts, annexes, etc."}
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												{icon name="notes"}
+											</td>
+											<td>
+												{trans("Notes")}
+											</td>
+											<td>
+												<textarea name="tariff[notes]" class="lms-ui-autogrow"
+													cols="45"
+													rows="4"
+													{tip text="Enter notes (optional)"}>{$tariff.notes|escape}</textarea>
+												{hint content="Enter notes (optional)<br>Text entered here will not be visible on customer documents such as contracts, annexes, etc."}
 											</td>
 										</tr>
 									</table>
@@ -309,62 +369,6 @@
 											<col style="width: 1%;">
 											<col style="width: 98%;">
 										</colgroup>
-										<tr>
-											<td>
-												{icon name="upload"}
-											</td>
-											<td>
-												{trans("Upload rate:")}
-											</td>
-											<td>
-												<input type="text" name="tariff[uprate]" size="6" value="{if $tariff.uprate}{$tariff.uprate}{/if}" {tip text="Enter minimal warranted upload value (optional)" trigger="uprate"}>
-												{trans("night:")} <input type="text" name="tariff[uprate_n]" size="6" value="{if $tariff.uprate_n}{$tariff.uprate_n}{/if}" {tip text="Enter minimal warranted upload value (optional)" trigger="uprate_n"}> kbit/s
-											</td>
-										</tr>
-										<tr>
-											<td>
-											</td>
-											<td>
-												{trans("Upload ceil:")}
-											</td>
-											<td>
-												<input type="text" name="tariff[upceil]" size="6" value="{if $tariff.upceil}{$tariff.upceil}{/if}" {tip text="Enter maximum upload value (optional)" trigger="upceil"}>
-												{trans("night:")} <input type="text" name="tariff[upceil_n]" size="6" value="{if $tariff.upceil_n}{$tariff.upceil_n}{/if}" {tip text="Enter maximum upload value (optional)" trigger="upceil_n"}> kbit/s
-											</td>
-										</tr>
-										<tr>
-											<td>
-											</td>
-											<td>
-												{trans("Upload burst time:")}
-											</td>
-											<td>
-												<input type="text" name="tariff[up_burst_time]" size="6" value="{if $tariff.up_burst_time}{$tariff.up_burst_time}{/if}" {tip text="Enter upload burst time (optional)" trigger="up_burst_time"}>
-												{trans("night:")} <input type="text" name="tariff[up_burst_time_n]" size="6" value="{if $tariff.up_burst_time_n}{$tariff.up_burst_time_n}{/if}" {tip text="Enter upload burst time (optional)" trigger="up_burst_time_n"}> s
-											</td>
-										</tr>
-										<tr>
-											<td>
-											</td>
-											<td>
-												{trans("Upload burst threshold:")}
-											</td>
-											<td>
-												<input type="text" name="tariff[up_burst_threshold]" size="6" value="{if $tariff.up_burst_threshold}{$tariff.up_burst_threshold}{/if}" {tip text="Enter upload burst threshold (optional)" trigger="up_burst_threshold"}>
-												{trans("night:")} <input type="text" name="tariff[up_burst_threshold_n]" size="6" value="{if $tariff.up_burst_threshold_n}{$tariff.up_burst_threshold_n}{/if}" {tip text="Enter upload burst threshold (optional)" trigger="up_burst_threshold_n"}> kbit/s
-											</td>
-										</tr>
-										<tr>
-											<td>
-											</td>
-											<td>
-												{trans("Upload burst limit:")}
-											</td>
-											<td>
-												<input type="text" name="tariff[up_burst_limit]" size="6" value="{if $tariff.up_burst_limit}{$tariff.up_burst_limit}{/if}" {tip text="Enter upload burst limit (optional)" trigger="up_burst_limit"}>
-												{trans("night:")} <input type="text" name="tariff[up_burst_limit_n]" size="6" value="{if $tariff.up_burst_limit_n}{$tariff.up_burst_limit_n}{/if}" {tip text="Enter upload burst limit (optional)" trigger="up_burst_limit_n"}> kbit/s
-											</td>
-										</tr>
 										<tr>
 											<td>
 												{icon name="download"}
@@ -419,6 +423,62 @@
 											<td>
 												<input type="text" name="tariff[down_burst_limit]" size="6" value="{if $tariff.down_burst_limit}{$tariff.down_burst_limit}{/if}" {tip text="Enter download burst limit (optional)" trigger="down_burst_limit"}>
 												{trans("night:")} <input type="text" name="tariff[down_burst_limit_n]" size="6" value="{if $tariff.down_burst_limit_n}{$tariff.down_burst_limit_n}{/if}" {tip text="Enter download burst limit (optional)" trigger="down_burst_limit_n"}> kbit/s
+											</td>
+										</tr>
+										<tr>
+											<td>
+												{icon name="upload"}
+											</td>
+											<td>
+												{trans("Upload rate:")}
+											</td>
+											<td>
+												<input type="text" name="tariff[uprate]" size="6" value="{if $tariff.uprate}{$tariff.uprate}{/if}" {tip text="Enter minimal warranted upload value (optional)" trigger="uprate"}>
+												{trans("night:")} <input type="text" name="tariff[uprate_n]" size="6" value="{if $tariff.uprate_n}{$tariff.uprate_n}{/if}" {tip text="Enter minimal warranted upload value (optional)" trigger="uprate_n"}> kbit/s
+											</td>
+										</tr>
+										<tr>
+											<td>
+											</td>
+											<td>
+												{trans("Upload ceil:")}
+											</td>
+											<td>
+												<input type="text" name="tariff[upceil]" size="6" value="{if $tariff.upceil}{$tariff.upceil}{/if}" {tip text="Enter maximum upload value (optional)" trigger="upceil"}>
+												{trans("night:")} <input type="text" name="tariff[upceil_n]" size="6" value="{if $tariff.upceil_n}{$tariff.upceil_n}{/if}" {tip text="Enter maximum upload value (optional)" trigger="upceil_n"}> kbit/s
+											</td>
+										</tr>
+										<tr>
+											<td>
+											</td>
+											<td>
+												{trans("Upload burst time:")}
+											</td>
+											<td>
+												<input type="text" name="tariff[up_burst_time]" size="6" value="{if $tariff.up_burst_time}{$tariff.up_burst_time}{/if}" {tip text="Enter upload burst time (optional)" trigger="up_burst_time"}>
+												{trans("night:")} <input type="text" name="tariff[up_burst_time_n]" size="6" value="{if $tariff.up_burst_time_n}{$tariff.up_burst_time_n}{/if}" {tip text="Enter upload burst time (optional)" trigger="up_burst_time_n"}> s
+											</td>
+										</tr>
+										<tr>
+											<td>
+											</td>
+											<td>
+												{trans("Upload burst threshold:")}
+											</td>
+											<td>
+												<input type="text" name="tariff[up_burst_threshold]" size="6" value="{if $tariff.up_burst_threshold}{$tariff.up_burst_threshold}{/if}" {tip text="Enter upload burst threshold (optional)" trigger="up_burst_threshold"}>
+												{trans("night:")} <input type="text" name="tariff[up_burst_threshold_n]" size="6" value="{if $tariff.up_burst_threshold_n}{$tariff.up_burst_threshold_n}{/if}" {tip text="Enter upload burst threshold (optional)" trigger="up_burst_threshold_n"}> kbit/s
+											</td>
+										</tr>
+										<tr>
+											<td>
+											</td>
+											<td>
+												{trans("Upload burst limit:")}
+											</td>
+											<td>
+												<input type="text" name="tariff[up_burst_limit]" size="6" value="{if $tariff.up_burst_limit}{$tariff.up_burst_limit}{/if}" {tip text="Enter upload burst limit (optional)" trigger="up_burst_limit"}>
+												{trans("night:")} <input type="text" name="tariff[up_burst_limit_n]" size="6" value="{if $tariff.up_burst_limit_n}{$tariff.up_burst_limit_n}{/if}" {tip text="Enter upload burst limit (optional)" trigger="up_burst_limit_n"}> kbit/s
 											</td>
 										</tr>
 										<tr>
@@ -606,7 +666,7 @@
 				switch (selected_item) {
 					case "{$smarty.const.SERVICE_PHONE}":
 						$( '#tariff-account-settings' ).hide();
-						$( '#tariff-capacity-settings' ).hide();
+						$( '#tariff-capacity-settings' ).show();
 						$( '#tariff-phone-settings' ).show();
 					break;
 

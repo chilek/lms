@@ -1,5 +1,5 @@
 <!--// $Id$ //-->
-{$disable_active_links=ConfigHelper::getConfig('phpui.disable_active_links_in_nodeinfo', 'true')}
+{$disable_active_links=ConfigHelper::getConfig('nodes.disable_active_links_in_info', ConfigHelper::getConfig('phpui.disable_active_links_in_nodeinfo', 'true'))}
 
 {$xajax}
 
@@ -401,8 +401,10 @@
 												<div>
 													<table style="width: 100%;" cellpadding="5">
 														<tr>
-															<td class="fall superlight">
-																<div>{$nodeinfo.info|replace:"\n":"<br>"}</div>
+															<td>
+																<div class="lms-ui-multiline-box">
+																	{$nodeinfo.info|replace:"\n":"<br>"}
+																</div>
 															</td>
 														</tr>
 													</table>
@@ -564,6 +566,30 @@
 														{if $online}
 															{button type="link" icon="reload" class="radius-disconnect-button"
 																data_nodesession_id=$nodesession.id tip="Disconnect existing session"}
+														{/if}
+														{if !empty($session_state_helper)}
+															{hint icon="info" id="session-state" url="?m=nodeinfo&id={$nodeinfo.id}&action=session_state"}
+														{/if}
+													</div>
+												</td>
+											</tr>
+										{/if}
+										{if $nodesession.mac}
+											<tr>
+												<td>
+													{icon name="mac"}
+												</td>
+												<td>
+													{trans("last MAC address")}
+												</td>
+												<td class="cell-flex">
+													<div>
+														{$nodesession.mac}
+														{$producer = EtherCodes::GetProducer($nodesession.mac)}
+														{if $producer}
+															<span class="lms-ui-font-smaller">
+																({$producer})
+															</span>
 														{/if}
 													</div>
 												</td>

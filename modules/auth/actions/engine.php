@@ -50,7 +50,7 @@ function authorize($module, $action)
     if (!is_authorized($module, $action)) {
         if (isset($ExecStack->_BINDTABLE['pre/'.$module.':'.$action])) {
             foreach ($ExecStack->_BINDTABLE['pre/'.$module.':'.$action] as $binding) {
-                list($mod, $act) = explode(':', $binding);
+                [$mod, $act] = explode(':', $binding);
                 
                 // we can remove action only if isn't binded to other action
                 if (isset($bindtable[$mod.':'.$act]) && $bindtable[$mod.':'.$act]['count'] > 1) {
@@ -64,7 +64,7 @@ function authorize($module, $action)
             
         if (isset($ExecStack->_BINDTABLE['post/'.$module.':'.$action])) {
             foreach ($ExecStack->_BINDTABLE['post/'.$module.':'.$action] as $binding) {
-                list($mod, $act) = explode(':', $binding);
+                [$mod, $act] = explode(':', $binding);
 
                 // we can remove action only if isn't binded to other action
                 if (isset($bindtable[$mod.':'.$act]) && $bindtable[$mod.':'.$act]['count'] > 1) {
@@ -119,7 +119,7 @@ if ($ExecStack->moduleExists($ExecStack->module)
 
 // first build special (helper) bindings table for authorize() function
 foreach ($ExecStack->_BINDTABLE as $idx => $binding) {
-    list($pre, $act) = explode('/', $idx);
+    [$pre, $act] = explode('/', $idx);
     foreach ($binding as $bind) {
         $bindtable[$bind]['action'][] = $act;
         $bindtable[$bind]['count'] ++;
@@ -128,7 +128,7 @@ foreach ($ExecStack->_BINDTABLE as $idx => $binding) {
 
 reset($ExecStack->_MODINFO); // reset for each() function below
 
-while (list($mod_name, $mod_info) = each($ExecStack->_MODINFO)) {
+while ([$mod_name, $mod_info] = each($ExecStack->_MODINFO)) {
     if (isset($mod_info['actions'])) {
         foreach ($mod_info['actions'] as $action_name => $action_info) {
             authorize($mod_name, $action_name);
@@ -142,7 +142,7 @@ $_MODINFO = $ExecStack->_MODINFO; // copy for nested loops below
 
 reset($ExecStack->_MODINFO); // reset again
 
-while (list($mod_name, $mod_info) = each($ExecStack->_MODINFO)) {
+while ([$mod_name, $mod_info] = each($ExecStack->_MODINFO)) {
     if (isset($mod_info['menus'])) {
         foreach ($mod_info['menus'] as $menu_idx => $menu_array) {
             foreach ($_MODINFO as $mod_array) {

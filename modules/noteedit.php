@@ -25,7 +25,7 @@
  */
 
 //$taxeslist = $LMS->GetTaxes();
-$action = isset($_GET['action']) ? $_GET['action'] : '';
+$action = $_GET['action'] ?? '';
 
 if (isset($_GET['id']) && $action=='edit') {
     if ($LMS->isDocumentPublished($_GET['id']) && !ConfigHelper::checkConfig('privileges.superuser')) {
@@ -134,7 +134,7 @@ switch ($action) {
 
         if (ConfigHelper::checkPrivilege('invoice_consent_date')) {
             if ($note['cdate']) { // && !$note['cdatewarning'])
-                list($year, $month, $day) = explode('/', $note['cdate']);
+                [$year, $month, $day] = explode('/', $note['cdate']);
                 if (checkdate($month, $day, $year)) {
                     $oldday = date('d', $note['oldcdate']);
                     $oldmonth = date('m', $note['oldcdate']);
@@ -247,14 +247,19 @@ switch ($action) {
             $SESSION->restore('noteid', $note['id']);
 
             $DB->BeginTrans();
+
+/*
             $DB->LockTables(array('documents', 'cash', 'debitnotecontents', 'numberplans'));
             $DB->BeginTrans();
             $tables = array('documents', 'cash', 'debitnotecontents', 'numberplans',
-                'addresses', 'customers', 'customer_addresses');
+                'addresses', 'customers', 'customer_addresses', 'vdivisions', 'vaddresses', 'logtransactions');
             if (ConfigHelper::getConfig('database.type') != 'postgres') {
-                $tables = array_merge($tables, array('addresses a', 'customers c', 'customer_addresses ca'));
+                $tables = array_merge($tables, array('addresses a', 'customers c', 'customer_addresses ca', 'location_cities lc', 'location_boroughs lb', 'location_districts ld', 'location_states ls', 'location_streets lst'));
             }
             $DB->LockTables($tables);
+*/
+
+            $DB->LockByHandle(LOCK_DEBIT_NOTE_NUMBER);
 
             if (!$note['number']) {
                 $note['number'] = $LMS->GetNewDocumentNumber(array(
@@ -317,20 +322,20 @@ switch ($action) {
                 'city' => $customer['city'],
                 SYSLOG::RES_COUNTRY => !empty($customer['countryid']) ? $division['countryid'] : null,
                 SYSLOG::RES_DIV => !empty($customer['divisionid']) ? $customer['divisionid'] : null,
-                'div_name' => ($division['name'] ? $division['name'] : ''),
-                'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
-                'div_address' => ($division['address'] ? $division['address'] : ''),
-                'div_city' => ($division['city'] ? $division['city'] : ''),
-                'div_zip' => ($division['zip'] ? $division['zip'] : ''),
+                'div_name' => ($division['name'] ?: ''),
+                'div_shortname' => ($division['shortname'] ?: ''),
+                'div_address' => ($division['address'] ?: ''),
+                'div_city' => ($division['city'] ?: ''),
+                'div_zip' => ($division['zip'] ?: ''),
                 'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => (!empty($division['countryid']) ? $division['countryid'] : null),
-                'div_ten'=> ($division['ten'] ? $division['ten'] : ''),
-                'div_regon' => ($division['regon'] ? $division['regon'] : ''),
+                'div_ten'=> ($division['ten'] ?: ''),
+                'div_regon' => ($division['regon'] ?: ''),
                 'div_bank' => $division['bank'] ?: null,
-                'div_account' => ($division['account'] ? $division['account'] : ''),
-                'div_inv_header' => ($division['inv_header'] ? $division['inv_header'] : ''),
-                'div_inv_footer' => ($division['inv_footer'] ? $division['inv_footer'] : ''),
-                'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
-                'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
+                'div_account' => ($division['account'] ?: ''),
+                'div_inv_header' => ($division['inv_header'] ?: ''),
+                'div_inv_footer' => ($division['inv_footer'] ?: ''),
+                'div_inv_author' => ($division['inv_author'] ?: ''),
+                'div_inv_cplace' => ($division['inv_cplace'] ?: ''),
                 'fullnumber' => $fullnumber,
                 'currency' => $note['currency'],
                 'currencyvalue' => $note['currencyvalue'],
@@ -414,7 +419,9 @@ switch ($action) {
                 ));
             }
 
-            $DB->UnLockTables();
+//            $DB->UnLockTables();
+            $DB->UnLockByHandle(LOCK_DEBIT_NOTE_NUMBER);
+
             $DB->CommitTrans();
 
             $SESSION->remove('notecontents');
@@ -449,7 +456,7 @@ $args = array(
     'doctype' => DOC_DNOTE,
     'cdate' => $note['cdate'],
 );
-if (isset($note['customerid']) && !empty($note['customerid'])) {
+if (!empty($note['customerid'])) {
     $args['customerid'] = $note['customerid'];
     $args['division'] = $DB->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($note['customerid']));
 }

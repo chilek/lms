@@ -94,6 +94,7 @@
 						{trans("Check all")}
 					</label>
 					{button icon="read" class="group-action-mark-as-read" label="Mark as read"}
+					{button icon="status-resolved" class="group-action-status-resolved" label="Resolve"}
 					{button icon="reply-all" class="group-action-run" label="Run group action"}
 					{if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
 						{button icon="delete" class="group-action-delete" label="Delete"}
@@ -106,6 +107,12 @@
 		</TR>
     </TFOOT>
 </TABLE>
+
+<form id="ticket-list" method="GET">
+	<input type="hidden" name="m" value="rtticketedit">
+	<input type="hidden" name="action" value="resolve">
+</form>
+
 <script>
 
 	function get_backid(elem) {
@@ -118,7 +125,7 @@
 
 	$(function() {
 		function disableLink() {
-			$('.group-action-run,.group-action-delete').prop('disabled', !$('.lms-ui-multi-check:checked').length);
+			$('.group-action-run,.group-action-delete,.group-action-status-resolved').prop('disabled', !$('.lms-ui-multi-check:checked').length);
 			$('.group-action-delete-permanently').prop('disabled', !$('.lms-ui-multi-check:checked[data-deleted="1"]').length);
 			$('.group-action-mark-as-read').prop('disabled', !$('.lms-ui-multi-check:checked[data-unread="1"]').length);
 		};
@@ -134,6 +141,15 @@
 				ticketid.push($(this).val());
 			});
 			location.href = '?m=rtmessageadd&ticketid[]=' + ticketid.join('&ticketid[]=');
+		});
+
+		$('.group-action-status-resolved').click(function () {
+			var ticketid = [];
+			var form = $("#ticket-list");
+			$('[name="ticketid[]"]:checked').each(function () {
+				form.append('<input type="hidden" name="id[]" value="' + $(this).val() + '">');
+			});
+			form.submit();
 		});
 
 		$('.group-action-delete').click(function () {

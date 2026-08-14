@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$useradd = isset($_POST['useradd']) ? $_POST['useradd'] : array();
+$useradd = $_POST['useradd'] ?? array();
 
 if (count($useradd)) {
     foreach ($useradd as $key => $value) {
@@ -37,7 +37,7 @@ if (count($useradd)) {
 
     if ($useradd['login']=='') {
         $error['login'] = trans('Login can\'t be empty!');
-    } elseif (!eregi('^[a-z0-9.-_]+$', $useradd['login'])) {
+    } elseif (!preg_match('#^[a-z0-9\.-_]+$#mi', $useradd['login'])) {
         $error['login'] = trans('Login contains forbidden characters!');
     } elseif ($LMS->GetUserIDByLogin($useradd['login'])) {
         $error['login'] = trans('User with specified login exists or that login was used in the past!');

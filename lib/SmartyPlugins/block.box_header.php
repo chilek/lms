@@ -27,12 +27,12 @@
 function smarty_block_box_header($params, $content, $template, $repeat)
 {
     if (!$repeat) {
-        $id = isset($params['id']) ? $params['id'] : null;
+        $id = $params['id'] ?? null;
         $multi_row = isset($params['multi_row']) && $params['multi_row'];
-        $icon = isset($params['icon']) ? $params['icon'] : null;
-        $label = isset($params['label']) ? $params['label'] : null;
-        $icon_class = isset($params['icon_class']) ? $params['icon_class'] : null;
-        $content_id = isset($params['content_id']) ? $params['content_id'] : null;
+        $icon = $params['icon'] ?? null;
+        $label = $params['label'] ?? null;
+        $icon_class = $params['icon_class'] ?? null;
+        $content_id = $params['content_id'] ?? null;
 
         if ($multi_row) {
             return '<div class="lms-ui-box-header-multi-row">'

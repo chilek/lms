@@ -78,8 +78,8 @@ $SMARTY->assign('xajax', $LMS->RunXajax());
 $layout['pagetitle'] = trans('Select model');
 
 $netdevmodelid = isset($_GET['netdevmodelid']) ? intval($_GET['netdevmodelid']) : null;
-$producer = isset($_GET['producer']) ? $_GET['producer'] : null;
-$model = isset($_GET['model']) ? $_GET['model'] : null;
+$producer = $_GET['producer'] ?? null;
+$model = $_GET['model'] ?? null;
 
 $producers = $DB->GetAll('
     SELECT id, name

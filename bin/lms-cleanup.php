@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2024 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,134 +25,30 @@
  *  $Id$
  */
 
-ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
-
-$parameters = array(
-    'config-file:' => 'C:',
-    'quiet' => 'q',
-    'help' => 'h',
-    'version' => 'v',
+$script_parameters = array(
+    'test' => 't',
     'resources:' => 'r:',
     'time-limit:' => 't:',
+    'balance-limit:' => 'b:',
 );
 
-$long_to_shorts = array();
-foreach ($parameters as $long => $short) {
-    $long = str_replace(':', '', $long);
-    if (isset($short)) {
-        $short = str_replace(':', '', $short);
-    }
-    $long_to_shorts[$long] = $short;
-}
-
-$options = getopt(
-    implode(
-        '',
-        array_filter(
-            array_values($parameters),
-            function ($value) {
-                return isset($value);
-            }
-        )
-    ),
-    array_keys($parameters)
-);
-
-foreach (array_flip(array_filter($long_to_shorts, function ($value) {
-    return isset($value);
-})) as $short => $long) {
-    if (array_key_exists($short, $options)) {
-        $options[$long] = $options[$short];
-        unset($options[$short]);
-    }
-}
-
-if (array_key_exists('version', $options)) {
-    print <<<EOF
-lms-cleanup.php
-(C) 2001-2020 LMS Developers
-
-EOF;
-    exit(0);
-}
-
-if (array_key_exists('help', $options)) {
-    print <<<EOF
-lms-cleanup.php
-(C) 2001-2020 LMS Developers
-
--C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
--h, --help                      print this help and exit;
--v, --version                   print version info and exit;
--q, --quiet                     suppress any output, except errors;
--r, --resources=<finances>
+$script_help = <<<EOF
+-t, --test                      no changes are made to database;
+-r, --resources=<finances,customers>
                                 system resource type list to clean up;
 -t, --time-limit=<days>
                                 only resources older than specified 'days' are cleaned up;
-
+-b, --balance-limit=<value>
+                                only resources related to customers with balance greater than
+                                or equal to specified 'value' are cleanup up;
 EOF;
-    exit(0);
+
+require_once('script-options.php');
+
+$test = isset($options['test']);
+if ($test) {
+    echo "WARNING! You are using test mode." . PHP_EOL;
 }
-
-$quiet = isset($options['quiet']);
-if (!$quiet) {
-    print <<<EOF
-lms-cleanup.php
-(C) 2001-2020 LMS Developers
-
-EOF;
-}
-
-if (array_key_exists('config-file', $options)) {
-    $CONFIG_FILE = $options['config-file'];
-} else {
-    $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
-}
-
-if (!$quiet) {
-    echo "Using file " . $CONFIG_FILE . " as config." . PHP_EOL;
-}
-
-if (!is_readable($CONFIG_FILE)) {
-    die("Unable to read configuration file [" . $CONFIG_FILE . "]!" . PHP_EOL);
-}
-
-define('CONFIG_FILE', $CONFIG_FILE);
-
-$CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
-
-// Check for configuration vars and set default values
-$CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
-$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib' : $CONFIG['directories']['lib_dir']);
-
-define('SYS_DIR', $CONFIG['directories']['sys_dir']);
-define('LIB_DIR', $CONFIG['directories']['lib_dir']);
-
-// Load autoloader
-$composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-if (file_exists($composer_autoload_path)) {
-    require_once $composer_autoload_path;
-} else {
-    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More information at https://getcomposer.org/" . PHP_EOL);
-}
-
-// Init database
-
-$DB = null;
-
-try {
-    $DB = LMSDB::getInstance();
-} catch (Exception $ex) {
-    trigger_error($ex->getMessage(), E_USER_WARNING);
-    // can't working without database
-    die("Fatal error: cannot connect to database!" . PHP_EOL);
-}
-
-// Include required files (including sequence is important)
-
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
-include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 
 $SYSLOG = SYSLOG::getInstance();
 
@@ -178,6 +74,7 @@ if (empty($resources)) {
 
 $supported_resources = array(
     'finances' => true,
+    'customers' => true,
 );
 foreach ($resources as $resource) {
     if (!isset($supported_resources[$resource])) {
@@ -196,12 +93,22 @@ if (isset($options['time-limit'])) {
 
 $time = strtotime($time_limit . ' days ago');
 
+if (isset($options['balance-limit'])) {
+    $balance_limit = filter_var($options['balance-limit'], FILTER_VALIDATE_FLOAT);
+    if ($balance_limit === false) {
+        $balance_limit = null;
+    }
+}
+
 $currency = Localisation::getDefaultCurrency();
 
 $resources = array_flip($resources);
 
 if (!$quiet) {
     echo PHP_EOL . 'Current time limit operation threshold: ' . $time_limit . ' days' . PHP_EOL;
+    if (isset($balance_limit)) {
+        echo 'Current balance limit operation threshold: ' . $balance_limit . PHP_EOL;
+    }
 }
 
 if (isset($resources['finances'])) {
@@ -212,11 +119,13 @@ if (isset($resources['finances'])) {
         echo '###################' . PHP_EOL;
     }
 
-    $balances = $DB->GetAll(
+    $balances = $DB->GetAllByKey(
         'SELECT customerid, SUM(value * currencyvalue) AS balance
         FROM cash
         WHERE time < ?
+            AND customerid IS NOT NULL
         GROUP BY customerid',
+        'customerid',
         array($time)
     );
 
@@ -228,11 +137,14 @@ if (isset($resources['finances'])) {
 
     $DB->BeginTrans();
 
-    echo 'Creating starting balance records... ';
+    if (!$quiet) {
+        echo 'Creating starting balance records... ';
+    }
     foreach ($balances as $customerid => $balance) {
         $DB->Execute(
-            'INSERT INTO cash (time, type, value, currency, comment) VALUES (?, ?, ?, ?, ?)',
+            'INSERT INTO cash (customerid, time, type, value, currency, comment) VALUES (?, ?, ?, ?, ?, ?)',
             array(
+                $customerid,
                 $time,
                 1,
                 $balance,
@@ -241,7 +153,9 @@ if (isset($resources['finances'])) {
             )
         );
     }
-    echo count($balances) . ' record(s) created.' . PHP_EOL;
+    if (!$quiet) {
+        echo count($balances) . ' record(s) created.' . PHP_EOL;
+    }
 
     $documents = $DB->GetAll(
         'SELECT DISTINCT cash.docid AS id, d.archived
@@ -269,7 +183,9 @@ if (isset($resources['finances'])) {
             WHERE id IN ?',
             array(Utils::array_column($documents, 'id'))
         );
-        echo $count . ' removed.'. PHP_EOL;
+        if (!$quiet) {
+            echo $count . ' removed.' . PHP_EOL;
+        }
     }
 
     if (!$quiet) {
@@ -284,7 +200,10 @@ if (isset($resources['finances'])) {
         )',
         array($time)
     );
-    echo $count . ' cash import(s) removed. ';
+    if (!$quiet) {
+        echo (empty($count) ? '0' : $count) . ' cash import(s) removed. ';
+    }
+
     $count = $DB->Execute(
         'DELETE FROM sourcefiles
         WHERE idate < ?
@@ -295,7 +214,10 @@ if (isset($resources['finances'])) {
           )',
         array($time)
     );
-    echo $count . ' source file(s) removed. ' . PHP_EOL;
+
+    if (!$quiet) {
+        echo (empty($count) ? '0' : $count) . ' source file(s) removed. ' . PHP_EOL;
+    }
 
     if (!$quiet) {
         echo 'Removing financial operations... ';
@@ -307,7 +229,77 @@ if (isset($resources['finances'])) {
             $time,
         )
     );
-    echo $count . ' operation(s) removed. ' . PHP_EOL;
 
-    $DB->CommitTrans();
+    if (!$quiet) {
+        echo (empty($count) ? '0' : $count) . ' operation(s) removed. ' . PHP_EOL;
+    }
+
+    if ($test) {
+        $DB->RollbackTrans();
+    } else {
+        $DB->CommitTrans();
+    }
+}
+
+if (isset($resources['customers'])) {
+    if (!$quiet) {
+        echo PHP_EOL;
+        echo '###################' . PHP_EOL;
+        echo 'Customer resources' . PHP_EOL;
+        echo '###################' . PHP_EOL;
+    }
+
+    $customers = $DB->GetAll(
+        'SELECT
+            c.id
+        FROM customers c
+        WHERE
+            NOT EXISTS (
+                SELECT 1
+                FROM documents d
+                WHERE d.customerid = c.id
+                    AND d.cdate > ?
+            )'
+            . (isset($balance_limit)
+                ? ' AND (EXISTS (
+                    SELECT 1
+                    FROM customerbalances b
+                    WHERE b.customerid = c.id
+                        AND b.balance >= ' . $balance_limit . '
+                ) OR NOT EXISTS (
+                    SELECT 1
+                    FROM customerbalances b
+                    WHERE b.customerid = c.id
+                ))'
+                : ''),
+        array(
+            $time,
+        )
+    );
+
+    $DB->BeginTrans();
+
+    if (!$quiet) {
+        echo 'Permanently deleting customer(s)... ';
+    }
+
+    $count = 0;
+    if (!empty($customers)) {
+        foreach ($customers as $customer) {
+            $result = $LMS->deleteCustomerPermanent($customer['id'], false);
+            if (!empty($result)) {
+                $count++;
+            }
+        }
+    }
+
+    if (!$quiet) {
+        echo $count . ' customer(s) deleted. ' . PHP_EOL;
+    }
+
+    if ($test) {
+        $DB->RollbackTrans();
+    } else {
+        $DB->CommitTrans();
+    }
 }

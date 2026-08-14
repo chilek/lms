@@ -32,6 +32,88 @@ function module_main()
 
     $SMARTY = LMSSmarty::getInstance();
 
+    if (ConfigHelper::checkConfig('userpanel.node_lock_management')) {
+        switch ($_GET['action']) {
+            case 'delete-nodelock':
+                $nodelockid = intval($_GET['id']);
+
+                if (!empty($nodelockid)) {
+                    if ($LMS->DB->GetOne(
+                        'SELECT
+                            nl.id
+                        FROM nodelocks nl
+                        JOIN nodes n ON n.id = nl.nodeid
+                        WHERE nl.id = ?
+                            AND nl.disabled = ?
+                            AND n.ownerid = ?',
+                        array(
+                            $nodelockid,
+                            0,
+                            $SESSION->id,
+                        )
+                    )) {
+                        $result = $LMS->DB->Execute(
+                            'DELETE FROM nodelocks
+                            WHERE id = ?',
+                            array($nodelockid)
+                        );
+                    } else {
+                        $result = 0;
+                    }
+                } else {
+                    $result = 0;
+                }
+
+                header('Content-Type: application/json');
+                die(json_encode(array(
+                    'result' => $result,
+                )));
+
+            case 'add-nodelock':
+                $nodeid = intval($_POST['nodeid']);
+
+                if ($LMS->DB->GetOne(
+                    'SELECT
+                        n.id
+                    FROM nodes n
+                    WHERE n.id = ?
+                        AND n.ownerid = ?',
+                    array(
+                        $nodeid,
+                        $SESSION->id,
+                    )
+                )) {
+                    $time = $_POST['time'];
+                    $days = 0;
+                    foreach ($time as $daynr => $day) {
+                        $days |= 1 << intval($daynr);
+                    }
+
+                    $result = $LMS->DB->Execute(
+                        'INSERT INTO nodelocks
+                        (nodeid, days, fromsec, tosec)
+                        VALUES (?, ?, ?, ?)',
+                        array(
+                            $nodeid,
+                            $days,
+                            $time['fromsec'],
+                            $time['tosec'],
+                        )
+                    );
+                    if (!empty($result)) {
+                        $result = $LMS->DB->GetLastInsertId('nodelocks');
+                    }
+                } else {
+                    $result = 0;
+                }
+
+                header('Content-Type: application/json');
+                die(json_encode(array(
+                    'result' => $result,
+                )));
+        }
+    }
+
     if (!empty($_GET['consent'])) {
         if ($LMS->DB->GetOne(
             'SELECT customerid FROM customerconsents WHERE customerid = ? AND type = ?',
@@ -51,10 +133,11 @@ function module_main()
 
     $userinfo = $LMS->GetCustomer($SESSION->id);
     $usernodes = $LMS->GetCustomerNodes($SESSION->id);
+
     //$balancelist = $LMS->GetCustomerBalanceList($SESSION->id);
 
     $fields_changed = $LMS->DB->GetAllByKey(
-        'SELECT id, fieldname, fieldvalue FROM up_info_changes WHERE customerid = ?',
+        'SELECT id, fieldname, fieldvalue, cdate FROM up_info_changes WHERE customerid = ?',
         'fieldname',
         array($SESSION->id)
     );
@@ -181,8 +264,11 @@ function module_updateusersave()
                                 'DELETE FROM up_info_changes WHERE customerid = ? AND fieldname = ?',
                                 array($id, $field . $i)
                             );
-                            $LMS->DB->Execute('INSERT INTO up_info_changes(customerid, fieldname, fieldvalue)
-						VALUES(?, ?, ?)', array($id, $field . $i, $v));
+                            $LMS->DB->Execute(
+                                'INSERT INTO up_info_changes (customerid, fieldname, fieldvalue, cdate)
+                                VALUES (?, ?, ?, ?NOW?)',
+                                array($id, $field . $i, $v)
+                            );
                             $need_change_notification = true;
                         }
                     }
@@ -227,8 +313,11 @@ function module_updateusersave()
                             'DELETE FROM up_info_changes WHERE customerid = ? AND fieldname = ?',
                             array($id, $field)
                         );
-                        $LMS->DB->Execute('INSERT INTO up_info_changes(customerid, fieldname, fieldvalue)
-					VALUES(?, ?, ?)', array($id, $field, $val));
+                        $LMS->DB->Execute(
+                            'INSERT INTO up_info_changes (customerid, fieldname, fieldvalue, cdate)
+                            VALUES (?, ?, ?, ?NOW?)',
+                            array($id, $field, $val)
+                        );
                         $need_change_notification = true;
                     }
                     break;
@@ -242,8 +331,11 @@ function module_updateusersave()
                             'DELETE FROM up_info_changes WHERE customerid = ? AND fieldname = ?',
                             array($id, $field)
                         );
-                        $LMS->DB->Execute('INSERT INTO up_info_changes(customerid, fieldname, fieldvalue)
-					VALUES(?, ?, ?)', array($id, $field, $val));
+                        $LMS->DB->Execute(
+                            'INSERT INTO up_info_changes (customerid, fieldname, fieldvalue, cdate)
+                            VALUES (?, ?, ?, ?NOW?)',
+                            array($id, $field, $val)
+                        );
                         $need_change_notification = true;
                     }
                     break;
@@ -259,8 +351,11 @@ function module_updateusersave()
                                 'DELETE FROM up_info_changes WHERE customerid = ? AND fieldname = ?',
                                 array($id, $field)
                             );
-                            $LMS->DB->Execute('INSERT INTO up_info_changes(customerid, fieldname, fieldvalue)
-						VALUES(?, ?, ?)', array($id, $field, $val));
+                            $LMS->DB->Execute(
+                                'INSERT INTO up_info_changes (customerid, fieldname, fieldvalue, cdate)
+                                VALUES (?, ?, ?, ?NOW?)',
+                                array($id, $field, $val)
+                            );
                             $need_change_notification = true;
                         }
                     }
@@ -277,27 +372,35 @@ function module_updateusersave()
                                 'DELETE FROM up_info_changes WHERE customerid = ? AND fieldname = ?',
                                 array($id, $field)
                             );
-                            $LMS->DB->Execute('INSERT INTO up_info_changes(customerid, fieldname, fieldvalue)
-						VALUES(?, ?, ?)', array($id, $field, $val));
+                            $LMS->DB->Execute(
+                                'INSERT INTO up_info_changes (customerid, fieldname, fieldvalue, cdate)
+                                VALUES (?, ?, ?, ?NOW?)',
+                                array($id, $field, $val)
+                            );
                             $need_change_notification = true;
                         }
                     }
                     break;
                 case 'ssn':
-                    if ($val!='' && !check_ssn($val)) {
-                        $error['ssn']=1;
-                    } else {
-                        if (isset($right['edit_addr'])) {
-                            $userinfo[$field] = $val;
-                            $needupdate = 1;
-                        } elseif (isset($right['edit_addr_ack'])) {
-                            $LMS->DB->Execute(
-                                'DELETE FROM up_info_changes WHERE customerid = ? AND fieldname = ?',
-                                array($id, $field)
-                            );
-                            $LMS->DB->Execute('INSERT INTO up_info_changes(customerid, fieldname, fieldvalue)
-						VALUES(?, ?, ?)', array($id, $field, $val));
-                            $need_change_notification = true;
+                    if (ConfigHelper::checkConfig('userpanel.show_customer_sensitive_data') || $val != '***') {
+                        if ($val != '' && !check_ssn($val)) {
+                            $error['ssn'] = 1;
+                        } else {
+                            if (isset($right['edit_addr'])) {
+                                $userinfo[$field] = $val;
+                                $needupdate = 1;
+                            } elseif (isset($right['edit_addr_ack'])) {
+                                $LMS->DB->Execute(
+                                    'DELETE FROM up_info_changes WHERE customerid = ? AND fieldname = ?',
+                                    array($id, $field)
+                                );
+                                $LMS->DB->Execute(
+                                    'INSERT INTO up_info_changes (customerid, fieldname, fieldvalue, cdate)
+                                    VALUES (?, ?, ?, ?NOW?)',
+                                    array($id, $field, $val)
+                                );
+                                $need_change_notification = true;
+                            }
                         }
                     }
                     break;
@@ -309,7 +412,7 @@ function module_updateusersave()
 
     if (isset($error)) {
         $usernodes = $LMS->GetCustomerNodes($SESSION->id);
-        $usernodes['ownerid'] = $SESSION->id;
+        //$usernodes['ownerid'] = $SESSION->id;
 
         $SMARTY->assign('userinfo', $userinfo);
         $SMARTY->assign('usernodes', $usernodes);
@@ -345,7 +448,7 @@ function module_updatepinform()
     $userinfo = $LMS->GetCustomer($SESSION->id);
 
     $usernodes = $LMS->GetCustomerNodes($SESSION->id);
-    $usernodes['ownerid'] = $SESSION->id;
+    //$usernodes['ownerid'] = $SESSION->id;
 
     $SMARTY->assign('userinfo', $userinfo);
     $SMARTY->assign('usernodes', $usernodes);
@@ -383,24 +486,41 @@ function module_updatepin()
     } elseif ($userinfo['pin'] == $userdata['pin']) {
         $error['pin'] = $error['pin2'] = trans('New PIN should be different than old PIN!');
     } else {
-        $pin_min_size = intval(ConfigHelper::getConfig('phpui.pin_min_size', 4));
-        $pin_max_size = intval(ConfigHelper::getConfig('phpui.pin_max_size', 6));
-        $pin_allowed_characters = ConfigHelper::getConfig('phpui.pin_allowed_characters', '0123456789');
+        $pin_min_size = intval(ConfigHelper::getConfig(
+            'customers.pin_min_length',
+            ConfigHelper::getConfig(
+                'phpui.pin_min_size',
+                4
+            )
+        ));
+        $pin_max_size = intval(ConfigHelper::getConfig(
+            'customers.pin_max_length',
+            ConfigHelper::getConfig(
+                'phpui.pin_max_size',
+                6
+            )
+        ));
+        $pin_allowed_characters = ConfigHelper::getConfig(
+            'customers.pin_allowed_characters',
+            ConfigHelper::getConfig(
+                'phpui.pin_allowed_characters',
+                '0123456789'
+            )
+        );
         if (!validate_random_string($userdata['pin'], $pin_min_size, $pin_max_size, $pin_allowed_characters)) {
-            $pin_allowed_characters = ConfigHelper::getConfig('phpui.pin_allowed_characters', '0123456789');
-            $pin_allowed_characters = str_split($pin_allowed_characters, 30);
+            $splitted_pin_allowed_characters = str_split($pin_allowed_characters, 30);
             $error['pin'] = $error['pin2'] = trans(
                 'PIN should have at least $a, maximum $b characters and contain only \'$c\' characters!',
-                ConfigHelper::getConfig('phpui.pin_min_size', 4),
-                ConfigHelper::getConfig('phpui.pin_max_size', 6),
-                implode('<br>', $pin_allowed_characters)
+                $pin_min_size,
+                $pin_max_size,
+                implode('<br>', $splitted_pin_allowed_characters)
             );
         }
     }
 
     if (isset($error)) {
         $usernodes = $LMS->GetCustomerNodes($SESSION->id);
-        $usernodes['ownerid'] = $SESSION->id;
+        //$usernodes['ownerid'] = $SESSION->id;
 
         $SMARTY->assign('userinfo', $userinfo);
         $SMARTY->assign('usernodes', $usernodes);
@@ -422,12 +542,24 @@ if (defined('USERPANEL_SETUPMODE')) {
     {
         global $layout, $SMARTY, $DB, $LMS;
 
+        if (!ConfigHelper::checkPrivilege('userpanel_management') && !ConfigHelper::checkPrivilege('userpanel_change_affirmation')) {
+            access_denied();
+        }
+
         $layout['pagetitle'] = trans('Changes affirmation');
 
-        $userchanges = $DB->GetAll('SELECT up_info_changes.id AS changeid, customerid, fieldname, fieldvalue AS newvalue, '.
-                    $DB->Concat('UPPER(lastname)', "' '", 'c.name').' AS customername, c.* 
-					FROM up_info_changes
-					JOIN customerview c ON (c.id = up_info_changes.customerid)');
+        $userchanges = $DB->GetAll(
+            'SELECT
+                up_info_changes.id AS changeid,
+                customerid,
+                fieldname,
+                fieldvalue AS newvalue,
+                up_info_changes.cdate, '
+                . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . ' AS customername,
+                c.*
+            FROM up_info_changes
+            JOIN customerview c ON c.id = up_info_changes.customerid'
+        );
 
         if (isset($userchanges)) {
             foreach ($userchanges as $key => $change) {
@@ -451,8 +583,8 @@ if (defined('USERPANEL_SETUPMODE')) {
                 if (isset($old)) {
                     $userchanges[$key]['oldvalue'] = $old;
                     unset($old);
-                } elseif (isset($userchanges[$key][$change['fieldname']])) {
-                    $userchanges[$key]['oldvalue'] = $userchanges[$key][$change['fieldname']];
+                } elseif (isset($change[$change['fieldname']])) {
+                    $userchanges[$key]['oldvalue'] = $change[$change['fieldname']];
                 }
             }
         }
@@ -470,6 +602,10 @@ if (defined('USERPANEL_SETUPMODE')) {
     {
         global $LMS;
 
+        if (!ConfigHelper::checkPrivilege('userpanel_management') && !ConfigHelper::checkPrivilege('userpanel_change_affirmation')) {
+            access_denied();
+        }
+
         $DB = LMSDB::getInstance();
 
         if (isset($_POST['userchanges'])) {
@@ -477,8 +613,12 @@ if (defined('USERPANEL_SETUPMODE')) {
             $addresses = array();
             $confirmed_changes = array();
             foreach ($_POST['userchanges'] as $changeid) {
-                $changes = $DB->GetRow('SELECT customerid, fieldname, fieldvalue FROM up_info_changes
-					WHERE id = ?', array($changeid));
+                $changes = $DB->GetRow(
+                    'SELECT customerid, fieldname, fieldvalue, cdate
+                    FROM up_info_changes
+                    WHERE id = ?',
+                    array($changeid)
+                );
                 if (!isset($args[$changes['customerid']])) {
                     $args[$changes['customerid']] = array(
                         SYSLOG::RES_CUST => $changes['customerid'],
@@ -609,6 +749,10 @@ if (defined('USERPANEL_SETUPMODE')) {
     {
         global $LMS;
 
+        if (!ConfigHelper::checkPrivilege('userpanel_management') && !ConfigHelper::checkPrivilege('userpanel_change_affirmation')) {
+            access_denied();
+        }
+
         $DB = LMSDB::getInstance();
 
         if (isset($_POST['userchanges'])) {
@@ -662,9 +806,15 @@ if (defined('USERPANEL_SETUPMODE')) {
     {
         global $SMARTY, $LMS;
 
+        if (!ConfigHelper::checkPrivilege('userpanel_management')) {
+            access_denied();
+        }
+
         $SMARTY->assign('hide_nodesbox', ConfigHelper::getConfig('userpanel.hide_nodesbox'));
+        $SMARTY->assign('node_lock_management', ConfigHelper::checkConfig('userpanel.node_lock_management'));
         $SMARTY->assign('consent_text', ConfigHelper::getConfig('userpanel.data_consent_text'));
         $SMARTY->assign('pin_changes', ConfigHelper::checkConfig('userpanel.pin_changes'));
+        $SMARTY->assign('show_sensitive_data', ConfigHelper::checkConfig('userpanel.show_customer_sensitive_data'));
         $SMARTY->assign('change_notification_mail_sender', ConfigHelper::getConfig('userpanel.change_notification_mail_sender'));
         $SMARTY->assign('change_notification_mail_recipient', ConfigHelper::getConfig('userpanel.change_notification_mail_recipient'));
         $SMARTY->assign('change_notification_mail_subject', ConfigHelper::getConfig('userpanel.change_notification_mail_subject'));
@@ -679,12 +829,37 @@ if (defined('USERPANEL_SETUPMODE')) {
 
     function module_submit_setup()
     {
+        if (!ConfigHelper::checkPrivilege('userpanel_management')) {
+            access_denied();
+        }
+
         $DB = LMSDB::getInstance();
 
         $DB->Execute(
             'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
             array(isset($_POST['hide_nodesbox']) ? 1 : 0, 'userpanel', 'hide_nodesbox')
         );
+
+        if ($DB->GetOne('SELECT 1 FROM uiconfig WHERE section = ? AND var = ?', array('userpanel', 'node_lock_management'))) {
+            $DB->Execute(
+                'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
+                array(
+                    isset($_POST['node_lock_management']) ? 1 : 0,
+                    'userpanel',
+                    'node_lock_management',
+                )
+            );
+        } else {
+            $DB->Execute(
+                'INSERT INTO uiconfig (section, var, value) VALUES (?, ?, ?)',
+                array(
+                    'userpanel',
+                    'node_lock_management',
+                    isset($_POST['node_lock_management']) ? 1 : 0,
+                )
+            );
+        }
+
         $DB->Execute(
             'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
             array($_POST['consent_text'], 'userpanel', 'data_consent_text')
@@ -692,6 +867,10 @@ if (defined('USERPANEL_SETUPMODE')) {
         $DB->Execute(
             'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
             array(isset($_POST['pin_changes']) ? 'true' : 'false', 'userpanel', 'pin_changes')
+        );
+        $DB->Execute(
+            'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
+            array(isset($_POST['show_sensitive_data']) ? 'true' : 'false', 'userpanel', 'show_customer_sensitive_data')
         );
         $DB->Execute(
             'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',

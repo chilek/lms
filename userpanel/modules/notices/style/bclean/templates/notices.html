@@ -1,5 +1,26 @@
 {include file="header.html"}
 {$xajax}
+
+<style>
+
+	.notice-attachments {
+		margin-top: 0.5em;
+		margin-bottom: 0.5em;
+	}
+
+	.notice-attachments ul {
+		margin-block-start: 0;
+		margin-block-end: 0;
+		list-style-type: none;
+		padding-inline-start: 0;
+	}
+
+	.notice-confirm {
+		margin-top: 0.5em;
+	}
+
+</style>
+
 {if $warning}
 	{box title="Warning to you"}
 	<div class="alert alert-warning" role="alert">
@@ -10,7 +31,7 @@
 {/if}
 
 {box title="Notice to you"}
-{if $notice}
+{if $notices}
 	<div class="table-responsive">
 		<table class="table table-bordered table-condensed table-striped">
 			<tr class="bg-primary text-white">
@@ -19,7 +40,7 @@
 				<th>{trans("Subject")}</th>
 				<th>{trans("Read")}</th>
 			</tr>
-			{foreach $notice as $items}
+			{foreach $notices as $items}
 				<tr class="{if $items.status==$smarty.const.MSG_ERROR}text-danger{elseif $items.status==$smarty.const.MSG_SENT}text-muted{/if}" onCLick="ReadNotice('{$items.id}');">
 					<td>{$items.cdate|date_format:"Y-m-d H:i"}</td>
 					<td>{if $items.type == $smarty.const.MSG_USERPANEL_URGENT}<strong>{trans("Urgent")}</strong>{else}{trans("Casual")}{/if}</td>
@@ -36,27 +57,51 @@
 				</tr>
 				<tr id="{$items.id}" style="display:none;">
 					<td colspan="4" >
-						<h3>{trans("Body:")}</h3>
-						{if $items.mibody}
-							{if $items.contenttype == 'text/plain'}
-								{nl2br(htmlspecialchars($items.mibody), false)}
-							{elseif $items.contenttype == 'text/html'}
-								{$items.mibody}
+						<h3>{trans("Body")}</h3>
+						<div class="notice-body">
+							{if $items.mibody}
+								{if $items.contenttype == 'text/plain'}
+									{nl2br(htmlspecialchars($items.mibody), false)}
+								{elseif $items.contenttype == 'text/html'}
+									{$items.mibody}
+								{else}
+									{nl2br($items.mibody, false)}
+								{/if}
 							{else}
-								{nl2br($items.mibody, false)}
+								{if $items.contenttype == 'text/plain'}
+									{nl2br(htmlspecialchars($items.body), false)}
+								{elseif $items.contenttype == 'text/html'}
+									{$items.body}
+								{else}
+									{nl2br($items.body, false)}
+								{/if}
 							{/if}
-						{else}
-							{if $items.contenttype == 'text/plain'}
-								{nl2br(htmlspecialchars($items.body), false)}
-							{elseif $items.contenttype == 'text/html'}
-								{$items.body}
-							{else}
-								{nl2br($items.body, false)}
-							{/if}
+						</div>
+						{if !empty($items.attachments)}
+							<div class="notice-attachments">
+								{icon name="attachment"}
+								<strong>{trans("Attachments")}</strong>
+								<ul>
+									{foreach $items.attachments as $attachmentid => $attachment}
+										<li>
+											<a href="?m=notices&f=attachmentview&id={$attachmentid}">
+												{$attachment.filename|escape}
+												{if preg_match('/pdf/', $attachment.contenttype)}
+													{$icon = "pdf"}
+												{elseif preg_match('/csv|excel|spreadsheet/', $attachment.contenttype)}
+													{$icon = "xls"}
+												{/if}
+												{icon name="lms-ui-icon-view" class=$icon}
+											</a>
+										</li>
+									{/foreach}
+								</ul>
+							</div>
 						{/if}
-						<br><br>
 						{if $items.status != $smarty.const.MSG_DELIVERED}
-							{button class="btn btn-primary" href="?m=notices&confirm={$items.id}" icon="confirm" label="<!userpanel>Confirm"}
+							<div class="notice-confirm">
+								{button class="btn btn-primary" href="?m=notices&confirm={$items.id}" icon="confirm" label="<!userpanel>Confirm"}
+							</div>
 						{/if}
 					</td>
 				</tr>

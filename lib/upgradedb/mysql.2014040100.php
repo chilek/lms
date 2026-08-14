@@ -31,7 +31,7 @@ if (!empty($dl)) {
     foreach ($dl as $division) {
         $this->Execute("UPDATE documents SET div_shortname = ?
 				WHERE divisionid = ?", array(
-            ($division['shortname'] ? $division['shortname'] : ''),
+            ($division['shortname'] ?: ''),
             $division['id']));
     }
 }

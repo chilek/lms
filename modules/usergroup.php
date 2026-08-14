@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$action = isset($_GET['action']) ? $_GET['action'] : '';
+$action = $_GET['action'] ?? '';
 
 if ($action == 'delete') {
     $LMS->UserAssignmentDelete(array('userid' => intval($_GET['id']),'usergroupid' => $_GET['usergroupid']));

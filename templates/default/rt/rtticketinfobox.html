@@ -1,9 +1,12 @@
 <!-- $Id$ -->
+{$gps_location_url = ConfigHelper::getConfig('phpui.gps_location_url', 'https://www.google.com/maps/place/%location')}
+{$ticketinfo_clipboard_text = ConfigHelper::getConfig('rt.ticketinfo_clipboard_text',"%ticketurl {trans("Subject:")}%subject{if $ticket.location}, {trans("Location:")}%location{/if}")|replace:"%location":$ticket.location|replace:"%ticketid":$ticket.ticketid|replace:"%subject":$ticket.subject|replace:"%ticketurl":"{$url}?m=rtticketview&id={$ticket.ticketid}"}
+
 <TABLE class="lmsbox">
 	<THEAD>
 	<TR>
 		<TD style="width: 100%;" class="bold" colspan="3">
-			{icon name="helpdesk" label="{t}Ticket No.{/t} {$ticket.ticketid|string_format:"%06d"}"}
+			{icon name="helpdesk" class="lms-ui-button-clipboard" label="{t}Ticket No.{/t} {$ticket.ticketid|string_format:"%06d"}" data_clipboard_text=$ticketinfo_clipboard_text}
 		</TD>
 	</TR>
 	</THEAD>
@@ -102,6 +105,18 @@
 									{$ticket.createtime|date_format:"Y-m-d H:i:s"}
 								</TD>
 							</TR>
+							{if ConfigHelper::checkPrivilege('helpdesk_ticket_custom_times') && isset($ticket.customcreatetime)}
+								<tr>
+									<td class="nobr">
+										<strong>
+											{icon name="timetable" label="<!rtticket>Custom create time"}
+										</strong>
+									</td>
+									<td>
+										{$ticket.customcreatetime|date_format:"Y-m-d H:i"}
+									</td>
+								</tr>
+							{/if}
 							{if $ticket.creatorid}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
@@ -120,6 +135,18 @@
 									{$ticket.uptime}
 								</TD>
 							</TR>
+							{if ConfigHelper::checkPrivilege('helpdesk_ticket_custom_times') && isset($ticket.customresolvetime)}
+								<tr>
+									<td class="nobr">
+										<strong>
+											{icon name="timetable" label="<!rtticket>Custom resolve time"}
+										</strong>
+									</td>
+									<td>
+										{$ticket.customresolvetime|date_format:"Y-m-d H:i"}
+									</td>
+								</tr>
+							{/if}
 							{if !empty($ticket.categories)}
 							<TR>
 								<TD style="width: 1%;" class="valign-top bold nobr">
@@ -182,6 +209,18 @@
 								</TD>
 								<TD style="width: 99%;">
 									<A href="?m=rtqueueview&amp;id={$ticket.queueid}">{$ticket.queuename}</A>
+									{if empty($favorite_queues)}
+										{button type="link" icon="next" disabled=true tip="No favorite queues defined (check 'rt.favorite_queues' configuration setting)"}
+									{else}
+										{foreach $favorite_queues as $queueid => $name}
+										{if $queueid != $ticket.queueid}
+											{button type="link" icon="next" tip=trans('Move ticket to queue $a', $name)
+												data_href="?m=rtticketedit&action=queuechange&id={$ticket.ticketid}&queueid=$queueid"
+												data_confirmation_text=trans('Are you sure, you want to move ticket to $a?', $name)
+											}
+										{/if}
+										{/foreach}
+									{/if}
 								</TD>
 							</TR>
 							<TR>
@@ -249,6 +288,61 @@
 								</TD>
 								<TD>
 									{$ticket.location|escape}
+									{button
+										type="link"
+										tip="Show on map"
+										icon="location"
+										href="{$gps_location_url|replace:"%location":$ticket.location|escape}"
+									}
+									{show_on_map_button
+										type="default"
+										cityid=$ticket.city_id
+										streetid=$ticket.street_id
+										building_num=$ticket.house
+									}
+									{show_on_map_button
+										type="google"
+										cityid=$ticket.city_id
+										streetid=$ticket.street_id
+										building_num=$ticket.house
+									}
+									{show_on_map_button
+										type="geoportal"
+										cityid=$ticket.city_id
+										streetid=$ticket.street_id
+										building_num=$ticket.house
+									}
+									{show_on_map_button
+										type="netstork"
+										cityid=$ticket.city_id
+										streetid=$ticket.street_id
+										building_num=$ticket.house
+									}
+									{show_on_map_button
+										type="sidusis"
+										cityid=$ticket.city_id
+										streetid=$ticket.street_id
+										building_num=$ticket.house
+									}
+								</TD>
+							</TR>
+							{/if}
+							{if $ticket.location && !empty($ticket.coords.latitude)}
+							<TR>
+								<TD class="bold nobr">
+									{icon name="location"
+										class="lms-ui-button-clipboard"
+										label="GPS coordinates"
+										data_clipboard_text="{$ticket.coords.latitude}, {$ticket.coords.longitude}"
+									}
+								</TD>
+								<TD>
+									{button
+										type="link"
+										class="lms-ui-button-clipboard"
+										label="{$ticket.coords.latitude}, {$ticket.coords.longitude}"
+										data_clipboard_text="{$ticket.coords.latitude}, {$ticket.coords.longitude}"
+									}
 								</TD>
 							</TR>
 							{/if}
@@ -300,7 +394,11 @@
 									{icon name="parentticket" label="Primary ticket"}
 								</TD>
 								<TD>
-									#{$ticket.parent.id|string_format:"%06d"} <a href="?m=rtticketview&id={$ticket.parent.id}">{$ticket.parent.name|escape}</a><br>
+									{button
+										type="link"
+										label="#{$ticket.parent.id|string_format:"%06d"} {$ticket.parent.name|escape}"
+										href="?m=rtticketview&id={$ticket.parent.id}"
+									}
 								</TD>
 							</TR>
 							{/if}
@@ -311,9 +409,12 @@
 									</TD>
 									<TD>
 										{foreach $ticket.childtickets as $t}
-											#{$t.id|string_format:"%06d"}
-											<a href="?m=rtticketview&id={$t.id}">{$t.subject|escape}</a>
-											<br>
+											{button
+												type="link"
+												label="#{$t.id|string_format:"%06d"} {$t.subject|escape}"
+												href="?m=rtticketview&id={$t.id}"
+											}
+											{if !$t@last}<br>{/if}
 										{/foreach}
 									</TD>
 								</TR>
@@ -325,14 +426,12 @@
 								</TD>
 								<TD>
 									{foreach $ticket.relatedtickets as $i}
-										{hint icon="info" mode="toggle" url="?m=rtticketinfo&id={$i.id}"}
-										#{$i.id}
-										<a href="?m=rtticketview&id={$i.id}">
-											{$i.name|escape}
-										</a>
-										{if !$i@last}
-											<br>
-										{/if}
+										{button
+											type="link"
+											label="#{$i.id|string_format:"%06d"} {$i.name|escape}"
+											href="?m=rtticketview&id={$i.id}"
+										}
+										{if !$i@last}<br>{/if}
 									{/foreach}
 								</TD>
 							</TR>
@@ -366,7 +465,7 @@
 			{if $ticket.state != $smarty.const.RT_RESOLVED}
 				{if ConfigHelper::checkConfig('rt.block_ticket_close_with_open_events', ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events'))
 					&& !empty($ticket['openeventcount'])}
-					{button icon="status-resolved" label="Ticket have open assigned events!" tip="Ticket have open assigned events!" class="blend disabled"}
+					{button icon="status-resolved" label="Ticket has open assigned events!" tip="Ticket has open assigned events!" class="blend disabled"}
 				{else}
 					{if empty($ticket['verifier_rtime']) && $ticket['verifierid'] != Auth::GetCurrentUser() && $ticket['verifierid']}
 						{button icon="verifier" label="Transfer to verifier" tip="Transfer to verifier" onclick="location.href='?m=rtticketedit&id={$ticket.ticketid}&action=verify';"}
@@ -395,15 +494,25 @@
 				{if $ticket.state != $smarty.const.RT_RESOLVED}
 					{button type="link-button" icon="childticket" label="Create secondary ticket" tip="Create secondary ticket" href="?m=rtticketadd&parentid={$ticket.ticketid}"}
 				{/if}
-				{if count($ticket.images)}
+				{if $ticket.images|size}
 					{button id="ticket-gallery-button" icon="gallery" label="Attachment gallery" tip="Attachment gallery" data_gallery="{base64_encode(json_encode($ticket.images))}"}
 				{/if}
 				{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-					{button id="restore-rtticket" icon="restore" label="Restore<!RT>" tip="Restore<!RT>" data_href="?m=rtrestore&id={$ticket.ticketid}&taction=restore"}
-					{button id="remove-rtticket" icon="delete" label="Delete permanently" tip="Delete permanently" data_href="?m=rtticketdel&id={$ticket.ticketid}&taction=delperm"}
+					{button id="restore-rtticket" icon="restore" label="Restore<!RT>" tip="Restore<!RT>"
+						data_href="?m=rtrestore&id={$ticket.ticketid}&taction=restore"
+						data_confirmation_text=trans('Are you sure, you want to restore ticket $a?', $ticket.ticketid)
+					}
+					{button id="remove-rtticket" icon="delete" label="Delete permanently" tip="Delete permanently"
+						data_href="?m=rtticketdel&id={$ticket.ticketid}&taction=delperm"
+						data_confirmation_text=trans('Are you sure, you want to permanently remove ticket $a?', $ticket.ticketid)
+					}
 				{else}
-					{button id="delete-rtticket" icon="delete" label="Delete" tip="Delete" data_href="?m=rtticketdel&id={$ticket.ticketid}&taction=delete"}
+					{button id="delete-rtticket" icon="delete" label="Delete" tip="Delete"
+						data_href="?m=rtticketdel&id={$ticket.ticketid}&taction=delete"
+						data_confirmation_text=trans('Are you sure, you want to remove ticket $a?', $ticket.ticketid)
+					}
 				{/if}
+				{button icon="link" class="lms-ui-button-clipboard" label="Copy link" data_clipboard_text=$ticketinfo_clipboard_text tip="Copy link"}
 			{/buttons}
 		</TD>
 	</TR>
@@ -504,25 +613,6 @@
 				+ ($('#notes-chkbox:checked').length ? '&notes=1' : '')
 				+ ($('#history-chkbox:checked').length ? '&history=1' : ''),
 				'_blank');
-		});
-
-		$('#delete-rtticket').click(function () {
-			confirmDialog($t("Are you sure, you want to remove ticket '$a'?", sprintf("%06d", {$ticket.ticketid})), this).done(function () {
-				location.href = $(this).attr('data-href');
-			});
-			return false;
-		});
-		$('#restore-rtticket').click(function () {
-			confirmDialog($t("Are you sure, you want to restore ticket $a?", sprintf("%06d", {$ticket.ticketid})), this).done(function () {
-				location.href = $(this).attr('data-href');
-			});
-			return false;
-		});
-		$('#remove-rtticket').click(function () {
-			confirmDialog($t("Are you sure, you want to permanently remove ticket $a?", sprintf("%06d", {$ticket.ticketid})), this).done(function () {
-				location.href = $(this).attr('data-href');
-			});
-			return false;
 		});
 
 		$('#ticket-assign-to-me').click(function() {

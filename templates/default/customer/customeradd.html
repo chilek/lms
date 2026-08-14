@@ -2,12 +2,24 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-{$pin_tip = ConfigHelper::getConfig('phpui.pin_restriction_description')}
+{$restrictive_sensitive_data_access = ConfigHelper::checkConfig('customers.restrictive_sensitive_data_access')}
+{$pin_tip = ConfigHelper::getConfig('customers.pin_restriction_description', ConfigHelper::getConfig('phpui.pin_restriction_description'))}
+{if !empty($unsecure_pin_validity)}
+	{$pin_tip = ConfigHelper::getConfig('customers.unsecure_pin_restriction_description', $pin_tip)}
+{/if}
 {if !$pin_tip}
-	{if $pin_min_size == $pin_max_size}
-		{$pin_tip=trans("Enter \$a characters PIN code", $pin_min_size)}
+	{if empty($unsecure_pin_validity)}
+		{if $pin_min_size == $pin_max_size}
+			{$pin_tip = trans("Enter \$a characters PIN code", $pin_min_size)}
+		{else}
+			{$pin_tip = trans("Enter \$a to \$b characters PIN code", $pin_min_size, $pin_max_size)}
+		{/if}
 	{else}
-		{$pin_tip=trans("Enter \$a to \$b characters PIN code", $pin_min_size, $pin_max_size)}
+		{if $unsecure_pin_min_size == $unsecure_pin_max_size}
+			{$pin_tip = trans("Enter \$a characters PIN code", $unsecure_pin_min_size)}
+		{else}
+			{$pin_tip = trans("Enter \$a to \$b characters PIN code", $unsecure_pin_min_size, $unsecure_pin_max_size)}
+		{/if}
 	{/if}
 {/if}
 <H1>{$layout.pagetitle}</H1>
@@ -32,8 +44,9 @@
 		.lms-ui-address-box {
 			max-width: 500px;
 		}
+	}
 
-		#paytime-cell .scombobox {
+	#paytime-cell .scombobox {
 		width: 11em;
 	}
 
@@ -41,32 +54,32 @@
 		cursor: pointer;
 	}
 
-	#identity-document-box {
-		padding-left: 0;
+	.identity-document-box {
+		padding-left: 0 !important;
 	}
 
-	#identity-document-box .identity-document-properties {
+	.identity-document-properties {
 		display: flex;
 		flex-direction: column;
 		flex-wrap: wrap;
 	}
 
-	#identity-document-box .identity-document-property {
+	.identity-document-property {
 		display: flex;
 		flex-direction: column;
 		flex-wrap: wrap;
 	}
 
-	#identity-document-box .identity-document-property > * {
+	.identity-document-property > * {
 		margin-top: 0.25em;
 		margin-bottom: 0.25em;
 	}
 
-	#identity-document-box .identity-document-property > input[type] {
+	.identity-document-property > input[type] {
 		margin-left: 0;
 	}
 
-	#identity-document-box .identity-document-property > select {
+	.identity-document-property > select {
 		margin-left: 0;
 	}
 
@@ -78,7 +91,7 @@
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
 </p>
-<TABLE class="lmsbox">
+<table class="lmsbox">
 	<THEAD>
 	<TR>
 		<TD class="lmsbox-panels">
@@ -166,10 +179,10 @@
 				{block name="customeradd-leftcolumn"}
 				<TR>
 					<TD>
-						{if $customeradd.status}{icon name="customer-status-{$_CSTATUSES[$customerinfo.status].alias}"}{else}{icon name="customer-status-connected"}{/if}
+						{if $customeradd.status}{icon name="customer-status-{$_CSTATUSES[$customeradd.status].alias}"}{else}{icon name="customer-status-connected"}{/if}
 					</TD>
 					<TD>
-						<select size="1" name="customeradd[status]" {tip trigger="status"}>
+						<select size="1" name="customeradd[status]" id="customer-status" {tip trigger="status"}>
 							{foreach $_CSTATUSES as $statusidx => $status}
 								<option value="{$statusidx}"{if $customeradd.status == $statusidx} selected{/if}>{$status.singularlabel}</option>
 							{/foreach}
@@ -178,9 +191,27 @@
 				</TR>
 				<tr>
 					<td>
+						{icon name="origin" class="fa-fw"}
+					</td>
+					<td>
+						<select size="1" name="customeradd[origin]" {tip trigger="origin"}>
+							<option value="">{trans("<!origin>— unspecified —")}</option>
+							{foreach Localisation::arraySort($_ORIGINS) as $originidx => $origin}
+								<option value="{$originidx}"{if $customeradd.origin == $originidx} selected{/if}>{$origin}</option>
+							{/foreach}
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>
 						{icon name="tag"}
 					</td>
 					<td>
+						{capture assign="customer_flag_tip"}{strip}
+							{foreach Localisation::arraySort($_CUSTOMERFLAGS, 'label') as $cflag => $flag}
+								<strong>{$flag.label}</strong> - {$flag.tip}<br>
+							{/foreach}
+						{/strip}{/capture}
 						<select name="customeradd[flags][]" {tip text="Select customer flags (optional)" class="lms-ui-multiselect"}
 							multiple>
 							{foreach Localisation::arraySort($_CUSTOMERFLAGS, 'label') as $cflag => $flag}
@@ -190,6 +221,7 @@
 							</option>
 							{/foreach}
 						</select>
+						{hint text=$customer_flag_tip}
 					</td>
 				</tr>
 				{if $divisions}
@@ -209,19 +241,21 @@
 				</tr>
 				{/if}
 				{if $groups}
-				<TR>
-					<TD>
-						{icon name="cg"}
-					</TD>
-					<TD>
-						<SELECT SIZE="1" NAME="customeradd[group]" {tip text="Select group to assign to customer" trigger="group"}>
-							<OPTION VALUE="0">{trans("… select group …")}</OPTION>
-							{foreach $groups as $group}
-							<OPTION VALUE="{$group.id}" {if $customeradd.group == $group.id}SELECTED{/if}>{$group.name} ({$group.id|string_format:"%04d"})</OPTION>
-							{/foreach}
-						</SELECT>
-					</TD>
-				</TR>
+					<tr>
+						<td>
+							{icon name="cg"}
+						</td>
+						<td>
+							<select size="1" name="customeradd[group][]" multiple data-placeholder="{trans("… select groups …")}"
+								{tip text="Select group to assign to customer" trigger="group" class="lms-ui-multiselect"}
+								required>
+								{foreach $groups as $group}
+									<option value="{$group.id}" {if !empty($customeradd.group) && in_array($group.id, $customeradd.group)} selected{/if}
+										>{$group.name|escape} (#{$group.id})</option>
+								{/foreach}
+							</select>
+						</td>
+					</tr>
 				{/if}
 				<TR>
 					<TD>
@@ -245,61 +279,20 @@
 						</div>
 					</TD>
 				</TR>
-				{if !ConfigHelper::checkPrivilege('hide_customer_sensitive_data')}
-					<tr>
-						<td>{trans("SSN")}</td>
-						<td>
-							<input type="text" size="30" value="{$customeradd.ssn}" name="customeradd[ssn]"
-								{tip trigger="ssn"}>
-							{if $customeradd.ssnwarning}
-								<input type="hidden" name="customeradd[ssnwarning]" value="1">
-							{/if}
-							{if $customeradd.ssnexistencewarning}
-								<input type="hidden" name="customeradd[ssnexistencewarning]" value="1">
-							{/if}
-						</td>
-					</tr>
-				{/if}
 				<tr>
-					<td>{trans("TEN")}</td>
-					<td>
-						<input type="text" size="30" value="{$customeradd.ten}" name="customeradd[ten]"
-							{tip trigger="ten"}>
-						{if $customeradd.tenwarning}
-							<input type="hidden" name="customeradd[tenwarning]" value="1">
-						{/if}
-						{if $customeradd.tenexistencewarning}
-							<input type="hidden" name="customeradd[tenexistencewarning]" value="1">
-						{/if}
-						{button type="link" icon="division" class="gusapi-button"
-							data_type=Utils::GUS_REGON_API_SEARCH_TYPE_TEN
-							tip="Click here to autocomplete company data from GUS REGON database"}
+					<td class="valign-top">
+						{icon name="user-id-number"}
 					</td>
-				</tr>
-				<tr>
-					<td>{trans("REGON")}</td>
-					<td>
-						<input type="text" size="30" value="{$customeradd.regon}" name="customeradd[regon]"
-							{tip trigger="regon"}>
-						{button type="link" icon="division" class="gusapi-button"
-							data_type=Utils::GUS_REGON_API_SEARCH_TYPE_REGON
-							tip="Click here to autocomplete company data from GUS REGON database"}
-					</td>
-				</tr>
-				{if !ConfigHelper::checkPrivilege('hide_customer_sensitive_data')}
-					<tr>
-						<td class="valign-top">
-							{icon name="user-id-number"}
-						</td>
-						<td class="cell-flex">
-							<div>
-								<table width="100%">
-									<colgroup>
-										<col style="width: 1%;">
-										<col style="width: 99%;">
-									</colgroup>
+					<td class="cell-flex identity-document-box">
+						<div>
+							<table class="user-id-number">
+								<colgroup>
+									<col style="width: 1%;">
+									<col style="width: 99%;">
+								</colgroup>
+								{if !ConfigHelper::checkPrivilege('hide_customer_sensitive_data', !$restrictive_sensitive_data_access)}
 									<tr>
-										<td class="nobr" colspan="2" id="identity-document-box">
+										<td colspan="2">
 											<fieldset>
 												<legend class="bold">
 													{trans("Identity document")}
@@ -307,16 +300,25 @@
 												<div class="identity-document-properties">
 													<label class="identity-document-property">
 														<span>{trans("Type")}</span>
-														{identitytypes elemname="customeradd[ict]" selected=$customerinfo.ict
+														{identitytypes elemname="customeradd[ict]" selected=$customeradd.ict
 															tip="" trigger="ict"}
 													</label>
 													<label class="identity-document-property">
 														<span>{trans("Number")}</span>
-														{if $customerinfo.icnwarning}
+														{if $customeradd.icnwarning}
 															<input type="hidden" name="customeradd[icnwarning]" value="1">
 														{/if}
-														<input type="text" value="{$customeradd.icn}" name="customeradd[icn]" size="30"
-															{tip trigger="icn"}>
+														{if ConfigHelper::checkPrivilege('customer_sensitive_data_view', !$restrictive_sensitive_data_access)}
+															{$icn = $customeradd.icn}
+															{$disabled = false}
+														{else}
+															{$icn = preg_replace('/[^\s]/', '*', $customeradd.icn)}
+															{$disabled = true}
+														{/if}
+														<input type="text" value="{$icn}" name="customeradd[icn]" size="30"
+															class="customer-sensitive-data" data-type="icn"
+															{tip trigger="icn"}
+															{if $disabled} disabled{/if}>
 													</label>
 													<label class="identity-document-property">
 														<span>{trans("Expires")}</span>
@@ -324,13 +326,12 @@
 															name="customeradd[icexpires]" size="10" id="icexpires"
 															class="lms-ui-date lms-ui-date-unix"
 															{tip trigger="icexpires"}
-															{if $customeradd.icexpires == -1} disabled{/if}>
+															{if $customeradd.icexpires == -1}disabled{/if}>
 													</label>
 													<label>
 														<input type="checkbox" name="customeradd[icexpires]"
 															id="icexpires-indefinitely"
-															value="-1"
-															{if $customeradd.icexpires == -1} checked{/if}
+															value="-1"{if $customeradd.icexpires == -1} checked{/if}
 															{tip trigger="icexpires-indefinitely"}>
 														{trans("indefinitely")}
 													</label>
@@ -338,32 +339,99 @@
 											</fieldset>
 										</td>
 									</tr>
-								</table>
-							</div>
-						</td>
-					</tr>
-				{/if}
-				<tr>
-					<td>{trans("RBE Name:")}</td>
-					<td>
-						<div class="valign-middle">
-							<textarea name="customeradd[rbename]" cols="45" rows="4"
-								{tip trigger="rbename"}
-								>{$customeradd.rbename|escape}</textarea>
-							{hint content="Enter National Court Register / Register of Business Entities Name (optional)"}
+									<tr>
+										<td>
+											{trans("SSN")}
+										</td>
+										<td>
+											{if ConfigHelper::checkPrivilege('customer_sensitive_data_view', !$restrictive_sensitive_data_access)}
+												{$ssn = $customeradd.ssn}
+												{$disabled = false}
+											{else}
+												{$ssn = preg_replace('/[^\s]/', '*', $customeradd.ssn)}
+												{$disabled = true}
+											{/if}
+											{if !$disabled}
+												<input type="hidden" name="customeradd[oldssn]" value="{$ssn}">
+											{/if}
+											<input type="text" name="customeradd[ssn]" value="{$ssn}" size="30"
+												data-type="ssn"
+												{tip trigger="ssn" class="customer-sensitive-data"}
+												{if $disabled} disabled{/if}>
+											{if $customeradd.ssnwarning}
+												<input type="hidden" name="customeradd[ssnwarning]" value="1">
+											{/if}
+											{if $customeradd.ssnexistencewarning}
+												<input type="hidden" name="customeradd[ssnexistencewarning]" value="1">
+											{/if}
+										</td>
+									</tr>
+								{/if}
+								<tr>
+									<td>{trans("TEN")}</td>
+									<td>
+										<input type="text" name="customeradd[ten]" value="{$customeradd.ten}" size="30"
+												{tip trigger="ten"}>
+										{if $customeradd.tenwarning}
+											<input type="hidden" name="customeradd[tenwarning]" value="1">
+										{/if}
+										{if $customeradd.tenexistencewarning}
+											<input type="hidden" name="customeradd[tenexistencewarning]" value="1">
+										{/if}
+										{button type="link" icon="division" class="gusapi-button"
+											data_type=Utils::GUS_REGON_API_SEARCH_TYPE_TEN
+											tip="Click here to autocomplete company data from GUS REGON database"}
+									</td>
+								</tr>
+								<tr>
+									<td>{trans("REGON")}</td>
+									<td>
+										<input type="text" value="{$customeradd.regon}" name="customeradd[regon]" size="30"
+											{tip trigger="regon"}>
+										{button type="link" icon="division" class="gusapi-button"
+											data_type=Utils::GUS_REGON_API_SEARCH_TYPE_REGON
+											tip="Click here to autocomplete company data from GUS REGON database"}
+									</td>
+								</tr>
+							</table>
 						</div>
 					</td>
 				</tr>
 				<tr>
-					<td>{trans("RBE")}</td>
-					<td>
-						<div class="valign-middle">
-							<input type="text" size="30" value="{$customeradd.rbe}" name="customeradd[rbe]"
-								{tip trigger="rbe"}>
-							{button type="link" icon="division" class="gusapi-button"
-								data_type=Utils::GUS_REGON_API_SEARCH_TYPE_RBE
-								tip="Click here to autocomplete company data from GUS REGON database"}
-							{hint content="Enter National Court Register / Register of Business Entities Number (optional)"}
+					<td class="valign-top">
+						{icon name="user-id-number"}
+					</td>
+					<td class="cell-flex identity-document-box">
+						<div>
+							<fieldset>
+								<legend class="bold">
+									{trans("Business register")}
+								</legend>
+								<div class="identity-document-properties">
+									<label class="identity-document-property">
+										<span>
+											{trans("Name")}
+											{hint content="Enter National Court Register / Register of Business Entities Name (optional)"}
+										</span>
+										<textarea name="customeradd[rbename]" cols="45" rows="4"
+											{tip trigger="rbename"}
+											>{$customeradd.rbename|escape}</textarea>
+									</label>
+									<label class="identity-document-property">
+										<span>
+											{trans("Number")}
+											{hint content="Enter National Court Register / Register of Business Entities Number (optional)"}
+										</span>
+										<span>
+											<input type="text" value="{$customeradd.rbe}" name="customeradd[rbe]" size="30"
+												{tip trigger="rbe"}>
+											{button type="link" icon="division" class="gusapi-button"
+												data_type=Utils::GUS_REGON_API_SEARCH_TYPE_RBE
+												tip="Click here to autocomplete company data from GUS REGON database"}
+										</span>
+									</label>
+								</div>
+							</fieldset>
 						</div>
 					</td>
 				</tr>
@@ -559,7 +627,7 @@
 									<div class="valign-middle nobr cutoffstop">
 										<input type="text" name="customeradd[cutoffstop]" id="cutoffstop"
 											{if $customeradd.cutoffstopindefinitely} style="display: none;"
-											{elseif $customeradd.cutoffstop} value="{$customerinfo.cutoffstop}"
+											{elseif $customeradd.cutoffstop} value="{$customeradd.cutoffstop}"
 											{/if}
 											size="10"
 											{tip class="lms-ui-date" trigger="cutoffstop"}>
@@ -578,55 +646,7 @@
 						{icon name="consent"}
 					</TD>
 					<TD>
-						<TABLE cellpadding="0" class="lms-ui-separated-rows">
-							<tbody class="lms-ui-multi-check">
-								<tr>
-									<td class="bold">
-										<label for="check-all-consents">
-											{trans("Consents")}
-										</label>
-									</td>
-									<td>
-										<input type="checkbox" class="lms-ui-multi-check-all"
-											id="check-all-consents" value="1">
-									</td>
-								</tr>
-								{block name="customeradd-options"}
-									{foreach $_CCONSENTS as $type => $consent}
-										{if !is_array($consent)}
-											{continue}
-										{/if}
-										{if $consent.type == 'selection'}
-											{foreach $consent.values as $subtype => $subconsent}
-												<tr>
-													<td>
-														<label class="consent-label" for="chkconsent{$subtype}">
-															{t a=$consent.label b=$subconsent.label}<!subconsent-label>$a ($b){/t}
-														</label>
-													</td>
-													<td>
-														<input type="radio" name="customeradd[consents][{$type}]" id="chkconsent{$subtype}"
-															value="{$subtype}"
-															{if isset($customeradd.consents[$type]) && $customeradd.consents[$type] == $subtype} checked{/if}>
-													</td>
-												</tr>
-											{/foreach}
-										{else}
-											<tr>
-												<td>
-													<span class="consent-label">{$consent.label}</span>
-												</td>
-												<td>
-													<input type="checkbox" name="customeradd[consents][{$type}]" id="chkconsent{$type}"
-														value="{$smarty.now}"{if isset($customeradd.consents[$type])} checked{/if}
-														{tip trigger="chkconsent"|cat:$type class="lms-ui-multi-check"}>
-												</td>
-											</tr>
-										{/if}
-									{/foreach}
-								{/block}
-							</tbody>
-						</TABLE>
+						{include file="customer/customerconsents.html" variable_prefix="customeradd" variables=$customeradd}
 					</TD>
 				</TR>
 				{/block}
@@ -736,12 +756,38 @@
 			{/foreach}
 		{/if}
 
+		var legal_person_required_property_validation_error = {if empty($legal_person_required_property_validation_error)}false{else}true{/if};
+		var natural_person_required_property_validation_error = {if empty($natural_person_required_property_validation_error)}false{else}true{/if};
+
+		var legal_person_required_property_validation_customer_statuses = [];
+		var natural_person_required_property_validation_customer_statuses = [];
+
+		{if !empty($legal_person_required_property_validation_customer_statuses)}
+			{foreach $legal_person_required_property_validation_customer_statuses as $index => $status}
+				legal_person_required_property_validation_customer_statuses.push('{$status}');
+			{/foreach}
+		{/if}
+
+		{if !empty($natural_person_required_property_validation_customer_statuses)}
+			{foreach $natural_person_required_property_validation_customer_statuses as $index => $status}
+				natural_person_required_property_validation_customer_statuses.push('{$status}');
+			{/foreach}
+		{/if}
+
 		$('[name="customeradd[pin]"]').change(function() {
-			if (validate_random_string(this.value, {$pin_min_size}, {$pin_max_size}, '{str_replace("'", "\'", $pin_allowed_characters)}')) {
-				this.setCustomValidity('');
-			} else {
-				this.setCustomValidity('{$pin_tip}');
-			}
+			{if empty($unsecure_pin_validity)}
+				if (validate_random_string(this.value, {$pin_min_size}, {$pin_max_size}, '{str_replace("'", "\'", $pin_allowed_characters)}')) {
+					this.setCustomValidity('');
+				} else {
+					this.setCustomValidity('{$pin_tip}');
+				}
+			{else}
+				if (validate_random_string(this.value, {$unsecure_pin_min_size}, {$unsecure_pin_max_size}, '{str_replace("'", "\'", $unsecure_pin_allowed_characters)}')) {
+					this.setCustomValidity('');
+				} else {
+					this.setCustomValidity('{$pin_tip}');
+				}
+			{/if}
 		});
 
 		init_email_validators();
@@ -760,6 +806,21 @@
 				$(this).attr('data-type'),
 				identifier,
 				function(data) {
+					if (data.hasOwnProperty('warning')) {
+						alertDialog({
+							title: "<!dialog>Alert",
+							message: data.warning,
+							context: that
+						});
+						return;
+					} else if (data.hasOwnProperty('error')) {
+						alertDialog({
+							title: "<!dialog>Error",
+							message: data.error,
+							context: that
+						});
+						return;
+					}
 					if (data.length > 1) {
 						customerCompanySelectionDialog(data, that).done(function(company) {
 							GusApiFinished('customeradd', company);
@@ -773,16 +834,30 @@
 
 		$('[name="customeradd[type]"]').change(function() {
 			var isPrivate = $('#private').prop('checked');
+			var status = $('#customer-status').val();
+
 			$('[name="customeradd[name]"]').prop('required', isPrivate);
+
 			var required_properties = isPrivate ? natural_person_required_properties : legal_person_required_properties;
+			var required_property_validation_error = isPrivate ? natural_person_required_property_validation_error : legal_person_required_property_validation_error;
+			var required_property_validation_customer_statuses = status ? natural_person_required_property_validation_customer_statuses : legal_person_required_property_validation_customer_statuses;
 			$.each(['ten', 'ssn', 'icn'], function(index, property) {
-				$('[name="customeradd[' + property + ']"]').prop('required', required_properties.indexOf(property) !== -1);
+				$('[name="customeradd[' + property + ']"]').prop(
+					'required',
+					required_properties.indexOf(property) !== -1
+						&& required_property_validation_error
+						&& required_property_validation_customer_statuses.indexOf(status) !== -1
+				);
 			});
 		}).change();
 
 		$('#randomize').click(function() {
 			$('[name="customeradd[pin]"]').val(
-				generate_random_string({$pin_min_size} + Math.floor(Math.random() * {($pin_max_size-$pin_min_size)+1}), '{str_replace("'", "\'", $pin_allowed_characters)}')
+				{if empty($unsecure_pin_validity)}
+					generate_random_string({$pin_min_size} + Math.floor(Math.random() * {($pin_max_size - $pin_min_size) + 1}), '{str_replace("'", "\'", $pin_allowed_characters)}')
+				{else}
+					generate_random_string({$pin_min_size} + Math.floor(Math.random() * {($unsecure_pin_max_size - $unsecure_pin_min_size) + 1}), '{str_replace("'", "\'", $unsecure_pin_allowed_characters)}')
+				{/if}
 			);
 		});
 
@@ -801,6 +876,16 @@
 
 		$('#cutoffstopindefinitely').change(function() {
 			$('.cutoffstop').toggle(!this.checked);
+		});
+
+		$("#reset-consents").click(function() {
+			$("#customer-consent-table").find("[data-default-checked]").each(function() {
+				if ($(this).is(":checkbox")) {
+					$(this).prop("checked", $(this).attr("data-default-checked") == "1");
+				} else {
+					$(this).prop("checked", $(this).attr("data-default-checked") == $(this).val());
+				}
+			});
 		});
 	});
 

@@ -25,26 +25,27 @@
  */
 
 // support for dynamic loading of plugin javascript code
-if (isset($_GET['template'])) {
+if (isset($_GET['template']) && preg_match('/^[a-zA-Z0-9_-]+$/', $_GET['template'])) {
     foreach ($documents_dirs as $doc) {
-        if (file_exists($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $_GET['template'])) {
+        if (is_readable($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $_GET['template'] . DIRECTORY_SEPARATOR . 'info.php')) {
             $doc_dir = $doc;
             $template_dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $_GET['template'];
             break;
         }
     }
     // read template information
-    if (file_exists($file = $template_dir . DIRECTORY_SEPARATOR . 'info.php')) {
+    if (is_readable($file = $template_dir . DIRECTORY_SEPARATOR . 'info.php')) {
         include($file);
         if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
             $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
         }
-        if (file_exists($file = $doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+        if (is_readable($file = $doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
             . $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.js')) {
             header('Content-Type: text/javascript');
             echo file_get_contents($file);
         }
         echo '$("#documentpromotions").toggle(' . (empty($engine['promotion-schema-selection']) ? 'false' : 'true'). ');';
+        echo '$("#document-consents").toggle(' . (empty($engine['customer-consent-selection']) ? 'false' : 'true'). ');';
     }
     die;
 }
@@ -52,7 +53,7 @@ if (isset($_GET['template'])) {
 function GenerateAttachmentHTML($template_dir, $engine, $selected = null)
 {
     $output = array();
-    if (isset($engine['attachments']) && !empty($engine['attachments']) && is_array($engine['attachments'])) {
+    if (!empty($engine['attachments']) && is_array($engine['attachments'])) {
         foreach ($engine['attachments'] as $idx => $file) {
             if (is_array($file)) {
                 $file['checked'] = isset($selected) ? isset($selected[$file['label']]) : $file['checked'];
@@ -78,14 +79,14 @@ function GenerateAttachmentHTML($template_dir, $engine, $selected = null)
     return implode('<br>', $output);
 }
 
-function GetPlugin($template, $customer, $update_title, $JSResponse)
+function GetPlugin($template, $customerid, $update_title, $JSResponse)
 {
     global $documents_dirs;
 
     $result = '';
 
     foreach ($documents_dirs as $doc) {
-        if (file_exists($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template)) {
+        if (is_readable($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template . DIRECTORY_SEPARATOR . 'info.php')) {
             $doc_dir = $doc;
             $template_dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template;
             break;
@@ -93,7 +94,7 @@ function GetPlugin($template, $customer, $update_title, $JSResponse)
     }
 
     // read template information
-    if (file_exists($file = $template_dir . DIRECTORY_SEPARATOR . 'info.php')) {
+    if (is_readable($file = $template_dir . DIRECTORY_SEPARATOR . 'info.php')) {
         include($file);
         if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
             $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
@@ -102,11 +103,11 @@ function GetPlugin($template, $customer, $update_title, $JSResponse)
 
     // call plugin
     if (!empty($engine['plugin'])) {
-        if (file_exists($file = $doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+        if (is_readable($file = $doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
             . $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.php')) {
             include($file);
         }
-        if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+        if (is_readable($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
             . $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.js')) {
             $JSResponse->removeScript($_SERVER['REQUEST_URI'] . '&template=' . $template);
             $JSResponse->includeScript($_SERVER['REQUEST_URI'] . '&template=' . $template);
@@ -123,15 +124,26 @@ function GetPlugin($template, $customer, $update_title, $JSResponse)
 
     $JSResponse->assign('plugin', 'innerHTML', $result);
     if ($update_title) {
-        $JSResponse->assign('title', 'value', isset($engine['form_title']) ? $engine['form_title'] : $engine['title']);
+        $JSResponse->assign('title', 'value', $engine['form_title'] ?? $engine['title']);
+    }
+
+    if (isset($engine['default_number_plan_id']) && (ctype_digit($engine['default_number_plan_id']) || is_int($engine['default_number_plan_id']))) {
+        $JSResponse->script('$(\'[name="document[numberplanid]"]\').val(\'' . intval($engine['default_number_plan_id']) . '\')');
+    } else {
+        $JSResponse->script('$(\'[name="document[numberplanid]"] option[data-default]\').prop(\'selected\', true)');
     }
 
     $JSResponse->script('$("#documentpromotions").toggle(' . (empty($engine['promotion-schema-selection']) ? 'false' : 'true') . ')');
+    $JSResponse->script('$("#document-consents").toggle(' . (empty($engine['customer-consent-selection']) ? 'false' : 'true') . ')');
+
+    if (isset($engine['default-dont-create-assignments'])) {
+        $JSResponse->script('$("#dont-create-assignments").prop(\'checked\', ' . (empty($engine['default-dont-create-assignments']) ? 'false' : 'true') . ')');
+    }
 }
 
 function GetDocumentTemplates($rights, $type = null)
 {
-    global $documents_dirs;
+    global $documents_dirs, $DOCTYPES;
 
     $docengines = array();
 
@@ -149,12 +161,13 @@ function GetDocumentTemplates($rights, $type = null)
             foreach ($dirs as $dir) {
                 $infofile = $doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
                 . $dir . DIRECTORY_SEPARATOR . 'info.php';
-                if (file_exists($infofile)) {
+                if (is_readable($infofile)) {
                     unset($engine);
                     include($infofile);
                     if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
                         $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
                     }
+
                     if (isset($engine['type'])) {
                         if (!is_array($engine['type'])) {
                             $engine['type'] = array($engine['type']);
@@ -163,8 +176,30 @@ function GetDocumentTemplates($rights, $type = null)
                         if (!empty($intersect)) {
                             $docengines[$dir] = $engine;
                         }
-                    } else {
+                    } elseif (isset($engine)) {
                         $docengines[$dir] = $engine;
+                        $intersect = $DOCTYPES;
+                    }
+
+                    $default = array();
+                    if (!empty($docengines[$dir]) && !empty($engine['default'])) {
+                        if (is_array($engine['default'])) {
+                            $default = array_filter(
+                                $engine['default'],
+                                function ($defaultFlag) {
+                                    return !empty($defaultFlag);
+                                }
+                            );
+                            $default = array_intersect(array_keys($default), $intersect);
+                            $default = array_combine($default, array_fill(0, count($default), true));
+                        } else {
+                            foreach ($intersect as $doctype) {
+                                $default[$doctype] = true;
+                            }
+                        }
+                    }
+                    if (!empty($docengines[$dir])) {
+                        $docengines[$dir]['default'] = $default;
                     }
                 }
             }
@@ -174,10 +209,7 @@ function GetDocumentTemplates($rights, $type = null)
 
     if (!empty($docengines)) {
         uasort($docengines, function ($a, $b) {
-            if ($a['title'] == $b['title']) {
-                return 0;
-            }
-            return $a['title'] < $b['title'] ? -1 : 1;
+            return $a['title'] <=> $b['title'];
         });
     }
 
@@ -201,15 +233,27 @@ function GetTemplates($doctype, $doctemplate, $JSResponse)
     );
     $docengines = GetDocumentTemplates($rights, $doctype);
     $document['templ'] = $doctemplate;
+    $document['type'] = $doctype;
     $SMARTY->assign('docengines', $docengines);
     $SMARTY->assign('document', $document);
     $contents = $SMARTY->fetch('document/documenttemplateoptions.html');
 
     $JSResponse->assign('templ', 'innerHTML', $contents);
-    if (isset($doctype) && !empty($doctype)) {
+    if (!empty($doctype)) {
         $JSResponse->call('enable_templates');
     } else {
         $JSResponse->call('disable_templates');
+    }
+
+    $defaultDocEngine = array_filter(
+        $docengines,
+        function ($engine) use ($doctype) {
+            return !empty($engine['default'][$doctype]);
+        }
+    );
+    $defaultDocEngine = reset($defaultDocEngine);
+    if (!empty($defaultDocEngine)) {
+        $JSResponse->call('DocTemplateChanged');
     }
 }
 
@@ -255,7 +299,7 @@ function GetReferenceDocuments($doctemplate, $customerid, $JSResponse)
         ob_start();
         foreach ($documents_dirs as $doc_dir) {
             $infofile = $doc_dir . '/templates/' . $doctemplate . '/info.php';
-            if (file_exists($infofile)) {
+            if (is_readable($infofile)) {
                 include($infofile);
                 if (isset($engine['reference_templates'])) {
                     if (is_array($engine['reference_templates'])) {
@@ -300,16 +344,96 @@ function GetReferenceDocuments($doctemplate, $customerid, $JSResponse)
 
     $SMARTY->assign('references', $references);
 
+    if (isset($engine['archive-reference-document'])) {
+        $SMARTY->assign(
+            'document',
+            [
+                'archive-reference' => !empty($engine['archive-reference-document']),
+            ]
+        );
+    }
+
     $template = $SMARTY->fetch('document/documentreference.html');
 
     $JSResponse->assign('referencedocument', 'innerHTML', $template);
 
-    $JSResponse->script('$(\'[name="document[reference]"]\').change(function() {'
-        . ' if (parseInt($(this).val())) { $("#a_reference_document_limit").show(); }'
-        . ' else { $("#a_reference_document_limit").hide(); }'
-        . '}).trigger("change")');
+    $JSResponse->script('$("#a_reference_document_limit").toggle(parseInt($(this).val()) > 0);');
 
     $JSResponse->script('$(\'[name="document[reference]"]\').prop("required", $(\'[name="document[templ]"] option:selected\').is("[data-refdoc-required]"));');
+}
+
+function GetCustomerConsents($template, $customerid, $JSResponse, $consents = null, $handleTemplateCustomerConsents = false)
+{
+    global $documents_dirs, $LMS, $SMARTY, $CCONSENTS;
+
+    $result = '';
+
+    foreach ($documents_dirs as $doc) {
+        if (is_readable($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template . DIRECTORY_SEPARATOR . 'info.php')) {
+            $doc_dir = $doc;
+            $template_dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template;
+            break;
+        }
+    }
+
+    // read template information
+    if (is_readable($file = $template_dir . DIRECTORY_SEPARATOR . 'info.php')) {
+        include($file);
+        if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
+            $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
+        }
+    }
+
+    $supported_customer_consents = $CCONSENTS;
+    if (!empty($engine['supported-customer-consents'])) {
+        $engine['supported-customer-consents'] = array_flip($engine['supported-customer-consents']);
+        $supported_customer_consents = array_filter(
+            $supported_customer_consents,
+            function ($consent, $consent_id) use ($engine) {
+                if (is_array($consent)) {
+                    return isset($engine['supported-customer-consents'][$consent_id]);
+                } else {
+                    return isset($engine['supported-customer-consents'][$consent]);
+                }
+            },
+            ARRAY_FILTER_USE_BOTH
+        );
+    }
+    $SMARTY->assign('supported_customer_consents', $supported_customer_consents);
+
+    if ($handleTemplateCustomerConsents && isset($engine['default-customer-consents']) && is_array($engine['default-customer-consents'])) {
+        $defaultCustomerConsents = array_flip($engine['default-customer-consents']);
+    } else {
+        $handleTemplateCustomerConsents = false;
+    }
+
+    $document['default-consents'] = array_filter(
+        $defaultCustomerConsents ?? $LMS->getCustomerConsents($customerid),
+        function ($consent) use ($supported_customer_consents) {
+            return isset($supported_customer_consents[$consent]);
+        },
+        ARRAY_FILTER_USE_KEY
+    );
+
+    if (!isset($consents) || $handleTemplateCustomerConsents) {
+        $document['consents'] = $document['default-consents'];
+    } else {
+        $document['consents'] = array_filter(
+            $consents,
+            function ($checked, $consent) use ($supported_customer_consents) {
+                return isset($supported_customer_consents[$consent]) && !empty($checked);
+            },
+            ARRAY_FILTER_USE_BOTH
+        );
+    }
+
+    $SMARTY->assign('variable_prefix', 'document');
+    $SMARTY->assign('variables', $document);
+
+    $template = $SMARTY->fetch('customer/customerconsents.html');
+
+    $JSResponse->assign('customer-consent-content', 'innerHTML', $template);
+    $JSResponse->script('initMultiChecks("#customer-consent-table .lms-ui-multi-check")');
 }
 
 function CustomerChanged($doctype, $doctemplate, $customerid)
@@ -319,6 +443,7 @@ function CustomerChanged($doctype, $doctemplate, $customerid)
     GetPlugin($doctemplate, $customerid, false, $JSResponse);
     GetTemplates($doctype, $doctemplate, $JSResponse);
     GetReferenceDocuments($doctemplate, $customerid, $JSResponse);
+    GetCustomerConsents($doctemplate, $customerid, $JSResponse);
 
     return $JSResponse;
 }
@@ -330,17 +455,22 @@ function DocTypeChanged($doctype, $customerid)
     GetTemplates($doctype, null, $JSResponse);
     GetReferenceDocuments(null, $customerid, $JSResponse);
 
-    $JSResponse->script('$("#documentpromotions").toggle(false)');
+    $JSResponse->script('$("#documentpromotions,#document-consents").toggle(false)');
+
+    $lms = LMS::getInstance();
+    $confirmPermission = $lms->checkDocumentPermission($doctype, DOCRIGHT_CONFIRM);
+    $JSResponse->script('$("#confirm-row").toggle(' . (empty($confirmPermission) ? 'false' : 'true') . ')');
 
     return $JSResponse;
 }
 
-function DocTemplateChanged($doctype, $doctemplate, $customerid)
+function DocTemplateChanged($doctype, $doctemplate, $customerid, $consents)
 {
     $JSResponse = new XajaxResponse();
 
     GetPlugin($doctemplate, $customerid, true, $JSResponse);
     GetReferenceDocuments($doctemplate, $customerid, $JSResponse);
+    GetCustomerConsents($doctemplate, $customerid, $JSResponse, $consents, true);
 
     return $JSResponse;
 }

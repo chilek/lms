@@ -103,12 +103,12 @@ function select_location($what, $id)
 			FROM location_districts WHERE stateid = ?
 			ORDER BY name', array($stateid));
 
-        $JSResponse->call('update_selection', 'district', $list ? $list : array(), !$what ? $districtid : 0);
+        $JSResponse->call('update_selection', 'district', $list ?: array(), !$what ? $districtid : 0);
     }
 
     if ($districtid) {
         $list = get_loc_boroughs($districtid);
-        $JSResponse->call('update_selection', 'borough', $list ? $list : array(), !$what ? $boroughid : 0);
+        $JSResponse->call('update_selection', 'borough', $list ?: array(), !$what ? $boroughid : 0);
     }
 
     return $JSResponse;
@@ -297,6 +297,20 @@ if (isset($_GET['search'])) {
         }
     }
 
+    if (!empty($nodesearch['modifiedfrom'])) {
+        $modifiedfrom = strtotime($nodesearch['modifiedfrom']);
+        if (empty($modifiedfrom)) {
+            $error['modifiedfrom'] = trans('Enter date in YYYY/MM/DD hh:mm format (empty field means ignore) or click to choose it from calendar');
+        }
+    }
+
+    if (!empty($nodesearch['modifiedto'])) {
+        $modifiedto = strtotime($nodesearch['modifiedto']);
+        if (empty($modifiedto)) {
+            $error['modifiedto'] = trans('Enter date in YYYY/MM/DD hh:mm format (empty field means ignore) or click to choose it from calendar');
+        }
+    }
+
     if (!empty($nodesearch['lastonlinebefore'])) {
         $lastonlinebefore = datetime_to_timestamp($nodesearch['lastonlinebefore']);
         if (empty($lastonlinebefore)) {
@@ -311,12 +325,26 @@ if (isset($_GET['search'])) {
         }
     }
 
+    if (empty($nodesearch['authtype'])) {
+        $nodesearch['authtype'] = array();
+    }
+
+    if (empty($nodesearch['authtypek'])) {
+        $nodesearch['authtypek'] = 'AND';
+    }
+
     if (!$error) {
         if (isset($createdfrom)) {
             $nodesearch['createdfrom'] = $createdfrom;
         }
         if (isset($createdto)) {
             $nodesearch['createdto'] = $createdto;
+        }
+        if (isset($modifiedfrom)) {
+            $nodesearch['modifiedfrom'] = $modifiedfrom;
+        }
+        if (isset($modifiedto)) {
+            $nodesearch['modifiedto'] = $modifiedto;
         }
         if (isset($lastonlinebefore)) {
             $nodesearch['lastonlinebefore'] = $lastonlinebefore;
@@ -325,7 +353,7 @@ if (isset($_GET['search'])) {
             $nodesearch['lastonlineafter'] = $lastonlineafter;
         }
 
-        $status = isset($nodesearch['status']) ? $nodesearch['status'] : null;
+        $status = $nodesearch['status'] ?? null;
         unset($nodesearch['status']);
         $nodelist = $LMS->GetNodeList(array('order' => $o, 'search' => $nodesearch, 'status' => $status, 'sqlskey' => $k));
 
@@ -349,7 +377,7 @@ if (isset($_GET['search'])) {
 
         $page = (!isset($_GET['page']) ? 1 : $_GET['page']);
 
-        $pagelimit = ConfigHelper::getConfig('phpui.nodelist_pagelimit', $listdata['total']);
+        $pagelimit = ConfigHelper::getConfig('nodes.list_page_limit', ConfigHelper::getConfig('phpui.nodelist_pagelimit', $listdata['total']));
         $start = ($page - 1) * $pagelimit;
         $SESSION->save('nslp', $page);
 

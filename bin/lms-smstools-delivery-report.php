@@ -188,22 +188,38 @@ $status = preg_replace('/^Status:\s*/', '', trim(reset($status)));
 $timestamp = strtotime(preg_replace('/^Discharge_timestamp:\s*/', '', trim(reset($timestamp))));
 $phone = preg_replace('/^From:\s*/', '', trim(reset($phone)));
 
-$msgitem = $DB->GetRow(
-    'SELECT id, destination FROM messageitems WHERE externalmsgid = ? AND status = ?',
-    array($msgid, MSG_SENT)
+$msgitems = $DB->GetAll(
+    'SELECT
+        mi.id,
+        mi.destination
+    FROM messageitems mi
+    JOIN messages m ON m.id = mi.messageid
+    WHERE m.type = ?
+        AND mi.status = ?
+        AND m.cdate >= ?NOW? - 86400
+        AND mi.externalmsgid = ?',
+    array(
+        MSG_SMS,
+        MSG_SENT,
+        $msgid,
+    )
 );
-if (!empty($msgitem)) {
-    $sms_prefix = ConfigHelper::getConfig('sms.prefix');
-    $prefix = !empty($sms_prefix) ? $sms_prefix : '';
+if (empty($msgitems)) {
+    die;
+}
 
-    $number = preg_replace('/^[^0-9]+/', '', $msgitem['destination']);
+$sms_prefix = ConfigHelper::getConfig('sms.prefix');
+$prefix = !empty($sms_prefix) ? $sms_prefix : '';
+
+foreach ($msgitems as $msgitem) {
+    $number = preg_replace('/[^0-9]+/', '', $msgitem['destination']);
     $number = preg_replace('/^0+/', '', $number);
     $number = str_replace(' ', '', $number);
     if ($prefix && substr($number, 0, strlen($prefix)) != $prefix) {
         $number = $prefix . $number;
     }
     if ($number == $phone) {
-        list ($code, $status, $text_status) = explode(',', $status);
+        [$code, $status, $text_status] = explode(',', $status);
         if ($status == 'Ok') {
             $DB->Execute(
                 'UPDATE messageitems SET status = ?, lastdate = ? WHERE id = ?',

@@ -28,7 +28,8 @@ $a = $DB->GetRow(
     'SELECT a.invoice, a.settlement,
         a.numberplanid, a.paytime, a.paytype, n.template, n.period, a.attribute,
         d.number AS docnumber, d.type AS doctype, d.cdate,
-        n2.template AS numtemplate, a.customerid, a.separatedocument,
+        n2.template AS numtemplate, a.customerid,
+        a.separatedocument, a.separateitem,
         t.value, t.flags,
         (CASE WHEN l.flags IS NULL
             THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)

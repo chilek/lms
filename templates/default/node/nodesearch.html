@@ -104,8 +104,11 @@
 				<option value="0"{if $nodesearch.status == 0} selected{/if}>{trans("— all —")}</option>
 				<option value="1"{if $nodesearch.status == 1} selected{/if}>{trans("connected<!plural:item>")}</option>
 				<option value="2"{if $nodesearch.status == 2} selected{/if}>{trans("disconnected<!plural:item>")}</option>
-				<option value="3"{if $nodesearch.status == 3} selected{/if}>{trans("online")}</option>
-				<option value="4"{if $nodesearch.status == 4} selected{/if}>{trans("without tariff")}</option>
+				<option value="3"{if $nodesearch.status == 3} selected{/if}>{trans("<!node>online")}</option>
+				<option value="12"{if $nodesearch.status == 12} selected{/if}>{trans("<!node>offline")}</option>
+				<option value="14"{if $nodesearch.status == 14} selected{/if}>{trans("<!node>unknown")}</option>
+				<option value="4"{if $nodesearch.status == 4} selected{/if}>{trans("no assignments")}</option>
+				<option value="13"{if $nodesearch.status == 13} selected{/if}>{trans("no active or future assignments")}</option>
 				<option value="5"{if $nodesearch.status == 5} selected{/if}>{trans("without explicit TERYT")}</option>
 				<option value="11"{if $nodesearch.status == 11} selected{/if}>{trans("without TERYT")}</option>
 				<option value="6"{if $nodesearch.status == 6} selected{/if}>{trans("Net Device not specified")}</option>
@@ -177,10 +180,10 @@
 			<input type="text" name="search[netdev]" id="netdev" value="{$nodesearch.netdev}" {tip text="Enter network device name or ip address"}>
 		</td>
 	</TR>
-	<TR>
-		<td class="bold nobr">
-			<img src="img/calendar.gif">
-			{trans("Created:")}
+	<tr>
+		<td class="nobr">
+			{icon name="modified-date"}
+			<strong>{trans("Created")}</strong>
 		</td>
 		<td>
 			{date_period_preset from="#createdfrom" to="#createdto" time=true}
@@ -191,40 +194,85 @@
 			<input type="text" name="search[createdto]" id="createdto" value="{$nodesearch.createdto}"
 				{tip class="calendar-time" text="Enter date in YYYY/MM/DD hh:mm format (empty field means ignore) or click to choose it from calendar"}>
 		</td>
-	</TR>
-	<TR>
-		<td class="bold nobr">
-			<img src="img/calendar.gif"> {trans("Last online earlier than:")}
+	</tr>
+	<tr>
+		<td class="nobr">
+			{icon name="modified-date"}
+			<strong>{trans("Modified")}</strong>
+		</td>
+		<td>
+			{date_period_preset from="#modifiedfrom" to="#modifiedto" time=true}
+			{trans("from")}
+			<input type="text" name="search[modifiedfrom]" id="modifiedfrom" value="{$nodesearch.modifiedfrom}"
+				{tip class="calendar-time" text="Enter date in YYYY/MM/DD hh:mm format (empty field means ignore) or click to choose it from calendar"}>
+			{trans("to")}
+			<input type="text" name="search[modifiedto]" id="modifiedto" value="{$nodesearch.modifiedto}"
+				{tip class="calendar-time" text="Enter date in YYYY/MM/DD hh:mm format (empty field means ignore) or click to choose it from calendar"}>
+		</td>
+	</tr>
+	<tr>
+		<td class="nobr">
+			{icon name="calendar"}
+			<strong>{trans("Last online earlier than")}</strong>
 		</td>
 		<td>
 			<input type="text" name="search[lastonlinebefore]" id="lastonlinebefore" value="{$nodesearch.lastonlinebefore}"
-					{tip class="calendar-time" text="Enter date in YYYY/MM/DD hh:mm format (empty field means ignore) or click to choose it from calendar"}>
+				{tip class="calendar-time" text="Enter date in YYYY/MM/DD hh:mm format (empty field means ignore) or click to choose it from calendar"}>
 		</td>
-	</TR>
-	<TR>
-		<td class="bold nobr">
-			<img src="img/calendar.gif"> {trans("Last online later than:")}
+	</tr>
+	<tr>
+		<td class="nobr">
+			{icon name="calendar"}
+			<strong>{trans("Last online later than")}</strong>
 		</td>
 		<td>
 			<input type="text" name="search[lastonlineafter]" id="lastonlineafter" value="{$nodesearch.lastonlineafter}"
-					{tip class="calendar-time" text="Enter date in YYYY/MM/DD hh:mm format (empty field means ignore) or click to choose it from calendar"}>
+				{tip class="calendar-time" text="Enter date in YYYY/MM/DD hh:mm format (empty field means ignore) or click to choose it from calendar"}>
 		</td>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
-			<IMG src="img/empty.gif" width="16" alt=""> {trans("Qualification operator:")}
-		</TD>
-		<TD>
+	</tr>
+	<tr>
+		<td class="nobr valign-top">
+			{icon name="netdev"}
+			<strong>{trans("Type")}</strong>
 			<label>
-				<INPUT class="radio light" type="radio" value="AND" name="k"{if $k!='OR'} checked{/if}>
+				<input class="radio light" type="radio" value="AND" name="search[authtypek]"{if $nodesearch.authtypek != 'OR'} checked{/if}>
 				{trans("and")}
 			</label>
 			<label>
-				<INPUT class="radio light" type="radio" value="OR" name="k"{if $k=='OR'} checked{/if}>
+				<input class="radio light" type="radio" value="OR" name="search[authtypek]"{if $nodesearch.authtypek == 'OR'} checked{/if}>
 				{trans("or")}
 			</label>
-		</TD>
-	</TR>
+		</td>
+		<td>
+			{foreach $_SESSIONTYPES as $idx => $sessiontype}
+				<label {tip text="`$sessiontype.tip`"}>
+					<input type="checkbox" name="search[authtype][{$idx}]" value="{$idx}"
+						   id="authtype{$idx}" {tip trigger="authtype`$idx`"}
+							{if ($nodeinfo.authtype & $idx) == $idx} checked{/if}>
+					{$sessiontype.label}
+				</label>
+				{if !$sessiontype@last}
+					<br>
+				{/if}
+			{/foreach}
+		</td>
+	</tr>
+	<tr>
+		<td class="nobr">
+			{icon name="qualification-operator"}
+			<strong>{trans("Qualification operator")}</strong>
+		</td>
+		<td>
+			<label>
+				<input class="radio light" type="radio" value="AND" name="k"{if $k!='OR'} checked{/if}>
+				{trans("and")}
+			</label>
+			<label>
+				<input class="radio light" type="radio" value="OR" name="k"{if $k=='OR'} checked{/if}>
+				{trans("or")}
+			</label>
+		</td>
+	</tr>
 	<TR>
 		<td class="lms-ui-box-buttons" colspan="2">
 			{button icon="search" label="Search" onclick="Search()"}

@@ -49,7 +49,7 @@ $big_networks = ConfigHelper::checkConfig('phpui.big_networks');
 $max_userlist_size = ConfigHelper::getConfig('timetable.event_max_userlist_size', ConfigHelper::getConfig('phpui.event_max_userlist_size'));
 $now = time();
 
-if (isset($_GET['ticketid']) && !empty($_GET['ticketid']) && intval($_GET['ticketid'])) {
+if (!empty($_GET['ticketid']) && intval($_GET['ticketid'])) {
     $eventticketid = intval($_GET['ticketid']);
 }
 
@@ -177,7 +177,7 @@ if (isset($_POST['event'])) {
             'begintime' => $begintime,
             'enddate' => $enddate,
             'endtime' => $endtime,
-            'users' => isset($event['userlist']) ? $event['userlist'] : array(),
+            'users' => $event['userlist'] ?? array(),
         )))) {
         $users_by_id = Utils::array_column($userlist, 'rname', 'id');
         $users = array_map(function ($userid) use ($users_by_id) {
@@ -250,8 +250,8 @@ if (isset($_POST['event'])) {
     $error = $hook_data['error'];
 
     if (!$error && !$warning) {
-        $event['address_id'] = !isset($event['address_id']) || $event['address_id'] == -1 ? null : $event['address_id'];
-        $event['nodeid'] = !isset($event['nodeid']) || empty($event['nodeid']) ? null : $event['nodeid'];
+        $event['address_id'] = !isset($event['address_id']) || $event['address_id'] <= 0 ? null : $event['address_id'];
+        $event['nodeid'] = empty($event['nodeid']) ? null : $event['nodeid'];
 
         switch ($event['helpdesk']) {
             case 'new':
@@ -403,13 +403,14 @@ if (isset($_POST['event'])) {
                         'body' => $ticket['body'],
                     );
                     $headers['Subject'] = $LMS->ReplaceNotificationSymbols($notification_mail_subject, $params);
-                    $params['customerinfo'] = isset($mail_customerinfo) ? $mail_customerinfo : null;
+                    $params['customerinfo'] = $mail_customerinfo ?? null;
                     $body = $LMS->ReplaceNotificationSymbols($notification_mail_body, $params);
-                    $params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
+                    $params['customerinfo'] = $sms_customerinfo ?? null;
                     $sms_body = $LMS->ReplaceNotificationSymbols($notification_sms_body, $params);
 
                     $LMS->NotifyUsers(array(
                         'queue' => $ticket['queue'],
+                        'ticketid' => $event['ticketid'],
                         'verifierid' => $ticket['verifierid'],
                         'mail_headers' => $headers,
                         'mail_body' => $body,
@@ -478,7 +479,8 @@ if (isset($_POST['event'])) {
     } else {
         $event['overlapwarned'] = 0;
         $event['wholedays'] = false;
-        $event['date'] = isset($event['date']) ? $event['date'] : $SESSION->get('edate');
+        $event['date'] = $event['date'] ?? $SESSION->get('edate');
+        $event['divisionid'] = $divisionid;
 
         if (isset($eventticketid)) {
             $event['helpdesk'] = 'assign';
@@ -491,13 +493,13 @@ if (isset($_POST['event'])) {
     $SMARTY->assign('backurl', $backurl);
 }
 
-if (isset($ticket['netnodeid']) && !empty($ticket['netnodeid'])) {
+if (!empty($ticket['netnodeid'])) {
     $search = array('netnode' => $ticket['netnodeid']);
 } else {
     $search = array();
 }
 
-$invprojectlist = $LMS->GetProjects('name', array());
+$invprojectlist = $LMS->GetProjects();
 
 $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 if (empty($categories)) {
@@ -507,7 +509,7 @@ $queuelist = $LMS->GetQueueList(array('stats' => false));
 
 $queue = null;
 if (isset($_POST['event'])) {
-    $queue = isset($ticket['queue']) ? $ticket['queue'] : null;
+    $queue = $ticket['queue'] ?? null;
     foreach ($categories as &$category) {
         $category['checked'] = isset($ticket['categories'][$category['id']]) || count($categories) == 1;
     }
@@ -567,7 +569,7 @@ if (isset($eventticketid) && empty($_GET['id'])) {
     $event['ticketid'] = $eventticketid;
     $event['ticket'] = $LMS->getTickets($eventticketid);
     $event['customerid'] = $event['ticket']['customerid'];
-    $event['customername'] = isset($event['ticket']['customername']) ? $event['ticket']['customername'] : '';
+    $event['customername'] = $event['ticket']['customername'] ?? '';
     if ($copy_ticket_summary_to_assigned_event) {
         $event['title'] = $event['ticket']['name'];
         $message = $LMS->GetFirstMessage($event['ticketid']);
@@ -578,7 +580,7 @@ if (isset($eventticketid) && empty($_GET['id'])) {
 if (isset($_GET['customerid'])) {
     $event['customerid'] = intval($_GET['customerid']);
 }
-if (isset($event['customerid']) && !empty($event['customerid'])) {
+if (!empty($event['customerid'])) {
     $event['customername'] = $LMS->GetCustomerName($event['customerid']);
     $addresses = $LMS->getCustomerAddresses($event['customerid']);
     $address_id = $LMS->determineDefaultCustomerAddress($addresses);
@@ -622,7 +624,8 @@ $SMARTY->assign(
         'event' => $event,
         'queuelist' => $queuelist,
         'categories' => $categories,
-        'invprojectlist' => $invprojectlist
+        'invprojectlist' => $invprojectlist,
+        'divisions' => $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())),
     )
 );
 

@@ -335,8 +335,7 @@ final class xajaxArgumentManager
             } else {
                 $objLanguageManager = xajaxLanguageManager::getInstance();
                 trigger_error(
-                    $objLanguageManager->getText('ARGMGR:ERR:03'),
-                    E_USER_NOTICE
+                    $objLanguageManager->getText('ARGMGR:ERR:03')
                 );
             }
             

@@ -26,7 +26,7 @@
 
 $layout['pagetitle'] = trans('Select customer');
 
-$p = isset($_GET['p']) ? $_GET['p'] : '';
+$p = $_GET['p'] ?? '';
 
 if (!$p || $p == 'main') {
     $SMARTY->assign('js', 'var targetfield = window.parent.targetfield;');
@@ -68,8 +68,8 @@ if (isset($where_node) || isset($where_cust)) {
 				LEFT JOIN customermailsview cc ON cc.customerid = c.id '
                 .(isset($where_node) ? 'LEFT JOIN vnodes ON (c.id = ownerid) ' : '')
                 .'WHERE deleted = 0 '
-                .(isset($where_cust) ? $where_cust : '')
-                .(isset($where_node) ? $where_node : '')
+                .($where_cust ?? '')
+                .($where_node ?? '')
                 . (isset($where_cust) ? 'UNION 
 					SELECT DISTINCT c.id, address, zip, city, cc.email, ssn, 
 					' . $DB->Concat('UPPER(c.lastname)', "' '", 'c.name') . ' AS customername,

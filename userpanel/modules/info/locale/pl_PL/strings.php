@@ -43,14 +43,17 @@ $_LANG['Disconnect'] = 'Odłącz';
 $_LANG['Disconnected'] = 'Odłączony	';
 $_LANG['Edit'] = 'Edytuj';
 $_LANG['Field:'] = 'Pole:';
+$_LANG['Field'] = 'Pole';
 $_LANG['Info'] = 'Informacje';
-$_LANG['Informations about you'] = 'Informacje o Tobie';
+$_LANG['Information about you'] = 'Informacje o Tobie';
 $_LANG['im'] = 'Gadu-Gadu';
 $_LANG['yahoo'] = 'Yahoo';
 $_LANG['skype'] = 'Skype';
 $_LANG['name'] = 'imię';
 $_LANG['New value:'] = 'Nowa wartość:';
+$_LANG['New value'] = 'Nowa wartość';
 $_LANG['Old value:'] = 'Stara wartość:';
+$_LANG['Old value'] = 'Stara wartość';
 $_LANG['phone'] = 'telefon';
 $_LANG['Show basic informations about you'] = 'Pokazuje podstawowe informacje o Tobie';
 $_LANG['SSN'] = 'PESEL';
@@ -144,3 +147,12 @@ $_LANG['MAC address'] = 'Adres MAC';
 $_LANG['IP address'] = 'Adres IP';
 
 $_LANG['PIN change required!'] = 'Wymagana zmiana PIN!';
+
+$_LANG['Show sensitive data'] = 'Pokaż dane wrażliwe';
+
+$_LANG['Active lock'] = 'Aktywna blokada';
+$_LANG['Lock management'] = 'Zarządzanie blokadami';
+$_LANG['Error during lock deletion!'] = 'Błąd podczas usuwania blokady!';
+$_LANG['Error during lock creation!'] = 'Błąd podczas tworzenia blokady!';
+$_LANG['No locks defined.'] = 'Brak zdefiniowanych blokad.';
+$_LANG['Node lock management'] = 'Zarządzanie blokadami komputerów';

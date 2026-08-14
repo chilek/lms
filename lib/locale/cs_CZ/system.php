@@ -62,10 +62,13 @@ self::addLanguageFunctions(
             if ($country_code) {
                 $ten = preg_replace('/[ \-]/', '', $ten);
             }
+            /*
             if (strpos($ten, 'CZ') === 0) {
                 $ten = substr($ten, 2);
             }
             return ($country_code ? 'CZ' : '') . $ten;
+            */
+            return $ten;
         },
         'getHolidays' => function ($year = null) {
             return array();
@@ -76,7 +79,7 @@ self::addLanguageFunctions(
          * \return string
          */
         'generateRandomPostcode' => function () {
-            return rand(1, 9) . sprintf("%04d", rand(0, 9999));
+            return random_int(1, 9) . sprintf("%04d", random_int(0, 9999));
         },
         'get_currency_value' => function ($currency, $date = null) {
             return exchangeratesapi_get_currency_value($currency, $date);

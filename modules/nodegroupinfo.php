@@ -40,8 +40,8 @@ if (isset($_GET['othersnetid']) && $othersnetid = $_GET['othersnetid']) {
     }
 }
 
-$nodegroup = $LMS->GetNodeGroup($id, isset($membersnetid) ? $membersnetid : 0);
-$nodes = $LMS->GetNodesWithoutGroup($id, isset($othersnetid) ? $othersnetid : 0);
+$nodegroup = $LMS->GetNodeGroup($id, $membersnetid ?? 0);
+$nodes = $LMS->GetNodesWithoutGroup($id, $othersnetid ?? 0);
 $nodescount = empty($nodes) ? 0 : count($nodes);
 
 $layout['pagetitle'] = trans('Group Info: $a', $nodegroup['name']);
@@ -52,7 +52,7 @@ $SMARTY->assign('nodegroup', $nodegroup);
 $SMARTY->assign('nodes', $nodes);
 $SMARTY->assign('nodescount', $nodescount);
 $SMARTY->assign('networks', $LMS->GetNetworks());
-$SMARTY->assign('membersnetid', isset($membersnetid) ? $membersnetid : 0);
-$SMARTY->assign('othersnetid', isset($othersnetid) ? $othersnetid : 0);
+$SMARTY->assign('membersnetid', $membersnetid ?? 0);
+$SMARTY->assign('othersnetid', $othersnetid ?? 0);
 
 $SMARTY->display('node/nodegroupinfo.html');

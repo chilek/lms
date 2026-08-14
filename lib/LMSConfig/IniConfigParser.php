@@ -31,7 +31,7 @@
  */
 class IniConfigParser implements ConfigParserInterface
 {
-    const NAME = 'INI_CONFIG_PARSER';
+    public const NAME = 'INI_CONFIG_PARSER';
     
     /**
      * Converts raw ini config into it's object representation

@@ -84,8 +84,8 @@
 										{trans("Network")}
 									</td>
 									<td>
-										<select name="ipadd[netid]"
-											{tip trigger="netid" class="lms-ui-advanced-select"}>
+										<select name="ipadd[netid]" id="netid"
+											{tip trigger="netid" class="lms-ui-advanced-select-test"}>
 											<option value="0">{trans("— automatic selection —")}</option>
 											{foreach $networks as $net}
 												<option value="{$net.id}" data-pubnetid="{$net.pubnetid}"
@@ -105,7 +105,7 @@
 									</td>
 									<td class="cell-flex">
 										<div>
-											<input type="text" name="ipadd[ipaddr]" value="{$nodeipdata.ipaddr}" required
+											<input type="text" name="ipadd[ipaddr]" id="ipaddr" value="{$nodeipdata.ipaddr}" required
 												{tip trigger="ipaddr"}>
 											{button type="link" onClick="return ipchoosewin({
 													ipelem: document.editipaddr['ipadd[ipaddr]'],
@@ -116,12 +116,12 @@
 												});" tip="Click to select IP from the list"
 												icon="next"}
 										</div>
-										{button type="link" id="selectfirstfreeaddress" icon="download"
+										{button type="link" id="get-first-free-address" icon="download"
 											label="Select first free address"}
 									</td>
 								</tr>
 
-								{if ConfigHelper::checkConfig('phpui.public_ip')}
+								{if ConfigHelper::checkConfig('nodes.public_ip', ConfigHelper::checkConfig('phpui.public_ip'))}
 									<tr>
 										<td>
 											{icon name="routed"}
@@ -157,7 +157,7 @@
 										{trans("MAC")}
 									</td>
 									<td class="lms-ui-mac-address-selection">
-										{mac_address_selection form="ipadd" macs=$nodeipdata.macs}
+										{mac_address_selection form="ipadd" macs=$nodeipdata.macs node_empty_mac=$netdev_empty_mac}
 									</td>
 								</tr>
 								<tr>
@@ -306,21 +306,38 @@
 
 <script>
 
+	function first_free_address_received(ip) {
+		var ipAddrElem = $('#ipaddr');
+		if (typeof(ip) === 'string') {
+			ipAddrElem.val(ip)
+				.removeClass('lms-ui-warning')
+				.removeAttr('data-tooltip')
+				.attr({
+					'data-manually-changed': '0',
+					'title': null
+				});
+		} else {
+			ipAddrElem.addClass('lms-ui-warning')
+				.removeAttr('data-tooltip')
+				.attr('title', $t("No free addresses in selected network!"));
+		}
+	}
+
 	$(function() {
-		{if (ConfigHelper::checkConfig('phpui.show_assigned_networks_only')) && ConfigHelper::checkConfig('phpui.public_ip')}
-			$('[name="ipadd[netid]"]').change(function() {
+		{if (ConfigHelper::checkConfig('phpui.show_assigned_networks_only')) && ConfigHelper::checkConfig('nodes.public_ip', ConfigHelper::checkConfig('phpui.public_ip'))}
+			$('#netid').change(function() {
 				var pubnetid = parseInt($('option:selected', this).attr('data-pubnetid'));
 				if (pubnetid) {
 				$('[name="ipadd[pubnetid]"]').val(0);
 			});
 		{/if}
 
-		$('#selectfirstfreeaddress').click(function() {
-			var netid = parseInt($('[name="ipadd[netid]"]').val());
+		$('#get-first-free-address').click(function() {
+			var netid = parseInt($('#netid').val());
 			if (!netid) {
 				return;
 			}
-			xajax_getFirstFreeAddress(netid, $('[name="ipadd[ipaddr]"]').uniqueId().attr('id'));
+			xajax_getFirstFreeAddress(netid);
 		});
 
 		$('#status').change(function() {
@@ -329,16 +346,16 @@
 		});
 
 		$('#genpasswd').click(function() {
-			var length = {ConfigHelper::getConfig('phpui.node_password_length', ConfigHelper::getConfig('phpui.nodepassword_length', '16'))};
+			var length = {ConfigHelper::getConfig('nodes.password_length', ConfigHelper::getConfig('phpui.node_password_length', ConfigHelper::getConfig('phpui.nodepassword_length', '16')))};
 			if (length > 32) {
 				length = 32;
 			}
 			if ($('#passwordcontainer').val().length > 0) {
 				confirmDialog($t("Are you sure, you want to generate new password?"), this).done(function() {
-					$( '#passwordcontainer' ).val(generate_random_string(length, "{ConfigHelper::getConfig('phpui.node_password_allowed_characters', ConfigHelper::getConfig('phpui.nodepassword_allowed_characters', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'))|replace:'"':'\"'}"));
+					$( '#passwordcontainer' ).val(generate_random_string(length, "{ConfigHelper::getConfig('nodes.password_allowed_characters', ConfigHelper::getConfig('phpui.node_password_allowed_characters', ConfigHelper::getConfig('phpui.nodepassword_allowed_characters', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')))|replace:'"':'\"'}"));
 				});
 			} else {
-				$( '#passwordcontainer' ).val(generate_random_string(length, "{ConfigHelper::getConfig('phpui.node_password_allowed_characters', ConfigHelper::getConfig('phpui.nodepassword_allowed_characters', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'))|replace:'"':'\"'}"));
+				$( '#passwordcontainer' ).val(generate_random_string(length, "{ConfigHelper::getConfig('nodes.password_allowed_characters', ConfigHelper::getConfig('phpui.node_password_allowed_characters', ConfigHelper::getConfig('phpui.nodepassword_allowed_characters', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')))|replace:'"':'\"'}"));
 			}
 			return false;
 		});

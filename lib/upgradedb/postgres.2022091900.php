@@ -49,7 +49,6 @@ if (!$this->ResourceExists('voipaccounts.extid', LMSDB::RESOURCE_TYPE_COLUMN)) {
 }
 
 if (!$this->ResourceExists('customerextids', LMSDB::RESOURCE_TYPE_TABLE)) {
-    $this->Execute("CREATE SEQUENCE customerextids_id_seq");
     $this->Execute(
         "CREATE TABLE customerextids (
             customerid integer NOT NULL

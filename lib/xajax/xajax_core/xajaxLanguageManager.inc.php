@@ -144,7 +144,7 @@ final class xajaxLanguageManager
     {
         if ('language' == $sName) {
             if ($mValue !== $this->sLanguage) {
-                $sFolder = dirname(__FILE__);
+                $sFolder = __DIR__;
                 @include $sFolder . '/xajax_lang_' . $mValue . '.inc.php';
                 // require $sFolder . '/xajax_lang_' . $mValue . '.inc.php';
                 $this->sLanguage = $mValue;

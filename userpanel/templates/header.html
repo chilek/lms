@@ -9,6 +9,7 @@
   <script type="text/javascript" src="js/common.js"></script>
   {include file="jquery.html" language=Localisation::getCurrentHtmlLanguage() lms_language=Localisation::getCurrentUiLanguage()}
   <link type="text/css" rel="stylesheet" href="{stylefile}" />
+  {$extra_css}
   {$hint_mode = ConfigHelper::getConfig('userpanel.hint')}
 {if $hint_mode != 'classic' && $hint_mode != 'none'}
   <script type="text/javascript" src="style/default/avatar.js"></script>

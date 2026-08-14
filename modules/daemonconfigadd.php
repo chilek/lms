@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$config = isset($_POST['config']) ? $_POST['config'] : null;
+$config = $_POST['config'] ?? null;
 
 if ($config) {
     foreach ($config as $idx => $key) {

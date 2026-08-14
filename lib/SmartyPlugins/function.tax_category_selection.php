@@ -26,8 +26,8 @@
 
 function smarty_function_tax_category_selection($params, $template)
 {
-    $elementname = isset($params['elementname']) ? $params['elementname'] : 'taxcategory';
-    $selected = isset($params['selected']) ? $params['selected'] : null;
+    $elementname = $params['elementname'] ?? 'taxcategory';
+    $selected = $params['selected'] ?? null;
     $data_attributes = '';
     foreach ($params as $name => $value) {
         if (strpos($name, 'data_') === 0) {
@@ -37,7 +37,7 @@ function smarty_function_tax_category_selection($params, $template)
     $result = '<select name="' . $elementname . '"' . (isset($params['id']) ? ' id="' . $params['id'] . '"' : '')
         . (isset($params['class']) ? ' class="' . $params['class'] . '"' : '')
         . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '')
-        . (isset($params['tip']) ? ' ' . LMSSmartyPlugins::tipFunction(array('text' => $params['tip'], 'trigger' => isset($params['id']) ? $params['id'] : $elementname), $template) : '')
+        . (isset($params['tip']) ? ' ' . LMSSmartyPlugins::tipFunction(array('text' => $params['tip'], 'trigger' => $params['id'] ?? $elementname), $template) : '')
         . (isset($params['visible']) && !$params['visible'] ? ' style="display: none;"' : '')
         . $data_attributes . '>';
     $result .= '<option value="0">' . trans("— none —") . '</option>';

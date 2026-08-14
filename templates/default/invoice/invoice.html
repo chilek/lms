@@ -26,8 +26,18 @@
 <!--// $Id$ //-->
 <div{if !$invoice.last} style="page-break-after: always"{/if}>
 	<table width="100%" cellspacing="3">
+		<colgroup>
+			{if empty($ksefurl)}
+				<col style="width: 1%;">
+			{else}
+				<col style="width: 1%;">
+				<col style="width: 97%;">
+			{/if}
+			<col style="width: 1%;">
+			<col style="width: 1%;">
+		</colgroup>
 		<tr>
-			<td width="98%" class="hdf" valign="top">
+			<td class="hdf{if !empty($ksefurl)} ksef-invoice{/if}" valign="top" nowrap>
 				{number number=$invoice.number template=$invoice.template time=$invoice.cdate customerid=$invoice.customerid assign=number}
 				{if $invoice.invoice && $invoice.doctype == $smarty.const.DOC_CNOTE}
 					{number number=$invoice.invoice.number template=$invoice.invoice.template time=$invoice.invoice.cdate customerid=$invoice.invoice.customerid assign=number_ref}
@@ -59,7 +69,25 @@
 					</span>
 				{/if}
 			</td>
-			<td width="1%" nowrap align="right" valign="top" class="sdr">
+			{if !empty($ksefurl)}
+				<td class="ksef-invoice-info">
+					<div>
+						<a href="{$ksefurl}" target="_blank">
+							{barcode type="QRCODE" text=$ksefurl show_text=false transliterate=false width=-2 height=-2}
+						</a>
+						<strong>{$ksefnumber}</strong>
+					</div>
+					{if !empty($ksefcertificateurl)}
+						<div>
+							<a href="{$ksefcertificateurl}" target="_blank">
+								{barcode type="QRCODE" text=$ksefcertificateurl show_text=false transliterate=false width=-2 height=-2}
+							</a>
+							<strong>CERTYFIKAT</strong>
+						</div>
+					{/if}
+				</td>
+			{/if}
+			<td nowrap align="right" valign="top" class="sdr">
 				{trans("Draw-up date:")}
 				<br>
 				{if !ConfigHelper::checkConfig('invoices.hide_sale_date')}
@@ -82,7 +110,7 @@
 					{trans("Payment type:")}
 				{/if}
 			</td>
-			<td width="1%" nowrap align="left" valign="top" class="sdr">
+			<td nowrap align="left" valign="top" class="sdr">
 				{$invoice.cdate|date_format:"Y-m-d"}
 				{if $invoice.division_cplace != ""}
 					, {$invoice.division_cplace}
@@ -118,7 +146,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td colspan="3" align="center" width="100%">
+			<td colspan="{if empty($ksefurl)}3{else}4{/if}" align="center">
 				&nbsp;
 			</td>
 		</tr>
@@ -150,10 +178,14 @@
 						</span>
 					{/if}
 				{/textformat}
+{*
 				{$tmp = str_replace('%ten%', format_ten($invoice.division_ten, $invoice.export), $invoice.division_header)}
+*}
+				{$tmp = str_replace('%ten%', format_ten($invoice.division_ten, false), $invoice.division_header)}
 				{$tmp = str_replace("\n", '<br>', $tmp)}
 				{$tmp = str_replace('%bankaccount', $account_text, $tmp)}
 				{$tmp = str_replace('%bankname', $invoice.div_bank, $tmp)}
+				{$tmp = str_replace('%extid', $invoice.extid, $tmp)}
 
 				{if ConfigHelper::checkConfig('invoices.customer_bankaccount', true)}
 					{textformat assign="tmp" wrap=5000}
@@ -170,7 +202,7 @@
 				<br><br>
 
 				<div class="address-header">{trans("Purchaser:")}</div>
-				{$invoice.name}
+				{$invoice.name|escape}
 				<br>
 				{$invoice.address}
 				<br>
@@ -180,7 +212,10 @@
 					{trans("TEN:")}
 					{$currentSystemLanguage = Localisation::getCurrentSystemLanguage()}
 					{Localisation::setSystemLanguage($invoice.lang)}
+{*
 					{format_ten($invoice.ten, $invoice.export)}
+*}
+					{format_ten($invoice.ten, false)}
 					<br>
 					{Localisation::setSystemLanguage($currentSystemLanguage)}
 				{elseif !ConfigHelper::checkConfig('invoices.hide_ssn', true) && $invoice.ssn != ""}
@@ -195,6 +230,11 @@
 					{document_address name=$invoice.rec_name address=$invoice.rec_address
 							street=$invoice.rec_street zip=$invoice.rec_zip
 							postoffice=$invoice.rec_postoffice city=$invoice.rec_city}
+					{if (!empty($invoice.recipient_ten))}
+						<br>
+						{trans("TEN")}
+						{$invoice.recipient_ten}
+					{/if}
 				{/if}
 			</td>
 			<td width="34%" valign="top" class="sdr">
@@ -534,27 +574,41 @@
 
 	<table width="100%" cellpadding="3">
 		<tr>
-			{if ($_PAYTYPES[$invoice.paytype].features & $smarty.const.INVOICE_FEATURE_TO_PAY) > 0}
-				<td width="50%" align="left" class="hdf">
-					{if $invoice.rebate}
-						{if $use_alert_color && !$show_balance_summary}<span style="color: red; font-weight: bold;">{/if}
-						{if $invoice.invoice && $invoice.doctype == $smarty.const.DOC_CNOTE}
+			<td width="50%" align="left" class="hdf">
+				{if $invoice.rebate}
+					{if $use_alert_color && !$show_balance_summary}<span style="color: red; font-weight: bold;">{/if}
+					{if $invoice.invoice && $invoice.doctype == $smarty.const.DOC_CNOTE}
+						{if ($_PAYTYPES[$invoice.paytype].features & $smarty.const.INVOICE_FEATURE_TO_PAY) > 0}
 							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Correction value: $a (to repay){/t}
 						{else}
-							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Invoice value: $a (to repay){/t}
+							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Correction value: $a{/t}
 						{/if}
-						{if $use_alert_color && !$show_balance_summary}</span>{/if}
 					{else}
-						{if $use_alert_color && !$show_balance_summary}<span style="color: red; font-weight: bold;">{/if}
-						{if $invoice.invoice && $invoice.doctype == $smarty.const.DOC_CNOTE}
+						{if ($_PAYTYPES[$invoice.paytype].features & $smarty.const.INVOICE_FEATURE_TO_PAY) > 0}
+							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Invoice value: $a (to repay){/t}
+						{else}
+							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Invoice value: $a{/t}
+						{/if}
+					{/if}
+					{if $use_alert_color && !$show_balance_summary}</span>{/if}
+				{else}
+					{if $use_alert_color && !$show_balance_summary}<span style="color: red; font-weight: bold;">{/if}
+					{if $invoice.invoice && $invoice.doctype == $smarty.const.DOC_CNOTE}
+						{if ($_PAYTYPES[$invoice.paytype].features & $smarty.const.INVOICE_FEATURE_TO_PAY) > 0}
 							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Correction value: $a (to pay){/t}
 						{else}
-							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Invoice value: $a (to pay){/t}
+							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Correction value: $a{/t}
 						{/if}
-						{if $use_alert_color && !$show_balance_summary}</span>{/if}
+					{else}
+						{if ($_PAYTYPES[$invoice.paytype].features & $smarty.const.INVOICE_FEATURE_TO_PAY) > 0}
+							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Invoice value: $a (to pay){/t}
+						{else}
+							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Invoice value: $a{/t}
+						{/if}
 					{/if}
-				</td>
-			{/if}
+					{if $use_alert_color && !$show_balance_summary}</span>{/if}
+				{/if}
+			</td>
 			<td width="50%" align="right" rowspan="2">
 				{if !ConfigHelper::checkConfig('invoices.hide_expositor')}
 					{t a=$invoice.expositor}Expositor: <b>$a</b>{/t}
@@ -589,62 +643,64 @@
 
 		{$customerbalance = $invoice.customerbalance}
 
-		{if $show_balance_summary}
-			<tr>
-				<td colspan="2" style="padding-bottom: 1em;">
-					{if isset($invoice.invoice) && $invoice.doctype == $smarty.const.DOC_CNOTE}
-						{$total = $invoice.total - $invoice.invoice.total}
-					{else}
-						{$total = $invoice.total}
-					{/if}
-
-					{$previous_balance = $customerbalance + $total}
-
-					{if $previous_balance > 0}
-						{$comment = trans('(excess payment)')}
-					{elseif $previous_balance < 0}
-						{$comment = trans('(to pay)')}
-					{else}
-						{$comment = ""}
-					{/if}
-
-					{trans('Previous balance: $a $b', Utils::formatMoney(abs($previous_balance) / $invoice.currencyvalue, $invoice.currency), $comment))}
-					<br>
-
-					{if $icustomerbalance > 0}
-						<span style="font-size: 180%; font-weight: bold; display: inline-block; margin-top: 0.3em;{if $use_alert_color} color: red;{/if}">
-							{trans('Excess payment: $a', Utils::formatMoney($customerbalance / $invoice.currencyvalue, $invoice.currency))}
-						</span>
-					{else}
-						<span style="font-size: 180%; font-weight: bold; display: inline-block; margin-top: 0.3em;{if $use_alert_color} color: red;{/if}">
-							{trans('Total to pay: $a', Utils::formatMoney(-$customerbalance / $invoice.currencyvalue, $invoice.currency))}
-						</span>
-					{/if}
-				</td>
-			</tr>
-		{else}
-			{if $icustomerbalance > 0}
-				{$comment = trans('(excess payment)')}
-			{elseif $customerbalance < 0}
-				{$comment = trans('(to pay)')}
-			{else}
-				{$comment = ''}
-			{/if}
-			<tr>
-				<td colspan="2">
-					<span style="font-weight: bold">
-						{if $use_alert_color}
-							<span style="color: red;">
+		{if !empty($invoice.balance_on_documents)}
+			{if $show_balance_summary}
+				<tr>
+					<td colspan="2" style="padding-bottom: 1em;">
+						{if isset($invoice.invoice) && $invoice.doctype == $smarty.const.DOC_CNOTE}
+							{$total = $invoice.total - $invoice.invoice.total}
+						{else}
+							{$total = $invoice.total}
 						{/if}
-						{trans('Your balance on date of invoice issue: $a $b', Utils::formatMoney($customerbalance / $invoice.currencyvalue, $invoice.currency), $comment)}
-						{if $use_alert_color}
+
+						{$previous_balance = $customerbalance + ($total * $invoice.currencyvalue)}
+
+						{if $previous_balance > 0}
+							{$comment = trans('(excess payment)')}
+						{elseif $previous_balance < 0}
+							{$comment = trans('(to pay)')}
+						{else}
+							{$comment = ""}
+						{/if}
+
+						{trans('Previous balance: $a $b', Utils::formatMoney(abs($previous_balance) / $invoice.currencyvalue, $invoice.currency), $comment)}
+						<br>
+
+						{if $icustomerbalance > 0}
+							<span style="font-size: 180%; font-weight: bold; display: inline-block; margin-top: 0.3em;{if $use_alert_color} color: red;{/if}">
+								{trans('Excess payment: $a', Utils::formatMoney($customerbalance / $invoice.currencyvalue, $invoice.currency))}
+							</span>
+						{else}
+							<span style="font-size: 180%; font-weight: bold; display: inline-block; margin-top: 0.3em;{if $use_alert_color} color: red;{/if}">
+								{trans('Total to pay: $a', Utils::formatMoney(-$customerbalance / $invoice.currencyvalue, $invoice.currency))}
 							</span>
 						{/if}
-						<br>
-						{trans('Balance includes current invoice')}
-					</span>
-				</td>
-			</tr>
+					</td>
+				</tr>
+			{else}
+				{if $icustomerbalance > 0}
+					{$comment = trans('(excess payment)')}
+				{elseif $customerbalance < 0}
+					{$comment = trans('(to pay)')}
+				{else}
+					{$comment = ''}
+				{/if}
+				<tr>
+					<td colspan="2">
+						<span style="font-weight: bold">
+							{if $use_alert_color}
+								<span style="color: red;">
+							{/if}
+							{trans('Your balance on date of invoice issue: $a $b', Utils::formatMoney($customerbalance / $invoice.currencyvalue, $invoice.currency), $comment)}
+							{if $use_alert_color}
+								</span>
+							{/if}
+							<br>
+							{trans('Balance includes current invoice')}
+						</span>
+					</td>
+				</tr>
+			{/if}
 		{/if}
 		<tr>
 			<td colspan="2">

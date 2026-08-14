@@ -51,14 +51,14 @@ switch (intval($_POST['customer_ten'])) {
 
 // date format 'yyyy/mm/dd'
 if ($from) {
-    list($year, $month, $day) = explode('/', $from);
+    [$year, $month, $day] = explode('/', $from);
     $unixfrom = mktime(0, 0, 0, $month, $day, $year);
 } else {
     $from = date('Y/m/d', time());
     $unixfrom = mktime(0, 0, 0); //today
 }
 if ($to) {
-    list($year, $month, $day) = explode('/', $to);
+    [$year, $month, $day] = explode('/', $to);
     $unixto = mktime(23, 59, 59, $month, $day, $year);
 } else {
     $to = date('Y/m/d', time());
@@ -67,7 +67,7 @@ if ($to) {
 
 $layout['pagetitle'] = trans('Sale Registry for period $a - $b', $from, $to);
 
-$listdata = array('tax' => 0, 'brutto' => 0, 'tax_receipt' => 0, 'brutto_receipt' => 0);
+$listdata = array('tax' => 0, 'brutto' => 0, 'tax_receipt' => 0, 'brutto_receipt' => 0, 'brutto_correction_note_receipt' => 0, 'tax_correction_note_receipt' => 0);
 $invoicelist = array();
 $taxeslist = array();
 $taxes = array();
@@ -121,14 +121,22 @@ if (!empty($_POST['servicetypes'])) {
 }
 
 if (!empty($_POST['division'])) {
-    $divwhere = ' AND d.divisionid '.(isset($_POST['divexclude']) ? '!=' : '=').' '.intval($_POST['division']);
+    if (!is_array($_POST['division'])) {
+        $divisions = array($_POST['division']);
+    }
+    $divisions = Utils::filterIntegers($_POST['division']);
+    if (!empty($divisions)) {
+        $divisionWhere = ' AND d.divisionid ' . (isset($_POST['divexclude']) ? 'NOT IN' : 'IN') . ' (' . implode(',', $divisions) . ')';
 
-    $divname = $DB->GetOne(
-        'SELECT name FROM divisions WHERE id = ?',
-        array(intval($_POST['division']))
-    );
+        $divisionNames = $DB->GetCol(
+            'SELECT name
+            FROM divisions
+            WHERE id IN ?',
+            array($divisions)
+        );
 
-    $layout['division'] = $divname;
+        $layout['division'] = $divisionNames;
+    }
 } else {
     unset($layout['division']);
 }
@@ -137,20 +145,28 @@ if (!empty($_POST['division'])) {
 switch ($_POST['sorttype']) {
     case 'sdate':
         $sortcol = 'CEIL(COALESCE(d.sdate, d.cdate) / 86400)';
-        $wherecol = 'COALESCE(d.sdate, d.cdate)';
         break;
     case 'pdate':
         $sortcol = 'CEIL((d.cdate + (d.paytime * 86400)) / 86400)';
-        $wherecol = '(d.cdate + (d.paytime * 86400))';
         break;
     case 'number':
         $sortcol = 'd.number';
-        $wherecol = 'd.cdate';
         break;
     case 'cdate':
     default:
         $sortcol = 'CEIL(d.cdate / 86400)';
+}
+
+switch ($_POST['datetype']) {
+    case 'sdate':
+        $wherecol = 'COALESCE(d.sdate, d.cdate)';
+        break;
+    case 'pdate':
+        $wherecol = '(d.cdate + (d.paytime * 86400))';
+        break;
+    case 'cdate':
         $wherecol = 'd.cdate';
+        break;
 }
 
 $doctypes = array();
@@ -185,6 +201,8 @@ if (!empty($_POST['jpk-flag']) && isset($DOC_FLAGS[$_POST['jpk-flag']])) {
     $jpk_flag = 0;
 }
 
+$ksefSubmit = empty($_POST['ksef-submit']) ? null : ($_POST['ksef-submit'] == 'yes' ? 1 : 0);
+
 if (!empty($_POST['numberplanid'])) {
     if (is_array($_POST['numberplanid'])) {
         $numberplans = Utils::filterIntegers($_POST['numberplanid']);
@@ -200,57 +218,113 @@ $taxes = $DB->GetAllByKey('SELECT id, value, label, taxed FROM taxes', 'id');
 
 $match_content_service_type = isset($_POST['print-match-content-service-type']);
 
-$documents = $DB->GetAll('SELECT d.id, d.type,
-            cn.name AS country, n.template,
-            a.state AS rec_state, a.state_id AS rec_state_id,
-            a.city as rec_city, a.city_id AS rec_city_id,
-            a.street AS rec_street, a.street_id AS rec_street_id,
-            a.zip as rec_zip, a.postoffice AS rec_postoffice,
-            a.name as rec_name, a.address AS rec_address,
-            a.house AS rec_house, a.flat AS rec_flat, a.country_id AS rec_country_id,
-            c.pin AS customerpin, c.divisionid AS current_divisionid,
-            c.street, c.building, c.apartment,
-            c.type AS ctype,
-            (CASE WHEN d.post_address_id IS NULL THEN c.post_street ELSE a2.street END) AS post_street,
-            (CASE WHEN d.post_address_id IS NULL THEN c.post_building ELSE a2.house END) AS post_building,
-            (CASE WHEN d.post_address_id IS NULL THEN c.post_apartment ELSE a2.flat END) AS post_apartment,
-            (CASE WHEN d.post_address_id IS NULL THEN c.post_name ELSE a2.name END) AS post_name,
-            (CASE WHEN d.post_address_id IS NULL THEN c.post_address ELSE a2.address END) AS post_address,
-            (CASE WHEN d.post_address_id IS NULL THEN c.post_zip ELSE a2.zip END) AS post_zip,
-            (CASE WHEN d.post_address_id IS NULL THEN c.post_city ELSE a2.city END) AS post_city,
-            (CASE WHEN d.post_address_id IS NULL THEN c.post_postoffice ELSE a2.postoffice END) AS post_postoffice,
-            (CASE WHEN d.post_address_id IS NULL THEN c.post_countryid ELSE a2.country_id END) AS post_countryid,
-            cp.name AS post_country,
-            (CASE WHEN d.div_countryid IS NOT NULL
-                THEN (CASE WHEN d.countryid IS NULL
-                    THEN cdv.ccode
-                    ELSE cn.ccode
-                END)
-                ELSE NULL
-            END) AS lang
-	    FROM documents d
-        JOIN customeraddressview c ON (c.id = d.customerid)
-        LEFT JOIN countries cn ON (cn.id = d.countryid)
-        LEFT JOIN countries cdv ON cdv.id = d.div_countryid
-        LEFT JOIN numberplans n ON (d.numberplanid = n.id)
-        LEFT JOIN vaddresses a ON d.recipient_address_id = a.id
-        LEFT JOIN vaddresses a2 ON d.post_address_id = a2.id
-        LEFT JOIN countries cp ON (d.post_address_id IS NOT NULL AND cp.id = a2.country_id) OR (d.post_address_id IS NULL AND cp.id = c.post_countryid)
-	    ' .
-        ( $ctype != -1 ? ' LEFT JOIN customers cu ON d.customerid = cu.id ' : '' )
-        . ' WHERE cancelled = 0 AND d.type IN ? AND (' . $wherecol . ' BETWEEN ? AND ?) '
-        . (empty($jpk_flag) ? '' : ' AND (d.flags & ' . $jpk_flag . ') > 0')
-        .(isset($numberplans) ? 'AND d.numberplanid IN (' . $numberplans . ')' : '')
-        .(isset($divwhere) ? $divwhere : '')
-        . (isset($servicetypewhere) ? $servicetypewhere : '')
-        .(isset($groupwhere) ? $groupwhere : '')
-        . $ctenwhere
-        .( $ctype != -1 ? ' AND cu.type = ' . $ctype : '')
-        .' AND NOT EXISTS (
-                	    SELECT 1 FROM vcustomerassignments a
-			    JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-			    WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)
-	    ORDER BY ' . $sortcol . ', d.id', $args);
+if (!empty($_POST['promotion-schema'])) {
+    $promotion_schema_tariffs_by_customers = $DB->GetAllByKey(
+        'SELECT
+            d.customerid,
+            ' . $DB->GroupConcat('t.id') . ' AS tariffids
+        FROM invoicecontents ic
+        JOIN documents d ON d.id = ic.docid
+        JOIN tariffs t ON t.id = ic.tariffid
+        JOIN assignments a ON a.customerid = d.customerid
+            AND a.tariffid = t.id
+            AND a.commited = 1
+            AND a.datefrom <= ?
+            AND (a.dateto = 0 OR a.dateto >= ?)
+        WHERE (' . $wherecol . ' BETWEEN ? AND ?)
+            AND d.type IN ?
+            AND a.promotionschemaid = ?
+        GROUP BY d.customerid',
+        'customerid',
+        array(
+            $unixto,
+            $unixfrom,
+            $unixfrom,
+            $unixto,
+            array(DOC_INVOICE, DOC_CNOTE),
+            $_POST['promotion-schema'],
+        )
+    );
+    if (empty($promotion_schema_tariffs_by_customers)) {
+        $promotion_schema_tariffs_by_customers = array();
+    }
+    foreach ($promotion_schema_tariffs_by_customers as &$tariffs) {
+        $tariffs['tariffids'] = array_flip(explode(',', $tariffs['tariffids']));
+    }
+    unset($tariffs);
+    $promotion_schema_tariffs_by_customers = Utils::array_column($promotion_schema_tariffs_by_customers, 'tariffids');
+//    var_dump($promotion_schema_tariffs_by_customers);
+//    die;
+}
+
+$documents = $DB->GetAll(
+    'SELECT
+        d.id, d.type,
+        cn.name AS country, n.template,
+        a.state AS rec_state, a.state_id AS rec_state_id,
+        a.city as rec_city, a.city_id AS rec_city_id,
+        a.street AS rec_street, a.street_id AS rec_street_id,
+        a.zip as rec_zip, a.postoffice AS rec_postoffice,
+        a.name as rec_name, a.address AS rec_address,
+        a.house AS rec_house, a.flat AS rec_flat, a.country_id AS rec_country_id,
+        c.pin AS customerpin, c.divisionid AS current_divisionid,
+        c.street, c.building, c.apartment,
+        c.type AS ctype,
+        (CASE WHEN d.post_address_id IS NULL THEN c.post_street ELSE a2.street END) AS post_street,
+        (CASE WHEN d.post_address_id IS NULL THEN c.post_building ELSE a2.house END) AS post_building,
+        (CASE WHEN d.post_address_id IS NULL THEN c.post_apartment ELSE a2.flat END) AS post_apartment,
+        (CASE WHEN d.post_address_id IS NULL THEN c.post_name ELSE a2.name END) AS post_name,
+        (CASE WHEN d.post_address_id IS NULL THEN c.post_address ELSE a2.address END) AS post_address,
+        (CASE WHEN d.post_address_id IS NULL THEN c.post_zip ELSE a2.zip END) AS post_zip,
+        (CASE WHEN d.post_address_id IS NULL THEN c.post_city ELSE a2.city END) AS post_city,
+        (CASE WHEN d.post_address_id IS NULL THEN c.post_postoffice ELSE a2.postoffice END) AS post_postoffice,
+        (CASE WHEN d.post_address_id IS NULL THEN c.post_countryid ELSE a2.country_id END) AS post_countryid,
+        cp.name AS post_country,
+        (CASE WHEN d.div_countryid IS NOT NULL
+            THEN (CASE WHEN d.countryid IS NULL
+                THEN cdv.ccode
+                ELSE cn.ccode
+            END)
+            ELSE NULL
+        END) AS lang,
+        d.extid
+    FROM documents d
+    JOIN customeraddressview c ON (c.id = d.customerid)
+    LEFT JOIN (
+        SELECT
+            kd.docid,
+            MAX(kd.id) AS maxid
+        FROM ksefdocuments kd
+        GROUP BY kd.docid
+    ) kd2 ON kd2.docid = d.id
+    LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.id = kd2.maxid
+    LEFT JOIN countries cn ON (cn.id = d.countryid)
+    LEFT JOIN countries cdv ON cdv.id = d.div_countryid
+    LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+    LEFT JOIN vaddresses a ON d.recipient_address_id = a.id
+    LEFT JOIN vaddresses a2 ON d.post_address_id = a2.id
+    LEFT JOIN countries cp ON (d.post_address_id IS NOT NULL AND cp.id = a2.country_id) OR (d.post_address_id IS NULL AND cp.id = c.post_countryid)'
+    . ($ctype != -1 ? ' LEFT JOIN customers cu ON d.customerid = cu.id ' : '')
+    . ' WHERE cancelled = 0 AND d.type IN ? AND (' . $wherecol . ' BETWEEN ? AND ?)'
+    . (empty($jpk_flag) ? '' : ' AND (d.flags & ' . $jpk_flag . ') > 0')
+    . (isset($numberplans) ? ' AND d.numberplanid IN (' . $numberplans . ')' : '')
+    . ($divisionWhere ?? '')
+    . ($servicetypewhere ?? '')
+    . ($groupwhere ?? '')
+    . $ctenwhere
+    . (isset($ksefSubmit)
+        ? (empty($ksefSubmit) ? ' AND kd.id IS NULL' : ' AND kd.ksefnumber IS NOT NULL AND kd.status = 200')
+        : ''
+    )
+    . ($ctype != -1 ? ' AND cu.type = ' . $ctype : '')
+    . ' AND NOT EXISTS (
+        SELECT 1 FROM vcustomerassignments a
+        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+        WHERE e.userid = lms_current_user() AND a.customerid = d.customerid
+    )
+    ORDER BY ' . $sortcol . ', d.id',
+    $args
+);
 
 if ($documents) {
     foreach ($documents as $document) {
@@ -267,6 +341,10 @@ if ($documents) {
                 break;
         }
 
+        if (empty($document['content'])) {
+            $document['content'] = array();
+        }
+
         if ($match_content_service_type && !empty($servicetypes)) {
             $document['content'] = array_filter(
                 $document['content'],
@@ -275,6 +353,16 @@ if ($documents) {
                 }
             );
         }
+
+        if (!empty($_POST['promotion-schema'])) {
+            $document['content'] = array_filter(
+                $document['content'],
+                function ($item) use ($promotion_schema_tariffs_by_customers, $document) {
+                    return isset($promotion_schema_tariffs_by_customers[$document['customerid']][$item['tariffid']]);
+                }
+            );
+        }
+
         if (empty($document['content'])) {
             continue;
         }
@@ -296,6 +384,7 @@ if ($documents) {
         $invoicelist[$idx]['customerid'] = $document['customerid'];
         $invoicelist[$idx]['currency'] = $document['currency'];
         $invoicelist[$idx]['currencyvalue'] = $document['currencyvalue'];
+        $invoicelist[$idx]['extid'] = $document['extid'];
 
         foreach ($document['content'] as $itemid => $item) {
             $taxid = intval($item['taxid']);
@@ -303,6 +392,10 @@ if ($documents) {
             if (!isset($invoicelist[$idx][$taxid])) {
                 $invoicelist[$idx][$taxid]['tax'] = 0;
                 $invoicelist[$idx][$taxid]['val'] = 0;
+                $invoicelist[$idx][$taxid]['tax_receipt'] = 0;
+                $invoicelist[$idx][$taxid]['val_receipt'] = 0;
+                $invoicelist[$idx][$taxid]['tax_correction_note_receipt'] = 0;
+                $invoicelist[$idx][$taxid]['val_correction_note_receipt'] = 0;
             }
 
             if (!isset($invoicelist[$idx]['tax'])) {
@@ -311,12 +404,11 @@ if ($documents) {
             if (!isset($invoicelist[$idx]['brutto'])) {
                 $invoicelist[$idx]['brutto'] = 0;
             }
-
-            if (!isset($invoicelist[$idx]['tax_receipt'])) {
-                $invoicelist[$idx]['tax_receipt'] = 0;
+            if (!isset($invoicelist[$idx]['tax_correction_note_receipt'])) {
+                $invoicelist[$idx]['tax_correction_note_receipt'] = 0;
             }
-            if (!isset($invoicelist[$idx]['brutto_receipt'])) {
-                $invoicelist[$idx]['brutto_receipt'] = 0;
+            if (!isset($invoicelist[$idx]['brutto_correction_note_receipt'])) {
+                $invoicelist[$idx]['brutto_correction_note_receipt'] = 0;
             }
 
             $taxid2 = null;
@@ -368,17 +460,30 @@ if ($documents) {
                 $listdata[$taxid]['val'] = 0;
                 $listdata[$taxid]['tax_receipt'] = 0;
                 $listdata[$taxid]['val_receipt'] = 0;
+                $listdata[$taxid]['tax_correction_note_receipt'] = 0;
+                $listdata[$taxid]['val_correction_note_receipt'] = 0;
             }
 
             if (!empty($invoicelist[$idx]['flags'][DOC_FLAG_RECEIPT])) {
-                $listdata[$taxid]['tax_receipt'] += $tax * $document['currencyvalue'];
-                $listdata[$taxid]['val_receipt'] += $netto * $document['currencyvalue'];
-                if (isset($taxid2)) {
-                    $listdata[$taxid2]['tax_receipt'] += $tax2 * $document['currencyvalue'];
-                    $listdata[$taxid2]['val_receipt'] += $netto2 * $document['currencyvalue'];
+                if ($doctype == DOC_CNOTE) {
+                    $listdata[$taxid]['tax_correction_note_receipt'] += $tax * $document['currencyvalue'];
+                    $listdata[$taxid]['val_correction_note_receipt'] += $netto * $document['currencyvalue'];
+                    if (isset($taxid2)) {
+                        $listdata[$taxid2]['tax_correction_note_receipt'] += $tax2 * $document['currencyvalue'];
+                        $listdata[$taxid2]['val_correction_note_receipt'] += $netto2 * $document['currencyvalue'];
+                    }
+                    $listdata['tax_correction_note_receipt'] += ($tax + $tax2) * $document['currencyvalue'];
+                    $listdata['brutto_correction_note_receipt'] += ($brutto + $brutto2) * $document['currencyvalue'];
+                } else {
+                    $listdata[$taxid]['tax_receipt'] += $tax * $document['currencyvalue'];
+                    $listdata[$taxid]['val_receipt'] += $netto * $document['currencyvalue'];
+                    if (isset($taxid2)) {
+                        $listdata[$taxid2]['tax_receipt'] += $tax2 * $document['currencyvalue'];
+                        $listdata[$taxid2]['val_receipt'] += $netto2 * $document['currencyvalue'];
+                    }
+                    $listdata['tax_receipt'] += ($tax + $tax2) * $document['currencyvalue'];
+                    $listdata['brutto_receipt'] += ($brutto + $brutto2) * $document['currencyvalue'];
                 }
-                $listdata['tax_receipt'] += ($tax + $tax2) * $document['currencyvalue'];
-                $listdata['brutto_receipt'] += ($brutto + $brutto2) * $document['currencyvalue'];
             } else {
                 $listdata[$taxid]['tax'] += $tax * $document['currencyvalue'];
                 $listdata[$taxid]['val'] += $netto * $document['currencyvalue'];
@@ -431,20 +536,41 @@ if (isset($_POST['extended'])) {
             if (!isset($totals[$page]['total_receipt'])) {
                 $totals[$page]['total_receipt'] = 0;
             }
-            $totals[$page]['total_receipt'] += $row['brutto'] * $row['currencyvalue'];
-            if (!isset($totals[$page]['sumtax_receipt'])) {
-                $totals[$page]['sumtax_receipt'] = 0;
+            if (!isset($totals[$page]['total_correction_note_receipt'])) {
+                $totals[$page]['total_correction_note_receipt'] = 0;
             }
-            $totals[$page]['sumtax_receipt'] += $row['tax'] * $row['currencyvalue'];
-            foreach ($taxeslist as $idx => $tax) {
-                if (!isset($totals[$page]['val_receipt'][$idx])) {
-                    $totals[$page]['val_receipt'][$idx] = 0;
+            if ($row['doctype'] == DOC_CNOTE) {
+                $totals[$page]['total_correction_note_receipt'] += $row['brutto'] * $row['currencyvalue'];
+                if (!isset($totals[$page]['sumtax_correction_note_receipt'])) {
+                    $totals[$page]['sumtax_correction_note_receipt'] = 0;
                 }
-                $totals[$page]['val_receipt'][$idx] += $row[$idx]['val'] * $row['currencyvalue'];
-                if (!isset($totals[$page]['tax_receipt'][$idx])) {
-                    $totals[$page]['tax_receipt'][$idx] = 0;
+                $totals[$page]['sumtax_correction_note_receipt'] += $row['tax'] * $row['currencyvalue'];
+                foreach ($taxeslist as $idx => $tax) {
+                    if (!isset($totals[$page]['val_correction_note_receipt'][$idx])) {
+                        $totals[$page]['val_correction_note_receipt'][$idx] = 0;
+                    }
+                    $totals[$page]['val_correction_note_receipt'][$idx] += $row[$idx]['val'] * $row['currencyvalue'];
+                    if (!isset($totals[$page]['tax_correction_note_receipt'][$idx])) {
+                        $totals[$page]['tax_correction_note_receipt'][$idx] = 0;
+                    }
+                    $totals[$page]['tax_correction_note_receipt'][$idx] += $row[$idx]['tax'] * $row['currencyvalue'];
                 }
-                $totals[$page]['tax_receipt'][$idx] += $row[$idx]['tax'] * $row['currencyvalue'];
+            } else {
+                $totals[$page]['total_receipt'] += $row['brutto'] * $row['currencyvalue'];
+                if (!isset($totals[$page]['sumtax_receipt'])) {
+                    $totals[$page]['sumtax_receipt'] = 0;
+                }
+                $totals[$page]['sumtax_receipt'] += $row['tax'] * $row['currencyvalue'];
+                foreach ($taxeslist as $idx => $tax) {
+                    if (!isset($totals[$page]['val_receipt'][$idx])) {
+                        $totals[$page]['val_receipt'][$idx] = 0;
+                    }
+                    $totals[$page]['val_receipt'][$idx] += $row[$idx]['val'] * $row['currencyvalue'];
+                    if (!isset($totals[$page]['tax_receipt'][$idx])) {
+                        $totals[$page]['tax_receipt'][$idx] = 0;
+                    }
+                    $totals[$page]['tax_receipt'][$idx] += $row[$idx]['tax'] * $row['currencyvalue'];
+                }
             }
         } else {
             if (!isset($totals[$page]['total'])) {
@@ -478,23 +604,31 @@ if (isset($_POST['extended'])) {
     foreach ($totals as $page => $t) {
         $pages[] = $page;
 
-        $totals[$page]['alltotal_receipt'] = (isset($totals[$page - 1]['alltotal_receipt']) ? $totals[$page - 1]['alltotal_receipt'] : 0)
-            + (isset($t['total_receipt']) ? $t['total_receipt'] : 0);
-        $totals[$page]['allsumtax_receipt'] = (isset($totals[$page - 1]['allsumtax_receipt']) ? $totals[$page - 1]['allsumtax_receipt'] : 0)
-            + (isset($t['sumtax_receipt']) ? $t['sumtax_receipt'] : 0);
-        $totals[$page]['alltotal'] = (isset($totals[$page - 1]['alltotal']) ? $totals[$page - 1]['alltotal'] : 0)
+        $totals[$page]['alltotal_receipt'] = ($totals[$page - 1]['alltotal_receipt'] ?? 0)
+            + ($t['total_receipt'] ?? 0);
+        $totals[$page]['allsumtax_receipt'] = ($totals[$page - 1]['allsumtax_receipt'] ?? 0)
+            + ($t['sumtax_receipt'] ?? 0);
+        $totals[$page]['alltotal_correction_note_receipt'] = ($totals[$page - 1]['alltotal_correction_note_receipt'] ?? 0)
+            + ($t['total_correction_note_receipt'] ?? 0);
+        $totals[$page]['allsumtax_correction_note_receipt'] = ($totals[$page - 1]['allsumtax_correction_note_receipt'] ?? 0)
+            + ($t['sumtax_correction_note_receipt'] ?? 0);
+        $totals[$page]['alltotal'] = ($totals[$page - 1]['alltotal'] ?? 0)
             + $t['total'];
-        $totals[$page]['allsumtax'] = (isset($totals[$page - 1]['allsumtax']) ? $totals[$page - 1]['allsumtax'] : 0)
+        $totals[$page]['allsumtax'] = ($totals[$page - 1]['allsumtax'] ?? 0)
             + $t['sumtax'];
 
         foreach ($taxeslist as $idx => $tax) {
             $totals[$page]['allval_receipt'][$idx] = (isset($totals[$page - 1]['allval_receipt']) ? $totals[$page - 1]['allval_receipt'][$idx] : 0)
-                + (isset($t['val_receipt'][$idx]) ? $t['val_receipt'][$idx] : 0);
+                + ($t['val_receipt'][$idx] ?? 0);
             $totals[$page]['alltax_receipt'][$idx] = (isset($totals[$page - 1]['alltax_receipt']) ? $totals[$page - 1]['alltax_receipt'][$idx] : 0)
-                + (isset($t['tax_receipt'][$idx]) ? $t['tax_receipt'][$idx] : 0);
-            $totals[$page]['allval'][$idx] = (isset($totals[$page - 1]['allval'][$idx]) ? $totals[$page - 1]['allval'][$idx] : 0)
+                + ($t['tax_receipt'][$idx] ?? 0);
+            $totals[$page]['allval_correction_note_receipt'][$idx] = (isset($totals[$page - 1]['allval_correction_note_receipt']) ? $totals[$page - 1]['allval_correction_note_receipt'][$idx] : 0)
+                + ($t['val_correction_note_receipt'][$idx] ?? 0);
+            $totals[$page]['alltax_correction_note_receipt'][$idx] = (isset($totals[$page - 1]['alltax_correction_note_receipt']) ? $totals[$page - 1]['alltax_correction_note_receipt'][$idx] : 0)
+                + ($t['tax_correction_note_receipt'][$idx] ?? 0);
+            $totals[$page]['allval'][$idx] = ($totals[$page - 1]['allval'][$idx] ?? 0)
                 + $t['val'][$idx];
-            $totals[$page]['alltax'][$idx] = (isset($totals[$page - 1]['alltax'][$idx]) ? $totals[$page-1]['alltax'][$idx] : 0)
+            $totals[$page]['alltax'][$idx] = ($totals[$page - 1]['alltax'][$idx] ?? 0)
                 + $t['tax'][$idx];
         }
     }
@@ -509,10 +643,18 @@ if (isset($_POST['extended'])) {
     $SMARTY->assign('printcustomerid', isset($_POST['printcustomerid']));
     $SMARTY->assign('printcustomerssn', isset($_POST['printcustomerssn']));
     $SMARTY->assign('printonlysummary', isset($_POST['printonlysummary']));
+    $SMARTY->assign('printextid', isset($_POST['printextid']));
 
     if (strtolower(ConfigHelper::getConfig('phpui.report_type', '', true)) == 'pdf') {
         $output = $SMARTY->fetch('invoice/invoicereport-ext.html');
-        html2pdf($output, trans('Reports'), $layout['pagetitle'], null, null, 'L', array(5, 5, 5, 5), ($_GET['save'] == 1) ? true : false);
+        Utils::html2pdf(array(
+            'content' => $output,
+            'subject' => trans('Reports'),
+            'title' => $layout['pagetitle'],
+            'orientation' => 'L',
+            'margins' => array(5, 5, 5, 5),
+            'dest' => $_GET['save'] == 1,
+        ));
     } else {
         $SMARTY->display('invoice/invoicereport-ext.html');
     }
@@ -520,10 +662,18 @@ if (isset($_POST['extended'])) {
     $SMARTY->assign('printcustomerid', isset($_POST['printcustomerid']));
     $SMARTY->assign('printcustomerssn', isset($_POST['printcustomerssn']));
     $SMARTY->assign('printonlysummary', isset($_POST['printonlysummary']));
+    $SMARTY->assign('printextid', isset($_POST['printextid']));
 
     if (strtolower(ConfigHelper::getConfig('phpui.report_type', '', true)) == 'pdf') {
         $output = $SMARTY->fetch('invoice/invoicereport.html');
-        html2pdf($output, trans('Reports'), $layout['pagetitle'], null, null, 'L', array(5, 5, 5, 5), ($_GET['save'] == 1) ? true : false);
+        Utils::html2pdf(array(
+            'content' => $output,
+            'subject' => trans('Reports'),
+            'title' => $layout['pagetitle'],
+            'orientation' => 'L',
+            'margins' => array(5, 5, 5, 5),
+            'dest' => $_GET['save'] == 1,
+        ));
     } else {
         $SMARTY->display('invoice/invoicereport.html');
     }

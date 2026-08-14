@@ -313,9 +313,8 @@ function update_soa_serial($did)
         }
 
             $serial = $today . str_pad($revision, 2, '0', STR_PAD_LEFT);
-        ;
 
-            // Change serial in SOA array.
+        // Change serial in SOA array.
             $soa[2] = $serial;
 
             // Build new SOA record content and update the database
@@ -407,7 +406,7 @@ function validate_dns_record(&$record, &$error)
     }
 
     if (!in_array($record['type'], array('SOA', 'CNAME')) && !empty($record['name'])) {
-        if ($errorname = check_hostname_fqdn($record['name'], true, false)) {
+        if ($errorname = check_hostname_fqdn($record['name'], true)) {
             $error['name'] = $errorname;
         }
     }
@@ -429,7 +428,7 @@ function validate_dns_record(&$record, &$error)
             break;
         case 'ALIAS':
         case 'ANAME':
-            if (strlen($record['alias']) && $errorname = check_hostname_fqdn($record['alias'], true, false)) {
+            if (strlen($record['alias']) && $errorname = check_hostname_fqdn($record['alias'], true)) {
                 $error['alias'] = $errorname;
             }
             break;
@@ -457,7 +456,7 @@ function validate_dns_record(&$record, &$error)
             }
             break;
         case 'CNAME':
-            if ($errorname = check_hostname_fqdn($record['alias'], true, false)) {
+            if ($errorname = check_hostname_fqdn($record['alias'], true)) {
                 $error['alias'] = $errorname;
             }
             break;

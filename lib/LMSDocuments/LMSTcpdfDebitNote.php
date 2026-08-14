@@ -27,7 +27,7 @@
 class LMSTcpdfDebitNote extends LMSTcpdfInvoice
 {
     // default font
-    const TCPDF_FONT = 'liberationsans';
+    public const TCPDF_FONT = 'liberationsans';
 
     private $use_alert_color;
 
@@ -79,8 +79,8 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         $tmp = $this->data['division_header'];
 
         if (!ConfigHelper::checkConfig('notes.show_only_alternative_accounts', ConfigHelper::checkConfig('invoices.show_only_alternative_accounts'))
-            || empty($this->data['bankccounts'])) {
-            $accounts = array(bankaccount($this->data['customerid'], $this->data['account']));
+            || empty($this->data['bankaccounts'])) {
+            $accounts = array(bankaccount($this->data['customerid'], $this->data['account'], $this->data['export']));
         } else {
             $accounts = array();
         }
@@ -91,11 +91,12 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         foreach ($accounts as &$account) {
             $account = format_bankaccount($account);
         }
+        unset($account);
         $account_text = ($this->use_alert_color ? '<span style="color:red">' : '')
             . implode("\n", $accounts)
             . ($this->use_alert_color ? '</span>' : '');
         $tmp = str_replace('%bankaccount', $account_text, $tmp);
-        $tmp = str_replace('%bankname', isset($this->data['div_bank']) ? $this->data['div_bank'] : '', $tmp);
+        $tmp = str_replace('%bankname', $this->data['div_bank'] ?? '', $tmp);
 
         if (ConfigHelper::checkConfig('notes.customer_bankaccount', ConfigHelper::checkConfig('invoices.customer_bankaccount', true))) {
             $tmp .= "\n" . trans('Bank account:') . "\n" . '<B>' . $account_text . '<B>';
@@ -115,7 +116,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
             $shipaddress = '';
             if ($this->data['post_name'] || $this->data['post_address']) {
                 $lines = document_address(array(
-                    'name' => $this->data['post_name'] ? $this->data['post_name'] : $this->data['name'],
+                    'name' => $this->data['post_name'] ?: $this->data['name'],
                     'address' => $this->data['post_address'],
                     'street' => $this->data['post_street'],
                     'zip' => $this->data['post_zip'],
@@ -233,16 +234,16 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         $h_head = 6;
         /* data table headers */
         foreach ($heads as $item => $name) {
-            $h_cell = $this->backend->getStringHeight($h_width[$item], $heads[$item], true, false, 0, 1);
+            $h_cell = $this->backend->getStringHeight($h_width[$item], $name, true, false, 0, 1);
             if ($h_cell > $h_head) {
                 $h_head = $h_cell;
             }
         }
         foreach ($heads as $item => $name) {
             if ($item == 'name') {
-                $this->backend->MultiCell($h_width[$item], $h_head, $heads[$item], 1, 'L', true, 0, '', '', true, 0, false, false, $h_head, 'M');
+                $this->backend->MultiCell($h_width[$item], $h_head, $name, 1, 'L', true, 0, '', '', true, 0, false, false, $h_head, 'M');
             } else {
-                $this->backend->MultiCell($h_width[$item], $h_head, $heads[$item], 1, 'C', true, 0, '', '', true, 0, false, false, $h_head, 'M');
+                $this->backend->MultiCell($h_width[$item], $h_head, $name, 1, 'C', true, 0, '', '', true, 0, false, false, $h_head, 'M');
             }
         }
 
@@ -325,8 +326,9 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         } else {
             $this->invoice_expositor();
         }
-        if (ConfigHelper::checkConfig('notes.show_balance', ConfigHelper::checkConfig('invoices.show_balance', true))
-            || ConfigHelper::checkConfig('notes.show_expired_balance', ConfigHelper::checkConfig('invoices.show_expired_balance'))) {
+        if ((ConfigHelper::checkConfig('notes.show_balance', ConfigHelper::checkConfig('invoices.show_balance', true))
+            || ConfigHelper::checkConfig('notes.show_expired_balance', ConfigHelper::checkConfig('invoices.show_expired_balance')))
+            && !empty($this->data['balance_on_documents'])) {
             $this->invoice_balance();
         }
         if (ConfigHelper::checkConfig('notes.qr2pay', ConfigHelper::checkConfig('invoices.qr2pay'))) {

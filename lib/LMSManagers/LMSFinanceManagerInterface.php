@@ -44,6 +44,8 @@ interface LMSFinanceManagerInterface
 
     public function AddAssignment($data);
 
+    public function addAssignmentsForSchema($data);
+
     public function ValidateAssignment($data);
 
     public function CheckSchemaModifiedValues(&$data);
@@ -65,6 +67,8 @@ interface LMSFinanceManagerInterface
     public function GetInvoiceList(array $params);
 
     public function AddInvoice($invoice);
+
+    public function setInvoiceExtID(array $invoice);
 
     public function InvoiceDelete($invoiceid);
 
@@ -168,5 +172,11 @@ interface LMSFinanceManagerInterface
 
     public function getPromotionSchema($id);
 
+    public function changePromotionSchemaTariffPermissions($schemaid, array $params);
+
     public function getPromotion($id);
+
+    public function getCashSources();
+
+    public function calculateDebtForDocuments(array $params);
 }

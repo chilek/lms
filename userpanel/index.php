@@ -97,6 +97,7 @@ if (file_exists($composer_autoload_path)) {
 }
 
 require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'checkdirs.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 
 // Initialize database
 
@@ -110,10 +111,22 @@ try {
     die("Fatal error: cannot connect to database!<BR>");
 }
 
+// Redirect to SSL
+$_FORCE_SSL = ConfigHelper::checkConfig('userpanel.force_ssl', ConfigHelper::getConfig('phpui.force_ssl'));
+if ($_FORCE_SSL && (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on')) {
+     header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+     exit(0);
+}
+
+$_TIMEOUT = ConfigHelper::getConfig('userpanel.timeout');
+
+$_SERVER['REMOTE_ADDR'] = str_replace("::ffff:", "", $_SERVER['REMOTE_ADDR']);
+
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
+require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'Session.class.php');
+
 // Initialize templates engine (must be before locale settings)
 $SMARTY = new LMSSmarty;
-
-$SMARTY->muteUndefinedOrNullWarnings();
 
 // test for proper version of Smarty
 
@@ -129,24 +142,8 @@ if (count($ver_chunks) < 1 || version_compare('3.1', $ver_chunks[0]) > 0) {
 
 define('SMARTY_VERSION', $ver_chunks[0]);
 
-// add LMS's custom plugins directory
-$SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
-
-// Redirect to SSL
-$_FORCE_SSL = ConfigHelper::checkConfig('userpanel.force_ssl', ConfigHelper::getConfig('phpui.force_ssl'));
-if ($_FORCE_SSL && (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on')) {
-     header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
-     exit(0);
-}
-
-$_TIMEOUT = ConfigHelper::getConfig('userpanel.timeout');
-
 // Include required files (including sequence is important)
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
-
-$_SERVER['REMOTE_ADDR'] = str_replace("::ffff:", "", $_SERVER['REMOTE_ADDR']);
 
 $AUTH = null;
 $SYSLOG = SYSLOG::getInstance();
@@ -156,7 +153,6 @@ if ($SYSLOG) {
 
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 
-require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'Session.class.php');
 require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'Userpanel.class.php');
 require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'ULMS.class.php');
 
@@ -166,7 +162,7 @@ unset($LMS); // reset LMS class to enable wrappers for LMS older versions
 
 $LMS = new ULMS($DB, $AUTH, $SYSLOG);
 
-$plugin_manager = new LMSPluginManager();
+$plugin_manager = LMSPluginManager::getInstance();
 $LMS->setPluginManager($plugin_manager);
 $SMARTY->setPluginManager($plugin_manager);
 
@@ -232,12 +228,26 @@ $layout['lmsvr'] = LMS::getSoftwareRevision();
 $layout['smarty_version'] = SMARTY_VERSION;
 $layout['hostname'] = hostname();
 $layout['dberrors'] =& $DB->GetErrors();
+$layout['url'] = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
+    . $_SERVER['HTTP_HOST']
+    . $_SERVER['REQUEST_URI'];
+    //. substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1);
 
 $SMARTY->assignByRef('modules', $USERPANEL->MODULES);
 $SMARTY->assignByRef('layout', $layout);
 $SMARTY->assign('page_header', ConfigHelper::getConfig('userpanel.page_header'));
 $SMARTY->assign('company_logo', ConfigHelper::getConfig('userpanel.company_logo'));
 $SMARTY->assign('timeout', $_TIMEOUT);
+
+$extra_css = ConfigHelper::getConfig('userpanel.extra_style', '');
+if (preg_match('#https?://#', $extra_css)) {
+    $extra_css = '<link type="text/css" rel="stylesheet" href="' . $extra_css . '">';
+} elseif (is_readable($extra_css)) {
+    $extra_css = '<style>' . PHP_EOL . file_get_contents((strpos($extra_css, DIRECTORY_SEPARATOR) === 0 ? '' : SYS_DIR . DIRECTORY_SEPARATOR) . $extra_css) . PHP_EOL . '</style>';
+} else {
+    $extra_css = '';
+}
+$SMARTY->assign('extra_css', $extra_css);
 
 header('X-Powered-By: LMS/'.$layout['lmsv']);
 
@@ -264,17 +274,15 @@ if ($SESSION->islogged) {
     $rights = $USERPANEL->GetCustomerRights($SESSION->id);
     $SMARTY->assign('rights', $rights);
 
+    $divisionId = $LMS->GetCustomerDivision($SESSION->id);
+    ConfigHelper::setFilter($divisionId);
+
     if (ConfigHelper::checkConfig('userpanel.hide_nodes_modules')) {
         if (!$DB->GetOne('SELECT COUNT(*) FROM vnodes WHERE ownerid = ? LIMIT 1', array($SESSION->id))) {
             $USERPANEL->RemoveModule('notices');
             $USERPANEL->RemoveModule('stats');
         }
     }
-
-    // Userpanel popup for urgent notice
-    $res = $LMS->ExecHook('userpanel_module_call_before');
-
-    $LMS->executeHook('userpanel_' . $module . '_on_load');
 
     $module_dir = null;
     foreach ($modules_dirs as $suspected_module_dir) {
@@ -285,7 +293,13 @@ if ($SESSION->islogged) {
         }
     }
 
+    // Userpanel popup for urgent notice
+    $res = $LMS->ExecHook('userpanel_module_call_before');
+
+    $LMS->executeHook('userpanel_' . $module . '_on_load');
+
     if ($module_dir !== null) {
+        $SMARTY->assign('menuitems', $USERPANEL->getMenuItems());
         $SMARTY->assign('customername', $LMS->GetCustomerName($SESSION->id));
 
         include($module_dir . $module . DIRECTORY_SEPARATOR . 'functions.php');
@@ -319,7 +333,14 @@ if ($SESSION->islogged) {
     }
 } else {
     $SMARTY->assign('error', $SESSION->error);
+    $SMARTY->assign('info', $SESSION->info);
     $SMARTY->assign('target', '?' . $_SERVER['QUERY_STRING']);
+
+    if ($SESSION->authCodeRequired()) {
+        $SMARTY->assign('phone_numbers', $SESSION->getCustomerPhoneNumbers());
+        $SMARTY->assign('authcode_required', true);
+    }
+
     $SMARTY->display('login.html');
 }
 

@@ -23,9 +23,9 @@
  *
  *  $Id$
  */
-$maction = isset($_GET['maction']) ? $_GET['maction'] : null;
-$taction = isset($_GET['taction']) ? $_GET['taction'] : null;
-$qaction = isset($_GET['qaction']) ? $_GET['qaction'] : null;
+$maction = $_GET['maction'] ?? null;
+$taction = $_GET['taction'] ?? null;
+$qaction = $_GET['qaction'] ?? null;
 
 $rt_dir = ConfigHelper::getConfig('rt.mail_dir', STORAGE_DIR . DIRECTORY_SEPARATOR . 'rt');
 
@@ -47,13 +47,11 @@ if ($maction == 'delperm') {
 if ($taction == 'delperm') {
     $ticket = intval($_GET['id']);
 
-    $queue = $LMS->GetQueueByTicketId($ticket);
-    $DB->Execute('DELETE FROM rttickets WHERE id = ?', array($ticket));
-    //HINT: We delete messages connected with deleted ticket in database (ON DELETE CASCADE mechanism)
+    $DB->BeginTrans();
 
-    if (!empty($et_dir)) {
-        rrmdir($rt_dir . DIRECTORY_SEPARATOR . sprintf('%06d', $ticket));
-    }
+    $LMS->deleteTicket($ticket);
+
+    $DB->CommitTrans();
 
     $SESSION->redirect('?m=rtqueueview'
         . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));

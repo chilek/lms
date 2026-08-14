@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$month = $_POST['month'] ? $_POST['month'] : date('n');
-$year = $_POST['year'] ? $_POST['year'] : date('Y');
-$customer = $_POST['customer'] ? $_POST['customer'] : $_GET['customer'];
+$month = $_POST['month'] ?: date('n');
+$year = $_POST['year'] ?: date('Y');
+$customer = $_POST['customer'] ?: $_GET['customer'];
 
 $layout['pagetitle'] = trans('Stats of Customer $a in month $b', $LMS->GetCustomerName($customer), date('F Y', mktime(0, 0, 0, $month, 1, $year)));
     
@@ -60,14 +60,14 @@ if ($list = $DB->GetAll(
         $listdata['upavg'] += $stats[$i]['upavg'];
         $listdata['downavg'] += $stats[$i]['downavg'];
                 
-        list($stats[$i]['upload'], $stats[$i]['uploadunit']) = setunits($stats[$i]['upload']);
-        list($stats[$i]['download'], $stats[$i]['downloadunit']) = setunits($stats[$i]['download']);
+        [$stats[$i]['upload'], $stats[$i]['uploadunit']] = setunits($stats[$i]['upload']);
+        [$stats[$i]['download'], $stats[$i]['downloadunit']] = setunits($stats[$i]['download']);
     }
 
     $listdata['upavg'] = $listdata['upavg']/date('t', $from);
     $listdata['downavg'] = $listdata['downavg']/date('t', $from);
-    list($listdata['upload'], $listdata['uploadunit']) = setunits($listdata['upload']);
-    list($listdata['download'], $listdata['downloadunit']) = setunits($listdata['download']);
+    [$listdata['upload'], $listdata['uploadunit']] = setunits($listdata['upload']);
+    [$listdata['download'], $listdata['downloadunit']] = setunits($listdata['download']);
 }
 
 $SMARTY->assign('stats', $stats);

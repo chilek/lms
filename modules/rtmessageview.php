@@ -53,12 +53,12 @@ if (isset($_GET['file']) || isset($_GET['cid'])) {
                 $imagick->scaleImage($width, 0);
                 header('Content-Type: ' . $attach['contenttype']);
                 header('Cache-Control: private');
-                header('Content-Disposition: ' . ($attach['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename=' . $filename);
+                header('Content-Disposition: ' . ($attach['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename="' . $filename . '"');
                 echo $imagick->getImageBlob();
             } else {
                 header('Content-Type: ' . $attach['contenttype']);
                 header('Cache-Control: private');
-                header('Content-Disposition: ' . ($attach['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename=' . $filename);
+                header('Content-Disposition: ' . ($attach['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename="' . $filename . '"');
                 echo @file_get_contents($file);
             }
         }
@@ -91,7 +91,7 @@ if ($message['customerid']) {
 
 if (!empty($message['attachments']) && count($message['attachments'])) {
     foreach ($message['attachments'] as $key => $val) {
-        list ($size, $unit) = setunits(@filesize($rt_dir . DIRECTORY_SEPARATOR
+        [$size, $unit] = setunits(@filesize($rt_dir . DIRECTORY_SEPARATOR
             . sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d' . DIRECTORY_SEPARATOR . '%s', $message['ticketid'], $message['id'], $val['filename'])));
         $message['attachments'][$key]['size'] = $size;
         $message['attachments'][$key]['unit'] = $unit;

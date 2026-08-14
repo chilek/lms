@@ -42,7 +42,7 @@ if (isset($_GET['aggregate_documents'])) {
 }
 
 $SMARTY->assign('aggregate_documents', $aggregate_documents);
-$SMARTY->assign('balancelist', $LMS->GetCustomerBalanceList($_GET['id'], null, false, $aggregate_documents));
+$SMARTY->assign('balancelist', $LMS->GetCustomerBalanceList($_GET['id'], null, 'ASC', $aggregate_documents));
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());
 $SMARTY->assign('customername', $customername);
 $SMARTY->assign('objectid', $id);

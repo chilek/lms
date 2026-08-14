@@ -27,11 +27,11 @@
 class LMSTcpdfTransferForm extends LMSDocument
 {
     // default font
-    const TCPDF_FONT = 'liberationsans';
+    public const TCPDF_FONT = 'liberationsans';
 
-    const VALUE_BALANCE = 1;
-    const VALUE_ASSIGNMENTS = 2;
-    const VALUE_CUSTOM = 3;
+    public const VALUE_BALANCE = 1;
+    public const VALUE_ASSIGNMENTS = 2;
+    public const VALUE_CUSTOM = 3;
 
     public function __construct($title, $pagesize = 'A4', $orientation = 'portrait')
     {
@@ -45,7 +45,7 @@ class LMSTcpdfTransferForm extends LMSDocument
         $this->backend->SetFont($font, 'BI', 7);
         $this->backend->SetFont($font, '', 7);
 
-        list ($margin_top, $margin_right, $margin_bottom, $margin_left) = explode(',', ConfigHelper::getConfig('invoices.tcpdf_margins', '27,15,25,15'));
+        [$margin_top, $margin_right, $margin_bottom, $margin_left] = explode(',', ConfigHelper::getConfig('invoices.tcpdf_margins', '27,15,25,15'));
         $this->backend->SetMargins(trim($margin_left), trim($margin_top), trim($margin_right));
         $this->backend->SetAutoPageBreak(true, trim($margin_bottom));
     }
@@ -285,7 +285,7 @@ class LMSTcpdfTransferForm extends LMSDocument
 
         /* account */
         $this->backend->SetFont(null, 'B', 9);
-        $this->backend->Text(67, 25, format_bankaccount($this->data['account'], isset($this->data['export']) ? $this->data['export'] : false));
+        $this->backend->Text(67, 25, format_bankaccount($this->data['account'], $this->data['export'] ?? false));
 
         /* currency */
         $this->backend->SetFont(null, 'B', 10);
@@ -363,13 +363,13 @@ class LMSTcpdfTransferForm extends LMSDocument
         // customer data
         if (!empty($customerinfo['accounts'])) {
             $customerinfo['accounts'] = array_filter($customerinfo['accounts'], function ($account) {
-                return ($account['type'] & CONTACT_INVOICES) > 0;
+                return ($account['type'] & (CONTACT_INVOICES | CONTACT_DISABLED)) == CONTACT_INVOICES;
             });
         }
         if (!empty($customerinfo['accounts'])) {
             $account = $customerinfo['accounts'][0]['account'];
         } elseif (!empty($customerinfo['account'])) {
-            $account = bankaccount($data['customerid'], $customerinfo['account'], isset($data['export']) ? $data['export'] : false);
+            $account = bankaccount($data['customerid'], $customerinfo['account'], $data['export'] ?? false);
         } else {
             $account = null;
         }

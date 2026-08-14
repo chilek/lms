@@ -12,15 +12,21 @@
 
 	{tab_header content_id="docpanel"}
 		{tab_header_cell icon="lms-ui-icon-document"}
-			<strong>{trans("Customer's Documents:")}</strong> ({t a=$limit}last $a documents{/t})
+			<strong>{trans("Customer Documents")}</strong>&nbsp;({t a=$limit}last $a documents{/t})
 		{/tab_header_cell}
 		{tab_header_cell}
-			<A href="?m=documentadd&cid={$customerinfo.id}">{trans("New Document")} &raquo;</A>
-			<A href="?m=documentlist&c={$customerinfo.id}">{trans("All Documents")} &raquo;</A>
+			<a href="?m=documentadd&cid={$customerinfo.id}">
+				{trans("New Document")}
+				{icon name="next" class="fa-fw"}
+			</a>
+			<a href="?m=documentlist&c={$customerinfo.id}">
+				{trans("All Documents")}
+				{icon name="next" class="fa-fw"}
+			</a>
 		{/tab_header_cell}
 	{/tab_header}
 
-	{tab_contents id="docpanel"}
+	{tab_contents id="docpanel" class="lms-ui-multi-check-hidden"}
 
 		{tab_table}
 
@@ -116,6 +122,7 @@
 						<div class="lms-ui-tab-table-column period" data-target-url="{$url}">
 							{if $doc.fromdate}{trans("from")} {$doc.fromdate|date_format:"Y-m-d"}{/if}
 							{if $doc.todate}{trans("to")} {$doc.todate|date_format:"Y-m-d"}{/if}
+							{if empty($doc.closed) && ($doc.fromdate || $doc.todate) && !empty($doc.dynamicperiod)}{trans("<!document-period>(dynamic)")}{/if}
 						</div>
 					</div>
 				</div>
@@ -145,25 +152,39 @@
 						{/if}
 						{if is_array($doc.attachments)}
 							{if $docattach.type == 1 || count($doc.attachments) == 1}
-								{documentview id="global-{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
-									url=$url external=true
-									text="<i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"}
+								{documentview
+									id="global-{$doc.docid}-{$docattach.id}"
+									type=$docattach.contenttype
+									doctype=$type
+									name=$docattach.filename
+									url=$url
+									external=true
+									text="<i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"
+								}
 							{/if}
+						{/if}
+						<input type="checkbox" name="marks[{$doc.docid}]" form="customerdocuments-form" class="document-checkbox lms-ui-multi-check" value="{$doc.docid}">
+						{if is_array($doc.attachments)}
 							{if count($doc.attachments) > 1 || !$docattach.type < 1}
-								<a href="#" id="allattachments-toggle-{$doc.docid}" onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
+								<a href="#" id="allattachments-toggle-{$doc.docid}" class="allattachments-toggle"
+									onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
 									<img src="img/asc_order.gif">
 								</a>
 							{/if}
 						{/if}
-						<INPUT TYPE="checkbox" NAME="marks[{$doc.docid}]" form="customerdocuments-form" class="lms-ui-multi-check" VALUE="{$doc.docid}">
 					</div>
 					<div id="allattachments-{$doc.docid}" class="document-attachment-container" style="display: none;">
 						{foreach $doc.attachments as $docattach}
-							{if $docattach@first && $docattach.type == 1}{continue}{/if}
-							{documentview id="local-{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
-								url="?m=documentview&id={$doc.docid}&attachmentid={$docattach.id}" external=true
-								text="{$docattach.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"}
+							{documentview
+								id="local-{$doc.docid}-{$docattach.id}"
+								type=$docattach.contenttype
+								name=$docattach.filename
+								url="?m=documentview&id={$doc.docid}&attachmentid={$docattach.id}"
+								external=true
+							}
 							{if $docattach.type == -1}<i class="lms-ui-icon-user" title="<strong>{t a=date("Y/m/d H:i", $docattach.cdate)}Sent by customer at $a{/t}</strong>"></i>{/if}
+							<input type="checkbox" name="attachment-marks[{$doc.docid}][{$docattach.id}]" form="customerdocuments-form"
+								class="document-attachment-checkbox lms-ui-multi-check" value="{$docattach.id}">
 							<br>
 						{/foreach}
 					</div>

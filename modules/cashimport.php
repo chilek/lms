@@ -43,7 +43,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
     $filename = 'import-'.date('Y-m-d').($div ? '-'.intval($_GET['division']) : '').'.csv';
 
     header('Content-Type: text/csv');
-        header('Content-Disposition: attachment; filename='.$filename);
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
     header('Pragma: public');
 
     if ($importlist = $DB->GetAll('SELECT i.date, i.value, i.customer, i.description,
@@ -58,7 +58,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
                 "%s,%s,\"%s\",\"%s\"\r\n",
                 date('Y-m-d', $row['date']),
                 str_replace(',', '.', $row['value']),
-                str_replace($search, $replace, $row['customername'] ? $row['customername'] : $row['customer']),
+                str_replace($search, $replace, $row['customername'] ?: $row['customer']),
                 str_replace($search, $replace, $row['description'])
             );
         }
@@ -68,7 +68,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
     $filename = 'import-'.date('Y-m-d').'.txt';
 
     header('Content-Type: text/plain');
-        header('Content-Disposition: attachment; filename='.$filename);
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
     header('Pragma: public');
 
     if ($importlist = $DB->GetAll('SELECT i.date, i.value, i.customer, i.description,
@@ -82,7 +82,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
                 "%s\t%s\t%s\t%s\r\n",
                 date('Y-m-d', $row['date']),
                 str_replace(',', '.', $row['value']),
-                $row['customername'] ? $row['customername'] : $row['customer'],
+                $row['customername'] ?: $row['customer'],
                 str_replace("\n", ' ', $row['description'])
             );
         }
@@ -96,7 +96,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
                 array($id)
             );
             if ($SYSLOG) {
-                list ($customerid, $sourceid, $sourcefileid) = array_values(
+                [$customerid, $sourceid, $sourcefileid] = array_values(
                     $DB->GetRow('SELECT customerid, sourceid, sourcefileid
 						FROM cashimport WHERE id = ?', array($id))
                 );
@@ -119,7 +119,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
                 array(empty($id) ? null : $id, $idx)
             );
             if ($SYSLOG) {
-                list ($sourceid, $sourcefileid) = array_values(
+                [$sourceid, $sourcefileid] = array_values(
                     $DB->GetRow('SELECT sourceid, sourcefileid
                     FROM cashimport WHERE id = ?', array($idx))
                 );
@@ -265,6 +265,8 @@ $divisions = $LMS->GetDivisions(array('order' => 'name'));
 
 $divisions[0] = array('id' => 0, 'name' => '');
 
+$division_names = array();
+
 if ($importlist = $DB->GetAll(
     'SELECT
         i.*,
@@ -280,7 +282,17 @@ if ($importlist = $DB->GetAll(
     $listdata['total'] = count($importlist);
 
     foreach ($importlist as $idx => $row) {
-        if ($row['divisionid'] && isset($divisions[$row['divisionid']])) {
+        $divisionid = $row['divisionid'];
+        if (!empty($row['divisionid']) && isset($divisions[$divisionid])) {
+            $division = $divisions[$divisionid];
+            if (!isset($division_names[$division['name']][$divisionid])) {
+                $division_names[$division['name']][$divisionid] = $divisionid;
+            }
+        } else {
+            $division = null;
+        }
+
+        if ($row['divisionid'] && isset($division)) {
             $divisions[$row['divisionid']]['list'][] = $row;
         } else {
             $divisions[0]['list'][] = $row;
@@ -299,11 +311,12 @@ $sourcefiles = $DB->GetAll('SELECT s.*, u.name AS username,
     ORDER BY s.idate DESC');
 
 $SMARTY->assign('divisions', $divisions);
-$SMARTY->assign('listdata', isset($listdata) ? $listdata : null);
+$SMARTY->assign('division_names', $division_names);
+$SMARTY->assign('listdata', $listdata ?? null);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('sourcefiles', $sourcefiles);
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 }
-$SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources WHERE deleted = 0 ORDER BY name'));
+$SMARTY->assign('sourcelist', $LMS->getCashSources());
 $SMARTY->display('cash/cashimport.html');

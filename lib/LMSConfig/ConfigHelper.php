@@ -81,7 +81,7 @@ class ConfigHelper
      */
     public static function checkConfig($name, $default = false)
     {
-        list($section_name, $variable_name) = explode('.', $name, 2);
+        [$section_name, $variable_name] = explode('.', $name, 2);
 
         if (empty($variable_name)) {
             return $default;
@@ -133,7 +133,7 @@ class ConfigHelper
 
     public static function variableExists($name)
     {
-        list ($section_name, $variable_name) = explode('.', $name, 2);
+        [$section_name, $variable_name] = explode('.', $name, 2);
 
         if (empty($variable_name)) {
             return false;
@@ -150,6 +150,26 @@ class ConfigHelper
         return true;
     }
 
+    public static function getSubSections($section_name)
+    {
+        return LMSConfig::getConfig()->getSubSections($section_name);
+    }
+
+    public static function parseSubSection($sub_section_name)
+    {
+        if (preg_match('/[a-z0-9_-]+-(?<type>[[:alnum:]]+):(?<name>[a-z0-9_-]+)$/', $sub_section_name, $m)) {
+            return array_filter(
+                $m,
+                function ($key) {
+                    return preg_match('/^(type|name)$/', $key);
+                },
+                ARRAY_FILTER_USE_KEY
+            );
+        } else {
+            return null;
+        }
+    }
+
     /**
      * Determines if user has got access privilege
      *
@@ -160,8 +180,36 @@ class ConfigHelper
     public static function checkPrivilege($privilege, $checkIfSuperUser = true)
     {
         if ($checkIfSuperUser && self::checkConfig('privileges.superuser')) {
-            return preg_match('/^hide_/', $privilege) ? false : true;
+            return !preg_match('/^hide_/', $privilege);
         }
         return self::checkConfig("privileges.$privilege");
+    }
+
+    public static function checkPrivileges()
+    {
+        $args = func_get_args();
+
+        if (empty($args)) {
+            return false;
+        }
+
+        if (is_bool($args[count($args) - 1])) {
+            $checkIfSuperUser = $args[count($args) - 1];
+        } else {
+            $checkIfSuperUser = true;
+        }
+
+        if (!empty($args)) {
+            foreach ($args as $arg) {
+                if ($checkIfSuperUser && self::checkConfig('privileges.superuser')) {
+                    return !preg_match('/^hide_/', $arg);
+                }
+                if (self::checkConfig('privileges.' . $arg)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

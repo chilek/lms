@@ -51,6 +51,8 @@ interface LMSHelpdeskManagerInterface
 
     public function GetQueueName($id);
 
+    public function GetFavoriteQueues();
+
     public function GetQueueEmail($id);
 
     public function GetQueueStats($id, $deleted_tickets = true);
@@ -127,7 +129,7 @@ interface LMSHelpdeskManagerInterface
 
     public function GetIndicatorStats();
 
-    public function DetermineSenderEmail($queue_email, $ticket_email, $user_email, $forced_order = null);
+    public function DetermineSenderEmail($user_email, $queue_email, $ticket_email, $forced_order = null);
 
     public function GetTicketRequestorMail($ticketid);
 
@@ -161,5 +163,7 @@ interface LMSHelpdeskManagerInterface
 
     public function assignCategoryToTicket($categoryid, $ticketid);
 
-    public function deleteTicket($ticketid);
+    public function deleteTicket($ticketid, $persistent = true);
+
+    public function getDivisionIdByTicketId($ticketid);
 }

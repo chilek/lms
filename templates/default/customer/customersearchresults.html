@@ -69,14 +69,14 @@
     </THEAD>
     <TBODY>
 	{foreach $customerlist as $customer}
-		<INPUT type="hidden" class="hiddenbtn customer-item" name="setwarnings[mcustomerid][]" value="{$customer.id}">
+		<INPUT type="hidden" class="hiddenbtn customer-item" name="setwarnings[mcustomerid][]" value="{$customer.id}" data-allowed-customer-status="{if empty($allowed_customer_status[$customer.status])}0{else}1{/if}">
 	{/foreach}
 	{section name=customerlist loop=$customerlist start=$start max=$pagelimit}
 	<TR class="highlight {if $customerlist[customerlist].deleted} lms-ui-resource-deleted{/if} {if $customerlist[customerlist].account && !$customerlist[customerlist].nodeac} blend{/if}" data-name="{$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}">
 		<TD onClick="return self.location.href='?m=customerinfo&id={$customerlist[customerlist].id}';" valign="top">
-			<img src="img/{$_CSTATUSES[$customerlist[customerlist].status].img}" alt="">
+			<i class="lms-ui-icon-customer-status-{$_CSTATUSES[$customerlist[customerlist].status].alias} fa-fw"></i>
 			{if $customerlist[customerlist].info}
-				<img src="img/info1.gif" alt="" {tip text=$customerlist[customerlist].info}>
+				<i class="lms-ui-icon-optional-info" title="{nl2br(htmlspecialchars($customerlist[customerlist].info))}"></i>
 			{/if}
 			<a name="{$customerlist[customerlist].id}" class="lms-ui-hint-rollover"
 				data-url="?m=customerinfoshort&id={$customerlist[customerlist].id}">
@@ -86,8 +86,8 @@
 				<i class="lms-ui-icon-star{if $customerlist[customerlist].karma > 0} green{else} red{/if}" title="{trans('Karma')}"></i>
 				(<span class="lms-ui-counter">{$customerlist[customerlist].karma}</span>)
 			{/if}
-			<BR>
-			<IMG src="img/home.gif" alt="">&nbsp;{$customerlist[customerlist].full_address}{if $customerlist[customerlist].country != ""}, {t}{$customerlist[customerlist].country}{/t}{/if}
+			<br>
+			<i class="lms-ui-icon-home fa-fw"></i>&nbsp;{$customerlist[customerlist].full_address}{if $customerlist[customerlist].country != ""}, {t}{$customerlist[customerlist].country}{/t}{/if}
 		</TD>
 		<TD valign="top" align="right" NOWRAP>
 			({$customerlist[customerlist].id|string_format:"%04d"})
@@ -110,47 +110,53 @@
 				{/if}
 			{/if}
 
-			{if $customerlist[customerlist].account}
-				{if $customerlist[customerlist].status == $smarty.const.CSTATUS_CONNECTED}
-					{if $customerlist[customerlist].nodeac == 1}
-						{button type="link" icon="connected" tip="Disconnect All" href="?m=nodeset&ownerid={$customerlist[customerlist].id}"}
-					{else}
-						{if $customerlist[customerlist].nodeac == 2}
-							{button type="link" icon="mixconnected" tip="Disconnect All" href="?m=nodeset&ownerid={$customerlist[customerlist].id}"}
+			{if ConfigHelper::checkPrivileges('customer_management', 'node_connections')}
+				{if $customerlist[customerlist].account}
+					{if $customerlist[customerlist].status == $smarty.const.CSTATUS_CONNECTED}
+						{if $customerlist[customerlist].nodeac == 1}
+							{button type="link" icon="connected" tip="Disconnect All" href="?m=nodeset&ownerid={$customerlist[customerlist].id}"}
 						{else}
-							{button type="link" icon="disconnected" tip="Connect All" href="?m=nodeset&ownerid={$customerlist[customerlist].id}&access=1"}
+							{if $customerlist[customerlist].nodeac == 2}
+								{button type="link" icon="mixconnected" tip="Disconnect All" href="?m=nodeset&ownerid={$customerlist[customerlist].id}"}
+							{else}
+								{button type="link" icon="disconnected" tip="Connect All" href="?m=nodeset&ownerid={$customerlist[customerlist].id}&access=1"}
+							{/if}
 						{/if}
 					{/if}
 				{/if}
 			{/if}
 
-			{if $customerlist[customerlist].warncount}
-				{if $customerlist[customerlist].status == $smarty.const.CSTATUS_CONNECTED}
-					{if $customerlist[customerlist].nodewarn == 1}
-						{if $customerlist[customerlist].message}{$tip=htmlspecialchars($customerlist[customerlist].message)}{else}{$tip="Disable notices for all"}{/if}
-						{button type="link" icon="warnon" tip=$tip href="?m=nodewarn&ownerid={$customerlist[customerlist].id}"}
-					{else}
-						{if $customerlist[customerlist].nodewarn == 2}
+			{if ConfigHelper::checkPrivileges('customer_management', 'node_management')}
+				{if $customerlist[customerlist].warncount}
+					{if $customerlist[customerlist].status == $smarty.const.CSTATUS_CONNECTED}
+						{if $customerlist[customerlist].nodewarn == 1}
 							{if $customerlist[customerlist].message}{$tip=htmlspecialchars($customerlist[customerlist].message)}{else}{$tip="Disable notices for all"}{/if}
-							{button type="link" icon="warnmix" tip=$tip href="?m=nodewarn&ownerid={$customerlist[customerlist].id}"}
+							{button type="link" icon="warnon" tip=$tip href="?m=nodewarn&ownerid={$customerlist[customerlist].id}"}
 						{else}
-							{if $customerlist[customerlist].message}{$tip=htmlspecialchars($customerlist[customerlist].message)}{else}{$tip="Enable notices for all"}{/if}
-							{button type="link" icon="warnoff" tip=$tip href="?m=nodewarn&ownerid={$customerlist[customerlist].id}&warning=1"}
+							{if $customerlist[customerlist].nodewarn == 2}
+								{if $customerlist[customerlist].message}{$tip=htmlspecialchars($customerlist[customerlist].message)}{else}{$tip="Disable notices for all"}{/if}
+								{button type="link" icon="warnmix" tip=$tip href="?m=nodewarn&ownerid={$customerlist[customerlist].id}"}
+							{else}
+								{if $customerlist[customerlist].message}{$tip=htmlspecialchars($customerlist[customerlist].message)}{else}{$tip="Enable notices for all"}{/if}
+								{button type="link" icon="warnoff" tip=$tip href="?m=nodewarn&ownerid={$customerlist[customerlist].id}&warning=1"}
+							{/if}
 						{/if}
 					{/if}
 				{/if}
 			{/if}
 
-			{if $customerlist[customerlist].deleted}
-				{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
-					{button type="link" class="remove-button" icon="clear" tip="Remove permanently" href="?m=customerdel&id={$customerlist[customerlist].id}&type=permanent"}
+			{if ConfigHelper::checkPrivilege('customer_management')}
+				{if $customerlist[customerlist].deleted}
+					{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
+						{button type="link" class="remove-button" icon="clear" tip="Remove permanently" href="?m=customerdel&id={$customerlist[customerlist].id}&type=permanent"}
+					{/if}
+					{button type="link" icon="restore" tip="Recover" href="?m=customeredit&id={$customerlist[customerlist].id}&action=recover"}
+				{else}
+					{if ConfigHelper::checkPrivilege('customer_removal')}
+						{button type="link" class="delete-customer" icon="delete" tip="Delete" href="?m=customerdel&id={$customerlist[customerlist].id}"}
+					{/if}
+					{button type="link" icon="edit" tip="Edit" href="?m=customeredit&id={$customerlist[customerlist].id}"}
 				{/if}
-				{button type="link" icon="restore" tip="Recover" href="?m=customeredit&id={$customerlist[customerlist].id}&action=recover"}
-			{else}
-				{if ConfigHelper::checkPrivilege('customer_removal')}
-					{button type="link" class="delete-customer" icon="delete" tip="Delete" href="?m=customerdel&id={$customerlist[customerlist].id}"}
-				{/if}
-				{button type="link" icon="edit" tip="Edit" href="?m=customeredit&id={$customerlist[customerlist].id}"}
 			{/if}
 
 			{button type="link" icon="info" tip="Info" href="?m=customerinfo&id={$customerlist[customerlist].id}"}
@@ -175,54 +181,68 @@
 		<TD COLSPAN="4" class="nobr">
 			<div id="action-panel">
 				<span class="bold">{trans("<!customersearch>Action:")}</span>
-				<select id="customer-action">
-					<optgroup label="{trans("Warnings")}">
-						<option value="1">{trans("<!customersearch>Enable warning")}</option>
-						<option value="2">{trans("<!customersearch>Disable warning")}</option>
-						<option value="3">{trans("Set notice content")}</option>
-					</optgroup>
-					<optgroup label="{trans("Customer statuses")}">
-						{foreach $_CSTATUSES as $statusid => $status}
-							<option value="{($statusid + 100)}">{$status.singularlabel}</option>
-						{/foreach}
-					</optgroup>
-					<optgroup label="{trans("<!customersearch>Customer deletion")}">
-						<option value="14">{trans("<!customersearch>Deletion")}</option>
-						<option value="15">{trans("<!customersearch>Restoration")}</option>
-					</optgroup>
-					{if is_array($listdata.customergroup)}
-						<optgroup label="{trans("Customer groups")}">
-							{$groups = array_flip($listdata.customergroup)}
-							<option value="4">{trans("<!customersearch>Add to groups")}</option>
-							<option value="9">{trans("<!customersearch>Create new group")}</option>
-							<option value="5">{trans("<!customersearch>Remove from groups")}</option>
-							<option value="6">{trans("<!customersearch>Replace groups")}</option>
+				<select id="customer-action" required>
+					<option value="">{trans("— select —")}</option>
+					{if ConfigHelper::checkPrivileges('customer_management', 'node_management')}
+						<optgroup label="{trans("Warnings")}">
+							<option value="1">{trans("<!customersearch>Enable warning")}</option>
+							<option value="2">{trans("<!customersearch>Disable warning")}</option>
+							<option value="3">{trans("Set notice content")}</option>
 						</optgroup>
 					{/if}
-					<optgroup label="{trans("Customer consents")}">
-						<option value="7">{trans("<!customersearch>Add consents")}</option>
-						<option value="8">{trans("<!customersearch>Remove consents")}</option>
-					</optgroup>
-					{if ConfigHelper::checkPrivilege("messaging")}
+					{if ConfigHelper::checkPrivilege('customer_management')}
+						<optgroup label="{trans("Customer statuses")}">
+							{foreach $_CSTATUSES as $statusid => $status}
+								<option value="{($statusid + 100)}">{$status.singularlabel}</option>
+							{/foreach}
+						</optgroup>
+						<optgroup label="{trans("<!customersearch>Customer deletion")}">
+							<option value="14">{trans("<!customersearch>Deletion")}</option>
+							{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
+								<option value="16">{trans("<!customersearch>Permanent deletion")}</option>
+							{/if}
+							<option value="15">{trans("<!customersearch>Restoration")}</option>
+						</optgroup>
+					{/if}
+					{if ConfigHelper::checkPrivilege('customer_group_assignments')}
+						{if is_array($listdata.customergroup)}
+							<optgroup label="{trans("Customer groups")}">
+								{$groups = array_flip($listdata.customergroup)}
+								<option value="4">{trans("<!customersearch>Add to groups")}</option>
+								<option value="9">{trans("<!customersearch>Create new group")}</option>
+								<option value="5">{trans("<!customersearch>Remove from groups")}</option>
+								<option value="6">{trans("<!customersearch>Replace groups")}</option>
+							</optgroup>
+						{/if}
+					{/if}
+					{if ConfigHelper::checkPrivilege('customer_management')}
+						<optgroup label="{trans("Customer consents")}">
+							<option value="7">{trans("<!customersearch>Add consents")}</option>
+							<option value="8">{trans("<!customersearch>Remove consents")}</option>
+						</optgroup>
+					{/if}
+					{if ConfigHelper::checkPrivileges('messaging', 'messaging_creation')}
 						<optgroup label="{trans("<!customersearch>Messages")}">
 							<option value="10">{trans("<!customersearch>New email message")}</option>
 							<option value="11">{trans("<!customersearch>New sms message")}</option>
 						</optgroup>
 					{/if}
-					{foreach $_CUSTOMERCONTACTTYPES as $contacttypeidx => $contacttype}
-						<optgroup label="{$contacttype.ui.legend.text}">
-							<option value="{$contacttypeidx}-1" data-resource="{$contacttypeidx}" data-operation="1"
-								data-target-multiselect="#contactflags-{$contacttypeidx}"
-								>{trans("<!customersearch>Add flags")}</option>
-							<option value="{$contacttypeidx}-2" data-resource="{$contacttypeidx}" data-operation="2"
-								data-target-multiselect="#contactflags-{$contacttypeidx}"
-								>{trans("<!customersearch>Remove flags")}</option>
+					{if ConfigHelper::checkPrivilege('customer_management')}
+						{foreach $_CUSTOMERCONTACTTYPES as $contacttypeidx => $contacttype}
+							<optgroup label="{$contacttype.ui.legend.text}">
+								<option value="{$contacttypeidx}-1" data-resource="{$contacttypeidx}" data-operation="1"
+									data-target-multiselect="#contactflags-{$contacttypeidx}"
+									>{trans("<!customersearch>Add flags")}</option>
+								<option value="{$contacttypeidx}-2" data-resource="{$contacttypeidx}" data-operation="2"
+									data-target-multiselect="#contactflags-{$contacttypeidx}"
+									>{trans("<!customersearch>Remove flags")}</option>
+							</optgroup>
+						{/foreach}
+						<optgroup label="{trans("Legal personality types")}">
+							<option value="12">{$_CTYPES[$smarty.const.CTYPES_PRIVATE]}</option>
+							<option value="13">{$_CTYPES[$smarty.const.CTYPES_COMPANY]}</option>
 						</optgroup>
-					{/foreach}
-					<optgroup label="{trans("Legal personality types")}">
-						<option value="12">{$_CTYPES[$smarty.const.CTYPES_PRIVATE]}</option>
-						<option value="13">{$_CTYPES[$smarty.const.CTYPES_COMPANY]}</option>
-					</optgroup>
+					{/if}
 				</select>
 				{if isset($groups)}
 					<SELECT SIZE="1" class="lms-ui-multiselect-deferred" NAME="setwarnings[customergroup][]"
@@ -239,6 +259,13 @@
 						{if !is_array($consent)}
 							{continue}
 						{/if}
+						{$customer_consent_group_id = Utils::findCustomerConsentGroupByCustomerConsent($type, $_CCONSENT_GROUPS)}
+						{if $current_customer_consent_group_id && $current_customer_consent_group_id != $customer_consent_group_id || $current_customer_consent_group_id && $consent@last}
+							</optgroup>
+						{/if}
+						{if $customer_consent_group_id && $customer_consent_group_id != $current_customer_consent_group_id}
+							<optgroup label="{$_CCONSENT_GROUPS[$customer_consent_group_id].label}">
+						{/if}
 						{if $consent.type == 'selection'}
 							{foreach $consent.values as $subtype => $subconsent}
 								{if !isset($subconsent.name)}
@@ -249,6 +276,7 @@
 						{else}
 							<option value="{$type}">{$consent.label}</option>
 						{/if}
+						{$current_customer_consent_group_id = $customer_consent_group_id}
 					{/foreach}
 				</select>
 				{foreach $_CUSTOMERCONTACTTYPES as $contacttypeidx => $contacttype}
@@ -399,7 +427,7 @@
 
 			$('.customer-item').each(function() {
 				$(this).attr('name', $(this).attr('name').replace('setwarnings[mcustomerid]', 'customers'));
-			});
+			}).filter('[data-allowed-customer-status="0"]').prop('disabled', true);
 
 			$('#customersearchresults').attr('action', action).submit();
 		}
@@ -436,8 +464,9 @@
 			$('#customersearchresults').attr('action', action).submit();
 		}
 
-		function deleteCustomer() {
-			var action = '?m=customerdel';
+		function deleteCustomer(permanent) {
+			permanent = typeof(permanent) != 'undefined' && permanent;
+			var action = '?m=customerdel' + (permanent ? '&type=permanent' : '');
 
 			$('#customersearchresults').attr('action', action).submit();
 		}
@@ -487,6 +516,13 @@
 
 		$('#customer-action-apply').click(function() {
 			var action = parseInt($('#customer-action').val());
+			var option = $('#customer-action option:selected');
+
+			if (isNaN(action) && !option.is("[data-operation]")) {
+				alertDialog($t("No action selected!"), this);
+				return;
+			}
+
 			switch (action) {
 				case 1:
 					setWarnings(1);
@@ -533,11 +569,13 @@
 				case 15:
 					restoreCustomer();
 					break;
+				case 16:
+					deleteCustomer(true);
+					break;
 				default:
 					if (action >= {($smarty.const.CSTATUS_CONNECTED + 100)} && action <= {($smarty.const.CSTATUS_LAST + 100)}) {
 						changeCustomerStatus(action - 100);
 					} else {
-						var option = $('#customer-action option:selected');
 						var resource = option.attr('data-resource');
 						var operation = option.attr('data-operation');
 						if (resource && operation) {
@@ -550,7 +588,6 @@
 
 		$('.balanceok-customer').click(function () {
 			var name = $(this).closest('tr').attr('data-name');
-			console.log('name=', name);
 			confirmDialog($t("Are you sure, you want to account ALL debts of customer \'$a\'?", name), this).done(function () {
 				location.href = $(this).attr('href');
 			});
@@ -559,7 +596,6 @@
 
 		$('.delete-customer').click(function () {
 			var name = $(this).closest('tr').attr('data-name');
-			console.log('name=', name);
 			confirmDialog($t("Are you sure, you want to remove customer '$a' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!", name), this).done(function () {
 				location.href = $(this).attr('href');
 			});

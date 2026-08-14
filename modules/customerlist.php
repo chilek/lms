@@ -39,6 +39,7 @@ if ($api) {
     }
     header('Content-Type: application/json');
     echo json_encode(array_values($customerlist));
+    $SESSION->close();
     die;
 } else {
     $SESSION->add_history_entry();
@@ -55,16 +56,20 @@ if ($api) {
 
     if (isset($_GET['o'])) {
         $filter['order'] = $_GET['o'];
-    } elseif (empty($filter['order']) && ConfigHelper::variableExists('phpui.customerlist_default_order')) {
-        $filter['order'] = ConfigHelper::getConfig('phpui.customerlist_default_order');
+    } elseif (empty($filter['order']) && (ConfigHelper::variableExists('phpui.customerlist_default_order') || ConfigHelper::variableExists('customers.list_default_order'))) {
+        $filter['order'] = ConfigHelper::getConfig('customers.list_default_order', ConfigHelper::getConfig('phpui.customerlist_default_order'));
     }
 
     if (isset($_GET['s'])) {
         $filter['state'] = $_GET['s'];
+    } elseif (!isset($filter['state'])) {
+        $filter['state'] = array();
+    } elseif (!is_array($filter['state'])) {
+        $filter['state'] = array($filter['state']);
     }
 
     if (isset($_GET['n'])) {
-        $filter['network'] = $_GET['n'];
+        $filter['network'] = intval($_GET['n']);
     }
 
     if (isset($_GET['gop'])) {
@@ -83,6 +88,10 @@ if ($api) {
         $filter['division'] = $_GET['d'];
     }
 
+    if (isset($_GET['type'])) {
+        $filter['type'] = intval($_GET['type']);
+    }
+
     if (isset($_GET['assignments'])) {
         $filter['assignments'] = $_GET['assignments'];
     }
@@ -96,19 +105,22 @@ if ($api) {
 
     if (isset($_GET['page'])) {
         $filter['page'] = intval($_GET['page']);
-    } elseif (!isset($filter['page']) || empty($filter['page'])) {
+    } elseif (empty($filter['page'])) {
         $filter['page'] = 1;
     }
 
     $SESSION->saveFilter($filter);
 
     $filter['search'] = array();
+    if (isset($filter['type']) && $filter['type'] !== -1) {
+        $filter['search']['type'] = $filter['type'];
+    }
     $filter['sqlskey'] = 'AND';
     $filter['count'] = true;
     $summary = $LMS->GetCustomerList($filter);
 
     $filter['total'] = intval($summary['total']);
-    $filter['limit'] = intval(ConfigHelper::getConfig('phpui.customerlist_pagelimit', 100));
+    $filter['limit'] = intval(ConfigHelper::getConfig('customers.list_page_limit', ConfigHelper::getConfig('phpui.customerlist_pagelimit', 100)));
     $filter['offset'] = ($filter['page'] - 1) * $filter['limit'];
     if ($filter['total'] && $filter['total'] < $filter['offset']) {
         $filter['page'] = 1;

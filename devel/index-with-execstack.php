@@ -115,7 +115,7 @@ if ($_FORCE_SSL && $_SERVER['HTTPS'] != 'on') {
 
 $_LMSDIR = dirname(__FILE__);
 
-$ExecStack = new ExecStack((isset($_GET['m']) ? $_GET['m'] : null), (isset($_GET['a']) ? $_GET['a'] : null), $_LMSDIR . '/modules/');
+$ExecStack = new ExecStack(($_GET['m'] ?? null), ($_GET['a'] ?? null), $_LMSDIR . '/modules/');
 
 // don't use foreach() below, because privileges checking action
 // will probably need to remove some actions from stack

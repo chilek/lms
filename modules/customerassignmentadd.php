@@ -38,21 +38,21 @@ if (isset($_POST['assignment'])) {
 
     $result = $LMS->ValidateAssignment($a);
     extract($result);
-    if (empty($a['taxid'])) {
-        $error['taxid'] = trans('— no tax rates defined —');
-    }
 
     if (isset($schemaid) && !$LMS->CheckSchemaModifiedValues($a)) {
         $error['promotion-select'] = trans('Illegal promotion schema period value modification!');
     }
 
     // try to restrict node assignment sharing
-    if ($a['tariffid'] > 0 && isset($a['nodes']) && !empty($a['nodes'])) {
-        $restricted_nodes = $LMS->CheckNodeTariffRestrictions(isset($a['id']) ? $a['id'] : null, $a['nodes'], $from, $to);
+    if ($a['tariffid'] > 0 && !empty($a['nodes'])) {
+        $restricted_nodes = $LMS->CheckNodeTariffRestrictions($a['id'] ?? null, $a['nodes'], $from, $to);
         $node_multi_tariff_restriction = ConfigHelper::getConfig(
-            'phpui.node_multi_tariff_restriction',
-            '',
-            true
+            'nodes.multi_tariff_restriction',
+            ConfigHelper::getConfig(
+                'phpui.node_multi_tariff_restriction',
+                '',
+                true
+            )
         );
         if (preg_match('/^(error|warning)$/', $node_multi_tariff_restriction) && !empty($restricted_nodes)) {
             foreach ($restricted_nodes as $nodeid) {
@@ -92,12 +92,12 @@ if (isset($_POST['assignment'])) {
         $LMS->UpdateExistingAssignments($a);
 
         if (isset($a['sassignmentid'][$schemaid]) && is_array($a['sassignmentid'][$schemaid])) {
-            $modifiedvalues = isset($a['values'][$schemaid]) ? $a['values'][$schemaid] : array();
+            $modifiedvalues = $a['values'][$schemaid] ?? array();
             $counts = $a['counts'][$schemaid];
             $backwardperiods = $a['backwardperiods'][$schemaid];
             $copy_a = $a;
-            $snodes = isset($a['snodes'][$schemaid]) ? $a['snodes'][$schemaid] : array();
-            $sphones = isset($a['sphones'][$schemaid]) ? $a['sphones'][$schemaid] : array();
+            $snodes = $a['snodes'][$schemaid] ?? array();
+            $sphones = $a['sphones'][$schemaid] ?? array();
 
             foreach ($a['sassignmentid'][$schemaid] as $label => $v) {
                 if (!$v) {
@@ -105,11 +105,11 @@ if (isset($_POST['assignment'])) {
                 }
 
                 $copy_a['promotionassignmentid'] = $v;
-                $copy_a['modifiedvalues'] = isset($modifiedvalues[$label][$v]) ? $modifiedvalues[$label][$v] : array();
+                $copy_a['modifiedvalues'] = $modifiedvalues[$label][$v] ?? array();
                 $copy_a['count'] = $counts[$label];
                 $copy_a['backwardperiod'] = $backwardperiods[$label][$v];
-                $copy_a['nodes'] = isset($snodes[$label]) ? $snodes[$label] : array();
-                $copy_a['phones'] = isset($sphones[$label]) ? $sphones[$label] : array();
+                $copy_a['nodes'] = $snodes[$label] ?? array();
+                $copy_a['phones'] = $sphones[$label] ?? array();
                 $tariffid = $LMS->AddAssignment($copy_a);
             }
         } else {
@@ -198,6 +198,7 @@ if (isset($_POST['assignment'])) {
         ConfigHelper::getConfig('phpui.default_assignment_discount_type', 'percentage')
     );
     $a['discount_type'] = $default_assignment_discount_type == 'percentage' ? DISCOUNT_PERCENTAGE : DISCOUNT_AMOUNT;
+    $a['target_price_trigger'] = ConfigHelper::checkConfig('assignments.default_target_discounted_price');
 
     $default_existing_assignment_operation = ConfigHelper::getConfig(
         'assignments.default_existing_operation',
@@ -215,11 +216,15 @@ if (isset($_POST['assignment'])) {
         $a['existing_assignments']['operation'] = EXISTINGASSIGNMENT_KEEP;
     }
 
+    $a['suspended'] = ConfigHelper::checkConfig('assignments.default_suspended');
+
     if (isset($_GET['nodeid']) && ($nodeid = intval($_GET['nodeid'])) > 0) {
         $a['nodes'] = array(
             $nodeid => $nodeid,
         );
     }
+
+    $a['netflag'] = ConfigHelper::checkConfig('assignments.default_net_account');
 
     $a['count'] = 1;
     $a['currency'] = Localisation::getDefaultCurrency();
@@ -263,7 +268,19 @@ if (is_array($defaultTaxIds)) {
     $defaultTaxId = 0;
 }
 $SMARTY->assign('defaultTaxId', $defaultTaxId);
-$SMARTY->assign('assignments', $LMS->GetCustomerAssignments($customer['id'], true, false));
+$assignments = $LMS->GetCustomerAssignments($customer['id'], true, false);
+$SMARTY->assign('assignments', $assignments);
 $SMARTY->assign('customerinfo', $customer);
+
+$document_separation_groups = array();
+if (!empty($assignments)) {
+    foreach ($assignments as $assignment) {
+        if (isset($assignment['separatedocument'])) {
+            $document_separation_groups[$assignment['separatedocument']] = $assignment['separatedocument'];
+        }
+    }
+    sort($document_separation_groups, SORT_STRING);
+}
+$SMARTY->assign('document_separation_groups', $document_separation_groups);
 
 $SMARTY->display('customer/customerassignmentsedit.html');

@@ -84,7 +84,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
     public function _driver_connect($dbhost, $dbuser, $dbpasswd, $dbname)
     {
         if (strpos($dbhost, ':') !== false) {
-            list ($host, $port) = explode(':', $dbhost);
+            [$host, $port] = explode(':', $dbhost);
         } else {
             $host = $dbhost;
             $port = '';
@@ -129,7 +129,9 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
     public function _driver_disconnect()
     {
         $this->_loaded = false;
-        @pg_close($this->_dblink);
+        if (!empty($this->_dblink)) {
+            @pg_close($this->_dblink);
+        }
     }
 
     /**
@@ -196,7 +198,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
     public function _driver_fetchrow_assoc($result = null)
     {
         if (!$this->_error) {
-            return @pg_fetch_array($result ? $result : $this->_result, null, PGSQL_ASSOC);
+            return @pg_fetch_array($result ?: $this->_result, null, PGSQL_ASSOC);
         } else {
             return false;
         }
@@ -269,7 +271,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
      */
     public function _driver_now()
     {
-        return 'EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer';
+        return 'EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::bigint';
     }
 
     /**
@@ -365,6 +367,16 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
         return true;
     }
 
+    public function _driver_lockbyhandle($handle): mixed
+    {
+        return $this->Execute('SELECT pg_advisory_xact_lock(' . $handle . ')');
+    }
+
+    public function _driver_unlockbyhandle($handle): mixed
+    {
+        return true;
+    }
+
     /**
      * Returns last inserted element id.
      *
@@ -449,6 +461,30 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
     }
 
     /**
+     * Substring match by regular expression for selected field.
+     *
+     * @param string $field
+     * @param string $regexp
+     * @return regexp match string
+     */
+    public function _driver_substringbyregexp($field, $regexp)
+    {
+        return 'SUBSTRING(' . $field . ' FROM \'' . $regexp . '\')';
+    }
+
+    /**
+     * Convert field variable to specified type.
+     *
+     * @param string $field
+     * @param string $type
+     * @return converted field
+     */
+    public function _driver_cast($field, $type)
+    {
+        return $field . '::' . $type;
+    }
+
+    /**
     * Check if database resource exists (table, view)
     *
     * @param string $name
@@ -472,7 +508,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
                 ) > 0;
                 break;
             case LMSDB::RESOURCE_TYPE_COLUMN:
-                list ($table_name, $column_name) = explode('.', $name);
+                [$table_name, $column_name] = explode('.', $name);
                 return $this->GetOne(
                     'SELECT COUNT(*) FROM information_schema.columns
 					WHERE table_catalog = ? AND table_name = ? AND column_name = ?',
@@ -493,10 +529,10 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
                 ) > 0;
                 break;
             case LMSDB::RESOURCE_TYPE_COLUMN_TYPE:
-                list ($table_name, $column_name, $column_type) = explode('.', $name);
+                [$table_name, $column_name, $column_type] = explode('.', $name);
                 if (preg_match('/^(?<type>[^\(]+)(?:\((?<length>[0-9]+)\))?$/', $column_type, $m)) {
                     $column_type = $m['type'];
-                    $column_length = $m['length'];
+                    $column_length = $m['length'] ?? null;
                 }
                 if (isset($column_length)) {
                     if ($column_type == 'varchar') {
@@ -528,6 +564,14 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
                         array($this->_dbname, $table_name, $column_name, $column_type)
                     ) > 0;
                 }
+                break;
+            case LMSDB::RESOURCE_TYPE_TRIGGER:
+                return $this->GetOne(
+                    'SELECT COUNT(*) FROM information_schema.triggers
+                    WHERE trigger_catalog = ?
+                        AND trigger_name = ?',
+                    array($this->_dbname, $name)
+                ) > 0;
                 break;
         }
     }

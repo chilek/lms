@@ -50,11 +50,7 @@ if (!empty($categories)) {
         } else {
             $background_color = '#ffffff';
         }
-        if (isset($cssProperties['color'])) {
-            $color = $cssProperties['color'];
-        } else {
-            $color = '#000000';
-        }
+        $color = $cssProperties['color'] ?? '#000000';
         $this->Execute(
             "UPDATE rtcategories SET style = ? WHERE id = ?",
             array('background-color:' . $background_color . ';' . 'color:' . $color, $category['id'])

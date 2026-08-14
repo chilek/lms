@@ -53,7 +53,7 @@ if (isset($_POST['networkdata'])) {
     }
 
     $networkdata['id'] = $_GET['id'];
-    $networkdata['size'] = pow(2, 32-$networkdata['prefix']);
+    $networkdata['size'] = 2 ** (32-$networkdata['prefix']);
     $networkdata['addresslong'] = ip_long($networkdata['address']);
     $networkdata['mask'] = prefix2mask($networkdata['prefix']);
     $networkdata['snatlong'] = ip_long($networkdata['snat']);
@@ -82,7 +82,8 @@ if (isset($_POST['networkdata'])) {
                     $warning['networkdata[address]'] = trans('Specified IP address overlaps with other network!');
                 }
             } else {
-                if (($networkdata['prefix'] < 31 && $network['assigned'] > $networkdata['size'] - 2)
+                $allAssignable = !empty($networkdata['allassignable']);
+                if (($networkdata['prefix'] < 31 && $network['assigned'] > $networkdata['size'] - ($allAssignable ? 0 : 2))
                     || ($networkdata['prefix'] == 31 && $network['assigned'] > $networkdata['size'])) {
                     $error['address'] = trans('New network is too small!');
                 } else {

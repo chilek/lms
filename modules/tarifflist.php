@@ -33,7 +33,7 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
         $order = 'name,asc';
     }
 
-    list($order,$direction) = sscanf($order, '%[^,],%s');
+    [$order, $direction] = sscanf($order, '%[^,],%s');
 
     ($direction == 'desc') ? $direction = 'desc' : $direction = 'asc';
 
@@ -63,11 +63,15 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
             $sqlord = " ORDER BY t.upceil $direction, t.name";
             break;
         case 'count':
-            $sqlord = " ORDER BY customerscount $direction, t.name";
+            $sqlord = " ORDER BY (CASE WHEN customerscount IS NULL THEN 0 ELSE customerscount END) $direction, t.name";
             break;
         default:
             $sqlord = " ORDER BY t.name, t.value DESC";
             break;
+    }
+
+    if (!empty($tags)) {
+        $tags = Utils::filterIntegers($tags);
     }
 
     $totalincome = array();

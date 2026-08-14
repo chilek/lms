@@ -44,18 +44,55 @@ function module_main()
         );
         header('Location: ?m=notices');
     } else {
-        $notice = $DB->GetAll(
-            'SELECT m.subject, m.cdate, (CASE WHEN mi.body IS NULL THEN m.body ELSE mi.body END) AS body,
-                m.type, m.contenttype, mi.id, mi.messageid, mi.destination, mi.status,
-                mi.lastdate, mi.lastreaddate, mi.body as mibody
-			FROM customers c
-			JOIN messageitems mi ON mi.customerid = c.id
-			JOIN messages m ON m.id = mi.messageid
-			WHERE m.type in (?, ?) AND c.id = ?
-			ORDER BY mi.status asc, m.cdate desc',
-            array(MSG_USERPANEL, MSG_USERPANEL_URGENT, $SESSION->id)
+        $notices = $DB->GetAllByKey(
+            'SELECT
+                m.subject,
+                m.cdate,
+                (CASE WHEN mi.body IS NULL THEN m.body ELSE mi.body END) AS body,
+                m.type,
+                m.contenttype,
+                mi.id,
+                mi.messageid,
+                mi.destination,
+                mi.status,
+                mi.lastdate,
+                mi.lastreaddate,
+                mi.body as mibody
+            FROM customers c
+            JOIN messageitems mi ON mi.customerid = c.id
+            JOIN messages m ON m.id = mi.messageid
+            WHERE m.type IN ?
+                AND c.id = ?
+            ORDER BY mi.status asc, m.cdate desc',
+            'messageid',
+            array(
+                array(MSG_USERPANEL, MSG_USERPANEL_URGENT,),
+                $SESSION->id,
+            )
         );
-        $SMARTY->assign('notice', $notice);
+        if (!empty($notices)) {
+            $attachments = $DB->GetAll(
+                'SELECT
+                    c.messageid,
+                    f.*
+                FROM filecontainers c
+                JOIN files f ON f.containerid = c.id
+                WHERE c.messageid IN ?',
+                array(
+                    array_keys($notices),
+                )
+            );
+            if (!empty($attachments)) {
+                foreach ($attachments as $attachment) {
+                    if (!isset($notices[$attachment['messageid']]['attachments'])) {
+                        $notices[$attachment['messageid']]['attachments'] = array();
+                    }
+                    $notices[$attachment['messageid']]['attachments'][$attachment['id']] = $attachment;
+                }
+            }
+        }
+
+        $SMARTY->assign('notices', $notices);
     }
 
     if (isset($_GET['confirm_urgent'])) {
@@ -72,6 +109,55 @@ function module_main()
         header('Location: ?m=notices');
     }
     $SMARTY->display('module:notices.html');
+}
+
+function module_attachmentview()
+{
+    global $DB, $SESSION;
+
+    if (!isset($_GET['id'])) {
+        die;
+    }
+
+    $attachmentid = intval($_GET['id']);
+
+    $attachment = $DB->GetRow(
+        'SELECT
+            f.*
+        FROM files f
+        JOIN filecontainers c ON c.id = f.containerid
+        JOIN messages m ON m.id = c.messageid
+        JOIN messageitems mi ON mi.messageid = m.id
+        WHERE mi.customerid = ?
+            AND f.id = ?',
+        array(
+            $SESSION->id,
+            $attachmentid,
+        )
+    );
+    if (empty($attachment)) {
+        die;
+    }
+
+    $filename = DOC_DIR . DIRECTORY_SEPARATOR . substr($attachment['md5sum'], 0, 2) . DIRECTORY_SEPARATOR . $attachment['md5sum'];
+    if (!file_exists($filename)) {
+        die;
+    }
+
+    header('Content-Type: ' . $attachment['contenttype']);
+
+    if (!preg_match('/(^text|pdf|image)/i', $attachment['contenttype'])) {
+        header('Content-Disposition: attachment; filename=' . $attachment['filename']);
+        header('Pragma: public');
+    } else {
+        header('Content-Disposition: inline; filename="' . $attachment['filename'] . '"');
+        header('Content-Transfer-Encoding: binary');
+        header('Content-Length: ' . filesize($filename));
+    }
+
+    readfile($filename);
+
+    die;
 }
 
 function setNoticeRead($noticeid)

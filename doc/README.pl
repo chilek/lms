@@ -688,11 +688,15 @@ password = hasło_podane_przy_tworzeniu_użytkownika_lms
 
    Sekcja ta zawiera opcje dotyczące naliczania opłat, a także dane do
    druków przelewu, których opis znajdziesz w rozdziale o fakturach.
+     __________________________________________________________________
+
+2.6.4. Sekcja [payments] - konfiguracja płatności
+
      * suspension_percentage (opcjonalny)
        Wartość procentowa obciążenia generowana dla obciążeń zawieszonych.
        Domyślnie: '0'
        Przykład: suspension_percentage = 50
-     __________________________________________________________________
+    __________________________________________________________________
 
 2.7. Prawa dostępu
 

@@ -33,7 +33,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
     public function NetworkExists($id)
     {
-        return ($this->db->GetOne('SELECT * FROM networks WHERE id=?', array($id)) ? true : false);
+        return (bool)$this->db->GetOne('SELECT * FROM networks WHERE id=?', array($id));
     }
 
     public function NetworkSet($id, $disabled = -1)
@@ -75,9 +75,15 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     public function IsIPFree($ip, $netid = 0)
     {
         if ($netid) {
-            return !($this->db->GetOne('SELECT id FROM vnodes WHERE (ipaddr=inet_aton(?) AND netid=?) OR ipaddr_pub=inet_aton(?)', array($ip, $netid, $ip)) ? true : false);
+            return !(bool)$this->db->GetOne(
+                'SELECT id FROM vnodes WHERE (ipaddr=inet_aton(?) AND netid=?) OR ipaddr_pub=inet_aton(?)',
+                array($ip, $netid, $ip)
+            );
         } else {
-            return !($this->db->GetOne('SELECT id FROM vnodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ip, $ip)) ? true : false);
+            return !(bool)$this->db->GetOne(
+                'SELECT id FROM vnodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)',
+                array($ip, $ip)
+            );
         }
     }
 
@@ -88,14 +94,26 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
     public function IsIPGateway($ip)
     {
-        return ($this->db->GetOne('SELECT gateway FROM networks WHERE gateway = ?', array($ip)) ? true : false);
+        $network_all_addresses_assignable = ConfigHelper::checkConfig('phpui.network_all_addresses_assignable');
+
+        return (bool)$this->db->GetOne(
+            'SELECT gateway
+            FROM networks
+            WHERE gateway = ?
+                AND allassignable = ?'
+                . ($network_all_addresses_assignable ? ' AND 1 = 0' : ''),
+            array(
+                $ip,
+                0,
+            )
+        );
     }
 
     public function GetPrefixList()
     {
         for ($i = 31; $i > 15; $i--) {
             $prefixlist['id'][] = $i;
-            $prefixlist['value'][] = trans('$a ($b addresses)', $i, pow(2, 32 - $i));
+            $prefixlist['value'][] = trans('$a ($b addresses)', $i, 2 ** (32 - $i));
         }
 
         return $prefixlist;
@@ -127,10 +145,14 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             'authtype' => $netadd['authtype'],
             'snat' => !empty($netadd['snat']) ? $netadd['snat'] : null,
             'pubnetid' => empty($netadd['pubnetid']) ? null : $netadd['pubnetid'],
+            'allassignable' => empty($netadd['allassignable']) ? 0 : 1,
         );
-        if ($this->db->Execute('INSERT INTO networks (name, address, mask, interface, gateway,
-				dns, dns2, domain, wins, dhcpstart, dhcpend, notes, vlanid, hostid, authtype, snat, pubnetid)
-				VALUES (?, inet_aton(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, inet_aton(?), ?)', array_values($args))) {
+        if ($this->db->Execute(
+            'INSERT INTO networks (name, address, mask, interface, gateway,
+            dns, dns2, domain, wins, dhcpstart, dhcpend, notes, vlanid, hostid, authtype, snat, pubnetid, allassignable)
+            VALUES (?, inet_aton(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, inet_aton(?), ?, ?)',
+            array_values($args)
+        )) {
             $netid = $this->db->GetLastInsertID('networks');
             if (!$netid) {
                 return false;
@@ -200,15 +222,36 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     public function GetNetworks($with_disabled = true)
     {
         if ($with_disabled == false) {
-            return $this->db->GetAll('SELECT id, name, inet_ntoa(address) AS address, 
-				address AS addresslong, mask, mask2prefix(inet_aton(mask)) AS prefix, disabled,
-				pubnetid
-				FROM networks WHERE disabled=0 ORDER BY name');
+            return $this->db->GetAll(
+                'SELECT
+                    id,
+                    name,
+                    inet_ntoa(address) AS address,
+                    address AS addresslong,
+                    mask,
+                    mask2prefix(inet_aton(mask)) AS prefix,
+                    disabled,
+                    pubnetid,
+                    allassignable
+                FROM networks
+                WHERE disabled = 0
+                ORDER BY name'
+            );
         } else {
-            return $this->db->GetAll('SELECT id, name, inet_ntoa(address) AS address, 
-				address AS addresslong, mask, mask2prefix(inet_aton(mask)) AS prefix, disabled,
-				pubnetid
-				FROM networks ORDER BY name');
+            return $this->db->GetAll(
+                'SELECT
+                    id,
+                    name,
+                    inet_ntoa(address) AS address,
+                    address AS addresslong,
+                    mask,
+                    mask2prefix(inet_aton(mask)) AS prefix,
+                    disabled,
+                    pubnetid,
+                    allassignable
+                FROM networks
+                ORDER BY name'
+            );
         }
     }
 
@@ -253,9 +296,9 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             );
         }
 
-        $order = isset($search['order']) && !empty($search['order']) ? $search['order'] : 'id,asc';
+        $order = !empty($search['order']) ? $search['order'] : 'id,asc';
 
-        list($order, $direction) = sscanf($order, '%[^,],%s');
+        [$order, $direction] = sscanf($order, '%[^,],%s');
 
         ($direction == 'desc') ? $direction = 'desc' : $direction = 'asc';
 
@@ -303,59 +346,62 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             $search['compareType'] = '=';
         }
 
-        if (empty($search['operatorType'])) {
+        if (empty($search['operatorType']) || !preg_match('/^(AND|OR)$/i', $search['operatorType'])) {
             $search['operatorType'] = 'AND';
+        } else {
+            $search['operatorType'] = strtoupper($search['operatorType']);
         }
 
         foreach ($search as $k => $v) {
             if ($v != '') {
                 switch ($k) {
                     case 'network_name':
-                        $sqlwhere .= " lower(n.name) ?LIKE? lower('" . $p.$v.$p . "') " . $search['operatorType'];
+                        $sqlwhere .= ' lower(n.name) ?LIKE? lower(' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType'];
                         break;
 
                     case 'network_address':
-                        $sqlwhere .= " inet_ntoa(address) " . $search['compareType'] . " lower('" . $p.$v.$p . "') " . $search['operatorType'];
+                        $sqlwhere .= ' inet_ntoa(address) ' . $search['compareType'] . ' lower(' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType'];
                         break;
 
                     case 'dhcp':
-                        $sqlwhere .= " '$v' BETWEEN n.dhcpstart AND n.dhcpend " . $search['operatorType'];
+                        $sqlwhere .= ' ' . $this->db->Escape($v) . ' BETWEEN n.dhcpstart AND n.dhcpend ' . $search['operatorType'];
                         break;
 
                     case 'size':
-                        $sqlwhere .= " $v ". $search['size_compare_char'] . " pow(2, 32 - mask2prefix(inet_aton(n.mask))) " . $search['operatorType'];
+                        $sqlwhere .= ' ' . $this->db->Escape($v) . ' ' . $search['size_compare_char'] . ' pow(2, 32 - mask2prefix(inet_aton(n.mask))) ' . $search['operatorType'];
                         break;
 
                     case 'interface':
-                        $sqlwhere .= " lower(n.interface) ?LIKE? lower('" . $p.$v.$p . "') " . $search['operatorType'];
+                        $sqlwhere .= ' lower(n.interface) ?LIKE? lower(' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType']
+                        ;
                         break;
 
                     case 'vlanid':
-                        $sqlwhere .= " vl.vlanid = " . $v . " " . $search['operatorType'];
+                        $sqlwhere .= ' vl.vlanid = ' . $this->db->Escape($v) . ' ' . $search['operatorType'];
                         break;
 
                     case 'gateway':
-                        $sqlwhere .= " n.gateway " . $search['compareType'] . " '" . $p.$v.$p . "' " . $search['operatorType'];
+                        $sqlwhere .= ' n.gateway ' . $search['compareType'] . ' ' . $this->db->Escape($p . $v . $p) . ' ' . $search['operatorType'];
                         break;
 
                     case 'dns':
-                        $sqlwhere .= " (n.dns " . $search['compareType'] . " '" . $p.$v.$p . "' OR n.dns2 " . $search['compareType'] . " '" . $p.$v.$p . "') " . $search['operatorType'];
+                        $sqlwhere .= ' (n.dns ' . $search['compareType'] . ' ' . $this->db->Escape($p . $v . $p) . ' OR n.dns2 ' . $search['compareType'] . ' ' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType'];
                         break;
 
                     case 'wins':
-                        $sqlwhere .= " n.wins " . $search['compareType'] . " '" . $p.$v.$p . "' " . $search['operatorType'];
+                        $sqlwhere .= ' n.wins ' . $search['compareType'] . ' ' . $this->db->Escape($p . $v . $p) . ' ' . $search['operatorType'];
                         break;
 
                     case 'domain':
-                        $sqlwhere .= " lower(n.domain) " . $search['compareType'] . " lower('" . $p.$v.$p . "') " . $search['operatorType'];
+                        $sqlwhere .= ' lower(n.domain) ' . $search['compareType'] . ' lower(' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType'];
                         break;
 
                     case 'host':
-                        $sqlwhere .= " 1 IN (SELECT 1 FROM hosts WHERE name ?LIKE? '" . $p.$v.$p . "') " . $search['operatorType'];
+                        $sqlwhere .= ' 1 IN (SELECT 1 FROM hosts WHERE name ?LIKE? ' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType'];
                         break;
 
                     case 'description':
-                        $sqlwhere .= " lower(n.notes) ?LIKE? lower('" . $p.$v.$p . "') " . $search['operatorType'];
+                        $sqlwhere .= ' lower(n.notes) ?LIKE? lower(' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType'];
                         break;
                 }
             }
@@ -364,7 +410,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             $sqlwhere = rtrim($sqlwhere, $search['operatorType']);
         }
 
-        $count = isset($search['count']) && !empty($search['count']);
+        $count = !empty($search['count']);
 
         if ($count) {
             return $this->db->GetOne('SELECT COUNT(n.id)
@@ -397,7 +443,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 			LEFT JOIN hosts h ON h.id = n.hostid
 			LEFT JOIN vlans vl ON n.vlanid = vl.id'
             . ($sqlwhere != ' WHERE' ? $sqlwhere : '')
-            . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
+            . (empty($sqlord) ? '' : $sqlord . ' ' . $direction)
             . (isset($search['limit']) ? ' LIMIT ' . $search['limit'] : '')
             . (isset($search['offset']) ? ' OFFSET ' . $search['offset'] : ''),
             array(intval(ConfigHelper::getConfig('phpui.lastonline_limit')))
@@ -408,7 +454,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             $assigned = 0;
             $online = 0;
 
-            foreach ($networks as $idx => $row) {
+            foreach ($networks as $row) {
                 $size += $row['size'];
                 $assigned += $row['assigned'];
                 $online += $row['online'];
@@ -426,21 +472,30 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
     public function IsIPValid($ip, $checkbroadcast = false, $ignoreid = 0)
     {
+        $network_all_addresses_assignable = ConfigHelper::checkConfig('phpui.network_all_addresses_assignable');
+
         $ip = ip_long($ip);
         return $this->db->GetOne(
             'SELECT 1 FROM networks
-			WHERE id <> ? AND ((mask = ? AND address <= ?) OR (mask <> ? AND address < ?))
-			AND ((mask <> ? AND broadcast(address, inet_aton(mask)) >' . ($checkbroadcast ? '=' : '') . ' ?)
-			    OR (mask = ? AND broadcast(address, inet_aton(mask)) >= ?))',
+            WHERE id <> ?
+                AND (
+                    (
+                        (mask = ? OR allassignable = 1 OR 1 = ' . ($network_all_addresses_assignable ? '1' : '0') . ')
+                        AND address <= ?
+                        AND broadcast(address, inet_aton(mask)) >= ?
+                    ) OR (
+                        mask <> ?
+                        AND address < ?
+                        AND broadcast(address, inet_aton(mask)) >' . ($checkbroadcast ? '=' : '') . ' ?
+                    )
+                )',
             array(
                 intval($ignoreid),
                 '255.255.255.254',
                 $ip,
-                '255.255.255.254',
                 $ip,
                 '255.255.255.254',
                 $ip,
-                '255.255.255.254',
                 $ip,
             )
         );
@@ -545,12 +600,17 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             'authtype' => $networkdata['authtype'],
             'snat' => $networkdata['snatlong'],
             'pubnetid' => empty($networkdata['pubnetid']) ? null : $networkdata['pubnetid'],
+            'allassignable' => empty($networkdata['allassignable']) ? 0 : 1,
             SYSLOG::RES_NETWORK => $networkdata['id']
         );
 
-        $res = $this->db->Execute('UPDATE networks SET name=?, address=inet_aton(?), 
+        $res = $this->db->Execute(
+            'UPDATE networks SET name=?, address=inet_aton(?),
             mask=?, interface=?, vlanid=?, gateway=?, dns=?, dns2=?, domain=?, wins=?,
-            dhcpstart=?, dhcpend=?, notes=?, hostid=?, authtype=?, snat=?, pubnetid=? WHERE id=?', array_values($args));
+            dhcpstart=?, dhcpend=?, notes=?, hostid=?, authtype=?, snat=?, pubnetid=?, allassignable = ?
+            WHERE id=?',
+            array_values($args)
+        );
 
         if ($res && $this->syslog) {
             $this->syslog->AddMessage(SYSLOG::RES_NETWORK, SYSLOG::OPER_UPDATE, $args);
@@ -766,18 +826,24 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     {
         global $LMS;
 
-        $network = $this->db->GetRow('SELECT no.ownerid, ne.id, ne.name,
+        $network_all_addresses_assignable = ConfigHelper::checkConfig('phpui.network_all_addresses_assignable');
+
+        $network = $this->db->GetRow(
+            'SELECT no.ownerid, ne.id, ne.name,
                 vl.vlanid, vl.description AS vlandescription,
                 vl.customerid AS vlancustomerid,
                 inet_ntoa(ne.address) AS address,
                 ne.address AS addresslong, ne.mask, ne.interface, ne.gateway, ne.dns, ne.dns2,
                 ne.domain, ne.wins, ne.dhcpstart, ne.dhcpend, ne.hostid, ne.authtype, inet_ntoa(ne.snat) AS snat,
                 mask2prefix(inet_aton(ne.mask)) AS prefix, ne.notes, ne.pubnetid,
-                inet_ntoa(broadcast(ne.address, inet_aton(ne.mask))) AS broadcast
+                inet_ntoa(broadcast(ne.address, inet_aton(ne.mask))) AS broadcast,
+                allassignable
             FROM networks ne
             LEFT JOIN nodes no ON (no.netid = ne.id AND no.ipaddr = 0 AND no.ipaddr_pub = 0)
             LEFT JOIN vlans vl ON (vl.id = ne.vlanid)
-            WHERE ne.id = ?', array($id));
+            WHERE ne.id = ?',
+            array($id)
+        );
 
         if (!empty($network['ownerid'])) {
             $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
@@ -803,14 +869,14 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                 FROM vnodes
                 JOIN networks net ON net.id = vnodes.netid
                 WHERE netid = ?
-                    AND ((net.mask <> ? AND ipaddr > ? AND ipaddr < ?) OR (net.mask = ? AND ipaddr >= ? AND ipaddr <= ?))
+                    AND ((net.mask <> ? AND ipaddr > ? AND ipaddr < ?) OR ((net.mask = ? OR net.allassignable = 1 OR 1 = ' . ($network_all_addresses_assignable ? '1' : '0') . ') AND ipaddr >= ? AND ipaddr <= ?))
             )
             UNION ALL
             (
                 SELECT vnodes.id, vnodes.name, ipaddr_pub AS ipaddr, ownerid, netdev
                 FROM vnodes
                 JOIN networks net ON ipaddr_pub & INET_ATON(net.mask) = net.address
-                WHERE ((net.mask <> ? AND ipaddr_pub > ? AND ipaddr_pub < ?) OR (net.mask = ? AND ipaddr_pub >= ? AND ipaddr_pub <= ?))
+                WHERE ((net.mask <> ? AND ipaddr_pub > ? AND ipaddr_pub < ?) OR ((net.mask = ? OR net.allassignable = 1 OR 1 = ' . ($network_all_addresses_assignable ? '1' : '0') . ') AND ipaddr_pub >= ? AND ipaddr_pub <= ?))
             )',
             'ipaddr',
             array(
@@ -841,7 +907,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
         if ($network['hostid']) {
             $network['hostname'] = $this->db->GetOne('SELECT name FROM hosts WHERE id=?', array($network['hostid']));
         }
-        $network['size'] = pow(2, 32 - $network['prefix']);
+        $network['size'] = 2 ** (32 - $network['prefix']);
         $network['assigned'] = empty($nodes) ? 0 : count($nodes);
         $network['free'] = $network['size'] - $network['assigned'];
         if (!$prefix_31) {
@@ -885,11 +951,11 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                 } else {
                     $network['nodes']['id'][$i] = 0;
 
-                    if (!$prefix_31 && $longip == $network['addresslong']) {
+                    if (!$prefix_31 && !$network_all_addresses_assignable && empty($network['allassignable']) && $longip == $network['addresslong']) {
                         $network['nodes']['name'][$i] = '<b>NETWORK</b>';
-                    } elseif (!$prefix_31 && $network['nodes']['address'][$i] == $network['broadcast']) {
+                    } elseif (!$prefix_31 && !$network_all_addresses_assignable && empty($network['allassignable']) && $network['nodes']['address'][$i] == $network['broadcast']) {
                         $network['nodes']['name'][$i] = '<b>BROADCAST</b>';
-                    } elseif ($network['nodes']['address'][$i] == $network['gateway']) {
+                    } elseif (!$network_all_addresses_assignable && empty($network['allassignable']) && $network['nodes']['address'][$i] == $network['gateway']) {
                         $network['nodes']['name'][$i] = '<b>GATEWAY</b>';
                     } elseif ($longip >= ip_long($network['dhcpstart']) && $longip <= ip_long($network['dhcpend'])) {
                         $network['nodes']['name'][$i] = '<b>DHCP</b>';
@@ -925,7 +991,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                 if ($res = execute_program('nbtscan', '-q -s: ' . $network['address'] . '/' . $network['prefix'])) {
                     $out = explode("\n", $res);
                     foreach ($out as $line) {
-                        list($ipaddr, $name, $null, $login, $mac) = explode(':', $line, 5);
+                        [$ipaddr, $name, $null, $login, $mac] = explode(':', $line, 5);
                         $row['ipaddr'] = trim($ipaddr);
                         if ($row['ipaddr']) {
                             $row['name'] = trim($name);
@@ -1073,8 +1139,8 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
         if (!empty($props['id'])) {
             $props = array(
                 'id' => $props['id'],
-                'vlanid' => isset($props['vlanid']) ? $props['vlanid'] : null,
-                'description' => isset($props['description']) ? $props['description'] : null,
+                'vlanid' => $props['vlanid'] ?? null,
+                'description' => $props['description'] ?? null,
                 'customerid' => empty($props['customerid']) ? null : $props['customerid'],
                 'netnodeid' => empty($props['netnodeid']) ? null : $props['netnodeid'],
             );
@@ -1099,6 +1165,6 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             }
 
             return $result;
-        };
+        }
     }
 }
