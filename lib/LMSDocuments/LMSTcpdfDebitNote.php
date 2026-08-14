@@ -79,8 +79,8 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         $tmp = $this->data['division_header'];
 
         if (!ConfigHelper::checkConfig('notes.show_only_alternative_accounts', ConfigHelper::checkConfig('invoices.show_only_alternative_accounts'))
-            || empty($this->data['bankccounts'])) {
-            $accounts = array(bankaccount($this->data['customerid'], $this->data['account']));
+            || empty($this->data['bankaccounts'])) {
+            $accounts = array(bankaccount($this->data['customerid'], $this->data['account'], $this->data['export']));
         } else {
             $accounts = array();
         }
@@ -91,6 +91,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         foreach ($accounts as &$account) {
             $account = format_bankaccount($account);
         }
+        unset($account);
         $account_text = ($this->use_alert_color ? '<span style="color:red">' : '')
             . implode("\n", $accounts)
             . ($this->use_alert_color ? '</span>' : '');
@@ -325,8 +326,9 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         } else {
             $this->invoice_expositor();
         }
-        if (ConfigHelper::checkConfig('notes.show_balance', ConfigHelper::checkConfig('invoices.show_balance', true))
-            || ConfigHelper::checkConfig('notes.show_expired_balance', ConfigHelper::checkConfig('invoices.show_expired_balance'))) {
+        if ((ConfigHelper::checkConfig('notes.show_balance', ConfigHelper::checkConfig('invoices.show_balance', true))
+            || ConfigHelper::checkConfig('notes.show_expired_balance', ConfigHelper::checkConfig('invoices.show_expired_balance')))
+            && !empty($this->data['balance_on_documents'])) {
             $this->invoice_balance();
         }
         if (ConfigHelper::checkConfig('notes.qr2pay', ConfigHelper::checkConfig('invoices.qr2pay'))) {

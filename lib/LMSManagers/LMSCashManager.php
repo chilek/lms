@@ -264,7 +264,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                         // then we matched customer by source account
                         if (!isset($unique_source_accounts)) {
                             $days = intval(ConfigHelper::getConfig($config_section . '.source_account_match_threshold_days'));
-                            $unique_source_accounts = $this->db->GetALl(
+                            $unique_source_accounts = $this->db->GetAll(
                                 'SELECT i.customerid, i.srcaccount
                                 FROM cashimport i
                                 JOIN (
@@ -531,11 +531,29 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 }
             }
 
+            $hook_data = compact('id', 'pattern', 'comment', 'theline', 'ln', 'patterns_cnt', 'error', 'line', 'time');
+            $hook_data['db'] = $this->db;
+
             $hook_data = $LMS->executeHook(
                 'cashimport_extra_filter_before_submit',
-                compact("id", "pattern", "comment", "theline", "ln", "patterns_cnt", "error", "line", "time")
+                $hook_data
             );
+
             extract($hook_data);
+
+            if (!empty($hook_data['ignore'])) {
+                $error['lines'][$ln] = array(
+                    'customer' => $customer,
+                    'customerid' => $id,
+                    'date' => $time,
+                    'operdate' => $operdate,
+                    'value' => $value,
+                    'comment' => $comment,
+                    'extid' => $extid,
+                );
+
+                continue;
+            }
 
             if (!$found_by_name && $id && (!$name || !$lastname)) {
                 if ($tmp = $this->db->GetRow('SELECT id, lastname, name FROM customers WHERE '
@@ -550,7 +568,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 }
             }
 
-            if ($id && !$this->db->GetOne('SELECT id FROM customers WHERE id = ?', array($id))) {
+            if ($id && !$this->db->GetOne('SELECT id FROM customers WHERE id = ?' . (empty($pattern['ignore_deleted_customers']) ? '' : ' AND deleted = 0'), array($id))) {
                 $id = null;
             }
 
@@ -570,7 +588,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
             }
             foreach (array('srcaccount', 'dstaccount', 'customername', 'cid', 'extid') as $replace_symbol) {
                 $variable = ${$replace_symbol};
-                $variable = strlen($variable) ? $variable : trans('none');
+                $variable = isset($variable) && strlen($variable) ? $variable : trans('none');
                 $comment = str_replace('%'. $replace_symbol . '%', $variable, $comment);
             }
 
@@ -711,6 +729,13 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
         if (!empty($imports)) {
             $idate  = ConfigHelper::checkConfig('finances.cashimport_use_idate');
             $icheck = ConfigHelper::checkConfig('finances.cashimport_checkinvoices');
+            $notification = ConfigHelper::checkConfig('cashimport.customer_notify', true);
+
+            $balance = array(
+                'type' => 1,
+                'userid' => null,
+                'notification' => $notification ? 1 : 0,
+            );
 
             $finance_manager = new LMSFinanceManager($this->db, $this->auth, $this->cache, $this->syslog);
             $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
@@ -720,13 +745,11 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 $this->db->BeginTrans();
 
                 $balance['time'] = $idate ? $import['idate'] : $import['date'];
-                $balance['type'] = 1;
                 $balance['value'] = $import['value'];
                 $balance['customerid'] = $import['customerid'];
                 $balance['comment'] = $import['description'];
                 $balance['importid'] = $import['id'];
                 $balance['sourceid'] = $import['sourceid'];
-                $balance['userid'] = null;
 
                 if ($import['value'] > 0 && $icheck) {
                     if ($invoices = $this->db->GetAll(

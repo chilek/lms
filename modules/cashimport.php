@@ -43,7 +43,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
     $filename = 'import-'.date('Y-m-d').($div ? '-'.intval($_GET['division']) : '').'.csv';
 
     header('Content-Type: text/csv');
-        header('Content-Disposition: attachment; filename='.$filename);
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
     header('Pragma: public');
 
     if ($importlist = $DB->GetAll('SELECT i.date, i.value, i.customer, i.description,
@@ -68,7 +68,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
     $filename = 'import-'.date('Y-m-d').'.txt';
 
     header('Content-Type: text/plain');
-        header('Content-Disposition: attachment; filename='.$filename);
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
     header('Pragma: public');
 
     if ($importlist = $DB->GetAll('SELECT i.date, i.value, i.customer, i.description,
@@ -265,6 +265,8 @@ $divisions = $LMS->GetDivisions(array('order' => 'name'));
 
 $divisions[0] = array('id' => 0, 'name' => '');
 
+$division_names = array();
+
 if ($importlist = $DB->GetAll(
     'SELECT
         i.*,
@@ -280,7 +282,17 @@ if ($importlist = $DB->GetAll(
     $listdata['total'] = count($importlist);
 
     foreach ($importlist as $idx => $row) {
-        if ($row['divisionid'] && isset($divisions[$row['divisionid']])) {
+        $divisionid = $row['divisionid'];
+        if (!empty($row['divisionid']) && isset($divisions[$divisionid])) {
+            $division = $divisions[$divisionid];
+            if (!isset($division_names[$division['name']][$divisionid])) {
+                $division_names[$division['name']][$divisionid] = $divisionid;
+            }
+        } else {
+            $division = null;
+        }
+
+        if ($row['divisionid'] && isset($division)) {
             $divisions[$row['divisionid']]['list'][] = $row;
         } else {
             $divisions[0]['list'][] = $row;
@@ -299,6 +311,7 @@ $sourcefiles = $DB->GetAll('SELECT s.*, u.name AS username,
     ORDER BY s.idate DESC');
 
 $SMARTY->assign('divisions', $divisions);
+$SMARTY->assign('division_names', $division_names);
 $SMARTY->assign('listdata', $listdata ?? null);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('sourcefiles', $sourcefiles);

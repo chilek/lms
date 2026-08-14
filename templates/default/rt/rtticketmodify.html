@@ -20,6 +20,11 @@
 		display: flex;
 	}
 
+	#requestor_mail_combobox,
+	#requestor_phone_combobox {
+		width: 20em;
+	}
+
 </style>
 
 {box_container id="ticket"}
@@ -30,7 +35,7 @@
 		{/box_header}
 		{box_header icon="service" label="Service type" icon_class="fa-fw"}
 			<select name="ticket[service]" id="ticket-service"
-				{tip class="lms-ui-advanced-select" text="Choose service type" trigger="service"}
+				{tip class="lms-ui-advanced-select-test" text="Choose service type" trigger="service"}
 				{if ConfigHelper::checkConfig('rt.ticket_service_required')} required{/if}>
 				<option value="" selected hidden>{trans("select")}</option>
 				{foreach $_SERVICETYPES as $key => $service}
@@ -40,7 +45,7 @@
 		{/box_header}
 		{box_header icon="type" label="Ticket type" icon_class="fa-fw"}
 			<select name="ticket[type]" id="ticket-type"
-				{tip class="lms-ui-advanced-select" text="Choose ticket type" trigger="type"}
+				{tip class="lms-ui-advanced-select-test" text="Choose ticket type" trigger="type"}
 				{if ConfigHelper::checkConfig('rt.ticket_type_required')} required{/if}>
 				<option value="" selected hidden>{trans("select")}</option>
 				{foreach Localisation::arraySort($_RT_TYPES, 'label') as $key => $type}
@@ -78,7 +83,7 @@
 
 			{box_row icon="user" label="Requestor" field_id="requestor" icon_class="fa-fw"}
 				<div class="lms-ui-box-row">
-					<select name="ticket[requestor_userid]" {tip class="lms-ui-advanced-select" text="Select requestor from list" trigger="requestor_userid"}>
+					<select name="ticket[requestor_userid]" {tip class="lms-ui-advanced-select-test" text="Select requestor from list" trigger="requestor_userid"}>
 						<option value="">{trans("<!person>— none —")}</option>
 						<option value="0"{if $ticket.requestor_userid == '0'} selected{/if}>{trans("— indicated person —")}</option>
 						{foreach $userlist as $user}
@@ -111,18 +116,46 @@
 				</div>
 				<div class="lms-ui-box-row indicated-person">
 					<div class="lms-ui-box-row-label">
-						<label for="requestor_mail">{trans("E-mail")}</label>
+						<label for="requestor_mail_combobox">{trans("E-mail")}</label>
 					</div>
 					<div class="lms-ui-box-row-field">
-						<input type="text" name="ticket[requestor_mail]" id="requestor_mail" value="{$ticket.requestor_mail}" {tip trigger="requestor_mail"}>
+						<input type="hidden" name="ticket[requestor_customer_mail]" id="requestor_customer_mail"
+							value="{$ticket.requestor_customer_mail}">
+						<input type="hidden" name="ticket[requestor_mail]" id="requestor_mail"
+							value="{$ticket.requestor_mail}">
+						<select id="requestor_mail_combobox" autocomplete="off"
+								data-value="{$ticket.requestor_mail}"
+								data-alt-invalid-field="#requestor_mail"
+								data-id-value="{$ticket.requestor_customer_mail}"
+								data-alt-field="#requestor_customer_mail"
+								{tip class="lms-ui-combobox" trigger="requestor_mail"}>
+							{foreach $customercontacts.emails as $item}
+								<option value="{$item.contact}"{if $item.contact == $ticket.requestor_customer_mail} selected{/if}
+									>{$item.contact}{if !empty($item.name)} ({$item.name|escape}){/if}</option>
+							{/foreach}
+						</select>
 					</div>
 				</div>
 				<div class="lms-ui-box-row indicated-person">
 					<div class="lms-ui-box-row-label">
-						<label for="requestor_phone">{trans("Phone")}</label>
+						<label for="requestor_phone_combobox">{trans("Phone")}</label>
 					</div>
 					<div class="lms-ui-box-row-field">
-						<input type="text" name="ticket[requestor_phone]" id="requestor_phone" value="{$ticket.requestor_phone}" {tip trigger="requestor_phone"}>
+						<input type="hidden" name="ticket[requestor_customer_phone]" id="requestor_customer_phone"
+							value="{$ticket.requestor_customer_phone}">
+						<input type="hidden" name="ticket[requestor_phone]" id="requestor_phone"
+							value="{$ticket.requestor_phone}">
+						<select id="requestor_phone_combobox" autocomplete="off"
+							data-value="{$ticket.requestor_phone}"
+							data-alt-invalid-field="#requestor_phone"
+							data-id-value="{$ticket.requestor_customer_phone}"
+							data-alt-field="#requestor_customer_phone"
+							{tip class="lms-ui-combobox" trigger="requestor_phone"}>
+							{foreach $customercontacts.phones as $item}
+								<option value="{$item.contact}"{if $item.contact == $ticket.requestor_customer_phone} selected{/if}
+									>{$item.contact}{if !empty($item.name)} ({$item.name|escape}){/if}</option>
+							{/foreach}
+						</select>
 					</div>
 				</div>
 			{/box_row}
@@ -182,7 +215,7 @@
 			{block name="rtticketmodify-rightcolumn"}
 			{box_row icon="owner" label="Owner" icon_class="fa-fw"}
 				<select size="1" name="ticket[owner]" id="owner"
-						{tip class="lms-ui-advanced-select" text="Select user" trigger="owner"}>
+						{tip class="lms-ui-advanced-select-test" text="Select user" trigger="owner"}>
 					<option value="0">{trans("— select user —")}</option>
 					{foreach $userlist as $user}
 						{if $user.id != $ticket.owner
@@ -208,7 +241,7 @@
 
 			{box_row icon="verifier" label="Verifier" field_id="rtverifiers" icon_class="fa-fw"}
 				{if $layout.module != 'rtticketedit' || !$ticket.oldverifierid || $ticket.oldverifierid == $layout.logid || ConfigHelper::checkConfig('privileges.superuser')}
-					<select size="1" name="ticket[verifierid]" {tip class="lms-ui-advanced-select" text="Select user" trigger="verifierid"}>
+					<select size="1" name="ticket[verifierid]" {tip class="lms-ui-advanced-select-test" text="Select user" trigger="verifierid"}>
 						<option value="">{trans("— select user —")}</option>
 						{foreach $userlist as $user}
 							{if $user.id != $ticket.verifierid
@@ -244,7 +277,7 @@
 			{/box_row}
 
 			{box_row icon="status" label="Status" icon_class="fa-fw"}
-				<SELECT name="ticket[state]" id="state" {tip class="lms-ui-advanced-select" text="Select status" trigger="state"}>
+				<SELECT name="ticket[state]" id="state" {tip class="lms-ui-advanced-select-test" text="Select status" trigger="state"}>
 					{foreach $_RT_STATES as $stateidx => $state}
 					<OPTION value="{$stateidx}"{if $ticket.state == $stateidx} selected{/if}>{$state.label}</OPTION>
 					{/foreach}
@@ -258,7 +291,7 @@
 
 			{box_row icon="queue" label="Queue" icon_class="fa-fw"}
 				<select size="1" name="ticket[queue]" id="queue-selection"
-						{tip class="lms-ui-advanced-select" text="Select queue" trigger="queue"}>
+						{tip class="lms-ui-advanced-select-test" text="Select queue" trigger="queue"}>
 					{foreach $queuelist as $item}
 						<option value="{$item.id}"
 							{if $item.newticketsubject && $item.newticketbody || $item.newticketsmsbody} data-newticket-notify="1"{/if}
@@ -344,7 +377,7 @@
 			{/box_row}
 
 			{box_row icon="invproject" label="Investment project" icon_class="fa-fw"}
-				<SELECT name="ticket[invprojectid]" {tip class="lms-ui-advanced-select" text="Select investment projects" trigger="invprojectid"}>
+				<SELECT name="ticket[invprojectid]" {tip class="lms-ui-advanced-select-test" text="Select investment projects" trigger="invprojectid"}>
 					<OPTION value="">{trans("— none —")}</OPTION>
 					{foreach $invprojectlist as $idx => $project}
 					<OPTION value="{$idx}" {if $idx == $ticket.invprojectid} selected{/if}>
@@ -357,8 +390,8 @@
 			{function ticket_item_content}
 				{capture name="item_content_result" assign="item_content_result"}{strip}
 					{hint icon="info" mode="toggle" url="?m=rtticketinfo&id={$item.id}"}
-					#{$item.id}
-					<a href="?m=rtticketview&id={$item.id}">{$item.name}</a>
+					(#{$item.id})
+					<a class="lms-ui-list-item-name" href="?m=rtticketview&id={$item.id}">{$item.name}</a>
 				{/strip}{/capture}
 			{/function}
 
@@ -408,8 +441,9 @@
 			$('[name="ticket[subject]"]').val(Base64.decode(selected.attr('data-subject')));
 
 			var message = Base64.decode(selected.attr('data-message'));
-			if (tinyMCE.editors.length) {
-				tinyMCE.editors[0].setContent(message);
+			var editor = tinyMCE.get(0);
+			if (editor) {
+				editor.setContent(message);
 			}
 			$($(this).attr('data-target')).val(message);
 		});
@@ -437,5 +471,41 @@
 			excluded_elements: [ {if isset($ticket.ticketid)}'{$ticket.ticketid}'{/if} ],
 			conflict_lists: [ '#parent-ticket' ]
 		});
+
+	$(function() {
+		$('#customer_addresses').on('lms:address_list_updated', function() {
+			{if ConfigHelper::checkConfig('rt.location_required')}
+				{if $layout.module == 'eventadd'}
+					$(this).prop('required', $('[name="event[custid]"]').val().length > 0).trigger('lms:advanced_select_update');
+				{else}
+					$(this).prop('required', $('[name="ticket[custid]"]').val().length > 0).trigger('lms:advanced_select_update');
+				{/if}
+			{/if}
+		}).on('lms:advanced_select_validate_required', function(e, data) {
+			{if ConfigHelper::checkConfig('rt.location_required')}
+				{if $layout.module == 'eventadd'}
+					var emptyCustomerId = !$('[name="event[custid]"]').val().length;
+				{else}
+					var emptyCustomerId = !$('[name="ticket[custid]"]').val().length;
+				{/if}
+				data.advancedSelectElement.toggleClass('lms-ui-error', !emptyCustomerId && data.invalidValue);
+				this.setCustomValidity(!emptyCustomerId && data.invalidValue ? $t('Location address is not selected') : '');
+			{/if}
+			return false;
+		});
+
+		{if $layout.module != 'eventadd'}
+			$('#customer_addresses').trigger('lms:address_list_updated');
+		{/if}
+
+		{if ConfigHelper::checkConfig('rt.notify_auto_check_on_queue_change')}
+			// Auto-check "Notify users" when queue changes
+			var queueElem = $('[name="ticket[queue]"]');
+			var originalQueue = queueElem.val();
+			queueElem.change(function() {
+				$('#notify').prop('checked', $(this).val() !== originalQueue);
+			});
+		{/if}
+	});
 
 </script>

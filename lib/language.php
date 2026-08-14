@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2026 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -46,6 +46,11 @@ function check_ten($ten)
     return Localisation::CallSystemFunction('check_ten', $ten);
 }
 
+function check_ksef_internal_id($ksef_internal_id)
+{
+    return Localisation::CallSystemFunction('check_ksef_internal_id', $ksef_internal_id);
+}
+
 function check_ssn($ssn)
 {
     return Localisation::CallSystemFunction('check_ssn', $ssn);
@@ -78,7 +83,17 @@ function format_bankaccount($account, $country_code = false)
 
 function format_ten($ten, $country_code = false)
 {
-    return Localisation::CallSystemFunction('format_ten', $ten, $country_code);
+    if (empty($ten)) {
+        return $ten;
+    } else {
+        $formattedTen = Localisation::CallSystemFunction('format_ten', $ten, $country_code);
+
+        if (empty($formattedTen)) {
+            $formattedTen = $ten;
+        }
+
+        return $formattedTen;
+    }
 }
 
 function getHolidays($year = null)

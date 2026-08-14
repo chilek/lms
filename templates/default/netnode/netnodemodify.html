@@ -24,6 +24,10 @@
 		align-items: flex-start;
 	}
 
+	#coowner {
+		width: 25em;
+	}
+
 </style>
 
 <script src="js/location_box.js"></script>
@@ -55,7 +59,7 @@
 
 			{box_row icon="type" icon_class="fa-fw" label="Type"}
 				{$netelementtypes = Localisation::arraySort($_NETELEMENTTYPES)}
-				<select name="netnode[type]" {tip text="Enter node type" class="lms-ui-advanced-select"}>
+				<select name="netnode[type]" {tip text="Enter node type" class="lms-ui-advanced-select-test show-group-labels"}>
 					<option value="0">{trans("<!netelemtype>— other —")}</option>
 					{foreach $_NETELEMENTTYPEGROUPS as $group => $types}
 						<optgroup label="{$group}">
@@ -104,9 +108,15 @@
 				</select>
 			{/box_row}
 
-			{box_row id="ownername" icon="division" icon_class="fa-fw" label="Owner identifier"}
-				<input type="text" name="netnode[coowner]" size="30" value="{$netnode.coowner|default:""|escape}"
-					{tip trigger="coowner" text="Enter co-owner name"}>
+			{box_row id="ownername" icon="division" icon_class="fa-fw" label="Foreign entity"}
+				<select name="netnode[coowner]" class="lms-ui-combobox" id="coowner"
+					data-value="{$netnode.coowner}">
+					{foreach $foreign_entities as $foreign_entity}
+						<option value="{$foreign_entity.id|escape}"
+							{if $foreign_entity.name == $netnode.coowner} selected{/if}
+							>{$foreign_entity.name}{if !empty($foreign_entity.type)} ({trans("TEN")} {$foreign_entity.id}){/if}</option>
+					{/foreach}
+				</select>
 			{/box_row}
 
 			{box_row id="customer" icon="customer" icon_class="fa-fw" label="Owner"}
@@ -252,7 +262,7 @@
 
 <script>
 
-	initAdvancedSelects('#customer_addresses');
+	initAdvancedSelectsTest('#customer_addresses');
 
 	$(function() {
 		$('[name="netnode[name]"]').focus();

@@ -24,20 +24,30 @@
  *  $Id$
  */
 
-$devices = $DB->GetAllByKey('SELECT n.id, n.name, va.location, '.$DB->GroupConcat('INET_NTOA(CASE WHEN vnodes.ownerid IS NULL THEN vnodes.ipaddr ELSE NULL END)', ',', true)
-                .' AS ipaddr, '.$DB->GroupConcat('CASE WHEN vnodes.ownerid IS NULL THEN vnodes.id ELSE NULL END', ',', true).' AS nodeid,
-				MAX(lastonline) AS lastonline,
-				(CASE WHEN nn.latitude IS NOT NULL AND n.netnodeid > 0 THEN nn.latitude ELSE n.latitude END) AS lat,
-				(CASE WHEN nn.longitude IS NOT NULL AND n.netnodeid > 0 THEN nn.longitude ELSE n.longitude END) AS lon,
-				' . $DB->GroupConcat('rs.id') . ' AS radiosectors, n.ownerid
-				FROM netdevices n
-				LEFT JOIN vaddresses va ON va.id = n.address_id
-				LEFT JOIN netnodes nn ON nn.id = n.netnodeid
-				LEFT JOIN vnodes ON n.id = vnodes.netdev
-				LEFT JOIN netradiosectors rs ON rs.netdev = n.id
-				WHERE ((nn.latitude IS NULL AND n.latitude IS NOT NULL) OR nn.latitude IS NOT NULL)
-					AND ((nn.longitude IS NULL AND n.longitude IS NOT NULL) OR nn.longitude IS NOT NULL)
-				GROUP BY n.id, n.name, va.location, n.latitude, n.longitude, nn.latitude, nn.longitude, n.ownerid, n.netnodeid', 'id');
+$foreign_entities = Utils::getForeignEntities();
+
+$devices = $DB->GetAllByKey(
+    'SELECT
+        n.id,
+        n.name,
+        va.location,
+        ' . $DB->GroupConcat('INET_NTOA(CASE WHEN vnodes.ownerid IS NULL THEN vnodes.ipaddr ELSE NULL END)', ',', true) . ' AS ipaddr, '
+        . $DB->GroupConcat('CASE WHEN vnodes.ownerid IS NULL THEN vnodes.id ELSE NULL END', ',', true) . ' AS nodeid,
+        MAX(lastonline) AS lastonline,
+        (CASE WHEN nn.latitude IS NOT NULL AND n.netnodeid > 0 THEN nn.latitude ELSE n.latitude END) AS lat,
+        (CASE WHEN nn.longitude IS NOT NULL AND n.netnodeid > 0 THEN nn.longitude ELSE n.longitude END) AS lon,
+        ' . $DB->GroupConcat('rs.id') . ' AS radiosectors,
+        n.ownerid
+    FROM netdevices n
+    LEFT JOIN vaddresses va ON va.id = n.address_id
+    LEFT JOIN netnodes nn ON nn.id = n.netnodeid
+    LEFT JOIN vnodes ON n.id = vnodes.netdev
+    LEFT JOIN netradiosectors rs ON rs.netdev = n.id
+    WHERE ((nn.latitude IS NULL AND n.latitude IS NOT NULL) OR nn.latitude IS NOT NULL)
+        AND ((nn.longitude IS NULL AND n.longitude IS NOT NULL) OR nn.longitude IS NOT NULL)
+    GROUP BY n.id, n.name, va.location, n.latitude, n.longitude, nn.latitude, nn.longitude, n.ownerid, n.netnodeid',
+    'id'
+);
 
 if ($devices) {
     $time_now = time();
@@ -76,7 +86,14 @@ if ($devices) {
     }
 
     $devlinks = $DB->GetAllByKey(
-        'SELECT id, src, dst, type, technology, speed
+        'SELECT
+            id,
+            src,
+            dst,
+            type,
+            technology,
+            speed,
+            foreignentity
         FROM netlinks
         WHERE src IN ?
             AND dst IN ?',
@@ -89,13 +106,36 @@ if ($devices) {
     if ($devlinks) {
         foreach ($devlinks as &$devlink) {
             $devlink['netlinkid'] = $devlink['id'];
+            $devlink['customers'] = array();
+            if (!empty($devices[$devlink['src']]['ownerid'])) {
+                $devlink['customers'][] = $devices[$devlink['src']]['ownerid'];
+            }
+            if (!empty($devices[$devlink['dst']]['ownerid'])) {
+                $devlink['customers'][] = $devices[$devlink['dst']]['ownerid'];
+            }
             $devlink['srclat'] = $devices[$devlink['src']]['lat'];
             $devlink['srclon'] = $devices[$devlink['src']]['lon'];
             $devlink['dstlat'] = $devices[$devlink['dst']]['lat'];
             $devlink['dstlon'] = $devices[$devlink['dst']]['lon'];
-            $devlink['typename'] = trans("Link type:") . ' ' . $LINKTYPES[$devlink['type']];
-            $devlink['technologyname'] = ($devlink['technology'] ? trans("Link technology:") . ' ' . $LINKTECHNOLOGIES[$devlink['type']][$devlink['technology']] : '');
-            $devlink['speedname'] = trans("Link speed:") . ' ' . $LINKSPEEDS[$devlink['speed']];
+            $devlink['typename'] = $LINKTYPES[$devlink['type']];
+            $devlink['technologyname'] = ($devlink['technology'] ? $LINKTECHNOLOGIES[$devlink['type']][$devlink['technology']] : '');
+            $devlink['speedname'] = $LINKSPEEDS[$devlink['speed']];
+
+            $foreignentity = array();
+            if (!empty($devlink['foreignentity'])) {
+                $foreignentity_key = $devlink['foreignentity'];
+                if (empty($foreign_entities[$foreignentity_key])) {
+                    $foreignentity['name'] = $foreignentity_key;
+                    $foreignentity['type'] = 0;
+                    $foreignentity['id'] = $foreignentity_key;
+                } else {
+                    $foreignentity['name'] = $foreign_entities[$foreignentity_key]['name'];
+                    $foreignentity['type'] = 1;
+                    $foreignentity['id'] = $foreignentity_key;
+                }
+            }
+            $devlink['foreignentity'] = $foreignentity;
+
             $devlink['points'] = array(
                 0 => array(
                     'lon' => $devices[$devlink['src']]['lon'],

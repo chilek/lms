@@ -159,6 +159,8 @@ if (!$api) {
 
     // uncomment this line if you're not gonna change template files no more
     //$SMARTY->compile_check = false;
+
+    $layout['phpversion'] = phpversion();
 }
 
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
@@ -190,13 +192,13 @@ if (isset($_GET['old_tab_id'], $_GET['tab_id'], $_POST['old_history_entry'], $_P
     header('Content-Type: application/json');
     die('[]');
 }
+$plugin_manager = LMSPluginManager::getInstance();
+
 $AUTH = new Auth($DB, $SESSION);
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
+$LMS->setPluginManager($plugin_manager);
 
 Localisation::initDefaultCurrency();
-
-$plugin_manager = LMSPluginManager::getInstance();
-$LMS->setPluginManager($plugin_manager);
 
 if (!$api) {
     $SMARTY->setPluginManager($plugin_manager);
@@ -221,14 +223,15 @@ if (!$api) {
     $layout['smarty_version'] = SMARTY_VERSION;
 }
 
-$layout['logname'] = $AUTH->logname;
+$layout['logname'] = Auth::GetCurrentUserName();
+$layout['logrname'] = Auth::GetCurrentUserReversedName();
 $layout['logid'] = Auth::GetCurrentUser();
 $layout['lmsdbv'] = $DB->GetVersion();
 $layout['hostname'] = hostname();
 $layout['lmsv'] = LMS::SOFTWARE_VERSION;
 $layout['lmsvr'] = LMS::getSoftwareRevision();
 $layout['dberrors'] = &$DB->GetErrors();
-$layout['dbdebug'] = $_DBDEBUG ?? false;
+$layout['dbdebug'] = $DB->GetDebug();
 $layout['popup'] = isset($_GET['popup']);
 $layout['url'] = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
     . $_SERVER['HTTP_HOST']
@@ -264,6 +267,15 @@ if (!$api) {
 
 $documents_dirs = array(DOC_DIR);
 $documents_dirs = $plugin_manager->executeHook('documents_dir_initialized', $documents_dirs);
+
+if ($api && $SESSION->isExpired()) {
+    header('HTTP/1.1 401 Unauthorized');
+    header('Content-Type: application/json');
+
+    die(json_encode(array(
+        'error' => trans('Session expired!'),
+    )));
+}
 
 // Check privileges and execute modules
 if ($AUTH->islogged) {
@@ -562,7 +574,14 @@ if ($AUTH->islogged) {
         $SESSION->save('lastmodule', $module);
     }
 } else {
-    if (!$api) {
+    if ($api) {
+        header('HTTP/1.1 401 Unauthorized');
+        header('Content-Type: application/json');
+
+        die(json_encode(array(
+            'error' => empty($AUTH->error) ? trans('No authentication data?') : $AUTH->error,
+        )));
+    } else {
         $SMARTY->assign('error', $AUTH->error);
         $SMARTY->assign('target', '?'.$_SERVER['QUERY_STRING']);
         if ($AUTH->authCodeRequired()) {

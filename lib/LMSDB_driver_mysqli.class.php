@@ -128,7 +128,11 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
      */
     public function _driver_disconnect()
     {
-        return @mysqli_close($this->_dblink);
+        if (empty($this->_dblink)) {
+            return true;
+        } else {
+            return @mysqli_close($this->_dblink);
+        }
     }
 
     /**
@@ -337,6 +341,16 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
         } else {
             $this->Execute('LOCK TABLES ' . $table . ' ' . $locktype);
         }
+    }
+
+    public function _driver_lockbyhandle($handle): mixed
+    {
+        return $this->GetOne('SELECT GET_LOCK(\'' . $handle . '\', ' . ((1 << 32) - 1) . ')');
+    }
+
+    public function _driver_unlockbyhandle($handle): mixed
+    {
+        return $this->GetOne('SELECT RELEASE_LOCK(\'' . $handle . '\')');
     }
 
     /**

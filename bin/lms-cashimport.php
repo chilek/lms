@@ -26,11 +26,13 @@
  */
 
 $script_parameters = array(
+    'config-file:' => 'C:',
     'section:' => 's:',
     'import-file:' => 'f:',
 );
 
 $script_help = <<<EOF
+-C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -s, --section=<section-name>    section name from lms configuration where settings
                                 are stored
 -f, --import-file               cash import file name from which import contents is read

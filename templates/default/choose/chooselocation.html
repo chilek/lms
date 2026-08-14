@@ -243,7 +243,7 @@ function update_selection(type, data, selected) {
 	select.val(selected ? selected : 0).focus();
 
 	if (type == 'street') {
-		initAdvancedSelects(select);
+		initAdvancedSelectsTest(select);
 		$('#house,#flat').show();
 
 		if (!data.length) {
@@ -303,7 +303,7 @@ function submit_location() {
 		location_box.find( "input[data-address='terc']" ).val(city_option.attr('data-terc'));
         location_box.find( "input[data-address='simc']" ).val(city_option.attr('data-simc'));
         // automatically preselect 'Poland' country when we submit territized location
-        location_box.find( "select[data-address='country']").val(2);
+        location_box.find('select[data-address="country"]').find('option[data-ccode="pl_PL"]').prop("selected", true);
     }
 
     // SET STREET
@@ -368,7 +368,7 @@ $( '#state_sel'     ).val( {$data.stateid} );
 $( '#district_sel'  ).val( {$data.districtid} );
 $( '#city_sel'      ).val( {$data.cityid} );
 $( '#street_sel'    ).val( location_box.find( "input[data-address='street-hidden']" ).val() );
-initAdvancedSelects('#street_sel');
+initAdvancedSelectsTest('#street_sel');
 
 $('#location-search').submit(function(e) {
 	e.preventDefault();

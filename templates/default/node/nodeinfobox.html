@@ -567,6 +567,9 @@
 															{button type="link" icon="reload" class="radius-disconnect-button"
 																data_nodesession_id=$nodesession.id tip="Disconnect existing session"}
 														{/if}
+														{if !empty($session_state_helper)}
+															{hint icon="info" id="session-state" url="?m=nodeinfo&id={$nodeinfo.id}&action=session_state"}
+														{/if}
 													</div>
 												</td>
 											</tr>

@@ -123,9 +123,14 @@ switch ($mode) {
                     . (empty($properties) || isset($properties['email']) ? " OR LOWER(cc.contact) ?LIKE? LOWER($sql_search)" : '')
                     . (empty($properties) || isset($properties['bankaccount']) ? " OR LOWER(REPLACE(cc2.contact, ' ', '')) ?LIKE? LOWER(REPLACE($sql_search, ' ', ''))" : '')
                     . (empty($properties) || isset($properties['ten']) ? " OR REPLACE(REPLACE(c.ten, '-', ''), ' ', '') ?LIKE? REPLACE(REPLACE($sql_search, '-', ''), ' ', '')" : '')
+                    . (empty($properties) || isset($properties['recipient-ten']) ? " OR EXISTS (SELECT 1 FROM customer_addresses ca WHERE ca.customer_id = c.id AND REPLACE(REPLACE(ca.ten, '-', ''), ' ', '') ?LIKE? REPLACE(REPLACE($sql_search, '-', ''), ' ', ''))" : '')
                     . (empty($properties) || isset($properties['ssn']) ? " OR REPLACE(REPLACE(c.ssn, '-', ''), ' ', '') ?LIKE? REPLACE(REPLACE($sql_search, '-', ''), ' ', '')" : '')
                     . (empty($properties) || isset($properties['additional-info']) ? " OR LOWER(c.info) ?LIKE? LOWER($sql_search)" : '')
-                    . (empty($properties) || isset($properties['notes']) ? " OR LOWER(c.notes) ?LIKE? LOWER($sql_search)" : '')
+                    . (empty($properties) || isset($properties['notes'])
+                        ? " OR LOWER(c.notes) ?LIKE? LOWER($sql_search)"
+                            . " OR EXISTS (SELECT 1 FROM customernotes cn WHERE cn.customerid = c.id AND LOWER(cn.message) ?LIKE? LOWER($sql_search))"
+                        : ''
+                    )
                     . (empty($properties) || isset($properties['documentmemo']) ? " OR LOWER(c.documentmemo) ?LIKE? LOWER($sql_search)" : '') . "
                 ORDER by deleted, customername, cc.contact, full_address
                 LIMIT ?",
@@ -287,6 +292,7 @@ switch ($mode) {
         $SESSION->remove('csln');
         $SESSION->remove('cslg');
         $SESSION->remove('csls');
+        $SESSION->remove('cslng');
 
         $target = '?m=customersearch&search=1';
         break;

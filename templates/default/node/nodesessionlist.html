@@ -47,10 +47,11 @@
 								<strong>{trans("Filter:")}</strong>
 								<SELECT name="filtertype">
 									<OPTION value="">{trans("— none —")}</OPTION>
-									<OPTION value="ip"{if $filtertype == 'ip'} selected{/if}>{trans("IP Address:")}</OPTION>
-									<OPTION value="mac"{if $filtertype == 'mac'} selected{/if}>{trans("MAC:")}</OPTION>
-									<OPTION value="customer"{if $filtertype == 'customer'} selected{/if}>{trans("Customer:")}</OPTION>
-									<OPTION value="nodeid"{if $filtertype == 'nodeid'} selected{/if}>{trans("Node ID:")}</OPTION>
+									<OPTION value="ip"{if $filtertype == 'ip'} selected{/if}>{trans("<!nodesession-search>IP address")}</OPTION>
+									<OPTION value="mac"{if $filtertype == 'mac'} selected{/if}>{trans("<!nodesession-search>MAC address")}</OPTION>
+									<OPTION value="customer"{if $filtertype == 'customer'} selected{/if}>{trans("<!nodesession-search>customer")}</OPTION>
+									<OPTION value="nodeid"{if $filtertype == 'nodeid'} selected{/if}>{trans("<!nodesession-search>node ID")}</OPTION>
+									<option value="location"{if $filtertype == 'location'} selected{/if}>{trans("<!nodesession-search>location")}</option>
 								</SELECT>&nbsp;
 								<input type="text" size="16" maxlength="32" name="filtervalue" value="{$filtervalue}">
 							</label>

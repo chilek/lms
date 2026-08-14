@@ -33,6 +33,7 @@ $script_parameters = array(
     'delete'  => 'd',
     'buildings'  => 'b',
     'building-base-provider:' => null,
+    'building-base-archived-filename-pattern:' => null,
     'allowed-building-operations:' => null,
     'only-unique-city-matches'  => 'o',
     'explicit-node-locations'  => 'e',
@@ -47,6 +48,9 @@ $script_help = <<<EOF
 -b, --buildings                    analyze building base and load it into database
     --building-base-provider=<gugik|sidusis>
                                    specify which building base provider should be used
+    --building-base-archived-filename-pattern=<...>
+                                   regular expression to which files in download directory
+                                   are matched as building database
     --allowed-building-operations=add,update,delete
                                    specify which building base operations are allowed
                                    when we load new building base
@@ -89,41 +93,9 @@ function parse_teryt_building_row($row)
 
 function dbf_to_utf8($src)
 {
-    return str_replace(
-        array(
-            "\xC2\xB9",
-            "\xC3\xA6",
-            "\xC3\xAA",
-            "\xC4\x99",
-            "\xC2\xB3",
-            "\xC3\xB1",
-            "\xC3\xB3",
-            "\xC2\x9C",
-            "\xC2\x9F",
-            "\xC2\xBF",
-            "\xC2\x8C",
-            "\xC2\xA3",
-            "\xC2\x8F",
-            "\xC2\xAF",
-        ),
-        array(
-            'ą',
-            'ć',
-            'ę',
-            'ę',
-            'ł',
-            'ń',
-            'ó',
-            'ś',
-            'ź',
-            'ż',
-            'Ś',
-            'Ł',
-            'Ź',
-            'Ż',
-        ),
-        $src
-    );
+    // Zamienia znaki 0x00–0xFF na bajty (latin1), a potem dekoduje jako UTF-8.
+    $bytes = mb_convert_encoding($src, 'ISO-8859-1', 'UTF-8');
+    return mb_convert_encoding($bytes, 'UTF-8', 'UTF-8');
 }
 
 /*!
@@ -183,7 +155,7 @@ function getIdentsWithSubcities($subcities, $street, $only_unique_city_matches)
  * \param  string $street street name
  * \return array  $ident  LMS location id's
  */
-function getIdents($city = null, $street = null, $only_unique_city_matches = false)
+function getIdents($city = null, $street = null, $only_unique_city_matches = false, $borough = null)
 {
     $street = trim(preg_replace('/^(ul\.|pl\.|al\.|bulw\.|os\.|wyb\.|plac|skwer|rondo|park|rynek|szosa|droga|ogród|wyspa)/i', '', $street));
 
@@ -217,7 +189,8 @@ function getIdents($city = null, $street = null, $only_unique_city_matches = fal
             FROM location_cities c
             JOIN location_boroughs lb ON lb.id = c.boroughid
             JOIN location_districts ld ON ld.id = lb.districtid
-            WHERE c.name ?LIKE? ?",
+            WHERE c.name ?LIKE? ?"
+                . (empty($borough) ? '' : ' AND lb.name ?LIKE? ' . $DB->Escape($borough)),
             array($city)
         );
         if (empty($cities)) {
@@ -280,7 +253,7 @@ function getNames($city_id, $street_id)
     }
 }
 
-ini_set('memory_limit', '512M');
+//ini_set('memory_limit', '512M');
 $stderr = fopen('php://stderr', 'w');
 
 define('PROGRESS_ROW_COUNT', 1000);
@@ -602,7 +575,17 @@ if (isset($options['fetch'])) {
         for ($i = 0; $i < $numFiles; ++$i) {
             $filename = $zip->getNameIndex($i);
             if (preg_match('/' . $building_base_provider['archived_filename_pattern'] . '/', $filename)) {
-                $zip->extractTo($teryt_dir, $filename);
+                $st = $zip->statIndex($i);
+                if ($st['comp_method'] === ZipArchive::CM_DEFLATE64) {
+                    $output = array();
+                    $result = null;
+                    exec('unzip -o -d ' . $teryt_dir . ' ' . $teryt_dir . DIRECTORY_SEPARATOR . $building_base_provider['filename'] . ' ' . $filename . ' 2>&1', $output, $result);
+                    if (!empty($result)) {
+                        die('Fatal error: failed to run \'unzip\' command! Maybe \'unzip\' utility is not installed in your system?' . PHP_EOL);
+                    }
+                } else {
+                    $zip->extractTo($teryt_dir, $filename);
+                }
             }
         }
 
@@ -1285,15 +1268,19 @@ if (isset($options['update'])) {
 } // close if ( isset($option['update']) )
 
 //==============================================================================
-// Read address point csv file
+// Read address point PRG database files
 //
 // -b, --buildings
 //==============================================================================
 
 if (isset($options['buildings'])) {
+    if (isset($options['building-base-archived-filename-pattern'])) {
+        $building_base_provider['archived_filename_pattern'] = $options['building-base-archived-filename-pattern'];
+    }
+
     $files = getdir($teryt_dir);
     if (empty($files)) {
-        fprintf($stderr, "Error: couldn't find files matching to '%s' regular expression!" . PHP_EOL, $building_base_provider['archived_filename_pattern']);
+        fprintf($stderr, "Error: couldn't find any files in '%s' directory!" . PHP_EOL, $teryt_dir);
         die;
     }
     $files = array_filter($files, function ($file) use ($building_base_provider) {
@@ -1302,7 +1289,7 @@ if (isset($options['buildings'])) {
     $file_count = count($files);
     if ($building_base_provider_type == 'gugik' && $file_count < 4
         || $building_base_provider_type == 'sidusis' && $file_count < 16) {
-        fprintf($stderr, "Error: couldn't find some files matching to '%s' regular expression!" . PHP_EOL, $building_base_provider['archived_filename_pattern']);
+        fprintf($stderr, "Error: couldn't find any files matching to '%s' regular expression!" . PHP_EOL, $building_base_provider['archived_filename_pattern']);
         die;
     }
 
@@ -1380,12 +1367,32 @@ if (isset($options['buildings'])) {
 
             $address = $Geometry->getDataArray();
 
+            if (isset($address['TERYT_GMI'])) {
+                $address['TERYT'] = substr($address['TERYT_GMI'], 0, -1);
+            }
+
             if (isset($state_list) && !isset($state_list[intval(substr($address['TERYT'], 0, 2))])) {
                 continue;
             }
 
-            $address['SIMC_NAZWA'] = dbf_to_utf8($address['SIMC_NAZWA']);
-            $address['ULIC_NAZWA'] = dbf_to_utf8($address['ULIC_NAZWA']);
+            if (isset($address['ID_ULIC'])) {
+                $address['ULIC_ID'] = $address['ID_ULIC'];
+            }
+            if (isset($address['ID_SIMC'])) {
+                $address['SIMC_ID'] = $address['ID_SIMC'];
+            }
+            if (isset($address['NAZWA_MSC'])) {
+                $address['SIMC_NAZWA'] = $address['NAZWA_MSC'];
+            }
+            if (isset($address['NAZWA_ULC'])) {
+                $address['ULIC_NAZWA'] = $address['NAZWA_ULC'];
+            }
+            if (isset($address['NUMER_PORZ'])) {
+                $address['NUMER'] = $address['NUMER_PORZ'];
+            }
+            if (isset($address['KOD_POCZT'])) {
+                $address['PNA'] = $address['KOD_POCZT'];
+            }
 
             $coords = $Geometry->getArray();
             $pointSrc = new \proj4php\Point($coords['x'], $coords['y'], $projEPSG2180);
@@ -1399,12 +1406,12 @@ if (isset($options['buildings'])) {
             $simc = $v['SIMC_ID'];
             $ulic = $v['ULIC_ID'];
 
-            $v['NUMER'] = preg_replace('/\.$/', '', dbf_to_utf8($v['NUMER']));
+            $v['NUMER'] = preg_replace('/\.$/', '', $v['NUMER']);
             if (!preg_match('#^[0-9a-zA-Z-, /\pL]*$#u', $v['NUMER'])) {
-                if (strlen($simc)) {
-                    fwrite($stderr, 'Warning: house number contains incorrect characters (TERC: ' . $terc . 'x, SIMC: ' . $simc . ', CITY: ' . $address['SIMC_NAZWA'] . ', ULIC: ' . $ulic . ', STREET: ' . $address['ULIC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
+                if (strlen($ulic)) {
+                    fwrite($stderr, 'Warning: house number contains incorrect characters (TERC: ' . $terc . 'x, SIMC: ' . (empty($simc) ? '(-)' : $simc) . ', CITY: ' . $address['SIMC_NAZWA'] . ', ULIC: ' . $ulic . ', STREET: ' . $address['ULIC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
                 } else {
-                    fwrite($stderr, 'Warning: house number contains incorrect characters (TERC: ' . $terc . 'x, SIMC: ' . $simc . ', CITY: ' . $address['SIMC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
+                    fwrite($stderr, 'Warning: house number contains incorrect characters (TERC: ' . $terc . 'x, SIMC: ' . (empty($simc) ? '(-)' : $simc) . ', CITY: ' . $address['SIMC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
                 }
                 continue;
             }
@@ -1412,12 +1419,16 @@ if (isset($options['buildings'])) {
             $city = $location_cache->getCityByIdent($terc, $simc);
 
             if (!$city) {
-                if (strlen($simc)) {
-                    fwrite($stderr, 'Warning: building was not found in TERYT database (TERC: ' . $terc . 'x, SIMC: ' . $simc . ', CITY: ' . $address['SIMC_NAZWA'] . ', ULIC: ' . $ulic . ', STREET: ' . $address['ULIC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
+                if (strlen($ulic)) {
+                    fwrite($stderr, 'Warning: building was not found in TERYT database using SIMC (TERC: ' . $terc . 'x, SIMC: ' . (empty($simc) ? '(-)' : $simc) . ', CITY: ' . $address['SIMC_NAZWA'] . ', ULIC: ' . $ulic . ', STREET: ' . $address['ULIC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
                 } else {
-                    fwrite($stderr, 'Warning: building was not found in TERYT database (TERC: ' . $terc . 'x, SIMC: ' . $simc . ', CITY: ' . $address['SIMC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
+                    fwrite($stderr, 'Warning: building was not found in TERYT database using SIMC (TERC: ' . $terc . 'x, SIMC: ' . (empty($simc) ? '(-)' : $simc) . ', CITY: ' . $address['SIMC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
                 }
                 continue;
+            }
+
+            if (!empty($city['cityid'])) {
+                $city['id'] = $city['cityid'];
             }
 
             if ($ulic == '' || $city == '99999') {
@@ -1425,7 +1436,7 @@ if (isset($options['buildings'])) {
             } else {
                 $street = $location_cache->getStreetByIdent($city['id'], $ulic);
                 if (empty($street)) {
-                    fwrite($stderr, 'Warning: building was not found in TERYT database (TERC: ' . $terc . 'x, SIMC: ' . $simc . ', CITY: ' . $address['SIMC_NAZWA'] . ', ULIC: ' . $ulic . ', STREET: ' . $address['ULIC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
+                    fwrite($stderr, 'Warning: building was not found in TERYT database using ULIC (TERC: ' . $terc . 'x, SIMC: ' . (empty($simc) ? '(-)' : $simc) . ', CITY: ' . $address['SIMC_NAZWA'] . ', ULIC: ' . $ulic . ', STREET: ' . $address['ULIC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
                     continue;
                 }
             }
@@ -1782,19 +1793,19 @@ if (isset($options['merge'])) {
 
     $addresses = $DB->GetAll("
         (
-            SELECT a.id, a.city, a.street, ca.customer_id
+            SELECT a.id, a.city, a.postoffice, a.street, a.house AS building_num, ca.customer_id
             FROM addresses a
             JOIN customer_addresses ca ON ca.address_id = a.id
             WHERE a.city IS NOT NULL
                 AND (a.city_id IS NULL OR (a.street IS NOT NULL AND a.street_id IS NULL))
         ) UNION (
-            SELECT a.id, a.city, a.street, 0 AS customer_id
+            SELECT a.id, a.city, a.postoffice, a.street, a.house AS building_num, 0 AS customer_id
             FROM addresses a
             JOIN netdevices nd ON nd.address_id = a.id
             WHERE a.city IS NOT NULL
                 AND (a.city_id IS NULL OR (a.street IS NOT NULL AND a.street_id IS NULL))
         ) UNION (
-            SELECT a.id, a.city, a.street, 0 AS customer_id
+            SELECT a.id, a.city, a.postoffice, a.street, a.house AS building_num, 0 AS customer_id
             FROM addresses a
             JOIN netnodes nn ON nn.address_id = a.id
             WHERE a.city IS NOT NULL
@@ -1811,11 +1822,36 @@ if (isset($options['merge'])) {
     $cities_with_sections = $LMS->GetCitiesWithSections();
 
     foreach ($addresses as $a) {
-        $city = empty($a['city']) ? '-' : $a['city'];
-        $street = empty($a['street']) ? '-' : $a['street'];
+        $city = empty($a['city']) ? null : $a['city'];
+        $street = empty($a['street']) ? null : $a['street'];
+        $postoffice = empty($a['postoffice']) ? null : $a['postoffice'];
+        $building = empty($a['building_num']) ? null: $a['building_num'];
 
         if (!$quiet) {
-            printf("City '%s', Street: '%s': ", $city, $street);
+            $location = array();
+            if (!empty($postoffice)) {
+                $location['Borough'] = $postoffice;
+            }
+            if (!empty($city)) {
+                $location['City'] = $city;
+            }
+            if (!empty($street)) {
+                $location['Street'] = $street;
+            }
+            if (!empty($building)) {
+                $location['Building'] = $building;
+            }
+            echo implode(
+                ', ',
+                array_map(
+                    function ($key, $value) {
+                        return $key . ': \'' . $value . '\'';
+                    },
+                    array_keys($location),
+                    $location
+                )
+            );
+            echo ': ';
         }
 
         $city = mb_strtolower($city);
@@ -1825,10 +1861,10 @@ if (isset($options['merge'])) {
         if (isset($location_cache[$key])) {
             $idents = $location_cache[$key];
         } else {
-            if (isset($cities_with_sections[$city]) && $city != '-' && $street != '-') {
+            if (isset($cities_with_sections[$city]) && !empty($city) && !empty($street)) {
                 $idents = getIdentsWithSubcities($cities_with_sections[$city], $street, $only_unique_city_matches);
             } else {
-                $idents = getIdents($city == '-' ? null : $city, $street == '-' ? null : $street, $only_unique_city_matches);
+                $idents = getIdents($city, $street, $only_unique_city_matches, $postoffice);
             }
             $location_cache[$key] = $idents;
         }
@@ -1982,14 +2018,30 @@ if (isset($options['explicit-node-locations'])) {
             $address = $addresses[$address_id];
 
             if (!$quiet) {
-                printf(
-                    'Setting explicit TERYT location address for node: %d (city: %s, street: %s, house: %s, flat: %s)' . PHP_EOL,
-                    $node['id'],
-                    $address['location_city_name'],
-                    $address['location_street_name'],
-                    $address['location_house'],
-                    $address['location_flat']
+                $address_components = array(
+                    'city' => $address['location_city_name'],
                 );
+                if (!empty($address['location_street_name'])) {
+                    $address_components['street'] = $address['location_street_name'];
+                }
+                if (!empty($address['location_house'])) {
+                    $address_components['house'] = $address['location_house'];
+                }
+                if (!empty($address['location_flat'])) {
+                    $address_components['flat'] = $address['location_flat'];
+                }
+                echo 'Setting explicit TERYT location address for node: #' . $node['id']
+                    . ' ('
+                    . implode(
+                        ', ',
+                        array_map(
+                            function ($key, $value) {
+                                return $key . ': ' . $value;
+                            },
+                            array_keys($address_components),
+                            $address_components
+                        )
+                    ) . ')' . PHP_EOL;
             }
 
             $DB->Execute(

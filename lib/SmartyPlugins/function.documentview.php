@@ -26,20 +26,51 @@
 
 function smarty_function_documentview($params, $template)
 {
-    static $vars = array('type', 'name', 'url', 'id', 'text');
-    static $types = array(
+    static $vars = array('type', 'name', 'url', 'id');
+    static $preview_types = array(
         'image/jpeg' => 'image',
         'image/png' => 'image',
         'image/gif' => 'image',
         'audio/mp3' => 'audio',
+        'audio/mpeg' => 'audio',
         'audio/ogg' => 'audio',
         'audio/oga' => 'audio',
         'audio/wav' => 'audio',
+        'audio/x-wav' => 'audio',
         'video/mp4' => 'video',
         'video/ogg' => 'video',
         'video/webm' => 'video',
         'application/pdf' => 'pdf',
     );
+    static $office2pdf_command = null;
+    static $office2pdf_document_types = null;
+
+    $DOCTYPE_ALIASES = $GLOBALS['DOCTYPE_ALIASES'];
+
+    if (!isset($office2pdf_command)) {
+        $office2pdf_command = ConfigHelper::getConfig('documents.office2pdf_command', '', true);
+    }
+
+    if (!isset($office2pdf_document_types)) {
+        $document_office2pdf_document_types = ConfigHelper::getConfig(
+            'documents.office2pdf_document_types',
+            '',
+            true
+        );
+
+        if (strlen($document_office2pdf_document_types)) {
+            $document_office2pdf_document_types = preg_split('/([\s]+|[\s]*,[\s]*)/', $document_office2pdf_document_types, -1, PREG_SPLIT_NO_EMPTY);
+            $office2pdf_document_types = array();
+            $doctype_aliases = array_flip($DOCTYPE_ALIASES);
+            foreach ($document_office2pdf_document_types as $document_office2pdf_document_type) {
+                if (isset($doctype_aliases[$document_office2pdf_document_type])) {
+                    $office2pdf_document_types[$doctype_aliases[$document_office2pdf_document_type]] = $document_office2pdf_document_type;
+                }
+            }
+        } else {
+            $office2pdf_document_types = $DOCTYPE_ALIASES;
+        }
+    }
 
     $result = '';
     foreach ($vars as $var) {
@@ -50,20 +81,67 @@ function smarty_function_documentview($params, $template)
         }
     }
     $external = isset($params['external']) && $params['external'] == 'true';
+    $doctype = empty($params['doctype']) ? 0 : intval($params['doctype']);
 
-    $type = $types[$type] ?? '';
+    $preview_type = $preview_types[$type] ?? '';
 
-    $result .= '<div class="documentviewdialog" id="documentviewdialog-' . $id . '" title="' . $name . '" style="display: none;"
-		data-url="' . $url . '"></div>';
+    if (empty($params['text'])) {
+        $office_document = preg_match('#^application/(rtf|msword|ms-excel|.+(oasis|opendocument|openxml).+)$#i', $type);
 
-    $result .= '<a href="' . $url . '" data-title="' . $name . '"';
-    if (empty($type)) {
-        $result .=  ' class="lms-ui-button" ' . ($external ? ' rel="external"' : '');
+        if (!empty($office2pdf_command) && $office_document && !$doctype || isset($office2pdf_document_types[$doctype])) {
+            $preview_type = 'office';
+        }
+    }
+
+    $result .= '<span class="documentview">';
+
+    $result .= '<div class="documentviewdialog" id="documentviewdialog-' . $id . '" title="' . $name . '" style="display: none;"'
+        . ' data-url="' . $url . '"></div>';
+
+    $result .= '<a href="' . $url . '" data-title="' . $name . '" data-name="' . $name . '" data-type="' . $type . '"';
+    if (empty($preview_type)) {
+        $result .=  ' class="lms-ui-button"'
+            . (!empty($office2pdf_command) && !empty($office_document) ? ' data-office2pdf="0"' : ($external ? ' rel="external"' : ''));
     } else {
         $result .= ' id="documentview-' . $id . '" data-dialog-id="documentviewdialog-' . $id . '" '
-            . 'class="lms-ui-button documentview documentview-' . $type . '"';
+            . 'class="lms-ui-button" data-preview-type="' . $preview_type . '"';
     }
+
+    if (empty($params['text'])) {
+        $icon_classes = array(
+            'lms-ui-icon-view',
+            'preview',
+        );
+
+        if (preg_match('/pdf/i', $type)) {
+            $icon_classes[] = 'pdf';
+        } elseif ($office_document) {
+            if (preg_match('/(text|rtf|msword|openxmlformats.+document)/i', $type)) {
+                $icon_classes[] = 'doc';
+            } elseif (preg_match('/(spreadsheet|ms-excel|openxmlformats.+sheet)/i', $type)) {
+                $icon_classes[] = 'xls';
+            }
+        }
+
+        $text = $name . ' <i class="' . implode(' ', $icon_classes) . '"></i>';
+    } else {
+        $text = $params['text'];
+    }
+
     $result .= '>' . $text . '</a>';
+
+    if (empty($params['text']) && $preview_type == 'office') {
+        $result .= LMSSmartyPlugins::buttonFunction(
+            array(
+                'type' => 'link',
+                'icon' => 'download',
+                'class' => 'download',
+            ),
+            $template
+        );
+    }
+
+    $result .= '</span>';
 
     return $result;
 }

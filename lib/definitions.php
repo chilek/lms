@@ -91,7 +91,9 @@ $CSTATUSES = array(
 
 const CUSTOMER_FLAG_RELATED_ENTITY = 1,
     CUSTOMER_FLAG_VAT_PAYER = 2,
-    CUSTOMER_FLAG_SUPPLIER = 4;
+    CUSTOMER_FLAG_SUPPLIER = 4,
+    CUSTOMER_FLAG_CONSUMER = 8,
+    CUSTOMER_FLAG_BUDGETARY_UNIT = 16;
 
 $CUSTOMERFLAGS = array(
     CUSTOMER_FLAG_RELATED_ENTITY => array(
@@ -109,47 +111,63 @@ $CUSTOMERFLAGS = array(
         'tip' => trans('check it if customer is supplier for example for warehouse purpose'),
         'alias' => 'supplier',
     ),
+    CUSTOMER_FLAG_CONSUMER => array(
+        'label' => 'consumer',
+        'tip' => trans('check it if customer is consumer'),
+        'alias' => 'consumer',
+    ),
+    CUSTOMER_FLAG_BUDGETARY_UNIT => array(
+        'label' => 'budgetary unit',
+        'tip' => trans('Check it if customer is budgetary unit (public or state)'),
+        'alias' => 'budgetary-unit',
+    )
 );
 
 // customer consents
-const CCONSENT_DATE = 1,
-    CCONSENT_INVOICENOTICE = 2,
-    CCONSENT_MAIL_SERVICE_INFO = 3,
-    CCONSENT_MAILING_NOTICE = CCONSENT_MAIL_SERVICE_INFO,
-    CCONSENT_MAILINGNOTICE = CCONSENT_MAIL_SERVICE_INFO,
-    CCONSENT_EINVOICE = 4,
-    CCONSENT_USERPANEL_SMS = 5,
-    CCONSENT_USERPANEL_SCAN = 6,
-    CCONSENT_TRANSFERFORM = 7,
-    CCONSENT_SMS_SERVICE_INFO = 8,
-    CCONSENT_SMS_NOTICE = CCONSENT_SMS_SERVICE_INFO,
-    CCONSENT_SMSNOTICE = CCONSENT_SMS_SERVICE_INFO,
-    CCONSENT_SMS_MARKETING = 9,
-    CCONSENT_MAIL_MARKETING = 10,
-    CCONSENT_PHONE_BILLING = 11,
-    CCONSENT_NONE_PHONE_BILLING = 12,
-    CCONSENT_FULL_PHONE_BILLING = 13,
-    CCONSENT_SIMPLIFIED_PHONE_BILLING = 14,
-    CCONSENT_PHONE_MARKETING = 15,
-    CCONSENT_DIRECT_MARKETING = 16,
-    CCONSENT_PHONE_SERVICE_INFO = 17,
-    CCONSENT_PHONE_NOTICE = CCONSENT_PHONE_SERVICE_INFO,
-    CCONSENT_PHONENOTICE = CCONSENT_PHONE_SERVICE_INFO,
-    CCONSENT_SMS_3RDPARTY_MARKETING = 18,
-    CCONSENT_MAIL_3RDPARTY_MARKETING = 19,
-    CCONSENT_PHONE_3RDPARTY_MARKETING = 20,
-    CCONSENT_DIRECT_3RDPARTY_MARKETING = 21,
-    CCONSENT_SMS_COMPLAINT = 22,
-    CCONSENT_MAIL_COMPLAINT = 23,
-    CCONSENT_PHONE_COMPLAINT = 24,
-    CCONSENT_FIBER_OPTIC_LINE_SUSPENSION = 25,
-    CCONSENT_CONTRACT_SIGNED_OUTSIDE_COMPANY_PREMISES = 31,
-    CCONSENT_SERVICE_PROVISION_BEFORE_WITHDRAWAL_PERIOD_EXPIRES = 26,
-    CCONSENT_DIGITAL_CONTENT_USE_RESULTS_IN_LOSS_OF_CONTRACT_WITHDRAWAL_POSSIBILITY = 32,
-    CCONSENT_USERPANEL_SERVICE_INFO = 27,
-    CCONSENT_USERPANEL_MARKETING = 28,
-    CCONSENT_USERPANEL_3RDPARTY_MARKETING = 29,
-    CCONSENT_USERPANEL_COMPLAINT = 30;
+define('CCONSENT_DATE', 1);
+define('CCONSENT_INVOICENOTICE', 2);
+define('CCONSENT_MAIL_SERVICE_INFO', 3);
+define('CCONSENT_MAILING_NOTICE', CCONSENT_MAIL_SERVICE_INFO);
+define('CCONSENT_MAILINGNOTICE', CCONSENT_MAIL_SERVICE_INFO);
+define('CCONSENT_EINVOICE', 4);
+define('CCONSENT_USERPANEL_SMS', 5);
+define('CCONSENT_USERPANEL_SCAN', 6);
+define('CCONSENT_TRANSFERFORM', 7);
+define('CCONSENT_SMS_SERVICE_INFO', 8);
+define('CCONSENT_SMS_NOTICE', CCONSENT_SMS_SERVICE_INFO);
+define('CCONSENT_SMSNOTICE', CCONSENT_SMS_SERVICE_INFO);
+define('CCONSENT_SMS_MARKETING', 9);
+define('CCONSENT_MAIL_MARKETING', 10);
+define('CCONSENT_PHONE_BILLING', 11);
+define('CCONSENT_NONE_PHONE_BILLING', 12);
+define('CCONSENT_FULL_PHONE_BILLING', 13);
+define('CCONSENT_SIMPLIFIED_PHONE_BILLING', 14);
+define('CCONSENT_PHONE_MARKETING', 15);
+define('CCONSENT_DIRECT_MARKETING', 16);
+define('CCONSENT_PHONE_SERVICE_INFO', 17);
+define('CCONSENT_PHONE_NOTICE', CCONSENT_PHONE_SERVICE_INFO);
+define('CCONSENT_PHONENOTICE', CCONSENT_PHONE_SERVICE_INFO);
+define('CCONSENT_SMS_3RDPARTY_MARKETING', 18);
+define('CCONSENT_MAIL_3RDPARTY_MARKETING', 19);
+define('CCONSENT_PHONE_3RDPARTY_MARKETING', 20);
+define('CCONSENT_DIRECT_3RDPARTY_MARKETING', 21);
+define('CCONSENT_SMS_COMPLAINT', 22);
+define('CCONSENT_MAIL_COMPLAINT', 23);
+define('CCONSENT_PHONE_COMPLAINT', 24);
+define('CCONSENT_FIBER_OPTIC_LINE_SUSPENSION', 25);
+define('CCONSENT_SERVICE_PROVISION_BEFORE_WITHDRAWAL_PERIOD_EXPIRES', 26);
+define('CCONSENT_USERPANEL_SERVICE_INFO', 27);
+define('CCONSENT_USERPANEL_MARKETING', 28);
+define('CCONSENT_USERPANEL_3RDPARTY_MARKETING', 29);
+define('CCONSENT_USERPANEL_COMPLAINT', 30);
+define('CCONSENT_CONTRACT_SIGNED_OUTSIDE_COMPANY_PREMISES', 31);
+define('CCONSENT_DIGITAL_CONTENT_USE_RESULTS_IN_LOSS_OF_CONTRACT_WITHDRAWAL_POSSIBILITY', 32);
+define('CCONSENT_BALANCE_ON_DOCUMENTS', 33);
+define('CCONSENT_KSEF_INVOICE', 34);
+define('CCONSENT_TRAFFIC_DATA_USE_FOR_MARKETING', 35);
+define('CCONSENT_POSTAL_DELIVERY_SERVICE_INFO', 36);
+define('CCONSENT_MAIL_SERVICE_PROVIDER_CHANGE', 37);
+define('CCONSENT_POSTAL_DELIVERY_SERVICE_PROVIDER_CHANGE', 38);
 
 $CCONSENTS = array(
     CCONSENT_DATE => array(
@@ -165,6 +183,21 @@ $CCONSENTS = array(
     CCONSENT_INVOICENOTICE => array(
         'label' => trans('<!consent>delivery via e-mail'),
         'name' => 'invoice_notice',
+        'type' => 'boolean',
+    ),
+    CCONSENT_KSEF_INVOICE => array(
+        'label' => trans('<!consent>submission to KSeF'),
+        'name' => 'ksef_invoice',
+        'type' => 'boolean',
+    ),
+    CCONSENT_MAIL_SERVICE_PROVIDER_CHANGE => array(
+        'label' => trans('<!service-provider-change>e-mail'),
+        'name' => 'mail_service_provider_change',
+        'type' => 'boolean',
+    ),
+    CCONSENT_POSTAL_DELIVERY_SERVICE_PROVIDER_CHANGE => array(
+        'label' => trans('<!service-provider-change>postal delivery'),
+        'name' => 'postal_delivery_service_provider_change',
         'type' => 'boolean',
     ),
     CCONSENT_MAIL_SERVICE_INFO => array(
@@ -186,6 +219,11 @@ $CCONSENTS = array(
         'label' => trans('<!service-info>via userpanel'),
         'name' => 'userpanel_service_info',
         'type' => 'boolean',
+    ),
+    CCONSENT_POSTAL_DELIVERY_SERVICE_INFO => array(
+        'label' => trans('<!service-info>postal delivery'),
+        'name' => 'postal_delivery_service_info',
+        'type' => 'boolean'
     ),
     CCONSENT_MAIL_MARKETING => array(
         'label' => trans('<!marketing>e-mail'),
@@ -210,6 +248,11 @@ $CCONSENTS = array(
     CCONSENT_USERPANEL_MARKETING => array(
         'label' => trans('<!marketing>via userpanel'),
         'name' => 'userpanel_marketing',
+        'type' => 'boolean',
+    ),
+    CCONSENT_TRAFFIC_DATA_USE_FOR_MARKETING => array(
+        'label' => trans('<!marketing>traffic data use'),
+        'name' => 'traffic_data_use_for_marketing',
         'type' => 'boolean',
     ),
     CCONSENT_MAIL_3RDPARTY_MARKETING => array(
@@ -292,6 +335,11 @@ $CCONSENTS = array(
         'name' => 'transfer_form',
         'type' => 'boolean',
     ),
+    CCONSENT_BALANCE_ON_DOCUMENTS => array(
+        'label' => trans('balance on documents'),
+        'name' => 'balance_on_documents',
+        'type' => 'boolean',
+    ),
     CCONSENT_PHONE_BILLING => array(
         'label' => trans('phone billing'),
         'name' => 'phone_billing',
@@ -318,6 +366,7 @@ $CCONSENTS = array(
 const CCONSENT_GROUP_MARKETING = 1,
     CCONSENT_GROUP_SERVICE_INFO = 2,
     CCONSENT_GROUP_INVOICES = 3,
+    CCONSENT_GROUP_SERVICE_PROVIDER_CHANGE = 9,
     CCONSENT_GROUP_3RDPARTY_MARKETING = 4,
     CCONSENT_GROUP_COMPLAINT = 5,
     CCONSENT_GROUP_TECHNICAL = 6,
@@ -330,6 +379,14 @@ $CCONSENT_GROUPS = array(
         'consents' => array(
             CCONSENT_EINVOICE,
             CCONSENT_INVOICENOTICE,
+            CCONSENT_KSEF_INVOICE,
+        ),
+    ),
+    CCONSENT_GROUP_SERVICE_PROVIDER_CHANGE => array(
+        'label'=> trans('<!consent-group>service provider change'),
+        'consents' => array(
+            CCONSENT_MAIL_SERVICE_PROVIDER_CHANGE,
+            CCONSENT_POSTAL_DELIVERY_SERVICE_PROVIDER_CHANGE,
         ),
     ),
     CCONSENT_GROUP_SERVICE_INFO => array(
@@ -339,6 +396,7 @@ $CCONSENT_GROUPS = array(
             CCONSENT_SMS_SERVICE_INFO,
             CCONSENT_PHONE_SERVICE_INFO,
             CCONSENT_USERPANEL_SERVICE_INFO,
+            CCONSENT_POSTAL_DELIVERY_SERVICE_INFO,
         ),
     ),
     CCONSENT_GROUP_MARKETING => array(
@@ -349,6 +407,7 @@ $CCONSENT_GROUPS = array(
             CCONSENT_PHONE_MARKETING,
             CCONSENT_DIRECT_MARKETING,
             CCONSENT_USERPANEL_MARKETING,
+            CCONSENT_TRAFFIC_DATA_USE_FOR_MARKETING,
         ),
     ),
     CCONSENT_GROUP_3RDPARTY_MARKETING => array(
@@ -773,12 +832,17 @@ const MSG_NEW = 1,
     MSG_DRAFT = 4,
     MSG_DELIVERED = 5,
     MSG_CANCELLED = 6,
-    MSG_BOUNCED = 7;
+    MSG_BOUNCED = 7,
+    MSG_READY_TO_SEND = 8;
 
 $MESSAGESTATUSES = array(
     MSG_NEW => array(
         'class' => 'lms-ui-message-new',
         'label' => trans('waiting<!plural>'),
+    ),
+    MSG_READY_TO_SEND => array(
+        'class' => 'lms-ui-message-ready-to-send',
+        'label' => trans('ready to send<!plural>'),
     ),
     MSG_SENT => array(
         'class' => 'lms-ui-message-sent',
@@ -1576,15 +1640,18 @@ if (strlen($allowed_link_technologies)) {
 }
 
 $LINKSPEEDS = array(
-    10000       => trans('10Mbit/s'),
-    25000       => trans('25Mbit/s'),
-    54000       => trans('54Mbit/s'),
-    100000      => trans('100Mbit/s'),
-    200000      => trans('200Mbit/s'),
-    300000      => trans('300Mbit/s'),
-    1000000     => trans('1Gbit/s'),
-    10000000    => trans('10Gbit/s'),
-    40000000    => trans('40Gbit/s'),
+    10000       => trans('10 Mbit/s'),
+    25000       => trans('25 Mbit/s'),
+    54000       => trans('54 Mbit/s'),
+    100000      => trans('100 Mbit/s'),
+    200000      => trans('200 Mbit/s'),
+    300000      => trans('300 Mbit/s'),
+    1000000     => trans('1 Gbit/s'),
+    2500000     => trans('2.5 Gbit/s'),
+    5000000     => trans('5 Gbit/s'),
+    10000000    => trans('10 Gbit/s'),
+    20000000    => trans('20 Gbit/s'),
+    40000000    => trans('40 Gbit/s'),
 );
 
 $BOROUGHTYPES = array(
@@ -1675,10 +1742,14 @@ $NETWORK_DUCT_TYPES = array(
     5 => trans('overground on power, lighting or traction foundation'),
 );
 
+const NET_ELEMENT_OWNERSHIP_OWN = 0,
+    NET_ELEMENT_OWNERSHIP_SHARED = 1,
+    NET_ELEMENT_OWNERSHIP_FOREIGN = 2;
+
 $NETELEMENTOWNERSHIPS = array(
-    0   => trans('Own node'),
-    1   => trans('Node shared with another entity'),
-    2   => trans('Foreign node'),
+    NET_ELEMENT_OWNERSHIP_OWN => trans('Own node'),
+    NET_ELEMENT_OWNERSHIP_SHARED => trans('Node shared with another entity'),
+    NET_ELEMENT_OWNERSHIP_FOREIGN => trans('Foreign node'),
 );
 
 const USERPANEL_AUTH_TYPE_ID_PIN = 1,
@@ -1755,6 +1826,22 @@ $USERPANEL_AUTH_TYPES = array(
     ),
 );
 
+const USERPANEL_REMINDER_TYPE_SSNTEN = 1,
+    USERPANEL_REMINDER_TYPE_ID = 2;
+
+$USERPANEL_REMINDER_TYPES = array(
+    USERPANEL_REMINDER_TYPE_SSNTEN => array(
+        'label' => trans('SSN/TEN'),
+        'selection' => trans('SSN/TEN'),
+        'input' => 'ten',
+    ),
+    USERPANEL_REMINDER_TYPE_ID => array(
+        'label' => trans('Customer ID'),
+        'selection' => trans('Customer ID'),
+        'input' => 'customerid',
+    ),
+);
+
 const EVENT_OTHER = 1,
     EVENT_NETWORK = 2,
     EVENT_SERVICE = 3,
@@ -1765,7 +1852,11 @@ const EVENT_OTHER = 1,
     EVENT_PHONE = 8,
     EVENT_TV = 9,
     EVENT_TECHNICAL_VERIFICATION = 10,
-    EVENT_REMINDER = 11;
+    EVENT_REMINDER = 11,
+    EVENT_SERVICE_IMPLEMENTATION = 12,
+    EVENT_TECHNICAL_PROBLEM = 13;
+
+
 
 $EVENTTYPES = array(
     EVENT_OTHER => array(
@@ -1823,6 +1914,16 @@ $EVENTTYPES = array(
         'style' => 'background-color: #FF66FF; color: black;',
         'alias' => 'reminder',
     ),
+    EVENT_SERVICE_IMPLEMENTATION => array(
+        'label' => 'service implementation',
+        'style' => 'background-color: #115770; color: white;',
+        'alias' => 'service_implementation',
+    ),
+    EVENT_TECHNICAL_PROBLEM => array(
+        'label' => 'technical problem',
+        'style' => 'background-color: #E7700C; color: white;',
+        'alias' => 'technical_problem',
+    ),
 );
 
 const SESSIONTYPE_PPPOE = 1,
@@ -1834,7 +1935,8 @@ const SESSIONTYPE_PPPOE = 1,
     SESSIONTYPE_DOCSIS = 64,
     SESSIONTYPE_LLU = 128,
     SESSIONTYPE_BSA = 256,
-    SESSIONTYPE_VPN = 512;
+    SESSIONTYPE_VPN = 512,
+    SESSIONTYPE_IPOE = 1024;
 
 $SESSIONTYPES = array(
     SESSIONTYPE_PPPOE => array(
@@ -1886,6 +1988,11 @@ $SESSIONTYPES = array(
         'label' => trans('VPN access'),
         'tip' => 'Mark as VPN access',
         'alias' => 'vpn',
+    ),
+    SESSIONTYPE_IPOE => array(
+        'label' => trans('IPoE access'),
+        'tip' => 'Mark as IPoE access',
+        'alias' => 'ipoe',
     ),
 );
 
@@ -2007,6 +2114,11 @@ $IDENTITY_TYPES = array(
     5   => 'permanent residence card',
 );
 
+const LOCK_INVOICE_NUMBER = 1,
+    LOCK_INVOICE_NOTE_NUMBER = 2,
+    LOCK_DEBIT_NOTE_NUMBER = 3,
+    LOCK_RECEIPT_NUMBER = 4;
+
 if (isset($SMARTY)) {
     $SMARTY->assign(
         array(
@@ -2052,6 +2164,7 @@ if (isset($SMARTY)) {
             '_NETWORK_DUCT_TYPES' => $NETWORK_DUCT_TYPES,
             '_NETELEMENTOWNERSHIPS' => $NETELEMENTOWNERSHIPS,
             '_USERPANEL_AUTH_TYPES' => $USERPANEL_AUTH_TYPES,
+            '_USERPANEL_REMINDER_TYPES' => $USERPANEL_REMINDER_TYPES,
             '_SESSIONTYPES' => $SESSIONTYPES,
             '_EXISTINGASSIGNMENTS' => $EXISTINGASSIGNMENTS,
             '_CURRENCIES' => $CURRENCIES,

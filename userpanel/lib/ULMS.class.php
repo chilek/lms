@@ -25,6 +25,8 @@
  *
 */
 
+use \Lms\KSeF\KSeF;
+
 // Extending LMS class for Userpanel-specific functions
 class ULMS extends LMS
 {
@@ -70,14 +72,14 @@ class ULMS extends LMS
                 }
 
                 $result['contacts'] = $this->DB->GetAllByKey(
-                    'SELECT id, contact AS phone, name
+                    'SELECT id, contact AS phone, name, type
 					FROM customercontacts WHERE customerid = ? AND (type & ?) > 0 AND (type & ?) = 0
 					ORDER BY id',
                     'id',
                     array($id, CONTACT_MOBILE | CONTACT_FAX | CONTACT_LANDLINE, CONTACT_DISABLED)
                 );
                 $result['emails'] = $this->DB->GetAllByKey(
-                    'SELECT id, contact AS email, name
+                    'SELECT id, contact AS email, name, type
 					FROM customercontacts WHERE customerid = ? AND (type & ?) > 0 AND (type & ?) = 0
 					ORDER BY id',
                     'id',
@@ -145,7 +147,7 @@ class ULMS extends LMS
         $sources = str_replace(';', ',', ConfigHelper::getConfig('userpanel.visible_ticket_sources'));
         $tickets = $this->DB->GetAll('SELECT * FROM rttickets WHERE customerid=?'
             . (!empty($queues) ? ' AND queueid IN (' . implode(',', $queues) . ')' : '')
-            . ('AND deleted = 0')
+            . ' AND deleted = 0'
             . ' AND source IN (' . $sources . ')'
             . ' ORDER BY createtime DESC', array($id));
         if (!empty($tickets)) {
@@ -253,6 +255,10 @@ class ULMS extends LMS
                 $node['locks'] = array();
             }
 
+            if (empty($nodelocks)) {
+                continue;
+            }
+
             foreach ($nodelocks as $lock) {
                 if ($lock['nodeid'] == $nodeid) {
                     $days = array();
@@ -267,5 +273,46 @@ class ULMS extends LMS
         unset($node);
 
         return $nodes;
+    }
+
+    public function isKsefDocument($docid)
+    {
+        $expectedKSeFStatuses = ConfigHelper::checkConfig('ksef.offline_support') ? [0, 200] : [200];
+
+        return $this->DB->GetOne(
+            'SELECT
+                d.id
+            FROM documents d
+            JOIN customers c ON c.id = d.customerid
+            LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
+            LEFT JOIN ksefconfig kc ON kc.divisionid = d.divisionid
+            WHERE d.id = ?
+                AND (
+                    kc.boundarydate IS NULL
+                    OR d.cdate < kc.boundarydate
+                    OR (
+                        EXISTS (SELECT 1 FROM uiconfig WHERE section = ? AND disabled = ? LIMIT 1)
+                        AND (
+                            c.type = ?
+                            OR (
+                                c.type = ?
+                                AND COALESCE(kc.allconsumers, 0) = ?
+                                AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ?)
+                            )
+                        )
+                    ) OR kd.status IN ?
+                )',
+            [
+                $expectedKSeFStatuses,
+                $docid,
+                'ksef',
+                0,
+                CTYPES_COMPANY,
+                CTYPES_PRIVATE,
+                0,
+                CCONSENT_KSEF_INVOICE,
+                $expectedKSeFStatuses,
+            ]
+        );
     }
 }

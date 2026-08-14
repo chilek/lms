@@ -227,7 +227,7 @@
 	</TR>
 	{/if}
     </THEAD>
-    <TBODY class="lms-ui-multi-check">
+    <TBODY class="lms-ui-multi-check lms-ui-multi-check-hidden">
 	<FORM METHOD="POST" NAME="page" id="page-form" ACTION="?m=documentedit&action=confirm">
 	{foreach $documentlist as $doc}
 	{assign var=docid value=$doc.docid}
@@ -307,26 +307,32 @@
 				{if $docattach.type == 1 || $doc.attachments|size == 1}
 					{documentview id="global-{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
 						url=$url external=true
-						text="<i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"
+						text="<i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('#^application/(rtf|.+(oasis|opendocument|openxml).+)$#i',$docattach.contenttype)} xls{/if}\"></i>"
 						tip="Preview"}
 				{/if}
 			{/buttons}
+			<input type="checkbox" name="marks[{$docid}]" value="{$docid}" class="document-checkbox lms-ui-multi-check"{if $marks.$docid} checked{/if}>
 			{if $doc.attachments|size > 1 || $docattach.type < 1}
-			<a href="#" id="allattachments-toggle-{$doc.docid}" onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
-				<img src="img/asc_order.gif">
-			</a>
+				<a href="#" id="allattachments-toggle-{$doc.docid}" onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
+					<img src="img/asc_order.gif">
+				</a>
 			{/if}
 			<div id="allattachments-{$doc.docid}" style="display: none;">
 				{foreach $doc.attachments as $docattach}
-					{if $docattach@first && $docattach.type == 1}{continue}{/if}
-					{documentview id="local-{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
-						url="?m=documentview&id={$doc.docid}&attachmentid={$docattach.id}" external=true
-						text="{$docattach.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"}
+					{documentview
+						id="local-{$doc.docid}-{$docattach.id}"
+						type=$docattach.contenttype
+						doctype=$doc.type
+						name=$docattach.filename
+						url="?m=documentview&id={$doc.docid}&attachmentid={$docattach.id}"
+						external=true
+					}
 					{if $docattach.type == -1}<i class="lms-ui-icon-user" title="<strong>{t a=date("Y/m/d H:i", $docattach.cdate)}Sent by customer at $a{/t}</strong>"></i>{/if}
+					<input type="checkbox" name="attachment-marks[{$docid}][{$docattach.id}]" class="document-attachment-checkbox lms-ui-multi-check" value="{$docattach.id}"
+						{if $marks.$docid} checked{/if}>
 					<br>
 				{/foreach}
 			</div>
-			<INPUT TYPE="checkbox" NAME="marks[{$docid}]" VALUE="{$docid}" class="lms-ui-multi-check"{if $marks.$docid} checked{/if}>
 		</TD>
 	</TR>
 	{foreachelse}
@@ -437,10 +443,12 @@
 			return;
 		}
 
-		if ($('tr[data-closed="0"] :checked').length) {
-			alertDialog($t('One or more of selected documents are not confirmed!'), this);
-			return;
-		}
+		{if !ConfigHelper::checkConfig('documents.allow_unapproved_document_archiving')}
+			if ($('tr[data-closed="0"] :checked').length) {
+				alertDialog($t('One or more of selected documents are not confirmed!'), this);
+				return;
+			}
+		{/if}
 
 		confirmDialog($t("Are you sure, you want to archive selected documents?"), this).done(function() {
 			document.page.action = "?m=documentedit&action=archive";
@@ -488,6 +496,27 @@
             });
         }
 		return false;
+	});
+
+	$(function() {
+		$('.document-checkbox').change(function() {
+			var documentAttachmentCheckboxes = $(this).closest('td').find('.document-attachment-checkbox');
+			var checked = $(this).prop('checked');
+			documentAttachmentCheckboxes.prop('checked', checked);
+			$(this).closest('tbody').trigger('lms:update_check_all');
+		});
+
+		$('.document-attachment-checkbox').change(function() {
+			var documentAttachmentCheckboxes = $(this).closest('td').find('.document-attachment-checkbox');
+			var documentCheckbox = $(this).closest('td').find('.document-checkbox');
+			var checked = $(this).prop('checked');
+			if (checked) {
+				documentCheckbox.prop('checked', documentAttachmentCheckboxes.filter(':checked').length);
+			} else {
+				documentCheckbox.prop('checked', documentAttachmentCheckboxes.filter(':not(:checked)').length !== documentAttachmentCheckboxes.length);
+			}
+			$(this).closest('tbody').trigger('lms:update_check_all');
+		});
 	});
 
 </script>

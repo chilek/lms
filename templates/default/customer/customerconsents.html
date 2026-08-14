@@ -37,7 +37,10 @@
 			</td>
 		</tr>
 		{block name="customer-consent-options"}
-			{foreach $_CCONSENTS as $type => $consent}
+			{if empty($supported_customer_consents)}
+				{$supported_customer_consents = $_CCONSENTS}
+			{/if}
+			{foreach $supported_customer_consents as $type => $consent}
 				{if !is_array($consent)}
 					{continue}
 				{/if}
@@ -67,7 +70,7 @@
 							</td>
 							<td class="text-right">
 								<input type="radio" name="{$variable_prefix}[consents][{$type}]" id="chkconsent{$subtype}"
-									value="{$subtype}"
+									value="{$subtype}" data-consent-type="{$subtype}"
 									{if isset($variables.consents[$type]) && $variables.consents[$type] == $subtype} checked{/if}
 									data-default-checked="{if isset($variables['default-consents'][$type]) && $variables['default-consents'][$type] == $subtype}{$subtype}{else}0{/if}">
 							</td>
@@ -80,7 +83,8 @@
 						</td>
 						<td class="text-right">
 							<input type="checkbox" name="{$variable_prefix}[consents][{$type}]" id="chkconsent{$type}"
-								value="{$smarty.now}"{if isset($variables.consents[$type])} checked{/if}
+								value="{$smarty.now}" data-consent-type="{$type}"
+								{if isset($variables.consents[$type])} checked{/if}
 								data-default-checked="{if isset($variables['default-consents'][$type])}1{else}0{/if}"
 								{tip trigger="chkconsent"|cat:$type class="lms-ui-multi-check"}>
 						</td>
@@ -88,6 +92,12 @@
 				{/if}
 				{$current_customer_consent_group_id = $customer_consent_group_id}
 			{/foreach}
+			{if $current_customer_consent_group_id && $current_customer_consent_group_id != $customer_consent_group_id || $current_customer_consent_group_id && $consent@last}
+							</table>
+						</fieldset>
+					</td>
+				</tr>
+			{/if}
 		{/block}
 	</tbody>
 </table>

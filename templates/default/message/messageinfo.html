@@ -37,7 +37,47 @@
 		border-top: 1px dotted grey;
 	}
 
+	#resend-popup .title {
+		font-weight: bold;
+		font-size: 120%;
+		margin-bottom: 0.5em;
+	}
+
+	#resend-popup ul {
+		list-style-type: none;
+		margin-block-start: 0;
+		margin-block-end: 0;
+		padding-inline-start: 0;
+	}
+
+	#resend-popup li {
+		/*font-weight: bold;*/
+		margin-top: 0.3em;
+		margin-bottom: 0.3em;
+	}
+
+	#resend-popup .action-buttons {
+		margin-top: 0.7em;
+		margin-bottom: 0;
+		display: flex;
+		justify-content: center;
+	}
+
 </style>
+
+<form id="resend-message-form" method="post" action="?m=messageadd&messageid={$message.id}">
+	{$customers = array()}
+	{foreach $itemlist as $item}
+		{if !empty($item.customerid) && !isset($customers[$item.customerid])}
+			{$customers[$item.customerid] = true}
+			<input type="hidden" name="customers[{$item.customerid}]" value="{$item.customerid}"
+				{if $item.status == $smarty.const.MSG_ERROR}data-message-error="1"{/if}
+				{if $item.status == $smarty.const.MSG_NEW || $item.status == $smarty.const.MSG_ERROR || $item.status == $smarty.const.MSG_BOUNCED}data-message-unsent="1"{/if}
+			>
+		{/if}
+	{/foreach}
+</form>
+
 <table class="lmsbox">
 	<colgroup>
 		<col style="width: 1%;">
@@ -78,7 +118,7 @@
 				{if $message.userid}
 					<a href="?m=userinfo&id={$message.userid}">{$message.username|escape}</a>
 				{else}
-					LMS
+					{LMS::SOFTWARE_NAME}
 				{/if}
 			</td>
 		</tr>
@@ -103,6 +143,45 @@
 				</td>
 				<td{if $message.startdate < $smarty.now} class="blend"{/if}>
 					{$message.startdate|date_format:"Y-m-d H:i"}
+				</td>
+			</tr>
+		{/if}
+		{if !empty($lastchanges[$smarty.const.MSG_SENT])}
+			<tr>
+				<td>
+					{icon name="success"}
+				</td>
+				<td class="nobr">
+					<strong>{trans("Last success")}</strong>
+				</td>
+				<td>
+					{$lastchanges[$smarty.const.MSG_SENT]|date_format:"Y-m-d H:i"}
+				</td>
+			</tr>
+		{/if}
+		{if !empty($lastchanges[$smarty.const.MSG_DELIVERED])}
+			<tr>
+				<td>
+					{icon name="mail"}
+				</td>
+				<td class="nobr">
+					<strong>{trans("Last delivery")}</strong>
+				</td>
+				<td>
+					{$lastchanges[$smarty.const.MSG_DELIVERED]|date_format:"Y-m-d H:i"}
+				</td>
+			</tr>
+		{/if}
+		{if !empty($lastchanges[$smarty.const.MSG_ERROR])}
+			<tr>
+				<td>
+					{icon name="error"}
+				</td>
+				<td class="nobr">
+					<strong>{trans("Last error")}</strong>
+				</td>
+				<td>
+					{$lastchanges[$smarty.const.MSG_ERROR]|date_format:"Y-m-d H:i"}
 				</td>
 			</tr>
 		{/if}
@@ -154,8 +233,7 @@
 					{foreach $filecontainers as $container}
 							{foreach $container.files as $file}
 								{documentview id="{$container.id}-{$file.id}" type=$file.contenttype name=$file.filename
-									url="?m=attachments&attachmentaction=viewfile&type=messageid&id={$container.id}&fileid={$file.id}" external=true
-									text="{$file.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$file.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$file.contenttype)} xls{/if}\"></i>"}
+									url="?m=attachments&attachmentaction=viewfile&type=messageid&id={$container.id}&fileid={$file.id}" external=true}
 								<br>
 							{/foreach}
 						{button id="downloadzippedcontainer" onclick="location.href = '?m=attachments&attachmentaction=downloadzippedcontainer&type=messageid&id={$container.id}';" label="Download as zip archive" icon="download"}
@@ -201,14 +279,58 @@
 		{/if}
 		<tr>
 			<td colspan="3" class="lms-ui-box-buttons">
-				{button id="delete-message" icon="delete" label="Delete"}
-				{if !empty($summary[$smarty.const.MSG_NEW]) || !empty($message.startdate) && !empty($summary[$smarty.const.MSG_ERROR])}
+				{if ConfigHelper::checkPrivileges('messaging', 'messaging_removal')}
+					{button id="delete-message" icon="delete" label="Delete"}
+				{/if}
+				{if (!empty($summary[$smarty.const.MSG_NEW]) || !empty($message.startdate) && !empty($summary[$smarty.const.MSG_ERROR]))
+					&& ConfigHelper::checkPrivileges('messaging', 'messaging_modification')}
 					{button icon="cancel" label="Cancel" href="?m=messagecancel&id={$message.id}"}
 				{/if}
-				{if !empty($itemerrorlist)}
+				{if !empty($itemerrorlist) && ConfigHelper::checkPrivileges('messaging', 'messaging_modification')}
 					{button icon="reload" label="Increase attempts" href="?m={$layout.module}&id={$message.id}&action=increase-attempts"}
 				{/if}
-				{button icon="resend" label="Resend" onclick="location.href = '?m=messageadd&messageid={$message.id}';"}
+				{if ConfigHelper::checkPrivileges('messaging', 'messaging_creation')}
+					{capture assign="content"}
+						<div id="resend-popup">
+							<div class="title">
+								{icon name="customer"}
+								<strong>{trans("Recipients")}</strong>
+							</div>
+							<div>
+								<ul>
+									<li>
+										<label>
+											<input type="radio" name="recipients" value="all">
+											{trans("selection from filter")}
+										</label>
+									</li>
+									<li>
+										<label>
+											<input type="radio" name="recipients" value="message-all">
+											{trans("all recipient of this message")}
+										</label>
+									</li>
+									<li>
+										<label>
+											<input type="radio" name="recipients" value="message-unsent" checked>
+											{trans("recipients who haven't received this message")}
+										</label>
+									</li>
+									<li>
+										<label>
+											<input type="radio" name="recipients" value="message-error">
+											{trans("recipients with delivery errors")}
+										</label>
+									</li>
+								</ul>
+							</div>
+							<div class="action-buttons">
+								{button icon="submit" label="<!next-step>Next" id="resend-button"}
+							</div>
+						</div>
+					{/capture}
+					{hint icon="reload" label="Resend" class="lms-ui-link-button" id="resend-message-button" content=$content}
+				{/if}
 			</td>
 		</tr>
 	</tbody>
@@ -291,6 +413,7 @@
 				<select size="1" name="status" form="messageitems">
 					<option value=""{if !$listdata.status} selected{/if}>{trans("— all statuses —")}</option>
 					<option value="{$smarty.const.MSG_NEW}"{if $listdata.status == $smarty.const.MSG_NEW} selected{/if}>{trans("waiting<!plural>")}</option>
+					<option value="{$smarty.const.MSG_READY_TO_SEND}"{if $listdata.status == $smarty.const.MSG_READY_TO_SEND} selected{/if}>{trans("ready to send<!plural>")}</option>
 					{*
 					<option value="{$smarty.const.MSG_DRAFT}"{if $listdata.status == $smarty.const.MSG_DRAFT} selected{/if}>{trans("drafts")}</OPTION>
 					*}
@@ -349,6 +472,8 @@
 						{trans("cancelled")}
 					{elseif $item.status == $smarty.const.MSG_BOUNCED}
 						{trans("bounced")}
+					{elseif $item.status == $smarty.const.MSG_READY_TO_SEND}
+						{trans("ready to send")}
 					{else}
 						{trans("waiting")}
 					{/if}
@@ -410,6 +535,44 @@
 				location.href =  '?m=messagedel&id={$message.id}';
 			});
 			return false;
+		});
+
+		var customers = $('#resend-message-form [name^="customers"]');
+
+		$(document).on('click', '#resend-button', function() {
+			var recipients = $('[name="recipients"]:checked').val();
+
+			switch (recipients) {
+				case 'all':
+					customers.prop('disabled', true);
+					break;
+				case 'message-all':
+					customers.prop('disabled', false);
+					break;
+				case 'message-unsent':
+					customers.each(function() {
+						$(this).prop('disabled', !$(this).is('[data-message-unsent]'));
+					});
+					break;
+				case 'message-error':
+					customers.each(function() {
+						$(this).prop('disabled', !$(this).is('[data-message-error]'));
+					});
+					break;
+			}
+
+			$('#resend-message-form').submit();
+		});
+
+		$('#resend-message-button').on('lms:hint:ready', function() {
+			$('[name="recipients"]').filter('[value="message-unsent"],[value="message-error"]').each(function() {
+				var itemStatus = $(this).val();
+				var disabled = !customers.filter('[data-' + itemStatus + ']').length;
+				$(this).prop('disabled', disabled).closest('label').toggleClass('lms-ui-disabled', disabled);
+				if (itemStatus === 'message-unsent' && disabled) {
+					$(this).closest('li').prev('li').find('input').prop('checked', true);
+				}
+			});
 		});
 	});
 

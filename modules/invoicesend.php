@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+use \Lms\KSeF\KSeF;
+
 $layout['pagetitle'] = trans('Invoice send');
 
 $SMARTY->display('header.html');
@@ -34,11 +36,18 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
     echo '<H1>' . $layout['pagetitle'] . '</H1>';
 
     if (isset($_POST['marks'])) {
-        if ($_GET['marks'] == 'invoice' || !isset($_POST['marks']['invoice'])) {
-            $marks = $_POST['marks'];
-        }
-        if (isset($_POST['marks']['invoice']) && $_POST['marks']['invoice']) {
-            $marks = $_POST['marks']['invoice'];
+        if (!empty($_POST['marks']['invoice']) || !empty($_POST['marks']['note'])) {
+            $marks = [];
+            if (!empty($_POST['marks']['invoice'])) {
+                $marks = array_merge($marks, $_POST['marks']['invoice']);
+            }
+            if (!empty($_POST['marks']['note'])) {
+                $marks = array_merge($marks, $_POST['marks']['note']);
+            }
+        } else {
+            if ($_GET['marks'] == 'invoice' || $_GET['marks'] == 'note') {
+                $marks = $_POST['marks'];
+            }
         }
 
         $ids = Utils::filterIntegers($marks);
@@ -56,27 +65,67 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
         echo '<span class="red">' . trans("Fatal error: No invoices nor debit notes were selected!") . '</span><br>';
     } else {
         $docs = $DB->GetAll(
-            "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctype, d.archived, n.template, m.email,
+            "SELECT
+                d.id,
+                d.number,
+                d.cdate,
+                d.name,
+                d.customerid,
+                d.type AS doctype,
+                d.archived,
+                n.template,
+                m.email,
                 d.divisionid,
-                (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type < 0) THEN 1 ELSE 0 END) AS documentreferenced
-			FROM documents d
-			LEFT JOIN customers c ON c.id = d.customerid
-			JOIN (
-			    SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
-				FROM customercontacts
-				WHERE (type & ?) = ?
-				GROUP BY customerid
-			) m ON m.customerid = c.id
-			LEFT JOIN numberplans n ON n.id = d.numberplanid
-			WHERE d.type IN (?, ?, ?, ?) AND d.id IN (" . implode(',', $ids) . ")
-			ORDER BY d.number",
-            array(
+                d.div_name,
+                d.div_shortname,
+                d.div_account,
+                (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type < 0) THEN 1 ELSE 0 END) AS documentreferenced,
+                kd.ksefnumber,
+                kd.status AS ksefstatus,
+                kd.hash AS ksefhash,
+                kbs.environment AS ksefenvironment,
+                d.div_ten AS kseften
+            FROM documents d
+            LEFT JOIN customers c ON c.id = d.customerid
+            LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
+            LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
+            LEFT JOIN ksefconfig kc ON kc.divisionid = d.divisionid
+            JOIN (
+                SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
+                FROM customercontacts
+                WHERE (type & ?) = ?
+                GROUP BY customerid
+            ) m ON m.customerid = c.id
+            LEFT JOIN numberplans n ON n.id = d.numberplanid
+            WHERE (
+                    d.type IN ?
+                    AND (
+                        d.cdate < kc.boundarydate
+                        OR kc.boundarydate IS NULL
+                        OR c.type = ? AND (COALESCE(kc.allconsumers, 0) = ? AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ?) OR kd.status IS NOT NULL)
+                        OR c.type = ? AND kd.status IS NOT NULL
+                    ) OR d.type IN ?
+                ) AND d.id IN (" . implode(',', $ids) . ")
+            ORDER BY d.number",
+            [
+                [
+                    0,
+                    200,
+                ],
                 CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_EMAIL | CONTACT_INVOICES,
-                DOC_INVOICE,
-                DOC_CNOTE,
-                DOC_DNOTE,
-                DOC_INVOICE_PRO
-            )
+                [
+                    DOC_INVOICE,
+                    DOC_CNOTE,
+                ],
+                CTYPES_PRIVATE,
+                0,
+                CCONSENT_KSEF_INVOICE,
+                CTYPES_COMPANY,
+                [
+                    DOC_DNOTE,
+                    DOC_INVOICE_PRO,
+                ],
+            ]
         );
 
         if (!empty($docs)) {
@@ -104,6 +153,14 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
             foreach ($divisiondocs as $divisionid => $docs) {
                 ConfigHelper::setFilter($divisionid);
 
+                $ksefOfflineSupport = ConfigHelper::checkConfig('ksef.offline_support');
+                $docs = array_filter(
+                    $docs,
+                    function ($doc) use ($ksefOfflineSupport) {
+                        return empty($doc['ksefhash']) || $doc['ksefstatus'] == 200 || $ksefOfflineSupport && empty($doc['ksefstatus']);
+                    }
+                );
+
                 $smtp_options = array(
                     'host' => ConfigHelper::getConfig('sendinvoices.smtp_host'),
                     'port' => ConfigHelper::getConfig('sendinvoices.smtp_port'),
@@ -128,6 +185,20 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                 $add_message = ConfigHelper::checkConfig('sendinvoices.add_message');
                 $message_attachments = ConfigHelper::checkConfig('sendinvoices.message_attachments');
                 $aggregate_documents = ConfigHelper::checkConfig('sendinvoices.aggregate_documents');
+                $financial_history_reverse_order = ConfigHelper::checkConfig(
+                    'sendinvoices.financial_history_reverse_order',
+                    ConfigHelper::checkConfig(
+                        'finances.history_reverse_order',
+                        true
+                    )
+                );
+                $financial_history_item_description_format = ConfigHelper::getConfig(
+                    'sendinvoices.financial_history_item_description_format',
+                    ConfigHelper::getConfig(
+                        'finances.history_item_description_format',
+                        '%comment'
+                    )
+                );
                 $dsn_email = ConfigHelper::getConfig('sendinvoices.dsn_email', '', true);
                 $mdn_email = ConfigHelper::getConfig('sendinvoices.mdn_email', '', true);
 
@@ -172,6 +243,8 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                         'add_message',
                         'message_attachments',
                         'aggregate_documents',
+                        'financial_history_reverse_order',
+                        'financial_history_item_description_format',
                         'which',
                         'duplicate_date',
                         'smtp_options'

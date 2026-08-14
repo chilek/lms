@@ -40,7 +40,7 @@ function getUsers($alldivisions, $selecteddivisions)
     }
 
     $users = $LMS->GetUsers(array(
-        'divisions' => implode(',', array_keys($divisions)),
+        'divisions' => array_keys($divisions),
         'order' => 'rname,asc',
     ));
     if (empty($users)) {

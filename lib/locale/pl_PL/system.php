@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2026 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,6 +24,28 @@
  *  $Id$
  */
 
+function check_pl_ten($ten)
+{
+    $ten = strtoupper(trim($ten));
+
+    $ten = preg_replace('/^PL/', '', $ten);
+
+    $ten = str_replace(['-', ' '], '', $ten);
+
+    if (!preg_match('/^\d{10}$/', $ten)) {
+        return false;
+    }
+
+    $weights = array(6, 5, 7, 2, 3, 4, 5, 6, 7);
+    $checksum = 0;
+
+    for ($x = 0; $x < 9; $x++) {
+        $checksum += $weights[$x] * (int)$ten[$x];
+    }
+
+    return $checksum % 11 == (int)$ten[9];
+}
+
 self::addLanguageFunctions(
     self::SYSTEM_FUNCTION,
     array(
@@ -31,25 +53,34 @@ self::addLanguageFunctions(
             return preg_match('/^[0-9]{2}-[0-9]{3}$/', $zip);
         },
         'check_ten' => function ($ten) {
-            $steps = array(6, 5, 7, 2, 3, 4, 5, 6, 7);
-            $sum_nb = 0;
+            return check_pl_ten($ten);
+        },
+        'check_ksef_internal_id' => function ($ksef_internal_id) {
+            $internal_id = str_replace(
+                array(
+                    '-',
+                    ' ',
+                ),
+                array(
+                    '',
+                    '',
+                ),
+                $ksef_internal_id
+            );
 
-            $ten = str_replace('-', '', $ten);
-            $ten = str_replace(' ', '', $ten);
-
-            if (strlen($ten) != 10) {
+            if (strlen($internal_id) != 15) {
                 return false;
             }
 
-            for ($x = 0; $x < 9; $x++) {
-                $sum_nb += $steps[$x] * $ten[$x];
+            if (!check_pl_ten(substr($internal_id, 0, 10))) {
+                return false;
             }
 
-            if ($sum_nb % 11 == $ten[9]) {
-                return true;
+            if (!preg_match('/-[0-9]{5}$/', $ksef_internal_id)) {
+                return false;
             }
 
-            return false;
+            return true;
         },
         'check_ssn' => function ($ssn) {
             // AFAIR This doesn't cover people born after Y2k, they have month+20
@@ -165,10 +196,13 @@ self::addLanguageFunctions(
             if ($country_code) {
                 $ten = preg_replace('/[ \-]/', '', $ten);
             }
+            /*
             if (strpos($ten, 'PL') === 0) {
                 $ten = substr($ten, 2);
             }
             return ($country_code ? 'PL' : '') . $ten;
+            */
+            return $ten;
         },
         'getHolidays' => function ($year = null) {
             if (!$year) {
@@ -187,6 +221,7 @@ self::addLanguageFunctions(
             $days[mktime(0, 0, 0, 8, 15, $year)] = 'Wniebowzięcie Najświętszej Maryi Panny';
             $days[mktime(0, 0, 0, 11, 1, $year)] = 'Wszystkich Świętych (Dzień Zmarłych)';
             $days[mktime(0, 0, 0, 11, 11, $year)] = 'Narodowe Święto Niepodległości (Dzień Niepodległości)';
+            $days[mktime(0, 0, 0, 12, 24, $year)] = 'Wigilia Bożego Narodzenia';
             $days[mktime(0, 0, 0, 12, 25, $year)] = 'Pierwszy dzień Bożego Narodzenia';
             $days[mktime(0, 0, 0, 12, 26, $year)] = 'Drugi dzień Bożego Narodzenia';
 

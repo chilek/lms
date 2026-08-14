@@ -25,7 +25,7 @@
  */
 
 // support for dynamic loading of plugin javascript code
-if (isset($_GET['template'])) {
+if (isset($_GET['template']) && preg_match('/^[a-zA-Z0-9_-]+$/', $_GET['template'])) {
     foreach ($documents_dirs as $doc) {
         if (is_readable($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $_GET['template'] . DIRECTORY_SEPARATOR . 'info.php')) {
             $doc_dir = $doc;
@@ -135,11 +135,15 @@ function GetPlugin($template, $customerid, $update_title, $JSResponse)
 
     $JSResponse->script('$("#documentpromotions").toggle(' . (empty($engine['promotion-schema-selection']) ? 'false' : 'true') . ')');
     $JSResponse->script('$("#document-consents").toggle(' . (empty($engine['customer-consent-selection']) ? 'false' : 'true') . ')');
+
+    if (isset($engine['default-dont-create-assignments'])) {
+        $JSResponse->script('$("#dont-create-assignments").prop(\'checked\', ' . (empty($engine['default-dont-create-assignments']) ? 'false' : 'true') . ')');
+    }
 }
 
 function GetDocumentTemplates($rights, $type = null)
 {
-    global $documents_dirs;
+    global $documents_dirs, $DOCTYPES;
 
     $docengines = array();
 
@@ -163,6 +167,7 @@ function GetDocumentTemplates($rights, $type = null)
                     if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
                         $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
                     }
+
                     if (isset($engine['type'])) {
                         if (!is_array($engine['type'])) {
                             $engine['type'] = array($engine['type']);
@@ -173,6 +178,28 @@ function GetDocumentTemplates($rights, $type = null)
                         }
                     } elseif (isset($engine)) {
                         $docengines[$dir] = $engine;
+                        $intersect = $DOCTYPES;
+                    }
+
+                    $default = array();
+                    if (!empty($docengines[$dir]) && !empty($engine['default'])) {
+                        if (is_array($engine['default'])) {
+                            $default = array_filter(
+                                $engine['default'],
+                                function ($defaultFlag) {
+                                    return !empty($defaultFlag);
+                                }
+                            );
+                            $default = array_intersect(array_keys($default), $intersect);
+                            $default = array_combine($default, array_fill(0, count($default), true));
+                        } else {
+                            foreach ($intersect as $doctype) {
+                                $default[$doctype] = true;
+                            }
+                        }
+                    }
+                    if (!empty($docengines[$dir])) {
+                        $docengines[$dir]['default'] = $default;
                     }
                 }
             }
@@ -206,6 +233,7 @@ function GetTemplates($doctype, $doctemplate, $JSResponse)
     );
     $docengines = GetDocumentTemplates($rights, $doctype);
     $document['templ'] = $doctemplate;
+    $document['type'] = $doctype;
     $SMARTY->assign('docengines', $docengines);
     $SMARTY->assign('document', $document);
     $contents = $SMARTY->fetch('document/documenttemplateoptions.html');
@@ -215,6 +243,17 @@ function GetTemplates($doctype, $doctemplate, $JSResponse)
         $JSResponse->call('enable_templates');
     } else {
         $JSResponse->call('disable_templates');
+    }
+
+    $defaultDocEngine = array_filter(
+        $docengines,
+        function ($engine) use ($doctype) {
+            return !empty($engine['default'][$doctype]);
+        }
+    );
+    $defaultDocEngine = reset($defaultDocEngine);
+    if (!empty($defaultDocEngine)) {
+        $JSResponse->call('DocTemplateChanged');
     }
 }
 
@@ -305,22 +344,88 @@ function GetReferenceDocuments($doctemplate, $customerid, $JSResponse)
 
     $SMARTY->assign('references', $references);
 
+    if (isset($engine['archive-reference-document'])) {
+        $SMARTY->assign(
+            'document',
+            [
+                'archive-reference' => !empty($engine['archive-reference-document']),
+            ]
+        );
+    }
+
     $template = $SMARTY->fetch('document/documentreference.html');
 
     $JSResponse->assign('referencedocument', 'innerHTML', $template);
 
-    $JSResponse->script('$(\'[name="document[reference]"]\').change(function() {'
-        . ' $("#a_reference_document_limit").toggle(parseInt($(this).val())); '
-        . '}); $("#a_reference_document_limit").toggle(parseInt($(this).val()));');
+    $JSResponse->script('$("#a_reference_document_limit").toggle(parseInt($(this).val()) > 0);');
 
     $JSResponse->script('$(\'[name="document[reference]"]\').prop("required", $(\'[name="document[templ]"] option:selected\').is("[data-refdoc-required]"));');
 }
 
-function GetCustomerConsents($customerid, $JSResponse)
+function GetCustomerConsents($template, $customerid, $JSResponse, $consents = null, $handleTemplateCustomerConsents = false)
 {
-    global $LMS, $SMARTY;
+    global $documents_dirs, $LMS, $SMARTY, $CCONSENTS;
 
-    $document['consents'] = $document['default-consents'] = $LMS->getCustomerConsents($customerid);
+    $result = '';
+
+    foreach ($documents_dirs as $doc) {
+        if (is_readable($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template . DIRECTORY_SEPARATOR . 'info.php')) {
+            $doc_dir = $doc;
+            $template_dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template;
+            break;
+        }
+    }
+
+    // read template information
+    if (is_readable($file = $template_dir . DIRECTORY_SEPARATOR . 'info.php')) {
+        include($file);
+        if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
+            $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
+        }
+    }
+
+    $supported_customer_consents = $CCONSENTS;
+    if (!empty($engine['supported-customer-consents'])) {
+        $engine['supported-customer-consents'] = array_flip($engine['supported-customer-consents']);
+        $supported_customer_consents = array_filter(
+            $supported_customer_consents,
+            function ($consent, $consent_id) use ($engine) {
+                if (is_array($consent)) {
+                    return isset($engine['supported-customer-consents'][$consent_id]);
+                } else {
+                    return isset($engine['supported-customer-consents'][$consent]);
+                }
+            },
+            ARRAY_FILTER_USE_BOTH
+        );
+    }
+    $SMARTY->assign('supported_customer_consents', $supported_customer_consents);
+
+    if ($handleTemplateCustomerConsents && isset($engine['default-customer-consents']) && is_array($engine['default-customer-consents'])) {
+        $defaultCustomerConsents = array_flip($engine['default-customer-consents']);
+    } else {
+        $handleTemplateCustomerConsents = false;
+    }
+
+    $document['default-consents'] = array_filter(
+        $defaultCustomerConsents ?? $LMS->getCustomerConsents($customerid),
+        function ($consent) use ($supported_customer_consents) {
+            return isset($supported_customer_consents[$consent]);
+        },
+        ARRAY_FILTER_USE_KEY
+    );
+
+    if (!isset($consents) || $handleTemplateCustomerConsents) {
+        $document['consents'] = $document['default-consents'];
+    } else {
+        $document['consents'] = array_filter(
+            $consents,
+            function ($checked, $consent) use ($supported_customer_consents) {
+                return isset($supported_customer_consents[$consent]) && !empty($checked);
+            },
+            ARRAY_FILTER_USE_BOTH
+        );
+    }
 
     $SMARTY->assign('variable_prefix', 'document');
     $SMARTY->assign('variables', $document);
@@ -338,7 +443,7 @@ function CustomerChanged($doctype, $doctemplate, $customerid)
     GetPlugin($doctemplate, $customerid, false, $JSResponse);
     GetTemplates($doctype, $doctemplate, $JSResponse);
     GetReferenceDocuments($doctemplate, $customerid, $JSResponse);
-    GetCustomerConsents($customerid, $JSResponse);
+    GetCustomerConsents($doctemplate, $customerid, $JSResponse);
 
     return $JSResponse;
 }
@@ -352,16 +457,20 @@ function DocTypeChanged($doctype, $customerid)
 
     $JSResponse->script('$("#documentpromotions,#document-consents").toggle(false)');
 
+    $lms = LMS::getInstance();
+    $confirmPermission = $lms->checkDocumentPermission($doctype, DOCRIGHT_CONFIRM);
+    $JSResponse->script('$("#confirm-row").toggle(' . (empty($confirmPermission) ? 'false' : 'true') . ')');
+
     return $JSResponse;
 }
 
-function DocTemplateChanged($doctype, $doctemplate, $customerid)
+function DocTemplateChanged($doctype, $doctemplate, $customerid, $consents)
 {
     $JSResponse = new XajaxResponse();
 
     GetPlugin($doctemplate, $customerid, true, $JSResponse);
     GetReferenceDocuments($doctemplate, $customerid, $JSResponse);
-    GetCustomerConsents($customerid, $JSResponse);
+    GetCustomerConsents($doctemplate, $customerid, $JSResponse, $consents, true);
 
     return $JSResponse;
 }

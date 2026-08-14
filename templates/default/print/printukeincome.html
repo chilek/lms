@@ -42,6 +42,16 @@
 			{trans("<!uke-income>Private income")}
 		</TD>
 		{/if}
+		{if !empty($budgetaryunits)}
+			<td width="30" class="HEAD nobr" align="CENTER">
+				{trans("<!uke-income>Budgetary unit services")}
+			</td>
+			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+				<td width="30" class="HEAD nobr" align="CENTER">
+					{trans("<!uke-income>Budgetary unit income")}
+				</td>
+			{/if}
+		{/if}
 		<TD WIDTH="30" CLASS="HEAD nobr" ALIGN="CENTER">
 			{trans("<!uke-income>Total services")}
 		</TD>
@@ -67,12 +77,21 @@
 			{else}
 				{trans("(undefined)")}
 			{/if}
+		</TD>
 		<TD ALIGN="CENTER">
-			{$row.businesscount}
+			{if empty($budgetaryunits)}
+				{$row.businesscount + $row.budgetaryunitcount}
+			{else}
+				{$row.businesscount}
+			{/if}
 		</TD>
 		{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 		<TD ALIGN="CENTER">
-			{moneyf($row.businessincome)}
+			{if empty($budgetaryunits)}
+				{moneyf($row.businessincome + $row.budgetaryunitincome)}
+			{else}
+				{moneyf($row.businessincome)}
+			{/if}
 		</TD>
 		{/if}
 		<TD ALIGN="CENTER">
@@ -82,6 +101,16 @@
 		<TD ALIGN="CENTER">
 			{moneyf($row.privateincome)}
 		</TD>
+		{/if}
+		{if !empty($budgetaryunits)}
+			<td align="center">
+				{$row.budgetaryunitcount}
+			</td>
+			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+				<td align="center">
+					{moneyf($row.budgetaryunitincome)}
+				</td>
+			{/if}
 		{/if}
 		<TD ALIGN="CENTER">
 			{$row.totalcount}
@@ -104,6 +133,9 @@
 						<td width="30" CLASS="HEAD nobr text-center">{trans("Bandwidth interval")}</td>
 						<td width="30" CLASS="HEAD nobr text-center">{trans("<!link>Business links")}</td>
 						<td width="30" CLASS="HEAD nobr text-center">{trans("<!link>Private links")}</td>
+						{if !empty($budgetaryunits)}
+							<td width="30" CLASS="HEAD nobr text-center">{trans("<!link>Budgetary unit links")}</td>
+						{/if}
 						<td width="30" CLASS="HEAD nobr text-center">{trans("Total")}</td>
 					</tr>
 				</thead>
@@ -111,8 +143,17 @@
 				{foreach $bandwidth_variation[$row.type] as $label => $stats}
 					<tr>
 						<td class="text-center">{$label}</td>
-						<td class="text-center">{$stats.business}</td>
+						<td class="text-center">
+							{if empty($budgetaryunits)}
+								{$stats.business + $stats.budgetaryunit}
+							{else}
+								{$stats.business}
+							{/if}
+						</td>
 						<td class="text-center">{$stats.private}</td>
+						{if !empty($budgetaryunits)}
+							<td class="text-center">{$stats.budgetaryunit}</td>
+						{/if}
 						<td class="text-center">{$stats.total}</td>
 					</tr>
 				{/foreach}
@@ -135,6 +176,10 @@
 		<TD CLASS="HEADGREY" ALIGN="CENTER" NOWRAP><B>{sum array=$income column="businessincome" assign="businessincome"}{moneyf($businessincome)}</B></TD>
 		<TD CLASS="HEADGREY" ALIGN="CENTER" NOWRAP><B>{sum array=$income column="privatecount"}</B></TD>
 		<TD CLASS="HEADGREY" ALIGN="CENTER" NOWRAP><B>{sum array=$income column="privateincome" assign="privateincome"}{moneyf($privateincome)}</B></TD>
+		{if !empty($budgetaryunits)}
+			<TD CLASS="HEADGREY" ALIGN="CENTER" NOWRAP><B>{sum array=$income column="budgetaryunitcount"}</B></TD>
+			<TD CLASS="HEADGREY" ALIGN="CENTER" NOWRAP><B>{sum array=$income column="budgetaryunitincome" assign="budgetaryunitincome"}{moneyf($budgetaryunitincome)}</B></TD>
+		{/if}
 		<TD CLASS="HEADGREY" ALIGN="CENTER" NOWRAP><B>{sum array=$income column="totalcount"}</B></TD>
 		<TD CLASS="HEADGREY" ALIGN="CENTER" NOWRAP><B>{sum array=$income column="totalincome" assign="totalincome"}{moneyf($totalincome)}</B></TD>
 	</TR>

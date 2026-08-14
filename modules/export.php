@@ -42,8 +42,9 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
     if ($_POST['to']) {
         [$year, $month, $day] = explode('/', $_POST['to']);
         $to = mktime(23, 59, 59, $month, $day, $year);
-    }
+    } else {
         $to = mktime(23, 59, 59, date('m'), date('d'), date('Y'));
+    }
 
     $registry = intval($_POST['registry']);
     $user = intval($_POST['user']);
@@ -72,7 +73,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
 		numberplans.template, extnumber, receiptcontents.description,
 		cashregs.name AS cashreg, b.balance
 		FROM documents d
-        JOIN customerbalances b ON b.customerid = d.customerid
+        LEFT JOIN customerbalances b ON b.customerid = d.customerid
 		LEFT JOIN receiptcontents ON (d.id = docid)
 		LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 		LEFT JOIN cashregs ON (cashregs.id = regid)

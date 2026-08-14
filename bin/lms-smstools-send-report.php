@@ -197,8 +197,19 @@ if ($msgitemid && $phone) {
     }
 
     $msgitem = $DB->GetRow(
-        'SELECT id, destination FROM messageitems WHERE id = ? AND status = ?',
-        array($msgitemid, MSG_NEW)
+        'SELECT
+            id,
+            destination
+        FROM messageitems
+        WHERE id = ?
+            AND status IN ?',
+        array(
+            $msgitemid,
+            array(
+                MSG_NEW,
+                MSG_READY_TO_SEND,
+            ),
+        )
     );
 
     if (!empty($msgitem)) {

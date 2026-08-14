@@ -1,17 +1,18 @@
-<link href="js/jqueryui/themes/base/jquery-ui.min.css" rel="stylesheet" type="text/css">
+<link href="js/jqueryui/themes/base/all.css" rel="stylesheet">
 <link href="js/jquery-datetimepicker/build/jquery.datetimepicker.min.css" rel="stylesheet" type="text/css">
 <link href="js/jquery-datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
 <link href="js/jquery-datatables-responsive/css/dataTables.responsive.min.css" rel="stylesheet" type="text/css">
 <link href="js/jquery-chosen/chosen.min.css" rel="stylesheet" type="text/css">
 <link href="js/jquery-simple-combobox/css/jquery.scombobox.min.css" rel="stylesheet" type="text/css">
+<link href="js/select2/css/select2.min.css" rel="stylesheet" type="text/css">
 <script>
 	var $_LANG = {}
 </script>
 <script src="js/locale/{$lms_language}.js"></script>
 <script src="js/language.js"></script>
 <script src="js/jquery/jquery.min.js"></script>
-<script src="js/jqueryui/jquery-ui.min.js"></script>
-<script src="js/jqueryui/ui/minified/i18n/datepicker-{$language}.js"></script>
+<script src="js/jqueryui/dist/jquery-ui.min.js"></script>
+<script src="js/jqueryui/ui/i18n/datepicker-{$language}.js"></script>
 <script src="js/jquery-datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
 <script src="js/jquery-datatables/media/js/jquery.dataTables.min.js"></script>
 <script src="js/jquery-datatables-responsive/js/dataTables.responsive.min.js"></script>
@@ -23,6 +24,8 @@
 {*
 <script src="js/jquery-simple-combobox/js/jquery.scombobox.min.js"></script>
 *}
+<script src="js/select2/js/select2.min.js"></script>
+<script src="js/select2/js/i18n/{$language}.js"></script>
 <script src="js/sprintf.min.js"></script>
 <script src="js/galleria/galleria.min.js"></script>
 <script src="js/galleria/themes/classic/galleria.classic.min.js"></script>
@@ -31,6 +34,7 @@
 	var lmsSettings = {
 		language: '{$language}',
 		uiLanguage: '{$lms_language}',
+		fontAwesomeName: 'Font Awesome 6 Free',
 		settingsTimeout: {intval(ConfigHelper::getConfig('phpui.settings_timeout', 28800))},
 		wysiwygEditor: {if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'}true{else}false{/if},
 		helpdeskWysiwygEditor: {if ConfigHelper::getConfig('rt.default_editor') == 'wysiwyg'}true{else}false{/if},
@@ -47,7 +51,9 @@
 		terytShowNumericIdentifiers: {if ConfigHelper::checkConfig('teryt.show_numeric_identifiers')}true{else}false{/if},
 		missedNodeWarning: {if ConfigHelper::checkConfig('assignments.missed_node_warning', ConfigHelper::checkConfig('phpui.node_assignment_warning'))}true{else}false{/if},
 		discountPercentage: {$smarty.const.DISCOUNT_PERCENTAGE},
-		discountAmount: {$smarty.const.DISCOUNT_AMOUNT}
+		discountAmount: {$smarty.const.DISCOUNT_AMOUNT},
+		office2pdfCommand: '{ConfigHelper::getConfig('documents.office2pdf_command', '', true)}',
+		mapCreateNewPointAfterLinkEditStart: {if ConfigHelper::checkConfig('map.create_new_point_after_link_edit_start', ConfigHelper::checkConfig('phpui.map_create_new_point_after_link_edit_start'))}true{else}false{/if}
 	};
 
 	var lms = {
@@ -75,7 +81,11 @@
 			},
 			smartFormatMoney: function (value, currency) {
 				return this.smartFormatNumber(value) + ' ' + currency;
-			},
+			}
+		},
+		permissions: {
+			fullAccess: {if ConfigHelper::checkPrivilege('superuser')}true{else}false{/if},
+			networkMapEdit: {if ConfigHelper::checkPrivilege('network_map_edit', false)}true{else}false{/if}
 		}
 	}
 
@@ -109,10 +119,13 @@
 					{$v = ""}
 				{/if}
 				var name = "{$k|replace:'"':'\"'}";
+				var elem = $('[name="' + name + '"]');
+				var form = elem.attr('form');
+				var html = '<input type="hidden" name="warning[' + name.replace(/[\[\]]/g, '-') + ']" value="1"' + (typeof(form) != 'undefined' ? ' form="' + form + '"' : '') + '>';
 				$('[name="' + name + '"]')
 					.attr('title', "{$v|replace:'"':'\"'}")
 					.addClass('lms-ui-warning')
-					.after('<input type="hidden" name="warning[' + name.replace(/[\[\]]/g, '-') + ']" value="1" />');
+					.after(html);
 			{/foreach}
 		{/if}
 	});

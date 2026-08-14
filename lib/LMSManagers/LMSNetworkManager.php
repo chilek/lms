@@ -94,7 +94,19 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
     public function IsIPGateway($ip)
     {
-        return (bool)$this->db->GetOne('SELECT gateway FROM networks WHERE gateway = ?', array($ip));
+        $network_all_addresses_assignable = ConfigHelper::checkConfig('phpui.network_all_addresses_assignable');
+
+        return (bool)$this->db->GetOne(
+            'SELECT gateway
+            FROM networks
+            WHERE gateway = ?
+                AND allassignable = ?'
+                . ($network_all_addresses_assignable ? ' AND 1 = 0' : ''),
+            array(
+                $ip,
+                0,
+            )
+        );
     }
 
     public function GetPrefixList()
@@ -334,59 +346,62 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             $search['compareType'] = '=';
         }
 
-        if (empty($search['operatorType'])) {
+        if (empty($search['operatorType']) || !preg_match('/^(AND|OR)$/i', $search['operatorType'])) {
             $search['operatorType'] = 'AND';
+        } else {
+            $search['operatorType'] = strtoupper($search['operatorType']);
         }
 
         foreach ($search as $k => $v) {
             if ($v != '') {
                 switch ($k) {
                     case 'network_name':
-                        $sqlwhere .= " lower(n.name) ?LIKE? lower('" . $p.$v.$p . "') " . $search['operatorType'];
+                        $sqlwhere .= ' lower(n.name) ?LIKE? lower(' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType'];
                         break;
 
                     case 'network_address':
-                        $sqlwhere .= " inet_ntoa(address) " . $search['compareType'] . " lower('" . $p.$v.$p . "') " . $search['operatorType'];
+                        $sqlwhere .= ' inet_ntoa(address) ' . $search['compareType'] . ' lower(' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType'];
                         break;
 
                     case 'dhcp':
-                        $sqlwhere .= " '$v' BETWEEN n.dhcpstart AND n.dhcpend " . $search['operatorType'];
+                        $sqlwhere .= ' ' . $this->db->Escape($v) . ' BETWEEN n.dhcpstart AND n.dhcpend ' . $search['operatorType'];
                         break;
 
                     case 'size':
-                        $sqlwhere .= " $v ". $search['size_compare_char'] . " pow(2, 32 - mask2prefix(inet_aton(n.mask))) " . $search['operatorType'];
+                        $sqlwhere .= ' ' . $this->db->Escape($v) . ' ' . $search['size_compare_char'] . ' pow(2, 32 - mask2prefix(inet_aton(n.mask))) ' . $search['operatorType'];
                         break;
 
                     case 'interface':
-                        $sqlwhere .= " lower(n.interface) ?LIKE? lower('" . $p.$v.$p . "') " . $search['operatorType'];
+                        $sqlwhere .= ' lower(n.interface) ?LIKE? lower(' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType']
+                        ;
                         break;
 
                     case 'vlanid':
-                        $sqlwhere .= " vl.vlanid = " . $v . " " . $search['operatorType'];
+                        $sqlwhere .= ' vl.vlanid = ' . $this->db->Escape($v) . ' ' . $search['operatorType'];
                         break;
 
                     case 'gateway':
-                        $sqlwhere .= " n.gateway " . $search['compareType'] . " '" . $p.$v.$p . "' " . $search['operatorType'];
+                        $sqlwhere .= ' n.gateway ' . $search['compareType'] . ' ' . $this->db->Escape($p . $v . $p) . ' ' . $search['operatorType'];
                         break;
 
                     case 'dns':
-                        $sqlwhere .= " (n.dns " . $search['compareType'] . " '" . $p.$v.$p . "' OR n.dns2 " . $search['compareType'] . " '" . $p.$v.$p . "') " . $search['operatorType'];
+                        $sqlwhere .= ' (n.dns ' . $search['compareType'] . ' ' . $this->db->Escape($p . $v . $p) . ' OR n.dns2 ' . $search['compareType'] . ' ' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType'];
                         break;
 
                     case 'wins':
-                        $sqlwhere .= " n.wins " . $search['compareType'] . " '" . $p.$v.$p . "' " . $search['operatorType'];
+                        $sqlwhere .= ' n.wins ' . $search['compareType'] . ' ' . $this->db->Escape($p . $v . $p) . ' ' . $search['operatorType'];
                         break;
 
                     case 'domain':
-                        $sqlwhere .= " lower(n.domain) " . $search['compareType'] . " lower('" . $p.$v.$p . "') " . $search['operatorType'];
+                        $sqlwhere .= ' lower(n.domain) ' . $search['compareType'] . ' lower(' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType'];
                         break;
 
                     case 'host':
-                        $sqlwhere .= " 1 IN (SELECT 1 FROM hosts WHERE name ?LIKE? '" . $p.$v.$p . "') " . $search['operatorType'];
+                        $sqlwhere .= ' 1 IN (SELECT 1 FROM hosts WHERE name ?LIKE? ' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType'];
                         break;
 
                     case 'description':
-                        $sqlwhere .= " lower(n.notes) ?LIKE? lower('" . $p.$v.$p . "') " . $search['operatorType'];
+                        $sqlwhere .= ' lower(n.notes) ?LIKE? lower(' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType'];
                         break;
                 }
             }
@@ -428,7 +443,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 			LEFT JOIN hosts h ON h.id = n.hostid
 			LEFT JOIN vlans vl ON n.vlanid = vl.id'
             . ($sqlwhere != ' WHERE' ? $sqlwhere : '')
-            . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
+            . (empty($sqlord) ? '' : $sqlord . ' ' . $direction)
             . (isset($search['limit']) ? ' LIMIT ' . $search['limit'] : '')
             . (isset($search['offset']) ? ' OFFSET ' . $search['offset'] : ''),
             array(intval(ConfigHelper::getConfig('phpui.lastonline_limit')))
@@ -439,7 +454,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             $assigned = 0;
             $online = 0;
 
-            foreach ($networks as $idx => $row) {
+            foreach ($networks as $row) {
                 $size += $row['size'];
                 $assigned += $row['assigned'];
                 $online += $row['online'];
@@ -940,7 +955,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                         $network['nodes']['name'][$i] = '<b>NETWORK</b>';
                     } elseif (!$prefix_31 && !$network_all_addresses_assignable && empty($network['allassignable']) && $network['nodes']['address'][$i] == $network['broadcast']) {
                         $network['nodes']['name'][$i] = '<b>BROADCAST</b>';
-                    } elseif ($network['nodes']['address'][$i] == $network['gateway']) {
+                    } elseif (!$network_all_addresses_assignable && empty($network['allassignable']) && $network['nodes']['address'][$i] == $network['gateway']) {
                         $network['nodes']['name'][$i] = '<b>GATEWAY</b>';
                     } elseif ($longip >= ip_long($network['dhcpstart']) && $longip <= ip_long($network['dhcpend'])) {
                         $network['nodes']['name'][$i] = '<b>DHCP</b>';

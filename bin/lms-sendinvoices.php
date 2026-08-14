@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2024 LMS Developers
+ *  (C) Copyright 2001-2026 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,8 +25,11 @@
  *  $Id$
  */
 
+use \Lms\KSeF\KSeF;
+
 $script_parameters = array(
     'test' => 't',
+    'section:' => 's:',
     'fakedate:' => 'f:',
     'fake-date:' => null,
     'force-date:' => null,
@@ -46,10 +49,16 @@ $script_parameters = array(
     'customergroups:' => null,
     'customer-status:' => null,
     'omit-free-days' => null,
+    'type:' => null,
+    'ksef' => null,
+    'ksef-offline' => null,
+    'without-ksef' => null,
 );
 
 $script_help = <<<EOF
 -t, --test                      print only invoices to send;
+-s, --section=<section-name>    section name from lms configuration where settings
+                                are stored
 -f, --fakedate, --fake-date, --force-date=YYYY/MM/DD       override system date;
 -p, --part-number=NN            defines which part of invoices that should be sent;
 -g, --fakehour=HH               override system hour; if no fakehour is present - current hour will be used;
@@ -75,6 +84,17 @@ $script_help = <<<EOF
     --customer-status=<status1,status2,...>
                                 send invoices of customers with specified status only
     --omit-free-days            dont send invoices on free days
+    --type=<invoice|cnote|dnote>
+                                send only documents with specified type;
+    --ksef
+                                send only documents which have assigned KSeF number
+                                (ONLINE KSeF documents);
+    --ksef-offline
+                                send only documents which already sent to KSeF
+                                but dont have assigned KSeF number (OFFLINE KSeF documents);
+    --without-ksef
+                                send only documents which dont have assigned KSeF number
+                                nor awaiting for KSeF handling;
 EOF;
 
 require_once('script-options.php');
@@ -102,6 +122,10 @@ if ($archive && $backup) {
 
 $no_attachments = isset($options['no-attachments']);
 
+$ksef = isset($options['ksef']);
+$withoutKsef = isset($options['without-ksef']);
+$ksefOffline = isset($options['ksef-offline']);
+
 if (!$no_attachments) {
     // Initialize templates engine (must be before locale settings)
     $SMARTY = new LMSSmarty;
@@ -118,6 +142,8 @@ if (!$no_attachments) {
     }
 
     define('SMARTY_VERSION', $ver_chunks[0]);
+
+    $SMARTY->assign('_PAYTYPES', $PAYTYPES);
 }
 
 $SYSLOG = SYSLOG::getInstance();
@@ -154,8 +180,12 @@ if (!$no_attachments) {
     $SMARTY->assignByRef('layout', $layout);
 }
 
-$invoice_filename = ConfigHelper::getConfig('sendinvoices.invoice_filename', 'invoice_%docid');
-$dnote_filename = ConfigHelper::getConfig('sendinvoices.debitnote_filename', 'dnote_%docid');
+$config_section = isset($options['section']) && preg_match('/^[a-z0-9-_]+$/i', $options['section'])
+    ? $options['section']
+    : 'sendinvoices';
+
+$invoice_filename = ConfigHelper::getConfig($config_section . '.invoice_filename', 'invoice_%docid');
+$dnote_filename = ConfigHelper::getConfig($config_section . '.debitnote_filename', 'dnote_%docid');
 
 $document_attachment_filename = ConfigHelper::getConfig('documents.attachment_filename', '%filename');
 
@@ -168,38 +198,52 @@ if ($backup || $archive) {
 } else {
     // now it's time for script settings
     $smtp_options = array(
-        'host' => ConfigHelper::getConfig('sendinvoices.smtp_host'),
-        'port' => ConfigHelper::getConfig('sendinvoices.smtp_port'),
-        'user' => ConfigHelper::getConfig('sendinvoices.smtp_username', ConfigHelper::getConfig('sendinvoices.smtp_user')),
-        'pass' => ConfigHelper::getConfig('sendinvoices.smtp_password', ConfigHelper::getConfig('sendinvoices.smtp_pass')),
-        'auth' => ConfigHelper::getConfig('sendinvoices.smtp_auth_type', ConfigHelper::getConfig('sendinvoices.smtp_auth')),
-        'ssl_verify_peer' => ConfigHelper::checkConfig('sendinvoices.smtp_ssl_verify_peer', true),
-        'ssl_verify_peer_name' => ConfigHelper::checkConfig('sendinvoices.smtp_ssl_verify_peer_name', true),
-        'ssl_allow_self_signed' => ConfigHelper::checkConfig('sendinvoices.smtp_ssl_allow_self_signed'),
+        'host' => ConfigHelper::getConfig($config_section . '.smtp_host'),
+        'port' => ConfigHelper::getConfig($config_section . '.smtp_port'),
+        'user' => ConfigHelper::getConfig($config_section . '.smtp_username', ConfigHelper::getConfig($config_section . '.smtp_user')),
+        'pass' => ConfigHelper::getConfig($config_section . '.smtp_password', ConfigHelper::getConfig($config_section . '.smtp_pass')),
+        'auth' => ConfigHelper::getConfig($config_section . '.smtp_auth_type', ConfigHelper::getConfig($config_section . '.smtp_auth')),
+        'ssl_verify_peer' => ConfigHelper::checkConfig($config_section . '.smtp_ssl_verify_peer', true),
+        'ssl_verify_peer_name' => ConfigHelper::checkConfig($config_section . '.smtp_ssl_verify_peer_name', true),
+        'ssl_allow_self_signed' => ConfigHelper::checkConfig($config_section . '.smtp_ssl_allow_self_signed'),
     );
 
-    $customergroups = ConfigHelper::getConfig('sendinvoices.customergroups', '', true);
-    $debug_email = ConfigHelper::getConfig('sendinvoices.debug_email', '', true);
-    $sender_name = ConfigHelper::getConfig('sendinvoices.sender_name', '', true);
-    $sender_email = ConfigHelper::getConfig('sendinvoices.sender_email', '', true);
-    $mail_subject = ConfigHelper::getConfig('sendinvoices.mail_subject', 'Invoice No. %invoice');
-    $mail_body = ConfigHelper::getConfig('sendinvoices.mail_body', ConfigHelper::getConfig('mail.sendinvoice_mail_body'));
-    $mail_format = ConfigHelper::getConfig('sendinvoices.mail_format', 'text');
-    $notify_email = ConfigHelper::getConfig('sendinvoices.notify_email', '', true);
-    $blind_notify_email = ConfigHelper::getConfig('sendinvoices.blind_notify_email', '', true);
-    $reply_email = ConfigHelper::getConfig('sendinvoices.reply_email', '', true);
-    $add_message = ConfigHelper::checkConfig('sendinvoices.add_message');
-    $message_attachments = ConfigHelper::checkConfig('sendinvoices.message_attachments');
-    $aggregate_documents = ConfigHelper::checkConfig('sendinvoices.aggregate_documents');
-    $dsn_email = ConfigHelper::getConfig('sendinvoices.dsn_email', '', true);
-    $mdn_email = ConfigHelper::getConfig('sendinvoices.mdn_email', '', true);
-    $part_size = $options['part-size'] ?? ConfigHelper::getConfig('sendinvoices.limit', '0');
+    $customergroups = ConfigHelper::getConfig($config_section . '.customergroups', '', true);
+    $debug_email = ConfigHelper::getConfig($config_section . '.debug_email', '', true);
+    $sender_name = ConfigHelper::getConfig($config_section . '.sender_name', '', true);
+    $sender_email = ConfigHelper::getConfig($config_section . '.sender_email', '', true);
+    $mail_subject = ConfigHelper::getConfig($config_section . '.mail_subject', 'Invoice No. %invoice');
+    $mail_body = ConfigHelper::getConfig($config_section . '.mail_body', ConfigHelper::getConfig('mail.sendinvoice_mail_body'));
+    $mail_format = ConfigHelper::getConfig($config_section . '.mail_format', 'text');
+    $notify_email = ConfigHelper::getConfig($config_section . '.notify_email', '', true);
+    $blind_notify_email = ConfigHelper::getConfig($config_section . '.blind_notify_email', '', true);
+    $reply_email = ConfigHelper::getConfig($config_section . '.reply_email', '', true);
+    $add_message = ConfigHelper::checkConfig($config_section . '.add_message');
+    $message_attachments = ConfigHelper::checkConfig($config_section . '.message_attachments');
+    $aggregate_documents = ConfigHelper::checkConfig($config_section . '.aggregate_documents');
+    $financial_history_reverse_order = ConfigHelper::checkConfig(
+        $config_section . '.financial_history_reverse_order',
+        ConfigHelper::checkConfig(
+            'finances.history_reverse_order',
+            true
+        )
+    );
+    $financial_history_item_description_format = ConfigHelper::getConfig(
+        $config_section . '.financial_history_item_description_format',
+        ConfigHelper::getConfig(
+            'finances.history_item_description_format',
+            '%comment'
+        )
+    );
+    $dsn_email = ConfigHelper::getConfig($config_section . '.dsn_email', '', true);
+    $mdn_email = ConfigHelper::getConfig($config_section . '.mdn_email', '', true);
+    $part_size = $options['part-size'] ?? ConfigHelper::getConfig($config_section . '.limit', '0');
 
-    $use_all_accounts = ConfigHelper::checkConfig('sendinvoices.use_all_accounts');
-    $use_only_alternative_accounts = ConfigHelper::checkConfig('sendinvoices.use_only_alternative_accounts');
+    $use_all_accounts = ConfigHelper::checkConfig($config_section . '.use_all_accounts');
+    $use_only_alternative_accounts = ConfigHelper::checkConfig($config_section . '.use_only_alternative_accounts');
 
     $allowed_customer_status = Utils::determineAllowedCustomerStatus(
-        $options['customer-status'] ?? ConfigHelper::getConfig('sendinvoices.allowed_customer_status', ''),
+        $options['customer-status'] ?? ConfigHelper::getConfig($config_section . '.allowed_customer_status', ''),
         -1
     );
 
@@ -209,7 +253,7 @@ if ($backup || $archive) {
         $customer_status_condition = ' AND c.status IN (' . implode(',', $allowed_customer_status) . ')';
     }
 
-    $interval = $options['interval'] ?? ConfigHelper::getConfig('sendinvoices.interval', 0);
+    $interval = $options['interval'] ?? ConfigHelper::getConfig($config_section . '.interval', 0);
     if ($interval == 'random') {
         $interval = -1;
     } else {
@@ -227,15 +271,19 @@ if ($backup || $archive) {
 
     $part_number = $options['part-number'] ?? ($options['fakehour'] ?? null);
     if (isset($part_number)) {
-        $part_number = intval($part_number);
+        if ($part_number == 'auto') {
+            $part_number = -1;
+        } else {
+            $part_number = intval($part_number);
+        }
     } else {
-        $part_number = intval(date('H', time()));
+        $part_number = intval(date('G'));
     }
 
     if (isset($options['extra-file'])) {
         $extrafile = $options['extra-file'] ?? null;
     } else {
-        $extrafile = ConfigHelper::getConfig('sendinvoices.extra_file', null, true);
+        $extrafile = ConfigHelper::getConfig($config_section . '.extra_file', null, true);
     }
     if ($extrafile && !is_readable($extrafile)) {
         echo "Warning: unable to read additional file or directory contents [$extrafile]!" . PHP_EOL;
@@ -263,6 +311,19 @@ if (empty($fakedate)) {
 }
 
 $omit_free_days = isset($options['omit-free-days']);
+
+$type = $options['type'] ?? null;
+$supported_types = array(
+    'invoice' => DOC_INVOICE,
+    'cnote' => DOC_CNOTE,
+    'dnote' => DOC_DNOTE,
+);
+if (!empty($type)) {
+    if (!isset($supported_types[$type])) {
+        die('Fatal error: unsupported document type \'' . $type . '\'!' . PHP_EOL);
+    }
+    $type = $supported_types[$type];
+}
 
 [$year, $month, $day] = explode('/', date('Y/n/j', $current_time));
 
@@ -326,7 +387,11 @@ if ($archive) {
         }
 
         if (!empty($part_size) && preg_match('/^[0-9]+$/', $part_size)) {
-            $part_offset = $part_number * $part_size;
+            if ($part_number == -1) {
+                $part_offset = -1;
+            } else {
+                $part_offset = $part_number * $part_size;
+            }
         }
     }
 }
@@ -340,10 +405,33 @@ if (!$no_attachments) {
 }
 
 if ($backup || $archive) {
-    $args = array(DOC_INVOICE, DOC_INVOICE_PRO, DOC_CNOTE, DOC_DNOTE);
+    $args = [
+        CCONSENT_BALANCE_ON_DOCUMENTS,
+        CCONSENT_KSEF_INVOICE,
+        [
+            200,
+            0,
+        ],
+        DOC_INVOICE,
+        DOC_INVOICE_PRO,
+        DOC_CNOTE,
+        DOC_DNOTE,
+    ];
 } else {
-    $args = array(CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_DISABLED,
-        CONTACT_EMAIL | CONTACT_INVOICES, DOC_INVOICE, DOC_INVOICE_PRO, DOC_CNOTE, DOC_DNOTE);
+    $args = [
+        CCONSENT_BALANCE_ON_DOCUMENTS,
+        CCONSENT_KSEF_INVOICE,
+        [
+            200,
+            0,
+        ],
+        CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_DISABLED,
+        CONTACT_EMAIL | CONTACT_INVOICES,
+        DOC_INVOICE,
+        DOC_INVOICE_PRO,
+        DOC_CNOTE,
+        DOC_DNOTE,
+    ];
 
     if ($omit_free_days) {
         $yesterday = strtotime('yesterday', $current_time);
@@ -380,6 +468,9 @@ if ($backup || $archive) {
                 "SELECT COUNT(*)
                 FROM documents d
                 LEFT JOIN customeraddressview c ON c.id = d.customerid
+                LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
+                LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
+                LEFT JOIN ksefconfig kc ON kc.divisionid = d.divisionid
                 JOIN (
                     SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
                     FROM customercontacts
@@ -395,41 +486,97 @@ if ($backup || $archive) {
                     AND c.invoicenotice = 1
                     AND d.cdate >= $daystart
                     AND d.cdate <= $dayend"
-                    . ($customergroups ?: ''),
-                $args
+                    . ($customergroups ?: '')
+                    . ($ksef ? ' AND kd.status = ' . 200 : '')
+                    . ($ksefOffline ? ' AND kd.status IS NOT NULL AND kd.status = ' . 0 : '')
+                    . ($withoutKsef
+                        ? ' AND kd.status IS NULL
+                            AND (
+                                c.type = ' . CTYPES_PRIVATE . '
+                                OR c.type = ' . CTYPES_COMPANY . ' AND (d.cdate < kc.boundarydate OR kc.boundarydate IS NULL)
+                            ) AND COALESCE(kc.allconsumers, 0) = 0
+                            AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')'
+                        : ''
+                    ),
+                [
+                    [
+                        200,
+                        0,
+                    ],
+                    CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_DISABLED,
+                    CONTACT_EMAIL | CONTACT_INVOICES,
+                    DOC_INVOICE,
+                    DOC_INVOICE_PRO,
+                    DOC_CNOTE,
+                    DOC_DNOTE,
+                ]
             ));
             if (empty($count)) {
                 die;
             }
 
             $part_size = ceil(($percent * $count) / 100);
-            $part_offset = $part_number * $part_size;
-            if ((!$part_offset && $part_number) || $part_offset >= $count) {
-                die;
+            if ($part_number == -1) {
+                $part_offset = -1;
+            } else {
+                $part_offset = $part_number * $part_size;
+                if ((!$part_offset && $part_number) || $part_offset >= $count) {
+                    die;
+                }
             }
         }
     }
 }
 
-$ignore_send_date = isset($options['ignore-send-date']) || ConfigHelper::checkConfig('sendinvoices.ignore_send_date');
+$ignore_send_date = isset($options['ignore-send-date']) || ConfigHelper::checkConfig($config_section . '.ignore_send_date');
 
-$query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid,
-            d.type AS doctype, d.archived,
-            d.senddate, n.template" . ($backup || $archive ? '' : ', m.email') . ",
-            (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type < 0) THEN 1 ELSE 0 END) AS documentreferenced
+$query = "
+    SELECT d.id, d.number, d.cdate, d.name, d.customerid,
+        d.type AS doctype, d.archived,
+        d.senddate,
+        d.div_account,
+        d.div_name,
+        d.div_shortname,
+        n.template"
+        . ($backup || $archive ? '' : ', m.email') . ",
+        (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type < 0) THEN 1 ELSE 0 END) AS documentreferenced,
+        (CASE WHEN EXISTS (SELECT 1 FROM customerconsents cc1 WHERE cc1.customerid = c.id AND cc1.type = ?) THEN 1 ELSE 0 END) AS balance_on_documents,
+        (CASE WHEN kc.allconsumers = 1 OR EXISTS (SELECT 1 FROM customerconsents cc2 WHERE cc2.customerid = c.id AND cc2.type = ?) THEN 1 ELSE 0 END) AS ksef_invoice_consent,
+        c.type AS ctype,
+        kd.ksefnumber,
+        kd.status AS ksefstatus,
+        kd.hash AS ksefhash,
+        kbs.environment AS ksefenvironment,
+        d.div_ten AS kseften
     FROM documents d
-    LEFT JOIN customeraddressview c ON c.id = d.customerid"
+    LEFT JOIN customeraddressview c ON c.id = d.customerid
+    LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
+    LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
+    LEFT JOIN ksefconfig kc ON kc.divisionid = d.divisionid"
     . ($backup || $archive ? '' : " JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
         FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id")
     . " LEFT JOIN numberplans n ON n.id = d.numberplanid
     WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
         . $customer_status_condition
+        . ($type ? ' AND d.type = ' . $type : '')
         . ($divisionid ? ' AND d.divisionid = ' . $divisionid : '')
         . " AND c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?)" . ($backup || $archive ? '' : " AND c.invoicenotice = 1")
         . ($archive ? " AND d.archived = 0" : '') . "
         AND d.cdate >= $daystart AND d.cdate <= $dayend"
         . ($customergroups ?: '')
-    . " ORDER BY d.number" . (!empty($part_size) ? " LIMIT $part_size OFFSET $part_offset" : '');
+        . ($ksef ? ' AND kd.status = ' . 200 : '')
+        . ($ksefOffline ? ' AND kd.status IS NOT NULL AND kd.status = ' . 0 : '')
+        . ($withoutKsef
+            ? ' AND kd.status IS NULL
+                AND (
+                    c.type = ' . CTYPES_PRIVATE . '
+                    OR c.type = ' . CTYPES_COMPANY . ' AND (d.cdate < kc.boundarydate OR kc.boundarydate IS NULL)
+                ) AND COALESCE(kc.allconsumers, 0) = 0
+                AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')'
+            : ''
+        )
+    . " ORDER BY d.number"
+    . (empty($part_size) || !isset($part_offset) || $part_offset == -1 ? '' : ' LIMIT ' . $part_size . ' OFFSET ' . $part_offset);
 $docs = $DB->GetAll($query, $args);
 
 if (!empty($docs)) {
@@ -546,9 +693,14 @@ if (!empty($docs)) {
         }
     } else {
         $docs_to_send = array();
+        $docs_to_send_count = 0;
         foreach ($docs as $doc) {
             if ($ignore_send_date || empty($doc['senddate'])) {
                 $docs_to_send[] = $doc;
+                $docs_to_send_count++;
+                if (isset($part_offset) && $part_offset == -1 && !empty($part_size) && $docs_to_send_count >= $part_size) {
+                    break;
+                }
             }
         }
         if (empty($docs_to_send)) {
@@ -595,6 +747,8 @@ if (!empty($docs)) {
             'add_message',
             'message_attachments',
             'aggregate_documents',
+            'financial_history_reverse_order',
+            'financial_history_item_description_format',
             'interval',
             'no_attachments',
             'use_all_accounts',
