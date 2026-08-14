@@ -11,9 +11,6 @@
 			<a class="nav-link" data-toggle="tab" href="#usernodesbox" role="tab">{trans("Your computers")}</a>
 		</li>
 	{/if}
-	<li class="nav-item">
-		<a class="nav-link" data-toggle="tab" href="#userdocsbox" role="tab">{trans("Your documents")}</a>
-	</li>
 </ul>
 <!-- Tab panes -->
 <div class="tab-content">
@@ -25,8 +22,5 @@
 			{include file="module:usernodesbox.html"}
 		</div>
 	{/if}
-	<div class="tab-pane" id="userdocsbox" role="tabpanel">
-		{include file="module:userdocsbox.html"}
-	</div>
 </div>
 {include file="footer.html"}

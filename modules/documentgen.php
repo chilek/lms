@@ -86,7 +86,7 @@ if (isset($_POST['document'])) {
         $error['todate'] = trans('Start date can\'t be greater than end date!');
     }
 
-    $state = $_POST['filter'];
+    $state = isset($_POST['filter']) ? $_POST['filter'] : null;
     $network = $_POST['network'];
 
     if (isset($_POST['customergroup'])) {
@@ -100,20 +100,25 @@ if (isset($_POST['document'])) {
     }
     $customergroupsqlskey = 'OR';
 
+    $search = array();
+    if (isset($document['ctype']) && strlen($document['ctype'])) {
+        $search['type'] = $document['ctype'];
+    }
+
     switch ($state) {
         case CSTATUS_DISCONNECTED:
         case 51:
         case 52:
         case CSTATUS_CONNECTED:
         case 0:
-            $customerlist = $LMS->GetCustomerList(compact('state', 'network', 'customergroup', 'customergroupsqlskey'));
+            $customerlist = $LMS->GetCustomerList(compact('state', 'network', 'customergroup', 'customergroupsqlskey', 'search'));
             break;
         case CSTATUS_INTERESTED:
         case CSTATUS_WAITING:
-            $customerlist = $LMS->GetCustomerList(compact('state'));
+            $customerlist = $LMS->GetCustomerList(compact('state', 'search'));
             break;
         case -1:
-            if ($customerlist = $LMS->GetCustomerList(compact('customergroup', 'customergroupsqlskey'))) {
+            if ($customerlist = $LMS->GetCustomerList(compact('customergroup', 'customergroupsqlskey', 'search'))) {
                 foreach ($customerlist as $idx => $row) {
                     if (!$row['account']) {
                         $ncustomerlist[] = $row;
@@ -141,7 +146,7 @@ if (isset($_POST['document'])) {
 
     if ($document['templ']) {
         foreach ($documents_dirs as $doc) {
-            if (file_exists($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'])) {
+            if (is_readable($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'] . DIRECTORY_SEPARATOR . 'info.php')) {
                 $doc_dir = $doc;
                 $template_dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'];
                 break;
@@ -256,13 +261,57 @@ if (isset($_POST['document'])) {
                 'customerid' => $document['customerid'],
             ));
 
+            $document['template'] = $numtemplate;
+            $document['nr'] = $document['fullnumber'] = $fullnumber;
+
+            $customer = $LMS->GetCustomer($document['customerid']);
+            $division = $LMS->GetDivision($customer['divisionid']);
+
             if ($document['templ']) {
-                $barcode = new \Com\Tecnick\Barcode\Barcode();
-                $bobj = $barcode->getBarcodeObj('C128', iconv('UTF-8', 'ASCII//TRANSLIT', $fullnumber), -1, -30, 'black');
-                $document['barcode'] = base64_encode($bobj->getPngData());
+                $SMARTY->assign(array(
+                    'customer' => $customer,
+                    'customerinfo' => $customer,
+                    'division' => $division,
+                    'document' => $document,
+                    'engine' => $engine,
+                ));
+
+                ConfigHelper::setFilter($customer['divisionid'], Auth::GetCurrentUser());
+
+                $company_logo = ConfigHelper::getConfig('documents.company_logo', '', true);
+                if (strlen($company_logo) && strpos($company_logo, DIRECTORY_SEPARATOR) !== 0) {
+                    $company_logo = SYS_DIR . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . $company_logo;
+                }
+
+                $company_logo_width = intval(ConfigHelper::getConfig('documents.company_logo_width', '150'));
+
+                $project_logo = ConfigHelper::getConfig('documents.project_logo', '', true);
+                if (strlen($project_logo) && strpos($project_logo, DIRECTORY_SEPARATOR) !== 0) {
+                    $project_logo = SYS_DIR . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . $project_logo;
+                }
+
+                $date_format = ConfigHelper::getConfig('documents.date_format', 'd.m.Y');
+
+                $default_header = ConfigHelper::getConfig('documents.default_header', '', true);
+                if (strlen($default_header) && is_readable($default_header)) {
+                    $header = $SMARTY->fetch($default_header);
+                } else {
+                    $header = '';
+                }
+
+                $default_footer = ConfigHelper::getConfig('documents.default_footer', '', true);
+                if (strlen($default_footer) && is_readable($default_footer)) {
+                    $footer = $SMARTY->fetch($default_footer);
+                } else {
+                    $footer = '';
+                }
+
+                $SMARTY->assign(compact('company_logo', 'company_logo_width', 'project_logo', 'date_format', 'header', 'footer'));
+
+                $outputs = array();
 
                 // run template engine
-                if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+                if (is_readable($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
                     . $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php')) {
                     $SMARTY->AddTemplateDir(
                         array(
@@ -283,26 +332,35 @@ if (isset($_POST['document'])) {
                     );
                 }
 
-                if ($output) {
-                    $file = tempnam(DOC_DIR, 'tmp.file');
-                    $fh = fopen($file, 'w');
-                    fwrite($fh, $output);
-                    fclose($fh);
-
-                    $md5sum = md5_file($file);
-                    $path = DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2);
-                    $docfile = array(
-                        'md5sum' => $md5sum,
-                        'type' => $engine['content_type'],
-                        'name' => $engine['output'],
-                        'tmpname' => $file,
-                        'attachmenttype' => 1,
-                        'path' => $path,
-                        'newfile' => $path . DIRECTORY_SEPARATOR . $md5sum,
+                if (empty($outputs) && !empty($output)) {
+                    $outputs[] = array(
+                        'filename' => $engine['output'],
+                        'content-type' => $engine['content_type'],
+                        'output' => $output
                     );
-                    $files[] = $docfile;
-                } else {
-                    $error = trans('Problem during file generation!');
+                }
+
+                if (!empty($outputs)) {
+                    foreach ($outputs as $output) {
+                        $file = tempnam(sys_get_temp_dir(), 'lms-document-attachment-');
+                        file_put_contents($file, $output['output']);
+
+                        $md5sum = md5_file($file);
+                        $path = DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2);
+
+                        $files[] = array(
+                            'md5sum' => $md5sum,
+                            'type' => $output['content-type'],
+                            'filename' => $output['filename'],
+                            'name' => $output['filename'],
+                            'tmpname' => $file,
+                            'attachmenttype' => 1,
+                            'path' => $path,
+                            'newfile' => $path . DIRECTORY_SEPARATOR . $md5sum,
+                        );
+                    }
+                } else if (empty($error)) {
+                    $error['templ'] = trans('Problem during file generation!');
                 }
             }
 
@@ -322,14 +380,12 @@ if (isset($_POST['document'])) {
                 }
             }
 
-            if ($error) {
-                $genresult .= '<span class="alert">' . $error . '</span><br>';
+            if (!empty($error)) {
+                $genresult .= '<span class="alert">' . (is_array($error) ? (empty($error['templ']) ? trans('unknown error') : $error['templ']) : $error) . '</span><br>';
                 continue;
             }
 
             $DB->BeginTrans();
-
-            $division = $LMS->GetDivision($gencust['divisionid']);
 
             $DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, customerid, userid, divisionid, name, address, zip, city, ten, ssn, closed,
 					div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
@@ -414,7 +470,7 @@ if (isset($_POST['document'])) {
     } else {
         if ($document['templ']) {
             foreach ($documents_dirs as $doc) {
-                if (file_exists($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'])) {
+                if (is_readable($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'] . DIRECTORY_SEPARATOR . 'info.php')) {
                     $doc_dir = $doc;
                     $template_dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'];
                     break;
@@ -435,15 +491,17 @@ if (isset($_POST['document'])) {
 
             // call plugin
             if (!empty($engine['plugin'])) {
-                if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+                if (is_readable($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
                     . $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.php')) {
                     include($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $engine['name']
                         . DIRECTORY_SEPARATOR . $engine['plugin'] . '.php');
                 }
-                if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+                if (is_readable($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
                     . $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.js')) {
                     $script_result = '<script src="' . $_SERVER['REQUEST_URI'] . '&template=' . $engine['name'] . '"></script>';
                 }
+            } else {
+                $result = $script_result = '';
             }
 
             // get plugin content
@@ -511,6 +569,19 @@ $SMARTY->assign('numberplans', $numberplans);
 $SMARTY->assign('planDocumentType', $document['type'] ?? null);
 
 $docengines = GetDocumentTemplates($rights, $document['type'] ?? null);
+
+if (isset($document['type']) && !empty($docengines)) {
+    $defaultDocEngine = array_filter(
+        $docengines,
+        function ($engine) use ($document) {
+            return !empty($engine['default'][$document['type']]);
+        }
+    );
+    $defaultDocEngine = reset($defaultDocEngine);
+    if (!empty($defaultDocEngine)) {
+        $SMARTY->assign('defaultDocEngine', $defaultDocEngine);
+    }
+}
 
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());

@@ -142,7 +142,11 @@ switch ($type) {
         $SMARTY->assign('balancelist', $list);
         if (strtolower($report_type) == 'pdf') {
             $output = $SMARTY->fetch('print/printcustomerbalance.html');
-            html2pdf($output, trans('Reports'), $layout['pagetitle']);
+            Utils::html2pdf(array(
+                'content' => $output,
+                'subject' => trans('Reports'),
+                'title' => $layout['pagetitle'],
+            ));
         } else {
             $SMARTY->display('print/printcustomerbalance.html');
         }
@@ -277,7 +281,7 @@ switch ($type) {
             . ($net ? ' AND EXISTS (SELECT 1 FROM vnodes WHERE c.customerid = ownerid AND ((ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ') OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')))' : '')
             . ($division ? ' AND customerview.divisionid = ' . $division : '')
             . (empty($types) ? '' : $typewhere)
-            . ' ORDER BY c.time ASC',
+            . ' ORDER BY c.time ASC, d.number',
             array(
                 $date['to'],
             )
@@ -351,7 +355,11 @@ switch ($type) {
 
         if (strtolower($report_type) == 'pdf') {
             $output = $SMARTY->fetch('print/printbalancelist.html');
-            html2pdf($output, trans('Reports'), $layout['pagetitle']);
+            Utils::html2pdf(array(
+                'content' => $output,
+                'subject' => trans('Reports'),
+                'title' => $layout['pagetitle'],
+            ));
         } else {
             if (isset($_POST['disposition']) && $_POST['disposition'] == 'csv') {
                 $filename = 'history-' . date('YmdHis') . '.csv';
@@ -404,7 +412,11 @@ switch ($type) {
         $SMARTY->assign('incomelist', $incomelist);
         if (strtolower($report_type) == 'pdf') {
             $output = $SMARTY->fetch('print/printincomereport.html');
-            html2pdf($output, trans('Reports'), $layout['pagetitle']);
+            Utils::html2pdf(array(
+                'content' => $output,
+                'subject' => trans('Reports'),
+                'title' => $layout['pagetitle'],
+            ));
         } else {
             $SMARTY->display('print/printincomereport.html');
         }
@@ -454,7 +466,11 @@ switch ($type) {
         $SMARTY->assign('importlist', $importlist);
         if (strtolower($report_type) == 'pdf') {
             $output = $SMARTY->fetch('print/printimportlist.html');
-            html2pdf($output, trans('Reports'), $layout['pagetitle']);
+            Utils::html2pdf(array(
+                'content' => $output,
+                'subject' => trans('Reports'),
+                'title' => $layout['pagetitle'],
+            ));
         } else {
             $SMARTY->display('print/printimportlist.html');
         }
@@ -495,6 +511,12 @@ switch ($type) {
             $type = '&oryginal=1';
         }
 
+        if (isset($_POST['ksef-submit']) && strlen($_POST['ksef-submit'])) {
+            $ksefSubmit = $_POST['ksef-submit'] == 'yes' ? 1 : 0;
+        } else {
+            $ksefSubmit = null;
+        }
+
         $layout['pagetitle'] = trans('Invoices');
 
         header(
@@ -503,8 +525,9 @@ switch ($type) {
                 .$type
                 .'&from='.$date['from']
                 .'&to='.$date['to']
+                . (isset($_POST['datetype']) && $_POST['datetype'] == 'sdate' ? '&datetype=sdate' : '')
                 .(!empty($_POST['einvoice']) ? '&einvoice=' . intval($_POST['einvoice']) : '')
-                .(!empty($_POST['division']) ? '&divisionid='.intval($_POST['division']) : '')
+                .(!empty($_POST['division']) ? (is_array($_POST['division']) ? '&divisionid[]=' . implode('&divisionid[]=', Utils::filterIntegers($_POST['division'])) : '&divisionid=' . intval($_POST['division'])) : '')
                 .(!empty($_POST['customer']) ? '&customerid='.intval($_POST['customer']) : '')
                 .(!empty($_POST['group']) && is_array($_POST['group']) ? '&groupid[]='
                     . implode('&groupid[]=', Utils::filterIntegers($_POST['group'])) : '')
@@ -515,6 +538,9 @@ switch ($type) {
                 .(!empty($_POST['autoissued']) ? '&autoissued=1' : '')
                 .(!empty($_POST['manualissued']) ? '&manualissued=1' : '')
                 . (isset($_POST['related-documents']) ? '&related-documents=1' : '')
+                . (!isset($_POST['transfer-forms']) || !empty($_POST['transfer-forms']) ? '&transfer-forms=1' : '')
+                . (!empty($_POST['purchase-invoices']) ? '&purchase-invoices=1' : '')
+                . (isset($ksefSubmit) ? '&ksef-submit=' . $ksefSubmit : '')
         );
         break;
 
@@ -792,7 +818,11 @@ switch ($type) {
 
         if (strtolower($report_type) == 'pdf') {
             $output = $SMARTY->fetch('print/printliabilityreport.html');
-            html2pdf($output, trans('Reports'), $layout['pagetitle']);
+            Utils::html2pdf(array(
+                'content' => $output,
+                'subject' => trans('Reports'),
+                'title' => $layout['pagetitle'],
+            ));
         } else {
             $SMARTY->display('print/printliabilityreport.html');
         }
@@ -890,17 +920,17 @@ switch ($type) {
 			ORDER BY ' . $sortcol . ', d.id',
             array(DOC_RECEIPT)
         )) {
-            foreach ($list as $idx => $row) {
-                $list[$idx]['number'] = docnumber(array(
+            foreach ($list as $idx => &$row) {
+                $row['number'] = docnumber(array(
                     'number' => $row['number'],
                     'template' => $row['template'],
                     'cdate' => $row['cdate'],
                     'ext_num' => $row['extnumber'],
                 ));
-                $list[$idx]['customer'] = $row['name'].' '.$row['address'].' '.$row['zip'].' '.$row['city'];
+                $row['customer'] = $row['name'] . ' ' . $row['address'] . ' ' . $row['zip'] . ' ' . $row['city'];
 
                 if ($row['posnumber'] > 1) {
-                    $list[$idx]['title'] = $DB->GetCol('SELECT description FROM receiptcontents WHERE docid=? ORDER BY itemid', array($list[$idx]['id']));
+                    $row['title'] = $DB->GetCol('SELECT description FROM receiptcontents WHERE docid = ? ORDER BY itemid', array($row['id']));
                 }
 
                 // summary
@@ -910,16 +940,17 @@ switch ($type) {
                     $listdata['totalexpense'] += -$row['value'] * $row['currencyvalue'];
                 }
 
-                if ($idx==0) {
-                    $list[$idx]['after'] = $listdata['startbalance'] + $row['value'] * $row['currencyvalue'];
+                if (empty($idx)) {
+                    $row['after'] = $listdata['startbalance'] + $row['value'] * $row['currencyvalue'];
                 } else {
-                    $list[$idx]['after'] = $list[$idx-1]['after'] + $row['value'] * $row['currencyvalue'];
+                    $row['after'] = $list[$idx - 1]['after'] + $row['value'] * $row['currencyvalue'];
                 }
 
                 if (!$row['closed']) {
                     $listdata['advances'] -= $row['value'] * $row['currencyvalue'];
                 }
             }
+            unset($row);
         }
 
         $listdata['endbalance'] = $listdata['startbalance'] + $listdata['totalincome'] - $listdata['totalexpense'];
@@ -952,6 +983,20 @@ switch ($type) {
         }
         $SMARTY->assign('receiptlist', $list);
         $SMARTY->assign('listdata', $listdata);
+
+        $csv = !empty($_POST['csv']);
+
+        if ($csv) {
+            $filename = 'receipts-' . date('YmdHis') . '.csv';
+            header('Content-Type: text/csv; charset=utf-8');
+            header('Content-Disposition: attachment; filename=' . $filename);
+            header('Pragma: public');
+
+            $SMARTY->display('print/printreceiptlist-csv.html');
+
+            $SESSION->close();
+            die;
+        }
 
         if (isset($_POST['extended'])) {
                 $pages = array();
@@ -1010,17 +1055,25 @@ switch ($type) {
             $SMARTY->assign('pages', $pages);
             $SMARTY->assign('totals', $totals);
             $SMARTY->assign('pagescount', count($pages));
-            $SMARTY->assign('reccount', count($list));
+            $SMARTY->assign('reccount', empty($list) ? 0 : count($list));
             if (strtolower($report_type) == 'pdf') {
                 $output = $SMARTY->fetch('print/printreceiptlist-ext.html');
-                html2pdf($output, trans('Reports'), $layout['pagetitle']);
+                Utils::html2pdf(array(
+                    'content' => $output,
+                    'subject' => trans('Reports'),
+                    'title' => $layout['pagetitle'],
+                ));
             } else {
                 $SMARTY->display('print/printreceiptlist-ext.html');
             }
         } else {
             if (strtolower($report_type) == 'pdf') {
                 $output = $SMARTY->fetch('print/printreceiptlist.html');
-                html2pdf($output, trans('Reports'), $layout['pagetitle']);
+                Utils::html2pdf(array(
+                    'content' => $output,
+                    'subject' => trans('Reports'),
+                    'title' => $layout['pagetitle'],
+                ));
             } else {
                 $SMARTY->display('print/printreceiptlist.html');
             }
@@ -1043,10 +1096,12 @@ switch ($type) {
         )));
         $SMARTY->assign('cashreglist', $DB->GetAllByKey('SELECT id, name FROM cashregs ORDER BY name', 'id'));
         $SMARTY->assign('divisions', $LMS->GetDivisions());
-        $SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources ORDER BY name'));
+        $SMARTY->assign('sourcelist', $LMS->getCashSources());
         $SMARTY->assign('printmenu', 'finances');
 
         $SMARTY->assign('invprojects', $LMS->GetProjects());
+
+        $SMARTY->assign('promotions', $LMS->GetPromotions());
 
         $SMARTY->display('print/printindex.html');
 

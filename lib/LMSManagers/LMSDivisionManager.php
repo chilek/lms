@@ -91,7 +91,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             . (isset($status) ? ' AND vd.status = ' . intval($status) : '')
             . (isset($userid) ? ' AND ud.userid = ' . intval($userid) : '')
             . (isset($divisionid) ? ' AND vd.id = ' . intval($divisionid) : '')
-            . ($sqlord != '' ? $sqlord . ' ' . $direction : ''),
+            . (empty($sqlord) ? '' : $sqlord . ' ' . $direction),
             'id'
         );
     }
@@ -109,6 +109,13 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
 
         $user_divisions = implode(',', array_keys($this->GetDivisions(array('userid' => Auth::GetCurrentUser()))));
 
+        if (!empty($excludedDivisions)) {
+            if (!is_array($excludedDivisions)) {
+                $excludedDivisions = array($excludedDivisions);
+            }
+            $excludedDivisions = Utils::filterIntegers($excludedDivisions);
+        }
+
         return $this->db->GetAll(
             'SELECT d.id, d.name, d.shortname, (CASE WHEN d.label IS NULL THEN d.shortname ELSE d.label END) AS label,
                 d.status, (SELECT COUNT(*) FROM customers WHERE divisionid = d.id) AS cnt,
@@ -116,7 +123,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             FROM vdivisions d
             WHERE 1 = 1'
             . ((isset($superuser) && empty($superuser)) || !isset($superuser) ? ' AND id IN (' . $user_divisions . ')' : '')
-            . (!empty($exludedDivisions) ? ' AND id NOT IN (' . $exludedDivisions . ')' : '') .
+            . (!empty($excludedDivisions) ? ' AND id NOT IN (' . implode(', ', $excludedDivisions) . ')' : '') .
             ' ORDER BY (CASE WHEN d.label IS NULL THEN d.shortname ELSE d.label END)'
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : '')
@@ -150,7 +157,9 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             'inv_paytime'     => $division['inv_paytime'],
             'inv_paytype'     => $division['inv_paytype'] ?: null,
             'email'           => empty($division['email']) ? null : $division['email'],
+            'serviceemail'    => empty($division['serviceemail']) ? null : $division['serviceemail'],
             'phone'           => empty($division['phone']) ? null : $division['phone'],
+            'servicephone'    => empty($division['servicephone']) ? null : $division['servicephone'],
             'description'     => $division['description'],
             'tax_office_code' => $division['tax_office_code'],
             'url'             => isset($division['url']) && strlen($division['url']) ? $division['url'] : null,
@@ -161,14 +170,24 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
 
         $this->db->Execute('INSERT INTO divisions (name, shortname, label, firstname, lastname, birthdate,
 			ten, regon, rbe, rbename, telecomnumber, bank, account, inv_header, inv_footer, inv_author,
-			inv_cplace, inv_paytime, inv_paytype, email, phone, description, tax_office_code, url, userpanel_url, address_id, office_address_id)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			inv_cplace, inv_paytime, inv_paytype, email, serviceemail, phone, servicephone, description, tax_office_code, url, userpanel_url, address_id, office_address_id)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
         $divisionid = $this->db->GetLastInsertID('divisions');
 
-        if ($divisionid && isset($division['users'])) {
-            foreach ($division['users'] as $userid) {
-                $this->db->Execute('INSERT INTO userdivisions (userid, divisionid) VALUES(?, ?)', array($userid, $divisionid));
+        if ($divisionid) {
+            if (isset($division['users'])) {
+                foreach ($division['users'] as $userid) {
+                    $this->db->Execute(
+                        'INSERT INTO userdivisions
+                        (userid, divisionid)
+                        VALUES (?, ?)',
+                        array(
+                            $userid,
+                            $divisionid,
+                        )
+                    );
+                }
             }
         }
 
@@ -185,7 +204,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
     {
         if ($this->db->GetOne('SELECT COUNT(*) FROM divisions', array($id)) != 1) {
             if ($this->syslog) {
-                $countryid = $this->db->GetOne('SELECT country_id FROM vdivisions
+                $countryid = $this->db->GetOne('SELECT countryid FROM vdivisions
 				WHERE id = ?', array($id));
                 $args = array(
                     SYSLOG::RES_DIV => $id,
@@ -265,7 +284,9 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             'inv_paytime' => $division['inv_paytime'],
             'inv_paytype' => $division['inv_paytype'] ?: null,
             'email'           => empty($division['email']) ? null : $division['email'],
+            'serviceemail'    => empty($division['serviceemail']) ? null : $division['serviceemail'],
             'phone'           => empty($division['phone']) ? null : $division['phone'],
+            'servicephone'    => empty($division['servicephone']) ? null : $division['servicephone'],
             'description' => $division['description'],
             'status'      => !empty($division['status']) ? 1 : 0,
             'tax_office_code' => $division['tax_office_code'],
@@ -280,7 +301,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
                 firstname = ?, lastname = ?, birthdate = ?,
                 ten=?, regon=?, rbe=?, rbename=?, telecomnumber=?, bank=?, account=?, inv_header=?,
                 inv_footer=?, inv_author=?, inv_cplace=?, inv_paytime=?,
-                inv_paytype=?, email=?, phone = ?, description=?, status=?, tax_office_code = ?,
+                inv_paytype=?, email=?, serviceemail = ?, phone = ?, servicephone = ?, description=?, status=?, tax_office_code = ?,
                 url = ?, userpanel_url = ?, office_address_id = ?
             WHERE id=?',
             array_values($args)

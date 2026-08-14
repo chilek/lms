@@ -257,7 +257,7 @@ if (isset($_GET['s'])) {
 } elseif (!isset($filter['state'])) {
     $filter['state'] = $ticketlist_status;
     if (isset($filter['state']) && strlen($filter['state'])) {
-        $filter['state'] = explode(',', $filter['state']);
+        $filter['state'] = Utils::filterIntegers(explode(',', $filter['state']));
     }
 }
 if (is_array($filter['state'])) {
@@ -284,7 +284,7 @@ if (isset($_GET['priority'])) {
 } elseif (!isset($filter['priority'])) {
     $filter['priority'] = $ticketlist_priority;
     if (isset($filter['priority']) && strlen($filter['priority'])) {
-        $filter['priority'] = explode(',', $filter['priority']);
+        $filter['priority'] = Utils::filterIntegers(explode(',', $filter['priority']));
     }
 }
 
@@ -293,6 +293,18 @@ if (isset($_GET['source'])) {
     $filter['source'] = intval($_GET['source']);
 } elseif (!isset($filter['source'])) {
     $filter['source'] = -1;
+}
+
+// cause
+if (isset($_GET['cause'])) {
+    $cause = $_GET['cause'];
+    if ($cause === '') {
+        $filter['cause'] = null;
+    } else {
+        $filter['cause'] = intval($cause);
+    }
+} elseif (!isset($filter['cause'])) {
+    $filter['cause'] = null;
 }
 
 // netnodeid's

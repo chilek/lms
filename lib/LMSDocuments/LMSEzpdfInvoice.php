@@ -280,7 +280,8 @@ class LMSEzpdfInvoice extends LMSInvoice
         if ($this->data['ten']) {
             $currentSystemLanguage = Localisation::getCurrentSystemLanguage();
             Localisation::setSystemLanguage($this->data['lang']);
-            $y = $y - $this->backend->text_align_left($x, $y, $font_size, trans('TEN') . ' ' . format_ten($this->data['ten'], $this->data['export']));
+            //$y = $y - $this->backend->text_align_left($x, $y, $font_size, trans('TEN') . ' ' . format_ten($this->data['ten'], $this->data['export']));
+            $y = $y - $this->backend->text_align_left($x, $y, $font_size, trans('TEN') . ' ' . format_ten($this->data['ten'], false));
             Localisation::setSystemLanguage($currentSystemLanguage);
         } else if (!ConfigHelper::checkConfig('invoices.hide_ssn', true) && $this->data['ssn']) {
             $y=$y-$this->backend->text_align_left($x, $y, $font_size, trans('SSN').' '.$this->data['ssn']);
@@ -293,7 +294,8 @@ class LMSEzpdfInvoice extends LMSInvoice
     {
         $font_size = 10;
         $y = $y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . trans('Seller:') . '</b>');
-        $tmp = str_replace('%ten%', format_ten($this->data['division_ten'], $this->data['export']), $this->data['division_header']);
+        //$tmp = str_replace('%ten%', format_ten($this->data['division_ten'], $this->data['export']), $this->data['division_header']);
+        $tmp = str_replace('%ten%', format_ten($this->data['division_ten'], false), $this->data['division_header']);
 
         if (!ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')
             || empty($this->data['bankccounts'])) {
@@ -311,8 +313,20 @@ class LMSEzpdfInvoice extends LMSInvoice
         $account_text = ($this->use_alert_color ? '<c:color:255,0,0>' : '')
             .  implode("</c:color>\n<c:color:255,0,0>", $accounts)
             . ($this->use_alert_color ? '</c:color>' : '');
-        $tmp = str_replace('%bankaccount', $account_text, $tmp);
-        $tmp = str_replace('%bankname', $this->data['div_bank'], $tmp);
+
+        $tmp = str_replace(
+            array(
+                '%bankaccount',
+                '%bankname',
+                '%extid',
+            ),
+            array(
+                $account_text,
+                $this->data['div_bank'] ?? '',
+                $this->data['extid'] ?? '-',
+            ),
+            $tmp
+        );
 
         if (ConfigHelper::checkConfig('invoices.customer_bankaccount', true)) {
             $tmp .= "\n" . trans('Bank account:') . "\n" . '<b>' . $account_text . '</b>';
@@ -389,6 +403,20 @@ class LMSEzpdfInvoice extends LMSInvoice
             'postoffice' => $this->data['rec_postoffice'],
             'city' => $this->data['rec_city'],
         ));
+        if (!empty($this->data['recipient_ten'])) {
+            $recipient_ten = str_replace(
+                array(
+                    '-',
+                    ' ',
+                ),
+                array(
+                    '',
+                    '',
+                ),
+                $this->data['recipient_ten']
+            );
+            $rec_lines[] = trans('TEN') . ' ' . $this->data['recipient_ten'];
+        }
 
         foreach ($rec_lines as $line) {
             $y -= $this->backend->text_align_left($x, $y, $font_size, $line);
@@ -1269,7 +1297,7 @@ class LMSEzpdfInvoice extends LMSInvoice
             } else {
                 $total = $this->data['total'];
             }
-            $previous_balance = $balance + $total;
+            $previous_balance = $balance + ($total * $this->data['currencyvalue']);
 
             if ($previous_balance > 0) {
                 $comment = trans('(excess payment)');
@@ -1278,7 +1306,6 @@ class LMSEzpdfInvoice extends LMSInvoice
             } else {
                 $comment = '';
             }
-
 
             $y = $y - $this->backend->text_align_left(
                 $x,
@@ -1390,8 +1417,20 @@ class LMSEzpdfInvoice extends LMSInvoice
             foreach ($accounts as &$account) {
                 $account = format_bankaccount($account, $this->data['export']);
             }
-            $tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
-            $tmp = str_replace('%bankname', $this->data['div_bank'], $tmp);
+
+            $tmp = str_replace(
+                array(
+                    '%bankaccount',
+                    '%bankname',
+                    '%extid',
+                ),
+                array(
+                    implode("\n", $accounts),
+                    $this->data['div_bank'] ?? '',
+                    $this->data['extid'] ?? '-',
+                ),
+                $tmp
+            );
 
             $tmp = preg_split('/\r?\n/', $tmp);
             foreach ($tmp as $line) {
@@ -1412,8 +1451,19 @@ class LMSEzpdfInvoice extends LMSInvoice
 
     protected function invoice_header_image($x, $y)
     {
-        $image_path = ConfigHelper::getConfig('invoices.header_image', '', true);
-        if (!file_exists($image_path) || !preg_match('/\.(?<ext>gif|jpg|jpeg|png)$/', $image_path, $m)) {
+        $image_path = $this->data['doctype'] != DOC_DNOTE
+            ? ConfigHelper::getConfig('invoices.header_image', '', true)
+            : ConfigHelper::getConfig('notes.header_image', ConfigHelper::getConfig('invoices.header_image', '', true), true);
+
+        if (!strlen($image_path)) {
+            return false;
+        }
+
+        if (strpos($image_path, DIRECTORY_SEPARATOR) !== 0) {
+            $image_path = SYS_DIR . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . $image_path;
+        }
+
+        if (!is_readable($image_path) || !preg_match('/\.(?<ext>gif|jpg|jpeg|png)$/i', $image_path, $m)) {
             return false;
         }
 
@@ -1454,6 +1504,15 @@ class LMSEzpdfInvoice extends LMSInvoice
         }
     }
 
+    protected function invoice_ksef_warning()
+    {
+        if (!empty($this->data['ksef_warning']) && !$this->data['cancelled']) {
+            $this->backend->setColor(0.5, 0.5, 0.5);
+            $this->backend->addText(80, 200, 50, trans('NO KSeF NUMBER'), 0, 'left', -45);
+            $this->backend->setColor(0, 0, 0);
+        }
+    }
+
     public function invoice_body_standard()
     {
         if (!empty($this->data['div_ccode'])) {
@@ -1469,7 +1528,11 @@ class LMSEzpdfInvoice extends LMSInvoice
         $top = $this->backend->ez['pageHeight'] - 50;
 
         $this->invoice_cancelled();
-        $this->invoice_no_accountant();
+        if (!empty($this->data['ksef_warning'])) {
+            $this->invoice_ksef_warning();
+        } else {
+            $this->invoice_no_accountant();
+        }
         $header_image = $this->invoice_header_image(30, $top - (self::HEADER_IMAGE_HEIGHT / 2));
         $this->invoice_dates(500, $top);
         $this->invoice_address_box(400, $top - 100);
@@ -1498,8 +1561,9 @@ class LMSEzpdfInvoice extends LMSInvoice
         if (ConfigHelper::checkConfig('invoices.show_pricing_method', true)) {
             $top = $this->invoice_pricing_method(30, $top);
         }
-        if (ConfigHelper::checkConfig('invoices.show_balance', true)
-            || ConfigHelper::checkConfig('invoices.show_expired_balance')) {
+        if ((ConfigHelper::checkConfig('invoices.show_balance', true)
+            || ConfigHelper::checkConfig('invoices.show_expired_balance'))
+            && !empty($this->data['balance_on_documents'])) {
             $top = $this->invoice_balance(30, $top);
         }
 
@@ -1536,6 +1600,8 @@ class LMSEzpdfInvoice extends LMSInvoice
     {
         global $PAYTYPES;
 
+        $lms = LMS::getInstance();
+
         if (!empty($this->data['div_ccode'])) {
             Localisation::setSystemLanguage($this->data['div_ccode']);
         }
@@ -1549,7 +1615,11 @@ class LMSEzpdfInvoice extends LMSInvoice
         $top = $this->backend->ez['pageHeight'] - 50;
 
         $this->invoice_cancelled();
-        $this->invoice_no_accountant();
+        if (!empty($this->data['ksef_warning'])) {
+            $this->invoice_ksef_warning();
+        } else {
+            $this->invoice_no_accountant();
+        }
         $header_image = $this->invoice_header_image(30, $top - (self::HEADER_IMAGE_HEIGHT / 2));
         $this->invoice_dates(500, $top);
         $this->invoice_address_box(400, $top - 100);
@@ -1582,16 +1652,18 @@ class LMSEzpdfInvoice extends LMSInvoice
         if (ConfigHelper::checkConfig('invoices.show_pricing_method', true)) {
             $top = $this->invoice_pricing_method(30, $top);
         }
-        if (ConfigHelper::checkConfig('invoices.show_balance', true)
-            || ConfigHelper::checkConfig('invoices.show_expired_balance')) {
+        if ((ConfigHelper::checkConfig('invoices.show_balance', true)
+            || ConfigHelper::checkConfig('invoices.show_expired_balance'))
+            && !empty($this->data['balance_on_documents'])) {
             $top = $this->invoice_balance(30, $top);
         }
 
         $this->backend->check_page_length($top, 200);
-        if (($PAYTYPES[$this->data['paytype']]['features'] & INVOICE_FEATURE_TRANSFER_FORM)
+        if ((!isset($this->data['transfer-forms']) || !empty($this->data['transfer-forms']))
+            && ($PAYTYPES[$this->data['paytype']]['features'] & INVOICE_FEATURE_TRANSFER_FORM)
             && ($this->data['customerbalance'] < 0 || ConfigHelper::checkConfig('invoices.always_show_form', true))) {
             $lms = LMS::getInstance();
-            if ($lms->checkCustomerConsent($this->data['customerid'], CCONSENT_TRANSFERFORM)) {
+            if ($lms->checkCustomerConsent($this->data['customerid'], CCONSENT_TRANSFERFORM) || !empty($this->data['transfer-forms'])) {
                 $this->invoice_main_form_fill(187, 3, 0.4);
                 $this->invoice_simple_form_fill(14, 3, 0.4);
             }

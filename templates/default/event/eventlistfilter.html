@@ -25,11 +25,23 @@
 							{/foreach}
 						</SELECT>
 
+						<select name="g[]" multiple
+							class="lms-ui-advanced-select-test auto-width"
+							data-placeholder="{trans("User groups")}">
+							<option value="">{trans("- any -")}</option>
+							{foreach $usergroups as $usergroup}
+								<option value="{$usergroup.id}" data-users="{$usergroup.users}"
+									{if !empty($filter.usergroups) && in_array($usergroup.id, $filter.usergroups)} selected{/if}
+									>{$usergroup.name|escape}</option>
+							{/foreach}
+						</select>
+
 						{user_selection
 							elemname="a[]"
 							placeholder="Users"
 							multiple=true
 							selected=$filter.userid
+							visible=$visible_users
 							hide_disabled=$hide_disabled_users
 							hide_deleted=$hide_deleted_users
 						}
@@ -40,11 +52,23 @@
 							<input type="checkbox" name="userand" value="1" onchange="document.filter.submit();"{if isset($filter.userand) && $filter.userand} checked{/if}{tip text="Use logical conjunction AND instead of OR in user selection"}>
 						</label>
 
+						<select name="divisionid[]" onchange="document.filter.submit();" multiple
+							class="lms-ui-multiselect"
+							data-default-value="{trans("— any —")}"
+							{tip text="Divisions"}>
+							{foreach $divisions as $division}
+								{if !$division.status}
+									<option value="{$division.id}"
+										{if !empty($filter.divisionid) && in_array($division.id, $filter.divisionid)} selected{/if}
+										>{$division.label|escape}</option>
+								{/if}
+							{/foreach}
+						</select>
+
 						<SELECT name="privacy" onchange="document.filter.submit();" {tip text="Select privacy flag"}>
 							<OPTION value="0"{if $filter.privacy == "0"} selected{/if}>{trans("— all —")}</OPTION>
 							<OPTION value="1"{if $filter.privacy == "1"} selected{/if}>{trans("public")}</OPTION>
 							<OPTION value="2"{if $filter.privacy == "2"} selected{/if}>{trans("private")}</OPTION>
-							<OPTION value="" selected disabled>{trans("Privacy")}</OPTION>
 						</SELECT>
 						{customerlist form="filter" customers=$customers selected=$filter.customerid selectname="u" inputname="u" customOnChange="document.filter.submit();" version=2}
 						{button label="Today" onclick="location.href='?m=eventlist&day={$smarty.now|date_format:"d"}&month={$smarty.now|date_format:"m"}&year={$smarty.now|date_format:"Y"}';"}
@@ -53,7 +77,6 @@
 							<OPTION value="" {if $filter.closed == ""} selected{/if}>{trans("— all —")}</OPTION>
 							<OPTION value="0"{if $filter.closed == "0"} selected{/if}>{trans("opened<!plural:event>")}</OPTION>
 							<OPTION value="1"{if $filter.closed == "1"} selected{/if}>{trans("closed<!plural:event>")}</OPTION>
-							<OPTION value="" selected disabled>{trans("Status")}</OPTION>
 						</SELECT>
 					</FORM>
 				</div>
@@ -61,4 +84,25 @@
 			</div>
 		</TD>
 	</TR>
+
+	<script>
+
+		$(function() {
+			$('[name="g[]"]').change(function() {
+				var that = $(this);
+				var userInGroups = [];
+				var users = that.find('option:selected').attr('data-users');
+				if (typeof(users) !== 'undefined') {
+					userInGroups = that.find('option:selected').attr('data-users').split(',');
+				}
+				userInGroups = [...new Set(userInGroups)];
+				$('[name="a[]"] option').each(function() {
+					$(this).toggle(!userInGroups.length || !that.val().length || userInGroups.indexOf($(this).val()) !== -1);
+					$(this).prop('selected', $(this).prop('selected') && (!userInGroups.length || userInGroups.indexOf($(this).val()) !== -1));
+				});
+				updateAdvancedSelectsTest('[name="a[]"]');
+			});
+		});
+
+	</script>
 {/block}

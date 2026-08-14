@@ -24,12 +24,20 @@
  *  $Id$
  */
 
+use \Lms\KSeF\KSeF;
+
 class LMSTcpdfInvoice extends LMSInvoice
 {
     // default font
     public const TCPDF_FONT = 'liberationsans';
 
     private $use_alert_color;
+
+    private $transfer_form_on_separate_page = false;
+
+    private $jpk_flags;
+    private $ksef_offline_support;
+    private $ksef_invoice_header;
 
     public function __construct($title, $pagesize = 'A4', $orientation = 'portrait')
     {
@@ -45,10 +53,16 @@ class LMSTcpdfInvoice extends LMSInvoice
 
         $this->use_alert_color = ConfigHelper::checkConfig('invoices.use_alert_color');
 
+        $this->transfer_form_on_separate_page = ConfigHelper::checkConfig('invoices.transfer_form_on_separate_page');
+
         [$margin_top, $margin_right, $margin_bottom, $margin_left] = explode(',', ConfigHelper::getConfig('invoices.tcpdf_margins', '27,15,25,15'));
 
         $this->backend->SetMargins(trim($margin_left), trim($margin_top), trim($margin_right));
         $this->backend->SetAutoPageBreak(true, trim($margin_bottom));
+
+        $this->jpk_flags = ConfigHelper::checkConfig('invoices.jpk_flags');
+        $this->ksef_offline_support = ConfigHelper::checkConfig('ksef.offline_support');
+        $this->ksef_invoice_header = ConfigHelper::getConfig('ksef.invoice_header');
     }
 
     protected function Table()
@@ -409,7 +423,9 @@ class LMSTcpdfInvoice extends LMSInvoice
             }
         }
 
-        if (!empty($flags)) {
+        if (empty($flags)) {
+            $this->jpk_flags = false;
+        } else {
             $this->backend->SetFont(null, '', 9);
             $this->backend->writeHTMLCell(0, 0, '', 3, trans('JPK:') . ' <b>' . implode(', ', $flags) . '</b>', 0, 1, 0, true, 'C');
         }
@@ -426,7 +442,18 @@ class LMSTcpdfInvoice extends LMSInvoice
 
     protected function invoice_title()
     {
-        $this->backend->SetY(29);
+        $y = 29;
+
+        if (!empty($this->jpk_flags) && !empty($this->data['ksefenvironment'])) {
+            $y += 3;
+        }
+
+        if (!empty($this->ksef_invoice_header)) {
+            $y += 5;
+        }
+
+        $this->backend->SetY($y);
+
         $this->backend->SetFont(null, 'B', 16);
         $docnumber = docnumber(array(
             'number' => $this->data['number'],
@@ -469,7 +496,8 @@ class LMSTcpdfInvoice extends LMSInvoice
     {
         $this->backend->SetFont(null, '', 8);
         $seller = '<b>' . trans('Seller:') . '</b><br>';
-        $tmp = str_replace('%ten%', format_ten($this->data['division_ten'], $this->data['export']), $this->data['division_header']);
+        //$tmp = str_replace('%ten%', format_ten($this->data['division_ten'], $this->data['export']), $this->data['division_header']);
+        $tmp = str_replace('%ten%', format_ten($this->data['division_ten'], false), $this->data['division_header']);
 
         if (!ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')
             || empty($this->data['bankaccounts'])) {
@@ -487,8 +515,20 @@ class LMSTcpdfInvoice extends LMSInvoice
         $account_text = ($this->use_alert_color ? '<span style="color:red">' : '')
             . implode("\n", $accounts)
             . ($this->use_alert_color ? '</span>' : '');
-        $tmp = str_replace('%bankaccount', $account_text, $tmp);
-        $tmp = str_replace('%bankname', $this->data['div_bank'] ?? '', $tmp);
+
+        $tmp = str_replace(
+            array(
+                '%bankaccount',
+                '%bankname',
+                '%extid',
+            ),
+            array(
+                $account_text,
+                $this->data['div_bank'] ?? '',
+                $this->data['extid'] ?? '-',
+            ),
+            $tmp
+        );
 
         if (ConfigHelper::checkConfig('invoices.customer_bankaccount', true)) {
             $tmp .= "\n" . trans('Bank account:') . "\n" . '<B>' . $account_text . '<B>';
@@ -508,7 +548,7 @@ class LMSTcpdfInvoice extends LMSInvoice
 
         $buyer = '<b>' . trans('Purchaser:') . '</b><br>';
 
-        $buyer .= $this->data['name'] . '<br>';
+        $buyer .= htmlspecialchars($this->data['name']) . '<br>';
         $buyer .= $this->data['address'] . '<br>';
         $buyer .= $this->data['zip'] . ' ' . $this->data['city'];
         if ($this->data['export']) {
@@ -518,7 +558,8 @@ class LMSTcpdfInvoice extends LMSInvoice
         if ($this->data['ten']) {
             $currentSystemLanguage = Localisation::getCurrentSystemLanguage();
             Localisation::setSystemLanguage($this->data['lang']);
-            $buyer .= trans('TEN') . ': ' . format_ten($this->data['ten'], $this->data['export']) . '<br>';
+            //$buyer .= trans('TEN') . ': ' . format_ten($this->data['ten'], $this->data['export']) . '<br>';
+            $buyer .= trans('TEN') . ': ' . format_ten($this->data['ten'], false) . '<br>';
             Localisation::setSystemLanguage($currentSystemLanguage);
         } elseif (!ConfigHelper::checkConfig('invoices.hide_ssn', true) && $this->data['ssn']) {
             $buyer .= trans('SSN') . ': ' . $this->data['ssn'] . '<br>';
@@ -550,7 +591,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             }
 
             if ($this->data['export']) {
-                $postbox .= trans(empty($this->data['post_country']) ? $this->data['country'] : $this->data['post_country']) . '<br>';
+                $postbox .= ', ' . trans(empty($this->data['post_country']) ? $this->data['country'] : $this->data['post_country']) . '<br>';
             }
 
             $this->backend->SetFont(null, 'B', 10);
@@ -580,25 +621,85 @@ class LMSTcpdfInvoice extends LMSInvoice
 
     protected function invoice_recipient()
     {
-        if (empty($this->data['recipient_address_id'])) {
-            return 0;
+        $y = $this->backend->getY();
+        $x = $this->backend->getX();
+
+        if (!empty($this->data['recipient_address_id'])) {
+            //$x = $this->backend->getPageWidth() / 2;
+            //$x = 125;
+            $x = 83;
+
+            $this->backend->SetFont(null, '', 8);
+
+            $this->backend->writeHTMLCell(80, '', '', '', '<b>' . trans('Recipient:') . '</b>', 0, 1, 0, true, 'L');
+
+            $rec_lines = document_address(array(
+                'name' => $this->data['rec_name'],
+                'address' => $this->data['rec_address'],
+                'street' => $this->data['rec_street'],
+                'zip' => $this->data['rec_zip'],
+                'postoffice' => $this->data['rec_postoffice'],
+                'city' => $this->data['rec_city'],
+            ));
+            if (!empty($this->data['recipient_ten'])) {
+                $recipient_ten = str_replace(
+                    array(
+                        '-',
+                        ' ',
+                    ),
+                    array(
+                        '',
+                        '',
+                    ),
+                    $this->data['recipient_ten']
+                );
+                $rec_lines[] = trans('TEN') . ' ' . $this->data['recipient_ten'];
+            }
+
+            foreach ($rec_lines as $line) {
+                $this->backend->writeHTMLCell(80, '', '', '', $line, 0, 1, 0, true, 'L');
+            }
+
+            $newY = $this->backend->getY();
         }
 
-        $this->backend->SetFont(null, '', 8);
+        if (!empty($this->data['recipient_address_id2'])) {
+            $this->backend->setY($y);
 
-        $this->backend->writeHTMLCell(80, '', '', '', '<b>' . trans('Recipient:') . '</b>', 0, 1, 0, true, 'L');
+            $this->backend->SetFont(null, '', 8);
 
-        $rec_lines = document_address(array(
-            'name' => $this->data['rec_name'],
-            'address' => $this->data['rec_address'],
-            'street' => $this->data['rec_street'],
-            'zip' => $this->data['rec_zip'],
-            'postoffice' => $this->data['rec_postoffice'],
-            'city' => $this->data['rec_city'],
-        ));
+            $this->backend->writeHTMLCell(80, '', $x, '', '<b>' . trans('Recipient (additional):') . '</b>', 0, 1, 0, true, 'L');
 
-        foreach ($rec_lines as $line) {
-            $this->backend->writeHTMLCell(80, '', '', '', $line, 0, 1, 0, true, 'L');
+            $rec_lines = document_address(array(
+                'name' => $this->data['rec_name2'],
+                'address' => $this->data['rec_address2'],
+                'street' => $this->data['rec_street2'],
+                'zip' => $this->data['rec_zip2'],
+                'postoffice' => $this->data['rec_postoffice2'],
+                'city' => $this->data['rec_city2'],
+            ));
+            if (!empty($this->data['recipient_ten2'])) {
+                $recipient_ten = str_replace(
+                    array(
+                        '-',
+                        ' ',
+                    ),
+                    array(
+                        '',
+                        '',
+                    ),
+                    $this->data['recipient_ten2']
+                );
+                $rec_lines[] = trans('TEN') . ' ' . $this->data['recipient_ten2'];
+            }
+
+            foreach ($rec_lines as $line) {
+                $this->backend->writeHTMLCell(80, '', $x, '', $line, 0, 1, 0, true, 'L');
+            }
+
+            if (isset($newY) && $newY > $this->backend->getY()) {
+                $this->backend->setY($newY);
+            }
         }
     }
 
@@ -695,7 +796,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             } else {
                 $total = $this->data['total'];
             }
-            $previous_balance = $balance + $total;
+            $previous_balance = $balance + ($total * $this->data['currencyvalue']);
 
             if ($previous_balance > 0) {
                 $comment = trans('(excess payment)');
@@ -739,7 +840,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                 '',
                 '',
                 trans(
-                    'Your balance on date of invoice issue: $a $b',
+                    'Your balance on date of document issue: $a $b',
                     Utils::formatMoney($balance / $this->data['currencyvalue'], $this->data['currency']),
                     $comment
                 ),
@@ -870,8 +971,20 @@ class LMSTcpdfInvoice extends LMSInvoice
             foreach ($accounts as &$account) {
                 $account = format_bankaccount($account, $this->data['export']);
             }
-            $tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
-            $tmp = str_replace('%bankname', $this->data['div_bank'] ?? '', $tmp);
+
+            $tmp = str_replace(
+                array(
+                    '%bankaccount',
+                    '%bankname',
+                    '%extid',
+                ),
+                array(
+                    implode("\n", $accounts),
+                    $this->data['div_bank'] ?? '',
+                    $this->data['extid'] ?? '-',
+                ),
+                $tmp
+            );
 
             $this->backend->SetFont(null, '', 8);
             //$h = $this->backend->getStringHeight(0, $tmp);
@@ -916,13 +1029,26 @@ class LMSTcpdfInvoice extends LMSInvoice
         $image_path = $this->data['doctype'] != DOC_DNOTE
             ? ConfigHelper::getConfig('invoices.header_image', '', true)
             : ConfigHelper::getConfig('notes.header_image', ConfigHelper::getConfig('invoices.header_image', '', true), true);
-        if (!file_exists($image_path)) {
+
+        if (!strlen($image_path)) {
             return;
         }
-        if (preg_match('/\.svg$/i', $image_path)) {
-            $this->backend->ImageSVG($image_path, 12, 8, 40, 0);
-        } else {
-            $this->backend->Image($image_path, 12, 8, 40, 0);
+
+        if (strpos($image_path, DIRECTORY_SEPARATOR) !== 0) {
+            $image_path = SYS_DIR . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . $image_path;
+        }
+
+        if (!is_readable($image_path) || !preg_match('/\.(?<ext>svg|gif|jpg|jpeg|png)$/i', $image_path, $m)) {
+            return;
+        }
+
+        switch (strtolower($m['ext'])) {
+            case 'svg':
+                $this->backend->ImageSVG($image_path, 12, 8, 40, 0);
+                break;
+            default:
+                $this->backend->Image($image_path, 12, 8, 40, 0);
+                break;
         }
     }
 
@@ -959,6 +1085,26 @@ class LMSTcpdfInvoice extends LMSInvoice
             $this->backend->Translate(30, 0);
             $this->backend->SetXY(10, 210);
             $this->backend->Write(0, trans('NO ACCOUNTANT DOCUMENT'), '', 0, 'C', true, 0, false, false, 0);
+            $this->backend->StopTransform();
+            $this->backend->setTextColorArray(array(0, 0, 0));
+
+            $this->backend->SetXY($x, $y);
+        }
+    }
+
+    public function invoice_ksef_warning()
+    {
+        if (!empty($this->data['ksef_warning'])) {
+            $x = $this->backend->GetX();
+            $y = $this->backend->GetY();
+
+            $this->backend->setTextColorArray(array(128, 128, 128));
+            $this->backend->StartTransform();
+            $this->backend->SetFont(null, '', 40);
+            $this->backend->Rotate(45, 10, 210);
+            $this->backend->Translate(30, 0);
+            $this->backend->SetXY(10, 210);
+            $this->backend->Write(0, trans('NO KSeF NUMBER'), '', 0, 'C', true, 0, false, false, 0);
             $this->backend->StopTransform();
             $this->backend->setTextColorArray(array(0, 0, 0));
 
@@ -1013,7 +1159,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $customerid = $this->data['customerid'];
 
         $this->backend->SetFont(null, '', 7);
-        $this->backend->writeHTMLCell(150, 0, '', '', trans("&nbsp; <BR> Scan and Pay <BR> You can make a transfer simply and quickly using your phone. <BR> To make a transfer, please scan QRcode on you smartphone in your bank's application."), 0, 1, 0, true, 'R');
+        $this->backend->writeHTMLCell(160, 0, '', '', trans("&nbsp; <BR> Scan and Pay <BR> You can make a transfer simply and quickly using your phone. <BR> To make a transfer, please scan QRcode on you smartphone in your bank's application."), 0, 1, 0, true, 'R');
         $tmp = preg_replace('/[^0-9]/', '', $this->data['division_ten'])
             . '|'
             . 'PL'
@@ -1041,8 +1187,128 @@ class LMSTcpdfInvoice extends LMSInvoice
             )
             . '|||';
         $style['position'] = 'R';
-        $this->backend->write2DBarcode($tmp, 'QRCODE,M', $x, $y, 30, 30, $style);
+        $this->backend->write2DBarcode($tmp, 'QRCODE,M', $x, $y, 20, 20, $style);
         unset($tmp);
+    }
+
+    public function invoice_ksef_qr_code()
+    {
+        if (empty($this->data['ksefenvironment'])
+            || !$this->ksef_offline_support && (empty($this->data['ksefnumber']) || empty($this->data['ksefstatus']))) {
+            return;
+        }
+
+        $url = KSeF::getQrCodeUrl([
+            'environment' => $this->data['ksefenvironment'],
+            'ten' => $this->data['division_ten'],
+            'date' => $this->data['cdate'],
+            'hash' => $this->data['ksefhash'],
+        ]);
+
+        $style['position'] = 'C';
+
+        $y = 5;
+        if ($this->jpk_flags) {
+            $y += 3;
+        }
+
+        if (empty($this->data['ksefnumber']) || empty($this->data['ksefstatus'])) {
+            $certificateUrl = KSeF::getCertificateQrCodeUrl([
+                'environment' => $this->data['ksefenvironment'],
+                'ten' => $this->data['division_ten'],
+                'divisionid' => $this->data['divisionid'],
+                'hash' => $this->data['ksefhash'],
+            ]);
+        } else {
+            $certificateUrl = null;
+        }
+
+        if (!empty($certificateUrl)) {
+            if (!empty($this->ksef_invoice_header)) {
+                $this->backend->SetFont(null, 'B', 10);
+
+                $this->backend->writeHTMLCell(
+                    '',
+                    '',
+                    '',
+                    $y,
+                    $this->ksef_invoice_header,
+                    0,
+                    1,
+                    0,
+                    true,
+                    'C'
+                );
+
+                $y += 5;
+            }
+
+            $pageWidth = $this->backend->getPageWidth();
+
+            $this->backend->write2DBarcode($url, 'QRCODE,M', ($pageWidth / 2) - 23, $y, 20, 20);
+            $this->backend->writeHTMLCell(
+                20,
+                '',
+                ($pageWidth / 2) - 23,
+                $y + 21,
+                '<a href="' . $url . '">OFFLINE</a>',
+                0,
+                1,
+                0,
+                true,
+                'C'
+            );
+
+            $this->backend->write2DBarcode($certificateUrl, 'QRCODE,M', ($pageWidth / 2) + 3, $y, 20, 20);
+            $this->backend->writeHTMLCell(
+                20,
+                '',
+                ($pageWidth / 2) + 3,
+                $y + 21,
+                '<a href="' . $certificateUrl . '">CERTYFIKAT</a>',
+                0,
+                1,
+                0,
+                true,
+                'C'
+            );
+        } else {
+            if (!empty($this->ksef_invoice_header)) {
+                $this->backend->SetFont(null, 'B', 10);
+
+                $this->backend->writeHTMLCell(
+                    '',
+                    '',
+                    '',
+                    $y,
+                    $this->ksef_invoice_header,
+                    0,
+                    1,
+                    0,
+                    true,
+                    'C'
+                );
+
+                $y += 5;
+            }
+
+            $this->backend->write2DBarcode($url, 'QRCODE,M', 0, $y, 20, 20, $style);
+
+            $this->backend->SetFont(null, '', 5);
+
+            $this->backend->writeHTMLCell(
+                '',
+                '',
+                '',
+                $y + 21,
+                '<a href="' . $url . '">' . (empty($this->data['ksefnumber']) || empty($this->data['ksefstatus']) ? 'OFFLINE' : $this->data['ksefnumber']) . '</a>',
+                0,
+                1,
+                0,
+                true,
+                'C'
+            );
+        }
     }
 
     public function invoice_body_standard()
@@ -1051,14 +1317,19 @@ class LMSTcpdfInvoice extends LMSInvoice
             Localisation::setSystemLanguage($this->data['div_ccode']);
         }
 
-        if (ConfigHelper::checkConfig('invoices.jpk_flags')) {
+        if ($this->jpk_flags) {
             $this->invoice_jpk_flags();
         }
 
         $this->invoice_cancelled();
-        $this->invoice_no_accountant();
+        if (!empty($this->data['ksef_warning'])) {
+            $this->invoice_ksef_warning();
+        } else {
+            $this->invoice_no_accountant();
+        }
         $this->invoice_header_image();
         $this->invoice_date();
+        $this->invoice_ksef_qr_code();
         $this->invoice_dates();
         $this->invoice_title();
         $this->invoice_seller();
@@ -1070,8 +1341,9 @@ class LMSTcpdfInvoice extends LMSInvoice
         if (ConfigHelper::checkConfig('invoices.show_pricing_method', true)) {
             $this->invoice_pricing_method();
         }
-        if (ConfigHelper::checkConfig('invoices.show_balance', true)
-            || ConfigHelper::checkConfig('invoices.show_expired_balance')) {
+        if ((ConfigHelper::checkConfig('invoices.show_balance', true)
+            || ConfigHelper::checkConfig('invoices.show_expired_balance'))
+            && !empty($this->data['balance_on_documents'])) {
             $this->invoice_balance();
         }
         if (ConfigHelper::checkConfig('invoices.qr2pay') && !isset($this->data['rebate'])) {
@@ -1177,6 +1449,16 @@ class LMSTcpdfInvoice extends LMSInvoice
         }
 
         $tranferform_common_data = $transferform->GetCommonData(array('customerid' => $this->data['customerid'], 'export' => $this->data['export']));
+
+        $account = null;
+        if (!ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')
+            || empty($this->data['bankaccounts'])) {
+            $account = bankaccount($this->data['customerid'], $this->data['account'], $this->data['export']);
+        } elseif (ConfigHelper::checkConfig('invoices.show_all_accounts')
+            || ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')) {
+            $account = reset($this->data['bankaccounts']);
+        }
+
         $tranferform_custom_data = array(
             'title' => $payment_title,
             'value' => $payment_value < 0 ? 0 : $payment_value,
@@ -1184,6 +1466,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             'currency' => $this->data['currency'],
             'paytype' => $this->data['paytype'],
             'pdate' => $this->data['pdate'],
+            'account' => $account,
             'barcode' => $payment_barcode,
             'division_shortname' => $this->data['division_shortname'],
             'division_name' => $this->data['division_name'],
@@ -1202,19 +1485,26 @@ class LMSTcpdfInvoice extends LMSInvoice
     {
         global $PAYTYPES;
 
+        $lms = LMS::getInstance();
+
         if (!empty($this->data['div_ccode'])) {
             Localisation::setSystemLanguage($this->data['div_ccode']);
         }
 
-        if (ConfigHelper::checkConfig('invoices.jpk_flags')) {
+        if ($this->jpk_flags) {
             $this->invoice_jpk_flags();
         }
 
         $this->invoice_cancelled();
-        $this->invoice_no_accountant();
+        if (!empty($this->data['ksef_warning'])) {
+            $this->invoice_ksef_warning();
+        } else {
+            $this->invoice_no_accountant();
+        }
         $this->invoice_header_image();
         $this->invoice_date();
         $this->invoice_dates();
+        $this->invoice_ksef_qr_code();
         $this->invoice_title();
         $this->invoice_seller();
         $this->invoice_buyer();
@@ -1225,8 +1515,9 @@ class LMSTcpdfInvoice extends LMSInvoice
         if (ConfigHelper::checkConfig('invoices.show_pricing_method', true)) {
             $this->invoice_pricing_method();
         }
-        if (ConfigHelper::checkConfig('invoices.show_balance', true)
-            || ConfigHelper::checkConfig('invoices.show_expired_balance')) {
+        if ((ConfigHelper::checkConfig('invoices.show_balance', true)
+            || ConfigHelper::checkConfig('invoices.show_expired_balance'))
+            && !empty($this->data['balance_on_documents'])) {
             $this->invoice_balance();
         }
         if (ConfigHelper::checkConfig('invoices.qr2pay') && !isset($this->data['rebate'])) {
@@ -1239,13 +1530,13 @@ class LMSTcpdfInvoice extends LMSInvoice
             $this->invoice_memo();
         }
 
-        if (($PAYTYPES[$this->data['paytype']]['features'] & INVOICE_FEATURE_TRANSFER_FORM)
+        if ((!isset($this->data['transfer-forms']) || !empty($this->data['transfer-forms']))
+            && ($PAYTYPES[$this->data['paytype']]['features'] & INVOICE_FEATURE_TRANSFER_FORM)
             && ($this->data['customerbalance'] < 0 || ConfigHelper::checkConfig('invoices.always_show_form', true))
             && !isset($this->data['rebate'])) {
             /* FT-0100 form */
-            $lms = LMS::getInstance();
-            if ($lms->checkCustomerConsent($this->data['customerid'], CCONSENT_TRANSFERFORM)) {
-                if ($this->backend->GetY() > 180) {
+            if ($lms->checkCustomerConsent($this->data['customerid'], CCONSENT_TRANSFERFORM) || !empty($this->data['transfer-forms'])) {
+                if ($this->backend->GetY() > 180 || $this->transfer_form_on_separate_page) {
                     $this->backend->AppendPage();
                 }
 

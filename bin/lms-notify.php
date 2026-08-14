@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2024 LMS Developers
+ *  (C) Copyright 2001-2026 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,6 +24,8 @@
  *
  *  $Id$
  */
+
+use \Lms\KSeF\KSeF;
 
 $script_parameters = array(
     'debug' => 'd',
@@ -47,6 +49,9 @@ $script_parameters = array(
     'customerid:' => null,
     'division:' => null,
     'omit-free-days' => null,
+    'ksef' => null,
+    'ksef-offline' => null,
+    'without-ksef' => null,
 );
 
 $script_help = <<<EOF
@@ -86,7 +91,16 @@ $script_help = <<<EOF
     --division=<shortname>
                                 limit notifications to customers which belong to specified
                                 division
-    --omit-free-days            dont send notifications on free days
+    --omit-free-days            dont send notifications on free days;
+    --ksef
+                                send only documents which have assigned KSeF number
+                                (ONLINE KSeF documents)
+    --ksef-offline
+                                send only documents which already sent to KSeF
+                                but dont have assigned KSeF number (OFFLINE KSeF documents);
+    --without-ksef
+                                send only documents which dont have assigned KSeF number
+                                nor awaiting for KSeF handling;
 EOF;
 
 require_once('script-options.php');
@@ -133,13 +147,18 @@ if (empty($fakedate)) {
 
 $omit_free_days = isset($options['omit-free-days']);
 
+$ksef = isset($options['ksef']);
+$withoutKsef = isset($options['without-ksef']);
+$ksefOffline = isset($options['ksef-offline']);
+
 [$year, $month, $day] = explode('/', date('Y/n/j', $current_time));
 
 $weekday = date('N', $current_time);
 $holidays = array(
     $year => getHolidays($year),
 );
-if ($omit_free_days && ($weekday > 5 || isset($holidays[$year][$current_time]))) {
+$current_day_time = strtotime('today', $current_time);
+if ($omit_free_days && ($weekday > 5 || isset($holidays[$year][$current_day_time]))) {
     die('Notifications are omitted, because current day is free day!' . PHP_EOL);
 }
 
@@ -154,25 +173,47 @@ if ($omit_free_days) {
     if (!isset($holidays[$yesterday_year])) {
         $holidays[$yesterday_year] = getHolidays($yesterday_year);
     }
+
+    $free_days = 0;
+
     if (date('N', $yesterday) > 5 || isset($holidays[$yesterday_year][$yesterday])) {
-        $prevday = $daystart;
-        do {
-            $nextday = $prevday;
+        $diff_days = round(($current_time - $currtime) / 86400);
+        $prevday = $diff_days ? $daystart : $yesterday;
+        $prevyear = date('Y', $prevday);
+
+        while (date('N', $prevday) > 5 || isset($holidays[$prevyear][$prevday])) {
+            $free_days++;
+
             $prevday = strtotime('yesterday', $prevday);
             $prevyear = date('Y', $prevday);
             if (!isset($holidays[$prevyear])) {
                 $holidays[$prevyear] = getHolidays($prevyear);
             }
-        } while (date('N', $prevday) > 5 || isset($holidays[$prevyear][$prevday]));
-        $days = round(($daystart - $nextday) / 86400);
-        $daystart = $nextday;
-
-        $diff_days = round(($current_time - $currtime) / 86400);
-        if ($days < $diff_days) {
-            $daystart = strtotime(($diff_days - $days) . ' days ago', $daystart);
         }
+
+        $daystart = strtotime(($free_days + 1) . ' days ago', $dayend + 1);
     }
 }
+
+if ($debug) {
+    echo 'Analized period: ' . date('Y/m/d H:i:s', $daystart) . ' - ' . date('Y/m/d H:i:s', $dayend) . PHP_EOL;
+}
+
+// Initialize templates engine (must be before locale settings)
+$SMARTY = new LMSSmarty;
+
+// test for proper version of Smarty
+
+if (defined('Smarty::SMARTY_VERSION')) {
+    $ver_chunks = preg_split('/[- ]/', preg_replace('/^smarty-/i', '', Smarty::SMARTY_VERSION), -1, PREG_SPLIT_NO_EMPTY);
+} else {
+    $ver_chunks = null;
+}
+if (count($ver_chunks) < 1 || version_compare('3.1', $ver_chunks[0]) > 0) {
+    die('Wrong version of Smarty engine! We support only Smarty-3.x greater than 3.1.' . PHP_EOL);
+}
+
+define('SMARTY_VERSION', $ver_chunks[0]);
 
 $SYSLOG = SYSLOG::getInstance();
 
@@ -181,9 +222,29 @@ $SYSLOG = SYSLOG::getInstance();
 $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 
-$plugin_manager = new LMSPluginManager();
+$plugin_manager = LMSPluginManager::getInstance();
 $LMS->setPluginManager($plugin_manager);
 $LMS->executeHook('lms_initialized', $LMS);
+
+// Set some template and layout variables
+
+$SMARTY->setTemplateDir(null);
+$custom_templates_dir = ConfigHelper::getConfig('phpui.custom_templates_dir');
+if (!empty($custom_templates_dir) && file_exists(SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . $custom_templates_dir)
+    && !is_file(SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . $custom_templates_dir)) {
+    $SMARTY->AddTemplateDir(SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . $custom_templates_dir);
+}
+$SMARTY->AddTemplateDir(
+    array(
+        SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . 'default',
+        SMARTY_TEMPLATES_DIR,
+    )
+);
+$SMARTY->setCompileDir(SMARTY_COMPILE_DIR);
+
+$SMARTY->assignByRef('layout', $layout);
+
+$plugin_manager->executeHook('smarty_initialized', $SMARTY);
 
 define('ACTION_PARAM_NONE', 0);
 define('ACTION_PARAM_REQUIRED', 1);
@@ -279,7 +340,7 @@ if (isset($options['actions'])) {
             }
 
             if (!empty($actions[$action]) && isset($supported_actions[$action]['param_map'])) {
-                $action[$action] = $supported_actions[$action]['param_map']($actions[$action]);
+                $actions[$action] = $supported_actions[$action]['param_map']($actions[$action]);
             }
         }
     } else {
@@ -365,14 +426,55 @@ $LMS->executeHook('division_set_after', array(
 
 // now it's time for script settings
 $smtp_options = array(
-    'host' => ConfigHelper::getConfig($config_section . '.smtp_host'),
-    'port' => ConfigHelper::getConfig($config_section . '.smtp_port'),
-    'user' => ConfigHelper::getConfig($config_section . '.smtp_username', ConfigHelper::getConfig($config_section . '.smtp_user')),
-    'pass' => ConfigHelper::getConfig($config_section . '.smtp_password', ConfigHelper::getConfig($config_section . '.smtp_pass')),
-    'auth' => ConfigHelper::getConfig($config_section . '.smtp_auth_type', ConfigHelper::getConfig($config_section . '.smtp_auth')),
-    'ssl_verify_peer' => ConfigHelper::checkConfig($config_section . '.smtp_ssl_verify_peer', true),
-    'ssl_verify_peer_name' => ConfigHelper::checkConfig($config_section . '.smtp_ssl_verify_peer_name', true),
-    'ssl_allow_self_signed' => ConfigHelper::checkConfig($config_section . '.smtp_ssl_allow_self_signed'),
+    'host' => ConfigHelper::getConfig(
+        $config_section . '.smtp_host',
+        ConfigHelper::getConfig('mail.smtp_host')
+    ),
+    'port' => ConfigHelper::getConfig(
+        $config_section . '.smtp_port',
+        ConfigHelper::getConfig('mail.smtp_port')
+    ),
+    'user' => ConfigHelper::getConfig(
+        $config_section . '.smtp_username',
+        ConfigHelper::getConfig(
+            $config_section . '.smtp_user',
+            ConfigHelper::getConfig('mail.smtp_username')
+        )
+    ),
+    'pass' => ConfigHelper::getConfig(
+        $config_section . '.smtp_password',
+        ConfigHelper::getConfig(
+            $config_section . '.smtp_pass',
+            ConfigHelper::getConfig('mail.smtp_password')
+        )
+    ),
+    'auth' => ConfigHelper::getConfig(
+        $config_section . '.smtp_auth_type',
+        ConfigHelper::getConfig(
+            $config_section . '.smtp_auth',
+            ConfigHelper::getConfig('mail.smtp_auth_type')
+        )
+    ),
+    'ssl_verify_peer' => ConfigHelper::checkConfig(
+        $config_section . '.smtp_ssl_verify_peer',
+        ConfigHelper::checkConfig(
+            'mail.smtp_ssl_verify_peer',
+            true
+        )
+    ),
+    'ssl_verify_peer_name' => ConfigHelper::checkConfig(
+        $config_section . '.smtp_ssl_verify_peer_name',
+        ConfigHelper::checkConfig(
+            'mail.smtp_ssl_verify_peer_name',
+            true
+        )
+    ),
+    'ssl_allow_self_signed' => ConfigHelper::checkConfig(
+        $config_section . '.smtp_ssl_allow_self_signed',
+        ConfigHelper::checkConfig(
+            'mail.smtp_ssl_allow_self_signed'
+        )
+    ),
 );
 
 $suspension_percentage = floatval(ConfigHelper::getConfig('payments.suspension_percentage', ConfigHelper::getConfig('finances.suspension_percentage', 0)));
@@ -390,6 +492,10 @@ $mail_content_type = $mail_format == 'html' ? 'text/html' : 'text/plain';
 $customergroups = ConfigHelper::getConfig($config_section . '.customergroups', '', true);
 $ignore_customer_consents = ConfigHelper::checkConfig($config_section . '.ignore_customer_consents');
 $ignore_contact_flags = ConfigHelper::checkConfig($config_section . '.ignore_contact_flags');
+$assignment_update = ConfigHelper::checkConfig($config_section . '.assignment_update', true);
+
+$financial_history_reverse_order = ConfigHelper::checkConfig($config_section . '.financial_history_reverse_order', true);
+$financial_history_item_description_format = ConfigHelper::getConfig($config_section . '.financial_history_item_description_format', '%comment');
 
 $required_phone_contact_flags = CONTACT_MOBILE | ($ignore_contact_flags ? 0 : CONTACT_NOTIFICATIONS);
 $checked_phone_contact_flags = $required_phone_contact_flags | CONTACT_DISABLED;
@@ -568,7 +674,7 @@ if (!empty($dsn_email)) {
 }
 
 if (!empty($mail_fname)) {
-    $mail_from = qp_encode($mail_fname) . ' <' . $mail_from . '>';
+    $mail_from = (empty($mail_fname) ? '' : qp_encode($mail_fname) . ' ') . '<' . $mail_from . '>';
 }
 
 $sms_options = $LMS->getCustomerSMSOptions();
@@ -579,16 +685,47 @@ function parse_customer_data($data, $format, $row)
 {
     static $use_only_alternative_accounts = null,
         $use_all_accounts = null,
-        $config_section = null;
+        $config_section = null,
+        $barcode = null,
+        $financial_history_reverse_order = null,
+        $financial_history_item_description_format = null,
+        $ksefOfflineSupport = null;
 
     global $LMS;
 
     $DB = LMSDB::getInstance();
 
-    if (!isset($use_only_alternative_accounts)) {
+    if (!isset($config_section)) {
         $config_section = $GLOBALS['config_section'];
+    }
+
+    if (!isset($use_only_alternative_accounts)) {
         $use_only_alternative_accounts = ConfigHelper::checkConfig($config_section . '.use_only_alternative_accounts');
         $use_all_accounts = ConfigHelper::checkConfig($config_section . '.use_all_accounts');
+    }
+
+    if (!isset($financial_history_reverse_order)) {
+        $financial_history_reverse_order = ConfigHelper::checkConfig(
+            $config_section . '.financial_history_reverse_order',
+            ConfigHelper::checkConfig(
+                'finances.history_reverse_order',
+                true
+            )
+        );
+    }
+
+    if (!isset($financial_history_item_description_format)) {
+        $financial_history_item_description_format = ConfigHelper::getConfig(
+            $config_section . '.financial_history_item_description_format',
+            ConfigHelper::checkConfig(
+                'finances.history_item_description_format',
+                '%comment'
+            )
+        );
+    }
+
+    if (!isset($ksefOfflineSupport)) {
+        $ksefOfflineSupport = ConfigHelper::checkConfig('ksef.offline_support');
     }
 
     if (!isset($row['totalbalance'])) {
@@ -597,7 +734,7 @@ function parse_customer_data($data, $format, $row)
 
     $amount = -$row['balance'];
     $totalamount = -$row['totalbalance'];
-    $hook_data = $LMS->executeHook('notify_parse_customer_data', array('data' => $data, 'customer' => $row));
+    $hook_data = $LMS->executeHook('notify_parse_customer_data', array('data' => $data, 'format' => $format, 'customer' => $row));
     $data = $hook_data['data'];
 
     if (isset($row['deadline'])) {
@@ -629,12 +766,49 @@ function parse_customer_data($data, $format, $row)
     if ($use_all_accounts || $use_only_alternative_accounts) {
         $accounts = array_merge($accounts, $alternative_accounts);
     }
+    $first_account = reset($accounts);
     foreach ($accounts as &$account) {
         $account = format_bankaccount($account);
     }
     unset($account);
 
     $all_accounts = implode($format == 'text' ? "\n" : '<br>', $accounts);
+
+    if (!empty($row['ksefnumber']) || $ksefOfflineSupport && !empty($row['ksefhash']) && empty($row['ksefstatus'])) {
+        if (strpos($data, '%ksef-url') !== false || strpos($data, '%ksef-qr-code') !== false) {
+            $ksefUrl = KSeF::getQrCodeUrl([
+                'ten' => $row['kseften'],
+                'date' => $row['cdate'],
+                'hash' => $row['ksefhash'],
+                'environment' => $row['ksefenvironment'],
+            ]);
+        } else {
+            $ksefUrl = '';
+        }
+
+        if (strpos($data, '%ksef-qr-code') !== false) {
+            if (!isset($barcode)) {
+                $barcode = new \Com\Tecnick\Barcode\Barcode();
+            }
+            $bobj = $barcode->getBarcodeObj('QRCODE', $ksefUrl, -3, -3, 'black', [0, 0, 0, 0]);
+
+            $ksefQrCode = '<img src="data:image/png;base64,' . base64_encode($bobj->getPngData()) . '">';
+        } else {
+            $ksefQrCode = '';
+        }
+    } else {
+        $ksefUrl = $ksefQrCode = '';
+    }
+
+    if (empty($row['ksefnumber'])) {
+        if ($ksefOfflineSupport && !empty($row['ksefhash']) && empty($row['ksefstatus'])) {
+            $ksefNumber = 'OFFLINE';
+        } else {
+            $ksefNumber = '';
+        }
+    } else {
+        $ksefNumber = $row['ksefnumber'];
+    }
 
     $data = str_replace(
         array(
@@ -657,12 +831,14 @@ function parse_customer_data($data, $format, $row)
             '%totalsaldo',
             '%pin',
             '%cid',
-
+            '%ksef-number',
+            '%ksef-url',
+            '%ksef-qr-code',
         ),
         array(
             $all_accounts,
             $commented_balance,
-            $row['name'],
+            trim($row['name']),
             $row['age'] ?? '',
             sprintf('%01.2f', $amount),
             sprintf('%01.2f', $totalamount),
@@ -679,6 +855,9 @@ function parse_customer_data($data, $format, $row)
             moneyf($row['totalbalance']),
             $row['pin'],
             $row['id'],
+            $ksefNumber,
+            $ksefUrl,
+            $ksefQrCode,
         ),
         $data
     );
@@ -719,7 +898,19 @@ function parse_customer_data($data, $format, $row)
         $data = preg_replace("/\%abonament/", empty($saldo) ? '0' : implode(', ', $saldo), $data);
     }
 
-    $data = $LMS->getLastNInTable($data, $row['id'], $format, $row['aggregate_documents']);
+    $data = $LMS->getLastNInTable($data, $row['id'], $format, $row['aggregate_documents'], $financial_history_reverse_order, $financial_history_item_description_format);
+
+    if (isset($row['value'], $row['currency'])) {
+        $values = explode(',', $row['value']);
+        $currencies = explode(',', $row['currency']);
+        if (!empty($values)) {
+            $valueWithCurrencies = [];
+            foreach ($values as $idx => $value) {
+                $valueWithCurrencies[] = moneyf($value, $currencies[$idx]);
+            }
+            $value = implode(', ', $valueWithCurrencies);
+        }
+    }
 
     // invoices, debit notes, documents
     $data = str_replace(
@@ -735,7 +926,7 @@ function parse_customer_data($data, $format, $row)
         array(
             $row['doc_number'] ?? '',
             $row['doc_number'] ?? '',
-            isset($row['value'], $row['currency']) ? moneyf($row['value'], $row['currency']) : '',
+            isset($value) ? $value : '',
             isset($row['cdate']) ? date('Y', $row['cdate']) : '',
             isset($row['cdate']) ? date('m', $row['cdate']) : '',
             isset($row['cdate']) ? date('d', $row['cdate']) : '',
@@ -743,6 +934,63 @@ function parse_customer_data($data, $format, $row)
         ),
         $data
     );
+
+    if (strpos($data, '%qr2pay') !== false) {
+        if ($format == 'html' && isset($row['value'], $row['currency'])) {
+            if (!isset($barcode)) {
+                $barcode = new \Com\Tecnick\Barcode\Barcode();
+            }
+
+            if (isset($row['doctype']) && $row['doctype'] == DOC_INVOICE) {
+                $qr2pay_comment = ConfigHelper::getConfig(
+                    'invoices.qr2pay_comment',
+                    trans('QR Payment for Internet Invoice no. %number')
+                );
+            } else {
+                $qr2pay_comment = ConfigHelper::getConfig(
+                    'notes.qr2pay_comment',
+                    ConfigHelper::getConfig(
+                        'invoices.qr2pay_comment',
+                        trans('QR Payment for Internet Invoice no. %number')
+                    )
+                );
+            }
+
+            $bobj = $barcode->getBarcodeObj(
+                'QRCODE',
+                preg_replace('/[^0-9]/', '', $row['div_ten'])
+                    . '|PL|'
+                    . $first_account
+                    . '|'
+                    . str_pad(($row['totalbalance'] < 0 ? -$row['totalbalance'] : 0) * 100, 6, 0, STR_PAD_LEFT)
+                    . '|'
+                    . mb_substr($row['div_shortname'], 0, 20)
+                    . '|'
+                    . str_replace(
+                        array(
+                            '%number',
+                        ),
+                        array(
+                            isset($row['doc_number']) ? $row['doc_number'] : '',
+                        ),
+                        preg_replace_callback(
+                            '/%(\\d*)cid/',
+                            function ($m) use ($row) {
+                                return sprintf('%0' . $m[1] . 'd', $row['id']);
+                            },
+                            $qr2pay_comment
+                        )
+                    )
+                    . '|||',
+                -3,
+                -3,
+                'black'
+            );
+            $data = str_replace('%qr2pay', '<img alt="Embedded Image" src="data:image/png;base64,' . base64_encode($bobj->getPngData()) . '">', $data);
+        } else {
+            $data = str_replace('%qr2pay', '', $data);
+        }
+    }
 
     return $data;
 }
@@ -887,11 +1135,15 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body)
         SET status = ?, lastdate = ?NOW?, error = ?
         WHERE messageid = ? AND customerid = ? AND id = ?";
 
+    $success = false;
+
     if (is_string($result)) {
         $DB->Execute($query, array(MSG_ERROR, $result, $msgid, $cid, $msgitemid));
         fprintf(STDERR, trans('Error sending mail: $a', $result) . PHP_EOL);
     } else { // MSG_SENT
         $DB->Execute($query, array($result, null, $msgid, $cid, $msgitemid));
+
+        $success = true;
     }
 
     if (!empty($interval)) {
@@ -902,6 +1154,8 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body)
         }
         usleep($delay * 1000);
     }
+
+    return $success;
 }
 
 function send_sms($msgid, $cid, $phone, $data)
@@ -932,6 +1186,8 @@ function send_sms($msgid, $cid, $phone, $data)
             $msgitemid,
         )
     );
+
+    return $result['status'] != MSG_ERROR;
 }
 
 function send_to_userpanel($msgid, $cid, $destination)
@@ -1331,40 +1587,168 @@ if (empty($types) || in_array('contracts', $types)) {
     $end = strtotime('+ ' . $days . ' days', $dayend);
 
     $customers = $DB->GetAll(
-        "SELECT c.id, c.pin, c.lastname, c.name,
-            SUM(value * currencyvalue) AS balance, d.number, d.template, d.cdate, d.dateto AS deadline,
-            m.email, x.phone
+        "SELECT
+            c.id,
+            c.pin,
+            c.lastname,
+            c.name,
+            SUM(cash.value * cash.currencyvalue) AS balance,
+            d.number,
+            d.template,
+            d.cdate,
+            d.dateto AS deadline,
+            m.email,
+            x.phone,
+            a3.value AS value,
+            a3.currency AS currency
         FROM customeraddressview c
-        JOIN cash ON (c.id = cash.customerid) "
+        JOIN cash ON c.id = cash.customerid "
         . ($expiration_type == 'assignments' ?
             "JOIN (
-                SELECT 0 AS cdate, MAX(a.dateto) AS dateto, a.customerid, 0 AS number, 0 AS template
+                SELECT
+                    0 AS cdate,
+                    MAX(a.dateto) AS dateto,
+                    a.customerid,
+                    0 AS number,
+                    0 AS template
                 FROM assignments a
                 WHERE a.dateto > 0
                 GROUP BY a.customerid
-                HAVING MAX(a.dateto) >= ? AND MAX(a.dateto) <= ?
+                HAVING MAX(a.dateto) >= ?
+                    AND MAX(a.dateto) <= ?
             ) d ON d.customerid = c.id" :
             "JOIN (
-                SELECT DISTINCT customerid, documents.id, documents.cdate, documents.number, numberplans.template, dc.todate AS dateto
+                SELECT
+                    DISTINCT customerid,
+                    documents.id,
+                    documents.cdate,
+                    documents.number,
+                    numberplans.template,
+                    dc.todate AS dateto
                 FROM documents
                 LEFT JOIN numberplans ON numberplans.id = documents.numberplanid
                 JOIN documentcontents dc ON dc.docid = documents.id
-                WHERE dc.todate >= ? AND dc.todate <= ?
+                WHERE dc.todate >= ?
+                    AND dc.todate <= ?
                     AND documents.archived = 0
                     AND documents.type IN (" . DOC_CONTRACT . ',' . DOC_ANNEX . ")
             ) d ON d.customerid = c.id") . "
-        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
+        LEFT JOIN (
+            SELECT
+                c2.id AS customerid,
+                " . $DB->GroupConcat('a4.value') . " AS value,
+                " . $DB->GroupConcat('a4.currency') . " AS currency
+            FROM customers c2
+            JOIN (
+                SELECT
+                    a.customerid,
+                    SUM(ROUND(
+                        (
+                            (
+                                (100 - a.pdiscount)
+                                * (CASE WHEN ca.netflag = 1
+                                    THEN ca.netvalue
+                                    ELSE ca.value
+                                END)
+                                / 100
+                            ) - a.vdiscount
+                        )
+                        * a.count
+                        * (CASE WHEN ca.netflag = 1
+                            THEN (100 + ca.taxrate) / 100
+                            ELSE 1
+                        END)
+                        * (CASE WHEN a.suspended = 0
+                            THEN 1
+                            ELSE " . $suspension_percentage . " / 100
+                        END)
+                        * (
+                            CASE WHEN a.period = " . DISPOSABLE . " THEN 0
+                            ELSE (
+                                CASE WHEN a.period <> " . DISPOSABLE . " AND ca.period > 0 AND ca.period <> a.period
+                                    THEN (
+                                        CASE ca.period
+                                            WHEN " . YEARLY . " THEN 1/12.0
+                                            WHEN " . HALFYEARLY . " THEN 1/6.0
+                                            WHEN " . QUARTERLY . " THEN 1/3.0
+                                            ELSE 1
+                                        END
+                                    ) ELSE (
+                                        CASE a.period
+                                            WHEN " . YEARLY . " THEN 1/12.0
+                                            WHEN " . HALFYEARLY . " THEN 1/6.0
+                                            WHEN " . QUARTERLY . " THEN 1/3.0
+                                            WHEN " . WEEKLY . " THEN 4.0
+                                            WHEN " . DAILY . " THEN 30.0
+                                            ELSE 1
+                                        END
+                                    )
+                                END
+                            )
+                            END
+                        )
+                    , 2)) AS value,
+                    ca.currency AS currency
+                FROM assignments a
+                JOIN (
+                    SELECT
+                        a2.id,
+                        COALESCE(t.period, 0) AS period,
+                        COALESCE(t.netvalue, l.netvalue) AS netvalue,
+                        COALESCE(t.value, l.value) AS value,
+                        COALESCE(t.currency, l.currency) AS currency,
+                        COALESCE(tt.value, lt.value) AS taxrate,
+                        COALESCE(
+                            CASE WHEN t.value IS NULL
+                                THEN (
+                                    CASE WHEN l.flags & " . TARIFF_FLAG_NET_ACCOUNT . " > 0
+                                        THEN 1
+                                        ELSE 0
+                                    END
+                                ) ELSE (
+                                    CASE WHEN t.flags & " . TARIFF_FLAG_NET_ACCOUNT . " > 0
+                                        THEN 1
+                                        ELSE 0
+                                    END
+                                )
+                            END
+                        ) AS netflag
+                    FROM assignments a2
+                    LEFT JOIN tariffs t ON t.id = a2.tariffid
+                    LEFT JOIN taxes tt ON tt.id = t.taxid
+                    LEFT JOIN liabilities l ON l.id = a2.liabilityid
+                    LEFT JOIN taxes lt ON lt.id = l.taxid
+                    WHERE a2.commited = 1
+                        AND a2.datefrom >= ?
+                        AND a2.dateto = 0
+                ) ca ON ca.id = a.id
+                WHERE a.commited = 1
+                    AND a.datefrom >= ?
+                    AND a.dateto = 0
+                GROUP BY
+                    a.customerid,
+                    ca.currency
+            ) a4 ON a4.customerid = c2.id
+            GROUP BY c2.id
+        ) a3 ON a3.customerid = c.id
+        LEFT JOIN (
+            SELECT
+                " . $DB->GroupConcat('contact') . " AS email,
+                customerid
             FROM customercontacts
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) m ON (m.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.mailingnotice = 1') . "
-        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
+        LEFT JOIN (
+            SELECT
+                " . $DB->GroupConcat('contact') . " AS phone,
+                customerid
             FROM customercontacts
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
         WHERE "
-            . ($expiration_type == 'assignments' ? '1 = 1' : 'NOT EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type < 0)')
+            . ($expiration_type == 'assignments' ? '1 = 1' : 'NOT EXISTS (SELECT 1 FROM documents d2 JOIN documentcontents dc2 ON dc2.docid = d2.id WHERE d2.reference = d.id AND d2.type < 0 AND dc2.todate > d.dateto)')
             . $customer_status_condition
             . $customer_type_condition
             . " AND d.dateto >= ? AND d.dateto <= ?"
@@ -1372,10 +1756,12 @@ if (empty($types) || in_array('contracts', $types)) {
             . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
             . ($notifications['contracts']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: '')
-        . " GROUP BY c.id, c.pin, c.lastname, c.name, d.number, d.template, d.cdate, d.dateto, m.email, x.phone",
+        . " GROUP BY c.id, c.pin, c.lastname, c.name, d.number, d.template, d.cdate, d.dateto, m.email, x.phone, a3.value, a3.currency",
         array(
             $start,
             $end,
+            $start,
+            $start,
             $checked_mail_contact_flags,
             $required_mail_contact_flags,
             $checked_phone_contact_flags,
@@ -1525,8 +1911,13 @@ if (empty($types) || in_array('debtors', $types)) {
     // @TODO: check 'messages' table and don't send notifies to often
     $customers = $DB->GetAll(
         "SELECT c.id, c.pin, c.lastname, c.name,
-            b2.balance AS balance, b.balance AS totalbalance, m.email, x.phone, divisions.account,
-            acc.alternative_accounts
+            b2.balance AS balance, b.balance AS totalbalance, m.email, x.phone,
+            acc.alternative_accounts,
+            divisions.account,
+            divisions.account AS div_account,
+            divisions.name AS div_name,
+            divisions.shortname AS div_shortname,
+            divisions.ten AS div_ten
         FROM customeraddressview c
         LEFT JOIN divisions ON divisions.id = c.divisionid
         LEFT JOIN (
@@ -1763,8 +2154,13 @@ if (empty($types) || in_array('reminder', $types)) {
     $days = $notifications['reminder']['days'];
     $limit = $notifications['reminder']['limit'];
     $documents = $DB->GetAll(
-        "SELECT d.id AS docid, c.id, c.pin, d.name,
-            d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
+        "SELECT d.id AS docid, c.id, c.pin, d.name, d.type AS doctype,
+            d.number, n.template, d.cdate, d.paytime, m.email, x.phone,
+            d.div_account AS account,
+            d.div_account,
+            d.div_name,
+            d.div_shortname,
+            d.div_ten,
             b2.balance AS balance, b.balance AS totalbalance, v.value, v.currency,
             acc.alternative_accounts
         FROM documents d
@@ -2031,10 +2427,23 @@ if (empty($types) || in_array('income', $types)) {
     $end = strtotime('+ 1 day', $start);
 
     $incomes = $DB->GetAll(
-        "SELECT c.id, c.pin, SUM(cash.value) AS value, cash.currency, cash.time AS cdate,
-            m.email, x.phone, divisions.account, acc.alternative_accounts,
+        "SELECT
+            c.id,
+            c.pin,
+            " . $DB->GroupConcat('cash.id') . " AS cashids,
+            SUM(cash.value) AS value,
+            cash.currency,
+            cash.time AS cdate,
+            m.email,
+            x.phone,
+            divisions.account,
+            divisions.account AS div_account,
+            divisions.name AS div_name,
+            divisions.shortname AS div_shortname,
+            acc.alternative_accounts,
             " . $DB->Concat('c.lastname', "' '", 'c.name') . " AS name,
-        b2.balance AS balance, b.balance AS totalbalance
+            b2.balance AS balance,
+            b.balance AS totalbalance
         FROM cash
         JOIN customeraddressview c ON c.id = cash.customerid
         LEFT JOIN divisions ON divisions.id = c.divisionid
@@ -2080,12 +2489,12 @@ if (empty($types) || in_array('income', $types)) {
         ) acc ON acc.customerid = c.id
         WHERE 1 = 1" . $customer_status_condition
             . $customer_type_condition
-            . " AND cash.type = 1 AND cash.value > 0 AND cash.time >= ? AND cash.time < ?"
+            . " AND cash.type = 1 AND cash.value > 0 AND cash.time >= ? AND cash.time < ? AND cash.notification = 1"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
             . ($notifications['income']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: '')
-        . " GROUP BY c.id, c.pin, cash.currency, cash.time, m.email, x.phone, divisions.account,
+        . " GROUP BY c.id, c.pin, cash.currency, cash.time, m.email, x.phone, divisions.account, divisions.name, divisions.shortname,
             acc.alternative_accounts, c.lastname, c.name, b2.balance, b.balance",
         array(
             DOC_CNOTE,
@@ -2183,6 +2592,8 @@ if (empty($types) || in_array('income', $types)) {
             }
 
             if (!$debug) {
+                $success = false;
+
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
                     $msgid = create_message(
                         MSG_MAIL,
@@ -2190,7 +2601,7 @@ if (empty($types) || in_array('income', $types)) {
                         $message ?? ($mail_format == 'html' ? $message_html : $message_text)
                     );
                     foreach ($recipient_mails as $recipient_mail) {
-                        send_mail(
+                        $result = send_mail(
                             $msgid,
                             $row['id'],
                             $recipient_mail,
@@ -2198,6 +2609,8 @@ if (empty($types) || in_array('income', $types)) {
                             $subject,
                             $message ?? ($mail_format == 'html' ? $message_html : $message_text)
                         );
+
+                        $success |= $result;
                     }
                 }
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
@@ -2207,12 +2620,14 @@ if (empty($types) || in_array('income', $types)) {
                         $message ?? $message_text
                     );
                     foreach ($recipient_phones as $recipient_phone) {
-                        send_sms(
+                        $result = send_sms(
                             $msgid,
                             $row['id'],
                             $recipient_phone,
                             $message ?? $message_text
                         );
+
+                        $success |= $result;
                     }
                 }
                 if (in_array('userpanel', $channels)) {
@@ -2222,6 +2637,8 @@ if (empty($types) || in_array('income', $types)) {
                         $message ?? ($format == 'html' ? $message_html : $message_text)
                     );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel'));
+
+                    $success = true;
                 }
                 if (in_array('userpanel-urgent', $channels)) {
                     $msgid = create_message(
@@ -2230,6 +2647,20 @@ if (empty($types) || in_array('income', $types)) {
                         $message ?? ($format == 'html' ? $message_html : $message_text)
                     );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
+
+                    $success = true;
+                }
+
+                if ($success) {
+                    $DB->Execute(
+                        'UPDATE cash
+                        SET notification = ?
+                        WHERE id IN ?',
+                        array(
+                            0,
+                            explode(',', $row['cashids']),
+                        )
+                    );
                 }
             }
         }
@@ -2240,14 +2671,29 @@ if (empty($types) || in_array('income', $types)) {
 if (empty($types) || in_array('invoices', $types)) {
     $documents = $DB->GetAll(
         "SELECT d.id AS docid, c.id, c.pin, d.name,
-            d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
+            d.number, n.template, d.cdate, d.paytime, m.email, x.phone,
+            d.div_account AS account,
+            d.div_account,
+            d.div_name,
+            d.div_shortname,
+            d.div_ten,
             acc.alternative_accounts,
             COALESCE(ca.balance, 0) AS balance,
             COALESCE(ca.balance, 0) AS totalbalance,
             v.value, v.currency,
-            c.invoicenotice
+            c.type AS ctype,
+            c.invoicenotice,
+            (CASE WHEN kc.allconsumers = 1 OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ?) THEN 1 ELSE 0 END) AS ksef_invoice_consent,
+            kd.ksefnumber,
+            kd.status AS ksefstatus,
+            kd.hash AS ksefhash,
+            kbs.environment AS ksefenvironment,
+            d.div_ten AS kseften
         FROM documents d
-        JOIN customeraddressview c ON (c.id = d.customerid)
+        JOIN customeraddressview c ON c.id = d.customerid
+        LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
+        LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
+        LEFT JOIN ksefconfig kc ON kc.divisionid = c.divisionid
         LEFT JOIN divisions ON divisions.id = c.divisionid
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
             FROM customercontacts
@@ -2283,8 +2729,24 @@ if (empty($types) || in_array('invoices', $types)) {
             . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
             . ($notifications['invoices']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: '')
+            . ($ksef ? ' AND kd.status = ' . 200 : '')
+            . ($ksefOffline ? ' AND kd.status IS NOT NULL AND kd.status = ' . 0 : '')
+            . ($withoutKsef
+                ? ' AND kd.status IS NULL
+                    AND (
+                        c.type = ' . CTYPES_PRIVATE . '
+                        OR c.type = ' . CTYPES_COMPANY . ' AND d.cdate < kc.boundarydate
+                    ) AND COALESCE(kc.allconsumers, 0) = 0
+                    AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')'
+                : ''
+            )
         . ' ORDER BY d.id',
-        array(
+        [
+            CCONSENT_KSEF_INVOICE,
+            [
+                200,
+                0,
+            ],
             CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS,
             $checked_phone_contact_flags,
@@ -2295,8 +2757,8 @@ if (empty($types) || in_array('invoices', $types)) {
             DOC_INVOICE_PRO,
             DOC_CNOTE,
             $daystart,
-            $dayend
-        )
+            $dayend,
+        ]
     );
 
     if (!empty($documents)) {
@@ -2360,7 +2822,7 @@ if (empty($types) || in_array('invoices', $types)) {
             }
 
             if (!$quiet) {
-                if (in_array('mail', $channels) && !empty($recipient_mails) && empty($row['invoicenotice'])) {
+                if (in_array('mail', $channels) && !empty($recipient_mails) && (empty($row['invoicenotice']) || $ignore_customer_consents)) {
                     if ($idx >= $start_idx && $idx <= $end_idx) {
                         foreach ($recipient_mails as $recipient_mail) {
                             printf(
@@ -2411,7 +2873,7 @@ if (empty($types) || in_array('invoices', $types)) {
             }
 
             if (!$debug) {
-                if (in_array('mail', $channels) && !empty($recipient_mails) && empty($row['invoicenotice'])) {
+                if (in_array('mail', $channels) && !empty($recipient_mails) && (empty($row['invoicenotice']) || $ignore_customer_consents)) {
                     if ($idx >= $start_idx && $idx <= $end_idx) {
                         $msgid = create_message(
                             MSG_MAIL,
@@ -2472,9 +2934,16 @@ if (empty($types) || in_array('invoices', $types)) {
 if (empty($types) || in_array('notes', $types)) {
     $documents = $DB->GetAll(
         "SELECT d.id AS docid, c.id, c.pin, d.name,
-            d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
+            d.number, n.template, d.cdate, d.paytime, m.email, x.phone,
+            d.div_account AS account,
+            d.div_account,
+            d.div_name,
+            d.div_shortname,
             acc.alternative_accounts,
-        COALESCE(ca.balance, 0) AS balance, v.value, v.currency
+            COALESCE(ca.balance, 0) AS balance,
+            COALESCE(ca.balance, 0) AS totalbalance,
+            v.value, v.currency,
+            c.invoicenotice
         FROM documents d
         JOIN customeraddressview c ON (c.id = d.customerid)
         LEFT JOIN divisions ON divisions.id = c.divisionid
@@ -2505,7 +2974,7 @@ if (empty($types) || in_array('notes', $types)) {
         ) ca ON (ca.customerid = d.customerid)
         WHERE 1 = 1" . $customer_status_condition
             . $customer_type_condition
-            . " AND (c.invoicenotice IS NULL OR c.invoicenotice = 0) AND d.type = ?
+            . " AND d.type = ?
             AND d.cdate >= ? AND d.cdate <= ?"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
@@ -2585,7 +3054,7 @@ if (empty($types) || in_array('notes', $types)) {
             }
 
             if (!$quiet) {
-                if (in_array('mail', $channels) && !empty($recipient_mails)) {
+                if (in_array('mail', $channels) && !empty($recipient_mails) && (empty($row['invoicenotice']) || $ignore_customer_consents)) {
                     if ($idx >= $start_idx && $idx <= $end_idx) {
                         foreach ($recipient_mails as $recipient_mail) {
                             printf(
@@ -2893,7 +3362,12 @@ if (empty($types) || in_array('birthday', $types)) {
 if (empty($types) || in_array('warnings', $types)) {
     $customers = $DB->GetAll(
         "SELECT c.id, (" . $DB->Concat('c.lastname', "' '", 'c.name') . ") AS name,
-            c.pin, c.message, m.email, x.phone, divisions.account, acc.alternative_accounts,
+            c.pin, c.message, m.email, x.phone,
+            divisions.account,
+            divisions.account AS div_account,
+            divisions.name AS div_name,
+            divisions.shortname AS div_shortname,
+            acc.alternative_accounts,
             COALESCE(ca.balance, 0) AS balance
         FROM customeraddressview c
         LEFT JOIN divisions ON divisions.id = c.divisionid
@@ -3326,65 +3800,364 @@ if (empty($types) || in_array('events', $types)) {
 }
 
 // send message to customers which have awaiting www messages
-if (in_array('www', $channels) && (empty($types) || in_array('messages', $types))) {
-    if (!$debug) {
-        $fh = fopen($notifications['messages']['file'], 'w');
-    }
-
-    $nodes = $DB->GetAll(
-        "SELECT INET_NTOA(ipaddr) AS ip
-            FROM vnodes n
-        JOIN customeraddressview c ON c.id = n.ownerid
-        JOIN (SELECT DISTINCT customerid FROM messageitems
-            JOIN messages m ON m.id = messageid
-            WHERE type = ? AND status = ?
-        ) m ON m.customerid = n.ownerid
-        WHERE 1 = 1"
-        . ($customerid ? ' AND n.ownerid = ' . $customerid : '')
-        . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
-        . " ORDER BY ipaddr",
-        array(
-            MSG_WWW,
-            MSG_NEW
-        )
-    );
-
-    if (!$debug && $fh) {
-        fwrite($fh, str_replace("\\n", PHP_EOL, $notifications['messages']['header']));
-    }
-
-    if (!empty($nodes)) {
-        foreach ($nodes as $node) {
-            if (!$quiet) {
-                printf("[www/messages] %s" . PHP_EOL, $node['ip']);
-            }
-            if (!$debug && $fh) {
-                fwrite($fh, str_replace(
-                    "\\n",
-                    PHP_EOL,
-                    parse_node_data($notifications['messages']['rule'], $node)
-                ));
-            }
-        }
+if (empty($types) || in_array('messages', $types)) {
+    if (in_array('www', $channels)) {
         if (!$debug) {
-            $DB->Execute(
-                "UPDATE messageitems
-                SET status = ?
-                WHERE messageid IN (
-                    SELECT id FROM messages WHERE type = ? AND status = ?
-                )",
-                array(
-                    MSG_SENT,
-                    MSG_WWW,
-                    MSG_NEW,
-                )
-            );
+            $fh = fopen($notifications['messages']['file'], 'w');
         }
-    }
 
-    if (!$debug && $fh) {
-        fwrite($fh, str_replace("\\n", PHP_EOL, $notifications['messages']['footer']));
-        fclose($fh);
+        $nodes = $DB->GetAll(
+            "SELECT INET_NTOA(ipaddr) AS ip
+                FROM vnodes n
+            JOIN customeraddressview c ON c.id = n.ownerid
+            JOIN (SELECT DISTINCT customerid FROM messageitems
+                JOIN messages m ON m.id = messageid
+                WHERE type = ? AND status = ?
+            ) m ON m.customerid = n.ownerid
+            WHERE 1 = 1"
+            . ($customerid ? ' AND n.ownerid = ' . $customerid : '')
+            . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+            . " ORDER BY ipaddr",
+            array(
+                MSG_WWW,
+                MSG_NEW
+            )
+        );
+
+        if (!$debug && $fh) {
+            fwrite($fh, str_replace("\\n", PHP_EOL, $notifications['messages']['header']));
+        }
+
+        if (!empty($nodes)) {
+            foreach ($nodes as $node) {
+                if (!$quiet) {
+                    printf("[www/messages] %s" . PHP_EOL, $node['ip']);
+                }
+                if (!$debug && $fh) {
+                    fwrite($fh, str_replace(
+                        "\\n",
+                        PHP_EOL,
+                        parse_node_data($notifications['messages']['rule'], $node)
+                    ));
+                }
+            }
+            if (!$debug) {
+                $DB->Execute(
+                    "UPDATE messageitems
+                    SET status = ?
+                    WHERE messageid IN (
+                        SELECT id FROM messages WHERE type = ? AND status = ?
+                    )",
+                    array(
+                        MSG_SENT,
+                        MSG_WWW,
+                        MSG_NEW,
+                    )
+                );
+            }
+        }
+
+        if (!$debug && $fh) {
+            fwrite($fh, str_replace("\\n", PHP_EOL, $notifications['messages']['footer']));
+            fclose($fh);
+        }
+    } elseif (in_array('mail', $channels) || in_array('sms', $channels)) {
+        $messagetypes = array();
+        if (in_array('mail', $channels)) {
+            $messagetypes[] = MSG_MAIL;
+        }
+        if (in_array('sms', $channels)) {
+            $messagetypes[] = MSG_SMS;
+            $messagetypes[] = MSG_ANYSMS;
+        }
+        $messageitems = $DB->GetAll(
+            'SELECT
+                m.id AS messageid,
+                m.type,
+                mi.destination,
+                mi.body,
+                mi.id AS messageitemid,
+                mi.customerid,
+                (' . $DB->Concat('c.lastname', "' '", 'c.name') . ') AS name,
+                mi.attributes,
+                mi.attempts
+            FROM messages m
+            JOIN messageitems mi ON mi.messageid = m.id
+            LEFT JOIN customers c ON c.id = mi.customerid
+            WHERE m.type IN ?
+                AND m.startdate > 0
+                AND m.startdate <= ?
+                AND mi.attempts > 0
+                AND mi.status IN ?'
+                . ($customerid ? ' AND c.id = ' . $customerid : '')
+                . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+            . ' ORDER BY mi.status,
+                m.startdate,
+                mi.id',
+            array(
+                $messagetypes,
+                $currtime,
+                array(
+                    MSG_NEW,
+                    MSG_ERROR,
+                ),
+            )
+        );
+
+        if (!empty($messageitems)) {
+            $count = count($messageitems);
+            $part_number = $part_offset = 0;
+            if (!empty($part_size)) {
+                if (preg_match('/^(?<percent>[0-9]+)%$/', $part_size, $m)) {
+                    $percent = intval($m['percent']);
+                    if ($percent < 1 || $percent > 99) {
+                        $start_idx = 0;
+                        $end_idx = $count;
+                    } else {
+                        $part_size = ceil(($percent * $count) / 100);
+                        $part_offset = $part_number * $part_size;
+                        $start_idx = $part_offset;
+                        if ((!$part_offset && $part_number) || $part_offset >= $count) {
+                            $end_idx = $part_offset - 1;
+                        } else {
+                            $end_idx = $part_offset + ($part_size ?: $count) - 1;
+                        }
+                    }
+                } else {
+                    $start_idx = $part_offset;
+                    $end_idx = $start_idx + $part_size - 1;
+                }
+            } else {
+                $start_idx = 0;
+                $end_idx = $count;
+            }
+
+            $files_by_messageids = array();
+            $idx = 0;
+            foreach ($messageitems as $messageitem) {
+                if ($idx >= $start_idx && $idx <= $end_idx) {
+                    $attributes = unserialize($messageitem['attributes']);
+                }
+
+                if (!$quiet) {
+                    if ($idx >= $start_idx && $idx <= $end_idx) {
+                        if ($messageitem['type'] == MSG_MAIL && in_array('mail', $channels)) {
+                            printf(
+                                "[mail/messages] %s (#%d) message #%d, message item #%d: %s, status: ",
+                                $messageitem['name'],
+                                $messageitem['customerid'],
+                                $messageitem['messageid'],
+                                $messageitem['messageitemid'],
+                                $attributes['destination'] ?? '-'
+                            );
+                        }
+                        if (($messageitem['type'] == MSG_SMS || $messageitem['type'] == MSG_ANYSMS) && in_array('sms', $channels)) {
+                            if (empty($message['customerid'])) {
+                                printf(
+                                    "[sms/messages] message #%d, message item #%d: %s, status: ",
+                                    $messageitem['messageid'],
+                                    $messageitem['messageitemid'],
+                                    $attributes['destination'] ?? '-'
+                                );
+                            } else {
+                                printf(
+                                    "[sms/messages] %s (#%d) message #%d, message item #%d: %s, status: ",
+                                    $messageitem['name'],
+                                    $messageitem['customerid'],
+                                    $messageitem['messageid'],
+                                    $messageitem['messageitemid'],
+                                    $attributes['destination'] ?? '-'
+                                );
+                            }
+                        }
+                    }
+                }
+
+                if ($idx >= $start_idx && $idx <= $end_idx) {
+                    if ($attributes === false) {
+                        $errors = [
+                            'message metadata is empty - permanent failure',
+                        ];
+
+                        if (!$quiet) {
+                            echo 'error: ' . implode(', ', $errors) . '.' . PHP_EOL;
+                        }
+
+                        $DB->Execute(
+                            'UPDATE messageitems
+                            SET status = ?, lastdate = ?NOW?, error = ?, attempts = ?
+                            WHERE messageid = ?
+                                AND id = ?',
+                            [
+                                MSG_ERROR,
+                                implode(', ', $errors),
+                                0,
+                                $messageitem['messageid'],
+                                $messageitem['messageitemid'],
+                            ]
+                        );
+
+                        $idx++;
+                        continue;
+                    }
+                }
+
+                if (!$debug) {
+                    if ($idx >= $start_idx && $idx <= $end_idx) {
+                        if ($messageitem['type'] == MSG_MAIL) {
+                            $files = array();
+
+                            if (!isset($files_by_messageids[$messageitem['messageid']])) {
+                                $file_containers = $LMS->GetFileContainers('messageid', $messageitem['messageid']);
+                                if (!empty($file_containers)) {
+                                    foreach ($file_containers as $file_container) {
+                                        foreach ($file_container['files'] as $file) {
+                                            $file = $LMS->GetFile($file['id']);
+                                            $files[] = array(
+                                                'content_type' => $file['contenttype'],
+                                                'filename' => $file['filename'],
+                                                'data' => file_get_contents($file['filepath']),
+                                            );
+                                        }
+                                    }
+
+                                    $files_by_messageids[$messageitem['messageid']] = $files;
+                                }
+                            } else {
+                                $files = $files_by_messageids[$messageitem['messageid']];
+                            }
+
+                            $headers = $attributes['headers'];
+
+                            if (!empty($dsn_email) || !empty($mdn_email)) {
+                                if (!empty($dsn_email)) {
+                                    $headers['Delivery-Status-Notification-To'] = true;
+                                }
+                                if (!isset($headers['X-LMS-Message-Item-Id'], $headers['Message-ID'])) {
+                                    $headers['X-LMS-Message-Item-Id'] = $messageitem['messageitemid'];
+                                    $headers['Message-ID'] = '<messageitem-' . $messageitem['messageitemid'] . '@rtsystem.' . gethostname() . '>';
+                                }
+                            }
+
+                            if (!empty($attributes['reply'])) {
+                                $headers['Reply-To'] = $attributes['reply'];
+                            }
+
+                            if (isset($headers['Cc']) && $headers['Cc'] == $headers['From'] || !empty($attributes['copytosender'])) {
+                                $headers['Cc'] = $mail_from;
+                            } else {
+                                $headers['Cc'] = '';
+                            }
+
+                            if (!empty($attributes['cc'])) {
+                                $headers['Cc'] = (empty($headers['Cc']) ? '' : ',') . $attributes['cc'];
+                            }
+
+                            if (!empty($attributes['bcc'])) {
+                                $headers['Bcc'] = $attributes['bcc'];
+                            }
+
+                            if (empty($dsn_email)) {
+                                $headers['From'] = $mail_from;
+                            } else {
+                                $headers['From'] = (empty($mail_fname) ? '' : qp_encode($mail_fname) . ' ') . '<' . $dsn_email . '>';
+                            }
+
+                            $result = $LMS->SendMail(
+                                $attributes['destination'],
+                                $headers,
+                                $attributes['body'],
+                                $files,
+                                null,
+                                $smtp_options
+                            );
+                        } else {
+                            $result = $LMS->SendSMS(
+                                $attributes['destination'],
+                                $attributes['body'],
+                                $messageitem['messageitemid'],
+                                $sms_options
+                            );
+                        }
+
+                        if (is_int($result)) {
+                            $status = $result;
+                            $errors = array();
+                        } elseif (is_string($result)) {
+                            $status = MSG_ERROR;
+                            $errors = array($result);
+                        } else {
+                            $status = $result['status'];
+                            $errors = $result['errors'] ?? array();
+                        }
+
+                        $attempts = $messageitem['attempts'] - 1;
+
+                        if (!$quiet) {
+                            switch ($status) {
+                                case MSG_SENT:
+                                case MSG_READY_TO_SEND:
+                                    if ($status == MSG_SENT) {
+                                        echo 'sent.';
+                                    } else {
+                                        echo 'ready to send.';
+                                    }
+                                    break;
+                                case MSG_ERROR:
+                                    if (empty($errors)) {
+                                        echo 'error';
+                                    } else {
+                                        echo 'error: ' . implode(', ', $errors);
+                                    }
+                                    if (!empty($attempts)) {
+                                        echo ' (' . $attempts . ' attempts left)';
+                                    }
+                                    echo '.';
+                                    break;
+                                default:
+                                    echo 'unknown.';
+                                    break;
+                            }
+                            echo PHP_EOL;
+                        }
+
+                        if ($status == MSG_SENT || $status == MSG_READY_TO_SEND || $status == MSG_ERROR || !empty($errors)) {
+                            $externalMsgId = ($status == MSG_SENT || $status == MSG_READY_TO_SEND) && isset($result['id'])
+                                ? $result['id']
+                                : null;
+
+                            $DB->Execute(
+                                'UPDATE messageitems
+                                SET status = ?, lastdate = ?NOW?, error = ?, attempts = ?
+                                    ' . (isset($externalMsgId) ? ', externalmsgid = ' . $DB->Escape($externalMsgId) : '') . '
+                                WHERE messageid = ?
+                                    AND id = ?',
+                                array(
+                                    $status,
+                                    empty($errors) ? null : implode(', ', $errors),
+                                    $attempts,
+                                    $messageitem['messageid'],
+                                    $messageitem['messageitemid'],
+                                )
+                            );
+                        }
+
+                        if (!empty($interval)) {
+                            if ($interval == -1) {
+                                $delay = mt_rand(500, 5000);
+                            } else {
+                                $delay = intval($interval);
+                            }
+                            usleep($delay * 1000);
+                        }
+                    }
+                } elseif ($idx >= $start_idx && $idx <= $end_idx) {
+                    echo 'tested.' . PHP_EOL;
+                }
+
+                $idx++;
+            }
+        }
     }
 }
 
@@ -3523,8 +4296,12 @@ if (!empty($intersect)) {
                         }
                     }
 
-                    $all_customers = $DB->GetCol(
-                        'SELECT c.id FROM customers c
+                    $all_customers = $DB->GetAll(
+                        'SELECT
+                            c.id,
+                            c.lastname,
+                            c.name
+                        FROM customers c
                         WHERE '
                         . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
                         . ' AND c.id IN (' . implode(',', $customers) . ')'
@@ -3534,10 +4311,11 @@ if (!empty($intersect)) {
                     if (empty($all_customers)) {
                         break;
                     }
+                    $all_customer_ids = Utils::array_column($all_customers, 'id');
 
                     $all_nodes = $DB->GetCol(
                         'SELECT n.id FROM nodes n
-                        WHERE n.ownerid IN (' . implode(',', $all_customers) . ')'
+                        WHERE n.ownerid IN (' . implode(',', $all_customer_ids) . ')'
                         . (empty($where_nodes) ? '' : ' AND (' . implode(' AND ', $where_nodes) . ')')
                     );
                     if (empty($all_nodes)) {
@@ -3551,7 +4329,13 @@ if (!empty($intersect)) {
                                     break;
                                 }
                                 $nodes = $DB->GetAll(
-                                    "SELECT n.id, n.ownerid FROM nodes n
+                                    "SELECT
+                                        n.id,
+                                        n.ownerid,
+                                        c.lastname,
+                                        c.name
+                                    FROM nodes n
+                                    JOIN customers c ON c.id = n.ownerid
                                     WHERE n.access = ?
                                         AND n.id IN (" . implode(',', $all_nodes) . ")",
                                     array(1)
@@ -3559,7 +4343,12 @@ if (!empty($intersect)) {
                                 if (!empty($nodes)) {
                                     foreach ($nodes as $node) {
                                         if (!$quiet) {
-                                            printf("[block/node-access] Customer: #%d, Node: #%d" . PHP_EOL, $node['ownerid'], $node['id']);
+                                            printf(
+                                                "[block/node-access] Customer: %s (#%d), Node: #%d" . PHP_EOL,
+                                                $node['lastname'] . ' ' . $node['name'],
+                                                $node['ownerid'],
+                                                $node['id']
+                                            );
                                         }
 
                                         if (!$debug) {
@@ -3586,7 +4375,13 @@ if (!empty($intersect)) {
                                     break;
                                 }
                                 $nodes = $DB->GetAll(
-                                    "SELECT n.id, n.ownerid FROM nodes n
+                                    "SELECT
+                                        n.id,
+                                        n.ownerid,
+                                        c.lastname,
+                                        c.name
+                                    FROM nodes n
+                                    JOIN customers c ON c.id = n.ownerid
                                     WHERE n.warning = ?
                                         AND n.id IN (" . implode(',', $all_nodes) . ")",
                                     array(0)
@@ -3594,7 +4389,12 @@ if (!empty($intersect)) {
                                 if (!empty($nodes)) {
                                     foreach ($nodes as $node) {
                                         if (!$quiet) {
-                                            printf("[block/node-warning] Customer: #%d, Node: #%d" . PHP_EOL, $node['ownerid'], $node['id']);
+                                            printf(
+                                                "[block/node-warning] Customer: %s (#%d), Node: #%d" . PHP_EOL,
+                                                $node['lastname'] . ' ' . $node['name'],
+                                                $node['ownerid'],
+                                                $node['id']
+                                            );
                                         }
 
                                         if (!$debug) {
@@ -3618,16 +4418,27 @@ if (!empty($intersect)) {
                                 break;
                             case 'assignment-invoice':
                                 $assigns = $DB->GetAll(
-                                    "SELECT id, customerid FROM assignments
-                                    WHERE invoice = ? AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
-                                        AND datefrom <= ?NOW? AND (dateto = 0 OR dateto >= ?NOW?)
-                                        AND customerid IN (" . implode(',', $customers) . ")",
+                                    "SELECT
+                                        a.id,
+                                        a.customerid,
+                                        c.lastname,
+                                        c.name
+                                    FROM assignments a
+                                    JOIN customers c ON c.id = a.customerid
+                                    WHERE a.invoice = ? AND (a.tariffid IS NOT NULL OR a.liabilityid IS NOT NULL)
+                                        AND a.datefrom <= ?NOW? AND (a.dateto = 0 OR a.dateto >= ?NOW?)
+                                        AND a.customerid IN (" . implode(',', $all_customer_ids) . ")",
                                     array(DOC_INVOICE)
                                 );
                                 if (!empty($assigns)) {
                                     foreach ($assigns as $assign) {
                                         if (!$quiet) {
-                                            printf("[block/assignment-invoice] Customer: #%d, Assignment: %d" . PHP_EOL, $assign['customerid'], $assign['id']);
+                                            printf(
+                                                "[block/assignment-invoice] Customer: %s (#%d), Assignment: %d" . PHP_EOL,
+                                                $assign['lastname'] . ' ' . $assign['name'],
+                                                $assign['customerid'],
+                                                $assign['id']
+                                            );
                                         }
 
                                         if (empty($action_params)) {
@@ -3666,33 +4477,42 @@ if (!empty($intersect)) {
                                 }
                                 break;
                             case 'customer-status':
-                                $custids = $DB->GetCol(
-                                    "SELECT id FROM customers
-                                    WHERE status <> ? AND id IN (" . implode(',', $customers) . ")",
+                                $custs = $DB->GetAll(
+                                    "SELECT
+                                        c.id,
+                                        c.lastname,
+                                        c.name
+                                    FROM customers c
+                                    WHERE c.status <> ?
+                                        AND c.id IN (" . implode(',', $all_customer_ids) . ")",
                                     array(CSTATUS_DEBT_COLLECTION)
                                 );
-                                if (!empty($custids)) {
+                                if (!empty($custs)) {
                                     $target_cstatus = reset($action_params);
                                     if (empty($target_cstatus)) {
                                         $target_cstatus = CSTATUS_DEBT_COLLECTION;
                                     }
 
-                                    foreach ($custids as $custid) {
+                                    foreach ($custs as $cust) {
                                         if (!$quiet) {
-                                            printf("[block/customer-status] Customer: #%d" . PHP_EOL, $custid);
+                                            printf(
+                                                "[block/customer-status] Customer: %s (#%d)" . PHP_EOL,
+                                                $cust['lastname'] . ' ' . $cust['name'],
+                                                $cust['id']
+                                            );
                                         }
 
                                         if (!$debug) {
                                             $DB->Execute(
                                                 "UPDATE customers SET status = ? WHERE id = ?",
-                                                array($target_cstatus, $custid)
+                                                array($target_cstatus, $cust['id'])
                                             );
                                             if ($SYSLOG) {
                                                 $SYSLOG->NewTransaction('lms-notify.php');
                                                 $SYSLOG->AddMessage(
                                                     SYSLOG::RES_CUST,
                                                     SYSLOG::OPER_UPDATE,
-                                                    array(SYSLOG::RES_CUST => $custid, 'status' => CSTATUS_DEBT_COLLECTION)
+                                                    array(SYSLOG::RES_CUST => $cust['id'], 'status' => CSTATUS_DEBT_COLLECTION)
                                                 );
                                             }
                                         }
@@ -3707,22 +4527,26 @@ if (!empty($intersect)) {
                                     SYSLOG::RES_TARIFF => null,
                                     SYSLOG::RES_LIAB => null,
                                 );
-                                foreach ($customers as $cid) {
+                                foreach ($all_customers as $customer) {
                                     if (!$DB->GetOne(
                                         "SELECT id FROM assignments WHERE customerid = ? AND tariffid IS NULL AND liabilityid IS NULL",
-                                        array($cid)
+                                        array($customer['id'])
                                     )) {
                                         if (!$quiet) {
-                                            printf("[block/all-assignment-suspension] Customer: #%d" . PHP_EOL, $cid);
+                                            printf(
+                                                "[block/all-assignment-suspension] Customer: %s (#%d)" . PHP_EOL,
+                                                $customer['lastname'] . ' ' . $customer['name'],
+                                                $customer['id']
+                                            );
                                         }
 
                                         if (!$debug) {
                                             $DB->Execute("INSERT INTO assignments (customerid, datefrom, tariffid, liabilityid)
-                                                VALUES (?, ?, NULL, NULL)", array($cid, $args['datefrom']));
+                                                VALUES (?, ?, NULL, NULL)", array($customer['id'], $args['datefrom']));
                                             if ($SYSLOG) {
                                                 $SYSLOG->NewTransaction('lms-notify.php');
                                                 $args[SYSLOG::RES_ASSIGN] = $DB->GetLastInsertID('assignments');
-                                                $args[SYSLOG::RES_CUST] = $cid;
+                                                $args[SYSLOG::RES_CUST] = $customer['id'];
                                                 $SYSLOG->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_ADD, $args);
                                             }
                                         }
@@ -3732,16 +4556,24 @@ if (!empty($intersect)) {
                             case 'customer-group':
                                 $customergroupid = $LMS->CustomergroupGetId(reset($action_params));
                                 if ($customergroupid) {
-                                    foreach ($customers as $cid) {
+                                    foreach ($all_customers as $customer) {
                                         if (!$quiet) {
-                                            printf("[block/customer-group] Customer: #%d, CustomerGroup: #%d" . PHP_EOL, $cid, $customergroupid);
+                                            printf(
+                                                "[block/customer-group] Customer: %s (#%d), CustomerGroup: #%d" . PHP_EOL,
+                                                $customer['lastname'] . ' ' . $customer['name'],
+                                                $customer['id'],
+                                                $customergroupid
+                                            );
                                         }
 
                                         if (!$debug) {
+                                            if ($SYSLOG) {
+                                                $SYSLOG->NewTransaction('lms-notify.php');
+                                            }
                                             $LMS->CustomerassignmentAdd(
                                                 array(
                                                     'customergroupid' => $customergroupid,
-                                                    'customerid' => $cid,
+                                                    'customerid' => $customer['id'],
                                                 )
                                             );
                                         }
@@ -3755,8 +4587,13 @@ if (!empty($intersect)) {
                                 $nodegroupid = $LMS->GetNodeGroupIdByName(reset($action_params));
                                 if ($nodegroupid) {
                                     $nodes = $DB->GetAll(
-                                        "SELECT n.id, n.ownerid
+                                        "SELECT
+                                            n.id,
+                                            n.ownerid,
+                                            c.lastname,
+                                            c.name
                                         FROM nodes n
+                                        JOIN customers c ON c.id = n.ownerid
                                         WHERE NOT EXISTS (
                                                 SELECT 1 FROM nodegroupassignments nga
                                                 WHERE nga.nodeid = n.id
@@ -3770,7 +4607,12 @@ if (!empty($intersect)) {
                                     if (!empty($nodes)) {
                                         foreach ($nodes as $node) {
                                             if (!$quiet) {
-                                                printf("[block/node-group] Customer: #%d, Node: #%d" . PHP_EOL, $node['ownerid'], $node['id']);
+                                                printf(
+                                                    "[block/node-group] Customer: %s (#%d), Node: #%d" . PHP_EOL,
+                                                    $node['lastname'] . ' ' . $node['name'],
+                                                    $node['ownerid'],
+                                                    $node['id']
+                                                );
                                             }
 
                                             if (!$debug) {
@@ -3790,7 +4632,8 @@ if (!empty($intersect)) {
                     }
 
                     $plugin_manager->executeHook('notification_blocks', array(
-                        'customers' => $customers,
+                        'customers' => $all_customer_ids,
+                        'nodes' => $all_nodes,
                         'actions' => $actions,
                         'quiet' => $quiet,
                         'debug' => $debug,
@@ -3862,8 +4705,12 @@ if (!empty($intersect)) {
                         }
                     }
 
-                    $all_customers = $DB->GetCol(
-                        'SELECT c.id FROM customers c
+                    $all_customers = $DB->GetAll(
+                        'SELECT
+                            c.id,
+                            c.lastname,
+                            c.name
+                        FROM customers c
                         WHERE 1 = 1' . $customer_status_condition
                         . $customer_type_condition
                         . ($customerid ? ' AND c.id = ' . $customerid : '')
@@ -3877,9 +4724,11 @@ if (!empty($intersect)) {
                         break;
                     }
 
+                    $all_customer_ids = Utils::array_column($all_customers, 'id');
+
                     $all_nodes = $DB->GetCol(
                         'SELECT n.id FROM nodes n
-                        WHERE n.ownerid IN (' . implode(',', $all_customers) . ')'
+                        WHERE n.ownerid IN (' . implode(',', $all_customer_ids) . ')'
                         . (empty($where_nodes) ? '' : ' AND (' . implode(' AND ', $where_nodes) . ')')
                     );
                     if (empty($all_nodes)) {
@@ -3893,7 +4742,13 @@ if (!empty($intersect)) {
                                     break;
                                 }
                                 $nodes = $DB->GetAll(
-                                    "SELECT n.id, n.ownerid FROM nodes n
+                                    "SELECT
+                                        n.id,
+                                        n.ownerid,
+                                        c.lastname,
+                                        c.name
+                                    FROM nodes n
+                                    JOIN customers c ON c.id = n.ownerid
                                     WHERE n.access = ?
                                         AND n.id IN (" . implode(',', $all_nodes) . ")",
                                     array(0)
@@ -3901,7 +4756,12 @@ if (!empty($intersect)) {
                                 if (!empty($nodes)) {
                                     foreach ($nodes as $node) {
                                         if (!$quiet) {
-                                            printf("[unblock/node-access] Customer: #%d, Node: #%d" . PHP_EOL, $node['ownerid'], $node['id']);
+                                            printf(
+                                                "[unblock/node-access] Customer: %s (#%d), Node: #%d" . PHP_EOL,
+                                                $node['lastname'] . ' ' . $node['name'],
+                                                $node['ownerid'],
+                                                $node['id']
+                                            );
                                         }
 
                                         if (!$debug) {
@@ -3928,7 +4788,13 @@ if (!empty($intersect)) {
                                     break;
                                 }
                                 $nodes = $DB->GetAll(
-                                    "SELECT n.id, n.ownerid FROM nodes n
+                                    "SELECT
+                                        n.id,
+                                        n.ownerid,
+                                        c.lastname,
+                                        c.name
+                                    FROM nodes n
+                                    JOIN customers c ON c.id = n.ownerid
                                     WHERE n.warning = ?
                                         AND n.id IN (" . implode(',', $all_nodes) . ")",
                                     array(1)
@@ -3936,7 +4802,12 @@ if (!empty($intersect)) {
                                 if (!empty($nodes)) {
                                     foreach ($nodes as $node) {
                                         if (!$quiet) {
-                                            printf("[unblock/node-warning] Customer: #%d, Node: #%d" . PHP_EOL, $node['ownerid'], $node['id']);
+                                            printf(
+                                                "[unblock/node-warning] Customer: %s (#%d), Node: #%d" . PHP_EOL,
+                                                $node['lastname'] . ' ' . $node['name'],
+                                                $node['ownerid'],
+                                                $node['id']
+                                            );
                                         }
 
                                         if (!$debug) {
@@ -3960,21 +4831,36 @@ if (!empty($intersect)) {
                                 break;
                             case 'assignment-invoice':
                                 $assigns = $DB->GetAll(
-                                    "SELECT id, customerid FROM assignments
-                                    WHERE invoice <> ? AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
-                                        AND datefrom <= ?NOW? AND (dateto = 0 OR dateto >= ?NOW?)
-                                        AND customerid IN (" . implode(',', $all_customers) . ")",
+                                    "SELECT
+                                        a.id,
+                                        a.customerid,
+                                        c.lastname,
+                                        c.name
+                                    FROM assignments a
+                                    JOIN customers c ON c.id = a.customerid
+                                    WHERE a.invoice <> ? AND (a.tariffid IS NOT NULL OR a.liabilityid IS NOT NULL)
+                                        AND a.datefrom <= ?NOW? AND (a.dateto = 0 OR a.dateto >= ?NOW?)
+                                        AND a.customerid IN (" . implode(',', $all_customer_ids) . ")",
                                     array(DOC_INVOICE)
                                 );
                                 if (!empty($assigns)) {
                                     foreach ($assigns as $assign) {
                                         if (!$quiet) {
-                                            printf("[unblock/assignment-invoice] Customer: #%d, Assignment: #%d" . PHP_EOL, $assign['customerid'], $assign['id']);
+                                            printf(
+                                                "[unblock/assignment-invoice] Customer: %s (#%d), Assignment: #%d" . PHP_EOL,
+                                                $assign['lastname'] . ' ' . $assign['name'],
+                                                $assign['customerid'],
+                                                $assign['id']
+                                            );
                                         }
 
                                         if (!$debug) {
-                                            $DB->Execute("UPDATE assignments SET invoice = ?
-                                                WHERE id = ?", array(DOC_INVOICE, $assign['id']));
+                                            $DB->Execute(
+                                                "UPDATE assignments
+                                                SET invoice = ?
+                                                WHERE id = ?",
+                                                array(DOC_INVOICE, $assign['id'])
+                                            );
                                             if ($SYSLOG) {
                                                 $SYSLOG->NewTransaction('lms-notify.php');
                                                 $SYSLOG->AddMessage(
@@ -3992,33 +4878,41 @@ if (!empty($intersect)) {
                                 }
                                 break;
                             case 'customer-status':
-                                $custids = $DB->GetCol(
-                                    "SELECT id FROM customers
-                                    WHERE status = ? AND id IN (" . implode(',', $all_customers) . ")",
+                                $custs = $DB->GetAll(
+                                    "SELECT
+                                        c.id,
+                                        c.lastname,
+                                        c.name
+                                    FROM customers c
+                                    WHERE c.status = ? AND c.id IN (" . implode(',', $all_customer_ids) . ")",
                                     array(CSTATUS_DEBT_COLLECTION)
                                 );
-                                if (!empty($custids)) {
+                                if (!empty($custs)) {
                                     $target_cstatus = reset($action_params);
                                     if (empty($target_cstatus)) {
                                         $target_cstatus = CSTATUS_CONNECTED;
                                     }
 
-                                    foreach ($custids as $custid) {
+                                    foreach ($custs as $cust) {
                                         if (!$quiet) {
-                                            printf("[unblock/customer-status] Customer: #%d" . PHP_EOL, $custid);
+                                            printf(
+                                                "[unblock/customer-status] Customer: %s (#%d)" . PHP_EOL,
+                                                $cust['lastname'] . ' ' . $cust['name'],
+                                                $cust['id']
+                                            );
                                         }
 
                                         if (!$debug) {
                                             $DB->Execute(
                                                 "UPDATE customers SET status = ? WHERE id = ?",
-                                                array($target_cstatus, $custid)
+                                                array($target_cstatus, $cust['id'])
                                             );
                                             if ($SYSLOG) {
                                                 $SYSLOG->NewTransaction('lms-notify.php');
                                                 $SYSLOG->AddMessage(
                                                     SYSLOG::RES_CUST,
                                                     SYSLOG::OPER_UPDATE,
-                                                    array(SYSLOG::RES_CUST => $custid, 'status' => CSTATUS_CONNECTED)
+                                                    array(SYSLOG::RES_CUST => $cust['id'], 'status' => CSTATUS_CONNECTED)
                                                 );
                                             }
                                         }
@@ -4032,35 +4926,45 @@ if (!empty($intersect)) {
                                     'settlement' => 1,
                                     'datefrom' => time(),
                                 );
-                                foreach ($all_customers as $cid) {
+                                foreach ($all_customers as $customer) {
                                     if ($SYSLOG) {
                                         $SYSLOG->NewTransaction('lms-notify.php');
                                     }
-                                    if ($datefrom = $DB->GetOne(
+                                    if ($assignment_update && $datefrom = $DB->GetOne(
                                         "SELECT datefrom FROM assignments WHERE customerid = ? AND tariffid IS NULL AND liabilityid IS NULL",
-                                        array($cid)
+                                        array($customer['id'])
                                     )) {
                                         $year = intval(date('Y', $datefrom));
                                         $month = intval(date('m', $datefrom));
                                         if ($year < $current_year || ($year == $current_year && $month < $current_month)) {
                                             $aids = $DB->GetCol(
-                                                "SELECT id FROM assignments
-                                                WHERE customerid = ? AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
-                                                    AND datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?)",
-                                                array($cid)
+                                                "SELECT a.id
+                                                FROM assignments a
+                                                WHERE a.customerid = ? AND (a.tariffid IS NOT NULL OR a.liabilityid IS NOT NULL)
+                                                    AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)",
+                                                array($customer['id'])
                                             );
                                             if (!empty($aids)) {
                                                 foreach ($aids as $aid) {
                                                     if (!$quiet) {
-                                                        printf("[unblock/all-assignment-suspension] assignment update: Customer: #%d, Assignment: #%d" . PHP_EOL, $cid, $aid);
+                                                        printf(
+                                                            "[unblock/all-assignment-suspension] assignment update: Customer: %s (#%d), Assignment: #%d" . PHP_EOL,
+                                                            $customer['lastname'] . ' ' . $customer['name'],
+                                                            $customer['id'],
+                                                            $aid
+                                                        );
                                                     }
 
                                                     if (!$debug) {
-                                                        $DB->Execute("UPDATE assignments SET settlement = 1, datefrom = ?
-                                                            WHERE id = ?", array($args['datefrom'], $aid));
+                                                        $DB->Execute(
+                                                            "UPDATE assignments
+                                                            SET settlement = 1, datefrom = ?
+                                                            WHERE id = ?",
+                                                            array($args['datefrom'], $aid)
+                                                        );
                                                         if ($SYSLOG) {
                                                             $args[SYSLOG::RES_ASSIGN] = $aid;
-                                                            $args[SYSLOG::RES_CUST] = $cid;
+                                                            $args[SYSLOG::RES_CUST] = $customer['id'];
                                                             $SYSLOG->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_UPDATE, $args);
                                                         }
                                                     }
@@ -4068,12 +4972,20 @@ if (!empty($intersect)) {
                                             }
                                         }
                                     }
-                                    $aids = $DB->GetCol("SELECT id FROM assignments
-                                        WHERE customerid = ? AND tariffid IS NULL AND liabilityid IS NULL", array($cid));
+                                    $aids = $DB->GetCol(
+                                        "SELECT id FROM assignments
+                                        WHERE customerid = ? AND tariffid IS NULL AND liabilityid IS NULL",
+                                        array($customer['id'])
+                                    );
                                     if (!empty($aids)) {
                                         foreach ($aids as $aid) {
                                             if (!$quiet) {
-                                                printf("[unblock/all-assignment-suspension] assignment deletion: Customer: #%d, Assignment: #%d" . PHP_EOL, $cid, $aid);
+                                                printf(
+                                                    "[unblock/all-assignment-suspension] assignment deletion: Customer: %s (#%d), Assignment: #%d" . PHP_EOL,
+                                                    $customer['lastname'] . ' ' . $customer['name'],
+                                                    $customer['id'],
+                                                    $aid
+                                                );
                                             }
 
                                             if (!$debug) {
@@ -4082,7 +4994,7 @@ if (!empty($intersect)) {
                                                     $SYSLOG->AddMessage(
                                                         SYSLOG::RES_ASSIGN,
                                                         SYSLOG::OPER_DELETE,
-                                                        array(SYSLOG::RES_ASSIGN => $aid, SYSLOG::RES_CUST => $cid)
+                                                        array(SYSLOG::RES_ASSIGN => $aid, SYSLOG::RES_CUST => $customer['id'])
                                                     );
                                                 }
                                             }
@@ -4093,16 +5005,24 @@ if (!empty($intersect)) {
                             case 'customer-group':
                                 $customergroupid = $LMS->CustomergroupGetId(reset($action_params));
                                 if ($customergroupid) {
-                                    foreach ($all_customers as $cid) {
+                                    foreach ($all_customers as $customer) {
                                         if (!$quiet) {
-                                            printf("[unblock/customer-group] Customer: #%d, CustomerGroup: #%d" . PHP_EOL, $cid, $customergroupid);
+                                            printf(
+                                                "[unblock/customer-group] Customer: %s (#%d), CustomerGroup: #%d" . PHP_EOL,
+                                                $customer['lastname'] . ' ' . $customer['name'],
+                                                $customer['id'],
+                                                $customergroupid
+                                            );
                                         }
 
                                         if (!$debug) {
+                                            if ($SYSLOG) {
+                                                $SYSLOG->NewTransaction('lms-notify.php');
+                                            }
                                             $LMS->CustomerassignmentDelete(
                                                 array(
                                                     'customergroupid' => $customergroupid,
-                                                    'customerid' => $cid,
+                                                    'customerid' => $customer['id'],
                                                 )
                                             );
                                         }
@@ -4116,8 +5036,13 @@ if (!empty($intersect)) {
                                 $nodegroupid = $LMS->GetNodeGroupIdByName(reset($action_params));
                                 if ($nodegroupid) {
                                     $nodes = $DB->GetAll(
-                                        "SELECT n.id, n.ownerid
+                                        "SELECT
+                                            n.id,
+                                            n.ownerid,
+                                            c.lastname,
+                                            c.name
                                         FROM nodes n
+                                        JOIN customers c ON c.id = n.ownerid
                                         WHERE EXISTS (
                                                 SELECT 1 FROM nodegroupassignments nga
                                                 WHERE nga.nodeid = n.id
@@ -4131,7 +5056,12 @@ if (!empty($intersect)) {
                                     if (!empty($nodes)) {
                                         foreach ($nodes as $node) {
                                             if (!$quiet) {
-                                                printf("[unblock/node-group] Customer: #%d, Node: #%d" . PHP_EOL, $node['ownerid'], $node['id']);
+                                                printf(
+                                                    "[unblock/node-group] Customer: %s (#%d), Node: #%d" . PHP_EOL,
+                                                    $node['lastname'] . ' ' . $node['name'],
+                                                    $node['ownerid'],
+                                                    $node['id']
+                                                );
                                             }
 
                                             if (!$debug) {
@@ -4151,7 +5081,7 @@ if (!empty($intersect)) {
                     }
 
                     $plugin_manager->executeHook('notification_unblocks', array(
-                        'customers' => $all_customers,
+                        'customers' => $all_customer_ids,
                         'nodes' => $all_nodes,
                         'actions' => $actions,
                         'quiet' => $quiet,

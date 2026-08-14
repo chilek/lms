@@ -296,9 +296,12 @@ if (isset($_POST['assignment'])) {
     if ($a['tariffid'] > 0 && !empty($a['nodes'])) {
         $restricted_nodes = $LMS->CheckNodeTariffRestrictions($a['id'], $a['nodes'], $from, $to);
         $node_multi_tariff_restriction = ConfigHelper::getConfig(
-            'phpui.node_multi_tariff_restriction',
-            '',
-            true
+            'nodes.multi_tariff_restriction',
+            ConfigHelper::getConfig(
+                'phpui.node_multi_tariff_restriction',
+                '',
+                true
+            )
         );
         if (preg_match('/^(error|warning)$/', $node_multi_tariff_restriction) && !empty($restricted_nodes)) {
             foreach ($restricted_nodes as $nodeid) {
@@ -414,13 +417,14 @@ if (isset($_POST['assignment'])) {
             SYSLOG::RES_TARIFF => empty($a['tariffid']) ? null : intval($a['tariffid']),
             SYSLOG::RES_CUST => $customer['id'],
             'attribute' => !empty($a['attribute']) ? $a['attribute'] : null,
+            'note' => !empty($a['note']) ? $a['note'] : null,
+            'suspended' => empty($a['suspended']) ? 0 : 1,
             'period' => $period,
             'backwardperiod' => isset($a['backwardperiod']) ? 1 : 0,
             'at' => $at,
             'count' => $count,
-            'note' => htmlspecialchars($a['note']),
             'invoice' => isset($a['invoice']) ? intval($a['invoice']) : 0,
-            'separatedocument' => empty($a['separatedocument']) ? 0 : 1,
+            'separatedocument'  => strlen($a['separatedocumentvalue']) ? $a['separatedocumentvalue'] : (strlen($a['separatedocument']) ? $a['separatedocument'] : null),
             'separateitem' => empty($a['separateitem']) ? 0 : 1,
             'settlement' => empty($a['settlement']) ? 0 : 1,
             'datefrom' => $from,
@@ -431,14 +435,15 @@ if (isset($_POST['assignment'])) {
             SYSLOG::RES_NUMPLAN => !empty($a['numberplanid']) ? $a['numberplanid'] : null,
             'paytime' => $paytime ?? null,
             'paytype' => !empty($a['paytype']) ? $a['paytype'] : null,
-            'recipient_address_id' => ($a['recipient_address_id'] >= 0) ? $a['recipient_address_id'] : null,
+            'recipient_address_id' => ($a['recipient_address_id'] > 0) ? $a['recipient_address_id'] : null,
+            'recipient_address_id2' => ($a['recipient_address_id2'] > 0) ? $a['recipient_address_id2'] : null,
             SYSLOG::RES_ASSIGN => $a['id']
         );
 
-        $DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, attribute=?, period=?,
-            backwardperiod=?, at=?, count=?, note=?,
+        $DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, attribute=?, note = ?, suspended = ?, period=?,
+            backwardperiod=?, at=?, count=?,
 			invoice=?, separatedocument=?, separateitem = ?, settlement=?, datefrom=?, dateto=?, pdiscount=?, vdiscount=?,
-			liabilityid=?, numberplanid=?, paytime = ?, paytype=?, recipient_address_id=?
+			liabilityid=?, numberplanid=?, paytime = ?, paytype=?, recipient_address_id = ?, recipient_address_id2 = ?
 			WHERE id=?', array_values($args));
         if ($SYSLOG) {
             $SYSLOG->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_UPDATE, $args);
@@ -520,12 +525,13 @@ if (isset($_POST['assignment'])) {
             ELSE (CASE WHEN liabilities.flags & ? > 0 THEN 1 ELSE 0 END)
         END) AS netflag,
         (CASE WHEN liabilityid IS NULL THEN tariffs.taxcategory ELSE liabilities.taxcategory END) AS taxcategory,
-        a.settlement, a.pdiscount, a.vdiscount, a.attribute, a.liabilityid,
+        a.settlement, a.pdiscount, a.vdiscount, a.attribute, a.suspended, a.liabilityid,
         (CASE WHEN liabilityid IS NULL THEN tariffs.name ELSE liabilities.name END) AS name,
         liabilities.value AS value, liabilities.currency AS currency,
         liabilities.netvalue AS netvalue,
         liabilities.prodid AS prodid, liabilities.taxid AS taxid,
-        recipient_address_id
+        recipient_address_id,
+        recipient_address_id2
         FROM assignments a
         LEFT JOIN tariffs ON (tariffs.id = a.tariffid)
         LEFT JOIN liabilities ON (liabilities.id = a.liabilityid)
@@ -639,6 +645,17 @@ if (!empty($a['nodes']) && is_array($a['nodes'])) {
     $a['nodes'] = array_flip($a['nodes']);
 }
 $SMARTY->assign('assignment', $a);
-$SMARTY->assign('assignments', $LMS->GetCustomerAssignments($customer['id'], true, false));
+$assignments = $LMS->GetCustomerAssignments($customer['id'], true, false);
+$SMARTY->assign('assignments', $assignments);
 $SMARTY->assign('customerinfo', $customer);
+
+$document_separation_groups = array();
+foreach ($assignments as $assignment) {
+    if (isset($assignment['separatedocument'])) {
+        $document_separation_groups[$assignment['separatedocument']] = $assignment['separatedocument'];
+    }
+}
+sort($document_separation_groups, SORT_STRING);
+$SMARTY->assign('document_separation_groups', $document_separation_groups);
+
 $SMARTY->display('customer/customerassignmentsedit.html');

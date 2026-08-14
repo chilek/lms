@@ -9,6 +9,7 @@
 	#button-panel {
 		display: flex;
 		flex-wrap: wrap;
+		align-items: center;
 	}
 
 	#button-panel > * {
@@ -69,6 +70,8 @@
 </script>
 
 {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
+{$offline_support = ConfigHelper::checkConfig('ksef.offline_support')}
+
 <FORM METHOD="POST" NAME="page">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox lms-ui-background-cycle">
@@ -164,12 +167,27 @@
 						{trans("exclude group")}
 					</label>
 					<label>
-						<input type="checkbox" name="hideclosed"{if $listdata.hideclosed} checked{/if}>
-						{trans("hide accounted<!plural>")}
+						{trans("Send to email")}
+						<select size="1" name="sendtoemail">
+							<option value="">{trans("- any -")}</option>
+							<option value="notsent"{if $listdata.sendtoemail == 'notsent'} selected{/if}>{trans("not sent")}</option>
+							<option value="withoutconsent"{if $listdata.sendtoemail == 'withoutconsent'} selected{/if}>{trans("without consent")}</option>
+						</select>
 					</label>
 					<label>
-						<input type="checkbox" name="notsent"{if $listdata.notsent} checked{/if}>
-						{trans("not sent to email")}
+						{trans("<!ksef>KSeF status")}
+						<select name="ksefstatus">
+							<option value="">{trans("<!ksef-status>- any -")}</option>
+							<option value="1"{if $listdata.ksefstatus == 1} selected{/if}>{trans("<!ksef-status>excluded")}</option>
+							<option value="2"{if $listdata.ksefstatus == 2} selected{/if}>{trans("<!ksef-status>not sent yet")}</option>
+							<option value="3"{if $listdata.ksefstatus == 3} selected{/if}>{trans("<!ksef-status>sent")}</option>
+							<option value="4"{if $listdata.ksefstatus == 4} selected{/if}>{trans("<!ksef-status>error")}</option>
+							<option value="5"{if $listdata.ksefstatus == 5} selected{/if}>{trans("<!ksef-status>assigned number")}</option>
+						</select>
+					</label>
+					<label>
+						<input type="checkbox" name="hideclosed"{if $listdata.hideclosed} checked{/if}>
+						{trans("hide accounted<!plural>")}
 					</label>
 					<label {tip text="translates into JPK MPP flag"}>
 						<input type="checkbox" name="splitpayment"{if $listdata.splitpayment} checked{/if}>
@@ -208,7 +226,9 @@
 	<TR class="highlight{if $invoice.closed} blend{elseif $invoice.cancelled} cancel{/if}" data-published="{$invoice.published}"
 			data-number="{$number}" data-customername="{$invoice.name|escape:"javascript"|escape:"html"}"
 			data-senddate="{if $invoice.senddate}{$invoice.senddate|date_format:"Y-m-d H:i"}{else}{$invoice.senddate}{/if}"
-			data-refdocs="{if empty($invoice.documentreferenced)}0{else}1{/if}">
+			data-refdocs="{if empty($invoice.documentreferenced)}0{else}1{/if}"
+			data-ksef="{if empty($invoice.ksefhash)}0{else}1{/if}"
+			data-ksef-submit="{if empty($invoice.ksefsubmit)}0{else}1{/if}">
 		<TD>
 			{$invoice.id|string_format:"%06d"}
 		</TD>
@@ -243,6 +263,14 @@
 			{foreach $invoice.customlinks as $link}
 				<A href="{$link.url}" rel="external"{if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="{$link.label}" {$link.tip}>{else}{$link.label}{/if}</A>
 			{/foreach}
+			{if !empty($invoice.ksefhash)}
+				{if !empty($invoice.ksefstatus) && ($invoice.ksefstatus < 200 || $invoice.ksefstatus >= 300)}
+					{$class = "lms-ui-error"}
+				{else}
+					{$class = ""}
+				{/if}
+				{hint icon="lock" url="?m=invoiceksefinfo&id={$invoiceid}" tooltip_class="lms-ui-ksef-qr-code" class=$class}
+			{/if}
 			{if $invoice.type == $smarty.const.DOC_INVOICE_PRO && !$invoice.closed}
 				{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
 					{button type="link" icon="transform" href="?m=invoicenew&id={$invoice.id}&action=init"
@@ -250,11 +278,13 @@
 				{/if}
 			{/if}
 			{if $invoice.sendinvoices && !$invoice.cancelled && ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE || $invoice.type == $smarty.const.DOC_INVOICE_PRO)}
-				{textformat assign="tip" wrap=5000}
-					{if $invoice.senddate}{trans("Send invoice again")}<br><strong>{t a=$invoice.senddate|date_format:"Y-m-d H:i"}(already sent on $a){/t}</strong>{else}{trans("Send invoice")}{/if}
-				{/textformat}
-				{button type="link" icon="{if $invoice.senddate}mailsent{else}mail{/if}" class="send-invoice" href="?m=invoicesend&id={$invoice.id}"
-					tip=$tip}
+				{if empty($invoice.ksefsubmission) || $invoice.ksefstatus == 200 || $offline_support && isset($invoice.ksefstatus) && $invoice.ksefstatus == 0}
+					{textformat assign="tip" wrap=5000}
+						{if $invoice.senddate}{trans("Send invoice again")}<br><strong>{t a=$invoice.senddate|date_format:"Y-m-d H:i"}(already sent on $a){/t}</strong>{else}{trans("Send invoice")}{/if}
+					{/textformat}
+					{button type="link" icon="{if $invoice.senddate}mailsent{else}mail{/if}" class="send-invoice" href="?m=invoicesend&id={$invoice.id}"
+						tip=$tip}
+				{/if}
 			{/if}
 			{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO || $invoice.type == $smarty.const.DOC_CNOTE}
 				{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE}
@@ -270,14 +300,18 @@
 					{if ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO) && !$invoice.closed && !$invoice.referenced && !$invoice.archived}
 						{if !$invoice.published || ConfigHelper::checkPrivilege('published_document_modification')}
 							{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
-								{button type="link" icon="delete" class="delete-invoice" tip="Delete"
-									href="?m=invoicedel&id={$invoice.id}"}
+								{if empty($invoice.ksefhash) && empty($invoice.ksefsubmit)}
+									{button type="link" icon="delete" class="delete-invoice" tip="Delete"
+										href="?m=invoicedel&id={$invoice.id}"}
+								{/if}
 							{/if}
 						{/if}
 					{/if}
 				{else}
 					{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
-						{button type="link" icon="delete" tip="Delete" class="delete-proforma-invoice" href="?m=invoicedel&id={$invoice.id}"}
+						{if empty($invoice.ksefhash) && empty($invoice.ksefsubmit)}
+							{button type="link" icon="delete" tip="Delete" class="delete-proforma-invoice" href="?m=invoicedel&id={$invoice.id}"}
+						{/if}
 					{/if}
 				{/if}
 			{/if}
@@ -285,8 +319,10 @@
 				{if $invoice.type == $smarty.const.DOC_CNOTE}
 					{if !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 						{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
-							{button type="link" icon="delete" class="delete-invoice" tip="Delete"
-								href="?m=invoicedel&id={$invoice.id}"}
+							{if empty($invoice.ksefhash) && empty($invoice.ksefsubmit)}
+								{button type="link" icon="delete" class="delete-invoice" tip="Delete"
+									href="?m=invoicedel&id={$invoice.id}"}
+							{/if}
 						{/if}
 					{/if}
 				{/if}
@@ -295,21 +331,28 @@
 						{if $invoice.type == $smarty.const.DOC_INVOICE}
 							{if !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 								{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
-									{button type="link" icon="edit"
-										href="?m=invoiceedit&id={$invoice.id}&action=edit" class="edit-invoice" tip="Edit"}
+									{if empty($invoice.ksefhash) && empty($invoice.ksefsubmit)
+										|| !empty($invoice.ksefstatus) && ($invoice.ksefstatus < 200 || $invoice.ksefstatus >= 300)}
+										{button type="link" icon="edit"
+											href="?m=invoiceedit&id={$invoice.id}&action=edit" class="edit-invoice" tip="Edit"}
+									{/if}
 								{/if}
 							{/if}
 						{else}
 							{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
-								{button type="link" icon="edit" tip="Edit"
-									href="?m=invoiceedit&id={$invoice.id}&action=edit{if $invoice.type == $smarty.const.DOC_INVOICE_PRO}&proforma=1{/if}"}
+								{if empty($invoice.ksefhash) && empty($invoice.ksefsubmit)}
+									{button type="link" icon="edit" tip="Edit"
+										href="?m=invoiceedit&id={$invoice.id}&action=edit{if $invoice.type == $smarty.const.DOC_INVOICE_PRO}&proforma=1{/if}"}
+								{/if}
 							{/if}
 						{/if}
 					{elseif $invoice.type == $smarty.const.DOC_CNOTE}
 						{if !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 							{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
-								{button type="link" icon="edit" tip="Edit" class="edit-invoice"
-									href="?m=invoicenoteedit&id={$invoice.id}&action=edit"}
+								{if empty($invoice.ksefhash) && empty($invoice.ksefsubmit)}
+									{button type="link" icon="edit" tip="Edit" class="edit-invoice"
+										href="?m=invoicenoteedit&id={$invoice.id}&action=edit"}
+								{/if}
 							{/if}
 						{/if}
 					{/if}
@@ -318,8 +361,10 @@
 			{if !$invoice.cancelled}
 				{if $invoice.type != $smarty.const.DOC_INVOICE_PRO && !$invoice.archived && !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 					{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
-						{button type="link" icon="cancel" tip="Cancel" class="cancel-invoice"
-							href="?m=invoicecancel&id={$invoice.id}"}
+						{if empty($invoice.ksefhash) && empty($invoice.ksefsubmit) || !empty($invoice.ksefstatus) && $invoice.ksefstatus >= 400 && $invoice.ksefstatus < 500}
+							{button type="link" icon="cancel" tip="Cancel" class="cancel-invoice"
+								href="?m=invoicecancel&id={$invoice.id}"}
+						{/if}
 					{/if}
 				{/if}
 			{elseif $invoice.cancelled}

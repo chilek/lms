@@ -29,6 +29,8 @@ $script_parameters = array(
     'section:' => 's:',
     'message-file:' => 'm:',
     'force-http-mode' => 'f',
+    'fetch-only' => 'o',
+    'output-directory:' => null,
 );
 
 $script_help = <<<EOF
@@ -36,7 +38,11 @@ $script_help = <<<EOF
                                 are stored
 -m, --message-file=<message-file>       name of message file;
 -f, --force-http-mode           force callback url mode even if script is not launched under
-                                http server control
+                                http server control;
+-o, --fetch-only                only fetch incoming SMS messages and write them to files;
+    --output-directory=<directory>
+                                output directory is directory where fetched messages
+                                are stored;
 EOF;
 
 require_once('script-options.php');
@@ -73,13 +79,28 @@ $customer_auto_reply_body = ConfigHelper::getConfig('sms.customer_auto_reply_bod
 
 $detect_customer_location_address = ConfigHelper::checkConfig($config_section . '.detect_customer_location_address');
 
+$mms_detect_regexp = ConfigHelper::getConfig($config_section . '.mms_detect_regexp', null, true);
+$customer_mms_auto_reply_body = ConfigHelper::getConfig($config_section . '.customer_mms_auto_reply_body', '', true);
+
+$voicecall_detect_regexp = ConfigHelper::getConfig($config_section . '.voicecall_detect_regexp', null, true);
+$customer_voicecall_auto_reply_body = ConfigHelper::getConfig($config_section . '.customer_voicecall_auto_reply_body', '', true);
+
 // Load plugin files and register hook callbacks
-$plugin_manager = new LMSPluginManager();
+$plugin_manager = LMSPluginManager::getInstance();
 $LMS->setPluginManager($plugin_manager);
 
 $message_files = array();
 
 if ($http_mode) {
+    if (isset($options['output-directory'])) {
+        $output_directory = $options['output-directory'];
+        if (!is_dir($output_directory)) {
+            die('Output directory \'' . $output_directory . '\' does not exist!' . PHP_EOL);
+        }
+    } else {
+        $output_directory = sys_get_temp_dir();
+    }
+
     // call external incoming SMS handler(s)
     $errors = array();
     $content = null;
@@ -110,14 +131,18 @@ if ($http_mode) {
 
     if (is_array($content)) {
         foreach ($content as $sms) {
-            $message_file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'LMS_INCOMING_MESSAGE-' . uniqid('', true);
+            $message_file = $output_directory . DIRECTORY_SEPARATOR . 'LMS_INCOMING_MESSAGE-' . uniqid('', true);
             file_put_contents($message_file, $sms);
             $message_files[] = $message_file;
         }
     } else {
-        $message_file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'LMS_INCOMING_MESSAGE-' . uniqid('', true);
+        $message_file = $output_directory . DIRECTORY_SEPARATOR . 'LMS_INCOMING_MESSAGE-' . uniqid('', true);
         file_put_contents($message_file, $content);
         $message_files[] = $message_file;
+    }
+
+    if (isset($options['fetch-only'])) {
+        die;
     }
 } else {
     if (isset($options['message-file'])) {
@@ -155,23 +180,30 @@ foreach ($message_files as $message_file) {
         $phone = null;
         $date = null;
         $ucs = false;
+        $binary = false;
+        $extid = null;
+
         reset($lines);
+
         while (($line = current($lines)) !== false) {
             if (preg_match('/^From: ([0-9]{3,15})$/', $line, $matches) && $phone == null) {
                 $phone = $matches[1];
-            }
-            if (preg_match('/^Received: (.*)$/', $line, $matches) && !isset($date)) {
+            } elseif (preg_match('/^Received: (.*)$/', $line, $matches) && !isset($date)) {
                 $date = strtotime($matches[1]);
                 if ($date === false) {
                     $date = null;
                 }
-            }
-            if (preg_match('/^Alphabet:.*UCS2?$/', $line)) {
+            } elseif (preg_match('/^Alphabet:.*UCS2?$/', $line)) {
                 $ucs = true;
+            } elseif (preg_match('/^Alphabet:[\s]*binary$/', $line)) {
+                $binary = true;
+            } elseif (preg_match('/^Message_id:[\s]*(.*)$/', $line, $matches) && !isset($extid)) {
+                $extid = $matches[1];
             }
+
             if (empty($line) && !$body) {
                 $body = true;
-            } else if ($body) {
+            } elseif ($body) {
                 if ($ucs) {
                     $line = preg_replace('/\x0$/', "\x0\n", $line);
                 }
@@ -183,10 +215,35 @@ foreach ($message_files as $message_file) {
             $message = iconv('UNICODEBIG', 'UTF-8', $message);
         }
 
-        if (!empty($phone)) {
-            $phone = preg_replace('/^' . $prefix . '/', '', $phone);
+        $mms_detected = false;
+        $voicecall_detected = false;
 
-            $customer = $DB->GetRow(
+        if (isset($mms_detect_regexp)) {
+            if ($binary) {
+                $message = preg_replace('/[\x00-\x1F\x7F-\xFF]/', '', $message);
+            }
+            if (preg_match('#' . $mms_detect_regexp . '#i', $message, $m)
+                && isset($m['phone'])) {
+                $phone = $m['phone'];
+                $mms_detected = true;
+            }
+        }
+
+        if (!$mms_detected && isset($voicecall_detect_regexp)) {
+            if ($binary) {
+                $message = preg_replace('/[\x00-\x1F\x7F-\xFF]/', '', $message);
+            }
+            if (preg_match('#' . $voicecall_detect_regexp . '#i', $message, $m)
+                && isset($m['phone'])) {
+                $phone = $m['phone'];
+                $voicecall_detected = true;
+            }
+        }
+
+        if (!empty($phone)) {
+            $phone = preg_replace('/^(\+)?' . $prefix . '/', '', $phone);
+
+            $customers = $DB->GetAll(
                 "SELECT customerid AS cid, " . $DB->Concat('lastname', "' '", 'c.name') . " AS name
                 FROM customercontacts cc
                 LEFT JOIN customers c ON c.id = cc.customerid
@@ -200,10 +257,31 @@ foreach ($message_files as $message_file) {
             );
 
             $formatted_phone = preg_replace('/^([0-9]{3})([0-9]{3})([0-9]{3})$/', '$1 $2 $3', $phone);
-            if (!empty($customer_auto_reply_body)) {
-                $LMS->SendSMS($phone, $customer_auto_reply_body, null, $LMS->getCustomerSMSOptions());
-                sleep(1);
+
+            if ($mms_detected) {
+                if (!empty($customer_mms_auto_reply_body)) {
+                    $LMS->SendSMS($phone, $customer_mms_auto_reply_body, null, $LMS->getCustomerSMSOptions());
+                    sleep(1);
+                }
+            } elseif ($voicecall_detected) {
+                if (!empty($customer_voicecall_auto_reply_body)) {
+                    $LMS->SendSMS($phone, $customer_voicecall_auto_reply_body, null, $LMS->getCustomerSMSOptions());
+                    sleep(1);
+                }
+            } else {
+                if (!empty($customer_auto_reply_body)) {
+                    $LMS->SendSMS($phone, $customer_auto_reply_body, null, $LMS->getCustomerSMSOptions());
+                    sleep(1);
+                }
             }
+
+            if (empty($customers) || count($customers) > 1) {
+                $customer = null;
+            } else {
+                $customer = reset($customers);
+            }
+
+            unset($customers);
         } else {
             $customer = null;
         }
@@ -236,6 +314,7 @@ foreach ($message_files as $message_file) {
             'address_id' => $address_id,
             'body' => $message,
             'phonefrom' => empty($phone) ? '' : $phone,
+            'extid' => $extid ?? null,
             'categories' => $cats,
             'source' => RT_SOURCE_SMS,
         ));
@@ -314,68 +393,71 @@ foreach ($message_files as $message_file) {
                     );
                 }
 
-                if (!empty($queuedata['newticketsubject']) && !empty($queuedata['newticketbody']) && !empty($emails)) {
-                    $custmail_subject = $queuedata['newticketsubject'];
-                    $custmail_subject = preg_replace_callback(
-                        '/%(\\d*)tid/',
-                        function ($m) use ($tid) {
-                            return sprintf('%0' . $m[1] . 'd', $tid);
-                        },
-                        $custmail_subject
-                    );
-                    $custmail_subject = str_replace(
-                        '%title',
-                        trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
-                        $custmail_subject
-                    );
-                    $custmail_body = $queuedata['newticketbody'];
-                    $custmail_body = preg_replace_callback(
-                        '/%(\\d*)tid/',
-                        function ($m) use ($tid) {
-                            return sprintf('%0' . $m[1] . 'd', $tid);
-                        },
-                        $custmail_body
-                    );
-                    $custmail_body = str_replace('%cid', $customer['cid'], $custmail_body);
-                    $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
-                    $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
-                    $custmail_body = str_replace(
-                        '%title',
-                        trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
-                        $custmail_body
-                    );
-                    $custmail_body = str_replace('%body', $message, $custmail_body);
-                    $custmail_headers = array(
-                        'From' => $headers['From'],
-                        'Reply-To' => $headers['From'],
-                        'Subject' => $custmail_subject,
-                    );
-                    foreach ($emails as $email) {
-                        $custmail_headers['To'] = '<' . $email . '>';
-                        $LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $LMS->GetRTSmtpOptions());
+                if (!$mms_detected && !$voicecall_detected) {
+                    if (!empty($queuedata['newticketsubject']) && !empty($queuedata['newticketbody']) && !empty($emails)) {
+                        $custmail_subject = $queuedata['newticketsubject'];
+                        $custmail_subject = preg_replace_callback(
+                            '/%(\\d*)tid/',
+                            function ($m) use ($tid) {
+                                return sprintf('%0' . $m[1] . 'd', $tid);
+                            },
+                            $custmail_subject
+                        );
+                        $custmail_subject = str_replace(
+                            '%title',
+                            trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
+                            $custmail_subject
+                        );
+                        $custmail_body = $queuedata['newticketbody'];
+                        $custmail_body = preg_replace_callback(
+                            '/%(\\d*)tid/',
+                            function ($m) use ($tid) {
+                                return sprintf('%0' . $m[1] . 'd', $tid);
+                            },
+                            $custmail_body
+                        );
+                        $custmail_body = str_replace('%cid', $customer['cid'], $custmail_body);
+                        $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
+                        $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
+                        $custmail_body = str_replace(
+                            '%title',
+                            trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
+                            $custmail_body
+                        );
+                        $custmail_body = str_replace('%body', $message, $custmail_body);
+                        $custmail_headers = array(
+                            'From' => $headers['From'],
+                            'Reply-To' => $headers['From'],
+                            'Subject' => $custmail_subject,
+                        );
+                        foreach ($emails as $email) {
+                            $custmail_headers['To'] = '<' . $email . '>';
+                            $LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $LMS->GetRTSmtpOptions());
+                        }
                     }
-                }
-                if (!empty($queuedata['newticketsmsbody']) && !empty($mobile_phones)) {
-                    $custsms_body = $queuedata['newticketsmsbody'];
-                    $custsms_body = preg_replace_callback(
-                        '/%(\\d*)tid/',
-                        function ($m) use ($tid) {
-                            return sprintf('%0' . $m[1] . 'd', $tid);
-                        },
-                        $custsms_body
-                    );
-                    $custsms_body = str_replace('%cid', $customer['cid'], $custsms_body);
-                    $custsms_body = str_replace('%pin', $info['pin'], $custsms_body);
-                    $custsms_body = str_replace('%customername', $info['customername'], $custsms_body);
-                    $custsms_body = str_replace(
-                        '%title',
-                        trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
-                        $custsms_body
-                    );
-                    $custsms_body = str_replace('%body', $message, $custsms_body);
 
-                    foreach ($mobile_phones as $phone) {
-                        $LMS->SendSMS($phone['contact'], $custsms_body);
+                    if (!empty($queuedata['newticketsmsbody']) && !empty($mobile_phones)) {
+                        $custsms_body = $queuedata['newticketsmsbody'];
+                        $custsms_body = preg_replace_callback(
+                            '/%(\\d*)tid/',
+                            function ($m) use ($tid) {
+                                return sprintf('%0' . $m[1] . 'd', $tid);
+                            },
+                            $custsms_body
+                        );
+                        $custsms_body = str_replace('%cid', $customer['cid'], $custsms_body);
+                        $custsms_body = str_replace('%pin', $info['pin'], $custsms_body);
+                        $custsms_body = str_replace('%customername', $info['customername'], $custsms_body);
+                        $custsms_body = str_replace(
+                            '%title',
+                            trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
+                            $custsms_body
+                        );
+                        $custsms_body = str_replace('%body', $message, $custsms_body);
+
+                        foreach ($mobile_phones as $phone) {
+                            $LMS->SendSMS($phone['contact'], $custsms_body);
+                        }
                     }
                 }
             } elseif ($helpdesk_customerinfo) {
@@ -402,6 +484,7 @@ foreach ($message_files as $message_file) {
 
             $LMS->NotifyUsers(array(
                 'queue' => $queueid,
+                'ticketid' => $tid,
                 'mail_headers' => $headers,
                 'mail_body' => $message,
                 'sms_body' => $sms_body,

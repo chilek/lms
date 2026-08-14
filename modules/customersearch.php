@@ -29,10 +29,6 @@ $SESSION->add_history_entry();
 if (isset($_POST['search'])) {
     $search = $_POST['search'];
 
-    if (!empty($search['tariffs'])) {
-        $search['tariffs'] = implode(",", $search['tariffs']);
-    }
-
     if ($search['balance_date']) {
         [$year, $month, $day] = explode('/', $search['balance_date']);
         $search['balance_date'] = mktime(23, 59, 59, $month, $day, $year);
@@ -77,6 +73,13 @@ if (!isset($_POST['sk'])) {
     $statesqlskey = $_POST['sk'];
 }
 $SESSION->save('cslsk', $statesqlskey);
+
+if (!isset($_POST['origin'])) {
+    $SESSION->restore('cslorigin', $origin);
+} else {
+    $origin = intval($_POST['origin']);
+}
+$SESSION->save('cslorigin', $origin);
 
 if (!isset($_POST['flags'])) {
     $SESSION->restore('cslf', $flags);
@@ -152,6 +155,16 @@ if (!isset($_POST['cgnot'])) {
 }
 $SESSION->save('cslcgnot', $customergroupnegation);
 
+if (!isset($_POST['group-date'])) {
+    $SESSION->restore('cslgd', $customergroupdate);
+} else {
+    $customergroupdate = date_to_timestamp($_POST['group-date']);
+    if (!empty($customergroupdate)) {
+        $customergroupdate = strtotime('tomorrow', $customergroupdate) - 1;
+    }
+}
+$SESSION->save('cslgd', $customergroupdate);
+
 if (!isset($_POST['k'])) {
     $SESSION->restore('cslk', $sqlskey);
 } else {
@@ -180,6 +193,13 @@ if (!isset($_POST['d'])) {
 }
 $SESSION->save('csld', $division);
 
+if (!isset($_POST['document'])) {
+    $SESSION->restore('csdocument', $document);
+} else {
+    $document = $_POST['document'];
+}
+$SESSION->save('csdocument', $document);
+
 if (isset($_GET['search'])) {
     $layout['pagetitle'] = trans('Customer Search Results');
     if (!isset($time)) {
@@ -194,8 +214,10 @@ if (isset($_GET['search'])) {
         "statesqlskey",
         "customergroupsqlskey",
         "customergroupnegation",
+        "customergroupdate",
         "flags",
         "flagsqlskey",
+        "origin",
         "consents",
         "karma",
         "network",
@@ -206,7 +228,8 @@ if (isset($_GET['search'])) {
         "sqlskey",
         "nodegroupnegation",
         "nodegroup",
-        "division"
+        "division",
+        "document"
     ));
 
     $listdata['total'] = $customerlist['total'];
@@ -237,7 +260,7 @@ if (isset($_GET['search'])) {
     }
 
     $page = (! $_GET['page'] ? 1 : $_GET['page']);
-    $pagelimit = ConfigHelper::getConfig('phpui.customerlist_pagelimit', $listdata['total']);
+    $pagelimit = ConfigHelper::getConfig('customers.list_page_limit', ConfigHelper::getConfig('phpui.customerlist_pagelimit', $listdata['total']));
     $start = ($page - 1) * $pagelimit;
 
     $SESSION->save('cslp', $page);
@@ -267,6 +290,24 @@ if (isset($_GET['search'])) {
         $SESSION->redirect('?m=customerinfo&id=' . $customerlist[0]['id']);
     } else {
         include(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
+
+        if (empty($state)) {
+            $state = array();
+        }
+
+        $allowed_customer_status = array_filter($state, function ($status) use ($CSTATUSES) {
+            return isset($CSTATUSES[$status]);
+        });
+        if (empty($allowed_customer_status)) {
+            $allowed_customer_status = Utils::determineAllowedCustomerStatus(
+                ConfigHelper::getConfig('messages.allowed_customer_status', '')
+            );
+        }
+        if (!empty($allowed_customer_status)) {
+            $allowed_customer_status = array_combine($allowed_customer_status, $allowed_customer_status);
+        }
+
+        $SMARTY->assign('allowed_customer_status', $allowed_customer_status);
         $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
         $SMARTY->display('customer/customersearchresults.html');
     }
@@ -291,13 +332,25 @@ if (isset($_GET['search'])) {
     $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
     $SMARTY->assign('cstateslist', $LMS->GetCountryStates());
     $SMARTY->assign('tariffs', $LMS->GetTariffs());
+    $SMARTY->assign('promotions', $LMS->GetPromotions());
     $SMARTY->assign('divisions', $LMS->GetDivisions());
     $SMARTY->assign('k', $sqlskey);
     $SMARTY->assign('sk', $statesqlskey);
     $SMARTY->assign('cgk', $customergroupsqlskey);
     $SMARTY->assign('cgnot', $customergroupnegation);
+    $SMARTY->assign('customergroupdate', $customergroupdate);
     $SMARTY->assign('fk', $flagsqlskey);
     $SMARTY->assign('ngnot', $nodegroupnegation);
     $SMARTY->assign('karma', $karma);
+    $SMARTY->assign('netdevicetypes', $DB->GetAllByKey('SELECT * FROM netdevicetypes', 'id'));
+
+    $hook_data = $LMS->executeHook(
+        'customersearch_before_display',
+        array(
+            'customer-consents' => $CCONSENTS,
+            'smarty' => $SMARTY,
+        )
+    );
+
     $SMARTY->display('customer/customersearch.html');
 }

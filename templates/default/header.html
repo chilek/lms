@@ -62,8 +62,8 @@
 	{/block}
 	{block name=pagecontent}
 		{include file="spinner.html"}
-		{$__old_history_entry = SESSION::getOldHistoryEntry()}
-		{$__history_entry = SESSION::getHistoryEntry()}
+		{$__old_history_entry = Session::getOldHistoryEntry()}
+		{$__history_entry = Session::getHistoryEntry()}
 		<input type="hidden" id="old-history-entry" value="{$__old_history_entry}">
 		<input type="hidden" id="history-entry" value="{$__history_entry}">
 		<script>
@@ -144,13 +144,45 @@
 				setCookie('tabId', lmsTabId);
 			}
 
-			$(window).focus(function() {
-				setCookie('tabId', lmsTabId);
+			var loginTimeout = parseInt('{ConfigHelper::getConfig('phpui.timeout')}');
+			var lastClearLoginTimeout = Date.now();
+			var clearLoginTimeoutHandle = null;
 
-				// check if login timeout condition is met - in newer web browser
-				// timers are not active when window is not visible
-				if (Date.now() > lms_login_timeout_ts) {
-					window.location.assign(window.location.href);
+			$(window).on('mousemove keypress focus scroll', function(e) {
+				if (e.type == 'focus') {
+					setCookie('tabId', lmsTabId);
+
+					// check if login timeout condition is met - in newer web browser
+					// timers are not active when window is not visible
+					if (Date.now() > lms_login_timeout_ts) {
+						window.location.assign(window.location.href);
+					}
+				} else {
+					start_login_timeout(loginTimeout);
+
+					if (Date.now() - lastClearLoginTimeout > (loginTimeout * 1000 / 2)) {
+						$.ajax({
+							url: '?clear_login_timeout=1&api=1',
+							method: "POST",
+							dataType: 'json'
+						});
+						lastClearLoginTimeout = Date.now();
+					} else {
+						if (clearLoginTimeoutHandle) {
+							clearTimeout(clearLoginTimeoutHandle);
+						}
+						clearLoginTimeoutHandle = setTimeout(
+							function () {
+								$.ajax({
+									url: '?clear_login_timeout=1&api=1',
+									method: "POST",
+									dataType: 'json'
+								});
+								lastClearLoginTimeout = Date.now();
+							},
+							loginTimeout * 1000 / 2
+						);
+					}
 				}
 			});
 

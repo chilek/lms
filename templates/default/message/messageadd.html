@@ -61,6 +61,49 @@
 		margin-left: 0.5em;
 	}
 
+	.additional-email-address.hidden {
+		display: none;
+	}
+
+	#template-attachment-list ul {
+		list-style-type: none;
+		margin-block-start: 0;
+		margin-block-end: 0;
+		padding-inline-start: 0;
+	}
+
+	#attachment > td:not(:last-child) {
+		padding-top: 0.8em;
+	}
+
+	#file-list {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	#container-file-list {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		border-top: 1px dotted grey;
+		margin-top: 0.5em;
+		padding-top: 0.5em;
+	}
+
+	#container-file-list ul {
+		margin-block-start: 0.5em;
+		margin-block-end: 0.5em;
+		padding-inline-start: 0;
+		list-style-type: none;
+	}
+
+	#container-file-list ul li.deleted .documentview .lms-ui-button {
+		text-decoration-line: line-through;
+		text-decoration-thickness: 1px;
+		text-decoration-color: rgba(0, 0, 0, 0.5);
+	}
+
 </style>
 
 {$xajax}
@@ -77,6 +120,20 @@
 
 <script>
 
+	var viewContentTypes = {
+		'image/jpeg': 'image',
+		'image/png': 'image',
+		'image/gif': 'image',
+		'audio/mp3': 'audio',
+		'audio/ogg': 'audio',
+		'audio/oga': 'audio',
+		'audio/wav': 'audio',
+		'video/mp4': 'video',
+		'video/ogg': 'video',
+		'video/webm': 'video',
+		'application/pdf': 'pdf',
+	};
+
 	function checkaddr(email)
 	{
 		{literal}
@@ -90,13 +147,11 @@
 
 	function messageTemplatesReceived(templates) {
 		var options = '<OPTION value="0">' + $t("— none —") + '</OPTION>';
-		if (templates) {
-			for (i = 0; i < templates.length; i++) {
-				options += '<option value="' + templates[i].id + '">' + templates[i].name + '</option>';
-			}
-		}
+		$.each(templates, function(index, template) {
+			options += '<option value="' + template.id + '">' + template.name + '</option>';
+		});
 		$('#msgtmplid').html(options).prop('disabled', false);
-		updateAdvancedSelects('#msgtmplid');
+		updateAdvancedSelectsTest('#msgtmplid');
 	}
 
 	function countChars(elem)
@@ -104,19 +159,80 @@
 		$('#charscounttext').html(elem.value.length);
 	}
 
-	function change_message_template(tmplid) {
-		if (tmplid) {
-			xajax_getMessageTemplate(tmplid, 'subject', {if $message.emailcount || empty($message.customers)}$('#typemail').prop('checked') || {/if}
-				$('#typewww').prop('checked') || $('#typeuserpanel').prop('checked') || $('#typeuserpanelurgent').prop('checked') ? 'mailbody' : 'smsbody');
-		}
-	}
+	function messageTemplateReceived(data) {
+		var type = $('[name="message[type]"]:checked').val();
 
-	function messageTemplateReceived(subjectelem, subject, messageelem, message) {
-		$('#' + subjectelem).val(subject);
-		if (tinyMCE.editors.length) {
-			tinyMCE.editors[0].setContent(message);
+		$('#' + data.subjectElem).val(data.subject);
+
+		var editor = tinyMCE.get(0);
+		if (editor) {
+			editor.setContent(data.message);
 		}
-		$('textarea[name="message[' + messageelem + ']"]').html(message);
+
+		var messageElem = $('textarea[name="message[' + data.messageElem + ']"]');
+		messageElem.html(data.message);
+
+		var templateAttachmentList = $('#template-attachment-list');
+		if (data.attachments.length) {
+			var html = '';
+			$.each(data.attachments, function(id, attachment) {
+				html += '<li>';
+
+				html += '<a class="lms-ui-button">' +
+					'<input type="hidden" name="message[template-attachments][' + attachment.id + ']"' +
+					' value="' + attachment.id + '">' +
+					'<i class="lms-ui-icon-delete"></i></a>';
+
+				var contentType = '';
+				if (viewContentTypes.hasOwnProperty(attachment.contenttype)) {
+					contentType = viewContentTypes[attachment.contenttype];
+				}
+
+				html += '<div class="documentviewdialog" id="documentviewdialog-' + attachment.id + '"' +
+					' title="' + attachment.filename + '"' +
+					' style="display: none;"' +
+					' data-url="?m=messagetemplatelist&action=attachment-view&id=' + attachment.id + '"></div>';
+
+				html += '<a href="?m=messagetemplatelist&action=attachment-view&id=' + attachment.id + '"'
+						+ ' data-title="' + attachment.filename + '"';
+				if (!contentType.length) {
+					html += ' class="lms-ui-button" rel="external"';
+				} else {
+					html += ' id="documentview-' + attachment.id + '"' +
+						' data-dialog-id="documentviewdialog-' + attachment.id + '"' +
+						' class="lms-ui-button documentview documentview-' + contentType + '"';
+				}
+
+				var size = get_size_unit(attachment.size);
+
+				html +=  '>' + attachment.filename + ' (' + size.size + ' ' + size.unit + ')' +
+					' <i class="lms-ui-icon-view' +
+					(attachment.contenttype.match(/pdf/)
+						? ' pdf'
+						: (attachment.contenttype.match(/csv|excel|spreadsheet/)
+							? ' xls'
+							: ''
+						)
+					) + '"></i>' +
+					'</a>';
+
+				html += '</li>';
+			});
+			templateAttachmentList.html('<ul>' + html + '</ul>');
+			initDocumentViewers(templateAttachmentList.find('.documentview'))
+		} else {
+			templateAttachmentList.empty();
+		}
+		$('#template-attachments').toggle(data.attachments.length > 0);
+
+		if (type < {$smarty.const.MSG_SMS} || type > {$smarty.const.MSG_ANYSMS}) {
+			data.messageElem.trigger(
+				'lms:visual_editor_change_required',
+				{
+					ifShow: data.contentType == 'text/html' || data.contentType == ''
+				}
+			);
+		}
 	}
 
 </script>
@@ -375,7 +491,7 @@
 								</label>
 							</td>
 							<td colspan="7" class="nobr">
-								<select name="message[netdev]" id="netdev" {tip class="lms-ui-advanced-select" trigger="netdev" text="Select network device"}>
+								<select name="message[netdev]" id="netdev" {tip class="lms-ui-advanced-select-test" trigger="netdev" text="Select network device"}>
 									<option value="">{trans("— none —")}</option>
 									{foreach $netdevices as $netdev}
 										<option value="{$netdev.id}"{if isset($message.netdev) && $netdev.id == $message.netdev} selected{/if}>{$netdev.name}</option>
@@ -497,6 +613,41 @@
 				</td>
 			</tr>
 		{/if}
+		<tr id="startdate-row" class="scheduled-message"{if $message.type != $smarty.const.MSG_MAIL && $message.type != $smarty.const.MSG_SMS && !$message.type != $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>
+			<td>
+				{icon name="calendar"}
+			</td>
+			<td class="nobr">
+				<strong>
+					<label for="startdate">
+						{trans("Start date")}
+					</label>
+				</strong>
+			</td>
+			<td>
+				<input type="text" name="message[startdate]" id="startdate"
+					value="{if $message.startdate}{$message.startdate|date_format:"Y/m/d H:i"}{/if}"
+					size="20" maxlength="20"
+					{tip trigger="startdate" class="lms-ui-datetime"}>
+			</td>
+		</tr>
+		<tr id="attemtps-row" class="scheduled-message"{if $message.type != $smarty.const.MSG_MAIL && $message.type != $smarty.const.MSG_SMS && !$message.type != $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>
+			<td>
+				{icon name="reload" class="attempts-field"}
+			</td>
+			<td class="nobr">
+				<strong>
+					<label for="attempts" class="attempts-field">
+						{trans("Attempts")}
+					</label>
+				</strong>
+			</td>
+			<td>
+				<input type="number" name="message[attempts]" id="attempts"
+					value="{if isset($message.attempts)}{$message.attempts}{else}{$default_send_attempts}{/if}"
+					size="10" maxlength="5" min="1" max="10">
+			</td>
+		</tr>
 		<tr id="mailsender"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
 			<td>
 				{icon name="mail"}
@@ -526,6 +677,53 @@
 			<td>
 				<input type="text" name="message[from]" size="40"  value="{if $message.from}{$message.from}{else}{$sender_name}{/if}"
 					{tip trigger="from" text="Enter sender name"}>
+			</td>
+		</tr>
+		<tr class="additional-email-addresses"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
+			<td></td>
+			<td></td>
+			<td>
+				{if empty($message['cc-email']) && empty($message['bcc-email']) && empty($message['reply-email'])}
+					{$icon = "next"}
+					{$label = "More e-mail addresses"}
+				{else}
+					{$icon = "previous"}
+					{$label = "Less e-mail addresses"}
+				{/if}
+				{button type="link" icon=$icon label=$label id="additional-email-addresses-button"}
+			</td>
+		</tr>
+		<tr class="additional-email-address{if empty($message['cc-email']) && empty($message['bcc-email']) && empty($message['reply-email'])} hidden{/if}"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
+			<td>
+				{icon name="mail"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Reply to")}</strong>
+			</td>
+			<td>
+				<input type="email" name="message[reply-email]" size="40"  value="{if !empty($message['reply-email'])}{$message['reply-email']}{/if}">
+			</td>
+		</tr>
+		<tr class="additional-email-address{if empty($message['cc-email']) && empty($message['bcc-email']) && empty($message['reply-email'])} hidden{/if}"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
+			<td>
+				{icon name="mail"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Carbon copy")}</strong>
+			</td>
+			<td>
+				<input type="email" multiple name="message[cc-email]" size="40"  value="{if !empty($message['cc-email'])}{$message['cc-email']}{/if}">
+			</td>
+		</tr>
+		<tr class="additional-email-address{if empty($message['cc-email']) && empty($message['bcc-email']) && empty($message['reply-email'])} hidden{/if}"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
+			<td>
+				{icon name="mail"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Blind carbon copy")}</strong>
+			</td>
+			<td>
+				<input type="email" multiple name="message[bcc-email]" size="40"  value="{if !empty($message['bcc-email'])}{$message['bcc-email']}{/if}">
 			</td>
 		</tr>
 		{if $users}
@@ -566,38 +764,7 @@
 					{tip trigger="phonenumber" text="Enter phone numbers separated by commas"}>
 			</td>
 		</tr>
-		<tr>
-			<td>
-				{icon name="message"}
-			</td>
-			<td>
-				<strong>{trans("Subject")}</strong>
-			</td>
-			<td>
-				<input type="text" name="message[subject]" id="subject" size="60" value="{$message.subject}"
-					{tip trigger="subject"}>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				{icon name="document"}
-			</td>
-			<td class="nobr">
-				<strong>{trans("Message template")}</strong>
-			</td>
-			<td>
-				<select name="message[tmplid]" id="msgtmplid" {tip class="lms-ui-advanced-select" trigger="msgtmplid" text="Select message template"}
-						onChange="javascript:change_message_template(this.options[this.selectedIndex].value);">
-					<option value="0">{trans("— none —")}</option>
-					{foreach $messagetemplates as $msgtmpl}
-						<option value="{$msgtmpl.id}"{if $message.tmplid == $msgtmpl.id} selected{/if}>{$msgtmpl.name}</option>
-					{/foreach}
-				</select>
-			</td>
-		</tr>
-		{capture assign="body_hint"}{strip}
-			Enter message body.<br>
-			<br>
+		{capture assign="content_hint"}{strip}
 			Supported substitutions/variables:<br>
 			<strong>%customer</strong> - customer first name and last name or name,<br>
 			<strong>%balance</strong>, <strong>%totalsaldo</strong>, <strong>%totalB</strong> - customer total balance,<br>
@@ -616,11 +783,41 @@
 			<br>
 			Substitution/variables supported while customer node is selected:<br>
 			<strong>%node_name</strong> - customer node name,<br>
+			<strong>%node_login</strong> - customer node login (node name is used when login is empty),<br>
 			<strong>%node_password</strong> - customer node password,<br>
 			<strong>%node_ip</strong> - customer node ip address,<br>
 			<strong>%node_ip_pub</strong> - customer node public ip address,<br>
 			<strong>%node_mac</strong> - customer node mac addresses.<br>
 		{/strip}{/capture}
+		<tr>
+			<td>
+				{icon name="message"}
+			</td>
+			<td>
+				<strong>{trans("Subject")}</strong>
+			</td>
+			<td>
+				<input type="text" name="message[subject]" id="subject" size="60" value="{$message.subject}"
+					{tip trigger="subject"}>
+				{hint text=trans("Enter message subject.")|cat:"<br><br>"|cat:trans($content_hint)}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="document"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Message template")}</strong>
+			</td>
+			<td>
+				<select name="message[tmplid]" id="msgtmplid" {tip class="lms-ui-advanced-select-test" trigger="msgtmplid" text="Select message template"}>
+					<option value="0">{trans("— none —")}</option>
+					{foreach $messagetemplates as $msgtmpl}
+						<option value="{$msgtmpl.id}"{if $message.tmplid == $msgtmpl.id} selected{/if}>{$msgtmpl.name}</option>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
 		<tr id="mailbody"{if $message.type > $smarty.const.MSG_MAIL && $message.type < $smarty.const.MSG_WWW} style="display: none"{/if}>
 			<td>
 				{icon name="edit"}
@@ -634,7 +831,7 @@
 						{tip class="lms-ui-wysiwyg-editor" trigger="mailbody"}
 						{if isset($message.wysiwyg.mailbody)} data-wysiwyg="{$message.wysiwyg.mailbody}"{/if}>{$message.body}</textarea>
 					<div class="lms-ui-util-buttons">
-						{hint content=$body_hint}
+						{hint text=trans("Enter message body.")|cat:"<br><br>"|cat:trans($content_hint)}
 						{speech_recognition target="#mailtext"}
 					</div>
 				</div>
@@ -653,7 +850,7 @@
 						onkeyup="countChars(this)" {tip trigger="smsbody"}
 						>{$message.body}</textarea>
 					<div class="lms-ui-util-buttons">
-						{hint content=$body_hint}
+						{hint text=trans("Enter message body.")|cat:"<br><br>"|cat:trans($content_hint)}
 						{speech_recognition target="#smstext"}
 					</div>
 				</div>
@@ -693,14 +890,52 @@
 			<td id="charscounttext">0</td>
 		</tr>
 		<tr id="attachment"{if $message.type > $smarty.const.MSG_MAIL} style="display: none"{/if}>
-			<td>
+			<td class="valign-top">
 				{icon name="attachment"}
 			</td>
-			<td class="nobr">
+			<td class="nobr valign-top">
 				<strong>{trans("Attachments")}</strong>
 			</td>
-			<td>
+			<td id="file-list">
 				{fileupload id="files" fileupload=$fileupload form="message"}
+				{if !empty($message['file-container'])}
+					<input type="hidden" name="message[file-container][id]" value="{$message['file-container'].id}">
+					<div id="container-file-list">
+						<span>
+							<strong>{trans("from earlier sent message")}</strong>
+						</span>
+						<ul>
+							{foreach $message['file-container'].files as $file}
+								<li{if !empty($file.deleted)} class="deleted"{/if}>
+									<input type="hidden" class="deleted-file" name="message[file-container][files][{$file.id}][deleted]" value="{if $file.deleted}1{else}0{/if}">
+									<input type="hidden" name="message[file-container][files][{$file.id}][id]" value="{$file.id}">
+									{$deleted = !empty($file.deleted)}
+									{button type="link" icon="trash" class="file-delete" style="{if $deleted} display: none;{/if}"}
+									{button type="link" icon="restore" class="file-restore" visible="false" style="{if !$deleted} display: none;{/if}"}
+									{capture assign="filename"}
+										{$file.filename|escape} ({$file.sizestr})
+									{/capture}
+									{documentview
+										id="file-{$file.id}"
+										type=$file.contenttype
+										name=$filename
+										url="?m=attachments&attachmentaction=viewfile&type=messageid&id={$message['file-container'].id}&fileid={$file.id}"
+									}
+								</li>
+							{/foreach}
+						</ul>
+					</div>
+				{/if}
+			</td>
+		</tr>
+		<tr id="template-attachments" style="display: none;">
+			<td class="valign-top">
+				{icon name="attachment"}
+			</td>
+			<td class="valign-top nobr">
+				<strong>{trans("Template attachments")}</strong>
+			</td>
+			<td id="template-attachment-list">
 			</td>
 		</tr>
 		<tr>
@@ -728,7 +963,11 @@
 			});
 
 			if (elem == 'typesms' || elem == 'typeanysms' || elem == 'typewww' || elem == 'typeuserpanel' || elem == 'typeuserpanelurgent') {
-				$('#mailfrom,#mailsender,#attachment').hide();
+				$('#mailfrom,#mailsender,.additional-email-addresses,.additional-email-address').hide();
+
+				$('.scheduled-message').toggle(elem != 'typewww' && elem != 'typeuserpanel' && elem != 'typeuserpanelurgent');
+
+				$('#attachment').toggle(elem != 'typesms' && elem != 'typeanysms' && elem != 'typewww');
 
 				{if $message.emailcount}
 					$('#customermails').hide();
@@ -765,7 +1004,9 @@
 					xajax_getMessageTemplates({$smarty.const.TMPL_SMS});
 				}
 			} else {
-				$('#mailbody,#mailfrom,#mailsender,#attachment').show();
+				$('#mailbody,#mailfrom,#mailsender,.additional-email-addresses,scheduled-message,#attachment').show();
+				$('.additional-email-address').css('display', '');
+				$('.additional-email-address').toggleClass('hidden', !$('[name="message[cc-email]"]').val().length && !$('[name="message[bcc-email]"]').val().length && !$('[name="message[reply-email]"]').val().length);
 
 				{if $message.emailcount}
 					$('#customermails').show();
@@ -783,6 +1024,21 @@
 			}
 			$('#msgtmplid').prop('disabled', true);
 		});
+
+		$('#additional-email-addresses-button').click(function() {
+			$('.additional-email-address').toggleClass('hidden');
+			$(this).find('i').toggleClass('lms-ui-icon-next lms-ui-icon-previous');
+			$(this).find('.lms-ui-label').text($(this).find('i').is('.lms-ui-icon-next') ?
+				'{trans("More e-mail addresses")}' :
+				'{trans("Less e-mail addresses")}'
+			);
+		});
+
+		$('#startdate').change(function() {
+			var disabled = !$(this).val().length;
+			$('#attempts').prop('disabled', disabled).prop('required', !disabled);
+			$('.attempts-field').toggleClass('lms-ui-disabled', disabled);
+		}).change();
 
 		$('#usergroup-selection').change(function() {
 			var userms = $('#user-selection').data('multiselect-object');
@@ -827,19 +1083,156 @@
 		}).mouseout();
 
 		$('#submit-button').click(function() {
+			var progressDeferred = progressDialog($t("Preparing recipient list. Please wait."));
+
 			var that = this;
 			tinyMCE.triggerSave();
-			$.ajax(
-				'?m=messageadd&count_recipients=1',
+
+			$(that).prop('disabled', true);
+
+			var ajaxRequest = $.ajax(
+				'?m=messageadd&validate=1',
 				{
 					method: "POST",
 					dataType: "json",
 					data: $('#message').serialize()
 				}
 			).done(function (data) {
+				function sendFormData() {
+					var modalDialog = $('#lms-ui-modal-dialog');
+					var status = modalDialog.find('.status');
+					var progressBar = modalDialog.find('.progress-bar');
+					var logMessages = modalDialog.find('.log-messages');
+					var messageId = null;
+					var lastLen = 0;
+
+					var form = $('#message').get(0);
+					var formData = new FormData(form);
+
+					var progressDeferred = progressDialog(
+						$t("Preparing messages..."),
+						null,
+						{
+							showProgressBar: true,
+							showLogMessages: true
+						}
+					);
+
+					var ajaxRequest = $.ajax({
+						url: this.action,
+						method: 'POST',
+						data: formData,
+						processData: false,
+						contentType: false,
+						xhr: function() {
+							var xhr = new window.XMLHttpRequest();
+							var total = 0;
+							var item = 0;
+							var unhandledLine = '';
+
+							xhr.onprogress = function() {
+								var responseText = xhr.responseText || '';
+								var chunk = responseText.substring(lastLen);
+								lastLen = responseText.length;
+
+								if (chunk) {
+									$.each(chunk.split(/\r?\n/), function(index, line) {
+										var icon, token;
+
+										try {
+											if (unhandledLine.length) {
+												line = unhandledLine + line;
+												unhandledLine = '';
+											}
+											token = JSON.parse(line);
+										} catch (e) {
+											unhandledLine = line;
+											return;
+										}
+
+										if (token.hasOwnProperty('message')) {
+											status.html(token.message);
+										} else if (token.hasOwnProperty('logmessage')) {
+											logMessages.append(token.logmessage + '<br>');
+										} else if (token.hasOwnProperty('item')) {
+											if (!total && token.hasOwnProperty('total')) {
+												status.html($t("Sending messages"));
+												total = parseInt(token.total);
+												progressBar.progressbar('option', 'max', total);
+											}
+											item = parseInt(token.item);
+											progressBar.progressbar('value', item);
+											icon = token.hasOwnProperty('icon') ? token.icon : '';
+											recipient = token.hasOwnProperty('recipient') ? token.recipient : '';
+											logMessages.append('<i class="' + icon + '"></i> (' + item + ' / ' + total + ') ' + recipient + ':');
+										} else if (token.hasOwnProperty('status')) {
+											logMessages.append(' ' + token.status + '<br>');
+										} else if (token.hasOwnProperty('messageid')) {
+											messageId = parseInt(token.messageid);
+										}
+									});
+
+									logMessages.scrollTop(logMessages[0].scrollHeight);
+								}
+							};
+
+							return xhr;
+						},
+						success: function(data) {
+							status.html($t("Finished"));
+
+							var buttons = modalDialog.dialog('option', 'buttons');
+
+							// zmień pierwszy przycisk
+							buttons[0].text = $t('Info');
+							buttons[0].icon = 'ui-icon-info';
+							buttons[0].click = function () {
+								location.href = '?m=messageinfo&id=' + messageId;
+							};
+
+							modalDialog.dialog('option', 'buttons', buttons);
+						}
+					});
+
+					progressDeferred.fail(function() {
+						ajaxRequest.abort();
+						$(that).prop('disabled', false);
+					});
+				}
+
+				progressDeferred.reject();
+
+				if (data.hasOwnProperty('error')) {
+					var error = data.error;
+
+					if (error.hasOwnProperty('recipients')) {
+						alertDialog(error.recipients);
+					}
+
+					$.each(error, function (property, message) {
+						var elem = $('[name="message[' + property + ']"]');
+						if (!elem.length) {
+							elem = $('#' + property);
+						}
+						if (elem.length) {
+							if (!elem.is(':visible')) {
+								if (elem.is('.lms-ui-wysiwyg-editor')) {
+									elem = elem.siblings('.tox-tinymce')
+								}
+							}
+							elem.addClass('lms-ui-error').attr('title', message);
+						}
+					});
+
+					return;
+				} else {
+					$('#message').find('.lms-ui-error').removeClass('lms-ui-error');
+				}
+
 				var confirmThreshold = {intval(ConfigHelper::getConfig('messages.send_confirm_threshold', ConfigHelper::getConfig('phpui.send_message_confirm_threshold', 50)))};
+
 				if (data.recipients <= confirmThreshold) {
-					$('#message').submit();
+					sendFormData();
 				} else {
 					var violationType = '{ConfigHelper::getConfig('messages.send_limit_violation_type', ConfigHelper::getConfig('phpui.send_message_limit_violation_type', 'warning'))}';
 					switch (violationType) {
@@ -849,27 +1242,61 @@
 									"You violate recipient limit ($a) trying to send messages to $b customer(s)!",
 									confirmThreshold,
 									data.recipients
-								),
-								that
-							);
+								)
+							).done(function() {
+								$(that).prop('disabled', false);
+							});
 							break;
 						case 'warning':
 							confirmDialog(
 								$t(
 									"Are you sure you want to send messages to $a customer(s)?",
 									data.recipients
-								),
-								that
+								)
 							).done(function() {
-								$('#message').submit();
+								sendFormData();
+							}).fail(function() {
+								$(that).prop('disabled', false);
 							});
 							break;
 						default:
-							$('#message').submit();
+							sendFormData();
 							break;
 					}
 				}
 			});
+
+			progressDeferred.fail(function() {
+				ajaxRequest.abort();
+				$(that).prop('disabled', false);
+			});
+		});
+
+		$('#msgtmplid').change(function() {
+			var templateId = parseInt($(this).val());
+			if (templateId) {
+				xajax_getMessageTemplate(templateId, 'subject', {if $message.emailcount || empty($message.customers)}$('#typemail').prop('checked') || {/if}
+				$('#typewww').prop('checked') || $('#typeuserpanel').prop('checked') || $('#typeuserpanelurgent').prop('checked') ? 'mailbody' : 'smsbody');
+			} else {
+				$('#template-attachments').hide();
+				$('#template-attachment-list').empty();
+			}
+		});
+
+		$('#template-attachments').on('click', '.lms-ui-button', function() {
+			var attachmentDeleteButton = $(this);
+			attachmentDeleteButton.find('[type="hidden"]').prop('disabled', function() {
+				return !$(this).prop('disabled');
+			}).end().siblings('.lms-ui-button').toggleClass('blend')
+				.end().find('i').toggleClass(['lms-ui-icon-delete', 'lms-ui-icon-restore']);
+		});
+
+		$('#container-file-list li').find('.file-delete,.file-restore').click(function() {
+			var deleted = $(this).is('.file-delete');
+			$(this).toggle();
+			$(this).siblings('.lms-ui-button').show();
+			$(this).closest('li').toggleClass('deleted', deleted)
+				.find('.deleted-file').val(deleted ? 1 : 0);
 		});
 	});
 

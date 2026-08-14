@@ -53,7 +53,7 @@ function GetItemList($id, $order = 'id,desc', $search = null, $cat = null, $stat
                 $where[] = ' i.customerid = '.intval($search);
                 break;
             case 'destination':
-                $where[] = ' UPPER(i.destination) ?LIKE? UPPER('.$DB->Escape('%'.$search.'%').')';
+                $where[] = ' UPPER(REPLACE(i.destination, \' \', \'\')) ?LIKE? UPPER(' . $DB->Escape('%' . str_replace(' ', '', $search) . '%') . ')';
                 break;
             case 'name':
                 $where[] = ' UPPER(c.lastname) ?LIKE? UPPER('.$DB->Escape('%'.$search.'%').')';
@@ -67,6 +67,9 @@ function GetItemList($id, $order = 'id,desc', $search = null, $cat = null, $stat
             case MSG_ERROR:
             case MSG_SENT:
             case MSG_DELIVERED:
+            case MSG_CANCELLED:
+            case MSG_DRAFT:
+            case MSG_BOUNCED:
                 $where[] = 'i.status = '.$status;
                 break;
         }
@@ -76,19 +79,46 @@ function GetItemList($id, $order = 'id,desc', $search = null, $cat = null, $stat
         $where = ' AND '.implode(' AND ', $where);
     }
 
-    $result = $DB->GetAll('SELECT i.id, i.customerid, i.status, i.error, i.body,
-			i.destination, i.lastdate, i.lastreaddate,'
-            .$DB->Concat('UPPER(c.lastname)', "' '", 'c.name').' AS customer
-		FROM messageitems i
-		LEFT JOIN customers c ON (c.id = i.customerid)
-		LEFT JOIN (
-			SELECT DISTINCT a.customerid FROM vcustomerassignments a
-				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-			WHERE e.userid = lms_current_user()
-		) e ON (e.customerid = c.id) 
-		WHERE e.customerid IS NULL AND i.messageid = '.intval($id)
-        .(!empty($where) ? $where : '')
-        .$sqlord.' '.$direction);
+    $userid = Auth::GetCurrentUser();
+
+    $result = $DB->GetAll(
+        'SELECT
+            i.id,
+            i.customerid,
+            i.status,
+            i.error,
+            i.subject,
+            i.body,
+            i.destination,
+            i.lastdate,
+            i.lastreaddate,
+            i.attempts, '
+            . $DB->Concat('UPPER(c.lastname)', "' '", 'c.name') . ' AS customer
+        FROM messageitems i
+        LEFT JOIN customers c ON c.id = i.customerid'
+        . (empty($userid)
+            ? ''
+            : ' LEFT JOIN userdivisions ud ON ud.divisionid = c.divisionid AND ud.userid = ' . $userid
+        )
+        . ' LEFT JOIN (
+            SELECT
+                DISTINCT a.customerid
+            FROM vcustomerassignments a
+            JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+            WHERE e.userid = lms_current_user()
+        ) e ON e.customerid = c.id
+        WHERE e.customerid IS NULL'
+            . (empty($userid)
+                ? ''
+                : ' AND (c.id IS NULL OR ud.userid IS NOT NULL)'
+        )
+        . ' AND i.messageid = ' . intval($id)
+        . (!empty($where) ? $where : '')
+        . $sqlord . ' ' . $direction
+    );
+    if (empty($result)) {
+        $result = [];
+    }
 
     $result['status'] = $status;
     $result['order'] = $order;
@@ -102,6 +132,50 @@ $message = $LMS->getSingleMessage($_GET['id']);
 if (!$message) {
     $SESSION->redirect('?m=messagelist');
 }
+
+if (!empty($message['startdate']) && isset($_GET['action']) && $_GET['action'] == 'increase-attempts' && ConfigHelper::checkPrivileges('messaging', 'messaging_modification')) {
+    $userid = Auth::GetCurrentUser();
+
+    $items = $DB->GetAll(
+        'SELECT
+            mi.id,
+            mi.attempts
+        FROM messageitems mi'
+        . (empty($userid)
+            ? ''
+            : ' LEFT JOIN customers c ON c.id = i.customerid
+            LEFT JOIN userdivisions ud ON ud.divisionid = c.divisionid AND ud.userid = ' . $userid
+        )
+        . ' WHERE mi.messageid = ?
+            AND mi.status = ?
+            AND mi.attempts IS NOT NULL
+            AND mi.attempts < ?'
+            . (empty($userid)
+                ? ''
+                : ' AND (c.id IS NULL OR ud.userid IS NOT NULL)'
+            ),
+        array(
+            $_GET['id'],
+            MSG_ERROR,
+            10,
+        )
+    );
+    if (!empty($items)) {
+        foreach ($items as $item) {
+            $DB->Execute(
+                'UPDATE messageitems
+                SET attempts = ?
+                WHERE id = ?',
+                array(
+                    $item['attempts'] + 1,
+                    $item['id'],
+                )
+            );
+        }
+    }
+    $SESSION->redirect('?m=messageinfo&id='. $_GET['id']);
+}
+
 
 if (mb_strlen($message['subject']) > 25) {
     $subject = mb_substr($message['subject'], 0, 25).'...';
@@ -146,6 +220,10 @@ if (isset($_POST['status'])) {
 $SESSION->save('milst', $status);
 
 $itemlist = GetItemList($message['id'], $o, $s, $c, $status);
+if (empty($itemlist)) {
+    //access_denied();
+    $itemlist = [];
+}
 
 $listdata['status'] = $itemlist['status'];
 $listdata['order'] = $itemlist['order'];
@@ -157,6 +235,13 @@ $listdata['id'] = intval($_GET['id']);
 unset($itemlist['status']);
 unset($itemlist['order']);
 unset($itemlist['direction']);
+
+$itemerrorlist = array_filter(
+    $itemlist,
+    function ($item) {
+        return $item['status'] == MSG_ERROR;
+    }
+);
 
 $listdata['total'] = count($itemlist);
 
@@ -175,13 +260,33 @@ $layout['pagetitle'] = trans('Message Info: $a', $subject);
 
 $SESSION->add_history_entry();
 
+$summary = array();
+$lastchanges = array();
+foreach ($itemlist as $item) {
+    if (!isset($summary[$item['status']])) {
+        $summary[$item['status']] = 0;
+    }
+    $summary[$item['status']]++;
+
+    if (isset($lastchanges[$item['status']])) {
+        $lastchanges[$item['status']] = max($lastchanges[$item['status']], $item['lastdate']);
+    } else {
+        $lastchanges[$item['status']] = $item['lastdate'];
+    }
+}
+
+$SESSION->add_history_entry();
+
 $SMARTY->assign('message', $message);
+$SMARTY->assign('summary', $summary);
+$SMARTY->assign('lastchanges', $lastchanges);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('start', ($page - 1) * $pagelimit);
 $SMARTY->assign('page', $page);
 $SMARTY->assign('marks', $marks);
 $SMARTY->assign('itemlist', $itemlist);
+$SMARTY->assign('itemerrorlist', $itemerrorlist);
 $SMARTY->assign('filecontainers', $LMS->GetFileContainers('messageid', $message['id']));
 
 $SMARTY->display('message/messageinfo.html');

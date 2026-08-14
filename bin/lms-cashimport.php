@@ -26,11 +26,13 @@
  */
 
 $script_parameters = array(
+    'config-file:' => 'C:',
     'section:' => 's:',
     'import-file:' => 'f:',
 );
 
 $script_help = <<<EOF
+-C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -s, --section=<section-name>    section name from lms configuration where settings
                                 are stored
 -f, --import-file               cash import file name from which import contents is read
@@ -50,7 +52,7 @@ $config_section = isset($options['section']) && preg_match('/^[a-z0-9-_]+$/i', $
     ? $options['section']
     : 'cashimport';
 
-$plugin_manager = new LMSPluginManager();
+$plugin_manager = LMSPluginManager::getInstance();
 $LMS->setPluginManager($plugin_manager);
 
 if (array_key_exists('import-file', $options)) {

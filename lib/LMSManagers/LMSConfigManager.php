@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2020 LMS Developers
+ *  Copyright (C) 2001-2026 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -53,6 +53,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         'logs.enabled'                      => CONFIG_TYPE_BOOLEAN,
         'phpui.note_check_payment'          => CONFIG_TYPE_BOOLEAN,
         'phpui.public_ip'                   => CONFIG_TYPE_BOOLEAN,
+        'nodes.public_ip'                   => CONFIG_TYPE_BOOLEAN,
         'phpui.radius'                      => CONFIG_TYPE_BOOLEAN,
         'phpui.hide_summaries'              => CONFIG_TYPE_BOOLEAN,
         'phpui.use_invoices'                => CONFIG_TYPE_BOOLEAN,
@@ -60,7 +61,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         'phpui.default_assignment_invoice'  => CONFIG_TYPE_POSITIVE_INTEGER,
         'assignments.default_document_type' => CONFIG_TYPE_POSITIVE_INTEGER,
         'phpui.invoice_check_payment'       => CONFIG_TYPE_BOOLEAN,
-        'phpui.logout_confirmation'     => CONFIG_TYPE_BOOLEAN,
+        'phpui.logout_confirmation'         => CONFIG_TYPE_BOOLEAN,
         'finances.cashimport_checkinvoices' => CONFIG_TYPE_BOOLEAN,
         'receipts.show_nodes_warning'       => CONFIG_TYPE_BOOLEAN,
         'invoices.customer_bankaccount'     => CONFIG_TYPE_BOOLEAN,
@@ -69,8 +70,10 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         'mail.phpmailer_is_html'            => CONFIG_TYPE_BOOLEAN,
         'mail.smtp_persist'                 => CONFIG_TYPE_BOOLEAN,
         'phpui.customerlist_pagelimit'      => CONFIG_TYPE_POSITIVE_INTEGER,
+        'customers.list_page_limit'         => CONFIG_TYPE_POSITIVE_INTEGER,
         'phpui.billinglist_pagelimit'       => CONFIG_TYPE_POSITIVE_INTEGER,
         'phpui.nodelist_pagelimit'          => CONFIG_TYPE_POSITIVE_INTEGER,
+        'nodes.list_page_limit'             => CONFIG_TYPE_POSITIVE_INTEGER,
         'phpui.balancelist_pagelimit'       => CONFIG_TYPE_POSITIVE_INTEGER,
         'phpui.configlist_pagelimit'        => CONFIG_TYPE_POSITIVE_INTEGER,
         'phpui.invoicelist_pagelimit'       => CONFIG_TYPE_POSITIVE_INTEGER,
@@ -95,6 +98,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         'phpui.timetable_days_forward'      => CONFIG_TYPE_POSITIVE_INTEGER,
         'phpui.nodepassword_length'         => CONFIG_TYPE_POSITIVE_INTEGER,
         'phpui.node_password_length'        => CONFIG_TYPE_POSITIVE_INTEGER,
+        'nodes.password_length'             => CONFIG_TYPE_POSITIVE_INTEGER,
         'phpui.check_for_updates_period'    => CONFIG_TYPE_POSITIVE_INTEGER,
         'phpui.quicksearch_limit'           => CONFIG_TYPE_POSITIVE_INTEGER,
         'phpui.ping_type'                   => CONFIG_TYPE_POSITIVE_INTEGER,
@@ -1666,5 +1670,36 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                 }
             }
         }
+    }
+
+    public function getConfigSectionsByPattern($sectionNamePattern)
+    {
+        $configSections = $this->db->GetCol(
+            'SELECT DISTINCT section
+            FROM uiconfig
+            WHERE section ?LIKE? ?
+            ORDER BY section',
+            [
+                $sectionNamePattern,
+            ]
+        );
+        if (empty($configSections)) {
+            $configSections = array();
+        } else {
+            $sectionNameRegExp = $sectionNamePattern;
+            if (strpos($sectionNameRegExp, '%') !== 0) {
+                $sectionNameRegExp = '^' . $sectionNameRegExp;
+            }
+            $sectionNameRegExp = preg_replace('/%$/', '', $sectionNameRegExp);
+
+            $configSections = array_map(
+                function ($section) use ($sectionNameRegExp) {
+                    return preg_replace('/' . $sectionNameRegExp . '/', '', $section);
+                },
+                $configSections
+            );
+        }
+
+        return $configSections;
     }
 }

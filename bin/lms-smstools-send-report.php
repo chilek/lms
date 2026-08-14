@@ -197,14 +197,25 @@ if ($msgitemid && $phone) {
     }
 
     $msgitem = $DB->GetRow(
-        'SELECT id, destination FROM messageitems WHERE id = ? AND status = ?',
-        array($msgitemid, MSG_NEW)
+        'SELECT
+            id,
+            destination
+        FROM messageitems
+        WHERE id = ?
+            AND status IN ?',
+        array(
+            $msgitemid,
+            array(
+                MSG_NEW,
+                MSG_READY_TO_SEND,
+            ),
+        )
     );
 
     if (!empty($msgitem)) {
         $sms_prefix = ConfigHelper::getConfig('sms.prefix');
         $prefix = !empty($sms_prefix) ? $sms_prefix : '';
-        $number = preg_replace('/^[^0-9]+/', '', $msgitem['destination']);
+        $number = preg_replace('/[^0-9]+/', '', $msgitem['destination']);
         $number = preg_replace('/^0+/', '', $number);
         $number = str_replace(' ', '', $number);
         if ($prefix && substr($number, 0, strlen($prefix)) != $prefix) {

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2024 LMS Developers
+ *  (C) Copyright 2001-2026 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,7 +26,7 @@
 
 ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
-const SCRIPT_COPYRIGHT_INFO = '(c) 2001-2024 LMS Developers';
+const SCRIPT_COPYRIGHT_INFO = '(c) 2001-2026 LMS Developers';
 
 $http_mode = isset($_SERVER['HTTP_HOST']);
 
@@ -144,6 +144,16 @@ if ($http_mode) {
             die('Fatal error: option \'' . $option_presentation . '\' requires parameter!' . PHP_EOL);
         }
     }
+
+    foreach ($options as $option_name => &$option) {
+        if (is_array($option)) {
+            $option = reset($option);
+        }
+        if (strpos($option, '\\-') === 0) {
+            $option = str_replace('\\-', '-', $option);
+        }
+    }
+    unset($option);
 }
 
 if (isset($options['force-http-mode'])) {
@@ -177,7 +187,9 @@ if (isset($options['config-file'])) {
     $CONFIG_FILE = $options['config-file'];
 } elseif ($http_mode && is_readable('lms.ini')) {
     $CONFIG_FILE = 'lms.ini';
-} elseif ($http_mode && is_readable(DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini')) {
+} elseif ($http_mode
+    && isset($_SERVER['HTTP_HOST'])
+    && is_readable(DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini')) {
     $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini';
 } else {
     $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';

@@ -106,70 +106,94 @@
         <COL style="width: 1%;">
         <COL style="width: 1%;">
         <COL style="width: 1%;">
-        <COL style="width: 1%;">
+        <COL style="width: 1%; min-width: 20em;">
         <COL style="width: 91%;">
         <COL style="width: 1%;">
     </COLGROUP>
     <THEAD>
-	<TR>
-		<TH scope="col">
-			{trans("Date:")}
-		</TH>
-		<TH scope="col">
-			{trans("User:")}
-		</TH>
-		<TH scope="col" class="text-right">
-			{trans("Liability:")}
-		</TH>
-		<TH scope="col" class="text-right">
-			{trans("Income:")}
-		</TH>
-		<TH scope="col" class="text-right">
-			{trans("Expense:")}
-		</TH>
-		<TH scope="col" class="text-center">&raquo;</TH>
-		<TH scope="col" class="text-right">
-			{trans("After:")}
-		</TH>
-                <TH scope="col">
-			{trans("Customer:")}
-		</TH>
-		<TH scope="col">
-			{trans("Description:")}
-		</TH>
-		<TH scope="col">{button icon="add" label="New Balance" href="?m=balanceadd"}</TH>
-	</TR>
+	<tr>
+		<td>
+			<strong>{trans("Date")}</strong>
+		</td>
+		<td>
+			<strong>{trans("User")}</strong>
+		</td>
+		<td class="text-right">
+			<strong>{trans("Liability")}</strong>
+		</td>
+		<td class="text-right">
+			<strong>{trans("Income")}</strong>
+		</td>
+		<td class="text-right">
+			<strong>{trans("Expense")}</strong>
+		</td>
+		<td class="text-center">&raquo;</td>
+		<td class="text-right">
+			<strong>{trans("After")}</strong>
+		</td>
+		<td>
+			<strong>{trans("Customer")}</strong>
+		</td>
+		<td>
+			<strong>{trans("Description")}</strong>
+		</td>
+		<td>
+			{button icon="add" label="New Balance" href="?m=balanceadd"}
+		</tdh>
+	</tr>
 	<TR>
 		<TD colspan="10">
-			<strong>{trans("Filter:")}</strong>
+			{icon name="filter"}
 			{if $listdata.cat == 'cashimport' && !is_array($listdata.search) && isset($sourcefilename)}
-				<INPUT type="hidden" name="sourcefileid" id="sourcefileid" value="{$listdata.search}">
+				<input type="hidden" name="sourcefileid" id="sourcefileid" value="{$listdata.search}">
 			{/if}
-			<INPUT type="text" name="search" id="search" value="{if $listdata.cat == 'cashimport' && isset($sourcefilename)}{$sourcefilename}{else}{$listdata.search}{/if}"
-				   size="15" {tip text="Enter value of searching data and select category"}>
-			<SELECT size="1" name="cat" id="cat" style="width: 150px">
-				<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("— select category —")}</OPTION>
-				<OPTION value="comment"{if $listdata.cat == "comment"} SELECTED{/if}>{trans("comment")}</OPTION>
-				<OPTION value="cdate"{if $listdata.cat == "cdate"} SELECTED{/if}>{trans("date (YYYY/MM/DD)")}</OPTION>
-				<OPTION value="month"{if $listdata.cat == "month"} SELECTED{/if}>{trans("month (YYYY/MM)")}</OPTION>
+			<select size="1" name="cat" id="cat" style="width: 150px">
+				<option value=""{if $listdata.cat == ""} selected{/if}>{trans("— select category —")}</option>
+				<option value="comment"{if $listdata.cat == "comment"} selected{/if}>{trans("comment")}</option>
+				<option value="cdate"{if $listdata.cat == "cdate"} selected{/if}>{trans("date (YYYY/MM/DD)")}</option>
+				<option value="month"{if $listdata.cat == "month"} selected{/if}>{trans("month (YYYY/MM)")}</option>
 				<option value="year"{if $listdata.cat == "year"} selected{/if}>{trans("year (YYYY)")}</option>
-				<OPTION value="number"{if $listdata.cat == "number"} SELECTED{/if}>{trans("document number")}</OPTION>
-				<OPTION value="value"{if $listdata.cat == "value"} SELECTED{/if}>{trans("value")}</OPTION>
-				<OPTION value="name"{if $listdata.cat == "name"} SELECTED{/if}>{trans("customer name")}</OPTION>
-				<OPTION value="customerid"{if $listdata.cat == "customerid"} SELECTED{/if}>{trans("customer ID")}</OPTION>
-				<OPTION value="ten"{if $listdata.cat == "ten"} SELECTED{/if}>{trans("TEN")}</OPTION>
-				<OPTION value="address"{if $listdata.cat == "address"} SELECTED{/if}>{trans("address")}</OPTION>
-				<OPTION value="documented"{if $listdata.cat == "documented"} SELECTED{/if}>{trans("with document")}</OPTION>
-				<OPTION value="notdocumented"{if $listdata.cat == "notdocumented"} SELECTED{/if}>{trans("without document")}</OPTION>
-				<OPTION value="cashimport"{if $listdata.cat == "cashimport"} selected{/if}>{trans("cash import file")}</OPTION>
-			</SELECT>
-			{trans("Group:")}
-			<SELECT size="1" name="group">
-				<OPTION value="0"{if !$listdata.group} SELECTED{/if}>{trans("— all groups —")}</OPTION>
-				{section name="grouplist" loop=$grouplist}
-					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group == $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:40:"&hellip;":true}</OPTION>
-				{/section}
-			</SELECT>
+				<option value="number"{if $listdata.cat == "number"} selected{/if}>{trans("document number")}</option>
+				<option value="value"{if $listdata.cat == "value"} selected{/if}>{trans("value")}</option>
+				<option value="name"{if $listdata.cat == "name"} selected{/if}>{trans("customer name")}</option>
+				<option value="customerid"{if $listdata.cat == "customerid"} selected{/if}>{trans("customer ID")}</option>
+				<option value="ten"{if $listdata.cat == "ten"} selected{/if}>{trans("TEN")}</option>
+				<option value="address"{if $listdata.cat == "address"} selected{/if}>{trans("address")}</option>
+				<option value="documented"{if $listdata.cat == "documented"} selected{/if}>{trans("with document")}</option>
+				<option value="notdocumented"{if $listdata.cat == "notdocumented"} selected{/if}>{trans("without document")}</option>
+				<option value="cashimport"{if $listdata.cat == "cashimport"} selected{/if}>{trans("cash import file")}</option>
+			</select>
+			<input type="text" name="search" id="search"
+				value="{if $listdata.cat == 'cashimport' && isset($sourcefilename)}{$sourcefilename}{else}{$listdata.search}{/if}"
+				size="15" {tip text="Enter value of searching data and select category"}>
+			<label>
+				{trans("Type")}
+				<select name="type" size="1">
+					<option value="">{trans("<!operation-type>— any —")}</option>
+					<option value="0"{if $listdata.type === "0"} selected{/if}>{trans("liability")}</option>
+					<option value="1"{if $listdata.type === "1"} selected{/if}>{trans("income")}</option>
+					<option value="2"{if $listdata.type === "2"} selected{/if}>{trans("expense")}</option>
+				</select>
+			</label>
+			<label{if empty($sourcelist)} style="display: none;"{/if}>
+				{trans("Source")}
+				<select name="source" size="1">
+					<option value="">{trans("<!cash-source>— any —")}</option>
+					<option value="-1"{if $listdata.source == -1} selected{/if}>{trans("<!cash-source>— none —")}</option>
+					{foreach $sourcelist as $item}
+						<option value="{$item.id}"{if $listdata.source == $item.id} selected{/if}>{$item.name}</option>
+					{/foreach}
+				</select>
+			</label>
+			<label>
+				{trans("Group")}
+				<select size="1" name="group">
+					<option value="0"{if !$listdata.group} selected{/if}>{trans("— all groups —")}</option>
+					{foreach $grouplist as $group}
+						<option value="{$group.id}"{if $listdata.group == $group.id} selected{/if}>{$group.name|trunescape:40}</option>
+					{/foreach}
+				</select>
+			</label>
 			<INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label
 					for="groupexclude">{trans("exclude group")}</label>&nbsp;
 			<span class="lms-ui-date-period-container">
@@ -221,14 +245,17 @@
 		<TD class="text-right nobr">
 			{if $balance.covenant}-{else}{moneyf($balance.after)}{/if}
 		</TD>
-		<TD class="text-right nobr">
-			{if $balance.customerid}<A HREF="?m=customerinfo&id={$balance.customerid}">{$balance.customername|trunescape:20}</A>{else} - {/if}
+		<TD class="text-right">
+			{if $balance.customerid}<A HREF="?m=customerinfo&id={$balance.customerid}">{$balance.customername|trunescape:110}</A>{else} - {/if}
 		</TD>
 		<TD>
 			{$balance.comment|escape}
 		</TD>
 		<TD class="text-right nobr">
 			{if $balance.docid}
+				{if !empty($balance.ksefhash)}
+					{hint icon="lock" url="?m=invoiceksefinfo&id={$balance.docid}" tooltip_class="lms-ui-ksef-qr-code"}
+				{/if}
 				{if $balance.doctype==$smarty.const.DOC_INVOICE}
 					{if !$balance.published || ConfigHelper::checkPrivilege('published_document_modification')}
 						{button type="link" icon="view" class="print-invoice lms-ui-hint-rollover"

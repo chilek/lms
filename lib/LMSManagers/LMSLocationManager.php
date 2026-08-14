@@ -94,7 +94,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 
     public function GetCountries()
     {
-        return $this->db->GetAllByKey('SELECT id, name FROM countries ORDER BY name', 'id');
+        return $this->db->GetAllByKey('SELECT * FROM countries ORDER BY name', 'id');
     }
 
     public function GetCountryName($id)
@@ -207,8 +207,16 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
         }
 
         $this->db->Execute(
-            'INSERT INTO customer_addresses (customer_id, address_id, type) VALUES (?,?,?)',
-            array($customer_id, $addr_id, $args['location_address_type'])
+            'INSERT INTO customer_addresses
+            (customer_id, address_id, type, ten, entity_type)
+            VALUES (?, ?, ?, ?, ?)',
+            array(
+                $customer_id,
+                $addr_id,
+                $args['location_address_type'],
+                empty($args['location_ten']) ? null : $args['location_ten'],
+                empty($args['location_entity_type']) || empty($args['location_ten']) ? null : $args['location_entity_type'],
+            )
         );
 
         return true;
@@ -343,8 +351,17 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
         }
 
         $this->db->Execute(
-            'UPDATE customer_addresses SET type = ? WHERE customer_id = ? AND address_id = ?',
-            array($args['location_address_type'], $customer_id, $args['address_id'])
+            'UPDATE customer_addresses
+            SET type = ?, ten = ?, entity_type = ?
+            WHERE customer_id = ?
+                AND address_id = ?',
+            array(
+                $args['location_address_type'],
+                empty($args['location_ten']) ? null : $args['location_ten'],
+                empty($args['location_entity_type']) || empty($args['location_ten']) ? null : $args['location_entity_type'],
+                $customer_id,
+                $args['address_id'],
+            )
         );
 
         return true;
@@ -443,6 +460,16 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
     {
         return $this->db->GetOne('SELECT address_id FROM customer_addresses
 			WHERE customer_id = ? AND type = ?', array($customer_id, $type));
+    }
+
+    public function getRecipientTen($address_id)
+    {
+        return $this->db->GetOne('SELECT ten FROM customer_addresses WHERE address_id = ?', array($address_id));
+    }
+
+    public function getEntityType($address_id)
+    {
+        return $this->db->GetOne('SELECT entity_type FROM customer_addresses WHERE address_id = ?', array($address_id));
     }
 
     public function TerytToLocation($terc, $simc, $ulic)
@@ -638,9 +665,9 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
             $parity = (intval($number) & 1) ? 1 : 2;
 
             $from = '(fromnumber IS NULL OR (fromnumber < ' . $number . ')
-                        OR (fromnumber = ' . $number . ' AND (fromletter IS NULL' . (empty($letter) ? '' : ' OR fromletter <= \'' . $letter . '\'') . ')))';
+                        OR (fromnumber = ' . $number . ' AND (fromletter IS NULL' . (empty($letter) ? '' : ' OR fromletter <= ' . $this->db->Escape($letter)) . ')))';
             $to = '(tonumber IS NULL OR (tonumber > ' . $number . ')
-                        OR (tonumber = ' . $number . ' AND (toletter IS NULL' . (empty($letter) ? '' : ' OR toletter >= \'' . $letter . '\'') . ')))';
+                        OR (tonumber = ' . $number . ' AND (toletter IS NULL' . (empty($letter) ? '' : ' OR toletter >= ' . $this->db->Escape($letter)) . ')))';
         }
 
         if (isset($cityid)) {
@@ -660,7 +687,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                         'SELECT zip FROM location_buildings
                         WHERE city_id = ?' . (isset($streetid) ? ' AND (street_id = ' . intval($streetid) . ' OR street_id IS NULL)' : '') . '
                             AND building_num = ' . mb_strtoupper($this->db->Escape($house)),
-                        array($cityid, $parity)
+                        array($cityid)
                     );
             }
         } elseif (isset($city)) {
@@ -724,8 +751,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                                         . ' END) = ' . $escaped_street . ')'
                                 : ''
                             )
-                            . ' AND building_num = ' . mb_strtoupper($this->db->Escape($house)),
-                        array($parity)
+                            . ' AND building_num = ' . mb_strtoupper($this->db->Escape($house))
                     );
             }
         }
@@ -767,5 +793,40 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
             'SELECT id FROM location_states WHERE LOWER(name) = LOWER(?)',
             array($state)
         ) > 0;
+    }
+
+    public function isCityWithStreets($cityid)
+    {
+        // exceptional query for cities with subcities
+        $street_count = $this->db->GetOne(
+            'SELECT
+                COUNT(lst.id) AS street_count
+            FROM location_cities lc
+            JOIN location_boroughs lb ON lb.id = lc.boroughid
+            JOIN location_districts ld ON ld.id = lb.districtid
+            JOIN location_boroughs lb2 ON lb2.districtid = lb.districtid AND lb2.type IN (8, 9)
+            JOIN location_cities lc2 ON lc2.boroughid = lb2.id
+            JOIN location_streets lst ON lst.cityid = lc2.id
+            WHERE lc.id = ?
+                AND lb.type = 1',
+            array(
+                $cityid,
+            )
+        );
+        if (!empty($street_count)) {
+            return true;
+        }
+
+        $street_count = $this->db->GetOne(
+            'SELECT
+                COUNT(lst.id) AS street_count
+            FROM location_cities lc
+            LEFT JOIN location_streets lst ON lst.cityid = lc.id
+            WHERE lc.id = ?',
+            array(
+                $cityid,
+            )
+        );
+        return !empty($street_count);
     }
 }

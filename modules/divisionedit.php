@@ -113,9 +113,29 @@ if (!empty($_POST['division'])) {
 
     if ($division['shortname'] == '') {
         $error['shortname'] = trans('Division short name is required!');
-    } else if ($olddiv['shortname'] != $division['shortname']
-        && $DB->GetOne('SELECT 1 FROM divisions WHERE shortname = ?', array($division['shortname']))) {
-        $error['shortname'] = trans('Division with specified name already exists!');
+    } elseif ($olddiv['shortname'] != $division['shortname']) {
+        if (!empty($division['label'])) {
+            if ($DB->GetOne(
+                'SELECT 1 FROM divisions
+                WHERE id <> ? AND label = ?',
+                array(
+                    $division['id'],
+                    $division['label'],
+                )
+            )) {
+                $error['label'] = trans('Division with specified label already exists!');
+            }
+        } elseif ($DB->GetOne(
+            'SELECT 1 FROM divisions
+            WHERE id <> ?
+                AND shortname = ?',
+            array(
+                $division['id'],
+                $division['shortname']
+            )
+        )) {
+            $error['shortname'] = trans('Division with specified name already exists!');
+        }
     }
 
     if (!empty($division['naturalperson'])) {
@@ -165,8 +185,16 @@ if (!empty($_POST['division'])) {
         $error['email'] = trans('E-mail isn\'t correct!');
     }
 
+    if ($division['serviceemail'] != '' && !check_email($division['serviceemail'])) {
+        $error['serviceemail'] = trans('E-mail isn\'t correct!');
+    }
+
     if ($division['phone'] != '' && !preg_match('/^\+?[0-9\s\-]+$/', $division['phone'])) {
         $error['phone'] = trans('Incorrect phone number!');
+    }
+
+    if ($division['servicephone'] != '' && !preg_match('/^\+?[0-9\s\-]+$/', $division['servicephone'])) {
+        $error['servicephone'] = trans('Incorrect phone number!');
     }
 
     if (strlen($division['url']) && !filter_var($division['url'], FILTER_VALIDATE_URL)) {

@@ -116,16 +116,21 @@
 				{/if}
 			</li>
 		{/if}
-		{if $userinfo.ssn neq ""}
+
+		{if $userinfo.ssn neq "" && (isset($fields_changed.ssn) && $fields_changed.ssn.fieldvalue != $userinfo.ssn || ConfigHelper::checkConfig('userpanel.show_customer_sensitive_data'))}
 			<li class="list-group-item">
 				<strong>{trans("SSN")}:</strong>
 				{if isset($fields_changed.ssn) && $fields_changed.ssn.fieldvalue != $userinfo.ssn}
-				    <del>{$userinfo.ssn}</del> &rarr; <mark>{$fields_changed.ssn.fieldvalue}</mark>
+					{if ConfigHelper::checkConfig('userpanel.show_customer_sensitive_data')}
+						<del>{$userinfo.ssn}</del>
+					{/if}
+					&rarr; <mark>{$fields_changed.ssn.fieldvalue}</mark>
 				{else}
-				    {$userinfo.ssn}
+					{$userinfo.ssn}
 				{/if}
 			</li>
 		{/if}
+
 		<li class="list-group-item">
 			<strong>{trans("Balance:")}
 		{if $userinfo.balance < 0}<span class="text-danger">{$userinfo.balance|money_format}{else}<span class="text-success">{$userinfo.balance|money_format}{/if}</span>
@@ -265,10 +270,12 @@
 						{if $rights.info.edit_addr || $rights.info.edit_addr_ack}
 							<div class="form-group">
 								<strong>{trans("SSN")}:</strong>
-								<INPUT class="form-control" TYPE="number" NAME="userdata[ssn]" VALUE="{$userinfo.ssn}" placeholder="{trans("Enter social security number")}">
+								<INPUT class="form-control" type="text" NAME="userdata[ssn]" VALUE="{if ConfigHelper::checkConfig('userpanel.show_customer_sensitive_data')}{$userinfo.ssn}{else}***{/if}" placeholder="{trans("Enter social security number")}">
 							</div>
 						{else}
-							<strong>{trans("SSN")}:</strong> {$userinfo.ssn}
+							{if ConfigHelper::checkConfig('userpanel.show_customer_sensitive_data')}
+								<strong>{trans("SSN")}:</strong> {$userinfo.ssn}
+							{/if}
 						{/if}
 					{else}
 						{if $rights.info.edit_addr || $rights.info.edit_addr_ack}
@@ -293,19 +300,27 @@
 </div>
 <script>
 
-	$('#updateuserbtn').click(function() {
-		var emails = $('input[type="email"]');
-		var invalid = emails.length;
-		emails.each(function() {
-			if (this.checkValidity()) {
-				invalid--;
+	$(function() {
+		$('#updateuserbtn').click(function () {
+			$('#updateuserinfobox').find('.alert').remove();
+
+			var emails = $('input[type="email"]');
+			var invalid = emails.length;
+			emails.each(function () {
+				if (this.checkValidity()) {
+					invalid--;
+				}
+			});
+			if (invalid) {
+				return false;
+			} else {
+				document.useredit.submit();
 			}
 		});
-		if (invalid) {
-			return false;
-		} else {
-			document.useredit.submit();
-		}
+
+		{if !empty($error)}
+			$('#updateuserinfobox').modal('show');
+		{/if}
 	});
 
 </script>

@@ -47,13 +47,19 @@ function getNodeLocks()
     $nodeid = intval($_GET['id']);
     $DB = LMSDB::getInstance();
     $locks = $DB->GetAll(
-        'SELECT id, days, fromsec, tosec, disabled FROM nodelocks WHERE nodeid = ? ORDER BY id',
+        'SELECT
+            id,
+            days,
+            fromsec,
+            tosec,
+            disabled
+        FROM nodelocks
+        WHERE nodeid = ?
+        ORDER BY id',
         array($nodeid)
     );
     if ($locks) {
         foreach ($locks as $lock) {
-            $fromsec = intval($lock['fromsec']);
-            $tosec = intval($lock['tosec']);
             $days = intval($lock['days']);
             $lockdays = array();
             for ($i = 0; $i < 7; $i++) {
@@ -61,9 +67,13 @@ function getNodeLocks()
                     $lockdays[$i] = 1;
                 }
             }
-            $disabled = intval($lock['disabled']);
-            $nodelocks[] = array('id' => $lock['id'], 'days' => $lockdays, 'fhour' => intval($fromsec / 3600), 'fminute' => intval(($fromsec % 3600) / 60),
-                'thour' => intval($tosec / 3600), 'tminute' => intval(($tosec % 3600) / 60), 'disabled' => $disabled);
+            $nodelocks[] = array(
+                'id' => $lock['id'],
+                'days' => $lockdays,
+                'fromsec' => intval($lock['fromsec']),
+                'tosec' => intval($lock['tosec']),
+                'disabled' => intval($lock['disabled']),
+            );
         }
     }
     $SMARTY->assign('nodelocks', $nodelocks);
@@ -88,12 +98,19 @@ function addNodeLock($params)
     parse_str($params, $formdata);
 
     $days = 0;
-    foreach ($formdata['days'] as $key => $value) {
-        $days += (1 << $key);
+    if (!empty($formdata['days'])) {
+        foreach ($formdata['days'] as $key => $value) {
+            $days += (1 << $key);
+        }
     }
-    $fromsec = $formdata['fhour'] * 3600 + $formdata['fminute'] * 60;
-    $tosec = $formdata['thour'] * 3600 + $formdata['tminute'] * 60;
-    if ($fromsec >= $tosec || !$days) {
+
+    if (empty($formdata['time'])) {
+        $fromsec = $tosec = 0;
+    } else {
+        $fromsec = empty($formdata['time']['fromsec']) ? 0 : $formdata['time']['fromsec'];
+        $tosec = empty($formdata['time']['tosec']) ? 0 : $formdata['time']['tosec'];
+    }
+    if ($fromsec && $tosec && $fromsec >= $tosec || !$days) {
         $result->assign('nodelockaddlink', 'disabled', false);
         return $result;
     }
@@ -101,9 +118,16 @@ function addNodeLock($params)
     $nodeid = intval($_GET['id']);
 
     $DB = LMSDB::getInstance();
+
     $DB->Execute(
-        'INSERT INTO nodelocks (nodeid, days, fromsec, tosec) VALUES (?, ?, ?, ?)',
-        array($nodeid, $days, $fromsec, $tosec)
+        'INSERT INTO nodelocks (nodeid, days, fromsec, tosec)
+        VALUES (?, ?, ?, ?)',
+        array(
+            $nodeid,
+            $days,
+            $fromsec,
+            $tosec,
+        )
     );
 
     $result->call('getNodeLocks');
@@ -139,10 +163,61 @@ function toggleNodeLock($id)
     return $result;
 }
 
+function updateNodeLock($params)
+{
+    $result = new xajaxResponse();
+
+    if (empty($params)) {
+        $result->assign('nodelockaddlink', 'disabled', false);
+        return $result;
+    }
+
+    $formdata = array();
+    parse_str($params, $formdata);
+
+    $days = 0;
+    if (!empty($formdata['days'])) {
+        foreach ($formdata['days'] as $key => $value) {
+            if (!empty($value)) {
+                $days += (1 << $key);
+            }
+        }
+    }
+
+    if (empty($formdata['time'])) {
+        $fromsec = $tosec = 0;
+    } else {
+        $fromsec = empty($formdata['time']['fromsec']) ? 0 : $formdata['time']['fromsec'];
+        $tosec = empty($formdata['time']['tosec']) ? 0 : $formdata['time']['tosec'];
+    }
+    if ($fromsec && $tosec && $fromsec >= $tosec || !$days) {
+        $result->assign('nodelockaddlink', 'disabled', false);
+        return $result;
+    }
+
+    $DB = LMSDB::getInstance();
+
+    $DB->Execute(
+        'UPDATE nodelocks
+        SET days = ?, fromsec = ?, tosec = ?
+        WHERE id = ?',
+        array(
+            $days,
+            $fromsec,
+            $tosec,
+            $formdata['id']
+        )
+    );
+
+    $result->call('getNodeLocks');
+
+    return $result;
+}
+
 function getThroughput($ip)
 {
     $cmd = ConfigHelper::getConfig('phpui.live_traffic_helper');
-    if (empty($cmd)) {
+    if (empty($cmd) || !check_ip($ip)) {
         return '';
     }
 
@@ -226,27 +301,20 @@ function getRadioSectors($netdev, $technology = 0)
     return $result;
 }
 
-function getFirstFreeAddress($netid, $elemid)
+function getFirstFreeAddress($netid)
 {
     global $LMS;
 
     $result = new xajaxResponse();
 
     $ip = $LMS->GetFirstFreeAddress($netid);
-    if ($ip != false) {
-        $result->assign($elemid, 'value', $ip);
-        $result->script('
-            $("#ipaddr").removeClass("lms-ui-warning").removeAttr("data-tooltip").attr("title", null);
-        ');
-    } else {
-        $result->script('
-            $("#ipaddr").addClass("lms-ui-warning").removeAttr("data-tooltip").attr("title",
-                $t("No free addresses in selected network!"));
-        ');
-    }
+
+    $result->call('first_free_address_received', $ip);
 
     return $result;
 }
+
+$session_state_helper = ConfigHelper::getConfig('nodes.session_state_helper', '', true);
 
 if (isset($_GET['action'])) {
     header('Content-type: text/html');
@@ -263,9 +331,69 @@ if (isset($_GET['action'])) {
             }
             die(getThroughput($_GET['ip']));
             break;
+        case 'session_state':
+            $session_state_helper = ConfigHelper::getConfig('nodes.session_state_helper', '', true);
+
+            if (!isset($_GET['id']) && empty($nodesessions) || empty($session_state_helper)) {
+                die;
+            }
+            $nodesession = reset($nodesessions);
+            if (empty($nodesession['nasipaddr'])) {
+                die;
+            }
+            $nasip = long2ip($nodesession['nasipaddr']);
+
+            $username = empty($nodeinfo['login']) ? $nodeinfo['name'] : $nodeinfo['login'];
+
+            $cmd = str_replace(
+                array(
+                    '%ip%',
+                    '%nasip%',
+                    '%username%',
+                ),
+                array(
+                    $nodeinfo['ip'],
+                    $nasip,
+                    $username,
+                ),
+                $session_state_helper
+            );
+
+            $output = '';
+            $ret = 0;
+            exec($cmd, $output, $ret);
+            if (!empty($output) && empty($ret)) {
+                $result = implode(PHP_EOL, $output);
+                $result = trim($result);
+                $result = preg_replace("/\n{3,}/", PHP_EOL, $result);
+                $result = str_replace(
+                    array(
+                        ' ',
+                        PHP_EOL
+                    ),
+                    array(
+                        '&nbsp;',
+                        '<br>',
+                    ),
+                    $result
+                );
+                if (empty($result)) {
+                    $result = '<span class="red bold">' . trans('No session information on NAS device!') . '</span>';
+                } else {
+                    $result = '<pre>' . $result . '</pre>';
+                }
+            } else {
+                $result = '<span class="red bold">' . trans('Error during communication with NAS device!') . '</span>';
+            }
+
+            die($result);
+
+            break;
     }
 }
 
-$LMS->RegisterXajaxFunction(array('getNodeLocks', 'addNodeLock', 'delNodeLock', 'toggleNodeLock',
+$SMARTY->assign('session_state_helper', $session_state_helper);
+
+$LMS->RegisterXajaxFunction(array('getNodeLocks', 'addNodeLock', 'delNodeLock', 'toggleNodeLock', 'updateNodeLock',
     'getManagementUrls', 'addManagementUrl', 'delManagementUrl', 'updateManagementUrl', 'getRadioSectors',
     'getFirstFreeAddress'));

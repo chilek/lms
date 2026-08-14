@@ -128,7 +128,11 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
      */
     public function _driver_disconnect()
     {
-        return @mysqli_close($this->_dblink);
+        if (empty($this->_dblink)) {
+            return true;
+        } else {
+            return @mysqli_close($this->_dblink);
+        }
     }
 
     /**
@@ -256,7 +260,7 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
      */
     public function _driver_now()
     {
-        return 'UNIX_TIMESTAMP()';
+        return 'UNIX_TIMESTAMP64()';
     }
 
     /**
@@ -337,6 +341,16 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
         } else {
             $this->Execute('LOCK TABLES ' . $table . ' ' . $locktype);
         }
+    }
+
+    public function _driver_lockbyhandle($handle): mixed
+    {
+        return $this->GetOne('SELECT GET_LOCK(\'' . $handle . '\', ' . ((1 << 32) - 1) . ')');
+    }
+
+    public function _driver_unlockbyhandle($handle): mixed
+    {
+        return $this->GetOne('SELECT RELEASE_LOCK(\'' . $handle . '\')');
     }
 
     /**
@@ -431,6 +445,30 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
     }
 
     /**
+     * Substring match by regular expression for selected field.
+     *
+     * @param string $field
+     * @param string $regexp
+     * @return regexp match string
+     */
+    public function _driver_substringbyregexp($field, $regexp)
+    {
+        return 'REGEXP_SUBSTR(' . $field . ', \'' . $regexp . '\')';
+    }
+
+    /**
+     * Convert field variable to specified type.
+     *
+     * @param string $field
+     * @param string $type
+     * @return converted field
+     */
+    public function _driver_cast($field, $type)
+    {
+        return 'CAST(' . $field . ' AS ' . $type . ')';
+    }
+
+    /**
     * Check if database resource exists (table, view)
     *
     * @param string $name
@@ -490,6 +528,13 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
                     'SELECT COUNT(*) FROM information_schema.columns
                     WHERE table_schema = ? AND table_name = ? AND column_name = ? AND column_type = ?',
                     array($this->_dbname, $table_name, $column_name, $column_type)
+                ) > 0;
+                break;
+            case LMSDB::RESOURCE_TYPE_TRIGGER:
+                return $this->GetOne(
+                    'SELECT COUNT(*) FROM information_schema.triggers
+                    WHERE trigger_schema = ? AND trigger_name = ?',
+                    array($this->_dbname, $name)
                 ) > 0;
                 break;
         }

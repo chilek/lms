@@ -53,7 +53,7 @@ function format_customer_im($contact)
 {
     switch ($contact['type'] & CONTACT_IM) {
         case CONTACT_IM_GG:
-            return trans('Gadu-Gadu') . ': ' . '<IMG src="http://status.gadu-gadu.pl/users/status.asp?id=' . $contact['contact'] . '&styl=1" alt=""> '
+            return trans('Gadu-Gadu') . ': ' . '<img src="https://status.gadu-gadu.pl/users/status.asp?id=' . $contact['contact'] . '&styl=1"> '
                 . '<a href="gg:' . htmlspecialchars($contact['contact']) . '">' . htmlspecialchars($contact['contact']) . '</a>';
             break;
         case CONTACT_IM_YAHOO:
@@ -414,8 +414,11 @@ $CUSTOMERCONTACTTYPES = array(
 );
 
 $supported_customer_contact_types = ConfigHelper::getConfig(
-    'phpui.supported_customer_contact_types',
-    implode(',', array_keys($CUSTOMERCONTACTTYPES))
+    'customers.supported_contact_types',
+    ConfigHelper::getConfig(
+        'phpui.supported_customer_contact_types',
+        implode(',', array_keys($CUSTOMERCONTACTTYPES))
+    )
 );
 $supported_customer_contact_types = array_flip(preg_split('/(\r?\n|\s*[;,]\s*|\s+)/', $supported_customer_contact_types, 0, PREG_SPLIT_NO_EMPTY));
 foreach ($CUSTOMERCONTACTTYPES as $contact_type => $contact_type_description) {
@@ -430,7 +433,10 @@ foreach ($CUSTOMERCONTACTTYPES as $ctype => $type) {
     $flags = array_flip(
         preg_split(
             '/([\s]+|[\s]*,[\s]*)/',
-            trim(ConfigHelper::getConfig('phpui.default_customer_' . $ctype . '_flags', 'helpdesk_notifications')),
+            trim(ConfigHelper::getConfig(
+                'customers.default_' . $ctype . '_flags',
+                ConfigHelper::getConfig('phpui.default_customer_' . $ctype . '_flags', 'helpdesk_notifications')
+            )),
             -1,
             PREG_SPLIT_NO_EMPTY
         )

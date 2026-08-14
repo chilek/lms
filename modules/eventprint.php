@@ -27,7 +27,7 @@
 $date = $_GET['day'] ?? 0;
 
 if (empty($date)) {
-    $date = time();
+    $date = strtotime('today');
 }
 
 [$year, $month, $day] = explode('/', date('Y/m/d', $date));

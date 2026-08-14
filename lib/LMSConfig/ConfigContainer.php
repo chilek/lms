@@ -92,6 +92,26 @@ class ConfigContainer
         return $this->config_sections;
     }
     
+    public function getSubSections($section_name)
+    {
+        return array_filter(
+            array_keys(array_map(
+                function ($config_section) use ($section_name) {
+                    return $config_section->getSectionName();
+                },
+                $this->config_sections
+            )),
+            function ($config_section_name) use ($section_name) {
+                if (strpos($config_section_name, $section_name) === 0) {
+                    $section_suffix = mb_substr($config_section_name, mb_strlen($section_name));
+                    return preg_match('/^-[[:alnum:]]+:[a-z0-9_-]+$/', $section_suffix) === 1;
+                } else {
+                    return false;
+                }
+            }
+        );
+    }
+
     /**
      * Checks if section exists
      *

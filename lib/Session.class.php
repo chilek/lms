@@ -37,6 +37,7 @@ class Session
     public $DB = null;              // database library object
     public $timeout = 600;          // timeout since session will
                         // be destroyed
+    private $expired = false;
     private $settings_timeout = 28800;          // timeout since user settings will
                         // be cleared
     public $autoupdate = false;     // do automatic update on each
@@ -78,6 +79,11 @@ class Session
         }
     }
 
+    public function isExpired()
+    {
+        return $this->expired;
+    }
+
     public function close()
     {
         $this->_saveSession();
@@ -93,8 +99,7 @@ class Session
 
     public function makeSID()
     {
-        [$usec, $sec] = explode(' ', microtime());
-        return md5(uniqid(random_int(0, mt_getrandmax()), true)).sprintf('%09x', $sec).sprintf('%07x', ($usec * 10000000));
+        return bin2hex(random_bytes(32));
     }
 
     public function restore_user_settings($force_settings_restore = false)
@@ -341,7 +346,29 @@ class Session
             'INSERT INTO sessions (id, ctime, mtime, atime, vdata, content) VALUES (?, ?NOW?, ?NOW?, ?NOW?, ?, ?)',
             array($this->SID, serialize($this->makeVData()), serialize($this->_content))
         );
-        setcookie('SID', $this->SID);
+        $this->_setSIDCookie();
+    }
+
+    private function _setSIDCookie()
+    {
+        setcookie('SID', $this->SID, array(
+            'httponly' => true,
+            'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+            'samesite' => 'Lax',
+        ));
+    }
+
+    // regenerate the session identifier while keeping session content,
+    // to prevent session fixation across a privilege change (e.g. login)
+    public function regenerateSID()
+    {
+        $oldSID = $this->SID;
+        $this->SID = $this->makeSID();
+        $this->DB->Execute(
+            'UPDATE sessions SET id = ? WHERE id = ?',
+            array($this->SID, $oldSID)
+        );
+        $this->_setSIDCookie();
     }
 
     public function _restoreSession()
@@ -351,13 +378,29 @@ class Session
         $row = $this->DB->GetRow('SELECT *, ?NOW? AS tt FROM sessions WHERE id = ?', array($this->SID));
 
         if ($row && serialize($this->makeVData()) == $row['vdata']) {
+            $content = unserialize($row['content']);
+
+            // login timeout specific for current user (hacky code but should work)
+            $user_timeout = $this->DB->GetOne(
+                'SELECT value FROM uiconfig WHERE section = ? AND var = ? AND userid = ?',
+                array(
+                    'phpui',
+                    'timeout',
+                    $content['session_id'],
+                )
+            );
+            if (!empty($user_timeout)) {
+                $this->timeout = $user_timeout;
+            }
+
             if (($row['mtime'] < $row['tt'] - $this->timeout) && ($row['atime'] < $row['tt'] - $this->timeout)) {
+                $this->expired = true;
                 $this->_destroySession();
             } else {
                 if (!isset($_POST['xjxfun']) && !isset($_GET['ajax'])) {
                     $this->DB->Execute('UPDATE sessions SET atime = ?NOW? WHERE id = ?', array($this->SID));
                 }
-                $this->_content = unserialize($row['content']);
+                $this->_content = $content;
                 $this->restore_user_settings(true);
                 return;
             }
@@ -678,5 +721,10 @@ class Session
         $this->close();
         header('Location: '.$location);
         die;
+    }
+
+    public function clearLoginTimeout()
+    {
+        $this->DB->Execute('UPDATE sessions SET atime = ?NOW? WHERE id = ?', array($this->SID));
     }
 }

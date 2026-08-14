@@ -167,7 +167,7 @@ function GetCashRegistryBalance($regid)
     $balance = $DB->GetOne('SELECT SUM(value) FROM receiptcontents
 				WHERE regid = ?', array($regid));
 
-    $result->script("$('form[name=\"movecash\"] input[name=\"value\"]').val(" . $balance . ")");
+    $result->script("$('input[name=\"value\"][form=\"movecash\"]').val(" . $balance . ")");
 
     return $result;
 }
@@ -207,6 +207,8 @@ $action = $_GET['action'] ?? '';
 
 switch ($action) {
     case 'init':
+        $notification = ConfigHelper::checkConfig('receipts.customer_notify', true);
+
         $oldreg = $receipt['regid'];
             unset($receipt);
             unset($contents);
@@ -227,6 +229,8 @@ switch ($action) {
         if (!$receipt['regid'] && (!empty($cashreglist) && count($cashreglist) == 1)) {
             $receipt['regid'] = key($cashreglist);
         }
+
+        $receipt['divisionid'] = $tabDivisionContext;
 
         if (!$receipt['regid'] || !$receipt['type']) {
             break;
@@ -343,6 +347,9 @@ switch ($action) {
                 $receipt['extended'] = true;
             }
         }
+
+        $notification = empty($_POST['notification']) ? 0 : 1;
+
         break;
 
     case 'additem':
@@ -373,6 +380,9 @@ switch ($action) {
         if (!$error && $itemdata['value'] && $itemdata['description']) {
             additem($contents, $itemdata);
         }
+
+        $notification = empty($itemdata['notification']) ? 0 : 1;
+
         break;
 
     case 'additemlist':
@@ -470,6 +480,9 @@ switch ($action) {
                 }
             }
         }
+
+        $notification = empty($_POST['notification']) ? 0 : 1;
+
         break;
     case 'deletepos':
         if (count($contents)) {
@@ -688,6 +701,9 @@ switch ($action) {
         if (!isset($error) && isset($customer)) {
             $receipt['selected'] = true;
         }
+
+        $notification = empty($_POST['notification']) ? 0 : 1;
+
         break;
 
     case 'save':
@@ -704,7 +720,6 @@ switch ($action) {
             } else {
                 $rid = $result;
             }
-
 
             $hook_data = $LMS->executeHook(
                 'receiptadd_after_submit',
@@ -749,6 +764,8 @@ switch ($action) {
     case 'movecash':
         $value = str_replace(',', '.', $_POST['value']);
         $dest = $_POST['registry'];
+
+        $notification = empty($_POST['notification']) ? 0 : 1;
 
         if ($value && $dest) {
             $cash = $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid = ?', array($receipt['regid']));
@@ -919,6 +936,10 @@ switch ($action) {
 
 if (!isset($cashreglist)) {
     $cashreglist = $LMS->GetCashRegistries($receipt['customerid'] ?? null);
+}
+
+if (isset($notification)) {
+    $receipt['notification'] = empty($notification) ? 0 : 1;
 }
 
 $SESSION->save('receipt', $receipt, true);

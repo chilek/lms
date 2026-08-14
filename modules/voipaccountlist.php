@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2022 LMS Developers
+ *  (C) Copyright 2001-2024 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -35,10 +35,21 @@ if (!isset($_GET['o'])) {
 }
 $SESSION->save('nlo', $o);
 
-$voipaccountlist = $LMS->GetVoipAccountList($o, null, null);
+$search = array(
+    'serviceproviderid' => null,
+);
+if (isset($_POST['search'])) {
+    $search = $_POST['search'];
+} else {
+    $SESSION->restore('valsearch', $search);
+}
+$SESSION->save('valsearch', $search);
+
+$voipaccountlist = $LMS->GetVoipAccountList($o, $search, null);
 $listdata['total'] = $voipaccountlist['total'];
 $listdata['order'] = $voipaccountlist['order'];
 $listdata['direction'] = $voipaccountlist['direction'];
+$listdata['search'] = $search;
 
 unset($voipaccountlist['total']);
 unset($voipaccountlist['order']);
@@ -59,10 +70,12 @@ if ($SESSION->is_set('valp') && !isset($_GET['page'])) {
     $SESSION->restore('valp', $_GET['page']);
 }
 
-$page = (!isset($_GET['page']) ? 1 : $_GET['page']);
+$page = isset($_GET['page']) ? $_GET['page'] : 1;
 $pagelimit = ConfigHelper::getConfig('phpui.voipaccountlist_pagelimit', $listdata['total']);
 $start = ($page - 1) * $pagelimit;
-
+if ($start > count($voipaccountlist)) {
+    $start = floor(count($voipaccountlist) / $pagelimit);
+}
 $SESSION->save('valp', $page);
 
 $hook_data = $plugin_manager->executeHook(

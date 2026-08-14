@@ -60,6 +60,7 @@ $_LANG['monthly'] = 'miesięcznie';
 $_LANG['No modules found!'] = 'Nie odnaleziono żadnych modułów!';
 $_LANG['none'] = 'żaden';
 $_LANG['PIN:'] = 'PIN:';
+$_LANG['PIN'] = 'PIN';
 $_LANG['Please login.'] = 'Proszę się zalogować.';
 $_LANG['Prio'] = 'Prio';
 $_LANG['quarterly'] = 'kwartalnie';
@@ -88,7 +89,7 @@ $_LANG['Disabling modules:'] = 'Wyłączenie modułów:';
 $_LANG['Remind credentials'] = 'Przypomnienie danych do logowania';
 $_LANG['Remind'] = 'Przypomnij';
 $_LANG['Login form'] = 'Formularz logowania';
-$_LANG['SSN or TEN:'] = 'PESEL lub NIP:';
+$_LANG['SSN or TEN'] = 'PESEL lub NIP';
 $_LANG['Credential reminder has been sent!'] = 'Dane do logowania zostały wysłane!';
 $_LANG['credential reminder'] = 'przypomnienie danych do logowania';
 $_LANG['Reminder mail sender:'] = 'Nadawca listu z danymi do logowania:';
@@ -101,7 +102,11 @@ $_LANG['Reminder sms body:'] = 'Treść SMS-a z danymi do logowania:';
 $_LANG['Enter reminder sms body'] = 'Wprowadź treść SMS-a z danymi do logowania';
 $_LANG['Credential reminder couldn\'t be sent!'] = 'Przypomnienie danych do logowania nie mogło zostać wysłane!';
 
+$_LANG['Reminder type'] = 'Dodatkowe dane używane w przypomnieniu danych do logowania';
 $_LANG['Authentication type:'] = 'Rodzaj uwierzytelniania:';
+$_LANG['Authentication type'] = 'Rodzaj uwierzytelniania';
+$_LANG['Two factor authentication'] = 'Uwierzytelnianie dwuetapowe';
+$_LANG['<!twofactor-auth-type>— disabled —'] = '— wyłączone —';
 $_LANG['Userpanel authentication type'] = 'Rodzaj uwierzytelniania używany przez Panel klienta';
 
 $_LANG['Page header'] = 'Nagłówek strony';
@@ -115,6 +120,8 @@ $_LANG['Enter Google reCAPTCHA secret'] = 'Podaj tajne hasło Google reCAPTCHA:'
 
 $_LANG['Web browser icon'] = 'Ikona w przeglądarce WWW';
 $_LANG['Enter full or relative URL address of web browser icon'] = 'Podaj pełny lub względny adres URL ikony widocznej w przeglądarce WWW';
+$_LANG['Extra style sheet'] = 'Dodatkowy arkusz stylów';
+$_LANG['Enter full or relative URL address of extra style sheet file'] = 'Podaj pełny lub względny adres URL pliku z dodatkowym arkuszem stylów';
 
 $_LANG['Session expires after:'] = 'Sesja wygasa za:';
 
@@ -129,10 +136,24 @@ $_LANG['Logged as:'] = 'Zalogowany jako:';
 $_LANG['PIN validation'] = 'Walidacja PIN';
 $_LANG['Userpanel PIN validation'] = 'Walidacja PIN przy logowaniu do Panelu klienta';
 $_LANG['Update'] = 'Uaktualnij';
-$_LANG['<!userpanel>Confirm'] = 'Zapoznałem się';
+$_LANG['<!userpanel>Confirm'] = 'Zapoznałem/am się';
 
 $_LANG['Access is temporarily blocked. Please try again in 10 minutes.'] = 'Dostęp został tymczasowo zablokowany. Spróbuj ponownie za 10 minut.';
 
 $_LANG['Allowed customer status'] = 'Dozwolony status klienta';
 
 $_LANG['PIN is expired - use credential reminder form!'] = 'Przeterminowany kod PIN - użyj formularza przypomnienia danych do logowania!';
+
+$_LANG['Continue'] = 'Kontynuuj';
+$_LANG['One-time password'] = 'Hasło jednorazowe';
+$_LANG['Your one-time password is: $a'] = 'Twoje hasło jednorazowe to: $a';
+$_LANG['Incorrect one-time password!'] = 'Niepoprawne hasło jednorazowe!';
+$_LANG['Your one-time password has been sent via SMS to your phone number $a.'] = 'Hasło jednorazowe zostało wysłane SMS-em na Twój numer telefonu $a.';
+$_LANG['Select phone number to which one-time password will be sent.'] = 'Wybierz Twój numer telefonu, na który zostanie wysłane hasło jednorazowe.';
+$_LANG['Send one-time password'] = 'Wyślij hasło jednorazowe';
+$_LANG['Your one-time password has already been sent via SMS to your phone number within the last 3 minutes.'] = 'Hasło jednorazowe zostało już wysłane SMS-em na Twój numer telefonu w ciągu ostatnich 3 minut!';
+$_LANG['Warning'] = 'Ostrzeżenie';
+$_LANG['Information'] = 'Informacja';
+
+$_LANG['SMS sending service is not configured!'] = 'Usługa wysyłki SMS-ów nie jest skonfigurowana!';
+$_LANG['You dont\'t have any phone numbers assigned to your account!'] = 'Nie masz przypisanych żadnych numerów telefonów do swojego konta!';

@@ -11,15 +11,45 @@
 		border-top: none;
 	}
 
+	#document-period {
+		display: flex;
+	}
+
+	#document-period > *:not(:first-child) {
+		margin-left: 0.5em;
+	}
+
+	#document-period > div {
+		display: flex;
+	}
+
+	#document-period > div:first-child {
+		display: flex;
+		flex-direction: column;
+	}
+
+	#document-period > div:first-child > :not(:first-child) {
+		margin-top: 0.3em;
+	}
+
+	#document-period > div:not(:first-child) {
+		display: flex;
+		align-items: center;
+		margin-left: 0.5em;
+	}
+
 </style>
 
 <script>
 
 	function DocTemplateChanged() {
 		reset_login_timeout();
-		xajax_DocTemplateChanged($('[name="document[type]"]').val(),
+		xajax_DocTemplateChanged(
+			$('[name="document[type]"]').val(),
 			$('[name="document[templ]"]').val(),
-			0);
+			0,
+			{}
+		);
 	}
 
 	function DocTypeChanged() {
@@ -55,12 +85,12 @@
 				{icon name="type"}
 			</td>
 			<td>
-				<strong>{trans("Type:")}</strong>
+				<strong>{trans("Type")}</strong>
 			</td>
 			<td>
 				<select size="1" name="document[type]" id="doctype" onChange="DocTypeChanged();"
-						{tip class="lms-ui-advanced-select" text="Select document type" trigger="type"} required
-				>
+					{tip class="lms-ui-advanced-select-test" text="Select document type" trigger="type"}
+					required>
 					<option value="0">{trans("— select type —")}</option>
 					{foreach $_DOCTYPES as $key => $item}
 						{if $key < 0 && in_array($key, $docrights)}
@@ -75,13 +105,12 @@
 				{icon name="template"}
 			</td>
 			<td>
-				<strong>{trans("Template:")}</strong>
+				<strong>{trans("Template")}</strong>
 			</td>
 			<td>
 				<select size="1" name="document[templ]" id="templ" {if $document.type >= 0} disabled{/if}
 					onChange="DocTemplateChanged();"
-					{tip text="Select document template" trigger="templ"}
-				>
+					{tip text="Select document template" trigger="templ"}>
 					<option value="0">... {trans("select template")} ...</option>
 					{foreach $docengines as $docengine}
 						<option value="{$docengine.name}"{if $document.templ == $docengine.name} selected{/if}>{$docengine.title}</option>
@@ -94,7 +123,7 @@
 				{icon name="document"}
 			</td>
 			<td class="nobr">
-				<strong>{trans("Title:")}</strong>
+				<strong>{trans("Title")}</strong>
 			</td>
 			<td class="nobr">
 				<input type="text" id="title" name="document[title]" value="{$document.title}"
@@ -108,7 +137,7 @@
 				{icon name="document"}
 			</td>
 			<td class="nobr">
-				<strong>{trans("First number:")}</strong>
+				<strong>{trans("First number")}</strong>
 			</td>
 			<td>
 				{numberplan_selection
@@ -126,26 +155,37 @@
 			</td>
 		</tr>
 		<tr>
-			<td>
+			<td class="valign-top">
 				{icon name="period"}
 			</td>
-			<td>
-				<strong>{trans("Period:")}</strong>
+			<td class="valign-top">
+				<strong>{trans("Period")}</strong>
 			</td>
 			<td>
-				{$allow_past_date = ConfigHelper::checkConfig('documents.allow_past_date', true)}
-				{trans("from:")}
-				<input type="text" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}"
-					placeholder="{trans("yyyy/mm/dd")}"
-					{tip class="lms-ui-date lms-ui-date-unix" text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"}
-					{if !$allow_past_date}data-min-date="{date('Y-m-d')}"{/if}
-					size="10">
-				{trans("to:")}
-				<input type="text" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}"
-					placeholder="{trans("yyyy/mm/dd")}"
-					{tip class="lms-ui-date lms-ui-date-unix" text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"}
-					{if !$allow_past_date}data-min-date="{date('Y-m-d')}"{/if}
-					size="10">
+				<div id="document-period">
+					{$allow_past_date = ConfigHelper::checkConfig('documents.allow_past_date', true)}
+					<div>
+						<label>
+							{trans("from")}
+							<input type="text" name="document[fromdate]" id="fromdate"
+								value="{if $document.fromdate}{$document.fromdate}{/if}"
+								placeholder="{trans("yyyy/mm/dd")}"
+								{tip class="lms-ui-date lms-ui-date-unix" text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"}
+								{if !$allow_past_date}data-min-date="{date('Y-m-d')}"{/if}
+								size="10">&nbsp;
+						</label>
+						<label>
+							{trans("to")}
+							<input type="text" name="document[todate]" id="todate"
+								value="{if $document.todate}{$document.todate}{/if}"
+								placeholder="{trans("yyyy/mm/dd")}"
+								{tip class="lms-ui-date lms-ui-date-unix" text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"}
+								{if !$allow_past_date}data-min-date="{date('Y-m-d')}"{/if}
+								size="10">
+						</label>
+					</div>
+					{date_period_preset from="#fromdate" to="#todate" periods="previous-year,previous-month,current-year,current-month,next-month,next-year"}
+				</div>
 			</td>
 		</tr>
 		<tr>
@@ -153,7 +193,7 @@
 				{icon name="description"}
 			</td>
 			<td>
-				<strong>{trans("Description:")}</strong>
+				<strong>{trans("Description")}</strong>
 			</td>
 			<td>
 				<textarea name="document[description]" rows="5" cols="50"
@@ -165,7 +205,7 @@
 				{icon name="import"}
 			</td>
 			<td>
-				<strong>{trans("Files:")}</strong>
+				<strong>{trans("Files")}</strong>
 			</td>
 			<td>
 				{fileupload id="attachments" fileupload=$fileupload form="documentgen-form"}
@@ -176,7 +216,7 @@
 				{icon name="import"}
 			</td>
 			<td class="nobr">
-				<strong>{trans("Document attachments:")}</strong>
+				<strong>{trans("Document attachments")}</strong>
 			</td>
 			<td id="attachment-cell">
 				{$attachment_result}
@@ -188,11 +228,31 @@
 			</td>
 			<td class="nobr">
 				<label for="closed">
-					<strong>{trans("Confirmed:")}</strong>
+					<strong>{trans("<!document>Confirmed")}</strong>
 				</label>
 			</td>
 			<td>
-				<input type="checkbox" name="document[closed]" id="closed" value="1" {if $document.closed} checked{/if}>
+				<input type="checkbox" name="document[closed]" id="closed" value="1"
+					{if $document.closed} checked{/if}>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="legal-personality"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Legal personality")}</strong>
+			</td>
+			<td>
+				<select name="document[ctype]">
+					<option value="">{trans("<!legal-personality>— any —")}</option>
+					<option value="{$smarty.const.CTYPES_PRIVATE}"
+						{if isset($document.ctype) && $document.ctype == $smarty.const.CTYPES_PRIVATE} selected{/if}
+						>{$_CTYPES[$smarty.const.CTYPES_PRIVATE]}</option>
+					<option value="{$smarty.const.CTYPES_COMPANY}"
+							{if $document.ctype == $smarty.const.CTYPES_COMPANY} selected{/if}
+						>{$_CTYPES[$smarty.const.CTYPES_COMPANY]}</option>
+				</select>
 			</td>
 		</tr>
 		<tr>
@@ -200,7 +260,7 @@
 				{icon name="customer"}
 			</td>
 			<td class="nobr">
-				<strong>{trans("Customers:")}</strong>
+				<strong>{trans("Customers")}</strong>
 			</td>
 			<td>
 				<table width="100%">
@@ -252,7 +312,7 @@
 				{icon name="ipnetwork"}
 			</td>
 			<td class="nobr">
-				<strong>{trans("Network:")}</strong>
+				<strong>{trans("Network")}</strong>
 			</td>
 			<td>
 				<select size="1" name="network" {tip text="Select network" trigger="customer"}>
@@ -309,6 +369,10 @@
 		$('[name="document[type]"]').change(function() {
 			$('#document-file-row').toggle(parseInt($(this).val()) != 0);
 		});
+
+		{if !empty($defaultDocEngine)}
+			DocTemplateChanged();
+		{/if}
 	});
 
 </script>

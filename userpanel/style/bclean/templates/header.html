@@ -7,6 +7,7 @@
         <title>{if $page_header}{$page_header}{else}{trans("Virtual Customer Service")}{/if}</title>
         <link rel="stylesheet" href="style/bclean/vendor/twbs/bootstrap/dist/css/bootstrap.min.css">
         <link type="text/css" rel="stylesheet" href="{stylefile}">
+        {$extra_css}
         <link href="{ConfigHelper::getConfig('userpanel.shortcut_icon', 'img/lms-net.gif')}" rel="shortcut icon">
         {include file="jquery.html" language=Localisation::getCurrentHtmlLanguage() lms_language=Localisation::getCurrentUiLanguage()}
 		<script src="style/default/common.js"></script>

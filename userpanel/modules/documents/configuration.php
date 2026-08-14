@@ -31,7 +31,7 @@ $USERPANEL->AddModule(
     15,         // Priority
     trans('This module allows to manage documents'),   // Description
     array(      // Array of submenus in LMS
-        array(
+        'documentlist' => array(
             'name' => trans('Documents to review'),
             'link' => '?m=documentlist&s=2',
             'tip' => trans('Documents which require your review'),

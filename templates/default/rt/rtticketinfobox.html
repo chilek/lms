@@ -105,6 +105,18 @@
 									{$ticket.createtime|date_format:"Y-m-d H:i:s"}
 								</TD>
 							</TR>
+							{if ConfigHelper::checkPrivilege('helpdesk_ticket_custom_times') && isset($ticket.customcreatetime)}
+								<tr>
+									<td class="nobr">
+										<strong>
+											{icon name="timetable" label="<!rtticket>Custom create time"}
+										</strong>
+									</td>
+									<td>
+										{$ticket.customcreatetime|date_format:"Y-m-d H:i"}
+									</td>
+								</tr>
+							{/if}
 							{if $ticket.creatorid}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
@@ -123,6 +135,18 @@
 									{$ticket.uptime}
 								</TD>
 							</TR>
+							{if ConfigHelper::checkPrivilege('helpdesk_ticket_custom_times') && isset($ticket.customresolvetime)}
+								<tr>
+									<td class="nobr">
+										<strong>
+											{icon name="timetable" label="<!rtticket>Custom resolve time"}
+										</strong>
+									</td>
+									<td>
+										{$ticket.customresolvetime|date_format:"Y-m-d H:i"}
+									</td>
+								</tr>
+							{/if}
 							{if !empty($ticket.categories)}
 							<TR>
 								<TD style="width: 1%;" class="valign-top bold nobr">
@@ -370,7 +394,11 @@
 									{icon name="parentticket" label="Primary ticket"}
 								</TD>
 								<TD>
-									#{$ticket.parent.id|string_format:"%06d"} <a href="?m=rtticketview&id={$ticket.parent.id}">{$ticket.parent.name|escape}</a><br>
+									{button
+										type="link"
+										label="#{$ticket.parent.id|string_format:"%06d"} {$ticket.parent.name|escape}"
+										href="?m=rtticketview&id={$ticket.parent.id}"
+									}
 								</TD>
 							</TR>
 							{/if}
@@ -381,9 +409,12 @@
 									</TD>
 									<TD>
 										{foreach $ticket.childtickets as $t}
-											#{$t.id|string_format:"%06d"}
-											<a href="?m=rtticketview&id={$t.id}">{$t.subject|escape}</a>
-											<br>
+											{button
+												type="link"
+												label="#{$t.id|string_format:"%06d"} {$t.subject|escape}"
+												href="?m=rtticketview&id={$t.id}"
+											}
+											{if !$t@last}<br>{/if}
 										{/foreach}
 									</TD>
 								</TR>
@@ -395,14 +426,12 @@
 								</TD>
 								<TD>
 									{foreach $ticket.relatedtickets as $i}
-										{hint icon="info" mode="toggle" url="?m=rtticketinfo&id={$i.id}"}
-										#{$i.id}
-										<a href="?m=rtticketview&id={$i.id}">
-											{$i.name|escape}
-										</a>
-										{if !$i@last}
-											<br>
-										{/if}
+										{button
+											type="link"
+											label="#{$i.id|string_format:"%06d"} {$i.name|escape}"
+											href="?m=rtticketview&id={$i.id}"
+										}
+										{if !$i@last}<br>{/if}
 									{/foreach}
 								</TD>
 							</TR>
@@ -436,7 +465,7 @@
 			{if $ticket.state != $smarty.const.RT_RESOLVED}
 				{if ConfigHelper::checkConfig('rt.block_ticket_close_with_open_events', ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events'))
 					&& !empty($ticket['openeventcount'])}
-					{button icon="status-resolved" label="Ticket have open assigned events!" tip="Ticket have open assigned events!" class="blend disabled"}
+					{button icon="status-resolved" label="Ticket has open assigned events!" tip="Ticket has open assigned events!" class="blend disabled"}
 				{else}
 					{if empty($ticket['verifier_rtime']) && $ticket['verifierid'] != Auth::GetCurrentUser() && $ticket['verifierid']}
 						{button icon="verifier" label="Transfer to verifier" tip="Transfer to verifier" onclick="location.href='?m=rtticketedit&id={$ticket.ticketid}&action=verify';"}
@@ -465,7 +494,7 @@
 				{if $ticket.state != $smarty.const.RT_RESOLVED}
 					{button type="link-button" icon="childticket" label="Create secondary ticket" tip="Create secondary ticket" href="?m=rtticketadd&parentid={$ticket.ticketid}"}
 				{/if}
-				{if count($ticket.images)}
+				{if $ticket.images|size}
 					{button id="ticket-gallery-button" icon="gallery" label="Attachment gallery" tip="Attachment gallery" data_gallery="{base64_encode(json_encode($ticket.images))}"}
 				{/if}
 				{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
@@ -483,7 +512,7 @@
 						data_confirmation_text=trans('Are you sure, you want to remove ticket $a?', $ticket.ticketid)
 					}
 				{/if}
-				{button icon="link" class="lms-ui-button-clipboard" label="Copy link" data_clipboard_text=$ticketinfo_clipboard_text}
+				{button icon="link" class="lms-ui-button-clipboard" label="Copy link" data_clipboard_text=$ticketinfo_clipboard_text tip="Copy link"}
 			{/buttons}
 		</TD>
 	</TR>

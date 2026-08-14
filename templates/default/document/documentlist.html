@@ -1,6 +1,10 @@
 {extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
+
+{$hide_disabled_users = ConfigHelper::checkConfig('documents.hide_disabled_users')}
+{$hide_deleted_users = ConfigHelper::checkConfig('documents.hide_deleted_users')}
+
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 
@@ -75,7 +79,7 @@
 		</TD>
 		<TD class="nobr">
 			<A href="?m=documentlist&amp;o=title{if $filter.direction == "asc" && $filter.order == "title"},desc{/if}">{trans("Title:")}</A>{if $filter.order == "title"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-			<BR>{trans("Period:")}
+			<BR>{trans("Period")}
 			<BR>{trans("Reference document:")}
 		</TD>
 		<TD class="nobr"> <A href="?m=documentlist&amp;o=customer{if $filter.direction == "asc" && $filter.order == "customer"},desc{/if}">{trans("Customer:")}</A>{if $filter.order == "customer"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</TD>
@@ -131,7 +135,16 @@
 							<input type="hidden" name="u[]" value="0">
 							<select name="u[]" multiple class="lms-ui-multiselect" data-default-value="{trans("— all —")}">
 								{foreach $users as $user}
-								<option value="{$user.id}"{if is_array($filter.userid) && in_array($user.id, $filter.userid)} selected{/if}>{$user.name|escape}</option>
+									{if (!is_array($filter.userid) || !in_array($user.id, $filter.userid))
+										&& ($hide_disabled_users && empty($user.access)
+										|| $hide_deleted_users && !empty($user.deleted))}
+										{continue}
+									{/if}
+									<option value="{$user.id}"
+										{if empty($user.access)} data-blend{/if}
+										{if !empty($user.deleted)} data-crossed{/if}
+										{if is_array($filter.userid) && in_array($user.id, $filter.userid)} selected{/if}
+											>{$user.rname|trunescape:40} ({$user.login})</option>
 								{/foreach}
 							</select>
 						{/if}
@@ -182,10 +195,11 @@
 							<OPTION value="-1">{trans("— all —")} </OPTION>
 							<OPTION value="0"{if $filter.status == 0} selected{/if}>{trans("unconfirmed")}</OPTION>
 							<OPTION value="1"{if $filter.status == 1} selected{/if}>{trans("confirmed")}</OPTION>
-							<OPTION value="4"{if $filter.status == 5} selected{/if}>{trans("confirmed (signed document scan)")}</OPTION>
-							<OPTION value="5"{if $filter.status == 4} selected{/if}>{trans("confirmed (sms authorization)")}</OPTION>
+							<OPTION value="5"{if $filter.status == 5} selected{/if}>{trans("confirmed (signed document scan)")}</OPTION>
+							<OPTION value="4"{if $filter.status == 4} selected{/if}>{trans("confirmed (sms authorization)")}</OPTION>
 							<OPTION value="2"{if $filter.status == 2} selected{/if}>{trans("review (signed document scan)")}</OPTION>
 							<OPTION value="3"{if $filter.status == 3} selected{/if}>{trans("waiting for signed document scan")}</OPTION>
+							<option value="6"{if $filter.status == 6} selected{/if}>{trans("waiting for customer action (expired)")}</option>
 						</SELECT>
 					</label>
 
@@ -213,7 +227,7 @@
 	</TR>
 	{/if}
     </THEAD>
-    <TBODY class="lms-ui-multi-check">
+    <TBODY class="lms-ui-multi-check lms-ui-multi-check-hidden">
 	<FORM METHOD="POST" NAME="page" id="page-form" ACTION="?m=documentedit&action=confirm">
 	{foreach $documentlist as $doc}
 	{assign var=docid value=$doc.docid}
@@ -252,8 +266,9 @@
 				{hint icon="info" content=$doc.description|escape|replace:"\n":'<br>'}
 			{/if}
 			{if $doc.fromdate || $doc.todate}<BR>
-			    {if $doc.fromdate}{trans("from")} {$doc.fromdate|date_format:"Y-m-d"}{/if}
-			    {if $doc.todate}{trans("to")} {$doc.todate|date_format:"Y-m-d"}{/if}
+				{if $doc.fromdate}{trans("from")} {$doc.fromdate|date_format:"Y-m-d"}{/if}
+				{if $doc.todate}{trans("to")} {$doc.todate|date_format:"Y-m-d"}{/if}
+				{if empty($doc.closed) && ($doc.fromdate || $doc.todate) && !empty($doc.dynamicperiod)}{trans("<!document-period>(dynamic)")}{/if}
 			{/if}
 			{if $doc.reference}<br>
 			<a href="?m={if $doc.reference.type < 0}documentview{else}invoice{/if}&id={$doc.reference.id}" rel="external">
@@ -292,26 +307,32 @@
 				{if $docattach.type == 1 || $doc.attachments|size == 1}
 					{documentview id="global-{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
 						url=$url external=true
-						text="<i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"
+						text="<i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('#^application/(rtf|.+(oasis|opendocument|openxml).+)$#i',$docattach.contenttype)} xls{/if}\"></i>"
 						tip="Preview"}
 				{/if}
 			{/buttons}
+			<input type="checkbox" name="marks[{$docid}]" value="{$docid}" class="document-checkbox lms-ui-multi-check"{if $marks.$docid} checked{/if}>
 			{if $doc.attachments|size > 1 || $docattach.type < 1}
-			<a href="#" id="allattachments-toggle-{$doc.docid}" onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
-				<img src="img/asc_order.gif">
-			</a>
+				<a href="#" id="allattachments-toggle-{$doc.docid}" onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
+					<img src="img/asc_order.gif">
+				</a>
 			{/if}
 			<div id="allattachments-{$doc.docid}" style="display: none;">
 				{foreach $doc.attachments as $docattach}
-					{if $docattach@first && $docattach.type == 1}{continue}{/if}
-					{documentview id="local-{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
-						url="?m=documentview&id={$doc.docid}&attachmentid={$docattach.id}" external=true
-						text="{$docattach.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"}
+					{documentview
+						id="local-{$doc.docid}-{$docattach.id}"
+						type=$docattach.contenttype
+						doctype=$doc.type
+						name=$docattach.filename
+						url="?m=documentview&id={$doc.docid}&attachmentid={$docattach.id}"
+						external=true
+					}
 					{if $docattach.type == -1}<i class="lms-ui-icon-user" title="<strong>{t a=date("Y/m/d H:i", $docattach.cdate)}Sent by customer at $a{/t}</strong>"></i>{/if}
+					<input type="checkbox" name="attachment-marks[{$docid}][{$docattach.id}]" class="document-attachment-checkbox lms-ui-multi-check" value="{$docattach.id}"
+						{if $marks.$docid} checked{/if}>
 					<br>
 				{/foreach}
 			</div>
-			<INPUT TYPE="checkbox" NAME="marks[{$docid}]" VALUE="{$docid}" class="lms-ui-multi-check"{if $marks.$docid} checked{/if}>
 		</TD>
 	</TR>
 	{foreachelse}
@@ -422,10 +443,12 @@
 			return;
 		}
 
-		if ($('tr[data-closed="0"] :checked').length) {
-			alertDialog($t('One or more of selected documents are not confirmed!'), this);
-			return;
-		}
+		{if !ConfigHelper::checkConfig('documents.allow_unapproved_document_archiving')}
+			if ($('tr[data-closed="0"] :checked').length) {
+				alertDialog($t('One or more of selected documents are not confirmed!'), this);
+				return;
+			}
+		{/if}
 
 		confirmDialog($t("Are you sure, you want to archive selected documents?"), this).done(function() {
 			document.page.action = "?m=documentedit&action=archive";
@@ -473,6 +496,27 @@
             });
         }
 		return false;
+	});
+
+	$(function() {
+		$('.document-checkbox').change(function() {
+			var documentAttachmentCheckboxes = $(this).closest('td').find('.document-attachment-checkbox');
+			var checked = $(this).prop('checked');
+			documentAttachmentCheckboxes.prop('checked', checked);
+			$(this).closest('tbody').trigger('lms:update_check_all');
+		});
+
+		$('.document-attachment-checkbox').change(function() {
+			var documentAttachmentCheckboxes = $(this).closest('td').find('.document-attachment-checkbox');
+			var documentCheckbox = $(this).closest('td').find('.document-checkbox');
+			var checked = $(this).prop('checked');
+			if (checked) {
+				documentCheckbox.prop('checked', documentAttachmentCheckboxes.filter(':checked').length);
+			} else {
+				documentCheckbox.prop('checked', documentAttachmentCheckboxes.filter(':not(:checked)').length !== documentAttachmentCheckboxes.length);
+			}
+			$(this).closest('tbody').trigger('lms:update_check_all');
+		});
 	});
 
 </script>

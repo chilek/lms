@@ -56,22 +56,43 @@ if (isset($_POST['rights'])) {
 
         $SESSION->redirect('?m=documenttypes');
     } else {
-        $users = $DB->GetAllByKey('SELECT id, name, rname, login FROM vusers
-			WHERE deleted = 0 ORDER BY rname', 'id');
+        $users = $DB->GetAllByKey(
+            'SELECT
+                id,
+                name,
+                rname,
+                login,
+                (CASE WHEN access = 1 AND accessfrom <= ?NOW? AND (accessto >= ?NOW? OR accessto = 0) THEN 1 ELSE 0 END) AS access
+            FROM vusers
+            WHERE deleted = 0
+            ORDER BY rname',
+            'id'
+        );
 
         foreach ($users as $idx => $user) {
             if (!empty($rights[$idx])) {
                 $rights[$idx]['rights'] = array_sum($rights[$idx]);
             }
             $rights[$idx]['name'] = $user['name'];
+            $rights[$idx]['access'] = $user['access'];
         }
     }
 } else {
-    $rights = $DB->GetAllByKey('SELECT u.id, u.name, u.rname, u.login, d.rights
-		FROM vusers u
-		LEFT JOIN docrights d ON (u.id = d.userid AND d.doctype = ?)
-		WHERE u.deleted = 0
-		ORDER BY u.rname', 'id', array($id));
+    $rights = $DB->GetAllByKey(
+        'SELECT
+            u.id,
+            u.name,
+            u.rname,
+            u.login,
+            d.rights,
+            (CASE WHEN u.access = 1 AND u.accessfrom <= ?NOW? AND (u.accessto >= ?NOW? OR u.accessto = 0) THEN 1 ELSE 0 END) AS access
+        FROM vusers u
+        LEFT JOIN docrights d ON u.id = d.userid AND d.doctype = ?
+        WHERE u.deleted = 0
+        ORDER BY u.rname',
+        'id',
+        array($id)
+    );
 }
 
 $type = array(

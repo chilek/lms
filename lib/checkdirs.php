@@ -130,6 +130,21 @@ if (!is_writable($promotionschema_dir)) {
     }
 }
 
+$message_template_dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'messagetemplates';
+
+if (!is_dir($message_template_dir)) {
+    $startup_errors[] = 'mkdir ' . $message_template_dir;
+}
+
+if (!is_writable($message_template_dir)) {
+    $startup_errors[] = 'chown -R ' . posix_geteuid() . ':' . posix_getegid() . ' ' . $message_template_dir;
+    $startup_errors[] = 'chmod -R 755 ' . $message_template_dir;
+    if ($selinux_active) {
+        $startup_errors[] = 'semanage fcontext -a -t httpd_sys_rw_content_t "' . rtrim($message_template_dir, '/') . '(/.*)?"';
+        $selinux_error = true;
+    }
+}
+
 if (!is_dir(DOC_DIR)) {
     $startup_errors[] = 'mkdir ' . DOC_DIR;
 }

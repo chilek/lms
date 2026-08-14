@@ -2,22 +2,20 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<script type="text/javascript">
-<!--
-    function PrintList()
-    {
+<script>
+
+    function PrintList() {
         document.voipaccountsearch.action = "?m=voipaccountsearch&search=1&print=1";
         document.voipaccountsearch.target = "_BLANK";
         document.voipaccountsearch.submit();
     }
 
-    function Search()
-    {
+    function Search() {
         document.voipaccountsearch.action = "?m=voipaccountsearch&search=1";
         document.voipaccountsearch.target = "";
         document.voipaccountsearch.submit();
     }
-//-->
+
 </script>
 <h1>{$layout.pagetitle}</h1>
 <form method="post" action="?m=voipaccountsearch&amp;search" name="voipaccountsearch">
@@ -30,65 +28,83 @@
         </colgroup>
         <thead>
             <tr>
-                <td class="bold" colspan="2">
-                    {trans("Find VoIP accounts matching the following search criteria:")}
+                <td colspan="2">
+                    <strong>{trans("Find VoIP accounts matching the following search criteria:")}</strong>
                 </td>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td class="bold nobr">
-                    <img src="img/voip.gif" width="16" alt=""> {trans("Login:")}
+                    {icon name="login"}
+                    <strong>{trans("Login")}</strong>
                 </td>
                 <td>
                     <input type="text" name="search[login]" {tip text="Enter login or it's fragment"}>
                 </td>
             </tr>
             <tr>
-                <td class="bold nobr">
-                    <img src="img/passwd.gif" width="16" alt=""> {trans("Password:")}
+                <td class="nobr">
+                    {icon name="password"}
+                    <strong>{trans("Password")}</strong>
                 </td>
                 <td>
                     <input type="text" name="search[password]" {tip text="Enter password or it's fragment"}>
                 </td>
             </tr>
             <tr>
-                <td class="bold nobr">
-                    <img src="img/phone.gif" width="16" alt=""> {trans("Phone number:")}
+                <td class="nobr">
+                    {icon name="phone"}
+                    <strong>{trans("Phone number")}</strong>
                 </td>
                 <td>
                     <input type="tel" name="search[phone]" {tip text="Enter phone number or it's fragment"}>
                 </td>
             </tr>
             <tr>
-                <td class="bold nobr">
-                    <img src="img/empty.gif" width="16" alt=""> {trans("Qualification operator:")}
+                <td class="nobr">
+                    {icon name="service"}
+                    <strong>{trans("Service provider")}</strong>
                 </td>
                 <td>
-                    <input class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}>
-                    <label for="operator0">{trans("and")}</label>
-                    <input class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}>
-                    <label for="operator1">{trans("or")}</label>
+                    <select name="search[serviceproviderid]">
+                        <option value="">{trans("— all —")}</option>
+                        {foreach $serviceproviders as $serviceprovider}
+                            <option value="{$serviceprovider.id}">{$serviceprovider.name|escape}</option>
+                        {/foreach}
+                    </select>
                 </td>
             </tr>
             <tr>
-                <td class="text-right" colspan="2">
-                    <a href="javascript:Search()" accesskey="s">
-                        {trans("Search")} <img src="img/search.gif" alt="">
-                    </a>
-                    <a href="javascript:PrintList()">
-                        {trans("Print")} <img src="img/print.gif" alt="">
-                    </a>
+                <td class="nobr">
+                    {icon name="operator"}
+                    <strong>{trans("Qualification operator")}</strong>
+                </td>
+                <td>
+                    <label>
+                        <input class="radio light" type="radio" value="AND" name="k"{if $k != 'OR'} checked{/if}>
+                        {trans("and")}
+                    </label>
+                    <label>
+                        <input class="radio light" type="radio" value="OR" name="k"{if $k == 'OR'} checked{/if}>
+                        {trans("or")}
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td class="lms-ui-box-buttons" colspan="2">
+                    {button icon="search" label="Search" onclick="Search()"}
+                    {button icon="print" label="Print"  onclick="PrintList()"}
                 </td>
             </tr>
         </tbody>
     </table>
 </form>
-<script type="text/javascript">
-<!--
+<script>
+
 	$(function() {
 		$('form[name="voipaccountsearch"] [name="search[login]"]').focus();
 	});
-//-->
+
 </script>
 {/block}

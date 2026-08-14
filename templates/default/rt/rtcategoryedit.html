@@ -1,6 +1,7 @@
 {extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
+{$hide_disabled_users = ConfigHelper::checkConfig('rt.hide_disabled_users', ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users'))}
 <!--// $Id$ //-->
 <h1>{$layout.pagetitle}</h1>
 <form method="POST" name="category" action="?m=rtcategoryedit&id={$category.id}">
@@ -72,7 +73,7 @@
 				{icon name="user"}
 			</td>
 			<td>
-				<strong>{trans("Users:")}</strong>
+				<strong>{trans("Users")}</strong>
 			</td>
 			<td>
 				<table class="lmsbox lms-ui-background-cycle">
@@ -91,8 +92,9 @@
 						</tr>
 					</thead>
 					<tbody class="lms-ui-multi-check">
-						{foreach from=$category.owners item=user}
-							<tr class="highlight">
+						{foreach $category.owners as $user}
+							<tr class="highlight{if empty($users[$user.id].access)} blend{/if}"
+								{if empty($users[$user.id].access) && $hide_disabled_users} style="display: none;"{/if}>
 								<td>
 									<a href="?m=userinfo&id={$user.id}">
 										{$user.rname|escape} ({$user.login})
@@ -103,6 +105,11 @@
 										value="1"{if $user.owner > 0} checked{/if}>
 								</td>
 							</tr>
+							{if empty($users[$user.id].access) && $hide_disabled_users}
+								<tr style="display: none;">
+									<td colspan="2"></td>
+								</tr>
+							{/if}
 						{/foreach}
 						<tr>
 							<td class="text-right">

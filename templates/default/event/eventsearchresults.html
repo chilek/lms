@@ -17,5 +17,9 @@
         {include file="event/eventlistbox.html"}
     </TBODY>
 </TABLE>
-<H2>{trans("Total events:")} {if empty($eventlist)}0{else}{count($eventlist)}{/if}</H2>
+<H2>
+    {t a=$eventlist|size}Events: $a{/t},
+    {t a=$total_time|duration_format b=round($total_time / 3600, 1)}Time: $a ($b h){/t},
+    {t a=$calendar_total_time|duration_format b=round($calendar_total_time / 3600, 1)}Calendar time: $a ($b h){/t}
+</H2>
 {/block}

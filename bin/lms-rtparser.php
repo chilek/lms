@@ -60,6 +60,10 @@ $SYSLOG = SYSLOG::getInstance();
 $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 
+// Initialize plugin manager (required for hooks like send_sms_before)
+$plugin_manager = LMSPluginManager::getInstance();
+$LMS->setPluginManager($plugin_manager);
+
 $hostname = gethostname();
 if (empty($hostname)) {
     $hostname = 'example.com';
@@ -99,10 +103,17 @@ $customerinfo = ConfigHelper::checkConfig($config_section . '.include_customerin
 $lms_url = ConfigHelper::getConfig($config_section . '.lms_url', 'http://localhost/lms/');
 $autoreply_from = ConfigHelper::getConfig($config_section . '.mail_from', '', true);
 $autoreply_name = ConfigHelper::getConfig($config_section . '.mail_from_name', '', true);
+$autoreply_format = ConfigHelper::getConfig($config_section . '.autoreply_format', 'text');
 $autoreply_subject = ConfigHelper::getConfig($config_section . '.autoreply_subject', "[RT#%tid] Receipt of request '%subject'");
 $autoreply_body = ConfigHelper::getConfig($config_section . '.autoreply_body', '', true);
 $autoreply = ConfigHelper::checkConfig($config_section . '.autoreply', true);
 $subject_ticket_regexp_match = ConfigHelper::getConfig($config_section . '.subject_ticket_regexp_match', '\[RT#(?<ticketid>[0-9]{6,})\]');
+$body_customer_phone_number_regexp_match = ConfigHelper::getConfig($config_section . '.body_customer_phone_number_regexp_match', '', true);
+$body_date_regexp_match = ConfigHelper::getConfig($config_section . '.body_date_regexp_match', '', true);
+$subject_template = ConfigHelper::getConfig($config_section . '.subject_template', '', true);
+$body_template = ConfigHelper::getConfig($config_section . '.body_template', '', true);
+$ignore_sender_email = ConfigHelper::checkConfig($config_section . '.ignore_sender_email');
+
 $modify_ticket_timeframe = ConfigHelper::getConfig($config_section . '.allow_modify_resolved_tickets_newer_than', 604800);
 
 $detect_customer_location_address = ConfigHelper::checkConfig($config_section . '.detect_customer_location_address');
@@ -122,6 +133,7 @@ $rtparser_password = ConfigHelper::getConfig(
     $smtp_options['pass'] ?? ConfigHelper::GetConfig('mail.smtp_password')
 );
 $rtparser_use_seen_flag = ConfigHelper::checkConfig($config_section . '.imap_use_seen_flag', true);
+$rtparser_use_flagged_flag = ConfigHelper::checkConfig($config_section . '.imap_use_flagged_flag');
 $rtparser_folder = ConfigHelper::getConfig($config_section . '.imap_folder', 'INBOX');
 
 $url_props = parse_url($lms_url);
@@ -149,6 +161,9 @@ if (!$autoreply_body) {
         . "subsequent posts related to this request.\n";
 }
 $autoreply_body = str_replace("\\n", "\n", $autoreply_body);
+
+$autoreply_subject_template = $autoreply_subject;
+$autoreply_body_template = $autoreply_body;
 
 if (!function_exists('mailparse_msg_create')) {
     fprintf($stderr, "Fatal error: PECL mailparse module is required!" . PHP_EOL);
@@ -203,7 +218,17 @@ if ($mode == MODE_IMAP) {
         exit(7);
     }
 
-    $posts = imap_search($ih, $rtparser_use_seen_flag ? 'UNSEEN' : 'ALL');
+    $search_filter = array();
+    $set_flags = array();
+    if ($rtparser_use_seen_flag) {
+        $search_filter[] = 'UNSEEN';
+        $set_flags[] = "\\Seen";
+    }
+    if ($rtparser_use_flagged_flag) {
+        $search_filter[] = 'UNFLAGGED';
+        $set_flags[] = "\\Flagged";
+    }
+    $posts = imap_search($ih, empty($search_filter) ? 'ALL' : implode(' ', $search_filter));
     if (empty($posts)) {
         imap_close($ih);
         die;
@@ -225,10 +250,10 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
     if ($postid !== false && $postid !== null) {
         $buffer = imap_fetchbody($ih, $postid, '');
 
-        if ($rtparser_use_seen_flag) {
-            imap_setflag_full($ih, $postid, "\\Seen");
+        if (!empty($set_flags)) {
+            imap_setflag_full($ih, $postid, implode(' ', $set_flags));
         } else {
-            imap_clearflag_full($ih, $postid, "\\Seen");
+            imap_clearflag_full($ih, $postid, "\\Seen \\Flagged");
         }
     }
 
@@ -254,6 +279,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         $partdata = mailparse_msg_get_part_data($part);
         $headers = $partdata['headers'];
 
+        $return_paths = null;
         if (isset($headers['return-path'])) {
             if (is_array($headers['return-path'])) {
                 $return_paths = $headers['return-path'];
@@ -263,23 +289,24 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             $return_paths = array_filter($return_paths, function ($var) {
                 return $var == '<>' || strtolower($var) == '<mailer-daemon>';
             });
-            if (!empty($return_paths) || isset($headers['auto-submitted']) && $headers['auto-submitted'] == 'auto-replied') {
-                mailparse_msg_free($mail);
+        }
 
-                if ($postid !== false && $postid !== null) {
-                    if ($rtparser_use_seen_flag) {
-                        imap_setflag_full($ih, $postid, "\\Seen");
-                    } else {
-                        imap_clearflag_full($ih, $postid, "\\Seen");
-                    }
+        if (!empty($return_paths) || isset($headers['auto-submitted']) && $headers['auto-submitted'] == 'auto-replied') {
+            mailparse_msg_free($mail);
 
-                    $postid = next($posts);
+            if ($postid !== false && $postid !== null) {
+                if (!empty($set_flags)) {
+                    imap_setflag_full($ih, $postid, implode(' ', $set_flags));
+                } else {
+                    imap_clearflag_full($ih, $postid, "\\Seen \\Flagged");
                 }
 
-                unset($buffer);
-
-                continue;
+                $postid = next($posts);
             }
+
+            unset($buffer);
+
+            continue;
         }
 
         $mh_from = iconv_mime_decode($headers['from']);
@@ -509,12 +536,11 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         // check email subject
         if (!$prev_tid && preg_match('/' . $subject_ticket_regexp_match . '/', $mh_subject, $matches)) {
             $prev_tid = sprintf('%d', $matches['ticketid']);
-            if (!$LMS->TicketExists($prev_tid)) {
-                $prev_tid = 0;
-            } else {
-                $prev_tid_contents = $LMS->GetTicketContents($prev_tid);
-                $queue = $prev_tid_contents['queueid'];
-            }
+        }
+
+        if ($prev_tid) {
+            $prev_tid_contents = $LMS->GetTicketContents($prev_tid);
+            $queue = $prev_tid_contents['queueid'];
         }
 
         $mail_mh_subject = $mh_subject;
@@ -538,9 +564,9 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         $toemails = array();
 
         if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $mh_to, $m)) {
-            $toemails[$m['address']] = $m['address'];
+            $toemails[strtolower($m['address'])] = strtolower($m['address']);
         } elseif (!empty($mh_to)) {
-            $toemails[$mh_to] = $mh_to;
+            $toemails[strtolower($mh_to)] = strtolower($mh_to);
         }
 
         $ccemails = array();
@@ -548,9 +574,9 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         if (!empty($_ccemails)) {
             foreach ($_ccemails as $ccemail) {
                 if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $ccemail, $m)) {
-                    $ccemails[$m['address']] = $m['display'] ?? '';
+                    $ccemails[strtolower($m['address'])] = $m['display'] ?? '';
                 } else {
-                    $ccemails[$ccemail] = '';
+                    $ccemails[strtolower($ccemail)] = '';
                 }
             }
         }
@@ -559,7 +585,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         if ((!$queue || $check_mail) && (!empty($toemails) || !empty($ccemails))) {
             $queueid = $queue;
             $queue = $DB->GetRow(
-                "SELECT id, email FROM rtqueues WHERE email IN ? LIMIT 1",
+                "SELECT id, LOWER(email) AS email FROM rtqueues WHERE LOWER(email) IN ? LIMIT 1",
                 array(array_merge(array_keys($toemails), array_keys($ccemails)))
             );
             if (!empty($queue) && (!$check_mail || $queue['id'] == $queueid)) {
@@ -586,20 +612,59 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             exit(5);
         }
 
-        // find customerid
-        $reqcustid = $DB->GetCol(
-            "SELECT c.id FROM customers c
-            JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ?) > 0
-            WHERE cc.contact = ?",
-            array(
-                CONTACT_EMAIL,
-                $fromemail,
-            )
-        );
-        if (empty($reqcustid) || count($reqcustid) > 1) {
-            $reqcustid = 0;
-        } else {
+        // try to find customerid by phone number match
+        $phone = null;
+        if (!empty($body_customer_phone_number_regexp_match)) {
+            if (preg_match('/' . $body_customer_phone_number_regexp_match . '/im', $mail_body, $m)) {
+                if (!empty($m['phone'])) {
+                    $phone = $m['phone'];
+                } elseif (!empty($m['number'])) {
+                    $phone = $m['number'];
+                }
+            }
+            if (!empty($phone)) {
+                $phone = preg_replace('/[^0-9]/', '', $phone);
+
+                $reqcustid = $DB->GetCol(
+                    "SELECT c.id
+                    FROM customers c
+                    JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ?) > 0
+                    WHERE REPLACE(REPLACE(contact, ' ', ''), '-', '') ?LIKE? ?",
+                    array(
+                        CONTACT_MOBILE | CONTACT_LANDLINE,
+                        '%' . $phone,
+                    )
+                );
+            }
+        }
+
+        $date = null;
+        if (!empty($body_date_regexp_match)) {
+            if (preg_match('/' . $body_date_regexp_match . '/im', $mail_body, $m)) {
+                if (!empty($m['date'])) {
+                    $date = trim($m['date']);
+                }
+            }
+        }
+
+        if (!empty($phone) && !empty($reqcustid) && count($reqcustid) == 1) {
             $reqcustid = reset($reqcustid);
+        } else {
+            // find customerid
+            $reqcustid = $DB->GetCol(
+                "SELECT c.id FROM customers c
+                JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ?) > 0
+                WHERE cc.contact = ?",
+                array(
+                    CONTACT_EMAIL,
+                    $fromemail,
+                )
+            );
+            if (empty($reqcustid) || count($reqcustid) > 1) {
+                $reqcustid = 0;
+            } else {
+                $reqcustid = reset($reqcustid);
+            }
         }
 
         // get sender e-mail if not specified
@@ -618,7 +683,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         if ($prev_tid && ($prev_tid_contents['state'] != RT_RESOLVED || $prev_tid_contents['resolvetime'] + $modify_ticket_timeframe > time())) {
             // find userid
             $requserid = $DB->GetOne(
-                "SELECT id FROM vusers WHERE email = ?",
+                "SELECT id FROM vusers WHERE LOWER(email) = LOWER(?)",
                 array($fromemail)
             );
             if (empty($requserid)) {
@@ -667,10 +732,21 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             $ticket_id = $LMS->TicketAdd(array(
                 'queue' => $queue,
                 'requestor' => empty($fromname) ? $mh_from : $fromname,
-                'requestor_mail' => empty($fromemail) ? null : $fromemail,
+                'requestor_mail' => $ignore_sender_email || empty($fromemail) ? null : $fromemail,
+                'requestor_phone' => empty($phone) ? null : $phone,
                 'customerid' => $reqcustid,
                 'address_id' => $address_id,
-                'subject' => $mh_subject,
+                'subject' => empty($subject_template)
+                    ? $mh_subject
+                    : str_replace(
+                        array(
+                            '%phone',
+                        ),
+                        array(
+                            empty($phone) ? '-' : $phone,
+                        ),
+                        $subject_template
+                    ),
                 'createtime' => $timestamp,
                 'source' => RT_SOURCE_EMAIL,
                 'mailfrom' => $mh_from,
@@ -678,7 +754,20 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 'messageid' => $mh_msgid,
                 'headers' => $mail_headers,
                 'contenttype' => $contenttype,
-                'body' => $mail_body,
+                'body' => empty($body_template)
+                    ? $mail_body
+                    : str_replace(
+                        array(
+                            '%phone',
+                            '%date',
+                        ),
+                        array(
+                            empty($phone) ? '-' : $phone,
+                            empty($date) ? '-' : $date,
+                        ),
+                        $body_template
+                    ),
+                'phonefrom' => empty($phone) ? '' : $phone,
                 'categories' => $cats), $files);
 
             $message_id = $LMS->GetLastMessageID();
@@ -696,22 +785,22 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                     $fromemail,
                 )
             ))) {
-                $autoreply_subject = preg_replace_callback(
+                $current_autoreply_subject = preg_replace_callback(
                     '/%(\\d*)tid/',
                     function ($m) use ($ticket_id) {
                         return sprintf('%0' . $m[1] . 'd', $ticket_id);
                     },
-                    $autoreply_subject
+                    $autoreply_subject_template
                 );
-                $autoreply_subject = str_replace('%subject', $mail_mh_subject, $autoreply_subject);
-                $autoreply_body = preg_replace_callback(
+                $current_autoreply_subject = str_replace('%subject', $mail_mh_subject, $current_autoreply_subject);
+                $current_autoreply_body = preg_replace_callback(
                     '/%(\\d*)tid/',
                     function ($m) use ($ticket_id) {
                         return sprintf('%0' . $m[1] . 'd', $ticket_id);
                     },
-                    $autoreply_body
+                    $autoreply_body_template
                 );
-                $autoreply_body = str_replace('%subject', $mail_mh_subject, $autoreply_body);
+                $current_autoreply_body = str_replace('%subject', $mail_mh_subject, $current_autoreply_body);
 
                 if ($replytoemail) {
                     $mailto = $replytoemail;
@@ -724,11 +813,15 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 $headers = array(
                     'From' => (empty($autoreply_name) ? '' : qp_encode($autoreply_name) . ' ') . '<' . $autoreply_from . '>',
                     'To' => $mailto_qp_encoded,
-                    'Subject' => $autoreply_subject,
+                    'Subject' => $current_autoreply_subject,
                     'References' => $mh_references . ' ' . $mh_msgid,
                     'In-Reply-To' => $mh_msgid,
                     'Message-ID' => "<confirm.$ticket_id.$queue.$timestamp@rtsystem.$hostname>",
                 );
+
+                if ($autoreply_format == 'html') {
+                    $headers['X-LMS-Format'] = 'html';
+                }
 
                 if (!empty($reqcustid) && !empty($ccemails)) {
                     $headers['Cc'] = implode(
@@ -739,7 +832,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                     );
                 }
 
-                $LMS->SendMail($mailto, $headers, $autoreply_body, null, null, $smtp_options);
+                $LMS->SendMail($mailto, $headers, $current_autoreply_body, null, null, $smtp_options);
             }
 
             $new_ticket = true;
@@ -749,10 +842,17 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
 
         if ($notify || $ticket['customerid'] && $reqcustid) {
             $helpdesk_sender_name = ConfigHelper::getConfig($config_section . '.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name'));
+
+            $mailfname = '';
+
             if (!empty($helpdesk_sender_name)) {
-                $mailfname = '"' . $LMS->GetQueueName($queue) . '"';
-            } else {
-                $mailfname = '';
+                $mailfname = $helpdesk_sender_name;
+
+                if ($mailfname == 'queue' || $mailfname == 'user') {
+                    $mailfname = $LMS->GetQueueName($queue);
+                }
+
+                $mailfname = '"' . $mailfname . '"';
             }
 
             if ($qemail = $LMS->GetQueueEmail($queue)) {
@@ -851,11 +951,13 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
 
             $LMS->NotifyUsers(array(
                 'queue' => $queue,
+                'ticketid' => $ticket_id,
                 'mail_headers' => $headers,
                 'mail_body' => $body,
                 'sms_body' => $sms_body,
                 'contenttype' => $contenttype,
                 'attachments' => &$attachments,
+                'smtp_options' => $smtp_options,
             ));
         }
 
@@ -905,10 +1007,10 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
     }
 
     if ($postid !== false && $postid !== null) {
-        if ($rtparser_use_seen_flag) {
-            imap_setflag_full($ih, $postid, "\\Seen");
+        if (!empty($set_flags)) {
+            imap_setflag_full($ih, $postid, implode(' ', $set_flags));
         } else {
-            imap_clearflag_full($ih, $postid, "\\Seen");
+            imap_clearflag_full($ih, $postid, "\\Seen \\Flagged");
         }
 
         $postid = next($posts);

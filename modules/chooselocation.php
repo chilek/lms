@@ -273,20 +273,29 @@ if (!empty($streetid)) {
     if (isset($_GET['addresstype'])) {
         switch (intval($_GET['addresstype'])) {
             case POSTAL_ADDRESS:
-                $variable_name = 'phpui.default_postal_address_state';
+                $variable_name = 'customers.default_postal_address_state';
+                $variable_name_compat = 'phpui.default_postal_address_state';
                 break;
             case BILLING_ADDRESS:
-                $variable_name = 'phpui.default_billing_address_state';
+                $variable_name = 'customers.default_billing_address_state';
+                $variable_name_compat = 'phpui.default_billing_address_state';
                 break;
             case LOCATION_ADDRESS:
             case DEFAULT_LOCATION_ADDRESS:
-                $variable_name = 'phpui.default_location_address_state';
+                $variable_name = 'customers.default_location_address_state';
+                $variable_name_compat = 'phpui.default_location_address_state';
                 break;
         }
     }
 
     if (isset($variable_name)) {
-        $default_state = ConfigHelper::getConfig($variable_name, ConfigHelper::getConfig('phpui.default_address_state'));
+        $default_state = ConfigHelper::getConfig(
+            $variable_name,
+            ConfigHelper::getConfig(
+                $variable_name_compat,
+                ConfigHelper::getConfig('phpui.default_address_state')
+            )
+        );
     } else {
         $default_state = ConfigHelper::getConfig('phpui.default_address_state');
     }
@@ -324,6 +333,8 @@ if (!empty($data['cityid'])) {
 $data['varname']   = $_GET['name'] ?? null;
 $data['formname']  = $_GET['form'] ?? null;
 $data['boxid']     = ( !empty($_GET['boxid'])) ? $_GET['boxid'] : null;
+$data['allow_empty_streets'] = !empty($_GET['allow_empty_streets']);
+$data['allow_empty_building_numbers'] = !empty($_GET['allow_empty_building_numbers']);
 $data['countries'] = $DB->GetAll('SELECT id, name FROM countries');
 
 $SMARTY->assign('data', $data);

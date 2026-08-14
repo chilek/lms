@@ -40,6 +40,12 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
      */
     public function getVoipAccountList($order = 'login,asc', $search = null, $sqlskey = 'AND')
     {
+        if (empty($sqlskey) || strtoupper($sqlskey) != 'OR') {
+            $sqlskey = 'AND';
+        } else {
+            $sqlskey = 'OR';
+        }
+
         if ($order == '') {
             $order = 'login,asc';
         }
@@ -82,8 +88,14 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                             $searchargs[] = 'n.phone ?LIKE? ' . $this->db->Escape("%$value%");
                             break;
 
+                        case 'serviceproviderid':
+                            $searchargs[] = 'v.serviceproviderid = ' . intval($value);
+                            break;
+
                         default:
-                            $searchargs[] = $idx . ' ?LIKE? ' . $this->db->Escape("%$value%");
+                            if (preg_match('/^[0-9a-z_]+$/i', $idx)) {
+                                $searchargs[] = $idx . ' ?LIKE? ' . $this->db->Escape("%$value%");
+                            }
                     }
                 }
             }
@@ -116,7 +128,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 				LEFT JOIN location_districts ld    ON ld.id   = lb.districtid
 				LEFT JOIN location_states lst      ON lst.id  = ld.stateid '
                 . ($searchargs ?? '')
-                . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
+                . (empty($sqlord) ? '' : $sqlord . ' ' . $direction)
         );
 
         if ($voipaccountlist) {
@@ -350,7 +362,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             SYSLOG::RES_ADDRESS => empty($voipaccountdata['address_id']) ? null : $voipaccountdata['address_id'],
             'description' => isset($voipaccountdata['description']) ? Utils::removeInsecureHtml($voipaccountdata['description']) : '',
             'extid' => isset($voipaccountdata['extid']) ? strval($voipaccountdata['extid']) : null,
-            'serviceproviderid' => isset($voipaccountdata['serviceproviderid']) ? intval($voipaccountdata['serviceproviderid']) : null,
+            'serviceproviderid' => empty($voipaccountdata['serviceproviderid']) ? null : intval($voipaccountdata['serviceproviderid']),
         );
 
         $voip_account_inserted = $DB->Execute(
@@ -711,15 +723,18 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
     {
         $extId = !empty($extid) ? strval($extid) : null;
         $result = $this->db->GetAll(
-            'SELECT v.id, login, passwd, ownerid, access, flags, balance, cost_limit, extid, serviceproviderid,
+            'SELECT v.id, v.login, v.passwd, v.ownerid, v.access, v.flags, v.balance, v.cost_limit,
+                v.extid, v.serviceproviderid, sp.name AS serviceprovidername,
                 lb.name AS borough_name, ld.name AS district_name,
                 lst.name AS state_name, lc.name AS city_name,
                 (CASE WHEN ls.name2 IS NOT NULL THEN ' . $this->db->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END) AS street_name,
                 lt.name AS street_type, addr.name as location_name,
                 addr.city as location_city_name, addr.street as location_street_name,
                 addr.city_id as location_city, addr.street_id as location_street,
-                addr.house as location_house, addr.flat as location_flat, addr.location
+                addr.house as location_house, addr.flat as location_flat, addr.location,
+                (CASE WHEN addr.city_id IS NOT NULL THEN 1 ELSE 0 END) AS teryt
             FROM voipaccounts v
+                LEFT JOIN serviceproviders sp      ON sp.id = v.serviceproviderid
                 LEFT JOIN vaddresses addr          ON addr.id = v.address_id
                 LEFT JOIN location_cities lc       ON lc.id   = addr.city_id
                 LEFT JOIN location_streets ls      ON ls.id   = addr.street_id
@@ -728,9 +743,9 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 LEFT JOIN location_districts ld    ON ld.id   = lb.districtid
                 LEFT JOIN location_states lst      ON lst.id  = ld.stateid
             WHERE ownerid = ?'
-            . (empty($extid) ? '' : ' AND extid ?LIKE? ' . $this->db->Escape("%$extid%"))
-            . (empty($serviceproviderid) ? '' : ' AND serviceproviderid = ' . intval($serviceproviderid))
-            . ' ORDER BY login ASC',
+            . (empty($extid) ? '' : ' AND v.extid ?LIKE? ' . $this->db->Escape("%$extid%"))
+            . (empty($serviceproviderid) ? '' : ' AND v.serviceproviderid = ' . intval($serviceproviderid))
+            . ' ORDER BY v.login ASC',
             array($id)
         );
 
@@ -787,25 +802,47 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         // FILTERS
         $where = array();
 
-        // VOIP ACCOUNT ID
         if (!empty($params['id'])) {
             if (is_array($params['id'])) {
-                $tmp = '(' . implode(',', $params['id']) . ')';
-                $where[] = '(cdr.callervoipaccountid in ' . $tmp . ' OR cdr.calleevoipaccountid in' . $tmp . ')';
+                $id = Utils::filterIntegers($params['id']);
+            } else {
+                $id = intval($params['id']);
+            }
+        }
+
+        if (!empty($params['fvownerid'])) {
+            $ownerid = intval($params['fvownerid']);
+        }
+
+        // VOIP ACCOUNT ID
+        if (!$id) {
+            if (is_array($id)) {
+                $tmp = implode(', ', $id);
+                if (empty($ownerid)) {
+                    $where[] = '(cdr.callervoipaccountid IN (' . $tmp . ') OR cdr.calleevoipaccountid IN (' . $tmp . '))';
+                } else {
+                    $where[] = '(cdr.callervoipaccountid IN (' . $tmp . ') AND vacc.ownerid = ' . $ownerid
+                        . ' OR cdr.calleevoipaccountid IN (' . $tmp . ') AND vacc2.ownerid = ' . $ownerid . ')';
+                }
                 unset($tmp);
             } else {
-                $where[] = '(cdr.callervoipaccountid = ' . $params['id'] . ' OR cdr.calleevoipaccountid = ' . $params['id'] . ')';
+                if (empty($ownerid)) {
+                    $where[] = '(cdr.callervoipaccountid = ' . $id . ' OR cdr.calleevoipaccountid = ' . $id . ')';
+                } else {
+                    $where[] = '(cdr.callervoipaccountid = ' . $id . ' AND vacc.ownerid = ' . $ownerid
+                        . ' OR cdr.calleevoipaccountid = ' . $id . ' AND vacc2.ownerid = ' . $ownerid . ')';
+                }
             }
         }
 
         // PHONE
         if (!empty($params['phone'])) {
-            $where[] = "(cdr.caller like '" . $params['phone'] . "' OR cdr.callee like '" . $params['phone'] . "')";
+            $where[] = '(cdr.caller ?LIKE? ' . $this->db->Escape($params['phone']) . ' OR cdr.callee ?LIKE? ' . $this->db->Escape($params['phone']) . ')';
         }
 
         // OWNERID
-        if (!empty($params['fvownerid'])) {
-            $where[] = "vacc.ownerid = " . $params['fvownerid'];
+        if (!empty($ownerid) && empty($id)) {
+            $where[] = "vacc.ownerid = " . $ownerid;
         }
 
         // CALL BILLING RANGE
@@ -844,7 +881,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 
         // billing record directions
         if (isset($params['ftype']) && is_numeric($params['ftype'])) {
-            $where[] = 'cdr.type = ' . $params['ftype'];
+            $where[] = 'cdr.type = ' . intval($params['ftype']);
         }
 
         // custom SQL conditions
@@ -875,8 +912,11 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             return $DB->GetRow(
                 'SELECT
                 SUM(price) AS price,
-                SUM(totaltime) AS totaltime,
-                SUM(billedtime) AS billedtime,
+                SUM(CASE WHEN cdr.type = ? THEN totaltime ELSE 0 END) AS totaltime,
+                SUM(CASE WHEN cdr.type = ? THEN billedtime ELSE 0 END) AS billedtime,
+                SUM(CASE WHEN cdr.type = ? THEN 1 ELSE 0 END) AS smses,
+                SUM(CASE WHEN cdr.type = ? THEN 1 ELSE 0 END) AS mmses,
+                SUM(CASE WHEN cdr.type = ? THEN totaltime ELSE 0 END) AS total_transfer,
                 COUNT(*) AS cnt
                 FROM
                 voip_cdr cdr
@@ -888,7 +928,14 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 LEFT JOIN        addresses addr1 ON ca1.address_id = addr1.id
                 LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c2.id AND ca2.type = ' . BILLING_ADDRESS . '
                 LEFT JOIN        addresses addr2 ON ca2.address_id = addr2.id'
-                . $where_string
+                . $where_string,
+                array(
+                    BILLING_RECORD_TYPE_VOICE_CALL,
+                    BILLING_RECORD_TYPE_VOICE_CALL,
+                    BILLING_RECORD_TYPE_SMS,
+                    BILLING_RECORD_TYPE_MMS,
+                    BILLING_RECORD_TYPE_DATA_TRANSFER,
+                )
             );
         }
 
@@ -897,7 +944,6 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                                      totaltime, billedtime,
                                      cdr.direction as direction, cdr.type AS type, callervoipaccountid, calleevoipaccountid,
                                      cdr.status as status, vacc.ownerid as callerownerid, vacc2.ownerid as calleeownerid,
-
                                      c1.name as caller_name, c1.lastname as caller_lastname, addr1.city as caller_city,
                                      addr1.street as caller_street, addr1.house as caller_building,
                                      c2.name as callee_name, c2.lastname as callee_lastname, addr2.city as callee_city,
@@ -913,8 +959,8 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                                      LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c2.id AND ca2.type = ' . BILLING_ADDRESS . '
                                      LEFT JOIN        addresses addr2 ON ca2.address_id = addr2.id
                                      ' . $where_string . $order_string
-            . (isset($limit) ? ' LIMIT ' . $limit : '')
-            . (isset($offset) ? ' OFFSET ' . $offset : ''));
+            . (isset($limit) ? ' LIMIT ' . intval($limit) : '')
+            . (isset($offset) ? ' OFFSET ' . intval($offset) : ''));
 
         return $bill_list;
     }

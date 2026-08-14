@@ -30,7 +30,7 @@ $_LANG['Unexpected empty reply from PESEL Reservation Registry API server!'] = '
 $_LANG['Malformed reply from PESEL Reservation Registry API server!'] = 'Błędna odpowiedź serwera API Rejestru Zastrzeżeń PESEL!';
 $_LANG['telecommunication service contract'] = 'umowa na usługi telekomunikacyjne';
 
-$_LANG['Show sensible data'] = 'Pokaż dane wrażliwe';
+$_LANG['Show sensitive data'] = 'Pokaż dane wrażliwe';
 $_LANG['customer sensitive data view'] = 'podgląd danych wrażliwych klientów';
 
 $_LANG['(hidden)'] = '(ukryto)';
@@ -47,6 +47,8 @@ $_LANG['Selected service provider has assigned External ID already!'] = 'Wybrany
 
 $_LANG['Network device map refresh error!'] = 'Błąd odświeżenia mapy sieci!';
 $_LANG['Network link update failed!'] = 'Błąd uaktualnienia połączenia sieciowego!';
+$_LANG['Network link properties'] = 'Właściwości połączenia sieciowego';
+$_LANG['Node link properties'] = 'Właściwości połączenia komputera';
 
 $_LANG['Invalid longitude format!'] = 'Błędny format długości geograficznej!';
 $_LANG['Invalid latitude format!'] = 'Błędny format szerokości geograficznej!';
@@ -86,6 +88,8 @@ $_LANG['<!uke-pit>Report other duct type as'] = 'Raportuj inny typ traktu jako';
 $_LANG['<!uke-pit>Complete breakdown points of network connections'] = 'Dopełniaj punkty załamania połączeń sieciowych';
 $_LANG['<!uke-pit>explicitly assigned address'] = 'jawnie przypisany adres';
 $_LANG['<!uke-pit>Report elements outside network infrastructure'] = 'Raportuj elementy spoza infrastruktury sieciowej';
+$_LANG['<!uke-pit>Report cable lines shorter than 1 meter'] = 'Raportuj linie kablowe krótsze niż 1 metr';
+$_LANG['<!uke-pit>Verify feeding network nodes if flexibility points'] = '<!uke-pit>Weryfikuj węzły zasilające punkty elastyczności';
 
 $_LANG['underground (placed directly in the ground)'] = 'podziemny (umieszczona bezpośrednio w ziemi)';
 $_LANG['placed in cable ducts (including cable pipeline, microducts)'] = 'umieszczony w kanalizacji kablowej (w tym w rurociągu kablowym, mikrokanalizacji)';
@@ -95,8 +99,18 @@ $_LANG['overground on power, lighting or traction foundation'] = 'nadziemny na p
 $_LANG['Duct type'] = 'Typ traktu';
 $_LANG['Duct type:'] = 'Typ traktu:';
 $_LANG['Select duct type'] = 'Wybierz typ traktu';
-$_LANG['Fiber/Line count'] = 'Liczba włókien/linii';
-$_LANG['Fiber/Line count:'] = 'Liczba włókien/linii:';
+$_LANG['Fiber/line count'] = 'Liczba włókien/linii';
+$_LANG['Fiber/line count:'] = 'Liczba włókien/linii:';
+$_LANG['Used fibers/lines'] = 'Wykorzystane włókna/linie';
+$_LANG['Used fibers/lines:'] = 'Wykorzystane włókna/linie:';
+$_LANG['Available fibers/lines'] = 'Dostępne włókna/linie';
+$_LANG['Available fibers/lines:'] = 'Dostępne włókna/linie:';
+$_LANG['Used fiber/line count cannot be greater than fiber/line count!'] = 'Liczba wykorzystanych włókien/linii nie może być większa niż liczba włókien/linii!';
+$_LANG['Available fiber/line count cannot be greater than fiber/line count!'] = 'Liczba dostępnych włókien/linii nie może być większa niż liczba włókien/linii!';
+$_LANG['Fiber/line count cannot be empty when entered used fiber/line count!'] = 'Liczba włókien/linii nie może być pusta, gdy wprowadzono liczbę wykorzystanych włókien/linii!';
+$_LANG['Fiber/line count cannot be empty when entered available fiber/line count!'] = 'Liczba włókien/linii nie może być pusta, gdy wprowadzono liczbę dostępnych włókien/linii!';
+$_LANG['Sum of used and available fiber/line count cannot be greater than fiber/line count!'] = 'Suma wykorzystanych i dostępnych włókien nie może być większa niż liczba włókien/linii!';
+$_LANG['New link'] = 'Nowe połączenie';
 
 $_LANG['Detected network loop on network node <strong>\'$a\'</strong>!'] = 'Wykryto zapętlenie sieci w węźle <strong>\'$a\'</strong>!';
 $_LANG['Detected network loop on network device <strong>\'$a\'</strong>!'] = 'Wykryto zapętlenie sieci w urządzeniu <strong>\'$a\'</strong>!';
@@ -130,6 +144,7 @@ $_LANG['Enter document number. WARNING! Changing this number can be DANGEROUS! (
 $_LANG['Previous balance: $a $b'] = 'Dotychczasowe saldo: $a $b';
 $_LANG['Total to pay: $a'] = 'Razem do zapłaty: $a';
 $_LANG['Invoice value: $a'] = 'Wartość faktury: $a';
+$_LANG['Correction value: $a'] = 'Wartość korekty: $a';
 $_LANG['Invoice value: $a (to pay)'] = 'Wartość faktury: $a (do zapłaty)';
 $_LANG['Invoice value: $a (to repay)'] = 'Wartość faktury: $a (do zwrotu)';
 $_LANG['Correction value: $a (to pay)'] = 'Wartość korekty: $a (do zapłaty)';
@@ -147,7 +162,9 @@ $_LANG['Gross'] = 'Brutto';
 $_LANG['gross'] = 'brutto';
 $_LANG['Net'] = 'Netto';
 $_LANG['gross'] = 'brutto';
+$_LANG['(gross)'] = '(brutto)';
 $_LANG['net'] = 'netto';
+$_LANG['(net)'] = '(netto)';
 $_LANG['Currency'] = 'Waluta';
 $_LANG['Unitary gross value'] = 'Cena jedn. brutto';
 
@@ -183,7 +200,7 @@ $_LANG['Network address:'] = 'Adres sieci:';
 $_LANG['Service type'] = 'Typ usługi';
 $_LANG['Service types'] = 'Typy usług';
 
-$_LANG['Legal personality types'] = 'Typu osobowości prawnej';
+$_LANG['Legal personality types'] = 'Typy osobowości prawnej';
 
 $_LANG['Week days'] = 'Dni tygodnia';
 
@@ -231,6 +248,8 @@ $_LANG['JPK flags'] = 'Flagi JPK';
 $_LANG['VAT payer'] = 'płatnik VAT';
 $_LANG['if customer is not VAT payer, then his telecommunication services are reported with JPK EE flag'] = 'jeśli klient nie jest płatnikiem VAT, to świadczone mu usługi telekomunikacyjne są raportowane z flagą JPK EE';
 $_LANG['supplier'] = 'dostawca';
+$_LANG['consumer'] = 'konsument';
+$_LANG['check it if customer is consumer'] = 'Zaznacz, jeśli klient jest konsumentem';
 $_LANG['contractor'] = 'kontrahent';
 $_LANG['check it if customer is supplier for example for warehouse purpose'] = 'zaznacz jeśli klient jest dostawcą np. na potrzeby magazynu';
 
@@ -241,8 +260,9 @@ $_LANG['with discount'] = 'z rabatem';
 $_LANG['Tax Category:'] = 'GTU:';
 $_LANG['Tax Category'] = 'GTU';
 
-$_LANG['<!invoice>With receipt:'] = 'W tym faktury wyst. na podst. parag. fisk.:';
-$_LANG['<!invoice>Without receipt:'] = 'Różnica (kwoty do uwzgl. w VAT-7):';
+$_LANG['<!invoice>Invoices with receipt'] = 'Faktury z paragonem';
+$_LANG['<!invoice>Correction notes with receipt'] = 'Faktury korygujące z paragonem';
+$_LANG['<!invoice>Without receipt'] = 'Bez paragonu';
 
 $_LANG['<!invoice>receipt'] = 'paragon';
 $_LANG['<!invoice>(receipt)'] = '(paragon)';
@@ -251,6 +271,7 @@ $_LANG['<!node-location>(implicit)'] = '(niejawna)';
 
 $_LANG['<!assignment>backward'] = 'wstecz';
 $_LANG['<!assignment>Backward:'] = 'Wstecz:';
+$_LANG['<!assignment>Backward'] = 'Wstecz';
 $_LANG['Check if tariff should be accounted backward'] = 'Zaznacz, jeśli taryfa powinna być naliczana za okres wsteczny';
 
 $_LANG['(limited to first 100)'] = '(ograniczone do pierwszych 100)';
@@ -275,6 +296,10 @@ $_LANG['Phone contacts:'] = 'Telefony kontaktowe:';
 $_LANG['Sole traders'] = 'Jednoosobowe działalności gospodarcze';
 $_LANG['(undefined)'] = '(nieokreślone)';
 
+$_LANG['other<!singular>'] = 'pozostały';
+$_LANG['other<!plural>'] = 'pozostali';
+$_LANG['Other:<!summary>'] = 'Pozostali:';
+
 $_LANG['Networks don\'t have the same mask!'] = 'Sieci nie posiadają tej samej maski!';
 $_LANG['Source address $a ($b) collides with destination address $c ($d)!'] = 'Adres źródłowy $a ($b) koliduje z docelowym $c ($d)!';
 $_LANG['with compacting'] = 'z porządkowaniem';
@@ -284,7 +309,7 @@ $_LANG['split payment'] = 'podzielona płatność';
 $_LANG['Split payment:'] = 'Podzielona płatność:';
 $_LANG['(split payment)'] = '(mechanizm podzielonej płatności)';
 
-$_LANG['There is no assigned primary ticket.'] = 'Nie ma przypisanego zgłoszenia nadrzędnego.';
+$_LANG['There is no assigned primary ticket.'] = 'Brak przypisanego zgłoszenia nadrzędnego.';
 $_LANG['Are you sure, you want to unlink ticket \'$a\'?'] = 'Czy jesteś pewien, że chcesz odwiązać zgłoszenie \'$a\'?';
 $_LANG['Cannot link ticket because of related ticket loop!'] = 'Nie można powiązać zgłoszenia z powodu pętli powiązań!';
 $_LANG['Primary ticket ID has been set to $a.'] = 'ID zgłoszenia nadrzędnego zostało ustawione na $a.';
@@ -297,8 +322,8 @@ $_LANG['<!login>password'] = 'hasło';
 $_LANG['Primary ticket'] = 'Zgłoszenie nadrzędne';
 $_LANG['show only primary tickets'] = 'pokaż tylko zgłoszenia nadrzędne';
 $_LANG['Enter ID of primary ticket'] = 'Wprowadź ID zgłoszenia nadrzędnego';
-$_LANG['There is no related tickets'] = 'Brak powiązanych zgłoszeń';
-$_LANG['There is no secondary tickets'] = 'Brak zgłoszeń podrzędnych';
+$_LANG['There are no related tickets'] = 'Brak powiązanych zgłoszeń';
+$_LANG['There are no secondary tickets'] = 'Brak zgłoszeń podrzędnych';
 $_LANG['No tickets.'] = 'Brak zgłoszeń.';
 $_LANG['Related tickets'] = 'Powiązane zgłoszenia';
 $_LANG['Secondary tickets'] = 'Zgłoszenia podrzędne';
@@ -313,7 +338,9 @@ $_LANG['Transfer to verifier'] = 'Przekaż do weryfikatora';
 $_LANG['<!balance>Transfer'] = 'Przenieś';
 $_LANG['Financial operation transfer'] = 'Przeniesienie operacji finansowych';
 $_LANG['transferred to customer $a (#$b): $c'] = 'przeniesiono do klienta $a (#$b): $c';
+$_LANG['transferred to customer $a (#$b)'] = 'przeniesiono do klienta $a (#$b)';
 $_LANG['transferred from customer $a (#$b): $c'] = 'przeniesiono od klienta $a (#$b): $c';
+$_LANG['transferred from customer $a (#$b)'] = 'przeniesiono od klienta $a (#$b)';
 $_LANG['Reuse'] = 'Ponownie';
 $_LANG['Enter encryption key'] = 'Wprowadź klucz szyfrowania';
 $_LANG['Encryption key:'] = 'Klucz szyfrowania:';
@@ -379,8 +406,9 @@ $_LANG['Copy'] = 'Kopiuj';
 $_LANG['Only verifier can change this'] = 'Tylko weryfikator może to zmienić';
 $_LANG['<!rt>hours'] = 'godzin';
 $_LANG['Network node location:'] = 'Lokalizacja węzła sieciowego:';
-$_LANG['Ticket have open assigned events!'] = 'Zgłoszenie posiada otwarte zdarzenia!';
+$_LANG['Ticket has open assigned events!'] = 'Zgłoszenie posiada otwarte zdarzenia!';
 $_LANG['Comment:'] = 'Komentarz:';
+$_LANG['Comment'] = 'Komentarz';
 $_LANG['comment details'] = 'szczegóły komentarzy';
 $_LANG['Enter invoice comment'] = 'Wprowadź komentarz do faktury';
 $_LANG['<!rt>Expired'] = 'Przeterminowany';
@@ -413,7 +441,7 @@ $_LANG['documents'] = 'dokumenty';
 $_LANG['Administrative contact:'] = 'Kontakt administracyjny:';
 $_LANG['Administrative contact'] = 'Kontakt administracyjny';
 $_LANG['Check if contact should be printed on documents'] = 'Zaznacz, jeśli kontakt powinien być drukowany na dokumentach';
-$_LANG['Check if would like to print cutomerlist as sending register'] = 'Zaznacz, jeśli chcesz wydrukować listę klientów w formacie książki nadawczej';
+$_LANG['Check if would like to print customer list as sending register'] = 'Zaznacz, jeśli chcesz wydrukować listę klientów w formacie książki nadawczej';
 
 $_LANG['Are you sure you want to send messages to $a customer(s)?'] = 'Jesteś pewien, że chcesz wysłać wiadomości do $a klient(a/ów)?';
 $_LANG['You violate recipient limit ($a) trying to send messages to $b customer(s)!'] = 'Naruszasz limit odbiorców ($a) próbując wysłać wiadomości do $b klient(a/ów)!';
@@ -445,6 +473,8 @@ $_LANG['Cost limit:'] = 'Limit kosztów:';
 $_LANG['Cost limit must be positive!'] = 'Limit kosztów musi być liczbą dodatnią!';
 $_LANG['Callee:'] = 'Dokąd:';
 $_LANG['Unit size<!voip>'] = 'Rozmiar jednostki';
+$_LANG['<!voip>Price per single tariff unit'] = 'Cena jednostki taryfikacyjnej';
+$_LANG['<!voip>Size of single tariff unit'] = 'Rozmiar jednostki taryfikacyjnej';
 $_LANG['Start call:'] = 'Dokąd:';
 
 $_LANG['billing'] = 'billing';
@@ -539,6 +569,7 @@ $_LANG['Network/Address:'] = 'Sieć/Adres:';
 $_LANG['Addresses (total/busy/online):'] = 'Adresy (wszystkie/zajęte/włączone):';
 $_LANG['Address field is required!'] = 'Nazwa adresu jest wymagana!';
 $_LANG['Address/prefix:'] = 'Adres/prefiks:';
+$_LANG['Address/prefix'] = 'Adres/prefiks';
 $_LANG['Administration'] = 'Administracja';
 $_LANG['After'] = 'Po';
 $_LANG['After:'] = 'Po:';
@@ -691,6 +722,7 @@ $_LANG['Bug Tracking System'] = 'System śledzenia błędów';
 $_LANG['bytes'] = 'bajtów';
 $_LANG['Incorrect IP address'] = 'Nieprawidłowy adres IP';
 $_LANG['Incorrect snat IP address'] = 'Nieprawidłowy adres snat IP';
+$_LANG['SNAT IP'] = 'SNAT IP';
 $_LANG['Cancel'] = 'Anuluj';
 $_LANG['Can\'t change value of tax rate which was used in the past!'] = 'Nie można zmienić wartości stawki podatkowej, która była już używana w przeszłości';
 $_LANG['No prefix groups assigned to tariff rule.'] = 'Nie przypisano grup do reguły taryfikacyjnej.';
@@ -734,6 +766,14 @@ $_LANG['<!voip>incoming SMS'] = 'SMS przychodzący';
 $_LANG['<!voip>incoming MMS'] = 'MMS przychodzący';
 $_LANG['<!voip>Total time'] = 'Czas całkowity';
 $_LANG['<!voip>Billed time'] = 'Czas billingowy';
+$_LANG['<!voip>Time on page'] = 'Czas na stronie';
+$_LANG['<!voip>Time'] = 'Czas';
+$_LANG['<!voip>Transfer on page'] = 'Transfer na stronie';
+$_LANG['<!voip>Transfer'] = 'Transfer';
+$_LANG['<!voip>Number of SMS on page'] = 'Liczba SMS-ów na stronie';
+$_LANG['<!voip>Number of SMS'] = 'Liczba SMS-ów';
+$_LANG['<!voip>Number of MMS on page'] = 'Liczba MMS-ów na stronie';
+$_LANG['<!voip>Number of MMS'] = 'Liczba MMS-ów';
 
 $_LANG['ChangeLog'] = 'ChangeLog';
 $_LANG['Change password'] = 'Zmiana hasła';
@@ -785,11 +825,16 @@ $_LANG['<!netrange>Node count'] = 'Liczba komputerów';
 $_LANG['<!netrange>Customers'] = 'Klienci';
 $_LANG['<!netrange>Customer name'] = 'Nazwa klienta';
 $_LANG['<!netrange>Project'] = 'Projekt';
+$_LANG['<!netrange-foreign-entity>— none —'] = '— brak —';
+$_LANG['<!netrange-foreign-entity>— any —'] = '— dowolny —';
+$_LANG['<!netrange>Foreign entity'] = 'Podmiot obcy';
 $_LANG['<!invproject>— any —'] = '— dowolny —';
 $_LANG['<!invproject>— ignore —'] = '— ignoruj —';
 $_LANG['<!invproject>— without project —'] = '— bez projektu —';
 $_LANG['<!invproject>— none —'] = '— brak —';
+$_LANG['<!cash-source>— none —'] = '— brak —';
 $_LANG['<!customer-type>— any —'] = '— dowolny —';
+$_LANG['<!legal-personality>— any —'] = '— dowolna —';
 $_LANG['connected<!singular>'] = 'podłączony';
 $_LANG['Connected:'] = 'Podłączeni:';
 $_LANG['Connected<!status>'] = 'podłączony';
@@ -852,6 +897,7 @@ $_LANG['Node Edit: $a'] = 'Edycja komputera: $a';
 $_LANG['Customer Liabilities:'] = 'Zobowiązania klienta:';
 $_LANG['Customer Liabilities'] = 'Zobowiązania klienta';
 $_LANG['Network Device Liabilities:'] = 'Zobowiązania urządzenia sieciowego:';
+$_LANG['Network Device Liabilities'] = 'Zobowiązania urządzenia sieciowego';
 $_LANG['Node Liabilities:'] = 'Zobowiązania komputera:';
 $_LANG['Node Liabilities'] = 'Zobowiązania komputera';
 $_LANG['customer name'] = 'nazwisko klienta';
@@ -859,8 +905,10 @@ $_LANG['Customer name'] = 'Nazwisko klienta';
 $_LANG['Customer No.: $a'] = 'Numer klienta: $a';
 $_LANG['Customer No.:'] = 'Numer klienta:';
 $_LANG['Customer Nodes ($a):'] = 'Komputery klienta ($a):';
+$_LANG['Customer Nodes ($a)'] = 'Komputery klienta ($a)';
 $_LANG['Customer Nodes'] = 'Komputery klienta';
 $_LANG['Customer Networks ($a):'] = 'Sieci klienta ($a):';
+$_LANG['Customer Networks ($a)'] = 'Sieci klienta ($a)';
 $_LANG['Customer Networks'] = 'Sieci klienta';
 $_LANG['Customer not selected!'] = 'Nie wybrano klienta!';
 $_LANG['Customer Remove: $a'] = 'Usunięcie klienta: $a';
@@ -877,6 +925,7 @@ $_LANG['Customers List:'] = 'Lista klientów:';
 $_LANG['Customers List $a$b'] = 'Lista klientów $a$b';
 $_LANG['Customers Management'] = 'Zarządzanie klientami';
 $_LANG['customers management'] = 'zarządzanie klientami';
+$_LANG['customer view'] = 'podgląd klientów';
 $_LANG['Customers Without Nodes List $a$b'] = 'Lista klientów bez komputerów $a$b';
 $_LANG['GIT Repository'] = 'Repozytorium GIT';
 $_LANG['Daemon'] = 'Demon';
@@ -895,6 +944,7 @@ $_LANG['Data older than one month will be combined into one hour'] = 'Dane stars
 $_LANG['Data precision level:'] = 'Poziom dokładności danych:';
 $_LANG['Date'] = 'Data';
 $_LANG['Date:'] = 'Data:';
+$_LANG['Date selection'] = 'Wybór daty';
 $_LANG['date (YYYY/MM/DD)'] = 'data (RRRR/MM/DD)';
 $_LANG['Validity period'] = 'Okres obowiązywania';
 $_LANG['Day:'] = 'Dzień:';
@@ -914,11 +964,11 @@ $_LANG['default<!paytime>'] = 'domyślny';
 $_LANG['Enter default price'] = 'Podaj domyślną cenę';
 $_LANG['Enter default number of units'] = 'Podaj domyślną liczbę jednostek';
 $_LANG['Enter default size of units'] = 'Podaj domyślny rozmiar jednostek';
-$_LANG['Price for one unit'] = 'Cena za jedną jednostkę taryfikacyjną';
 $_LANG['Number of units at a promotion price'] = 'Liczba jednostek w cenie promocyjnej';
 $_LANG['Unit size in seconds'] = 'Rozmiar jednostki w sekundach';
 $_LANG['Delete'] = 'Usuń';
 $_LANG['Delete permanently'] = 'Usuń trwale';
+$_LANG['<!customersearch>Permanent deletion'] = 'Usunięcie trwałe';
 $_LANG['delete'] = 'usuń';
 $_LANG['Delete connection'] = 'Usuń połączenie';
 $_LANG['Delete customer\'s liability'] = 'Usuń zobowiązanie klienta';
@@ -948,6 +998,7 @@ $_LANG['Device name is required!'] = 'Nazwa urządzenia jest wymagana!';
 $_LANG['IP addresses ($a):'] = 'Adresy IP ($a):';
 $_LANG['Device has been deleted.'] = 'Urządzenie zostało usunięte.';
 $_LANG['DHCP range:'] = 'Zakres DHCP:';
+$_LANG['DHCP range'] = 'Zakres DHCP';
 $_LANG['Disable'] = 'Wyłącz';
 $_LANG['disabled'] = 'wyłączony';
 $_LANG['Disabled<!plural>:'] = 'Niedostępne<!plural>:';
@@ -966,8 +1017,12 @@ $_LANG['List of Disconnected Customers $a$b'] = 'Lista klientów odłączonych $
 $_LANG['List of Disconnected Nodes'] = 'Lista odłączonych komputerów';
 $_LANG['Discount:'] = 'Rabat:';
 $_LANG['Discount'] = 'Rabat';
+$_LANG['Discount value'] = 'Wartość rabatu';
+$_LANG['Discount type'] = 'Typ rabatu';
+$_LANG['Discounted price'] = 'Cena po rabacie';
 $_LANG['Display customers matching the following criteria:'] = 'Wyświetl klientów spełniających następujące kryteria:';
 $_LANG['Network map display'] = 'Wyświetla mapę sieci ';
+$_LANG['network map edit'] = 'edycja mapy sieci';
 $_LANG['Network ranges'] = 'Zasięgi sieciowe';
 $_LANG['Network Ranges'] = 'Zasięgi sieciowe';
 $_LANG['Display this form again, when this account is saved'] = 'Po utworzeniu konta wyświetl ten formularz ponownie';
@@ -981,11 +1036,13 @@ $_LANG['Display this form again, when this payment is saved'] = 'Po dodaniu pła
 $_LANG['Display this form again, when this group is saved'] = 'Po dodaniu grupy wyświetl ten formularz ponownie';
 $_LANG['Display tickets matching the following criteria'] = 'Wyświetl zgłoszenia pasujące do następujących kryteriów';
 $_LANG['DNS servers:'] = 'Serwery DNS:';
+$_LANG['DNS servers'] = 'Serwery DNS';
 $_LANG['Document'] = 'Dokument';
 $_LANG['Document $a'] = 'Dokument $a';
 $_LANG['Documentation'] = 'Dokumentacja';
 $_LANG['Document with specified number exists!'] = 'Dokument z podanym numerem już istnieje!';
 $_LANG['Domain:'] = 'Domena:';
+$_LANG['Domain'] = 'Domena';
 $_LANG['domain alias'] = 'alias domenowy';
 $_LANG['Domain Edit: $a'] = 'Edycja domeny: $a';
 $_LANG['Domain name is required!'] = 'Nazwa domeny jest wymagana!';
@@ -993,6 +1050,7 @@ $_LANG['Domains'] = 'Domeny';
 $_LANG['Domains List'] = 'Lista domen';
 $_LANG['Domain with specified name exists!'] = 'Domena o podanej nazwie już istnieje!';
 $_LANG['Downceil:'] = 'Downceil:';
+$_LANG['Downceil'] = 'Downceil';
 $_LANG['Download'] = 'Download';
 $_LANG['Download ceil:'] = 'Download ceil:';
 $_LANG['Download rate:'] = 'Download rate:';
@@ -1029,6 +1087,7 @@ $_LANG['Enter account quota in MB'] = 'Wprowadź limit dla konta w MB';
 $_LANG['Enter account name'] = 'Wprowadź nazwę konta';
 $_LANG['Enter additional information'] = 'Wprowadź dodatkowe informacje';
 $_LANG['Enter additional information (optional)'] = 'Wprowadź dodatkowe informacje (opcjonalnie)';
+$_LANG['Enter additional information (optional)<br>Text entered here can be visible on customer documents such as contracts, annexes, etc.'] = 'Wprowadź dodatkowe informacje (opcjonalnie)<br>Wprowadzony tutaj tekst może być widoczny na dokumentach klienta, takich jak umowy, aneksy, itd.';
 $_LANG['Enter alias name'] = 'Wprowadź alias';
 $_LANG['Enter beginning of DHCP range (optional)'] = 'Wprowadź początek zakresu DHCP (opcjonalnie)';
 $_LANG['Enter/change your registration info'] = 'Wprowadź/zmień swoje dane rejestracyjne';
@@ -1180,7 +1239,7 @@ $_LANG['Enter WINS server address (optional)'] = 'Wprowadź adres serwera WINS (
 $_LANG['entries'] = 'wpisów';
 $_LANG['Error:'] = 'Błąd:';
 $_LANG['Error!'] = 'Błąd!';
-$_LANG['Occoured problem'] = 'Wystąpił problem';
+$_LANG['Problem occurred'] = 'Wystąpił problem';
 $_LANG['Saved'] = 'Zapisano';
 $_LANG['Error: Unknown reload type: "$a"!'] = 'Błąd: Nieznany typ przeładowania: "$a"!';
 $_LANG['even'] = 'parzyste';
@@ -1193,6 +1252,8 @@ $_LANG['Event title is too long!'] = 'Tytuł zdarzenia jest za długi!';
 $_LANG['Holiday:'] = 'Dzień wolny od pracy:';
 $_LANG['service<!event>'] = 'serwis';
 $_LANG['technical verification'] = 'weryfikacja techniczna';
+$_LANG['service implementation'] = 'realizacja usługi';
+$_LANG['technical problem'] = 'problem techniczny';
 $_LANG['<!netrange>Services'] = 'Usługi';
 $_LANG['<!netrange>Services:'] = 'Usługi:';
 $_LANG['installation'] = 'instalacja';
@@ -1200,7 +1261,8 @@ $_LANG['meeting'] = 'spotkanie';
 $_LANG['exclude group'] = 'wyłącz grupę';
 $_LANG['Expiration date:'] = 'Data ważności:';
 $_LANG['expired'] = 'wygasł';
-$_LANG['Due balance'] = 'Saldo wymagalne';
+$_LANG['<!assignments>expired'] = 'przeterminowane';
+$_LANG['Balance excluding current receivables'] = 'Saldo bez należności nieprzeterminowanych';
 $_LANG['<!rt>expired'] = 'przedawniony';
 $_LANG['expired<!guarantee>'] = 'wygasła';
 $_LANG['Exposed By'] = 'Wystawił';
@@ -1252,6 +1314,7 @@ $_LANG['From who:'] = 'Od kogo:';
 $_LANG['ftp'] = 'ftp';
 $_LANG['full access'] = 'pełny dostęp';
 $_LANG['Gateway:'] = 'Brama:';
+$_LANG['Gateway'] = 'Brama';
 $_LANG['Generate'] = 'Wygeneruj';
 $_LANG['Generate invoice'] = 'Wygeneruj fakturę';
 $_LANG['Generate PIN'] = 'Wygeneruj PIN';
@@ -1302,6 +1365,7 @@ $_LANG['with receipt<!plural>'] = 'z paragonem';
 $_LANG['High'] = 'Wysoki';
 $_LANG['Homedir:'] = 'Katalog domowy:';
 $_LANG['Host:'] = 'Host:';
+$_LANG['Host'] = 'Host';
 $_LANG['Host Edit: $a'] = 'Edycja hosta: $a';
 $_LANG['Hostname:'] = 'Nazwa hosta:';
 $_LANG['Host name is required!'] = 'Nazwa hosta jest wymagana!';
@@ -1390,6 +1454,7 @@ $_LANG['Interested:'] = 'Zainteresowani:';
 $_LANG['Interested Customers List $a'] = 'Lista zainteresowanych klientów $a';
 $_LANG['Interested<!status>'] = 'zainteresowany';
 $_LANG['Interface:'] = 'Interfejs:';
+$_LANG['Interface'] = 'Interfejs';
 $_LANG['Invalid chars in group name!'] = 'Niedozwolone znaki w nazwie grupy!';
 $_LANG['Invalid date format!'] = 'Nieprawidłowy format daty!';
 $_LANG['Invalid date format: $a.\\nFormat accepted is \'YYYY/MM/DD hh:mm\'.'] = 'Błędny format daty: $a.\\nDozwolony format to  \'YYYY/MM/DD gg:mm\'.';
@@ -1429,6 +1494,7 @@ $_LANG['IP Address:'] = 'Adres IP:';
 $_LANG['IP Address Pools Management'] = 'Zarządzanie sieciami IP';
 $_LANG['IP addresses instead of nodes names'] = 'Adresy IP zamiast nazw komputerów';
 $_LANG['IP addresses status:'] = 'Wykorzystanie adresów IP:';
+$_LANG['IP addresses status'] = 'Wykorzystanie adresów IP';
 $_LANG['IP address for DHCP range end does not match with network address!'] = 'Adres IP dla końca zakresu DHCP nie pokrywa się z adresem sieci!';
 $_LANG['IP address for DHCP range start does not match with network address!'] = 'Adres IP dla początku zakresu DHCP nie pokrywają się z adresami sieci!';
 $_LANG['IP address is in use!'] = 'Adres IP jest już zajęty!';
@@ -1446,6 +1512,7 @@ $_LANG['Last:'] = 'Ostatni:';
 $_LANG['last $a transactions'] = 'ostatnie $a transakcji';
 $_LANG['Last 30 Days'] = 'Ostatnie 30 dni';
 $_LANG['Last date of invoice settlement is $a. If sure, you want to write invoice with date of $b, then click "Submit" again.'] = 'Ostatnia data wystawienia faktury to $a. Jeżeli jesteś pewien, że chcesz zapisać fakturę z datą $b, to ponownie kliknij "Zapisz".';
+$_LANG['Last date of document settlement is $a. If sure, you want to write document with date of $b, then click "Submit" again.'] = 'Ostatnia data wystawienia dokumentu to $a. Jeżeli jesteś pewien, że chcesz zapisać dokument z datą $b, to ponownie kliknij "Zapisz".';
 $_LANG['Last Day'] = 'Ostatni dzień';
 $_LANG['Last day stats for all networks'] = 'Statystyki z ostatniego dnia dla wszystkich sieci';
 $_LANG['Last date of receipt settlement is $a. If sure, you want to write receipt with date of $b, then click "Submit" again.'] = 'Ostatnia data wystawienia pokwitowania to $a. Jeśli na pewno chcesz wystawić dowód wpłaty z datą $b kliknij ponownie "Zapisz".';
@@ -1460,6 +1527,7 @@ $_LANG['Last month stats for all networks'] = 'Statystyki z ostatniego miesiąca
 $_LANG['last online:'] = 'ostatnio włączony:';
 $_LANG['last online'] = 'ostatnio włączony';
 $_LANG['Last online:'] = 'Ostatnio włączony:';
+$_LANG['Last online'] = 'Ostatnio włączony';
 $_LANG['Last online: $a'] = 'Ostatnio włączony: $a';
 $_LANG['Last inspection:'] = 'Czas ostatniego przeglądu:';
 $_LANG['Last inspection'] = 'Czas ostatniego przeglądu';
@@ -1516,6 +1584,7 @@ $_LANG['Location:'] = 'Lokalizacja:';
 $_LANG['Location'] = 'Lokalizacja';
 $_LANG['Login'] = 'Zaloguj się';
 $_LANG['Login:'] = 'Login:';
+$_LANG['<!voipaccount>Login'] = 'Login';
 $_LANG['<!radius>Login'] = 'Login';
 $_LANG['<!node>Login'] = 'Login';
 $_LANG['Login<!second>'] = 'Login';
@@ -1527,6 +1596,7 @@ $_LANG['low'] = 'niski';
 $_LANG['MAC address'] = 'Adres MAC';
 $_LANG['MAC address:'] = 'Adres MAC:';
 $_LANG['MAC address is in use!'] = 'Adres MAC jest już używany!';
+$_LANG['last MAC address'] = 'ostatni adres MAC';
 $_LANG['used'] = 'używany';
 $_LANG['Address is used by the following resources:'] = 'Adres jest używany przez poniższe zasoby:';
 $_LANG['assigned to <strong>$a</strong> nodes'] = 'przypisany do <strong>$a</strong> komputerów';
@@ -1555,7 +1625,9 @@ $_LANG['Notices:'] = 'Powiadomienia:';
 $_LANG['notice disabled'] = 'powiadomienie wyłączone';
 $_LANG['notice enabled'] = 'powiadomienie włączone';
 $_LANG['Not exists'] = 'Nie znaleziono';
-$_LANG['not sent to email'] = 'niewysłane e-mailem';
+$_LANG['not sent'] = 'niewysłane';
+$_LANG['Send to email'] = 'Wysyłka e-mailem';
+$_LANG['without consent'] = 'bez zgody';
 $_LANG['Instant messengers'] = 'Komunikatory';
 $_LANG['Messages'] = 'Wiadomości';
 $_LANG['Message subject is required!'] = 'Temat wiadomości jest wymagany!';
@@ -1578,6 +1650,7 @@ $_LANG['First/last name:'] = 'Imię i nazwisko:';
 $_LANG['Sender First, Last name (name)'] = 'Imię i nazwisko nadawcy (nazwa)';
 $_LANG['Last and first name'] = 'Nazwisko i imię';
 $_LANG['Name contains forbidden characters!'] = 'Nazwisko zawiera niepoprawne znaki!';
+$_LANG['<!node>Name contains forbidden characters!'] = 'Nazwa zawiera niepoprawne znaki!';
 $_LANG['Name of messages sender or predefined variables: "queue" - queue name, "user" - logged user name. Default: none.'] = 'Nazwa nadawcy wiadomości lub jedna z predefiniowanych wartości: "queue" - nazwa kolejki, "user" - zalogowany użytkownik. Domyślnie: pusta.';
 $_LANG['Name of product, commodity or service'] = 'Nazwa produktu, towaru lub usługi';
 $_LANG['Name of Product, Commodity or Service'] = 'Nazwa produktu, towaru lub usługi';
@@ -1617,12 +1690,14 @@ $_LANG['Network:'] = 'Sieć:';
 $_LANG['Network address count'] = 'Liczba adresów w sieci';
 $_LANG['Network address/mask:'] = 'Adres sieci/maska:';
 $_LANG['Network address:'] = 'Adres sieci:';
+$_LANG['Network address'] = 'Adres sieci';
 $_LANG['Network Balance Sheet'] = 'Historia operacji finansowych';
 $_LANG['Network Devices'] = 'Urządzenia sieciowe';
 $_LANG['Network Devices:'] = 'Urządzenia sieciowe:';
 $_LANG['Network Device'] = 'Urządzenie sieciowe';
 $_LANG['Assigned Network Device:'] = 'Przypisane urządzenie sieciowe:';
 $_LANG['Network Devices ($a):'] = 'Urządzenia sieciowe ($a):';
+$_LANG['Network Devices ($a)'] = 'Urządzenia sieciowe ($a)';
 $_LANG['Network devices list'] = 'Lista urządzeń sieciowych';
 $_LANG['Network Edit: $a'] = 'Edycja sieci: $a';
 $_LANG['Network usage'] = 'Wykorzystanie sieci';
@@ -1635,6 +1710,7 @@ $_LANG['Network name already exists!'] = 'Nazwa sieci jest obecnie używana!';
 $_LANG['Host/network/prefix (interface):'] = 'Host/sieć/prefiks (interfejs):';
 $_LANG['networks and devices management'] = 'zarządzanie sieciami i urządzeniami';
 $_LANG['Network size:'] = 'Rozmiar sieci:';
+$_LANG['Network size'] = 'Rozmiar sieci';
 $_LANG['Network Statistics'] = 'Statystyki sieci';
 $_LANG['Network Statistics Compacting'] = 'Kompaktowanie statystyk sieci';
 $_LANG['new'] = 'nowy';
@@ -1734,6 +1810,10 @@ $_LANG['Notes:'] = 'Notatki:';
 $_LANG['Notes'] = 'Notatki';
 $_LANG['No such transactions found in database.'] = 'Nie znaleziono żadnych transakcji w bazie danych.';
 $_LANG['Notice (+R)'] = 'Powiadomienia (+O)';
+$_LANG['SMS Notice (+R)'] = 'Powiadomienia SMS (+O)';
+$_LANG['E-mail Notice (+R)'] = 'Powiadomienia e-mail (+O)';
+$_LANG['Watcher SMS Notice'] = 'Powiadomienia SMS obserwatorów';
+$_LANG['Watcher E-mail Notice'] = 'Powiadomienia e-mail obserwatorów';
 $_LANG['not resolved'] = 'nierozwiązane';
 $_LANG['Show resolved'] = 'Pokaż rozwiązane';
 $_LANG['Hide resolved'] = 'Ukryj rozwiązane';
@@ -1750,6 +1830,9 @@ $_LANG['Number of units'] = 'Liczba jednostek';
 $_LANG['odd'] = 'nieparzyste';
 $_LANG['Off'] = 'Wyłączony';
 $_LANG['online'] = 'on-line';
+$_LANG['<!node>online'] = 'aktywne';
+$_LANG['<!node>offline'] = 'nieaktywne';
+$_LANG['<!node>unknown'] = 'nieznany';
 $_LANG['Online:'] = 'Włączone:';
 $_LANG['Online Documentation'] = 'Dokumentacja online';
 $_LANG['Only \'new\' ticket can be owned by no one!'] = 'Tylko nowe zgłoszenia mogą być pozbawione właściciela!';
@@ -1790,6 +1873,7 @@ $_LANG['Password Change for User $a'] = 'Zmiana hasła dla użytkownika $a';
 $_LANG['User $a has been set as verifier to ticket.'] = 'Użytkownik $a został przypisany jako weryfikator zgłoszenia.';
 $_LANG['Verifier has been removed from ticket.'] = 'Weryfikator został usunięty ze zgłoszenia.';
 $_LANG['Password is too long (max. 32 characters)!'] = 'Hasło jest za długie (maks. 32 znaki)!';
+$_LANG['Password is too long (max. $a characters)!'] = 'Hasło jest za długie (maks. $a znaki)!';
 $_LANG['Password is required!'] = 'Wymagane wpisanie hasła!';
 $_LANG['Password is empty!'] = 'Wpisano puste hasło!';
 $_LANG['Login is too long (max. 32 characters)!'] = 'Login jest za długi (maks. 32 znaki)!';
@@ -1817,7 +1901,13 @@ $_LANG['Allow nodes addition with duplicated MAC address (not checking that some
 $_LANG['Percentage of suspended liabilities. Default: 0'] = 'Wartość procentowa zawieszonych zobowiązań. Domyślnie: 0';
 $_LANG['Permissions:'] = 'Prawa:';
 $_LANG['Permissions'] = 'Uprawnienia';
+$_LANG['<!promotion-assignment>Grant'] = 'Nadaj';
+$_LANG['<!promotion-assignment>Revoke'] = 'Odbierz';
+$_LANG['<!promotion-assignment>permissions'] = 'uprawnienia';
+$_LANG['<!promotion-assignment>No users selected!'] = 'Nie wybrano użytkowników!';
+$_LANG['<!promotion-assignment>No tariffs selected!'] = 'Nie wybrano taryf!';
 $_LANG['Phone'] = 'Telefon';
+$_LANG['Service Phone'] = 'Telefon serwisowy';
 $_LANG['Phone contact options'] = 'Opcje kontaktów telefonicznych';
 $_LANG['Phone:'] = 'Telefon:';
 $_LANG['Pool numbers'] = 'Pule numeracyjne';
@@ -1865,6 +1955,7 @@ $_LANG['Purchase date cannot be empty when guarantee period is set!'] = 'Data za
 $_LANG['Purchaser:'] = 'Nabywca:';
 $_LANG['Put in order'] = 'Uporządkuj';
 $_LANG['Qualification operator:'] = 'Operator warunkowy';
+$_LANG['Qualification operator'] = 'Operator warunkowy';
 $_LANG['Qualify to use current day of month for payment day. Default: 0 (off).'] = 'Wybieraj aktualny dzień miesiąca jako dzień tworzenia nowych płatności. Domyślnie: 0 (Wyłączone).';
 $_LANG['Qualify the day of month for payment day. Default: 0 (undefined).'] = 'Domyślny dzień miesiąca przypisywany nowym płatnościom miesięcznym. Domyślnie: 0 (niezdefiniowany).';
 $_LANG['quarterly'] = 'kwartalnie';
@@ -1894,7 +1985,7 @@ $_LANG['Call recording'] = 'Nagrywanie rozmów';
 $_LANG['Readdressing network $a'] = 'Przeadresowanie sieci $a';
 $_LANG['Readdressing Network $a'] = 'Przeadresowanie sieci $a';
 $_LANG['read only (excluding helpdesk)'] = 'tylko do odczytu (bez Helpdesku)';
-$_LANG['Reassign to network:'] = 'Przenieś do sieci:';
+$_LANG['Reassign to network'] = 'Przenieś do sieci';
 $_LANG['Receipt'] = 'Pokwitowanie';
 $_LANG['receipt/cash'] = 'paragon/gotówka';
 $_LANG['receipt/transfer'] = 'paragon/przelew';
@@ -1944,6 +2035,7 @@ $_LANG['Scan'] = 'Skanuj';
 $_LANG['Search'] = 'Szukaj';
 $_LANG['Searching of Events in Timetable'] = 'Szukanie wpisów w kalendarzu';
 $_LANG['Section:'] = 'Sekcja:';
+$_LANG['Section'] = 'Sekcja';
 $_LANG['Section name contains forbidden characters!'] = 'Nazwa sekcji zawiera zabronione znaki!';
 $_LANG['Select'] = 'Wybierz';
 $_LANG['select'] = 'wybierz';
@@ -1975,7 +2067,7 @@ $_LANG['— select domain —'] = '— wybierz domenę —';
 $_LANG['Select device guarantee period (optional)'] = 'Wybierz okres ważności gwarancji urządzenia (opcjonalnie)';
 $_LANG['Select domain name'] = 'Wybierz nazwę domeny';
 $_LANG['Selected:'] = 'Wybrane:';
-$_LANG['Related groups:'] = 'Powiązane grupy:';
+$_LANG['<!voip>Prefix groups'] = 'Grupy prefiksów';
 $_LANG['Selected customer is not connected!'] = 'Wybrany klient nie jest podłączony!';
 $_LANG['Select event\'s status'] = 'Wybierz status wpisu';
 $_LANG['— select filter category —'] = '— wybierz kategorię filtrowania —';
@@ -2021,6 +2113,7 @@ $_LANG['Select time period to account liability'] = 'Wybierz okres dla naliczani
 $_LANG['Search groups'] = 'Wyszukaj grupę';
 $_LANG['Select type of operation'] = 'Wybierz typ operacji';
 $_LANG['— select user —'] = '— wybierz użytkownika —';
+$_LANG['— select users —'] = '— wybierz użytkowników —';
 $_LANG['select user'] = 'wybierz użytkownika';
 $_LANG['Select user'] = 'Wybierz użytkownika';
 $_LANG['Select user (optional)'] = 'Wybierz użytkownika (opcjonalnie)';
@@ -2037,6 +2130,8 @@ $_LANG['Sending messages to:'] = 'Wysyłanie wiadomości do:';
 $_LANG['Send'] = 'Wyślij';
 $_LANG['Send registration info'] = 'Wyślij dane rejestracyjne';
 $_LANG['separate document'] = 'oddzielny dokument';
+$_LANG['Document separation group'] = 'Grupa separowania dokumentów';
+$_LANG['separate document position'] = 'oddzielna pozycja w dokumencie';
 $_LANG['Serial number:'] = 'Numer seryjny:';
 $_LANG['Serial number'] = 'Numer seryjny';
 $_LANG['Service:'] = 'Usługa:';
@@ -2054,7 +2149,7 @@ $_LANG['Size:'] = 'Rozmiar:';
 $_LANG['Quantity of numbers'] = 'Liczba numerów';
 $_LANG['Slovakia'] = 'Słowacja';
 $_LANG['Czech'] = 'Czechy';
-$_LANG['Small font text appearing in selected (in template) place of the invoice, e.g. Our Bank: SNETISP, 828823917293871928371\nPhone number 555 123 123'] = 'Tekst napisany małą czcionką pojawiająca się w wybranym (w szablonie) miejscu na fakturze. np. Nasz bank: SNETISP, 828823917293871928371\nNumer telefonu 555 123 123';
+$_LANG['Small font text appearing in selected (in template) place of the invoice, e.g. Our Bank: SNETISP, 828823917293871928371\nPhone number 555 123 123'] = 'Tekst napisany małą czcionką pojawiający się w wybranym (w szablonie) miejscu na fakturze. np. Nasz bank: SNETISP, 828823917293871928371\nNumer telefonu 555 123 123';
 $_LANG['Smarty version:'] = 'Wersja Smarty:';
 $_LANG['SMTP settings.'] = 'Ustawienia SMTP.';
 $_LANG['Software version:'] = 'Wersja oprogramowania:';
@@ -2122,8 +2217,11 @@ $_LANG['Tax value'] = 'Kwota PTU';
 $_LANG['Tax Value'] = 'Kwota PTU';
 $_LANG['TEN'] = 'NIP';
 $_LANG['Missed required TEN identifier!'] = 'Brak identyfikatora NIP!';
+$_LANG['Missed recommended TEN identifier!'] = 'Brak zalecanego identyfikatora NIP!';
 $_LANG['Missed required SSN identifier!'] = 'Brak identyfikatora PESEL!';
+$_LANG['Missed recommended SSN identifier!'] = 'Brak zalecanego identyfikatora PESEL!';
 $_LANG['Missed required Identity Card Number!'] = 'Brak identyfikatora dokumentu tożsamości!';
+$_LANG['Missed recommended Identity Card Number!'] = 'Brak zalecanego identyfikatora dokumentu tożsamości!';
 $_LANG['TEN $a'] = 'NIP $a';
 $_LANG['TEN:'] = 'NIP:';
 $_LANG['TEN: $a'] = 'NIP: $a';
@@ -2191,6 +2289,7 @@ $_LANG['Total Invoiceless Income ($a to $b)'] = 'Łączny przychód bezrachunkow
 $_LANG['Total Tax'] = 'Suma PTU';
 $_LANG['Type:'] = 'Typ:';
 $_LANG['Scope:'] = 'Zasięg:';
+$_LANG['Scope'] = 'Zasięg';
 $_LANG['Type/Quota:'] = 'Typ/Limit:';
 $_LANG['Type (sh/mail/www/ftp/sql/cloud):'] = 'Typ (sh/mail/www/ftp/sql/chmura):';
 $_LANG['configuration'] = 'konfiguracja interfejsu użytkownika';
@@ -2202,6 +2301,7 @@ $_LANG['Unknown option. No description.'] = 'Nieznana opcja. Brak opisu.';
 $_LANG['unknown OS ($a)'] = 'nieznany OS ($a)';
 $_LANG['Unresolved:'] = 'Nierozwiązane:';
 $_LANG['Upceil:'] = 'Upceil:';
+$_LANG['Upceil'] = 'Upceil';
 $_LANG['Upload'] = 'Upload';
 $_LANG['Upload ceil:'] = 'Upload ceil:';
 $_LANG['Upload rate:'] = 'Upload rate:';
@@ -2213,8 +2313,9 @@ $_LANG['URL:'] = 'Adres URL:';
 $_LANG['URL'] = 'Adres URL';
 $_LANG['URL of your homepage:'] = 'Adres twojej strony domowej:';
 $_LANG['USA'] = 'USA';
-$_LANG['Enter message body.<br><br>'
-    + 'Supported substitutions/variables:<br>'
+$_LANG['Enter message subject.'] = 'Wprowadź temat wiadomości.';
+$_LANG['Enter message body.'] = 'Wprowadź treść wiadomości.';
+$_LANG['Supported substitutions/variables:<br>'
     + '<strong>%customer</strong> - customer first name and last name or name,<br>'
     + '<strong>%balance</strong>, <strong>%totalsaldo</strong>, <strong>%totalB</strong> - customer total balance,<br>'
     + '<strong>%commented_balance</strong> - customer total balance as absolute value with text comment explaining customer billing status,<br>'
@@ -2231,12 +2332,12 @@ $_LANG['Enter message body.<br><br>'
     + '<strong>%date-d</strong> - current day.<br><br>'
     + 'Substitution/variables supported while customer node is selected:<br>'
     + '<strong>%node_name</strong> - customer node name,<br>'
+    + '<strong>%node_login</strong> - customer node login (node name is used when login is empty),<br>'
     + '<strong>%node_password</strong> - customer node password,<br>'
     + '<strong>%node_ip</strong> - customer node ip address,<br>'
     + '<strong>%node_ip_pub</strong> - customer node public ip address,<br>'
     + '<strong>%node_mac</strong> - customer node mac addresses.<br>'] =
-    'Wprowadź treść wiadomości.<br><br>'
-    + 'Obsługiwane podstawienia/zmienne:<br>'
+    'Obsługiwane podstawienia/zmienne:<br>'
     + '<strong>%customer</strong> - imię i nazwisko lub nazwa klienta,<br>'
     + '<strong>%balance</strong>, <strong>%totalsaldo</strong>, <strong>%totalB</strong> - całkowite saldo klienta,<br>'
     + '<strong>%commented_balance</strong> - całkowite saldo klienta jako wartość bezwzględna z komentarzem tekstowym wyjaśniającym stan rozliczeń klienta,<br>'
@@ -2253,6 +2354,7 @@ $_LANG['Enter message body.<br><br>'
     + '<strong>%date-d</strong> - bieżący dzień.<br><br>'
     + 'Obsługiwane podstawienia/zmienne gdy wybrano komputer kliencki:<br>'
     + '<strong>%node_name</strong> - nazwa komputera klienckiego,<br>'
+    + '<strong>%node_login</strong> - login komputera klienckiego (użycie nazwy komputera, gdy login jest pusty),<br>'
     + '<strong>%node_password</strong> - hasło komputera klienckiego,<br>'
     + '<strong>%node_ip</strong> - adres IP komputera klienckiego,<br>'
     + '<strong>%node_ip_pub</strong> - publiczny adres IP komputera klienckiego,<br>'
@@ -2299,8 +2401,9 @@ $_LANG['Template for user sms notice relevant to customer info in ticket in Help
 $_LANG['When enabled, system will sent notification to all users with rights for current queue after new ticket creation. Default: disabled.'] = 'Gdy włączona, system wyśle informacje o dodaniu nowego zgłoszenia do wszystkich użytkowników, którzy mają prawa do konkretnej kolejki. Domyślnie: wyłączona.';
 $_LANG['Why you should register? If you register, we will know who\'s using LMS. Also, you will be listed (your company name and url) on LMS website. It\'s free. We don\'t gather any e-mails, snails or other info. We just keep your company name, url, unique installation id and your LMS version (but only for statistical purposes - we can\'t track your version by your name or installation id). In future, we plan to make available something like \'Registered LMS site\'. Summary: we will be happy if you fill form below and send it to us.'] = 'Dlaczego powinieneś się zarejestrować? Jeśli to zrobisz, będziemy wiedzieć kto używa LMS-a. Twoje dane (nazwa firmy i URL) znajdą się na stronie LMS-a. Rejestracja jest darmowa. Nie wysyłamy żadnych reklam, e-maili, ani innych informacji. Przechowujemy tylko nazwę, url, unikalny identyfikator instalacji i wersję LMS-a (wyłącznie do celów statystycznych - nie można rozpoznać wersji na podstawie nazwy lub identyfikatora instalacji). W przyszłości planujemy uruchomienie czegoś w stylu \'Strona Zarejestrowanych Użytkowników LMS-a\'. Podsumowanie: Będziemy wdzięczni, jeśli wypełnisz poniższy formularz i prześlesz do nas.';
 $_LANG['WINS server:'] = 'Serwer WINS:';
+$_LANG['WINS server'] = 'Serwer WINS';
 $_LANG['wireless'] = 'bezprzewodowe';
-$_LANG['with all nodes not connected to network device'] = 'z wszystkimi komputerami niepodłączonymi do urządzenia sieciowego';
+$_LANG['with all nodes not connected to network device'] = 'ze wszystkimi komputerami niepodłączonymi do urządzenia sieciowego';
 $_LANG['With receipt:'] = 'W tym faktury wyst. na podst. parag. fisk.:';
 $_LANG['with invoice'] = 'z fakturą';
 $_LANG['Without receipt:'] = 'Różnica (kwoty do uwzgl. w VAT-7):';
@@ -2524,6 +2627,7 @@ $_LANG['Customer ID: %cid'] = 'ID klienta: %cid';
 $_LANG['PIN: %pin'] = 'PIN: %pin';
 $_LANG['Enter balance limit (default 0)'] = 'Wprowadź limit bilansu (domyślnie 0)';
 $_LANG['Transfer forms'] = 'Formularze przelewu';
+$_LANG['transfer forms'] = 'formularze przelewu';
 $_LANG['Not set'] = 'Nie ustawione';
 $_LANG['New network is too small. Put in order IP addresses first!'] = 'Nowa sieć jest zbyt mała. Uporządkuj najpierw adresy IP!';
 $_LANG['You can assign customer to ticket'] = 'Możesz przypisać klienta do zgłoszenia';
@@ -2581,10 +2685,13 @@ $_LANG['Moving assets to registry $a'] = 'Przeniesienie środków do rejestru $a
 $_LANG['Select cash registry'] = 'Wybierz rejestr kasowy';
 $_LANG['— select registry —'] = '— wybierz rejestr —';
 $_LANG['Target:'] = 'Cel:';
+$_LANG['Target'] = 'Cel';
+$_LANG['target price'] = 'cena docelowa';
 $_LANG['There is no cash in selected registry!'] = 'Brak środków w wybranym rejestrze!';
 $_LANG['There is no cash in selected registry! You can expense only $a.'] = 'Brak środków w wybranym rejestrze! Możesz wydać tylko $a.';
 $_LANG['You don\'t have permission to add receipt in selected cash registry!'] = 'Nie posiadasz uprawnień, aby dodać dokument w wybranym rejestrze!';
 $_LANG['Registry:'] = 'Rejestr:';
+$_LANG['Registry'] = 'Rejestr';
 $_LANG['Expense'] = 'Rozchód';
 $_LANG['Income'] = 'Przychód';
 $_LANG['No such cash receipts in database.'] = 'Brak dokumentów kasowych w bazie danych.';
@@ -2610,11 +2717,15 @@ $_LANG['NO'] = 'NIE';
 $_LANG['order'] = 'zamówienie';
 $_LANG['Confirm'] = 'Zatwierdź';
 $_LANG['Confirmed:'] = 'Zatwierdzony:';
+$_LANG['<!document>Confirmed'] = 'Zatwierdzony';
 $_LANG['Deleted:'] = 'Usunięty:';
+$_LANG['Deleted'] = 'Usunięty';
 $_LANG['Edit Document: $a'] = 'Edycja dokumentu: $a';
 $_LANG['Additional number:'] = 'Dodatkowy numer:';
 $_LANG['Enter additional document number'] = 'Wprowadź dodatkowy numer dokumentu';
 $_LANG['income/expense'] = 'przychód/rozchód';
+$_LANG['income'] = 'przychód';
+$_LANG['expense'] = 'rozchód';
 $_LANG['Liability'] = 'Zobowiązanie';
 $_LANG['Options:'] = 'Opcje:';
 $_LANG['Options'] = 'Opcje';
@@ -2672,6 +2783,7 @@ $_LANG['permanent residence card'] = 'karta stałego pobytu';
 $_LANG['RBE:'] = 'EDG/KRS:';
 $_LANG['RBE Name:'] = 'Nazwa EDG/KRS:';
 $_LANG['RBE Name'] = 'Nazwa EDG/KRS';
+$_LANG['Business register'] = 'Rejestr przedsiębiorstw';
 $_LANG['Allows you to add new document'] = 'Dodanie nowego dokumentu';
 $_LANG['Allows you to add the new prefixes'] = 'Dodanie nowych prefiksów';
 $_LANG['Allows you to search documents'] = 'Wyszukiwanie dokumentów';
@@ -2684,11 +2796,12 @@ $_LANG['Pla:'] = 'Plan';
 $_LANG['Additional information:'] = 'Informacje dodatkowe:';
 $_LANG['extended format'] = 'format rozszerzony';
 $_LANG['Page $a from $b'] = 'Strona $a z $b';
-$_LANG['Page total:'] = 'Razem na stronie:';
-$_LANG['Total from start of period:'] = 'Razem od początku okresu:';
-$_LANG['Total from start of period (with receipt):'] = 'Razem od początku okresu (z paragonem):';
-$_LANG['Total from start of period (without receipt):'] = 'Razem od początku okresu (bez paragonu):';
-$_LANG['Transfered from previous page:'] = 'Przeniesienie z poprzedniej strony:';
+$_LANG['Page total'] = 'Razem na stronie';
+$_LANG['Total from start of period'] = 'Razem od początku okresu';
+$_LANG['Total from start of period (invoices with receipt)'] = 'Razem od początku okresu (faktury z paragonem)';
+$_LANG['Total from start of period (correction notes with receipt)'] = 'Razem od początku okresu (korekty faktur z paragonem)';
+$_LANG['Total from start of period (without receipt)'] = 'Razem od początku okresu (bez paragonu)';
+$_LANG['Transfered from previous page'] = 'Przeniesienie z poprzedniej strony';
 $_LANG['Hide expired'] = 'Ukryj przeterminowane';
 $_LANG['Interested customers can\'t have computers!'] = 'Zainteresowani klienci nie mogą posiadać komputerów!';
 $_LANG['Node owner is not connected!'] = 'Właściciel komputera nie jest podłączony!';
@@ -2697,6 +2810,7 @@ $_LANG['Show expired'] = 'Pokaż przeterminowane';
 $_LANG['customer sheet'] = 'karta klienta';
 $_LANG['contract termination'] = 'rozwiązanie umowy';
 $_LANG['Enter notes (optional)'] = 'Wprowadź notatki (opcjonalnie)';
+$_LANG['Enter notes (optional)<br>Text entered here will not be visible on customer documents such as contracts, annexes, etc.'] = 'Wprowadź notatki (opcjonalnie)<br>Tekst wprowadzony tutaj nie będzie widoczny na dokumentach klienta, takich jak umowy, aneksy, itd.';
 $_LANG['select numbering plan'] = 'wybierz plan numeracyjny';
 $_LANG['Customer has got unconfirmed documents!'] = 'Klient posiada niezatwierdzone dokumenty!';
 $_LANG['Documents:'] = 'Dokumenty:';
@@ -2707,6 +2821,7 @@ $_LANG['MAC'] = 'MAC';
 $_LANG['Search:'] = 'Szukaj:';
 $_LANG['Support for big ISPs e.g. hidding long customers selection dropdowns. Default: false'] = 'Wsparcie dla dużych providerów, np. ukrywanie długich list wyboru klientów. Domyślnie: wyłączona.';
 $_LANG['Page generation time:'] = 'Czas generowania strony:';
+$_LANG['SQL query time:'] = 'Czas zapytań SQL:';
 $_LANG['sec.'] = 'sek.';
 $_LANG['Cause'] = 'Przyczyna';
 $_LANG['company\'s side'] = 'po stronie firmy';
@@ -2784,6 +2899,8 @@ $_LANG['not in debt (expired)'] = 'niezadłużeni (przeterminowane)';
 $_LANG['Helpdesk ticket printout template file. Default: rtticketprint.html'] = 'Szablon wydruku zgłoszenia. Domyślnie: rtticketprint.html';
 $_LANG['suspended<!plural>'] = 'zawieszeni';
 $_LANG['without tariff'] = 'bez taryfy';
+$_LANG['no assignments'] = 'bez zobowiązań';
+$_LANG['no active or future assignments'] = 'bez aktywnych i przyszłych zobowiązań';
 $_LANG['without group'] = 'bez grupy';
 $_LANG['Default status filter setting on tickets list. For allowed values see HTML source code. Default: not set'] = 'Domyślne ustawienie filtra statusu na liście zgłoszeń. Dozwolonych wartości szukaj w kodzie html strony. Domyślnie: nie ustawiona';
 $_LANG['Channel:'] = 'Kanał:';
@@ -2828,6 +2945,7 @@ $_LANG['Enter device name or it\'s fragment'] = 'Wprowadź nazwę urządzenia lu
 $_LANG['Enter network name or it\'s fragment'] = 'Wprowadź nazwę sieci lub jej fragment';
 $_LANG['Enter producer name or it\'s fragment'] = 'Wprowadź nazwę producenta lub jej fragment';
 $_LANG['Find devices matching the following search criteria:'] = 'Wyszukaj urządzenia pasujące do poniższych kryteriów:';
+$_LANG['Find devices matching the following search criteria'] = 'Wyszukaj urządzenia pasujące do poniższych kryteriów';
 $_LANG['Network Devices Search'] = 'Szukaj urządzeń';
 $_LANG['IP Network Search'] = 'Szukaj sieci IP';
 $_LANG['Network Devices Search Results'] = 'Wyniki wyszukiwania urządzeń';
@@ -2917,6 +3035,7 @@ $_LANG['Selected port number is taken by node!'] = 'Port o wybranym numerze jest
 $_LANG['Wireless'] = 'Bezprzewodowo';
 $_LANG['IP address edit'] = 'Edycja adresu IP';
 $_LANG['New IP address'] = 'Nowy adres IP';
+$_LANG['Destination'] = 'Cel';
 $_LANG['Destination:'] = 'Cel:';
 $_LANG['Login<!account>'] = 'Login';
 $_LANG['Accounts number:'] = 'Liczba kont:';
@@ -3018,6 +3137,8 @@ $_LANG['Consent to electronic invoices:'] = 'Zgoda na faktury elektroniczne:';
 $_LANG['Consent to electronic invoices'] = 'Zgoda na faktury elektroniczne';
 $_LANG['Consent to invoices delivery via e-mail:'] = 'Zgoda na dostarczanie faktur pocztą elektroniczną:';
 $_LANG['invoice delivery via e-mail'] = 'dostarczanie faktur pocztą elektroniczną';
+$_LANG['<!consent>delivery via e-mail'] = 'dostarczanie pocztą elektroniczną';
+$_LANG['<!consent>submission to KSeF'] = 'wysyłka do KSeF';
 $_LANG['Consent to messages delivery via e-mail:'] = 'Zgoda na dostarczanie informacji pocztą elektroniczną:';
 $_LANG['Consent to messages delivery via sms:'] = 'Zgoda na dostarczanie informacji SMS-em:';
 $_LANG['message delivery via e-mail'] = 'dostarczanie informacji pocztą elektroniczną';
@@ -3034,6 +3155,7 @@ $_LANG['Select link type'] = 'Wybierz typ łącza';
 $_LANG['With document of type:'] = 'Z dokumentem typu:';
 $_LANG['in date:'] = 'z dnia:';
 $_LANG['Legal personality:'] = 'Osobowość prawna:';
+$_LANG['Legal personality'] = 'Osobowość prawna';
 $_LANG['Add state'] = 'Dodaj województwo';
 $_LANG['Are you sure, you want to delete state \'$a\'?'] = 'Czy na pewno chcesz usunąć województwo \'$a\'?';
 $_LANG['Country States Definitions'] = 'Definicje województw';
@@ -3077,6 +3199,7 @@ $_LANG['Global division context'] = 'Globalny kontekst firmy';
 $_LANG['Division long name is required!'] = 'Pełna nazwa firmy jest wymagana!';
 $_LANG['Division short name is required!'] = 'Skrócona nazwa firmy jest wymagana!';
 $_LANG['Division with specified name already exists!'] = 'Firma o podanej nazwie już istnieje!';
+$_LANG['Division with specified label already exists!'] = 'Firma o podanej etykiecie już istnieje!';
 $_LANG['Edit Division: $a'] = 'Edycja firmy: $a';
 $_LANG['Division is required!'] = 'Firma jest wymagana!';
 $_LANG['Enter bank account or mass payments account prefix (optional)'] = 'Wprowadź konto bankowe lub prefiks konta płatności masowych (opcjonalnie)';
@@ -3097,18 +3220,22 @@ $_LANG['New Division'] = 'Nowa firma';
 $_LANG['No such divisions in database.'] = 'Brak firm w bazie danych.';
 $_LANG['Select division'] = 'Wybierz firmę';
 $_LANG['Division:'] = 'Firma:';
+$_LANG['Division'] = 'Firma';
 $_LANG['Unlock'] = 'Odblokuj';
 $_LANG['Wrong account number!'] = 'Niepoprawny format konta!';
 $_LANG['Zip code is required!'] = 'Kod pocztowy jest wymagany!';
 $_LANG['Limit of records displayed on one page in divisions list. Default: 100.'] = 'Limit ilości rekordów na liście firm. Domyślnie: 100.';
 $_LANG['VoIP Accounts List'] = 'Lista kont VoIP';
 $_LANG['VoIP pricelist:'] = 'Cennik VoIP:';
+$_LANG['VoIP summary'] = 'Podsumowanie VoIP';
+$_LANG['VoIP summary report'] = 'Raport z podsumowaniem VoIP';
 $_LANG['Phone tariff list'] = 'Lista taryf telefonicznych';
 $_LANG['Promotions/special rules for tariffs'] = 'Promocje/reguły specjalne dla taryf';
 $_LANG['Phone number:'] = 'Numer telefonu:';
 $_LANG['Phone number'] = 'Numer telefonu';
 $_LANG['<!phone>number'] = 'numer';
 $_LANG['Phone numbers:'] = 'Numery telefonów:';
+$_LANG['Phone numbers'] = 'Numery telefonów';
 $_LANG['No such VoIP accounts in database.'] = 'Brak kont VoIP w bazie.';
 $_LANG['That customer does not own any VoIP account.'] = 'Klient nie posiada kont VoIP.';
 $_LANG['No such VoIP accounts matching search criteria.'] = 'Brak kont VoIP spełniających zadane kryteria.';
@@ -3144,6 +3271,7 @@ $_LANG['VoIP account'] = 'Konto VoIP';
 $_LANG['VoIP Account Info: $a'] = 'Informacje o koncie: $a';
 $_LANG['VoIP Account Edit: $a'] = 'Edycja konta VoIP: $a';
 $_LANG['VoIP Accounts ($a):'] = 'Konta VoIP ($a):';
+$_LANG['VoIP Accounts ($a)'] = 'Konta VoIP ($a)';
 $_LANG['VoIP Accounts:'] = 'Konta VoIP:';
 $_LANG['VoIP Accounts'] = 'Konta VoIP';
 $_LANG['<!do>Import'] = 'Importuj';
@@ -3194,6 +3322,7 @@ $_LANG['There are no open events in timetable.'] = 'Brak otwartych zdarzeń w te
 $_LANG['Allows you to send notices to customers'] = 'Pozwala wysyłać powiadomienia do klientów';
 $_LANG['Allows you to send messages to customers'] = 'Pozwala wysyłać wiadomości do klientów';
 $_LANG['Creation date:'] = 'Data utworzenia:';
+$_LANG['Creation date'] = 'Data utworzenia';
 $_LANG['Customers Messaging'] = 'Komunikacja z klientami';
 $_LANG['destination number/email'] = 'numer/adres odbiorcy';
 $_LANG['drafts'] = 'szkice';
@@ -3208,6 +3337,10 @@ $_LANG['Messages List'] = 'Lista wiadomości';
 $_LANG['Message Add'] = 'Nowa wiadomość';
 $_LANG['Message Info: $a'] = 'Informacje o wiadomości: $a';
 $_LANG['messaging (email, sms)'] = 'komunikacja (e-mail, SMS)';
+$_LANG['messaging (email, sms) - view'] = 'komunikacja (e-mail, SMS) - podgląd';
+$_LANG['messaging (email, sms) - creation'] = 'komunikacja (e-mail, SMS) - tworzenie';
+$_LANG['messaging (email, sms) - modification'] = 'komunikacja (e-mail, SMS) - modyfikacja';
+$_LANG['messaging (email, sms) - removal'] = 'komunikacja (e-mail, SMS) - usuwanie';
 $_LANG['Notice content:'] = 'Treść powiadomienia:';
 $_LANG['No such messages in database.'] = 'Brak wiadomości w bazie danych.';
 $_LANG['No such recipients in database.'] = 'Brak odbiorców w bazie danych.';
@@ -3215,6 +3348,8 @@ $_LANG['added'] = 'dodano';
 $_LANG['delivered'] = 'dostarczono';
 $_LANG['cancelled'] = 'anulowano';
 $_LANG['bounced'] = 'odesłano';
+$_LANG['ready to send'] = 'gotowa do wysłania';
+$_LANG['ready to send<!plural>'] = 'gotowe do wysłania';
 $_LANG['delivered<!plural>'] = 'dostarczone';
 $_LANG['cancelled<!plural>'] = 'anulowane';
 $_LANG['bounced<!plural>'] = 'odesłane';
@@ -3327,7 +3462,9 @@ $_LANG['You can select import source to limit results'] = 'Możesz wybrać źró
 $_LANG['— all sources —'] = '— wszystkie —';
 $_LANG['— auto —'] = '— automatycznie —';
 $_LANG['— none —'] = '— żadne —';
+$_LANG['<!street-name>— none —'] = '— brak —';
 $_LANG['<!promotionschema>— none —'] = '— żaden —';
+$_LANG['<!netlink>— none —'] = '— brak —';
 $_LANG['There are no types in database.'] = 'Brak typów w bazie danych.';
 $_LANG['Use current division data:'] = 'Zastosuj dane bieżącej firmy (oddziału):';
 $_LANG['Seller data change'] = 'Zmiana danych sprzedawcy';
@@ -3355,14 +3492,21 @@ $_LANG['Note drawer:'] = 'Wystawca noty:';
 $_LANG['issuer\'s signature'] = 'podpis wystawcy noty';
 $_LANG['Note recipient:'] = 'Odbiorca noty:';
 $_LANG['No such debit notes in database.'] = 'Brak not obciążeniowych w bazie danych.';
-$_LANG['VoIP accounts management'] = 'zarządzanie kontami VoIP';
+$_LANG['VoIP account management'] = 'zarządzanie kontami VoIP';
+$_LANG['VoIP billings'] = 'billingi VoIP';
+$_LANG['VoIP number pool management'] = 'zarządzanie pulami numerów VoIP';
+$_LANG['VoIP price list management'] = 'zarządzanie cennikami VoIP';
+$_LANG['VoIP call recordings'] = 'nagrania połączeń VoIP';
 $_LANG['VoIP prefix management'] = 'Zarządzanie prefiksami VoIP';
 $_LANG['Userpanel management'] = 'zarządzanie Panelem klienta';
+$_LANG['Userpanel change affirmation'] = 'zatwierdzanie zmian w Panelu klienta';
 $_LANG['cash-in receipt'] = 'KP';
 $_LANG['cash-out receipt'] = 'KW';
 $_LANG['cash receipts'] = 'dok. kasowe';
 $_LANG['New document:'] = 'Nowy dokument:';
+$_LANG['New document'] = 'Nowy dokument';
 $_LANG['Show All:'] = 'Pokaż wszystkie:';
+$_LANG['Show All'] = 'Pokaż wszystkie';
 $_LANG['transactions'] = 'transakcje';
 $_LANG['debit notes'] = 'noty obciążeniowe';
 $_LANG['Debit Note Edit: $a'] = 'Edycja noty: $a';
@@ -3500,6 +3644,7 @@ $_LANG['Payment Type:'] = 'Typ płatności:';
 $_LANG['tariffless liability'] = 'zobowiązanie beztaryfowe';
 $_LANG['Tariff rules'] = 'Reguły taryfikacyjne';
 $_LANG['Tariff rule:'] = 'Reguła taryfikacyjna:';
+$_LANG['Tariff rule'] = 'Reguła taryfikacyjna';
 $_LANG['barter'] = 'barter';
 $_LANG['card'] = 'karta';
 $_LANG['cash'] = 'gotówka';
@@ -3611,6 +3756,7 @@ $_LANG['Select promotion schema'] = 'Wybierz schemat promocji';
 $_LANG['Select promotion location'] = 'Wybierz lokalizację promocji';
 $_LANG['per promotion schema'] = 'wg schematu promocji';
 $_LANG['Promotion Schema:'] = 'Schemat promocyjny:';
+$_LANG['Promotion Schema'] = 'Schemat promocyjny';
 $_LANG['Additional subscription after promotion period:'] = 'Dodatkowa taryfa po okresie promocji:';
 $_LANG['Additional subscription is useless when contract prolongation is not set!'] = 'Dodatkowa taryfa nie ma sensu, gdy nie zaznaczono przedłużenia umowy!';
 $_LANG['Contract prolongation after promotion period:'] = 'Przedłużenie umowy po okresie promocji:';
@@ -3765,6 +3911,7 @@ $_LANG['Sun'] = 'nd.';
 $_LANG['Sunday'] = 'niedziela';
 $_LANG['No locks.'] = 'Brak blokad.';
 $_LANG['Locks:'] = 'Blokady:';
+$_LANG['Locks'] = 'Blokady';
 $_LANG['Node Locks'] = 'Blokady komputera';
 $_LANG['Add new lock'] = 'Dodaj nową blokadę';
 $_LANG['Remove lock'] = 'Usuń blokadę';
@@ -3783,7 +3930,22 @@ $_LANG['<!uke-income>Private income'] = 'Przychód prywatny';
 $_LANG['<!uke-income>Total services'] = 'Całkowita liczba świadczonych usług';
 $_LANG['<!uke-income>Total income'] = 'Całkowity przychód';
 $_LANG['<!uke-income>No data.'] = 'Brak danych.';
-$_LANG['UKE income report for period $a - $b'] = 'Raport przychodów UKE za okres $a - $b';
+$_LANG['<!voip-summary>for period'] = 'za okres';
+$_LANG['<!voip-summary>from $a'] = 'od $a';
+$_LANG['<!voip-summary>to $a'] = 'do $a';
+$_LANG['<!voip-summary>Domestic prefix'] = 'Prefiks krajowy';
+$_LANG['<!voip-summary>Business customers (domestic)'] = 'Klienci biznesowi (krajowe)';
+$_LANG['<!voip-summary>Private customers (domestic)'] = 'Klienci prywatni (krajowe)';
+$_LANG['<!voip-summary>Business customers (international)'] = 'Klienci biznesowi (międzynarodowe)';
+$_LANG['<!voip-summary>Private customers (international)'] = 'Klienci prywatni (międzynarodowe)';
+$_LANG['<!voip-summary>No billing records for selected period!'] = 'Brak rekordów billingowych w wybranym okresie!';
+$_LANG['<!voip-summary>Outgoing count'] = 'Liczba wychodzących';
+$_LANG['<!voip-summary>Incoming count'] = 'Liczba przychodzących';
+$_LANG['<!voip-summary>Outgoing time'] = 'Czas wychodzących';
+$_LANG['<!voip-summary>Incoming time'] = 'Czas przychodzących';
+$_LANG['<!voip-summary>Outgoing cost'] = 'Koszt wychodzących';
+$_LANG['<!voip-summary>Incoming cost'] = 'Koszt przychodzących';
+$_LANG['UKE income report ($a) for period $b - $c'] = 'Raport przychodów UKE ($a) za okres $b - $c';
 
 $_LANG['Link speed:'] = 'Szybkość łącza:';
 $_LANG['Select link speed'] = 'Wybierz szybkość łącza';
@@ -3792,9 +3954,12 @@ $_LANG['phone'] = 'telefon';
 $_LANG['tv'] = 'telewizja';
 $_LANG['Change connection properties'] = 'Zmień właściwości połączenia';
 
-$_LANG['Check a host ...'] = 'Sprawdź łączność z hostem …';
-$_LANG['Center map around network elements ...'] = 'Wyśrodkuj mapę wokół jej elementów …';
-$_LANG['Refresh network state ...'] = 'Odśwież stan sieci …';
+$_LANG['Check a host'] = 'Sprawdź łączność z hostem';
+$_LANG['Center map around network elements'] = 'Wyśrodkuj mapę wokół jej elementów';
+$_LANG['Refresh network state'] = 'Odśwież stan sieci';
+$_LANG['Show/hide foreign entity network links'] = 'Pokaż/ukryj połączenia sieciowe z przypisanym podmiotem obcym';
+$_LANG['Show/hide customer owned infrastructure elements'] = 'Pokaż/ukryj infrastrukturę będącą własnością klientów';
+$_LANG['Change network link edit mode'] = 'Zmień tryb edycji połączeń sieciowych';
 
 $_LANG['municipal commune'] = 'gm. miejska';
 $_LANG['rural commune'] = 'gm. wiejska';
@@ -3813,6 +3978,7 @@ $_LANG['Previous operation has not been finished yet!'] = 'Poprzednia czynność
 $_LANG['You haven\\\'t selected any nodes!'] = 'Nie wybrałeś żadnego komputera!';
 
 $_LANG['Your balance on date of invoice issue: $a $b'] = 'Saldo w dniu wystawienia faktury: $a $b';
+$_LANG['Your balance on date of document issue: $a $b'] = 'Saldo w dniu wystawienia dokumentu: $a $b';
 $_LANG['Balance includes current invoice'] = 'Saldo uwzględnia również bieżącą fakturę.';
 $_LANG['Your balance before invoice issue:'] = 'Saldo przed wystawieniem faktury:';
 $_LANG['Your balance without unexpired invoices: $a $b'] = 'Saldo bez nieprzeterminowanych faktur: $a $b';
@@ -3885,9 +4051,9 @@ $_LANG['Target section'] = 'Sekcja docelowa';
 $_LANG['Target user'] = 'Użytkownik docelowy';
 $_LANG['Target division'] = 'Firma docelowa';
 $_LANG['to_the_source_sections'] = 'do_żródłowych_sekcji';
-$_LANG['Create the missing parent bindings'] = 'Utwórz brakujące powiązania nadrzędne';
-$_LANG['With child bindings'] = 'Z powiązaniami podrzędnymi';
-$_LANG['Override existing'] = 'Nadpisz istniejące';
+$_LANG['create the missing ancestor bindings'] = 'utwórz brakujące powiązania nadrzędne';
+$_LANG['descendant bindings'] = 'powiązania podrzędne';
+$_LANG['override existing'] = 'nadpisz istniejące';
 $_LANG['Are you sure, you want to clone all selected options?'] = 'Czy jesteś pewien, że chcesz sklonować wybrane opcje?';
 $_LANG['new section name'] = 'nazwa nowej sekcji';
 $_LANG['Clone selected'] = 'Klonuj zaznaczone';
@@ -3904,6 +4070,7 @@ $_LANG['Node Sessions:'] = 'Sesje komputera:';
 $_LANG['Node Sessions'] = 'Sesje komputera';
 $_LANG['<!menu>Node Sessions'] = 'Sesje komputerów';
 $_LANG['Network Device Sessions For Selected IP Address:'] = 'Sesje urządzenia sieciowego dla wybranego adresu IP:';
+$_LANG['Network Device Sessions For Selected IP Address'] = 'Sesje urządzenia sieciowego dla wybranego adresu IP';
 $_LANG['Network Device Sessions'] = 'Sesje urządzenia sieciowego';
 $_LANG['(last $a sessions)'] = '(ostatnie $a sesji)';
 $_LANG['Started:'] = 'Rozpoczęto:';
@@ -3937,6 +4104,7 @@ $_LANG['Resource Type'] = 'Typ zasobu';
 $_LANG['Enter resource ID (empty means any ID)'] = 'Podaj ID zasobu (puste pole oznacza dowolny ID)';
 $_LANG['Enter property value (empty means any value)'] = 'Podaj wartość właściwości (puste pole oznacza dowolną wartość)';
 $_LANG['Next'] = 'Następne';
+$_LANG['<!next-step>Next'] = 'Dalej';
 $_LANG['Previous'] = 'Poprzednie';
 $_LANG['Next<!pagin>'] = 'Następna';
 $_LANG['Previous<!pagin>'] = 'Poprzednia';
@@ -4023,6 +4191,8 @@ $_LANG['tariff price variant<!syslog>'] = 'wariant cenowy taryfy';
 $_LANG['ticket message<!syslog>'] = 'wiadomość do zgłoszenia';
 $_LANG['queue<!syslog>'] = 'kolejka';
 $_LANG['network node<!syslog>'] = 'węzeł sieciowy';
+$_LANG['SSN reservation check<!syslog>'] = 'sprawdzenie zastrzeżenia PESEL';
+$_LANG['SSN reservation check error<!syslog>'] = 'błąd sprawdzenia zastrzeżenia PESEL';
 
 $_LANG['Choose network'] = 'Wybierz sieć';
 $_LANG['— automatic selection —'] = '— wybór automatyczny —';
@@ -4084,8 +4254,8 @@ $_LANG['Casual'] = 'Zwykła';
 $_LANG['Unread'] = 'Nieprzeczytana';
 $_LANG['Read status:'] = 'Status przeczytania:';
 $_LANG['Was read on:'] = 'Przeczytana dnia:';
-$_LANG['Last read on:'] = 'Ostatnio czytana dnia:';
-$_LANG['Was confirm on:'] = 'Potwierdzona dnia:';
+$_LANG['Last read'] = 'Ostatnio czytana';
+$_LANG['Confirmed'] = 'Potwierdzona';
 $_LANG['only userpanel message'] = 'tylko wiadomości panelu klienta';
 
 $_LANG['Subject (new ticket)'] = 'Temat (nowe zgłoszenie)';
@@ -4121,10 +4291,14 @@ $_LANG['consent required'] = 'wymagana zgoda';
 $_LANG['Check if ticket is expired'] = 'Zaznacz, jeśli zgłoszenie ma przekroczony termin ostateczny';
 $_LANG['Check if customer consent to messages delivery via e-mail or sms is required'] = 'Zaznacz, jeśli wymagana jest zgoda klienta na dostarczanie informacji pocztą elektroniczną lub SMS-em';
 
+$_LANG['Existing links'] = 'Istniejące połączenia';
+
 $_LANG['Select link technology'] = 'Wybierz technologię łącza';
 $_LANG['Link technology:'] = 'Technologia łącza:';
+$_LANG['Link technology'] = 'Technologia łącza';
 $_LANG['<!netrange>Technology'] = 'Technologia';
 $_LANG['— unknown —'] = '— nieznana —';
+$_LANG['— without technology —'] = '— bez technologii —';
 $_LANG['Link technology is required!'] = 'Technologia łącza jest wymagana!';
 $_LANG['Link technology is not selected!'] = 'Nie wybrano technologii łącza';
 
@@ -4348,6 +4522,10 @@ $_LANG['Enable/disable EAP Server Client'] = 'Włącza/wyłącza komputer jako k
 $_LANG['Enable/disable WiFi AP Client access'] = 'Włącza/wyłącza komputer jako klient WiFi AP';
 $_LANG['Enable/disable VoIP Gateway access'] = 'Włącza/wyłącza komputer jako bramkę VoIP';
 $_LANG['Enable/disable DOCSIS access'] = 'Włącza/wyłącza dostęp DOCSIS';
+$_LANG['VPN access'] = 'Dostęp VPN';
+$_LANG['Mark as VPN access'] = 'Oznacz jako dostęp VPN';
+$_LANG['IPoE access'] = 'Dostęp IPoE';
+$_LANG['Mark as IPoE access'] = 'Oznacz jako dostęp IPoE';
 
 $_LANG['WiFi'] = 'WiFi';
 $_LANG['Potential range'] = 'Potencjalne zasięgi';
@@ -4383,15 +4561,23 @@ $_LANG['confirmed (sms authorization)'] = 'zatwierdzony (autoryzacja SMS-em)';
 $_LANG['unconfirmed'] = 'niezatwierdzony';
 $_LANG['review (signed document scan)'] = 'do przejrzenia (skan z podpisem klienta)';
 $_LANG['waiting for signed document scan'] = 'oczekujący na skan z podpisem klienta';
+$_LANG['waiting for customer action (expired)'] = 'oczekujące na działanie klienta (po terminie)';
 
 $_LANG['Customer ID and PIN'] = 'ID klienta i PIN';
 $_LANG['Phone number and PIN'] = 'Numer telefonu i PIN';
 $_LANG['Document number and PIN'] = 'Numer dokumentu i PIN';
 $_LANG['Customer e-mail and PIN'] = 'E-mail klienta i PIN';
 $_LANG['Document number:'] = 'Numer dokumentu:';
+$_LANG['Document number'] = 'Numer dokumentu';
 $_LANG['Customer e-mail:'] = 'E-mail klienta:';
+$_LANG['Customer e-mail'] = 'E-mail klienta';
 $_LANG['SSN/TEN:'] = 'PESEL/NIP:';
+$_LANG['SSN/TEN'] = 'PESEL/NIP';
 $_LANG['SSN/TEN and PIN'] = 'PESEL/NIP i PIN';
+$_LANG['Customer External ID/PIN'] = 'Zewnętrzny ID klienta/PIN';
+$_LANG['Customer External ID and PIN'] = 'Zewnętrzny ID klienta i PIN';
+$_LANG['Customer External ID/PIN authentication options'] = 'Opcje uwierzytelniania zewnętrznym ID klienta i PIN';
+$_LANG['<!service-provider>— default —'] = '— domyślny —';
 
 $_LANG['Contracts'] = 'Umowy';
 $_LANG['without contracts'] = 'bez umów';
@@ -4473,6 +4659,7 @@ $_LANG['Building:'] = 'Budynek:';
 $_LANG['Building'] = 'Budynek';
 $_LANG['<!netrange>Buildings: $a'] = 'Budynków: $a';
 $_LANG['Apartment:'] = 'Lokal:';
+$_LANG['Apartment'] = 'Lokal';
 $_LANG['Postal address'] = 'Adres korespondencyjny';
 
 $_LANG['Street name required!'] = 'Wymagana nazwa ulicy!';
@@ -4482,6 +4669,9 @@ $_LANG['Building number required!'] = 'Wymagany numer budynku!';
 $_LANG['External system identifier:'] = 'Identyfikator w systemie zewnętrznym:';
 $_LANG['External system identifier'] = 'Identyfikator w systemie zewnętrznym';
 $_LANG['Enter customer identifier in external system (optional)'] = 'Wprowadź identyfikator klienta w systemie zewnętrznym (opcjonalnie)';
+$_LANG['Enter tariff identifier in external system (optional)'] = 'Wprowadź identyfikator taryfy w systemie zewnętrznym (opcjonalnie)';
+$_LANG['Another tariff with specified External ID already exists!'] = 'Istnieje już Inna taryfa o podanym Zewnętrznym ID!';
+$_LANG['Another tariff with specified External ID assigned to selected service provider already exists!'] = 'Istnieje już inna taryfa o podanym Zewnętrznym ID powiązanym z wybranym dostawcą usług!';
 
 $_LANG['You already used this password!'] = 'Takie hasło było już używane!';
 
@@ -4531,10 +4721,12 @@ $_LANG['closed<!plural:event>'] = 'zamknięte';
 $_LANG['Assignments:'] = 'Zobowiązania:';
 $_LANG['Assignments'] = 'Zobowiązania';
 $_LANG['suspended'] = 'zawieszone';
+$_LANG['suspended, current'] = 'zawieszone, bieżące';
 $_LANG['active, with invoice'] = 'aktywne, z fakturą';
 $_LANG['active, with pro forma'] = 'aktywne, z pro forma';
 $_LANG['active, without document'] = 'aktywne, bez dokumentu';
 $_LANG['without end date'] = 'bez daty zakończenia';
+$_LANG['all without end date'] = 'wszystkie bez daty zakończenia';
 $_LANG['without start date'] = 'bez daty rozpoczęcia';
 $_LANG['with end date'] = 'z datą zakończenia';
 $_LANG['with end date:'] = 'z datą zakończenia:';
@@ -4578,12 +4770,16 @@ $_LANG['All users'] = 'Wszyscy użytkownicy';
 $_LANG['Determine GPS coordinates automatically'] = 'Wyznacz automatycznie współrzędne GPS';
 $_LANG['Default ping type. You can use "1" for ping or "2" for arping. Default: 1.'] = 'Domyślny rodzaj ping. Możesz użyć "1" dla ping lub "2" dla arping. Domyślnie: 1.';
 $_LANG['Default City in TERYT. Set city id in TERYT.'] = 'Domyślne Miasto dla TERYT. Wprowadź id Miasta z TERYT.';
-$_LANG['Prefix groups assigned to price list'] = 'Grupy prefiksów przypisane do cennika';
-$_LANG['Prefix groups assigned to tariff rule'] = 'Grupy prefiksów przypisane do reguły taryfikacyjnej';
+$_LANG['<!voip>Prefix group prices'] = 'Ceny przypisane do grup prefiksów';
+$_LANG['<!voip>Tariff rule information details'] = 'Szczegółowe informacje o regule taryfikacyjnej';
+$_LANG['<!voip>Add prefix group'] = 'Dodaj grupę prefiksów';
 
 $_LANG['Allows you to search for IP address pools'] = 'Wyszukiwanie sieci';
 
 $_LANG['Total events:'] = 'Razem zdarzeń:';
+$_LANG['Events: $a'] = 'Zdarzeń: $a';
+$_LANG['Time: $a ($b h)'] = 'Czas: $a ($b h)';
+$_LANG['Calendar time: $a ($b h)'] = 'Czas kalendarzowy: $a ($b h)';
 $_LANG['Today'] = 'Dziś';
 
 $_LANG['Begin time:'] = 'Czas rozpoczęcia:';
@@ -4658,6 +4854,7 @@ $_LANG['New files'] = 'Nowe pliki';
 $_LANG['Attached files:'] = 'Załączone pliki:';
 $_LANG['Attached files'] = 'Załączone pliki';
 $_LANG['Files:'] = 'Pliki:';
+$_LANG['Files'] = 'Pliki';
 
 $_LANG['Select files'] = 'Wybierz pliki';
 $_LANG['Uploading files ...'] = 'Wysyłanie plików …';
@@ -4684,6 +4881,11 @@ $_LANG['AJAX: Error during persistent setting save on server:'] = 'AJAX: Błąd 
 
 $_LANG['Enter street'] = 'Podaj ulicę';
 $_LANG['— any —'] = '— dowolne —';
+$_LANG['- any -'] = '- dowolne -';
+$_LANG['<!operation-type>— any —'] = '— dowolny —';
+$_LANG['<!cash-source>— any —'] = '— dowolne —';
+$_LANG['<!document-type>— any —'] = '— dowolne —';
+$_LANG['<!document>Type'] = 'Typ';
 
 $_LANG['Import from files:'] = 'Import z plików:';
 $_LANG['Non plain text file detected!'] = 'Wykryto plik nietekstowy!';
@@ -4749,7 +4951,7 @@ $_LANG['Select first free address'] = 'Wybierz pierwszy dostępny adres';
 $_LANG['Selected network is already assigned to customer $a ($b)!'] = 'Wybrana sieć jest już przypisana do klienta $a ($b)!';
 
 $_LANG['— without assigned groups —'] = '— bez przypisanych grup —';
-
+$_LANG['— without technology —'] = '— bez technologii —';
 $_LANG['Creation date<!document>'] = 'Data utworzenia';
 $_LANG['Confirmation date<!document>'] = 'Data zatwierdzenia';
 $_LANG['Created by<!document>'] = 'Utworzono przez';
@@ -4852,6 +5054,7 @@ $_LANG['Enter external customer ID fragment and press Enter'] = 'Podaj fragment 
 
 $_LANG['Customer count'] = 'Liczba klientów';
 $_LANG['Assignment count'] = 'Liczba zobowiązań';
+$_LANG['assignment management'] = 'zarządzanie zobowiązaniami';
 $_LANG['Active assignment count'] = 'Liczba aktywnych zobowiązań';
 $_LANG['Active assignments not found!'] = 'Nie znaleziono aktywnych zobowiązań';
 
@@ -4865,6 +5068,7 @@ $_LANG['unapproved documents'] = 'niezatwierdzone dokumenty';
 
 $_LANG['Select reference document'] = 'Wybierz dokument odniesienia';
 $_LANG['Reference document:'] = 'Dokument odniesienia:';
+$_LANG['with reference document'] = 'z dokumentem odniesienia';
 $_LANG['$a no. $b issued on $c'] = '$a nr $b z dnia $c';
 
 $_LANG['External ID:'] = 'ID zewnętrzne:';
@@ -4891,6 +5095,7 @@ $_LANG['Access:'] = 'Dostęp:';
 $_LANG['<!access>— any —'] = '— dowolny —';
 
 $_LANG['Existing assignments:'] = 'Istniejące zobowiązania:';
+$_LANG['Existing assignments'] = 'Istniejące zobowiązania';
 $_LANG['<!existingassignment>keep'] = 'zachowaj';
 $_LANG['<!existingassignment>suspend'] = 'zawieś';
 $_LANG['<!existingassignment>cut'] = 'skróć';
@@ -4910,6 +5115,8 @@ $_LANG['Send documents'] = 'Wyślij dokumenty';
 
 $_LANG['PPPoE login:'] = 'Login PPPoE:';
 $_LANG['PPPoE password:'] = 'Hasło PPPoE:';
+$_LANG['PPPoE login'] = 'Login PPPoE';
+$_LANG['PPPoE password'] = 'Hasło PPPoE';
 $_LANG['PPPoE login and password'] = 'Login i hasło PPPoE';
 
 $_LANG['Customer has not checked \'electronic invoice\' consent and you are trying to mark this mail contact for invoice sending!'] = 'Klient nie ma zaznaczonej zgody na \'faktury elektroniczne\', podczas gdy próbujesz oznaczyć mail kontaktowy do wysyłki faktur!';
@@ -4929,9 +5136,12 @@ $_LANG['&nbsp; <BR> Scan and Pay <BR> You can make a transfer simply and quickly
 $_LANG['QR Payment for Internet Invoice no. %number'] = 'QR Zapłata za Internet FV nr %number';
 
 $_LANG['Click here to autocomplete company data from GUS REGON database'] = 'Kliknij tutaj, aby uzupełnić automatycznie dane firmy z bazy danych GUS REGON';
+$_LANG['No data found in REGON database!'] = 'Brak danych w bazie REGON!';
+$_LANG['Bad REGON API key!'] = 'Błędny klucz API REGON!';
 $_LANG['Click here to autocomplete zip code'] = 'Kliknij tutaj, aby automatycznie uzupełnić kod pocztowy';
 
 $_LANG['settlement type of first deficient period:'] = 'sposób wyrównania początkowego okresu niepełnego:';
+$_LANG['settlement type of first deficient period'] = 'sposób wyrównania początkowego okresu niepełnego';
 $_LANG['<!settlement>— none —'] = '— brak —';
 $_LANG['<!settlement>next period'] = 'następny okres';
 $_LANG['<!settlement>current period'] = 'bieżący okres';
@@ -4969,6 +5179,7 @@ $_LANG['Enter network device name or ip address'] = 'Wprowadź nazwę urządzeni
 $_LANG['Event is assigned to users which already have assigned an event in the same time: $a!'] = 'Zdarzenie jest przypisane do użytkowników, którzy posiadają już przypisane zdarzenia w tym samym czasie: $a!';
 
 $_LANG['Transfer form:'] = 'Formularz przelewu:';
+$_LANG['Transfer form'] = 'Formularz przelewu';
 $_LANG['<!transferform>assignments'] = 'zobowiązania';
 $_LANG['<!transferform>balance'] = 'saldo';
 $_LANG['<!transferform>custom'] = 'dowolne';
@@ -5008,6 +5219,7 @@ $_LANG['Indicator panel:'] = 'Panel wskaźników:';
 $_LANG['Indicator panel'] = 'Panel wskaźników';
 
 $_LANG['Public network:'] = 'Sieć publiczna:';
+$_LANG['Public network'] = 'Sieć publiczna';
 $_LANG['Assign public network (optional)'] = 'Przypisz sieć publiczną (opcjonalnie)';
 $_LANG['— select public network —'] = '— wybierz sieć publiczną —';
 
@@ -5048,6 +5260,7 @@ $_LANG['<!qs>location address'] = 'adres lokalizacyjny';
 $_LANG['<!qs>email'] = 'e-mail';
 $_LANG['<!qs>alternative bank account'] = 'alternatywny rachunek bankowy';
 $_LANG['<!qs>TEN'] = 'NIP';
+$_LANG['<!qs>Recipient TEN'] = 'NIP odbiorcy';
 $_LANG['<!qs>SSN'] = 'PESEL';
 $_LANG['<!qs>additional information'] = 'informacje dodatkowe';
 $_LANG['<!qs>notes'] = 'notatki';
@@ -5124,6 +5337,7 @@ $_LANG['Owner identifier:'] = 'Identyfikator właściciela:';
 $_LANG['Owner identifier'] = 'Identyfikator właściciela';
 
 $_LANG['Network Nodes ($a):'] = 'Węzły sieciowe ($a):';
+$_LANG['Network Nodes ($a)'] = 'Węzły sieciowe ($a)';
 $_LANG['Network Nodes'] = 'Węzły sieciowe';
 $_LANG['That customer hasn\'t got any assigned network nodes.'] = 'Ten klient nie posiada przypisanych żadnych węzłów sieciowych';
 $_LANG['New network node'] = 'Nowy węzeł sieciowy';
@@ -5184,12 +5398,13 @@ $_LANG['VoIP number:'] = 'Numer VoIP:';
 $_LANG['Pro-forma Invoice No. $a'] = 'Faktura pro forma nr $a';
 
 $_LANG['Aggregate documents'] = 'Agreguj dokumenty';
+$_LANG['aggregate documents'] = 'agreguj dokumenty';
 $_LANG['Don\'t aggregate documents'] = 'Nie agreguj dokumentów';
 
 $_LANG['— no description —'] = '— brak opisu —';
 
-$_LANG['Last online earlier than:'] = 'Ostatnio widziane wcześniej niż:';
-$_LANG['Last online later than:'] = 'Ostatnio widziane później niż:';
+$_LANG['Last online earlier than'] = 'Ostatnio widziane wcześniej niż';
+$_LANG['Last online later than'] = 'Ostatnio widziane później niż';
 $_LANG['Enter date in YYYY/MM/DD hh:mm format (empty field means ignore) or click to choose it from calendar'] = 'Podaj datę w formacie RRRR/MM/DD GG:MM (puste pole oznacza ignorowanie daty) lub kliknij, żeby wybrać datę z kalendarza';
 
 $_LANG['<!qs>show unresolved only'] = 'pokaż tylko nierozwiązane';
@@ -5198,6 +5413,9 @@ $_LANG['Category selection is recommended but not required!'] = 'Wybór kategori
 
 $_LANG['invoice sale date manipulation'] = 'manipulowanie datą sprzedaży faktur';
 $_LANG['invoice consent date manipulation'] = 'manipulowanie datą wystawienia faktur';
+
+$_LANG['Consent date'] = 'Data wystawienia';
+$_LANG['document consent date manipulation'] = 'manipulowanie datą wystawienia dokumentu';
 
 $_LANG['Network name'] = 'Nazwa sieci';
 
@@ -5249,6 +5467,7 @@ $_LANG['new window'] = 'nowe okno';
 $_LANG['<!message>helpdesk'] = 'helpdesk';
 
 $_LANG['<!message-type>Message types:'] = 'Rodzaje wiadomości';
+$_LANG['<!message-type>Message types'] = 'Rodzaje wiadomości';
 $_LANG['<!message-type>message'] = 'wiadomość';
 $_LANG['<!message-type>note'] = 'notatka';
 
@@ -5264,6 +5483,8 @@ $_LANG['Check if representative should be disabled'] = 'Zaznacz, jeśli reprezen
 
 $_LANG['<!dialog>Confirmation'] = 'Potwierdzenie';
 $_LANG['<!dialog>Alert'] = 'Ostrzeżenie';
+$_LANG['<!dialog>Information'] = 'Informacja';
+$_LANG['<!dialog>Error'] = 'Błąd';
 
 $_LANG['Copy link'] = 'Kopiuj link';
 $_LANG['Copy as links'] = 'Kopiuj jako linki';
@@ -5332,6 +5553,8 @@ $_LANG['splice tray'] = 'tacka spawów';
 $_LANG['Own node'] = 'Węzeł własny';
 $_LANG['Node shared with another entity'] = 'Węzeł współdzielony z innym podmiotem';
 $_LANG['Foreign node'] = 'Węzeł obcy';
+$_LANG['Foreign entity'] = 'Podmiot obcy';
+$_LANG['Foreign entity:'] = 'Podmiot obcy:';
 
 $_LANG['Your session is near to expiration! Click "OK" if you want to prevent logout.'] = 'Twoja sesja jest bliska przeterminowania! Kliknij "OK", jeśli chcesz zapobiec wylogowaniu.';
 
@@ -5347,7 +5570,7 @@ $_LANG['Disable lock'] = 'Wyłącz blokadę';
 $_LANG['Bandwidth distribution:'] = 'Rozkład przepływności:';
 $_LANG['Bandwidth interval'] = 'Przedział przepływności';
 $_LANG['<!link>Private links'] = 'Łącza prywatne';
-$_LANG['<!link>Bussiness links'] = 'Łącza biznesowe';
+$_LANG['<!link>Business links'] = 'Łącza biznesowe';
 $_LANG['<!link>$a ($b)'] = '$a ($b)';
 
 $_LANG['on day'] = 'na dzień';
@@ -5450,6 +5673,7 @@ $_LANG['Ticket access denied!'] = 'Odmowa dostępu do zgłoszenia!';
 
 $_LANG['from ticket'] = 'ze zgłoszenia';
 $_LANG['from message'] = 'z wiadomości';
+$_LANG['from message "To" header'] = 'z nagłówka "Do" wiadomości';
 $_LANG['from message "Copy" header'] = 'z nagłówka "Kopia" wiadomości';
 $_LANG['from message "From" header'] = 'z nagłówka "Od" wiadomości';
 $_LANG['from message "Reply" header'] = 'z nagłówka "Odpowiedz" wiadomości';
@@ -5468,6 +5692,8 @@ $_LANG['Ticket has already been assigned to other user in mean-time. Are you sur
 
 $_LANG['Enter document memo (optional)'] = 'Wprowadź notatkę widoczną na dokumentach (opcjonalnie)';
 $_LANG['Memo:'] = 'Notatka:';
+$_LANG['<!qs>document memo'] = 'notatka na dokumentach';
+$_LANG['Document memo:'] = 'Notatka na dokumentach:';
 
 $_LANG['close event'] = 'zamknij zdarzenie';
 
@@ -5477,6 +5703,7 @@ $_LANG['Select tax category'] = 'Wybierz GTU';
 $_LANG['Tax category selection is required!'] = 'Wymagany wybór GTU!';
 
 $_LANG['TERYT address is required!'] = 'Wymagany adres zgodny z TERYT!';
+$_LANG['TERYT address recommended!'] = 'Zalecany adres zgodny z TERYT!';
 
 $_LANG['investment project management'] = 'zarządzanie projektami inwestycyjnymi';
 
@@ -5516,12 +5743,14 @@ $_LANG['Service start'] = 'Rozpoczęcie świadczenia usługi';
 $_LANG['Enter service start date in YYYY/MM/DD format (optional)'] = 'Wprowadź datę rozpoczęcia świadczenia usługi w formacie RRRR/MM/DD (opcjonalnie)';
 $_LANG['Start date can not be earlier than "from" date!'] = 'Data rozpoczęcia świadczenia usługi nie może być wcześniejsza od daty "od"!';
 $_LANG['Start date can not be earlier than current date!'] = 'Data rozpoczęcia świadczenia usługi nie może być wcześniejsza od daty bieżącej!';
-$_LANG['document form approval in customer panel using SMS authorization'] = 'zatwierdzanie przez panel klienta formy dokumentowej autoryzowanej przez SMS';
-$_LANG['document form approval in customer panel using scans'] = 'zatwierdzanie przez panel klienta formy dokumentowej w postaci skanów';
+$_LANG['approval in customer panel using SMS authorization'] = 'zatwierdzanie przez panel klienta po autoryzacji SMS-em';
+$_LANG['approval in customer panel using scans'] = 'zatwierdzanie przez panel klienta po przesłaniu w postaci skanów';
 $_LANG['invoice transfer form'] = 'druczek przelewu na fakturze';
+$_LANG['balance on documents'] = 'saldo na dokumentach';
 
 $_LANG['Copy from billing address'] = 'Kopiuj z adresu billingowego';
 $_LANG['Copy from post address'] = 'Kopiuj z adresu korespondencyjnego';
+$_LANG['copy consent date'] = 'kopiuj datę wystawienia';
 
 $_LANG['Choose TERYT location'] = 'Wybierz lokalizację TERYT';
 $_LANG['Ticket watching'] = 'Obserwowanie zgłoszeń';
@@ -5571,7 +5800,7 @@ $_LANG['Visible tabs:'] = 'Widoczne zakładki:';
 $_LANG['No primary ticket is selected!'] = 'Nie wybrano zgłoszenia nadrzędnego!';
 $_LANG['used tariff edit'] = 'edycja użytych taryf';
 
-$_LANG['Resend'] = 'Wyślij nową';
+$_LANG['Resend'] = 'Wyślij ponownie';
 
 $_LANG['more actions'] = 'więcej czynności';
 $_LANG['Ticket $a'] = 'Zgłoszenie $a';
@@ -5601,6 +5830,7 @@ $_LANG['Network device selection is required!'] = 'Wymagany wybór urządzenia s
 $_LANG['financial operations'] = 'operacje finansowe';
 
 $_LANG['Routed Networks ($a):'] = 'Trasowane sieci ($a):';
+$_LANG['Routed Networks ($a)'] = 'Trasowane sieci ($a)';
 $_LANG['Routed Networks'] = 'Trasowane sieci';
 $_LANG['That node hasn\'t got any assigned routed networks.'] = 'Komputer nie posiada przypisanych żadnych trasowanych sieci.';
 $_LANG['Remove routed network'] = 'Usuń trasowaną sieć';
@@ -5711,6 +5941,8 @@ $_LANG['Are you sure, you want to permanently remove all selected tickets?'] = '
 $_LANG['Message #$a'] = 'Wiadomość #$a';
 
 $_LANG['non-empty'] = 'niepusty';
+$_LANG['empty'] = 'pusty';
+$_LANG['given value'] = 'podana wartość';
 
 $_LANG['Reward/penalty for'] = 'Nagroda/kara za';
 $_LANG['Rewards'] = 'Nagrody';
@@ -5722,6 +5954,7 @@ $_LANG['Reward for'] = 'Nagroda za';
 $_LANG['Penalty for'] = 'Kara za';
 
 $_LANG['Select network device type'] = 'Wybierz typ urządzenia sieciowego';
+$_LANG['Network device type'] = 'Typ urządzenia sieciowego';
 $_LANG['<!netdevtype>— undefined —'] = '— nieokreślony —';
 
 $_LANG['Starting balance at $a'] = 'Saldo początkowe na dzień $a';
@@ -5743,8 +5976,21 @@ $_LANG['Events which begin in the past are not allowed!'] = 'Zdarzenia rozpoczyn
 
 $_LANG['on time payments'] = 'terminowe płatności';
 $_LANG['electronic invoice'] = 'faktura elektroniczna';
-$_LANG['e-mail marketing'] = 'marketing pocztą elektroniczną';
-$_LANG['sms marketing'] = 'marketing SMS-em';
+$_LANG['<!marketing>e-mail'] = 'pocztą elektroniczną';
+$_LANG['<!marketing>sms'] = 'SMS-em';
+$_LANG['<!marketing>telephone'] = 'telefoniczny';
+$_LANG['<!marketing>direct'] = 'bezpośredni';
+$_LANG['<!marketing>via userpanel'] = 'poprzez panel klienta';
+$_LANG['<!marketing>traffic data use'] = 'wykorzystanie danych o transmisji';
+$_LANG['<!complaint>e-mail'] = 'pocztą elektroniczną';
+$_LANG['<!complaint>sms'] = 'SMS-em';
+$_LANG['<!complaint>telephone'] = 'telefonicznie';
+$_LANG['<!complaint>via userpanel'] = 'poprzez panel klienta';
+$_LANG['<!service-info>e-mail'] = 'pocztą elektroniczną';
+$_LANG['<!service-info>sms'] = 'SMS-em';
+$_LANG['<!service-info>telephone'] = 'telefonicznie';
+$_LANG['<!service-info>via userpanel'] = 'poprzez panel klienta';
+$_LANG['<!service-info>postal delivery'] = 'pocztą tradycyjną';
 $_LANG['phone billing'] = 'billing telefoniczny';
 
 $_LANG['Issuer'] = 'Wystawca';
@@ -5870,3 +6116,296 @@ $_LANG['hide customer sensitive data'] = 'ukrywanie danych wrażliwych klientów
 
 $_LANG['No email address is selected while customer email notification is checked!'] = 'Nie wybrano adresu e-mail, podczas gdy powiadomienie e-mail klienta zostało zaznaczone!';
 $_LANG['No phone number is selected while customer sms notification is checked!'] = 'Nie wybrano numeru telefonu, podczas gdy powiadomienie SMS klienta zostało zaznaczone!';
+
+$_LANG['No action selected!'] = 'Nie wybrano czynności!';
+
+$_LANG['All assignable'] = 'Przydział wszystkich';
+$_LANG['Check if network and broadcast addresses are assignable'] = 'Zaznacz, jeśli ma być możliwy przydział adresów sieci i rozgłoszeniowego';
+
+$_LANG['LLU service'] = 'Usługa LLU';
+$_LANG['Mark as LLU service'] = 'Oznacz jako usługę LLU';
+$_LANG['BSA service'] = 'Usługa BSA';
+$_LANG['Mark as BSA service'] = 'Oznacz jako usługę BSA';
+
+$_LANG['<!uke-pit>BSA service'] = 'usługa BSA';
+$_LANG['<!uke-pit>critical infrastructure'] = 'infrastruktura krytyczna';
+$_LANG['<!uke-pit>interface count increase possibility'] = 'możliwość zwiększenia liczby interfejsów';
+$_LANG['<!uke-pit-service>access to cable ducting'] = 'dostęp do kanalizacji kablowej';
+$_LANG['<!uke-pit-service>access to dark fibers'] = 'dostęp do ciemnych włókien';
+$_LANG['<!uke-pit-service>LLU'] = 'LLU';
+$_LANG['<!uke-pit-service>VULA'] = 'VULA';
+$_LANG['<!uke-pit-service>access to pole substructure, towers and masts'] = 'dostęp do podbudowy słupowej, wież i masztów';
+$_LANG['<!uke-pit-service>collocation'] = 'kolokacja';
+$_LANG['<!uke-pit-service>network connection in collocation mode'] = 'połączenie sieci w trybie kolokacji';
+$_LANG['<!uke-pit-service>network connection in linear mode'] = 'połączenie sieci w trybie liniowym';
+$_LANG['<!uke-pit-service>provided to end user'] = 'świadczona dla użytkowników końcowych';
+$_LANG['<!uke-pit-service>other'] = 'inna';
+
+$_LANG['Expired identity card'] = 'Nieważny dokument tożsamości';
+
+$_LANG['<!origin>Facebook'] = 'Facebook';
+$_LANG['<!origin>company website'] = 'witryna firmowa';
+$_LANG['<!origin>search engine'] = 'wyszukiwarka';
+$_LANG['<!origin>online advertising'] = 'reklama online';
+$_LANG['<!origin>car advertising'] = 'reklama na samochodzie';
+$_LANG['<!origin>banner'] = 'baner';
+$_LANG['<!origin>leaflet'] = 'ulotka';
+$_LANG['<!origin>worker'] = 'pracownik';
+$_LANG['<!origin>recommendation'] = 'polecenie';
+$_LANG['<!origin>neighbour'] = 'sąsiad';
+$_LANG['<!origin>event'] = 'wydarzenie';
+$_LANG['<!origin>— unspecified —'] = '— nieokreślone —';
+$_LANG['<!origin>Origin'] = 'Pochodzenie';
+$_LANG['<!origin>— any —'] = '— dowolne —';
+
+$_LANG['Customer origin is empty!'] = 'Puste pochodzenie klienta!';
+$_LANG['Customer origin is required!'] = 'Wymagane pochodzenie klienta!';
+
+$_LANG['relative to reference document'] = 'względem dokumentu odniesienia';
+$_LANG['Relative to reference document'] = 'Względem dokumentu odniesienia';
+
+$_LANG['(taxation)'] = '(opodatkowanie)';
+
+$_LANG['Start date'] = 'Data rozpoczęcia';
+$_LANG['Attempts'] = 'Liczba prób';
+$_LANG['Attempts left'] = 'Zostało prób';
+$_LANG['Increase attempts'] = 'Zwiększ liczbę prób';
+
+$_LANG['without e-mail contact'] = 'bez kontaktu e-mail';
+$_LANG['without phone contact'] = 'bez kontaktu telefonicznego';
+
+$_LANG['Summary'] = 'Podsumowanie';
+$_LANG['Volume'] = 'Ilość';
+
+$_LANG['Last change'] = 'Ostatnia zmiana';
+
+$_LANG['<!consent-group>marketing'] = 'marketing';
+$_LANG['<!consent-group>third party marketing'] = 'marketing podmiotów trzecich';
+$_LANG['<!consent-group>service information'] = 'informacje związane z usługą';
+$_LANG['<!consent-group>invoices'] = 'faktury';
+$_LANG['<!consent-group>complaint information'] = 'informacje związane z reklamacją';
+$_LANG['<!consent-group>technical'] = 'techniczne';
+$_LANG['<!consent-group>contact signing related'] = 'związane z podpisaniem umowy';
+$_LANG['<!consent-group>document form'] = 'forma dokumentowa';
+
+$_LANG['suspension of a fiber optic line over the customer plot'] = 'przewieszenie linii światłowodowej nad działką klienta';
+$_LANG['contract signed outside the company premises'] = 'podpisanie umowy poza lokalem przedsiębiorstwa';
+$_LANG['service provision before withdrawal period expires'] = 'świadczenie usług przed upływem okresu na odstąpienie od umowy';
+$_LANG['digital content use results in loss of contract withdrawal possibility'] = 'wykorzystanie treści cyfrowych powoduję utratę możliwości odstąpienia od umowy';
+
+$_LANG['reminder'] = 'przypomnienie';
+
+$_LANG['<!document-period>dynamic'] = 'dynamiczny';
+$_LANG['<!document-period>(dynamic)'] = '(dynamiczny)';
+
+$_LANG['Customer Consents'] = 'Zgody klienta';
+$_LANG['Reset consents'] = 'Zresetuj zgody';
+
+$_LANG['document external ID'] = 'zewnętrzny ID dokumentu';
+$_LANG['Document external ID'] = 'Zewnętrzny ID dokumentu';
+
+$_LANG['Don\'t create assignments'] = 'Nie twórz zobowiązań';
+
+$_LANG['business'] = 'biznesowy';
+$_LANG['individual'] = 'indywidualny';
+
+$_LANG['send to customer email'] = 'wyślij na e-mail klienta';
+
+$_LANG['Time period'] = 'Zakres czasu';
+$_LANG['\'From\' time should be earlier than \'to\' time!'] = 'Czas \'od\' powinien być wcześniejszy niż czas \'do\'!';
+$_LANG['No day was checked!'] = 'Nie zaznaczono żadnego dnia!';
+
+$_LANG['You select the receipt option, which may require issuing fiscal receipt!'] = 'Zaznaczasz opcję paragonu, co może wiązać się z koniecznością wygenerowania paragonu fiskalnego!';
+
+$_LANG['<!rtticket>Custom create time'] = 'Własny czas utworzenia';
+$_LANG['<!rtticket>Custom resolve time'] = 'Własny czas rozwiązania';
+$_LANG['Helpdesk (RT) ticket custom create and resolve times'] = 'własne czasy utworzenia i rozwiązania zgłoszenia Helpdesk (RT)';
+$_LANG['Custom resolve time should be later than custom create time!'] = 'Własny czas rozwiązania powinien być późniejszy niż własny czas utworzenia!';
+$_LANG['Ticket custom create time has been changed from $a to $b.'] = 'Własny czas utworzenia zgłoszenia został zmieniony z $a na $b.';
+$_LANG['Ticket custom create time has been set to $a.'] = 'Własny czas utworzenia zgłoszenia został ustawiony na $a';
+$_LANG['Ticket custom create time has been removed.'] = 'Własny czas utworzenia zgłoszenia został usunięty';
+$_LANG['Ticket custom resolve time has been changed from $a to $b.'] = 'Własny czas rozwiązania zgłoszenia został zmieniony z $a na $b.';
+$_LANG['Ticket custom resolve time has been set to $a.'] = 'Własny czas rozwiązania zgłoszenia został ustawiony na $a';
+$_LANG['Ticket custom resolve time has been removed.'] = 'Własny czas rozwiązania zgłoszenia został usunięty';
+
+$_LANG['Last error'] = 'Ostatni błąd';
+$_LANG['Last success'] = 'Ostatnie powodzenie';
+$_LANG['Last delivery'] = 'Ostatnie dostarczenie';
+
+$_LANG['Promotion schema'] = 'Schemat promocyjny';
+$_LANG['Promotion schemas'] = 'Schematy promocyjne';
+
+$_LANG['Generate new password and copy it to clipboard'] = 'Wygeneruj nowe hasło i skopiuj je do schowka';
+
+$_LANG['<!nodesession-search>IP address'] = 'adres IP';
+$_LANG['<!nodesession-search>MAC address'] = 'adres MAC';
+$_LANG['<!nodesession-search>customer'] = 'klient';
+$_LANG['<!nodesession-search>node ID'] = 'id komputera';
+$_LANG['<!nodesession-search>location'] = 'lokalizacja';
+
+$_LANG['<!financial-history>Charge'] = 'Obciążenie';
+$_LANG['<!financial-history>Payment'] = 'Wpłata';
+
+$_LANG['Blind carbon copy'] = 'Ukryte do wiadomości';
+$_LANG['Carbon copy'] = 'Do wiadomości';
+$_LANG['Reply to'] = 'Odpowiedź do';
+$_LANG['More e-mail addresses'] = 'Więcej adresów e-mail';
+$_LANG['Less e-mail addresses'] = 'Mniej adresów e-mail';
+
+$_LANG['exact match'] = 'dokładne dopasowanie';
+
+$_LANG['No authentication data?'] = 'Brak danych uwierzytelniających?';
+$_LANG['Session expired!'] = 'Sesja wygasła!';
+
+$_LANG['Office to PDF file conversion mechanism is not enabled!'] = 'Mechanizm konwersji plików biurowych do PDF nie jest aktywny!';
+$_LANG['Cannot create Office to PDF conversion process!'] = 'Niemożliwe utworzenie procesu konwersji plików biurowych do PDF!';
+
+$_LANG['— based on \'visual editor\' option —'] = '— bazuje na opcji \'edytor wizualny\' —';
+$_LANG['HTML'] = 'HTML';
+$_LANG['plain text'] = 'zwykły tekst';
+$_LANG['Queues'] = 'Kolejki';
+
+$_LANG['Existing attachments'] = 'Istniejące załączniki';
+$_LANG['Template attachments'] = 'Załączniki szablonu';
+
+$_LANG['The validity date range of the document is determined upon its approval.'] = 'Zakres dat obowiązywania dokumentu jest wyznaczany przy jego zatwierdzaniu.';
+
+$_LANG['Additional properties'] = 'Dodatkowe właściwości';
+$_LANG['assigned bandwidth'] = 'przydzielona przepustowość';
+$_LANG['Min. download'] = 'Min. pobieranie';
+$_LANG['Max. download'] = 'Maks. pobieranie';
+$_LANG['Min. upload'] = 'Min. wysyłanie';
+$_LANG['Max. upload'] = 'Maks. wysyłanie';
+
+$_LANG['customer has not assigned any mobile phones with \'documents\' flag'] = 'klient nie ma przypisanych żadnych telefonów komórkowych z opcją \'dokumenty\'';
+$_LANG['document encryption password: $a $b'] = 'hasło szyfrujące dokument: $a $b';
+
+$_LANG['with recipient address'] = 'z adresem odbiorcy';
+
+$_LANG['Error during communication with NAS device!'] = 'Błąd podczas komunikacji z urządzeniem NAS!';
+$_LANG['No session information on NAS device!'] = 'Brak informacji o sesji na urządzeniu NAS!';
+
+$_LANG['unknown error'] = 'nieznany błąd';
+
+$_LANG['budgetary unit'] = 'jednostka budżetowa';
+$_LANG['Check it if customer is budgetary unit (public or state)'] = 'Zaznacz, jeśli klient jest jednostką budżetową (publiczną lub samorządową)';
+$_LANG['Separate budgetary units'] = 'Wydziel jednostki budżetowe';
+$_LANG['<!uke-income>Budgetary unit services'] = 'Usługi świadczone dla jednostek budżetowych';
+$_LANG['<!uke-income>Budgetary unit income'] = 'Przychód z jednostek budżetowych';
+$_LANG['<!link>Budgetary unit links'] = 'Łącza jednostek budżetowych';
+
+$_LANG['Location address is not selected'] = 'Nie wybrano adresu lokalizacji';
+
+$_LANG['2.5 Gbit/s'] = '2,5 Gbit/s';
+
+$_LANG['Selected divisions have different TEN identifiers!'] = 'Wybrane firmy mają różne identyfikatory NIP!';
+
+$_LANG['Invoice sent to KSeF in batch session $a at $b on $c and waiting for handling...'] = 'Faktura wysłana do KSeF sesją wsadową $a o godzinie $b w dniu $c i oczekuje na przetworzenie...';
+
+$_LANG['<!netdevmodeltype>passive'] = 'pasywne';
+$_LANG['<!netdevmodeltype>active'] = 'aktywne';
+
+$_LANG['<!rt>Configuration section'] = 'Sekcja konfiguracyjna';
+$_LANG['<!rt-configuration-section>— default —'] = '— domyślna —';
+
+$_LANG['Download UPO'] = 'Pobierz UPO';
+$_LANG['View UPO'] = 'Pokaż UPO';
+
+$_LANG['<!ksef>Local Government Unit (role 8)'] = 'jednostka samorządu terytorialnego (rola 8)';
+$_LANG['<!ksef>VAT group (role 10)'] = 'grupa VAT (rola 10)';
+$_LANG['<!ksef>other (role 2)'] = 'inny (rola 2)';
+$_LANG['<!ksef>employee (role 11)'] = 'pracownik (rola 11)';
+
+$_LANG['<!ksef>Document type/number'] = 'Typ/numer dokumentu';
+$_LANG['KSeF number'] = 'Numer KSeF';
+$_LANG['<!ksef>Seller name'] = 'Nazwa sprzedawcy';
+$_LANG['<!ksef>Seller TEN'] = 'NIP sprzedawcy';
+$_LANG['<!ksef>Buyer name'] = 'Nazwa nabywcy';
+$_LANG['<!ksef>Net value'] = 'Wartość netto';
+$_LANG['<!ksef>VAT value'] = 'Wartość VAT';
+$_LANG['<!ksef>Gross value'] = 'Wartość brutto';
+$_LANG['<!ksef>Bank name'] = 'Nazwa banku';
+$_LANG['<!ksef>Bank account'] = 'Konto bankowe';
+$_LANG['<!ksef>No purchase invoices matching filter criteria.'] = 'Brak faktur zakupu dopasowanych do kryteriów filtra.';
+$_LANG['<!ksef>purchase invoices'] = 'faktury zakupu';
+$_LANG['<!ksef>Payment type'] = 'Typ płatności';
+$_LANG['<!ksef>Payment date'] = 'Data płatności';
+$_LANG['<!ksef>Paid'] = 'Zapłacono';
+$_LANG['<!ksef>Don\'t post document'] = 'Nie księguj dokumentu';
+$_LANG['<!ksef>Post document'] = 'Księguj dokument';
+$_LANG['<!ksef>Settle document'] = 'Rozlicz dokument';
+$_LANG['<!ksef>Unsettle document'] = 'Cofnij rozliczenie dokumentu';
+$_LANG['<!ksef>Document details'] = 'Szczegóły dokumentu';
+
+$_LANG['KSeF Purchase Invoices'] = 'Faktury zakupu KSeF';
+$_LANG['KSeF purchase invoice management'] = 'Zarządzanie fakturami zakupu KSeF';
+$_LANG['<!ksef>KSeF purchase invoice management'] = 'zarządzanie fakturami zakupu KSeF';
+$_LANG['<!ksef>posted'] = 'księgowane';
+$_LANG['<!ksef>unsettled'] = 'nierozliczone';
+
+$_LANG['<!ksef>No.'] = 'Lp.';
+$_LANG['<!ksef>Description'] = 'Opis';
+
+$_LANG['<!ksef>VAT rate'] = 'Stawka VAT';
+$_LANG['<!ksef>Price'] = 'Cena';
+$_LANG['<!ksef>Net value'] = 'Wartość netto';
+$_LANG['<!ksef>Gross value'] = 'Wartość brutto';
+$_LANG['<!ksef>VAT'] = 'VAT';
+$_LANG['<!ksef>Total'] = 'Razem';
+
+$_LANG['<!ksef>Download invoice'] = 'Pobierz fakturę';
+$_LANG['<!ksef>View invoice'] = 'Pokaż fakturę';
+
+$_LANG['<!ksef>Invoice notes'] = 'Notatki do faktury';
+$_LANG['<!ksef>Invoice tags'] = 'Etykiety faktury';
+$_LANG['<!ksef>Tags'] = 'Etykiety';
+
+$_LANG['<!ksef>Seller'] = 'Sprzedawca';
+$_LANG['<!ksef>$a (TEN $b)'] = '$a (NIP $b)';
+
+$_LANG['<!ksef>advance invoice'] = 'faktura zaliczkowa';
+$_LANG['<!ksef>final invoice'] = 'faktura rozliczeniowa';
+$_LANG['<!ksef>simplified invoice'] = 'faktura uproszczona';
+$_LANG['<!ksef>corrective advance invoice'] = 'korekta faktury zaliczkowej';
+$_LANG['<!ksef>corrective final invoice'] = 'korekta faktury rozliczeniowej';
+$_LANG['<!ksef>standard PEF invoice'] = 'faktura podstawowa PEF';
+$_LANG['<!ksef>custom structured PEF invoice'] = 'faktura specjalizowana PEF';
+$_LANG['<!ksef>corrective PEF invoice'] = 'korekta faktury PEF';
+$_LANG['<!ksef>RR invoice'] = 'faktura RR';
+$_LANG['<!ksef>corrective RR invoice'] = 'korekta faktury RR';
+
+$_LANG['selection from filter'] = 'wybór z filtra';
+$_LANG['all recipient of this message'] = 'wszyscy odbiorcy tej wiadomości';
+$_LANG['recipients who haven\'t received this message'] = 'odbiorcy, którzy nie otrzymali tej wiadomości';
+$_LANG['recipients with delivery errors'] = 'odbiorcy, do których wysyłka zakończyła się błędem';
+
+$_LANG['Preparing recipient list. Please wait.'] = 'Przygotowywanie listy odbiorców. Proszę czekać.';
+$_LANG['Preparing messages...'] = 'Przygotowywanie wiadomości...';
+$_LANG['Sending messages'] = 'Wysyłanie wiadomości';
+$_LANG['Finished'] = 'Zakończone';
+
+$_LANG['from earlier sent message'] = 'z poprzednio wysłanej wiadomości';
+$_LANG['The are no recipients which match filter criteria!'] = 'Brak odbiorców pasujących do kryteriów filtra!';
+
+$_LANG['Select/enter value'] = 'Wybierz/wpisz wartość';
+
+$_LANG['Show QR2Pay code'] = 'Pokaż kod QR2Pay';
+$_LANG['Show invoice items'] = 'Pokaż pozycje faktury';
+$_LANG['Invoice tag management'] = 'Zarządzanie etykietami faktury';
+$_LANG['Invoice textual description'] = 'Tekstowy opis faktury';
+
+$_LANG['Submit to KSeF'] = 'Wysyłka do KSeF';
+
+$_LANG['<!ksef>Invoice sent to KSeF in batch session $a'] = 'Faktura wysłana do KSeF sesją wsadową $a';
+$_LANG['<!ksef>at $a on $b and its handling has finished with error:'] = 'w dniu $a o godzinie $b i jej przetwarzanie zakończyło się błędem:';
+$_LANG['<!ksef>$a (error code: $b)'] = '$a (kod błędu: $b)';
+
+$_LANG['NO KSeF NUMBER'] = 'BRAK NUMERU KSeF';
+
+$_LANG['<!ksef>KSeF status'] = 'Status KSeF';
+$_LANG['<!ksef-status>- any -'] = '- dowolny -';
+$_LANG['<!ksef-status>excluded'] = 'wykluczona';
+$_LANG['<!ksef-status>not sent yet'] = 'jeszcze niewysłana';
+$_LANG['<!ksef-status>sent'] = 'wysłana';
+$_LANG['<!ksef-status>error'] = 'błąd';
+$_LANG['<!ksef-status>assigned number'] = 'nadany numer';

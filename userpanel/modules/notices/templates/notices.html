@@ -1,6 +1,27 @@
 <!-- $Id$ -->
 {include file="header.html"}
 {$xajax}
+
+<style>
+
+	.notice-attachments {
+		margin-top: 0.5em;
+		margin-bottom: 0.5em;
+	}
+
+	.notice-attachments ul {
+		margin-block-start: 0;
+		margin-block-end: 0;
+		list-style-type: none;
+		padding-inline-start: 0;
+	}
+
+	.notice-confirm {
+		margin-top: 0.5em;
+	}
+
+</style>
+
 {if $warning}
 <table width="100%" cellpadding="10">
     <tr>
@@ -28,7 +49,7 @@
     <tr>
        <td>
 						{box title="Notice to you"}
-						{if $notice}
+						{if $notices}
 						<table style="width: 100%;" cellpadding="3" class="light">
 								<tr class="darkest bold">
 									<td width="2%">{trans("Date:")}</td>
@@ -37,7 +58,7 @@
 									<td width="10%">{trans("Read status:")}</td>
 								</tr>
 								{cycle values="light,lucid" print=false name=messages}
-								{foreach $notice as $items}
+								{foreach $notices as $items}
 								<tr class="dark hand {cycle name=messages}{if $items.status == $smarty.const.MSG_ERROR} alert{elseif $items.status == $smarty.const.MSG_SENT} blend{elseif $items.status == $smarty.const.MSG_DELIVERED} green{/if}" onCLick="ReadNotice('{$items.id}');">
 									<td width="2%" class="nobr">{$items.cdate|date_format:"Y-m-d H:i"}</td>
 									<td width="8%" >{if $items.type == $smarty.const.MSG_USERPANEL_URGENT}<strong>{trans("Urgent")}</strong>{else}{trans("Casual")}{/if}</td>
@@ -55,29 +76,51 @@
 								</tr>
 								<tr id="{$items.id}"  style="display:none;">
 									<td width="10%" align="center" colspan="4" >
-										<strong>{trans("Body:")}</strong><br />
-										{if $items.mibody}
-											{if $items.contenttype == 'text/plain'}
-												{nl2br(htmlspecialchars($items.mibody), false)}
-											{elseif $items.contenttype == 'text/html'}
-												{$items.mibody}
+										<h3>{trans("Body")}</h3>
+										<div class="notice-body">
+											{if $items.mibody}
+												{if $items.contenttype == 'text/plain'}
+													{nl2br(htmlspecialchars($items.mibody), false)}
+												{elseif $items.contenttype == 'text/html'}
+													{$items.mibody}
+												{else}
+													{nl2br($items.mibody, false)}
+												{/if}
 											{else}
-												{nl2br($items.mibody, false)}
+												{if $items.contenttype == 'text/plain'}
+													{nl2br(htmlspecialchars($items.body), false)}
+												{elseif $items.contenttype == 'text/html'}
+													{$items.body}
+												{else}
+													{nl2br($items.body, false)}
+												{/if}
 											{/if}
-										{else}
-											{if $items.contenttype == 'text/plain'}
-												{nl2br(htmlspecialchars($items.body), false)}
-											{elseif $items.contenttype == 'text/html'}
-												{$items.body}
-											{else}
-												{nl2br($items.body, false)}
-											{/if}
+										</div>
+										{if !empty($items.attachments)}
+											<div class="notice-attachments">
+												{icon name="attachment"}
+												<strong>{trans("Attachments")}</strong>
+												<ul>
+													{foreach $items.attachments as $attachmentid => $attachment}
+														<li>
+															<a href="?m=notices&f=attachmentview&id={$attachmentid}">
+																{$attachment.filename|escape}
+																{if preg_match('/pdf/', $attachment.contenttype)}
+																	{$icon = "pdf"}
+																{elseif preg_match('/csv|excel|spreadsheet/', $attachment.contenttype)}
+																	{$icon = "xls"}
+																{/if}
+																{icon name="lms-ui-icon-view" class=$icon}
+															</a>
+														</li>
+													{/foreach}
+												</ul>
+											</div>
 										{/if}
-										<br /><br />
 										{if $items.status != $smarty.const.MSG_DELIVERED}
-											<a href="?m=notices&confirm={$items.id}">{trans("I confirm reading")} {img src="save.gif" alt=""}</a>
-										{else}
-											&nbsp;
+											<div class="notice-confirm">
+												<a href="?m=notices&confirm={$items.id}">{trans("I confirm reading")} {img src="save.gif" alt=""}</a>
+											</div>
 										{/if}
 									</td>
 								</tr>

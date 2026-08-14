@@ -35,6 +35,10 @@
 		map.addControl(selectlayer);
 		selectlayer.activate();
 
+		$(function() {
+			map.updateSize();
+		});
+
 		set_lastonline_limit({ConfigHelper::getConfig('phpui.lastonline_limit')});
 		setTimeout("netdevmap_refresh()", lastonline_limit * 1000);
 

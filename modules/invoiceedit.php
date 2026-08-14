@@ -51,6 +51,10 @@ if (isset($_GET['id']) && ($action == 'edit' || $action == 'init')) {
         return;
     }
 
+    if ($LMS->isKsefDocument($_GET['id'])) {
+        return;
+    }
+
     $invoice = $LMS->GetInvoiceContent($_GET['id']);
 
     if (!empty($invoice['cancelled'])) {
@@ -83,6 +87,7 @@ if (isset($_GET['id']) && ($action == 'edit' || $action == 'init')) {
             's_valuenetto' => str_replace(',', '.', $item['netvalue']),
             's_valuebrutto' => str_replace(',', '.', $item['grossvalue']),
             'tax' => isset($taxeslist[$item['taxid']]) ? $taxeslist[$item['taxid']]['label'] : '',
+            'taxvalue' => isset($taxeslist[$item['taxid']]) ? $taxeslist[$item['taxid']]['value'] : 0,
             'taxid' => $item['taxid'],
             'taxcategory' => $item['taxcategory'],
         );
@@ -247,6 +252,7 @@ switch ($action) {
             }
 
             $itemdata['tax'] = $taxeslist[$itemdata['taxid']]['label'];
+            $itemdata['taxvalue'] = $taxeslist[$itemdata['taxid']]['value'];
         }
 
         if ($itemdata['tariffid'] > 0) {
@@ -304,6 +310,7 @@ switch ($action) {
         $oldflags = $invoice['oldflags'];
         $oldcomment = $invoice['oldcomment'];
         $oldmemo = $invoice['oldmemo'];
+        $extid = $invoice['extid'];
         $closed   = $invoice['closed'];
         $divisionid = $invoice['divisionid'];
         $name = $invoice['name'];
@@ -314,6 +321,7 @@ switch ($action) {
         $city = $invoice['city'];
         $countryid = $invoice['countryid'];
         $recipient_address = $invoice['recipient_address'] ?? null;
+        $recipient_address2 = $invoice['recipient_address2'] ?? null;
 
         unset($invoice);
         unset($error);
@@ -334,6 +342,7 @@ switch ($action) {
         $invoice['oldflags'] = $oldflags;
         $invoice['oldcomment'] = $oldcomment;
         $invoice['oldmemo'] = $invoice['memo'] = $oldmemo;
+        $invoice['extid'] = $extid;
         $invoice['divisionid'] = $divisionid;
         $invoice['name'] = $name;
         $invoice['address'] = $address;
@@ -343,11 +352,16 @@ switch ($action) {
         $invoice['city'] = $city;
         $invoice['countryid'] = $countryid;
         $invoice['recipient_address'] = $recipient_address;
+        $invoice['recipient_address2'] = $recipient_address2;
+
+        if (!empty($invoice['extid']) && !empty($oldflags[DOC_FLAG_RECEIPT])) {
+            $invoice['flags'][DOC_FLAG_RECEIPT] = 1;
+        }
 
         $currtime = time();
 
         if (ConfigHelper::checkPrivilege('invoice_consent_date')) {
-            if ($invoice['cdate']) { // && !$invoice['cdatewarning'])
+            if ($invoice['cdate']) {
                 [$year, $month, $day] = explode('/', $invoice['cdate']);
                 if (checkdate($month, $day, $year)) {
                     $oldday = date('d', $invoice['oldcdate']);
@@ -372,6 +386,30 @@ switch ($action) {
             }
         } else {
             $invoice['cdate'] = $invoice['oldcdate'];
+        }
+
+        if (ConfigHelper::checkPrivilege('invoice_consent_date') && $invoice['cdate'] && !isset($warnings['invoice-cdate-'])) {
+            if (empty($invoice['numberplanid'])) {
+                $maxdate = $DB->GetOne(
+                    'SELECT MAX(cdate) FROM documents WHERE type = ? AND numberplanid IS NULL',
+                    array($invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE)
+                );
+            } else {
+                $maxdate = $DB->GetOne(
+                    'SELECT MAX(cdate) FROM documents WHERE type = ? AND numberplanid = ?',
+                    array($invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE, $invoice['numberplanid'])
+                );
+            }
+
+            if ($invoice['cdate'] < $maxdate) {
+                $warning['invoice[cdate]'] = trans(
+                    'Last date of invoice settlement is $a. If sure, you want to write invoice with date of $b, then click "Submit" again.',
+                    date('Y/m/d H:i', $maxdate),
+                    date('Y/m/d H:i', $invoice['cdate'])
+                );
+            }
+        } elseif (!$invoice['cdate']) {
+            $invoice['cdate'] = $currtime;
         }
 
         if (ConfigHelper::checkPrivilege('invoice_sale_date')) {
@@ -445,6 +483,8 @@ switch ($action) {
         if ($numberplans && count($numberplans) && empty($invoice['numberplanid']) && $invoice['numberplanid'] != 0) {
             $error['numberplanid'] = trans('Select numbering plan');
         }
+
+        $SESSION->restore('invoiceid', $invoice['id'], true);
 
         if ($invoice['number']) {
             if (!preg_match('/^[0-9]+$/', $invoice['number'])) {
@@ -557,10 +597,39 @@ switch ($action) {
             }
 
             if ($invoice['recipient_address_id'] > 0) {
+                $recipient_ten = $LMS->getRecipientTen($invoice['recipient_address_id']);
+                $recipient_type = $LMS->getEntityType($invoice['recipient_address_id']);
                 $DB->Execute(
-                    'UPDATE documents SET recipient_address_id = ? WHERE id = ?',
+                    'UPDATE documents SET recipient_address_id = ?, recipient_ten = ?, recipient_type = ? WHERE id = ?',
                     array(
                         $LMS->CopyAddress($invoice['recipient_address_id']),
+                        $recipient_ten,
+                        $recipient_type,
+                        $invoice['id']
+                    )
+                );
+            }
+        }
+
+        $prev_rec_addr2 = $DB->GetOne('SELECT recipient_address_id2 FROM documents WHERE id = ?', array($invoice['id']));
+        if (empty($prev_rec_addr2)) {
+            $prev_rec_addr2 = -1;
+        }
+
+        if ($prev_rec_addr2 != $invoice['recipient_address_id2']) {
+            if ($prev_rec_addr2 > 0) {
+                $DB->Execute('DELETE FROM addresses WHERE id = ?', array($prev_rec_addr2));
+            }
+
+            if ($invoice['recipient_address_id2'] > 0) {
+                $recipient_ten2 = $LMS->getRecipientTen($invoice['recipient_address_id2']);
+                $recipient_type2 = $LMS->getEntityType($invoice['recipient_address_id2']);
+                $DB->Execute(
+                    'UPDATE documents SET recipient_address_id2 = ?, recipient_ten2 = ?, recipient_type2 = ? WHERE id = ?',
+                    array(
+                        $LMS->CopyAddress($invoice['recipient_address_id2']),
+                        $recipient_ten2,
+                        $recipient_type2,
                         $invoice['id']
                     )
                 );
@@ -581,6 +650,8 @@ switch ($action) {
         }
 
         $DB->BeginTrans();
+
+/*
         $tables = array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions', 'vdivisions',
             'customerview', 'customercontacts', 'netdevices', 'nodes',
             'logtransactions', 'logmessages', 'logmessagekeys', 'logmessagedata');
@@ -590,6 +661,9 @@ switch ($action) {
             $tables = array_merge($tables, array('customers cv', 'customer_addresses ca'));
         }
         $DB->LockTables($tables);
+*/
+
+        $DB->LockByHandle(LOCK_INVOICE_NUMBER);
 
         $division = $LMS->GetDivision($use_current_customer_data ? $customer['divisionid'] : $invoice['divisionid']);
 
@@ -796,12 +870,22 @@ switch ($action) {
         }
 
         $hook_data = array(
+            'customer' => array(
+                'id' => $invoice['customerid'],
+            ),
             'contents' => $contents,
             'invoice' => $invoice,
         );
         $hook_data = $LMS->ExecuteHook('invoiceedit_save_after_submit', $hook_data);
+        if (isset($hook_data['extid'])) {
+            $invoice['extid'] = $hook_data['extid'];
+            $LMS->setInvoiceExtID($invoice);
+        }
 
-        $DB->UnLockTables();
+//        $DB->UnLockTables();
+
+        $DB->UnLockByHandle(LOCK_INVOICE_NUMBER);
+
         $DB->CommitTrans();
 
         if (isset($_GET['print'])) {
@@ -822,7 +906,7 @@ $SESSION->save('invoicecontents', $contents, true);
 $SESSION->save('invoicecustomer', $customerid, true);
 $SESSION->save('invoiceediterror', $error, true);
 
-if ($action && !$error) {
+if ($action && empty($error) && empty($warning)) {
     // redirect needed because we don't want to destroy contents of invoice in order of page refresh
     $SESSION->redirect('?m=invoiceedit');
 }
@@ -868,6 +952,8 @@ $invoice = $hook_data['invoice'];
 
 if (isset($customer)) {
     $addresses = $LMS->getCustomerAddresses($customer['id']);
+    $addresses2 = $addresses;
+
     if (isset($invoice['recipient_address'])) {
         $addresses = array_replace(
             array($invoice['recipient_address']['address_id'] => $invoice['recipient_address']),
@@ -875,7 +961,17 @@ if (isset($customer)) {
         );
         $invoice['recipient_address'] = base64_encode(json_encode($invoice['recipient_address']));
     }
+
+    if (isset($invoice['recipient_address2'])) {
+        $addresses2 = array_replace(
+            array($invoice['recipient_address2']['address_id'] => $invoice['recipient_address2']),
+            $addresses2
+        );
+        $invoice['recipient_address2'] = base64_encode(json_encode($invoice['recipient_address2']));
+    }
+
     $SMARTY->assign('addresses', $addresses);
+    $SMARTY->assign('addresses2', $addresses2);
 }
 
 $SMARTY->assign('customer', $customer);

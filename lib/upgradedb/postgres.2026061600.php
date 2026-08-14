@@ -3,9 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
- *
- *  Please, see the doc/AUTHORS for more information about authors!
+ *  (C) Copyright 2001-2026 LMS Developers
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
@@ -21,10 +19,20 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
  */
 
-function smarty_modifier_size($array, $default = 0)
-{
-    return LMSSmartyPlugins::sizeModifier($array, $default);
-}
+$this->BeginTrans();
+
+$this->Execute(
+    "UPDATE uiconfig SET section = ?, var = ? WHERE section = ? AND var = ?",
+    array(
+        'documents',
+        'confirm_date_required',
+        'phpui',
+        'document_confirm_date_required',
+    )
+);
+
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2026061600', 'dbversion'));
+
+$this->CommitTrans();

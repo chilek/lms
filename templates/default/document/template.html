@@ -1,0 +1,477 @@
+{$division.name = $division.name|donthyphenate}
+{$division.shortname = $division.shortname|donthyphenate}
+{function signature_box}
+	{if isset($margin)}
+		{$margin_top = intval($margin)}
+		{$margin_bottom = $margin_top}
+	{else}
+		{if isset($margin_top)}
+			{$margin_top = intval($margin_top)}
+		{else}
+			{$margin_top = "2em"}
+		{/if}
+		{if isset($margin_bottom)}
+			{$margin_bottom = intval($margin_bottom)}
+		{else}
+			{$margin_bottom = "2em"}
+		{/if}
+	{/if}
+	{if empty($type) || $type != "dots"}
+		{$type = "borders"}
+	{/if}
+	{if !empty($label)}
+		{$right_label = $label}
+	{/if}
+	<div class="signature-box {$type}" style="margin-top: {$margin_top}; margin-bottom: {$margin_bottom};">
+		<div class="signature-box-field{if empty($left_label)} signature-box-field-hidden{/if}">
+			{if !empty($left_label)}
+				<span class="signature-box-field-label">{strip}
+					{if $type == "dots"}
+						{str_repeat("&hellip;", 15)}
+						<br>
+					{/if}
+					{$left_label}
+				{/strip}</span>
+			{/if}
+		</div>
+		<div class="signature-box-field{if empty($right_label)} signature-box-field-hidden{/if}">
+			{if !empty($right_label)}
+				<span class="signature-box-field-label">{strip}
+					{if $type == "dots"}
+						{str_repeat("&hellip;", 15)}
+						<br>
+					{/if}
+					{$right_label}
+				{/strip}</span>
+			{/if}
+		</div>
+	</div>
+{/function}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="content-language" content="{if isset($LANGDEFS)}{$LANGDEFS.$_ui_language.html}{else}{Localisation::getCurrentHtmlLanguage()}{/if}">
+		<meta http-equiv="content-type" content="text/html; charset={if isset($LANGDEFS)}{$LANGDEFS.$_ui_language.charset}{else}{Localisation::getCurrentHtmlCharset()}{/if}">
+		<title>{$engine.title}</title>
+		{if ConfigHelper::getConfig("documents.hyphenate_text")}
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/hyphenopoly/6.0.0/Hyphenopoly_Loader.min.js"
+				integrity="sha512-HfGXsquwKoNFT5XHY0HoO4rAWddD724JyV0VL/poEu5afw8GJ69bi+/7pRdC1v33xzchn7jyrLpzVUiMBeKQ1w=="
+				crossorigin="anonymous"
+				referrerpolicy="no-referrer"></script>
+			<script>
+
+				Hyphenopoly.config({
+					require: {
+						"en-us": "Supercalifragilisticexpialidocious",
+						"pl": "Konstantypolitańczykiwiczówna"
+					},
+					setup: {
+						CORScredentials: "omit",
+						selectors: {
+							"body": {}
+						}
+					}
+				});
+
+			</script>
+		{/if}
+
+		{block name="html-header"}{/block}
+		<style>
+
+			@page {
+				size: A4;
+				margin: 1cm;
+			}
+
+			body {
+				font-size: 10pt;
+			}
+
+			.logo-project {
+				margin: 0 auto;
+				width: 600px;
+				height: 60px;
+			}
+
+			.company-logo {
+				margin-bottom: 0.5em !important;
+			}
+
+			ul,ol {
+				text-align: justify;
+			}
+
+			p {
+				text-align: justify;
+				margin: 4px 0 0 0;
+			}
+
+			.paragraph-title {
+				font-weight: bold;
+				text-align: center;
+				margin-top: 1.5em;
+				margin-bottom: 1.5em;
+			}
+
+			table {
+				border-collapse: collapse;
+				margin-top: 0.5em;
+				margin-bottom: 0.5em;
+				break-inside: avoid;
+			}
+
+			table caption {
+				font-weight: bold;
+				text-align: left;
+				padding-top: 0.5em;
+				padding-bottom: 0.5em;
+			}
+
+			.centered-table {
+				display: flex;
+				justify-content: center;
+			}
+
+			.centered-table caption {
+				text-align: center;
+			}
+
+			.hidden {
+				display: none;
+			}
+
+			.page-break-before {
+				break-before: page;
+			}
+
+			.page-break-after {
+				break-after: page;
+			}
+
+			thead {
+				display: table-header-group;
+			}
+
+			thead td {
+				text-align: center;
+			}
+
+			tbody {
+				display: table-row-group;
+			}
+
+			tfoot {
+				display: table-footer-group;
+			}
+
+			.text-center {
+				text-align: center;
+			}
+
+			.text-right {
+				text-align: right;
+			}
+
+			.bold {
+				font-weight: bold;
+			}
+
+			.nobr {
+				white-space: nowrap;
+			}
+
+			.list-paragraphs {
+				padding-inline-start: 0;
+				list-style: none;
+				counter-reset: paragraph;
+				padding-left: 0;
+			}
+
+			.list-paragraphs > li {
+				list-style-type: none;
+				counter-increment: paragraph;
+			}
+
+			.paragraph::before {
+				content: "\00A7\00A0" counter(paragraph) "\00A0";
+				min-width: 2ch;
+			}
+
+			.list-paragraphs.dots .paragraph::before {
+				content: "\00A7\00A0" counter(paragraph) ".\00A0";
+			}
+
+			.paragraph-container {
+				text-align: center;
+				font-weight: bold;
+				font-size: 130%;
+				margin-top: 1em;
+				margin-bottom: 1em;
+			}
+
+			.list-sections-with-paragraphs {
+				padding-inline-start: 0;
+				list-style: none;
+				counter-reset: section;
+				padding-left: 0;
+			}
+
+			.list-sections-with-paragraphs > li:first-child {
+				counter-reset: paragraph;
+			}
+
+			.list-sections-with-paragraphs > li {
+				list-style-type: none;
+			}
+
+			.section::before {
+				content: counter(section, upper-roman) "\00A0";
+				min-width: 2ch;
+			}
+
+			.list-sections-with-paragraphs.dots .section::before {
+				content: counter(section, upper-roman) ".\00A0";
+				min-width: 2ch;
+			}
+
+			.section-container {
+				text-align: center;
+				font-weight: bold;
+				font-size: 130%;
+				margin-top: 1em;
+				margin-bottom: 0.2em;
+				counter-increment: section;
+			}
+
+			.list-sections-with-paragraphs .paragraph-container {
+				list-style-type: none;
+				counter-increment: paragraph;
+				margin-top: 0.2em;
+			}
+
+			.list-numbers {
+				padding-inline-start: 2em;
+				counter-reset: number;
+			}
+
+			.list-numbers > li {
+				counter-increment: number;
+				padding-inline-start: 0.4em;
+			}
+
+			.list-numbers > li::marker {
+				content: counter(number, decimal) ".";
+			}
+
+			.list-numbers .list-numbers {
+				list-style: none;
+				padding-inline-start: 2em;
+				counter-reset: number-number;
+			}
+
+			.list-numbers .list-numbers > li {
+				counter-increment: number-number;
+				padding-inline-start: 0.4em;
+			}
+
+			.list-numbers .list-numbers > li::marker {
+				content: counter(number, decimal) "." counter(number-number, decimal) ".";
+			}
+
+			.list-hyphens {
+				padding-inline-start: 1.1em;
+				list-style: none;
+			}
+
+			.list-hyphens > li::marker {
+				content: "–\00A0";
+			}
+
+			.list-disc {
+				padding-inline-start: 1.1rem;
+				list-style: none;
+				margin-block-start: 0.3rem;
+				margin-block-end: 0.3rem;
+			}
+
+			.list-disc > li {
+				padding-inline-start: 0.4rem;
+			}
+			.list-disc > li::marker {
+				content: "\25AA\00A0";
+			}
+
+			.list-paragraph-dot-numbers {
+				padding-inline-start: 1.5em;
+				list-style: none;
+				counter-reset: paragraph-dot-numbers;
+			}
+
+			.list-paragraph-dot-numbers > li {
+				counter-increment: paragraph-dot-numbers;
+				padding-inline-start: 0.4em;
+			}
+
+			.list-paragraph-dot-numbers > li::marker {
+				content: counter(paragraph) "." counter(paragraph-dot-numbers) ".";
+			}
+
+			.list-roman-numbers {
+				padding-inline-start: 1.5em;
+				list-style: none;
+				counter-reset: roman-numbers;
+			}
+
+			.list-roman-numbers > li {
+				counter-increment: roman-numbers;
+			}
+
+			.list-roman-numbers > li::marker {
+				content: counter(roman-numbers, upper-roman) ".\00A0";
+			}
+
+			.list-roman-numbers.upper > li::marker {
+				content: counter(roman-numbers, upper-roman) ".\00A0";
+			}
+
+			.list-roman-numbers.upper.brackets > li::marker {
+				content: counter(roman-numbers, upper-roman) ")\00A0";
+			}
+
+			.list-roman-numbers.brackets > li::marker {
+				content: counter(roman-numbers, upper-roman) ")\00A0";
+			}
+
+			.list-roman-numbers.lower > li::marker {
+				content: counter(roman-numbers, lower-roman) ".\00A0";
+			}
+
+			.list-roman-numbers.lower.brackets > li::marker {
+				content: counter(roman-numbers, lower-roman) ")\00A0";
+			}
+
+			.list-letters {
+				padding-inline-start: 1.5em;
+				list-style: none;
+				counter-reset: alpha;
+			}
+
+			.list-letters > li {
+				counter-increment: alpha;
+			}
+
+			.list-letters:not(.explicit) > li::marker {
+				content: counter(alpha, lower-alpha) ")\00A0";
+			}
+
+			.list-letters.explicit {
+				padding-inline-start: 0;
+			}
+
+			.list-letters.explicit > li {
+				margin-top: 0.2rem;
+				margin-bottom: 0.4rem;
+			}
+
+			.list-letters.explicit > li > .list-item-title {
+				font-weight: bold;
+				text-decoration: underline;
+				margin-top: 0.6rem;
+				margin-bottom: 0.6rem;
+			}
+
+			.list-letters.explicit > li > .list-item-content::before {
+				content: counter(alpha, lower-alpha) ")\00A0";
+			}
+
+			.list-letters.explicit > li > .list-item-content > * {
+				margin-top: 0.5rem;
+				margin-bottom: 0.5rem;
+			}
+
+			.signature-box {
+				width: 100%;
+				display: flex;
+				justify-content: space-around;
+				break-inside: avoid;
+			}
+
+			.signature-box-field {
+				display: flex;
+				min-width: 25em;
+				height: 7.5em;
+				justify-content: center;
+				align-items: flex-end;
+				padding-bottom: 0.7em;
+			}
+
+			.signature-box.borders > .signature-box-field {
+				border: 1px solid black;
+			}
+
+			.signature-box.borders > .signature-box-field.signature-box-field-hidden {
+				border: none;
+			}
+
+			.signature-box-field-label {
+				text-align: center;
+			}
+
+			{block name="style"}{/block}
+
+		</style>
+	</head>
+	<body lang="pl">
+		<table style="border-style: none;">
+			<thead>
+				<tr>
+					<td style="border-style: none;">
+						{block name="header-logos"}
+							<p style="text-align:center">
+								{if $company_logo}
+									{image file=$company_logo width=$company_logo_width class="company-logo logo-company"}
+								{/if}
+								{if $document.eu || !empty($document.project)}
+									{if $project_logo}
+										{image file=$project_logo class="logo-project project-logo"}
+									{elseif isset($project_logo)}
+										Brak zdefiniowanego logo projektu EU w szablonie umowy!
+									{/if}
+								{/if}
+							</p>
+						{/block}
+						{block name="header"}{/block}
+					</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td style="border-style: none;">
+						{block name="content-header"}{/block}
+						{block name="number-barcode"}
+							{barcode text=$document.nr}
+						{/block}
+						{block name="content"}{/block}
+					</td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td style="border-style: none;">
+						{if $document.eu || !empty($document.project)}
+							<hr>
+							<p class="text-center">
+								<em>
+									Projekt {if isset($document.project)}{$document.project} {/if}współfinansowany
+									przez Unię Europejską ze środków Europejskiego Funduszu Rozwoju Regionalnego
+								</em>
+							</p>
+						{/if}
+						{block name="footer"}{/block}
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</body>
+</html>

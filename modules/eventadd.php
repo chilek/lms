@@ -250,7 +250,7 @@ if (isset($_POST['event'])) {
     $error = $hook_data['error'];
 
     if (!$error && !$warning) {
-        $event['address_id'] = !isset($event['address_id']) || $event['address_id'] == -1 ? null : $event['address_id'];
+        $event['address_id'] = !isset($event['address_id']) || $event['address_id'] <= 0 ? null : $event['address_id'];
         $event['nodeid'] = empty($event['nodeid']) ? null : $event['nodeid'];
 
         switch ($event['helpdesk']) {
@@ -410,6 +410,7 @@ if (isset($_POST['event'])) {
 
                     $LMS->NotifyUsers(array(
                         'queue' => $ticket['queue'],
+                        'ticketid' => $event['ticketid'],
                         'verifierid' => $ticket['verifierid'],
                         'mail_headers' => $headers,
                         'mail_body' => $body,
@@ -479,6 +480,7 @@ if (isset($_POST['event'])) {
         $event['overlapwarned'] = 0;
         $event['wholedays'] = false;
         $event['date'] = $event['date'] ?? $SESSION->get('edate');
+        $event['divisionid'] = $divisionid;
 
         if (isset($eventticketid)) {
             $event['helpdesk'] = 'assign';
@@ -622,7 +624,8 @@ $SMARTY->assign(
         'event' => $event,
         'queuelist' => $queuelist,
         'categories' => $categories,
-        'invprojectlist' => $invprojectlist
+        'invprojectlist' => $invprojectlist,
+        'divisions' => $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())),
     )
 );
 

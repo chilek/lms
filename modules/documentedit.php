@@ -69,8 +69,14 @@ if (empty($document)) {
 
 $document['customer_name'] = $LMS->GetCustomerName($document['customerid']);
 
-$document['attachments'] = $DB->GetAllByKey('SELECT *, 0 AS deleted FROM documentattachments
-	WHERE docid = ? ORDER BY type DESC', 'id', array($_GET['id']));
+$document['attachments'] = $DB->GetAllByKey(
+    'SELECT *, 0 AS deleted
+    FROM documentattachments
+    WHERE docid = ?
+    ORDER BY type DESC, id ASC',
+    'id',
+    array($_GET['id'])
+);
 
 if (isset($_POST['document'])) {
     $documentedit = $_POST['document'];
@@ -120,6 +126,61 @@ if (isset($_POST['document'])) {
         }
     }
 
+    $currtime = time();
+
+    if (ConfigHelper::checkPrivilege('document_consent_date')) {
+        if ($documentedit['cdate']) {
+            [$year, $month, $day] = explode('/', $documentedit['cdate']);
+            if (checkdate($month, $day, $year)) {
+                $cdate = mktime(
+                    date('G', $currtime),
+                    date('i', $currtime),
+                    date('s', $currtime),
+                    $month,
+                    $day,
+                    $year
+                );
+                if (strtotime('today', $cdate) != strtotime('today', intval($document['cdate']))) {
+                    $documentedit['cdate'] = $cdate;
+                    $currmonth = $month;
+                } else {
+                    $documentedit['cdate'] = $document['cdate'];
+                }
+            } else {
+                $error['cdate'] = trans('Incorrect date format!');
+                $documentedit['cdate'] = $currtime;
+            }
+        }
+    } else {
+        $documentedit['cdate'] = $document['cdate'];
+    }
+
+    if (ConfigHelper::checkPrivilege('document_consent_date') && $documentedit['cdate'] && !isset($warnings['document-cdate-'])) {
+        if ($documentedit['type'] && strtotime('today', intval($document['cdate'])) != strtotime('today', intval($documentedit['cdate']))) {
+            if (empty($documentedit['numberplanid'])) {
+                $maxdate = $DB->GetOne(
+                    'SELECT MAX(cdate) FROM documents WHERE type = ? AND numberplanid IS NULL AND id <> ?',
+                    array($documentedit['type'], $documentedit['id'])
+                );
+            } else {
+                $maxdate = $DB->GetOne(
+                    'SELECT MAX(cdate) FROM documents WHERE type = ? AND numberplanid = ? AND id <> ?',
+                    array($documentedit['type'], $documentedit['numberplanid'], $documentedit['id'])
+                );
+            }
+
+            if ($documentedit['cdate'] < $maxdate) {
+                $warning['document[cdate]'] = trans(
+                    'Last date of document settlement is $a. If sure, you want to write document with date of $b, then click "Submit" again.',
+                    date('Y/m/d H:i', $maxdate),
+                    date('Y/m/d H:i', $documentedit['cdate'])
+                );
+            }
+        }
+    } elseif (!$documentedit['cdate']) {
+        $documentedit['cdate'] = $document['cdate'];
+    }
+
     if ($documentedit['fromdate']) {
         $date = explode('/', $documentedit['fromdate']);
         if (checkdate($date[1], $date[2], $date[0])) {
@@ -146,13 +207,18 @@ if (isset($_POST['document'])) {
         $error['todate'] = trans('Start date can\'t be greater than end date!');
     }
 
-    $documentedit['closed'] = isset($documentedit['closed']) ? DOC_CLOSED : DOC_OPEN;
+    if ($document['docrights'] & DOCRIGHT_CONFIRM) {
+        $documentedit['closed'] = isset($documentedit['closed']) ? (empty($documentedit['closed']) ? DOC_OPEN : (empty($document['closed']) ? DOC_CLOSED : $document['closed'])) : $document['closed'];
+    } else {
+        $documentedit['closed'] = $document['closed'];
+    }
+
     $documentedit['archived'] = isset($documentedit['archived']) ? 1 : 0;
-    if ($documentedit['archived'] && !$documentedit['closed']) {
+    if ($documentedit['archived'] && empty($documentedit['closed'])) {
         $error['closed'] = trans('Cannot undo document confirmation while it is archived!');
     }
 
-    if (isset($documentedit['confirmdate']) && $documentedit['confirmdate'] && !$documentedit['closed']) {
+    if (isset($documentedit['confirmdate']) && $documentedit['confirmdate'] && empty($documentedit['closed'])) {
         $date = explode('/', $documentedit['confirmdate']);
         if (checkdate($date[1], $date[2], $date[0])) {
             $documentedit['confirmdate'] = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
@@ -185,7 +251,7 @@ if (isset($_POST['document'])) {
         }
     }
 
-    if (!$error) {
+    if (!$error && !$warning) {
         $DB->BeginTrans();
 
         $fullnumber = docnumber(array(
@@ -195,46 +261,33 @@ if (isset($_POST['document'])) {
             'customerid' => $document['customerid'],
         ));
 
-        if ($documentedit['closed']) {
-            if ($document['confirmdate'] == -1 && $document['closed'] < DOC_CLOSED_AFTER_CUSTOMER_SMS) {
-                $closed = DOC_CLOSED_AFTER_CUSTOMER_SMS;
-            } elseif ($document['closed'] == DOC_CLOSED_AFTER_CUSTOMER_SCAN) {
-                $closed = DOC_CLOSED_AFTER_CUSTOMER_SCAN;
-            } else {
-                $closed = DOC_CLOSED;
-            }
-        } else {
-            $closed = DOC_OPEN;
-        }
+        $closing = !empty($documentedit['closed']) && empty($document['closed']);
 
         $allowed_archiving = ($document['docrights'] & DOCRIGHT_ARCHIVE) > 0;
+
         $DB->Execute(
-            'UPDATE documents SET type=?, closed=?, sdate=?, cuserid=?, confirmdate = ?,
-			        archived = ?, adate = ?, auserid = ?, number=?, numberplanid=?, fullnumber=?
-				WHERE id=?',
-            array(  $documentedit['type'],
-                    ($document['docrights'] & DOCRIGHT_CONFIRM)
-                        ? ($closed == DOC_OPEN && !$document['closed'] ? DOC_OPEN : $closed)
-                        : $document['closed'],
-                    ($document['docrights'] & DOCRIGHT_CONFIRM)
-                        ? $documentedit['closed'] ? ($document['closed'] ? $document['sdate'] : time()) : 0
-                        : $document['sdate'],
-                    ($document['docrights'] & DOCRIGHT_CONFIRM)
-                        ? ($documentedit['closed'] ? ($document['closed'] ? $document['cuserid'] : $userid) : null)
-                        : $document['cuserid'],
-                    !$document['closed'] && $documentedit['closed'] && $document['confirmdate'] == -1 ? 0 : ($documentedit['closed'] || !$documentedit['confirmdate'] ? 0 : strtotime('tomorrow', $documentedit['confirmdate']) - 1),
-                    $allowed_archiving ? $documentedit['archived'] : $document['archived'],
-                    $allowed_archiving
-                        ? ($documentedit['archived'] ? ($document['archived'] ? $document['adate'] : time()) : 0)
-                        : $document['adate'],
-                    $allowed_archiving
-                        ? ($documentedit['archived'] ? ($document['archived'] ? $document['auserid'] : $userid) : null)
-                        : $document['auserid'],
-                    $documentedit['number'],
-                    empty($documentedit['numberplanid']) ? null : $documentedit['numberplanid'],
-                    $fullnumber,
-                    $documentedit['id'],
-                    )
+            'UPDATE documents SET type = ?, closed = ?, cdate = ?, sdate = ?, cuserid = ?, confirmdate = ?,
+                archived = ?, adate = ?, auserid = ?, number = ?, numberplanid = ?, fullnumber = ?
+                WHERE id = ?',
+            array(
+                $documentedit['type'],
+                $documentedit['closed'],
+                $documentedit['cdate'],
+                ($document['docrights'] & DOCRIGHT_CONFIRM) && $closing ? time() : $document['sdate'],
+                ($document['docrights'] & DOCRIGHT_CONFIRM) && $closing ? $userid : $document['cuserid'],
+                $closing && $document['confirmdate'] == -1 ? 0 : ($documentedit['closed'] || !$documentedit['confirmdate'] ? 0 : strtotime('tomorrow', $documentedit['confirmdate']) - 1),
+                $allowed_archiving ? $documentedit['archived'] : $document['archived'],
+                $allowed_archiving
+                    ? ($documentedit['archived'] ? ($document['archived'] ? $document['adate'] : time()) : 0)
+                    : $document['adate'],
+                $allowed_archiving
+                    ? ($documentedit['archived'] ? ($document['archived'] ? $document['auserid'] : $userid) : null)
+                    : $document['auserid'],
+                $documentedit['number'],
+                empty($documentedit['numberplanid']) ? null : $documentedit['numberplanid'],
+                $fullnumber,
+                $documentedit['id'],
+            )
         );
 
         $DB->Execute(
@@ -264,7 +317,7 @@ if (isset($_POST['document'])) {
 
         $DB->CommitTrans();
 
-        if ($closed > DOC_OPEN && !$document['closed']) {
+        if ($closing && !$document['closed']) {
             $LMS->CommitDocuments(array($documentedit['id']), false, false);
         }
 
@@ -273,6 +326,7 @@ if (isset($_POST['document'])) {
         $document['title'] = $documentedit['title'];
         $document['type'] = $documentedit['type'];
         $document['description'] = $documentedit['description'];
+        $document['cdate'] = $documentedit['cdate'];
         $document['closed'] = $documentedit['closed'];
         $document['number'] = $documentedit['number'];
         $document['numberplanid'] = $documentedit['numberplanid'];

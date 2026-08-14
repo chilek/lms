@@ -1,7 +1,7 @@
 {if $unread_notices}
 <script>
 
-    $('.lms-userpanel-notices').addClass('lms-userpanel-icon-warning');
+    $('#lms-userpanel-menu-item-notices .warning-icon').addClass('lms-userpanel-icon-warning');
 
 </script>
 {/if}
@@ -13,6 +13,26 @@
             .modal-dialog {
                 max-width: 60vw;
             }
+        }
+
+        .modal-content {
+            width: fit-content;
+        }
+
+        .modal-content img {
+            max-width: 80vw;
+            max-height: 80vh;
+        }
+
+        .modal-body ul {
+            margin-block-start: 0;
+            margin-block-end: 0;
+            list-style-type: none;
+            padding-inline-start: 0;
+        }
+
+        #urgent-notice-attachments {
+            border-top: 1px solid #dee2e6;
         }
 
     </style>
@@ -30,7 +50,7 @@
                         success: function(data) {
                             $('#urgent-notice-dialog').modal('hide');
                             if (!parseInt(data["unread_notices"])) {
-                                $('.lms-userpanel-notices').removeClass('lms-userpanel-icon-warning');
+                                $('#lms-userpanel-menu-item-notices .warning-icon').removeClass('lms-userpanel-icon-warning');
                             }
                             if (typeof(data["urgent_notice"]) == 'object') {
                                 $('#urgent-notice-dialog').one('hidden.bs.modal', function() {
@@ -69,6 +89,27 @@
                     <div id="urgent-notice-body" class="modal-body">
                         {$urgent_notice.body}
                     </div>
+                    {if !empty($urgent_notice.attachments)}
+                        <div id="urgent-notice-attachments" class="modal-body">
+                            {icon name="attachment"}
+                            <strong>{trans("Attachments")}</strong>
+                            <ul>
+                                {foreach $urgent_notice.attachments as $attachmentid => $attachment}
+                                    <li>
+                                        <a href="?m=notices&f=attachmentview&id={$attachmentid}">
+                                            {$attachment.filename|escape}
+                                            {if preg_match('/pdf/', $attachment.contenttype)}
+                                                {$icon = "pdf"}
+                                            {elseif preg_match('/csv|excel|spreadsheet/', $attachment.contenttype)}
+                                                {$icon = "xls"}
+                                            {/if}
+                                            {icon name="lms-ui-icon-view" class=$icon}
+                                        </a>
+                                    </li>
+                                {/foreach}
+                            </ul>
+                        </div>
+                    {/if}
                     <div class="modal-footer">
                         {button id="urgent-notice-confirm" data_id="{$urgent_notice.id}" class="btn btn-primary" icon="confirm" label="<!userpanel>Confirm"}
                     </div>

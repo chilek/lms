@@ -558,7 +558,7 @@ if ($customers_loc) {
     }
 }
 
-unset($customer_loc);
+unset($customers_loc);
 
 /* --------------------------------
     REWRITE VIEWS AND TABLES WHO USING OLD LOCATION FIELDS

@@ -15,6 +15,19 @@
 		flex-direction: column !important;
 	}
 
+	#netnode-services {
+		align-items: flex-start;
+	}
+
+	#netnode-services .lms-ui-box-row-field {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	#coowner {
+		width: 25em;
+	}
+
 </style>
 
 <script src="js/location_box.js"></script>
@@ -46,7 +59,7 @@
 
 			{box_row icon="type" icon_class="fa-fw" label="Type"}
 				{$netelementtypes = Localisation::arraySort($_NETELEMENTTYPES)}
-				<select name="netnode[type]" {tip text="Enter node type" class="lms-ui-advanced-select"}>
+				<select name="netnode[type]" {tip text="Enter node type" class="lms-ui-advanced-select-test show-group-labels"}>
 					<option value="0">{trans("<!netelemtype>— other —")}</option>
 					{foreach $_NETELEMENTTYPEGROUPS as $group => $types}
 						<optgroup label="{$group}">
@@ -95,9 +108,15 @@
 				</select>
 			{/box_row}
 
-			{box_row id="ownername" icon="division" icon_class="fa-fw" label="Owner identifier"}
-				<input type="text" name="netnode[coowner]" size="30" value="{$netnode.coowner|default:""|escape}"
-					{tip trigger="coowner" text="Enter co-owner name"}>
+			{box_row id="ownername" icon="division" icon_class="fa-fw" label="Foreign entity"}
+				<select name="netnode[coowner]" class="lms-ui-combobox" id="coowner"
+					data-value="{$netnode.coowner}">
+					{foreach $foreign_entities as $foreign_entity}
+						<option value="{$foreign_entity.id|escape}"
+							{if $foreign_entity.name == $netnode.coowner} selected{/if}
+							>{$foreign_entity.name}{if !empty($foreign_entity.type)} ({trans("TEN")} {$foreign_entity.id}){/if}</option>
+					{/foreach}
+				</select>
 			{/box_row}
 
 			{box_row id="customer" icon="customer" icon_class="fa-fw" label="Owner"}
@@ -139,6 +158,8 @@
 					location_zip         = "{$netnode.location_zip}"
 					location_country_id  = "{$netnode.location_country}"
 					teryt                = "{$netnode.teryt}"
+					allow_empty_streets = ConfigHelper::checkConfig('teryt.allow_empty_streets', true)
+					allow_empty_building_numbers = ConfigHelper::checkConfig('teryt.allow_empty_building_numbers', true)
 				}
 			{/box_row}
 
@@ -195,6 +216,26 @@
 				</label>
 			{/box_row}
 
+			{box_row icon="options" icon_class="fa-fw" label="Flags"}
+				{foreach $_NETWORK_NODE_FLAGS as $flag => $label}
+					<label>
+						<input type="checkbox" name="netnode[flags][{$flag}]" value="{$flag}"
+							{if !empty($netnode.flags[$flag])} checked{/if}>
+						{$label}
+					</label>
+				{/foreach}
+			{/box_row}
+
+			{box_row icon="money" icon_class="fa-fw" label="Services" id="netnode-services"}
+				{foreach $_NETWORK_NODE_SERVICES as $service => $label}
+					<label>
+						<input type="checkbox" name="netnode[services][{$service}]" value="{$service}"
+							{if !empty($netnode.services[$service])} checked{/if}>
+						{$label}
+					</label>
+				{/foreach}
+			{/box_row}
+
 			{box_row icon="note" icon_class="fa-fw" label="Note"}
 				<textarea id="info" name="netnode[info]"
 					{tip text="Enter notes (optional)"} cols="50" rows="5">{$netnode.info|default:""|escape}</textarea>
@@ -221,7 +262,7 @@
 
 <script>
 
-	initAdvancedSelects('#customer_addresses');
+	initAdvancedSelectsTest('#customer_addresses');
 
 	$(function() {
 		$('[name="netnode[name]"]').focus();

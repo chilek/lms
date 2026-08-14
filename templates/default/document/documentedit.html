@@ -7,10 +7,6 @@
 
 <style>
 
-	.docattachrow a:nth-child(2) {
-		margin-left: 0.5em;
-	}
-
 	table.lmsbox > thead >tr:not(:first-child) {
 		border-top: none;
 	}
@@ -36,7 +32,7 @@
 			</td>
 			<td>
 				<select size="1" name="document[type]" id="doctype" onchange="setnumberplans();"
-						{tip class="lms-ui-advanced-select" text="Select document type" trigger="type"}>
+						{tip class="lms-ui-advanced-select-test" text="Select document type" trigger="type"}>
 					{foreach Localisation::arraySort($_DOCTYPES) as $key => $item}
 						{if $key < 0 && in_array($key, $docrights)}
 							<option value="{$key}"{if $document.type==$key} selected{/if}>{$item}</option>
@@ -80,6 +76,7 @@
 			<td>
 				{numberplan_selection
 					doctype_selector  = "#doctype"
+					cdate_selector    = "[name='document[cdate]']"
 					numberplanlist    = $numberplans
 					input_name        = "document[number]"
 					input_value       = $document.number
@@ -93,6 +90,30 @@
 				}
 			</td>
 		</tr>
+		{if !$document.closed}
+		<tr>
+			<td>
+				{icon name="calendar"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Consent date")}</strong>
+			</td>
+			<td class="nobr">
+				{if ConfigHelper::checkPrivilege("document_consent_date")}
+					<input type="text" name="document[cdate]" value="{$document.cdate|date_format:"Y/m/d"}" size="12"
+						placeholder="{trans("yyyy/mm/dd")}" data-cdate="{$document.cdate}"
+						{tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}
+					>
+					{if $document.cdatewarning}
+						<input type="hidden" name="document[cdatewarning]" value="1">
+					{/if}
+				{else}
+					<input type="hidden" name="document[cdate]" value="{$document.cdate|date_format:"Y/m/d"}">
+					{$document.cdate|date_format:"Y-m-d"}
+				{/if}
+			</td>
+		</tr>
+		{/if}
 		<tr>
 			<td>
 				{icon name="period"}
@@ -171,17 +192,22 @@
 			<td>
 				{foreach $document.attachments as $docattach}
 				<div class="docattachrow{if $docattach.type <= 0} docattach{if $document.attachments[$docattach.id].deleted} blend crossed{/if}{/if}">
-					<a href="#">
-						<i class="fa-fw lms-ui-icon-{if $document.attachments[$docattach.id].deleted}cancel{else}delete{/if}"
-								{if $docattach.type == 1} style="visibility: hidden;"{/if}></i>
+					<a class="lms-ui-button toggle-button">
+						<i class="fa-fw lms-ui-icon-{if $document.attachments[$docattach.id].deleted}restore{else}delete{/if}"
+							{if $docattach.type == 1} style="visibility: hidden;"{/if}></i>
 					</a>
 					{$class = ""}
 					{if $document.attachments[$docattach.id].deleted}
 						{$class = "blend"}
 					{/if}
-					{documentview id="{$document.id}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
-						url="?m=documentview&id={$document.id}&attachmentid={$docattach.id}" external=true class=$class
-						text="{$docattach.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"}
+					{documentview
+						id="{$document.id}-{$docattach.id}"
+						type=$docattach.contenttype
+						name=$docattach.filename
+						url="?m=documentview&id={$document.id}&attachmentid={$docattach.id}"
+						external=true
+						class=$class
+					}
 					{if $docattach.type == -1}<i class="lms-ui-icon-user" title="<strong>{t a=date("Y/m/d H:i", $docattach.cdate)}Sent by customer at $a{/t}</strong>"></i>{/if}
 					<input type="hidden" name="document[attachments][{$docattach.id}][deleted]" value="{$document.attachments[$docattach.id].deleted}">
 				</div>
@@ -218,6 +244,7 @@
 				</label>
 			</td>
 			<td>
+				<input type="hidden" name="document[closed]" value="0">
 				<input type="checkbox" name="document[closed]" id="closed" value="1" {if $document.closed} checked{/if}>
 			</td>
 		</tr>
@@ -256,11 +283,11 @@
 	$(function() {
 		$('form[name="documentedit"] [name="document[title]"]').focus();
 
-		$('.docattach').on('click', function() {
+		$('.toggle-button').on('click', function() {
 			var elem = $(this);
-			elem.toggleClass('blend crossed').find('.lms-ui-button').toggleClass('blend')
-			elem.find('i').toggleClass('lms-ui-icon-delete').toggleClass('lms-ui-icon-cancel');
-			elem.find('input').val(+ elem.hasClass('blend'));
+			elem.siblings('.documentview').find('.lms-ui-button').toggleClass('blend')
+			elem.find('i').toggleClass('lms-ui-icon-delete').toggleClass('lms-ui-icon-restore');
+			elem.siblings('input').val(+elem.find('i').is('.lms-ui-icon-restore'));
 			return false;
 		});
 

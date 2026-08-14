@@ -176,7 +176,12 @@ switch ($type) {
 
         if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
             $output = $SMARTY->fetch("$print_template");
-            html2pdf($output, trans('Reports'), $layout['pagetitle'], null, null, 'L');
+            Utils::html2pdf(array(
+                'content' => $output,
+                'subject' => trans('Reports'),
+                'title' => $layout['pagetitle'],
+                'orientation' => 'L',
+            ));
         } else {
             $SMARTY->display("$print_template");
         }
@@ -252,7 +257,11 @@ switch ($type) {
         $SMARTY->assign('balancelist', $list);
         if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
             $output = $SMARTY->fetch('print/printcustomerbalance.html');
-            html2pdf($output, trans('Reports'), $layout['pagetitle']);
+            Utils::html2pdf(array(
+                'content' => $output,
+                'subject' => trans('Reports'),
+                'title' => $layout['pagetitle'],
+            ));
         } else {
             $SMARTY->display('print/printcustomerbalance.html');
         }
@@ -381,6 +390,7 @@ switch ($type) {
         $content .= "\t\t<dataStanNa>" . date('d-m-Y') . "</dataStanNa>\n";
         $content .= "\t\t<Nazwa>" . htmlspecialchars($division['name']) . "</Nazwa>\n";
         $content .= "\t\t<Regon>" . $division['regon'] . "</Regon>\n";
+/*
         $content .= "\t\t<AdresOperatora>\n";
         $content .= "\t\t\t<Miejscowosc>" . htmlspecialchars($division['city']) . "</Miejscowosc>\n";
         if (!empty($division_address['street'])) {
@@ -394,6 +404,7 @@ switch ($type) {
         $content .= "\t\t\t<Poczta>" . htmlspecialchars(empty($division_address['postoffice']) ? $division['city'] : $division_address['postoffice']) . "</Poczta>\n";
         $content .= "\t\t\t<Telefon>" . $division['phone'] . "</Telefon>\n";
         $content .= "\t\t</AdresOperatora>\n";
+*/
 
         $state_ident_by_ids = $DB->GetAllByKey('SELECT id, ident FROM location_states', 'id');
         if (empty($state_ident_by_ids)) {
@@ -418,15 +429,18 @@ switch ($type) {
         );
 
         if (!empty($landline_customers)) {
-            $content .= "\t\t<AbonenciStacj>\n";
+            //$content .= "\t\t<AbonenciStacj>\n";
+            $content .= "\t\t<Abonenci>\n";
             foreach ($landline_customers as $customerid => $landline_customer) {
                 $customer = $LMS->GetCustomer($customerid);
 
                 foreach ($landline_customer['locations'] as $location => $address) {
                     $content .= "\t\t\t<Abonent>\n";
 
+/*
                     $content .= "\t\t\t\t<Nazwisko>" . htmlspecialchars($customer['lastname']) . "</Nazwisko>\n";
                     $content .= "\t\t\t\t<Imie>" . htmlspecialchars($customer['name']) . "</Imie>\n";
+*/
                     $content .= "\t\t\t\t<Pesel>" . (preg_match('/^[0-9]{11}$/', $customer['ssn']) ? $customer['ssn'] : '00000000000') . "</Pesel>\n";
                     if (preg_match('/^[0-9]{10}$/', $customer['ten'])) {
                         $content .= "\t\t\t\t<Nip>" . $customer['ten'] . "</Nip>\n";
@@ -448,6 +462,7 @@ switch ($type) {
                     }
                     $content .= "\t\t\t\t</TelefonyKontaktowe>\n";
 
+/*
                     $locations = '';
 
                     $location_content = "\t\t\t\t<AdresPunktu>\n";
@@ -523,11 +538,13 @@ switch ($type) {
                     $locations .= $location_content . "\t\t\t\t</AdresPunktu>\n";
 
                     $content .= $locations;
+*/
 
                     $content .= "\t\t\t</Abonent>\n";
                 }
             }
-            $content .= "\t\t</AbonenciStacj>\n";
+            //$content .= "\t\t</AbonenciStacj>\n";
+            $content .= "\t\t</Abonenci>\n";
         }
 
         if (!empty($mobile_customers)) {

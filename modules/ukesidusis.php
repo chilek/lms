@@ -64,6 +64,7 @@ $buildings = $DB->GetAll(
         r.uplink,
         r.type,
         r.services,
+        r.foreignentity,
         r.invprojectid,
         p.name AS invprojectname,
         p.cdate AS invprojectcdate,
@@ -143,29 +144,57 @@ if (empty($projects)) {
                 break;
         }
 
-        fputcsv(
-            $fh,
-            array(
-                'ZS',
-                $building['netrangeid'],
-                $building['state_ident'] . $building['district_ident'] . $building['borough_ident'] . $building['borough_type'],
-                $building['city_name'],
-                $building['city_ident'],
-                $building['street_rlabel'],
-                $building['street_ident'],
-                $building['building_num'],
-                sprintf('%02.6F', round($building['latitude'], 6)),
-                sprintf('%02.6F', round($building['longitude'], 6)),
-                $linktype,
-                $SIDUSIS_LINKTECHNOLOGIES[$building['linktype']][$building['linktechnology']],
-                $building['downlink'],
-                $building['uplink'],
-                $building['type'] == '1' ? 'rzeczywisty' : 'teoretyczny',
-                ($building['services'] & 1) ? 'TAK' : 'NIE',
-                ($building['services'] & 2) ? 'TAK' : 'NIE',
-                OPERATOR_REPRESENTATIVE_ID,
-            )
-        );
+        if (time() >= strtotime('2024/10/14')) {
+            fputcsv(
+                $fh,
+                array(
+                    'ZS',
+                    $building['netrangeid'],
+                    $building['state_ident'] . $building['district_ident'] . $building['borough_ident'] . $building['borough_type'],
+                    $building['city_name'],
+                    $building['city_ident'],
+                    $building['street_rlabel'],
+                    $building['street_ident'],
+                    $building['building_num'],
+                    sprintf('%02.6F', round($building['latitude'], 6)),
+                    sprintf('%02.6F', round($building['longitude'], 6)),
+                    $linktype,
+                    $SIDUSIS_LINKTECHNOLOGIES[$building['linktype']][$building['linktechnology']],
+                    $building['downlink'],
+                    $building['uplink'],
+                    $building['type'] == '1' ? 'rzeczywisty' : 'teoretyczny',
+                    ($building['services'] & 1) ? 'TAK' : 'NIE',
+                    ($building['services'] & 2) ? 'TAK' : 'NIE',
+                    ($building['services'] & 2) ? (strlen($building['foreignentity']) ? 'NIE' : 'TAK') : '',
+                    ($building['services'] & 2) ? $building['foreignentity'] : '',
+                    OPERATOR_REPRESENTATIVE_ID,
+                )
+            );
+        } else {
+            fputcsv(
+                $fh,
+                array(
+                    'ZS',
+                    $building['netrangeid'],
+                    $building['state_ident'] . $building['district_ident'] . $building['borough_ident'] . $building['borough_type'],
+                    $building['city_name'],
+                    $building['city_ident'],
+                    $building['street_rlabel'],
+                    $building['street_ident'],
+                    $building['building_num'],
+                    sprintf('%02.6F', round($building['latitude'], 6)),
+                    sprintf('%02.6F', round($building['longitude'], 6)),
+                    $linktype,
+                    $SIDUSIS_LINKTECHNOLOGIES[$building['linktype']][$building['linktechnology']],
+                    $building['downlink'],
+                    $building['uplink'],
+                    $building['type'] == '1' ? 'rzeczywisty' : 'teoretyczny',
+                    ($building['services'] & 1) ? 'TAK' : 'NIE',
+                    ($building['services'] & 2) ? 'TAK' : 'NIE',
+                    OPERATOR_REPRESENTATIVE_ID,
+                )
+            );
+        }
     }
 } else {
     $subproject_buildings = array();

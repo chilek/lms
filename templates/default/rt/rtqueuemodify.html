@@ -1,6 +1,7 @@
 {extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
+{$hide_disabled_users = ConfigHelper::checkConfig('rt.hide_disabled_users', ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users'))}
 <!--// $Id$ //-->
 
 <style>
@@ -354,6 +355,23 @@
 					</div>
 				</div>
 			</div>
+			{if !empty($configsections)}
+				<div class="lms-ui-box-row">
+					<div class="lms-ui-box-field">
+						<div class="lms-ui-box-field-label">
+							{icon name="configuration"}
+							<strong>{trans("<!rt>Configuration section")}</strong>
+						</div>
+						<select size="1" id="uiconfigsection" form="queue-form" class="lms-ui-box-field-value"
+								name="queue[uiconfigsection]" {tip trigger="uiconfigsection"}>
+							<option value="">{trans("<!rt-configuration-section>— default —")}</option>
+							{foreach $configsections as $configsection}
+								<option value="{$configsection}" {if $configsection == $queue.uiconfigsection} selected{/if}>{$configsection}</option>
+							{/foreach}
+						</select>
+					</div>
+				</div>
+			{/if}
 			<div class="lms-ui-box-row">
 				<div class="lms-ui-box-field">
 					<div class="lms-ui-box-field-label">
@@ -378,7 +396,8 @@
 						</div>
 						<div class="lms-ui-box-body lms-ui-flex-column">
 							{foreach $queue.rights as $right}
-								<div class="lms-ui-box-row highlight lms-ui-row-all-check">
+								<div class="lms-ui-box-row highlight lms-ui-row-all-check{if empty($right.access)} blend{/if}"
+									{if empty($right.access) && $hide_disabled_users} style="display: none;"{/if}>
 									<div class="lms-ui-box-field username">
 										<a href="?m=userinfo&id={$right.id}">{$right.rname}</a>
 										<span class="user-login">({$right.login})</span>
@@ -395,6 +414,9 @@
 										</div>
 									{/foreach}
 								</div>
+								{if empty($right.access) && $hide_disabled_users}
+									<div style="display: none;"></div>
+								{/if}
 							{/foreach}
 						</div>
 						<div class="lms-ui-box-footer">
@@ -669,7 +691,7 @@
 
 		for (var i = 0; i < {count($_RT_RIGHTS)}; i++) {
 			$('input:checkbox[name="allbox[' + Math.pow(2, i) + ']"]').click(function() {
-				$('input:checkbox[name*="queue[users]"][value="' + $(this).attr('data-value') + '"]').prop('checked', this.checked);
+				$('input:checkbox[name*="queue[users]"][value="' + $(this).attr('data-value') + '"]:visible').prop('checked', this.checked);
 			});
 		}
 

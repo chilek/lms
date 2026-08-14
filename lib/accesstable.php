@@ -36,7 +36,7 @@ $access_table = array(
     ),
     'read_only' => array(
         'label' => trans('read only (excluding helpdesk)'),
-        'allow_regexp' => '^(([a-z]+(list|info|view|search|balance|infoshort))|eventschedule|customeraddresses|customerselect|customerassignmenthelper|netdevmap|eventprint|eventnote|nodelistshort|number|choose[a-z]+)$',
+        'allow_regexp' => '^(([a-z]+(list|info|view|search|balance|infoshort|ksefinfo))|eventschedule|customeraddresses|customerselect|customerassignmenthelper|netdevmap|eventprint|eventnote|nodelistshort|number|choose[a-z]+)$',
         'allow_menu_items' => array(
             'admin' => array('userlist', 'dblist', 'copyrights', 'usergrouplist'),
             'customers' => array('customerlist', 'customersearch', 'customergrouplist'),
@@ -56,28 +56,39 @@ $access_table = array(
     ),
     'node_connections' => array(
         'label' => trans('nodes connection/disconnection'),
-        'allow_regexp' => '^nodeset$',
+        'allow_regexp' => '^(nodeset|nodesession)$',
     ),
     'financial_operations' => array(
         'label' => trans('financial operations'),
-        'allow_regexp' => '^((customerassignment)(add|info|list|move|edit|del)|(balance|customerbalance)(new|add|ok|del|transfer|)|(cashreg(info))|(invoice|invoice(new|edit|del|note(|edit)|paid|info|send))|(note|note(add|edit|del|paid))|number|customertransferform)$',
+        'allow_regexp' => '^((customerassignment)(add|info|list|move|edit|del)|(balance|customerbalance)(new|add|ok|del|transfer|)|(cashreg(info))|(invoice|invoice(new|edit|del|note(|edit)|paid|info|send))|(note|note(add|edit|del|paid))|number|customertransferform|ksefpurchaseinvoiceinfo|invoiceksefinfo)$',
         'allow_menu_items' => array(
             'finances' => array('balancenew', 'invoicenew', 'invoicenew-proforma', 'noteadd', 'receiptadd'),
         ),
     ),
     'finances_management' => array(
         'label' => trans('finances management'),
-        'allow_regexp' => '^((tariff|customerassignment)(add|info|list|move|edit|del)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list|transfer|)|(cashreg(list|info))|(invoice|invoice(list|new|edit|del|note(|edit)|report|paid|info|send))|(note|note(list|add|edit|del|paid))|number|export|print|cashimport|cashimportparser|cashpackagedel|customertransferform|customerselect|tariffpricevariant)$',
+        'allow_regexp' => '^((tariff|customerassignment)(add|info|list|move|edit|del)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list|transfer|)|(cashreg(list|info))|(invoice|invoice(list|new|edit|del|note(|edit)|report|paid|info|send))|(note|note(list|add|edit|del|paid))|number|export|print|cashimport|cashimportparser|cashpackagedel|voipaccountbilling|customertransferform|customerselect|tariffpricevariant|ksefpurchaseinvoiceinfo|invoiceksefinfo)$',
         'allow_menu_items' => array(
             'finances' => Permission::MENU_ALL,
         ),
     ),
     'finances_view' => array(
         'label' => trans('finances view'),
-        'allow_regexp' => '^((balance|customerbalance|invoice|note)list|cashreginfo|invoice(|info|send)|note|number)$',
+        'allow_regexp' => '^((balance|customerbalance|invoice|note)list|cashreginfo|invoice(|info|send)|note|number|ksefpurchaseinvoiceinfo|invoiceksefinfo)$',
         'allow_menu_items' => array(
             'finances' => array('balancelist', 'invoicelist', 'invoicelist-proforma', 'notelist'),
         ),
+    ),
+    'ksef_invoice_purchases' => array(
+        'label' => trans('<!ksef>KSeF purchase invoice management'),
+        'allow_regexp' => '^ksefpurchaseinvoice[a-z]+$',
+        'allow_menu_items' => array(
+            'finances' => array('ksefpurchaseinvoices'),
+        )
+    ),
+    'assignment_management' => array(
+        'label' => trans('assignment management'),
+        'allow_regexp' => '^customerassignment(add|info|edit|del|helper)$',
     ),
     'used_tariff_edit' => array(
         'label' => trans('used tariff edit'),
@@ -108,6 +119,9 @@ $access_table = array(
     'published_document_modification' => array(
         'label' => trans('published document modification'),
     ),
+    'document_consent_date' => array(
+        'label' => trans('document consent date manipulation'),
+    ),
     'reload' => array(
         'label' => trans('configuration reload'),
         'allow_regexp' => '^reload$',
@@ -117,10 +131,18 @@ $access_table = array(
     ),
     'customer_management' => array(
         'label' => trans('customers management'),
-        'allow_regexp' => '^((customer|document)(add|edit|info|infoshort|list|print|search|warn|cutoffstop|group)|documentdel|documentscanadd|customertransferform|customeraddresses|customerselect|customernote|customername|customerassignmenthelper|documentsend|documentgen|documentview|nodewarn|choose(node|location)|gusapi|number|invoiceinfo)$',
+        'allow_regexp' => '^((customer|document)(add|edit|info|infoshort|list|print|search|warn|cutoffstop)|documentdel|documentscanadd|customertransferform|customeraddresses|customerselect|customernote|customername|customerassignmenthelper|documentsend|documentgen|documentview|nodewarn|choose(customer|node|location)|gusapi|number|invoiceinfo|voipaccount(add|del|list|info|infoshort|edit|search)|customerextidhelper)$',
         'allow_menu_items' => array(
             'customers' => Permission::MENU_ALL,
             'documents' => Permission::MENU_ALL,
+        ),
+    ),
+    'customer_view' => array(
+        'label' => trans('customer view'),
+        'allow_regexp' => '^((customer|document)(info|infoshort|list|print|search)|customeraddresses|customername|documentview|number|invoiceinfo|customerextidhelper)$',
+        'allow_menu_items' => array(
+            'customers' => array('customerlist', 'customersearch'),
+            'documents' => array('documentlist'),
         ),
     ),
     'customer_sensitive_data_view' => array(
@@ -128,7 +150,7 @@ $access_table = array(
     ),
     'customer_call_view' => array(
         'label' => trans('customer phone call view'),
-        'allow_regexp' => '^customercalllist$',
+        'allow_regexp' => '^customercall(|list)$',
         'allow_menu_items' => array(
             'customers' => array('customercalllist'),
         ),
@@ -150,24 +172,46 @@ $access_table = array(
     ),
     'node_management' => array(
         'label' => trans('nodes management'),
-        'allow_regexp' => '^(node(add|info|infoshort|list|listshort|scan|search|del|edit|print|warn|sessionlist|session)|choose(mac|ip|location|gpscoords|netdevice)|ping)|customeraddresses|customerselect|routednetworks$',
+        'allow_regexp' => '^(node(add|info|infoshort|list|listshort|scan|search|del|edit|print|warn|sessionlist|session)|choose(mac|ip|location|gpscoords|netdevice)|ping|pinger)|customeraddresses|customerselect|routednetworks$',
         'allow_menu_items' => array(
             'nodes' => Permission::MENU_ALL,
         ),
     ),
     'traffic_stats' => array(
         'label' => trans('traffic stats'),
-        'allow_regexp' => '^(traffic|traffic(print|graph))$',
+        'allow_regexp' => '^(traffic|traffic(print|graph)|cheating)$',
         'allow_menu_items' => array(
-            'stats' => Permission::MENU_ALL,
+            'nodes' => Permission::MENU_ALL,
         ),
     ),
     'messaging' => array(
         'label' => trans('messaging (email, sms)'),
-        'allow_regexp' => '^(message(add|del|list|info|template(del|list))|attachments)$',
+        'allow_regexp' => '^(message(add|del|list|info|cancel|template(del|list))|attachments)$',
         'allow_menu_items' => array(
             'messages' => Permission::MENU_ALL,
         ),
+    ),
+    'messaging_view' => array(
+        'label' => trans('messaging (email, sms) - view'),
+        'allow_regexp' => '^(message(list|info|templatelist)|attachments)$',
+        'allow_menu_items' => array(
+            'messages' => array('messagelist', 'messagetemplatelist'),
+        ),
+    ),
+    'messaging_creation' => array(
+        'label' => trans('messaging (email, sms) - creation'),
+        'allow_regexp' => '^messageadd$',
+        'allow_menu_items' => array(
+            'messages' => array('messageadd'),
+        ),
+    ),
+    'messaging_modification' => array(
+        'label' => trans('messaging (email, sms) - modification'),
+        'allow_regexp' => '^messagecancel$',
+    ),
+    'messaging_removal' => array(
+        'label' => trans('messaging (email, sms) - removal'),
+        'allow_regexp' => '^(message(del|templatedel))$',
     ),
     'helpdesk_administration' => array(
         'label' => trans('Helpdesk (RT) administration'),
@@ -187,6 +231,9 @@ $access_table = array(
         'label' => trans('Helpdesk (RT) advanced operation'),
         'allow_regexp' => '^(rtremove|rtrestore)$',
     ),
+    'helpdesk_ticket_custom_times' => array(
+        'label' => trans('Helpdesk (RT) ticket custom create and resolve times'),
+    ),
     'hosting_management' => array(
         'label' => trans('hosting management'),
         'allow_regexp' => '^(accountpasswd|(account|domain|alias|record)(list|edit|add|del|info|search))$',
@@ -204,11 +251,15 @@ $access_table = array(
     'network_management' => array(
         'label' => trans('networks and devices management'),
         'allow_regexp' => '^((net|netdev|ewxch)(info|list|edit|add|del|print|cmp|mac|map(refresh|)|remap|search)|choose(mac|ip|gpscoords|netdevfrommap|netdevfornetnode|netdevmodel|netdevreplace)|ewxnodelist|ewxdevlist|chooselocation|ping'
-            . '|netnode(add|adddev|del|deldev|edit|info|list)|netdevmodels|netlinkproperties|netusage|attachments|routednetworks|vlanlist|netranges|netlinkpoints)$',
+            . '|netnode(add|adddev|del|deldev|edit|info|list)|netdevmodels|netlinkproperties|netusage|evio|routeros-config|attachments|routednetworks|vlanlist|netranges)$',
         'allow_menu_items' => array(
             'networks' => Permission::MENU_ALL,
             'netdevices' => Permission::MENU_ALL,
         ),
+    ),
+    'network_map_edit' => array(
+        'label' => trans('network map edit'),
+        'allow_regexp' => '^netlinkpoints$',
     ),
     'timetable_management' => array(
         'label' => trans('timetable management'),
@@ -264,17 +315,51 @@ $access_table = array(
         'label' => trans('summaries hiding'),
     ),
     'voip_account_management' => array(
-        'label' => trans('VoIP accounts management'),
-        'allow_regexp' => '^(voipimport|voipaccount(list|search|info|add|del|edit|rules))$',
+        'label' => trans('VoIP account management'),
+        'allow_regexp' => '^voipaccount(list|search|set|info|add|del|edit)$',
         'allow_menu_items' => array(
-            'VoIP' => Permission::MENU_ALL,
+            'VoIP' => array('voipaccountadd', 'voipaccountlist', 'voipaccountsearch'),
         ),
+    ),
+    'voip_billings' => array(
+        'label' => trans('VoIP billings'),
+        'allow_regexp' => '^voipaccountbilling(info|list)$',
+        'allow_menu_items' => array(
+            'VoIP' => array('voipaccountbillinglist'),
+        ),
+    ),
+    'voip_number_pool_management' => array(
+        'label' => trans('VoIP number pool management'),
+        'allow_regexp' => '^voippoolnumberlist$',
+        'allow_menu_items' => array(
+            'VoIP' => array('voippoolnumberlist'),
+        ),
+    ),
+    'voip_price_list_management' => array(
+        'label' => trans('VoIP price list management'),
+        'allow_regexp' => '^voip(pricelist|tariffrules)$',
+        'allow_menu_items' => array(
+            'VoIP' => array('voippricelist', 'voiptariffrules'),
+        ),
+    ),
+    'voip_call_recordings' => array(
+        'label' => trans('VoIP call recordings'),
+        'allow_regexp' => '^voipcallrecording$',
     ),
     'userpanel_management' => array(
         'label' => trans('Userpanel management'),
         'allow_regexp' => '^userpanel$',
         'allow_menu_items' => array(
             'userpanel' => Permission::MENU_ALL,
+        ),
+    ),
+    'userpanel_change_affirmation' => array(
+        'label' => trans('Userpanel change affirmation'),
+        'allow_regexp' => '^userpanel$',
+        'allow_menu_items' => array(
+            'userpanel' => array(
+                'changeaffirmation', 'documentlist',
+            ),
         ),
     ),
     'hide_sysinfo' => array(
@@ -285,6 +370,10 @@ $access_table = array(
     ),
     'hide_finances' => array(
         'label' => trans('finances hiding'),
+        'deny_regexp' => '^(tariff|payment|balance|invoice|note|cashreg|receipt|tarifftag)',
+        'deny_menu_items' => array(
+            'finances' => Permission::MENU_ALL,
+        ),
     ),
     'hide_customer_sensitive_data' => array(
         'label' => trans('hide customer sensitive data'),

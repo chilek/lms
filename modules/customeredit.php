@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2026 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,7 +28,7 @@ if (isset($_GET['search'])) {
     $SESSION->restore('customersearch', $search);
     $SESSION->restore('cslo', $order);
     $SESSION->restore('csls', $state);
-    $SESSION->restore('cslsk', $statesqlkey);
+    $SESSION->restore('cslsk', $statesqlskey);
     $SESSION->restore('csln', $network);
     $SESSION->restore('cslng', $nodegroup);
     $SESSION->restore('cslg', $customergroup);
@@ -38,7 +38,7 @@ if (isset($_GET['search'])) {
     $customerlist = $LMS->GetCustomerList(compact(
         'order',
         'state',
-        'statesqlkey',
+        'statesqlskey',
         'network',
         'customergroup',
         'search',
@@ -129,6 +129,7 @@ if (isset($_GET['oper'])) {
     }
 }
 if (!isset($_POST['xjxfun'])) {
+    require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customerconsents.php');
     require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
     $action = $_GET['action'] ?? '';
@@ -179,17 +180,44 @@ if (!isset($_POST['xjxfun'])) {
                     }
                 }
 
-                if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')
+                if (!ConfigHelper::checkPrivilege('full_access')
                     && !empty($v['location_city_name']) && ($v['location_country_id'] == 2 || empty($v['location_country_id']))
                     && (!isset($v['teryt']) || empty($v['location_city'])) && $LMS->isTerritState($v['location_state_name'])) {
-                    $error['customerdata[addresses][' . $k . '][teryt]'] = trans('TERYT address is required!');
-                    $customerdata['addresses'][ $k ]['show'] = true;
+                    $terytRequired = ConfigHelper::getConfig('phpui.teryt_required', 'false');
+                    if ($terytRequired === 'error') {
+                        $terytRequired = true;
+                    } elseif ($terytRequired !== 'warning') {
+                        $terytRequired = ConfigHelper::checkValue($terytRequired);
+                    }
+                    if (is_bool($terytRequired) && $terytRequired) {
+                        $error['customerdata[addresses][' . $k . '][teryt]'] = trans('TERYT address is required!');
+                        $customerdata['addresses'][$k]['show'] = true;
+                    } elseif ($terytRequired === 'warning' && !isset($warnings['customerdata-addresses--' . $k . '--teryt-'])) {
+                        $warning['customerdata[addresses][' . $k . '][teryt]']= trans('TERYT address recommended!');
+                        $customerdata['addresses'][$k]['show'] = true;
+                    }
                 }
 
                 Localisation::setSystemLanguage($countryCode);
-                if ($v['location_zip'] && !check_zip($v['location_zip'])) {
-                    $error['customerdata[addresses][' . $k . '][location_zip]'] = trans('Incorrect ZIP code!');
-                    $customerdata['addresses'][ $k ]['show'] = true;
+
+                if (!ConfigHelper::checkConfig('phpui.skip_zip_validation') && $v['location_zip']) {
+                    $zip_validation_result = check_zip($v['location_zip']);
+                    if (isset($zip_validation_result) && !$zip_validation_result) {
+                        $error['customerdata[addresses][' . $k . '][location_zip]'] = trans('Incorrect ZIP code!');
+                        $customerdata['addresses'][$k]['show'] = true;
+                    }
+                }
+
+                if (!empty($v['location_ten']) && !isset($warnings['customerdata-addresses--' . $k . '--location_ten-'])) {
+                    $ten_validation_result = check_ten($v['location_ten']);
+                    if (!$ten_validation_result) {
+                        $ksef_internal_id_validation = check_ksef_internal_id($v['location_ten']);
+                        $ten_validation_result |= $ksef_internal_id_validation === true || !isset($ksef_internal_id_validation);
+                    }
+                    if (isset($ten_validation_result) && !$ten_validation_result) {
+                        $warning['customerdata[addresses][' . $k . '][location_ten]'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
+                        $customerdata['addresses'][$k]['show'] = true;
+                    }
                 }
             }
 
@@ -201,8 +229,11 @@ if (!isset($_POST['xjxfun'])) {
                 $ic_expires = $customerdata['icexpires'] > 0 && $customerdata['icexpires'] < time();
                 if ($ic_expires) {
                     $identity_card_expiration_check = ConfigHelper::getConfig(
-                        'phpui.customer_identity_card_expiration_check',
-                        'none'
+                        'customers.identity_card_expiration_check',
+                        ConfigHelper::getConfig(
+                            'phpui.customer_identity_card_expiration_check',
+                            'none'
+                        )
                     );
                     switch ($identity_card_expiration_check) {
                         case 'warning':
@@ -219,12 +250,21 @@ if (!isset($_POST['xjxfun'])) {
 
             if (isset($customerdata['ten'])) {
                 if ($customerdata['ten'] != '' && $customerdata['ten'] != $LMS->getCustomerTen($_GET['id'])) {
-                    if (!isset($customerdata['tenwarning']) && !check_ten($customerdata['ten'])) {
-                        $warning['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
-                        $tenwarning = 1;
+                    if (!isset($customerdata['tenwarning'])) {
+                        $ten_validation_result = check_ten($customerdata['ten']);
+                        if (isset($ten_validation_result) && !$ten_validation_result) {
+                            $warning['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
+                            $tenwarning = 1;
+                        }
                     }
-                    $ten_existence_check = ConfigHelper::getConfig('phpui.customer_ten_existence_check', 'none');
-                    $ten_existence_scope = ConfigHelper::getConfig('phpui.customer_ten_existence_scope', 'global');
+                    $ten_existence_check = ConfigHelper::getConfig(
+                        'customers.ten_existence_check',
+                        ConfigHelper::getConfig('phpui.customer_ten_existence_check', 'none')
+                    );
+                    $ten_existence_scope = ConfigHelper::getConfig(
+                        'customers.ten_existence_scope',
+                        ConfigHelper::getConfig('phpui.customer_ten_existence_scope', 'global')
+                    );
                     if (preg_match('/^(global|division)$/', $ten_existence_scope)) {
                         $ten_existence_scope = 'global';
                     }
@@ -251,12 +291,24 @@ if (!isset($_POST['xjxfun'])) {
 
             if (isset($customerdata['ssn'])) {
                 if ($customerdata['ssn'] != '' && $customerdata['ssn'] != $LMS->getCustomerSsn($_GET['id'])) {
-                    if (!isset($customerdata['ssnwarning']) && !check_ssn($customerdata['ssn'])) {
-                        $warning['ssn'] = trans('Incorrect Social Security Number! If you are sure you want to accept it, then click "Submit" again.');
-                        $ssnwarning = 1;
+                    if (isset($customerdata['ssnwarning']) && isset($customerdata['oldssn']) && $customerdata['oldssn'] != $customerdata['ssn']) {
+                        unset($customerdata['ssnwarning']);
                     }
-                    $ssn_existence_check = ConfigHelper::getConfig('phpui.customer_ssn_existence_check', 'none');
-                    $ssn_existence_scope = ConfigHelper::getConfig('phpui.customer_ssn_existence_scope', 'global');
+                    if (!isset($customerdata['ssnwarning'])) {
+                        $ssn_validation_result = check_ssn($customerdata['ssn']);
+                        if (isset($ssn_validation_result) && !$ssn_validation_result) {
+                            $warning['ssn'] = trans('Incorrect Social Security Number! If you are sure you want to accept it, then click "Submit" again.');
+                            $ssnwarning = 1;
+                        }
+                    }
+                    $ssn_existence_check = ConfigHelper::getConfig(
+                        'customers.ssn_existence_check',
+                        ConfigHelper::getConfig('phpui.customer_ssn_existence_check', 'none')
+                    );
+                    $ssn_existence_scope = ConfigHelper::getConfig(
+                        'customers.ssn_existence_scope',
+                        ConfigHelper::getConfig('phpui.customer_ssn_existence_scope', 'global')
+                    );
                     if (preg_match('/^(global|division)$/', $ssn_existence_scope)) {
                         $ssn_existence_scope = 'global';
                     }
@@ -281,14 +333,20 @@ if (!isset($_POST['xjxfun'])) {
                 }
             }
 
-            if ($customerdata['regon'] != '' && !check_regon($customerdata['regon'])) {
-                $error['regon'] = trans('Incorrect Business Registration Number!');
+            if ($customerdata['regon'] != '') {
+                $regon_validation_result = check_regon($customerdata['regon']);
+                if (isset($regon_validation_result) && !$regon_validation_result) {
+                    $error['regon'] = trans('Incorrect Business Registration Number!');
+                }
             }
 
             if (isset($customerdata['icn'])) {
-                if ($customerdata['icn'] != '' && $customerdata['ict'] == 0 && !isset($customerdata['icnwarning']) && !check_icn($customerdata['icn'])) {
-                    $warning['icn'] = trans('Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.');
-                    $icnwarning = 1;
+                if ($customerdata['icn'] != '' && $customerdata['ict'] == 0 && !isset($customerdata['icnwarning'])) {
+                    $icn_validation_result = check_icn($customerdata['icn']);
+                    if (isset($icn_validation_result) && !$icn_validation_result) {
+                        $warning['icn'] = trans('Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.');
+                        $icnwarning = 1;
+                    }
                 }
             }
 
@@ -311,7 +369,10 @@ if (!isset($_POST['xjxfun'])) {
                 $properties['validator']($customerdata, $contacts, $error);
             }
 
-            $customer_invoice_notice_consent_check = ConfigHelper::getConfig('phpui.customer_invoice_notice_consent_check', 'error');
+            $customer_invoice_notice_consent_check = ConfigHelper::getConfig(
+                'customers.invoice_notice_consent_check',
+                ConfigHelper::getConfig('phpui.customer_invoice_notice_consent_check', 'error')
+            );
             if ($customer_invoice_notice_consent_check != 'none') {
                 if (isset($customerdata['emails']) && $customerdata['emails']) {
                     foreach ($customerdata['emails'] as $idx => $val) {
@@ -514,6 +575,7 @@ if (!isset($_POST['xjxfun'])) {
                 $customerinfo['icexpires'] = -1;
             }
         }
+
         $SMARTY->assign('backurl', $backurl);
 
         $SESSION->save(
@@ -531,6 +593,8 @@ if (!isset($_POST['xjxfun'])) {
     $customerid = $customerinfo['id'];
 
     include(MODULES_DIR.'/customer.inc.php');
+
+    $customerinfo['default-consents'] = $LMS->getCustomerConsents($_GET['id']);
 }
 
 $LMS->InitXajax();

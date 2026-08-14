@@ -1,6 +1,6 @@
 <?php
 
-use PragmaRX\Google2FA\Google2FA;
+use Lms\Google2FA\Google2FA;
 use Com\Tecnick\Barcode\Barcode;
 
 /*
@@ -71,9 +71,9 @@ $SESSION->add_history_entry();
 if (!empty($userinfo['twofactorauth'])) {
     $google2fa = new Google2FA();
     $url = $google2fa->getQRCodeUrl(
-        $userinfo['name'],
         'http' . ($_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST']
             . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1),
+        $userinfo['name'],
         $userinfo['twofactorauthsecretkey']
     );
 

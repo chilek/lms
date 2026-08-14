@@ -46,11 +46,19 @@ class UserpanelNoticeHandler
 
     public function getUrgentNotice()
     {
-        return $this->db->GetRow(
-            'SELECT m.subject, m.cdate, (CASE WHEN mi.body IS NULL THEN m.body ELSE mi.body END) AS body,
-                m.type, mi.id, mi.messageid, mi.destination, mi.status
-				FROM messageitems mi, messages m
-				WHERE m.id = mi.messageid
+        $notice = $this->db->GetRow(
+            'SELECT
+                m.subject,
+                m.cdate,
+                (CASE WHEN mi.body IS NULL THEN m.body ELSE mi.body END) AS body,
+                m.type,
+                mi.id,
+                mi.messageid,
+                mi.destination,
+                mi.status
+                FROM messageitems mi
+                JOIN messages m ON m.id = mi.messageid
+                WHERE m.id = mi.messageid
                     AND m.type = ?
                     AND mi.status = ?
                     AND mi.customerid = ?
@@ -58,6 +66,29 @@ class UserpanelNoticeHandler
                 LIMIT 1',
             array(MSG_USERPANEL_URGENT, MSG_SENT, $this->customerid)
         );
+
+        if (!empty($notice)) {
+            $notice['attachments'] = array();
+
+            $attachments = $this->db->GetAll(
+                'SELECT
+                    c.messageid,
+                    f.*
+                FROM filecontainers c
+                JOIN files f ON f.containerid = c.id
+                WHERE c.messageid = ?',
+                array(
+                    $notice['messageid'],
+                )
+            );
+            if (!empty($attachments)) {
+                foreach ($attachments as $attachment) {
+                    $notice['attachments'][$attachment['id']] = $attachment;
+                }
+            }
+        }
+
+        return $notice;
     }
 
     public function getUnreadNotices()

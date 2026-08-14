@@ -19,7 +19,7 @@
 
 {/box}
 
-{$pin_tip = ConfigHelper::getConfig('phpui.pin_restriction_description')}
+{$pin_tip = ConfigHelper::getConfig('customers.pin_restriction_description', ConfigHelper::getConfig('phpui.pin_restriction_description'))}
 
 <div class="modal fade" id="updatepinbox" tabindex="-1" role="dialog" aria-labelledby="updatepinbox" aria-hidden="true">
 	<div class="modal-dialog" role="document">

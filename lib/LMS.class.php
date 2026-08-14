@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+use \Lms\KSeF\KSeF;
+
 // LMS Class - contains internal LMS database functions used
 // to fetch data like customer names, searching for mac's by ID, etc..
 
@@ -472,10 +474,10 @@ class LMS
         return $manager->checkUserAccess($id);
     }
 
-    public function GetUserInfo($id)
+    public function GetUserInfo($id, $details = true)
     {
         $manager = $this->getUserManager();
-        return $manager->getUserInfo($id);
+        return $manager->getUserInfo($id, $details);
     }
 
     public function UserUpdate($user)
@@ -542,10 +544,10 @@ class LMS
         return $manager->DeleteCustomer($id);
     }
 
-    public function DeleteCustomerPermanent($id)
+    public function DeleteCustomerPermanent($id, $transacton = true)
     {
         $manager = $this->getCustomerManager();
-        return $manager->deleteCustomerPermanent($id);
+        return $manager->deleteCustomerPermanent($id, $transacton);
     }
 
     public function restoreCustomer($id)
@@ -601,10 +603,10 @@ class LMS
         return $manager->getCustomerConsents($id);
     }
 
-    public function getCustomerSensibleData($id)
+    public function getCustomerSensitiveData($id)
     {
         $manager = $this->getCustomerManager();
-        return $manager->getCustomerSensibleData($id);
+        return $manager->getCustomerSensitiveData($id);
     }
     public function GetCustomer($id, $short = false)
     {
@@ -678,10 +680,10 @@ class LMS
         return $manager->getCustomerShortBalanceList($customerid, $limit, $order);
     }
 
-    public function getLastNInTable($body, $customerid, $format, $aggregate_documents = false)
+    public function getLastNInTable($body, $customerid, $format, $aggregate_documents = false, $reverse_order = true, $item_description_format = null)
     {
         $manager = $this->getCustomerManager();
-        return $manager->getLastNInTable($body, $customerid, $format, $aggregate_documents);
+        return $manager->getLastNInTable($body, $customerid, $format, $aggregate_documents, $reverse_order, $item_description_format);
     }
 
     public function CustomerStats()
@@ -690,10 +692,10 @@ class LMS
         return $manager->customerStats();
     }
 
-    public function updateCustomerConsents($customerid, $current_consents, $new_consents)
+    public function updateCustomerConsents($customerid, $current_consents, $new_consents, $consent_mask = null)
     {
         $manager = $this->getCustomerManager();
-        return $manager->updateCustomerConsents($customerid, $current_consents, $new_consents);
+        return $manager->updateCustomerConsents($customerid, $current_consents, $new_consents, $consent_mask);
     }
 
     public function checkCustomerAddress($a_id, $c_id)
@@ -766,6 +768,12 @@ class LMS
     {
         $manager = $this->getCustomerManager();
         return $manager->getCustomerSMSOptions();
+    }
+
+    public function getCustomerAddressesWithOrWithoutEndPoints($customerid, $with = true)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->GetCustomerAddressesWithOrWithoutEndPoints($customerid, $with);
     }
 
     public function GetCustomerAddressesWithEndPoints($customerid)
@@ -1485,6 +1493,12 @@ class LMS
         return $manager->AddAssignment($data);
     }
 
+    public function addAssignmentsForSchema($data)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->addAssignmentsForSchema($data);
+    }
+
     public function ValidateAssignment($data)
     {
         $manager = $this->getFinanceManager();
@@ -1525,6 +1539,12 @@ class LMS
     {
         $manager = $this->getFinanceManager();
         return $manager->AddInvoice($invoice);
+    }
+
+    public function setInvoiceExtID(array $invoice)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->setInvoiceExtID($invoice);
     }
 
     public function InvoiceDelete($invoiceid)
@@ -2660,6 +2680,12 @@ class LMS
         return $manager->deleteTicket($ticketid, $persistent);
     }
 
+    public function getDivisionIdByTicketId($ticketid)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->getDivisionIdByTicketId($ticketid);
+    }
+
     /*
      *  LMS-UI configuration
      */
@@ -2752,6 +2778,12 @@ class LMS
     {
         $manager = $this->getConfigManager();
         return $manager->toggleConfigOption($id);
+    }
+
+    public function getConfigSectionsByPattern($sectionNamePattern)
+    {
+        $manager = $this->getConfigManager();
+        return $manager->getConfigSectionsByPattern($sectionNamePattern);
     }
 
     /*
@@ -2941,16 +2973,22 @@ class LMS
     public function applyMessageTemplates($body, $content_type = 'text/plain')
     {
         static $username = null;
+        static $rusername = null;
+        static $userposition = null;
 
         if (!isset($username)) {
             $userid = Auth::GetCurrentUser();
             if (empty($userid)) {
-                $username = trans('System');
+                $username = $rusername = $userposition = trans('System');
             } else {
                 $user_manager = $this->getUserManager();
-                $username = $user_manager->getUserName($userid);
-                if (empty($username)) {
-                    $username = trans('System');
+                $user = $user_manager->GetUserInfo($userid, false);
+                if (empty($user)) {
+                    $username = $rusername = $userposition = trans('System');
+                } else {
+                    $username = $user['name'];
+                    $rusername = $user['rname'];
+                    $userposition = $user['position'];
                 }
             }
         }
@@ -2961,10 +2999,14 @@ class LMS
             array(
                 '%body',
                 '%username',
+                '%rusername',
+                '%userposition',
             ),
             array(
                 $body,
                 $username,
+                $rusername,
+                $userposition,
             ),
             $message_template
         );
@@ -2972,7 +3014,7 @@ class LMS
 
     public function SendMail($recipients, $headers, $body, $files = null, $persist = null, $smtp_options = null)
     {
-        $persist = is_null($persist) ? ConfigHelper::getConfig('mail.smtp_persist', true) : $persist;
+        $persist = is_null($persist) ? ConfigHelper::checkConfig('mail.smtp_persist', true) : $persist;
 
         $mail_backend = ConfigHelper::getConfig('mail.backend');
         $hide_sensitive_headers = ConfigHelper::checkConfig('mail.hide_sensitive_headers');
@@ -3016,7 +3058,7 @@ class LMS
                 }
             }
 
-            $headers['X-Mailer'] = 'LMS-' . self::SOFTWARE_VERSION;
+            $headers['X-Mailer'] = self::SOFTWARE_NAME . '-' . self::SOFTWARE_VERSION;
             if (!$hide_sensitive_headers) {
                 if (!empty($_SERVER['REMOTE_ADDR'])) {
                     $headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
@@ -3087,10 +3129,16 @@ class LMS
                 return MSG_SENT;
             }
         } elseif ($mail_backend == 'phpmailer') {
-            $this->mail_object = new \PHPMailer\PHPMailer\PHPMailer();
-            $this->mail_object->isSMTP();
+            if (!is_object($this->mail_object) || !$persist) {
+                $this->mail_object = new \PHPMailer\PHPMailer\PHPMailer();
+                $this->mail_object->isSMTP();
 
-            $this->mail_object->SMTPKeepAlive = $persist;
+                $this->mail_object->SMTPKeepAlive = $persist;
+            } else {
+                $this->mail_object->clearAllRecipients();
+                $this->mail_object->clearCustomHeaders();
+                $this->mail_object->clearAttachments();
+            }
 
             $this->mail_object->Host = (!isset($smtp_options['host']) ? $smtp_host : $smtp_options['host']);
             $this->mail_object->Port = (!isset($smtp_options['port']) ? $smtp_port : $smtp_options['port']);
@@ -3126,7 +3174,7 @@ class LMS
                 )
             );
 
-            $this->mail_object->XMailer = 'LMS-' . self::SOFTWARE_VERSION;
+            $this->mail_object->XMailer = self::SOFTWARE_NAME . '-' . self::SOFTWARE_VERSION;
             if (!$hide_sensitive_headers) {
                 if (!empty($_SERVER['REMOTE_ADDR'])) {
                     $this->mail_object->addCustomHeader('X-Remote-IP: '.$_SERVER['REMOTE_ADDR']);
@@ -3199,7 +3247,7 @@ class LMS
 
             if ($files) {
                 foreach ($files as $chunk) {
-                    if (isset($header['X-LMS-Format']) && $headers['X-LMS-Format'] == 'html' && isset($chunk['content-id'])) {
+                    if (isset($headers['X-LMS-Format']) && $headers['X-LMS-Format'] == 'html' && isset($chunk['content-id'])) {
                         $this->mail_object->addStringEmbeddedImage(
                             $chunk['data'],
                             $chunk['content-id'],
@@ -3220,8 +3268,8 @@ class LMS
 
             if (isset($headers['X-LMS-Format']) && $headers['X-LMS-Format'] == 'html') {
                 $this->mail_object->isHTML(true);
-                $this->mail_object->AltBody = trans("To view the message, please use an HTML compatible email viewer");
                 $this->mail_object->msgHTML(preg_replace('/\r?\n/', "\n", $body));
+                $this->mail_object->AltBody = Utils::generateTextFromHtml($body);
             } else {
                 $this->mail_object->isHTML(false);
                 $this->mail_object->Body = $body;
@@ -3299,6 +3347,8 @@ class LMS
             $number = $debug_phone;
         }
 
+        $with_country_code = preg_match('/^\s*(0|\+)/', $number);
+
         $prefix = $sms_options['prefix'] ?? ConfigHelper::getConfig('sms.prefix', '');
         $number = preg_replace('/[^0-9]/', '', $number);
         $number = preg_replace('/^0+/', '', $number);
@@ -3316,7 +3366,7 @@ class LMS
         }
 
         // add prefix to the number if needed
-        if ($prefix && substr($number, 0, strlen($prefix)) != $prefix) {
+        if (!$with_country_code && $prefix && substr($number, 0, strlen($prefix)) != $prefix) {
             $number = $prefix . $number;
         }
 
@@ -3579,10 +3629,10 @@ class LMS
         return $manager->getSystemDefaultNumberPlan($properties);
     }
 
-    public function getDefaultNumberPlanID($doctype, $divisionid = null)
+    public function getDefaultNumberPlanID($doctype, $divisionid = null, $cdate = null)
     {
         $manager = $this->getDocumentManager();
-        return $manager->getDefaultNumberPlanID($doctype, $divisionid);
+        return $manager->getDefaultNumberPlanID($doctype, $divisionid, $cdate);
     }
 
     public function checkNumberPlanAccess($id)
@@ -3729,10 +3779,10 @@ class LMS
         return $manager->DocumentAttachmentExists($md5sum);
     }
 
-    public function GetDocumentFullContents($id)
+    public function GetDocumentFullContents($id, $with_reference_document = false, $attachments = null)
     {
         $manager = $this->getDocumentManager();
-        return $manager->GetDocumentFullContents($id);
+        return $manager->GetDocumentFullContents($id, $with_reference_document, $attachments);
     }
 
     public function SendDocuments($docs, $type, $params)
@@ -3741,10 +3791,16 @@ class LMS
         return $manager->SendDocuments($docs, $type, $params);
     }
 
-    public function DeleteDocument($docid)
+    public function deleteDocumentAttachments($docid, array $attachmentIds = [])
     {
         $manager = $this->getDocumentManager();
-        return $manager->DeleteDocument($docid);
+        return $manager->deleteDocumentAttachments($docid, $attachmentIds);
+    }
+
+    public function DeleteDocument($docid, array $attachmentIds = [])
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->DeleteDocument($docid, $attachmentIds);
     }
 
     public function CopyDocumentPermissions($src_userid, $dst_userid)
@@ -3799,6 +3855,24 @@ class LMS
     {
         $manager = $this->getDocumentManager();
         return $manager->getDocumentFullNumber($docid);
+    }
+
+    public function checkDocumentPermission($docType, $permission)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->checkDocumentPermission($docType, $permission);
+    }
+
+    public function isKsefDocument($docid)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->isKsefDocument($docid);
+    }
+
+    public function isKsefDocumentByCashId($cashid)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->isKsefDocumentByCashId($cashid);
     }
 
     /*
@@ -3895,6 +3969,17 @@ class LMS
         return $manager->GetCustomerAddress($customer_id, $type);
     }
 
+    public function getRecipientTen($address_id)
+    {
+        $manager = $this->getLocationManager();
+        return $manager->getRecipientTen($address_id);
+    }
+
+    public function getEntityType($address_id)
+    {
+        $manager = $this->getLocationManager();
+        return $manager->getEntityType($address_id);
+    }
     public function TerytToLocation($terc, $simc, $ulic)
     {
         $manager = $this->getLocationManager();
@@ -3929,6 +4014,12 @@ class LMS
     {
         $manager = $this->getLocationManager();
         return $manager->isTerritState($state);
+    }
+
+    public function isCityWithStreets($cityid)
+    {
+        $manager = $this->getLocationManager();
+        return $manager->isCityWithStreets($cityid);
     }
 
     public function GetNAStypes()
@@ -4062,10 +4153,28 @@ class LMS
         return $manager->getPromotionSchema($id);
     }
 
+    public function changePromotionSchemaTariffPermissions($schemaid, array $params)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->changePromotionSchemaTariffPermissions($schemaid, $params);
+    }
+
     public function getPromotion($id)
     {
         $manager = $this->getFinanceManager();
         return $manager->getPromotion($id);
+    }
+
+    public function getCashSources()
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->getCashSources();
+    }
+
+    public function calculateDebtForDocuments(array $params)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->calculateDebtForDocuments($params);
     }
 
     /**
@@ -4181,22 +4290,28 @@ class LMS
         return $manager->MessageTemplateExists($type, $name);
     }
 
-    public function AddMessageTemplate($type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message)
+    public function AddMessageTemplate($type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype = 'text', array $attachments = array())
     {
         $manager = $this->getMessageManager();
-        return $manager->AddMessageTemplate($type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message);
+        return $manager->AddMessageTemplate($type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype, $attachments);
     }
 
-    public function UpdateMessageTemplate($id, $type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message)
+    public function UpdateMessageTemplate($id, $type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype = 'text', array $attachments = array(), array $attachments_to_delete = array())
     {
         $manager = $this->getMessageManager();
-        return $manager->UpdateMessageTemplate($id, $type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message);
+        return $manager->UpdateMessageTemplate($id, $type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message, $contenttype, $attachments, $attachments_to_delete);
     }
 
     public function DeleteMessageTemplates(array $ids)
     {
         $manager = $this->getMessageManager();
         return $manager->DeleteMessageTemplates($ids);
+    }
+
+    public function GetMessageTemplateAttachments($templateid)
+    {
+        $manager = $this->getMessageManager();
+        return $manager->GetMessageTemplateAttachments($templateid);
     }
 
     public function GetMessageTemplates($type = 0)
@@ -5086,6 +5201,8 @@ class LMS
 
     public function SendInvoices($docs, $type, $params)
     {
+        static $barcode = null;
+
         extract($params);
 
         if ($type == 'frontend') {
@@ -5096,6 +5213,18 @@ class LMS
 
         if (!isset($no_attachments)) {
             $no_attachments = false;
+        }
+
+        if (!isset($aggregate_documents)) {
+            $aggregate_documents = false;
+        }
+
+        if (!isset($financial_history_reverse_order)) {
+            $financial_history_reverse_order = true;
+        }
+
+        if (!isset($financial_history_item_description_format)) {
+            $financial_history_item_description_format = '%comment';
         }
 
         $month = sprintf('%02d', intval(date('m', $currtime)));
@@ -5120,6 +5249,9 @@ class LMS
 
             if (!$no_attachments) {
                 $document = $this->GetTradeDocument($doc);
+                if (empty($document)) {
+                    continue;
+                }
                 $filename = $document['filename'];
             }
 
@@ -5174,6 +5306,44 @@ class LMS
 
             $all_accounts = implode(isset($mail_format) && $mail_format == 'text' ? "\n" : '<br>', $accounts);
 
+            $ksefOfflineSupport = ConfigHelper::checkConfig('ksef.offline_support');
+
+            if (!empty($doc['ksefnumber']) || $ksefOfflineSupport && !empty($doc['ksefhash']) && empty($doc['ksefstatus'])) {
+                if (strpos($body, '%ksef-url') !== false || strpos($body, '%ksef-qr-code') !== false) {
+                    $ksefUrl = KSeF::getQrCodeUrl([
+                        'ten' => $doc['kseften'],
+                        'date' => $doc['cdate'],
+                        'hash' => $doc['ksefhash'],
+                        'environment' => $doc['ksefenvironment'],
+                    ]);
+                } else {
+                    $ksefUrl = '';
+                }
+
+                if (strpos($body, '%ksef-qr-code') !== false) {
+                    if (!isset($barcode)) {
+                        $barcode = new \Com\Tecnick\Barcode\Barcode();
+                    }
+                    $bobj = $barcode->getBarcodeObj('QRCODE', $ksefUrl, -3, -3, 'black', [0, 0, 0, 0]);
+
+                    $ksefQrCode = '<img src="data:image/png;base64,' . base64_encode($bobj->getPngData()) . '">';
+                } else {
+                    $ksefQrCode = '';
+                }
+            } else {
+                $ksefUrl = $ksefQrCode = '';
+            }
+
+            if (empty($doc['ksefnumber'])) {
+                if ($ksefOfflineSupport && !empty($doc['ksefhash']) && empty($doc['ksefstatus'])) {
+                    $ksefNumber = 'OFFLINE';
+                } else {
+                    $ksefNumber = '';
+                }
+            } else {
+                $ksefNumber = $doc['ksefnumber'];
+            }
+
             $body = str_replace(
                 array(
                     '%invoice',
@@ -5199,6 +5369,9 @@ class LMS
                     '%cdate-y',
                     '%cdate-m',
                     '%cdate-d',
+                    '%ksef-number',
+                    '%ksef-url',
+                    '%ksef-qr-code',
 
                 ),
                 array(
@@ -5224,14 +5397,18 @@ class LMS
                     date('Y', $document['document']['cdate']),
                     date('m', $document['document']['cdate']),
                     date('d', $document['document']['cdate']),
+                    $ksefNumber,
+                    $ksefUrl,
+                    $ksefQrCode,
                 ),
                 $body
             );
 
             $subject = preg_replace('/%invoice/', $invoice_number, $subject);
+            $doc['customername'] = $doc['name'];
             $doc['name'] = '"' . $doc['name'] . '"';
 
-            $body = $this->getLastNInTable($body, $doc['customerid'], $mail_format, $aggregate_documents);
+            $body = $this->getLastNInTable($body, $doc['customerid'], $mail_format, $aggregate_documents, $financial_history_reverse_order, $financial_history_item_description_format);
 
             $mailto = array();
             $mailto_qp_encoded = array();
@@ -5303,11 +5480,27 @@ class LMS
                     }
 
                     if ($extrafile) {
-                        $files[] = array(
-                            'content_type' => mime_content_type($extrafile),
-                            'filename' => basename($extrafile),
-                            'data' => file_get_contents($extrafile)
-                        );
+                        if (is_dir($extrafile)) {
+                            $direntries = getdir($extrafile);
+                            if (!empty($direntries)) {
+                                foreach ($direntries as $direntry) {
+                                    $filename = $extrafile . DIRECTORY_SEPARATOR . $direntry;
+                                    if (is_file($filename)) {
+                                        $files[] = array(
+                                            'content_type' => mime_content_type($filename),
+                                            'filename' => $direntry,
+                                            'data' => file_get_contents($filename)
+                                        );
+                                    }
+                                }
+                            }
+                        } else {
+                            $files[] = array(
+                                'content_type' => mime_content_type($extrafile),
+                                'filename' => basename($extrafile),
+                                'data' => file_get_contents($extrafile)
+                            );
+                        }
                     }
                 }
 
@@ -5332,6 +5525,10 @@ class LMS
                     $headers['Cc'] = $notify_email;
                 }
 
+                if (!empty($blind_notify_email)) {
+                    $headers['Bcc'] = $blind_notify_email;
+                }
+
                 if (isset($mail_format) && $mail_format == 'html') {
                     $headers['X-LMS-Format'] = 'html';
                     $content_type = 'text/html';
@@ -5344,6 +5541,7 @@ class LMS
                 $data = array(
                     'body' => $body,
                     'doc' => $doc,
+                    'balance' => $balance,
                     'mail_format' => $mail_format,
                     'headers' => $headers
                 );

@@ -119,9 +119,12 @@ $customers = $DB->GetAll(
     FROM customeraddressview c
     JOIN customer_addresses ca ON ca.customer_id = c.id AND ca.type = ?
     JOIN vdivisions d ON d.id = c.divisionid
-    WHERE c.type = ? AND c." . $type . " <> ? AND c.status IN ?"
-    . ($customerid ? ' AND c.id = ' . $customerid : '')
-    . ($customergroups ?: $customergroups)
+    WHERE c.type = ?
+        AND c.deleted = 0
+        AND c." . $type . " <> ?
+        AND c.status IN ?"
+        . ($customerid ? ' AND c.id = ' . $customerid : '')
+        . ($customergroups ?: $customergroups)
     . " ORDER BY c.id",
     array(
         BILLING_ADDRESS,
@@ -189,7 +192,7 @@ foreach ($customers as $customer) {
     } else {
         if (count($result) > 1) {
             if (!$quiet) {
-                echo 'Ambigous data in REGON database!' . PHP_EOL;
+                echo 'Ambiguous data in REGON database!' . PHP_EOL;
             }
             continue;
         }
@@ -237,16 +240,20 @@ foreach ($customers as $customer) {
         if (isset($properties['address'])) {
             $current_address = $LMS->getAddress($customer['address_id']);
             $address = reset($result['addresses']);
-            if ($address['location_state_name'] != $current_address['state_name']
-                || $address['location_city_name'] != $current_address['city_name']
-                || $address['location_street_name'] != $current_address['street']
-                || $address['location_house'] != $current_address['house']
-                || $address['location_flat'] != $current_address['flat']
-                || $address['location_zip'] != $current_address['zip']
-                || $address['location_postoffice'] != $current_address['postoffice']
-                || $address['location_state'] != $current_address['state_id']
-                || $address['location_city'] != $current_address['city_id']
-                || $address['location_street'] != $current_address['street_id']) {
+            if (!empty($address['location_city'])
+                && (
+                    $address['location_state_name'] != $current_address['state_name']
+                    || $address['location_city_name'] != $current_address['city_name']
+                    || $address['location_street_name'] != $current_address['street']
+                    || $address['location_house'] != $current_address['house']
+                    || $address['location_flat'] != $current_address['flat']
+                    || $address['location_zip'] != $current_address['zip']
+                    || $address['location_postoffice'] != $current_address['postoffice']
+                    || $address['location_state'] != $current_address['state_id']
+                    || $address['location_city'] != $current_address['city_id']
+                    || $address['location_street'] != $current_address['street_id']
+                )
+            ) {
                 $address['teryt'] = !empty($address['location_city']);
                 $address['address_id'] = $customer['address_id'];
                 $LMS->UpdateAddress(
