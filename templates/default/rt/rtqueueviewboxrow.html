@@ -34,13 +34,12 @@
 		</span>
 	</TD>
 	<TD class="nobr">
-		<span class="lms-ui-hint-rollover" data-url="?m=rtticketinfo&id={$ticket.id}">
-			<span class="bold" style="{$_RT_PRIORITY_STYLES[$ticket.priority]}">&nbsp;{$ticket.id|string_format:"%06d"}&nbsp;</span>
-			<span>{if (is_array($filter.ids) && count($filter.ids) != 1) || !isset($filter.ids)}{$ticket.name}{/if}</span>
-			{if !ConfigHelper::checkConfig('rt.hide_ticket_row_create_time')}
-				<br>{$ticket.createtime|date_format:"Y-m-d H:i:s"}
-			{/if}
-		</span>
+		<span class="bold" style="{$_RT_PRIORITY_STYLES[$ticket.priority]}">&nbsp;{$ticket.id|string_format:"%06d"}&nbsp;</span>
+		{hint class="lms-ui-ignore-target-url" icon="info" url="?m=rtticketinfo&id={$ticket.id}" mode="toggle"}
+		<span>{if (is_array($filter.ids) && count($filter.ids) != 1) || !isset($filter.ids)}{$ticket.name}{/if}</span>
+		{if !ConfigHelper::checkConfig('rt.hide_ticket_row_create_time')}
+			<br>{$ticket.createtime|date_format:"Y-m-d H:i:s"}
+		{/if}
 	</TD>
 	<TD class="text-center">
 		<span>{$_SERVICETYPES[$ticket.service]}</span>
