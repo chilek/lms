@@ -3587,10 +3587,10 @@ class LMS
         return $manager->OpenEvent($id);
     }
 
-    public function EventClose($params)
+    public function CloseEvent($params)
     {
         $manager = $this->getEventManager();
-        return $manager->EventClose($params);
+        return $manager->CloseEvent($params);
     }
 
     public function GetCustomerIdByTicketId($id)

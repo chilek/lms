@@ -788,7 +788,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
      *      ticketid - assigned ticketid of all events to close
      */
 
-    public function EventClose($params)
+    public function CloseEvent($params)
     {
         if (!ConfigHelper::checkPrivilege('timetable_mangement')) {
             die('Error - cannot close event(s) - no permissions');

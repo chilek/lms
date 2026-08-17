@@ -81,9 +81,9 @@ switch ($action) {
     case 'close':
         $SESSION->remove_history_entry();
         if (isset($ticketid)) {
-            $LMS->EventClose(array('ticketid' => $ticketid));
+            $LMS->CloseEvent(array('ticketid' => $ticketid));
         } else {
-            $LMS->EventClose(array('id' => $id));
+            $LMS->CloseEvent(array('id' => $id));
         }
         $SESSION->redirect($backurl);
         break;
