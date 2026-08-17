@@ -3581,10 +3581,10 @@ class LMS
         return $manager->GetEventList($params);
     }
 
-    public function EventOpen($id)
+    public function OpenEvent($id)
     {
         $manager = $this->getEventManager();
-        return $manager->EventOpen($id);
+        return $manager->OpenEvent($id);
     }
 
     public function EventClose($params)

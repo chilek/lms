@@ -71,7 +71,7 @@ $action = $_GET['action'] ?? null;
 switch ($action) {
     case 'open':
         if (empty($event['closeddate']) || ($event['closed'] == 1 && $aee && ($now - $event['closeddate'] < $aee)) || $superuser) {
-            $LMS->EventOpen($id);
+            $LMS->OpenEvent($id);
             $SESSION->remove_history_entry();
             $SESSION->redirect($backurl);
         } else {

@@ -837,7 +837,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         );
     }
 
-    public function EventOpen($id)
+    public function OpenEvent($id)
     {
         if (!ConfigHelper::checkPrivilege('timetable_mangement')) {
             die('Error - cannot open event(s) - no permissions');
