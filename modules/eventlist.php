@@ -38,6 +38,7 @@ $default_forward_day_limit = ConfigHelper::getConfig('timetable.default_forward_
 $hide_disabled_users = ConfigHelper::checkConfig('timetable.hide_disabled_users', ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users'));
 $show_delayed_events = ConfigHelper::checkConfig('timetable.show_delayed_events', ConfigHelper::checkConfig('phpui.timetable_overdue_events'));
 $big_networks = ConfigHelper::checkConfig('phpui.big_networks');
+$user_row_limit = ConfigHelper::getConfig('timetable.row_user_limit', ConfigHelper::getConfig('phpui.timetable_user_row_limit', 4));
 $params['userid'] = Auth::GetCurrentUser();
 
 if (!empty($filter['edate'])) {
@@ -267,21 +268,23 @@ if (!empty($usergroups)) {
 }
 
 $SMARTY->assign(array(
-    'today' => $today,
-    'period' => $LMS->GetTimetableRange(),
-    'eventlist' => $eventlist,
-    'overdue_events' => $overdue_events,
-    'days' => $days,
-    'daylist' => $daylist,
-    'date' => $date,
-    'error' => $error,
-    'netnodes' => $LMS->GetNetNodes(),
-    'netdevices' => $LMS->GetNetDevList('name,asc', array('short' => true)),
-    'visible_users' => $visible_users,
-    'usergroups' => $usergroups,
-    'overdue_events_only' => $overdue_events_only,
-    'getHolidays', getHolidays($year ?? null),
-    'customerlist' => $big_networks ? null : $LMS->GetCustomerNames(),
-    'divisions' => $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())),
+        'today' => $today,
+        'period' => $LMS->GetTimetableRange(),
+        'eventlist' => $eventlist,
+        'overdue_events' => $overdue_events,
+        'days' => $days,
+        'daylist' => $daylist,
+        'date' => $date,
+        'error' => $error,
+        'netnodes' => $LMS->GetNetNodes(),
+        'netdevices' => $LMS->GetNetDevList('name,asc', array('short' => true)),
+        'overdue_events_only' => $overdue_events_only,
+        'getHolidays', getHolidays($year ?? null),
+        'customerlist' => $big_networks ? null : $LMS->GetCustomerNames(),
+        'user_row_limit' => $user_row_limit,
+        'visible_users' => $visible_users,
+        'usergroups' => $usergroups,
+        'divisions' => $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())),
 ));
+
 $SMARTY->display('event/eventlist.html');

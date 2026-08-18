@@ -61,7 +61,9 @@ interface LMSHelpdeskManagerInterface
 
     public function GetUserRightsToCategory($user, $category, $ticket = null);
 
-    public function GetCategoryList($stats = true);
+    public function GetCategoryList($stats = true, $owners = true);
+
+    public function GetCategoryUsers($categoryid);
 
     public function GetCategoryStats($id);
 
