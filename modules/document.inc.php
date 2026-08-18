@@ -157,7 +157,7 @@ function GetDocumentTemplates($rights, $type = null)
 
     ob_start();
     foreach ($documents_dirs as $doc_dir) {
-        if ($dirs = getdir($doc_dir . DIRECTORY_SEPARATOR . 'templates', '^[a-z0-9_-]+$')) {
+        if ($dirs = getdir($doc_dir . DIRECTORY_SEPARATOR . 'templates', '^[a-zA-Z0-9_-]+$')) {
             foreach ($dirs as $dir) {
                 $infofile = $doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
                 . $dir . DIRECTORY_SEPARATOR . 'info.php';
