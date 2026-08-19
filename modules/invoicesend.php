@@ -45,7 +45,7 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                 $marks = array_merge($marks, $_POST['marks']['note']);
             }
         } else {
-            if ($_GET['marks'] == 'invoice' || $_GET['marks'] == 'note') {
+            if ($_GET['marks'] == 'invoice' || $_GET['marks'] == 'note' || $_GET['marks'] == 'cash') {
                 $marks = $_POST['marks'];
             }
         }
