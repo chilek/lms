@@ -4,6 +4,12 @@
 <!--// $Id$ //-->
 <h1>{$layout.pagetitle}</h1>
 
+{if !empty($error.halve)}
+<script>
+	alertDialog("{$error.halve}");
+</script>
+{/if}
+
 {if $unlockedit}
 	<form name="remap" id="remap" action="" method="get">
 		<input type="submit" class="hiddenbtn">
@@ -379,6 +385,7 @@
 					{button id="delete-net" type="link-button" data_href="?m=netdel&id={$network.id}" data_name="{$network.name}" icon="delete" label="Remove"}
 					{button href="?m=netinfo&id={$network.id}" icon="cancel" label="Cancel"}
 				{else}
+					{button id="halve-net" data_href="?m=netinfo&id={$network.id}&action=halve" data_name="{$network.name}" icon="administration" label="Halve"}
 					{button href="?m=netedit&id={$network.id}" accesskey="E" icon="edit" label="Edit"}
 					{button id="delete-net" data_href="?m=netdel&id={$network.id}" data_name="{$network.name}" icon="delete" label="Remove"}
 				{/if}
@@ -486,6 +493,12 @@
 <script>
 
 	$(function() {
+		$('#halve-net').click(function() {
+		    confirmDialog($t("Are You sure, you want to halve network '$a'?", $(this).data('name')), this)
+		        .done(() => { location.href = $(this).data('href'); });
+		    return false;
+		});
+
 		$('#delete-net').click(function() {
 			var name = $(this).attr('data-name');
 			confirmDialog($t("Are you sure, you want to remove network '$a' from database?", name), this).done(function () {
