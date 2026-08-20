@@ -1235,6 +1235,7 @@ version 28-git (????-??-??):
   - enhancement: selection of document attachments is possible for document view/send/delete [chilan]
   - security: harden path traversal, session fixation, cookie  flags, brute-force, MD5 magic-hash [djrzulf]
   - enhancement: added service e-mail property to divisions [chilan]
+  - enhancement: new customer consent: 'postal_delivery_complaint' [chilan]
 
 version 27.0 (2021-08-20):
 
