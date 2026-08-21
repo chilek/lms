@@ -153,6 +153,7 @@ $_LANG['Correction value: $a (to repay)'] = 'Wartość korekty: $a (do zwrotu)';
 
 $_LANG['Ticket ID is empty or invalid'] = 'Brak ID zgłoszenia lub jest ono nieprawidłowe';
 $_LANG['Select tariff'] = 'Wybierz taryfę';
+$_LANG['— Select tariff —'] = '— Wybierz taryfę —';
 $_LANG['Document flags'] = 'Flagi dokumentu';
 $_LANG['The document is issued according to the $a price'] = 'Dokument wystawiony według ceny $a';
 $_LANG['calculated from net'] = 'liczone od netto';
