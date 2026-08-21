@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute('ALTER TABLE events ALTER COLUMN begintime TYPE integer');
 $this->Execute('ALTER TABLE events ALTER COLUMN endtime TYPE integer');
@@ -37,7 +36,3 @@ if (!empty($events)) {
         );
     }
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018091000', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,10 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE pna ALTER COLUMN zip TYPE varchar(10)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020042701', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $ident_lengths = array(
     'location_states' => 2,
@@ -37,7 +36,3 @@ foreach ($ident_lengths as $table => $length) {
         array($length, $length)
     );
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017063000', 'dbversion'));
-
-$this->CommitTrans();

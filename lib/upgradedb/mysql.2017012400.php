@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("DROP VIEW IF EXISTS customerview");
 $this->Execute("DROP VIEW IF EXISTS contractorview");
@@ -77,7 +76,3 @@ CREATE VIEW customeraddressview AS
 
 $this->Execute("ALTER TABLE divisions ADD COLUMN rbe varchar(255) NOT NULL DEFAULT ''");
 $this->Execute("ALTER TABLE divisions ADD COLUMN rbename varchar(255) NOT NULL DEFAULT ''");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017012400', 'dbversion'));
-
-$this->CommitTrans();

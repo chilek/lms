@@ -21,10 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("UPDATE docrights SET doctype = ? WHERE doctype = ?", array('-128', '-10'));
 $this->Execute("UPDATE documents SET type = ? WHERE type = ?", array('-128', '-10'));
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014040400', 'dbversion'));
-$this->CommitTrans();

@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE customers CHANGE paytime paytime smallint NOT NULL DEFAULT '-1'");
 
@@ -37,7 +36,3 @@ $this->Execute("CREATE VIEW customersview AS
 
 $this->Execute("ALTER TABLE documents CHANGE paytime paytime smallint NOT NULL DEFAULT '0'");
 $this->Execute("ALTER TABLE divisions CHANGE inv_paytime inv_paytime smallint DEFAULT NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013111900', 'dbversion'));
-
-$this->CommitTrans();

@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 CREATE SEQUENCE countries_id_seq;
@@ -54,7 +53,3 @@ INSERT INTO countries (name) VALUES ('Slovakia');
 INSERT INTO countries (name) VALUES ('USA');
 
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008112400', 'dbversion'));
-
-$this->CommitTrans();

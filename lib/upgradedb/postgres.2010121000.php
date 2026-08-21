@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     DROP VIEW customersview;
@@ -61,7 +60,3 @@ $this->Execute("
 
     CREATE INDEX excludedgroups_customergroupid_idx ON excludedgroups (customergroupid);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010121000', 'dbversion'));
-
-$this->CommitTrans();

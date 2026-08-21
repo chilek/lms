@@ -21,12 +21,7 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE assignments ADD COLUMN separatedocument tinyint(1) DEFAULT 0 NOT NULL");
 
 $this->Execute("UPDATE assignments SET separatedocument = 1, invoice = 1 WHERE invoice = 2");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018010500', 'dbversion'));
-
-$this->CommitTrans();

@@ -35,5 +35,3 @@ $this->Execute("
 	PRIMARY KEY (id)
     ) ENGINE=MyISAM
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2004112600', 'dbversion'));

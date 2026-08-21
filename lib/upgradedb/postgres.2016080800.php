@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE voip_rules RENAME TO voip_rule_groups;
                 ALTER SEQUENCE voip_rules_id_seq RENAME TO voip_rule_groups_id_seq;
@@ -32,7 +31,4 @@ $this->Execute("ALTER TABLE voip_rules RENAME TO voip_rule_groups;
                 ALTER TABLE voip_rules RENAME ruleid        TO rule_group_id;
                 ALTER TABLE voip_rules RENAME groupid       TO prefix_group_id;
                 ALTER TABLE voip_rules RENAME rule_settings TO settings;
-
-                UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016080800', 'dbversion'));
-
-$this->CommitTrans();
+");

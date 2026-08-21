@@ -24,13 +24,8 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 ALTER TABLE rttickets ADD creatorid integer NOT NULL DEFAULT 0;
 CREATE INDEX rttickets_creatorid_idx ON rttickets (creatorid);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007110600', 'dbversion'));
-
-$this->CommitTrans();

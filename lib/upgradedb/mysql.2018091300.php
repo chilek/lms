@@ -21,13 +21,7 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute('ALTER TABLE netnodes ADD COLUMN ownerid int(11) DEFAULT NULL');
 $this->Execute("ALTER TABLE netnodes ADD CONSTRAINT netnodes_ownerid_fkey
 	FOREIGN KEY (ownerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE");
-
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018091300', 'dbversion'));
-
-$this->CommitTrans();

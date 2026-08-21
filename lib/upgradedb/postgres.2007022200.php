@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE INDEX rtmessages_ticketid_idx ON rtmessages (ticketid);
@@ -41,7 +40,3 @@ $this->Execute("
 			  
     CREATE INDEX rtnotes_ticketid_idx ON rtnotes (ticketid);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007022200', 'dbversion'));
-
-$this->CommitTrans();

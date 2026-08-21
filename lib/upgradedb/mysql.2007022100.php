@@ -24,11 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("UPDATE rtrights SET rights = 7 WHERE rights = 2");
 $this->Execute("UPDATE rtrights SET rights = 15 WHERE rights = 3");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007022100', 'dbversion'));
-
-$this->CommitTrans();

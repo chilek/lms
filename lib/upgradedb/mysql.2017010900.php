@@ -21,11 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE tariffs ADD COLUMN datefrom int(11) NOT NULL DEFAULT 0");
 $this->Execute("ALTER TABLE tariffs ADD COLUMN dateto int(11) NOT NULL DEFAULT 0");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017010900', 'dbversion'));
-
-$this->CommitTrans();

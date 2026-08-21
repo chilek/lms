@@ -21,11 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE netdevices MODIFY COLUMN producer varchar(256) DEFAULT '' NOT NULL");
 $this->Execute("ALTER TABLE netdevices MODIFY COLUMN model varchar(256) DEFAULT '' NOT NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021050700', 'dbversion'));
-
-$this->CommitTrans();

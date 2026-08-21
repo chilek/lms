@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE SEQUENCE filecontainers_id_seq;
@@ -50,7 +49,3 @@ $this->Execute("
 	);
 	CREATE INDEX files_md5sum_idx ON files (md5sum)
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018082300', 'dbversion'));
-
-$this->CommitTrans();

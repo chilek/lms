@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE TABLE logtransactions (
@@ -68,7 +67,3 @@ $this->Execute("
 		FOREIGN KEY (logmessageid) REFERENCES logmessages (id) ON DELETE CASCADE ON UPDATE CASCADE
 	) ENGINE=InnoDB
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013042600', 'dbversion'));
-
-$this->CommitTrans();

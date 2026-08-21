@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE voipaccounts ADD COLUMN location varchar(255) DEFAULT NULL");
 $this->Execute("ALTER TABLE voipaccounts ADD COLUMN location_city int(11)");
@@ -35,7 +34,3 @@ $this->Execute("ALTER TABLE voipaccounts ADD INDEX location_city (location_city,
 $this->Execute("ALTER TABLE voipaccounts ADD INDEX location_street (location_street)");
 $this->Execute("ALTER TABLE voipaccounts ADD FOREIGN KEY (location_city) REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE");
 $this->Execute("ALTER TABLE voipaccounts ADD FOREIGN KEY (location_street) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015072300', 'dbversion'));
-
-$this->CommitTrans();

@@ -24,10 +24,5 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE documents ADD reason varchar(255) NOT NULL DEFAULT ''");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007053100', 'dbversion'));
-
-$this->CommitTrans();

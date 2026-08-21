@@ -21,11 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE events ADD COLUMN closeduserid integer DEFAULT 0 NOT NULL");
 $this->Execute("ALTER TABLE events ADD COLUMN closeddate integer DEFAULT 0 NOT NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016071200', 'dbversion'));
-
-$this->CommitTrans();

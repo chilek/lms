@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE rtqueues ADD COLUMN deleted smallint DEFAULT 0 NOT NULL;
@@ -34,7 +33,3 @@ $this->Execute("
         ALTER TABLE rtmessages ADD COLUMN deltime integer DEFAULT 0 NOT NULL;
         ALTER TABLE rtmessages ADD COLUMN deluserid integer DEFAULT 0 NOT NULL
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017070400', 'dbversion'));
-
-$this->CommitTrans();

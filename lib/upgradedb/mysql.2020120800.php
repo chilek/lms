@@ -21,13 +21,8 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute(
     "INSERT INTO uiconfig (section, var, value) VALUES (?, ?, ?)",
     array('userpanel', 'pin_validation', 'true')
 );
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020120800', 'dbversion'));
-
-$this->CommitTrans();

@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	DROP VIEW vnodes;
@@ -49,7 +48,3 @@ $this->Execute("
 
 $this->Execute("ALTER TABLE netdevices ADD longitude numeric(10, 6) DEFAULT NULL");
 $this->Execute("ALTER TABLE netdevices ADD latitude numeric(10, 6) DEFAULT NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011110800', 'dbversion'));
-
-$this->CommitTrans();

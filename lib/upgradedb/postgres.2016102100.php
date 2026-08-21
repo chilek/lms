@@ -21,13 +21,8 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE netdevices ADD COLUMN ownerid integer NULL");
 
 $this->Execute("ALTER TABLE netdevices ADD CONSTRAINT ownerid_fk
                 FOREIGN KEY (ownerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016102100', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE SEQUENCE rttemplatetypes_id_seq;
@@ -44,6 +43,3 @@ $this->Execute("
 		CONSTRAINT rttemplatequeues_templateid_key UNIQUE (templateid, queueid)
 	)
 ");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019042400', 'dbversion'));
-
-$this->CommitTrans();

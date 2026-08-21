@@ -29,6 +29,6 @@ sed -i -e "s/^define('DBVERSION', '\([0-9]\+\)');/define('DBVERSION', '$1');/g" 
 
 for dbdriver in mysql postgres; do
 	if [ ! -f "${LMSDIR}/lib/upgradedb/${dbdriver}.$1.php" ]; then
-		sed -e "s/%version%/$1/g" ${CWD}/upgradedb-template.php >${LMSDIR}/lib/upgradedb/${dbdriver}.$1.php
+		cp ${CWD}/upgradedb-template.php ${LMSDIR}/lib/upgradedb/${dbdriver}.$1.php
 	fi
 done

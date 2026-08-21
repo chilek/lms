@@ -25,5 +25,3 @@
  */
 
 $this->Execute("ALTER TABLE nodes ADD lastonline INT(11) NOT NULL DEFAULT '0'");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2004081400', 'dbversion'));

@@ -57,5 +57,3 @@ $this->Execute("
 	PRIMARY KEY (id),
 	UNIQUE KEY instanceid (instanceid, var))
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005033103', 'dbversion'));

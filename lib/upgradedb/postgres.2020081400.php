@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE SEQUENCE customernotes_id_seq;
@@ -36,7 +35,3 @@ $this->Execute("
         PRIMARY KEY (id)
     )
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020081400', 'dbversion'));
-
-$this->CommitTrans();

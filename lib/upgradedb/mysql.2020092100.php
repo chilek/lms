@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE TABLE location_city_types (
@@ -41,7 +40,3 @@ $this->Execute("
     ALTER TABLE location_cities ADD CONSTRAINT location_cities_type_fkey
         FOREIGN KEY (type) REFERENCES location_city_types (id) ON DELETE CASCADE ON UPDATE CASCADE
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020092100', 'dbversion'));
-
-$this->CommitTrans();

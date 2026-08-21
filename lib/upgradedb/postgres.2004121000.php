@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 $this->Execute("
     ALTER TABLE uiconfig ADD section1 varchar(64);
     UPDATE uiconfig SET section1 = section;
@@ -44,6 +43,4 @@ $this->Execute("
     ALTER TABLE uiconfig ALTER var SET NOT NULL;
     ALTER TABLE uiconfig ALTER var SET DEFAULT '';
     
-    UPDATE dbinfo SET keyvalue = '2004121000' WHERE keytype = 'dbversion'
 ");
-$this->CommitTrans();

@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE TABLE plicbdoperators (
@@ -36,7 +35,3 @@ $this->Execute("
 		INDEX rpt (rpt)
 	) ENGINE=InnoDB;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015090200', 'dbversion'));
-
-$this->CommitTrans();

@@ -142,4 +142,3 @@ if (empty($versions['up_module_stats']) || $versions['up_module_stats']['keyvalu
 }
 
 $this->Execute("DELETE FROM dbinfo WHERE keytype ?LIKE? 'up_%'");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008061300', 'dbversion'));

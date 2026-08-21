@@ -21,12 +21,7 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE tariffs ADD COLUMN cloud_limit int(11) DEFAULT NULL");
 $this->Execute("ALTER TABLE tariffs ADD COLUMN quota_cloud_limit int(11) DEFAULT NULL");
 $this->Execute("ALTER TABLE passwd ADD COLUMN quota_cloud int(11) DEFAULT 0 NOT NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017042700', 'dbversion'));
-
-$this->CommitTrans();

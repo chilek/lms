@@ -24,10 +24,5 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE networks ADD disabled tinyint(1) NOT NULL DEFAULT '0'");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008042400', 'dbversion'));
-
-$this->CommitTrans();

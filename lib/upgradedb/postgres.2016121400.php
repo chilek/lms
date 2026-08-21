@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("CREATE SEQUENCE location_buildings_id_seq");
 $this->Execute("CREATE TABLE location_buildings (
@@ -36,7 +35,3 @@ $this->Execute("CREATE TABLE location_buildings (
                 ");
 
 $this->Execute('CREATE INDEX location_cityid_index ON location_buildings (city_id);');
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016121400', 'dbversion'));
-
-$this->CommitTrans();

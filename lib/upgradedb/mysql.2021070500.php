@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE TABLE customercalls (
@@ -51,7 +50,3 @@ $this->Execute("
         UNIQUE KEY customercallassignments_customercallid_ukey (customercallid, customerid)
     ) ENGINE=InnoDB
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021070500', 'dbversion'));
-
-$this->CommitTrans();

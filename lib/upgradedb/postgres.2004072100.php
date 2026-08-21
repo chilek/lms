@@ -25,12 +25,11 @@
  */
 
 $this->Execute("
-    BEGIN;
+    
     ALTER TABLE users ADD serviceaddr text;
     ALTER TABLE users ALTER serviceaddr SET DEFAULT '';
     UPDATE users SET serviceaddr='';
     ALTER TABLE users ALTER serviceaddr SET NOT NULL;
     
-    UPDATE dbinfo SET keyvalue = '2004072100' WHERE keytype = 'dbversion';
-    COMMIT;
+    
 ");

@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 $this->Execute("
     ALTER TABLE passwd ADD home1 varchar(255);
     UPDATE passwd SET home1 = home;
@@ -33,6 +32,4 @@ $this->Execute("
     ALTER TABLE passwd ALTER home SET DEFAULT '';
     ALTER TABLE passwd ALTER home SET NOT NULL;
 
-    UPDATE dbinfo SET keyvalue = '2004112400' WHERE keytype = 'dbversion';
 ");
-$this->CommitTrans();

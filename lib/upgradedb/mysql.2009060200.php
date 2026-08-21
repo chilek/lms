@@ -42,5 +42,3 @@ $this->Execute("ALTER TABLE cash ADD sourceid int(11) DEFAULT NULL");
 $this->Execute("ALTER TABLE cashimport ADD sourceid int(11) DEFAULT NULL");
 $this->Execute("ALTER TABLE cash ADD INDEX importid (importid)");
 $this->Execute("ALTER TABLE cash ADD INDEX sourceid (sourceid)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009060200', 'dbversion'));

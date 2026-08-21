@@ -21,11 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE tariffs DROP CONSTRAINT tariffs_name_key");
 $this->Execute("ALTER TABLE tariffs ADD CONSTRAINT tariffs_name_key UNIQUE(name, value)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011021700', 'dbversion'));
-
-$this->CommitTrans();

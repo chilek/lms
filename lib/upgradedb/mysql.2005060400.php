@@ -26,5 +26,3 @@
 
 $this->Execute("ALTER TABLE cash ADD reference INT(11) DEFAULT '0' NOT NULL");
 $this->Execute("ALTER TABLE cash ADD INDEX reference (reference)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005060400', 'dbversion'));

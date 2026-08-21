@@ -110,7 +110,6 @@ define('BILLING_ADDRESS_2017013100', 1);
 define('LOCATION_ADDRESS_2017013100', 2);
 define('DEFAULT_LOCATION_ADDRESS_2017013100', 3);
 
-$this->BeginTrans();
 
 $this->Execute("CREATE TABLE addresses (
                     id         int(11) NOT NULL auto_increment,
@@ -584,7 +583,3 @@ $this->Execute("DROP INDEX location_city   ON nodes;");
 $this->Execute("DROP INDEX location_street ON nodes;");
 $this->Execute("DROP INDEX location_street ON netdevices;");
 $this->Execute("DROP INDEX location_city   ON netdevices;");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017013100', 'dbversion'));
-
-$this->CommitTrans();

@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE customers ADD im integer;
@@ -33,7 +32,3 @@ $this->Execute("
 	ALTER TABLE customers ALTER im SET DEFAULT 0;
 	ALTER TABLE customers DROP gguin;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005062600', 'dbversion'));
-
-$this->CommitTrans();

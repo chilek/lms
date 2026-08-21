@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("INSERT INTO uiconfig (section, var, value)
 	VALUES (?, ?, ?)", array('userpanel', 'change_notification_mail_sender', ''));
@@ -31,7 +30,3 @@ $this->Execute("INSERT INTO uiconfig (section, var, value)
 	VALUES (?, ?, ?)", array('userpanel', 'change_notification_mail_subject', ''));
 $this->Execute("INSERT INTO uiconfig (section, var, value)
 	VALUES (?, ?, ?)", array('userpanel', 'change_notification_mail_body', ''));
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017080500', 'dbversion'));
-
-$this->CommitTrans();

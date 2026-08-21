@@ -24,10 +24,5 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("CREATE INDEX tariffid ON assignments(tariffid)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = '2005022500' WHERE keytype = 'dbversion'");
-
-$this->CommitTrans();

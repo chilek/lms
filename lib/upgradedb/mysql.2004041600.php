@@ -42,4 +42,3 @@ $this->Execute("
 	UNIQUE KEY userassignment (usergroupid, userid)
     )
 ");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2004041600', 'dbversion'));
