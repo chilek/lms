@@ -102,6 +102,7 @@ class SYSLOG
     public const OPER_UPDATE = 3;
 
     public const OPER_GET = 4;
+    public const OPER_HALVE = 5;
     public const OPER_SSN_RESERVATION_CHECK_ERROR = 238;
     public const OPER_SSN_RESERVATION_CHECK = 239;
     public const OPER_DBBACKUPRECOVER = 240;
@@ -260,6 +261,7 @@ class SYSLOG
         self::OPER_ADD => 'addition<!syslog>',
         self::OPER_DELETE => 'deletion<!syslog>',
         self::OPER_UPDATE => 'update<!syslog>',
+        self::OPER_HALVE => 'halve<!syslog>',
         self::OPER_GET => 'get<!syslog>',
         self::OPER_SSN_RESERVATION_CHECK_ERROR => 'SSN reservation check error<!syslog>',
         self::OPER_SSN_RESERVATION_CHECK => 'SSN reservation check<!syslog>',
@@ -274,6 +276,7 @@ class SYSLOG
         self::OPER_ADD => 'color: green',
         self::OPER_DELETE => 'color: red',
         self::OPER_UPDATE => 'color: blue',
+        self::OPER_HALVE => 'color: #b8860b',
         self::OPER_GET => 'color: black',
         self::OPER_SSN_RESERVATION_CHECK_ERROR => 'color: red',
         self::OPER_SSN_RESERVATION_CHECK => 'color: red',
