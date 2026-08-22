@@ -635,6 +635,7 @@ $_LANG['Are you sure, you want to restore that message?'] = 'Jesteś pewien, że
 $_LANG['Are you sure, you want to delete all selected messages?'] = 'Jesteś pewien, że chcesz usunąć wszystkie wybrane wiadomości?';
 $_LANG['Are you sure, you want to delete that network?'] = 'Jesteś pewien, że chcesz usunąć tę sieć?';
 $_LANG['Are You sure, you want to halve network \'$a\'?'] = 'Jesteś pewien, że chcesz przepołowić sieć \'$a\'?';
+$_LANG['Unable to split network: network address is already assigned to a computer.'] = 'Nie można podzielić sieci: adres sieci jest przypisany do komputera.';
 $_LANG['Are you sure, you want to delete that payment?'] = 'Jesteś pewien, że chcesz usunąć tę płatność?';
 $_LANG['Are you sure, you want to delete payment \'$a\'?'] = 'Jesteś pewien, że chcesz usunąć płatność \'$a\'?';
 $_LANG['Are you sure, you want to delete that tariff?'] = 'Jesteś pewien, że chcesz usunąć tę taryfę?';
