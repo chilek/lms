@@ -15,7 +15,7 @@
 		<td width="98%">
 			<SELECT name="helpdesk[queue]" {userpaneltip text="Select queue" trigger="queue"}>
 				{foreach $queues as $queue}
-				<OPTION value="{$queue.id}"{if $helpdesk.queue == $queue.id} selected{/if}>{$queue.name}</OPTION>
+				<option value="{$queue.id}"{if $helpdesk.queue == $queue.id} selected{/if}>{$queue.name}{if $queue.description != ''} ({$queue.description}){/if}</option>
 				{/foreach}
 			</SELECT>
 		</td>
