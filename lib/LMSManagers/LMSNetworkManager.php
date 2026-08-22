@@ -164,6 +164,20 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
         }
 
         $second_address = long_ip($second_network);
+
+        if ($this->db->GetOne(
+            'SELECT id
+            FROM nodes
+            WHERE netid = ?
+                AND ipaddr = ?
+            LIMIT 1',
+            [$netid, $second_network]
+        )) {
+            throw new RuntimeException(
+                'Unable to split network: network address is already assigned to a computer.'
+            );
+        }
+
         if ($this->NetworkOverlaps($second_address, $mask, $network['hostid'], $netid)) {
             throw new RuntimeException('Specified IP address overlaps with other network!');
         }
