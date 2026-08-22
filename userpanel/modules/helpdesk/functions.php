@@ -669,7 +669,7 @@ function module_main()
 
     $queues = ConfigHelper::getConfig('userpanel.queues');
     if (!empty($queues)) {
-        $queues = $LMS->DB->GetAll('SELECT id, name FROM rtqueues WHERE id IN ('
+        $queues = $LMS->DB->GetAll('SELECT id, name, descriotion FROM rtqueues WHERE id IN ('
             . str_replace(';', ',', $queues) . ')');
     } else {
         $queues = array();
