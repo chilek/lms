@@ -49,7 +49,7 @@
 							<td>
 								<select name="sources[]" multiple id="sources" size="20" {tip text="Helpdesk visible ticket sources in Userpanel" class="lms-ui-multiselect"}>
 									{foreach $_RT_SOURCES as $sourceidx => $source}
-										<option value="{$sourceidx}"{if in_array($sourceidx, $sources)} selected{/if}>{$source}</option>
+										<option value="{$sourceidx}"{if in_array($sourceidx, $sources)} selected{/if}>{trans($source)}</option>
 									{/foreach}
 								</select>
 							</td>
