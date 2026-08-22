@@ -35,6 +35,8 @@ interface LMSNetworkManagerInterface
 
     public function NetworkSet($id, $disabled = -1);
 
+    public function HalveNetwork(int $netid) : int;
+
     public function IsIPFree($ip, $netid = 0);
 
     public function IsIPInNetwork($ip, $netid);
