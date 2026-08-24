@@ -96,7 +96,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
             $ticketqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
             $messageid = '<msg.' . $ticketqueue['id'] . '.' . $event['ticketid'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
-            $messagebody = trans('Assigned event ($a) was created.', $a = $id);
+            $messagebody = trans('Assigned event ($a) has been created.', $a = $id);
 
             $helpdesk_manager->TicketMessageAdd(array(
                 'ticketid' => $event['ticketid'],
@@ -187,7 +187,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
             $ticketqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
             $messageid = '<msg.' . $ticketqueue['id'] . '.' . $event['helpdesk'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
-            $messagebody = trans('Assigned event ($a) was modified.', $a = $event['id']);
+            $messagebody = trans('Assigned event ($a) has been modified.', $a = $event['id']);
 
             $helpdesk_manager->TicketMessageAdd(array(
                 'ticketid' => $event['helpdesk'],
@@ -231,7 +231,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
                 $ticketqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
                 $messageid = '<msg.' . $ticketqueue['id'] . '.' . $event['ticketid'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
-                $messagebody = trans('Assigned event ($a) was deleted.', $a = $id);
+                $messagebody = trans('Assigned event ($a) has been deleted.', $a = $id);
 
                 $helpdesk_manager->TicketMessageAdd(array(
                     'ticketid' => $event['ticketid'],
@@ -808,7 +808,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 $helpdesk_manager->TicketMessageAdd(array(
                     'ticketid' => $params['ticketid'],
                     'messageid' => '<msg.' . $params['ticketid'] . $id['id'] . '.' . time() . '@rtsystem.' . gethostname() . '>',
-                    'body' => trans('Assigned event ($a) was closed.', $a = $id['id']),
+                    'body' => trans('Assigned event ($a) has been closed.', $a = $id['id']),
                     'type' => RTMESSAGE_ASSIGNED_EVENT_CHANGE,
                 ));
             }
@@ -871,7 +871,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             $helpdesk_manager->TicketMessageAdd(array(
                 'ticketid' => $event['ticketid'],
                 'messageid' => '<msg.' . $ticketqueue['id'] . '.' . $event['ticketid'] . '.' . time() . '@rtsystem.' . gethostname() . '>',
-                'body' => trans('Assigned event ($a) was opened.', $a = $id),
+                'body' => trans('Assigned event ($a) has been opened.', $a = $id),
                 'type' => RTMESSAGE_ASSIGNED_EVENT_CHANGE,
             ));
         }
