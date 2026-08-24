@@ -374,7 +374,7 @@ $SMARTY->assign('numberplans', $numberplans);
 $SMARTY->assign('planDocumentType', $document['type']);
 
 /*
-if($dirs = getdir(DOC_DIR.'/templates', '^[a-z0-9_-]+$'))
+if($dirs = getdir(DOC_DIR.'/templates', '^[a-zA-Z0-9_-]+$'))
     foreach($dirs as $dir)
     {
         $infofile = DOC_DIR.'/templates/'.$dir.'/info.php';

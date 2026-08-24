@@ -2544,17 +2544,12 @@ foreach ($assigns as $assign) {
                         );
                         if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment) {
                             $DB->Execute(
-                                "UPDATE cash SET value = value + ?
-								WHERE docid = ? AND itemid = ?",
-                                array(-$partial_grossvalue, $invoices[$cid], $tmp_item['itemid'])
-                            );
-                            $DB->Execute(
                                 "UPDATE cash SET value = ?
                                 WHERE docid = ? AND itemid = ?",
                                 array(
                                     $netflag
                                         ? -round(($partial_price * (100 + $assign['taxrate']) / 100) * ($tmp_item['count'] + $assign['count']), 2)
-                                        : -$partial_grossvalue * ($tmp_item['count'] + $assign['count']),
+                                        : -$partial_price * ($tmp_item['count'] + $assign['count']),
                                     $invoices[$cid],
                                     $tmp_item['itemid'],
                                 )

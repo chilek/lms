@@ -1410,6 +1410,7 @@ $_LANG['Incorrect ID number'] = 'Błędny identyfikator';
 $_LANG['Incorrect IM uin!'] = 'Błędny identyfikator komunikatora internetowego!';
 $_LANG['Incorrect interface name!'] = 'Niepoprawna nazwa urządzenia!';
 $_LANG['Incorrect IP address!'] = 'Niepoprawny adres IP!';
+$_LANG['Incorrect IP address or mask'] = 'Niepoprawny adres IP lub maska';
 $_LANG['Incorrect IP address for DHCP range end!'] = 'Niepoprawny adres IP końca zakresu DHCP!';
 $_LANG['Incorrect IP address for DHCP range start!'] = 'Niepoprawny adres IP początku zakresu DHCP!';
 $_LANG['Incorrect MAC address!'] = 'Niepoprawny adres MAC!';

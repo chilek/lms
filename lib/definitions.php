@@ -168,6 +168,7 @@ define('CCONSENT_TRAFFIC_DATA_USE_FOR_MARKETING', 35);
 define('CCONSENT_POSTAL_DELIVERY_SERVICE_INFO', 36);
 define('CCONSENT_MAIL_SERVICE_PROVIDER_CHANGE', 37);
 define('CCONSENT_POSTAL_DELIVERY_SERVICE_PROVIDER_CHANGE', 38);
+define('CCONSENT_POSTAL_DELIVERY_COMPLAINT', 39);
 
 $CCONSENTS = array(
     CCONSENT_DATE => array(
@@ -300,6 +301,11 @@ $CCONSENTS = array(
         'name' => 'userpanel_complaint',
         'type' => 'boolean',
     ),
+    CCONSENT_POSTAL_DELIVERY_COMPLAINT => array(
+        'label' => trans('<!service-info>postal delivery'),
+        'name' => 'postal_delivery_complaint',
+        'type' => 'boolean',
+    ),
     CCONSENT_FIBER_OPTIC_LINE_SUSPENSION => array(
         'label' => trans('suspension of a fiber optic line over the customer plot'),
         'name' => 'fiber_optic_line_suspension',
@@ -427,6 +433,7 @@ $CCONSENT_GROUPS = array(
             CCONSENT_SMS_COMPLAINT,
             CCONSENT_PHONE_COMPLAINT,
             CCONSENT_USERPANEL_COMPLAINT,
+            CCONSENT_POSTAL_DELIVERY_COMPLAINT,
         ),
     ),
     CCONSENT_GROUP_TECHNICAL => array(

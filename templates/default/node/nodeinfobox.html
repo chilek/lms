@@ -446,7 +446,7 @@
 												{icon name="location"}
 											</td>
 											<td>
-												<strong>{trans("GPS longitude")}</strong>
+												{trans("GPS longitude")}
 											</td>
 											<td class="cell-flex">
 												{if $nodeinfo.longitude}{$nodeinfo.longitude}{else}{/if}
@@ -458,7 +458,7 @@
 												{icon name="location"}
 											</td>
 											<td>
-												<strong>{trans("GPS latitude")}</strong>
+												{trans("GPS latitude")}
 											</td>
 											<td class="cell-flex">
 												{if $nodeinfo.latitude}{$nodeinfo.latitude}{else}{/if}
@@ -486,6 +486,12 @@
 												}
 												{show_on_map_button
 													type="netstork"
+													latitude=$nodeinfo.latitude
+													longitude=$nodeinfo.longitude
+													label=true
+												}
+												{show_on_map_button
+													type="sidusis"
 													latitude=$nodeinfo.latitude
 													longitude=$nodeinfo.longitude
 													label=true

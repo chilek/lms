@@ -1382,13 +1382,13 @@ if (isset($options['buildings'])) {
                 $address['SIMC_ID'] = $address['ID_SIMC'];
             }
             if (isset($address['NAZWA_MSC'])) {
-                $address['SIMC_NAZWA'] = $address['NAZWA_MSC'];
+                $address['SIMC_NAZWA'] = dbf_to_utf8($address['NAZWA_MSC']);
             }
             if (isset($address['NAZWA_ULC'])) {
-                $address['ULIC_NAZWA'] = $address['NAZWA_ULC'];
+                $address['ULIC_NAZWA'] = dbf_to_utf8($address['NAZWA_ULC']);
             }
             if (isset($address['NUMER_PORZ'])) {
-                $address['NUMER'] = $address['NUMER_PORZ'];
+                $address['NUMER'] = dbf_to_utf8($address['NUMER_PORZ']);
             }
             if (isset($address['KOD_POCZT'])) {
                 $address['PNA'] = $address['KOD_POCZT'];
