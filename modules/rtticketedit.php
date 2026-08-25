@@ -233,6 +233,9 @@ if ($id && !isset($_POST['ticket'])) {
                     . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
                 break;
             case 'fastnote':
+                if (empty($_POST['fastnote'])) {
+                    break;
+                }
                 $message = array(
                             'ticketid' => $id,
                             'body' => $_POST['fastnote'],
