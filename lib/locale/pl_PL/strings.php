@@ -33,7 +33,7 @@ $_LANG['telecommunication service contract'] = 'umowa na usługi telekomunikacyj
 
 $_LANG['Note added'] = 'Notatka dodana';
 $_LANG['Adding note'] = 'Dodaję notatkę';
-$_LANG['Adding note Error'] = 'Błąd dodawania notatki';
+$_LANG['Error adding note'] = 'Błąd dodawania notatki';
 
 $_LANG['Show sensitive data'] = 'Pokaż dane wrażliwe';
 $_LANG['customer sensitive data view'] = 'podgląd danych wrażliwych klientów';
