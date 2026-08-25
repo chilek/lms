@@ -32,11 +32,7 @@ function addQuickNote(ticketId) {
         success: () => {
             showStatus($t('Note added'), 'green');
             $input.val('');
-            setTimeout(() => {
-                const cleanUrl = window.location.origin + window.location.pathname + window.location.search;
-                window.location.href = cleanUrl;
-                }, 1500
-            );
+            setTimeout(() => { window.location.reload(); }, 1500);
         },
         error: (xhr, status, error) => {
             showStatus($t('Error adding note'), 'red');
