@@ -23,7 +23,7 @@ function sendQuickMessage(ticketId) {
     const messageText = $input.val().trim();
     updateButtonState(true);
 
-    showStatus($t('Sending message'), 'orange');
+    showStatus($t('Adding note'), 'orange');
 
     $.ajax({
         url: "?m=rtticketedit&id=" + ticketId + "&action=fastnote",
