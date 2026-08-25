@@ -6427,3 +6427,5 @@ $_LANG['<!ksef-status>assigned number'] = 'nadany numer';
 $_LANG['Base date'] = 'Data bazowa';
 
 $_LANG['Incorrect snat IP address!'] = 'Niepoprawny adres IP snat!';
+
+$_LANG['Network has assigned IP addresses!'] = 'Sieć posiada przypisane adresy IP!';

@@ -380,7 +380,7 @@
 					{button href="?m=netinfo&id={$network.id}" icon="cancel" label="Cancel"}
 				{else}
 					{button href="?m=netedit&id={$network.id}" accesskey="E" icon="edit" label="Edit"}
-					{button id="delete-net" data_href="?m=netdel&id={$network.id}" data_name="{$network.name}" icon="delete" label="Remove"}
+					{button id="delete-net" data_href="?m=netdel&id={$network.id}" data_name="{$network.name}" data_assigned="{$network.assigned}" icon="delete" label="Remove"}
 				{/if}
 			</td>
 		</tr>
@@ -488,9 +488,16 @@
 	$(function() {
 		$('#delete-net').click(function() {
 			var name = $(this).attr('data-name');
-			confirmDialog($t("Are you sure, you want to remove network '$a' from database?", name), this).done(function () {
-				location.href = $(this).attr('data-href');
-			});
+			var assigned = parseInt($(this).attr('data-assigned'));
+
+			if (assigned) {
+				alertDialog($t("Network has assigned IP addresses!"), this);
+			} else {
+				confirmDialog($t("Are you sure, you want to remove network '$a' from database?", name), this).done(function () {
+					location.href = $(this).attr('data-href');
+				});
+			}
+
 			return false;
 		});
 
