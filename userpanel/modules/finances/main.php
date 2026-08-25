@@ -46,6 +46,21 @@ if (isset($balance['docid'])) {
     }
 }
 
+$SMARTY->assign(
+    'ksef_enabled',
+    $DB->GetOne(
+        'SELECT 1
+        FROM uiconfig
+        WHERE section = ?
+            AND disabled = ?
+        LIMIT 1',
+        [
+            'ksef',
+            0,
+        ]
+    )
+);
+
 $SMARTY->assign('userinfo', $userinfo);
 $SMARTY->assign('balancelist', $balance);
 $SMARTY->assign('aggregate_documents', $aggregate_documents);

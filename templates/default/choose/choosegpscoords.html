@@ -42,6 +42,10 @@
 		map.events.register("click", map, click);
 		map.events.register("feature_click", map, click);
 
+		$(function() {
+			map.updateSize();
+		});
+
 		set_lastonline_limit({ConfigHelper::getConfig('phpui.lastonline_limit')});
 		setTimeout("netdevmap_refresh()", lastonline_limit * 1000);
 

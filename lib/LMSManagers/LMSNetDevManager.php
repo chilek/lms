@@ -194,6 +194,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             $linecount = null;
             $usedlines = null;
             $availablelines = null;
+            $foreignentity = null;
         } else {
             $type = isset($link['type']) && (is_int($link['type']) || ctype_digit($link['type']))
                 ? intval($link['type']) : null;
@@ -213,6 +214,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 ? intval($link['usedlines']) : null;
             $availablelines = isset($link['availablelines']) && (is_int($link['availablelines']) || ctype_digit($link['availablelines']))
                 ? intval($link['availablelines']) : null;
+            $foreignentity = empty($link['foreignentity']) ? null : $link['foreignentity'];
         }
 
         $query = 'UPDATE netlinks
@@ -224,7 +226,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 routetype = ?,
                 linecount = ?,
                 usedlines = ?,
-                availablelines = ?';
+                availablelines = ?,
+                foreignentity = ?';
         $args = array(
             'type' => $type,
             'src_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR) => $dstradiosector,
@@ -235,6 +238,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'linecount' => $linecount,
             'usedlines' => $usedlines,
             'availablelines' => $availablelines,
+            'foreignentity' => $foreignentity,
         );
         if (isset($link['srcport']) && isset($link['dstport'])) {
             $query .= ', srcport = ?, dstport = ?';
@@ -312,6 +316,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         $availablelines = isset($link['availablelines']) && (is_int($link['availablelines']) || ctype_digit($link['availablelines']))
             ? intval($link['availablelines'])
             : null;
+        $foreignentity = empty($link['foreignentity']) ? null : $link['foreignentity'];
 
         if ($dev1 != $dev2) {
             if (!$this->IsNetDevLink($dev1, $dev2)) {
@@ -329,11 +334,12 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                     'linecount' => $linecount,
                     'usedlines' => $usedlines,
                     'availablelines' => $availablelines,
+                    'foreignentity' => $foreignentity,
                 );
                 $res = $this->db->Execute(
                     'INSERT INTO netlinks
-                    (src, dst, type, srcradiosector, dstradiosector, technology, speed, srcport, dstport, routetype, linecount, usedlines, availablelines)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                    (src, dst, type, srcradiosector, dstradiosector, technology, speed, srcport, dstport, routetype, linecount, usedlines, availablelines, foreignentity)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                     array_values($args)
                 );
                 if ($this->syslog && $res) {
@@ -501,7 +507,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             $this->db->Execute(
                 'UPDATE netdevices SET address_id = ? WHERE id = ?',
                 array(
-                    ($data['customer_address_id'] >= 0 ? $data['customer_address_id'] : null),
+                    ($data['customer_address_id'] > 0 ? $data['customer_address_id'] : null),
                     $data['id']
                 )
             );
@@ -512,7 +518,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 $this->db->Execute(
                     'UPDATE netdevices SET address_id = ? WHERE id = ?',
                     array(
-                        ($address_id >= 0 ? $address_id : null),
+                        ($address_id > 0 ? $address_id : null),
                         $data['id']
                         )
                 );
@@ -682,7 +688,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 routetype,
                 linecount,
                 usedlines,
-                availablelines
+                availablelines,
+                foreignentity
             FROM netlinks
             WHERE (src = ? AND dst = ?) OR (dst = ? AND src = ?)',
             array($dev1, $dev1, $dev1, $dev1, $dev1, $dev2, $dev1, $dev2)
@@ -717,12 +724,19 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
     {
         return $this->db->GetAll(
             'SELECT d.id, d.name, d.description,
-                d.producer, d.ports, l.type AS linktype,
+                d.producer,
+                m.name AS model,
+                ndt.id AS devtype,
+                ndt.name AS devtypename,
+                ndt.passive AS devtypepassive,
+                d.ports,
+                l.type AS linktype,
                 l.technology AS linktechnology, l.speed AS linkspeed, l.srcport, l.dstport,
                 l.routetype,
                 l.linecount,
                 l.usedlines,
                 l.availablelines,
+                l.foreignentity,
                 srcrs.name AS srcradiosector, dstrs.name AS dstradiosector,
                 (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id)
                     + (SELECT COUNT(*) FROM vnodes WHERE netdev = d.id AND ownerid IS NOT NULL)
@@ -732,6 +746,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 d.netnodeid,
                 nn.name AS netnodename
             FROM netdevices d
+            LEFT JOIN netdevicemodels m ON m.id = d.netdevicemodelid
+            LEFT JOIN netdevicetypes ndt ON ndt.id = m.type
             LEFT JOIN vaddresses addr ON d.address_id = addr.id
             LEFT JOIN netnodes nn ON nn.id = d.netnodeid
             JOIN (
@@ -744,7 +760,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                     (CASE src WHEN ? THEN dstport ELSE srcport END) AS srcport,
                     (CASE src WHEN ? THEN srcport ELSE dstport END) AS dstport,
                     (CASE src WHEN ? THEN dstradiosector ELSE srcradiosector END) AS srcradiosector,
-                    (CASE src WHEN ? THEN srcradiosector ELSE dstradiosector END) AS dstradiosector
+                    (CASE src WHEN ? THEN srcradiosector ELSE dstradiosector END) AS dstradiosector,
+                    foreignentity
                 FROM netlinks
                 WHERE src = ?
                    OR dst = ?
@@ -874,7 +891,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                         }
                         break;
                     case 'ownerid':
-                        $where[] = 'd.ownerid = ' . $value;
+                        $where[] = 'd.ownerid = ' . intval($value);
                         break;
                     case 'linktechnology':
                         if ($value == -3) {
@@ -913,7 +930,10 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         }
 
         $netdevlist = $this->db->GetAll('SELECT d.id, d.name' . ($short ? '' : ',
-				d.description, d.producer, d.model, m.type AS devtype, t.name AS devtypename,
+				d.description, d.producer, d.model,
+				ndt.id AS devtype,
+				ndt.name AS devtypename,
+				ndt.passive AS devtypepassive,
 				d.serialnumber, d.ports, d.ownerid,' .
                 $this->db->Concat('cu.lastname', "' '", 'cu.name') . ' AS customername,
 				d.invprojectid, p.name AS project, d.status,
@@ -944,7 +964,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				LEFT JOIN invprojects p         ON p.id = d.invprojectid
 				LEFT JOIN netnodes n            ON n.id = d.netnodeid
 				LEFT JOIN netdevicemodels m     ON m.id = d.netdevicemodelid
-				LEFT JOIN netdevicetypes t      ON t.id = m.type
+				LEFT JOIN netdevicetypes ndt    ON ndt.id = m.type
 				LEFT JOIN location_streets lst  ON lst.id = addr.street_id
 				LEFT JOIN location_cities lc    ON lc.id = addr.city_id
 				LEFT JOIN location_boroughs lb  ON lb.id = lc.boroughid
@@ -952,7 +972,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				LEFT JOIN location_states ls    ON ls.id = ld.stateid
 				LEFT JOIN customers cu ON cu.id = d.ownerid '
                 . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
-                . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
+                . (empty($sqlord) ? '' : $sqlord . ' ' . $direction)
                 . (isset($limit) ? ' LIMIT ' . $limit : '')
                 . (isset($offset) ? ' OFFSET ' . $offset : ''));
 
@@ -1170,6 +1190,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 d.name,
                 d.description,
                 d.producer,
+                d.model,
                 d.ports,
                 nn.id AS netnodeid,
                 nn.name AS netnodename
@@ -1198,7 +1219,10 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
     {
         $result = $this->db->GetRow(
             'SELECT d.*, d.invprojectid AS projectid, t.name AS nastypename, c.name AS channel, d.ownerid,
-                producer, ndm.netdeviceproducerid AS producerid, model, d.netdevicemodelid AS modelid, ndm.type AS typeid, ndt.name AS type,
+                producer, ndm.netdeviceproducerid AS producerid, model, d.netdevicemodelid AS modelid,
+                ndt.id AS devtype,
+                ndt.name AS devtypename,
+                ndt.passive AS devtypepassive,
                 (CASE WHEN lst.name2 IS NOT NULL THEN ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' ELSE lst.name END) AS street_name,
                 lt.name AS street_type, lc.name AS city_name,
                 lb.name AS borough_name, lb.type AS borough_type,
@@ -1214,7 +1238,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             FROM netdevices d
             LEFT JOIN divisions dv ON dv.id = d.divisionid
             LEFT JOIN netdevicemodels ndm      ON ndm.id = d.netdevicemodelid
-            LEFT JOIN netdevicetypes ndt       ON ndm.type = ndt.id
+            LEFT JOIN netdevicetypes ndt       ON ndt.id = ndm.type
             LEFT JOIN vaddresses addr          ON addr.id = d.address_id
             LEFT JOIN nastypes t               ON (t.id = d.nastype)
             LEFT JOIN ewx_channels c           ON (d.channelid = c.id)
@@ -1378,19 +1402,24 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
     {
         if (!empty($producerid)) {
             return $this->db->GetAll(
-                'SELECT m.id, m.name, m.type, t.id AS typeid, t.name AS typename
+                'SELECT m.id, m.name, m.type,
+                    ndt.id AS devtype,
+                    ndt.name AS devtypename,
+                    ndt.passive AS devtypepassive
                 FROM netdevicemodels m
-                LEFT JOIN netdevicetypes t ON t.id = m.type
+                LEFT JOIN netdevicetypes ndt ON ndt.id = m.type
                 ORDER BY m.name ASC',
                 array($producerid)
             );
         }
 
-        $models = $this->db->GetAll('SELECT m.id, p.id AS producerid, m.name, m.type,
-                t.id AS typeid, t.name AS typename
+        $models = $this->db->GetAll('SELECT m.id, p.id AS producerid, m.name,
+                ndt.id AS devtype,
+                ndt.name AS devtypename,
+                ndt.passive AS devtypepassive
 			FROM netdevicemodels m
 			JOIN netdeviceproducers p ON p.id = m.netdeviceproducerid
-			LEFT JOIN netdevicetypes t ON t.id = m.type
+			LEFT JOIN netdevicetypes ndt ON ndt.id = m.type
 			ORDER BY p.id, m.name');
         if (empty($models)) {
             return array();
@@ -1414,10 +1443,13 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         }
 
         $list = $this->db->GetAll(
-            'SELECT m.id, m.name, m.alternative_name, m.type, t.name AS typename,
+            'SELECT m.id, m.name, m.alternative_name,
+                ndt.id AS devtype,
+                ndt.name AS devtypename,
+                ndt.passive AS devtypepassive,
 			(SELECT COUNT(i.id) FROM netdevices i WHERE i.netdevicemodelid = m.id) AS netdevcount
 			FROM netdevicemodels m
-			LEFT JOIN netdevicetypes t ON t.id = m.type
+			LEFT JOIN netdevicetypes ndt ON ndt.id = m.type
 			WHERE m.netdeviceproducerid = ?
 			ORDER BY m.name ASC',
             array($pid)
@@ -1451,9 +1483,12 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
     public function getNetDevTypes()
     {
         return $this->db->GetAllByKey(
-            'SELECT t.id, t.name
-            FROM netdevicetypes t
-            ORDER BY t.name',
+            'SELECT
+                ndt.id,
+                ndt.name,
+                ndt.passive
+            FROM netdevicetypes ndt
+            ORDER BY ndt.name',
             'id'
         );
     }

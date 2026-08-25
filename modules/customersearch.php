@@ -29,10 +29,6 @@ $SESSION->add_history_entry();
 if (isset($_POST['search'])) {
     $search = $_POST['search'];
 
-    if (!empty($search['tariffs'])) {
-        $search['tariffs'] = implode(",", $search['tariffs']);
-    }
-
     if ($search['balance_date']) {
         [$year, $month, $day] = explode('/', $search['balance_date']);
         $search['balance_date'] = mktime(23, 59, 59, $month, $day, $year);
@@ -294,6 +290,24 @@ if (isset($_GET['search'])) {
         $SESSION->redirect('?m=customerinfo&id=' . $customerlist[0]['id']);
     } else {
         include(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
+
+        if (empty($state)) {
+            $state = array();
+        }
+
+        $allowed_customer_status = array_filter($state, function ($status) use ($CSTATUSES) {
+            return isset($CSTATUSES[$status]);
+        });
+        if (empty($allowed_customer_status)) {
+            $allowed_customer_status = Utils::determineAllowedCustomerStatus(
+                ConfigHelper::getConfig('messages.allowed_customer_status', '')
+            );
+        }
+        if (!empty($allowed_customer_status)) {
+            $allowed_customer_status = array_combine($allowed_customer_status, $allowed_customer_status);
+        }
+
+        $SMARTY->assign('allowed_customer_status', $allowed_customer_status);
         $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
         $SMARTY->display('customer/customersearchresults.html');
     }

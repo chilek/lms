@@ -159,6 +159,8 @@ if (!$api) {
 
     // uncomment this line if you're not gonna change template files no more
     //$SMARTY->compile_check = false;
+
+    $layout['phpversion'] = phpversion();
 }
 
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
@@ -190,13 +192,13 @@ if (isset($_GET['old_tab_id'], $_GET['tab_id'], $_POST['old_history_entry'], $_P
     header('Content-Type: application/json');
     die('[]');
 }
+$plugin_manager = LMSPluginManager::getInstance();
+
 $AUTH = new Auth($DB, $SESSION);
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
+$LMS->setPluginManager($plugin_manager);
 
 Localisation::initDefaultCurrency();
-
-$plugin_manager = LMSPluginManager::getInstance();
-$LMS->setPluginManager($plugin_manager);
 
 if (!$api) {
     $SMARTY->setPluginManager($plugin_manager);
@@ -229,7 +231,7 @@ $layout['hostname'] = hostname();
 $layout['lmsv'] = LMS::SOFTWARE_VERSION;
 $layout['lmsvr'] = LMS::getSoftwareRevision();
 $layout['dberrors'] = &$DB->GetErrors();
-$layout['dbdebug'] = $_DBDEBUG ?? false;
+$layout['dbdebug'] = $DB->GetDebug();
 $layout['popup'] = isset($_GET['popup']);
 $layout['url'] = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
     . $_SERVER['HTTP_HOST']

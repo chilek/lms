@@ -260,7 +260,9 @@
 			{/if}
 		</td>
 		<td class="nobr" align="right">
-		{if $doc.closed || ($doc.confirmdate > 0 && $doc.confirmdate >= $smarty.now) || $doc.confirmdate == -1}
+		{if $doc.closed
+			|| ConfigHelper::checkConfig('userpanel.show_unapproved_document_attachments')
+			|| ($doc.confirmdate > 0 && $doc.confirmdate >= $smarty.now) || $doc.confirmdate == -1}
 			{foreach $doc.attachments as $docattach}
 			<a href="?m=documents&f=docview&id={$doc.id}&attachmentid={$docattach.id}" target="_blank">
 				{if $docattach.type == 1}{trans("View")}{else}{$docattach.filename}{/if} {img src="view.gif" alt="View"}

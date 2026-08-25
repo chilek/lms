@@ -10,7 +10,7 @@
 	}
 
 	#periodcont .scombobox {
-		width: 10em;
+		width: 12em;
 		margin-right: 0.5em;
 	}
 
@@ -234,10 +234,10 @@
 		$("#periodadd").click(function() {
 			var comboboxes = $('#periodcont').children('.scombobox');
 
-			if (comboboxes.length == 1) {
+			if (comboboxes.length === 1) {
 				var firstSelect = $(comboboxes[0]).find('select');
 				firstSelect.find('option:first-child').remove();
-				$(comboboxes[0]).scombobox('fill');
+				updateComboBoxes(firstSelect);
 			}
 
 			comboboxes = $('#periodcont').children('.scombobox');
@@ -252,9 +252,11 @@
 
 		$("#perioddel").click(function() {
 			var comboboxes = $('#periodcont .scombobox');
-			var select = $(comboboxes[0]).find('select');
-			select.prepend('<OPTION value="0">— ' + $t("unlimited") + ' —</OPTION>');
-			$(comboboxes[0]).scombobox('fill');
+			if (comboboxes.length <= 2) {
+				var select = $(comboboxes[0]).find('select');
+				select.prepend('<option value="0">— ' + $t("unlimited") + ' —</option>');
+				updateComboBoxes(select);
+			}
 
 			$('#perioddel').prev().remove();
 			$('#perioddel').toggle(comboboxes.length > 2);

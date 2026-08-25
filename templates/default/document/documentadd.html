@@ -1,7 +1,7 @@
 {extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
-{$document_confirm_date_required = intval(ConfigHelper::getConfig('phpui.document_confirm_date_required'))}
+{$document_confirm_date_required = intval(ConfigHelper::getConfig('documents.confirm_date_required', ConfigHelper::getConfig('phpui.document_confirm_date_required')))}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {$xajax}
@@ -73,6 +73,11 @@
 		display: flex;
 		align-items: center;
 		margin-left: 0.5em;
+	}
+
+	#dynamic-period-option {
+		display: flex;
+		align-items: center;
 	}
 
 </style>
@@ -248,11 +253,17 @@
 			</td>
 			<td>
 				<div id="document-period">
-					<label>
-						<input type="checkbox" name="document[dynamicperiod]" value="1"
-							{if !empty($document.dynamicperiod)} checked{/if}>
-						{trans("<!document-period>dynamic")}
-					</label>
+					{capture assign="hint"}{strip}
+						The validity date range of the document is determined upon its approval.
+					{/strip}{/capture}
+					<div id="dynamic-period-option">
+						<label>
+							<input type="checkbox" name="document[dynamicperiod]" value="1"
+								{if !empty($document.dynamicperiod)} checked{/if}>
+							{trans("<!document-period>dynamic")}
+						</label>
+						{hint content=$hint}
+					</div>
 					{$allow_past_date = ConfigHelper::checkConfig('documents.allow_past_date', true)}
 					<div>
 						<div>
@@ -349,7 +360,7 @@
 				{$attachment_result}
 			</td>
 		</tr>
-		<tr>
+		<tr id="confirm-row"{if empty($confirm_permission)} style="display: none;"{/if}>
 			<td>
 				{icon name="confirm"}
 			</td>

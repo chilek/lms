@@ -70,10 +70,8 @@ $olddiv = $DB->GetRow(
         o_addr.postoffice AS location_office_postoffice,
         ' . $DB->Concat('simc.woj', 'simc.pow', 'simc.gmi', 'simc.rodz_gmi') . ' AS office_terc,
         simc.sym AS office_simc,
-        ulic.sym_ul AS office_ulic,
-        kd.token AS kseftoken
+        ulic.sym_ul AS office_ulic
     FROM vdivisions d
-    LEFT JOIN ksefdivisions kd ON kd.divisionid = d.id
     LEFT JOIN addresses addr           ON addr.id = d.address_id
     LEFT JOIN location_cities lc       ON lc.id = addr.city_id
     LEFT JOIN location_streets ls      ON ls.id = addr.street_id
@@ -115,9 +113,29 @@ if (!empty($_POST['division'])) {
 
     if ($division['shortname'] == '') {
         $error['shortname'] = trans('Division short name is required!');
-    } else if ($olddiv['shortname'] != $division['shortname']
-        && $DB->GetOne('SELECT 1 FROM divisions WHERE shortname = ?', array($division['shortname']))) {
-        $error['shortname'] = trans('Division with specified name already exists!');
+    } elseif ($olddiv['shortname'] != $division['shortname']) {
+        if (!empty($division['label'])) {
+            if ($DB->GetOne(
+                'SELECT 1 FROM divisions
+                WHERE id <> ? AND label = ?',
+                array(
+                    $division['id'],
+                    $division['label'],
+                )
+            )) {
+                $error['label'] = trans('Division with specified label already exists!');
+            }
+        } elseif ($DB->GetOne(
+            'SELECT 1 FROM divisions
+            WHERE id <> ?
+                AND shortname = ?',
+            array(
+                $division['id'],
+                $division['shortname']
+            )
+        )) {
+            $error['shortname'] = trans('Division with specified name already exists!');
+        }
     }
 
     if (!empty($division['naturalperson'])) {
@@ -167,6 +185,10 @@ if (!empty($_POST['division'])) {
         $error['email'] = trans('E-mail isn\'t correct!');
     }
 
+    if ($division['serviceemail'] != '' && !check_email($division['serviceemail'])) {
+        $error['serviceemail'] = trans('E-mail isn\'t correct!');
+    }
+
     if ($division['phone'] != '' && !preg_match('/^\+?[0-9\s\-]+$/', $division['phone'])) {
         $error['phone'] = trans('Incorrect phone number!');
     }
@@ -189,10 +211,6 @@ if (!empty($_POST['division'])) {
 
     if (!preg_match('/^[0-9]*$/', $division['tax_office_code'])) {
         $error['tax_office_code'] = trans('Invalid format of Tax Office Code!');
-    }
-
-    if (!preg_match('/^([0-9a-fA-F]{64})?$/', $division['kseftoken'])) {
-        $error['kseftoken'] = trans('Invalid format of KSeF token!');
     }
 
     if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')

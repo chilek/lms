@@ -78,7 +78,7 @@ if (isset($netnodedata)) {
     }
     Localisation::resetSystemLanguage();
 
-    if (in_array($netnodedata['ownership'], array('1', '2'))) { // węzeł współdzielony lub obcy
+    if (in_array($netnodedata['ownership'], array(NET_ELEMENT_OWNERSHIP_SHARED, NET_ELEMENT_OWNERSHIP_FOREIGN))) { // węzeł współdzielony lub obcy
         if (!strlen(trim($netnodedata['coowner']))) {
             $error['coowner'] = trans('Co-owner identifier is required');
         }
@@ -100,10 +100,19 @@ if (isset($netnodedata)) {
     }
 
     if (empty($netnodedata['ownerid']) && !ConfigHelper::checkPrivilege('full_access')
-        && ConfigHelper::checkConfig('phpui.teryt_required')
         && !empty($netnodedata['location_city_name']) && ($netnodedata['location_country_id'] == 2 || empty($netnodedata['location_country_id']))
         && (!isset($netnodedata['teryt']) || empty($netnodedata['location_city'])) && $LMS->isTerritState($netnodedata['location_state_name'])) {
-        $error['netnode[teryt]'] = trans('TERYT address is required!');
+        $terytRequired = ConfigHelper::getConfig('phpui.teryt_required', 'false');
+        if ($terytRequired === 'error') {
+            $terytRequired = true;
+        } elseif ($terytRequired !== 'warning') {
+            $terytRequired = ConfigHelper::checkValue($terytRequired);
+        }
+        if (is_bool($terytRequired) && $terytRequired) {
+            $error['netnode[teryt]'] = trans('TERYT address is required!');
+        } elseif ($terytRequired === 'warning' && !isset($warnings['netnode-teryt-'])) {
+            $warning['netnode[teryt]'] = trans('TERYT address recommended!');
+        }
     }
 
     $allow_empty_streets = ConfigHelper::checkConfig('teryt.allow_empty_streets', true);
@@ -120,7 +129,7 @@ if (isset($netnodedata)) {
         }
     }
 
-    if (!$error) {
+    if (!$error && !$warning) {
         if ($netnodedata['projectid'] == -1) {
             $netnodedata['projectid'] = $LMS->AddProject($netnodedata);
         } elseif (empty($netnodedata['projectid'])) {
@@ -156,10 +165,10 @@ if (isset($netnodedata)) {
     $netnodedata['uip'] = 0;
     $netnodedata['miar'] = 0;
     $netnodedata['invprojectid'] = '-2'; // no investment project selected
-    $netnodedata['ownership'] = 0;
+    $netnodedata['ownership'] = NET_ELEMENT_OWNERSHIP_OWN;
     if (isset($_GET['customerid'])) {
         $netnodedata['ownerid'] = $_GET['customerid'];
-        $netnodedata['ownership'] = 2;
+        $netnodedata['ownership'] = NET_ELEMENT_OWNERSHIP_FOREIGN;
     }
 }
 
@@ -174,5 +183,6 @@ if (!empty($netnodedata['ownerid'])) {
 $SMARTY->assign('netnode', $netnodedata);
 $SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('NNprojects', $LMS->GetProjects());
+$SMARTY->assign('foreign_entities', Utils::getForeignEntities());
 
 $SMARTY->display('netnode/netnodemodify.html');

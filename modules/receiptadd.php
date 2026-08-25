@@ -167,7 +167,7 @@ function GetCashRegistryBalance($regid)
     $balance = $DB->GetOne('SELECT SUM(value) FROM receiptcontents
 				WHERE regid = ?', array($regid));
 
-    $result->script("$('form[name=\"movecash\"] input[name=\"value\"]').val(" . $balance . ")");
+    $result->script("$('input[name=\"value\"][form=\"movecash\"]').val(" . $balance . ")");
 
     return $result;
 }

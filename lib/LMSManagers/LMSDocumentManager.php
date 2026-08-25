@@ -30,6 +30,8 @@ use setasign\Fpdi\PdfParser\StreamReader;
 use setasign\FpdiProtection\FpdiProtection;
 */
 
+use \Lms\KSeF\KSeF;
+
 /**
  * LMSDocumentManager
  *
@@ -135,6 +137,18 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $limit = $params['limit'] ?? null;
         $offset = $params['offset'] ?? null;
         $count = isset($params['count']) && $params['count'];
+
+        if (is_array($type)) {
+            $type = Utils::filterIntegers($type);
+        }
+
+        if (is_array($service)) {
+            $service = Utils::filterIntegers($service);
+        }
+
+        if (is_array($userid)) {
+            $userid = Utils::filterIntegers($userid);
+        }
 
         if ($order=='') {
             $order='cdate,asc';
@@ -306,8 +320,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             . $status_sql
             . ($archived == -1 ? '' : ' AND d.archived = ' . intval($archived))
             .$sqlord
-            . (isset($limit) ? ' LIMIT ' . $limit : '')
-            . (isset($offset) ? ' OFFSET ' . $offset : ''),
+            . (isset($limit) ? ' LIMIT ' . intval($limit) : '')
+            . (isset($offset) ? ' OFFSET ' . intval($offset) : ''),
             array(
                 Auth::GetCurrentUser(),
                 DOCRIGHT_VIEW,
@@ -371,7 +385,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
 
         if (is_array($doctype)) {
-            $where[] = 'n.doctype IN (' . implode(',', $doctype) . ')';
+            $doctype = Utils::filterIntegers($doctype);
+            if (!empty($doctype)) {
+                $where[] = 'n.doctype IN (' . implode(',', $doctype) . ')';
+            }
         } else if ($doctype) {
             $where[] = 'n.doctype = ' . intval($doctype);
         }
@@ -382,7 +399,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
 
         if ($cdate) {
-            $where[] = '(n.datefrom <= ' . $cdate . ' AND (n.dateto = 0 OR n.dateto >= ' . $cdate .  '))';
+            $where[] = '(n.datefrom <= ' . intval($cdate) . ' AND (n.dateto = 0 OR n.dateto >= ' . intval($cdate) .  '))';
         }
 
         if (isset($customertype)) {
@@ -2299,12 +2316,16 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             return;
         }
 
+        $allowUnapprovedDocumentArchiving = ConfigHelper::checkConfig('documents.allow_unapproved_document_archiving');
+
         $docs = $this->db->GetCol(
             'SELECT d.id
-				FROM documents d
-				' . ($userid ? ' JOIN docrights r ON r.doctype = d.type' : '') . '
-				WHERE d.closed > ' . DOC_OPEN . ' AND d.archived = 0 AND d.id IN (' . implode(',', $ids) . ')
-					' . ($userid ? ' AND r.userid = ' . $userid . ' AND (r.rights & ' . DOCRIGHT_ARCHIVE . ') > 0' : '')
+            FROM documents d
+            ' . ($userid ? ' JOIN docrights r ON r.doctype = d.type' : '') . '
+            WHERE ' . ($allowUnapprovedDocumentArchiving ? '1 = 1' : 'd.closed > ' . DOC_OPEN) . '
+                AND d.archived = 0
+                AND d.id IN (' . implode(',', $ids) . ')
+                ' . ($userid ? ' AND r.userid = ' . $userid . ' AND (r.rights & ' . DOCRIGHT_ARCHIVE . ') > 0' : '')
         );
         if (empty($docs)) {
             return;
@@ -2313,8 +2334,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $this->db->BeginTrans();
 
         $this->db->Execute(
-            'UPDATE documents SET archived = 1, adate = ?NOW?, auserid = ?
-			WHERE id IN (' . implode(',', $docs) . ')',
+            'UPDATE documents
+            SET archived = 1, adate = ?NOW?, auserid = ?
+            WHERE id IN (' . implode(',', $docs) . ')',
             array($userid)
         );
 
@@ -2421,7 +2443,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
 
         $finance_manager = new LMSFinanceManager($this->db, $this->auth, $this->cache, $this->syslog);
-        if ($document['doctype'] == DOC_CNOTE) {
+        if ($document['doctype'] == DOC_DNOTE) {
             $data = $finance_manager->GetNoteContent($docid);
         } else {
             $data = $finance_manager->GetInvoiceContent($docid);
@@ -2570,7 +2592,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         return $authcode;
     }
 
-    public function GetDocumentFullContents($id, $with_reference_document = false)
+    public function GetDocumentFullContents($id, $with_reference_document = false, $attachments = null)
     {
         global $DOCTYPES, $DOCTYPE_ALIASES;
 
@@ -2583,7 +2605,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     c.pin,
                     d.fullnumber, n.template, d.ssn, d.ten, d.name, d.reference,
                     d2.number AS ref_number,
-                    d2.cdate AS ref_date,
+                    d2.cdate AS ref_cdate,
                     d2.fullnumber AS ref_fullnumber,
                     d2.type AS ref_type,
                     n2.template AS ref_template,
@@ -2604,7 +2626,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 JOIN docrights r ON (r.doctype = d.type)
                 LEFT JOIN documents d2 ON d2.id = d.reference
                 LEFT JOIN numberplans n2 ON n2.id = d2.numberplanid
-                WHERE d.id = ? AND r.userid = ? AND (r.rights & ?) > 0',
+                WHERE d.id = ?
+                    AND r.userid = ?
+                    AND (r.rights & ?) > 0',
                 array(
                     CONTACT_MOBILE | CONTACT_DOCUMENTS | CONTACT_DISABLED,
                     CONTACT_MOBILE | CONTACT_DOCUMENTS,
@@ -2620,7 +2644,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     c.pin,
                     d.fullnumber, n.template, d.ssn, d.ten, d.name, d.reference,
                     d2.number AS ref_number,
-                    d2.cdate AS ref_date,
+                    d2.cdate AS ref_cdate,
                     d2.fullnumber AS ref_fullnumber,
                     d2.type AS ref_type,
                     n2.template AS ref_template,
@@ -2689,8 +2713,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     FROM documentattachments a
                     JOIN documents d ON d.id = a.docid
                     JOIN customers c ON c.id = d.customerid
-                    WHERE a.docid = ?
-                    ORDER BY a.type DESC
+                    WHERE a.docid = ?'
+                    . (empty($attachments) ? '' : ' AND a.id IN (' . implode(', ', $attachments) . ')')
+                    . ' ORDER BY a.type DESC
                 )'
                 . (count($args) > 1
                     ? ' UNION (
@@ -2914,6 +2939,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 break;
         }
 
+        extract($params);
+
         if (!isset($currtime)) {
             $currtime = time();
         }
@@ -2954,20 +2981,32 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         $currentDivisionId = LMSDivisionManager::getCurrentDivision();
 
-        extract($params);
-
         $errors = array();
         $info = array();
 
         $currentDocumentDivisionId = null;
+
+        $userid = Auth::GetCurrentUser();
+        if (empty($userid)) {
+            $username = $rusername = trans('System');
+        } else {
+            $user_manager = new LMSUserManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $user = $user_manager->GetUserInfo($userid, false);
+            if (empty($user)) {
+                $username = $rusername = trans('System');
+            } else {
+                $username = $user['name'];
+                $rusername = $user['rname'];
+            }
+        }
 
         foreach ($docs as $doc) {
             if ($currentDocumentDivisionId != $doc['divisionid']) {
                 $currentDocumentDivisionId = $doc['divisionid'];
 
                 if (!isset($smtp_options_by_division_ids[$currentDocumentDivisionId])) {
-                    if (isset($smtp_options_by_division_ids[0])) {
-                        ConfigHelper::setFilter($currentDocumentDivisionId, Auth::GetCurrentUser());
+                    if (isset($smtp_options_by_division_ids[0]) || empty($smtp_options_by_division_ids)) {
+                        ConfigHelper::setFilter($currentDocumentDivisionId, $userid);
                     }
 
                     $smtp_options = array(
@@ -3014,6 +3053,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         'send_zip_filename' => ConfigHelper::getConfig('documents.send_zip_filename'),
                         'send_zip_protection_password' => ConfigHelper::getConfig('documents.send_zip_protection_password'),
                         'send_zip_protection_method' => ConfigHelper::getConfig('documents.send_zip_protection_method'),
+                        'send_zip_protect_all_attachments' => ConfigHelper::checkConfig('documents.send_zip_protect_all_attachments'),
 
                         'document_protected_document_types' => ConfigHelper::getConfig(
                             'documents.protected_document_types',
@@ -3114,6 +3154,17 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 }
 
                 if (!empty($sender_name)) {
+                    $sender_name = str_replace(
+                        array(
+                            '%username',
+                            '%rusername',
+                        ),
+                        array(
+                            $username,
+                            $rusername,
+                        ),
+                        $sender_name
+                    );
                     $from = $sender_name . ' <' . $from . '>';
                 }
 
@@ -3121,7 +3172,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 $mail_subjects = array();
             }
 
-            $document = $this->GetDocumentFullContents($doc['id'], !empty($reference_document) && $aggregate_reference_document_email);
+            $document = $this->GetDocumentFullContents($doc['id'], !empty($reference_document) && $aggregate_reference_document_email, $attachments);
             if (empty($document)) {
                 continue;
             }
@@ -3159,6 +3210,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     '%cid',
                     '%pin',
                     '%customer_name',
+                    '%username',
+                    '%rusername',
                     '\n',
                 ),
                 array(
@@ -3172,6 +3225,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     $document['customerid'],
                     $document['pin'],
                     $document['name'],
+                    $username,
+                    $rusername,
                     "\n",
                 ),
                 $body
@@ -3227,6 +3282,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
                 $all_attachment_filenames = array();
                 $filename_duplicates = false;
+
+                $encryption = false;
+
+                $authcode_required = !empty($send_zip_protection_password) && strpos($send_zip_protection_password, '%authcode') !== false;
 
                 foreach ($document['attachments'] as $attachment) {
                     $extension = '';
@@ -3375,8 +3434,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         $all_attachment_filenames[$zip_archived_filename] = true;
 
                         $zip->addFromString($zip_archived_filename, $attachment['contents']);
-                        if (!empty($zip_password) && $attachment['type'] == 1) {
+                        if (!empty($zip_password) && ($attachment['type'] == 1 || !empty($send_zip_protect_all_attachments))) {
                             $zip->setEncryptionName($zip_archived_filename, constant($send_zip_protection_method));
+
+                            $encryption = true;
                         }
                     }
                 }
@@ -3434,7 +3495,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     $this->db->Execute(
                         'INSERT INTO messages (subject, body, cdate, type, userid)
 						VALUES (?, ?, ?NOW?, ?, ?)',
-                        array($subject, $body, MSG_MAIL, Auth::GetCurrentUser())
+                        array($subject, $body, MSG_MAIL, $userid)
                     );
                     $msgid = $this->db->GetLastInsertID('messages');
 
@@ -3471,17 +3532,90 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     }
                 }
 
-                if (!empty($document['authcode']) && !empty($doc['phone'])) {
-                    $phones = explode(',', $doc['phone']);
-                    foreach ($phones as $phone) {
-                        $LMS->SendSMS(
-                            $phone,
-                            str_replace(
-                                '%authcode',
-                                $document['authcode'],
-                                $document_protection_password_authcode_message
+                if (isset($document_protected_document_types[$document['type']])
+                    && $authcode_required
+                    && empty($doc['phone'])) {
+                    $msg = trans('customer has not assigned any mobile phones with \'documents\' flag');
+
+                    if ($add_message) {
+                        foreach ($msgitems[$doc['customerid']] as $email => $msgitemid) {
+                            $this->db->Execute(
+                                'UPDATE messageitems
+                                SET status = ?, lastdate = ?NOW?, error = ?
+                                WHERE id = ?',
+                                array(
+                                    MSG_ERROR,
+                                    $msg,
+                                    $msgitemid,
+                                )
+                            );
+                        }
+                    }
+
+                    switch ($type) {
+                        case 'backend':
+                            fprintf(STDERR, $msg . $eol);
+                            break;
+                        case 'frontend':
+                            echo '<span class="red">' . htmlspecialchars($msg) . '</span>' . $eol;
+                            flush();
+                            break;
+                        case 'userpanel':
+                            $errors[] = htmlspecialchars($msg);
+                            break;
+                    }
+
+                    continue;
+                }
+
+                if (!empty($document['authcode']) && $encryption && !empty($doc['phone'])) {
+                    $sms_body = str_replace(
+                        '%authcode',
+                        $document['authcode'],
+                        $document_protection_password_authcode_message
+                    );
+
+                    if ($add_message) {
+                        $this->db->Execute(
+                            'INSERT INTO messages (subject, body, cdate, type, userid)
+                            VALUES (?, ?, ?NOW?, ?, ?)',
+                            array(
+                                trans('document encryption password: $a $b', $DOCTYPES[$document['type']], $document['fullnumber']),
+                                $sms_body,
+                                MSG_SMS,
+                                $userid,
                             )
                         );
+
+                        $smsmsgid = $this->db->GetLastInsertID('messages');
+                    }
+
+                    $phones = explode(',', $doc['phone']);
+                    foreach ($phones as $phone) {
+                        if ($add_message) {
+                            $this->db->Execute(
+                                'INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)
+                                VALUES (?, ?, ?, ?NOW?, ?)',
+                                array($smsmsgid, $doc['customerid'], $phone, MSG_NEW)
+                            );
+
+                            $smsmsgitemid = $this->db->GetLastInsertID('messageitems');
+                        }
+
+                        $res = $LMS->SendSMS($phone, $sms_body, $smsmsgitemid);
+
+                        if ($add_message) {
+                            $this->db->Execute(
+                                'UPDATE messageitems
+                                SET status = ?, error = ?, lastdate = ?NOW?
+                                WHERE id = ?',
+                                array(
+                                    is_string($res) ? MSG_ERROR : MSG_SENT,
+                                    is_string($res) ? $res : null,
+                                    $smsmsgitemid,
+                                )
+                            );
+                        }
                     }
                 }
 
@@ -3552,7 +3686,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
     }
 
-    public function deleteDocumentAttachments($docid)
+    public function deleteDocumentAttachments($docid, array $attachmentIds = [])
     {
         $attachments = $this->db->GetAll(
             'SELECT
@@ -3563,7 +3697,17 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             array($docid)
         );
 
+        $deletedAttachments = 0;
+
+        $attachmentIds = array_flip($attachmentIds);
+
         foreach ($attachments as $attachment) {
+            if (!empty($attachmentIds) && !isset($attachmentIds[$attachment['id']])) {
+                continue;
+            }
+
+            $deletedAttachments++;
+
             $md5sum = $attachment['md5sum'];
             if ($this->db->GetOne('SELECT COUNT(*) FROM documentattachments WHERE md5sum = ?', array((string)$md5sum)) == 1) {
                 $filename_pdf = DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2) . DIRECTORY_SEPARATOR . $md5sum . '.pdf';
@@ -3588,9 +3732,11 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 $this->syslog->AddMessage(SYSLOG::RES_DOCATTACH, SYSLOG::OPER_DELETE, $args);
             }
         }
+
+        return count($attachments) === $deletedAttachments;
     }
 
-    public function DeleteDocument($docid)
+    public function DeleteDocument($docid, array $attachmentIds = [])
     {
         $document = $this->db->GetRow(
             'SELECT d.id, d.type, d.customerid FROM documents d
@@ -3602,16 +3748,28 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             return false;
         }
 
-        $this->deleteDocumentAttachments($docid);
+        $documentDelete = $this->deleteDocumentAttachments($docid, $attachmentIds);
 
-        $this->db->Execute('DELETE FROM documents WHERE id = ?', array($docid));
-        if ($this->syslog) {
-            $args = array(
-                SYSLOG::RES_DOC => $docid,
-                SYSLOG::RES_CUST => $document['customerid'],
-                'type' => $document['type'],
+        if ($documentDelete) {
+            $this->db->Execute('DELETE FROM documents WHERE id = ?', array($docid));
+            if ($this->syslog) {
+                $args = array(
+                    SYSLOG::RES_DOC => $docid,
+                    SYSLOG::RES_CUST => $document['customerid'],
+                    'type' => $document['type'],
+                );
+                $this->syslog->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
+            }
+        } elseif (!empty($attachmentIds)) {
+            $this->db->Execute(
+                'DELETE FROM documentattachments
+                    WHERE docid = ?
+                        AND id IN ?',
+                array(
+                    $docid,
+                    $attachmentIds,
+                )
             );
-            $this->syslog->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
         }
 
         return true;
@@ -3798,5 +3956,109 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
     public function getDocumentFullNumber($docid)
     {
         return $this->db->GetOne('SELECT fullnumber FROM documents WHERE id = ?', array($docid));
+    }
+
+    public function checkDocumentPermission($docType, $permission)
+    {
+        $permission = $this->db->GetOne(
+            'SELECT 1 FROM docrights r
+            WHERE r.doctype = ?
+                AND r.userid = ?
+                AND (r.rights & ?) > 0',
+            [
+                $docType,
+                Auth::GetCurrentUser(),
+                $permission,
+            ]
+        );
+
+        return !empty($permission);
+    }
+
+    public function isKsefDocument($docid)
+    {
+        return $this->db->GetOne(
+            'SELECT COUNT(*)
+            FROM documents d
+            JOIN customers c ON c.id = d.customerid
+            LEFT JOIN ksefdocuments kd ON kd.docid = d.id
+            LEFT JOIN (
+                SELECT
+                    kd.docid,
+                    MAX(kd.id) AS maxid
+                FROM ksefdocuments kd
+                WHERE kd.status >= ? AND kd.status < ?
+                GROUP BY kd.docid
+            ) kd2 ON kd2.docid = d.id
+            LEFT JOIN ksefconfig kc ON kc.divisionid = d.divisionid
+            WHERE d.id = ?
+                AND (d.cdate >= kc.boundarydate OR kc.boundarydate IS NULL)
+                AND (
+                    kd.id IS NOT NULL AND kd.status IN ?
+                    OR kc.delay > -1 AND ?NOW? - d.cdate >= kc.delay
+                    AND (
+                        c.type = ?
+                        OR kc.allconsumers = ?
+                        OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ?)
+                    )
+                    AND kd.id <> kd2.maxid
+                )',
+            [
+                400,
+                500,
+                $docid,
+                [
+                    200,
+                    0,
+                ],
+                CTYPES_COMPANY,
+                1,
+                CCONSENT_KSEF_INVOICE,
+            ]
+        );
+    }
+
+    public function isKsefDocumentByCashId($cashid)
+    {
+        return $this->db->GetOne(
+            'SELECT COUNT(*)
+            FROM cash c
+            JOIN documents d ON d.id = c.docid
+            JOIN customers ON customers.id = c.customerid
+            LEFT JOIN ksefdocuments kd ON kd.docid = d.id
+            LEFT JOIN (
+                SELECT
+                    kd.docid,
+                    MAX(kd.id) AS maxid
+                FROM ksefdocuments kd
+                WHERE kd.status >= ? AND kd.status < ?
+                GROUP BY kd.docid
+            ) kd2 ON kd2.docid = d.id
+            LEFT JOIN ksefconfig kc ON kc.divisionid = d.divisionid
+            WHERE c.id = ?
+                AND (d.cdate >= kc.boundarydate OR kc.boundarydate IS NULL)
+                AND (
+                    kd.id IS NOT NULL AND kd.status IN ?
+                    OR kc.delay > -1 AND ?NOW? - d.cdate >= kc.delay
+                    AND (
+                        customers.type = ?
+                        OR kc.allconsumers = ?
+                        OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.customerid AND cc.type = ?)
+                    )
+                    AND kd.id <> kd2.maxid
+                )',
+            [
+                400,
+                500,
+                $cashid,
+                [
+                    200,
+                    0,
+                ],
+                CTYPES_COMPANY,
+                1,
+                CCONSENT_KSEF_INVOICE,
+            ]
+        );
     }
 }

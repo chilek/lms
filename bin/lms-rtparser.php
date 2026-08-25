@@ -60,6 +60,10 @@ $SYSLOG = SYSLOG::getInstance();
 $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 
+// Initialize plugin manager (required for hooks like send_sms_before)
+$plugin_manager = LMSPluginManager::getInstance();
+$LMS->setPluginManager($plugin_manager);
+
 $hostname = gethostname();
 if (empty($hostname)) {
     $hostname = 'example.com';
@@ -157,6 +161,9 @@ if (!$autoreply_body) {
         . "subsequent posts related to this request.\n";
 }
 $autoreply_body = str_replace("\\n", "\n", $autoreply_body);
+
+$autoreply_subject_template = $autoreply_subject;
+$autoreply_body_template = $autoreply_body;
 
 if (!function_exists('mailparse_msg_create')) {
     fprintf($stderr, "Fatal error: PECL mailparse module is required!" . PHP_EOL);
@@ -557,9 +564,9 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         $toemails = array();
 
         if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $mh_to, $m)) {
-            $toemails[$m['address']] = $m['address'];
+            $toemails[strtolower($m['address'])] = strtolower($m['address']);
         } elseif (!empty($mh_to)) {
-            $toemails[$mh_to] = $mh_to;
+            $toemails[strtolower($mh_to)] = strtolower($mh_to);
         }
 
         $ccemails = array();
@@ -567,9 +574,9 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         if (!empty($_ccemails)) {
             foreach ($_ccemails as $ccemail) {
                 if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $ccemail, $m)) {
-                    $ccemails[$m['address']] = $m['display'] ?? '';
+                    $ccemails[strtolower($m['address'])] = $m['display'] ?? '';
                 } else {
-                    $ccemails[$ccemail] = '';
+                    $ccemails[strtolower($ccemail)] = '';
                 }
             }
         }
@@ -578,7 +585,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         if ((!$queue || $check_mail) && (!empty($toemails) || !empty($ccemails))) {
             $queueid = $queue;
             $queue = $DB->GetRow(
-                "SELECT id, email FROM rtqueues WHERE email IN ? LIMIT 1",
+                "SELECT id, LOWER(email) AS email FROM rtqueues WHERE LOWER(email) IN ? LIMIT 1",
                 array(array_merge(array_keys($toemails), array_keys($ccemails)))
             );
             if (!empty($queue) && (!$check_mail || $queue['id'] == $queueid)) {
@@ -676,7 +683,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         if ($prev_tid && ($prev_tid_contents['state'] != RT_RESOLVED || $prev_tid_contents['resolvetime'] + $modify_ticket_timeframe > time())) {
             // find userid
             $requserid = $DB->GetOne(
-                "SELECT id FROM vusers WHERE email = ?",
+                "SELECT id FROM vusers WHERE LOWER(email) = LOWER(?)",
                 array($fromemail)
             );
             if (empty($requserid)) {
@@ -778,22 +785,22 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                     $fromemail,
                 )
             ))) {
-                $autoreply_subject = preg_replace_callback(
+                $current_autoreply_subject = preg_replace_callback(
                     '/%(\\d*)tid/',
                     function ($m) use ($ticket_id) {
                         return sprintf('%0' . $m[1] . 'd', $ticket_id);
                     },
-                    $autoreply_subject
+                    $autoreply_subject_template
                 );
-                $autoreply_subject = str_replace('%subject', $mail_mh_subject, $autoreply_subject);
-                $autoreply_body = preg_replace_callback(
+                $current_autoreply_subject = str_replace('%subject', $mail_mh_subject, $current_autoreply_subject);
+                $current_autoreply_body = preg_replace_callback(
                     '/%(\\d*)tid/',
                     function ($m) use ($ticket_id) {
                         return sprintf('%0' . $m[1] . 'd', $ticket_id);
                     },
-                    $autoreply_body
+                    $autoreply_body_template
                 );
-                $autoreply_body = str_replace('%subject', $mail_mh_subject, $autoreply_body);
+                $current_autoreply_body = str_replace('%subject', $mail_mh_subject, $current_autoreply_body);
 
                 if ($replytoemail) {
                     $mailto = $replytoemail;
@@ -806,7 +813,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 $headers = array(
                     'From' => (empty($autoreply_name) ? '' : qp_encode($autoreply_name) . ' ') . '<' . $autoreply_from . '>',
                     'To' => $mailto_qp_encoded,
-                    'Subject' => $autoreply_subject,
+                    'Subject' => $current_autoreply_subject,
                     'References' => $mh_references . ' ' . $mh_msgid,
                     'In-Reply-To' => $mh_msgid,
                     'Message-ID' => "<confirm.$ticket_id.$queue.$timestamp@rtsystem.$hostname>",
@@ -825,7 +832,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                     );
                 }
 
-                $LMS->SendMail($mailto, $headers, $autoreply_body, null, null, $smtp_options);
+                $LMS->SendMail($mailto, $headers, $current_autoreply_body, null, null, $smtp_options);
             }
 
             $new_ticket = true;
@@ -950,6 +957,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 'sms_body' => $sms_body,
                 'contenttype' => $contenttype,
                 'attachments' => &$attachments,
+                'smtp_options' => $smtp_options,
             ));
         }
 

@@ -129,6 +129,9 @@ a.lms-ui-button:not(.lms-ui-link-button) {
   > i:before {
     color: black;
   }
+  &.lms-ui-error > i:before {
+    color: @error-text;
+  }
   > i {
     text-align: center;
     padding: 0 0.1em;
@@ -214,12 +217,12 @@ td > button:last-child {
 i.lms-ui-button-clipboard:hover {
   cursor: pointer;
   &:not(.lms-ui-static) {
-    .lms-ui-icon-copy;
+    .lms-ui-icon-copy();
   }
 }
 
 a.lms-ui-button:not(.lms-ui-link-button).lms-ui-button-speech-recognition.active {
-  .fa-beat;
+  .fa-beat();
   > i:before {
     color: red;
   }

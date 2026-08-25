@@ -27,7 +27,7 @@
 define('ELEMENT_MODE_FLEXIBILITY_POINT', 1);
 define('ELEMENT_MODE_NETWORK_NODE', 2);
 
-ini_set('memory_limit', '512M');
+//ini_set('memory_limit', '512M');
 ini_set('max_execution_time', '0');
 
 if (!class_exists('ZipArchive')) {
@@ -402,6 +402,10 @@ if ($report_type == 'full' && empty($root_netdevice_id)) {
     die(trans('Root network device ID is not defined! Use <strong>\'phpui.root_netdevice_id\'</strong> configuration setting to define it.'));
 }
 
+$empty_building_number_pattern = str_replace('/', '\\/', ConfigHelper::getConfig('uke.pit_empty_building_number_pattern', '', true));
+
+$foreign_entities = Utils::getForeignEntities();
+
 $division = isset($_POST['division']) ? intval($_POST['division']) : 0;
 $aggregate_customer_services = isset($_POST['aggregate-customer-services']);
 $customer_resources_as_operator_resources = isset($_POST['customer-resources-as-operator-resources']);
@@ -413,6 +417,7 @@ $validate_wireless_links = isset($_POST['validate-wireless-links']);
 $complete_breakdown_points = isset($_POST['complete-breakdown-points']);
 $detect_loops = isset($_POST['detectloops']);
 $report_elements_outside_network_infrastructure = isset($_POST['report-elements-outside-network-infrastructure']);
+$report_cable_lines_shorter_than_1m = isset($_POST['report-cable-lines-shorter-than-1m']);
 $verify_feeding_netnodes_of_flexibility_points = isset($POST['uke-pit-verify-feeding-netnodes-of-flexibility-points']);
 
 $pit_ethernet_technologies = array();
@@ -913,8 +918,15 @@ if ($report_type == 'full') {
             } else {
                 if (empty($netdevice['location_city'])) {
                     $netnodename = $netdevice['location'] ?? '(pusty)';
+                } elseif ((empty($netdevice['location_house'])
+                        || !empty($empty_building_number_pattern) && preg_match('/' . $empty_building_number_pattern . '/iu', $netdevice['location_house']))
+                    && !empty($netdevice['longitude']) && !empty($netdevice['latitude'])) {
+                    $netnodename = $netdevice['area_terc'] . '_' . $netdevice['area_simc'] . '_' . $netdevice['area_ulic']
+                        . '_' . sprintf('%.6f', $netdevice['longitude'])
+                        . '_' . sprintf('%.6f', $netdevice['latitude']);
                 } else {
-                    $netnodename = $netdevice['area_terc'] . '_' . $netdevice['area_simc'] . '_' . $netdevice['area_ulic'] . '_' . $netdevice['location_house'];
+                    $netnodename = $netdevice['area_terc'] . '_' . $netdevice['area_simc'] . '_' . $netdevice['area_ulic']
+                        . '_' . $netdevice['location_house'];
                 }
                 $netnodename = mb_strtoupper($netnodename);
 
@@ -1016,7 +1028,7 @@ if ($report_type == 'full') {
                                 $error['simc'] = true;
                             }
                             if (!strlen($netnode['location_house'])) {
-                                $error['location_house'] = true;
+                                $error['location_building'] = true;
                             }
                             $errors['netnodes'][] = $error;
                         }
@@ -1028,7 +1040,7 @@ if ($report_type == 'full') {
                             'simc' => true,
                         );
                         if (!isset($netnode['location_house']) || !strlen($netnode['location_house'])) {
-                            $error['location_house'] = true;
+                            $error['location_building'] = true;
                         }
                         $errors['netnodes'][] = $error;
                     }
@@ -1049,7 +1061,7 @@ if ($report_type == 'full') {
                     $netnodes[$netnodename]['location_zip'] = $netdevice['location_zip'];
                     $netnodes[$netnodename]['status'] = 0;
                     $netnodes[$netnodename]['type'] = 8;
-                    $netnodes[$netnodename]['ownership'] = 0;
+                    $netnodes[$netnodename]['ownership'] = NET_ELEMENT_OWNERSHIP_OWN;
                     $netnodes[$netnodename]['coowner'] = '';
 
                     if (isset($teryt_cities[$netdevice['location_city']])) {
@@ -1083,7 +1095,7 @@ if ($report_type == 'full') {
                                 $error['simc'] = true;
                             }
                             if (!strlen($netdevice['location_house'])) {
-                                $error['location_house'] = true;
+                                $error['location_building'] = true;
                             }
                             $errors['netdevices'][] = $error;
                         }
@@ -1095,7 +1107,7 @@ if ($report_type == 'full') {
                             'simc' => true,
                         );
                         if (!isset($netdevice['location_house']) || !strlen($netdevice['location_house'])) {
-                            $error['location_house'] = true;
+                            $error['location_building'] = true;
                         }
                         $errors['netdevices'][] = $error;
                     }
@@ -1143,7 +1155,7 @@ if ($report_type == 'full') {
                                 $error['simc'] = true;
                             }
                             if (!strlen($netdevice['location_house'])) {
-                                $error['location_house'] = true;
+                                $error['location_building'] = true;
                             }
                             $errors['netdevices'][] = $error;
                         }
@@ -1155,7 +1167,7 @@ if ($report_type == 'full') {
                             'simc' => true,
                         );
                         if (!isset($netdevice['location_house']) || !strlen($netdevice['location_house'])) {
-                            $error['location_house'] = true;
+                            $error['location_building'] = true;
                         }
                         $errors['netdevices'][] = $error;
                     }
@@ -1254,7 +1266,7 @@ if ($report_type == 'full') {
                 }
             }
 
-            if ($netnode['ownership'] == 2) {
+            if ($netnode['ownership'] == NET_ELEMENT_OWNERSHIP_FOREIGN) {
                 continue;
             }
 
@@ -1651,7 +1663,7 @@ if ($report_type == 'full') {
                                     $error['simc'] = true;
                                 }
                                 if (!strlen($range['building'])) {
-                                    $error['location_house'] = true;
+                                    $error['location_building'] = true;
                                 }
                             }
                             $errors['nodes'][] = $error;
@@ -1671,7 +1683,7 @@ if ($report_type == 'full') {
                                     $error['simc'] = true;
                                 }
                                 if (!strlen($range['building'])) {
-                                    $error['location_house'] = true;
+                                    $error['location_building'] = true;
                                 }
                             }
                             $errors['netdevices'][] = $error;
@@ -1840,7 +1852,7 @@ if ($report_type == 'full') {
                     $error['simc'] = true;
                 }
                 if (!isset($node['location_house']) || !strlen($node['location_house'])) {
-                    $error['location_house'] = true;
+                    $error['location_building'] = true;
                 }
             }
             $errors['nodes'][] = $error;
@@ -2152,6 +2164,7 @@ if ($report_type == 'full') {
                     nl.linecount,
                     nl.usedlines,
                     nl.availablelines,
+                    nl.foreignentity,
                     (CASE src WHEN ? THEN (CASE WHEN srcrs.license IS NULL THEN dstrs.license ELSE srcrs.license END)
                         ELSE (CASE WHEN dstrs.license IS NULL THEN srcrs.license ELSE dstrs.license END) END) AS license,
                     (CASE src WHEN ? THEN (CASE WHEN srcrs.frequency IS NULL THEN dstrs.frequency ELSE srcrs.frequency END)
@@ -2211,8 +2224,10 @@ if ($report_type == 'full') {
 
                                 $processed_netlinks[$netnodelinkid] = true;
 
-                                $foreign = $netnodes[$netdevnetnodename]['ownership'] == 2 && $dstnetnode['ownership'] < 2
-                                    || $netnodes[$netdevnetnodename]['ownership'] < 2 && $dstnetnode['ownership'] == 2;
+                                $foreign = $netnodes[$netdevnetnodename]['ownership'] == NET_ELEMENT_OWNERSHIP_FOREIGN && $dstnetnode['ownership'] != NET_ELEMENT_OWNERSHIP_FOREIGN
+                                    || $netnodes[$netdevnetnodename]['ownership'] != NET_ELEMENT_OWNERSHIP_FOREIGN && $dstnetnode['ownership'] == NET_ELEMENT_OWNERSHIP_FOREIGN;
+                                $shared = $netnodes[$netdevnetnodename]['ownership'] == NET_ELEMENT_OWNERSHIP_SHARED && $dstnetnode['ownership'] != NET_ELEMENT_OWNERSHIP_SHARED
+                                    || $netnodes[$netdevnetnodename]['ownership'] != NET_ELEMENT_OWNERSHIP_SHARED && $dstnetnode['ownership'] == NET_ELEMENT_OWNERSHIP_SHARED;
 
                                 $netlinks[] = array(
                                     'id' => $netlink['id'],
@@ -2227,9 +2242,11 @@ if ($report_type == 'full') {
                                     'linecount' => $netlink['linecount'],
                                     'usedlines' => $netlink['usedlines'],
                                     'availablelines' => $netlink['availablelines'],
+                                    'foreignentity' => $netlink['foreignentity'],
                                     'invproject' => $invproject,
                                     'status' => $status,
                                     'foreign' => $foreign,
+                                    'shared' => $shared,
                                 );
 
                                 $othernetnode = $dstnetnode;
@@ -2252,25 +2269,29 @@ if ($report_type == 'full') {
 
                             $processed_netlinks[$netnodelinkid] = true;
 
-                            $foreign = $netnodes[$netdevnetnodename]['ownership'] == 2 && $dstnetnode['ownership'] < 2
-                                || $netnodes[$netdevnetnodename]['ownership'] < 2 && $dstnetnode['ownership'] == 2;
+                            $foreign = $netnodes[$netdevnetnodename]['ownership'] == NET_ELEMENT_OWNERSHIP_FOREIGN && $dstnetnode['ownership'] != NET_ELEMENT_OWNERSHIP_FOREIGN
+                                || $netnodes[$netdevnetnodename]['ownership'] != NET_ELEMENT_OWNERSHIP_FOREIGN && $dstnetnode['ownership'] == NET_ELEMENT_OWNERSHIP_FOREIGN;
+                            $shared = $netnodes[$netdevnetnodename]['ownership'] == NET_ELEMENT_OWNERSHIP_SHARED && $dstnetnode['ownership'] != NET_ELEMENT_OWNERSHIP_SHARED
+                                || $netnodes[$netdevnetnodename]['ownership'] != NET_ELEMENT_OWNERSHIP_SHARED && $dstnetnode['ownership'] == NET_ELEMENT_OWNERSHIP_SHARED;
 
                             $netlinks[] = array(
                                 'id' => $netlink['id'],
                                 'type' => $netlink['type'],
                                 'speed' => $speed,
                                 'technology' => $netlink['technology'],
-                                'src' => $netdevnetnodename,
-                                'dst' => $srcnetnodename,
+                                'src' => $srcnetnodename,
+                                'dst' => $netdevnetnodename,
                                 'license' => $netlink['license'] ?? '',
                                 'frequency' => $netlink['frequency'],
                                 'routetype' => $netlink['routetype'],
                                 'linecount' => $netlink['linecount'],
                                 'usedlines' => $netlink['usedlines'],
                                 'availablelines' => $netlink['availablelines'],
+                                'foreignentity' => $netlink['foreignentity'],
                                 'invproject' => $invproject,
                                 'status' => $status,
                                 'foreign' => $foreign,
+                                'shared' => $shared,
                             );
 
                             $othernetnode = $srcnetnode;
@@ -2455,6 +2476,10 @@ if ($report_type == 'full') {
                 continue;
             }
 
+            if ($netnode['ownership'] == NET_ELEMENT_OWNERSHIP_FOREIGN) {
+                continue;
+            }
+
             $media = array();
             foreach ($netnode['technologies'] as $technology) {
                 $mediaCode = mediaCodeByTechnology($technology);
@@ -2465,14 +2490,14 @@ if ($report_type == 'full') {
             }
 
             if ($netnode['mode'] == ELEMENT_MODE_NETWORK_NODE) {
-                if (strlen($netnode['coowner']) && !empty($netnode['ownership'])) {
+                if (strlen($netnode['coowner']) && $netnode['ownership'] == NET_ELEMENT_OWNERSHIP_SHARED) {
                     $used_foreigners[$netnode['coowner']] = true;
                 }
 
                 $data = array(
                     'we01_id_wezla' => '',
-                    'we02_tytul_do_wezla' => strlen($netnode['coowner']) && !empty($netnode['ownership']) ? 'Węzeł współdzielony z innym podmiotem' : 'Węzeł własny',
-                    'we03_id_podmiotu_obcego' => strlen($netnode['coowner']) && !empty($netnode['ownership']) ? 'PO-' . $netnode['coowner'] : '',
+                    'we02_tytul_do_wezla' => strlen($netnode['coowner']) && $netnode['ownership'] == NET_ELEMENT_OWNERSHIP_SHARED ? 'Węzeł współdzielony z innym podmiotem' : 'Węzeł własny',
+                    'we03_id_podmiotu_obcego' => strlen($netnode['coowner']) && $netnode['ownership'] == NET_ELEMENT_OWNERSHIP_SHARED ? 'PO-' . $netnode['coowner'] : '',
                     'we04_terc' => $netnode['area_terc'] ?? '',
                     'we05_simc' => $netnode['area_simc'] ?? '',
                     'we06_ulic' => $netnode['address_symul'] ?? '',
@@ -2484,8 +2509,8 @@ if ($report_type == 'full') {
                     'we12_technologia_dostepowa' => '',
                     'we13_uslugi_transmisji_danych' => '',
                     'we14_mozliwosc_zwiekszenia_liczby_interfejsow' => isset($netnode['flags'][NETWORK_NODE_FLAG_INTERFACE_COUNT_INCREASE_POSSIBILITY]) ? 'Tak' : 'Nie',
-                    'we15_finansowanie_publ' => strlen($netnode['coowner']) && !empty($netnode['ownership']) ? '' : (empty($netnode['invproject']) ? 'Nie' : 'Tak'),
-                    'we16_numery_projektow_publ' => empty($netnode['invproject']) || strlen($netnode['coowner']) && !empty($netnode['ownership'])
+                    'we15_finansowanie_publ' => strlen($netnode['coowner']) && $netnode['ownership'] == NET_ELEMENT_OWNERSHIP_SHARED ? '' : (empty($netnode['invproject']) ? 'Nie' : 'Tak'),
+                    'we16_numery_projektow_publ' => empty($netnode['invproject']) || strlen($netnode['coowner']) && $netnode['ownership'] == NET_ELEMENT_OWNERSHIP_SHARED
                         ? ''
                         : implode(';', $netnode['invproject']),
                     'we17_infrastruktura_o_duzym_znaczeniu' => isset($netnode['flags'][NETWORK_NODE_FLAG_CRITICAL_INFRASTRUCTURE]) ? 'Tak' : 'Nie',
@@ -2732,10 +2757,16 @@ if ($report_type == 'full') {
     $po_buffer = 'po01_id_podmiotu_obcego,po02_nip_pl,po03_nip_nie_pl' . EOL;
     foreach ($foreigners as $name => $foreigner) {
         if (isset($used_foreigners[$name])) {
+            if (!empty($foreign_entities[$name]['type'])) {
+                $foreignEntityId = $foreign_entities[$name]['name'];
+                $foreignEntityTen = $foreign_entities[$name]['id'];
+            } else {
+                $foreignEntityId = $foreigner;
+                $foreignEntityTen = '';
+            }
             $data = array(
-                // alternatively $foreingerid can be used
-                'po01_id_podmiotu_obcego' => 'PO-' . $foreigner,
-                'po02_nip_pil' => '',
+                'po01_id_podmiotu_obcego' => 'PO-' . $foreignEntityId,
+                'po02_nip_pl' => $foreignEntityTen,
                 'po03_nip_nie_pl' => '',
             );
             $po_buffer .= to_csv($data) . EOL;
@@ -2808,6 +2839,10 @@ if ($report_type == 'full') {
         // save info about network lines
         if ($netlinks) {
             foreach ($netlinks as $netlink) {
+                if (!empty($netlink['foreignentity'])) {
+                    continue;
+                }
+
                 $technology = $netlink['technology'];
 
                 if ($netnodes[$netlink['src']]['id'] != $netnodes[$netlink['dst']]['id']) {
@@ -2880,6 +2915,23 @@ if ($report_type == 'full') {
                             'longitude' => $dstnetnode['longitude'],
                             'latitude' => $dstnetnode['latitude'],
                         );
+
+                        if (!$report_cable_lines_shorter_than_1m) {
+                            $distance = 0.0;
+                            $prevPoint = null;
+
+                            foreach ($points as $idx => $point) {
+                                if (isset($prevPoint)) {
+                                    $distance += Utils::haversineDistanceMeters($prevPoint['latitude'], $prevPoint['longitude'], $point['latitude'], $point['longitude']);
+                                }
+
+                                $prevPoint = $point;
+                            }
+
+                            if ($distance < 1.0) {
+                                continue;
+                            }
+                        }
 
                         $data = array(
                             'lk01_id_lk' => 'LK-' . $netlink['id'],

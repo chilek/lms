@@ -191,7 +191,7 @@
 		<TD colspan="2" class="nobr">
 		</TD>
 		<TD class="bold text-right">
-			{t a=$listdata.total}Total: $a{/t}
+			{t a=$listdata.total b=$listdata.recipients}Total: $a (Recipients: $b){/t}
 		</TD>
 		<TD colspan="2" class="text-right nobr">
 			{if ConfigHelper::checkPrivileges('messaging', 'messaging_removal')}

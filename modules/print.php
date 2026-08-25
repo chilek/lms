@@ -281,7 +281,7 @@ switch ($type) {
             . ($net ? ' AND EXISTS (SELECT 1 FROM vnodes WHERE c.customerid = ownerid AND ((ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ') OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')))' : '')
             . ($division ? ' AND customerview.divisionid = ' . $division : '')
             . (empty($types) ? '' : $typewhere)
-            . ' ORDER BY c.time ASC',
+            . ' ORDER BY c.time ASC, d.number',
             array(
                 $date['to'],
             )
@@ -511,6 +511,12 @@ switch ($type) {
             $type = '&oryginal=1';
         }
 
+        if (isset($_POST['ksef-submit']) && strlen($_POST['ksef-submit'])) {
+            $ksefSubmit = $_POST['ksef-submit'] == 'yes' ? 1 : 0;
+        } else {
+            $ksefSubmit = null;
+        }
+
         $layout['pagetitle'] = trans('Invoices');
 
         header(
@@ -519,8 +525,9 @@ switch ($type) {
                 .$type
                 .'&from='.$date['from']
                 .'&to='.$date['to']
+                . (isset($_POST['datetype']) && $_POST['datetype'] == 'sdate' ? '&datetype=sdate' : '')
                 .(!empty($_POST['einvoice']) ? '&einvoice=' . intval($_POST['einvoice']) : '')
-                .(!empty($_POST['division']) ? '&divisionid='.intval($_POST['division']) : '')
+                .(!empty($_POST['division']) ? (is_array($_POST['division']) ? '&divisionid[]=' . implode('&divisionid[]=', Utils::filterIntegers($_POST['division'])) : '&divisionid=' . intval($_POST['division'])) : '')
                 .(!empty($_POST['customer']) ? '&customerid='.intval($_POST['customer']) : '')
                 .(!empty($_POST['group']) && is_array($_POST['group']) ? '&groupid[]='
                     . implode('&groupid[]=', Utils::filterIntegers($_POST['group'])) : '')
@@ -532,6 +539,8 @@ switch ($type) {
                 .(!empty($_POST['manualissued']) ? '&manualissued=1' : '')
                 . (isset($_POST['related-documents']) ? '&related-documents=1' : '')
                 . (!isset($_POST['transfer-forms']) || !empty($_POST['transfer-forms']) ? '&transfer-forms=1' : '')
+                . (!empty($_POST['purchase-invoices']) ? '&purchase-invoices=1' : '')
+                . (isset($ksefSubmit) ? '&ksef-submit=' . $ksefSubmit : '')
         );
         break;
 
@@ -1046,7 +1055,7 @@ switch ($type) {
             $SMARTY->assign('pages', $pages);
             $SMARTY->assign('totals', $totals);
             $SMARTY->assign('pagescount', count($pages));
-            $SMARTY->assign('reccount', count($list));
+            $SMARTY->assign('reccount', empty($list) ? 0 : count($list));
             if (strtolower($report_type) == 'pdf') {
                 $output = $SMARTY->fetch('print/printreceiptlist-ext.html');
                 Utils::html2pdf(array(

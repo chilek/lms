@@ -98,7 +98,7 @@ $customers = $DB->GetAll(
                 FROM documents d
                 JOIN vinvoicecontents ic ON ic.docid = d.id
                 WHERE d.type = ? AND d.cancelled = 0'
-                    . (ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment') ? 'AND 1=0' : '') . '
+                    . (ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment') ? ' AND 1 = 0' : '') . '
                 GROUP BY d.customerid
             )
         ) c

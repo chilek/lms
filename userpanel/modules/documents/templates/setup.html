@@ -45,6 +45,17 @@
 						</tr>
 						<tr>
 							<td class="nobr">
+								<label for="show_unapproved_document_attachments">
+									{trans("Show unapproved document attachments")}
+								</label>
+							</td>
+							<td class="nobr">
+								<input type="checkbox" name="moduleconfig[show_unapproved_document_attachments]" id="show_unapproved_document_attachments"
+									value="1"{if $moduleconfig.show_unapproved_document_attachments} checked{/if} {tip text="Show unapproved document attachments"}>
+							</td>
+						</tr>
+						<tr>
+							<td class="nobr">
 								<label for="allowed_document_types">
 									{trans("Visible document types")}
 								</label>

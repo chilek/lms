@@ -472,13 +472,13 @@ class Localisation
         if (is_string($number)) {
             $number = floatval($number);
         }
-        if ($number ** -1 === -INF) {
-            $number = 0;
+        if (!is_finite($number)) {
+            $number = 0.0;
         }
         if ($editable) {
-            return self::$editableNumberSmartFormatter->format($number);
+            return self::$editableNumberSmartFormatter->format($number ?? 0);
         } else {
-            return self::$numberSmartFormatter->format($number);
+            return self::$numberSmartFormatter->format($number ?? 0);
         }
     }
 
@@ -487,8 +487,8 @@ class Localisation
         if (is_string($number)) {
             $number = floatval($number);
         }
-        if ($number ** -1 === -INF) {
-            $number = 0;
+        if (!is_finite($number)) {
+            $number = 0.0;
         }
         if ($editable) {
             return self::$editableNumberFormatter->format($number);

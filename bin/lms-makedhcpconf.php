@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2025 LMS Developers
+ *  (C) Copyright 2001-2026 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -63,6 +63,8 @@ $default_lease_time = ConfigHelper::getConfig($config_section . '.default_lease_
 $max_lease_time = ConfigHelper::getConfig($config_section . '.max_lease_time', 86400);
 $enable_option82 = ConfigHelper::checkConfig($config_section . '.enable_option82');
 $use_network_authtype = ConfigHelper::checkConfig($config_section . '.use_network_authtype');
+$filename_pattern = ConfigHelper::getConfig($config_section . '.filename_pattern', '', true);
+$speed_unit_type = intval(ConfigHelper::getConfig('phpui.speed_unit_type', 1000));
 $config_begin = ConfigHelper::getConfig(
     $config_section . '.begin',
     "ddns-update-style none;\nlog-facility local6;\ndefault-lease-time $default_lease_time;\nmax-lease-time $max_lease_time;\n"
@@ -340,8 +342,12 @@ foreach ($networks as $networkid => $net) {
             mac,
             INET_NTOA(ipaddr) AS ip,
             INET_NTOA(ipaddr_pub) AS ip_pub,
-            ownerid
-        FROM vnodes n
+            ownerid,
+            downrate,
+            downceil,
+            uprate,
+            upceil
+        FROM vnodealltariffs n
         WHERE netid = ?
             AND (n.ownerid IS NULL OR 1 = 1"
             . ($customergroups ? str_replace('%customerid_alias%', 'n.ownerid', $customergroups) : '')
@@ -390,9 +396,9 @@ foreach ($networks as $networkid => $net) {
         $macs = explode(",", $node['mac']);
         $hosts = array();
         foreach ($macs as $key => $mac) {
+            $hosts[$mac] = $node;
             $hosts[$mac]['name'] = $node['name'] . ($key == 0 ? '' : '-' . $node['id'] . '-' . $key);
             $hosts[$mac]['fixed_address'] = $node['ip'];
-            $hosts[$mac]['id'] = $node['id'];
             $hosts[$mac]['options'] = array();
             if (!empty($dhcp_relay['mac'])) {
                 $hosts[$mac]['options']['agent.remote-id'] = $dhcp_relay['mac'];
@@ -458,6 +464,34 @@ foreach ($networks as $networkid => $net) {
                 $host_content .= 'host ' . $host['name'] . ' { # ID: ' . $host['id'] . "\n";
                 $host_content .= "\thardware ethernet " . $mac . ";\n";
                 $host_content .= "\tfixed-address " . $host['fixed_address'] . ";\n";
+
+                if (!empty($filename_pattern)) {
+                    $host_content .= "\tfilename \""
+                        . str_replace(
+                            array(
+                                '%kilo_downrate%',
+                                '%kilo_uprate%',
+                                '%kilo_downceil%',
+                                '%kilo_upceil%',
+                                '%mega_downrate%',
+                                '%mega_uprate%',
+                                '%mega_downceil%',
+                                '%mega_upceil%',
+                            ),
+                            array(
+                                $host['downrate'],
+                                $host['uprate'],
+                                $host['downceil'],
+                                $host['upceil'],
+                                round($host['downrate'] / $speed_unit_type),
+                                round($host['uprate'] / $speed_unit_type),
+                                round($host['downceil'] / $speed_unit_type),
+                                round($host['upceil'] / $speed_unit_type),
+                            ),
+                            $filename_pattern
+                        ) . "\";\n";
+                }
+
                 $mac = preg_replace('/[^0-9a-fA-F]/', '', $mac);
                 foreach ($host['options'] as $name => $value) {
                     $value = str_replace(

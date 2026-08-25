@@ -91,6 +91,7 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
     $filter['type'] = $_POST['type'] ?? null;
     $filter['privacy'] = isset($_POST['privacy']) ? intval($_POST['privacy']) : null;
     $filter['closed'] = $_POST['closed'] ?? null;
+    $filter['divisionid'] = isset($_POST['divisionid']) ? Utils::filterIntegers($_POST['divisionid']) : array();
 
     if (isset($_POST['switchToTimetable'])) {
         $SESSION->save('schedulerFiler', $filter, true);
@@ -387,6 +388,7 @@ $today = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
 
 $visible_users = null;
 $usergroups = $LMS->UsergroupGetList();
+unset($usergroups['total'], $usergroups['totalcount']);
 if (!empty($usergroups)) {
     if (!empty($filter['usergroups'])) {
         $visible_users = array();
@@ -398,6 +400,7 @@ if (!empty($usergroups)) {
         $visible_users = array_unique($visible_users);
         $visible_users = array_combine($visible_users, $visible_users);
     }
+    unset($usergroups['total'], $usergroups['totalcount']);
 }
 
 $SMARTY->assign(array(
@@ -416,6 +419,7 @@ $SMARTY->assign(array(
     'date' => $date,
     'error' => $error,
     'customerlist' => ($big_networks ? null : $LMS->GetCustomerNames()),
+    'divisions' => $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())),
     'getHolidays' => getHolidays($year ?? null)
 ));
 $SMARTY->display('event/eventschedule.html');

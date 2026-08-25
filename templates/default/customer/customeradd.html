@@ -4,11 +4,22 @@
 <!--// $Id$ //-->
 {$restrictive_sensitive_data_access = ConfigHelper::checkConfig('customers.restrictive_sensitive_data_access')}
 {$pin_tip = ConfigHelper::getConfig('customers.pin_restriction_description', ConfigHelper::getConfig('phpui.pin_restriction_description'))}
+{if !empty($unsecure_pin_validity)}
+	{$pin_tip = ConfigHelper::getConfig('customers.unsecure_pin_restriction_description', $pin_tip)}
+{/if}
 {if !$pin_tip}
-	{if $pin_min_size == $pin_max_size}
-		{$pin_tip=trans("Enter \$a characters PIN code", $pin_min_size)}
+	{if empty($unsecure_pin_validity)}
+		{if $pin_min_size == $pin_max_size}
+			{$pin_tip = trans("Enter \$a characters PIN code", $pin_min_size)}
+		{else}
+			{$pin_tip = trans("Enter \$a to \$b characters PIN code", $pin_min_size, $pin_max_size)}
+		{/if}
 	{else}
-		{$pin_tip=trans("Enter \$a to \$b characters PIN code", $pin_min_size, $pin_max_size)}
+		{if $unsecure_pin_min_size == $unsecure_pin_max_size}
+			{$pin_tip = trans("Enter \$a characters PIN code", $unsecure_pin_min_size)}
+		{else}
+			{$pin_tip = trans("Enter \$a to \$b characters PIN code", $unsecure_pin_min_size, $unsecure_pin_max_size)}
+		{/if}
 	{/if}
 {/if}
 <H1>{$layout.pagetitle}</H1>
@@ -196,6 +207,11 @@
 						{icon name="tag"}
 					</td>
 					<td>
+						{capture assign="customer_flag_tip"}{strip}
+							{foreach Localisation::arraySort($_CUSTOMERFLAGS, 'label') as $cflag => $flag}
+								<strong>{$flag.label}</strong> - {$flag.tip}<br>
+							{/foreach}
+						{/strip}{/capture}
 						<select name="customeradd[flags][]" {tip text="Select customer flags (optional)" class="lms-ui-multiselect"}
 							multiple>
 							{foreach Localisation::arraySort($_CUSTOMERFLAGS, 'label') as $cflag => $flag}
@@ -205,6 +221,7 @@
 							</option>
 							{/foreach}
 						</select>
+						{hint text=$customer_flag_tip}
 					</td>
 				</tr>
 				{if $divisions}
@@ -333,6 +350,9 @@
 											{else}
 												{$ssn = preg_replace('/[^\s]/', '*', $customeradd.ssn)}
 												{$disabled = true}
+											{/if}
+											{if !$disabled}
+												<input type="hidden" name="customeradd[oldssn]" value="{$ssn}">
 											{/if}
 											<input type="text" name="customeradd[ssn]" value="{$ssn}" size="30"
 												data-type="ssn"
@@ -755,11 +775,19 @@
 		{/if}
 
 		$('[name="customeradd[pin]"]').change(function() {
-			if (validate_random_string(this.value, {$pin_min_size}, {$pin_max_size}, '{str_replace("'", "\'", $pin_allowed_characters)}')) {
-				this.setCustomValidity('');
-			} else {
-				this.setCustomValidity('{$pin_tip}');
-			}
+			{if empty($unsecure_pin_validity)}
+				if (validate_random_string(this.value, {$pin_min_size}, {$pin_max_size}, '{str_replace("'", "\'", $pin_allowed_characters)}')) {
+					this.setCustomValidity('');
+				} else {
+					this.setCustomValidity('{$pin_tip}');
+				}
+			{else}
+				if (validate_random_string(this.value, {$unsecure_pin_min_size}, {$unsecure_pin_max_size}, '{str_replace("'", "\'", $unsecure_pin_allowed_characters)}')) {
+					this.setCustomValidity('');
+				} else {
+					this.setCustomValidity('{$pin_tip}');
+				}
+			{/if}
 		});
 
 		init_email_validators();
@@ -778,6 +806,21 @@
 				$(this).attr('data-type'),
 				identifier,
 				function(data) {
+					if (data.hasOwnProperty('warning')) {
+						alertDialog({
+							title: "<!dialog>Alert",
+							message: data.warning,
+							context: that
+						});
+						return;
+					} else if (data.hasOwnProperty('error')) {
+						alertDialog({
+							title: "<!dialog>Error",
+							message: data.error,
+							context: that
+						});
+						return;
+					}
 					if (data.length > 1) {
 						customerCompanySelectionDialog(data, that).done(function(company) {
 							GusApiFinished('customeradd', company);
@@ -798,7 +841,6 @@
 			var required_properties = isPrivate ? natural_person_required_properties : legal_person_required_properties;
 			var required_property_validation_error = isPrivate ? natural_person_required_property_validation_error : legal_person_required_property_validation_error;
 			var required_property_validation_customer_statuses = status ? natural_person_required_property_validation_customer_statuses : legal_person_required_property_validation_customer_statuses;
-			console.log(required_properties, required_property_validation_error, required_property_validation_customer_statuses);
 			$.each(['ten', 'ssn', 'icn'], function(index, property) {
 				$('[name="customeradd[' + property + ']"]').prop(
 					'required',
@@ -811,7 +853,11 @@
 
 		$('#randomize').click(function() {
 			$('[name="customeradd[pin]"]').val(
-				generate_random_string({$pin_min_size} + Math.floor(Math.random() * {($pin_max_size-$pin_min_size)+1}), '{str_replace("'", "\'", $pin_allowed_characters)}')
+				{if empty($unsecure_pin_validity)}
+					generate_random_string({$pin_min_size} + Math.floor(Math.random() * {($pin_max_size - $pin_min_size) + 1}), '{str_replace("'", "\'", $pin_allowed_characters)}')
+				{else}
+					generate_random_string({$pin_min_size} + Math.floor(Math.random() * {($unsecure_pin_max_size - $unsecure_pin_min_size) + 1}), '{str_replace("'", "\'", $unsecure_pin_allowed_characters)}')
+				{/if}
 			);
 		});
 

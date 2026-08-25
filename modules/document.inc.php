@@ -25,7 +25,7 @@
  */
 
 // support for dynamic loading of plugin javascript code
-if (isset($_GET['template'])) {
+if (isset($_GET['template']) && preg_match('/^[a-zA-Z0-9_-]+$/', $_GET['template'])) {
     foreach ($documents_dirs as $doc) {
         if (is_readable($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $_GET['template'] . DIRECTORY_SEPARATOR . 'info.php')) {
             $doc_dir = $doc;
@@ -135,6 +135,10 @@ function GetPlugin($template, $customerid, $update_title, $JSResponse)
 
     $JSResponse->script('$("#documentpromotions").toggle(' . (empty($engine['promotion-schema-selection']) ? 'false' : 'true') . ')');
     $JSResponse->script('$("#document-consents").toggle(' . (empty($engine['customer-consent-selection']) ? 'false' : 'true') . ')');
+
+    if (isset($engine['default-dont-create-assignments'])) {
+        $JSResponse->script('$("#dont-create-assignments").prop(\'checked\', ' . (empty($engine['default-dont-create-assignments']) ? 'false' : 'true') . ')');
+    }
 }
 
 function GetDocumentTemplates($rights, $type = null)
@@ -153,7 +157,7 @@ function GetDocumentTemplates($rights, $type = null)
 
     ob_start();
     foreach ($documents_dirs as $doc_dir) {
-        if ($dirs = getdir($doc_dir . DIRECTORY_SEPARATOR . 'templates', '^[a-z0-9_-]+$')) {
+        if ($dirs = getdir($doc_dir . DIRECTORY_SEPARATOR . 'templates', '^[a-zA-Z0-9_-]+$')) {
             foreach ($dirs as $dir) {
                 $infofile = $doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
                 . $dir . DIRECTORY_SEPARATOR . 'info.php';
@@ -340,6 +344,15 @@ function GetReferenceDocuments($doctemplate, $customerid, $JSResponse)
 
     $SMARTY->assign('references', $references);
 
+    if (isset($engine['archive-reference-document'])) {
+        $SMARTY->assign(
+            'document',
+            [
+                'archive-reference' => !empty($engine['archive-reference-document']),
+            ]
+        );
+    }
+
     $template = $SMARTY->fetch('document/documentreference.html');
 
     $JSResponse->assign('referencedocument', 'innerHTML', $template);
@@ -349,7 +362,7 @@ function GetReferenceDocuments($doctemplate, $customerid, $JSResponse)
     $JSResponse->script('$(\'[name="document[reference]"]\').prop("required", $(\'[name="document[templ]"] option:selected\').is("[data-refdoc-required]"));');
 }
 
-function GetCustomerConsents($template, $customerid, $JSResponse, $consents = null)
+function GetCustomerConsents($template, $customerid, $JSResponse, $consents = null, $handleTemplateCustomerConsents = false)
 {
     global $documents_dirs, $LMS, $SMARTY, $CCONSENTS;
 
@@ -388,15 +401,21 @@ function GetCustomerConsents($template, $customerid, $JSResponse, $consents = nu
     }
     $SMARTY->assign('supported_customer_consents', $supported_customer_consents);
 
+    if ($handleTemplateCustomerConsents && isset($engine['default-customer-consents']) && is_array($engine['default-customer-consents'])) {
+        $defaultCustomerConsents = array_flip($engine['default-customer-consents']);
+    } else {
+        $handleTemplateCustomerConsents = false;
+    }
+
     $document['default-consents'] = array_filter(
-        $LMS->getCustomerConsents($customerid),
+        $defaultCustomerConsents ?? $LMS->getCustomerConsents($customerid),
         function ($consent) use ($supported_customer_consents) {
             return isset($supported_customer_consents[$consent]);
         },
         ARRAY_FILTER_USE_KEY
     );
 
-    if (!isset($consents)) {
+    if (!isset($consents) || $handleTemplateCustomerConsents) {
         $document['consents'] = $document['default-consents'];
     } else {
         $document['consents'] = array_filter(
@@ -438,6 +457,10 @@ function DocTypeChanged($doctype, $customerid)
 
     $JSResponse->script('$("#documentpromotions,#document-consents").toggle(false)');
 
+    $lms = LMS::getInstance();
+    $confirmPermission = $lms->checkDocumentPermission($doctype, DOCRIGHT_CONFIRM);
+    $JSResponse->script('$("#confirm-row").toggle(' . (empty($confirmPermission) ? 'false' : 'true') . ')');
+
     return $JSResponse;
 }
 
@@ -447,7 +470,7 @@ function DocTemplateChanged($doctype, $doctemplate, $customerid, $consents)
 
     GetPlugin($doctemplate, $customerid, true, $JSResponse);
     GetReferenceDocuments($doctemplate, $customerid, $JSResponse);
-    GetCustomerConsents($doctemplate, $customerid, $JSResponse, $consents);
+    GetCustomerConsents($doctemplate, $customerid, $JSResponse, $consents, true);
 
     return $JSResponse;
 }

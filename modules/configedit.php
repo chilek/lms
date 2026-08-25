@@ -65,6 +65,21 @@ if (!($id = $LMS->ConfigOptionExists($params))) {
 
 if (isset($_GET['statuschange'])) {
     $LMS->toggleConfigOption($id);
+
+    $configVariable = $LMS->GetConfigVariable($id);
+    if ($configVariable['section'] == 'ksef') {
+        $ksef = new \Lms\KSeF\KSeF($DB, $LMS);
+
+        switch ($configVariable['var']) {
+            case 'delay':
+            case 'all_consumers':
+            case 'boundary_date':
+            case 'show_balance_summary':
+                $ksef->updateConfig();
+                break;
+        }
+    }
+
     $SESSION->redirect_to_history_entry();
 }
 
@@ -212,6 +227,19 @@ if (isset($_POST['config'])) {
             $DB->BeginTrans();
             $configid = $LMS->editConfigOption($args);
             $DB->CommitTrans();
+
+            if ($args['section'] == 'ksef') {
+                $ksef = new \Lms\KSeF\KSeF($DB, $LMS);
+
+                switch ($args['var']) {
+                    case 'delay':
+                    case 'all_consumers':
+                    case 'boundary_date':
+                    case 'show_balance_summary':
+                        $ksef->updateConfig();
+                        break;
+                }
+            }
         }
         $SESSION->redirect_to_history_entry();
     }

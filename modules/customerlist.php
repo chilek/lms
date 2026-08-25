@@ -62,10 +62,14 @@ if ($api) {
 
     if (isset($_GET['s'])) {
         $filter['state'] = $_GET['s'];
+    } elseif (!isset($filter['state'])) {
+        $filter['state'] = array();
+    } elseif (!is_array($filter['state'])) {
+        $filter['state'] = array($filter['state']);
     }
 
     if (isset($_GET['n'])) {
-        $filter['network'] = $_GET['n'];
+        $filter['network'] = intval($_GET['n']);
     }
 
     if (isset($_GET['gop'])) {

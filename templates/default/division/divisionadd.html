@@ -14,6 +14,9 @@
 <H1>{$layout.pagetitle}</H1>
 <script src="js/location_box.js"></script>
 <script src="js/location_box_expandable.js"></script>
+
+{include file="customer/customercompanyselectiondialog.html"}
+
 <form method="POST" action="?m=divisionadd" name="division">
 <input type="submit" class="hiddenbtn">
 <table class="lmsbox">
@@ -144,6 +147,9 @@
 				{if $division.tenwarning}
 					<input type="hidden" name="division[tenwarning]" value="1">
 				{/if}
+				{button type="link" icon="division" class="gusapi-button"
+					data_type=Utils::GUS_REGON_API_SEARCH_TYPE_TEN
+					tip="Click here to autocomplete company data from GUS REGON database"}
 			</td>
 		</tr>
 		<tr>
@@ -177,6 +183,9 @@
 			<td>
 				<input type="text" size="40" value="{$division.regon}" name="division[regon]"
 					{tip text="Enter Business Registration Number (optional)" trigger="regon"}>
+					{button type="link" icon="division" class="gusapi-button"
+						data_type=Utils::GUS_REGON_API_SEARCH_TYPE_REGON
+						tip="Click here to autocomplete company data from GUS REGON database"}
 			</td>
 		</tr>
 		<tr>
@@ -202,6 +211,9 @@
 			<td>
 				<input type="text" value="{$division.rbe}" name="division[rbe]" size="30"
 					{tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
+				{button type="link" icon="division" class="gusapi-button"
+					data_type=Utils::GUS_REGON_API_SEARCH_TYPE_RBE
+					tip="Click here to autocomplete company data from GUS REGON database"}
 			</td>
 		</tr>
 		<tr>
@@ -238,11 +250,23 @@
 				{icon name="mail"}
 			</td>
 			<td class="nobr">
-				<strong>{trans("Email:")}</strong>
+				<strong>{trans("Email")}</strong>
 			</td>
 			<td>
 				<input type="text" value="{$division.email}" name="division[email]" size="40"
 					{tip text="Enter e-mail address (optional)" trigger="email"}>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="mail"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Service Email")}</strong>
+			</td>
+			<td>
+				<input type="text" value="{$division.serviceemail}" name="division[serviceemail]" size="40"
+					{tip text="Enter e-mail address (optional)" trigger="serviceemail"}>
 			</td>
 		</tr>
 		<tr>
@@ -413,20 +437,6 @@
 			</td>
 		</tr>
 		<tr>
-			<td>
-				{icon name="url"}
-			</td>
-			<td>
-				<strong>{trans("KSeF token")}</strong>
-			</td>
-			<td>
-				<input type="text" name="division[kseftoken]" value="{$division.kseftoken}"
-					size="60"
-					{literal}pattern="([0-9a-fA-F]{64})?"{/literal}
-					{tip id="kseftoken"}>
-			</td>
-		</tr>
-		<tr>
 			<td colspan="3" class="lms-ui-box-buttons">
 				{button type="submit" icon="save" label="Submit"}
 				{button type="link-button" icon="cancel" label="Cancel" href="?m=divisionlist"}
@@ -451,6 +461,71 @@
 		}).change();
 
 		//check_teryt(['location', 'location_city'], true);
+
+		$('.gusapi-button').click(function() {
+			var identifier = $(this).siblings('input[type="text"]').val().replace(/-/g, '');
+			if (!identifier.length) {
+				return;
+			}
+			var that = this;
+			GusApiGetCompanyDetails(
+				$(this).attr('data-type'),
+				identifier,
+				function(data) {
+					var propertyToSelectors = {
+						lastname: [ '[name="division[shortname]"]', '[name="division[name]"]' ],
+						name: [ '[name="division[shortname]"]', '[name="division[shortname]"]' ],
+						rbe: '[name="division[rbe]"]',
+						rbename: '[name="division[rbename]"]',
+						regon: '[name="division[regon]"]',
+						ten: '[name="division[ten]"]',
+						addresses: [
+							{
+								location_state: '[name="division[location_state]"]',
+								location_state_name: '[name="division[location_state_name]"]',
+								location_city: '[name="division[location_city]"]',
+								location_city_name: '[name="division[location_city_name]"]',
+								location_street: '[name="division[location_street]"]',
+								location_street_name: '[name="division[location_street_name]"]',
+								location_house: '[name="division[location_house]"]',
+								location_flat: '[name="division[location_flat]"]',
+								location_zip: '[name="division[location_zip]"]',
+								location_postoffice: '[name="division[location_postoffice]"]',
+								teryt: '[name="division[teryt]"]'
+							},
+							{
+								location_state: '[name="division[office_address][location_state]"]',
+								location_state_name: '[name="division[office_address][location_state_name]"]',
+								location_city: '[name="division[office_address][location_city]"]',
+								location_city_name: '[name="division[office_address][location_city_name]"]',
+								location_street: '[name="division[office_address][location_street]"]',
+								location_street_name: '[name="division[office_address][location_street_name]"]',
+								location_house: '[name="division[office_address][location_house]"]',
+								location_flat: '[name="division[office_address][location_flat]"]',
+								location_zip: '[name="division[office_address][location_zip]"]',
+								location_postoffice: '[name="division[office_address][location_postoffice]"]',
+								teryt: '[name="division[office_address][teryt]"]'
+							}
+						]
+					}
+
+					if (data.length > 1) {
+						customerCompanySelectionDialog(data, that).done(function(company) {
+							GusApiFinished(
+								propertyToSelectors,
+								company
+							);
+						});
+					} else {
+						GusApiFinished(
+							propertyToSelectors,
+							data[0]
+						);
+					}
+				}
+			);
+			return false;
+		});
 	});
 
 </script>

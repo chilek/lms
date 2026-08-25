@@ -163,6 +163,20 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
         )
     );
 
+    $foreign_entities = Utils::getForeignEntities();
+    if (!empty($netdevconnected) && !empty($foreign_entities)) {
+        foreach ($netdevconnected as &$netdevconn) {
+            if (!empty($netdevconn['foreignentity'])) {
+                if (!empty($foreign_entities[$netdevconn['foreignentity']])) {
+                    $foreign_entity = $foreign_entities[$netdevconn['foreignentity']];
+                    $netdevconn['foreignentity'] = $foreign_entity['name'] . (empty($foreign_entity['type']) ? '' : ', ' . trans('TEN') . ' ' . $foreign_entity['id']);
+                }
+            }
+        }
+        unset($netdevconn);
+    }
+    $SMARTY->assign('foreign_entities', $foreign_entities);
+
     $hook_data = $LMS->executeHook(
         'netdevinfo_before_display',
         array(

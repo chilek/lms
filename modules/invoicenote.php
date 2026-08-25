@@ -128,6 +128,11 @@ if (isset($_GET['id']) && $action == 'init') {
     $cnote['use_current_division'] = true;
 
     $cnote['recipient_address_id'] = $invoice['recipient_address_id'];
+    $cnote['recipient_ten'] = $invoice['recipient_ten'];
+    $cnote['recipient_type'] = $invoice['recipient_type'];
+    $cnote['recipient_address_id2'] = $invoice['recipient_address_id2'];
+    $cnote['recipient_ten2'] = $invoice['recipient_ten2'];
+    $cnote['recipient_type2'] = $invoice['recipient_type2'];
 
     //old header values
     $cnote['oldheader'] = array(
@@ -137,6 +142,11 @@ if (isset($_GET['id']) && $action == 'init') {
         'paytype' => $cnote['paytype'],
         'deadline' => date("Y/m/d", intval($cnote['deadline'])),
         'recipient_address_id' => $cnote['recipient_address_id'],
+        'recipient_ten' => $cnote['recipient_ten'],
+        'recipient_type' => $cnote['recipient_type'],
+        'recipient_address_id2' => $cnote['recipient_address_id2'],
+        'recipient_ten2' => $cnote['recipient_ten2'],
+        'recipient_type2' => $cnote['recipient_type2'],
         'use_current_customer_data' => isset($cnote['use_current_customer_data']),
         'reason' => $cnote['reason'],
     );
@@ -241,9 +251,10 @@ switch ($action) {
                 if (checkdate($smonth, $sday, $syear)) {
                     $sdate = mktime(23, 59, 59, $smonth, $sday, $syear);
                     $cnote['sdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $smonth, $sday, $syear);
-                    if ($sdate < $invoice['sdate']) {
-                        $error['sdate'] = trans('Credit note sale date cannot be earlier than invoice sale date!');
-                    }
+                    // sale date in correction invoice can be earlier than one in corrected invoice!
+                    //if ($sdate < $invoice['sdate']) {
+                    //    $error['sdate'] = trans('Credit note sale date cannot be earlier than invoice sale date!');
+                    //}
                 } else {
                     $error['sdate'] = trans('Incorrect date format! Using current date.');
                     $cnote['sdate'] = $currtime;
@@ -302,6 +313,11 @@ switch ($action) {
             'paytype' => $cnote['paytype'],
             'deadline' => date("Y/m/d", $cnote['deadline']),
             'recipient_address_id' => $cnote['recipient_address_id'],
+            'recipient_ten' => $cnote['recipient_ten'],
+            'recipient_type' => $cnote['recipient_type'],
+            'recipient_address_id2' => $cnote['recipient_address_id2'],
+            'recipient_ten2' => $cnote['recipient_ten2'],
+            'recipient_type2' => $cnote['recipient_type2'],
             'use_current_customer_data' => isset($cnote['use_current_customer_data']),
             'reason' => $cnote['reason'],
         );
@@ -731,6 +747,8 @@ switch ($action) {
         }
 
         $DB->BeginTrans();
+
+/*
         $tables = array('documents', 'numberplans', 'divisions', 'vdivisions',
             'addresses', 'customers', 'customer_addresses', 'logtransactions');
         if (ConfigHelper::getConfig('database.type') != 'postgres') {
@@ -740,7 +758,11 @@ switch ($action) {
         if ($SYSLOG) {
             $tables = array_merge($tables, array('logmessages', 'logmessagekeys', 'logmessagedata'));
         }
+
         $DB->LockTables($tables);
+*/
+
+        $DB->LockByHandle(LOCK_INVOICE_NOTE_NUMBER);
 
         if (!isset($cnote['number']) || !$cnote['number']) {
             $cnote['number'] = $LMS->GetNewDocumentNumber(array(
@@ -784,9 +806,33 @@ switch ($action) {
         ));
 
         if (!empty($cnote['recipient_address_id']) && $cnote['recipient_address_id'] != -1) {
+            if ($invoice['recipient_address_id'] == $cnote['recipient_address_id']) {
+                $cnote['recipient_ten'] = $invoice['recipient_ten'];
+                $cnote['recipient_type'] = $invoice['recipient_type'];
+            } else {
+                $cnote['recipient_ten'] = $LMS->getRecipientTen($cnote['recipient_address_id']);
+                $cnote['recipient_type'] = $LMS->getEntityType($cnote['recipient_address_id']);
+            }
             $cnote['recipient_address_id'] = $LMS->CopyAddress($cnote['recipient_address_id']);
         } else {
             $cnote['recipient_address_id'] = null;
+            $cnote['recipient_ten'] = null;
+            $cnote['recipient_type'] = null;
+        }
+
+        if (!empty($cnote['recipient_address_id2']) && $cnote['recipient_address_id2'] != -1) {
+            if ($invoice['recipient_address_id2'] == $cnote['recipient_address_id2']) {
+                $cnote['recipient_ten2'] = $invoice['recipient_ten2'];
+                $cnote['recipient_type2'] = $invoice['recipient_type2'];
+            } else {
+                $cnote['recipient_ten2'] = $LMS->getRecipientTen($cnote['recipient_address_id2']);
+                $cnote['recipient_type2'] = $LMS->getEntityType($cnote['recipient_address_id2']);
+            }
+            $cnote['recipient_address_id2'] = $LMS->CopyAddress($cnote['recipient_address_id2']);
+        } else {
+            $cnote['recipient_address_id2'] = null;
+            $cnote['recipient_ten2'] = null;
+            $cnote['recipient_type2'] = null;
         }
 
         if ($use_current_customer_data) {
@@ -851,6 +897,11 @@ switch ($action) {
             'div_inv_cplace' => $division['inv_cplace'] ?: '',
             'fullnumber' => $fullnumber,
             'recipient_address_id' => $cnote['recipient_address_id'],
+            'recipient_ten' => $cnote['recipient_ten'],
+            'recipient_type' => $cnote['recipient_type'],
+            'recipient_address_id2' => $cnote['recipient_address_id2'],
+            'recipient_ten2' => $cnote['recipient_ten2'],
+            'recipient_type2' => $cnote['recipient_type2'],
             'post_address_id' => $invoice['post_address_id'],
             'currency' => $cnote['currency'],
             'currencyvalue' => $cnote['currencyvalue'],
@@ -860,9 +911,11 @@ switch ($action) {
 				userid, customerid, name, address, ten, ssn, zip, city, countryid, reference, reason, divisionid,
 				div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 				div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
-				recipient_address_id, post_address_id, currency, currencyvalue, memo)
+                recipient_address_id, recipient_ten, recipient_type,
+                recipient_address_id2, recipient_ten2, recipient_type2,
+                post_address_id, currency, currencyvalue, memo)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-					?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+					?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
         $id = $DB->GetOne(
             'SELECT id FROM documents WHERE number = ? AND cdate = ? AND type = ?',
@@ -880,7 +933,9 @@ switch ($action) {
             );
         }
 
-        $DB->UnLockTables();
+//        $DB->UnLockTables();
+
+        $DB->UnLockByHandle(LOCK_INVOICE_NOTE_NUMBER);
 
         foreach ($contents as $idx => $item) {
             $item['valuebrutto'] = str_replace(',', '.', $item['valuebrutto']);
@@ -984,6 +1039,8 @@ $contents = $hook_data['contents'];
 $invoice = $hook_data['invoice'];
 
 $addresses = $LMS->getCustomerAddresses($invoice['customerid']);
+$addresses2 = $addresses;
+
 if (isset($invoice['recipient_address'])) {
     $addresses = array_replace(
         array($invoice['recipient_address']['address_id'] => $invoice['recipient_address']),
@@ -991,6 +1048,14 @@ if (isset($invoice['recipient_address'])) {
     );
 }
 $SMARTY->assign('addresses', $addresses);
+
+if (isset($invoice['recipient_address2'])) {
+    $addresses2 = array_replace(
+        array($invoice['recipient_address2']['address_id'] => $invoice['recipient_address2']),
+        $addresses2
+    );
+}
+$SMARTY->assign('addresses2', $addresses2);
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);

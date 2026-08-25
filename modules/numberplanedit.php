@@ -40,7 +40,7 @@ function getUsers($alldivisions, $selecteddivisions)
     }
 
     $users = $LMS->GetUsers(array(
-        'divisions' => implode(',', array_keys($divisions)),
+        'divisions' => array_keys($divisions),
         'order' => 'rname,asc',
     ));
     if (empty($users)) {
@@ -58,7 +58,16 @@ if (isset($_GET['op']) && $_GET['op'] == 'updateusers') {
     )));
 }
 
-$numberplan = $LMS->getNumberPlan($_GET['id']);
+if (empty($_GET['id'])) {
+    access_denied();
+}
+
+$numberPlanId = intval($_GET['id']);
+if (empty($numberPlanId)) {
+    access_denied();
+}
+
+$numberplan = $LMS->getNumberPlan($numberPlanId);
 if (empty($numberplan)) {
     access_denied();
 }

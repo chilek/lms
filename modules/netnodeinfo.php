@@ -96,5 +96,10 @@ $pagelimit = ConfigHelper::getConfig(
 $SMARTY->assign('start', $start);
 $SMARTY->assign('pagelimit', $pagelimit);
 
+$foreign_entities = Utils::getForeignEntities();
+if (!empty($result['coowner']) && !empty($foreign_entities[$result['coowner']])) {
+    $SMARTY->assign('foreign_entity', $foreign_entities[$result['coowner']]);
+}
+
 $SMARTY->assign('netnodeinfo_sortable_order', $SESSION->get_persistent_setting('netnodeinfo-sortable-order'));
 $SMARTY->display('netnode/netnodeinfo.html');

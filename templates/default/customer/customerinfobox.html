@@ -101,6 +101,16 @@
 		border-top: none !important;
 	}
 
+	#consent-caption td {
+		display: flex;
+		align-items: flex-start;
+	}
+
+	#consent-caption td > * {
+		margin-left: 0.5em;
+		largin-right: 0.5em;
+	}
+
 </style>
 
 <table class="lmsbox{if $customerpanel} lms-ui-tab-container lms-ui-sortable{/if}" id="customerinfobox"{if $customerpanel} data-label="{trans("Customer Info")}"{/if}>
@@ -317,6 +327,8 @@
 															{$v.location|default:""|escape}
 														{/if}
 													</span>
+													{button type="link" class="lms-ui-button-clipboard" icon="clipboard"
+														clipboard="{$v.location|default:""|escape}" tip="Copy to clipboard"}
 													{$gps_location_url_replaced = str_replace(
 														array(
 															'%location',
@@ -387,6 +399,7 @@
 												<td>
 													<span title="{trans('postal address')}">
 														{if $v.location_name}{$v.location_name|escape}, {/if}
+														{if !empty($v.location_ten)}{trans("TEN")} {$v.location_ten|escape}, {/if}
 														{if $v.teryt}
 															{if $show_numeric_identifiers}
 																{capture assign="teryt_comment"}{strip}
@@ -404,6 +417,8 @@
 															{$v.location|escape}
 														{/if}
 													</span>
+													{button type="link" class="lms-ui-button-clipboard" icon="clipboard"
+														clipboard="{$v.location|default:""|escape}" tip="Copy to clipboard"}
 													{$gps_location_url_replaced = str_replace(
 														array(
 															'%location',
@@ -453,12 +468,12 @@
 														streetid=$v.location_street
 														building_num=$v.location_house
 													}
-                                                                                                        {show_on_map_button
-                                                                                                                type='sidusis'
-                                                                                                                cityid=$v.location_city
-                                                                                                                streetid=$v.location_street
-                                                                                                                building_num=$v.location_house
-                                                                                                        }
+													{show_on_map_button
+														type='sidusis'
+														cityid=$v.location_city
+														streetid=$v.location_street
+														building_num=$v.location_house
+													}
 												</td>
 											</tr>
 											{break}
@@ -482,6 +497,7 @@
 												<td>
 													<span title="{$title}">
 														{if $v.location_name}{$v.location_name|escape}, {/if}
+														{if !empty($v.location_ten)}{trans("TEN")} {$v.location_ten|escape}, {/if}
 														{if $v.teryt}
 															{if $show_numeric_identifiers}
 																{capture assign="teryt_comment"}{strip}
@@ -499,6 +515,8 @@
 															{$v.location|default:""|escape}
 														{/if}
 													</span>
+													{button type="link" class="lms-ui-button-clipboard" icon="clipboard"
+														clipboard="{$v.location|default:""|escape}" tip="Copy to clipboard"}
 													{$gps_location_url_replaced = str_replace(
 														array(
 															'%location',
@@ -574,10 +592,12 @@
 															<tr{if ($contact.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED} class="blend"{/if}>
 																<td class="customer-contact">
 																	<div>
-																		{if isset($properties.formatter)}{call_user_func($properties['formatter'], $contact)}{else}{$contact.contact|escape}{/if}
-																		{if $type == 'email' || $type == 'phone'}
-																			{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_text=$contact.contact}
+																		{if isset($properties.formatter)}
+																			{$text = call_user_func($properties.formatter, $contact)}
+																		{else}
+																			{$text = $contact.contact|escape}
 																		{/if}
+																		{contact type=$contact.type content=$text text=$contact.contact clipboard_button=true qrcode_button=true}
 																		{if $contact.typestr}[{$contact.typestr}]{/if}
 																		{if $contact.name} ({$contact.name|trunescape:40}){/if}
 																	</div>
@@ -739,11 +759,10 @@
 										</td>
 										<td>
 											<table cellpadding="2" class="lms-ui-separated-rows">
-												<tr>
-													<td>
+												<tr id="consent-caption">
+													<td colspan="2">
 														<strong>{trans("Consents")}</strong>
-													</td>
-													<td>
+														{button type="link" icon="less" icon_class="consent-view-toggle-icon" id="consent-view-toggle-button"}
 													</td>
 												</tr>
 												{block name="customerinfobox-options"}
@@ -760,7 +779,7 @@
 															</tr>
 														{/if}
 														{if $customer_consent_group_id && $customer_consent_group_id != $current_customer_consent_group_id}
-															<tr class="consent-group-row">
+															<tr class="consent-group-row consent-row">
 																<td colspan="2">
 																	<fieldset class="consent-group">
 																		<legend>
@@ -768,7 +787,7 @@
 																		</legend>
 																		<table class="lms-ui-separated-rows">
 														{/if}
-														<tr>
+														<tr class="consent-row">
 															<td>
 																{if $consent.type == 'selection' && isset($customerinfo.consents[$type]) && isset($consent.values[$customerinfo.consents[$type]].name)}
 																	{t a=$consent.label b=$consent.values[$customerinfo.consents[$type]].label}<!billing-type>$a ($b){/t}
@@ -924,7 +943,7 @@
 													{icon name="money"}
 												</td>
 												<td>
-													<strong>{trans("Due balance")}</strong>
+													<strong>{trans("Balance excluding current receivables")}</strong>
 												</td>
 												<td>
 													{if $customerinfo.expiredbalance < 0}
@@ -1049,6 +1068,14 @@
 		}
 	{/if}
 
+	function consentViewToggle() {
+		var iconElem = $('.consent-view-toggle-icon');
+		iconElem.toggleClass('lms-ui-icon-less lms-ui-icon-more');
+		var consentViewVisible = !iconElem.is('.lms-ui-icon-more');
+		setStorageItem('consent-view-visible', consentViewVisible ? 1 : 0, 'local');
+		iconElem.closest('.customer-options').find('.consent-row').toggle(consentViewVisible);
+	}
+
 	$(function() {
 		{if ConfigHelper::checkPrivilege('customer_management')}
 			$('#delete-button').click(function() {
@@ -1136,6 +1163,16 @@
 
 			});
 		});
+
+		$('#consent-view-toggle-button').click(consentViewToggle);
 	});
+
+	var consentViewVisible = getStorageItem('consent-view-visible', 'local');
+	if (consentViewVisible) {
+		consentViewVisible = parseInt(consentViewVisible);
+		if (!consentViewVisible) {
+			consentViewToggle();
+		}
+	}
 
 </script>

@@ -367,6 +367,16 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
         return true;
     }
 
+    public function _driver_lockbyhandle($handle): mixed
+    {
+        return $this->Execute('SELECT pg_advisory_xact_lock(' . $handle . ')');
+    }
+
+    public function _driver_unlockbyhandle($handle): mixed
+    {
+        return true;
+    }
+
     /**
      * Returns last inserted element id.
      *
@@ -558,7 +568,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
             case LMSDB::RESOURCE_TYPE_TRIGGER:
                 return $this->GetOne(
                     'SELECT COUNT(*) FROM information_schema.triggers
-                    WHERE trigger_calalog = ?
+                    WHERE trigger_catalog = ?
                         AND trigger_name = ?',
                     array($this->_dbname, $name)
                 ) > 0;

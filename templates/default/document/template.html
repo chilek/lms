@@ -8,65 +8,45 @@
 		{if isset($margin_top)}
 			{$margin_top = intval($margin_top)}
 		{else}
-			{$margin_top = 60}
+			{$margin_top = "2em"}
 		{/if}
 		{if isset($margin_bottom)}
 			{$margin_bottom = intval($margin_bottom)}
 		{else}
-			{$margin_bottom = 30}
+			{$margin_bottom = "2em"}
 		{/if}
 	{/if}
+	{if empty($type) || $type != "dots"}
+		{$type = "borders"}
+	{/if}
 	{if !empty($label)}
-		{$left_label = $label}
+		{$right_label = $label}
 	{/if}
-	<table class="signature-box" style="margin-top: {$margin_top}px; margin-bottom: {$margin_bottom}px;">
-		<colgroup>
-			{if !empty($left_label) && !empty($right_label)}
-				<col style="width: 50%;">
-				<col style="width: 50%;">
-			{else}
-				<col style="width: 100%;">
-			{/if}
-		</colgroup>
-		<tr>
+	<div class="signature-box {$type}" style="margin-top: {$margin_top}; margin-bottom: {$margin_bottom};">
+		<div class="signature-box-field{if empty($left_label)} signature-box-field-hidden{/if}">
 			{if !empty($left_label)}
-				<td>
-					<div class="signature-box-field">
-						<span class="signature-box-field-dots">{strip}
-							{$repeat = $left_label|strlen}
-							{"&hellip;"|str_repeat:$repeat}
-						{/strip}</span>
-						<span class="signature-box-field-label">{strip}
-							{$left_label}
-						{/strip}</span>
-					</div>
-				</td>
+				<span class="signature-box-field-label">{strip}
+					{if $type == "dots"}
+						{str_repeat("&hellip;", 15)}
+						<br>
+					{/if}
+					{$left_label}
+				{/strip}</span>
 			{/if}
+		</div>
+		<div class="signature-box-field{if empty($right_label)} signature-box-field-hidden{/if}">
 			{if !empty($right_label)}
-				<td>
-					<div class="signature-box-field">
-						<span class="signature-box-field-dots">{strip}
-							{$repeat = $right_label|strlen}
-							{"&hellip;"|str_repeat:$repeat}
-						{/strip}</span>
-						<span class="signature-box-field-label">{strip}
-							{$right_label}
-						{/strip}</span>
-					</div>
-				</td>
+				<span class="signature-box-field-label">{strip}
+					{if $type == "dots"}
+						{str_repeat("&hellip;", 15)}
+						<br>
+					{/if}
+					{$right_label}
+				{/strip}</span>
 			{/if}
-		</tr>
-	</table>
+		</div>
+	</div>
 {/function}
-{function date}{strip}
-	{if isset($date)}
-		{$date|date_format:$date_format}
-	{elseif isset($value)}
-		{$value|date_format:$date_format}
-	{else}
-		{$smarty.now|date_format:$date_format}
-	{/if}
-{/strip}{/function}
 <!DOCTYPE html>
 <html>
 	<head>
@@ -104,16 +84,18 @@
 				margin: 1cm;
 			}
 
+			body {
+				font-size: 10pt;
+			}
+
 			.logo-project {
 				margin: 0 auto;
 				width: 600px;
 				height: 60px;
 			}
 
-			.signature-table {
-				width: 100%;
-				border: 0;
-				margin-top: 3em;
+			.company-logo {
+				margin-bottom: 0.5em !important;
 			}
 
 			ul,ol {
@@ -121,7 +103,6 @@
 			}
 
 			p {
-				font-size: 8pt;
 				text-align: justify;
 				margin: 4px 0 0 0;
 			}
@@ -200,31 +181,241 @@
 				white-space: nowrap;
 			}
 
-			.signature-box {
-				width: 100%;
+			.list-paragraphs {
+				padding-inline-start: 0;
+				list-style: none;
+				counter-reset: paragraph;
+				padding-left: 0;
 			}
 
-			.signature-box td {
-				width: 50%;
-				border: 0;
+			.list-paragraphs > li {
+				list-style-type: none;
+				counter-increment: paragraph;
+			}
+
+			.paragraph::before {
+				content: "\00A7\00A0" counter(paragraph) "\00A0";
+				min-width: 2ch;
+			}
+
+			.list-paragraphs.dots .paragraph::before {
+				content: "\00A7\00A0" counter(paragraph) ".\00A0";
+			}
+
+			.paragraph-container {
 				text-align: center;
-				vertical-align: top;
+				font-weight: bold;
+				font-size: 130%;
+				margin-top: 1em;
+				margin-bottom: 1em;
+			}
+
+			.list-sections-with-paragraphs {
+				padding-inline-start: 0;
+				list-style: none;
+				counter-reset: section;
+				padding-left: 0;
+			}
+
+			.list-sections-with-paragraphs > li:first-child {
+				counter-reset: paragraph;
+			}
+
+			.list-sections-with-paragraphs > li {
+				list-style-type: none;
+			}
+
+			.section::before {
+				content: counter(section, upper-roman) "\00A0";
+				min-width: 2ch;
+			}
+
+			.list-sections-with-paragraphs.dots .section::before {
+				content: counter(section, upper-roman) ".\00A0";
+				min-width: 2ch;
+			}
+
+			.section-container {
+				text-align: center;
+				font-weight: bold;
+				font-size: 130%;
+				margin-top: 1em;
+				margin-bottom: 0.2em;
+				counter-increment: section;
+			}
+
+			.list-sections-with-paragraphs .paragraph-container {
+				list-style-type: none;
+				counter-increment: paragraph;
+				margin-top: 0.2em;
+			}
+
+			.list-numbers {
+				padding-inline-start: 2em;
+				counter-reset: number;
+			}
+
+			.list-numbers > li {
+				counter-increment: number;
+				padding-inline-start: 0.4em;
+			}
+
+			.list-numbers > li::marker {
+				content: counter(number, decimal) ".";
+			}
+
+			.list-numbers .list-numbers {
+				list-style: none;
+				padding-inline-start: 2em;
+				counter-reset: number-number;
+			}
+
+			.list-numbers .list-numbers > li {
+				counter-increment: number-number;
+				padding-inline-start: 0.4em;
+			}
+
+			.list-numbers .list-numbers > li::marker {
+				content: counter(number, decimal) "." counter(number-number, decimal) ".";
+			}
+
+			.list-hyphens {
+				padding-inline-start: 1.1em;
+				list-style: none;
+			}
+
+			.list-hyphens > li::marker {
+				content: "–\00A0";
+			}
+
+			.list-disc {
+				padding-inline-start: 1.1rem;
+				list-style: none;
+				margin-block-start: 0.3rem;
+				margin-block-end: 0.3rem;
+			}
+
+			.list-disc > li {
+				padding-inline-start: 0.4rem;
+			}
+			.list-disc > li::marker {
+				content: "\25AA\00A0";
+			}
+
+			.list-paragraph-dot-numbers {
+				padding-inline-start: 1.5em;
+				list-style: none;
+				counter-reset: paragraph-dot-numbers;
+			}
+
+			.list-paragraph-dot-numbers > li {
+				counter-increment: paragraph-dot-numbers;
+				padding-inline-start: 0.4em;
+			}
+
+			.list-paragraph-dot-numbers > li::marker {
+				content: counter(paragraph) "." counter(paragraph-dot-numbers) ".";
+			}
+
+			.list-roman-numbers {
+				padding-inline-start: 1.5em;
+				list-style: none;
+				counter-reset: roman-numbers;
+			}
+
+			.list-roman-numbers > li {
+				counter-increment: roman-numbers;
+			}
+
+			.list-roman-numbers > li::marker {
+				content: counter(roman-numbers, upper-roman) ".\00A0";
+			}
+
+			.list-roman-numbers.upper > li::marker {
+				content: counter(roman-numbers, upper-roman) ".\00A0";
+			}
+
+			.list-roman-numbers.upper.brackets > li::marker {
+				content: counter(roman-numbers, upper-roman) ")\00A0";
+			}
+
+			.list-roman-numbers.brackets > li::marker {
+				content: counter(roman-numbers, upper-roman) ")\00A0";
+			}
+
+			.list-roman-numbers.lower > li::marker {
+				content: counter(roman-numbers, lower-roman) ".\00A0";
+			}
+
+			.list-roman-numbers.lower.brackets > li::marker {
+				content: counter(roman-numbers, lower-roman) ")\00A0";
+			}
+
+			.list-letters {
+				padding-inline-start: 1.5em;
+				list-style: none;
+				counter-reset: alpha;
+			}
+
+			.list-letters > li {
+				counter-increment: alpha;
+			}
+
+			.list-letters:not(.explicit) > li::marker {
+				content: counter(alpha, lower-alpha) ")\00A0";
+			}
+
+			.list-letters.explicit {
+				padding-inline-start: 0;
+			}
+
+			.list-letters.explicit > li {
+				margin-top: 0.2rem;
+				margin-bottom: 0.4rem;
+			}
+
+			.list-letters.explicit > li > .list-item-title {
+				font-weight: bold;
+				text-decoration: underline;
+				margin-top: 0.6rem;
+				margin-bottom: 0.6rem;
+			}
+
+			.list-letters.explicit > li > .list-item-content::before {
+				content: counter(alpha, lower-alpha) ")\00A0";
+			}
+
+			.list-letters.explicit > li > .list-item-content > * {
+				margin-top: 0.5rem;
+				margin-bottom: 0.5rem;
+			}
+
+			.signature-box {
+				width: 100%;
+				display: flex;
+				justify-content: space-around;
+				break-inside: avoid;
 			}
 
 			.signature-box-field {
 				display: flex;
-				flex-direction: column;
-				align-items: center;
+				min-width: 25em;
+				height: 7.5em;
+				justify-content: center;
+				align-items: flex-end;
+				padding-bottom: 0.7em;
 			}
 
-			.signature-box-field-dots {
-				max-width: 40vw;
-				overflow: hidden;
+			.signature-box.borders > .signature-box-field {
+				border: 1px solid black;
+			}
+
+			.signature-box.borders > .signature-box-field.signature-box-field-hidden {
+				border: none;
 			}
 
 			.signature-box-field-label {
-				max-width: 40vw;
-				white-space: normal;
+				text-align: center;
 			}
 
 			{block name="style"}{/block}
@@ -240,8 +431,6 @@
 							<p style="text-align:center">
 								{if $company_logo}
 									{image file=$company_logo width=$company_logo_width class="company-logo logo-company"}
-								{elseif isset($company_logo)}
-									Brak zdefiniowanego logo firmy w szablonie umowy!
 								{/if}
 								{if $document.eu || !empty($document.project)}
 									{if $project_logo}

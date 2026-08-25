@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+use \Lms\KSeF\KSeF;
+
 /**
  * LMSFinanceManager
  *
@@ -127,7 +129,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $assignments = $this->db->GetAll(
             'SELECT a.id AS id, a.tariffid, a.customerid, a.period AS periodvalue, a.backwardperiod, a.note,
-            a.at, a.suspended, a.invoice, a.settlement, a.recipient_address_id,
+            a.at, a.suspended, a.invoice, a.settlement,
+            a.recipient_address_id,
+            a.recipient_address_id2,
             a.datefrom, a.dateto, a.pdiscount,
             a.vdiscount AS unitary_vdiscount,
             (a.vdiscount * a.count) AS vdiscount,
@@ -233,7 +237,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $row['name'] = $this->getAssignmentPresentation($row);
                 $lms = LMS::getInstance();
                 $recipient_address = !empty($row['recipient_address_id']) ? $lms->GetAddress($row['recipient_address_id']) : null;
+                $recipient_address2 = !empty($row['recipient_address_id2']) ? $lms->GetAddress($row['recipient_address_id2']) : null;
                 $row['recipient_location'] = $recipient_address ? $recipient_address['location'] : null;
+                $row['recipient_location2'] = $recipient_address2 ? $recipient_address2['location'] : null;
 
                 $row['docnumber'] = docnumber(array(
                     'number' => $row['docnumber'],
@@ -482,6 +488,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 ConfigHelper::checkConfig('phpui.promotion_use_discounts')
             );
 
+            $current_month = date('m', $data['cdate']);
+
             foreach ($data_tariff as $idx => $dt) {
                 [$value, $period] = explode(':', $dt);
 
@@ -531,14 +539,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             }
                             $at = $datefrom;
                         } elseif (($data['at'] === 0 && $start_day >= date('j', mktime(12, 0, 0, $start_month + 1, 0, $start_year)))
-                            || ($data['at'] > 0 && $start_day >= $data['at'])) {
+                            || ($data['at'] > 0 && $start_day >= $data['at'] && $start_month == $current_month)) {
                             $datefrom = mktime(0, 0, 0, $start_month + ($data['at'] === 0 ? 2 : 1), $data['at'], $start_year);
                             $at = $datefrom;
                         } elseif ($data['at'] === 0) {
                             $datefrom = mktime(0, 0, 0, $start_month + 1, 0, $start_year);
                             $at = $datefrom;
                         } else {
-                            $at = mktime(0, 0, 0, $start_month + ($start_day >= $data['at'] ? 1 : 0), $data['at'], $start_year);
+                            $at = mktime(0, 0, 0, $start_month + ($start_day >= $data['at'] && $start_month == $current_month ? 1 : 0), $data['at'], $start_year);
                         }
                         $_datefrom = $orig_datefrom;
 
@@ -854,6 +862,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                     'suspended' => empty($data['suspended']) ? 0 : 1,
                                     SYSLOG::RES_LIAB => null,
                                     'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
+                                    'recipient_address_id2' => $data['recipient_address_id2'] > 0 ? $data['recipient_address_id2'] : null,
                                     'docid' => empty($data['docid']) ? null : $data['docid'],
                                     'promotionschemaid' => $data['schemaid'],
                                     'commited' => $commited,
@@ -966,6 +975,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                 'suspended' => empty($data['suspended']) ? 0 : 1,
                                 SYSLOG::RES_LIAB => null,
                                 'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
+                                'recipient_address_id2' => $data['recipient_address_id2'] > 0 ? $data['recipient_address_id2'] : null,
                                 'docid' => empty($data['docid']) ? null : $data['docid'],
                                 'promotionschemaid' => $data['schemaid'],
                                 'commited' => $commited,
@@ -1021,6 +1031,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         'suspended' => empty($data['suspended']) ? 0 : 1,
                         SYSLOG::RES_LIAB => empty($lid) ? null : $lid,
                         'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
+                        'recipient_address_id2' => $data['recipient_address_id2'] > 0 ? $data['recipient_address_id2'] : null,
                         'docid' => empty($data['docid']) ? null : $data['docid'],
                         'promotionschemaid' => $data['schemaid'],
                         'commited' => $commited,
@@ -1152,6 +1163,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         'suspended' => empty($data['suspended']) ? 0 : 1,
                         SYSLOG::RES_LIAB    => empty($lid) ? null : $lid,
                         'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
+                        'recipient_address_id2' => $data['recipient_address_id2'] > 0 ? $data['recipient_address_id2'] : null,
                         'docid'             => empty($data['docid']) ? null : $data['docid'],
                         'promotionschemaid' => null,
                         'commited'          => $commited,
@@ -1234,6 +1246,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         'suspended'         => empty($data['suspended']) ? 0 : 1,
                         SYSLOG::RES_LIAB    => empty($lid) ? null : $lid,
                         'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
+                        'recipient_address_id2' => $data['recipient_address_id2'] > 0 ? $data['recipient_address_id2'] : null,
                         'docid'             => empty($data['docid']) ? null : $data['docid'],
                         'promotionschemaid' => null,
                         'commited'          => $commited,
@@ -1300,6 +1313,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     'suspended' => empty($data['suspended']) ? 0 : 1,
                     SYSLOG::RES_LIAB => empty($lid) ? null : $lid,
                     'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
+                    'recipient_address_id2' => $data['recipient_address_id2'] > 0 ? $data['recipient_address_id2'] : null,
                     'docid' => empty($data['docid']) ? null : $data['docid'],
                     'promotionschemaid' => null,
                     'commited' => $commited,
@@ -1331,7 +1345,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
                 if (!empty($diff_days)) {
                     $data['datefrom'] = strtotime(intval($diff_days) . ' days', $data['datefrom']);
-                    $data['dateto'] = strtotime(intval($diff_days) . ' days', $data['dateto']);
+                    if (!empty($data['dateto'])) {
+                        $data['dateto'] = strtotime(intval($diff_days) . ' days', $data['dateto']);
+                    }
                 }
             }
 
@@ -1368,9 +1384,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 separatedocument, separateitem,
                 settlement, numberplanid,
                 paytime, paytype, datefrom, dateto, pdiscount, vdiscount, attribute, note,
-                suspended, liabilityid, recipient_address_id,
+                suspended, liabilityid,
+                recipient_address_id,
+                recipient_address_id2,
                 docid, promotionschemaid, commited)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array_values($args)
         );
 
@@ -1390,7 +1408,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             // Use multi-value INSERT query
             $values = array();
             foreach ($args['nodes'] as $nodeid) {
-                $values[] = sprintf('(%d, %d)', $nodeid, $args['assignmentid']);
+                $nodeExists = $this->db->GetOne('SELECT id FROM nodes WHERE id = ?', array($nodeid));
+                if (!empty($nodeExists)) {
+                    $values[] = sprintf('(%d, %d)', $nodeid, $args['assignmentid']);
+                }
+            }
+
+            if (empty($values)) {
+                return;
             }
 
             $this->db->Execute('INSERT INTO nodeassignments (nodeid, assignmentid)
@@ -1416,7 +1441,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             // Use multi-value INSERT query
             $values = array();
             foreach ($args['phones'] as $numberid) {
-                $values[] = sprintf('(%d, %d)', $numberid, $args['assignmentid']);
+                $values[] = sprintf('(%d, %d)', intval($numberid), $args['assignmentid']);
             }
 
             $this->db->Execute('INSERT INTO voip_number_assignments (number_id, assignment_id)
@@ -1598,7 +1623,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             if (empty($a['dateto'])) {
                 $to = 0;
             } elseif (preg_match('/^[0-9]+$/', $a['dateto'])) {
-                $to = strtotime('+ 1 day', $a['dateto']) - 1;
+                $to = strtotime('tomorrow', strtotime('today', $a['dateto'])) - 1;
             } else {
                 $error['dateto'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
             }
@@ -1696,6 +1721,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     } elseif ($a['discount_type'] == 2 && $a['discount'] && $a['value'] - $a['discount'] < 0) {
                         $error['value'] = trans('Value less than discount are not allowed!');
                         $error['discount'] = trans('Value less than discount are not allowed!');
+                    }
+
+                    if (empty($a['taxid'])) {
+                        $error['taxid'] = trans('- no tax rates defined -');
                     }
 
                     if (ConfigHelper::checkConfig('phpui.tax_category_required')
@@ -1932,6 +1961,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function GetTradeDocumentArchiveStats($ids)
     {
+        $ids = Utils::filterIntegers($ids);
+
         $archive_stats = $this->db->GetRow(
             'SELECT SUM(CASE WHEN d.archived = 1 THEN 1 ELSE 0 END) AS archive,
 			SUM(CASE WHEN d.archived = 0 THEN 1 ELSE 0 END) AS current,
@@ -1939,7 +1970,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			SUM(CASE WHEN a.contenttype = ? THEN 1 ELSE 0 END) AS pdf
 		FROM documents d
 		LEFT JOIN documentattachments a ON a.docid = d.id AND a.type = ?
-		WHERE d.id IN (' . implode(',', $ids) . ')',
+		WHERE d.id IN (' . implode(', ', $ids) . ')',
             array('text/html', 'application/pdf', 1)
         );
 
@@ -2114,7 +2145,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     public function GetInvoiceList(array $params)
     {
         extract($params);
-        foreach (array('search', 'cat', 'group', 'numberplan', 'division', 'exclude', 'hideclosed', 'sendtoemail', 'page', 'customer') as $var) {
+        foreach (array('search', 'cat', 'group', 'numberplan', 'division', 'exclude', 'hideclosed', 'sendtoemail', 'ksefstatus', 'page', 'customer') as $var) {
             if (!isset(${$var})) {
                 ${$var} = null;
             }
@@ -2162,7 +2193,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $join_cash = false;
 
-        $where = '';
+        $where = $where2 = '';
 
         if ($search!='' && $cat) {
             switch ($cat) {
@@ -2171,12 +2202,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     break;
                 case 'cdate':
                     $where = ' AND d.cdate >= ' . intval($search) . ' AND d.cdate < ' . strtotime('tomorrow', intval($search));
+                    $where2 = ' AND d.cdate >= ' . intval($search) . ' AND d.cdate < ' . strtotime('tomorrow', intval($search));
                     break;
                 case 'month':
                     $where = ' AND d.cdate >= ' . intval($search) . ' AND d.cdate < ' . strtotime('+1 month', $search);
+                    $where2 = ' AND d.cdate >= ' . intval($search) . ' AND d.cdate < ' . strtotime('+1 month', $search);
                     break;
                 case 'year':
                     $where = ' AND d.cdate >= ' . intval($search) . ' AND d.cdate < ' . strtotime('+1 year', $search);
+                    $where2 = ' AND d.cdate >= ' . intval($search) . ' AND d.cdate < ' . strtotime('+1 year', $search);
                     break;
                 case 'ten':
                     $where = ' AND d.ten = ' . $this->db->Escape($search);
@@ -2210,11 +2244,57 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $numberplan = Utils::filterIntegers($numberplan);
         }
 
+        if (!empty($ksefstatus)) {
+            switch ($ksefstatus) {
+                case 1:
+                    $where .= '
+                        AND d.type IN (' . implode(',', [DOC_INVOICE, DOC_CNOTE]) . ')
+                        AND (
+                            (d.cdate < kc.boundarydate OR kc.boundarydate IS NULL)
+                            OR (
+                                c.type <> ' . CTYPES_COMPANY . '
+                                AND COALESCE(kc.allconsumers, 0) = 0
+                                AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')
+                            )
+                        )';
+                    break;
+                case 2:
+                    $where .= ' AND (d.cdate >= kc.boundarydate OR kc.boundarydate IS NULL)
+                        AND d.type IN (' . implode(',', [DOC_INVOICE, DOC_CNOTE]) . ')
+                        AND kd.status IS NULL
+                        AND (
+                            c.type = ' . CTYPES_COMPANY . '
+                            OR kc.allconsumers = 1
+                            OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')
+                        )';
+                    break;
+                case 3:
+                    $where .= ' AND kd.status = 0';
+                    break;
+                case 4:
+                    $where .= ' AND kd.status IS NOT NULL AND (kd.status < 200 OR kd.status >= 300)';
+                    break;
+                case 5:
+                    $where .= ' AND kd.status = 200';
+                    break;
+            }
+        }
+
         $userid = Auth::GetCurrentUser();
 
         if ($count) {
             return $this->db->GetOne('SELECT COUNT(DISTINCT id) FROM (SELECT d.id
-                FROM documents d'
+                FROM documents d
+                LEFT JOIN (
+                    SELECT
+                        kd.docid,
+                        MAX(kd.id) AS maxid
+                    FROM ksefdocuments kd
+                    GROUP BY kd.docid
+                ) kd2 ON kd2.docid = d.id
+                JOIN customers c ON c.id = d.customerid
+                LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.id = kd2.maxid
+                LEFT JOIN ksefconfig kc ON kc.divisionid = d.divisionid'
                 . ($join_cash ?
                     ' JOIN invoicecontents a ON (a.docid = d.id)
                     LEFT JOIN cash ON cash.docid = d.id AND cash.itemid = a.itemid'
@@ -2262,23 +2342,80 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                    -SUM(cash.value)
 			END) AS value,
 			d.currency, d.currencyvalue,
-			COUNT(a.docid) AS count,
+			COUNT(ic.docid) AS count,
 			i.sendinvoices,
 			(CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type > 0) THEN 1 ELSE 0 END) AS referenced,
-			(CASE WHEN EXISTS (SELECT 1 FROM documents d3 WHERE d3.reference = d.id AND d3.type < 0) THEN 1 ELSE 0 END) AS documentreferenced
-			FROM documents d
-			JOIN vinvoicecontents a ON (a.docid = d.id)'
+			(CASE WHEN EXISTS (SELECT 1 FROM documents d3 WHERE d3.reference = d.id AND d3.type < 0) THEN 1 ELSE 0 END) AS documentreferenced,
+                kd.status AS ksefstatus,
+                kd.statusdescription AS ksefstatusdescription,
+                kd.statusdetails AS ksefstatusdetails,
+                kd.hash AS ksefhash,
+                kd.ksefnumber AS ksefnumber,
+                kc.delay AS ksefdelay,
+                (CASE
+                    WHEN d.cdate >= kc.boundarydate
+                        AND kc.delay > -1
+                        AND ?NOW? - d.cdate >= kc.delay
+                        AND d.type IN (' . implode(',', [DOC_INVOICE, DOC_CNOTE]) . ')
+                        AND (
+                            c.type = ' . CTYPES_COMPANY . '
+                            OR kc.allconsumers = 1
+                            OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')
+                        )
+                    THEN 1
+                    ELSE 0
+                END) AS ksefsubmit,
+                (CASE
+                    WHEN d.cdate >= kc.boundarydate
+                        AND d.type IN (' . implode(',', [DOC_INVOICE, DOC_CNOTE]) . ')
+                        AND (
+                            c.type = ' . CTYPES_COMPANY . '
+                            OR kc.allconsumers = 1
+                            OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ' . CCONSENT_KSEF_INVOICE . ')
+                        )
+                    THEN 1
+                    ELSE 0
+                END) AS ksefsubmission
+            FROM documents d
+            JOIN customers c ON c.id = d.customerid
+            LEFT JOIN (
+                SELECT
+                    kd.docid,
+                    MAX(kd.id) AS maxid
+                FROM ksefdocuments kd
+                GROUP BY kd.docid
+            ) kd2 ON kd2.docid = d.id
+            LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.id = kd2.maxid
+            LEFT JOIN ksefconfig kc ON kc.divisionid = d.divisionid
+            LEFT JOIN invoicecontents ic ON ic.docid = d.id
+            LEFT JOIN (
+                SELECT
+                    ic.grossvalue,
+                    ic.docid,
+                    ic.itemid,
+                    ic.taxid
+                FROM vinvoicecontents ic
+                JOIN documents d ON d.id = ic.docid
+                WHERE d.type = ' . DOC_INVOICE_PRO
+                    . (empty($where2) ? '' : $where2) . '
+            ) a ON a.docid = d.id'
             . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
-            . ' LEFT JOIN cash ON cash.docid = d.id AND a.itemid = cash.itemid
+            . ' LEFT JOIN cash ON cash.docid = d.id AND cash.itemid = ic.itemid
 			LEFT JOIN documents d2 ON d2.reference = d.id
-			LEFT JOIN invoicecontents b ON (d.reference = b.docid AND a.itemid = b.itemid)
 			LEFT JOIN countries ON (countries.id = d.countryid)
 			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
             LEFT JOIN taxes ON a.taxid = taxes.id
 			LEFT JOIN (
-				SELECT DISTINCT c.id AS customerid, 1 AS sendinvoices FROM customeraddressview c
-				JOIN customercontacts cc ON cc.customerid = c.id
-				WHERE invoicenotice = 1 AND cc.type & ' . (CONTACT_INVOICES | CONTACT_DISABLED) . ' = ' . CONTACT_INVOICES . '
+				SELECT
+					ccs.customerid,
+					1 AS sendinvoices
+				FROM customerconsents ccs
+				WHERE ccs.type = ' . CCONSENT_INVOICENOTICE . '
+					AND EXISTS (
+						SELECT 1 FROM customercontacts cc
+						WHERE cc.customerid = ccs.customerid
+							AND (cc.type & ' . (CONTACT_INVOICES | CONTACT_DISABLED) . ') = ' . CONTACT_INVOICES . '
+					)
 			) i ON i.customerid = d.customerid
 			LEFT JOIN (
 			SELECT DISTINCT a.customerid FROM vcustomerassignments a
@@ -2302,8 +2439,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             . (!empty($numberplan) ? ' AND d.numberplanid IN (' . implode(',', $numberplan) . ')' : '')
             . (!empty($division) ? ' AND d.divisionid = ' . intval($division) : '')
             . ' GROUP BY d.id, d2.id, d.number, d.cdate, d.customerid,
-			d.name, d.address, d.zip, d.city, numberplans.template, d.closed, d.type, d.reference, countries.name,
-			d.cancelled, d.published, sendinvoices, d.archived, d.senddate, d.currency, d.currencyvalue '
+                    d.name, d.address, d.zip, d.city, numberplans.template, d.closed, d.type, d.reference, countries.name,
+                    d.cancelled, d.published, sendinvoices, d.archived, d.senddate, d.currency, d.currencyvalue,
+                    kd.status, kd.statusdescription, kd.statusdetails, kd.hash, kd.ksefnumber, kc.delay, kc.allconsumers, kc.boundarydate, c.type '
             . ($having ?? '')
             . $sqlord.' '.$direction
             . (isset($limit) ? ' LIMIT ' . $limit : '')
@@ -2348,9 +2486,23 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
 
         if (!empty($invoice['invoice']['recipient_address_id']) && $invoice['invoice']['recipient_address_id'] > 0) {
+            $invoice['invoice']['recipient_ten'] = $location_manager->getRecipientTen($invoice['invoice']['recipient_address_id']);
+            $invoice['invoice']['recipient_type'] = $location_manager->getEntityType($invoice['invoice']['recipient_address_id']);
             $invoice['invoice']['recipient_address_id'] = $location_manager->CopyAddress($invoice['invoice']['recipient_address_id']);
         } else {
+            $invoice['invoice']['recipient_ten'] = null;
+            $invoice['invoice']['recipient_type'] = null;
             $invoice['invoice']['recipient_address_id'] = null;
+        }
+
+        if (!empty($invoice['invoice']['recipient_address_id2']) && $invoice['invoice']['recipient_address_id2'] > 0) {
+            $invoice['invoice']['recipient_ten2'] = $location_manager->getRecipientTen($invoice['invoice']['recipient_address_id2']);
+            $invoice['invoice']['recipient_type2'] = $location_manager->getEntityType($invoice['invoice']['recipient_address_id2']);
+            $invoice['invoice']['recipient_address_id2'] = $location_manager->CopyAddress($invoice['invoice']['recipient_address_id2']);
+        } else {
+            $invoice['invoice']['recipient_ten2'] = null;
+            $invoice['invoice']['recipient_type2'] = null;
+            $invoice['invoice']['recipient_address_id2'] = null;
         }
 
         $post_address_id = $location_manager->GetCustomerAddress($invoice['customer']['id'], POSTAL_ADDRESS);
@@ -2420,6 +2572,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'fullnumber' => $fullnumber,
             'comment' => $comment,
             'recipient_address_id' => empty($invoice['invoice']['recipient_address_id']) ? null : $invoice['invoice']['recipient_address_id'],
+            'recipient_ten' => empty($invoice['invoice']['recipient_ten']) ? null : $invoice['invoice']['recipient_ten'],
+            'recipient_type' => empty($invoice['invoice']['recipient_ten']) ? null : $invoice['invoice']['recipient_type'],
+            'recipient_address_id2' => empty($invoice['invoice']['recipient_address_id2']) ? null : $invoice['invoice']['recipient_address_id2'],
+            'recipient_ten2' => empty($invoice['invoice']['recipient_ten2']) ? null : $invoice['invoice']['recipient_ten2'],
+            'recipient_type2' => empty($invoice['invoice']['recipient_ten2']) ? null : $invoice['invoice']['recipient_type2'],
             'post_address_id' => empty($invoice['invoice']['post_address_id']) ? null : $invoice['invoice']['post_address_id'],
             'currency' => $invoice['invoice']['currency'] ?? Localisation::getCurrentCurrency(),
             'currencyvalue' => $invoice['invoice']['currencyvalue'] ?? 1.0,
@@ -2433,8 +2590,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			ten, ssn, zip, city, countryid, divisionid,
 			div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 			div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
-			comment, recipient_address_id, post_address_id, currency, currencyvalue, memo, reference)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			comment,
+            recipient_address_id, recipient_ten, recipient_type,
+            recipient_address_id2, recipient_ten2, recipient_type2,
+            post_address_id, currency, currencyvalue, memo, reference)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
         $iid = $this->db->GetLastInsertID('documents');
         if ($this->syslog) {
             unset($args[SYSLOG::RES_USER]);
@@ -2483,7 +2643,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             if ($type != DOC_INVOICE_PRO || ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment')) {
                 $this->AddBalance(array(
                     'time' => $cdate,
-                    'value' => str_replace(',', '.', $item['s_valuebrutto']) * -1,
+                    'value' => floatval(str_replace(',', '.', $item['s_valuebrutto'])) * -1,
                     'currency' => $invoice['invoice']['currency'],
                     'currencyvalue' => $invoice['invoice']['currencyvalue'],
                     'taxid' => $item['taxid'],
@@ -2552,6 +2712,18 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
         $document_manager->DeleteDocumentAddresses($invoiceid);
 
+        $this->db->Execute(
+            'DELETE FROM ksefdocuments
+            WHERE docid = ?
+                AND status >= ?
+                AND status < ?',
+            [
+                $invoiceid,
+                400,
+                500,
+            ]
+        );
+
         $this->db->Execute('DELETE FROM documents WHERE id = ?', array($invoiceid));
     }
 
@@ -2618,22 +2790,66 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.div_bank AS division_bank, d.div_account AS division_account,
 				d.div_inv_header AS division_header, d.div_inv_footer AS division_footer,
 				d.div_inv_author AS division_author, d.div_inv_cplace AS division_cplace,
-				d.recipient_address_id, d.post_address_id,
+				d.recipient_address_id,
+				d.recipient_ten,
+				d.recipient_type,
+				d.recipient_address_id2,
+				d.recipient_ten2,
+				d.recipient_type2,
+				d.post_address_id,
+				a.state AS rec_state, a.state_id AS rec_state_id,
+				a.city as rec_city, a.city_id AS rec_city_id,
+				a.street AS rec_street, a.street_id AS rec_street_id,
+				a.zip as rec_zip, a.postoffice AS rec_postoffice,
+				a.name as rec_name, a.address AS rec_address,
+				a.house AS rec_house, a.flat AS rec_flat, a.country_id AS rec_country_id,
+				a2.state AS rec_state2, a2.state_id AS rec_state_id2,
+				a2.city as rec_city2, a2.city_id AS rec_city_id2,
+				a2.street AS rec_street2, a2.street_id AS rec_street_id2,
+				a2.zip as rec_zip2, a2.postoffice AS rec_postoffice2,
+				a2.name as rec_name2, a2.address AS rec_address2,
+				a2.house AS rec_house2, a2.flat AS rec_flat2, a2.country_id AS rec_country_id2,
 				d.currency, d.currencyvalue, d.memo,
-				d.extid
+				d.extid,
+                c.type AS customertype,
+				(CASE WHEN cc.type IS NULL THEN 0 ELSE 1 END) AS balance_on_documents,
+				(CASE WHEN kc.allconsumers = 1 OR cc2.type IS NOT NULL THEN 1 ELSE 0 END) AS ksef_invoice_consent,
+                    kd.ksefnumber,
+                    kd.status AS ksefstatus,
+                    kd.hash AS ksefhash,
+                    kd.permanent_storage_date AS ksefdate,
+                    kbs.environment AS ksefenvironment,
+                    kc.boundarydate AS ksefboundarydate,
+                    kc.showbalancesummary AS ksefshowbalancesummary,
+                    kc.xmladdallvalues AS ksefxmladdallvalues
 				FROM documents d'
                 . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
-                . ' LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+                . '
+                JOIN customers c ON c.id = d.customerid
+                LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				LEFT JOIN vusers u ON u.id = d.userid
+				LEFT JOIN customerconsents cc ON cc.customerid = d.customerid AND cc.type = ?
+				LEFT JOIN customerconsents cc2 ON cc2.customerid = d.customerid AND cc2.type = ?
+				LEFT JOIN vaddresses a ON d.recipient_address_id = a.id
+				LEFT JOIN vaddresses a2 ON d.recipient_address_id2 = a2.id
+				LEFT JOIN ksefconfig kc ON kc.divisionid = d.divisionid
+				LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
+				LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
 				WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)',
-                array(
+                [
                     DOC_FLAG_SPLIT_PAYMENT,
                     DOC_FLAG_NET_ACCOUNT,
+                    CCONSENT_BALANCE_ON_DOCUMENTS,
+                    CCONSENT_KSEF_INVOICE,
+                    [
+                        200,
+                        0,
+                    ],
                     $invoiceid,
                     DOC_INVOICE,
                     DOC_CNOTE,
-                    DOC_INVOICE_PRO
-                )
+                    DOC_INVOICE_PRO,
+                ]
             );
         } else {
             $result = $this->db->GetRow(
@@ -2653,24 +2869,36 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.div_bank AS division_bank, d.div_account AS division_account,
 				d.div_inv_header AS division_header, d.div_inv_footer AS division_footer,
 				d.div_inv_author AS division_author, d.div_inv_cplace AS division_cplace,
-				d.recipient_address_id, d.post_address_id,
+				d.recipient_address_id,
+				d.recipient_ten,
+				d.recipient_type,
 				a.state AS rec_state, a.state_id AS rec_state_id,
 				a.city as rec_city, a.city_id AS rec_city_id,
 				a.street AS rec_street, a.street_id AS rec_street_id,
 				a.zip as rec_zip, a.postoffice AS rec_postoffice,
 				a.name as rec_name, a.address AS rec_address,
 				a.house AS rec_house, a.flat AS rec_flat, a.country_id AS rec_country_id,
+				d.recipient_address_id2,
+				d.recipient_ten2,
+				d.recipient_type2,
+				a2.state AS rec_state2, a2.state_id AS rec_state_id2,
+				a2.city as rec_city2, a2.city_id AS rec_city_id2,
+				a2.street AS rec_street2, a2.street_id AS rec_street_id2,
+				a2.zip as rec_zip2, a2.postoffice AS rec_postoffice2,
+				a2.name as rec_name2, a2.address AS rec_address2,
+				a2.house AS rec_house2, a2.flat AS rec_flat2, a2.country_id AS rec_country_id2,
+				d.post_address_id,
 				c.pin AS customerpin, c.divisionid AS current_divisionid,
 				c.street, c.building, c.apartment, c.type AS customertype,
-				(CASE WHEN d.post_address_id IS NULL THEN c.post_street ELSE a2.street END) AS post_street,
-				(CASE WHEN d.post_address_id IS NULL THEN c.post_building ELSE a2.house END) AS post_building,
-				(CASE WHEN d.post_address_id IS NULL THEN c.post_apartment ELSE a2.flat END) AS post_apartment,
-				(CASE WHEN d.post_address_id IS NULL THEN c.post_name ELSE a2.name END) AS post_name,
-				(CASE WHEN d.post_address_id IS NULL THEN c.post_address ELSE a2.address END) AS post_address,
-				(CASE WHEN d.post_address_id IS NULL THEN c.post_zip ELSE a2.zip END) AS post_zip,
-				(CASE WHEN d.post_address_id IS NULL THEN c.post_city ELSE a2.city END) AS post_city,
-				(CASE WHEN d.post_address_id IS NULL THEN c.post_postoffice ELSE a2.postoffice END) AS post_postoffice,
-				(CASE WHEN d.post_address_id IS NULL THEN c.post_countryid ELSE a2.country_id END) AS post_countryid,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_street ELSE a3.street END) AS post_street,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_building ELSE a3.house END) AS post_building,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_apartment ELSE a3.flat END) AS post_apartment,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_name ELSE a3.name END) AS post_name,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_address ELSE a3.address END) AS post_address,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_zip ELSE a3.zip END) AS post_zip,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_city ELSE a3.city END) AS post_city,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_postoffice ELSE a3.postoffice END) AS post_postoffice,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_countryid ELSE a3.country_id END) AS post_countryid,
 				cp.name AS post_country,
 				(CASE WHEN d.div_countryid IS NOT NULL
 				    THEN (CASE WHEN d.countryid IS NULL
@@ -2681,65 +2909,132 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				END) AS lang,
 				cdv.ccode AS div_ccode,
 				d.currency, d.currencyvalue, d.memo,
-				d.extid
+				d.extid,
+				(CASE WHEN cc.type IS NULL THEN 0 ELSE 1 END) AS balance_on_documents,
+				(CASE WHEN kc.allconsumers = 1 OR cc2.type IS NOT NULL THEN 1 ELSE 0 END) AS ksef_invoice_consent,
+                    kd.ksefnumber,
+                    kd.status AS ksefstatus,
+                    kd.hash AS ksefhash,
+                    kd.permanent_storage_date AS ksefdate,
+                    kbs.environment AS ksefenvironment,
+                    kc.boundarydate AS ksefboundarydate,
+                    kc.showbalancesummary AS ksefshowbalancesummary,
+                    kc.xmladdallvalues AS ksefxmladdallvalues
 				FROM documents d'
                 . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
                 . ' LEFT JOIN customeraddressview c ON (c.id = d.customerid)
 				LEFT JOIN vusers u ON u.id = d.userid
+				LEFT JOIN customerconsents cc ON cc.customerid = d.customerid AND cc.type = ?
+				LEFT JOIN customerconsents cc2 ON cc2.customerid = d.customerid AND cc2.type = ?
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN countries cdv ON cdv.id = d.div_countryid
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				LEFT JOIN vaddresses a ON d.recipient_address_id = a.id
-				LEFT JOIN vaddresses a2 ON d.post_address_id = a2.id
-				LEFT JOIN countries cp ON (d.post_address_id IS NOT NULL AND cp.id = a2.country_id) OR (d.post_address_id IS NULL AND cp.id = c.post_countryid)
+				LEFT JOIN vaddresses a2 ON d.recipient_address_id2 = a2.id
+				LEFT JOIN vaddresses a3 ON d.post_address_id = a3.id
+				LEFT JOIN countries cp ON (d.post_address_id IS NOT NULL AND cp.id = a3.country_id) OR (d.post_address_id IS NULL AND cp.id = c.post_countryid)
+				LEFT JOIN ksefconfig kc ON kc.divisionid = d.divisionid
+				LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
+				LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
 				WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)',
-                array(
+                [
                     DOC_FLAG_SPLIT_PAYMENT,
                     DOC_FLAG_NET_ACCOUNT,
+                    CCONSENT_BALANCE_ON_DOCUMENTS,
+                    CCONSENT_KSEF_INVOICE,
+                    [
+                        200,
+                        0,
+                    ],
                     $invoiceid,
                     DOC_INVOICE,
                     DOC_CNOTE,
-                    DOC_INVOICE_PRO
-                )
+                    DOC_INVOICE_PRO,
+                ]
             );
         }
 
         if ($result) {
+            $result['ksef_warning'] = $result['doctype'] != DOC_INVOICE_PRO
+                && empty($result['ksefnumber'])
+                && $result['cdate'] >= $result['ksefboundarydate']
+                && (!empty($result['ksef_invoice_consent']) || $result['customertype'] == CTYPES_COMPANY);
+
             $result['export'] = $result['division_countryid'] && $result['countryid'] && $result['division_countryid'] != $result['countryid'];
 
             $result['name'] = trim($result['name']);
 
-            if ($detail_level == self::INVOICE_CONTENT_DETAIL_ALL && !empty($result['recipient_address_id'])) {
-                $result['recipient_address'] = array(
-                    'address_id' => $result['recipient_address_id'],
-                    'location_name' => $result['rec_name'],
-                    'location_state_name' => $result['rec_state'],
-                    'location_state' => $result['rec_state_id'],
-                    'location_city_name' => $result['rec_city'],
-                    'location_city' => $result['rec_city_id'],
-                    'location_street_name' => $result['rec_street'],
-                    'location_street' => $result['rec_street_id'],
-                    'location_house' => $result['rec_house'],
-                    'location_zip' => $result['rec_zip'],
-                    'location_postoffice' => $result['rec_postoffice'],
-                    'location_country_id' => $result['rec_country_id'],
-                    'location_flat' => $result['rec_flat'],
-                    'location_address_type' => RECIPIENT_ADDRESS,
-                );
-                // generate address as single string
-                $recipient_location = location_str(array(
-                    'city_name'      => $result['recipient_address']['location_city_name'],
-                    'postoffice'     => $result['recipient_address']['location_postoffice'],
-                    'street_name'    => $result['recipient_address']['location_street_name'],
-                    'location_house' => $result['recipient_address']['location_house'],
-                    'location_flat'  => $result['recipient_address']['location_flat']
-                ));
+            if ($detail_level == self::INVOICE_CONTENT_DETAIL_ALL) {
+                if (!empty($result['recipient_address_id'])) {
+                    $result['recipient_address'] = array(
+                        'address_id' => $result['recipient_address_id'],
+                        'location_name' => $result['rec_name'],
+                        'location_state_name' => $result['rec_state'],
+                        'location_state' => $result['rec_state_id'],
+                        'location_city_name' => $result['rec_city'],
+                        'location_city' => $result['rec_city_id'],
+                        'location_street_name' => $result['rec_street'],
+                        'location_street' => $result['rec_street_id'],
+                        'location_house' => $result['rec_house'],
+                        'location_zip' => $result['rec_zip'],
+                        'location_postoffice' => $result['rec_postoffice'],
+                        'location_country_id' => $result['rec_country_id'],
+                        'location_flat' => $result['rec_flat'],
+                        'location_ten' => $result['recipient_ten'],
+                        'location_entity_type' => $result['recipient_type'],
+                        'location_address_type' => RECIPIENT_ADDRESS,
+                    );
+                    // generate address as single string
+                    $recipient_location = location_str(array(
+                        'city_name' => $result['recipient_address']['location_city_name'],
+                        'postoffice' => $result['recipient_address']['location_postoffice'],
+                        'street_name' => $result['recipient_address']['location_street_name'],
+                        'location_house' => $result['recipient_address']['location_house'],
+                        'location_flat' => $result['recipient_address']['location_flat']
+                    ));
 
-                if (strlen($recipient_location)) {
-                    $result['recipient_address']['location'] = (empty($result['recipient_address']['location_name']) ? '' : $result['recipient_address']['location_name'] . ', ')
-                        . (empty($result['recipient_address']['location_zip']) ? '' : $result['recipient_address']['location_zip'] . ' ') . $recipient_location;
-                } else {
-                    $result['recipient_address']['location'] = trans('undefined');
+                    if (strlen($recipient_location)) {
+                        $result['recipient_address']['location'] = (empty($result['recipient_address']['location_name']) ? '' : $result['recipient_address']['location_name'] . ', ')
+                            . (empty($result['recipient_address']['location_zip']) ? '' : $result['recipient_address']['location_zip'] . ' ') . $recipient_location;
+                    } else {
+                        $result['recipient_address']['location'] = trans('undefined');
+                    }
+                }
+
+                if (!empty($result['recipient_address_id2'])) {
+                    $result['recipient_address2'] = array(
+                        'address_id' => $result['recipient_address_id2'],
+                        'location_name' => $result['rec_name2'],
+                        'location_state_name' => $result['rec_state2'],
+                        'location_state' => $result['rec_state_id2'],
+                        'location_city_name' => $result['rec_city2'],
+                        'location_city' => $result['rec_city_id2'],
+                        'location_street_name' => $result['rec_street2'],
+                        'location_street' => $result['rec_street_id2'],
+                        'location_house' => $result['rec_house2'],
+                        'location_zip' => $result['rec_zip2'],
+                        'location_postoffice' => $result['rec_postoffice2'],
+                        'location_country_id' => $result['rec_country_id2'],
+                        'location_flat' => $result['rec_flat2'],
+                        'location_ten' => $result['recipient_ten2'],
+                        'location_entity_type' => $result['recipient_type2'],
+                        'location_address_type' => RECIPIENT_ADDRESS,
+                    );
+                    // generate address as single string
+                    $recipient_location2 = location_str(array(
+                        'city_name' => $result['recipient_address2']['location_city_name'],
+                        'postoffice' => $result['recipient_address2']['location_postoffice'],
+                        'street_name' => $result['recipient_address2']['location_street_name'],
+                        'location_house' => $result['recipient_address2']['location_house'],
+                        'location_flat' => $result['recipient_address2']['location_flat']
+                    ));
+
+                    if (strlen($recipient_location2)) {
+                        $result['recipient_address2']['location'] = (empty($result['recipient_address2']['location_name']) ? '' : $result['recipient_address2']['location_name'] . ', ')
+                            . (empty($result['recipient_address2']['location_zip']) ? '' : $result['recipient_address2']['location_zip'] . ' ') . $recipient_location2;
+                    } else {
+                        $result['recipient_address2']['location'] = trans('undefined');
+                    }
                 }
             }
 
@@ -2762,16 +3057,20 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $result['totaltax'] = 0;
             $result['total'] = 0;
 
-            $result['flags'] = array(
+            $flags = array(
                 DOC_FLAG_RECEIPT => ($result['flags'] & DOC_FLAG_RECEIPT) ? 1 : 0,
                 DOC_FLAG_TELECOM_SERVICE => ($result['flags'] & DOC_FLAG_TELECOM_SERVICE) ? 1 : 0,
                 DOC_FLAG_RELATED_ENTITY => ($result['flags'] & DOC_FLAG_RELATED_ENTITY) ? 1 : 0,
+                DOC_FLAG_SPLIT_PAYMENT => ($result['flags'] & DOC_FLAG_SPLIT_PAYMENT) ? 1 : 0,
+                DOC_FLAG_NET_ACCOUNT => ($result['flags'] & DOC_FLAG_NET_ACCOUNT) ? 1 : 0,
             );
+            $result['flags'] = $flags;
 
             if ($result['reference'] && $result['doctype'] != DOC_INVOICE_PRO && !$nested_flag) {
                 $result['invoice'] = $this->GetInvoiceContent($result['reference'], $detail_level);
                 if (isset($result['invoice']['invoice'])) {
                     // replace pointed correction note number to previous one in invoice chain
+                    $result['invoice']['fullnumber'] = $result['invoice']['invoice']['fullnumber'];
                     $result['invoice']['number'] = $result['invoice']['invoice']['number'];
                     $result['invoice']['numberplanid'] = $result['invoice']['invoice']['numberplanid'];
                     $result['invoice']['template'] = $result['invoice']['invoice']['template'];
@@ -2875,7 +3174,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     }
                     $result['customerbalancelistlimit'] = ConfigHelper::getConfig('invoices.print_balance_history_limit');
                 }
+            }
 
+            if ($detail_level >= self::INVOICE_CONTENT_DETAIL_MORE) {
                 $default_author = ConfigHelper::getConfig('invoices.default_author', 'user_issuer,user_name,division_author');
                 $default_author = preg_split('/[\s]*,[\s]*/', trim($default_author), -1, PREG_SPLIT_NO_EMPTY);
                 $expositor = trans('system');
@@ -3078,7 +3379,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             .' GROUP BY d.id, number, cdate, archived, cancelled, d.customerid,
 			d.name, address, zip, city, numberplans.template, closed, published, c.name, d.currency, d.currencyvalue '
             .($having ?? '')
-            .$sqlord.' '.$direction
+            . (empty($sqlord) ? '' : $sqlord . ' ' . $direction)
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : ''));
 
@@ -3098,7 +3399,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $userid = Auth::GetCurrentUser();
 
-        if ($result = $this->db->GetRow('SELECT d.id, d.type AS doctype, d.number, d.name, d.customerid,
+        if ($result = $this->db->GetRow(
+            'SELECT d.id, d.type AS doctype, d.number, d.name, d.customerid,
                 d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
 				d.ten, d.ssn, d.cdate, d.numberplanid, d.closed, d.cancelled, d.published, d.archived, d.divisionid, d.paytime, d.paytype,
 				u.name AS user, u.issuer, n.template,
@@ -3129,17 +3431,25 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				    END)
 				    ELSE NULL
 				END) AS lang,
-				d.currency, d.currencyvalue
+				d.currency, d.currencyvalue,
+				(CASE WHEN cc.type IS NULL THEN 0 ELSE 1 END) AS balance_on_documents
 				FROM documents d'
                 . (empty($userid) ? '' : ' JOIN userdivisions ud ON ud.divisionid = d.divisionid AND ud.userid = ' . $userid)
                 . ' JOIN customeraddressview c ON (c.id = d.customerid)
+                LEFT JOIN customerconsents cc ON cc.customerid = c.id AND cc.type = ?
 				LEFT JOIN vusers u ON u.id = d.userid 
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN countries cdv ON cdv.id = d.div_countryid
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				LEFT JOIN vaddresses a2 ON a2.id = d.post_address_id
 				LEFT JOIN countries cp ON (d.post_address_id IS NOT NULL AND cp.id = a2.country_id) OR (d.post_address_id IS NULL AND cp.id = c.post_countryid)
-				WHERE d.id = ? AND d.type = ?', array($id, DOC_DNOTE))) {
+				WHERE d.id = ? AND d.type = ?',
+            array(
+                CCONSENT_BALANCE_ON_DOCUMENTS,
+                $id,
+                DOC_DNOTE,
+            )
+        )) {
             $result['export'] = $result['division_countryid'] && $result['countryid'] && $result['division_countryid'] != $result['countryid'];
 
             $result['bankaccounts'] = $this->db->GetCol(
@@ -3208,7 +3518,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
 
             $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
-            $result['customerbalance'] = $customer_manager->GetCustomerBalance($result['customerid'], $result['cdate'] + 1);
+            $result['customerbalance'] = $customer_manager->getCustomerBalance($result['customerid'], $result['cdate'] + 1);
 
             $default_author = ConfigHelper::getConfig('notes.default_author', 'user_issuer,user_name,division_author');
             $default_author = preg_split('/[\s]*,[\s]*/', trim($default_author), -1, PREG_SPLIT_NO_EMPTY);
@@ -3315,6 +3625,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'authtype' => $tariff['authtype'],
             'flags' => $flags,
             'netvalue' => $tariff['netvalue'],
+            'serviceproviderid' => empty($tariff['serviceproviderid']) ? null : intval($tariff['serviceproviderid']),
+            'extid' => empty($tariff['extid']) ? null : $tariff['extid'],
         );
         $args2 = array();
         foreach ($ACCOUNTTYPES as $typeidx => $type) {
@@ -3329,10 +3641,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				climit, plimit, uprate_n, downrate_n,
 				upceil_n, up_burst_time_n, up_burst_threshold_n, up_burst_limit_n,
 				downceil_n, down_burst_time_n, down_burst_threshold_n, down_burst_limit_n,
-				climit_n, plimit_n, dlimit, type, domain_limit, alias_limit, authtype, flags, netvalue, '
+				climit_n, plimit_n, dlimit, type, domain_limit, alias_limit, authtype, flags, netvalue,
+                serviceproviderid, extid, '
                 . implode(', ', array_keys($args2)) . ')
 				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
-					?,?,?,?,?,?,?,?,?,?,?,?, ?,' . implode(',', array_fill(0, count($args2), '?')) . ')',
+					?,?,?,?,?,?,?,?,?,?,?,?, ?, ?, ?, ' . implode(',', array_fill(0, count($args2), '?')) . ')',
             array_values(array_merge($args, $args2))
         );
         if ($result) {
@@ -3418,6 +3731,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'authtype' => $tariff['authtype'],
             'flags' => $flags,
             'netvalue' => $tariff['netvalue'],
+            'serviceproviderid' => empty($tariff['serviceproviderid']) ? null : intval($tariff['serviceproviderid']),
+            'extid' => empty($tariff['extid']) ? null : $tariff['extid'],
         );
         $args2 = array();
         foreach ($ACCOUNTTYPES as $typeidx => $type) {
@@ -3439,7 +3754,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             downceil_n = ?, down_burst_time_n = ?, down_burst_threshold_n = ?, down_burst_limit_n = ?,
             climit_n = ?, plimit_n = ?,
             dlimit = ?, domain_limit = ?, alias_limit = ?, type = ?, voip_tariff_id = ?, voip_tariff_rule_id = ?, 
-            authtype = ?, flags = ?, netvalue = ?, '
+            authtype = ?, flags = ?, netvalue = ?, serviceproviderid = ?, extid = ?, '
             . implode(' = ?, ', $fields) . ' = ? WHERE id=?', array_values($args));
         if ($res && $this->syslog) {
             $this->syslog->AddMessage(SYSLOG::RES_TARIFF, SYSLOG::OPER_UPDATE, $args);
@@ -3913,13 +4228,19 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         if ($balancelist = $this->db->GetAll('SELECT cash.id AS id, time, cash.userid AS userid, cash.value AS value,
                 cash.currency, cash.currencyvalue, 
-				cash.customerid AS customerid, cash.comment, docid, cash.type AS type,
+				cash.customerid AS customerid, cash.comment, cash.docid, cash.type AS type,
 				documents.type AS doctype, documents.closed AS closed,
 				documents.published, documents.archived, '
-             . $this->db->Concat('UPPER(c.lastname)', "' '", 'c.name').' AS customername
+            . $this->db->Concat('UPPER(c.lastname)', "' '", 'c.name').' AS customername,
+                kd.status AS ksefstatus,
+                kd.hash AS ksefhash,
+                kd.ksefnumber AS ksefnumber,
+                kc.delay AS ksefdelay
 				FROM cash
 				LEFT JOIN customerview c ON (cash.customerid = c.id)
-				LEFT JOIN documents ON (documents.id = docid)
+				LEFT JOIN documents ON (documents.id = cash.docid)
+                LEFT JOIN ksefdocuments kd ON kd.docid = documents.id AND kd.status IN (' . implode(',', [0, 200]) . ')
+                LEFT JOIN ksefconfig kc ON kc.divisionid = documents.divisionid
 				WHERE 1=1 '
             .$where
             .(!empty($group) ?
@@ -4331,13 +4652,19 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $default_taxlabel = ConfigHelper::getConfig('phpui.default_taxlabel');
 
         return $this->db->GetAllByKey(
-            'SELECT id, value, label, taxed FROM taxes
+            'SELECT
+                id,
+                value,
+                label,
+                taxed,
+                reversecharge
+            FROM taxes
             WHERE validfrom <= ?
                 AND (validto = 0 OR validto >= ?)'
                 . ($default ? (
                     isset($default_taxlabel)
                         ? ' AND label = ' . $this->db->Escape($default_taxlabel)
-                        : (isset($default_taxrate) ? ' AND value = ' . $default_taxrate : '')
+                        : (isset($default_taxrate) ? ' AND value = ' . floatval(str_replace(',', '.', $default_taxrate)) : '')
                 ) : '')
             . ' ORDER BY value',
             'id',
@@ -4380,7 +4707,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         if (!is_array($ids)) {
             $ids = array($ids);
         }
-        $this->db->Execute('UPDATE documents SET published = 1 WHERE id IN (' . implode(',', $ids) . ')');
+        $ids = Utils::filterIntegers($ids);
+
+        $this->db->Execute('UPDATE documents SET published = 1 WHERE id IN (' . implode(', ', $ids) . ')');
     }
 
     public function isDocumentPublished($id)
@@ -4406,7 +4735,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         if (!is_array($ids)) {
             $ids = array($ids);
         }
-        $this->db->Execute('UPDATE documents SET senddate = ?NOW? WHERE id IN (' . implode(',', $ids) . ')');
+        $ids = Utils::filterIntegers($ids);
+
+        $this->db->Execute('UPDATE documents SET senddate = ?NOW? WHERE id IN (' . implode(', ', $ids) . ')');
     }
 
     public function GetReceiptList(array $params)
@@ -4530,7 +4861,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             .' GROUP BY documents.id, currency, currencyvalue, number, cdate, customerid, documents.name, address, zip, city, numberplans.template,
             vusers.rname, extnumber, closed '
             .$having
-            .($sqlord != '' ? $sqlord : '')
+            . (empty($sqlord) ? '' : $sqlord)
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : ''),
             array($registry)
@@ -5138,11 +5469,16 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function GetDocumentsForBalanceRecords($ids, $doctypes)
     {
+        $ids = Utils::filterIntegers($ids);
+        if (empty($ids)) {
+            return [];
+        }
+
         return $this->db->GetCol(
             "SELECT DISTINCT docid FROM cash c
 			JOIN documents d ON d.id = c.docid
 			WHERE d.type IN ?
-				AND c.id IN (" . implode(',', $ids) . ")",
+				AND c.id IN (" . implode(', ', $ids) . ")",
             array($doctypes)
         );
     }
@@ -5157,6 +5493,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function CheckNodeTariffRestrictions($aid, $nodes, $datefrom, $dateto)
     {
+        $nodes = Utils::filterIntegers($nodes);
+        if (empty($nodes)) {
+            return [];
+        }
+
         $nodeassigns = $this->db->GetCol(
             'SELECT DISTINCT na.nodeid FROM nodeassignments na
             JOIN nodes n ON n.id = na.nodeid
@@ -5392,6 +5733,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $args['recipient_address_id'] = empty($proforma['recipient_address_id']) ? null :
             $location_manager->CopyAddress($proforma['recipient_address_id']);
+        $args['recipient_ten'] = $proforma['recipient_address_ten'];
+        $args['recipient_type'] = $proforma['recipient_address_type'];
+
+        $args['recipient_address_id2'] = empty($proforma['recipient_address_id2']) ? null :
+            $location_manager->CopyAddress($proforma['recipient_address_id2']);
+        $args['recipient_ten2'] = $proforma['recipient_address_ten2'];
+        $args['recipient_type2'] = $proforma['recipient_address_type2'];
 
         $this->db->Execute(
             'INSERT INTO documents (cdate, sdate, paytime, paytype, flags, customerid,
@@ -5399,13 +5747,17 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 div_name, div_shortname, div_address, div_city, div_zip, div_countryid,
                 div_ten, div_regon, div_bank, div_account, div_inv_header, div_inv_footer,
                 div_inv_author, div_inv_cplace, comment, currency, currencyvalue, memo,
-                type, number, fullnumber, numberplanid, recipient_address_id)
+                type, number, fullnumber, numberplanid,
+                recipient_address_id, recipient_ten, recipient_type,
+                recipient_address_id2, recipient_ten2, recipient_type2)
                 VALUES (?, ?, ?, ?, ?, ?,
                     ?, ?, ?, ?, ?, ?, ?, ?,
                     ?, ?, ?, ?, ?, ?,
                     ?, ?, ?, ?, ?, ?,
                     ?, ?, ?, ?, ?, ?,
-                    ?, ?, ?, ?, ?)',
+                    ?, ?, ?, ?,
+                    ?, ?, ?,
+                    ?, ?, ?)',
             array_values($args)
         );
         $invoiceid = $args[SYSLOG::RES_DOC] = $this->db->GetLastInsertID('documents');
@@ -5470,11 +5822,26 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     public function isInvoiceEditable($id)
     {
         return ($this->db->GetOne(
-            'SELECT d.id FROM documents d
+            'SELECT d.id
+            FROM documents d
             LEFT JOIN documents d2 ON d2.reference = d.id AND d2.type > 0
-            WHERE d.id = ? AND d.type IN ? AND d.cancelled = 0 AND d.closed = 0 AND d.archived = 0 AND d2.id IS NULL
+            LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
+            WHERE d.id = ?
+                AND d.type IN ?
+                AND d.cancelled = 0
+                AND d.closed = 0
+                AND d.archived = 0
+                AND d2.id IS NULL
+                AND kd.id IS NULL
                 ' . (ConfigHelper::checkPrivilege('published_document_modification') ? '' : ' AND d.published = 0'),
-            array($id, array(DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO))
+            [
+                [
+                    200,
+                    0,
+                ],
+                $id,
+                [DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO],
+            ]
         ) > 0);
     }
 

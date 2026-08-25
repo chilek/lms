@@ -264,7 +264,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                         // then we matched customer by source account
                         if (!isset($unique_source_accounts)) {
                             $days = intval(ConfigHelper::getConfig($config_section . '.source_account_match_threshold_days'));
-                            $unique_source_accounts = $this->db->GetALl(
+                            $unique_source_accounts = $this->db->GetAll(
                                 'SELECT i.customerid, i.srcaccount
                                 FROM cashimport i
                                 JOIN (
@@ -531,11 +531,29 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 }
             }
 
+            $hook_data = compact('id', 'pattern', 'comment', 'theline', 'ln', 'patterns_cnt', 'error', 'line', 'time');
+            $hook_data['db'] = $this->db;
+
             $hook_data = $LMS->executeHook(
                 'cashimport_extra_filter_before_submit',
-                compact("id", "pattern", "comment", "theline", "ln", "patterns_cnt", "error", "line", "time")
+                $hook_data
             );
+
             extract($hook_data);
+
+            if (!empty($hook_data['ignore'])) {
+                $error['lines'][$ln] = array(
+                    'customer' => $customer,
+                    'customerid' => $id,
+                    'date' => $time,
+                    'operdate' => $operdate,
+                    'value' => $value,
+                    'comment' => $comment,
+                    'extid' => $extid,
+                );
+
+                continue;
+            }
 
             if (!$found_by_name && $id && (!$name || !$lastname)) {
                 if ($tmp = $this->db->GetRow('SELECT id, lastname, name FROM customers WHERE '
@@ -570,7 +588,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
             }
             foreach (array('srcaccount', 'dstaccount', 'customername', 'cid', 'extid') as $replace_symbol) {
                 $variable = ${$replace_symbol};
-                $variable = strlen($variable) ? $variable : trans('none');
+                $variable = isset($variable) && strlen($variable) ? $variable : trans('none');
                 $comment = str_replace('%'. $replace_symbol . '%', $variable, $comment);
             }
 

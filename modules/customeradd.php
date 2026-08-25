@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2026 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,6 +27,8 @@
 if (isset($_GET['ajax'])) {
     header('Content-type: text/plain');
     $search = urldecode(trim($_GET['what']));
+
+    $mode = null;
 
     switch ($_GET['mode']) {
         case 'street':
@@ -177,18 +179,42 @@ if (isset($_POST['customeradd'])) {
             }
         }
 
-        if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')
+        if (!ConfigHelper::checkPrivilege('full_access')
             && !empty($v['location_city_name']) && ($v['location_country_id'] == 2 || empty($v['location_country_id']))
             && (!isset($v['teryt']) || empty($v['location_city'])) && $LMS->isTerritState($v['location_state_name'])) {
-            $error['customeradd[addresses][' . $k . '][teryt]'] = trans('TERYT address is required!');
-            $customeradd['addresses'][ $k ]['show'] = true;
+            $terytRequired = ConfigHelper::getConfig('phpui.teryt_required', 'false');
+            if ($terytRequired === 'error') {
+                $terytRequired = true;
+            } elseif ($terytRequired !== 'warning') {
+                $terytRequired = ConfigHelper::checkValue($terytRequired);
+            }
+            if (is_bool($terytRequired) && $terytRequired) {
+                $error['customeradd[addresses][' . $k . '][teryt]'] = trans('TERYT address is required!');
+                $customeradd['addresses'][$k]['show'] = true;
+            } elseif ($terytRequired === 'warning' && !isset($warnings['customeradd-addresses--' . $k . '--teryt-'])) {
+                $warning['customeradd[addresses][' . $k . '][teryt]']= trans('TERYT address recommended!');
+                $customeradd['addresses'][$k]['show'] = true;
+            }
         }
 
         Localisation::setSystemLanguage($countryCode);
-        if ($v['location_zip']) {
+
+        if (!ConfigHelper::checkConfig('phpui.skip_zip_validation') && $v['location_zip']) {
             $zip_validation_result = check_zip($v['location_zip']);
             if (isset($zip_validation_result) && !$zip_validation_result) {
                 $error['customeradd[addresses][' . $k . '][location_zip]'] = trans('Incorrect ZIP code!');
+                $customeradd['addresses'][$k]['show'] = true;
+            }
+        }
+
+        if (!empty($v['location_ten']) && !isset($warnings['customeradd-addresses--' . $k . '--location_ten-'])) {
+            $ten_validation_result = check_ten($v['location_ten']);
+            if (!$ten_validation_result) {
+                $ksef_internal_id_validation = check_ksef_internal_id($v['location_ten']);
+                $ten_validation_result |= $ksef_internal_id_validation === true || !isset($ksef_internal_id_validation);
+            }
+            if (isset($ten_validation_result) && !$ten_validation_result) {
+                $warning['customeradd[addresses][' . $k . '][location_ten]'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
                 $customeradd['addresses'][$k]['show'] = true;
             }
         }
@@ -288,6 +314,9 @@ if (isset($_POST['customeradd'])) {
 
     if (isset($customeradd['ssn'])) {
         if ($customeradd['ssn'] != '') {
+            if (isset($customeradd['ssnwarning']) && isset($customeradd['oldssn']) && $customeradd['oldssn'] != $customeradd['ssn']) {
+                unset($customeradd['ssnwarning']);
+            }
             if (!isset($customeradd['ssnwarning'])) {
                 $ssn_validation_result = check_ssn($customeradd['ssn']);
                 if (isset($ssn_validation_result) && !$ssn_validation_result) {

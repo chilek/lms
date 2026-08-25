@@ -151,31 +151,35 @@ function update_contacts($customerid)
 
     $JSResponse = new xajaxResponse();
 
-    $emails = array_filter(
-        $LMS->getCustomerContacts($customerid, CONTACT_EMAIL),
-        function ($contact) {
-            return !($contact['type'] & CONTACT_DISABLED);
-        }
-    );
-    usort(
-        $emails,
-        function ($a, $b) {
-            return ($a['contact'] < $b['contact']) ? -1 : 1;
-        }
-    );
+    if (!empty($customerid)) {
+        $emails = array_filter(
+            $LMS->getCustomerContacts($customerid, CONTACT_EMAIL),
+            function ($contact) {
+                return !($contact['type'] & CONTACT_DISABLED);
+            }
+        );
+        usort(
+            $emails,
+            function ($a, $b) {
+                return ($a['contact'] < $b['contact']) ? -1 : 1;
+            }
+        );
 
-    $phones = array_filter(
-        $LMS->getCustomerContacts($customerid, CONTACT_LANDLINE | CONTACT_MOBILE),
-        function ($contact) {
-            return !($contact['type'] & CONTACT_DISABLED);
-        }
-    );
-    usort(
-        $phones,
-        function ($a, $b) {
-            return ($a['contact'] < $b['contact']) ? -1 : 1;
-        }
-    );
+        $phones = array_filter(
+            $LMS->getCustomerContacts($customerid, CONTACT_LANDLINE | CONTACT_MOBILE),
+            function ($contact) {
+                return !($contact['type'] & CONTACT_DISABLED);
+            }
+        );
+        usort(
+            $phones,
+            function ($a, $b) {
+                return ($a['contact'] < $b['contact']) ? -1 : 1;
+            }
+        );
+    } else {
+        $emails = $phones = array();
+    }
 
     $JSResponse->call('update_contacts', compact('emails', 'phones'));
 

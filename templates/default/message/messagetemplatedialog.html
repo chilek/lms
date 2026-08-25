@@ -343,9 +343,9 @@
 
 					if (response.hasOwnProperty('error')) {
 						$.each(response.error, function (index, value) {
-							$('#' + index).addClass("ui-state-error").prop('title', value);
+							$('#' + index).addClass("lms-ui-error").prop('title', value);
 							if (index == '{$operation}-template-html-body') {
-								$('#' + index).siblings('.mce-tinymce').addClass('ui-state-error');
+								$('#' + index).siblings('.tox-tinymce').addClass('lms-ui-error');
 							}
 						});
 					} else {

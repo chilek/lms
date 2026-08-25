@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2024 LMS Developers
+ *  (C) Copyright 2001-2026 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,7 +25,7 @@
  */
 
 // here should be always the newest version of database!
-define('DBVERSION', '2025070300');
+define('DBVERSION', '2026081100');
 
 /**
  *
@@ -36,7 +36,6 @@ define('DBVERSION', '2025070300');
  */
 abstract class LMSDB_common implements LMSDBInterface
 {
-
     /** @var string LMS version * */
     protected $_version = DBVERSION;
 
@@ -81,6 +80,8 @@ abstract class LMSDB_common implements LMSDBInterface
     protected $_warnings = true;
 
     private $_upgrade_errors = array();
+
+    protected $sqlQueryTime = 0;
 
     /**
      * Connects to database.
@@ -130,7 +131,7 @@ abstract class LMSDB_common implements LMSDBInterface
      * @param array $inputarray
      * @return int|false
      */
-    public function Execute($query, array $inputarray = null)
+    public function Execute($query, ?array $inputarray = null)
     {
         if ($this->debug) {
             $start = microtime(true);
@@ -142,11 +143,17 @@ abstract class LMSDB_common implements LMSDBInterface
                 'error' => $this->_driver_geterror(),
             );
         } elseif ($this->debug) {
-            $this->errors[] = array(
-                'query' => $this->_query,
-                'error' => 'DEBUG: NOERROR',
-                'time' => microtime(true) - $start,
-            );
+            $sqlQueryTime =  microtime(true) - $start;
+
+            if ($this->debug & LMSDB::DEBUG_DETAILS) {
+                $this->errors[] = array(
+                    'query' => $this->_query,
+                    'error' => 'DEBUG: NOERROR',
+                    'time' => $sqlQueryTime,
+                );
+            }
+
+            $this->sqlQueryTime += $sqlQueryTime;
         }
 
         return $this->_driver_affected_rows();
@@ -159,7 +166,7 @@ abstract class LMSDB_common implements LMSDBInterface
      * @param array $inputarray
      * @return int|false
      */
-    public function MultiExecute($query, array $inputarray = null)
+    public function MultiExecute($query, ?array $inputarray = null)
     {
         if ($this->debug) {
             $start = microtime(true);
@@ -171,14 +178,25 @@ abstract class LMSDB_common implements LMSDBInterface
                 'error' => $this->_driver_geterror(),
             );
         } elseif ($this->debug) {
-            $this->errors[] = array(
-                'query' => $this->_query,
-                'error' => 'DEBUG: NOERROR',
-                'time' => microtime(true) - $start,
-            );
+            $sqlQueryTime =  microtime(true) - $start;
+
+            if ($this->debug & LMSDB::DEBUG_DETAILS) {
+                $this->errors[] = array(
+                    'query' => $this->_query,
+                    'error' => 'DEBUG: NOERROR',
+                    'time' => microtime(true) - $start,
+                );
+            }
+
+            $this->sqlQueryTime += $sqlQueryTime;
         }
 
         return $this->_driver_affected_rows();
+    }
+
+    public function getSqlQueryTime()
+    {
+        return $this->sqlQueryTime;
     }
 
     /**
@@ -188,7 +206,7 @@ abstract class LMSDB_common implements LMSDBInterface
      * @param array $inputarray
      * @return array
      */
-    public function GetAll($query = null, array $inputarray = null)
+    public function GetAll($query = null, ?array $inputarray = null)
     {
         if ($query) {
             $this->Execute($query, $inputarray);
@@ -212,7 +230,7 @@ abstract class LMSDB_common implements LMSDBInterface
      * @param array $inputarray
      * @return array
      */
-    public function GetAllByKey($query = null, $key = null, array $inputarray = null)
+    public function GetAllByKey($query = null, $key = null, ?array $inputarray = null)
     {
         if ($query) {
             $this->Execute($query, $inputarray);
@@ -234,7 +252,7 @@ abstract class LMSDB_common implements LMSDBInterface
      * @param array $inputarray
      * @return array
      */
-    public function GetRow($query = null, array $inputarray = null)
+    public function GetRow($query = null, ?array $inputarray = null)
     {
         if ($query) {
             $this->Execute($query, $inputarray);
@@ -250,7 +268,7 @@ abstract class LMSDB_common implements LMSDBInterface
      * @param array $inputarray
      * @return array
      */
-    public function GetCol($query = null, array $inputarray = null)
+    public function GetCol($query = null, ?array $inputarray = null)
     {
         if ($query) {
             $this->Execute($query, $inputarray);
@@ -272,7 +290,7 @@ abstract class LMSDB_common implements LMSDBInterface
      * @param array $inputarray
      * @return string|int|null
      */
-    public function GetOne($query = null, array $inputarray = null)
+    public function GetOne($query = null, ?array $inputarray = null)
     {
         if ($query) {
             $this->Execute($query, $inputarray);
@@ -295,7 +313,7 @@ abstract class LMSDB_common implements LMSDBInterface
      * @param array $inputarray
      * @return null
      */
-    public function Exec($query, array $inputarray = null)
+    public function Exec($query, ?array $inputarray = null)
     {
         if ($this->debug) {
             $start = microtime(true);
@@ -307,11 +325,17 @@ abstract class LMSDB_common implements LMSDBInterface
                 'error' => $this->_driver_geterror()
             );
         } elseif ($this->debug) {
-            $this->errors[] = array(
-                'query' => $this->_query,
-                'error' => 'DEBUG: NOERROR',
-                'time' => microtime(true) - $start,
-            );
+            $sqlQueryTime =  microtime(true) - $start;
+
+            if ($this->debug & LMSDB::DEBUG_DETAILS) {
+                $this->errors[] = array(
+                    'query' => $this->_query,
+                    'error' => 'DEBUG: NOERROR',
+                    'time' => $sqlQueryTime,
+                );
+            }
+
+            $this->sqlQueryTime += $sqlQueryTime;
         }
 
         if ($this->_driver_num_rows()) {
@@ -419,6 +443,17 @@ abstract class LMSDB_common implements LMSDBInterface
      *
      * @return string
      */
+
+    public function LockByHandle($handle): mixed
+    {
+        return $this->_driver_lockbyhandle($handle);
+    }
+
+    public function UnLockByHandle($handle): mixed
+    {
+        return $this->_driver_unlockbyhandle($handle);
+    }
+
     public function GetDBVersion()
     {
         return $this->_driver_dbversion();
@@ -570,7 +605,7 @@ abstract class LMSDB_common implements LMSDBInterface
      * @param array $inputarray
      * @return string
      */
-    protected function _query_parser($query, array $inputarray = null)
+    protected function _query_parser($query, ?array $inputarray = null)
     {
         // replace metadata
         $query = str_ireplace('?NOW?', $this->_driver_now(), $query);
@@ -580,13 +615,38 @@ abstract class LMSDB_common implements LMSDBInterface
             $param_count = substr_count($query, '?');
             $array_count = $inputarray ? count($inputarray) : 0;
             if ($param_count != $array_count) {
+                $backtrace = Utils::getDebugBacktrace(15);
+
+                if (empty($backtrace)) {
+                    $backtraceText = '';
+                } else {
+                    $backtraceText = 'Stack trace:' . PHP_EOL
+                        . implode(
+                            PHP_EOL,
+                            array_map(
+                                function ($item) {
+                                    return '  ' . $item;
+                                },
+                                $backtrace
+                            )
+                        );
+                }
+
+                $logError = "SQL query parser error: parameter count differs from passed argument count ({$param_count} != {$array_count}): "
+                    . ($array_count ? var_export($inputarray, true) : '');
+
                 $error = array(
                     'query' => $query,
-                    'error' => "SQL query parser error: parameter count differs from passed argument count ({$param_count} != {$array_count}): "
-                        . ($array_count ? var_export($inputarray, true) : ''),
+                    'error' => $logError . PHP_EOL . $backtraceText,
                 );
                 $this->errors[] = $error;
-                writesyslog($error['error'] . ' (' . str_replace("\t", ' ', $error['query']) . ')', LOG_ERR);
+
+                writesyslog(
+                    $logError
+                        . ' (' . str_replace("\t", ' ', $error['query']) . ')' . PHP_EOL
+                        . (empty($backtraceText) ? '' : $backtraceText . PHP_EOL),
+                    LOG_ERR
+                );
             }
         }
 
@@ -748,6 +808,12 @@ abstract class LMSDB_common implements LMSDBInterface
     {
 
         $this->debug = $debug;
+    }
+
+    public function GetDebug($debug = true)
+    {
+
+        return $this->debug;
     }
 
     public function UpgradeDb($dbver = DBVERSION, $pluginclass = null, $libdir = null, $docdir = null)

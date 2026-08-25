@@ -42,6 +42,10 @@ if (isset($_GET['id']) && $action == 'edit') {
         return;
     }
 
+    if ($LMS->isKsefDocument($_GET['id'])) {
+        return;
+    }
+
     $cnote = $LMS->GetInvoiceContent($_GET['id']);
 
     if (!empty($cnote['cancelled'])) {
@@ -116,6 +120,11 @@ if (isset($_GET['id']) && $action == 'edit') {
         'paytype' => $cnote['paytype'],
         'deadline' => date("Y/m/d", intval($cnote['deadline'])),
         'recipient_address_id' => $cnote['recipient_address_id'],
+        'recipient_ten' => $cnote['recipient_ten'],
+        'recipient_type' => $cnote['recipient_type'],
+        'recipient_address_id2' => $cnote['recipient_address_id2'],
+        'recipient_ten2' => $cnote['recipient_ten2'],
+        'recipient_type2' => $cnote['recipient_type2'],
         'use_current_customer_data' => isset($cnote['use_current_customer_data']),
         'reason' => $cnote['reason'],
     );
@@ -238,9 +247,10 @@ switch ($action) {
                 if (checkdate($smonth, $sday, $syear)) {
                     $sdate = mktime(23, 59, 59, $smonth, $sday, $syear);
                     $cnote['sdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $smonth, $sday, $syear);
-                    if ($sdate < $invoice['sdate']) {
-                        $error['sdate'] = trans('Credit note sale date cannot be earlier than invoice sale date!');
-                    }
+                    // sale date in correction invoice can be earlier than one in corrected invoice!
+                    //if ($sdate < $invoice['sdate']) {
+                    //    $error['sdate'] = trans('Credit note sale date cannot be earlier than invoice sale date!');
+                    //}
                 } else {
                     $error['sdate'] = trans('Incorrect date format! Using current date.');
                     $cnote['sdate'] = $currtime;
@@ -292,6 +302,7 @@ switch ($action) {
             'paytype' => $cnote['paytype'],
             'deadline' => date("Y/m/d", $cnote['deadline']),
             'recipient_address_id' => $_POST['cnote[recipient_address_id]'],
+            'recipient_address_id2' => $_POST['cnote[recipient_address_id2]'],
             'use_current_customer_data' => isset($cnote['use_current_customer_data']),
             'reason' => $cnote['reason'],
         );
@@ -618,10 +629,40 @@ switch ($action) {
             }
 
             if ($cnote['recipient_address_id'] > 0) {
+                $recipient_ten = $LMS->getRecipientTen($cnote['recipient_address_id']);
+                $recipient_type = $LMS->getEntityType($cnote['recipient_address_id']);
                 $DB->Execute(
-                    'UPDATE documents SET recipient_address_id = ? WHERE id = ?',
+                    'UPDATE documents SET recipient_address_id = ?, recipient_ten = ?, recipient_type = ? WHERE id = ?',
                     array(
                         $LMS->CopyAddress($cnote['recipient_address_id']),
+                        $recipient_ten,
+                        $recipient_type,
+                        $iid,
+                    )
+                );
+            }
+        }
+
+        // updates customer recipient address stored in document
+        $prev_rec_addr2 = $DB->GetOne('SELECT recipient_address_id2 FROM documents WHERE id = ?', array($iid));
+        if (empty($prev_rec_addr2)) {
+            $prev_rec_addr2 = -1;
+        }
+
+        if ($prev_rec_addr2 != $cnote['recipient_address_id2']) {
+            if ($prev_rec_addr2 > 0) {
+                $DB->Execute('DELETE FROM addresses WHERE id = ?', array($prev_rec_addr2));
+            }
+
+            if ($cnote['recipient_address_id2'] > 0) {
+                $recipient_ten2 = $LMS->getRecipientTen($cnote['recipient_address_id2']);
+                $recipient_type2 = $LMS->getEntityType($cnote['recipient_address_id2']);
+                $DB->Execute(
+                    'UPDATE documents SET recipient_address_id2 = ?, recipient_ten2 = ?, recipient_type2 = ? WHERE id = ?',
+                    array(
+                        $LMS->CopyAddress($cnote['recipient_address_id2']),
+                        $recipient_ten2,
+                        $recipient_type2,
                         $iid,
                     )
                 );
@@ -851,6 +892,8 @@ $contents = $hook_data['contents'];
 $cnote = $hook_data['cnote'];
 
 $addresses = $LMS->getCustomerAddresses($cnote['customerid']);
+$addresses2 = $addresses;
+
 if (isset($cnote['recipient_address'])) {
     $addresses = array_replace(
         array($cnote['recipient_address']['address_id'] => $cnote['recipient_address']),
@@ -858,6 +901,14 @@ if (isset($cnote['recipient_address'])) {
     );
 }
 $SMARTY->assign('addresses', $addresses);
+
+if (isset($cnote['recipient_address2'])) {
+    $addresses2 = array_replace(
+        array($cnote['recipient_address2']['address_id'] => $cnote['recipient_address2']),
+        $addresses2
+    );
+}
+$SMARTY->assign('addresses2', $addresses2);
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);

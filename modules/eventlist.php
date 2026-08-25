@@ -63,7 +63,9 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
     }
 
     $filter['userand'] = isset($_POST['userand']) ? intval($_POST['userand']) : 0;
-    $filter['userid'] = $_POST['a'] ?? null;
+    $filter['userid'] = isset($_POST['a'])
+        ? Utils::filterIntegers(is_array($_POST['a']) ? $_POST['a'] : [$_POST['a']])
+        : null;
     $filter['usergroups'] = $_POST['g'] ?? null;
     $filter['customerid'] = $_POST['u'] ?? null;
     $filter['type'] = $_POST['type'] ?? null;
@@ -71,6 +73,7 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
     $filter['closed'] = $_POST['closed'] ?? null;
     $filter['netnodeid'] = (isset($_POST['netnodeid']) && $LMS->NetNodeExists(intval($_POST['netnodeid']))) ? intval($_POST['netnodeid']) : null;
     $filter['netdevid'] = (isset($_POST['netdevid']) && $LMS->NetDevExists(intval($_POST['netdevid']))) ? intval($_POST['netdevid']) : null;
+    $filter['divisionid'] = isset($_POST['divisionid']) ? Utils::filterIntegers($_POST['divisionid']) : array();
 
     if (isset($_POST['switchToSchedule'])) {
         $SESSION->save('timetableFiler', $filter, true);
@@ -107,7 +110,7 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
     $filter['userand'] = isset($_GET['userand']) ? intval($_GET['userand']) : 0;
 
     if (isset($_GET['a'])) {
-        $filter['userid'] = $_GET['a'];
+        $filter['userid'] = Utils::filterIntegers(is_array($_GET['a']) ? $_GET['a'] : [$_GET['a']]);
     }
 
     if (isset($_GET['g'])) {
@@ -248,6 +251,7 @@ $today = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
 
 $visible_users = null;
 $usergroups = $LMS->UsergroupGetList();
+unset($usergroups['total'], $usergroups['totalcount']);
 if (!empty($usergroups)) {
     if (!empty($filter['usergroups'])) {
         $visible_users = array();
@@ -257,24 +261,27 @@ if (!empty($usergroups)) {
             }
         }
         $visible_users = array_unique($visible_users);
+        $visible_users = array_combine($visible_users, $visible_users);
     }
+    unset($usergroups['total'], $usergroups['totalcount']);
 }
 
 $SMARTY->assign(array(
-        'today' => $today,
-        'period' => $LMS->GetTimetableRange(),
-        'eventlist' => $eventlist,
-        'overdue_events' => $overdue_events,
-        'days' => $days,
-        'daylist' => $daylist,
-        'date' => $date,
-        'error' => $error,
-        'netnodes' => $LMS->GetNetNodes(),
-        'netdevices' => $LMS->GetNetDevList('name,asc', array('short' => true)),
-        'visible_users' => $visible_users,
-        'usergroups' => $usergroups,
-        'overdue_events_only' => $overdue_events_only,
-        'getHolidays', getHolidays($year ?? null),
-        'customerlist' => $big_networks ? null : $LMS->GetCustomerNames(),
-    ));
+    'today' => $today,
+    'period' => $LMS->GetTimetableRange(),
+    'eventlist' => $eventlist,
+    'overdue_events' => $overdue_events,
+    'days' => $days,
+    'daylist' => $daylist,
+    'date' => $date,
+    'error' => $error,
+    'netnodes' => $LMS->GetNetNodes(),
+    'netdevices' => $LMS->GetNetDevList('name,asc', array('short' => true)),
+    'visible_users' => $visible_users,
+    'usergroups' => $usergroups,
+    'overdue_events_only' => $overdue_events_only,
+    'getHolidays', getHolidays($year ?? null),
+    'customerlist' => $big_networks ? null : $LMS->GetCustomerNames(),
+    'divisions' => $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())),
+));
 $SMARTY->display('event/eventlist.html');

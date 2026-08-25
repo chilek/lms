@@ -50,6 +50,26 @@ $action = !empty($_GET['action']) ? $_GET['action'] : '';
 $edit = '';
 $subtitle = '';
 
+$netdevipActions = array_flip([
+    'addip',
+    'formaddip',
+    'editip',
+    'formeditip',
+]);
+if (!empty($action) && isset($netdevipActions[$action])) {
+    $netdev_empty_mac = ConfigHelper::getConfig('netdevices.empty_mac', '', true);
+
+    if (strlen($netdev_empty_mac)) {
+        if (check_mac($netdev_empty_mac)) {
+            $netdev_empty_mac = Utils::normalizeMac($netdev_empty_mac);
+        } else {
+            $netdev_empty_mac = '';
+        }
+    }
+
+    $SMARTY->assign('netdev_empty_mac', $netdev_empty_mac);
+}
+
 switch ($action) {
     case 'updatenodefield':
         $LMS->updateNodeField($_POST['nodeid'], $_POST['field'], $_POST['val']);
@@ -241,6 +261,7 @@ switch ($action) {
         $linecount = !empty($_GET['linecount']) && ctype_digit($_GET['linecount']) ? intval($_GET['linecount']) : null;
         $usedlines = isset($_GET['usedlines']) && ctype_digit($_GET['usedlines']) ? intval($_GET['usedlines']) : null;
         $availablelines = isset($_GET['availablelines']) && ctype_digit($_GET['availablelines']) ? intval($_GET['availablelines']) : null;
+        $foreignentity = empty($_GET['foreignentity']) ? null : $_GET['foreignentity'];
 
         $ports1 = $DB->GetOne('SELECT ports FROM netdevices WHERE id = ?', array($_GET['id']));
         $takenports1 = $LMS->CountNetDevLinks($_GET['id']);
@@ -305,6 +326,7 @@ switch ($action) {
         $SESSION->save('devlinklinecount', $linecount);
         $SESSION->save('devlinkusedlines', $usedlines);
         $SESSION->save('devlinkavailablelines', $availablelines);
+        $SESSION->save('devlinkforeignentity', $foreignentity);
 
         if (!$error) {
             $LMS->NetDevLink($dev['id'], $_GET['id'], array(
@@ -319,6 +341,7 @@ switch ($action) {
                 'linecount' => $linecount,
                 'usedlines' => $usedlines,
                 'availablelines' => $availablelines,
+                'foreignentity' => $foreignentity,
             ));
             $SESSION->redirect('?m=netdevinfo&id=' . $_GET['id']);
         }
@@ -373,9 +396,18 @@ switch ($action) {
     case 'addip':
         $subtitle = trans('New IP address');
         $nodeipdata['access'] = 1;
+
         $mac = $LMS->getNetDevMacs($id, 1);
         $macAddress = (!empty($mac) ? $mac[0]['mac'] : '');
-        $nodeipdata['macs'] = array(0 => $macAddress);
+        $macs = array(0 => $macAddress);
+
+        $nodeipdata['macs'] = array_filter(
+            $macs,
+            function ($mac) use ($netdev_empty_mac) {
+                return $mac != $netdev_empty_mac;
+            }
+        );
+
         $SMARTY->assign('nodeipdata', $nodeipdata);
         $edit = 'addip';
         break;
@@ -385,11 +417,19 @@ switch ($action) {
         $nodeipdata['ipaddr'] = $nodeipdata['ip'];
         $nodeipdata['ipaddr_pub'] = $nodeipdata['ip_pub'];
         $subtitle = trans('IP address edit');
-        $macs = array();
-        foreach ($nodeipdata['macs'] as $key => $value) {
-            $macs[] = $nodeipdata['macs'][$key]['mac'];
-        }
-        $nodeipdata['macs'] = $macs;
+
+        $nodeipdata['macs'] = array_filter(
+            array_map(
+                function ($mac) {
+                    return $mac['mac'];
+                },
+                $nodeipdata['macs']
+            ),
+            function ($mac) use ($netdev_empty_mac) {
+                return $mac != $netdev_empty_mac;
+            }
+        );
+
         $SMARTY->assign('nodeipdata', $nodeipdata);
         $edit = 'ip';
         break;
@@ -490,7 +530,7 @@ switch ($action) {
             if (!check_ip($nodeipdata['ipaddr_pub'])) {
                 $error['ipaddr_pub'] = trans('Incorrect IP address!');
             } elseif (!$LMS->IsIPValid($nodeipdata['ipaddr_pub'])) {
-                $error['ipaddr_pub'] = trans('Specified address does not belongs to any network!');
+                $error['ipaddr_pub'] = trans('Specified address does not belong to any network!');
             } elseif (!$LMS->IsIPFree($nodeipdata['ipaddr_pub'])) {
                 $error['ipaddr_pub'] = trans('Specified IP address is in use!');
             }
@@ -515,7 +555,13 @@ switch ($action) {
                 }
             }
         }
-        $nodeipdata['macs'] = $macs;
+
+        $nodeipdata['macs'] = array_filter(
+            $macs,
+            function ($mac) use ($netdev_empty_mac) {
+                return $mac != $netdev_empty_mac;
+            }
+        );
 
         if (strlen($nodeipdata['passwd']) > 32) {
             $error['passwd'] = trans('Password is too long (max. 32 characters)!');
@@ -638,7 +684,13 @@ switch ($action) {
                 $error['mac-input-' . $key] = trans('Incorrect MAC address!');
             }
         }
-        $nodeipdata['macs'] = $macs;
+
+        $nodeipdata['macs'] = array_filter(
+            $macs,
+            function ($mac) use ($netdev_empty_mac) {
+                return $mac != $netdev_empty_mac;
+            }
+        );
 
         if (strlen($nodeipdata['passwd']) > 32) {
             $error['passwd'] = trans('Password is too long (max. 32 characters)!');
@@ -780,10 +832,19 @@ if (isset($netdev)) {
     }
 
     if (empty($netdev['ownerid']) && !ConfigHelper::checkPrivilege('full_access')
-        && ConfigHelper::checkConfig('phpui.teryt_required')
         && !empty($netdev['location_city_name']) && ($netdev['location_country_id'] == 2 || empty($netdev['location_country_id']))
         && (!isset($netdev['teryt']) || empty($netdev['location_city'])) && $LMS->isTerritState($netdev['location_state_name'])) {
-        $error['netdev[teryt]'] = trans('TERYT address is required!');
+        $terytRequired = ConfigHelper::getConfig('phpui.teryt_required', 'false');
+        if ($terytRequired === 'error') {
+            $terytRequired = true;
+        } elseif ($terytRequired !== 'warning') {
+            $terytRequired = ConfigHelper::checkValue($terytRequired);
+        }
+        if (is_bool($terytRequired) && $terytRequired) {
+            $error['netdev[teryt]'] = trans('TERYT address is required!');
+        } elseif ($terytRequired === 'warning' && !isset($warnings['netdev-teryt-'])) {
+            $warning['netdev[teryt]'] = trans('TERYT address recommended!');
+        }
     }
 
     $allow_empty_streets = ConfigHelper::checkConfig('teryt.allow_empty_streets', true);
@@ -818,7 +879,7 @@ if (isset($netdev)) {
     $netdev = $hook_data['netdevdata'];
     $error = $hook_data['error'];
 
-    if (!$error) {
+    if (!$error && !$warning) {
         if (!$api) {
             if ($netdev['guaranteeperiod'] == -1) {
                 $netdev['guaranteeperiod'] = null;
@@ -965,6 +1026,20 @@ if ($subtitle) {
     $layout['pagetitle'] .= ' - ' . $subtitle;
 }
 
+$foreign_entities = Utils::getForeignEntities();
+if (!empty($netdevconnected) && !empty($foreign_entities)) {
+    foreach ($netdevconnected as &$netdevconn) {
+        if (!empty($netdevconn['foreignentity'])) {
+            if (!empty($foreign_entities[$netdevconn['foreignentity']])) {
+                $foreign_entity = $foreign_entities[$netdevconn['foreignentity']];
+                $netdevconn['foreignentity'] = $foreign_entity['name'] . (empty($foreign_entity['type']) ? '' : ', ' . trans('TEN') . ' ' . $foreign_entity['id']);
+            }
+        }
+    }
+    unset($netdevconn);
+}
+$SMARTY->assign('foreign_entities', $foreign_entities);
+
 $SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('NNprojects', $LMS->GetProjects());
 $SMARTY->assign('NNnodes', $LMS->GetNetNodes());
@@ -992,6 +1067,7 @@ $SMARTY->assign('devlinkroutetype', $SESSION->get('devlinkroutetype'));
 $SMARTY->assign('devlinklinecount', $SESSION->get('devlinklinecount'));
 $SMARTY->assign('devlinkusedlines', $SESSION->get('devlinkusedlines'));
 $SMARTY->assign('devlinkavailablelines', $SESSION->get('devlinkavailablelines'));
+$SMARTY->assign('devlinkforeignentity', $SESSION->get('devlinkforeignentity'));
 
 if ($SESSION->is_set('nodelinktype')) {
     $nodelinktype = $SESSION->get('nodelinktype');

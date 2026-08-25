@@ -390,8 +390,8 @@
 			{function ticket_item_content}
 				{capture name="item_content_result" assign="item_content_result"}{strip}
 					{hint icon="info" mode="toggle" url="?m=rtticketinfo&id={$item.id}"}
-					#{$item.id}
-					<a href="?m=rtticketview&id={$item.id}">{$item.name}</a>
+					(#{$item.id})
+					<a class="lms-ui-list-item-name" href="?m=rtticketview&id={$item.id}">{$item.name}</a>
 				{/strip}{/capture}
 			{/function}
 
@@ -441,8 +441,9 @@
 			$('[name="ticket[subject]"]').val(Base64.decode(selected.attr('data-subject')));
 
 			var message = Base64.decode(selected.attr('data-message'));
-			if (tinyMCE.editors.length) {
-				tinyMCE.editors[0].setContent(message);
+			var editor = tinyMCE.get(0);
+			if (editor) {
+				editor.setContent(message);
 			}
 			$($(this).attr('data-target')).val(message);
 		});
@@ -470,5 +471,41 @@
 			excluded_elements: [ {if isset($ticket.ticketid)}'{$ticket.ticketid}'{/if} ],
 			conflict_lists: [ '#parent-ticket' ]
 		});
+
+	$(function() {
+		$('#customer_addresses').on('lms:address_list_updated', function() {
+			{if ConfigHelper::checkConfig('rt.location_required')}
+				{if $layout.module == 'eventadd'}
+					$(this).prop('required', $('[name="event[custid]"]').val().length > 0).trigger('lms:advanced_select_update');
+				{else}
+					$(this).prop('required', $('[name="ticket[custid]"]').val().length > 0).trigger('lms:advanced_select_update');
+				{/if}
+			{/if}
+		}).on('lms:advanced_select_validate_required', function(e, data) {
+			{if ConfigHelper::checkConfig('rt.location_required')}
+				{if $layout.module == 'eventadd'}
+					var emptyCustomerId = !$('[name="event[custid]"]').val().length;
+				{else}
+					var emptyCustomerId = !$('[name="ticket[custid]"]').val().length;
+				{/if}
+				data.advancedSelectElement.toggleClass('lms-ui-error', !emptyCustomerId && data.invalidValue);
+				this.setCustomValidity(!emptyCustomerId && data.invalidValue ? $t('Location address is not selected') : '');
+			{/if}
+			return false;
+		});
+
+		{if $layout.module != 'eventadd'}
+			$('#customer_addresses').trigger('lms:address_list_updated');
+		{/if}
+
+		{if ConfigHelper::checkConfig('rt.notify_auto_check_on_queue_change')}
+			// Auto-check "Notify users" when queue changes
+			var queueElem = $('[name="ticket[queue]"]');
+			var originalQueue = queueElem.val();
+			queueElem.change(function() {
+				$('#notify').prop('checked', $(this).val() !== originalQueue);
+			});
+		{/if}
+	});
 
 </script>

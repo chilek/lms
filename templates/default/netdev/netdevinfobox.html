@@ -120,6 +120,13 @@
 										</td>
 										<td>
 											{$netdev.model}
+											{if !empty($netdev.devtypename)}{strip}
+												(
+												{trans($netdev.devtypename)}
+												&nbsp;-&nbsp;
+												{if empty($netdev.devtypepassive)}{trans("<!netdevmodeltype>active")}{else}{trans("<!netdevmodeltype>passive")}{/if}
+												)
+											{/strip}{/if}
 										</td>
 									</tr>
 								{/if}

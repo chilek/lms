@@ -25,9 +25,9 @@ CREATE TABLE users (
 	passwdforcechange smallint NOT NULL DEFAULT 0,
 	ntype smallint      DEFAULT NULL,
 	lastlogindate bigint 	DEFAULT 0  NOT NULL,
-	lastloginip varchar(16) DEFAULT '' NOT NULL,
+	lastloginip varchar(40) DEFAULT '' NOT NULL,
 	failedlogindate bigint DEFAULT 0  NOT NULL,
-	failedloginip varchar(16) DEFAULT '' NOT NULL,
+	failedloginip varchar(40) DEFAULT '' NOT NULL,
 	deleted smallint	DEFAULT 0 NOT NULL,
 	passwdexpiration bigint DEFAULT 0 NOT NULL,
 	passwdlastchange bigint DEFAULT 0 NOT NULL,
@@ -66,7 +66,7 @@ DROP SEQUENCE IF EXISTS twofactorauthtrusteddevices_id_seq;
 CREATE SEQUENCE twofactorauthtrusteddevices_id_seq;
 DROP TABLE IF EXISTS twofactorauthtrusteddevices CASCADE;
 CREATE TABLE twofactorauthtrusteddevices (
-    id integer DEFAULT nextval('twofactorauthtrusteddevices_id_seq'::text),
+    id integer DEFAULT nextval('twofactorauthtrusteddevices_id_seq'::text) NOT NULL,
     userid integer NOT NULL
         CONSTRAINT twofactorauthtrusteddevices_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
     cookiename varchar(64) NOT NULL,
@@ -211,9 +211,9 @@ DROP TABLE IF EXISTS location_buildings CASCADE;
 CREATE TABLE location_buildings (
 	id           integer DEFAULT nextval('location_buildings_id_seq'::text) NOT NULL,
 	city_id      integer NOT NULL
-		CONSTRAINT location_cities_city_id_fkey REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT location_buildings_city_id_fkey REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	street_id    integer NULL
-		CONSTRAINT location_cities_street_id_fkey REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT location_buildings_street_id_fkey REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	building_num varchar(20) NULL,
 	zip          varchar(10) DEFAULT NULL,
 	latitude     numeric(10,6) NULL,
@@ -271,6 +271,7 @@ CREATE TABLE divisions (
 	bank        varchar(100)    DEFAULT NULL,
 	account		varchar(48) 	NOT NULL DEFAULT '',
 	email varchar(255)          DEFAULT NULL,
+	serviceemail varchar(255)   DEFAULT NULL,
 	phone varchar(255) DEFAULT NULL,
 	servicephone varchar(40) DEFAULT NULL,
 	inv_header 	text		NOT NULL DEFAULT '',
@@ -289,12 +290,14 @@ CREATE TABLE divisions (
 	office_address_id integer DEFAULT NULL
 		CONSTRAINT divisions_office_address_id_fkey REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id),
+	CONSTRAINT divisions_shortname_label_ukey UNIQUE (shortname, label),
 	UNIQUE (shortname)
 );
 
 /* --------------------------------------------------------
   Structure of table "serviceproviders" (serviceproviders)
 -------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS serviceproviders_id_seq;
 CREATE SEQUENCE serviceproviders_id_seq;
 DROP TABLE IF EXISTS serviceproviders;
 CREATE TABLE serviceproviders (
@@ -392,7 +395,7 @@ CREATE TABLE customernotes (
     message text NOT NULL,
     moddate bigint DEFAULT NULL,
     moduserid integer DEFAULT NULL
-        CONSTRAINT customernotes_moduserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE SET NULL,
+        CONSTRAINT customernotes_moduserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
     PRIMARY KEY (id)
 );
 
@@ -513,6 +516,8 @@ CREATE TABLE customer_addresses (
     	CONSTRAINT customer_addresses_customer_id_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
     address_id  integer REFERENCES addresses (id) ON DELETE CASCADE ON UPDATE CASCADE,
     type        smallint NULL,
+    ten varchar(50) DEFAULT NULL,
+    entity_type smallint DEFAULT NULL,
     PRIMARY KEY (id),
     UNIQUE(customer_id, address_id)
 );
@@ -575,6 +580,12 @@ CREATE TABLE documents (
 		CONSTRAINT documents_cuserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	recipient_address_id integer DEFAULT NULL
 		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	recipient_ten varchar(50) DEFAULT NULL,
+	recipient_type smallint DEFAULT NULL,
+	recipient_address_id2 integer DEFAULT NULL
+		CONSTRAINT documents_recipient_address_id2_fkey REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	recipient_ten2 varchar(50) DEFAULT NULL,
+	recipient_type2 smallint DEFAULT NULL,
 	post_address_id integer DEFAULT NULL
 		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	template varchar(255) DEFAULT NULL,
@@ -598,6 +609,7 @@ CREATE INDEX documents_numberplanid_idx ON documents(numberplanid);
 CREATE INDEX documents_customerid_idx ON documents(customerid);
 CREATE INDEX documents_closed_idx ON documents(closed);
 CREATE INDEX documents_reference_idx ON documents(reference);
+CREATE INDEX documents_type_idx ON documents (type);
 
 /* --------------------------------------------------------
   Structure of table "documentcontents"
@@ -783,9 +795,9 @@ CREATE SEQUENCE voip_rule_states_id_seq;
 DROP TABLE IF EXISTS voip_rule_states CASCADE;
 CREATE TABLE voip_rule_states (
 	id              integer DEFAULT nextval('voip_rule_states_id_seq'::text) NOT NULL,
-	voip_account_id integer NOT NULL DEFAULT NULL
+	voip_account_id integer NOT NULL
 		REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	rule_id         integer NOT NULL DEFAULT NULL
+	rule_id         integer NOT NULL
 		REFERENCES voip_rules (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	units_left      integer NULL DEFAULT NULL,
 	PRIMARY KEY(id),
@@ -818,6 +830,7 @@ CREATE TABLE voip_cdr (
 	caller varchar(20) NOT NULL,
 	callee varchar(20) NOT NULL,
 	call_start_time bigint NOT NULL,
+	creationdate bigint DEFAULT NULL,
 	totaltime bigint NOT NULL,
 	billedtime bigint NOT NULL,
 	price numeric(12,5) NOT NULL,
@@ -843,6 +856,7 @@ CREATE TABLE voip_cdr (
 CREATE INDEX voip_cdr_caller_idx ON voip_cdr (caller);
 CREATE INDEX voip_cdr_callee_idx ON voip_cdr (callee);
 CREATE INDEX voip_cdr_call_start_time_idx ON voip_cdr (call_start_time);
+CREATE INDEX voip_cdr_creationdate_idx ON voip_cdr (creationdate);
 CREATE INDEX voip_cdr_direction_idx ON voip_cdr (direction);
 CREATE INDEX voip_cdr_type_idx ON voip_cdr (type);
 CREATE INDEX voip_cdr_incremental_idx ON voip_cdr (incremental);
@@ -934,6 +948,9 @@ CREATE TABLE tariffs (
     flags smallint DEFAULT 0 NOT NULL,
     netvalue numeric(9,3) DEFAULT NULL,
     notes text DEFAULT NULL,
+    serviceproviderid integer DEFAULT NULL
+        CONSTRAINT tariffs_serviceproviderid_fkey REFERENCES serviceproviders (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    extid varchar(64) DEFAULT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT tariffs_name_key UNIQUE (name, value, currency, period)
 );
@@ -1124,6 +1141,8 @@ CREATE TABLE assignments (
 	attribute varchar(255) DEFAULT NULL,
 	recipient_address_id integer DEFAULT NULL
 		CONSTRAINT assignments_recipient_address_id_fkey REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	recipient_address_id2 integer DEFAULT NULL
+		CONSTRAINT assignments_recipient_address_id2_fkey REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	docid integer DEFAULT NULL
 		CONSTRAINT assignments_docid_fkey REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	commited smallint DEFAULT 1 NOT NULL,
@@ -1176,6 +1195,8 @@ CREATE TABLE invoicecontents (
 	period smallint DEFAULT 3
 );
 CREATE INDEX invoicecontents_docid_idx ON invoicecontents (docid);
+CREATE INDEX invoicecontents_tariffid_idx ON invoicecontents (tariffid);
+CREATE INDEX invoicecontents_docid_itemid_idx ON invoicecontents(docid, itemid);
 
 /* --------------------------------------------------------
   Structure of table "debitnotecontents"
@@ -1312,6 +1333,7 @@ CREATE INDEX cash_sourceid_idx ON cash (sourceid);
 CREATE INDEX cash_time_idx ON cash (time);
 CREATE INDEX cash_linktechnology_idx ON cash (linktechnology);
 CREATE INDEX cash_notification_idx ON cash (notification);
+CREATE INDEX cash_docid_itemid_idx ON cash (docid, itemid);
 
 /* --------------------------------------------------------
   Structure of table "pna"
@@ -2046,6 +2068,7 @@ CREATE TABLE netlinks (
 		REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	dstradiosector integer	DEFAULT NULL
 		REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	foreignentity varchar(255) DEFAULT NULL,
 	PRIMARY KEY  (id),
 	CONSTRAINT netlinks_src_key UNIQUE (src, dst)
 );
@@ -2125,6 +2148,7 @@ CREATE TABLE rtqueues (
 	CONSTRAINT rtqueues_deluserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
   verifierid integer DEFAULT NULL
     CONSTRAINT rtqueues_verifierid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  uiconfigsection varchar(64) DEFAULT NULL,
   PRIMARY KEY (id),
   UNIQUE (name)
 );
@@ -2165,7 +2189,8 @@ CREATE TABLE rttickets (
     CONSTRAINT rttickets_address_id_fkey REFERENCES addresses (id) ON UPDATE CASCADE ON DELETE SET NULL,
   nodeid integer	DEFAULT NULL
     CONSTRAINT rttickets_nodeid_fkey REFERENCES nodes (id) ON UPDATE CASCADE ON DELETE SET NULL,
-  netnodeid integer	DEFAULT NULL,
+  netnodeid integer	DEFAULT NULL
+    CONSTRAINT rttickets_netnodeid_fkey REFERENCES netnodes (id) ON UPDATE CASCADE ON DELETE SET NULL,
   netdevid integer	DEFAULT NULL
     CONSTRAINT rttickets_netdevid_fkey REFERENCES netdevices (id) ON UPDATE CASCADE ON DELETE SET NULL,
   verifierid integer DEFAULT NULL
@@ -2586,12 +2611,15 @@ CREATE TABLE events (
 		CONSTRAINT events_netnodeid_fkey REFERENCES netnodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	netdevid integer DEFAULT NULL
 		CONSTRAINT events_netdevid_fkey REFERENCES netdevices (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	divisionid integer DEFAULT NULL
+		CONSTRAINT events_divisionid_fkey REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 );
 CREATE INDEX events_date_idx ON events(date);
 CREATE INDEX events_nodeid_idx ON events(nodeid);
 CREATE INDEX events_netnodeid_idx ON events (netnodeid);
 CREATE INDEX events_netdevid_idx ON events (netdevid);
+CREATE INDEX events_divisionid_idx ON events (divisionid);
 
 /* ---------------------------------------------------
  Structure of table "events" (Timetable)
@@ -2610,7 +2638,7 @@ CREATE TABLE eventassignments (
 ------------------------------------------------------*/
 DROP TABLE IF EXISTS sessions CASCADE;
 CREATE TABLE sessions (
-    id 		varchar(50) 	NOT NULL DEFAULT '',
+    id 		varchar(100) 	NOT NULL DEFAULT '',
     ctime 	bigint 	NOT NULL DEFAULT 0,
     mtime 	bigint 	NOT NULL DEFAULT 0,
     atime 	bigint 	NOT NULL DEFAULT 0,
@@ -2734,8 +2762,7 @@ DROP TABLE IF EXISTS dbinfo CASCADE;
 CREATE TABLE dbinfo (
     keytype 	varchar(255) 	DEFAULT '' NOT NULL,
     keyvalue 	varchar(255) 	DEFAULT '' NOT NULL,
-    PRIMARY KEY (keytype),
-    CONSTRAINT dbinfo_keytype_ukey UNIQUE (keytype)
+    PRIMARY KEY (keytype)
 );
 
 /* ---------------------------------------------------
@@ -3099,32 +3126,211 @@ CREATE TABLE files (
 CREATE INDEX files_md5sum_idx ON files (md5sum);
 
 /* ---------------------------------------------------
+ Structure of table ksefbatchsessions
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS ksefbatchsessions_id_seq;
+CREATE SEQUENCE ksefbatchsessions_id_seq;
+DROP TABLE IF EXISTS ksefbatchsessions CASCADE;
+CREATE TABLE ksefbatchsessions (
+    id integer DEFAULT nextval('ksefbatchsessions_id_seq'::text) NOT NULL,
+    ksefnumber varchar(40) NOT NULL,
+    cdate bigint NOT NULL,
+    lastupdate bigint NOT NULL,
+    status smallint NOT NULL DEFAULT 0,
+    statusdescription text DEFAULT NULL,
+    environment smallint NOT NULL DEFAULT 0,
+    PRIMARY KEY (id)
+);
+CREATE INDEX ksefbatchsessions_ksefnumber_idx ON ksefbatchsessions (ksefnumber);
+CREATE INDEX ksefbatchsessions_status_idx ON ksefbatchsessions (status);
+
+/* ---------------------------------------------------
  Structure of table ksefdocuments
 ------------------------------------------------------*/
-DROP TABLE IF EXISTS ksefdocuments;
-CREATE TABLE ksefdocuments (
-	docid integer NOT NULL
-		CONSTRAINT ksefdocuments_docid_fkey REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	refnumber varchar(40) NOT NULL,
-	elemrefnumber varchar(40) NOT NULL,
-	ksefnumber varchar(40) DEFAULT NULL,
-	status smallint NOT NULL DEFAULT 0,
-	statusdescription text DEFAULT NULL,
-	hash varchar(130) NOT NULL
+DROP SEQUENCE IF EXISTS ksefdocuments_id_seq;
+CREATE SEQUENCE ksefdocuments_id_seq;
+DROP TABLE IF EXISTS ksefdocuments CASCADE;
+CREATE TABLE ksefdocuments
+(
+    id                integer     DEFAULT nextval('ksefdocuments_id_seq'::text) NOT NULL,
+    batchsessionid    integer     NOT NULL
+        CONSTRAINT ksefbatchsessions_batchsessionid_fkey REFERENCES ksefbatchsessions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    docid             integer     NOT NULL
+        CONSTRAINT ksefdocuments_docid_fkey REFERENCES documents (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    ordinalnumber     integer     NOT NULL,
+    ksefnumber        varchar(40) DEFAULT NULL,
+    hash              varchar(50) NOT NULL,
+    status            smallint    NOT NULL DEFAULT 0,
+    statusdescription text        DEFAULT NULL,
+    statusdetails     text        DEFAULT NULL,
+    permanent_storage_date timestamptz DEFAULT NULL,
+    PRIMARY KEY (id)
 );
-CREATE INDEX ksefdocuments_refnumber_idx ON ksefdocuments (refnumber);
-CREATE INDEX ksefdocuments_elemrefnumber_idx ON ksefdocuments (elemrefnumber);
-CREATE INDEX ksefdocuments_ksefnumber_idx ON ksefdocuments (ksefnumber);
 CREATE INDEX ksefdocuments_status_idx ON ksefdocuments (status);
 
 /* ---------------------------------------------------
- Structure of table ksefdivisions
+ Structure of table ksefconfig
 ------------------------------------------------------*/
-DROP TABLE IF EXISTS ksefdivisions;
-CREATE TABLE ksefdivisions (
-	divisionid integer NOT NULL
-		CONSTRAINT ksefdivisions_divisionid_fkey REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	token varchar(70) NOT NULL
+DROP SEQUENCE IF EXISTS ksefconfig_id_seq;
+CREATE SEQUENCE ksefconfig_id_seq;
+DROP TABLE IF EXISTS ksefconfig CASCADE;
+CREATE TABLE ksefconfig (
+    id integer DEFAULT nextval('ksefconfig_id_seq'::text) NOT NULL,
+    divisionid integer NOT NULL
+        CONSTRAINT ksefconfig_divisionid_fkey REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    delay integer NOT NULL,
+    allconsumers smallint NOT NULL,
+    boundarydate bigint NOT NULL,
+    showbalancesummary smallint NOT NULL,
+    xmladdallvalues smallint NOT NULL DEFAULT 0,
+    PRIMARY KEY (id)
+);
+
+/* ---------------------------------------------------
+ Structure of table ksefinvoices
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS ksefinvoices_id_seq;
+CREATE SEQUENCE ksefinvoices_id_seq;
+DROP TABLE IF EXISTS ksefinvoices CASCADE;
+CREATE TABLE ksefinvoices (
+    id integer DEFAULT nextval('ksefinvoices_id_seq'::text) NOT NULL,
+    division_id integer NOT NULL
+        CONSTRAINT ksefinvoices_division_id_fkey REFERENCES divisions (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    issue_date bigint NOT NULL,
+    from_date bigint NOT NULL,
+    to_date bigint DEFAULT NULL,
+    permanent_storage_date timestamptz NOT NULL,
+    ksef_number varchar(40) NOT NULL,
+    invoice_number varchar(256) NOT NULL,
+    corrected_ksef_number varchar(44) DEFAULT NULL,
+    corrected_invoice_number varchar(256) DEFAULT NULL,
+    corrected_invoice_issue_date bigint NULL,
+    seller_ten varchar(10) NOT NULL,
+    seller_name varchar(512) NOT NULL,
+    buyer_identifier_type smallint NOT NULL,
+    buyer_identifier_value varchar(50) NOT NULL,
+    buyer_name varchar(512) NOT NULL,
+    net_amount numeric(12,5) NOT NULL,
+    gross_amount numeric(12,5) NOT NULL,
+    vat_amount numeric(12,5) NOT NULL,
+    currency varchar(3) NOT NULL,
+    currency_value numeric(22,6) NOT NULL DEFAULT 1.0,
+    invoicing_mode smallint NOT NULL,
+    invoice_type smallint NOT NULL,
+    form_system_code varchar(15) NOT NULL,
+    form_schema_version varchar(15) NOT NULL,
+    form_value varchar(15) NOT NULL,
+    invoice_hash varchar(44) NOT NULL,
+    corrected_invoice_hash varchar(44) DEFAULT NULL,
+    bank_account varchar(48) DEFAULT NULL,
+    bank_name varchar(256) DEFAULT NULL,
+    paid smallint NOT NULL DEFAULT 0,
+    pay_date bigint DEFAULT NULL,
+    pay_type smallint DEFAULT 0,
+    buyer_id varchar(50) DEFAULT NULL,
+    posting smallint DEFAULT 1,
+    settled smallint DEFAULT 0,
+    notes text DEFAULT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT ksefinvoices_ksef_number_ukey UNIQUE (ksef_number)
+);
+CREATE INDEX ksefinvoices_issue_date_idx ON ksefinvoices (issue_date);
+CREATE INDEX ksefinvoices_permanent_storage_date_idx ON ksefinvoices (permanent_storage_date);
+CREATE INDEX ksefinvoices_ksef_number_idx ON ksefinvoices (ksef_number);
+CREATE INDEX ksefinvoices_corrected_ksef_number_idx ON ksefinvoices (corrected_ksef_number);
+CREATE INDEX ksefinvoices_seller_ten_idx ON ksefinvoices (seller_ten);
+CREATE INDEX ksefinvoices_buyer_identifier_value_idx ON ksefinvoices (buyer_identifier_value);
+CREATE INDEX ksefinvoices_invoice_type_idx ON ksefinvoices (invoice_type);
+
+/* ---------------------------------------------------
+ Structure of table ksefinvoicethirdsubjects
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS ksefinvoicethirdsubjects_id_seq;
+CREATE SEQUENCE ksefinvoicethirdsubjects_id_seq;
+DROP TABLE IF EXISTS ksefinvoicethirdsubjects CASCADE;
+CREATE TABLE ksefinvoicethirdsubjects (
+    id integer DEFAULT nextval('ksefinvoicethirdsubjects_id_seq'::text) NOT NULL,
+    ksefinvoiceid integer NOT NULL
+        CONSTRAINT ksefinvoicethirdsubjects_ksefinvoiceid_fkey REFERENCES ksefinvoices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    identifier_type smallint NOT NULL,
+    identifier_value varchar(50) NOT NULL,
+    name varchar(512) NOT NULL,
+    role integer NOT NULL,
+    PRIMARY KEY (id)
+);
+CREATE INDEX ksefinvoicethirdsubjects_identifier_type_idx ON ksefinvoicethirdsubjects (identifier_type);
+CREATE INDEX ksefinvoicethirdsubjects_identifier_value_idx ON ksefinvoicethirdsubjects (identifier_value);
+CREATE INDEX ksefinvoicethirdsubjects_role_idx ON ksefinvoicethirdsubjects (role);
+
+/* ---------------------------------------------------
+ Structure of table ksefinvoicesummaries
+------------------------------------------------------*/
+DROP TABLE IF EXISTS ksefinvoicesummaries CASCADE;
+CREATE TABLE ksefinvoicesummaries (
+    ksef_invoice_id integer NOT NULL
+        CONSTRAINT ksefinvoicesummaries_ksef_invoice_id_fkey REFERENCES ksefinvoices (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    net_amount numeric(12,5) NOT NULL,
+    gross_amount numeric(12,5) NOT NULL,
+    vat_amount numeric(12,5) NOT NULL,
+    tax_rate numeric(4,2),
+    taxed smallint DEFAULT 1,
+    reverse_charge smallint DEFAULT 0,
+    eu smallint DEFAULT 0,
+    export smallint DEFAULT 0
+);
+
+/* ---------------------------------------------------
+ Structure of table ksefinvoiceitems
+------------------------------------------------------*/
+CREATE TABLE ksefinvoiceitems (
+    ksef_invoice_id integer NOT NULL
+        CONSTRAINT ksefinvoiceitems_ksef_invoice_id_fkey REFERENCES ksefinvoices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    item_id smallint NOT NULL,
+    name varchar(512) DEFAULT NULL,
+    prod_id varchar(50) DEFAULT NULL,
+    unit varchar(512) DEFAULT NULL,
+    count numeric(22,6) DEFAULT NULL,
+    net_flag smallint DEFAULT 1,
+    net_price numeric(24,8) NOT NULL,
+    price numeric(24,8) NOT NULL,
+    net_value numeric(16,2) NOT NULL,
+    value numeric(16,2) NOT NULL,
+    tax_rate numeric(4,2),
+    taxed smallint DEFAULT 1,
+    reverse_charge smallint DEFAULT 0,
+    eu smallint DEFAULT 0,
+    export smallint DEFAULT 0,
+    product_service_group smallint DEFAULT 0,
+    before_state smallint DEFAULT 0,
+    order_id text DEFAULT NULL
+);
+CREATE INDEX ksefinvoiceitems_order_id_idx ON ksefinvoiceitems (order_id);
+
+/* ---------------------------------------------------
+ Structure of table ksefinvoicetags
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS ksefinvoicetags_id_seq;
+CREATE SEQUENCE ksefinvoicetags_id_seq;
+DROP TABLE IF EXISTS ksefinvoicetags CASCADE;
+CREATE TABLE ksefinvoicetags (
+    id integer DEFAULT nextval('ksefinvoicetags_id_seq'::text) NOT NULL,
+    name text NOT NULL,
+    PRIMARY KEY (id)
+);
+
+/* ---------------------------------------------------
+ Structure of table ksefinvoicetagassignments
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS ksefinvoicetagassignments_id_seq;
+CREATE SEQUENCE ksefinvoicetagassignments_id_seq;
+DROP TABLE IF EXISTS ksefinvoicetagassignments CASCADE;
+CREATE TABLE ksefinvoicetagassignments (
+    id integer DEFAULT nextval('ksefinvoicetagassignments_id_seq'::text) NOT NULL,
+    ksef_invoice_id integer NOT NULL
+        CONSTRAINT ksefinvoicetagassignments_ksef_invoice_id_fkey REFERENCES ksefinvoices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    ksef_invoice_tag_id integer NOT NULL
+        CONSTRAINT ksefinvoicetagassignments_ksef_invoice_tag_id_fkey REFERENCES ksefinvoicetags (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (id)
 );
 
 /* ---------------------------------------------------
@@ -3168,9 +3374,9 @@ CREATE TABLE up_customers (
     customerid integer 	    DEFAULT NULL
 		CONSTRAINT up_customers_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	lastlogindate bigint 	DEFAULT 0 NOT NULL,
-	lastloginip varchar(16) DEFAULT '' NOT NULL,
+	lastloginip varchar(40) DEFAULT '' NOT NULL,
 	failedlogindate bigint DEFAULT 0 NOT NULL,
-	failedloginip varchar(16) DEFAULT '' NOT NULL,
+	failedloginip varchar(40) DEFAULT '' NOT NULL,
 	enabled smallint 	    DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
@@ -3211,7 +3417,7 @@ CREATE TABLE up_info_changes (
 ------------------------------------------------------*/
 DROP TABLE IF EXISTS up_sessions CASCADE;
 CREATE TABLE up_sessions (
-	id		varchar(50) 	NOT NULL DEFAULT '',
+	id		varchar(100) 	NOT NULL DEFAULT '',
 	customerid  integer NOT NULL
 		CONSTRAINT up_sessions_customerid_fkey REFERENCES customers (id) ON UPDATE CASCADE ON DELETE CASCADE,
 	ctime	bigint 	NOT NULL DEFAULT 0,
@@ -3232,7 +3438,8 @@ CASE
     THEN 0
     ELSE current_setting(''lms.current_user'')::integer
 END
-' LANGUAGE SQL;
+' LANGUAGE SQL
+STABLE;
 
 CREATE VIEW vcustomerassignments AS
     SELECT ca.*
@@ -3705,12 +3912,19 @@ CREATE VIEW customermailsview AS
 			GROUP BY customerid;
 
 CREATE VIEW vusers AS
-    SELECT u.*, (u.firstname || ' ' || u.lastname) AS name, (u.lastname || ' ' || u.firstname) AS rname
+    SELECT
+        u.*,
+        (u.firstname || ' ' || u.lastname) AS name,
+        (u.lastname || ' ' || u.firstname) AS rname
     FROM users u
     LEFT JOIN userdivisions ud ON u.id = ud.userid
-    WHERE lms_current_user() = 0 OR ud.divisionid IN (SELECT ud2.divisionid
-                             FROM userdivisions ud2
-                             WHERE ud2.userid = lms_current_user())
+    WHERE lms_current_user() = 0
+        OR ud.divisionid IN (
+            SELECT ud2.divisionid
+            FROM userdivisions ud2
+            WHERE ud2.userid = lms_current_user()
+        )
+        OR ud.divisionid IS NULL
     GROUP BY u.id;
 
 CREATE VIEW vallusers AS
@@ -4087,6 +4301,7 @@ URL: %url
 ('userpanel', 'default_categories', '1', '', 0),
 ('userpanel', 'auth_type', '1', '', 0),
 ('userpanel', 'show_confirmed_documents_only', 'false', '', 0),
+('userpanel', 'show_unapproved_document_attachments', 'false', '', 0),
 ('userpanel', 'module_order', '', '', 0),
 ('userpanel', 'visible_ticket_sources', '0;1;2;3;4;5;6;7', '', 0),
 ('userpanel', 'change_notification_mail_sender', '', '', 0),
@@ -4174,7 +4389,12 @@ URL: %url
 2023.09.07:11.50
 2023.10.05:11.25
 2025.05.08:10.75
-2025.07.03:10.5', '', 0);
+2025.07.03:10.5
+2025.09.04:10.25
+2025.10.09:10.0
+2025.11.06:9.75
+2025.12.04:9.50
+2026.03.05:9.25', '', 0);
 
 INSERT INTO invprojects (name, type) VALUES ('inherited', 1);
 
@@ -4522,6 +4742,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025070300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026081100');
 
 COMMIT;

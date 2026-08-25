@@ -47,6 +47,28 @@ if (!empty($_POST['division'])) {
         $error['shortname'] = trans('Division with specified name already exists!');
     }
 
+    if ($division['shortname'] == '') {
+        $error['shortname'] = trans('Division short name is required!');
+    } elseif (!empty($division['label'])) {
+        if ($DB->GetOne(
+            'SELECT 1 FROM divisions
+            WHERE label = ?',
+            array(
+                $division['label'],
+            )
+        )) {
+            $error['label'] = trans('Division with specified label already exists!');
+        }
+    } elseif ($DB->GetOne(
+        'SELECT 1 FROM divisions
+        WHERE shortname = ?',
+        array(
+            $division['shortname']
+        )
+    )) {
+        $error['shortname'] = trans('Division with specified name already exists!');
+    }
+
     if (!empty($division['naturalperson'])) {
         if (empty($division['firstname'])) {
             $error['firstname'] = trans('First name cannot be empty for natural person!');
@@ -94,6 +116,10 @@ if (!empty($_POST['division'])) {
         $error['email'] = trans('E-mail isn\'t correct!');
     }
 
+    if ($division['serviceemail'] != '' && !check_email($division['serviceemail'])) {
+        $error['serviceemail'] = trans('E-mail isn\'t correct!');
+    }
+
     if ($division['phone'] != '' && !preg_match('/^\+?[0-9\s\-]+$/', $division['phone'])) {
         $error['phone'] = trans('Incorrect phone number!');
     }
@@ -116,10 +142,6 @@ if (!empty($_POST['division'])) {
 
     if (!preg_match('/^[0-9]*$/', $division['tax_office_code'])) {
         $error['tax_office_code'] = trans('Invalid format of Tax Office Code!');
-    }
-
-    if (!preg_match('/^([0-9a-fA-F]{64})?$/', $division['kseftoken'])) {
-        $error['kseftoken'] = trans('Invalid format of KSeF token!');
     }
 
     if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')

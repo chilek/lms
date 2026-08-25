@@ -341,7 +341,7 @@ if ($id && !isset($_POST['ticket'])) {
                     $ticket = $LMS->GetTicketContents($ticketid);
 
                     if ($block_ticket_close_with_open_events && !empty($ticket['openeventcount'])) {
-                        die(trans("Ticket have open assigned events!"));
+                        die(trans("Ticket has open assigned events!"));
                     } else {
                         if ($ticket['state'] != RT_RESOLVED) {
                             $LMS->TicketChange($ticketid, array('state' => RT_RESOLVED));
@@ -635,7 +635,7 @@ if (isset($_POST['ticket'])) {
     if (empty($ticketedit['categories']) && (!$allow_empty_categories || (empty($ticketedit['categorywarn']) && $empty_category_warning))) {
         if ($allow_empty_categories) {
             $ticketedit['categorywarn'] = 1;
-            $error['categories'] = trans('Category selection is recommended but not required!');
+            $warning['categories'] = trans('Category selection is recommended but not required!');
         } else {
             $error['categories'] = trans('You have to select category!');
         }
@@ -717,7 +717,7 @@ if (isset($_POST['ticket'])) {
 
     if ($block_ticket_close_with_open_events) {
         if ($ticketedit['state'] == RT_RESOLVED && !empty($ticket['openeventcount'])) {
-            $error['state'] = trans('Ticket have open assigned events!');
+            $error['state'] = trans('Ticket has open assigned events!');
         }
     }
 
@@ -773,7 +773,7 @@ if (isset($_POST['ticket'])) {
         $ticketedit['categories'] = array_flip($ticketedit['categories']);
     }
 
-    if (!$error) {
+    if (!$error && !$warning) {
         // setting status and the ticket owner
         $props = array(
             'queueid' => $ticketedit['queue'],
@@ -785,7 +785,7 @@ if (isset($_POST['ticket'])) {
             'categories' => isset($ticketedit['categories']) ? array_keys($ticketedit['categories']) : array(),
             'source' => $ticketedit['source'],
             'priority' => $ticketedit['priority'] ?? null,
-            'address_id' => $ticketedit['address_id'] == -1 ? null : $ticketedit['address_id'],
+            'address_id' => $ticketedit['address_id'] <= 0 ? null : $ticketedit['address_id'],
             'nodeid' => empty($ticketedit['nodeid']) ? null : $ticketedit['nodeid'],
             'netnodeid' => empty($ticketedit['netnodeid']) ? null : $ticketedit['netnodeid'],
             'netdevid' => empty($ticketedit['netdevid']) ? null : $ticketedit['netdevid'],
@@ -994,8 +994,8 @@ if (isset($_POST['ticket'])) {
     $ticket['requestor_phone'] = $ticketedit['requestor_phone'] ?? null;
     $ticket['parentid'] = $ticketedit['parentid'] ?? null;
     $ticket['categorywarn'] = $ticketedit['categorywarn'] ?? 0;
-    $ticket['customcreatetime'] = $ticketedit['customcreatetime'];
-    $ticket['customresolvetime'] = $ticketedit['customresolvetime'];
+    $ticket['customcreatetime'] = $ticketedit['customcreatetime'] ?? null;
+    $ticket['customresolvetime'] = $ticketedit['customresolvetime'] ?? null;
 
     if (!empty($ticketedit['relatedtickets'])) {
         $ticket['relatedtickets'] = $LMS->getTickets($ticketedit['relatedtickets']);

@@ -67,19 +67,23 @@ $(function() {
 			.closest('.lms-ui-box-row').toggleClass('blend', !data.list.length)
 			.removeAttr('data-tooltip').attr('title', data.list.length ? '' : $t("No parent ticket is selected!"));
 	});
-
-	$('#requestor_mail_combobox').scombobox('val', '');
-	$('#requestor_phone_combobox').scombobox('val', '');
 });
 
 function change_customer(customer_selector, address_selector) {
 	getCustomerAddresses($(customer_selector).val(), function (addresses) {
 		setAddressList('#customer_addresses', addresses);
-		if (Object.keys(addresses).length == 1) {
-			$('#customer_addresses').val($('#customer_addresses option:last-child').val());
-			updateAdvancedSelectsTest('#customer_addresses');
+
+		if (Object.keys(addresses).length) {
+			$.each(addresses, function(index, address) {
+				if (address.hasOwnProperty('default_address')) {
+					$('#customer_addresses').val(address.address_id);
+					updateAdvancedSelectsTest('#customer_addresses');
+				}
+			});
 		}
+
 		xajax_select_location($(customer_selector).val(), $(address_selector).val());
+		$('#customer_addresses').trigger('lms:address_list_updated');
 		xajax_update_contacts($(customer_selector).val());
 	});
 }
@@ -94,6 +98,7 @@ function update_nodes(data) {
 }
 
 function update_contacts(data) {
+	var oldValue;
 	var values = [];
 	$(data.emails).each(function(idx, item) {
 		values.push({
@@ -102,9 +107,10 @@ function update_contacts(data) {
 		});
 	});
 
+	oldValue = $('#requestor_mail_combobox').scombobox('val');
 	$('#requestor_mail_combobox')
 		.scombobox('fill', values)
-		.scombobox('val', '');
+		.scombobox('val', oldValue);
 
 	values = [];
 	$(data.phones).each(function(idx, item) {
@@ -114,9 +120,10 @@ function update_contacts(data) {
 		});
 	});
 
+	oldValue = $('#requestor_phone_combobox').scombobox('val');
 	$('#requestor_phone_combobox')
 		.scombobox('fill', values)
-		.scombobox('val', '');
+		.scombobox('val', oldValue);
 }
 
 function initCustomerSelection() {

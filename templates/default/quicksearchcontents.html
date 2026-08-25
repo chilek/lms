@@ -18,6 +18,7 @@
 		<option value="email"{if !isset($qs_properties.customer) || isset($qs_properties.customer.email)} selected{/if}>{trans("<!qs>email")}</option>
 		<option value="bankaccount"{if !isset($qs_properties.customer) || isset($qs_properties.customer.bankaccount)} selected{/if}>{trans("<!qs>alternative bank account")}</option>
 		<option value="ten"{if !isset($qs_properties.customer) || isset($qs_properties.customer.ten)} selected{/if}>{trans("<!qs>TEN")}</option>
+		<option value="recipient-ten"{if !isset($qs_properties.customer) || isset($qs_properties.customer['recipient-ten'])} selected{/if}>{trans("<!qs>Recipient TEN")}</option>
 		<option value="ssn"{if !isset($qs_properties.customer) || isset($qs_properties.customer.ssn)} selected{/if}>{trans("<!qs>SSN")}</option>
 		<option value="additional-info"{if !isset($qs_properties.customer) || isset($qs_properties.customer['additional-info'])} selected{/if}>{trans("<!qs>additional information")}</option>
 		<option value="notes"{if !isset($qs_properties.customer) || isset($qs_properties.customer['notes'])} selected{/if}>{trans("<!qs>notes")}</option>

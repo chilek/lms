@@ -73,6 +73,10 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             }
             switch ($key) {
                 case 'type':
+                    if (empty($val)) {
+                        break;
+                    }
+
                     if (is_array($val)) {
                         if (!in_array(-1, $val)) {
                             $where[] = 'n.type IN (' . implode(',', $val) . ')';
@@ -87,6 +91,10 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
                     }
                     break;
                 case 'invprojectid':
+                    if (empty($val)) {
+                        break;
+                    }
+
                     if (is_array($val)) {
                         if (in_array(-2, $val)) {
                             $where[] = 'n.invprojectid IS NULL';
@@ -158,10 +166,10 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
                     addr.house as location_house, addr.flat as location_flat') . '
                 FROM netnodes n
                 ' . ($short ? ''
-                : ' LEFT JOIN (
+                : 'LEFT JOIN (
                     SELECT
                         nn.id AS netnodeid,
-                        COUNT(*) AS netdevcount
+                        COUNT(nd.id) AS netdevcount
                     FROM netnodes nn
                     LEFT JOIN netdevices nd ON nd.netnodeid = nn.id
                     GROUP BY nn.id
@@ -175,7 +183,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
                 LEFT JOIN location_districts ld ON ld.id = lb.districtid
                 LEFT JOIN location_states ls    ON ls.id = ld.stateid '
                 . (empty($where) ? '' : ' WHERE ' . implode(' AND ', $where))
-                . ' ' . $ostr . ' ' . $dir
+                . (empty($ostr) ? '' : ' ' . $ostr . ' ' . $dir)
                 . (isset($limit) ? ' LIMIT ' . $limit : '')
                 . (isset($offset) ? ' OFFSET ' . $offset : ''),
                 'id'
@@ -395,7 +403,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             $this->db->Execute(
                 'UPDATE netnodes SET address_id = ? WHERE id = ?',
                 array(
-                    ($netnodedata['customer_address_id'] >= 0 ? $netnodedata['customer_address_id'] : null),
+                    ($netnodedata['customer_address_id'] > 0 ? $netnodedata['customer_address_id'] : null),
                     $netnodedata['id']
                 )
             );
@@ -407,7 +415,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
                 $this->db->Execute(
                     'UPDATE netnodes SET address_id = ? WHERE id = ?',
                     array(
-                        ($address_id >= 0 ? $address_id : null),
+                        ($address_id > 0 ? $address_id : null),
                         $netnodedata['id']
                     )
                 );

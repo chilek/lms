@@ -162,6 +162,10 @@ function openPopupWindow(options)
 		options.title = 'openPopupWindow';
 	}
 
+	if (!options.hasOwnProperty('position')) {
+		options.position = { my: "left top", at: "left bottom", of: options.selector };
+	}
+
 	$.ajax({
 		url: options.url,
 		async: true,
@@ -175,7 +179,7 @@ function openPopupWindow(options)
 				dialogClass: 'lms-ui-popup',
 				closeOnEscape: true,
 				modal: true,
-				position: { my: "left top", at: "left bottom", of: options.selector },
+				position: options.position,
 				resizable: true,
 				width: 'auto',
 				title: options.title,
@@ -192,6 +196,10 @@ function openPopupWindow(options)
 
 			if (options.onLoaded) {
 				options.onLoaded();
+			}
+
+			if (options.hasOwnProperty('onSubmit') && typeof(options.onSubmit) === 'function') {
+				dialog.find('form').submit(options.onSubmit);
 			}
 		}
 
@@ -238,6 +246,21 @@ if ( typeof $ !== 'undefined' ) {
 			});
 		});
 
+		$('body').on('click', '.dev-link-port,.node-link-port', function() {
+			var url;
+			if ($(this).is('.dev-link-port')) {
+				url = '?m=netlinkproperties&id=' + $(this).attr('data-src-netdev') + '&devid=' + $(this).attr('data-dst-netdev') + '&isnetlink=1'
+			} else {
+				url = '?m=netlinkproperties&id=' + $(this).attr('data-netdev') + '&devid=' + $(this).attr('data-node') + '&isnetlink=0'
+			}
+			openPopupWindow({
+				url: url,
+				selector: this,
+				position: { my: 'center', at: 'center', of: 'body' },
+				title: $(this).is('.dev-link-port') ? $t("Network link properties") : $t("Node link properties")
+			});
+		});
+
         // disable and enable inputs after click
         $('body').on('change', '.lms-ui-address-teryt-checkbox', function() {
             var boxid = $( this ).closest( ".lms-ui-address-box" ).attr( 'id' );
@@ -245,6 +268,7 @@ if ( typeof $ !== 'undefined' ) {
             if ( $( this ).is(':checked') ) {
                 $("#" + boxid + " input[type=text]").prop("readonly", true);
                 $("#" + boxid).find("input[data-address='zip']").attr('readonly', false);
+                $("#" + boxid).find("input[data-address='ten']").attr('readonly', false);
                 $("#" + boxid).find("input[data-address='postoffice']").attr('readonly', false);
                 $("#" + boxid).find("input[data-address='location-name']").attr('readonly', false);
                 $("#" + boxid).find("select[data-address='state-select']").css('display', 'none').attr('disabled', true);
@@ -898,10 +922,17 @@ function GusApiGetCompanyDetails(searchType, searchData, on_success) {
 		}
 	}).done(function(data) {
 		if (data.hasOwnProperty('error')) {
-			alert(data.error);
+			alertDialog({
+				title: $t("<!dialog>Error"),
+				message: data.error
+			});
 			return;
 		}
 		if (data.hasOwnProperty('warning')) {
+			alertDialog({
+				title: $t("<!dialog>Alert"),
+				message: data.warning
+			});
 			return;
 		}
 		on_success(data);
@@ -909,27 +940,71 @@ function GusApiGetCompanyDetails(searchType, searchData, on_success) {
 }
 
 function GusApiFinished(fieldPrefix, details) {
-	$.each(details, function(key, value) {
-		if (key == 'addresses') {
-			$.each(value, function(idx, addresses) {
+	if (typeof(fieldPrefix) == 'object') {
+		var handledFields = {};
+		$.each(fieldPrefix, function(key, fieldSelector) {
+			if (key == 'addresses') {
+				var addresses = details.addresses;
 				if (!Array.isArray(addresses)) {
 					addresses = [ addresses ];
 				}
-				$.each(addresses, function(addressnr, address) {
-					$.each(address, function (addresskey, addressvalue) {
-						$('[name="' + fieldPrefix + '[addresses][' + addressnr + '][' + addresskey + ']"]').val(
-							typeof(addressvalue) == 'string' ? addressvalue : '');
+
+				$.each(addresses, function (addressNumber, address) {
+					$.each(address, function (addressPropertyName, addressPropertyValue) {
+						if (!(addressPropertyName in fieldSelector[addressNumber])) {
+							return;
+						}
+						$(fieldSelector[addressNumber][addressPropertyName]).val(addressPropertyValue);
 					});
-					if ((address.location_state > 0) != $('[name="' + fieldPrefix + '[addresses][' + addressnr + '][teryt]"]').prop('checked')) {
-						$('[name="' + fieldPrefix + '[addresses][' + addressnr + '][teryt]"]').click();
+					if ((address.location_state > 0) != $(fieldSelector[addressNumber].teryt).prop('checked')) {
+						$(fieldSelector[addressNumber].teryt).click();
 					}
-					$('[name="' + fieldPrefix + '[addresses][' + addressnr + '][location_city_name]"]').trigger('input');
 				});
-			});
-		} else {
-			$('[name="' + fieldPrefix + '[' + key + ']"]').val(typeof(value) == 'string' ? value : '');
-		}
-	});
+			} else if (Array.isArray(fieldSelector)) {
+				$.each(fieldSelector, function(selectorIdx, selector) {
+					if (handledFields.hasOwnProperty(selector)) {
+						if (details[key].length) {
+							var val = $(selector).val();
+							$(selector).val((val.length ? val + ' ' : '') + details[key]);
+						}
+					} else {
+						$(selector).val(details[key]);
+						handledFields[selector] = key;
+					}
+				});
+			} else if (handledFields.hasOwnProperty(fieldSelector)) {
+				if (details[key].length) {
+					var val = $(fieldSelector).val();
+					$(fieldSelector).val((val.length ? val + ' ' : '') + details[key]);
+				}
+			} else {
+				$(fieldSelector).val(details[key]);
+				handledFields[fieldSelector] = key;
+			}
+		});
+	} else {
+		$.each(details, function(key, value) {
+			if (key == 'addresses') {
+				$.each(value, function(idx, addresses) {
+					if (!Array.isArray(addresses)) {
+						addresses = [ addresses ];
+					}
+					$.each(addresses, function(addressnr, address) {
+						$.each(address, function (addresskey, addressvalue) {
+							$('[name="' + fieldPrefix + '[addresses][' + addressnr + '][' + addresskey + ']"]').val(
+								typeof(addressvalue) == 'string' ? addressvalue : '');
+						});
+						if ((address.location_state > 0) != $('[name="' + fieldPrefix + '[addresses][' + addressnr + '][teryt]"]').prop('checked')) {
+							$('[name="' + fieldPrefix + '[addresses][' + addressnr + '][teryt]"]').click();
+						}
+						$('[name="' + fieldPrefix + '[addresses][' + addressnr + '][location_city_name]"]').trigger('input');
+					});
+				});
+			} else {
+				$('[name="' + fieldPrefix + '[' + key + ']"]').val(typeof(value) == 'string' ? value : '');
+			}
+		});
+	}
 }
 
 function osm_get_zip_code(search, on_success) {

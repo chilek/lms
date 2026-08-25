@@ -36,7 +36,7 @@ $access_table = array(
     ),
     'read_only' => array(
         'label' => trans('read only (excluding helpdesk)'),
-        'allow_regexp' => '^(([a-z]+(list|info|view|search|balance|infoshort))|eventschedule|customeraddresses|customerselect|customerassignmenthelper|netdevmap|eventprint|eventnote|nodelistshort|number|choose[a-z]+)$',
+        'allow_regexp' => '^(([a-z]+(list|info|view|search|balance|infoshort|ksefinfo))|eventschedule|customeraddresses|customerselect|customerassignmenthelper|netdevmap|eventprint|eventnote|nodelistshort|number|choose[a-z]+)$',
         'allow_menu_items' => array(
             'admin' => array('userlist', 'dblist', 'copyrights', 'usergrouplist'),
             'customers' => array('customerlist', 'customersearch', 'customergrouplist'),
@@ -56,28 +56,35 @@ $access_table = array(
     ),
     'node_connections' => array(
         'label' => trans('nodes connection/disconnection'),
-        'allow_regexp' => '^nodeset$',
+        'allow_regexp' => '^(nodeset|nodesession)$',
     ),
     'financial_operations' => array(
         'label' => trans('financial operations'),
-        'allow_regexp' => '^((customerassignment)(add|info|list|move|edit|del)|(balance|customerbalance)(new|add|ok|del|transfer|)|(cashreg(info))|(invoice|invoice(new|edit|del|note(|edit)|paid|info|send))|(note|note(add|edit|del|paid))|number|customertransferform)$',
+        'allow_regexp' => '^((customerassignment)(add|info|list|move|edit|del)|(balance|customerbalance)(new|add|ok|del|transfer|)|(cashreg(info))|(invoice|invoice(new|edit|del|note(|edit)|paid|info|send))|(note|note(add|edit|del|paid))|number|customertransferform|ksefpurchaseinvoiceinfo|invoiceksefinfo)$',
         'allow_menu_items' => array(
             'finances' => array('balancenew', 'invoicenew', 'invoicenew-proforma', 'noteadd', 'receiptadd'),
         ),
     ),
     'finances_management' => array(
         'label' => trans('finances management'),
-        'allow_regexp' => '^((tariff|customerassignment)(add|info|list|move|edit|del)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list|transfer|)|(cashreg(list|info))|(invoice|invoice(list|new|edit|del|note(|edit)|report|paid|info|send))|(note|note(list|add|edit|del|paid))|number|export|print|cashimport|cashimportparser|cashpackagedel|customertransferform|customerselect|tariffpricevariant)$',
+        'allow_regexp' => '^((tariff|customerassignment)(add|info|list|move|edit|del)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list|transfer|)|(cashreg(list|info))|(invoice|invoice(list|new|edit|del|note(|edit)|report|paid|info|send))|(note|note(list|add|edit|del|paid))|number|export|print|cashimport|cashimportparser|cashpackagedel|voipaccountbilling|customertransferform|customerselect|tariffpricevariant|ksefpurchaseinvoiceinfo|invoiceksefinfo)$',
         'allow_menu_items' => array(
             'finances' => Permission::MENU_ALL,
         ),
     ),
     'finances_view' => array(
         'label' => trans('finances view'),
-        'allow_regexp' => '^((balance|customerbalance|invoice|note)list|cashreginfo|invoice(|info|send)|note|number)$',
+        'allow_regexp' => '^((balance|customerbalance|invoice|note)list|cashreginfo|invoice(|info|send)|note|number|ksefpurchaseinvoiceinfo|invoiceksefinfo)$',
         'allow_menu_items' => array(
             'finances' => array('balancelist', 'invoicelist', 'invoicelist-proforma', 'notelist'),
         ),
+    ),
+    'ksef_invoice_purchases' => array(
+        'label' => trans('<!ksef>KSeF purchase invoice management'),
+        'allow_regexp' => '^ksefpurchaseinvoice[a-z]+$',
+        'allow_menu_items' => array(
+            'finances' => array('ksefpurchaseinvoices'),
+        )
     ),
     'assignment_management' => array(
         'label' => trans('assignment management'),
@@ -124,7 +131,7 @@ $access_table = array(
     ),
     'customer_management' => array(
         'label' => trans('customers management'),
-        'allow_regexp' => '^((customer|document)(add|edit|info|infoshort|list|print|search|warn|cutoffstop)|documentdel|documentscanadd|customertransferform|customeraddresses|customerselect|customernote|customername|customerassignmenthelper|documentsend|documentgen|documentview|nodewarn|choose(customer|node|location)|gusapi|number|invoiceinfo|customerextidhelper)$',
+        'allow_regexp' => '^((customer|document)(add|edit|info|infoshort|list|print|search|warn|cutoffstop)|documentdel|documentscanadd|customertransferform|customeraddresses|customerselect|customernote|customername|customerassignmenthelper|documentsend|documentgen|documentview|nodewarn|choose(customer|node|location)|gusapi|number|invoiceinfo|voipaccount(add|del|list|info|infoshort|edit|search)|customerextidhelper)$',
         'allow_menu_items' => array(
             'customers' => Permission::MENU_ALL,
             'documents' => Permission::MENU_ALL,
@@ -165,16 +172,16 @@ $access_table = array(
     ),
     'node_management' => array(
         'label' => trans('nodes management'),
-        'allow_regexp' => '^(node(add|info|infoshort|list|listshort|scan|search|del|edit|print|warn|sessionlist|session)|choose(mac|ip|location|gpscoords|netdevice)|ping)|customeraddresses|customerselect|routednetworks$',
+        'allow_regexp' => '^(node(add|info|infoshort|list|listshort|scan|search|del|edit|print|warn|sessionlist|session)|choose(mac|ip|location|gpscoords|netdevice)|ping|pinger)|customeraddresses|customerselect|routednetworks$',
         'allow_menu_items' => array(
             'nodes' => Permission::MENU_ALL,
         ),
     ),
     'traffic_stats' => array(
         'label' => trans('traffic stats'),
-        'allow_regexp' => '^(traffic|traffic(print|graph))$',
+        'allow_regexp' => '^(traffic|traffic(print|graph)|cheating)$',
         'allow_menu_items' => array(
-            'stats' => Permission::MENU_ALL,
+            'nodes' => Permission::MENU_ALL,
         ),
     ),
     'messaging' => array(
@@ -244,11 +251,15 @@ $access_table = array(
     'network_management' => array(
         'label' => trans('networks and devices management'),
         'allow_regexp' => '^((net|netdev|ewxch)(info|list|edit|add|del|print|cmp|mac|map(refresh|)|remap|search)|choose(mac|ip|gpscoords|netdevfrommap|netdevfornetnode|netdevmodel|netdevreplace)|ewxnodelist|ewxdevlist|chooselocation|ping'
-            . '|netnode(add|adddev|del|deldev|edit|info|list)|netdevmodels|netlinkproperties|netusage|attachments|routednetworks|vlanlist|netranges|netlinkpoints)$',
+            . '|netnode(add|adddev|del|deldev|edit|info|list)|netdevmodels|netlinkproperties|netusage|evio|routeros-config|attachments|routednetworks|vlanlist|netranges)$',
         'allow_menu_items' => array(
             'networks' => Permission::MENU_ALL,
             'netdevices' => Permission::MENU_ALL,
         ),
+    ),
+    'network_map_edit' => array(
+        'label' => trans('network map edit'),
+        'allow_regexp' => '^netlinkpoints$',
     ),
     'timetable_management' => array(
         'label' => trans('timetable management'),

@@ -161,7 +161,7 @@ define(
 );
 
 $estimate  = new Estimate(SqlProvider::getInstance());
-$db_buffor = new VoipDbBuffor(SqlProvider::getInstance());
+$db_buffer = new VoipDbBuffer(SqlProvider::getInstance());
 
 switch (strtolower($options['action'])) {
     case 'estimate':
@@ -196,7 +196,7 @@ switch (strtolower($options['action'])) {
             while ($f_line = fgets($fh)) {
                 ++$i;
 
-                if (($tmp = $db_buffor->appendCdr($f_line)) != 1) {
+                if (($tmp = $db_buffer->appendCdr($f_line)) != 1) {
                     $error[] = array('line'=>$i, 'desc'=>$tmp);
                 }
             }
@@ -224,13 +224,13 @@ switch (strtolower($options['action'])) {
                 $cdr['call_type']   = $options['direction'];
                 $cdr['uniqueid']    = $options['uniqueid'];
 
-                $db_buffor->appendCdr($cdr);
+                $db_buffer->appendCdr($cdr);
             } catch (Exception $e) {
                 echo $e->getMessage();
             }
         }
 
-        $db_buffor->insert();
+        $db_buffer->insert();
         break;
 
     case 'refilltariffs':
