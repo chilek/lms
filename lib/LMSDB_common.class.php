@@ -873,14 +873,33 @@ abstract class LMSDB_common implements LMSDBInterface
                         }
                     }
 
-                    if (!empty($pendingupgrades)) {
+                    if (empty($pendingupgrades)) {
+                        echo 'No pending upgrades' . PHP_EOL;
+                    } else {
                         sort($pendingupgrades);
                         foreach ($pendingupgrades as $upgrade) {
-                            include($libdir . DIRECTORY_SEPARATOR . 'upgradedb' . DIRECTORY_SEPARATOR . $filename_prefix . '.' . $upgrade . '.php');
-                            if (empty($this->errors)) {
-                                $lastupgrade = $upgrade;
-                            } else {
+                            $fname = $libdir . DIRECTORY_SEPARATOR . 'upgradedb'
+                                . DIRECTORY_SEPARATOR . $filename_prefix . '.' . $upgrade . '.php';
+                            $this->BeginTrans();
+                            try {
+                                include($fname);
+                            } catch (Exception $e) {
+                                $this->RollbackTrans();
+                                throw $e;
+                            }
+                            if ($this->errors) {
+                                print 'Error in DB schema upgrade: ' . $fname . PHP_EOL;
+                                $this->RollbackTrans();
                                 break;
+                            } else {
+                                $this->Execute(
+                                    'UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?',
+                                    array($upgrade, 'dbversion')
+                                );
+                                $this->CommitTrans();
+                                print 'Timestamp: ' . time() . ', DB version is now: '
+                                    . $upgrade . PHP_EOL;
+                                $lastupgrade = $upgrade;
                             }
                         }
                     }
