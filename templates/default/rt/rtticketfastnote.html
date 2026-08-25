@@ -38,7 +38,7 @@
                 <div id="quick-message-container-inner">
                 {speech_recognition target="#quick-note-input"}
                 <textarea id="quick-note-input" placeholder="{trans('Enter note')}"></textarea>
-                {button id="quick-message-send" label="Add" icon="note" onclick="javascript:sendQuickMessage({$ticket.ticketid});"}
+                {button id="quick-message-send" label="Add" icon="note" onclick="javascript:addQuickNote({$ticket.ticketid});"}
                 </div>
                 <div id="quick-message-overlay"></div>
             </div>
