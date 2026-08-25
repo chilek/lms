@@ -19,7 +19,7 @@ function showStatus(message, color) {
     }, 4000);
 }
 
-function sendQuickMessage(ticketId) {
+function addQuickNote(ticketId) {
     const messageText = $input.val().trim();
     updateButtonState(true);
 
