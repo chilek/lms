@@ -376,7 +376,7 @@
 				{if $unlockedit}
 					{button id="putinorder-net" data_href="?m=netcmp&id={$network.id}" icon="sorting" label="Put in order"}
 					{button accesskey="S" onclick="document.netedit.submit()" icon="save" label="Submit"}
-					{button id="delete-net" type="link-button" data_href="?m=netdel&id={$network.id}" data_name="{$network.name}" icon="delete" label="Remove"}
+					{button id="delete-net" type="link-button" data_href="?m=netdel&id={$network.id}" data_name="{$network.name}" data_assigned="{$network.assigned}" icon="delete" label="Remove"}
 					{button href="?m=netinfo&id={$network.id}" icon="cancel" label="Cancel"}
 				{else}
 					{button href="?m=netedit&id={$network.id}" accesskey="E" icon="edit" label="Edit"}
