@@ -39,7 +39,7 @@ function sendQuickMessage(ticketId) {
             );
         },
         error: (xhr, status, error) => {
-            showStatus(`$t('Adding note Error'): ${error}"`, 'red');
+            showStatus(`$t('Error adding note'): ${error}"`, 'red');
             console.error(trans('AJAX Error:'), xhr.responseText);
         },
         complete: () => {
