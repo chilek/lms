@@ -634,6 +634,7 @@ $_LANG['Are you sure, you want to restore that message?'] = 'Jesteś pewien, że
 $_LANG['Are you sure, you want to delete all selected messages?'] = 'Jesteś pewien, że chcesz usunąć wszystkie wybrane wiadomości?';
 $_LANG['Are you sure, you want to delete that network?'] = 'Jesteś pewien, że chcesz usunąć tę sieć?';
 $_LANG['Are you sure, you want to delete that payment?'] = 'Jesteś pewien, że chcesz usunąć tę płatność?';
+$_LANG['Are You sure, you want to split network \'$a\' in half?'] = 'Jesteś pewien, że chcesz podzielić sieć \'$a\' na pół?';
 $_LANG['Are you sure, you want to delete payment \'$a\'?'] = 'Jesteś pewien, że chcesz usunąć płatność \'$a\'?';
 $_LANG['Are you sure, you want to delete that tariff?'] = 'Jesteś pewien, że chcesz usunąć tę taryfę?';
 $_LANG['Are you sure, you want to delete tariff \'$a\'?'] = 'Jesteś pewien, że chcesz usunąć taryfę \'$a\'?';

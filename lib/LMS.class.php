@@ -1837,6 +1837,13 @@ class LMS
         return $manager->NetworkSet($id, $disabled);
     }
 
+    public function SplitNetworkInHalf(int $netid): int
+    {
+        $manager = $this->getNetworkManager();
+        return $manager->SplitNetworkInHalf($netid);
+    }
+
+
     public function IsIPFree($ip, $netid = 0)
     {
         $manager = $this->getNetworkManager();
