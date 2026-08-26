@@ -815,34 +815,28 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         }
 
         // VOIP ACCOUNT ID
-        if (!$id) {
+        if (empty($id)) {
+            if (!empty($ownerid)) {
+                $where[] = '(vacc.ownerid = ' . $ownerid . ' OR vacc2.ownerid = ' . $ownerid . ')';
+            }
+        } else {
             if (is_array($id)) {
-                $tmp = implode(', ', $id);
-                if (empty($ownerid)) {
-                    $where[] = '(cdr.callervoipaccountid IN (' . $tmp . ') OR cdr.calleevoipaccountid IN (' . $tmp . '))';
-                } else {
-                    $where[] = '(cdr.callervoipaccountid IN (' . $tmp . ') AND vacc.ownerid = ' . $ownerid
-                        . ' OR cdr.calleevoipaccountid IN (' . $tmp . ') AND vacc2.ownerid = ' . $ownerid . ')';
-                }
-                unset($tmp);
+                $voipAccountIdOperator = 'IN';
             } else {
-                if (empty($ownerid)) {
-                    $where[] = '(cdr.callervoipaccountid = ' . $id . ' OR cdr.calleevoipaccountid = ' . $id . ')';
-                } else {
-                    $where[] = '(cdr.callervoipaccountid = ' . $id . ' AND vacc.ownerid = ' . $ownerid
-                        . ' OR cdr.calleevoipaccountid = ' . $id . ' AND vacc2.ownerid = ' . $ownerid . ')';
-                }
+                $voipAccountIdOperator = '=';
+            }
+
+            if (empty($ownerid)) {
+                $where[] = '(cdr.callervoipaccountid ' . $voipAccountIdOperator . ' ' . $this->db->Escape($id) . ' OR cdr.calleevoipaccountid ' . $voipAccountIdOperator . ' ' . $this->db->Escape($id) . ')';
+            } else {
+                $where[] = '(cdr.callervoipaccountid ' . $voipAccountIdOperator . ' ' . $this->db->Escape($id) . ' AND vacc.ownerid = ' . $ownerid . '
+                    OR cdr.calleevoipaccountid ' . $voipAccountIdOperator . ' ' . $this->db->Escape($id) . ' AND vacc2.ownerid = ' . $ownerid . ')';
             }
         }
 
         // PHONE
         if (!empty($params['phone'])) {
             $where[] = '(cdr.caller ?LIKE? ' . $this->db->Escape($params['phone']) . ' OR cdr.callee ?LIKE? ' . $this->db->Escape($params['phone']) . ')';
-        }
-
-        // OWNERID
-        if (!empty($ownerid) && empty($id)) {
-            $where[] = "vacc.ownerid = " . $ownerid;
         }
 
         // CALL BILLING RANGE
