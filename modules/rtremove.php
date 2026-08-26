@@ -45,7 +45,6 @@ if ($maction == 'delperm') {
 }
 
 if ($taction == 'delperm') {
-
     $DB->BeginTrans();
 
     $LMS->deleteTicket($id);
