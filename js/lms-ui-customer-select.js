@@ -138,6 +138,12 @@ function initCustomerList(selector)
                     suggestionInput.prop('required', true);
                 }
                 return false;
+            }).on('change', function() {
+                if (!select.length) {
+                    if ($(this).val().length) {
+                        suggestionInput.prop('required', false);
+                    }
+                }
             });
 
             suggestionInput.one('focus', function() {
