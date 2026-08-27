@@ -72,6 +72,7 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                 GROUP BY customerid
             ) p ON p.customerid = d.customerid
             WHERE d.id IN ?
+                AND d.cancelled = 0
             ORDER BY d.id",
             array(
                 CONTACT_EMAIL | CONTACT_DOCUMENTS | CONTACT_DISABLED,
