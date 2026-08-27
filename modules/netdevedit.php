@@ -415,7 +415,7 @@ switch ($action) {
     case 'editip':
         $nodeipdata = $LMS->GetNode($_GET['ip']);
         $nodeipdata['ipaddr'] = $nodeipdata['ip'];
-        $nodeipdata['ipaddr_pub'] = $nodeipdata['ip_pub'];
+        $nodeipdata['ipaddr_pub'] = empty($nodeipdata['ip_pub']) ? '' : $nodeipdata['ip_pub'];
         $subtitle = trans('IP address edit');
 
         $nodeipdata['macs'] = array_filter(
