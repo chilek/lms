@@ -946,11 +946,10 @@ if (isset($netdev)) {
 } else {
     $netdev = $LMS->GetNetDev($id);
 
-    if (isset($netdev['producer'])) {
-        $netdev['pagetitle'] = trans('Device Edit: $a ($b)', $netdev['name'], $netdev['producer'] . ($netdev['model'] ? ' ' . $netdev['model'] : ''));
-    } else {
-        $netdev['pagetitle'] = trans('Device Edit: $a', $netdev['name']);
-    }
+    $producerModel = trim(str_replace('-', '', ($netdev['producer'] ?? '') . ' ' . ($netdev['model'] ?? '')));
+    $netdev['pagetitle'] = $producerModel
+        ? trans('Device Edit: $a ($b)', $netdev['name'], $producerModel)
+        : trans('Device Edit: $a', $netdev['name']);
 
     if (isset($netdev['producerid']) && preg_match('/^[0-9]+$/', $netdev['producerid'])
         && isset($netdev['modelid']) && preg_match('/^[0-9]+$/', $netdev['modelid'])) {
