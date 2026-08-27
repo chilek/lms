@@ -45,7 +45,8 @@ if (!empty($_GET['id'])) {
         FROM documents d
         LEFT JOIN numberplans n ON d.numberplanid = n.id
         LEFT JOIN divisions ds ON ds.id = d.divisionid
-        WHERE d.id = ?'
+        WHERE d.id = ?
+            AND d.cancelled = 0'
             . (
                 ConfigHelper::checkConfig('userpanel.show_confirmed_documents_only')
                     ? ' AND (d.closed > 0 OR d.confirmdate >= ?NOW? OR d.confirmdate = -1)'

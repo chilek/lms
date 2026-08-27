@@ -77,8 +77,8 @@
 			{/if}
 			{$docattach = reset($doc.attachments)}
 			{capture assign="url"}?m=documentview&id={$doc.docid}{if $default_all_attachments}&attachments=1{elseif $doc.attachments|size == 1}&attachmentid={$docattach.id}{/if}{/capture}
-			<div class="lms-ui-tab-table-row{if $doc.closed} lms-ui-document-closed{/if}{if $doc.archived} lms-ui-document-archived{/if}"
-				 data-senddate="{if $doc.senddate}{$doc.senddate|date_format:"Y-m-d H:i"}{else}{$doc.senddate}{/if}">
+			<div class="lms-ui-tab-table-row{if $doc.closed} lms-ui-document-closed{/if}{if $doc.archived} lms-ui-document-archived{/if}{if !empty($doc.cancelled)} cancel{/if}"
+				data-senddate="{if $doc.senddate}{$doc.senddate|date_format:"Y-m-d H:i"}{else}{$doc.senddate}{/if}">
 				<div class="lms-ui-tab-table-wrapper col-6">
 					<div class="lms-ui-tab-table-wrapper col-4">
 						<div class="lms-ui-tab-table-wrapper col-2">
@@ -129,7 +129,7 @@
 
 				<div class="lms-ui-tab-table-column buttons" style="flex-direction: column;">
 					<div class="lms-ui-tab-table-column buttons">
-						{if $customerinfo.senddocuments}
+						{if $customerinfo.senddocuments && empty($doc.cancelled)}
 							{textformat assign="tip" wrap=5000}
 								{if $doc.senddate}{trans("Send document again")}<br><strong>{t a=$doc.senddate|date_format:"Y-m-d H:i"}(already sent on $a){/t}</strong>{else}{trans("Document send")}{/if}
 							{/textformat}
@@ -138,7 +138,7 @@
 						{/if}
 						{assign var=type value=$doc.type}
 						{button type="link" icon="save" href="?m=documentview&id={$doc.docid}&save=1" tip="Save"}
-						{if ! $doc.closed && ($docrights.$type.rights & $smarty.const.DOCRIGHT_CONFIRM)}
+						{if empty($doc.closed) && ($docrights.$type.rights & $smarty.const.DOCRIGHT_CONFIRM) && empty($doc.cancelled)}
 							{button type="link" icon="confirm" href="?m=documentedit&id={$doc.docid}&action=confirm" tip="Confirm"}
 						{/if}
 						{if $doc.closed && !$doc.archived && ($docrights.$type.rights & $smarty.const.DOCRIGHT_ARCHIVE)}
@@ -148,6 +148,14 @@
 							{button type="link" class="delete-doc" href="?m=documentdel&id={$doc.docid}" icon="delete" onclick=$onclick tip="Remove document"}
 						{/if}
 						{if ($docrights.$type.rights & $smarty.const.DOCRIGHT_EDIT)}
+							{if !$doc.closed}
+								{if empty($doc.cancelled)}
+									{button type="link" icon="cancel" href="?m=documentcancel&id={$doc.docid}" tip="Cancel document"
+									class="cancel-document"}
+								{else}
+									{button type="link" icon="recover" href="?m=documentcancel&id={$doc.docid}&recover=1" tip="Recover document"}
+								{/if}
+							{/if}
 							{button type="link" icon="edit" href="?m=documentedit&id={$doc.docid}" tip="Edit"}
 						{/if}
 						{if is_array($doc.attachments)}

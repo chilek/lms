@@ -6428,3 +6428,6 @@ $_LANG['Base date'] = 'Data bazowa';
 $_LANG['Incorrect snat IP address!'] = 'Niepoprawny adres IP snat!';
 
 $_LANG['Network has assigned IP addresses!'] = 'Sieć posiada przypisane adresy IP!';
+
+$_LANG['Cancel document'] = 'Anuluj dokument';
+$_LANG['Are you sure, you want to cancel that document?'] = 'Jesteś pewien, że chcesz anulować ten dokument?';

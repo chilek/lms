@@ -2472,11 +2472,23 @@ div.lms-ui-tab-container {
 		&:nth-child(odd) {
 			background-color: @light;
 		}
+		&:nth-child(even).cancel {
+			background-color: @red-lucid;
+		}
+		&:nth-child(odd).cancel {
+			background-color: @red-light;
+		}
 		&.lucid {
 			background-color: @lucid;
 		}
 		&.light {
 			background-color: @light;
+		}
+		&.lucid.cancel {
+			background-color: @red-lucid;
+		}
+		&.light.cancel {
+			background-color: @red-light;
 		}
 		&.header {
 			background-color: @light;

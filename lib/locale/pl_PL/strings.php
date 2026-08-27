@@ -3354,6 +3354,7 @@ $_LANG['No such recipients in database.'] = 'Brak odbiorców w bazie danych.';
 $_LANG['added'] = 'dodano';
 $_LANG['delivered'] = 'dostarczono';
 $_LANG['cancelled'] = 'anulowano';
+$_LANG['<!document>cancelled'] = 'anulowany';
 $_LANG['bounced'] = 'odesłano';
 $_LANG['ready to send'] = 'gotowa do wysłania';
 $_LANG['ready to send<!plural>'] = 'gotowe do wysłania';
@@ -6429,3 +6430,7 @@ $_LANG['Base date'] = 'Data bazowa';
 $_LANG['Incorrect snat IP address!'] = 'Niepoprawny adres IP snat!';
 
 $_LANG['Network has assigned IP addresses!'] = 'Sieć posiada przypisane adresy IP!';
+
+$_LANG['Cancel document'] = 'Anuluj dokument';
+$_LANG['Recover document'] = 'Przywróć dokument';
+$_LANG['Are you sure, you want to cancel that document?'] = 'Jesteś pewien, że chcesz anulować ten dokument?';
