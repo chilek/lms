@@ -94,7 +94,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
     public function IsIPGateway($ip)
     {
-        $network_all_addresses_assignable = ConfigHelper::checkConfig('phpui.network_all_addresses_assignable');
+        $network_all_addresses_assignable = ConfigHelper::getConfig('phpui.network_all_addresses_assignable');
 
         return (bool)$this->db->GetOne(
             'SELECT gateway
@@ -472,7 +472,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
     public function IsIPValid($ip, $checkbroadcast = false, $ignoreid = 0)
     {
-        $network_all_addresses_assignable = ConfigHelper::checkConfig('phpui.network_all_addresses_assignable');
+        $network_all_addresses_assignable = ConfigHelper::getConfig('phpui.network_all_addresses_assignable');
 
         $ip = ip_long($ip);
         return $this->db->GetOne(
@@ -826,7 +826,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     {
         global $LMS;
 
-        $network_all_addresses_assignable = ConfigHelper::checkConfig('phpui.network_all_addresses_assignable');
+        $network_all_addresses_assignable = ConfigHelper::getConfig('phpui.network_all_addresses_assignable');
 
         $network = $this->db->GetRow(
             'SELECT no.ownerid, ne.id, ne.name,
