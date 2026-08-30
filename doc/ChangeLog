@@ -1236,7 +1236,8 @@ version 28-git (????-??-??):
   - security: harden path traversal, session fixation, cookie  flags, brute-force, MD5 magic-hash [djrzulf]
   - enhancement: added service e-mail property to divisions [chilan]
   - enhancement: new customer consent: 'postal_delivery_complaint' [chilan]
-  - enhancement:  add splitting into equal subnets [interduo]
+  - enhancement: documents can be cancelled [chilan]
+  - enhancement: add splitting into equal subnets [interduo]
 
 version 27.0 (2021-08-20):
 

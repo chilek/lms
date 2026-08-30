@@ -3363,6 +3363,7 @@ $_LANG['No such recipients in database.'] = 'Brak odbiorców w bazie danych.';
 $_LANG['added'] = 'dodano';
 $_LANG['delivered'] = 'dostarczono';
 $_LANG['cancelled'] = 'anulowano';
+$_LANG['<!document>cancelled'] = 'anulowany';
 $_LANG['bounced'] = 'odesłano';
 $_LANG['ready to send'] = 'gotowa do wysłania';
 $_LANG['ready to send<!plural>'] = 'gotowe do wysłania';
@@ -5035,9 +5036,11 @@ $_LANG['(no subject)'] = '(brak tematu)';
 
 $_LANG['cloud'] = 'chmura';
 
-$_LANG['Assigned event ($a) was created.'] = 'Utworzono przypisane zdarzenie ($a).';
-$_LANG['Assigned event ($a) was modified.'] = 'Zmodyfikowano przypisane zdarzenie ($a).';
-$_LANG['Assigned event ($a) was deleted.'] = 'Usunięto przypisane zdarzenie ($a).';
+$_LANG['Assigned event ($a) has been created.'] = 'Utworzono przypisane zdarzenie ($a).';
+$_LANG['Assigned event ($a) has been modified.'] = 'Zmodyfikowano przypisane zdarzenie ($a).';
+$_LANG['Assigned event ($a) has been deleted.'] = 'Usunięto przypisane zdarzenie ($a).';
+$_LANG['Assigned event ($a) has been opened.'] = 'Przypisane zdarzenie ($a) zostało otwarte.';
+$_LANG['Assigned event ($a) has been closed.'] = 'Przypisane zdarzenie ($a) zostało zamknięte.';
 
 $_LANG['New ticket body should not be empty if you set new ticket subject!'] = 'Treść powiadomienia o nowym zgłoszeniu nie może być pusta w sytuacji, gdy ustawiono temat powiadomienia o nowym zgłoszeniu!';
 $_LANG['New ticket subject should not be empty if you set new ticket body!'] = 'Temat powiadomienia o nowym zgłoszeniu nie może być pusty w sytuacji, gdy ustawiono treść powiadomienia o nowym zgłoszeniu!';
@@ -6439,3 +6442,7 @@ $_LANG['Base date'] = 'Data bazowa';
 $_LANG['Incorrect snat IP address!'] = 'Niepoprawny adres IP snat!';
 
 $_LANG['Network has assigned IP addresses!'] = 'Sieć posiada przypisane adresy IP!';
+
+$_LANG['Cancel document'] = 'Anuluj dokument';
+$_LANG['Recover document'] = 'Przywróć dokument';
+$_LANG['Are you sure, you want to cancel that document?'] = 'Jesteś pewien, że chcesz anulować ten dokument?';

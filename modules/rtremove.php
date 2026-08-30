@@ -26,30 +26,28 @@
 $maction = $_GET['maction'] ?? null;
 $taction = $_GET['taction'] ?? null;
 $qaction = $_GET['qaction'] ?? null;
+$id = intval($_GET['id']);
 
 $rt_dir = ConfigHelper::getConfig('rt.mail_dir', STORAGE_DIR . DIRECTORY_SEPARATOR . 'rt');
 
 if ($maction == 'delperm') {
-    $msg = intval($_GET['id']);
-    $ticket = $DB->GetOne('SELECT ticketid FROM rtmessages WHERE id = ?', array($msg));
+    $ticket = $DB->GetOne('SELECT ticketid FROM rtmessages WHERE id = ?', array($id));
 
-    if ($DB->GetOne('SELECT MIN(id) FROM rtmessages WHERE ticketid = ?', array($ticket)) != $msg) {
+    if ($DB->GetOne('SELECT MIN(id) FROM rtmessages WHERE ticketid = ?', array($ticket)) != $id) {
         if (!empty($rt_dir)) {
-            rrmdir($rt_dir . DIRECTORY_SEPARATOR . sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d', $ticket, $msg));
+            rrmdir($rt_dir . DIRECTORY_SEPARATOR . sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d', $ticket, $id));
         }
 
-        $DB->Execute('DELETE FROM rtmessages WHERE id = ?', array($msg));
+        $DB->Execute('DELETE FROM rtmessages WHERE id = ?', array($id));
     }
 
     $SESSION->redirect('?m=rtticketview&id=' . $ticket);
 }
 
 if ($taction == 'delperm') {
-    $ticket = intval($_GET['id']);
-
     $DB->BeginTrans();
 
-    $LMS->deleteTicket($ticket);
+    $LMS->deleteTicket($id);
 
     $DB->CommitTrans();
 
@@ -58,19 +56,18 @@ if ($taction == 'delperm') {
 }
 
 if ($qaction == 'delperm') {
-    $queue = intval($_GET['id']);
-    $ticket = $DB->GetOne('SELECT id FROM rttickets WHERE queueid = ?', array($queue));
+    $ticket = $DB->GetOne('SELECT id FROM rttickets WHERE queueid = ?', array($id));
 
     if (!empty($rt_dir)) {
         // remove attachment files
-        if ($tickets = $DB->GetCol('SELECT id FROM rttickets WHERE queueid = ?', array($queue))) {
+        if ($tickets = $DB->GetCol('SELECT id FROM rttickets WHERE queueid = ?', array($id))) {
             foreach ($tickets as $ticket) {
                 rrmdir($rt_dir . DIRECTORY_SEPARATOR . sprintf('%06d', $ticket));
             }
         }
     }
 
-    $DB->Execute('DELETE FROM rtqueues WHERE id=?', array($queue));
+    $DB->Execute('DELETE FROM rtqueues WHERE id = ?', array($id));
 
     $SESSION->redirect('?m=rtqueuelist');
 }

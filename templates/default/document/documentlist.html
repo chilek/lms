@@ -200,6 +200,7 @@
 							<OPTION value="2"{if $filter.status == 2} selected{/if}>{trans("review (signed document scan)")}</OPTION>
 							<OPTION value="3"{if $filter.status == 3} selected{/if}>{trans("waiting for signed document scan")}</OPTION>
 							<option value="6"{if $filter.status == 6} selected{/if}>{trans("waiting for customer action (expired)")}</option>
+							<option value="7"{if $filter.status == 7} selected{/if}>{trans("<!document>cancelled")}</option>
 						</SELECT>
 					</label>
 
@@ -236,7 +237,9 @@
 	{/if}
 	{$docattach = reset($doc.attachments)}
 	{capture assign="url"}?m=documentview&id={$doc.docid}{if $default_all_attachments}&attachments=1{elseif $doc.attachments|size == 1}&attachmentid={$docattach.id}{/if}{/capture}
-	<TR class="highlight{if $doc.closed} lms-ui-document-closed{/if}{if $doc.archived} lms-ui-document-archived{/if}" data-archived="{if $doc.archived}1{else}0{/if}" data-closed="{if $doc.closed}1{else}0{/if}"
+	<TR class="highlight{if $doc.closed} lms-ui-document-closed{/if}{if $doc.archived} lms-ui-document-archived{/if}{if !empty($doc.cancelled)} cancel{/if}"
+		data-archived="{if $doc.archived}1{else}0{/if}"
+		data-closed="{if $doc.closed}1{else}0{/if}"
 		data-senddate="{if $doc.senddate}{$doc.senddate|date_format:"Y-m-d H:i"}{else}{$doc.senddate}{/if}"
 		data-popup-menu-title="{t a=$doc.docid|string_format:"#%06d"}Document $a{/t}">
 		<TD class="nobr" data-target-url="{$url}"{if $doc.description} {tip text=$doc.description}{/if}>
@@ -281,7 +284,7 @@
 		<TD class="nobr"><A href="?m=customerinfo&amp;id={$doc.customerid}">{$doc.name|truncate:40:"&hellip;":true}</A></TD>
 		<TD class="lms-ui-buttons text-right nobr">
 			{buttons}
-				{if $doc.senddocuments}
+				{if $doc.senddocuments && empty($doc.cancelled)}
 					{textformat assign="tip" wrap=5000}
 						{if $doc.senddate}{trans("Send document again")}<br><strong>{t a=$doc.senddate|date_format:"Y-m-d H:i"}(already sent on $a){/t}</strong>{else}{trans("Document send")}{/if}
 					{/textformat}
@@ -290,7 +293,7 @@
 				{/if}
 				{assign var=type value=$doc.type}
 				{button type="link" icon="save" href="?m=documentview&id={$doc.docid}&save=1" tip="Save"}
-				{if ! $doc.closed && ($docrights.$type.rights & $smarty.const.DOCRIGHT_CONFIRM)}
+				{if empty($doc.closed) && ($docrights.$type.rights & $smarty.const.DOCRIGHT_CONFIRM) && empty($doc.cancelled)}
 					{button type="link" icon="confirm" href="?m=documentedit&id={$doc.docid}&action=confirm" tip="Confirm"}
 				{/if}
 				{if $doc.closed && !$doc.archived && ($docrights.$type.rights & $smarty.const.DOCRIGHT_ARCHIVE)}
@@ -302,6 +305,14 @@
 						href="?m=documentdel&id={$doc.docid}" tip="Remove document"}
 				{/if}
 				{if ($docrights.$type.rights & $smarty.const.DOCRIGHT_EDIT)}
+					{if !$doc.closed}
+						{if empty($doc.cancelled)}
+							{button type="link" icon="cancel" href="?m=documentcancel&id={$doc.docid}" tip="Cancel document"
+								class="cancel-document"}
+						{else}
+							{button type="link" icon="recover" href="?m=documentcancel&id={$doc.docid}&recover=1" tip="Recover document"}
+						{/if}
+					{/if}
 					{button type="link" icon="edit" href="?m=documentedit&id={$doc.docid}" tip="Edit"}
 				{/if}
 				{if $docattach.type == 1 || $doc.attachments|size == 1}
@@ -516,6 +527,26 @@
 				documentCheckbox.prop('checked', documentAttachmentCheckboxes.filter(':not(:checked)').length !== documentAttachmentCheckboxes.length);
 			}
 			$(this).closest('tbody').trigger('lms:update_check_all');
+		});
+
+		$('.cancel-document').click(function() {
+			confirmDialog($t("Are you sure, you want to cancel that document?"), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+
+		$('#delete-documents').click(function() {
+			if (!$(this).closest('tfoot').prev('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+				alertDialog($t('No document has been selected!'), this);
+				return;
+			}
+
+			confirmDialog($t("Are you sure, you want to delete selected documents?"), this).done(function () {
+				document.page.action = "?m=documentdel";
+				document.page.target = "";
+				document.page.submit();
+			});
 		});
 	});
 
