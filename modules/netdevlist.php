@@ -85,9 +85,13 @@ if ($api) {
 
     if (empty($model)) {
         $model = -1;
+    } elseif (!preg_match('/^-[0-9]+$/', $model)) {
+        $model = mb_strtoupper($model);
     }
     if (empty($producer)) {
         $producer = -1;
+    } elseif (!preg_match('/^-[0-9]+$/', $producer)) {
+        $producer = mb_strtoupper($producer);
     }
 
     $producers = $DB->GetCol("SELECT DISTINCT UPPER(TRIM(producer)) AS producer FROM netdevices WHERE producer <> '' ORDER BY producer");
