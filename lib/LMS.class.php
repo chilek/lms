@@ -1837,6 +1837,13 @@ class LMS
         return $manager->NetworkSet($id, $disabled);
     }
 
+    public function SplitNetworkInHalf(int $netid): int
+    {
+        $manager = $this->getNetworkManager();
+        return $manager->SplitNetworkInHalf($netid);
+    }
+
+
     public function IsIPFree($ip, $netid = 0)
     {
         $manager = $this->getNetworkManager();
@@ -3579,6 +3586,18 @@ class LMS
     {
         $manager = $this->getEventManager();
         return $manager->GetEventList($params);
+    }
+
+    public function OpenEvent($id)
+    {
+        $manager = $this->getEventManager();
+        return $manager->OpenEvent($id);
+    }
+
+    public function CloseEvent($params)
+    {
+        $manager = $this->getEventManager();
+        return $manager->CloseEvent($params);
     }
 
     public function GetCustomerIdByTicketId($id)

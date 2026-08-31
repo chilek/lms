@@ -1237,6 +1237,7 @@ version 28-git (????-??-??):
   - enhancement: added service e-mail property to divisions [chilan]
   - enhancement: new customer consent: 'postal_delivery_complaint' [chilan]
   - enhancement: documents can be cancelled [chilan]
+  - enhancement: add splitting into equal subnets [interduo]
   - enhancement: added document separation group filter in customer assignment box/panel [chilan]
 
 version 27.0 (2021-08-20):
