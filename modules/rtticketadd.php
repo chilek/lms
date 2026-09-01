@@ -339,7 +339,9 @@ if (isset($_POST['ticket'])) {
                 $mailfname = '"' . $mailfname . '"';
             }
 
-            $mailfrom = $LMS->DetermineSenderEmail($user['email'], $LMS->GetQueueEmail($ticket['queue']), $ticket['requestor_mail']);
+               $mailfrom = !empty($notification_sender_email)
+                   ? $notification_sender_email
+                   : $LMS->DetermineSenderEmail($user['email'], $LMS->GetQueueEmail($ticket['queue']), $ticket['requestor_mail']);
 
             $ticketdata = $LMS->GetTicketContents($id);
 
@@ -468,6 +470,8 @@ if (isset($_POST['ticket'])) {
                     'contenttype' => $ticket['contenttype'],
                     'attachments' => &$attachments,
                     'smtp_options' => $smtp_options,
+                    'recipients' => (isset($ticket['notify']) ? RT_NOTIFICATION_USER : 0)
+                      | (empty($ticket['verifierid']) ? 0 : RT_NOTIFICATION_VERIFIER),
                 ));
             }
         }

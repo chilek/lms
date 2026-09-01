@@ -334,7 +334,7 @@ if (isset($_GET['ticketid'])) {
                 'attachments' => &$attachments,
                 'recipients' => ($note['notify'] ? RT_NOTIFICATION_USER : 0)
                     | (empty($note['verifierid']) ? 0 : RT_NOTIFICATION_VERIFIER),
-                'smtp_options', $smtp_options,
+                'smtp_options' => $smtp_options,
             ));
         }
 
