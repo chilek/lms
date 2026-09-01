@@ -339,7 +339,9 @@ if (isset($_POST['ticket'])) {
                 $mailfname = '"' . $mailfname . '"';
             }
 
-            $mailfrom = $LMS->DetermineSenderEmail($user['email'], $LMS->GetQueueEmail($ticket['queue']), $ticket['requestor_mail']);
+               $mailfrom = !empty($notification_sender_email)
+                   ? $notification_sender_email
+                   : $LMS->DetermineSenderEmail($user['email'], $LMS->GetQueueEmail($ticket['queue']), $ticket['requestor_mail']);
 
             $ticketdata = $LMS->GetTicketContents($id);
 
