@@ -468,6 +468,8 @@ if (isset($_POST['ticket'])) {
                     'contenttype' => $ticket['contenttype'],
                     'attachments' => &$attachments,
                     'smtp_options' => $smtp_options,
+                    'recipients' => (isset($ticket['notify']) ? RT_NOTIFICATION_USER : 0)
+                      | (empty($ticket['verifierid']) ? 0 : RT_NOTIFICATION_VERIFIER),
                 ));
             }
         }
