@@ -192,13 +192,13 @@
 							{if $ticket.deadline}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
-									{icon name="timetable" label="<!rt>Deadline"}
+									{icon name="deadline" label="<!rt>Deadline"}
 								</TD>
 								<TD style="width: 99%;">
-									{if $ticket.deadline}
-										{$ticket.deadline|date_format:"Y-m-d H:i:s"}
+									{if $ticket.deadline > $smarty.now && $ticket.state != $smarty.const.RT_RESOLVED}
+										<span class="lms-ui-important-box">{trans("<!rt>Expired")}</span>{hint mode="toggle" text="{$ticket.deadline|date_format:"Y-m-d H:i:s"}"}
 									{else}
-										{trans("none")}
+										{$ticket.deadline|date_format:"Y-m-d H:i:s"}
 									{/if}
 								</TD>
 							</TR>
