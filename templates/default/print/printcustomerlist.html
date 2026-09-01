@@ -36,7 +36,13 @@
 			</td>
 		{/if}
 		<TD WIDTH="150" CLASS="HEAD" ALIGN="RIGHT">
-			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{trans("Subscription")}<BR>{/if}
+			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+				{trans("Subscription")}
+				{if !empty($listdata.showassignments)}
+					({trans("assignment names")})
+				{/if}
+				<br>
+			{/if}
 			{trans("E-mail")}<BR>
 			{trans("TEN/SSN")}
 		</TD>
@@ -86,8 +92,13 @@
 				<td class="text-right" style="max-width: 200ch;">
 					{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 						{$customer.tariffvalue|money_format}
-						<br>
 					{/if}
+					{if !empty($listdata.showassignments) && !empty($customer['assignmentsnames'])}
+						({foreach $customer['assignmentsnames'] as $idx => $ca}
+							{$ca}
+						{/foreach})
+					{/if}
+					<br>
 					{if $customer.email}
 						{$customer.email|replace:",":', '}
 						<br>
