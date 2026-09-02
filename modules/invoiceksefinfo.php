@@ -82,7 +82,8 @@ if (!empty($_GET['action']) && $_GET['action'] == 'send') {
         die('No invoices selected.');
     }
     $backUrl = '?m=invoicelist';
-    if (!empty($_POST['backurl'])
+    if (
+        !empty($_POST['backurl'])
         && is_string($_POST['backurl'])
         && preg_match('/^\?m=invoicelist(?:[&#]|$)/', $_POST['backurl'])
     ) {
@@ -118,7 +119,6 @@ if (!empty($_GET['action']) && $_GET['action'] == 'send') {
         );
 
         $result['send_result'] = $service->send($config, null, null, $docIds);
-        $result['sync_result'] = $service->sync($config, null, null, $docIds);
     } catch (\Throwable $e) {
         $result['error'] = $e->getMessage();
     }
@@ -214,8 +214,9 @@ if (!empty($_GET['purchase'])) {
     die;
 }
 
-if ($doc = $DB->GetRow(
-    'SELECT
+if (
+    $doc = $DB->GetRow(
+        'SELECT
         d.id,
         d.fullnumber,
         d.cdate,
@@ -241,14 +242,15 @@ if ($doc = $DB->GetRow(
     JOIN ksefdocuments kd ON kd.docid = d.id AND (kd.status IN ? OR kd.id = kd2.maxid)
     JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
     WHERE d.id = ?',
-    [
+        [
         [
             0,
             200,
         ],
         $_GET['id'],
-    ]
-)) {
+        ]
+    )
+) {
     $doc['ksefstatusdetails'] = KSeF::formatStatusDetails($doc['ksefstatusdetails']);
 
     if (!empty($_GET['action'])) {

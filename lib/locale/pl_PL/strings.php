@@ -6442,7 +6442,6 @@ $_LANG['<!ksef>Send to KSeF'] = 'Wyślij KSeF';
 $_LANG['Send invoice to KSeF'] = 'Wyślij fakturę do KSeF';
 $_LANG['KSeF invoice handling'] = 'Obsługa faktur KSeF';
 $_LANG['KSeF submitted:'] = 'Wysłano do KSeF:';
-$_LANG['KSeF synchronized:'] = 'Zaktualizowano z KSeF:';
 $_LANG['Return to invoice list'] = 'Powrót do listy faktur';
 $_LANG['KSeF submission result is not available.'] = 'Wynik wysyłki do KSeF jest niedostępny.';
 $_LANG['<!ksef-status>- any -'] = '- dowolny -';
