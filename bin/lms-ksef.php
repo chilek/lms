@@ -29,7 +29,7 @@ $script_parameters = [
 
 $script_help = <<<EOF
     --send                      send eligible sales invoices to KSeF;
-    --sync                      synchronize pending KSeF invoice statuses and UPO files;
+    --sync                      synchronize pending KSeF invoice statuses;
 -t, --test                      dry run; print candidate counts only;
     --division=<shortname>      limit sending candidates to selected division;
     --customerid=<id>           limit sending candidates to selected customer;

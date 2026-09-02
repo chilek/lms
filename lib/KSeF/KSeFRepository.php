@@ -251,6 +251,8 @@ class KSeFRepository implements KSeFRepositoryInterface
                 d.id AS docid,
                 kd.ordinalnumber,
                 kbs.ksefnumber AS session_reference_number,
+                kbs.id AS session_id,
+                kbs.status AS session_status,
                 d.divisionid,
                 d.div_ten AS seller_ten
             FROM ksefdocuments kd
@@ -288,14 +290,6 @@ class KSeFRepository implements KSeFRepositoryInterface
                 $id,
             ]
         );
-    }
-
-    public function saveUpo(string $ksefNumber, string $content): void
-    {
-        $result = KSeF::saveUpoContent($ksefNumber, $content);
-        if ($result !== true) {
-            throw new \RuntimeException(is_string($result) ? $result : 'Couldn\'t save KSeF UPO file.');
-        }
     }
 
     private function normalizeIds(?array $ids): array

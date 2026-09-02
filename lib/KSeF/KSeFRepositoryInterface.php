@@ -34,6 +34,4 @@ interface KSeFRepositoryInterface
         ?string $ksefNumber,
         ?string $permanentStorageDate
     ): void;
-
-    public function saveUpo(string $ksefNumber, string $content): void;
 }

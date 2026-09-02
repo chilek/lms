@@ -4,28 +4,22 @@ namespace Lms\KSeF;
 
 class KSeFSubmissionService
 {
-    const INVOICE_LIST_RETRY_SECONDS = [1, 2, 3, 5, 10];
-    const INVOICE_LIST_WAIT_SECONDS = 600;
-
     private $repository;
     private $gateway;
     private $xmlBuilder;
     private $configProvider;
-    private $sleeper;
     private $divisionConfigs = [];
 
     public function __construct(
         KSeFRepositoryInterface $repository,
         KSeFGatewayInterface $gateway,
         callable $xmlBuilder,
-        ?callable $configProvider = null,
-        ?callable $sleeper = null
+        ?callable $configProvider = null
     ) {
         $this->repository = $repository;
         $this->gateway = $gateway;
         $this->xmlBuilder = $xmlBuilder;
         $this->configProvider = $configProvider;
-        $this->sleeper = $sleeper ?: 'sleep';
     }
 
     public function send(
@@ -97,6 +91,7 @@ class KSeFSubmissionService
             $preparedInvoices = $invoiceGroup['invoices'];
             $groupConfig = $this->configForDivision($invoiceGroup['division_id'], $config);
             $reserved = null;
+            $sessionReferenceNumber = null;
             $sessionReferenceStored = false;
             $documents = [];
             foreach ($preparedInvoices as $preparedInvoice) {
@@ -132,7 +127,6 @@ class KSeFSubmissionService
                     }
                 }
 
-                $sessionReferenceNumber = null;
                 try {
                     $sessionReferenceNumber = $this->gateway->sendXmlBatch($groupConfig, $sellerTen, $xmlDocuments);
                     $this->repository->updateSessionReference($reserved['session_id'], $sessionReferenceNumber);
@@ -146,13 +140,17 @@ class KSeFSubmissionService
                 $this->repository->closeSession($reserved['session_id']);
                 $result['submitted'] += count($reserved['documents']);
             } catch (\Throwable $e) {
-                if (!empty($reserved['session_id']) && !$sessionReferenceStored) {
+                if (!empty($reserved['session_id']) && $sessionReferenceNumber === null) {
                     $this->repository->discardSession((int) $reserved['session_id']);
                 }
 
+                $error = $e->getMessage();
+                if ($sessionReferenceNumber !== null && !$sessionReferenceStored) {
+                    $error .= ' Remote KSeF session reference: ' . $sessionReferenceNumber . '.';
+                }
                 $failedInvoices = !empty($reserved['documents']) ? $reserved['documents'] : $documents;
                 foreach ($failedInvoices as $failedInvoice) {
-                    $this->skipInvoice($result, (int) $failedInvoice['docid'], $e->getMessage());
+                    $this->skipInvoice($result, (int) $failedInvoice['docid'], $error);
                 }
             }
         }
@@ -199,6 +197,8 @@ class KSeFSubmissionService
                         'config' => $documentConfig,
                         'seller_ten' => $sellerTen,
                         'reference_number' => $document['session_reference_number'],
+                        'session_id' => (int) $document['session_id'],
+                        'session_status' => (int) $document['session_status'],
                         'documents' => [],
                     ];
                 }
@@ -209,16 +209,30 @@ class KSeFSubmissionService
         }
 
         foreach ($sessionGroups as $sessionGroup) {
+            $closeError = null;
+            if ($sessionGroup['session_status'] !== KSeF::STATUS_ACCEPTED) {
+                try {
+                    $this->gateway->closeBatchSession(
+                        $sessionGroup['config'],
+                        $sessionGroup['seller_ten'],
+                        $sessionGroup['reference_number']
+                    );
+                    $this->repository->closeSession($sessionGroup['session_id']);
+                } catch (\Throwable $e) {
+                    $closeError = $e->getMessage();
+                }
+            }
+
             try {
-                $invoicesByOrdinalNumber = $this->waitForInvoices(
+                $invoicesByOrdinalNumber = $this->getInvoicesByOrdinalNumber(
                     $sessionGroup['config'],
                     $sessionGroup['seller_ten'],
-                    $sessionGroup['reference_number'],
-                    $sessionGroup['documents']
+                    $sessionGroup['reference_number']
                 );
             } catch (\Throwable $e) {
+                $error = $closeError === null ? $e->getMessage() : $closeError . ' ' . $e->getMessage();
                 foreach ($sessionGroup['documents'] as $document) {
-                    $this->addSyncError($result, (int) $document['id'], $e->getMessage());
+                    $this->addSyncError($result, (int) $document['id'], $error);
                 }
                 continue;
             }
@@ -227,8 +241,10 @@ class KSeFSubmissionService
                 try {
                     $ordinalNumber = (int) $document['ordinalnumber'];
                     if (!isset($invoicesByOrdinalNumber[$ordinalNumber])) {
+                        $errorPrefix = $closeError === null ? '' : $closeError . ' ';
                         throw new \RuntimeException(
-                            'Couldn\'t find KSeF invoice for session ' . $document['session_reference_number']
+                            $errorPrefix . 'Couldn\'t find KSeF invoice for session '
+                                . $document['session_reference_number']
                                 . ' and ordinal number ' . $document['ordinalnumber'] . '.'
                         );
                     }
@@ -286,46 +302,19 @@ class KSeFSubmissionService
         return base64_encode(hash('sha256', $xml, true));
     }
 
-    private function waitForInvoices(
+    private function getInvoicesByOrdinalNumber(
         KSeFConfig $config,
         string $sellerTen,
-        string $sessionReferenceNumber,
-        array $documents
+        string $sessionReferenceNumber
     ): array {
-        $waitedSeconds = 0;
-        for ($attempt = 0; $attempt === 0 || $waitedSeconds < self::INVOICE_LIST_WAIT_SECONDS; $attempt++) {
-            if ($attempt > 0) {
-                $sleepSeconds = self::INVOICE_LIST_RETRY_SECONDS[
-                    min($attempt - 1, count(self::INVOICE_LIST_RETRY_SECONDS) - 1)
-                ];
-                $sleepSeconds = min($sleepSeconds, self::INVOICE_LIST_WAIT_SECONDS - $waitedSeconds);
-                call_user_func($this->sleeper, $sleepSeconds);
-                $waitedSeconds += $sleepSeconds;
-            }
-
-            $invoicesByOrdinalNumber = [];
-            foreach ($this->gateway->listInvoices($config, $sellerTen, $sessionReferenceNumber) as $invoice) {
-                if (isset($invoice['ordinal_number'])) {
-                    $invoicesByOrdinalNumber[(int) $invoice['ordinal_number']] = $invoice;
-                }
-            }
-            if ($this->containsAllDocuments($invoicesByOrdinalNumber, $documents)) {
-                return $invoicesByOrdinalNumber;
+        $invoicesByOrdinalNumber = [];
+        foreach ($this->gateway->listInvoices($config, $sellerTen, $sessionReferenceNumber) as $invoice) {
+            if (isset($invoice['ordinal_number'])) {
+                $invoicesByOrdinalNumber[(int) $invoice['ordinal_number']] = $invoice;
             }
         }
 
         return $invoicesByOrdinalNumber;
-    }
-
-    private function containsAllDocuments(array $invoicesByOrdinalNumber, array $documents): bool
-    {
-        foreach ($documents as $document) {
-            if (!isset($invoicesByOrdinalNumber[(int) $document['ordinalnumber']])) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     private function updateDocument(array $document, array $status): void
@@ -335,14 +324,6 @@ class KSeFSubmissionService
         if ($statusCode === KSeF::STATUS_DUPLICATE && !empty($status['original_ksef_number'])) {
             $statusCode = KSeF::STATUS_ACCEPTED;
             $ksefNumber = $status['original_ksef_number'];
-        }
-
-        if ($statusCode === KSeF::STATUS_ACCEPTED
-            && !empty($ksefNumber)
-            && !empty($status['upo'])
-            && is_string($status['upo'])
-        ) {
-            $this->repository->saveUpo($ksefNumber, $status['upo']);
         }
 
         $this->repository->updateDocumentStatus(
@@ -362,7 +343,9 @@ class KSeFSubmissionService
         }
 
         try {
-            return (new \DateTimeImmutable($date))->format('Y-m-d H:i:s');
+            return (new \DateTimeImmutable($date))
+                ->setTimezone(new \DateTimeZone('UTC'))
+                ->format('Y-m-d H:i:s');
         } catch (\Exception $e) {
             return null;
         }

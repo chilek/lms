@@ -11,9 +11,7 @@ class FakeKSeFRepository implements KSeFRepositoryInterface
     public $sessionCloseUpdates = [];
     public $discardedSessions = [];
     public $statusUpdates = [];
-    public $savedUpos = [];
     public $reservedSkipped = [];
-    public $failUpoSave = false;
     public $failSessionReferenceUpdate = false;
     public $eligibleDocIds = null;
     public $eligibleLimit = null;
@@ -119,18 +117,6 @@ class FakeKSeFRepository implements KSeFRepositoryInterface
             'status_details' => $statusDetails,
             'ksef_number' => $ksefNumber,
             'permanent_storage_date' => $permanentStorageDate,
-        ];
-    }
-
-    public function saveUpo(string $ksefNumber, string $content): void
-    {
-        if ($this->failUpoSave) {
-            throw new \RuntimeException('UPO save failed');
-        }
-
-        $this->savedUpos[] = [
-            'ksef_number' => $ksefNumber,
-            'content' => $content,
         ];
     }
 }

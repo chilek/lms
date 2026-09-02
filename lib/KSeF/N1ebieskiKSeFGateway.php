@@ -87,7 +87,7 @@ class N1ebieskiKSeFGateway implements KSeFGatewayInterface
                     $statusCode = (int) ($status->code ?? 0);
                     $statusDetails = $this->extractStatusDetails($invoice);
                     $ksefNumber = $invoice->ksefNumber ?? null;
-                    [$originalKsefNumber] = $this->extractDuplicateReferences($statusDetails);
+                    $originalKsefNumber = $this->extractDuplicateKsefNumber($statusDetails);
                     $originalKsefNumber = $status?->extensions?->originalKsefNumber ?? $originalKsefNumber;
 
                     $invoices[] = [
@@ -98,7 +98,6 @@ class N1ebieskiKSeFGateway implements KSeFGatewayInterface
                         'ksef_number' => $ksefNumber,
                         'permanent_storage_date' => $invoice->permanentStorageDate ?? null,
                         'original_ksef_number' => $originalKsefNumber,
-                        'upo' => null,
                     ];
                 }
             }
@@ -205,19 +204,15 @@ class N1ebieskiKSeFGateway implements KSeFGatewayInterface
         return null;
     }
 
-    private function extractDuplicateReferences(?string $statusDetails): array
+    private function extractDuplicateKsefNumber(?string $statusDetails): ?string
     {
         $ksefNumber = null;
-        $sessionReferenceNumber = null;
         if ($statusDetails !== null) {
             if (preg_match('/\b[0-9]{10}-[0-9]{8}-[A-Z0-9]{12}-[A-Z0-9]{2}\b/i', $statusDetails, $matches)) {
                 $ksefNumber = strtoupper($matches[0]);
             }
-            if (preg_match('/\b[0-9]{8}-[A-Z]{2}-[A-Z0-9]{10}-[A-Z0-9]{10}-[A-Z0-9]{2}\b/i', $statusDetails, $matches)) {
-                $sessionReferenceNumber = strtoupper($matches[0]);
-            }
         }
 
-        return [$ksefNumber, $sessionReferenceNumber];
+        return $ksefNumber;
     }
 }
