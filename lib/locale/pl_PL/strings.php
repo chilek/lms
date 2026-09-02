@@ -716,7 +716,7 @@ $_LANG['Enter some property value and press Enter. Icon on left allows to choose
 $_LANG['Enter phone number and press Enter'] = 'Wprowadź numer telefonu i naciśnij Enter';
 $_LANG['Enter node ID, name, IP address or MAC address and press Enter'] = 'Wprowadź identyfikator komputera, nazwę, adres IP lub adres MAC i naciśnij Enter';
 $_LANG['Enter netnode ID or name and press Enter'] = 'Wprowadź ID lub nazwę węzła i naciśnij Enter';
-$_LANG['Enter device ID, name or serial number and press Enter'] = 'Wprowadź ID, nazwę urządzenia lub numer seryjny i naciśnij Enter';
+$_LANG['Enter device ID, name, serial number or IP address and press Enter'] = 'Wprowadź ID, nazwę urządzenia, numer seryjny lub adres IP i naciśnij Enter';
 $_LANG['Enter request tracker ID, subject or requestor name and press Enter'] = 'Wprowadź identyfikator zgłoszenia, temat lub nazwisko/nazwę zgłaszającego i naciśnij Enter';
 $_LANG['Both IP addresses for DHCP range are required!'] = 'Obydwa adresy IP są wymagane dla zakresu DHCP!';
 $_LANG['Browse'] = 'Przeglądaj';
@@ -5301,6 +5301,7 @@ $_LANG['<!qs>device id'] = 'identyfikator urządzenia';
 $_LANG['<!qs>device name'] = 'nazwa urządzenia';
 $_LANG['<!qs>device serial number'] = 'numer seryjny urządzenia';
 $_LANG['<!qs>device mac'] = 'adres MAC urządzenia';
+$_LANG['<!qs>device ip address'] = 'adres IP urządzenia';
 $_LANG['<!qs>device description'] = 'opis urządzenia';
 
 $_LANG['<!qs>network node id'] = 'identyfikator węzła sieciowego';
