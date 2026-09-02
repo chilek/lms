@@ -166,6 +166,25 @@ class KSeFSubmissionServiceTest extends TestCase
         $this->assertStringContainsString('submission outcome is unknown', $result['errors'][0]['error']);
     }
 
+    public function testSendBuildsEachInvoiceXmlExactlyOnce()
+    {
+        $repository = new FakeKSeFRepository([
+            $this->invoice(123),
+            $this->invoice(124),
+        ]);
+        $gateway = new FakeKSeFGateway();
+        $buildCounts = [];
+        $service = $this->service($repository, $gateway, function (array $invoice) use (&$buildCounts) {
+            $buildCounts[$invoice['id']] = ($buildCounts[$invoice['id']] ?? 0) + 1;
+            return '<Faktura>' . $invoice['id'] . '</Faktura>';
+        });
+
+        $result = $service->send($this->config());
+
+        $this->assertSame(2, $result['submitted']);
+        $this->assertSame([123 => 1, 124 => 1], $buildCounts);
+    }
+
     public function testSyncMatchesSessionInvoicesByOrdinalAndUpdatesThemIndependently()
     {
         $repository = new FakeKSeFRepository([], [
