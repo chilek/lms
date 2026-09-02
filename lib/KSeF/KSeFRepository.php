@@ -67,7 +67,7 @@ class KSeFRepository implements KSeFRepositoryInterface
 
         $sessionReferenceNumber = 'LOCAL-S-' . (int) $documents[0]['docid'] . '-' . \Utils::randomBytes(12);
 
-        $this->db->BeginTrans();
+        $this->beginTransactionOrFail();
         try {
             $reservableDocuments = [];
             $skippedDocuments = [];
@@ -147,7 +147,7 @@ class KSeFRepository implements KSeFRepositoryInterface
                     'docid' => $document['docid'],
                 ];
             }
-            $this->db->CommitTrans();
+            $this->commitTransactionOrFail();
 
             return [
                 'session_id' => $sessionId,
@@ -194,7 +194,7 @@ class KSeFRepository implements KSeFRepositoryInterface
 
     public function discardSession(int $id): void
     {
-        $this->db->BeginTrans();
+        $this->beginTransactionOrFail();
         try {
             $this->executeOrFail(
                 'DELETE FROM ksefdocuments
@@ -210,7 +210,7 @@ class KSeFRepository implements KSeFRepositoryInterface
                     $id,
                 ]
             );
-            $this->db->CommitTrans();
+            $this->commitTransactionOrFail();
         } catch (\Throwable $e) {
             $this->db->RollbackTrans();
             throw $e;
@@ -301,6 +301,20 @@ class KSeFRepository implements KSeFRepositoryInterface
     {
         if ($this->db->Execute($query, $params) === false) {
             throw new \RuntimeException('KSeF database operation failed.');
+        }
+    }
+
+    private function beginTransactionOrFail(): void
+    {
+        if ($this->db->BeginTrans() === false) {
+            throw new \RuntimeException('Unable to start KSeF database transaction.');
+        }
+    }
+
+    private function commitTransactionOrFail(): void
+    {
+        if ($this->db->CommitTrans() === false) {
+            throw new \RuntimeException('Unable to commit KSeF database transaction.');
         }
     }
 

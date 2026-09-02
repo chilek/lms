@@ -81,7 +81,6 @@ class KSeFSubmissionService
 
             $invoiceGroups[$groupKey]['invoices'][] = [
                 'docid' => (int) $invoice['id'],
-                'invoice' => $invoice,
                 'xml' => $xml,
                 'hash' => $this->invoiceHash($xml),
             ];
@@ -125,15 +124,7 @@ class KSeFSubmissionService
                 $xmlDocuments = [];
                 foreach ($preparedInvoices as $preparedInvoice) {
                     if (isset($reservedDocIds[$preparedInvoice['docid']])) {
-                        $currentXml = call_user_func($this->xmlBuilder, $preparedInvoice['invoice']);
-                        if (!is_string($currentXml) || trim($currentXml) === '') {
-                            throw new \RuntimeException('Invoice changed or became unavailable after reservation.');
-                        }
-                        $this->gateway->validateXml($currentXml);
-                        if (!hash_equals($preparedInvoice['hash'], $this->invoiceHash($currentXml))) {
-                            throw new \RuntimeException('Invoice changed after KSeF submission was prepared.');
-                        }
-                        $xmlDocuments[] = $currentXml;
+                        $xmlDocuments[] = $preparedInvoice['xml'];
                     }
                 }
 

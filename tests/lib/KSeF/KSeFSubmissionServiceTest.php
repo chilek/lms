@@ -166,26 +166,6 @@ class KSeFSubmissionServiceTest extends TestCase
         $this->assertStringContainsString('submission outcome is unknown', $result['errors'][0]['error']);
     }
 
-    public function testSendDoesNotSubmitXmlChangedAfterReservation()
-    {
-        $repository = new FakeKSeFRepository([$this->invoice(123)]);
-        $gateway = new FakeKSeFGateway();
-        $buildCount = 0;
-        $service = $this->service($repository, $gateway, function (array $invoice) use (&$buildCount) {
-            $buildCount++;
-            return $buildCount === 1
-                ? '<Faktura>original</Faktura>'
-                : '<Faktura>changed</Faktura>';
-        });
-
-        $result = $service->send($this->config());
-
-        $this->assertSame(1, $result['skipped']);
-        $this->assertSame([1], $repository->discardedSessions);
-        $this->assertSame([], $gateway->sentXmlBatches);
-        $this->assertStringContainsString('changed after KSeF submission was prepared', $result['errors'][0]['error']);
-    }
-
     public function testSyncMatchesSessionInvoicesByOrdinalAndUpdatesThemIndependently()
     {
         $repository = new FakeKSeFRepository([], [

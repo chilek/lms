@@ -43,6 +43,70 @@ class KSeFRepositoryTest extends TestCase
         $this->assertSame('2026-04-24 08:00:00', $db->params[4]);
     }
 
+    public function testFailedTransactionStartPreventsWrites(): void
+    {
+        $db = new class {
+            public $executeCalled = false;
+
+            public function BeginTrans()
+            {
+                return false;
+            }
+
+            public function Execute($query, $params)
+            {
+                $this->executeCalled = true;
+                return 1;
+            }
+        };
+        $repository = new KSeFRepository($db);
+
+        try {
+            $repository->discardSession(1);
+            $this->fail('Failed transaction start should throw.');
+        } catch (\RuntimeException $e) {
+            $this->assertStringContainsString('start KSeF database transaction', $e->getMessage());
+            $this->assertFalse($db->executeCalled);
+        }
+    }
+
+    public function testFailedTransactionCommitIsReported(): void
+    {
+        $db = new class {
+            public $rollbackCalled = false;
+
+            public function BeginTrans()
+            {
+                return true;
+            }
+
+            public function Execute($query, $params)
+            {
+                return 1;
+            }
+
+            public function CommitTrans()
+            {
+                return false;
+            }
+
+            public function RollbackTrans()
+            {
+                $this->rollbackCalled = true;
+                return true;
+            }
+        };
+        $repository = new KSeFRepository($db);
+
+        try {
+            $repository->discardSession(1);
+            $this->fail('Failed transaction commit should throw.');
+        } catch (\RuntimeException $e) {
+            $this->assertStringContainsString('commit KSeF database transaction', $e->getMessage());
+            $this->assertTrue($db->rollbackCalled);
+        }
+    }
+
     private function recordingDatabase(string $type)
     {
         return new class ($type) {
