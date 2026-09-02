@@ -17,6 +17,7 @@ use Lms\KSeF\KSeF;
 use Lms\KSeF\KSeFConfig;
 use Lms\KSeF\KSeFRepository;
 use Lms\KSeF\KSeFSubmissionService;
+use Lms\KSeF\KSeFSynchronizationLock;
 use Lms\KSeF\N1ebieskiKSeFGateway;
 
 $script_parameters = [
@@ -107,7 +108,15 @@ if ($send) {
 }
 
 if ($sync) {
-    $result = $service->sync($config, $divisionId, $customerId);
+    $lock = new KSeFSynchronizationLock();
+    if (!$lock->acquire(STORAGE_DIR . DIRECTORY_SEPARATOR . 'lms-ksef-sync.lock')) {
+        die('KSeF synchronization is already running.' . PHP_EOL);
+    }
+    try {
+        $result = $service->sync($config, $divisionId, $customerId);
+    } finally {
+        $lock->release();
+    }
     echo 'KSeF status updates: ' . $result['updated'] . PHP_EOL;
     foreach ($result['errors'] as $error) {
         echo 'KSeF document ' . $error['id'] . ': ' . $error['error'] . PHP_EOL;
