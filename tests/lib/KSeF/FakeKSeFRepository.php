@@ -19,6 +19,9 @@ class FakeKSeFRepository implements KSeFRepositoryInterface
     public $pendingCustomerId = null;
     public $pendingDocIds = null;
     public $pendingLimit = null;
+    public $sessionDocuments = null;
+    public $recoveryClaimed = true;
+    public $recoveryClaims = [];
 
     private $eligibleInvoices;
     private $pendingDocuments;
@@ -78,6 +81,24 @@ class FakeKSeFRepository implements KSeFRepositoryInterface
         ];
     }
 
+    public function getSessionDocuments(int $sessionId): array
+    {
+        $documents = $this->sessionDocuments ?? $this->pendingDocuments;
+        return array_values(array_filter(
+            $documents,
+            fn (array $document): bool => (int) $document['session_id'] === $sessionId
+        ));
+    }
+
+    public function claimSessionRecovery(
+        int $sessionId,
+        string $expectedReferenceNumber,
+        array $documentHashes
+    ): bool {
+        $this->recoveryClaims[] = compact('sessionId', 'expectedReferenceNumber', 'documentHashes');
+        return $this->recoveryClaimed;
+    }
+
     public function closeSession(int $id): void
     {
         $this->sessionCloseUpdates[] = $id;
@@ -108,7 +129,8 @@ class FakeKSeFRepository implements KSeFRepositoryInterface
         ?string $statusDescription,
         ?string $statusDetails,
         ?string $ksefNumber,
-        ?string $permanentStorageDate
+        ?string $permanentStorageDate,
+        ?string $hash = null
     ): void {
         $this->statusUpdates[] = [
             'id' => $id,
@@ -117,6 +139,7 @@ class FakeKSeFRepository implements KSeFRepositoryInterface
             'status_details' => $statusDetails,
             'ksef_number' => $ksefNumber,
             'permanent_storage_date' => $permanentStorageDate,
+            'hash' => $hash,
         ];
     }
 }

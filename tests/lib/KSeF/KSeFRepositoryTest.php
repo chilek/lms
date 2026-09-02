@@ -107,6 +107,113 @@ class KSeFRepositoryTest extends TestCase
         }
     }
 
+    public function testRecoveryClaimUsesCompareAndSwapAfterMaximumBatchUploadWindow(): void
+    {
+        $db = new class {
+            public $queries = [];
+            public $committed = false;
+
+            public function BeginTrans()
+            {
+                return true;
+            }
+
+            public function Execute($query, $params)
+            {
+                $this->queries[] = compact('query', 'params');
+                return 1;
+            }
+
+            public function CommitTrans()
+            {
+                $this->committed = true;
+                return true;
+            }
+
+            public function RollbackTrans()
+            {
+                return true;
+            }
+        };
+        $repository = new KSeFRepository($db);
+
+        $claimed = $repository->claimSessionRecovery(7, 'LOCAL-S-7-token', [
+            11 => ['recovery_original_hash' => 'old', 'recovery_hash' => 'new'],
+        ]);
+
+        $this->assertTrue($claimed);
+        $this->assertTrue($db->committed);
+        $this->assertStringContainsString('id = ? AND ksefnumber = ?', $db->queries[0]['query']);
+        $this->assertSame(18 * 60 * 60, $db->queries[0]['params'][4]);
+        $this->assertSame('RECOVERY-S-7', $db->queries[0]['params'][0]);
+        $this->assertSame('LOCAL-S-7-token', $db->queries[0]['params'][3]);
+    }
+
+    public function testRecoveryClaimRollsBackWhenSessionWasAlreadyClaimed(): void
+    {
+        $db = new class {
+            public $rollbackCalled = false;
+            public $executeCount = 0;
+
+            public function BeginTrans()
+            {
+                return true;
+            }
+
+            public function Execute($query, $params)
+            {
+                $this->executeCount++;
+                return 0;
+            }
+
+            public function RollbackTrans()
+            {
+                $this->rollbackCalled = true;
+                return true;
+            }
+        };
+        $repository = new KSeFRepository($db);
+
+        $this->assertFalse($repository->claimSessionRecovery(7, 'LOCAL-S-7-token', []));
+        $this->assertTrue($db->rollbackCalled);
+        $this->assertSame(1, $db->executeCount);
+    }
+
+    public function testRecoveryClaimRollsBackWhenDocumentChangedConcurrently(): void
+    {
+        $db = new class {
+            public $rollbackCalled = false;
+            public $executeCount = 0;
+
+            public function BeginTrans()
+            {
+                return true;
+            }
+
+            public function Execute($query, $params)
+            {
+                $this->executeCount++;
+                return $this->executeCount === 1 ? 1 : 0;
+            }
+
+            public function RollbackTrans()
+            {
+                $this->rollbackCalled = true;
+                return true;
+            }
+        };
+        $repository = new KSeFRepository($db);
+
+        $this->expectException(\RuntimeException::class);
+        try {
+            $repository->claimSessionRecovery(7, 'LOCAL-S-7-token', [
+                11 => ['recovery_original_hash' => 'old', 'recovery_hash' => 'new'],
+            ]);
+        } finally {
+            $this->assertTrue($db->rollbackCalled);
+        }
+    }
+
     private function recordingDatabase(string $type)
     {
         return new class ($type) {

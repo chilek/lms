@@ -216,6 +216,129 @@ class KSeFSubmissionServiceTest extends TestCase
         $this->assertSame(['SESSION-1'], $gateway->listedSessions);
     }
 
+    public function testSyncRecoversUnknownSubmissionAsDuplicateAndKeepsOriginalHash()
+    {
+        $repository = new FakeKSeFRepository([], [
+            $this->pendingDocument([
+                'session_reference_number' => 'LOCAL-S-123-token',
+                'session_status' => KSeF::STATUS_PENDING,
+            ]),
+        ]);
+        $gateway = new FakeKSeFGateway();
+        $gateway->sessionInvoices['SESSION-1'] = [$this->remoteInvoice(1, [
+            'status' => KSeF::STATUS_DUPLICATE,
+            'original_ksef_number' => '1234567890-20260424-ABCDEF',
+        ])];
+
+        $result = $this->service($repository, $gateway)->sync($this->config());
+
+        $this->assertSame(1, $result['updated']);
+        $this->assertSame([['<Faktura>123</Faktura>']], $gateway->sentXmlBatches);
+        $this->assertSame('original-hash', $repository->statusUpdates[0]['hash']);
+        $this->assertSame('1234567890-20260424-ABCDEF', $repository->statusUpdates[0]['ksef_number']);
+    }
+
+    public function testSyncRecoversUnknownSubmissionAsAcceptedAndUsesRecoveryHash()
+    {
+        $repository = new FakeKSeFRepository([], [
+            $this->pendingDocument([
+                'session_reference_number' => 'LOCAL-S-123-token',
+                'session_status' => KSeF::STATUS_PENDING,
+            ]),
+        ]);
+        $gateway = new FakeKSeFGateway();
+        $gateway->sessionInvoices['SESSION-1'] = [$this->remoteInvoice(1, [
+            'status' => KSeF::STATUS_ACCEPTED,
+            'ksef_number' => '1234567890-20260424-NEWREF',
+        ])];
+
+        $result = $this->service($repository, $gateway)->sync($this->config());
+
+        $expectedHash = base64_encode(hash('sha256', '<Faktura>123</Faktura>', true));
+        $this->assertSame(1, $result['updated']);
+        $this->assertSame($expectedHash, $repository->statusUpdates[0]['hash']);
+    }
+
+    public function testSyncKeepsRecoveryHashesWhileResubmissionIsPending()
+    {
+        $repository = new FakeKSeFRepository([], [
+            $this->pendingDocument([
+                'session_reference_number' => 'LOCAL-S-123-token',
+                'session_status' => KSeF::STATUS_PENDING,
+            ]),
+        ]);
+        $gateway = new FakeKSeFGateway();
+        $gateway->sessionInvoices['SESSION-1'] = [$this->remoteInvoice(1, [
+            'status' => KSeF::STATUS_PENDING,
+            'status_details' => 'Still processing',
+        ])];
+
+        $this->service($repository, $gateway)->sync($this->config());
+
+        $details = json_decode($repository->statusUpdates[0]['status_details'], true);
+        $this->assertSame('original-hash', $details['recovery_original_hash']);
+        $this->assertArrayHasKey('recovery_hash', $details);
+        $this->assertNull($repository->statusUpdates[0]['hash']);
+    }
+
+    public function testSyncDoesNotSendWhenAnotherProcessClaimsRecovery()
+    {
+        $repository = new FakeKSeFRepository([], [
+            $this->pendingDocument([
+                'session_reference_number' => 'LOCAL-S-123-token',
+                'session_status' => KSeF::STATUS_PENDING,
+            ]),
+        ]);
+        $repository->recoveryClaimed = false;
+        $gateway = new FakeKSeFGateway();
+
+        $result = $this->service($repository, $gateway)->sync($this->config());
+
+        $this->assertSame(['updated' => 0, 'errors' => []], $result);
+        $this->assertSame([], $gateway->sentXmlBatches);
+        $this->assertSame([], $gateway->listedSessions);
+    }
+
+    public function testSyncRecoversWholeSessionDespiteDocumentSelection()
+    {
+        $third = $this->pendingDocument([
+            'id' => 12,
+            'docid' => 125,
+            'ordinalnumber' => 3,
+            'session_reference_number' => 'LOCAL-S-123-token',
+            'session_status' => KSeF::STATUS_PENDING,
+            'hash' => 'third-hash',
+        ]);
+        $repository = new FakeKSeFRepository([], [$third]);
+        $repository->sessionDocuments = [
+            $this->pendingDocument([
+                'session_reference_number' => 'LOCAL-S-123-token',
+                'session_status' => KSeF::STATUS_PENDING,
+            ]),
+            $this->pendingDocument([
+                'id' => 11,
+                'docid' => 124,
+                'ordinalnumber' => 2,
+                'session_reference_number' => 'LOCAL-S-123-token',
+                'session_status' => KSeF::STATUS_PENDING,
+                'hash' => 'second-hash',
+            ]),
+            $third,
+        ];
+        $gateway = new FakeKSeFGateway();
+        $gateway->sessionInvoices['SESSION-1'] = [
+            $this->remoteInvoice(1),
+            $this->remoteInvoice(2),
+            $this->remoteInvoice(3),
+        ];
+
+        $result = $this->service($repository, $gateway)->sync($this->config(), null, null, [125]);
+
+        $this->assertSame(3, $result['updated']);
+        $this->assertCount(3, $gateway->sentXmlBatches[0]);
+        $this->assertSame([10, 11, 12], array_column($repository->statusUpdates, 'id'));
+    }
+
     public function testSyncUsesDivisionConfigAndSelectionFilters()
     {
         $repository = new FakeKSeFRepository([], [
@@ -388,6 +511,8 @@ class KSeFSubmissionServiceTest extends TestCase
             'session_id' => 1,
             'session_status' => KSeF::STATUS_ACCEPTED,
             'ordinalnumber' => 1,
+            'hash' => 'original-hash',
+            'statusdetails' => null,
         ], $overrides);
     }
 

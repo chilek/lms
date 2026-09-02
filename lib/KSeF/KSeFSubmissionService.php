@@ -214,6 +214,59 @@ class KSeFSubmissionService
         }
 
         foreach ($sessionGroups as $sessionGroup) {
+            if (str_starts_with($sessionGroup['reference_number'], 'LOCAL-S-')) {
+                try {
+                    $sessionGroup['documents'] = $this->repository->getSessionDocuments(
+                        $sessionGroup['session_id']
+                    );
+                    if (empty($sessionGroup['documents'])) {
+                        throw new \RuntimeException('KSeF recovery session has no pending documents.');
+                    }
+
+                    $xmlDocuments = [];
+                    $documentHashes = [];
+                    foreach ($sessionGroup['documents'] as &$document) {
+                        $xml = call_user_func($this->xmlBuilder, ['id' => (int) $document['docid']]);
+                        if (!is_string($xml) || trim($xml) === '') {
+                            throw new \RuntimeException('Invoice is unavailable for KSeF recovery.');
+                        }
+                        $this->gateway->validateXml($xml);
+                        $recoveryHash = $this->invoiceHash($xml);
+                        $documentHashes[(int) $document['id']] = [
+                            'recovery_original_hash' => $document['hash'],
+                            'recovery_hash' => $recoveryHash,
+                        ];
+                        $document = array_merge($document, $documentHashes[(int) $document['id']]);
+                        $xmlDocuments[] = $xml;
+                    }
+                    unset($document);
+
+                    if (!$this->repository->claimSessionRecovery(
+                        $sessionGroup['session_id'],
+                        $sessionGroup['reference_number'],
+                        $documentHashes
+                    )) {
+                        continue;
+                    }
+
+                    $recoveredReferenceNumber = $this->gateway->sendXmlBatch(
+                        $sessionGroup['config'],
+                        $sessionGroup['seller_ten'],
+                        $xmlDocuments
+                    );
+                    $this->repository->updateSessionReference(
+                        $sessionGroup['session_id'],
+                        $recoveredReferenceNumber
+                    );
+                    $sessionGroup['reference_number'] = $recoveredReferenceNumber;
+                } catch (\Throwable $e) {
+                    foreach ($sessionGroup['documents'] as $document) {
+                        $this->addSyncError($result, (int) $document['id'], $e->getMessage());
+                    }
+                    continue;
+                }
+            }
+
             $closeError = null;
             if ($sessionGroup['session_status'] !== KSeF::STATUS_ACCEPTED) {
                 try {
@@ -249,7 +302,7 @@ class KSeFSubmissionService
                         $errorPrefix = $closeError === null ? '' : $closeError . ' ';
                         throw new \RuntimeException(
                             $errorPrefix . 'Couldn\'t find KSeF invoice for session '
-                                . $document['session_reference_number']
+                                . $sessionGroup['reference_number']
                                 . ' and ordinal number ' . $document['ordinalnumber'] . '.'
                         );
                     }
@@ -326,19 +379,38 @@ class KSeFSubmissionService
     {
         $statusCode = (int) ($status['status'] ?? KSeF::STATUS_PENDING);
         $ksefNumber = $status['ksef_number'] ?? null;
+        $recoveryDetails = $this->getRecoveryDetails($document);
+        $hash = $recoveryDetails['recovery_hash'] ?? null;
+        $statusDetails = $status['status_details'] ?? null;
+        if ($statusCode === KSeF::STATUS_PENDING && !empty($recoveryDetails)) {
+            $statusDetails = $document['statusdetails'] ?? json_encode($recoveryDetails);
+            $hash = null;
+        }
         if ($statusCode === KSeF::STATUS_DUPLICATE && !empty($status['original_ksef_number'])) {
             $statusCode = KSeF::STATUS_ACCEPTED;
             $ksefNumber = $status['original_ksef_number'];
+            $hash = $recoveryDetails['recovery_original_hash'] ?? null;
         }
 
         $this->repository->updateDocumentStatus(
             (int) $document['id'],
             $statusCode,
             $status['status_description'] ?? null,
-            $status['status_details'] ?? null,
+            $statusDetails,
             $ksefNumber,
-            $this->normalizeStorageDate($status['permanent_storage_date'] ?? null)
+            $this->normalizeStorageDate($status['permanent_storage_date'] ?? null),
+            $hash
         );
+    }
+
+    private function getRecoveryDetails(array $document): array
+    {
+        if (isset($document['recovery_hash'])) {
+            return $document;
+        }
+
+        $details = json_decode($document['statusdetails'] ?? '', true);
+        return is_array($details) ? $details : [];
     }
 
     private function normalizeStorageDate(?string $date): ?string

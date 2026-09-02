@@ -13,6 +13,14 @@ interface KSeFRepositoryInterface
 
     public function reserveInvoices(array $documents, int $environment): array;
 
+    public function getSessionDocuments(int $sessionId): array;
+
+    public function claimSessionRecovery(
+        int $sessionId,
+        string $expectedReferenceNumber,
+        array $documentHashes
+    ): bool;
+
     public function updateSessionReference(int $id, string $referenceNumber): void;
 
     public function closeSession(int $id): void;
@@ -32,6 +40,7 @@ interface KSeFRepositoryInterface
         ?string $statusDescription,
         ?string $statusDetails,
         ?string $ksefNumber,
-        ?string $permanentStorageDate
+        ?string $permanentStorageDate,
+        ?string $hash = null
     ): void;
 }

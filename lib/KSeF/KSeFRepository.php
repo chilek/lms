@@ -4,6 +4,8 @@ namespace Lms\KSeF;
 
 class KSeFRepository implements KSeFRepositoryInterface
 {
+    private const RECOVERY_DELAY = 18 * 60 * 60;
+
     private $db;
 
     public function __construct($db)
@@ -176,6 +178,68 @@ class KSeFRepository implements KSeFRepositoryInterface
         );
     }
 
+    public function getSessionDocuments(int $sessionId): array
+    {
+        return $this->db->GetAll(
+            'SELECT kd.id, kd.docid, kd.ordinalnumber, kd.hash, kd.statusdetails,
+                kbs.ksefnumber AS session_reference_number, kbs.id AS session_id,
+                kbs.status AS session_status, d.divisionid, d.div_ten AS seller_ten
+            FROM ksefdocuments kd
+            JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
+            JOIN documents d ON d.id = kd.docid
+            WHERE kd.batchsessionid = ? AND kd.status = ?
+            ORDER BY kd.ordinalnumber',
+            [$sessionId, KSeF::STATUS_PENDING]
+        ) ?: [];
+    }
+
+    public function claimSessionRecovery(
+        int $sessionId,
+        string $expectedReferenceNumber,
+        array $documentHashes
+    ): bool {
+        $this->beginTransactionOrFail();
+        try {
+            $affectedRows = $this->executeOrFail(
+                'UPDATE ksefbatchsessions
+                SET ksefnumber = ?, lastupdate = ?NOW?, statusdescription = ?
+                WHERE id = ? AND ksefnumber = ? AND ?NOW? - lastupdate >= ?',
+                [
+                    'RECOVERY-S-' . $sessionId,
+                    'KSeF recovery submission attempted.',
+                    $sessionId,
+                    $expectedReferenceNumber,
+                    self::RECOVERY_DELAY,
+                ]
+            );
+            if ($affectedRows !== 1) {
+                $this->db->RollbackTrans();
+                return false;
+            }
+
+            foreach ($documentHashes as $documentId => $hashes) {
+                $affectedRows = $this->executeOrFail(
+                    'UPDATE ksefdocuments SET statusdetails = ?
+                    WHERE id = ? AND batchsessionid = ? AND status = ?',
+                    [
+                        json_encode($hashes),
+                        $documentId,
+                        $sessionId,
+                        KSeF::STATUS_PENDING,
+                    ]
+                );
+                if ($affectedRows !== 1) {
+                    throw new \RuntimeException('KSeF recovery document claim failed.');
+                }
+            }
+            $this->commitTransactionOrFail();
+            return true;
+        } catch (\Throwable $e) {
+            $this->db->RollbackTrans();
+            throw $e;
+        }
+    }
+
     public function closeSession(int $id): void
     {
         $this->executeOrFail(
@@ -226,10 +290,13 @@ class KSeFRepository implements KSeFRepositoryInterface
         $conditions = [
             'kd.status = ?',
             'kbs.ksefnumber NOT LIKE ?',
+            '(kbs.ksefnumber NOT LIKE ? OR ?NOW? - kbs.lastupdate >= ?)',
         ];
         $params = [
             KSeF::STATUS_PENDING,
+            'RECOVERY-S-%',
             'LOCAL-S-%',
+            self::RECOVERY_DELAY,
         ];
 
         if ($divisionId !== null) {
@@ -250,6 +317,8 @@ class KSeFRepository implements KSeFRepositoryInterface
                 kd.id,
                 d.id AS docid,
                 kd.ordinalnumber,
+                kd.hash,
+                kd.statusdetails,
                 kbs.ksefnumber AS session_reference_number,
                 kbs.id AS session_id,
                 kbs.status AS session_status,
@@ -271,7 +340,8 @@ class KSeFRepository implements KSeFRepositoryInterface
         ?string $statusDescription,
         ?string $statusDetails,
         ?string $ksefNumber,
-        ?string $permanentStorageDate
+        ?string $permanentStorageDate,
+        ?string $hash = null
     ): void {
         $this->executeOrFail(
             'UPDATE ksefdocuments
@@ -279,7 +349,8 @@ class KSeFRepository implements KSeFRepositoryInterface
                 statusdescription = ?,
                 statusdetails = ?,
                 ksefnumber = ?,
-                permanent_storage_date = ?
+                permanent_storage_date = ?,
+                hash = COALESCE(?, hash)
             WHERE id = ?',
             [
                 $status,
@@ -287,6 +358,7 @@ class KSeFRepository implements KSeFRepositoryInterface
                 $statusDetails,
                 $ksefNumber,
                 $this->storageDateForDatabase($permanentStorageDate),
+                $hash,
                 $id,
             ]
         );
@@ -297,11 +369,14 @@ class KSeFRepository implements KSeFRepositoryInterface
         return array_values(array_unique(array_filter(array_map('intval', \Utils::filterIntegers($ids)))));
     }
 
-    private function executeOrFail(string $query, array $params): void
+    private function executeOrFail(string $query, array $params): int
     {
-        if ($this->db->Execute($query, $params) === false) {
+        $result = $this->db->Execute($query, $params);
+        if ($result === false) {
             throw new \RuntimeException('KSeF database operation failed.');
         }
+
+        return $result;
     }
 
     private function beginTransactionOrFail(): void
