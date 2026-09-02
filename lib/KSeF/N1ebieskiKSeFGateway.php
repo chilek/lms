@@ -7,15 +7,12 @@ use N1ebieski\KSEFClient\Contracts\Resources\ClientResourceInterface;
 use N1ebieski\KSEFClient\Factories\EncryptionKeyFactory;
 use N1ebieski\KSEFClient\Requests\Sessions\Batch\Close\CloseRequest;
 use N1ebieski\KSEFClient\Requests\Sessions\Batch\OpenAndSend\OpenAndSendXmlRequest;
-use N1ebieski\KSEFClient\Requests\Sessions\Invoices\KsefUpo\KsefUpoRequest;
 use N1ebieski\KSEFClient\Requests\Sessions\Invoices\List\ListRequest;
-use N1ebieski\KSEFClient\Requests\Sessions\Invoices\Upo\UpoRequest;
 use N1ebieski\KSEFClient\Support\Optional;
 use N1ebieski\KSEFClient\Validator\Rules\Xml\SchemaRule;
 use N1ebieski\KSEFClient\Validator\Validator;
 use N1ebieski\KSEFClient\ValueObjects\Mode;
 use N1ebieski\KSEFClient\ValueObjects\Requests\ContinuationToken;
-use N1ebieski\KSEFClient\ValueObjects\Requests\KsefNumber;
 use N1ebieski\KSEFClient\ValueObjects\Requests\ReferenceNumber;
 use N1ebieski\KSEFClient\ValueObjects\Requests\Sessions\FormCode;
 use N1ebieski\KSEFClient\ValueObjects\Requests\Sessions\PageSize;
@@ -90,32 +87,8 @@ class N1ebieskiKSeFGateway implements KSeFGatewayInterface
                     $statusCode = (int) ($status->code ?? 0);
                     $statusDetails = $this->extractStatusDetails($invoice);
                     $ksefNumber = $invoice->ksefNumber ?? null;
-                    [$originalKsefNumber, $originalSessionReferenceNumber] =
-                        $this->extractDuplicateReferences($statusDetails);
+                    [$originalKsefNumber] = $this->extractDuplicateReferences($statusDetails);
                     $originalKsefNumber = $status?->extensions?->originalKsefNumber ?? $originalKsefNumber;
-                    $originalSessionReferenceNumber = $status?->extensions?->originalSessionReferenceNumber
-                        ?? $originalSessionReferenceNumber;
-                    $upo = null;
-
-                    if ($statusCode === KSeF::STATUS_ACCEPTED && !empty($ksefNumber)) {
-                        $upo = $client
-                            ->sessions()
-                            ->invoices()
-                            ->upo(new UpoRequest(
-                                ReferenceNumber::from($sessionReferenceNumber),
-                                ReferenceNumber::from($invoice->referenceNumber)
-                            ))
-                            ->body();
-                    } elseif ($statusCode === KSeF::STATUS_DUPLICATE
-                        && !empty($originalKsefNumber)
-                        && !empty($originalSessionReferenceNumber)
-                    ) {
-                        $upo = $this->fetchOriginalUpo(
-                            $client,
-                            $originalSessionReferenceNumber,
-                            $originalKsefNumber
-                        );
-                    }
 
                     $invoices[] = [
                         'ordinal_number' => isset($invoice->ordinalNumber) ? (int) $invoice->ordinalNumber : null,
@@ -125,7 +98,7 @@ class N1ebieskiKSeFGateway implements KSeFGatewayInterface
                         'ksef_number' => $ksefNumber,
                         'permanent_storage_date' => $invoice->permanentStorageDate ?? null,
                         'original_ksef_number' => $originalKsefNumber,
-                        'upo' => $upo,
+                        'upo' => null,
                     ];
                 }
             }
@@ -179,25 +152,6 @@ class N1ebieskiKSeFGateway implements KSeFGatewayInterface
             KSeF::ENVIRONMENT_DEMO => Mode::Demo,
             default => Mode::Test,
         };
-    }
-
-    private function fetchOriginalUpo(
-        ClientResourceInterface $client,
-        string $sessionReferenceNumber,
-        string $ksefNumber
-    ): ?string {
-        try {
-            return $client
-                ->sessions()
-                ->invoices()
-                ->ksefUpo(new KsefUpoRequest(
-                    ReferenceNumber::from($sessionReferenceNumber),
-                    KsefNumber::from($ksefNumber)
-                ))
-                ->body();
-        } catch (\Throwable $e) {
-            return null;
-        }
     }
 
     private function formatXmlValidationException(\Throwable $exception): string
