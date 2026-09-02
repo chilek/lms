@@ -790,11 +790,11 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
     public function CloseEvent($params)
     {
-        if (!ConfigHelper::checkPrivilege('timetable_mangement')) {
-            die('Error - cannot close event(s) - no permissions');
+        if (!ConfigHelper::checkPrivilege('timetable_management')) {
+            die(trans('Error: cannot close event - no user permissions'));
         }
         if (empty($params)) {
-            die('Error - cannot close event(s)');
+            die(trans('Error: cannot close event'));
         }
 
         if (!empty($params['ticketid'])) {
@@ -839,8 +839,8 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
     public function OpenEvent($id)
     {
-        if (!ConfigHelper::checkPrivilege('timetable_mangement')) {
-            die('Error - cannot open event(s) - no permissions');
+        if (!ConfigHelper::checkPrivilege('timetable_management')) {
+            die(trans('Error: cannot open event - no user permissions'));
         }
 
         $aee = ConfigHelper::getConfig(
@@ -849,10 +849,10 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         );
         $event = $this->GetEvent($id);
         if (empty($event['closed'])) {
-            die('Cannot open event - event not closed');
+            die(trans('Error: cannot open event - event not closed'));
         }
         if (!ConfigHelper::checkPrivilege('superuser') && $aee && ((time() - $event['closeddate']) < $aee)) {
-            die('Cannot open event - event closed too long ago');
+            die(trans('Error: cannot open event - event closed too long ago'));
         }
 
         if ($this->syslog) {

@@ -75,7 +75,7 @@ switch ($action) {
             $SESSION->remove_history_entry();
             $SESSION->redirect($backurl);
         } else {
-            die(trans('Cannot open event - event closed too long ago.'));
+            die(trans('Error: cannot open event - event closed too long ago'));
         }
         break;
     case 'close':
@@ -93,7 +93,7 @@ switch ($action) {
             $SESSION->remove_history_entry();
             $SESSION->redirect($backurl);
         } else {
-            die("Cannot assign to event - event closed too long ago.");
+            die(trans("Error: cannot assign to event - event closed too long ago"));
         }
         break;
     case 'unassign':
@@ -102,7 +102,7 @@ switch ($action) {
             $SESSION->remove_history_entry();
             $SESSION->redirect($backurl);
         } else {
-            die("Cannot unassign from event - event closed too long ago.");
+            die(trans("Error: cannot unassign from event - event closed too long ago"));
         }
         break;
 }
