@@ -81,6 +81,7 @@ class KSeFSubmissionService
 
             $invoiceGroups[$groupKey]['invoices'][] = [
                 'docid' => (int) $invoice['id'],
+                'invoice' => $invoice,
                 'xml' => $xml,
                 'hash' => $this->invoiceHash($xml),
             ];
@@ -93,6 +94,7 @@ class KSeFSubmissionService
             $reserved = null;
             $sessionReferenceNumber = null;
             $sessionReferenceStored = false;
+            $submissionAttempted = false;
             $documents = [];
             foreach ($preparedInvoices as $preparedInvoice) {
                 $documents[] = [
@@ -123,11 +125,20 @@ class KSeFSubmissionService
                 $xmlDocuments = [];
                 foreach ($preparedInvoices as $preparedInvoice) {
                     if (isset($reservedDocIds[$preparedInvoice['docid']])) {
-                        $xmlDocuments[] = $preparedInvoice['xml'];
+                        $currentXml = call_user_func($this->xmlBuilder, $preparedInvoice['invoice']);
+                        if (!is_string($currentXml) || trim($currentXml) === '') {
+                            throw new \RuntimeException('Invoice changed or became unavailable after reservation.');
+                        }
+                        $this->gateway->validateXml($currentXml);
+                        if (!hash_equals($preparedInvoice['hash'], $this->invoiceHash($currentXml))) {
+                            throw new \RuntimeException('Invoice changed after KSeF submission was prepared.');
+                        }
+                        $xmlDocuments[] = $currentXml;
                     }
                 }
 
                 try {
+                    $submissionAttempted = true;
                     $sessionReferenceNumber = $this->gateway->sendXmlBatch($groupConfig, $sellerTen, $xmlDocuments);
                     $this->repository->updateSessionReference($reserved['session_id'], $sessionReferenceNumber);
                     $sessionReferenceStored = true;
@@ -140,11 +151,14 @@ class KSeFSubmissionService
                 $this->repository->closeSession($reserved['session_id']);
                 $result['submitted'] += count($reserved['documents']);
             } catch (\Throwable $e) {
-                if (!empty($reserved['session_id']) && $sessionReferenceNumber === null) {
+                if (!empty($reserved['session_id']) && !$submissionAttempted) {
                     $this->repository->discardSession((int) $reserved['session_id']);
                 }
 
                 $error = $e->getMessage();
+                if ($submissionAttempted && $sessionReferenceNumber === null) {
+                    $error .= ' KSeF submission outcome is unknown; the local reservation was retained to prevent a duplicate.';
+                }
                 if ($sessionReferenceNumber !== null && !$sessionReferenceStored) {
                     $error .= ' Remote KSeF session reference: ' . $sessionReferenceNumber . '.';
                 }
@@ -345,7 +359,7 @@ class KSeFSubmissionService
         try {
             return (new \DateTimeImmutable($date))
                 ->setTimezone(new \DateTimeZone('UTC'))
-                ->format('Y-m-d H:i:s');
+                ->format('Y-m-d\TH:i:sP');
         } catch (\Exception $e) {
             return null;
         }

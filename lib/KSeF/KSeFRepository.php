@@ -114,7 +114,7 @@ class KSeFRepository implements KSeFRepositoryInterface
                 ];
             }
 
-            $this->db->Execute(
+            $this->executeOrFail(
                 'INSERT INTO ksefbatchsessions (ksefnumber, cdate, lastupdate, status, statusdescription, environment)
                 VALUES (?, ?NOW?, ?NOW?, ?, ?, ?)',
                 [
@@ -129,7 +129,7 @@ class KSeFRepository implements KSeFRepositoryInterface
             $reservedDocuments = [];
             foreach ($reservableDocuments as $index => $document) {
                 $ordinalNumber = $index + 1;
-                $this->db->Execute(
+                $this->executeOrFail(
                     'INSERT INTO ksefdocuments
                         (batchsessionid, docid, ordinalnumber, hash, status, statusdescription, statusdetails)
                     VALUES (?, ?, ?, ?, ?, ?, ?)',
@@ -162,7 +162,7 @@ class KSeFRepository implements KSeFRepositoryInterface
 
     public function updateSessionReference(int $id, string $referenceNumber): void
     {
-        $this->db->Execute(
+        $this->executeOrFail(
             'UPDATE ksefbatchsessions
             SET ksefnumber = ?,
                 lastupdate = ?NOW?,
@@ -178,7 +178,7 @@ class KSeFRepository implements KSeFRepositoryInterface
 
     public function closeSession(int $id): void
     {
-        $this->db->Execute(
+        $this->executeOrFail(
             'UPDATE ksefbatchsessions
             SET status = ?,
                 lastupdate = ?NOW?,
@@ -196,14 +196,14 @@ class KSeFRepository implements KSeFRepositoryInterface
     {
         $this->db->BeginTrans();
         try {
-            $this->db->Execute(
+            $this->executeOrFail(
                 'DELETE FROM ksefdocuments
                 WHERE batchsessionid = ?',
                 [
                     $id,
                 ]
             );
-            $this->db->Execute(
+            $this->executeOrFail(
                 'DELETE FROM ksefbatchsessions
                 WHERE id = ?',
                 [
@@ -273,7 +273,7 @@ class KSeFRepository implements KSeFRepositoryInterface
         ?string $ksefNumber,
         ?string $permanentStorageDate
     ): void {
-        $this->db->Execute(
+        $this->executeOrFail(
             'UPDATE ksefdocuments
             SET status = ?,
                 statusdescription = ?,
@@ -286,7 +286,7 @@ class KSeFRepository implements KSeFRepositoryInterface
                 $statusDescription,
                 $statusDetails,
                 $ksefNumber,
-                $permanentStorageDate,
+                $this->storageDateForDatabase($permanentStorageDate),
                 $id,
             ]
         );
@@ -295,5 +295,27 @@ class KSeFRepository implements KSeFRepositoryInterface
     private function normalizeIds(?array $ids): array
     {
         return array_values(array_unique(array_filter(array_map('intval', \Utils::filterIntegers($ids)))));
+    }
+
+    private function executeOrFail(string $query, array $params): void
+    {
+        if ($this->db->Execute($query, $params) === false) {
+            throw new \RuntimeException('KSeF database operation failed.');
+        }
+    }
+
+    private function storageDateForDatabase(?string $date): ?string
+    {
+        if ($date === null || !method_exists($this->db, 'GetDbType')) {
+            return $date;
+        }
+
+        if (in_array($this->db->GetDbType(), ['mysql', 'mysqli'], true)) {
+            return (new \DateTimeImmutable($date))
+                ->setTimezone(new \DateTimeZone('UTC'))
+                ->format('Y-m-d H:i:s');
+        }
+
+        return $date;
     }
 }

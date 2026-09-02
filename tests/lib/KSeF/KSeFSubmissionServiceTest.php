@@ -153,6 +153,39 @@ class KSeFSubmissionServiceTest extends TestCase
         $this->assertStringContainsString('Remote KSeF session reference: SESSION-1.', $result['errors'][0]['error']);
     }
 
+    public function testSendKeepsReservationWhenSubmissionOutcomeIsUnknown()
+    {
+        $repository = new FakeKSeFRepository([$this->invoice(123)]);
+        $gateway = new FakeKSeFGateway();
+        $gateway->failSend = true;
+
+        $result = $this->service($repository, $gateway)->send($this->config());
+
+        $this->assertSame(1, $result['skipped']);
+        $this->assertSame([], $repository->discardedSessions);
+        $this->assertStringContainsString('submission outcome is unknown', $result['errors'][0]['error']);
+    }
+
+    public function testSendDoesNotSubmitXmlChangedAfterReservation()
+    {
+        $repository = new FakeKSeFRepository([$this->invoice(123)]);
+        $gateway = new FakeKSeFGateway();
+        $buildCount = 0;
+        $service = $this->service($repository, $gateway, function (array $invoice) use (&$buildCount) {
+            $buildCount++;
+            return $buildCount === 1
+                ? '<Faktura>original</Faktura>'
+                : '<Faktura>changed</Faktura>';
+        });
+
+        $result = $service->send($this->config());
+
+        $this->assertSame(1, $result['skipped']);
+        $this->assertSame([1], $repository->discardedSessions);
+        $this->assertSame([], $gateway->sentXmlBatches);
+        $this->assertStringContainsString('changed after KSeF submission was prepared', $result['errors'][0]['error']);
+    }
+
     public function testSyncMatchesSessionInvoicesByOrdinalAndUpdatesThemIndependently()
     {
         $repository = new FakeKSeFRepository([], [
@@ -179,7 +212,7 @@ class KSeFSubmissionServiceTest extends TestCase
         $this->assertSame(['updated' => 2, 'errors' => []], $result);
         $this->assertSame([10, 11], array_column($repository->statusUpdates, 'id'));
         $this->assertSame([200, 450], array_column($repository->statusUpdates, 'status'));
-        $this->assertSame('2026-04-24 08:00:00', $repository->statusUpdates[0]['permanent_storage_date']);
+        $this->assertSame('2026-04-24T08:00:00+00:00', $repository->statusUpdates[0]['permanent_storage_date']);
         $this->assertNull($repository->statusUpdates[1]['ksef_number']);
         $this->assertSame(['SESSION-1'], $gateway->listedSessions);
     }

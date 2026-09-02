@@ -14,8 +14,8 @@ class FakeKSeFGateway implements KSeFGatewayInterface
     public $listedTokens = [];
     public $sessionInvoices = [];
     public $failClose = false;
+    public $failSend = false;
     public $invalidXmlDocuments = [];
-    public $invoiceResponseSequences = [];
 
     public function validateXml(string $xml): void
     {
@@ -28,6 +28,9 @@ class FakeKSeFGateway implements KSeFGatewayInterface
     {
         $this->sentXmlBatches[] = $xmlDocuments;
         $this->sentTokens[] = $config->getToken();
+        if ($this->failSend) {
+            throw new \RuntimeException('Submission response lost');
+        }
 
         return 'SESSION-' . count($this->sentXmlBatches);
     }
@@ -45,10 +48,6 @@ class FakeKSeFGateway implements KSeFGatewayInterface
     {
         $this->listedSessions[] = $sessionReferenceNumber;
         $this->listedTokens[] = $config->getToken();
-        if (!empty($this->invoiceResponseSequences[$sessionReferenceNumber])) {
-            return array_shift($this->invoiceResponseSequences[$sessionReferenceNumber]);
-        }
-
         return $this->sessionInvoices[$sessionReferenceNumber] ?? [];
     }
 }
