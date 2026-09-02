@@ -2002,76 +2002,387 @@ $(function() {
 		}
 	});
 
-	var SpeechRecognition = window.hasOwnProperty('SpeechRecognition') ?
-		SpeechRecognition :
-		(window.hasOwnProperty('webkitSpeechRecognition') ? webkitSpeechRecognition : null);
-	var speechRecognitionTimeout = null;
+	const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
 	if (SpeechRecognition) {
-		$('.lms-ui-button-speech-recognition').click(function () {
+		const recognition = new SpeechRecognition();
+
+		recognition.continuous = true;
+		recognition.lang = lmsSettings.uiLanguage.replace('_', '-');
+		//recognition.interimResults = false;
+		recognition.interimResults = true;
+		recognition.maxAlternatives = 1;
+
+		// Indeks pierwszego wyniku SpeechRecognition,
+		// którego jeszcze nie zatwierdziliśmy w textarea.
+		let committedResultIndex = 0;
+		// Czy trwa rozpoznawanie.
+		let recognizing = false;
+
+		let textareaSelectionStart = 0;
+		let textareaSelectionEnd = 0;
+
+		let textareaInterimStart = null;
+		let textareaInterimEnd = null;
+
+		let tinyInterimNode = null;
+
+		$('.lms-ui-button-speech-recognition').click(function() {
 			var button = $(this);
 			var input = $(button.attr('data-target'));
+			var inputElem = input.get(0);
 			var inputId = input.attr('id');
-			button.toggleClass('active');
-			if (button.is('.active')) {
-				$('.lms-ui-button-speech-recognition.active').not(button).removeClass('active');
-				var recognition = new SpeechRecognition();
-				recognition.continuous = true;
-				recognition.lang = lmsSettings.uiLanguage.replace('_', '-');
-				recognition.interimResults = false;
-				recognition.maxAlternatives = 1;
-				recognition.onresult = function (e) {
-					var value = input.val();
-					if (e.results.length) {
-						var result = e.results[e.results.length - 1][0].transcript;
-						var editor = tinyMCE.get(inputId);
-						if (editor && !editor.isHidden()) {
-							editor.insertContent(result);
-						} else {
-							var beginSubString = value.substring(0, input.get(0).selectionStart);
-							beginSubString += beginSubString.length && beginSubString[beginSubString.length - 1] != ' ' ? ' ' : '';
-							var endSubString = value.substring(input.get(0).selectionEnd);
-							endSubString = (endSubString.length && endSubString[0] != ' ' ? ' ' : '') + endSubString;
-							input.val(beginSubString + result + endSubString);
-							input.get(0).selectionStart = input.get(0).selectionEnd = beginSubString.length + result.length;
-							if (editor) {
-								editor.setContent(input.val());
-							}
-						}
-						if (speechRecognitionTimeout) {
-							clearTimeout(speechRecognitionTimeout);
-						}
-						speechRecognitionTimeout = setTimeout(function () {
-							recognition.stop();
-							button.removeClass('active');
-						}, 5000);
+			var editor = tinyMCE.get(inputId);
+
+			/**
+			 * Zwraca aktywny edytor TinyMCE dla naszego TEXTAREA
+			 * albo null, jeżeli TinyMCE nie jest aktywne.
+			 */
+			function getTinyMCEEditor()
+			{
+				if (typeof window.tinymce === 'undefined' || !inputElem.id) {
+					return null;
+				}
+
+				const editor = tinymce.get(inputId);
+
+				if (!editor ||
+					!editor.initialized ||
+					editor.isHidden()) {
+					return null;
+				}
+
+				return editor;
+			}
+
+			/**
+			 * Czy aktualnie pracujemy w TinyMCE?
+			 */
+			function isTinyMCE()
+			{
+				return getTinyMCEEditor() !== null;
+			}
+
+			function saveTextareaSelection()
+			{
+				textareaSelectionStart = inputElem.selectionStart;
+				textareaSelectionEnd = inputElem.selectionEnd;
+			}
+
+			function removeTextareaInterim()
+			{
+				if (textareaInterimStart === null) {
+					return;
+				}
+
+				inputElem.setRangeText(
+					'',
+					textareaInterimStart,
+					textareaInterimEnd,
+					'end'
+				);
+
+				textareaSelectionStart = textareaInterimStart;
+				textareaSelectionEnd = textareaInterimStart;
+
+				textareaInterimStart = null;
+				textareaInterimEnd = null;
+			}
+
+			function setTextareaInterim(text)
+			{
+				removeTextareaInterim();
+
+				if (!text) {
+					return;
+				}
+
+				textareaInterimStart = textareaSelectionStart;
+
+				inputElem.setRangeText(
+					text,
+					textareaSelectionStart,
+					textareaSelectionEnd,
+					'end'
+				);
+
+				textareaInterimEnd = textareaInterimStart + text.length;
+
+				textareaSelectionStart = textareaInterimEnd;
+				textareaSelectionEnd = textareaInterimEnd;
+
+				inputElem.setSelectionRange(
+					textareaSelectionStart,
+					textareaSelectionEnd
+				);
+			}
+
+			function commitTextareaText(text)
+			{
+				removeTextareaInterim();
+
+				if (!text) {
+					return;
+				}
+
+				inputElem.setRangeText(
+					text,
+					textareaSelectionStart,
+					textareaSelectionEnd,
+					'end'
+				);
+
+				textareaSelectionStart += text.length;
+				textareaSelectionEnd = textareaSelectionStart;
+
+				inputElem.setSelectionRange(
+					textareaSelectionStart,
+					textareaSelectionEnd
+				);
+			}
+
+			function removeTinyInterim()
+			{
+				if (!tinyInterimNode) {
+					return;
+				}
+
+				/*
+				 * Kursor ustawiamy w miejscu, w którym znajdował się interim,
+				 * a następnie usuwamy tymczasową zawartość.
+				 */
+				const editor = getTinyMCEEditor();
+
+				if (!editor) {
+					tinyInterimNode = null;
+					return;
+				}
+
+				const parent = tinyInterimNode.parentNode;
+
+				if (!parent) {
+					tinyInterimNode = null;
+					return;
+				}
+
+				const range = editor.getDoc().createRange();
+
+				range.setStartBefore(tinyInterimNode);
+				range.collapse(true);
+
+				tinyInterimNode.remove();
+
+				editor.selection.setRng(range);
+
+				tinyInterimNode = null;
+			}
+
+
+			function setTinyInterim(text)
+			{
+				const editor = getTinyMCEEditor();
+
+				if (!editor) {
+					return;
+				}
+
+				if (tinyInterimNode && tinyInterimNode.isConnected) {
+					/*
+					 * Nie tworzymy kolejnego fragmentu.
+					 * Podmieniamy aktualną hipotezę Chrome.
+					 */
+					tinyInterimNode.textContent = text;
+
+					const range = editor.getDoc().createRange();
+
+					range.selectNodeContents(tinyInterimNode);
+					range.collapse(false);
+
+					editor.selection.setRng(range);
+
+					return;
+				}
+
+				if (!text) {
+					return;
+				}
+
+				/*
+				 * Tworzymy specjalny SPAN reprezentujący tylko bieżący interim.
+				 */
+				const doc = editor.getDoc();
+
+				tinyInterimNode = doc.createElement('span');
+
+				tinyInterimNode.setAttribute(
+					'data-speech-recognition-interim',
+					'1'
+				);
+
+				tinyInterimNode.textContent = text;
+
+				/*
+				 * Jeżeli coś było zaznaczone, zastępujemy zaznaczenie.
+				 */
+				const range = editor.selection.getRng();
+
+				range.deleteContents();
+				range.insertNode(tinyInterimNode);
+
+				/*
+				 * Kursor za tekstem interim.
+				 */
+				range.setStartAfter(tinyInterimNode);
+				range.collapse(true);
+
+				editor.selection.setRng(range);
+			}
+
+			function commitTinyText(text)
+			{
+				const editor = getTinyMCEEditor();
+
+				if (!editor || !text) {
+					return;
+				}
+
+				/*
+				 * Jeżeli istnieje interim, zamieniamy jego SPAN
+				 * bezpośrednio na zwykły tekst.
+				 */
+				if (tinyInterimNode && tinyInterimNode.isConnected) {
+					const doc = editor.getDoc();
+
+					const textNode = doc.createTextNode(text);
+
+					tinyInterimNode.parentNode.replaceChild(
+						textNode,
+						tinyInterimNode
+					);
+
+					tinyInterimNode = null;
+
+					/*
+					 * Kursor za zatwierdzonym tekstem.
+					 */
+					const range = doc.createRange();
+
+					range.setStartAfter(textNode);
+					range.collapse(true);
+
+					editor.selection.setRng(range);
+
+					editor.nodeChanged();
+
+					return;
+				}
+
+				/*
+				 * Brak interim - normalne wstawienie w miejscu kursora.
+				 */
+				editor.insertContent(
+					editor.dom.encode(text)
+				);
+			}
+
+			function removeInterim()
+			{
+				if (isTinyMCE()) {
+					removeTinyInterim();
+				} else {
+					removeTextareaInterim();
+				}
+			}
+
+			function setInterim(text)
+			{
+				if (isTinyMCE()) {
+					setTinyInterim(text);
+				} else {
+					setTextareaInterim(text);
+				}
+			}
+
+			function commitText(text)
+			{
+				if (isTinyMCE()) {
+					commitTinyText(text);
+				} else {
+					commitTextareaText(text);
+				}
+			}
+
+			recognition.onstart = () => {
+				recognizing = true;
+				committedResultIndex = 0;
+
+				if (!isTinyMCE()) {
+					saveTextareaSelection();
+				}
+
+				button.addClass('active');
+			};
+
+			recognition.onresult = (event) => {
+				let finalText = '';
+				let interimText = '';
+
+				/*
+				 * Chrome przechowuje wszystkie wyniki bieżącej sesji.
+				 *
+				 * resultIndex mówi, od którego miejsca coś się zmieniło.
+				 */
+				for (let i = committedResultIndex; i < event.results.length; i++) {
+					const result = event.results[i];
+					const text = result[0].transcript;
+
+					if (result.isFinal) {
+						finalText += text;
+
+						committedResultIndex = i + 1;
+					} else {
+						interimText += text;
 					}
 				}
-				recognition.onspeechstart = function() {
-					if (speechRecognitionTimeout) {
-						clearTimeout(speechRecognitionTimeout);
-						speechRecognitionTimeout = null;
-					}
+
+				/*
+				 * Jeżeli pojawił się FINAL, zastępuje bieżący interim.
+				 */
+				if (finalText) {
+					commitText(finalText);
 				}
-				recognition.onspeechend = function() {
-					if (speechRecognitionTimeout) {
-						clearTimeout(speechRecognitionTimeout);
-					}
-					speechRecognitionTimeout = setTimeout(function () {
-						recognition.stop();
-						button.removeClass('active');
-					}, 5000);
+
+				/*
+				 * Potem pokazujemy nową hipotezę.
+				 */
+				if (interimText) {
+					setInterim(interimText);
 				}
-				recognition.start();
-				speechRecognitionTimeout = setTimeout(function () {
-					recognition.stop();
-					button.removeClass('active');
-				}, 5000);
+			};
+
+			recognition.onerror = (event) => {
+				console.error(
+					'SpeechRecognition error:',
+					event.error
+				);
+			};
+
+			recognition.onend = () => {
+				recognizing = false;
+
+				/*
+				 * Chrome może zakończyć sesję mając jeszcze widoczny interim.
+				 * Nie traktujemy go automatycznie jako final.
+				 */
+				removeInterim();
+
+				button.removeClass('active');
+			};
+
+			if (recognizing) {
+				recognition.stop();
 			} else {
-				if (speechRecognitionTimeout) {
-					clearTimeout(speechRecognitionTimeout);
-					speechRecognitionTimeout = null;
-				}
+				recognition.start();
 			}
 		});
 	} else {
