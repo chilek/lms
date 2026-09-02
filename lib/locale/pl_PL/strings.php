@@ -5720,6 +5720,10 @@ $_LANG['<!qs>document memo'] = 'notatka na dokumentach';
 $_LANG['Document memo:'] = 'Notatka na dokumentach:';
 
 $_LANG['close event'] = 'zamknij zdarzenie';
+$_LANG['Error: cannot close event - no user permissions'] = 'Błąd: nie można zamknąć zdarzenia - brak uprawnień użytkownika';
+$_LANG['Error: cannot close event'] = 'Błąd: nie można zamknąć zdarzenia';
+$_LANG['Error: cannot open event - no user permissions'] = 'Błąd: nie można otworzyć zdarzenia - brak uprawnień użytkownika';
+$_LANG['Error: cannot open event - event not closed'] = 'Nie można otworzyć zdarzenia - zdarzenie nie jest zamknięte';
 
 $_LANG['Tax category:'] = 'GTU:';
 $_LANG['Tax category'] = 'GTU';
@@ -5869,7 +5873,10 @@ $_LANG['$a selected contacts of $b customers'] = '$a wybranych kontaktów spośr
 $_LANG['show customer list'] = 'pokaż listę klientów';
 $_LANG['hide customer list'] = 'ukryj listę klientów';
 
-$_LANG['Cannot open event - event closed too long ago.'] = 'Nie można otworzyć zdarzenia - zostało ono zamknięte zbyt dawno.';
+$_LANG['Error: cannot open event - event closed too long ago'] = 'Błąd: nie można otworzyć zdarzenia - zostało ono zamknięte zbyt dawno';
+$_LANG['Error: cannot unassign from event - event closed too long ago'] = 'Błąd: nie można usunąć przypisania ze zdarzenia - zostało ono zamknięte zbyt dawno';
+$_LANG['Error: cannot assign to event - event closed too long ago'] = 'Błąd: nie można przypisać do zdarzenia - zostało ono zamknięte zbyt dawno';
+
 
 $_LANG['Text label:'] = 'Etykieta tekstowa:';
 $_LANG['Text label'] = 'Etykieta tekstowa';
