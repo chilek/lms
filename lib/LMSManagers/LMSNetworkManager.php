@@ -560,6 +560,10 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             $search['operatorType'] = strtoupper($search['operatorType']);
         }
 
+        $size_compare_char = (isset($search['size_compare_char']) && in_array($search['size_compare_char'], array('<', '>', '<=', '>=', '=', '<>'), true))
+            ? $search['size_compare_char']
+            : '=';
+
         foreach ($search as $k => $v) {
             if ($v != '') {
                 switch ($k) {
@@ -576,7 +580,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                         break;
 
                     case 'size':
-                        $sqlwhere .= ' ' . $this->db->Escape($v) . ' ' . $search['size_compare_char'] . ' pow(2, 32 - mask2prefix(inet_aton(n.mask))) ' . $search['operatorType'];
+                        $sqlwhere .= ' ' . $this->db->Escape($v) . ' ' . $size_compare_char . ' pow(2, 32 - mask2prefix(inet_aton(n.mask))) ' . $search['operatorType'];
                         break;
 
                     case 'interface':
