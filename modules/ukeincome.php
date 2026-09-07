@@ -44,7 +44,21 @@ if ($to) {
 }
 
 if (isset($_POST['type'])) {
-    $type = isset($_POST['type']) && $_POST['type'] == 'linktechnologies' ? 'linktechnologies' : 'servicetypes';
+    if (isset($_POST['type'])) {
+        switch ($_POST['type']) {
+            case 'linktechnologies':
+            case 'servicetypes':
+            case 'tariffs':
+                $type = $_POST['type'];
+                break;
+            default:
+                $type = 'servicetypes';
+                break;
+        }
+    } else {
+        $type = 'servicetypes';
+    }
+
     $filter['uke-income']['type'] = $type;
 } else {
     $type = 'servicetypes';
@@ -112,34 +126,51 @@ switch ($customergroup_intersection) {
         break;
 }
 
-$income = $DB->GetAll('
-	SELECT ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : 'cash.servicetype') . ' AS type,
-		COUNT(DISTINCT CASE WHEN c.type = ' . CTYPES_PRIVATE . ' THEN c.id ELSE null END) AS privatecount,
-		COUNT(DISTINCT CASE WHEN c.type = ' . CTYPES_COMPANY . ' AND (c.flags & ' . CUSTOMER_FLAG_BUDGETARY_UNIT . ') = 0 THEN c.id ELSE null END) AS businesscount,
-		COUNT(DISTINCT CASE WHEN c.type = ' . CTYPES_COMPANY . ' AND (c.flags & ' . CUSTOMER_FLAG_BUDGETARY_UNIT . ') > 0 THEN c.id ELSE null END) AS budgetaryunitcount,
-		COUNT(DISTINCT c.id) AS totalcount,
-		SUM(CASE WHEN c.type = ' . CTYPES_PRIVATE . ' THEN ' . $value_formula . ' ELSE 0 END) * -1 AS privateincome,
-		SUM(CASE WHEN c.type = ' . CTYPES_COMPANY . ' AND (c.flags & ' . CUSTOMER_FLAG_BUDGETARY_UNIT . ') = 0 THEN ' . $value_formula . ' ELSE 0 END) * -1 AS businessincome,
-		SUM(CASE WHEN c.type = ' . CTYPES_COMPANY . ' AND (c.flags & ' . CUSTOMER_FLAG_BUDGETARY_UNIT . ') > 0 THEN ' . $value_formula . ' ELSE 0 END) * -1 AS budgetaryunitincome,
-		SUM(' . $value_formula . ') * -1 AS totalincome
-	FROM cash
-    LEFT JOIN documents d ON d.id = cash.docid
-	JOIN customers c ON c.id = cash.customerid
-	JOIN taxes t ON t.id = cash.taxid
-	WHERE cash.type = 0 AND time >= ? AND time <= ? AND (d.id IS NULL OR d.cancelled = 0)'
-    . ($division ? ' AND ((cash.docid IS NOT NULL AND d.divisionid = ' . $division . ')
-            OR (cash.docid IS NULL AND c.divisionid = ' . $division . '))' : '')
-    . ($customergroup ? ' AND EXISTS (SELECT 1 FROM customerassignments
-        WHERE customergroupid = ' . $customergroup . ' AND customerid = c.id'
-        . $customergroup_intersection_condition . ')'
+$income = $DB->GetAll(
+    'SELECT ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : ($type == 'servicetypes' ? 'cash.servicetype' : 'tf.name')) . ' AS type,
+        COUNT(DISTINCT CASE WHEN c.type = ' . CTYPES_PRIVATE . ' THEN c.id ELSE null END) AS privatecount,
+        COUNT(DISTINCT CASE WHEN c.type = ' . CTYPES_COMPANY . ' AND (c.flags & ' . CUSTOMER_FLAG_BUDGETARY_UNIT . ') = 0 THEN c.id ELSE null END) AS businesscount,
+        COUNT(DISTINCT CASE WHEN c.type = ' . CTYPES_COMPANY . ' AND (c.flags & ' . CUSTOMER_FLAG_BUDGETARY_UNIT . ') > 0 THEN c.id ELSE null END) AS budgetaryunitcount,
+        COUNT(DISTINCT c.id) AS totalcount,
+        SUM(CASE WHEN c.type = ' . CTYPES_PRIVATE . ' THEN ' . $value_formula . ' ELSE 0 END) * -1 AS privateincome,
+        SUM(CASE WHEN c.type = ' . CTYPES_COMPANY . ' AND (c.flags & ' . CUSTOMER_FLAG_BUDGETARY_UNIT . ') = 0 THEN ' . $value_formula . ' ELSE 0 END) * -1 AS businessincome,
+        SUM(CASE WHEN c.type = ' . CTYPES_COMPANY . ' AND (c.flags & ' . CUSTOMER_FLAG_BUDGETARY_UNIT . ') > 0 THEN ' . $value_formula . ' ELSE 0 END) * -1 AS budgetaryunitincome,
+        SUM(' . $value_formula . ') * -1 AS totalincome
+    FROM cash
+    LEFT JOIN documents d ON d.id = cash.docid'
+    . ($type == 'tariffs'
+        ? ' LEFT JOIN invoicecontents ic ON ic.docid = d.id AND ic.itemid = cash.itemid
+            LEFT JOIN tariffs tf ON tf.id = ic.tariffid'
         : '')
-    . ($type == 'linktechnologies' ?
-        ' GROUP BY cash.linktechnology
-	    ORDER BY cash.linktechnology' :
-        ' AND cash.docid IS NOT NULL
-        GROUP BY cash.servicetype
-        ORDER BY cash.servicetype'
-    ), array($unixfrom, $unixto));
+    . ' JOIN customers c ON c.id = cash.customerid
+    JOIN taxes t ON t.id = cash.taxid
+    WHERE cash.type = 0
+        AND time >= ?
+        AND time <= ?
+        AND (d.id IS NULL OR d.cancelled = 0)'
+        . ($division ? ' AND ((cash.docid IS NOT NULL AND d.divisionid = ' . $division . ')
+            OR (cash.docid IS NULL AND c.divisionid = ' . $division . '))' : '')
+        . ($customergroup ? ' AND EXISTS (SELECT 1 FROM customerassignments
+            WHERE customergroupid = ' . $customergroup . ' AND customerid = c.id'
+            . $customergroup_intersection_condition . ')'
+            : '')
+        . ($type == 'linktechnologies'
+            ? ' GROUP BY cash.linktechnology
+                ORDER BY cash.linktechnology'
+            : ($type == 'servicetypes'
+                ? ' AND cash.docid IS NOT NULL
+                    GROUP BY cash.servicetype
+                    ORDER BY cash.servicetype'
+                : ' --AND tf.id IS NOT NULL
+                    GROUP BY tf.name
+                    ORDER BY tf.name'
+            )
+        ),
+    array(
+        $unixfrom,
+        $unixto,
+    )
+);
 
 if ($bandwidths) {
     $bandwidth_intervals = array(
@@ -205,7 +236,7 @@ if ($bandwidths) {
     $months = round(($unixto - $unixfrom) / (30 * 86400));
 
     $customer_links = $DB->GetAll(
-        'SELECT ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : 'cash.servicetype') . ' AS type,
+        'SELECT ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : ($type == 'servicetypes' ? 'cash.servicetype' : 't.name')) . ' AS type,
             t.downceil,
             (SUM((CASE WHEN c.type = ' . CTYPES_PRIVATE . ' THEN ROUND(ic.count) ELSE 0 END)
                 * (CASE
@@ -244,8 +275,10 @@ if ($bandwidths) {
         JOIN invoicecontents ic ON ic.docid = cash.docid AND ic.itemid = cash.itemid
         JOIN tariffs t ON t.id = ic.tariffid
         WHERE ' . ($type == 'linktechnologies' ? 'cash.servicetype = ' . SERVICE_INTERNET . ' AND cash.linktechnology IS NOT NULL' : '1=1') . '
-            AND t.downceil > 0 AND t.upceil > 0
-            AND cash.time >= ? AND cash.time <= ? '
+            AND t.downceil > 0
+            AND t.upceil > 0
+            AND cash.time >= ?
+            AND cash.time <= ? '
         . ($division ? ' AND ((cash.docid IS NOT NULL AND c.divisionid = ' . $division . ')
             OR (cash.docid IS NULL AND c.divisionid = ' . $division . '))' : '')
         . ($customergroup ? ' AND EXISTS (
@@ -255,9 +288,12 @@ if ($bandwidths) {
                     . $customergroup_intersection_condition
             . ')'
             : '')
-        . ' GROUP BY ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : 'cash.servicetype') . ', t.downceil
-        ORDER BY ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : 'cash.servicetype'),
-        array($unixfrom, $unixto)
+        . ' GROUP BY ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : ($type == 'servicetypes' ? 'cash.servicetype' : 't.name')) . ', t.downceil
+        ORDER BY ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : ($type == 'servicetypes' ? 'cash.servicetype' : 't.name')),
+        array(
+            $unixfrom,
+            $unixto,
+        )
     );
     if (!empty($customer_links)) {
         foreach ($customer_links as $customer_link) {
@@ -303,6 +339,8 @@ if ($type == 'linktechnologies') {
     }
     $SMARTY->assign('linktechnologies', $linktechnologies);
 }
+
+$SMARTY->assign('type', $type);
 
 $layout['pagetitle'] = trans(
     'UKE income report ($a) for period $b - $c',

@@ -6454,3 +6454,6 @@ $_LANG['Network has assigned IP addresses!'] = 'Sieć posiada przypisane adresy 
 $_LANG['Cancel document'] = 'Anuluj dokument';
 $_LANG['Recover document'] = 'Przywróć dokument';
 $_LANG['Are you sure, you want to cancel that document?'] = 'Jesteś pewien, że chcesz anulować ten dokument?';
+
+$_LANG['<!uke-income>tariffs'] = 'taryfy';
+$_LANG['<!uke-income>Tariff'] = 'Taryfa';

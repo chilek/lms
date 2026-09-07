@@ -2650,6 +2650,11 @@
 						{if isset($filter['uke-income']['type']) && $filter['uke-income']['type'] == 'servicetypes'} checked{/if}>
 					{trans("service types")}
 				</label>
+				<label>
+					<input type="radio" name="type" value="tariffs" form="uke-income-form"
+						{if isset($filter['uke-income']['type']) && $filter['uke-income']['type'] == 'tariffs'} checked{/if}>
+					{trans("<!uke-income>tariffs")}
+				</label>
 			</td>
 		</tr>
 		<tr>
