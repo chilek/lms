@@ -82,16 +82,16 @@
 				<div class="lms-ui-tab-table-wrapper col-6">
 					<div class="lms-ui-tab-table-wrapper col-4">
 						<div class="lms-ui-tab-table-wrapper col-2">
-							<div class="lms-ui-tab-table-column number" data-target-url="{$url}"
-									{if $doc.description} {tip text=$doc.description}{/if}>
+							<div class="lms-ui-tab-table-column number"
+								{if $doc.description} {tip text=$doc.description}{/if}>
 								<strong>{number number=$doc.number template=$doc.template customerid=$customerinfo.id time=$doc.cdate}</strong>
 							</div>
-							<div class="lms-ui-tab-table-column creation-date" data-target-url="{$url}">
+							<div class="lms-ui-tab-table-column creation-date">
 								{$doc.cdate|date_format:"Y-m-d H:i"}{if $doc.sdate} / {$doc.sdate|date_format:"Y-m-d H:i"}{/if}
 							</div>
 						</div>
 						<div class="lms-ui-tab-table-wrapper col-2">
-							<div class="lms-ui-tab-table-column created-by" data-target-url="{$url}">
+							<div class="lms-ui-tab-table-column created-by">
 								{$doc.username|escape}
 								{if $doc.cuserid} / {$doc.cusername|escape}{/if}
 								{if $doc.closed == $smarty.const.DOC_CLOSED_AFTER_CUSTOMER_SMS}
@@ -102,14 +102,14 @@
 									{icon name="sign" tip="attached document scans with customer signature"}
 								{/if}
 							</div>
-							<div class="lms-ui-tab-table-column type" data-target-url="{$url}">
+							<div class="lms-ui-tab-table-column type">
 								<strong>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</strong>
 							</div>
 						</div>
 					</div>
 
 					<div class="lms-ui-tab-table-wrapper col-3">
-						<div class="lms-ui-tab-table-column title" data-target-url="{$url}">
+						<div class="lms-ui-tab-table-column title">
 							{$doc.title|truncate:40:"&hellip;":true}
 						</div>
 						<div class="lms-ui-tab-table-column description">
@@ -119,7 +119,7 @@
 								&ndash;
 							{/if}
 						</div>
-						<div class="lms-ui-tab-table-column period" data-target-url="{$url}">
+						<div class="lms-ui-tab-table-column period">
 							{if $doc.fromdate}{trans("from")} {$doc.fromdate|date_format:"Y-m-d"}{/if}
 							{if $doc.todate}{trans("to")} {$doc.todate|date_format:"Y-m-d"}{/if}
 							{if empty($doc.closed) && ($doc.fromdate || $doc.todate) && !empty($doc.dynamicperiod)}{trans("<!document-period>(dynamic)")}{/if}

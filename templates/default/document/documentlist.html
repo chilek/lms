@@ -242,7 +242,7 @@
 		data-closed="{if $doc.closed}1{else}0{/if}"
 		data-senddate="{if $doc.senddate}{$doc.senddate|date_format:"Y-m-d H:i"}{else}{$doc.senddate}{/if}"
 		data-popup-menu-title="{t a=$doc.docid|string_format:"#%06d"}Document $a{/t}">
-		<TD class="nobr" data-target-url="{$url}"{if $doc.description} {tip text=$doc.description}{/if}>
+		<TD class="nobr"{if $doc.description} {tip text=$doc.description}{/if}>
 			{$doc.cdate|date_format:"Y-m-d H:i"}{if $doc.sdate} / {$doc.sdate|date_format:"Y-m-d H:i"}{/if}
 			{if $doc.closed == $smarty.const.DOC_OPEN && $doc.confirmdate}
 				{hint text=$doc.confirmdate|date_format:"Y-m-d H:i" icon="wait"}
@@ -251,7 +251,7 @@
 				<B>{number number=$doc.number template=$doc.template time=$doc.cdate customerid=$doc.customerid}</B>
 			{/if}
 		</TD>
-		<TD class="nobr" data-target-url="{$url}">
+		<TD class="nobr">
 			{$doc.username|escape}
 			{if $doc.cuserid} / {$doc.cusername|escape}{/if}
 			{if $doc.closed == $smarty.const.DOC_CLOSED_AFTER_CUSTOMER_SMS}
@@ -263,7 +263,7 @@
 			{/if}
 			<BR><B>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</B>
 		</TD>
-		<TD class="nobr" data-target-url="{$url}">
+		<TD class="nobr">
 			{$doc.title|truncate:40:"&hellip;":true}
 			{if $doc.description}
 				{hint icon="info" content=$doc.description|escape|replace:"\n":'<br>'}
